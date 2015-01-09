@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Dirk Lemstra 2014
+// Copyright Dirk Lemstra 2014-2015
 //
 // Implementation of channel moments.
 //
@@ -11,6 +11,7 @@
 #include "Magick++/Include.h"
 #include "Magick++/Exception.h"
 #include "Magick++/Statistic.h"
+#include "Magick++/Image.h"
 
 using namespace std;
 
@@ -444,23 +445,23 @@ Magick::ChannelMoments Magick::ImageMoments::channel(
   return(ChannelMoments());
 }
 
-Magick::ImageMoments::ImageMoments(const MagickCore::Image *image)
+Magick::ImageMoments::ImageMoments(const Image &image_)
   : _channels()
 {
   MagickCore::ChannelMoments*
     channel_moments;
 
   GetPPException;
-  channel_moments=GetImageMoments(image,exceptionInfo);
+  channel_moments=GetImageMoments(image_.constImage(),exceptionInfo);
   if (channel_moments != (MagickCore::ChannelMoments *) NULL)
     {
       register ssize_t
         i;
 
-      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      for (i=0; i < (ssize_t) GetPixelChannels(image_.constImage()); i++)
       {
-        PixelChannel channel=GetPixelChannelChannel(image,i);
-        PixelTrait traits=GetPixelChannelTraits(image,channel);
+        PixelChannel channel=GetPixelChannelChannel(image_.constImage(),i);
+        PixelTrait traits=GetPixelChannelTraits(image_.constImage(),channel);
         if (traits == UndefinedPixelTrait)
           continue;
         if ((traits & UpdatePixelTrait) == 0)
@@ -473,7 +474,7 @@ Magick::ImageMoments::ImageMoments(const MagickCore::Image *image)
       channel_moments=(MagickCore::ChannelMoments *) RelinquishMagickMemory(
         channel_moments);
     }
-  ThrowPPException;
+  ThrowPPException(image_.quiet());
 }
 
 Magick::ImagePerceptualHash::ImagePerceptualHash(void)
@@ -567,7 +568,7 @@ double Magick::ImagePerceptualHash::sumSquaredDifferences(
 }
 
 Magick::ImagePerceptualHash::ImagePerceptualHash(
-  const MagickCore::Image *image)
+  const Image &image_)
   : _channels()
 {
   MagickCore::ChannelPerceptualHash*
@@ -577,25 +578,26 @@ Magick::ImagePerceptualHash::ImagePerceptualHash(
     traits;
 
   GetPPException;
-  channel_perceptual_hash=GetImagePerceptualHash(image,exceptionInfo);
+  channel_perceptual_hash=GetImagePerceptualHash(image_.constImage(),
+    exceptionInfo);
   if (channel_perceptual_hash != (MagickCore::ChannelPerceptualHash *) NULL)
     {
-      traits=GetPixelChannelTraits(image,RedPixelChannel);
+      traits=GetPixelChannelTraits(image_.constImage(),RedPixelChannel);
       if ((traits & UpdatePixelTrait) != 0)
         _channels.push_back(Magick::ChannelPerceptualHash(RedPixelChannel,
           &channel_perceptual_hash[RedPixelChannel]));
-      traits=GetPixelChannelTraits(image,GreenPixelChannel);
+      traits=GetPixelChannelTraits(image_.constImage(),GreenPixelChannel);
       if ((traits & UpdatePixelTrait) != 0)
         _channels.push_back(Magick::ChannelPerceptualHash(GreenPixelChannel,
           &channel_perceptual_hash[GreenPixelChannel]));
-      traits=GetPixelChannelTraits(image,BluePixelChannel);
+      traits=GetPixelChannelTraits(image_.constImage(),BluePixelChannel);
       if ((traits & UpdatePixelTrait) != 0)
         _channels.push_back(Magick::ChannelPerceptualHash(BluePixelChannel,
           &channel_perceptual_hash[BluePixelChannel]));
       channel_perceptual_hash=(MagickCore::ChannelPerceptualHash *)
         RelinquishMagickMemory(channel_perceptual_hash);
     }
-  ThrowPPException;
+  ThrowPPException(image_.quality());
 }
 
 Magick::ImageStatistics::ImageStatistics(void)
@@ -625,23 +627,23 @@ Magick::ChannelStatistics Magick::ImageStatistics::channel(
   return(ChannelStatistics());
 }
 
-Magick::ImageStatistics::ImageStatistics(const MagickCore::Image *image)
+Magick::ImageStatistics::ImageStatistics(const Image &image_)
   : _channels()
 {
   MagickCore::ChannelStatistics*
     channel_statistics;
 
   GetPPException;
-  channel_statistics=GetImageStatistics(image,exceptionInfo);
+  channel_statistics=GetImageStatistics(image_.constImage(),exceptionInfo);
   if (channel_statistics != (MagickCore::ChannelStatistics *) NULL)
     {
       register ssize_t
         i;
 
-      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      for (i=0; i < (ssize_t) GetPixelChannels(image_.constImage()); i++)
       {
-        PixelChannel channel=GetPixelChannelChannel(image,i);
-        PixelTrait traits=GetPixelChannelTraits(image,channel);
+        PixelChannel channel=GetPixelChannelChannel(image_.constImage(),i);
+        PixelTrait traits=GetPixelChannelTraits(image_.constImage(),channel);
         if (traits == UndefinedPixelTrait)
           continue;
         if ((traits & UpdatePixelTrait) == 0)
@@ -654,5 +656,5 @@ Magick::ImageStatistics::ImageStatistics(const MagickCore::Image *image)
       channel_statistics=(MagickCore::ChannelStatistics *) RelinquishMagickMemory(
         channel_statistics);
     }
-  ThrowPPException;
+  ThrowPPException(image_.quiet());
 }

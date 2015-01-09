@@ -1,7 +1,7 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
 // Copyright Bob Friesenhahn, 1999, 2002
-// Copyright Dirk Lemstra 2013-2014
+// Copyright Dirk Lemstra 2013-2015
 //
 // Implementation of STL classes and functions
 //
@@ -784,13 +784,15 @@ void Magick::raiseImage::operator()( Magick::Image &image_ ) const
 
 Magick::ReadOptions::ReadOptions(void)
   : _imageInfo(static_cast<ImageInfo*>(AcquireMagickMemory(
-      sizeof(ImageInfo))))
+      sizeof(ImageInfo)))),
+    _quiet(false)
 {
   GetImageInfo(_imageInfo);
 }
 
 Magick::ReadOptions::ReadOptions(const Magick::ReadOptions& options_)
-  : _imageInfo(CloneImageInfo(options_._imageInfo))
+  : _imageInfo(CloneImageInfo(options_._imageInfo)),
+    _quiet(false)
 {
 }
 

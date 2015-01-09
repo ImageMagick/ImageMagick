@@ -1,7 +1,7 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
 // Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003
-// Copyright Dirk Lemstra 2014
+// Copyright Dirk Lemstra 2014-2015
 //
 // Implementation of Exception and derived classes
 //
@@ -703,120 +703,122 @@ Magick::Exception* Magick::createException(const MagickCore::ExceptionInfo *exce
   std::string message=formatExceptionMessage(exception_);
   switch (exception_->severity)
   {
-    case BlobError:
-    case BlobFatalError:
+    case MagickCore::BlobError:
+    case MagickCore::BlobFatalError:
       return new ErrorBlob(message);
-    case BlobWarning:
+    case MagickCore::BlobWarning:
       return new WarningBlob(message);
-    case CacheError:
-    case CacheFatalError:
+    case MagickCore::CacheError:
+    case MagickCore::CacheFatalError:
       return new ErrorCache(message);
-    case CacheWarning:
+    case MagickCore::CacheWarning:
       return new WarningCache(message);
-    case CoderError:
-    case CoderFatalError:
+    case MagickCore::CoderError:
+    case MagickCore::CoderFatalError:
       return new ErrorCoder(message);
-    case CoderWarning:
+    case MagickCore::CoderWarning:
       return new WarningCoder(message);
-    case ConfigureError:
-    case ConfigureFatalError:
+    case MagickCore::ConfigureError:
+    case MagickCore::ConfigureFatalError:
       return new ErrorConfigure(message);
-    case ConfigureWarning:
+    case MagickCore::ConfigureWarning:
       return new WarningConfigure(message);
-    case CorruptImageError:
-    case CorruptImageFatalError:
+    case MagickCore::CorruptImageError:
+    case MagickCore::CorruptImageFatalError:
       return new ErrorCorruptImage(message);
-    case CorruptImageWarning:
+    case MagickCore::CorruptImageWarning:
       return new WarningCorruptImage(message);
-    case DelegateError:
-    case DelegateFatalError:
+    case MagickCore::DelegateError:
+    case MagickCore::DelegateFatalError:
       return new ErrorDelegate(message);
-    case DelegateWarning:
+    case MagickCore::DelegateWarning:
       return new WarningDelegate(message);
-    case DrawError:
-    case DrawFatalError:
+    case MagickCore::DrawError:
+    case MagickCore::DrawFatalError:
       return new ErrorDraw(message);
-    case DrawWarning:
+    case MagickCore::DrawWarning:
       return new WarningDraw(message);
-    case FileOpenError:
-    case FileOpenFatalError:
+    case MagickCore::FileOpenError:
+    case MagickCore::FileOpenFatalError:
       return new ErrorFileOpen(message);
-    case FileOpenWarning:
+    case MagickCore::FileOpenWarning:
       return new WarningFileOpen(message);
-    case ImageError:
-    case ImageFatalError:
+    case MagickCore::ImageError:
+    case MagickCore::ImageFatalError:
       return new ErrorImage(message);
-    case ImageWarning:
+    case MagickCore::ImageWarning:
       return new WarningImage(message);
-    case MissingDelegateError:
-    case MissingDelegateFatalError:
+    case MagickCore::MissingDelegateError:
+    case MagickCore::MissingDelegateFatalError:
       return new ErrorMissingDelegate(message);
-    case MissingDelegateWarning:
+    case MagickCore::MissingDelegateWarning:
       return new WarningMissingDelegate(message);
-    case ModuleError:
-    case ModuleFatalError:
+    case MagickCore::ModuleError:
+    case MagickCore::ModuleFatalError:
       return new ErrorModule(message);
-    case ModuleWarning:
+    case MagickCore::ModuleWarning:
       return new WarningModule(message);
-    case MonitorError:
-    case MonitorFatalError:
+    case MagickCore::MonitorError:
+    case MagickCore::MonitorFatalError:
       return new ErrorMonitor(message);
-    case MonitorWarning:
+    case MagickCore::MonitorWarning:
       return new WarningMonitor(message);
-    case OptionError:
-    case OptionFatalError:
+    case MagickCore::OptionError:
+    case MagickCore::OptionFatalError:
       return new ErrorOption(message);
-    case OptionWarning:
+    case MagickCore::OptionWarning:
       return new WarningOption(message);
-    case PolicyWarning:
+    case MagickCore::PolicyWarning:
       return new WarningPolicy(message);
-    case PolicyError:
-    case PolicyFatalError:
+    case MagickCore::PolicyError:
+    case MagickCore::PolicyFatalError:
       return new ErrorPolicy(message);
-    case RegistryError:
-    case RegistryFatalError:
+    case MagickCore::RegistryError:
+    case MagickCore::RegistryFatalError:
       return new ErrorRegistry(message);
-    case RegistryWarning:
+    case MagickCore::RegistryWarning:
       return new WarningRegistry(message);
-    case ResourceLimitError:
-    case ResourceLimitFatalError:
+    case MagickCore::ResourceLimitError:
+    case MagickCore::ResourceLimitFatalError:
       return new ErrorResourceLimit(message);
-    case ResourceLimitWarning:
+    case MagickCore::ResourceLimitWarning:
       return new WarningResourceLimit(message);
-    case StreamError:
-    case StreamFatalError:
+    case MagickCore::StreamError:
+    case MagickCore::StreamFatalError:
       return new ErrorStream(message);
-    case StreamWarning:
+    case MagickCore::StreamWarning:
       return new WarningStream(message);
-    case TypeError:
-    case TypeFatalError:
+    case MagickCore::TypeError:
+    case MagickCore::TypeFatalError:
       return new ErrorType(message);
-    case TypeWarning:
+    case MagickCore::TypeWarning:
       return new WarningType(message);
-    case UndefinedException:
+    case MagickCore::UndefinedException:
     default:
       return new ErrorUndefined(message);
-    case XServerError:
-    case XServerFatalError:
+    case MagickCore::XServerError:
+    case MagickCore::XServerFatalError:
       return new ErrorXServer(message);
-    case XServerWarning:
+    case MagickCore::XServerWarning:
       return new WarningXServer(message);
     }
 }
 
 MagickPPExport void Magick::throwExceptionExplicit(
-  const ExceptionType severity_,const char* reason_,const char* description_)
+  const MagickCore::ExceptionType severity_,const char* reason_,
+  const char* description_)
 {
   // Just return if there is no reported error
-  if (severity_ == UndefinedException)
+  if (severity_ == MagickCore::UndefinedException)
     return;
 
   GetPPException;
-  ThrowException(exceptionInfo,severity_,reason_, description_);
-  ThrowPPException;
+  ThrowException(exceptionInfo,severity_,reason_,description_);
+  ThrowPPException(false);
 }
 
-MagickPPExport void Magick::throwException(ExceptionInfo *exception_)
+MagickPPExport void Magick::throwException(ExceptionInfo *exception_,
+  const bool quiet_)
 {
   const ExceptionInfo
     *p;
@@ -825,17 +827,20 @@ MagickPPExport void Magick::throwException(ExceptionInfo *exception_)
     *nestedException,
     *q;
 
-  ExceptionType
+  MagickCore::ExceptionType
     severity;
 
   size_t
     index;
 
+  std::string
+    message;
+
   // Just return if there is no reported error
-  if (exception_->severity == UndefinedException)
+  if (exception_->severity == MagickCore::UndefinedException)
     return;
 
-  std::string message=formatExceptionMessage(exception_);
+  message=formatExceptionMessage(exception_);
   nestedException=(Exception *) NULL;
   LockSemaphoreInfo(exception_->semaphore);
   if (exception_->exceptions != (void *) NULL)
@@ -863,107 +868,114 @@ MagickPPExport void Magick::throwException(ExceptionInfo *exception_)
     }
   UnlockSemaphoreInfo(exception_->semaphore);
   severity=exception_->severity;
+
+  if ((quiet_) && (severity < MagickCore::ErrorException))
+    {
+      delete nestedException;
+      return;
+    }
+
   DestroyExceptionInfo(exception_);
 
   switch (severity)
   {
-    case BlobError:
-    case BlobFatalError:
+    case MagickCore::BlobError:
+    case MagickCore::BlobFatalError:
       throw ErrorBlob(message,nestedException);
-    case BlobWarning:
+    case MagickCore::BlobWarning:
       throw WarningBlob(message,nestedException);
-    case CacheError:
-    case CacheFatalError:
+    case MagickCore::CacheError:
+    case MagickCore::CacheFatalError:
       throw ErrorCache(message,nestedException);
-    case CacheWarning:
+    case MagickCore::CacheWarning:
       throw WarningCache(message,nestedException);
-    case CoderError:
-    case CoderFatalError:
+    case MagickCore::CoderError:
+    case MagickCore::CoderFatalError:
       throw ErrorCoder(message,nestedException);
-    case CoderWarning:
+    case MagickCore::CoderWarning:
       throw WarningCoder(message,nestedException);
-    case ConfigureError:
-    case ConfigureFatalError:
+    case MagickCore::ConfigureError:
+    case MagickCore::ConfigureFatalError:
       throw ErrorConfigure(message,nestedException);
-    case ConfigureWarning:
+    case MagickCore::ConfigureWarning:
       throw WarningConfigure(message,nestedException);
-    case CorruptImageError:
-    case CorruptImageFatalError:
+    case MagickCore::CorruptImageError:
+    case MagickCore::CorruptImageFatalError:
       throw ErrorCorruptImage(message,nestedException);
-    case CorruptImageWarning:
+    case MagickCore::CorruptImageWarning:
       throw WarningCorruptImage(message,nestedException);
-    case DelegateError:
-    case DelegateFatalError:
+    case MagickCore::DelegateError:
+    case MagickCore::DelegateFatalError:
       throw ErrorDelegate(message,nestedException);
-    case DelegateWarning:
+    case MagickCore::DelegateWarning:
       throw WarningDelegate(message,nestedException);
-    case DrawError:
-    case DrawFatalError:
+    case MagickCore::DrawError:
+    case MagickCore::DrawFatalError:
       throw ErrorDraw(message,nestedException);
-    case DrawWarning:
+    case MagickCore::DrawWarning:
       throw WarningDraw(message,nestedException);
-    case FileOpenError:
-    case FileOpenFatalError:
+    case MagickCore::FileOpenError:
+    case MagickCore::FileOpenFatalError:
       throw ErrorFileOpen(message,nestedException);
-    case FileOpenWarning:
+    case MagickCore::FileOpenWarning:
       throw WarningFileOpen(message,nestedException);
-    case ImageError:
-    case ImageFatalError:
+    case MagickCore::ImageError:
+    case MagickCore::ImageFatalError:
       throw ErrorImage(message,nestedException);
-    case ImageWarning:
+    case MagickCore::ImageWarning:
       throw WarningImage(message,nestedException);
-    case MissingDelegateError:
-    case MissingDelegateFatalError:
+    case MagickCore::MissingDelegateError:
+    case MagickCore::MissingDelegateFatalError:
       throw ErrorMissingDelegate(message,nestedException);
-    case MissingDelegateWarning:
+    case MagickCore::MissingDelegateWarning:
       throw WarningMissingDelegate(message,nestedException);
-    case ModuleError:
-    case ModuleFatalError:
+    case MagickCore::ModuleError:
+    case MagickCore::ModuleFatalError:
       throw ErrorModule(message,nestedException);
-    case ModuleWarning:
+    case MagickCore::ModuleWarning:
       throw WarningModule(message,nestedException);
-    case MonitorError:
-    case MonitorFatalError:
+    case MagickCore::MonitorError:
+    case MagickCore::MonitorFatalError:
       throw ErrorMonitor(message,nestedException);
-    case MonitorWarning:
+    case MagickCore::MonitorWarning:
       throw WarningMonitor(message,nestedException);
-    case OptionError:
-    case OptionFatalError:
+    case MagickCore::OptionError:
+    case MagickCore::OptionFatalError:
       throw ErrorOption(message,nestedException);
-    case OptionWarning:
+    case MagickCore::OptionWarning:
       throw WarningOption(message,nestedException);
-    case PolicyWarning:
+    case MagickCore::PolicyWarning:
       throw WarningPolicy(message,nestedException);
-    case PolicyError:
-    case PolicyFatalError:
+    case MagickCore::PolicyError:
+    case MagickCore::PolicyFatalError:
       throw ErrorPolicy(message,nestedException);
-    case RegistryError:
-    case RegistryFatalError:
+    case MagickCore::RegistryError:
+    case MagickCore::RegistryFatalError:
       throw ErrorRegistry(message,nestedException);
-    case RegistryWarning:
+    case MagickCore::RegistryWarning:
       throw WarningRegistry(message,nestedException);
-    case ResourceLimitError:
-    case ResourceLimitFatalError:
+    case MagickCore::ResourceLimitError:
+    case MagickCore::ResourceLimitFatalError:
       throw ErrorResourceLimit(message,nestedException);
-    case ResourceLimitWarning:
+    case MagickCore::ResourceLimitWarning:
       throw WarningResourceLimit(message,nestedException);
-    case StreamError:
-    case StreamFatalError:
+    case MagickCore::StreamError:
+    case MagickCore::StreamFatalError:
       throw ErrorStream(message,nestedException);
-    case StreamWarning:
+    case MagickCore::StreamWarning:
       throw WarningStream(message,nestedException);
-    case TypeError:
-    case TypeFatalError:
+    case MagickCore::TypeError:
+    case MagickCore::TypeFatalError:
       throw ErrorType(message,nestedException);
-    case TypeWarning:
+    case MagickCore::TypeWarning:
       throw WarningType(message,nestedException);
-    case UndefinedException:
+    case MagickCore::UndefinedException:
     default:
       throw ErrorUndefined(message,nestedException);
-    case XServerError:
-    case XServerFatalError:
+    case MagickCore::XServerError:
+    case MagickCore::XServerFatalError:
       throw ErrorXServer(message,nestedException);
-    case XServerWarning:
+    case MagickCore::XServerWarning:
       throw WarningXServer(message,nestedException);
     }
 }

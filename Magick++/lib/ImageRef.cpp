@@ -1,7 +1,7 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
 // Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
-// Copyright Dirk Lemstra 2014
+// Copyright Dirk Lemstra 2014-2015
 //
 // Implementation of ImageRef
 //
@@ -23,7 +23,7 @@ Magick::ImageRef::ImageRef(void)
 {
   GetPPException;
   _image=AcquireImage(_options->imageInfo(),exceptionInfo);
-  ThrowPPException;
+  ThrowPPException(false);
 }
 
 Magick::ImageRef::ImageRef(MagickCore::Image *image_)
@@ -63,7 +63,8 @@ size_t Magick::ImageRef::decrease()
   if (_refCount == 0)
     {
       _mutexLock.unlock();
-      throwExceptionExplicit(OptionError,"Invalid call to decrease");
+      throwExceptionExplicit(MagickCore::OptionError,
+        "Invalid call to decrease");
     }
   count=--_refCount;
   _mutexLock.unlock();
@@ -139,7 +140,7 @@ std::string Magick::ImageRef::signature(const bool force_)
       property=GetImageProperty(_image,"Signature",exceptionInfo);
     }
   _mutexLock.unlock();
-  ThrowPPException;
+  ThrowPPException(true);
 
   return(std::string(property));
 }

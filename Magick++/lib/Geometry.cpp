@@ -278,7 +278,8 @@ Magick::Geometry::operator std::string() const
     geometry;
 
   if (!isValid())
-    throwExceptionExplicit(OptionError,"Invalid geometry argument");
+    throwExceptionExplicit(MagickCore::OptionError,
+      "Invalid geometry argument");
 
   if (_width)
     {

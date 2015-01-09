@@ -1,7 +1,7 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
 // Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
-// Copyright Dirk Lemstra 2013-2014
+// Copyright Dirk Lemstra 2013-2015
 //
 // Inclusion of ImageMagick headers (with namespace magic)
 
@@ -1076,17 +1076,11 @@ namespace Magick
   using MagickCore::Base64Encode;
   using MagickCore::BilevelImage;
   using MagickCore::BlackThresholdImage;
-  using MagickCore::BlobError;
-  using MagickCore::BlobFatalError;
   using MagickCore::BlobToImage;
-  using MagickCore::BlobWarning;
   using MagickCore::BlueShiftImage;
   using MagickCore::BlurImage;
   using MagickCore::BrightnessContrastImage;
   using MagickCore::BorderImage;
-  using MagickCore::CacheError;
-  using MagickCore::CacheFatalError;
-  using MagickCore::CacheWarning;
   using MagickCore::CharcoalImage;
   using MagickCore::CannyEdgeImage;
   using MagickCore::ChopImage;
@@ -1098,9 +1092,6 @@ namespace Magick
   using MagickCore::CloneImageInfo;
   using MagickCore::CloneQuantizeInfo;
   using MagickCore::ClutImage;
-  using MagickCore::CoderError;
-  using MagickCore::CoderFatalError;
-  using MagickCore::CoderWarning;
   using MagickCore::ColorDecisionListImage;
   using MagickCore::ColorizeImage;
   using MagickCore::ColorMatrixImage;
@@ -1108,9 +1099,6 @@ namespace Magick
   using MagickCore::CompareImages;
   using MagickCore::CompareImagesLayers;
   using MagickCore::CompositeImage;
-  using MagickCore::ConfigureError;
-  using MagickCore::ConfigureFatalError;
-  using MagickCore::ConfigureWarning;
   using MagickCore::ConnectedComponentsImage;
   using MagickCore::ConstituteImage;
   using MagickCore::ContrastImage;
@@ -1119,16 +1107,10 @@ namespace Magick
   using MagickCore::ConvertRGBToHSL;
   using MagickCore::ConvolveImage;
   using MagickCore::CopyMagickString;
-  using MagickCore::CorruptImageError;
-  using MagickCore::CorruptImageFatalError;
-  using MagickCore::CorruptImageWarning;
   using MagickCore::CropImage;
   using MagickCore::CropImageToTiles;
   using MagickCore::CycleColormapImage;
   using MagickCore::DecipherImage;
-  using MagickCore::DelegateError;
-  using MagickCore::DelegateFatalError;
-  using MagickCore::DelegateWarning;
   using MagickCore::DeleteImageOption;
   using MagickCore::DeleteImageRegistry;
   using MagickCore::DeskewImage;
@@ -1158,8 +1140,6 @@ namespace Magick
   using MagickCore::DrawComment;
   using MagickCore::DrawComposite;
   using MagickCore::DrawEllipse;
-  using MagickCore::DrawError;
-  using MagickCore::DrawFatalError;
   using MagickCore::DrawImage;
   using MagickCore::DrawInfo;
   using MagickCore::DrawingWand;
@@ -1235,7 +1215,6 @@ namespace Magick
   using MagickCore::DrawSkewX;
   using MagickCore::DrawSkewY;
   using MagickCore::DrawTranslate;
-  using MagickCore::DrawWarning;
   using MagickCore::EdgeImage;
   using MagickCore::EmbossImage;
   using MagickCore::EncipherImage;
@@ -1243,13 +1222,9 @@ namespace Magick
   using MagickCore::EqualizeImage;
   using MagickCore::EvaluateImage;
   using MagickCore::ExceptionInfo;
-  using MagickCore::ExceptionType;
   using MagickCore::ExportImagePixels;
   using MagickCore::ExportQuantumPixels;
   using MagickCore::ExtentImage;
-  using MagickCore::FileOpenError;
-  using MagickCore::FileOpenFatalError;
-  using MagickCore::FileOpenWarning;
   using MagickCore::FlipImage;
   using MagickCore::FloodfillPaintImage;
   using MagickCore::FlopImage;
@@ -1314,13 +1289,10 @@ namespace Magick
   using MagickCore::HaldClutImage;
   using MagickCore::HeightValue;
   using MagickCore::HoughLineImage;
-  using MagickCore::ImageError;
-  using MagickCore::ImageFatalError;
   using MagickCore::ImageInfo;
   using MagickCore::ImageRegistryType;
   using MagickCore::ImageToBlob;
   using MagickCore::ImagesToBlob;
-  using MagickCore::ImageWarning;
   using MagickCore::ImplodeImage;
   using MagickCore::ImportQuantumPixels;
   using MagickCore::InterpretImageProperties;
@@ -1349,16 +1321,7 @@ namespace Magick
   using MagickCore::MergeImageLayers;
   using MagickCore::MinifyImage;
   using MagickCore::MinimumValue;
-  using MagickCore::MissingDelegateError;
-  using MagickCore::MissingDelegateFatalError;
-  using MagickCore::MissingDelegateWarning;
   using MagickCore::ModulateImage;
-  using MagickCore::ModuleError;
-  using MagickCore::ModuleFatalError;
-  using MagickCore::ModuleWarning;
-  using MagickCore::MonitorError;
-  using MagickCore::MonitorFatalError;
-  using MagickCore::MonitorWarning;
   using MagickCore::MontageInfo;
   using MagickCore::MorphologyImage;
   using MagickCore::MotionBlurImage;
@@ -1371,9 +1334,6 @@ namespace Magick
   using MagickCore::OilPaintImage;
   using MagickCore::OpaquePaintImage;
   using MagickCore::OrderedPosterizeImage;
-  using MagickCore::OptionError;
-  using MagickCore::OptionFatalError;
-  using MagickCore::OptionWarning;
   using MagickCore::OptimizeImageLayers;
   using MagickCore::OptimizeImageTransparency;
   using MagickCore::OptimizePlusImageLayers;
@@ -1386,9 +1346,6 @@ namespace Magick
   using MagickCore::PixelWand;
   using MagickCore::PointInfo;
   using MagickCore::PolaroidImage;
-  using MagickCore::PolicyWarning;
-  using MagickCore::PolicyError;
-  using MagickCore::PolicyFatalError;
   using MagickCore::PopDrawingWand;
   using MagickCore::PosterizeImage;
   using MagickCore::ProfileImage;
@@ -1404,19 +1361,13 @@ namespace Magick
   using MagickCore::ReadImage;
   using MagickCore::RectangleInfo;
   using MagickCore::RegisterMagickInfo;
-  using MagickCore::RegistryError;
-  using MagickCore::RegistryFatalError;
   using MagickCore::RegistryType;
-  using MagickCore::RegistryWarning;
   using MagickCore::RelinquishMagickMemory;
   using MagickCore::RemapImage;
   using MagickCore::ResampleImage;
   using MagickCore::ResetLinkedListIterator;
   using MagickCore::ResizeImage;
   using MagickCore::ResizeMagickMemory;
-  using MagickCore::ResourceLimitError;
-  using MagickCore::ResourceLimitFatalError;
-  using MagickCore::ResourceLimitWarning;
   using MagickCore::RollImage;
   using MagickCore::RotateImage;
   using MagickCore::RotationalBlurImage;
@@ -1467,9 +1418,6 @@ namespace Magick
   using MagickCore::StatisticImage;
   using MagickCore::SteganoImage;
   using MagickCore::StereoImage;
-  using MagickCore::StreamError;
-  using MagickCore::StreamFatalError;
-  using MagickCore::StreamWarning;
   using MagickCore::StringInfo;
   using MagickCore::StripImage;
   using MagickCore::SwirlImage;
@@ -1486,10 +1434,6 @@ namespace Magick
   using MagickCore::TransposeImage;
   using MagickCore::TransverseImage;
   using MagickCore::TrimImage;
-  using MagickCore::TypeError;
-  using MagickCore::TypeFatalError;
-  using MagickCore::TypeWarning;
-  using MagickCore::UndefinedException;
   using MagickCore::UndefinedRegistryType;
   using MagickCore::UniqueImageColors;
   using MagickCore::UnlockSemaphoreInfo;
@@ -1502,9 +1446,6 @@ namespace Magick
   using MagickCore::WidthValue;
   using MagickCore::WriteImage;
   using MagickCore::XNegative;
-  using MagickCore::XServerError;
-  using MagickCore::XServerFatalError;
-  using MagickCore::XServerWarning;
   using MagickCore::XValue;
   using MagickCore::YNegative;
   using MagickCore::YValue;
@@ -1532,11 +1473,11 @@ namespace Magick
   MagickCore::ChannelType \
     channel_mask; \
   channel_mask=MagickCore::SetImageChannelMask(image(),channel)
-#define ThrowPPDrawException \
-  throwException(exceptionInfo); \
+#define ThrowPPDrawException(quiet) \
+  throwException(exceptionInfo,quiet); \
   (void) MagickCore::DestroyExceptionInfo(exceptionInfo)
-#define ThrowPPException \
-  throwException(exceptionInfo); \
+#define ThrowPPException(quiet) \
+  throwException(exceptionInfo,quiet); \
   (void) MagickCore::DestroyExceptionInfo(exceptionInfo)
 
 #endif // Magick_Include_header

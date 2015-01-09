@@ -257,7 +257,7 @@ void Magick::Options::fillPattern(const MagickCore::Image *fillPattern_)
       _drawInfo->fill_pattern=CloneImage(const_cast<MagickCore::Image*>(
         fillPattern_),0,0,static_cast<MagickBooleanType>(MagickTrue),
         exceptionInfo);
-      ThrowPPException;
+      ThrowPPException(true);
     }
 }
 
@@ -317,7 +317,7 @@ std::string Magick::Options::format(void) const
   GetPPException;
   if (*_imageInfo->magick != '\0' )
     magick_info = GetMagickInfo(_imageInfo->magick,exceptionInfo);
-  ThrowPPException;
+  ThrowPPException(true);
 
   if ((magick_info != 0) && (*magick_info->description != '\0'))
     return(std::string( magick_info->description));
@@ -342,9 +342,9 @@ void Magick::Options::magick(const std::string &magick_)
   GetPPException;
   SetImageInfo(_imageInfo,1,exceptionInfo);
   if (*_imageInfo->magick == '\0')
-    throwExceptionExplicit(OptionWarning, "Unrecognized image format",
-      magick_.c_str());
-  ThrowPPException;
+    throwExceptionExplicit(MagickCore::OptionError,
+      "Unrecognized image format",magick_.c_str());
+  ThrowPPException(true);
 }
 
 std::string Magick::Options::magick(void) const
@@ -589,9 +589,9 @@ void Magick::Options::strokePattern(const MagickCore::Image *strokePattern_)
   if (strokePattern_)
     {
       GetPPException;
-      _drawInfo->stroke_pattern=CloneImage( const_cast<MagickCore::Image*>(
+      _drawInfo->stroke_pattern=CloneImage(const_cast<MagickCore::Image*>(
         strokePattern_),0,0,MagickTrue,exceptionInfo);
-      ThrowPPException;
+      ThrowPPException(true);
     }
 }
 
