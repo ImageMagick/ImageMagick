@@ -1115,7 +1115,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
               SetPixelIndex(indexes+(x++),index);
               p++;
             }
-          if (x < image->columns)
+          if (x < (ssize_t) image->columns)
             break;
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;
