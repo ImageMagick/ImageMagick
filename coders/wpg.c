@@ -478,9 +478,14 @@ static int UnpackWPGRaster(Image *image,int bpp)
   if(BImgBuff==NULL) return(-2);
 
   while(y<(ssize_t) image->rows)
-    {
-      bbuf=ReadBlobByte(image);
+  {
+    int
+      c;
 
+    c=ReadBlobByte(image);
+    if (c ==  EOF)
+      break;
+    bbuf=(unsigned char) c;
       RunCount=bbuf & 0x7F;
       if(bbuf & 0x80)
         {
@@ -526,7 +531,7 @@ static int UnpackWPGRaster(Image *image,int bpp)
       }
     }
   BImgBuff=(unsigned char *) RelinquishMagickMemory(BImgBuff);
-  return(0);
+  return(y < (ssize_t) image->rows ? -5 : 0);
 }
 
 
