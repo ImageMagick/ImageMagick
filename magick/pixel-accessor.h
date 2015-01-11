@@ -113,6 +113,19 @@ static inline MagickRealType AbsolutePixelValue(const MagickRealType x)
   return(x < 0.0f ? -x : x);
 }
 
+static inline Quantum ClampPixel(const MagickRealType value)
+{ 
+  if (value < 0.0f)
+    return(0); 
+  if (value >= (MagickRealType) QuantumRange)
+    return((Quantum) QuantumRange);
+#if !defined(MAGICKCORE_HDRI_SUPPORT)
+  return((Quantum) (value+0.5f));
+#else
+  return((Quantum) value);
+#endif
+}
+
 static inline MagickRealType GetPixelLuma(const Image *restrict image,
   const PixelPacket *restrict pixel)
 {
