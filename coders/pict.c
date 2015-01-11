@@ -89,9 +89,9 @@
   pixmap.plane_bytes=ReadBlobMSBLong(image); \
   pixmap.table=ReadBlobMSBLong(image); \
   pixmap.reserved=ReadBlobMSBLong(image); \
-  if ((pixmap.bits_per_pixel <= 0) || (pixmap.bits_per_pixel > 32) || \
-      (pixmap.component_count <= 0) || (pixmap.component_count > 4) || \
-      (pixmap.component_size <= 0)) \
+  if ((EOFBlob(image) != MagickFalse) || (pixmap.bits_per_pixel <= 0) || \
+      (pixmap.bits_per_pixel > 32) || (pixmap.component_count <= 0) || \
+      (pixmap.component_count > 4) || (pixmap.component_size <= 0)) \
     ThrowReaderException(CorruptImageError,"ImproperImageHeader"); \
 }
 
@@ -488,7 +488,13 @@ static unsigned char *DecodeImage(Image *blob,Image *image,
         q=pixels+y*width*GetPixelChannels(image);;
         number_pixels=bytes_per_line;
         count=ReadBlob(blob,(size_t) number_pixels,scanline);
-        (void) count;
+        if (count != (ssize_t) number_pixels)
+          {
+            (void) ThrowMagickException(exception,GetMagickModule(),
+              CorruptImageError,"UnableToUncompressImage","`%s'",
+              image->filename);
+            break;
+          }
         p=ExpandBuffer(scanline,&number_pixels,bits_per_pixel);
         if ((q+number_pixels) > (pixels+(*extent)))
           {
@@ -519,6 +525,12 @@ static unsigned char *DecodeImage(Image *blob,Image *image,
         break;
       }
     count=ReadBlob(blob,scanline_length,scanline);
+    if (count != (ssize_t) scanline_length)
+      {
+        (void) ThrowMagickException(exception,GetMagickModule(),
+          CorruptImageError,"UnableToUncompressImage","`%s'",image->filename);
+        break;
+      }
     for (j=0; j < (ssize_t) scanline_length; )
       if ((scanline[j] & 0x80) == 0)
         {
@@ -784,7 +796,7 @@ static MagickBooleanType ReadRectangle(Image *image,PICTRectangle *rectangle)
   rectangle->left=(short) ReadBlobMSBShort(image);
   rectangle->bottom=(short) ReadBlobMSBShort(image);
   rectangle->right=(short) ReadBlobMSBShort(image);
-  if ((rectangle->left > rectangle->right) ||
+  if ((EOFBlob(image) != MagickFalse) || (rectangle->left > rectangle->right) ||
       (rectangle->top > rectangle->bottom))
     return(MagickFalse);
   return(MagickTrue);
@@ -1297,7 +1309,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             if (info == (unsigned char *) NULL)
               break;
             count=ReadBlob(image,length,info);
-            (void) count;
+            if (count != (ssize_t) length)
+              ThrowReaderException(ResourceLimitError,"UnableToReadImageData");
             switch (type)
             {
               case 0xe0:
