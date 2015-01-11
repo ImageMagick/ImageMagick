@@ -45,6 +45,7 @@
 #include "MagickWand/MagickWand.h"
 #include "MagickWand/mogrify-private.h"
 #include "MagickCore/string-private.h"
+#include "MagickCore/image-private.h"
 #include "MagickCore/xwindow-private.h"
 
 /*
@@ -207,13 +208,6 @@ static MagickBooleanType ImportUsage(void)
     "the filename suffix (i.e. image.ps).  Specify 'file' as '-' for\n");
   (void) printf("standard input or output.\n");
   return(MagickFalse);
-}
-
-static inline ssize_t MagickMax(const ssize_t x,const ssize_t y)
-{
-  if (x > y)
-    return(x);
-  return(y);
 }
 
 WandExport MagickBooleanType ImportImageCommand(ImageInfo *image_info,
