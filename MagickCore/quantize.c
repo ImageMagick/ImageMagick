@@ -3119,7 +3119,7 @@ static void ReduceImageColors(const Image *image,CubeInfo *cube_info)
 
   cube_info->next_threshold=0.0;
   if ((cube_info->colors > cube_info->maximum_colors) && 
-      (cube_info->nodes > 128))
+      (cube_info->nodes > 256))
     {
       MagickRealType
         *quantize_error;
