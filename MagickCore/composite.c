@@ -96,15 +96,15 @@
 %  The format of the CompositeImage method is:
 %
 %      MagickBooleanType CompositeImage(Image *image,
-%        const Image *composite_image,const CompositeOperator compose,
+%        const Image *source_image,const CompositeOperator compose,
 %        const MagickBooleanType clip_to_self,const ssize_t x_offset,
 %        const ssize_t y_offset,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o image: the destination image, modified by he composition
+%    o image: the canvas image, modified by he composition
 %
-%    o composite_image: the composite (source) image.
+%    o source_image: the source image.
 %
 %    o compose: This operator affects how the composite is applied to
 %      the image.  The operators and how they are utilized are listed here
@@ -137,7 +137,7 @@
       Color Function :  f(Sc,Dc)  where Sc and Dc are the normizalized colors
       Blending areas :  X = 1     for area of overlap, ie: f(Sc,Dc)
                         Y = 1     for source preserved
-                        Z = 1     for destination preserved
+                        Z = 1     for canvas preserved
 
    Conversion to transparency (then optimized)
       Dca' = f(Sc, Dc)*Sa*Da + Y*Sca*(1-Da) + Z*Dca*(1-Sa)
@@ -285,13 +285,13 @@ static void CompositeHCL(const MagickRealType red,const MagickRealType green,
 }
 
 static MagickBooleanType CompositeOverImage(Image *image,
-  const Image *composite_image,const MagickBooleanType clip_to_self,
+  const Image *source_image,const MagickBooleanType clip_to_self,
   const ssize_t x_offset,const ssize_t y_offset,ExceptionInfo *exception)
 {
 #define CompositeImageTag  "Composite/Image"
 
   CacheView
-    *composite_view,
+    *source_view,
     *image_view;
 
   MagickBooleanType
@@ -308,11 +308,11 @@ static MagickBooleanType CompositeOverImage(Image *image,
   */
   status=MagickTrue;
   progress=0;
-  composite_view=AcquireVirtualCacheView(composite_image,exception);
+  source_view=AcquireVirtualCacheView(source_image,exception);
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
-    magick_threads(composite_image,image,image->rows,1)
+    magick_threads(source_image,image,image->rows,1)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -337,7 +337,7 @@ static MagickBooleanType CompositeOverImage(Image *image,
       {
         if (y < y_offset)
           continue;
-        if ((y-y_offset) >= (ssize_t) composite_image->rows)
+        if ((y-y_offset) >= (ssize_t) source_image->rows)
           continue;
       }
     /*
@@ -345,10 +345,10 @@ static MagickBooleanType CompositeOverImage(Image *image,
     */
     pixels=(Quantum *) NULL;
     p=(Quantum *) NULL;
-    if ((y >= y_offset) && ((y-y_offset) < (ssize_t) composite_image->rows))
+    if ((y >= y_offset) && ((y-y_offset) < (ssize_t) source_image->rows))
       {
-        p=GetCacheViewVirtualPixels(composite_view,0,y-y_offset,
-          composite_image->columns,1,exception);
+        p=GetCacheViewVirtualPixels(source_view,0,y-y_offset,
+          source_image->columns,1,exception);
         if (p == (const Quantum *) NULL)
           {
             status=MagickFalse;
@@ -356,7 +356,7 @@ static MagickBooleanType CompositeOverImage(Image *image,
           }
         pixels=p;
         if (x_offset < 0)
-          p-=x_offset*GetPixelChannels(composite_image);
+          p-=x_offset*GetPixelChannels(source_image);
       }
     q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
     if (q == (Quantum *) NULL)
@@ -384,11 +384,11 @@ static MagickBooleanType CompositeOverImage(Image *image,
               q+=GetPixelChannels(image);
               continue;
             }
-          if ((x-x_offset) >= (ssize_t) composite_image->columns)
+          if ((x-x_offset) >= (ssize_t) source_image->columns)
             break;
         }
       if ((pixels == (Quantum *) NULL) || (x < x_offset) ||
-          ((x-x_offset) >= (ssize_t) composite_image->columns))
+          ((x-x_offset) >= (ssize_t) source_image->columns))
         {
           Quantum
             source[MaxPixelChannels];
@@ -396,23 +396,23 @@ static MagickBooleanType CompositeOverImage(Image *image,
           /*
             Virtual composite:
               Sc: source color.
-              Dc: destination color.
+              Dc: canvas color.
           */
           if (GetPixelReadMask(image,q) == 0)
             {
               q+=GetPixelChannels(image);
               continue;
             }
-          (void) GetOneVirtualPixel(composite_image,x-x_offset,y-y_offset,
+          (void) GetOneVirtualPixel(source_image,x-x_offset,y-y_offset,
             source,exception);
           for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
           {
             PixelChannel channel=GetPixelChannelChannel(image,i);
             PixelTrait traits=GetPixelChannelTraits(image,channel);
-            PixelTrait composite_traits=GetPixelChannelTraits(composite_image,
+            PixelTrait source_traits=GetPixelChannelTraits(source_image,
               channel);
             if ((traits == UndefinedPixelTrait) ||
-                (composite_traits == UndefinedPixelTrait))
+                (source_traits == UndefinedPixelTrait))
               continue;
             q[i]=source[channel];
           }
@@ -422,34 +422,34 @@ static MagickBooleanType CompositeOverImage(Image *image,
       /*
         Authentic composite:
           Sa:  normalized source alpha.
-          Da:  normalized destination alpha.
+          Da:  normalized canvas alpha.
       */
-      if (GetPixelReadMask(composite_image,p) == 0)
+      if (GetPixelReadMask(source_image,p) == 0)
         {
-          p+=GetPixelChannels(composite_image);
-          channels=GetPixelChannels(composite_image);
-          if (p >= (pixels+channels*composite_image->columns))
+          p+=GetPixelChannels(source_image);
+          channels=GetPixelChannels(source_image);
+          if (p >= (pixels+channels*source_image->columns))
             p=pixels;
           q+=GetPixelChannels(image);
           continue;
         }
-      Sa=QuantumScale*GetPixelAlpha(composite_image,p);
+      Sa=QuantumScale*GetPixelAlpha(source_image,p);
       Da=QuantumScale*GetPixelAlpha(image,q);
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel channel=GetPixelChannelChannel(image,i);
         PixelTrait traits=GetPixelChannelTraits(image,channel);
-        PixelTrait composite_traits=GetPixelChannelTraits(composite_image,
+        PixelTrait source_traits=GetPixelChannelTraits(source_image,
           channel);
         if ((traits == UndefinedPixelTrait) ||
-            (composite_traits == UndefinedPixelTrait))
+            (source_traits == UndefinedPixelTrait))
           continue;
         if ((traits & CopyPixelTrait) != 0)
           {
             /*
               Copy channel.
             */
-            q[i]=GetPixelChannel(composite_image,channel,p);
+            q[i]=GetPixelChannel(source_image,channel,p);
             continue;
           }
         if (channel == AlphaPixelChannel)
@@ -462,17 +462,17 @@ static MagickBooleanType CompositeOverImage(Image *image,
           }
         /*
           Sc: source color.
-          Dc: destination color.
+          Dc: canvas color.
         */
-        Sc=(MagickRealType) GetPixelChannel(composite_image,channel,p);
+        Sc=(MagickRealType) GetPixelChannel(source_image,channel,p);
         Dc=(MagickRealType) q[i];
         Sca=QuantumScale*Sa*Sc;
         Dca=QuantumScale*Da*Dc;
         q[i]=ClampToQuantum(QuantumRange*(Sca+Dca*(1.0-Sa)));
       }
-      p+=GetPixelChannels(composite_image);
-      channels=GetPixelChannels(composite_image);
-      if (p >= (pixels+channels*composite_image->columns))
+      p+=GetPixelChannels(source_image);
+      channels=GetPixelChannels(source_image);
+      if (p >= (pixels+channels*source_image->columns))
         p=pixels;
       q+=GetPixelChannels(image);
     }
@@ -492,7 +492,7 @@ static MagickBooleanType CompositeOverImage(Image *image,
           status=MagickFalse;
       }
   }
-  composite_view=DestroyCacheView(composite_view);
+  source_view=DestroyCacheView(source_view);
   image_view=DestroyCacheView(image_view);
   return(status);
 }
@@ -505,15 +505,15 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
 #define CompositeImageTag  "Composite/Image"
 
   CacheView
-    *composite_view,
+    *source_view,
     *image_view;
 
   GeometryInfo
     geometry_info;
 
   Image
-    *composite_image,
-    *destination_image;
+    *canvas_image,
+    *source_image;
 
   MagickBooleanType
     status;
@@ -523,7 +523,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
 
   MagickRealType
     amount,
-    destination_dissolve,
+    canvas_dissolve,
     midpoint,
     percent_luma,
     percent_chroma,
@@ -544,26 +544,26 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
   assert(composite->signature == MagickSignature);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
-  composite_image=CloneImage(composite,0,0,MagickTrue,exception);
-  if (composite_image == (const Image *) NULL)
+  source_image=CloneImage(composite,0,0,MagickTrue,exception);
+  if (source_image == (const Image *) NULL)
     return(MagickFalse);
   if (IsGrayColorspace(image->colorspace) != MagickFalse)
     (void) SetImageColorspace(image,sRGBColorspace,exception);
-  (void) SetImageColorspace(composite_image,image->colorspace,exception);
+  (void) SetImageColorspace(source_image,image->colorspace,exception);
   if ((image->alpha_trait != UndefinedPixelTrait) &&
-      (composite_image->alpha_trait == UndefinedPixelTrait))
-    (void) SetImageAlphaChannel(composite_image,SetAlphaChannel,exception);
+      (source_image->alpha_trait == UndefinedPixelTrait))
+    (void) SetImageAlphaChannel(source_image,SetAlphaChannel,exception);
 if (0)
   if ((compose == OverCompositeOp) || (compose == SrcOverCompositeOp))
     {
-      status=CompositeOverImage(image,composite_image,clip_to_self,x_offset,
+      status=CompositeOverImage(image,source_image,clip_to_self,x_offset,
         y_offset,exception);
-      composite_image=DestroyImage(composite_image);
+      source_image=DestroyImage(source_image);
       return(status);
     }
-  destination_image=(Image *) NULL;
+  canvas_image=(Image *) NULL;
   amount=0.5;
-  destination_dissolve=1.0;
+  canvas_dissolve=1.0;
   percent_luma=100.0;
   percent_chroma=100.0;
   source_dissolve=1.0;
@@ -574,18 +574,18 @@ if (0)
     {
       if ((x_offset < 0) || (y_offset < 0))
         break;
-      if ((x_offset+(ssize_t) composite_image->columns) > (ssize_t) image->columns)
+      if ((x_offset+(ssize_t) source_image->columns) > (ssize_t) image->columns)
         break;
-      if ((y_offset+(ssize_t) composite_image->rows) > (ssize_t) image->rows)
+      if ((y_offset+(ssize_t) source_image->rows) > (ssize_t) image->rows)
         break;
       status=MagickTrue;
-      composite_view=AcquireVirtualCacheView(composite_image,exception);
+      source_view=AcquireVirtualCacheView(source_image,exception);
       image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
-        magick_threads(composite_image,image,composite_image->rows,1)
+        magick_threads(source_image,image,source_image->rows,1)
 #endif
-      for (y=0; y < (ssize_t) composite_image->rows; y++)
+      for (y=0; y < (ssize_t) source_image->rows; y++)
       {
         MagickBooleanType
           sync;
@@ -601,38 +601,38 @@ if (0)
 
         if (status == MagickFalse)
           continue;
-        p=GetCacheViewVirtualPixels(composite_view,0,y,composite_image->columns,
+        p=GetCacheViewVirtualPixels(source_view,0,y,source_image->columns,
           1,exception);
         q=GetCacheViewAuthenticPixels(image_view,x_offset,y+y_offset,
-          composite_image->columns,1,exception);
+          source_image->columns,1,exception);
         if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
           {
             status=MagickFalse;
             continue;
           }
-        for (x=0; x < (ssize_t) composite_image->columns; x++)
+        for (x=0; x < (ssize_t) source_image->columns; x++)
         {
           register ssize_t
             i;
 
-          if (GetPixelReadMask(composite_image,p) == 0)
+          if (GetPixelReadMask(source_image,p) == 0)
             {
-              p+=GetPixelChannels(composite_image);
+              p+=GetPixelChannels(source_image);
               q+=GetPixelChannels(image);
               continue;
             }
-          for (i=0; i < (ssize_t) GetPixelChannels(composite_image); i++)
+          for (i=0; i < (ssize_t) GetPixelChannels(source_image); i++)
           {
-            PixelChannel channel=GetPixelChannelChannel(composite_image,i);
-            PixelTrait composite_traits=GetPixelChannelTraits(composite_image,
+            PixelChannel channel=GetPixelChannelChannel(source_image,i);
+            PixelTrait source_traits=GetPixelChannelTraits(source_image,
               channel);
             PixelTrait traits=GetPixelChannelTraits(image,channel);
             if ((traits == UndefinedPixelTrait) ||
-                (composite_traits == UndefinedPixelTrait))
+                (source_traits == UndefinedPixelTrait))
               continue;
             SetPixelChannel(image,channel,p[i],q);
           }
-          p+=GetPixelChannels(composite_image);
+          p+=GetPixelChannels(source_image);
           q+=GetPixelChannels(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
@@ -652,27 +652,27 @@ if (0)
               status=MagickFalse;
           }
       }
-      composite_view=DestroyCacheView(composite_view);
+      source_view=DestroyCacheView(source_view);
       image_view=DestroyCacheView(image_view);
-      composite_image=DestroyImage(composite_image);
+      source_image=DestroyImage(source_image);
       return(status);
     }
     case IntensityCompositeOp:
     {
       if ((x_offset < 0) || (y_offset < 0))
         break;
-      if ((x_offset+(ssize_t) composite_image->columns) > (ssize_t) image->columns)
+      if ((x_offset+(ssize_t) source_image->columns) > (ssize_t) image->columns)
         break;
-      if ((y_offset+(ssize_t) composite_image->rows) > (ssize_t) image->rows)
+      if ((y_offset+(ssize_t) source_image->rows) > (ssize_t) image->rows)
         break;
       status=MagickTrue;
-      composite_view=AcquireVirtualCacheView(composite_image,exception);
+      source_view=AcquireVirtualCacheView(source_image,exception);
       image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
-        magick_threads(composite_image,image,composite_image->rows,1)
+        magick_threads(source_image,image,source_image->rows,1)
 #endif
-      for (y=0; y < (ssize_t) composite_image->rows; y++)
+      for (y=0; y < (ssize_t) source_image->rows; y++)
       {
         MagickBooleanType
           sync;
@@ -688,26 +688,26 @@ if (0)
 
         if (status == MagickFalse)
           continue;
-        p=GetCacheViewVirtualPixels(composite_view,0,y,composite_image->columns,
+        p=GetCacheViewVirtualPixels(source_view,0,y,source_image->columns,
           1,exception);
         q=GetCacheViewAuthenticPixels(image_view,x_offset,y+y_offset,
-          composite_image->columns,1,exception);
+          source_image->columns,1,exception);
         if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
           {
             status=MagickFalse;
             continue;
           }
-        for (x=0; x < (ssize_t) composite_image->columns; x++)
+        for (x=0; x < (ssize_t) source_image->columns; x++)
         {
-          if (GetPixelReadMask(composite_image,p) == 0)
+          if (GetPixelReadMask(source_image,p) == 0)
             {
-              p+=GetPixelChannels(composite_image);
+              p+=GetPixelChannels(source_image);
               q+=GetPixelChannels(image);
               continue;
             }
-          SetPixelAlpha(image,ClampToQuantum(GetPixelIntensity(composite_image,
+          SetPixelAlpha(image,ClampToQuantum(GetPixelIntensity(source_image,
             p)),q);
-          p+=GetPixelChannels(composite_image);
+          p+=GetPixelChannels(source_image);
           q+=GetPixelChannels(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
@@ -727,16 +727,16 @@ if (0)
               status=MagickFalse;
           }
       }
-      composite_view=DestroyCacheView(composite_view);
+      source_view=DestroyCacheView(source_view);
       image_view=DestroyCacheView(image_view);
-      composite_image=DestroyImage(composite_image);
+      source_image=DestroyImage(source_image);
       return(status);
     }
     case CopyAlphaCompositeOp:
     case ChangeMaskCompositeOp:
     {
       /*
-        Modify destination outside the overlaid region and require an alpha
+        Modify canvas outside the overlaid region and require an alpha
         channel to exist, to add transparency.
       */
       if (image->alpha_trait == UndefinedPixelTrait)
@@ -746,8 +746,8 @@ if (0)
     case BlurCompositeOp:
     {
       CacheView
-        *composite_view,
-        *destination_view;
+        *canvas_view,
+        *source_view;
 
       const char
         *value;
@@ -773,11 +773,11 @@ if (0)
         Blur Image dictated by an overlay gradient map: X = red_channel;
           Y = green_channel; compose:args =  x_scale[,y_scale[,angle]].
       */
-      destination_image=CloneImage(image,image->columns,image->rows,MagickTrue,
+      canvas_image=CloneImage(image,image->columns,image->rows,MagickTrue,
         exception);
-      if (destination_image == (Image *) NULL)
+      if (canvas_image == (Image *) NULL)
         {
-          composite_image=DestroyImage(composite_image);
+          source_image=DestroyImage(source_image);
           return(MagickFalse);
         }
       /*
@@ -792,8 +792,8 @@ if (0)
         {
           (void) ThrowMagickException(exception,GetMagickModule(),OptionWarning,
             "InvalidSetting","'%s' '%s'","compose:args",value);
-          composite_image=DestroyImage(composite_image);
-          destination_image=DestroyImage(destination_image);
+          source_image=DestroyImage(source_image);
+          canvas_image=DestroyImage(canvas_image);
           return(MagickFalse);
         }
       /*
@@ -847,9 +847,9 @@ if (0)
 
       /* do the variable blurring of each pixel in image */
       GetPixelInfo(image,&pixel);
-      composite_view=AcquireVirtualCacheView(composite_image,exception);
-      destination_view=AcquireAuthenticCacheView(destination_image,exception);
-      for (y=0; y < (ssize_t) composite_image->rows; y++)
+      source_view=AcquireVirtualCacheView(source_image,exception);
+      canvas_view=AcquireAuthenticCacheView(canvas_image,exception);
+      for (y=0; y < (ssize_t) source_image->rows; y++)
       {
         MagickBooleanType
           sync;
@@ -865,17 +865,17 @@ if (0)
 
         if (((y+y_offset) < 0) || ((y+y_offset) >= (ssize_t) image->rows))
           continue;
-        p=GetCacheViewVirtualPixels(composite_view,0,y,composite_image->columns,
+        p=GetCacheViewVirtualPixels(source_view,0,y,source_image->columns,
           1,exception);
-        q=QueueCacheViewAuthenticPixels(destination_view,0,y,
-          destination_image->columns,1,exception);
+        q=QueueCacheViewAuthenticPixels(canvas_view,0,y,
+          canvas_image->columns,1,exception);
         if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
           break;
-        for (x=0; x < (ssize_t) composite_image->columns; x++)
+        for (x=0; x < (ssize_t) source_image->columns; x++)
         {
           if (((x_offset+x) < 0) || ((x_offset+x) >= (ssize_t) image->columns))
             {
-              p+=GetPixelChannels(composite_image);
+              p+=GetPixelChannels(source_image);
               continue;
             }
           if (fabs((double) angle_range) > MagickEpsilon)
@@ -884,7 +884,7 @@ if (0)
                 angle;
 
               angle=angle_start+angle_range*QuantumScale*
-                GetPixelBlue(composite_image,p);
+                GetPixelBlue(source_image,p);
               blur.x1=width*cos(angle);
               blur.x2=width*sin(angle);
               blur.y1=(-height*sin(angle));
@@ -898,33 +898,33 @@ if (0)
               GetPixelRed(p),QuantumScale*GetPixelGreen(p));
 #endif
           ScaleResampleFilter(resample_filter,
-            blur.x1*QuantumScale*GetPixelRed(composite_image,p),
-            blur.y1*QuantumScale*GetPixelGreen(composite_image,p),
-            blur.x2*QuantumScale*GetPixelRed(composite_image,p),
-            blur.y2*QuantumScale*GetPixelGreen(composite_image,p) );
+            blur.x1*QuantumScale*GetPixelRed(source_image,p),
+            blur.y1*QuantumScale*GetPixelGreen(source_image,p),
+            blur.x2*QuantumScale*GetPixelRed(source_image,p),
+            blur.y2*QuantumScale*GetPixelGreen(source_image,p) );
           (void) ResamplePixelColor(resample_filter,(double) x_offset+x,
             (double) y_offset+y,&pixel,exception);
-          SetPixelViaPixelInfo(destination_image,&pixel,q);
-          p+=GetPixelChannels(composite_image);
-          q+=GetPixelChannels(destination_image);
+          SetPixelViaPixelInfo(canvas_image,&pixel,q);
+          p+=GetPixelChannels(source_image);
+          q+=GetPixelChannels(canvas_image);
         }
-        sync=SyncCacheViewAuthenticPixels(destination_view,exception);
+        sync=SyncCacheViewAuthenticPixels(canvas_view,exception);
         if (sync == MagickFalse)
           break;
       }
       resample_filter=DestroyResampleFilter(resample_filter);
-      composite_view=DestroyCacheView(composite_view);
-      destination_view=DestroyCacheView(destination_view);
-      composite_image=DestroyImage(composite_image);
-      composite_image=destination_image;
+      source_view=DestroyCacheView(source_view);
+      canvas_view=DestroyCacheView(canvas_view);
+      source_image=DestroyImage(source_image);
+      source_image=canvas_image;
       break;
     }
     case DisplaceCompositeOp:
     case DistortCompositeOp:
     {
       CacheView
-        *composite_view,
-        *destination_view,
+        *source_view,
+        *canvas_view,
         *image_view;
 
       const char
@@ -946,11 +946,11 @@ if (0)
           X = red_channel;  Y = green_channel;
           compose:args = x_scale[,y_scale[,center.x,center.y]]
       */
-      destination_image=CloneImage(image,image->columns,image->rows,MagickTrue,
+      canvas_image=CloneImage(image,image->columns,image->rows,MagickTrue,
         exception);
-      if (destination_image == (Image *) NULL)
+      if (canvas_image == (Image *) NULL)
         {
-          composite_image=DestroyImage(composite_image);
+          source_image=DestroyImage(source_image);
           return(MagickFalse);
         }
       SetGeometryInfo(&geometry_info);
@@ -962,9 +962,9 @@ if (0)
         {
           if ((flags & AspectValue) == 0)
             {
-              horizontal_scale=(MagickRealType) (composite_image->columns-1.0)/
+              horizontal_scale=(MagickRealType) (source_image->columns-1.0)/
                 2.0;
-              vertical_scale=(MagickRealType) (composite_image->rows-1.0)/2.0;
+              vertical_scale=(MagickRealType) (source_image->rows-1.0)/2.0;
             }
           else
             {
@@ -980,8 +980,8 @@ if (0)
             {
               if ((flags & AspectValue) == 0)
                 {
-                  horizontal_scale*=(composite_image->columns-1.0)/200.0;
-                  vertical_scale*=(composite_image->rows-1.0)/200.0;
+                  horizontal_scale*=(source_image->columns-1.0)/200.0;
+                  vertical_scale*=(source_image->rows-1.0)/200.0;
                 }
               else
                 {
@@ -1006,7 +1006,7 @@ if (0)
         {
           if ((flags & XValue) == 0)
             if ((flags & AspectValue) == 0)
-              center.x=(MagickRealType) (x_offset+(composite_image->columns-1)/
+              center.x=(MagickRealType) (x_offset+(source_image->columns-1)/
                 2.0);
             else
               center.x=(MagickRealType) ((image->columns-1)/2);
@@ -1017,7 +1017,7 @@ if (0)
               center.x=geometry_info.xi;
           if ((flags & YValue) == 0)
             if ((flags & AspectValue) == 0)
-              center.y=(MagickRealType) (y_offset+(composite_image->rows-1)/
+              center.y=(MagickRealType) (y_offset+(source_image->rows-1)/
                 2.0);
             else
               center.y=(MagickRealType) ((image->rows-1)/2);
@@ -1033,9 +1033,9 @@ if (0)
       */
       GetPixelInfo(image,&pixel);
       image_view=AcquireVirtualCacheView(image,exception);
-      composite_view=AcquireVirtualCacheView(composite_image,exception);
-      destination_view=AcquireAuthenticCacheView(destination_image,exception);
-      for (y=0; y < (ssize_t) composite_image->rows; y++)
+      source_view=AcquireVirtualCacheView(source_image,exception);
+      canvas_view=AcquireAuthenticCacheView(canvas_image,exception);
+      for (y=0; y < (ssize_t) source_image->rows; y++)
       {
         MagickBooleanType
           sync;
@@ -1051,27 +1051,27 @@ if (0)
 
         if (((y+y_offset) < 0) || ((y+y_offset) >= (ssize_t) image->rows))
           continue;
-        p=GetCacheViewVirtualPixels(composite_view,0,y,composite_image->columns,
+        p=GetCacheViewVirtualPixels(source_view,0,y,source_image->columns,
           1,exception);
-        q=QueueCacheViewAuthenticPixels(destination_view,0,y,
-          destination_image->columns,1,exception);
+        q=QueueCacheViewAuthenticPixels(canvas_view,0,y,
+          canvas_image->columns,1,exception);
         if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
           break;
-        for (x=0; x < (ssize_t) composite_image->columns; x++)
+        for (x=0; x < (ssize_t) source_image->columns; x++)
         {
           if (((x_offset+x) < 0) || ((x_offset+x) >= (ssize_t) image->columns))
             {
-              p+=GetPixelChannels(composite_image);
+              p+=GetPixelChannels(source_image);
               continue;
             }
           /*
             Displace the offset.
           */
-          offset.x=(double) (horizontal_scale*(GetPixelRed(composite_image,p)-
+          offset.x=(double) (horizontal_scale*(GetPixelRed(source_image,p)-
             (((MagickRealType) QuantumRange+1.0)/2.0)))/(((MagickRealType)
             QuantumRange+1.0)/2.0)+center.x+((compose == DisplaceCompositeOp) ?
             x : 0);
-          offset.y=(double) (vertical_scale*(GetPixelGreen(composite_image,p)-
+          offset.y=(double) (vertical_scale*(GetPixelGreen(source_image,p)-
             (((MagickRealType) QuantumRange+1.0)/2.0)))/(((MagickRealType)
             QuantumRange+1.0)/2.0)+center.y+((compose == DisplaceCompositeOp) ?
             y : 0);
@@ -1082,20 +1082,20 @@ if (0)
             Mask with the 'invalid pixel mask' in alpha channel.
           */
           pixel.alpha=(MagickRealType) QuantumRange*(1.0-(1.0-QuantumScale*
-            pixel.alpha)*(1.0-QuantumScale*GetPixelAlpha(composite_image,p)));
-          SetPixelViaPixelInfo(destination_image,&pixel,q);
-          p+=GetPixelChannels(composite_image);
-          q+=GetPixelChannels(destination_image);
+            pixel.alpha)*(1.0-QuantumScale*GetPixelAlpha(source_image,p)));
+          SetPixelViaPixelInfo(canvas_image,&pixel,q);
+          p+=GetPixelChannels(source_image);
+          q+=GetPixelChannels(canvas_image);
         }
-        sync=SyncCacheViewAuthenticPixels(destination_view,exception);
+        sync=SyncCacheViewAuthenticPixels(canvas_view,exception);
         if (sync == MagickFalse)
           break;
       }
-      destination_view=DestroyCacheView(destination_view);
-      composite_view=DestroyCacheView(composite_view);
+      canvas_view=DestroyCacheView(canvas_view);
+      source_view=DestroyCacheView(source_view);
       image_view=DestroyCacheView(image_view);
-      composite_image=DestroyImage(composite_image);
-      composite_image=destination_image;
+      source_image=DestroyImage(source_image);
+      source_image=canvas_image;
       break;
     }
     case DissolveCompositeOp:
@@ -1111,18 +1111,18 @@ if (0)
         {
           flags=ParseGeometry(value,&geometry_info);
           source_dissolve=geometry_info.rho/100.0;
-          destination_dissolve=1.0;
+          canvas_dissolve=1.0;
           if ((source_dissolve-MagickEpsilon) < 0.0)
             source_dissolve=0.0;
           if ((source_dissolve+MagickEpsilon) > 1.0)
             {
-              destination_dissolve=2.0-source_dissolve;
+              canvas_dissolve=2.0-source_dissolve;
               source_dissolve=1.0;
             }
           if ((flags & SigmaValue) != 0)
-            destination_dissolve=geometry_info.sigma/100.0;
-          if ((destination_dissolve-MagickEpsilon) < 0.0)
-            destination_dissolve=0.0;
+            canvas_dissolve=geometry_info.sigma/100.0;
+          if ((canvas_dissolve-MagickEpsilon) < 0.0)
+            canvas_dissolve=0.0;
         }
       break;
     }
@@ -1136,9 +1136,9 @@ if (0)
         {
           flags=ParseGeometry(value,&geometry_info);
           source_dissolve=geometry_info.rho/100.0;
-          destination_dissolve=1.0-source_dissolve;
+          canvas_dissolve=1.0-source_dissolve;
           if ((flags & SigmaValue) != 0)
-            destination_dissolve=geometry_info.sigma/100.0;
+            canvas_dissolve=geometry_info.sigma/100.0;
         }
       break;
     }
@@ -1208,11 +1208,11 @@ if (0)
   status=MagickTrue;
   progress=0;
   midpoint=((MagickRealType) QuantumRange+1.0)/2;
-  composite_view=AcquireVirtualCacheView(composite_image,exception);
+  source_view=AcquireVirtualCacheView(source_image,exception);
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
-    magick_threads(composite_image,image,image->rows,1)
+    magick_threads(source_image,image,image->rows,1)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -1228,7 +1228,7 @@ if (0)
       chroma;
 
     PixelInfo
-      destination_pixel,
+      canvas_pixel,
       source_pixel;
 
     register const Quantum
@@ -1246,7 +1246,7 @@ if (0)
       {
         if (y < y_offset)
           continue;
-        if ((y-y_offset) >= (ssize_t) composite_image->rows)
+        if ((y-y_offset) >= (ssize_t) source_image->rows)
           continue;
       }
     /*
@@ -1254,10 +1254,10 @@ if (0)
     */
     pixels=(Quantum *) NULL;
     p=(Quantum *) NULL;
-    if ((y >= y_offset) && ((y-y_offset) < (ssize_t) composite_image->rows))
+    if ((y >= y_offset) && ((y-y_offset) < (ssize_t) source_image->rows))
       {
-        p=GetCacheViewVirtualPixels(composite_view,0,y-y_offset,
-          composite_image->columns,1,exception);
+        p=GetCacheViewVirtualPixels(source_view,0,y-y_offset,
+          source_image->columns,1,exception);
         if (p == (const Quantum *) NULL)
           {
             status=MagickFalse;
@@ -1265,7 +1265,7 @@ if (0)
           }
         pixels=p;
         if (x_offset < 0)
-          p-=x_offset*GetPixelChannels(composite_image);
+          p-=x_offset*GetPixelChannels(source_image);
       }
     q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
     if (q == (Quantum *) NULL)
@@ -1276,8 +1276,8 @@ if (0)
     hue=0.0;
     chroma=0.0;
     luma=0.0;
-    GetPixelInfo(image,&destination_pixel);
-    GetPixelInfo(composite_image,&source_pixel);
+    GetPixelInfo(image,&canvas_pixel);
+    GetPixelInfo(source_image,&source_pixel);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       double
@@ -1305,11 +1305,11 @@ if (0)
               q+=GetPixelChannels(image);
               continue;
             }
-          if ((x-x_offset) >= (ssize_t) composite_image->columns)
+          if ((x-x_offset) >= (ssize_t) source_image->columns)
             break;
         }
       if ((pixels == (Quantum *) NULL) || (x < x_offset) ||
-          ((x-x_offset) >= (ssize_t) composite_image->columns))
+          ((x-x_offset) >= (ssize_t) source_image->columns))
         {
           Quantum
             source[MaxPixelChannels];
@@ -1317,9 +1317,9 @@ if (0)
           /*
             Virtual composite:
               Sc: source color.
-              Dc: destination color.
+              Dc: canvas color.
           */
-          (void) GetOneVirtualPixel(composite_image,x-x_offset,y-y_offset,
+          (void) GetOneVirtualPixel(source_image,x-x_offset,y-y_offset,
             source,exception);
           if (GetPixelReadMask(image,q) == 0)
             {
@@ -1333,10 +1333,10 @@ if (0)
 
             PixelChannel channel=GetPixelChannelChannel(image,i);
             PixelTrait traits=GetPixelChannelTraits(image,channel);
-            PixelTrait composite_traits=GetPixelChannelTraits(composite_image,
+            PixelTrait source_traits=GetPixelChannelTraits(source_image,
               channel);
             if ((traits == UndefinedPixelTrait) ||
-                (composite_traits == UndefinedPixelTrait))
+                (source_traits == UndefinedPixelTrait))
               continue;
             switch (compose)
             {
@@ -1371,7 +1371,7 @@ if (0)
               case DissolveCompositeOp:
               {
                 if (channel == AlphaPixelChannel)
-                  pixel=destination_dissolve*GetPixelAlpha(composite_image,
+                  pixel=canvas_dissolve*GetPixelAlpha(source_image,
                     source);
                 else
                   pixel=(MagickRealType) source[channel];
@@ -1391,15 +1391,15 @@ if (0)
       /*
         Authentic composite:
           Sa:  normalized source alpha.
-          Da:  normalized destination alpha.
+          Da:  normalized canvas alpha.
       */
-      Sa=QuantumScale*GetPixelAlpha(composite_image,p);
+      Sa=QuantumScale*GetPixelAlpha(source_image,p);
       Da=QuantumScale*GetPixelAlpha(image,q);
       switch (compose)
       {
         case BumpmapCompositeOp:
         {
-          alpha=GetPixelIntensity(composite_image,p)*Sa;
+          alpha=GetPixelIntensity(source_image,p)*Sa;
           break;
         }
         case ColorBurnCompositeOp:
@@ -1441,8 +1441,8 @@ if (0)
         }
         case DissolveCompositeOp:
         {
-          alpha=source_dissolve*Sa*(-destination_dissolve*Da)+source_dissolve*
-            Sa+destination_dissolve*Da;
+          alpha=source_dissolve*Sa*(-canvas_dissolve*Da)+source_dissolve*
+            Sa+canvas_dissolve*Da;
           break;
         }
         case DstOverCompositeOp:
@@ -1486,7 +1486,7 @@ if (0)
       }
       if (GetPixelReadMask(image,q) == 0)
         {
-          p+=GetPixelChannels(composite_image);
+          p+=GetPixelChannels(source_image);
           q+=GetPixelChannels(image);
           continue;
         }
@@ -1498,8 +1498,8 @@ if (0)
         case ModulateCompositeOp:
         case SaturateCompositeOp:
         {
-          GetPixelInfoPixel(composite_image,p,&source_pixel);
-          GetPixelInfoPixel(image,q,&destination_pixel);
+          GetPixelInfoPixel(source_image,p,&source_pixel);
+          GetPixelInfoPixel(image,q,&canvas_pixel);
           break;
         }
         default:
@@ -1513,20 +1513,20 @@ if (0)
 
         PixelChannel channel=GetPixelChannelChannel(image,i);
         PixelTrait traits=GetPixelChannelTraits(image,channel);
-        PixelTrait composite_traits=GetPixelChannelTraits(composite_image,
+        PixelTrait source_traits=GetPixelChannelTraits(source_image,
           channel);
         if (traits == UndefinedPixelTrait)
           continue;
-        if ((composite_traits == UndefinedPixelTrait) &&
+        if ((source_traits == UndefinedPixelTrait) &&
              (((compose != CopyAlphaCompositeOp) &&
                (compose != ChangeMaskCompositeOp)) ||
               (channel != AlphaPixelChannel)))
             continue;
         /*
           Sc: source color.
-          Dc: destination color.
+          Dc: canvas color.
         */
-        Sc=(MagickRealType) GetPixelChannel(composite_image,channel,p);
+        Sc=(MagickRealType) GetPixelChannel(source_image,channel,p);
         Dc=(MagickRealType) q[i];
         if ((traits & CopyPixelTrait) != 0)
           {
@@ -1573,7 +1573,7 @@ if (0)
                     pixel=(MagickRealType) TransparentAlpha;
                     break;
                   }
-                equivalent=IsFuzzyEquivalencePixel(composite_image,p,image,q);
+                equivalent=IsFuzzyEquivalencePixel(source_image,p,image,q);
                 if (equivalent != MagickFalse)
                   pixel=(MagickRealType) TransparentAlpha;
                 else
@@ -1610,8 +1610,8 @@ if (0)
               }
               case CopyAlphaCompositeOp:
               {
-                if (composite_traits == UndefinedPixelTrait)
-                  pixel=GetPixelIntensity(composite_image,p);
+                if (source_traits == UndefinedPixelTrait)
+                  pixel=GetPixelIntensity(source_image,p);
                 else
                   pixel=QuantumRange*Sa;
                 break;
@@ -1628,13 +1628,13 @@ if (0)
               }
               case DarkenIntensityCompositeOp:
               {
-                pixel=Sa*GetPixelIntensity(composite_image,p) <
+                pixel=Sa*GetPixelIntensity(source_image,p) <
                   Da*GetPixelIntensity(image,q) ? Sa : Da;
                 break;
               }
               case LightenIntensityCompositeOp:
               {
-                pixel=Sa*GetPixelIntensity(composite_image,p) >
+                pixel=Sa*GetPixelIntensity(source_image,p) >
                   Da*GetPixelIntensity(image,q) ? Sa : Da;
                 break;
               }
@@ -1660,7 +1660,7 @@ if (0)
         /*
           Porter-Duff compositions:
             Sca: source normalized color multiplied by alpha.
-            Dca: normalized destination color multiplied by alpha.
+            Dca: normalized canvas color multiplied by alpha.
         */
         Sca=QuantumScale*Sa*Sc;
         Dca=QuantumScale*Da*Dc;
@@ -1693,7 +1693,7 @@ if (0)
           }
           case BlendCompositeOp:
           {
-            pixel=gamma*(source_dissolve*Sa*Sc+destination_dissolve*Da*Dc);
+            pixel=gamma*(source_dissolve*Sa*Sc+canvas_dissolve*Da*Dc);
             break;
           }
           case BlurCompositeOp:
@@ -1713,7 +1713,7 @@ if (0)
                 pixel=Dc;
                 break;
               }
-            pixel=QuantumScale*GetPixelIntensity(composite_image,p)*Dc;
+            pixel=QuantumScale*GetPixelIntensity(source_image,p)*Dc;
             break;
           }
           case ChangeMaskCompositeOp:
@@ -1769,8 +1769,8 @@ if (0)
                 pixel=Sc;
                 break;
               }
-            CompositeHCL(destination_pixel.red,destination_pixel.green,
-              destination_pixel.blue,&sans,&sans,&luma);
+            CompositeHCL(canvas_pixel.red,canvas_pixel.green,
+              canvas_pixel.blue,&sans,&sans,&luma);
             CompositeHCL(source_pixel.red,source_pixel.green,source_pixel.blue,
               &hue,&chroma,&sans);
             HCLComposite(hue,chroma,luma,&red,&green,&blue);
@@ -1792,28 +1792,28 @@ if (0)
           {
             if (channel == BlackPixelChannel)
               pixel=(MagickRealType) (QuantumRange-
-                GetPixelBlack(composite_image,p));
+                GetPixelBlack(source_image,p));
             break;
           }
           case CopyBlueCompositeOp:
           case CopyYellowCompositeOp:
           {
             if (channel == BluePixelChannel)
-              pixel=(MagickRealType) GetPixelBlue(composite_image,p);
+              pixel=(MagickRealType) GetPixelBlue(source_image,p);
             break;
           }
           case CopyGreenCompositeOp:
           case CopyMagentaCompositeOp:
           {
             if (channel == GreenPixelChannel)
-              pixel=(MagickRealType) GetPixelGreen(composite_image,p);
+              pixel=(MagickRealType) GetPixelGreen(source_image,p);
             break;
           }
           case CopyRedCompositeOp:
           case CopyCyanCompositeOp:
           {
             if (channel == RedPixelChannel)
-              pixel=(MagickRealType) GetPixelRed(composite_image,p);
+              pixel=(MagickRealType) GetPixelRed(source_image,p);
             break;
           }
           case DarkenCompositeOp:
@@ -1833,7 +1833,7 @@ if (0)
           }
           case DarkenIntensityCompositeOp:
           {
-            pixel=Sa*GetPixelIntensity(composite_image,p) <
+            pixel=Sa*GetPixelIntensity(source_image,p) <
               Da*GetPixelIntensity(image,q) ? Sc : Dc;
             break;
           }
@@ -1845,7 +1845,7 @@ if (0)
           case DissolveCompositeOp:
           {
             pixel=gamma*(source_dissolve*Sa*Sc-source_dissolve*Sa*
-              destination_dissolve*Da*Dc+destination_dissolve*Da*Dc);
+              canvas_dissolve*Da*Dc+canvas_dissolve*Da*Dc);
             break;
           }
           case DivideDstCompositeOp:
@@ -1947,8 +1947,8 @@ if (0)
                 pixel=Sc;
                 break;
               }
-            CompositeHCL(destination_pixel.red,destination_pixel.green,
-              destination_pixel.blue,&hue,&chroma,&luma);
+            CompositeHCL(canvas_pixel.red,canvas_pixel.green,
+              canvas_pixel.blue,&hue,&chroma,&luma);
             CompositeHCL(source_pixel.red,source_pixel.green,source_pixel.blue,
               &hue,&sans,&sans);
             HCLComposite(hue,chroma,luma,&red,&green,&blue);
@@ -2011,7 +2011,7 @@ if (0)
                 OR a greyscale version of a binary 'And'
                 OR the 'Union' of pixel sets.
             */
-            pixel=Sa*GetPixelIntensity(composite_image,p) >
+            pixel=Sa*GetPixelIntensity(source_image,p) >
               Da*GetPixelIntensity(image,q) ? Sc : Dc;
             break;
           }
@@ -2027,8 +2027,8 @@ if (0)
                 pixel=Sc;
                 break;
               }
-            CompositeHCL(destination_pixel.red,destination_pixel.green,
-              destination_pixel.blue,&hue,&chroma,&luma);
+            CompositeHCL(canvas_pixel.red,canvas_pixel.green,
+              canvas_pixel.blue,&hue,&chroma,&luma);
             CompositeHCL(source_pixel.red,source_pixel.green,source_pixel.blue,
               &sans,&sans,&luma);
             HCLComposite(hue,chroma,luma,&red,&green,&blue);
@@ -2075,7 +2075,7 @@ if (0)
           case MinusSrcCompositeOp:
           {
             /*
-              Minus source from destination.
+              Minus source from canvas.
 
                 f(Sc,Dc) = Sc - Dc
             */
@@ -2092,14 +2092,14 @@ if (0)
                 pixel=Dc;
                 break;
               }
-            offset=(ssize_t) (GetPixelIntensity(composite_image,p)-midpoint);
+            offset=(ssize_t) (GetPixelIntensity(source_image,p)-midpoint);
             if (offset == 0)
               {
                 pixel=Dc;
                 break;
               }
-            CompositeHCL(destination_pixel.red,destination_pixel.green,
-              destination_pixel.blue,&hue,&chroma,&luma);
+            CompositeHCL(canvas_pixel.red,canvas_pixel.green,
+              canvas_pixel.blue,&hue,&chroma,&luma);
             luma+=(0.01*percent_luma*offset)/midpoint;
             chroma*=0.01*percent_chroma;
             HCLComposite(hue,chroma,luma,&red,&green,&blue);
@@ -2213,8 +2213,8 @@ if (0)
                 pixel=Sc;
                 break;
               }
-            CompositeHCL(destination_pixel.red,destination_pixel.green,
-              destination_pixel.blue,&hue,&chroma,&luma);
+            CompositeHCL(canvas_pixel.red,canvas_pixel.green,
+              canvas_pixel.blue,&hue,&chroma,&luma);
             CompositeHCL(source_pixel.red,source_pixel.green,source_pixel.blue,
               &sans,&chroma,&sans);
             HCLComposite(hue,chroma,luma,&red,&green,&blue);
@@ -2307,9 +2307,9 @@ if (0)
         }
         q[i]=ClampPixel(pixel);
       }
-      p+=GetPixelChannels(composite_image);
-      channels=GetPixelChannels(composite_image);
-      if (p >= (pixels+channels*composite_image->columns))
+      p+=GetPixelChannels(source_image);
+      channels=GetPixelChannels(source_image);
+      if (p >= (pixels+channels*source_image->columns))
         p=pixels;
       q+=GetPixelChannels(image);
     }
@@ -2329,12 +2329,12 @@ if (0)
           status=MagickFalse;
       }
   }
-  composite_view=DestroyCacheView(composite_view);
+  source_view=DestroyCacheView(source_view);
   image_view=DestroyCacheView(image_view);
-  if (destination_image != (Image * ) NULL)
-    destination_image=DestroyImage(destination_image);
+  if (canvas_image != (Image * ) NULL)
+    canvas_image=DestroyImage(canvas_image);
   else
-    composite_image=DestroyImage(composite_image);
+    source_image=DestroyImage(source_image);
   return(status);
 }
 
