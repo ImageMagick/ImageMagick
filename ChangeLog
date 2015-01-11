@@ -8,7 +8,7 @@
     is raised.
 
 2014-01-01  6.9.0-3 Cristy  <quetzlzacatenango@image...>
-  * New version 6.9.0-2, SVN revision 17537.
+  * New version 6.9.0-3, SVN revision 17537.
 
 2015-01-01  6.9.0-3 Cristy  <quetzlzacatenango@image...>
   * ImageMagick builds when HDRI is enabled (reference
