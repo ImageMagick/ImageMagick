@@ -2384,8 +2384,8 @@ static MagickBooleanType SkipDXTMipmaps(Image *image,DDSInfo *dds_info,
       for (i = 1; (i < (ssize_t) dds_info->mipmapcount) && w && h; i++)
       {
         offset = (MagickOffsetType) ((w + 3) / 4) * ((h + 3) / 4) * texel_size;
-        (void) SeekBlob(image, offset, SEEK_CUR);
-        
+        if (SeekBlob(image, offset, SEEK_CUR) < 0)
+          break;
         w = DIV2(w);
         h = DIV2(h);
       }
@@ -2431,8 +2431,8 @@ static MagickBooleanType SkipRGBMipmaps(Image *image,DDSInfo *dds_info,
       for (i=1; (i < (ssize_t) dds_info->mipmapcount) && w && h; i++)
       {
         offset = (MagickOffsetType) w * h * pixel_size;
-        (void) SeekBlob(image, offset, SEEK_CUR);
-        
+        if (SeekBlob(image, offset, SEEK_CUR) < 0)
+          break;
         w = DIV2(w);
         h = DIV2(h);
       }
