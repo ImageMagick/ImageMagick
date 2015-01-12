@@ -2140,8 +2140,8 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
             QuantumRange+1.0)/2.0)+center.y+((compose == DisplaceCompositeOp) ?
             y : 0));
           (void) InterpolateMagickPixelPacket(image,image_view,
-            UndefinedInterpolatePixel,(double) offset.x,(double) offset.y,
-            &pixel,exception);
+            BlendInterpolatePixel,(double) offset.x,(double) offset.y,&pixel,
+            exception);
           /*
             Mask with the 'invalid pixel mask' in alpha channel.
           */
