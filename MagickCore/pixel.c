@@ -5683,7 +5683,7 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
           pixels[3].black));
       gamma=((epsilon.y*(epsilon.x+delta.x)+delta.y*(epsilon.x+delta.x)));
       gamma=PerceptibleReciprocal(gamma);
-      pixel->alpha=(epsilon.y*(epsilon.x*pixels[0].alpha+delta.x*
+      pixel->alpha=gamma*(epsilon.y*(epsilon.x*pixels[0].alpha+delta.x*
         pixels[1].alpha)+delta.y*(epsilon.x*pixels[2].alpha+delta.x*
         pixels[3].alpha));
       break;
