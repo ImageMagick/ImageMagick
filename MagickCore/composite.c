@@ -962,14 +962,13 @@ if (0)
         {
           if ((flags & AspectValue) == 0)
             {
-              horizontal_scale=(MagickRealType) (source_image->columns-1.0)/
-                2.0;
-              vertical_scale=(MagickRealType) (source_image->rows-1.0)/2.0;
+              horizontal_scale=(MagickRealType) (source_image->columns-1)/2.0;
+              vertical_scale=(MagickRealType) (source_image->rows-1)/2.0;
             }
           else
             {
-              horizontal_scale=(MagickRealType) (image->columns-1.0)/2.0;
-              vertical_scale=(MagickRealType) (image->rows-1.0)/2.0;
+              horizontal_scale=(MagickRealType) (image->columns-1)/2.0;
+              vertical_scale=(MagickRealType) (image->rows-1)/2.0;
             }
         }
       else
@@ -980,13 +979,13 @@ if (0)
             {
               if ((flags & AspectValue) == 0)
                 {
-                  horizontal_scale*=(source_image->columns-1.0)/200.0;
-                  vertical_scale*=(source_image->rows-1.0)/200.0;
+                  horizontal_scale*=(source_image->columns-1)/200.0;
+                  vertical_scale*=(source_image->rows-1)/200.0;
                 }
               else
                 {
-                  horizontal_scale*=(image->columns-1.0)/200.0;
-                  vertical_scale*=(image->rows-1.0)/200.0;
+                  horizontal_scale*=(image->columns-1)/200.0;
+                  vertical_scale*=(image->rows-1)/200.0;
                 }
             }
           if ((flags & HeightValue) == 0)
@@ -1009,7 +1008,7 @@ if (0)
               center.x=(MagickRealType) (x_offset+(source_image->columns-1)/
                 2.0);
             else
-              center.x=(MagickRealType) ((image->columns-1)/2);
+              center.x=(MagickRealType) ((image->columns-1)/2.0);
           else
             if ((flags & AspectValue) == 0)
               center.x=(MagickRealType) x_offset+geometry_info.xi;
@@ -1017,10 +1016,9 @@ if (0)
               center.x=geometry_info.xi;
           if ((flags & YValue) == 0)
             if ((flags & AspectValue) == 0)
-              center.y=(MagickRealType) (y_offset+(source_image->rows-1)/
-                2.0);
+              center.y=(MagickRealType) (y_offset+(source_image->rows-1)/2.0);
             else
-              center.y=(MagickRealType) ((image->rows-1)/2);
+              center.y=(MagickRealType) ((image->rows-1)/2.0);
           else
             if ((flags & AspectValue) == 0)
               center.y=(MagickRealType) y_offset+geometry_info.psi;
@@ -1051,10 +1049,10 @@ if (0)
 
         if (((y+y_offset) < 0) || ((y+y_offset) >= (ssize_t) image->rows))
           continue;
-        p=GetCacheViewVirtualPixels(source_view,0,y,source_image->columns,
-          1,exception);
-        q=QueueCacheViewAuthenticPixels(canvas_view,0,y,
-          canvas_image->columns,1,exception);
+        p=GetCacheViewVirtualPixels(source_view,0,y,source_image->columns,1,
+          exception);
+        q=QueueCacheViewAuthenticPixels(canvas_view,0,y,canvas_image->columns,1,
+          exception);
         if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
           break;
         for (x=0; x < (ssize_t) source_image->columns; x++)
@@ -1075,9 +1073,8 @@ if (0)
             (((MagickRealType) QuantumRange+1.0)/2.0)))/(((MagickRealType)
             QuantumRange+1.0)/2.0)+center.y+((compose == DisplaceCompositeOp) ?
             y : 0);
-          (void) InterpolatePixelInfo(image,image_view,
-            UndefinedInterpolatePixel,(double) offset.x,(double) offset.y,
-            &pixel,exception);
+          (void) InterpolatePixelInfo(image,image_view,BlendInterpolatePixel,
+            (double) offset.x,(double) offset.y,&pixel,exception);
           /*
             Mask with the 'invalid pixel mask' in alpha channel.
           */
