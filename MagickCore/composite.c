@@ -1073,8 +1073,9 @@ if (0)
             (((MagickRealType) QuantumRange+1.0)/2.0)))/(((MagickRealType)
             QuantumRange+1.0)/2.0)+center.y+((compose == DisplaceCompositeOp) ?
             y : 0);
-          (void) InterpolatePixelInfo(image,image_view,BlendInterpolatePixel,
-            (double) offset.x,(double) offset.y,&pixel,exception);
+          (void) InterpolatePixelInfo(image,image_view,
+            UndefinedInterpolatePixel,(double) offset.x,(double) offset.y,
+            &pixel,exception);
           /*
             Mask with the 'invalid pixel mask' in alpha channel.
           */
