@@ -138,7 +138,7 @@ struct sRGB_info_struct
 };
 
 const struct sRGB_info_struct sRGB_info[] =
-{ 
+{
     /* ICC v2 perceptual sRGB_IEC61966-2-1_black_scaled.icc */
     { 3048, 0x3b8772b9UL, 0},
 
@@ -2322,12 +2322,12 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   {
      const char
        *value;
- 
+
      value=GetImageOption(image_info,"png:swap-bytes");
- 
+
      if (value == NULL)
         value=GetImageArtifact(image,"png:swap-bytes");
- 
+
      if (value != NULL)
         png_set_swap(ping);
   }
@@ -2955,7 +2955,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
       image->gamma = image_gamma;
     }
-  
+
   (void)LogMagickEvent(CoderEvent,GetMagickModule(),
       "    image->colorspace=%d",(int) image->colorspace);
 
@@ -10474,7 +10474,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                  {
                       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                           "  Setting up iCCP chunk");
-    
+
                        png_set_iCCP(ping,ping_info,(png_charp) name,0,
 #if (PNG_LIBPNG_VER < 10500)
                          (png_charp) GetStringInfoDatum(profile),
@@ -10675,7 +10675,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           write_tIME_chunk(image,ping,ping_info,timestamp,exception);
     }
 #endif
-  
+
   if (mng_info->need_blob != MagickFalse)
   {
     if (OpenBlob(image_info,image,WriteBinaryBlobMode,exception) ==
@@ -11522,47 +11522,47 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
         {
           /* Retrieve png:IHDR.bit-depth-orig and png:IHDR.color-type-orig. */
           value=GetImageProperty(image,"png:IHDR.bit-depth-orig",exception);
-    
+
           if (value != (char *) NULL)
             {
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                  "  png00 inherited bit depth=%s",value);
-    
+
               if (LocaleCompare(value,"1") == 0)
                 mng_info->write_png_depth = 1;
-    
+
               else if (LocaleCompare(value,"2") == 0)
                 mng_info->write_png_depth = 2;
-    
+
               else if (LocaleCompare(value,"4") == 0)
                 mng_info->write_png_depth = 4;
-    
+
               else if (LocaleCompare(value,"8") == 0)
                 mng_info->write_png_depth = 8;
-    
+
               else if (LocaleCompare(value,"16") == 0)
                 mng_info->write_png_depth = 16;
             }
-    
+
           value=GetImageProperty(image,"png:IHDR.color-type-orig",exception);
-    
+
           if (value != (char *) NULL)
             {
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                  "  png00 inherited color type=%s",value);
-    
+
               if (LocaleCompare(value,"0") == 0)
                 mng_info->write_png_colortype = 1;
-    
+
               else if (LocaleCompare(value,"2") == 0)
                 mng_info->write_png_colortype = 3;
-    
+
               else if (LocaleCompare(value,"3") == 0)
                 mng_info->write_png_colortype = 4;
-    
+
               else if (LocaleCompare(value,"4") == 0)
                 mng_info->write_png_colortype = 5;
-    
+
               else if (LocaleCompare(value,"6") == 0)
                 mng_info->write_png_colortype = 7;
             }
