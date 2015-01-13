@@ -177,7 +177,10 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
   buffer=(unsigned char *) AcquireQuantumMemory(MagickMaxBufferExtent,
     sizeof(*buffer));
   if (buffer == (unsigned char *) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+    {
+      jbg_dec_free(&jbig_info);
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+    }
   status=JBG_EAGAIN;
   do
   {
@@ -203,6 +206,7 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
   image->compression=JBIG2Compression;
   if (AcquireImageColormap(image,2) == MagickFalse)
     {
+      jbg_dec_free(&jbig_info);
       buffer=(unsigned char *) RelinquishMagickMemory(buffer);
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     }
@@ -216,12 +220,16 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
   image->y_resolution=300;
   if (image_info->ping != MagickFalse)
     {
+      jbg_dec_free(&jbig_info);
+      buffer=(unsigned char *) RelinquishMagickMemory(buffer);
       (void) CloseBlob(image);
       return(GetFirstImageInList(image));
     }
   status=SetImageExtent(image,image->columns,image->rows);
   if (status == MagickFalse)
     {
+      jbg_dec_free(&jbig_info);
+      buffer=(unsigned char *) RelinquishMagickMemory(buffer);
       InheritException(exception,&image->exception);
       return(DestroyImageList(image));
     }
