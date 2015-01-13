@@ -255,8 +255,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
   size_t
     bytes_per_line,
     extent,
-    height,
-    length;
+    height;
 
   ssize_t
     count,
@@ -489,13 +488,6 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
     else
       if (image->storage_class == PseudoClass)
         {
-          if (bytes_per_line == 0)
-            bytes_per_line=image->columns;
-          length=image->rows*(image->columns+image->columns % 2);
-          if (((sun_info.type == RT_ENCODED) &&
-               (length > (bytes_per_line*image->rows))) ||
-              ((sun_info.type != RT_ENCODED) && (length > sun_info.length)))
-            ThrowReaderException(CorruptImageError,"UnableToReadImageData");
           for (y=0; y < (ssize_t) image->rows; y++)
           {
             q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
@@ -529,11 +521,6 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
             bytes_per_pixel++;
           if (bytes_per_line == 0)
             bytes_per_line=bytes_per_pixel*image->columns;
-          length=image->rows*(bytes_per_line+bytes_per_line % 2);
-          if (((sun_info.type == RT_ENCODED) &&
-               (length > (bytes_per_line*image->rows))) ||
-              ((sun_info.type != RT_ENCODED) && (length > sun_info.length)))
-            ThrowReaderException(CorruptImageError,"UnableToReadImageData");
           for (y=0; y < (ssize_t) image->rows; y++)
           {
             q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
