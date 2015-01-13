@@ -439,6 +439,12 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (sun_info.type == RT_ENCODED)
       (void) DecodeImage(sun_data,sun_info.length,sun_pixels,bytes_per_line*
          height);
+    else
+      {
+        if (sun_info.length > (height*bytes_per_line))
+          ThrowReaderException(ResourceLimitError,"ImproperImageHeader");
+        (void) CopyMagickMemory(sun_pixels,sun_data,sun_info.length);
+      }
     sun_data=(unsigned char *) RelinquishMagickMemory(sun_data);
     /*
       Convert SUN raster image to pixel packets.
