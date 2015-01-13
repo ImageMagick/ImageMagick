@@ -2443,6 +2443,16 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,const ChannelType channel,
             exception);
           return(ceil((double) alpha));
         }
+      if (LocaleNCompare(expression,"clamp",5) == 0)
+        {
+          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+5,beta,
+            exception);
+          if (alpha < 0.0)
+            return(0.0);
+          if (alpha > 1.0)
+            return(1.0);
+          return(alpha);
+        }
       if (LocaleNCompare(expression,"cosh",4) == 0)
         {
           alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+4,beta,
