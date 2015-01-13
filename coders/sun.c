@@ -255,6 +255,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
   size_t
     bytes_per_line,
     extent,
+    height,
     length;
 
   ssize_t
@@ -420,33 +421,23 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
     count=(ssize_t) ReadBlob(image,sun_info.length,sun_data);
     if (count != (ssize_t) sun_info.length)
       ThrowReaderException(CorruptImageError,"UnableToReadImageData");
-    sun_pixels=sun_data;
-    bytes_per_line=0;
+    height=sun_info.height;
+    if ((height == 0) || (sun_info.width == 0) || (sun_info.depth == 0) ||
+        ((bytes_per_line/sun_info.depth) != sun_info.width))
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+    bytes_per_line+=15;
+    bytes_per_line<<=1;
+    if ((bytes_per_line >> 1) != (sun_info.width*sun_info.depth+15))
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+    bytes_per_line>>=4;
+    sun_pixels=(unsigned char *) AcquireQuantumMemory(height,
+      bytes_per_line*sizeof(*sun_pixels));
+    if (sun_pixels == (unsigned char *) NULL)
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     if (sun_info.type == RT_ENCODED)
-      {
-        size_t
-          height;
-
-        /*
-          Read run-length encoded raster pixels.
-        */
-        height=sun_info.height;
-        if ((height == 0) || (sun_info.width == 0) || (sun_info.depth == 0) ||
-            ((bytes_per_line/sun_info.depth) != sun_info.width))
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-        bytes_per_line+=15;
-        bytes_per_line<<=1;
-        if ((bytes_per_line >> 1) != (sun_info.width*sun_info.depth+15))
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-        bytes_per_line>>=4;
-        sun_pixels=(unsigned char *) AcquireQuantumMemory(height,
-          bytes_per_line*sizeof(*sun_pixels));
-        if (sun_pixels == (unsigned char *) NULL)
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-        (void) DecodeImage(sun_data,sun_info.length,sun_pixels,bytes_per_line*
-          height);
-        sun_data=(unsigned char *) RelinquishMagickMemory(sun_data);
-      }
+      (void) DecodeImage(sun_data,sun_info.length,sun_pixels,bytes_per_line*
+        height);
+    sun_data=(unsigned char *) RelinquishMagickMemory(sun_data);
     /*
       Convert SUN raster image to pixel packets.
     */
