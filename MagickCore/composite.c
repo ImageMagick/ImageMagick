@@ -930,12 +930,12 @@ if (0)
       const char
         *value;
 
-      PixelInfo
-        pixel;
-
       MagickRealType
         horizontal_scale,
         vertical_scale;
+
+      PixelInfo
+        pixel;
 
       PointInfo
         center,
@@ -1079,8 +1079,8 @@ if (0)
           /*
             Mask with the 'invalid pixel mask' in alpha channel.
           */
-          pixel.alpha=(MagickRealType) QuantumRange*(1.0-(1.0-QuantumScale*
-            pixel.alpha)*(1.0-QuantumScale*GetPixelAlpha(source_image,p)));
+          pixel.alpha=(MagickRealType) QuantumRange*(QuantumScale*pixel.alpha)*
+            (QuantumScale*GetPixelAlpha(source_image,p));
           SetPixelViaPixelInfo(canvas_image,&pixel,q);
           p+=GetPixelChannels(source_image);
           q+=GetPixelChannels(canvas_image);
