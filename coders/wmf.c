@@ -177,6 +177,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void *) image);
   if (wmf_status != wmf_E_None)
     {
+      ipa_device_close(wmf_info);
       wmf_api_destroy(wmf_info);
       ThrowFileException(exception,FileOpenError,"UnableToOpenFile",
         image->filename);
@@ -186,6 +187,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   wmf_status=wmf_scan(wmf_info,0,&bounding_box);
   if (wmf_status != wmf_E_None)
     {
+      ipa_device_close(wmf_info);
       wmf_api_destroy(wmf_info);
       ThrowReaderException(DelegateError,"FailedToScanFile");
     }
@@ -196,6 +198,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     file=fdopen(unique_file,"wb");
   if ((unique_file == -1) || (file == (FILE *) NULL))
     {
+      ipa_device_close(wmf_info);
       wmf_api_destroy(wmf_info);
       ThrowReaderException(FileOpenError,"UnableToCreateTemporaryFile");
     }
@@ -204,6 +207,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   wmf_status=wmf_play(wmf_info,0,&bounding_box);
   if (wmf_status != wmf_E_None)
     {
+      ipa_device_close(wmf_info);
       wmf_api_destroy(wmf_info);
       ThrowReaderException(DelegateError,"FailedToRenderFile");
     }
