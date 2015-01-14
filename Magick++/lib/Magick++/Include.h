@@ -1223,6 +1223,7 @@ namespace Magick
   using MagickCore::GetCacheViewAuthenticIndexQueue;
   using MagickCore::GetCacheViewAuthenticPixels;
   using MagickCore::GetCacheViewVirtualPixels;
+  using MagickCore::GetClientName;
   using MagickCore::GetColorTuple;
   using MagickCore::GetDrawInfo;
   using MagickCore::GetGeometry;
@@ -1389,7 +1390,6 @@ namespace Magick
   using MagickCore::SelectiveBlurImageChannel;
   using MagickCore::SeparateImageChannel;
   using MagickCore::SepiaToneImage;
-  using MagickCore::SetClientName;
   using MagickCore::SetGeometry;
   using MagickCore::SetImageAlphaChannel;
   using MagickCore::SetImageArtifact;
