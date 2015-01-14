@@ -686,7 +686,7 @@ Magick::WarningXServer::~WarningXServer() throw()
 std::string Magick::formatExceptionMessage(const MagickCore::ExceptionInfo *exception_)
 {
   // Format error message ImageMagick-style
-  std::string message=SetClientName(0);
+  std::string message=GetClientName();
   if (exception_->reason != (char *) NULL)
     {
       message+=std::string(": ");
