@@ -43,6 +43,7 @@
 #include "magick/blob-private.h"
 #include "magick/exception.h"
 #include "magick/exception-private.h"
+#include "magick/image-private.h"
 #include "magick/list.h"
 #include "magick/locale_.h"
 #include "magick/log.h"
@@ -355,13 +356,6 @@ MagickExport StringInfo *CloneStringInfo(const StringInfo *string_info)
 %    o source: the source string.
 %
 */
-
-static inline size_t MagickMin(const size_t x,const size_t y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
 
 MagickExport int CompareStringInfo(const StringInfo *target,
   const StringInfo *source)

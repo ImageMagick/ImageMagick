@@ -52,6 +52,7 @@
 #include "magick/blob-private.h"
 #include "magick/exception.h"
 #include "magick/exception-private.h"
+#include "magick/image-private.h"
 #include "magick/log.h"
 #include "magick/memory_.h"
 #include "magick/semaphore.h"
@@ -594,14 +595,6 @@ MagickExport XMLTreeInfo *DestroyXMLTree(XMLTreeInfo *xml_info)
 %    o extent: Maximum length of the string.
 %
 */
-
-static inline MagickSizeType MagickMin(const MagickSizeType x,
-  const MagickSizeType y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
 
 MagickPrivate char *FileToXML(const char *filename,const size_t extent)
 {
