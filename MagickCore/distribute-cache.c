@@ -60,6 +60,7 @@
 #include "MagickCore/exception-private.h"
 #include "MagickCore/geometry.h"
 #include "MagickCore/image.h"
+#include "MagickCore/image-private.h"
 #include "MagickCore/list.h"
 #include "MagickCore/locale_.h"
 #include "MagickCore/memory_.h"
@@ -136,14 +137,6 @@
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
-static inline MagickSizeType MagickMin(const MagickSizeType x,
-  const MagickSizeType y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
 
 static inline MagickOffsetType dpc_read(int file,const MagickSizeType length,
   unsigned char *restrict message)

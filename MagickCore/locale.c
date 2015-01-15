@@ -46,6 +46,7 @@
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
 #include "MagickCore/hashmap.h"
+#include "MagickCore/image-private.h"
 #include "MagickCore/locale_.h"
 #include "MagickCore/locale-private.h"
 #include "MagickCore/log.h"
@@ -1148,13 +1149,6 @@ static void LocaleFatalErrorHandler(
   (void) FormatLocaleFile(stderr,".\n");
   (void) fflush(stderr);
   exit(1);
-}
-
-static inline size_t MagickMin(const size_t x,const size_t y)
-{
-  if (x < y)
-    return(x);
-  return(y);
 }
 
 static MagickBooleanType LoadLocaleCache(SplayTreeInfo *locale_cache,

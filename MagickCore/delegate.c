@@ -56,6 +56,7 @@
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
 #include "MagickCore/hashmap.h"
+#include "MagickCore/image-private.h"
 #include "MagickCore/list.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/nt-base-private.h"
@@ -1006,13 +1007,6 @@ static MagickBooleanType IsDelegateCacheInstantiated(ExceptionInfo *exception)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
-static inline size_t MagickMin(const size_t x,const size_t y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
 
 static MagickBooleanType CopyDelegateFile(const char *source,
   const char *destination)
