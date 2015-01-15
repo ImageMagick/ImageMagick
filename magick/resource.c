@@ -47,6 +47,7 @@
 #include "magick/hashmap.h"
 #include "magick/log.h"
 #include "magick/image.h"
+#include "magick/image-private.h"
 #include "magick/memory_.h"
 #include "magick/nt-base-private.h"
 #include "magick/option.h"
@@ -1055,13 +1056,6 @@ MagickExport MagickBooleanType RelinquishUniqueFileResource(const char *path)
 %
 */
 
-static inline size_t MagickMax(const size_t x,const size_t y)
-{
-  if (x > y)
-    return(x);
-  return(y);
-}
-
 static inline MagickSizeType StringToSizeType(const char *string,
   const double interval)
 {
@@ -1258,14 +1252,6 @@ MagickExport void ResourceComponentTerminus(void)
 %    o limit: the maximum limit for the resource.
 %
 */
-
-static inline MagickSizeType MagickMin(const MagickSizeType x,
-  const MagickSizeType y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
 
 MagickExport MagickBooleanType SetMagickResourceLimit(const ResourceType type,
   const MagickSizeType limit)

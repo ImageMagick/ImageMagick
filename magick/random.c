@@ -51,6 +51,7 @@
 #include "magick/studio.h"
 #include "magick/exception.h"
 #include "magick/exception-private.h"
+#include "magick/image-private.h"
 #include "magick/memory_.h"
 #include "magick/semaphore.h"
 #include "magick/random_.h"
@@ -162,13 +163,6 @@ static StringInfo
 %      RandomInfo *AcquireRandomInfo(void)
 %
 */
-
-static inline size_t MagickMin(const size_t x,const size_t y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
 
 MagickExport RandomInfo *AcquireRandomInfo(void)
 {

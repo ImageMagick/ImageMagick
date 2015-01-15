@@ -46,6 +46,7 @@
 #include "magick/exception.h"
 #include "magick/exception-private.h"
 #include "magick/geometry.h"
+#include "magick/image-private.h"
 #include "magick/list.h"
 #include "magick/log.h"
 #include "magick/memory_.h"
@@ -146,14 +147,6 @@ MagickExport MagickBooleanType AcquireUniqueFilename(char *path)
 %   o  destination:  the destination path.
 %
 */
-
-static inline MagickSizeType MagickMin(const MagickSizeType x,
-  const MagickSizeType y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
 
 MagickExport MagickBooleanType AcquireUniqueSymbolicLink(const char *source,
   char *destination)
