@@ -180,7 +180,7 @@ static inline char *create_utf8_string(const wchar_t *wideChar)
 %                   and DLL_PROCESS_DETACH.
 %
 */
-#if defined(_DLL) && defined( ProvideDllMain )
+#if defined(_DLL) && defined(ProvideDllMain)
 BOOL WINAPI DllMain(HINSTANCE handle,DWORD reason,LPVOID lpvReserved)
 {
   magick_unreferenced(lpvReserved);
@@ -198,6 +198,7 @@ BOOL WINAPI DllMain(HINSTANCE handle,DWORD reason,LPVOID lpvReserved)
       wchar_t
         *wide_path;
 
+      MagickCoreGenesis((const char*) NULL,MagickFalse);
       wide_path=(wchar_t *) AcquireQuantumMemory(MaxTextExtent,
         sizeof(*wide_path));
       if (wide_path == (wchar_t *) NULL)
@@ -215,7 +216,6 @@ BOOL WINAPI DllMain(HINSTANCE handle,DWORD reason,LPVOID lpvReserved)
                 module_path[count+1]='\0';
                 break;
               }
-          MagickCoreGenesis(module_path,MagickFalse);
           path=(char *) AcquireQuantumMemory(16UL*MaxTextExtent,sizeof(*path));
           if (path == (char *) NULL)
             {
@@ -750,7 +750,7 @@ MagickPrivate MagickBooleanType NTGetExecutionPath(char *path,
   wchar_t
     wide_path[MaxTextExtent];
 
-  (void) GetModuleFileNameW(0,wide_path,(DWORD) extent);
+  (void) GetModuleFileNameW((HMODULE) NULL,wide_path,(DWORD) extent);
   (void) WideCharToMultiByte(CP_UTF8,0,wide_path,-1,path,(int) extent,NULL,
     NULL);
   return(MagickTrue);
