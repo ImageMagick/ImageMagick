@@ -50,6 +50,7 @@
 #include "MagickCore/studio.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
+#include "MagickCore/image-private.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/semaphore.h"
 #include "MagickCore/random_.h"
@@ -158,13 +159,6 @@ static StringInfo
 %      RandomInfo *AcquireRandomInfo(void)
 %
 */
-
-static inline size_t MagickMin(const size_t x,const size_t y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
 
 MagickExport RandomInfo *AcquireRandomInfo(void)
 {

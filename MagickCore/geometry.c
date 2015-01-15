@@ -45,6 +45,7 @@
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
 #include "MagickCore/geometry.h"
+#include "MagickCore/image-private.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/string-private.h"
@@ -1237,14 +1238,6 @@ MagickExport MagickStatusType ParseGravityGeometry(const Image *image,
 %      the given geometry specification.
 %
 */
-
-static inline size_t MagickMax(const size_t x,
-  const size_t y)
-{
-  if (x > y)
-    return(x);
-  return(y);
-}
 
 MagickExport MagickStatusType ParseMetaGeometry(const char *geometry,ssize_t *x,
   ssize_t *y,size_t *width,size_t *height)

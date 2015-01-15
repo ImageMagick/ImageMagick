@@ -45,6 +45,7 @@
 #include "MagickCore/cache.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
+#include "MagickCore/image-private.h"
 #include "MagickCore/matrix.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/pixel-accessor.h"
@@ -119,14 +120,6 @@ struct _MatrixInfo
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
-static inline MagickSizeType MagickMin(const MagickSizeType x,
-  const MagickSizeType y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
 
 #if defined(SIGBUS)
 static void MatrixSignalHandler(int status)
