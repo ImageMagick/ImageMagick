@@ -6,6 +6,9 @@
 2014-01-05  6.9.0-4 Dirk Lemstra <dirk@lem.....org>
   * Report Ghostscript version when -verbose is used and when an exception
     is raised.
+  * Fixed invalid path check in MagickCoreGenesis under Windows and disabled
+    ProvideDllMain by default (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&p=118875).
 
 2014-01-01  6.9.0-3 Cristy  <quetzlzacatenango@image...>
   * New version 6.9.0-3, SVN revision 17537.
