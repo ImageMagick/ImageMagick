@@ -548,6 +548,7 @@ int status;
   }
 DblBreak:
 
+  inflateEnd(&zip_info);
   (void)fclose(mat_file);
   RelinquishMagickMemory(CacheBlock);
   RelinquishMagickMemory(DecompressBlock);
