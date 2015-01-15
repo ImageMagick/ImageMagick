@@ -3130,7 +3130,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
           (LocaleCompare("y-resolution",property) == 0) )
         {
           (void) FormatLocaleString(value,MaxTextExtent,"%.20g",
-           image->y_resolution);
+            image->y_resolution);
           break;
         }
       break;
