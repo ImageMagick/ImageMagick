@@ -1004,26 +1004,26 @@ if (0)
       if (compose == DistortCompositeOp)
         {
           if ((flags & XValue) == 0)
-            if ((flags & AspectValue) == 0)
+            if ((flags & AspectValue) != 0)
+              center.x=(MagickRealType) ((image->columns-1)/2.0);
+            else
               center.x=(MagickRealType) (x_offset+(source_image->columns-1)/
                 2.0);
-            else
-              center.x=(MagickRealType) ((image->columns-1)/2.0);
           else
-            if ((flags & AspectValue) == 0)
-              center.x=(MagickRealType) x_offset+geometry_info.xi;
-            else
+            if ((flags & AspectValue) != 0)
               center.x=geometry_info.xi;
+            else
+              center.x=(MagickRealType) (x_offset+geometry_info.xi);
           if ((flags & YValue) == 0)
-            if ((flags & AspectValue) == 0)
-              center.y=(MagickRealType) (y_offset+(source_image->rows-1)/2.0);
-            else
+            if ((flags & AspectValue) != 0)
               center.y=(MagickRealType) ((image->rows-1)/2.0);
-          else
-            if ((flags & AspectValue) == 0)
-              center.y=(MagickRealType) y_offset+geometry_info.psi;
             else
+              center.y=(MagickRealType) (y_offset+(source_image->rows-1)/2.0);
+          else
+            if ((flags & AspectValue) != 0)
               center.y=geometry_info.psi;
+            else
+              center.y=(MagickRealType) (y_offset+geometry_info.psi);
         }
       /*
         Shift the pixel offset point as defined by the provided,
