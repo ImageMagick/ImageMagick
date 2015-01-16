@@ -2028,14 +2028,13 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
         {
           if ((flags & AspectValue) == 0)
             {
-              horizontal_scale=(MagickRealType) (source_image->columns-1.0)/
-                2.0;
-              vertical_scale=(MagickRealType) (source_image->rows-1.0)/2.0;
+              horizontal_scale=(MagickRealType) (source_image->columns-1)/2.0;
+              vertical_scale=(MagickRealType) (source_image->rows-1)/2.0;
             }
           else
             {
-              horizontal_scale=(MagickRealType) (image->columns-1.0)/2.0;
-              vertical_scale=(MagickRealType) (image->rows-1.0)/2.0;
+              horizontal_scale=(MagickRealType) (image->columns-1)/2.0;
+              vertical_scale=(MagickRealType) (image->rows-1)/2.0;
             }
         }
       else
@@ -2046,13 +2045,13 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
             {
               if ((flags & AspectValue) == 0)
                 {
-                  horizontal_scale*=(source_image->columns-1.0)/200.0;
-                  vertical_scale*=(source_image->rows-1.0)/200.0;
+                  horizontal_scale*=(source_image->columns-1)/200.0;
+                  vertical_scale*=(source_image->rows-1)/200.0;
                 }
               else
                 {
-                  horizontal_scale*=(image->columns-1.0)/200.0;
-                  vertical_scale*=(image->rows-1.0)/200.0;
+                  horizontal_scale*=(image->columns-1)/200.0;
+                  vertical_scale*=(image->rows-1)/200.0;
                 }
             }
           if ((flags & HeightValue) == 0)
@@ -2071,11 +2070,11 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
       if (compose == DistortCompositeOp)
         {
           if ((flags & XValue) == 0)
-            if ((flags & AspectValue) == 0)
+            if ((flags & AspectValue) != 0)
+              center.x=((MagickRealType) image->columns-1)/2.0;
+            else
               center.x=(MagickRealType) (x_offset+(source_image->columns-1)/
                 2.0);
-            else
-              center.x=((MagickRealType) image->columns-1)/2.0;
           else
             if ((flags & AspectValue) == 0)
               center.x=(MagickRealType) (x_offset+geometry_info.xi);
@@ -2085,13 +2084,12 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
             if ((flags & AspectValue) != 0)
               center.y=((MagickRealType) image->rows-1)/2.0;
             else
-              center.y=(MagickRealType) (y_offset+(source_image->rows-1)/
-                2.0);
+              center.y=(MagickRealType) (y_offset+(source_image->rows-1)/2.0);
           else
-            if ((flags & AspectValue) == 0)
-              center.y=(MagickRealType) (y_offset+geometry_info.psi);
-            else
+            if ((flags & AspectValue) != 0)
               center.y=geometry_info.psi;
+            else
+              center.y=(MagickRealType) (y_offset+geometry_info.psi);
         }
       /*
         Shift the pixel offset point as defined by the provided,
