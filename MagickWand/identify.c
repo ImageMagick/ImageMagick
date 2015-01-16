@@ -346,8 +346,6 @@ WandExport MagickBooleanType IdentifyImageCommand(ImageInfo *image_info,
                   "MemoryAllocationFailed",GetExceptionMessage(errno));
               (void) ConcatenateString(&(*metadata),text);
               text=DestroyString(text);
-              if (GlobExpression(format,"*%n*",MagickFalse) != MagickFalse)
-                break;
             }
         }
         RemoveAllImageStack();
