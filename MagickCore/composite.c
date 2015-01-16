@@ -958,7 +958,7 @@ if (0)
       value=GetImageArtifact(image,"compose:args");
       if (value != (char *) NULL)
         flags=ParseGeometry(value,&geometry_info);
-      if ((flags & (WidthValue|HeightValue)) == 0 )
+      if ((flags & (WidthValue | HeightValue)) == 0 )
         {
           if ((flags & AspectValue) == 0)
             {
