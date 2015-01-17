@@ -1695,13 +1695,17 @@ if (0)
             break;
           }
           case BlurCompositeOp:
-          case DisplaceCompositeOp:
-          case DistortCompositeOp:
           case CopyCompositeOp:
           case ReplaceCompositeOp:
           case SrcCompositeOp:
           {
             pixel=QuantumRange*Sca;
+            break;
+          }
+          case DisplaceCompositeOp:
+          case DistortCompositeOp:
+          {
+            pixel=Sc;
             break;
           }
           case BumpmapCompositeOp:
