@@ -68,7 +68,7 @@
   Define declarations.
 */
 #if !defined(MAP_FAILED)
-#define MAP_FAILED      ((void *) -1)
+#define MAP_FAILED      ((void *)(LONG_PTR)-1)
 #endif
 
 /*
