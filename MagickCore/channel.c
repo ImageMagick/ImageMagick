@@ -1155,7 +1155,8 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
     }
     case OnAlphaChannel:
     {
-      status=SetImageAlpha(image,OpaqueAlpha,exception);
+      if (image->alpha_trait == UndefinedPixelTrait)
+        status=SetImageAlpha(image,OpaqueAlpha,exception);
       image->alpha_trait=BlendPixelTrait;
       break;
     }
