@@ -1912,7 +1912,6 @@ RestoreMSCWarning
                 pixel=(Quantum) ScaleQuantumToChar(ClampToQuantum(GetPixelLuma(
                   image,p)));
                 q=PopHexPixel(hex_digits,(size_t) pixel,q);
-                i++;
                 if ((q-pixels+8) >= 80)
                   {
                     *q++='\n';
