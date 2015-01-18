@@ -320,7 +320,7 @@ MagickExport void RegisterStaticModules(void)
   (void) RegisterXCFImage();
   (void) RegisterXPMImage();
   (void) RegisterXPSImage();
-  (void) RegisterXTRNmage();
+  (void) RegisterXTRNImage();
 #if defined(MAGICKCORE_X11_DELEGATE)
   (void) RegisterXWDImage();
 #endif
