@@ -5,37 +5,25 @@ Cristy
      Principal architect of ImageMagick and still maintains the ImageMagick
      distribution.
 
-Siu Chi Chan
-     Accelerate numerous image filters with OpenCL under AMD, Intel,
-     and NVidia.  Adapted from MulticoreWare OpenCL contribution.
-
 Dirk Lemstra
-     Contributed to Magick++ and the Windows distribution.
+     Contributor to and maintainer of Magick++, OpenCL acceleration, and
+     the Windows build (configure, ImageMagickObject, etc.).
 
 Glenn Randers-Pehrson
      Contributed significantly to the utilities.  Authored support for JNG,
      MNG, and PNG formats. Provided significant support for the BMP format.
-     Significant improvements to the documentation.
-
-Nicolas Robidoux, Laurentian University
-     New ellipse clamping method and vertical/horizontal line preserving
-     filters for EWA resampling. Sped up resampling filter kernels.
+     Made significant improvements to the documentation.
 
 Bastien ROUCARIÈS
      Various patches from Debian downstream.
 
-Anthony Thyssen
-     Designed the ImageMagick 6.0 command line processing with parenthesis,
-     image sequence operators, and GIF animation processing.  Wrote the
-     image perspective distortions (-distort) and resampling methods.
-     Maintains a comprehensive set of examples of using ImageMagick at
-     http://www.imagemagick.org/Usage/.
-
 Fred Weinhaus
-     Contributed support and documentation for the discrete Fourier transform.
+     Contributed support and documentation for the discrete Fourier transform,
+     connected component labeling, perceptual hash, kuwahara filter and others.
      Also provides scripts that perform some out-of-the ordinary image
-     processing operations @ http://www.fmwconcepts.com/imagemagick/.
-
+     processing operations @ http://www.fmwconcepts.com/imagemagick/.  He
+     utilized his scripts as unit tests for ImageMagick version 7 to ensure
+     version 6 compatibility before its release.
 
 
 These individuals have made source code contributions to the ImageMagick
@@ -46,6 +34,10 @@ Kelly Bergougnoux
 
 Nathan Brown
      Original author of the JP2 coder.
+
+Siu Chi Chan
+     Accelerate numerous image filters with OpenCL under AMD, Intel,
+     and NVidia.  Adapted from MulticoreWare OpenCL contribution.
 
 Mike Chiarappa
      Created a Borland C++ Builder 6.0 build environment for ImageMagick.
@@ -95,6 +87,10 @@ William Radcliffe
      by 'identify'. Ported module loader support to Windows. Significantly
      improved polygon rendering performance.
 
+Nicolas Robidoux, Laurentian University
+     New ellipse clamping method and vertical/horizontal line preserving
+     filters for EWA resampling. Sped up resampling filter kernels.
+
 Leonard Rosenthol
      Authored the 'conjure' utility and associated MSL execution environment.
      Provided MacOS support. Authored the CLIPBOARD, XCF, and PSD coders.
@@ -108,6 +104,13 @@ Kyle Shorter
 Lars Ruben Skyum
      Contributed the -clippath functionality, improved color profile support,
      and re-wrote the PS3 coder.
+
+Anthony Thyssen
+     Designed the ImageMagick 6.0 command line processing with parenthesis,
+     image sequence operators, and GIF animation processing.  Wrote the
+     image perspective distortions (-distort) and resampling methods.
+     Maintains a comprehensive set of examples of using ImageMagick at
+     http://www.imagemagick.org/Usage/.
 
 Milan Votava
      Contributed support for Wireless BitMap, used in WAP - Wireless Access
