@@ -199,21 +199,24 @@ static Image *ReadXTRNImage(const ImageInfo *image_info,
         {
           hr = SafeArrayGetLBound(pSafeArray, 1, &lBoundl);
           if (SUCCEEDED(hr))
-            hr = SafeArrayGetUBound(pSafeArray, 1, &lBoundu);
-          if (SUCCEEDED(hr))
             {
-              blob_length = lBoundu - lBoundl + 1;
-              hr = SafeArrayAccessData(pSafeArray,(void**) &blob_data);
-              if(SUCCEEDED(hr))
+              hr = SafeArrayGetUBound(pSafeArray, 1, &lBoundu);
+              if (SUCCEEDED(hr))
                 {
-                  *clone_info->filename='\0';
-                  *clone_info->magick='\0';
-                  if (*filename != '\0')
-                    (void) CopyMagickString(clone_info->filename,filename,
-                      MaxTextExtent);
-                  image=BlobToImage(clone_info,blob_data,blob_length,exception);
-                  hr=SafeArrayUnaccessData(pSafeArray);
-                  CatchException(exception);
+                  blob_length = lBoundu - lBoundl + 1;
+                  hr = SafeArrayAccessData(pSafeArray,(void**) &blob_data);
+                  if(SUCCEEDED(hr))
+                    {
+                      *clone_info->filename='\0';
+                      *clone_info->magick='\0';
+                      if (*filename != '\0')
+                        (void) CopyMagickString(clone_info->filename,filename,
+                          MaxTextExtent);
+                      image=BlobToImage(clone_info,blob_data,blob_length,
+                        exception);
+                      hr=SafeArrayUnaccessData(pSafeArray);
+                      CatchException(exception);
+                    }
                 }
             }
         }
@@ -406,6 +409,7 @@ static MagickBooleanType WriteXTRNImage(const ImageInfo *image_info,
     *param3;
 
   param1 = param2 = param3 = (void *) NULL;
+  status=MagickTrue;
   if (LocaleCompare(image_info->magick,"XTRNFILE") == 0)
     {
       clone_info=CloneImageInfo(image_info);
