@@ -868,7 +868,7 @@ static tsize_t TIFFWriteBlob(thandle_t image,tdata_t data,tsize_t size)
   return(count);
 }
 
-static TIFFMethodType GetJpegMethod(Image* image,TIFF *tiff,uint16 photometric,
+static TIFFMethodType GetJPEGMethod(Image* image,TIFF *tiff,uint16 photometric,
   uint16 bits_per_sample,uint16 samples_per_pixel)
 {
 #define BUFFER_SIZE 2048
@@ -891,20 +891,20 @@ static TIFFMethodType GetJpegMethod(Image* image,TIFF *tiff,uint16 photometric,
     **value;
 
   unsigned char
-    buffer[BUFFER_SIZE+1];
+    buffer[BUFFER_SIZE+2];
 
   unsigned short
     length;
 
   /* only support 8 bit for now */
-  if (photometric != PHOTOMETRIC_SEPARATED || bits_per_sample != 8 ||
-      samples_per_pixel != 4)
+  if ((photometric != PHOTOMETRIC_SEPARATED) || (bits_per_sample != 8) ||
+      (samples_per_pixel != 4))
     return(ReadGenericMethod);
   /* Search for Adobe APP14 JPEG Marker */
   if (!TIFFGetField(tiff,TIFFTAG_STRIPOFFSETS,&value))
     return(ReadRGBAMethod);
   position=TellBlob(image);
-  offset=(MagickOffsetType)value[0];
+  offset=(MagickOffsetType) value[0];
   if (SeekBlob(image,offset,SEEK_SET) != offset)
     return(ReadRGBAMethod);
   method=ReadRGBAMethod;
@@ -1417,7 +1417,7 @@ RestoreMSCWarning
         (interlace == PLANARCONFIG_SEPARATE) && (bits_per_sample < 64))
       method=ReadGenericMethod;
     if (image->compression == JPEGCompression)
-      method=GetJpegMethod(image,tiff,photometric,bits_per_sample,
+      method=GetJPEGMethod(image,tiff,photometric,bits_per_sample,
         samples_per_pixel);
     if (compress_tag == COMPRESSION_JBIG)
       method=ReadStripMethod;
