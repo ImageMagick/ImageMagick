@@ -2027,6 +2027,7 @@ MagickExport MagickBooleanType InjectImageBlob(const ImageInfo *image_info,
   if (file == -1)
     {
       (void) RelinquishUniqueFileResource(filename);
+      file=close(file);
       ThrowFileException(exception,FileOpenError,"UnableToOpenFile",
         image_info->filename);
       return(MagickFalse);
