@@ -2023,7 +2023,6 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
       packet_size+=quantum_info->depth/8;
     if (compression == RLECompression)
       packet_size++;
-    length=image->columns;
     length=MagickMax(BZipMaxExtent(packet_size*image->columns),ZipMaxExtent(
       packet_size*image->columns));
     if ((compression == BZipCompression) || (compression == ZipCompression))
