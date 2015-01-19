@@ -938,17 +938,14 @@ MagickExport char *EscapeString(const char *source,const char escape)
   if (destination == (char *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"UnableToEscapeString");
   *destination='\0';
-  if (source != (char *) NULL)
-    {
-      q=destination;
-      for (p=source; *p != '\0'; p++)
-      {
-        if ((*p == '\\') || (*p == escape))
-          *q++='\\';
-        *q++=(*p);
-      }
-      *q='\0';
-    }
+  q=destination;
+  for (p=source; *p != '\0'; p++)
+  {
+    if ((*p == '\\') || (*p == escape))
+      *q++='\\';
+    *q++=(*p);
+  }
+  *q='\0';
   return(destination);
 }
 
