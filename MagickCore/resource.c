@@ -500,7 +500,12 @@ MagickExport int AcquireUniqueFileResource(char *path)
   assert(path != (char *) NULL);
   (void) LogMagickEvent(ResourceEvent,GetMagickModule(),"...");
   if (random_info == (RandomInfo *) NULL)
-    random_info=AcquireRandomInfo();
+    {
+      LockSemaphoreInfo(resource_semaphore);
+      if (random_info == (RandomInfo *) NULL)
+        random_info=AcquireRandomInfo();
+      UnlockSemaphoreInfo(resource_semaphore);
+    }
   file=(-1);
   for (i=0; i < (ssize_t) TMP_MAX; i++)
   {
