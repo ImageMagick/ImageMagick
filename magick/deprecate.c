@@ -827,8 +827,7 @@ MagickExport char *AllocateString(const char *source)
   if (destination == (char *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   *destination='\0';
-  if (source != (char *) NULL)
-    (void) CopyMagickString(destination,source,length);
+  (void) CopyMagickString(destination,source,length);
   return(destination);
 }
 
