@@ -755,7 +755,7 @@ namespace Magick
     void connectedComponents(const size_t connectivity_);
 
     // Contrast image (enhance intensity differences in image)
-    void contrast(const size_t sharpen_);
+    void contrast(const bool sharpen_);
 
     // A simple image enhancement technique that attempts to improve the
     // contrast in an image by 'stretching' the range of intensity values

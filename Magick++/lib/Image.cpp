@@ -2508,7 +2508,7 @@ void Magick::Image::connectedComponents(const size_t connectivity_)
   ThrowImageException;
 }
 
-void Magick::Image::contrast(const size_t sharpen_)
+void Magick::Image::contrast(const bool sharpen_)
 {
   modifyImage();
   GetPPException;
