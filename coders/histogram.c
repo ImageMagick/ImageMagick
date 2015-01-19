@@ -281,7 +281,9 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
         (maximum < histogram[x].blue))
       maximum=histogram[x].blue;
   }
-  scale=(double) histogram_image->rows/maximum;
+  scale=0.0;
+  if (fabs(maximum) >= MagickEpsilon)
+    scale=(double) histogram_image->rows/maximum;
   /*
     Initialize histogram image.
   */
