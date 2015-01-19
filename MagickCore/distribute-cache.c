@@ -252,6 +252,7 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
       CLOSE_SOCKET(client_socket);
       client_socket=(SOCKET_TYPE) (-1);
     }
+  freeaddrinfo(result);
   return(client_socket);
 #else
   (void) ThrowMagickException(exception,GetMagickModule(),MissingDelegateError,
