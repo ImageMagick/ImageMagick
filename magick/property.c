@@ -3508,8 +3508,6 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
       /* artifact - direct image artifact lookup (with glob) */
       if (LocaleNCompare("artifact:",pattern,9) == 0)
       {
-        if (image == (Image *) NULL)
-          continue; /* else no image to retrieve artifact */
         if (IsGlob(pattern+9) != MagickFalse)
         {
           ResetImageArtifactIterator(image);
