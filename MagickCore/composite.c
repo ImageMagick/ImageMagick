@@ -1219,11 +1219,11 @@ if (0)
 
     MagickRealType
       blue,
-      luma,
+      chroma,
       green,
       hue,
-      red,
-      chroma;
+      luma,
+      red;
 
     PixelInfo
       canvas_pixel,
@@ -1369,8 +1369,7 @@ if (0)
               case DissolveCompositeOp:
               {
                 if (channel == AlphaPixelChannel)
-                  pixel=canvas_dissolve*GetPixelAlpha(source_image,
-                    source);
+                  pixel=canvas_dissolve*GetPixelAlpha(source_image,source);
                 else
                   pixel=(MagickRealType) source[channel];
                 break;
