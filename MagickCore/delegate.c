@@ -86,7 +86,7 @@ static const char
     "  <delegate decode=\"avi:decode\" stealth=\"True\" command=\"&quot;mplayer&quot; &quot;%i&quot; -really-quiet -ao null -vo png:z=3\"/>"
     "  <delegate decode=\"browse\" stealth=\"True\" spawn=\"True\" command=\"&quot;xdg-open&quot; http://www.imagemagick.org/; rm &quot;%i&quot;\"/>"
     "  <delegate decode=\"cgm\" thread-support=\"False\" command=\"&quot;ralcgm&quot; -d ps -oC &lt; &quot;%i&quot; &gt; &quot;%o&quot; 2&gt; &quot;%u&quot;\"/>"
-    "  <delegate decode=\"dng:decode\" command=\"&quot;/usr/bin/ufraw-batch&quot; --silent --wb=camera --black-point=auto --exposure=auto --create-id=also --out-type=ppm16 &quot;--output=%u.pnm&quot; &quot;%i&quot;\"/>"
+    "  <delegate decode=\"dng:decode\" command=\"&quot;ufraw-batch&quot; --silent --create-id=also --out-type=png --out-depth=16 &quot;--output=%u.png&quot; &quot;%i&quot;\"/>"
     "  <delegate decode=\"edit\" stealth=\"True\" command=\"&quot;xterm&quot; -title &quot;Edit Image Comment&quot; -e vi &quot;%o&quot;\"/>"
     "  <delegate decode=\"eps\" encode=\"pdf\" mode=\"bi\" command=\"&quot;gs&quot; -q -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=pdfwrite&quot; &quot;-sOutputFile=%o&quot; &quot;-f%i&quot;\"/>"
     "  <delegate decode=\"eps\" encode=\"ps\" mode=\"bi\" command=\"&quot;gs&quot; -q -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=ps2write&quot; &quot;-sOutputFile=%o&quot; &quot;-f%i&quot;\"/>"
