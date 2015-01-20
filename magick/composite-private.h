@@ -49,6 +49,10 @@ static inline void MagickCompositeOver(const PixelPacket *p,
   double
     gamma;
 
+  MagickRealType
+    Da,
+    Sa;
+
   /*
     Compose pixel p over pixel q with the given opacities.
   */
@@ -58,7 +62,9 @@ static inline void MagickCompositeOver(const PixelPacket *p,
         *composite=(*q);
       return;
     }
-  gamma=1.0-QuantumScale*QuantumScale*alpha*beta;
+  Sa=1.0-QuantumScale*alpha;
+  Da=1.0-QuantumScale*beta;
+  gamma=RoundToUnity(Sa+Da-Sa*Da);
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
   composite->opacity=(Quantum) (QuantumRange*(1.0-gamma)+0.5);
   gamma=PerceptibleReciprocal(gamma);
@@ -87,6 +93,10 @@ static inline void MagickPixelCompositeOver(const MagickPixelPacket *p,
   double
     gamma;
 
+  MagickRealType
+    Da,
+    Sa;
+
   /*
     Compose pixel p over pixel q with the given opacities.
   */
@@ -95,7 +105,9 @@ static inline void MagickPixelCompositeOver(const MagickPixelPacket *p,
       *composite=(*p);
       return;
     }
-  gamma=1.0-QuantumScale*QuantumScale*alpha*beta;
+  Sa=1.0-QuantumScale*alpha;
+  Da=1.0-QuantumScale*beta;
+  gamma=RoundToUnity(Sa+Da-Sa*Da);
   composite->opacity=(MagickRealType) QuantumRange*(1.0-gamma);
   gamma=PerceptibleReciprocal(gamma);
   composite->red=gamma*MagickOver_(p->red,alpha,q->red,beta);
