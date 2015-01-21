@@ -2032,6 +2032,7 @@ MagickExport MagickBooleanType InjectImageBlob(const ImageInfo *image_info,
   if (buffer == (unsigned char *) NULL)
     {
       (void) RelinquishUniqueFileResource(filename);
+      file=close(file);
       ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
         image->filename);
     }
