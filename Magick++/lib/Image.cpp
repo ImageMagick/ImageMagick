@@ -1577,7 +1577,7 @@ size_t Magick::Image::totalColors(void) const
     colors;
 
   GetPPException;
-  colors=GetNumberColors(constImage(),0,exceptionInfo);
+  colors=GetNumberColors(constImage(),(FILE *) NULL,exceptionInfo);
   ThrowImageException;
   return colors;
 }
