@@ -410,7 +410,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowReaderException(ResourceLimitError,"ImproperImageHeader");
     number_pixels=(MagickSizeType) (image->columns*image->rows);
     if ((sun_info.type != RT_ENCODED) && 
-        ((number_pixels*sun_info.depth) > (8*sun_info.length)))
+        ((number_pixels*sun_info.depth) > (8UL*sun_info.length)))
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     bytes_per_line=sun_info.width*sun_info.depth;
     sun_data=(unsigned char *) AcquireQuantumMemory((size_t) MagickMax(
