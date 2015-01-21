@@ -1226,7 +1226,7 @@ static MagickStatusType ReadPSDLayers(Image *image,const ImageInfo *image_info,
           if ((count != 0) && (LocaleNCompare(type,"Lr16",4) == 0))
             size=GetPSDSize(psd_info,image);
           else
-            if (DiscardBlobBytes(image,(MagickSizeType) (size-quantum-12)) ==
+            if (DiscardBlobBytes(image,(MagickSizeType) (size-quantum-12UL)) ==
                 MagickFalse)
               ThrowBinaryException(CorruptImageError,"UnexpectedEndOfFile",
                 image->filename);
