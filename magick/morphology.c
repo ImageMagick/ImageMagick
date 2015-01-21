@@ -3037,7 +3037,8 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
                 }
                 /* Sync'ed channels, all channels are modified */
                 gamma=PerceptibleReciprocal(gamma);
-                gamma*=(double) kernel->height*kernel->width/count;
+                if (count != 0)
+                  gamma*=(double) kernel->height*kernel->width/count;
                 SetPixelRed(q,ClampToQuantum((MagickRealType) (gamma*result.red)));
                 SetPixelGreen(q,ClampToQuantum((MagickRealType) (gamma*result.green)));
                 SetPixelBlue(q,ClampToQuantum((MagickRealType) (gamma*result.blue)));
