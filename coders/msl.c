@@ -1913,7 +1913,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       if ((attribute != (const char *) NULL)  &&
                           (LocaleCompare(value,value) == 0))
                         {
-                          SetImageType(composite_image,TrueColorMatteType,
+                          SetImageType(composite_image,TrueColorAlphaType,
                             exception);
                           (void) CompositeImage(composite_image,
                             msl_info->image[j],CopyAlphaCompositeOp,MagickTrue,

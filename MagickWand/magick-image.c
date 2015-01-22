@@ -10302,8 +10302,8 @@ WandExport MagickBooleanType MagickSetImageTicksPerSecond(MagickWand *wand,
 %    o wand: the magick wand.
 %
 %    o image_type: the image type:   UndefinedType, BilevelType, GrayscaleType,
-%      GrayscaleMatteType, PaletteType, PaletteMatteType, TrueColorType,
-%      TrueColorMatteType, ColorSeparationType, ColorSeparationMatteType,
+%      GrayscaleAlphaType, PaletteType, PaletteAlphaType, TrueColorType,
+%      TrueColorAlphaType, ColorSeparationType, ColorSeparationAlphaType,
 %      or OptimizeType.
 %
 */

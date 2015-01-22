@@ -206,7 +206,7 @@ static MagickBooleanType WriteTHUMBNAILImage(const ImageInfo *image_info,
   if (thumbnail_image == (Image *) NULL)
     return(MagickFalse);
   (void) SetImageType(thumbnail_image,thumbnail_image->alpha_trait == UndefinedPixelTrait ?
-    TrueColorType : TrueColorMatteType,exception);
+    TrueColorType : TrueColorAlphaType,exception);
   (void) CopyMagickString(thumbnail_image->filename,image->filename,
     MaxTextExtent);
   write_info=CloneImageInfo(image_info);

@@ -773,7 +773,7 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image,
   tga_info.bits_per_pixel=8;
   tga_info.attributes=0;
   if ((image_info->type != TrueColorType) &&
-      (image_info->type != TrueColorMatteType) &&
+      (image_info->type != TrueColorAlphaType) &&
       (image_info->type != PaletteType) &&
       (image->alpha_trait == UndefinedPixelTrait) &&
       (IsImageGray(image,exception) != MagickFalse))

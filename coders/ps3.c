@@ -1255,9 +1255,9 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
     pixels=(unsigned char *) NULL;
     length=0;
     if ((image_info->type != TrueColorType) &&
-        (image_info->type != TrueColorMatteType) &&
+        (image_info->type != TrueColorAlphaType) &&
         (image_info->type != ColorSeparationType) &&
-        (image_info->type != ColorSeparationMatteType) &&
+        (image_info->type != ColorSeparationAlphaType) &&
         (image->colorspace != CMYKColorspace) &&
         ((IsImageGray(image,exception) != MagickFalse) ||
          (IsImageMonochrome(image,exception) != MagickFalse)))

@@ -624,15 +624,15 @@ namespace Magick
   using MagickCore::UndefinedType;
   using MagickCore::BilevelType;
   using MagickCore::GrayscaleType;
-  using MagickCore::GrayscaleMatteType;
+  using MagickCore::GrayscaleAlphaType;
   using MagickCore::PaletteType;
-  using MagickCore::PaletteMatteType;
+  using MagickCore::PaletteAlphaType;
   using MagickCore::TrueColorType;
-  using MagickCore::TrueColorMatteType;
+  using MagickCore::TrueColorAlphaType;
   using MagickCore::ColorSeparationType;
-  using MagickCore::ColorSeparationMatteType;
+  using MagickCore::ColorSeparationAlphaType;
   using MagickCore::OptimizeType;
-  using MagickCore::PaletteBilevelMatteType;
+  using MagickCore::PaletteBilevelAlphaType;
 
   // Interlace types
   using MagickCore::InterlaceType;

@@ -7995,7 +7995,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,MagickTrue);
       XCheckRefreshWindows(display,windows);
       (void) SetImageType(*image,(*image)->alpha_trait == UndefinedPixelTrait ?
-        GrayscaleType : GrayscaleMatteType,exception);
+        GrayscaleType : GrayscaleAlphaType,exception);
       XSetCursorState(display,windows,MagickFalse);
       if (IfMagickTrue(windows->image.orphan) )
         break;
