@@ -2387,8 +2387,8 @@ MagickExport Image *PolynomialImage(const Image *images,
             continue;
           if ((traits & UpdatePixelTrait) == 0)
             continue;
-          coefficient=(MagickRealType) terms[2*i];
-          degree=(MagickRealType) terms[(i << 1)+1];
+          coefficient=(MagickRealType) terms[2*j];
+          degree=(MagickRealType) terms[(j << 1)+1];
           polynomial_pixel[x].channel[i]+=coefficient*
             pow(QuantumScale*GetPixelChannel(image,channel,p),degree);
         }
