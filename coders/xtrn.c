@@ -56,7 +56,6 @@
 /*
   Include declarations.
 */
-#if defined(_VISUALC_)
 #include "magick/studio.h"
 #include "magick/blob.h"
 #include "magick/blob-private.h"
@@ -71,6 +70,7 @@
 #include "magick/memory_.h"
 #include "magick/module.h"
 #include "magick/string_.h"
+#if defined(_VISUALC_)
 #define WIN32_LEAN_AND_MEAN
 #define VC_EXTRALEAN
 #include <windows.h>
@@ -81,6 +81,7 @@
 */
 static MagickBooleanType
   WriteXTRNImage(const ImageInfo *,Image *);
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -109,6 +110,7 @@ static MagickBooleanType
 %    o exception: return any errors or warnings in this structure.
 %
 */
+#if defined(_VISUALC_)
 static Image *ReadXTRNImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
@@ -225,6 +227,7 @@ static Image *ReadXTRNImage(const ImageInfo *image_info,
   clone_info=DestroyImageInfo(clone_info);
   return(image);
 }
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -255,32 +258,40 @@ ModuleExport size_t RegisterXTRNImage(void)
     *entry;
 
   entry=SetMagickInfo("XTRNFILE");
+#if defined(_VISUALC_)
   entry->decoder=ReadXTRNImage;
   entry->encoder=WriteXTRNImage;
+#endif
   entry->adjoin=MagickFalse;
   entry->stealth=MagickTrue;
   entry->description=ConstantString("External transfer of a file");
   entry->module=ConstantString("XTRN");
   RegisterMagickInfo(entry);
   entry=SetMagickInfo("XTRNIMAGE");
+#if defined(_VISUALC_)
   entry->decoder=ReadXTRNImage;
   entry->encoder=WriteXTRNImage;
+#endif
   entry->adjoin=MagickFalse;
   entry->stealth=MagickTrue;
   entry->description=ConstantString("External transfer of a image in memory");
   entry->module=ConstantString("XTRN");
   RegisterMagickInfo(entry);
   entry=SetMagickInfo("XTRNBLOB");
+#if defined(_VISUALC_)
   entry->decoder=ReadXTRNImage;
   entry->encoder=WriteXTRNImage;
+#endif
   entry->adjoin=MagickFalse;
   entry->stealth=MagickTrue;
   entry->description=ConstantString("IExternal transfer of a blob in memory");
   entry->module=ConstantString("XTRN");
   RegisterMagickInfo(entry);
   entry=SetMagickInfo("XTRNARRAY");
+#if defined(_VISUALC_)
   entry->decoder=ReadXTRNImage;
   entry->encoder=WriteXTRNImage;
+#endif
   entry->adjoin=MagickFalse;
   entry->stealth=MagickTrue;
   entry->description=ConstantString(
@@ -345,7 +356,9 @@ ModuleExport void UnregisterXTRNImage(void)
 %
 */
 
-size_t SafeArrayFifo(const Image *image,const void *data,const size_t length)
+#if defined(_VISUALC_)
+static size_t SafeArrayFifo(const Image *image,const void *data,
+  const size_t length)
 {
   SAFEARRAYBOUND NewArrayBounds[1];  /* 1 Dimension */
   size_t tlen=length;
