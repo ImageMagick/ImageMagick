@@ -5562,7 +5562,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                         else
                           frame_timeout=PNG_UINT_31_MAX;
 
-                        if (change_delay == 2)
+                        if (change_timeout == 2)
                           default_frame_timeout=frame_timeout;
 
                         p+=4;
