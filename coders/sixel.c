@@ -1230,7 +1230,7 @@ static MagickBooleanType WriteSIXELImage(const ImageInfo *image_info,Image *imag
         Identify transparent colormap index.
       */
       if ((image->storage_class == DirectClass) || (image->colors > 256))
-        (void) SetImageType(image,PaletteBilevelMatteType,exception);
+        (void) SetImageType(image,PaletteBilevelAlphaType,exception);
       for (i=0; i < (ssize_t) image->colors; i++)
         if (image->colormap[i].alpha != OpaqueAlpha)
           {
@@ -1246,7 +1246,7 @@ static MagickBooleanType WriteSIXELImage(const ImageInfo *image_info,Image *imag
           }
       if (opacity == -1)
         {
-          (void) SetImageType(image,PaletteBilevelMatteType,exception);
+          (void) SetImageType(image,PaletteBilevelAlphaType,exception);
           for (i=0; i < (ssize_t) image->colors; i++)
             if (image->colormap[i].alpha != OpaqueAlpha)
               {

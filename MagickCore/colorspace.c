@@ -318,7 +318,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
       }
       image_view=DestroyCacheView(image_view);
       image->type=image->alpha_trait == UndefinedPixelTrait ? ColorSeparationType :
-        ColorSeparationMatteType;
+        ColorSeparationAlphaType;
       if (SetImageColorspace(image,colorspace,exception) == MagickFalse)
         return(MagickFalse);
       return(status);

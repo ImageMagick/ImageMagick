@@ -734,7 +734,7 @@ void ConvertBMPToImage(const BITMAPINFOHEADER *bmp_info,
   if (bmp_info->biBitCount == 24)
     image->type(MagickCore::TrueColorType);
   else
-    image->type(MagickCore::TrueColorMatteType);
+    image->type(MagickCore::TrueColorAlphaType);
   register unsigned int bytes_per_row=bmp_info->biWidth*bmp_info->biBitCount/8;
   if (bytes_per_row % 4 != 0) {
     bytes_per_row=bytes_per_row+(4-bytes_per_row % 4);  // divisible by 4.

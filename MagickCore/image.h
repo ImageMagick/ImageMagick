@@ -53,15 +53,15 @@ typedef enum
   UndefinedType,
   BilevelType,
   GrayscaleType,
-  GrayscaleMatteType,
+  GrayscaleAlphaType,
   PaletteType,
-  PaletteMatteType,
+  PaletteAlphaType,
   TrueColorType,
-  TrueColorMatteType,
+  TrueColorAlphaType,
   ColorSeparationType,
-  ColorSeparationMatteType,
+  ColorSeparationAlphaType,
   OptimizeType,
-  PaletteBilevelMatteType
+  PaletteBilevelAlphaType
 } ImageType;
 
 typedef enum

@@ -916,7 +916,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
         (visual_info->klass == TrueColor) ||
         (visual_info->klass == DirectColor))
       (void) SetImageType(image_list[scene],image_list[scene]->alpha_trait ==
-        BlendPixelTrait ? TrueColorType : TrueColorMatteType,exception);
+        BlendPixelTrait ? TrueColorType : TrueColorAlphaType,exception);
     if ((display_image->columns < image_list[scene]->columns) &&
         (display_image->rows < image_list[scene]->rows))
       display_image=image_list[scene];
@@ -924,7 +924,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
   if ((resource_info->map_type != (char *) NULL) ||
       (visual_info->klass == TrueColor) || (visual_info->klass == DirectColor))
     (void) SetImageType(display_image,display_image->alpha_trait !=
-      BlendPixelTrait ? TrueColorType : TrueColorMatteType,exception);
+      BlendPixelTrait ? TrueColorType : TrueColorAlphaType,exception);
   XMakeStandardColormap(display,visual_info,&resources,display_image,map_info,
     &pixel,exception);
   /*
@@ -1540,7 +1540,7 @@ MagickExport Image *XAnimateImages(Display *display,
         (visual_info->klass == TrueColor) ||
         (visual_info->klass == DirectColor))
       (void) SetImageType(image_list[scene],image_list[scene]->alpha_trait ==
-        BlendPixelTrait ? TrueColorType : TrueColorMatteType,exception);
+        BlendPixelTrait ? TrueColorType : TrueColorAlphaType,exception);
     if ((display_image->columns < image_list[scene]->columns) &&
         (display_image->rows < image_list[scene]->rows))
       display_image=image_list[scene];

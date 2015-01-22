@@ -598,24 +598,24 @@ MagickExport ImageType GetImageType(const Image *image,ExceptionInfo *exception)
     {
       if (image->alpha_trait == UndefinedPixelTrait)
         return(ColorSeparationType);
-      return(ColorSeparationMatteType);
+      return(ColorSeparationAlphaType);
     }
   if (IsImageMonochrome(image,exception) != MagickFalse)
     return(BilevelType);
   if (IsImageGray(image,exception) != MagickFalse)
     {
       if (image->alpha_trait != UndefinedPixelTrait)
-        return(GrayscaleMatteType);
+        return(GrayscaleAlphaType);
       return(GrayscaleType);
     }
   if (IsPaletteImage(image,exception) != MagickFalse)
     {
       if (image->alpha_trait != UndefinedPixelTrait)
-        return(PaletteMatteType);
+        return(PaletteAlphaType);
       return(PaletteType);
     }
   if (image->alpha_trait != UndefinedPixelTrait)
-    return(TrueColorMatteType);
+    return(TrueColorAlphaType);
   return(TrueColorType);
 }
 
@@ -668,7 +668,7 @@ MagickExport MagickBooleanType IsImageGray(const Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if ((image->type == BilevelType) || (image->type == GrayscaleType) ||
-      (image->type == GrayscaleMatteType))
+      (image->type == GrayscaleAlphaType))
     return(MagickTrue);
   if ((IsGrayColorspace(image->colorspace) == MagickFalse) &&
       (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse))
@@ -703,7 +703,7 @@ MagickExport MagickBooleanType IsImageGray(const Image *image,
     return(MagickFalse);
   ((Image *) image)->type=type;
   if ((type == GrayscaleType) && (image->alpha_trait != UndefinedPixelTrait))
-    ((Image *) image)->type=GrayscaleMatteType;
+    ((Image *) image)->type=GrayscaleAlphaType;
   return(MagickTrue);
 }
 
@@ -1167,7 +1167,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type,
       image->alpha_trait=UndefinedPixelTrait;
       break;
     }
-    case GrayscaleMatteType:
+    case GrayscaleAlphaType:
     {
       if (IsImageGray(image,exception) == MagickFalse)
         status=TransformImageColorspace(image,GRAYColorspace,exception);
@@ -1189,7 +1189,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type,
       image->alpha_trait=UndefinedPixelTrait;
       break;
     }
-    case PaletteBilevelMatteType:
+    case PaletteBilevelAlphaType:
     {
       ChannelType
         channel_mask;
@@ -1206,7 +1206,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type,
       quantize_info=DestroyQuantizeInfo(quantize_info);
       break;
     }
-    case PaletteMatteType:
+    case PaletteAlphaType:
     {
       if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
         status=TransformImageColorspace(image,sRGBColorspace,exception);
@@ -1227,7 +1227,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type,
       image->alpha_trait=UndefinedPixelTrait;
       break;
     }
-    case TrueColorMatteType:
+    case TrueColorAlphaType:
     {
       if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
         status=TransformImageColorspace(image,sRGBColorspace,exception);
@@ -1250,7 +1250,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type,
       image->alpha_trait=UndefinedPixelTrait;
       break;
     }
-    case ColorSeparationMatteType:
+    case ColorSeparationAlphaType:
     {
       if (image->colorspace != CMYKColorspace)
         {

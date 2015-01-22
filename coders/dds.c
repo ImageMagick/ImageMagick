@@ -2206,7 +2206,7 @@ static MagickBooleanType ReadUncompressedRGBA(Image *image, DDSInfo *dds_info,
       else if (IsBitMask(dds_info->pixelformat,0x00ff,0x00ff,0x00ff,0xff00))
         {
           alphaBits=2;
-          (void) SetImageType(image,GrayscaleMatteType,exception);
+          (void) SetImageType(image,GrayscaleAlphaType,exception);
         }
       else if (IsBitMask(dds_info->pixelformat,0x0f00,0x00f0,0x000f,0xf000))
         alphaBits=4;

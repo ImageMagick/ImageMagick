@@ -3763,13 +3763,13 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     if (image->alpha_trait != UndefinedPixelTrait)
     {
       if (ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
-        (void) SetImageType(image,GrayscaleMatteType,exception);
+        (void) SetImageType(image,GrayscaleAlphaType,exception);
 
       else if (ping_color_type == PNG_COLOR_TYPE_PALETTE)
-        (void) SetImageType(image,PaletteMatteType,exception);
+        (void) SetImageType(image,PaletteAlphaType,exception);
 
       else
-        (void) SetImageType(image,TrueColorMatteType,exception);
+        (void) SetImageType(image,TrueColorAlphaType,exception);
     }
 
     else
@@ -9654,14 +9654,14 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
               image_matte=MagickFalse;
             }
 
-          if (image_info->type == TrueColorMatteType)
+          if (image_info->type == TrueColorAlphaType)
             {
               ping_color_type=(png_byte) PNG_COLOR_TYPE_RGB_ALPHA;
               image_matte=MagickTrue;
             }
 
           if (image_info->type == PaletteType ||
-              image_info->type == PaletteMatteType)
+              image_info->type == PaletteAlphaType)
             ping_color_type=(png_byte) PNG_COLOR_TYPE_PALETTE;
 
           if (mng_info->write_png_colortype == 0 &&
@@ -11583,7 +11583,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
       image->depth = 8;
 
       if (image->alpha_trait != UndefinedPixelTrait)
-        (void) SetImageType(image,TrueColorMatteType,exception);
+        (void) SetImageType(image,TrueColorAlphaType,exception);
 
       else
         (void) SetImageType(image,TrueColorType,exception);
@@ -11598,7 +11598,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
       image->depth = 8;
       image->alpha_trait = BlendPixelTrait;
 
-      (void) SetImageType(image,TrueColorMatteType,exception);
+      (void) SetImageType(image,TrueColorAlphaType,exception);
       (void) SyncImage(image,exception);
     }
 
@@ -11609,7 +11609,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
       image->depth = 16;
 
       if (image->alpha_trait != UndefinedPixelTrait)
-        (void) SetImageType(image,TrueColorMatteType,exception);
+        (void) SetImageType(image,TrueColorAlphaType,exception);
 
       else
         (void) SetImageType(image,TrueColorType,exception);
@@ -11624,7 +11624,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
       image->depth = 16;
       image->alpha_trait = BlendPixelTrait;
 
-      (void) SetImageType(image,TrueColorMatteType,exception);
+      (void) SetImageType(image,TrueColorAlphaType,exception);
       (void) SyncImage(image,exception);
     }
 
@@ -12152,8 +12152,8 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
   jpeg_image_info=(ImageInfo *) NULL;
 
   status=MagickTrue;
-  transparent=image_info->type==GrayscaleMatteType ||
-     image_info->type==TrueColorMatteType || image->alpha_trait != UndefinedPixelTrait;
+  transparent=image_info->type==GrayscaleAlphaType ||
+     image_info->type==TrueColorAlphaType || image->alpha_trait != UndefinedPixelTrait;
 
   jng_alpha_sample_depth = 0;
 
@@ -12209,7 +12209,7 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
   /* To do: check bit depth of PNG alpha channel */
 
   /* Check if image is grayscale. */
-  if (image_info->type != TrueColorMatteType && image_info->type !=
+  if (image_info->type != TrueColorAlphaType && image_info->type !=
     TrueColorType && IsImageGray(image,exception))
     jng_color_type-=2;
 
