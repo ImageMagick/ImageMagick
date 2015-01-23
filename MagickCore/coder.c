@@ -155,6 +155,7 @@ static const CoderMapInfo
     { "J2K", "JP2" },
     { "JPE", "JPEG" },
     { "JPG", "JPEG" },
+    { "JPS", "JPEG" },
     { "JPX", "JP2" },
     { "K", "RAW" },
     { "LOGO", "MAGICK" },
