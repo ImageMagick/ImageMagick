@@ -1577,7 +1577,7 @@ ModuleExport size_t RegisterJPEGImage(void)
   if (*version != '\0')
     entry->version=ConstantString(version);
   entry->mime_type=ConstantString("image/jpeg");
-  entry->module=ConstantString("JPEG Stereoscopic");
+  entry->module=ConstantString("JPEG");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("PJPEG");
 #if (JPEG_LIB_VERSION < 80) && !defined(LIBJPEG_TURBO_VERSION)
