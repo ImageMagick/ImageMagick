@@ -330,7 +330,9 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Determine if this a PDB image file.
   */
-  count=ReadBlob(image,32,(unsigned char *) pdb_info.name);
+  count=ReadBlob(image,sizeof(pdb_info.name),(unsigned char *) pdb_info.name);
+  if (count != sizeof(pdb_info.name))
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   pdb_info.attributes=(short) ReadBlobMSBShort(image);
   pdb_info.version=(short) ReadBlobMSBShort(image);
   pdb_info.create_time=ReadBlobMSBLong(image);
@@ -371,7 +373,9 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read image header.
   */
-  count=ReadBlob(image,32,(unsigned char *) pdb_image.name);
+  count=ReadBlob(image,sizeof(pdb_image.name),(unsigned char *) pdb_image.name);
+  if (count != sizeof(pdb_image.name))
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   pdb_image.version=ReadBlobByte(image);
   pdb_image.type=(unsigned char) ((int) ReadBlobByte(image));
   pdb_image.reserved_1=ReadBlobMSBLong(image);
@@ -759,8 +763,9 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image,
   } else {
     bits_per_pixel=4;
   }
-  (void) ResetMagickMemory(pdb_info.name,0,32);
-  (void) CopyMagickString(pdb_info.name,image_info->filename,32);
+  (void) ResetMagickMemory(&pdb_info.name,0,sizeof(pdb_info));
+  (void) CopyMagickString(pdb_info.name,image_info->filename,
+    sizeof(pdb_info.name));
   pdb_info.attributes=0;
   pdb_info.version=0;
   pdb_info.create_time=time(NULL);
@@ -775,7 +780,7 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image,
   pdb_info.next_record=0;
   comment=GetImageProperty(image,"comment",exception);
   pdb_info.number_records=(comment == (const char *) NULL ? 1 : 2);
-  (void) WriteBlob(image,32,(unsigned char *) pdb_info.name);
+  (void) WriteBlob(image,sizeof(pdb_info.name),(unsigned char *) pdb_info.name);
   (void) WriteBlobMSBShort(image,(unsigned short) pdb_info.attributes);
   (void) WriteBlobMSBShort(image,(unsigned short) pdb_info.version);
   (void) WriteBlobMSBLong(image,(unsigned int) pdb_info.create_time);
@@ -789,7 +794,7 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image,
   (void) WriteBlobMSBLong(image,(unsigned int) pdb_info.seed);
   (void) WriteBlobMSBLong(image,(unsigned int) pdb_info.next_record);
   (void) WriteBlobMSBShort(image,(unsigned short) pdb_info.number_records);
-  (void) CopyMagickString(pdb_image.name,pdb_info.name,32);
+  (void) CopyMagickString(pdb_image.name,pdb_info.name,sizeof(pdb_image.name));
   pdb_image.version=1;  /* RLE Compressed */
   switch (bits_per_pixel)
   {
@@ -921,7 +926,8 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image,
   /*
     Write the Image data.
   */
-  (void) WriteBlob(image,32,(unsigned char *) pdb_image.name);
+  (void) WriteBlob(image,sizeof(pdb_image.name),(unsigned char *)
+    pdb_image.name);
   (void) WriteBlobByte(image,(unsigned char) pdb_image.version);
   (void) WriteBlobByte(image,pdb_image.type);
   (void) WriteBlobMSBLong(image,(unsigned int) pdb_image.reserved_1);
