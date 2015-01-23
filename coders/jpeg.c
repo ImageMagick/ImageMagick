@@ -1564,6 +1564,21 @@ ModuleExport size_t RegisterJPEGImage(void)
   entry->mime_type=ConstantString("image/jpeg");
   entry->module=ConstantString("JPEG");
   (void) RegisterMagickInfo(entry);
+  entry=SetMagickInfo("JPS");
+#if (JPEG_LIB_VERSION < 80) && !defined(LIBJPEG_TURBO_VERSION)
+  entry->thread_support=NoThreadSupport;
+#endif
+#if defined(MAGICKCORE_JPEG_DELEGATE)
+  entry->decoder=(DecodeImageHandler *) ReadJPEGImage;
+  entry->encoder=(EncodeImageHandler *) WriteJPEGImage;
+#endif
+  entry->adjoin=MagickFalse;
+  entry->description=ConstantString(description);
+  if (*version != '\0')
+    entry->version=ConstantString(version);
+  entry->mime_type=ConstantString("image/jpeg");
+  entry->module=ConstantString("JPEG Stereoscopic");
+  (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("PJPEG");
 #if (JPEG_LIB_VERSION < 80) && !defined(LIBJPEG_TURBO_VERSION)
   entry->thread_support=NoThreadSupport;
@@ -1605,8 +1620,9 @@ ModuleExport size_t RegisterJPEGImage(void)
 ModuleExport void UnregisterJPEGImage(void)
 {
   (void) UnregisterMagickInfo("PJPG");
-  (void) UnregisterMagickInfo("JPEG");
+  (void) UnregisterMagickInfo("JPS");
   (void) UnregisterMagickInfo("JPG");
+  (void) UnregisterMagickInfo("JPEG");
   (void) UnregisterMagickInfo("JPE");
 }
 
@@ -2141,6 +2157,9 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
+  if ((LocaleCompare(image_info->magick,"JPS") == 0) &&
+      (image->next != (Image *) NULL))
+    image=AppendImages(image,MagickFalse,exception);
   /*
     Initialize JPEG parameters.
   */
