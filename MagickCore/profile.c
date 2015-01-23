@@ -776,11 +776,11 @@ static MagickBooleanType SetsRGBImageProfile(Image *image,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if (GetImageProfile(image,"icm") != (const StringInfo *) NULL)
+  if (GetImageProfile(image,"icc") != (const StringInfo *) NULL)
     return(MagickFalse);
   profile=AcquireStringInfo(sizeof(sRGBProfile));
   SetStringInfoDatum(profile,sRGBProfile);
-  status=SetImageProfile(image,"icm",profile,exception);
+  status=SetImageProfile(image,"icc",profile,exception);
   profile=DestroyStringInfo(profile);
   return(status);
 }
