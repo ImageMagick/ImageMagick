@@ -516,6 +516,10 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   dib_info.y_pixels=ReadBlobLSBLong(image);
   dib_info.number_colors=ReadBlobLSBLong(image);
   dib_info.colors_important=ReadBlobLSBLong(image);
+  if ((dib_info.bits_per_pixel != 1) && (dib_info.bits_per_pixel != 4) &&
+      (dib_info.bits_per_pixel != 8) && (dib_info.bits_per_pixel != 16) &&
+      (dib_info.bits_per_pixel != 24) && (dib_info.bits_per_pixel != 32))
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   if ((dib_info.compression == BI_BITFIELDS) &&
       ((dib_info.bits_per_pixel == 16) || (dib_info.bits_per_pixel == 32)))
     {
@@ -523,6 +527,8 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       dib_info.green_mask=ReadBlobLSBLong(image);
       dib_info.blue_mask=ReadBlobLSBLong(image);
     }
+  if (EOFBlob(image) != MagickFalse)
+    ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
   if (dib_info.width <= 0)
     ThrowReaderException(CorruptImageError,"NegativeOrZeroImageSize");
   if (dib_info.height == 0)
@@ -560,6 +566,8 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->rows=(size_t) MagickAbsoluteValue(dib_info.height);
   image->matte=dib_info.bits_per_pixel == 32 ? MagickTrue : MagickFalse;
   image->depth=8;
+  if ((dib_info.number_colors > 256) || (dib_info.colors_important > 256))
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   if ((dib_info.number_colors != 0) || (dib_info.bits_per_pixel < 16))
     {
       size_t
@@ -632,7 +640,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   if (dib_info.compression == BI_RLE4)
     dib_info.bits_per_pixel<<=1;
-  bytes_per_line=4*((image->columns*dib_info.bits_per_pixel+31)/32);
+  bytes_per_line=4*(image->columns*dib_info.bits_per_pixel+31)/32;
   length=bytes_per_line*image->rows;
   pixel_info=AcquireVirtualMemory((size_t) image->rows,MagickMax(
     bytes_per_line,image->columns+256UL)*sizeof(*pixels));

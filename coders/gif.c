@@ -1670,6 +1670,9 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image)
       }
     if (LocaleCompare(write_info->magick,"GIF87") != 0)
       {
+        const char
+          *value;
+
         /*
           Write graphics control extension.
         */
@@ -1683,14 +1686,13 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image)
         delay=(size_t) (100*image->delay/MagickMax((size_t)
           image->ticks_per_second,1));
         (void) WriteBlobLSBShort(image,(unsigned short) delay);
-        (void) WriteBlobByte(image,(unsigned char) (opacity >= 0 ? opacity : 0));
+        (void) WriteBlobByte(image,(unsigned char) (opacity >= 0 ? opacity :
+          0));
         (void) WriteBlobByte(image,(unsigned char) 0x00);
+        value=GetImageProperty(image,"comment");
         if ((LocaleCompare(write_info->magick,"GIF87") != 0) &&
-            (GetImageProperty(image,"comment") != (const char *) NULL))
+            (value != (const char *) NULL))
           {
-            const char
-              *value;
-
             register const char
               *p;
 
@@ -1702,7 +1704,6 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image)
             */
             (void) WriteBlobByte(image,(unsigned char) 0x21);
             (void) WriteBlobByte(image,(unsigned char) 0xfe);
-            value=GetImageProperty(image,"comment");
             for (p=value; *p != '\0'; )
             {
               count=MagickMin(strlen(p),255);
