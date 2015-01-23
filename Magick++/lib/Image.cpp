@@ -912,10 +912,9 @@ void Magick::Image::highlightColor(const Color color_)
   artifact("highlight-color",value);
 }
 
-// ICC ICM color profile (BLOB)
 void Magick::Image::iccColorProfile(const Magick::Blob &colorProfile_)
 {
-  profile("icm",colorProfile_);
+  profile("icc",colorProfile_);
 }
 
 Magick::Blob Magick::Image::iccColorProfile(void) const
