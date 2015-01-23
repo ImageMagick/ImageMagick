@@ -2115,13 +2115,13 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
-  if (status == MagickFalse)
-    return(status);
   exception=(&image->exception);
   if ((LocaleCompare(image_info->magick,"JPS") == 0) &&
       (image->next != (Image *) NULL))
     image=AppendImages(image,MagickFalse,exception);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
+  if (status == MagickFalse)
+    return(status);
   /*
     Initialize JPEG parameters.
   */
