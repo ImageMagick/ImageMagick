@@ -262,8 +262,8 @@ MagickExport MagickBooleanType BlobToFile(char *filename,const void *blob,
     }
   for (i=0; i < length; i+=count)
   {
-    count=write(file,(const char *) blob+i,(size_t) MagickMin(length-i,
-      (MagickSizeType) SSIZE_MAX));
+    count=write(file,(const char *) blob+i,MagickMin(length-i,(size_t)
+      SSIZE_MAX));
     if (count <= 0)
       {
         count=0;
@@ -794,7 +794,7 @@ static inline const unsigned char *ReadBlobStream(Image *image,
       return(data);
     }
   data=image->blob->data+image->blob->offset;
-  *count=(ssize_t) MagickMin(length,(MagickSizeType) (image->blob->length-
+  *count=(ssize_t) MagickMin(length,(size_t) (image->blob->length-
     image->blob->offset));
   image->blob->offset+=(*count);
   if (*count != (ssize_t) length)
@@ -1089,8 +1089,7 @@ MagickExport unsigned char *FileToBlob(const char *filename,const size_t extent,
       (void) lseek(file,0,SEEK_SET);
       for (i=0; i < *length; i+=count)
       {
-        count=read(file,blob+i,(size_t) MagickMin(*length-i,(MagickSizeType)
-          SSIZE_MAX));
+        count=read(file,blob+i,MagickMin(*length-i,(size_t) SSIZE_MAX));
         if (count <= 0)
           {
             count=0;
@@ -2858,8 +2857,8 @@ MagickExport ssize_t ReadBlob(Image *image,const size_t length,
 
       for (i=0; i < (ssize_t) length; i+=count)
       {
-        count=read(fileno(image->blob->file_info.file),q+i,(size_t)
-          MagickMin(length-i,(MagickSizeType) SSIZE_MAX));
+        count=read(fileno(image->blob->file_info.file),q+i,MagickMin(length-i,
+          (size_t) SSIZE_MAX));
         if (count <= 0)
           {
             count=0;
@@ -2954,7 +2953,7 @@ MagickExport ssize_t ReadBlob(Image *image,const size_t length,
           break;
         }
       p=image->blob->data+image->blob->offset;
-      count=(ssize_t) MagickMin(length,(MagickSizeType) (image->blob->length-
+      count=(ssize_t) MagickMin(length,(size_t) (image->blob->length-
         image->blob->offset));
       image->blob->offset+=count;
       if (count != (ssize_t) length)
@@ -4634,4 +4633,46 @@ MagickExport ssize_t WriteBlobString(Image *image,const char *string)
   assert(image->signature == MagickSignature);
   assert(string != (const char *) NULL);
   return(WriteBlobStream(image,strlen(string),(const unsigned char *) string));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++  Z e r o C o p y R e a d B l o b                                            %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ZeroCopyReadBlob() reads data from the blob or image file and returns it.  It
+%  returns a pointer to the data buffer you supply or to the image memory
+%  buffer if its supported (zero-copy). If length is zero, ZeroCopyReadBlob()
+%  returns a count of zero and has no other results. If length is greater than
+%  SSIZE_MAX, the result is unspecified.
+%
+%  The format of the ZeroReadBlobCopy method is:
+%
+%      void *ZeroCopyReadBlob(Image *image,const size_t length,ssize_t *count,
+%        void *data)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o length:  Specifies an integer representing the number of bytes to read
+%      from the file.
+%
+%    o length: returns the number of bytes read.
+%
+%    o data:  Specifies an area to place the information requested from the
+%      file.
+%
+*/
+MagickExport void *ZeroCopyReadBlob(Image *image,const size_t length,void *data,
+  ssize_t *count)
+{
+  *count=ReadBlob(image,length,data);
+  return(data);
 }
