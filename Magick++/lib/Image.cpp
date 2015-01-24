@@ -3045,7 +3045,7 @@ void Magick::Image::frame(const Geometry &geometry_)
 }
 
 void Magick::Image::frame(const size_t width_,const size_t height_,
-  const ssize_t outerBevel_,const ssize_t innerBevel_)
+  const ssize_t innerBevel_,const ssize_t outerBevel_)
 {
   FrameInfo
     info;
