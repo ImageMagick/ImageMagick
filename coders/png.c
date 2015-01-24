@@ -5153,7 +5153,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (length != 0)
               repeat=p[0];
 
-            if (repeat == 3)
+            if (repeat == 3 && length > 8)
               {
                 final_delay=(png_uint_32) mng_get_long(&p[2]);
                 mng_iterations=(png_uint_32) mng_get_long(&p[6]);
@@ -5182,66 +5182,72 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 CoderError,"DEFI chunk found in MNG-VLC datastream","`%s'",
                 image->filename);
 
-            object_id=(p[0] << 8) | p[1];
-
-            if (mng_type == 2 && object_id != 0)
-              (void) ThrowMagickException(&image->exception,GetMagickModule(),
-                CoderError,"Nonzero object_id in MNG-LC datastream","`%s'",
-                image->filename);
-
-            if (object_id > MNG_MAX_OBJECTS)
+            if (length > 1)
               {
-                /*
-                  Instead of using a warning we should allocate a larger
-                  MngInfo structure and continue.
-                */
-                (void) ThrowMagickException(&image->exception,GetMagickModule(),
-                  CoderError,"object id too large","`%s'",image->filename);
-                object_id=MNG_MAX_OBJECTS;
-              }
+                object_id=(p[0] << 8) | p[1];
 
-            if (mng_info->exists[object_id])
-              if (mng_info->frozen[object_id])
-                {
-                  chunk=(unsigned char *) RelinquishMagickMemory(chunk);
+                if (mng_type == 2 && object_id != 0)
                   (void) ThrowMagickException(&image->exception,
-                    GetMagickModule(),CoderError,
-                    "DEFI cannot redefine a frozen MNG object","`%s'",
-                    image->filename);
-                  continue;
-                }
+                     GetMagickModule(),
+                     CoderError,"Nonzero object_id in MNG-LC datastream",
+                     "`%s'", image->filename);
 
-            mng_info->exists[object_id]=MagickTrue;
-
-            if (length > 2)
-              mng_info->invisible[object_id]=p[2];
-
-            /*
-              Extract object offset info.
-            */
-            if (length > 11)
-              {
-                mng_info->x_off[object_id]=(ssize_t) ((p[4] << 24) |
-                    (p[5] << 16) | (p[6] << 8) | p[7]);
-
-                mng_info->y_off[object_id]=(ssize_t) ((p[8] << 24) |
-                    (p[9] << 16) | (p[10] << 8) | p[11]);
-
-                if (logging != MagickFalse)
+                if (object_id > MNG_MAX_OBJECTS)
                   {
-                    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                      "  x_off[%d]: %.20g,  y_off[%d]: %.20g",
-                      object_id,(double) mng_info->x_off[object_id],
-                      object_id,(double) mng_info->y_off[object_id]);
+                    /*
+                      Instead of using a warning we should allocate a larger
+                      MngInfo structure and continue.
+                    */
+                    (void) ThrowMagickException(&image->exception,
+                        GetMagickModule(), CoderError,
+                        "object id too large","`%s'",image->filename);
+                        object_id=MNG_MAX_OBJECTS;
                   }
-              }
 
-            /*
-              Extract object clipping info.
-            */
-            if (length > 27)
-              mng_info->object_clip[object_id]=mng_read_box(mng_info->frame,0,
-                &p[12]);
+                if (mng_info->exists[object_id])
+                  if (mng_info->frozen[object_id])
+                    {
+                      chunk=(unsigned char *) RelinquishMagickMemory(chunk);
+                      (void) ThrowMagickException(&image->exception,
+                        GetMagickModule(),CoderError,
+                        "DEFI cannot redefine a frozen MNG object","`%s'",
+                        image->filename);
+                      continue;
+                    }
+
+                mng_info->exists[object_id]=MagickTrue;
+
+                if (length > 2)
+                  mng_info->invisible[object_id]=p[2];
+
+                /*
+                  Extract object offset info.
+                */
+                if (length > 11)
+                  {
+                    mng_info->x_off[object_id]=(ssize_t) ((p[4] << 24) |
+                        (p[5] << 16) | (p[6] << 8) | p[7]);
+
+                    mng_info->y_off[object_id]=(ssize_t) ((p[8] << 24) |
+                        (p[9] << 16) | (p[10] << 8) | p[11]);
+
+                    if (logging != MagickFalse)
+                      {
+                        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                          "  x_off[%d]: %.20g,  y_off[%d]: %.20g",
+                          object_id,(double) mng_info->x_off[object_id],
+                          object_id,(double) mng_info->y_off[object_id]);
+                      }
+                  }
+
+                /*
+                  Extract object clipping info.
+                */
+            
+                if (length > 27)
+                  mng_info->object_clip[object_id]=
+                    mng_read_box(mng_info->frame,0, &p[12]);
+            }
 
             chunk=(unsigned char *) RelinquishMagickMemory(chunk);
             continue;
@@ -5444,7 +5450,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             frame_timeout=default_frame_timeout;
             fb=default_fb;
 
-            if (length != 0)
+            if (length > 0)
               if (p[0])
                 mng_info->framing_mode=p[0];
 
@@ -5475,10 +5481,10 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     change_clipping=(*p++);
                     p++; /* change_sync */
 
-                    if (change_delay)
+                    if (change_delay && (p-chunk) < (ssize_t) (length-4))
                       {
-                        frame_delay=1UL*image->ticks_per_second*
-                          mng_get_long(p);
+                          frame_delay=1UL*image->ticks_per_second*
+                            mng_get_long(p);
 
                         if (mng_info->ticks_per_second != 0)
                           frame_delay/=mng_info->ticks_per_second;
@@ -5496,7 +5502,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                             "    Framing_delay=%.20g",(double) frame_delay);
                       }
 
-                    if (change_timeout)
+                    if (change_timeout && (p-chunk) < (ssize_t) (length-4))
                       {
                         frame_timeout=1UL*image->ticks_per_second*
                           mng_get_long(p);
@@ -5517,7 +5523,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                             "    Framing_timeout=%.20g",(double) frame_timeout);
                       }
 
-                    if (change_clipping)
+                    if (change_clipping && (p-chunk) < (ssize_t) (length-17))
                       {
                         fb=mng_read_box(previous_fb,(char) p[0],&p[1]);
                         p+=17;
@@ -5611,23 +5617,29 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Read CLIP.
             */
-            first_object=(p[0] << 8) | p[1];
-            last_object=(p[2] << 8) | p[3];
+            if (length > 3)
+              {
+                first_object=(p[0] << 8) | p[1];
+                last_object=(p[2] << 8) | p[3];
+                p+=4;
 
-            for (i=(int) first_object; i <= (int) last_object; i++)
-            {
-              if (mng_info->exists[i] && !mng_info->frozen[i])
+                for (i=(int) first_object; i <= (int) last_object; i++)
                 {
-                  MngBox
-                    box;
+                  if (mng_info->exists[i] && !mng_info->frozen[i])
+                    {
+                      MngBox
+                        box;
 
-                  box=mng_info->object_clip[i];
-                  mng_info->object_clip[i]=mng_read_box(box,(char) p[4],&p[5]);
+                      box=mng_info->object_clip[i];
+                      if ((p-chunk) < (ssize_t) (length-17))
+                        mng_info->object_clip[i]=
+                           mng_read_box(box,(char) p[0],&p[1]);
+                    }
                 }
-            }
 
             chunk=(unsigned char *) RelinquishMagickMemory(chunk);
             continue;
+          }
           }
         if (memcmp(type,mng_SAVE,4) == 0)
           {
@@ -5683,24 +5695,30 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
             /* read MOVE */
 
-            first_object=(p[0] << 8) | p[1];
-            last_object=(p[2] << 8) | p[3];
-            for (i=(ssize_t) first_object; i <= (ssize_t) last_object; i++)
+            if (length > 3)
             {
-              if (mng_info->exists[i] && !mng_info->frozen[i])
-                {
-                  MngPair
-                    new_pair;
+              first_object=(p[0] << 8) | p[1];
+              last_object=(p[2] << 8) | p[3];
+              p+=4;
 
-                  MngPair
-                    old_pair;
+              for (i=(ssize_t) first_object; i <= (ssize_t) last_object; i++)
+              {
+                if (mng_info->exists[i] && !mng_info->frozen[i] &&
+                    (p-chunk) < (ssize_t) (length-8))
+                  {
+                    MngPair
+                      new_pair;
 
-                  old_pair.a=mng_info->x_off[i];
-                  old_pair.b=mng_info->y_off[i];
-                  new_pair=mng_read_pair(old_pair,(int) p[4],&p[5]);
-                  mng_info->x_off[i]=new_pair.a;
-                  mng_info->y_off[i]=new_pair.b;
-                }
+                    MngPair
+                      old_pair;
+
+                    old_pair.a=mng_info->x_off[i];
+                    old_pair.b=mng_info->y_off[i];
+                    new_pair=mng_read_pair(old_pair,(int) p[0],&p[1]);
+                    mng_info->x_off[i]=new_pair.a;
+                    mng_info->y_off[i]=new_pair.b;
+                  }
+              }
             }
 
             chunk=(unsigned char *) RelinquishMagickMemory(chunk);
@@ -5710,27 +5728,30 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (memcmp(type,mng_LOOP,4) == 0)
           {
             ssize_t loop_iters=1;
-            loop_level=chunk[0];
-            mng_info->loop_active[loop_level]=1;  /* mark loop active */
-
-            /* Record starting point.  */
-            loop_iters=mng_get_long(&chunk[1]);
-
-            if (logging != MagickFalse)
-              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                "  LOOP level %.20g has %.20g iterations ",(double) loop_level,
-                (double) loop_iters);
-
-            if (loop_iters == 0)
-              skipping_loop=loop_level;
-
-            else
+            if (length > 0) /* To do: check spec, if empty LOOP is allowed */
               {
-                mng_info->loop_jump[loop_level]=TellBlob(image);
-                mng_info->loop_count[loop_level]=loop_iters;
-              }
+                loop_level=chunk[0];
+                mng_info->loop_active[loop_level]=1;  /* mark loop active */
 
-            mng_info->loop_iteration[loop_level]=0;
+                /* Record starting point.  */
+                loop_iters=mng_get_long(&chunk[1]);
+
+                if (logging != MagickFalse)
+                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                    "  LOOP level %.20g has %.20g iterations ",
+                    (double) loop_level, (double) loop_iters);
+
+                if (loop_iters == 0)
+                  skipping_loop=loop_level;
+
+                else
+                  {
+                    mng_info->loop_jump[loop_level]=TellBlob(image);
+                    mng_info->loop_count[loop_level]=loop_iters;
+                  }
+
+                mng_info->loop_iteration[loop_level]=0;
+              }
             chunk=(unsigned char *) RelinquishMagickMemory(chunk);
             continue;
           }
@@ -6006,33 +6027,36 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
             mng_info->basi_warning++;
 #ifdef MNG_BASI_SUPPORTED
-            basi_width=(size_t) ((p[0] << 24) | (p[1] << 16) |
-               (p[2] << 8) | p[3]);
-            basi_height=(size_t) ((p[4] << 24) | (p[5] << 16) |
-               (p[6] << 8) | p[7]);
-            basi_color_type=p[8];
-            basi_compression_method=p[9];
-            basi_filter_type=p[10];
-            basi_interlace_method=p[11];
             if (length > 11)
+              {
+                basi_width=(size_t) ((p[0] << 24) | (p[1] << 16) |
+                   (p[2] << 8) | p[3]);
+                basi_height=(size_t) ((p[4] << 24) | (p[5] << 16) |
+                   (p[6] << 8) | p[7]);
+                basi_color_type=p[8];
+                basi_compression_method=p[9];
+                basi_filter_type=p[10];
+                basi_interlace_method=p[11];
+              }
+            if (length > 13)
               basi_red=(p[12] << 8) & p[13];
 
             else
               basi_red=0;
 
-            if (length > 13)
+            if (length > 15)
               basi_green=(p[14] << 8) & p[15];
 
             else
               basi_green=0;
 
-            if (length > 15)
+            if (length > 17)
               basi_blue=(p[16] << 8) & p[17];
 
             else
               basi_blue=0;
 
-            if (length > 17)
+            if (length > 19)
               basi_alpha=(p[18] << 8) & p[19];
 
             else
@@ -6043,7 +6067,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   basi_alpha=255;
               }
 
-            if (length > 19)
+            if (length > 20)
               basi_viewable=p[20];
 
             else
