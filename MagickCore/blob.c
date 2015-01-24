@@ -140,7 +140,7 @@ struct _BlobInfo
   StreamHandler
     stream;
 
-  unsigned char
+  void
     *data;
 
   MagickBooleanType
@@ -261,8 +261,8 @@ MagickExport MagickBooleanType BlobToFile(char *filename,const void *blob,
     }
   for (i=0; i < length; i+=count)
   {
-    count=write(file,(const char *) blob+i,(size_t) MagickMin(length-i,
-      (MagickSizeType) SSIZE_MAX));
+    count=write(file,(const char *) blob+i,MagickMin(length-i,(size_t)
+      SSIZE_MAX));
     if (count <= 0)
       {
         count=0;
@@ -665,16 +665,16 @@ MagickExport void DestroyBlob(Image *image)
 %
 %  The format of the DetachBlob method is:
 %
-%      unsigned char *DetachBlob(BlobInfo *blob_info)
+%      void *DetachBlob(BlobInfo *blob_info)
 %
 %  A description of each parameter follows:
 %
 %    o blob_info: Specifies a pointer to a BlobInfo structure.
 %
 */
-MagickExport unsigned char *DetachBlob(BlobInfo *blob_info)
+MagickExport void *DetachBlob(BlobInfo *blob_info)
 {
-  unsigned char
+  void
     *data;
 
   assert(blob_info != (BlobInfo *) NULL);
@@ -683,7 +683,7 @@ MagickExport unsigned char *DetachBlob(BlobInfo *blob_info)
   if (blob_info->mapped != MagickFalse)
     {
       (void) UnmapBlob(blob_info->data,blob_info->length);
-      blob_info->data=(unsigned char *) NULL;
+      blob_info->data=(void *) NULL;
       RelinquishMagickResource(MapResource,blob_info->length);
     }
   blob_info->mapped=MagickFalse;
@@ -793,8 +793,8 @@ static inline const unsigned char *ReadBlobStream(Image *image,
       return(data);
     }
   data=image->blob->data+image->blob->offset;
-  *count=(ssize_t) MagickMin(length,(MagickSizeType) (image->blob->length-
-    image->blob->offset));
+  *count=(ssize_t) MagickMin((MagickOffsetType) length,image->blob->length-
+    image->blob->offset);
   image->blob->offset+=(*count);
   if (*count != (ssize_t) length)
     image->blob->eof=MagickTrue;
@@ -958,7 +958,7 @@ MagickExport int EOFBlob(const Image *image)
 %
 %  The format of the FileToBlob method is:
 %
-%      unsigned char *FileToBlob(const char *filename,const size_t extent,
+%      void *FileToBlob(const char *filename,const size_t extent,
 %        size_t *length,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -975,7 +975,7 @@ MagickExport int EOFBlob(const Image *image)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport unsigned char *FileToBlob(const char *filename,const size_t extent,
+MagickExport void *FileToBlob(const char *filename,const size_t extent,
   size_t *length,ExceptionInfo *exception)
 {
   int
@@ -1006,7 +1006,7 @@ MagickExport unsigned char *FileToBlob(const char *filename,const size_t extent,
   if (file == -1)
     {
       ThrowFileException(exception,BlobError,"UnableToOpenFile",filename);
-      return((unsigned char *) NULL);
+      return(NULL);
     }
   offset=(MagickOffsetType) lseek(file,0,SEEK_END);
   count=0;
@@ -1053,13 +1053,13 @@ MagickExport unsigned char *FileToBlob(const char *filename,const size_t extent,
         {
           (void) ThrowMagickException(exception,GetMagickModule(),
             ResourceLimitError,"MemoryAllocationFailed","`%s'",filename);
-          return((unsigned char *) NULL);
+          return(NULL);
         }
       if (file == -1)
         {
           blob=(unsigned char *) RelinquishMagickMemory(blob);
           ThrowFileException(exception,BlobError,"UnableToReadBlob",filename);
-          return((unsigned char *) NULL);
+          return(NULL);
         }
       *length=(size_t) MagickMin(i+count,extent);
       blob[*length]='\0';
@@ -1075,7 +1075,7 @@ MagickExport unsigned char *FileToBlob(const char *filename,const size_t extent,
       file=close(file);
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",filename);
-      return((unsigned char *) NULL);
+      return(NULL);
     }
   map=MapBlob(file,ReadMode,0,*length);
   if (map != (unsigned char *) NULL)
@@ -1088,7 +1088,7 @@ MagickExport unsigned char *FileToBlob(const char *filename,const size_t extent,
       (void) lseek(file,0,SEEK_SET);
       for (i=0; i < *length; i+=count)
       {
-        count=read(file,blob+i,(size_t) MagickMin(*length-i,(MagickSizeType)
+        count=read(file,blob+i,(size_t) MagickMin(*length-i,(size_t)
           SSIZE_MAX));
         if (count <= 0)
           {
@@ -1102,7 +1102,7 @@ MagickExport unsigned char *FileToBlob(const char *filename,const size_t extent,
           file=close(file)-1;
           blob=(unsigned char *) RelinquishMagickMemory(blob);
           ThrowFileException(exception,BlobError,"UnableToReadBlob",filename);
-          return((unsigned char *) NULL);
+          return(NULL);
         }
     }
   blob[*length]='\0';
@@ -1460,14 +1460,14 @@ MagickExport MagickSizeType GetBlobSize(const Image *image)
 %
 %  The format of the GetBlobStreamData method is:
 %
-%      unsigned char *GetBlobStreamData(const Image *image)
+%      void *GetBlobStreamData(const Image *image)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
 */
-MagickExport unsigned char *GetBlobStreamData(const Image *image)
+MagickExport void *GetBlobStreamData(const Image *image)
 {
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -1524,7 +1524,7 @@ MagickPrivate StreamHandler GetBlobStreamHandler(const Image *image)
 %
 %  The format of the ImageToBlob method is:
 %
-%      unsigned char *ImageToBlob(const ImageInfo *image_info,Image *image,
+%      void *ImageToBlob(const ImageInfo *image_info,Image *image,
 %        size_t *length,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -1538,7 +1538,7 @@ MagickPrivate StreamHandler GetBlobStreamHandler(const Image *image)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport unsigned char *ImageToBlob(const ImageInfo *image_info,
+MagickExport void *ImageToBlob(const ImageInfo *image_info,
   Image *image,size_t *length,ExceptionInfo *exception)
 {
   const MagickInfo
@@ -1584,9 +1584,9 @@ MagickExport unsigned char *ImageToBlob(const ImageInfo *image_info,
         Native blob support for this image format.
       */
       blob_info->length=0;
-      blob_info->blob=(void *) AcquireQuantumMemory(MagickMaxBlobExtent,
+      blob_info->blob=AcquireQuantumMemory(MagickMaxBlobExtent,
         sizeof(unsigned char));
-      if (blob_info->blob == (void *) NULL)
+      if (blob_info->blob == NULL)
         (void) ThrowMagickException(exception,GetMagickModule(),
           ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
       else
@@ -1777,7 +1777,7 @@ MagickExport MagickBooleanType ImageToFile(Image *image,char *filename,
 %
 %  The format of the ImagesToBlob method is:
 %
-%      unsigned char *ImagesToBlob(const ImageInfo *image_info,Image *images,
+%      void *ImagesToBlob(const ImageInfo *image_info,Image *images,
 %        size_t *length,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -1791,8 +1791,8 @@ MagickExport MagickBooleanType ImageToFile(Image *image,char *filename,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport unsigned char *ImagesToBlob(const ImageInfo *image_info,
-  Image *images,size_t *length,ExceptionInfo *exception)
+MagickExport void *ImagesToBlob(const ImageInfo *image_info,Image *images,
+  size_t *length,ExceptionInfo *exception)
 {
   const MagickInfo
     *magick_info;
@@ -2182,8 +2182,8 @@ MagickPrivate MagickBooleanType IsBlobTemporary(const Image *image)
 %
 %  The format of the MapBlob method is:
 %
-%      unsigned char *MapBlob(int file,const MapMode mode,
-%        const MagickOffsetType offset,const size_t length)
+%      void *MapBlob(int file,const MapMode mode,const MagickOffsetType offset,
+%        const size_t length)
 %
 %  A description of each parameter follows:
 %
@@ -2196,7 +2196,7 @@ MagickPrivate MagickBooleanType IsBlobTemporary(const Image *image)
 %    o length: the length of the mapping is returned in this pointer.
 %
 */
-MagickExport unsigned char *MapBlob(int file,const MapMode mode,
+MagickExport void *MapBlob(int file,const MapMode mode,
   const MagickOffsetType offset,const size_t length)
 {
 #if defined(MAGICKCORE_HAVE_MMAP)
@@ -2204,7 +2204,7 @@ MagickExport unsigned char *MapBlob(int file,const MapMode mode,
     flags,
     protection;
 
-  unsigned char
+  void
     *map;
 
   /*
@@ -2215,7 +2215,7 @@ MagickExport unsigned char *MapBlob(int file,const MapMode mode,
 #if defined(MAP_ANONYMOUS)
     flags|=MAP_ANONYMOUS;
 #else
-    return((unsigned char *) NULL);
+    return(NULL);
 #endif
   switch (mode)
   {
@@ -2240,24 +2240,22 @@ MagickExport unsigned char *MapBlob(int file,const MapMode mode,
     }
   }
 #if !defined(MAGICKCORE_HAVE_HUGEPAGES) || !defined(MAP_HUGETLB)
-  map=(unsigned char *) mmap((char *) NULL,length,protection,flags,file,
-    (off_t) offset);
+  map=mmap((char *) NULL,length,protection,flags,file,(off_t) offset);
 #else
-  map=(unsigned char *) mmap((char *) NULL,length,protection,flags |
-    MAP_HUGETLB,file,(off_t) offset);
-  if (map == (unsigned char *) MAP_FAILED)
-    map=(unsigned char *) mmap((char *) NULL,length,protection,flags,file,
-      (off_t) offset);
+  map=mmap((char *) NULL,length,protection,flags | MAP_HUGETLB,file,(off_t)
+    offset);
+  if (map == MAP_FAILED)
+    map=mmap((char *) NULL,length,protection,flags,file,(off_t) offset);
 #endif
-  if (map == (unsigned char *) MAP_FAILED)
-    return((unsigned char *) NULL);
+  if (map == MAP_FAILED)
+    return(NULL);
   return(map);
 #else
   (void) file;
   (void) mode;
   (void) offset;
   (void) length;
-  return((unsigned char *) NULL);
+  return(NULL);
 #endif
 }
 
@@ -2803,7 +2801,7 @@ MagickExport Image *PingBlob(const ImageInfo *image_info,const void *blob,
 %
 %  The format of the ReadBlob method is:
 %
-%      ssize_t ReadBlob(Image *image,const size_t length,unsigned char *data)
+%      ssize_t ReadBlob(Image *image,const size_t length,void *data)
 %
 %  A description of each parameter follows:
 %
@@ -2816,8 +2814,7 @@ MagickExport Image *PingBlob(const ImageInfo *image_info,const void *blob,
 %      file.
 %
 */
-MagickExport ssize_t ReadBlob(Image *image,const size_t length,
-  unsigned char *data)
+MagickExport ssize_t ReadBlob(Image *image,const size_t length,void *data)
 {
   int
     c;
@@ -2848,8 +2845,8 @@ MagickExport ssize_t ReadBlob(Image *image,const size_t length,
 
       for (i=0; i < (ssize_t) length; i+=count)
       {
-        count=read(fileno(image->blob->file_info.file),q+i,(size_t)
-          MagickMin(length-i,(MagickSizeType) SSIZE_MAX));
+        count=read(fileno(image->blob->file_info.file),q+i,MagickMin(length-i,
+          (size_t) SSIZE_MAX));
         if (count <= 0)
           {
             count=0;
@@ -2944,8 +2941,8 @@ MagickExport ssize_t ReadBlob(Image *image,const size_t length,
           break;
         }
       p=image->blob->data+image->blob->offset;
-      count=(ssize_t) MagickMin(length,(MagickSizeType) (image->blob->length-
-        image->blob->offset));
+      count=(ssize_t) MagickMin((MagickOffsetType) length,image->blob->length-
+        image->blob->offset);
       image->blob->offset+=count;
       if (count != (ssize_t) length)
         image->blob->eof=MagickTrue;
@@ -3709,10 +3706,10 @@ MagickExport MagickOffsetType SeekBlob(Image *image,
         break;
       image->blob->extent=(size_t) (image->blob->offset+image->blob->quantum);
       image->blob->quantum<<=1;
-      image->blob->data=(unsigned char *) ResizeQuantumMemory(image->blob->data,
+      image->blob->data=ResizeQuantumMemory(image->blob->data,
         image->blob->extent+1,sizeof(*image->blob->data));
       (void) SyncBlob(image);
-      if (image->blob->data == (unsigned char *) NULL)
+      if (image->blob->data == NULL)
         {
           (void) DetachBlob(image->blob);
           return(-1);
@@ -4631,4 +4628,46 @@ MagickExport ssize_t WriteBlobString(Image *image,const char *string)
   assert(image->signature == MagickSignature);
   assert(string != (const char *) NULL);
   return(WriteBlobStream(image,strlen(string),(const unsigned char *) string));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++  Z e r o C o p y R e a d B l o b                                            %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ZeroCopyReadBlob() reads data from the blob or image file and returns it.  It
+%  returns a pointer to the data buffer you supply or to the image memory
+%  buffer if its supported (zero-copy). If length is zero, ZeroCopyReadBlob()
+%  returns a count of zero and has no other results. If length is greater than
+%  SSIZE_MAX, the result is unspecified.
+%
+%  The format of the ZeroReadBlobCopy method is:
+%
+%      void *ZeroCopyReadBlob(Image *image,const size_t length,ssize_t *count,
+%        void *data)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o length:  Specifies an integer representing the number of bytes to read
+%      from the file.
+%
+%    o length: returns the number of bytes read.
+%
+%    o data:  Specifies an area to place the information requested from the
+%      file.
+%
+*/
+MagickExport void *ZeroCopyReadBlob(Image *image,const size_t length,void *data,
+  ssize_t *count)
+{
+  *count=ReadBlob(image,length,data);
+  return(data);
 }
