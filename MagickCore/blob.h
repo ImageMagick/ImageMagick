@@ -93,7 +93,7 @@ extern MagickExport MagickSizeType
   ReadBlobMSBLongLong(Image *);
 
 extern MagickExport ssize_t
-  ReadBlob(Image *,const size_t,unsigned char *),
+  ReadBlob(Image *,const size_t,void *),
   WriteBlob(Image *,const size_t,const unsigned char *),
   WriteBlobByte(Image *,const unsigned char),
   WriteBlobFloat(Image *,const float),
@@ -105,14 +105,6 @@ extern MagickExport ssize_t
   WriteBlobMSBLongLong(Image *,const MagickSizeType),
   WriteBlobMSBShort(Image *,const unsigned short),
   WriteBlobString(Image *,const char *);
-
-extern MagickExport unsigned char
-  *DetachBlob(BlobInfo *),
-  *FileToBlob(const char *,const size_t,size_t *,ExceptionInfo *),
-  *GetBlobStreamData(const Image *),
-  *ImageToBlob(const ImageInfo *,Image *,size_t *,ExceptionInfo *),
-  *ImagesToBlob(const ImageInfo *,Image *,size_t *,ExceptionInfo *),
-  *MapBlob(int,const MapMode,const MagickOffsetType,const size_t);
 
 extern MagickExport unsigned int
   ReadBlobLong(Image *),
@@ -127,9 +119,16 @@ extern MagickExport unsigned short
 extern MagickExport void
   AttachBlob(BlobInfo *,const void *,const size_t),
   DestroyBlob(Image *),
+  *DetachBlob(BlobInfo *),
   DuplicateBlob(Image *,const Image *),
+  *GetBlobStreamData(const Image *),
+  *FileToBlob(const char *,const size_t,size_t *,ExceptionInfo *),
+  *ImageToBlob(const ImageInfo *,Image *,size_t *,ExceptionInfo *),
+  *ImagesToBlob(const ImageInfo *,Image *,size_t *,ExceptionInfo *),
+  *MapBlob(int,const MapMode,const MagickOffsetType,const size_t),
   MSBOrderLong(unsigned char *,const size_t),
-  MSBOrderShort(unsigned char *,const size_t);
+  MSBOrderShort(unsigned char *,const size_t),
+  *ZeroCopyReadBlob(Image *,const size_t,void *,ssize_t *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
