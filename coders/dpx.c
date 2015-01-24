@@ -1229,6 +1229,9 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       MagickTrue : MagickFalse);
     for (y=0; y < (ssize_t) image->rows; y++)
     {
+      const void
+        *pixels;
+
       MagickBooleanType
         sync;
 
@@ -1242,29 +1245,24 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         count,
         offset;
 
-      unsigned char
-        *pixels;
-
       if (status == MagickFalse)
         continue;
-      pixels=GetQuantumPixels(quantum_info);
-      {
-        count=ReadBlob(image,extent,pixels);
-        if ((image->progress_monitor != (MagickProgressMonitor) NULL) &&
-            (image->previous == (Image *) NULL))
-          {
-            MagickBooleanType
-              proceed;
-
-            proceed=SetImageProgress(image,LoadImageTag,(MagickOffsetType) row,
-              image->rows);
-            if (proceed == MagickFalse)
-              status=MagickFalse;
-          }
-        offset=row++;
-      }
+      pixels=ReadBlobStream(image,extent,GetQuantumPixels(quantum_info),
+        &count);
       if (count != (ssize_t) extent)
         status=MagickFalse;
+      if ((image->progress_monitor != (MagickProgressMonitor) NULL) &&
+          (image->previous == (Image *) NULL))
+        {
+          MagickBooleanType
+            proceed;
+
+          proceed=SetImageProgress(image,LoadImageTag,(MagickOffsetType) row,
+            image->rows);
+          if (proceed == MagickFalse)
+            status=MagickFalse;
+        }
+      offset=row++;
       q=QueueAuthenticPixels(image,0,offset,image->columns,1,exception);
       if (q == (PixelPacket *) NULL)
         {

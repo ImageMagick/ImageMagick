@@ -68,6 +68,9 @@ extern MagickExport char
 extern MagickExport const struct stat
   *GetBlobProperties(const Image *);
 
+extern MagickExport const void
+  *ReadBlobStream(Image *,const size_t,void *,ssize_t *);
+
 extern MagickExport double
   ReadBlobDouble(Image *);
 
@@ -125,8 +128,7 @@ extern MagickExport void
   AttachBlob(BlobInfo *,const void *,const size_t),
   GetBlobInfo(BlobInfo *),
   MSBOrderLong(unsigned char *,const size_t),
-  MSBOrderShort(unsigned char *,const size_t),
-  *ZeroCopyReadBlob(Image *,const size_t,void *,ssize_t *);
+  MSBOrderShort(unsigned char *,const size_t);
 
 extern MagickPrivate void
   DisassociateBlob(Image *);
