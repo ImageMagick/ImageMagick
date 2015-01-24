@@ -28,9 +28,10 @@ extern "C" {
 
 #define ThrowBinaryException(severity,tag,context) \
 { \
+  assert(tag != (const char *) NULL); \
   if (image != (Image *) NULL) \
-    (void) ThrowMagickException(exception,GetMagickModule(),severity, \
-      tag == (const char *) NULL ? "unknown" : tag,"`%s'",context); \
+    (void) ThrowMagickException(exception,GetMagickModule(),severity,tag, \
+      "`%s'",context); \
   return(MagickFalse); \
 }
 #define ThrowFatalException(severity,tag) \
@@ -41,10 +42,11 @@ extern "C" {
   ExceptionInfo \
     *exception; \
  \
+  assert(tag != (const char *) NULL); \
   exception=AcquireExceptionInfo(); \
   message=GetExceptionMessage(errno); \
-  (void) ThrowMagickException(exception,GetMagickModule(),severity, \
-    tag == (const char *) NULL ? "unknown" : tag,"`%s'",message); \
+  (void) ThrowMagickException(exception,GetMagickModule(),severity,tag, \
+    "`%s'",message); \
   message=DestroyString(message); \
   CatchException(exception); \
   (void) DestroyExceptionInfo(exception); \
@@ -56,21 +58,24 @@ extern "C" {
   char \
     *message; \
  \
+  assert(tag != (const char *) NULL); \
   message=GetExceptionMessage(errno); \
-  (void) ThrowMagickException(exception,GetMagickModule(),severity, \
-    tag == (const char *) NULL ? "unknown" : tag,"'%s': %s",context,message); \
+  (void) ThrowMagickException(exception,GetMagickModule(),severity,tag, \
+    "'%s': %s",context,message); \
   message=DestroyString(message); \
 }
 #define ThrowImageException(severity,tag) \
 { \
-  (void) ThrowMagickException(exception,GetMagickModule(),severity, \
-    tag == (const char *) NULL ? "unknown" : tag,"`%s'",image->filename); \
+  assert(tag != (const char *) NULL); \
+  (void) ThrowMagickException(exception,GetMagickModule(),severity,tag, \
+    "`%s'",image->filename); \
   return((Image *) NULL); \
 }
 #define ThrowReaderException(severity,tag) \
 { \
-  (void) ThrowMagickException(exception,GetMagickModule(),severity, \
-    tag == (const char *) NULL ? "unknown" : tag,"`%s'",image_info->filename); \
+  assert(tag != (const char *) NULL); \
+  (void) ThrowMagickException(exception,GetMagickModule(),severity,tag, \
+    "`%s'",image_info->filename); \
   if ((image) != (Image *) NULL) \
     { \
       (void) CloseBlob(image); \
@@ -80,8 +85,9 @@ extern "C" {
 }
 #define ThrowWriterException(severity,tag) \
 { \
-  (void) ThrowMagickException(exception,GetMagickModule(),severity, \
-    tag == (const char *) NULL ? "unknown" : tag,"`%s'",image->filename); \
+  assert(tag != (const char *) NULL); \
+  (void) ThrowMagickException(exception,GetMagickModule(),severity,tag, \
+    "`%s'",image->filename); \
   if (image_info->adjoin != MagickFalse) \
     while (image->previous != (Image *) NULL) \
       image=image->previous; \
