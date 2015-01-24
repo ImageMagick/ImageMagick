@@ -5779,7 +5779,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (memcmp(type,mng_LOOP,4) == 0)
           {
             ssize_t loop_iters=1;
-            if (length > 0) /* To do: check spec, if empty LOOP is allowed */
+            if (length > 4)
               {
                 loop_level=chunk[0];
                 mng_info->loop_active[loop_level]=1;  /* mark loop active */
@@ -5809,57 +5809,61 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
         if (memcmp(type,mng_ENDL,4) == 0)
           {
-            loop_level=chunk[0];
-
-            if (skipping_loop > 0)
+            if (length > 0)
               {
-                if (skipping_loop == loop_level)
+                loop_level=chunk[0];
+
+                if (skipping_loop > 0)
                   {
-                    /*
-                      Found end of zero-iteration loop.
-                    */
-                    skipping_loop=(-1);
-                    mng_info->loop_active[loop_level]=0;
-                  }
-              }
-
-            else
-              {
-                if (mng_info->loop_active[loop_level] == 1)
-                  {
-                    mng_info->loop_count[loop_level]--;
-                    mng_info->loop_iteration[loop_level]++;
-
-                    if (logging != MagickFalse)
-                      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                        "  ENDL: LOOP level %.20g has %.20g remaining iters ",
-                        (double) loop_level,(double)
-                        mng_info->loop_count[loop_level]);
-
-                    if (mng_info->loop_count[loop_level] != 0)
+                    if (skipping_loop == loop_level)
                       {
-                        offset=SeekBlob(image,mng_info->loop_jump[loop_level],
-                          SEEK_SET);
-
-                        if (offset < 0)
-                          ThrowReaderException(CorruptImageError,
-                            "ImproperImageHeader");
-                      }
-
-                    else
-                      {
-                        short
-                          last_level;
-
                         /*
-                          Finished loop.
+                          Found end of zero-iteration loop.
                         */
+                        skipping_loop=(-1);
                         mng_info->loop_active[loop_level]=0;
-                        last_level=(-1);
-                        for (i=0; i < loop_level; i++)
-                          if (mng_info->loop_active[i] == 1)
-                            last_level=(short) i;
-                        loop_level=last_level;
+                      }
+                  }
+
+                else
+                  {
+                    if (mng_info->loop_active[loop_level] == 1)
+                      {
+                        mng_info->loop_count[loop_level]--;
+                        mng_info->loop_iteration[loop_level]++;
+
+                        if (logging != MagickFalse)
+                          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                          "  ENDL: LOOP level %.20g has %.20g remaining iters ",
+                            (double) loop_level,(double)
+                            mng_info->loop_count[loop_level]);
+
+                        if (mng_info->loop_count[loop_level] != 0)
+                          {
+                            offset=
+                              SeekBlob(image,mng_info->loop_jump[loop_level],
+                              SEEK_SET);
+
+                            if (offset < 0)
+                              ThrowReaderException(CorruptImageError,
+                                "ImproperImageHeader");
+                          }
+
+                        else
+                          {
+                            short
+                              last_level;
+
+                            /*
+                              Finished loop.
+                            */
+                            mng_info->loop_active[loop_level]=0;
+                            last_level=(-1);
+                            for (i=0; i < loop_level; i++)
+                              if (mng_info->loop_active[i] == 1)
+                                last_level=(short) i;
+                            loop_level=last_level;
+                          }
                       }
                   }
               }
