@@ -3521,6 +3521,10 @@ static MagickBooleanType TraceSVGImage(Image *image,ExceptionInfo *exception)
     blob_length=2048;
     blob=(unsigned char *) ImageToBlob(image_info,clone_image,&blob_length,
       exception);
+    clone_image=DestroyImage(clone_image);
+    image_info=DestroyImageInfo(image_info);
+    if (blob == (unsigned char *) NULL)
+      return(MagickFalse);
     encode_length=0;
     base64=Base64Encode(blob,blob_length,&encode_length);
     blob=(unsigned char *) RelinquishMagickMemory(blob);
@@ -3539,6 +3543,7 @@ static MagickBooleanType TraceSVGImage(Image *image,ExceptionInfo *exception)
       if (i > 76)
         (void) WriteBlobString(image,"\n");
     }
+    base64=DestroyString(base64);
     (void) WriteBlobString(image,"\" />\n");
     (void) WriteBlobString(image,"</svg>\n");
   }
