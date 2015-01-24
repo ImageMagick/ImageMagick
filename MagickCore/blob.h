@@ -55,6 +55,9 @@ extern MagickExport BlobInfo
 extern MagickExport char
   *ReadBlobString(Image *,char *);
 
+extern MagickExport const void
+  *ReadBlobStream(Image *,const size_t,void *,ssize_t *);
+
 extern MagickExport double
   ReadBlobDouble(Image *);
 
@@ -127,8 +130,7 @@ extern MagickExport void
   *ImagesToBlob(const ImageInfo *,Image *,size_t *,ExceptionInfo *),
   *MapBlob(int,const MapMode,const MagickOffsetType,const size_t),
   MSBOrderLong(unsigned char *,const size_t),
-  MSBOrderShort(unsigned char *,const size_t),
-  *ZeroCopyReadBlob(Image *,const size_t,void *,ssize_t *);
+  MSBOrderShort(unsigned char *,const size_t);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

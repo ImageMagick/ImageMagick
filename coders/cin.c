@@ -387,6 +387,9 @@ static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
   CINInfo
     cin;
 
+  const void
+    *pixels;
+
   Image
     *image;
 
@@ -416,8 +419,7 @@ static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
     y;
 
   unsigned char
-    magick[4],
-    *pixels;
+    magick[4];
 
   /*
     Open image file.
@@ -743,7 +745,6 @@ static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
   quantum_info->quantum=32;
   quantum_info->pack=MagickFalse;
   quantum_type=RGBQuantum;
-  pixels=GetQuantumPixels(quantum_info);
   length=GetQuantumExtent(image,quantum_info,quantum_type);
   length=GetBytesPerRow(image->columns,3,image->depth,MagickTrue);
   if (cin.image.number_channels == 1)
@@ -756,7 +757,8 @@ static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
     if (q == (Quantum *) NULL)
       break;
-    count=ReadBlob(image,length,pixels);
+    pixels=ReadBlobStream(image,length,GetQuantumPixels(quantum_info),
+      &count);
     if ((size_t) count != length)
       break;
     (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
