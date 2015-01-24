@@ -321,12 +321,12 @@ bool Magick::Image::adjoin(void) const
 void Magick::Image::antiAlias(const bool flag_)
 {
   modifyImage();
-  options()->antiAlias(static_cast<size_t>(flag_));
+  options()->antiAlias(flag_);
 }
 
-bool Magick::Image::antiAlias(void)
+bool Magick::Image::antiAlias(void) const
 {
-  return(static_cast<bool>(options()->antiAlias()));
+  return(constOptions()->antiAlias());
 }
 
 void Magick::Image::animationDelay(const size_t delay_)
@@ -527,7 +527,7 @@ void Magick::Image::colorMapSize(const size_t entries_)
   (void) AcquireImageColormap(image(),entries_);
 }
 
-size_t Magick::Image::colorMapSize(void)
+size_t Magick::Image::colorMapSize(void) const
 {
   if (!constImage()->colormap)
     throwExceptionExplicit(OptionError,"Image does not contain a colormap");
@@ -866,7 +866,7 @@ std::string Magick::Image::formatExpression(const std::string expression)
     text_string;
 
   modifyImage();
-  text=InterpretImageProperties(imageInfo(),image(),expression.c_str());
+  text=InterpretImageProperties(constImageInfo(),image(),expression.c_str());
   if (text != (char *) NULL)
     {
       text_string=std::string(text);
@@ -1597,13 +1597,13 @@ std::string Magick::Image::tileName(void) const
   return(constOptions()->tileName());
 }
 
-size_t Magick::Image::totalColors(void)
+size_t Magick::Image::totalColors(void) const
 {
   size_t
     colors;
 
   GetPPException;
-  colors=GetNumberColors(image(),0,exceptionInfo);
+  colors=GetNumberColors(constImage(),0,exceptionInfo);
   ThrowPPException;
   return(colors);
 }
@@ -1934,7 +1934,7 @@ void Magick::Image::artifact(const std::string &name_,
   (void) SetImageArtifact(image(),name_.c_str(),value_.c_str());
 }
 
-std::string Magick::Image::artifact(const std::string &name_)
+std::string Magick::Image::artifact(const std::string &name_) const
 {
   const char
     *value;
@@ -1951,7 +1951,7 @@ void Magick::Image::attribute(const std::string name_,const std::string value_)
   SetImageProperty(image(),name_.c_str(),value_.c_str());
 }
 
-std::string Magick::Image::attribute(const std::string name_)
+std::string Magick::Image::attribute(const std::string name_) const
 {
   const char
     *value;
@@ -3458,7 +3458,7 @@ void Magick::Image::modulate(const double brightness_,const double saturation_,
   throwImageException();
 }
 
-Magick::ImageMoments Magick::Image::moments(void)
+Magick::ImageMoments Magick::Image::moments(void) const
 {
   return(ImageMoments(constImage()));
 }
@@ -4179,7 +4179,7 @@ void Magick::Image::selectiveBlurChannel(const ChannelType channel_,
   ThrowPPException;
 }
 
-Magick::Image Magick::Image::separate(const ChannelType channel_)
+Magick::Image Magick::Image::separate(const ChannelType channel_) const
 {
   MagickCore::Image
     *image;
@@ -4655,7 +4655,7 @@ void Magick::Image::trim(void)
   ThrowPPException;
 }
 
-Magick::Image Magick::Image::uniqueColors(void)
+Magick::Image Magick::Image::uniqueColors(void) const
 {
   MagickCore::Image
     *image;
