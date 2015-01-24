@@ -1410,8 +1410,6 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
           file=fdopen(unique_file,"wb");
         if ((unique_file == -1) || (file == (FILE *) NULL))
           {
-            if (file != (FILE *) NULL)
-              (void) fclose(file);
             (void) RelinquishUniqueFileResource(read_info->filename);
             (void) CopyMagickString(image->filename,read_info->filename,
               MaxTextExtent);

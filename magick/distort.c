@@ -424,13 +424,6 @@ static double *GenerateCoefficients(const Image *image,
       break;
     case PolynomialDistortion:
       /* number of coefficents depend on the given polynomal 'order' */
-      if ( number_arguments <= 1 && (number_arguments-1)%cp_size != 0)
-      {
-        (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-                   "InvalidArgument","%s : '%s'","Polynomial",
-                   "Invalid number of args: order [CPs]...");
-        return((double *) NULL);
-      }
       i = poly_number_terms(arguments[0]);
       number_coeff = 2 + i*number_values;
       if ( i == 0 ) {
