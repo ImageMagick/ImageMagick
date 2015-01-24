@@ -3496,7 +3496,10 @@ void Magick::Image::morphology(const MorphologyMethod method_,
 
   option=CommandOptionToMnemonic(MagickKernelOptions,kernel_);
   if (option == (const char *)NULL)
-    throwExceptionExplicit(OptionError,"Unable to determine kernel type.");
+    {
+      throwExceptionExplicit(OptionError,"Unable to determine kernel type.");
+      return;
+    }
 
   kernel=std::string(option);
   if (!arguments_.empty())
