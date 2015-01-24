@@ -1,3 +1,6 @@
+2014-01-23  6.9.0-5 Glenn Randers-Pehrson <glennrp@image...>
+  * Check lengths of certain MNG chunks before reading them.
+
 2014-01-18  6.9.0-5 Cristy  <quetzlzacatenango@image...>
   * Remove possible resource memory leak in a multi-threaded program (bug
     report and patch from David Chapman <d...@acm.org>.
