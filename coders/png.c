@@ -5657,6 +5657,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             chunk=(unsigned char *) RelinquishMagickMemory(chunk);
             continue;
           }
+
         if (memcmp(type,mng_CLIP,4) == 0)
           {
             unsigned int
@@ -5666,24 +5667,31 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Read CLIP.
             */
-            first_object=(p[0] << 8) | p[1];
-            last_object=(p[2] << 8) | p[3];
+            if (length > 3)
+              {
+                first_object=(p[0] << 8) | p[1];
+                last_object=(p[2] << 8) | p[3];
+                p+=4;
 
-            for (i=(int) first_object; i <= (int) last_object; i++)
-            {
-              if (mng_info->exists[i] && !mng_info->frozen[i])
+                for (i=(int) first_object; i <= (int) last_object; i++)
                 {
-                  MngBox
-                    box;
+                  if (mng_info->exists[i] && !mng_info->frozen[i])
+                    {
+                      MngBox
+                        box;
 
-                  box=mng_info->object_clip[i];
-                  mng_info->object_clip[i]=mng_read_box(box,(char) p[4],&p[5]);
+                      box=mng_info->object_clip[i];
+                      if ((p-chunk) < (ssize_t) (length-17))
+                        mng_info->object_clip[i]=
+                           mng_read_box(box,(char) p[0],&p[1]);
+                    }
                 }
-            }
 
+              }
             chunk=(unsigned char *) RelinquishMagickMemory(chunk);
             continue;
           }
+
         if (memcmp(type,mng_SAVE,4) == 0)
           {
             for (i=1; i < MNG_MAX_OBJECTS; i++)
@@ -5738,24 +5746,30 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
             /* read MOVE */
 
-            first_object=(p[0] << 8) | p[1];
-            last_object=(p[2] << 8) | p[3];
-            for (i=(ssize_t) first_object; i <= (ssize_t) last_object; i++)
+            if (length > 3)
             {
-              if (mng_info->exists[i] && !mng_info->frozen[i])
-                {
-                  MngPair
-                    new_pair;
+              first_object=(p[0] << 8) | p[1];
+              last_object=(p[2] << 8) | p[3];
+              p+=4;
 
-                  MngPair
-                    old_pair;
+              for (i=(ssize_t) first_object; i <= (ssize_t) last_object; i++)
+              {
+                if (mng_info->exists[i] && !mng_info->frozen[i] &&
+                    (p-chunk) < (ssize_t) (length-8))
+                  {
+                    MngPair
+                      new_pair;
 
-                  old_pair.a=mng_info->x_off[i];
-                  old_pair.b=mng_info->y_off[i];
-                  new_pair=mng_read_pair(old_pair,(int) p[4],&p[5]);
-                  mng_info->x_off[i]=new_pair.a;
-                  mng_info->y_off[i]=new_pair.b;
-                }
+                    MngPair
+                      old_pair;
+
+                    old_pair.a=mng_info->x_off[i];
+                    old_pair.b=mng_info->y_off[i];
+                    new_pair=mng_read_pair(old_pair,(int) p[0],&p[1]);
+                    mng_info->x_off[i]=new_pair.a;
+                    mng_info->y_off[i]=new_pair.b;
+                  }
+              }
             }
 
             chunk=(unsigned char *) RelinquishMagickMemory(chunk);
@@ -5765,27 +5779,30 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (memcmp(type,mng_LOOP,4) == 0)
           {
             ssize_t loop_iters=1;
-            loop_level=chunk[0];
-            mng_info->loop_active[loop_level]=1;  /* mark loop active */
-
-            /* Record starting point.  */
-            loop_iters=mng_get_long(&chunk[1]);
-
-            if (logging != MagickFalse)
-              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                "  LOOP level %.20g has %.20g iterations ",(double) loop_level,
-                (double) loop_iters);
-
-            if (loop_iters == 0)
-              skipping_loop=loop_level;
-
-            else
+            if (length > 0) /* To do: check spec, if empty LOOP is allowed */
               {
-                mng_info->loop_jump[loop_level]=TellBlob(image);
-                mng_info->loop_count[loop_level]=loop_iters;
-              }
+                loop_level=chunk[0];
+                mng_info->loop_active[loop_level]=1;  /* mark loop active */
 
-            mng_info->loop_iteration[loop_level]=0;
+                /* Record starting point.  */
+                loop_iters=mng_get_long(&chunk[1]);
+
+                if (logging != MagickFalse)
+                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                    "  LOOP level %.20g has %.20g iterations ",
+                    (double) loop_level, (double) loop_iters);
+
+                if (loop_iters == 0)
+                  skipping_loop=loop_level;
+
+                else
+                  {
+                    mng_info->loop_jump[loop_level]=TellBlob(image);
+                    mng_info->loop_count[loop_level]=loop_iters;
+                  }
+
+                mng_info->loop_iteration[loop_level]=0;
+              }
             chunk=(unsigned char *) RelinquishMagickMemory(chunk);
             continue;
           }
