@@ -1442,7 +1442,8 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
             x_offset++;
             if ((x_offset < 0) || (x_offset >= (ssize_t) image->columns))
               {
-                q++;
+                if (q != (PixelPacket *) NULL)
+                  q++;
                 continue;
               }
             if (bitmap->bitmap.pixel_mode != ft_pixel_mode_mono)
