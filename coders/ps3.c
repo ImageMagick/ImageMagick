@@ -1466,11 +1466,6 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
                 (void) WriteBlobString(image,PS3_NoCompression"\n");
                 break;
               }
-              case JPEGCompression:
-              {
-                (void) WriteBlobString(image,PS3_JPEGCompression"\n");
-                break;
-              }
               case RLECompression:
               {
                 (void) WriteBlobString(image,PS3_RLECompression"\n");
@@ -1541,11 +1536,6 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
                   Ascii85Encode(image,pixels[i]);
                 Ascii85Flush(image);
                 status=MagickTrue;
-                break;
-              }
-              case JPEGCompression:
-              {
-                status=InjectImageBlob(image_info,image,image,"jpeg",exception);
                 break;
               }
               case RLECompression:
