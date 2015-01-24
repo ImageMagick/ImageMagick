@@ -129,7 +129,7 @@ namespace Magick
 
     // Anti-alias Postscript and TrueType fonts (default true)
     void antiAlias(const bool flag_);
-    bool antiAlias(void);
+    bool antiAlias(void) const;
 
     // Time in 1/100ths of a second which must expire before
     // displaying the next image in an animated sequence.
@@ -202,7 +202,7 @@ namespace Magick
 
     // Colormap size (number of colormap entries)
     void colorMapSize(const size_t entries_);
-    size_t colorMapSize(void);
+    size_t colorMapSize(void) const;
 
     // Image Color Space
     void colorSpace(const ColorspaceType colorSpace_);
@@ -523,7 +523,7 @@ namespace Magick
     std::string tileName(void) const;
 
     // Number of colors in the image
-    size_t totalColors(void);
+    size_t totalColors(void) const;
 
     // Rotation to use when annotating with text or drawing
     void transformRotation(const double angle_);
@@ -639,11 +639,11 @@ namespace Magick
     void artifact(const std::string &name_,const std::string &value_);
 
     // Returns the value of the artifact with the specified name.
-    std::string artifact(const std::string &name_);
+    std::string artifact(const std::string &name_) const;
 
     // Access/Update a named image attribute
     void attribute(const std::string name_,const std::string value_);
-    std::string attribute(const std::string name_ );
+    std::string attribute(const std::string name_ ) const;
 
     // Extracts the 'mean' from the image and adjust the image to try
     // make set its gamma appropriatally.
@@ -1089,7 +1089,7 @@ namespace Magick
       const double hue_);
 
     // Returns the normalized moments of one or more image channels.
-    ImageMoments moments(void);
+    ImageMoments moments(void) const;
 
     // Applies a kernel to the image according to the given mophology method.
     void morphology(const MorphologyMethod method_,const std::string kernel_,
@@ -1301,7 +1301,7 @@ namespace Magick
       const double sigma_,const double threshold_);
 
     // Separates a channel from the image and returns it as a grayscale image.
-    Image separate(const ChannelType channel_);
+    Image separate(const ChannelType channel_) const;
 
     // Applies a special effect to the image, similar to the effect achieved in
     // a photo darkroom by sepia toning.  Threshold ranges from 0 to 
@@ -1444,7 +1444,7 @@ namespace Magick
     void trim(void);
 
     // Returns the unique colors of an image.
-    Image uniqueColors(void);
+    Image uniqueColors(void) const;
 
     // Replace image with a sharpened version of the original image
     // using the unsharp mask algorithm.
