@@ -3476,7 +3476,11 @@ void Magick::Image::morphologyChannel(const ChannelType channel_,
   GetPPException;
   kernel=AcquireKernelInfo(kernel_.c_str(),exceptionInfo);
   if (kernel == (KernelInfo *)NULL)
-    throwExceptionExplicit(MagickCore::OptionError,"Unable to parse kernel.");
+    {
+      throwExceptionExplicit(MagickCore::OptionError,
+        "Unable to parse kernel.");
+      return;
+    }
   SetPPChannelMask(channel_);
   newImage=MorphologyImage(constImage(),method_,iterations_,kernel,
     exceptionInfo);
