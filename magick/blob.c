@@ -235,7 +235,6 @@ MagickExport void AttachBlob(BlobInfo *blob_info,const void *blob,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
 MagickExport MagickBooleanType BlobToFile(char *filename,const void *blob,
   const size_t length,ExceptionInfo *exception)
 {
