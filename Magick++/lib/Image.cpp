@@ -349,12 +349,12 @@ Magick::Color Magick::Image::alphaColor(void) const
 void Magick::Image::antiAlias(const bool flag_)
 {
   modifyImage();
-  options()->antiAlias(static_cast<size_t>(flag_));
+  options()->antiAlias(flag_);
 }
 
-bool Magick::Image::antiAlias(void)
+bool Magick::Image::antiAlias(void) const
 {
-  return(static_cast<bool>(options()->antiAlias()));
+  return(constOptions()->antiAlias());
 }
 
 void Magick::Image::animationDelay(const size_t delay_)
@@ -1924,7 +1924,7 @@ void Magick::Image::artifact(const std::string &name_,const std::string &value_)
   (void) SetImageArtifact(image(),name_.c_str(),value_.c_str());
 }
 
-std::string Magick::Image::artifact(const std::string &name_)
+std::string Magick::Image::artifact(const std::string &name_) const
 {
   const char
     *value;
@@ -1943,7 +1943,7 @@ void Magick::Image::attribute(const std::string name_,const std::string value_)
   ThrowImageException;
 }
 
-std::string Magick::Image::attribute(const std::string name_)
+std::string Magick::Image::attribute(const std::string name_) const
 {
   const char
     *value;
@@ -2380,8 +2380,8 @@ bool Magick::Image::compare(const Image &reference_)
 
   GetPPException;
   modifyImage();
-  ref.modifyImage();
-  status=static_cast<bool>(IsImagesEqual(image(),ref.image(),exceptionInfo));
+  status=static_cast<bool>(IsImagesEqual(image(),ref.constImage(),
+    exceptionInfo));
   ThrowImageException;
   return(status);
 }
@@ -3415,7 +3415,7 @@ void Magick::Image::modulate(const double brightness_,const double saturation_,
   ThrowImageException;
 }
 
-Magick::ImageMoments Magick::Image::moments(void)
+Magick::ImageMoments Magick::Image::moments(void) const
 {
   return(ImageMoments(*this));
 }
@@ -3636,7 +3636,7 @@ void Magick::Image::perceptibleChannel(const ChannelType channel_,
   ThrowImageException;
 }
 
- Magick::ImagePerceptualHash Magick::Image::perceptualHash()
+ Magick::ImagePerceptualHash Magick::Image::perceptualHash() const
 {
   return(ImagePerceptualHash(*this));
 }
@@ -4146,7 +4146,7 @@ void Magick::Image::selectiveBlurChannel(const ChannelType channel_,
   ThrowImageException;
 }
 
-Magick::Image Magick::Image::separate(const ChannelType channel_)
+Magick::Image Magick::Image::separate(const ChannelType channel_) const
 {
   MagickCore::Image
     *image;
@@ -4337,7 +4337,7 @@ void Magick::Image::spread(const size_t amount_)
   ThrowImageException;
 }
 
-Magick::ImageStatistics Magick::Image::statistics()
+Magick::ImageStatistics Magick::Image::statistics() const
 {
   return(ImageStatistics(*this));
 }
@@ -4587,7 +4587,7 @@ void Magick::Image::trim(void)
   ThrowImageException;
 }
 
-Magick::Image Magick::Image::uniqueColors(void)
+Magick::Image Magick::Image::uniqueColors(void) const
 {
   MagickCore::Image
     *image;

@@ -108,7 +108,7 @@ namespace Magick
 
     // Anti-alias Postscript and TrueType fonts (default true)
     void antiAlias(const bool flag_);
-    bool antiAlias(void);
+    bool antiAlias(void) const;
 
     // Time in 1/100ths of a second which must expire before
     // displaying the next image in an animated sequence.
@@ -605,11 +605,11 @@ namespace Magick
     void artifact(const std::string &name_,const std::string &value_);
 
     // Returns the value of the artifact with the specified name.
-    std::string artifact(const std::string &name_);
+    std::string artifact(const std::string &name_) const;
 
     // Access/Update a named image attribute
     void attribute(const std::string name_,const std::string value_);
-    std::string attribute(const std::string name_);
+    std::string attribute(const std::string name_) const;
 
     // Extracts the 'mean' from the image and adjust the image to try
     // make set its gamma appropriatally.
@@ -1031,7 +1031,7 @@ namespace Magick
       const double hue_);
 
     // Returns the normalized moments of one or more image channels.
-    ImageMoments moments(void);
+    ImageMoments moments(void) const;
 
     // Applies a kernel to the image according to the given mophology method.
     void morphology(const MorphologyMethod method_,const std::string kernel_,
@@ -1084,7 +1084,7 @@ namespace Magick
     void perceptibleChannel(const ChannelType channel_,const double epsilon_);
 
     // Returns the perceptual hash for this image.
-    Magick::ImagePerceptualHash perceptualHash();
+    Magick::ImagePerceptualHash perceptualHash() const;
 
     // Ping is similar to read except only enough of the image is read
     // to determine the image columns, rows, and filesize.  Access the
@@ -1237,7 +1237,7 @@ namespace Magick
       const double sigma_,const double threshold_);
 
     // Separates a channel from the image and returns it as a grayscale image.
-    Image separate(const ChannelType channel_);
+    Image separate(const ChannelType channel_) const;
 
     // Applies a special effect to the image, similar to the effect achieved in
     // a photo darkroom by sepia toning.  Threshold ranges from 0 to 
@@ -1307,7 +1307,7 @@ namespace Magick
     void spread(const size_t amount_=3);
 
     // Returns the statistics for this image.
-    Magick::ImageStatistics statistics();
+    Magick::ImageStatistics statistics() const;
 
     // Add a digital watermark to the image (based on second image)
     void stegano(const Image &watermark_);
@@ -1382,7 +1382,7 @@ namespace Magick
     void trim(void);
 
     // Returns the unique colors of an image.
-    Image uniqueColors(void);
+    Image uniqueColors(void) const;
 
     // Replace image with a sharpened version of the original image
     // using the unsharp mask algorithm.
