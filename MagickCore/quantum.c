@@ -470,15 +470,14 @@ MagickExport void GetQuantumInfo(const ImageInfo *image_info,
 %
 %  The format of the GetQuantumPixels method is:
 %
-%      unsigned char *QuantumPixels GetQuantumPixels(
-%        const QuantumInfo *quantum_info)
+%      void *QuantumPixels GetQuantumPixels(const QuantumInfo *quantum_info)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
 */
-MagickExport unsigned char *GetQuantumPixels(const QuantumInfo *quantum_info)
+MagickExport void *GetQuantumPixels(const QuantumInfo *quantum_info)
 {
   const int
     id = GetOpenMPThreadId();

@@ -564,6 +564,9 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         extent=GetQuantumExtent(image,quantum_info,quantum_type);
         for (y=0; y < (ssize_t) image->rows; y++)
         {
+          const void
+            *pixels;
+
           MagickBooleanType
             sync;
 
@@ -577,29 +580,24 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           size_t
             length;
 
-          unsigned char
-            *pixels;
-
           if (status == MagickFalse)
             continue;
-          pixels=GetQuantumPixels(quantum_info);
-          {
-            count=ReadBlob(image,extent,pixels);
-            if ((image->progress_monitor != (MagickProgressMonitor) NULL) &&
-                (image->previous == (Image *) NULL))
-              {
-                MagickBooleanType
-                  proceed;
-
-                proceed=SetImageProgress(image,LoadImageTag,(MagickOffsetType)
-                  row,image->rows);
-                if (proceed == MagickFalse)
-                  status=MagickFalse;
-              }
-            offset=row++;
-          }
+          pixels=ReadBlobStream(image,extent,GetQuantumPixels(quantum_info),
+            &count);
           if (count != (ssize_t) extent)
             status=MagickFalse;
+          if ((image->progress_monitor != (MagickProgressMonitor) NULL) &&
+              (image->previous == (Image *) NULL))
+            {
+              MagickBooleanType
+                proceed;
+
+              proceed=SetImageProgress(image,LoadImageTag,(MagickOffsetType)
+                row,image->rows);
+              if (proceed == MagickFalse)
+                status=MagickFalse;
+            }
+          offset=row++;
           q=QueueAuthenticPixels(image,0,offset,image->columns,1,exception);
           if (q == (Quantum *) NULL)
             {
@@ -639,6 +637,9 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         for (y=0; y < (ssize_t) image->rows; y++)
         {
+          const void
+            *pixels;
+
           MagickBooleanType
             sync;
 
@@ -655,29 +656,24 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             count,
             offset;
 
-          unsigned char
-            *pixels;
-
           if (status == MagickFalse)
             continue;
-          pixels=GetQuantumPixels(quantum_info);
-          {
-            count=ReadBlob(image,extent,pixels);
-            if ((image->progress_monitor != (MagickProgressMonitor) NULL) &&
-                (image->previous == (Image *) NULL))
-              {
-                MagickBooleanType
-                  proceed;
-
-                proceed=SetImageProgress(image,LoadImageTag,(MagickOffsetType)
-                  row,image->rows);
-                if (proceed == MagickFalse)
-                  status=MagickFalse;
-              }
-            offset=row++;
-          }
+          pixels=ReadBlobStream(image,extent,GetQuantumPixels(quantum_info),
+            &count);
           if (count != (ssize_t) extent)
             status=MagickFalse;
+          if ((image->progress_monitor != (MagickProgressMonitor) NULL) &&
+              (image->previous == (Image *) NULL))
+            {
+              MagickBooleanType
+                proceed;
+
+              proceed=SetImageProgress(image,LoadImageTag,(MagickOffsetType)
+                row,image->rows);
+              if (proceed == MagickFalse)
+                status=MagickFalse;
+            }
+          offset=row++;
           q=QueueAuthenticPixels(image,0,offset,image->columns,1,exception);
           if (q == (Quantum *) NULL)
             {
@@ -758,6 +754,9 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) SetQuantumEndian(image,quantum_info,MSBEndian);
         for (y=0; y < (ssize_t) image->rows; y++)
         {
+          const void
+            *pixels;
+
           MagickBooleanType
             sync;
 
@@ -774,29 +773,24 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             count,
             offset;
 
-          unsigned char
-            *pixels;
-
           if (status == MagickFalse)
             continue;
-          pixels=GetQuantumPixels(quantum_info);
-          {
-            count=ReadBlob(image,extent,pixels);
-            if ((image->progress_monitor != (MagickProgressMonitor) NULL) &&
-                (image->previous == (Image *) NULL))
-              {
-                MagickBooleanType
-                  proceed;
-
-                proceed=SetImageProgress(image,LoadImageTag,(MagickOffsetType)
-                  row,image->rows);
-                if (proceed == MagickFalse)
-                  status=MagickFalse;
-              }
-            offset=row++;
-          }
+          pixels=ReadBlobStream(image,extent,GetQuantumPixels(quantum_info),
+            &count);
           if (count != (ssize_t) extent)
             status=MagickFalse;
+          if ((image->progress_monitor != (MagickProgressMonitor) NULL) &&
+              (image->previous == (Image *) NULL))
+            {
+              MagickBooleanType
+                proceed;
+
+              proceed=SetImageProgress(image,LoadImageTag,(MagickOffsetType)
+                row,image->rows);
+              if (proceed == MagickFalse)
+                status=MagickFalse;
+            }
+          offset=row++;
           q=QueueAuthenticPixels(image,0,offset,image->columns,1,exception);
           if (q == (Quantum *) NULL)
             {
@@ -960,6 +954,9 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         for (y=0; y < (ssize_t) image->rows; y++)
         {
+          const void
+            *pixels;
+
           MagickBooleanType
             sync;
 
@@ -976,29 +973,24 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             count,
             offset;
 
-          unsigned char
-            *pixels;
-
           if (status == MagickFalse)
             continue;
-          pixels=GetQuantumPixels(quantum_info);
-          {
-            count=ReadBlob(image,extent,pixels);
-            if ((image->progress_monitor != (MagickProgressMonitor) NULL) &&
-                (image->previous == (Image *) NULL))
-              {
-                MagickBooleanType
-                  proceed;
-
-                proceed=SetImageProgress(image,LoadImageTag,(MagickOffsetType)
-                  row,image->rows);
-                if (proceed == MagickFalse)
-                  status=MagickFalse;
-              }
-            offset=row++;
-          }
+          pixels=ReadBlobStream(image,extent,GetQuantumPixels(quantum_info),
+            &count);
           if (count != (ssize_t) extent)
             status=MagickFalse;
+          if ((image->progress_monitor != (MagickProgressMonitor) NULL) &&
+              (image->previous == (Image *) NULL))
+            {
+              MagickBooleanType
+                proceed;
+
+              proceed=SetImageProgress(image,LoadImageTag,(MagickOffsetType)
+                row,image->rows);
+              if (proceed == MagickFalse)
+                status=MagickFalse;
+            }
+          offset=row++;
           q=QueueAuthenticPixels(image,0,offset,image->columns,1,exception);
           if (q == (Quantum *) NULL)
             {
@@ -1034,7 +1026,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       for (x=0; x < (ssize_t) image->columns; x++)
                       {
                         p=PushCharPixel(p,&pixel);
-                        SetPixelGray(image,ScaleAnyToQuantum(pixel,max_value),q);
+                        SetPixelGray(image,ScaleAnyToQuantum(pixel,max_value),
+                          q);
                         SetPixelAlpha(image,OpaqueAlpha,q);
                         if (image->alpha_trait != UndefinedPixelTrait)
                           {
@@ -1079,7 +1072,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     if (image->alpha_trait != UndefinedPixelTrait)
                       {
                         p=PushLongPixel(MSBEndian,p,&pixel);
-                        SetPixelAlpha(image,ScaleAnyToQuantum(pixel,max_value),q);
+                        SetPixelAlpha(image,ScaleAnyToQuantum(pixel,max_value),
+                          q);
                       }
                     q+=GetPixelChannels(image);
                   }
@@ -1101,11 +1095,14 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                         p=PushCharPixel(p,&pixel);
                         SetPixelRed(image,ScaleAnyToQuantum(pixel,max_value),q);
                         p=PushCharPixel(p,&pixel);
-                        SetPixelGreen(image,ScaleAnyToQuantum(pixel,max_value),q);
+                        SetPixelGreen(image,ScaleAnyToQuantum(pixel,max_value),
+                          q);
                         p=PushCharPixel(p,&pixel);
-                        SetPixelBlue(image,ScaleAnyToQuantum(pixel,max_value),q);
+                        SetPixelBlue(image,ScaleAnyToQuantum(pixel,max_value),
+                          q);
                         p=PushCharPixel(p,&pixel);
-                        SetPixelBlack(image,ScaleAnyToQuantum(pixel,max_value),q);
+                        SetPixelBlack(image,ScaleAnyToQuantum(pixel,max_value),
+                          q);
                         SetPixelAlpha(image,OpaqueAlpha,q);
                         if (image->alpha_trait != UndefinedPixelTrait)
                           {
@@ -1127,11 +1124,14 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                         p=PushShortPixel(MSBEndian,p,&pixel);
                         SetPixelRed(image,ScaleAnyToQuantum(pixel,max_value),q);
                         p=PushShortPixel(MSBEndian,p,&pixel);
-                        SetPixelGreen(image,ScaleAnyToQuantum(pixel,max_value),q);
+                        SetPixelGreen(image,ScaleAnyToQuantum(pixel,max_value),
+                          q);
                         p=PushShortPixel(MSBEndian,p,&pixel);
-                        SetPixelBlue(image,ScaleAnyToQuantum(pixel,max_value),q);
+                        SetPixelBlue(image,ScaleAnyToQuantum(pixel,max_value),
+                          q);
                         p=PushShortPixel(MSBEndian,p,&pixel);
-                        SetPixelBlack(image,ScaleAnyToQuantum(pixel,max_value),q);
+                        SetPixelBlack(image,ScaleAnyToQuantum(pixel,max_value),
+                          q);
                         SetPixelAlpha(image,OpaqueAlpha,q);
                         if (image->alpha_trait != UndefinedPixelTrait)
                           {
@@ -1156,7 +1156,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     if (image->alpha_trait != UndefinedPixelTrait)
                       {
                         p=PushLongPixel(MSBEndian,p,&pixel);
-                        SetPixelAlpha(image,ScaleAnyToQuantum(pixel,max_value),q);
+                        SetPixelAlpha(image,ScaleAnyToQuantum(pixel,max_value),
+                          q);
                       }
                     q+=GetPixelChannels(image);
                   }
@@ -1177,14 +1178,17 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                         p=PushCharPixel(p,&pixel);
                         SetPixelRed(image,ScaleAnyToQuantum(pixel,max_value),q);
                         p=PushCharPixel(p,&pixel);
-                        SetPixelGreen(image,ScaleAnyToQuantum(pixel,max_value),q);
+                        SetPixelGreen(image,ScaleAnyToQuantum(pixel,max_value),
+                          q);
                         p=PushCharPixel(p,&pixel);
-                        SetPixelBlue(image,ScaleAnyToQuantum(pixel,max_value),q);
+                        SetPixelBlue(image,ScaleAnyToQuantum(pixel,max_value),
+                          q);
                         SetPixelAlpha(image,OpaqueAlpha,q);
                         if (image->alpha_trait != UndefinedPixelTrait)
                           {
                             p=PushCharPixel(p,&pixel);
-                            SetPixelAlpha(image,ScaleAnyToQuantum(pixel,max_value),q);
+                            SetPixelAlpha(image,ScaleAnyToQuantum(pixel,
+                              max_value),q);
                           }
                         q+=GetPixelChannels(image);
                       }
@@ -1200,9 +1204,11 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                         p=PushShortPixel(MSBEndian,p,&pixel);
                         SetPixelRed(image,ScaleAnyToQuantum(pixel,max_value),q);
                         p=PushShortPixel(MSBEndian,p,&pixel);
-                        SetPixelGreen(image,ScaleAnyToQuantum(pixel,max_value),q);
+                        SetPixelGreen(image,ScaleAnyToQuantum(pixel,max_value),
+                          q);
                         p=PushShortPixel(MSBEndian,p,&pixel);
-                        SetPixelBlue(image,ScaleAnyToQuantum(pixel,max_value),q);
+                        SetPixelBlue(image,ScaleAnyToQuantum(pixel,max_value),
+                          q);
                         SetPixelAlpha(image,OpaqueAlpha,q);
                         if (image->alpha_trait != UndefinedPixelTrait)
                           {
@@ -1226,7 +1232,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     if (image->alpha_trait != UndefinedPixelTrait)
                       {
                         p=PushLongPixel(MSBEndian,p,&pixel);
-                        SetPixelAlpha(image,ScaleAnyToQuantum(pixel,max_value),q);
+                        SetPixelAlpha(image,ScaleAnyToQuantum(pixel,max_value),
+                          q);
                       }
                     q+=GetPixelChannels(image);
                   }
@@ -1269,6 +1276,9 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         extent=GetQuantumExtent(image,quantum_info,quantum_type);
         for (y=0; y < (ssize_t) image->rows; y++)
         {
+          const void
+            *pixels;
+
           MagickBooleanType
             sync;
 
@@ -1282,29 +1292,24 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           size_t
             length;
 
-          unsigned char
-            *pixels;
-
           if (status == MagickFalse)
             continue;
-          pixels=GetQuantumPixels(quantum_info);
-          {
-            count=ReadBlob(image,extent,pixels);
-            if ((image->progress_monitor != (MagickProgressMonitor) NULL) &&
-                (image->previous == (Image *) NULL))
-              {
-                MagickBooleanType
-                  proceed;
-
-                proceed=SetImageProgress(image,LoadImageTag,(MagickOffsetType)
-                  row,image->rows);
-                if (proceed == MagickFalse)
-                  status=MagickFalse;
-              }
-            offset=row++;
-          }
+          pixels=ReadBlobStream(image,extent,GetQuantumPixels(quantum_info),
+            &count);
           if ((size_t) count != extent)
             status=MagickFalse;
+          if ((image->progress_monitor != (MagickProgressMonitor) NULL) &&
+              (image->previous == (Image *) NULL))
+            {
+              MagickBooleanType
+                proceed;
+
+              proceed=SetImageProgress(image,LoadImageTag,(MagickOffsetType)
+                row,image->rows);
+              if (proceed == MagickFalse)
+                status=MagickFalse;
+            }
+          offset=row++;
           q=QueueAuthenticPixels(image,0,(ssize_t) (image->rows-offset-1),
             image->columns,1,exception);
           if (q == (Quantum *) NULL)

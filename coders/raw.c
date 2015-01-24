@@ -96,6 +96,9 @@ static MagickBooleanType
 */
 static Image *ReadRAWImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
+  const void
+    *pixels;
+
   Image
     *canvas_image,
     *image;
@@ -118,9 +121,6 @@ static Image *ReadRAWImage(const ImageInfo *image_info,ExceptionInfo *exception)
   ssize_t
     count,
     y;
-
-  unsigned char
-    *pixels;
 
   /*
     Open image file.
@@ -155,7 +155,6 @@ static Image *ReadRAWImage(const ImageInfo *image_info,ExceptionInfo *exception)
   quantum_info=AcquireQuantumInfo(image_info,canvas_image);
   if (quantum_info == (QuantumInfo *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-  pixels=GetQuantumPixels(quantum_info);
   if (image_info->number_scenes != 0)
     while (image->scene < image_info->scene)
     {
@@ -166,7 +165,8 @@ static Image *ReadRAWImage(const ImageInfo *image_info,ExceptionInfo *exception)
       length=GetQuantumExtent(canvas_image,quantum_info,quantum_type);
       for (y=0; y < (ssize_t) image->rows; y++)
       {
-        count=ReadBlob(image,length,pixels);
+        pixels=ReadBlobStream(image,length,GetQuantumPixels(quantum_info),
+          &count);
         if (count != (ssize_t) length)
           break;
       }
@@ -188,7 +188,8 @@ static Image *ReadRAWImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (scene == 0)
       {
         length=GetQuantumExtent(canvas_image,quantum_info,quantum_type);
-        count=ReadBlob(image,length,pixels);
+        pixels=ReadBlobStream(image,length,GetQuantumPixels(quantum_info),
+          &count);
       }
     for (y=0; y < (ssize_t) image->extract_info.height; y++)
     {
@@ -241,7 +242,8 @@ static Image *ReadRAWImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (status == MagickFalse)
             break;
         }
-      count=ReadBlob(image,length,pixels);
+      pixels=ReadBlobStream(image,length,GetQuantumPixels(quantum_info),
+        &count);
     }
     SetQuantumImageType(image,quantum_type);
     /*
