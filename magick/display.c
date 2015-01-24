@@ -10196,6 +10196,7 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
           (void) XFreeStringList(files);
           ThrowXWindowException(ResourceLimitError,
             "MemoryAllocationFailed","...");
+          return((Image *) NULL);
         }
       j=0;
       for (i=1; i < count; i++)
