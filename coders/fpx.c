@@ -948,13 +948,13 @@ static MagickBooleanType WriteFPXImage(const ImageInfo *image_info,Image *image)
       image->columns*fpx_info.components[i].columnStride;
     fpx_info.components[i].theData=pixels+i;
   }
-  fpx_info.components[0].myColorType.myColor=fpx_info.numberOfComponents != 1
-    ? NIFRGB_R : MONOCHROME;
+  fpx_info.components[0].myColorType.myColor=fpx_info.numberOfComponents != 1 ?
+    NIFRGB_R : MONOCHROME;
   fpx_info.components[1].myColorType.myColor=NIFRGB_G;
   fpx_info.components[2].myColorType.myColor=NIFRGB_B;
   fpx_info.components[3].myColorType.myColor=ALPHA;
   /*
-    Write image pixelss.
+    Write image pixels.
   */
   quantum_type=RGBQuantum;
   if (image->matte != MagickFalse)

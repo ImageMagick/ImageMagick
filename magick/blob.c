@@ -776,32 +776,6 @@ MagickPrivate void DisassociateBlob(Image *image)
 %    o length:  the number of bytes to skip.
 %
 */
-
-static inline const unsigned char *ReadBlobStream(Image *image,
-  const size_t length,unsigned char *data,ssize_t *count)
-{
-  assert(count != (ssize_t *) NULL);
-  assert(image->blob != (BlobInfo *) NULL);
-  if (image->blob->type != BlobStream)
-    {
-      *count=ReadBlob(image,length,data);
-      return(data);
-    }
-  if (image->blob->offset >= (MagickOffsetType) image->blob->length)
-    {
-      *count=0;
-      image->blob->eof=MagickTrue;
-      return(data);
-    }
-  data=image->blob->data+image->blob->offset;
-  *count=(ssize_t) MagickMin(length,(size_t) (image->blob->length-
-    image->blob->offset));
-  image->blob->offset+=(*count);
-  if (*count != (ssize_t) length)
-    image->blob->eof=MagickTrue;
-  return(data);
-}
-
 MagickExport MagickBooleanType DiscardBlobBytes(Image *image,
   const MagickSizeType length)
 {
@@ -3517,6 +3491,70 @@ MagickExport unsigned short ReadBlobMSBShort(Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++  R e a d B l o b S t r e a m                                                %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ReadBlobStream() reads data from the blob or image file and returns it.  It
+%  returns a pointer to the data buffer you supply or to the image memory
+%  buffer if its supported (zero-copy). If length is zero, ReadBlobStream()
+%  returns a count of zero and has no other results. If length is greater than
+%  SSIZE_MAX, the result is unspecified.
+%
+%  The format of the ReadBlobStream method is:
+%
+%      const void *ReadBlobStream(Image *image,const size_t length,void *data,
+%        ssize_t *count)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o length:  Specifies an integer representing the number of bytes to read
+%      from the file.
+%
+%    o length: returns the number of bytes read.
+%
+%    o data:  Specifies an area to place the information requested from the
+%      file.
+%
+*/
+MagickExport const void *ReadBlobStream(Image *image,const size_t length,
+  void *data,ssize_t *count)
+{
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(image->blob != (BlobInfo *) NULL);
+  assert(image->blob->type != UndefinedStream);
+  assert(count != (ssize_t *) NULL);
+  if (image->blob->type != BlobStream)
+    {
+      assert(data != NULL);
+      *count=ReadBlob(image,length,data);
+      return(data);
+    }
+  if (image->blob->offset >= (MagickOffsetType) image->blob->length)
+    {
+      *count=0;
+      image->blob->eof=MagickTrue;
+      return(data);
+    }
+  data=image->blob->data+image->blob->offset;
+  *count=(ssize_t) MagickMin(length,(size_t) (image->blob->length-
+    image->blob->offset));
+  image->blob->offset+=(*count);
+  if (*count != (ssize_t) length)
+    image->blob->eof=MagickTrue;
+  return(data);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   R e a d B l o b S t r i n g                                               %
 %                                                                             %
 %                                                                             %
@@ -4633,46 +4671,4 @@ MagickExport ssize_t WriteBlobString(Image *image,const char *string)
   assert(image->signature == MagickSignature);
   assert(string != (const char *) NULL);
   return(WriteBlobStream(image,strlen(string),(const unsigned char *) string));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+  Z e r o C o p y R e a d B l o b                                            %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  ZeroCopyReadBlob() reads data from the blob or image file and returns it.  It
-%  returns a pointer to the data buffer you supply or to the image memory
-%  buffer if its supported (zero-copy). If length is zero, ZeroCopyReadBlob()
-%  returns a count of zero and has no other results. If length is greater than
-%  SSIZE_MAX, the result is unspecified.
-%
-%  The format of the ZeroReadBlobCopy method is:
-%
-%      void *ZeroCopyReadBlob(Image *image,const size_t length,ssize_t *count,
-%        void *data)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-%    o length:  Specifies an integer representing the number of bytes to read
-%      from the file.
-%
-%    o length: returns the number of bytes read.
-%
-%    o data:  Specifies an area to place the information requested from the
-%      file.
-%
-*/
-MagickExport void *ZeroCopyReadBlob(Image *image,const size_t length,void *data,
-  ssize_t *count)
-{
-  *count=ReadBlob(image,length,data);
-  return(data);
 }

@@ -100,6 +100,9 @@ static MagickBooleanType
 static Image *ReadCMYKImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
+  const void
+    *pixels;
+
   Image
     *canvas_image,
     *image;
@@ -125,9 +128,6 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
   ssize_t
     count,
     y;
-
-  unsigned char
-    *pixels;
 
   /*
     Open image file.
@@ -164,13 +164,13 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
   quantum_info=AcquireQuantumInfo(image_info,canvas_image);
   if (quantum_info == (QuantumInfo *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-  pixels=GetQuantumPixels(quantum_info);
   quantum_type=CMYKQuantum;
   if (LocaleCompare(image_info->magick,"CMYKA") == 0)
     {
       quantum_type=CMYKAQuantum;
       image->matte=MagickTrue;
     }
+  pixels=NULL;
   if (image_info->number_scenes != 0)
     while (image->scene < image_info->scene)
     {
@@ -181,7 +181,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
       length=GetQuantumExtent(canvas_image,quantum_info,quantum_type);
       for (y=0; y < (ssize_t) image->rows; y++)
       {
-        count=ReadBlob(image,length,pixels);
+        pixels=ReadBlobStream(image,length,GetQuantumPixels(quantum_info),
+          &count);
         if (count != (ssize_t) length)
           break;
       }
@@ -215,7 +216,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
         if (scene == 0)
           {
             length=GetQuantumExtent(canvas_image,quantum_info,quantum_type);
-            count=ReadBlob(image,length,pixels);
+            pixels=ReadBlobStream(image,length,GetQuantumPixels(quantum_info),
+              &count);
           }
         for (y=0; y < (ssize_t) image->extract_info.height; y++)
         {
@@ -283,7 +285,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
               if (status == MagickFalse)
                 break;
             }
-          count=ReadBlob(image,length,pixels);
+          pixels=ReadBlobStream(image,length,GetQuantumPixels(quantum_info),
+            &count);
         }
         break;
       }
@@ -305,7 +308,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
         if (scene == 0)
           {
             length=GetQuantumExtent(canvas_image,quantum_info,CyanQuantum);
-            count=ReadBlob(image,length,pixels);
+            pixels=ReadBlobStream(image,length,GetQuantumPixels(quantum_info),
+              &count);
           }
         for (y=0; y < (ssize_t) image->extract_info.height; y++)
         {
@@ -392,7 +396,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
                 if (SyncAuthenticPixels(image,exception) == MagickFalse)
                   break;
               }
-            count=ReadBlob(image,length,pixels);
+            pixels=ReadBlobStream(image,length,GetQuantumPixels(quantum_info),
+              &count);
           }
           if (image->previous == (Image *) NULL)
             {
@@ -412,7 +417,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
         if (scene == 0)
           {
             length=GetQuantumExtent(canvas_image,quantum_info,CyanQuantum);
-            count=ReadBlob(image,length,pixels);
+            pixels=ReadBlobStream(image,length,GetQuantumPixels(quantum_info),
+              &count);
           }
         for (y=0; y < (ssize_t) image->extract_info.height; y++)
         {
@@ -458,7 +464,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
               if (SyncAuthenticPixels(image,exception) == MagickFalse)
                 break;
             }
-          count=ReadBlob(image,length,pixels);
+          pixels=ReadBlobStream(image,length,GetQuantumPixels(quantum_info),
+            &count);
         }
         if (image->previous == (Image *) NULL)
           {
@@ -510,7 +517,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
               if (SyncAuthenticPixels(image,exception) == MagickFalse)
                 break;
            }
-          count=ReadBlob(image,length,pixels);
+          pixels=ReadBlobStream(image,length,GetQuantumPixels(quantum_info),
+            &count);
         }
         if (image->previous == (Image *) NULL)
           {
@@ -562,7 +570,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
               if (SyncAuthenticPixels(image,exception) == MagickFalse)
                 break;
             }
-          count=ReadBlob(image,length,pixels);
+          pixels=ReadBlobStream(image,length,GetQuantumPixels(quantum_info),
+            &count);
         }
         if (image->previous == (Image *) NULL)
           {
@@ -623,7 +632,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
               if (SyncAuthenticPixels(image,exception) == MagickFalse)
                 break;
             }
-          count=ReadBlob(image,length,pixels);
+          pixels=ReadBlobStream(image,length,GetQuantumPixels(quantum_info),
+            &count);
         }
         if (image->previous == (Image *) NULL)
           {
@@ -678,7 +688,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
                   if (SyncAuthenticPixels(image,exception) == MagickFalse)
                     break;
                 }
-              count=ReadBlob(image,length,pixels);
+              pixels=ReadBlobStream(image,length,GetQuantumPixels(quantum_info),
+                &count);
             }
             if (image->previous == (Image *) NULL)
               {
@@ -714,13 +725,18 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
         length=GetQuantumExtent(canvas_image,quantum_info,CyanQuantum);
         for (i=0; i < (ssize_t) scene; i++)
           for (y=0; y < (ssize_t) image->extract_info.height; y++)
-            if (ReadBlob(image,length,pixels) != (ssize_t) length)
+          {
+            pixels=ReadBlobStream(image,length,GetQuantumPixels(quantum_info),
+              &count);
+            if (count != (ssize_t) length)
               {
                 ThrowFileException(exception,CorruptImageError,
                   "UnexpectedEndOfFile",image->filename);
                 break;
               }
-        count=ReadBlob(image,length,pixels);
+          }
+        pixels=ReadBlobStream(image,length,GetQuantumPixels(quantum_info),
+          &count);
         for (y=0; y < (ssize_t) image->extract_info.height; y++)
         {
           register const PixelPacket
@@ -765,7 +781,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
               if (SyncAuthenticPixels(image,exception) == MagickFalse)
                 break;
             }
-          count=ReadBlob(image,length,pixels);
+          pixels=ReadBlobStream(image,length,GetQuantumPixels(quantum_info),
+            &count);
         }
         if (image->previous == (Image *) NULL)
           {
@@ -785,13 +802,18 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
         length=GetQuantumExtent(canvas_image,quantum_info,MagentaQuantum);
         for (i=0; i < (ssize_t) scene; i++)
           for (y=0; y < (ssize_t) image->extract_info.height; y++)
-            if (ReadBlob(image,length,pixels) != (ssize_t) length)
+          {
+            pixels=ReadBlobStream(image,length,GetQuantumPixels(quantum_info),
+              &count);
+            if (count != (ssize_t) length)
               {
                 ThrowFileException(exception,CorruptImageError,
                   "UnexpectedEndOfFile",image->filename);
                 break;
               }
-        count=ReadBlob(image,length,pixels);
+          }
+        pixels=ReadBlobStream(image,length,GetQuantumPixels(quantum_info),
+          &count);
         for (y=0; y < (ssize_t) image->extract_info.height; y++)
         {
           register const PixelPacket
@@ -836,7 +858,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
               if (SyncAuthenticPixels(image,exception) == MagickFalse)
                 break;
            }
-          count=ReadBlob(image,length,pixels);
+          pixels=ReadBlobStream(image,length,GetQuantumPixels(quantum_info),
+            &count);
         }
         if (image->previous == (Image *) NULL)
           {
@@ -856,13 +879,18 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
         length=GetQuantumExtent(canvas_image,quantum_info,YellowQuantum);
         for (i=0; i < (ssize_t) scene; i++)
           for (y=0; y < (ssize_t) image->extract_info.height; y++)
-            if (ReadBlob(image,length,pixels) != (ssize_t) length)
+          {
+            pixels=ReadBlobStream(image,length,GetQuantumPixels(quantum_info),
+              &count);
+            if (count != (ssize_t) length)
               {
                 ThrowFileException(exception,CorruptImageError,
                   "UnexpectedEndOfFile",image->filename);
                 break;
               }
-        count=ReadBlob(image,length,pixels);
+          }
+        pixels=ReadBlobStream(image,length,GetQuantumPixels(quantum_info),
+          &count);
         for (y=0; y < (ssize_t) image->extract_info.height; y++)
         {
           register const PixelPacket
@@ -907,7 +935,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
               if (SyncAuthenticPixels(image,exception) == MagickFalse)
                 break;
            }
-          count=ReadBlob(image,length,pixels);
+          pixels=ReadBlobStream(image,length,GetQuantumPixels(quantum_info),
+            &count);
         }
         if (image->previous == (Image *) NULL)
           {
@@ -927,13 +956,18 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
         length=GetQuantumExtent(canvas_image,quantum_info,BlackQuantum);
         for (i=0; i < (ssize_t) scene; i++)
           for (y=0; y < (ssize_t) image->extract_info.height; y++)
-            if (ReadBlob(image,length,pixels) != (ssize_t) length)
+          {
+            pixels=ReadBlobStream(image,length,GetQuantumPixels(quantum_info),
+              &count);
+            if (count != (ssize_t) length)
               {
                 ThrowFileException(exception,CorruptImageError,
                   "UnexpectedEndOfFile",image->filename);
                 break;
               }
-        count=ReadBlob(image,length,pixels);
+          }
+        pixels=ReadBlobStream(image,length,GetQuantumPixels(quantum_info),
+          &count);
         for (y=0; y < (ssize_t) image->extract_info.height; y++)
         {
           register const IndexPacket
@@ -987,7 +1021,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
               if (SyncAuthenticPixels(image,exception) == MagickFalse)
                 break;
            }
-          count=ReadBlob(image,length,pixels);
+          pixels=ReadBlobStream(image,length,GetQuantumPixels(quantum_info),
+            &count);
         }
         if (image->previous == (Image *) NULL)
           {
@@ -1009,13 +1044,18 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
             length=GetQuantumExtent(canvas_image,quantum_info,AlphaQuantum);
             for (i=0; i < (ssize_t) scene; i++)
               for (y=0; y < (ssize_t) image->extract_info.height; y++)
-                if (ReadBlob(image,length,pixels) != (ssize_t) length)
+              {
+                pixels=ReadBlobStream(image,length,
+                  GetQuantumPixels(quantum_info),&count);
+                if (count != (ssize_t) length)
                   {
                     ThrowFileException(exception,CorruptImageError,
                       "UnexpectedEndOfFile",image->filename);
                     break;
                   }
-            count=ReadBlob(image,length,pixels);
+              }
+            pixels=ReadBlobStream(image,length,GetQuantumPixels(quantum_info),
+              &count);
             for (y=0; y < (ssize_t) image->extract_info.height; y++)
             {
               register const PixelPacket
@@ -1060,7 +1100,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
                   if (SyncAuthenticPixels(image,exception) == MagickFalse)
                     break;
                }
-              count=ReadBlob(image,length,pixels);
+              pixels=ReadBlobStream(image,length,GetQuantumPixels(quantum_info),
+                &count);
             }
             if (image->previous == (Image *) NULL)
               {
