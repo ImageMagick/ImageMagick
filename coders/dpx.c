@@ -1235,7 +1235,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
       if (status == MagickFalse)
         continue;
-      pixels=ReadBlobStream(image,length,GetQuantumPixels(quantum_info),
+      pixels=ReadBlobStream(image,extent,GetQuantumPixels(quantum_info),
         &count);
       if (count != (ssize_t) extent)
         status=MagickFalse;
