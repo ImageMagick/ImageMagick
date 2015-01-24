@@ -5637,9 +5637,9 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     }
                 }
 
+              }
             chunk=(unsigned char *) RelinquishMagickMemory(chunk);
             continue;
-          }
           }
         if (memcmp(type,mng_SAVE,4) == 0)
           {
