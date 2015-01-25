@@ -170,6 +170,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
       quantum_type=CMYKAQuantum;
       image->alpha_trait=BlendPixelTrait;
     }
+  pixels=NULL;
   if (image_info->number_scenes != 0)
     while (image->scene < image_info->scene)
     {
