@@ -47,6 +47,7 @@
 #include "magick/color.h"
 #include "magick/color-private.h"
 #include "magick/colormap.h"
+#include "magick/colormap-private.h"
 #include "magick/colorspace.h"
 #include "magick/colorspace-private.h"
 #include "magick/exception.h"
@@ -492,7 +493,10 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
               break;
             indexes=GetAuthenticIndexQueue(image);
             for (x=0; x < (ssize_t) image->columns; x++)
-              SetPixelIndex(indexes+x,*p++);
+            {
+              SetPixelIndex(indexes+x,ConstrainColormapIndex(image,*p));
+              p++;
+            }
             if ((image->columns % 2) != 0)
               p++;
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
