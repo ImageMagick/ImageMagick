@@ -1,6 +1,8 @@
 2014-01-24  6.9.0-5 Dirk Lemstra <dirk@lem.....org>
   * Fixed iccColorProfile() in Magick++ (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=26910).
+  * Fixed infinite loop in HDR reader (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=26929).
 
 2014-01-23  6.9.0-5 Glenn Randers-Pehrson <glennrp@image...>
   * Check lengths of certain MNG chunks before reading them.
