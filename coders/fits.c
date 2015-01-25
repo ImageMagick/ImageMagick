@@ -392,6 +392,10 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
       c=ReadBlobByte(image);
     if (fits_info.extend == MagickFalse)
       break;
+    if ((fits_info.bits_per_pixel != 8) && (fits_info.bits_per_pixel != 16) &&
+        (fits_info.bits_per_pixel != 32) && (fits_info.bits_per_pixel != 64) &&
+        (fits_info.bits_per_pixel != -32) && (fits_info.bits_per_pixel != -64))
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     number_pixels=(MagickSizeType) fits_info.columns*fits_info.rows;
     if ((fits_info.simple != MagickFalse) && (fits_info.number_axes >= 1) &&
         (fits_info.number_axes <= 4) && (number_pixels != 0))
@@ -471,7 +475,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
       if (image->previous == (Image *) NULL)
         {
           status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
-                image->rows);
+            image->rows);
           if (status == MagickFalse)
             break;
         }
