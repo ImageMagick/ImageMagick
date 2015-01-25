@@ -1857,7 +1857,7 @@ MagickExport Image *HoughLineImage(const Image *image,const size_t width,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if (GetPixelIntensity(image,p) > (QuantumRange/2))
+      if (GetPixelIntensity(image,p) > (QuantumRange/2.0))
         {
           register ssize_t
             i;
