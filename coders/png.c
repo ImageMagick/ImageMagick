@@ -4673,6 +4673,9 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
   status=SetImageProgress(image,LoadImagesTag,2*TellBlob(image),
     2*GetBlobSize(image));
 
+  if (status == MagickFalse)
+    return((Image *) NULL);
+
   if (logging != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
       "  exit ReadOneJNGImage(); unique_filenames=%d",unique_filenames);
@@ -4997,7 +5000,10 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
            type[0],type[1],type[2],type[3],(double) length);
 
         if (length > PNG_UINT_31_MAX)
-          status=MagickFalse;
+          {
+            status=MagickFalse;
+            break;
+          }
 
         if (count == 0)
           ThrowReaderException(CorruptImageError,"CorruptImage");
@@ -12173,8 +12179,15 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
         ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
 
       (void) CopyMagickString(jpeg_image->magick,"JPEG",MaxTextExtent);
+
       status=SeparateImageChannel(jpeg_image,OpacityChannel);
+      if (status == MagickFalse)
+        ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+
       status=NegateImage(jpeg_image,MagickFalse);
+      if (status == MagickFalse)
+        ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+
       jpeg_image->matte=MagickFalse;
 
       jpeg_image_info->type=GrayscaleType;
@@ -12226,9 +12239,13 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
           /* Encode opacity as a grayscale PNG blob */
           status=OpenBlob(jpeg_image_info,jpeg_image,WriteBinaryBlobMode,
             &image->exception);
+          if (status == MagickFalse)
+            ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+
           if (logging != MagickFalse)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "  Creating PNG blob.");
+
           length=0;
 
           (void) CopyMagickString(jpeg_image_info->magick,"PNG",MaxTextExtent);
@@ -12592,6 +12609,9 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
       "  Created jpeg_image, %.20g x %.20g.",(double) jpeg_image->columns,
       (double) jpeg_image->rows);
+
+  if (status == MagickFalse)
+    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
 
   if (jng_color_type == 8 || jng_color_type == 12)
     jpeg_image_info->type=GrayscaleType;
