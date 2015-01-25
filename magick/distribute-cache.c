@@ -222,6 +222,7 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
     result->ai_protocol);
   if (client_socket == -1)
     {
+      freeaddrinfo(result);
       (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
         "DistributedPixelCache","'%s'",hostname);
       return(-1);
