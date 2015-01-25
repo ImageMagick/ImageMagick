@@ -1398,6 +1398,9 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
           bzip_info.avail_out=(unsigned int) (packet_size*image->columns);
           do
           {
+            int
+              code;
+
             if (bzip_info.avail_in == 0)
               {
                 bzip_info.next_in=(char *) compress_pixels;
@@ -1410,7 +1413,13 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                 bzip_info.avail_in=(unsigned int) ReadBlob(image,length,
                   (unsigned char *) bzip_info.next_in);
               }
-            if (BZ2_bzDecompress(&bzip_info) == BZ_STREAM_END)
+            code=BZ2_bzDecompress(&bzip_info);
+            if (code < 0)
+              {
+                status=MagickFalse;
+                break;
+              }
+            if (code == BZ_STREAM_END)
               break;
           } while (bzip_info.avail_out != 0);
           (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
@@ -1460,6 +1469,9 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
           zip_info.avail_out=(uInt) (packet_size*image->columns);
           do
           {
+            int
+              code;
+
             if (zip_info.avail_in == 0)
               {
                 zip_info.next_in=compress_pixels;
@@ -1472,7 +1484,13 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                 zip_info.avail_in=(unsigned int) ReadBlob(image,length,
                   zip_info.next_in);
               }
-            if (inflate(&zip_info,Z_SYNC_FLUSH) == Z_STREAM_END)
+            code=inflate(&zip_info,Z_SYNC_FLUSH);
+            if (code < 0)
+              {
+                status=MagickFalse;
+                break;
+              }
+            if (code == Z_STREAM_END)
               break;
           } while (zip_info.avail_out != 0);
           (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
