@@ -371,7 +371,15 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         ThrowReaderException(CorruptImageError,"CorruptImage");
     }
   num_pad_bytes = (size_t) (img_offset - TellBlob( image ));
-  while (num_pad_bytes--) ReadBlobByte( image );
+  while (num_pad_bytes-- != 0)
+  {
+    int
+      c;
+
+    c=ReadBlobByte(image);
+    if (c == EOF)
+      break;
+  }
   /*
     Read image header.
   */
