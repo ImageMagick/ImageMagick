@@ -274,7 +274,7 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (value_expected == MagickFalse)
             continue;
           p=value;
-          while ((c != '\n') && (c != '\0'))
+          while ((c != '\n') && (c != '\0') && (c != EOF))
           {
             if ((size_t) (p-value) < (MaxTextExtent-1))
               *p++=c;
@@ -319,18 +319,20 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     chromaticity[6],
                     white_point[2];
 
-                  (void) sscanf(value,"%g %g %g %g %g %g %g %g",
-                    &chromaticity[0],&chromaticity[1],&chromaticity[2],
-                    &chromaticity[3],&chromaticity[4],&chromaticity[5],
-                    &white_point[0],&white_point[1]);
-                  image->chromaticity.red_primary.x=chromaticity[0];
-                  image->chromaticity.red_primary.y=chromaticity[1];
-                  image->chromaticity.green_primary.x=chromaticity[2];
-                  image->chromaticity.green_primary.y=chromaticity[3];
-                  image->chromaticity.blue_primary.x=chromaticity[4];
-                  image->chromaticity.blue_primary.y=chromaticity[5];
-                  image->chromaticity.white_point.x=white_point[0],
-                  image->chromaticity.white_point.y=white_point[1];
+                  if (sscanf(value,"%g %g %g %g %g %g %g %g",&chromaticity[0],
+                      &chromaticity[1],&chromaticity[2],&chromaticity[3],
+                      &chromaticity[4],&chromaticity[5],&white_point[0],
+                      &white_point[1]) == 8)
+                    {
+                      image->chromaticity.red_primary.x=chromaticity[0];
+                      image->chromaticity.red_primary.y=chromaticity[1];
+                      image->chromaticity.green_primary.x=chromaticity[2];
+                      image->chromaticity.green_primary.y=chromaticity[3];
+                      image->chromaticity.blue_primary.x=chromaticity[4];
+                      image->chromaticity.blue_primary.y=chromaticity[5];
+                      image->chromaticity.white_point.x=white_point[0],
+                      image->chromaticity.white_point.y=white_point[1];
+                    }
                   break;
                 }
               (void) FormatLocaleString(tag,MaxTextExtent,"hdr:%s",keyword);
@@ -349,9 +351,11 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     height,
                     width;
 
-                  (void) sscanf(value,"%d +X %d",&height,&width);
-                  image->columns=(size_t) width;
-                  image->rows=(size_t) height;
+                  if (sscanf(value,"%d +X %d",&height,&width) == 2)
+                    {
+                      image->columns=(size_t) width;
+                      image->rows=(size_t) height;
+                    }
                   break;
                 }
               (void) FormatLocaleString(tag,MaxTextExtent,"hdr:%s",keyword);
