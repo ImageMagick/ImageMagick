@@ -115,7 +115,8 @@ static SplayTreeInfo
   *magick_list = (SplayTreeInfo *) NULL;
 
 static volatile MagickBooleanType
-  instantiate_magickcore = MagickFalse;
+  instantiate_magickcore = MagickFalse,
+  magickcore_signal_in_progress = MagickFalse;
 
 /*
   Forward declarations.
@@ -1161,11 +1162,10 @@ static SignalHandler *SetMagickSignalHandler(int signal_number,
 
 static void MagickSignalHandler(int signal_number)
 {
-#if !defined(MAGICKCORE_HAVE_SIGACTION)
-  (void) signal(signal_number,SIG_IGN);
-#endif
+  if (magickcore_signal_in_progress != MagickFalse)
+    (void) SetMagickSignalHandler(signal_number,signal_handlers[signal_number]);
+  magickcore_signal_in_progress=MagickTrue;
   AsynchronousResourceComponentTerminus();
-  (void) SetMagickSignalHandler(signal_number,signal_handlers[signal_number]);
 #if defined(SIGQUIT)
   if (signal_number == SIGQUIT)
     abort();
