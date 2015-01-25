@@ -8,6 +8,8 @@
 2014-01-18  6.9.0-5 Cristy  <quetzlzacatenango@image...>
   * Remove possible resource memory leak in a multi-threaded program (bug
     report and patch from David Chapman <d...@acm.org>.
+  * Small optimization to pixel cache.
+  * More image sanity checks.
 
 2014-01-16  6.9.0-4 Cristy  <quetzlzacatenango@image...>
   * New version 6.9.0-4, SVN revision 17697.
