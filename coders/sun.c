@@ -47,6 +47,7 @@
 #include "MagickCore/color.h"
 #include "MagickCore/color-private.h"
 #include "MagickCore/colormap.h"
+#include "MagickCore/colormap-private.h"
 #include "MagickCore/colorspace.h"
 #include "MagickCore/colorspace-private.h"
 #include "MagickCore/exception.h"
@@ -495,7 +496,8 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
               break;
             for (x=0; x < (ssize_t) image->columns; x++)
             {
-              SetPixelIndex(image,*p++,q);
+              SetPixelIndex(image,ConstrainColormapIndex(image,*p,exception),q);
+              p++;
               q+=GetPixelChannels(image);
             }
             if ((image->columns % 2) != 0)
