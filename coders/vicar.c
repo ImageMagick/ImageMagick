@@ -275,6 +275,8 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
   while (count < (ssize_t) length)
   {
     c=ReadBlobByte(image);
+    if (c == EOF)
+      break;
     count++;
   }
   if ((image->columns == 0) || (image->rows == 0))
