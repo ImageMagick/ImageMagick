@@ -319,10 +319,14 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     chromaticity[6],
                     white_point[2];
 
-                  if (sscanf(value,"%g %g %g %g %g %g %g %g",&chromaticity[0],
-                      &chromaticity[1],&chromaticity[2],&chromaticity[3],
-                      &chromaticity[4],&chromaticity[5],&white_point[0],
-                      &white_point[1]) == 8)
+                  int
+                    count;
+
+                  count=sscanf(value,"%g %g %g %g %g %g %g %g",&chromaticity[0],
+                    &chromaticity[1],&chromaticity[2],&chromaticity[3],
+                    &chromaticity[4],&chromaticity[5],&white_point[0],
+                    &white_point[1]);
+                  if (count == 8)
                     {
                       image->chromaticity.red_primary.x=chromaticity[0];
                       image->chromaticity.red_primary.y=chromaticity[1];
