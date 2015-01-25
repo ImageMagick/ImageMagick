@@ -4732,6 +4732,9 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
   status=SetImageProgress(image,LoadImagesTag,2*TellBlob(image),
     2*GetBlobSize(image));
 
+  if (status == MagickFalse)
+    return((Image *) NULL);
+
   if (logging != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
       "  exit ReadOneJNGImage()");
@@ -5056,7 +5059,10 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
            type[0],type[1],type[2],type[3],(double) length);
 
         if (length > PNG_UINT_31_MAX)
-          status=MagickFalse;
+          {
+            status=MagickFalse;
+            break;
+          }
 
         if (count == 0)
           ThrowReaderException(CorruptImageError,"CorruptImage");
@@ -10887,6 +10893,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           status=SetImageProgress(image,LoadImageTag,
               (MagickOffsetType) (pass * image->rows + y),
               num_passes * image->rows);
+
           if (status == MagickFalse)
             break;
         }
@@ -10948,6 +10955,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
             status=SetImageProgress(image,LoadImageTag,
               (MagickOffsetType) (pass * image->rows + y),
               num_passes * image->rows);
+
             if (status == MagickFalse)
               break;
             }
@@ -11014,6 +11022,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                 status=SetImageProgress(image,LoadImageTag,
                   (MagickOffsetType) (pass * image->rows + y),
                   num_passes * image->rows);
+
                 if (status == MagickFalse)
                   break;
               }
@@ -11087,6 +11096,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                 status=SetImageProgress(image,LoadImageTag,
                   (MagickOffsetType) (pass * image->rows + y),
                   num_passes * image->rows);
+
                 if (status == MagickFalse)
                   break;
               }
@@ -12174,7 +12184,8 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
 
   status=MagickTrue;
   transparent=image_info->type==GrayscaleAlphaType ||
-     image_info->type==TrueColorAlphaType || image->alpha_trait != UndefinedPixelTrait;
+     image_info->type==TrueColorAlphaType ||
+     image->alpha_trait != UndefinedPixelTrait;
 
   jng_alpha_sample_depth = 0;
 
@@ -12261,6 +12272,9 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
           /* Encode alpha as a grayscale PNG blob */
           status=OpenBlob(jpeg_image_info,jpeg_image,WriteBinaryBlobMode,
             exception);
+          if (status == MagickFalse)
+            ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+ 
           if (logging != MagickFalse)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "  Creating PNG blob.");
@@ -12286,6 +12300,9 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
 
           status=OpenBlob(jpeg_image_info,jpeg_image,WriteBinaryBlobMode,
             exception);
+          if (status == MagickFalse)
+            ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+ 
 
           (void) CopyMagickString(jpeg_image_info->magick,"JPEG",MaxTextExtent);
           (void) CopyMagickString(jpeg_image->magick,"JPEG",MaxTextExtent);
@@ -12624,6 +12641,9 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
       "  Created jpeg_image, %.20g x %.20g.",(double) jpeg_image->columns,
       (double) jpeg_image->rows);
+
+  if (status == MagickFalse)
+    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
 
   if (jng_color_type == 8 || jng_color_type == 12)
     jpeg_image_info->type=GrayscaleType;
