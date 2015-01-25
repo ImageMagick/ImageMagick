@@ -175,6 +175,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       quantum_type=RGBOQuantum;
       canvas_image->alpha_trait=BlendPixelTrait;
     }
+  pixels=NULL;
   if (image_info->number_scenes != 0)
     while (image->scene < image_info->scene)
     {
