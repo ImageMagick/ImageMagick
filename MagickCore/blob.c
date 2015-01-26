@@ -140,7 +140,7 @@ struct _BlobInfo
   StreamHandler
     stream;
 
-  void
+  unsigned char
     *data;
 
   MagickBooleanType
@@ -683,7 +683,7 @@ MagickExport void *DetachBlob(BlobInfo *blob_info)
   if (blob_info->mapped != MagickFalse)
     {
       (void) UnmapBlob(blob_info->data,blob_info->length);
-      blob_info->data=(void *) NULL;
+      blob_info->data=(unsigned char *) NULL;
       RelinquishMagickResource(MapResource,blob_info->length);
     }
   blob_info->mapped=MagickFalse;
@@ -3743,7 +3743,7 @@ MagickExport MagickOffsetType SeekBlob(Image *image,
         break;
       image->blob->extent=(size_t) (image->blob->offset+image->blob->quantum);
       image->blob->quantum<<=1;
-      image->blob->data=ResizeQuantumMemory(image->blob->data,
+      image->blob->data=(unsigned char *) ResizeQuantumMemory(image->blob->data,
         image->blob->extent+1,sizeof(*image->blob->data));
       (void) SyncBlob(image);
       if (image->blob->data == NULL)
