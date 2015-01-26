@@ -19,7 +19,7 @@ Magick::Blob::Blob(void)
 {
 }
 
-Magick::Blob::Blob(const void* data_,size_t length_)
+Magick::Blob::Blob(const void* data_,const size_t length_)
   : _blobRef(new Magick::BlobRef(data_,length_))
 {
 }
@@ -124,7 +124,7 @@ size_t Magick::Blob::length(void) const
   return(_blobRef->_length);
 }
 
-void Magick::Blob::update(const void* data_,size_t length_)
+void Magick::Blob::update(const void* data_,const size_t length_)
 {
   bool
     doDelete; 
@@ -144,7 +144,7 @@ void Magick::Blob::update(const void* data_,size_t length_)
   _blobRef=new Magick::BlobRef(data_,length_);
 }
 
-void Magick::Blob::updateNoCopy(void* data_,size_t length_,
+void Magick::Blob::updateNoCopy(void* data_,const size_t length_,
   Magick::Blob::Allocator allocator_)
 {
   bool

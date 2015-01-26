@@ -30,7 +30,7 @@ namespace Magick
     Blob(void);
 
     // Construct object with data, making a copy of the supplied data.
-    Blob(const void* data_,size_t length_);
+    Blob(const void* data_,const size_t length_);
 
     // Copy constructor (reference counted)
     Blob(const Blob& blob_);
@@ -58,7 +58,7 @@ namespace Magick
 
     // Update object contents, making a copy of the supplied data.
     // Any existing data in the object is deallocated.
-    void update(const void* data_,size_t length_);
+    void update(const void* data_,const size_t length_);
 
     // Update object contents, using supplied pointer directly (no
     // copy). Any existing data in the object is deallocated.  The user
@@ -67,7 +67,7 @@ namespace Magick
     // Specify allocator_ as "MallocAllocator" if memory is allocated
     // via the C language malloc() function, or "NewAllocator" if
     // memory is allocated via C++ 'new'.
-    void updateNoCopy(void* data_,size_t length_,
+    void updateNoCopy(void* data_,const size_t length_,
       Allocator allocator_=NewAllocator);
 
   private:
