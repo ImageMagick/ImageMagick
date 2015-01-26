@@ -180,7 +180,7 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
       quantum_type=RGBAQuantum;
       image->alpha_trait=BlendPixelTrait;
     }
-  pixels=NULL;
+  pixels=(const void *) NULL;
   if (image_info->number_scenes != 0)
     while (image->scene < image_info->scene)
     {
