@@ -30,7 +30,7 @@ namespace Magick
     Blob(void);
 
     // Construct object with data, making a copy of the supplied data.
-    Blob(const void* data_,size_t length_);
+    Blob(const void* data_,const size_t length_);
 
     // Copy constructor (reference counted)
     Blob(const Blob& blob_);

@@ -23,7 +23,7 @@ namespace Magick
   public:
 
     // Construct with data, making private copy of data
-    BlobRef(const void* data_,size_t length_);
+    BlobRef(const void* data_,const size_t length_);
 
     // Destructor (actually destroys data)
     ~BlobRef(void);
