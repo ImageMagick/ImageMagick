@@ -1116,7 +1116,7 @@ MagickExport void *FileToBlob(const char *filename,const size_t extent,
 */
 
 static inline ssize_t WriteBlobStream(Image *image,const size_t length,
-  const unsigned char *data)
+  const void *data)
 {
   MagickSizeType
     extent;
@@ -1125,10 +1125,10 @@ static inline ssize_t WriteBlobStream(Image *image,const size_t length,
     *q;
 
   assert(image->blob != (BlobInfo *) NULL);
+  assert(image->blob->type != UndefinedStream);
+  assert(data != NULL);
   if (image->blob->type != BlobStream)
     return(WriteBlob(image,length,data));
-  assert(image->blob->type != UndefinedStream);
-  assert(data != (void *) NULL);
   extent=(MagickSizeType) (image->blob->offset+(MagickOffsetType) length);
   if (extent >= image->blob->extent)
     {
