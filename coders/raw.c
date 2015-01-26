@@ -172,6 +172,7 @@ static Image *ReadRAWImage(const ImageInfo *image_info,ExceptionInfo *exception)
   scene=0;
   count=0;
   length=0;
+  pixels=(const void *) NULL;
   do
   {
     /*

@@ -179,6 +179,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
   scene=0;
   count=0;
   length=0;
+  pixels=(const void *) NULL;
   do
   {
     /*
