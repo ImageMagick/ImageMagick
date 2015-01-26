@@ -160,6 +160,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
   quantum_info=AcquireQuantumInfo(image_info,canvas_image);
   if (quantum_info == (QuantumInfo *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+  pixels=(const void *) NULL;
   if (image_info->number_scenes != 0)
     while (image->scene < image_info->scene)
     {
@@ -179,7 +180,6 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
   scene=0;
   count=0;
   length=0;
-  pixels=(const void *) NULL;
   do
   {
     /*
