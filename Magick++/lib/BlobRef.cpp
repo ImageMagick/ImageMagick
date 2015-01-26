@@ -16,7 +16,7 @@
 
 #include <string.h>
 
-Magick::BlobRef::BlobRef(const void* data_,size_t length_)
+Magick::BlobRef::BlobRef(const void* data_,const size_t length_)
   : allocator(Magick::Blob::NewAllocator),
     length(length_),
     data((void*) NULL),

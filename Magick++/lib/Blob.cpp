@@ -20,7 +20,7 @@ Magick::Blob::Blob(void)
 {
 }
 
-Magick::Blob::Blob(const void* data_,size_t length_)
+Magick::Blob::Blob(const void* data_,const size_t length_)
   : _blobRef(new Magick::BlobRef(data_, length_))
 {
 }
