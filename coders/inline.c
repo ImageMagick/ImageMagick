@@ -267,6 +267,9 @@ static MagickBooleanType WriteINLINEImage(const ImageInfo *image_info,
   const MagickInfo
     *magick_info;
 
+  Image
+    *write_image;
+
   ImageInfo
     *write_info;
 
@@ -289,8 +292,29 @@ static MagickBooleanType WriteINLINEImage(const ImageInfo *image_info,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  /*
+    Write base64-encoded image.
+  */
+  write_info=CloneImageInfo(image_info);
+  (void) SetImageInfo(write_info,1,exception);
+  if (LocaleCompare(write_info->magick,"INLINE") == 0)
+    (void) CopyMagickString(write_info->magick,image->magick,MaxTextExtent);
+  magick_info=GetMagickInfo(write_info->magick,exception);
+  if ((magick_info == (const MagickInfo *) NULL) ||
+      (GetMagickMimeType(magick_info) == (const char *) NULL))
+    ThrowWriterException(CorruptImageError,"ImageTypeNotSupported");
+  (void) CopyMagickString(image->filename,write_info->filename,MaxTextExtent);
   blob_length=2048;
-  blob=(unsigned char *) ImageToBlob(image_info,image,&blob_length,exception);
+  write_image=CloneImage(image,0,0,MagickTrue,exception);
+  if (write_image == (Image *) NULL)
+    {
+      write_info=DestroyImageInfo(write_info);
+      return(MagickTrue);
+    }
+  blob=(unsigned char *) ImageToBlob(write_info,write_image,&blob_length,
+    exception);
+  write_image=DestroyImage(write_image);
+  write_info=DestroyImageInfo(write_info);
   if (blob == (unsigned char *) NULL)
     return(MagickFalse);
   encode_length=0;
@@ -298,26 +322,9 @@ static MagickBooleanType WriteINLINEImage(const ImageInfo *image_info,
   blob=(unsigned char *) RelinquishMagickMemory(blob);
   if (base64 == (char *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
-  write_info=CloneImageInfo(image_info);
-  /*
-    Write base64-encoded image.
-  */
-  (void) SetImageInfo(write_info,1,exception);
-  (void) CopyMagickString(image->filename,write_info->filename,MaxTextExtent);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
-  write_info=DestroyImageInfo(write_info);
   if (status == MagickFalse)
-    {
-      base64=DestroyString(base64);
-      return(status);
-    }
-  magick_info=GetMagickInfo(image->magick,exception);
-  if ((magick_info == (const MagickInfo *) NULL) ||
-      (GetMagickMimeType(magick_info) == (const char *) NULL))
-    {
-      base64=DestroyString(base64);
-      ThrowWriterException(CorruptImageError,"ImageTypeNotSupported");
-    }
+    return(status);
   (void) FormatLocaleString(message,MaxTextExtent,"data:%s;base64,",
     GetMagickMimeType(magick_info));
   (void) WriteBlobString(image,message);
