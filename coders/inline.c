@@ -291,9 +291,8 @@ static MagickBooleanType WriteINLINEImage(const ImageInfo *image_info,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   blob_length=2048;
-  exception=AcquireExceptionInfo();
+  exception=(&image->exception);
   blob=(unsigned char *) ImageToBlob(image_info,image,&blob_length,exception);
-  exception=DestroyExceptionInfo(exception);
   if (blob == (unsigned char *) NULL)
     return(MagickFalse);
   encode_length=0;
@@ -305,16 +304,16 @@ static MagickBooleanType WriteINLINEImage(const ImageInfo *image_info,
   /*
     Write base64-encoded image.
   */
-  (void) SetImageInfo(write_info,1,&image->exception);
+  (void) SetImageInfo(write_info,1,exception);
   (void) CopyMagickString(image->filename,write_info->filename,MaxTextExtent);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   write_info=DestroyImageInfo(write_info);
   if (status == MagickFalse)
     {
       base64=DestroyString(base64);
       return(status);
     }
-  magick_info=GetMagickInfo(image->magick,&image->exception);
+  magick_info=GetMagickInfo(image->magick,exception);
   if ((magick_info == (const MagickInfo *) NULL) ||
       (GetMagickMimeType(magick_info) == (const char *) NULL))
     {
