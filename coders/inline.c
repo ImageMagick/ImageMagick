@@ -267,9 +267,6 @@ static MagickBooleanType WriteINLINEImage(const ImageInfo *image_info,
   const MagickInfo
     *magick_info;
 
-  ExceptionInfo
-    *sans_exception;
-
   ImageInfo
     *write_info;
 
@@ -293,10 +290,7 @@ static MagickBooleanType WriteINLINEImage(const ImageInfo *image_info,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   blob_length=2048;
-  sans_exception=AcquireExceptionInfo();
-  blob=(unsigned char *) ImageToBlob(image_info,image,&blob_length,
-    sans_exception);
-  sans_exception=DestroyExceptionInfo(sans_exception);
+  blob=(unsigned char *) ImageToBlob(image_info,image,&blob_length,exception);
   if (blob == (unsigned char *) NULL)
     return(MagickFalse);
   encode_length=0;
