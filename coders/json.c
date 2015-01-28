@@ -708,7 +708,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
       (GetMagickDescription(magick_info) != (const char *) NULL))
     (void) FormatLocaleFile(file,"    \"formatDescription\": \"%s\",\n",
       GetMagickDescription(magick_info));
-  if ((magick_info == (const MagickInfo *) NULL) ||
+  if ((magick_info != (const MagickInfo *) NULL) &&
       (GetMagickMimeType(magick_info) != (const char *) NULL))
     (void) FormatLocaleFile(file,"    \"mimeType\": \"%s\",\n",
       GetMagickMimeType(magick_info));
