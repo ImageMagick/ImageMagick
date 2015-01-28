@@ -1386,7 +1386,10 @@ RestoreMSCWarning
       {
         if (image_info->number_scenes != 0)
           if (image->scene >= (image_info->scene+image_info->number_scenes-1))
-            break;
+            {
+              quantum_info=DestroyQuantumInfo(quantum_info);
+              break;
+            }
         goto next_tiff_frame;
       }
     method=ReadGenericMethod;
