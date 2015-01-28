@@ -266,7 +266,6 @@ static const struct ReferenceFormats
     { "ICO", UndefinedCompression, 0.0 },
     { "ICON", UndefinedCompression, 0.0 },
     { "INFO", UndefinedCompression, 0.0 },
-    { "INLINE", UndefinedCompression, 0.0 },
     { "JBG", UndefinedCompression, 0.0 },
     { "JNG", UndefinedCompression, 0.004 },
     { "JNG", JPEGCompression, 0.004 },
