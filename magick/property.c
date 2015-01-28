@@ -1435,8 +1435,7 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
                         break;
                       }
                   }
-                  (void) FormatLocaleString(key,MaxTextExtent,"%s",
-                    description);
+                  (void) FormatLocaleString(key,MaxTextExtent,"%s",description);
                   if (level == 2)
                     (void) SubstituteString(&key,"exif:","exif:thumbnail:");
                   break;
