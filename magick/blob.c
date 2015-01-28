@@ -1569,6 +1569,7 @@ MagickExport unsigned char *ImageToBlob(const ImageInfo *image_info,
           image->blob->exempt=MagickTrue;
           *image->filename='\0';
           status=WriteImage(blob_info,image);
+          InheritException(exception,&image->exception);
           *length=image->blob->length;
           blob=DetachBlob(image->blob);
           if (status == MagickFalse)
@@ -1605,7 +1606,9 @@ MagickExport unsigned char *ImageToBlob(const ImageInfo *image_info,
               status=WriteImage(blob_info,image);
               (void) CloseBlob(image);
               (void) fclose(blob_info->file);
-              if (status != MagickFalse)
+              if (status == MagickFalse)
+                InheritException(exception,&image->exception);
+              else
                 blob=FileToBlob(unique,~0UL,length,exception);
             }
           (void) RelinquishUniqueFileResource(unique);
