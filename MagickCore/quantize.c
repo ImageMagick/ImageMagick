@@ -1532,7 +1532,6 @@ static MagickBooleanType FloydSteinbergDither(Image *image,CubeInfo *cube_info,
         status=MagickFalse;
         continue;
       }
-    q+=(y & 0x01)*GetPixelChannels(image)*image->columns;
     cube=(*cube_info);
     current=pixels[id]+(y & 0x01)*image->columns;
     previous=pixels[id]+((y+1) & 0x01)*image->columns;
@@ -1549,9 +1548,8 @@ static MagickBooleanType FloydSteinbergDither(Image *image,CubeInfo *cube_info,
       ssize_t
         u;
 
-      q-=(y & 0x01)*GetPixelChannels(image);
       u=(y & 0x01) != 0 ? (ssize_t) image->columns-1-x : x;
-      AssociateAlphaPixel(image,&cube,q,&pixel);
+      AssociateAlphaPixel(image,&cube,q+u*GetPixelChannels(image),&pixel);
       if (x > 0)
         {
           pixel.red+=7*current[u-v].red/16;
@@ -1623,14 +1621,18 @@ static MagickBooleanType FloydSteinbergDither(Image *image,CubeInfo *cube_info,
       */
       index=(size_t) cube.cache[i];
       if (image->storage_class == PseudoClass)
-        SetPixelIndex(image,(Quantum) index,q);
+        SetPixelIndex(image,(Quantum) index,q+u*GetPixelChannels(image));
       if (cube.quantize_info->measure_error == MagickFalse)
         {
-          SetPixelRed(image,ClampToQuantum(image->colormap[index].red),q);
-          SetPixelGreen(image,ClampToQuantum(image->colormap[index].green),q);
-          SetPixelBlue(image,ClampToQuantum(image->colormap[index].blue),q);
+          SetPixelRed(image,ClampToQuantum(image->colormap[index].red),
+            q+u*GetPixelChannels(image));
+          SetPixelGreen(image,ClampToQuantum(image->colormap[index].green),
+            q+u*GetPixelChannels(image));
+          SetPixelBlue(image,ClampToQuantum(image->colormap[index].blue),
+            q+u*GetPixelChannels(image));
           if (cube.associate_alpha != MagickFalse)
-            SetPixelAlpha(image,ClampToQuantum(image->colormap[index].alpha),q);
+            SetPixelAlpha(image,ClampToQuantum(image->colormap[index].alpha),
+              q+u*GetPixelChannels(image));
         }
       if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
         status=MagickFalse;
@@ -1653,7 +1655,6 @@ static MagickBooleanType FloydSteinbergDither(Image *image,CubeInfo *cube_info,
           if (proceed == MagickFalse)
             status=MagickFalse;
         }
-      q+=((y+1) & 0x01)*GetPixelChannels(image);
     }
   }
   image_view=DestroyCacheView(image_view);
