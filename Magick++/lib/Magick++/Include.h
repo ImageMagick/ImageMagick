@@ -1270,6 +1270,7 @@ namespace Magick
   using MagickCore::GetNextValueInLinkedList;
   using MagickCore::GetNumberOfElementsInLinkedList;
   using MagickCore::GetPixelBlue;
+  using MagickCore::GetPixelChannelOffset;
   using MagickCore::GetPixelChannelTraits;
   using MagickCore::GetPixelGreen;
   using MagickCore::GetPixelInfo;
