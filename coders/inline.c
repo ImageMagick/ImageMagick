@@ -326,7 +326,10 @@ static MagickBooleanType WriteINLINEImage(const ImageInfo *image_info,
   */
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
-    return(status);
+    {
+      base64=DestroyString(base64);
+      return(status);
+    }
   (void) FormatLocaleString(message,MaxTextExtent,"data:%s;base64,",
     GetMagickMimeType(magick_info));
   (void) WriteBlobString(image,message);
