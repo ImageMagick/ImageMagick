@@ -292,9 +292,6 @@ static MagickBooleanType WriteINLINEImage(const ImageInfo *image_info,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  /*
-    Write base64-encoded image.
-  */
   write_info=CloneImageInfo(image_info);
   (void) SetImageInfo(write_info,1,exception);
   if (LocaleCompare(write_info->magick,"INLINE") == 0)
@@ -322,9 +319,15 @@ static MagickBooleanType WriteINLINEImage(const ImageInfo *image_info,
   blob=(unsigned char *) RelinquishMagickMemory(blob);
   if (base64 == (char *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+  /*
+    Write base64-encoded image.
+  */
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
-    return(status);
+    {
+      base64=DestroyString(base64);
+      return(status);
+    }
   (void) FormatLocaleString(message,MaxTextExtent,"data:%s;base64,",
     GetMagickMimeType(magick_info));
   (void) WriteBlobString(image,message);
