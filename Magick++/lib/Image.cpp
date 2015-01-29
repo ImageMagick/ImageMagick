@@ -960,6 +960,11 @@ MagickCore::DisposeType Magick::Image::gifDisposeMethod(void) const
   return(constImage()->dispose);
 }
 
+bool Magick::Image::hasChannel(const PixelChannel channel) const
+{
+  return (GetPixelChannelTraits(constImage(),channel) != UndefinedPixelTrait);
+}
+
 void Magick::Image::highlightColor(const Color color_)
 {
   std::string
