@@ -276,6 +276,8 @@ namespace Magick
     void gifDisposeMethod(const DisposeType disposeMethod_);
     DisposeType gifDisposeMethod(void) const;
 
+    bool hasChannel(const PixelChannel channel) const;
+
     // When comparing images, emphasize pixel differences with this color.
     void highlightColor(const Color color_);
 
