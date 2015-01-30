@@ -1,3 +1,6 @@
+2015-01-30  6.9.0-5 Glenn Randers-Pehrson <glennrp@image...>
+  * In coders/gif.c, quiet two warnings.
+
 2015-01-24  6.9.0-5 Dirk Lemstra <dirk@lem.....org>
   * Fixed iccColorProfile() in Magick++ (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=26910).
