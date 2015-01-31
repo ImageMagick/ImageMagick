@@ -34,6 +34,8 @@ int main(int,char ** argv)
     if (getenv("SRCDIR") != 0)
       srcdir=getenv("SRCDIR");
 
+	 srcdir="D:\\ImageMagick\\ImageMagick-Windows-6\\Magick++\\tests\\";
+
     //
     // Test readImages and writeImages
     //
@@ -141,6 +143,19 @@ int main(int,char ** argv)
         cout << "Line: " << __LINE__
           << "  Image magick: " << fourth.magick()
           << " is not equal to PDB"
+          << endl;
+      }
+
+    third.magick("");
+    third.write("testmagick_anim_out.ico");
+    fourth.read("testmagick_anim_out.ico");
+
+    if (fourth.magick() != "ICO")
+      {
+        ++failures;
+        cout << "Line: " << __LINE__
+          << "  Image magick: " << fourth.magick()
+          << " is not equal to ICO"
           << endl;
       }
   }

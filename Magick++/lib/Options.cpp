@@ -340,6 +340,12 @@ Magick::InterlaceType Magick::Options::interlaceType(void) const
 
 void Magick::Options::magick(const std::string &magick_)
 {
+  if (magick_.empty())
+  {
+    _imageInfo->filename[0] = '\0';
+    return;
+  }
+
   FormatLocaleString(_imageInfo->filename,MaxTextExtent,"%.1024s:",
     magick_.c_str());
   GetPPException;
