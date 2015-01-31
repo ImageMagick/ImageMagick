@@ -342,7 +342,7 @@ void Magick::Options::magick(const std::string &magick_)
 {
   if (magick_.empty())
   {
-    _imageInfo->filename[0] = '\0';
+    _imageInfo->magick[0] = '\0';
     return;
   }
 
