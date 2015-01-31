@@ -218,9 +218,9 @@ static LZWInfo *AcquireLZWInfo(Image *image,const size_t data_size)
   lzw_info->clear_code=lzw_info->maximum_data_value+1;
   lzw_info->end_code=lzw_info->maximum_data_value+2;
   lzw_info->table[0]=(size_t *) AcquireQuantumMemory(MaximumLZWCode,
-    sizeof(*lzw_info->table));
+    sizeof(**lzw_info->table));
   lzw_info->table[1]=(size_t *) AcquireQuantumMemory(MaximumLZWCode,
-    sizeof(*lzw_info->table));
+    sizeof(**lzw_info->table));
   if ((lzw_info->table[0] == (size_t *) NULL) ||
       (lzw_info->table[1] == (size_t *) NULL))
     {
@@ -1025,7 +1025,16 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (global_colormap == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   if (BitSet((int) flag,0x80) != 0)
-    count=ReadBlob(image,(size_t) (3*global_colors),global_colormap);
+    {
+      count=ReadBlob(image,(size_t) (3*global_colors),global_colormap);
+        if (count != (ssize_t) (3*image->colors))
+          {
+            global_colormap=(unsigned char *) RelinquishMagickMemory(
+              global_colormap);
+            ThrowReaderException(CorruptImageError,
+              "InsufficientImageDataInFile");
+          }
+    }
   delay=0;
   dispose=0;
   duration=0;
