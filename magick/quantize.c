@@ -3354,7 +3354,7 @@ static MagickBooleanType SetGrayscaleImage(Image *image)
         register IndexPacket
           *restrict indexes;
 
-        register const PixelPacket
+        register PixelPacket
           *restrict q;
 
         register ssize_t
