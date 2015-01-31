@@ -143,6 +143,19 @@ int main(int,char ** argv)
           << " is not equal to PDB"
           << endl;
       }
+
+    third.magick("");
+    third.write("testmagick_anim_out.ico");
+    fourth.read("testmagick_anim_out.ico");
+
+    if (fourth.magick() != "ICO")
+      {
+        ++failures;
+        cout << "Line: " << __LINE__
+          << "  Image magick: " << fourth.magick()
+          << " is not equal to ICO"
+          << endl;
+      }
   }
   catch(Exception &error_)
     {
