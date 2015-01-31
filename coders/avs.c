@@ -141,7 +141,6 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read AVS X image.
   */
-  image->alpha_trait=BlendPixelTrait;
   width=ReadBlobMSBLong(image);
   height=ReadBlobMSBLong(image);
   if (EOFBlob(image) != MagickFalse)
