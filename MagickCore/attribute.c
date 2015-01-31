@@ -855,7 +855,7 @@ MagickExport MagickBooleanType IsImageOpaque(const Image *image,
       p+=GetPixelChannels(image);
     }
     if (x < (ssize_t) image->columns)
-     break;
+      break;
   }
   image_view=DestroyCacheView(image_view);
   return(y < (ssize_t) image->rows ? MagickFalse : MagickTrue);

@@ -182,6 +182,8 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         SetPixelRed(image,ScaleCharToQuantum(*p++),q);
         SetPixelGreen(image,ScaleCharToQuantum(*p++),q);
         SetPixelBlue(image,ScaleCharToQuantum(*p++),q);
+        if (GetPixelAlpha(image,q) != OpaqueAlpha)
+          image->alpha_trait=BlendPixelTrait;
         q+=GetPixelChannels(image);
       }
       if (SyncAuthenticPixels(image,exception) == MagickFalse)
