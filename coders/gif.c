@@ -1025,15 +1025,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (global_colormap == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   if (BitSet((int) flag,0x80) != 0)
-    {
-      count=ReadBlob(image,(size_t) (3*global_colors),global_colormap);
-      if (count != (ssize_t) (3*global_colors))
-        {
-          global_colormap=(unsigned char *) RelinquishMagickMemory(
-            global_colormap);
-          ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
-        }
-    }
+    (void) ReadBlob(image,(size_t) (3*global_colors),global_colormap);
   delay=0;
   dispose=0;
   duration=0;
