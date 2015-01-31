@@ -1027,13 +1027,12 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (BitSet((int) flag,0x80) != 0)
     {
       count=ReadBlob(image,(size_t) (3*global_colors),global_colormap);
-        if (count != (ssize_t) (3*image->colors))
-          {
-            global_colormap=(unsigned char *) RelinquishMagickMemory(
-              global_colormap);
-            ThrowReaderException(CorruptImageError,
-              "InsufficientImageDataInFile");
-          }
+      if (count != (ssize_t) (3*global_colors))
+        {
+          global_colormap=(unsigned char *) RelinquishMagickMemory(
+            global_colormap);
+          ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
+        }
     }
   delay=0;
   dispose=0;

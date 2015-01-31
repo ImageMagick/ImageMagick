@@ -110,7 +110,7 @@
 %
 %    Sr, Sg, Sb: Sums of the red, green, and blue component values for all
 %    pixels not classified at a lower depth. The combination of these sums
-%    and n2  will ultimately characterize the mean color of a set of
+%    and n2 will ultimately characterize the mean color of a set of
 %    pixels represented by this node.
 %
 %    E: the distance squared in RGB space between each pixel contained
@@ -441,7 +441,7 @@ static inline void AssociateAlphaPixel(const Image *image,
     alpha;
 
   if ((cube_info->associate_alpha == MagickFalse) ||
-      (GetPixelAlpha(image,pixel)== OpaqueAlpha))
+      (GetPixelAlpha(image,pixel) == OpaqueAlpha))
     {
       alpha_pixel->red=(double) GetPixelRed(image,pixel);
       alpha_pixel->green=(double) GetPixelGreen(image,pixel);
@@ -600,8 +600,8 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info,
             Find closest color among siblings and their children.
           */
           cube.target=pixel;
-          cube.distance=(double) (4.0*(QuantumRange+1.0)*
-            (QuantumRange+1.0)+1.0);
+          cube.distance=(double) (4.0*(QuantumRange+1.0)*(QuantumRange+1.0)+
+            1.0);
           ClosestColor(image,&cube,node_info->parent);
           index=cube.color_number;
           for (i=0; i < (ssize_t) count; i++)
@@ -664,8 +664,8 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info,
         intensity=(double) (GetPixelInfoLuma(q) < (QuantumRange/2.0) ? 0 :
           QuantumRange);
         q->red=intensity;
-        q->green=intensity;
-        q->blue=intensity;
+        q->green=q->red;
+        q->blue=q->red;
         q++;
       }
     }
@@ -717,7 +717,7 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info,
 %
 %    Sr, Sg, Sb : Sums of the red, green, and blue component values for
 %    all pixels not classified at a lower depth. The combination of
-%    these sums and n2  will ultimately characterize the mean color of a
+%    these sums and n2 will ultimately characterize the mean color of a
 %    set of pixels represented by this node.
 %
 %    E: the distance squared in RGB space between each pixel contained
@@ -742,7 +742,7 @@ static inline void SetAssociatedAlpha(const Image *image,CubeInfo *cube_info)
   MagickBooleanType
     associate_alpha;
 
-  associate_alpha=image->alpha_trait != UndefinedPixelTrait ? MagickTrue :
+  associate_alpha=image->alpha_trait == BlendPixelTrait ? MagickTrue :
     MagickFalse;
   if ((cube_info->quantize_info->number_colors == 2) &&
       (cube_info->quantize_info->colorspace == GRAYColorspace))
@@ -1273,7 +1273,7 @@ static size_t DefineImageColormap(Image *image,CubeInfo *cube_info,
             opacity;
 
           opacity=(double) (alpha*QuantumRange*node_info->total_color.alpha);
-          q->alpha=(double) ClampToQuantum((opacity));
+          q->alpha=(double) ClampToQuantum(opacity);
           if (q->alpha == OpaqueAlpha)
             {
               q->red=(double) ClampToQuantum(alpha*QuantumRange*
@@ -1664,7 +1664,7 @@ static MagickBooleanType FloydSteinbergDither(Image *image,CubeInfo *cube_info,
 
 static MagickBooleanType
   RiemersmaDither(Image *,CacheView *,CubeInfo *,const unsigned int,
-    ExceptionInfo *exception);
+    ExceptionInfo *);
 
 static void Riemersma(Image *image,CacheView *image_view,CubeInfo *cube_info,
   const size_t level,const unsigned int direction,ExceptionInfo *exception)
@@ -2219,8 +2219,8 @@ MagickExport MagickBooleanType GetImageQuantizeError(Image *image,
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      index=1UL*GetPixelIndex(image,p);
-      if (image->alpha_trait != UndefinedPixelTrait)
+      index=GetPixelIndex(image,p);
+      if (image->alpha_trait == BlendPixelTrait)
         {
           alpha=(double) (QuantumScale*GetPixelAlpha(image,p));
           beta=(double) (QuantumScale*image->colormap[index].alpha);
@@ -2360,6 +2360,8 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   if (image->storage_class == PseudoClass)
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
     #pragma omp parallel for schedule(static,4) shared(progress,status) \
@@ -2421,7 +2423,7 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
           (image->colorspace == CMYKColorspace))
         SetPixelBlack(image,PosterizePixel(GetPixelBlack(image,q)),q);
       if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
-          (image->alpha_trait != UndefinedPixelTrait))
+          (image->alpha_trait == BlendPixelTrait))
         SetPixelAlpha(image,PosterizePixel(GetPixelAlpha(image,q)),q);
       q+=GetPixelChannels(image);
     }
@@ -2719,12 +2721,14 @@ MagickExport MagickBooleanType QuantizeImage(const QuantizeInfo *quantize_info,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   maximum_colors=quantize_info->number_colors;
   if (maximum_colors == 0)
     maximum_colors=MaxColormapSize;
   if (maximum_colors > MaxColormapSize)
     maximum_colors=MaxColormapSize;
-  if (image->alpha_trait == UndefinedPixelTrait)
+  if (image->alpha_trait != BlendPixelTrait)
     {
       if ((image->columns*image->rows) <= maximum_colors)
         (void) DirectToColormapImage(image,exception);
@@ -2754,7 +2758,7 @@ MagickExport MagickBooleanType QuantizeImage(const QuantizeInfo *quantize_info,
         colors>>=2;
       if ((quantize_info->dither_method != NoDitherMethod) && (depth > 2))
         depth--;
-      if ((image->alpha_trait != UndefinedPixelTrait) && (depth > 5))
+      if ((image->alpha_trait == BlendPixelTrait) && (depth > 5))
         depth--;
       if (IsImageGray(image,exception) != MagickFalse)
         depth=MaxTreeDepth;
@@ -2839,6 +2843,8 @@ MagickExport MagickBooleanType QuantizeImages(const QuantizeInfo *quantize_info,
   assert(images->signature == MagickSignature);
   if (images->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   if (GetNextImageInList(images) == (Image *) NULL)
     {
       /*
@@ -2941,7 +2947,7 @@ MagickExport MagickBooleanType QuantizeImages(const QuantizeInfo *quantize_info,
 %
 %      size_t QuantizeErrorFlatten(const Image *image,const CubeInfo *cube_info,
 %        const NodeInfo *node_info,const ssize_t offset,
-%        MagickRealType *quantize_error)
+%        double *quantize_error)
 %
 %  A description of each parameter follows.
 %
@@ -2957,7 +2963,7 @@ MagickExport MagickBooleanType QuantizeImages(const QuantizeInfo *quantize_info,
 %
 */
 static size_t QuantizeErrorFlatten(const Image *image,const CubeInfo *cube_info,
-  const NodeInfo *node_info,const ssize_t offset,MagickRealType *quantize_error)
+  const NodeInfo *node_info,const ssize_t offset,double *quantize_error)
 {
   register ssize_t
     i;
@@ -3090,17 +3096,17 @@ static void Reduce(const Image *image,CubeInfo *cube_info,
 %
 */
 
-static int MagickRealTypeCompare(const void *error_p,const void *error_q)
+static int QuantizeErrorCompare(const void *error_p,const void *error_q)
 {
-  MagickRealType
+  double
     *p,
     *q;
 
-  p=(MagickRealType *) error_p;
-  q=(MagickRealType *) error_q;
+  p=(double *) error_p;
+  q=(double *) error_q;
   if (*p > *q)
     return(1);
-  if (fabs((double) (*q-*p)) <= MagickEpsilon)
+  if (fabs(*q-*p) <= MagickEpsilon)
     return(0);
   return(-1);
 }
@@ -3121,25 +3127,24 @@ static void ReduceImageColors(const Image *image,CubeInfo *cube_info)
   cube_info->next_threshold=0.0;
   if (cube_info->colors > cube_info->maximum_colors)
     {
-      MagickRealType
+      double
         *quantize_error;
 
       /*
         Enable rapid reduction of the number of unique colors.
       */
-      quantize_error=(MagickRealType *) AcquireQuantumMemory(cube_info->nodes,
+      quantize_error=(double *) AcquireQuantumMemory(cube_info->nodes,
         sizeof(*quantize_error));
-      if (quantize_error != (MagickRealType *) NULL)
+      if (quantize_error != (double *) NULL)
         {
           (void) QuantizeErrorFlatten(image,cube_info,cube_info->root,0,
             quantize_error);
-          qsort(quantize_error,cube_info->nodes,sizeof(MagickRealType),
-            MagickRealTypeCompare);
+          qsort(quantize_error,cube_info->nodes,sizeof(double),
+            QuantizeErrorCompare);
           if (cube_info->nodes > (110*(cube_info->maximum_colors+1)/100))
             cube_info->next_threshold=quantize_error[cube_info->nodes-110*
               (cube_info->maximum_colors+1)/100];
-          quantize_error=(MagickRealType *) RelinquishMagickMemory(
-            quantize_error);
+          quantize_error=(double *) RelinquishMagickMemory(quantize_error);
         }
   }
   for (span=cube_info->colors; cube_info->colors > cube_info->maximum_colors; )
@@ -3167,8 +3172,8 @@ static void ReduceImageColors(const Image *image,CubeInfo *cube_info)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  RemapImage() replaces the colors of an image with a dither of the colors
-%  provided.
+%  RemapImage() replaces the colors of an image with the closest of the colors
+%  from the reference image.
 %
 %  The format of the RemapImage method is:
 %
@@ -3204,6 +3209,8 @@ MagickExport MagickBooleanType RemapImage(const QuantizeInfo *quantize_info,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(remap_image != (Image *) NULL);
   assert(remap_image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   cube_info=GetCubeInfo(quantize_info,MaxTreeDepth,
     quantize_info->number_colors);
   if (cube_info == (CubeInfo *) NULL)
@@ -3268,6 +3275,8 @@ MagickExport MagickBooleanType RemapImages(const QuantizeInfo *quantize_info,
   assert(images->signature == MagickSignature);
   if (images->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   image=images;
   if (remap_image == (Image *) NULL)
     {
@@ -3319,7 +3328,8 @@ MagickExport MagickBooleanType RemapImages(const QuantizeInfo *quantize_info,
 %
 %  The format of the SetGrayscaleImage method is:
 %
-%      MagickBooleanType SetGrayscaleImage(Image *image,ExceptionInfo *exeption)
+%      MagickBooleanType SetGrayscaleImage(Image *image,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -3335,17 +3345,17 @@ extern "C" {
 
 static int IntensityCompare(const void *x,const void *y)
 {
+  double
+    intensity;
+
   PixelInfo
     *color_1,
     *color_2;
 
-  ssize_t
-    intensity;
-
   color_1=(PixelInfo *) x;
   color_2=(PixelInfo *) y;
-  intensity=(ssize_t) (GetPixelInfoIntensity((const Image *) NULL,color_1)-
-    (ssize_t) GetPixelInfoIntensity((const Image *) NULL,color_2));
+  intensity=GetPixelInfoIntensity((const Image *) NULL,color_1)-
+    GetPixelInfoIntensity((const Image *) NULL,color_2);
   return((int) intensity);
 }
 
