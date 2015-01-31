@@ -1066,7 +1066,8 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             global_colormap=(unsigned char *) RelinquishMagickMemory(
               global_colormap);
-            ThrowReaderException(CorruptImageError,"UnableToReadExtensionBlock");
+            ThrowReaderException(CorruptImageError,
+              "UnableToReadExtensionBlock");
           }
         switch (c)
         {
@@ -1160,7 +1161,11 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 number_extensionss++;
                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                   "    Reading GIF application extension");
-                info=(unsigned char *) AcquireQuantumMemory(255UL,sizeof(*info));
+                info=(unsigned char *) AcquireQuantumMemory(255UL,
+                  sizeof(*info));
+                if (info == (unsigned char *) NULL)
+                  ThrowReaderException(ResourceLimitError,
+                    "MemoryAllocationFailed");
                 reserved_length=255;
                 for (info_length=0; ; )
                 {
@@ -1234,9 +1239,9 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Read image attributes.
     */
     meta_image->scene=image->scene;
-    CloneImageProperties(image,meta_image);
+    (void) CloneImageProperties(image,meta_image);
     DestroyImageProperties(meta_image);
-    CloneImageProfiles(image,meta_image);
+    (void) CloneImageProfiles(image,meta_image);
     DestroyImageProfiles(meta_image);
     image->storage_class=PseudoClass;
     image->compression=LZWCompression;
@@ -1247,8 +1252,8 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->depth=8;
     flag=(unsigned char) ReadBlobByte(image);
     image->interlace=BitSet((int) flag,0x40) != 0 ? GIFInterlace : NoInterlace;
-    image->colors=BitSet((int) flag,0x80) == 0 ? global_colors :
-      one << ((size_t) (flag & 0x07)+1);
+    image->colors=BitSet((int) flag,0x80) == 0 ? global_colors : one <<
+      ((size_t) (flag & 0x07)+1);
     if (opacity >= (ssize_t) image->colors)
       opacity=(-1);
     image->page.width=page.width;
@@ -1293,8 +1298,8 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
               image->transparent_color=image->colormap[opacity];
             }
         }
-        image->background_color=image->colormap[MagickMin(background,
-          image->colors-1)];
+        image->background_color=image->colormap[MagickMin((ssize_t) background,
+          (ssize_t) image->colors-1)];
       }
     else
       {
@@ -1471,7 +1476,8 @@ ModuleExport void UnregisterGIFImage(void)
 %
 %  The format of the WriteGIFImage method is:
 %
-%      MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image)
+%      MagickBooleanType WriteGIFImage(const ImageInfo *image_info,
+%        Image *image)
 %
 %  A description of each parameter follows.
 %
@@ -1745,7 +1751,7 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image)
               attributes[MaxTextExtent];
 
             ssize_t
-              length;
+              count;
 
             /*
               Write ImageMagick extension.
@@ -1756,10 +1762,10 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image)
             (void) WriteBlobByte(image,(unsigned char) 0xff);
             (void) WriteBlobByte(image,(unsigned char) 0x0b);
             (void) WriteBlob(image,11,(unsigned char *) "ImageMagick");
-            length=FormatLocaleString(attributes,MaxTextExtent,"gamma=%g",
+            count=FormatLocaleString(attributes,MaxTextExtent,"gamma=%g",
               image->gamma);
-            (void) WriteBlobByte(image,(unsigned char) length);
-            (void) WriteBlob(image,length,(unsigned char *) attributes);
+            (void) WriteBlobByte(image,(unsigned char) count);
+            (void) WriteBlob(image,(size_t) count,(unsigned char *) attributes);
             (void) WriteBlobByte(image,(unsigned char) 0x00);
           }
         ResetImageProfileIterator(image);
