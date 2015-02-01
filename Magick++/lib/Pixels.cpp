@@ -24,7 +24,7 @@ Magick::Pixels::Pixels(Magick::Image &image_)
     _rows(0)
 {
   GetPPException;
-    _view=AcquireVirtualCacheView(_image.image(),exceptionInfo),
+    _view=AcquireVirtualCacheView(image_.image(),exceptionInfo),
   ThrowPPException(image_.quiet());
 }
 
@@ -45,7 +45,7 @@ Magick::Quantum* Magick::Pixels::get(const ssize_t x_,const ssize_t y_,
   GetPPException;
   Quantum* pixels=GetCacheViewAuthenticPixels(_view,x_,y_,columns_,rows_,
     exceptionInfo);
-  ThrowPPException(true);
+  ThrowPPException(_image.quiet());
 
   return pixels;
 }
@@ -61,7 +61,7 @@ const Magick::Quantum* Magick::Pixels::getConst(const ssize_t x_,
   GetPPException;
   const Quantum* pixels=GetCacheViewVirtualPixels(_view,x_,y_,columns_,rows_,
     exceptionInfo);
-  ThrowPPException(true);
+  ThrowPPException(_image.quiet());
 
   return pixels;
 }
@@ -84,7 +84,7 @@ Magick::Quantum* Magick::Pixels::set(const ssize_t x_,const ssize_t y_,
   GetPPException;
   Quantum* pixels=QueueCacheViewAuthenticPixels(_view,x_,y_,columns_,rows_,
     exceptionInfo);
-  ThrowPPException(true);
+  ThrowPPException(_image.quiet());
 
   return pixels;
 }
@@ -93,7 +93,7 @@ void Magick::Pixels::sync(void)
 {
   GetPPException;
   SyncCacheViewAuthenticPixels(_view,exceptionInfo);
-  ThrowPPException(true);
+  ThrowPPException(_image.quiet());
 }
 
 // Return pixel colormap index array
@@ -141,7 +141,6 @@ const void *Magick::PixelData::data(void) const
 {
   return(_size);
 }
-
 
 void Magick::PixelData::init(Magick::Image &image_,const ::ssize_t x_,
   const ::ssize_t y_,const size_t width_,const size_t height_,

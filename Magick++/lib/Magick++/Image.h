@@ -1481,7 +1481,6 @@ namespace Magick
       const PixelInfo *target,const bool invert_);
 
     ImageRef *_imgRef;
-    bool     _quiet;
   };
 
 } // end of namespace Magick

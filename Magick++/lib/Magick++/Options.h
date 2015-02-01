@@ -1,7 +1,7 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
 // Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003
-// Copyright Dirk Lemstra 2014
+// Copyright Dirk Lemstra 2014-2015
 //
 // Definition of Options
 //
@@ -167,6 +167,10 @@ namespace Magick
     void quantizeTreeDepth(size_t treeDepth_);
     size_t quantizeTreeDepth(void) const;
 
+    // Suppress all warning messages. Error messages are still reported.
+    void quiet(const bool quiet_);
+    bool quiet(void) const;
+
     // Units of resolution to interpret density
     void resolutionUnits(ResolutionType resolutionUnits_);
     ResolutionType resolutionUnits(void) const;
@@ -311,9 +315,10 @@ namespace Magick
     // Assignment not supported
     Options& operator=(const Options&);
 
-    MagickCore::ImageInfo *_imageInfo;
+    MagickCore::ImageInfo    *_imageInfo;
     MagickCore::QuantizeInfo *_quantizeInfo;
-    MagickCore::DrawInfo *_drawInfo;
+    MagickCore::DrawInfo     *_drawInfo;
+    bool                     _quiet;
   };
 } // namespace Magick
 
