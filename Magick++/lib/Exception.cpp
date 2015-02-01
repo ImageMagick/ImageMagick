@@ -866,8 +866,8 @@ MagickPPExport void Magick::throwException(ExceptionInfo *exception_,
           }
       }
     }
-  UnlockSemaphoreInfo(exception_->semaphore);
   severity=exception_->severity;
+  UnlockSemaphoreInfo(exception_->semaphore);
 
   if ((quiet_) && (severity < MagickCore::ErrorException))
     {
