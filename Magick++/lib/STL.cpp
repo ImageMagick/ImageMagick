@@ -864,6 +864,16 @@ size_t Magick::ReadOptions::depth(void) const
   return(_imageInfo->depth);
 }
 
+void Magick::ReadOptions::quiet(const bool quiet_)
+{
+  _quiet=quiet_;
+}
+
+bool Magick::ReadOptions::quiet(void) const
+{
+   return(_quiet);
+}
+
 void Magick::ReadOptions::size(const Geometry &geometry_)
 {
   _imageInfo->size=(char *) RelinquishMagickMemory(_imageInfo->size);
