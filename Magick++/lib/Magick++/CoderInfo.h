@@ -1,7 +1,7 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
 // Copyright Bob Friesenhahn, 2001, 2002
-// Copyright Dirk Lemstra 2013-2014
+// Copyright Dirk Lemstra 2013-2015
 //
 // CoderInfo Definition
 //
