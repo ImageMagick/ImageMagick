@@ -1,6 +1,7 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
 // Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
+// Copyright Dirk Lemstra 2015
 //
 // Definition of an Image reference
 //
@@ -43,10 +44,6 @@ namespace Magick
     ImageRef(const ImageRef&);
     ImageRef& operator=(const ImageRef&);
 
-    // Retrieve registration id from reference
-    void id(const ::ssize_t id_);
-    ::ssize_t id(void) const;
-
     // Retrieve image from reference
     void image(MagickCore::Image *image_);
     MagickCore::Image *&image(void);
@@ -57,7 +54,6 @@ namespace Magick
 
     MagickCore::Image *_image;    // ImageMagick Image
     Options           *_options;  // User-specified options
-    ::ssize_t         _id;        // Registry ID (-1 if not registered)
     ::ssize_t         _refCount;  // Reference count
     MutexLock         _mutexLock; // Mutex lock
   };
@@ -67,11 +63,6 @@ namespace Magick
 //
 // Inlines
 //
-
-inline ::ssize_t Magick::ImageRef::id(void) const
-{
-  return(_id);
-}
 
 inline MagickCore::Image *&Magick::ImageRef::image(void)
 {

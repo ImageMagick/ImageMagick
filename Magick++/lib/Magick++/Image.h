@@ -1,7 +1,7 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
 // Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003
-// Copyright Dirk Lemstra 2013-2014
+// Copyright Dirk Lemstra 2013-2015
 //
 // Definition of Image, the representation of a single image in Magick++
 //
@@ -1528,17 +1528,11 @@ namespace Magick
     // Prepare to update image (copy if reference > 1)
     void modifyImage(void);
 
-    // Register image with image registry or obtain registration id
-    ::ssize_t registerId(void);
-
     // Replace current image (reference counted)
     MagickCore::Image *replaceImage(MagickCore::Image *replacement_);
 
     // Test for ImageMagick error and throw exception if error
     void throwImageException(void) const;
-
-    // Unregister image from image registry
-    void unregisterId(void);
 
   private:
 

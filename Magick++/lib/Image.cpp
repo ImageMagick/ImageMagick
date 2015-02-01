@@ -1,7 +1,7 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
 // Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003
-// Copyright Dirk Lemstra 2013-2014
+// Copyright Dirk Lemstra 2013-2015
 //
 // Implementation of Image
 //
@@ -4904,34 +4904,13 @@ void Magick::Image::modifyImage(void)
   {
     Lock(&_imgRef->_mutexLock);
     if (_imgRef->_refCount == 1)
-      {
-        // De-register image and return
-        _imgRef->id(-1);
-        return;
-      }
+      return;
   }
 
   GetPPException;
   replaceImage(CloneImage(constImage(),0,0,MagickTrue,exceptionInfo));
   ThrowPPException;
   return;
-}
-
-ssize_t Magick::Image::registerId(void)
-{
-  Lock(&_imgRef->_mutexLock);
-  if (_imgRef->id() < 0)
-    {
-      char
-        id[MaxTextExtent];
-
-      GetPPException;
-      _imgRef->id(_imgRef->id()+1);
-      sprintf(id,"%.20g\n",(double) _imgRef->id());
-      SetImageRegistry(ImageRegistryType,id,image(),exceptionInfo);
-      ThrowPPException;
-    }
-  return(_imgRef->id());
 }
 
 MagickCore::Image *Magick::Image::replaceImage(MagickCore::Image *replacement_)
@@ -4950,7 +4929,6 @@ MagickCore::Image *Magick::Image::replaceImage(MagickCore::Image *replacement_)
     if (_imgRef->_refCount == 1)
       {
         // We own the image, just replace it, and de-register
-        _imgRef->id(-1);
         _imgRef->image(image);
       }
     else
@@ -4968,12 +4946,6 @@ void Magick::Image::throwImageException(void) const
 {
   // Throw C++ exception while resetting Image exception to default state
   throwException(&const_cast<MagickCore::Image*>(constImage())->exception);
-}
-
-void Magick::Image::unregisterId(void)
-{
-  modifyImage();
-  _imgRef->id(-1);
 }
 
 void Magick::Image::read(MagickCore::Image *image,
