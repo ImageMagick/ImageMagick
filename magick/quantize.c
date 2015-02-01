@@ -2891,7 +2891,7 @@ MagickExport MagickBooleanType QuantizeImages(const QuantizeInfo *quantize_info,
 %
 %  Contributed by Yoya.
 %
-%  The format of the QuantizeImages method is:
+%  The format of the QuantizeErrorFlatten method is:
 %
 %      size_t QuantizeErrorFlatten(const Image *image,const CubeInfo *cube_info,
 %        const NodeInfo *node_info,const ssize_t offset,
