@@ -2676,7 +2676,7 @@ namespace Magick
     images=MagickCore::BlobToImage(options.imageInfo(),blob_.data(),
       blob_.length(),exceptionInfo);
     insertImages(sequence_,images);
-    ThrowPPException(options.quiet())
+    ThrowPPException(options.quiet());
   }
 
   template<class Container>
@@ -2699,7 +2699,7 @@ namespace Magick
 
     insertImages( separatedImages_, images );
 
-    ThrowPPException(image_.quiet())
+    ThrowPPException(image_.quiet());
   }
 
   // Smush images from list into single image in either horizontal or
