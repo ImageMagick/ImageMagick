@@ -1,7 +1,7 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
 // Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003
-// Copyright Dirk Lemstra 2014
+// Copyright Dirk Lemstra 2014-2015
 //
 // Color Implementation
 //
@@ -209,7 +209,7 @@ const Magick::Color& Magick::Color::operator=(const std::string &x11color_)
     }
   else
     _isValid=false;
-  ThrowPPException;
+  ThrowPPException(false);
 
   return(*this);
 }

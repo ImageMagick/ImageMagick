@@ -28,6 +28,7 @@ using namespace std;
 #define AbsoluteValue(x)  ((x) < 0 ? -(x) : (x))
 #define MagickPI  3.14159265358979323846264338327950288419716939937510
 #define DegreesToRadians(x)  (MagickPI*(x)/180.0)
+#define ThrowImageException ThrowPPException(quiet())
 
 MagickPPExport const char *Magick::borderGeometryDefault="6x6+0+0";
 MagickPPExport const char *Magick::frameGeometryDefault="25x25+6+6";
@@ -438,7 +439,7 @@ Magick::Geometry Magick::Image::boundingBox(void) const
   
   GetPPException;
   bbox=GetImageBoundingBox(constImage(),exceptionInfo);
-  ThrowPPException;
+  ThrowImageException;
   return(Geometry(bbox));
 }
 
@@ -497,7 +498,7 @@ Magick::Image Magick::Image::clipMask(void) const
 
   GetPPException;
   image=GetImageClipMask(constImage(),exceptionInfo);
-  ThrowPPException;
+  ThrowImageException;
 
   if (image == (MagickCore::Image *) NULL)
     return(Magick::Image());
@@ -802,7 +803,7 @@ Magick::Image Magick::Image::fillPattern(void) const
       GetPPException;
       image=CloneImage(tmpTexture,0,0,MagickTrue,exceptionInfo);
       texture.replaceImage(image);
-      ThrowPPException;
+      ThrowImageException;
     }
 
   return(texture);
@@ -848,7 +849,7 @@ std::string Magick::Image::format(void) const
 
   GetPPException;
   magick_info=GetMagickInfo(constImage()->magick,exceptionInfo);
-  ThrowPPException;
+  ThrowImageException;
 
   if ((magick_info != 0) && (*magick_info->description != '\0'))
     return(std::string(magick_info->description));
@@ -1075,7 +1076,7 @@ Magick::Image Magick::Image::mask(void) const
 
   GetPPException;
   image=GetImageMask(constImage(),exceptionInfo);
-  ThrowPPException;
+  ThrowImageException;
 
   if (image == (MagickCore::Image *) NULL)
     return(Magick::Image());
@@ -1151,7 +1152,7 @@ size_t Magick::Image::modulusDepth(void) const
 
   GetPPException;
   depth=GetImageDepth(constImage(),exceptionInfo);
-  ThrowPPException;
+  ThrowImageException;
   return(depth);
 }
 
@@ -1253,7 +1254,7 @@ Magick::Image Magick::Image::penTexture(void) const
       GetPPException;
       image=CloneImage(tmpTexture,0,0,MagickTrue,exceptionInfo);
       texture.replaceImage(image);
-      ThrowPPException;
+      ThrowImageException;
     }
   return(texture);
 }
@@ -1324,6 +1325,17 @@ void Magick::Image::quantizeTreeDepth(const size_t treeDepth_)
 size_t Magick::Image::quantizeTreeDepth(void) const
 {
   return(constOptions()->quantizeTreeDepth());
+}
+
+void Magick::Image::quiet(const bool quiet_)
+{
+  modifyImage();
+  options()->quiet(quiet_);
+}
+
+bool Magick::Image::quiet(void) const
+{
+  return(constOptions()->quiet());
 }
 
 void Magick::Image::renderingIntent(
@@ -1485,7 +1497,7 @@ Magick::Image Magick::Image::strokePattern(void) const
       GetPPException;
       image=CloneImage(tmpTexture,0,0,MagickTrue,exceptionInfo);
       texture.replaceImage(image);
-      ThrowPPException;
+      ThrowImageException;
     }
   return(texture);
 }
@@ -1612,7 +1624,7 @@ size_t Magick::Image::totalColors(void) const
 
   GetPPException;
   colors=GetNumberColors(constImage(),0,exceptionInfo);
-  ThrowPPException;
+  ThrowImageException;
   return(colors);
 }
 
@@ -1715,7 +1727,7 @@ void Magick::Image::adaptiveBlur(const double radius_,const double sigma_)
   GetPPException;
   newImage=AdaptiveBlurImage(constImage(),radius_,sigma_,exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::adaptiveResize(const Geometry &geometry_)
@@ -1737,7 +1749,7 @@ void Magick::Image::adaptiveResize(const Geometry &geometry_)
   GetPPException;
   newImage=AdaptiveResizeImage(constImage(),width,height,exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::adaptiveSharpen(const double radius_,const double sigma_)
@@ -1748,7 +1760,7 @@ void Magick::Image::adaptiveSharpen(const double radius_,const double sigma_)
   GetPPException;
   newImage=AdaptiveSharpenImage(constImage(),radius_,sigma_,exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::adaptiveSharpenChannel(const ChannelType channel_,
@@ -1761,7 +1773,7 @@ void Magick::Image::adaptiveSharpenChannel(const ChannelType channel_,
   newImage=AdaptiveSharpenImageChannel(constImage(),channel_,radius_,sigma_,
     exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::adaptiveThreshold(const size_t width_,const size_t height_,
@@ -1774,7 +1786,7 @@ void Magick::Image::adaptiveThreshold(const size_t width_,const size_t height_,
   newImage=AdaptiveThresholdImage(constImage(),width_,height_,offset_,
     exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::addNoise(const NoiseType noiseType_)
@@ -1785,7 +1797,7 @@ void Magick::Image::addNoise(const NoiseType noiseType_)
   GetPPException;
   newImage=AddNoiseImage(constImage(),noiseType_,exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::addNoiseChannel(const ChannelType channel_,
@@ -1798,7 +1810,7 @@ void Magick::Image::addNoiseChannel(const ChannelType channel_,
   newImage=AddNoiseImageChannel(constImage(),channel_,noiseType_,
     exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::affineTransform(const DrawableAffine &affine_ )
@@ -1819,7 +1831,7 @@ void Magick::Image::affineTransform(const DrawableAffine &affine_ )
   GetPPException;
   newImage=AffineTransformImage(constImage(),&_affine,exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::alphaChannel(AlphaChannelType alphaType_)
@@ -2017,7 +2029,7 @@ void Magick::Image::autoOrient(void)
   (void) SyncImageSettings(imageInfo(),image());
   newImage=AutoOrientImage(constImage(),image()->orientation,exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::blackThreshold(const std::string &threshold_)
@@ -2034,7 +2046,7 @@ void Magick::Image::blackThresholdChannel(const ChannelType channel_,
   GetPPException;
   BlackThresholdImageChannel(image(),channel_,threshold_.c_str(),
     exceptionInfo);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::blueShift(const double factor_)
@@ -2045,7 +2057,7 @@ void Magick::Image::blueShift(const double factor_)
   GetPPException;
   newImage=BlueShiftImage(constImage(),factor_,exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 // Blur image
@@ -2057,7 +2069,7 @@ void Magick::Image::blur(const double radius_, const double sigma_)
   GetPPException;
   newImage=BlurImage(constImage(),radius_,sigma_,exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::blurChannel(const ChannelType channel_,
@@ -2070,7 +2082,7 @@ void Magick::Image::blurChannel(const ChannelType channel_,
   newImage=BlurImageChannel(constImage(),channel_,radius_,sigma_,
     exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::border(const Geometry &geometry_)
@@ -2084,7 +2096,7 @@ void Magick::Image::border(const Geometry &geometry_)
   GetPPException;
   newImage=BorderImage(constImage(),&borderInfo,exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::brightnessContrast(const double brightness_,
@@ -2114,7 +2126,7 @@ void Magick::Image::cannyEdge(const double radius_,const double sigma_,
   newImage=CannyEdgeImage(constImage(),radius_,sigma_,lowerPercent_,
     upperPercent_,exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::channel(const ChannelType channel_)
@@ -2139,7 +2151,7 @@ size_t Magick::Image::channelDepth(const ChannelType channel_)
 
   GetPPException;
   channel_depth=GetImageChannelDepth(constImage(), channel_,exceptionInfo);
-  ThrowPPException;
+  ThrowImageException;
   return channel_depth;
 }
 
@@ -2151,7 +2163,7 @@ void Magick::Image::charcoal(const double radius_,const double sigma_)
   GetPPException;
   newImage=CharcoalImage(constImage(),radius_,sigma_,exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::chop(const Geometry &geometry_)
@@ -2165,7 +2177,7 @@ void Magick::Image::chop(const Geometry &geometry_)
   GetPPException;
   newImage=ChopImage(constImage(),&chopInfo,exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::chromaBluePrimary(const double x_,const double y_)
@@ -2289,7 +2301,7 @@ void Magick::Image::colorize(const unsigned int opacityRed_,
   GetPPException;
   newImage=ColorizeImage(image(),opacity,penColor_,exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::colorize(const unsigned int opacity_,
@@ -2352,7 +2364,7 @@ void Magick::Image::colorMatrix(const size_t order_,
       kernel_info->values=(double *) NULL;
       kernel_info=DestroyKernelInfo(kernel_info);
       replaceImage(newImage);
-      ThrowPPException;
+      ThrowImageException;
     }
 }
 
@@ -2379,7 +2391,7 @@ double Magick::Image::compare(const Image &reference_,const MetricType metric_)
   GetPPException;
   GetImageDistortion(image(),reference_.constImage(),metric_,&distortion,
     exceptionInfo);
-  ThrowPPException;
+  ThrowImageException;
   return(distortion);
 }
 
@@ -2392,7 +2404,7 @@ double Magick::Image::compareChannel(const ChannelType channel_,
   GetPPException;
   GetImageChannelDistortion(image(),reference_.constImage(),channel_,metric_,
     &distortion,exceptionInfo);
-  ThrowPPException;
+  ThrowImageException;
   return(distortion);
 }
 
@@ -2405,7 +2417,7 @@ Magick::Image Magick::Image::compare(const Image &reference_,
   GetPPException;
   newImage=CompareImages(image(),reference_.constImage(),metric_,distortion,
     exceptionInfo);
-  ThrowPPException;
+  ThrowImageException;
   if (newImage == (MagickCore::Image *) NULL)
     return(Magick::Image());
   else
@@ -2421,7 +2433,7 @@ Magick::Image Magick::Image::compareChannel(const ChannelType channel_,
   GetPPException;
   newImage=CompareImageChannels(image(),reference_.constImage(),channel_,
     metric_,distortion,exceptionInfo);
-  ThrowPPException;
+  ThrowImageException;
   if (newImage == (MagickCore::Image *) NULL)
     return(Magick::Image());
   else
@@ -2484,7 +2496,7 @@ void Magick::Image::connectedComponents(const size_t connectivity_)
   GetPPException;
   newImage=ConnectedComponentsImage(constImage(),connectivity_,exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::contrast(const size_t sharpen_)
@@ -2519,7 +2531,7 @@ void Magick::Image::convolve(const size_t order_,const double *kernel_)
   GetPPException;
   newImage=ConvolveImage(constImage(),order_,kernel_,exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::crop(const Geometry &geometry_)
@@ -2533,7 +2545,7 @@ void Magick::Image::crop(const Geometry &geometry_)
   GetPPException;
   newImage=CropImage(constImage(),&cropInfo,exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::cycleColormap(const ssize_t amount_)
@@ -2548,7 +2560,7 @@ void Magick::Image::decipher(const std::string &passphrase_)
   modifyImage();
   GetPPException;
   DecipherImage(image(),passphrase_.c_str(),exceptionInfo);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::defineSet(const std::string &magick_,
@@ -2616,7 +2628,7 @@ void Magick::Image::deskew(const double threshold_)
   GetPPException;
   newImage=DeskewImage(constImage(),threshold_,exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::despeckle(void)
@@ -2627,7 +2639,7 @@ void Magick::Image::despeckle(void)
   GetPPException;
   newImage=DespeckleImage(constImage(),exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 Magick::ImageType Magick::Image::determineType(void) const
@@ -2637,7 +2649,7 @@ Magick::ImageType Magick::Image::determineType(void) const
 
   GetPPException;
   image_type=GetImageType(constImage(),exceptionInfo);
-  ThrowPPException;
+  ThrowImageException;
   return(image_type);
 }
 
@@ -2656,7 +2668,7 @@ void Magick::Image::distort(const DistortImageMethod method_,
   newImage=DistortImage(constImage(),method_,number_arguments_,arguments_,
     bestfit_ == true ? MagickTrue : MagickFalse,exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::draw(const Magick::Drawable &drawable_)
@@ -2717,7 +2729,7 @@ void Magick::Image::edge(const double radius_)
   GetPPException;
   newImage=EdgeImage(constImage(),radius_,exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::emboss(const double radius_,const double sigma_)
@@ -2728,7 +2740,7 @@ void Magick::Image::emboss(const double radius_,const double sigma_)
   GetPPException;
   newImage=EmbossImage(constImage(),radius_,sigma_,exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::encipher(const std::string &passphrase_)
@@ -2736,7 +2748,7 @@ void Magick::Image::encipher(const std::string &passphrase_)
   modifyImage();
   GetPPException;
   EncipherImage(image(),passphrase_.c_str(),exceptionInfo);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::enhance(void)
@@ -2747,7 +2759,7 @@ void Magick::Image::enhance(void)
   GetPPException;
   newImage=EnhanceImage(constImage(),exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::equalize(void)
@@ -2780,7 +2792,7 @@ void Magick::Image::extent(const Geometry &geometry_)
   extentInfo.y=geometry_.yOff();
   newImage=ExtentImage(constImage(),&extentInfo,exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::extent(const Geometry &geometry_,
@@ -2819,7 +2831,7 @@ void Magick::Image::flip(void)
   GetPPException;
   newImage=FlipImage(constImage(),exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::floodFillColor(const Geometry &point_,
@@ -3004,7 +3016,7 @@ void Magick::Image::flop(void)
   GetPPException;
   newImage=FlopImage(constImage(),exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::fontTypeMetrics(const std::string &text_,
@@ -3049,7 +3061,7 @@ void Magick::Image::frame(const Geometry &geometry_)
   GetPPException;
   newImage=FrameImage(constImage(),&info,exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::frame(const size_t width_,const size_t height_,
@@ -3071,7 +3083,7 @@ void Magick::Image::frame(const size_t width_,const size_t height_,
   GetPPException;
   newImage=FrameImage(constImage(),&info,exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::fx(const std::string expression)
@@ -3083,7 +3095,7 @@ void Magick::Image::fx(const std::string expression)
   newImage=FxImageChannel(constImage(),DefaultChannels,expression.c_str(),
     exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::fx(const std::string expression,
@@ -3096,7 +3108,7 @@ void Magick::Image::fx(const std::string expression,
   newImage=FxImageChannel(constImage(),channel,expression.c_str(),
     exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::gamma(const double gamma_)
@@ -3132,7 +3144,7 @@ void Magick::Image::gaussianBlur(const double width_,const double sigma_)
   GetPPException;
   newImage=GaussianBlurImage(constImage(),width_,sigma_,exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::gaussianBlurChannel(const ChannelType channel_,
@@ -3145,7 +3157,7 @@ void Magick::Image::gaussianBlurChannel(const ChannelType channel_,
   newImage=GaussianBlurImageChannel(constImage(),channel_,width_,sigma_,
     exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 const Magick::IndexPacket* Magick::Image::getConstIndexes(void) const
@@ -3168,7 +3180,7 @@ const Magick::PixelPacket* Magick::Image::getConstPixels(const ssize_t x_,
 
   GetPPException;
   result=(*GetVirtualPixels)(constImage(),x_,y_,columns_,rows_,exceptionInfo);
-  ThrowPPException;
+  ThrowImageException;
   return(result);
 }
 
@@ -3194,7 +3206,7 @@ Magick::PixelPacket *Magick::Image::getPixels(const ssize_t x_,
   modifyImage();
   GetPPException;
   result=(*GetAuthenticPixels)(image(),x_,y_,columns_,rows_,exceptionInfo);
-  ThrowPPException;
+  ThrowImageException;
   return(result);
 }
 
@@ -3222,7 +3234,7 @@ void Magick::Image::houghLine(const size_t width_,const size_t height_,
   newImage=HoughLineImage(constImage(),width_,height_,threshold_,
     exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::implode(const double factor_)
@@ -3233,7 +3245,7 @@ void Magick::Image::implode(const double factor_)
   GetPPException;
   newImage=ImplodeImage(constImage(),factor_,exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::inverseFourierTransform(const Image &phase_)
@@ -3251,7 +3263,7 @@ void Magick::Image::inverseFourierTransform(const Image &phase_,
   newImage=InverseFourierTransformImage(constImage(),phase_.constImage(),
     magnitude_ == true ? MagickTrue : MagickFalse,exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::kuwahara(const double radius_,const double sigma_)
@@ -3262,7 +3274,7 @@ void Magick::Image::kuwahara(const double radius_,const double sigma_)
   GetPPException;
   newImage=KuwaharaImage(constImage(),radius_,sigma_,exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::kuwaharaChannel(const ChannelType channel_,
@@ -3275,7 +3287,7 @@ void Magick::Image::kuwaharaChannel(const ChannelType channel_,
   newImage=KuwaharaImageChannel(constImage(),channel_,radius_,sigma_,
     exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::level(const double black_point,const double white_point,
@@ -3388,7 +3400,7 @@ void Magick::Image::liquidRescale(const Geometry &geometry_)
   GetPPException;
   newImage=LiquidRescaleImage(constImage(),width,height,x,y,exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::magnify(void)
@@ -3399,7 +3411,7 @@ void Magick::Image::magnify(void)
   GetPPException;
   newImage=MagnifyImage(constImage(),exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::map(const Image &mapImage_,const bool dither_)
@@ -3427,7 +3439,7 @@ void Magick::Image::medianFilter(const double radius_)
   newImage=StatisticImage(constImage(),MedianStatistic,(size_t) radius_,
     (size_t) radius_,exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::mergeLayers(const ImageLayerMethod layerMethod_)
@@ -3438,7 +3450,7 @@ void Magick::Image::mergeLayers(const ImageLayerMethod layerMethod_)
   GetPPException;
   newImage=MergeImageLayers(image(),layerMethod_,exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::minify(void)
@@ -3449,7 +3461,7 @@ void Magick::Image::minify(void)
   GetPPException;
   newImage=MinifyImage(constImage(),exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::modulate(const double brightness_,const double saturation_,
@@ -3468,7 +3480,7 @@ void Magick::Image::modulate(const double brightness_,const double saturation_,
 
 Magick::ImageMoments Magick::Image::moments(void) const
 {
-  return(ImageMoments(constImage()));
+  return(ImageMoments(*this));
 }
 
 void Magick::Image::morphology(const MorphologyMethod method_,
@@ -3489,7 +3501,7 @@ void Magick::Image::morphology(const MorphologyMethod method_,
     exceptionInfo);
   replaceImage(newImage);
   kernel=DestroyKernelInfo(kernel);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::morphology(const MorphologyMethod method_,
@@ -3538,7 +3550,7 @@ void Magick::Image::morphologyChannel(const ChannelType channel_,
     kernel,exceptionInfo);
   replaceImage(newImage);
   kernel=DestroyKernelInfo(kernel);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::morphologyChannel(const ChannelType channel_,
@@ -3571,7 +3583,7 @@ void Magick::Image::motionBlur(const double radius_,const double sigma_,
   GetPPException;
   newImage=MotionBlurImage(constImage(),radius_,sigma_,angle_,exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::negate(const bool grayscale_)
@@ -3604,7 +3616,7 @@ void Magick::Image::oilPaint(const double radius_)
   GetPPException;
   newImage=OilPaintImage(constImage(),radius_,exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::opacity(const unsigned int opacity_)
@@ -3644,7 +3656,7 @@ void Magick::Image::orderedDither(std::string thresholdMap_)
   modifyImage();
   GetPPException;
   (void) OrderedPosterizeImage(image(),thresholdMap_.c_str(),exceptionInfo);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::orderedDitherChannel(const ChannelType channel_,
@@ -3654,7 +3666,7 @@ void Magick::Image::orderedDitherChannel(const ChannelType channel_,
   GetPPException;
   (void) OrderedPosterizeImageChannel(image(),channel_,thresholdMap_.c_str(),
     exceptionInfo);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::perceptible(const double epsilon_)
@@ -3752,7 +3764,7 @@ void Magick::Image::polaroid(const std::string &caption_,const double angle_)
   newImage=PolaroidImage(constImage(),options()->drawInfo(),angle_,
     exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::posterize(const size_t levels_,const bool dither_)
@@ -3783,7 +3795,7 @@ void Magick::Image::process(std::string name_,const ssize_t argc,
     &image()->exception);
 
   if (status == false)
-    throwException(&image()->exception);
+    throwImageException();
 }
 
 void Magick::Image::profile(const std::string name_,
@@ -3832,7 +3844,7 @@ void Magick::Image::quantumOperator(const ChannelType channel_,
 {
   GetPPException;
   EvaluateImageChannel(image(),channel_,operator_,rvalue_,exceptionInfo);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::quantumOperator (const ssize_t x_,const ssize_t y_,
@@ -3855,7 +3867,7 @@ void Magick::Image::quantumOperator (const ssize_t x_,const ssize_t y_,
   (void) CompositeImage(image(),image()->matte != MagickFalse ?
     OverCompositeOp : CopyCompositeOp,cropImage,geometry.x, geometry.y);
   cropImage=DestroyImageList(cropImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::raise(const Geometry &geometry_,const bool raisedFlag_)
@@ -3876,7 +3888,7 @@ void Magick::Image::randomThreshold( const Geometry &thresholds_ )
   modifyImage();
   (void) RandomThresholdImage(image(),static_cast<std::string>(
     thresholds_).c_str(),exceptionInfo);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::randomThresholdChannel(const Geometry &thresholds_,
@@ -3886,7 +3898,7 @@ void Magick::Image::randomThresholdChannel(const Geometry &thresholds_,
   modifyImage();
   (void) RandomThresholdImageChannel(image(),channel_,static_cast<std::string>(
     thresholds_).c_str(),exceptionInfo);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::read(const Blob &blob_)
@@ -3949,9 +3961,9 @@ void Magick::Image::read(const size_t width_,const size_t height_,
   newImage=ConstituteImage(width_,height_,map_.c_str(),type_,pixels_,
     exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
   if (newImage)
-    throwException(&newImage->exception);
+    throwException(&newImage->exception,quiet());
 }
 
 void Magick::Image::read(const std::string &imageSpec_)
@@ -3977,7 +3989,7 @@ void Magick::Image::readPixels(const Magick::QuantumType quantum_,
   ImportQuantumPixels(image(),(MagickCore::CacheView *) NULL,quantum_info,
     quantum_,source_,exceptionInfo);
   quantum_info=DestroyQuantumInfo(quantum_info);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::reduceNoise(const double order_)
@@ -3989,7 +4001,7 @@ void Magick::Image::reduceNoise(const double order_)
   newImage=StatisticImage(constImage(),NonpeakStatistic,(size_t) order_,
     (size_t) order_,exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::resample(const Geometry &geometry_)
@@ -4012,7 +4024,7 @@ void Magick::Image::resample(const Geometry &geometry_)
   newImage=ResampleImage(constImage(),width,height,image()->filter,1.0,
     exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::resize(const Geometry &geometry_)
@@ -4035,7 +4047,7 @@ void Magick::Image::resize(const Geometry &geometry_)
   newImage=ResizeImage(constImage(),width,height,image()->filter,1.0,
     exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::roll(const Geometry &roll_)
@@ -4055,7 +4067,7 @@ void Magick::Image::roll(const Geometry &roll_)
   GetPPException;
   newImage=RollImage(constImage(),xOff,yOff,exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::roll(const size_t columns_,const size_t rows_)
@@ -4067,7 +4079,7 @@ void Magick::Image::roll(const size_t columns_,const size_t rows_)
   newImage=RollImage(constImage(),static_cast<ssize_t>(columns_),
     static_cast<ssize_t>(rows_),exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::rotate(const double degrees_)
@@ -4078,7 +4090,7 @@ void Magick::Image::rotate(const double degrees_)
   GetPPException;
   newImage=RotateImage(constImage(),degrees_,exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::rotationalBlur(const double angle_)
@@ -4089,7 +4101,7 @@ void Magick::Image::rotationalBlur(const double angle_)
   GetPPException;
   newImage=RotationalBlurImage(constImage(),angle_,exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::rotationalBlurChannel(const ChannelType channel_,
@@ -4102,7 +4114,7 @@ void Magick::Image::rotationalBlurChannel(const ChannelType channel_,
   newImage=RotationalBlurImageChannel(constImage(),channel_,angle_,
     exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::sample(const Geometry &geometry_)
@@ -4124,7 +4136,7 @@ void Magick::Image::sample(const Geometry &geometry_)
   GetPPException;
   newImage=SampleImage(constImage(),width,height,exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::scale(const Geometry &geometry_)
@@ -4146,7 +4158,7 @@ void Magick::Image::scale(const Geometry &geometry_)
   GetPPException;
   newImage=ScaleImage(constImage(),width,height,exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::segment(const double clusterThreshold_,
@@ -4171,7 +4183,7 @@ void Magick::Image::selectiveBlur(const double radius_,const double sigma_,
   newImage=SelectiveBlurImage(constImage(),radius_,sigma_,threshold_,
     exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::selectiveBlurChannel(const ChannelType channel_,
@@ -4184,7 +4196,7 @@ void Magick::Image::selectiveBlurChannel(const ChannelType channel_,
   newImage=SelectiveBlurImageChannel(constImage(),channel_,radius_,sigma_,
     threshold_,exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 Magick::Image Magick::Image::separate(const ChannelType channel_) const
@@ -4194,7 +4206,7 @@ Magick::Image Magick::Image::separate(const ChannelType channel_) const
 
   GetPPException;
   image=SeparateImage(constImage(),channel_,exceptionInfo);
-  ThrowPPException;
+  ThrowImageException;
   if (image == (MagickCore::Image *) NULL)
     return(Magick::Image());
   else
@@ -4209,7 +4221,7 @@ void Magick::Image::sepiaTone(const double threshold_)
   GetPPException;
   newImage=SepiaToneImage(constImage(),threshold_,exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 Magick::PixelPacket *Magick::Image::setPixels(const ssize_t x_,
@@ -4221,7 +4233,7 @@ Magick::PixelPacket *Magick::Image::setPixels(const ssize_t x_,
   modifyImage();
   GetPPException;
   result=(*QueueAuthenticPixels)(image(),x_, y_,columns_,rows_,exceptionInfo);
-  ThrowPPException;
+  ThrowImageException;
   return(result);
 }
 
@@ -4235,7 +4247,7 @@ void Magick::Image::shade(const double azimuth_,const double elevation_,
   newImage=ShadeImage(constImage(),colorShading_ == true ?
     MagickTrue : MagickFalse,azimuth_,elevation_,exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::shadow(const double percent_opacity_,const double sigma_,
@@ -4247,7 +4259,7 @@ void Magick::Image::shadow(const double percent_opacity_,const double sigma_,
   GetPPException;
   newImage=ShadowImage(constImage(),percent_opacity_,sigma_,x_,y_,exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::sharpen(const double radius_,const double sigma_)
@@ -4258,7 +4270,7 @@ void Magick::Image::sharpen(const double radius_,const double sigma_)
   GetPPException;
   newImage=SharpenImage(constImage(),radius_,sigma_,exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::sharpenChannel(const ChannelType channel_,
@@ -4271,7 +4283,7 @@ void Magick::Image::sharpenChannel(const ChannelType channel_,
   newImage=SharpenImageChannel(constImage(),channel_,radius_,sigma_,
     exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::shave(const Geometry &geometry_)
@@ -4285,7 +4297,7 @@ void Magick::Image::shave(const Geometry &geometry_)
   GetPPException;
   newImage=ShaveImage(constImage(),&shaveInfo,exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::shear(const double xShearAngle_,const double yShearAngle_)
@@ -4296,7 +4308,7 @@ void Magick::Image::shear(const double xShearAngle_,const double yShearAngle_)
   GetPPException;
   newImage=ShearImage(constImage(),xShearAngle_,yShearAngle_,exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::sigmoidalContrast(const size_t sharpen_,
@@ -4334,7 +4346,7 @@ void Magick::Image::sketch(const double radius_,const double sigma_,
   GetPPException;
   newImage=SketchImage(constImage(),radius_,sigma_,angle_,exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::solarize(const double factor_)
@@ -4355,7 +4367,7 @@ void Magick::Image::sparseColor(const ChannelType channel,
   newImage=SparseColorImage(constImage(),channel,method,number_arguments,
     arguments,exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::splice(const Geometry &geometry_)
@@ -4369,7 +4381,7 @@ void Magick::Image::splice(const Geometry &geometry_)
   GetPPException;
   newImage=SpliceImage(constImage(),&spliceInfo,exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::spread(const size_t amount_)
@@ -4380,7 +4392,7 @@ void Magick::Image::spread(const size_t amount_)
   GetPPException;
   newImage=SpreadImage(constImage(),amount_,exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::statistics(ImageStatistics *statistics) const
@@ -4424,7 +4436,7 @@ void Magick::Image::statistics(ImageStatistics *statistics) const
   (void) GetImageChannelKurtosis(constImage(),OpacityChannel,
     &statistics->opacity.kurtosis,&statistics->opacity.skewness,
     exceptionInfo);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::stegano(const Image &watermark_)
@@ -4435,7 +4447,7 @@ void Magick::Image::stegano(const Image &watermark_)
   GetPPException;
   newImage=SteganoImage(constImage(),watermark_.constImage(),exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::stereo(const Image &rightImage_)
@@ -4446,7 +4458,7 @@ void Magick::Image::stereo(const Image &rightImage_)
   GetPPException;
   newImage=StereoImage(constImage(),rightImage_.constImage(),exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::strip(void)
@@ -4476,7 +4488,7 @@ Magick::Image Magick::Image::subImageSearch(const Image &reference_,
   GetPPException;
   newImage=SimilarityMetricImage(image(),reference_.constImage(),metric_,
     &offset,similarityMetric_,exceptionInfo);
-  ThrowPPException;
+  ThrowImageException;
   if (offset_ != (Geometry *) NULL)
     *offset_=offset;
   if (newImage == (MagickCore::Image *) NULL)
@@ -4493,14 +4505,14 @@ void Magick::Image::swirl(const double degrees_)
   GetPPException;
   newImage=SwirlImage(constImage(),degrees_,exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::syncPixels(void)
 {
   GetPPException;
   (void) (*SyncAuthenticPixels)(image(),exceptionInfo);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::texture(const Image &texture_)
@@ -4536,7 +4548,7 @@ void Magick::Image::thumbnail(const Geometry &geometry_)
   GetPPException;
   newImage=ThumbnailImage(constImage(),width,height,exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::tint(const std::string opacity_)
@@ -4548,7 +4560,7 @@ void Magick::Image::tint(const std::string opacity_)
   newImage=TintImage(constImage(),opacity_.c_str(),constOptions()->fillColor(),
     exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::transform(const Geometry &imageGeometry_)
@@ -4638,7 +4650,7 @@ void Magick::Image::transpose(void)
   GetPPException;
   newImage=TransposeImage(constImage(),exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::transverse(void)
@@ -4649,7 +4661,7 @@ void Magick::Image::transverse(void)
   GetPPException;
   newImage=TransverseImage(constImage(),exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::trim(void)
@@ -4660,7 +4672,7 @@ void Magick::Image::trim(void)
   GetPPException;
   newImage=TrimImage(constImage(),exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 Magick::Image Magick::Image::uniqueColors(void) const
@@ -4670,7 +4682,7 @@ Magick::Image Magick::Image::uniqueColors(void) const
 
   GetPPException;
   image=UniqueImageColors(constImage(),exceptionInfo);
-  ThrowPPException;
+  ThrowImageException;
   if (image == (MagickCore::Image *) NULL)
     return(Magick::Image());
   else
@@ -4687,7 +4699,7 @@ void Magick::Image::unsharpmask(const double radius_,const double sigma_,
   newImage=UnsharpMaskImage(constImage(),radius_,sigma_,amount_,threshold_,
     exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::unsharpmaskChannel(const ChannelType channel_,
@@ -4701,7 +4713,7 @@ void Magick::Image::unsharpmaskChannel(const ChannelType channel_,
   newImage=UnsharpMaskImageChannel(constImage(),channel_,radius_,sigma_,
     amount_,threshold_,exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::vignette(const double radius_,const double sigma_,
@@ -4713,7 +4725,7 @@ void Magick::Image::vignette(const double radius_,const double sigma_,
   GetPPException;
   newImage=VignetteImage(constImage(),radius_,sigma_,x_,y_,exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::wave(const double amplitude_,const double wavelength_)
@@ -4724,7 +4736,7 @@ void Magick::Image::wave(const double amplitude_,const double wavelength_)
   GetPPException;
   newImage=WaveImage(constImage(),amplitude_,wavelength_,exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::whiteThreshold(const std::string &threshold_)
@@ -4741,7 +4753,7 @@ void Magick::Image::whiteThresholdChannel(const ChannelType channel_,
   GetPPException;
   WhiteThresholdImageChannel(image(),channel_,threshold_.c_str(),
     exceptionInfo);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::write(Blob *blob_)
@@ -4757,7 +4769,7 @@ void Magick::Image::write(Blob *blob_)
   data=ImagesToBlob(constImageInfo(),image(),&length,exceptionInfo);
   if (length > 0)
     blob_->updateNoCopy(data,length,Blob::MallocAllocator);
-  ThrowPPException;
+  ThrowImageException;
   throwImageException();
 }
 
@@ -4775,7 +4787,7 @@ void Magick::Image::write(Blob *blob_,const std::string &magick_)
   data=ImagesToBlob(constImageInfo(),image(),&length,exceptionInfo);
   if (length > 0)
     blob_->updateNoCopy(data,length,Blob::MallocAllocator);
-  ThrowPPException;
+  ThrowImageException;
   throwImageException();
 }
 
@@ -4795,7 +4807,7 @@ void Magick::Image::write(Blob *blob_,const std::string &magick_,
   data=ImagesToBlob(constImageInfo(),image(),&length,exceptionInfo);
   if (length > 0)
     blob_->updateNoCopy(data,length,Blob::MallocAllocator);
-  ThrowPPException;
+  ThrowImageException;
   throwImageException();
 }
 
@@ -4806,7 +4818,7 @@ void Magick::Image::write(const ssize_t x_,const ssize_t y_,
   GetPPException;
   ExportImagePixels(constImage(),x_,y_,columns_,rows_,map_.c_str(),type_,
     pixels_,exceptionInfo);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::write(const std::string &imageSpec_)
@@ -4828,7 +4840,7 @@ void Magick::Image::writePixels(const Magick::QuantumType quantum_,
   ExportQuantumPixels(constImage(),(MagickCore::CacheView *) NULL,quantum_info,
     quantum_,destination_,exceptionInfo);
   quantum_info=DestroyQuantumInfo(quantum_info);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 void Magick::Image::zoom(const Geometry &geometry_)
@@ -4851,7 +4863,7 @@ void Magick::Image::zoom(const Geometry &geometry_)
   newImage=ResizeImage(constImage(),width,height,image()->filter,image()->blur,
     exceptionInfo);
   replaceImage(newImage);
-  ThrowPPException;
+  ThrowImageException;
 }
 
 Magick::Image::Image(MagickCore::Image *image_)
@@ -4909,7 +4921,7 @@ void Magick::Image::modifyImage(void)
 
   GetPPException;
   replaceImage(CloneImage(constImage(),0,0,MagickTrue,exceptionInfo));
-  ThrowPPException;
+  ThrowImageException;
   return;
 }
 
@@ -4945,7 +4957,8 @@ MagickCore::Image *Magick::Image::replaceImage(MagickCore::Image *replacement_)
 void Magick::Image::throwImageException(void) const
 {
   // Throw C++ exception while resetting Image exception to default state
-  throwException(&const_cast<MagickCore::Image*>(constImage())->exception);
+  throwException(&const_cast<MagickCore::Image*>(constImage())->exception,
+    quiet());
 }
 
 void Magick::Image::read(MagickCore::Image *image,
@@ -4971,9 +4984,9 @@ void Magick::Image::read(MagickCore::Image *image,
       (void) MagickCore::DestroyExceptionInfo(exceptionInfo);
       throwExceptionExplicit(ImageWarning,"No image was loaded.");
     }
-  ThrowPPException;
+  ThrowImageException;
   if (image != (MagickCore::Image *) NULL)
-    throwException(&image->exception);
+    throwException(&image->exception,quiet());
 }
 
 void Magick::Image::floodFill(const ssize_t x_,const ssize_t y_,
@@ -4997,7 +5010,7 @@ void Magick::Image::floodFill(const ssize_t x_,const ssize_t y_,
       GetPPException;
       fillPattern=CloneImage(options()->fillPattern(),0,0,MagickTrue,
         exceptionInfo);
-      ThrowPPException;
+      ThrowImageException;
     }
 
   if (fillPattern_ == (Magick::Image *)NULL)

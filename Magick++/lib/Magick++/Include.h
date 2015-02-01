@@ -1488,8 +1488,8 @@ namespace Magick
   MagickCore::ExceptionInfo \
     *exceptionInfo; \
   exceptionInfo=MagickCore::AcquireExceptionInfo()
-#define ThrowPPException \
-  throwException(exceptionInfo); \
+#define ThrowPPException(quiet) \
+  throwException(exceptionInfo,quiet); \
   (void) MagickCore::DestroyExceptionInfo(exceptionInfo)
 
 #endif // Magick_Include_header

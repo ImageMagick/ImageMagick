@@ -23,8 +23,8 @@ Magick::Pixels::Pixels(Magick::Image &image_)
     _rows(0)
 {
   GetPPException;
-  _view=AcquireVirtualCacheView(_image.image(),exceptionInfo);
-  ThrowPPException;
+  _view=AcquireVirtualCacheView(image_.image(),exceptionInfo);
+  ThrowPPException(image_.quiet());
 }
 
 Magick::Pixels::~Pixels(void)
@@ -44,7 +44,7 @@ Magick::PixelPacket* Magick::Pixels::get(const ssize_t x_,const ssize_t y_,
   GetPPException;
   PixelPacket* pixels=GetCacheViewAuthenticPixels(_view,x_,y_,columns_,rows_,
     exceptionInfo);
-  ThrowPPException;
+  ThrowPPException(_image.quiet());
 
   return pixels;
 }
@@ -60,7 +60,7 @@ const Magick::PixelPacket* Magick::Pixels::getConst(const ssize_t x_,
   GetPPException;
   const PixelPacket* pixels=GetCacheViewVirtualPixels(_view,x_,y_,columns_,
     rows_,exceptionInfo);
-  ThrowPPException;
+  ThrowPPException(_image.quiet());
 
   return pixels;
 }
@@ -76,7 +76,7 @@ Magick::PixelPacket* Magick::Pixels::set(const ssize_t x_,const ssize_t y_,
   GetPPException;
   PixelPacket* pixels=QueueCacheViewAuthenticPixels(_view,x_,y_,columns_,rows_,
     exceptionInfo);
-  ThrowPPException;
+  ThrowPPException(_image.quiet());
 
   return pixels;
 }
@@ -85,7 +85,7 @@ void Magick::Pixels::sync(void)
 {
   GetPPException;
   (void) SyncCacheViewAuthenticPixels(_view,exceptionInfo);
-  ThrowPPException;
+  ThrowPPException(_image.quiet());
 }
 
 Magick::IndexPacket* Magick::Pixels::indexes (void)
@@ -130,7 +130,6 @@ const void *Magick::PixelData::data(void) const
 {
   return(_size);
 }
-
 
 void Magick::PixelData::init(Magick::Image &image_,const ::ssize_t x_,
   const ::ssize_t y_,const size_t width_,const size_t height_,
@@ -183,7 +182,7 @@ void Magick::PixelData::init(Magick::Image &image_,const ::ssize_t x_,
     map_.c_str(),type_,_data,exceptionInfo);
   if (exceptionInfo->severity != UndefinedException)
     relinquish();
-  ThrowPPException;
+  ThrowPPException(image_.quiet());
 }
 
 void Magick::PixelData::relinquish(void) throw()
