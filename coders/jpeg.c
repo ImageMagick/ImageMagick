@@ -1302,7 +1302,16 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
     }
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
-    return(DestroyImageList(image));
+    {
+      jpeg_destroy_decompress(&jpeg_info);
+      return(DestroyImageList(image));
+    }
+  if ((jpeg_info.output_components != 1) &&
+      (jpeg_info.output_components != 3) && (jpeg_info.output_components != 4))
+    {
+      jpeg_destroy_decompress(&jpeg_info);
+      ThrowReaderException(CorruptImageError,"ImageTypeNotSupported");
+    }
   memory_info=AcquireVirtualMemory((size_t) image->columns,
     jpeg_info.output_components*sizeof(*jpeg_pixels));
   if (memory_info == (MemoryInfo *) NULL)
