@@ -1591,8 +1591,7 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image,
         /*
           Identify transparent colormap index.
         */
-        if ((image->storage_class == DirectClass) || (image->colors > 256))
-          (void) SetImageType(image,PaletteBilevelAlphaType,exception);
+        (void) SetImageType(image,PaletteBilevelAlphaType,exception);
         for (i=0; i < (ssize_t) image->colors; i++)
           if (image->colormap[i].alpha != OpaqueAlpha)
             {
