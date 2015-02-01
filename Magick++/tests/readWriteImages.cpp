@@ -34,8 +34,6 @@ int main(int,char ** argv)
     if (getenv("SRCDIR") != 0)
       srcdir=getenv("SRCDIR");
 
-	 srcdir="D:\\ImageMagick\\ImageMagick-Windows-6\\Magick++\\tests\\";
-
     //
     // Test readImages and writeImages
     //
