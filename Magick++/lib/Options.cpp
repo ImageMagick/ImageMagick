@@ -609,7 +609,7 @@ void Magick::Options::strokePattern(const MagickCore::Image *strokePattern_)
       GetPPException;
       _drawInfo->stroke_pattern=CloneImage(const_cast<MagickCore::Image*>(
         strokePattern_),0,0,MagickTrue,exceptionInfo);
-      ThrowPPException(true);
+      ThrowPPException(_quiet);
     }
 }
 
