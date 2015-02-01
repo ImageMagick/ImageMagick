@@ -228,7 +228,7 @@ const Magick::Color& Magick::Color::operator=(const std::string &color_)
     }
   else
     _isValid = false;
-  ThrowPPException(true);
+  ThrowPPException(false);
 
   return(*this);
 }

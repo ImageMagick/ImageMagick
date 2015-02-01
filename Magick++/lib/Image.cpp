@@ -27,7 +27,7 @@ using namespace std;
 #define AbsoluteValue(x)  ((x) < 0 ? -(x) : (x))
 #define MagickPI  3.14159265358979323846264338327950288419716939937510
 #define DegreesToRadians(x)  (MagickPI*(x)/180.0)
-#define ThrowImageException ThrowPPException(_quiet)
+#define ThrowImageException ThrowPPException(quiet())
 
 MagickPPExport const char *Magick::borderGeometryDefault="6x6+0+0";
 MagickPPExport const char *Magick::frameGeometryDefault="25x25+6+6";
@@ -75,14 +75,12 @@ MagickPPExport int Magick::operator <= (const Magick::Image &left_,
 }
 
 Magick::Image::Image(void)
-  : _imgRef(new ImageRef),
-    _quiet(false)
+  : _imgRef(new ImageRef)
 {
 }
 
 Magick::Image::Image(const Blob &blob_)
-  : _imgRef(new ImageRef),
-    _quiet(false)
+  : _imgRef(new ImageRef)
 {
   try
   {
@@ -102,8 +100,7 @@ Magick::Image::Image(const Blob &blob_)
 }
 
 Magick::Image::Image(const Blob &blob_,const Geometry &size_)
-  : _imgRef(new ImageRef),
-    _quiet(false)
+  : _imgRef(new ImageRef)
 {
   try
   {
@@ -124,8 +121,7 @@ Magick::Image::Image(const Blob &blob_,const Geometry &size_)
 
 Magick::Image::Image(const Blob &blob_,const Geometry &size_,
   const size_t depth_)
-  : _imgRef(new ImageRef),
-    _quiet(false)
+  : _imgRef(new ImageRef)
 {
   try
   {
@@ -146,8 +142,7 @@ Magick::Image::Image(const Blob &blob_,const Geometry &size_,
 
 Magick::Image::Image(const Blob &blob_,const Geometry &size_,
   const size_t depth_,const std::string &magick_)
-  : _imgRef(new ImageRef),
-    _quiet(false)
+  : _imgRef(new ImageRef)
 {
   try
   {
@@ -168,8 +163,7 @@ Magick::Image::Image(const Blob &blob_,const Geometry &size_,
 
 Magick::Image::Image(const Blob &blob_,const Geometry &size_,
   const std::string &magick_)
-  : _imgRef(new ImageRef),
-    _quiet(false)
+  : _imgRef(new ImageRef)
 {
   try
   {
@@ -189,8 +183,7 @@ Magick::Image::Image(const Blob &blob_,const Geometry &size_,
 }
 
 Magick::Image::Image(const Geometry &size_,const Color &color_)
-  : _imgRef(new ImageRef),
-    _quiet(false)
+  : _imgRef(new ImageRef)
 {
   // xc: prefix specifies an X11 color string
   std::string imageSpec("xc:");
@@ -217,16 +210,14 @@ Magick::Image::Image(const Geometry &size_,const Color &color_)
 }
 
 Magick::Image::Image(const Image &image_)
-  : _imgRef(image_._imgRef),
-    _quiet(image_._quiet)
+  : _imgRef(image_._imgRef)
 {
   _imgRef->increase();
 }
 
 Magick::Image::Image(const size_t width_,const size_t height_,
   const std::string &map_,const StorageType type_,const void *pixels_)
-  : _imgRef(new ImageRef),
-    _quiet(false)
+  : _imgRef(new ImageRef)
 {
   try
   {
@@ -245,8 +236,7 @@ Magick::Image::Image(const size_t width_,const size_t height_,
 }
 
 Magick::Image::Image(const std::string &imageSpec_)
-  : _imgRef(new ImageRef),
-    _quiet(false)
+  : _imgRef(new ImageRef)
 {
   try
   {
@@ -729,7 +719,7 @@ std::string Magick::Image::directory(void) const
   if (constImage()->directory)
     return(std::string(constImage()->directory));
 
-  if (!_quiet)
+  if (!quiet())
     throwExceptionExplicit(MagickCore::CorruptImageWarning,
       "Image does not contain a directory");
 
@@ -903,7 +893,7 @@ std::string Magick::Image::format(void) const
   if ((magick_info != 0) && (*magick_info->description != '\0'))
     return(std::string(magick_info->description));
 
-  if (!_quiet)
+  if (!quiet())
     throwExceptionExplicit(MagickCore::CorruptImageWarning,
       "Unrecognized image magick type");
 
@@ -941,7 +931,7 @@ Magick::Geometry Magick::Image::geometry(void) const
   if (constImage()->geometry)
     return Geometry(constImage()->geometry);
 
-  if (!_quiet)
+  if (!quiet())
     throwExceptionExplicit(MagickCore::OptionWarning,
       "Image does not contain a geometry");
 
@@ -1198,7 +1188,7 @@ Magick::Geometry Magick::Image::montageGeometry(void) const
   if (constImage()->montage)
     return Magick::Geometry(constImage()->montage);
 
-  if (!_quiet)
+  if (!quiet())
     throwExceptionExplicit(MagickCore::CorruptImageWarning,
     "Image does not contain a montage");
 
@@ -1309,12 +1299,13 @@ size_t Magick::Image::quantizeTreeDepth() const
 
 void Magick::Image::quiet(const bool quiet_)
 {
-  _quiet=quiet_;
+  modifyImage();
+  options()->quiet(quiet_);
 }
 
 bool Magick::Image::quiet(void) const
 {
-   return(_quiet);
+  return(constOptions()->quiet());
 }
 
 void Magick::Image::renderingIntent(
@@ -2739,7 +2730,7 @@ void Magick::Image::draw(const Magick::Drawable &drawable_)
 
       ClonePPDrawException(wand);
       wand=DestroyDrawingWand(wand);
-      ThrowPPDrawException(_quiet);
+      ThrowPPDrawException(quiet());
     }
 }
 
@@ -2767,7 +2758,7 @@ void Magick::Image::draw(const std::vector<Magick::Drawable> &drawable_)
 
       ClonePPDrawException(wand);
       wand=DestroyDrawingWand(wand);
-      ThrowPPDrawException(_quiet);
+      ThrowPPDrawException(quiet());
     }
 }
 
@@ -4800,8 +4791,7 @@ void Magick::Image::zoom(const Geometry &geometry_)
 }
 
 Magick::Image::Image(MagickCore::Image *image_)
-  : _imgRef(new ImageRef(image_)),
-    _quiet(false)
+  : _imgRef(new ImageRef(image_))
 {
 }
 
@@ -4903,7 +4893,7 @@ void Magick::Image::read(MagickCore::Image *image,
       image == (MagickCore::Image *) NULL)
     {
       (void) MagickCore::DestroyExceptionInfo(exceptionInfo);
-      if (!_quiet)
+      if (!quiet())
         throwExceptionExplicit(MagickCore::ImageWarning,
           "No image was loaded.");
     }
