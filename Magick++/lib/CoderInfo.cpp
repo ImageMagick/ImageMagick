@@ -1,7 +1,7 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
 // Copyright Bob Friesenhahn, 2001, 2002
-// Copyright Dirk Lemstra 2013-2014
+// Copyright Dirk Lemstra 2013-2015
 //
 // CoderInfo implementation
 //
@@ -48,7 +48,7 @@ Magick::CoderInfo::CoderInfo(const std::string &name_)
 
   GetPPException;
   magickInfo=GetMagickInfo(name_.c_str(),exceptionInfo);
-  ThrowPPException;
+  ThrowPPException(false);
   if (magickInfo == 0)
     {
       throwExceptionExplicit(OptionError,"Coder not found",name_.c_str());

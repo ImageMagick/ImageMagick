@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Dirk Lemstra 2014
+// Copyright Dirk Lemstra 2014-2015
 //
 // Definition of channel moments.
 //
@@ -13,6 +13,8 @@
 
 namespace Magick
 {
+  class Image;
+
   class MagickPPExport ChannelMoments
   {
   public:
@@ -91,7 +93,7 @@ namespace Magick
     //
     // Implemementation methods
     //
-    ImageMoments(const MagickCore::Image *image_);
+    ImageMoments(const Image &image_);
 
   private:
     std::vector<ChannelMoments> _channels;

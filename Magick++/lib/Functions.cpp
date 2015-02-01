@@ -29,7 +29,7 @@ MagickPPExport void Magick::DisableOpenCL(void)
   GetPPException;
   MagickCore::InitImageMagickOpenCL(MagickCore::MAGICK_OPENCL_OFF,NULL,NULL,
     exceptionInfo);
-  ThrowPPException;
+  ThrowPPException(false);
 }
 
 MagickPPExport bool Magick::EnableOpenCL(const bool useCache_)
@@ -46,7 +46,7 @@ MagickPPExport bool Magick::EnableOpenCL(const bool useCache_)
     status=MagickCore::InitImageMagickOpenCL(
       MagickCore::MAGICK_OPENCL_DEVICE_SELECT_AUTO_CLEAR_CACHE,NULL,NULL,
       exceptionInfo) == MagickTrue;
-  ThrowPPException;
+  ThrowPPException(false);
   return(status);
 }
 

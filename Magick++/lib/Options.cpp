@@ -29,7 +29,8 @@ Magick::Options::Options(void)
       sizeof(ImageInfo)))),
     _quantizeInfo(static_cast<QuantizeInfo*>(AcquireMagickMemory(
       sizeof(QuantizeInfo)))),
-    _drawInfo(static_cast<DrawInfo*>(AcquireMagickMemory(sizeof(DrawInfo))))
+    _drawInfo(static_cast<DrawInfo*>(AcquireMagickMemory(sizeof(DrawInfo)))),
+    _quiet(false)
 {
   // Initialize image info with defaults
   GetImageInfo(_imageInfo);
@@ -44,7 +45,8 @@ Magick::Options::Options(void)
 Magick::Options::Options(const Magick::Options& options_)
   : _imageInfo(CloneImageInfo(options_._imageInfo)),
     _quantizeInfo(CloneQuantizeInfo(options_._quantizeInfo)),
-    _drawInfo(CloneDrawInfo(_imageInfo,options_._drawInfo))
+    _drawInfo(CloneDrawInfo(_imageInfo,options_._drawInfo)),
+    _quiet(false)
 {
 }
 
@@ -260,7 +262,7 @@ void Magick::Options::fillPattern(const MagickCore::Image *fillPattern_)
       _drawInfo->fill_pattern=CloneImage(const_cast<MagickCore::Image*>(
         fillPattern_),0,0,static_cast<MagickBooleanType>(MagickTrue),
         exceptionInfo);
-      ThrowPPException;
+      ThrowPPException(_quiet);
     }
 }
 
@@ -320,7 +322,7 @@ std::string Magick::Options::format(void) const
   GetPPException;
   if (*_imageInfo->magick != '\0')
     magick_info=GetMagickInfo(_imageInfo->magick,exceptionInfo);
-  ThrowPPException;
+  ThrowPPException(_quiet);
   
   if ((magick_info != 0) && (*magick_info->description != '\0'))
     return(std::string(magick_info->description));
@@ -350,7 +352,7 @@ void Magick::Options::magick(const std::string &magick_)
     magick_.c_str());
   GetPPException;
   SetImageInfo(_imageInfo,1,exceptionInfo);
-  ThrowPPException;
+  ThrowPPException(_quiet);
   if (*_imageInfo->magick == '\0')
     throwExceptionExplicit(OptionWarning,"Unrecognized image format",
       magick_.c_str());
@@ -459,6 +461,16 @@ void Magick::Options::quantizeTreeDepth(size_t treeDepth_)
 size_t Magick::Options::quantizeTreeDepth(void) const
 {
   return(_quantizeInfo->tree_depth);
+}
+
+void Magick::Options::quiet(const bool quiet_)
+{
+  _quiet=quiet_;
+}
+
+bool Magick::Options::quiet(void) const
+{
+   return(_quiet);
 }
 
 void Magick::Options::resolutionUnits(Magick::ResolutionType resolutionUnits_)
@@ -600,7 +612,7 @@ void Magick::Options::strokePattern(const MagickCore::Image *strokePattern_)
       GetPPException;
       _drawInfo->stroke_pattern=CloneImage(const_cast<MagickCore::Image*>(
         strokePattern_),0,0,MagickTrue,exceptionInfo);
-      ThrowPPException;
+      ThrowPPException(_quiet);
     }
 }
 
@@ -934,9 +946,10 @@ MagickCore::QuantizeInfo *Magick::Options::quantizeInfo( void )
 Magick::Options::Options(const MagickCore::ImageInfo *imageInfo_,
   const MagickCore::QuantizeInfo *quantizeInfo_,
   const MagickCore::DrawInfo *drawInfo_)
-: _imageInfo(0),
-  _quantizeInfo(0),
-  _drawInfo(0)
+: _imageInfo((MagickCore::ImageInfo* ) NULL),
+  _quantizeInfo((MagickCore::QuantizeInfo* ) NULL),
+  _drawInfo((MagickCore::DrawInfo* ) NULL),
+  _quiet(false)
 {
   _imageInfo=CloneImageInfo(imageInfo_);
   _quantizeInfo=CloneQuantizeInfo(quantizeInfo_);

@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Dirk Lemstra 2014
+// Copyright Dirk Lemstra 2014-2015
 //
 // Implementation of channel moments.
 //
@@ -11,6 +11,7 @@
 #include "Magick++/Include.h"
 #include "Magick++/ChannelMoments.h"
 #include "Magick++/Exception.h"
+#include "Magick++/Image.h"
 
 using namespace std;
 
@@ -137,17 +138,17 @@ Magick::ChannelMoments Magick::ImageMoments::channel(
   return(ChannelMoments());
 }
 
-Magick::ImageMoments::ImageMoments(const MagickCore::Image *image)
+Magick::ImageMoments::ImageMoments(const Image &image_)
   : _channels()
 {
   MagickCore::ChannelMoments*
     channel_moments;
 
   GetPPException;
-  channel_moments=GetImageChannelMoments(image,exceptionInfo);
+  channel_moments=GetImageChannelMoments(image_.constImage(),exceptionInfo);
   if (channel_moments != (MagickCore::ChannelMoments *) NULL)
     {
-      switch(image->colorspace)
+      switch(image_.constImage()->colorspace)
       {
         case RGBColorspace:
         default:
@@ -173,14 +174,14 @@ Magick::ImageMoments::ImageMoments(const MagickCore::Image *image)
             &channel_moments[GrayChannel]));
           break;
       }
-      if (image->matte != MagickFalse)
+      if (image_.constImage()->matte != MagickFalse)
         _channels.push_back(Magick::ChannelMoments(AlphaChannel,
           &channel_moments[AlphaChannel]));
-      if (image->colorspace != GRAYColorspace)
+      if (image_.constImage()->colorspace != GRAYColorspace)
         _channels.push_back(Magick::ChannelMoments(CompositeChannels,
           &channel_moments[CompositeChannels]));
       channel_moments=(MagickCore::ChannelMoments *) RelinquishMagickMemory(
         channel_moments);
     }
-  ThrowPPException;
+  ThrowPPException(image_.quiet());
 }

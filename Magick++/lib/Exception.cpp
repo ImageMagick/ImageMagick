@@ -813,10 +813,11 @@ MagickPPExport void Magick::throwExceptionExplicit(
 
   GetPPException;
   ThrowException(exceptionInfo,severity_,reason_, description_);
-  ThrowPPException;
+  ThrowPPException(false);
 }
 
-MagickPPExport void Magick::throwException(ExceptionInfo *exception_)
+MagickPPExport void Magick::throwException(ExceptionInfo *exception_,
+  const bool quiet_)
 {
   const ExceptionInfo
     *p;
@@ -863,6 +864,13 @@ MagickPPExport void Magick::throwException(ExceptionInfo *exception_)
     }
   severity=exception_->severity;
   UnlockSemaphoreInfo(exception_->semaphore);
+
+  if ((quiet_) && (severity < MagickCore::ErrorException))
+    {
+      delete nestedException;
+      return;
+    }
+
   DestroyExceptionInfo(exception_);
 
   switch (severity)

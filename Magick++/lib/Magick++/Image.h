@@ -414,6 +414,10 @@ namespace Magick
     void quantizeTreeDepth(const size_t treeDepth_);
     size_t quantizeTreeDepth(void) const;
 
+    // Suppress all warning messages. Error messages are still reported.
+    void quiet(const bool quiet_);
+    bool quiet(void) const;
+
     // The type of rendering intent
     void renderingIntent(const RenderingIntent renderingIntent_);
     RenderingIntent renderingIntent(void) const;
