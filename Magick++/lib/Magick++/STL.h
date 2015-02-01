@@ -901,6 +901,10 @@ namespace Magick
     void depth(size_t depth_);
     size_t depth(void) const;
 
+    // Suppress all warning messages. Error messages are still reported.
+    void quiet(const bool quiet_);
+    bool quiet(void) const;
+
     // Image size (required for raw formats)
     void size(const Geometry &geometry_);
     Geometry size(void) const;
@@ -917,6 +921,7 @@ namespace Magick
     ReadOptions& operator=(const ReadOptions&);
 
     MagickCore::ImageInfo *_imageInfo;
+    bool                  _quiet;
   };
 
   // Reduce noise in image using a noise peak elimination filter
@@ -2001,7 +2006,7 @@ namespace Magick
     MagickCore::AnimateImages( first_->imageInfo(), first_->image() );
     MagickCore::GetImageException( first_->image(), exceptionInfo );
     unlinkImages( first_, last_ );
-    ThrowPPException;
+    ThrowPPException(first_->quiet());
   }
 
   // Append images from list into single image in either horizontal or
@@ -2018,7 +2023,7 @@ namespace Magick
                    exceptionInfo ); 
     unlinkImages( first_, last_ );
     appendedImage_->replaceImage( image );
-    ThrowPPException;
+    ThrowPPException(appendedImage_->quiet());
   }
 
   // Average a set of images.
@@ -2033,7 +2038,7 @@ namespace Magick
        MagickCore::MeanEvaluateOperator, exceptionInfo );
     unlinkImages( first_, last_ );
     averagedImage_->replaceImage( image );
-    ThrowPPException;
+    ThrowPPException(averagedImage_->quiet());
   }
 
   // Merge a sequence of images.
@@ -2061,7 +2066,7 @@ namespace Magick
     insertImages( coalescedImages_, images );
 
     // Report any error
-    ThrowPPException;
+    ThrowPPException(first_->quiet());
   }
 
   // Return format coders matching specified conditions.
@@ -2188,7 +2193,7 @@ namespace Magick
     size_t colors;
     MagickCore::ColorPacket *histogram_array = 
       MagickCore::GetImageHistogram( image.constImage(), &colors, exceptionInfo );
-    ThrowPPException;
+    ThrowPPException(image.quiet());
 
     // Clear out container
     histogram_->clear();
@@ -2219,7 +2224,7 @@ namespace Magick
     MagickCore::Image* image = CombineImages( first_->image(), channel_, exceptionInfo );
     unlinkImages( first_, last_ );
     combinedImage_->replaceImage( image );
-    ThrowPPException;
+    ThrowPPException(combinedImage_->quiet());
   }
 
   template <class Container>
@@ -2231,7 +2236,7 @@ namespace Magick
       static_cast<std::string>(geometry_).c_str(),exceptionInfo);
     tiledImages_->clear();
     insertImages(tiledImages_,images);
-    ThrowPPException;
+    ThrowPPException(image_.quiet());
   }
 
   // Break down an image sequence into constituent parts.  This is
@@ -2256,7 +2261,7 @@ namespace Magick
     insertImages( deconstructedImages_, images );
 
     // Report any error
-    ThrowPPException;
+    ThrowPPException(first_->quiet());
   }
 
   //
@@ -2270,7 +2275,7 @@ namespace Magick
     MagickCore::DisplayImages( first_->imageInfo(), first_->image() );
     MagickCore::GetImageException( first_->image(), exceptionInfo );
     unlinkImages( first_, last_ );
-    ThrowPPException;
+    ThrowPPException(first_->quiet());
   }
 
   // Applies a value to the image with an arithmetic, relational,
@@ -2287,7 +2292,7 @@ namespace Magick
     MagickCore::Image* image = EvaluateImages( first_->image(), operator_, exceptionInfo );
     unlinkImages( first_, last_ );
     evaluatedImage_->replaceImage( image );
-    ThrowPPException;
+    ThrowPPException(evaluatedImage_->quiet());
   }
 
   // Merge a sequence of image frames which represent image layers.
@@ -2302,7 +2307,7 @@ namespace Magick
       FlattenLayer,exceptionInfo );
     unlinkImages( first_, last_ );
     flattendImage_->replaceImage( image );
-    ThrowPPException;
+    ThrowPPException(flattendImage_->quiet());
   }
 
   // Implements the discrete Fourier transform (DFT) of the image either as a
@@ -2323,7 +2328,7 @@ namespace Magick
     insertImages( fourierImages_, images );
 
     // Report any error
-    ThrowPPException;
+    ThrowPPException(image_.quiet());
   }
   template <class Container >
   void forwardFourierTransformImage( Container *fourierImages_,
@@ -2342,7 +2347,7 @@ namespace Magick
     insertImages( fourierImages_, images );
 
     // Report any error
-    ThrowPPException;
+    ThrowPPException(image_.quiet());
   }
 
   // Applies a mathematical expression to a sequence of images.
@@ -2359,7 +2364,7 @@ namespace Magick
       expression.c_str(),exceptionInfo);
     unlinkImages(first_,last_);
     fxImage_->replaceImage(image);
-    ThrowPPException;
+    ThrowPPException(fxImage_->quiet());
   }
 
   // Replace the colors of a sequence of images with the closest color
@@ -2384,7 +2389,7 @@ namespace Magick
     if ( exceptionInfo->severity != MagickCore::UndefinedException )
       {
         unlinkImages( first_, last_ );
-        throwException( exceptionInfo );
+        throwException(exceptionInfo,mapImage_.quiet());
       }
 
     MagickCore::Image* image = first_->image();
@@ -2397,7 +2402,7 @@ namespace Magick
             if ( image->exception.severity > MagickCore::UndefinedException )
               {
                 unlinkImages( first_, last_ );
-                throwException( exceptionInfo );
+                throwException(exceptionInfo,mapImage_.quiet());
               }
           }
   
@@ -2406,7 +2411,7 @@ namespace Magick
         if ( image->exception.severity > MagickCore::UndefinedException )
           {
             unlinkImages( first_, last_ );
-            throwException( exceptionInfo );
+            throwException(exceptionInfo,mapImage_.quiet());
           }
 
         // Next image
@@ -2429,7 +2434,7 @@ namespace Magick
     MagickCore::Image* image = MergeImageLayers( first_->image(), method_, exceptionInfo );
     unlinkImages( first_, last_ );
     mergedImage_->replaceImage( image );
-    ThrowPPException;
+    ThrowPPException(mergedImage_->quiet());
   }
 
   // Create a composite image by combining several separate images.
@@ -2474,7 +2479,7 @@ namespace Magick
     MagickCore::DestroyMontageInfo(montageInfo);
 
     // Report any montage error
-    ThrowPPException;
+    ThrowPPException(first_->quiet());
 
     // Apply transparency to montage images
     if (montageImages_->size() > 0 && options_.transparentColor().isValid())
@@ -2504,7 +2509,7 @@ namespace Magick
     insertImages( morphedImages_, images );
 
     // Report any error
-    ThrowPPException;
+    ThrowPPException(first_->quiet());
   }
 
   // Inlay a number of images to form a single coherent picture.
@@ -2518,7 +2523,7 @@ namespace Magick
        MosaicLayer,exceptionInfo ); 
     unlinkImages( first_, last_ );
     mosaicImage_->replaceImage( image );
-    ThrowPPException;
+    ThrowPPException(mosaicImage_->quiet());
   }
 
   // Compares each image the GIF disposed forms of the previous image in
@@ -2540,7 +2545,7 @@ namespace Magick
 
     insertImages( optimizedImages_, images );
 
-    ThrowPPException;
+    ThrowPPException(first_->quiet());
   }
   
   // optimizeImagePlusLayers is exactly as optimizeImageLayers, but may
@@ -2561,7 +2566,7 @@ namespace Magick
 
     insertImages( optimizedImages_, images );
 
-    ThrowPPException;
+    ThrowPPException(first_->quiet());
   }
 
   // Compares each image the GIF disposed forms of the previous image in the
@@ -2576,7 +2581,7 @@ namespace Magick
     OptimizeImageTransparency(first_->image(),exceptionInfo);
     unlinkImages(first_,last_ );
 
-    ThrowPPException;
+    ThrowPPException(first_->quiet());
   }
 
   // Adds the names of the profiles from the image to the container.
@@ -2613,7 +2618,7 @@ namespace Magick
     if ( exceptionInfo->severity > MagickCore::UndefinedException )
       {
   unlinkImages( first_, last_ );
-  throwException( exceptionInfo );
+  ThrowPPException(first_->quiet());
       }
 
     MagickCore::Image* image = first_->image();
@@ -2631,7 +2636,7 @@ namespace Magick
       }
 
     unlinkImages( first_, last_ );
-    (void) MagickCore::DestroyExceptionInfo( exceptionInfo );
+    ThrowPPException(first_->quiet());
   }
 
   // Read images into existing container (appending to container)
@@ -2651,7 +2656,7 @@ namespace Magick
     GetPPException;
     images=MagickCore::ReadImage(imageInfo,exceptionInfo);
     insertImages(sequence_,images);
-    ThrowPPException;
+    ThrowPPException(options.quiet());
   }
 
   template<class Container>
@@ -2671,7 +2676,7 @@ namespace Magick
     images=MagickCore::BlobToImage(options.imageInfo(),blob_.data(),
       blob_.length(),exceptionInfo);
     insertImages(sequence_,images);
-    ThrowPPException;
+    ThrowPPException(options.quiet())
   }
 
   template<class Container>
@@ -2694,7 +2699,7 @@ namespace Magick
 
     insertImages( separatedImages_, images );
 
-    ThrowPPException;
+    ThrowPPException(image_.quiet())
   }
 
   // Smush images from list into single image in either horizontal or
@@ -2712,7 +2717,7 @@ namespace Magick
       (MagickBooleanType) stack_,offset_,exceptionInfo);
     unlinkImages(first_,last_);
     smushedImage_->replaceImage(newImage);
-    ThrowPPException;
+    ThrowPPException(smushedImage_->quiet());
   }
 
   // Write Images
@@ -2739,7 +2744,7 @@ namespace Magick
         return;
       }
 
-    ThrowPPException;
+    ThrowPPException(first_->quiet());
   }
   // Write images to BLOB
   template <class InputIterator>
@@ -2762,7 +2767,7 @@ namespace Magick
 
     unlinkImages( first_, last_ );
 
-    ThrowPPException;
+    ThrowPPException(first_->quiet());
   }
 
 } // namespace Magick
