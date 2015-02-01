@@ -2091,7 +2091,7 @@ namespace Magick
       MagickCore::GetMagickList( "*", &number_formats, exceptionInfo );
     if( !coder_list )
       {
-        throwException( exceptionInfo, true );
+        throwException(exceptionInfo);
         throwExceptionExplicit(MagickCore::MissingDelegateError,
                              "Coder array not returned!", 0 );
       }
@@ -2141,7 +2141,7 @@ namespace Magick
           }
       }
     coder_list=(char **) MagickCore::RelinquishMagickMemory( coder_list );
-    ThrowPPException(true);
+    ThrowPPException(false);
   }
 
   //
