@@ -2618,7 +2618,7 @@ namespace Magick
     if ( exceptionInfo->severity > MagickCore::UndefinedException )
       {
   unlinkImages( first_, last_ );
-  ThrowPPException(first_->quiet());
+  throwException(exceptionInfo,first_->quiet());
       }
 
     MagickCore::Image* image = first_->image();
@@ -2636,7 +2636,7 @@ namespace Magick
       }
 
     unlinkImages( first_, last_ );
-    ThrowPPException(first_->quiet());
+    (void) MagickCore::DestroyExceptionInfo( exceptionInfo );
   }
 
   // Read images into existing container (appending to container)
