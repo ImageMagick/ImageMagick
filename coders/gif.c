@@ -582,9 +582,6 @@ static MagickBooleanType EncodeImage(const ImageInfo *image_info,Image *image,
   IndexPacket
     index;
 
-  register ssize_t
-    i;
-
   short
     *hash_code,
     *hash_prefix,
@@ -640,6 +637,9 @@ static MagickBooleanType EncodeImage(const ImageInfo *image_info,Image *image,
   /*
     Initialize GIF encoder.
   */
+  (void) ResetMagickMemory(hash_code,0,MaxHashTable*sizeof(*hash_code));
+  (void) ResetMagickMemory(hash_prefix,0,MaxHashTable*sizeof(*hash_prefix));
+  (void) ResetMagickMemory(hash_suffix,0,MaxHashTable*sizeof(*hash_suffix));
   number_bits=data_size;
   max_code=MaxCode(number_bits);
   clear_code=((short) one << (data_size-1));
@@ -648,8 +648,6 @@ static MagickBooleanType EncodeImage(const ImageInfo *image_info,Image *image,
   length=0;
   datum=0;
   bits=0;
-  for (i=0; i < MaxHashTable; i++)
-    hash_code[i]=0;
   GIFOutputCode(clear_code);
   /*
     Encode pixels.
