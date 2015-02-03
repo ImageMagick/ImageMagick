@@ -431,8 +431,7 @@ static HENHMETAFILE ReadEnhMetaFile(const char *path,ssize_t *width,
 
 #define CENTIMETERS_INCH 2.54
 
-static Image *ReadEMFImage(const ImageInfo *image_info,
-  ExceptionInfo *exception)
+static Image *ReadEMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   BITMAPINFO
     DIBinfo;
