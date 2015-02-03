@@ -450,6 +450,9 @@ static Image *ReadEMFImage(const ImageInfo *image_info,
   Image
     *image;
 
+  MagickBooleanType
+    status;
+
   RECT
     rect;
 
