@@ -1869,6 +1869,7 @@ am__EXEEXT_3 = Magick++/demo/analyze$(EXEEXT) \
 	Magick++/tests/color$(EXEEXT) \
 	Magick++/tests/colorHistogram$(EXEEXT) \
 	Magick++/tests/exceptions$(EXEEXT) \
+	Magick++/tests/geometry$(EXEEXT) \
 	Magick++/tests/montageImages$(EXEEXT) \
 	Magick++/tests/morphImages$(EXEEXT) \
 	Magick++/tests/readWriteBlob$(EXEEXT) \
@@ -1950,6 +1951,11 @@ am_Magick___tests_exceptions_OBJECTS =  \
 Magick___tests_exceptions_OBJECTS =  \
 	$(am_Magick___tests_exceptions_OBJECTS)
 Magick___tests_exceptions_DEPENDENCIES = $(am__DEPENDENCIES_3)
+am_Magick___tests_geometry_OBJECTS =  \
+	Magick++/tests/Magick___tests_geometry-geometry.$(OBJEXT)
+Magick___tests_geometry_OBJECTS =  \
+	$(am_Magick___tests_geometry_OBJECTS)
+Magick___tests_geometry_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___tests_montageImages_OBJECTS = Magick++/tests/Magick___tests_montageImages-montageImages.$(OBJEXT)
 Magick___tests_montageImages_OBJECTS =  \
 	$(am_Magick___tests_montageImages_OBJECTS)
@@ -2200,6 +2206,7 @@ SOURCES = $(Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_
 	$(Magick___tests_color_SOURCES) \
 	$(Magick___tests_colorHistogram_SOURCES) \
 	$(Magick___tests_exceptions_SOURCES) \
+	$(Magick___tests_geometry_SOURCES) \
 	$(Magick___tests_montageImages_SOURCES) \
 	$(Magick___tests_morphImages_SOURCES) \
 	$(Magick___tests_readWriteBlob_SOURCES) \
@@ -2291,6 +2298,7 @@ DIST_SOURCES = $(Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUF
 	$(Magick___tests_color_SOURCES) \
 	$(Magick___tests_colorHistogram_SOURCES) \
 	$(Magick___tests_exceptions_SOURCES) \
+	$(Magick___tests_geometry_SOURCES) \
 	$(Magick___tests_montageImages_SOURCES) \
 	$(Magick___tests_morphImages_SOURCES) \
 	$(Magick___tests_readWriteBlob_SOURCES) \
@@ -4900,6 +4908,7 @@ MAGICKPP_CHECK_PGRMS_OPT = \
 	Magick++/tests/color \
 	Magick++/tests/colorHistogram \
 	Magick++/tests/exceptions \
+	Magick++/tests/geometry \
 	Magick++/tests/montageImages \
 	Magick++/tests/morphImages \
 	Magick++/tests/readWriteBlob \
@@ -4956,6 +4965,9 @@ Magick___tests_colorHistogram_CPPFLAGS = $(MAGICKPP_CPPFLAGS)
 Magick___tests_exceptions_SOURCES = Magick++/tests/exceptions.cpp
 Magick___tests_exceptions_LDADD = $(MAGICKPP_LDADD)
 Magick___tests_exceptions_CPPFLAGS = $(MAGICKPP_CPPFLAGS)
+Magick___tests_geometry_SOURCES = Magick++/tests/geometry.cpp
+Magick___tests_geometry_LDADD = $(MAGICKPP_LDADD)
+Magick___tests_geometry_CPPFLAGS = $(MAGICKPP_CPPFLAGS)
 Magick___tests_montageImages_SOURCES = Magick++/tests/montageImages.cpp
 Magick___tests_montageImages_LDADD = $(MAGICKPP_LDADD)
 Magick___tests_montageImages_CPPFLAGS = $(MAGICKPP_CPPFLAGS)
@@ -7003,6 +7015,13 @@ Magick++/tests/Magick___tests_exceptions-exceptions.$(OBJEXT):  \
 Magick++/tests/exceptions$(EXEEXT): $(Magick___tests_exceptions_OBJECTS) $(Magick___tests_exceptions_DEPENDENCIES) $(EXTRA_Magick___tests_exceptions_DEPENDENCIES) Magick++/tests/$(am__dirstamp)
 	@rm -f Magick++/tests/exceptions$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(Magick___tests_exceptions_OBJECTS) $(Magick___tests_exceptions_LDADD) $(LIBS)
+Magick++/tests/Magick___tests_geometry-geometry.$(OBJEXT):  \
+	Magick++/tests/$(am__dirstamp) \
+	Magick++/tests/$(DEPDIR)/$(am__dirstamp)
+
+Magick++/tests/geometry$(EXEEXT): $(Magick___tests_geometry_OBJECTS) $(Magick___tests_geometry_DEPENDENCIES) $(EXTRA_Magick___tests_geometry_DEPENDENCIES) Magick++/tests/$(am__dirstamp)
+	@rm -f Magick++/tests/geometry$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(Magick___tests_geometry_OBJECTS) $(Magick___tests_geometry_LDADD) $(LIBS)
 Magick++/tests/Magick___tests_montageImages-montageImages.$(OBJEXT):  \
 	Magick++/tests/$(am__dirstamp) \
 	Magick++/tests/$(DEPDIR)/$(am__dirstamp)
@@ -7218,6 +7237,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@Magick++/tests/$(DEPDIR)/Magick___tests_color-color.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@Magick++/tests/$(DEPDIR)/Magick___tests_colorHistogram-colorHistogram.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@Magick++/tests/$(DEPDIR)/Magick___tests_exceptions-exceptions.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@Magick++/tests/$(DEPDIR)/Magick___tests_geometry-geometry.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@Magick++/tests/$(DEPDIR)/Magick___tests_montageImages-montageImages.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@Magick++/tests/$(DEPDIR)/Magick___tests_morphImages-morphImages.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@Magick++/tests/$(DEPDIR)/Magick___tests_readWriteBlob-readWriteBlob.Po@am__quote@
@@ -10674,6 +10694,20 @@ Magick++/tests/Magick___tests_exceptions-exceptions.obj: Magick++/tests/exceptio
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/tests/exceptions.cpp' object='Magick++/tests/Magick___tests_exceptions-exceptions.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___tests_exceptions_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/tests/Magick___tests_exceptions-exceptions.obj `if test -f 'Magick++/tests/exceptions.cpp'; then $(CYGPATH_W) 'Magick++/tests/exceptions.cpp'; else $(CYGPATH_W) '$(srcdir)/Magick++/tests/exceptions.cpp'; fi`
+
+Magick++/tests/Magick___tests_geometry-geometry.o: Magick++/tests/geometry.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___tests_geometry_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/tests/Magick___tests_geometry-geometry.o -MD -MP -MF Magick++/tests/$(DEPDIR)/Magick___tests_geometry-geometry.Tpo -c -o Magick++/tests/Magick___tests_geometry-geometry.o `test -f 'Magick++/tests/geometry.cpp' || echo '$(srcdir)/'`Magick++/tests/geometry.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/tests/$(DEPDIR)/Magick___tests_geometry-geometry.Tpo Magick++/tests/$(DEPDIR)/Magick___tests_geometry-geometry.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/tests/geometry.cpp' object='Magick++/tests/Magick___tests_geometry-geometry.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___tests_geometry_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/tests/Magick___tests_geometry-geometry.o `test -f 'Magick++/tests/geometry.cpp' || echo '$(srcdir)/'`Magick++/tests/geometry.cpp
+
+Magick++/tests/Magick___tests_geometry-geometry.obj: Magick++/tests/geometry.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___tests_geometry_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/tests/Magick___tests_geometry-geometry.obj -MD -MP -MF Magick++/tests/$(DEPDIR)/Magick___tests_geometry-geometry.Tpo -c -o Magick++/tests/Magick___tests_geometry-geometry.obj `if test -f 'Magick++/tests/geometry.cpp'; then $(CYGPATH_W) 'Magick++/tests/geometry.cpp'; else $(CYGPATH_W) '$(srcdir)/Magick++/tests/geometry.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/tests/$(DEPDIR)/Magick___tests_geometry-geometry.Tpo Magick++/tests/$(DEPDIR)/Magick___tests_geometry-geometry.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/tests/geometry.cpp' object='Magick++/tests/Magick___tests_geometry-geometry.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___tests_geometry_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/tests/Magick___tests_geometry-geometry.obj `if test -f 'Magick++/tests/geometry.cpp'; then $(CYGPATH_W) 'Magick++/tests/geometry.cpp'; else $(CYGPATH_W) '$(srcdir)/Magick++/tests/geometry.cpp'; fi`
 
 Magick++/tests/Magick___tests_montageImages-montageImages.o: Magick++/tests/montageImages.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___tests_montageImages_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/tests/Magick___tests_montageImages-montageImages.o -MD -MP -MF Magick++/tests/$(DEPDIR)/Magick___tests_montageImages-montageImages.Tpo -c -o Magick++/tests/Magick___tests_montageImages-montageImages.o `test -f 'Magick++/tests/montageImages.cpp' || echo '$(srcdir)/'`Magick++/tests/montageImages.cpp
