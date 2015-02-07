@@ -12181,6 +12181,7 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
   blob=(unsigned char *) NULL;
   jpeg_image=(Image *) NULL;
   jpeg_image_info=(ImageInfo *) NULL;
+  length=0;
 
   status=MagickTrue;
   transparent=image_info->type==GrayscaleAlphaType ||
@@ -12551,7 +12552,6 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
        (void) WriteBlobMSBULong(image,crc32(0,chunk,13));
     }
 
-
   if (transparent != 0)
     {
       if (jng_alpha_compression_method==0)
@@ -12595,7 +12595,7 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
             p+=(8+len);
           }
         }
-      else
+      else if (length != 0)
         {
           /* Write JDAA chunk header */
           if (logging != MagickFalse)
