@@ -988,6 +988,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             bmp_info.blue_mask=0x0000001fU;
           }
       }
+    (void) ResetMagickMemory(&shift,0,sizeof(shift));
+    (void) ResetMagickMemory(&quantum_bits,0,sizeof(quantum_bits));
     if ((bmp_info.bits_per_pixel == 16) || (bmp_info.bits_per_pixel == 32))
       {
         register size_t
@@ -996,8 +998,6 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Get shift and quantum bits info from bitfield masks.
         */
-        (void) ResetMagickMemory(&shift,0,sizeof(shift));
-        (void) ResetMagickMemory(&quantum_bits,0,sizeof(quantum_bits));
         if (bmp_info.red_mask != 0)
           while (((bmp_info.red_mask << shift.red) & 0x80000000UL) == 0)
             shift.red++;
