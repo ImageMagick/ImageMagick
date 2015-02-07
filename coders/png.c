@@ -13100,8 +13100,8 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image)
 
          if (need_defi && final_delay > 2 && (final_delay != 4) &&
             (final_delay != 5) && (final_delay != 10) && (final_delay != 20) &&
-            (final_delay != 25) && (final_delay != 50) && (final_delay !=
-               (size_t) 1UL*image->ticks_per_second))
+            (final_delay != 25) && (final_delay != 50) && (1UL*final_delay !=
+               1UL*image->ticks_per_second))
            mng_info->need_fram=MagickTrue;  /* make it exact; cannot be VLC */
        }
 
