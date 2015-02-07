@@ -242,12 +242,6 @@ const Magick::Geometry& Magick::Geometry::operator=(
       isValid(true);
     }
 
-  if ((flags & XNegative) != 0)
-    _xOff=-_xOff;
-
-  if ((flags & YNegative) != 0)
-    _yOff=-_yOff;
-
   if ((flags & PercentValue) != 0)
     _percent=true;
 
@@ -296,17 +290,13 @@ Magick::Geometry::operator std::string() const
 
   if (_xOff || _yOff)
     {
-      if (_xOff < 0)
-        geometry+='-';
-      else
+      if (_xOff >= 0)
         geometry+='+';
 
       FormatLocaleString(buffer,MaxTextExtent,"%.20g",(double) _xOff);
       geometry+=buffer;
 
-      if (_yOff < 0)
-        geometry+='-';
-      else
+      if (_yOff >= 0)
         geometry+='+';
 
       FormatLocaleString(buffer,MaxTextExtent,"%.20g",(double) _yOff);
