@@ -171,6 +171,7 @@ MAGICKPP_CHECK_PGRMS_OPT = \
 	Magick++/tests/color \
 	Magick++/tests/colorHistogram \
 	Magick++/tests/exceptions \
+	Magick++/tests/geometry \
 	Magick++/tests/montageImages \
 	Magick++/tests/morphImages \
 	Magick++/tests/readWriteBlob \
@@ -243,6 +244,10 @@ Magick___tests_colorHistogram_CPPFLAGS= $(MAGICKPP_CPPFLAGS)
 Magick___tests_exceptions_SOURCES	    = Magick++/tests/exceptions.cpp
 Magick___tests_exceptions_LDADD		    = $(MAGICKPP_LDADD)
 Magick___tests_exceptions_CPPFLAGS    = $(MAGICKPP_CPPFLAGS)
+
+Magick___tests_geometry_SOURCES	    = Magick++/tests/geometry.cpp
+Magick___tests_geometry_LDADD		    = $(MAGICKPP_LDADD)
+Magick___tests_geometry_CPPFLAGS    = $(MAGICKPP_CPPFLAGS)
 
 Magick___tests_montageImages_SOURCES	= Magick++/tests/montageImages.cpp
 Magick___tests_montageImages_LDADD	  = $(MAGICKPP_LDADD)
