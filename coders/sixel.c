@@ -685,7 +685,8 @@ static MagickBooleanType sixel_encode_impl(unsigned char *pixels, size_t width,s
 
     int x, y, i, n, c;
     int left, right;
-    int len, pix;
+    int pix;
+    size_t len;
     unsigned char *map;
     sixel_node_t *np, *tp, top;
     int nwrite;
