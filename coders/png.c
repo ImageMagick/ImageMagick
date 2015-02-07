@@ -6814,7 +6814,6 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       q++;
                     }
                     n++;
-                    p++;
                   }
 
                   if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -12136,6 +12135,7 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
   blob=(unsigned char *) NULL;
   jpeg_image=(Image *) NULL;
   jpeg_image_info=(ImageInfo *) NULL;
+  length=0;
 
   unique_filenames=0;
 
@@ -12518,7 +12518,6 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
        (void) WriteBlobMSBULong(image,crc32(0,chunk,13));
     }
 
-
   if (transparent != 0)
     {
       if (jng_alpha_compression_method==0)
@@ -12562,7 +12561,7 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
             p+=(8+len);
           }
         }
-      else
+      else if (length != 0)
         {
           /* Write JDAA chunk header */
           if (logging != MagickFalse)
@@ -13102,7 +13101,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image)
          if (need_defi && final_delay > 2 && (final_delay != 4) &&
             (final_delay != 5) && (final_delay != 10) && (final_delay != 20) &&
             (final_delay != 25) && (final_delay != 50) && (final_delay !=
-               1UL*image->ticks_per_second))
+               (size_t) 1UL*image->ticks_per_second))
            mng_info->need_fram=MagickTrue;  /* make it exact; cannot be VLC */
        }
 
