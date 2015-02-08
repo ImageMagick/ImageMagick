@@ -85,13 +85,11 @@ Magick::Image::Image(const Blob &blob_)
   try
   {
     // Initialize, Allocate and Read images
+    quiet(true);
     read(blob_);
+    quiet(false);
   }
-  catch(const Warning &/*warning_*/)
-  {
-    // FIXME: need a way to report warnings in constructor
-  }
-  catch (const Error &/*error_*/)
+  catch (const Error&)
   {
     // Release resources
     delete _imgRef;
@@ -105,13 +103,11 @@ Magick::Image::Image(const Blob &blob_,const Geometry &size_)
   try
   {
     // Read from Blob
+    quiet(true);
     read(blob_, size_);
+    quiet(false);
   }
-  catch(const Warning &/*warning_*/)
-  {
-    // FIXME: need a way to report warnings in constructor
-  }
-  catch(const Error &/*error_*/)
+  catch(const Error&)
   {
     // Release resources
     delete _imgRef;
@@ -126,13 +122,11 @@ Magick::Image::Image(const Blob &blob_,const Geometry &size_,
   try
   {
     // Read from Blob
+    quiet(true);
     read(blob_,size_,depth_);
+    quiet(false);
   }
-  catch(const Warning &/*warning_*/)
-  {
-    // FIXME: need a way to report warnings in constructor
-  }
-  catch(const Error &/*error_*/)
+  catch(const Error&)
   {
     // Release resources
     delete _imgRef;
@@ -147,13 +141,11 @@ Magick::Image::Image(const Blob &blob_,const Geometry &size_,
   try
   {
     // Read from Blob
+    quiet(true);
     read(blob_,size_,depth_,magick_);
+    quiet(false);
   }
-  catch(const Warning &/*warning_*/)
-  {
-    // FIXME: need a way to report warnings in constructor
-  }
-  catch(const Error &/*error_*/)
+  catch(const Error&)
   {
     // Release resources
     delete _imgRef;
@@ -168,13 +160,11 @@ Magick::Image::Image(const Blob &blob_,const Geometry &size_,
   try
   {
     // Read from Blob
+    quiet(true);
     read(blob_,size_,magick_);
+    quiet(false);
   }
-  catch(const Warning &/*warning_*/)
-  {
-    // FIXME: need a way to report warnings in constructor
-  }
-  catch(const Error &/*error_*/)
+  catch(const Error&)
   {
     // Release resources
     delete _imgRef;
@@ -191,17 +181,15 @@ Magick::Image::Image(const Geometry &size_,const Color &color_)
 
   try
   {
+    quiet(true);
     // Set image size
     size(size_);
 
     // Initialize, Allocate and Read images
     read(imageSpec);
+    quiet(false);
   }
-  catch(const Warning &/*warning_*/)
-  {
-    // FIXME: need a way to report warnings in constructor
-  }
-  catch(const Error & /*error_*/)
+  catch(const Error&)
   {
     // Release resources
     delete _imgRef;
@@ -221,13 +209,11 @@ Magick::Image::Image(const size_t width_,const size_t height_,
 {
   try
   {
+    quiet(true);
     read(width_,height_,map_.c_str(),type_,pixels_);
+    quiet(false);
   }
-  catch(const Warning &/*warning_*/)
-  {
-    // FIXME: need a way to report warnings in constructor
-  }
-  catch(const Error &/*error_*/)
+  catch(const Error&)
   {
     // Release resources
     delete _imgRef;
@@ -241,13 +227,11 @@ Magick::Image::Image(const std::string &imageSpec_)
   try
   {
     // Initialize, Allocate and Read images
+    quiet(true);
     read(imageSpec_);
+    quiet(false);
   }
-  catch(const Warning &/*warning_*/)
-  {
-    // FIXME: need a way to report warnings in constructor
-  }
-  catch(const Error &/*error_*/)
+  catch(const Error&)
   {
     // Release resources
     delete _imgRef;
