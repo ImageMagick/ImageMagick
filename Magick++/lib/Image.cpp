@@ -3104,15 +3104,15 @@ void Magick::Image::gamma(const double gamma_)
 void Magick::Image::gamma(const double gammaRed_,const double gammaGreen_,
   const double gammaBlue_)
 {
-  char
-    gamma[MaxTextExtent + 1];
-
-  FormatLocaleString(gamma,MaxTextExtent,"%3.6f/%3.6f/%3.6f/",gammaRed_,
-    gammaGreen_,gammaBlue_);
-
   modifyImage();
   GetPPException;
-  GammaImage(image(),atof(gamma),exceptionInfo);
+  GetAndSetPPChannelMask(RedChannel);
+  (void) GammaImage(image(),gammaRed_,exceptionInfo);
+  SetPPChannelMask(GreenChannel);
+  (void) GammaImage(image(),gammaGreen_,exceptionInfo);
+  SetPPChannelMask(BlueChannel);
+  (void) GammaImage(image(),gammaBlue_,exceptionInfo);
+  RestorePPChannelMask;
   ThrowImageException;
 }
 
