@@ -36,7 +36,7 @@
 %
 %
 */
-
+
 /*
   Include declarations.
 */
@@ -99,7 +99,7 @@
 #include "librsvg/librsvg-features.h"
 #endif
 #endif
-
+
 /*
   Typedef declarations.
 */
@@ -184,13 +184,13 @@ typedef struct _SVGInfo
     document;
 #endif
 } SVGInfo;
-
+
 /*
   Forward declarations.
 */
 static MagickBooleanType
   WriteSVGImage(const ImageInfo *,Image *,ExceptionInfo *);
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -2832,7 +2832,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             attributes;
 
           /*
-            Our best hope for compliance to the SVG standard.
+            Our best hope of compliance with the SVG standard.
           */
           status=AcquireUniqueSymbolicLink(image->filename,input_filename);
           (void) AcquireUniqueFilename(output_filename);
@@ -2856,17 +2856,23 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if ((status == 0) && (stat(output_filename,&attributes) == 0) &&
               (attributes.st_size != 0))
             {
+              Image
+                *svg_image;
+
               ImageInfo
                 *read_info;
 
               read_info=CloneImageInfo(image_info);
               (void) CopyMagickString(read_info->filename,output_filename,
                 MaxTextExtent);
-              image=ReadImage(read_info,exception);
+              svg_image=ReadImage(read_info,exception);
               read_info=DestroyImageInfo(read_info);
               (void) RelinquishUniqueFileResource(output_filename);
-              if (image != (Image *) NULL)
-                return(image);
+              if (svg_image != (Image *) NULL)
+                {
+                  image=DestroyImage(image);
+                  return(svg_image);
+                }
             }
           (void) RelinquishUniqueFileResource(output_filename);
         }
@@ -3192,7 +3198,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   return(GetFirstImageInList(image));
 }
 #endif
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -3279,7 +3285,7 @@ ModuleExport size_t RegisterSVGImage(void)
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -3308,7 +3314,7 @@ ModuleExport void UnregisterSVGImage(void)
   xmlCleanupParser();
 #endif
 }
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
