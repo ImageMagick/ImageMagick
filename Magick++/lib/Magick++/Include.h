@@ -1465,6 +1465,10 @@ namespace Magick
   MagickCore::ExceptionInfo \
     *exceptionInfo; \
   exceptionInfo=MagickCore::AcquireExceptionInfo();
+#define GetAndSetPPChannelMask(channel) \
+  MagickCore::ChannelType \
+    channel_mask; \
+  channel_mask=MagickCore::SetImageChannelMask(image(),channel)
 #define ClonePPDrawException(wand) \
   MagickCore::ExceptionInfo \
     *exceptionInfo; \
@@ -1472,9 +1476,7 @@ namespace Magick
 #define RestorePPChannelMask \
   MagickCore::SetPixelChannelMask(image(),channel_mask)
 #define SetPPChannelMask(channel) \
-  MagickCore::ChannelType \
-    channel_mask; \
-  channel_mask=MagickCore::SetImageChannelMask(image(),channel)
+  (void) MagickCore::SetImageChannelMask(image(),channel)
 #define ThrowPPDrawException(quiet) \
   throwException(exceptionInfo,quiet); \
   (void) MagickCore::DestroyExceptionInfo(exceptionInfo)

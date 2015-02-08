@@ -476,7 +476,7 @@ void Magick::Image::channelDepth(const ChannelType channel_,
 {
   modifyImage();
   GetPPException;
-  SetPPChannelMask(channel_);
+  GetAndSetPPChannelMask(channel_);
   SetImageDepth(image(),depth_,exceptionInfo);
   RestorePPChannelMask;
   ThrowImageException;
@@ -488,7 +488,7 @@ size_t Magick::Image::channelDepth(const ChannelType channel_)
     channel_depth;
 
   GetPPException;
-  SetPPChannelMask(channel_);
+  GetAndSetPPChannelMask(channel_);
   channel_depth=GetImageDepth(constImage(),exceptionInfo);
   RestorePPChannelMask;
   ThrowImageException;
@@ -1737,7 +1737,7 @@ void Magick::Image::adaptiveSharpenChannel(const ChannelType channel_,
     *newImage;
 
   GetPPException;
-  SetPPChannelMask(channel_);
+  GetAndSetPPChannelMask(channel_);
   newImage=AdaptiveSharpenImage(constImage(),radius_,sigma_,exceptionInfo);
   RestorePPChannelMask;
   replaceImage(newImage);
@@ -1776,7 +1776,7 @@ void Magick::Image::addNoiseChannel(const ChannelType channel_,
     *newImage;
 
   GetPPException;
-  SetPPChannelMask(channel_);
+  GetAndSetPPChannelMask(channel_);
   newImage=AddNoiseImage(constImage(),noiseType_,1.0,exceptionInfo);
   RestorePPChannelMask;
   replaceImage(newImage);
@@ -1981,7 +1981,7 @@ void Magick::Image::autoGammaChannel(const ChannelType channel_)
 {
   modifyImage();
   GetPPException;
-  SetPPChannelMask(channel_);
+  GetAndSetPPChannelMask(channel_);
   (void) SyncImageSettings(imageInfo(),image(),exceptionInfo);
   (void) AutoGammaImage(image(),exceptionInfo);
   RestorePPChannelMask;
@@ -2001,7 +2001,7 @@ void Magick::Image::autoLevelChannel(const ChannelType channel_)
 {
   modifyImage();
   GetPPException;
-  SetPPChannelMask(channel_);
+  GetAndSetPPChannelMask(channel_);
   (void) SyncImageSettings(imageInfo(),image(),exceptionInfo);
   (void) AutoLevelImage(image(),exceptionInfo);
   RestorePPChannelMask;
@@ -2037,7 +2037,7 @@ void Magick::Image::blackThresholdChannel(const ChannelType channel_,
 {
   modifyImage();
   GetPPException;
-  SetPPChannelMask(channel_);
+  GetAndSetPPChannelMask(channel_);
   BlackThresholdImage(image(),threshold_.c_str(),exceptionInfo);
   RestorePPChannelMask;
   ThrowImageException;
@@ -2072,7 +2072,7 @@ void Magick::Image::blurChannel(const ChannelType channel_,
     *newImage;
 
   GetPPException;
-  SetPPChannelMask(channel_);
+  GetAndSetPPChannelMask(channel_);
   newImage=BlurImage(constImage(),radius_,sigma_,exceptionInfo);
   RestorePPChannelMask;
   replaceImage(newImage);
@@ -2108,7 +2108,7 @@ void Magick::Image::brightnessContrastChannel(const ChannelType channel_,
 {
   modifyImage();
   GetPPException;
-  SetPPChannelMask(channel_);
+  GetAndSetPPChannelMask(channel_);
   BrightnessContrastImage(image(),brightness_,contrast_,exceptionInfo);
   RestorePPChannelMask;
   ThrowImageException;
@@ -2236,7 +2236,7 @@ void Magick::Image::clampChannel(const ChannelType channel_)
 {
   modifyImage();
   GetPPException;
-  SetPPChannelMask(channel_);
+  GetAndSetPPChannelMask(channel_);
   ClampImage(image(),exceptionInfo);
   RestorePPChannelMask;
   ThrowImageException;
@@ -2273,7 +2273,7 @@ void Magick::Image::clutChannel(const ChannelType channel_,
 {
   modifyImage();
   GetPPException;
-  SetPPChannelMask(channel_);
+  GetAndSetPPChannelMask(channel_);
   ClutImage(image(),clutImage_.constImage(),method,exceptionInfo);
   RestorePPChannelMask;
   ThrowImageException;
@@ -2415,7 +2415,7 @@ double Magick::Image::compareChannel(const ChannelType channel_,
     distortion=0.0;
 
   GetPPException;
-  SetPPChannelMask(channel_);
+  GetAndSetPPChannelMask(channel_);
   GetImageDistortion(image(),reference_.constImage(),metric_,&distortion,
     exceptionInfo);
   RestorePPChannelMask;
@@ -2446,7 +2446,7 @@ Magick::Image Magick::Image::compareChannel(const ChannelType channel_,
     *newImage;
 
   GetPPException;
-  SetPPChannelMask(channel_);
+  GetAndSetPPChannelMask(channel_);
   newImage=CompareImages(image(),reference_.constImage(),metric_,distortion,
     exceptionInfo);
   RestorePPChannelMask;
@@ -2540,7 +2540,7 @@ void Magick::Image::contrastStretchChannel(const ChannelType channel_,
 {
   modifyImage();
   GetPPException;
-  SetPPChannelMask(channel_);
+  GetAndSetPPChannelMask(channel_);
   ContrastStretchImage(image(),blackPoint_,whitePoint_,exceptionInfo);
   RestorePPChannelMask;
   ThrowImageException;
@@ -2885,7 +2885,7 @@ void Magick::Image::floodFillAlpha(const ssize_t x_,const ssize_t y_,
   target=static_cast<PixelInfo>(pixelColor(x_,y_));
   target.alpha=alpha_;
   GetPPException;
-  SetPPChannelMask(AlphaChannel);
+  GetAndSetPPChannelMask(AlphaChannel);
   FloodfillPaintImage(image(),options()->drawInfo(),&target,x_,y_,
     (MagickBooleanType)invert_,exceptionInfo);
   RestorePPChannelMask;
@@ -2903,7 +2903,7 @@ void Magick::Image::floodFillAlpha(const ssize_t x_,const ssize_t y_,
   target=static_cast<PixelInfo>(target_);
   target.alpha=alpha_;
   GetPPException;
-  SetPPChannelMask(AlphaChannel);
+  GetAndSetPPChannelMask(AlphaChannel);
   FloodfillPaintImage(image(),options()->drawInfo(),&target,x_,y_,
     (MagickBooleanType)invert_,exceptionInfo);
   RestorePPChannelMask;
@@ -3086,7 +3086,7 @@ void Magick::Image::fx(const std::string expression_,
     *newImage;
 
   GetPPException;
-  SetPPChannelMask(channel_);
+  GetAndSetPPChannelMask(channel_);
   newImage=FxImage(constImage(),expression_.c_str(),exceptionInfo);
   RestorePPChannelMask;
   replaceImage(newImage);
@@ -3134,7 +3134,7 @@ void Magick::Image::gaussianBlurChannel(const ChannelType channel_,
     *newImage;
 
   GetPPException;
-  SetPPChannelMask(channel_);
+  GetAndSetPPChannelMask(channel_);
   newImage=GaussianBlurImage(constImage(),width_,sigma_,exceptionInfo);
   RestorePPChannelMask;
   replaceImage(newImage);
@@ -3272,7 +3272,7 @@ void Magick::Image::kuwaharaChannel(const ChannelType channel_,
     *newImage;
 
   GetPPException;
-  SetPPChannelMask(channel_);
+  GetAndSetPPChannelMask(channel_);
   newImage=KuwaharaImage(constImage(),radius_,sigma_,exceptionInfo);
   replaceImage(newImage);
   RestorePPChannelMask;
@@ -3293,7 +3293,7 @@ void Magick::Image::levelChannel(const ChannelType channel_,
 {
   modifyImage();
   GetPPException;
-  SetPPChannelMask(channel_);
+  GetAndSetPPChannelMask(channel_);
   (void) LevelImage(image(),blackPoint_,whitePoint_,gamma_,exceptionInfo);
   RestorePPChannelMask;
   ThrowImageException;
@@ -3328,7 +3328,7 @@ void Magick::Image::levelColorsChannel(const ChannelType channel_,
   black=static_cast<PixelInfo>(blackColor_);
   white=static_cast<PixelInfo>(whiteColor_);
   GetPPException;
-  SetPPChannelMask(channel_);
+  GetAndSetPPChannelMask(channel_);
   (void) LevelImageColors(image(),&black,&white,invert_ == true ?
     MagickTrue : MagickFalse,exceptionInfo);
   RestorePPChannelMask;
@@ -3491,7 +3491,7 @@ void Magick::Image::morphologyChannel(const ChannelType channel_,
         "Unable to parse kernel.");
       return;
     }
-  SetPPChannelMask(channel_);
+  GetAndSetPPChannelMask(channel_);
   newImage=MorphologyImage(constImage(),method_,iterations_,kernel,
     exceptionInfo);
   RestorePPChannelMask;
@@ -3550,7 +3550,7 @@ void Magick::Image::negateChannel(const ChannelType channel_,
 {
   modifyImage();
   GetPPException;
-  SetPPChannelMask(channel_);
+  GetAndSetPPChannelMask(channel_);
   NegateImage(image(),(MagickBooleanType) grayscale_,exceptionInfo);
   RestorePPChannelMask;
   ThrowImageException;
@@ -3621,7 +3621,7 @@ void Magick::Image::orderedDitherChannel(const ChannelType channel_,
 {
   modifyImage();
   GetPPException;
-  SetPPChannelMask(channel_);
+  GetAndSetPPChannelMask(channel_);
   (void) OrderedPosterizeImage(image(),thresholdMap_.c_str(),exceptionInfo);
   RestorePPChannelMask;
   ThrowImageException;
@@ -3640,7 +3640,7 @@ void Magick::Image::perceptibleChannel(const ChannelType channel_,
 {
   modifyImage();
   GetPPException;
-  SetPPChannelMask(channel_);
+  GetAndSetPPChannelMask(channel_);
   PerceptibleImage(image(),epsilon_,exceptionInfo);
   RestorePPChannelMask;
   ThrowImageException;
@@ -3746,7 +3746,7 @@ void Magick::Image::posterizeChannel(const ChannelType channel_,
 {
   modifyImage();
   GetPPException;
-  SetPPChannelMask(channel_);
+  GetAndSetPPChannelMask(channel_);
   PosterizeImage(image(),levels_,method_,exceptionInfo);
   RestorePPChannelMask;
   ThrowImageException;
@@ -3804,7 +3804,7 @@ void Magick::Image::quantumOperator(const ChannelType channel_,
   const MagickEvaluateOperator operator_,double rvalue_)
 {
   GetPPException;
-  SetPPChannelMask(channel_);
+  GetAndSetPPChannelMask(channel_);
   EvaluateImage(image(),operator_,rvalue_,exceptionInfo);
   RestorePPChannelMask;
   ThrowImageException;
@@ -3827,7 +3827,7 @@ void Magick::Image::quantumOperator(const ssize_t x_,const ssize_t y_,
 
   GetPPException;
   cropImage=CropImage(image(),&geometry,exceptionInfo);
-  SetPPChannelMask(channel_);
+  GetAndSetPPChannelMask(channel_);
   EvaluateImage(cropImage,operator_,rvalue_,exceptionInfo);
   RestorePPChannelMask;
   (void) CompositeImage(image(),cropImage,image()->alpha_trait == 
@@ -3862,7 +3862,7 @@ void Magick::Image::randomThresholdChannel(const ChannelType channel_,
 {
   modifyImage();
   GetPPException;
-  SetPPChannelMask(channel_);
+  GetAndSetPPChannelMask(channel_);
   (void) RandomThresholdImage(image(),static_cast<std::string>(
     thresholds_).c_str(),exceptionInfo);
   RestorePPChannelMask;
@@ -4065,7 +4065,7 @@ void Magick::Image::rotationalBlurChannel(const ChannelType channel_,
     *newImage;
 
   GetPPException;
-  SetPPChannelMask(channel_);
+  GetAndSetPPChannelMask(channel_);
   newImage=RotationalBlurImage(constImage(),angle_,exceptionInfo);
   RestorePPChannelMask;
   replaceImage(newImage);
@@ -4148,7 +4148,7 @@ void Magick::Image::selectiveBlurChannel(const ChannelType channel_,
     *newImage;
 
   GetPPException;
-  SetPPChannelMask(channel_);
+  GetAndSetPPChannelMask(channel_);
   newImage=SelectiveBlurImage(constImage(),radius_,sigma_,threshold_,
     exceptionInfo);
   RestorePPChannelMask;
@@ -4238,7 +4238,7 @@ void Magick::Image::sharpenChannel(const ChannelType channel_,
     *newImage;
 
   GetPPException;
-  SetPPChannelMask(channel_);
+  GetAndSetPPChannelMask(channel_);
   newImage=SharpenImage(constImage(),radius_,sigma_,exceptionInfo);
   RestorePPChannelMask;
   replaceImage(newImage);
@@ -4313,7 +4313,7 @@ void Magick::Image::sparseColor(const ChannelType channel_,
     *newImage;
 
   GetPPException;
-  SetPPChannelMask(channel_);
+  GetAndSetPPChannelMask(channel_);
   newImage=SparseColorImage(constImage(),method_,numberArguments_,arguments_,
     exceptionInfo);
   RestorePPChannelMask;
@@ -4632,7 +4632,7 @@ void Magick::Image::unsharpmaskChannel(const ChannelType channel_,
     *newImage;
 
   GetPPException;
-  SetPPChannelMask(channel_);
+  GetAndSetPPChannelMask(channel_);
   newImage=UnsharpMaskImage(constImage(),radius_,sigma_,amount_,threshold_,
     exceptionInfo);
   RestorePPChannelMask;
@@ -4677,7 +4677,7 @@ void Magick::Image::whiteThresholdChannel(const ChannelType channel_,
 {
   modifyImage();
   GetPPException;
-  SetPPChannelMask(channel_);
+  GetAndSetPPChannelMask(channel_);
   WhiteThresholdImage(image(),threshold_.c_str(),exceptionInfo);
   RestorePPChannelMask;
   ThrowImageException;
