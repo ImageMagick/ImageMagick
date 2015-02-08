@@ -8,7 +8,7 @@
 #
 subdir=Magick++/tests
 . ./common.shi
-echo "1..12"
+echo "1..13"
 
 SRCDIR=${top_srcdir}/${subdir}/
 export SRCDIR
