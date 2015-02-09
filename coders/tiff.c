@@ -1377,6 +1377,8 @@ RestoreMSCWarning
       }
     if (TIFFGetFieldDefaulted(tiff,TIFFTAG_PAGENUMBER,&value,&pages) == 1)
       image->scene=value;
+    if ((image->storage_class == PseudoClass) && (image->matte == MagickFalse))
+      image->depth=GetImageDepth(image,exception);
     if (image_info->ping != MagickFalse)
       {
         if (image_info->number_scenes != 0)
@@ -1952,8 +1954,6 @@ RestoreMSCWarning
         if (bits_per_sample == 1)
           image->type=BilevelType;
       }
-    if (image->storage_class == PseudoClass)
-      image->depth=GetImageDepth(image,exception);
     /*
       Proceed to next image.
     */
