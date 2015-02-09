@@ -1592,7 +1592,7 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image)
       }
     else
       {
-        MagickRealType
+        double
           alpha,
           beta;
 
@@ -1609,10 +1609,10 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image)
                   opacity=i;
                   continue;
                 }
-              alpha=(MagickRealType) TransparentOpacity-(MagickRealType)
-                image->colormap[i].opacity;
-              beta=(MagickRealType) TransparentOpacity-(MagickRealType)
-                image->colormap[opacity].opacity;
+              alpha=fabs((double) image->colormap[i].opacity-
+                TransparentOpacity);
+              beta=fabs((double) image->colormap[opacity].opacity-
+                TransparentOpacity);
               if (alpha < beta)
                 opacity=i;
             }
@@ -1627,10 +1627,10 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image)
                       opacity=i;
                       continue;
                     }
-                  alpha=(Quantum) TransparentOpacity-(MagickRealType)
-                    image->colormap[i].opacity;
-                  beta=(Quantum) TransparentOpacity-(MagickRealType)
-                    image->colormap[opacity].opacity;
+                  alpha=fabs((double) image->colormap[i].opacity-
+                    TransparentOpacity);
+                  beta=fabs((double) image->colormap[opacity].opacity-
+                    TransparentOpacity);
                   if (alpha < beta)
                     opacity=i;
                 }
