@@ -1135,7 +1135,8 @@ MagickPrivate ssize_t GetMagickPageSize(void)
 %
 %  The path of the GetPathAttributes method is:
 %
-%      MagickBooleanType GetPathAttributes(const char *path,void *attributes)
+%      MagickBooleanType GetPathAttributes(const char *path,
+%        struct stat *attributes)
 %
 %  A description of each parameter follows.
 %
@@ -1145,19 +1146,15 @@ MagickPrivate ssize_t GetMagickPageSize(void)
 %
 */
 MagickExport MagickBooleanType GetPathAttributes(const char *path,
-  void *attributes)
+  struct stat *attributes)
 {
-  MagickBooleanType
-    status;
-
   if (path == (const char *) NULL)
     {
       errno=EINVAL;
       return(MagickFalse);
     }
-  status=stat_utf8(path,(struct stat *) attributes) == 0 ? MagickTrue :
-    MagickFalse;
-  return(status);
+  ResetMagickMemory(attributes,0,sizeof(*attributes));
+  return(stat_utf8(path,attributes) == 0 ? MagickTrue : MagickFalse);
 }
 
 /*
