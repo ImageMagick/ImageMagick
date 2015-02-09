@@ -3556,6 +3556,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
       q=GetAuthenticPixelQueue(image);
       if (image_view != (CacheView *) NULL)
         q=GetCacheViewAuthenticPixelQueue(image_view);
+      indexes=GetAuthenticIndexQueue(image);
       for (x=0; x < (ssize_t) number_pixels; x++)
       {
         alpha=QuantumScale*GetPixelAlpha(q);
@@ -3563,6 +3564,9 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
         SetPixelRed(q,ClampToQuantum(alpha*GetPixelRed(q)));
         SetPixelGreen(q,ClampToQuantum(alpha*GetPixelGreen(q)));
         SetPixelBlue(q,ClampToQuantum(alpha*GetPixelBlue(q)));
+        if (image->colorspace == CMYKColorspace)
+          SetPixelBlack(indexes+x,ClampToQuantum(alpha*GetPixelBlack(
+            indexes+x)));
         q++;
       }
     }
