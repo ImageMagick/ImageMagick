@@ -1276,7 +1276,8 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     if (AcquireImageColormap(image,image->colors) == MagickFalse)
       {
-        global_colormap=(unsigned char *) RelinquishMagickMemory(global_colormap);
+        global_colormap=(unsigned char *) RelinquishMagickMemory(
+          global_colormap);
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
       }
     if (BitSet((int) flag,0x80) == 0)
@@ -1598,7 +1599,8 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image)
         /*
           Identify transparent colormap index.
         */
-        (void) SetImageType(image,PaletteBilevelMatteType);
+        if ((image->storage_class == DirectClass) || (image->colors > 256))
+          (void) SetImageType(image,PaletteBilevelMatteType);
         for (i=0; i < (ssize_t) image->colors; i++)
           if (image->colormap[i].opacity != OpaqueOpacity)
             {
