@@ -1589,7 +1589,8 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image,
         /*
           Identify transparent colormap index.
         */
-        (void) SetImageType(image,PaletteBilevelAlphaType,exception);
+        if ((image->storage_class == DirectClass) || (image->colors > 256))
+          (void) SetImageType(image,PaletteBilevelAlphaType,exception);
         for (i=0; i < (ssize_t) image->colors; i++)
           if (image->colormap[i].alpha != OpaqueAlpha)
             {
@@ -1598,9 +1599,8 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image,
                   opacity=i;
                   continue;
                 }
-              alpha=(double) TransparentAlpha-(double) image->colormap[i].alpha;
-              beta=(double) TransparentAlpha-(double)
-                image->colormap[opacity].alpha;
+              alpha=fabs(image->colormap[i].alpha-TransparentAlpha);
+              beta=fabs(image->colormap[opacity].alpha-TransparentAlpha);
               if (alpha < beta)
                 opacity=i;
             }
@@ -1615,10 +1615,8 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image,
                       opacity=i;
                       continue;
                     }
-                  alpha=(Quantum) TransparentAlpha-(double)
-                    image->colormap[i].alpha;
-                  beta=(Quantum) TransparentAlpha-(double)
-                    image->colormap[opacity].alpha;
+                  alpha=fabs(image->colormap[i].alpha-TransparentAlpha);
+                  beta=fabs(image->colormap[opacity].alpha-TransparentAlpha);
                   if (alpha < beta)
                     opacity=i;
                 }
