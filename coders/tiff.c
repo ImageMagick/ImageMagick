@@ -1382,6 +1382,8 @@ RestoreMSCWarning
     value=(unsigned short) image->scene;
     if (TIFFGetFieldDefaulted(tiff,TIFFTAG_PAGENUMBER,&value,&pages) == 1)
       image->scene=value;
+    if ((image->storage_class == PseudoClass) && (image->matte == MagickFalse))
+      image->depth=GetImageDepth(image,exception);
     if (image_info->ping != MagickFalse)
       {
         if (image_info->number_scenes != 0)
@@ -1917,11 +1919,12 @@ RestoreMSCWarning
           q+=GetPixelChannels(image)*(image->columns-1);
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-            SetPixelRed(image,ScaleCharToQuantum((unsigned char) TIFFGetR(*p)),q);
+            SetPixelRed(image,ScaleCharToQuantum((unsigned char)
+              TIFFGetR(*p)),q);
             SetPixelGreen(image,ScaleCharToQuantum((unsigned char)
               TIFFGetG(*p)),q);
-            SetPixelBlue(image,ScaleCharToQuantum((unsigned char) TIFFGetB(*p)),
-              q);
+            SetPixelBlue(image,ScaleCharToQuantum((unsigned char)
+              TIFFGetB(*p)),q);
             if (image->alpha_trait != UndefinedPixelTrait)
               SetPixelAlpha(image,ScaleCharToQuantum((unsigned char)
                 TIFFGetA(*p)),q);
@@ -1955,8 +1958,6 @@ RestoreMSCWarning
         if (bits_per_sample == 1)
           image->type=BilevelType;
       }
-    if (image->storage_class == PseudoClass)
-      image->depth=GetImageDepth(image,exception);
     /*
       Proceed to next image.
     */
