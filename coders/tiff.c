@@ -1377,8 +1377,52 @@ RestoreMSCWarning
       }
     if (TIFFGetFieldDefaulted(tiff,TIFFTAG_PAGENUMBER,&value,&pages) == 1)
       image->scene=value;
-    if ((image->storage_class == PseudoClass) && (image->matte == MagickFalse))
-      image->depth=GetImageDepth(image,exception);
+    if (image->storage_class == PseudoClass)
+      {
+        int
+          tiff_status;
+
+        size_t
+          range;
+
+        uint16
+          *blue_colormap,
+          *green_colormap,
+          *red_colormap;
+
+        /*
+          Initialize colormap.
+        */
+        tiff_status=TIFFGetField(tiff,TIFFTAG_COLORMAP,&red_colormap,
+          &green_colormap,&blue_colormap);
+        if (tiff_status == 1)
+          {
+            if ((red_colormap != (uint16 *) NULL) &&
+                (green_colormap != (uint16 *) NULL) &&
+                (blue_colormap != (uint16 *) NULL))
+              {
+                range=255;  /* might be old style 8-bit colormap */
+                for (i=0; i < (ssize_t) image->colors; i++)
+                  if ((red_colormap[i] >= 256) || (green_colormap[i] >= 256) ||
+                      (blue_colormap[i] >= 256))
+                    {
+                      range=65535;
+                      break;
+                    }
+                for (i=0; i < (ssize_t) image->colors; i++)
+                {
+                  image->colormap[i].red=ClampToQuantum(((double)
+                    QuantumRange*red_colormap[i])/range);
+                  image->colormap[i].green=ClampToQuantum(((double)
+                    QuantumRange*green_colormap[i])/range);
+                  image->colormap[i].blue=ClampToQuantum(((double)
+                    QuantumRange*blue_colormap[i])/range);
+                }
+              }
+          }
+        if (image->matte == MagickFalse)
+          image->depth=GetImageDepth(image,exception);
+      }
     if (image_info->ping != MagickFalse)
       {
         if (image_info->number_scenes != 0)
@@ -1433,52 +1477,6 @@ RestoreMSCWarning
         /*
           Convert TIFF image to PseudoClass MIFF image.
         */
-        if ((image->storage_class == PseudoClass) &&
-            (photometric == PHOTOMETRIC_PALETTE))
-          {
-            int
-              tiff_status;
-
-            size_t
-              range;
-
-            uint16
-              *blue_colormap,
-              *green_colormap,
-              *red_colormap;
-
-            /*
-              Initialize colormap.
-            */
-            tiff_status=TIFFGetField(tiff,TIFFTAG_COLORMAP,&red_colormap,
-              &green_colormap,&blue_colormap);
-            if (tiff_status == 1)
-              {
-                if ((red_colormap != (uint16 *) NULL) &&
-                    (green_colormap != (uint16 *) NULL) &&
-                    (blue_colormap != (uint16 *) NULL))
-                  {
-                    range=255;  /* might be old style 8-bit colormap */
-                    for (i=0; i < (ssize_t) image->colors; i++)
-                      if ((red_colormap[i] >= 256) ||
-                          (green_colormap[i] >= 256) ||
-                          (blue_colormap[i] >= 256))
-                        {
-                          range=65535;
-                          break;
-                        }
-                    for (i=0; i < (ssize_t) image->colors; i++)
-                    {
-                      image->colormap[i].red=ClampToQuantum(((double)
-                        QuantumRange*red_colormap[i])/range);
-                      image->colormap[i].green=ClampToQuantum(((double)
-                        QuantumRange*green_colormap[i])/range);
-                      image->colormap[i].blue=ClampToQuantum(((double)
-                        QuantumRange*blue_colormap[i])/range);
-                    }
-                  }
-              }
-          }
         quantum_type=IndexQuantum;
         pad=(size_t) MagickMax((size_t) samples_per_pixel-1,0);
         if (image->matte != MagickFalse)
