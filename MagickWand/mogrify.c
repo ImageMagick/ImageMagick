@@ -1734,8 +1734,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             if (*option == '+')
               (*image)->gamma=StringToDouble(argv[i+1],(char **) NULL);
             else
-              (void) GammaImage(*image,StringToDouble(argv[i+1],
-                (char **) NULL),exception);
+              (void) GammaImage(*image,StringToDouble(argv[i+1],(char **) NULL),
+                exception);
             break;
           }
         if ((LocaleCompare("gaussian-blur",option+1) == 0) ||
