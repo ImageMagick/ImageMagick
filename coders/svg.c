@@ -3512,12 +3512,18 @@ static MagickBooleanType TraceSVGImage(Image *image,ExceptionInfo *exception)
     (void) WriteBlobString(image,
       "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n");
     (void) WriteBlobString(image,
-      "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 20010904//EN\"\n");
+      "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\"");
     (void) WriteBlobString(image,
-      "  \"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd\">\n");
+      " \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">\n");
     (void) FormatLocaleString(message,MaxTextExtent,
-      "<svg width=\"%.20g\" height=\"%.20g\">\n",(double) image->columns,
-      (double) image->rows);
+      "<svg version=\"1.1\" id=\"Layer_1\" "
+      "xmlns=\"http://www.w3.org/2000/svg\" "
+      "xmlns:xlink=\"http://www.w3.org/1999/xlink\" x=\"0px\" y=\"0px\" "
+      "width=\"%.20gpx\" height=\"%.20gpx\" viewBox=\"0 0 %.20g %.20g\" "
+      "enable-background=\"new 0 0 %.20g %.20g\" xml:space=\"preserve\">",
+      (double) image->columns,(double) image->rows,
+      (double) image->columns,(double) image->rows,
+      (double) image->columns,(double) image->rows);
     (void) WriteBlobString(image,message);
     clone_image=CloneImage(image,0,0,MagickTrue,exception);
     if (clone_image == (Image *) NULL)
