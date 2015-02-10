@@ -1382,7 +1382,8 @@ RestoreMSCWarning
     value=(unsigned short) image->scene;
     if (TIFFGetFieldDefaulted(tiff,TIFFTAG_PAGENUMBER,&value,&pages) == 1)
       image->scene=value;
-    if ((image->storage_class == PseudoClass) && (image->matte == MagickFalse))
+    if ((image->storage_class == PseudoClass) &&
+        (image->alpha_trait == UndefinedPixelTrait))
       image->depth=GetImageDepth(image,exception);
     if (image_info->ping != MagickFalse)
       {
