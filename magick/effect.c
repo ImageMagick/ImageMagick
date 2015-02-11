@@ -1507,9 +1507,6 @@ MagickExport Image *FilterImageChannel(const Image *image,
   assert(exception->signature == MagickSignature);
   if ((kernel->width % 2) == 0)
     ThrowImageException(OptionError,"KernelWidthMustBeAnOddNumber");
-
-
-
   if (image->debug != MagickFalse)
     {
       char
@@ -1554,23 +1551,22 @@ MagickExport Image *FilterImageChannel(const Image *image,
   if (filter_image == (Image *) NULL)
     return((Image *) NULL);
   if (SetImageStorageClass(filter_image,DirectClass) == MagickFalse)
-  {
-    InheritException(exception,&filter_image->exception);
-    filter_image=DestroyImage(filter_image);
-    return((Image *) NULL);
-  }
-
+    {
+      InheritException(exception,&filter_image->exception);
+      filter_image=DestroyImage(filter_image);
+      return((Image *) NULL);
+    }
   /*
     Normalize kernel.
   */
   filter_kernel=(MagickRealType *) MagickAssumeAligned(AcquireAlignedMemory(
-    kernel->width,kernel->width*sizeof(*filter_kernel)));
+    kernel->width,kernel->height*sizeof(*filter_kernel)));
   if (filter_kernel == (MagickRealType *) NULL)
     {
       filter_image=DestroyImage(filter_image);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
-  for (i=0; i < (ssize_t) (kernel->width*kernel->width); i++)
+  for (i=0; i < (ssize_t) (kernel->width*kernel->height); i++)
     filter_kernel[i]=(MagickRealType) kernel->values[i];
   /*
     Filter image.
@@ -1790,7 +1786,6 @@ MagickExport Image *FilterImageChannel(const Image *image,
   filter_kernel=(MagickRealType *) RelinquishAlignedMemory(filter_kernel);
   if (status == MagickFalse)
     filter_image=DestroyImage(filter_image);
-
 #ifdef MAGICKCORE_CLPERFMARKER
   clEndPerfMarkerAMD();
 #endif
