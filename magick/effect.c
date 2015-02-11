@@ -1714,7 +1714,7 @@ MagickExport Image *FilterImageChannel(const Image *image,
             }
             kernel_pixels+=image->columns+kernel->width;
           }
-          gamma=PerceptibleReciprocal(gamma);
+          gamma=PerceptibleReciprocal(gamma); 
           if ((channel & RedChannel) != 0)
             SetPixelRed(q,ClampToQuantum(gamma*pixel.red));
           if ((channel & GreenChannel) != 0)
