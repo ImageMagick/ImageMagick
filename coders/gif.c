@@ -1194,7 +1194,8 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 else if (magick != MagickFalse)
                   {
                     (void) CopyMagickString(name,"magick",sizeof(name));
-                    image->gamma=StringToDouble((char *) info+6,(char **) NULL);
+                    meta_image->gamma=StringToDouble((char *) info+6,
+                      (char **) NULL);
                   }
                 else
                   (void) FormatLocaleString(name,sizeof(name),"gif:%.11s",
@@ -1371,8 +1372,8 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
         break;
     opacity=(-1);
-    status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) image->scene-1,
-      image->scene);
+    status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) image->scene-
+      1,image->scene);
     if (status == MagickFalse)
       break;
   }
