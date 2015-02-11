@@ -2443,8 +2443,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           if (IfNormalOp)
             constant=PerceptibleReciprocal(constant);
           (void) EvaluateImage(_image,PowEvaluateOperator,constant,_exception);
-          if (_image->gamma != 0.0)
-            _image->gamma*=constant;
+          _image->gamma*=StringToDouble(arg1,(char **) NULL);
 #endif
           /* Set gamma setting -- Old meaning of "+gamma"
            * _image->gamma=StringToDouble(arg1,(char **) NULL);
