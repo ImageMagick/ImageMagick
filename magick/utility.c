@@ -1762,7 +1762,7 @@ MagickExport size_t MultilineCensus(const char *label)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   S h r e a d F i l e                                                       %
+%   S h r e d F i l e                                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1813,7 +1813,11 @@ MagickPrivate MagickBooleanType ShredFile(const char *path)
       */
       status=remove_utf8(path);
       if (status == -1)
-        return(MagickFalse);
+        {
+          (void) LogMagickEvent(ExceptionEvent,GetMagickModule(),
+            "Failed to remove: %s",path);
+          return(MagickFalse);
+        }
       return(MagickTrue);
     }
   file=open_utf8(path,O_WRONLY | O_EXCL | O_BINARY,S_MODE);
@@ -1823,6 +1827,9 @@ MagickPrivate MagickBooleanType ShredFile(const char *path)
         Don't shred the file, just remove it.
       */
       status=remove_utf8(path);
+      if (status == -1)
+        (void) LogMagickEvent(ExceptionEvent,GetMagickModule(),
+          "Failed to remove: %s",path);
       return(MagickFalse);
     }
   /*
