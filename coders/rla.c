@@ -113,11 +113,11 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
       revision;
 
     char
-      gamma[16],
-      red_primary[24],
-      green_primary[24],
-      blue_primary[24],
-      white_point[24];
+      gamma[16+1],
+      red_primary[24+1],
+      green_primary[24+1],
+      blue_primary[24+1],
+      white_point[24+1];
 
     int
       job_number;
