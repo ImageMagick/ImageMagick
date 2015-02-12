@@ -1,3 +1,7 @@
+2015-02-10  6.9.0-6 Cristy  <quetzlzacatenango@image...>
+  * A transient bug for the  write MSL element (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=27022).
+
 2015-02-08  6.9.0-6 Glenn Randers-Pehrson <glennrp@image...>
   * Remove uninitialized, unused "p++" from coders/png.c, MNG reader.
   * Initialize "length" in coders/png.c, WriteJNGImage().
