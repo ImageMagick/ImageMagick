@@ -4178,10 +4178,14 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
     pixel=bias;
     for (x=0; x < (ssize_t) spread_image->columns; x++)
     {
+      PointInfo
+        point;
+
+      point.x=GetPseudoRandomValue(random_info[id]);
+      point.y=GetPseudoRandomValue(random_info[id]);
       (void) InterpolateMagickPixelPacket(image,image_view,
-        UndefinedInterpolatePixel,(double) x+width*(GetPseudoRandomValue(
-        random_info[id])-0.5),(double) y+width*(GetPseudoRandomValue(
-        random_info[id])-0.5),&pixel,exception);
+        UndefinedInterpolatePixel,(double) x+width*(point.x-0.5),(double)
+        y+width*(point.y-0.5),&pixel,exception);
       SetPixelPacket(spread_image,&pixel,q,indexes+x);
       q++;
     }
