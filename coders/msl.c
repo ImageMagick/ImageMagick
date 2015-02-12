@@ -7252,6 +7252,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
 
           /* process */
           {
+            *msl_info->image_info[n]->magick='\0';
             (void) WriteImage(msl_info->image_info[n], msl_info->image[n]);
             break;
           }
@@ -7629,8 +7630,8 @@ static void MSLExternalSubset(void *context,const xmlChar *name,
 }
 #endif
 
-static MagickBooleanType ProcessMSLScript(const ImageInfo *image_info,Image **image,
-  ExceptionInfo *exception)
+static MagickBooleanType ProcessMSLScript(const ImageInfo *image_info,
+  Image **image,ExceptionInfo *exception)
 {
   char
     message[MaxTextExtent];
