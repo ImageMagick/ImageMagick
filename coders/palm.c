@@ -409,7 +409,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     }
     mask=(size_t) (1U << bits_per_pixel)-1;
-    for (y = 0; y < (ssize_t) image->rows; y++)
+    for (y=0; y < (ssize_t) image->rows; y++)
     {
       if ((flags & PALM_IS_COMPRESSED_FLAG) == 0)
         {
@@ -517,7 +517,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
       }
     one_row=(unsigned char *) RelinquishMagickMemory(one_row);
     if (compressionType == PALM_COMPRESSION_SCANLINE)
-    lastrow=(unsigned char *) RelinquishMagickMemory(lastrow);
+      lastrow=(unsigned char *) RelinquishMagickMemory(lastrow);
     /*
       Proceed to next image. Copied from coders/pnm.c
     */
