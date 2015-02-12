@@ -167,7 +167,8 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
     status;
 
   MagickOffsetType
-    offset;
+    offset,
+    *scanlines;
 
   register ssize_t
     i,
@@ -178,7 +179,6 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   ssize_t
     count,
-    *scanlines,
     y;
 
   RLAInfo
@@ -269,8 +269,9 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
       InheritException(exception,&image->exception);
       return(DestroyImageList(image));
     }
-  scanlines=(ssize_t *) AcquireQuantumMemory(image->rows,sizeof(*scanlines));
-  if (scanlines == (ssize_t *) NULL)
+  scanlines=(MagickOffsetType *) AcquireQuantumMemory(image->rows,
+    sizeof(*scanlines));
+  if (scanlines == (MagickOffsetType *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   if (*rla_info.description != '\0')
     (void) SetImageProperty(image,"comment",(char *) rla_info.description);
@@ -278,15 +279,14 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Read offsets to each scanline data.
   */
   for (i=0; i < (ssize_t) image->rows; i++)
-    scanlines[i]=(ssize_t) ((int) ReadBlobMSBLong(image));
+    scanlines[i]=(MagickOffsetType) ((int) ReadBlobMSBLong(image));
   /*
     Read image data.
   */
   x=0;
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    offset=SeekBlob(image,(MagickOffsetType) scanlines[image->rows-y-1],
-      SEEK_SET);
+    offset=SeekBlob(image,scanlines[image->rows-y-1],SEEK_SET);
     if (offset < 0)
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     for (channel=0; channel < (int) rla_info.number_channels; channel++)
@@ -388,6 +388,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (status == MagickFalse)
       break;
   }
+  scanlines=(MagickOffsetType *) RelinquishMagickMemory(scanlines);
   if (EOFBlob(image) != MagickFalse)
     ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
       image->filename);
