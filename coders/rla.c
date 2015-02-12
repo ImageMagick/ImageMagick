@@ -113,25 +113,25 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
       revision;
 
     char
-      gamma[16],
-      red_primary[24],
-      green_primary[24],
-      blue_primary[24],
-      white_point[24];
+      gamma[16+1],
+      red_primary[24+1],
+      green_primary[24+1],
+      blue_primary[24+1],
+      white_point[24+1];
 
-    ssize_t
+    int
       job_number;
 
     char
-      name[128],
-      description[128],
-      program[64],
-      machine[32],
-      user[32],
-      date[20],
-      aspect[24],
-      aspect_ratio[8],
-      chan[32];
+      name[128+1],
+      description[128+1],
+      program[64+1],
+      machine[32+1],
+      user[32+1],
+      date[20+1],
+      aspect[24+1],
+      aspect_ratio[8+1],
+      chan[32+1];
 
     short
       field;
@@ -148,10 +148,10 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
       auxiliary_bits;
 
     char
-      auxiliary[32],
-      space[36];
+      auxiliary[32+1],
+      space[36+1];
 
-    ssize_t
+    int
       next;
   } RLAInfo;
 
@@ -167,7 +167,8 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
     status;
 
   MagickOffsetType
-    offset;
+    offset,
+    *scanlines;
 
   register ssize_t
     i,
@@ -178,7 +179,6 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   ssize_t
     count,
-    *scanlines,
     y;
 
   RLAInfo
@@ -204,6 +204,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
+  (void) ResetMagickMemory(&rla_info,0,sizeof(rla_info));
   rla_info.window.left=(short) ReadBlobMSBShort(image);
   rla_info.window.right=(short) ReadBlobMSBShort(image);
   rla_info.window.bottom=(short) ReadBlobMSBShort(image);
@@ -255,8 +256,10 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   image->alpha_trait=rla_info.number_matte_channels != 0 ? BlendPixelTrait : 
     UndefinedPixelTrait;
-  image->columns=1UL*rla_info.active_window.right-rla_info.active_window.left+1;
-  image->rows=1UL*rla_info.active_window.top-rla_info.active_window.bottom+1;
+  image->columns=(size_t) (rla_info.active_window.right-
+    rla_info.active_window.left+1);
+  image->rows=(size_t) (rla_info.active_window.top-
+    rla_info.active_window.bottom+1);
   if (image_info->ping != MagickFalse)
     {
       (void) CloseBlob(image);
@@ -265,8 +268,9 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
     return(DestroyImageList(image));
-  scanlines=(ssize_t *) AcquireQuantumMemory(image->rows,sizeof(*scanlines));
-  if (scanlines == (ssize_t *) NULL)
+  scanlines=(MagickOffsetType *) AcquireQuantumMemory(image->rows,
+    sizeof(*scanlines));
+  if (scanlines == (MagickOffsetType *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   if (*rla_info.description != '\0')
     (void) SetImageProperty(image,"comment",rla_info.description,exception);
@@ -274,7 +278,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Read offsets to each scanline data.
   */
   for (i=0; i < (ssize_t) image->rows; i++)
-    scanlines[i]=(int) ReadBlobMSBLong(image);
+    scanlines[i]=(MagickOffsetType) ((int) ReadBlobMSBLong(image));
   /*
     Read image data.
   */
@@ -386,6 +390,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (EOFBlob(image) != MagickFalse)
     ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
       image->filename);
+  scanlines=(MagickOffsetType *) RelinquishMagickMemory(scanlines);
   (void) CloseBlob(image);
   return(GetFirstImageInList(image));
 }
