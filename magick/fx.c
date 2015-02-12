@@ -335,12 +335,10 @@ MagickExport Image *AddNoiseImageChannel(const Image *image,
   status=MagickTrue;
   progress=0;
   random_info=AcquireRandomInfoThreadSet();
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  key=GetRandomSecretKey(random_info[0]);
-#endif
   image_view=AcquireVirtualCacheView(image,exception);
   noise_view=AcquireAuthenticCacheView(noise_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
+  key=GetRandomSecretKey(random_info[0]);
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     magick_threads(image,noise_image,image->rows,key == ~0UL)
 #endif
@@ -4443,11 +4441,9 @@ MagickExport Image *SketchImage(const Image *image,const double radius,
     status=MagickTrue;
     GetMagickPixelPacket(random_image,&zero);
     random_info=AcquireRandomInfoThreadSet();
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-    key=GetRandomSecretKey(random_info[0]);
-#endif
     random_view=AcquireAuthenticCacheView(random_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
+    key=GetRandomSecretKey(random_info[0]);
 #pragma omp parallel for schedule(static,4) shared(status) \
   magick_threads(random_image,random_image,random_image->rows,key == ~0UL)
 #endif
