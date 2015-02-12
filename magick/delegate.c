@@ -445,6 +445,27 @@ MagickExport int ExternalDelegateCommand(const MagickBooleanType asynchronous,
     }
 #endif
 #elif defined(MAGICKCORE_WINDOWS_SUPPORT)
+  {
+    register char
+      *p;
+
+    /*
+      If a command shell is executed we need to change the forward slashes in
+      files to a backslash. We need to do this to keep Windows happy when we
+      want to 'move' a file.
+
+      TODO: This won't work if one of the delegate parameters has a forward
+            slash as aparameter.
+    */
+    p=strstr(sanitize_command, "cmd.exe /c");
+    if (p != (char*) NULL)
+      {
+        p+=10;
+        for (; *p != '\0'; p++)
+          if (*p == '/')
+            *p=*DirectorySeparator;
+      }
+  }
   status=NTSystemCommand(sanitize_command,message);
 #elif defined(macintosh)
   status=MACSystemCommand(sanitize_command);
@@ -457,10 +478,10 @@ MagickExport int ExternalDelegateCommand(const MagickBooleanType asynchronous,
     {
       if ((message != (char *) NULL) && (*message != '\0'))
         (void) ThrowMagickException(exception,GetMagickModule(),DelegateError,
-          "FailedToExecuteCommand","`%s' (%s)",command,message);
+          "FailedToExecuteCommand","`%s' (%s)",sanitize_command,message);
       else
         (void) ThrowMagickException(exception,GetMagickModule(),DelegateError,
-          "FailedToExecuteCommand","`%s' (%d)",command,status);
+          "FailedToExecuteCommand","`%s' (%d)",sanitize_command,status);
     }
   sanitize_command=DestroyString(sanitize_command);
   for (i=0; i < (ssize_t) number_arguments; i++)
