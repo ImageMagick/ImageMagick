@@ -7306,6 +7306,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
 
           /* process */
           {
+            *msl_info->image_info[n]->magick='\0';
             (void) WriteImage(msl_info->image_info[n], msl_info->image[n],
               msl_info->exception);
             break;
