@@ -119,26 +119,26 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
       blue_primary[24],
       white_point[24];
 
-    ssize_t
+    int
       job_number;
 
     char
-      name[128],
-      description[128],
-      program[64],
-      machine[32],
-      user[32],
-      date[20],
-      aspect[24],
-      aspect_ratio[8],
-      chan[32];
+      name[128+1],
+      description[128+1],
+      program[64+1],
+      machine[32+1],
+      user[32+1],
+      date[20+1],
+      aspect[24+1],
+      aspect_ratio[8+1],
+      chan[32+1];
 
     short
       field;
 
     char
-      time[12],
-      filter[32];
+      time[12+1],
+      filter[32+1];
 
     short
       bits_per_channel,
@@ -148,10 +148,10 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
       auxiliary_bits;
 
     char
-      auxiliary[32],
-      space[36];
+      auxiliary[32+1],
+      space[36+1];
 
-    ssize_t
+    int
       next;
   } RLAInfo;
 
@@ -204,6 +204,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
+  (void) ResetMagickMemory(&rla_info,0,sizeof(rla_info));
   rla_info.window.left=(short) ReadBlobMSBShort(image);
   rla_info.window.right=(short) ReadBlobMSBShort(image);
   rla_info.window.bottom=(short) ReadBlobMSBShort(image);
@@ -229,7 +230,6 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   rla_info.job_number=(int) ReadBlobMSBLong(image);
   count=ReadBlob(image,128,(unsigned char *) rla_info.name);
   count=ReadBlob(image,128,(unsigned char *) rla_info.description);
-  rla_info.description[127]='\0';
   count=ReadBlob(image,64,(unsigned char *) rla_info.program);
   count=ReadBlob(image,32,(unsigned char *) rla_info.machine);
   count=ReadBlob(image,32,(unsigned char *) rla_info.user);
@@ -254,8 +254,10 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Initialize image structure.
   */
   image->matte=rla_info.number_matte_channels != 0 ? MagickTrue : MagickFalse;
-  image->columns=1UL*rla_info.active_window.right-rla_info.active_window.left+1;
-  image->rows=1UL*rla_info.active_window.top-rla_info.active_window.bottom+1;
+  image->columns=(size_t) (rla_info.active_window.right-
+    rla_info.active_window.left+1);
+  image->rows=(size_t) (rla_info.active_window.top-
+    rla_info.active_window.bottom+1);
   if (image_info->ping != MagickFalse)
     {
       (void) CloseBlob(image);
@@ -276,14 +278,15 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Read offsets to each scanline data.
   */
   for (i=0; i < (ssize_t) image->rows; i++)
-    scanlines[i]=(int) ReadBlobMSBLong(image);
+    scanlines[i]=(ssize_t) ((int) ReadBlobMSBLong(image));
   /*
     Read image data.
   */
   x=0;
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    offset=SeekBlob(image,scanlines[image->rows-y-1],SEEK_SET);
+    offset=SeekBlob(image,(MagickOffsetType) scanlines[image->rows-y-1],
+      SEEK_SET);
     if (offset < 0)
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     for (channel=0; channel < (int) rla_info.number_channels; channel++)
