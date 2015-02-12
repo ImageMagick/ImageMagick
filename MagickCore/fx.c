@@ -4441,11 +4441,9 @@ MagickExport Image *SketchImage(const Image *image,const double radius,
     return((Image *) NULL);
   status=MagickTrue;
   random_info=AcquireRandomInfoThreadSet();
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  key=GetRandomSecretKey(random_info[0]);
-#endif
   random_view=AcquireAuthenticCacheView(random_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
+  key=GetRandomSecretKey(random_info[0]);
   #pragma omp parallel for schedule(static,4) shared(status) \
     magick_threads(random_image,random_image,random_image->rows,key == ~0UL)
 #endif

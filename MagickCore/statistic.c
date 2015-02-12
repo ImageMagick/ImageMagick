@@ -482,13 +482,11 @@ MagickExport Image *EvaluateImages(const Image *images,
   status=MagickTrue;
   progress=0;
   random_info=AcquireRandomInfoThreadSet();
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  key=GetRandomSecretKey(random_info[0]);
-#endif
   evaluate_view=AcquireAuthenticCacheView(image,exception);
   if (op == MedianEvaluateOperator)
     {
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
+      key=GetRandomSecretKey(random_info[0]);
       #pragma omp parallel for schedule(static,4) shared(progress,status) \
         magick_threads(image,images,image->rows,key == ~0UL)
 #endif
@@ -590,6 +588,7 @@ MagickExport Image *EvaluateImages(const Image *images,
   else
     {
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
+      key=GetRandomSecretKey(random_info[0]);
       #pragma omp parallel for schedule(static,4) shared(progress,status) \
         magick_threads(image,images,image->rows,key == ~0UL)
 #endif
@@ -789,11 +788,9 @@ MagickExport MagickBooleanType EvaluateImage(Image *image,
   status=MagickTrue;
   progress=0;
   random_info=AcquireRandomInfoThreadSet();
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  key=GetRandomSecretKey(random_info[0]);
-#endif
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
+  key=GetRandomSecretKey(random_info[0]);
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     magick_threads(image,image,image->rows,key == ~0UL)
 #endif
