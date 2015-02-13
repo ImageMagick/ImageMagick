@@ -2653,8 +2653,7 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
   {
     case 'b':
     {
-      if ((LocaleCompare("base",property) == 0) ||
-          (LocaleCompare("basename",property) == 0) )
+      if (LocaleCompare("basename",property) == 0)
         {
           WarnNoImageReturn("\"%%[%s]\"",property);
           GetPathComponent(image->magick_filename,BasePath,value);
@@ -2801,7 +2800,7 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
           string=image->magick;
           break;
         }
-      if (LocaleCompare("maxima",property) == 0)
+      if (LocaleCompare("max",property) == 0)
         {
           double
             maximum,
@@ -2825,7 +2824,7 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
             GetMagickPrecision(),mean);
           break;
         }
-      if (LocaleCompare("minima",property) == 0)
+      if (LocaleCompare("min",property) == 0)
         {
           double
             maximum,
@@ -2977,8 +2976,7 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
             GetMagickPrecision(),skewness);
           break;
         }
-      if ((LocaleCompare("standard-deviation",property) == 0) ||
-          (LocaleCompare("standard_deviation",property) == 0))
+      if (LocaleCompare("standard-deviation",property) == 0)
         {
           double
             mean,
@@ -3037,30 +3035,6 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
           WarnNoImageReturn("\"%%[%s]\"",property);
           (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
             (image->magick_columns != 0 ? image->magick_columns : 256));
-          break;
-        }
-      break;
-    }
-    case 'x': /* FUTURE: Obsolete X resolution */
-    {
-      if ((LocaleCompare("xresolution",property) == 0) ||
-          (LocaleCompare("x-resolution",property) == 0) )
-        {
-          WarnNoImageReturn("\"%%[%s]\"",property);
-          (void) FormatLocaleString(value,MaxTextExtent,"%.20g",
-            image->resolution.x);
-          break;
-        }
-      break;
-    }
-    case 'y': /* FUTURE: Obsolete Y resolution */
-    {
-      if ((LocaleCompare("yresolution",property) == 0) ||
-          (LocaleCompare("y-resolution",property) == 0) )
-        {
-          WarnNoImageReturn("\"%%[%s]\"",property);
-          (void) FormatLocaleString(value,MaxTextExtent,"%.20g",
-            image->resolution.y);
           break;
         }
       break;
