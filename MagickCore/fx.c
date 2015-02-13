@@ -104,7 +104,7 @@
 #define LogicalAndOperator  0xfbU
 #define LogicalOrOperator  0xfcU
 #define ExponentialNotation 0xfdU
- 
+
 struct _FxInfo
 {
   const Image
@@ -656,7 +656,6 @@ MagickExport Image *ColorizeImage(const Image *image,const char *blend,
   (((pixel)*(100.0-(blend_percentage))+(colorize)*(blend_percentage))/100.0)
 
   CacheView
-    *colorize_view,
     *image_view;
 
   GeometryInfo
@@ -689,8 +688,7 @@ MagickExport Image *ColorizeImage(const Image *image,const char *blend,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  colorize_image=CloneImage(image,image->columns,image->rows,MagickTrue,
-    exception);
+  colorize_image=CloneImage(image,0,0,MagickTrue,exception);
   if (colorize_image == (Image *) NULL)
     return((Image *) NULL);
   if (SetImageStorageClass(colorize_image,DirectClass,exception) == MagickFalse)
@@ -698,7 +696,7 @@ MagickExport Image *ColorizeImage(const Image *image,const char *blend,
       colorize_image=DestroyImage(colorize_image);
       return((Image *) NULL);
     }
-  if ((IsGrayColorspace(image->colorspace) != MagickFalse) ||
+  if ((IsGrayColorspace(colorize_image->colorspace) != MagickFalse) ||
       (IsPixelInfoGray(colorize) != MagickFalse))
     (void) SetImageColorspace(colorize_image,sRGBColorspace,exception);
   if ((colorize_image->alpha_trait == UndefinedPixelTrait) &&
@@ -706,7 +704,7 @@ MagickExport Image *ColorizeImage(const Image *image,const char *blend,
     (void) SetImageAlpha(colorize_image,OpaqueAlpha,exception);
   if (blend == (const char *) NULL)
     return(colorize_image);
-  GetPixelInfo(image,&blend_percentage);
+  GetPixelInfo(colorize_image,&blend_percentage);
   flags=ParseGeometry(blend,&geometry_info);
   blend_percentage.red=geometry_info.rho;
   blend_percentage.green=geometry_info.rho;
@@ -731,19 +729,15 @@ MagickExport Image *ColorizeImage(const Image *image,const char *blend,
   */
   status=MagickTrue;
   progress=0;
-  image_view=AcquireVirtualCacheView(image,exception);
-  colorize_view=AcquireAuthenticCacheView(colorize_image,exception);
+  image_view=AcquireVirtualCacheView(colorize_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
-    magick_threads(image,colorize_image,image->rows,1)
+    magick_threads(colorize_image,colorize_image,colorize_image->rows,1)
 #endif
-  for (y=0; y < (ssize_t) image->rows; y++)
+  for (y=0; y < (ssize_t) colorize_image->rows; y++)
   {
     MagickBooleanType
       sync;
-
-    register const Quantum
-      *restrict p;
 
     register Quantum
       *restrict q;
@@ -753,42 +747,33 @@ MagickExport Image *ColorizeImage(const Image *image,const char *blend,
 
     if (status == MagickFalse)
       continue;
-    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
-    q=QueueCacheViewAuthenticPixels(colorize_view,0,y,colorize_image->columns,1,
+    q=GetCacheViewAuthenticPixels(image_view,0,y,colorize_image->columns,1,
       exception);
-    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
+    if (q == (Quantum *) NULL)
       {
         status=MagickFalse;
         continue;
       }
-    for (x=0; x < (ssize_t) image->columns; x++)
+    for (x=0; x < (ssize_t) colorize_image->columns; x++)
     {
       register ssize_t
         i;
 
-      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      for (i=0; i < (ssize_t) GetPixelChannels(colorize_image); i++)
       {
-        PixelChannel channel=GetPixelChannelChannel(image,i);
-        PixelTrait traits=GetPixelChannelTraits(image,channel);
-        PixelTrait colorize_traits=GetPixelChannelTraits(colorize_image,
-          channel);
-        if ((traits == UndefinedPixelTrait) ||
-            (colorize_traits == UndefinedPixelTrait))
+        PixelTrait traits=GetPixelChannelTraits(colorize_image,i);
+        if (traits == UndefinedPixelTrait)
           continue;
-        if (((colorize_traits & CopyPixelTrait) != 0) ||
-            (GetPixelReadMask(image,p) == 0))
-          {
-            SetPixelChannel(colorize_image,channel,p[i],q);
-            continue;
-          }
-        SetPixelChannel(colorize_image,channel,ClampToQuantum(Colorize(p[i],
-          GetPixelInfoChannel(&blend_percentage,channel),GetPixelInfoChannel(
-          colorize,channel))),q);
+        if (((traits & CopyPixelTrait) != 0) ||
+            (GetPixelReadMask(colorize_image,q) == 0))
+          continue;
+        SetPixelChannel(colorize_image,i,ClampToQuantum(Colorize(q[i],
+          GetPixelInfoChannel(&blend_percentage,i),
+          GetPixelInfoChannel(colorize,i))),q);
       }
-      p+=GetPixelChannels(image);
       q+=GetPixelChannels(colorize_image);
     }
-    sync=SyncCacheViewAuthenticPixels(colorize_view,exception);
+    sync=SyncCacheViewAuthenticPixels(image_view,exception);
     if (sync == MagickFalse)
       status=MagickFalse;
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
@@ -799,13 +784,13 @@ MagickExport Image *ColorizeImage(const Image *image,const char *blend,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
         #pragma omp critical (MagickCore_ColorizeImage)
 #endif
-        proceed=SetImageProgress(image,ColorizeImageTag,progress++,image->rows);
+        proceed=SetImageProgress(image,ColorizeImageTag,progress++,
+          colorize_image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }
   }
   image_view=DestroyCacheView(image_view);
-  colorize_view=DestroyCacheView(colorize_view);
   if (status == MagickFalse)
     colorize_image=DestroyImage(colorize_image);
   return(colorize_image);
@@ -1927,7 +1912,7 @@ static const char *FxOperatorPrecedence(const char *expression,
         if ((isdigit((int) ((unsigned char) c)) != 0) &&
             ((LocaleNCompare(expression,"E+",2) == 0) ||
              (LocaleNCompare(expression,"E-",2) == 0)))
-          { 
+          {
             expression+=2;  /* scientific notation */
             break;
           }
