@@ -2801,7 +2801,7 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
           string=image->magick;
           break;
         }
-      if (LocaleCompare("max",property) == 0)
+      if (LocaleCompare("maxima",property) == 0)
         {
           double
             maximum,
@@ -2825,7 +2825,7 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
             GetMagickPrecision(),mean);
           break;
         }
-      if (LocaleCompare("min",property) == 0)
+      if (LocaleCompare("minima",property) == 0)
         {
           double
             maximum,
@@ -2844,8 +2844,8 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
       if (LocaleCompare("opaque",property) == 0)
         {
           WarnNoImageReturn("\"%%[%s]\"",property);
-          string=CommandOptionToMnemonic(MagickBooleanOptions,
-               (ssize_t) IsImageOpaque(image,exception));
+          string=CommandOptionToMnemonic(MagickBooleanOptions,(ssize_t)
+            IsImageOpaque(image,exception));
           break;
         }
       if (LocaleCompare("orientation",property) == 0)
@@ -2882,7 +2882,6 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
           profile=GetImageProfile(image,property+8);
           if (profile == (StringInfo *) NULL)
             break;
-
           icc_profile=cmsOpenProfileFromMem(GetStringInfoDatum(profile),
             (cmsUInt32Number) GetStringInfoLength(profile));
           if (icc_profile != (cmsHPROFILE *) NULL)
