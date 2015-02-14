@@ -2638,13 +2638,13 @@ static MagickBooleanType WriteDDSImage(const ImageInfo *image_info,
   if (pixelFormat == DDPF_FOURCC)
     {
       option=GetImageOption(image_info,"dds:cluster-fit");
-      if (option != (char *) NULL && LocaleCompare(option,"true") == 0)
+      if (IsStringTrue(option) != MagickFalse)
         {
           clusterFit=MagickTrue;
           if (compression != FOURCC_DXT1)
             {
               option=GetImageOption(image_info,"dds:weight-by-alpha");
-              if (option != (char *) NULL && LocaleCompare(option,"true") == 0)
+              if (IsStringTrue(option) != MagickFalse)
                 weightByAlpha=MagickTrue;
             }
         }
