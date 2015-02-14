@@ -2800,7 +2800,8 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
           string=image->magick;
           break;
         }
-      if (LocaleCompare("maxima",property) == 0)
+      if ((LocaleCompare("maxima",property) == 0) ||
+          (LocaleCompare("max",property) == 0))
         {
           double
             maximum,
@@ -2824,7 +2825,8 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
             GetMagickPrecision(),mean);
           break;
         }
-      if (LocaleCompare("minima",property) == 0)
+      if ((LocaleCompare("minima",property) == 0) ||
+          (LocaleCompare("min",property) == 0))
         {
           double
             maximum,
