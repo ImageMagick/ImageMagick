@@ -426,6 +426,8 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
               for (i=0; i < (ssize_t) bytes_per_row; )
               {
                 count=(ssize_t) ReadBlobByte(image);
+                if (count < 0)
+                  break;
                 count=MagickMin(count,(ssize_t) bytes_per_row-i);
                 byte=(size_t) ReadBlobByte(image);
                 (void) ResetMagickMemory(one_row+i,(int) byte,(size_t) count);
@@ -518,6 +520,12 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
     one_row=(unsigned char *) RelinquishMagickMemory(one_row);
     if (compressionType == PALM_COMPRESSION_SCANLINE)
       lastrow=(unsigned char *) RelinquishMagickMemory(lastrow);
+    if (EOFBlob(image) != MagickFalse)
+      {
+        ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
+          image->filename);
+        break;
+      }
     /*
       Proceed to next image. Copied from coders/pnm.c
     */
