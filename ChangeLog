@@ -1,3 +1,6 @@
+2015-02-14  6.9.0-6 Cristy  <quetzlzacatenango@image...>
+  * New version 6.9.0-6, SVN revision 18010.
+
 2015-02-12  6.9.0-6 Dirk Lemstra <dirk@lem.....org>
   * Fixed command line execution in Windows for delegates that
     move files (reference
