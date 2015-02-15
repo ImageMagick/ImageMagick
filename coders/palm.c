@@ -258,10 +258,6 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
   register PixelPacket
     *q;
 
-  ssize_t
-    count,
-    y;
-
   size_t
     bytes_per_row,
     flags,
@@ -279,6 +275,10 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
     pad,
     size,
     bit;
+
+  ssize_t
+    count,
+    y;
 
   unsigned char
     *lastrow,
@@ -323,13 +323,19 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
     bytes_per_row=ReadBlobMSBShort(image);
     flags=ReadBlobMSBShort(image);
     bits_per_pixel=(size_t) ReadBlobByte(image);
-    if ((bits_per_pixel == 0) || (bits_per_pixel > 16))
-      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    if ((bits_per_pixel != 1) && (bits_per_pixel != 2) &&
+        (bits_per_pixel != 4) && (bits_per_pixel != 8) &&
+        (bits_per_pixel != 16))
+      ThrowReaderException(CorruptImageError,"UnrecognizedBitsPerPixel");
     version=(size_t) ReadBlobByte(image);
     (void) version;
     nextDepthOffset=(size_t) ReadBlobMSBShort(image);
     transparentIndex=(size_t) ReadBlobByte(image);
     compressionType=(size_t) ReadBlobByte(image);
+    if ((compressionType != PALM_COMPRESSION_NONE) &&
+        (compressionType != PALM_COMPRESSION_SCANLINE ) &&
+        (compressionType != PALM_COMPRESSION_RLE))
+      ThrowReaderException(CorruptImageError,"UnrecognizedImageCompression");
     pad=ReadBlobMSBShort(image);
     (void) pad;
     /*
@@ -396,6 +402,17 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
       {
         image->storage_class=PseudoClass;
         image->depth=8;
+      }
+    if (image_info->ping != MagickFalse) 
+      {
+        (void) CloseBlob(image);
+        return(image);
+      }
+    status=SetImageExtent(image,image->columns,image->rows);
+    if (status == MagickFalse)
+      {
+        InheritException(exception,&image->exception);
+        return(DestroyImageList(image));
       }
     one_row=(unsigned char *) AcquireQuantumMemory(MagickMax(bytes_per_row,
       2*image->columns),sizeof(*one_row));
@@ -966,10 +983,8 @@ static MagickBooleanType WritePALMImage(const ImageInfo *image_info,
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
     /* padding to 4 byte word */
-    for (cc = (GetBlobSize(image))%4; cc > 0; cc--)
-    {
+    for (cc=(GetBlobSize(image)) % 4; cc > 0; cc--)
       (void) WriteBlobByte(image,0);
-    }
     /* write nextDepthOffset and return to end of image */
     offset=SeekBlob(image,currentOffset+10,SEEK_SET);
     nextDepthOffset=(size_t) ((GetBlobSize(image)-currentOffset)/4);
