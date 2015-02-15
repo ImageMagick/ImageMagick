@@ -402,7 +402,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
         (void) CloseBlob(image);
         return(image);
       }
-    status=SetImageExtent(image,image->columns,image->rows);
+    status=SetImageExtent(image,image->columns,image->rows,exception);
     if (status == MagickFalse)
       return(DestroyImageList(image));
     one_row=(unsigned char *) AcquireQuantumMemory(MagickMax(bytes_per_row,
