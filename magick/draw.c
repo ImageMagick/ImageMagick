@@ -41,8 +41,7 @@
 % algorithm, and minor rendering improvements.
 %
 */
-
-
+
 /*
   Include declarations.
 */
@@ -86,14 +85,12 @@
 #include "magick/token.h"
 #include "magick/transform.h"
 #include "magick/utility.h"
-
-
+
 /*
   Define declarations.
 */
 #define BezierQuantum  200
-
-
+
 /*
   Typedef declarations.
 */
@@ -157,8 +154,7 @@ typedef struct _PathInfo
   PathInfoCode
     code;
 } PathInfo;
-
-
+
 /*
   Forward declarations.
 */
@@ -183,8 +179,7 @@ static void
   TraceRoundRectangle(PrimitiveInfo *,const PointInfo,const PointInfo,
     PointInfo),
   TraceSquareLinecap(PrimitiveInfo *,const size_t,const double);
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
