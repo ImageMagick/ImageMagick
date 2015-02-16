@@ -1048,8 +1048,8 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
   white=(double *) AcquireQuantumMemory(MaxPixelChannels,sizeof(*white));
   histogram=(double *) AcquireQuantumMemory(MaxMap+1UL,MaxPixelChannels*
     sizeof(*histogram));
-  stretch_map=(double *) AcquireQuantumMemory(MaxMap+1UL,
-    GetPixelChannels(image)*sizeof(*stretch_map));
+  stretch_map=(double *) AcquireQuantumMemory(MaxMap+1UL,MaxPixelChannels*
+    sizeof(*stretch_map));
   if ((black == (double *) NULL) || (white == (double *) NULL) ||
       (histogram == (double *) NULL) || (stretch_map == (double *) NULL))
     {
