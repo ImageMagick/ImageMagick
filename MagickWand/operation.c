@@ -1595,10 +1595,10 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
   }
 
   /* clean up percent escape interpreted strings */
-  if (arg1 != arg1n )
-    arg1=DestroyString((char *)arg1);
-  if (arg2 != arg2n )
-    arg2=DestroyString((char *)arg2);
+  if ((arg1 && arg1n) && (arg1 != arg1n ))
+    arg1=DestroyString((char *) arg1);
+  if ((arg2 && arg2n) && (arg2 != arg2n ))
+    arg2=DestroyString((char *) arg2);
 
 #undef _image_info
 #undef _exception
