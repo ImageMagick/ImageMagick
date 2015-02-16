@@ -1212,10 +1212,10 @@ MagickExport MagickBooleanType TransformImageColorspace(Image *image,
     return(MagickTrue);
   if ((image->colorspace == Rec709LumaColorspace) &&
       (colorspace == sRGBColorspace))
-    return(MagickTrue);
+    return(SetImageColorspace(image,colorspace));
   if ((image->colorspace == GRAYColorspace) && (image->gamma != 1.0) &&
       (colorspace == sRGBColorspace))
-    return(MagickTrue);
+    return(SetImageColorspace(image,colorspace));
   if (colorspace == UndefinedColorspace)
     return(SetImageColorspace(image,colorspace));
   /*
