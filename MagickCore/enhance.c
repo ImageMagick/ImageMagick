@@ -1048,8 +1048,8 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
   white=(double *) AcquireQuantumMemory(MaxPixelChannels,sizeof(*white));
   histogram=(double *) AcquireQuantumMemory(MaxMap+1UL,MaxPixelChannels*
     sizeof(*histogram));
-  stretch_map=(double *) AcquireQuantumMemory(MaxMap+1UL,MaxPixelChannels*
-    sizeof(*stretch_map));
+  stretch_map=(double *) AcquireQuantumMemory(MaxMap+1UL,
+    GetPixelChannels(image)*sizeof(*stretch_map));
   if ((black == (double *) NULL) || (white == (double *) NULL) ||
       (histogram == (double *) NULL) || (stretch_map == (double *) NULL))
     {
@@ -1176,25 +1176,25 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
       {
         if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
           {
-            i=GetPixelChannelChannel(image,RedPixelChannel);
+            i=GetPixelChannelOffset(image,RedPixelChannel);
             image->colormap[j].red=stretch_map[GetPixelChannels(image)*
               ScaleQuantumToMap(ClampToQuantum(image->colormap[j].red))+i];
           }
         if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
           {
-            i=GetPixelChannelChannel(image,GreenPixelChannel);
+            i=GetPixelChannelOffset(image,GreenPixelChannel);
             image->colormap[j].green=stretch_map[GetPixelChannels(image)*
               ScaleQuantumToMap(ClampToQuantum(image->colormap[j].green))+i];
           }
         if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
           {
-            i=GetPixelChannelChannel(image,BluePixelChannel);
+            i=GetPixelChannelOffset(image,BluePixelChannel);
             image->colormap[j].blue=stretch_map[GetPixelChannels(image)*
               ScaleQuantumToMap(ClampToQuantum(image->colormap[j].blue))+i];
           }
         if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
           {
-            i=GetPixelChannelChannel(image,AlphaPixelChannel);
+            i=GetPixelChannelOffset(image,AlphaPixelChannel);
             image->colormap[j].alpha=stretch_map[GetPixelChannels(image)*
               ScaleQuantumToMap(ClampToQuantum(image->colormap[j].alpha))+i];
           }
