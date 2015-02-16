@@ -1242,8 +1242,8 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
         PixelTrait traits=GetPixelChannelTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        q[i]=ClampToQuantum(stretch_map[GetPixelChannels(image)*ScaleQuantumToMap(q[i])+
-          channel]);
+        q[i]=ClampToQuantum(stretch_map[GetPixelChannels(image)*
+          ScaleQuantumToMap(q[i])+channel]);
       }
       q+=GetPixelChannels(image);
     }
