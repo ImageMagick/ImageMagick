@@ -328,7 +328,8 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
         (bits_per_pixel != 16))
       ThrowReaderException(CorruptImageError,"UnrecognizedBitsPerPixel");
     version=(size_t) ReadBlobByte(image);
-    (void) version;
+    if ((version != 0) && (version != 1) && (version != 2))
+      ThrowReaderException(CorruptImageError,"FileFormatVersionMismatch");
     nextDepthOffset=(size_t) ReadBlobMSBShort(image);
     transparentIndex=(size_t) ReadBlobByte(image);
     compressionType=(size_t) ReadBlobByte(image);
@@ -381,17 +382,15 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
           }
         }
       else
+        for (i=0; i < (ssize_t) (1L << bits_per_pixel); i++)
         {
-          for (i=0; i < (ssize_t) (1L << bits_per_pixel); i++)
-          {
-            index=ConstrainColormapIndex(image,(size_t) (255-i));
-            image->colormap[(int) index].red=ScaleCharToQuantum(
-              PalmPalette[i][0]);
-            image->colormap[(int) index].green=ScaleCharToQuantum(
-              PalmPalette[i][1]);
-            image->colormap[(int) index].blue=ScaleCharToQuantum(
-              PalmPalette[i][2]);
-          }
+          index=ConstrainColormapIndex(image,(size_t) (255-i));
+          image->colormap[(int) index].red=ScaleCharToQuantum(
+            PalmPalette[i][0]);
+          image->colormap[(int) index].green=ScaleCharToQuantum(
+            PalmPalette[i][1]);
+          image->colormap[(int) index].blue=ScaleCharToQuantum(
+            PalmPalette[i][2]);
         }
       }
     if (flags & PALM_IS_COMPRESSED_FLAG)
@@ -433,6 +432,8 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
           /* TODO move out of loop! */
           image->compression=NoCompression;
           count=ReadBlob(image,bytes_per_row,one_row);
+          if (count != (ssize_t) bytes_per_row)
+            break;
         }
       else
         {
@@ -463,6 +464,8 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
               for (i=0; i < (ssize_t) bytes_per_row; i+=8)
               {
                 count=(ssize_t) ReadBlobByte(image);
+                if (count < 0)
+                  break;
                 byte=(size_t) MagickMin((ssize_t) bytes_per_row-i,8);
                 for (bit=0; bit < byte; bit++)
                 {
@@ -556,13 +559,9 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
         */
         totalOffset+=(MagickOffsetType) (nextDepthOffset*4);
         if (totalOffset >= (MagickOffsetType) GetBlobSize(image))
-          {
-            ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-          }
+          ThrowReaderException(CorruptImageError,"ImproperImageHeader")
         else
-          {
-            seekNextDepth=SeekBlob(image,totalOffset,SEEK_SET);
-          }
+          seekNextDepth=SeekBlob(image,totalOffset,SEEK_SET);
         if (seekNextDepth != totalOffset)
           ThrowReaderException(CorruptImageError,"ImproperImageHeader");
         /*
