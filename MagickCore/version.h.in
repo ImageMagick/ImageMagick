@@ -50,6 +50,8 @@ extern "C" {
 #define MagickppLibMinInterface  @MAGICKPP_LIBRARY_CURRENT_MIN@
 #define MagickReleaseDate  "@PACKAGE_RELEASE_DATE@"
 #define MagickChangeDate   "@PACKAGE_CHANGE_DATE@"
+#define MagickAuthoritativeLicense  \
+  "http://www.imagemagick.org/script/license.php"
 #define MagickAuthoritativeURL  "http://www.imagemagick.org"
 #define MagickFeatures "@MAGICK_FEATURES@"
 #define MagickDelegates "@MAGICK_DELEGATES@"
@@ -82,6 +84,7 @@ extern MagickExport const char
   *GetMagickCopyright(void),
   *GetMagickDelegates(void),
   *GetMagickFeatures(void),
+  *GetMagickLicense(void),
   *GetMagickPackageName(void),
   *GetMagickQuantumDepth(size_t *),
   *GetMagickQuantumRange(size_t *),
