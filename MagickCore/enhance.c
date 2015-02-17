@@ -1068,7 +1068,7 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
     Form histogram.
   */
   status=MagickTrue;
-  (void) ResetMagickMemory(histogram,0,(MaxMap+1)*MaxPixelChannels*
+  (void) ResetMagickMemory(histogram,0,(MaxMap+1)*GetPixelChannels(image)*
     sizeof(*histogram));
   image_view=AcquireVirtualCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
