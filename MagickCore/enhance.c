@@ -1048,8 +1048,8 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
   white=(double *) AcquireQuantumMemory(MaxPixelChannels,sizeof(*white));
   histogram=(double *) AcquireQuantumMemory(MaxMap+1UL,MaxPixelChannels*
     sizeof(*histogram));
-  stretch_map=(double *) AcquireQuantumMemory(MaxMap+1UL,MaxPixelChannels*
-    sizeof(*stretch_map));
+  stretch_map=(double *) AcquireQuantumMemory(MaxMap+1UL,
+    GetPixelChannels(image)*sizeof(*stretch_map));
   if ((black == (double *) NULL) || (white == (double *) NULL) ||
       (histogram == (double *) NULL) || (stretch_map == (double *) NULL))
     {
@@ -1243,7 +1243,7 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
         if ((traits & UpdatePixelTrait) == 0)
           continue;
         q[i]=ClampToQuantum(stretch_map[GetPixelChannels(image)*
-          ScaleQuantumToMap(q[i])+channel]);
+          ScaleQuantumToMap(q[i])+i]);
       }
       q+=GetPixelChannels(image);
     }
