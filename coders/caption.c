@@ -269,12 +269,12 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
   else
     {
       (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",
-        -metrics.bounds.x1+draw_info->stroke_width/2.0,metrics.ascent+
+        -metrics.bounds.x1+draw_info->stroke_width/2.0,metrics.bounds.y2+
         draw_info->stroke_width/2.0);
       if (draw_info->direction == RightToLeftDirection)
         (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",
           image->columns-(metrics.bounds.x2+draw_info->stroke_width/2.0),
-          metrics.ascent+draw_info->stroke_width/2.0);
+          metrics.bounds.y2+draw_info->stroke_width/2.0);
       draw_info->geometry=AcquireString(geometry);
     }
   status=AnnotateImage(image,draw_info);
