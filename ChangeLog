@@ -1,6 +1,8 @@
 2015-02-15  6.9.0-7 Cristy  <quetzlzacatenango@image...>
   * Line strokes appeared too thin (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=26927).
+  * Keep text in caption area (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=22504).
 
 2015-02-14  6.9.0-6 Cristy  <quetzlzacatenango@image...>
   * New version 6.9.0-6, SVN revision 18010.
