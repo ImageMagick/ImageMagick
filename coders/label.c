@@ -222,8 +222,9 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   if ((draw_info->gravity != UndefinedGravity) &&
       (draw_info->direction != RightToLeftDirection))
     {
-      image->page.x=(ssize_t) (metrics.bounds.x1-draw_info->stroke_width/2.0);
-      image->page.y+=(ssize_t) (metrics.bounds.y2-metrics.ascent);
+      image->page.x=(ssize_t) floor(metrics.bounds.x1-
+        draw_info->stroke_width/2.0+0.5);
+      image->page.y-=(ssize_t) floor(metrics.bounds.y2-metrics.ascent+0.5);
     }
   else
     {
