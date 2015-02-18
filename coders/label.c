@@ -214,20 +214,22 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
     return(DestroyImageList(image));
-  if (draw_info->gravity == UndefinedGravity)
+  if ((draw_info->gravity != UndefinedGravity) &&
+      (draw_info->direction != RightToLeftDirection))
+    {
+      image->page.x=(ssize_t) (metrics.bounds.x1-draw_info->stroke_width/2.0);
+      image->page.y+=(ssize_t) (metrics.bounds.y2-metrics.ascent);
+    }
+  else
     {
       (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",
         -metrics.bounds.x1+draw_info->stroke_width/2.0,metrics.bounds.y2+
         draw_info->stroke_width/2.0);
-      (void) CloneString(&draw_info->geometry,geometry);
-    }
-  if (draw_info->direction == RightToLeftDirection)
-    {
       if (draw_info->direction == RightToLeftDirection)
         (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",
           image->columns-(metrics.bounds.x2+draw_info->stroke_width/2.0),
           metrics.bounds.y2+draw_info->stroke_width/2.0);
-      (void) CloneString(&draw_info->geometry,geometry);
+      draw_info->geometry=AcquireString(geometry);
     }
   if (SetImageBackgroundColor(image,exception) == MagickFalse)
     {
