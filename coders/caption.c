@@ -265,7 +265,10 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
   status=GetMultilineTypeMetrics(image,draw_info,&metrics);
   if ((draw_info->gravity != UndefinedGravity) &&
       (draw_info->direction != RightToLeftDirection))
-    image->page.x=(ssize_t) (metrics.bounds.x1-draw_info->stroke_width/2.0);
+    {
+      image->page.x=(ssize_t) (metrics.bounds.x1-draw_info->stroke_width/2.0);
+      image->page.y+=(ssize_t) (metrics.bounds.y2-metrics.ascent);
+    }
   else
     {
       (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",
