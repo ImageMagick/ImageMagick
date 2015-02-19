@@ -2805,9 +2805,10 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
         if (   ( p[r].red != GetPixelRed(q))
             || ( p[r].green != GetPixelGreen(q))
             || ( p[r].blue != GetPixelBlue(q))
-            || ( p[r].opacity != GetPixelOpacity(q))
-            || ( image->colorspace == CMYKColorspace &&
-                GetPixelIndex(p_indexes+r) != GetPixelIndex(q_indexes+y) ) )
+            || ( (image->matte != MagickFalse) &&
+                 (p[r].opacity != GetPixelOpacity(q)))
+            || ( (image->colorspace == CMYKColorspace) &&
+                 (GetPixelIndex(p_indexes+r) != GetPixelIndex(q_indexes+y))) )
           changes[id]++;
         p++;
         q++;
@@ -3330,9 +3331,10 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
       if (   ( p[r].red != GetPixelRed(q) )
           || ( p[r].green != GetPixelGreen(q) )
           || ( p[r].blue != GetPixelBlue(q) )
-          || ( p[r].opacity != GetPixelOpacity(q) )
-          || ( image->colorspace == CMYKColorspace &&
-               GetPixelIndex(p_indexes+r) != GetPixelIndex(q_indexes+x) ) )
+          || ( (image->matte != MagickFalse) &&
+               (p[r].opacity != GetPixelOpacity(q)))
+          || ( (image->colorspace == CMYKColorspace) &&
+               (GetPixelIndex(p_indexes+r) != GetPixelIndex(q_indexes+x))) )
         changes[id]++;
       p++;
       q++;
@@ -3601,9 +3603,10 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
       if (   ( p[r].red != GetPixelRed(q) )
           || ( p[r].green != GetPixelGreen(q) )
           || ( p[r].blue != GetPixelBlue(q) )
-          || ( p[r].opacity != GetPixelOpacity(q) )
-          || ( image->colorspace == CMYKColorspace &&
-               GetPixelIndex(p_indexes+r) != GetPixelIndex(q_indexes+x) ) )
+          || ( (image->matte != MagickFalse) &&
+               (p[r].opacity != GetPixelOpacity(q)))
+          || ( (image->colorspace == CMYKColorspace) &&
+               (GetPixelIndex(p_indexes+r) != GetPixelIndex(q_indexes+x))) )
         changed++;  /* The pixel was changed in some way! */
 
       p++; /* increment pixel buffers */
@@ -3791,9 +3794,10 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
       if (   ( p[r].red != GetPixelRed(q) )
           || ( p[r].green != GetPixelGreen(q) )
           || ( p[r].blue != GetPixelBlue(q) )
-          || ( p[r].opacity != GetPixelOpacity(q) )
-          || ( image->colorspace == CMYKColorspace &&
-               GetPixelIndex(p_indexes+r) != GetPixelIndex(q_indexes+x) ) )
+          || ( (image->matte != MagickFalse) &&
+               (p[r].opacity != GetPixelOpacity(q)))
+          || ( (image->colorspace == CMYKColorspace) &&
+               (GetPixelIndex(p_indexes+r) != GetPixelIndex(q_indexes+x))) )
         changed++;  /* The pixel was changed in some way! */
 
       p--; /* go backward through pixel buffers */
