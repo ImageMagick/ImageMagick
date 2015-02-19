@@ -272,7 +272,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
     {
       image->page.x=(ssize_t) floor(metrics.bounds.x1-
         draw_info->stroke_width/2.0+0.5);
-      image->page.y=(ssize_t) floor(-2-draw_info->stroke_width/2.0+0.5);
+      image->page.y=(ssize_t) floor(-2.0-draw_info->stroke_width/2.0+0.5);
     }
   else
     {
