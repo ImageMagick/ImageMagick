@@ -2046,6 +2046,8 @@ static MagickBooleanType SyncExifProfile(Image *image, StringInfo *profile)
         directory=directory_stack[level].directory;
         entry=directory_stack[level].entry;
       }
+    if ((directory < exif) || (directory > (exif+length-2)))
+      break;
     /*
       Determine how many entries there are in the current IFD.
     */
