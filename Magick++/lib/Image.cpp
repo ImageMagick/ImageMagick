@@ -201,7 +201,7 @@ Magick::Image::Image(const Geometry &size_,const Color &color_)
 Magick::Image::Image(const Image &image_)
   : _imgRef(image_._imgRef)
 {
- Lock lock(&_imgRef->_mutexLock);
+  Lock lock(&_imgRef->_mutexLock);
 
   // Increase reference count
   ++_imgRef->_refCount;
@@ -249,7 +249,7 @@ Magick::Image::~Image()
     doDelete=false;
 
   {
-   Lock lock(&_imgRef->_mutexLock);
+    Lock lock(&_imgRef->_mutexLock);
     if (--_imgRef->_refCount == 0)
       doDelete=true;
   }
@@ -268,12 +268,12 @@ Magick::Image& Magick::Image::operator=(const Magick::Image &image_)
         doDelete=false;
 
       {
-       Lock lock(&image_._imgRef->_mutexLock);
+        Lock lock(&image_._imgRef->_mutexLock);
         ++image_._imgRef->_refCount;
       }
 
       {
-       Lock lock(&_imgRef->_mutexLock);
+        Lock lock(&_imgRef->_mutexLock);
         if (--_imgRef->_refCount == 0)
           doDelete=true;
       }
@@ -4309,7 +4309,7 @@ std::string Magick::Image::signature(const bool force_) const
   const char
     *property;
 
- Lock lock(&_imgRef->_mutexLock);
+  Lock lock(&_imgRef->_mutexLock);
 
   // Re-calculate image signature if necessary
   if (force_ ||  !GetImageProperty(constImage(), "Signature") ||
@@ -4898,7 +4898,7 @@ const MagickCore::QuantizeInfo *Magick::Image::constQuantizeInfo(void) const
 void Magick::Image::modifyImage(void)
 {
   {
-   Lock lock(&_imgRef->_mutexLock);
+    Lock lock(&_imgRef->_mutexLock);
     if (_imgRef->_refCount == 1)
       return;
   }
@@ -4920,7 +4920,7 @@ MagickCore::Image *Magick::Image::replaceImage(MagickCore::Image *replacement_)
     image=AcquireImage(constImageInfo());
 
   {
-   Lock lock(&_imgRef->_mutexLock);
+    Lock lock(&_imgRef->_mutexLock);
 
     if (_imgRef->_refCount == 1)
       {
