@@ -1153,12 +1153,14 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
     If EXIF data exists, then try to parse the request for a tag.
   */
   profile=GetImageProfile(image,"exif");
-  if (profile == (StringInfo *) NULL)
+  if (profile == (const StringInfo *) NULL)
     return(MagickFalse);
   if ((property == (const char *) NULL) || (*property == '\0'))
     return(MagickFalse);
   while (isspace((int) ((unsigned char) *property)) != 0)
     property++;
+  if (strlen(property) <= 5)
+    return(MagickFalse);
   all=0;
   tag=(~0UL);
   switch (*(property+5))
@@ -1298,6 +1300,8 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
         entry=directory_stack[level].entry;
         tag_offset=directory_stack[level].offset;
       }
+    if ((directory < exif) || (directory > (exif+length-2)))
+      break;
     /*
       Determine how many entries there are in the current IFD.
     */
