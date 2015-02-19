@@ -132,7 +132,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
   draw_info->text=ConstantString(label);
   metrics.width=0;
-  metrics.ascent=0.0;
+  metrics.bounds.y2=0.0;
   status=GetMultilineTypeMetrics(image,draw_info,&metrics);
   if ((image->columns == 0) && (image->rows == 0))
     {
@@ -153,7 +153,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
         for ( ; ; draw_info->pointsize*=2.0)
         {
           (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",
-            -metrics.bounds.x1,metrics.ascent);
+            -metrics.bounds.x1,metrics.bounds.y2);
           if (draw_info->gravity == UndefinedGravity)
             (void) CloneString(&draw_info->geometry,geometry);
           status=GetMultilineTypeMetrics(image,draw_info,&metrics);
@@ -175,7 +175,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
         {
           draw_info->pointsize=(low+high)/2.0;
           (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",
-            -metrics.bounds.x1,metrics.ascent);
+            -metrics.bounds.x1,metrics.bounds.y2);
           if (draw_info->gravity == UndefinedGravity)
             (void) CloneString(&draw_info->geometry,geometry);
           status=GetMultilineTypeMetrics(image,draw_info,&metrics);
@@ -209,7 +209,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   if (image->columns == 0)
     image->columns=(size_t) (draw_info->pointsize+draw_info->stroke_width+0.5);
   if (image->rows == 0)
-    image->rows=(size_t) (metrics.ascent-metrics.descent+
+    image->rows=(size_t) (metrics.bounds.y2-metrics.descent+
       draw_info->stroke_width+0.5);
   if (image->rows == 0)
     image->rows=(size_t) (draw_info->pointsize+draw_info->stroke_width+0.5);
@@ -221,17 +221,20 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
     }
   if ((draw_info->gravity != UndefinedGravity) &&
       (draw_info->direction != RightToLeftDirection))
-    image->page.x=(ssize_t) floor(metrics.bounds.x1-
-      draw_info->stroke_width/2.0+0.5);
+    {
+      image->page.x=(ssize_t) floor(metrics.bounds.x1-
+        draw_info->stroke_width/2.0+0.5);
+      image->page.y=(ssize_t) floor(-2.0-draw_info->stroke_width/2.0+0.5);
+    }
   else
     {
       (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",
-        -metrics.bounds.x1+draw_info->stroke_width/2.0,metrics.ascent+
+        -metrics.bounds.x1+draw_info->stroke_width/2.0,metrics.bounds.y2+
         draw_info->stroke_width/2.0);
       if (draw_info->direction == RightToLeftDirection)
         (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",
           image->columns-(metrics.bounds.x2+draw_info->stroke_width/2.0),
-          metrics.ascent+draw_info->stroke_width/2.0);
+          metrics.bounds.y2+draw_info->stroke_width/2.0);
       draw_info->geometry=AcquireString(geometry);
     }
   if (SetImageBackgroundColor(image) == MagickFalse)
