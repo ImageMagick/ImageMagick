@@ -29,7 +29,7 @@ Magick::Blob::Blob(const Magick::Blob& blob_)
   : _blobRef(blob_._blobRef)
 {
   // Increase reference count
- Lock lock(&_blobRef->_mutexLock);
+  Lock lock(&_blobRef->_mutexLock);
   ++_blobRef->_refCount;
 }
 
@@ -37,7 +37,7 @@ Magick::Blob::~Blob ()
 {
   bool doDelete=false;
   {
-   Lock lock(&_blobRef->_mutexLock);
+    Lock lock(&_blobRef->_mutexLock);
     if (--_blobRef->_refCount == 0)
       doDelete=true;
   }
@@ -58,12 +58,12 @@ Magick::Blob& Magick::Blob::operator=(const Magick::Blob& blob_)
   if (this != &blob_)
     {
       {
-       Lock lock(&blob_._blobRef->_mutexLock);
+        Lock lock(&blob_._blobRef->_mutexLock);
         ++blob_._blobRef->_refCount;
       }
       doDelete=false;
       {
-       Lock lock(&_blobRef->_mutexLock);
+        Lock lock(&_blobRef->_mutexLock);
         if (--_blobRef->_refCount == 0)
           doDelete=true;
       }
@@ -132,7 +132,7 @@ void Magick::Blob::update(const void* data_,const size_t length_)
 
   doDelete=false;
   {
-   Lock lock( &_blobRef->_mutexLock );
+    Lock lock( &_blobRef->_mutexLock );
     if (--_blobRef->_refCount == 0)
       doDelete=true;
   }
@@ -153,7 +153,7 @@ void Magick::Blob::updateNoCopy(void* data_,const size_t length_,
 
   doDelete=false;
   {
-   Lock lock(&_blobRef->_mutexLock);
+    Lock lock(&_blobRef->_mutexLock);
     if (--_blobRef->_refCount == 0)
       doDelete=true;
   }
