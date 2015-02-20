@@ -38,7 +38,6 @@ Magick::MutexLock::MutexLock(void)
 #else
 #if defined(_VISUALC_) && defined(_MT)
 // Win32 threads
-  : _mutex()
 {
   SECURITY_ATTRIBUTES
     security;
