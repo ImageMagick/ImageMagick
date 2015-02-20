@@ -196,12 +196,13 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
         }
         draw_info->pointsize=(low+high)/2.0-0.5;
       }
-  status=GetMultilineTypeMetrics(image,draw_info,&metrics,exception);
-  if (status == MagickFalse)
-    {
-      image=DestroyImageList(image);
-      return((Image *) NULL);
-    }
+   status=GetMultilineTypeMetrics(image,draw_info,&metrics,exception);
+   if (status == MagickFalse)
+     {
+      draw_info=DestroyDrawInfo(draw_info);
+       image=DestroyImageList(image);
+       return((Image *) NULL);
+     }
   if (image->columns == 0)
     image->columns=(size_t) (metrics.width+draw_info->stroke_width+0.5);
   if (image->columns == 0)
@@ -213,28 +214,25 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
     image->rows=(size_t) (draw_info->pointsize+draw_info->stroke_width+0.5);
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
-    return(DestroyImageList(image));
-  if ((draw_info->gravity != UndefinedGravity) &&
-      (draw_info->direction != RightToLeftDirection))
-    image->page.x=(ssize_t) floor(metrics.bounds.x1-
-      draw_info->stroke_width/2.0+0.5);
-  else
     {
-      (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",
-        -metrics.bounds.x1+draw_info->stroke_width/2.0,metrics.ascent+
-        draw_info->stroke_width/2.0);
-      if (draw_info->direction == RightToLeftDirection)
-        (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",
-          image->columns-(metrics.bounds.x2+draw_info->stroke_width/2.0),
-          metrics.ascent+draw_info->stroke_width/2.0);
-      draw_info->geometry=AcquireString(geometry);
+      draw_info=DestroyDrawInfo(draw_info);
+      return(DestroyImageList(image));
     }
   if (SetImageBackgroundColor(image,exception) == MagickFalse)
     {
+      draw_info=DestroyDrawInfo(draw_info);
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
-  (void) AnnotateImage(image,draw_info,exception);
+  /*
+    Draw label.
+  */
+  (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",
+    draw_info->direction == RightToLeftDirection ? image->columns-
+    metrics.bounds.x2 : 0.0,draw_info->gravity == UndefinedGravity ?
+    metrics.ascent : 0.0);
+  draw_info->geometry=AcquireString(geometry);
+  status=AnnotateImage(image,draw_info,exception);
   if (image_info->pointsize == 0.0)
     {
       char
@@ -245,6 +243,11 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
       (void) SetImageProperty(image,"label:pointsize",pointsize,exception);
     }
   draw_info=DestroyDrawInfo(draw_info);
+  if (status == MagickFalse)
+    {
+      image=DestroyImageList(image);
+      return((Image *) NULL);
+    }
   return(GetFirstImageInList(image));
 }
 
