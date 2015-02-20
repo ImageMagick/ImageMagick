@@ -200,6 +200,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   status=GetMultilineTypeMetrics(image,draw_info,&metrics);
   if (status == MagickFalse)
     {
+      draw_info=DestroyDrawInfo(draw_info);
       InheritException(exception,&image->exception);
       image=DestroyImageList(image);
       return((Image *) NULL);
@@ -216,31 +217,26 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   status=SetImageExtent(image,image->columns,image->rows);
   if (status == MagickFalse)
     {
+      draw_info=DestroyDrawInfo(draw_info);
       InheritException(exception,&image->exception);
       return(DestroyImageList(image));
     }
-  if ((draw_info->gravity != UndefinedGravity) &&
-      (draw_info->direction != RightToLeftDirection))
-    image->page.x=(ssize_t) floor(metrics.bounds.x1-
-      draw_info->stroke_width/2.0+0.5);
-  else
-    {
-      (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",
-        -metrics.bounds.x1+draw_info->stroke_width/2.0,metrics.ascent+
-        draw_info->stroke_width/2.0);
-      if (draw_info->direction == RightToLeftDirection)
-        (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",
-          image->columns-(metrics.bounds.x2+draw_info->stroke_width/2.0),
-          metrics.ascent+draw_info->stroke_width/2.0);
-      draw_info->geometry=AcquireString(geometry);
-    }
   if (SetImageBackgroundColor(image) == MagickFalse)
     {
+      draw_info=DestroyDrawInfo(draw_info);
       InheritException(exception,&image->exception);
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
-  (void) AnnotateImage(image,draw_info);
+  /*
+    Draw label.
+  */
+  (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",
+    draw_info->direction == RightToLeftDirection ? image->columns-
+    metrics.bounds.x2 : 0.0,draw_info->gravity == UndefinedGravity ?
+    metrics.ascent : 0.0);
+  draw_info->geometry=AcquireString(geometry);
+  status=AnnotateImage(image,draw_info);
   if (image_info->pointsize == 0.0)
     {
       char
@@ -251,6 +247,11 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
       (void) SetImageProperty(image,"label:pointsize",pointsize);
     }
   draw_info=DestroyDrawInfo(draw_info);
+  if (status == MagickFalse)
+    {
+      image=DestroyImageList(image);
+      return((Image *) NULL);
+    }
   return(GetFirstImageInList(image));
 }
 
