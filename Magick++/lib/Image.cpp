@@ -4821,7 +4821,7 @@ const MagickCore::QuantizeInfo *Magick::Image::constQuantizeInfo(void) const
 
 void Magick::Image::modifyImage(void)
 {
-  if (_imgRef->isOwner())
+  if (!_imgRef->isShared())
     return;
 
   GetPPException;
@@ -4844,14 +4844,14 @@ MagickCore::Image *Magick::Image::replaceImage(MagickCore::Image *replacement_)
     }
 
   // We can replace the image if we own it.
-  if (!_imgRef->replaceImage(image))
-    {
-      // We don't own the image, dereference and replace with new reference
-      if (_imgRef->decrease() == 0)
-        delete _imgRef;
+  if (_imgRef->replaceImage(image))
+    return(image);
 
-      _imgRef=new ImageRef(image,constOptions());
-    }
+  // We don't own the image, dereference and replace with new reference
+  if (_imgRef->decrease() == 0)
+    delete _imgRef;
+
+  _imgRef=new ImageRef(image,constOptions());
 
   return(image);
 }

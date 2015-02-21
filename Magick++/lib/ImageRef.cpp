@@ -83,15 +83,15 @@ void Magick::ImageRef::increase()
   _mutexLock.unlock();
 }
 
-bool Magick::ImageRef::isOwner()
+bool Magick::ImageRef::isShared()
 {
   bool
-    isOwner;
+    isShared;
 
   _mutexLock.lock();
-  isOwner=(_refCount == 1);
+  isShared=(_refCount > 1);
   _mutexLock.unlock();
-  return(isOwner);
+  return(isShared);
 }
 
 void  Magick::ImageRef::options(Magick::Options *options_)
