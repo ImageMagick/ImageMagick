@@ -1199,6 +1199,9 @@ namespace Magick
     void reduceNoise(void);
     void reduceNoise(const double order_);
 
+    // Resets the image page canvas and position.
+    void repage();
+
     // Resize image in terms of its pixel size.
     void resample(const Point &density_);
 
