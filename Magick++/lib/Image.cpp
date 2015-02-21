@@ -1210,7 +1210,7 @@ void Magick::Image::page(const Magick::Geometry &pageSize_)
 Magick::Geometry Magick::Image::page(void) const
 {
   return(Geometry(constImage()->page.width,constImage()->page.height,
-    AbsoluteValue(constImage()->page.x),AbsoluteValue(constImage()->page.y)));
+    constImage()->page.x,constImage()->page.y));
 }
 
 void Magick::Image::quality(const size_t quality_)
@@ -3958,6 +3958,16 @@ void Magick::Image::reduceNoise(const double order_)
     (size_t) order_,exceptionInfo);
   replaceImage(newImage);
   ThrowImageException;
+}
+
+void Magick::Image::repage()
+{
+  modifyImage();
+  options()->page(Geometry());
+  image()->page.width = 0;
+  image()->page.height = 0;
+  image()->page.x = 0;
+  image()->page.y = 0;
 }
 
 void Magick::Image::resample(const Point &density_)
