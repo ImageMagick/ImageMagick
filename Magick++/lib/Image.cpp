@@ -3988,6 +3988,16 @@ void Magick::Image::reduceNoise(const double order_)
   ThrowImageException;
 }
 
+void Magick::Image::repage()
+{
+  modifyImage();
+  options()->page(Geometry());
+  image()->page.width = 0;
+  image()->page.height = 0;
+  image()->page.x = 0;
+  image()->page.y = 0;
+}
+
 void Magick::Image::resample(const Geometry &geometry_)
 {
   MagickCore::Image
