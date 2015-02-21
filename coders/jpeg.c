@@ -2430,7 +2430,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
     sampling_factor=image_info->sampling_factor;
   if (sampling_factor == (const char *) NULL)
     {
-      if (image->quality >= 90)
+      if (quality >= 90)
         for (i=0; i < MAX_COMPONENTS; i++)
         {
           jpeg_info.comp_info[i].h_samp_factor=1;
