@@ -48,15 +48,15 @@ namespace Magick
     // Increases reference count
     void increase();
 
-    // Returns true if the reference count is one
-    bool isOwner();
+    // Returns true if the reference count is more than one
+    bool isShared();
 
     // Retrieve Options from reference
     void options(Options *options_);
     Options *options(void);
 
-    // Tries to replaces the images with the specified image, returns fails
-    // when this fails
+    // Tries to replaces the images with the specified image, returns
+    // false when current the image is shared
     bool replaceImage(MagickCore::Image *replacement_);
 
     // Image signature. Set force_ to true in order to re-calculate
