@@ -324,42 +324,6 @@ Magick::Geometry::operator std::string() const
   return(geometry);
 }
 
-Magick::Geometry::Geometry(const MagickCore::RectangleInfo &rectangle_)
-  : _width(static_cast<size_t>(rectangle_.width)),
-    _height(static_cast<size_t>(rectangle_.height)),
-    _xOff(static_cast<ssize_t>(rectangle_.x)),
-    _yOff(static_cast<ssize_t>(rectangle_.y)),
-    _isValid(true),
-    _percent(false),
-    _aspect(false),
-    _greater(false),
-    _less(false),
-    _fillArea(false),
-    _limitPixels(false)
-{
-}
-
-const Magick::Geometry& Magick::Geometry::operator=(
-  const MagickCore::RectangleInfo &rectangle_)
-{
-  _width=static_cast<size_t>(rectangle_.width),
-  _height=static_cast<size_t>(rectangle_.height),
-  _xOff=static_cast<ssize_t>(rectangle_.x),
-  _yOff=static_cast<ssize_t>(rectangle_.y),
-  _isValid=true;
-  return(*this);
-}
-
-Magick::Geometry::operator MagickCore::RectangleInfo() const
-{
-  RectangleInfo rectangle;
-  rectangle.width=_width;
-  rectangle.height=_height;
-  rectangle.x=_xOff;
-  rectangle.y=_yOff;
-  return(rectangle);
-}
-
 void Magick::Geometry::aspect(bool aspect_)
 {
   _aspect=aspect_;
@@ -469,6 +433,42 @@ inline void Magick::Geometry::yOff(::ssize_t yOff_)
 ::ssize_t Magick::Geometry::yOff(void) const
 {
   return(_yOff);
+}
+
+Magick::Geometry::Geometry(const MagickCore::RectangleInfo &rectangle_)
+  : _width(static_cast<size_t>(rectangle_.width)),
+    _height(static_cast<size_t>(rectangle_.height)),
+    _xOff(static_cast<ssize_t>(rectangle_.x)),
+    _yOff(static_cast<ssize_t>(rectangle_.y)),
+    _isValid(true),
+    _percent(false),
+    _aspect(false),
+    _greater(false),
+    _less(false),
+    _fillArea(false),
+    _limitPixels(false)
+{
+}
+
+const Magick::Geometry& Magick::Geometry::operator=(
+  const MagickCore::RectangleInfo &rectangle_)
+{
+  _width=static_cast<size_t>(rectangle_.width),
+  _height=static_cast<size_t>(rectangle_.height),
+  _xOff=static_cast<ssize_t>(rectangle_.x),
+  _yOff=static_cast<ssize_t>(rectangle_.y),
+  _isValid=true;
+  return(*this);
+}
+
+Magick::Geometry::operator MagickCore::RectangleInfo() const
+{
+  RectangleInfo rectangle;
+  rectangle.width=_width;
+  rectangle.height=_height;
+  rectangle.x=_xOff;
+  rectangle.y=_yOff;
+  return(rectangle);
 }
 
 MagickPPExport int Magick::operator == (const Magick::Point& left_,
