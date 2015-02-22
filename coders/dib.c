@@ -935,8 +935,8 @@ ModuleExport size_t RegisterDIBImage(void)
   entry->decoder=(DecodeImageHandler *) ReadDIBImage;
   entry->encoder=(EncodeImageHandler *) WriteDIBImage;
   entry->magick=(IsImageFormatHandler *) IsDIB;
-  entry->adjoin=MagickFalse;
-  entry->stealth=MagickTrue;
+  entry->flags^=Adjoin;
+  entry->flags|=Stealth;
   entry->description=ConstantString(
     "Microsoft Windows 3.X Packed Device-Independent Bitmap");
   entry->module=ConstantString("DIB");

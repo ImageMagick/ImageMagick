@@ -7378,7 +7378,7 @@ ModuleExport size_t RegisterPNGImage(void)
 #endif
 
   entry=SetMagickInfo("MNG");
-  entry->seekable_stream=MagickTrue;  /* To do: eliminate this. */
+  entry->flags|=SeekableStream;  /* To do: eliminate this. */
 
 #if defined(MAGICKCORE_PNG_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadMNGImage;
@@ -7404,7 +7404,7 @@ ModuleExport size_t RegisterPNGImage(void)
 #endif
 
   entry->magick=(IsImageFormatHandler *) IsPNG;
-  entry->adjoin=MagickFalse;
+  entry->flags^=Adjoin;
   entry->description=ConstantString("Portable Network Graphics");
   entry->mime_type=ConstantString("image/png");
   entry->module=ConstantString("PNG");
@@ -7423,7 +7423,7 @@ ModuleExport size_t RegisterPNGImage(void)
 #endif
 
   entry->magick=(IsImageFormatHandler *) IsPNG;
-  entry->adjoin=MagickFalse;
+  entry->flags^=Adjoin;
   entry->description=ConstantString(
             "8-bit indexed with optional binary transparency");
   entry->mime_type=ConstantString("image/png");
@@ -7453,7 +7453,7 @@ ModuleExport size_t RegisterPNGImage(void)
 #endif
 
   entry->magick=(IsImageFormatHandler *) IsPNG;
-  entry->adjoin=MagickFalse;
+  entry->flags^=Adjoin;
   entry->description=ConstantString("opaque or binary transparent 24-bit RGB");
   entry->mime_type=ConstantString("image/png");
   entry->module=ConstantString("PNG");
@@ -7467,7 +7467,7 @@ ModuleExport size_t RegisterPNGImage(void)
 #endif
 
   entry->magick=(IsImageFormatHandler *) IsPNG;
-  entry->adjoin=MagickFalse;
+  entry->flags^=Adjoin;
   entry->description=ConstantString("opaque or transparent 32-bit RGBA");
   entry->mime_type=ConstantString("image/png");
   entry->module=ConstantString("PNG");
@@ -7481,7 +7481,7 @@ ModuleExport size_t RegisterPNGImage(void)
 #endif
 
   entry->magick=(IsImageFormatHandler *) IsPNG;
-  entry->adjoin=MagickFalse;
+  entry->flags^=Adjoin;
   entry->description=ConstantString("opaque or binary transparent 48-bit RGB");
   entry->mime_type=ConstantString("image/png");
   entry->module=ConstantString("PNG");
@@ -7495,7 +7495,7 @@ ModuleExport size_t RegisterPNGImage(void)
 #endif
 
   entry->magick=(IsImageFormatHandler *) IsPNG;
-  entry->adjoin=MagickFalse;
+  entry->flags^=Adjoin;
   entry->description=ConstantString("opaque or transparent 64-bit RGBA");
   entry->mime_type=ConstantString("image/png");
   entry->module=ConstantString("PNG");
@@ -7509,7 +7509,7 @@ ModuleExport size_t RegisterPNGImage(void)
 #endif
 
   entry->magick=(IsImageFormatHandler *) IsPNG;
-  entry->adjoin=MagickFalse;
+  entry->flags^=Adjoin;
   entry->description=ConstantString(
     "PNG inheriting bit-depth and color-type from original");
   entry->mime_type=ConstantString("image/png");
@@ -7526,7 +7526,7 @@ ModuleExport size_t RegisterPNGImage(void)
 #endif
 
   entry->magick=(IsImageFormatHandler *) IsJNG;
-  entry->adjoin=MagickFalse;
+  entry->flags^=Adjoin;
   entry->description=ConstantString("JPEG Network Graphics");
   entry->mime_type=ConstantString("image/x-jng");
   entry->module=ConstantString("PNG");

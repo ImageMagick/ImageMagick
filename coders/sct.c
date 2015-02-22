@@ -315,7 +315,7 @@ ModuleExport size_t RegisterSCTImage(void)
   entry=SetMagickInfo("SCT");
   entry->decoder=(DecodeImageHandler *) ReadSCTImage;
   entry->magick=(IsImageFormatHandler *) IsSCT;
-  entry->adjoin=MagickFalse;
+  entry->flags^=Adjoin;
   entry->description=ConstantString("Scitex HandShake");
   entry->module=ConstantString("SCT");
   (void) RegisterMagickInfo(entry);

@@ -950,10 +950,9 @@ ModuleExport size_t RegisterDJVUImage(void)
 #if defined(MAGICKCORE_DJVU_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadDJVUImage;
 #endif
-  entry->raw=MagickTrue;
   entry->magick=(IsImageFormatHandler *) IsDJVU;
-  entry->adjoin=MagickFalse;
-  entry->thread_support=MagickTrue;
+  entry->flags|=RawSupport;
+  entry->flags^=Adjoin;
   entry->description=AcquireString("Déjà vu");
   entry->module=AcquireString("DJVU");
   if (*version != '\0')

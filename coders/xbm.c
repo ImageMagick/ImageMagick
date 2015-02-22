@@ -422,7 +422,7 @@ ModuleExport size_t RegisterXBMImage(void)
   entry->decoder=(DecodeImageHandler *) ReadXBMImage;
   entry->encoder=(EncodeImageHandler *) WriteXBMImage;
   entry->magick=(IsImageFormatHandler *) IsXBM;
-  entry->adjoin=MagickFalse;
+  entry->flags^=Adjoin;
   entry->description=ConstantString(
     "X Windows system bitmap (black and white)");
   entry->module=ConstantString("XBM");

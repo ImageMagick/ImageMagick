@@ -541,8 +541,8 @@ ModuleExport size_t RegisterFITSImage(void)
   entry->decoder=(DecodeImageHandler *) ReadFITSImage;
   entry->encoder=(EncodeImageHandler *) WriteFITSImage;
   entry->magick=(IsImageFormatHandler *) IsFITS;
-  entry->adjoin=MagickFalse;
-  entry->seekable_stream=MagickTrue;
+  entry->flags^=Adjoin;
+  entry->flags|=SeekableStream;
   entry->description=ConstantString("Flexible Image Transport System");
   entry->module=ConstantString("FITS");
   (void) RegisterMagickInfo(entry);
@@ -550,8 +550,8 @@ ModuleExport size_t RegisterFITSImage(void)
   entry->decoder=(DecodeImageHandler *) ReadFITSImage;
   entry->encoder=(EncodeImageHandler *) WriteFITSImage;
   entry->magick=(IsImageFormatHandler *) IsFITS;
-  entry->adjoin=MagickFalse;
-  entry->seekable_stream=MagickTrue;
+  entry->flags^=Adjoin;
+  entry->flags|=SeekableStream;
   entry->description=ConstantString("Flexible Image Transport System");
   entry->module=ConstantString("FTS");
   (void) RegisterMagickInfo(entry);

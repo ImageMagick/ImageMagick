@@ -16,35 +16,38 @@
 using namespace std;
 
 Magick::CoderInfo::CoderInfo(void)
-  : _description(),
+  : _decoderThreadSupport(false),
+    _description(),
+    _encoderThreadSupport(false),
     _isMultiFrame(false),
     _isReadable(false),
     _isWritable(false),
     _mimeType(),
-    _name(),
-    _threadSupport(NoThreadSupport)
+    _name()
 {
 }
 
 Magick::CoderInfo::CoderInfo(const Magick::CoderInfo &coder_)
-  : _description(coder_._description),
+  : _decoderThreadSupport(coder_._decoderThreadSupport),
+    _description(coder_._description),
+    _encoderThreadSupport(coder_._encoderThreadSupport),
     _isMultiFrame(coder_._isMultiFrame),
     _isReadable(coder_._isReadable),
     _isWritable(coder_._isWritable),
     _mimeType(coder_._mimeType),
-    _name(coder_._name),
-    _threadSupport(coder_._threadSupport)
+    _name(coder_._name)
 {
 }
 
 Magick::CoderInfo::CoderInfo(const std::string &name_)
-  : _description(),
+  : _decoderThreadSupport(false),
+    _description(),
+    _encoderThreadSupport(false),
     _isMultiFrame(false),
     _isReadable(false),
     _isWritable(false),
     _mimeType(),
-    _name(),
-    _threadSupport(NoThreadSupport)
+    _name()
 {
   const Magick::MagickInfo
     *magickInfo;
@@ -57,15 +60,18 @@ Magick::CoderInfo::CoderInfo(const std::string &name_)
       name_.c_str());
   else
     {
+      _decoderThreadSupport=(GetMagickDecoderThreadSupport(magickInfo) ==
+        MagickTrue) ? true : false;
       _description=string(magickInfo->description);
-      _isMultiFrame=((magickInfo->adjoin == MagickFalse) ? false : true);
+      _decoderThreadSupport=(GetMagickEncoderThreadSupport(magickInfo) ==
+        MagickTrue) ? true : false;
+      _isMultiFrame=(GetMagickAdjoin(magickInfo) == MagickTrue) ? true : false;
       _isReadable=((magickInfo->decoder == (MagickCore::DecodeImageHandler *)
         NULL) ? false : true);
       _isWritable=((magickInfo->encoder == (MagickCore::EncodeImageHandler *)
         NULL) ? false : true);
       _mimeType=string(magickInfo->mime_type ? magickInfo->mime_type : "");
       _name=string(magickInfo->name);
-      _threadSupport=magickInfo->thread_support;
     }
 }
 
@@ -78,25 +84,26 @@ Magick::CoderInfo& Magick::CoderInfo::operator=(const CoderInfo &coder_)
   // If not being set to ourself
   if (this != &coder_)
     {
+      _decoderThreadSupport=coder_._decoderThreadSupport;
       _description=coder_._description;
+      _encoderThreadSupport=coder_._encoderThreadSupport;
       _isMultiFrame=coder_._isMultiFrame;
       _isReadable=coder_._isReadable;
       _isWritable=coder_._isWritable;
       _mimeType=coder_._mimeType;
       _name=coder_._name;
-      _threadSupport=coder_._threadSupport;
     }
   return(*this);
 }
 
 bool Magick::CoderInfo::canReadMultithreaded(void) const
 {
-  return((_threadSupport & DecoderThreadSupport) == DecoderThreadSupport);
+  return(_decoderThreadSupport);
 }
 
 bool Magick::CoderInfo::canWriteMultithreaded(void) const
 {
-  return((_threadSupport & EncoderThreadSupport) == EncoderThreadSupport);
+  return(_encoderThreadSupport);
 }
 
 std::string Magick::CoderInfo::description(void) const

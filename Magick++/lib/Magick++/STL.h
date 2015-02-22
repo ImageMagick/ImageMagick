@@ -2100,7 +2100,7 @@ namespace Magick
           MagickCore::RelinquishMagickMemory( coder_list[i] );
 
         // Skip stealth coders
-        if ( magick_info->stealth )
+        if ( MagickCore::GetMagickStealth(magick_info) )
           continue;
 
         try {

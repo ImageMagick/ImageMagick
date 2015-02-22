@@ -155,7 +155,6 @@ static MagickBooleanType
 */
 MagickExport DecodeImageHandler *GetImageDecoder(const MagickInfo *magick_info)
 {
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(magick_info != (MagickInfo *) NULL);
   assert(magick_info->signature == MagickSignature);
   return(magick_info->decoder);
@@ -185,7 +184,6 @@ MagickExport DecodeImageHandler *GetImageDecoder(const MagickInfo *magick_info)
 */
 MagickExport EncodeImageHandler *GetImageEncoder(const MagickInfo *magick_info)
 {
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(magick_info != (MagickInfo *) NULL);
   assert(magick_info->signature == MagickSignature);
   return(magick_info->encoder);
@@ -282,10 +280,9 @@ MagickExport MagickBooleanType GetImageMagick(const unsigned char *magick,
 */
 MagickExport MagickBooleanType GetMagickAdjoin(const MagickInfo *magick_info)
 {
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(magick_info != (MagickInfo *) NULL);
   assert(magick_info->signature == MagickSignature);
-  return(magick_info->adjoin);
+  return(((magick_info->flags & Adjoin) == 0) ? MagickFalse : MagickTrue);
 }
 
 /*
@@ -313,10 +310,43 @@ MagickExport MagickBooleanType GetMagickAdjoin(const MagickInfo *magick_info)
 MagickExport MagickBooleanType GetMagickBlobSupport(
   const MagickInfo *magick_info)
 {
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(magick_info != (MagickInfo *) NULL);
   assert(magick_info->signature == MagickSignature);
-  return(magick_info->blob_support);
+  return(((magick_info->flags & BlobSupport) == 0) ? MagickFalse :
+    MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   G e t M a g i c k D e c o d e r T h r e a d S u p p o r t                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetMagickDecoderThreadSupport() returns MagickTrue if the decoder supports
+%  threads.
+%
+%  The format of the GetMagickDecoderThreadSupport method is:
+%
+%      MagickStatusType GetMagickDecoderThreadSupport(
+%        const MagickInfo *magick_info)
+%
+%  A description of each parameter follows:
+%
+%    o magick_info:  The magick info.
+%
+*/
+MagickExport MagickBooleanType GetMagickDecoderThreadSupport(
+  const MagickInfo *magick_info)
+{
+  assert(magick_info != (MagickInfo *) NULL);
+  assert(magick_info->signature == MagickSignature);
+  return(((magick_info->flags & DecoderThreadSupport) == 0) ? MagickFalse :
+    MagickTrue);
 }
 
 /*
@@ -343,10 +373,42 @@ MagickExport MagickBooleanType GetMagickBlobSupport(
 */
 MagickExport const char *GetMagickDescription(const MagickInfo *magick_info)
 {
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(magick_info != (MagickInfo *) NULL);
   assert(magick_info->signature == MagickSignature);
   return(magick_info->description);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   G e t M a g i c k E n c o d e r T h r e a d S u p p o r t                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetMagickEncoderThreadSupport() returns MagickTrue if the encoder supports
+%  threads.
+%
+%  The format of the GetMagickEncoderThreadSupport method is:
+%
+%      MagickStatusType GetMagickEncoderThreadSupport(
+%        const MagickInfo *magick_info)
+%
+%  A description of each parameter follows:
+%
+%    o magick_info:  The magick info.
+%
+*/
+MagickExport MagickBooleanType GetMagickEncoderThreadSupport(
+  const MagickInfo *magick_info)
+{
+  assert(magick_info != (MagickInfo *) NULL);
+  assert(magick_info->signature == MagickSignature);
+  return(((magick_info->flags & DecoderThreadSupport) == 0) ? MagickFalse :
+    MagickTrue);
 }
 
 /*
@@ -375,10 +437,10 @@ MagickExport const char *GetMagickDescription(const MagickInfo *magick_info)
 MagickExport MagickBooleanType GetMagickEndianSupport(
   const MagickInfo *magick_info)
 {
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(magick_info != (MagickInfo *) NULL);
   assert(magick_info->signature == MagickSignature);
-  return(magick_info->endian_support);
+  return(((magick_info->flags & EndianSupport) == 0) ? MagickFalse :
+    MagickTrue);
 }
 
 /*
@@ -540,7 +602,7 @@ MagickExport const MagickInfo **GetMagickInfoList(const char *pattern,
   p=(const MagickInfo *) GetNextValueInSplayTree(magick_list);
   for (i=0; p != (const MagickInfo *) NULL; )
   {
-    if ((p->stealth == MagickFalse) &&
+    if ((GetMagickStealth(p) == MagickFalse) &&
         (GlobExpression(p->name,pattern,MagickFalse) != MagickFalse))
       formats[i++]=p;
     p=(const MagickInfo *) GetNextValueInSplayTree(magick_list);
@@ -630,7 +692,7 @@ MagickExport char **GetMagickList(const char *pattern,
   p=(const MagickInfo *) GetNextValueInSplayTree(magick_list);
   for (i=0; p != (const MagickInfo *) NULL; )
   {
-    if ((p->stealth == MagickFalse) &&
+    if ((GetMagickStealth(p) == MagickFalse) &&
         (GlobExpression(p->name,pattern,MagickFalse) != MagickFalse))
       formats[i++]=ConstantString(p->name);
     p=(const MagickInfo *) GetNextValueInSplayTree(magick_list);
@@ -666,7 +728,6 @@ MagickExport char **GetMagickList(const char *pattern,
 */
 MagickExport const char *GetMagickMimeType(const MagickInfo *magick_info)
 {
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(magick_info != (MagickInfo *) NULL);
   assert(magick_info->signature == MagickSignature);
   return(magick_info->mime_type);
@@ -722,10 +783,9 @@ MagickExport int GetMagickPrecision(void)
 MagickExport MagickBooleanType GetMagickRawSupport(
   const MagickInfo *magick_info)
 {
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(magick_info != (MagickInfo *) NULL);
   assert(magick_info->signature == MagickSignature);
-  return(magick_info->raw);
+  return(((magick_info->flags & RawSupport) == 0) ? MagickFalse : MagickTrue);
 }
 
 /*
@@ -754,41 +814,39 @@ MagickExport MagickBooleanType GetMagickRawSupport(
 MagickExport MagickBooleanType GetMagickSeekableStream(
   const MagickInfo *magick_info)
 {
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(magick_info != (MagickInfo *) NULL);
   assert(magick_info->signature == MagickSignature);
-  return(magick_info->seekable_stream);
+  return(((magick_info->flags & SeekableStream) == 0) ? MagickFalse :
+    MagickTrue);
 }
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   G e t M a g i c k T h r e a d S u p p o r t                               %
++   G e t M a g i c k S t e a l t h                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetMagickThreadSupport() returns MagickTrue if the magick supports threads.
+%  GetMagickStealth() returns MagickTrue if the magick is a stealth coder.
 %
-%  The format of the GetMagickThreadSupport method is:
+%  The format of the GetMagickStealth method is:
 %
-%      MagickStatusType GetMagickThreadSupport(const MagickInfo *magick_info)
+%      MagickBooleanType GetMagickStealth(const MagickInfo *magick_info)
 %
 %  A description of each parameter follows:
 %
 %    o magick_info:  The magick info.
 %
 */
-MagickExport MagickStatusType GetMagickThreadSupport(
-  const MagickInfo *magick_info)
+MagickExport MagickBooleanType GetMagickStealth(const MagickInfo *magick_info)
 {
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(magick_info != (MagickInfo *) NULL);
   assert(magick_info->signature == MagickSignature);
-  return(magick_info->thread_support);
+  return(((magick_info->flags & Stealth) == 0) ? MagickFalse : MagickTrue);
 }
 
 /*
@@ -860,13 +918,13 @@ static MagickBooleanType IsMagickTreeInstantiated(ExceptionInfo *exception)
             ThrowFatalException(ResourceLimitFatalError,
               "MemoryAllocationFailed");
           magick_info=SetMagickInfo("ephemeral");
-          magick_info->stealth=MagickTrue;
+          magick_info->flags|=Stealth;
           status=AddValueToSplayTree(magick_list,magick_info->name,magick_info);
           if (status == MagickFalse)
             ThrowFatalException(ResourceLimitFatalError,
               "MemoryAllocationFailed");
           magick_info=SetMagickInfo("clipmask");
-          magick_info->stealth=MagickTrue;
+          magick_info->flags|=Stealth;
           status=AddValueToSplayTree(magick_list,magick_info->name,magick_info);
           if (status == MagickFalse)
             ThrowFatalException(ResourceLimitFatalError,
@@ -975,11 +1033,11 @@ MagickExport MagickBooleanType ListMagickInfo(FILE *file,
     "-----------------------\n");
   for (i=0; i < (ssize_t) number_formats; i++)
   {
-    if (magick_info[i]->stealth != MagickFalse)
+    if (GetMagickStealth(magick_info[i]) != MagickFalse)
       continue;
     (void) FormatLocaleFile(file,"%9s%c ",
       magick_info[i]->name != (char *) NULL ? magick_info[i]->name : "",
-      magick_info[i]->blob_support != MagickFalse ? '*' : ' ');
+      GetMagickBlobSupport(magick_info[i]) != MagickFalse ? '*' : ' ');
 #if defined(MAGICKCORE_MODULES_SUPPORT)
     {
       char
@@ -995,7 +1053,7 @@ MagickExport MagickBooleanType ListMagickInfo(FILE *file,
 #endif
     (void) FormatLocaleFile(file,"%c%c%c ",magick_info[i]->decoder ? 'r' : '-',
       magick_info[i]->encoder ? 'w' : '-',magick_info[i]->encoder != NULL &&
-      magick_info[i]->adjoin != MagickFalse ? '+' : '-');
+      GetMagickAdjoin(magick_info[i]) != MagickFalse ? '+' : '-');
     if (magick_info[i]->description != (char *) NULL)
       (void) FormatLocaleFile(file,"  %s",magick_info[i]->description);
     if (magick_info[i]->version != (char *) NULL)
@@ -1451,8 +1509,8 @@ MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *magick_info)
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",magick_info->name);
   if (magick_list == (SplayTreeInfo *) NULL)
     return((MagickInfo *) NULL);
-  if (((magick_info->thread_support & DecoderThreadSupport) == 0) ||
-      ((magick_info->thread_support & EncoderThreadSupport) == 0))
+  if ((GetMagickDecoderThreadSupport(magick_info) == MagickFalse) ||
+      (GetMagickEncoderThreadSupport(magick_info) == MagickFalse))
     magick_info->semaphore=AcquireSemaphoreInfo();
   status=AddValueToSplayTree(magick_list,magick_info->name,magick_info);
   if (status == MagickFalse)
@@ -1499,10 +1557,8 @@ MagickExport MagickInfo *SetMagickInfo(const char *name)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(magick_info,0,sizeof(*magick_info));
   magick_info->name=ConstantString(name);
-  magick_info->adjoin=MagickTrue;
-  magick_info->blob_support=MagickTrue;
-  magick_info->thread_support=(MagickStatusType) (DecoderThreadSupport |
-    EncoderThreadSupport);
+  magick_info->flags=Adjoin | BlobSupport | DecoderThreadSupport |
+    EncoderThreadSupport;
   magick_info->signature=MagickSignature;
   return(magick_info);
 }

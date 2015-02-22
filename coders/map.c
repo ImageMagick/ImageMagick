@@ -275,10 +275,10 @@ ModuleExport size_t RegisterMAPImage(void)
   entry=SetMagickInfo("MAP");
   entry->decoder=(DecodeImageHandler *) ReadMAPImage;
   entry->encoder=(EncodeImageHandler *) WriteMAPImage;
-  entry->adjoin=MagickFalse;
+  entry->flags^=Adjoin;
   entry->format_type=ExplicitFormatType;
-  entry->raw=MagickTrue;
-  entry->endian_support=MagickTrue;
+  entry->flags|=RawSupport;
+  entry->flags|=EndianSupport;
   entry->description=ConstantString("Colormap intensities and indices");
   entry->module=ConstantString("MAP");
   (void) RegisterMagickInfo(entry);

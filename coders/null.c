@@ -182,7 +182,7 @@ ModuleExport size_t RegisterNULLImage(void)
   entry=SetMagickInfo("NULL");
   entry->decoder=(DecodeImageHandler *) ReadNULLImage;
   entry->encoder=(EncodeImageHandler *) WriteNULLImage;
-  entry->adjoin=MagickFalse;
+  entry->flags^=Adjoin;
   entry->format_type=ImplicitFormatType;
   entry->description=ConstantString("Constant image of uniform color");
   entry->module=ConstantString("NULL");

@@ -1284,6 +1284,8 @@ namespace Magick
   using MagickCore::GetImageProperty;
   using MagickCore::GetImageQuantizeError;
   using MagickCore::GetImageType;
+  using MagickCore::GetMagickDecoderThreadSupport;
+  using MagickCore::GetMagickEncoderThreadSupport;
   using MagickCore::GetMagickInfo;
   using MagickCore::GetMultilineTypeMetrics;
   using MagickCore::GetNextValueInLinkedList;

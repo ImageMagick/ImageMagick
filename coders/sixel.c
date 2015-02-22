@@ -1109,7 +1109,7 @@ ModuleExport size_t RegisterSIXELImage(void)
   entry->decoder=(DecodeImageHandler *) ReadSIXELImage;
   entry->encoder=(EncodeImageHandler *) WriteSIXELImage;
   entry->magick=(IsImageFormatHandler *) IsSIXEL;
-  entry->adjoin=MagickFalse;
+  entry->flags^=Adjoin;
   entry->description=ConstantString("DEC SIXEL Graphics Format");
   entry->module=ConstantString("SIXEL");
   (void) RegisterMagickInfo(entry);
@@ -1117,7 +1117,7 @@ ModuleExport size_t RegisterSIXELImage(void)
   entry->decoder=(DecodeImageHandler *) ReadSIXELImage;
   entry->encoder=(EncodeImageHandler *) WriteSIXELImage;
   entry->magick=(IsImageFormatHandler *) IsSIXEL;
-  entry->adjoin=MagickFalse;
+  entry->flags^=Adjoin;
   entry->description=ConstantString("DEC SIXEL Graphics Format");
   entry->module=ConstantString("SIX");
   (void) RegisterMagickInfo(entry);

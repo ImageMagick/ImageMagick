@@ -425,9 +425,9 @@ ModuleExport size_t RegisterPCLImage(void)
   entry->decoder=(DecodeImageHandler *) ReadPCLImage;
   entry->encoder=(EncodeImageHandler *) WritePCLImage;
   entry->magick=(IsImageFormatHandler *) IsPCL;
-  entry->blob_support=MagickFalse;
-  entry->seekable_stream=MagickTrue;
-  entry->thread_support=EncoderThreadSupport;
+  entry->flags^=BlobSupport;
+  entry->flags^=DecoderThreadSupport;
+  entry->flags|=SeekableStream;
   entry->description=ConstantString("Printer Control Language");
   entry->module=ConstantString("PCL");
   (void) RegisterMagickInfo(entry);

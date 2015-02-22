@@ -250,7 +250,7 @@ ModuleExport size_t RegisterRGFImage(void)
   entry=SetMagickInfo("RGF");
   entry->decoder=(DecodeImageHandler *) ReadRGFImage;
   entry->encoder=(EncodeImageHandler *) WriteRGFImage;
-  entry->adjoin=MagickFalse;
+  entry->flags^=Adjoin;
   entry->description=ConstantString(
     "LEGO Mindstorms EV3 Robot Graphic Format (black and white)");
   entry->module=ConstantString("RGF");

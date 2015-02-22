@@ -550,7 +550,7 @@ ModuleExport size_t RegisterVIPSImage(void)
   entry->encoder=(EncodeImageHandler *) WriteVIPSImage;
   entry->magick=(IsImageFormatHandler *) IsVIPS;
   entry->description=ConstantString("VIPS image");
-  entry->endian_support=MagickTrue;
+  entry->flags|=EndianSupport;
   entry->module=ConstantString("VIPS");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);

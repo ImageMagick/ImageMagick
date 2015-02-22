@@ -607,7 +607,7 @@ ModuleExport size_t RegisterPALMImage(void)
   entry=SetMagickInfo("PALM");
   entry->decoder=(DecodeImageHandler *) ReadPALMImage;
   entry->encoder=(EncodeImageHandler *) WritePALMImage;
-  entry->seekable_stream=MagickTrue;
+  entry->flags|=SeekableStream;
   entry->description=ConstantString("Palm pixmap");
   entry->module=ConstantString("PALM");
   (void) RegisterMagickInfo(entry);

@@ -549,8 +549,8 @@ ModuleExport size_t RegisterJP2Image(void)
   entry->mime_type=ConstantString("image/jp2");
   entry->module=ConstantString("JP2");
   entry->magick=(IsImageFormatHandler *) IsJP2;
-  entry->adjoin=MagickFalse;
-  entry->seekable_stream=MagickTrue;
+  entry->flags^=Adjoin;
+  entry->flags|=SeekableStream;
 #if defined(MAGICKCORE_LIBOPENJP2_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadJP2Image;
   entry->encoder=(EncodeImageHandler *) WriteJP2Image;
@@ -563,8 +563,8 @@ ModuleExport size_t RegisterJP2Image(void)
   entry->mime_type=ConstantString("image/jp2");
   entry->module=ConstantString("JP2");
   entry->magick=(IsImageFormatHandler *) IsJ2K;
-  entry->adjoin=MagickFalse;
-  entry->seekable_stream=MagickTrue;
+  entry->flags^=Adjoin;
+  entry->flags|=SeekableStream;
 #if defined(MAGICKCORE_LIBOPENJP2_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadJP2Image;
   entry->encoder=(EncodeImageHandler *) WriteJP2Image;
@@ -577,8 +577,8 @@ ModuleExport size_t RegisterJP2Image(void)
   entry->mime_type=ConstantString("image/jp2");
   entry->module=ConstantString("JP2");
   entry->magick=(IsImageFormatHandler *) IsJ2K;
-  entry->adjoin=MagickFalse;
-  entry->seekable_stream=MagickTrue;
+  entry->flags^=Adjoin;
+  entry->flags|=SeekableStream;
 #if defined(MAGICKCORE_LIBOPENJP2_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadJP2Image;
   entry->encoder=(EncodeImageHandler *) WriteJP2Image;
@@ -591,8 +591,8 @@ ModuleExport size_t RegisterJP2Image(void)
   entry->mime_type=ConstantString("image/jp2");
   entry->module=ConstantString("JP2");
   entry->magick=(IsImageFormatHandler *) IsJP2;
-  entry->adjoin=MagickFalse;
-  entry->seekable_stream=MagickTrue;
+  entry->flags^=Adjoin;
+  entry->flags|=SeekableStream;
 #if defined(MAGICKCORE_LIBOPENJP2_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadJP2Image;
   entry->encoder=(EncodeImageHandler *) WriteJP2Image;
@@ -605,8 +605,8 @@ ModuleExport size_t RegisterJP2Image(void)
   entry->mime_type=ConstantString("image/jp2");
   entry->module=ConstantString("JP2");
   entry->magick=(IsImageFormatHandler *) IsJP2;
-  entry->adjoin=MagickFalse;
-  entry->seekable_stream=MagickTrue;
+  entry->flags^=Adjoin;
+  entry->flags|=SeekableStream;
 #if defined(MAGICKCORE_LIBOPENJP2_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadJP2Image;
   entry->encoder=(EncodeImageHandler *) WriteJP2Image;
@@ -619,8 +619,8 @@ ModuleExport size_t RegisterJP2Image(void)
   entry->mime_type=ConstantString("image/jp2");
   entry->module=ConstantString("JP2");
   entry->magick=(IsImageFormatHandler *) IsJP2;
-  entry->adjoin=MagickFalse;
-  entry->seekable_stream=MagickTrue;
+  entry->flags^=Adjoin;
+  entry->flags|=SeekableStream;
 #if defined(MAGICKCORE_LIBOPENJP2_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadJP2Image;
   entry->encoder=(EncodeImageHandler *) WriteJP2Image;

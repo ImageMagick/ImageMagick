@@ -241,7 +241,7 @@ ModuleExport size_t RegisterOTBImage(void)
   entry=SetMagickInfo("OTB");
   entry->decoder=(DecodeImageHandler *) ReadOTBImage;
   entry->encoder=(EncodeImageHandler *) WriteOTBImage;
-  entry->adjoin=MagickFalse;
+  entry->flags^=Adjoin;
   entry->description=ConstantString("On-the-air bitmap");
   entry->module=ConstantString("OTB");
   (void) RegisterMagickInfo(entry);

@@ -273,7 +273,7 @@ ModuleExport size_t RegisterCLIPBOARDImage(void)
   entry->decoder=(DecodeImageHandler *) ReadCLIPBOARDImage;
   entry->encoder=(EncodeImageHandler *) WriteCLIPBOARDImage;
 #endif
-  entry->adjoin=MagickFalse;
+  entry->flags^=Adjoin;
   entry->format_type=ImplicitFormatType;
   entry->description=ConstantString("The system clipboard");
   entry->module=ConstantString("CLIPBOARD");
