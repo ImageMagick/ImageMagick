@@ -401,7 +401,7 @@ ModuleExport size_t RegisterSFWImage(void)
   entry=SetMagickInfo("SFW");
   entry->decoder=(DecodeImageHandler *) ReadSFWImage;
   entry->magick=(IsImageFormatHandler *) IsSFW;
-  entry->adjoin=MagickFalse;
+  entry->flags^=Adjoin;
   entry->description=ConstantString("Seattle Film Works");
   entry->module=ConstantString("SFW");
   (void) RegisterMagickInfo(entry);

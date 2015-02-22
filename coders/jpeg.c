@@ -1535,7 +1535,7 @@ ModuleExport size_t RegisterJPEGImage(void)
   entry->encoder=(EncodeImageHandler *) WriteJPEGImage;
 #endif
   entry->magick=(IsImageFormatHandler *) IsJPEG;
-  entry->adjoin=MagickFalse;
+  entry->flags^=Adjoin;
   entry->description=ConstantString(description);
   if (*version != '\0')
     entry->version=ConstantString(version);
@@ -1551,7 +1551,7 @@ ModuleExport size_t RegisterJPEGImage(void)
   entry->encoder=(EncodeImageHandler *) WriteJPEGImage;
 #endif
   entry->magick=(IsImageFormatHandler *) IsJPEG;
-  entry->adjoin=MagickFalse;
+  entry->flags^=Adjoin;
   entry->description=ConstantString(description);
   if (*version != '\0')
     entry->version=ConstantString(version);
@@ -1566,7 +1566,7 @@ ModuleExport size_t RegisterJPEGImage(void)
   entry->decoder=(DecodeImageHandler *) ReadJPEGImage;
   entry->encoder=(EncodeImageHandler *) WriteJPEGImage;
 #endif
-  entry->adjoin=MagickFalse;
+  entry->flags^=Adjoin;
   entry->description=ConstantString(description);
   if (*version != '\0')
     entry->version=ConstantString(version);
@@ -1581,7 +1581,7 @@ ModuleExport size_t RegisterJPEGImage(void)
   entry->decoder=(DecodeImageHandler *) ReadJPEGImage;
   entry->encoder=(EncodeImageHandler *) WriteJPEGImage;
 #endif
-  entry->adjoin=MagickFalse;
+  entry->flags^=Adjoin;
   entry->description=ConstantString(description);
   if (*version != '\0')
     entry->version=ConstantString(version);
@@ -1596,7 +1596,7 @@ ModuleExport size_t RegisterJPEGImage(void)
   entry->decoder=(DecodeImageHandler *) ReadJPEGImage;
   entry->encoder=(EncodeImageHandler *) WriteJPEGImage;
 #endif
-  entry->adjoin=MagickFalse;
+  entry->flags^=Adjoin;
   entry->description=ConstantString(description);
   if (*version != '\0')
     entry->version=ConstantString(version);

@@ -333,7 +333,7 @@ ModuleExport size_t RegisterTTFImage(void)
   entry->decoder=(DecodeImageHandler *) ReadTTFImage;
 #endif
   entry->magick=(IsImageFormatHandler *) IsTTF;
-  entry->adjoin=MagickFalse;
+  entry->flags^=Adjoin;
   entry->description=ConstantString("Multi-face font package");
   if (*version != '\0')
     entry->version=ConstantString(version);
@@ -344,7 +344,7 @@ ModuleExport size_t RegisterTTFImage(void)
   entry->decoder=(DecodeImageHandler *) ReadTTFImage;
 #endif
   entry->magick=(IsImageFormatHandler *) IsPFA;
-  entry->adjoin=MagickFalse;
+  entry->flags^=Adjoin;
   entry->description=ConstantString("Postscript Type 1 font (ASCII)");
   if (*version != '\0')
     entry->version=ConstantString(version);
@@ -355,7 +355,7 @@ ModuleExport size_t RegisterTTFImage(void)
   entry->decoder=(DecodeImageHandler *) ReadTTFImage;
 #endif
   entry->magick=(IsImageFormatHandler *) IsPFA;
-  entry->adjoin=MagickFalse;
+  entry->flags^=Adjoin;
   entry->description=ConstantString("Postscript Type 1 font (binary)");
   if (*version != '\0')
     entry->version=ConstantString(version);
@@ -366,7 +366,7 @@ ModuleExport size_t RegisterTTFImage(void)
   entry->decoder=(DecodeImageHandler *) ReadTTFImage;
 #endif
   entry->magick=(IsImageFormatHandler *) IsTTF;
-  entry->adjoin=MagickFalse;
+  entry->flags^=Adjoin;
   entry->description=ConstantString("Open Type font");
   if (*version != '\0')
     entry->version=ConstantString(version);
@@ -377,7 +377,7 @@ ModuleExport size_t RegisterTTFImage(void)
   entry->decoder=(DecodeImageHandler *) ReadTTFImage;
 #endif
   entry->magick=(IsImageFormatHandler *) IsTTF;
-  entry->adjoin=MagickFalse;
+  entry->flags^=Adjoin;
   entry->description=ConstantString("TrueType font collection");
   if (*version != '\0')
     entry->version=ConstantString(version);
@@ -388,7 +388,7 @@ ModuleExport size_t RegisterTTFImage(void)
   entry->decoder=(DecodeImageHandler *) ReadTTFImage;
 #endif
   entry->magick=(IsImageFormatHandler *) IsTTF;
-  entry->adjoin=MagickFalse;
+  entry->flags^=Adjoin;
   entry->description=ConstantString("TrueType font");
   if (*version != '\0')
     entry->version=ConstantString(version);

@@ -210,7 +210,7 @@ ModuleExport size_t RegisterHRZImage(void)
   entry=SetMagickInfo("HRZ");
   entry->decoder=(DecodeImageHandler *) ReadHRZImage;
   entry->encoder=(EncodeImageHandler *) WriteHRZImage;
-  entry->adjoin=MagickFalse;
+  entry->flags^=Adjoin;
   entry->description=ConstantString("Slow Scan TeleVision");
   entry->module=ConstantString("HRZ");
   (void) RegisterMagickInfo(entry);

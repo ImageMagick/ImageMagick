@@ -69,13 +69,14 @@ namespace Magick
     bool unregister(void) const;
 
   private:
+    bool             _decoderThreadSupport;
     std::string      _description;
+    bool             _encoderThreadSupport;
     bool             _isMultiFrame;
     bool             _isReadable;
     bool             _isWritable;
     std::string      _mimeType;
     std::string      _name;
-    MagickStatusType _threadSupport;
   };
 
 } // namespace Magick

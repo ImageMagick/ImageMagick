@@ -293,9 +293,9 @@ ModuleExport size_t RegisterEXRImage(void)
   entry->encoder=(EncodeImageHandler *) WriteEXRImage;
 #endif
   entry->magick=(IsImageFormatHandler *) IsEXR;
-  entry->adjoin=MagickFalse;
+  entry->flags^=Adjoin;
   entry->description=ConstantString("High Dynamic-range (HDR)");
-  entry->blob_support=MagickFalse;
+  entry->flags^=BlobSupport;
   entry->module=ConstantString("EXR");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);

@@ -196,10 +196,10 @@ ModuleExport size_t RegisterHALDImage(void)
 
   entry=SetMagickInfo("HALD");
   entry->decoder=(DecodeImageHandler *) ReadHALDImage;
-  entry->adjoin=MagickFalse;
+  entry->flags^=Adjoin;
   entry->format_type=ImplicitFormatType;
-  entry->raw=MagickTrue;
-  entry->endian_support=MagickTrue;
+  entry->flags|=RawSupport;
+  entry->flags|=EndianSupport;
   entry->description=ConstantString("Identity Hald color lookup table image");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);

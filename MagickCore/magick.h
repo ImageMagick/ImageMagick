@@ -34,10 +34,16 @@ typedef enum
 
 typedef enum
 {
-  NoThreadSupport = 0x0000,
-  DecoderThreadSupport = 0x0001,
-  EncoderThreadSupport = 0x0002
-} MagickThreadSupport;
+  NoFlag = 0x0000,
+  Adjoin = 0x0001,
+  BlobSupport = 0x0002,
+  DecoderThreadSupport = 0x0004,
+  EncoderThreadSupport = 0x0008,
+  EndianSupport = 0x0010,
+  RawSupport = 0x0020,
+  SeekableStream = 0x0040,
+  Stealth = 0x0080
+} MagickFlagType;
 
 typedef Image
   *DecodeImageHandler(const ImageInfo *,ExceptionInfo *);
@@ -58,42 +64,32 @@ typedef struct _MagickInfo
     *note,
     *module;
 
-  ImageInfo
-    *image_info;
-
   DecodeImageHandler
     *decoder;
 
   EncodeImageHandler
     *encoder;
 
+  ImageInfo
+    *image_info;
+
   IsImageFormatHandler
     *magick;
-
-  void
-    *client_data;
-
-  MagickBooleanType
-    adjoin,
-    raw,
-    endian_support,
-    blob_support,
-    seekable_stream;
 
   MagickFormatType
     format_type;
 
   MagickStatusType
-    thread_support;
-
-  MagickBooleanType
-    stealth;
+    flags;
 
   SemaphoreInfo
     *semaphore;
 
   size_t
     signature;
+
+  void
+    *client_data;
 } MagickInfo;
 
 extern MagickExport char
@@ -117,9 +113,12 @@ extern MagickExport MagickBooleanType
   GetImageMagick(const unsigned char *,const size_t,char *),
   GetMagickAdjoin(const MagickInfo *),
   GetMagickBlobSupport(const MagickInfo *),
+  GetMagickDecoderThreadSupport(const MagickInfo *),
+  GetMagickEncoderThreadSupport(const MagickInfo *),
   GetMagickEndianSupport(const MagickInfo *),
   GetMagickRawSupport(const MagickInfo *),
   GetMagickSeekableStream(const MagickInfo *),
+  GetMagickStealth(const MagickInfo *),
   IsMagickCoreInstantiated(void),
   UnregisterMagickInfo(const char *);
 
@@ -130,9 +129,6 @@ extern const MagickExport MagickInfo
 extern MagickExport MagickInfo
   *RegisterMagickInfo(MagickInfo *),
   *SetMagickInfo(const char *);
-
-extern MagickExport MagickStatusType
-  GetMagickThreadSupport(const MagickInfo *);
 
 extern MagickExport void
   MagickCoreGenesis(const char *,const MagickBooleanType),

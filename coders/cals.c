@@ -327,7 +327,7 @@ ModuleExport size_t RegisterCALSImage(void)
 #if defined(MAGICKCORE_TIFF_DELEGATE)
   entry->encoder=(EncodeImageHandler *) WriteCALSImage;
 #endif
-  entry->adjoin=MagickFalse;
+  entry->flags^=Adjoin;
   entry->magick=(IsImageFormatHandler *) IsCALS;
   entry->description=ConstantString(CALSDescription);
   entry->note=ConstantString(CALSNote);
@@ -338,7 +338,7 @@ ModuleExport size_t RegisterCALSImage(void)
 #if defined(MAGICKCORE_TIFF_DELEGATE)
   entry->encoder=(EncodeImageHandler *) WriteCALSImage;
 #endif
-  entry->adjoin=MagickFalse;
+  entry->flags^=Adjoin;
   entry->magick=(IsImageFormatHandler *) IsCALS;
   entry->description=ConstantString(CALSDescription);
   entry->note=ConstantString(CALSNote);

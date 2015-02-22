@@ -817,7 +817,7 @@ ModuleExport size_t RegisterEMFImage(void)
   entry->description=ConstantString(
     "Windows Enhanced Meta File");
   entry->magick=(IsImageFormatHandler *) IsEMF;
-  entry->blob_support=MagickFalse;
+  entry->flags^=BlobSupport;
   entry->module=ConstantString("WMF");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("WMF");
@@ -826,7 +826,7 @@ ModuleExport size_t RegisterEMFImage(void)
 #endif
   entry->description=ConstantString("Windows Meta File");
   entry->magick=(IsImageFormatHandler *) IsWMF;
-  entry->blob_support=MagickFalse;
+  entry->flags^=BlobSupport;
   entry->module=ConstantString("WMF");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
