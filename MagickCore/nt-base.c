@@ -2621,7 +2621,6 @@ MagickPrivate void NTWarningHandler(const ExceptionType severity,
 static void NTUncaughtException()
 {
   AsynchronousResourceComponentTerminus();
-  Exit(0);
 }
 
 MagickPrivate void NTWindowsGenesis(void)
