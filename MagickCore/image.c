@@ -2630,9 +2630,21 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
       if ((magic_info != (const MagicInfo *) NULL) &&
           (GetMagicName(magic_info) != (char *) NULL))
         {
-          (void) CopyMagickString(image_info->magick,GetMagicName(magic_info),
-            MaxTextExtent);
-          magick_info=GetMagickInfo(image_info->magick,sans_exception);
+          /*
+            Try to use magick_info that was determined earlier by the extension
+          */
+          if ((magick_info != (const MagickInfo *) NULL) &&
+              (GetMagickUseExtension(magick_info) != MagickFalse) &&
+              (LocaleCompare(magick_info->module,GetMagicName(
+                magic_info)) == 0))
+            (void) CopyMagickString(image_info->magick,magick_info->name,
+              MaxTextExtent);
+          else
+            {
+              (void) CopyMagickString(image_info->magick,GetMagicName(
+                magic_info),MaxTextExtent);
+              magick_info=GetMagickInfo(image_info->magick,sans_exception);
+            }
           if ((magick_info == (const MagickInfo *) NULL) ||
               (GetMagickEndianSupport(magick_info) == MagickFalse))
             image_info->endian=UndefinedEndian;
