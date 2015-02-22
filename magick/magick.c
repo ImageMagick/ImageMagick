@@ -1197,7 +1197,7 @@ static void MagickSignalHandler(int signal_number)
   if (signal_number == SIGHUP)
     exit(signal_number);
 #endif
-#if defined(SIGINT) && !defined(MAGICKCORE_WINDOWS_SUPPORT)
+#if defined(SIGINT)
   if (signal_number == SIGINT)
     exit(signal_number);
 #endif
