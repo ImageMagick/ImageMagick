@@ -63,7 +63,7 @@ Magick::CoderInfo::CoderInfo(const std::string &name_)
       _decoderThreadSupport=(GetMagickDecoderThreadSupport(magickInfo) ==
         MagickTrue) ? true : false;
       _description=string(magickInfo->description);
-      _decoderThreadSupport=(GetMagickEncoderThreadSupport(magickInfo) ==
+      _encoderThreadSupport=(GetMagickEncoderThreadSupport(magickInfo) ==
         MagickTrue) ? true : false;
       _isMultiFrame=(GetMagickAdjoin(magickInfo) == MagickTrue) ? true : false;
       _isReadable=((magickInfo->decoder == (MagickCore::DecodeImageHandler *)
