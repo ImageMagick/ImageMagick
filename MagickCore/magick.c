@@ -848,6 +848,39 @@ MagickExport MagickBooleanType GetMagickStealth(const MagickInfo *magick_info)
   assert(magick_info->signature == MagickSignature);
   return(((magick_info->flags & Stealth) == 0) ? MagickFalse : MagickTrue);
 }
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   G e t M a g i c k U s e E x t e n s i o n                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetMagickUseExtension() returns MagickTrue if the magick can use the
+%  extension of the format if the format return by IsImageFormatHandler uses
+%  the same coder.
+%
+%  The format of the GetMagickUseExtension method is:
+%
+%      MagickBooleanType GetMagickUseExtension(const MagickInfo *magick_info)
+%
+%  A description of each parameter follows:
+%
+%    o magick_info:  The magick info.
+%
+*/
+MagickExport MagickBooleanType GetMagickUseExtension(
+  const MagickInfo *magick_info)
+{
+  assert(magick_info != (MagickInfo *) NULL);
+  assert(magick_info->signature == MagickSignature);
+  return(((magick_info->flags & UseExtension) == 0) ? MagickFalse :
+    MagickTrue);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1558,7 +1591,7 @@ MagickExport MagickInfo *SetMagickInfo(const char *name)
   (void) ResetMagickMemory(magick_info,0,sizeof(*magick_info));
   magick_info->name=ConstantString(name);
   magick_info->flags=Adjoin | BlobSupport | DecoderThreadSupport |
-    EncoderThreadSupport;
+    EncoderThreadSupport | UseExtension;
   magick_info->signature=MagickSignature;
   return(magick_info);
 }

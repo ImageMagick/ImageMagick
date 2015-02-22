@@ -42,7 +42,8 @@ typedef enum
   EndianSupport = 0x0010,
   RawSupport = 0x0020,
   SeekableStream = 0x0040,
-  Stealth = 0x0080
+  Stealth = 0x0080,
+  UseExtension = 0x0100
 } MagickFlagType;
 
 typedef Image
@@ -119,6 +120,7 @@ extern MagickExport MagickBooleanType
   GetMagickRawSupport(const MagickInfo *),
   GetMagickSeekableStream(const MagickInfo *),
   GetMagickStealth(const MagickInfo *),
+  GetMagickUseExtension(const MagickInfo *),
   IsMagickCoreInstantiated(void),
   UnregisterMagickInfo(const char *);
 
