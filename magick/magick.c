@@ -1297,7 +1297,7 @@ MagickExport void MagickCoreGenesis(const char *path,
       if (signal_handlers[SIGHUP] == (SignalHandler *) NULL)
         signal_handlers[SIGHUP]=RegisterMagickSignalHandler(SIGHUP);
 #endif
-#if defined(SIGINT) && !defined(MAGICKCORE_WINDOWS_SUPPORT)
+#if defined(SIGINT)
       if (signal_handlers[SIGINT] == (SignalHandler *) NULL)
         signal_handlers[SIGINT]=RegisterMagickSignalHandler(SIGINT);
 #endif
