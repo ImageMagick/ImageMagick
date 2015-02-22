@@ -98,7 +98,7 @@ ModuleExport size_t RegisterUILImage(void)
 
   entry=SetMagickInfo("UIL");
   entry->encoder=(EncodeImageHandler *) WriteUILImage;
-  entry->flags^=Adjoin;
+  entry->flags^=CoderAdjoinFlag;
   entry->description=ConstantString("X-Motif UIL table");
   entry->module=ConstantString("UIL");
   (void) RegisterMagickInfo(entry);

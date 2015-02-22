@@ -250,8 +250,8 @@ ModuleExport size_t RegisterMVGImage(void)
   entry->decoder=(DecodeImageHandler *) ReadMVGImage;
   entry->encoder=(EncodeImageHandler *) WriteMVGImage;
   entry->magick=(IsImageFormatHandler *) IsMVG;
-  entry->flags^=Adjoin;
-  entry->flags|=SeekableStream;
+  entry->flags^=CoderAdjoinFlag;
+  entry->flags|=CoderSeekableStreamFlag;
   entry->description=ConstantString("Magick Vector Graphics");
   entry->module=ConstantString("MVG");
   (void) RegisterMagickInfo(entry);

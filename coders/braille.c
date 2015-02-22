@@ -98,19 +98,19 @@ ModuleExport size_t RegisterBRAILLEImage(void)
 
   entry=SetMagickInfo("BRF");
   entry->encoder=(EncodeImageHandler *) WriteBRAILLEImage;
-  entry->flags^=Adjoin;
+  entry->flags^=CoderAdjoinFlag;
   entry->description=AcquireString("BRF ASCII Braille format");
   entry->module=AcquireString("BRAILLE");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("UBRL");
   entry->encoder=(EncodeImageHandler *) WriteBRAILLEImage;
-  entry->flags^=Adjoin;
+  entry->flags^=CoderAdjoinFlag;
   entry->description=AcquireString("Unicode Text format");
   entry->module=AcquireString("BRAILLE");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("ISOBRL");
   entry->encoder=(EncodeImageHandler *) WriteBRAILLEImage;
-  entry->flags^=Adjoin;
+  entry->flags^=CoderAdjoinFlag;
   entry->description=AcquireString("ISO/TR 11548-1 format");
   entry->module=AcquireString("BRAILLE");
   (void) RegisterMagickInfo(entry);

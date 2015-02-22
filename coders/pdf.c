@@ -865,9 +865,9 @@ ModuleExport size_t RegisterPDFImage(void)
   entry=SetMagickInfo("AI");
   entry->decoder=(DecodeImageHandler *) ReadPDFImage;
   entry->encoder=(EncodeImageHandler *) WritePDFImage;
-  entry->flags^=Adjoin;
-  entry->flags^=BlobSupport;
-  entry->flags|=SeekableStream;
+  entry->flags^=CoderAdjoinFlag;
+  entry->flags^=CoderBlobSupportFlag;
+  entry->flags|=CoderSeekableStreamFlag;
   entry->description=ConstantString("Adobe Illustrator CS2");
   entry->mime_type=ConstantString("application/pdf");
   entry->module=ConstantString("PDF");
@@ -875,9 +875,9 @@ ModuleExport size_t RegisterPDFImage(void)
   entry=SetMagickInfo("EPDF");
   entry->decoder=(DecodeImageHandler *) ReadPDFImage;
   entry->encoder=(EncodeImageHandler *) WritePDFImage;
-  entry->flags^=Adjoin;
-  entry->flags^=BlobSupport;
-  entry->flags|=SeekableStream;
+  entry->flags^=CoderAdjoinFlag;
+  entry->flags^=CoderBlobSupportFlag;
+  entry->flags|=CoderSeekableStreamFlag;
   entry->description=ConstantString("Encapsulated Portable Document Format");
   entry->mime_type=ConstantString("application/pdf");
   entry->module=ConstantString("PDF");
@@ -886,8 +886,8 @@ ModuleExport size_t RegisterPDFImage(void)
   entry->decoder=(DecodeImageHandler *) ReadPDFImage;
   entry->encoder=(EncodeImageHandler *) WritePDFImage;
   entry->magick=(IsImageFormatHandler *) IsPDF;
-  entry->flags^=BlobSupport;
-  entry->flags|=SeekableStream;
+  entry->flags^=CoderBlobSupportFlag;
+  entry->flags|=CoderSeekableStreamFlag;
   entry->description=ConstantString("Portable Document Format");
   entry->mime_type=ConstantString("application/pdf");
   entry->module=ConstantString("PDF");
@@ -896,8 +896,8 @@ ModuleExport size_t RegisterPDFImage(void)
   entry->decoder=(DecodeImageHandler *) ReadPDFImage;
   entry->encoder=(EncodeImageHandler *) WritePDFImage;
   entry->magick=(IsImageFormatHandler *) IsPDF;
-  entry->flags^=BlobSupport;
-  entry->flags|=SeekableStream;
+  entry->flags^=CoderBlobSupportFlag;
+  entry->flags|=CoderSeekableStreamFlag;
   entry->description=ConstantString("Portable Document Archive Format");
   entry->mime_type=ConstantString("application/pdf");
   entry->module=ConstantString("PDF");

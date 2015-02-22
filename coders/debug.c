@@ -104,8 +104,8 @@ ModuleExport size_t RegisterDEBUGImage(void)
 
   entry=SetMagickInfo("DEBUG");
   entry->encoder=(EncodeImageHandler *) WriteDEBUGImage;
-  entry->flags|=RawSupport;
-  entry->flags|=Stealth;
+  entry->flags|=CoderRawSupportFlag;
+  entry->flags|=CoderStealthFlag;
   entry->description=ConstantString("Image pixel values for debugging");
   entry->module=ConstantString("DEBUG");
   (void) RegisterMagickInfo(entry);

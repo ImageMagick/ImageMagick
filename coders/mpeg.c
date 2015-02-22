@@ -243,7 +243,7 @@ ModuleExport size_t RegisterMPEGImage(void)
   entry=SetMagickInfo("AVI");
   entry->decoder=(DecodeImageHandler *) ReadMPEGImage;
   entry->magick=(IsImageFormatHandler *) IsAVI;
-  entry->flags^=BlobSupport;
+  entry->flags^=CoderBlobSupportFlag;
   entry->description=ConstantString("Microsoft Audio/Visual Interleaved");
   entry->module=ConstantString("MPEG");
   (void) RegisterMagickInfo(entry);
@@ -251,7 +251,7 @@ ModuleExport size_t RegisterMPEGImage(void)
   entry->decoder=(DecodeImageHandler *) ReadMPEGImage;
   entry->encoder=(EncodeImageHandler *) WriteMPEGImage;
   entry->magick=(IsImageFormatHandler *) IsMPEG;
-  entry->flags^=BlobSupport;
+  entry->flags^=CoderBlobSupportFlag;
   entry->description=ConstantString("MPEG Video Stream");
   entry->module=ConstantString("MPEG");
   (void) RegisterMagickInfo(entry);
@@ -259,7 +259,7 @@ ModuleExport size_t RegisterMPEGImage(void)
   entry->decoder=(DecodeImageHandler *) ReadMPEGImage;
   entry->encoder=(EncodeImageHandler *) WriteMPEGImage;
   entry->magick=(IsImageFormatHandler *) IsMPEG;
-  entry->flags^=BlobSupport;
+  entry->flags^=CoderBlobSupportFlag;
   entry->description=ConstantString("MPEG Video Stream");
   entry->module=ConstantString("MPEG");
   (void) RegisterMagickInfo(entry);
@@ -267,7 +267,7 @@ ModuleExport size_t RegisterMPEGImage(void)
   entry->decoder=(DecodeImageHandler *) ReadMPEGImage;
   entry->encoder=(EncodeImageHandler *) WriteMPEGImage;
   entry->magick=(IsImageFormatHandler *) IsMPEG;
-  entry->flags^=BlobSupport;
+  entry->flags^=CoderBlobSupportFlag;
   entry->description=ConstantString("MPEG Video Stream");
   entry->module=ConstantString("MPEG");
   (void) RegisterMagickInfo(entry);
@@ -275,7 +275,7 @@ ModuleExport size_t RegisterMPEGImage(void)
   entry->decoder=(DecodeImageHandler *) ReadMPEGImage;
   entry->encoder=(EncodeImageHandler *) WriteMPEGImage;
   entry->magick=(IsImageFormatHandler *) IsMPEG;
-  entry->flags^=BlobSupport;
+  entry->flags^=CoderBlobSupportFlag;
   entry->description=ConstantString("MPEG-4 Video Stream");
   entry->module=ConstantString("MPEG");
   (void) RegisterMagickInfo(entry);
@@ -283,7 +283,7 @@ ModuleExport size_t RegisterMPEGImage(void)
   entry->decoder=(DecodeImageHandler *) ReadMPEGImage;
   entry->encoder=(EncodeImageHandler *) WriteMPEGImage;
   entry->magick=(IsImageFormatHandler *) IsMPEG;
-  entry->flags^=BlobSupport;
+  entry->flags^=CoderBlobSupportFlag;
   entry->description=ConstantString("MPEG Video Stream");
   entry->module=ConstantString("MPEG");
   (void) RegisterMagickInfo(entry);
@@ -291,7 +291,7 @@ ModuleExport size_t RegisterMPEGImage(void)
   entry->decoder=(DecodeImageHandler *) ReadMPEGImage;
   entry->encoder=(EncodeImageHandler *) WriteMPEGImage;
   entry->magick=(IsImageFormatHandler *) IsMPEG;
-  entry->flags^=BlobSupport;
+  entry->flags^=CoderBlobSupportFlag;
   entry->description=ConstantString("Raw MPEG-4 Video");
   entry->module=ConstantString("MPEG");
   (void) RegisterMagickInfo(entry);
@@ -299,7 +299,7 @@ ModuleExport size_t RegisterMPEGImage(void)
   entry->decoder=(DecodeImageHandler *) ReadMPEGImage;
   entry->encoder=(EncodeImageHandler *) WriteMPEGImage;
   entry->magick=(IsImageFormatHandler *) IsMPEG;
-  entry->flags^=BlobSupport;
+  entry->flags^=CoderBlobSupportFlag;
   entry->description=ConstantString("Windows Media Video");
   entry->module=ConstantString("MPEG");
   (void) RegisterMagickInfo(entry);

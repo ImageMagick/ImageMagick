@@ -224,9 +224,9 @@ ModuleExport size_t RegisterMONOImage(void)
   entry=SetMagickInfo("MONO");
   entry->decoder=(DecodeImageHandler *) ReadMONOImage;
   entry->encoder=(EncodeImageHandler *) WriteMONOImage;
-  entry->flags|=RawSupport;
-  entry->flags|=EndianSupport;
-  entry->flags^=Adjoin;
+  entry->flags|=CoderRawSupportFlag;
+  entry->flags|=CoderEndianSupportFlag;
+  entry->flags^=CoderAdjoinFlag;
   entry->description=ConstantString("Raw bi-level bitmap");
   entry->module=ConstantString("MONO");
   (void) RegisterMagickInfo(entry);

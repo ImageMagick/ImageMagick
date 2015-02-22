@@ -951,8 +951,8 @@ ModuleExport size_t RegisterDJVUImage(void)
   entry->decoder=(DecodeImageHandler *) ReadDJVUImage;
 #endif
   entry->magick=(IsImageFormatHandler *) IsDJVU;
-  entry->flags|=RawSupport;
-  entry->flags^=Adjoin;
+  entry->flags|=CoderRawSupportFlag;
+  entry->flags^=CoderAdjoinFlag;
   entry->description=AcquireString("Déjà vu");
   entry->module=AcquireString("DJVU");
   if (*version != '\0')

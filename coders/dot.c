@@ -197,7 +197,7 @@ ModuleExport size_t RegisterDOTImage(void)
 #if defined(MAGICKCORE_GVC_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadDOTImage;
 #endif
-  entry->flags^=BlobSupport;
+  entry->flags^=CoderBlobSupportFlag;
   entry->description=ConstantString("Graphviz");
   entry->module=ConstantString("DOT");
   (void) RegisterMagickInfo(entry);
@@ -205,7 +205,7 @@ ModuleExport size_t RegisterDOTImage(void)
 #if defined(MAGICKCORE_GVC_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadDOTImage;
 #endif
-  entry->flags^=BlobSupport;
+  entry->flags^=CoderBlobSupportFlag;
   entry->description=ConstantString("Graphviz");
   entry->module=ConstantString("DOT");
   (void) RegisterMagickInfo(entry);

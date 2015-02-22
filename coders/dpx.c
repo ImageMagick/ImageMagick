@@ -1332,8 +1332,8 @@ ModuleExport size_t RegisterDPXImage(void)
   entry->decoder=(DecodeImageHandler *) ReadDPXImage;
   entry->encoder=(EncodeImageHandler *) WriteDPXImage;
   entry->magick=(IsImageFormatHandler *) IsDPX;
-  entry->flags^=Adjoin;
-  entry->flags|=SeekableStream;
+  entry->flags^=CoderAdjoinFlag;
+  entry->flags|=CoderSeekableStreamFlag;
   entry->description=ConstantString("SMPTE 268M-2003 (DPX 2.0)");
   entry->note=ConstantString(DPXNote);
   entry->module=ConstantString("DPX");

@@ -1411,7 +1411,7 @@ ModuleExport size_t RegisterGIFImage(void)
   entry->decoder=(DecodeImageHandler *) ReadGIFImage;
   entry->encoder=(EncodeImageHandler *) WriteGIFImage;
   entry->magick=(IsImageFormatHandler *) IsGIF;
-  entry->flags^=Adjoin;
+  entry->flags^=CoderAdjoinFlag;
   entry->description=ConstantString("CompuServe graphics interchange format");
   entry->version=ConstantString("version 87a");
   entry->mime_type=ConstantString("image/gif");

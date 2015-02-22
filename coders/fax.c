@@ -240,7 +240,7 @@ ModuleExport size_t RegisterFAXImage(void)
   entry->decoder=(DecodeImageHandler *) ReadFAXImage;
   entry->encoder=(EncodeImageHandler *) WriteFAXImage;
   entry->magick=(IsImageFormatHandler *) IsFAX;
-  entry->flags^=Adjoin;
+  entry->flags^=CoderAdjoinFlag;
   entry->description=ConstantString("Group 3 FAX");
   entry->module=ConstantString("FAX");
   (void) RegisterMagickInfo(entry);

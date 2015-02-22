@@ -111,7 +111,7 @@ ModuleExport size_t RegisterJSONImage(void)
 
   entry=SetMagickInfo("JSON");
   entry->encoder=(EncodeImageHandler *) WriteJSONImage;
-  entry->flags^=BlobSupport;
+  entry->flags^=CoderBlobSupportFlag;
   entry->description=ConstantString("The image format and characteristics");
   entry->module=ConstantString("JSON");
   (void) RegisterMagickInfo(entry);

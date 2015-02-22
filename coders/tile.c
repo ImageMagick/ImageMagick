@@ -169,8 +169,8 @@ ModuleExport size_t RegisterTILEImage(void)
 
   entry=SetMagickInfo("TILE");
   entry->decoder=(DecodeImageHandler *) ReadTILEImage;
-  entry->flags|=RawSupport;
-  entry->flags|=EndianSupport;
+  entry->flags|=CoderRawSupportFlag;
+  entry->flags|=CoderEndianSupportFlag;
   entry->format_type=ImplicitFormatType;
   entry->description=ConstantString("Tile image with a texture");
   entry->module=ConstantString("TILE");

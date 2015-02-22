@@ -283,9 +283,9 @@ ModuleExport size_t RegisterEPTImage(void)
   entry->decoder=(DecodeImageHandler *) ReadEPTImage;
   entry->encoder=(EncodeImageHandler *) WriteEPTImage;
   entry->magick=(IsImageFormatHandler *) IsEPT;
-  entry->flags|=SeekableStream;
-  entry->flags^=Adjoin;
-  entry->flags^=BlobSupport;
+  entry->flags|=CoderSeekableStreamFlag;
+  entry->flags^=CoderAdjoinFlag;
+  entry->flags^=CoderBlobSupportFlag;
   entry->description=ConstantString(
     "Encapsulated PostScript with TIFF preview");
   entry->module=ConstantString("EPT");
@@ -294,9 +294,9 @@ ModuleExport size_t RegisterEPTImage(void)
   entry->decoder=(DecodeImageHandler *) ReadEPTImage;
   entry->encoder=(EncodeImageHandler *) WriteEPTImage;
   entry->magick=(IsImageFormatHandler *) IsEPT;
-  entry->flags^=Adjoin;
-  entry->flags|=SeekableStream;
-  entry->flags^=BlobSupport;
+  entry->flags^=CoderAdjoinFlag;
+  entry->flags|=CoderSeekableStreamFlag;
+  entry->flags^=CoderBlobSupportFlag;
   entry->description=ConstantString(
     "Encapsulated PostScript Level II with TIFF preview");
   entry->module=ConstantString("EPT");
@@ -305,8 +305,8 @@ ModuleExport size_t RegisterEPTImage(void)
   entry->decoder=(DecodeImageHandler *) ReadEPTImage;
   entry->encoder=(EncodeImageHandler *) WriteEPTImage;
   entry->magick=(IsImageFormatHandler *) IsEPT;
-  entry->flags|=SeekableStream;
-  entry->flags^=BlobSupport;
+  entry->flags|=CoderSeekableStreamFlag;
+  entry->flags^=CoderBlobSupportFlag;
   entry->description=ConstantString(
     "Encapsulated PostScript Level III with TIFF preview");
   entry->module=ConstantString("EPT");

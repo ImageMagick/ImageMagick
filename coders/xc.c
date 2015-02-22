@@ -188,19 +188,19 @@ ModuleExport size_t RegisterXCImage(void)
 
   entry=SetMagickInfo("XC");
   entry->decoder=(DecodeImageHandler *) ReadXCImage;
-  entry->flags^=Adjoin;
+  entry->flags^=CoderAdjoinFlag;
   entry->format_type=ImplicitFormatType;
-  entry->flags|=RawSupport;
-  entry->flags|=EndianSupport;
+  entry->flags|=CoderRawSupportFlag;
+  entry->flags|=CoderEndianSupportFlag;
   entry->description=ConstantString("Constant image uniform color");
   entry->module=ConstantString("XC");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("CANVAS");
   entry->decoder=(DecodeImageHandler *) ReadXCImage;
-  entry->flags^=Adjoin;
+  entry->flags^=CoderAdjoinFlag;
   entry->format_type=ImplicitFormatType;
-  entry->flags|=RawSupport;
-  entry->flags|=EndianSupport;
+  entry->flags|=CoderRawSupportFlag;
+  entry->flags|=CoderEndianSupportFlag;
   entry->description=ConstantString("Constant image uniform color");
   entry->module=ConstantString("XC");
   (void) RegisterMagickInfo(entry);

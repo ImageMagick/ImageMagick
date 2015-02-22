@@ -497,9 +497,9 @@ ModuleExport size_t RegisterFPXImage(void)
   entry->decoder=(DecodeImageHandler *) ReadFPXImage;
   entry->encoder=(EncodeImageHandler *) WriteFPXImage;
 #endif
-  entry->flags^=Adjoin;
-  entry->flags|=SeekableStream;
-  entry->flags^=BlobSupport;
+  entry->flags^=CoderAdjoinFlag;
+  entry->flags|=CoderSeekableStreamFlag;
+  entry->flags^=CoderBlobSupportFlag;
   entry->description=ConstantString("FlashPix Format");
   entry->module=ConstantString("FPX");
   (void) RegisterMagickInfo(entry);

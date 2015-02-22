@@ -311,7 +311,7 @@ ModuleExport size_t RegisterJBIGImage(void)
   entry->decoder=(DecodeImageHandler *) ReadJBIGImage;
   entry->encoder=(EncodeImageHandler *) WriteJBIGImage;
 #endif
-  entry->flags^=Adjoin;
+  entry->flags^=CoderAdjoinFlag;
   entry->description=ConstantString(JBIGDescription);
   if (*version != '\0')
     entry->version=ConstantString(version);

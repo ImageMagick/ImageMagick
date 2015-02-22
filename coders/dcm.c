@@ -4145,8 +4145,8 @@ ModuleExport size_t RegisterDCMImage(void)
   entry=SetMagickInfo("DCM");
   entry->decoder=(DecodeImageHandler *) ReadDCMImage;
   entry->magick=(IsImageFormatHandler *) IsDCM;
-  entry->flags^=Adjoin;
-  entry->flags|=SeekableStream;
+  entry->flags^=CoderAdjoinFlag;
+  entry->flags|=CoderSeekableStreamFlag;
   entry->description=ConstantString(
     "Digital Imaging and Communications in Medicine image");
   entry->note=ConstantString(DCMNote);

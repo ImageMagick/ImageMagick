@@ -425,8 +425,8 @@ ModuleExport size_t RegisterRLAImage(void)
 
   entry=SetMagickInfo("RLA");
   entry->decoder=(DecodeImageHandler *) ReadRLAImage;
-  entry->flags^=Adjoin;
-  entry->flags|=SeekableStream;
+  entry->flags^=CoderAdjoinFlag;
+  entry->flags|=CoderSeekableStreamFlag;
   entry->description=ConstantString("Alias/Wavefront image");
   entry->module=ConstantString("RLA");
   (void) RegisterMagickInfo(entry);
