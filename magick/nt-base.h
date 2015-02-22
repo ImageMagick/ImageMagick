@@ -248,6 +248,9 @@ extern "C" {
 #if !defined(tempnam)
 #  define tempnam  _tempnam_s
 #endif
+#if !defined(unlink)
+#  define unlink  _unlink
+#endif
 #if !defined(vfprintf_l)
 #define vfprintf_l  _vfprintf_l
 #endif
