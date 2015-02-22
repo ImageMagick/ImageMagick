@@ -30,8 +30,6 @@ extern MagickExport Image
     ExceptionInfo *);
 
 extern MagickExport void
-  ScaleKernelInfo(KernelInfo *,const double,const GeometryFlags),
-  UnityAddKernelInfo(KernelInfo *,const double),
   ZeroKernelNans(KernelInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
