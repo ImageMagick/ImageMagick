@@ -4692,7 +4692,7 @@ MagickExport void ScaleGeometryKernelInfo (KernelInfo *kernel,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%     S c a l e K e r n e l I n f o                                           %
++     S c a l e K e r n e l I n f o                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -4897,7 +4897,7 @@ MagickExport void ShowKernelInfo(const KernelInfo *kernel)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%     U n i t y A d d K e r n a l I n f o                                     %
++     U n i t y A d d K e r n a l I n f o                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
