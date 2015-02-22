@@ -10326,7 +10326,7 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
     }
   magick_info=GetMagickInfo(image_info->magick,exception);
   if ((magick_info != (const MagickInfo *) NULL) &&
-      IfMagickTrue(magick_info->raw))
+      GetMagickRawSupport(magick_info) == MagickTrue)
     {
       char
         geometry[MaxTextExtent];
