@@ -2502,6 +2502,10 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
         Look for explicit image formats.
       */
       format_type=UndefinedFormatType;
+      magick_info=GetMagickInfo(magic,sans_exception);
+      if ((magick_info != (const MagickInfo *) NULL) &&
+          (magick_info->format_type != UndefinedFormatType))
+        format_type=magick_info->format_type;
       i=0;
       while ((format_type == UndefinedFormatType) &&
              (format_type_formats[i] != (char *) NULL))
@@ -2511,10 +2515,6 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
           format_type=ExplicitFormatType;
         i++;
       }
-      magick_info=GetMagickInfo(magic,sans_exception);
-      if ((magick_info != (const MagickInfo *) NULL) &&
-          (magick_info->format_type != UndefinedFormatType))
-        format_type=magick_info->format_type;
       if (format_type == UndefinedFormatType)
         (void) CopyMagickString(image_info->magick,magic,MaxTextExtent);
       else
