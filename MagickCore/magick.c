@@ -282,7 +282,8 @@ MagickExport MagickBooleanType GetMagickAdjoin(const MagickInfo *magick_info)
 {
   assert(magick_info != (MagickInfo *) NULL);
   assert(magick_info->signature == MagickSignature);
-  return(((magick_info->flags & Adjoin) == 0) ? MagickFalse : MagickTrue);
+  return(((magick_info->flags & CoderAdjoinFlag) == 0) ? MagickFalse :
+    MagickTrue);
 }
 
 /*
@@ -312,7 +313,7 @@ MagickExport MagickBooleanType GetMagickBlobSupport(
 {
   assert(magick_info != (MagickInfo *) NULL);
   assert(magick_info->signature == MagickSignature);
-  return(((magick_info->flags & BlobSupport) == 0) ? MagickFalse :
+  return(((magick_info->flags & CoderBlobSupportFlag) == 0) ? MagickFalse :
     MagickTrue);
 }
 
@@ -345,8 +346,8 @@ MagickExport MagickBooleanType GetMagickDecoderThreadSupport(
 {
   assert(magick_info != (MagickInfo *) NULL);
   assert(magick_info->signature == MagickSignature);
-  return(((magick_info->flags & DecoderThreadSupport) == 0) ? MagickFalse :
-    MagickTrue);
+  return(((magick_info->flags & CoderDecoderThreadSupportFlag) == 0) ?
+    MagickFalse : MagickTrue);
 }
 
 /*
@@ -407,8 +408,8 @@ MagickExport MagickBooleanType GetMagickEncoderThreadSupport(
 {
   assert(magick_info != (MagickInfo *) NULL);
   assert(magick_info->signature == MagickSignature);
-  return(((magick_info->flags & DecoderThreadSupport) == 0) ? MagickFalse :
-    MagickTrue);
+  return(((magick_info->flags & CoderDecoderThreadSupportFlag) == 0) ?
+    MagickFalse : MagickTrue);
 }
 
 /*
@@ -439,7 +440,7 @@ MagickExport MagickBooleanType GetMagickEndianSupport(
 {
   assert(magick_info != (MagickInfo *) NULL);
   assert(magick_info->signature == MagickSignature);
-  return(((magick_info->flags & EndianSupport) == 0) ? MagickFalse :
+  return(((magick_info->flags & CoderEndianSupportFlag) == 0) ? MagickFalse :
     MagickTrue);
 }
 
@@ -785,7 +786,8 @@ MagickExport MagickBooleanType GetMagickRawSupport(
 {
   assert(magick_info != (MagickInfo *) NULL);
   assert(magick_info->signature == MagickSignature);
-  return(((magick_info->flags & RawSupport) == 0) ? MagickFalse : MagickTrue);
+  return(((magick_info->flags & CoderRawSupportFlag) == 0) ? MagickFalse :
+    MagickTrue);
 }
 
 /*
@@ -816,7 +818,7 @@ MagickExport MagickBooleanType GetMagickSeekableStream(
 {
   assert(magick_info != (MagickInfo *) NULL);
   assert(magick_info->signature == MagickSignature);
-  return(((magick_info->flags & SeekableStream) == 0) ? MagickFalse :
+  return(((magick_info->flags & CoderSeekableStreamFlag) == 0) ? MagickFalse :
     MagickTrue);
 }
 
@@ -846,7 +848,8 @@ MagickExport MagickBooleanType GetMagickStealth(const MagickInfo *magick_info)
 {
   assert(magick_info != (MagickInfo *) NULL);
   assert(magick_info->signature == MagickSignature);
-  return(((magick_info->flags & Stealth) == 0) ? MagickFalse : MagickTrue);
+  return(((magick_info->flags & CoderStealthFlag) == 0) ? MagickFalse :
+    MagickTrue);
 }
 
 /*
@@ -878,7 +881,7 @@ MagickExport MagickBooleanType GetMagickUseExtension(
 {
   assert(magick_info != (MagickInfo *) NULL);
   assert(magick_info->signature == MagickSignature);
-  return(((magick_info->flags & UseExtension) == 0) ? MagickFalse :
+  return(((magick_info->flags & CoderUseExtensionFlag) == 0) ? MagickFalse :
     MagickTrue);
 }
 
@@ -951,13 +954,13 @@ static MagickBooleanType IsMagickTreeInstantiated(ExceptionInfo *exception)
             ThrowFatalException(ResourceLimitFatalError,
               "MemoryAllocationFailed");
           magick_info=SetMagickInfo("ephemeral");
-          magick_info->flags|=Stealth;
+          magick_info->flags|=CoderStealthFlag;
           status=AddValueToSplayTree(magick_list,magick_info->name,magick_info);
           if (status == MagickFalse)
             ThrowFatalException(ResourceLimitFatalError,
               "MemoryAllocationFailed");
           magick_info=SetMagickInfo("clipmask");
-          magick_info->flags|=Stealth;
+          magick_info->flags|=CoderStealthFlag;
           status=AddValueToSplayTree(magick_list,magick_info->name,magick_info);
           if (status == MagickFalse)
             ThrowFatalException(ResourceLimitFatalError,
@@ -1590,8 +1593,9 @@ MagickExport MagickInfo *SetMagickInfo(const char *name)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(magick_info,0,sizeof(*magick_info));
   magick_info->name=ConstantString(name);
-  magick_info->flags=Adjoin | BlobSupport | DecoderThreadSupport |
-    EncoderThreadSupport | UseExtension;
+  magick_info->flags=CoderAdjoinFlag | CoderBlobSupportFlag |
+    CoderDecoderThreadSupportFlag | CoderEncoderThreadSupportFlag |
+    CoderUseExtensionFlag;
   magick_info->signature=MagickSignature;
   return(magick_info);
 }

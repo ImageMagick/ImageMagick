@@ -547,7 +547,7 @@ ModuleExport size_t RegisterDPSImage(void)
 #if defined(MAGICKCORE_DPS_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadDPSImage;
 #endif
-  entry->flags^=BlobSupport;
+  entry->flags^=CoderBlobSupportFlag;
   entry->description=ConstantString("Display Postscript Interpreter");
   entry->module=ConstantString("DPS");
   (void) RegisterMagickInfo(entry);

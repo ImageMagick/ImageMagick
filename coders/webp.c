@@ -412,7 +412,7 @@ ModuleExport size_t RegisterWEBPImage(void)
 #endif
   entry->description=ConstantString("WebP Image Format");
   entry->mime_type=ConstantString("image/x-webp");
-  entry->flags^=Adjoin;
+  entry->flags^=CoderAdjoinFlag;
   entry->module=ConstantString("WEBP");
   entry->magick=(IsImageFormatHandler *) IsWEBP;
   if (*version != '\0')

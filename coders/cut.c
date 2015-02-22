@@ -641,7 +641,7 @@ ModuleExport size_t RegisterCUTImage(void)
 
   entry=SetMagickInfo("CUT");
   entry->decoder=(DecodeImageHandler *) ReadCUTImage;
-  entry->flags|=SeekableStream;
+  entry->flags|=CoderSeekableStreamFlag;
   entry->description=ConstantString("DR Halo");
   entry->module=ConstantString("CUT");
   (void) RegisterMagickInfo(entry);

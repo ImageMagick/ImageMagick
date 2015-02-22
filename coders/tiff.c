@@ -2151,11 +2151,11 @@ ModuleExport size_t RegisterTIFFImage(void)
   entry->decoder=(DecodeImageHandler *) ReadGROUP4Image;
   entry->encoder=(EncodeImageHandler *) WriteGROUP4Image;
 #endif
-  entry->flags|=RawSupport;
-  entry->flags|=EndianSupport;
-  entry->flags^=Adjoin;
+  entry->flags|=CoderRawSupportFlag;
+  entry->flags|=CoderEndianSupportFlag;
+  entry->flags^=CoderAdjoinFlag;
   entry->format_type=ImplicitFormatType;
-  entry->flags|=SeekableStream;
+  entry->flags|=CoderSeekableStreamFlag;
   entry->description=ConstantString("Raw CCITT Group4");
   entry->mime_type=ConstantString("image/tiff");
   entry->module=ConstantString("TIFF");
@@ -2165,8 +2165,8 @@ ModuleExport size_t RegisterTIFFImage(void)
   entry->decoder=(DecodeImageHandler *) ReadTIFFImage;
   entry->encoder=(EncodeImageHandler *) WritePTIFImage;
 #endif
-  entry->flags|=EndianSupport;
-  entry->flags|=SeekableStream;
+  entry->flags|=CoderEndianSupportFlag;
+  entry->flags|=CoderSeekableStreamFlag;
   entry->description=ConstantString("Pyramid encoded TIFF");
   entry->mime_type=ConstantString("image/tiff");
   entry->module=ConstantString("TIFF");
@@ -2176,9 +2176,9 @@ ModuleExport size_t RegisterTIFFImage(void)
   entry->decoder=(DecodeImageHandler *) ReadTIFFImage;
   entry->encoder=(EncodeImageHandler *) WriteTIFFImage;
 #endif
-  entry->flags|=EndianSupport;
-  entry->flags|=SeekableStream;
-  entry->flags|=Stealth;
+  entry->flags|=CoderEndianSupportFlag;
+  entry->flags|=CoderSeekableStreamFlag;
+  entry->flags|=CoderStealthFlag;
   entry->description=ConstantString(TIFFDescription);
   if (*version != '\0')
     entry->version=ConstantString(version);
@@ -2191,8 +2191,8 @@ ModuleExport size_t RegisterTIFFImage(void)
   entry->encoder=(EncodeImageHandler *) WriteTIFFImage;
 #endif
   entry->magick=(IsImageFormatHandler *) IsTIFF;
-  entry->flags|=EndianSupport;
-  entry->flags|=SeekableStream;
+  entry->flags|=CoderEndianSupportFlag;
+  entry->flags|=CoderSeekableStreamFlag;
   entry->description=ConstantString(TIFFDescription);
   if (*version != '\0')
     entry->version=ConstantString(version);
@@ -2204,9 +2204,9 @@ ModuleExport size_t RegisterTIFFImage(void)
   entry->decoder=(DecodeImageHandler *) ReadTIFFImage;
   entry->encoder=(EncodeImageHandler *) WriteTIFFImage;
 #endif
-  entry->flags^=Adjoin;
-  entry->flags|=EndianSupport;
-  entry->flags|=SeekableStream;
+  entry->flags^=CoderAdjoinFlag;
+  entry->flags|=CoderEndianSupportFlag;
+  entry->flags|=CoderSeekableStreamFlag;
   entry->description=ConstantString("Tagged Image File Format (64-bit)");
   if (*version != '\0')
     entry->version=ConstantString(version);

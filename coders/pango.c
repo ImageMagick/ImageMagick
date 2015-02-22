@@ -507,7 +507,7 @@ ModuleExport size_t RegisterPANGOImage(void)
   entry->description=ConstantString("Pango Markup Language");
   if (*version != '\0')
     entry->version=ConstantString(version);
-  entry->flags^=Adjoin;
+  entry->flags^=CoderAdjoinFlag;
   entry->module=ConstantString("PANGO");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);

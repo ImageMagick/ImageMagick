@@ -261,8 +261,8 @@ ModuleExport size_t RegisterXTRNImage(void)
   entry->decoder=ReadXTRNImage;
   entry->encoder=WriteXTRNImage;
 #endif
-  entry->flags^=Adjoin;
-  entry->flags|=Stealth;
+  entry->flags^=CoderAdjoinFlag;
+  entry->flags|=CoderStealthFlag;
   entry->description=ConstantString("External transfer of a file");
   entry->module=ConstantString("XTRN");
   RegisterMagickInfo(entry);
@@ -271,8 +271,8 @@ ModuleExport size_t RegisterXTRNImage(void)
   entry->decoder=ReadXTRNImage;
   entry->encoder=WriteXTRNImage;
 #endif
-  entry->flags^=Adjoin;
-  entry->flags|=Stealth;
+  entry->flags^=CoderAdjoinFlag;
+  entry->flags|=CoderStealthFlag;
   entry->description=ConstantString("External transfer of a image in memory");
   entry->module=ConstantString("XTRN");
   RegisterMagickInfo(entry);
@@ -281,8 +281,8 @@ ModuleExport size_t RegisterXTRNImage(void)
   entry->decoder=ReadXTRNImage;
   entry->encoder=WriteXTRNImage;
 #endif
-  entry->flags^=Adjoin;
-  entry->flags|=Stealth;
+  entry->flags^=CoderAdjoinFlag;
+  entry->flags|=CoderStealthFlag;
   entry->description=ConstantString("IExternal transfer of a blob in memory");
   entry->module=ConstantString("XTRN");
   RegisterMagickInfo(entry);
@@ -291,8 +291,8 @@ ModuleExport size_t RegisterXTRNImage(void)
   entry->decoder=ReadXTRNImage;
   entry->encoder=WriteXTRNImage;
 #endif
-  entry->flags^=Adjoin;
-  entry->flags|=Stealth;
+  entry->flags^=CoderAdjoinFlag;
+  entry->flags|=CoderStealthFlag;
   entry->description=ConstantString(
     "External transfer via a smart array interface");
   entry->module=ConstantString("XTRN");

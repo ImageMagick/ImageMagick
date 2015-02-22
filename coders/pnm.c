@@ -1426,7 +1426,7 @@ ModuleExport size_t RegisterPNMImage(void)
   entry=SetMagickInfo("PFM");
   entry->decoder=(DecodeImageHandler *) ReadPNMImage;
   entry->encoder=(EncodeImageHandler *) WritePNMImage;
-  entry->flags|=EndianSupport;
+  entry->flags|=CoderEndianSupportFlag;
   entry->description=ConstantString("Portable float format");
   entry->module=ConstantString("PFM");
   (void) RegisterMagickInfo(entry);

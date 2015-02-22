@@ -276,7 +276,7 @@ ModuleExport size_t RegisterSCRImage(void)
 
   entry=SetMagickInfo("SCR");
   entry->decoder=(DecodeImageHandler *) ReadSCRImage;
-  entry->flags^=Adjoin;
+  entry->flags^=CoderAdjoinFlag;
   entry->description=ConstantString("ZX-Spectrum SCREEN$");
   entry->module=ConstantString("SCR");
   (void) RegisterMagickInfo(entry);

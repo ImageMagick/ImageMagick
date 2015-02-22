@@ -992,7 +992,7 @@ ModuleExport size_t RegisterMPCImage(void)
   entry=SetMagickInfo("CACHE");
   entry->description=ConstantString("Magick Persistent Cache image format");
   entry->module=ConstantString("CACHE");
-  entry->flags|=Stealth;
+  entry->flags|=CoderStealthFlag;
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("MPC");
   entry->decoder=(DecodeImageHandler *) ReadMPCImage;

@@ -34,17 +34,17 @@ typedef enum
 
 typedef enum
 {
-  NoFlag = 0x0000,
-  Adjoin = 0x0001,
-  BlobSupport = 0x0002,
-  DecoderThreadSupport = 0x0004,
-  EncoderThreadSupport = 0x0008,
-  EndianSupport = 0x0010,
-  RawSupport = 0x0020,
-  SeekableStream = 0x0040,
-  Stealth = 0x0080,
-  UseExtension = 0x0100
-} MagickFlagType;
+  CoderNoFlag = 0x0000,
+  CoderAdjoinFlag = 0x0001,
+  CoderBlobSupportFlag = 0x0002,
+  CoderDecoderThreadSupportFlag = 0x0004,
+  CoderEncoderThreadSupportFlag = 0x0008,
+  CoderEndianSupportFlag = 0x0010,
+  CoderRawSupportFlag = 0x0020,
+  CoderSeekableStreamFlag = 0x0040,
+  CoderStealthFlag = 0x0080,
+  CoderUseExtensionFlag = 0x0100
+} MagickInfoFlag;
 
 typedef Image
   *DecodeImageHandler(const ImageInfo *,ExceptionInfo *);
