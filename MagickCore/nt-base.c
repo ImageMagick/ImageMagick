@@ -1704,7 +1704,7 @@ static UINT ChangeErrorMode(void)
   UINT
     mode;
 
-  mode=SEM_FAILCRITICALERRORS | SEM_NOOPENFILEERRORBOX;
+  mode=SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX | SEM_NOOPENFILEERRORBOX;
 
   handle=GetModuleHandle("kernel32.dll");
   if (handle == (HMODULE) NULL)
@@ -1712,7 +1712,8 @@ static UINT ChangeErrorMode(void)
 
   getErrorMode=(GETERRORMODE) NTGetLibrarySymbol(handle,"GetErrorMode");
   if (getErrorMode != (GETERRORMODE) NULL)
-    mode=getErrorMode() | SEM_FAILCRITICALERRORS | SEM_NOOPENFILEERRORBOX;
+    mode=getErrorMode() | SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX |
+      SEM_NOOPENFILEERRORBOX;
 
   return SetErrorMode(mode);
 }
