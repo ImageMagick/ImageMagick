@@ -2620,11 +2620,19 @@ MagickPrivate void NTWarningHandler(const ExceptionType severity,
 %      void NTWindowsGenesis(void)
 %
 */
+
+static void NTUncaughtException()
+{
+  AsynchronousResourceComponentTerminus();
+  Exit(0);
+}
+
 MagickPrivate void NTWindowsGenesis(void)
 {
   char
     *mode;
 
+  set_unexpected(NTUncaughtException);
   mode=GetEnvironmentValue("MAGICK_ERRORMODE");
   if (mode != (char *) NULL)
     {
@@ -2638,7 +2646,8 @@ MagickPrivate void NTWindowsGenesis(void)
         debug;
 
       debug=_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
-      debug|=_CRTDBG_CHECK_ALWAYS_DF | _CRTDBG_DELAY_FREE_MEM_DF | _CRTDBG_LEAK_CHECK_DF;
+      debug|=_CRTDBG_CHECK_ALWAYS_DF | _CRTDBG_DELAY_FREE_MEM_DF |
+        _CRTDBG_LEAK_CHECK_DF;
       (void) _CrtSetDbgFlag(debug);
       _ASSERTE(_CrtCheckMemory());
     }
