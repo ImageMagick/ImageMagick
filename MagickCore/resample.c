@@ -666,7 +666,8 @@ MagickExport MagickBooleanType ResamplePixelColor(
     Finialize results of resampling
   */
   divisor_m = 1.0/divisor_m;
-  pixel->alpha = (double) ClampToQuantum(divisor_m*pixel->alpha);
+  if (pixel->alpha_trait != UndefinedPixelTrait)
+    pixel->alpha = (double) ClampToQuantum(divisor_m*pixel->alpha);
   divisor_c = 1.0/divisor_c;
   pixel->red   = (double) ClampToQuantum(divisor_c*pixel->red);
   pixel->green = (double) ClampToQuantum(divisor_c*pixel->green);
