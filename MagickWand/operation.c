@@ -2142,12 +2142,24 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("convolve",option+1) == 0)
         {
+          double
+            gamma;
+            
           KernelInfo
             *kernel_info;
+            
+          register ssize_t
+            j;
 
           kernel_info=AcquireKernelInfo(arg1,exception);
           if (kernel_info == (KernelInfo *) NULL)
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
+          gamma=0.0;
+          for (j=0; j < (ssize_t) (kernel_info->width*kernel_info->height); j++)
+            gamma+=kernel_info->values[j];
+          gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
+          for (j=0; j < (ssize_t) (kernel_info->width*kernel_info->height); j++)
+            kernel_info->values[j]*=gamma;
           new_image=MorphologyImage(_image,CorrelateMorphology,1,kernel_info,
             _exception);
           kernel_info=DestroyKernelInfo(kernel_info);
