@@ -169,6 +169,13 @@ static Image *ReadBGRImage(const ImageInfo *image_info,
     {
       quantum_type=BGRAQuantum;
       image->alpha_trait=BlendPixelTrait;
+      canvas_image->alpha_trait=BlendPixelTrait;
+    }
+  if (LocaleCompare(image_info->magick,"BGRO") == 0)
+    {
+      quantum_type=RGBOQuantum;
+      image->alpha_trait=BlendPixelTrait;
+      canvas_image->alpha_trait=BlendPixelTrait;
     }
   pixels=(const void *) NULL;
   if (image_info->number_scenes != 0)
@@ -1028,6 +1035,14 @@ ModuleExport size_t RegisterBGRImage(void)
   entry->flags|=CoderRawSupportFlag;
   entry->flags|=CoderEndianSupportFlag;
   entry->description=ConstantString("Raw blue, green, red, and alpha samples");
+  entry->module=ConstantString("BGR");
+  (void) RegisterMagickInfo(entry);
+  entry=SetMagickInfo("BGRO");
+  entry->decoder=(DecodeImageHandler *) ReadBGRImage;
+  entry->encoder=(EncodeImageHandler *) WriteBGRImage;
+  entry->flags|=CoderRawSupportFlag;
+  entry->flags|=CoderEndianSupportFlag;
+  entry->description=ConstantString("Raw blue, green, red, and opacity samples");
   entry->module=ConstantString("BGR");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
