@@ -1033,6 +1033,14 @@ ModuleExport size_t RegisterBGRImage(void)
   entry->description=ConstantString("Raw blue, green, red, and alpha samples");
   entry->module=ConstantString("BGR");
   (void) RegisterMagickInfo(entry);
+  entry=SetMagickInfo("BGRO");
+  entry->decoder=(DecodeImageHandler *) ReadBGRImage;
+  entry->encoder=(EncodeImageHandler *) WriteBGRImage;
+  entry->raw=MagickTrue;
+  entry->endian_support=MagickTrue;
+  entry->description=ConstantString("Raw blue, green, red, and opacity samples");
+  entry->module=ConstantString("BGR");
+  (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }
 
