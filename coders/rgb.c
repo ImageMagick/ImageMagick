@@ -173,6 +173,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (LocaleCompare(image_info->magick,"RGBO") == 0)
     {
       quantum_type=RGBOQuantum;
+      image->alpha_trait=BlendPixelTrait;
       canvas_image->alpha_trait=BlendPixelTrait;
     }
   pixels=(const void *) NULL;
