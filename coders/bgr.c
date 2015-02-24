@@ -170,6 +170,11 @@ static Image *ReadBGRImage(const ImageInfo *image_info,
       quantum_type=BGRAQuantum;
       image->matte=MagickTrue;
     }
+  if (LocaleCompare(image_info->magick,"BGRO") == 0)
+    {
+      quantum_type=BGROQuantum;
+      image->matte=MagickTrue;
+    }
   pixels=(const void *) NULL;
   if (image_info->number_scenes != 0)
     while (image->scene < image_info->scene)
