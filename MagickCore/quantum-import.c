@@ -3597,7 +3597,8 @@ MagickExport size_t ImportQuantumPixels(const Image *image,
         q+=GetPixelChannels(image);
       }
     }
-  if ((quantum_type == RGBOQuantum) || (quantum_type == CMYKOQuantum))
+  if ((quantum_type == RGBOQuantum) || (quantum_type == CMYKOQuantum) ||
+      (quantum_type == BGROQuantum))
     {
       register Quantum
         *restrict q;
@@ -3607,7 +3608,7 @@ MagickExport size_t ImportQuantumPixels(const Image *image,
         q=GetCacheViewAuthenticPixelQueue(image_view);
       for (x=0; x < (ssize_t) number_pixels; x++)
       {
-        SetPixelAlpha(image,GetPixelAlpha(image,q),q);
+        SetPixelOpacity(image,GetPixelAlpha(image,q),q);
         q+=GetPixelChannels(image);
       }
     }
