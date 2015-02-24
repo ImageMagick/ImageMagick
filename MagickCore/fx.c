@@ -1187,7 +1187,7 @@ static double FxChannelStatistics(FxInfo *fx_info,Image *image,
       (void) GetImageKurtosis(image,&kurtosis,&skewness,exception);
       (void) FormatLocaleString(statistic,MaxTextExtent,"%g",skewness);
     }
-  if (LocaleNCompare(symbol,"standard-deviation",18) == 0)
+  if (LocaleNCompare(symbol,"standard_deviation",18) == 0)
     {
       double
         mean,
@@ -1774,7 +1774,7 @@ static double FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
         }
       if (LocaleNCompare(symbol,"skewness",8) == 0)
         return(FxChannelStatistics(fx_info,image,channel,symbol,exception));
-      if (LocaleNCompare(symbol,"standard-deviation",18) == 0)
+      if (LocaleNCompare(symbol,"standard_deviation",18) == 0)
         return(FxChannelStatistics(fx_info,image,channel,symbol,exception));
       break;
     }
