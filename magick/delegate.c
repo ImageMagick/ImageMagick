@@ -1053,7 +1053,7 @@ static MagickBooleanType CopyDelegateFile(const char *source,
   assert(source != (const char *) NULL);
   assert(destination != (char *) NULL);
   status=GetPathAttributes(destination,&attributes);
-  if ((status != MagickFalse) && (attributes.st_size != 0))
+  if (status != MagickFalse)
     return(MagickTrue);
   destination_file=open_utf8(destination,O_WRONLY | O_BINARY | O_CREAT,S_MODE);
   if (destination_file == -1)
