@@ -2938,9 +2938,9 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         MagickTrue : MagickFalse;
     use_explicit=((group == 0x0002) && (explicit_retry == MagickFalse)) ||
       (explicit_file != MagickFalse) ? MagickTrue : MagickFalse;
-    if ((use_explicit != MagickFalse) && (strcmp(implicit_vr,"xs") == 0))
+    if ((use_explicit != MagickFalse) && (strncmp(implicit_vr,"xs",2) == 0))
       (void) CopyMagickString(implicit_vr,explicit_vr,MaxTextExtent);
-    if ((use_explicit == MagickFalse) || (strcmp(implicit_vr,"!!") == 0))
+    if ((use_explicit == MagickFalse) || (strncmp(implicit_vr,"!!",2) == 0))
       {
         offset=SeekBlob(image,(MagickOffsetType) -2,SEEK_CUR);
         if (offset < 0)
@@ -2953,9 +2953,10 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Assume explicit type.
         */
         quantum=2;
-        if ((strcmp(explicit_vr,"OB") == 0) ||
-            (strcmp(explicit_vr,"UN") == 0) ||
-            (strcmp(explicit_vr,"OW") == 0) || (strcmp(explicit_vr,"SQ") == 0))
+        if ((strncmp(explicit_vr,"OB",2) == 0) ||
+            (strncmp(explicit_vr,"UN",2) == 0) ||
+            (strncmp(explicit_vr,"OW",2) == 0) ||
+            (strncmp(explicit_vr,"SQ",2) == 0))
           {
             (void) ReadBlobLSBShort(image);
             quantum=4;
@@ -2981,16 +2982,16 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     length=1;
     if (datum != 0)
       {
-        if ((strcmp(implicit_vr,"SS") == 0) ||
-            (strcmp(implicit_vr,"US") == 0))
+        if ((strncmp(implicit_vr,"SS",2) == 0) ||
+            (strncmp(implicit_vr,"US",2) == 0))
           quantum=2;
         else
-          if ((strcmp(implicit_vr,"UL") == 0) ||
-              (strcmp(implicit_vr,"SL") == 0) ||
-              (strcmp(implicit_vr,"FL") == 0))
+          if ((strncmp(implicit_vr,"UL",2) == 0) ||
+              (strncmp(implicit_vr,"SL",2) == 0) ||
+              (strncmp(implicit_vr,"FL",2) == 0))
             quantum=4;
           else
-            if (strcmp(implicit_vr,"FD") != 0)
+            if (strncmp(implicit_vr,"FD",2) != 0)
               quantum=1;
             else
               quantum=8;
@@ -3410,7 +3411,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           case 0x0020:
           {
             if ((data != (unsigned char *) NULL) &&
-                (strncmp((char*) data,"INVERSE", 7) == 0))
+                (strncmp((char *) data,"INVERSE",7) == 0))
               polarity=MagickTrue;
             break;
           }
