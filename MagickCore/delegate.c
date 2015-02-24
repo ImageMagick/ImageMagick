@@ -1061,7 +1061,7 @@ static MagickBooleanType CopyDelegateFile(const char *source,
   assert(source != (const char *) NULL);
   assert(destination != (char *) NULL);
   status=GetPathAttributes(destination,&attributes);
-  if( IfMagickTrue(status) && (attributes.st_size != 0))
+  if (status != MagickFalse)
     return(MagickTrue);
   destination_file=open_utf8(destination,O_WRONLY | O_BINARY | O_CREAT,S_MODE);
   if (destination_file == -1)
@@ -1323,10 +1323,10 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
       }
     if (LocaleCompare(decode,"SCAN") != 0)
       {
-        if( IfMagickFalse(CopyDelegateFile(image->filename,input_filename)) )
+        if (IfMagickFalse(CopyDelegateFile(image->filename,input_filename)))
           (void) RelinquishUniqueFileResource(input_filename);
       }
-    if( IfMagickFalse(CopyDelegateFile(image_info->filename,output_filename)) )
+    if (IfMagickFalse(CopyDelegateFile(image_info->filename,output_filename)))
       (void) RelinquishUniqueFileResource(output_filename);
     if( IfMagickTrue(image_info->temporary) )
       (void) RelinquishUniqueFileResource(image_info->filename);
