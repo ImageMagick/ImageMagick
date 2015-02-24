@@ -353,14 +353,14 @@ void Magick::Options::magick(const std::string &magick_)
   GetPPException;
   SetImageInfo(_imageInfo,1,exceptionInfo);
   ThrowPPException(_quiet);
-  if (*_imageInfo->magick == '\0')
+  if ( _imageInfo->magick[0] == '\0' )
     throwExceptionExplicit(OptionWarning,"Unrecognized image format",
       magick_.c_str());
 }
 
 std::string Magick::Options::magick(void) const
 {
-  if (*_imageInfo->magick)
+  if ( _imageInfo->magick[0] != '\0' )
     return(std::string(_imageInfo->magick));
  
   return(std::string());
