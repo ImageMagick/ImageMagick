@@ -173,7 +173,7 @@ static Image *ReadBGRImage(const ImageInfo *image_info,
     }
   if (LocaleCompare(image_info->magick,"BGRO") == 0)
     {
-      quantum_type=RGBOQuantum;
+      quantum_type=BGROQuantum;
       image->alpha_trait=BlendPixelTrait;
       canvas_image->alpha_trait=BlendPixelTrait;
     }
