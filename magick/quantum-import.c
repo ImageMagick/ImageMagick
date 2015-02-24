@@ -3528,7 +3528,8 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
         q++;
       }
     }
-  if ((quantum_type == RGBOQuantum) || (quantum_type == CMYKOQuantum))
+  if ((quantum_type == RGBOQuantum) || (quantum_type == CMYKOQuantum) ||
+      (quantum_type == BGROQuantum))
     {
       register PixelPacket
         *restrict q;
