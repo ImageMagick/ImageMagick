@@ -2153,9 +2153,10 @@ ModuleExport size_t RegisterTIFFImage(void)
 #endif
   entry->flags|=CoderRawSupportFlag;
   entry->flags|=CoderEndianSupportFlag;
-  entry->flags^=CoderAdjoinFlag;
-  entry->format_type=ImplicitFormatType;
   entry->flags|=CoderSeekableStreamFlag;
+  entry->flags^=CoderAdjoinFlag;
+  entry->flags^=CoderUseExtensionFlag;
+  entry->format_type=ImplicitFormatType;
   entry->description=ConstantString("Raw CCITT Group4");
   entry->mime_type=ConstantString("image/tiff");
   entry->module=ConstantString("TIFF");
@@ -2167,6 +2168,7 @@ ModuleExport size_t RegisterTIFFImage(void)
 #endif
   entry->flags|=CoderEndianSupportFlag;
   entry->flags|=CoderSeekableStreamFlag;
+  entry->flags^=CoderUseExtensionFlag;
   entry->description=ConstantString("Pyramid encoded TIFF");
   entry->mime_type=ConstantString("image/tiff");
   entry->module=ConstantString("TIFF");
@@ -2179,6 +2181,7 @@ ModuleExport size_t RegisterTIFFImage(void)
   entry->flags|=CoderEndianSupportFlag;
   entry->flags|=CoderSeekableStreamFlag;
   entry->flags|=CoderStealthFlag;
+  entry->flags^=CoderUseExtensionFlag;
   entry->description=ConstantString(TIFFDescription);
   if (*version != '\0')
     entry->version=ConstantString(version);
@@ -2193,6 +2196,7 @@ ModuleExport size_t RegisterTIFFImage(void)
   entry->magick=(IsImageFormatHandler *) IsTIFF;
   entry->flags|=CoderEndianSupportFlag;
   entry->flags|=CoderSeekableStreamFlag;
+  entry->flags^=CoderUseExtensionFlag;
   entry->description=ConstantString(TIFFDescription);
   if (*version != '\0')
     entry->version=ConstantString(version);
@@ -2204,9 +2208,10 @@ ModuleExport size_t RegisterTIFFImage(void)
   entry->decoder=(DecodeImageHandler *) ReadTIFFImage;
   entry->encoder=(EncodeImageHandler *) WriteTIFFImage;
 #endif
-  entry->flags^=CoderAdjoinFlag;
   entry->flags|=CoderEndianSupportFlag;
   entry->flags|=CoderSeekableStreamFlag;
+  entry->flags^=CoderAdjoinFlag;
+  entry->flags^=CoderUseExtensionFlag;
   entry->description=ConstantString("Tagged Image File Format (64-bit)");
   if (*version != '\0')
     entry->version=ConstantString(version);
