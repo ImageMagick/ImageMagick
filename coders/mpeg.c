@@ -503,6 +503,7 @@ static MagickBooleanType WriteMPEGImage(const ImageInfo *image_info,
     basename);
   count=0;
   write_info=CloneImageInfo(image_info);
+  *write_info->magick='\0';
   for (p=coalesce_image; p != (Image *) NULL; p=GetNextImageInList(p))
   {
     char
