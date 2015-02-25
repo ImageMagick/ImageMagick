@@ -615,7 +615,6 @@ static struct PackageInfo *ClonePackageInfo(struct PackageInfo *info,
     }
   *clone_info=(*info);
   clone_info->image_info=CloneImageInfo(info->image_info);
-  *clone_info->magick='\0';
   return(clone_info);
 }
 
@@ -14333,6 +14332,7 @@ Write(ref,...)
       (void) CopyMagickString(next->filename,filename,MaxTextExtent);
       next->scene=scene++;
     }
+    *package_info->image_info->magick='\0';
     SetImageInfo(package_info->image_info,(unsigned int)
       GetImageListLength(image),&image->exception);
     for (next=image; next; next=next->next)
