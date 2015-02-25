@@ -1283,6 +1283,7 @@ MagickExport MagickBooleanType WriteImages(const ImageInfo *image_info,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
   assert(exception != (ExceptionInfo *) NULL);
   write_info=CloneImageInfo(image_info);
+  *write_info->magick='\0';
   images=GetFirstImageInList(images);
   if (filename != (const char *) NULL)
     for (p=images; p != (Image *) NULL; p=GetNextImageInList(p))

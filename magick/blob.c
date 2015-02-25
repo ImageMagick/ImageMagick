@@ -1538,6 +1538,7 @@ MagickExport unsigned char *ImageToBlob(const ImageInfo *image_info,
   *length=0;
   blob=(unsigned char *) NULL;
   blob_info=CloneImageInfo(image_info);
+  *blob_info->magick='\n';
   blob_info->adjoin=MagickFalse;
   (void) SetImageInfo(blob_info,1,exception);
   if (*blob_info->magick != '\0')
@@ -1794,6 +1795,7 @@ MagickExport unsigned char *ImagesToBlob(const ImageInfo *image_info,
   *length=0;
   blob=(unsigned char *) NULL;
   blob_info=CloneImageInfo(image_info);
+  *blob_info->magick='\0';
   (void) SetImageInfo(blob_info,(unsigned int) GetImageListLength(images),
     exception);
   if (*blob_info->magick != '\0')
@@ -1982,6 +1984,7 @@ MagickExport MagickBooleanType InjectImageBlob(const ImageInfo *image_info,
   DestroyBlob(byte_image);
   byte_image->blob=CloneBlobInfo((BlobInfo *) NULL);
   write_info=CloneImageInfo(image_info);
+  *write_info->magick='\0';
   SetImageInfoFile(write_info,unique_file);
   status=WriteImage(write_info,byte_image);
   write_info=DestroyImageInfo(write_info);
