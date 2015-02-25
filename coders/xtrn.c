@@ -425,6 +425,7 @@ static MagickBooleanType WriteXTRNImage(const ImageInfo *image_info,
   if (LocaleCompare(image_info->magick,"XTRNFILE") == 0)
     {
       clone_info=CloneImageInfo(image_info);
+      *clone_info->magick='\0';
       status=WriteImage(image_info,image);
       if (status == MagickFalse)
         CatchImageException(image);
