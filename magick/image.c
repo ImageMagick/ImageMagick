@@ -2174,6 +2174,7 @@ MagickExport MagickBooleanType SetImageBackgroundColor(Image *image)
   if (image->colorspace == CMYKColorspace)
     ConvertRGBToCMYK(&background);
   index=0;
+  pixel.opacity=OpaqueOpacity;
   SetPixelPacket(image,&background,&pixel,&index);
   /*
     Set image background color.
