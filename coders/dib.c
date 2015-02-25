@@ -640,7 +640,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   if (dib_info.compression == BI_RLE4)
     dib_info.bits_per_pixel<<=1;
-  bytes_per_line=4*(image->columns*dib_info.bits_per_pixel+31)/32;
+  bytes_per_line=4*((image->columns*dib_info.bits_per_pixel+31)/32);
   length=bytes_per_line*image->rows;
   pixel_info=AcquireVirtualMemory((size_t) image->rows,MagickMax(
     bytes_per_line,image->columns+256UL)*sizeof(*pixels));
