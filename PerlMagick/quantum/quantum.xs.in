@@ -615,6 +615,7 @@ static struct PackageInfo *ClonePackageInfo(struct PackageInfo *info,
     }
   *clone_info=(*info);
   clone_info->image_info=CloneImageInfo(info->image_info);
+  *clone_info->magick='\0';
   return(clone_info);
 }
 
