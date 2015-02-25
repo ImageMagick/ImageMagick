@@ -904,7 +904,7 @@ static TIFFMethodType GetJPEGMethod(Image* image,TIFF *tiff,uint16 photometric,
   if (!TIFFGetField(tiff,TIFFTAG_STRIPOFFSETS,&value))
     return(ReadRGBAMethod);
   position=TellBlob(image);
-  offset=(MagickOffsetType) value[0];
+  offset=(MagickOffsetType) (value[0]);
   if (SeekBlob(image,offset,SEEK_SET) != offset)
     return(ReadRGBAMethod);
   method=ReadRGBAMethod;

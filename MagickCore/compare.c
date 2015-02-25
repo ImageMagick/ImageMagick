@@ -130,6 +130,8 @@ static inline MagickBooleanType ValidateImageMorphology(
   /*
     Does the image match the reconstructed image morphology?
   */
+  if (image->number_channels != reconstruct_image->number_channels)
+    return(MagickFalse);
   return(MagickTrue);
 }
 
@@ -1535,6 +1537,9 @@ MagickExport MagickBooleanType IsImagesEqual(Image *image,
   assert(image->signature == MagickSignature);
   assert(reconstruct_image != (const Image *) NULL);
   assert(reconstruct_image->signature == MagickSignature);
+  if ((image->columns != reconstruct_image->columns) ||
+      (image->rows != reconstruct_image->rows))
+    ThrowBinaryException(ImageError,"ImageMorphologyDiffers",image->filename);
   if (ValidateImageMorphology(image,reconstruct_image) == MagickFalse)
     ThrowBinaryException(ImageError,"ImageMorphologyDiffers",image->filename);
   area=0.0;
