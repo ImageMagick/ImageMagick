@@ -14589,6 +14589,7 @@ Write(ref,...)
       (void) CopyMagickString(next->filename,filename,MaxTextExtent);
       next->scene=scene++;
     }
+    *package_info->image_info->magick='\0';
     SetImageInfo(package_info->image_info,(unsigned int)
       GetImageListLength(image),exception);
     for (next=image; next; next=next->next)
