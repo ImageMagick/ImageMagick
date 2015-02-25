@@ -161,6 +161,9 @@ static MagickBooleanType WriteMATTEImage(const ImageInfo *image_info,
   Image
     *matte_image;
 
+  ImageInfo
+    *write_info;
+
   MagickBooleanType
     status;
 
@@ -210,9 +213,12 @@ static MagickBooleanType WriteMATTEImage(const ImageInfo *image_info,
     if (status == MagickFalse)
       break;
   }
+  write_info=CloneImageInfo(image_info);
+  *write_info->magick='\0';
   (void) FormatLocaleString(matte_image->filename,MaxTextExtent,
     "MIFF:%s",image->filename);
-  status=WriteImage(image_info,matte_image);
+  status=WriteImage(write_info,matte_image);
+  write_info=DestroyImageInfo(write_info);
   matte_image=DestroyImage(matte_image);
   return(status);
 }
