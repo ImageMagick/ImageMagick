@@ -280,6 +280,7 @@ static MagickBooleanType WriteHTMLImage(const ImageInfo *image_info,
   (void) CopyMagickString(image->filename,image_info->filename,MaxTextExtent);
   (void) CopyMagickString(filename,image->filename,MaxTextExtent);
   write_info=CloneImageInfo(image_info);
+  *write_info->magick='\0';
   write_info->adjoin=MagickTrue;
   status=MagickTrue;
   if (LocaleCompare(image_info->magick,"SHTML") != 0)
