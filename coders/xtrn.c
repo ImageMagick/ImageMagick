@@ -426,7 +426,7 @@ static MagickBooleanType WriteXTRNImage(const ImageInfo *image_info,
     {
       clone_info=CloneImageInfo(image_info);
       *clone_info->magick='\0';
-      status=WriteImage(image_info,image);
+      status=WriteImage(clone_info,image);
       if (status == MagickFalse)
         CatchImageException(image);
       clone_info=DestroyImageInfo(clone_info);
