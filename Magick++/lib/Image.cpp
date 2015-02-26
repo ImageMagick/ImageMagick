@@ -2360,6 +2360,9 @@ bool Magick::Image::compare(const Image &reference_)
   Image
     ref=reference_;
 
+  if (columns() != reference_.columns() || rows() != reference_.rows())
+    return(false);
+
   modifyImage();
   ref.modifyImage();
   status=static_cast<bool>(IsImagesEqual(image(),ref.constImage()));
