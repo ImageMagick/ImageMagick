@@ -116,6 +116,7 @@ static MagickBooleanType MontageUsage(void)
       "-repage geometry     size and location of an image canvas (operator)",
       "-resize geometry     resize the image",
       "-rotate degrees      apply Paeth rotation to the image",
+      "-scale geometry      scale the image",
       "-strip               strip image of all profiles and comments",
       "-transform           affine transform image",
       "-transpose           flip image vertically and rotate 90 degrees",
@@ -1432,7 +1433,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
               ThrowMontageInvalidArgumentException(option,argv[i]);
             break;
           }
-        if (LocaleCompare("seed",option+1) == 0)
+        if (LocaleCompare("scale",option+1) == 0)
           {
             if (*option == '+')
               break;
@@ -1457,6 +1458,17 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
             first_scene=(int) StringToLong(argv[i]);
             last_scene=first_scene;
             (void) sscanf(argv[i],"%ld-%ld",&first_scene,&last_scene);
+            break;
+          }
+        if (LocaleCompare("seed",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowMontageException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowMontageInvalidArgumentException(option,argv[i]);
             break;
           }
         if (LocaleCompare("set",option+1) == 0)
