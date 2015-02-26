@@ -106,6 +106,7 @@ Image Operators:
   \-repage geometry     size and location of an image canvas (operator)
   \-resize geometry     resize the image
   \-rotate degrees      apply Paeth rotation to the image
+  \-scale geometry      scale the image
   \-strip               strip image of all profiles and comments
   \-transform           affine transform image
   \-transpose           flip image vertically and rotate 90 degrees
