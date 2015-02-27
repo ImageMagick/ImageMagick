@@ -2870,7 +2870,8 @@ MagickExport MagickBooleanType LinearStretchImage(Image *image,
       break;
   }
   histogram=(double *) RelinquishMagickMemory(histogram);
-  status=LevelImage(image,(double) black,(double) white,1.0,exception);
+  status=LevelImage(image,(double) ScaleMapToQuantum(black),(double)
+    ScaleMapToQuantum(white),1.0,exception);
   return(status);
 }
 
