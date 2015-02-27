@@ -253,6 +253,12 @@ $example->Level('20%x');
 $example->Clamp();
 push(@$images,$example);
 
+print "Linear stretch...\n";
+$example=$model->Clone();
+$example->Label('Linear Stretch');
+$example->LinearStretch('5x5');
+push(@$images,$example);
+
 print "Median Filter...\n";
 $example=$model->Clone();
 $example->Label('Median Filter');
