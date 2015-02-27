@@ -3421,8 +3421,8 @@ MagickExport MagickBooleanType LinearStretchImage(Image *image,
       break;
   }
   histogram=(MagickRealType *) RelinquishMagickMemory(histogram);
-  status=LevelImageChannel(image,DefaultChannels,(double) black,(double) white,
-    1.0);
+  status=LevelImageChannel(image,DefaultChannels,(double)
+    ScaleMapToQuantum(black),(double) ScaleMapToQuantum(white),1.0);
   return(status);
 }
 
