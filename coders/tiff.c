@@ -511,11 +511,6 @@ static MagickBooleanType ReadProfile(Image *image,const char *name,
 
   if (length < 4)
     return(MagickFalse);
-  if ((LocaleCompare(name,"icc") != 0) && (LocaleCompare(name,"xmp") != 0))
-    {
-      if (strstr((char *) datum,"8BIM") == (char *) NULL)
-        return(MagickFalse);
-    }
   profile=BlobToStringInfo(datum,(size_t) length);
   if (profile == (StringInfo *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
