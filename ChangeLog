@@ -1,6 +1,8 @@
 2015-02-22  6.9.0-8 Cristy  <quetzlzacatenango@image...>
   * Writing histograms / mpeg working again (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=27089).
+  * The -linear-stretch option worked for Q16 but not Q32 (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=27112).
 
 2015-02-22  6.9.0-7 Cristy  <quetzlzacatenango@image...>
   * New version 6.9.0-7, SVN revision 18067.
