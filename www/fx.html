@@ -305,7 +305,7 @@
      &amp;&amp; (logical AND),  || (logical OR),
      ~ (logical NOT),  ?: (ternary conditional)</dd>
   <dt class="doc"> math functions: </dt>
-     <dd> abs(), acos(), acosh(), airy(), alt(), asin(), asinh(), atan(), atanh(), atan2(), ceil(), cos(), cosh(), debug(), drc(), exp(), floor(), gauss(), gcd(), hypot(), int(), isnan(), j0(), j1(), jinc(), ln(), log(), logtwo(), max(), min(), mod(), not(), pow(), rand(), round(), sign(), sin(), sinc(), sinh(), sqrt(), squish(), tan(), tanh(), trunc()</dd>
+     <dd> abs(), acos(), acosh(), airy(), alt(), asin(), asinh(), atan(), atanh(), atan2(), ceil(), clamp(), cos(), cosh(), debug(), drc(), exp(), floor(), gauss(), gcd(), hypot(), int(), isnan(), j0(), j1(), jinc(), ln(), log(), logtwo(), max(), min(), mod(), not(), pow(), rand(), round(), sign(), sin(), sinc(), sinh(), sqrt(), squish(), tan(), tanh(), trunc()</dd>
   <dt class="doc"> channel functions: </dt>
     <dd> channel(r,g,b,a), channel(c,m,y,k,a)</dd>
   <dt class="doc"> color names:</dt>
@@ -428,6 +428,7 @@
 <li> <code>ceil(</code><em>x</em><code>)</code>: smallest integral value not less than argument</li>
 <li> <code>channel(</code><em>r</em>,<em>g</em>,<em>b</em>,<em>a</em><code>)</code>: select numeric argument based on current channel</li>
 <li> <code>channel(</code><em>c</em>,<em>m</em>,<em>y</em>,<em>k</em>,<em>a</em><code>)</code>: select numeric argument based on current channel</li>
+<li> <code>clamp(</code><em>x</em><code>)</code>:  clamp value</li>
 <li> <code>cos(</code><em>x</em><code>)</code>:  cosine function</li>
 <li> <code>cosh(</code><em>x</em><code>)</code>:  hyperbolic cosine function</li>
 <li> <code>debug(</code><em>x</em><code>)</code>:  print <em>x</em> (useful for debugging your expression)</li>
@@ -571,7 +572,7 @@
     <span id="linkbar-east"> </span>
 </div>
 <div class="footer">
-  <span id="footer-west">©  1999-2015 ImageMagick Studio LLC</span>
+  <span id="footer-west">©  1999-2014 ImageMagick Studio LLC</span>
   <span id="footer-east"> <a href="contact.html">Contact the Wizards</a></span>
 </div>
 <div style="clear: both; margin: 0; width: 100%; "></div>

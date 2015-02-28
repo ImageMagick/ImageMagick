@@ -441,9 +441,17 @@ white:                the area surrounding the image is white
 <p>To determine the current setting of these limits, use this command:</p>
 
 <p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -list resource</span></p><pre class="text">
-File         Area       Memory          Map         Disk    Thread         Time
--------------------------------------------------------------------------------
- 768     1.0386GB    3.8692GiB    7.7384GiB    unlimited         4    unlimited
+Resource limits:
+  Width: 100MP
+  Height: 100MP
+  Area: 25.181GB
+  Memory: 11.726GiB
+  Map: 23.452GiB
+  Disk: unlimited
+  File: 768
+  Thread: 12
+  Throttle: 0
+  Time: unlimited
 </pre>
 
 <p>You can set these limits either as a <a href="resources.html#configure">policy</a> (see <a href="../source/policy.xml">policy.xml</a>), with an <a href="resources.html#environment">environment variable</a>, with the <a href="command-line-options.html#limit">-limit</a> command line option, or with the <a href="../api/resource.html#SetMagickResourceLimit">SetMagickResourceLimit()</a> MagickCore API method. As an example, our online web interface to ImageMagick, <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">ImageMagick Studio</a>, includes these policy limits to help prevent a denial-of-service:</p>
@@ -452,6 +460,8 @@ File         Area       Memory          Map         Disk    Thread         Time
   &lt;policy domain="resource" name="temporary-path" value="/tmp"/>
   &lt;policy domain="resource" name="memory" value="256MiB"/>
   &lt;policy domain="resource" name="map" value="512MiB"/>
+  &lt;policy domain="resource" name="width" value="100MP"/>
+  &lt;policy domain="resource" name="height" value="100MP"/>
   &lt;policy domain="resource" name="area" value="128MB"/>
   &lt;policy domain="resource" name="disk" value="1GiB"/>
   &lt;policy domain="resource" name="file" value="768"/>
@@ -734,7 +744,7 @@ void ConvertBMPToImage(const BITMAPINFOHEADER *bmp_info,
   if (bmp_info->biBitCount == 24)
     image->type(MagickCore::TrueColorType);
   else
-    image->type(MagickCore::TrueColorAlphaType);
+    image->type(MagickCore::TrueColorMatteType);
   register unsigned int bytes_per_row=bmp_info->biWidth*bmp_info->biBitCount/8;
   if (bytes_per_row % 4 != 0) {
     bytes_per_row=bytes_per_row+(4-bytes_per_row % 4);  // divisible by 4.
@@ -1550,7 +1560,7 @@ ModuleExport size_t analyzeImage(Image **images,const int argc,const char **argv
     <span id="linkbar-east"> </span>
 </div>
 <div class="footer">
-  <span id="footer-west">©  1999-2015 ImageMagick Studio LLC</span>
+  <span id="footer-west">©  1999-2014 ImageMagick Studio LLC</span>
   <span id="footer-east"> <a href="contact.html">Contact the Wizards</a></span>
 </div>
 <div style="clear: both; margin: 0; width: 100%; "></div>

@@ -301,6 +301,12 @@ file or data stream.</p>
 
 <p>Any image larger than this area limit is cached to disk rather than memory.</p>
 
+<p>Use <code>width</code> to limit the maximum width of an image in pixels.  Exceed this limit and an exception is thrown and processing stops.</p>
+
+<pre class="text">
+  &lt;policy domain="resource" name="width" value="100MP"/>
+</pre>
+
 <p>To limit the elapsed time of any ImageMagick command to 5 minutes, use this policy:</p>
 
 <pre class="text">
@@ -459,6 +465,8 @@ file or data stream.</p>
 <dt class="doc">MAGICK_FONT_PATH</dt>
   <dd>Set path ImageMagick searches for TrueType and Postscript Type1 font files.</dd>
   <dd>This path is only consulted if a particular font file is not found in the current directory.</dd>
+<dt class="doc">MAGICK_HEIGHT_LIMIT</dt>
+  <dd>Set the maximum <em>height</em> of an image.</dd>
 <dt class="doc">MAGICK_HOME</dt>
   <dd>Set the path at the top of ImageMagick installation directory.</dd>
   <dd>This path is consulted by <em>uninstalled</em> builds of ImageMagick which do not have their location hard-coded or set by an installer.</dd>
@@ -486,8 +494,10 @@ file or data stream.</p>
 <dt class="doc">MAGICK_TIME_LIMIT</dt>
   <dd>Set maximum time in seconds.</dd>
   <dd>When this limit is exceeded, an exception is thrown and processing stops.</dd>
+<dt class="doc">MAGICK_WIDTH_LIMIT</dt>
+  <dd>Set the maximum <em>width</em> of an image.</dd>
 </dl>
-<p>Define arguments for the <code>MAGICK_AREA_LIMIT</code>, <code>MAGICK_DISK_LIMIT</code>, <code>MAGICK_MAP_LIMIT</code>, and <code>MAGICK_MEMORY_LIMIT</code> environment variables with SI prefixes (.e.g <code>100MB</code>).</p>
+<p>Define arguments for the <code>MAGICK_AREA_LIMIT</code>, <code>MAGICK_DISK_LIMIT</code>, <code>MAGICK_MAP_LIMIT</code>, and <code>MAGICK_MEMORY_LIMIT</code> environment variables with SI prefixes (.e.g <code>100MB</code>). <code>MAGICK_WIDTH_LIMIT</code> and <code>MAGICK_HEIGHT_LIMIT</code> accepts pixel suffixes such as MP for mega-pixels (e.g. 100MP).</p>
 </div>
 
 
@@ -505,7 +515,7 @@ file or data stream.</p>
     <span id="linkbar-east"> </span>
 </div>
 <div class="footer">
-  <span id="footer-west">©  1999-2015 ImageMagick Studio LLC</span>
+  <span id="footer-west">©  1999-2014 ImageMagick Studio LLC</span>
   <span id="footer-east"> <a href="contact.html">Contact the Wizards</a></span>
 </div>
 <div style="clear: both; margin: 0; width: 100%; "></div>

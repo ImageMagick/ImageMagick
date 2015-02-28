@@ -234,76 +234,127 @@
 
 <p>We list a few examples of the <code>identify</code> command here to illustrate its usefulness and ease of use. To get started, lets identify an image in the JPEG format:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify rose.jpg</span><span class='crtout'> rose.jpg JPEG 640x480 sRGB 87kb 0.050u 0:01</span></p>
+<pre class="text">
+-> identify rose.jpg
+rose.jpg JPEG 70x46 70x46+0+0 8-bit sRGB 2.36KB 0.000u 0:00.000
+</pre>
+
 <p>Next, we look at the same image in greater detail:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -verbose rose.jpg</span><span class='crtout'>Image: rose.jpg  <br/>
-    Format: JPEG (Joint Photographic Experts Group JFIF format)  <br/>
-    Class: DirectClass  <br/>
-    Geometry: 70x46+0+0  <br/>
-    Resolution: 72x72  <br/>
-    Print size: 0.972222x0.638889  <br/>
-    Units: PixelsPerInch  <br/>
-    Type: TrueColor  <br/>
-    Endianess: Undefined  <br/>
-    Colorspace: RGB  <br/>
-    Depth: 8-bit  <br/>
-    Channel depth:  <br/>
-      red: 8-bit  <br/>
-      green: 8-bit  <br/>
-      blue: 8-bit  <br/>
-    Channel statistics:  <br/>
-      red:  <br/>
-        min: 37 (0.145098)  <br/>
-        max: 255 (1)  <br/>
-        mean: 145.58 (0.5709)  <br/>
-        standard deviation: 67.3195 (0.263998)  <br/>
-      green:  <br/>
-        min: 31 (0.121569)  <br/>
-        max: 255 (1)  <br/>
-        mean: 89.2512 (0.350005)  <br/>
-        standard deviation: 52.0488 (0.204113)  <br/>
-      blue:  <br/>
-        min: 17 (0.0666667)  <br/>
-        max: 255 (1)  <br/>
-        mean: 80.4075 (0.315323)  <br/>
-        standard deviation: 54.0052 (0.211785)  <br/>
-    Rendering intent: Undefined  <br/>
-    Interlace: None  <br/>
-    Background color: white  <br/>
-    Border color: rgb(223,223,223)  <br/>
-    Matte color: grey74  <br/>
-    Transparent color: black  <br/>
-    Page geometry: 70x46+0+0  <br/>
-    Dispose: Undefined  <br/>
-    Iterations: 0  <br/>
-    Compression: JPEG  <br/>
-    Quality: 100  <br/>
-    Orientation: Undefined  <br/>
-    Properties:  <br/>
-      date:create: 2008-01-08T11:08:52-05:00  <br/>
-      date:modify: 2005-04-07T12:48:13-04:00  <br/>
-      jpeg:colorspace: 2  <br/>
-      jpeg:sampling-factor: 2x2,1x1,1x1  <br/>
-      signature: dcd00d6303f80f4fa53f991804cb026151c1e851b7a96255e82da87299583ebc  <br/>
-    Artifacts:  <br/>
-      verbose: true  <br/>
-    Tainted: False  <br/>
-    Filesize: 3.97266kb  <br/>
-    Number pixels: 3.14453kb  <br/>
-    Version: ImageMagick 6.8.9-5 2014-04-11 Q16 http://www.imagemagick.org</span></p>
+<div class="viewport">-> identify -verbose rose.jpg
+Image: rose.jpg
+  Format: JPEG (Joint Photographic Experts Group JFIF format)
+  Mime type: images/jpeg
+  Class: DirectClass
+  Geometry: 70x46+0+0
+  Units: Undefined
+  Type: TrueColor
+  Endianess: Undefined
+  Colorspace: sRGB
+  Depth: 8-bit
+  Channel depth:
+    red: 8-bit
+    green: 8-bit
+    blue: 8-bit
+  Channel statistics:
+    Pixels: 3220
+    Red:
+      min: 35 (0.137255)
+      max: 255 (1)
+      mean: 145.57 (0.570865)
+      standard deviation: 67.2976 (0.263912)
+      kurtosis: -1.37971
+      skewness: 0.0942169
+      entropy: 0.423259
+    Green:
+      min: 33 (0.129412)
+      max: 255 (1)
+      mean: 89.2193 (0.349879)
+      standard deviation: 52.0803 (0.204236)
+      kurtosis: 2.70722
+      skewness: 1.82562
+      entropy: 0.422526
+    Blue:
+      min: 11 (0.0431373)
+      max: 255 (1)
+      mean: 80.3742 (0.315193)
+      standard deviation: 53.8536 (0.21119)
+      kurtosis: 2.90978
+      skewness: 1.92617
+      entropy: 0.423259
+  Image statistics:
+    Overall:
+      min: 11 (0.0431373)
+      max: 255 (1)
+      mean: 105.055 (0.411979)
+      standard deviation: 58.1422 (0.228008)
+      kurtosis: 1.25759
+      skewness: 1.4277
+      entropy: 0.423015
+  Rendering intent: Perceptual
+  Gamma: 0.454545
+  Chromaticity:
+    red primary: (0.64,0.33)
+    green primary: (0.3,0.6)
+    blue primary: (0.15,0.06)
+    white point: (0.3127,0.329)
+  Background color: white
+  Border color: srgb(223,223,223)
+  Matte color: grey74
+  Transparent color: black
+  Interlace: None
+  Intensity: Undefined
+  Compose: Over
+  Page geometry: 70x46+0+0
+  Dispose: Undefined
+  Iterations: 0
+  Compression: JPEG
+  Quality: 92
+  Orientation: Undefined
+  Properties:
+    date:create: 2014-11-09T09:00:35-05:00
+    date:modify: 2014-11-09T09:00:35-05:00
+    jpeg:colorspace: 2
+    jpeg:sampling-factor: 2x2,1x1,1x1
+    signature: 22a99838bd5594250f706d1d9383b2830f439fcbaf1455cbe2f7f59a4deb065a
+  Artifacts:
+    filename: rose.jpg
+    verbose: true
+  Tainted: False
+  Filesize: 2.36KB
+  Number pixels: 3.22K
+  Pixels per second: 3.22EB
+  User time: 0.000u
+  Elapsed time: 0:01.000
+  Version: ImageMagick Q16 http://www.imagemagick.org
+</div>
+
 <p>To get the print size in inches of an image at 72 DPI, use:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -format "%[fx:w/72] by %[fx:h/72] inches" document.png</span><span class='crtout'>8.5 x 11 inches</span></p>
+<pre class="text">
+-> identify -format "%[fx:w/72] by %[fx:h/72] inches" document.png
+8.5 x 11 inches
+</pre>
+
 <p>The depth and dimensions of a raw image must be specified on the command line:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -depth 8 -size 640x480 image.raw</span><span class='crtout'>image.raw RGB 640x480 sRGB 9kb 0.000u 0:01</span></p>
+<pre class="text">
+-> identify -depth 8 -size 640x480 image.raw
+image.raw RGB 640x480 sRGB 9kb 0.000u 0:01
+</pre>
+
 <p>Here we display the image texture features, moments, perceptual hash, and the number of unique colors in the image:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -verbose -features 1 -moments -unique image.png</span></p>
+<pre class="text">
+-> identify -verbose -features 1 -moments -unique image.png
+</pre>
+
 <p>Here is a special define that outputs the location of the minimum or maximum pixel of the image:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -precision 5 -define identify:locate=maximum -define identify:limit=3 image.png</span></p>
+<pre class="text">
+identify -precision 5 -define identify:locate=maximum -define identify:limit=3 image.png
+</pre>
+
 <p>You can find additional examples of using <code>identify</code> in <a href="http://www.imagemagick.org/Usage/">Examples of ImageMagick Usage</a>.</p>
 
 </div>
@@ -550,7 +601,7 @@ transparent, extract, background, or shape the alpha channel</td>
     <span id="linkbar-east"> </span>
 </div>
 <div class="footer">
-  <span id="footer-west">©  1999-2015 ImageMagick Studio LLC</span>
+  <span id="footer-west">©  1999-2014 ImageMagick Studio LLC</span>
   <span id="footer-east"> <a href="contact.html">Contact the Wizards</a></span>
 </div>
 <div style="clear: both; margin: 0; width: 100%; "></div>

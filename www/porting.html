@@ -250,7 +250,7 @@ options, and more global use of 'image properities' (more commonly known as
 
 <h2><a id="hdri"></a>High Dynamic Range Imaging</h2>
 <div class="doc-section">
-<p>ImageMagick version 7 enables <a href="high-dynamic-range.html">high dynamic range imaging</a> (HDRI) by default.  HDRI accurately represents the wide range of intensity levels found in real scenes ranging from the brightest direct sunlight to the deepest darkest shadows.  In addition, image processing results are more accurate.  The disadvantage is it requires more memory and may result in slower processing times.  To disable HDRI (recommended for smart phone builds such as iOS), simply add <code>--disable-hdri</code> to the configure script command line when building ImageMagick.</p>
+<p>ImageMagick version 7 enables <a href="high-dynamic-range.html">high dynamic range imaging</a> (HDRI) by default.  HDRI accurately represents the wide range of intensity levels found in real scenes ranging from the brightest direct sunlight to the deepest darkest shadows.  In addition, image processing results are more accurate.  The disadvantage is it requires more memory and may result in slower processing times.  If you see differences in the results of your version 6 command-line with version 7, it is likely due to HDRI.  You may need to add <code>-clamp</code> to your command-line to constrain pixels to the 0 .. QuantumRange range, or disable HDRI when you build ImaegMagick version 7.  To disable HDRI (recommended for smart phone builds such as iOS), simply add <code>--disable-hdri</code> to the configure script command line when building ImageMagick.</p>
 </div>
 
 <h2><a id="channels"></a>Pixel Channels</h2>
@@ -459,6 +459,21 @@ options, and more global use of 'image properities' (more commonly known as
 <div class="doc-section">
 <p>We support alpha now, previously opacity.  With alpha, a value of 0 means that the pixel does not have any coverage information and is transparent; i.e. there was no color contribution from any geometry because the geometry did not overlap this pixel. A value of QuantumRange means that the pixel is opaque because the geometry completely overlapped the pixel. As a consequence, in version 7, the PixelInfo structure member alpha has replaced the previous opacity member.  Another consequence is the alpha part of a sRGB value in hexadecimal notation is now reversed (e.g. #0000 is fully transparent).</p>
 </div>
+<h2><a id="colorspace"></a>Colorspace</h2>
+<div class="doc-section">
+<p>The <code>Rec601Luma</code> and <code>Rec709Luma</code> colorspaces are no longer supported.  Instead, specify the <code>gray</code> colorspace and choose from these intensity options:</p>
+<pre class="text">
+Rec601Luma
+Rec601Luminance
+Rec709Luma
+Rec709Luminance
+</pre>
+<p>For example,</p>
+<pre class="text">
+convert myImage.png -intensity Rec709Luminance -colorspace gray myImage.jpg
+</pre>
+
+</div>
 <h2><a id="grayscale"></a>Grayscale</h2>
 <div class="doc-section">
 <p>Previously, grayscale images were Rec601Luminance and consumed 4 channels: red, green, blue, and alpha.  With version 7, grayscale consumes only 1 channel requiring far less resources as a result.</p>
@@ -483,6 +498,7 @@ identify -verbose -mask r mask.png statue.tif
 <p>The IntegerPixel storage type is removed (use LongPixel instead) and LongLongPixel is added</p>
 <p>Image signatures have changed to account for variable pixel channels.</p>
 <p>All color packet structures, PixelPacket, LongPacket, and DoublePacket, are consolidated to a single color structure, PixelInfo.</p>
+<p>The ChannelMoments structure member <code>I</code> is now <code>invariant</code>.  <code>I</code> conflicts with the <code>complex.h</code> header.</p>
 </div>
 <h2><a id="headers"></a>Header Files</h2>
 <div class="doc-section">
@@ -501,6 +517,8 @@ MagickWand-config
 </pre>
 <p>The FilterImage() method has been removed.  Use ConvolveImage() instead.</p>
 
+<p>The <code>%[min]</code> and <code>%[max]</code> string escapes are no longer supported.  Use <code>%[minima]</code> and <code>%[maxima]</code> instead.</p>
+
 <p>In addition, all deprecated <a href="http://magick.imagemagick.org/api/deprecate.html">MagickCore</a> and <a href="http://magick.imagemagick.org/api/magick-deprecate.html">MagickWand</a> methods are no longer available in version 7.</p>
 </div>
 
@@ -509,14 +527,14 @@ MagickWand-config
 <div class="doc-section">
 
 <p>As mentioned the primary focus of the changes to the Shell API or Command
-Line Interface is the the abstration so that not only can 'options' be read
+Line Interface is the abstraction so that not only can <em>options</em> be read
 from command line arguments, but also from a file (script) or from a file
 stream (interactive commands, or co-processing). </p>
 
 <p>To do this the CLI parser needed to be re-written, so as to always perform
 all options, in a strict, do-it-as-you-see it order. Previously in IMv6
 options were performed in groups (known as 'FireOptions), this awkwardness is
-now gone.  However the strict order means that you can no long give operations
+now gone.  However the strict order means that you can no longer give operations
 before providing an image for the operations to work on.  To do so will now
 produce an error. </p>
 
@@ -544,10 +562,11 @@ currently done by removing alpha from teh active channels via
 <code>-channel</code> option.  (e.g. <code>convert castle.gif -channel RGB
 -negate castle.png</code>). </p>
 
-<p>Reading gray-scale images will generate a image with only one channel. If
+<p>Reading gray-scale images generate an image with only one channel. If
 that image is to then accept color the <code>-colorspace</code> setting needs to
 be applied to expand the one channel into separate RGB (or other) channels.
 </p>
+<p>Previously, command-line arguments were limited to 4096 characters, with ImageMagick version 7, the limit has increased to 8192 characters.</p>
 
 <h3>Command Changes</h3>
 <dl>
@@ -570,11 +589,21 @@ be applied to expand the one channel into separate RGB (or other) channels.
 
 </dl>
 
-<h3>Behavorial Changes</h3>
+<h3>Behavioral Changes</h3>
+<p>Image settings are applied to each image on the command line.  To associate a setting with a particular image, use parenthesis to remove ambiguity.  In this example we assign a unique page offset to each image:</p>
+<pre class="text">
+convert \( -page +10+20 first.png \) \( -page +100+200 second.png \) ...
+</pre>
+
+<p>By default, image operations such as convolution blends alpha with each channel.  To convolve each channel independently, deactivate the alpha channel as follows:</p>
+<pre class="text">
+convert ... -alpha discrete -blur 0x1 ...
+</pre>
+<p>To just copy the alpha values, use <code>-alpha off</code>.</p>
 <p>Some options have changed in ImageMagick version 7.  These include:</p>
 <dl>
-<dt>-combine</dt>
-<dd>This option now requires an argument, the image colorspace (e.g. -combine sRGB).</dd>
+<dt>+combine</dt>
+<dd>This option now requires an argument, the image colorspace (e.g. +combine sRGB).</dd>
 </dl>
 
 <h3>New Options</h3>
@@ -592,13 +621,13 @@ scripts.</p>
 
 <dt>--</dt>
 <dd>End of options, to be used in IMv7 "<code>mogrify</code>" command to
-    explictally separate the operations to be applied and the images that
+    explicitly separate the operations to be applied and the images that
     are to be processed 'in-place'.  (not yet implemented).  However if
     not provided, "<code>-read</code>" can still be used to differentiate
     secondary image reads (for use in things like alpha composition) from
     the 'in-place' image being processed. </dd>
 
-<dd>In other commands (such as "magick") it is equivelent to a explict
+<dd>In other commands (such as "magick") it is equivalent to a explicit
     "<code>-read</code>" (see below) of the next option as a image (as it was in
     IMv6).  </dd>
 
@@ -675,14 +704,6 @@ scripts.</p>
 <dd>currently negates all channels, including alpha if present.  As such you
     may need to use the -channel option to prevent alpha negation.  </dd>
 
-<dt>-convolve</dt>
-<dd>option no longer normalizes the kernel argument (unless some type of
-    masking is involved, such as alpha blending) and accepts named kernels
-    (see <a href="http://www.imagemagick.org/Usage/convolve/" >IM Examples,
-    Convolve</a> ) as well as non-square <a
-    href="http://www.imagemagick.org/Usage/morphology/#user">user defined
-    kernels</a>. Use <code>-define convolve:normalize=true</code> on the command-line to force normalization.</dd>
-
 </dl>
 
 <h3>Deprecated warning given, but will work (for now)</h3>
@@ -712,7 +733,7 @@ example "+annotate", "+resize", "+clut", and "+draw" .</p>
 
 <dl>
 <dt>-affinity</dt>
-<dd>Replaced by <code>-affinity</code>.</dd>
+<dd>Replaced by <code>-remap</code>.</dd>
 <dt>-maximum</dt>
 <dd>Replaced by <code>-evaluate-sequence Max</code>.</dd>
 <dt>-median</dt>
@@ -791,7 +812,7 @@ example "+annotate", "+resize", "+clut", and "+draw" .</p>
     <span id="linkbar-east"> </span>
 </div>
 <div class="footer">
-  <span id="footer-west">©  1999-2015 ImageMagick Studio LLC</span>
+  <span id="footer-west">©  1999-2014 ImageMagick Studio LLC</span>
   <span id="footer-east"> <a href="contact.html">Contact the Wizards</a></span>
 </div>
 <div style="clear: both; margin: 0; width: 100%; "></div>

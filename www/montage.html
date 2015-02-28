@@ -233,7 +233,7 @@
 
 <p>We list a few examples of the <code>montage</code> command here to illustrate its usefulness and ease of use.  To get started, let's montage two images into a single composite:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>montage -background #336699 -geometry +4+4 rose.jpg red-ball.png montage.jpg</span></p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>montage -background '#336699' -geometry +4+4 rose.jpg red-ball.png montage.jpg</span></p>
 <p class="image">
   <a href="../images/rose.jpg">
   <img style="margin-top:14px; margin-bottom:14px;" src="../images/rose.jpg" width="70" height="46" alt="rose" />
@@ -249,7 +249,7 @@
 
 <p>Ok, let's add some decorations:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>montage -label %f -frame 5 -background #336699 -geometry +4+4 rose.jpg red-ball.png frame.jpg</span></p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>montage -label %f -frame 5 -background '#336699' -geometry +4+4 rose.jpg red-ball.png frame.jpg</span></p>
 <p class="image">
   <a href="../images/rose.jpg">
   <img style="margin-top:31px; margin-bottom:31px;" src="../images/rose.jpg" width="70" height="46" alt="rose.jpg" />
@@ -646,6 +646,11 @@ transparent, extract, background, or shape the alpha channel</td>
   </tr>
 
   <tr>
+    <td valign="top"><a href="command-line-options.html#scale">-scale <em class="option">geometry</em></a></td>
+    <td valign="top">scale the image</td>
+  </tr>
+
+  <tr>
     <td valign="top"><a href="command-line-options.html#scenes">-scenes<em>range</em></a></td>
     <td valign="top">image scene range</td>
   </tr>
@@ -794,7 +799,7 @@ transparent, extract, background, or shape the alpha channel</td>
     <span id="linkbar-east"> </span>
 </div>
 <div class="footer">
-  <span id="footer-west">©  1999-2015 ImageMagick Studio LLC</span>
+  <span id="footer-west">©  1999-2014 ImageMagick Studio LLC</span>
   <span id="footer-east"> <a href="contact.html">Contact the Wizards</a></span>
 </div>
 <div style="clear: both; margin: 0; width: 100%; "></div>
