@@ -189,25 +189,6 @@
 <div class="eastbar">
   <script type="text/javascript">
     /* <![CDATA[ */
-    window.___gcfg = {
-      lang: 'en-US'
-    };
-
-    (function() {
-      var po = document.createElement('offline-script');
-      po.type = 'text/javascript';
-      po.async = true;
-      po.src = 'https://apis.google.com/js/plusone.js';
-      var script = document.getElementsByTagName('offline-script')[0];
-      script.parentNode.insertBefore(po, script);
-    })();
-    var gplusone = document.getElementById("gplusone");
-    gplusone.setAttribute("data-size","medium");
-    gplusone.setAttribute("data-count","true");
-    /* ]]> */
-  </script>
-  <script type="text/javascript">
-    /* <![CDATA[ */
     (function() {
         var po = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
         po.type = 'text/javascript';
@@ -218,12 +199,11 @@
     })();
     /* ]]> */
   </script>
-  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="../index.html"></a></div>
+  <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="../index.html"></a>
   <noscript>
     <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
     <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0" /></a>
   </noscript>
-  <div class="g-plusone" data-size="standard" data-count="true"></div>
 </div>
 
 <div class="main">
@@ -309,6 +289,12 @@ file or data stream.</p>
 
 <p>Any image larger than this area limit is cached to disk rather than memory.</p>
 
+<p>Use <code>width</code> to limit the maximum width of an image in pixels.  Exceed this limit and an exception is thrown and processing stops.</p>
+
+<pre class="text">
+  &lt;policy domain="resource" name="width" value="100MP"/>
+</pre>
+
 <p>To limit the elapsed time of any ImageMagick command to 5 minutes, use this policy:</p>
 
 <pre class="text">
@@ -354,8 +340,8 @@ file or data stream.</p>
 <pre class="text">
   $MAGICK_CONFIGURE_PATH
   $MAGICK_HOME/etc/ImageMagick
-  $MAGICK_HOME/share/ImageMagick-6.8.9 
-  $PREFIX/share/ImageMagick-6.8.9 
+  $MAGICK_HOME/share/ImageMagick-6.9.0 
+  $PREFIX/share/ImageMagick-6.9.0 
   $HOME/.config/ImageMagick/
   &lt;<em>client path</em>&gt;/etc/ImageMagick/
   &lt;<em>current directory</em>&gt;
@@ -371,7 +357,7 @@ file or data stream.</p>
   &lt;<em>client path</em>&gt;
 </pre>
 
-<p>Above, $PREFIX is the default install path, typically <code>c:\\Program Files\\ImageMagick-6.8.9</code>.</p>
+<p>Above, $PREFIX is the default install path, typically <code>c:\\Program Files\\ImageMagick-6.9.0</code>.</p>
 
 <p>For an uninstalled Windows installation, the configuration load order is:</p>
 
@@ -394,23 +380,23 @@ file or data stream.</p>
 <p>An image coder (i.e. encoder / decoder) is responsible for registering, optionally classifying, optionally reading, optionally writing, and unregistering one image format (e.g. PNG, GIF, JPEG, etc.).  ImageMagick searches for coders in the following order and it uses the first match found:</p>
 
 <pre class="text">
-  $MAGICK_HOME/lib/ImageMagick-6.8.9/modules-Q16/coders/
-  &lt;<em>client path</em>&gt;/../lib/ImageMagick-6.8.9/modules-Q16/coders/
-  $MAGICK_HOME/lib/ImageMagick-6.8.9/modules-Q16/coders
-  $MAGICK_HOME/share/ImageMagick-6.8.9/modules-Q16/coders
+  $MAGICK_HOME/lib/ImageMagick-6.9.0/modules-Q16/coders/
+  &lt;<em>client path</em>&gt;/../lib/ImageMagick-6.9.0/modules-Q16/coders/
+  $MAGICK_HOME/lib/ImageMagick-6.9.0/modules-Q16/coders
+  $MAGICK_HOME/share/ImageMagick-6.9.0/modules-Q16/coders
   $HOME/.config/ImageMagick/
-  &lt;<em>client path</em>&gt;/lib/ImageMagick-6.8.9/modules-Q16/coders
+  &lt;<em>client path</em>&gt;/lib/ImageMagick-6.9.0/modules-Q16/coders
 </pre>
 
 <h4>Filters</h4>
 <p>ImageMagick provides a convenient mechanism for adding your own custom image processing algorithms.  ImageMagick searches for filters in the following order and it uses the first match found:</p>
 <pre class="text">
-  $MAGICK_HOME/lib/ImageMagick-6.8.9/modules-Q16/filters/
-  &lt;<em>client path</em>&gt;/../lib/ImageMagick-6.8.9/modules-Q16/filters/
-  $MAGICK_HOME/lib/ImageMagick-6.8.9/modules-Q16/filters
-  $MAGICK_HOME/share/ImageMagick-6.8.9/modules-Q16/filters
+  $MAGICK_HOME/lib/ImageMagick-6.9.0/modules-Q16/filters/
+  &lt;<em>client path</em>&gt;/../lib/ImageMagick-6.9.0/modules-Q16/filters/
+  $MAGICK_HOME/lib/ImageMagick-6.9.0/modules-Q16/filters
+  $MAGICK_HOME/share/ImageMagick-6.9.0/modules-Q16/filters
   $HOME/.config/ImageMagick/
-  &lt;<em>client path</em>&gt;/lib/ImageMagick-6.8.9/modules-Q16/filters
+  &lt;<em>client path</em>&gt;/lib/ImageMagick-6.9.0/modules-Q16/filters
 </pre>
 
 </div>
@@ -423,7 +409,7 @@ file or data stream.</p>
 <pre class="text">
   $MAGICK_CONFIGURE_PATH
   $MAGICK_HOME/etc/ImageMagick/
-  $MAGICK_HOME/share/ImageMagick-6.8.9/
+  $MAGICK_HOME/share/ImageMagick-6.9.0/
   $HOME/.config/ImageMagick/
   &lt;<em>client path</em>&gt;/etc/ImageMagick/
   $MAGICK_FONT_PATH
@@ -467,6 +453,8 @@ file or data stream.</p>
 <dt class="doc">MAGICK_FONT_PATH</dt>
   <dd>Set path ImageMagick searches for TrueType and Postscript Type1 font files.</dd>
   <dd>This path is only consulted if a particular font file is not found in the current directory.</dd>
+<dt class="doc">MAGICK_HEIGHT_LIMIT</dt>
+  <dd>Set the maximum <em>height</em> of an image.</dd>
 <dt class="doc">MAGICK_HOME</dt>
   <dd>Set the path at the top of ImageMagick installation directory.</dd>
   <dd>This path is consulted by <em>uninstalled</em> builds of ImageMagick which do not have their location hard-coded or set by an installer.</dd>
@@ -494,8 +482,10 @@ file or data stream.</p>
 <dt class="doc">MAGICK_TIME_LIMIT</dt>
   <dd>Set maximum time in seconds.</dd>
   <dd>When this limit is exceeded, an exception is thrown and processing stops.</dd>
+<dt class="doc">MAGICK_WIDTH_LIMIT</dt>
+  <dd>Set the maximum <em>width</em> of an image.</dd>
 </dl>
-<p>Define arguments for the <code>MAGICK_AREA_LIMIT</code>, <code>MAGICK_DISK_LIMIT</code>, <code>MAGICK_MAP_LIMIT</code>, and <code>MAGICK_MEMORY_LIMIT</code> environment variables with SI prefixes (.e.g <code>100MB</code>).</p>
+<p>Define arguments for the <code>MAGICK_AREA_LIMIT</code>, <code>MAGICK_DISK_LIMIT</code>, <code>MAGICK_MAP_LIMIT</code>, and <code>MAGICK_MEMORY_LIMIT</code> environment variables with SI prefixes (.e.g <code>100MB</code>). <code>MAGICK_WIDTH_LIMIT</code> and <code>MAGICK_HEIGHT_LIMIT</code> accepts pixel suffixes such as MP for mega-pixels (e.g. 100MP).</p>
 </div>
 
 
@@ -519,4 +509,4 @@ file or data stream.</p>
 <div style="clear: both; margin: 0; width: 100%; "></div>
 </body>
 </html>
-<!-- Magick Cache 2nd November 2014 12:39 -->
+<!-- Magick Cache 28th February 2015 07:09 -->

@@ -189,25 +189,6 @@
 <div class="eastbar">
   <script type="text/javascript">
     /* <![CDATA[ */
-    window.___gcfg = {
-      lang: 'en-US'
-    };
-
-    (function() {
-      var po = document.createElement('offline-script');
-      po.type = 'text/javascript';
-      po.async = true;
-      po.src = 'https://apis.google.com/js/plusone.js';
-      var script = document.getElementsByTagName('offline-script')[0];
-      script.parentNode.insertBefore(po, script);
-    })();
-    var gplusone = document.getElementById("gplusone");
-    gplusone.setAttribute("data-size","medium");
-    gplusone.setAttribute("data-count","true");
-    /* ]]> */
-  </script>
-  <script type="text/javascript">
-    /* <![CDATA[ */
     (function() {
         var po = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
         po.type = 'text/javascript';
@@ -218,24 +199,109 @@
     })();
     /* ]]> */
   </script>
-  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="../index.html"></a></div>
+  <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="../index.html"></a>
   <noscript>
     <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
     <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0" /></a>
   </noscript>
-  <div class="g-plusone" data-size="standard" data-count="true"></div>
 </div>
 
 <div class="main">
 
 <h1>ImageMagick Changelog</h1>
-<dl><dt>2014-10-25  6.8.9-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<dl><dt>2015-02-22  6.9.0-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.9.0-7, SVN revision 18067.</dd>
+<dt>2015-02-15  6.9.0-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Line strokes appeared too thin (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=26927).</dd>
+  <dd> Keep text in caption area (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=22504).</dd>
+<dt>2015-02-14  6.9.0-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.9.0-6, SVN revision 18010.</dd>
+<dt>2015-02-12  6.9.0-6 Dirk Lemstra &lt;dirk@lem.....org&gt;</dt>
+  <dd> Fixed command line execution in Windows for delegates that    move files (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=1&amp;t=27027).</dd>
+<dt>2015-02-10  6.9.0-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> A transient bug for the write MSL element (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=27022).</dd>
+<dt>2015-02-08  6.9.0-6 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Remove uninitialized, unused "p++" from coders/png.c, MNG reader.</dd>
+  <dd> Initialize "length" in coders/png.c, WriteJNGImage().</dd>
+  <dd> Fix signed/unsigned mismatch in coders/png.c, MNG reader.</dd>
+<dt>2015-02-08  6.9.0-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.9.0-5, SVN revision 17946.</dd>
+<dt>2015-01-30  6.9.0-5 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> In coders/gif.c, quiet two warnings.</dd>
+<dt>2015-01-24  6.9.0-5 Dirk Lemstra &lt;dirk@lem.....org&gt;</dt>
+  <dd> Fixed iccColorProfile() in Magick++ (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=2&amp;t=26910).</dd>
+  <dd> Fixed infinite loop in HDR reader (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=26929).</dd>
+<dt>2015-01-23  6.9.0-5 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Check lengths of certain MNG chunks before reading them.</dd>
+  <dd> In the PNG codec, check status wherever a function returns it.</dd>
+<dt>2015-01-18  6.9.0-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Remove possible resource memory leak in a multi-threaded program (bug    report and patch from David Chapman &lt;d...@acm.org&gt;.</dd>
+  <dd> Small optimization to pixel cache.</dd>
+  <dd> More image sanity checks.</dd>
+  <dd> Support writing base64-encoded images (e.g<dt>	  convert logo: inline:jpeg:logo.txt).</dt>
+  <dd> Repair small TIFF leak when pinging (patch provided by Andrey Cherniy).</dd>
+<dt>2015-01-16  6.9.0-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.9.0-4, SVN revision 17697.</dd>
+<dt>2015-01-07  6.9.0-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Additional coder sanity checks (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=26842,    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=26682).</dd>
+<dt>2015-01-05  6.9.0-4 Dirk Lemstra &lt;dirk@lem.....org&gt;</dt>
+  <dd> Report Ghostscript version when -verbose is used and when an exception    is raised.</dd>
+  <dd> Fixed invalid path check in MagickCoreGenesis under Windows and disabled    ProvideDllMain by default (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;p=118875).</dd>
+<dt>2015-01-01  6.9.0-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.9.0-3, SVN revision 17537.</dd>
+<dt>2015-01-01  6.9.0-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> ImageMagick builds when HDRI is enabled (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=26803).</dd>
+<dt>2014-12-31  6.9.0-3 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Don't read beyond the end of a tEXt keyword when checking for Raw profile.</dd>
+<dt>2014-12-27  6.9.0-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.9.0-2, SVN revision 17468.</dd>
+<dt>2014-12-14  6.9.0-1 Dirk Lemstra &lt;dirk@snakeware...&gt;</dt>
+  <dd> Added support for reading EXR files to the Windows distribution.</dd>
+  <dd> Fixed enabling alpha in 32-bit BMP files (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=26662).</dd>
+  <dd> Added support for writing 16-bit TGA files (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=1&amp;t=26693).</dd>
+  <dd> Improved performance of dds:cluster-fit when OpenMP is enabled.</dd>
+  <dd> Added support for distributed pixel cache to the Windows distribution.</dd>
+<dt>2014-12-04  6.9.0-1 Alexey Dolgavin &lt;dolgavin.alexey@gmail...&gt;</dt>
+  <dd> Fix ImageMagick crashes while read EXIF from TIFF.</dd>
+<dt>2014-11-20  6.9.0-1 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Don't handle a "previous" image in the PNG or JNG decoder.</dd>
+  <dd> Don't override gamma with 1.0 when reading a grayscale PNG image (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=26576).</dd>
+  <dd> Update progress monitor for every PNG row instead of every pass (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=1&amp;t=26589).</dd>
+  <dd> Reject input PNG with dimensions larger than specified with -limit width    and -limit height.</dd>
+<dt>2014-11-20  6.9.0-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Fix double free / invalid read when converting jpg to pdb (thanks to    Hanno).</dd>
+  <dd> Maximum XWD image size is 64Kx64K (thanks to Hanno).</dd>
+  <dd> Maximum DPX number of elements is 8 (thanks to Hanno).</dd>
+  <dd> Transient problem with SVG (reference      http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=26587).</dd>
+  <dd> Numerous buffer overflow fixes (thanks to Gynvael Coldwind and    Mateusz Jurczyk of the Google Security Team).</dd>
+  <dd> Additional PNM sanity checks (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=26682).</dd>
+  <dd> The SetImageBias() bias value is no longer ignored (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=25732).</dd>
+  <dd> Area crop now returns the expected number of tiles (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=26701).</dd>
+  <dd> Respect TGA ColorMapIndex field (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=26738).</dd>
+  <dd> Clang does not support __alloc_size__, fix fabs() (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=26739).</dd>
+  <dd> Support width and height resource limits.</dd>
+  <dd> Don't read TIFF profiles when pinging (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=2&amp;t=26670).</dd>
+<dt>2014-11-16  6.9.0-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.9.0-0, SVN revision 17067.</dd>
+<dt>2014-11-03  6.9.0-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Check for zero-sized rendered SVG image (bug report from    Vladimir Davydov).</dd>
+<dt>2014-11-01  6.8.9-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.8.9-10, SVN revision 16910.</dd>
+<dt>2014-10-29  6.8.9-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> EXIF directory offsets must be greater than 0 (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=26456).</dd>
+  <dd> Accept morphology kernels from files (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=2&amp;t=26466).</dd>
+  <dd> Don't optimize JPEG compression by default (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=26482).</dd>
+<dt>2014-10-26  6.8.9-10 Dirk Lemstra &lt;dirk@snakeware...&gt;</dt>
+  <dd> Added support for reading jpeg compressed YCCK tiff files (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=24412).</dd>
+  <dd> Fixed reading DICOM files with big endian transfer syntax (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=26448).</dd>
+<dt>2014-10-25  6.8.9-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> New version 6.8.9-9, SVN revision 16819.</dd>
 <dt>2014-10-03  6.8.9-9 Dirk Lemstra &lt;dirk@snakeware...&gt;</dt>
   <dd> Added sixel coder created by Hayaki Saito (@kefir_).</dd>
   <dd> Fixed buffer overflow in PCX and DCM coder (bug report from Hanno Böck).</dd>
   <dd> Added support for reading/writing the tIME chunk in the PNG coder.</dd>
   <dd> Added eps:fit-page option to the PS coder to set -dEPSFitPage.</dd>
+  <dd> Improved reporting tiff:alpha and allowed setting tiff:alpha to    unspecified.</dd>
 <dt>2014-09-30  6.8.9-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Support xyY colorspace (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=2&amp;t=26324).</dd>
   <dd> Reduce noise while preserving edges with the -kuwahara option.</dd>
@@ -3693,4 +3759,3 @@
 <div style="clear: both; margin: 0; width: 100%; "></div>
 </body>
 </html>
-<!-- Magick Cache 2nd November 2014 12:42 -->

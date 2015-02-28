@@ -189,25 +189,6 @@
 <div class="eastbar">
   <script type="text/javascript">
     /* <![CDATA[ */
-    window.___gcfg = {
-      lang: 'en-US'
-    };
-
-    (function() {
-      var po = document.createElement('offline-script');
-      po.type = 'text/javascript';
-      po.async = true;
-      po.src = 'https://apis.google.com/js/plusone.js';
-      var script = document.getElementsByTagName('offline-script')[0];
-      script.parentNode.insertBefore(po, script);
-    })();
-    var gplusone = document.getElementById("gplusone");
-    gplusone.setAttribute("data-size","medium");
-    gplusone.setAttribute("data-count","true");
-    /* ]]> */
-  </script>
-  <script type="text/javascript">
-    /* <![CDATA[ */
     (function() {
         var po = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
         po.type = 'text/javascript';
@@ -218,12 +199,11 @@
     })();
     /* ]]> */
   </script>
-  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="../index.html"></a></div>
+  <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="../index.html"></a>
   <noscript>
     <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
     <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0" /></a>
   </noscript>
-  <div class="g-plusone" data-size="standard" data-count="true"></div>
 </div>
 
 <div class="main">
@@ -650,9 +630,9 @@ the supported image formats.</p>
 
   <tr>
     <td valign="top">INLINE</td>
-    <td valign="top">R</td>
+    <td valign="top">RW</td>
     <td valign="top">Base64-encoded inline image</td>
-    <td valign="top">The inline image look similar to <code>inline:data:;base64,/9j/4AAQSk...knrn//2Q==</code>.  If the inline image exceeds 5000 characters, it must be referenced from a file (e.g. <code>inline:inline.txt</code>).</td>
+    <td valign="top">The inline image look similar to <code>inline:data:;base64,/9j/4AAQSk...knrn//2Q==</code>.  If the inline image exceeds 5000 characters, reference it from a file (e.g. <code>inline:inline.txt</code>). You can also write a base64-encoded image.  Embed the mime type in the filename, for example, <code>convert myimage inline:jpeg:myimage.txt</code>.</td>
   </tr>
 
   <tr>
@@ -701,7 +681,7 @@ the supported image formats.</p>
     <td valign="top"><a href="http://www.jpeg.org/">JPEG</a></td>
     <td valign="top">RW</td>
     <td valign="top">Joint Photographic Experts Group JFIF format</td>
-    <td valign="top">Note, JPEG is a lossy compression.  In addition, you cannot create black and white images with JPEG nor can you save transparency.<br /><br /> Requires <a href="http://www.ijg.org/files/">jpegsrc.v8c.tar.gz</a>.  You can set quality scaling for luminance and chrominance separately (e.g. -quality 90,70). You can optionally define the DCT method, for example to specify the float method, use <a href="command-line-options.html#define">-define jpeg:dct-method=float</a>. By default we compute optimal Huffman coding tables.  Specify <a href="command-line-options.html#define">-define jpeg:optimize-coding=false</a> to use the default Huffman tables. Two other options include <a href="command-line-options.html#define">-define jpeg:block-smoothing</a> and <a href="command-line-options.html#define">-define jpeg:fancy-upsampling</a>. Set the sampling factor with <a href="command-line-options.html#define">-define jpeg:sampling-factor</a>. You can size the image with <code>jpeg:size</code>, for example <a href="command-line-options.html#define">-define jpeg:size=128x128</a>. To restrict the maximum file size, use <code>jpeg:extent</code>, for example <a href="command-line-options.html#define">-define jpeg:extent=400KB</a>.  To define one or more custom quantization tables, use <a href="command-line-options.html#define">-define jpeg:q-table=<i>filename</i></a>.</td>
+    <td valign="top">Note, JPEG is a lossy compression.  In addition, you cannot create black and white images with JPEG nor can you save transparency.<br /><br /> Requires <a href="http://www.ijg.org/files/">jpegsrc.v8c.tar.gz</a>.  You can set quality scaling for luminance and chrominance separately (e.g. -quality 90,70). You can optionally define the DCT method, for example to specify the float method, use <a href="command-line-options.html#define">-define jpeg:dct-method=float</a>. By default we compute optimal Huffman coding tables.  Specify <a href="command-line-options.html#define">-define jpeg:optimize-coding=false</a> to use the default Huffman tables. Two other options include <a href="command-line-options.html#define">-define jpeg:block-smoothing</a> and <a href="command-line-options.html#define">-define jpeg:fancy-upsampling</a>. Set the sampling factor with <a href="command-line-options.html#define">-define jpeg:sampling-factor</a>. You can size the image with <code>jpeg:size</code>, for example <a href="command-line-options.html#define">-define jpeg:size=128x128</a>. To restrict the maximum file size, use <code>jpeg:extent</code>, for example <a href="command-line-options.html#define">-define jpeg:extent=400KB</a>.  To define one or more custom quantization tables, use <a href="command-line-options.html#define">-define jpeg:q-table=<i>filename</i></a>. To avoid reading a particular associated image profile, use <a href="command-line-options.html#define">-define profile:skip=<i>name</i></a> (e.g. profile:skip=ICC).</td>
   </tr>
 
   <tr>
@@ -971,7 +951,7 @@ convert \( -size 15x15 canvas:black canvas:white -append \) \
     <td valign="top"><a href="http://www.libpng.org/pub/png/">PNG</a></td>
     <td valign="top">RW</td>
     <td valign="top">Portable Network Graphics</td>
-    <td valign="top">Requires libpng-1.0.11 or later, <a href="http://www.libpng.org/pub/png/libpng.html">libpng-1.2.5</a> or later recommended. The PNG specification does not support pixels-per-inch units, only pixels-per-centimeter.</td>
+    <td valign="top">Requires libpng-1.0.11 or later, <a href="http://www.libpng.org/pub/png/libpng.html">libpng-1.2.5</a> or later recommended. The PNG specification does not support pixels-per-inch units, only pixels-per-centimeter. To avoid reading a particular associated image profile, use <a href="command-line-options.html#define">-define profile:skip=<i>name</i></a> (e.g. profile:skip=ICC).</td>
   </tr>
 
   <tr>
@@ -2109,4 +2089,4 @@ convert \( -size 15x15 canvas:black canvas:white -append \) \
 <div style="clear: both; margin: 0; width: 100%; "></div>
 </body>
 </html>
-<!-- Magick Cache 2nd November 2014 14:29 -->
+<!-- Magick Cache 28th February 2015 07:59 -->
