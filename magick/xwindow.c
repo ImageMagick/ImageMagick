@@ -3007,7 +3007,7 @@ MagickExport void XGetPixelPacket(Display *display,
   if (pixel->pixels != (unsigned long *) NULL)
     pixel->pixels=(unsigned long *) RelinquishMagickMemory(pixel->pixels);
   pixel->pixels=(unsigned long *) AcquireQuantumMemory(packets,
-    sizeof(pixel->pixels));
+    sizeof(*pixel->pixels));
   if (pixel->pixels == (unsigned long *) NULL)
     ThrowXWindowFatalException(ResourceLimitFatalError,"UnableToGetPixelInfo",
       image->filename);
@@ -5869,7 +5869,7 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
         (XPixelIntensity(&window->pixel_info->background_color) <
          XPixelIntensity(&window->pixel_info->foreground_color) ? 0x80 : 0x00);
       polarity=(unsigned short) ((GetPixelIntensity(image,
-        &canvas->colormap[0])) < (QuantumRange/2) ? 1 : 0);
+        &canvas->colormap[0])) < (QuantumRange/2.0) ? 1 : 0);
       if (canvas->colors == 2)
         polarity=GetPixelIntensity(canvas,&canvas->colormap[0]) <
           GetPixelIntensity(canvas,&canvas->colormap[1]);
@@ -6477,7 +6477,7 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
         (XPixelIntensity(&window->pixel_info->background_color) <
          XPixelIntensity(&window->pixel_info->foreground_color) ?  0x01 : 0x00);
       polarity=(unsigned short) ((GetPixelIntensity(image,
-        &canvas->colormap[0])) < (QuantumRange/2) ? 1 : 0);
+        &canvas->colormap[0])) < (QuantumRange/2.0) ? 1 : 0);
       if (canvas->colors == 2)
         polarity=GetPixelIntensity(canvas,&canvas->colormap[0]) <
           GetPixelIntensity(canvas,&canvas->colormap[1]);
