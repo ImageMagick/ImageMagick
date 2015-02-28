@@ -823,13 +823,15 @@ void Magick::raiseImage::operator()( Magick::Image &image_ ) const
 
 Magick::ReadOptions::ReadOptions(void)
   : _imageInfo(static_cast<ImageInfo*>(AcquireMagickMemory(
-      sizeof(ImageInfo))))
+      sizeof(ImageInfo)))),
+    _quiet(false)
 {
   GetImageInfo(_imageInfo);
 }
 
 Magick::ReadOptions::ReadOptions(const Magick::ReadOptions& options_)
-  : _imageInfo(CloneImageInfo(options_._imageInfo))
+  : _imageInfo(CloneImageInfo(options_._imageInfo)),
+    _quiet(false)
 {
 }
 
