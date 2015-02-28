@@ -248,6 +248,9 @@ extern "C" {
 #if !defined(tempnam)
 #  define tempnam  _tempnam_s
 #endif
+#if !defined(umask)
+#  define umask  _umask
+#endif
 #if !defined(unlink)
 #  define unlink  _unlink
 #endif
