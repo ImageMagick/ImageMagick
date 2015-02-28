@@ -253,7 +253,7 @@ static MagickBooleanType WriteBRAILLEImage(const ImageInfo *image_info,
   polarity=0;
   if (image->storage_class == PseudoClass) {
     polarity=(IndexPacket) (GetPixelLuma(image,&image->colormap[0]) >=
-      (QuantumRange/2));
+      (QuantumRange/2.0));
     if (image->colors == 2)
       polarity=(IndexPacket) (GetPixelLuma(image,&image->colormap[0]) >=
         GetPixelLuma(image,&image->colormap[1]));
