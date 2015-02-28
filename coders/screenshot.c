@@ -165,7 +165,7 @@ static Image *ReadSCREENSHOTImage(const ImageInfo *image_info,
       screen->columns=(size_t) GetDeviceCaps(hDC,HORZRES);
       screen->rows=(size_t) GetDeviceCaps(hDC,VERTRES);
       screen->storage_class=DirectClass;
-      status=SetImageExtent(image,image->columns,image->rows,exception);
+      status=SetImageExtent(screen,screen->columns,screen->rows,exception);
       if (status == MagickFalse)
         return(DestroyImageList(image));
       if (image == (Image *) NULL)
