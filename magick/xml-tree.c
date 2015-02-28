@@ -2806,9 +2806,7 @@ MagickExport char *XMLTreeInfoToXML(XMLTreeInfo *xml_info)
         p=root->processing_instructions[i][j];
       }
     }
-  ordered=(XMLTreeInfo *) NULL;
-  if (xml_info != (XMLTreeInfo *) NULL)
-    ordered=xml_info->ordered;
+  ordered=xml_info->ordered;
   xml_info->parent=(XMLTreeInfo *) NULL;
   xml_info->ordered=(XMLTreeInfo *) NULL;
   xml=XMLTreeTagToXML(xml_info,&xml,&length,&extent,0,root->attributes);
