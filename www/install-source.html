@@ -189,25 +189,6 @@
 <div class="eastbar">
   <script type="text/javascript">
     /* <![CDATA[ */
-    window.___gcfg = {
-      lang: 'en-US'
-    };
-
-    (function() {
-      var po = document.createElement('offline-script');
-      po.type = 'text/javascript';
-      po.async = true;
-      po.src = 'https://apis.google.com/js/plusone.js';
-      var script = document.getElementsByTagName('offline-script')[0];
-      script.parentNode.insertBefore(po, script);
-    })();
-    var gplusone = document.getElementById("gplusone");
-    gplusone.setAttribute("data-size","medium");
-    gplusone.setAttribute("data-count","true");
-    /* ]]> */
-  </script>
-  <script type="text/javascript">
-    /* <![CDATA[ */
     (function() {
         var po = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
         po.type = 'text/javascript';
@@ -218,12 +199,11 @@
     })();
     /* ]]> */
   </script>
-  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="../index.html"></a></div>
+  <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="../index.html"></a>
   <noscript>
     <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
     <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0" /></a>
   </noscript>
-  <div class="g-plusone" data-size="standard" data-count="true"></div>
 </div>
 
 <div class="main">
@@ -249,7 +229,7 @@
 <p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>tar xvzf ImageMagick.tar.gz</span></p>
 <p>Next configure and compile ImageMagick:</p>
 
-<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>cd ImageMagick-6.8.9</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>./configure</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>make</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>cd ImageMagick-6.9.0</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>./configure</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>make</span></p>
 <p>If ImageMagick configured and compiled without complaint, you are ready to install it on your system.  Administrator privileges are required to install.  To install, type</p>
 
 <p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>sudo make install</span></p>
@@ -278,22 +258,22 @@
 <p>You can unpack the distribution with <a href="http://www.winzip.com">WinZip</a> or type the following from any MS-DOS Command Prompt window:</p>
 
 <p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>unzip ImageMagick-windows.zip</span></p>
-<p>Next, launch your Visual Studio IDE and choose <kbd>Open->Project</kbd>.  Select the configure workspace from the <kbd>ImageMagick-6.8.9/VisualMagick/configure</kbd> folder and press Open.  Choose <kbd>Build->Build Solution</kbd>
+<p>Next, launch your Visual Studio IDE and choose <kbd>Open->Project</kbd>.  Select the configure workspace from the <kbd>ImageMagick-6.9.0/VisualMagick/configure</kbd> folder and press Open.  Choose <kbd>Build->Build Solution</kbd>
 to compile the program and on completion run the program.</p>
 
 <p class="image"><img src="../images/configure.jpg" alt="[configure]" /></p>
 
-<p>Press <kbd>Next</kbd> and click on the multi-threaded static build.  If you are using the Visual Studio 6.0 IDE, make sure no check is next to the <em>Generate Visual Studio 7</em> format option.  Now press, on <kbd>Next</kbd> twice and finally <kbd>Finish</kbd>.  The configuration utility just created a workspace required to build ImageMagick from source.  Choose <kbd>Open->Project</kbd> and select the VisualStaticMT workspace from the <kbd>ImageMagick-6.8.9/VisualMagick/</kbd>  folder.  Finally, choose <kbd>Build->Build Solution</kbd> to compile and build the ImageMagick distribution.</p>
+<p>Press <kbd>Next</kbd> and click on the multi-threaded static build.  If you are using the Visual Studio 6.0 IDE, make sure no check is next to the <em>Generate Visual Studio 7</em> format option.  Now press, on <kbd>Next</kbd> twice and finally <kbd>Finish</kbd>.  The configuration utility just created a workspace required to build ImageMagick from source.  Choose <kbd>Open->Project</kbd> and select the VisualStaticMT workspace from the <kbd>ImageMagick-6.9.0/VisualMagick/</kbd>  folder.  Finally, choose <kbd>Build->Build Solution</kbd> to compile and build the ImageMagick distribution.</p>
 
 <p>To verify ImageMagick is working properly, launch a MS-DOS Command Prompt window and type</p>
 
-<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>cd ImageMagick-6.8.9</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>convert logo: image.jpg</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>cd ImageMagick-6.9.0</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>convert logo: image.jpg</span></p>
 <p>For a more comprehensive test, run the ImageMagick validation suite:</p>
 
 <p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>validate</span></p>
 <p>Congratulations, you have a working ImageMagick distribution under Windows and you are ready to use ImageMagick to <a href="http://www.imagemagick.org/Usage/">convert, compose, or edit</a> your images or perhaps you'll want to use one of the <a href="api.html">Application Program Interfaces</a> for C, C++, Perl, and others.</p>
 
-<p>The above instructions will satisfy a great number of ImageMagick users, but we suspect a few will have additional questions or problems to consider.  For example, what does one do if ImageMagick fails to configure or compile?  Or what if you want to install ImageMagick in a place other than the <kbd>ImageMagick-6.8.9/VisualMagick/bin</kbd> folder?  Or perhaps you want to build and install the <a href="ImageMagickObject.html">ImageMagickObject</a> COM+ component.  You will find the answer to these questions, and more, in <a href="advanced-windows-installation.html">Advanced Windows Source Installation</a>.</p>
+<p>The above instructions will satisfy a great number of ImageMagick users, but we suspect a few will have additional questions or problems to consider.  For example, what does one do if ImageMagick fails to configure or compile?  Or what if you want to install ImageMagick in a place other than the <kbd>ImageMagick-6.9.0/VisualMagick/bin</kbd> folder?  Or perhaps you want to build and install the <a href="ImageMagickObject.html">ImageMagickObject</a> COM+ component.  You will find the answer to these questions, and more, in <a href="advanced-windows-installation.html">Advanced Windows Source Installation</a>.</p>
 </div>
 
 
@@ -317,4 +297,4 @@ to compile the program and on completion run the program.</p>
 <div style="clear: both; margin: 0; width: 100%; "></div>
 </body>
 </html>
-<!-- Magick Cache 2nd November 2014 14:19 -->
+<!-- Magick Cache 28th February 2015 07:19 -->

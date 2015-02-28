@@ -189,25 +189,6 @@
 <div class="eastbar">
   <script type="text/javascript">
     /* <![CDATA[ */
-    window.___gcfg = {
-      lang: 'en-US'
-    };
-
-    (function() {
-      var po = document.createElement('offline-script');
-      po.type = 'text/javascript';
-      po.async = true;
-      po.src = 'https://apis.google.com/js/plusone.js';
-      var script = document.getElementsByTagName('offline-script')[0];
-      script.parentNode.insertBefore(po, script);
-    })();
-    var gplusone = document.getElementById("gplusone");
-    gplusone.setAttribute("data-size","medium");
-    gplusone.setAttribute("data-count","true");
-    /* ]]> */
-  </script>
-  <script type="text/javascript">
-    /* <![CDATA[ */
     (function() {
         var po = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
         po.type = 'text/javascript';
@@ -218,12 +199,11 @@
     })();
     /* ]]> */
   </script>
-  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="../../index.html"></a></div>
+  <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="../../index.html"></a>
   <noscript>
     <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
     <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0" /></a>
   </noscript>
-  <div class="g-plusone" data-size="standard" data-count="true"></div>
 </div>
 
 <div class="main">
@@ -240,17 +220,17 @@
 
 <pre class="code">
   MagickBooleanType CompositeImage(Image *image,
-    const CompositeOperator compose,Image *composite_image,
+    const CompositeOperator compose,Image *source_image,
     const ssize_t x_offset,const ssize_t y_offset)
   MagickBooleanType CompositeImageChannel(Image *image,
     const ChannelType channel,const CompositeOperator compose,
-    Image *composite_image,const ssize_t x_offset,const ssize_t y_offset)
+    Image *source_image,const ssize_t x_offset,const ssize_t y_offset)
 </pre>
 
 <p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<p>the destination image, modified by he composition</p>
+<p>the canvas image, modified by he composition</p>
 
 <h5>channel</h5>
 <p>the channel.</p>
@@ -258,7 +238,7 @@
 <h5>compose</h5>
 <p>This operator affects how the composite is applied to the image.  The operators and how they are utilized are listed here http://www.w3.org/TR/SVG12/#compositing.</p>
 
-<h5>composite_image</h5>
+<h5>source_image</h5>
 <p>the composite (source) image.</p>
 
 <h5>x_offset</h5>
@@ -267,15 +247,15 @@
 <h5>y_offset</h5>
 <p>the row offset of the composited image.</p>
 
-<p>Extra Controls from Image meta-data in 'composite_image' (artifacts)</p>
+<p>Extra Controls from Image meta-data in 'source_image' (artifacts)</p>
 
 <p>o "compose:args" A string containing extra numerical arguments for specific compose methods, generally expressed as a 'geometry' or a comma separated list of numbers.</p>
 
 <p>Compose methods needing such arguments include "BlendCompositeOp" and "DisplaceCompositeOp".</p>
 
-<p>o "compose:outside-overlay" Modify how the composition is to effect areas not directly covered by the 'composite_image' at the offset given.  Normally this is dependant on the 'compose' method, especially Duff-Porter methods.</p>
+<p>o "compose:outside-overlay" Modify how the composition is to effect areas not directly covered by the 'source_image' at the offset given.  Normally this is dependant on the 'compose' method, especially Duff-Porter methods.</p>
 
-<p>If set to "false" then disable all normal handling of pixels not covered by the composite_image.  Typically used for repeated tiling of the composite_image by the calling API.</p>
+<p>If set to "false" then disable all normal handling of pixels not covered by the source_image.  Typically used for repeated tiling of the source_image by the calling API.</p>
 
 <p>Previous to IM v6.5.3-3  this was called "modify-outside-overlay"</p>
 
@@ -321,4 +301,3 @@
 <div style="clear: both; margin: 0; width: 100%; "></div>
 </body>
 </html>
-<!-- Magick Cache 2nd November 2014 12:43 -->
