@@ -886,7 +886,7 @@ static TIFFMethodType GetJPEGMethod(Image* image,TIFF *tiff,uint16 photometric,
     **value;
 
   unsigned char
-    buffer[BUFFER_SIZE+3];
+    buffer[BUFFER_SIZE+32];
 
   unsigned short
     length;
