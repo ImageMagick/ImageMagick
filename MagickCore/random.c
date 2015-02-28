@@ -451,11 +451,14 @@ static StringInfo *GenerateEntropicChaos(RandomInfo *random_info)
 
     (void) GetPathTemplate(path);
     file=mkstemp(path);
-#if defined(__OS2__)
-    setmode(file,O_BINARY);
-#endif
     if (file != -1)
-      (void) close(file);
+      {
+        (void) fchmod(file,0600);
+#if defined(__OS2__)
+        setmode(file,O_BINARY);
+#endif
+        (void) close(file);
+      }
     (void) remove_utf8(path);
     SetStringInfoLength(chaos,strlen(path));
     SetStringInfoDatum(chaos,(unsigned char *) path);
