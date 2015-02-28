@@ -13344,11 +13344,6 @@ QueryFormat(ref,...)
           PUSHs(&sv_undef);
           continue;
         }
-      PUSHs(sv_2mortal(newSViv(magick_info->adjoin)));
-      PUSHs(sv_2mortal(newSViv(magick_info->blob_support)));
-      PUSHs(sv_2mortal(newSViv(magick_info->raw)));
-      PUSHs(sv_2mortal(newSViv((long) magick_info->decoder)));
-      PUSHs(sv_2mortal(newSViv((long) magick_info->encoder)));
       if (magick_info->description == (char *) NULL)
         PUSHs(&sv_undef);
       else
