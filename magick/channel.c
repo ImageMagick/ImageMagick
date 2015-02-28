@@ -897,6 +897,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
         NULL,&background);
       if (image->colorspace == CMYKColorspace)
         ConvertRGBToCMYK(&background);
+      (void) ResetMagickMemory(&pixel,0,sizeof(pixel));
       index=0;
       SetPixelPacket(image,&background,&pixel,&index);
       image_view=AcquireAuthenticCacheView(image,exception);
