@@ -524,11 +524,14 @@ MagickExport int AcquireUniqueFileResource(char *path)
     key=DestroyStringInfo(key);
 #if defined(MAGICKCORE_HAVE_MKSTEMP)
     file=mkstemp(path);
-#if defined(__OS2__)
-    setmode(file,O_BINARY);
-#endif
     if (file != -1)
-      break;
+      {
+        (void) fchmod(file,0600);
+#if defined(__OS2__)
+        setmode(file,O_BINARY);
+#endif
+        break;
+      }
 #endif
     key=GetRandomKey(random_info,12);
     p=path+strlen(path)-12;
