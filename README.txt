@@ -1,12 +1,11 @@
 Introduction to ImageMagick
 
-  ImageMagick®, http://www.imagemagick.org, is a software suite to create,
-  edit, and compose bitmap images. It can read, convert and write images in
-  a variety of formats (over 100) including DPX, EXR, GIF, JPEG, JPEG-2000,
-  PDF, PhotoCD, PNG, Postscript, SVG, and TIFF. Use ImageMagick to scale,
-  flip, mirror, rotate, distort, shear and transform images, adjust image
-  colors, apply various special effects, or draw text, lines, polygons,
-  ellipses and Bézier curves.
+  ImageMagick® is a software suite to create, edit, compose, or convert
+  bitmap images. It can read and write images in a variety of formats (over
+  200) including PNG, JPEG, JPEG-2000, GIF, TIFF, DPX, EXR, WebP, Postscript,
+  PDF, and SVG.  Use ImageMagick to resize, flip, mirror, rotate, distort,
+  shear and transform images, adjust image colors, apply various special
+  effects, or draw text, lines, polygons, ellipses and Bézier curves.
   
   The functionality of ImageMagick is typically utilized from the command
   line or you can use the features from programs written in your favorite
@@ -27,6 +26,12 @@ Introduction to ImageMagick
   each ImageMagick release, we perform a comprehensive security assessment
   that includes memory and thread error detection to prevent security
   vulnerabilities.
+
+  ImageMagick is available from http://www.imagemagick.org/download to
+  download. It runs on Linux, Windows, Mac Os X, iOS, Android OS, and others.
+
+  The authoritative ImageMagick web site is http://www.imagemagick.org.
+
 
 Features and Capabilities
   
