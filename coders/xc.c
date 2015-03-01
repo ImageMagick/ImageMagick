@@ -147,6 +147,7 @@ static Image *ReadXCImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   (void) SetImageColorspace(image,color.colorspace);
   image->matte=color.matte;
+  (void) ResetMagickMemory(&pixel,0,sizeof(pixel));
   index=0;
   SetPixelPacket(image,&color,&pixel,&index);
   for (y=0; y < (ssize_t) image->rows; y++)
