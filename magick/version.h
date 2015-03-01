@@ -27,11 +27,11 @@ extern "C" {
 */
 #define MagickPackageName "ImageMagick"
 #define MagickCopyright  "Copyright (C) 1999-2015 ImageMagick Studio LLC"
-#define MagickSVNRevision  "18150:18152M"
+#define MagickSVNRevision  "18178:18179M"
 #define MagickLibVersion  0x690
 #define MagickLibVersionText  "6.9.0"
 #define MagickLibVersionNumber  2,0,0
-#define MagickLibAddendum  "-9"
+#define MagickLibAddendum  "-10"
 #define MagickLibInterface  2
 #define MagickLibMinInterface  2
 #if defined(_WINDOWS)
@@ -45,7 +45,7 @@ extern "C" {
 #endif
 #define MagickppLibVersionText  "6.9.0"
 #define MagickppLibVersionNumber  6:0:0
-#define MagickppLibAddendum  "-9"
+#define MagickppLibAddendum  "-10"
 #define MagickppLibInterface  6
 #define MagickppLibMinInterface  6
 #define MagickReleaseDate  "2015-02-28"
