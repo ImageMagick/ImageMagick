@@ -1,5 +1,5 @@
 2015-03-03  6.9.0-9 Cristy  <quetzlzacatenango@image...>
-  * Account for differences in image size when comparing two images (bugf
+  * Account for differences in image size when comparing two images (bug
     report from Dirk).
 
 2015-03-01  6.9.0-9 Cristy  <quetzlzacatenango@image...>
