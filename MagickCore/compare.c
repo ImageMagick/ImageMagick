@@ -985,8 +985,7 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
         MagickBooleanType
           proceed;
 
-        proceed=SetImageProgress(image,SimilarityImageTag,progress++,
-          image->rows);
+        proceed=SetImageProgress(image,SimilarityImageTag,progress++,rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }
