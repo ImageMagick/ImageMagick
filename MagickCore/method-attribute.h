@@ -103,7 +103,7 @@ extern "C" {
 
 #define MagickSignature  0xabacadabUL
 #if !defined(MaxTextExtent)
-# define MaxTextExtent  131072  /* always >= 4096 */
+# define MaxTextExtent  (16*8192-2)  /* always >= 4096 */
 #endif
 
 #if defined(MAGICKCORE_HAVE___ATTRIBUTE__)
