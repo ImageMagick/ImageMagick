@@ -342,7 +342,10 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   }
   if ((count != 4) || (width > 10) || (image->columns == 0) ||
       (image->rows == 0) || (image->colors == 0))
-    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    {
+      xpm_buffer=DestroyString(xpm_buffer);
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    }
   /*
     Remove unquoted characters.
   */
@@ -366,7 +369,10 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   xpm_colors=NewSplayTree(CompareXPMColor,RelinquishMagickMemory,
     (void *(*)(void *)) NULL);
   if (AcquireImageColormap(image,image->colors) == MagickFalse)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+    {
+      xpm_buffer=DestroyString(xpm_buffer);
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+    }
   /*
     Read image colormap.
   */
@@ -419,7 +425,11 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image->depth=pixel.depth;
   }
   if (j < (ssize_t) image->colors)
-    ThrowReaderException(CorruptImageError,"CorruptImage");
+    {
+      xpm_colors=DestroySplayTree(xpm_colors);
+      xpm_buffer=DestroyString(xpm_buffer);
+      ThrowReaderException(CorruptImageError,"CorruptImage");
+    }
   j=0;
   if (image_info->ping == MagickFalse)
     {
@@ -459,12 +469,17 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           break;
       }
       if (y < (ssize_t) image->rows)
-        ThrowReaderException(CorruptImageError,"NotEnoughPixelData");
+        {
+          xpm_colors=DestroySplayTree(xpm_colors);
+          xpm_buffer=DestroyString(xpm_buffer);
+          ThrowReaderException(CorruptImageError,"NotEnoughPixelData");
+        }
     }
   /*
     Relinquish resources.
   */
   xpm_colors=DestroySplayTree(xpm_colors);
+  xpm_buffer=DestroyString(xpm_buffer);
   (void) CloseBlob(image);
   return(GetFirstImageInList(image));
 }
