@@ -18,10 +18,10 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
   <meta http-equiv="reply-to" content="magick-users@imagemagick.org"/>
   <meta name="application-name" content="ImageMagick"/>
-  <meta name="description" content="A collection of tools and libraries to read, write, and manipulate an image in any of the more popular image formats."/>
+  <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves."/>
   <meta name="application-url" content="http://www.imagemagick.org"/>
   <meta name="generator" content="PHP"/>
-  <meta name="keywords" content="porting, to, imagemagick, version, 7, convert, edit, compose, image, pixel"/>
+  <meta name="keywords" content="porting, to, imagemagick, version, 7, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert"/>
   <meta name="rating" content="GENERAL"/>
   <meta name="robots" content="INDEX, FOLLOW"/>
   <meta name="generator" content="ImageMagick Studio LLC"/>
@@ -216,7 +216,7 @@
 <div class="doc-section">
 <p>The design of ImageMagick is an evolutionary process, with the design and implementation efforts serving to influence and guide further progress in the other.  With ImageMagick version 7 we aim to improve the design based on lessons learned from the version 6 implementation.  ImageMagick was originally designed to display RGB images to an X Windows server.  Over time we extended support to RGBA images and then to the CMYK and CMYKA image format.  With ImageMagick version 7, we extend support to arbitrary colorspaces with an arbitrary number of pixel channels.  Other design changes are in the works and we will document them here so be sure to revisit periodically.</p>
 
-<p>To support variable pixel channels in the MagickCore API, pixel handling has changed when getting or setting the pixel channels.  You can access channels as an array, <em>pixel[i]</em>, or use an accessor such as GetPixelRed() or SetPixelRed().  There are some modest changes to the MagickWand API.   Magick++ and PerlMagick should behave exactly as it does for ImageMagick version 6.</p>
+<p>To support variable pixel channels in the MagickCore API, pixel handling has changed when getting or setting the pixel channels.  You can access channels as an array, <em>pixel[i]</em>, or use an accessor such as GetPixelRed() or SetPixelRed().  There are some modest changes to the MagickCore and MagickWand API.   Magick++ and PerlMagick should behave exactly as it does for ImageMagick version 6.</p>
 
 <p>The shell API (command line) of ImageMagick version 7 is also undergoing
 a major overhaul, with specific emphasis on the ability to read 'options' not
@@ -350,12 +350,12 @@ options, and more global use of 'image properities' (more commonly known as
 
 <p>Note, how we use GetPixelChannels() to advance to the next set of pixel channels.</p>
 
-<p>The colormap indexes and black pixel channel (for the CMYK colorspace) are no longer stored in the index channel, previously accessed with GetAuthenticIndexQueue() and GetCacheViewAuthenticIndexQueue().  Instead they are now a pixel channel and accessed with the convenience pixel accessor methods GetPixelIndex(), SetPixelIndex(), GetPixelBlack(), and SetPixelBlack().</p>
+<p>The colormap indexes and black pixel channel (for the CMYK colorspace) are no longer stored in the index channel, previously accessed with GetAuthenticIndexQueue() and GetCacheViewAuthenticIndexQueue().  Instead they are now a first class pixel channel and accessed as a member of the pixel array (e.g. <code>pixel[4]</code>) or with the convenience pixel accessor methods GetPixelIndex(), SetPixelIndex(), GetPixelBlack(), and SetPixelBlack().</p>
 
 <p>As a consequence of using an array structure for variable pixel channels, auto-vectorization compilers have additional opportunities to speed up pixel loops.</p>
 
 <h4>Pixel Accessors</h4>
-<p>Use accessors to get or set pixel channels:</p>
+<p>You can access pixel channel as array elements (e.g. <code>pixel[1]</code>) or use convenience accessors to get or set pixel channels:</p>
 
 <pre class="text">
   GetPixela()			SetPixela()
@@ -478,7 +478,7 @@ identify -verbose -mask r mask.png statue.tif
 <h2><a id="core"></a>MagickCore API</h2>
 <div class="doc-section">
 <p>Almost all image processing algorithms are now channel aware.</p>
-<p>MagickCore, version 7, adds an ExceptionInfo argument to those methods that lacked it in version 6, e.g. NegateImage(image,MagickTrue,exception);</p>
+<p>MagickCore, version 7, adds an ExceptionInfo argument to those methods that lacked it in version 6, e.g. <code>NegateImage(image,MagickTrue,exception</code>);</p>
 <p>All method channel analogs have been removed (e.g. BlurImageChannel()), they are no longer necessary, use pixel traits instead.</p>
 <p>Public and private API calls are now declared with the GCC visibility attribute.  The MagickCore and MagickWand dynamic libraries now only export public struct and function declarations.</p>
 <p>The InterpolatePixelMethod enum is now PixelInterpolateMethod.</p>
@@ -503,8 +503,6 @@ identify -verbose -mask r mask.png statue.tif
 MagickWand-config
 </pre>
 <p>The FilterImage() method has been removed.  Use ConvolveImage() instead.</p>
-
-<p>The <code>%[min]</code> and <code>%[max]</code> string escapes are no longer supported.  Use <code>%[minima]</code> and <code>%[maxima]</code> instead.</p>
 
 <p>In addition, all deprecated <a href="http://magick.imagemagick.org/api/deprecate.html">MagickCore</a> and <a href="http://magick.imagemagick.org/api/magick-deprecate.html">MagickWand</a> methods are no longer available in version 7.</p>
 </div>
@@ -553,7 +551,7 @@ currently done by removing alpha from teh active channels via
 that image is to then accept color the <code>-colorspace</code> setting needs to
 be applied to expand the one channel into separate RGB (or other) channels.
 </p>
-<p>Previously, command-line arguments were limited to 4096 characters, with ImageMagick version 7, the limit has increased to 8192 characters.</p>
+<p>Previously, command-line arguments were limited to 4096 characters, with ImageMagick version 7 the limit has increased to 131072 characters.</p>
 
 <h3>Command Changes</h3>
 <dl>
@@ -805,4 +803,4 @@ example "+annotate", "+resize", "+clut", and "+draw" .</p>
 <div style="clear: both; margin: 0; width: 100%; "></div>
 </body>
 </html>
-<!-- Magick Cache 28th February 2015 08:09 -->
+<!-- Magick Cache 8th March 2015 06:39 -->
