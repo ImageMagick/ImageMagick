@@ -91,7 +91,6 @@ static Image *ReadCLIPImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
   Image
-    *clip_image,
     *image;
 
   ImageInfo
@@ -109,16 +108,21 @@ static Image *ReadCLIPImage(const ImageInfo *image_info,
   assert(exception->signature == MagickSignature);
   read_info=CloneImageInfo(image_info);
   SetImageInfoBlob(read_info,(void *) NULL,0);
-  *read_info->magick='\0';
-  clip_image=ReadImage(read_info,exception);
+  (void) CopyMagickString(read_info->magick,"MIFF",MaxTextExtent);
+  image=ReadImage(read_info,exception);
   read_info=DestroyImageInfo(read_info);
-  if (clip_image == (Image *) NULL)
-    return((Image *) NULL);
-  (void) ClipImage(clip_image,exception);
-  image=GetImageMask(clip_image,exception);
-  clip_image=DestroyImage(clip_image);
-  if (image == (Image *) NULL)
-    ThrowReaderException(CoderError,"ImageDoesNotHaveAClipMask");
+  if (image != (Image *) NULL)
+    {
+      Image
+        *clip_image;
+
+      (void) ClipImage(image,exception);
+      clip_image=GetImageMask(image,exception);
+      if (clip_image == (Image *) NULL)
+        ThrowReaderException(CoderError,"ImageDoesNotHaveAClipMask");
+      image=DestroyImage(image);
+      image=clip_image;
+    }
   return(GetFirstImageInList(image));
 }
 
