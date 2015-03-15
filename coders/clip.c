@@ -116,14 +116,14 @@ static Image *ReadCLIPImage(const ImageInfo *image_info,
     {
       Image
         *clip_image;
-        
+
       (void) ClipImage(image);
       if (image->clip_mask == (Image *) NULL)
         ThrowReaderException(CoderError,"ImageDoesNotHaveAClipMask");
       clip_image=CloneImage(image->clip_mask,0,0,MagickTrue,exception);
       image=DestroyImage(image);
       image=clip_image;
-    } 
+    }
   return(GetFirstImageInList(image));
 }
 
