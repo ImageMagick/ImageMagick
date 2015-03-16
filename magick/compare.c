@@ -2082,6 +2082,9 @@ MagickExport Image *SimilarityMetricImage(Image *image,const Image *reference,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp critical (MagickCore_SimilarityImage)
 #endif
+      if ((metric == NormalizedCrossCorrelationErrorMetric) ||
+          (metric == UndefinedErrorMetric))
+        similarity=1.0-similarity;
       if (similarity < *similarity_metric)
         {
           *similarity_metric=similarity;
