@@ -1813,6 +1813,9 @@ MagickExport Image *SimilarityImage(Image *image,const Image *reference,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp critical (MagickCore_SimilarityImage)
 #endif
+      if ((metric == NormalizedCrossCorrelationErrorMetric) ||
+          (metric == UndefinedErrorMetric))
+        similarity=1.0-similarity;
       if (similarity < *similarity_metric)
         {
           offset->x=x;
@@ -1861,5 +1864,8 @@ MagickExport Image *SimilarityImage(Image *image,const Image *reference,
   similarity_view=DestroyCacheView(similarity_view);
   if (status == MagickFalse)
     similarity_image=DestroyImage(similarity_image);
+  if ((metric == NormalizedCrossCorrelationErrorMetric) ||
+      (metric == UndefinedErrorMetric))
+    similarity=1.0-similarity;
   return(similarity_image);
 }
