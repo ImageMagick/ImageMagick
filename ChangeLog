@@ -1,3 +1,7 @@
+2015-03-16  6.9.0-6 Glenn Randers-Pehrson <glennrp@image...>
+  * Fix integer overflow when scaling a 1-bit sample to Q64 (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=27195).
+
 2015-03-01  6.9.0-10 Cristy  <quetzlzacatenango@image...>
   * New version 6.9.0-10, SVN revision 18299.
 
