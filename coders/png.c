@@ -2862,7 +2862,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       else
         {
           int
-             scale_to_short;
+            scale_to_short;
 
           scale_to_short = 65535L/((1UL << ping_file_depth)-1);
 
@@ -3022,13 +3022,14 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
       else
         {
-          size_t
+          Quantum
             scale;
 
-          scale=(QuantumRange/((1UL << ping_file_depth)-1));
+          scale = 65535UL/((1UL << ping_file_depth)-1);
 
-          if (scale < 1)
-             scale=1;
+#if (MAGICKCORE_QUANTUM_DEPTH > 16)
+          scale = ScaleShortToQuantum(scale);
+#endif
 
           for (i=0; i < (ssize_t) image->colors; i++)
           {
@@ -3347,7 +3348,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           {
             for (x=(ssize_t) image->columns-1; x >= 0; x--)
             {
-#if (MAGICKCORE_QUANTUM_DEPTH == 16) || (MAGICKCORE_QUANTUM_DEPTH == 32)
+#if (MAGICKCORE_QUANTUM_DEPTH >= 16)
               unsigned short
                 quantum;
 
