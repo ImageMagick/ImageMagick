@@ -24,6 +24,7 @@ extern "C" {
 
 typedef enum
 {
+  UndefinedCompositeOp,
   AlphaCompositeOp,
   AtopCompositeOp,
   BlendCompositeOp,
@@ -92,7 +93,6 @@ typedef enum
   SrcOutCompositeOp,
   SrcOverCompositeOp,
   ThresholdCompositeOp,
-  UndefinedCompositeOp,
   VividLightCompositeOp,
   XorCompositeOp
 } CompositeOperator;
