@@ -106,8 +106,10 @@ static Image *ReadFDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   assert(exception->signature == MagickSignature);
   read_info=CloneImageInfo(image_info);
   read_info->file=fdopen(StringToLong(image_info->filename),"rb");
-  if (read_info->file ==  (FILE *) NULL)
+  if ((read_info->file == (FILE *) NULL) ||
+      (IsGeometry(image_info->filename) == MagickFalse))
     {
+      read_info=DestroyImageInfo(read_info);
       ThrowFileException(exception,BlobError,"UnableToOpenBlob",
         image_info->filename);
       return((Image *) NULL);
