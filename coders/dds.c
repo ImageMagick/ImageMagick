@@ -2729,7 +2729,7 @@ static void WriteDDSInfo(Image *image, const size_t pixelFormat,
   (void) WriteBlobLSBLong(image,0x00);
   (void) WriteBlobLSBLong(image,(unsigned int) mipmaps+1);
   (void) ResetMagickMemory(software,0,sizeof(software));
-  (void) strcpy(software,"IMAGEMAGICK");
+  (void) CopyMagickString(software,"IMAGEMAGICK",MaxTextExtent);
   (void) WriteBlob(image,44,(unsigned char *) software);
 
   (void) WriteBlobLSBLong(image,32);
