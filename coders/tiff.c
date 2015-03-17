@@ -1129,11 +1129,22 @@ RestoreMSCWarning
         break;
       }
       case PHOTOMETRIC_LOGL:
+      { 
+        (void) SetImageProperty(image,"tiff:photometric","CIE Log2(L)");
+        break;
+      } 
       case PHOTOMETRIC_LOGLUV:
+      { 
+        (void) SetImageProperty(image,"tiff:photometric","LOGLUV");
+        break;
+      } 
+#if defined(PHOTOMETRIC_MASK)
+      case PHOTOMETRIC_MASK:
       {
-        (void) TIFFSetField(tiff,TIFFTAG_SGILOGDATAFMT,SGILOGDATAFMT_FLOAT);
+        (void) SetImageProperty(image,"tiff:photometric","MASK");
         break;
       }
+#endif
       case PHOTOMETRIC_SEPARATED:
       {
         (void) SetImageProperty(image,"tiff:photometric","separated",exception);
