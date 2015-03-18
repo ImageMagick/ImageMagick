@@ -1130,18 +1130,18 @@ RestoreMSCWarning
       }
       case PHOTOMETRIC_LOGL:
       { 
-        (void) SetImageProperty(image,"tiff:photometric","CIE Log2(L)");
+        (void) SetImageProperty(image,"tiff:photometric","CIE Log2(L)",exception);
         break;
       } 
       case PHOTOMETRIC_LOGLUV:
       { 
-        (void) SetImageProperty(image,"tiff:photometric","LOGLUV");
+        (void) SetImageProperty(image,"tiff:photometric","LOGLUV",exception);
         break;
       } 
 #if defined(PHOTOMETRIC_MASK)
       case PHOTOMETRIC_MASK:
       {
-        (void) SetImageProperty(image,"tiff:photometric","MASK");
+        (void) SetImageProperty(image,"tiff:photometric","MASK",exception);
         break;
       }
 #endif
