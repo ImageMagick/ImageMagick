@@ -1864,8 +1864,5 @@ MagickExport Image *SimilarityImage(Image *image,const Image *reference,
   similarity_view=DestroyCacheView(similarity_view);
   if (status == MagickFalse)
     similarity_image=DestroyImage(similarity_image);
-  if ((metric == NormalizedCrossCorrelationErrorMetric) ||
-      (metric == UndefinedErrorMetric))
-    *similarity_metric=1.0-(*similarity_metric);
   return(similarity_image);
 }
