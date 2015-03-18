@@ -1105,8 +1105,7 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
         distortion[BlueChannel]+=area*QuantumScale*(Sa*GetPixelBlue(p)-
           image_statistics[BlueChannel].mean)*(Da*GetPixelBlue(q)-
           reconstruct_statistics[BlueChannel].mean);
-      if (((channel & OpacityChannel) != 0) &&
-          (image->matte != MagickFalse))
+      if (((channel & OpacityChannel) != 0) && (image->matte != MagickFalse))
         distortion[OpacityChannel]+=area*QuantumScale*(
           GetPixelOpacity(p)-image_statistics[OpacityChannel].mean)*
           (GetPixelOpacity(q)-reconstruct_statistics[OpacityChannel].mean);
@@ -1158,8 +1157,7 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
   if (((channel & OpacityChannel) != 0) && (image->matte != MagickFalse))
     distortion[CompositeChannels]+=distortion[OpacityChannel]*
       distortion[OpacityChannel];
-  if (((channel & IndexChannel) != 0) &&
-      (image->colorspace == CMYKColorspace))
+  if (((channel & IndexChannel) != 0) && (image->colorspace == CMYKColorspace))
     distortion[CompositeChannels]+=distortion[BlackChannel]*
       distortion[BlackChannel];
   distortion[CompositeChannels]=sqrt(distortion[CompositeChannels]/
