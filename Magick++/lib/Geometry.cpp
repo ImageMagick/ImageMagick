@@ -288,7 +288,7 @@ Magick::Geometry::operator std::string() const
   char
     buffer[MaxTextExtent];
 
-  string
+  std::string
     geometry;
 
   if (!isValid())

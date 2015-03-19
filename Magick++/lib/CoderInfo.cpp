@@ -55,9 +55,9 @@ Magick::CoderInfo::CoderInfo(const std::string &name_)
     }
   else
     {
-      _name=string(magickInfo->name);
-      _description=string(magickInfo->description);
-      _mimeType=string(magickInfo->mime_type ? magickInfo->mime_type : "");
+      _name=std::string(magickInfo->name);
+      _description=std::string(magickInfo->description);
+      _mimeType=std::string(magickInfo->mime_type ? magickInfo->mime_type : "");
       _isReadable=((magickInfo->decoder == 0) ? false : true);
       _isWritable=((magickInfo->encoder == 0) ? false : true);
       _isMultiFrame=((magickInfo->adjoin == 0) ? false : true);
@@ -119,9 +119,9 @@ bool Magick::CoderInfo::unregister(void) const
 }
 
 Magick::CoderInfo::CoderInfo(const MagickCore::MagickInfo *magickInfo_)
-  : _name(string(magickInfo_->name ? magickInfo_->name : "")),
-    _description(string(magickInfo_->description ? magickInfo_->description : "")),
-    _mimeType(string(magickInfo_->mime_type ? magickInfo_->mime_type : "")),
+  : _name(std::string(magickInfo_->name ? magickInfo_->name : "")),
+    _description(std::string(magickInfo_->description ? magickInfo_->description : "")),
+    _mimeType(std::string(magickInfo_->mime_type ? magickInfo_->mime_type : "")),
     _isReadable(magickInfo_->decoder ? true : false),
     _isWritable(magickInfo_->encoder ? true : false),
     _isMultiFrame(magickInfo_->adjoin ? true : false)
