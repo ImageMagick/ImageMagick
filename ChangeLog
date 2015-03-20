@@ -1,3 +1,6 @@
+2015-03-21  6.9.1-0 Cristy  <quetzlzacatenango@image...>
+  * New version 6.9.1-0, SVN revision 18245.
+
 2015-03-17  6.9.1-0 Cristy  <quetzlzacatenango@image...>
   * Grayscale DPX image files are no longer skewed (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=27209).
