@@ -882,7 +882,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
   if (!((header_ole[0] == 0x50) && (header_ole[1] == 0x49) &&
       (header_ole[2] == 0x43) && (header_ole[3] == 0x54 )))
     for (i=0; i < 508; i++)
-      (void) ReadBlobByte(image);
+      if (ReadBlobByte(image) == EOF)
+        break;
   (void) ReadBlobMSBShort(image);  /* skip picture size */
   if (ReadRectangle(image,&frame) == MagickFalse)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
@@ -958,7 +959,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             if (length != 0x000a)
               {
                 for (i=0; i < (ssize_t) (length-2); i++)
-                  (void) ReadBlobByte(image);
+                  if (ReadBlobByte(image) == EOF)
+                    break;
                 break;
               }
             if (ReadRectangle(image,&frame) == MagickFalse)
@@ -986,11 +988,13 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             */
             pattern=1L*ReadBlobMSBShort(image);
             for (i=0; i < 8; i++)
-              (void) ReadBlobByte(image);
+              if (ReadBlobByte(image) == EOF)
+                break;
             if (pattern == 2)
               {
                 for (i=0; i < 5; i++)
-                  (void) ReadBlobByte(image);
+                  if (ReadBlobByte(image) == EOF)
+                    break;
                 break;
               }
             if (pattern != 1)
@@ -1019,16 +1023,19 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             if (length < 8)
               {
                 for (i=0; i < (ssize_t) (length*height); i++)
-                  (void) ReadBlobByte(image);
+                  if (ReadBlobByte(image) == EOF)
+                    break;
               }
             else
               for (j=0; j < (int) height; j++)
                 if (length > 200)
                   for (j=0; j < (ssize_t) ReadBlobMSBShort(image); j++)
-                    (void) ReadBlobByte(image);
+                    if (ReadBlobByte(image) == EOF)
+                      break;
                 else
                   for (j=0; j < (ssize_t) ReadBlobByte(image); j++)
-                    (void) ReadBlobByte(image);
+                    if (ReadBlobByte(image) == EOF)
+                      break;
             break;
           }
           case 0x1b:
@@ -1058,7 +1065,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             */
             length=ReadBlobMSBShort(image);
             for (i=0; i < (ssize_t) (length-2); i++)
-              (void) ReadBlobByte(image);
+              if (ReadBlobByte(image) == EOF)
+                break;
             break;
           }
           case 0x90:
@@ -1181,7 +1189,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                 */
                 length=ReadBlobMSBShort(image);
                 for (i=0; i < (ssize_t) (length-2); i++)
-                  (void) ReadBlobByte(image);
+                  if (ReadBlobByte(image) == EOF)
+                    break;
               }
             if ((code != 0x9a) && (code != 0x9b) &&
                 (bytes_per_line & 0x8000) == 0)
@@ -1356,7 +1365,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
               (void) ReadBlobMSBShort(image);
             else
               for (i=0; i < (ssize_t) codes[code].length; i++)
-                (void) ReadBlobByte(image);
+                if (ReadBlobByte(image) == EOF)
+                  break;
           }
         }
       }
@@ -1366,7 +1376,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
           Skip header.
         */
         for (i=0; i < 24; i++)
-          (void) ReadBlobByte(image);
+          if (ReadBlobByte(image) == EOF)
+            break;
         continue;
       }
     if (((code >= 0xb0) && (code <= 0xcf)) ||
@@ -1407,21 +1418,27 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             return((Image *) NULL);
           }
         length=ReadBlobMSBLong(image);
-        for (i=0; i < 6; i++)
-          (void) ReadBlobMSBLong(image);
-        if (ReadRectangle(image,&frame) == MagickFalse)
+        if (length > 154)
           {
-            (void) fclose(file);
-            (void) RelinquishUniqueFileResource(read_info->filename);
-            ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+            for (i=0; i < 6; i++)
+              (void) ReadBlobMSBLong(image);
+            if (ReadRectangle(image,&frame) == MagickFalse)
+              {
+                (void) fclose(file);
+                (void) RelinquishUniqueFileResource(read_info->filename);
+                ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+              }
+            for (i=0; i < 122; i++)
+              if (ReadBlobByte(image) == EOF)
+                break;
+            for (i=0; i < (ssize_t) (length-154); i++)
+            {
+              c=ReadBlobByte(image);
+              if (c == EOF)
+                break;
+              (void) fputc(c,file);
+            }
           }
-        for (i=0; i < 122; i++)
-          (void) ReadBlobByte(image);
-        for (i=0; i < (ssize_t) (length-154); i++)
-        {
-          c=ReadBlobByte(image);
-          (void) fputc(c,file);
-        }
         (void) fclose(file);
         (void) close(unique_file);
         tile_image=ReadImage(read_info,exception);
@@ -1452,7 +1469,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
         */
         length=ReadBlobMSBShort(image);
         for (i=0; i < (ssize_t) length; i++)
-          (void) ReadBlobByte(image);
+          if (ReadBlobByte(image) == EOF)
+            break;
         continue;
       }
     if ((code >= 0x100) && (code <= 0x7fff))
@@ -1462,7 +1480,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
         */
         length=(size_t) ((code >> 7) & 0xff);
         for (i=0; i < (ssize_t) length; i++)
-          (void) ReadBlobByte(image);
+          if (ReadBlobByte(image) == EOF)
+            break;
         continue;
       }
   }
