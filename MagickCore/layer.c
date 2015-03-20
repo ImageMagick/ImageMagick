@@ -832,6 +832,16 @@ MagickExport Image *CompareImagesLayers(const Image *image,
   next=GetNextImageInList(next);
   for ( ; next != (const Image *) NULL; next=GetNextImageInList(next))
   {
+    if ((bounds[i].x == -1) && (bounds[i].y == -1) &&
+        (bounds[i].width == 1) && (bounds[i].height == 1))
+      {
+        /*
+          An empty frame is returned from CompareImageBounds(), which means the
+          current frame is identical to the previous frame.
+        */
+        i++;
+        continue;
+      }
     image_a=CloneImage(next,0,0,MagickTrue,exception);
     if (image_a == (Image *) NULL)
       break;
