@@ -1844,8 +1844,8 @@ void Magick::Image::annotate(const std::string &text_,
         }
       else
         {
-          (void) CopyMagickString(boundingArea,string(boundingArea_).c_str(),
-            MaxTextExtent);
+          (void) CopyMagickString(boundingArea,
+            std::string(boundingArea_).c_str(), MaxTextExtent);
         }
       drawInfo->geometry=boundingArea;
     }
