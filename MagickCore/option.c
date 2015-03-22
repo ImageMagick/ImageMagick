@@ -1563,6 +1563,7 @@ static const OptionInfo
   PrimitiveOptions[] =
   {
     { "Undefined", UndefinedPrimitive, UndefinedOptionFlag, MagickTrue },
+    { "Alpha", AlphaPrimitive, UndefinedOptionFlag, MagickFalse },
     { "Arc", ArcPrimitive, UndefinedOptionFlag, MagickFalse },
     { "Bezier", BezierPrimitive, UndefinedOptionFlag, MagickFalse },
     { "Circle", CirclePrimitive, UndefinedOptionFlag, MagickFalse },
@@ -1570,7 +1571,6 @@ static const OptionInfo
     { "Ellipse", EllipsePrimitive, UndefinedOptionFlag, MagickFalse },
     { "Image", ImagePrimitive, UndefinedOptionFlag, MagickFalse },
     { "Line", LinePrimitive, UndefinedOptionFlag, MagickFalse },
-    { "Matte", MattePrimitive, UndefinedOptionFlag, MagickFalse },
     { "Path", PathPrimitive, UndefinedOptionFlag, MagickFalse },
     { "Point", PointPrimitive, UndefinedOptionFlag, MagickFalse },
     { "Polygon", PolygonPrimitive, UndefinedOptionFlag, MagickFalse },

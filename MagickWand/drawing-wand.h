@@ -123,6 +123,7 @@ extern WandExport size_t
 extern WandExport void
   ClearDrawingWand(DrawingWand *),
   DrawAffine(DrawingWand *,const AffineMatrix *),
+  DrawAlpha(DrawingWand *,const double,const double,const PaintMethod),
   DrawAnnotation(DrawingWand *,const double,const double,const unsigned char *),
   DrawArc(DrawingWand *,const double,const double,const double,const double,
     const double,const double),
@@ -140,7 +141,6 @@ extern WandExport void
   DrawSetTextInterwordSpacing(DrawingWand *,const double),
   DrawGetTextUnderColor(const DrawingWand *,PixelWand *),
   DrawLine(DrawingWand *,const double, const double,const double,const double),
-  DrawMatte(DrawingWand *,const double,const double,const PaintMethod),
   DrawPathClose(DrawingWand *),
   DrawPathCurveToAbsolute(DrawingWand *,const double,const double,const double,
     const double,const double,const double),

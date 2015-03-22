@@ -718,11 +718,11 @@ static PathInfo *ConvertPrimitiveToPath(
   */
   switch (primitive_info->primitive)
   {
-    case PointPrimitive:
+    case AlphaPrimitive:
     case ColorPrimitive:
-    case MattePrimitive:
-    case TextPrimitive:
     case ImagePrimitive:
+    case PointPrimitive:
+    case TextPrimitive:
       return((PathInfo *) NULL);
     default:
       break;
@@ -1832,6 +1832,11 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
             affine.ty=StringToDouble(token,(char **) NULL);
             break;
           }
+        if (LocaleCompare("alpha",keyword) == 0)
+          {
+            primitive_type=AlphaPrimitive;
+            break;
+          }
         if (LocaleCompare("arc",keyword) == 0)
           {
             primitive_type=ArcPrimitive;
@@ -2170,15 +2175,6 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
       {
         if (LocaleCompare("line",keyword) == 0)
           primitive_type=LinePrimitive;
-        else
-          status=MagickFalse;
-        break;
-      }
-      case 'm':
-      case 'M':
-      {
-        if (LocaleCompare("matte",keyword) == 0)
-          primitive_type=MattePrimitive;
         else
           status=MagickFalse;
         break;
@@ -3014,8 +3010,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
         i=(ssize_t) (j+TracePath(primitive_info+j,token));
         break;
       }
+      case AlphaPrimitive:
       case ColorPrimitive:
-      case MattePrimitive:
       {
         ssize_t
           method;
@@ -4059,10 +4055,10 @@ static void LogPrimitiveInfo(const PrimitiveInfo *primitive_info)
   y=(ssize_t) ceil(primitive_info->point.y-0.5);
   switch (primitive_info->primitive)
   {
-    case PointPrimitive:
+    case AlphaPrimitive:
     {
       (void) LogMagickEvent(DrawEvent,GetMagickModule(),
-        "PointPrimitive %.20g,%.20g %s",(double) x,(double) y,
+        "AlphaPrimitive %.20g,%.20g %s",(double) x,(double) y,
         methods[primitive_info->method]);
       return;
     }
@@ -4073,10 +4069,16 @@ static void LogPrimitiveInfo(const PrimitiveInfo *primitive_info)
         methods[primitive_info->method]);
       return;
     }
-    case MattePrimitive:
+    case ImagePrimitive:
     {
       (void) LogMagickEvent(DrawEvent,GetMagickModule(),
-        "MattePrimitive %.20g,%.20g %s",(double) x,(double) y,
+        "ImagePrimitive %.20g,%.20g",(double) x,(double) y);
+      return;
+    }
+    case PointPrimitive:
+    {
+      (void) LogMagickEvent(DrawEvent,GetMagickModule(),
+        "PointPrimitive %.20g,%.20g %s",(double) x,(double) y,
         methods[primitive_info->method]);
       return;
     }
@@ -4084,12 +4086,6 @@ static void LogPrimitiveInfo(const PrimitiveInfo *primitive_info)
     {
       (void) LogMagickEvent(DrawEvent,GetMagickModule(),
         "TextPrimitive %.20g,%.20g",(double) x,(double) y);
-      return;
-    }
-    case ImagePrimitive:
-    {
-      (void) LogMagickEvent(DrawEvent,GetMagickModule(),
-        "ImagePrimitive %.20g,%.20g",(double) x,(double) y);
       return;
     }
     default:
@@ -4167,143 +4163,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
   image_view=AcquireAuthenticCacheView(image,exception);
   switch (primitive_info->primitive)
   {
-    case PointPrimitive:
-    {
-      PixelInfo
-        fill_color;
-
-      register Quantum
-        *q;
-
-      if ((y < 0) || (y >= (ssize_t) image->rows))
-        break;
-      if ((x < 0) || (x >= (ssize_t) image->columns))
-        break;
-      q=GetCacheViewAuthenticPixels(image_view,x,y,1,1,exception);
-      if (q == (Quantum *) NULL)
-        break;
-      (void) GetFillColor(draw_info,x,y,&fill_color,exception);
-      CompositePixelOver(image,&fill_color,(double) fill_color.alpha,q,
-        (double) GetPixelAlpha(image,q),q);
-      (void) SyncCacheViewAuthenticPixels(image_view,exception);
-      break;
-    }
-    case ColorPrimitive:
-    {
-      switch (primitive_info->method)
-      {
-        case PointMethod:
-        default:
-        {
-          PixelInfo
-            pixel;
-
-          register Quantum
-            *q;
-
-          q=GetCacheViewAuthenticPixels(image_view,x,y,1,1,exception);
-          if (q == (Quantum *) NULL)
-            break;
-          GetPixelInfo(image,&pixel);
-          (void) GetFillColor(draw_info,x,y,&pixel,exception);
-          SetPixelViaPixelInfo(image,&pixel,q);
-          (void) SyncCacheViewAuthenticPixels(image_view,exception);
-          break;
-        }
-        case ReplaceMethod:
-        {
-          MagickBooleanType
-            sync;
-
-          PixelInfo
-            pixel,
-            target;
-
-          (void) GetOneCacheViewVirtualPixelInfo(image_view,x,y,&target,
-            exception);
-          for (y=0; y < (ssize_t) image->rows; y++)
-          {
-            register Quantum
-              *restrict q;
-
-            q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
-              exception);
-            if (q == (Quantum *) NULL)
-              break;
-            for (x=0; x < (ssize_t) image->columns; x++)
-            {
-              GetPixelInfoPixel(image,q,&pixel);
-              if (IsFuzzyEquivalencePixelInfo(&pixel,&target) == MagickFalse)
-                {
-                  q+=GetPixelChannels(image);
-                  continue;
-                }
-              (void) GetFillColor(draw_info,x,y,&pixel,exception);
-              SetPixelViaPixelInfo(image,&pixel,q);
-              q+=GetPixelChannels(image);
-            }
-            sync=SyncCacheViewAuthenticPixels(image_view,exception);
-            if (sync == MagickFalse)
-              break;
-          }
-          break;
-        }
-        case FloodfillMethod:
-        case FillToBorderMethod:
-        {
-          PixelInfo
-            target;
-
-          (void) GetOneVirtualPixelInfo(image,TileVirtualPixelMethod,x,y,
-            &target,exception);
-          if (primitive_info->method == FillToBorderMethod)
-            {
-              target.red=(double) draw_info->border_color.red;
-              target.green=(double) draw_info->border_color.green;
-              target.blue=(double) draw_info->border_color.blue;
-            }
-          status&=FloodfillPaintImage(image,draw_info,&target,x,y,
-            primitive_info->method == FloodfillMethod ? MagickFalse :
-            MagickTrue,exception);
-          break;
-        }
-        case ResetMethod:
-        {
-          MagickBooleanType
-            sync;
-
-          PixelInfo
-            pixel;
-
-          GetPixelInfo(image,&pixel);
-          for (y=0; y < (ssize_t) image->rows; y++)
-          {
-            register Quantum
-              *restrict q;
-
-            register ssize_t
-              x;
-
-            q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
-              exception);
-            if (q == (Quantum *) NULL)
-              break;
-            for (x=0; x < (ssize_t) image->columns; x++)
-            {
-              (void) GetFillColor(draw_info,x,y,&pixel,exception);
-              SetPixelViaPixelInfo(image,&pixel,q);
-              q+=GetPixelChannels(image);
-            }
-            sync=SyncCacheViewAuthenticPixels(image_view,exception);
-            if (sync == MagickFalse)
-              break;
-          }
-          break;
-        }
-      }
-      break;
-    }
-    case MattePrimitive:
+    case AlphaPrimitive:
     {
       if (image->alpha_trait == UndefinedPixelTrait)
         (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
@@ -4427,23 +4287,119 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
       }
       break;
     }
-    case TextPrimitive:
+    case ColorPrimitive:
     {
-      char
-        geometry[MaxTextExtent];
+      switch (primitive_info->method)
+      {
+        case PointMethod:
+        default:
+        {
+          PixelInfo
+            pixel;
 
-      DrawInfo
-        *clone_info;
+          register Quantum
+            *q;
 
-      if (primitive_info->text == (char *) NULL)
-        break;
-      clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
-      (void) CloneString(&clone_info->text,primitive_info->text);
-      (void) FormatLocaleString(geometry,MaxTextExtent,"%+f%+f",
-        primitive_info->point.x,primitive_info->point.y);
-      (void) CloneString(&clone_info->geometry,geometry);
-      status&=AnnotateImage(image,clone_info,exception);
-      clone_info=DestroyDrawInfo(clone_info);
+          q=GetCacheViewAuthenticPixels(image_view,x,y,1,1,exception);
+          if (q == (Quantum *) NULL)
+            break;
+          GetPixelInfo(image,&pixel);
+          (void) GetFillColor(draw_info,x,y,&pixel,exception);
+          SetPixelViaPixelInfo(image,&pixel,q);
+          (void) SyncCacheViewAuthenticPixels(image_view,exception);
+          break;
+        }
+        case ReplaceMethod:
+        {
+          MagickBooleanType
+            sync;
+
+          PixelInfo
+            pixel,
+            target;
+
+          (void) GetOneCacheViewVirtualPixelInfo(image_view,x,y,&target,
+            exception);
+          for (y=0; y < (ssize_t) image->rows; y++)
+          {
+            register Quantum
+              *restrict q;
+
+            q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
+              exception);
+            if (q == (Quantum *) NULL)
+              break;
+            for (x=0; x < (ssize_t) image->columns; x++)
+            {
+              GetPixelInfoPixel(image,q,&pixel);
+              if (IsFuzzyEquivalencePixelInfo(&pixel,&target) == MagickFalse)
+                {
+                  q+=GetPixelChannels(image);
+                  continue;
+                }
+              (void) GetFillColor(draw_info,x,y,&pixel,exception);
+              SetPixelViaPixelInfo(image,&pixel,q);
+              q+=GetPixelChannels(image);
+            }
+            sync=SyncCacheViewAuthenticPixels(image_view,exception);
+            if (sync == MagickFalse)
+              break;
+          }
+          break;
+        }
+        case FloodfillMethod:
+        case FillToBorderMethod:
+        {
+          PixelInfo
+            target;
+
+          (void) GetOneVirtualPixelInfo(image,TileVirtualPixelMethod,x,y,
+            &target,exception);
+          if (primitive_info->method == FillToBorderMethod)
+            {
+              target.red=(double) draw_info->border_color.red;
+              target.green=(double) draw_info->border_color.green;
+              target.blue=(double) draw_info->border_color.blue;
+            }
+          status&=FloodfillPaintImage(image,draw_info,&target,x,y,
+            primitive_info->method == FloodfillMethod ? MagickFalse :
+            MagickTrue,exception);
+          break;
+        }
+        case ResetMethod:
+        {
+          MagickBooleanType
+            sync;
+
+          PixelInfo
+            pixel;
+
+          GetPixelInfo(image,&pixel);
+          for (y=0; y < (ssize_t) image->rows; y++)
+          {
+            register Quantum
+              *restrict q;
+
+            register ssize_t
+              x;
+
+            q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
+              exception);
+            if (q == (Quantum *) NULL)
+              break;
+            for (x=0; x < (ssize_t) image->columns; x++)
+            {
+              (void) GetFillColor(draw_info,x,y,&pixel,exception);
+              SetPixelViaPixelInfo(image,&pixel,q);
+              q+=GetPixelChannels(image);
+            }
+            sync=SyncCacheViewAuthenticPixels(image_view,exception);
+            if (sync == MagickFalse)
+              break;
+          }
+          break;
+        }
+      }
       break;
     }
     case ImagePrimitive:
@@ -4524,6 +4480,46 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
         (void) CompositeImage(image,composite_image,draw_info->compose,
           MagickTrue,geometry.x,geometry.y,exception);
       composite_image=DestroyImage(composite_image);
+      break;
+    }
+    case PointPrimitive:
+    {
+      PixelInfo
+        fill_color;
+
+      register Quantum
+        *q;
+
+      if ((y < 0) || (y >= (ssize_t) image->rows))
+        break;
+      if ((x < 0) || (x >= (ssize_t) image->columns))
+        break;
+      q=GetCacheViewAuthenticPixels(image_view,x,y,1,1,exception);
+      if (q == (Quantum *) NULL)
+        break;
+      (void) GetFillColor(draw_info,x,y,&fill_color,exception);
+      CompositePixelOver(image,&fill_color,(double) fill_color.alpha,q,
+        (double) GetPixelAlpha(image,q),q);
+      (void) SyncCacheViewAuthenticPixels(image_view,exception);
+      break;
+    }
+    case TextPrimitive:
+    {
+      char
+        geometry[MaxTextExtent];
+
+      DrawInfo
+        *clone_info;
+
+      if (primitive_info->text == (char *) NULL)
+        break;
+      clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
+      (void) CloneString(&clone_info->text,primitive_info->text);
+      (void) FormatLocaleString(geometry,MaxTextExtent,"%+f%+f",
+        primitive_info->point.x,primitive_info->point.y);
+      (void) CloneString(&clone_info->geometry,geometry);
+      status&=AnnotateImage(image,clone_info,exception);
+      clone_info=DestroyDrawInfo(clone_info);
       break;
     }
     default:

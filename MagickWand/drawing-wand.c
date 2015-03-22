@@ -152,116 +152,6 @@ struct _DrawingWand
     signature;
 };
 
-/* Vector table for invoking subordinate renderers */
-struct _DrawVTable
-{
-  DrawingWand *(*DestroyDrawingWand) (DrawingWand *);
-  void (*DrawAnnotation)(DrawingWand *,const double,const double,
-    const unsigned char *);
-  void (*DrawArc)(DrawingWand *,const double,const double,const double,
-    const double,const double,const double);
-  void (*DrawBezier)(DrawingWand *,const size_t,const PointInfo *);
-  void (*DrawCircle)(DrawingWand *,const double,const double,const double,
-    const double);
-  void (*DrawColor)(DrawingWand *,const double,const double,const PaintMethod);
-  void (*DrawComment)(DrawingWand *,const char *);
-  void (*DrawEllipse)(DrawingWand *,const double,const double,const double,
-    const double,const double,const double);
-  MagickBooleanType (*DrawComposite)(DrawingWand *,const CompositeOperator,
-    const double,const double,const double,const double,const Image *);
-  void (*DrawLine)(DrawingWand *,const double,const double,const double,
-    const double);
-  void (*DrawMatte)(DrawingWand *,const double,const double,const PaintMethod);
-  void (*DrawPathClose)(DrawingWand *);
-  void (*DrawPathCurveToAbsolute)(DrawingWand *,const double,const double,
-    const double,const double,const double,const double);
-  void (*DrawPathCurveToRelative)(DrawingWand *,const double,const double,
-    const double,const double,const double,const double);
-  void (*DrawPathCurveToQuadraticBezierAbsolute)(DrawingWand *,const double,
-    const double,const double,const double);
-  void (*DrawPathCurveToQuadraticBezierRelative)(DrawingWand *,const double,
-    const double,const double,const double);
-  void (*DrawPathCurveToQuadraticBezierSmoothAbsolute)(DrawingWand *,
-    const double,const double);
-  void (*DrawPathCurveToQuadraticBezierSmoothRelative)(DrawingWand *,
-    const double,const double);
-  void (*DrawPathCurveToSmoothAbsolute)(DrawingWand *,const double,
-    const double,const double,const double);
-  void (*DrawPathCurveToSmoothRelative)(DrawingWand *,const double,
-    const double,const double,const double);
-  void (*DrawPathEllipticArcAbsolute)(DrawingWand *,const double,const double,
-    const double,const MagickBooleanType,const MagickBooleanType,const double,
-    const double);
-  void (*DrawPathEllipticArcRelative)(DrawingWand *,const double,const double,
-    const double,const MagickBooleanType,const MagickBooleanType,const double,
-    const double);
-  void (*DrawPathFinish)(DrawingWand *);
-  void (*DrawPathLineToAbsolute)(DrawingWand *,const double,const double);
-  void (*DrawPathLineToRelative)(DrawingWand *,const double,const double);
-  void (*DrawPathLineToHorizontalAbsolute)(DrawingWand *,const double);
-  void (*DrawPathLineToHorizontalRelative)(DrawingWand *,const double);
-  void (*DrawPathLineToVerticalAbsolute)(DrawingWand *,const double);
-  void (*DrawPathLineToVerticalRelative)(DrawingWand *,const double);
-  void (*DrawPathMoveToAbsolute)(DrawingWand *,const double,const double);
-  void (*DrawPathMoveToRelative)(DrawingWand *,const double,const double);
-  void (*DrawPathStart)(DrawingWand *);
-  void (*DrawPoint)(DrawingWand *,const double,const double);
-  void (*DrawPolygon)(DrawingWand *,const size_t,const PointInfo *);
-  void (*DrawPolyline)(DrawingWand *,const size_t,const PointInfo *);
-  void (*DrawPopClipPath)(DrawingWand *);
-  void (*DrawPopDefs)(DrawingWand *);
-  MagickBooleanType (*DrawPopPattern)(DrawingWand *);
-  void (*DrawPushClipPath)(DrawingWand *,const char *);
-  void (*DrawPushDefs)(DrawingWand *);
-  MagickBooleanType (*DrawPushPattern)(DrawingWand *,const char *,const double,
-    const double,const double,const double);
-  void (*DrawRectangle)(DrawingWand *,const double,const double,const double,
-    const double);
-  void (*DrawRoundRectangle)(DrawingWand *,double,double,double,double,
-    double,double);
-  void (*DrawAffine)(DrawingWand *,const AffineMatrix *);
-  MagickBooleanType (*DrawSetClipPath)(DrawingWand *,const char *);
-  void (*DrawSetBorderColor)(DrawingWand *,const PixelWand *);
-  void (*DrawSetClipRule)(DrawingWand *,const FillRule);
-  void (*DrawSetClipUnits)(DrawingWand *,const ClipPathUnits);
-  void (*DrawSetFillColor)(DrawingWand *,const PixelWand *);
-  void (*DrawSetFillRule)(DrawingWand *,const FillRule);
-  MagickBooleanType (*DrawSetFillPatternURL)(DrawingWand *,const char *);
-  MagickBooleanType (*DrawSetFont)(DrawingWand *,const char *);
-  MagickBooleanType (*DrawSetFontFamily)(DrawingWand *,const char *);
-  void (*DrawSetTextKerning)(DrawingWand *,const double);
-  void (*DrawSetTextInterwordSpacing)(DrawingWand *,const double);
-  double (*DrawGetTextKerning)(DrawingWand *);
-  double (*DrawGetTextInterwordSpacing)(DrawingWand *);
-  void (*DrawSetFontSize)(DrawingWand *,const double);
-  void (*DrawSetFontStretch)(DrawingWand *,const StretchType);
-  void (*DrawSetFontStyle)(DrawingWand *,const StyleType);
-  void (*DrawSetFontWeight)(DrawingWand *,const size_t);
-  void (*DrawSetGravity)(DrawingWand *,const GravityType);
-  void (*DrawRotate)(DrawingWand *,const double);
-  void (*DrawScale)(DrawingWand *,const double,const double);
-  void (*DrawSkewX)(DrawingWand *,const double);
-  void (*DrawSkewY)(DrawingWand *,const double);
-  void (*DrawSetStrokeAntialias)(DrawingWand *,const MagickBooleanType);
-  void (*DrawSetStrokeColor)(DrawingWand *,const PixelWand *);
-  MagickBooleanType (*DrawSetStrokeDashArray)(DrawingWand *,const double *);
-  void (*DrawSetStrokeDashOffset)(DrawingWand *,const double);
-  void (*DrawSetStrokeLineCap)(DrawingWand *,const LineCap);
-  void (*DrawSetStrokeLineJoin)(DrawingWand *,const LineJoin);
-  void (*DrawSetStrokeMiterLimit)(DrawingWand *,const size_t);
-  MagickBooleanType (*DrawSetStrokePatternURL)(DrawingWand *,const char *);
-  void (*DrawSetStrokeWidth)(DrawingWand *,const double);
-  void (*DrawSetTextAntialias)(DrawingWand *,const MagickBooleanType);
-  void (*DrawSetTextDecoration)(DrawingWand *,const DecorationType);
-  void (*DrawSetTextUnderColor)(DrawingWand *,const PixelWand *);
-  void (*DrawTranslate)(DrawingWand *,const double,const double);
-  void (*DrawSetViewbox)(DrawingWand *,const double,const double,
-    const double,const double);
-  void (*PeekDrawingWand)(DrawingWand *);
-  MagickBooleanType (*PopDrawingWand)(DrawingWand *);
-  MagickBooleanType (*PushDrawingWand)(DrawingWand *);
-};
-
 /*
   Forward declarations.
 */
@@ -729,6 +619,56 @@ WandExport DrawingWand *DrawAllocateWand(const DrawInfo *draw_info,Image *image)
     }
   wand->image=image;
   return(wand);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   D r a w A l p h a                                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DrawAlpha() paints on the image's alpha channel in order to set effected
+%  pixels to transparent.
+%  to influence the alpha of pixels. The available paint
+%  methods are:
+%
+%    PointMethod: Select the target pixel
+%    ReplaceMethod: Select any pixel that matches the target pixel.
+%    FloodfillMethod: Select the target pixel and matching neighbors.
+%    FillToBorderMethod: Select the target pixel and neighbors not matching
+%      border color.
+%    ResetMethod: Select all pixels.
+%
+%  The format of the DrawAlpha method is:
+%
+%      void DrawAlpha(DrawingWand *wand,const double x,const double y,
+%        const PaintMethod paint_method)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the drawing wand.
+%
+%    o x: x ordinate
+%
+%    o y: y ordinate
+%
+%    o paint_method: paint method.
+%
+*/
+WandExport void DrawAlpha(DrawingWand *wand,const double x,const double y,
+  const PaintMethod paint_method)
+{
+  assert(wand != (DrawingWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  (void) MvgPrintf(wand,"alpha %.20g %.20g '%s'\n",x,y,CommandOptionToMnemonic(
+    MagickMethodOptions,(ssize_t) paint_method));
 }
 
 /*
@@ -2779,56 +2719,6 @@ WandExport void DrawLine(DrawingWand *wand,const double sx,const double sy,
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   (void) MvgPrintf(wand,"line %.20g %.20g %.20g %.20g\n",sx,sy,ex,ey);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   D r a w M a t t e                                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  DrawMatte() paints on the image's alpha channel in order to set effected
-%  pixels to transparent.
-%  to influence the alpha of pixels. The available paint
-%  methods are:
-%
-%    PointMethod: Select the target pixel
-%    ReplaceMethod: Select any pixel that matches the target pixel.
-%    FloodfillMethod: Select the target pixel and matching neighbors.
-%    FillToBorderMethod: Select the target pixel and neighbors not matching
-%      border color.
-%    ResetMethod: Select all pixels.
-%
-%  The format of the DrawMatte method is:
-%
-%      void DrawMatte(DrawingWand *wand,const double x,const double y,
-%        const PaintMethod paint_method)
-%
-%  A description of each parameter follows:
-%
-%    o wand: the drawing wand.
-%
-%    o x: x ordinate
-%
-%    o y: y ordinate
-%
-%    o paint_method: paint method.
-%
-*/
-WandExport void DrawMatte(DrawingWand *wand,const double x,const double y,
-  const PaintMethod paint_method)
-{
-  assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
-    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  (void) MvgPrintf(wand,"matte %.20g %.20g '%s'\n",x,y,CommandOptionToMnemonic(
-    MagickMethodOptions,(ssize_t) paint_method));
 }
 
 /*

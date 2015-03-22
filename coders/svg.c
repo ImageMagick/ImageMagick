@@ -3729,6 +3729,11 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image,
             affine.ty=StringToDouble(token,(char **) NULL);
             break;
           }
+        if (LocaleCompare("alpha",keyword) == 0)
+          {
+            primitive_type=AlphaPrimitive;
+            break;
+          }
         if (LocaleCompare("angle",keyword) == 0)
           {
             GetMagickToken(q,&q,token);
@@ -3935,17 +3940,6 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image,
         if (LocaleCompare("line",keyword) == 0)
           {
             primitive_type=LinePrimitive;
-            break;
-          }
-        status=MagickFalse;
-        break;
-      }
-      case 'm':
-      case 'M':
-      {
-        if (LocaleCompare("matte",keyword) == 0)
-          {
-            primitive_type=MattePrimitive;
             break;
           }
         status=MagickFalse;
@@ -4597,8 +4591,8 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image,
         (void) WriteBlobString(image,"\"/>\n");
         break;
       }
+      case AlphaPrimitive:
       case ColorPrimitive:
-      case MattePrimitive:
       {
         if (primitive_info[j].coordinates != 1)
           {

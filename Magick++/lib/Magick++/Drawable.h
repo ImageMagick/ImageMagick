@@ -348,6 +348,63 @@ private:
   MagickCore::AffineMatrix  _affine;
 };
 
+// Change pixel alpha value to transparent using PaintMethod
+class MagickPPExport DrawableAlpha : public DrawableBase
+{
+public:
+
+    DrawableAlpha(double x_, double y_,PaintMethod paintMethod_)
+      : _x(x_),
+        _y(y_),
+        _paintMethod(paintMethod_)
+    {
+    }
+
+    ~DrawableAlpha(void);
+
+    // Operator to invoke equivalent draw API call
+    void operator()(MagickCore::DrawingWand *context_) const;
+
+    // Return polymorphic copy of object
+    DrawableBase* copy() const;
+
+    void x(double x_)
+    {
+      _x=x_;
+    }
+
+    double x(void) const
+    {
+      return(_x);
+    }
+
+    void y(double y_)
+    {
+      _y=y_;
+    }
+
+    double y(void) const
+    {
+      return(_y);
+    }
+
+    void paintMethod(PaintMethod paintMethod_)
+    {
+      _paintMethod=paintMethod_;
+    }
+
+    PaintMethod paintMethod(void) const
+    {
+      return(_paintMethod);
+    }
+
+  private:
+
+    double _x;
+    double _y;
+    PaintMethod _paintMethod;
+};
+
 // Arc
 class MagickPPExport DrawableArc : public DrawableBase
 {
@@ -1055,58 +1112,6 @@ private:
   double _startY;
   double _endX;
   double _endY;
-};
-
-// Change pixel matte value to transparent using PaintMethod
-class MagickPPExport DrawableMatte : public DrawableBase
-{
-public:
-  DrawableMatte ( double x_, double y_,
-                  PaintMethod paintMethod_ )
-    : _x(x_),
-      _y(y_),
-      _paintMethod(paintMethod_)
-    { }
-
-  /*virtual*/ ~DrawableMatte ( void );
-
-  // Operator to invoke equivalent draw API call
-  /*virtual*/ void operator()( MagickCore::DrawingWand *context_ ) const;
-
-  // Return polymorphic copy of object
-  /*virtual*/ DrawableBase* copy() const;
-
-  void x( double x_ )
-    {
-      _x = x_;
-    }
-  double x( void ) const
-    {
-      return _x;
-    }
-
-  void y( double y_ )
-    {
-      _y = y_;
-    }
-  double y( void ) const
-    {
-      return _y;
-    }
-
-  void paintMethod( PaintMethod paintMethod_ )
-    {
-      _paintMethod = paintMethod_;
-    }
-  PaintMethod paintMethod( void ) const
-    {
-      return _paintMethod;
-    }
-
-private:
-  double _x;
-  double _y;
-  PaintMethod _paintMethod;
 };
 
 // Drawable Path
