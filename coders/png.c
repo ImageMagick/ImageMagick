@@ -3025,7 +3025,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           Quantum
             scale;
 
-          scale = 65535UL/((1UL << ping_file_depth)-1);
+          scale = (Quantum) (65535UL)/((1UL << ping_file_depth)-1);
 
 #if (MAGICKCORE_QUANTUM_DEPTH > 16)
           scale = ScaleShortToQuantum(scale);
