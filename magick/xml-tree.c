@@ -1649,7 +1649,7 @@ static void ParseProcessingInstructions(XMLTreeRoot *root,char *xml,
       if (root->processing_instructions == (char ***) NULL)
         ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
       root->processing_instructions[i]=(char **) AcquireQuantumMemory(3,
-        sizeof(*root->processing_instructions));
+        sizeof(**root->processing_instructions));
       if (root->processing_instructions[i] == (char **) NULL)
         ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
       root->processing_instructions[i+1]=(char **) NULL;
