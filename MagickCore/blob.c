@@ -3848,6 +3848,8 @@ MagickPrivate MagickBooleanType SetBlobExtent(Image *image,
       if ((MagickSizeType) offset >= extent)
         break;
       offset=SeekBlob(image,(MagickOffsetType) extent-1,SEEK_SET);
+      if (offset < 0)
+        break;
       count=(ssize_t) fwrite((const unsigned char *) "",1,1,
         image->blob->file_info.file);
 #if defined(MAGICKCORE_HAVE_POSIX_FALLOCATE)
