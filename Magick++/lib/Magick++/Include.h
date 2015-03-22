@@ -1155,6 +1155,7 @@ namespace Magick
   using MagickCore::DistortImage;
   using MagickCore::DrawAffine;
   using MagickCore::DrawAllocateWand;
+  using MagickCore::DrawAlpha;
   using MagickCore::DrawAnnotation;
   using MagickCore::DrawArc;
   using MagickCore::DrawBezier;
@@ -1165,7 +1166,6 @@ namespace Magick
   using MagickCore::DrawEllipse;
   using MagickCore::DrawImage;
   using MagickCore::DrawLine;
-  using MagickCore::DrawMatte;
   using MagickCore::DrawPathClose;
   using MagickCore::DrawPathCurveToAbsolute;
   using MagickCore::DrawPathCurveToQuadraticBezierAbsolute;

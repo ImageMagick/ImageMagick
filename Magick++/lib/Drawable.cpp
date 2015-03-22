@@ -244,6 +244,21 @@ Magick::DrawableBase* Magick::DrawableAffine::copy() const
   return new DrawableAffine(*this);
 }
 
+// Change pixel matte value to transparent using PaintMethod
+Magick::DrawableAlpha::~DrawableAlpha(void)
+{
+}
+
+void Magick::DrawableAlpha::operator()(MagickCore::DrawingWand * context_) const
+{
+  DrawAlpha(context_,_x,_y,_paintMethod);
+}
+
+Magick::DrawableBase* Magick::DrawableAlpha::copy() const
+{
+  return new DrawableAlpha(*this);
+}
+
 // Arc
 Magick::DrawableArc::~DrawableArc( void )
 {
@@ -708,19 +723,6 @@ void Magick::DrawableLine::operator()( MagickCore::DrawingWand * context_ ) cons
 Magick::DrawableBase* Magick::DrawableLine::copy() const
 {
   return new DrawableLine(*this);
-}
-
-// Change pixel matte value to transparent using PaintMethod
-Magick::DrawableMatte::~DrawableMatte ( void )
-{
-}
-void Magick::DrawableMatte::operator()( MagickCore::DrawingWand * context_ ) const
-{
-  DrawMatte( context_, _x, _y, _paintMethod );
-}
-Magick::DrawableBase* Magick::DrawableMatte::copy() const
-{
-  return new DrawableMatte(*this);
 }
 
 // Drawable Path

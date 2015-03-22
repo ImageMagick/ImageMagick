@@ -103,21 +103,21 @@ typedef enum
 typedef enum
 {
   UndefinedPrimitive,
-  PointPrimitive,
+  AlphaPrimitive,
+  ArcPrimitive,
+  BezierPrimitive,
+  CirclePrimitive,
+  ColorPrimitive,
+  EllipsePrimitive,
+  ImagePrimitive,
   LinePrimitive,
+  PathPrimitive,
+  PointPrimitive,
+  PolygonPrimitive,
+  PolylinePrimitive,
   RectanglePrimitive,
   RoundRectanglePrimitive,
-  ArcPrimitive,
-  EllipsePrimitive,
-  CirclePrimitive,
-  PolylinePrimitive,
-  PolygonPrimitive,
-  BezierPrimitive,
-  ColorPrimitive,
-  MattePrimitive,
-  TextPrimitive,
-  ImagePrimitive,
-  PathPrimitive
+  TextPrimitive
 } PrimitiveType;
 
 typedef enum
