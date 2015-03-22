@@ -826,14 +826,14 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
           channel_statistics[OpacityChannel].depth);
       scale=1.0;
       if (image->depth <= MAGICKCORE_QUANTUM_DEPTH)
-        scale=(double) (QuantumRange/((size_t) QuantumRange >> ((size_t)
-          MAGICKCORE_QUANTUM_DEPTH-image->depth)));
+        scale=(double) QuantumRange/((size_t) QuantumRange >> ((size_t)
+          MAGICKCORE_QUANTUM_DEPTH-image->depth));
     }
   if (channel_statistics != (ChannelStatistics *) NULL)
     {
       (void) FormatLocaleFile(file,"  Channel statistics:\n");
-      (void) FormatLocaleFile(file,"    Pixels: %.20g\n",
-        (double) image->columns*image->rows);
+      (void) FormatLocaleFile(file,"    Pixels: %.20g\n",(double)
+        image->columns*image->rows);
       switch (colorspace)
       {
         case RGBColorspace:
