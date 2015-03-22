@@ -1,7 +1,7 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
 // Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
-// Copyright Dirk Lemstra 2014
+// Copyright Dirk Lemstra 2014-2015
 //
 // Definition of an Image reference
 //
@@ -33,9 +33,6 @@ namespace Magick
     // Construct with an image pointer and default options
     ImageRef(MagickCore::Image *image_);
 
-    // Construct with an image pointer and options
-    ImageRef(MagickCore::Image *image_,const Options *options_);
-
     // Destroy image and options
     ~ImageRef(void);
 
@@ -56,8 +53,9 @@ namespace Magick
     Options *options(void);
 
     // Tries to replaces the images with the specified image, returns
-    // false when current the image is shared
-    bool replaceImage(MagickCore::Image *replacement_);
+    // a new instance when the current image is shared.
+    static ImageRef *replaceImage(ImageRef *imgRef,
+      MagickCore::Image *replacement_);
 
     // Image signature. Set force_ to true in order to re-calculate
     // the signature regardless of whether the image data has been
@@ -66,8 +64,12 @@ namespace Magick
 
   private:
 
+    // Construct with an image pointer and options
+    ImageRef(MagickCore::Image *image_,const Options *options_);
+
     // Copy constructor and assignment are not supported
     ImageRef(const ImageRef&);
+
     ImageRef& operator=(const ImageRef&);
 
     MagickCore::Image *_image;    // ImageMagick Image

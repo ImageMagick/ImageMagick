@@ -43,7 +43,7 @@ Magick::Options::Options(void)
 }
 
 Magick::Options::Options(const Magick::Options& options_)
-  : _imageInfo(CloneImageInfo(options_._imageInfo )),
+  : _imageInfo(CloneImageInfo(options_._imageInfo)),
     _quantizeInfo(CloneQuantizeInfo(options_._quantizeInfo)),
     _drawInfo(CloneDrawInfo(_imageInfo,options_._drawInfo)),
     _quiet(options_._quiet)

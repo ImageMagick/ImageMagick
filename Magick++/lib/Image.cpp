@@ -4853,16 +4853,7 @@ MagickCore::Image *Magick::Image::replaceImage(MagickCore::Image *replacement_)
       ThrowImageException;
     }
 
-  // We can replace the image if we own it.
-  if (_imgRef->replaceImage(image))
-    return(image);
-
-  // We don't own the image, dereference and replace with new reference
-  if (_imgRef->decrease() == 0)
-    delete _imgRef;
-
-  _imgRef=new ImageRef(image,constOptions());
-
+  _imgRef=ImageRef::replaceImage(_imgRef,image);
   return(image);
 }
 
