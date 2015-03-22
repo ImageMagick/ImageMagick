@@ -34,15 +34,6 @@ Magick::ImageRef::ImageRef(MagickCore::Image *image_)
 {
 }
 
-Magick::ImageRef::ImageRef(MagickCore::Image *image_,const Options *options_)
-  : _image(image_),
-    _mutexLock(),
-    _options(0),
-    _refCount(1)
-{
-  _options=new Options(*options_);
-}
-
 Magick::ImageRef::~ImageRef(void)
 {
   // Deallocate image
@@ -105,22 +96,30 @@ Magick::Options *Magick::ImageRef::options(void)
   return(_options);
 }
 
-bool Magick::ImageRef::replaceImage(MagickCore::Image * replacement_)
+Magick::ImageRef *Magick::ImageRef::replaceImage(ImageRef *imgRef,
+  MagickCore::Image *replacement_)
 {
-  bool
-    replaced;
+  Magick::ImageRef
+    *instance;
 
-  replaced=false;
-  _mutexLock.lock();
-  if (_refCount == 1)
+  imgRef->_mutexLock.lock();
+  if (imgRef->_refCount == 1)
     {
-      if (_image != (MagickCore::Image*) NULL)
-        (void) DestroyImageList(_image);
-      _image=replacement_;
-      replaced=true;
+      // We can replace the image if we own it.
+      instance=imgRef;
+      if (imgRef->_image != (MagickCore::Image*) NULL)
+        (void) DestroyImageList(imgRef->_image);
+      imgRef->_image=replacement_;
+      imgRef->_mutexLock.unlock();
     }
-  _mutexLock.unlock();
-  return(replaced);
+  else
+    {
+      // We don't own the image, create a new ImageRef instance.
+      instance=new ImageRef(replacement_,imgRef->_options);
+      imgRef->_refCount--;
+      imgRef->_mutexLock.unlock();
+    }
+  return(instance);
 }
 
 std::string Magick::ImageRef::signature(const bool force_)
@@ -143,4 +142,13 @@ std::string Magick::ImageRef::signature(const bool force_)
   ThrowPPException(true);
 
   return(std::string(property));
+}
+
+Magick::ImageRef::ImageRef(MagickCore::Image *image_,const Options *options_)
+  : _image(image_),
+    _mutexLock(),
+    _options(0),
+    _refCount(1)
+{
+  _options=new Options(*options_);
 }
