@@ -1615,31 +1615,32 @@ private:
 class MagickPPExport DrawableDashArray : public DrawableBase
 {
 public:
-  DrawableDashArray( const double* dasharray_ );
-  DrawableDashArray( const size_t* dasharray_ ); // Deprecated
-  DrawableDashArray( const Magick::DrawableDashArray &original_ );
 
-  /*virtual*/ ~DrawableDashArray( void );
+    DrawableDashArray(const double* dasharray_);
 
-  // Operator to invoke equivalent draw API call
-  /*virtual*/ void operator()( MagickCore::DrawingWand *context_ ) const;
+    DrawableDashArray(const Magick::DrawableDashArray &original_);
 
-  // Return polymorphic copy of object
-  /*virtual*/ DrawableBase* copy() const;
+    ~DrawableDashArray(void);
 
-  void dasharray( const double* dasharray_ );
-  void dasharray( const size_t* dasharray_ ); // Deprecated
+    // Operator to invoke equivalent draw API call
+    void operator()(MagickCore::DrawingWand *context_) const;
 
-  const double* dasharray( void ) const
+    // Return polymorphic copy of object
+    DrawableBase* copy() const;
+
+    void dasharray(const double* dasharray_);
+
+    const double* dasharray(void) const
     {
       return _dasharray;
     }
 
-  DrawableDashArray& operator=(const Magick::DrawableDashArray &original_);
+    DrawableDashArray& operator=(const Magick::DrawableDashArray &original_);
 
 private:
-  size_t	_size;
-  double       *_dasharray;
+
+    size_t _size;
+    double *_dasharray;
 };
 
 // Stroke dashoffset

@@ -1020,24 +1020,15 @@ Magick::DrawableBase* Magick::DrawableSkewY::copy() const
   return new DrawableSkewY(*this);
 }
 
+Magick::DrawableDashArray::DrawableDashArray(const double* dasharray_)
+  : _size(0),
+    _dasharray(0)
+{
+  dasharray(dasharray_);
+}
 
-// Stroke dasharray
-Magick::DrawableDashArray::DrawableDashArray( const double* dasharray_ )
-  : _size(0),
-    _dasharray(0)
-{
-  dasharray( dasharray_ );
-}
-// Deprecated, do not use for new code, and migrate existing code to
-// using double*
-Magick::DrawableDashArray::DrawableDashArray( const size_t* dasharray_ )
-  : _size(0),
-    _dasharray(0)
-{
-  dasharray( dasharray_ );
-}
-Magick::DrawableDashArray::DrawableDashArray
-(const Magick::DrawableDashArray& original_)
+Magick::DrawableDashArray::DrawableDashArray(
+  const Magick::DrawableDashArray& original_)
   : DrawableBase (original_),
     _size(original_._size),
     _dasharray(new double[_size+1])
@@ -1049,14 +1040,16 @@ Magick::DrawableDashArray::DrawableDashArray
     _dasharray[_size]=0.0;
   }
 }
-Magick::DrawableDashArray::~DrawableDashArray( void )
+
+Magick::DrawableDashArray::~DrawableDashArray(void)
 {
   delete [] _dasharray;
-  _size = 0;
-  _dasharray = 0;
+  _size=0;
+  _dasharray=0;
 }
-Magick::DrawableDashArray& Magick::DrawableDashArray::operator=
-(const Magick::DrawableDashArray &original_)
+
+Magick::DrawableDashArray& Magick::DrawableDashArray::operator=(
+  const Magick::DrawableDashArray &original_)
 {
   if( this != &original_ )
     {
@@ -1072,32 +1065,37 @@ Magick::DrawableDashArray& Magick::DrawableDashArray::operator=
     }
   return *this;
 }
-// Invoke object
-void Magick::DrawableDashArray::operator()
-  ( MagickCore::DrawingWand *context_ ) const
-{
-  (void) DrawSetStrokeDashArray( context_, (const unsigned long) _size, _dasharray );
-}
-Magick::DrawableBase* Magick::DrawableDashArray::copy() const
-{
-  return new DrawableDashArray(*this);
-}
-void Magick::DrawableDashArray::dasharray ( const double* dasharray_ )
-{
-  delete [] _dasharray;
-  _size = 0;
-  _dasharray = 0;
 
-  if(dasharray_)
+void Magick::DrawableDashArray::operator()(
+  MagickCore::DrawingWand *context_) const
+{
+  (void) DrawSetStrokeDashArray(context_,(const unsigned long) _size,_dasharray);
+}
+
+Magick::DrawableBase *Magick::DrawableDashArray::copy() const
+{
+  return(new DrawableDashArray(*this));
+}
+
+void Magick::DrawableDashArray::dasharray(const double* dasharray_)
+{
+  size_t
+    n;
+
+  delete [] _dasharray;
+  _size=0;
+  _dasharray=0;
+
+  if (dasharray_)
     {
       // Count elements in dash array
-      size_t n = 0;
+      n=0;
       {
         const double *p = dasharray_;
         while(*p++ != 0.0)
           n++;
       }
-      _size = n;
+      _size=n;
 
       // Allocate elements
       _dasharray=new double[_size+1];
@@ -1106,36 +1104,6 @@ void Magick::DrawableDashArray::dasharray ( const double* dasharray_ )
         for (size_t i=0; i < _size; i++)
           _dasharray[i]=dasharray_[i];
         _dasharray[_size]=0.0;
-      }
-    }
-}
-// This method is deprecated.  Don't use for new code, and migrate existing
-// code to the const double* version.
-void Magick::DrawableDashArray::dasharray( const size_t* dasharray_ )
-{
-  if (_dasharray)
-      delete [] _dasharray;
-  _size = 0;
-  _dasharray = 0;
-
-  if(dasharray_)
-    {
-      // Count elements in dash array
-      size_t n = 0;
-      {
-        const size_t *p = dasharray_;
-        while(*p++ != 0)
-          n++;
-      }
-      _size = n;
-
-      // Allocate elements
-      _dasharray=new double[_size+1];
-      // Copy elements
-      {
-        for (size_t i=0; i < _size; i++)
-          _dasharray[i]=dasharray_[i];
-        _dasharray[_size]=0;
       }
     }
 }
