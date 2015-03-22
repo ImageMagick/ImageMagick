@@ -92,7 +92,7 @@ Magick::Quantum* Magick::Pixels::set(const ssize_t x_,const ssize_t y_,
 void Magick::Pixels::sync(void)
 {
   GetPPException;
-  SyncCacheViewAuthenticPixels(_view,exceptionInfo);
+  (void) SyncCacheViewAuthenticPixels(_view,exceptionInfo);
   ThrowPPException(_image.quiet());
 }
 
