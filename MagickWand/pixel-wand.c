@@ -1262,6 +1262,7 @@ WandExport void PixelGetQuantumPacket(const PixelWand *wand,PixelInfo *packet)
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   assert(packet != (PixelInfo *) NULL);
+  packet->depth=wand->pixel.depth;
   packet->fuzz=wand->pixel.fuzz;
   packet->alpha=(double) ClampToQuantum(wand->pixel.alpha);
   packet->alpha_trait=wand->pixel.alpha_trait;
