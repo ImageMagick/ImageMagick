@@ -198,7 +198,7 @@ extern WandExport void
   DrawSetFontStyle(DrawingWand *,const StyleType),
   DrawSetFontWeight(DrawingWand *,const size_t),
   DrawSetGravity(DrawingWand *,const GravityType),
-  DrawSetAlpha(DrawingWand *,const double),
+  DrawSetOpacity(DrawingWand *,const double),
   DrawSetStrokeAntialias(DrawingWand *,const MagickBooleanType),
   DrawSetStrokeColor(DrawingWand *,const PixelWand *),
   DrawSetStrokeDashOffset(DrawingWand *,const double dashoffset),

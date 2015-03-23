@@ -4752,12 +4752,12 @@ WandExport MagickBooleanType DrawSetFontResolution(DrawingWand *wand,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DrawSetAlpha() sets the alpha to use when drawing using the fill or
+%  DrawSetOpacity() sets the alpha to use when drawing using the fill or
 %  stroke color or texture.  Fully opaque is 1.0.
 %
-%  The format of the DrawSetAlpha method is:
+%  The format of the DrawSetOpacity method is:
 %
-%      void DrawSetAlpha(DrawingWand *wand,const double alpha)
+%      void DrawSetOpacity(DrawingWand *wand,const double alpha)
 %
 %  A description of each parameter follows:
 %
@@ -4766,7 +4766,7 @@ WandExport MagickBooleanType DrawSetFontResolution(DrawingWand *wand,
 %    o alpha: fill alpha
 %
 */
-WandExport void DrawSetAlpha(DrawingWand *wand,const double alpha)
+WandExport void DrawSetOpacity(DrawingWand *wand,const double alpha)
 {
   Quantum
     quantum_alpha;
@@ -4780,7 +4780,7 @@ WandExport void DrawSetAlpha(DrawingWand *wand,const double alpha)
       (CurrentContext->alpha != quantum_alpha))
     {
       CurrentContext->alpha=(Quantum) alpha;
-      (void) MvgPrintf(wand,"alpha %.20g\n",alpha);
+      (void) MvgPrintf(wand,"opacity %.20g\n",alpha);
     }
 }
 
