@@ -417,8 +417,9 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     cmyk,
     cropbox,
     fitPage,
-    trimbox,
-    status;
+    status,
+    stop_on_error,
+    trimbox;
 
   MagickStatusType
     flags;
@@ -505,6 +506,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   cmyk=image_info->colorspace == CMYKColorspace ? MagickTrue : MagickFalse;
   cropbox=IsStringTrue(GetImageOption(image_info,"pdf:use-cropbox"));
+  stop_on_error=IsStringTrue(GetImageOption(image_info,"pdf:stop-on-error"));
   trimbox=IsStringTrue(GetImageOption(image_info,"pdf:use-trimbox"));
   count=0;
   spotcolor=0;
@@ -715,6 +717,8 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) ConcatenateMagickString(options,"-dUseCIEColor ",MaxTextExtent);
   if (cropbox != MagickFalse)
     (void) ConcatenateMagickString(options,"-dUseCropBox ",MaxTextExtent);
+  if (stop_on_error != MagickFalse)
+    (void) ConcatenateMagickString(options,"-dPDFSTOPONERROR ",MaxTextExtent);
   if (trimbox != MagickFalse)
     (void) ConcatenateMagickString(options,"-dUseTrimBox ",MaxTextExtent);
   read_info=CloneImageInfo(image_info);
