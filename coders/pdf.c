@@ -418,8 +418,9 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     cmyk,
     cropbox,
     fitPage,
-    trimbox,
-    status;
+    status,
+    stop_on_error,
+    trimbox;
 
   MagickStatusType
     flags;
@@ -509,6 +510,10 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   option=GetImageOption(image_info,"pdf:use-cropbox");
   if (option != (const char *) NULL)
     cropbox=IsMagickTrue(option);
+  stop_on_error=MagickFalse;
+  option=GetImageOption(image_info,"pdf:stop-on-error");
+  if (option != (const char *) NULL)
+    stop_on_error=IsMagickTrue(option);
   trimbox=MagickFalse;
   option=GetImageOption(image_info,"pdf:use-trimbox");
   if (option != (const char *) NULL)
@@ -724,6 +729,8 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) ConcatenateMagickString(options,"-dUseCropBox ",MaxTextExtent);
   if (trimbox != MagickFalse)
     (void) ConcatenateMagickString(options,"-dUseTrimBox ",MaxTextExtent);
+  if (stop_on_error != MagickFalse)
+    (void) ConcatenateMagickString(options,"-dPDFSTOPONERROR ",MaxTextExtent);
   read_info=CloneImageInfo(image_info);
   *read_info->magick='\0';
   if (read_info->number_scenes != 0)
