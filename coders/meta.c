@@ -326,8 +326,8 @@ static ssize_t parse8BIM(Image *ifile, Image *ofile)
   recnum = 0;
   line = (char *) AcquireQuantumMemory((size_t) inputlen,sizeof(*line));
   if (line == (char *) NULL)
-    break;
-  name = token = (char *) NULL;
+    return(-1);
+  newstr = name = token = (char *) NULL;
   savedpos = 0;
   token_info=AcquireTokenInfo();
   while (super_fgets(&line,&inputlen,ifile)!=NULL)
@@ -338,7 +338,7 @@ static ssize_t parse8BIM(Image *ifile, Image *ofile)
     token=(char *) AcquireQuantumMemory((size_t) inputlen,sizeof(*token));
     if (token == (char *) NULL)
       break;
-    newstr=(newstr *) AcquireQuantumMemory((size_t) inputlen,sizeof(*newstr));
+    newstr=(char *) AcquireQuantumMemory((size_t) inputlen,sizeof(*newstr));
     if (newstr == (char *) NULL)
       break;
     while (Tokenizer(token_info,0,token,(size_t) inputlen,line,"","=","\"",0,
@@ -502,6 +502,12 @@ static ssize_t parse8BIM(Image *ifile, Image *ofile)
       name=DestroyString(name);
   }
   token_info=DestroyTokenInfo(token_info);
+  if (token != (char *) NULL)
+    token=DestroyString(token);
+  if (newstr != (char *) NULL)
+    newstr=DestroyString(newstr);
+  if (name != (char *) NULL)
+    name=DestroyString(name);
   line=DestroyString(line);
   if (savedolen > 0)
     {
@@ -611,7 +617,7 @@ static ssize_t parse8BIMW(Image *ifile, Image *ofile)
   line=(char *) AcquireQuantumMemory((size_t) inputlen,sizeof(*line));
   if (line == (char *) NULL)
     return(-1);
-  name = token = (char *) NULL;
+  newstr = name = token = (char *) NULL;
   savedpos = 0;
   token_info=AcquireTokenInfo();
   while (super_fgets_w(&line,&inputlen,ifile) != NULL)
@@ -786,6 +792,12 @@ static ssize_t parse8BIMW(Image *ifile, Image *ofile)
       name=DestroyString(name);
   }
   token_info=DestroyTokenInfo(token_info);
+  if (token != (char *) NULL)
+    token=DestroyString(token);
+  if (newstr != (char *) NULL)
+    newstr=DestroyString(newstr);
+  if (name != (char *) NULL)
+    name=DestroyString(name);
   line=DestroyString(line);
   if (savedolen > 0)
     {
