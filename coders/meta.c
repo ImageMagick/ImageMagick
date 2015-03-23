@@ -140,8 +140,6 @@ static MagickBooleanType IsMETA(const unsigned char *magick,const size_t length)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-#define BUFFER_SZ 4096
-
 typedef struct _html_code
 {
   short
@@ -286,7 +284,6 @@ static char *super_fgets(char **b, int *blen, Image *file)
   return((char *) p);
 }
 
-#define BUFFER_SZ 4096
 #define IPTC_ID 1028
 #define THUMBNAIL_ID 1033
 
@@ -311,7 +308,7 @@ static ssize_t parse8BIM(Image *ifile, Image *ofile)
     recnum;
 
   int
-    inputlen = BUFFER_SZ;
+    inputlen = MaxTextExtent;
 
   MagickOffsetType
     savedpos,
@@ -327,6 +324,8 @@ static ssize_t parse8BIM(Image *ifile, Image *ofile)
   dataset = 0;
   recnum = 0;
   line = (char *) AcquireQuantumMemory((size_t) inputlen,sizeof(*line));
+  if (line == (char *) NULL)
+    return(-1);
   name = token = (char *) NULL;
   savedpos = 0;
   token_info=AcquireTokenInfo();
@@ -336,7 +335,11 @@ static ssize_t parse8BIM(Image *ifile, Image *ofile)
     next=0;
 
     token=(char *) AcquireQuantumMemory((size_t) inputlen,sizeof(*token));
+    if (token == (char *) NULL)
+      break;
     newstr=(char *) AcquireQuantumMemory((size_t) inputlen,sizeof(*newstr));
+    if (newstr == (char *) NULL)
+      break;
     while (Tokenizer(token_info,0,token,(size_t) inputlen,line,"","=","\"",0,
            &brkused,&next,&quoted)==0)
     {
@@ -490,8 +493,10 @@ static ssize_t parse8BIM(Image *ifile, Image *ofile)
           }
       state++;
     }
-    token=DestroyString(token);
-    newstr=DestroyString(newstr);
+    if (token != (char *) NULL)
+      token=DestroyString(token);
+    if (newstr != (char *) NULL)
+      newstr=DestroyString(newstr);
     if (name != (char *) NULL)
       name=DestroyString(name);
   }
@@ -514,7 +519,7 @@ static ssize_t parse8BIM(Image *ifile, Image *ofile)
         return(-1);
       savedolen = 0L;
     }
-  return outputlen;
+  return(outputlen);
 }
 
 static char *super_fgets_w(char **b, int *blen, Image *file)
@@ -587,7 +592,7 @@ static ssize_t parse8BIMW(Image *ifile, Image *ofile)
     recnum;
 
   int
-    inputlen = BUFFER_SZ;
+    inputlen = MaxTextExtent;
 
   ssize_t
     savedolen = 0L,
@@ -603,6 +608,8 @@ static ssize_t parse8BIMW(Image *ifile, Image *ofile)
   dataset = 0;
   recnum = 0;
   line=(char *) AcquireQuantumMemory((size_t) inputlen,sizeof(*line));
+  if (line == (char *) NULL)
+    return(-1);
   name = token = (char *) NULL;
   savedpos = 0;
   token_info=AcquireTokenInfo();
@@ -612,7 +619,11 @@ static ssize_t parse8BIMW(Image *ifile, Image *ofile)
     next=0;
 
     token=(char *) AcquireQuantumMemory((size_t) inputlen,sizeof(*token));
+    if (token == (char *) NULL)
+      return(-1);
     newstr=(char *) AcquireQuantumMemory((size_t) inputlen,sizeof(*newstr));
+    if (newstr == (char *) NULL)
+      return(-1);
     while (Tokenizer(token_info,0,token,(size_t) inputlen,line,"","=","\"",0,
       &brkused,&next,&quoted)==0)
     {
@@ -766,9 +777,12 @@ static ssize_t parse8BIMW(Image *ifile, Image *ofile)
           }
       state++;
     }
-    token=DestroyString(token);
-    newstr=DestroyString(newstr);
-    name=DestroyString(name);
+    if (token != (char *) NULL)  
+      token=DestroyString(token);
+    if (newstr != (char *) NULL)  
+      newstr=DestroyString(newstr);
+    if (name != (char *) NULL)  
+      name=DestroyString(name);
   }
   token_info=DestroyTokenInfo(token_info);
   line=DestroyString(line);
