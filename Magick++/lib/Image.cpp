@@ -3011,7 +3011,8 @@ void Magick::Image::fontTypeMetrics(const std::string &text_,
 
   drawInfo=options()->drawInfo();
   drawInfo->text=const_cast<char *>(text_.c_str());
-  GetTypeMetrics(image(),drawInfo,&(metrics->_typeMetric));
+  if (GetTypeMetrics(image(),drawInfo,&(metrics->_typeMetric)) == MagickFalse)
+    throwImageException();
   drawInfo->text=0;
 }
 
@@ -3163,7 +3164,7 @@ const Magick::PixelPacket* Magick::Image::getConstPixels(const ssize_t x_,
     *result;
 
   GetPPException;
-  result=(*GetVirtualPixels)(constImage(),x_,y_,columns_,rows_,exceptionInfo);
+  result=GetVirtualPixels(constImage(),x_,y_,columns_,rows_,exceptionInfo);
   ThrowImageException;
   return(result);
 }
@@ -3189,7 +3190,7 @@ Magick::PixelPacket *Magick::Image::getPixels(const ssize_t x_,
 
   modifyImage();
   GetPPException;
-  result=(*GetAuthenticPixels)(image(),x_,y_,columns_,rows_,exceptionInfo);
+  result=GetAuthenticPixels(image(),x_,y_,columns_,rows_,exceptionInfo);
   ThrowImageException;
   return(result);
 }
@@ -4226,7 +4227,7 @@ Magick::PixelPacket *Magick::Image::setPixels(const ssize_t x_,
 
   modifyImage();
   GetPPException;
-  result=(*QueueAuthenticPixels)(image(),x_, y_,columns_,rows_,exceptionInfo);
+  result=QueueAuthenticPixels(image(),x_, y_,columns_,rows_,exceptionInfo);
   ThrowImageException;
   return(result);
 }
@@ -4505,7 +4506,7 @@ void Magick::Image::swirl(const double degrees_)
 void Magick::Image::syncPixels(void)
 {
   GetPPException;
-  (void) (*SyncAuthenticPixels)(image(),exceptionInfo);
+  (void) SyncAuthenticPixels(image(),exceptionInfo);
   ThrowImageException;
 }
 

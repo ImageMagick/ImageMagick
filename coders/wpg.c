@@ -495,7 +495,10 @@ static int UnpackWPGRaster(Image *image,int bpp)
               for(i=0;i<(int) RunCount;i++) InsertByte(bbuf);
             }
           else {  /* read next byte as RunCount; repeat 0xFF runcount* */
-            RunCount=ReadBlobByte(image);
+            c=ReadBlobByte(image);
+            if (c < 0)
+              break;
+            RunCount=(unsigned char) c;
             for(i=0;i<(int) RunCount;i++) InsertByte(0xFF);
           }
         }
@@ -509,7 +512,10 @@ static int UnpackWPGRaster(Image *image,int bpp)
               }
           }
         else {  /* repeat previous line runcount* */
-          RunCount=ReadBlobByte(image);
+          c=ReadBlobByte(image);
+          if (c < 0)
+            break;
+          RunCount=(unsigned char) c;
           if(x) {    /* attempt to duplicate row from x position: */
             /* I do not know what to do here */
             BImgBuff=(unsigned char *) RelinquishMagickMemory(BImgBuff);
@@ -604,6 +610,8 @@ static int UnpackWPG2Raster(Image *image,int bpp)
           break;
         case 0x7F:
           RunCount=ReadBlobByte(image);   /* BLK */
+          if (RunCount < 0)
+            break;
           for(i=0; i < SampleSize*(RunCount+1); i++)
             {
               InsertByte6(0);
@@ -611,12 +619,16 @@ static int UnpackWPG2Raster(Image *image,int bpp)
           break;
         case 0xFD:
           RunCount=ReadBlobByte(image);   /* EXT */
+          if (RunCount < 0)
+            break;
           for(i=0; i<= RunCount;i++)
             for(bbuf=0; bbuf < SampleSize; bbuf++)
               InsertByte6(SampleBuffer[bbuf]);
           break;
         case 0xFE:
           RunCount=ReadBlobByte(image);  /* RST */
+          if (RunCount < 0)
+            break;
           if(x!=0)
             {
               (void) FormatLocaleFile(stderr,
@@ -636,6 +648,8 @@ static int UnpackWPG2Raster(Image *image,int bpp)
           break;
         case 0xFF:
           RunCount=ReadBlobByte(image);   /* WHT */
+          if (RunCount < 0)
+            break;
           for (i=0; i < SampleSize*(RunCount+1); i++)
           {
             InsertByte6(0xFF);
@@ -643,6 +657,8 @@ static int UnpackWPG2Raster(Image *image,int bpp)
           break;
         default:
           RunCount=bbuf & 0x7F;
+          if (RunCount < 0)
+            break;
 
           if(bbuf & 0x80)     /* REP */
             {
