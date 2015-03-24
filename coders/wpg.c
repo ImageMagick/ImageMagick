@@ -448,7 +448,6 @@ static void InsertRow(Image *image,unsigned char *p,ssize_t y,int bpp,
 static int UnpackWPGRaster(Image *image,int bpp,ExceptionInfo *exception)
 {
   int
-    c,
     x,
     y,
     i;
@@ -602,7 +601,7 @@ static int UnpackWPG2Raster(Image *image,int bpp,ExceptionInfo *exception)
         case 0x7F:
           RunCount=ReadBlobByte(image);   /* BLK */
           if (RunCount < 0)
-            brealk;
+            break;
           for(i=0; i < SampleSize*(RunCount+1); i++)
             {
               InsertByte6(0);
@@ -611,7 +610,7 @@ static int UnpackWPG2Raster(Image *image,int bpp,ExceptionInfo *exception)
         case 0xFD:
           RunCount=ReadBlobByte(image);   /* EXT */
           if (RunCount < 0)
-            brealk;
+            break;
           for(i=0; i<= RunCount;i++)
             for(bbuf=0; bbuf < SampleSize; bbuf++)
               InsertByte6(SampleBuffer[bbuf]);          
@@ -619,7 +618,7 @@ static int UnpackWPG2Raster(Image *image,int bpp,ExceptionInfo *exception)
         case 0xFE:
           RunCount=ReadBlobByte(image);  /* RST */
           if (RunCount < 0)
-            brealk;
+            break;
           if(x!=0)
             {
               (void) FormatLocaleFile(stderr,
@@ -640,7 +639,7 @@ static int UnpackWPG2Raster(Image *image,int bpp,ExceptionInfo *exception)
         case 0xFF:
           RunCount=ReadBlobByte(image);   /* WHT */
           if (RunCount < 0)
-            brealk;
+            break;
           for(i=0; i < SampleSize*(RunCount+1); i++)
             {
               InsertByte6(0xFF);
