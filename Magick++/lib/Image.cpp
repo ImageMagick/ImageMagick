@@ -3132,7 +3132,7 @@ const Magick::Quantum *Magick::Image::getConstPixels(const ssize_t x_,
     *p;
 
   GetPPException;
-  p=(*GetVirtualPixels)(constImage(),x_, y_,columns_, rows_,exceptionInfo);
+  p=GetVirtualPixels(constImage(),x_, y_,columns_, rows_,exceptionInfo);
   ThrowImageException;
   return(p);
 }
@@ -3173,7 +3173,7 @@ Magick::Quantum *Magick::Image::getPixels(const ssize_t x_,const ssize_t y_,
 
   modifyImage();
   GetPPException;
-  result=(*GetAuthenticPixels)(image(),x_, y_,columns_,rows_,exceptionInfo);
+  result=GetAuthenticPixels(image(),x_, y_,columns_,rows_,exceptionInfo);
   ThrowImageException;
 
   return(result);
@@ -4183,7 +4183,7 @@ Magick::Quantum *Magick::Image::setPixels(const ssize_t x_,const ssize_t y_,
 
   modifyImage();
   GetPPException;
-  result=(*QueueAuthenticPixels)(image(),x_,y_,columns_,rows_,exceptionInfo);
+  result=QueueAuthenticPixels(image(),x_,y_,columns_,rows_,exceptionInfo);
   ThrowImageException;
   return(result);
 }
@@ -4413,7 +4413,7 @@ void Magick::Image::swirl(const double degrees_)
 void Magick::Image::syncPixels(void)
 {
   GetPPException;
-  (void) (*SyncAuthenticPixels)(image(),exceptionInfo);
+  (void) SyncAuthenticPixels(image(),exceptionInfo);
   ThrowImageException;
 }
 
