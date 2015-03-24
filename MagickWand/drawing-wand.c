@@ -5389,6 +5389,8 @@ WandExport MagickBooleanType DrawSetStrokeDashArray(DrawingWand *wand,
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   n_new=number_elements;
+  if (dasharray == (const double *) NULL)
+    n_new=0;
   n_old=0;
   update=MagickFalse;
   q=CurrentContext->dash_pattern;
@@ -6785,6 +6787,7 @@ WandExport MagickBooleanType PushDrawingWand(DrawingWand *wand)
     (size_t) wand->index+1UL,sizeof(*wand->graphic_context));
   if (wand->graphic_context == (DrawInfo **) NULL)
     {
+      wand->index--;
       ThrowDrawException(ResourceLimitError,"MemoryAllocationFailed",
         wand->name);
       return(MagickFalse);
