@@ -140,7 +140,7 @@ static MagickBooleanType CompositeImageList(ImageInfo *image_info,Image **image,
         case ModulateCompositeOp:
         case ThresholdCompositeOp:
         {
-          (void) SetImageArtifact(composite_image,"compose:args",
+          (void) SetImageArtifact(*image,"compose:args",
             composite_options->compose_args);
           break;
         }
@@ -191,8 +191,7 @@ static MagickBooleanType CompositeImageList(ImageInfo *image_info,Image **image,
               /*
                 Tile the composite image.
               */
-              (void) SetImageArtifact(composite_image,"compose:outside-overlay",
-                "false");
+              (void) SetImageArtifact(*image,"compose:outside-overlay","false");
               columns=composite_image->columns;
               for (y=0; y < (ssize_t) (*image)->rows; y+=(ssize_t) composite_image->rows)
                 for (x=0; x < (ssize_t) (*image)->columns; x+=(ssize_t) columns)
