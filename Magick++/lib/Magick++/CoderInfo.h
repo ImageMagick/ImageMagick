@@ -62,6 +62,9 @@ namespace Magick
     // Format mime type
     std::string mimeType(void) const;
 
+    // Name of the module
+    std::string module(void) const;
+
     // Format name
     std::string name(void) const;
 
@@ -69,14 +72,15 @@ namespace Magick
     bool unregister(void) const;
 
   private:
-    bool             _decoderThreadSupport;
-    std::string      _description;
-    bool             _encoderThreadSupport;
-    bool             _isMultiFrame;
-    bool             _isReadable;
-    bool             _isWritable;
-    std::string      _mimeType;
-    std::string      _name;
+    bool        _decoderThreadSupport;
+    std::string _description;
+    bool        _encoderThreadSupport;
+    bool        _isMultiFrame;
+    bool        _isReadable;
+    bool        _isWritable;
+    std::string _mimeType;
+    std::string _module;
+    std::string _name;
   };
 
 } // namespace Magick
