@@ -23,6 +23,7 @@ Magick::CoderInfo::CoderInfo(void)
     _isReadable(false),
     _isWritable(false),
     _mimeType(),
+    _module(),
     _name()
 {
 }
@@ -35,6 +36,7 @@ Magick::CoderInfo::CoderInfo(const Magick::CoderInfo &coder_)
     _isReadable(coder_._isReadable),
     _isWritable(coder_._isWritable),
     _mimeType(coder_._mimeType),
+    _module(coder_._module),
     _name(coder_._name)
 {
 }
@@ -47,6 +49,7 @@ Magick::CoderInfo::CoderInfo(const std::string &name_)
     _isReadable(false),
     _isWritable(false),
     _mimeType(),
+    _module(),
     _name()
 {
   const Magick::MagickInfo
@@ -62,7 +65,7 @@ Magick::CoderInfo::CoderInfo(const std::string &name_)
     {
       _decoderThreadSupport=(GetMagickDecoderThreadSupport(magickInfo) ==
         MagickTrue) ? true : false;
-      _description=string(magickInfo->description);
+      _description=std::string(magickInfo->description);
       _encoderThreadSupport=(GetMagickEncoderThreadSupport(magickInfo) ==
         MagickTrue) ? true : false;
       _isMultiFrame=(GetMagickAdjoin(magickInfo) == MagickTrue) ? true : false;
@@ -70,8 +73,10 @@ Magick::CoderInfo::CoderInfo(const std::string &name_)
         NULL) ? false : true);
       _isWritable=((magickInfo->encoder == (MagickCore::EncodeImageHandler *)
         NULL) ? false : true);
-      _mimeType=string(magickInfo->mime_type ? magickInfo->mime_type : "");
-      _name=string(magickInfo->name);
+      _mimeType=std::string(magickInfo->mime_type != (char *) NULL ?
+        magickInfo->mime_type : "");
+      _module=std::string(magickInfo->module);
+      _name=std::string(magickInfo->name);
     }
 }
 
@@ -91,6 +96,7 @@ Magick::CoderInfo& Magick::CoderInfo::operator=(const CoderInfo &coder_)
       _isReadable=coder_._isReadable;
       _isWritable=coder_._isWritable;
       _mimeType=coder_._mimeType;
+      _module=coder_._module;
       _name=coder_._name;
     }
   return(*this);
@@ -129,6 +135,11 @@ bool Magick::CoderInfo::isMultiFrame(void) const
 std::string Magick::CoderInfo::mimeType(void) const
 {
   return(_mimeType);
+}
+
+std::string Magick::CoderInfo::module(void) const
+{
+  return(_module);
 }
 
 std::string Magick::CoderInfo::name(void) const
