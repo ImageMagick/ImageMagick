@@ -1607,7 +1607,7 @@ if (0)
               }
               case CopyAlphaCompositeOp:
               {
-                if (source_traits == UndefinedPixelTrait)
+                if ((source_traits & BlendPixelTrait) == 0)
                   pixel=GetPixelIntensity(source_image,p);
                 else
                   pixel=QuantumRange*Sa;
