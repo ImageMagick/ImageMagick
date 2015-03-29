@@ -597,7 +597,7 @@ Magick::ImagePerceptualHash::ImagePerceptualHash(
       channel_perceptual_hash=(MagickCore::ChannelPerceptualHash *)
         RelinquishMagickMemory(channel_perceptual_hash);
     }
-  ThrowPPException(image_.quality());
+  ThrowPPException(image_.quiet());
 }
 
 Magick::ImageStatistics::ImageStatistics(void)
