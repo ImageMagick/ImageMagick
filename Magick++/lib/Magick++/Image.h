@@ -1197,7 +1197,7 @@ namespace Magick
 
     // Reduce noise in image using a noise peak elimination filter
     void reduceNoise(void);
-    void reduceNoise(const double order_);
+    void reduceNoise(const size_t order_);
 
     // Resets the image page canvas and position.
     void repage();
