@@ -120,8 +120,7 @@ static inline void SetPixelPacket(const Image *image,
   SetPixelRed(color,ClampToQuantum(pixel->red));
   SetPixelGreen(color,ClampToQuantum(pixel->green));
   SetPixelBlue(color,ClampToQuantum(pixel->blue));
-  if (pixel->matte != MagickFalse)
-    SetPixelOpacity(color,ClampToQuantum(pixel->opacity));
+  SetPixelOpacity(color,ClampToQuantum(pixel->opacity));
   if ((image->colorspace == CMYKColorspace) ||
       (image->storage_class == PseudoClass))
     SetPixelIndex(index,ClampToQuantum(pixel->index));
