@@ -47,6 +47,8 @@
 #include "magick/exception-private.h"
 #include "magick/cache.h"
 #include "magick/cache-private.h"
+#include "magick/colorspace.h"
+#include "magick/colorspace-private.h"
 #include "magick/constitute.h"
 #include "magick/delegate.h"
 #include "magick/geometry.h"
@@ -519,6 +521,7 @@ MagickExport QuantumType GetQuantumType(Image *image,ExceptionInfo *exception)
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  (void) exception;
   quantum_type=RGBQuantum;
   if (image->matte != MagickFalse)
     quantum_type=RGBAQuantum;
@@ -528,7 +531,7 @@ MagickExport QuantumType GetQuantumType(Image *image,ExceptionInfo *exception)
       if (image->matte != MagickFalse)
         quantum_type=CMYKAQuantum;
     }
-  if (IsGrayImage(image,exception) != MagickFalse)
+  if (IsGrayColorspace(image->colorspace) != MagickFalse)
     {
       quantum_type=GrayQuantum;
       if (image->matte != MagickFalse)
