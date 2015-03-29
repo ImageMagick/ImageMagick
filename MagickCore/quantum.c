@@ -47,6 +47,8 @@
 #include "MagickCore/exception-private.h"
 #include "MagickCore/cache.h"
 #include "MagickCore/cache-private.h"
+#include "MagickCore/colorspace.h"
+#include "MagickCore/colorspace-private.h"
 #include "MagickCore/constitute.h"
 #include "MagickCore/delegate.h"
 #include "MagickCore/geometry.h"
@@ -529,7 +531,7 @@ MagickExport QuantumType GetQuantumType(Image *image,ExceptionInfo *exception)
       if (image->alpha_trait != UndefinedPixelTrait)
         quantum_type=CMYKAQuantum;
     }
-  if (IsImageGray(image,exception) != MagickFalse)
+  if (IsGrayColorspace(image->colorspace) != MagickFalse)
     {
       quantum_type=GrayQuantum;
       if (image->alpha_trait != UndefinedPixelTrait)
