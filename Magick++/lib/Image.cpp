@@ -3945,17 +3945,17 @@ void Magick::Image::readPixels(const Magick::QuantumType quantum_,
 
 void Magick::Image::reduceNoise(void)
 {
-  reduceNoise(3.0);
+  reduceNoise(3);
 }
 
-void Magick::Image::reduceNoise(const double order_)
+void Magick::Image::reduceNoise(const size_t order_)
 {
   MagickCore::Image
     *newImage;
 
   GetPPException;
-  newImage=StatisticImage(constImage(),NonpeakStatistic,(size_t) order_,
-    (size_t) order_,exceptionInfo);
+  newImage=StatisticImage(constImage(),NonpeakStatistic,order_,
+    order_,exceptionInfo);
   replaceImage(newImage);
   ThrowImageException;
 }
