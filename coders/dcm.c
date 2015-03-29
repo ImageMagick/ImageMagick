@@ -3133,12 +3133,15 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (strncmp(transfer_syntax,"1.2.840.10008.1.2",17) == 0)
               {
                 int
+                  count,
                   subtype,
                   type;
 
                 type=0;
                 subtype=0;
-                (void) sscanf(transfer_syntax+17,".%d.%d",&type,&subtype);
+                count=sscanf(transfer_syntax+17,".%d.%d",&type,&subtype);
+                if (count < 1)
+                  ThrowReaderException(CorruptImageError,"ImproperImageHeader");
                 switch (type)
                 {
                   case 1:
