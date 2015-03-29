@@ -522,6 +522,7 @@ MagickExport QuantumType GetQuantumType(Image *image,ExceptionInfo *exception)
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  (void) exception;
   quantum_type=RGBQuantum;
   if (image->alpha_trait != UndefinedPixelTrait)
     quantum_type=RGBAQuantum;
