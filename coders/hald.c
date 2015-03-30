@@ -201,6 +201,7 @@ ModuleExport size_t RegisterHALDImage(void)
   entry->flags|=CoderRawSupportFlag;
   entry->flags|=CoderEndianSupportFlag;
   entry->description=ConstantString("Identity Hald color lookup table image");
+  entry->module=ConstantString("HALD");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }
