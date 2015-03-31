@@ -402,7 +402,6 @@ static MagickBooleanType WriteEPTImage(const ImageInfo *image_info,Image *image,
   if (write_image == (Image *) NULL)
     return(MagickFalse);
   write_info=CloneImageInfo(image_info);
-  *write_info->magick='\0';
   (void) CopyMagickString(write_info->magick,"EPS",MaxTextExtent);
   if (LocaleCompare(image_info->magick,"EPT2") == 0)
     (void) CopyMagickString(write_info->magick,"EPS2",MaxTextExtent);
