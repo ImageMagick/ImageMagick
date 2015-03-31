@@ -2179,6 +2179,16 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
           status=MagickFalse;
         break;
       }
+      case 'm':
+      case 'M':
+      {
+        if (LocaleCompare("matte",keyword) == 0)
+          {
+            primitive_type=AlphaPrimitive;
+            break;
+          }
+        break;
+      }
       case 'o':
       case 'O':
       {
