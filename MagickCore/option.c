@@ -1571,6 +1571,7 @@ static const OptionInfo
     { "Ellipse", EllipsePrimitive, UndefinedOptionFlag, MagickFalse },
     { "Image", ImagePrimitive, UndefinedOptionFlag, MagickFalse },
     { "Line", LinePrimitive, UndefinedOptionFlag, MagickFalse },
+    { "Matte", AlphaPrimitive, UndefinedOptionFlag, MagickFalse },
     { "Path", PathPrimitive, UndefinedOptionFlag, MagickFalse },
     { "Point", PointPrimitive, UndefinedOptionFlag, MagickFalse },
     { "Polygon", PolygonPrimitive, UndefinedOptionFlag, MagickFalse },
