@@ -158,6 +158,9 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
     highlight,
     lowlight;
 
+  RectangleInfo
+    geometry;
+
   size_t
     columns,
     rows;
@@ -182,9 +185,12 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
     exception);
   if (status == MagickFalse)
     return((Image *) NULL);
-  rows=MagickMax(image->rows,reconstruct_image->rows);
   columns=MagickMax(image->columns,reconstruct_image->columns);
-  difference_image=CloneImage(image,columns,rows,MagickTrue,exception);
+  rows=MagickMax(image->rows,reconstruct_image->rows);
+  SetGeometry(image,&geometry);
+  geometry.width=columns;
+  geometry.height=rows;
+  difference_image=ExtentImage(image,&geometry,exception);
   if (difference_image == (Image *) NULL)
     return((Image *) NULL);
   (void) SetImageAlphaChannel(difference_image,OpaqueAlphaChannel,exception);
