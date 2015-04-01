@@ -457,7 +457,7 @@ static MagickBooleanType CompositeOverImage(Image *image,
             /*
               Set alpha channel.
             */
-            q[i]=ClampToQuantum(QuantumRange*(Sa+Da-Sa*Da));
+            q[i]=ClampPixel(QuantumRange*(Sa+Da-Sa*Da));
             continue;
           }
         /*
@@ -468,7 +468,7 @@ static MagickBooleanType CompositeOverImage(Image *image,
         Dc=(MagickRealType) q[i];
         Sca=QuantumScale*Sa*Sc;
         Dca=QuantumScale*Da*Dc;
-        q[i]=ClampToQuantum(QuantumRange*(Sca+Dca*(1.0-Sa)));
+        q[i]=ClampPixel(QuantumRange*(Sca+Dca*(1.0-Sa)));
       }
       p+=GetPixelChannels(source_image);
       channels=GetPixelChannels(source_image);
@@ -705,8 +705,7 @@ if (0)
               q+=GetPixelChannels(image);
               continue;
             }
-          SetPixelAlpha(image,ClampToQuantum(GetPixelIntensity(source_image,
-            p)),q);
+          SetPixelAlpha(image,ClampPixel(GetPixelIntensity(source_image,p)),q);
           p+=GetPixelChannels(source_image);
           q+=GetPixelChannels(image);
         }
@@ -1380,7 +1379,7 @@ if (0)
                 break;
               }
             }
-            q[i]=ClampToQuantum(pixel);
+            q[i]=ClampPixel(pixel);
           }
           q+=GetPixelChannels(image);
           continue;
@@ -1530,7 +1529,7 @@ if (0)
             /*
               Copy channel.
             */
-            q[i]=ClampToQuantum(Sc);
+            q[i]=ClampPixel(Sc);
             continue;
           }
         if (channel == AlphaPixelChannel)
@@ -1651,7 +1650,7 @@ if (0)
                 break;
               }
             }
-            q[i]=ClampToQuantum(pixel);
+            q[i]=ClampPixel(pixel);
             continue;
           }
         /*
@@ -2306,7 +2305,7 @@ if (0)
             break;
           }
         }
-        q[i]=ClampToQuantum(pixel);
+        q[i]=ClampPixel(pixel);
       }
       p+=GetPixelChannels(source_image);
       channels=GetPixelChannels(source_image);
