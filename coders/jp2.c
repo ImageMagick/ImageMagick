@@ -486,7 +486,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
            }
            case 3:
            {
-             q->opacity=ClampToQuantum(pixel);
+             q->opacity=ClampToQuantum(QuantumRange-pixel);
              break;
            }
         }
