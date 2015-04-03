@@ -248,6 +248,14 @@ ModuleExport size_t RegisterMPEGImage(void)
   entry->description=ConstantString("Microsoft Audio/Visual Interleaved");
   entry->module=ConstantString("MPEG");
   (void) RegisterMagickInfo(entry);
+  entry=SetMagickInfo("MKV");
+  entry->decoder=(DecodeImageHandler *) ReadMPEGImage;
+  entry->encoder=(EncodeImageHandler *) WriteMPEGImage;
+  entry->magick=(IsImageFormatHandler *) IsMPEG;
+  entry->blob_support=MagickFalse;
+  entry->description=ConstantString("Multimedia Container");
+  entry->module=ConstantString("MPEG");
+  (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("MOV");
   entry->decoder=(DecodeImageHandler *) ReadMPEGImage;
   entry->encoder=(EncodeImageHandler *) WriteMPEGImage;
@@ -329,12 +337,13 @@ ModuleExport size_t RegisterMPEGImage(void)
 ModuleExport void UnregisterMPEGImage(void)
 {
   (void) UnregisterMagickInfo("WMV");
+  (void) UnregisterMagickInfo("MOV");
   (void) UnregisterMagickInfo("M4V");
   (void) UnregisterMagickInfo("M2V");
   (void) UnregisterMagickInfo("MP4");
   (void) UnregisterMagickInfo("MPG");
   (void) UnregisterMagickInfo("MPEG");
-  (void) UnregisterMagickInfo("MOV");
+  (void) UnregisterMagickInfo("MKV");
   (void) UnregisterMagickInfo("AVI");
 }
 
