@@ -1704,11 +1704,9 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
       r=p+4*(image->columns+4);
       Enhance(5.0); Enhance(8.0); Enhance(10.0); Enhance(8.0); Enhance(5.0);
       SetPixelRed(q,(aggregate.red+(total_weight/2)-1)/total_weight);
-      SetPixelGreen(q,(aggregate.green+(total_weight/2)-1)/
-        total_weight);
+      SetPixelGreen(q,(aggregate.green+(total_weight/2)-1)/total_weight);
       SetPixelBlue(q,(aggregate.blue+(total_weight/2)-1)/total_weight);
-      SetPixelOpacity(q,(aggregate.opacity+(total_weight/2)-1)/
-        total_weight);
+      SetPixelOpacity(q,(aggregate.opacity+(total_weight/2)-1)/total_weight);
       p++;
       q++;
     }
