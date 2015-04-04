@@ -1298,11 +1298,11 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
 MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
 {
 #define EnhanceImageTag  "Enhance/Image"
+#define EnhanceThreshold  0.00185
 #define EnhancePixel(weight) \
   mean=QuantumScale*((double) r[i]+(double) p[center+i])/2.0; \
   distance=QuantumScale*((double) r[i]-(double) p[center+i]); \
-  distance_squared=mean*distance*distance; \
-  if (distance_squared < 0.00185) \
+  if ((mean*distance*distance) < EnhanceThreshold) \
     { \
       aggregate+=(weight)*r[i]; \
       total_weight+=(weight); \
@@ -1396,7 +1396,6 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
         double
           aggregate,
           distance,
-          distance_squared,
           mean,
           total_weight;
 
@@ -1424,7 +1423,7 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
         EnhancePixel(0.1); EnhancePixel(0.25); EnhancePixel(0.5);
           EnhancePixel(0.25); EnhancePixel(0.1);
         r=p+2*GetPixelChannels(image)*(image->columns+4);
-        EnhancePixel(0.125); EnhancePixel(0.5); EnhancePixel(0.5);
+        EnhancePixel(0.125); EnhancePixel(0.5); EnhancePixel(1.0);
           EnhancePixel(0.5); EnhancePixel(0.125);
         r=p+3*GetPixelChannels(image)*(image->columns+4);
         EnhancePixel(0.1); EnhancePixel(0.25); EnhancePixel(0.5);
@@ -1433,7 +1432,7 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
         EnhancePixel(0.0625); EnhancePixel(0.1); EnhancePixel(0.125);
           EnhancePixel(0.1); EnhancePixel(0.0625);
         SetPixelChannel(enhance_image,channel,ClampToQuantum((aggregate+
-          (total_weight/2)-1)/total_weight),q);
+          (total_weight/2.0))/total_weight),q);
       }
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(enhance_image);
