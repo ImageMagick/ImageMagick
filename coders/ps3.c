@@ -474,11 +474,15 @@ static MagickBooleanType WritePS3MaskImage(const ImageInfo *image_info,
     Note BeginData DSC comment for update later.
   */
   start=TellBlob(image);
+  if (start < 0)
+    ThrowWriterException(CorruptImageError,"ImproperImageHeader");
   (void) FormatLocaleString(buffer,MaxTextExtent,
     "%%%%BeginData:%13ld %s Bytes\n",0L,compression == NoCompression ?
     "ASCII" : "BINARY");
   (void) WriteBlobString(image,buffer);
   stop=TellBlob(image);
+  if (stop < 0)
+    ThrowWriterException(CorruptImageError,"ImproperImageHeader");
   /*
     Only lossless compressions for the mask.
   */
@@ -598,6 +602,8 @@ static MagickBooleanType WritePS3MaskImage(const ImageInfo *image_info,
   (void) WriteBlobByte(image,'\n');
   length=(size_t) (TellBlob(image)-stop);
   stop=TellBlob(image);
+  if (stop < 0)
+    ThrowWriterException(CorruptImageError,"ImproperImageHeader");
   offset=SeekBlob(image,start,SEEK_SET);
   if (offset < 0)
     ThrowWriterException(CorruptImageError,"ImproperImageHeader");
@@ -1177,11 +1183,15 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
       Remember position of BeginData comment so we can update it.
     */
     start=TellBlob(image);
+    if (start < 0)
+      ThrowWriterException(CorruptImageError,"ImproperImageHeader");
     (void) FormatLocaleString(buffer,MaxTextExtent,
       "%%%%BeginData:%13ld %s Bytes\n",0L,
       compression == NoCompression ? "ASCII" : "BINARY");
     (void) WriteBlobString(image,buffer);
     stop=TellBlob(image);
+    if (stop < 0)
+      ThrowWriterException(CorruptImageError,"ImproperImageHeader");
     (void) WriteBlobString(image,"DisplayImage\n");
     /*
       Translate, scale, and font point size.
@@ -1568,6 +1578,8 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
     */
     length=(size_t) (TellBlob(image)-stop);
     stop=TellBlob(image);
+    if (stop < 0)
+      ThrowWriterException(CorruptImageError,"ImproperImageHeader");
     offset=SeekBlob(image,start,SEEK_SET);
     if (offset < 0)
       ThrowWriterException(CorruptImageError,"ImproperImageHeader");
