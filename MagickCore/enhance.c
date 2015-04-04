@@ -1297,18 +1297,17 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
 */
 MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
 {
+#define EnhanceImageTag  "Enhance/Image"
 #define EnhancePixel(weight) \
-  mean=((double) r[i]+GetPixelChannel(enhance_image,channel,q))/2.0; \
-  distance=(double) r[i]-(double) GetPixelChannel(enhance_image,channel,q); \
-  distance_squared=QuantumScale*(2.0*((double) QuantumRange+1.0)+mean)* \
-    distance*distance; \
-  if (distance_squared < ((double) QuantumRange*(double) QuantumRange/25.0f)) \
+  mean=QuantumScale*((double) r[i]+(double) p[center+i])/2.0; \
+  distance=QuantumScale*((double) r[i]-(double) p[center+i]); \
+  distance_squared=mean*distance*distance; \
+  if (distance_squared < 0.00185) \
     { \
       aggregate+=(weight)*r[i]; \
       total_weight+=(weight); \
     } \
   r+=GetPixelChannels(image);
-#define EnhanceImageTag  "Enhance/Image"
 
   CacheView
     *enhance_view,
@@ -1433,8 +1432,8 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
         r=p+4*GetPixelChannels(image)*(image->columns+4);
         EnhancePixel(5.0); EnhancePixel(8.0); EnhancePixel(10.0);
           EnhancePixel(8.0); EnhancePixel(5.0);
-        SetPixelChannel(enhance_image,channel,ClampToQuantum(aggregate/
-          total_weight),q);
+        SetPixelChannel(enhance_image,channel,ClampToQuantum((aggregate+
+          (total_weight/2)-1)/total_weight),q);
       }
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(enhance_image);
