@@ -1418,20 +1418,20 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
         aggregate=0.0;
         total_weight=0.0;
         r=p;
-        EnhancePixel(5.0); EnhancePixel(8.0); EnhancePixel(10.0);
-          EnhancePixel(8.0); EnhancePixel(5.0);
+        EnhancePixel(0.0625); EnhancePixel(0.1); EnhancePixel(0.125);
+          EnhancePixel(0.1); EnhancePixel(0.0625);
         r=p+1*GetPixelChannels(image)*(image->columns+4);
-        EnhancePixel(8.0); EnhancePixel(20.0); EnhancePixel(40.0);
-          EnhancePixel(20.0); EnhancePixel(8.0);
+        EnhancePixel(0.1); EnhancePixel(0.25); EnhancePixel(0.5);
+          EnhancePixel(0.25); EnhancePixel(0.1);
         r=p+2*GetPixelChannels(image)*(image->columns+4);
-        EnhancePixel(10.0); EnhancePixel(40.0); EnhancePixel(80.0);
-          EnhancePixel(40.0); EnhancePixel(10.0);
+        EnhancePixel(0.125); EnhancePixel(0.5); EnhancePixel(0.5);
+          EnhancePixel(0.5); EnhancePixel(0.125);
         r=p+3*GetPixelChannels(image)*(image->columns+4);
-        EnhancePixel(8.0); EnhancePixel(20.0); EnhancePixel(40.0);
-          EnhancePixel(20.0); EnhancePixel(8.0);
+        EnhancePixel(0.1); EnhancePixel(0.25); EnhancePixel(0.5);
+          EnhancePixel(0.25); EnhancePixel(0.1);
         r=p+4*GetPixelChannels(image)*(image->columns+4);
-        EnhancePixel(5.0); EnhancePixel(8.0); EnhancePixel(10.0);
-          EnhancePixel(8.0); EnhancePixel(5.0);
+        EnhancePixel(0.0625); EnhancePixel(0.1); EnhancePixel(0.125);
+          EnhancePixel(0.1); EnhancePixel(0.0625);
         SetPixelChannel(enhance_image,channel,ClampToQuantum((aggregate+
           (total_weight/2)-1)/total_weight),q);
       }
