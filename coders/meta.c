@@ -421,6 +421,8 @@ static ssize_t parse8BIM(Image *ifile, Image *ofile)
 
                     ssize_t diff = outputlen - savedolen;
                     currentpos = TellBlob(ofile);
+                    if (currentpos < 0)
+                      return(-1);
                     offset=SeekBlob(ofile,savedpos,SEEK_SET);
                     if (offset < 0)
                       return(-1);
@@ -470,6 +472,8 @@ static ssize_t parse8BIM(Image *ifile, Image *ofile)
                   {
                     /* patch in a fake length for now and fix it later */
                     savedpos = TellBlob(ofile);
+                    if (savedpos < 0)
+                      return(-1);
                     (void) WriteBlobMSBLong(ofile,0xFFFFFFFFU);
                     outputlen += 4;
                     savedolen = outputlen;
@@ -516,6 +520,8 @@ static ssize_t parse8BIM(Image *ifile, Image *ofile)
       ssize_t diff = outputlen - savedolen;
 
       currentpos = TellBlob(ofile);
+      if (currentpos < 0)
+        return(-1);
       offset=SeekBlob(ofile,savedpos,SEEK_SET);
       if (offset < 0)
         return(-1);
@@ -711,6 +717,8 @@ static ssize_t parse8BIMW(Image *ifile, Image *ofile)
 
                     ssize_t diff = outputlen - savedolen;
                     currentpos = TellBlob(ofile);
+                    if (currentpos < 0)
+                      return(-1);
                     offset=SeekBlob(ofile,savedpos,SEEK_SET);
                     if (offset < 0)
                       return(-1);
@@ -760,6 +768,8 @@ static ssize_t parse8BIMW(Image *ifile, Image *ofile)
                   {
                     /* patch in a fake length for now and fix it later */
                     savedpos = TellBlob(ofile);
+                    if (savedpos < 0)
+                      return(-1);
                     (void) WriteBlobMSBLong(ofile,0xFFFFFFFFU);
                     outputlen += 4;
                     savedolen = outputlen;
@@ -806,6 +816,8 @@ static ssize_t parse8BIMW(Image *ifile, Image *ofile)
       ssize_t diff = outputlen - savedolen;
 
       currentpos = TellBlob(ofile);
+      if (currentpos < 0)
+        return(-1);
       offset=SeekBlob(ofile,savedpos,SEEK_SET);
       if (offset < 0)
         return(-1);
