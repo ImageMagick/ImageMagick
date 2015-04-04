@@ -1,3 +1,6 @@
+2015-04-04  6.9.1-1 Cristy  <quetzlzacatenango@image...>
+  * New version 6.9.1-1, SVN revision 18308.
+
 2015-03-21  6.9.1-1 Cristy  <quetzlzacatenango@image...>
   * Skip empty frames when comparing layers (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=27234).
