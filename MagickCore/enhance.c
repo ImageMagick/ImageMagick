@@ -1298,13 +1298,33 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
 MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
 {
 #define EnhanceImageTag  "Enhance/Image"
-#define EnhanceThreshold  0.00185
-#define EnhancePixel(weight) \
-  mean=QuantumScale*((double) r[i]+(double) p[center+i])/2.0; \
-  distance=QuantumScale*((double) r[i]-(double) p[center+i]); \
-  if ((mean*distance*distance) < EnhanceThreshold) \
+#define Enhance(weight) \
+  mean=(GetPixelRed(image,r)+pixel.red)/2.0; \
+  distance=GetPixelRed(image,r)-pixel.red; \
+  distance_squared=QuantumScale*(2.0*(QuantumRange+1.0)+mean)*distance* \
+    distance; \
+  mean=(GetPixelGreen(image,r)+pixel.green)/2.0; \
+  distance=GetPixelGreen(image,r)-pixel.green; \
+  distance_squared+=4.0*distance*distance; \
+  mean=(GetPixelBlue(image,r)+pixel.blue)/2.0; \
+  distance=GetPixelBlue(image,r)-pixel.blue; \
+  distance_squared+=QuantumScale*(3.0*(QuantumRange+1.0)-1.0-mean)*distance* \
+    distance; \
+  mean=(GetPixelBlack(image,r)+pixel.black)/2.0; \
+  distance=GetPixelBlack(image,r)-pixel.black; \
+  distance_squared+=QuantumScale*(3.0*(QuantumRange+1.0)-1.0-mean)*distance* \
+    distance; \
+  mean=(GetPixelAlpha(image,r)+pixel.alpha)/2.0; \
+  distance=GetPixelAlpha(image,r)-pixel.alpha; \
+  distance_squared+=QuantumScale*(3.0*(QuantumRange+1.0)-1.0-mean)*distance* \
+    distance; \
+  if (distance_squared < (QuantumRange*QuantumRange/25.0)) \
     { \
-      aggregate+=(weight)*r[i]; \
+      aggregate.red+=(weight)*GetPixelRed(image,r); \
+      aggregate.green+=(weight)*GetPixelGreen(image,r); \
+      aggregate.blue+=(weight)*GetPixelBlue(image,r); \
+      aggregate.black+=(weight)*GetPixelBlack(image,r); \
+      aggregate.alpha+=(weight)*GetPixelAlpha(image,r); \
       total_weight+=(weight); \
     } \
   r+=GetPixelChannels(image);
@@ -1338,7 +1358,7 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
     exception);
   if (enhance_image == (Image *) NULL)
     return((Image *) NULL);
-  if( IfMagickFalse(SetImageStorageClass(enhance_image,DirectClass,exception)) )
+  if (SetImageStorageClass(enhance_image,DirectClass,exception) == MagickFalse)
     {
       enhance_image=DestroyImage(enhance_image);
       return((Image *) NULL);
@@ -1356,6 +1376,9 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
+    PixelInfo
+      pixel;
+
     register const Quantum
       *restrict p;
 
@@ -1379,10 +1402,20 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
         continue;
       }
     center=(ssize_t) GetPixelChannels(image)*(2*(image->columns+4)+2);
+    GetPixelInfo(image,&pixel);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      register ssize_t
-        i;
+      double
+        distance,
+        distance_squared,
+        mean,
+        total_weight;
+
+      PixelInfo
+        aggregate;
+
+      register const Quantum
+        *restrict r;
 
       if (GetPixelReadMask(image,p) == 0)
         {
@@ -1391,53 +1424,29 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
           q+=GetPixelChannels(enhance_image);
           continue;
         }
-      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-      {
-        double
-          aggregate,
-          distance,
-          mean,
-          total_weight;
-
-        register const Quantum
-          *restrict r;
-
-        PixelChannel channel=GetPixelChannelChannel(image,i);
-        PixelTrait traits=GetPixelChannelTraits(image,channel);
-        PixelTrait enhance_traits=GetPixelChannelTraits(enhance_image,channel);
-        if ((traits == UndefinedPixelTrait) ||
-            (enhance_traits == UndefinedPixelTrait))
-          continue;
-        SetPixelChannel(enhance_image,channel,p[center+i],q);
-        if ((enhance_traits & CopyPixelTrait) != 0)
-          continue;
-        /*
-          Compute weighted average of target pixel color components.
-        */
-        aggregate=0.0;
-        total_weight=0.0;
-        r=p;
-        EnhancePixel(0.0625); EnhancePixel(0.1); EnhancePixel(0.125);
-          EnhancePixel(0.1); EnhancePixel(0.0625);
-        r=p+1*GetPixelChannels(image)*(image->columns+4);
-        EnhancePixel(0.1); EnhancePixel(0.25); EnhancePixel(0.5);
-          EnhancePixel(0.25); EnhancePixel(0.1);
-        r=p+2*GetPixelChannels(image)*(image->columns+4);
-        EnhancePixel(0.125); EnhancePixel(0.5); EnhancePixel(1.0);
-          EnhancePixel(0.5); EnhancePixel(0.125);
-        r=p+3*GetPixelChannels(image)*(image->columns+4);
-        EnhancePixel(0.1); EnhancePixel(0.25); EnhancePixel(0.5);
-          EnhancePixel(0.25); EnhancePixel(0.1);
-        r=p+4*GetPixelChannels(image)*(image->columns+4);
-        EnhancePixel(0.0625); EnhancePixel(0.1); EnhancePixel(0.125);
-          EnhancePixel(0.1); EnhancePixel(0.0625);
-        SetPixelChannel(enhance_image,channel,ClampToQuantum((aggregate+
-          (total_weight/2.0))/total_weight),q);
-      }
+      GetPixelInfo(image,&aggregate);
+      total_weight=0.0;
+      GetPixelInfoPixel(image,p+center,&pixel);
+      r=p;
+      Enhance(5.0); Enhance(8.0); Enhance(10.0); Enhance(8.0); Enhance(5.0);
+      r=p+GetPixelChannels(image)*(image->columns+4);
+      Enhance(8.0); Enhance(20.0); Enhance(40.0); Enhance(20.0); Enhance(8.0);
+      r=p+2*GetPixelChannels(image)*(image->columns+4);
+      Enhance(10.0); Enhance(40.0); Enhance(80.0); Enhance(40.0); Enhance(10.0);
+      r=p+3*GetPixelChannels(image)*(image->columns+4);
+      Enhance(8.0); Enhance(20.0); Enhance(40.0); Enhance(20.0); Enhance(8.0);
+      r=p+4*GetPixelChannels(image)*(image->columns+4);
+      Enhance(5.0); Enhance(8.0); Enhance(10.0); Enhance(8.0); Enhance(5.0);
+      pixel.red=((aggregate.red+total_weight/2.0)/total_weight);
+      pixel.green=((aggregate.green+total_weight/2.0)/total_weight);
+      pixel.blue=((aggregate.blue+total_weight/2.0)/total_weight);
+      pixel.black=((aggregate.black+total_weight/2.0)/total_weight);
+      pixel.alpha=((aggregate.alpha+total_weight/2.0)/total_weight);
+      SetPixelViaPixelInfo(image,&pixel,q);
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(enhance_image);
     }
-    if( IfMagickFalse(SyncCacheViewAuthenticPixels(enhance_view,exception)) )
+    if (SyncCacheViewAuthenticPixels(enhance_view,exception) == MagickFalse)
       status=MagickFalse;
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
       {
@@ -1448,7 +1457,7 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
         #pragma omp critical (MagickCore_EnhanceImage)
 #endif
         proceed=SetImageProgress(image,EnhanceImageTag,progress++,image->rows);
-        if( IfMagickFalse(proceed) )
+        if (proceed == MagickFalse)
           status=MagickFalse;
       }
   }
