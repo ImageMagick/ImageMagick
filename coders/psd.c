@@ -2671,7 +2671,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image,
       else
         rounded_layer_info_size=layer_info_size;
       (void) SetPSDSize(&psd_info,image,rounded_layer_info_size);
-      if (base_image->alpha_trait != UndefinedPixelTrait)
+      if (image->alpha_trait != UndefinedPixelTrait)
         (void) WriteBlobMSBShort(image,-(unsigned short) layer_count);
       else
         (void) WriteBlobMSBShort(image,(unsigned short) layer_count);
