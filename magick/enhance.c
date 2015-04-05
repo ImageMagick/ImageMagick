@@ -1565,24 +1565,20 @@ MagickExport MagickBooleanType ContrastStretchImageChannel(Image *image,
 */
 MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
 {
-#define Enhance(weight) \
-  mean=((MagickRealType) GetPixelRed(r)+pixel.red)/2; \
-  distance=(MagickRealType) GetPixelRed(r)-(MagickRealType) pixel.red; \
-  distance_squared=QuantumScale*(2.0*((MagickRealType) QuantumRange+1.0)+ \
-    mean)*distance*distance; \
-  mean=((MagickRealType) GetPixelGreen(r)+pixel.green)/2; \
-  distance=(MagickRealType) GetPixelGreen(r)-(MagickRealType) pixel.green; \
-  distance_squared+=4.0*distance*distance; \
-  mean=((MagickRealType) GetPixelBlue(r)+pixel.blue)/2; \
-  distance=(MagickRealType) GetPixelBlue(r)-(MagickRealType) pixel.blue; \
-  distance_squared+=QuantumScale*(3.0*((MagickRealType) QuantumRange+1.0)-1.0- \
-    mean)*distance*distance; \
-  mean=((MagickRealType) r->opacity+pixel.opacity)/2; \
-  distance=(MagickRealType) r->opacity-(MagickRealType) pixel.opacity; \
-  distance_squared+=QuantumScale*(3.0*((MagickRealType) QuantumRange+1.0)-1.0- \
-    mean)*distance*distance; \
-  if (distance_squared < ((MagickRealType) QuantumRange*(MagickRealType) \
-      QuantumRange/25.0f)) \
+#define EnhancePixel(weight) \
+  mean=QuantumScale*((double) GetPixelRed(r)+pixel.red)/2.0; \
+  distance=QuantumScale*((double) GetPixelRed(r)-pixel.red); \
+  distance_squared=(4.0+mean)*distance*distance; \
+  mean=QuantumScale*((double) GetPixelGreen(r)+pixel.green)/2.0; \
+  distance=QuantumScale*((double) GetPixelGreen(r)-pixel.green); \
+  distance_squared+=(7.0-mean)*distance*distance; \
+  mean=QuantumScale*((double) GetPixelBlue(r)+pixel.blue)/2.0; \
+  distance=QuantumScale*((double) GetPixelBlue(r)-pixel.blue); \
+  distance_squared+=(5.0-mean)*distance*distance; \
+  mean=QuantumScale*((double) GetPixelOpacity(r)+pixel.opacity)/2.0; \
+  distance=QuantumScale*((double) GetPixelOpacity(r)-pixel.opacity); \
+  distance_squared+=(5.0-mean)*distance*distance; \
+  if (distance_squared < 0.069) \
     { \
       aggregate.red+=(weight)*GetPixelRed(r); \
       aggregate.green+=(weight)*GetPixelGreen(r); \
@@ -1671,14 +1667,14 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      MagickPixelPacket
-        aggregate;
-
-      MagickRealType
+      double
         distance,
         distance_squared,
         mean,
         total_weight;
+
+      MagickPixelPacket
+        aggregate;
 
       PixelPacket
         pixel;
@@ -1694,15 +1690,20 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
       r=p+2*(image->columns+4)+2;
       pixel=(*r);
       r=p;
-      Enhance(5.0); Enhance(8.0); Enhance(10.0); Enhance(8.0); Enhance(5.0);
+      EnhancePixel(5.0); EnhancePixel(8.0); EnhancePixel(10.0);
+        EnhancePixel(8.0); EnhancePixel(5.0);
       r=p+(image->columns+4);
-      Enhance(8.0); Enhance(20.0); Enhance(40.0); Enhance(20.0); Enhance(8.0);
+      EnhancePixel(8.0); EnhancePixel(20.0); EnhancePixel(40.0);
+        EnhancePixel(20.0); EnhancePixel(8.0);
       r=p+2*(image->columns+4);
-      Enhance(10.0); Enhance(40.0); Enhance(80.0); Enhance(40.0); Enhance(10.0);
+      EnhancePixel(10.0); EnhancePixel(40.0); EnhancePixel(80.0);
+        EnhancePixel(40.0); EnhancePixel(10.0);
       r=p+3*(image->columns+4);
-      Enhance(8.0); Enhance(20.0); Enhance(40.0); Enhance(20.0); Enhance(8.0);
+      EnhancePixel(8.0); EnhancePixel(20.0); EnhancePixel(40.0);
+        EnhancePixel(20.0); EnhancePixel(8.0);
       r=p+4*(image->columns+4);
-      Enhance(5.0); Enhance(8.0); Enhance(10.0); Enhance(8.0); Enhance(5.0);
+      EnhancePixel(5.0); EnhancePixel(8.0); EnhancePixel(10.0);
+        EnhancePixel(8.0); EnhancePixel(5.0);
       SetPixelRed(q,(aggregate.red+(total_weight/2)-1)/total_weight);
       SetPixelGreen(q,(aggregate.green+(total_weight/2)-1)/total_weight);
       SetPixelBlue(q,(aggregate.blue+(total_weight/2)-1)/total_weight);
