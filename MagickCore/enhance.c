@@ -1318,7 +1318,7 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
   distance=GetPixelAlpha(image,r)-pixel.alpha; \
   distance_squared+=QuantumScale*(3.0*(QuantumRange+1.0)-1.0-mean)*distance* \
     distance; \
-  if (distance_squared < (QuantumRange*QuantumRange/25.0)) \
+  if (distance_squared < ((double) QuantumRange*QuantumRange/25.0)) \
     { \
       aggregate.red+=(weight)*GetPixelRed(image,r); \
       aggregate.green+=(weight)*GetPixelGreen(image,r); \
