@@ -1,3 +1,6 @@
+2015-04-06  6.9.1-2 Dirk Lemstra <dirk@lem.....org>
+  * Reduce draw epsilon to increate mathematical stability.
+
 2015-04-04  6.9.1-1 Cristy  <quetzlzacatenango@image...>
   * New version 6.9.1-1, SVN revision 18308.
 
