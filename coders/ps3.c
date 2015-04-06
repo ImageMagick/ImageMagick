@@ -334,7 +334,7 @@ static MagickBooleanType SerializeImageChannel(const ImageInfo *image_info,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   status=MagickTrue;
-  pack=IsImageMonochrome(image,exception) == MagickFalse ? 1UL : 8UL;
+  pack=SetImageMonochrome(image,exception) == MagickFalse ? 1UL : 8UL;
   padded_columns=((image->columns+pack-1)/pack)*pack;
   *length=(size_t) padded_columns*image->rows/pack;
   *pixel_info=AcquireVirtualMemory(*length,sizeof(*q));
@@ -899,7 +899,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
     case FaxCompression:
     case Group4Compression:
     { 
-      if ((IsImageMonochrome(image,exception) == MagickFalse) ||
+      if ((SetImageMonochrome(image,exception) == MagickFalse) ||
           (image->alpha_trait != UndefinedPixelTrait))
         compression=RLECompression;
       break;
@@ -1042,7 +1042,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
               (void) WriteBlobString(image,
                 "%%DocumentProcessColors: Cyan Magenta Yellow Black\n");
             else
-              if (IsImageGray(image,exception) != MagickFalse)
+              if (SetImageGray(image,exception) != MagickFalse)
                 (void) WriteBlobString(image,
                   "%%DocumentProcessColors: Black\n");
           }
@@ -1128,7 +1128,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
       (void) WriteBlobString(image,
         "%%PageProcessColors: Cyan Magenta Yellow Black\n");
     else
-      if (IsImageGray(image,exception) != MagickFalse)
+      if (SetImageGray(image,exception) != MagickFalse)
         (void) WriteBlobString(image,"%%PageProcessColors: Black\n");
     /*
       Adjust document bounding box to bound page bounding box.
@@ -1257,7 +1257,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
     */
     option=GetImageOption(image_info,"ps3:imagemask");
     (void) WriteBlobString(image,((option != (const char *) NULL) &&
-      (IsImageMonochrome(image,exception) != MagickFalse)) ?
+      (SetImageMonochrome(image,exception) != MagickFalse)) ?
       "true\n" : "false\n");
     /*
       Output pixel data.
@@ -1269,8 +1269,8 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
         (image_info->type != ColorSeparationType) &&
         (image_info->type != ColorSeparationAlphaType) &&
         (image->colorspace != CMYKColorspace) &&
-        ((IsImageGray(image,exception) != MagickFalse) ||
-         (IsImageMonochrome(image,exception) != MagickFalse)))
+        ((SetImageGray(image,exception) != MagickFalse) ||
+         (SetImageMonochrome(image,exception) != MagickFalse)))
       {
         /*
           Gray images.
@@ -1319,7 +1319,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
           1 bit or 8 bit components?
         */
         (void) FormatLocaleString(buffer,MaxTextExtent,"%d\n",
-          IsImageMonochrome(image,exception) != MagickFalse ? 1 : 8);
+          SetImageMonochrome(image,exception) != MagickFalse ? 1 : 8);
         (void) WriteBlobString(image,buffer);
         /*
           Image data.

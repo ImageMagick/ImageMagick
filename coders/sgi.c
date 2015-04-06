@@ -944,7 +944,7 @@ static MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image,
     else
       {
         if ((image_info->type != TrueColorType) &&
-            (IsImageGray(image,exception) != MagickFalse))
+            (SetImageGray(image,exception) != MagickFalse))
           {
             iris_info.dimension=2;
             iris_info.depth=1;

@@ -738,7 +738,7 @@ static MagickBooleanType WritePCLImage(const ImageInfo *image_info,Image *image,
       density);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"\033&l0E");  /* top margin 0 */
-    if (IsImageMonochrome(image,exception) != MagickFalse)
+    if (SetImageMonochrome(image,exception) != MagickFalse)
       {
         /*
           Monochrome image: use default printer monochrome setup.

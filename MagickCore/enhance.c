@@ -1042,7 +1042,7 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if (IsImageGray(image,exception) != MagickFalse)
+  if (SetImageGray(image,exception) != MagickFalse)
     (void) SetImageColorspace(image,GRAYColorspace,exception);
   black=(double *) AcquireQuantumMemory(GetPixelChannels(image),sizeof(*black));
   white=(double *) AcquireQuantumMemory(GetPixelChannels(image),sizeof(*white));

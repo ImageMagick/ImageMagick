@@ -1638,7 +1638,7 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
             dpx.image.image_element[i].descriptor=RGBAComponentType;
           if ((image_info->type != TrueColorType) &&
               (image->alpha_trait == UndefinedPixelTrait) &&
-              (IsImageGray(image,exception) != MagickFalse))
+              (SetImageGray(image,exception) != MagickFalse))
             dpx.image.image_element[i].descriptor=LumaComponentType;
           break;
         }
@@ -1972,7 +1972,7 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
     dpx.image.image_element[0].packing == 0 ? MagickFalse : MagickTrue);
   if ((image_info->type != TrueColorType) &&
       (image->alpha_trait == UndefinedPixelTrait) &&
-      (IsImageGray(image,exception) != MagickFalse))
+      (SetImageGray(image,exception) != MagickFalse))
     {
       quantum_type=GrayQuantum;
       extent=GetBytesPerRow(image->columns,1UL,image->depth,

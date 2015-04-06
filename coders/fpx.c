@@ -837,7 +837,7 @@ static MagickBooleanType WriteFPXImage(const ImageInfo *image_info,Image *image,
   if (image->alpha_trait != UndefinedPixelTrait)
     colorspace.numberOfComponents=4;
   if ((image_info->type != TrueColorType) &&
-      (IsImageGray(image,exception) != MagickFalse))
+      (SetImageGray(image,exception) != MagickFalse))
     {
       colorspace.numberOfComponents=1;
       colorspace.theComponents[0].myColor=MONOCHROME;

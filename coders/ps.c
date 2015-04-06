@@ -1887,9 +1887,9 @@ RestoreMSCWarning
     index=0;
     x=0;
     if ((image_info->type != TrueColorType) &&
-        (IsImageGray(image,exception) != MagickFalse))
+        (SetImageGray(image,exception) != MagickFalse))
       {
-        if (IsImageMonochrome(image,exception) == MagickFalse)
+        if (SetImageMonochrome(image,exception) == MagickFalse)
           {
             Quantum
               pixel;
