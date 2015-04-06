@@ -722,7 +722,6 @@ MagickExport MagickBooleanType ExpandFilenames(int *number_arguments,
   char ***arguments)
 {
   char
-    *directory,
     home_directory[MaxTextExtent],
     **vector;
 
@@ -809,8 +808,7 @@ MagickExport MagickBooleanType ExpandFilenames(int *number_arguments,
         GetPathComponent(option,SubimagePath,subimage);
         ExpandFilename(path);
         if (*home_directory == '\0')
-          directory=getcwd(home_directory,MaxTextExtent-1);
-        (void) directory;
+          getcwd_utf8(home_directory,MaxTextExtent-1);
         filelist=ListFiles(*path == '\0' ? home_directory : path,filename,
           &number_files);
       }
