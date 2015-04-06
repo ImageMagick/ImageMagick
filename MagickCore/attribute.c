@@ -632,18 +632,15 @@ MagickExport ImageType GetImageType(const Image *image,ExceptionInfo *exception)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  IsImageGray() returns MagickTrue if the type of the image is grayscale or
-%  bilevel.
+%  bi-level.
 %
 %  The format of the IsImageGray method is:
 %
-%      MagickBooleanType IsImageGray(const Image *image,
-%        ExceptionInfo *exception)
+%      MagickBooleanType IsImageGray(const Image *image)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
-%
-%    o exception: return any errors or warnings in this structure.
 %
 */
 MagickExport MagickBooleanType IsImageGray(const Image *image)
@@ -671,14 +668,11 @@ MagickExport MagickBooleanType IsImageGray(const Image *image)
 %
 %  The format of the IsImageMonochrome method is:
 %
-%      MagickBooleanType IsImageMonochrome(const Image *image,
-%        ExceptionInfo *exception)
+%      MagickBooleanType IsImageMonochrome(const Image *image)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
-%
-%    o exception: return any errors or warnings in this structure.
 %
 */
 MagickExport MagickBooleanType IsImageMonochrome(const Image *image)
@@ -687,7 +681,7 @@ MagickExport MagickBooleanType IsImageMonochrome(const Image *image)
   assert(image->signature == MagickSignature);
   if (image->type == BilevelType)
     return(MagickTrue);
-  return(MagickTrue);
+  return(MagickFalse);
 }
 
 /*
