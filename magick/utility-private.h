@@ -128,6 +128,23 @@ static inline FILE *fopen_utf8(const char *path,const char *mode)
 #endif
 }
 
+static inline void getcwd_utf8(char *path,size_t extent)
+{
+#if !defined(MAGICKCORE_WINDOWS_SUPPORTT) || defined(__CYGWIN__) || defined(__MINGW32__) || defined(__MINGW64__)
+  wchar_t
+    wide_path[MaxTextExtent];
+
+  (void) _wgetcwd(wide_path,MaxTextExtent-1);
+  (void) WideCharToMultiByte(CP_UTF8,0,wide_path,-1,path,(int) extent,NULL,NULL);
+#else
+  char
+    *directory;
+
+   directory=getcwd(path,extent);
+   (void) directory;
+#endif
+}
+
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(__CYGWIN__) && !defined(__MINGW32__) && !defined(__MINGW64__)
 typedef int
   mode_t;
