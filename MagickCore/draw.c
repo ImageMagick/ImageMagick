@@ -5763,12 +5763,10 @@ static void TraceSquareLinecap(PrimitiveInfo *primitive_info,
 
 static inline double DrawEpsilonReciprocal(const double x)
 {
-#define DrawEpsilon  ((double) 1.0e-6)
+#define DrawEpsilon  (1.0e-6)
 
-  double sign = x < (double) 0.0 ? (double) -1.0 :
-    (double) 1.0;
-  return((sign*x) >= DrawEpsilon ? (double) 1.0/x : sign*(
-    (double) 1.0/DrawEpsilon));
+  double sign = x < 0.0 ? -1.0 : 1.0;
+  return((sign*x) >= DrawEpsilon ? 1.0/x : sign*(1.0/DrawEpsilon));
 }
 
 static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
