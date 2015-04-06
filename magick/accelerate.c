@@ -5074,7 +5074,7 @@ MagickExport MagickBooleanType ComputeContrastStretchImageChannel(Image *image,
   (void) ResetMagickMemory(histogram,0,(MaxMap+1)*sizeof(*histogram));
 
   /*
-  if (IsGrayImage(image,exception) != MagickFalse)
+  if (SetImageGray(image,exception) != MagickFalse)
     (void) SetImageColorspace(image,GRAYColorspace);
   */
 

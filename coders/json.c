@@ -776,7 +776,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
       if (channel_statistics == (ChannelStatistics *) NULL)
         return(MagickFalse);
       colorspace=image->colorspace;
-      if (IsGrayImage(image,exception) != MagickFalse)
+      if (SetImageGray(image,exception) != MagickFalse)
         colorspace=GRAYColorspace;
       (void) CopyMagickString(target,locate,MaxTextExtent);
       *target=(char) toupper((int) ((unsigned char) *target));
@@ -856,7 +856,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
   (void) FormatLocaleFile(file,"    \"baseDepth\": \"%.20g\",\n",(double)
     image->depth);
   (void) FormatLocaleFile(file,"    \"channelDepth\": {\n");
-  if (IsGrayImage(image,exception) != MagickFalse)
+  if (SetImageGray(image,exception) != MagickFalse)
     colorspace=GRAYColorspace;
   if (image->matte != MagickFalse)
     (void) FormatLocaleFile(file,"      \"alpha\": \"%.20g\",\n",(double)

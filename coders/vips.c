@@ -663,7 +663,7 @@ static MagickBooleanType WriteVIPSImage(const ImageInfo *image_info,
   (void) WriteBlobLong(image,(unsigned int) image->rows);
   (void) SetImageStorageClass(image,DirectClass);
   channels=image->matte ? 4 : 3;
-  if (IsGrayImage(image,&image->exception) != MagickFalse)
+  if (SetImageGray(image,&image->exception) != MagickFalse)
     channels=image->matte ? 2 : 1;
   else if (image->colorspace == CMYKColorspace)
     channels=image->matte ? 5 : 4;

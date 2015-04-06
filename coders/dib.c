@@ -1058,7 +1058,7 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image)
       dib_info.bits_per_pixel=8;
       if (image_info->depth > 8)
         dib_info.bits_per_pixel=16;
-      if (IsMonochromeImage(image,&image->exception) != MagickFalse)
+      if (SetImageMonochrome(image,&image->exception) != MagickFalse)
         dib_info.bits_per_pixel=1;
       dib_info.number_colors=(dib_info.bits_per_pixel == 16) ? 0 :
         (1UL << dib_info.bits_per_pixel);

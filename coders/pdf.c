@@ -1330,7 +1330,7 @@ RestoreMSCWarning
       case FaxCompression:
       case Group4Compression:
       {
-        if ((IsMonochromeImage(image,&image->exception) == MagickFalse) ||
+        if ((SetImageMonochrome(image,&image->exception) == MagickFalse) ||
             (image->matte != MagickFalse))
           compression=RLECompression;
         break;
@@ -1682,7 +1682,7 @@ RestoreMSCWarning
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
     if ((compression == FaxCompression) || (compression == Group4Compression) ||
         ((image_info->type != TrueColorType) &&
-         (IsGrayImage(image,&image->exception) != MagickFalse)))
+         (SetImageGray(image,&image->exception) != MagickFalse)))
       {
         switch (compression)
         {
@@ -2030,7 +2030,7 @@ RestoreMSCWarning
       if ((compression == FaxCompression) ||
           (compression == Group4Compression) ||
           ((image_info->type != TrueColorType) &&
-           (IsGrayImage(image,&image->exception) != MagickFalse)))
+           (SetImageGray(image,&image->exception) != MagickFalse)))
           (void) CopyMagickString(buffer,"/DeviceGray\n",MaxTextExtent);
       else
         if ((image->storage_class == DirectClass) || (image->colors > 256) ||
@@ -2137,7 +2137,7 @@ RestoreMSCWarning
     if ((compression == FaxCompression) ||
         (compression == Group4Compression) ||
         ((image_info->type != TrueColorType) &&
-         (IsGrayImage(tile_image,&image->exception) != MagickFalse)))
+         (SetImageGray(tile_image,&image->exception) != MagickFalse)))
       {
         switch (compression)
         {

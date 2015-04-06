@@ -922,7 +922,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image)
     pcx_info.encoding=image_info->compression == NoCompression ? 0 : 1;
     pcx_info.bits_per_pixel=8;
     if ((image->storage_class == PseudoClass) &&
-        (IsMonochromeImage(image,&image->exception) != MagickFalse))
+        (SetImageMonochrome(image,&image->exception) != MagickFalse))
       pcx_info.bits_per_pixel=1;
     pcx_info.left=0;
     pcx_info.top=0;
