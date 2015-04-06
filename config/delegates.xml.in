@@ -62,10 +62,10 @@
   If stealth="True" the delegate is not listed in user requested
   "-list delegate" listings. These are typically special internal delegates.
 
-  If spawn="True" ImageMagick will not way for the delegate to finish,
-  nor will it read any output image.  It will only wait for either the input
-  file to be removed (See "ephemeral:" coder) indicating that the input file
-  has been read, or a maximum time limit of 2 seconds.
+  If spawn="True" ImageMagick will not wait for the delegate to finish, nor will
+  it read any output image.  It will only wait for either the input file to be
+  removed (See "ephemeral:" coder) indicating that the input file has been read,
+  or a maximum time limit of 2 seconds.
 -->
 <delegatemap>
   <delegate decode="autotrace" stealth="True" command="&quot;@ConvertDelegate@&quot; &quot;%i&quot; &quot;pnm:%u&quot;\n&quot;@AutotraceDecodeDelegate@&quot; -input-format pnm -output-format svg -output-file &quot;%o&quot; &quot;%u&quot;"/>
