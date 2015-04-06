@@ -946,15 +946,13 @@ ModuleExport size_t RegisterDJVUImage(void)
   (void) ConcatenateMagickString(version,"libdjvu ",MaxTextExtent);
   (void) ConcatenateMagickString(version,DJVU_LIBDJVU_VER_STRING,MaxTextExtent);
 #endif
-  entry=SetMagickInfo("DJVU");
+  entry=AcquireMagickInfo("DJVU","DJVU","Déjà vu");
 #if defined(MAGICKCORE_DJVU_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadDJVUImage;
 #endif
   entry->magick=(IsImageFormatHandler *) IsDJVU;
   entry->flags|=CoderRawSupportFlag;
   entry->flags^=CoderAdjoinFlag;
-  entry->description=AcquireString("Déjà vu");
-  entry->module=AcquireString("DJVU");
   if (*version != '\0')
     entry->version=AcquireString(version);
   entry->note=AcquireString(DJVUNote);

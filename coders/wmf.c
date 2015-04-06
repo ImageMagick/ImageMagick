@@ -2948,20 +2948,16 @@ ModuleExport size_t RegisterWMFImage(void)
   MagickInfo
     *entry;
 
-  entry = SetMagickInfo("WMZ");
+  entry = AcquireMagickInfo("WMF","WMZ","Compressed Windows Meta File");
 #if defined(MAGICKCORE_WMF_DELEGATE) || defined(MAGICKCORE_WMFLITE_DELEGATE)
   entry->decoder=ReadWMFImage;
 #endif
-  entry->description=ConstantString("Compressed Windows Meta File");
-  entry->module=ConstantString("WMZ");
   entry->flags|=CoderSeekableStreamFlag;
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("WMF");
+  entry=AcquireMagickInfo("WMF","WMF","Windows Meta File");
 #if defined(MAGICKCORE_WMF_DELEGATE) || defined(MAGICKCORE_WMFLITE_DELEGATE)
   entry->decoder=ReadWMFImage;
 #endif
-  entry->description=ConstantString("Windows Meta File");
-  entry->module=ConstantString("WMF");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

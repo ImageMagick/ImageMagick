@@ -98,13 +98,11 @@ ModuleExport size_t RegisterPREVIEWImage(void)
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("PREVIEW");
+  entry=AcquireMagickInfo("PREVIEW","PREVIEW",
+    "Show a preview an image enhancement, effect, or f/x");
   entry->encoder=(EncodeImageHandler *) WritePreviewImage;
   entry->flags^=CoderAdjoinFlag;
   entry->format_type=ImplicitFormatType;
-  entry->description=ConstantString(
-    "Show a preview an image enhancement, effect, or f/x");
-  entry->module=ConstantString("PREVIEW");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

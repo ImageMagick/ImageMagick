@@ -4146,15 +4146,13 @@ ModuleExport size_t RegisterDCMImage(void)
       "and supplement 61 which adds JPEG-2000 encoding."
     };
 
-  entry=SetMagickInfo("DCM");
+  entry=AcquireMagickInfo("DCM","DCM",
+    "Digital Imaging and Communications in Medicine image");
   entry->decoder=(DecodeImageHandler *) ReadDCMImage;
   entry->magick=(IsImageFormatHandler *) IsDCM;
   entry->flags^=CoderAdjoinFlag;
   entry->flags|=CoderSeekableStreamFlag;
-  entry->description=ConstantString(
-    "Digital Imaging and Communications in Medicine image");
   entry->note=ConstantString(DCMNote);
-  entry->module=ConstantString("DCM");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

@@ -1664,15 +1664,13 @@ ModuleExport size_t RegisterMIFFImage(void)
   (void) ConcatenateMagickString(version," and BZlib",MaxTextExtent);
 #endif
 #endif
-  entry=SetMagickInfo("MIFF");
+  entry=AcquireMagickInfo("MIFF","MIFF","Magick Image File Format");
   entry->decoder=(DecodeImageHandler *) ReadMIFFImage;
   entry->encoder=(EncodeImageHandler *) WriteMIFFImage;
   entry->magick=(IsImageFormatHandler *) IsMIFF;
   entry->flags|=CoderSeekableStreamFlag;
-  entry->description=ConstantString("Magick Image File Format");
   if (*version != '\0')
     entry->version=ConstantString(version);
-  entry->module=ConstantString("MIFF");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

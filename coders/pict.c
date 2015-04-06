@@ -1520,23 +1520,19 @@ ModuleExport size_t RegisterPICTImage(void)
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("PCT");
+  entry=AcquireMagickInfo("PICT","PCT","Apple Macintosh QuickDraw/PICT");
   entry->decoder=(DecodeImageHandler *) ReadPICTImage;
   entry->encoder=(EncodeImageHandler *) WritePICTImage;
   entry->flags^=CoderAdjoinFlag;
   entry->flags|=CoderSeekableStreamFlag;
-  entry->description=ConstantString("Apple Macintosh QuickDraw/PICT");
   entry->magick=(IsImageFormatHandler *) IsPICT;
-  entry->module=ConstantString("PICT");
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("PICT");
+  entry=AcquireMagickInfo("PICT","PICT","Apple Macintosh QuickDraw/PICT");
   entry->decoder=(DecodeImageHandler *) ReadPICTImage;
   entry->encoder=(EncodeImageHandler *) WritePICTImage;
   entry->flags^=CoderAdjoinFlag;
   entry->flags|=CoderSeekableStreamFlag;
-  entry->description=ConstantString("Apple Macintosh QuickDraw/PICT");
   entry->magick=(IsImageFormatHandler *) IsPICT;
-  entry->module=ConstantString("PICT");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

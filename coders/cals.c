@@ -309,40 +309,29 @@ static Image *ReadCALSImage(const ImageInfo *image_info,
 */
 ModuleExport size_t RegisterCALSImage(void)
 {
+#define CALSDescription  "Continuous Acquisition and Life-cycle Support Type 1"
+#define CALSNote  "Specified in MIL-R-28002 and MIL-PRF-28002"
+
   MagickInfo
     *entry;
 
-  static const char
-    *CALSDescription=
-    {
-      "Continuous Acquisition and Life-cycle Support Type 1"
-    },
-    *CALSNote=
-    {
-      "Specified in MIL-R-28002 and MIL-PRF-28002"
-    };
-
-  entry=SetMagickInfo("CAL");
+  entry=AcquireMagickInfo("CALS","CAL",CALSDescription);
   entry->decoder=(DecodeImageHandler *) ReadCALSImage;
 #if defined(MAGICKCORE_TIFF_DELEGATE)
   entry->encoder=(EncodeImageHandler *) WriteCALSImage;
 #endif
   entry->flags^=CoderAdjoinFlag;
   entry->magick=(IsImageFormatHandler *) IsCALS;
-  entry->description=ConstantString(CALSDescription);
   entry->note=ConstantString(CALSNote);
-  entry->module=ConstantString("CALS");
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("CALS");
+  entry=AcquireMagickInfo("CALS","CALS",CALSDescription);
   entry->decoder=(DecodeImageHandler *) ReadCALSImage;
 #if defined(MAGICKCORE_TIFF_DELEGATE)
   entry->encoder=(EncodeImageHandler *) WriteCALSImage;
 #endif
   entry->flags^=CoderAdjoinFlag;
   entry->magick=(IsImageFormatHandler *) IsCALS;
-  entry->description=ConstantString(CALSDescription);
   entry->note=ConstantString(CALSNote);
-  entry->module=ConstantString("CALS");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

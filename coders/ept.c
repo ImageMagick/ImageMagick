@@ -279,37 +279,31 @@ ModuleExport size_t RegisterEPTImage(void)
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("EPT");
-  entry->decoder=(DecodeImageHandler *) ReadEPTImage;
-  entry->encoder=(EncodeImageHandler *) WriteEPTImage;
-  entry->magick=(IsImageFormatHandler *) IsEPT;
-  entry->flags|=CoderSeekableStreamFlag;
-  entry->flags^=CoderAdjoinFlag;
-  entry->flags^=CoderBlobSupportFlag;
-  entry->description=ConstantString(
+  entry=AcquireMagickInfo("EPT","EPT",
     "Encapsulated PostScript with TIFF preview");
-  entry->module=ConstantString("EPT");
+  entry->decoder=(DecodeImageHandler *) ReadEPTImage;
+  entry->encoder=(EncodeImageHandler *) WriteEPTImage;
+  entry->magick=(IsImageFormatHandler *) IsEPT;
+  entry->flags|=CoderSeekableStreamFlag;
+  entry->flags^=CoderAdjoinFlag;
+  entry->flags^=CoderBlobSupportFlag;
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("EPT2");
+  entry=AcquireMagickInfo("EPT","EPT2",
+    "Encapsulated PostScript Level II with TIFF preview");
   entry->decoder=(DecodeImageHandler *) ReadEPTImage;
   entry->encoder=(EncodeImageHandler *) WriteEPTImage;
   entry->magick=(IsImageFormatHandler *) IsEPT;
   entry->flags^=CoderAdjoinFlag;
   entry->flags|=CoderSeekableStreamFlag;
   entry->flags^=CoderBlobSupportFlag;
-  entry->description=ConstantString(
-    "Encapsulated PostScript Level II with TIFF preview");
-  entry->module=ConstantString("EPT");
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("EPT3");
+  entry=AcquireMagickInfo("EPT","EPT3",
+    "Encapsulated PostScript Level III with TIFF preview");
   entry->decoder=(DecodeImageHandler *) ReadEPTImage;
   entry->encoder=(EncodeImageHandler *) WriteEPTImage;
   entry->magick=(IsImageFormatHandler *) IsEPT;
   entry->flags|=CoderSeekableStreamFlag;
   entry->flags^=CoderBlobSupportFlag;
-  entry->description=ConstantString(
-    "Encapsulated PostScript Level III with TIFF preview");
-  entry->module=ConstantString("EPT");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

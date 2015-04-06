@@ -1034,61 +1034,51 @@ ModuleExport size_t RegisterPSImage(void)
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("EPI");
-  entry->decoder=(DecodeImageHandler *) ReadPSImage;
-  entry->encoder=(EncodeImageHandler *) WritePSImage;
-  entry->magick=(IsImageFormatHandler *) IsPS;
-  entry->flags^=CoderAdjoinFlag;
-  entry->flags^=CoderBlobSupportFlag;
-  entry->flags|=CoderSeekableStreamFlag;
-  entry->description=ConstantString(
+  entry=AcquireMagickInfo("PS","EPI",
     "Encapsulated PostScript Interchange format");
-  entry->mime_type=ConstantString("application/postscript");
-  entry->module=ConstantString("PS");
-  (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("EPS");
   entry->decoder=(DecodeImageHandler *) ReadPSImage;
   entry->encoder=(EncodeImageHandler *) WritePSImage;
   entry->magick=(IsImageFormatHandler *) IsPS;
   entry->flags^=CoderAdjoinFlag;
   entry->flags^=CoderBlobSupportFlag;
   entry->flags|=CoderSeekableStreamFlag;
-  entry->description=ConstantString("Encapsulated PostScript");
   entry->mime_type=ConstantString("application/postscript");
-  entry->module=ConstantString("PS");
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("EPSF");
+  entry=AcquireMagickInfo("PS","EPS","Encapsulated PostScript");
   entry->decoder=(DecodeImageHandler *) ReadPSImage;
   entry->encoder=(EncodeImageHandler *) WritePSImage;
   entry->magick=(IsImageFormatHandler *) IsPS;
   entry->flags^=CoderAdjoinFlag;
   entry->flags^=CoderBlobSupportFlag;
   entry->flags|=CoderSeekableStreamFlag;
-  entry->description=ConstantString("Encapsulated PostScript");
   entry->mime_type=ConstantString("application/postscript");
-  entry->module=ConstantString("PS");
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("EPSI");
+  entry=AcquireMagickInfo("PS","EPSF","Encapsulated PostScript");
   entry->decoder=(DecodeImageHandler *) ReadPSImage;
   entry->encoder=(EncodeImageHandler *) WritePSImage;
   entry->magick=(IsImageFormatHandler *) IsPS;
   entry->flags^=CoderAdjoinFlag;
   entry->flags^=CoderBlobSupportFlag;
   entry->flags|=CoderSeekableStreamFlag;
-  entry->description=ConstantString(
+  entry->mime_type=ConstantString("application/postscript");
+  (void) RegisterMagickInfo(entry);
+  entry=AcquireMagickInfo("PS","EPSI",
     "Encapsulated PostScript Interchange format");
+  entry->decoder=(DecodeImageHandler *) ReadPSImage;
+  entry->encoder=(EncodeImageHandler *) WritePSImage;
+  entry->magick=(IsImageFormatHandler *) IsPS;
+  entry->flags^=CoderAdjoinFlag;
+  entry->flags^=CoderBlobSupportFlag;
+  entry->flags|=CoderSeekableStreamFlag;
   entry->mime_type=ConstantString("application/postscript");
-  entry->module=ConstantString("PS");
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("PS");
+  entry=AcquireMagickInfo("PS","PS","PostScript");
   entry->decoder=(DecodeImageHandler *) ReadPSImage;
   entry->encoder=(EncodeImageHandler *) WritePSImage;
   entry->magick=(IsImageFormatHandler *) IsPS;
   entry->mime_type=ConstantString("application/postscript");
-  entry->module=ConstantString("PS");
   entry->flags^=CoderBlobSupportFlag;
   entry->flags|=CoderSeekableStreamFlag;
-  entry->description=ConstantString("PostScript");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

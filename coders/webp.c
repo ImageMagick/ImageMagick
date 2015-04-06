@@ -401,7 +401,7 @@ ModuleExport size_t RegisterWEBPImage(void)
     *entry;
 
   *version='\0';
-  entry=SetMagickInfo("WEBP");
+  entry=AcquireMagickInfo("WEBP","WEBP","WebP Image Format");
 #if defined(MAGICKCORE_WEBP_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadWEBPImage;
   entry->encoder=(EncodeImageHandler *) WriteWEBPImage;
@@ -410,10 +410,8 @@ ModuleExport size_t RegisterWEBPImage(void)
     (WebPGetDecoderVersion() >> 8) & 0xff,
     (WebPGetDecoderVersion() >> 0) & 0xff,WEBP_DECODER_ABI_VERSION);
 #endif
-  entry->description=ConstantString("WebP Image Format");
   entry->mime_type=ConstantString("image/x-webp");
   entry->flags^=CoderAdjoinFlag;
-  entry->module=ConstantString("WEBP");
   entry->magick=(IsImageFormatHandler *) IsWEBP;
   if (*version != '\0')
     entry->version=ConstantString(version);

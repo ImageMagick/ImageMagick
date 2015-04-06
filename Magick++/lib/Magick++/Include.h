@@ -1081,6 +1081,7 @@ namespace Magick
   using MagickCore::AcquireVirtualCacheView;
   using MagickCore::AcquireImage;
   using MagickCore::AcquireKernelInfo;
+  using MagickCore::AcquireMagickInfo;
   using MagickCore::AcquireMagickMemory;
   using MagickCore::AcquireQuantumInfo;
   using MagickCore::AcquireString;
@@ -1395,7 +1396,6 @@ namespace Magick
   using MagickCore::SetImageRegistry;
   using MagickCore::SetImageType;
   using MagickCore::SetLogEventMask;
-  using MagickCore::SetMagickInfo;
   using MagickCore::SetMagickResourceLimit;
   using MagickCore::SetImageVirtualPixelMethod;
   using MagickCore::SetPixelChannel;

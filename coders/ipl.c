@@ -439,13 +439,11 @@ ModuleExport size_t RegisterIPLImage(void)
   MagickInfo
     *entry;
   
-  entry=SetMagickInfo("IPL");
+  entry=AcquireMagickInfo("IPL","IPL","IPL Image Sequence");
   entry->decoder=(DecodeImageHandler *) ReadIPLImage;
   entry->encoder=(EncodeImageHandler *) WriteIPLImage;
   entry->magick=(IsImageFormatHandler *) IsIPL;
   entry->flags|=CoderEndianSupportFlag;
-  entry->description=ConstantString("IPL Image Sequence");
-  entry->module=ConstantString("IPL");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

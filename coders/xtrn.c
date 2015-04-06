@@ -256,46 +256,40 @@ ModuleExport size_t RegisterXTRNImage(void)
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("XTRNFILE");
+  entry=AcquireMagickInfo("XTRN","XTRNFILE","External transfer of a file");
 #if defined(_VISUALC_)
   entry->decoder=ReadXTRNImage;
   entry->encoder=WriteXTRNImage;
 #endif
   entry->flags^=CoderAdjoinFlag;
   entry->flags|=CoderStealthFlag;
-  entry->description=ConstantString("External transfer of a file");
-  entry->module=ConstantString("XTRN");
   RegisterMagickInfo(entry);
-  entry=SetMagickInfo("XTRNIMAGE");
+  entry=AcquireMagickInfo("XTRN","XTRNIMAGE",
+    "External transfer of a image in memory");
 #if defined(_VISUALC_)
   entry->decoder=ReadXTRNImage;
   entry->encoder=WriteXTRNImage;
 #endif
   entry->flags^=CoderAdjoinFlag;
   entry->flags|=CoderStealthFlag;
-  entry->description=ConstantString("External transfer of a image in memory");
-  entry->module=ConstantString("XTRN");
   RegisterMagickInfo(entry);
-  entry=SetMagickInfo("XTRNBLOB");
+  entry=AcquireMagickInfo("XTRN","XTRNBLOB",
+    "IExternal transfer of a blob in memory");
 #if defined(_VISUALC_)
   entry->decoder=ReadXTRNImage;
   entry->encoder=WriteXTRNImage;
 #endif
   entry->flags^=CoderAdjoinFlag;
   entry->flags|=CoderStealthFlag;
-  entry->description=ConstantString("IExternal transfer of a blob in memory");
-  entry->module=ConstantString("XTRN");
   RegisterMagickInfo(entry);
-  entry=SetMagickInfo("XTRNARRAY");
-#if defined(_VISUALC_)
-  entry->decoder=ReadXTRNImage;
-  entry->encoder=WriteXTRNImage;
-#endif
-  entry->flags^=CoderAdjoinFlag;
-  entry->flags|=CoderStealthFlag;
-  entry->description=ConstantString(
+  entry=AcquireMagickInfo("XTRN","XTRNARRAY",
     "External transfer via a smart array interface");
-  entry->module=ConstantString("XTRN");
+#if defined(_VISUALC_)
+  entry->decoder=ReadXTRNImage;
+  entry->encoder=WriteXTRNImage;
+#endif
+  entry->flags^=CoderAdjoinFlag;
+  entry->flags|=CoderStealthFlag;
   RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

@@ -215,13 +215,11 @@ ModuleExport size_t RegisterARTImage(void)
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("ART");
+  entry=AcquireMagickInfo("ART","ART","PFS: 1st Publisher Clip Art");
   entry->decoder=(DecodeImageHandler *) ReadARTImage;
   entry->encoder=(EncodeImageHandler *) WriteARTImage;
   entry->flags|=CoderRawSupportFlag;
   entry->flags^=CoderAdjoinFlag;
-  entry->description=ConstantString("PFS: 1st Publisher Clip Art");
-  entry->module=ConstantString("ART");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

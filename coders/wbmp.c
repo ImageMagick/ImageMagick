@@ -252,12 +252,10 @@ ModuleExport size_t RegisterWBMPImage(void)
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("WBMP");
+  entry=AcquireMagickInfo("WBMP","WBMP","Wireless Bitmap (level 0) image");
   entry->decoder=(DecodeImageHandler *) ReadWBMPImage;
   entry->encoder=(EncodeImageHandler *) WriteWBMPImage;
   entry->flags^=CoderAdjoinFlag;
-  entry->description=ConstantString("Wireless Bitmap (level 0) image");
-  entry->module=ConstantString("WBMP");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

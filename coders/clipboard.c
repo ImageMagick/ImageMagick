@@ -268,15 +268,13 @@ ModuleExport size_t RegisterCLIPBOARDImage(void)
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("CLIPBOARD");
+  entry=AcquireMagickInfo("CLIPBOARD","CLIPBOARD","The system clipboard");
 #if defined(MAGICKCORE_WINGDI32_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadCLIPBOARDImage;
   entry->encoder=(EncodeImageHandler *) WriteCLIPBOARDImage;
 #endif
   entry->flags^=CoderAdjoinFlag;
   entry->format_type=ImplicitFormatType;
-  entry->description=ConstantString("The system clipboard");
-  entry->module=ConstantString("CLIPBOARD");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

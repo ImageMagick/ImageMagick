@@ -1012,29 +1012,26 @@ ModuleExport size_t RegisterRGBImage(void)
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("RGB");
+  entry=AcquireMagickInfo("RGB","RGB",
+    "Raw red, green, and blue samples");
   entry->decoder=(DecodeImageHandler *) ReadRGBImage;
   entry->encoder=(EncodeImageHandler *) WriteRGBImage;
   entry->flags|=CoderRawSupportFlag;
   entry->flags|=CoderEndianSupportFlag;
-  entry->description=ConstantString("Raw red, green, and blue samples");
-  entry->module=ConstantString("RGB");
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("RGBA");
+  entry=AcquireMagickInfo("RGB","RGBA",
+    "Raw red, green, blue, and alpha samples");
   entry->decoder=(DecodeImageHandler *) ReadRGBImage;
   entry->encoder=(EncodeImageHandler *) WriteRGBImage;
   entry->flags|=CoderRawSupportFlag;
   entry->flags|=CoderEndianSupportFlag;
-  entry->description=ConstantString("Raw red, green, blue, and alpha samples");
-  entry->module=ConstantString("RGB");
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("RGBO");
+  entry=AcquireMagickInfo("RGB","RGBO",
+    "Raw red, green, blue, and opacity samples");
   entry->decoder=(DecodeImageHandler *) ReadRGBImage;
   entry->encoder=(EncodeImageHandler *) WriteRGBImage;
   entry->flags|=CoderRawSupportFlag;
   entry->flags|=CoderEndianSupportFlag;
-  entry->description=ConstantString("Raw red, green, blue, and opacity samples");
-  entry->module=ConstantString("RGB");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

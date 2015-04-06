@@ -374,14 +374,12 @@ ModuleExport size_t RegisterXPSImage(void)
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("XPS");
+  entry=AcquireMagickInfo("XPS","XPS","Microsoft XML Paper Specification");
   entry->decoder=(DecodeImageHandler *) ReadXPSImage;
   entry->flags^=CoderAdjoinFlag;
   entry->flags^=CoderBlobSupportFlag;
   entry->flags^=CoderDecoderThreadSupportFlag;
   entry->flags|=CoderSeekableStreamFlag;
-  entry->description=ConstantString("Microsoft XML Paper Specification");
-  entry->module=ConstantString("XPS");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

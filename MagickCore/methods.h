@@ -1092,7 +1092,7 @@ extern "C" {
 #define SetLogEventMask  PrependMagickMethod(SetLogEventMask)
 #define SetLogFormat  PrependMagickMethod(SetLogFormat)
 #define SetLogName  PrependMagickMethod(SetLogName)
-#define SetMagickInfo  PrependMagickMethod(SetMagickInfo)
+#define AcquireMagickInfo  PrependMagickMethod(AcquireMagickInfo)
 #define SetMagickMemoryMethods  PrependMagickMethod(SetMagickMemoryMethods)
 #define SetMagickRegistry  PrependMagickMethod(SetMagickRegistry)
 #define SetMagickResourceLimit  PrependMagickMethod(SetMagickResourceLimit)

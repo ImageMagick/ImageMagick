@@ -214,23 +214,19 @@ ModuleExport size_t RegisterUYVYImage(void)
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("PAL");
+  entry=AcquireMagickInfo("UYVY","PAL","16bit/pixel interleaved YUV");
   entry->decoder=(DecodeImageHandler *) ReadUYVYImage;
   entry->encoder=(EncodeImageHandler *) WriteUYVYImage;
   entry->flags^=CoderAdjoinFlag;
   entry->flags|=CoderRawSupportFlag;
   entry->flags|=CoderEndianSupportFlag;
-  entry->description=ConstantString("16bit/pixel interleaved YUV");
-  entry->module=ConstantString("UYVY");
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("UYVY");
+  entry=AcquireMagickInfo("UYVY","UYVY","16bit/pixel interleaved YUV");
   entry->decoder=(DecodeImageHandler *) ReadUYVYImage;
   entry->encoder=(EncodeImageHandler *) WriteUYVYImage;
   entry->flags^=CoderAdjoinFlag;
   entry->flags|=CoderRawSupportFlag;
   entry->flags|=CoderEndianSupportFlag;
-  entry->description=ConstantString("16bit/pixel interleaved YUV");
-  entry->module=ConstantString("UYVY");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

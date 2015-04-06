@@ -421,15 +421,13 @@ ModuleExport size_t RegisterPCLImage(void)
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("PCL");
+  entry=AcquireMagickInfo("PCL","PCL","Printer Control Language");
   entry->decoder=(DecodeImageHandler *) ReadPCLImage;
   entry->encoder=(EncodeImageHandler *) WritePCLImage;
   entry->magick=(IsImageFormatHandler *) IsPCL;
   entry->flags^=CoderBlobSupportFlag;
   entry->flags^=CoderDecoderThreadSupportFlag;
   entry->flags|=CoderSeekableStreamFlag;
-  entry->description=ConstantString("Printer Control Language");
-  entry->module=ConstantString("PCL");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

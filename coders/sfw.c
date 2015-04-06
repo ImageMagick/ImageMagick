@@ -398,12 +398,10 @@ ModuleExport size_t RegisterSFWImage(void)
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("SFW");
+  entry=AcquireMagickInfo("SFW","SFW","Seattle Film Works");
   entry->decoder=(DecodeImageHandler *) ReadSFWImage;
   entry->magick=(IsImageFormatHandler *) IsSFW;
   entry->flags^=CoderAdjoinFlag;
-  entry->description=ConstantString("Seattle Film Works");
-  entry->module=ConstantString("SFW");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

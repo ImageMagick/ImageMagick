@@ -239,19 +239,15 @@ ModuleExport size_t RegisterPLASMAImage(void)
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("PLASMA");
+  entry=AcquireMagickInfo("PLASMA","PLASMA","Plasma fractal image");
   entry->decoder=(DecodeImageHandler *) ReadPlasmaImage;
   entry->flags^=CoderAdjoinFlag;
   entry->format_type=ImplicitFormatType;
-  entry->description=ConstantString("Plasma fractal image");
-  entry->module=ConstantString("PLASMA");
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("FRACTAL");
+  entry=AcquireMagickInfo("PLASMA","FRACTAL","Plasma fractal image");
   entry->decoder=(DecodeImageHandler *) ReadPlasmaImage;
   entry->flags^=CoderAdjoinFlag;
   entry->format_type=ImplicitFormatType;
-  entry->description=ConstantString("Plasma fractal image");
-  entry->module=ConstantString("PLASMA");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

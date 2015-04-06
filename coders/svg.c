@@ -3242,41 +3242,36 @@ ModuleExport size_t RegisterSVGImage(void)
   (void) FormatLocaleString(version,MaxTextExtent,"RSVG %d.%d.%d",
     LIBRSVG_MAJOR_VERSION,LIBRSVG_MINOR_VERSION,LIBRSVG_MICRO_VERSION);
 #endif
-  entry=SetMagickInfo("SVG");
+  entry=AcquireMagickInfo("SVG","SVG","Scalable Vector Graphics");
 #if defined(MAGICKCORE_XML_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadSVGImage;
 #endif
   entry->encoder=(EncodeImageHandler *) WriteSVGImage;
   entry->flags^=CoderBlobSupportFlag;
-  entry->description=ConstantString("Scalable Vector Graphics");
   entry->mime_type=ConstantString("image/svg+xml");
   if (*version != '\0')
     entry->version=ConstantString(version);
   entry->magick=(IsImageFormatHandler *) IsSVG;
-  entry->module=ConstantString("SVG");
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("SVGZ");
+  entry=AcquireMagickInfo("SVG","SVGZ","Compressed Scalable Vector Graphics");
 #if defined(MAGICKCORE_XML_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadSVGImage;
 #endif
   entry->encoder=(EncodeImageHandler *) WriteSVGImage;
   entry->flags^=CoderBlobSupportFlag;
-  entry->description=ConstantString("Compressed Scalable Vector Graphics");
   entry->mime_type=ConstantString("image/svg+xml");
   if (*version != '\0')
     entry->version=ConstantString(version);
   entry->magick=(IsImageFormatHandler *) IsSVG;
-  entry->module=ConstantString("SVG");
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("MSVG");
+  entry=AcquireMagickInfo("SVG","MSVG",
+    "ImageMagick's own SVG internal renderer");
 #if defined(MAGICKCORE_XML_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadSVGImage;
 #endif
   entry->encoder=(EncodeImageHandler *) WriteSVGImage;
   entry->flags^=CoderBlobSupportFlag;
-  entry->description=ConstantString("ImageMagick's own SVG internal renderer");
   entry->magick=(IsImageFormatHandler *) IsSVG;
-  entry->module=ConstantString("SVG");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

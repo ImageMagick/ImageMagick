@@ -356,11 +356,9 @@ ModuleExport size_t RegisterJNXImage(void)
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("JNX");
+  entry=AcquireMagickInfo("JNX","JNX","Garmin tile format");
   entry->decoder=(DecodeImageHandler *) ReadJNXImage;
-  entry->description=ConstantString("Garmin tile format");
   entry->flags|=CoderSeekableStreamFlag;
-  entry->module=ConstantString("JNX");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

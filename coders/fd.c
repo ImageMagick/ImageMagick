@@ -154,10 +154,8 @@ ModuleExport size_t RegisterFDImage(void)
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("FD");
+  entry=AcquireMagickInfo("FD","FD","Read image from a file descriptor");
   entry->decoder=(DecodeImageHandler *) ReadFDImage;
-  entry->description=ConstantString("Read image from a file descriptor");
-  entry->module=ConstantString("FD");
   entry->flags|=CoderStealthFlag;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);

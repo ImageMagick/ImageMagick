@@ -931,15 +931,13 @@ ModuleExport size_t RegisterDIBImage(void)
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("DIB");
+  entry=AcquireMagickInfo("DIB","DIB",
+    "Microsoft Windows 3.X Packed Device-Independent Bitmap");
   entry->decoder=(DecodeImageHandler *) ReadDIBImage;
   entry->encoder=(EncodeImageHandler *) WriteDIBImage;
   entry->magick=(IsImageFormatHandler *) IsDIB;
   entry->flags^=CoderAdjoinFlag;
   entry->flags|=CoderStealthFlag;
-  entry->description=ConstantString(
-    "Microsoft Windows 3.X Packed Device-Independent Bitmap");
-  entry->module=ConstantString("DIB");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

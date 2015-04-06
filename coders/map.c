@@ -272,15 +272,13 @@ ModuleExport size_t RegisterMAPImage(void)
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("MAP");
+  entry=AcquireMagickInfo("MAP","MAP","Colormap intensities and indices");
   entry->decoder=(DecodeImageHandler *) ReadMAPImage;
   entry->encoder=(EncodeImageHandler *) WriteMAPImage;
   entry->flags^=CoderAdjoinFlag;
   entry->format_type=ExplicitFormatType;
   entry->flags|=CoderRawSupportFlag;
   entry->flags|=CoderEndianSupportFlag;
-  entry->description=ConstantString("Colormap intensities and indices");
-  entry->module=ConstantString("MAP");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

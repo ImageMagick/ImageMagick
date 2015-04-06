@@ -542,12 +542,10 @@ ModuleExport size_t RegisterJP2Image(void)
 #if defined(MAGICKCORE_LIBOPENJP2_DELEGATE)
   (void) FormatLocaleString(version,MaxTextExtent,"%s",opj_version());
 #endif
-  entry=SetMagickInfo("JP2");
-  entry->description=ConstantString("JPEG-2000 File Format Syntax");
+  entry=AcquireMagickInfo("JP2","JP2","JPEG-2000 File Format Syntax");
   if (*version != '\0')
     entry->version=ConstantString(version);
   entry->mime_type=ConstantString("image/jp2");
-  entry->module=ConstantString("JP2");
   entry->magick=(IsImageFormatHandler *) IsJP2;
   entry->flags^=CoderAdjoinFlag;
   entry->flags|=CoderSeekableStreamFlag;
@@ -556,12 +554,10 @@ ModuleExport size_t RegisterJP2Image(void)
   entry->encoder=(EncodeImageHandler *) WriteJP2Image;
 #endif
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("J2C");
-  entry->description=ConstantString("JPEG-2000 Code Stream Syntax");
+  entry=AcquireMagickInfo("JP2","J2C","JPEG-2000 Code Stream Syntax");
   if (*version != '\0')
     entry->version=ConstantString(version);
   entry->mime_type=ConstantString("image/jp2");
-  entry->module=ConstantString("JP2");
   entry->magick=(IsImageFormatHandler *) IsJ2K;
   entry->flags^=CoderAdjoinFlag;
   entry->flags|=CoderSeekableStreamFlag;
@@ -570,12 +566,10 @@ ModuleExport size_t RegisterJP2Image(void)
   entry->encoder=(EncodeImageHandler *) WriteJP2Image;
 #endif
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("J2K");
-  entry->description=ConstantString("JPEG-2000 Code Stream Syntax");
+  entry=AcquireMagickInfo("JP2","J2K","JPEG-2000 Code Stream Syntax");
   if (*version != '\0')
     entry->version=ConstantString(version);
   entry->mime_type=ConstantString("image/jp2");
-  entry->module=ConstantString("JP2");
   entry->magick=(IsImageFormatHandler *) IsJ2K;
   entry->flags^=CoderAdjoinFlag;
   entry->flags|=CoderSeekableStreamFlag;
@@ -584,12 +578,10 @@ ModuleExport size_t RegisterJP2Image(void)
   entry->encoder=(EncodeImageHandler *) WriteJP2Image;
 #endif
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("JPM");
-  entry->description=ConstantString("JPEG-2000 File Format Syntax");
+  entry=AcquireMagickInfo("JP2","JPM","JPEG-2000 File Format Syntax");
   if (*version != '\0')
     entry->version=ConstantString(version);
   entry->mime_type=ConstantString("image/jp2");
-  entry->module=ConstantString("JP2");
   entry->magick=(IsImageFormatHandler *) IsJP2;
   entry->flags^=CoderAdjoinFlag;
   entry->flags|=CoderSeekableStreamFlag;
@@ -598,12 +590,10 @@ ModuleExport size_t RegisterJP2Image(void)
   entry->encoder=(EncodeImageHandler *) WriteJP2Image;
 #endif
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("JPT");
-  entry->description=ConstantString("JPEG-2000 File Format Syntax");
+  entry=AcquireMagickInfo("JP2","JPT","JPEG-2000 File Format Syntax");
   if (*version != '\0')
     entry->version=ConstantString(version);
   entry->mime_type=ConstantString("image/jp2");
-  entry->module=ConstantString("JP2");
   entry->magick=(IsImageFormatHandler *) IsJP2;
   entry->flags^=CoderAdjoinFlag;
   entry->flags|=CoderSeekableStreamFlag;
@@ -612,12 +602,10 @@ ModuleExport size_t RegisterJP2Image(void)
   entry->encoder=(EncodeImageHandler *) WriteJP2Image;
 #endif
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("JPC");
-  entry->description=ConstantString("JPEG-2000 Code Stream Syntax");
+  entry=AcquireMagickInfo("JP2","JPC","JPEG-2000 Code Stream Syntax");
   if (*version != '\0')
     entry->version=ConstantString(version);
   entry->mime_type=ConstantString("image/jp2");
-  entry->module=ConstantString("JP2");
   entry->magick=(IsImageFormatHandler *) IsJP2;
   entry->flags^=CoderAdjoinFlag;
   entry->flags|=CoderSeekableStreamFlag;

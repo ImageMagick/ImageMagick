@@ -497,28 +497,22 @@ ModuleExport size_t RegisterXPMImage(void)
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("PICON");
+  entry=AcquireMagickInfo("XPM","PICON","Personal Icon");
   entry->decoder=(DecodeImageHandler *) ReadXPMImage;
   entry->encoder=(EncodeImageHandler *) WritePICONImage;
   entry->flags^=CoderAdjoinFlag;
-  entry->description=ConstantString("Personal Icon");
-  entry->module=ConstantString("XPM");
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("PM");
+  entry=AcquireMagickInfo("XPM","PM","X Windows system pixmap (color)");
   entry->decoder=(DecodeImageHandler *) ReadXPMImage;
   entry->encoder=(EncodeImageHandler *) WriteXPMImage;
   entry->flags^=CoderAdjoinFlag;
   entry->flags|=CoderStealthFlag;
-  entry->description=ConstantString("X Windows system pixmap (color)");
-  entry->module=ConstantString("XPM");
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("XPM");
+  entry=AcquireMagickInfo("XPM","XPM","X Windows system pixmap (color)");
   entry->decoder=(DecodeImageHandler *) ReadXPMImage;
   entry->encoder=(EncodeImageHandler *) WriteXPMImage;
   entry->magick=(IsImageFormatHandler *) IsXPM;
   entry->flags^=CoderAdjoinFlag;
-  entry->description=ConstantString("X Windows system pixmap (color)");
-  entry->module=ConstantString("XPM");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

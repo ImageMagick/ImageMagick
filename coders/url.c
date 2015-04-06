@@ -293,39 +293,31 @@ ModuleExport size_t RegisterURLImage(void)
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("HTTP");
+  entry=AcquireMagickInfo("URL","HTTP","Uniform Resource Locator (http://)");
 #if (defined(MAGICKCORE_WINDOWS_SUPPORT) && \
     !(defined(__MINGW32__) || defined(__MINGW64__))) || \
     (defined(MAGICKCORE_XML_DELEGATE) && defined(LIBXML_HTTP_ENABLED))
   entry->decoder=(DecodeImageHandler *) ReadURLImage;
 #endif
-  entry->description=ConstantString("Uniform Resource Locator (http://)");
-  entry->module=ConstantString("URL");
   entry->flags|=CoderStealthFlag;
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("HTTPS");
+  entry=AcquireMagickInfo("URL","HTTPS","Uniform Resource Locator (https://)");
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) && \
     !(defined(__MINGW32__) || defined(__MINGW64__))
   entry->decoder=(DecodeImageHandler *) ReadURLImage;
 #endif
-  entry->description=ConstantString("Uniform Resource Locator (https://)");
-  entry->module=ConstantString("URL");
   entry->flags|=CoderStealthFlag;
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("FTP");
+  entry=AcquireMagickInfo("URL","FTP","Uniform Resource Locator (ftp://)");
 #if (defined(MAGICKCORE_WINDOWS_SUPPORT) && \
     !(defined(__MINGW32__) || defined(__MINGW64__))) || \
     (defined(MAGICKCORE_XML_DELEGATE) && defined(LIBXML_FTP_ENABLED))
   entry->decoder=(DecodeImageHandler *) ReadURLImage;
 #endif
-  entry->description=ConstantString("Uniform Resource Locator (ftp://)");
-  entry->module=ConstantString("URL");
   entry->flags|=CoderStealthFlag;
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("FILE");
+  entry=AcquireMagickInfo("URL","FILE","Uniform Resource Locator (file://)");
   entry->decoder=(DecodeImageHandler *) ReadURLImage;
-  entry->description=ConstantString("Uniform Resource Locator (file://)");
-  entry->module=ConstantString("URL");
   entry->flags|=CoderStealthFlag;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);

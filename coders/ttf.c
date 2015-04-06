@@ -328,71 +328,59 @@ ModuleExport size_t RegisterTTFImage(void)
   (void) FormatLocaleString(version,MaxTextExtent,"Freetype %d.%d.%d",
     FREETYPE_MAJOR,FREETYPE_MINOR,FREETYPE_PATCH);
 #endif
-  entry=SetMagickInfo("DFONT");
+  entry=AcquireMagickInfo("TTF","DFONT","Multi-face font package");
 #if defined(MAGICKCORE_FREETYPE_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadTTFImage;
 #endif
   entry->magick=(IsImageFormatHandler *) IsTTF;
   entry->flags^=CoderAdjoinFlag;
-  entry->description=ConstantString("Multi-face font package");
   if (*version != '\0')
     entry->version=ConstantString(version);
-  entry->module=ConstantString("TTF");
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("PFA");
+  entry=AcquireMagickInfo("TTF","PFA","Postscript Type 1 font (ASCII)");
 #if defined(MAGICKCORE_FREETYPE_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadTTFImage;
 #endif
   entry->magick=(IsImageFormatHandler *) IsPFA;
   entry->flags^=CoderAdjoinFlag;
-  entry->description=ConstantString("Postscript Type 1 font (ASCII)");
   if (*version != '\0')
     entry->version=ConstantString(version);
-  entry->module=ConstantString("TTF");
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("PFB");
+  entry=AcquireMagickInfo("TTF","PFB","Postscript Type 1 font (binary)");
 #if defined(MAGICKCORE_FREETYPE_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadTTFImage;
 #endif
   entry->magick=(IsImageFormatHandler *) IsPFA;
   entry->flags^=CoderAdjoinFlag;
-  entry->description=ConstantString("Postscript Type 1 font (binary)");
   if (*version != '\0')
     entry->version=ConstantString(version);
-  entry->module=ConstantString("TTF");
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("OTF");
+  entry=AcquireMagickInfo("TTF","OTF","Open Type font");
 #if defined(MAGICKCORE_FREETYPE_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadTTFImage;
 #endif
   entry->magick=(IsImageFormatHandler *) IsTTF;
   entry->flags^=CoderAdjoinFlag;
-  entry->description=ConstantString("Open Type font");
   if (*version != '\0')
     entry->version=ConstantString(version);
-  entry->module=ConstantString("TTF");
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("TTC");
+  entry=AcquireMagickInfo("TTF","TTC","TrueType font collection");
 #if defined(MAGICKCORE_FREETYPE_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadTTFImage;
 #endif
   entry->magick=(IsImageFormatHandler *) IsTTF;
   entry->flags^=CoderAdjoinFlag;
-  entry->description=ConstantString("TrueType font collection");
   if (*version != '\0')
     entry->version=ConstantString(version);
-  entry->module=ConstantString("TTF");
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("TTF");
+  entry=AcquireMagickInfo("TTF","TTF","TrueType font");
 #if defined(MAGICKCORE_FREETYPE_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadTTFImage;
 #endif
   entry->magick=(IsImageFormatHandler *) IsTTF;
   entry->flags^=CoderAdjoinFlag;
-  entry->description=ConstantString("TrueType font");
   if (*version != '\0')
     entry->version=ConstantString(version);
-  entry->module=ConstantString("TTF");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

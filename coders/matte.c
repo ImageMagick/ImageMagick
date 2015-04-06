@@ -93,11 +93,9 @@ ModuleExport size_t RegisterMATTEImage(void)
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("MATTE");
+  entry=AcquireMagickInfo("MATTE","MATTE","MATTE format");
   entry->encoder=(EncodeImageHandler *) WriteMATTEImage;
   entry->format_type=ExplicitFormatType;
-  entry->description=ConstantString("MATTE format");
-  entry->module=ConstantString("MATTE");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

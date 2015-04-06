@@ -500,15 +500,13 @@ ModuleExport size_t RegisterPANGOImage(void)
   (void) FormatLocaleString(version,MaxTextExtent,"Pangocairo %s",
     PANGO_VERSION_STRING);
 #endif
-  entry=SetMagickInfo("PANGO");
+  entry=AcquireMagickInfo("PANGO","PANGO","Pango Markup Language");
 #if defined(MAGICKCORE_PANGOCAIRO_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadPANGOImage;
 #endif
-  entry->description=ConstantString("Pango Markup Language");
   if (*version != '\0')
     entry->version=ConstantString(version);
   entry->flags^=CoderAdjoinFlag;
-  entry->module=ConstantString("PANGO");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }
