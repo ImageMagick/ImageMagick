@@ -1610,7 +1610,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
       case 'f':
       {
         format='F';
-        if (IsGrayImage(image,&image->exception) != MagickFalse)
+        if (SetImageGray(image,&image->exception) != MagickFalse)
           format='f';
         break;
       }
@@ -1626,12 +1626,12 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
       case 'n':
       {
         if ((image_info->type != TrueColorType) &&
-            (IsGrayImage(image,&image->exception) != MagickFalse))
+            (SetImageGray(image,&image->exception) != MagickFalse))
           {
             format='5';
             if (image_info->compression == NoCompression)
               format='2';
-            if (IsMonochromeImage(image,&image->exception) != MagickFalse)
+            if (SetImageMonochrome(image,&image->exception) != MagickFalse)
               {
                 format='4';
                 if (image_info->compression == NoCompression)

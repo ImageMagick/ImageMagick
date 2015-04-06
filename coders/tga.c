@@ -766,7 +766,7 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,
       (image_info->type != TrueColorMatteType) &&
       (image_info->type != PaletteType) &&
       (image->matte == MagickFalse) &&
-      (IsGrayImage(image,&image->exception) != MagickFalse))
+      (SetImageGray(image,&image->exception) != MagickFalse))
     tga_info.image_type=compression == RLECompression ? TGARLEMonochrome :
       TGAMonochrome;
   else

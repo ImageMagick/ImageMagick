@@ -785,7 +785,7 @@ static MagickBooleanType WriteSUNImage(const ImageInfo *image_info,Image *image)
           0;
       }
     else
-      if (IsMonochromeImage(image,&image->exception))
+      if (SetImageMonochrome(image,&image->exception))
         {
           /*
             Monochrome SUN raster.
@@ -878,7 +878,7 @@ static MagickBooleanType WriteSUNImage(const ImageInfo *image_info,Image *image)
         pixels=(unsigned char *) RelinquishMagickMemory(pixels);
       }
     else
-      if (IsMonochromeImage(image,&image->exception))
+      if (SetImageMonochrome(image,&image->exception))
         {
           register unsigned char
             bit,

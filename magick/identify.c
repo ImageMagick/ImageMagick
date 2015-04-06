@@ -577,7 +577,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       if (channel_statistics == (ChannelStatistics *) NULL)
         return(MagickFalse);
       colorspace=image->colorspace;
-      if (IsGrayImage(image,exception) != MagickFalse)
+      if (SetImageGray(image,exception) != MagickFalse)
         colorspace=GRAYColorspace;
       (void) FormatLocaleFile(file,"  Channel %s locations:\n",locate);
       switch (colorspace)
@@ -787,7 +787,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         (void) FormatLocaleFile(file,"  Depth: %.20g/%.20g-bit\n",(double)
           image->depth,(double) depth);
       (void) FormatLocaleFile(file,"  Channel depth:\n");
-      if (IsGrayImage(image,exception) != MagickFalse)
+      if (SetImageGray(image,exception) != MagickFalse)
         colorspace=GRAYColorspace;
       switch (colorspace)
       {

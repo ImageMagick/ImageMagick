@@ -4061,7 +4061,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               }
           }
       }
-    if (IsGrayImage(image,exception) != MagickFalse)
+    if (SetImageGray(image,exception) != MagickFalse)
       (void) SetImageColorspace(image,GRAYColorspace);
     if (EOFBlob(image) != MagickFalse)
       {

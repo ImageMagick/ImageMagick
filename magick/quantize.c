@@ -2685,7 +2685,7 @@ MagickExport MagickBooleanType QuantizeImage(const QuantizeInfo *quantize_info,
     {
       if ((image->columns*image->rows) <= maximum_colors)
         (void) DirectToColormapImage(image,&image->exception);
-      if (IsGrayImage(image,&image->exception) != MagickFalse)
+      if (SetImageGray(image,&image->exception) != MagickFalse)
         (void) SetGrayscaleImage(image);
     }
   if ((image->storage_class == PseudoClass) &&
@@ -2712,7 +2712,7 @@ MagickExport MagickBooleanType QuantizeImage(const QuantizeInfo *quantize_info,
         depth--;
       if ((image->matte != MagickFalse) && (depth > 5))
         depth--;
-      if (IsGrayImage(image,&image->exception) != MagickFalse)
+      if (SetImageGray(image,&image->exception) != MagickFalse)
         depth=MaxTreeDepth;
     }
   /*
@@ -3457,7 +3457,7 @@ static MagickBooleanType SetGrayscaleImage(Image *image)
   image_view=DestroyCacheView(image_view);
   colormap_index=(ssize_t *) RelinquishMagickMemory(colormap_index);
   image->type=GrayscaleType;
-  if (IsMonochromeImage(image,&image->exception) != MagickFalse)
+  if (SetImageMonochrome(image,&image->exception) != MagickFalse)
     image->type=BilevelType;
   return(status);
 }

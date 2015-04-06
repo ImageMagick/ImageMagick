@@ -1013,7 +1013,7 @@ RestoreMSCWarning
         viff_info.color_space_model=VFF_CM_NONE;
         viff_info.data_storage_type=VFF_TYP_1_BYTE;
         packets=number_pixels;
-        if (IsGrayImage(image,&image->exception) == MagickFalse)
+        if (SetImageGray(image,&image->exception) == MagickFalse)
           {
             /*
               Colormapped VIFF raster.
@@ -1114,7 +1114,7 @@ RestoreMSCWarning
         }
       }
     else
-      if (IsGrayImage(image,&image->exception) == MagickFalse)
+      if (SetImageGray(image,&image->exception) == MagickFalse)
         {
           unsigned char
             *viff_colormap;

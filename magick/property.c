@@ -2454,7 +2454,7 @@ static const char *GetMagickPropertyLetter(const ImageInfo *image_info,
         Image storage class and colorspace.
       */
       colorspace=image->colorspace;
-      if (IsGrayImage(image,&image->exception) != MagickFalse)
+      if (SetImageGray(image,&image->exception) != MagickFalse)
         colorspace=GRAYColorspace;
       (void) FormatLocaleString(value,MaxTextExtent,"%s %s %s",
         CommandOptionToMnemonic(MagickClassOptions,(ssize_t)
