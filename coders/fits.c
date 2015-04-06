@@ -544,7 +544,7 @@ ModuleExport size_t RegisterFITSImage(void)
   entry->flags^=CoderAdjoinFlag;
   entry->flags|=CoderSeekableStreamFlag;
   (void) RegisterMagickInfo(entry);
-  entry=AcquireMagickInfo("FTS","FITS","Flexible Image Transport System");
+  entry=AcquireMagickInfo("FITS","FTS","Flexible Image Transport System");
   entry->decoder=(DecodeImageHandler *) ReadFITSImage;
   entry->encoder=(EncodeImageHandler *) WriteFITSImage;
   entry->magick=(IsImageFormatHandler *) IsFITS;
