@@ -1023,11 +1023,9 @@ ModuleExport size_t RegisterPATTERNImage(void)
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("PATTERN");
+  entry=AcquireMagickInfo("PATTERN","PATTERN","Predefined pattern");
   entry->decoder=(DecodeImageHandler *) ReadPATTERNImage;
   entry->flags^=CoderAdjoinFlag;
-  entry->description=ConstantString("Predefined pattern");
-  entry->module=ConstantString("PATTERN");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

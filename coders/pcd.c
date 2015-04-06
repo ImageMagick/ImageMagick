@@ -869,22 +869,18 @@ ModuleExport size_t RegisterPCDImage(void)
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("PCD");
+  entry=AcquireMagickInfo("PCD","PCD","Photo CD");
   entry->decoder=(DecodeImageHandler *) ReadPCDImage;
   entry->encoder=(EncodeImageHandler *) WritePCDImage;
   entry->magick=(IsImageFormatHandler *) IsPCD;
   entry->flags^=CoderAdjoinFlag;
   entry->flags|=CoderSeekableStreamFlag;
-  entry->description=ConstantString("Photo CD");
-  entry->module=ConstantString("PCD");
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("PCDS");
+  entry=AcquireMagickInfo("PCD","PCDS","Photo CD");
   entry->decoder=(DecodeImageHandler *) ReadPCDImage;
   entry->encoder=(EncodeImageHandler *) WritePCDImage;
   entry->flags^=CoderAdjoinFlag;
   entry->flags|=CoderSeekableStreamFlag;
-  entry->description=ConstantString("Photo CD");
-  entry->module=ConstantString("PCD");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

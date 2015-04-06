@@ -135,14 +135,12 @@ ModuleExport size_t RegisterXImage(void)
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("X");
+  entry=SetMagickInfo("X","X","X Image");
 #if defined(MAGICKCORE_X11_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadXImage;
   entry->encoder=(EncodeImageHandler *) WriteXImage;
 #endif
   entry->format_type=ImplicitFormatType;
-  entry->description=ConstantString("X Image");
-  entry->module=ConstantString("X");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

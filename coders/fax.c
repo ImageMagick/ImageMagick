@@ -228,21 +228,17 @@ ModuleExport size_t RegisterFAXImage(void)
       "resized using a geometry of \"150x100%\".\n"
     };
 
-  entry=SetMagickInfo("FAX");
+  entry=AcquireMagickInfo("FAX","FAX","Group 3 FAX");
   entry->decoder=(DecodeImageHandler *) ReadFAXImage;
   entry->encoder=(EncodeImageHandler *) WriteFAXImage;
   entry->magick=(IsImageFormatHandler *) IsFAX;
-  entry->description=ConstantString("Group 3 FAX");
   entry->note=ConstantString(Note);
-  entry->module=ConstantString("FAX");
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("G3");
+  entry=AcquireMagickInfo("FAX","G3","Group 3 FAX");
   entry->decoder=(DecodeImageHandler *) ReadFAXImage;
   entry->encoder=(EncodeImageHandler *) WriteFAXImage;
   entry->magick=(IsImageFormatHandler *) IsFAX;
   entry->flags^=CoderAdjoinFlag;
-  entry->description=ConstantString("Group 3 FAX");
-  entry->module=ConstantString("FAX");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

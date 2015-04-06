@@ -767,28 +767,22 @@ ModuleExport size_t RegisterICONImage(void)
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("CUR");
+  entry=AcquireMagickInfo("ICON","CUR","Microsoft icon");
   entry->decoder=(DecodeImageHandler *) ReadICONImage;
   entry->encoder=(EncodeImageHandler *) WriteICONImage;
   entry->flags^=CoderAdjoinFlag;
   entry->flags|=CoderSeekableStreamFlag;
-  entry->description=ConstantString("Microsoft icon");
-  entry->module=ConstantString("CUR");
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("ICO");
+  entry=AcquireMagickInfo("ICON","ICO","Microsoft icon");
   entry->decoder=(DecodeImageHandler *) ReadICONImage;
   entry->encoder=(EncodeImageHandler *) WriteICONImage;
   entry->flags|=CoderSeekableStreamFlag;
-  entry->description=ConstantString("Microsoft icon");
-  entry->module=ConstantString("ICON");
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("ICON");
+  entry=AcquireMagickInfo("ICON","ICON","Microsoft icon");
   entry->decoder=(DecodeImageHandler *) ReadICONImage;
   entry->encoder=(EncodeImageHandler *) WriteICONImage;
   entry->flags^=CoderAdjoinFlag;
   entry->flags|=CoderSeekableStreamFlag;
-  entry->description=ConstantString("Microsoft icon");
-  entry->module=ConstantString("ICON");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

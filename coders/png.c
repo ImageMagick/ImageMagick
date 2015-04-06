@@ -7378,7 +7378,7 @@ ModuleExport size_t RegisterPNGImage(void)
     }
 #endif
 
-  entry=SetMagickInfo("MNG");
+  entry=AcquireMagickInfo("PNG","MNG","Multiple-image Network Graphics");
   entry->flags|=CoderSeekableStreamFlag;  /* To do: eliminate this. */
 
 #if defined(MAGICKCORE_PNG_DELEGATE)
@@ -7387,17 +7387,15 @@ ModuleExport size_t RegisterPNGImage(void)
 #endif
 
   entry->magick=(IsImageFormatHandler *) IsMNG;
-  entry->description=ConstantString("Multiple-image Network Graphics");
 
   if (*version != '\0')
     entry->version=ConstantString(version);
 
   entry->mime_type=ConstantString("video/x-mng");
-  entry->module=ConstantString("PNG");
   entry->note=ConstantString(MNGNote);
   (void) RegisterMagickInfo(entry);
 
-  entry=SetMagickInfo("PNG");
+  entry=AcquireMagickInfo("PNG","PNG","Portable Network Graphics");
 
 #if defined(MAGICKCORE_PNG_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadPNGImage;
@@ -7406,9 +7404,7 @@ ModuleExport size_t RegisterPNGImage(void)
 
   entry->magick=(IsImageFormatHandler *) IsPNG;
   entry->flags^=CoderAdjoinFlag;
-  entry->description=ConstantString("Portable Network Graphics");
   entry->mime_type=ConstantString("image/png");
-  entry->module=ConstantString("PNG");
 
   if (*version != '\0')
     entry->version=ConstantString(version);
@@ -7416,7 +7412,8 @@ ModuleExport size_t RegisterPNGImage(void)
   entry->note=ConstantString(PNGNote);
   (void) RegisterMagickInfo(entry);
 
-  entry=SetMagickInfo("PNG8");
+  entry=AcquireMagickInfo("PNG","PNG8",
+    "8-bit indexed with optional binary transparency");
 
 #if defined(MAGICKCORE_PNG_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadPNGImage;
@@ -7425,13 +7422,11 @@ ModuleExport size_t RegisterPNGImage(void)
 
   entry->magick=(IsImageFormatHandler *) IsPNG;
   entry->flags^=CoderAdjoinFlag;
-  entry->description=ConstantString(
-            "8-bit indexed with optional binary transparency");
   entry->mime_type=ConstantString("image/png");
-  entry->module=ConstantString("PNG");
   (void) RegisterMagickInfo(entry);
 
-  entry=SetMagickInfo("PNG24");
+  entry=AcquireMagickInfo("PNG","PNG24",
+    "opaque or binary transparent 24-bit RGB");
   *version='\0';
 
 #if defined(ZLIB_VERSION)
@@ -7455,12 +7450,10 @@ ModuleExport size_t RegisterPNGImage(void)
 
   entry->magick=(IsImageFormatHandler *) IsPNG;
   entry->flags^=CoderAdjoinFlag;
-  entry->description=ConstantString("opaque or binary transparent 24-bit RGB");
   entry->mime_type=ConstantString("image/png");
-  entry->module=ConstantString("PNG");
   (void) RegisterMagickInfo(entry);
 
-  entry=SetMagickInfo("PNG32");
+  entry=AcquireMagickInfo("PNG","PNG32","opaque or transparent 32-bit RGBA");
 
 #if defined(MAGICKCORE_PNG_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadPNGImage;
@@ -7469,12 +7462,11 @@ ModuleExport size_t RegisterPNGImage(void)
 
   entry->magick=(IsImageFormatHandler *) IsPNG;
   entry->flags^=CoderAdjoinFlag;
-  entry->description=ConstantString("opaque or transparent 32-bit RGBA");
   entry->mime_type=ConstantString("image/png");
-  entry->module=ConstantString("PNG");
   (void) RegisterMagickInfo(entry);
 
-  entry=SetMagickInfo("PNG48");
+  entry=AcquireMagickInfo("PNG","PNG48",
+    "opaque or binary transparent 48-bit RGB");
 
 #if defined(MAGICKCORE_PNG_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadPNGImage;
@@ -7483,12 +7475,10 @@ ModuleExport size_t RegisterPNGImage(void)
 
   entry->magick=(IsImageFormatHandler *) IsPNG;
   entry->flags^=CoderAdjoinFlag;
-  entry->description=ConstantString("opaque or binary transparent 48-bit RGB");
   entry->mime_type=ConstantString("image/png");
-  entry->module=ConstantString("PNG");
   (void) RegisterMagickInfo(entry);
 
-  entry=SetMagickInfo("PNG64");
+  entry=AcquireMagickInfo("PNG","PNG64","opaque or transparent 64-bit RGBA");
 
 #if defined(MAGICKCORE_PNG_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadPNGImage;
@@ -7497,27 +7487,23 @@ ModuleExport size_t RegisterPNGImage(void)
 
   entry->magick=(IsImageFormatHandler *) IsPNG;
   entry->flags^=CoderAdjoinFlag;
-  entry->description=ConstantString("opaque or transparent 64-bit RGBA");
   entry->mime_type=ConstantString("image/png");
-  entry->module=ConstantString("PNG");
   (void) RegisterMagickInfo(entry);
 
-  entry=SetMagickInfo("PNG00");
-
-#if defined(MAGICKCORE_PNG_DELEGATE)
-  entry->decoder=(DecodeImageHandler *) ReadPNGImage;
-  entry->encoder=(EncodeImageHandler *) WritePNGImage;
-#endif
-
-  entry->magick=(IsImageFormatHandler *) IsPNG;
-  entry->flags^=CoderAdjoinFlag;
-  entry->description=ConstantString(
+  entry=AcquireMagickInfo("PNG","PNG00",
     "PNG inheriting bit-depth and color-type from original");
+
+#if defined(MAGICKCORE_PNG_DELEGATE)
+  entry->decoder=(DecodeImageHandler *) ReadPNGImage;
+  entry->encoder=(EncodeImageHandler *) WritePNGImage;
+#endif
+
+  entry->magick=(IsImageFormatHandler *) IsPNG;
+  entry->flags^=CoderAdjoinFlag;
   entry->mime_type=ConstantString("image/png");
-  entry->module=ConstantString("PNG");
   (void) RegisterMagickInfo(entry);
 
-  entry=SetMagickInfo("JNG");
+  entry=AcquireMagickInfo("PNG","JNG","JPEG Network Graphics");
 
 #if defined(JNG_SUPPORTED)
 #if defined(MAGICKCORE_PNG_DELEGATE)
@@ -7528,9 +7514,7 @@ ModuleExport size_t RegisterPNGImage(void)
 
   entry->magick=(IsImageFormatHandler *) IsJNG;
   entry->flags^=CoderAdjoinFlag;
-  entry->description=ConstantString("JPEG Network Graphics");
   entry->mime_type=ConstantString("image/x-jng");
-  entry->module=ConstantString("PNG");
   entry->note=ConstantString(JNGNote);
   (void) RegisterMagickInfo(entry);
 

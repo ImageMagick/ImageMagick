@@ -306,36 +306,30 @@ ModuleExport size_t RegisterJBIGImage(void)
 #if defined(JBG_VERSION)
   (void) CopyMagickString(version,JBG_VERSION,MaxTextExtent);
 #endif
-  entry=SetMagickInfo("BIE");
+  entry=AcquireMagickInfo("JBIG","BIE",JBIGDescription);
 #if defined(MAGICKCORE_JBIG_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadJBIGImage;
   entry->encoder=(EncodeImageHandler *) WriteJBIGImage;
 #endif
   entry->flags^=CoderAdjoinFlag;
-  entry->description=ConstantString(JBIGDescription);
   if (*version != '\0')
     entry->version=ConstantString(version);
-  entry->module=ConstantString("JBIG");
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("JBG");
+  entry=AcquireMagickInfo("JBIG","JBG",JBIGDescription);
 #if defined(MAGICKCORE_JBIG_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadJBIGImage;
   entry->encoder=(EncodeImageHandler *) WriteJBIGImage;
 #endif
-  entry->description=ConstantString(JBIGDescription);
   if (*version != '\0')
     entry->version=ConstantString(version);
-  entry->module=ConstantString("JBIG");
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("JBIG");
+  entry=AcquireMagickInfo("JBIG","JBIG",JBIGDescription);
 #if defined(MAGICKCORE_JBIG_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadJBIGImage;
   entry->encoder=(EncodeImageHandler *) WriteJBIGImage;
 #endif
-  entry->description=ConstantString(JBIGDescription);
   if (*version != '\0')
     entry->version=ConstantString(version);
-  entry->module=ConstantString("JBIG");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

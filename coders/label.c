@@ -279,12 +279,10 @@ ModuleExport size_t RegisterLABELImage(void)
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("LABEL");
+  entry=AcquireMagickInfo("LABEL","LABEL","Image label");
   entry->decoder=(DecodeImageHandler *) ReadLABELImage;
   entry->flags^=CoderAdjoinFlag;
   entry->format_type=ImplicitFormatType;
-  entry->description=ConstantString("Image label");
-  entry->module=ConstantString("LABEL");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

@@ -2304,29 +2304,23 @@ ModuleExport size_t RegisterDDSImage(void)
   MagickInfo
     *entry;
 
-  entry = SetMagickInfo("DDS");
+  entry = AcquireMagickInfo("DDS","DDS","Microsoft DirectDraw Surface");
   entry->decoder = (DecodeImageHandler *) ReadDDSImage;
   entry->encoder = (EncodeImageHandler *) WriteDDSImage;
   entry->magick = (IsImageFormatHandler *) IsDDS;
   entry->flags|=CoderSeekableStreamFlag;
-  entry->description = ConstantString("Microsoft DirectDraw Surface");
-  entry->module = ConstantString("DDS");
   (void) RegisterMagickInfo(entry);
-  entry = SetMagickInfo("DXT1");
+  entry = AcquireMagickInfo("DDS","DXT1","Microsoft DirectDraw Surface");
   entry->decoder = (DecodeImageHandler *) ReadDDSImage;
   entry->encoder = (EncodeImageHandler *) WriteDDSImage;
   entry->magick = (IsImageFormatHandler *) IsDDS;
   entry->flags|=CoderSeekableStreamFlag;
-  entry->description = ConstantString("Microsoft DirectDraw Surface");
-  entry->module = ConstantString("DDS");
   (void) RegisterMagickInfo(entry);
-  entry = SetMagickInfo("DXT5");
+  entry = AcquireMagickInfo("DDS","DXT5","Microsoft DirectDraw Surface");
   entry->decoder = (DecodeImageHandler *) ReadDDSImage;
   entry->encoder = (EncodeImageHandler *) WriteDDSImage;
   entry->magick = (IsImageFormatHandler *) IsDDS;
   entry->flags|=CoderSeekableStreamFlag;
-  entry->description = ConstantString("Microsoft DirectDraw Surface");
-  entry->module = ConstantString("DDS");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

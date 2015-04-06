@@ -203,23 +203,19 @@ ModuleExport size_t RegisterGRADIENTImage(void)
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("GRADIENT");
+  entry=AcquireMagickInfo("GRADIENT","GRADIENT",
+    "Gradual linear passing from one shade to another");
   entry->decoder=(DecodeImageHandler *) ReadGRADIENTImage;
   entry->flags^=CoderAdjoinFlag;
   entry->flags|=CoderRawSupportFlag;
   entry->format_type=ImplicitFormatType;
-  entry->description=ConstantString("Gradual linear passing from one shade to "
-    "another");
-  entry->module=ConstantString("GRADIENT");
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("RADIAL-GRADIENT");
+  entry=AcquireMagickInfo("GRADIENT","RADIAL-GRADIENT",
+    "Gradual radial passing from one shade to another");
   entry->decoder=(DecodeImageHandler *) ReadGRADIENTImage;
   entry->flags^=CoderAdjoinFlag;
   entry->flags|=CoderRawSupportFlag;
   entry->format_type=ImplicitFormatType;
-  entry->description=ConstantString("Gradual radial passing from one shade to "
-    "another");
-  entry->module=ConstantString("GRADIENT");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

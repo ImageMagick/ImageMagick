@@ -1110,13 +1110,11 @@ ModuleExport size_t RegisterMATImage(void)
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("MAT");
+  entry=AcquireMagickInfo("MAT","MAT","MATLAB level 5 image format");
   entry->decoder=(DecodeImageHandler *) ReadMATImage;
   entry->encoder=(EncodeImageHandler *) WriteMATImage;
   entry->flags^=CoderBlobSupportFlag;
   entry->flags|=CoderSeekableStreamFlag;
-  entry->description=AcquireString("MATLAB level 5 image format");
-  entry->module=AcquireString("MAT");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

@@ -492,7 +492,7 @@ ModuleExport size_t RegisterFPXImage(void)
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("FPX");
+  entry=AcquireMagickInfo("FPX","FPX","FlashPix Format");
 #if defined(MAGICKCORE_FPX_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadFPXImage;
   entry->encoder=(EncodeImageHandler *) WriteFPXImage;
@@ -500,8 +500,6 @@ ModuleExport size_t RegisterFPXImage(void)
   entry->flags^=CoderAdjoinFlag;
   entry->flags|=CoderSeekableStreamFlag;
   entry->flags^=CoderBlobSupportFlag;
-  entry->description=ConstantString("FlashPix Format");
-  entry->module=ConstantString("FPX");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

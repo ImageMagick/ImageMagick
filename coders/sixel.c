@@ -1105,21 +1105,17 @@ ModuleExport size_t RegisterSIXELImage(void)
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("SIXEL");
+  entry=AcquireMagickInfo("SIXEL","SIXEL","DEC SIXEL Graphics Format");
   entry->decoder=(DecodeImageHandler *) ReadSIXELImage;
   entry->encoder=(EncodeImageHandler *) WriteSIXELImage;
   entry->magick=(IsImageFormatHandler *) IsSIXEL;
   entry->flags^=CoderAdjoinFlag;
-  entry->description=ConstantString("DEC SIXEL Graphics Format");
-  entry->module=ConstantString("SIXEL");
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("SIX");
+  entry=AcquireMagickInfo("SIX","SIX","DEC SIXEL Graphics Format");
   entry->decoder=(DecodeImageHandler *) ReadSIXELImage;
   entry->encoder=(EncodeImageHandler *) WriteSIXELImage;
   entry->magick=(IsImageFormatHandler *) IsSIXEL;
   entry->flags^=CoderAdjoinFlag;
-  entry->description=ConstantString("DEC SIXEL Graphics Format");
-  entry->module=ConstantString("SIX");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

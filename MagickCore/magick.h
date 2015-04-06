@@ -122,6 +122,7 @@ extern MagickExport MagickBooleanType
   GetMagickStealth(const MagickInfo *),
   GetMagickUseExtension(const MagickInfo *),
   IsMagickCoreInstantiated(void),
+  RegisterMagickInfo(MagickInfo *),
   UnregisterMagickInfo(const char *);
 
 extern const MagickExport MagickInfo
@@ -129,8 +130,7 @@ extern const MagickExport MagickInfo
   **GetMagickInfoList(const char *,size_t *,ExceptionInfo *);
 
 extern MagickExport MagickInfo
-  *RegisterMagickInfo(MagickInfo *),
-  *SetMagickInfo(const char *);
+  *AcquireMagickInfo(const char *, const char *, const char *);
 
 extern MagickExport void
   MagickCoreGenesis(const char *,const MagickBooleanType),

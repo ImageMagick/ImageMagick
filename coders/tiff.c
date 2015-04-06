@@ -2152,7 +2152,7 @@ ModuleExport size_t RegisterTIFFImage(void)
   }
 #endif
 
-  entry=SetMagickInfo("GROUP4");
+  entry=AcquireMagickInfo("TIFF","GROUP4","Raw CCITT Group4");
 #if defined(MAGICKCORE_TIFF_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadGROUP4Image;
   entry->encoder=(EncodeImageHandler *) WriteGROUP4Image;
@@ -2163,11 +2163,9 @@ ModuleExport size_t RegisterTIFFImage(void)
   entry->flags^=CoderAdjoinFlag;
   entry->flags^=CoderUseExtensionFlag;
   entry->format_type=ImplicitFormatType;
-  entry->description=ConstantString("Raw CCITT Group4");
   entry->mime_type=ConstantString("image/tiff");
-  entry->module=ConstantString("TIFF");
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("PTIF");
+  entry=AcquireMagickInfo("TIFF","PTIF","Pyramid encoded TIFF");
 #if defined(MAGICKCORE_TIFF_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadTIFFImage;
   entry->encoder=(EncodeImageHandler *) WritePTIFImage;
@@ -2175,11 +2173,9 @@ ModuleExport size_t RegisterTIFFImage(void)
   entry->flags|=CoderEndianSupportFlag;
   entry->flags|=CoderSeekableStreamFlag;
   entry->flags^=CoderUseExtensionFlag;
-  entry->description=ConstantString("Pyramid encoded TIFF");
   entry->mime_type=ConstantString("image/tiff");
-  entry->module=ConstantString("TIFF");
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("TIF");
+  entry=AcquireMagickInfo("TIFF","TIF",TIFFDescription);
 #if defined(MAGICKCORE_TIFF_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadTIFFImage;
   entry->encoder=(EncodeImageHandler *) WriteTIFFImage;
@@ -2188,13 +2184,11 @@ ModuleExport size_t RegisterTIFFImage(void)
   entry->flags|=CoderSeekableStreamFlag;
   entry->flags|=CoderStealthFlag;
   entry->flags^=CoderUseExtensionFlag;
-  entry->description=ConstantString(TIFFDescription);
   if (*version != '\0')
     entry->version=ConstantString(version);
   entry->mime_type=ConstantString("image/tiff");
-  entry->module=ConstantString("TIFF");
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("TIFF");
+  entry=AcquireMagickInfo("TIFF","TIFF",TIFFDescription);
 #if defined(MAGICKCORE_TIFF_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadTIFFImage;
   entry->encoder=(EncodeImageHandler *) WriteTIFFImage;
@@ -2203,13 +2197,11 @@ ModuleExport size_t RegisterTIFFImage(void)
   entry->flags|=CoderEndianSupportFlag;
   entry->flags|=CoderSeekableStreamFlag;
   entry->flags^=CoderUseExtensionFlag;
-  entry->description=ConstantString(TIFFDescription);
   if (*version != '\0')
     entry->version=ConstantString(version);
   entry->mime_type=ConstantString("image/tiff");
-  entry->module=ConstantString("TIFF");
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("TIFF64");
+  entry=AcquireMagickInfo("TIFF","TIFF64","Tagged Image File Format (64-bit)");
 #if defined(TIFF_VERSION_BIG)
   entry->decoder=(DecodeImageHandler *) ReadTIFFImage;
   entry->encoder=(EncodeImageHandler *) WriteTIFFImage;
@@ -2218,11 +2210,9 @@ ModuleExport size_t RegisterTIFFImage(void)
   entry->flags|=CoderSeekableStreamFlag;
   entry->flags^=CoderAdjoinFlag;
   entry->flags^=CoderUseExtensionFlag;
-  entry->description=ConstantString("Tagged Image File Format (64-bit)");
   if (*version != '\0')
     entry->version=ConstantString(version);
   entry->mime_type=ConstantString("image/tiff");
-  entry->module=ConstantString("TIFF");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

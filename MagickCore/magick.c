@@ -136,6 +136,60 @@ static MagickBooleanType
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%    A c q u i r e M a g i c k I n f o                                        %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  AcquireMagickInfo() allocates a MagickInfo structure and initializes the
+%  members to default values.
+%
+%  The format of the AcquireMagickInfo method is:
+%
+%      MagickInfo *AcquireMagickInfo(const char *module, const char *name,)
+%
+%  A description of each parameter follows:
+%
+%    o module: a character string that represents the module associated
+%      with the MagickInfo structure.
+%
+%    o name: a character string that represents the image format associated
+%      with the MagickInfo structure.
+%
+%    o description: a character string that represents the image format
+%      associated with the MagickInfo structure.
+%
+*/
+MagickExport MagickInfo *AcquireMagickInfo(const char *module,
+  const char *name, const char *description)
+{
+  MagickInfo
+    *magick_info;
+
+  assert(module != (const char *) NULL);
+  assert(name != (const char *) NULL);
+  assert(description != (const char *) NULL);
+  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",name);
+  magick_info=(MagickInfo *) AcquireMagickMemory(sizeof(*magick_info));
+  if (magick_info == (MagickInfo *) NULL)
+    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+  (void) ResetMagickMemory(magick_info,0,sizeof(*magick_info));
+  magick_info->module=ConstantString(module);
+  magick_info->name=ConstantString(name);
+  magick_info->description=ConstantString(description);
+  magick_info->flags=CoderAdjoinFlag | CoderBlobSupportFlag |
+    CoderDecoderThreadSupportFlag | CoderEncoderThreadSupportFlag |
+    CoderUseExtensionFlag;
+  magick_info->signature=MagickSignature;
+  return(magick_info);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   G e t I m a g e D e c o d e r                                             %
 %                                                                             %
 %                                                                             %
@@ -953,13 +1007,7 @@ static MagickBooleanType IsMagickTreeInstantiated(ExceptionInfo *exception)
           if (magick_list == (SplayTreeInfo *) NULL)
             ThrowFatalException(ResourceLimitFatalError,
               "MemoryAllocationFailed");
-          magick_info=SetMagickInfo("ephemeral");
-          magick_info->flags|=CoderStealthFlag;
-          status=AddValueToSplayTree(magick_list,magick_info->name,magick_info);
-          if (status == MagickFalse)
-            ThrowFatalException(ResourceLimitFatalError,
-              "MemoryAllocationFailed");
-          magick_info=SetMagickInfo("clipmask");
+          magick_info=AcquireMagickInfo("EPHEMERAL","EPHEMERAL","Internal format");
           magick_info->flags|=CoderStealthFlag;
           status=AddValueToSplayTree(magick_list,magick_info->name,magick_info);
           if (status == MagickFalse)
@@ -1532,7 +1580,7 @@ MagickExport void MagickCoreTerminus(void)
 %    o magick_info: the magick info.
 %
 */
-MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *magick_info)
+MagickExport MagickBooleanType RegisterMagickInfo(MagickInfo *magick_info)
 {
   MagickBooleanType
     status;
@@ -1544,60 +1592,12 @@ MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *magick_info)
   assert(magick_info->signature == MagickSignature);
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",magick_info->name);
   if (magick_list == (SplayTreeInfo *) NULL)
-    return((MagickInfo *) NULL);
+    return(MagickFalse);
   if ((GetMagickDecoderThreadSupport(magick_info) == MagickFalse) ||
       (GetMagickEncoderThreadSupport(magick_info) == MagickFalse))
     magick_info->semaphore=AcquireSemaphoreInfo();
   status=AddValueToSplayTree(magick_list,magick_info->name,magick_info);
-  if (status == MagickFalse)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  return(magick_info);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   S e t M a g i c k I n f o                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  SetMagickInfo() allocates a MagickInfo structure and initializes the members
-%  to default values.
-%
-%  The format of the SetMagickInfo method is:
-%
-%      MagickInfo *SetMagickInfo(const char *name)
-%
-%  A description of each parameter follows:
-%
-%    o magick_info: Method SetMagickInfo returns the allocated and initialized
-%      MagickInfo structure.
-%
-%    o name: a character string that represents the image format associated
-%      with the MagickInfo structure.
-%
-*/
-MagickExport MagickInfo *SetMagickInfo(const char *name)
-{
-  MagickInfo
-    *magick_info;
-
-  assert(name != (const char *) NULL);
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",name);
-  magick_info=(MagickInfo *) AcquireMagickMemory(sizeof(*magick_info));
-  if (magick_info == (MagickInfo *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  (void) ResetMagickMemory(magick_info,0,sizeof(*magick_info));
-  magick_info->name=ConstantString(name);
-  magick_info->flags=CoderAdjoinFlag | CoderBlobSupportFlag |
-    CoderDecoderThreadSupportFlag | CoderEncoderThreadSupportFlag |
-    CoderUseExtensionFlag;
-  magick_info->signature=MagickSignature;
-  return(magick_info);
+  return(status);
 }
 
 /*

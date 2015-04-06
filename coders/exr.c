@@ -287,16 +287,14 @@ ModuleExport size_t RegisterEXRImage(void)
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("EXR");
+  entry=AcquireMagickInfo("EXR","EXR","High Dynamic-range (HDR)");
 #if defined(MAGICKCORE_OPENEXR_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadEXRImage;
   entry->encoder=(EncodeImageHandler *) WriteEXRImage;
 #endif
   entry->magick=(IsImageFormatHandler *) IsEXR;
   entry->flags^=CoderAdjoinFlag;
-  entry->description=ConstantString("High Dynamic-range (HDR)");
   entry->flags^=CoderBlobSupportFlag;
-  entry->module=ConstantString("EXR");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

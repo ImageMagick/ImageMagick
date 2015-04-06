@@ -1513,20 +1513,19 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
 */
 ModuleExport size_t RegisterJPEGImage(void)
 {
+#define JPEGDescription "Joint Photographic Experts Group JFIF format"
+
   char
     version[MaxTextExtent];
 
   MagickInfo
     *entry;
 
-  static const char
-    description[] = "Joint Photographic Experts Group JFIF format";
-
   *version='\0';
 #if defined(JPEG_LIB_VERSION)
   (void) FormatLocaleString(version,MaxTextExtent,"%d",JPEG_LIB_VERSION);
 #endif
-  entry=SetMagickInfo("JPE");
+  entry=AcquireMagickInfo("JPEG","JPE",JPEGDescription);
 #if (JPEG_LIB_VERSION < 80) && !defined(LIBJPEG_TURBO_VERSION)
   entry->thread_support=NoThreadSupport;
 #endif
@@ -1537,13 +1536,11 @@ ModuleExport size_t RegisterJPEGImage(void)
   entry->magick=(IsImageFormatHandler *) IsJPEG;
   entry->flags^=CoderAdjoinFlag;
   entry->flags^=CoderUseExtensionFlag;
-  entry->description=ConstantString(description);
   if (*version != '\0')
     entry->version=ConstantString(version);
   entry->mime_type=ConstantString("image/jpeg");
-  entry->module=ConstantString("JPEG");
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("JPEG");
+  entry=AcquireMagickInfo("JPEG","JPEG",JPEGDescription);
 #if (JPEG_LIB_VERSION < 80) && !defined(LIBJPEG_TURBO_VERSION)
   entry->thread_support=NoThreadSupport;
 #endif
@@ -1553,13 +1550,11 @@ ModuleExport size_t RegisterJPEGImage(void)
 #endif
   entry->magick=(IsImageFormatHandler *) IsJPEG;
   entry->flags^=CoderAdjoinFlag;
-  entry->description=ConstantString(description);
   if (*version != '\0')
     entry->version=ConstantString(version);
   entry->mime_type=ConstantString("image/jpeg");
-  entry->module=ConstantString("JPEG");
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("JPG");
+  entry=AcquireMagickInfo("JPEG","JPG",JPEGDescription);
 #if (JPEG_LIB_VERSION < 80) && !defined(LIBJPEG_TURBO_VERSION)
   entry->thread_support=NoThreadSupport;
 #endif
@@ -1569,13 +1564,11 @@ ModuleExport size_t RegisterJPEGImage(void)
 #endif
   entry->flags^=CoderAdjoinFlag;
   entry->flags^=CoderUseExtensionFlag;
-  entry->description=ConstantString(description);
   if (*version != '\0')
     entry->version=ConstantString(version);
   entry->mime_type=ConstantString("image/jpeg");
-  entry->module=ConstantString("JPEG");
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("JPS");
+  entry=AcquireMagickInfo("JPEG","JPS",JPEGDescription);
 #if (JPEG_LIB_VERSION < 80) && !defined(LIBJPEG_TURBO_VERSION)
   entry->thread_support=NoThreadSupport;
 #endif
@@ -1585,13 +1578,11 @@ ModuleExport size_t RegisterJPEGImage(void)
 #endif
   entry->flags^=CoderAdjoinFlag;
   entry->flags^=CoderUseExtensionFlag;
-  entry->description=ConstantString(description);
   if (*version != '\0')
     entry->version=ConstantString(version);
   entry->mime_type=ConstantString("image/jpeg");
-  entry->module=ConstantString("JPEG");
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("PJPEG");
+  entry=AcquireMagickInfo("JPEG","PJPEG",JPEGDescription);
 #if (JPEG_LIB_VERSION < 80) && !defined(LIBJPEG_TURBO_VERSION)
   entry->thread_support=NoThreadSupport;
 #endif
@@ -1601,11 +1592,9 @@ ModuleExport size_t RegisterJPEGImage(void)
 #endif
   entry->flags^=CoderAdjoinFlag;
   entry->flags^=CoderUseExtensionFlag;
-  entry->description=ConstantString(description);
   if (*version != '\0')
     entry->version=ConstantString(version);
   entry->mime_type=ConstantString("image/jpeg");
-  entry->module=ConstantString("JPEG");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

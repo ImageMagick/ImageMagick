@@ -186,23 +186,19 @@ ModuleExport size_t RegisterXCImage(void)
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("XC");
+  entry=AcquireMagickInfo("XC","XC","Constant image uniform color");
   entry->decoder=(DecodeImageHandler *) ReadXCImage;
   entry->flags^=CoderAdjoinFlag;
   entry->format_type=ImplicitFormatType;
   entry->flags|=CoderRawSupportFlag;
   entry->flags|=CoderEndianSupportFlag;
-  entry->description=ConstantString("Constant image uniform color");
-  entry->module=ConstantString("XC");
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("CANVAS");
+  entry=AcquireMagickInfo("XC","CANVAS","Constant image uniform color");
   entry->decoder=(DecodeImageHandler *) ReadXCImage;
   entry->flags^=CoderAdjoinFlag;
   entry->format_type=ImplicitFormatType;
   entry->flags|=CoderRawSupportFlag;
   entry->flags|=CoderEndianSupportFlag;
-  entry->description=ConstantString("Constant image uniform color");
-  entry->module=ConstantString("XC");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

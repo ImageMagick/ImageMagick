@@ -1880,21 +1880,17 @@ ModuleExport size_t RegisterPSDImage(void)
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("PSB");
+  entry=AcquireMagickInfo("PSD","PSB","Adobe Large Document Format");
   entry->decoder=(DecodeImageHandler *) ReadPSDImage;
   entry->encoder=(EncodeImageHandler *) WritePSDImage;
   entry->magick=(IsImageFormatHandler *) IsPSD;
   entry->flags|=CoderSeekableStreamFlag;
-  entry->description=ConstantString("Adobe Large Document Format");
-  entry->module=ConstantString("PSD");
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("PSD");
+  entry=AcquireMagickInfo("PSD","PSD","Adobe Photoshop bitmap");
   entry->decoder=(DecodeImageHandler *) ReadPSDImage;
   entry->encoder=(EncodeImageHandler *) WritePSDImage;
   entry->magick=(IsImageFormatHandler *) IsPSD;
   entry->flags|=CoderSeekableStreamFlag;
-  entry->description=ConstantString("Adobe Photoshop bitmap");
-  entry->module=ConstantString("PSD");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

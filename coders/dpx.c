@@ -1334,15 +1334,13 @@ ModuleExport size_t RegisterDPXImage(void)
       "See SMPTE 268M-2003 specification at http://www.smtpe.org\n"
     };
 
-  entry=SetMagickInfo("DPX");
+  entry=AcquireMagickInfo("DPX","DPX","SMPTE 268M-2003 (DPX 2.0)");
   entry->decoder=(DecodeImageHandler *) ReadDPXImage;
   entry->encoder=(EncodeImageHandler *) WriteDPXImage;
   entry->magick=(IsImageFormatHandler *) IsDPX;
   entry->flags^=CoderAdjoinFlag;
   entry->flags|=CoderSeekableStreamFlag;
-  entry->description=ConstantString("SMPTE 268M-2003 (DPX 2.0)");
   entry->note=ConstantString(DPXNote);
-  entry->module=ConstantString("DPX");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

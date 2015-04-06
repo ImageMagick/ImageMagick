@@ -810,24 +810,19 @@ ModuleExport size_t RegisterEMFImage(void)
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("EMF");
+  entry=AcquireMagickInfo("EMF","EMF","Windows Enhanced Meta File");
 #if defined(MAGICKCORE_WINGDI32_DELEGATE)
   entry->decoder=ReadEMFImage;
 #endif
-  entry->description=ConstantString(
-    "Windows Enhanced Meta File");
   entry->magick=(IsImageFormatHandler *) IsEMF;
   entry->flags^=CoderBlobSupportFlag;
-  entry->module=ConstantString("WMF");
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("WMF");
+  entry=AcquireMagickInfo("EMF","WMF","Windows Meta File");
 #if defined(MAGICKCORE_WINGDI32_DELEGATE)
   entry->decoder=ReadEMFImage;
 #endif
-  entry->description=ConstantString("Windows Meta File");
   entry->magick=(IsImageFormatHandler *) IsWMF;
   entry->flags^=CoderBlobSupportFlag;
-  entry->module=ConstantString("WMF");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

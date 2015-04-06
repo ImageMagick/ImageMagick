@@ -697,11 +697,9 @@ ModuleExport size_t RegisterPESImage(void)
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("PES");
+  entry=AcquireMagickInfo("PES","PES","Embrid Embroidery Format");
   entry->decoder=(DecodeImageHandler *) ReadPESImage;
   entry->magick=(IsImageFormatHandler *) IsPES;
-  entry->description=ConstantString("Embrid Embroidery Format");
-  entry->module=ConstantString("PES");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

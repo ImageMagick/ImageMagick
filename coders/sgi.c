@@ -743,12 +743,10 @@ ModuleExport size_t RegisterSGIImage(void)
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("SGI");
+  entry=AcquireMagickInfo("SGI","SGI","Irix RGB image");
   entry->decoder=(DecodeImageHandler *) ReadSGIImage;
   entry->encoder=(EncodeImageHandler *) WriteSGIImage;
   entry->magick=(IsImageFormatHandler *) IsSGI;
-  entry->description=ConstantString("Irix RGB image");
-  entry->module=ConstantString("SGI");
   entry->flags|=CoderSeekableStreamFlag;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);

@@ -102,12 +102,10 @@ ModuleExport size_t RegisterHISTOGRAMImage(void)
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("HISTOGRAM");
+  entry=AcquireMagickInfo("HISTOGRAM","HISTOGRAM","Histogram of the image");
   entry->encoder=(EncodeImageHandler *) WriteHISTOGRAMImage;
   entry->flags^=CoderAdjoinFlag;
   entry->format_type=ImplicitFormatType;
-  entry->description=ConstantString("Histogram of the image");
-  entry->module=ConstantString("HISTOGRAM");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

@@ -7870,13 +7870,11 @@ ModuleExport size_t RegisterMSLImage(void)
 #if defined(MAGICKCORE_XML_DELEGATE)
   xmlInitParser();
 #endif
-  entry=SetMagickInfo("MSL");
+  entry=AcquireMagickInfo("MSL","MSL","Magick Scripting Language");
 #if defined(MAGICKCORE_XML_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadMSLImage;
   entry->encoder=(EncodeImageHandler *) WriteMSLImage;
 #endif
-  entry->description=ConstantString("Magick Scripting Language");
-  entry->module=ConstantString("MSL");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

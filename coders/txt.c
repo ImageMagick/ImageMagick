@@ -596,27 +596,21 @@ ModuleExport size_t RegisterTXTImage(void)
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("SPARSE-COLOR");
+  entry=AcquireMagickInfo("TXT","SPARSE-COLOR","Sparse Color");
   entry->encoder=(EncodeImageHandler *) WriteTXTImage;
   entry->flags|=CoderRawSupportFlag;
   entry->flags|=CoderEndianSupportFlag;
-  entry->description=ConstantString("Sparse Color");
-  entry->module=ConstantString("TXT");
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("TEXT");
+  entry=AcquireMagickInfo("TXT","TEXT","Text");
   entry->decoder=(DecodeImageHandler *) ReadTXTImage;
   entry->encoder=(EncodeImageHandler *) WriteTXTImage;
   entry->flags|=CoderRawSupportFlag;
   entry->flags|=CoderEndianSupportFlag;
-  entry->description=ConstantString("Text");
-  entry->module=ConstantString("TXT");
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("TXT");
+  entry=AcquireMagickInfo("TXT","TXT","Text");
   entry->decoder=(DecodeImageHandler *) ReadTXTImage;
   entry->encoder=(EncodeImageHandler *) WriteTXTImage;
-  entry->description=ConstantString("Text");
   entry->magick=(IsImageFormatHandler *) IsTXT;
-  entry->module=ConstantString("TXT");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

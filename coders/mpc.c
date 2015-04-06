@@ -989,17 +989,15 @@ ModuleExport size_t RegisterMPCImage(void)
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("CACHE");
-  entry->description=ConstantString("Magick Persistent Cache image format");
+  entry=AcquireMagickInfo("MPC","CACHE",
+    "Magick Persistent Cache image format");
   entry->module=ConstantString("CACHE");
   entry->flags|=CoderStealthFlag;
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("MPC");
+  entry=AcquireMagickInfo("MPC","MPC","Magick Persistent Cache image format");
   entry->decoder=(DecodeImageHandler *) ReadMPCImage;
   entry->encoder=(EncodeImageHandler *) WriteMPCImage;
   entry->magick=(IsImageFormatHandler *) IsMPC;
-  entry->description=ConstantString("Magick Persistent Cache image format");
-  entry->module=ConstantString("MPC");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

@@ -355,13 +355,11 @@ ModuleExport size_t RegisterVICARImage(void)
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("VICAR");
+  entry=AcquireMagickInfo("VICAR","VICAR","VICAR rasterfile format");
   entry->decoder=(DecodeImageHandler *) ReadVICARImage;
   entry->encoder=(EncodeImageHandler *) WriteVICARImage;
   entry->magick=(IsImageFormatHandler *) IsVICAR;
   entry->flags^=CoderAdjoinFlag;
-  entry->description=ConstantString("VICAR rasterfile format");
-  entry->module=ConstantString("VICAR");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }
