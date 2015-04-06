@@ -562,7 +562,7 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if(palette==NULL)
     {    /*attempt to detect binary (black&white) images*/
       if ((image->storage_class == PseudoClass) &&
-          (IsImageGray(image,exception) != MagickFalse))
+          (SetImageGray(image,exception) != MagickFalse))
         {
           if(GetCutColors(image,exception)==2)
             {

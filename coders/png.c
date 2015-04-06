@@ -12244,7 +12244,7 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
 
   /* Check if image is grayscale. */
   if (image_info->type != TrueColorAlphaType && image_info->type !=
-    TrueColorType && IsImageGray(image,exception))
+    TrueColorType && SetImageGray(image,exception))
     jng_color_type-=2;
 
   if (logging != MagickFalse)
@@ -13030,7 +13030,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
 
         if (need_local_plte == 0)
           {
-            if (IsImageGray(image,exception) == MagickFalse)
+            if (SetImageGray(image,exception) == MagickFalse)
               all_images_are_gray=MagickFalse;
             mng_info->equal_palettes=PalettesAreEqual(image,next_image);
             if (use_global_plte == 0)

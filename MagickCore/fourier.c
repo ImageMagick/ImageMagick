@@ -946,7 +946,7 @@ MagickExport Image *ForwardFourierTransformImage(const Image *image,
             AppendImageToList(&fourier_image,magnitude_image);
             AppendImageToList(&fourier_image,phase_image);
             status=MagickTrue;
-            is_gray=IsImageGray(image,exception);
+            is_gray=SetImageGray(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
             #pragma omp parallel sections
 #endif
@@ -1511,9 +1511,9 @@ MagickExport Image *InverseFourierTransformImage(const Image *magnitude_image,
           status;
 
         status=MagickTrue;
-        is_gray=IsImageGray(magnitude_image,exception);
+        is_gray=SetImageGray(magnitude_image,exception);
         if (is_gray != MagickFalse)
-          is_gray=IsImageGray(phase_image,exception);
+          is_gray=SetImageGray(phase_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
         #pragma omp parallel sections
 #endif
