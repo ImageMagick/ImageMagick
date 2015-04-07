@@ -2010,7 +2010,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
               }
             break;
           }
-        if (LocaleCompare("fill-alpha",keyword) == 0)
+        if (LocaleCompare("fill-opacity",keyword) == 0)
           {
             GetMagickToken(q,&q,token);
             factor=strchr(token,'%') != (char *) NULL ? 0.01 : 1.0;
@@ -2177,16 +2177,6 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
           primitive_type=LinePrimitive;
         else
           status=MagickFalse;
-        break;
-      }
-      case 'm':
-      case 'M':
-      {
-        if (LocaleCompare("matte",keyword) == 0)
-          {
-            primitive_type=AlphaPrimitive;
-            break;
-          }
         break;
       }
       case 'o':

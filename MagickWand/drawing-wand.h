@@ -48,12 +48,12 @@ extern WandExport DirectionType
   DrawGetTextDirection(const DrawingWand *);
 
 extern WandExport double
-  DrawGetFillAlpha(const DrawingWand *),
+  DrawGetFillOpacity(const DrawingWand *),
   DrawGetFontSize(const DrawingWand *),
-  DrawGetAlpha(const DrawingWand *),
+  DrawGetOpacity(const DrawingWand *),
   *DrawGetStrokeDashArray(const DrawingWand *,size_t *),
   DrawGetStrokeDashOffset(const DrawingWand *),
-  DrawGetStrokeAlpha(const DrawingWand *),
+  DrawGetStrokeOpacty(const DrawingWand *),
   DrawGetStrokeWidth(const DrawingWand *),
   DrawGetTextKerning(DrawingWand *),
   DrawGetTextInterlineSpacing(DrawingWand *),
@@ -191,7 +191,7 @@ extern WandExport void
   DrawSetClipRule(DrawingWand *,const FillRule),
   DrawSetClipUnits(DrawingWand *,const ClipPathUnits),
   DrawSetFillColor(DrawingWand *,const PixelWand *),
-  DrawSetFillAlpha(DrawingWand *,const double),
+  DrawSetFillOpacity(DrawingWand *,const double),
   DrawSetFillRule(DrawingWand *,const FillRule),
   DrawSetFontSize(DrawingWand *,const double),
   DrawSetFontStretch(DrawingWand *,const StretchType),
@@ -205,7 +205,7 @@ extern WandExport void
   DrawSetStrokeLineCap(DrawingWand *,const LineCap),
   DrawSetStrokeLineJoin(DrawingWand *,const LineJoin),
   DrawSetStrokeMiterLimit(DrawingWand *,const size_t),
-  DrawSetStrokeAlpha(DrawingWand *, const double),
+  DrawSetStrokeOpacity(DrawingWand *, const double),
   DrawSetStrokeWidth(DrawingWand *,const double),
   DrawSetTextAlignment(DrawingWand *,const AlignType),
   DrawSetTextAntialias(DrawingWand *,const MagickBooleanType),
