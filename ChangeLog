@@ -1,3 +1,7 @@
+2015-04-07  6.9.1-2 Cristy  <quetzlzacatenango@image...>
+  * Fix JPEG-2000 transparency on write (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=27304).
+
 2015-04-06  6.9.1-2 Dirk Lemstra <dirk@lem.....org>
   * Reduce draw epsilon to increate mathematical stability.
   * Fixed UTF8 issue when determining the current working directory
