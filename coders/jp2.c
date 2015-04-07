@@ -955,6 +955,11 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
       ((image->columns == 2048) || (image->rows == 1080) ||
        (image->columns == 4096) || (image->rows == 2160)))
     CinemaProfileCompliance(jp2_image,&parameters);
+  if (channels == 4)
+    jp2_image->comps[3].alpha=1;
+  else
+   if ((channels == 2) && (jp2_colorspace == OPJ_CLRSPC_GRAY))
+     jp2_image->comps[1].alpha=1;
   /*
     Convert to JP2 pixels.
   */
