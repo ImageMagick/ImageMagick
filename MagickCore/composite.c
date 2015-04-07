@@ -553,7 +553,6 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
   if ((image->alpha_trait != UndefinedPixelTrait) &&
       (source_image->alpha_trait == UndefinedPixelTrait))
     (void) SetImageAlphaChannel(source_image,SetAlphaChannel,exception);
-if (0)
   if ((compose == OverCompositeOp) || (compose == SrcOverCompositeOp))
     {
       status=CompositeOverImage(image,source_image,clip_to_self,x_offset,
@@ -601,8 +600,8 @@ if (0)
 
         if (status == MagickFalse)
           continue;
-        p=GetCacheViewVirtualPixels(source_view,0,y,source_image->columns,
-          1,exception);
+        p=GetCacheViewVirtualPixels(source_view,0,y,source_image->columns,1,
+          exception);
         q=GetCacheViewAuthenticPixels(image_view,x_offset,y+y_offset,
           source_image->columns,1,exception);
         if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
@@ -688,8 +687,8 @@ if (0)
 
         if (status == MagickFalse)
           continue;
-        p=GetCacheViewVirtualPixels(source_view,0,y,source_image->columns,
-          1,exception);
+        p=GetCacheViewVirtualPixels(source_view,0,y,source_image->columns,1,
+          exception);
         q=GetCacheViewAuthenticPixels(image_view,x_offset,y+y_offset,
           source_image->columns,1,exception);
         if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
@@ -864,10 +863,10 @@ if (0)
 
         if (((y+y_offset) < 0) || ((y+y_offset) >= (ssize_t) image->rows))
           continue;
-        p=GetCacheViewVirtualPixels(source_view,0,y,source_image->columns,
-          1,exception);
-        q=QueueCacheViewAuthenticPixels(canvas_view,0,y,
-          canvas_image->columns,1,exception);
+        p=GetCacheViewVirtualPixels(source_view,0,y,source_image->columns,1,
+          exception);
+        q=QueueCacheViewAuthenticPixels(canvas_view,0,y,canvas_image->columns,1,
+          exception);
         if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
           break;
         for (x=0; x < (ssize_t) source_image->columns; x++)
@@ -1316,8 +1315,8 @@ if (0)
               Sc: source color.
               Dc: canvas color.
           */
-          (void) GetOneVirtualPixel(source_image,x-x_offset,y-y_offset,
-            source,exception);
+          (void) GetOneVirtualPixel(source_image,x-x_offset,y-y_offset,source,
+            exception);
           if (GetPixelReadMask(image,q) == 0)
             {
               q+=GetPixelChannels(image);
@@ -1437,8 +1436,8 @@ if (0)
         }
         case DissolveCompositeOp:
         {
-          alpha=source_dissolve*Sa*(-canvas_dissolve*Da)+source_dissolve*
-            Sa+canvas_dissolve*Da;
+          alpha=source_dissolve*Sa*(-canvas_dissolve*Da)+source_dissolve*Sa+
+            canvas_dissolve*Da;
           break;
         }
         case DstOverCompositeOp:
@@ -1509,8 +1508,7 @@ if (0)
 
         PixelChannel channel=GetPixelChannelChannel(image,i);
         PixelTrait traits=GetPixelChannelTraits(image,channel);
-        PixelTrait source_traits=GetPixelChannelTraits(source_image,
-          channel);
+        PixelTrait source_traits=GetPixelChannelTraits(source_image,channel);
         if (traits == UndefinedPixelTrait)
           continue;
         if ((source_traits == UndefinedPixelTrait) &&
@@ -1769,8 +1767,8 @@ if (0)
                 pixel=Sc;
                 break;
               }
-            CompositeHCL(canvas_pixel.red,canvas_pixel.green,
-              canvas_pixel.blue,&sans,&sans,&luma);
+            CompositeHCL(canvas_pixel.red,canvas_pixel.green,canvas_pixel.blue,
+              &sans,&sans,&luma);
             CompositeHCL(source_pixel.red,source_pixel.green,source_pixel.blue,
               &hue,&chroma,&sans);
             HCLComposite(hue,chroma,luma,&red,&green,&blue);
@@ -1947,8 +1945,8 @@ if (0)
                 pixel=Sc;
                 break;
               }
-            CompositeHCL(canvas_pixel.red,canvas_pixel.green,
-              canvas_pixel.blue,&hue,&chroma,&luma);
+            CompositeHCL(canvas_pixel.red,canvas_pixel.green,canvas_pixel.blue,
+              &hue,&chroma,&luma);
             CompositeHCL(source_pixel.red,source_pixel.green,source_pixel.blue,
               &hue,&sans,&sans);
             HCLComposite(hue,chroma,luma,&red,&green,&blue);
@@ -2027,8 +2025,8 @@ if (0)
                 pixel=Sc;
                 break;
               }
-            CompositeHCL(canvas_pixel.red,canvas_pixel.green,
-              canvas_pixel.blue,&hue,&chroma,&luma);
+            CompositeHCL(canvas_pixel.red,canvas_pixel.green,canvas_pixel.blue,
+              &hue,&chroma,&luma);
             CompositeHCL(source_pixel.red,source_pixel.green,source_pixel.blue,
               &sans,&sans,&luma);
             HCLComposite(hue,chroma,luma,&red,&green,&blue);
@@ -2098,8 +2096,8 @@ if (0)
                 pixel=Dc;
                 break;
               }
-            CompositeHCL(canvas_pixel.red,canvas_pixel.green,
-              canvas_pixel.blue,&hue,&chroma,&luma);
+            CompositeHCL(canvas_pixel.red,canvas_pixel.green,canvas_pixel.blue,
+              &hue,&chroma,&luma);
             luma+=(0.01*percent_luma*offset)/midpoint;
             chroma*=0.01*percent_chroma;
             HCLComposite(hue,chroma,luma,&red,&green,&blue);
@@ -2213,8 +2211,8 @@ if (0)
                 pixel=Sc;
                 break;
               }
-            CompositeHCL(canvas_pixel.red,canvas_pixel.green,
-              canvas_pixel.blue,&hue,&chroma,&luma);
+            CompositeHCL(canvas_pixel.red,canvas_pixel.green,canvas_pixel.blue,
+              &hue,&chroma,&luma);
             CompositeHCL(source_pixel.red,source_pixel.green,source_pixel.blue,
               &sans,&chroma,&sans);
             HCLComposite(hue,chroma,luma,&red,&green,&blue);
@@ -2431,8 +2429,8 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture,
             MagickBooleanType
               proceed;
 
-            proceed=SetImageProgress(image,TextureImageTag,(MagickOffsetType)
-              y,image->rows);
+            proceed=SetImageProgress(image,TextureImageTag,(MagickOffsetType) y,
+              image->rows);
             if (proceed == MagickFalse)
               status=MagickFalse;
           }
