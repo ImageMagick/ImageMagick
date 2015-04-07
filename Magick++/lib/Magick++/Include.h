@@ -1206,7 +1206,7 @@ namespace Magick
   using MagickCore::DrawSetClipRule;
   using MagickCore::DrawSetClipUnits;
   using MagickCore::DrawSetFillColor;
-  using MagickCore::DrawSetFillAlpha;
+  using MagickCore::DrawSetFillOpacity;
   using MagickCore::DrawSetFillPatternURL;
   using MagickCore::DrawSetFillRule;
   using MagickCore::DrawSetFont;
@@ -1223,7 +1223,7 @@ namespace Magick
   using MagickCore::DrawSetStrokeLineCap;
   using MagickCore::DrawSetStrokeLineJoin;
   using MagickCore::DrawSetStrokeMiterLimit;
-  using MagickCore::DrawSetStrokeAlpha;
+  using MagickCore::DrawSetStrokeOpacity;
   using MagickCore::DrawSetStrokePatternURL;
   using MagickCore::DrawSetStrokeWidth;
   using MagickCore::DrawSetTextAntialias;

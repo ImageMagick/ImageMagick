@@ -244,7 +244,6 @@ Magick::DrawableBase* Magick::DrawableAffine::copy() const
   return new DrawableAffine(*this);
 }
 
-// Change pixel matte value to transparent using PaintMethod
 Magick::DrawableAlpha::~DrawableAlpha(void)
 {
 }
@@ -624,18 +623,19 @@ Magick::DrawableBase* Magick::DrawableFillRule::copy() const
   return new DrawableFillRule(*this);
 }
 
-// Specify drawing fill alpha
-Magick::DrawableFillAlpha::~DrawableFillAlpha ( void )
+Magick::DrawableFillOpacity::~DrawableFillOpacity(void)
 {
 }
-void Magick::DrawableFillAlpha::operator()
-  ( MagickCore::DrawingWand * context_ ) const
+
+void Magick::DrawableFillOpacity::operator()
+  (MagickCore::DrawingWand *context_) const
 {
-  DrawSetFillAlpha( context_, _alpha );
+  DrawSetFillOpacity(context_,_opacity);
 }
-Magick::DrawableBase* Magick::DrawableFillAlpha::copy() const
+
+Magick::DrawableBase* Magick::DrawableFillOpacity::copy() const
 {
-  return new DrawableFillAlpha(*this);
+  return new DrawableFillOpacity(*this);
 }
 
 // Specify text font
@@ -1208,18 +1208,19 @@ Magick::DrawableBase* Magick::DrawableStrokeColor::copy() const
   return new DrawableStrokeColor(*this);
 }
 
-// Stroke alpha
-Magick::DrawableStrokeAlpha::~DrawableStrokeAlpha ( void )
+Magick::DrawableStrokeOpacity::~DrawableStrokeOpacity(void)
 {
 }
-void Magick::DrawableStrokeAlpha::operator()
-  ( MagickCore::DrawingWand * context_ ) const
+
+void Magick::DrawableStrokeOpacity::operator()
+  (MagickCore::DrawingWand * context_) const
 {
-  DrawSetStrokeAlpha( context_, _alpha );
+  DrawSetStrokeOpacity(context_,_opacity);
 }
-Magick::DrawableBase* Magick::DrawableStrokeAlpha::copy() const
+
+Magick::DrawableBase* Magick::DrawableStrokeOpacity::copy() const
 {
-  return new DrawableStrokeAlpha(*this);
+  return new DrawableStrokeOpacity(*this);
 }
 
 // Stroke width

@@ -955,33 +955,35 @@ private:
 };
 
 // Specify drawing fill alpha
-class MagickPPExport DrawableFillAlpha : public DrawableBase
+class MagickPPExport DrawableFillOpacity : public DrawableBase
 {
 public:
-  DrawableFillAlpha ( double alpha_ )
-    : _alpha(alpha_)
-    {
-    }
 
-  /*virtual*/ ~DrawableFillAlpha ( void );
+  DrawableFillOpacity(double opacity_)
+    : _opacity(opacity_)
+  {
+  }
+
+  ~DrawableFillOpacity ( void );
 
   // Operator to invoke equivalent draw API call
-  /*virtual*/ void operator()( MagickCore::DrawingWand *context_ ) const;
+  void operator()(MagickCore::DrawingWand *context_) const;
 
   // Return polymorphic copy of object
-  /*virtual*/ DrawableBase* copy() const;
+  DrawableBase* copy() const;
 
-  void alpha( double alpha_ )
-    {
-      _alpha = alpha_;
-    }
-  double alpha( void ) const
-    {
-      return _alpha;
-    }
+  void opacity(double opacity_)
+  {
+    _opacity=opacity_;
+  }
+
+  double opacity(void) const
+  {
+    return(_opacity);
+  }
 
 private:
-  double _alpha;
+  double _opacity;
 };
 
 // Specify text font
@@ -1818,34 +1820,36 @@ private:
   Color _color;
 };
 
-// Stroke alpha
-class MagickPPExport DrawableStrokeAlpha : public DrawableBase
+// Stroke opacity
+class MagickPPExport DrawableStrokeOpacity : public DrawableBase
 {
 public:
-  DrawableStrokeAlpha ( double alpha_ )
-    : _alpha(alpha_)
-    {
-    }
 
-  /*virtual*/ ~DrawableStrokeAlpha ( void );
+  DrawableStrokeOpacity(double opacity_)
+    : _opacity(opacity_)
+  {
+  }
+
+  ~DrawableStrokeOpacity(void);
 
   // Operator to invoke equivalent draw API call
-  /*virtual*/ void operator()( MagickCore::DrawingWand *context_ ) const;
+  void operator()(MagickCore::DrawingWand *context_) const;
 
   // Return polymorphic copy of object
-  /*virtual*/ DrawableBase* copy() const;
+  DrawableBase* copy() const;
 
-  void alpha( double alpha_ )
-    {
-      _alpha = alpha_;
-    }
-  double alpha( void ) const
-    {
-      return _alpha;
-    }
+  void opacity(double opacity_)
+  {
+    _opacity=opacity_;
+  }
+
+  double opacity(void) const
+  {
+    return(_opacity);
+  }
 
 private:
-  double _alpha;
+  double _opacity;
 };
 
 // Stroke width
