@@ -229,7 +229,7 @@ static MagickBooleanType IsPSD(const unsigned char *magick,const size_t length)
 %
 %  The format of the ReadPSDImage method is:
 %
-%      Image *ReadPSDImage(image_info)
+%      Image *ReadPSDImage(image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1582,8 +1582,7 @@ static MagickStatusType ReadPSDMergedImage(Image* image,
   return(status);
 }
 
-static Image *ReadPSDImage(const ImageInfo *image_info,
-  ExceptionInfo *exception)
+static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image
     *image;
@@ -1811,34 +1810,26 @@ static Image *ReadPSDImage(const ImageInfo *image_info,
       SeekBlob(image,offset+length,SEEK_SET);
     }
   /*
-    If we are only "pinging" the image, then we're done - so return.
-  */
-  if (image_info->ping != MagickFalse)
-    {
-      (void) CloseBlob(image);
-      return(GetFirstImageInList(image));
-    }
-  /*
     Read the precombined layer, present for PSD < 4 compatibility.
   */
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
       "  reading the precombined layer");
-  if (has_merged_image != MagickFalse || GetImageListLength(image) == 1)
+  if ((has_merged_image != MagickFalse) || (GetImageListLength(image) == 1))
     has_merged_image=(MagickBooleanType) ReadPSDMergedImage(image,&psd_info,
       exception);
-  if (has_merged_image == MagickFalse && GetImageListLength(image) == 1 &&
-    length != 0)
+  if ((has_merged_image == MagickFalse) && (GetImageListLength(image) == 1) &&
+      (length != 0))
     {
       SeekBlob(image,offset,SEEK_SET);
-      if (ReadPSDLayers(image,image_info,&psd_info,MagickFalse,exception) !=
-          MagickTrue)
+      status=ReadPSDLayers(image,image_info,&psd_info,MagickFalse,exception);
+      if (status != MagickTrue)
         {
           (void) CloseBlob(image);
           return((Image *) NULL);
         }
     }
-  if (has_merged_image == MagickFalse && GetImageListLength(image) > 1)
+  if ((has_merged_image == MagickFalse) && (GetImageListLength(image) > 1))
     {
       Image
         *merged;
