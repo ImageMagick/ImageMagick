@@ -5254,10 +5254,10 @@ static size_t TracePath(PrimitiveInfo *primitive_info,const char *path)
     y;
 
   PointInfo
-    end,
-    points[4],
-    point,
-    start;
+    end = {0.0, 0.0},
+    points[4] = { {0.0,0.0}, {0.0,0.0}, {0.0,0.0}, {0.0,0.0} },
+    point = {0.0, 0.0},
+    start = {0.0, 0.0};
 
   PrimitiveType
     primitive_type;
@@ -5273,15 +5273,8 @@ static size_t TracePath(PrimitiveInfo *primitive_info,const char *path)
     z_count;
 
   attribute=0;
-  end.x=0.0;
-  end.y=0.0;
-  point.x=0.0;
-  point.y=0.0;
-  start.x=0.0;
-  start.y=0.0;
   number_coordinates=0;
   z_count=0;
-  (void) ResetMagickMemory(points,0,sizeof(*points));
   primitive_type=primitive_info->primitive;
   q=primitive_info;
   for (p=path; *p != '\0'; )
