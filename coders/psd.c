@@ -1810,6 +1810,14 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       SeekBlob(image,offset+length,SEEK_SET);
     }
   /*
+    If we are only "pinging" the image, then we're done - so return.
+  */
+  if (image_info->ping != MagickFalse)
+    {
+      (void) CloseBlob(image);
+      return(GetFirstImageInList(image));
+    }
+  /*
     Read the precombined layer, present for PSD < 4 compatibility.
   */
   if (image->debug != MagickFalse)
