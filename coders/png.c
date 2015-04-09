@@ -4565,16 +4565,8 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
   color_image=DestroyImage(color_image);
   color_image_info=DestroyImageInfo(color_image_info);
 
-  if (logging != MagickFalse)
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-      "    Finished reading jng_image from color_blob.");
-
   if (jng_image == (Image *) NULL)
-  {
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-      "    returning NULL JNG image");
     return((Image *) NULL);
-  }
 
   if (logging != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -6329,6 +6321,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "exit ReadJNGImage() with error");
 
+        MngInfoFreeStruct(mng_info,&have_mng_structure);
         return((Image *) NULL);
       }
 
