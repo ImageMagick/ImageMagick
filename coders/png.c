@@ -4393,7 +4393,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
 
         /* Copy IDAT header and chunk data to alpha_image->blob */
 
-        if (image_info->ping == MagickFalse)
+        if (alpha_image != NULL && image_info->ping == MagickFalse)
           {
             if (logging != MagickFalse)
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -4418,7 +4418,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
       {
         /* Copy chunk data to alpha_image->blob */
 
-        if (image_info->ping == MagickFalse)
+        if (alpha_image != NULL && image_info->ping == MagickFalse)
           {
             if (logging != MagickFalse)
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -4868,8 +4868,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     page_geometry[MaxTextExtent];
 
   Image
-    *image,
-    *previous;
+    *image;
 
   MagickBooleanType
     logging,
@@ -6353,7 +6352,6 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           ThrowReaderException(CorruptImageError,"ImproperImageHeader");
       }
 
-    previous=image;
     mng_info->image=image;
     mng_info->mng_type=mng_type;
     mng_info->object_id=object_id;
@@ -6368,11 +6366,9 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
     if (image == (Image *) NULL)
       {
-        if (IsImageObject(previous) != MagickFalse)
-          {
-            (void) DestroyImageList(previous);
-            (void) CloseBlob(previous);
-          }
+        if (logging != MagickFalse)
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+            "exit ReadJNGImage() with error");
 
         MngInfoFreeStruct(mng_info,&have_mng_structure);
         return((Image *) NULL);
