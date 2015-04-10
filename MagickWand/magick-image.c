@@ -3621,7 +3621,7 @@ WandExport MagickWand *MagickGetImage(MagickWand *wand)
 %
 %  The format of the MagickGetImageAlphaChannel method is:
 %
-%      size_t MagickGetImageAlphaChannel(MagickWand *wand)
+%      MagickBooleanType MagickGetImageAlphaChannel(MagickWand *wand)
 %
 %  A description of each parameter follows:
 %
