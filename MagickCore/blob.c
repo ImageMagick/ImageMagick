@@ -4180,6 +4180,7 @@ MagickExport ssize_t WriteBlob(Image *image,const size_t length,
   {
     case UndefinedStream:
       break;
+    case StandardStream:
     case FileStream:
     case PipeStream:
     {
