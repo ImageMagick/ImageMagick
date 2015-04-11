@@ -4242,6 +4242,10 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
                open alpha_blob, attached to alpha_image
         */
 
+        if (logging != MagickFalse)
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+            "    Creating color_blob.");
+
         color_image_info=(ImageInfo *)AcquireMagickMemory(sizeof(ImageInfo));
 
         if (color_image_info == (ImageInfo *) NULL)
@@ -4252,10 +4256,6 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
 
         if (color_image == (Image *) NULL)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-
-        if (logging != MagickFalse)
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "    Creating color_blob.");
 
         (void) AcquireUniqueFilename(color_image->filename);
         unique_filenames++;
@@ -4546,6 +4546,9 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
 
        o destroy the secondary image.
   */
+
+  if (color_image == (Image *) NULL)
+    return((Image *) NULL);
 
   (void) SeekBlob(color_image,0,SEEK_SET);
 
