@@ -659,35 +659,35 @@ static inline void WriteTGAPixel(Image *image,TGAImageType image_type,
       if (image_type == TGAMonochrome || image_type == TGARLEMonochrome)
         (void) WriteBlobByte(image,ScaleQuantumToChar(ClampToQuantum(
           GetPixelLuma(image,p))));
-      else if (image->depth == 5)
-        {
-          unsigned char
-            green,
-            value;
-
-            green=(unsigned char) ScaleQuantumToAny(GetPixelGreen(p),range);
-            value=((unsigned char) ScaleQuantumToAny(GetPixelBlue(p),range)) |
-              ((green & 0x07) << 5);
-            (void) WriteBlobByte(image,value);
-            value=(unsigned char) ((((image->matte != MagickFalse) && 
-              (GetPixelAlpha(p) < midpoint)) ? 80 : 0) | ((unsigned char)
-              ScaleQuantumToAny(GetPixelRed(p),range) << 2) |
-              ((green & 0x18) >> 3));
-            (void) WriteBlobByte(image,value);
-        }
       else
-        {
-          (void) WriteBlobByte(image,ScaleQuantumToChar(GetPixelBlue(p)));
-          (void) WriteBlobByte(image,ScaleQuantumToChar(GetPixelGreen(p)));
-          (void) WriteBlobByte(image,ScaleQuantumToChar(GetPixelRed(p)));
-          if (image->matte != MagickFalse)
-            (void) WriteBlobByte(image,ScaleQuantumToChar(GetPixelAlpha(p)));
-        }
+        if (image->depth == 5)
+          {
+            unsigned char
+              green,
+              value;
+
+              green=(unsigned char) ScaleQuantumToAny(GetPixelGreen(p),range);
+              value=((unsigned char) ScaleQuantumToAny(GetPixelBlue(p),range)) |
+                ((green & 0x07) << 5);
+              (void) WriteBlobByte(image,value);
+              value=(unsigned char) ((((image->matte != MagickFalse) && 
+                (GetPixelAlpha(p) < midpoint)) ? 80 : 0) | ((unsigned char)
+                ScaleQuantumToAny(GetPixelRed(p),range) << 2) |
+                ((green & 0x18) >> 3));
+              (void) WriteBlobByte(image,value);
+          }
+        else
+          {
+            (void) WriteBlobByte(image,ScaleQuantumToChar(GetPixelBlue(p)));
+            (void) WriteBlobByte(image,ScaleQuantumToChar(GetPixelGreen(p)));
+            (void) WriteBlobByte(image,ScaleQuantumToChar(GetPixelRed(p)));
+            if (image->matte != MagickFalse)
+              (void) WriteBlobByte(image,ScaleQuantumToChar(GetPixelAlpha(p)));
+          }
     }
 }
 
-static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,
-  Image *image)
+static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image)
 {
   CompressionType
     compression;
@@ -696,7 +696,7 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,
     *value;
 
   const double
-    midpoint=QuantumRange / 2.0;
+    midpoint = QuantumRange/2.0;
 
   MagickBooleanType
     status;
@@ -775,8 +775,7 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,
         /*
           Full color TGA raster.
         */
-        tga_info.image_type=compression == RLECompression ? TGARLERGB :
-          TGARGB;
+        tga_info.image_type=compression == RLECompression ? TGARLERGB : TGARGB;
         if (image_info->depth == 5)
           tga_info.bits_per_pixel=16;
         else
@@ -794,8 +793,8 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,
         /*
           Colormapped TGA raster.
         */
-        tga_info.image_type=compression == RLECompression ? TGARLEColormap
-          : TGAColormap;
+        tga_info.image_type=compression == RLECompression ? TGARLEColormap :
+          TGAColormap;
         tga_info.colormap_type=1;
         tga_info.colormap_length=(unsigned short) image->colors;
         if (image_info->depth == 5)
@@ -883,21 +882,22 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,
                 if (GetPixelIndex(indexes+i) != GetPixelIndex(indexes+(i-1)))
                   break;
               }
-            else if (tga_info.image_type == TGARLEMonochrome)
-              {
-                if (GetPixelLuma(image,p+i) != GetPixelLuma(image,p+(i-1)))
-                  break;
-              }
             else
-              {
-                if ((GetPixelBlue(p+i) != GetPixelBlue(p+(i-1))) ||
-                    (GetPixelGreen(p+i) != GetPixelGreen(p+(i-1))) ||
-                    (GetPixelRed(p+i) != GetPixelRed(p+(i-1))))
-                  break;
-                if ((image->matte != MagickFalse) &&
-                    (GetPixelAlpha(p+i) != GetPixelAlpha(p+(i-1))))
-                  break;
-              }
+              if (tga_info.image_type == TGARLEMonochrome)
+                {
+                  if (GetPixelLuma(image,p+i) != GetPixelLuma(image,p+(i-1)))
+                    break;
+                }
+              else
+                {
+                  if ((GetPixelBlue(p+i) != GetPixelBlue(p+(i-1))) ||
+                      (GetPixelGreen(p+i) != GetPixelGreen(p+(i-1))) ||
+                      (GetPixelRed(p+i) != GetPixelRed(p+(i-1))))
+                    break;
+                  if ((image->matte != MagickFalse) &&
+                      (GetPixelAlpha(p+i) != GetPixelAlpha(p+(i-1))))
+                    break;
+                }
             i++;
           }
           if (i < 3)
@@ -914,8 +914,8 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,
                   (void) WriteBlobByte(image,(unsigned char) (--count));
                   while (count >= 0)
                   {
-                    WriteTGAPixel(image,tga_info.image_type,
-                      indexes-(count+1),p-(count+1),range,midpoint);
+                    WriteTGAPixel(image,tga_info.image_type,indexes-(count+1),
+                      p-(count+1),range,midpoint);
                     count--;
                   }
                   count=0;
@@ -924,8 +924,7 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,
           if (i >= 3)
             {
               (void) WriteBlobByte(image,(unsigned char) ((i-1) | 0x80));
-              WriteTGAPixel(image,tga_info.image_type,indexes,p,range,
-                midpoint);
+              WriteTGAPixel(image,tga_info.image_type,indexes,p,range,midpoint);
               p+=i;
               indexes+=i;
             }
@@ -935,8 +934,7 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,
     else
       {
         for (x=0; x < (ssize_t) image->columns; x++)
-          WriteTGAPixel(image,tga_info.image_type,indexes+x,p++,range,
-            midpoint);
+          WriteTGAPixel(image,tga_info.image_type,indexes+x,p++,range,midpoint);
       }
     if (image->previous == (Image *) NULL)
       {
