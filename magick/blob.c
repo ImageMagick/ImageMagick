@@ -4172,10 +4172,6 @@ MagickExport ssize_t WriteBlob(Image *image,const size_t length,
     case UndefinedStream:
       break;
     case StandardStream:
-    {
-      count=write(fileno(image->blob->file_info.file),data,length);
-      break;
-    }
     case FileStream:
     case PipeStream:
     {
@@ -4186,6 +4182,20 @@ MagickExport ssize_t WriteBlob(Image *image,const size_t length,
           count=(ssize_t) fwrite((const char *) data,1,length,
             image->blob->file_info.file);
           break;
+        }
+        case 4:
+        {
+          c=putc((int) *p++,image->blob->file_info.file);
+          if (c == EOF)
+            break;
+          count++;
+        }
+        case 3:
+        {
+          c=putc((int) *p++,image->blob->file_info.file);
+          if (c == EOF)
+            break;
+          count++;
         }
         case 2:
         {
@@ -4216,6 +4226,20 @@ MagickExport ssize_t WriteBlob(Image *image,const size_t length,
           count=(ssize_t) gzwrite(image->blob->file_info.gzfile,(void *) data,
             (unsigned int) length);
           break;
+        }
+        case 4:
+        {
+          c=gzputc(image->blob->file_info.gzfile,(int) *p++);
+          if (c == EOF)
+            break;
+          count++;
+        }
+        case 3:
+        {
+          c=gzputc(image->blob->file_info.gzfile,(int) *p++);
+          if (c == EOF)
+            break;
+          count++;
         }
         case 2:
         {
