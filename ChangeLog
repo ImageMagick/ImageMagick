@@ -6,6 +6,8 @@
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=27304).
   * Identify now identifies PSD (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=26948).
+  * Speed up writing to TGA (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=27369).
 
 2015-04-06  6.9.1-2 Dirk Lemstra <dirk@lem.....org>
   * Reduce draw epsilon to increate mathematical stability.
