@@ -465,8 +465,8 @@ static Image *ReadTGAImage(const ImageInfo *image_info,
             range=GetQuantumRange(5UL);
             pixel.red=(MagickRealType) ScaleAnyToQuantum(1UL*(k & 0x7c) >> 2,
               range);
-            pixel.green=(MagickRealType) ScaleAnyToQuantum((1UL*(k & 0x03)
-              << 3)+(1UL*(j & 0xe0) >> 5),range);
+            pixel.green=(MagickRealType) ScaleAnyToQuantum((1UL*
+              (k & 0x03) << 3)+(1UL*(j & 0xe0) >> 5),range);
             pixel.blue=(MagickRealType) ScaleAnyToQuantum(1UL*(j & 0x1f),range);
             if (image->alpha_trait != UndefinedPixelTrait)
               pixel.alpha=(MagickRealType) ((k & 0x80) == 0 ? (Quantum)
@@ -656,33 +656,36 @@ static inline void WriteTGAPixel(Image *image,TGAImageType image_type,
       if (image_type == TGAMonochrome || image_type == TGARLEMonochrome)
         (void) WriteBlobByte(image,ScaleQuantumToChar(ClampToQuantum(
           GetPixelLuma(image,p))));
-      else if (image->depth == 5)
-        {
-          unsigned char
-            green,
-            value;
-
-          green=(unsigned char) ScaleQuantumToAny(GetPixelGreen(image,p),range);
-          value=((unsigned char) ScaleQuantumToAny(GetPixelBlue(image,p),
-            range)) | ((green & 0x07) << 5);
-          (void) WriteBlobByte(image,value);
-          value=(((image->alpha_trait != UndefinedPixelTrait) &&
-            ((double) GetPixelAlpha(image,p) < midpoint)) ?
-            80 : 0) | ((unsigned char) ScaleQuantumToAny(GetPixelRed(image,p),
-            range) << 2) | ((green & 0x18) >> 3);
-          (void) WriteBlobByte(image,value);
-        }
       else
-        {
-          (void) WriteBlobByte(image,ScaleQuantumToChar(GetPixelBlue(image,
-            p)));
-          (void) WriteBlobByte(image,ScaleQuantumToChar(GetPixelGreen(image,
-            p)));
-          (void) WriteBlobByte(image,ScaleQuantumToChar(GetPixelRed(image,p)));
-          if (image->alpha_trait != UndefinedPixelTrait)
-            (void) WriteBlobByte(image,ScaleQuantumToChar(GetPixelAlpha(image,
-              p)));
-        }
+        if (image->depth == 5)
+          {
+            unsigned char
+              green,
+              value;
+
+            green=(unsigned char) ScaleQuantumToAny(GetPixelGreen(image,p),
+              range);
+            value=((unsigned char) ScaleQuantumToAny(GetPixelBlue(image,p),
+              range)) | ((green & 0x07) << 5);
+            (void) WriteBlobByte(image,value);
+            value=(((image->alpha_trait != UndefinedPixelTrait) &&
+              ((double) GetPixelAlpha(image,p) < midpoint)) ?  80 : 0) |
+              ((unsigned char) ScaleQuantumToAny(GetPixelRed(image,p),range) <<
+              2) | ((green & 0x18) >> 3);
+            (void) WriteBlobByte(image,value);
+          }
+        else
+          {
+            (void) WriteBlobByte(image,ScaleQuantumToChar(
+              GetPixelBlue(image,p)));
+            (void) WriteBlobByte(image,ScaleQuantumToChar(
+              GetPixelGreen(image,p)));
+            (void) WriteBlobByte(image,ScaleQuantumToChar(
+              GetPixelRed(image,p)));
+            if (image->alpha_trait != UndefinedPixelTrait)
+              (void) WriteBlobByte(image,ScaleQuantumToChar(
+                GetPixelAlpha(image,p)));
+          }
     }
 }
 
@@ -696,7 +699,7 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image,
     *value;
 
   const double
-    midpoint=QuantumRange / 2.0;
+    midpoint = QuantumRange/2.0;
 
   MagickBooleanType
     status;
@@ -777,8 +780,7 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image,
         /*
           Full color TGA raster.
         */
-        tga_info.image_type=compression == RLECompression ? TGARLERGB :
-          TGARGB;
+        tga_info.image_type=compression == RLECompression ? TGARLERGB : TGARGB;
         if (image_info->depth == 5)
           tga_info.bits_per_pixel=16;
         else
@@ -821,8 +823,7 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image,
   (void) WriteBlobByte(image,tga_info.bits_per_pixel);
   (void) WriteBlobByte(image,tga_info.attributes);
   if (tga_info.id_length != 0)
-    (void) WriteBlob(image,tga_info.id_length,(unsigned char *)
-      value);
+    (void) WriteBlob(image,tga_info.id_length,(unsigned char *) value);
   if (tga_info.colormap_type != 0)
     {
       unsigned char
@@ -833,8 +834,8 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image,
         Dump colormap to file (blue, green, red byte order).
       */
       targa_colormap=(unsigned char *) AcquireQuantumMemory((size_t)
-        tga_info.colormap_length,(tga_info.colormap_size/8)*sizeof(
-        *targa_colormap));
+        tga_info.colormap_length,(tga_info.colormap_size/8)*
+        sizeof(*targa_colormap));
       if (targa_colormap == (unsigned char *) NULL)
         ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
       q=targa_colormap;
