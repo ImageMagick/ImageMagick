@@ -851,12 +851,9 @@ MagickPrivate void ConvertRGBToHCL(const double red,const double green,
   const double blue,double *hue,double *chroma,double *luma)
 {
   double
-    b,
     c,
-    g,
     h,
-    max,
-    r;
+    max;
 
   /*
     Convert RGB to HCL colorspace.
@@ -864,26 +861,23 @@ MagickPrivate void ConvertRGBToHCL(const double red,const double green,
   assert(hue != (double *) NULL);
   assert(chroma != (double *) NULL);
   assert(luma != (double *) NULL);
-  r=red;
-  g=green;
-  b=blue;
-  max=MagickMax(r,MagickMax(g,b));
-  c=max-(double) MagickMin(r,MagickMin(g,b));
+  max=MagickMax(red,MagickMax(green,blue));
+  c=max-(double) MagickMin(red,MagickMin(green,blue));
   h=0.0;
   if (c == 0.0)
     h=0.0;
   else
     if (red == max)
-      h=fmod((g-b)/c+6.0,6.0);
+      h=fmod((green-blue)/c+6.0,6.0);
     else
       if (green == max)
-        h=((b-r)/c)+2.0;
+        h=((blue-red)/c)+2.0;
       else
         if (blue == max)
-          h=((r-g)/c)+4.0;
+          h=((red-green)/c)+4.0;
   *hue=(h/6.0);
   *chroma=QuantumScale*c;
-  *luma=QuantumScale*(0.298839*r+0.586811*g+0.114350*b);
+  *luma=QuantumScale*(0.298839*red+0.586811*green+0.114350*blue);
 }
 
 /*
@@ -918,12 +912,9 @@ MagickPrivate void ConvertRGBToHCLp(const double red,const double green,
   const double blue,double *hue,double *chroma,double *luma)
 {
   double
-    b,
     c,
-    g,
     h,
-    max,
-    r;
+    max;
 
   /*
     Convert RGB to HCL colorspace.
@@ -931,26 +922,23 @@ MagickPrivate void ConvertRGBToHCLp(const double red,const double green,
   assert(hue != (double *) NULL);
   assert(chroma != (double *) NULL);
   assert(luma != (double *) NULL);
-  r=red;
-  g=green;
-  b=blue;
-  max=MagickMax(r,MagickMax(g,b));
-  c=max-(double) MagickMin(r,MagickMin(g,b));
+  max=MagickMax(red,MagickMax(green,blue));
+  c=max-MagickMin(red,MagickMin(green,blue));
   h=0.0;
   if (c == 0.0)
     h=0.0;
   else
     if (red == max)
-      h=fmod((g-b)/c+6.0,6.0);
+      h=fmod((green-blue)/c+6.0,6.0);
     else
       if (green == max)
-        h=((b-r)/c)+2.0;
+        h=((blue-red)/c)+2.0;
       else
         if (blue == max)
-          h=((r-g)/c)+4.0;
+          h=((red-green)/c)+4.0;
   *hue=(h/6.0);
   *chroma=QuantumScale*c;
-  *luma=QuantumScale*(0.298839*r+0.586811*g+0.114350*b);
+  *luma=QuantumScale*(0.298839*red+0.586811*green+0.114350*blue);
 }
 
 /*
@@ -985,12 +973,9 @@ MagickPrivate void ConvertRGBToHSB(const double red,const double green,
   const double blue,double *hue,double *saturation,double *brightness)
 {
   double
-    b,
     delta,
-    g,
     max,
-    min,
-    r;
+    min;
 
   /*
     Convert RGB to HSB colorspace.
@@ -1001,15 +986,12 @@ MagickPrivate void ConvertRGBToHSB(const double red,const double green,
   *hue=0.0;
   *saturation=0.0;
   *brightness=0.0;
-  r=red;
-  g=green;
-  b=blue;
-  min=r < g ? r : g;
-  if (b < min)
-    min=b;
-  max=r > g ? r : g;
-  if (b > max)
-    max=b;
+  min=red < green ? red : green;
+  if (blue < min)
+    min=blue;
+  max=red > green ? red : green;
+  if (blue > max)
+    max=blue;
   if (max == 0.0)
     return;
   delta=max-min;
@@ -1017,13 +999,13 @@ MagickPrivate void ConvertRGBToHSB(const double red,const double green,
   *brightness=QuantumScale*max;
   if (delta == 0.0)
     return;
-  if (r == max)
-    *hue=(g-b)/delta;
+  if (red == max)
+    *hue=(green-blue)/delta;
   else
-    if (g == max)
-      *hue=2.0+(b-r)/delta;
+    if (green == max)
+      *hue=2.0+(blue-red)/delta;
     else
-      *hue=4.0+(r-g)/delta;
+      *hue=4.0+(red-green)/delta;
   *hue/=6.0;
   if (*hue < 0.0)
     *hue+=1.0;
@@ -1259,11 +1241,8 @@ MagickPrivate void ConvertRGBToHWB(const double red,const double green,
   const double blue,double *hue,double *whiteness,double *blackness)
 {
   double
-    b,
     f,
-    g,
     p,
-    r,
     v,
     w;
 
@@ -1273,11 +1252,8 @@ MagickPrivate void ConvertRGBToHWB(const double red,const double green,
   assert(hue != (double *) NULL);
   assert(whiteness != (double *) NULL);
   assert(blackness != (double *) NULL);
-  r=red;
-  g=green;
-  b=blue;
-  w=MagickMin(r,MagickMin(g,b));
-  v=MagickMax(r,MagickMax(g,b));
+  w=MagickMin(red,MagickMin(green,blue));
+  v=MagickMax(red,MagickMax(green,blue));
   *blackness=1.0-QuantumScale*v;
   *whiteness=QuantumScale*w;
   if (v == w)
@@ -1285,8 +1261,8 @@ MagickPrivate void ConvertRGBToHWB(const double red,const double green,
       *hue=(-1.0);
       return;
     }
-  f=(r == w) ? g-b : ((g == w) ? b-r : r-g);
-  p=(r == w) ? 3.0 : ((g == w) ? 5.0 : 1.0);
+  f=(red == w) ? green-blue : ((green == w) ? blue-red : red-green);
+  p=(red == w) ? 3.0 : ((green == w) ? 5.0 : 1.0);
   *hue=(p-f/(v-1.0*w))/6.0;
 }
 
