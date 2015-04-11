@@ -2824,24 +2824,6 @@ MagickExport ssize_t ReadBlob(Image *image,const size_t length,
     case UndefinedStream:
       break;
     case StandardStream:
-    {
-      register ssize_t
-        i;
-
-      for (i=0; i < (ssize_t) length; i+=count)
-      {
-        count=read(fileno(image->blob->file_info.file),q+i,MagickMin(length-i,
-          (size_t) SSIZE_MAX));
-        if (count <= 0)
-          {
-            count=0;
-            if (errno != EINTR)
-              break;
-          }
-      }
-      count=i;
-      break;
-    }
     case FileStream:
     case PipeStream:
     {
@@ -2851,6 +2833,22 @@ MagickExport ssize_t ReadBlob(Image *image,const size_t length,
         {
           count=(ssize_t) fread(q,1,length,image->blob->file_info.file);
           break;
+        }
+        case 4:
+        {
+          c=getc(image->blob->file_info.file);
+          if (c == EOF)
+            break;
+          *q++=(unsigned char) c;
+          count++;
+        }
+        case 3:
+        {
+          c=getc(image->blob->file_info.file);
+          if (c == EOF)
+            break;
+          *q++=(unsigned char) c;
+          count++;
         }
         case 2:
         {
@@ -2883,6 +2881,22 @@ MagickExport ssize_t ReadBlob(Image *image,const size_t length,
           count=(ssize_t) gzread(image->blob->file_info.gzfile,q,
             (unsigned int) length);
           break;
+        }
+        case 4:
+        {
+          c=gzgetc(image->blob->file_info.gzfile);
+          if (c == EOF)
+            break;
+          *q++=(unsigned char) c;
+          count++;
+        }
+        case 3:
+        {
+          c=gzgetc(image->blob->file_info.gzfile);
+          if (c == EOF)
+            break;
+          *q++=(unsigned char) c;
+          count++;
         }
         case 2:
         {
