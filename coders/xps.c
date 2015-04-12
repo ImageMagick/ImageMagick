@@ -106,10 +106,10 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   char
     command[MaxTextExtent],
-    density[MaxTextExtent],
+    *density,
     filename[MaxTextExtent],
     geometry[MaxTextExtent],
-    options[MaxTextExtent],
+    *options,
     input_filename[MaxTextExtent];
 
   const DelegateInfo
@@ -193,8 +193,6 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if ((flags & SigmaValue) == 0)
         image->y_resolution=image->x_resolution;
     }
-  (void) FormatLocaleString(density,MaxTextExtent,"%gx%g",
-    image->x_resolution,image->y_resolution);
   /*
     Determine page geometry from the XPS media box.
   */
@@ -276,7 +274,10 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
        delegate_info=GetDelegateInfo("xps:color",(char *) NULL,exception);
   if (delegate_info == (const DelegateInfo *) NULL)
     return((Image *) NULL);
-  *options='\0';
+  density=AcquireString("");
+  options=AcquireString("");
+  (void) FormatLocaleString(density,MaxTextExtent,"%gx%g",
+    image->x_resolution,image->y_resolution);
   if ((page.width == 0) || (page.height == 0))
     (void) ParseAbsoluteGeometry(PSPageGeometry,&page);
   if (image_info->page != (char *) NULL)
@@ -311,6 +312,8 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     read_info->antialias != MagickFalse ? 4 : 1,
     read_info->antialias != MagickFalse ? 4 : 1,density,options,
     read_info->filename,input_filename);
+  options=DestroyString(options);
+  density=DestroyString(density);
   status=ExternalDelegateCommand(MagickFalse,read_info->verbose,command,
     (char *) NULL,exception) != 0 ? MagickTrue : MagickFalse;
   image=ReadImage(read_info,exception);

@@ -382,10 +382,10 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   char
     command[MaxTextExtent],
-    density[MaxTextExtent],
+    *density,
     filename[MaxTextExtent],
     geometry[MaxTextExtent],
-    options[MaxTextExtent],
+    *options,
     input_filename[MaxTextExtent],
     message[MaxTextExtent],
     postscript_filename[MaxTextExtent];
@@ -715,7 +715,8 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image=DestroyImage(image);
       return((Image *) NULL);
     }
-  *options='\0';
+  density=AcquireString("");
+  options=AcquireString("");
   (void) FormatLocaleString(density,MaxTextExtent,"%gx%g",image->x_resolution,
     image->y_resolution);
   if ((image_info->page != (char *) NULL) || (fitPage != MagickFalse))
@@ -758,6 +759,8 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     read_info->antialias != MagickFalse ? 4 : 1,
     read_info->antialias != MagickFalse ? 4 : 1,density,options,filename,
     postscript_filename,input_filename);
+  options=DestroyString(options);
+  density=DestroyString(density);
   *message='\0';
   status=InvokePDFDelegate(read_info->verbose,command,message,exception);
   (void) RelinquishUniqueFileResource(postscript_filename);
