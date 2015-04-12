@@ -137,12 +137,12 @@ MagickExport Image *AutoOrientImage(const Image *image,
     }
     case RightTopOrientation:
     {
-      orient_image=TransverseImage(image,exception);
+      orient_image=RotateImage(image,90.0,exception);
       break;
     }
     case RightBottomOrientation:
     {
-      orient_image=RotateImage(image,90.0,exception);
+      orient_image=TransverseImage(image,exception);
       break;
     }
     case LeftBottomOrientation:
