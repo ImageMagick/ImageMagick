@@ -979,18 +979,24 @@ MagickExport MagickBooleanType RelinquishUniqueFileResource(const char *path)
   char
     cache_path[MaxTextExtent];
 
+  MagickBooleanType
+    status;
+
   assert(path != (const char *) NULL);
+  status=MagickFalse;
   (void) LogMagickEvent(ResourceEvent,GetMagickModule(),"%s",path);
   if (resource_semaphore == (SemaphoreInfo *) NULL)
     ActivateSemaphoreInfo(&resource_semaphore);
   LockSemaphoreInfo(resource_semaphore);
   if (temporary_resources != (SplayTreeInfo *) NULL)
-    (void) DeleteNodeFromSplayTree(temporary_resources, (const void *) path);
+    status=DeleteNodeFromSplayTree(temporary_resources, (const void *) path);
   UnlockSemaphoreInfo(resource_semaphore);
   (void) CopyMagickString(cache_path,path,MaxTextExtent);
   AppendImageFormat("cache",cache_path);
   (void) ShredFile(cache_path);
-  return(ShredFile(path));
+  if (status == MagickFalse)
+    status=ShredFile(path);
+  return(status);
 }
 
 /*
