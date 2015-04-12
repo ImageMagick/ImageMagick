@@ -152,10 +152,10 @@ static Image *ReadPCLImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   char
     command[MaxTextExtent],
-    density[MaxTextExtent],
+    *density,
     filename[MaxTextExtent],
     geometry[MaxTextExtent],
-    options[MaxTextExtent],
+    *options,
     input_filename[MaxTextExtent];
 
   const char
@@ -323,16 +323,16 @@ static Image *ReadPCLImage(const ImageInfo *image_info,ExceptionInfo *exception)
        delegate_info=GetDelegateInfo("pcl:color",(char *) NULL,exception);
   if (delegate_info == (const DelegateInfo *) NULL)
     return((Image *) NULL);
-  *options='\0';
   if ((page.width == 0) || (page.height == 0))
     (void) ParseAbsoluteGeometry(PSPageGeometry,&page);
   if (image_info->page != (char *) NULL)
     (void) ParseAbsoluteGeometry(image_info->page,&page);
-  (void) FormatLocaleString(density,MaxTextExtent,"%gx%g",
-    image->resolution.x,image->resolution.y);
+  density=AcquireString("");
+  options=AcquireString("");
+  (void) FormatLocaleString(density,MaxTextExtent,"%gx%g",image->resolution.x,
+    image->resolution.y);
   page.width=(size_t) floor(page.width*image->resolution.x/delta.x+0.5);
-  page.height=(size_t) floor(page.height*image->resolution.y/delta.y+
-    0.5);
+  page.height=(size_t) floor(page.height*image->resolution.y/delta.y+0.5);
   (void) FormatLocaleString(options,MaxTextExtent,"-g%.20gx%.20g ",(double)
      page.width,(double) page.height);
   image=DestroyImage(image);
@@ -362,6 +362,8 @@ static Image *ReadPCLImage(const ImageInfo *image_info,ExceptionInfo *exception)
     read_info->antialias != MagickFalse ? 4 : 1,
     read_info->antialias != MagickFalse ? 4 : 1,density,options,
     read_info->filename,input_filename);
+  options=DestroyString(options);
+  density=DestroyString(density);
   status=ExternalDelegateCommand(MagickFalse,read_info->verbose,command,
     (char *) NULL,exception) != 0 ? MagickTrue : MagickFalse;
   image=ReadImage(read_info,exception);
