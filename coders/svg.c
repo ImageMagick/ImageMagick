@@ -2818,7 +2818,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           char
             background[MaxTextExtent],
             command[MaxTextExtent],
-            density[MaxTextExtent],
+            *density,
             input_filename[MaxTextExtent],
             opacity[MaxTextExtent],
             output_filename[MaxTextExtent],
@@ -2836,6 +2836,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           status=AcquireUniqueSymbolicLink(image->filename,input_filename);
           (void) AcquireUniqueFilename(output_filename);
           (void) AcquireUniqueFilename(unique);
+          density=AcquireString("");
           (void) FormatLocaleString(density,MaxTextExtent,"%.20g,%.20g",
             image->x_resolution,image->y_resolution);
           (void) FormatLocaleString(background,MaxTextExtent,
@@ -2848,6 +2849,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           (void) FormatLocaleString(command,MaxTextExtent,GetDelegateCommands(
             delegate_info),input_filename,output_filename,density,background,
             opacity,unique);
+          density=DestroyString(density);
           status=ExternalDelegateCommand(MagickFalse,image_info->verbose,
             command,(char *) NULL,exception);
           (void) RelinquishUniqueFileResource(unique);
