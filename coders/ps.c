@@ -414,12 +414,12 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   char
     command[MaxTextExtent],
-    density[MaxTextExtent],
+    *density,
     filename[MaxTextExtent],
     geometry[MaxTextExtent],
     input_filename[MaxTextExtent],
     message[MaxTextExtent],
-    options[MaxTextExtent],
+    *options,
     postscript_filename[MaxTextExtent];
 
   const char
@@ -864,7 +864,8 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
-  *options='\0';
+  density=AcquireString("");
+  options=AcquireString("");
   (void) FormatLocaleString(density,MaxTextExtent,"%gx%g",resolution.x,
     resolution.y);
   (void) FormatLocaleString(options,MaxTextExtent,"-g%.20gx%.20g ",(double)
@@ -902,6 +903,8 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     read_info->antialias != MagickFalse ? 4 : 1,
     read_info->antialias != MagickFalse ? 4 : 1,density,options,filename,
     postscript_filename,input_filename);
+  options=DestroyString(options);
+  density=DestroyString(density);
   *message='\0';
   status=InvokePostscriptDelegate(read_info->verbose,command,message,exception);
   (void) InterpretImageFilename(image_info,image,filename,1,
