@@ -5356,7 +5356,7 @@ Get(ref,...)
               if (image == (Image *) NULL)
                 continue;
               j=info ? info->image_info->monochrome :
-                IsImageMonochrome(image,exception);
+                SetImageMonochrome(image,exception);
               s=newSViv(j);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
