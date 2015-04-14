@@ -1336,15 +1336,16 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
     }
   (void) FormatLocaleFile(file,"  Tainted: %s\n",CommandOptionToMnemonic(
     MagickBooleanOptions,(ssize_t) image->taint));
-  (void) FormatMagickSize(GetBlobSize(image),MagickFalse,"B",format);
+  (void) FormatMagickSize(GetBlobSize(image),MagickFalse,"B",MaxTextExtent,
+    format);
   (void) FormatLocaleFile(file,"  Filesize: %s\n",format);
   (void) FormatMagickSize((MagickSizeType) image->columns*image->rows,
-    MagickFalse,"B",format);
+    MagickFalse,"B",MaxTextExtent,format);
   if (strlen(format) > 1)
     format[strlen(format)-1]='\0';
   (void) FormatLocaleFile(file,"  Number pixels: %s\n",format);
   (void) FormatMagickSize((MagickSizeType) ((double) image->columns*image->rows/
-    elapsed_time+0.5),MagickFalse,"B",format);
+    elapsed_time+0.5),MagickFalse,"B",MaxTextExtent,format);
   (void) FormatLocaleFile(file,"  Pixels per second: %s\n",format);
   (void) FormatLocaleFile(file,"  User time: %0.3fu\n",user_time);
   (void) FormatLocaleFile(file,"  Elapsed time: %lu:%02lu.%03lu\n",
