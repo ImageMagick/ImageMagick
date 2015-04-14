@@ -27,7 +27,7 @@ extern "C" {
 typedef struct _StringInfo
 {
   char
-    path[MaxTextExtent];
+    *path;
 
   unsigned char
     *datum;
