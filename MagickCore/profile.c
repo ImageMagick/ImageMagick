@@ -274,9 +274,6 @@ MagickExport void DestroyImageProfiles(Image *image)
 MagickExport const StringInfo *GetImageProfile(const Image *image,
   const char *name)
 {
-  char
-    key[MaxTextExtent];
-
   const StringInfo
     *profile;
 
@@ -286,9 +283,8 @@ MagickExport const StringInfo *GetImageProfile(const Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->profiles == (SplayTreeInfo *) NULL)
     return((StringInfo *) NULL);
-  (void) CopyMagickString(key,name,MaxTextExtent);
   profile=(const StringInfo *) GetValueFromSplayTree((SplayTreeInfo *)
-    image->profiles,key);
+    image->profiles,name);
   return(profile);
 }
 
