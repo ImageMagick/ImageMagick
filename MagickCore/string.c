@@ -646,7 +646,7 @@ MagickExport StringInfo *ConfigureFileToStringInfo(const char *filename)
   string[length]='\0';
   file=close(file)-1;
   string_info=AcquireStringInfo(0);
-  (void) CopyMagickString(string_info->path,filename,MaxTextExtent);
+  string_info->path=ConstantString(filename);
   string_info->length=length;
   if (string_info->datum != (unsigned char *) NULL)
     string_info->datum=(unsigned char *) RelinquishMagickMemory(
@@ -840,6 +840,8 @@ MagickExport StringInfo *DestroyStringInfo(StringInfo *string_info)
   if (string_info->datum != (unsigned char *) NULL)
     string_info->datum=(unsigned char *) RelinquishMagickMemory(
       string_info->datum);
+  if (string_info->path != (char *) NULL)
+    string_info->path=(char *) RelinquishMagickMemory(string_info->path);
   string_info->signature=(~MagickSignature);
   string_info=(StringInfo *) RelinquishMagickMemory(string_info);
   return(string_info);
@@ -1025,11 +1027,12 @@ MagickExport StringInfo *FileToStringInfo(const char *filename,
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",filename);
   assert(exception != (ExceptionInfo *) NULL);
   string_info=AcquireStringInfo(0);
-  (void) CopyMagickString(string_info->path,filename,MaxTextExtent);
+  string_info->path=ConstantString(filename);
   if (string_info->datum != (unsigned char *) NULL)
     string_info->datum=(unsigned char *) RelinquishMagickMemory(
       string_info->datum);
-  string_info->datum=FileToBlob(filename,extent,&string_info->length,exception);
+  string_info->datum=(unsigned char *) FileToBlob(filename,extent,
+    &string_info->length,exception);
   if (string_info->datum == (unsigned char *) NULL)
     {
       string_info=DestroyStringInfo(string_info);
@@ -1959,7 +1962,7 @@ MagickExport void SetStringInfoPath(StringInfo *string_info,const char *path)
   assert(string_info != (StringInfo *) NULL);
   assert(string_info->signature == MagickSignature);
   assert(path != (const char *) NULL);
-  (void) CopyMagickString(string_info->path,path,MaxTextExtent);
+  string_info->path=ConstantString(path);
 }
 
 /*
