@@ -841,7 +841,7 @@ MagickExport StringInfo *DestroyStringInfo(StringInfo *string_info)
     string_info->datum=(unsigned char *) RelinquishMagickMemory(
       string_info->datum);
   if (string_info->path != (char *) NULL)
-    string_info->path=(char *) RelinquishMagickMemory(string_info->path);
+    string_info->path=DestroyString(string_info->path);
   string_info->signature=(~MagickSignature);
   string_info=(StringInfo *) RelinquishMagickMemory(string_info);
   return(string_info);
