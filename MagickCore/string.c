@@ -1059,7 +1059,7 @@ MagickExport StringInfo *FileToStringInfo(const char *filename,
 %  The format of the FormatMagickSize method is:
 %
 %      ssize_t FormatMagickSize(const MagickSizeType size,const char *suffix,
-^        char *format)
+%        const size_t length,char *format)
 %
 %  A description of each parameter follows:
 %
@@ -1069,18 +1069,21 @@ MagickExport StringInfo *FileToStringInfo(const char *filename,
 %
 %    o suffix:  append suffix, typically B or P.
 %
+%    o length: the maximum length of the string.
+%
 %    o format:  human readable format.
 %
 */
 MagickExport ssize_t FormatMagickSize(const MagickSizeType size,
-  const MagickBooleanType bi,const char *suffix,char *format)
+  const MagickBooleanType bi,const char *suffix,const size_t length,
+  char *format)
 {
   const char
     **units;
 
   double
     bytes,
-    length;
+    extent;
 
   register ssize_t
     i,
@@ -1107,21 +1110,21 @@ MagickExport ssize_t FormatMagickSize(const MagickSizeType size,
       units=bi_units;
     }
 #if defined(_MSC_VER) && (_MSC_VER == 1200)
-  length=(double) ((MagickOffsetType) size);
+  extent=(double) ((MagickOffsetType) size);
 #else
-  length=(double) size;
+  extent=(double) size;
 #endif
-  for (i=0; (length >= bytes) && (units[i+1] != (const char *) NULL); i++)
-    length/=bytes;
+  for (i=0; (extent >= bytes) && (units[i+1] != (const char *) NULL); i++)
+    extent/=bytes;
   count=0;
   for (j=2; j < 12; j++)
   {
     if (suffix == (const char *) NULL)
-      count=FormatLocaleString(format,MaxTextExtent,"%.*g%s",(int) (i+j),
-        length,units[i]);
+      count=FormatLocaleString(format,length,"%.*g%s",(int) (i+j),extent,
+        units[i]);
     else
-      count=FormatLocaleString(format,MaxTextExtent,"%.*g%s%s",(int) (i+j),
-        length,units[i],suffix);
+      count=FormatLocaleString(format,length,"%.*g%s%s",(int) (i+j),extent,
+        units[i],suffix);
     if (strchr(format,'+') == (char *) NULL)
       break;
   }
@@ -1149,12 +1152,12 @@ MagickExport ssize_t FormatMagickSize(const MagickSizeType size,
 %
 %  A description of each parameter follows.
 %
-%   o time:  the time since the Epoch (00:00:00 UTC, January 1, 1970),
-%     measured in seconds.
+%    o time:  the time since the Epoch (00:00:00 UTC, January 1, 1970),
+%      measured in seconds.
 %
-%   o length: the maximum length of the string.
+%    o length: the maximum length of the string.
 %
-%   o timestamp:  Return the Internet date/time here.
+%    o timestamp:  Return the Internet date/time here.
 %
 */
 MagickExport ssize_t FormatMagickTime(const time_t time,const size_t length,

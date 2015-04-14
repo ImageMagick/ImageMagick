@@ -3232,7 +3232,7 @@ static MagickBooleanType SetPixelCacheExtent(Image *image,MagickSizeType length)
         format[MaxTextExtent],
         message[MaxTextExtent];
 
-      (void) FormatMagickSize(length,MagickFalse,"B",format);
+      (void) FormatMagickSize(length,MagickFalse,"B",MaxTextExtent,format);
       (void) FormatLocaleString(message,MaxTextExtent,
         "extend %s (%s[%d], disk, %s)",cache_info->filename,
         cache_info->cache_filename,cache_info->file,format);
@@ -3364,7 +3364,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
               if (image->debug != MagickFalse)
                 {
                   (void) FormatMagickSize(cache_info->length,MagickTrue,"B",
-                    format);
+                    MaxTextExtent,format);
                   type=CommandOptionToMnemonic(MagickCacheOptions,(ssize_t)
                     cache_info->type);
                   (void) FormatLocaleString(message,MaxTextExtent,
@@ -3424,7 +3424,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
               if (image->debug != MagickFalse)
                 {
                   (void) FormatMagickSize(cache_info->length,MagickFalse,"B",
-                    format);
+                    MaxTextExtent,format);
                   type=CommandOptionToMnemonic(MagickCacheOptions,(ssize_t)
                     cache_info->type);
                   (void) FormatLocaleString(message,MaxTextExtent,
@@ -3507,7 +3507,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
               if (image->debug != MagickFalse)
                 {
                   (void) FormatMagickSize(cache_info->length,MagickTrue,"B",
-                    format);
+                    MaxTextExtent,format);
                   type=CommandOptionToMnemonic(MagickCacheOptions,(ssize_t)
                     cache_info->type);
                   (void) FormatLocaleString(message,MaxTextExtent,
@@ -3532,7 +3532,8 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
     }
   if (image->debug != MagickFalse)
     {
-      (void) FormatMagickSize(cache_info->length,MagickFalse,"B",format);
+      (void) FormatMagickSize(cache_info->length,MagickFalse,"B",MaxTextExtent,
+        format);
       type=CommandOptionToMnemonic(MagickCacheOptions,(ssize_t)
         cache_info->type);
       (void) FormatLocaleString(message,MaxTextExtent,
