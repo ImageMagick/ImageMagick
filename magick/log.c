@@ -1248,8 +1248,7 @@ static char *TranslateFilename(const LogInfo *log_info)
 }
 
 MagickBooleanType LogMagickEventList(const LogEventType type,const char *module,
-  const char *function,const size_t line,const char *format,
-  va_list operands)
+  const char *function,const size_t line,const char *format,va_list operands)
 {
   char
     event[MaxTextExtent],
