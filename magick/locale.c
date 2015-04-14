@@ -66,14 +66,6 @@
 #define MaxRecursionDepth  200
 
 /*
-  Typedef declarations.
-*/
-#if defined(__CYGWIN__)
-typedef struct _locale_t
-  *locale_t;
-#endif
-
-/*
   Static declarations.
 */
 static const char
@@ -94,7 +86,7 @@ static SemaphoreInfo
 static SplayTreeInfo
   *locale_cache = (SplayTreeInfo *) NULL;
 
-#if defined(MAGICKCORE_HAVE_STRTOD_L)
+#if defined(MAGICKCORE_HAVE_LOCALE_H)
 static volatile locale_t
   c_locale = (locale_t) NULL;
 #endif
@@ -107,7 +99,7 @@ static MagickBooleanType
   LoadLocaleCache(SplayTreeInfo *,const char *,const char *,const char *,
     const size_t,ExceptionInfo *);
 
-#if defined(MAGICKCORE_HAVE_STRTOD_L)
+#if defined(MAGICKCORE_HAVE_LOCALE_H)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -237,7 +229,7 @@ static SplayTreeInfo *AcquireLocaleSplayTree(const char *filename,
   return(locale_cache);
 }
 
-#if defined(MAGICKCORE_HAVE_STRTOD_L)
+#if defined(MAGICKCORE_HAVE_LOCALE_H)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -339,7 +331,7 @@ MagickExport ssize_t FormatLocaleFileList(FILE *file,
   ssize_t
     n;
 
-#if defined(MAGICKCORE_HAVE_VFPRINTF_L)
+#if defined(MAGICKCORE_HAVE_LOCALE_H) && defined(MAGICKCORE_HAVE_VFPRINTF_L)
   {
     locale_t
       locale;
@@ -355,7 +347,7 @@ MagickExport ssize_t FormatLocaleFileList(FILE *file,
 #endif
   }
 #else
-#if defined(MAGICKCORE_HAVE_USELOCALE) && defined(MAGICKCORE_HAVE_STRTOD_L)
+#if defined(MAGICKCORE_HAVE_LOCALE_H) && defined(MAGICKCORE_HAVE_USELOCALE)
   {
     locale_t
       locale,
@@ -430,7 +422,7 @@ MagickExport ssize_t FormatLocaleStringList(char *restrict string,
   ssize_t
     n;
 
-#if defined(MAGICKCORE_HAVE_VSNPRINTF_L)
+#if defined(MAGICKCORE_HAVE_LOCALE_H) && defined(MAGICKCORE_HAVE_VSNPRINTF_L)
   {
     locale_t
       locale;
@@ -446,7 +438,7 @@ MagickExport ssize_t FormatLocaleStringList(char *restrict string,
 #endif
   }
 #elif defined(MAGICKCORE_HAVE_VSNPRINTF)
-#if defined(MAGICKCORE_HAVE_USELOCALE) && defined(MAGICKCORE_HAVE_STRTOD_L)
+#if defined(MAGICKCORE_HAVE_LOCALE_H) && defined(MAGICKCORE_HAVE_USELOCALE)
   {
     locale_t
       locale,
@@ -989,7 +981,7 @@ MagickExport double InterpretLocaleValue(const char *restrict string,
     value=(double) strtoul(string,&q,16);
   else
     {
-#if defined(MAGICKCORE_HAVE_STRTOD_L)
+#if defined(MAGICKCORE_HAVE_LOCALE_H) && defined(MAGICKCORE_HAVE_STRTOD_L)
       locale_t
         locale;
 
@@ -1428,7 +1420,7 @@ MagickExport void LocaleComponentTerminus(void)
   LockSemaphoreInfo(locale_semaphore);
   if (locale_cache != (SplayTreeInfo *) NULL)
     locale_cache=DestroySplayTree(locale_cache);
-#if defined(MAGICKCORE_HAVE_STRTOD_L)
+#if defined(MAGICKCORE_HAVE_LOCALE_H)
   DestroyCLocale();
 #endif
   UnlockSemaphoreInfo(locale_semaphore);
