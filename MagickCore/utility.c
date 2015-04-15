@@ -281,7 +281,8 @@ MagickExport void AppendImageFormat(const char *format,char *filename)
       char
         message[MagickPathExtent];
 
-      (void) FormatLocaleString(message,MagickPathExtent,"%s:%s",format,filename);
+      (void) FormatLocaleString(message,MagickPathExtent,"%s:%s",format,
+        filename);
       (void) CopyMagickString(filename,message,MagickPathExtent);
       return;
     }
@@ -295,8 +296,8 @@ MagickExport void AppendImageFormat(const char *format,char *filename)
       GetPathComponent(filename,RootPath,root);
       (void) CopyMagickString(filename,root,MagickPathExtent);
       GetPathComponent(filename,RootPath,root);
-      (void) FormatLocaleString(filename,MagickPathExtent,"%s.%s.%s",root,format,
-        extension);
+      (void) FormatLocaleString(filename,MagickPathExtent,"%s.%s.%s",root,
+        format,extension);
       return;
     }
   GetPathComponent(filename,RootPath,root);
@@ -980,8 +981,8 @@ MagickPrivate MagickBooleanType GetExecutionPath(char *path,const size_t extent)
 #if defined(MAGICKCORE_HAVE_GETPID) && defined(MAGICKCORE_HAVE_READLINK) && defined(PATH_MAX)
   {
     char
-      link_path[MagickPathExtent],
-      execution_path[PATH_MAX+1];
+      execution_path[PATH_MAX+1],
+      link_path[MagickPathExtent];
 
     ssize_t
       count;
