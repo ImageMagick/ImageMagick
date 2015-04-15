@@ -215,8 +215,8 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
         ((MagickSizeType) resource_info.map < limit) ? MagickTrue : MagickFalse;
       (void) FormatMagickSize((MagickSizeType) resource_info.map,MagickTrue,
         "B",MagickFormatExtent,resource_current);
-      (void) FormatMagickSize(resource_info.map_limit,MagickTrue,
-        "B",MagickFormatExtent,resource_limit);
+      (void) FormatMagickSize(resource_info.map_limit,MagickTrue,"B",
+        MagickFormatExtent,resource_limit);
       break;
     }
     case DiskResource:
@@ -253,8 +253,8 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
         (size < limit) ? MagickTrue : MagickFalse;
       (void) FormatMagickSize((MagickSizeType) resource_info.height,MagickFalse,
         "P",MagickFormatExtent,resource_current);
-      (void) FormatMagickSize(resource_info.height_limit,MagickFalse,
-        "P",MagickFormatExtent,resource_limit);
+      (void) FormatMagickSize(resource_info.height_limit,MagickFalse,"P",
+        MagickFormatExtent,resource_limit);
       break;
     }
     case ThreadResource:
