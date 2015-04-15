@@ -865,8 +865,8 @@ MagickExport void RelinquishMagickResource(const ResourceType type,
       resource_info.width=(MagickOffsetType) size;
       (void) FormatMagickSize((MagickSizeType) resource_info.width,MagickFalse,
         "P",MagickFormatExtent,resource_current);
-      (void) FormatMagickSize(resource_info.width_limit,MagickFalse,
-        "P",MagickFormatExtent,resource_limit);
+      (void) FormatMagickSize(resource_info.width_limit,MagickFalse,"P",
+        MagickFormatExtent,resource_limit);
       break;
     }
     case HeightResource:
@@ -874,8 +874,8 @@ MagickExport void RelinquishMagickResource(const ResourceType type,
       resource_info.width=(MagickOffsetType) size;
       (void) FormatMagickSize((MagickSizeType) resource_info.width,MagickFalse,
         "P",MagickFormatExtent,resource_current);
-      (void) FormatMagickSize(resource_info.width_limit,MagickFalse,
-        "P",MagickFormatExtent,resource_limit);
+      (void) FormatMagickSize(resource_info.width_limit,MagickFalse,"P",
+        MagickFormatExtent,resource_limit);
       break;
     }
     case AreaResource:
@@ -883,8 +883,8 @@ MagickExport void RelinquishMagickResource(const ResourceType type,
       resource_info.area=(MagickOffsetType) size;
       (void) FormatMagickSize((MagickSizeType) resource_info.area,MagickFalse,
         "B",MagickFormatExtent,resource_current);
-      (void) FormatMagickSize(resource_info.area_limit,MagickFalse,
-        "B",MagickFormatExtent,resource_limit);
+      (void) FormatMagickSize(resource_info.area_limit,MagickFalse,"B",
+        MagickFormatExtent,resource_limit);
       break;
     }
     case MemoryResource:
@@ -892,8 +892,8 @@ MagickExport void RelinquishMagickResource(const ResourceType type,
       resource_info.memory-=size;
       (void) FormatMagickSize((MagickSizeType) resource_info.memory,
         MagickTrue,"B",MagickFormatExtent,resource_current);
-      (void) FormatMagickSize(resource_info.memory_limit,MagickTrue,
-        "B",MagickFormatExtent,resource_limit);
+      (void) FormatMagickSize(resource_info.memory_limit,MagickTrue,"B",
+        MagickFormatExtent,resource_limit);
       break;
     }
     case MapResource:
@@ -901,8 +901,8 @@ MagickExport void RelinquishMagickResource(const ResourceType type,
       resource_info.map-=size;
       (void) FormatMagickSize((MagickSizeType) resource_info.map,MagickTrue,
         "B",MagickFormatExtent,resource_current);
-      (void) FormatMagickSize(resource_info.map_limit,MagickTrue,
-        "B",MagickFormatExtent,resource_limit);
+      (void) FormatMagickSize(resource_info.map_limit,MagickTrue,"B",
+        MagickFormatExtent,resource_limit);
       break;
     }
     case DiskResource:
@@ -910,8 +910,8 @@ MagickExport void RelinquishMagickResource(const ResourceType type,
       resource_info.disk-=size;
       (void) FormatMagickSize((MagickSizeType) resource_info.disk,MagickTrue,
         "B",MagickFormatExtent,resource_current);
-      (void) FormatMagickSize(resource_info.disk_limit,MagickTrue,
-        "B",MagickFormatExtent,resource_limit);
+      (void) FormatMagickSize(resource_info.disk_limit,MagickTrue,"B",
+        MagickFormatExtent,resource_limit);
       break;
     }
     case FileResource:
