@@ -2121,7 +2121,7 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
           r+=GetPixelChannels(magnify_image);
           for (i=0; i < (ssize_t) channels; i++)
             r[i]=p[4*channels+i];
-          r+=GetPixelChannels(magnify_image)*magnify_image->columns;
+          r+=GetPixelChannels(magnify_image)*(magnify_image->columns-1);
           for (i=0; i < (ssize_t) channels; i++)
             r[i]=p[4*channels+i];
           r+=GetPixelChannels(magnify_image);
@@ -2146,7 +2146,7 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
           else
             for (i=0; i < (ssize_t) channels; i++)
               r[i]=p[4*channels+i];
-          r+=GetPixelChannels(magnify_image)*magnify_image->columns;
+          r+=GetPixelChannels(magnify_image)*(magnify_image->columns-1);
           if (fabs(intensity[3]-intensity[7]) < MagickEpsilon)
             for (i=0; i < (ssize_t) channels; i++)
               r[i]=p[3*channels+i];
