@@ -405,7 +405,7 @@ MagickExport char *GetImageViewException(const ImageView *image_view,
   assert(image_view->signature == MagickSignature);
   assert(severity != (ExceptionType *) NULL);
   *severity=image_view->exception->severity;
-  description=(char *) AcquireQuantumMemory(2UL*MaxTextExtent,
+  description=(char *) AcquireQuantumMemory(2UL*MagickPathExtent,
     sizeof(*description));
   if (description == (char *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
@@ -413,14 +413,14 @@ MagickExport char *GetImageViewException(const ImageView *image_view,
   if (image_view->exception->reason != (char *) NULL)
     (void) CopyMagickString(description,GetLocaleExceptionMessage(
       image_view->exception->severity,image_view->exception->reason),
-        MaxTextExtent);
+        MagickPathExtent);
   if (image_view->exception->description != (char *) NULL)
     {
-      (void) ConcatenateMagickString(description," (",MaxTextExtent);
+      (void) ConcatenateMagickString(description," (",MagickPathExtent);
       (void) ConcatenateMagickString(description,GetLocaleExceptionMessage(
         image_view->exception->severity,image_view->exception->description),
-        MaxTextExtent);
-      (void) ConcatenateMagickString(description,")",MaxTextExtent);
+        MagickPathExtent);
+      (void) ConcatenateMagickString(description,")",MagickPathExtent);
     }
   return(description);
 }

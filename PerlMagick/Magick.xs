@@ -113,11 +113,11 @@ extern "C" {
 #define InheritPerlException(exception,perl_exception) \
 { \
   char \
-    message[MaxTextExtent]; \
+    message[MagickPathExtent]; \
  \
   if ((exception)->severity != UndefinedException) \
     { \
-      (void) FormatLocaleString(message,MaxTextExtent,"Exception %d: %s%s%s%s",\
+      (void) FormatLocaleString(message,MagickPathExtent,"Exception %d: %s%s%s%s",\
         (exception)->severity, (exception)->reason ? \
         GetLocaleExceptionMessage((exception)->severity,(exception)->reason) : \
         "Unknown", (exception)->description ? " (" : "", \
@@ -986,7 +986,7 @@ static struct PackageInfo *GetPackageInfo(pTHX_ void *reference,
   struct PackageInfo *package_info,ExceptionInfo *exception)
 {
   char
-    message[MaxTextExtent];
+    message[MagickPathExtent];
 
   struct PackageInfo
     *clone_info;
@@ -994,7 +994,7 @@ static struct PackageInfo *GetPackageInfo(pTHX_ void *reference,
   SV
     *sv;
 
-  (void) FormatLocaleString(message,MaxTextExtent,"%s::package%s%p",
+  (void) FormatLocaleString(message,MagickPathExtent,"%s::package%s%p",
     PackageName,XS_VERSION,reference);
   sv=perl_get_sv(message,(TRUE | 0x02));
   if (sv == (SV *) NULL)
@@ -1469,10 +1469,10 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
         {
           if (info)
             (void) CopyMagickString(info->image_info->filename,SvPV(sval,na),
-              MaxTextExtent);
+              MagickPathExtent);
           for ( ; image; image=image->next)
             (void) CopyMagickString(image->filename,SvPV(sval,na),
-              MaxTextExtent);
+              MagickPathExtent);
           break;
         }
       if (LocaleCompare(attribute,"file") == 0)
@@ -1668,10 +1668,10 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
       if (LocaleCompare(attribute,"magick") == 0)
         {
           if (info)
-            (void) FormatLocaleString(info->image_info->filename,MaxTextExtent,
+            (void) FormatLocaleString(info->image_info->filename,MagickPathExtent,
               "%s:",SvPV(sval,na));
           for ( ; image; image=image->next)
-            (void) CopyMagickString(image->magick,SvPV(sval,na),MaxTextExtent);
+            (void) CopyMagickString(image->magick,SvPV(sval,na),MagickPathExtent);
           break;
         }
       if (LocaleCompare(attribute,"map-limit") == 0)
@@ -2675,11 +2675,11 @@ Average(ref)
     av_push(av,sv_bless(rv,hv));
     SvREFCNT_dec(sv);
     info=GetPackageInfo(aTHX_ (void *) av,info,exception);
-    (void) FormatLocaleString(info->image_info->filename,MaxTextExtent,
-      "average-%.*s",(int) (MaxTextExtent-9),
+    (void) FormatLocaleString(info->image_info->filename,MagickPathExtent,
+      "average-%.*s",(int) (MagickPathExtent-9),
       ((p=strrchr(image->filename,'/')) ? p+1 : image->filename));
     (void) CopyMagickString(image->filename,info->image_info->filename,
-      MaxTextExtent);
+      MagickPathExtent);
     SetImageInfo(info->image_info,0,exception);
     exception=DestroyExceptionInfo(exception);
     SvREFCNT_dec(perl_exception);
@@ -2876,7 +2876,7 @@ ChannelFx(ref,...)
 
     char
       *attribute,
-      expression[MaxTextExtent];
+      expression[MagickPathExtent];
 
     ChannelType
       channel,
@@ -2934,9 +2934,9 @@ ChannelFx(ref,...)
       Get options.
     */
     channel=DefaultChannels;
-    (void) CopyMagickString(expression,"u",MaxTextExtent);
+    (void) CopyMagickString(expression,"u",MagickPathExtent);
     if (items == 2)
-      (void) CopyMagickString(expression,(char *) SvPV(ST(1),na),MaxTextExtent);
+      (void) CopyMagickString(expression,(char *) SvPV(ST(1),na),MagickPathExtent);
     else
       for (i=2; i < items; i+=2)
       {
@@ -2971,7 +2971,7 @@ ChannelFx(ref,...)
             if (LocaleCompare(attribute,"expression") == 0)
               {
                 (void) CopyMagickString(expression,SvPV(ST(i),na),
-                  MaxTextExtent);
+                  MagickPathExtent);
                 break;
               }
             ThrowPerlException(exception,OptionError,"UnrecognizedAttribute",
@@ -3565,11 +3565,11 @@ ComplexImages(ref)
     av_push(av,sv_bless(rv,hv));
     SvREFCNT_dec(sv);
     info=GetPackageInfo(aTHX_ (void *) av,info,exception);
-    (void) FormatLocaleString(info->image_info->filename,MaxTextExtent,
-      "complex-%.*s",(int) (MaxTextExtent-9),
+    (void) FormatLocaleString(info->image_info->filename,MagickPathExtent,
+      "complex-%.*s",(int) (MagickPathExtent-9),
       ((p=strrchr(image->filename,'/')) ? p+1 : image->filename));
     (void) CopyMagickString(image->filename,info->image_info->filename,
-      MaxTextExtent);
+      MagickPathExtent);
     SetImageInfo(info->image_info,0,exception);
     exception=DestroyExceptionInfo(exception);
     SvREFCNT_dec(perl_exception);
@@ -3749,7 +3749,7 @@ DESTROY(ref)
       case SVt_PVAV:
       {
         char
-          message[MaxTextExtent];
+          message[MagickPathExtent];
 
         const SV
           *key;
@@ -3769,7 +3769,7 @@ DESTROY(ref)
         /*
           Array (AV *) reference
         */
-        (void) FormatLocaleString(message,MaxTextExtent,"package%s%p",
+        (void) FormatLocaleString(message,MagickPathExtent,"package%s%p",
           XS_VERSION,reference);
         hv=gv_stashpv(PackageName, FALSE);
         if (!hv)
@@ -4022,11 +4022,11 @@ EvaluateImages(ref)
     av_push(av,sv_bless(rv,hv));
     SvREFCNT_dec(sv);
     info=GetPackageInfo(aTHX_ (void *) av,info,exception);
-    (void) FormatLocaleString(info->image_info->filename,MaxTextExtent,
-      "evaluate-%.*s",(int) (MaxTextExtent-9),
+    (void) FormatLocaleString(info->image_info->filename,MagickPathExtent,
+      "evaluate-%.*s",(int) (MagickPathExtent-9),
       ((p=strrchr(image->filename,'/')) ? p+1 : image->filename));
     (void) CopyMagickString(image->filename,info->image_info->filename,
-      MaxTextExtent);
+      MagickPathExtent);
     SetImageInfo(info->image_info,0,exception);
     exception=DestroyExceptionInfo(exception);
     SvREFCNT_dec(perl_exception);
@@ -4064,46 +4064,46 @@ Features(ref,...)
   {
 #define ChannelFeatures(channel,direction) \
 { \
-  (void) FormatLocaleString(message,MaxTextExtent,"%.15g", \
+  (void) FormatLocaleString(message,MagickPathExtent,"%.15g", \
     channel_features[channel].angular_second_moment[direction]); \
   PUSHs(sv_2mortal(newSVpv(message,0))); \
-  (void) FormatLocaleString(message,MaxTextExtent,"%.15g", \
+  (void) FormatLocaleString(message,MagickPathExtent,"%.15g", \
     channel_features[channel].contrast[direction]); \
   PUSHs(sv_2mortal(newSVpv(message,0))); \
-  (void) FormatLocaleString(message,MaxTextExtent,"%.15g", \
+  (void) FormatLocaleString(message,MagickPathExtent,"%.15g", \
     channel_features[channel].contrast[direction]); \
   PUSHs(sv_2mortal(newSVpv(message,0))); \
-  (void) FormatLocaleString(message,MaxTextExtent,"%.15g", \
+  (void) FormatLocaleString(message,MagickPathExtent,"%.15g", \
     channel_features[channel].variance_sum_of_squares[direction]); \
   PUSHs(sv_2mortal(newSVpv(message,0))); \
-  (void) FormatLocaleString(message,MaxTextExtent,"%.15g", \
+  (void) FormatLocaleString(message,MagickPathExtent,"%.15g", \
     channel_features[channel].inverse_difference_moment[direction]); \
   PUSHs(sv_2mortal(newSVpv(message,0))); \
-  (void) FormatLocaleString(message,MaxTextExtent,"%.15g", \
+  (void) FormatLocaleString(message,MagickPathExtent,"%.15g", \
     channel_features[channel].sum_average[direction]); \
   PUSHs(sv_2mortal(newSVpv(message,0))); \
-  (void) FormatLocaleString(message,MaxTextExtent,"%.15g", \
+  (void) FormatLocaleString(message,MagickPathExtent,"%.15g", \
     channel_features[channel].sum_variance[direction]); \
   PUSHs(sv_2mortal(newSVpv(message,0))); \
-  (void) FormatLocaleString(message,MaxTextExtent,"%.15g", \
+  (void) FormatLocaleString(message,MagickPathExtent,"%.15g", \
     channel_features[channel].sum_entropy[direction]); \
   PUSHs(sv_2mortal(newSVpv(message,0))); \
-  (void) FormatLocaleString(message,MaxTextExtent,"%.15g", \
+  (void) FormatLocaleString(message,MagickPathExtent,"%.15g", \
     channel_features[channel].entropy[direction]); \
   PUSHs(sv_2mortal(newSVpv(message,0))); \
-  (void) FormatLocaleString(message,MaxTextExtent,"%.15g", \
+  (void) FormatLocaleString(message,MagickPathExtent,"%.15g", \
     channel_features[channel].difference_variance[direction]); \
   PUSHs(sv_2mortal(newSVpv(message,0))); \
-  (void) FormatLocaleString(message,MaxTextExtent,"%.15g", \
+  (void) FormatLocaleString(message,MagickPathExtent,"%.15g", \
     channel_features[channel].difference_entropy[direction]); \
   PUSHs(sv_2mortal(newSVpv(message,0))); \
-  (void) FormatLocaleString(message,MaxTextExtent,"%.15g", \
+  (void) FormatLocaleString(message,MagickPathExtent,"%.15g", \
     channel_features[channel].measure_of_correlation_1[direction]); \
   PUSHs(sv_2mortal(newSVpv(message,0))); \
-  (void) FormatLocaleString(message,MaxTextExtent,"%.15g", \
+  (void) FormatLocaleString(message,MagickPathExtent,"%.15g", \
     channel_features[channel].measure_of_correlation_2[direction]); \
   PUSHs(sv_2mortal(newSVpv(message,0))); \
-  (void) FormatLocaleString(message,MaxTextExtent,"%.15g", \
+  (void) FormatLocaleString(message,MagickPathExtent,"%.15g", \
     channel_features[channel].maximum_correlation_coefficient[direction]); \
   PUSHs(sv_2mortal(newSVpv(message,0))); \
 }
@@ -4113,7 +4113,7 @@ Features(ref,...)
 
     char
       *attribute,
-      message[MaxTextExtent];
+      message[MagickPathExtent];
 
     ChannelFeatures
       *channel_features;
@@ -4333,11 +4333,11 @@ Flatten(ref)
     av_push(av,sv_bless(rv,hv));
     SvREFCNT_dec(sv);
     info=GetPackageInfo(aTHX_ (void *) av,info,exception);
-    (void) FormatLocaleString(info->image_info->filename,MaxTextExtent,
-      "flatten-%.*s",(int) (MaxTextExtent-9),
+    (void) FormatLocaleString(info->image_info->filename,MagickPathExtent,
+      "flatten-%.*s",(int) (MagickPathExtent-9),
       ((p=strrchr(image->filename,'/')) ? p+1 : image->filename));
     (void) CopyMagickString(image->filename,info->image_info->filename,
-      MaxTextExtent);
+      MagickPathExtent);
     SetImageInfo(info->image_info,0,exception);
     exception=DestroyExceptionInfo(exception);
     SvREFCNT_dec(perl_exception);
@@ -4378,7 +4378,7 @@ Fx(ref,...)
 
     char
       *attribute,
-      expression[MaxTextExtent];
+      expression[MagickPathExtent];
 
     ChannelType
       channel,
@@ -4436,9 +4436,9 @@ Fx(ref,...)
       Get options.
     */
     channel=DefaultChannels;
-    (void) CopyMagickString(expression,"u",MaxTextExtent);
+    (void) CopyMagickString(expression,"u",MagickPathExtent);
     if (items == 2)
-      (void) CopyMagickString(expression,(char *) SvPV(ST(1),na),MaxTextExtent);
+      (void) CopyMagickString(expression,(char *) SvPV(ST(1),na),MagickPathExtent);
     else
       for (i=2; i < items; i+=2)
       {
@@ -4473,7 +4473,7 @@ Fx(ref,...)
             if (LocaleCompare(attribute,"expression") == 0)
               {
                 (void) CopyMagickString(expression,SvPV(ST(i),na),
-                  MaxTextExtent);
+                  MagickPathExtent);
                 break;
               }
             ThrowPerlException(exception,OptionError,"UnrecognizedAttribute",
@@ -4540,7 +4540,7 @@ Get(ref,...)
   {
     char
       *attribute,
-      color[MaxTextExtent];
+      color[MagickPathExtent];
 
     const char
       *value;
@@ -4645,7 +4645,7 @@ Get(ref,...)
             {
               if (image == (Image *) NULL)
                 break;
-              (void) FormatLocaleString(color,MaxTextExtent,
+              (void) FormatLocaleString(color,MagickPathExtent,
                 "%.20g,%.20g,%.20g,%.20g",(double) image->background_color.red,
                 (double) image->background_color.green,
                 (double) image->background_color.blue,
@@ -4693,7 +4693,7 @@ Get(ref,...)
             {
               if (image == (Image *) NULL)
                 break;
-              (void) FormatLocaleString(color,MaxTextExtent,"%.15g,%.15g",
+              (void) FormatLocaleString(color,MagickPathExtent,"%.15g,%.15g",
                 image->chromaticity.blue_primary.x,
                 image->chromaticity.blue_primary.y);
               s=newSVpv(color,0);
@@ -4704,7 +4704,7 @@ Get(ref,...)
             {
               if (image == (Image *) NULL)
                 break;
-              (void) FormatLocaleString(color,MaxTextExtent,
+              (void) FormatLocaleString(color,MagickPathExtent,
                 "%.20g,%.20g,%.20g,%.20g",(double) image->border_color.red,
                 (double) image->border_color.green,
                 (double) image->border_color.blue,
@@ -4716,7 +4716,7 @@ Get(ref,...)
           if (LocaleCompare(attribute,"bounding-box") == 0)
             {
               char
-                geometry[MaxTextExtent];
+                geometry[MagickPathExtent];
 
               RectangleInfo
                 page;
@@ -4724,7 +4724,7 @@ Get(ref,...)
               if (image == (Image *) NULL)
                 break;
               page=GetImageBoundingBox(image,exception);
-              (void) FormatLocaleString(geometry,MaxTextExtent,
+              (void) FormatLocaleString(geometry,MagickPathExtent,
                 "%.20gx%.20g%+.20g%+.20g",(double) page.width,(double)
                 page.height,(double) page.x,(double) page.y);
               s=newSVpv(geometry,0);
@@ -4839,7 +4839,7 @@ Get(ref,...)
               (void) items;
               if (j > (ssize_t) image->colors)
                 j%=image->colors;
-              (void) FormatLocaleString(color,MaxTextExtent,
+              (void) FormatLocaleString(color,MagickPathExtent,
                 "%.20g,%.20g,%.20g,%.20g",(double) image->colormap[j].red,
                 (double) image->colormap[j].green,
                 (double) image->colormap[j].blue,
@@ -4882,11 +4882,11 @@ Get(ref,...)
           if (LocaleCompare(attribute,"density") == 0)
             {
               char
-                geometry[MaxTextExtent];
+                geometry[MagickPathExtent];
 
               if (image == (Image *) NULL)
                 break;
-              (void) FormatLocaleString(geometry,MaxTextExtent,"%.15gx%.15g",
+              (void) FormatLocaleString(geometry,MagickPathExtent,"%.15gx%.15g",
                 image->resolution.x,image->resolution.y);
               s=newSVpv(geometry,0);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
@@ -5078,7 +5078,7 @@ Get(ref,...)
             {
               if (image == (Image *) NULL)
                 break;
-              (void) FormatLocaleString(color,MaxTextExtent,"%.15g,%.15g",
+              (void) FormatLocaleString(color,MagickPathExtent,"%.15g,%.15g",
                 image->chromaticity.green_primary.x,
                 image->chromaticity.green_primary.y);
               s=newSVpv(color,0);
@@ -5141,7 +5141,7 @@ Get(ref,...)
               if (image != (Image *) NULL)
                 {
                   char
-                    key[MaxTextExtent];
+                    key[MagickPathExtent];
 
                   MagickBooleanType
                     status;
@@ -5149,7 +5149,7 @@ Get(ref,...)
                   static ssize_t
                     id = 0;
 
-                  (void) FormatLocaleString(key,MaxTextExtent,"%.20g\n",(double)
+                  (void) FormatLocaleString(key,MagickPathExtent,"%.20g\n",(double)
                     id);
                   status=SetImageRegistry(ImageRegistryType,key,image,
                     exception);
@@ -5162,7 +5162,7 @@ Get(ref,...)
           if (LocaleNCompare(attribute,"index",5) == 0)
             {
               char
-                name[MaxTextExtent];
+                name[MagickPathExtent];
 
               int
                 items;
@@ -5189,7 +5189,7 @@ Get(ref,...)
               p=GetCacheViewVirtualPixels(image_view,x,y,1,1,exception);
               if (p != (const Quantum *) NULL)
                 {
-                  (void) FormatLocaleString(name,MaxTextExtent,QuantumFormat,
+                  (void) FormatLocaleString(name,MagickPathExtent,QuantumFormat,
                     GetPixelIndex(image,p));
                   s=newSVpv(name,0);
                   PUSHs(s ? sv_2mortal(s) : &sv_undef);
@@ -5312,7 +5312,7 @@ Get(ref,...)
             {
               if (image == (Image *) NULL)
                 break;
-              (void) FormatLocaleString(color,MaxTextExtent,
+              (void) FormatLocaleString(color,MagickPathExtent,
                 "%.20g,%.20g,%.20g,%.20g",(double) image->matte_color.red,
                 (double) image->matte_color.green,
                 (double) image->matte_color.blue,
@@ -5400,9 +5400,9 @@ Get(ref,...)
               if (image != (Image *) NULL)
                 {
                   char
-                    geometry[MaxTextExtent];
+                    geometry[MagickPathExtent];
 
-                  (void) FormatLocaleString(geometry,MaxTextExtent,
+                  (void) FormatLocaleString(geometry,MagickPathExtent,
                     "%.20gx%.20g%+.20g%+.20g",(double) image->page.width,
                     (double) image->page.height,(double) image->page.x,(double)
                     image->page.y);
@@ -5428,7 +5428,7 @@ Get(ref,...)
           if (LocaleNCompare(attribute,"pixel",5) == 0)
             {
               char
-                tuple[MaxTextExtent];
+                tuple[MagickPathExtent];
 
               int
                 items;
@@ -5448,12 +5448,12 @@ Get(ref,...)
               (void) items;
               p=GetVirtualPixels(image,x,y,1,1,exception);
               if (image->colorspace != CMYKColorspace)
-                (void) FormatLocaleString(tuple,MaxTextExtent,QuantumFormat ","
+                (void) FormatLocaleString(tuple,MagickPathExtent,QuantumFormat ","
                   QuantumFormat "," QuantumFormat "," QuantumFormat,
                   GetPixelRed(image,p),GetPixelGreen(image,p),
                   GetPixelBlue(image,p),GetPixelAlpha(image,p));
               else
-                (void) FormatLocaleString(tuple,MaxTextExtent,QuantumFormat ","
+                (void) FormatLocaleString(tuple,MagickPathExtent,QuantumFormat ","
                   QuantumFormat "," QuantumFormat "," QuantumFormat ","
                   QuantumFormat,GetPixelRed(image,p),GetPixelGreen(image,p),
                   GetPixelBlue(image,p),GetPixelBlack(image,p),
@@ -5521,7 +5521,7 @@ Get(ref,...)
             {
               if (image == (Image *) NULL)
                 break;
-              (void) FormatLocaleString(color,MaxTextExtent,"%.15g,%.15g",
+              (void) FormatLocaleString(color,MagickPathExtent,"%.15g,%.15g",
                 image->chromaticity.red_primary.x,
                 image->chromaticity.red_primary.y);
               s=newSVpv(color,0);
@@ -5624,7 +5624,7 @@ Get(ref,...)
             {
               if (image == (Image *) NULL)
                 break;
-              (void) FormatLocaleString(color,MaxTextExtent,
+              (void) FormatLocaleString(color,MagickPathExtent,
                 "%.20g,%.20g,%.20g,%.20g",(double) image->transparent_color.red,
                 (double) image->transparent_color.green,
                 (double) image->transparent_color.blue,
@@ -5725,7 +5725,7 @@ Get(ref,...)
             {
               if (image == (Image *) NULL)
                 break;
-              (void) FormatLocaleString(color,MaxTextExtent,"%.15g,%.15g",
+              (void) FormatLocaleString(color,MagickPathExtent,"%.15g,%.15g",
                 image->chromaticity.white_point.x,
                 image->chromaticity.white_point.y);
               s=newSVpv(color,0);
@@ -6283,7 +6283,7 @@ Histogram(ref,...)
       *av;
 
     char
-      message[MaxTextExtent];
+      message[MagickPathExtent];
 
     PixelInfo
       *histogram;
@@ -6341,25 +6341,25 @@ Histogram(ref,...)
       EXTEND(sp,6*count);
       for (i=0; i < (ssize_t) number_colors; i++)
       {
-        (void) FormatLocaleString(message,MaxTextExtent,"%.20g",
+        (void) FormatLocaleString(message,MagickPathExtent,"%.20g",
           histogram[i].red);
         PUSHs(sv_2mortal(newSVpv(message,0)));
-        (void) FormatLocaleString(message,MaxTextExtent,"%.20g",
+        (void) FormatLocaleString(message,MagickPathExtent,"%.20g",
           histogram[i].green);
         PUSHs(sv_2mortal(newSVpv(message,0)));
-        (void) FormatLocaleString(message,MaxTextExtent,"%.20g",
+        (void) FormatLocaleString(message,MagickPathExtent,"%.20g",
           histogram[i].blue);
         PUSHs(sv_2mortal(newSVpv(message,0)));
         if (image->colorspace == CMYKColorspace)
           {
-            (void) FormatLocaleString(message,MaxTextExtent,"%.20g",
+            (void) FormatLocaleString(message,MagickPathExtent,"%.20g",
               histogram[i].black);
             PUSHs(sv_2mortal(newSVpv(message,0)));
           }
-        (void) FormatLocaleString(message,MaxTextExtent,"%.20g",
+        (void) FormatLocaleString(message,MagickPathExtent,"%.20g",
           histogram[i].alpha);
         PUSHs(sv_2mortal(newSVpv(message,0)));
-        (void) FormatLocaleString(message,MaxTextExtent,"%.20g",(double)
+        (void) FormatLocaleString(message,MagickPathExtent,"%.20g",(double)
           histogram[i].count);
         PUSHs(sv_2mortal(newSVpv(message,0)));
       }
@@ -6840,7 +6840,7 @@ ImageToBlob(ref,...)
   PPCODE:
   {
     char
-      filename[MaxTextExtent];
+      filename[MagickPathExtent];
 
     ExceptionInfo
       *exception;
@@ -6892,11 +6892,11 @@ ImageToBlob(ref,...)
     for (i=2; i < items; i+=2)
       SetAttribute(aTHX_ package_info,image,SvPV(ST(i-1),na),ST(i),exception);
     (void) CopyMagickString(filename,package_info->image_info->filename,
-      MaxTextExtent);
+      MagickPathExtent);
     scene=0;
     for (next=image; next; next=next->next)
     {
-      (void) CopyMagickString(next->filename,filename,MaxTextExtent);
+      (void) CopyMagickString(next->filename,filename,MagickPathExtent);
       next->scene=scene++;
     }
     SetImageInfo(package_info->image_info,(unsigned int)
@@ -7559,7 +7559,7 @@ Mogrify(ref,...)
 
     char
       attribute_flag[MaxArguments],
-      message[MaxTextExtent];
+      message[MagickPathExtent];
 
     ChannelType
       channel,
@@ -7733,7 +7733,7 @@ Mogrify(ref,...)
         {
           if (SvTYPE(sv) != SVt_RV)
             {
-              (void) FormatLocaleString(message,MaxTextExtent,
+              (void) FormatLocaleString(message,MagickPathExtent,
                 "invalid %.60s value",pp->method);
               ThrowPerlException(exception,OptionError,message,SvPV(sv,na));
               goto continue_outer_loop;
@@ -7793,7 +7793,7 @@ Mogrify(ref,...)
             al->integer_reference=ParseChannelOption(SvPV(sv,na));
           if ((al->integer_reference < 0) && ((al->integer_reference=SvIV(sv)) <= 0))
             {
-              (void) FormatLocaleString(message,MaxTextExtent,
+              (void) FormatLocaleString(message,MagickPathExtent,
                 "invalid %.60s value",pp->method);
               ThrowPerlException(exception,OptionError,message,SvPV(sv,na));
               goto continue_outer_loop;
@@ -7821,7 +7821,7 @@ Mogrify(ref,...)
       {
         default:
         {
-          (void) FormatLocaleString(message,MaxTextExtent,"%.20g",(double) ix);
+          (void) FormatLocaleString(message,MagickPathExtent,"%.20g",(double) ix);
           ThrowPerlException(exception,OptionError,
             "UnrecognizedPerlMagickMethod",message);
           goto PerlException;
@@ -8465,9 +8465,9 @@ Mogrify(ref,...)
           if ((attribute_flag[9] != 0) || (attribute_flag[10] != 0))
             {
               char
-                geometry[MaxTextExtent];
+                geometry[MagickPathExtent];
 
-              (void) FormatLocaleString(geometry,MaxTextExtent,"%+f%+f",
+              (void) FormatLocaleString(geometry,MagickPathExtent,"%+f%+f",
                 (double) argument_list[9].real_reference+draw_info->affine.tx,
                 (double) argument_list[10].real_reference+draw_info->affine.ty);
               (void) CloneString(&draw_info->geometry,geometry);
@@ -8561,7 +8561,7 @@ Mogrify(ref,...)
         case 35:  /* Composite */
         {
           char
-            composite_geometry[MaxTextExtent];
+            composite_geometry[MagickPathExtent];
 
           Image
             *composite_image,
@@ -8750,7 +8750,7 @@ Mogrify(ref,...)
           /*
             Composite two images (normal composition).
           */
-          (void) FormatLocaleString(composite_geometry,MaxTextExtent,
+          (void) FormatLocaleString(composite_geometry,MagickPathExtent,
             "%.20gx%.20g%+.20g%+.20g",(double) composite_image->columns,
             (double) composite_image->rows,(double) geometry.x,(double)
             geometry.y);
@@ -9062,7 +9062,7 @@ Mogrify(ref,...)
             argument_list[4].real_reference=1.0;
           if (attribute_flag[0] == 0)
             {
-              (void) FormatLocaleString(message,MaxTextExtent,
+              (void) FormatLocaleString(message,MagickPathExtent,
                 "%.15g,%.15g,%.15g",(double) argument_list[2].real_reference,
                 (double) argument_list[3].real_reference,
                 (double) argument_list[4].real_reference);
@@ -9139,7 +9139,7 @@ Mogrify(ref,...)
         case 43:  /* Modulate */
         {
           char
-            modulate[MaxTextExtent];
+            modulate[MagickPathExtent];
 
           geometry_info.rho=100.0;
           geometry_info.sigma=100.0;
@@ -9171,7 +9171,7 @@ Mogrify(ref,...)
               geometry_info.rho=argument_list[6].real_reference;
               SetImageArtifact(image,"modulate:colorspace","HWB");
             }
-          (void) FormatLocaleString(modulate,MaxTextExtent,"%.15g,%.15g,%.15g",
+          (void) FormatLocaleString(modulate,MagickPathExtent,"%.15g,%.15g,%.15g",
             geometry_info.rho,geometry_info.sigma,geometry_info.xi);
           (void) ModulateImage(image,modulate,exception);
           break;
@@ -11892,7 +11892,7 @@ Mosaic(ref)
     av_push(av,sv_bless(rv,hv));
     SvREFCNT_dec(sv);
     (void) CopyMagickString(info->image_info->filename,image->filename,
-      MaxTextExtent);
+      MagickPathExtent);
     SetImageInfo(info->image_info,0,exception);
     exception=DestroyExceptionInfo(exception);
     SvREFCNT_dec(perl_exception);
@@ -12072,7 +12072,7 @@ Ping(ref,...)
     for (i=0; i < n; i++)
     {
       (void) CopyMagickString(package_info->image_info->filename,list[i],
-        MaxTextExtent);
+        MagickPathExtent);
       image=PingImage(package_info->image_info,exception);
       if (image == (Image *) NULL)
         break;
@@ -12319,7 +12319,7 @@ QueryColorname(ref,...)
       *av;
 
     char
-      message[MaxTextExtent];
+      message[MagickPathExtent];
 
     ExceptionInfo
       *exception;
@@ -12392,7 +12392,7 @@ QueryFont(ref,...)
   {
     char
       *name,
-      message[MaxTextExtent];
+      message[MagickPathExtent];
 
     ExceptionInfo
       *exception;
@@ -12460,7 +12460,7 @@ QueryFont(ref,...)
       else
         PUSHs(sv_2mortal(newSVpv(CommandOptionToMnemonic(MagickStretchOptions,
           type_info->stretch),0)));
-      (void) FormatLocaleString(message,MaxTextExtent,"%.20g",(double)
+      (void) FormatLocaleString(message,MagickPathExtent,"%.20g",(double)
         type_info->weight);
       PUSHs(sv_2mortal(newSVpv(message,0)));
       if (type_info->encoding == (char *) NULL)
@@ -12869,7 +12869,7 @@ QueryFontMetrics(ref,...)
     if (draw_info->geometry == (char *) NULL)
       {
         draw_info->geometry=AcquireString((char *) NULL);
-        (void) FormatLocaleString(draw_info->geometry,MaxTextExtent,
+        (void) FormatLocaleString(draw_info->geometry,MagickPathExtent,
           "%.15g,%.15g",x,y);
       }
     status=GetTypeMetrics(image,draw_info,&metrics,exception);
@@ -13242,7 +13242,7 @@ QueryMultilineFontMetrics(ref,...)
     if (draw_info->geometry == (char *) NULL)
       {
         draw_info->geometry=AcquireString((char *) NULL);
-        (void) FormatLocaleString(draw_info->geometry,MaxTextExtent,
+        (void) FormatLocaleString(draw_info->geometry,MagickPathExtent,
           "%.15g,%.15g",x,y);
       }
     status=GetMultilineTypeMetrics(image,draw_info,&metrics,exception);
@@ -13316,7 +13316,7 @@ QueryFormat(ref,...)
     if (items == 1)
       {
         char
-          format[MaxTextExtent];
+          format[MagickPathExtent];
 
         const MagickInfo
           **format_list;
@@ -13328,7 +13328,7 @@ QueryFormat(ref,...)
         EXTEND(sp,types);
         for (i=0; i < (ssize_t) types; i++)
         {
-          (void) CopyMagickString(format,format_list[i]->name,MaxTextExtent);
+          (void) CopyMagickString(format,format_list[i]->name,MagickPathExtent);
           LocaleLower(format);
           PUSHs(sv_2mortal(newSVpv(format,0)));
         }
@@ -13869,9 +13869,9 @@ SetPixel(ref,...)
               if (SvTYPE(ST(i)) != SVt_RV)
                 {
                   char
-                    message[MaxTextExtent];
+                    message[MagickPathExtent];
 
-                  (void) FormatLocaleString(message,MaxTextExtent,
+                  (void) FormatLocaleString(message,MagickPathExtent,
                     "invalid %.60s value",attribute);
                   ThrowPerlException(exception,OptionError,message,
                     SvPV(ST(i),na));
@@ -14186,28 +14186,28 @@ Statistics(ref,...)
   {
 #define ChannelStatistics(channel) \
 { \
-  (void) FormatLocaleString(message,MaxTextExtent,"%.20g", \
+  (void) FormatLocaleString(message,MagickPathExtent,"%.20g", \
     (double) channel_statistics[channel].depth); \
   PUSHs(sv_2mortal(newSVpv(message,0))); \
-  (void) FormatLocaleString(message,MaxTextExtent,"%.15g", \
+  (void) FormatLocaleString(message,MagickPathExtent,"%.15g", \
     channel_statistics[channel].minima/scale); \
   PUSHs(sv_2mortal(newSVpv(message,0))); \
-  (void) FormatLocaleString(message,MaxTextExtent,"%.15g", \
+  (void) FormatLocaleString(message,MagickPathExtent,"%.15g", \
     channel_statistics[channel].maxima/scale); \
   PUSHs(sv_2mortal(newSVpv(message,0))); \
-  (void) FormatLocaleString(message,MaxTextExtent,"%.15g", \
+  (void) FormatLocaleString(message,MagickPathExtent,"%.15g", \
     channel_statistics[channel].mean/scale); \
   PUSHs(sv_2mortal(newSVpv(message,0))); \
-  (void) FormatLocaleString(message,MaxTextExtent,"%.15g", \
+  (void) FormatLocaleString(message,MagickPathExtent,"%.15g", \
     channel_statistics[channel].standard_deviation/scale); \
   PUSHs(sv_2mortal(newSVpv(message,0))); \
-  (void) FormatLocaleString(message,MaxTextExtent,"%.15g", \
+  (void) FormatLocaleString(message,MagickPathExtent,"%.15g", \
     channel_statistics[channel].kurtosis); \
   PUSHs(sv_2mortal(newSVpv(message,0))); \
-  (void) FormatLocaleString(message,MaxTextExtent,"%.15g", \
+  (void) FormatLocaleString(message,MagickPathExtent,"%.15g", \
     channel_statistics[channel].skewness); \
   PUSHs(sv_2mortal(newSVpv(message,0))); \
-  (void) FormatLocaleString(message,MaxTextExtent,"%.15g", \
+  (void) FormatLocaleString(message,MagickPathExtent,"%.15g", \
     channel_statistics[channel].entropy); \
   PUSHs(sv_2mortal(newSVpv(message,0))); \
 }
@@ -14216,7 +14216,7 @@ Statistics(ref,...)
       *av;
 
     char
-      message[MaxTextExtent];
+      message[MagickPathExtent];
 
     ChannelStatistics
       *channel_statistics;
@@ -14524,7 +14524,7 @@ Write(ref,...)
   PPCODE:
   {
     char
-      filename[MaxTextExtent];
+      filename[MagickPathExtent];
 
     ExceptionInfo
       *exception;
@@ -14577,11 +14577,11 @@ Write(ref,...)
           SetAttribute(aTHX_ package_info,image,SvPV(ST(i-1),na),ST(i),
             exception);
     (void) CopyMagickString(filename,package_info->image_info->filename,
-      MaxTextExtent);
+      MagickPathExtent);
     scene=0;
     for (next=image; next; next=next->next)
     {
-      (void) CopyMagickString(next->filename,filename,MaxTextExtent);
+      (void) CopyMagickString(next->filename,filename,MagickPathExtent);
       next->scene=scene++;
     }
     *package_info->image_info->magick='\0';

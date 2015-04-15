@@ -167,7 +167,7 @@ static MagickBooleanType IsTTF(const unsigned char *magick,const size_t length)
 static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   char
-    buffer[MaxTextExtent],
+    buffer[MagickPathExtent],
     *text;
 
   const char
@@ -217,7 +217,7 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   type_info=GetTypeInfo(image_info->filename,exception);
   if ((type_info != (const TypeInfo *) NULL) &&
       (type_info->glyphs != (char *) NULL))
-    (void) CopyMagickString(image->filename,type_info->glyphs,MaxTextExtent);
+    (void) CopyMagickString(image->filename,type_info->glyphs,MagickPathExtent);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFalse)
     {
@@ -244,8 +244,8 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
   }
-  (void) CopyMagickString(image->magick,image_info->magick,MaxTextExtent);
-  (void) CopyMagickString(image->filename,image_info->filename,MaxTextExtent);
+  (void) CopyMagickString(image->magick,image_info->magick,MagickPathExtent);
+  (void) CopyMagickString(image->filename,image_info->filename,MagickPathExtent);
   /*
     Prepare drawing commands
   */
@@ -253,29 +253,29 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
   draw_info->font=AcquireString(image->filename);
   ConcatenateString(&draw_info->primitive,"push graphic-context\n");
-  (void) FormatLocaleString(buffer,MaxTextExtent," viewbox 0 0 %.20g %.20g\n",
+  (void) FormatLocaleString(buffer,MagickPathExtent," viewbox 0 0 %.20g %.20g\n",
     (double) image->columns,(double) image->rows);
   ConcatenateString(&draw_info->primitive,buffer);
   ConcatenateString(&draw_info->primitive," font-size 18\n");
-  (void) FormatLocaleString(buffer,MaxTextExtent," text 10,%.20g '",(double) y);
+  (void) FormatLocaleString(buffer,MagickPathExtent," text 10,%.20g '",(double) y);
   ConcatenateString(&draw_info->primitive,buffer);
   text=EscapeString(Text,'"');
   ConcatenateString(&draw_info->primitive,text);
   text=DestroyString(text);
-  (void) FormatLocaleString(buffer,MaxTextExtent,"'\n");
+  (void) FormatLocaleString(buffer,MagickPathExtent,"'\n");
   ConcatenateString(&draw_info->primitive,buffer);
   y+=20*(ssize_t) MultilineCensus((char *) Text)+20;
   for (i=12; i <= 72; i+=6)
   {
     y+=i+12;
     ConcatenateString(&draw_info->primitive," font-size 18\n");
-    (void) FormatLocaleString(buffer,MaxTextExtent," text 10,%.20g '%.20g'\n",
+    (void) FormatLocaleString(buffer,MagickPathExtent," text 10,%.20g '%.20g'\n",
       (double) y,(double) i);
     ConcatenateString(&draw_info->primitive,buffer);
-    (void) FormatLocaleString(buffer,MaxTextExtent," font-size %.20g\n",
+    (void) FormatLocaleString(buffer,MagickPathExtent," font-size %.20g\n",
       (double) i);
     ConcatenateString(&draw_info->primitive,buffer);
-    (void) FormatLocaleString(buffer,MaxTextExtent," text 50,%.20g "
+    (void) FormatLocaleString(buffer,MagickPathExtent," text 50,%.20g "
       "'That which does not destroy me, only makes me stronger.'\n",(double) y);
     ConcatenateString(&draw_info->primitive,buffer);
     if (i >= 24)
@@ -318,14 +318,14 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 ModuleExport size_t RegisterTTFImage(void)
 {
   char
-    version[MaxTextExtent];
+    version[MagickPathExtent];
 
   MagickInfo
     *entry;
 
   *version='\0';
 #if defined(FREETYPE_MAJOR) && defined(FREETYPE_MINOR) && defined(FREETYPE_PATCH)
-  (void) FormatLocaleString(version,MaxTextExtent,"Freetype %d.%d.%d",
+  (void) FormatLocaleString(version,MagickPathExtent,"Freetype %d.%d.%d",
     FREETYPE_MAJOR,FREETYPE_MINOR,FREETYPE_PATCH);
 #endif
   entry=AcquireMagickInfo("TTF","DFONT","Multi-face font package");

@@ -76,7 +76,7 @@ struct _MatrixInfo
     synchronize;
 
   char
-    path[MaxTextExtent];
+    path[MagickPathExtent];
 
   int
     file;

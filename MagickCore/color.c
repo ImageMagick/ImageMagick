@@ -999,7 +999,7 @@ MagickExport const ColorInfo *GetColorCompliance(const char *name,
   const ComplianceType compliance,ExceptionInfo *exception)
 {
   char
-    colorname[MaxTextExtent];
+    colorname[MagickPathExtent];
 
   register const ColorInfo
     *p;
@@ -1015,12 +1015,12 @@ MagickExport const ColorInfo *GetColorCompliance(const char *name,
   */
   *colorname='\0';
   if (name != (const char *) NULL)
-    (void) CopyMagickString(colorname,name,MaxTextExtent);
+    (void) CopyMagickString(colorname,name,MagickPathExtent);
   for (q=colorname; *q != '\0'; q++)
   {
     if (isspace((int) ((unsigned char) *q)) == 0)
       continue;
-    (void) CopyMagickString(q,q+1,MaxTextExtent);
+    (void) CopyMagickString(q,q+1,MagickPathExtent);
     q--;
   }
   /*
@@ -1120,7 +1120,7 @@ MagickExport void ConcatenateColorComponent(const PixelInfo *pixel,
   const PixelChannel component,const ComplianceType compliance,char *tuple)
 {
   char
-    text[MaxTextExtent];
+    text[MagickPathExtent];
 
   double
     color;
@@ -1158,37 +1158,37 @@ MagickExport void ConcatenateColorComponent(const PixelInfo *pixel,
   }
   if (compliance == NoCompliance)
     {
-      (void) FormatLocaleString(text,MaxTextExtent,"%.*g",GetMagickPrecision(),
+      (void) FormatLocaleString(text,MagickPathExtent,"%.*g",GetMagickPrecision(),
         color);
-      (void) ConcatenateMagickString(tuple,text,MaxTextExtent);
+      (void) ConcatenateMagickString(tuple,text,MagickPathExtent);
       return;
     }
   if (compliance != SVGCompliance)
     {
       if (pixel->depth > 16)
         {
-          (void) FormatLocaleString(text,MaxTextExtent,"%10lu",(unsigned long)
+          (void) FormatLocaleString(text,MagickPathExtent,"%10lu",(unsigned long)
             ScaleQuantumToLong(ClampToQuantum(color)));
-          (void) ConcatenateMagickString(tuple,text,MaxTextExtent);
+          (void) ConcatenateMagickString(tuple,text,MagickPathExtent);
           return;
         }
       if (pixel->depth > 8)
         {
-          (void) FormatLocaleString(text,MaxTextExtent,"%5d",
+          (void) FormatLocaleString(text,MagickPathExtent,"%5d",
             ScaleQuantumToShort(ClampToQuantum(color)));
-          (void) ConcatenateMagickString(tuple,text,MaxTextExtent);
+          (void) ConcatenateMagickString(tuple,text,MagickPathExtent);
           return;
         }
-      (void) FormatLocaleString(text,MaxTextExtent,"%3d",
+      (void) FormatLocaleString(text,MagickPathExtent,"%3d",
         ScaleQuantumToChar(ClampToQuantum(color)));
-      (void) ConcatenateMagickString(tuple,text,MaxTextExtent);
+      (void) ConcatenateMagickString(tuple,text,MagickPathExtent);
       return;
     }
   if (component == AlphaPixelChannel)
     {
-      (void) FormatLocaleString(text,MaxTextExtent,"%.*g",GetMagickPrecision(),
+      (void) FormatLocaleString(text,MagickPathExtent,"%.*g",GetMagickPrecision(),
         (QuantumScale*color));
-      (void) ConcatenateMagickString(tuple,text,MaxTextExtent);
+      (void) ConcatenateMagickString(tuple,text,MagickPathExtent);
       return;
     }
   if ((pixel->colorspace == HCLColorspace) ||
@@ -1199,21 +1199,21 @@ MagickExport void ConcatenateColorComponent(const PixelInfo *pixel,
       (pixel->colorspace == HSVColorspace) ||
       (pixel->colorspace == HWBColorspace))
     {
-      (void) FormatLocaleString(text,MaxTextExtent,"%.*g%%",
+      (void) FormatLocaleString(text,MagickPathExtent,"%.*g%%",
         GetMagickPrecision(),(100.0*QuantumScale*color));
-      (void) ConcatenateMagickString(tuple,text,MaxTextExtent);
+      (void) ConcatenateMagickString(tuple,text,MagickPathExtent);
       return;
     }
   if ((pixel->colorspace == LabColorspace) || (pixel->depth > 8))
     {
-      (void) FormatLocaleString(text,MaxTextExtent,"%.*g%%",
+      (void) FormatLocaleString(text,MagickPathExtent,"%.*g%%",
         GetMagickPrecision(),(100.0*QuantumScale*color));
-      (void) ConcatenateMagickString(tuple,text,MaxTextExtent);
+      (void) ConcatenateMagickString(tuple,text,MagickPathExtent);
       return;
     }
-  (void) FormatLocaleString(text,MaxTextExtent,"%d",ScaleQuantumToChar(
+  (void) FormatLocaleString(text,MagickPathExtent,"%d",ScaleQuantumToChar(
     ClampToQuantum(color)));
-  (void) ConcatenateMagickString(tuple,text,MaxTextExtent);
+  (void) ConcatenateMagickString(tuple,text,MagickPathExtent);
 }
 
 /*
@@ -1441,7 +1441,7 @@ static void ConcatentateHexColorComponent(const PixelInfo *pixel,
   const PixelChannel channel,char *tuple)
 {
   char
-    component[MaxTextExtent];
+    component[MagickPathExtent];
 
   double
     color;
@@ -1479,29 +1479,29 @@ static void ConcatentateHexColorComponent(const PixelInfo *pixel,
   }
   if (pixel->depth > 32)
     {
-      (void) FormatLocaleString(component,MaxTextExtent,"%08lX%08lX",
+      (void) FormatLocaleString(component,MagickPathExtent,"%08lX%08lX",
         (unsigned long) ScaleQuantumToLong(ClampToQuantum(color)),
         (unsigned long) ScaleQuantumToLong(ClampToQuantum(color)));
-      (void) ConcatenateMagickString(tuple,component,MaxTextExtent);
+      (void) ConcatenateMagickString(tuple,component,MagickPathExtent);
       return;
     }
   if (pixel->depth > 16)
     {
-      (void) FormatLocaleString(component,MaxTextExtent,"%08X",
+      (void) FormatLocaleString(component,MagickPathExtent,"%08X",
         (unsigned int) ScaleQuantumToLong(ClampToQuantum(color)));
-      (void) ConcatenateMagickString(tuple,component,MaxTextExtent);
+      (void) ConcatenateMagickString(tuple,component,MagickPathExtent);
       return;
     }
   if (pixel->depth > 8)
     {
-      (void) FormatLocaleString(component,MaxTextExtent,"%04X",
+      (void) FormatLocaleString(component,MagickPathExtent,"%04X",
         ScaleQuantumToShort(ClampToQuantum(color)));
-      (void) ConcatenateMagickString(tuple,component,MaxTextExtent);
+      (void) ConcatenateMagickString(tuple,component,MagickPathExtent);
       return;
     }
-  (void) FormatLocaleString(component,MaxTextExtent,"%02X",
+  (void) FormatLocaleString(component,MagickPathExtent,"%02X",
     ScaleQuantumToChar(ClampToQuantum(color)));
-  (void) ConcatenateMagickString(tuple,component,MaxTextExtent);
+  (void) ConcatenateMagickString(tuple,component,MagickPathExtent);
   return;
 }
 
@@ -1520,7 +1520,7 @@ MagickExport void GetColorTuple(const PixelInfo *pixel,
       /*
         Convert pixel to hex color.
       */
-      (void) ConcatenateMagickString(tuple,"#",MaxTextExtent);
+      (void) ConcatenateMagickString(tuple,"#",MagickPathExtent);
       ConcatentateHexColorComponent(pixel,RedPixelChannel,tuple);
       ConcatentateHexColorComponent(pixel,GreenPixelChannel,tuple);
       ConcatentateHexColorComponent(pixel,BluePixelChannel,tuple);
@@ -1562,31 +1562,31 @@ MagickExport void GetColorTuple(const PixelInfo *pixel,
         color.depth=8;
     }
   (void) ConcatenateMagickString(tuple,CommandOptionToMnemonic(
-    MagickColorspaceOptions,(ssize_t) color.colorspace),MaxTextExtent);
+    MagickColorspaceOptions,(ssize_t) color.colorspace),MagickPathExtent);
   if (color.alpha_trait != UndefinedPixelTrait)
-    (void) ConcatenateMagickString(tuple,"a",MaxTextExtent);
-  (void) ConcatenateMagickString(tuple,"(",MaxTextExtent);
+    (void) ConcatenateMagickString(tuple,"a",MagickPathExtent);
+  (void) ConcatenateMagickString(tuple,"(",MagickPathExtent);
   if (color.colorspace == GRAYColorspace)
     ConcatenateColorComponent(&color,GrayPixelChannel,SVGCompliance,tuple);
   else
     {
       ConcatenateColorComponent(&color,RedPixelChannel,SVGCompliance,tuple);
-      (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
+      (void) ConcatenateMagickString(tuple,",",MagickPathExtent);
       ConcatenateColorComponent(&color,GreenPixelChannel,SVGCompliance,tuple);
-      (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
+      (void) ConcatenateMagickString(tuple,",",MagickPathExtent);
       ConcatenateColorComponent(&color,BluePixelChannel,SVGCompliance,tuple);
     }
   if (color.colorspace == CMYKColorspace)
     {
-      (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
+      (void) ConcatenateMagickString(tuple,",",MagickPathExtent);
       ConcatenateColorComponent(&color,BlackPixelChannel,SVGCompliance,tuple);
     }
   if (color.alpha_trait != UndefinedPixelTrait)
     {
-      (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
+      (void) ConcatenateMagickString(tuple,",",MagickPathExtent);
       ConcatenateColorComponent(&color,AlphaPixelChannel,SVGCompliance,tuple);
     }
-  (void) ConcatenateMagickString(tuple,")",MaxTextExtent);
+  (void) ConcatenateMagickString(tuple,")",MagickPathExtent);
   LocaleLower(tuple);
   return;
 }
@@ -1885,7 +1885,7 @@ MagickExport MagickBooleanType ListColorInfo(FILE *file,
   ExceptionInfo *exception)
 {
   char
-    tuple[MaxTextExtent];
+    tuple[MagickPathExtent];
 
   const char
     *path;
@@ -1977,7 +1977,7 @@ static MagickBooleanType LoadColorCache(LinkedListInfo *color_cache,
   ExceptionInfo *exception)
 {
   char
-    keyword[MaxTextExtent],
+    keyword[MagickPathExtent],
     *token;
 
   ColorInfo
@@ -2007,7 +2007,7 @@ static MagickBooleanType LoadColorCache(LinkedListInfo *color_cache,
     GetMagickToken(q,&q,token);
     if (*token == '\0')
       break;
-    (void) CopyMagickString(keyword,token,MaxTextExtent);
+    (void) CopyMagickString(keyword,token,MagickPathExtent);
     if (LocaleNCompare(keyword,"<!DOCTYPE",9) == 0)
       {
         /*
@@ -2033,7 +2033,7 @@ static MagickBooleanType LoadColorCache(LinkedListInfo *color_cache,
         */
         while (((*token != '/') && (*(token+1) != '>')) && (*q != '\0'))
         {
-          (void) CopyMagickString(keyword,token,MaxTextExtent);
+          (void) CopyMagickString(keyword,token,MagickPathExtent);
           GetMagickToken(q,&q,token);
           if (*token != '=')
             continue;
@@ -2046,17 +2046,17 @@ static MagickBooleanType LoadColorCache(LinkedListInfo *color_cache,
               else
                 {
                   char
-                    path[MaxTextExtent],
+                    path[MagickPathExtent],
                     *xml;
 
                   GetPathComponent(filename,HeadPath,path);
                   if (*path != '\0')
                     (void) ConcatenateMagickString(path,DirectorySeparator,
-                      MaxTextExtent);
+                      MagickPathExtent);
                   if (*token == *DirectorySeparator)
-                    (void) CopyMagickString(path,token,MaxTextExtent);
+                    (void) CopyMagickString(path,token,MagickPathExtent);
                   else
-                    (void) ConcatenateMagickString(path,token,MaxTextExtent);
+                    (void) ConcatenateMagickString(path,token,MagickPathExtent);
                   xml=FileToXML(path,~0UL);
                   if (xml != (char *) NULL)
                     {
@@ -2320,7 +2320,7 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
   if (strchr(name,'(') != (char *) NULL)
     {
       char
-        colorspace[MaxTextExtent];
+        colorspace[MagickPathExtent];
 
       MagickBooleanType
         icc_color;
@@ -2328,7 +2328,7 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
       /*
         Parse color of the form rgb(100,255,0).
       */
-      (void) CopyMagickString(colorspace,name,MaxTextExtent);
+      (void) CopyMagickString(colorspace,name,MagickPathExtent);
       for (i=0; colorspace[i] != '\0'; i++)
         if (colorspace[i] == '(')
           break;
@@ -2337,7 +2337,7 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
       icc_color=MagickFalse;
       if (LocaleNCompare(colorspace,"device-",7) == 0)
         {
-          (void) CopyMagickString(colorspace,colorspace+7,MaxTextExtent);
+          (void) CopyMagickString(colorspace,colorspace+7,MagickPathExtent);
           scale=(double) QuantumRange;
           icc_color=MagickTrue;
         }
@@ -2346,7 +2346,7 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
           register ssize_t
             j;
 
-          (void) CopyMagickString(colorspace,name+i+2,MaxTextExtent);
+          (void) CopyMagickString(colorspace,name+i+2,MagickPathExtent);
           for (j=0; colorspace[j] != '\0'; j++)
             if (colorspace[j] == ',')
               break;
@@ -2586,7 +2586,7 @@ MagickExport MagickBooleanType QueryColorname(
          (fabs((double) (p->color.blue-color->blue)) < MagickEpsilon) &&
          (fabs((double) (p->color.alpha-alpha)) < MagickEpsilon))
       {
-        (void) CopyMagickString(name,p->name,MaxTextExtent);
+        (void) CopyMagickString(name,p->name,MagickPathExtent);
         break;
       }
     p=(const ColorInfo *) GetNextValueInLinkedList(color_cache);

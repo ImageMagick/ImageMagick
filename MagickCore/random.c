@@ -444,7 +444,7 @@ static StringInfo *GenerateEntropicChaos(RandomInfo *random_info)
 #if defined(MAGICKCORE_HAVE_MKSTEMP)
   {
     char
-      path[MaxTextExtent];
+      path[MagickPathExtent];
 
     int
       file;

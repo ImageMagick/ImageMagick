@@ -382,7 +382,7 @@ static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #define RGBColorType  3
 
   char
-    property[MaxTextExtent];
+    property[MagickPathExtent];
 
   CINInfo
     cin;
@@ -887,7 +887,7 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image,
   ExceptionInfo *exception)
 {
   char
-    timestamp[MaxTextExtent];
+    timestamp[MagickPathExtent];
 
   const char
     *value;
@@ -989,7 +989,7 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image,
   (void) memcpy(&local_time,localtime(&seconds),sizeof(local_time));
 #endif
   (void) memset(timestamp,0,sizeof(timestamp));
-  (void) strftime(timestamp,MaxTextExtent,"%Y:%m:%d:%H:%M:%S%Z",&local_time);
+  (void) strftime(timestamp,MagickPathExtent,"%Y:%m:%d:%H:%M:%S%Z",&local_time);
   (void) memset(cin.file.create_date,0,sizeof(cin.file.create_date));
   (void) CopyMagickString(cin.file.create_date,timestamp,11);
   offset+=WriteBlob(image,sizeof(cin.file.create_date),(unsigned char *)
@@ -1087,7 +1087,7 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image,
     cin.origination.filename);
   seconds=time((time_t *) NULL);
   (void) memset(timestamp,0,sizeof(timestamp));
-  (void) strftime(timestamp,MaxTextExtent,"%Y:%m:%d:%H:%M:%S%Z",&local_time);
+  (void) strftime(timestamp,MagickPathExtent,"%Y:%m:%d:%H:%M:%S%Z",&local_time);
   (void) memset(cin.origination.create_date,0,
     sizeof(cin.origination.create_date));
   (void) CopyMagickString(cin.origination.create_date,timestamp,11);

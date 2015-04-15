@@ -806,7 +806,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
   char
-    geometry[MaxTextExtent],
+    geometry[MagickPathExtent],
     header_ole[4];
 
   Image
@@ -1413,7 +1413,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
           {
             (void) RelinquishUniqueFileResource(read_info->filename);
             (void) CopyMagickString(image->filename,read_info->filename,
-              MaxTextExtent);
+              MagickPathExtent);
             ThrowFileException(exception,FileOpenError,
               "UnableToCreateTemporaryFile",image->filename);
             image=DestroyImageList(image);
@@ -1448,7 +1448,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
         read_info=DestroyImageInfo(read_info);
         if (tile_image == (Image *) NULL)
           continue;
-        (void) FormatLocaleString(geometry,MaxTextExtent,"%.20gx%.20g",
+        (void) FormatLocaleString(geometry,MagickPathExtent,"%.20gx%.20g",
           (double) MagickMax(image->columns,tile_image->columns),
           (double) MagickMax(image->rows,tile_image->rows));
         (void) SetImageExtent(image,
@@ -1811,7 +1811,7 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
           return(MagickFalse);
         }
       jpeg_info=CloneImageInfo(image_info);
-      (void) CopyMagickString(jpeg_info->magick,"JPEG",MaxTextExtent);
+      (void) CopyMagickString(jpeg_info->magick,"JPEG",MagickPathExtent);
       length=0;
       blob=(unsigned char *) ImageToBlob(jpeg_info,jpeg_image,&length,
         exception);

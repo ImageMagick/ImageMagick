@@ -1379,7 +1379,7 @@ MagickExport MagickBooleanType DrawClipPath(Image *image,
   const DrawInfo *draw_info,const char *name,ExceptionInfo *exception)
 {
   char
-    filename[MaxTextExtent];
+    filename[MagickPathExtent];
 
   Image
     *clip_mask;
@@ -1398,7 +1398,7 @@ MagickExport MagickBooleanType DrawClipPath(Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(draw_info != (const DrawInfo *) NULL);
-  (void) FormatLocaleString(filename,MaxTextExtent,"%s",name);
+  (void) FormatLocaleString(filename,MagickPathExtent,"%s",name);
   value=GetImageArtifact(image,filename);
   if (value == (const char *) NULL)
     return(MagickFalse);
@@ -1661,11 +1661,11 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
     current;
 
   char
-    key[2*MaxTextExtent],
-    keyword[MaxTextExtent],
-    geometry[MaxTextExtent],
-    name[MaxTextExtent],
-    pattern[MaxTextExtent],
+    key[2*MagickPathExtent],
+    keyword[MagickPathExtent],
+    geometry[MagickPathExtent],
+    name[MagickPathExtent],
+    pattern[MagickPathExtent],
     *primitive,
     *token;
 
@@ -1986,7 +1986,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
         if (LocaleCompare("fill",keyword) == 0)
           {
             GetMagickToken(q,&q,token);
-            (void) FormatLocaleString(pattern,MaxTextExtent,"%s",token);
+            (void) FormatLocaleString(pattern,MagickPathExtent,"%s",token);
             if (GetImageArtifact(image,pattern) != (const char *) NULL)
               (void) DrawPatternPath(image,draw_info,token,
                 &graphic_context[n]->fill_pattern,exception);
@@ -2001,7 +2001,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
 
                     pattern_info=AcquireImageInfo();
                     (void) CopyMagickString(pattern_info->filename,token,
-                      MaxTextExtent);
+                      MagickPathExtent);
                     graphic_context[n]->fill_pattern=ReadImage(pattern_info,
                       exception);
                     CatchException(exception);
@@ -2261,10 +2261,10 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
             if (LocaleCompare("clip-path",token) == 0)
               {
                 char
-                  name[MaxTextExtent];
+                  name[MagickPathExtent];
 
                 GetMagickToken(q,&q,token);
-                (void) FormatLocaleString(name,MaxTextExtent,"%s",token);
+                (void) FormatLocaleString(name,MagickPathExtent,"%s",token);
                 for (p=q; *q != '\0'; )
                 {
                   GetMagickToken(q,&q,token);
@@ -2283,17 +2283,17 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
             if (LocaleCompare("gradient",token) == 0)
               {
                 char
-                  key[2*MaxTextExtent],
-                  name[MaxTextExtent],
-                  type[MaxTextExtent];
+                  key[2*MagickPathExtent],
+                  name[MagickPathExtent],
+                  type[MagickPathExtent];
 
                 SegmentInfo
                   segment;
 
                 GetMagickToken(q,&q,token);
-                (void) CopyMagickString(name,token,MaxTextExtent);
+                (void) CopyMagickString(name,token,MagickPathExtent);
                 GetMagickToken(q,&q,token);
-                (void) CopyMagickString(type,token,MaxTextExtent);
+                (void) CopyMagickString(type,token,MagickPathExtent);
                 GetMagickToken(q,&q,token);
                 segment.x1=StringToDouble(token,(char **) NULL);
                 GetMagickToken(q,&q,token);
@@ -2337,10 +2337,10 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
                 bounds.y2=graphic_context[n]->affine.rx*segment.x2+
                   graphic_context[n]->affine.sy*segment.y2+
                   graphic_context[n]->affine.ty;
-                (void) FormatLocaleString(key,MaxTextExtent,"%s",name);
+                (void) FormatLocaleString(key,MagickPathExtent,"%s",name);
                 (void) SetImageArtifact(image,key,token);
-                (void) FormatLocaleString(key,MaxTextExtent,"%s-geometry",name);
-                (void) FormatLocaleString(geometry,MaxTextExtent,
+                (void) FormatLocaleString(key,MagickPathExtent,"%s-geometry",name);
+                (void) FormatLocaleString(geometry,MagickPathExtent,
                   "%gx%g%+.15g%+.15g",
                   MagickMax(fabs(bounds.x2-bounds.x1+1.0),1.0),
                   MagickMax(fabs(bounds.y2-bounds.y1+1.0),1.0),
@@ -2355,7 +2355,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
                   bounds;
 
                 GetMagickToken(q,&q,token);
-                (void) CopyMagickString(name,token,MaxTextExtent);
+                (void) CopyMagickString(name,token,MagickPathExtent);
                 GetMagickToken(q,&q,token);
                 bounds.x=(ssize_t) ceil(StringToDouble(token,(char **) NULL)-
                   0.5);
@@ -2385,10 +2385,10 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
                   break;
                 }
                 (void) CopyMagickString(token,p,(size_t) (q-p-4+1));
-                (void) FormatLocaleString(key,MaxTextExtent,"%s",name);
+                (void) FormatLocaleString(key,MagickPathExtent,"%s",name);
                 (void) SetImageArtifact(image,key,token);
-                (void) FormatLocaleString(key,MaxTextExtent,"%s-geometry",name);
-                (void) FormatLocaleString(geometry,MaxTextExtent,
+                (void) FormatLocaleString(key,MagickPathExtent,"%s-geometry",name);
+                (void) FormatLocaleString(geometry,MagickPathExtent,
                   "%.20gx%.20g%+.20g%+.20g",(double) bounds.width,(double)
                   bounds.height,(double) bounds.x,(double) bounds.y);
                 (void) SetImageArtifact(image,key,geometry);
@@ -2489,7 +2489,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
         if (LocaleCompare("stroke",keyword) == 0)
           {
             GetMagickToken(q,&q,token);
-            (void) FormatLocaleString(pattern,MaxTextExtent,"%s",token);
+            (void) FormatLocaleString(pattern,MagickPathExtent,"%s",token);
             if (GetImageArtifact(image,pattern) != (const char *) NULL)
               (void) DrawPatternPath(image,draw_info,token,
                 &graphic_context[n]->stroke_pattern,exception);
@@ -2504,7 +2504,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
 
                     pattern_info=AcquireImageInfo();
                     (void) CopyMagickString(pattern_info->filename,token,
-                      MaxTextExtent);
+                      MagickPathExtent);
                     graphic_context[n]->stroke_pattern=ReadImage(pattern_info,
                       exception);
                     CatchException(exception);
@@ -3472,7 +3472,7 @@ MagickExport MagickBooleanType DrawPatternPath(Image *image,
   ExceptionInfo *exception)
 {
   char
-    property[MaxTextExtent];
+    property[MagickPathExtent];
 
   const char
     *geometry,
@@ -3493,11 +3493,11 @@ MagickExport MagickBooleanType DrawPatternPath(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(draw_info != (const DrawInfo *) NULL);
   assert(name != (const char *) NULL);
-  (void) FormatLocaleString(property,MaxTextExtent,"%s",name);
+  (void) FormatLocaleString(property,MagickPathExtent,"%s",name);
   path=GetImageArtifact(image,property);
   if (path == (const char *) NULL)
     return(MagickFalse);
-  (void) FormatLocaleString(property,MaxTextExtent,"%s-geometry",name);
+  (void) FormatLocaleString(property,MagickPathExtent,"%s-geometry",name);
   geometry=GetImageArtifact(image,property);
   if (geometry == (const char *) NULL)
     return(MagickFalse);
@@ -4408,7 +4408,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
         affine;
 
       char
-        composite_geometry[MaxTextExtent];
+        composite_geometry[MagickPathExtent];
 
       Image
         *composite_image;
@@ -4432,7 +4432,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
       else
         {
           (void) CopyMagickString(clone_info->filename,primitive_info->text,
-            MaxTextExtent);
+            MagickPathExtent);
           composite_image=ReadImage(clone_info,exception);
         }
       clone_info=DestroyImageInfo(clone_info);
@@ -4446,12 +4446,12 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
           ((y1 != 0L) && (y1 != (ssize_t) composite_image->rows)))
         {
           char
-            geometry[MaxTextExtent];
+            geometry[MagickPathExtent];
 
           /*
             Resize image.
           */
-          (void) FormatLocaleString(geometry,MaxTextExtent,"%gx%g!",
+          (void) FormatLocaleString(geometry,MagickPathExtent,"%gx%g!",
             primitive_info[1].point.x,primitive_info[1].point.y);
           composite_image->filter=image->filter;
           (void) TransformImage(&composite_image,(char *) NULL,geometry,
@@ -4466,7 +4466,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
       image->gravity=draw_info->gravity;
       geometry.x=x;
       geometry.y=y;
-      (void) FormatLocaleString(composite_geometry,MaxTextExtent,
+      (void) FormatLocaleString(composite_geometry,MagickPathExtent,
         "%.20gx%.20g%+.20g%+.20g",(double) composite_image->columns,(double)
         composite_image->rows,(double) geometry.x,(double) geometry.y);
       (void) ParseGravityGeometry(image,composite_geometry,&geometry,exception);
@@ -4506,7 +4506,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
     case TextPrimitive:
     {
       char
-        geometry[MaxTextExtent];
+        geometry[MagickPathExtent];
 
       DrawInfo
         *clone_info;
@@ -4515,7 +4515,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
         break;
       clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
       (void) CloneString(&clone_info->text,primitive_info->text);
-      (void) FormatLocaleString(geometry,MaxTextExtent,"%+f%+f",
+      (void) FormatLocaleString(geometry,MagickPathExtent,"%+f%+f",
         primitive_info->point.x,primitive_info->point.y);
       (void) CloneString(&clone_info->geometry,geometry);
       status&=AnnotateImage(image,clone_info,exception);
@@ -5240,7 +5240,7 @@ static void TraceLine(PrimitiveInfo *primitive_info,const PointInfo start,
 static size_t TracePath(PrimitiveInfo *primitive_info,const char *path)
 {
   char
-    token[MaxTextExtent];
+    token[MagickPathExtent];
 
   const char
     *p;

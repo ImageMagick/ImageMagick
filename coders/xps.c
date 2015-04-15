@@ -105,12 +105,12 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #define RenderXPSText  "  Rendering XPS...  "
 
   char
-    command[MaxTextExtent],
+    command[MagickPathExtent],
     *density,
-    filename[MaxTextExtent],
-    geometry[MaxTextExtent],
+    filename[MagickPathExtent],
+    geometry[MagickPathExtent],
     *options,
-    input_filename[MaxTextExtent];
+    input_filename[MagickPathExtent];
 
   const char
     *option;
@@ -215,7 +215,7 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     *p++=(char) c;
     if ((c != (int) '/') && (c != '\n') &&
-        ((size_t) (p-command) < (MaxTextExtent-1)))
+        ((size_t) (p-command) < (MagickPathExtent-1)))
       continue;
     *p='\0';
     p=command;
@@ -266,7 +266,7 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) ParseAbsoluteGeometry(PSPageGeometry,&page);
   if (image_info->page != (char *) NULL)
     (void) ParseAbsoluteGeometry(image_info->page,&page);
-  (void) FormatLocaleString(geometry,MaxTextExtent,"%.20gx%.20g",(double)
+  (void) FormatLocaleString(geometry,MagickPathExtent,"%.20gx%.20g",(double)
     page.width,(double) page.height);
   if (image_info->monochrome != MagickFalse)
     delegate_info=GetDelegateInfo("xps:mono",(char *) NULL,exception);
@@ -279,7 +279,7 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     return((Image *) NULL);
   density=AcquireString("");
   options=AcquireString("");
-  (void) FormatLocaleString(density,MaxTextExtent,"%gx%g",
+  (void) FormatLocaleString(density,MagickPathExtent,"%gx%g",
     image->resolution.x,image->resolution.y);
   if ((page.width == 0) || (page.height == 0))
     (void) ParseAbsoluteGeometry(PSPageGeometry,&page);
@@ -287,7 +287,7 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) ParseAbsoluteGeometry(image_info->page,&page);
   page.width=(size_t) floor(page.width*image->resolution.y/delta.x+0.5);
   page.height=(size_t) floor(page.height*image->resolution.y/delta.y+0.5);
-  (void) FormatLocaleString(options,MaxTextExtent,"-g%.20gx%.20g ",(double)
+  (void) FormatLocaleString(options,MagickPathExtent,"-g%.20gx%.20g ",(double)
     page.width,(double) page.height);
   image=DestroyImage(image);
   read_info=CloneImageInfo(image_info);
@@ -295,10 +295,10 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (read_info->number_scenes != 0)
     {
       if (read_info->number_scenes != 1)
-        (void) FormatLocaleString(options,MaxTextExtent,"-dLastPage=%.20g",
+        (void) FormatLocaleString(options,MagickPathExtent,"-dLastPage=%.20g",
           (double) (read_info->scene+read_info->number_scenes));
       else
-        (void) FormatLocaleString(options,MaxTextExtent,
+        (void) FormatLocaleString(options,MagickPathExtent,
           "-dFirstPage=%.20g -dLastPage=%.20g",(double) read_info->scene+1,
           (double) (read_info->scene+read_info->number_scenes));
       read_info->number_scenes=0;
@@ -307,11 +307,11 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   option=GetImageOption(image_info,"authenticate");
   if (option != (const char *) NULL)
-    (void) FormatLocaleString(options+strlen(options),MaxTextExtent,
+    (void) FormatLocaleString(options+strlen(options),MagickPathExtent,
       " -sPCLPassword=%s",option);
-  (void) CopyMagickString(filename,read_info->filename,MaxTextExtent);
+  (void) CopyMagickString(filename,read_info->filename,MagickPathExtent);
   (void) AcquireUniqueFilename(read_info->filename);
-  (void) FormatLocaleString(command,MaxTextExtent,
+  (void) FormatLocaleString(command,MagickPathExtent,
     GetDelegateCommands(delegate_info),
     read_info->antialias != MagickFalse ? 4 : 1,
     read_info->antialias != MagickFalse ? 4 : 1,density,options,
@@ -340,7 +340,7 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   do
   {
-    (void) CopyMagickString(image->filename,filename,MaxTextExtent);
+    (void) CopyMagickString(image->filename,filename,MagickPathExtent);
     image->page=page;
     next_image=SyncNextImageInList(image);
     if (next_image != (Image *) NULL)

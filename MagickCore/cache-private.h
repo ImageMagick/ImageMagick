@@ -188,8 +188,8 @@ typedef struct _CacheInfo
     file;
 
   char
-    filename[MaxTextExtent],
-    cache_filename[MaxTextExtent];
+    filename[MagickPathExtent],
+    cache_filename[MagickPathExtent];
 
   CacheMethods
     methods;

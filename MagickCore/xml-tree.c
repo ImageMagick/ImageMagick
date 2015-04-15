@@ -216,8 +216,8 @@ MagickPrivate XMLTreeInfo *AddPathToXMLTree(XMLTreeInfo *xml_info,
 {
   char
     **components,
-    subnode[MaxTextExtent],
-    tag[MaxTextExtent];
+    subnode[MagickPathExtent],
+    tag[MagickPathExtent];
 
   register ssize_t
     i;
@@ -342,12 +342,12 @@ MagickPrivate char *CanonicalXMLContent(const char *content,
   */
   i=0;
   canonical_content=AcquireString((char *) NULL);
-  extent=MaxTextExtent;
+  extent=MagickPathExtent;
   for (p=utf8; *p != '\0'; p++)
   {
-    if ((i+MaxTextExtent) > (ssize_t) extent)
+    if ((i+MagickPathExtent) > (ssize_t) extent)
       {
-        extent+=MaxTextExtent;
+        extent+=MagickPathExtent;
         canonical_content=(char *) ResizeQuantumMemory(canonical_content,extent,
           sizeof(*canonical_content));
         if (canonical_content == (char *) NULL)
@@ -679,8 +679,8 @@ MagickPrivate char *FileToXML(const char *filename,const size_t extent)
     }
   length=(size_t) MagickMin((MagickSizeType) offset,extent);
   xml=(char *) NULL;
-  if (~length >= (MaxTextExtent-1))
-    xml=(char *) AcquireQuantumMemory(length+MaxTextExtent,sizeof(*xml));
+  if (~length >= (MagickPathExtent-1))
+    xml=(char *) AcquireQuantumMemory(length+MagickPathExtent,sizeof(*xml));
   if (xml == (char *) NULL)
     {
       file=close(file);
@@ -1006,8 +1006,8 @@ MagickPrivate XMLTreeInfo *GetXMLTreePath(XMLTreeInfo *xml_info,const char *path
 {
   char
     **components,
-    subnode[MaxTextExtent],
-    tag[MaxTextExtent];
+    subnode[MagickPathExtent],
+    tag[MagickPathExtent];
 
   register ssize_t
     i;
@@ -1333,9 +1333,9 @@ static char *ConvertUTF16ToUTF8(const char *content,size_t *length)
           (content[i] & 0xff);
         c=(((c & 0x3ff) << 10) | (byte & 0x3ff))+0x10000;
       }
-    if ((size_t) (j+MaxTextExtent) > extent)
+    if ((size_t) (j+MagickPathExtent) > extent)
       {
-        extent=(size_t) j+MaxTextExtent;
+        extent=(size_t) j+MagickPathExtent;
         utf8=(char *) ResizeQuantumMemory(utf8,extent,sizeof(*utf8));
         if (utf8 == (char *) NULL)
           return(utf8);
@@ -2616,9 +2616,9 @@ static char *EncodePredefinedEntities(const char *source,ssize_t offset,
     }
   if (canonical_content == (char *) NULL)
     return(*destination);
-  if ((*length+strlen(canonical_content)+MaxTextExtent) > *extent)
+  if ((*length+strlen(canonical_content)+MagickPathExtent) > *extent)
     {
-      *extent=(*length)+strlen(canonical_content)+MaxTextExtent;
+      *extent=(*length)+strlen(canonical_content)+MagickPathExtent;
       *destination=(char *) ResizeQuantumMemory(*destination,*extent,
         sizeof(**destination));
       if (*destination == (char *) NULL)
@@ -2654,9 +2654,9 @@ static char *XMLTreeTagToXML(XMLTreeInfo *xml_info,char **source,size_t *length,
   offset=0;
   *source=EncodePredefinedEntities(content+start,(ssize_t) (xml_info->offset-
     start),source,length,extent,MagickFalse);
-  if ((*length+strlen(xml_info->tag)+MaxTextExtent) > *extent)
+  if ((*length+strlen(xml_info->tag)+MagickPathExtent) > *extent)
     {
-      *extent=(*length)+strlen(xml_info->tag)+MaxTextExtent;
+      *extent=(*length)+strlen(xml_info->tag)+MagickPathExtent;
       *source=(char *) ResizeQuantumMemory(*source,*extent,sizeof(**source));
       if (*source == (char *) NULL)
         return(*source);
@@ -2667,9 +2667,9 @@ static char *XMLTreeTagToXML(XMLTreeInfo *xml_info,char **source,size_t *length,
     attribute=GetXMLTreeAttribute(xml_info,xml_info->attributes[i]);
     if (attribute != xml_info->attributes[i+1])
       continue;
-    if ((*length+strlen(xml_info->attributes[i])+MaxTextExtent) > *extent)
+    if ((*length+strlen(xml_info->attributes[i])+MagickPathExtent) > *extent)
       {
-        *extent=(*length)+strlen(xml_info->attributes[i])+MaxTextExtent;
+        *extent=(*length)+strlen(xml_info->attributes[i])+MagickPathExtent;
         *source=(char *) ResizeQuantumMemory(*source,*extent,sizeof(**source));
         if (*source == (char *) NULL)
           return((char *) NULL);
@@ -2694,9 +2694,9 @@ static char *XMLTreeTagToXML(XMLTreeInfo *xml_info,char **source,size_t *length,
         j+=3;
         continue;
       }
-    if ((*length+strlen(attributes[i][j])+MaxTextExtent) > *extent)
+    if ((*length+strlen(attributes[i][j])+MagickPathExtent) > *extent)
       {
-        *extent=(*length)+strlen(attributes[i][j])+MaxTextExtent;
+        *extent=(*length)+strlen(attributes[i][j])+MagickPathExtent;
         *source=(char *) ResizeQuantumMemory(*source,*extent,sizeof(**source));
         if (*source == (char *) NULL)
           return((char *) NULL);
@@ -2715,9 +2715,9 @@ static char *XMLTreeTagToXML(XMLTreeInfo *xml_info,char **source,size_t *length,
   else
     *source=EncodePredefinedEntities(xml_info->content,-1,source,length,extent,
       MagickFalse);
-  if ((*length+strlen(xml_info->tag)+MaxTextExtent) > *extent)
+  if ((*length+strlen(xml_info->tag)+MagickPathExtent) > *extent)
     {
-      *extent=(*length)+strlen(xml_info->tag)+MaxTextExtent;
+      *extent=(*length)+strlen(xml_info->tag)+MagickPathExtent;
       *source=(char *) ResizeQuantumMemory(*source,*extent,sizeof(**source));
       if (*source == (char *) NULL)
         return((char *) NULL);
@@ -2772,7 +2772,7 @@ MagickExport char *XMLTreeInfoToXML(XMLTreeInfo *xml_info)
     return((char *) NULL);
   xml=AcquireString((char *) NULL);
   length=0;
-  extent=MaxTextExtent;
+  extent=MagickPathExtent;
   root=(XMLTreeRoot *) xml_info;
   while (root->root.parent != (XMLTreeInfo *) NULL)
     root=(XMLTreeRoot *) root->root.parent;
@@ -2793,9 +2793,9 @@ MagickExport char *XMLTreeInfoToXML(XMLTreeInfo *xml_info)
             continue;
           }
         q=root->processing_instructions[i][0];
-        if ((length+strlen(p)+strlen(q)+MaxTextExtent) > extent)
+        if ((length+strlen(p)+strlen(q)+MagickPathExtent) > extent)
           {
-            extent=length+strlen(p)+strlen(q)+MaxTextExtent;
+            extent=length+strlen(p)+strlen(q)+MagickPathExtent;
             xml=(char *) ResizeQuantumMemory(xml,extent,sizeof(*xml));
             if (xml == (char *) NULL)
               return(xml);
@@ -2827,9 +2827,9 @@ MagickExport char *XMLTreeInfoToXML(XMLTreeInfo *xml_info)
             continue;
           }
         q=root->processing_instructions[i][0];
-        if ((length+strlen(p)+strlen(q)+MaxTextExtent) > extent)
+        if ((length+strlen(p)+strlen(q)+MagickPathExtent) > extent)
           {
-            extent=length+strlen(p)+strlen(q)+MaxTextExtent;
+            extent=length+strlen(p)+strlen(q)+MagickPathExtent;
             xml=(char *) ResizeQuantumMemory(xml,extent,sizeof(*xml));
             if (xml == (char *) NULL)
               return(xml);

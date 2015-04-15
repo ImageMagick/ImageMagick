@@ -95,7 +95,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
 {
   char
     *caption,
-    geometry[MaxTextExtent],
+    geometry[MagickPathExtent],
     *property,
     *text;
 
@@ -166,7 +166,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
         exception);
       (void) CloneString(&draw_info->text,text);
       text=DestroyString(text);
-      (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",
+      (void) FormatLocaleString(geometry,MagickPathExtent,"%+g%+g",
         -metrics.bounds.x1,metrics.ascent);
       if (draw_info->gravity == UndefinedGravity)
         (void) CloneString(&draw_info->geometry,geometry);
@@ -182,7 +182,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
         exception);
       (void) CloneString(&draw_info->text,text);
       text=DestroyString(text);
-      (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",
+      (void) FormatLocaleString(geometry,MagickPathExtent,"%+g%+g",
         -metrics.bounds.x1,metrics.ascent);
       if (draw_info->gravity == UndefinedGravity)
         (void) CloneString(&draw_info->geometry,geometry);
@@ -218,7 +218,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
           exception);
         (void) CloneString(&draw_info->text,text);
         text=DestroyString(text);
-        (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",
+        (void) FormatLocaleString(geometry,MagickPathExtent,"%+g%+g",
           -metrics.bounds.x1,metrics.ascent);
         if (draw_info->gravity == UndefinedGravity)
           (void) CloneString(&draw_info->geometry,geometry);
@@ -244,7 +244,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
           exception);
         (void) CloneString(&draw_info->text,text);
         text=DestroyString(text);
-        (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",
+        (void) FormatLocaleString(geometry,MagickPathExtent,"%+g%+g",
           -metrics.bounds.x1,metrics.ascent);
         if (draw_info->gravity == UndefinedGravity)
           (void) CloneString(&draw_info->geometry,geometry);
@@ -272,7 +272,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
   */
   i=FormatMagickCaption(image,draw_info,split,&metrics,&caption,exception);
   (void) CloneString(&draw_info->text,caption);
-  (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",
+  (void) FormatLocaleString(geometry,MagickPathExtent,"%+g%+g",
     draw_info->direction == RightToLeftDirection ? image->columns-
     metrics.bounds.x2 : -metrics.bounds.x1,draw_info->gravity ==
     UndefinedGravity ? metrics.ascent : 0.0);
@@ -281,9 +281,9 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
   if (image_info->pointsize == 0.0)
     { 
       char
-        pointsize[MaxTextExtent];
+        pointsize[MagickPathExtent];
       
-      (void) FormatLocaleString(pointsize,MaxTextExtent,"%.20g",
+      (void) FormatLocaleString(pointsize,MagickPathExtent,"%.20g",
         draw_info->pointsize);
       (void) SetImageProperty(image,"caption:pointsize",pointsize,exception);
     }

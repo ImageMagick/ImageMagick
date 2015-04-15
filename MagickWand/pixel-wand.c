@@ -66,7 +66,7 @@ struct _PixelWand
     id;
 
   char
-    name[MaxTextExtent];
+    name[MagickPathExtent];
 
   ExceptionInfo
     *exception;
@@ -154,7 +154,7 @@ WandExport PixelWand *ClonePixelWand(const PixelWand *wand)
       wand->name);
   (void) ResetMagickMemory(clone_wand,0,sizeof(*clone_wand));
   clone_wand->id=AcquireWandId();
-  (void) FormatLocaleString(clone_wand->name,MaxTextExtent,"%s-%.20g",
+  (void) FormatLocaleString(clone_wand->name,MagickPathExtent,"%s-%.20g",
     PixelWandId,(double) clone_wand->id);
   clone_wand->exception=AcquireExceptionInfo();
   InheritException(clone_wand->exception,wand->exception);
@@ -406,7 +406,7 @@ WandExport PixelWand *NewPixelWand(void)
       GetExceptionMessage(errno));
   (void) ResetMagickMemory(wand,0,sizeof(*wand));
   wand->id=AcquireWandId();
-  (void) FormatLocaleString(wand->name,MaxTextExtent,"%s-%.20g",PixelWandId,
+  (void) FormatLocaleString(wand->name,MagickPathExtent,"%s-%.20g",PixelWandId,
     (double) wand->id);
   wand->exception=AcquireExceptionInfo();
   GetPixelInfo((Image *) NULL,&wand->pixel);
@@ -741,21 +741,21 @@ WandExport char *PixelGetColorAsString(const PixelWand *wand)
 WandExport char *PixelGetColorAsNormalizedString(const PixelWand *wand)
 {
   char
-    color[2*MaxTextExtent];
+    color[2*MagickPathExtent];
 
   assert(wand != (const PixelWand *) NULL);
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  (void) FormatLocaleString(color,MaxTextExtent,"%g,%g,%g",
+  (void) FormatLocaleString(color,MagickPathExtent,"%g,%g,%g",
     (double) (QuantumScale*wand->pixel.red),
     (double) (QuantumScale*wand->pixel.green),
     (double) (QuantumScale*wand->pixel.blue));
   if (wand->pixel.colorspace == CMYKColorspace)
-    (void) FormatLocaleString(color+strlen(color),MaxTextExtent,",%g",
+    (void) FormatLocaleString(color+strlen(color),MagickPathExtent,",%g",
       (double) (QuantumScale*wand->pixel.black));
   if (wand->pixel.alpha_trait != UndefinedPixelTrait)
-    (void) FormatLocaleString(color+strlen(color),MaxTextExtent,",%g",
+    (void) FormatLocaleString(color+strlen(color),MagickPathExtent,",%g",
       (double) (QuantumScale*wand->pixel.alpha));
   return(ConstantString(color));
 }
@@ -890,7 +890,7 @@ WandExport char *PixelGetException(const PixelWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   assert(severity != (ExceptionType *) NULL);
   *severity=wand->exception->severity;
-  description=(char *) AcquireQuantumMemory(2UL*MaxTextExtent,
+  description=(char *) AcquireQuantumMemory(2UL*MagickPathExtent,
     sizeof(*description));
   if (description == (char *) NULL)
     ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
@@ -898,13 +898,13 @@ WandExport char *PixelGetException(const PixelWand *wand,
   *description='\0';
   if (wand->exception->reason != (char *) NULL)
     (void) CopyMagickString(description,GetLocaleExceptionMessage(
-      wand->exception->severity,wand->exception->reason),MaxTextExtent);
+      wand->exception->severity,wand->exception->reason),MagickPathExtent);
   if (wand->exception->description != (char *) NULL)
     {
-      (void) ConcatenateMagickString(description," (",MaxTextExtent);
+      (void) ConcatenateMagickString(description," (",MagickPathExtent);
       (void) ConcatenateMagickString(description,GetLocaleExceptionMessage(
-        wand->exception->severity,wand->exception->description),MaxTextExtent);
-      (void) ConcatenateMagickString(description,")",MaxTextExtent);
+        wand->exception->severity,wand->exception->description),MagickPathExtent);
+      (void) ConcatenateMagickString(description,")",MagickPathExtent);
     }
   return(description);
 }

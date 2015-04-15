@@ -702,7 +702,7 @@ WandExport MagickBooleanType MagickImageCommand(ImageInfo *image_info,int argc,
 
   GetPathComponent(argv[0],TailPath,cli_wand->wand.name);
   SetClientName(cli_wand->wand.name);
-  ConcatenateMagickString(cli_wand->wand.name,"-CLI",MaxTextExtent);
+  ConcatenateMagickString(cli_wand->wand.name,"-CLI",MagickPathExtent);
 
   len=strlen(argv[0]);  /* precaution */
 

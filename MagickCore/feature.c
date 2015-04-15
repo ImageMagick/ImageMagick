@@ -246,7 +246,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
     pixel;
 
   char
-    geometry[MaxTextExtent];
+    geometry[MagickPathExtent];
 
   double
     lower_threshold,
@@ -281,7 +281,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
   /*
     Filter out noise.
   */
-  (void) FormatLocaleString(geometry,MaxTextExtent,
+  (void) FormatLocaleString(geometry,MagickPathExtent,
     "blur:%.20gx%.20g;blur:%.20gx%.20g+90",radius,sigma,radius,sigma);
   kernel_info=AcquireKernelInfo(geometry,exception);
   if (kernel_info == (KernelInfo *) NULL)
@@ -1771,8 +1771,8 @@ MagickExport Image *HoughLineImage(const Image *image,const size_t width,
     *image_view;
 
   char
-    message[MaxTextExtent],
-    path[MaxTextExtent];
+    message[MagickPathExtent],
+    path[MagickPathExtent];
 
   const char
     *artifact;
@@ -1908,12 +1908,12 @@ MagickExport Image *HoughLineImage(const Image *image,const size_t width,
       accumulator=DestroyMatrixInfo(accumulator);
       return((Image *) NULL);
     }
-  (void) FormatLocaleString(message,MaxTextExtent,
+  (void) FormatLocaleString(message,MagickPathExtent,
     "# Hough line transform: %.20gx%.20g%+.20g\n",(double) width,
     (double) height,(double) threshold);
   if (write(file,message,strlen(message)) != (ssize_t) strlen(message))
     status=MagickFalse;
-  (void) FormatLocaleString(message,MaxTextExtent,"viewbox 0 0 %.20g %.20g\n",
+  (void) FormatLocaleString(message,MagickPathExtent,"viewbox 0 0 %.20g %.20g\n",
     (double) image->columns,(double) image->rows);
   if (write(file,message,strlen(message)) != (ssize_t) strlen(message))
     status=MagickFalse;
@@ -1997,7 +1997,7 @@ MagickExport Image *HoughLineImage(const Image *image,const size_t width,
                 (image->rows/2.0))*sin(DegreesToRadians((double) x))))/
                 cos(DegreesToRadians((double) x))+(image->columns/2.0);
             }
-          (void) FormatLocaleString(message,MaxTextExtent,
+          (void) FormatLocaleString(message,MagickPathExtent,
             "line %g,%g %g,%g  # %g\n",line.x1,line.y1,line.x2,line.y2,maxima);
           if (write(file,message,strlen(message)) != (ssize_t) strlen(message))
             status=MagickFalse;
@@ -2010,7 +2010,7 @@ MagickExport Image *HoughLineImage(const Image *image,const size_t width,
   */
   image_info=AcquireImageInfo();
   image_info->background_color=image->background_color;
-  (void) FormatLocaleString(image_info->filename,MaxTextExtent,"mvg:%s",path);
+  (void) FormatLocaleString(image_info->filename,MagickPathExtent,"mvg:%s",path);
   artifact=GetImageArtifact(image,"background");
   if (artifact != (const char *) NULL)
     (void) SetImageOption(image_info,"background",artifact);

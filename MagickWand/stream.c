@@ -291,7 +291,7 @@ WandExport MagickBooleanType StreamImageCommand(ImageInfo *image_info,
         filename=argv[i];
         if ((LocaleCompare(filename,"--") == 0) && (i < (ssize_t) (argc-1)))
           filename=argv[++i];
-        (void) CopyMagickString(image_info->filename,filename,MaxTextExtent);
+        (void) CopyMagickString(image_info->filename,filename,MagickPathExtent);
         images=StreamImage(image_info,stream_info,exception);
         status&=(images != (Image *) NULL) &&
           (exception->severity < ErrorException);
@@ -580,7 +580,7 @@ WandExport MagickBooleanType StreamImageCommand(ImageInfo *image_info,
       {
         if (LocaleCompare("map",option+1) == 0)
           {
-            (void) CopyMagickString(argv[i]+1,"san",MaxTextExtent);
+            (void) CopyMagickString(argv[i]+1,"san",MagickPathExtent);
             if (*option == '+')
               break;
             i++;

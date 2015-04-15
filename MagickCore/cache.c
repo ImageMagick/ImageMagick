@@ -672,9 +672,9 @@ static MagickBooleanType ClonePixelCacheRepository(
   if (cache_info->debug != MagickFalse)
     {
       char
-        message[MaxTextExtent];
+        message[MagickPathExtent];
 
-      (void) FormatLocaleString(message,MaxTextExtent,"%s => %s",
+      (void) FormatLocaleString(message,MagickPathExtent,"%s => %s",
         CommandOptionToMnemonic(MagickCacheOptions,(ssize_t) cache_info->type),
         CommandOptionToMnemonic(MagickCacheOptions,(ssize_t) clone_info->type));
       (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s",message);
@@ -868,9 +868,9 @@ MagickPrivate Cache DestroyPixelCache(Cache cache)
   if (cache_info->debug != MagickFalse)
     {
       char
-        message[MaxTextExtent];
+        message[MagickPathExtent];
 
-      (void) FormatLocaleString(message,MaxTextExtent,"destroy %s",
+      (void) FormatLocaleString(message,MagickPathExtent,"destroy %s",
         cache_info->filename);
       (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s",message);
     }
@@ -3229,11 +3229,11 @@ static MagickBooleanType SetPixelCacheExtent(Image *image,MagickSizeType length)
   if (image->debug != MagickFalse)
     {
       char
-        format[MaxTextExtent],
-        message[MaxTextExtent];
+        format[MagickPathExtent],
+        message[MagickPathExtent];
 
-      (void) FormatMagickSize(length,MagickFalse,"B",MaxTextExtent,format);
-      (void) FormatLocaleString(message,MaxTextExtent,
+      (void) FormatMagickSize(length,MagickFalse,"B",MagickPathExtent,format);
+      (void) FormatLocaleString(message,MagickPathExtent,
         "extend %s (%s[%d], disk, %s)",cache_info->filename,
         cache_info->cache_filename,cache_info->file,format);
       (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s",message);
@@ -3265,8 +3265,8 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
     source_info;
 
   char
-    format[MaxTextExtent],
-    message[MaxTextExtent];
+    format[MagickPathExtent],
+    message[MagickPathExtent];
 
   const char
     *type;
@@ -3297,7 +3297,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
   assert(cache_info->signature == MagickSignature);
   source_info=(*cache_info);
   source_info.file=(-1);
-  (void) FormatLocaleString(cache_info->filename,MaxTextExtent,"%s[%.20g]",
+  (void) FormatLocaleString(cache_info->filename,MagickPathExtent,"%s[%.20g]",
     image->filename,(double) GetImageIndexInList(image));
   cache_info->storage_class=image->storage_class;
   cache_info->colorspace=image->colorspace;
@@ -3364,10 +3364,10 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
               if (image->debug != MagickFalse)
                 {
                   (void) FormatMagickSize(cache_info->length,MagickTrue,"B",
-                    MaxTextExtent,format);
+                    MagickPathExtent,format);
                   type=CommandOptionToMnemonic(MagickCacheOptions,(ssize_t)
                     cache_info->type);
-                  (void) FormatLocaleString(message,MaxTextExtent,
+                  (void) FormatLocaleString(message,MagickPathExtent,
                     "open %s (%s %s, %.20gx%.20gx%.20g %s)",
                     cache_info->filename,cache_info->mapped != MagickFalse ?
                     "Anonymous" : "Heap",type,(double) cache_info->columns,
@@ -3410,7 +3410,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
               cache_info->type=DistributedCache;
               cache_info->server_info=server_info;
               (void) FormatLocaleString(cache_info->cache_filename,
-                MaxTextExtent,"%s:%d",GetDistributeCacheHostname(
+                MagickPathExtent,"%s:%d",GetDistributeCacheHostname(
                 (DistributeCacheInfo *) cache_info->server_info),
                 GetDistributeCachePort((DistributeCacheInfo *)
                 cache_info->server_info));
@@ -3424,10 +3424,10 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
               if (image->debug != MagickFalse)
                 {
                   (void) FormatMagickSize(cache_info->length,MagickFalse,"B",
-                    MaxTextExtent,format);
+                    MagickPathExtent,format);
                   type=CommandOptionToMnemonic(MagickCacheOptions,(ssize_t)
                     cache_info->type);
-                  (void) FormatLocaleString(message,MaxTextExtent,
+                  (void) FormatLocaleString(message,MagickPathExtent,
                     "open %s (%s[%d], %s, %.20gx%.20gx%.20g %s)",
                     cache_info->filename,cache_info->cache_filename,
                     GetDistributeCacheFile((DistributeCacheInfo *)
@@ -3507,10 +3507,10 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
               if (image->debug != MagickFalse)
                 {
                   (void) FormatMagickSize(cache_info->length,MagickTrue,"B",
-                    MaxTextExtent,format);
+                    MagickPathExtent,format);
                   type=CommandOptionToMnemonic(MagickCacheOptions,(ssize_t)
                     cache_info->type);
-                  (void) FormatLocaleString(message,MaxTextExtent,
+                  (void) FormatLocaleString(message,MagickPathExtent,
                     "open %s (%s[%d], %s, %.20gx%.20gx%.20g %s)",
                     cache_info->filename,cache_info->cache_filename,
                     cache_info->file,type,(double) cache_info->columns,(double)
@@ -3532,11 +3532,11 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
     }
   if (image->debug != MagickFalse)
     {
-      (void) FormatMagickSize(cache_info->length,MagickFalse,"B",MaxTextExtent,
+      (void) FormatMagickSize(cache_info->length,MagickFalse,"B",MagickPathExtent,
         format);
       type=CommandOptionToMnemonic(MagickCacheOptions,(ssize_t)
         cache_info->type);
-      (void) FormatLocaleString(message,MaxTextExtent,
+      (void) FormatLocaleString(message,MagickPathExtent,
         "open %s (%s[%d], %s, %.20gx%.20gx%.20g %s)",cache_info->filename,
         cache_info->cache_filename,cache_info->file,type,(double)
         cache_info->columns,(double) cache_info->rows,(double)
@@ -3619,7 +3619,7 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
         (void) LogMagickEvent(CacheEvent,GetMagickModule(),
           "attach persistent cache");
       (void) CopyMagickString(cache_info->cache_filename,filename,
-        MaxTextExtent);
+        MagickPathExtent);
       cache_info->type=DiskCache;
       cache_info->offset=(*offset);
       if (OpenPixelCache(image,ReadMode,exception) == MagickFalse)
@@ -3646,7 +3646,7 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
           if (status == 0)
             {
               (void) CopyMagickString(cache_info->cache_filename,filename,
-                MaxTextExtent);
+                MagickPathExtent);
               *offset+=cache_info->length+page_size-(cache_info->length %
                 page_size);
               UnlockSemaphoreInfo(cache_info->semaphore);
@@ -3666,7 +3666,7 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
   clone_info=(CacheInfo *) clone_image.cache;
   image->cache=ClonePixelCache(cache_info);
   cache_info=(CacheInfo *) ReferencePixelCache(image->cache);
-  (void) CopyMagickString(cache_info->cache_filename,filename,MaxTextExtent);
+  (void) CopyMagickString(cache_info->cache_filename,filename,MagickPathExtent);
   cache_info->type=DiskCache;
   cache_info->offset=(*offset);
   cache_info=(CacheInfo *) image->cache;

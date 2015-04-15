@@ -186,7 +186,7 @@ static MagickBooleanType WriteINFOImage(const ImageInfo *image_info,
     if (format == (char *) NULL)
       {
         (void) CopyMagickString(image->filename,image->magick_filename,
-          MaxTextExtent);
+          MagickPathExtent);
         image->magick_columns=image->columns;
         image->magick_rows=image->rows;
         (void) IdentifyImage(image,GetBlobFileHandle(image),

@@ -685,7 +685,7 @@ static Image *ReadEMFImage(const ImageInfo *image_info,
     *p;
 
   wchar_t
-    fileName[MaxTextExtent];
+    fileName[MagickPathExtent];
 
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
@@ -698,7 +698,7 @@ static Image *ReadEMFImage(const ImageInfo *image_info,
   if (Gdiplus::GdiplusStartup(&token,&startup_input,NULL) != 
     Gdiplus::Status::Ok)
     ThrowReaderException(CoderError, "GdiplusStartupFailed");
-  MultiByteToWideChar(CP_UTF8,0,image->filename,-1,fileName,MaxTextExtent);
+  MultiByteToWideChar(CP_UTF8,0,image->filename,-1,fileName,MagickPathExtent);
   source=Gdiplus::Image::FromFile(fileName);
   if (source == (Gdiplus::Image *) NULL)
     {

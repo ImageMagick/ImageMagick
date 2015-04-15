@@ -99,7 +99,7 @@ typedef struct _JNXLevelInfo
     scale;
 
   unsigned short
-    copyright[MaxTextExtent];
+    copyright[MagickPathExtent];
 } JNXLevelInfo;
 
 /*
@@ -212,7 +212,7 @@ static Image *ReadJNXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) ReadBlobLSBLong(image);
         j=0;
         while ((c=ReadBlobLSBShort(image)) != 0)
-          if (j < (MaxTextExtent-1))
+          if (j < (MagickPathExtent-1))
             jnx_level_info[i].copyright[j++]=c;
         jnx_level_info[i].copyright[j]=0;
       }
@@ -297,14 +297,14 @@ static Image *ReadJNXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
         }
       read_info=CloneImageInfo(image_info);
-      (void) CopyMagickString(read_info->magick,"JPEG",MaxTextExtent);
+      (void) CopyMagickString(read_info->magick,"JPEG",MagickPathExtent);
       tile_image=BlobToImage(read_info,blob,tile_length+2,exception);
       read_info=DestroyImageInfo(read_info);
       blob=(unsigned char *) RelinquishMagickMemory(blob);
       offset=SeekBlob(image,restore_offset,SEEK_SET);
       if (tile_image == (Image *) NULL)
         continue;
-      (void) CopyMagickString(tile_image->magick,image->magick,MaxTextExtent);
+      (void) CopyMagickString(tile_image->magick,image->magick,MagickPathExtent);
       (void) FormatImageProperty(tile_image,"jnx:northeast","%.20g,%.20g",
         northeast.x,northeast.y);
       (void) FormatImageProperty(tile_image,"jnx:southwest","%.20g,%.20g",

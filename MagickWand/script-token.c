@@ -337,8 +337,8 @@ WandExport ScriptTokenInfo * DestroyScriptTokenInfo(ScriptTokenInfo *token_info)
 #define SaveChar(c) \
 { \
   if ((size_t) offset >= (token_info->length-1)) { \
-    if ( token_info->length >= MaxTextExtent ) \
-      token_info->length += MaxTextExtent; \
+    if ( token_info->length >= MagickPathExtent ) \
+      token_info->length += MagickPathExtent; \
     else \
       token_info->length *= 4; \
     token_info->token = (char *) \

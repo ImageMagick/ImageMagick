@@ -130,7 +130,7 @@ static Image *ReadMGKImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
   char
-    buffer[MaxTextExtent];
+    buffer[MagickPathExtent];
 
   Image
     *image;
@@ -363,7 +363,7 @@ static MagickBooleanType WriteMGKImage(const ImageInfo *image_info,
   Image *image)
 {
   char
-    buffer[MaxTextExtent];
+    buffer[MagickPathExtent];
 
   MagickBooleanType
     status;
@@ -414,7 +414,7 @@ static MagickBooleanType WriteMGKImage(const ImageInfo *image_info,
       Initialize raster file header.
     */
     (void) WriteBlobString(image,"id=mgk\n");
-    (void) FormatMagickString(buffer,MaxTextExtent,"%lu %lu\n",image->columns,
+    (void) FormatMagickString(buffer,MagickPathExtent,"%lu %lu\n",image->columns,
       image->rows);
     (void) WriteBlobString(image,buffer);
     for (y=0; y < (ssize_t) image->rows; y++)

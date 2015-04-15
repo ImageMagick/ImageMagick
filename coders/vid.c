@@ -163,7 +163,7 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image_info->debug != MagickFalse)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"name: %s",
         filelist[i]);
-    (void) CopyMagickString(read_info->filename,filelist[i],MaxTextExtent);
+    (void) CopyMagickString(read_info->filename,filelist[i],MagickPathExtent);
     filelist[i]=DestroyString(filelist[i]);
     *read_info->magick='\0';
     next_image=ReadImage(read_info,exception);
@@ -331,11 +331,11 @@ static MagickBooleanType WriteVIDImage(const ImageInfo *image_info,Image *image,
   if (montage_image == (Image *) NULL)
     return(MagickFalse);
   (void) CopyMagickString(montage_image->filename,image_info->filename,
-    MaxTextExtent);
+    MagickPathExtent);
   write_info=CloneImageInfo(image_info);
   (void) SetImageInfo(write_info,1,exception);
   if (LocaleCompare(write_info->magick,"VID") == 0)
-    (void) FormatLocaleString(montage_image->filename,MaxTextExtent,
+    (void) FormatLocaleString(montage_image->filename,MagickPathExtent,
       "miff:%s",write_info->filename);
   status=WriteImage(write_info,montage_image,exception);
   montage_image=DestroyImage(montage_image);

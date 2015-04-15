@@ -650,7 +650,7 @@ MagickExport LinkedListInfo *GetConfigureOptions(const char *filename,
   ExceptionInfo *exception)
 {
   char
-    path[MaxTextExtent];
+    path[MagickPathExtent];
 
   const char
     *element;
@@ -665,7 +665,7 @@ MagickExport LinkedListInfo *GetConfigureOptions(const char *filename,
   assert(filename != (const char *) NULL);
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",filename);
   assert(exception != (ExceptionInfo *) NULL);
-  (void) CopyMagickString(path,filename,MaxTextExtent);
+  (void) CopyMagickString(path,filename,MagickPathExtent);
   /*
     Load XML from configuration files to linked-list.
   */
@@ -677,7 +677,7 @@ MagickExport LinkedListInfo *GetConfigureOptions(const char *filename,
       element=(const char *) GetNextValueInLinkedList(paths);
       while (element != (const char *) NULL)
       {
-        (void) FormatLocaleString(path,MaxTextExtent,"%s%s",element,filename);
+        (void) FormatLocaleString(path,MagickPathExtent,"%s%s",element,filename);
         (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
           "Searching for configure file: \"%s\"",path);
         xml=ConfigureFileToStringInfo(path);
@@ -745,7 +745,7 @@ MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
 #define MagickCoreDebugDLL  "CORE_DB_MagickCore_.dll"
 
   char
-    path[MaxTextExtent];
+    path[MagickPathExtent];
 
   LinkedListInfo
     *paths;
@@ -753,7 +753,7 @@ MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
   assert(filename != (const char *) NULL);
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",filename);
   assert(exception != (ExceptionInfo *) NULL);
-  (void) CopyMagickString(path,filename,MaxTextExtent);
+  (void) CopyMagickString(path,filename,MagickPathExtent);
   paths=NewLinkedList(0);
   {
     char
@@ -771,14 +771,14 @@ MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
 
         for (p=configure_path-1; p != (char *) NULL; )
         {
-          (void) CopyMagickString(path,p+1,MaxTextExtent);
+          (void) CopyMagickString(path,p+1,MagickPathExtent);
           q=strchr(path,DirectoryListSeparator);
           if (q != (char *) NULL)
             *q='\0';
           q=path+strlen(path)-1;
           if ((q >= path) && (*q != *DirectorySeparator))
             (void) ConcatenateMagickString(path,DirectorySeparator,
-              MaxTextExtent);
+              MagickPathExtent);
           (void) AppendValueToLinkedList(paths,ConstantString(path));
           p=strchr(p+1,DirectoryListSeparator);
         }
@@ -812,7 +812,7 @@ MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
     key_value=NTRegistryKeyLookup(RegistryKey);
     if (key_value != (unsigned char *) NULL)
       {
-        (void) FormatLocaleString(path,MaxTextExtent,"%s%s",(char *) key_value,
+        (void) FormatLocaleString(path,MagickPathExtent,"%s%s",(char *) key_value,
           DirectorySeparator);
         (void) AppendValueToLinkedList(paths,ConstantString(path));
         key_value=(unsigned char *) RelinquishMagickMemory(key_value);
@@ -831,17 +831,17 @@ MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
     if (home != (char *) NULL)
       {
 #if !defined(MAGICKCORE_POSIX_SUPPORT)
-        (void) FormatLocaleString(path,MaxTextExtent,"%s%s",home,
+        (void) FormatLocaleString(path,MagickPathExtent,"%s%s",home,
           DirectorySeparator);
         (void) AppendValueToLinkedList(paths,ConstantString(path));
 #else
-        (void) FormatLocaleString(path,MaxTextExtent,"%s/etc/%s/",home,
+        (void) FormatLocaleString(path,MagickPathExtent,"%s/etc/%s/",home,
           MAGICKCORE_CONFIGURE_RELATIVE_PATH);
         (void) AppendValueToLinkedList(paths,ConstantString(path));
-        (void) FormatLocaleString(path,MaxTextExtent,"%s/share/%s/",home,
+        (void) FormatLocaleString(path,MagickPathExtent,"%s/share/%s/",home,
           MAGICKCORE_SHARE_RELATIVE_PATH);
         (void) AppendValueToLinkedList(paths,ConstantString(path));
-        (void) FormatLocaleString(path,MaxTextExtent,"%s",
+        (void) FormatLocaleString(path,MagickPathExtent,"%s",
           MAGICKCORE_SHAREARCH_PATH);
         (void) AppendValueToLinkedList(paths,ConstantString(path));
 #endif
@@ -851,25 +851,25 @@ MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
   if (*GetClientPath() != '\0')
     {
 #if !defined(MAGICKCORE_POSIX_SUPPORT)
-      (void) FormatLocaleString(path,MaxTextExtent,"%s%s",GetClientPath(),
+      (void) FormatLocaleString(path,MagickPathExtent,"%s%s",GetClientPath(),
         DirectorySeparator);
       (void) AppendValueToLinkedList(paths,ConstantString(path));
 #else
       char
-        prefix[MaxTextExtent];
+        prefix[MagickPathExtent];
 
       /*
         Search based on executable directory if directory is known.
       */
-      (void) CopyMagickString(prefix,GetClientPath(),MaxTextExtent);
+      (void) CopyMagickString(prefix,GetClientPath(),MagickPathExtent);
       ChopPathComponents(prefix,1);
-      (void) FormatLocaleString(path,MaxTextExtent,"%s/etc/%s/",prefix,
+      (void) FormatLocaleString(path,MagickPathExtent,"%s/etc/%s/",prefix,
         MAGICKCORE_CONFIGURE_RELATIVE_PATH);
       (void) AppendValueToLinkedList(paths,ConstantString(path));
-      (void) FormatLocaleString(path,MaxTextExtent,"%s/share/%s/",prefix,
+      (void) FormatLocaleString(path,MagickPathExtent,"%s/share/%s/",prefix,
         MAGICKCORE_SHARE_RELATIVE_PATH);
       (void) AppendValueToLinkedList(paths,ConstantString(path));
-      (void) FormatLocaleString(path,MaxTextExtent,"%s",
+      (void) FormatLocaleString(path,MagickPathExtent,"%s",
         MAGICKCORE_SHAREARCH_PATH);
       (void) AppendValueToLinkedList(paths,ConstantString(path));
 #endif
@@ -891,7 +891,7 @@ MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
         /*
           Search $HOME/.config/ImageMagick.
         */
-        (void) FormatLocaleString(path,MaxTextExtent,
+        (void) FormatLocaleString(path,MagickPathExtent,
           "%s%s.config%sImageMagick%s",home,DirectorySeparator,
           DirectorySeparator,DirectorySeparator);
         (void) AppendValueToLinkedList(paths,ConstantString(path));
@@ -901,7 +901,7 @@ MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
   {
     char
-      module_path[MaxTextExtent];
+      module_path[MagickPathExtent];
 
     if ((NTGetModulePath(MagickCoreDLL,module_path) != MagickFalse) ||
         (NTGetModulePath(MagickCoreDebugDLL,module_path) != MagickFalse))
@@ -912,7 +912,7 @@ MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
         /*
           Search module path.
         */
-        (void) FormatLocaleString(path,MaxTextExtent,"%s%s",module_path,
+        (void) FormatLocaleString(path,MagickPathExtent,"%s%s",module_path,
           DirectorySeparator);
         key_value=NTRegistryKeyLookup(RegistryKey);
         if (key_value == (unsigned char *) NULL)
@@ -925,10 +925,10 @@ MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
         /*
           Search PerlMagick module path.
         */
-        (void) FormatLocaleString(path,MaxTextExtent,"%s%s",module_path,
+        (void) FormatLocaleString(path,MagickPathExtent,"%s%s",module_path,
           DirectorySeparator);
         (void) AppendValueToLinkedList(paths,ConstantString(path));
-        (void) FormatLocaleString(path,MaxTextExtent,"%s%s",module_path,
+        (void) FormatLocaleString(path,MagickPathExtent,"%s%s",module_path,
           "\\inc\\lib\\auto\\Image\\Magick\\");
         (void) AppendValueToLinkedList(paths,ConstantString(path));
       }
@@ -1125,7 +1125,7 @@ static MagickBooleanType LoadConfigureCache(LinkedListInfo *configure_cache,
   ExceptionInfo *exception)
 {
   char
-    keyword[MaxTextExtent],
+    keyword[MagickPathExtent],
     *token;
 
   ConfigureInfo
@@ -1153,7 +1153,7 @@ static MagickBooleanType LoadConfigureCache(LinkedListInfo *configure_cache,
     GetMagickToken(q,&q,token);
     if (*token == '\0')
       break;
-    (void) CopyMagickString(keyword,token,MaxTextExtent);
+    (void) CopyMagickString(keyword,token,MagickPathExtent);
     if (LocaleNCompare(keyword,"<!DOCTYPE",9) == 0)
       {
         /*
@@ -1179,7 +1179,7 @@ static MagickBooleanType LoadConfigureCache(LinkedListInfo *configure_cache,
         */
         while (((*token != '/') && (*(token+1) != '>')) && (*q != '\0'))
         {
-          (void) CopyMagickString(keyword,token,MaxTextExtent);
+          (void) CopyMagickString(keyword,token,MagickPathExtent);
           GetMagickToken(q,&q,token);
           if (*token != '=')
             continue;
@@ -1192,17 +1192,17 @@ static MagickBooleanType LoadConfigureCache(LinkedListInfo *configure_cache,
               else
                 {
                   char
-                    path[MaxTextExtent],
+                    path[MagickPathExtent],
                     *xml;
 
                   GetPathComponent(filename,HeadPath,path);
                   if (*path != '\0')
                     (void) ConcatenateMagickString(path,DirectorySeparator,
-                      MaxTextExtent);
+                      MagickPathExtent);
                   if (*token == *DirectorySeparator)
-                    (void) CopyMagickString(path,token,MaxTextExtent);
+                    (void) CopyMagickString(path,token,MagickPathExtent);
                   else
-                    (void) ConcatenateMagickString(path,token,MaxTextExtent);
+                    (void) ConcatenateMagickString(path,token,MagickPathExtent);
                   xml=FileToXML(path,~0UL);
                   if (xml != (char *) NULL)
                     {

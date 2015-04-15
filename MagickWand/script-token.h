@@ -31,7 +31,7 @@ typedef enum {
   TokenStatusMemoryFailed
 } TokenStatus;
 
-/* Initial length is MaxTextExtent/64 => 64  (divisor is a power of 4)
+/* Initial length is MagickPathExtent/64 => 64  (divisor is a power of 4)
    most tokens are never larger than this, so no need to waste memory!
    Also no CLI option is larger than about 40 characters!
 */

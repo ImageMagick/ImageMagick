@@ -58,7 +58,7 @@
 #include <errno.h>
 
 /* Defines to replace MagickWand / MagickCore defintions */
-#define MaxTextExtent     4096
+#define MagickPathExtent     4096
 #define MagickFalse       0
 #define MagickTrue        1
 #define MagickBooleanType int

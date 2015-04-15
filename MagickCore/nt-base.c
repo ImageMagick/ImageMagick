@@ -198,11 +198,11 @@ BOOL WINAPI DllMain(HINSTANCE handle,DWORD reason,LPVOID lpvReserved)
         *wide_path;
 
       MagickCoreGenesis((const char *) NULL,MagickFalse);
-      wide_path=(wchar_t *) AcquireQuantumMemory(MaxTextExtent,
+      wide_path=(wchar_t *) AcquireQuantumMemory(MagickPathExtent,
         sizeof(*wide_path));
       if (wide_path == (wchar_t *) NULL)
         return(FALSE);
-      count=(ssize_t) GetModuleFileNameW(handle,wide_path,MaxTextExtent);
+      count=(ssize_t) GetModuleFileNameW(handle,wide_path,MagickPathExtent);
       if (count != 0)
         {
           char
@@ -215,22 +215,22 @@ BOOL WINAPI DllMain(HINSTANCE handle,DWORD reason,LPVOID lpvReserved)
                 module_path[count+1]='\0';
                 break;
               }
-          path=(char *) AcquireQuantumMemory(16UL*MaxTextExtent,sizeof(*path));
+          path=(char *) AcquireQuantumMemory(16UL*MagickPathExtent,sizeof(*path));
           if (path == (char *) NULL)
             {
               module_path=DestroyString(module_path);
               wide_path=(wchar_t *) RelinquishMagickMemory(wide_path);
               return(FALSE);
             }
-          count=(ssize_t) GetEnvironmentVariable("PATH",path,16*MaxTextExtent);
+          count=(ssize_t) GetEnvironmentVariable("PATH",path,16*MagickPathExtent);
           if ((count != 0) && (strstr(path,module_path) == (char *) NULL))
             {
-              if ((strlen(module_path)+count+1) < (16*MaxTextExtent-1))
+              if ((strlen(module_path)+count+1) < (16*MagickPathExtent-1))
                 {
                   char
                     *variable;
 
-                  variable=(char *) AcquireQuantumMemory(16UL*MaxTextExtent,
+                  variable=(char *) AcquireQuantumMemory(16UL*MagickPathExtent,
                     sizeof(*variable));
                   if (variable == (char *) NULL)
                     {
@@ -239,7 +239,7 @@ BOOL WINAPI DllMain(HINSTANCE handle,DWORD reason,LPVOID lpvReserved)
                       wide_path=(wchar_t *) RelinquishMagickMemory(wide_path);
                       return(FALSE);
                     }
-                  (void) FormatLocaleString(variable,16*MaxTextExtent,
+                  (void) FormatLocaleString(variable,16*MagickPathExtent,
                     "%s;%s",module_path,path);
                   SetEnvironmentVariable("PATH",variable);
                   variable=DestroyString(variable);
@@ -606,7 +606,7 @@ MagickPrivate void NTErrorHandler(const ExceptionType severity,
   const char *reason,const char *description)
 {
   char
-    buffer[3*MaxTextExtent],
+    buffer[3*MagickPathExtent],
     *message;
 
   (void) severity;
@@ -617,18 +617,18 @@ MagickPrivate void NTErrorHandler(const ExceptionType severity,
     }
   message=GetExceptionMessage(errno);
   if ((description != (char *) NULL) && errno)
-    (void) FormatLocaleString(buffer,MaxTextExtent,"%s: %s (%s) [%s].\n",
+    (void) FormatLocaleString(buffer,MagickPathExtent,"%s: %s (%s) [%s].\n",
       GetClientName(),reason,description,message);
   else
     if (description != (char *) NULL)
-      (void) FormatLocaleString(buffer,MaxTextExtent,"%s: %s (%s).\n",
+      (void) FormatLocaleString(buffer,MagickPathExtent,"%s: %s (%s).\n",
         GetClientName(),reason,description);
     else
       if (errno != 0)
-        (void) FormatLocaleString(buffer,MaxTextExtent,"%s: %s [%s].\n",
+        (void) FormatLocaleString(buffer,MagickPathExtent,"%s: %s [%s].\n",
           GetClientName(),reason,message);
       else
-        (void) FormatLocaleString(buffer,MaxTextExtent,"%s: %s.\n",
+        (void) FormatLocaleString(buffer,MagickPathExtent,"%s: %s.\n",
           GetClientName(),reason);
   message=DestroyString(message);
   (void) MessageBox(NULL,buffer,"ImageMagick Exception",MB_OK | MB_TASKMODAL |
@@ -747,7 +747,7 @@ MagickPrivate MagickBooleanType NTGetExecutionPath(char *path,
   const size_t extent)
 {
   wchar_t
-    wide_path[MaxTextExtent];
+    wide_path[MagickPathExtent];
 
   (void) GetModuleFileNameW((HMODULE) NULL,wide_path,(DWORD) extent);
   (void) WideCharToMultiByte(CP_UTF8,0,wide_path,-1,path,(int) extent,NULL,
@@ -820,7 +820,7 @@ char *NTGetLastError(void)
 MagickPrivate const char *NTGetLibraryError(void)
 {
   static char
-    last_error[MaxTextExtent];
+    last_error[MagickPathExtent];
 
   char
     *error;
@@ -828,7 +828,7 @@ MagickPrivate const char *NTGetLibraryError(void)
   *last_error='\0';
   error=NTGetLastError();
   if (error)
-    (void) CopyMagickString(last_error,error,MaxTextExtent);
+    (void) CopyMagickString(last_error,error,MagickPathExtent);
   error=DestroyString(error);
   return(last_error);
 }
@@ -896,7 +896,7 @@ void *NTGetLibrarySymbol(void *handle,const char *name)
 MagickPrivate MagickBooleanType NTGetModulePath(const char *module,char *path)
 {
   char
-    module_path[MaxTextExtent];
+    module_path[MagickPathExtent];
 
   HMODULE
     handle;
@@ -908,7 +908,7 @@ MagickPrivate MagickBooleanType NTGetModulePath(const char *module,char *path)
   handle=GetModuleHandle(module);
   if (handle == (HMODULE) NULL)
     return(MagickFalse);
-  length=GetModuleFileName(handle,module_path,MaxTextExtent);
+  length=GetModuleFileName(handle,module_path,MagickPathExtent);
   if (length != 0)
     GetPathComponent(module_path,HeadPath,path);
   return(MagickTrue);
@@ -1011,7 +1011,7 @@ static int NTLocateGhostscript(DWORD flags,int *root_index,
   for (i=0; i < (ssize_t) (sizeof(products)/sizeof(products[0])); i++)
   {
     char
-      key[MaxTextExtent];
+      key[MagickPathExtent];
 
     HKEY
       hkey;
@@ -1022,7 +1022,7 @@ static int NTLocateGhostscript(DWORD flags,int *root_index,
     REGSAM
       mode;
 
-    (void) FormatLocaleString(key,MaxTextExtent,"SOFTWARE\\%s",products[i]);
+    (void) FormatLocaleString(key,MagickPathExtent,"SOFTWARE\\%s",products[i]);
     for (j=0; j < (ssize_t) (sizeof(registry_roots)/sizeof(registry_roots[0]));
          j++)
     {
@@ -1078,7 +1078,7 @@ static int NTGhostscriptGetString(const char *name,BOOL *is_64_bit,
   char *value,const size_t length)
 {
   char
-    buffer[MaxTextExtent],
+    buffer[MagickPathExtent],
     *directory;
 
   int
@@ -1106,7 +1106,7 @@ static int NTGhostscriptGetString(const char *name,BOOL *is_64_bit,
       directory=GetEnvironmentValue("MAGICK_GHOSTSCRIPT_PATH");
       if (directory != (char *) NULL)
         {
-          (void) FormatLocaleString(buffer,MaxTextExtent,"%s%sgsdll32.dll",
+          (void) FormatLocaleString(buffer,MagickPathExtent,"%s%sgsdll32.dll",
             directory,DirectorySeparator);
           if (IsPathAccessible(buffer) != MagickFalse)
             {
@@ -1115,7 +1115,7 @@ static int NTGhostscriptGetString(const char *name,BOOL *is_64_bit,
                 *is_64_bit=FALSE;
               return(TRUE);
             }
-          (void) FormatLocaleString(buffer,MaxTextExtent,"%s%sgsdll64.dll",
+          (void) FormatLocaleString(buffer,MagickPathExtent,"%s%sgsdll64.dll",
             directory,DirectorySeparator);
           if (IsPathAccessible(buffer) != MagickFalse)
             {
@@ -1160,7 +1160,7 @@ static int NTGhostscriptGetString(const char *name,BOOL *is_64_bit,
     return(FALSE);
   if (is_64_bit != NULL)
     *is_64_bit=is_64_bit_version;
-  (void) FormatLocaleString(buffer,MaxTextExtent,"SOFTWARE\\%s\\%d.%02d",
+  (void) FormatLocaleString(buffer,MagickPathExtent,"SOFTWARE\\%s\\%d.%02d",
     product_family,major_version,minor_version);
   extent=(int) length;
   if (NTGetRegistryValue(registry_roots[root_index].hkey,buffer,flags,name,
@@ -1177,7 +1177,7 @@ static int NTGhostscriptGetString(const char *name,BOOL *is_64_bit,
 MagickPrivate int NTGhostscriptDLL(char *path,int length)
 {
   static char
-    dll[MaxTextExtent] = { "" };
+    dll[MagickPathExtent] = { "" };
 
   static BOOL
     is_64_bit_version;
@@ -1258,7 +1258,7 @@ MagickPrivate int NTGhostscriptEXE(char *path,int length)
     *p;
 
   static char
-    program[MaxTextExtent] = { "" };
+    program[MagickPathExtent] = { "" };
 
   static BOOL
     is_64_bit_version = FALSE;
@@ -1307,9 +1307,9 @@ MagickPrivate int NTGhostscriptEXE(char *path,int length)
 MagickPrivate int NTGhostscriptFonts(char *path,int length)
 {
   char
-    buffer[MaxTextExtent],
+    buffer[MagickPathExtent],
     *directory,
-    filename[MaxTextExtent];
+    filename[MagickPathExtent];
 
   register char
     *p,
@@ -1319,12 +1319,12 @@ MagickPrivate int NTGhostscriptFonts(char *path,int length)
   directory=GetEnvironmentValue("MAGICK_GHOSTSCRIPT_FONT_PATH");
   if (directory != (char *) NULL)
     {
-      (void) CopyMagickString(buffer,directory,MaxTextExtent);
+      (void) CopyMagickString(buffer,directory,MagickPathExtent);
       directory=DestroyString(directory);
     }
   else
     {
-      if (NTGhostscriptGetString("GS_LIB",NULL,buffer,MaxTextExtent) == FALSE)
+      if (NTGhostscriptGetString("GS_LIB",NULL,buffer,MagickPathExtent) == FALSE)
         return(FALSE);
     }
   for (p=buffer-1; p != (char *) NULL; p=strchr(p+1,DirectoryListSeparator))
@@ -1333,7 +1333,7 @@ MagickPrivate int NTGhostscriptFonts(char *path,int length)
     q=strchr(path,DirectoryListSeparator);
     if (q != (char *) NULL)
       *q='\0';
-    (void) FormatLocaleString(filename,MaxTextExtent,"%s%sfonts.dir",path,
+    (void) FormatLocaleString(filename,MagickPathExtent,"%s%sfonts.dir",path,
       DirectorySeparator);
     if (IsPathAccessible(filename) != MagickFalse)
       return(TRUE);
@@ -1364,7 +1364,7 @@ MagickPrivate int NTGhostscriptFonts(char *path,int length)
 MagickPrivate int NTGhostscriptLoadDLL(void)
 {
   char
-    path[MaxTextExtent];
+    path[MagickPathExtent];
 
   if (ghost_semaphore == (SemaphoreInfo *) NULL)
     ActivateSemaphoreInfo(&ghost_semaphore);
@@ -1622,15 +1622,15 @@ MagickPrivate DIR *NTOpenDirectory(const char *path)
     length;
 
   wchar_t
-    file_specification[MaxTextExtent];
+    file_specification[MagickPathExtent];
 
   assert(path != (const char *) NULL);
   length=MultiByteToWideChar(CP_UTF8,0,path,-1,file_specification,
-    MaxTextExtent);
+    MagickPathExtent);
   if (length == 0)
     return((DIR *) NULL);
   if(wcsncat(file_specification,(const wchar_t*) DirectorySeparator,
-       MaxTextExtent-wcslen(file_specification)-1) == (wchar_t*) NULL)
+       MagickPathExtent-wcslen(file_specification)-1) == (wchar_t*) NULL)
     return((DIR *) NULL);
   entry=(DIR *) AcquireMagickMemory(sizeof(DIR));
   if (entry != (DIR *) NULL)
@@ -1641,7 +1641,7 @@ MagickPrivate DIR *NTOpenDirectory(const char *path)
   if (entry->hSearch == INVALID_HANDLE_VALUE)
     {
       if(wcsncat(file_specification,L"*.*",
-        MaxTextExtent-wcslen(file_specification)-1) == (wchar_t*) NULL)
+        MagickPathExtent-wcslen(file_specification)-1) == (wchar_t*) NULL)
         {
           entry=(DIR *) RelinquishMagickMemory(entry);
           return((DIR *) NULL);
@@ -1723,9 +1723,9 @@ static inline void *NTLoadLibrary(const char *filename)
     length;
 
   wchar_t
-    path[MaxTextExtent];
+    path[MagickPathExtent];
 
-  length=MultiByteToWideChar(CP_UTF8,0,filename,-1,path,MaxTextExtent);
+  length=MultiByteToWideChar(CP_UTF8,0,filename,-1,path,MagickPathExtent);
   if (length == 0)
     return((void *) NULL);
   return (void *) LoadLibraryExW(path,NULL,LOAD_WITH_ALTERED_SEARCH_PATH);
@@ -1734,7 +1734,7 @@ static inline void *NTLoadLibrary(const char *filename)
 MagickPrivate void *NTOpenLibrary(const char *filename)
 {
   char
-    path[MaxTextExtent];
+    path[MagickPathExtent];
 
   register const char
     *p,
@@ -1757,9 +1757,9 @@ MagickPrivate void *NTOpenLibrary(const char *filename)
         if (q != (const char*) NULL)
           (void) CopyMagickString(path,p,q-p+1);
         else
-          (void) CopyMagickString(path,p,MaxTextExtent);
-        (void) ConcatenateMagickString(path,DirectorySeparator,MaxTextExtent);
-        (void) ConcatenateMagickString(path,filename,MaxTextExtent);
+          (void) CopyMagickString(path,p,MagickPathExtent);
+        (void) ConcatenateMagickString(path,DirectorySeparator,MagickPathExtent);
+        (void) ConcatenateMagickString(path,filename,MagickPathExtent);
         handle=NTLoadLibrary(path);
         if (handle != (void *) NULL || q == (const char*) NULL)
           break;
@@ -1854,7 +1854,7 @@ MagickPrivate struct dirent *NTReadDirectory(DIR *entry)
 MagickPrivate unsigned char *NTRegistryKeyLookup(const char *subkey)
 {
   char
-    package_key[MaxTextExtent];
+    package_key[MagickPathExtent];
 
   DWORD
     size,
@@ -1872,7 +1872,7 @@ MagickPrivate unsigned char *NTRegistryKeyLookup(const char *subkey)
   /*
     Look-up base key.
   */
-  (void) FormatLocaleString(package_key,MaxTextExtent,"SOFTWARE\\%s\\%s\\Q:%d",
+  (void) FormatLocaleString(package_key,MagickPathExtent,"SOFTWARE\\%s\\%s\\Q:%d",
     MagickPackageName,MagickLibVersionText,MAGICKCORE_QUANTUM_DEPTH);
   (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),"%s",package_key);
   registry_key=(HKEY) INVALID_HANDLE_VALUE;
@@ -1990,7 +1990,7 @@ MagickPrivate unsigned char *NTResourceToBlob(const char *id)
 
 #ifndef MAGICKCORE_LIBRARY_NAME
   char
-    path[MaxTextExtent];
+    path[MagickPathExtent];
 #endif
 
   DWORD
@@ -2014,7 +2014,7 @@ MagickPrivate unsigned char *NTResourceToBlob(const char *id)
 #ifdef MAGICKCORE_LIBRARY_NAME
   handle=GetModuleHandle(MAGICKCORE_LIBRARY_NAME);
 #else
-  (void) FormatLocaleString(path,MaxTextExtent,"%s%s%s",GetClientPath(),
+  (void) FormatLocaleString(path,MagickPathExtent,"%s%s%s",GetClientPath(),
     DirectorySeparator,GetClientName());
   if (IsPathAccessible(path) != MagickFalse)
     handle=GetModuleHandle(path);
@@ -2036,7 +2036,7 @@ MagickPrivate unsigned char *NTResourceToBlob(const char *id)
       FreeResource(global);
       return((unsigned char *) NULL);
     }
-  blob=(unsigned char *) AcquireQuantumMemory(length+MaxTextExtent,
+  blob=(unsigned char *) AcquireQuantumMemory(length+MagickPathExtent,
     sizeof(*blob));
   if (blob != (unsigned char *) NULL)
     {
@@ -2194,14 +2194,14 @@ MagickPrivate int NTSystemCommand(const char *command,char *output)
       error=NTGetLastError(); \
       if (error != (char *) NULL) \
         { \
-          CopyMagickString(output,error,MaxTextExtent); \
+          CopyMagickString(output,error,MagickPathExtent); \
           error=DestroyString(error); \
         } \
     }
 
   char
     *error,
-    local_command[MaxTextExtent];
+    local_command[MagickPathExtent];
 
   DWORD
     bytes_read,
@@ -2234,7 +2234,7 @@ MagickPrivate int NTSystemCommand(const char *command,char *output)
   GetStartupInfo(&startup_info);
   startup_info.dwFlags=STARTF_USESHOWWINDOW;
   startup_info.wShowWindow=SW_SHOWMINNOACTIVE;
-  (void) CopyMagickString(local_command,command,MaxTextExtent);
+  (void) CopyMagickString(local_command,command,MagickPathExtent);
   asynchronous=command[strlen(command)-1] == '&' ? MagickTrue : MagickFalse;
   if (asynchronous != MagickFalse)
     {
@@ -2300,7 +2300,7 @@ MagickPrivate int NTSystemCommand(const char *command,char *output)
   if (read_output != (HANDLE) NULL)
     if (PeekNamedPipe(read_output,(LPVOID) NULL,0,(LPDWORD) NULL,&size,
           (LPDWORD) NULL))
-      if ((size > 0) && (ReadFile(read_output,output,MaxTextExtent-1,
+      if ((size > 0) && (ReadFile(read_output,output,MagickPathExtent-1,
           &bytes_read,NULL))) 
         output[bytes_read]='\0';
   CleanupOutputHandles;
@@ -2584,16 +2584,16 @@ MagickPrivate void NTWarningHandler(const ExceptionType severity,
   const char *reason,const char *description)
 {
   char
-    buffer[2*MaxTextExtent];
+    buffer[2*MagickPathExtent];
 
   (void) severity;
   if (reason == (char *) NULL)
     return;
   if (description == (char *) NULL)
-    (void) FormatLocaleString(buffer,MaxTextExtent,"%s: %s.\n",GetClientName(),
+    (void) FormatLocaleString(buffer,MagickPathExtent,"%s: %s.\n",GetClientName(),
       reason);
   else
-    (void) FormatLocaleString(buffer,MaxTextExtent,"%s: %s (%s).\n",
+    (void) FormatLocaleString(buffer,MagickPathExtent,"%s: %s (%s).\n",
       GetClientName(),reason,description);
   (void) MessageBox(NULL,buffer,"ImageMagick Warning",MB_OK | MB_TASKMODAL |
     MB_SETFOREGROUND | MB_ICONINFORMATION);

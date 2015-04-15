@@ -153,7 +153,7 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     count;
 
   unsigned char
-    magick[MaxTextExtent];
+    magick[MagickPathExtent];
 
   /*
     Open image file.
@@ -221,7 +221,7 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     next_image=ReadImage(read_info,exception);
     if (next_image == (Image *) NULL)
       break;
-    (void) FormatLocaleString(next_image->filename,MaxTextExtent,
+    (void) FormatLocaleString(next_image->filename,MagickPathExtent,
       "slide_%02ld.sfw",(long) next_image->scene);
     if (image == (Image *) NULL)
       image=next_image;

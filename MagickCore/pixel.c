@@ -4325,7 +4325,7 @@ static void LogPixelChannels(const Image *image)
   for (i=0; i < (ssize_t) image->number_channels; i++)
   {
     char
-      traits[MaxTextExtent];
+      traits[MagickPathExtent];
 
     const char
       *name;
@@ -4396,13 +4396,13 @@ static void LogPixelChannels(const Image *image)
     channel=GetPixelChannelChannel(image,i);
     *traits='\0';
     if ((GetPixelChannelTraits(image,channel) & UpdatePixelTrait) != 0)
-      (void) ConcatenateMagickString(traits,"update,",MaxTextExtent);
+      (void) ConcatenateMagickString(traits,"update,",MagickPathExtent);
     if ((GetPixelChannelTraits(image,channel) & BlendPixelTrait) != 0)
-      (void) ConcatenateMagickString(traits,"blend,",MaxTextExtent);
+      (void) ConcatenateMagickString(traits,"blend,",MagickPathExtent);
     if ((GetPixelChannelTraits(image,channel) & CopyPixelTrait) != 0)
-      (void) ConcatenateMagickString(traits,"copy,",MaxTextExtent);
+      (void) ConcatenateMagickString(traits,"copy,",MagickPathExtent);
     if (*traits == '\0')
-      (void) ConcatenateMagickString(traits,"undefined,",MaxTextExtent);
+      (void) ConcatenateMagickString(traits,"undefined,",MagickPathExtent);
     traits[strlen(traits)-1]='\0';
     (void) LogMagickEvent(PixelEvent,GetMagickModule(),"  %.20g: %s (%s)",
       (double) i,name,traits);

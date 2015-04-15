@@ -297,14 +297,14 @@ ModuleExport size_t RegisterJBIGImage(void)
 #define JBIGDescription  "Joint Bi-level Image experts Group interchange format"
 
   char
-    version[MaxTextExtent];
+    version[MagickPathExtent];
 
   MagickInfo
     *entry;
 
   *version='\0';
 #if defined(JBG_VERSION)
-  (void) CopyMagickString(version,JBG_VERSION,MaxTextExtent);
+  (void) CopyMagickString(version,JBG_VERSION,MagickPathExtent);
 #endif
   entry=AcquireMagickInfo("JBIG","BIE",JBIGDescription);
 #if defined(MAGICKCORE_JBIG_DELEGATE)

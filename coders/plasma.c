@@ -146,7 +146,7 @@ static Image *ReadPlasmaImage(const ImageInfo *image_info,
   */
   read_info=CloneImageInfo(image_info);
   SetImageInfoBlob(read_info,(void *) NULL,0);
-  (void) FormatLocaleString(read_info->filename,MaxTextExtent,
+  (void) FormatLocaleString(read_info->filename,MagickPathExtent,
     "gradient:%s",image_info->filename);
   image=ReadImage(read_info,exception);
   read_info=DestroyImageInfo(read_info);

@@ -323,7 +323,7 @@ static MagickBooleanType WriteFAXImage(const ImageInfo *image_info,Image *image,
   if (status == MagickFalse)
     return(status);
   write_info=CloneImageInfo(image_info);
-  (void) CopyMagickString(write_info->magick,"FAX",MaxTextExtent);
+  (void) CopyMagickString(write_info->magick,"FAX",MagickPathExtent);
   scene=0;
   do
   {

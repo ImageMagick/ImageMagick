@@ -98,7 +98,7 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,
 {
   char
     *p,
-    pedantic_geometry[MaxTextExtent],
+    pedantic_geometry[MagickPathExtent],
     *q;
 
   double
@@ -116,14 +116,14 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,
   flags=NoValue;
   if ((geometry == (char *) NULL) || (*geometry == '\0'))
     return(flags);
-  if (strlen(geometry) >= (MaxTextExtent-1))
+  if (strlen(geometry) >= (MagickPathExtent-1))
     return(flags);
-  (void) CopyMagickString(pedantic_geometry,geometry,MaxTextExtent);
+  (void) CopyMagickString(pedantic_geometry,geometry,MagickPathExtent);
   for (p=pedantic_geometry; *p != '\0'; )
   {
     if (isspace((int) ((unsigned char) *p)) != 0)
       {
-        (void) CopyMagickString(p,p+1,MaxTextExtent);
+        (void) CopyMagickString(p,p+1,MagickPathExtent);
         continue;
       }
     c=(int)*p;
@@ -132,43 +132,43 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,
       case '%':
       {
         flags|=PercentValue;
-        (void) CopyMagickString(p,p+1,MaxTextExtent);
+        (void) CopyMagickString(p,p+1,MagickPathExtent);
         break;
       }
       case '!':
       {
         flags|=AspectValue;
-        (void) CopyMagickString(p,p+1,MaxTextExtent);
+        (void) CopyMagickString(p,p+1,MagickPathExtent);
         break;
       }
       case '<':
       {
         flags|=LessValue;
-        (void) CopyMagickString(p,p+1,MaxTextExtent);
+        (void) CopyMagickString(p,p+1,MagickPathExtent);
         break;
       }
       case '>':
       {
         flags|=GreaterValue;
-        (void) CopyMagickString(p,p+1,MaxTextExtent);
+        (void) CopyMagickString(p,p+1,MagickPathExtent);
         break;
       }
       case '^':
       {
         flags|=MinimumValue;
-        (void) CopyMagickString(p,p+1,MaxTextExtent);
+        (void) CopyMagickString(p,p+1,MagickPathExtent);
         break;
       }
       case '@':
       {
         flags|=AreaValue;
-        (void) CopyMagickString(p,p+1,MaxTextExtent);
+        (void) CopyMagickString(p,p+1,MagickPathExtent);
         break;
       }
       case '(':
       case ')':
       {
-        (void) CopyMagickString(p,p+1,MaxTextExtent);
+        (void) CopyMagickString(p,p+1,MagickPathExtent);
         break;
       }
       case 'x':
@@ -442,13 +442,13 @@ MagickExport char *GetPageGeometry(const char *page_geometry)
         /*
           Replace mneumonic with the equivalent size in dots-per-inch.
         */
-        (void) CopyMagickString(page,PageSizes[i][1],MaxTextExtent);
+        (void) CopyMagickString(page,PageSizes[i][1],MagickPathExtent);
         (void) ConcatenateMagickString(page,page_geometry+
-          strlen(PageSizes[i][0]),MaxTextExtent);
+          strlen(PageSizes[i][0]),MagickPathExtent);
         flags=GetGeometry(page,&geometry.x,&geometry.y,&geometry.width,
           &geometry.height);
         if ((flags & GreaterValue) == 0)
-          (void) ConcatenateMagickString(page,">",MaxTextExtent);
+          (void) ConcatenateMagickString(page,">",MagickPathExtent);
         break;
       }
   return(page);
@@ -701,7 +701,7 @@ MagickExport MagickStatusType ParseAffineGeometry(const char *geometry,
   AffineMatrix *affine_matrix,ExceptionInfo *exception)
 {
   char
-    token[MaxTextExtent];
+    token[MagickPathExtent];
 
   const char
     *p;
@@ -811,7 +811,7 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
 {
   char
     *p,
-    pedantic_geometry[MaxTextExtent],
+    pedantic_geometry[MagickPathExtent],
     *q;
 
   double
@@ -830,14 +830,14 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
   flags=NoValue;
   if ((geometry == (char *) NULL) || (*geometry == '\0'))
     return(flags);
-  if (strlen(geometry) >= (MaxTextExtent-1))
+  if (strlen(geometry) >= (MagickPathExtent-1))
     return(flags);
-  (void) CopyMagickString(pedantic_geometry,geometry,MaxTextExtent);
+  (void) CopyMagickString(pedantic_geometry,geometry,MagickPathExtent);
   for (p=pedantic_geometry; *p != '\0'; )
   {
     if (isspace((int) ((unsigned char) *p)) != 0)
       {
-        (void) CopyMagickString(p,p+1,MaxTextExtent);
+        (void) CopyMagickString(p,p+1,MagickPathExtent);
         continue;
       }
     c=(int) ((unsigned char) *p);
@@ -846,43 +846,43 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
       case '%':
       {
         flags|=PercentValue;
-        (void) CopyMagickString(p,p+1,MaxTextExtent);
+        (void) CopyMagickString(p,p+1,MagickPathExtent);
         break;
       }
       case '!':
       {
         flags|=AspectValue;
-        (void) CopyMagickString(p,p+1,MaxTextExtent);
+        (void) CopyMagickString(p,p+1,MagickPathExtent);
         break;
       }
       case '<':
       {
         flags|=LessValue;
-        (void) CopyMagickString(p,p+1,MaxTextExtent);
+        (void) CopyMagickString(p,p+1,MagickPathExtent);
         break;
       }
       case '>':
       {
         flags|=GreaterValue;
-        (void) CopyMagickString(p,p+1,MaxTextExtent);
+        (void) CopyMagickString(p,p+1,MagickPathExtent);
         break;
       }
       case '^':
       {
         flags|=MinimumValue;
-        (void) CopyMagickString(p,p+1,MaxTextExtent);
+        (void) CopyMagickString(p,p+1,MagickPathExtent);
         break;
       }
       case '@':
       {
         flags|=AreaValue;
-        (void) CopyMagickString(p,p+1,MaxTextExtent);
+        (void) CopyMagickString(p,p+1,MagickPathExtent);
         break;
       }
       case '(':
       case ')':
       {
-        (void) CopyMagickString(p,p+1,MaxTextExtent);
+        (void) CopyMagickString(p,p+1,MagickPathExtent);
         break;
       }
       case 'x':

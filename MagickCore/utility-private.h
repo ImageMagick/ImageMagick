@@ -59,13 +59,13 @@ static inline wchar_t *create_wchar_path(const char *utf8)
   if (count > MAX_PATH)
     {
       char
-        buffer[MaxTextExtent];
+        buffer[MagickPathExtent];
 
       wchar_t
         shortPath[MAX_PATH],
         *longPath;
 
-      (void) FormatLocaleString(buffer,MaxTextExtent,"\\\\?\\%s",utf8);
+      (void) FormatLocaleString(buffer,MagickPathExtent,"\\\\?\\%s",utf8);
       count+=4;
       longPath=(wchar_t *) AcquireQuantumMemory(count,sizeof(*longPath));
       if (longPath == (wchar_t *) NULL)
@@ -151,9 +151,9 @@ static inline void getcwd_utf8(char *path,size_t extent)
    (void) directory;
 #else
   wchar_t
-    wide_path[MaxTextExtent];
+    wide_path[MagickPathExtent];
 
-  (void) _wgetcwd(wide_path,MaxTextExtent-1);
+  (void) _wgetcwd(wide_path,MagickPathExtent-1);
   (void) WideCharToMultiByte(CP_UTF8,0,wide_path,-1,path,(int) extent,NULL,NULL);
 #endif
 }

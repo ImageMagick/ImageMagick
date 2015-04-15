@@ -775,7 +775,7 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
   const double sigma,ExceptionInfo *exception)
 {
   char
-    geometry[MaxTextExtent];
+    geometry[MagickPathExtent];
 
   KernelInfo
     *kernel_info;
@@ -789,7 +789,7 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  (void) FormatLocaleString(geometry,MaxTextExtent,
+  (void) FormatLocaleString(geometry,MagickPathExtent,
     "blur:%.20gx%.20g;blur:%.20gx%.20g+90",radius,sigma,radius,sigma);
   kernel_info=AcquireKernelInfo(geometry,exception);
   if (kernel_info == (KernelInfo *) NULL)
@@ -1365,7 +1365,7 @@ MagickExport Image *GaussianBlurImage(const Image *image,const double radius,
   const double sigma,ExceptionInfo *exception)
 {
   char
-    geometry[MaxTextExtent];
+    geometry[MagickPathExtent];
 
   KernelInfo
     *kernel_info;
@@ -1379,7 +1379,7 @@ MagickExport Image *GaussianBlurImage(const Image *image,const double radius,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  (void) FormatLocaleString(geometry,MaxTextExtent,"gaussian:%.20gx%.20g",
+  (void) FormatLocaleString(geometry,MagickPathExtent,"gaussian:%.20gx%.20g",
     radius,sigma);
   kernel_info=AcquireKernelInfo(geometry,exception);
   if (kernel_info == (KernelInfo *) NULL)
@@ -1952,8 +1952,8 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
 #define DefaultPreviewGeometry  "204x204+10+10"
 
   char
-    factor[MaxTextExtent],
-    label[MaxTextExtent];
+    factor[MagickPathExtent],
+    label[MagickPathExtent];
 
   double
     degrees,
@@ -2040,14 +2040,14 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
       {
         degrees+=45.0;
         preview_image=RotateImage(thumbnail,degrees,exception);
-        (void) FormatLocaleString(label,MaxTextExtent,"rotate %g",degrees);
+        (void) FormatLocaleString(label,MagickPathExtent,"rotate %g",degrees);
         break;
       }
       case ShearPreview:
       {
         degrees+=5.0;
         preview_image=ShearImage(thumbnail,degrees,degrees,exception);
-        (void) FormatLocaleString(label,MaxTextExtent,"shear %gx%g",degrees,
+        (void) FormatLocaleString(label,MagickPathExtent,"shear %gx%g",degrees,
           2.0*degrees);
         break;
       }
@@ -2056,7 +2056,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
         x=(ssize_t) ((i+1)*thumbnail->columns)/NumberTiles;
         y=(ssize_t) ((i+1)*thumbnail->rows)/NumberTiles;
         preview_image=RollImage(thumbnail,x,y,exception);
-        (void) FormatLocaleString(label,MaxTextExtent,"roll %+.20gx%+.20g",
+        (void) FormatLocaleString(label,MagickPathExtent,"roll %+.20gx%+.20g",
           (double) x,(double) y);
         break;
       }
@@ -2065,10 +2065,10 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
         preview_image=CloneImage(thumbnail,0,0,MagickTrue,exception);
         if (preview_image == (Image *) NULL)
           break;
-        (void) FormatLocaleString(factor,MaxTextExtent,"100,100,%g",2.0*
+        (void) FormatLocaleString(factor,MagickPathExtent,"100,100,%g",2.0*
           percentage);
         (void) ModulateImage(preview_image,factor,exception);
-        (void) FormatLocaleString(label,MaxTextExtent,"modulate %s",factor);
+        (void) FormatLocaleString(label,MagickPathExtent,"modulate %s",factor);
         break;
       }
       case SaturationPreview:
@@ -2076,9 +2076,9 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
         preview_image=CloneImage(thumbnail,0,0,MagickTrue,exception);
         if (preview_image == (Image *) NULL)
           break;
-        (void) FormatLocaleString(factor,MaxTextExtent,"100,%g",2.0*percentage);
+        (void) FormatLocaleString(factor,MagickPathExtent,"100,%g",2.0*percentage);
         (void) ModulateImage(preview_image,factor,exception);
-        (void) FormatLocaleString(label,MaxTextExtent,"modulate %s",factor);
+        (void) FormatLocaleString(label,MagickPathExtent,"modulate %s",factor);
         break;
       }
       case BrightnessPreview:
@@ -2086,9 +2086,9 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
         preview_image=CloneImage(thumbnail,0,0,MagickTrue,exception);
         if (preview_image == (Image *) NULL)
           break;
-        (void) FormatLocaleString(factor,MaxTextExtent,"%g",2.0*percentage);
+        (void) FormatLocaleString(factor,MagickPathExtent,"%g",2.0*percentage);
         (void) ModulateImage(preview_image,factor,exception);
-        (void) FormatLocaleString(label,MaxTextExtent,"modulate %s",factor);
+        (void) FormatLocaleString(label,MagickPathExtent,"modulate %s",factor);
         break;
       }
       case GammaPreview:
@@ -2099,7 +2099,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
           break;
         gamma+=0.4f;
         (void) GammaImage(preview_image,gamma,exception);
-        (void) FormatLocaleString(label,MaxTextExtent,"gamma %g",gamma);
+        (void) FormatLocaleString(label,MagickPathExtent,"gamma %g",gamma);
         break;
       }
       case SpiffPreview:
@@ -2108,7 +2108,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
         if (preview_image != (Image *) NULL)
           for (x=0; x < i; x++)
             (void) ContrastImage(preview_image,MagickTrue,exception);
-        (void) FormatLocaleString(label,MaxTextExtent,"contrast (%.20g)",
+        (void) FormatLocaleString(label,MagickPathExtent,"contrast (%.20g)",
           (double) i+1);
         break;
       }
@@ -2119,7 +2119,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
           break;
         for (x=0; x < i; x++)
           (void) ContrastImage(preview_image,MagickFalse,exception);
-        (void) FormatLocaleString(label,MaxTextExtent,"+contrast (%.20g)",
+        (void) FormatLocaleString(label,MagickPathExtent,"+contrast (%.20g)",
           (double) i+1);
         break;
       }
@@ -2132,7 +2132,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
         quantize_info.number_colors=colors;
         quantize_info.colorspace=GRAYColorspace;
         (void) QuantizeImage(&quantize_info,preview_image,exception);
-        (void) FormatLocaleString(label,MaxTextExtent,
+        (void) FormatLocaleString(label,MagickPathExtent,
           "-colorspace gray -colors %.20g",(double) colors);
         break;
       }
@@ -2144,7 +2144,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
         colors<<=1;
         quantize_info.number_colors=colors;
         (void) QuantizeImage(&quantize_info,preview_image,exception);
-        (void) FormatLocaleString(label,MaxTextExtent,"colors %.20g",(double)
+        (void) FormatLocaleString(label,MagickPathExtent,"colors %.20g",(double)
           colors);
         break;
       }
@@ -2161,7 +2161,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
         preview_image=DespeckleImage(thumbnail,exception);
         if (preview_image == (Image *) NULL)
           break;
-        (void) FormatLocaleString(label,MaxTextExtent,"despeckle (%.20g)",
+        (void) FormatLocaleString(label,MagickPathExtent,"despeckle (%.20g)",
           (double) i+1);
         break;
       }
@@ -2169,7 +2169,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
       {
         preview_image=StatisticImage(thumbnail,NonpeakStatistic,(size_t) radius,
           (size_t) radius,exception);
-        (void) FormatLocaleString(label,MaxTextExtent,"noise %g",radius);
+        (void) FormatLocaleString(label,MagickPathExtent,"noise %g",radius);
         break;
       }
       case AddNoisePreview:
@@ -2178,56 +2178,56 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
         {
           case 0:
           {
-            (void) CopyMagickString(factor,"uniform",MaxTextExtent);
+            (void) CopyMagickString(factor,"uniform",MagickPathExtent);
             break;
           }
           case 1:
           {
-            (void) CopyMagickString(factor,"gaussian",MaxTextExtent);
+            (void) CopyMagickString(factor,"gaussian",MagickPathExtent);
             break;
           }
           case 2:
           {
-            (void) CopyMagickString(factor,"multiplicative",MaxTextExtent);
+            (void) CopyMagickString(factor,"multiplicative",MagickPathExtent);
             break;
           }
           case 3:
           {
-            (void) CopyMagickString(factor,"impulse",MaxTextExtent);
+            (void) CopyMagickString(factor,"impulse",MagickPathExtent);
             break;
           }
           case 5:
           {
-            (void) CopyMagickString(factor,"laplacian",MaxTextExtent);
+            (void) CopyMagickString(factor,"laplacian",MagickPathExtent);
             break;
           }
           case 6:
           {
-            (void) CopyMagickString(factor,"Poisson",MaxTextExtent);
+            (void) CopyMagickString(factor,"Poisson",MagickPathExtent);
             break;
           }
           default:
           {
-            (void) CopyMagickString(thumbnail->magick,"NULL",MaxTextExtent);
+            (void) CopyMagickString(thumbnail->magick,"NULL",MagickPathExtent);
             break;
           }
         }
         preview_image=StatisticImage(thumbnail,NonpeakStatistic,(size_t) i,
           (size_t) i,exception);
-        (void) FormatLocaleString(label,MaxTextExtent,"+noise %s",factor);
+        (void) FormatLocaleString(label,MagickPathExtent,"+noise %s",factor);
         break;
       }
       case SharpenPreview:
       {
         preview_image=SharpenImage(thumbnail,radius,sigma,exception);
-        (void) FormatLocaleString(label,MaxTextExtent,"sharpen %gx%g",radius,
+        (void) FormatLocaleString(label,MagickPathExtent,"sharpen %gx%g",radius,
           sigma);
         break;
       }
       case BlurPreview:
       {
         preview_image=BlurImage(thumbnail,radius,sigma,exception);
-        (void) FormatLocaleString(label,MaxTextExtent,"blur %gx%g",radius,
+        (void) FormatLocaleString(label,MagickPathExtent,"blur %gx%g",radius,
           sigma);
         break;
       }
@@ -2238,21 +2238,21 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
           break;
         (void) BilevelImage(thumbnail,(double) (percentage*((double)
           QuantumRange+1.0))/100.0,exception);
-        (void) FormatLocaleString(label,MaxTextExtent,"threshold %g",(double)
+        (void) FormatLocaleString(label,MagickPathExtent,"threshold %g",(double)
           (percentage*((double) QuantumRange+1.0))/100.0);
         break;
       }
       case EdgeDetectPreview:
       {
         preview_image=EdgeImage(thumbnail,radius,exception);
-        (void) FormatLocaleString(label,MaxTextExtent,"edge %g",radius);
+        (void) FormatLocaleString(label,MagickPathExtent,"edge %g",radius);
         break;
       }
       case SpreadPreview:
       {
         preview_image=SpreadImage(thumbnail,radius,thumbnail->interpolate,
           exception);
-        (void) FormatLocaleString(label,MaxTextExtent,"spread %g",radius+0.5);
+        (void) FormatLocaleString(label,MagickPathExtent,"spread %g",radius+0.5);
         break;
       }
       case SolarizePreview:
@@ -2262,7 +2262,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
           break;
         (void) SolarizeImage(preview_image,(double) QuantumRange*percentage/
           100.0,exception);
-        (void) FormatLocaleString(label,MaxTextExtent,"solarize %g",
+        (void) FormatLocaleString(label,MagickPathExtent,"solarize %g",
           (QuantumRange*percentage)/100.0);
         break;
       }
@@ -2271,7 +2271,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
         degrees+=10.0;
         preview_image=ShadeImage(thumbnail,MagickTrue,degrees,degrees,
           exception);
-        (void) FormatLocaleString(label,MaxTextExtent,"shade %gx%g",degrees,
+        (void) FormatLocaleString(label,MagickPathExtent,"shade %gx%g",degrees,
           degrees);
         break;
       }
@@ -2285,7 +2285,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
         geometry.x=(i-1)/2;
         geometry.y=(i-1)/2;
         (void) RaiseImage(preview_image,&geometry,MagickTrue,exception);
-        (void) FormatLocaleString(label,MaxTextExtent,
+        (void) FormatLocaleString(label,MagickPathExtent,
           "raise %.20gx%.20g%+.20g%+.20g",(double) geometry.width,(double)
           geometry.height,(double) geometry.x,(double) geometry.y);
         break;
@@ -2298,7 +2298,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
         threshold+=0.4f;
         (void) SegmentImage(preview_image,sRGBColorspace,MagickFalse,threshold,
           threshold,exception);
-        (void) FormatLocaleString(label,MaxTextExtent,"segment %gx%g",
+        (void) FormatLocaleString(label,MagickPathExtent,"segment %gx%g",
           threshold,threshold);
         break;
       }
@@ -2306,7 +2306,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
       {
         preview_image=SwirlImage(thumbnail,degrees,image->interpolate,
           exception);
-        (void) FormatLocaleString(label,MaxTextExtent,"swirl %g",degrees);
+        (void) FormatLocaleString(label,MagickPathExtent,"swirl %g",degrees);
         degrees+=45.0;
         break;
       }
@@ -2315,7 +2315,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
         degrees+=0.1f;
         preview_image=ImplodeImage(thumbnail,degrees,image->interpolate,
           exception);
-        (void) FormatLocaleString(label,MaxTextExtent,"implode %g",degrees);
+        (void) FormatLocaleString(label,MagickPathExtent,"implode %g",degrees);
         break;
       }
       case WavePreview:
@@ -2323,7 +2323,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
         degrees+=5.0f;
         preview_image=WaveImage(thumbnail,0.5*degrees,2.0*degrees,
           image->interpolate,exception);
-        (void) FormatLocaleString(label,MaxTextExtent,"wave %gx%g",0.5*degrees,
+        (void) FormatLocaleString(label,MagickPathExtent,"wave %gx%g",0.5*degrees,
           2.0*degrees);
         break;
       }
@@ -2331,7 +2331,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
       {
         preview_image=OilPaintImage(thumbnail,(double) radius,(double) sigma,
           exception);
-        (void) FormatLocaleString(label,MaxTextExtent,"charcoal %gx%g",radius,
+        (void) FormatLocaleString(label,MagickPathExtent,"charcoal %gx%g",radius,
           sigma);
         break;
       }
@@ -2339,14 +2339,14 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
       {
         preview_image=CharcoalImage(thumbnail,(double) radius,(double) sigma,
           exception);
-        (void) FormatLocaleString(label,MaxTextExtent,"charcoal %gx%g",radius,
+        (void) FormatLocaleString(label,MagickPathExtent,"charcoal %gx%g",radius,
           sigma);
         break;
       }
       case JPEGPreview:
       {
         char
-          filename[MaxTextExtent];
+          filename[MagickPathExtent];
 
         int
           file;
@@ -2358,12 +2358,12 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
         if (preview_image == (Image *) NULL)
           break;
         preview_info->quality=(size_t) percentage;
-        (void) FormatLocaleString(factor,MaxTextExtent,"%.20g",(double)
+        (void) FormatLocaleString(factor,MagickPathExtent,"%.20g",(double)
           preview_info->quality);
         file=AcquireUniqueFileResource(filename);
         if (file != -1)
           file=close(file)-1;
-        (void) FormatLocaleString(preview_image->filename,MaxTextExtent,
+        (void) FormatLocaleString(preview_image->filename,MagickPathExtent,
           "jpeg:%s",filename);
         status=WriteImage(preview_info,preview_image,exception);
         if (status != MagickFalse)
@@ -2372,7 +2372,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
               *quality_image;
 
             (void) CopyMagickString(preview_info->filename,
-              preview_image->filename,MaxTextExtent);
+              preview_image->filename,MagickPathExtent);
             quality_image=ReadImage(preview_info,exception);
             if (quality_image != (Image *) NULL)
               {
@@ -2382,16 +2382,16 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
           }
         (void) RelinquishUniqueFileResource(preview_image->filename);
         if ((GetBlobSize(preview_image)/1024) >= 1024)
-          (void) FormatLocaleString(label,MaxTextExtent,"quality %s\n%gmb ",
+          (void) FormatLocaleString(label,MagickPathExtent,"quality %s\n%gmb ",
             factor,(double) ((MagickOffsetType) GetBlobSize(preview_image))/
             1024.0/1024.0);
         else
           if (GetBlobSize(preview_image) >= 1024)
-            (void) FormatLocaleString(label,MaxTextExtent,
+            (void) FormatLocaleString(label,MagickPathExtent,
               "quality %s\n%gkb ",factor,(double) ((MagickOffsetType)
               GetBlobSize(preview_image))/1024.0);
           else
-            (void) FormatLocaleString(label,MaxTextExtent,"quality %s\n%.20gb ",
+            (void) FormatLocaleString(label,MagickPathExtent,"quality %s\n%.20gb ",
               factor,(double) ((MagickOffsetType) GetBlobSize(thumbnail)));
         break;
       }
@@ -2419,7 +2419,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
     Create the montage.
   */
   montage_info=CloneMontageInfo(preview_info,(MontageInfo *) NULL);
-  (void) CopyMagickString(montage_info->filename,image->filename,MaxTextExtent);
+  (void) CopyMagickString(montage_info->filename,image->filename,MagickPathExtent);
   montage_info->shadow=MagickTrue;
   (void) CloneString(&montage_info->tile,"3x3");
   (void) CloneString(&montage_info->geometry,DefaultPreviewGeometry);
@@ -2804,7 +2804,7 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
   if (image->debug != MagickFalse)
     {
       char
-        format[MaxTextExtent],
+        format[MagickPathExtent],
         *message;
 
       register const MagickRealType
@@ -2822,11 +2822,11 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
       for (v=0; v < (ssize_t) width; v++)
       {
         *message='\0';
-        (void) FormatLocaleString(format,MaxTextExtent,"%.20g: ",(double) v);
+        (void) FormatLocaleString(format,MagickPathExtent,"%.20g: ",(double) v);
         (void) ConcatenateString(&message,format);
         for (u=0; u < (ssize_t) width; u++)
         {
-          (void) FormatLocaleString(format,MaxTextExtent,"%+f ",(double) *k++);
+          (void) FormatLocaleString(format,MagickPathExtent,"%+f ",(double) *k++);
           (void) ConcatenateString(&message,format);
         }
         (void) LogMagickEvent(TransformEvent,GetMagickModule(),"%s",message);

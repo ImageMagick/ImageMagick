@@ -314,7 +314,7 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
       buffer=(unsigned char *) RelinquishMagickMemory(buffer);
       read_info=DestroyImageInfo(read_info);
       (void) CopyMagickString(image->filename,read_info->filename,
-        MaxTextExtent);
+        MagickPathExtent);
       ThrowFileException(exception,FileOpenError,"UnableToCreateTemporaryFile",
         image->filename);
       image=DestroyImageList(image);
@@ -353,8 +353,8 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image=DestroyImageList(image);
       return(jpeg_image);
     }
-  (void) CopyMagickString(jpeg_image->filename,image->filename,MaxTextExtent);
-  (void) CopyMagickString(jpeg_image->magick,image->magick,MaxTextExtent);
+  (void) CopyMagickString(jpeg_image->filename,image->filename,MagickPathExtent);
+  (void) CopyMagickString(jpeg_image->magick,image->magick,MagickPathExtent);
   image=DestroyImageList(image);
   image=jpeg_image;
   /*

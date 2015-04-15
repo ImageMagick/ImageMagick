@@ -363,7 +363,7 @@ static Image *ReadVIPSImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
   char
-    buffer[MaxTextExtent],
+    buffer[MagickPathExtent],
     *metadata;
 
   Image
@@ -502,7 +502,7 @@ static Image *ReadVIPSImage(const ImageInfo *image_info,
   else
     ThrowReaderException(CoderError,"Unsupported coding");
   metadata=(char *) NULL;
-  while ((n=ReadBlob(image,MaxTextExtent-1,(unsigned char *) buffer)) != 0)
+  while ((n=ReadBlob(image,MagickPathExtent-1,(unsigned char *) buffer)) != 0)
   {
     buffer[n]='\0';
     if (metadata == (char *) NULL)

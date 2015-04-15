@@ -424,7 +424,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     SetImageColorspace(image,YCbCrColorspace,exception);
     if (interlace == PartitionInterlace)
       (void) CopyMagickString(image->filename,image_info->filename,
-        MaxTextExtent);
+        MagickPathExtent);
     if (EOFBlob(image) != MagickFalse)
       {
         ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
@@ -825,7 +825,7 @@ static MagickBooleanType WriteYUVImage(const ImageInfo *image_info,Image *image,
     chroma_image=DestroyImage(chroma_image);
     if (interlace == PartitionInterlace)
       (void) CopyMagickString(image->filename,image_info->filename,
-        MaxTextExtent);
+        MagickPathExtent);
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);

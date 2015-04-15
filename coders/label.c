@@ -90,7 +90,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
   char
-    geometry[MaxTextExtent],
+    geometry[MagickPathExtent],
     *property;
 
   const char
@@ -152,7 +152,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
         */
         for ( ; ; draw_info->pointsize*=2.0)
         {
-          (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",
+          (void) FormatLocaleString(geometry,MagickPathExtent,"%+g%+g",
             -metrics.bounds.x1,metrics.ascent);
           if (draw_info->gravity == UndefinedGravity)
             (void) CloneString(&draw_info->geometry,geometry);
@@ -173,7 +173,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
         for (low=1.0; (high-low) > 0.5; )
         {
           draw_info->pointsize=(low+high)/2.0;
-          (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",
+          (void) FormatLocaleString(geometry,MagickPathExtent,"%+g%+g",
             -metrics.bounds.x1,metrics.ascent);
           if (draw_info->gravity == UndefinedGravity)
             (void) CloneString(&draw_info->geometry,geometry);
@@ -227,7 +227,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   /*
     Draw label.
   */
-  (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",
+  (void) FormatLocaleString(geometry,MagickPathExtent,"%+g%+g",
     draw_info->direction == RightToLeftDirection ? image->columns-
     metrics.bounds.x2 : 0.0,draw_info->gravity == UndefinedGravity ?
     metrics.ascent : 0.0);
@@ -236,9 +236,9 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   if (image_info->pointsize == 0.0)
     {
       char
-        pointsize[MaxTextExtent];
+        pointsize[MagickPathExtent];
 
-      (void) FormatLocaleString(pointsize,MaxTextExtent,"%.20g",
+      (void) FormatLocaleString(pointsize,MagickPathExtent,"%.20g",
         draw_info->pointsize);
       (void) SetImageProperty(image,"label:pointsize",pointsize,exception);
     }

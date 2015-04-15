@@ -429,9 +429,9 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
   const MagickBooleanType verbose,ExceptionInfo *exception)
 {
   char
-    color[MaxTextExtent],
-    format[MaxTextExtent],
-    key[MaxTextExtent];
+    color[MagickPathExtent],
+    format[MagickPathExtent],
+    key[MagickPathExtent];
 
   ChannelFeatures
     *channel_features;
@@ -600,7 +600,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
           if (image->total_colors != 0)
             {
               (void) FormatMagickSize(image->total_colors,MagickFalse,"B",
-                MaxTextExtent,format);
+                MagickPathExtent,format);
               (void) FormatLocaleFile(file,"%s ",format);
             }
         }
@@ -619,7 +619,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       if (GetBlobSize(image) != 0)
         {
           (void) FormatMagickSize(GetBlobSize(image),MagickFalse,"B",
-            MaxTextExtent,format);
+            MagickPathExtent,format);
           (void) FormatLocaleFile(file,"%s ",format);
         }
       (void) FormatLocaleFile(file,"%0.3fu %lu:%02lu.%03lu",user_time,
@@ -642,7 +642,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
     if (LocaleCompare(image->magick_filename,image->filename) != 0)
       {
         char
-          filename[MaxTextExtent];
+          filename[MagickPathExtent];
 
         GetPathComponent(image->magick_filename,TailPath,filename);
         (void) FormatLocaleFile(file,"  Base filename: %s\n",filename);
@@ -950,7 +950,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
           if ((x < (ssize_t) image->columns) || (y < (ssize_t) image->rows))
             {
               char
-                tuple[MaxTextExtent];
+                tuple[MagickPathExtent];
 
               PixelInfo
                 pixel;
@@ -987,9 +987,9 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       if (image->colors <= 1024)
         {
           char
-            color[MaxTextExtent],
-            hex[MaxTextExtent],
-            tuple[MaxTextExtent];
+            color[MagickPathExtent],
+            hex[MagickPathExtent],
+            tuple[MagickPathExtent];
 
           PixelInfo
             pixel;
@@ -1002,28 +1002,28 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
           for (i=0; i < (ssize_t) image->colors; i++)
           {
             pixel=(*p);
-            (void) CopyMagickString(tuple,"(",MaxTextExtent);
+            (void) CopyMagickString(tuple,"(",MagickPathExtent);
             ConcatenateColorComponent(&pixel,RedPixelChannel,X11Compliance,
               tuple);
-            (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
+            (void) ConcatenateMagickString(tuple,",",MagickPathExtent);
             ConcatenateColorComponent(&pixel,GreenPixelChannel,X11Compliance,
               tuple);
-            (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
+            (void) ConcatenateMagickString(tuple,",",MagickPathExtent);
             ConcatenateColorComponent(&pixel,BluePixelChannel,X11Compliance,
               tuple);
             if (pixel.colorspace == CMYKColorspace)
               {
-                (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
+                (void) ConcatenateMagickString(tuple,",",MagickPathExtent);
                 ConcatenateColorComponent(&pixel,BlackPixelChannel,
                   X11Compliance,tuple);
               }
             if (pixel.alpha_trait != UndefinedPixelTrait)
               {
-                (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
+                (void) ConcatenateMagickString(tuple,",",MagickPathExtent);
                 ConcatenateColorComponent(&pixel,AlphaPixelChannel,
                   X11Compliance,tuple);
               }
-            (void) ConcatenateMagickString(tuple,")",MaxTextExtent);
+            (void) ConcatenateMagickString(tuple,")",MagickPathExtent);
             (void) QueryColorname(image,&pixel,SVGCompliance,color,
               exception);
             GetColorTuple(&pixel,MagickTrue,hex);
@@ -1196,7 +1196,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         property=GetNextImageProperty(image);
       }
     }
-  (void) FormatLocaleString(key,MaxTextExtent,"8BIM:1999,2998:#1");
+  (void) FormatLocaleString(key,MagickPathExtent,"8BIM:1999,2998:#1");
   value=GetImageProperty(image,key,exception);
   if (value != (const char *) NULL)
     {
@@ -1317,8 +1317,8 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
               length=(size_t) (GetStringInfoDatum(profile)[i++] << 8);
               length|=GetStringInfoDatum(profile)[i++];
               attribute=(char *) NULL;
-              if (~length >= (MaxTextExtent-1))
-                attribute=(char *) AcquireQuantumMemory(length+MaxTextExtent,
+              if (~length >= (MagickPathExtent-1))
+                attribute=(char *) AcquireQuantumMemory(length+MagickPathExtent,
                   sizeof(*attribute));
               if (attribute != (char *) NULL)
                 {
@@ -1383,16 +1383,16 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
     }
   (void) FormatLocaleFile(file,"  Tainted: %s\n",CommandOptionToMnemonic(
     MagickBooleanOptions,(ssize_t) image->taint));
-  (void) FormatMagickSize(GetBlobSize(image),MagickFalse,"B",MaxTextExtent,
+  (void) FormatMagickSize(GetBlobSize(image),MagickFalse,"B",MagickPathExtent,
     format);
   (void) FormatLocaleFile(file,"  Filesize: %s\n",format);
   (void) FormatMagickSize((MagickSizeType) image->columns*image->rows,
-    MagickFalse,"B",MaxTextExtent,format);
+    MagickFalse,"B",MagickPathExtent,format);
   if (strlen(format) > 1)
     format[strlen(format)-1]='\0';
   (void) FormatLocaleFile(file,"  Number pixels: %s\n",format);
   (void) FormatMagickSize((MagickSizeType) ((double) image->columns*image->rows/
-    elapsed_time+0.5),MagickFalse,"B",MaxTextExtent,format);
+    elapsed_time+0.5),MagickFalse,"B",MagickPathExtent,format);
   (void) FormatLocaleFile(file,"  Pixels per second: %s\n",format);
   (void) FormatLocaleFile(file,"  User time: %0.3fu\n",user_time);
   (void) FormatLocaleFile(file,"  Elapsed time: %lu:%02lu.%03lu\n",

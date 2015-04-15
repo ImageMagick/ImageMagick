@@ -161,9 +161,9 @@ static MagickBooleanType WriteUILImage(const ImageInfo *image_info,Image *image,
 #define MaxCixels  92
 
   char
-    basename[MaxTextExtent],
-    buffer[MaxTextExtent],
-    name[MaxTextExtent],
+    basename[MagickPathExtent],
+    buffer[MagickPathExtent],
+    name[MagickPathExtent],
     *symbol;
 
   int
@@ -291,7 +291,7 @@ static MagickBooleanType WriteUILImage(const ImageInfo *image_info,Image *image,
   symbol=AcquireString("");
   (void) WriteBlobString(image,"/* UIL */\n");
   GetPathComponent(image->filename,BasePath,basename);
-  (void) FormatLocaleString(buffer,MaxTextExtent,
+  (void) FormatLocaleString(buffer,MagickPathExtent,
     "value\n  %s_ct : color_table(\n",basename);
   (void) WriteBlobString(image,buffer);
   GetPixelInfo(image,&pixel);
@@ -307,7 +307,7 @@ static MagickBooleanType WriteUILImage(const ImageInfo *image_info,Image *image,
     GetColorTuple(&pixel,MagickTrue,name);
     if (transparent != MagickFalse)
       if (i == (ssize_t) (colors-1))
-        (void) CopyMagickString(name,"None",MaxTextExtent);
+        (void) CopyMagickString(name,"None",MagickPathExtent);
     /*
       Write UIL color.
     */
@@ -321,15 +321,15 @@ static MagickBooleanType WriteUILImage(const ImageInfo *image_info,Image *image,
     symbol[j]='\0';
     (void) SubstituteString(&symbol,"'","''");
     if (LocaleCompare(name,"None") == 0)
-      (void) FormatLocaleString(buffer,MaxTextExtent,
+      (void) FormatLocaleString(buffer,MagickPathExtent,
         "    background color = '%s'",symbol);
     else
-      (void) FormatLocaleString(buffer,MaxTextExtent,
+      (void) FormatLocaleString(buffer,MagickPathExtent,
         "    color('%s',%s) = '%s'",name,
         GetPixelInfoIntensity(image,image->colormap+i) <
         (QuantumRange/2.0) ? "background" : "foreground",symbol);
     (void) WriteBlobString(image,buffer);
-    (void) FormatLocaleString(buffer,MaxTextExtent,"%s",
+    (void) FormatLocaleString(buffer,MagickPathExtent,"%s",
       (i == (ssize_t) (colors-1) ? ");\n" : ",\n"));
     (void) WriteBlobString(image,buffer);
   }
@@ -337,7 +337,7 @@ static MagickBooleanType WriteUILImage(const ImageInfo *image_info,Image *image,
     Define UIL pixels.
   */
   GetPathComponent(image->filename,BasePath,basename);
-  (void) FormatLocaleString(buffer,MaxTextExtent,
+  (void) FormatLocaleString(buffer,MagickPathExtent,
     "  %s_icon : icon(color_table = %s_ct,\n",basename,basename);
   (void) WriteBlobString(image,buffer);
   for (y=0; y < (ssize_t) image->rows; y++)
@@ -357,11 +357,11 @@ static MagickBooleanType WriteUILImage(const ImageInfo *image_info,Image *image,
         symbol[j]=Cixel[k];
       }
       symbol[j]='\0';
-      (void) CopyMagickString(buffer,symbol,MaxTextExtent);
+      (void) CopyMagickString(buffer,symbol,MagickPathExtent);
       (void) WriteBlobString(image,buffer);
       p+=GetPixelChannels(image);
     }
-    (void) FormatLocaleString(buffer,MaxTextExtent,"\"%s\n",
+    (void) FormatLocaleString(buffer,MagickPathExtent,"\"%s\n",
       (y == (ssize_t) (image->rows-1) ? ");" : ","));
     (void) WriteBlobString(image,buffer);
     status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,

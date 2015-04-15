@@ -270,9 +270,9 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Note image label.
         */
         label=(char *) NULL;
-        if (~summary_info.title.length >= (MaxTextExtent-1))
+        if (~summary_info.title.length >= (MagickPathExtent-1))
           label=(char *) AcquireQuantumMemory(summary_info.title.length+
-            MaxTextExtent,sizeof(*label));
+            MagickPathExtent,sizeof(*label));
         if (label == (char *) NULL)
           {
             FPX_ClearSystem();
@@ -294,9 +294,9 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Note image comment.
         */
         comments=(char *) NULL;
-        if (~summary_info.comments.length >= (MaxTextExtent-1))
+        if (~summary_info.comments.length >= (MagickPathExtent-1))
           comments=(char *) AcquireQuantumMemory(summary_info.comments.length+
-            MaxTextExtent,sizeof(*comments));
+            MagickPathExtent,sizeof(*comments));
         if (comments == (char *) NULL)
           {
             FPX_ClearSystem();
@@ -905,13 +905,13 @@ static MagickBooleanType WriteFPXImage(const ImageInfo *image_info,Image *image,
       summary_info.title_valid=MagickTrue;
       length=strlen(label);
       summary_info.title.length=length;
-      if (~length >= (MaxTextExtent-1))
+      if (~length >= (MagickPathExtent-1))
         summary_info.title.ptr=(unsigned char *) AcquireQuantumMemory(
-          length+MaxTextExtent,sizeof(*summary_info.title.ptr));
+          length+MagickPathExtent,sizeof(*summary_info.title.ptr));
       if (summary_info.title.ptr == (unsigned char *) NULL)
         ThrowWriterException(DelegateError,"UnableToSetImageTitle");
       (void) CopyMagickString((char *) summary_info.title.ptr,label,
-        MaxTextExtent);
+        MagickPathExtent);
     }
   comment=GetImageProperty(image,"comment",exception);
   if (comment != (const char *) NULL)

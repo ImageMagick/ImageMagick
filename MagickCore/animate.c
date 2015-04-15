@@ -408,7 +408,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         i;
 
       static char
-        filenames[MaxTextExtent] = "*";
+        filenames[MagickPathExtent] = "*";
 
       if (resource_info->immutable != MagickFalse)
         break;
@@ -448,7 +448,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XCheckRefreshWindows(display,windows);
       for (i=0; i < number_files; i++)
       {
-        (void) CopyMagickString(read_info->filename,filelist[i],MaxTextExtent);
+        (void) CopyMagickString(read_info->filename,filelist[i],MagickPathExtent);
         filelist[i]=DestroyString(filelist[i]);
         *read_info->magick='\0';
         next=ReadImage(read_info,exception);
@@ -477,7 +477,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     case PlayCommand:
     {
       char
-        basename[MaxTextExtent];
+        basename[MagickPathExtent];
 
       int
         status;
@@ -488,7 +488,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       *state|=PlayAnimationState;
       *state&=(~AutoReverseAnimationState);
       GetPathComponent((*image)->magick_filename,BasePath,basename);
-      (void) FormatLocaleString(windows->image.name,MaxTextExtent,
+      (void) FormatLocaleString(windows->image.name,MagickPathExtent,
         "%s: %s",MagickPackageName,basename);
       if (resource_info->title != (char *) NULL)
         {
@@ -497,7 +497,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
 
           title=InterpretImageProperties(resource_info->image_info,*image,
             resource_info->title,exception);
-          (void) CopyMagickString(windows->image.name,title,MaxTextExtent);
+          (void) CopyMagickString(windows->image.name,title,MagickPathExtent);
           title=DestroyString(title);
         }
       status=XStringListToTextProperty(&windows->image.name,1,&window_name);
@@ -544,9 +544,9 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       if (status == MagickFalse)
         {
           char
-            message[MaxTextExtent];
+            message[MagickPathExtent];
 
-          (void) FormatLocaleString(message,MaxTextExtent,"%s:%s",
+          (void) FormatLocaleString(message,MagickPathExtent,"%s:%s",
             exception->reason != (char *) NULL ? exception->reason : "",
             exception->description != (char *) NULL ? exception->description :
             "");
@@ -612,14 +612,14 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       if (mozilla_window != (Window) NULL)
         {
           char
-            command[MaxTextExtent],
+            command[MagickPathExtent],
             *url;
 
           /*
             Display documentation using Netscape remote control.
           */
           url=GetMagickHomeURL();
-          (void) FormatLocaleString(command,MaxTextExtent,
+          (void) FormatLocaleString(command,MagickPathExtent,
             "openurl(%s,new-tab)",url);
           url=DestroyString(url);
           mozilla_atom=XInternAtom(display,"_MOZILLA_COMMAND",MagickFalse);
@@ -731,8 +731,8 @@ MagickExport void XAnimateBackgroundImage(Display *display,
   XResourceInfo *resource_info,Image *images,ExceptionInfo *exception)
 {
   char
-    geometry[MaxTextExtent],
-    visual_type[MaxTextExtent];
+    geometry[MagickPathExtent],
+    visual_type[MagickPathExtent];
 
   Image
     *coalesce_image,
@@ -820,11 +820,11 @@ MagickExport void XAnimateBackgroundImage(Display *display,
   */
   window_attributes.width=XDisplayWidth(display,XDefaultScreen(display));
   window_attributes.height=XDisplayHeight(display,XDefaultScreen(display));
-  (void) CopyMagickString(visual_type,"default",MaxTextExtent);
+  (void) CopyMagickString(visual_type,"default",MagickPathExtent);
   status=XGetWindowAttributes(display,window_info.id,&window_attributes) != 0 ?
     MagickTrue : MagickFalse;
   if (status != MagickFalse)
-    (void) FormatLocaleString(visual_type,MaxTextExtent,"0x%lx",
+    (void) FormatLocaleString(visual_type,MagickPathExtent,"0x%lx",
       XVisualIDFromVisual(window_attributes.visual));
   if (visual_info == (XVisualInfo *) NULL)
     {
@@ -951,7 +951,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
       (image_list[0]->rows != window_info.height))
     ThrowXWindowFatalException(XServerFatalError,"UnableToCreateXImage",
       image_list[0]->filename);
-  (void) FormatLocaleString(geometry,MaxTextExtent,"%ux%u+0+0>",
+  (void) FormatLocaleString(geometry,MagickPathExtent,"%ux%u+0+0>",
     window_attributes.width,window_attributes.height);
   geometry_info.width=window_info.width;
   geometry_info.height=window_info.height;
@@ -1002,7 +1002,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
   if (resources.image_geometry != (char *) NULL)
     {
       char
-        default_geometry[MaxTextExtent];
+        default_geometry[MagickPathExtent];
 
       int
         flags,
@@ -1019,7 +1019,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
         ThrowXWindowFatalException(ResourceLimitFatalError,
           "MemoryAllocationFailed",images->filename);
       size_hints->flags=0L;
-      (void) FormatLocaleString(default_geometry,MaxTextExtent,"%ux%u",width,
+      (void) FormatLocaleString(default_geometry,MagickPathExtent,"%ux%u",width,
         height);
       flags=XWMGeometry(display,visual_info->screen,resources.image_geometry,
         default_geometry,window_info.border_width,size_hints,&window_info.x,
@@ -1302,10 +1302,10 @@ MagickExport Image *XAnimateImages(Display *display,
     };
 
   char
-    command[MaxTextExtent],
+    command[MagickPathExtent],
     *directory,
-    geometry[MaxTextExtent],
-    resource_name[MaxTextExtent];
+    geometry[MagickPathExtent],
+    resource_name[MagickPathExtent];
 
   CommandType
     command_type;
@@ -1342,7 +1342,7 @@ MagickExport Image *XAnimateImages(Display *display,
     scene;
 
   static char
-    working_directory[MaxTextExtent];
+    working_directory[MagickPathExtent];
 
   static size_t
     number_windows;
@@ -1414,7 +1414,7 @@ MagickExport Image *XAnimateImages(Display *display,
         status;
 
       if (*working_directory == '\0')
-        (void) CopyMagickString(working_directory,".",MaxTextExtent);
+        (void) CopyMagickString(working_directory,".",MagickPathExtent);
       status=chdir(working_directory);
       if (status == -1)
         (void) ThrowMagickException(exception,GetMagickModule(),FileOpenError,
@@ -1655,29 +1655,29 @@ MagickExport Image *XAnimateImages(Display *display,
 
       title=InterpretImageProperties(resource_info->image_info,display_image,
         resource_info->title,exception);
-      (void) CopyMagickString(windows->image.name,title,MaxTextExtent);
-      (void) CopyMagickString(windows->image.icon_name,title,MaxTextExtent);
+      (void) CopyMagickString(windows->image.name,title,MagickPathExtent);
+      (void) CopyMagickString(windows->image.icon_name,title,MagickPathExtent);
       title=DestroyString(title);
     }
   else
     {
       char
-        filename[MaxTextExtent];
+        filename[MagickPathExtent];
 
       /*
         Window name is the base of the filename.
       */
       GetPathComponent(display_image->magick_filename,TailPath,filename);
-      (void) FormatLocaleString(windows->image.name,MaxTextExtent,
+      (void) FormatLocaleString(windows->image.name,MagickPathExtent,
         "%s: %s[scene: %.20g frames: %.20g]",MagickPackageName,filename,(double)
         display_image->scene,(double) number_scenes);
-      (void) CopyMagickString(windows->image.icon_name,filename,MaxTextExtent);
+      (void) CopyMagickString(windows->image.icon_name,filename,MagickPathExtent);
     }
   if (resource_info->immutable != MagickFalse)
     windows->image.immutable=MagickTrue;
   windows->image.shape=MagickTrue;
   windows->image.geometry=resource_info->image_geometry;
-  (void) FormatLocaleString(geometry,MaxTextExtent,"%ux%u+0+0>!",
+  (void) FormatLocaleString(geometry,MagickPathExtent,"%ux%u+0+0>!",
     XDisplayWidth(display,visual_info->screen),
     XDisplayHeight(display,visual_info->screen));
   geometry_info.width=display_image->columns;
@@ -1804,7 +1804,7 @@ MagickExport Image *XAnimateImages(Display *display,
     resource_info,&windows->command);
   windows->command.data=MagickMenus;
   (void) XCommandWidget(display,windows,CommandMenu,(XEvent *) NULL);
-  (void) FormatLocaleString(resource_name,MaxTextExtent,"%s.command",
+  (void) FormatLocaleString(resource_name,MagickPathExtent,"%s.command",
     resource_info->client_name);
   windows->command.geometry=XGetResourceClass(resource_info->resource_database,
     resource_name,"geometry",(char *) NULL);
@@ -1834,7 +1834,7 @@ MagickExport Image *XAnimateImages(Display *display,
   */
   XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->widget);
-  (void) FormatLocaleString(resource_name,MaxTextExtent,"%s.widget",
+  (void) FormatLocaleString(resource_name,MagickPathExtent,"%s.widget",
     resource_info->client_name);
   windows->widget.geometry=XGetResourceClass(resource_info->resource_database,
     resource_name,"geometry",(char *) NULL);
@@ -1965,7 +1965,7 @@ MagickExport Image *XAnimateImages(Display *display,
 
         title=InterpretImageProperties(resource_info->image_info,
           image_list[scene],resource_info->title,exception);
-        (void) CopyMagickString(windows->image.name,title,MaxTextExtent);
+        (void) CopyMagickString(windows->image.name,title,MagickPathExtent);
         title=DestroyString(title);
       }
     else
@@ -1974,7 +1974,7 @@ MagickExport Image *XAnimateImages(Display *display,
           strlen(image_list[scene]->magick_filename)-1;
         while ((p > image_list[scene]->magick_filename) && (*(p-1) != '/'))
           p--;
-        (void) FormatLocaleString(windows->image.name,MaxTextExtent,
+        (void) FormatLocaleString(windows->image.name,MagickPathExtent,
           "%s: %s[%.20g of %.20g]",MagickPackageName,p,(double) scene+1,
           (double) number_scenes);
       }
@@ -2093,7 +2093,7 @@ MagickExport Image *XAnimateImages(Display *display,
                 strlen(image_list[scene]->filename)-1;
               while ((p > image_list[scene]->filename) && (*(p-1) != '/'))
                 p--;
-              (void) FormatLocaleString(windows->image.name,MaxTextExtent,
+              (void) FormatLocaleString(windows->image.name,MagickPathExtent,
                 "%s: %s[%.20g of %.20g]",MagickPackageName,p,(double)
                 scene+1,(double) number_scenes);
               if (resource_info->title != (char *) NULL)
@@ -2104,7 +2104,7 @@ MagickExport Image *XAnimateImages(Display *display,
                   title=InterpretImageProperties(resource_info->image_info,
                     image,resource_info->title,exception);
                   (void) CopyMagickString(windows->image.name,title,
-                    MaxTextExtent);
+                    MagickPathExtent);
                   title=DestroyString(title);
                 }
               status=XStringListToTextProperty(&windows->image.name,1,
@@ -2180,7 +2180,7 @@ MagickExport Image *XAnimateImages(Display *display,
         id=XCommandWidget(display,windows,CommandMenu,&event);
         if (id < 0)
           continue;
-        (void) CopyMagickString(command,CommandMenu[id],MaxTextExtent);
+        (void) CopyMagickString(command,CommandMenu[id],MagickPathExtent);
         command_type=CommandMenus[id];
         if (id < MagickMenus)
           {
@@ -2194,7 +2194,7 @@ MagickExport Image *XAnimateImages(Display *display,
               command);
             if (entry < 0)
               continue;
-            (void) CopyMagickString(command,Menus[id][entry],MaxTextExtent);
+            (void) CopyMagickString(command,Menus[id][entry],MagickPathExtent);
             command_type=Commands[id][entry];
           }
         if (command_type != NullCommand)
@@ -2340,7 +2340,7 @@ MagickExport Image *XAnimateImages(Display *display,
                   Offix DND.
                 */
                 (void) CopyMagickString(resource_info->image_info->filename,
-                  (char *) data,MaxTextExtent);
+                  (char *) data,MagickPathExtent);
               }
             else
               {
@@ -2353,7 +2353,7 @@ MagickExport Image *XAnimateImages(Display *display,
                     break;
                   }
                 (void) CopyMagickString(resource_info->image_info->filename,
-                  ((char *) data)+5,MaxTextExtent);
+                  ((char *) data)+5,MagickPathExtent);
               }
             nexus=ReadImage(resource_info->image_info,exception);
             CatchException(exception);
@@ -2693,12 +2693,12 @@ MagickExport Image *XAnimateImages(Display *display,
           Display image named by the remote command protocol.
         */
         status=XGetWindowProperty(display,event.xproperty.window,
-          event.xproperty.atom,0L,(long) MaxTextExtent,MagickFalse,(Atom)
+          event.xproperty.atom,0L,(long) MagickPathExtent,MagickFalse,(Atom)
           AnyPropertyType,&type,&format,&length,&after,&data);
         if ((status != Success) || (length == 0))
           break;
         (void) CopyMagickString(resource_info->image_info->filename,
-          (char *) data,MaxTextExtent);
+          (char *) data,MagickPathExtent);
         nexus=ReadImage(resource_info->image_info,exception);
         CatchException(exception);
         if (nexus != (Image *) NULL)
@@ -2841,10 +2841,10 @@ MagickExport Image *XAnimateImages(Display *display,
   /*
     Change to home directory.
   */
-  directory=getcwd(working_directory,MaxTextExtent);
+  directory=getcwd(working_directory,MagickPathExtent);
   (void) directory;
   if (*resource_info->home_directory == '\0')
-    (void) CopyMagickString(resource_info->home_directory,".",MaxTextExtent);
+    (void) CopyMagickString(resource_info->home_directory,".",MagickPathExtent);
   status=chdir(resource_info->home_directory);
   if (status == -1)
     (void) ThrowMagickException(exception,GetMagickModule(),FileOpenError,
@@ -2892,7 +2892,7 @@ static MagickBooleanType XSaveImage(Display *display,
   ExceptionInfo *exception)
 {
   char
-    filename[MaxTextExtent];
+    filename[MagickPathExtent];
 
   ImageInfo
     *image_info;
@@ -2905,11 +2905,11 @@ static MagickBooleanType XSaveImage(Display *display,
   */
   if (resource_info->write_filename != (char *) NULL)
     (void) CopyMagickString(filename,resource_info->write_filename,
-      MaxTextExtent);
+      MagickPathExtent);
   else
     {
       char
-        path[MaxTextExtent];
+        path[MagickPathExtent];
 
       int
         status;
@@ -2917,7 +2917,7 @@ static MagickBooleanType XSaveImage(Display *display,
       GetPathComponent(image->filename,HeadPath,path);
       GetPathComponent(image->filename,TailPath,filename);
       if (*path == '\0')
-        (void) CopyMagickString(path,".",MaxTextExtent);
+        (void) CopyMagickString(path,".",MagickPathExtent);
       status=chdir(path);
       if (status == -1)
         (void) ThrowMagickException(exception,GetMagickModule(),FileOpenError,
@@ -2939,13 +2939,13 @@ static MagickBooleanType XSaveImage(Display *display,
         return(MagickTrue);
     }
   image_info=CloneImageInfo(resource_info->image_info);
-  (void) CopyMagickString(image_info->filename,filename,MaxTextExtent);
+  (void) CopyMagickString(image_info->filename,filename,MagickPathExtent);
   (void) SetImageInfo(image_info,1,exception);
   if ((LocaleCompare(image_info->magick,"JPEG") == 0) ||
       (LocaleCompare(image_info->magick,"JPG") == 0))
     {
       char
-        quality[MaxTextExtent];
+        quality[MagickPathExtent];
 
       int
         status;
@@ -2953,7 +2953,7 @@ static MagickBooleanType XSaveImage(Display *display,
       /*
         Request JPEG quality from user.
       */
-      (void) FormatLocaleString(quality,MaxTextExtent,"%.20g",(double)
+      (void) FormatLocaleString(quality,MagickPathExtent,"%.20g",(double)
         image_info->quality);
       status=XDialogWidget(display,windows,"Save","Enter JPEG quality:",
         quality);
@@ -2969,16 +2969,16 @@ static MagickBooleanType XSaveImage(Display *display,
       (LocaleCompare(image_info->magick,"PS2") == 0))
     {
       char
-        geometry[MaxTextExtent];
+        geometry[MagickPathExtent];
 
       /*
         Request page geometry from user.
       */
-      (void) CopyMagickString(geometry,PSPageGeometry,MaxTextExtent);
+      (void) CopyMagickString(geometry,PSPageGeometry,MagickPathExtent);
       if (LocaleCompare(image_info->magick,"PDF") == 0)
-        (void) CopyMagickString(geometry,PSPageGeometry,MaxTextExtent);
+        (void) CopyMagickString(geometry,PSPageGeometry,MagickPathExtent);
       if (image_info->page != (char *) NULL)
-        (void) CopyMagickString(geometry,image_info->page,MaxTextExtent);
+        (void) CopyMagickString(geometry,image_info->page,MagickPathExtent);
       XListBrowserWidget(display,windows,&windows->widget,PageSizes,"Select",
         "Select page geometry:",geometry);
       if (*geometry != '\0')

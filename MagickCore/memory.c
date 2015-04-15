@@ -129,7 +129,7 @@ typedef struct _MagickMemoryMethods
 struct _MemoryInfo
 {
   char
-    filename[MaxTextExtent];
+    filename[MagickPathExtent];
 
   VirtualMemoryType
     type;

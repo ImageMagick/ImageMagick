@@ -60,7 +60,7 @@ typedef struct _MontageInfo
     gravity;
 
   char
-    filename[MaxTextExtent];
+    filename[MagickPathExtent];
 
   MagickBooleanType
     debug;

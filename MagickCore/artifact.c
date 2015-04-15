@@ -152,21 +152,21 @@ MagickExport MagickBooleanType DefineImageArtifact(Image *image,
   const char *artifact)
 {
   char
-    key[MaxTextExtent],
-    value[MaxTextExtent];
+    key[MagickPathExtent],
+    value[MagickPathExtent];
 
   register char
     *p;
 
   assert(image != (Image *) NULL);
   assert(artifact != (const char *) NULL);
-  (void) CopyMagickString(key,artifact,MaxTextExtent-1);
+  (void) CopyMagickString(key,artifact,MagickPathExtent-1);
   for (p=key; *p != '\0'; p++)
     if (*p == '=')
       break;
   *value='\0';
   if (*p == '=')
-    (void) CopyMagickString(value,p+1,MaxTextExtent);
+    (void) CopyMagickString(value,p+1,MagickPathExtent);
   *p='\0';
   return(SetImageArtifact(image,key,value));
 }

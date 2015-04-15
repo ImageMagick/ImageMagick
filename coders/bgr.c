@@ -1329,7 +1329,7 @@ static MagickBooleanType WriteBGRImage(const ImageInfo *image_info,Image *image,
           }
         if (image_info->interlace == PartitionInterlace)
           (void) CopyMagickString(image->filename,image_info->filename,
-            MaxTextExtent);
+            MagickPathExtent);
         if (image->previous == (Image *) NULL)
           {
             status=SetImageProgress(image,SaveImageTag,6,6);
@@ -1452,7 +1452,7 @@ static MagickBooleanType WriteBGRImage(const ImageInfo *image_info,Image *image,
           }
         (void) CloseBlob(image);
         (void) CopyMagickString(image->filename,image_info->filename,
-          MaxTextExtent);
+          MagickPathExtent);
         if (image->previous == (Image *) NULL)
           {
             status=SetImageProgress(image,SaveImageTag,6,6);

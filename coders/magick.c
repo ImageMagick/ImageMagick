@@ -12977,8 +12977,8 @@ static const unsigned char
 typedef struct _MagickImageInfo
 {
   char
-    name[MaxTextExtent],
-    magick[MaxTextExtent];
+    name[MagickPathExtent],
+    magick[MagickPathExtent];
 
   const void
     *blob;
@@ -13052,7 +13052,7 @@ static Image *ReadMAGICKImage(const ImageInfo *image_info,
   blob_info=CloneImageInfo(image_info);
   if (LocaleCompare(image_info->magick,"MAGICK") != 0)
     (void) CopyMagickString(blob_info->filename,image_info->magick,
-      MaxTextExtent);
+      MagickPathExtent);
   image=(Image *) NULL;
   blob=(const void *) NULL;
   extent=0;
@@ -13060,7 +13060,7 @@ static Image *ReadMAGICKImage(const ImageInfo *image_info,
     if (LocaleCompare(blob_info->filename,MagickImageList[i].name) == 0)
       {
         (void) CopyMagickString(blob_info->magick,MagickImageList[i].magick,
-          MaxTextExtent);
+          MagickPathExtent);
         blob=MagickImageList[i].blob;
         extent=MagickImageList[i].extent;
         break;
@@ -13207,7 +13207,7 @@ static MagickBooleanType WriteMAGICKImage(const ImageInfo *image_info,
   Image *image,ExceptionInfo *exception)
 {
   char
-    buffer[MaxTextExtent];
+    buffer[MagickPathExtent];
 
   Image
     *magick_image;
@@ -13245,11 +13245,11 @@ static MagickBooleanType WriteMAGICKImage(const ImageInfo *image_info,
     ThrowWriterException(ResourceLimitError,exception->reason);
   write_info=CloneImageInfo(image_info);
   *write_info->filename='\0';
-  (void) CopyMagickString(write_info->magick,"GIF",MaxTextExtent);
+  (void) CopyMagickString(write_info->magick,"GIF",MagickPathExtent);
   length=(size_t) magick_image->columns*magick_image->rows;
   if (magick_image->storage_class == DirectClass)
     {
-      (void) CopyMagickString(write_info->magick,"PNM",MaxTextExtent);
+      (void) CopyMagickString(write_info->magick,"PNM",MagickPathExtent);
       length*=3;
     }
   blob=ImageToBlob(write_info,magick_image,&length,exception);
@@ -13261,7 +13261,7 @@ static MagickBooleanType WriteMAGICKImage(const ImageInfo *image_info,
   if (status == MagickFalse)
     return(status);
   (void) WriteBlobString(image,"/*\n");
-  (void) FormatLocaleString(buffer,MaxTextExtent,"  %s (%s).\n",
+  (void) FormatLocaleString(buffer,MagickPathExtent,"  %s (%s).\n",
     image->filename,image->storage_class == DirectClass ? "PNM" : "GIF");
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,"*/\n");
@@ -13272,11 +13272,11 @@ static MagickBooleanType WriteMAGICKImage(const ImageInfo *image_info,
   p=(char *) blob;
   for (i=0; i < (ssize_t) length ; i++)
   {
-    (void) FormatLocaleString(buffer,MaxTextExtent,"0x%02X, ",*p & 0xff);
+    (void) FormatLocaleString(buffer,MagickPathExtent,"0x%02X, ",*p & 0xff);
     (void) WriteBlobString(image,buffer);
     if (((i+1) % 12) == 0)
       {
-        (void) CopyMagickString(buffer,"\n    ",MaxTextExtent);
+        (void) CopyMagickString(buffer,"\n    ",MagickPathExtent);
         (void) WriteBlobString(image,buffer);
       }
     p++;

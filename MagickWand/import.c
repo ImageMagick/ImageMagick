@@ -450,7 +450,7 @@ WandExport MagickBooleanType ImportImageCommand(ImageInfo *image_info,
         filename=argv[i];
         if (target_window != (char *) NULL)
           (void) CopyMagickString(image_info->filename,target_window,
-            MaxTextExtent);
+            MagickPathExtent);
         for (scene=0; scene < (size_t) MagickMax(snapshots,1); scene++)
         {
           (void) sleep(resource_info.pause);
@@ -459,8 +459,8 @@ WandExport MagickBooleanType ImportImageCommand(ImageInfo *image_info,
             (exception->severity < ErrorException);
           if (images == (Image *) NULL)
             continue;
-          (void) CopyMagickString(images->filename,filename,MaxTextExtent);
-          (void) CopyMagickString(images->magick,"PS",MaxTextExtent);
+          (void) CopyMagickString(images->filename,filename,MagickPathExtent);
+          (void) CopyMagickString(images->magick,"PS",MagickPathExtent);
           images->scene=scene;
           AppendImageStack(images);
         }
@@ -493,7 +493,7 @@ WandExport MagickBooleanType ImportImageCommand(ImageInfo *image_info,
       {
         if (LocaleCompare("border",option+1) == 0)
           {
-            (void) CopyMagickString(argv[i]+1,"sans",MaxTextExtent);
+            (void) CopyMagickString(argv[i]+1,"sans",MagickPathExtent);
             ximage_info.borders=(*option == '-') ? MagickTrue : MagickFalse;
             break;
           }
@@ -802,7 +802,7 @@ WandExport MagickBooleanType ImportImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("frame",option+1) == 0)
           {
-            (void) CopyMagickString(argv[i]+1,"sans0",MaxTextExtent);
+            (void) CopyMagickString(argv[i]+1,"sans0",MagickPathExtent);
             ximage_info.frame=(*option == '-') ? MagickTrue : MagickFalse;
             break;
           }
@@ -1164,7 +1164,7 @@ WandExport MagickBooleanType ImportImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("snaps",option+1) == 0)
           {
-            (void) CopyMagickString(argv[i]+1,"sans",MaxTextExtent);
+            (void) CopyMagickString(argv[i]+1,"sans",MagickPathExtent);
             i++;
             if (i == (ssize_t) argc)
               ThrowImportException(OptionError,"MissingArgument",option);

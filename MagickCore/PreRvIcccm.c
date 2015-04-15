@@ -311,7 +311,7 @@ int XStringListToTextProperty(char **argv,int argc,XTextProperty *property)
           *buffer++='\0';
         else
           {
-            (void) CopyMagickString(buffer,argument,MaxTextExtent);
+            (void) CopyMagickString(buffer,argument,MagickPathExtent);
             buffer+=(strlen(argument)+1);
           }
       }

@@ -179,7 +179,7 @@ const Magick::Geometry& Magick::Geometry::operator=(
   const std::string &geometry_)
 {
   char
-    geom[MaxTextExtent];
+    geom[MagickPathExtent];
 
   char
     *pageptr;
@@ -196,14 +196,14 @@ const Magick::Geometry& Magick::Geometry::operator=(
   // If argument does not start with digit, presume that it is a
   // page-size specification that needs to be converted to an
   // equivalent geometry specification using PostscriptGeometry()
-  (void) CopyMagickString(geom,geometry_.c_str(),MaxTextExtent);
+  (void) CopyMagickString(geom,geometry_.c_str(),MagickPathExtent);
   if (geom[0] != '-' && geom[0] != '+' && geom[0] != 'x' &&
       !isdigit(static_cast<int>(geom[0])))
     {
       pageptr=GetPageGeometry(geom);
       if (pageptr != 0)
         {
-          (void) CopyMagickString(geom,pageptr,MaxTextExtent);
+          (void) CopyMagickString(geom,pageptr,MagickPathExtent);
           pageptr=(char *) RelinquishMagickMemory(pageptr);
         }
     }
@@ -266,7 +266,7 @@ const Magick::Geometry& Magick::Geometry::operator=(
 Magick::Geometry::operator std::string() const
 {
   char
-    buffer[MaxTextExtent];
+    buffer[MagickPathExtent];
 
   std::string
     geometry;
@@ -277,13 +277,13 @@ Magick::Geometry::operator std::string() const
 
   if (_width)
     {
-      FormatLocaleString(buffer,MaxTextExtent,"%.20g",(double) _width);
+      FormatLocaleString(buffer,MagickPathExtent,"%.20g",(double) _width);
       geometry+=buffer;
     }
 
   if (_height)
     {
-      FormatLocaleString(buffer,MaxTextExtent,"%.20g",(double) _height);
+      FormatLocaleString(buffer,MagickPathExtent,"%.20g",(double) _height);
       geometry+='x';
       geometry+=buffer;
     }
@@ -293,13 +293,13 @@ Magick::Geometry::operator std::string() const
       if (_xOff >= 0)
         geometry+='+';
 
-      FormatLocaleString(buffer,MaxTextExtent,"%.20g",(double) _xOff);
+      FormatLocaleString(buffer,MagickPathExtent,"%.20g",(double) _xOff);
       geometry+=buffer;
 
       if (_yOff >= 0)
         geometry+='+';
 
-      FormatLocaleString(buffer,MaxTextExtent,"%.20g",(double) _yOff);
+      FormatLocaleString(buffer,MagickPathExtent,"%.20g",(double) _yOff);
       geometry+=buffer;
     }
 
@@ -569,7 +569,7 @@ const Magick::Point& Magick::Point::operator=(const std::string &point_)
 Magick::Point::operator std::string() const
 {
   char
-    buffer[MaxTextExtent];
+    buffer[MagickPathExtent];
 
   string
     point;
@@ -579,7 +579,7 @@ Magick::Point::operator std::string() const
   else
     point+="+";
 
-  FormatLocaleString(buffer,MaxTextExtent,"%.20g",_x);
+  FormatLocaleString(buffer,MagickPathExtent,"%.20g",_x);
   point+=buffer;
 
   if (_y < 0.0)
@@ -587,7 +587,7 @@ Magick::Point::operator std::string() const
   else
     point+="x+";
 
-  FormatLocaleString(buffer,MaxTextExtent,"%.20g",(double) _y);
+  FormatLocaleString(buffer,MagickPathExtent,"%.20g",(double) _y);
   point+=buffer;
 
   return(point);

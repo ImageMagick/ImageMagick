@@ -97,7 +97,7 @@ WandExport MagickCLI *AcquireMagickCLI(ImageInfo *image_info,
      However some parts may be given fro man external source!
   */
   cli_wand->wand.id=AcquireWandId();
-  (void) FormatLocaleString(cli_wand->wand.name,MaxTextExtent,
+  (void) FormatLocaleString(cli_wand->wand.name,MagickPathExtent,
            "%s-%.20g","MagickWandCLI", (double) cli_wand->wand.id);
   cli_wand->wand.images=NewImageList();
   if ( image_info == (ImageInfo *) NULL)
@@ -273,7 +273,7 @@ WandExport MagickBooleanType CLILogEvent(MagickCLI *cli_wand,
      const size_t line,const char *format,...)
 {
   char
-    new_format[MaxTextExtent];
+    new_format[MagickPathExtent];
 
   MagickBooleanType
     status;
@@ -286,10 +286,10 @@ WandExport MagickBooleanType CLILogEvent(MagickCLI *cli_wand,
      list, but that does not appear to be possible! So we do some
      pre-formating of the location info here.
   */
-  (void) FormatLocaleString(new_format,MaxTextExtent,cli_wand->location,
+  (void) FormatLocaleString(new_format,MagickPathExtent,cli_wand->location,
        cli_wand->filename, cli_wand->line, cli_wand->column);
-  (void) ConcatenateMagickString(new_format," ",MaxTextExtent);
-  (void) ConcatenateMagickString(new_format,format,MaxTextExtent);
+  (void) ConcatenateMagickString(new_format," ",MagickPathExtent);
+  (void) ConcatenateMagickString(new_format,format,MagickPathExtent);
 
   va_start(operands,format);
   status=LogMagickEventList(type,module,function,line,new_format,operands);
@@ -318,7 +318,7 @@ WandExport MagickBooleanType CLIThrowException(MagickCLI *cli_wand,
        const ExceptionType severity,const char *tag,const char *format,...)
 {
   char
-    new_format[MaxTextExtent];
+    new_format[MagickPathExtent];
 
   size_t
     len;
@@ -334,11 +334,11 @@ WandExport MagickBooleanType CLIThrowException(MagickCLI *cli_wand,
      list, but that does not appear to be possible! So we do some
      pre-formating of the location info here.
   */
-  (void) CopyMagickString(new_format,format,MaxTextExtent);
-  (void) ConcatenateMagickString(new_format," ",MaxTextExtent);
+  (void) CopyMagickString(new_format,format,MagickPathExtent);
+  (void) ConcatenateMagickString(new_format," ",MagickPathExtent);
 
   len=strlen(new_format);
-  (void) FormatLocaleString(new_format+len,MaxTextExtent-len,cli_wand->location,
+  (void) FormatLocaleString(new_format+len,MagickPathExtent-len,cli_wand->location,
        cli_wand->filename, cli_wand->line, cli_wand->column);
 
   va_start(operands,format);

@@ -255,7 +255,7 @@ MagickExport const char *GetMagickFeatures(void)
 MagickExport char *GetMagickHomeURL(void)
 {
   char
-    path[MaxTextExtent];
+    path[MagickPathExtent];
 
   const char
     *element;
@@ -274,7 +274,7 @@ MagickExport char *GetMagickHomeURL(void)
   element=(const char *) GetNextValueInLinkedList(paths);
   while (element != (const char *) NULL)
   {
-    (void) FormatLocaleString(path,MaxTextExtent,"%s%s%s",element,
+    (void) FormatLocaleString(path,MagickPathExtent,"%s%s%s",element,
       DirectorySeparator,MagickURLFilename);
     if (IsPathAccessible(path) != MagickFalse)
       return(ConstantString(path));
@@ -493,7 +493,7 @@ MagickExport unsigned int GetMagickSignature(const StringInfo *nonce)
   unsigned int
     signature;
 
-  version=AcquireStringInfo(MaxTextExtent);
+  version=AcquireStringInfo(MagickPathExtent);
   p=GetStringInfoDatum(version);
   signature=MAGICKCORE_QUANTUM_DEPTH;
   (void) memcpy(p,&signature,sizeof(signature));

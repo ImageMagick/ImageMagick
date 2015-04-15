@@ -126,7 +126,7 @@ WandExport MagickWand *CloneMagickWand(const MagickWand *wand)
       wand->name);
   (void) ResetMagickMemory(clone_wand,0,sizeof(*clone_wand));
   clone_wand->id=AcquireWandId();
-  (void) FormatLocaleString(clone_wand->name,MaxTextExtent,"%s-%.20g",
+  (void) FormatLocaleString(clone_wand->name,MagickPathExtent,"%s-%.20g",
     MagickWandId,(double) clone_wand->id);
   clone_wand->exception=AcquireExceptionInfo();
   InheritException(clone_wand->exception,wand->exception);
@@ -282,7 +282,7 @@ WandExport char *MagickGetException(const MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   assert(severity != (ExceptionType *) NULL);
   *severity=wand->exception->severity;
-  description=(char *) AcquireQuantumMemory(2UL*MaxTextExtent,
+  description=(char *) AcquireQuantumMemory(2UL*MagickPathExtent,
     sizeof(*description));
   if (description == (char *) NULL)
     {
@@ -293,13 +293,13 @@ WandExport char *MagickGetException(const MagickWand *wand,
   *description='\0';
   if (wand->exception->reason != (char *) NULL)
     (void) CopyMagickString(description,GetLocaleExceptionMessage(
-      wand->exception->severity,wand->exception->reason),MaxTextExtent);
+      wand->exception->severity,wand->exception->reason),MagickPathExtent);
   if (wand->exception->description != (char *) NULL)
     {
-      (void) ConcatenateMagickString(description," (",MaxTextExtent);
+      (void) ConcatenateMagickString(description," (",MagickPathExtent);
       (void) ConcatenateMagickString(description,GetLocaleExceptionMessage(
-        wand->exception->severity,wand->exception->description),MaxTextExtent);
-      (void) ConcatenateMagickString(description,")",MaxTextExtent);
+        wand->exception->severity,wand->exception->description),MagickPathExtent);
+      (void) ConcatenateMagickString(description,")",MagickPathExtent);
     }
   return(description);
 }
@@ -1068,7 +1068,7 @@ WandExport MagickWand *NewMagickWand(void)
       GetExceptionMessage(errno));
   (void) ResetMagickMemory(wand,0,sizeof(*wand));
   wand->id=AcquireWandId();
-  (void) FormatLocaleString(wand->name,MaxTextExtent,"%s-%.20g",MagickWandId,
+  (void) FormatLocaleString(wand->name,MagickPathExtent,"%s-%.20g",MagickWandId,
     (double) wand->id);
   wand->images=NewImageList();
   wand->image_info=AcquireImageInfo();

@@ -52,7 +52,7 @@ struct _MagickWand
     id;
 
   char
-    name[MaxTextExtent];  /* Wand name to use for MagickWand Logs */
+    name[MagickPathExtent];  /* Wand name to use for MagickWand Logs */
 
   Image
     *images;          /* The images in this wand - also the current image */

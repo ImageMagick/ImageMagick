@@ -409,7 +409,7 @@ static MagickBooleanType ScribbleImage(MagickWand *canvas)
 int main(int argc,char **argv)
 {
   char
-    filename[MaxTextExtent];
+    filename[MagickPathExtent];
 
   MagickBooleanType
     status;
@@ -422,7 +422,7 @@ int main(int argc,char **argv)
       (void) printf ("Usage: %s filename\n",argv[0]);
       exit(1);
     }
-  (void) CopyMagickString(filename,argv[1],MaxTextExtent);
+  (void) CopyMagickString(filename,argv[1],MagickPathExtent);
   /*
     Create canvas image.
   */

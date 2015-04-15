@@ -201,7 +201,7 @@ void Magick::Montage::updateMontageInfo(MontageInfo &montageInfo_ ) const
   // filename
   if (_font.length() != 0)
     {
-      _fileName.copy(montageInfo_.filename,MaxTextExtent-1);
+      _fileName.copy(montageInfo_.filename,MagickPathExtent-1);
       montageInfo_.filename[ _fileName.length() ] = 0; // null terminate
     }
   // fill

@@ -566,7 +566,7 @@ static void ParseImageResourceBlocks(Image *image,
       case 0x03ed:
       {
         char
-          value[MaxTextExtent];
+          value[MagickPathExtent];
 
         unsigned short
           resolution;
@@ -576,14 +576,14 @@ static void ParseImageResourceBlocks(Image *image,
         */
         p=PushShortPixel(MSBEndian,p,&resolution);
         image->resolution.x=(double) resolution;
-        (void) FormatLocaleString(value,MaxTextExtent,"%g",image->resolution.x);
+        (void) FormatLocaleString(value,MagickPathExtent,"%g",image->resolution.x);
         (void) SetImageProperty(image,"tiff:XResolution",value,exception);
         p=PushShortPixel(MSBEndian,p,&short_sans);
         p=PushShortPixel(MSBEndian,p,&short_sans);
         p=PushShortPixel(MSBEndian,p,&short_sans);
         p=PushShortPixel(MSBEndian,p,&resolution);
         image->resolution.y=(double) resolution;
-        (void) FormatLocaleString(value,MaxTextExtent,"%g",image->resolution.y);
+        (void) FormatLocaleString(value,MagickPathExtent,"%g",image->resolution.y);
         (void) SetImageProperty(image,"tiff:YResolution",value,exception);
         p=PushShortPixel(MSBEndian,p,&short_sans);
         p=PushShortPixel(MSBEndian,p,&short_sans);
@@ -1110,7 +1110,7 @@ static MagickStatusType ReadPSDLayer(Image *image,const PSDInfo *psd_info,
   LayerInfo* layer_info,ExceptionInfo *exception)
 {
   char
-    message[MaxTextExtent];
+    message[MagickPathExtent];
 
   MagickStatusType
     status;
@@ -1137,13 +1137,13 @@ static MagickStatusType ReadPSDLayer(Image *image,const PSDInfo *psd_info,
   /*
     Set up some hidden attributes for folks that need them.
   */
-  (void) FormatLocaleString(message,MaxTextExtent,"%.20gld",
+  (void) FormatLocaleString(message,MagickPathExtent,"%.20gld",
     (double) layer_info->page.x);
   (void) SetImageArtifact(layer_info->image,"psd:layer.x",message);
-  (void) FormatLocaleString(message,MaxTextExtent,"%.20g",
+  (void) FormatLocaleString(message,MagickPathExtent,"%.20g",
     (double) layer_info->page.y);
   (void) SetImageArtifact(layer_info->image,"psd:layer.y",message);
-  (void) FormatLocaleString(message,MaxTextExtent,"%.20g",(double)
+  (void) FormatLocaleString(message,MagickPathExtent,"%.20g",(double)
     layer_info->opacity);
   (void) SetImageArtifact(layer_info->image,"psd:layer.opacity",message);
   (void) SetImageProperty(layer_info->image,"label",(char *) layer_info->name,
@@ -2744,12 +2744,12 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image,
         if (property == (const char *) NULL)
           {
             char
-              layer_name[MaxTextExtent];
+              layer_name[MagickPathExtent];
 
             (void) WriteBlobMSBLong(image,16);
             (void) WriteBlobMSBLong(image,0);
             (void) WriteBlobMSBLong(image,0);
-            (void) FormatLocaleString(layer_name,MaxTextExtent,"L%04ld",(long)
+            (void) FormatLocaleString(layer_name,MagickPathExtent,"L%04ld",(long)
               layer_count++);
             WritePascalString(image,layer_name,4);
           }

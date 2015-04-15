@@ -3625,7 +3625,7 @@ MagickExport Image *ThumbnailImage(const Image *image,const size_t columns,
 #define SampleFactor  5
 
   char
-    value[MaxTextExtent];
+    value[MagickPathExtent];
 
   const char
     *name;
@@ -3690,37 +3690,37 @@ MagickExport Image *ThumbnailImage(const Image *image,const size_t columns,
     name=GetNextImageProfile(thumbnail_image);
   }
   (void) DeleteImageProperty(thumbnail_image,"comment");
-  (void) CopyMagickString(value,image->magick_filename,MaxTextExtent);
+  (void) CopyMagickString(value,image->magick_filename,MagickPathExtent);
   if (strstr(image->magick_filename,"//") == (char *) NULL)
-    (void) FormatLocaleString(value,MaxTextExtent,"file://%s",
+    (void) FormatLocaleString(value,MagickPathExtent,"file://%s",
       image->magick_filename);
   (void) SetImageProperty(thumbnail_image,"Thumb::URI",value,exception);
-  (void) CopyMagickString(value,image->magick_filename,MaxTextExtent);
+  (void) CopyMagickString(value,image->magick_filename,MagickPathExtent);
   if ( IfMagickTrue(GetPathAttributes(image->filename,&attributes)) )
     {
-      (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
+      (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
         attributes.st_mtime);
       (void) SetImageProperty(thumbnail_image,"Thumb::MTime",value,exception);
     }
-  (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
+  (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
     attributes.st_mtime);
-  (void) FormatMagickSize(GetBlobSize(image),MagickFalse,"B",MaxTextExtent,
+  (void) FormatMagickSize(GetBlobSize(image),MagickFalse,"B",MagickPathExtent,
     value);
   (void) SetImageProperty(thumbnail_image,"Thumb::Size",value,exception);
-  (void) FormatLocaleString(value,MaxTextExtent,"image/%s",image->magick);
+  (void) FormatLocaleString(value,MagickPathExtent,"image/%s",image->magick);
   LocaleLower(value);
   (void) SetImageProperty(thumbnail_image,"Thumb::Mimetype",value,exception);
   (void) SetImageProperty(thumbnail_image,"software",GetMagickVersion(&version),
     exception);
-  (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
+  (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
     image->magick_columns);
   (void) SetImageProperty(thumbnail_image,"Thumb::Image::Width",value,
     exception);
-  (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
+  (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
     image->magick_rows);
   (void) SetImageProperty(thumbnail_image,"Thumb::Image::Height",value,
     exception);
-  (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
+  (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
     GetImageListLength(image));
   (void) SetImageProperty(thumbnail_image,"Thumb::Document::Pages",value,
     exception);

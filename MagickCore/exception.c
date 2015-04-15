@@ -454,7 +454,7 @@ MagickExport ExceptionInfo *DestroyExceptionInfo(ExceptionInfo *exception)
 MagickExport char *GetExceptionMessage(const int error)
 {
   char
-    exception[MaxTextExtent];
+    exception[MagickPathExtent];
 
   *exception='\0';
 #if defined(MAGICKCORE_HAVE_STRERROR_R)
@@ -573,13 +573,13 @@ MagickExport const char *GetLocaleExceptionMessage(const ExceptionType severity,
   const char *tag)
 {
   char
-    message[MaxTextExtent];
+    message[MagickPathExtent];
 
   const char
     *locale_message;
 
   assert(tag != (const char *) NULL);
-  (void) FormatLocaleString(message,MaxTextExtent,"Exception/%s%s",
+  (void) FormatLocaleString(message,MagickPathExtent,"Exception/%s%s",
     ExceptionSeverityToTag(severity),tag);
   locale_message=GetLocaleMessage(message);
   if (locale_message == (const char *) NULL)
@@ -993,9 +993,9 @@ MagickExport MagickBooleanType ThrowMagickExceptionList(
   const char *format,va_list operands)
 {
   char
-    message[MaxTextExtent],
-    path[MaxTextExtent],
-    reason[MaxTextExtent];
+    message[MagickPathExtent],
+    path[MagickPathExtent],
+    reason[MagickPathExtent];
 
   const char
     *locale,
@@ -1013,16 +1013,16 @@ MagickExport MagickBooleanType ThrowMagickExceptionList(
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   locale=GetLocaleExceptionMessage(severity,tag);
-  (void) CopyMagickString(reason,locale,MaxTextExtent);
-  (void) ConcatenateMagickString(reason," ",MaxTextExtent);
+  (void) CopyMagickString(reason,locale,MagickPathExtent);
+  (void) ConcatenateMagickString(reason," ",MagickPathExtent);
   length=strlen(reason);
 #if defined(MAGICKCORE_HAVE_VSNPRINTF)
-  n=vsnprintf(reason+length,MaxTextExtent-length,format,operands);
+  n=vsnprintf(reason+length,MagickPathExtent-length,format,operands);
 #else
   n=vsprintf(reason+length,format,operands);
 #endif
   if (n < 0)
-    reason[MaxTextExtent-1]='\0';
+    reason[MagickPathExtent-1]='\0';
   status=LogMagickEvent(ExceptionEvent,module,function,line,"%s",reason);
   GetPathComponent(module,TailPath,path);
   type="undefined";
@@ -1032,7 +1032,7 @@ MagickExport MagickBooleanType ThrowMagickExceptionList(
     type="error";
   if (severity >= FatalErrorException)
     type="fatal";
-  (void) FormatLocaleString(message,MaxTextExtent,"%s @ %s/%s/%s/%.20g",reason,
+  (void) FormatLocaleString(message,MagickPathExtent,"%s @ %s/%s/%s/%.20g",reason,
     type,path,function,(double) line);
   (void) ThrowException(exception,severity,message,(char *) NULL);
   return(status);

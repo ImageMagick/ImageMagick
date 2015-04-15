@@ -100,7 +100,7 @@ static MagickWand *CloneMagickWandFromImages(const MagickWand *wand,
       images->filename);
   (void) ResetMagickMemory(clone_wand,0,sizeof(*clone_wand));
   clone_wand->id=AcquireWandId();
-  (void) FormatLocaleString(clone_wand->name,MaxTextExtent,"%s-%.20g",
+  (void) FormatLocaleString(clone_wand->name,MagickPathExtent,"%s-%.20g",
     MagickWandId,(double) clone_wand->id);
   clone_wand->exception=AcquireExceptionInfo();
   InheritException(clone_wand->exception,wand->exception);
@@ -595,7 +595,7 @@ WandExport MagickBooleanType MagickAnnotateImage(MagickWand *wand,
   const double angle,const char *text)
 {
   char
-    geometry[MaxTextExtent];
+    geometry[MagickPathExtent];
 
   DrawInfo
     *draw_info;
@@ -613,7 +613,7 @@ WandExport MagickBooleanType MagickAnnotateImage(MagickWand *wand,
   if (draw_info == (DrawInfo *) NULL)
     return(MagickFalse);
   (void) CloneString(&draw_info->text,text);
-  (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",x,y);
+  (void) FormatLocaleString(geometry,MagickPathExtent,"%+g%+g",x,y);
   draw_info->affine.sx=cos((double) DegreesToRadians(fmod(angle,360.0)));
   draw_info->affine.rx=sin((double) DegreesToRadians(fmod(angle,360.0)));
   draw_info->affine.ry=(-sin((double) DegreesToRadians(fmod(angle,360.0))));
@@ -864,7 +864,7 @@ WandExport MagickBooleanType MagickBlackThresholdImage(MagickWand *wand,
   const PixelWand *threshold)
 {
   char
-    thresholds[MaxTextExtent];
+    thresholds[MagickPathExtent];
 
   MagickBooleanType
     status;
@@ -875,7 +875,7 @@ WandExport MagickBooleanType MagickBlackThresholdImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  (void) FormatLocaleString(thresholds,MaxTextExtent,
+  (void) FormatLocaleString(thresholds,MagickPathExtent,
     QuantumFormat "," QuantumFormat "," QuantumFormat "," QuantumFormat,
     PixelGetRedQuantum(threshold),PixelGetGreenQuantum(threshold),
     PixelGetBlueQuantum(threshold),PixelGetAlphaQuantum(threshold));
@@ -1548,7 +1548,7 @@ WandExport MagickBooleanType MagickColorizeImage(MagickWand *wand,
   const PixelWand *colorize,const PixelWand *blend)
 {
   char
-    percent_blend[MaxTextExtent];
+    percent_blend[MagickPathExtent];
 
   Image
     *colorize_image;
@@ -1564,14 +1564,14 @@ WandExport MagickBooleanType MagickColorizeImage(MagickWand *wand,
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   GetPixelInfo(wand->images,&target);
   if (target.colorspace != CMYKColorspace)
-    (void) FormatLocaleString(percent_blend,MaxTextExtent,
+    (void) FormatLocaleString(percent_blend,MagickPathExtent,
       "%g,%g,%g,%g",(double) (100.0*QuantumScale*
       PixelGetRedQuantum(blend)),(double) (100.0*QuantumScale*
       PixelGetGreenQuantum(blend)),(double) (100.0*QuantumScale*
       PixelGetBlueQuantum(blend)),(double) (100.0*QuantumScale*
       PixelGetAlphaQuantum(blend)));
   else
-    (void) FormatLocaleString(percent_blend,MaxTextExtent,
+    (void) FormatLocaleString(percent_blend,MagickPathExtent,
       "%g,%g,%g,%g,%g",(double) (100.0*QuantumScale*
       PixelGetRedQuantum(blend)),(double) (100.0*QuantumScale*
       PixelGetGreenQuantum(blend)),(double) (100.0*QuantumScale*
@@ -5953,7 +5953,7 @@ WandExport char *MagickIdentifyImage(MagickWand *wand)
 {
   char
     *description,
-    filename[MaxTextExtent];
+    filename[MagickPathExtent];
 
   FILE
     *file;
@@ -6596,7 +6596,7 @@ WandExport MagickBooleanType MagickModulateImage(MagickWand *wand,
   const double brightness,const double saturation,const double hue)
 {
   char
-    modulate[MaxTextExtent];
+    modulate[MagickPathExtent];
 
   MagickBooleanType
     status;
@@ -6607,7 +6607,7 @@ WandExport MagickBooleanType MagickModulateImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  (void) FormatLocaleString(modulate,MaxTextExtent,"%g,%g,%g",
+  (void) FormatLocaleString(modulate,MagickPathExtent,"%g,%g,%g",
     brightness,saturation,hue);
   status=ModulateImage(wand->images,modulate,wand->exception);
   return(status);
@@ -7370,7 +7370,7 @@ WandExport MagickBooleanType MagickPingImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   ping_info=CloneImageInfo(wand->image_info);
   if (filename != (const char *) NULL)
-    (void) CopyMagickString(ping_info->filename,filename,MaxTextExtent);
+    (void) CopyMagickString(ping_info->filename,filename,MagickPathExtent);
   images=PingImage(ping_info,wand->exception);
   ping_info=DestroyImageInfo(ping_info);
   if (images == (Image *) NULL)
@@ -7971,7 +7971,7 @@ WandExport MagickBooleanType MagickRandomThresholdImage(MagickWand *wand,
   const double low,const double high)
 {
   char
-    threshold[MaxTextExtent];
+    threshold[MagickPathExtent];
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
@@ -7979,7 +7979,7 @@ WandExport MagickBooleanType MagickRandomThresholdImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  (void) FormatLocaleString(threshold,MaxTextExtent,"%gx%g",low,high);
+  (void) FormatLocaleString(threshold,MagickPathExtent,"%gx%g",low,high);
   return(RandomThresholdImage(wand->images,threshold,wand->exception));
 }
 
@@ -8027,7 +8027,7 @@ WandExport MagickBooleanType MagickReadImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   read_info=CloneImageInfo(wand->image_info);
   if (filename != (const char *) NULL)
-    (void) CopyMagickString(read_info->filename,filename,MaxTextExtent);
+    (void) CopyMagickString(read_info->filename,filename,MagickPathExtent);
   images=ReadImage(read_info,wand->exception);
   read_info=DestroyImageInfo(read_info);
   if (images == (Image *) NULL)
@@ -9486,7 +9486,7 @@ WandExport MagickBooleanType MagickSetImageFilename(MagickWand *wand,
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   if (filename != (const char *) NULL)
-    (void) CopyMagickString(wand->images->filename,filename,MaxTextExtent);
+    (void) CopyMagickString(wand->images->filename,filename,MagickPathExtent);
   return(MagickTrue);
 }
 
@@ -9537,7 +9537,7 @@ WandExport MagickBooleanType MagickSetImageFormat(MagickWand *wand,
   if (magick_info == (const MagickInfo *) NULL)
     return(MagickFalse);
   ClearMagickException(wand->exception);
-  (void) CopyMagickString(wand->images->magick,format,MaxTextExtent);
+  (void) CopyMagickString(wand->images->magick,format,MagickPathExtent);
   return(MagickTrue);
 }
 
@@ -11571,7 +11571,7 @@ WandExport MagickBooleanType MagickTintImage(MagickWand *wand,
   const PixelWand *tint,const PixelWand *blend)
 {
   char
-    percent_blend[MaxTextExtent];
+    percent_blend[MagickPathExtent];
 
   Image
     *tint_image;
@@ -11586,14 +11586,14 @@ WandExport MagickBooleanType MagickTintImage(MagickWand *wand,
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   if (wand->images->colorspace != CMYKColorspace)
-    (void) FormatLocaleString(percent_blend,MaxTextExtent,
+    (void) FormatLocaleString(percent_blend,MagickPathExtent,
       "%g,%g,%g,%g",(double) (100.0*QuantumScale*
       PixelGetRedQuantum(blend)),(double) (100.0*QuantumScale*
       PixelGetGreenQuantum(blend)),(double) (100.0*QuantumScale*
       PixelGetBlueQuantum(blend)),(double) (100.0*QuantumScale*
       PixelGetAlphaQuantum(blend)));
   else
-    (void) FormatLocaleString(percent_blend,MaxTextExtent,
+    (void) FormatLocaleString(percent_blend,MagickPathExtent,
       "%g,%g,%g,%g,%g",(double) (100.0*QuantumScale*
       PixelGetCyanQuantum(blend)),(double) (100.0*QuantumScale*
       PixelGetMagentaQuantum(blend)),(double) (100.0*QuantumScale*
@@ -12134,7 +12134,7 @@ WandExport MagickBooleanType MagickWhiteThresholdImage(MagickWand *wand,
   const PixelWand *threshold)
 {
   char
-    thresholds[MaxTextExtent];
+    thresholds[MagickPathExtent];
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
@@ -12142,7 +12142,7 @@ WandExport MagickBooleanType MagickWhiteThresholdImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  (void) FormatLocaleString(thresholds,MaxTextExtent,
+  (void) FormatLocaleString(thresholds,MagickPathExtent,
     QuantumFormat "," QuantumFormat "," QuantumFormat "," QuantumFormat,
     PixelGetRedQuantum(threshold),PixelGetGreenQuantum(threshold),
     PixelGetBlueQuantum(threshold),PixelGetAlphaQuantum(threshold));
@@ -12196,7 +12196,7 @@ WandExport MagickBooleanType MagickWriteImage(MagickWand *wand,
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   if (filename != (const char *) NULL)
-    (void) CopyMagickString(wand->images->filename,filename,MaxTextExtent);
+    (void) CopyMagickString(wand->images->filename,filename,MagickPathExtent);
   image=CloneImage(wand->images,0,0,MagickTrue,wand->exception);
   if (image == (Image *) NULL)
     return(MagickFalse);

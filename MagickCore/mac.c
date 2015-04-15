@@ -459,7 +459,7 @@ MagickExport MagickBooleanType MACIsMagickConflict(const char *magick)
   assert(magick != (char *) NULL);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",magick);
-  (void) CopyMagickString((char *) volume_name,magick,MaxTextExtent);
+  (void) CopyMagickString((char *) volume_name,magick,MagickPathExtent);
   c2pstr((char *) volume_name);
   if (volume_name[volume_name[0]] != ':')
     volume_name[++volume_name[0]]=':';
@@ -500,15 +500,15 @@ MagickExport void MACErrorHandler(const ExceptionType error,const char *reason,
   const char *description)
 {
   char
-    buffer[3*MaxTextExtent];
+    buffer[3*MagickPathExtent];
 
   if (reason == (char *) NULL)
     return;
   if (description == (char *) NULL)
-    (void) FormatLocaleString(buffer,MaxTextExtent,"%s: %s.\n",GetClientName(),
+    (void) FormatLocaleString(buffer,MagickPathExtent,"%s: %s.\n",GetClientName(),
       reason);
   else
-    (void) FormatLocaleString(buffer,MaxTextExtent,"%s: %s (%s).\n",
+    (void) FormatLocaleString(buffer,MagickPathExtent,"%s: %s (%s).\n",
       GetClientName(),reason,description);
 #if defined(DISABLE_SIOUX)
   if(exception.hook != (MACErrorHookPtr) NULL)
@@ -559,15 +559,15 @@ static void MACFatalErrorHandler(const ExceptionType severity,
   const char *reason,const char *description)
 {
   char
-    buffer[3*MaxTextExtent];
+    buffer[3*MagickPathExtent];
 
   if (reason == (char *) NULL)
     return;
   if (description == (char *) NULL)
-    (void) FormatLocaleString(buffer,MaxTextExtent,"%s: %s.\n",GetClientName(),
+    (void) FormatLocaleString(buffer,MagickPathExtent,"%s: %s.\n",GetClientName(),
       reason);
   else
-    (void) FormatLocaleString(buffer,MaxTextExtent,"%s: %s (%s).\n",
+    (void) FormatLocaleString(buffer,MagickPathExtent,"%s: %s (%s).\n",
       GetClientName(),reason,description);
   if(exception.hook != (MACErrorHookPtr) NULL)
     exception.hook(severity, buffer);
@@ -958,10 +958,10 @@ MagickExport void MACWarningHandler(const ExceptionType warning,
   if (reason == (char *) NULL)
     return;
   if (description == (char *) NULL)
-    (void) FormatLocaleString(buffer,MaxTextExtent,"%s: %s.\n",GetClientName(),
+    (void) FormatLocaleString(buffer,MagickPathExtent,"%s: %s.\n",GetClientName(),
       reason);
   else
-    (void) FormatLocaleString(buffer,MaxTextExtent,"%s: %s (%s).\n",
+    (void) FormatLocaleString(buffer,MagickPathExtent,"%s: %s (%s).\n",
       GetClientName(),reason,description);
 #if defined(DISABLE_SIOUX)
   if(exception.hook != (MACErrorHookPtr) NULL)
@@ -1120,7 +1120,7 @@ MagickExport struct dirent *readdir(DIR *entry)
     dir_entry;
 
   static unsigned char
-    pathname[MaxTextExtent];
+    pathname[MagickPathExtent];
 
   if (entry == (DIR *) NULL)
     return((struct dirent *) NULL);
@@ -1561,7 +1561,7 @@ MagickExport void SetApplicationType(const char *filename,const char *magick,
   (void) CopyMagickString((char *) &filetype,magick,MagickMin(strlen(magick),
     4));
   if (LocaleCompare(magick,"JPG") == 0)
-    (void) CopyMagickString((char *) &filetype,"JPEG",MaxTextExtent);
+    (void) CopyMagickString((char *) &filetype,"JPEG",MagickPathExtent);
   c2pstrcpy(name,filename);
   FSMakeFSSpec(0,0,name,&file_specification);
   FSpCreate(&file_specification,application,filetype,smSystemScript);

@@ -568,16 +568,16 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         Read comment.
       */
       c=ReadBlobByte(image);
-      length=MaxTextExtent;
+      length=MagickPathExtent;
       comment=AcquireString((char *) NULL);
       for (p=comment; c != EOF; p++)
       {
-        if ((size_t) (p-comment+MaxTextExtent) >= length)
+        if ((size_t) (p-comment+MagickPathExtent) >= length)
           {
             *p='\0';
             length<<=1;
-            length+=MaxTextExtent;
-            comment=(char *) ResizeQuantumMemory(comment,length+MaxTextExtent,
+            length+=MagickPathExtent;
+            comment=(char *) ResizeQuantumMemory(comment,length+MagickPathExtent,
               sizeof(*comment));
             if (comment == (char *) NULL)
               break;

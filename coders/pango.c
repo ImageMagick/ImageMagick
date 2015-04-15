@@ -490,14 +490,14 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
 ModuleExport size_t RegisterPANGOImage(void)
 {
   char
-    version[MaxTextExtent];
+    version[MagickPathExtent];
 
   MagickInfo
     *entry;
 
   *version='\0';
 #if defined(PANGO_VERSION_STRING)
-  (void) FormatLocaleString(version,MaxTextExtent,"Pangocairo %s",
+  (void) FormatLocaleString(version,MagickPathExtent,"Pangocairo %s",
     PANGO_VERSION_STRING);
 #endif
   entry=AcquireMagickInfo("PANGO","PANGO","Pango Markup Language");

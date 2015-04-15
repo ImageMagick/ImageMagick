@@ -991,7 +991,7 @@ static Image *ReadSIXELImage(const ImageInfo *image_info,ExceptionInfo *exceptio
   /*
     Read SIXEL file.
   */
-  length=MaxTextExtent;
+  length=MagickPathExtent;
   sixel_buffer=(char *) AcquireQuantumMemory((size_t) length,sizeof(*sixel_buffer));
   p=sixel_buffer;
   if (sixel_buffer != (char *) NULL)
@@ -1002,10 +1002,10 @@ static Image *ReadSIXELImage(const ImageInfo *image_info,ExceptionInfo *exceptio
       if ((*p == '}') && (*(p+1) == ';'))
         break;
       p+=strlen(p);
-      if ((size_t) (p-sixel_buffer+MaxTextExtent) < length)
+      if ((size_t) (p-sixel_buffer+MagickPathExtent) < length)
         continue;
       length<<=1;
-      sixel_buffer=(char *) ResizeQuantumMemory(sixel_buffer,length+MaxTextExtent,
+      sixel_buffer=(char *) ResizeQuantumMemory(sixel_buffer,length+MagickPathExtent,
         sizeof(*sixel_buffer));
       if (sixel_buffer == (char *) NULL)
         break;

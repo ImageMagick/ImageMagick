@@ -217,7 +217,7 @@ static KernelInfo *ParseKernelArray(const char *kernel_string)
     *kernel;
 
   char
-    token[MaxTextExtent];
+    token[MagickPathExtent];
 
   const char
     *p,
@@ -374,7 +374,7 @@ static KernelInfo *ParseKernelName(const char *kernel_string,
   ExceptionInfo *exception)
 {
   char
-    token[MaxTextExtent];
+    token[MagickPathExtent];
 
   const char
     *p,
@@ -492,7 +492,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string,
 
   char
     *kernel_cache,
-    token[MaxTextExtent];
+    token[MagickPathExtent];
 
   const char
     *p;
@@ -3667,7 +3667,7 @@ MagickPrivate Image *MorphologyApply(const Image *image,
     changed;        /* number pixels changed by last primitive operation */
 
   char
-    v_info[MaxTextExtent];
+    v_info[MagickPathExtent];
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -3894,11 +3894,11 @@ MagickPrivate Image *MorphologyApply(const Image *image,
         /* Extra information for debugging compound operations */
         if ( IfMagickTrue(verbose) ) {
           if ( stage_limit > 1 )
-            (void) FormatLocaleString(v_info,MaxTextExtent,"%s:%.20g.%.20g -> ",
+            (void) FormatLocaleString(v_info,MagickPathExtent,"%s:%.20g.%.20g -> ",
              CommandOptionToMnemonic(MagickMorphologyOptions,method),(double)
              method_loop,(double) stage_loop);
           else if ( primitive != method )
-            (void) FormatLocaleString(v_info, MaxTextExtent, "%s:%.20g -> ",
+            (void) FormatLocaleString(v_info, MagickPathExtent, "%s:%.20g -> ",
               CommandOptionToMnemonic(MagickMorphologyOptions, method),(double)
               method_loop);
           else

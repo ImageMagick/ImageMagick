@@ -1959,12 +1959,12 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
   if ( IfStringTrue(GetImageArtifact(image,"verbose")) ) {
     register ssize_t
        i;
-    char image_gen[MaxTextExtent];
+    char image_gen[MagickPathExtent];
     const char *lookup;
 
     /* Set destination image size and virtual offset */
     if ( bestfit || viewport_given ) {
-      (void) FormatLocaleString(image_gen, MaxTextExtent,"  -size %.20gx%.20g "
+      (void) FormatLocaleString(image_gen, MagickPathExtent,"  -size %.20gx%.20g "
         "-page %+.20g%+.20g xc: +insert \\\n",(double) geometry.width,
         (double) geometry.height,(double) geometry.x,(double) geometry.y);
       lookup="v.p{ xx-v.page.x-.5, yy-v.page.y-.5 }";

@@ -356,10 +356,10 @@ size_t Magick::Image::animationIterations(void) const
 void Magick::Image::attenuate(const double attenuate_)
 {
   char
-    value[MaxTextExtent];
+    value[MagickPathExtent];
 
   modifyImage();
-  FormatLocaleString(value,MaxTextExtent,"%.20g",attenuate_);
+  FormatLocaleString(value,MagickPathExtent,"%.20g",attenuate_);
   (void) SetImageArtifact(image(),"attenuate",value);
 }
 
@@ -1464,11 +1464,11 @@ Magick::Image Magick::Image::strokePattern(void) const
 void Magick::Image::strokeWidth(const double strokeWidth_)
 {
   char
-    value[MaxTextExtent];
+    value[MagickPathExtent];
 
   modifyImage();
   options()->strokeWidth(strokeWidth_);
-  FormatLocaleString(value,MaxTextExtent,"%.20g",strokeWidth_);
+  FormatLocaleString(value,MagickPathExtent,"%.20g",strokeWidth_);
   (void) SetImageArtifact(image(),"strokewidth",value);
 }
 
@@ -1824,7 +1824,7 @@ void Magick::Image::annotate(const std::string &text_,
     oaffine;
 
   char
-    boundingArea[MaxTextExtent];
+    boundingArea[MagickPathExtent];
 
   DrawInfo
     *drawInfo;
@@ -1839,13 +1839,13 @@ void Magick::Image::annotate(const std::string &text_,
     {
       if (boundingArea_.width() == 0 || boundingArea_.height() == 0)
         {
-          FormatLocaleString(boundingArea,MaxTextExtent,"%+.20g%+.20g",
+          FormatLocaleString(boundingArea,MagickPathExtent,"%+.20g%+.20g",
             (double) boundingArea_.xOff(),(double) boundingArea_.yOff());
         }
       else
         {
           (void) CopyMagickString(boundingArea,
-            std::string(boundingArea_).c_str(), MaxTextExtent);
+            std::string(boundingArea_).c_str(), MagickPathExtent);
         }
       drawInfo->geometry=boundingArea;
     }
@@ -2273,7 +2273,7 @@ void Magick::Image::colorize(const unsigned int alphaRed_,
   const Color &penColor_)
 {
   char
-    blend[MaxTextExtent];
+    blend[MagickPathExtent];
 
   MagickCore::Image
     *newImage;
@@ -2285,7 +2285,7 @@ void Magick::Image::colorize(const unsigned int alphaRed_,
     throwExceptionExplicit(MagickCore::OptionError,
       "Pen color argument is invalid");
 
-  FormatLocaleString(blend,MaxTextExtent,"%u/%u/%u",alphaRed_,alphaGreen_,
+  FormatLocaleString(blend,MagickPathExtent,"%u/%u/%u",alphaRed_,alphaGreen_,
     alphaBlue_);
 
   target=static_cast<PixelInfo>(penColor_);
@@ -3398,9 +3398,9 @@ void Magick::Image::modulate(const double brightness_,const double saturation_,
   const double hue_)
 {
   char
-    modulate[MaxTextExtent + 1];
+    modulate[MagickPathExtent + 1];
 
-  FormatLocaleString(modulate,MaxTextExtent,"%3.6f,%3.6f,%3.6f",brightness_,
+  FormatLocaleString(modulate,MagickPathExtent,"%3.6f,%3.6f,%3.6f",brightness_,
     saturation_,hue_);
 
   modifyImage();

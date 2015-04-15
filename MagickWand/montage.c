@@ -409,7 +409,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
           else
             {
               char
-                filename[MaxTextExtent];
+                filename[MagickPathExtent];
 
               /*
                 Form filename for multi-part images.
@@ -417,7 +417,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
               (void) InterpretImageFilename(image_info,(Image *) NULL,
                 image_info->filename,(int) scene,filename,exception);
               if (LocaleCompare(filename,image_info->filename) == 0)
-                (void) FormatLocaleString(filename,MaxTextExtent,"%s.%.20g",
+                (void) FormatLocaleString(filename,MagickPathExtent,"%s.%.20g",
                   image_info->filename,(double) scene);
               images=ReadImages(image_info,filename,exception);
             }
@@ -538,7 +538,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
           {
             if (k == 0)
               {
-                (void) CopyMagickString(argv[i]+1,"sans",MaxTextExtent);
+                (void) CopyMagickString(argv[i]+1,"sans",MagickPathExtent);
                 montage_info->border_width=0;
               }
             if (*option == '+')
@@ -979,7 +979,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
           {
             if (k == 0)
               {
-                (void) CopyMagickString(argv[i]+1,"sans",MaxTextExtent);
+                (void) CopyMagickString(argv[i]+1,"sans",MagickPathExtent);
                 (void) CloneString(&montage_info->frame,(char *) NULL);
               }
             if (*option == '+')
@@ -1215,7 +1215,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
             MontageMode
               mode;
 
-            (void) CopyMagickString(argv[i]+1,"sans",MaxTextExtent);
+            (void) CopyMagickString(argv[i]+1,"sans",MagickPathExtent);
             if (*option == '+')
               break;
             i++;
@@ -1470,7 +1470,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
           {
             if (k == 0)
               {
-                (void) CopyMagickString(argv[i]+1,"sans",MaxTextExtent);
+                (void) CopyMagickString(argv[i]+1,"sans",MagickPathExtent);
                 montage_info->shadow=(*option == '-') ? MagickTrue :
                   MagickFalse;
                 break;
@@ -1580,7 +1580,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
           {
             if (k == 0)
               {
-                (void) CopyMagickString(argv[i]+1,"sans",MaxTextExtent);
+                (void) CopyMagickString(argv[i]+1,"sans",MagickPathExtent);
                 (void) CloneString(&montage_info->tile,(char *) NULL);
               }
             if (*option == '+')
@@ -1779,7 +1779,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
   FinalizeImageSettings(image_info,image,MagickTrue);
   if (image == (Image *) NULL)
     ThrowMontageException(OptionError,"MissingAnImageFilename",argv[argc-1]);
-  (void) CopyMagickString(montage_info->filename,argv[argc-1],MaxTextExtent);
+  (void) CopyMagickString(montage_info->filename,argv[argc-1],MagickPathExtent);
   montage_image=MontageImageList(image_info,montage_info,image,exception);
   if (montage_image == (Image *) NULL)
     status=MagickFalse;
@@ -1788,12 +1788,12 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
       /*
         Write image.
       */
-      (void) CopyMagickString(image_info->filename,argv[argc-1],MaxTextExtent);
+      (void) CopyMagickString(image_info->filename,argv[argc-1],MagickPathExtent);
       (void) CopyMagickString(montage_image->magick_filename,argv[argc-1],
-        MaxTextExtent);
+        MagickPathExtent);
       if (*montage_image->magick == '\0')
         (void) CopyMagickString(montage_image->magick,image->magick,
-          MaxTextExtent);
+          MagickPathExtent);
       status&=WriteImages(image_info,montage_image,argv[argc-1],exception);
       if (metadata != (char **) NULL)
         {

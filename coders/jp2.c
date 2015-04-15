@@ -533,14 +533,14 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
 ModuleExport size_t RegisterJP2Image(void)
 {
   char
-    version[MaxTextExtent];
+    version[MagickPathExtent];
 
   MagickInfo
     *entry;
 
   *version='\0';
 #if defined(MAGICKCORE_LIBOPENJP2_DELEGATE)
-  (void) FormatLocaleString(version,MaxTextExtent,"%s",opj_version());
+  (void) FormatLocaleString(version,MagickPathExtent,"%s",opj_version());
 #endif
   entry=AcquireMagickInfo("JP2","JP2","JPEG-2000 File Format Syntax");
   if (*version != '\0')

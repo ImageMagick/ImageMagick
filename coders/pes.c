@@ -421,7 +421,7 @@ static MagickBooleanType IsPES(const unsigned char *magick,const size_t length)
 static Image *ReadPESImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   char
-    filename[MaxTextExtent];
+    filename[MagickPathExtent];
 
   FILE
     *file;
@@ -653,16 +653,16 @@ static Image *ReadPESImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   read_info=CloneImageInfo(image_info);
   SetImageInfoBlob(read_info,(void *) NULL,0);
-  (void) FormatLocaleString(read_info->filename,MaxTextExtent,"svg:%s",
+  (void) FormatLocaleString(read_info->filename,MagickPathExtent,"svg:%s",
     filename);
   image=ReadImage(read_info,exception);
   if (image != (Image *) NULL)
     {
       (void) CopyMagickString(image->filename,image_info->filename,
-        MaxTextExtent);
+        MagickPathExtent);
       (void) CopyMagickString(image->magick_filename,image_info->filename,
-        MaxTextExtent);
-      (void) CopyMagickString(image->magick,"PES",MaxTextExtent);
+        MagickPathExtent);
+      (void) CopyMagickString(image->magick,"PES",MagickPathExtent);
     }
   read_info=DestroyImageInfo(read_info);
   (void) RelinquishUniqueFileResource(filename);

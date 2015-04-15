@@ -210,7 +210,7 @@ static MagickBooleanType WriteMATTEImage(const ImageInfo *image_info,
   }
   write_info=CloneImageInfo(image_info);
   if (LocaleCompare(write_info->magick,"MATTE") == 0)
-    (void) FormatLocaleString(matte_image->filename,MaxTextExtent,
+    (void) FormatLocaleString(matte_image->filename,MagickPathExtent,
       "MIFF:%s",image->filename);
   status=WriteImage(write_info,matte_image,exception);
   write_info=DestroyImageInfo(write_info);

@@ -93,7 +93,7 @@ struct _DrawingWand
     id;
 
   char
-    name[MaxTextExtent];
+    name[MagickPathExtent];
 
   /* Support structures */
   Image
@@ -176,7 +176,7 @@ static int MvgPrintf(DrawingWand *wand,const char *format,...)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",format);
   assert(wand != (DrawingWand *) NULL);
   assert(wand->signature == WandSignature);
-  extent=20UL*MaxTextExtent;
+  extent=20UL*MagickPathExtent;
   if (wand->mvg == (char *) NULL)
     {
       wand->mvg=(char *) AcquireQuantumMemory(extent,sizeof(*wand->mvg));
@@ -189,7 +189,7 @@ static int MvgPrintf(DrawingWand *wand,const char *format,...)
       wand->mvg_alloc=extent;
       wand->mvg_length=0;
     }
-  if (wand->mvg_alloc < (wand->mvg_length+10*MaxTextExtent))
+  if (wand->mvg_alloc < (wand->mvg_length+10*MagickPathExtent))
     {
       extent+=wand->mvg_alloc;
       wand->mvg=(char *) ResizeQuantumMemory(wand->mvg,extent,
@@ -249,7 +249,7 @@ static int MvgPrintf(DrawingWand *wand,const char *format,...)
 static int MvgAutoWrapPrintf(DrawingWand *wand,const char *format,...)
 {
   char
-    buffer[MaxTextExtent];
+    buffer[MagickPathExtent];
 
   int
     count;
@@ -284,7 +284,7 @@ static void MvgAppendColor(DrawingWand *wand,const PixelInfo *packet)
   else
     {
       char
-        tuple[MaxTextExtent];
+        tuple[MagickPathExtent];
 
       PixelInfo
         pixel;
@@ -454,7 +454,7 @@ WandExport DrawingWand *CloneDrawingWand(const DrawingWand *wand)
       "MemoryAllocationFailed",GetExceptionMessage(errno));
   (void) ResetMagickMemory(clone_wand,0,sizeof(*clone_wand));
   clone_wand->id=AcquireWandId();
-  (void) FormatLocaleString(clone_wand->name,MaxTextExtent,"DrawingWand-%.20g",
+  (void) FormatLocaleString(clone_wand->name,MagickPathExtent,"DrawingWand-%.20g",
     (double) clone_wand->id);
   clone_wand->exception=AcquireExceptionInfo();
   InheritException(clone_wand->exception,wand->exception);
@@ -993,7 +993,7 @@ WandExport MagickBooleanType DrawComposite(DrawingWand *wand,
   if (clone_image == (Image *) NULL)
     return(MagickFalse);
   image_info=AcquireImageInfo();
-  (void) CopyMagickString(image_info->magick,"MIFF",MaxTextExtent);
+  (void) CopyMagickString(image_info->magick,"MIFF",MagickPathExtent);
   blob_length=2048;
   blob=(unsigned char *) ImageToBlob(image_info,clone_image,&blob_length,
     wand->exception);
@@ -1007,9 +1007,9 @@ WandExport MagickBooleanType DrawComposite(DrawingWand *wand,
   if (base64 == (char *) NULL)
     {
       char
-        buffer[MaxTextExtent];
+        buffer[MagickPathExtent];
 
-      (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g bytes",(double)
+      (void) FormatLocaleString(buffer,MagickPathExtent,"%.20g bytes",(double)
         (4L*blob_length/3L+4L));
       ThrowDrawException(ResourceLimitWarning,"MemoryAllocationFailed",
         wand->name);
@@ -1327,7 +1327,7 @@ WandExport char *DrawGetException(const DrawingWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   assert(severity != (ExceptionType *) NULL);
   *severity=wand->exception->severity;
-  description=(char *) AcquireQuantumMemory(2UL*MaxTextExtent,
+  description=(char *) AcquireQuantumMemory(2UL*MagickPathExtent,
     sizeof(*description));
   if (description == (char *) NULL)
     ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
@@ -1336,14 +1336,14 @@ WandExport char *DrawGetException(const DrawingWand *wand,
   if (wand->exception->reason != (char *) NULL)
     (void) CopyMagickString(description,GetLocaleExceptionMessage(
       wand->exception->severity,wand->exception->reason),
-      MaxTextExtent);
+      MagickPathExtent);
   if (wand->exception->description != (char *) NULL)
     {
-      (void) ConcatenateMagickString(description," (",MaxTextExtent);
+      (void) ConcatenateMagickString(description," (",MagickPathExtent);
       (void) ConcatenateMagickString(description,GetLocaleExceptionMessage(
         wand->exception->severity,wand->exception->description),
-        MaxTextExtent);
-      (void) ConcatenateMagickString(description,")",MaxTextExtent);
+        MagickPathExtent);
+      (void) ConcatenateMagickString(description,")",MagickPathExtent);
     }
   return(description);
 }
@@ -2422,7 +2422,7 @@ WandExport double DrawGetTextInterwordSpacing(DrawingWand *wand)
 WandExport char *DrawGetVectorGraphics(DrawingWand *wand)
 {
   char
-    value[MaxTextExtent],
+    value[MagickPathExtent],
     *xml;
 
   PixelInfo
@@ -2451,7 +2451,7 @@ WandExport char *DrawGetVectorGraphics(DrawingWand *wand)
     {
       (void) CopyMagickString(value,CommandOptionToMnemonic(
         MagickClipPathOptions,(ssize_t) CurrentContext->clip_units),
-        MaxTextExtent);
+        MagickPathExtent);
       (void) SetXMLTreeContent(child,value);
     }
   child=AddChildToXMLTree(xml_info,"decorate",0);
@@ -2459,7 +2459,7 @@ WandExport char *DrawGetVectorGraphics(DrawingWand *wand)
     {
       (void) CopyMagickString(value,CommandOptionToMnemonic(
         MagickDecorateOptions,(ssize_t) CurrentContext->decorate),
-        MaxTextExtent);
+        MagickPathExtent);
       (void) SetXMLTreeContent(child,value);
     }
   child=AddChildToXMLTree(xml_info,"encoding",0);
@@ -2478,7 +2478,7 @@ WandExport char *DrawGetVectorGraphics(DrawingWand *wand)
   child=AddChildToXMLTree(xml_info,"fill-opacity",0);
   if (child != (XMLTreeInfo *) NULL)
     {
-      (void) FormatLocaleString(value,MaxTextExtent,"%.20g",
+      (void) FormatLocaleString(value,MagickPathExtent,"%.20g",
         (double) (QuantumScale*CurrentContext->fill.alpha));
       (void) SetXMLTreeContent(child,value);
     }
@@ -2487,7 +2487,7 @@ WandExport char *DrawGetVectorGraphics(DrawingWand *wand)
     {
       (void) CopyMagickString(value,CommandOptionToMnemonic(
         MagickFillRuleOptions,(ssize_t) CurrentContext->fill_rule),
-        MaxTextExtent);
+        MagickPathExtent);
       (void) SetXMLTreeContent(child,value);
     }
   child=AddChildToXMLTree(xml_info,"font",0);
@@ -2499,7 +2499,7 @@ WandExport char *DrawGetVectorGraphics(DrawingWand *wand)
   child=AddChildToXMLTree(xml_info,"font-size",0);
   if (child != (XMLTreeInfo *) NULL)
     {
-      (void) FormatLocaleString(value,MaxTextExtent,"%.20g",
+      (void) FormatLocaleString(value,MagickPathExtent,"%.20g",
         CurrentContext->pointsize);
       (void) SetXMLTreeContent(child,value);
     }
@@ -2507,20 +2507,20 @@ WandExport char *DrawGetVectorGraphics(DrawingWand *wand)
   if (child != (XMLTreeInfo *) NULL)
     {
       (void) CopyMagickString(value,CommandOptionToMnemonic(
-        MagickStretchOptions,(ssize_t) CurrentContext->stretch),MaxTextExtent);
+        MagickStretchOptions,(ssize_t) CurrentContext->stretch),MagickPathExtent);
       (void) SetXMLTreeContent(child,value);
     }
   child=AddChildToXMLTree(xml_info,"font-style",0);
   if (child != (XMLTreeInfo *) NULL)
     {
       (void) CopyMagickString(value,CommandOptionToMnemonic(
-        MagickStyleOptions,(ssize_t) CurrentContext->style),MaxTextExtent);
+        MagickStyleOptions,(ssize_t) CurrentContext->style),MagickPathExtent);
       (void) SetXMLTreeContent(child,value);
     }
   child=AddChildToXMLTree(xml_info,"font-weight",0);
   if (child != (XMLTreeInfo *) NULL)
     {
-      (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
+      (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
         CurrentContext->weight);
       (void) SetXMLTreeContent(child,value);
     }
@@ -2528,7 +2528,7 @@ WandExport char *DrawGetVectorGraphics(DrawingWand *wand)
   if (child != (XMLTreeInfo *) NULL)
     {
       (void) CopyMagickString(value,CommandOptionToMnemonic(
-        MagickGravityOptions,(ssize_t) CurrentContext->gravity),MaxTextExtent);
+        MagickGravityOptions,(ssize_t) CurrentContext->gravity),MagickPathExtent);
       (void) SetXMLTreeContent(child,value);
     }
   child=AddChildToXMLTree(xml_info,"stroke",0);
@@ -2544,7 +2544,7 @@ WandExport char *DrawGetVectorGraphics(DrawingWand *wand)
   child=AddChildToXMLTree(xml_info,"stroke-antialias",0);
   if (child != (XMLTreeInfo *) NULL)
     {
-      (void) FormatLocaleString(value,MaxTextExtent,"%d",
+      (void) FormatLocaleString(value,MagickPathExtent,"%d",
         CurrentContext->stroke_antialias != MagickFalse ? 1 : 0);
       (void) SetXMLTreeContent(child,value);
     }
@@ -2560,7 +2560,7 @@ WandExport char *DrawGetVectorGraphics(DrawingWand *wand)
       {
         if (i != 0)
           (void) ConcatenateString(&dash_pattern,",");
-        (void) FormatLocaleString(value,MaxTextExtent,"%.20g",
+        (void) FormatLocaleString(value,MagickPathExtent,"%.20g",
           CurrentContext->dash_pattern[i]);
         (void) ConcatenateString(&dash_pattern,value);
       }
@@ -2570,7 +2570,7 @@ WandExport char *DrawGetVectorGraphics(DrawingWand *wand)
   child=AddChildToXMLTree(xml_info,"stroke-dashoffset",0);
   if (child != (XMLTreeInfo *) NULL)
     {
-      (void) FormatLocaleString(value,MaxTextExtent,"%.20g",
+      (void) FormatLocaleString(value,MagickPathExtent,"%.20g",
         CurrentContext->dash_offset);
       (void) SetXMLTreeContent(child,value);
     }
@@ -2578,7 +2578,7 @@ WandExport char *DrawGetVectorGraphics(DrawingWand *wand)
   if (child != (XMLTreeInfo *) NULL)
     {
       (void) CopyMagickString(value,CommandOptionToMnemonic(MagickLineCapOptions,
-        (ssize_t) CurrentContext->linecap),MaxTextExtent);
+        (ssize_t) CurrentContext->linecap),MagickPathExtent);
       (void) SetXMLTreeContent(child,value);
     }
   child=AddChildToXMLTree(xml_info,"stroke-linejoin",0);
@@ -2586,27 +2586,27 @@ WandExport char *DrawGetVectorGraphics(DrawingWand *wand)
     {
       (void) CopyMagickString(value,CommandOptionToMnemonic(
         MagickLineJoinOptions,(ssize_t) CurrentContext->linejoin),
-        MaxTextExtent);
+        MagickPathExtent);
       (void) SetXMLTreeContent(child,value);
     }
   child=AddChildToXMLTree(xml_info,"stroke-miterlimit",0);
   if (child != (XMLTreeInfo *) NULL)
     {
-      (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
+      (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
         CurrentContext->miterlimit);
       (void) SetXMLTreeContent(child,value);
     }
   child=AddChildToXMLTree(xml_info,"stroke-opacity",0);
   if (child != (XMLTreeInfo *) NULL)
     {
-      (void) FormatLocaleString(value,MaxTextExtent,"%.20g",
+      (void) FormatLocaleString(value,MagickPathExtent,"%.20g",
         (double) (QuantumScale*CurrentContext->stroke.alpha));
       (void) SetXMLTreeContent(child,value);
     }
   child=AddChildToXMLTree(xml_info,"stroke-width",0);
   if (child != (XMLTreeInfo *) NULL)
     {
-      (void) FormatLocaleString(value,MaxTextExtent,"%.20g",
+      (void) FormatLocaleString(value,MagickPathExtent,"%.20g",
         CurrentContext->stroke_width);
       (void) SetXMLTreeContent(child,value);
     }
@@ -2614,13 +2614,13 @@ WandExport char *DrawGetVectorGraphics(DrawingWand *wand)
   if (child != (XMLTreeInfo *) NULL)
     {
       (void) CopyMagickString(value,CommandOptionToMnemonic(MagickAlignOptions,
-        (ssize_t) CurrentContext->align),MaxTextExtent);
+        (ssize_t) CurrentContext->align),MagickPathExtent);
       (void) SetXMLTreeContent(child,value);
     }
   child=AddChildToXMLTree(xml_info,"text-antialias",0);
   if (child != (XMLTreeInfo *) NULL)
     {
-      (void) FormatLocaleString(value,MaxTextExtent,"%d",
+      (void) FormatLocaleString(value,MagickPathExtent,"%d",
         CurrentContext->text_antialias != MagickFalse ? 1 : 0);
       (void) SetXMLTreeContent(child,value);
     }
@@ -4006,8 +4006,8 @@ WandExport void DrawPopDefs(DrawingWand *wand)
 WandExport MagickBooleanType DrawPopPattern(DrawingWand *wand)
 {
   char
-    geometry[MaxTextExtent],
-    key[MaxTextExtent];
+    geometry[MagickPathExtent],
+    key[MagickPathExtent];
 
   assert(wand != (DrawingWand *) NULL);
   assert(wand->signature == WandSignature);
@@ -4021,9 +4021,9 @@ WandExport MagickBooleanType DrawPopPattern(DrawingWand *wand)
         wand->name);
       return(MagickFalse);
     }
-  (void) FormatLocaleString(key,MaxTextExtent,"%s",wand->pattern_id);
+  (void) FormatLocaleString(key,MagickPathExtent,"%s",wand->pattern_id);
   (void) SetImageArtifact(wand->image,key,wand->mvg+wand->pattern_offset);
-  (void) FormatLocaleString(geometry,MaxTextExtent,"%.20gx%.20g%+.20g%+.20g",
+  (void) FormatLocaleString(geometry,MagickPathExtent,"%.20gx%.20g%+.20g%+.20g",
     (double) wand->pattern_bounds.width,(double) wand->pattern_bounds.height,
     (double) wand->pattern_bounds.x,(double) wand->pattern_bounds.y);
   (void) SetImageArtifact(wand->image,key,geometry);
@@ -4729,13 +4729,13 @@ WandExport MagickBooleanType DrawSetFontResolution(DrawingWand *wand,
   const double x_resolution,const double y_resolution)
 {
   char
-    density[MaxTextExtent];
+    density[MagickPathExtent];
 
   assert(wand != (DrawingWand *) NULL);
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  (void) FormatLocaleString(density,MaxTextExtent,"%.20gx%.20g",x_resolution,
+  (void) FormatLocaleString(density,MagickPathExtent,"%.20gx%.20g",x_resolution,
     y_resolution);
   (void) CloneString(&CurrentContext->density,density);
   return(MagickTrue);
@@ -4816,8 +4816,8 @@ WandExport MagickBooleanType DrawSetFillPatternURL(DrawingWand *wand,
   const char *fill_url)
 {
   char
-    pattern[MaxTextExtent],
-    pattern_spec[MaxTextExtent];
+    pattern[MagickPathExtent],
+    pattern_spec[MagickPathExtent];
 
   assert(wand != (DrawingWand *) NULL);
   assert(wand->signature == WandSignature);
@@ -4831,13 +4831,13 @@ WandExport MagickBooleanType DrawSetFillPatternURL(DrawingWand *wand,
       ThrowDrawException(DrawError,"NotARelativeURL",fill_url);
       return(MagickFalse);
     }
-  (void) FormatLocaleString(pattern,MaxTextExtent,"%s",fill_url+1);
+  (void) FormatLocaleString(pattern,MagickPathExtent,"%s",fill_url+1);
   if (GetImageArtifact(wand->image,pattern) == (const char *) NULL)
     {
       ThrowDrawException(DrawError,"URLNotFound",fill_url)
       return(MagickFalse);
     }
-  (void) FormatLocaleString(pattern_spec,MaxTextExtent,"url(%s)",fill_url);
+  (void) FormatLocaleString(pattern_spec,MagickPathExtent,"url(%s)",fill_url);
 #if DRAW_BINARY_IMPLEMENTATION
   DrawPatternPath(wand->image,CurrentContext,pattern_spec,
     &CurrentContext->fill_pattern);
@@ -5259,8 +5259,8 @@ WandExport MagickBooleanType DrawSetStrokePatternURL(DrawingWand *wand,
   const char *stroke_url)
 {
   char
-    pattern[MaxTextExtent],
-    pattern_spec[MaxTextExtent];
+    pattern[MagickPathExtent],
+    pattern_spec[MagickPathExtent];
 
   assert(wand != (DrawingWand *) NULL);
   assert(wand->signature == WandSignature);
@@ -5271,13 +5271,13 @@ WandExport MagickBooleanType DrawSetStrokePatternURL(DrawingWand *wand,
   assert(stroke_url != NULL);
   if (stroke_url[0] != '#')
     ThrowDrawException(DrawError,"NotARelativeURL",stroke_url);
-  (void) FormatLocaleString(pattern,MaxTextExtent,"%s",stroke_url+1);
+  (void) FormatLocaleString(pattern,MagickPathExtent,"%s",stroke_url+1);
   if (GetImageArtifact(wand->image,pattern) == (const char *) NULL)
     {
       ThrowDrawException(DrawError,"URLNotFound",stroke_url)
       return(MagickFalse);
     }
-  (void) FormatLocaleString(pattern_spec,MaxTextExtent,"url(%s)",stroke_url);
+  (void) FormatLocaleString(pattern_spec,MagickPathExtent,"url(%s)",stroke_url);
 #if DRAW_BINARY_IMPLEMENTATION
   DrawPatternPath(wand->image,CurrentContext,pattern_spec,
     &CurrentContext->stroke_pattern);
@@ -6269,7 +6269,7 @@ WandExport MagickBooleanType DrawSetVectorGraphics(DrawingWand *wand,
   if (child != (XMLTreeInfo *) NULL)
     {
       char
-        token[MaxTextExtent];
+        token[MagickPathExtent];
 
       const char
         *q;
@@ -6626,7 +6626,7 @@ WandExport DrawingWand *NewDrawingWand(void)
       GetExceptionMessage(errno));
   (void) ResetMagickMemory(wand,0,sizeof(*wand));
   wand->id=AcquireWandId();
-  (void) FormatLocaleString(wand->name,MaxTextExtent,"%s-%.20g",DrawingWandId,
+  (void) FormatLocaleString(wand->name,MagickPathExtent,"%s-%.20g",DrawingWandId,
     (double) wand->id);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);

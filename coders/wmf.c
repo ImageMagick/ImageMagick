@@ -116,7 +116,7 @@ static long WMFTellBlob(void *image)
 static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   char
-    filename[MaxTextExtent];
+    filename[MagickPathExtent];
 
   int
     unique_file;
@@ -220,17 +220,17 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   read_info=CloneImageInfo(image_info);
   SetImageInfoBlob(read_info,(void *) NULL,0);
-  (void) FormatLocaleString(read_info->filename,MaxTextExtent,"eps:%s",
+  (void) FormatLocaleString(read_info->filename,MagickPathExtent,"eps:%s",
     filename);
   image=ReadImage(read_info,exception);
   read_info=DestroyImageInfo(read_info);
   if (image != (Image *) NULL)
     {
       (void) CopyMagickString(image->filename,image_info->filename,
-        MaxTextExtent);
+        MagickPathExtent);
       (void) CopyMagickString(image->magick_filename,image_info->filename,
-        MaxTextExtent);
-      (void) CopyMagickString(image->magick,"WMF",MaxTextExtent);
+        MagickPathExtent);
+      (void) CopyMagickString(image->magick,"WMF",MagickPathExtent);
     }
   (void) RelinquishUniqueFileResource(filename);
   return(GetFirstImageInList(image));
@@ -532,9 +532,9 @@ static void draw_pattern_push( wmfAPI* API,
                                unsigned long rows )
 {
   char
-    pattern_id[MaxTextExtent];
+    pattern_id[MagickPathExtent];
 
-  (void) FormatLocaleString(pattern_id,MaxTextExtent,"brush_%lu",id);
+  (void) FormatLocaleString(pattern_id,MagickPathExtent,"brush_%lu",id);
   (void) DrawPushPattern(WmfDrawingWand,pattern_id,0,0,columns,rows);
 }
 
@@ -744,13 +744,13 @@ static void ipa_bmp_read(wmfAPI * API, wmfBMP_Read_t * bmp_read) {
 
   image_info=CloneImageInfo(ddata->image_info);
   exception=ddata->exception;
-  (void) CopyMagickString(image_info->magick,"DIB",MaxTextExtent);
+  (void) CopyMagickString(image_info->magick,"DIB",MagickPathExtent);
   if (bmp_read->width || bmp_read->height)
     {
       char
-        size[MaxTextExtent];
+        size[MagickPathExtent];
 
-      (void) FormatLocaleString(size,MaxTextExtent,"%ux%u",bmp_read->width,
+      (void) FormatLocaleString(size,MagickPathExtent,"%ux%u",bmp_read->width,
         bmp_read->height);
       CloneString(&image_info->size,size);
     }
@@ -827,7 +827,7 @@ static void ipa_device_close(wmfAPI * API)
 static void ipa_device_begin(wmfAPI * API)
 {
   char
-    comment[MaxTextExtent];
+    comment[MagickPathExtent];
 
   wmf_magick_t
     *ddata = WMF_MAGICK_GetData(API);
@@ -837,7 +837,7 @@ static void ipa_device_begin(wmfAPI * API)
 
   DrawSetViewbox(WmfDrawingWand, 0, 0, ddata->image->columns, ddata->image->rows );
 
-  (void) FormatLocaleString(comment,MaxTextExtent,"Created by ImageMagick %s",
+  (void) FormatLocaleString(comment,MagickPathExtent,"Created by ImageMagick %s",
     GetMagickVersion((size_t *) NULL));
   DrawComment(WmfDrawingWand,comment);
 
@@ -880,7 +880,7 @@ static void ipa_device_begin(wmfAPI * API)
 
       image_info = CloneImageInfo((ImageInfo *) 0);
       (void) CopyMagickString(image_info->filename,ddata->image_info->texture,
-        MaxTextExtent);
+        MagickPathExtent);
       if ( ddata->image_info->size )
         CloneString(&image_info->size,ddata->image_info->size);
 
@@ -890,12 +890,12 @@ static void ipa_device_begin(wmfAPI * API)
       if (image)
         {
           char
-            pattern_id[MaxTextExtent];
+            pattern_id[MagickPathExtent];
 
           MagickWand
             *magick_wand;
 
-          (void) CopyMagickString(image->magick,"MIFF",MaxTextExtent);
+          (void) CopyMagickString(image->magick,"MIFF",MagickPathExtent);
           DrawPushDefs(WmfDrawingWand);
           draw_pattern_push(API,ddata->pattern_id,image->columns,image->rows);
           magick_wand=NewMagickWandFromImage(image);
@@ -904,7 +904,7 @@ static void ipa_device_begin(wmfAPI * API)
           magick_wand=DestroyMagickWand(magick_wand);
           (void) DrawPopPattern(WmfDrawingWand);
           DrawPopDefs(WmfDrawingWand);
-          (void) FormatLocaleString(pattern_id,MaxTextExtent,"#brush_%lu",
+          (void) FormatLocaleString(pattern_id,MagickPathExtent,"#brush_%lu",
             ddata->pattern_id);
           (void) DrawSetFillPatternURL(WmfDrawingWand,pattern_id);
           ++ddata->pattern_id;
@@ -1345,12 +1345,12 @@ static void ipa_region_clip(wmfAPI *API, wmfPolyRectangle_t *poly_rect)
   if (poly_rect->count > 0)
     {
       char
-        clip_mask_id[MaxTextExtent];
+        clip_mask_id[MagickPathExtent];
 
       /* Define clip path */
       ddata->clip_mask_id++;
       DrawPushDefs(WmfDrawingWand);
-      (void) FormatLocaleString(clip_mask_id,MaxTextExtent,"clip_%lu",
+      (void) FormatLocaleString(clip_mask_id,MagickPathExtent,"clip_%lu",
         ddata->clip_mask_id);
       DrawPushClipPath(WmfDrawingWand,clip_mask_id);
       (void) PushDrawingWand(WmfDrawingWand);
@@ -1829,9 +1829,9 @@ static void util_set_brush(wmfAPI *API, wmfDC *dc,const BrushApply brush_apply)
         DrawPopDefs(WmfDrawingWand);
         {
           char
-            pattern_id[MaxTextExtent];
+            pattern_id[MagickPathExtent];
 
-          (void) FormatLocaleString(pattern_id,MaxTextExtent,"#brush_%lu",
+          (void) FormatLocaleString(pattern_id,MagickPathExtent,"#brush_%lu",
             ddata->pattern_id);
           if (brush_apply == BrushApplyStroke )
             (void) DrawSetStrokePatternURL(WmfDrawingWand,pattern_id);
@@ -1942,9 +1942,9 @@ static void util_set_brush(wmfAPI *API, wmfDC *dc,const BrushApply brush_apply)
 
             {
               char
-                pattern_id[MaxTextExtent];
+                pattern_id[MagickPathExtent];
 
-              (void) FormatLocaleString(pattern_id,MaxTextExtent,"#brush_%lu",
+              (void) FormatLocaleString(pattern_id,MagickPathExtent,"#brush_%lu",
                 ddata->pattern_id);
               if ( brush_apply == BrushApplyStroke )
                 (void) DrawSetStrokePatternURL(WmfDrawingWand,pattern_id);
@@ -2436,7 +2436,7 @@ static void lite_font_map( wmfAPI* API, wmfFont* font)
   if (!magick_font->ps_name)
     {
       char
-        target[MaxTextExtent];
+        target[MagickPathExtent];
 
       int
         target_weight = 400,
@@ -2456,13 +2456,13 @@ static void lite_font_map( wmfAPI* API, wmfFont* font)
                                        strstr(wmf_font_name,"Oblique"))) )
         want_italic = MagickTrue;
 
-      (void) CopyMagickString(target,"Times",MaxTextExtent);
+      (void) CopyMagickString(target,"Times",MagickPathExtent);
       for( i=0; SubFontMap[i].name != NULL; i++ )
         {
           if (LocaleCompare(wmf_font_name, SubFontMap[i].name) == 0)
             {
               (void) CopyMagickString(target,SubFontMap[i].mapping,
-                MaxTextExtent);
+                MagickPathExtent);
               break;
             }
         }

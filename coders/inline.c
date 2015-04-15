@@ -260,7 +260,7 @@ static MagickBooleanType WriteINLINEImage(const ImageInfo *image_info,
 {
   char
     *base64,
-    message[MaxTextExtent];
+    message[MagickPathExtent];
 
   const MagickInfo
     *magick_info;
@@ -293,12 +293,12 @@ static MagickBooleanType WriteINLINEImage(const ImageInfo *image_info,
   write_info=CloneImageInfo(image_info);
   (void) SetImageInfo(write_info,1,exception);
   if (LocaleCompare(write_info->magick,"INLINE") == 0)
-    (void) CopyMagickString(write_info->magick,image->magick,MaxTextExtent);
+    (void) CopyMagickString(write_info->magick,image->magick,MagickPathExtent);
   magick_info=GetMagickInfo(write_info->magick,exception);
   if ((magick_info == (const MagickInfo *) NULL) ||
       (GetMagickMimeType(magick_info) == (const char *) NULL))
     ThrowWriterException(CorruptImageError,"ImageTypeNotSupported");
-  (void) CopyMagickString(image->filename,write_info->filename,MaxTextExtent);
+  (void) CopyMagickString(image->filename,write_info->filename,MagickPathExtent);
   blob_length=2048;
   write_image=CloneImage(image,0,0,MagickTrue,exception);
   if (write_image == (Image *) NULL)
@@ -326,7 +326,7 @@ static MagickBooleanType WriteINLINEImage(const ImageInfo *image_info,
       base64=DestroyString(base64);
       return(status);
     }
-  (void) FormatLocaleString(message,MaxTextExtent,"data:%s;base64,",
+  (void) FormatLocaleString(message,MagickPathExtent,"data:%s;base64,",
     GetMagickMimeType(magick_info));
   (void) WriteBlobString(image,message);
   (void) WriteBlobString(image,base64);

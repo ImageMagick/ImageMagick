@@ -203,7 +203,7 @@ static const LogMapInfo
   };
 
 static char
-  log_name[MaxTextExtent] = "Magick";
+  log_name[MagickPathExtent] = "Magick";
 
 static LinkedListInfo
   *log_cache = (LinkedListInfo *) NULL;
@@ -961,11 +961,11 @@ static char *TranslateEvent(const LogEventType magick_unused(type),
   text=AcquireString(event);
   if (log_info->format == (char *) NULL)
     return(text);
-  extent=strlen(event)+MaxTextExtent;
+  extent=strlen(event)+MagickPathExtent;
   if (LocaleCompare(log_info->format,"xml") == 0)
     {
       char
-        timestamp[MaxTextExtent];
+        timestamp[MagickPathExtent];
 
       /*
         Translate event in "XML" format.
@@ -997,10 +997,10 @@ static char *TranslateEvent(const LogEventType magick_unused(type),
   for (p=log_info->format; *p != '\0'; p++)
   {
     *q='\0';
-    if ((size_t) (q-text+MaxTextExtent) >= extent)
+    if ((size_t) (q-text+MagickPathExtent) >= extent)
       {
-        extent+=MaxTextExtent;
-        text=(char *) ResizeQuantumMemory(text,extent+MaxTextExtent,
+        extent+=MagickPathExtent;
+        text=(char *) ResizeQuantumMemory(text,extent+MagickPathExtent,
           sizeof(*text));
         if (text == (char *) NULL)
           return((char *) NULL);
@@ -1166,15 +1166,15 @@ static char *TranslateFilename(const LogInfo *log_info)
   assert(log_info != (LogInfo *) NULL);
   assert(log_info->filename != (char *) NULL);
   filename=AcquireString((char *) NULL);
-  extent=MaxTextExtent;
+  extent=MagickPathExtent;
   q=filename;
   for (p=log_info->filename; *p != '\0'; p++)
   {
     *q='\0';
-    if ((size_t) (q-filename+MaxTextExtent) >= extent)
+    if ((size_t) (q-filename+MagickPathExtent) >= extent)
       {
-        extent+=MaxTextExtent;
-        filename=(char *) ResizeQuantumMemory(filename,extent+MaxTextExtent,
+        extent+=MagickPathExtent;
+        filename=(char *) ResizeQuantumMemory(filename,extent+MagickPathExtent,
           sizeof(*filename));
         if (filename == (char *) NULL)
           return((char *) NULL);
@@ -1251,7 +1251,7 @@ MagickBooleanType LogMagickEventList(const LogEventType type,const char *module,
   const char *function,const size_t line,const char *format,va_list operands)
 {
   char
-    event[MaxTextExtent],
+    event[MagickPathExtent],
     *text;
 
   const char
@@ -1281,12 +1281,12 @@ MagickBooleanType LogMagickEventList(const LogEventType type,const char *module,
     }
   domain=CommandOptionToMnemonic(MagickLogEventOptions,type);
 #if defined(MAGICKCORE_HAVE_VSNPRINTF)
-  n=vsnprintf(event,MaxTextExtent,format,operands);
+  n=vsnprintf(event,MagickPathExtent,format,operands);
 #else
   n=vsprintf(event,format,operands);
 #endif
   if (n < 0)
-    event[MaxTextExtent-1]='\0';
+    event[MagickPathExtent-1]='\0';
   text=TranslateEvent(type,module,function,line,domain,event);
   if (text == (char *) NULL)
     {
@@ -1425,7 +1425,7 @@ static MagickBooleanType LoadLogCache(LinkedListInfo *log_cache,const char *xml,
   const char *filename,const size_t depth,ExceptionInfo *exception)
 {
   char
-    keyword[MaxTextExtent],
+    keyword[MagickPathExtent],
     *token;
 
   const char
@@ -1452,7 +1452,7 @@ static MagickBooleanType LoadLogCache(LinkedListInfo *log_cache,const char *xml,
     GetMagickToken(q,&q,token);
     if (*token == '\0')
       break;
-    (void) CopyMagickString(keyword,token,MaxTextExtent);
+    (void) CopyMagickString(keyword,token,MagickPathExtent);
     if (LocaleNCompare(keyword,"<!DOCTYPE",9) == 0)
       {
         /*
@@ -1478,7 +1478,7 @@ static MagickBooleanType LoadLogCache(LinkedListInfo *log_cache,const char *xml,
         */
         while (((*token != '/') && (*(token+1) != '>')) && (*q != '\0'))
         {
-          (void) CopyMagickString(keyword,token,MaxTextExtent);
+          (void) CopyMagickString(keyword,token,MagickPathExtent);
           GetMagickToken(q,&q,token);
           if (*token != '=')
             continue;
@@ -1491,17 +1491,17 @@ static MagickBooleanType LoadLogCache(LinkedListInfo *log_cache,const char *xml,
               else
                 {
                   char
-                    path[MaxTextExtent],
+                    path[MagickPathExtent],
                     *xml;
 
                   GetPathComponent(filename,HeadPath,path);
                   if (*path != '\0')
                     (void) ConcatenateMagickString(path,DirectorySeparator,
-                      MaxTextExtent);
+                      MagickPathExtent);
                   if (*token == *DirectorySeparator)
-                    (void) CopyMagickString(path,token,MaxTextExtent);
+                    (void) CopyMagickString(path,token,MagickPathExtent);
                   else
-                    (void) ConcatenateMagickString(path,token,MaxTextExtent);
+                    (void) ConcatenateMagickString(path,token,MagickPathExtent);
                   xml=FileToXML(path,~0UL);
                   if (xml != (char *) NULL)
                     {
@@ -1844,6 +1844,6 @@ MagickExport void SetLogMethod(MagickLogMethod method)
 MagickExport const char *SetLogName(const char *name)
 {
   if ((name != (char *) NULL) && (*name != '\0'))
-    (void) CopyMagickString(log_name,name,MaxTextExtent);
+    (void) CopyMagickString(log_name,name,MagickPathExtent);
   return(log_name);
 }

@@ -204,7 +204,7 @@ static SplayTreeInfo *AcquireTypeCache(const char *filename,
   {
     char
       *font_path,
-      path[MaxTextExtent];
+      path[MagickPathExtent];
 
     const StringInfo
       *option;
@@ -217,7 +217,7 @@ static SplayTreeInfo *AcquireTypeCache(const char *filename,
     option=(const StringInfo *) GetNextValueInLinkedList(options);
     while (option != (const StringInfo *) NULL)
     {
-      (void) CopyMagickString(path,GetStringInfoPath(option),MaxTextExtent);
+      (void) CopyMagickString(path,GetStringInfoPath(option),MagickPathExtent);
       status&=LoadTypeCache(type_cache,(const char *)
         GetStringInfoDatum(option),GetStringInfoPath(option),0,exception);
       option=(const StringInfo *) GetNextValueInLinkedList(options);
@@ -232,7 +232,7 @@ static SplayTreeInfo *AcquireTypeCache(const char *filename,
         /*
           Search MAGICK_FONT_PATH.
         */
-        (void) FormatLocaleString(path,MaxTextExtent,"%s%s%s",font_path,
+        (void) FormatLocaleString(path,MagickPathExtent,"%s%s%s",font_path,
           DirectorySeparator,filename);
         option=FileToString(path,~0UL,exception);
         if (option != (void *) NULL)
@@ -736,8 +736,8 @@ MagickExport MagickBooleanType LoadFontConfigFonts(SplayTreeInfo *type_cache,
 #endif
 
   char
-    extension[MaxTextExtent],
-    name[MaxTextExtent];
+    extension[MagickPathExtent],
+    name[MagickPathExtent];
 
   FcChar8
     *family,
@@ -814,21 +814,21 @@ MagickExport MagickBooleanType LoadFontConfigFonts(SplayTreeInfo *type_cache,
     (void) ResetMagickMemory(type_info,0,sizeof(*type_info));
     type_info->path=ConstantString("System Fonts");
     type_info->signature=MagickSignature;
-    (void) CopyMagickString(name,"Unknown",MaxTextExtent);
+    (void) CopyMagickString(name,"Unknown",MagickPathExtent);
     status=FcPatternGetString(font_set->fonts[i],FC_FULLNAME,0,&fullname);
     if ((status == FcResultMatch) && (fullname != (FcChar8 *) NULL))
-      (void) CopyMagickString(name,(const char *) fullname,MaxTextExtent);
+      (void) CopyMagickString(name,(const char *) fullname,MagickPathExtent);
     else
       {
         if (family != (FcChar8 *) NULL)
-          (void) CopyMagickString(name,(const char *) family,MaxTextExtent);
+          (void) CopyMagickString(name,(const char *) family,MagickPathExtent);
         status=FcPatternGetString(font_set->fonts[i],FC_STYLE,0,&style);
         if ((status == FcResultMatch) && (style != (FcChar8 *) NULL) &&
             (LocaleCompare((const char *) style,"Regular") != 0))
           {
-            (void) ConcatenateMagickString(name," ",MaxTextExtent);
+            (void) ConcatenateMagickString(name," ",MagickPathExtent);
             (void) ConcatenateMagickString(name,(const char *) style,
-              MaxTextExtent);
+              MagickPathExtent);
           }
       }
     type_info->name=ConstantString(name);
@@ -938,7 +938,7 @@ static MagickBooleanType IsTypeTreeInstantiated(ExceptionInfo *exception)
 MagickExport MagickBooleanType ListTypeInfo(FILE *file,ExceptionInfo *exception)
 {
   char
-    weight[MaxTextExtent];
+    weight[MagickPathExtent];
 
   const char
     *family,
@@ -985,7 +985,7 @@ MagickExport MagickBooleanType ListTypeInfo(FILE *file,ExceptionInfo *exception)
     glyphs="unknown";
     if (type_info[i]->glyphs != (char *) NULL)
       glyphs=type_info[i]->glyphs;
-    (void) FormatLocaleString(weight,MaxTextExtent,"%.20g",(double)
+    (void) FormatLocaleString(weight,MagickPathExtent,"%.20g",(double)
       type_info[i]->weight);
     (void) FormatLocaleFile(file,"  Font: %s\n",name);
     (void) FormatLocaleFile(file,"    family: %s\n",family);
@@ -1050,8 +1050,8 @@ static inline MagickBooleanType SetTypeNodePath(const char *filename,
       path=DestroyString(path);
       GetPathComponent(filename,HeadPath,font_path);
       (void) ConcatenateMagickString(font_path,DirectorySeparator,
-        MaxTextExtent);
-      (void) ConcatenateMagickString(font_path,token,MaxTextExtent);
+        MagickPathExtent);
+      (void) ConcatenateMagickString(font_path,token,MagickPathExtent);
       path=ConstantString(font_path);
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
       if (strchr(path,'@') != (char *) NULL)
@@ -1073,8 +1073,8 @@ static MagickBooleanType LoadTypeCache(SplayTreeInfo *type_cache,
   ExceptionInfo *exception)
 {
   char
-    font_path[MaxTextExtent],
-    keyword[MaxTextExtent],
+    font_path[MagickPathExtent],
+    keyword[MagickPathExtent],
     *token;
 
   const char
@@ -1101,8 +1101,8 @@ static MagickBooleanType LoadTypeCache(SplayTreeInfo *type_cache,
     Determine the Ghostscript font path.
   */
   *font_path='\0';
-  if (NTGhostscriptFonts(font_path,MaxTextExtent-2))
-    (void) ConcatenateMagickString(font_path,DirectorySeparator,MaxTextExtent);
+  if (NTGhostscriptFonts(font_path,MagickPathExtent-2))
+    (void) ConcatenateMagickString(font_path,DirectorySeparator,MagickPathExtent);
 #endif
   for (q=(char *) xml; *q != '\0'; )
   {
@@ -1112,7 +1112,7 @@ static MagickBooleanType LoadTypeCache(SplayTreeInfo *type_cache,
     GetMagickToken(q,&q,token);
     if (*token == '\0')
       break;
-    (void) CopyMagickString(keyword,token,MaxTextExtent);
+    (void) CopyMagickString(keyword,token,MagickPathExtent);
     if (LocaleNCompare(keyword,"<!DOCTYPE",9) == 0)
       {
         /*
@@ -1138,7 +1138,7 @@ static MagickBooleanType LoadTypeCache(SplayTreeInfo *type_cache,
         */
         while (((*token != '/') && (*(token+1) != '>')) && (*q != '\0'))
         {
-          (void) CopyMagickString(keyword,token,MaxTextExtent);
+          (void) CopyMagickString(keyword,token,MagickPathExtent);
           GetMagickToken(q,&q,token);
           if (*token != '=')
             continue;
@@ -1151,7 +1151,7 @@ static MagickBooleanType LoadTypeCache(SplayTreeInfo *type_cache,
               else
                 {
                   char
-                    path[MaxTextExtent],
+                    path[MagickPathExtent],
                     *xml;
 
                   ExceptionInfo
@@ -1161,11 +1161,11 @@ static MagickBooleanType LoadTypeCache(SplayTreeInfo *type_cache,
                   GetPathComponent(filename,HeadPath,path);
                   if (*path != '\0')
                     (void) ConcatenateMagickString(path,DirectorySeparator,
-                      MaxTextExtent);
+                      MagickPathExtent);
                   if (*token == *DirectorySeparator)
-                    (void) CopyMagickString(path,token,MaxTextExtent);
+                    (void) CopyMagickString(path,token,MagickPathExtent);
                   else
-                    (void) ConcatenateMagickString(path,token,MaxTextExtent);
+                    (void) ConcatenateMagickString(path,token,MagickPathExtent);
                   sans_exception=AcquireExceptionInfo();
                   xml=FileToString(path,~0UL,sans_exception);
                   sans_exception=DestroyExceptionInfo(sans_exception);

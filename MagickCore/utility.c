@@ -183,13 +183,13 @@ MagickExport MagickBooleanType AcquireUniqueSymbolicLink(const char *source,
   else
     {
       char
-        path[MaxTextExtent];
+        path[MagickPathExtent];
 
       *path='\0';
-      if (getcwd(path,MaxTextExtent) == (char *) NULL)
+      if (getcwd(path,MagickPathExtent) == (char *) NULL)
         return(MagickFalse);
-      (void) ConcatenateMagickString(path,DirectorySeparator,MaxTextExtent);
-      (void) ConcatenateMagickString(path,source,MaxTextExtent);
+      (void) ConcatenateMagickString(path,DirectorySeparator,MagickPathExtent);
+      (void) ConcatenateMagickString(path,source,MagickPathExtent);
       if (symlink(path,destination) == 0)
         return(MagickTrue);
     }
@@ -268,8 +268,8 @@ MagickExport MagickBooleanType AcquireUniqueSymbolicLink(const char *source,
 MagickExport void AppendImageFormat(const char *format,char *filename)
 {
   char
-    extension[MaxTextExtent],
-    root[MaxTextExtent];
+    extension[MagickPathExtent],
+    root[MagickPathExtent];
 
   assert(format != (char *) NULL);
   assert(filename != (char *) NULL);
@@ -279,10 +279,10 @@ MagickExport void AppendImageFormat(const char *format,char *filename)
   if (LocaleCompare(filename,"-") == 0)
     {
       char
-        message[MaxTextExtent];
+        message[MagickPathExtent];
 
-      (void) FormatLocaleString(message,MaxTextExtent,"%s:%s",format,filename);
-      (void) CopyMagickString(filename,message,MaxTextExtent);
+      (void) FormatLocaleString(message,MagickPathExtent,"%s:%s",format,filename);
+      (void) CopyMagickString(filename,message,MagickPathExtent);
       return;
     }
   GetPathComponent(filename,ExtensionPath,extension);
@@ -293,14 +293,14 @@ MagickExport void AppendImageFormat(const char *format,char *filename)
       (LocaleCompare(extension,"svgz") == 0))
     {
       GetPathComponent(filename,RootPath,root);
-      (void) CopyMagickString(filename,root,MaxTextExtent);
+      (void) CopyMagickString(filename,root,MagickPathExtent);
       GetPathComponent(filename,RootPath,root);
-      (void) FormatLocaleString(filename,MaxTextExtent,"%s.%s.%s",root,format,
+      (void) FormatLocaleString(filename,MagickPathExtent,"%s.%s.%s",root,format,
         extension);
       return;
     }
   GetPathComponent(filename,RootPath,root);
-  (void) FormatLocaleString(filename,MaxTextExtent,"%s.%s",root,format);
+  (void) FormatLocaleString(filename,MagickPathExtent,"%s.%s",root,format);
 }
 
 /*
@@ -602,13 +602,13 @@ MagickPrivate void ChopPathComponents(char *path,const size_t components)
 MagickPrivate void ExpandFilename(char *path)
 {
   char
-    expand_path[MaxTextExtent];
+    expand_path[MagickPathExtent];
 
   if (path == (char *) NULL)
     return;
   if (*path != '~')
     return;
-  (void) CopyMagickString(expand_path,path,MaxTextExtent);
+  (void) CopyMagickString(expand_path,path,MagickPathExtent);
   if ((*(path+1) == *DirectorySeparator) || (*(path+1) == '\0'))
     {
       char
@@ -617,15 +617,15 @@ MagickPrivate void ExpandFilename(char *path)
       /*
         Substitute ~ with $HOME.
       */
-      (void) CopyMagickString(expand_path,".",MaxTextExtent);
-      (void) ConcatenateMagickString(expand_path,path+1,MaxTextExtent);
+      (void) CopyMagickString(expand_path,".",MagickPathExtent);
+      (void) ConcatenateMagickString(expand_path,path+1,MagickPathExtent);
       home=GetEnvironmentValue("HOME");
       if (home == (char *) NULL)
         home=GetEnvironmentValue("USERPROFILE");
       if (home != (char *) NULL)
         {
-          (void) CopyMagickString(expand_path,home,MaxTextExtent);
-          (void) ConcatenateMagickString(expand_path,path+1,MaxTextExtent);
+          (void) CopyMagickString(expand_path,home,MagickPathExtent);
+          (void) ConcatenateMagickString(expand_path,path+1,MagickPathExtent);
           home=DestroyString(home);
         }
     }
@@ -633,7 +633,7 @@ MagickPrivate void ExpandFilename(char *path)
     {
 #if defined(MAGICKCORE_POSIX_SUPPORT) && !defined(__OS2__)
       char
-        username[MaxTextExtent];
+        username[MagickPathExtent];
 
       register char
         *p;
@@ -644,22 +644,22 @@ MagickPrivate void ExpandFilename(char *path)
       /*
         Substitute ~ with home directory from password file.
       */
-      (void) CopyMagickString(username,path+1,MaxTextExtent);
+      (void) CopyMagickString(username,path+1,MagickPathExtent);
       p=strchr(username,'/');
       if (p != (char *) NULL)
         *p='\0';
       entry=getpwnam(username);
       if (entry == (struct passwd *) NULL)
         return;
-      (void) CopyMagickString(expand_path,entry->pw_dir,MaxTextExtent);
+      (void) CopyMagickString(expand_path,entry->pw_dir,MagickPathExtent);
       if (p != (char *) NULL)
         {
-          (void) ConcatenateMagickString(expand_path,"/",MaxTextExtent);
-          (void) ConcatenateMagickString(expand_path,p+1,MaxTextExtent);
+          (void) ConcatenateMagickString(expand_path,"/",MagickPathExtent);
+          (void) ConcatenateMagickString(expand_path,p+1,MagickPathExtent);
         }
 #endif
     }
-  (void) CopyMagickString(path,expand_path,MaxTextExtent);
+  (void) CopyMagickString(path,expand_path,MagickPathExtent);
 }
 
 /*
@@ -722,7 +722,7 @@ MagickExport MagickBooleanType ExpandFilenames(int *number_arguments,
   char ***arguments)
 {
   char
-    home_directory[MaxTextExtent],
+    home_directory[MagickPathExtent],
     **vector;
 
   register ssize_t
@@ -755,11 +755,11 @@ MagickExport MagickBooleanType ExpandFilenames(int *number_arguments,
   {
     char
       **filelist,
-      filename[MaxTextExtent],
-      magick[MaxTextExtent],
+      filename[MagickPathExtent],
+      magick[MagickPathExtent],
       *option,
-      path[MaxTextExtent],
-      subimage[MaxTextExtent];
+      path[MagickPathExtent],
+      subimage[MagickPathExtent];
 
     MagickBooleanType
       destroy;
@@ -808,7 +808,7 @@ MagickExport MagickBooleanType ExpandFilenames(int *number_arguments,
         GetPathComponent(option,SubimagePath,subimage);
         ExpandFilename(path);
         if (*home_directory == '\0')
-          getcwd_utf8(home_directory,MaxTextExtent-1);
+          getcwd_utf8(home_directory,MagickPathExtent-1);
         filelist=ListFiles(*path == '\0' ? home_directory : path,filename,
           &number_files);
       }
@@ -882,34 +882,34 @@ MagickExport MagickBooleanType ExpandFilenames(int *number_arguments,
           }
           continue;
         }
-      (void) CopyMagickString(filename,path,MaxTextExtent);
+      (void) CopyMagickString(filename,path,MagickPathExtent);
       if (*path != '\0')
         (void) ConcatenateMagickString(filename,DirectorySeparator,
-          MaxTextExtent);
+          MagickPathExtent);
       if (filelist[j] != (char *) NULL)
-        (void) ConcatenateMagickString(filename,filelist[j],MaxTextExtent);
+        (void) ConcatenateMagickString(filename,filelist[j],MagickPathExtent);
       filelist[j]=DestroyString(filelist[j]);
-      if (strlen(filename) >= (MaxTextExtent-1))
+      if (strlen(filename) >= (MagickPathExtent-1))
         ThrowFatalException(OptionFatalError,"FilenameTruncated");
       if (IsPathDirectory(filename) <= 0)
         {
           char
-            path[MaxTextExtent];
+            path[MagickPathExtent];
 
           *path='\0';
           if (*magick != '\0')
             {
-              (void) ConcatenateMagickString(path,magick,MaxTextExtent);
-              (void) ConcatenateMagickString(path,":",MaxTextExtent);
+              (void) ConcatenateMagickString(path,magick,MagickPathExtent);
+              (void) ConcatenateMagickString(path,":",MagickPathExtent);
             }
-          (void) ConcatenateMagickString(path,filename,MaxTextExtent);
+          (void) ConcatenateMagickString(path,filename,MagickPathExtent);
           if (*subimage != '\0')
             {
-              (void) ConcatenateMagickString(path,"[",MaxTextExtent);
-              (void) ConcatenateMagickString(path,subimage,MaxTextExtent);
-              (void) ConcatenateMagickString(path,"]",MaxTextExtent);
+              (void) ConcatenateMagickString(path,"[",MagickPathExtent);
+              (void) ConcatenateMagickString(path,subimage,MagickPathExtent);
+              (void) ConcatenateMagickString(path,"]",MagickPathExtent);
             }
-          if (strlen(path) >= (MaxTextExtent-1))
+          if (strlen(path) >= (MagickPathExtent-1))
             ThrowFatalException(OptionFatalError,"FilenameTruncated");
           if (destroy != MagickFalse)
             {
@@ -980,18 +980,18 @@ MagickPrivate MagickBooleanType GetExecutionPath(char *path,const size_t extent)
 #if defined(MAGICKCORE_HAVE_GETPID) && defined(MAGICKCORE_HAVE_READLINK) && defined(PATH_MAX)
   {
     char
-      link_path[MaxTextExtent],
+      link_path[MagickPathExtent],
       execution_path[PATH_MAX+1];
 
     ssize_t
       count;
 
-    (void) FormatLocaleString(link_path,MaxTextExtent,"/proc/%.20g/exe",
+    (void) FormatLocaleString(link_path,MagickPathExtent,"/proc/%.20g/exe",
       (double) getpid());
     count=readlink(link_path,execution_path,PATH_MAX);
     if (count == -1)
       {
-        (void) FormatLocaleString(link_path,MaxTextExtent,"/proc/%.20g/file",
+        (void) FormatLocaleString(link_path,MagickPathExtent,"/proc/%.20g/file",
           (double) getpid());
         count=readlink(link_path,execution_path,PATH_MAX);
       }
@@ -1173,7 +1173,7 @@ MagickExport MagickBooleanType GetPathAttributes(const char *path,
 %  GetPathComponent() returns the parent directory name, filename, basename, or
 %  extension of a file path.
 %
-%  The component string pointed to must have at least MaxTextExtent space
+%  The component string pointed to must have at least MagickPathExtent space
 %  for the results to be stored.
 %
 %  The format of the GetPathComponent function is:
@@ -1194,9 +1194,9 @@ MagickExport void GetPathComponent(const char *path,PathType type,
   char *component)
 {
   char
-    magick[MaxTextExtent],
+    magick[MagickPathExtent],
     *q,
-    subimage[MaxTextExtent];
+    subimage[MagickPathExtent];
 
   register char
     *p;
@@ -1209,7 +1209,7 @@ MagickExport void GetPathComponent(const char *path,PathType type,
       *component='\0';
       return;
     }
-  (void) CopyMagickString(component,path,MaxTextExtent);
+  (void) CopyMagickString(component,path,MagickPathExtent);
   *magick='\0';
 #if defined(__OS2__)
   if (path[1] != ":")
@@ -1255,7 +1255,7 @@ MagickExport void GetPathComponent(const char *path,PathType type,
           break;
       if (*q == '[')
         {
-          (void) CopyMagickString(subimage,q+1,MaxTextExtent);
+          (void) CopyMagickString(subimage,q+1,MagickPathExtent);
           subimage[p-q-1]='\0';
           if ((IsSceneGeometry(subimage,MagickFalse) == MagickFalse) &&
               (IsGeometry(subimage) == MagickFalse))
@@ -1273,7 +1273,7 @@ MagickExport void GetPathComponent(const char *path,PathType type,
   {
     case MagickPath:
     {
-      (void) CopyMagickString(component,magick,MaxTextExtent);
+      (void) CopyMagickString(component,magick,MagickPathExtent);
       break;
     }
     case RootPath:
@@ -1304,7 +1304,7 @@ MagickExport void GetPathComponent(const char *path,PathType type,
     case BasePath:
     {
       if (IsBasenameSeparator(*p) != MagickFalse)
-        (void) CopyMagickString(component,p+1,MaxTextExtent);
+        (void) CopyMagickString(component,p+1,MagickPathExtent);
       for (p=component+(strlen(component)-1); p > component; p--)
         if (*p == '.')
           {
@@ -1316,7 +1316,7 @@ MagickExport void GetPathComponent(const char *path,PathType type,
     case ExtensionPath:
     {
       if (IsBasenameSeparator(*p) != MagickFalse)
-        (void) CopyMagickString(component,p+1,MaxTextExtent);
+        (void) CopyMagickString(component,p+1,MagickPathExtent);
       p=component;
       if (*p != '\0')
         for (p=component+strlen(component)-1; p > component; p--)
@@ -1324,12 +1324,12 @@ MagickExport void GetPathComponent(const char *path,PathType type,
             break;
       *component='\0';
       if (*p == '.')
-        (void) CopyMagickString(component,p+1,MaxTextExtent);
+        (void) CopyMagickString(component,p+1,MagickPathExtent);
       break;
     }
     case SubimagePath:
     {
-      (void) CopyMagickString(component,subimage,MaxTextExtent);
+      (void) CopyMagickString(component,subimage,MagickPathExtent);
       break;
     }
     case CanonicalPath:
@@ -1392,7 +1392,7 @@ MagickPrivate char **GetPathComponents(const char *path,
     for (q=p; *q != '\0'; q++)
       if (IsBasenameSeparator(*q))
         break;
-    components[i]=(char *) AcquireQuantumMemory((size_t) (q-p)+MaxTextExtent,
+    components[i]=(char *) AcquireQuantumMemory((size_t) (q-p)+MagickPathExtent,
       sizeof(**components));
     if (components[i] == (char *) NULL)
       ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
