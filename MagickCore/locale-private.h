@@ -22,6 +22,10 @@
 extern "C" {
 #endif
 
+#if !defined(MagickLocaleExtent)
+# define MagickLocaleExtent  256
+#endif
+
 extern MagickPrivate MagickBooleanType
   LocaleComponentGenesis(void);
 

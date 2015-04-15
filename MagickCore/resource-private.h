@@ -22,6 +22,10 @@
 extern "C" {
 #endif
 
+#if !defined(MagickFormatExtent)
+# define MagickFormatExtent  64
+#endif
+
 extern MagickPrivate MagickBooleanType
   ResourceComponentGenesis(void);
 
