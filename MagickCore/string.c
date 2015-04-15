@@ -245,8 +245,8 @@ MagickExport StringInfo *BlobToStringInfo(const void *blob,const size_t length)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  CloneString() replaces or frees the destination string to make it
-%  a clone of the input string plus MagickPathExtent more space so the string may
-%  be worked on on.
+%  a clone of the input string plus MagickPathExtent more space so the string 
+%  may be worked on.
 %
 %  If source is a NULL pointer the destination string will be freed and set to
 %  a NULL pointer.  A pointer to the stored in the destination is also returned.
@@ -285,8 +285,8 @@ MagickExport char *CloneString(char **destination,const char *source)
   length=strlen(source);
   if (~length < MagickPathExtent)
     ThrowFatalException(ResourceLimitFatalError,"UnableToAcquireString");
-  *destination=(char *) ResizeQuantumMemory(*destination,length+MagickPathExtent,
-    sizeof(**destination));
+  *destination=(char *) ResizeQuantumMemory(*destination,length+
+    MagickPathExtent,sizeof(**destination));
   if (*destination == (char *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"UnableToAcquireString");
   if (length != 0)
@@ -495,8 +495,8 @@ MagickExport MagickBooleanType ConcatenateString(char **destination,
   length+=source_length;
   if (~length < MagickPathExtent)
     ThrowFatalException(ResourceLimitFatalError,"UnableToConcatenateString");
-  *destination=(char *) ResizeQuantumMemory(*destination,length+MagickPathExtent,
-    sizeof(**destination));
+  *destination=(char *) ResizeQuantumMemory(*destination,length+
+    MagickPathExtent,sizeof(**destination));
   if (*destination == (char *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"UnableToConcatenateString");
   if (source_length != 0)
@@ -604,7 +604,8 @@ MagickExport StringInfo *ConfigureFileToStringInfo(const char *filename)
   length=(size_t) offset;
   string=(char *) NULL;
   if (~length >= (MagickPathExtent-1))
-    string=(char *) AcquireQuantumMemory(length+MagickPathExtent,sizeof(*string));
+    string=(char *) AcquireQuantumMemory(length+MagickPathExtent,
+      sizeof(*string));
   if (string == (char *) NULL)
     {
       file=close(file)-1;
@@ -2041,7 +2042,8 @@ MagickExport char *StringInfoToString(const StringInfo *string_info)
   string=(char *) NULL;
   length=string_info->length;
   if (~length >= (MagickPathExtent-1))
-    string=(char *) AcquireQuantumMemory(length+MagickPathExtent,sizeof(*string));
+    string=(char *) AcquireQuantumMemory(length+MagickPathExtent,
+      sizeof(*string));
   if (string == (char *) NULL)
     return((char *) NULL);
   (void) memcpy(string,(char *) string_info->datum,length*sizeof(*string));
@@ -2094,7 +2096,8 @@ MagickExport char *StringInfoToHexString(const StringInfo *string_info)
   length=string_info->length;
   if (~length < MagickPathExtent)
     ThrowFatalException(ResourceLimitFatalError,"UnableToAcquireString");
-  string=(char *) AcquireQuantumMemory(length+MagickPathExtent,2*sizeof(*string));
+  string=(char *) AcquireQuantumMemory(length+MagickPathExtent,2*
+    sizeof(*string));
   if (string == (char *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"UnableToAcquireString");
   hex_digits[0]='0';
@@ -2476,8 +2479,8 @@ MagickExport char **StringToList(const char *text)
         for (q=p; *q != '\0'; q++)
           if ((*q == '\r') || (*q == '\n'))
             break;
-        textlist[i]=(char *) AcquireQuantumMemory((size_t) (q-p)+MagickPathExtent,
-          sizeof(**textlist));
+        textlist[i]=(char *) AcquireQuantumMemory((size_t) (q-p)+
+          MagickPathExtent,sizeof(**textlist));
         if (textlist[i] == (char *) NULL)
           ThrowFatalException(ResourceLimitFatalError,"UnableToConvertText");
         (void) memcpy(textlist[i],p,(size_t) (q-p));
