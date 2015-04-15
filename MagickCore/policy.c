@@ -256,7 +256,7 @@ static LinkedListInfo *AcquirePolicyCache(const char *filename,
 static PolicyInfo *GetPolicyInfo(const char *name,ExceptionInfo *exception)
 {
   char
-    policyname[MaxTextExtent];
+    policyname[MagickPathExtent];
 
   register PolicyInfo
     *p;
@@ -272,12 +272,12 @@ static PolicyInfo *GetPolicyInfo(const char *name,ExceptionInfo *exception)
   */
   *policyname='\0';
   if (name != (const char *) NULL)
-    (void) CopyMagickString(policyname,name,MaxTextExtent);
+    (void) CopyMagickString(policyname,name,MagickPathExtent);
   for (q=policyname; *q != '\0'; q++)
   {
     if (isspace((int) ((unsigned char) *q)) == 0)
       continue;
-    (void) CopyMagickString(q,q+1,MaxTextExtent);
+    (void) CopyMagickString(q,q+1,MagickPathExtent);
     q--;
   }
   /*
@@ -736,7 +736,7 @@ static MagickBooleanType LoadPolicyCache(LinkedListInfo *policy_cache,
   ExceptionInfo *exception)
 {
   char
-    keyword[MaxTextExtent],
+    keyword[MagickPathExtent],
     *token;
 
   const char
@@ -766,7 +766,7 @@ static MagickBooleanType LoadPolicyCache(LinkedListInfo *policy_cache,
     GetMagickToken(q,&q,token);
     if (*token == '\0')
       break;
-    (void) CopyMagickString(keyword,token,MaxTextExtent);
+    (void) CopyMagickString(keyword,token,MagickPathExtent);
     if (LocaleNCompare(keyword,"<!DOCTYPE",9) == 0)
       {
         /*
@@ -792,7 +792,7 @@ static MagickBooleanType LoadPolicyCache(LinkedListInfo *policy_cache,
         */
         while (((*token != '/') && (*(token+1) != '>')) && (*q != '\0'))
         {
-          (void) CopyMagickString(keyword,token,MaxTextExtent);
+          (void) CopyMagickString(keyword,token,MagickPathExtent);
           GetMagickToken(q,&q,token);
           if (*token != '=')
             continue;
@@ -805,17 +805,17 @@ static MagickBooleanType LoadPolicyCache(LinkedListInfo *policy_cache,
               else
                 {
                   char
-                    path[MaxTextExtent],
+                    path[MagickPathExtent],
                     *xml;
 
                   GetPathComponent(filename,HeadPath,path);
                   if (*path != '\0')
                     (void) ConcatenateMagickString(path,DirectorySeparator,
-                      MaxTextExtent);
+                      MagickPathExtent);
                   if (*token == *DirectorySeparator)
-                    (void) CopyMagickString(path,token,MaxTextExtent);
+                    (void) CopyMagickString(path,token,MagickPathExtent);
                   else
-                    (void) ConcatenateMagickString(path,token,MaxTextExtent);
+                    (void) ConcatenateMagickString(path,token,MagickPathExtent);
                   xml=FileToXML(path,~0UL);
                   if (xml != (char *) NULL)
                     {

@@ -157,7 +157,7 @@ static Image *ReadMVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if ((image->columns == 0) || (image->rows == 0))
     {
       char
-        primitive[MaxTextExtent];
+        primitive[MagickPathExtent];
 
       register char
         *p;

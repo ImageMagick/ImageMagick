@@ -2115,7 +2115,7 @@ WandExport MagickBooleanType MagickSetFilename(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
 
   if (filename != (const char *) NULL)
-    (void) CopyMagickString(wand->image_info->filename,filename,MaxTextExtent);
+    (void) CopyMagickString(wand->image_info->filename,filename,MagickPathExtent);
   return(MagickTrue);
 }
 
@@ -2200,7 +2200,7 @@ WandExport MagickBooleanType MagickSetFormat(MagickWand *wand,
   if (magick_info == (const MagickInfo *) NULL)
     return(MagickFalse);
   ClearMagickException(wand->exception);
-  (void) CopyMagickString(wand->image_info->magick,format,MaxTextExtent);
+  (void) CopyMagickString(wand->image_info->magick,format,MagickPathExtent);
   return(MagickTrue);
 }
 
@@ -2576,14 +2576,14 @@ WandExport MagickBooleanType MagickSetPage(MagickWand *wand,
   const ssize_t y)
 {
   char
-    geometry[MaxTextExtent];
+    geometry[MagickPathExtent];
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
   if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
 
-  (void) FormatLocaleString(geometry,MaxTextExtent,"%.20gx%.20g%+.20g%+.20g",
+  (void) FormatLocaleString(geometry,MagickPathExtent,"%.20gx%.20g%+.20g%+.20g",
     (double) width,(double) height,(double) x,(double) y);
   (void) CloneString(&wand->image_info->page,geometry);
   return(MagickTrue);
@@ -2780,14 +2780,14 @@ WandExport MagickBooleanType MagickSetResolution(MagickWand *wand,
   const double x_resolution,const double y_resolution)
 {
   char
-    density[MaxTextExtent];
+    density[MagickPathExtent];
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
   if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
 
-  (void) FormatLocaleString(density,MaxTextExtent,"%gx%g",x_resolution,
+  (void) FormatLocaleString(density,MagickPathExtent,"%gx%g",x_resolution,
     y_resolution);
   (void) CloneString(&wand->image_info->density,density);
   return(MagickTrue);
@@ -2825,7 +2825,7 @@ WandExport MagickBooleanType MagickSetSamplingFactors(MagickWand *wand,
   const size_t number_factors,const double *sampling_factors)
 {
   char
-    sampling_factor[MaxTextExtent];
+    sampling_factor[MagickPathExtent];
 
   register ssize_t
     i;
@@ -2842,12 +2842,12 @@ WandExport MagickBooleanType MagickSetSamplingFactors(MagickWand *wand,
     return(MagickTrue);
   for (i=0; i < (ssize_t) (number_factors-1); i++)
   {
-    (void) FormatLocaleString(sampling_factor,MaxTextExtent,"%g,",
+    (void) FormatLocaleString(sampling_factor,MagickPathExtent,"%g,",
       sampling_factors[i]);
     (void) ConcatenateString(&wand->image_info->sampling_factor,
       sampling_factor);
   }
-  (void) FormatLocaleString(sampling_factor,MaxTextExtent,"%g",
+  (void) FormatLocaleString(sampling_factor,MagickPathExtent,"%g",
     sampling_factors[i]);
   (void) ConcatenateString(&wand->image_info->sampling_factor,sampling_factor);
   return(MagickTrue);
@@ -2885,14 +2885,14 @@ WandExport MagickBooleanType MagickSetSize(MagickWand *wand,
   const size_t columns,const size_t rows)
 {
   char
-    geometry[MaxTextExtent];
+    geometry[MagickPathExtent];
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
   if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
 
-  (void) FormatLocaleString(geometry,MaxTextExtent,"%.20gx%.20g",(double)
+  (void) FormatLocaleString(geometry,MagickPathExtent,"%.20gx%.20g",(double)
     columns,(double) rows);
   (void) CloneString(&wand->image_info->size,geometry);
   return(MagickTrue);
@@ -2933,14 +2933,14 @@ WandExport MagickBooleanType MagickSetSizeOffset(MagickWand *wand,
   const size_t columns,const size_t rows,const ssize_t offset)
 {
   char
-    geometry[MaxTextExtent];
+    geometry[MagickPathExtent];
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
   if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
 
-  (void) FormatLocaleString(geometry,MaxTextExtent,"%.20gx%.20g%+.20g",
+  (void) FormatLocaleString(geometry,MagickPathExtent,"%.20gx%.20g%+.20g",
     (double) columns,(double) rows,(double) offset);
   (void) CloneString(&wand->image_info->size,geometry);
   return(MagickTrue);

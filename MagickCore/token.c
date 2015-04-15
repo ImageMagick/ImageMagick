@@ -277,7 +277,7 @@ MagickExport void GetMagickToken(const char *start,const char **end,char *token)
       if (token[offset] == '#')
         offset++;
       i=(ssize_t) strlen(token);
-      (void) CopyMagickString(token,token+offset,MaxTextExtent);
+      (void) CopyMagickString(token,token+offset,MagickPathExtent);
       token[i-offset-1]='\0';
     }
   while (isspace((int) ((unsigned char) *p)) != 0)
@@ -346,7 +346,7 @@ MagickExport MagickBooleanType GlobExpression(const char *expression,
         Determine if pattern is a scene, i.e. img0001.pcd[2].
       */
       image_info=AcquireImageInfo();
-      (void) CopyMagickString(image_info->filename,pattern,MaxTextExtent);
+      (void) CopyMagickString(image_info->filename,pattern,MagickPathExtent);
       exception=AcquireExceptionInfo();
       (void) SetImageInfo(image_info,0,exception);
       exception=DestroyExceptionInfo(exception);

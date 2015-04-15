@@ -1677,8 +1677,8 @@ static MagickBooleanType SetImageProfileInternal(Image *image,const char *name,
   ExceptionInfo *exception)
 {
   char
-    key[MaxTextExtent],
-    property[MaxTextExtent];
+    key[MagickPathExtent],
+    property[MagickPathExtent];
 
   MagickBooleanType
     status;
@@ -1690,7 +1690,7 @@ static MagickBooleanType SetImageProfileInternal(Image *image,const char *name,
   if (image->profiles == (SplayTreeInfo *) NULL)
     image->profiles=NewSplayTree(CompareSplayTreeString,RelinquishMagickMemory,
       DestroyProfile);
-  (void) CopyMagickString(key,name,MaxTextExtent);
+  (void) CopyMagickString(key,name,MagickPathExtent);
   LocaleLower(key);
   status=AddValueToSplayTree((SplayTreeInfo *) image->profiles,
     ConstantString(key),CloneStringInfo(profile));
@@ -1704,7 +1704,7 @@ static MagickBooleanType SetImageProfileInternal(Image *image,const char *name,
   /*
     Inject profile into image properties.
   */
-  (void) FormatLocaleString(property,MaxTextExtent,"%s:*",name);
+  (void) FormatLocaleString(property,MagickPathExtent,"%s:*",name);
   (void) GetImageProperty(image,property,exception);
   return(status);
 }

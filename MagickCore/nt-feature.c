@@ -291,9 +291,9 @@ MagickExport MagickBooleanType NTAcquireTypeCache(SplayTreeInfo *type_cache,
     list_entries = 0;
 
   char
-    buffer[MaxTextExtent],
-    system_root[MaxTextExtent],
-    font_root[MaxTextExtent];
+    buffer[MagickPathExtent],
+    system_root[MagickPathExtent],
+    font_root[MagickPathExtent];
 
   DWORD
     type,
@@ -327,17 +327,17 @@ MagickExport MagickBooleanType NTAcquireTypeCache(SplayTreeInfo *type_cache,
   if (res != ERROR_SUCCESS)
     return(MagickFalse);
   *font_root='\0';
-  (void) CopyMagickString(buffer,system_root,MaxTextExtent);
-  (void) ConcatenateMagickString(buffer,"\\fonts\\arial.ttf",MaxTextExtent);
+  (void) CopyMagickString(buffer,system_root,MagickPathExtent);
+  (void) ConcatenateMagickString(buffer,"\\fonts\\arial.ttf",MagickPathExtent);
   if (IsPathAccessible(buffer) != MagickFalse)
     {
-      (void) CopyMagickString(font_root,system_root,MaxTextExtent);
-      (void) ConcatenateMagickString(font_root,"\\fonts\\",MaxTextExtent);
+      (void) CopyMagickString(font_root,system_root,MagickPathExtent);
+      (void) ConcatenateMagickString(font_root,"\\fonts\\",MagickPathExtent);
     }
   else
     {
-      (void) CopyMagickString(font_root,system_root,MaxTextExtent);
-      (void) ConcatenateMagickString(font_root,"\\",MaxTextExtent);
+      (void) CopyMagickString(font_root,system_root,MagickPathExtent);
+      (void) ConcatenateMagickString(font_root,"\\",MagickPathExtent);
     }
 
   {
@@ -351,8 +351,8 @@ MagickExport MagickBooleanType NTAcquireTypeCache(SplayTreeInfo *type_cache,
       value_name_length;
 
     char
-      value_data[MaxTextExtent],
-      value_name[MaxTextExtent];
+      value_data[MagickPathExtent],
+      value_name[MagickPathExtent];
 
     res = ERROR_SUCCESS;
 
@@ -360,7 +360,7 @@ MagickExport MagickBooleanType NTAcquireTypeCache(SplayTreeInfo *type_cache,
       {
         char
           *family_extent,
-          token[MaxTextExtent],
+          token[MagickPathExtent],
           *pos,
           *q;
 
@@ -384,7 +384,7 @@ MagickExport MagickBooleanType NTAcquireTypeCache(SplayTreeInfo *type_cache,
         type_info->signature=MagickSignature;
 
         /* Name */
-        (void) CopyMagickString(buffer,value_name,MaxTextExtent);
+        (void) CopyMagickString(buffer,value_name,MagickPathExtent);
         for(pos = buffer; *pos != 0 ; pos++)
           if (*pos == ' ')
             *pos = '-';
@@ -398,11 +398,11 @@ MagickExport MagickBooleanType NTAcquireTypeCache(SplayTreeInfo *type_cache,
 
         /* Glyphs */
         if (strchr(value_data,'\\') != (char *) NULL)
-          (void) CopyMagickString(buffer,value_data,MaxTextExtent);
+          (void) CopyMagickString(buffer,value_data,MagickPathExtent);
         else
           {
-            (void) CopyMagickString(buffer,font_root,MaxTextExtent);
-            (void) ConcatenateMagickString(buffer,value_data,MaxTextExtent);
+            (void) CopyMagickString(buffer,font_root,MagickPathExtent);
+            (void) ConcatenateMagickString(buffer,value_data,MagickPathExtent);
           }
 
         LocaleLower(buffer);

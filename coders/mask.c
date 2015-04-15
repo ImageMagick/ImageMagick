@@ -110,7 +110,7 @@ static Image *ReadMASKImage(const ImageInfo *image_info,
   assert(exception->signature == MagickSignature);
   read_info=CloneImageInfo(image_info);
   SetImageInfoBlob(read_info,(void *) NULL,0);
-  (void) CopyMagickString(read_info->magick,"MIFF",MaxTextExtent);
+  (void) CopyMagickString(read_info->magick,"MIFF",MagickPathExtent);
   image=ReadImage(read_info,exception);
   read_info=DestroyImageInfo(read_info);
   if (image != (Image *) NULL)
@@ -297,11 +297,11 @@ static MagickBooleanType WriteMASKImage(const ImageInfo *image_info,
   mask_image=MaskImage(image,exception);
   if (mask_image == (Image *) NULL)
     return(MagickFalse);
-  (void) CopyMagickString(mask_image->filename,image->filename,MaxTextExtent);
+  (void) CopyMagickString(mask_image->filename,image->filename,MagickPathExtent);
   write_info=CloneImageInfo(image_info);
   (void) SetImageInfo(write_info,1,exception);
   if (LocaleCompare(write_info->magick,"MASK") == 0)
-    (void) FormatLocaleString(mask_image->filename,MaxTextExtent,"miff:%s",
+    (void) FormatLocaleString(mask_image->filename,MagickPathExtent,"miff:%s",
       write_info->filename);
   status=WriteImage(write_info,mask_image,exception);
   mask_image=DestroyImage(mask_image);

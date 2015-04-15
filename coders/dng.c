@@ -131,14 +131,14 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   SetImageInfoBlob(read_info,(void *) NULL,0);
   (void) InvokeDelegate(read_info,image,"dng:decode",(char *) NULL,exception);
   image=DestroyImage(image);
-  (void) FormatLocaleString(read_info->filename,MaxTextExtent,"%s.png",
+  (void) FormatLocaleString(read_info->filename,MagickPathExtent,"%s.png",
     read_info->unique);
   sans_exception=AcquireExceptionInfo();
   image=ReadImage(read_info,sans_exception);
   sans_exception=DestroyExceptionInfo(sans_exception);
   if (image == (Image *) NULL)
     {
-      (void) FormatLocaleString(read_info->filename,MaxTextExtent,"%s.ppm",
+      (void) FormatLocaleString(read_info->filename,MagickPathExtent,"%s.ppm",
         read_info->unique);
       image=ReadImage(read_info,exception);
     }
@@ -146,17 +146,17 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (image != (Image *) NULL)
     {
       char
-        filename[MaxTextExtent],
+        filename[MagickPathExtent],
         *xml;
 
       ExceptionInfo
         *sans;
 
-      (void) CopyMagickString(image->magick,read_info->magick,MaxTextExtent);
-      (void) FormatLocaleString(filename,MaxTextExtent,"%s.ufraw",
+      (void) CopyMagickString(image->magick,read_info->magick,MagickPathExtent);
+      (void) FormatLocaleString(filename,MagickPathExtent,"%s.ufraw",
         read_info->unique);
       sans=AcquireExceptionInfo();
-      xml=FileToString(filename,MaxTextExtent,sans);
+      xml=FileToString(filename,MagickPathExtent,sans);
       (void) RelinquishUniqueFileResource(filename);
       if (xml != (char *) NULL)
         {
@@ -171,7 +171,7 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               char
                 *content,
-                property[MaxTextExtent];
+                property[MagickPathExtent];
 
               const char
                 *tag;
@@ -189,7 +189,7 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 tag=GetXMLTreeTag(next);
                 if (tag == (char *) NULL)
                   tag="unknown";
-                (void) FormatLocaleString(property,MaxTextExtent,"dng:%s",tag);
+                (void) FormatLocaleString(property,MagickPathExtent,"dng:%s",tag);
                 content=ConstantString(GetXMLTreeContent(next)); 
                 StripString(content);
                 if ((LocaleCompare(tag,"log") != 0) &&

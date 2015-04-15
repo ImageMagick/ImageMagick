@@ -844,8 +844,8 @@ static const unsigned char
 typedef struct _PatternInfo
 {
   char
-    name[MaxTextExtent],
-    magick[MaxTextExtent];
+    name[MagickPathExtent],
+    magick[MagickPathExtent];
 
   const void
     *blob;
@@ -971,7 +971,7 @@ static Image *ReadPATTERNImage(const ImageInfo *image_info,
     if (LocaleCompare(blob_info->filename,PatternImageList[i].name) == 0)
       {
         (void) CopyMagickString(blob_info->magick,PatternImageList[i].magick,
-          MaxTextExtent);
+          MagickPathExtent);
         blob=PatternImageList[i].blob;
         extent=PatternImageList[i].extent;
         break;

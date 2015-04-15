@@ -1043,7 +1043,7 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
             resource_info.map_type=(char *) NULL;
             if (*option == '+')
               break;
-            (void) CopyMagickString(argv[i]+1,"san",MaxTextExtent);
+            (void) CopyMagickString(argv[i]+1,"san",MagickPathExtent);
             i++;
             if (i == (ssize_t) argc)
               ThrowAnimateException(OptionError,"MissingArgument",option);

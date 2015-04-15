@@ -928,7 +928,7 @@ static Image *ReadDJVUImage(const ImageInfo *image_info,
 ModuleExport size_t RegisterDJVUImage(void)
 {
   char
-    version[MaxTextExtent];
+    version[MagickPathExtent];
 
   MagickInfo
     *entry;
@@ -943,8 +943,8 @@ ModuleExport size_t RegisterDJVUImage(void)
 
   *version='\0';
 #if defined(DJVU_LIBDJVU_VER_STRING)
-  (void) ConcatenateMagickString(version,"libdjvu ",MaxTextExtent);
-  (void) ConcatenateMagickString(version,DJVU_LIBDJVU_VER_STRING,MaxTextExtent);
+  (void) ConcatenateMagickString(version,"libdjvu ",MagickPathExtent);
+  (void) ConcatenateMagickString(version,DJVU_LIBDJVU_VER_STRING,MagickPathExtent);
 #endif
   entry=AcquireMagickInfo("DJVU","DJVU","Déjà vu");
 #if defined(MAGICKCORE_DJVU_DELEGATE)

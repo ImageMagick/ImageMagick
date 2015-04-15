@@ -1288,7 +1288,7 @@ MagickExport MagickBooleanType OrderedPosterizeImage(Image *image,
     *image_view;
 
   char
-    token[MaxTextExtent];
+    token[MagickPathExtent];
 
   const char
     *p;
@@ -1327,7 +1327,7 @@ MagickExport MagickBooleanType OrderedPosterizeImage(Image *image,
   while (((isspace((int) ((unsigned char) *p)) == 0) && (*p != ',')) &&
          (*p != '\0'))
   {
-    if ((p-threshold_map) >= (MaxTextExtent-1))
+    if ((p-threshold_map) >= (MagickPathExtent-1))
       break;
     token[p-threshold_map]=(*p);
     p++;

@@ -162,7 +162,7 @@ typedef struct _XDrawInfo
     *coordinate_info;
 
   char
-    geometry[MaxTextExtent];
+    geometry[MagickPathExtent];
 } XDrawInfo;
 
 typedef enum
@@ -203,7 +203,7 @@ typedef struct _XAnnotateInfo
     stencil;
 
   char
-    geometry[MaxTextExtent];
+    geometry[MagickPathExtent];
 
   struct _XAnnotateInfo
     *next,
@@ -344,7 +344,7 @@ typedef struct _XResourceInfo
     gravity;
 
   char
-    home_directory[MaxTextExtent];
+    home_directory[MagickPathExtent];
 } XResourceInfo;
 
 typedef struct _XWindowInfo

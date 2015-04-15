@@ -134,7 +134,7 @@ MagickExport MontageInfo *CloneMontageInfo(const ImageInfo *image_info,
   clone_info->matte_color=montage_info->matte_color;
   clone_info->gravity=montage_info->gravity;
   (void) CopyMagickString(clone_info->filename,montage_info->filename,
-    MaxTextExtent);
+    MagickPathExtent);
   clone_info->debug=IsEventLogging();
   return(clone_info);
 }
@@ -223,7 +223,7 @@ MagickExport void GetMontageInfo(const ImageInfo *image_info,
   assert(montage_info != (MontageInfo *) NULL);
   (void) ResetMagickMemory(montage_info,0,sizeof(*montage_info));
   (void) CopyMagickString(montage_info->filename,image_info->filename,
-    MaxTextExtent);
+    MagickPathExtent);
   montage_info->geometry=AcquireString(DefaultTileGeometry);
   if (image_info->font != (char *) NULL)
     montage_info->font=AcquireString(image_info->font);
@@ -326,7 +326,7 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
 #define TileImageTag  "Tile/Image"
 
   char
-    tile_geometry[MaxTextExtent],
+    tile_geometry[MagickPathExtent],
     *title;
 
   const char
@@ -489,11 +489,11 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
   if (montage_info->frame != (char *) NULL)
     {
       char
-        absolute_geometry[MaxTextExtent];
+        absolute_geometry[MagickPathExtent];
 
       frame_info.width=extract_info.width;
       frame_info.height=extract_info.height;
-      (void) FormatLocaleString(absolute_geometry,MaxTextExtent,"%s!",
+      (void) FormatLocaleString(absolute_geometry,MagickPathExtent,"%s!",
         montage_info->frame);
       flags=ParseMetaGeometry(absolute_geometry,&frame_info.outer_bevel,
         &frame_info.inner_bevel,&frame_info.width,&frame_info.height);
@@ -537,7 +537,7 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
   if (montage_info->texture != (char *) NULL)
     {
       (void) CopyMagickString(clone_info->filename,montage_info->texture,
-        MaxTextExtent);
+        MagickPathExtent);
       texture=ReadImage(clone_info,exception);
     }
   /*
@@ -619,7 +619,7 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
       Initialize montage image.
     */
     (void) CopyMagickString(montage->filename,montage_info->filename,
-      MaxTextExtent);
+      MagickPathExtent);
     montage->columns=(size_t) MagickMax((ssize_t) bounds.width,1);
     montage->rows=(size_t) MagickMax((ssize_t) bounds.height,1);
     (void) SetImageBackgroundColor(montage,exception);
@@ -645,7 +645,7 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
       GetMontageGeometry(montage_info->tile,number_images,&x_offset,&y_offset,
         &sans,&sans);
     y_offset+=(ssize_t) title_offset;
-    (void) FormatLocaleString(montage->montage,MaxTextExtent,
+    (void) FormatLocaleString(montage->montage,MagickPathExtent,
       "%.20gx%.20g%+.20g%+.20g",(double) (extract_info.width+
       (extract_info.x+border_width)*2),(double) (extract_info.height+
       (extract_info.y+border_width)*2+(double) ((metrics.ascent-
@@ -667,7 +667,7 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
     if (montage_info->title != (char *) NULL)
       {
         char
-          geometry[MaxTextExtent];
+          geometry[MagickPathExtent];
 
         DrawInfo
           *clone_info;
@@ -682,7 +682,7 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
         clone_info->gravity=CenterGravity;
         clone_info->pointsize*=2.0;
         (void) GetTypeMetrics(image_list[0],clone_info,&metrics,exception);
-        (void) FormatLocaleString(geometry,MaxTextExtent,
+        (void) FormatLocaleString(geometry,MagickPathExtent,
           "%.20gx%.20g%+.20g%+.20g",(double) montage->columns,(double)
           (metrics.ascent-metrics.descent),0.0,(double) extract_info.y+4);
         (void) CloneString(&clone_info->geometry,geometry);
@@ -756,7 +756,7 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
       tile_image->gravity=montage_info->gravity;
       if (image->gravity != UndefinedGravity)
         tile_image->gravity=image->gravity;
-      (void) FormatLocaleString(tile_geometry,MaxTextExtent,"%.20gx%.20g+0+0",
+      (void) FormatLocaleString(tile_geometry,MagickPathExtent,"%.20gx%.20g+0+0",
         (double) image->columns,(double) image->rows);
       flags=ParseGravityGeometry(tile_image,tile_geometry,&geometry,exception);
       x=(ssize_t) (geometry.x+border_width);
@@ -818,12 +818,12 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
           if (value != (const char *) NULL)
             {
               char
-                geometry[MaxTextExtent];
+                geometry[MagickPathExtent];
 
               /*
                 Annotate composite tile with label.
               */
-              (void) FormatLocaleString(geometry,MaxTextExtent,
+              (void) FormatLocaleString(geometry,MagickPathExtent,
                 "%.20gx%.20g%+.20g%+.20g",(double) ((montage_info->frame ?
                 image->columns : width)-2*border_width),(double)
                 (metrics.ascent-metrics.descent+4)*MultilineCensus(value),

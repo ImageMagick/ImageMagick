@@ -640,7 +640,7 @@ static void TimeCodeToString(const size_t timestamp,char *code)
   shift=4*TimeFields;
   for (i=0; i <= TimeFields; i++)
   {
-    (void) FormatLocaleString(code,MaxTextExtent-strlen(code),"%x",
+    (void) FormatLocaleString(code,MagickPathExtent-strlen(code),"%x",
       (unsigned int) ((timestamp >> shift) & 0x0fU));
     code++;
     if (((i % 2) != 0) && (i < TimeFields))
@@ -654,7 +654,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   char
     magick[4],
-    value[MaxTextExtent];
+    value[MagickPathExtent];
 
   DPXInfo
     dpx;
@@ -815,7 +815,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   for (i=0; i < 8; i++)
   {
     char
-      property[MaxTextExtent];
+      property[MagickPathExtent];
 
     dpx.image.image_element[i].data_sign=ReadBlobLong(image);
     offset+=4;
@@ -831,7 +831,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     offset++;
     dpx.image.image_element[i].transfer_characteristic=(unsigned char)
       ReadBlobByte(image);
-    (void) FormatLocaleString(property,MaxTextExtent,
+    (void) FormatLocaleString(property,MagickPathExtent,
       "dpx:image.element[%lu].transfer-characteristic",(long) i);
     (void) FormatImageProperty(image,property,"%s",
       GetImageTransferCharacteristic((DPXTransferCharacteristic)

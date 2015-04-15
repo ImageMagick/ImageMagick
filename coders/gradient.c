@@ -96,7 +96,7 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
   char
-    colorname[MaxTextExtent];
+    colorname[MagickPathExtent];
 
   Image
     *image;
@@ -124,20 +124,20 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
   assert(exception->signature == MagickSignature);
   read_info=CloneImageInfo(image_info);
   SetImageInfoBlob(read_info,(void *) NULL,0);
-  (void) CopyMagickString(colorname,image_info->filename,MaxTextExtent);
+  (void) CopyMagickString(colorname,image_info->filename,MagickPathExtent);
   (void) sscanf(image_info->filename,"%[^-]",colorname);
-  (void) FormatLocaleString(read_info->filename,MaxTextExtent,"xc:%s",
+  (void) FormatLocaleString(read_info->filename,MagickPathExtent,"xc:%s",
     colorname);
   image=ReadImage(read_info,exception);
   read_info=DestroyImageInfo(read_info);
   if (image == (Image *) NULL)
     return((Image *) NULL);
   (void) SetImageAlpha(image,(Quantum) TransparentAlpha,exception);
-  (void) CopyMagickString(image->filename,image_info->filename,MaxTextExtent);
+  (void) CopyMagickString(image->filename,image_info->filename,MagickPathExtent);
   icc_color=MagickFalse;
   if (LocaleCompare(colorname,"icc") == 0)
     {
-      (void) ConcatenateMagickString(colorname,"-",MaxTextExtent);
+      (void) ConcatenateMagickString(colorname,"-",MagickPathExtent);
       (void) sscanf(image_info->filename,"%*[^-]-%[^-]",colorname+4);
       icc_color=MagickTrue;
     }
@@ -148,9 +148,9 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
       return((Image *) NULL);
     }
   (void) SetImageColorspace(image,start_color.colorspace,exception);
-  (void) CopyMagickString(colorname,"white",MaxTextExtent);
+  (void) CopyMagickString(colorname,"white",MagickPathExtent);
   if (GetPixelInfoIntensity(image,&start_color) > (QuantumRange/2.0))
-    (void) CopyMagickString(colorname,"black",MaxTextExtent);
+    (void) CopyMagickString(colorname,"black",MagickPathExtent);
   if (icc_color == MagickFalse)
     (void) sscanf(image_info->filename,"%*[^-]-%[^-]",colorname);
   else

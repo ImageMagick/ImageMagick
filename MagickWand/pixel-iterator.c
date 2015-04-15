@@ -67,7 +67,7 @@ struct _PixelIterator
     id;
 
   char
-    name[MaxTextExtent];
+    name[MagickPathExtent];
 
   ExceptionInfo
     *exception;
@@ -168,7 +168,7 @@ WandExport PixelIterator *ClonePixelIterator(const PixelIterator *iterator)
       iterator->name);
   (void) ResetMagickMemory(clone_iterator,0,sizeof(*clone_iterator));
   clone_iterator->id=AcquireWandId();
-  (void) FormatLocaleString(clone_iterator->name,MaxTextExtent,"%s-%.20g",
+  (void) FormatLocaleString(clone_iterator->name,MagickPathExtent,"%s-%.20g",
     PixelIteratorId,(double) clone_iterator->id);
   clone_iterator->exception=AcquireExceptionInfo();
   InheritException(clone_iterator->exception,iterator->exception);
@@ -322,7 +322,7 @@ WandExport PixelIterator *NewPixelIterator(MagickWand *wand)
       GetExceptionMessage(errno));
   (void) ResetMagickMemory(iterator,0,sizeof(*iterator));
   iterator->id=AcquireWandId();
-  (void) FormatLocaleString(iterator->name,MaxTextExtent,"%s-%.20g",
+  (void) FormatLocaleString(iterator->name,MagickPathExtent,"%s-%.20g",
     PixelIteratorId,(double) iterator->id);
   iterator->exception=exception;
   iterator->view=view;
@@ -441,7 +441,7 @@ WandExport PixelIterator *NewPixelRegionIterator(MagickWand *wand,
       wand->name);
   (void) ResetMagickMemory(iterator,0,sizeof(*iterator));
   iterator->id=AcquireWandId();
-  (void) FormatLocaleString(iterator->name,MaxTextExtent,"%s-%.20g",
+  (void) FormatLocaleString(iterator->name,MagickPathExtent,"%s-%.20g",
     PixelIteratorId,(double) iterator->id);
   iterator->exception=exception;
   iterator->view=view;
@@ -553,7 +553,7 @@ WandExport char *PixelGetIteratorException(const PixelIterator *iterator,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",iterator->name);
   assert(severity != (ExceptionType *) NULL);
   *severity=iterator->exception->severity;
-  description=(char *) AcquireQuantumMemory(2UL*MaxTextExtent,
+  description=(char *) AcquireQuantumMemory(2UL*MagickPathExtent,
     sizeof(*description));
   if (description == (char *) NULL)
     ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
@@ -561,14 +561,14 @@ WandExport char *PixelGetIteratorException(const PixelIterator *iterator,
   *description='\0';
   if (iterator->exception->reason != (char *) NULL)
     (void) CopyMagickString(description,GetLocaleExceptionMessage(
-      iterator->exception->severity,iterator->exception->reason),MaxTextExtent);
+      iterator->exception->severity,iterator->exception->reason),MagickPathExtent);
   if (iterator->exception->description != (char *) NULL)
     {
-      (void) ConcatenateMagickString(description," (",MaxTextExtent);
+      (void) ConcatenateMagickString(description," (",MagickPathExtent);
       (void) ConcatenateMagickString(description,GetLocaleExceptionMessage(
         iterator->exception->severity,iterator->exception->description),
-        MaxTextExtent);
-      (void) ConcatenateMagickString(description,")",MaxTextExtent);
+        MagickPathExtent);
+      (void) ConcatenateMagickString(description,")",MagickPathExtent);
     }
   return(description);
 }

@@ -230,20 +230,20 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) CloseBlob(image);
   image=DestroyImage(image);
   read_info=CloneImageInfo(image_info);
-  (void) CopyMagickString(read_info->magick,"EPS",MaxTextExtent);
+  (void) CopyMagickString(read_info->magick,"EPS",MagickPathExtent);
   image=BlobToImage(read_info,ept_info.postscript,ept_info.postscript_length,
     exception);
   if (image == (Image *) NULL)
     {
-      (void) CopyMagickString(read_info->magick,"TIFF",MaxTextExtent);
+      (void) CopyMagickString(read_info->magick,"TIFF",MagickPathExtent);
       image=BlobToImage(read_info,ept_info.tiff,ept_info.tiff_length,exception);
     }
   read_info=DestroyImageInfo(read_info);
   if (image != (Image *) NULL)
     {
       (void) CopyMagickString(image->filename,image_info->filename,
-        MaxTextExtent);
-      (void) CopyMagickString(image->magick,"EPT",MaxTextExtent);
+        MagickPathExtent);
+      (void) CopyMagickString(image->magick,"EPT",MagickPathExtent);
     }
   ept_info.tiff=(unsigned char *) RelinquishMagickMemory(ept_info.tiff);
   ept_info.postscript=(unsigned char *) RelinquishMagickMemory(
@@ -364,7 +364,7 @@ static MagickBooleanType WriteEPTImage(const ImageInfo *image_info,Image *image,
   ExceptionInfo *exception)
 {
   char
-     filename[MaxTextExtent];
+     filename[MagickPathExtent];
 
   EPTInfo
     ept_info;
@@ -396,11 +396,11 @@ static MagickBooleanType WriteEPTImage(const ImageInfo *image_info,Image *image,
   if (write_image == (Image *) NULL)
     return(MagickFalse);
   write_info=CloneImageInfo(image_info);
-  (void) CopyMagickString(write_info->magick,"EPS",MaxTextExtent);
+  (void) CopyMagickString(write_info->magick,"EPS",MagickPathExtent);
   if (LocaleCompare(image_info->magick,"EPT2") == 0)
-    (void) CopyMagickString(write_info->magick,"EPS2",MaxTextExtent);
+    (void) CopyMagickString(write_info->magick,"EPS2",MagickPathExtent);
   if (LocaleCompare(image_info->magick,"EPT3") == 0)
-    (void) CopyMagickString(write_info->magick,"EPS3",MaxTextExtent);
+    (void) CopyMagickString(write_info->magick,"EPS3",MagickPathExtent);
   (void) ResetMagickMemory(&ept_info,0,sizeof(ept_info));
   ept_info.magick=0xc6d3d0c5ul;
   ept_info.postscript=(unsigned char *) ImageToBlob(write_info,write_image,
@@ -414,10 +414,10 @@ static MagickBooleanType WriteEPTImage(const ImageInfo *image_info,Image *image,
     return(MagickFalse);
   write_info=CloneImageInfo(image_info);
   *write_info->magick='\0';
-  (void) CopyMagickString(write_info->magick,"TIFF",MaxTextExtent);
-  (void) FormatLocaleString(filename,MaxTextExtent,"tiff:%s",
+  (void) CopyMagickString(write_info->magick,"TIFF",MagickPathExtent);
+  (void) FormatLocaleString(filename,MagickPathExtent,"tiff:%s",
     write_info->filename); 
-  (void) CopyMagickString(write_info->filename,filename,MaxTextExtent);
+  (void) CopyMagickString(write_info->filename,filename,MagickPathExtent);
   (void) TransformImage(&write_image,(char *) NULL,"512x512>",exception);
   if ((write_image->storage_class == DirectClass) ||
       (write_image->colors > 256))

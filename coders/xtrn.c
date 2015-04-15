@@ -166,7 +166,7 @@ static Image *ReadXTRNImage(const ImageInfo *image_info,
         *blob_length;
 
       char
-        filename[MaxTextExtent];
+        filename[MagickPathExtent];
 
       (void) sscanf(clone_info->filename,"%lx,%lx,%s",&param1,&param2,&filename);
       blob_data=(char **) param1;
@@ -178,7 +178,7 @@ static Image *ReadXTRNImage(const ImageInfo *image_info,
     {
       char
         *blob_data,
-        filename[MaxTextExtent];
+        filename[MagickPathExtent];
 
       HRESULT
         hr;
@@ -213,7 +213,7 @@ static Image *ReadXTRNImage(const ImageInfo *image_info,
                       *clone_info->magick='\0';
                       if (*filename != '\0')
                         (void) CopyMagickString(clone_info->filename,filename,
-                          MaxTextExtent);
+                          MagickPathExtent);
                       image=BlobToImage(clone_info,blob_data,blob_length,
                         exception);
                       hr=SafeArrayUnaccessData(pSafeArray);
@@ -459,7 +459,7 @@ static MagickBooleanType WriteXTRNImage(const ImageInfo *image_info,
         *blob_length;
 
       char
-        filename[MaxTextExtent];
+        filename[MagickPathExtent];
 
       clone_info=CloneImageInfo(image_info);
       if (clone_info->filename[0])
@@ -470,15 +470,15 @@ static MagickBooleanType WriteXTRNImage(const ImageInfo *image_info,
           blob_data=(char **) param1;
           blob_length=(size_t *) param2;
           scene = 0;
-          (void) CopyMagickString(clone_info->filename,filename,MaxTextExtent);
+          (void) CopyMagickString(clone_info->filename,filename,MagickPathExtent);
           for (p=image; p != (Image *) NULL; p=GetNextImageInList(p))
           {
-            (void) CopyMagickString(p->filename,filename,MaxTextExtent);
+            (void) CopyMagickString(p->filename,filename,MagickPathExtent);
             p->scene=scene++;
           }
           SetImageInfo(clone_info,1,exception);
           (void) CopyMagickString(image->magick,clone_info->magick,
-            MaxTextExtent);
+            MagickPathExtent);
           if (*blob_length == 0)
             *blob_length=8192;
           *blob_data=(char *) ImageToBlob(clone_info,image,blob_length,
@@ -493,7 +493,7 @@ static MagickBooleanType WriteXTRNImage(const ImageInfo *image_info,
   else if (LocaleCompare(image_info->magick,"XTRNARRAY") == 0)
     {
       char
-        filename[MaxTextExtent];
+        filename[MagickPathExtent];
 
       size_t
         blob_length;
@@ -507,15 +507,15 @@ static MagickBooleanType WriteXTRNImage(const ImageInfo *image_info,
           (void) sscanf(clone_info->filename,"%lx,%s",&param1,&filename);
           image->client_data=param1;
           scene=0;
-          (void) CopyMagickString(clone_info->filename,filename,MaxTextExtent);
+          (void) CopyMagickString(clone_info->filename,filename,MagickPathExtent);
           for (p=image; p != (Image *) NULL; p=GetNextImageInList(p))
           {
-            (void) CopyMagickString(p->filename,filename,MaxTextExtent);
+            (void) CopyMagickString(p->filename,filename,MagickPathExtent);
             p->scene=scene++;
           }
           SetImageInfo(clone_info,1,exception);
           (void) CopyMagickString(image->magick,clone_info->magick,
-            MaxTextExtent);
+            MagickPathExtent);
           blob_data=ImageToBlob(clone_info,image,&blob_length,
             exception);
           if (blob_data == (unsigned char *) NULL)

@@ -1809,21 +1809,21 @@ MagickExport MagickBooleanType DefineImageOption(ImageInfo *image_info,
   const char *option)
 {
   char
-    key[MaxTextExtent],
-    value[MaxTextExtent];
+    key[MagickPathExtent],
+    value[MagickPathExtent];
 
   register char
     *p;
 
   assert(image_info != (ImageInfo *) NULL);
   assert(option != (const char *) NULL);
-  (void) CopyMagickString(key,option,MaxTextExtent);
+  (void) CopyMagickString(key,option,MagickPathExtent);
   for (p=key; *p != '\0'; p++)
     if (*p == '=')
       break;
   *value='\0';
   if (*p == '=')
-    (void) CopyMagickString(value,p+1,MaxTextExtent);
+    (void) CopyMagickString(value,p+1,MagickPathExtent);
   *p='\0';
   return(SetImageOption(image_info,key,value));
 }
@@ -2046,7 +2046,7 @@ MagickExport ssize_t GetCommandOptionFlags(const CommandOption option,
   const MagickBooleanType list,const char *options)
 {
   char
-    token[MaxTextExtent];
+    token[MagickPathExtent];
 
   const OptionInfo
     *command_info,
@@ -2089,7 +2089,7 @@ MagickExport ssize_t GetCommandOptionFlags(const CommandOption option,
     while (((isspace((int) ((unsigned char) *p)) == 0) && (*p != sentinel)) &&
            (*p != '\0'))
     {
-      if ((q-token) >= (MaxTextExtent-1))
+      if ((q-token) >= (MagickPathExtent-1))
         break;
       *q++=(*p++);
     }
@@ -2103,9 +2103,9 @@ MagickExport ssize_t GetCommandOptionFlags(const CommandOption option,
          (strchr(token+1,'_') != (char *) NULL)))
       {
         while ((q=strchr(token+1,'-')) != (char *) NULL)
-          (void) CopyMagickString(q,q+1,MaxTextExtent-strlen(q));
+          (void) CopyMagickString(q,q+1,MagickPathExtent-strlen(q));
         while ((q=strchr(token+1,'_')) != (char *) NULL)
-          (void) CopyMagickString(q,q+1,MaxTextExtent-strlen(q));
+          (void) CopyMagickString(q,q+1,MagickPathExtent-strlen(q));
         for (i=0; option_info[i].mnemonic != (char *) NULL; i++)
           if (LocaleCompare(token,option_info[i].mnemonic) == 0)
             break;
@@ -2591,7 +2591,7 @@ MagickExport ssize_t ParseCommandOption(const CommandOption option,
   const MagickBooleanType list,const char *options)
 {
   char
-    token[MaxTextExtent];
+    token[MagickPathExtent];
 
   const OptionInfo
     *command_info,
@@ -2634,7 +2634,7 @@ MagickExport ssize_t ParseCommandOption(const CommandOption option,
     while (((isspace((int) ((unsigned char) *p)) == 0) && (*p != sentinel)) &&
            (*p != '\0'))
     {
-      if ((q-token) >= (MaxTextExtent-1))
+      if ((q-token) >= (MagickPathExtent-1))
         break;
       *q++=(*p++);
     }
@@ -2648,9 +2648,9 @@ MagickExport ssize_t ParseCommandOption(const CommandOption option,
          (strchr(token+1,'_') != (char *) NULL)))
         {
           while ((q=strchr(token+1,'-')) != (char *) NULL)
-            (void) CopyMagickString(q,q+1,MaxTextExtent-strlen(q));
+            (void) CopyMagickString(q,q+1,MagickPathExtent-strlen(q));
           while ((q=strchr(token+1,'_')) != (char *) NULL)
-            (void) CopyMagickString(q,q+1,MaxTextExtent-strlen(q));
+            (void) CopyMagickString(q,q+1,MagickPathExtent-strlen(q));
           for (i=0; option_info[i].mnemonic != (char *) NULL; i++)
             if (LocaleCompare(token,option_info[i].mnemonic) == 0)
               break;
@@ -2695,7 +2695,7 @@ MagickExport ssize_t ParsePixelChannelOption(const char *channels)
 {
   char
     *q,
-    token[MaxTextExtent];
+    token[MagickPathExtent];
 
   ssize_t
     channel;

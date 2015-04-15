@@ -202,7 +202,7 @@ static inline Image *GetImageCache(const ImageInfo *image_info,const char *path,
   ExceptionInfo *exception)
 {
   char
-    key[MaxTextExtent];
+    key[MagickPathExtent];
 
   ExceptionInfo
     *sans_exception;
@@ -213,14 +213,14 @@ static inline Image *GetImageCache(const ImageInfo *image_info,const char *path,
   ImageInfo
     *read_info;
 
-  (void) FormatLocaleString(key,MaxTextExtent,"cache:%s",path);
+  (void) FormatLocaleString(key,MagickPathExtent,"cache:%s",path);
   sans_exception=AcquireExceptionInfo();
   image=(Image *) GetImageRegistry(ImageRegistryType,key,sans_exception);
   sans_exception=DestroyExceptionInfo(sans_exception);
   if (image != (Image *) NULL)
     return(image);
   read_info=CloneImageInfo(image_info);
-  (void) CopyMagickString(read_info->filename,path,MaxTextExtent);
+  (void) CopyMagickString(read_info->filename,path,MagickPathExtent);
   image=ReadImage(read_info,exception);
   read_info=DestroyImageInfo(read_info);
   if (image != (Image *) NULL)
@@ -613,7 +613,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
     channel_mask;
 
   char
-    key[MaxTextExtent],
+    key[MagickPathExtent],
     *value;
 
   const char
@@ -758,7 +758,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
       if (LocaleCompare((const char *) tag,"annotate") == 0)
         {
           char
-            text[MaxTextExtent];
+            text[MagickPathExtent];
 
           /*
             Annotate image.
@@ -1073,7 +1073,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 }
               }
             }
-          (void) FormatLocaleString(text,MaxTextExtent,
+          (void) FormatLocaleString(text,MagickPathExtent,
             "%.20gx%.20g%+.20g%+.20g",(double) geometry.width,(double)
             geometry.height,(double) geometry.x,(double) geometry.y);
           CloneString(&draw_info->geometry,text);
@@ -1368,7 +1368,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
       if (LocaleCompare((const char *) tag,"colorize") == 0)
         {
           char
-            blend[MaxTextExtent];
+            blend[MagickPathExtent];
 
           Image
             *colorize_image;
@@ -1386,7 +1386,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
               break;
             }
           GetPixelInfo(msl_info->image[n],&target);
-          (void) CopyMagickString(blend,"100",MaxTextExtent);
+          (void) CopyMagickString(blend,"100",MagickPathExtent);
           if (attributes != (const xmlChar **) NULL)
             for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
             {
@@ -1402,7 +1402,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"blend") == 0)
                     {
-                      (void) CopyMagickString(blend,value,MaxTextExtent);
+                      (void) CopyMagickString(blend,value,MagickPathExtent);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -1744,7 +1744,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
       if (LocaleCompare((const char *) tag,"composite") == 0)
         {
           char
-            composite_geometry[MaxTextExtent];
+            composite_geometry[MagickPathExtent];
 
           CompositeOperator
             compose;
@@ -2065,7 +2065,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
               }
             }
           image=msl_info->image[n];
-          (void) FormatLocaleString(composite_geometry,MaxTextExtent,
+          (void) FormatLocaleString(composite_geometry,MagickPathExtent,
             "%.20gx%.20g%+.20g%+.20g",(double) composite_image->columns,
             (double) composite_image->rows,(double) geometry.x,(double)
             geometry.y);
@@ -2366,7 +2366,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
       if (LocaleCompare((const char *) tag,"draw") == 0)
         {
           char
-            text[MaxTextExtent];
+            text[MagickPathExtent];
 
           /*
             Annotate image.
@@ -2702,7 +2702,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 }
               }
             }
-          (void) FormatLocaleString(text,MaxTextExtent,
+          (void) FormatLocaleString(text,MagickPathExtent,
             "%.20gx%.20g%+.20g%+.20g",(double) geometry.width,(double)
             geometry.height,(double) geometry.x,(double) geometry.y);
           CloneString(&draw_info->geometry,text);
@@ -3181,7 +3181,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
       if (LocaleCompare((const char *) tag,"gamma") == 0)
         {
           char
-            gamma[MaxTextExtent];
+            gamma[MagickPathExtent];
 
           PixelInfo
             pixel;
@@ -3243,7 +3243,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"gamma") == 0)
                     {
-                      (void) CopyMagickString(gamma,value,MaxTextExtent);
+                      (void) CopyMagickString(gamma,value,MagickPathExtent);
                       break;
                     }
                   if (LocaleCompare(keyword,"green") == 0)
@@ -3276,7 +3276,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
               }
             }
           if (*gamma == '\0')
-            (void) FormatLocaleString(gamma,MaxTextExtent,"%g,%g,%g",
+            (void) FormatLocaleString(gamma,MagickPathExtent,"%g,%g,%g",
               (double) pixel.red,(double) pixel.green,(double) pixel.blue);
           (void) GammaImage(msl_info->image[n],strtod(gamma,(char **) NULL),
             msl_info->exception);
@@ -3296,7 +3296,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           {
             keyword=(const char *) attributes[i++];
             CloneString(&value,(const char *) attributes[i]);
-            (void) CopyMagickString(key,value,MaxTextExtent);
+            (void) CopyMagickString(key,value,MagickPathExtent);
             switch (*keyword)
             {
               case 'H':
@@ -3304,7 +3304,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
               {
                 if (LocaleCompare(keyword,"height") == 0)
                   {
-                    (void) FormatLocaleString(value,MaxTextExtent,"%.20g",
+                    (void) FormatLocaleString(value,MagickPathExtent,"%.20g",
                       (double) msl_info->image[n]->rows);
                     (void) SetImageProperty(msl_info->attributes[n],key,value,
                       exception);
@@ -3317,7 +3317,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
               {
                 if (LocaleCompare(keyword,"width") == 0)
                   {
-                    (void) FormatLocaleString(value,MaxTextExtent,"%.20g",
+                    (void) FormatLocaleString(value,MagickPathExtent,"%.20g",
                       (double) msl_info->image[n]->columns);
                     (void) SetImageProperty(msl_info->attributes[n],key,value,
                       exception);
@@ -3368,9 +3368,9 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       *next_image;
 
                     (void) CopyMagickString(msl_info->image_info[n]->filename,
-                      "xc:",MaxTextExtent);
+                      "xc:",MagickPathExtent);
                     (void) ConcatenateMagickString(msl_info->image_info[n]->
-                      filename,value,MaxTextExtent);
+                      filename,value,MagickPathExtent);
                     next_image=ReadImage(msl_info->image_info[n],exception);
                     CatchException(exception);
                     if (next_image == (Image *) NULL)
@@ -3496,7 +3496,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
         {
           keyword=(const char *) attributes[i++];
           CloneString(&value,(const char *) attributes[i]);
-          (void) CopyMagickString(key,value,MaxTextExtent);
+          (void) CopyMagickString(key,value,MagickPathExtent);
           switch (*keyword)
           {
             case 'B':
@@ -3912,7 +3912,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
       if (LocaleCompare((const char *) tag,"modulate") == 0)
         {
           char
-            modulate[MaxTextExtent];
+            modulate[MagickPathExtent];
 
           /*
             Modulate image.
@@ -4027,7 +4027,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 }
               }
             }
-          (void) FormatLocaleString(modulate,MaxTextExtent,"%g,%g,%g",
+          (void) FormatLocaleString(modulate,MagickPathExtent,"%g,%g,%g",
             geometry_info.rho,geometry_info.sigma,geometry_info.xi);
           (void) ModulateImage(msl_info->image[n],modulate,
             msl_info->exception);
@@ -4397,8 +4397,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
               if (profile_image == (Image *) NULL)
                 {
                   char
-                    name[MaxTextExtent],
-                    filename[MaxTextExtent];
+                    name[MagickPathExtent],
+                    filename[MagickPathExtent];
 
                   register char
                     *p;
@@ -4406,8 +4406,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                   StringInfo
                     *profile;
 
-                  (void) CopyMagickString(filename,keyword,MaxTextExtent);
-                  (void) CopyMagickString(name,keyword,MaxTextExtent);
+                  (void) CopyMagickString(filename,keyword,MagickPathExtent);
+                  (void) CopyMagickString(name,keyword,MagickPathExtent);
                   for (p=filename; *p != '\0'; p++)
                     if ((*p == ':') && (IsPathDirectory(keyword) < 0) &&
                         (IsPathAccessible(keyword) == MagickFalse))
@@ -4561,7 +4561,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
       if (LocaleCompare((const char *) tag,"query-font-metrics") == 0)
         {
           char
-            text[MaxTextExtent];
+            text[MagickPathExtent];
 
           MagickBooleanType
             status;
@@ -4877,7 +4877,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 }
               }
             }
-          (void) FormatLocaleString(text,MaxTextExtent,
+          (void) FormatLocaleString(text,MagickPathExtent,
             "%.20gx%.20g%+.20g%+.20g",(double) geometry.width,(double)
             geometry.height,(double) geometry.x,(double) geometry.y);
           CloneString(&draw_info->geometry,text);
@@ -5046,7 +5046,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       *image;
 
                     (void) CopyMagickString(msl_info->image_info[n]->filename,
-                      value,MaxTextExtent);
+                      value,MagickPathExtent);
                     image=ReadImage(msl_info->image_info[n],exception);
                     CatchException(exception);
                     if (image == (Image *) NULL)
@@ -6113,7 +6113,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
               if (LocaleCompare(keyword, "page") == 0)
               {
                 char
-                  page[MaxTextExtent];
+                  page[MagickPathExtent];
 
                 const char
                   *image_option;
@@ -6129,10 +6129,10 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 if (image_option != (const char *) NULL)
                   flags=ParseAbsoluteGeometry(image_option,&geometry);
                 flags=ParseAbsoluteGeometry(value,&geometry);
-                (void) FormatLocaleString(page,MaxTextExtent,"%.20gx%.20g",
+                (void) FormatLocaleString(page,MagickPathExtent,"%.20gx%.20g",
                   (double) geometry.width,(double) geometry.height);
                 if (((flags & XValue) != 0) || ((flags & YValue) != 0))
-                  (void) FormatLocaleString(page,MaxTextExtent,
+                  (void) FormatLocaleString(page,MagickPathExtent,
                     "%.20gx%.20g%+.20g%+.20g",(double) geometry.width,
                     (double) geometry.height,(double) geometry.x,(double)
                     geometry.y);
@@ -7291,7 +7291,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 if (LocaleCompare(keyword,"filename") == 0)
                   {
                     (void) CopyMagickString(msl_info->image[n]->filename,value,
-                      MaxTextExtent);
+                      MagickPathExtent);
                     break;
                   }
                 (void) SetMSLAttributes(msl_info,keyword,value);
@@ -7444,13 +7444,13 @@ static void MSLCharacters(void *context,const xmlChar *c,int length)
   msl_info=(MSLInfo *) context;
   if (msl_info->content != (char *) NULL)
     msl_info->content=(char *) ResizeQuantumMemory(msl_info->content,
-      strlen(msl_info->content)+length+MaxTextExtent,
+      strlen(msl_info->content)+length+MagickPathExtent,
       sizeof(*msl_info->content));
   else
     {
       msl_info->content=(char *) NULL;
-      if (~length >= (MaxTextExtent-1))
-        msl_info->content=(char *) AcquireQuantumMemory(length+MaxTextExtent,
+      if (~length >= (MagickPathExtent-1))
+        msl_info->content=(char *) AcquireQuantumMemory(length+MagickPathExtent,
           sizeof(*msl_info->content));
       if (msl_info->content != (char *) NULL)
         *msl_info->content='\0';
@@ -7532,7 +7532,7 @@ static void MSLWarning(void *context,const char *format,...)
 {
   char
     *message,
-    reason[MaxTextExtent];
+    reason[MagickPathExtent];
 
   MSLInfo
     *msl_info;
@@ -7552,7 +7552,7 @@ static void MSLWarning(void *context,const char *format,...)
 #if !defined(MAGICKCORE_HAVE_VSNPRINTF)
   (void) vsprintf(reason,format,operands);
 #else
-  (void) vsnprintf(reason,MaxTextExtent,format,operands);
+  (void) vsnprintf(reason,MagickPathExtent,format,operands);
 #endif
   message=GetExceptionMessage(errno);
   ThrowMSLException(CoderError,reason,message);
@@ -7563,7 +7563,7 @@ static void MSLWarning(void *context,const char *format,...)
 static void MSLError(void *context,const char *format,...)
 {
   char
-    reason[MaxTextExtent];
+    reason[MagickPathExtent];
 
   MSLInfo
     *msl_info;
@@ -7583,7 +7583,7 @@ static void MSLError(void *context,const char *format,...)
 #if !defined(MAGICKCORE_HAVE_VSNPRINTF)
   (void) vsprintf(reason,format,operands);
 #else
-  (void) vsnprintf(reason,MaxTextExtent,format,operands);
+  (void) vsnprintf(reason,MagickPathExtent,format,operands);
 #endif
   ThrowMSLException(DelegateFatalError,reason,"SAX error");
   va_end(operands);
@@ -7692,7 +7692,7 @@ static MagickBooleanType ProcessMSLScript(const ImageInfo *image_info,
   Image **image,ExceptionInfo *exception)
 {
   char
-    message[MaxTextExtent];
+    message[MagickPathExtent];
 
   Image
     *msl_image;
@@ -8063,7 +8063,7 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
         }
       if (LocaleCompare(keyword,"filename") == 0)
         {
-          (void) CopyMagickString(image_info->filename,value,MaxTextExtent);
+          (void) CopyMagickString(image_info->filename,value,MagickPathExtent);
           break;
         }
       ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
@@ -8102,7 +8102,7 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
     {
       if (LocaleCompare(keyword,"magick") == 0)
         {
-          (void) CopyMagickString(image_info->magick,value,MaxTextExtent);
+          (void) CopyMagickString(image_info->magick,value,MagickPathExtent);
           break;
         }
       if (LocaleCompare(keyword,"mattecolor") == 0)

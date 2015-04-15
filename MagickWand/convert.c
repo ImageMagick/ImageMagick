@@ -2166,7 +2166,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
         if (LocaleCompare("morphology",option+1) == 0)
           {
             char
-              token[MaxTextExtent];
+              token[MagickPathExtent];
 
             KernelInfo
               *kernel_info;

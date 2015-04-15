@@ -177,7 +177,7 @@ static MagickBooleanType WriteTHUMBNAILImage(const ImageInfo *image_info,
     offset;
 
   unsigned char
-    magick[MaxTextExtent];
+    magick[MagickPathExtent];
 
   profile=GetImageProfile(image,"exif");
   if (profile == (const StringInfo *) NULL)
@@ -206,11 +206,11 @@ static MagickBooleanType WriteTHUMBNAILImage(const ImageInfo *image_info,
   (void) SetImageType(thumbnail_image,thumbnail_image->alpha_trait ==
     UndefinedPixelTrait ? TrueColorType : TrueColorAlphaType,exception);
   (void) CopyMagickString(thumbnail_image->filename,image->filename,
-    MaxTextExtent);
+    MagickPathExtent);
   write_info=CloneImageInfo(image_info);
   (void) SetImageInfo(write_info,1,exception);
   if (LocaleCompare(write_info->magick,"THUMBNAIL") == 0)
-    (void) FormatLocaleString(thumbnail_image->filename,MaxTextExtent,
+    (void) FormatLocaleString(thumbnail_image->filename,MagickPathExtent,
       "miff:%s",write_info->filename);
   status=WriteImage(write_info,thumbnail_image,exception);
   thumbnail_image=DestroyImage(thumbnail_image);

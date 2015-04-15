@@ -395,7 +395,7 @@ MagickExport int ExternalDelegateCommand(const MagickBooleanType asynchronous,
     }
   sanitize_command=SanitizeDelegateCommand(command);
   if (asynchronous != MagickFalse)
-    (void) ConcatenateMagickString(sanitize_command,"&",MaxTextExtent);
+    (void) ConcatenateMagickString(sanitize_command,"&",MagickPathExtent);
   if (message != (char *) NULL)
     *message='\0';
 #if defined(MAGICKCORE_POSIX_SUPPORT)
@@ -1105,8 +1105,8 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
   char
     *command,
     **commands,
-    input_filename[MaxTextExtent],
-    output_filename[MaxTextExtent];
+    input_filename[MagickPathExtent],
+    output_filename[MagickPathExtent];
 
   const DelegateInfo
     *delegate_info;
@@ -1220,21 +1220,21 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
       LocaleUpper(magick);
       clone_info=CloneImageInfo(image_info);
       (void) CopyMagickString((char *) clone_info->magick,magick,
-        MaxTextExtent);
+        MagickPathExtent);
       if (LocaleCompare(magick,"NULL") != 0)
-        (void) CopyMagickString(image->magick,magick,MaxTextExtent);
+        (void) CopyMagickString(image->magick,magick,MagickPathExtent);
       magick=DestroyString(magick);
-      (void) FormatLocaleString(clone_info->filename,MaxTextExtent,"%s:",
+      (void) FormatLocaleString(clone_info->filename,MagickPathExtent,"%s:",
         delegate_info->decode);
       (void) SetImageInfo(clone_info,(unsigned int) GetImageListLength(image),
         exception);
       (void) CopyMagickString(clone_info->filename,image_info->filename,
-        MaxTextExtent);
+        MagickPathExtent);
       (void) CopyMagickString(image_info->filename,image->filename,
-        MaxTextExtent);
+        MagickPathExtent);
       for (p=image; p != (Image *) NULL; p=GetNextImageInList(p))
       {
-        (void) FormatLocaleString(p->filename,MaxTextExtent,"%s:%s",
+        (void) FormatLocaleString(p->filename,MagickPathExtent,"%s:%s",
           delegate_info->decode,clone_info->filename);
         status=WriteImage(clone_info,p,exception);
         if( IfMagickFalse(status) )
@@ -1270,8 +1270,8 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
     }
   command=(char *) NULL;
   status=MagickFalse;
-  (void) CopyMagickString(output_filename,image_info->filename,MaxTextExtent);
-  (void) CopyMagickString(input_filename,image->filename,MaxTextExtent);
+  (void) CopyMagickString(output_filename,image_info->filename,MagickPathExtent);
+  (void) CopyMagickString(input_filename,image->filename,MagickPathExtent);
   for (i=0; commands[i] != (char *) NULL; i++)
   {
     status=AcquireUniqueSymbolicLink(output_filename,image_info->filename);
@@ -1342,8 +1342,8 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
       }
     commands[i]=DestroyString(commands[i]);
   }
-  (void) CopyMagickString(image_info->filename,output_filename,MaxTextExtent);
-  (void) CopyMagickString(image->filename,input_filename,MaxTextExtent);
+  (void) CopyMagickString(image_info->filename,output_filename,MagickPathExtent);
+  (void) CopyMagickString(image->filename,input_filename,MagickPathExtent);
   /*
     Relinquish resources.
   */
@@ -1387,7 +1387,7 @@ MagickExport MagickBooleanType ListDelegateInfo(FILE *file,
 
   char
     **commands,
-    delegate[MaxTextExtent];
+    delegate[MagickPathExtent];
 
   const char
     *path;
@@ -1424,8 +1424,8 @@ MagickExport MagickBooleanType ListDelegateInfo(FILE *file,
     path=delegate_info[i]->path;
     *delegate='\0';
     if (delegate_info[i]->encode != (char *) NULL)
-      (void) CopyMagickString(delegate,delegate_info[i]->encode,MaxTextExtent);
-    (void) ConcatenateMagickString(delegate,"        ",MaxTextExtent);
+      (void) CopyMagickString(delegate,delegate_info[i]->encode,MagickPathExtent);
+    (void) ConcatenateMagickString(delegate,"        ",MagickPathExtent);
     delegate[8]='\0';
     commands=StringToList(delegate_info[i]->commands);
     if (commands == (char **) NULL)
@@ -1486,7 +1486,7 @@ static MagickBooleanType LoadDelegateCache(LinkedListInfo *delegate_cache,
   ExceptionInfo *exception)
 {
   char
-    keyword[MaxTextExtent],
+    keyword[MagickPathExtent],
     *token;
 
   const char
@@ -1516,7 +1516,7 @@ static MagickBooleanType LoadDelegateCache(LinkedListInfo *delegate_cache,
     GetMagickToken(q,&q,token);
     if (*token == '\0')
       break;
-    (void) CopyMagickString(keyword,token,MaxTextExtent);
+    (void) CopyMagickString(keyword,token,MagickPathExtent);
     if (LocaleNCompare(keyword,"<!DOCTYPE",9) == 0)
       {
         /*
@@ -1542,7 +1542,7 @@ static MagickBooleanType LoadDelegateCache(LinkedListInfo *delegate_cache,
         */
         while (((*token != '/') && (*(token+1) != '>')) && (*q != '\0'))
         {
-          (void) CopyMagickString(keyword,token,MaxTextExtent);
+          (void) CopyMagickString(keyword,token,MagickPathExtent);
           GetMagickToken(q,&q,token);
           if (*token != '=')
             continue;
@@ -1555,17 +1555,17 @@ static MagickBooleanType LoadDelegateCache(LinkedListInfo *delegate_cache,
               else
                 {
                   char
-                    path[MaxTextExtent],
+                    path[MagickPathExtent],
                     *xml;
 
                   GetPathComponent(filename,HeadPath,path);
                   if (*path != '\0')
                     (void) ConcatenateMagickString(path,DirectorySeparator,
-                      MaxTextExtent);
+                      MagickPathExtent);
                   if (*token == *DirectorySeparator)
-                    (void) CopyMagickString(path,token,MaxTextExtent);
+                    (void) CopyMagickString(path,token,MagickPathExtent);
                   else
-                    (void) ConcatenateMagickString(path,token,MaxTextExtent);
+                    (void) ConcatenateMagickString(path,token,MagickPathExtent);
                   xml=FileToXML(path,~0UL);
                   if (xml != (char *) NULL)
                     {
@@ -1625,9 +1625,9 @@ static MagickBooleanType LoadDelegateCache(LinkedListInfo *delegate_cache,
             if (strchr(commands,'@') != (char *) NULL)
               {
                 char
-                  path[MaxTextExtent];
+                  path[MagickPathExtent];
 
-                NTGhostscriptEXE(path,MaxTextExtent);
+                NTGhostscriptEXE(path,MagickPathExtent);
                 (void) SubstituteString((char **) &commands,"@PSDelegate@",
                   path);
                 (void) SubstituteString((char **) &commands,"\\","/");

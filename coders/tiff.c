@@ -303,7 +303,7 @@ static Image *ReadGROUP4Image(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
   char
-    filename[MaxTextExtent];
+    filename[MagickPathExtent];
 
   FILE
     *file;
@@ -392,16 +392,16 @@ static Image *ReadGROUP4Image(const ImageInfo *image_info,
     Read TIFF image.
   */
   read_info=CloneImageInfo((ImageInfo *) NULL);
-  (void) FormatLocaleString(read_info->filename,MaxTextExtent,"%s",filename);
+  (void) FormatLocaleString(read_info->filename,MagickPathExtent,"%s",filename);
   image=ReadTIFFImage(read_info,exception);
   read_info=DestroyImageInfo(read_info);
   if (image != (Image *) NULL)
     {
       (void) CopyMagickString(image->filename,image_info->filename,
-        MaxTextExtent);
+        MagickPathExtent);
       (void) CopyMagickString(image->magick_filename,image_info->filename,
-        MaxTextExtent);
-      (void) CopyMagickString(image->magick,"GROUP4",MaxTextExtent);
+        MagickPathExtent);
+      (void) CopyMagickString(image->magick,"GROUP4",MagickPathExtent);
     }
   (void) RelinquishUniqueFileResource(filename);
   return(image);
@@ -535,17 +535,17 @@ static int TIFFCloseBlob(thandle_t image)
 static void TIFFErrors(const char *module,const char *format,va_list error)
 {
   char
-    message[MaxTextExtent];
+    message[MagickPathExtent];
 
   ExceptionInfo
     *exception;
 
 #if defined(MAGICKCORE_HAVE_VSNPRINTF)
-  (void) vsnprintf(message,MaxTextExtent,format,error);
+  (void) vsnprintf(message,MagickPathExtent,format,error);
 #else
   (void) vsprintf(message,format,error);
 #endif
-  (void) ConcatenateMagickString(message,".",MaxTextExtent);
+  (void) ConcatenateMagickString(message,".",MagickPathExtent);
   exception=(ExceptionInfo *) MagickGetThreadValue(tiff_exception);
   if (exception != (ExceptionInfo *) NULL)
     (void) ThrowMagickException(exception,GetMagickModule(),CoderError,message,
@@ -601,7 +601,7 @@ static void TIFFGetProfiles(TIFF *tiff,Image *image,ExceptionInfo *exception)
 static void TIFFGetProperties(TIFF *tiff,Image *image,ExceptionInfo *exception)
 {
   char
-    message[MaxTextExtent],
+    message[MagickPathExtent],
     *text;
 
   uint32
@@ -625,8 +625,8 @@ static void TIFFGetProperties(TIFF *tiff,Image *image,ExceptionInfo *exception)
     (void) SetImageProperty(image,"tiff:model",text,exception);
   if (TIFFGetField(tiff,TIFFTAG_OPIIMAGEID,&count,&text) == 1)
     {
-      if (count >= MaxTextExtent)
-        count=MaxTextExtent-1;
+      if (count >= MagickPathExtent)
+        count=MagickPathExtent-1;
       (void) CopyMagickString(message,text,count+1);
       (void) SetImageProperty(image,"tiff:image-id",message,exception);
     }
@@ -636,15 +636,15 @@ static void TIFFGetProperties(TIFF *tiff,Image *image,ExceptionInfo *exception)
     (void) SetImageProperty(image,"tiff:software",text,exception);
   if (TIFFGetField(tiff,33423,&count,&text) == 1)
     {
-      if (count >= MaxTextExtent)
-        count=MaxTextExtent-1;
+      if (count >= MagickPathExtent)
+        count=MagickPathExtent-1;
       (void) CopyMagickString(message,text,count+1);
       (void) SetImageProperty(image,"tiff:kodak-33423",message,exception);
     }
   if (TIFFGetField(tiff,36867,&count,&text) == 1)
     {
-      if (count >= MaxTextExtent)
-        count=MaxTextExtent-1;
+      if (count >= MagickPathExtent)
+        count=MagickPathExtent-1;
       (void) CopyMagickString(message,text,count+1);
       (void) SetImageProperty(image,"tiff:kodak-36867",message,exception);
     }
@@ -655,7 +655,7 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image,
 {
 #if defined(MAGICKCORE_HAVE_TIFFREADEXIFDIRECTORY)
   char
-    value[MaxTextExtent];
+    value[MagickPathExtent];
 
   register ssize_t
     i;
@@ -699,7 +699,7 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image,
         ascii=(char *) NULL;
         if ((TIFFGetField(tiff,exif_info[i].tag,&ascii,&sans,&sans) == 1) &&
             (ascii != (char *) NULL) && (*ascii != '\0'))
-          (void) CopyMagickString(value,ascii,MaxTextExtent);
+          (void) CopyMagickString(value,ascii,MagickPathExtent);
         break;
       }
       case TIFF_SHORT:
@@ -711,7 +711,7 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image,
 
             shorty=0;
             if (TIFFGetField(tiff,exif_info[i].tag,&shorty,&sans,&sans) == 1)
-              (void) FormatLocaleString(value,MaxTextExtent,"%d",shorty);
+              (void) FormatLocaleString(value,MagickPathExtent,"%d",shorty);
           }
         else
           {
@@ -727,7 +727,7 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image,
             tiff_status=TIFFGetField(tiff,exif_info[i].tag,&shorty_num,&shorty,
               &sans,&sans);
             if (tiff_status == 1)
-              (void) FormatLocaleString(value,MaxTextExtent,"%d",
+              (void) FormatLocaleString(value,MagickPathExtent,"%d",
                 shorty_num != 0 ? shorty[0] : 0);
           }
         break;
@@ -739,7 +739,7 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image,
 
         longy=0;
         if (TIFFGetField(tiff,exif_info[i].tag,&longy,&sans,&sans) == 1)
-          (void) FormatLocaleString(value,MaxTextExtent,"%d",longy);
+          (void) FormatLocaleString(value,MagickPathExtent,"%d",longy);
         break;
       }
 #if defined(TIFF_VERSION_BIG)
@@ -750,7 +750,7 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image,
 
         long8y=0;
         if (TIFFGetField(tiff,exif_info[i].tag,&long8y,&sans,&sans) == 1)
-          (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
+          (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
             ((MagickOffsetType) long8y));
         break;
       }
@@ -764,7 +764,7 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image,
 
         floaty=0.0;
         if (TIFFGetField(tiff,exif_info[i].tag,&floaty,&sans,&sans) == 1)
-          (void) FormatLocaleString(value,MaxTextExtent,"%g",(double) floaty);
+          (void) FormatLocaleString(value,MagickPathExtent,"%g",(double) floaty);
         break;
       }
       case TIFF_DOUBLE:
@@ -774,7 +774,7 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image,
 
         doubley=0.0;
         if (TIFFGetField(tiff,exif_info[i].tag,&doubley,&sans,&sans) == 1)
-          (void) FormatLocaleString(value,MaxTextExtent,"%g",doubley);
+          (void) FormatLocaleString(value,MagickPathExtent,"%g",doubley);
         break;
       }
       default:
@@ -836,17 +836,17 @@ static void TIFFUnmapBlob(thandle_t image,tdata_t base,toff_t size)
 static void TIFFWarnings(const char *module,const char *format,va_list warning)
 {
   char
-    message[MaxTextExtent];
+    message[MagickPathExtent];
 
   ExceptionInfo
     *exception;
 
 #if defined(MAGICKCORE_HAVE_VSNPRINTF)
-  (void) vsnprintf(message,MaxTextExtent,format,warning);
+  (void) vsnprintf(message,MagickPathExtent,format,warning);
 #else
   (void) vsprintf(message,format,warning);
 #endif
-  (void) ConcatenateMagickString(message,".",MaxTextExtent);
+  (void) ConcatenateMagickString(message,".",MagickPathExtent);
   exception=(ExceptionInfo *) MagickGetThreadValue(tiff_exception);
   if (exception != (ExceptionInfo *) NULL)
     (void) ThrowMagickException(exception,GetMagickModule(),CoderWarning,
@@ -1276,7 +1276,7 @@ RestoreMSCWarning
 #if defined(JPEG_SUPPORT)
          {
            char
-             sampling_factor[MaxTextExtent];
+             sampling_factor[MagickPathExtent];
 
            int
              tiff_status;
@@ -1289,7 +1289,7 @@ RestoreMSCWarning
              &horizontal,&vertical);
            if (tiff_status == 1)
              {
-               (void) FormatLocaleString(sampling_factor,MaxTextExtent,"%dx%d",
+               (void) FormatLocaleString(sampling_factor,MagickPathExtent,"%dx%d",
                  horizontal,vertical);
                (void) SetImageProperty(image,"jpeg:sampling-factor",
                  sampling_factor,exception);
@@ -1448,10 +1448,10 @@ RestoreMSCWarning
     if (TIFFGetField(tiff,TIFFTAG_ROWSPERSTRIP,&rows_per_strip) == 1)
       {
         char
-          value[MaxTextExtent];
+          value[MagickPathExtent];
 
         method=ReadStripMethod;
-        (void) FormatLocaleString(value,MaxTextExtent,"%u",
+        (void) FormatLocaleString(value,MagickPathExtent,"%u",
           (unsigned int) rows_per_strip);
         (void) SetImageProperty(image,"tiff:rows-per-strip",value,exception);
       }
@@ -2114,7 +2114,7 @@ ModuleExport size_t RegisterTIFFImage(void)
 #define TIFFDescription  "Tagged Image File Format"
 
   char
-    version[MaxTextExtent];
+    version[MagickPathExtent];
 
   MagickInfo
     *entry;
@@ -2135,7 +2135,7 @@ ModuleExport size_t RegisterTIFFImage(void)
   UnlockSemaphoreInfo(tiff_semaphore);
   *version='\0';
 #if defined(TIFF_VERSION)
-  (void) FormatLocaleString(version,MaxTextExtent,"%d",TIFF_VERSION);
+  (void) FormatLocaleString(version,MagickPathExtent,"%d",TIFF_VERSION);
 #endif
 #if defined(MAGICKCORE_TIFF_DELEGATE)
   {
@@ -2146,7 +2146,7 @@ ModuleExport size_t RegisterTIFFImage(void)
       i;
 
     p=TIFFGetVersion();
-    for (i=0; (i < (MaxTextExtent-1)) && (*p != 0) && (*p != '\n'); i++)
+    for (i=0; (i < (MagickPathExtent-1)) && (*p != 0) && (*p != '\n'); i++)
       version[i]=(*p++);
     version[i]='\0';
   }
@@ -2291,7 +2291,7 @@ static MagickBooleanType WriteGROUP4Image(const ImageInfo *image_info,
   Image *image,ExceptionInfo *exception)
 {
   char
-    filename[MaxTextExtent];
+    filename[MagickPathExtent];
 
   FILE
     *file;
@@ -2355,7 +2355,7 @@ static MagickBooleanType WriteGROUP4Image(const ImageInfo *image_info,
         filename);
       return(MagickFalse);
     }
-  (void) FormatLocaleString(huffman_image->filename,MaxTextExtent,"tiff:%s",
+  (void) FormatLocaleString(huffman_image->filename,MagickPathExtent,"tiff:%s",
     filename);
   (void) SetImageType(huffman_image,BilevelType,exception);
   write_info=CloneImageInfo((ImageInfo *) NULL);
@@ -2513,8 +2513,8 @@ static MagickBooleanType WritePTIFImage(const ImageInfo *image_info,
   */
   write_info=CloneImageInfo(image_info);
   write_info->adjoin=MagickTrue;
-  (void) CopyMagickString(write_info->magick,"TIFF",MaxTextExtent);
-  (void) CopyMagickString(images->magick,"TIFF",MaxTextExtent);
+  (void) CopyMagickString(write_info->magick,"TIFF",MagickPathExtent);
+  (void) CopyMagickString(images->magick,"TIFF",MagickPathExtent);
   status=WriteTIFFImage(write_info,images,exception);
   images=DestroyImageList(images);
   write_info=DestroyImageInfo(write_info);

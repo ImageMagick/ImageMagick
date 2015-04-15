@@ -309,7 +309,7 @@ static ssize_t parse8BIM(Image *ifile, Image *ofile)
     recnum;
 
   int
-    inputlen = MaxTextExtent;
+    inputlen = MagickPathExtent;
 
   MagickOffsetType
     savedpos,
@@ -371,7 +371,7 @@ static ssize_t parse8BIM(Image *ifile, Image *ofile)
                 recnum = (unsigned int) StringToUnsignedLong(newstr);
                 break;
               case 2:
-                name=(char *) AcquireQuantumMemory(strlen(newstr)+MaxTextExtent,
+                name=(char *) AcquireQuantumMemory(strlen(newstr)+MagickPathExtent,
                   sizeof(*name));
                 if (name)
                   (void) strcpy(name,newstr);
@@ -605,7 +605,7 @@ static ssize_t parse8BIMW(Image *ifile, Image *ofile)
     recnum;
 
   int
-    inputlen = MaxTextExtent;
+    inputlen = MagickPathExtent;
 
   ssize_t
     savedolen = 0L,
@@ -667,10 +667,10 @@ static ssize_t parse8BIMW(Image *ifile, Image *ofile)
                 recnum=(unsigned int) StringToUnsignedLong(newstr);
                 break;
               case 2:
-                name=(char *) AcquireQuantumMemory(strlen(newstr)+MaxTextExtent,
+                name=(char *) AcquireQuantumMemory(strlen(newstr)+MagickPathExtent,
                   sizeof(*name));
                 if (name)
-                  (void) CopyMagickString(name,newstr,strlen(newstr)+MaxTextExtent);
+                  (void) CopyMagickString(name,newstr,strlen(newstr)+MagickPathExtent);
                 break;
             }
             state++;
@@ -1224,9 +1224,9 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
   if (LocaleNCompare(image_info->magick,"APP1",4) == 0)
     {
       char
-        name[MaxTextExtent];
+        name[MagickPathExtent];
 
-      (void) FormatLocaleString(name,MaxTextExtent,"APP%d",1);
+      (void) FormatLocaleString(name,MagickPathExtent,"APP%d",1);
       buff=AcquireImage((ImageInfo *) NULL,exception);
       if (buff == (Image *) NULL)
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
@@ -1713,7 +1713,7 @@ iptc_find:
 static void formatString(Image *ofile, const char *s, int len)
 {
   char
-    temp[MaxTextExtent];
+    temp[MagickPathExtent];
 
   (void) WriteBlobByte(ofile,'"');
   for (; len > 0; len--, s++) {
@@ -1738,7 +1738,7 @@ static void formatString(Image *ofile, const char *s, int len)
         (void) WriteBlobByte(ofile,(unsigned char) *s);
       else
         {
-          (void) FormatLocaleString(temp,MaxTextExtent,"&#%d;", c & 255);
+          (void) FormatLocaleString(temp,MagickPathExtent,"&#%d;", c & 255);
           (void) WriteBlobString(ofile,temp);
         }
       break;
@@ -1823,7 +1823,7 @@ static const tag_spec tags[] = {
 static int formatIPTC(Image *ifile, Image *ofile)
 {
   char
-    temp[MaxTextExtent];
+    temp[MagickPathExtent];
 
   unsigned int
     foundiptc,
@@ -1902,7 +1902,7 @@ static int formatIPTC(Image *ifile, Image *ofile)
       }
     if (taglen < 0) return -1;
     /* make a buffer to hold the tag datand snag it from the input stream */
-    str=(unsigned char *) AcquireQuantumMemory((size_t) (taglen+MaxTextExtent),
+    str=(unsigned char *) AcquireQuantumMemory((size_t) (taglen+MagickPathExtent),
       sizeof(*str));
     if (str == (unsigned char *) NULL)
       {
@@ -1919,10 +1919,10 @@ static int formatIPTC(Image *ifile, Image *ofile)
 
     /* now finish up by formatting this binary data into ASCII equivalent */
     if (strlen((char *)readable) > 0)
-      (void) FormatLocaleString(temp,MaxTextExtent,"%d#%d#%s=",
+      (void) FormatLocaleString(temp,MagickPathExtent,"%d#%d#%s=",
         (unsigned int) dataset, (unsigned int) recnum, readable);
     else
-      (void) FormatLocaleString(temp,MaxTextExtent,"%d#%d=",
+      (void) FormatLocaleString(temp,MagickPathExtent,"%d#%d=",
         (unsigned int) dataset,(unsigned int) recnum);
     (void) WriteBlobString(ofile,temp);
     formatString( ofile, (char *)str, taglen );
@@ -1957,7 +1957,7 @@ static int readWordFromBuffer(char **s, ssize_t *len)
 static int formatIPTCfromBuffer(Image *ofile, char *s, ssize_t len)
 {
   char
-    temp[MaxTextExtent];
+    temp[MagickPathExtent];
 
   unsigned int
     foundiptc,
@@ -2034,7 +2034,7 @@ static int formatIPTCfromBuffer(Image *ofile, char *s, ssize_t len)
     if (taglen > 65535)
       return(-1);
     /* make a buffer to hold the tag datand snag it from the input stream */
-    str=(unsigned char *) AcquireQuantumMemory((size_t) (taglen+MaxTextExtent),
+    str=(unsigned char *) AcquireQuantumMemory((size_t) (taglen+MagickPathExtent),
       sizeof(*str));
     if (str == (unsigned char *) NULL)
       {
@@ -2052,10 +2052,10 @@ static int formatIPTCfromBuffer(Image *ofile, char *s, ssize_t len)
 
     /* now finish up by formatting this binary data into ASCII equivalent */
     if (strlen((char *)readable) > 0)
-      (void) FormatLocaleString(temp,MaxTextExtent,"%d#%d#%s=",
+      (void) FormatLocaleString(temp,MagickPathExtent,"%d#%d#%s=",
         (unsigned int) dataset,(unsigned int) recnum, readable);
     else
-      (void) FormatLocaleString(temp,MaxTextExtent,"%d#%d=",
+      (void) FormatLocaleString(temp,MagickPathExtent,"%d#%d=",
         (unsigned int) dataset,(unsigned int) recnum);
     (void) WriteBlobString(ofile,temp);
     formatString( ofile, (char *)str, taglen );
@@ -2069,7 +2069,7 @@ static int formatIPTCfromBuffer(Image *ofile, char *s, ssize_t len)
 static int format8BIM(Image *ifile, Image *ofile)
 {
   char
-    temp[MaxTextExtent];
+    temp[MagickPathExtent];
 
   unsigned int
     foundOSType;
@@ -2132,7 +2132,7 @@ static int format8BIM(Image *ifile, Image *ofile)
         return(-1);
       plen = (unsigned char) c;
       PString=(unsigned char *) AcquireQuantumMemory((size_t) (plen+
-        MaxTextExtent),sizeof(*PString));
+        MagickPathExtent),sizeof(*PString));
       if (PString == (unsigned char *) NULL)
         {
           printf("MemoryAllocationFailed");
@@ -2178,10 +2178,10 @@ static int format8BIM(Image *ifile, Image *ofile)
          * ASCII equivalent
          */
         if (strlen((const char *)PString) > 0)
-          (void) FormatLocaleString(temp,MaxTextExtent,"8BIM#%d#%s=",ID,
+          (void) FormatLocaleString(temp,MagickPathExtent,"8BIM#%d#%s=",ID,
             PString);
         else
-          (void) FormatLocaleString(temp,MaxTextExtent,"8BIM#%d=",ID);
+          (void) FormatLocaleString(temp,MagickPathExtent,"8BIM#%d=",ID);
         (void) WriteBlobString(ofile,temp);
         if (ID == IPTC_ID)
           {

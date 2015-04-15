@@ -5225,7 +5225,7 @@ int main(int argc,char **argv)
   {
     char
       *p,
-      path[MaxTextExtent];
+      path[MagickPathExtent];
 
     path[0]=0;
     p=getenv("SRCDIR");

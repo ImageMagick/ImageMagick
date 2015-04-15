@@ -65,7 +65,7 @@ struct _WandView
     id;
 
   char
-    name[MaxTextExtent],
+    name[MagickPathExtent],
     *description;
 
   RectangleInfo
@@ -133,7 +133,7 @@ WandExport WandView *CloneWandView(const WandView *wand_view)
       wand_view->name);
   (void) ResetMagickMemory(clone_view,0,sizeof(*clone_view));
   clone_view->id=AcquireWandId();
-  (void) FormatLocaleString(clone_view->name,MaxTextExtent,"%s-%.20g",
+  (void) FormatLocaleString(clone_view->name,MagickPathExtent,"%s-%.20g",
     WandViewId,(double) clone_view->id);
   clone_view->description=ConstantString(wand_view->description);
   clone_view->image=CloneImage(wand_view->image,0,0,MagickTrue,
@@ -422,7 +422,7 @@ WandExport char *GetWandViewException(const WandView *wand_view,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand_view->name);
   assert(severity != (ExceptionType *) NULL);
   *severity=wand_view->exception->severity;
-  description=(char *) AcquireQuantumMemory(2UL*MaxTextExtent,
+  description=(char *) AcquireQuantumMemory(2UL*MagickPathExtent,
     sizeof(*description));
   if (description == (char *) NULL)
     ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
@@ -431,14 +431,14 @@ WandExport char *GetWandViewException(const WandView *wand_view,
   if (wand_view->exception->reason != (char *) NULL)
     (void) CopyMagickString(description,GetLocaleExceptionMessage(
       wand_view->exception->severity,wand_view->exception->reason),
-        MaxTextExtent);
+        MagickPathExtent);
   if (wand_view->exception->description != (char *) NULL)
     {
-      (void) ConcatenateMagickString(description," (",MaxTextExtent);
+      (void) ConcatenateMagickString(description," (",MagickPathExtent);
       (void) ConcatenateMagickString(description,GetLocaleExceptionMessage(
         wand_view->exception->severity,wand_view->exception->description),
-        MaxTextExtent);
-      (void) ConcatenateMagickString(description,")",MaxTextExtent);
+        MagickPathExtent);
+      (void) ConcatenateMagickString(description,")",MagickPathExtent);
     }
   return(description);
 }
@@ -756,7 +756,7 @@ WandExport WandView *NewWandView(MagickWand *wand)
       GetExceptionMessage(errno));
   (void) ResetMagickMemory(wand_view,0,sizeof(*wand_view));
   wand_view->id=AcquireWandId();
-  (void) FormatLocaleString(wand_view->name,MaxTextExtent,"%s-%.20g",
+  (void) FormatLocaleString(wand_view->name,MagickPathExtent,"%s-%.20g",
     WandViewId,(double) wand_view->id);
   wand_view->description=ConstantString("WandView");
   wand_view->wand=wand;
@@ -818,7 +818,7 @@ WandExport WandView *NewWandViewExtent(MagickWand *wand,const ssize_t x,
       GetExceptionMessage(errno));
   (void) ResetMagickMemory(wand_view,0,sizeof(*wand_view));
   wand_view->id=AcquireWandId();
-  (void) FormatLocaleString(wand_view->name,MaxTextExtent,"%s-%.20g",
+  (void) FormatLocaleString(wand_view->name,MagickPathExtent,"%s-%.20g",
     WandViewId,(double) wand_view->id);
   wand_view->description=ConstantString("WandView");
   exception=AcquireExceptionInfo();

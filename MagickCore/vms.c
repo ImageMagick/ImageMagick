@@ -130,7 +130,7 @@ DIR *opendir(char *name)
   /*
     Initialize descriptor.
   */
-  (void) FormatLocaleString(directory->pattern,MaxTextExtent,"%s*.*",name);
+  (void) FormatLocaleString(directory->pattern,MagickPathExtent,"%s*.*",name);
   directory->context=0;
   directory->pat.dsc$a_pointer=directory->pattern;
   directory->pat.dsc$w_length=strlen(directory->pattern);
@@ -206,9 +206,9 @@ struct dirent *readdir(DIR *directory)
   *p='\0';
   p=strchr(buffer,']');
   if (p)
-    (void) CopyMagickString(directory->entry.d_name,p+1,MaxTextExtent);
+    (void) CopyMagickString(directory->entry.d_name,p+1,MagickPathExtent);
   else
-    (void) CopyMagickString(directory->entry.d_name,buffer,MaxTextExtent);
+    (void) CopyMagickString(directory->entry.d_name,buffer,MagickPathExtent);
   directory->entry.d_namlen=strlen(directory->entry.d_name);
   return(&directory->entry);
 }

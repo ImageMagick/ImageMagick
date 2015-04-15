@@ -1203,7 +1203,7 @@ static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
           }
         if (image_info->interlace == PartitionInterlace)
           (void) CopyMagickString(image->filename,image_info->filename,
-            MaxTextExtent);
+            MagickPathExtent);
         if (image->previous == (Image *) NULL)
           {
             status=SetImageProgress(image,SaveImageTag,5,5);
@@ -1313,7 +1313,7 @@ static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
           }
         (void) CloseBlob(image);
         (void) CopyMagickString(image->filename,image_info->filename,
-          MaxTextExtent);
+          MagickPathExtent);
         if (image->previous == (Image *) NULL)
           {
             status=SetImageProgress(image,SaveImageTag,5,5);

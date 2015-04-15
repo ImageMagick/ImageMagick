@@ -224,9 +224,9 @@ FILE *Magick::Options::file(void) const
 
 void Magick::Options::fileName(const std::string &fileName_)
 {
-  fileName_.copy(_imageInfo->filename,MaxTextExtent-1);
-  if (fileName_.length() > MaxTextExtent-1)
-    _imageInfo->filename[MaxTextExtent-1]=0;
+  fileName_.copy(_imageInfo->filename,MagickPathExtent-1);
+  if (fileName_.length() > MagickPathExtent-1)
+    _imageInfo->filename[MagickPathExtent-1]=0;
   else
     _imageInfo->filename[fileName_.length()]=0;
 }
@@ -345,7 +345,7 @@ void Magick::Options::magick(const std::string &magick_)
     return;
   }
 
-  FormatLocaleString(_imageInfo->filename,MaxTextExtent,"%.1024s:",
+  FormatLocaleString(_imageInfo->filename,MagickPathExtent,"%.1024s:",
     magick_.c_str());
   GetPPException;
   SetImageInfo(_imageInfo,1,exceptionInfo);

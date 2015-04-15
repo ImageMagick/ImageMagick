@@ -500,7 +500,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             option=argv[++i];
             filename=option;
           }
-        (void) CopyMagickString(image_info->filename,filename,MaxTextExtent);
+        (void) CopyMagickString(image_info->filename,filename,MagickPathExtent);
         images=ReadImage(image_info,exception);
         CatchException(exception);
         status&=(images != (Image *) NULL) &&
@@ -588,7 +588,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
                 Write image.
               */
               (void) CopyMagickString(display_image->filename,
-                resource_info.write_filename,MaxTextExtent);
+                resource_info.write_filename,MagickPathExtent);
               (void) SetImageInfo(image_info,1,exception);
               status&=WriteImage(image_info,display_image,exception);
             }
@@ -1168,7 +1168,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             resource_info.image_geometry=(char *) NULL;
             if (*option == '+')
               break;
-            (void) CopyMagickString(argv[i]+1,"sans",MaxTextExtent);
+            (void) CopyMagickString(argv[i]+1,"sans",MagickPathExtent);
             i++;
             if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);

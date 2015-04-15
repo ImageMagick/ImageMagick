@@ -834,17 +834,17 @@ static MagickBooleanType LoadMimeCache(LinkedListInfo *mime_cache,
         else
           {
             char
-              path[MaxTextExtent],
+              path[MagickPathExtent],
               *xml;
 
             GetPathComponent(filename,HeadPath,path);
             if (*path != '\0')
               (void) ConcatenateMagickString(path,DirectorySeparator,
-                MaxTextExtent);
+                MagickPathExtent);
             if (*attribute == *DirectorySeparator)
-              (void) CopyMagickString(path,attribute,MaxTextExtent);
+              (void) CopyMagickString(path,attribute,MagickPathExtent);
             else
-              (void) ConcatenateMagickString(path,attribute,MaxTextExtent);
+              (void) ConcatenateMagickString(path,attribute,MagickPathExtent);
             xml=FileToXML(path,~0UL);
             if (xml != (char *) NULL)
               {
@@ -1002,8 +1002,8 @@ static MagickBooleanType LoadMimeCache(LinkedListInfo *mime_cache,
 MagickExport char *MagickToMime(const char *magick)
 {
   char
-    filename[MaxTextExtent],
-    media[MaxTextExtent];
+    filename[MagickPathExtent],
+    media[MagickPathExtent];
 
   const MimeInfo
     *mime_info;
@@ -1011,14 +1011,14 @@ MagickExport char *MagickToMime(const char *magick)
   ExceptionInfo
     *exception;
 
-  (void) FormatLocaleString(filename,MaxTextExtent,"file.%s",magick);
+  (void) FormatLocaleString(filename,MagickPathExtent,"file.%s",magick);
   LocaleLower(filename);
   exception=AcquireExceptionInfo();
   mime_info=GetMimeInfo(filename,(unsigned char *) " ",1,exception);
   exception=DestroyExceptionInfo(exception);
   if (mime_info != (const MimeInfo *) NULL)
     return(ConstantString(GetMimeType(mime_info)));
-  (void) FormatLocaleString(media,MaxTextExtent,"image/x-%s",magick);
+  (void) FormatLocaleString(media,MagickPathExtent,"image/x-%s",magick);
   LocaleLower(media+8);
   return(ConstantString(media));
 }

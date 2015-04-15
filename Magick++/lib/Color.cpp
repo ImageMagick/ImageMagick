@@ -241,7 +241,7 @@ Magick::Color::operator MagickCore::PixelInfo() const
 Magick::Color::operator std::string() const
 {
   char
-    colorbuf[MaxTextExtent];
+    colorbuf[MagickPathExtent];
 
   PixelInfo
     pixel;

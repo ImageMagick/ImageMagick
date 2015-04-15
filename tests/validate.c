@@ -1159,7 +1159,7 @@ static size_t ValidateCompareCommand(ImageInfo *image_info,
 {
   char
     **arguments,
-    command[MaxTextExtent];
+    command[MagickPathExtent];
 
   int
     number_arguments;
@@ -1181,7 +1181,7 @@ static size_t ValidateCompareCommand(ImageInfo *image_info,
     CatchException(exception);
     (void) FormatLocaleFile(stdout,"  test %.20g: %s",(double) (test++),
       compare_options[i]);
-    (void) FormatLocaleString(command,MaxTextExtent,"%s %s %s %s",
+    (void) FormatLocaleString(command,MagickPathExtent,"%s %s %s %s",
       compare_options[i],reference_filename,reference_filename,output_filename);
     arguments=StringToArgv(command,&number_arguments);
     if (arguments == (char **) NULL)
@@ -1250,7 +1250,7 @@ static size_t ValidateCompositeCommand(ImageInfo *image_info,
 {
   char
     **arguments,
-    command[MaxTextExtent];
+    command[MagickPathExtent];
 
   int
     number_arguments;
@@ -1272,7 +1272,7 @@ static size_t ValidateCompositeCommand(ImageInfo *image_info,
     CatchException(exception);
     (void) FormatLocaleFile(stdout,"  test %.20g: %s",(double) (test++),
       composite_options[i]);
-    (void) FormatLocaleString(command,MaxTextExtent,"%s %s %s %s",
+    (void) FormatLocaleString(command,MagickPathExtent,"%s %s %s %s",
       reference_filename,composite_options[i],reference_filename,
       output_filename);
     arguments=StringToArgv(command,&number_arguments);
@@ -1342,7 +1342,7 @@ static size_t ValidateConvertCommand(ImageInfo *image_info,
 {
   char
     **arguments,
-    command[MaxTextExtent];
+    command[MagickPathExtent];
 
   int
     number_arguments;
@@ -1364,7 +1364,7 @@ static size_t ValidateConvertCommand(ImageInfo *image_info,
     CatchException(exception);
     (void) FormatLocaleFile(stdout,"  test %.20g: %s",(double) test++,
       convert_options[i]);
-    (void) FormatLocaleString(command,MaxTextExtent,"%s %s %s %s",
+    (void) FormatLocaleString(command,MagickPathExtent,"%s %s %s %s",
       reference_filename,convert_options[i],reference_filename,output_filename);
     arguments=StringToArgv(command,&number_arguments);
     if (arguments == (char **) NULL)
@@ -1433,7 +1433,7 @@ static size_t ValidateIdentifyCommand(ImageInfo *image_info,
 {
   char
     **arguments,
-    command[MaxTextExtent];
+    command[MagickPathExtent];
 
   int
     number_arguments;
@@ -1456,7 +1456,7 @@ static size_t ValidateIdentifyCommand(ImageInfo *image_info,
     CatchException(exception);
     (void) FormatLocaleFile(stdout,"  test %.20g: %s",(double) test++,
       identify_options[i]);
-    (void) FormatLocaleString(command,MaxTextExtent,"%s %s",
+    (void) FormatLocaleString(command,MagickPathExtent,"%s %s",
       identify_options[i],reference_filename);
     arguments=StringToArgv(command,&number_arguments);
     if (arguments == (char **) NULL)
@@ -1532,10 +1532,10 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
 {
   char
 #ifdef MagickCountTempFiles
-    path[MaxTextExtent],
-    SystemCommand[MaxTextExtent],
+    path[MagickPathExtent],
+    SystemCommand[MagickPathExtent],
 #endif
-    size[MaxTextExtent];
+    size[MagickPathExtent];
 
   const MagickInfo
     *magick_info;
@@ -1593,7 +1593,7 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
         CommandOptionToMnemonic(MagickTypeOptions,reference_types[j].type),
         (double) reference_types[j].depth);
       (void) CopyMagickString(image_info->filename,reference_filename,
-        MaxTextExtent);
+        MagickPathExtent);
       reference_image=ReadImage(image_info,exception);
       if (reference_image == (Image *) NULL ||
           exception->severity >= ErrorException)
@@ -1607,11 +1607,11 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
       /*
         Write reference image.
       */
-      (void) FormatLocaleString(size,MaxTextExtent,"%.20gx%.20g",
+      (void) FormatLocaleString(size,MagickPathExtent,"%.20gx%.20g",
         (double) reference_image->columns,(double) reference_image->rows);
       (void) CloneString(&image_info->size,size);
       image_info->depth=reference_types[j].depth;
-      (void) FormatLocaleString(reference_image->filename,MaxTextExtent,"%s:%s",
+      (void) FormatLocaleString(reference_image->filename,MagickPathExtent,"%s:%s",
         reference_formats[i].magick,output_filename);
       status=SetImageType(reference_image,reference_types[j].type,exception);
       if (status == MagickFalse || exception->severity >= ErrorException)
@@ -1647,7 +1647,7 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
       /*
         Ping reference image.
       */
-      (void) FormatLocaleString(image_info->filename,MaxTextExtent,"%s:%s",
+      (void) FormatLocaleString(image_info->filename,MagickPathExtent,"%s:%s",
         reference_formats[i].magick,output_filename);
       ping_image=PingImage(image_info,exception);
       if (ping_image == (Image *) NULL ||
@@ -1676,10 +1676,10 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
       /*
         Write reference image.
       */
-      (void) FormatLocaleString(reference_image->filename,MaxTextExtent,"%s:%s",
+      (void) FormatLocaleString(reference_image->filename,MagickPathExtent,"%s:%s",
         reference_formats[i].magick,output_filename);
       (void) CopyMagickString(image_info->magick,reference_formats[i].magick,
-        MaxTextExtent);
+        MagickPathExtent);
       reference_image->depth=reference_types[j].depth;
       reference_image->compression=reference_formats[i].compression;
       length=8192;
@@ -1712,7 +1712,7 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
       /*
         Read reconstruct image.
       */
-      (void) FormatLocaleString(image_info->filename,MaxTextExtent,"%s:%s",
+      (void) FormatLocaleString(image_info->filename,MagickPathExtent,"%s:%s",
         reference_formats[i].magick,output_filename);
       reconstruct_image=BlobToImage(image_info,blob,length,exception);
       blob=(unsigned char *) RelinquishMagickMemory(blob);
@@ -1758,7 +1758,7 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
       (void) fflush(stdout);
       SystemCommand[0]='\0';
       (void) strncat(SystemCommand,"echo `ls ",9);
-      (void) strncat(SystemCommand,path,MaxTextExtent-31);
+      (void) strncat(SystemCommand,path,MagickPathExtent-31);
       (void) strncat(SystemCommand,"* | wc -w` tmp files.",20);
       (void) system(SystemCommand);
       (void) fflush(stdout);
@@ -1811,7 +1811,7 @@ static size_t ValidateImageFormatsOnDisk(ImageInfo *image_info,
   ExceptionInfo *exception)
 {
   char
-    size[MaxTextExtent];
+    size[MagickPathExtent];
 
   const MagickInfo
     *magick_info;
@@ -1856,7 +1856,7 @@ static size_t ValidateImageFormatsOnDisk(ImageInfo *image_info,
         CommandOptionToMnemonic(MagickTypeOptions,reference_types[j].type),
         (double) reference_types[j].depth);
       (void) CopyMagickString(image_info->filename,reference_filename,
-        MaxTextExtent);
+        MagickPathExtent);
       reference_image=ReadImage(image_info,exception);
       if (reference_image == (Image *) NULL ||
           exception->severity >= ErrorException)
@@ -1870,11 +1870,11 @@ static size_t ValidateImageFormatsOnDisk(ImageInfo *image_info,
       /*
         Write reference image.
       */
-      (void) FormatLocaleString(size,MaxTextExtent,"%.20gx%.20g",
+      (void) FormatLocaleString(size,MagickPathExtent,"%.20gx%.20g",
         (double) reference_image->columns,(double) reference_image->rows);
       (void) CloneString(&image_info->size,size);
       image_info->depth=reference_types[j].depth;
-      (void) FormatLocaleString(reference_image->filename,MaxTextExtent,"%s:%s",
+      (void) FormatLocaleString(reference_image->filename,MagickPathExtent,"%s:%s",
         reference_formats[i].magick,output_filename);
       status=SetImageType(reference_image,reference_types[j].type,exception);
       if (status == MagickFalse || exception->severity >= ErrorException)
@@ -1910,7 +1910,7 @@ static size_t ValidateImageFormatsOnDisk(ImageInfo *image_info,
       /*
         Read reference image.
       */
-      (void) FormatLocaleString(image_info->filename,MaxTextExtent,"%s:%s",
+      (void) FormatLocaleString(image_info->filename,MagickPathExtent,"%s:%s",
         reference_formats[i].magick,output_filename);
       reference_image=ReadImage(image_info,exception);
       if (reference_image == (Image *) NULL ||
@@ -1925,7 +1925,7 @@ static size_t ValidateImageFormatsOnDisk(ImageInfo *image_info,
       /*
         Write reference image.
       */
-      (void) FormatLocaleString(reference_image->filename,MaxTextExtent,"%s:%s",
+      (void) FormatLocaleString(reference_image->filename,MagickPathExtent,"%s:%s",
         reference_formats[i].magick,output_filename);
       reference_image->depth=reference_types[j].depth;
       reference_image->compression=reference_formats[i].compression;
@@ -1942,7 +1942,7 @@ static size_t ValidateImageFormatsOnDisk(ImageInfo *image_info,
       /*
         Read reconstruct image.
       */
-      (void) FormatLocaleString(image_info->filename,MaxTextExtent,"%s:%s",
+      (void) FormatLocaleString(image_info->filename,MagickPathExtent,"%s:%s",
         reference_formats[i].magick,output_filename);
       reconstruct_image=ReadImage(image_info,exception);
       if (reconstruct_image == (Image *) NULL ||
@@ -2068,7 +2068,7 @@ static size_t ValidateImportExportPixels(ImageInfo *image_info,
         reference_map[i],CommandOptionToMnemonic(MagickStorageOptions,
         reference_storage[j].type));
       (void) CopyMagickString(image_info->filename,reference_filename,
-        MaxTextExtent);
+        MagickPathExtent);
       reference_image=ReadImage(image_info,exception);
       if (reference_image == (Image *) NULL ||
           exception->severity >= ErrorException)
@@ -2216,7 +2216,7 @@ static size_t ValidateMontageCommand(ImageInfo *image_info,
 {
   char
     **arguments,
-    command[MaxTextExtent];
+    command[MagickPathExtent];
 
   int
     number_arguments;
@@ -2238,7 +2238,7 @@ static size_t ValidateMontageCommand(ImageInfo *image_info,
     CatchException(exception);
     (void) FormatLocaleFile(stdout,"  test %.20g: %s",(double) (test++),
       montage_options[i]);
-    (void) FormatLocaleString(command,MaxTextExtent,"%s %s %s %s",
+    (void) FormatLocaleString(command,MagickPathExtent,"%s %s %s %s",
       reference_filename,montage_options[i],reference_filename,
       output_filename);
     arguments=StringToArgv(command,&number_arguments);
@@ -2308,7 +2308,7 @@ static size_t ValidateStreamCommand(ImageInfo *image_info,
 {
   char
     **arguments,
-    command[MaxTextExtent];
+    command[MagickPathExtent];
 
   int
     number_arguments;
@@ -2330,7 +2330,7 @@ static size_t ValidateStreamCommand(ImageInfo *image_info,
     CatchException(exception);
     (void) FormatLocaleFile(stdout,"  test %.20g: %s",(double) (test++),
       stream_options[i]);
-    (void) FormatLocaleString(command,MaxTextExtent,"%s %s %s",
+    (void) FormatLocaleString(command,MagickPathExtent,"%s %s %s",
       stream_options[i],reference_filename,output_filename);
     arguments=StringToArgv(command,&number_arguments);
     if (arguments == (char **) NULL)
@@ -2426,8 +2426,8 @@ int main(int argc,char **argv)
 }
 
   char
-    output_filename[MaxTextExtent],
-    reference_filename[MaxTextExtent],
+    output_filename[MagickPathExtent],
+    reference_filename[MagickPathExtent],
     *option;
 
   double
@@ -2478,13 +2478,13 @@ int main(int argc,char **argv)
   (void) regard_warnings;
   exception=AcquireExceptionInfo();
   image_info=AcquireImageInfo();
-  (void) CopyMagickString(image_info->filename,ReferenceFilename,MaxTextExtent);
+  (void) CopyMagickString(image_info->filename,ReferenceFilename,MagickPathExtent);
   for (i=1; i < (ssize_t) argc; i++)
   {
     option=argv[i];
     if (IsCommandOption(option) == MagickFalse)
       {
-        (void) CopyMagickString(image_info->filename,option,MaxTextExtent);
+        (void) CopyMagickString(image_info->filename,option,MagickPathExtent);
         continue;
       }
     switch (*(option+1))
@@ -2584,11 +2584,11 @@ int main(int argc,char **argv)
     {
       if (LocaleCompare(image_info->filename,ReferenceFilename) == 0)
         (void) CopyMagickString(reference_image->magick,ReferenceImageFormat,
-          MaxTextExtent);
+          MagickPathExtent);
       (void) AcquireUniqueFilename(reference_filename);
       (void) AcquireUniqueFilename(output_filename);
       (void) CopyMagickString(reference_image->filename,reference_filename,
-        MaxTextExtent);
+        MagickPathExtent);
       status=WriteImage(image_info,reference_image,exception);
       reference_image=DestroyImage(reference_image);
       if (status == MagickFalse)

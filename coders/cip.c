@@ -161,7 +161,7 @@ static MagickBooleanType WriteCIPImage(const ImageInfo *image_info,Image *image,
   ExceptionInfo *exception)
 {
   char
-    buffer[MaxTextExtent];
+    buffer[MagickPathExtent];
 
   const char
     *value;
@@ -199,30 +199,30 @@ static MagickBooleanType WriteCIPImage(const ImageInfo *image_info,Image *image,
   (void) WriteBlobString(image,"<CiscoIPPhoneImage>\n");
   value=GetImageProperty(image,"label",exception);
   if (value != (const char *) NULL)
-    (void) FormatLocaleString(buffer,MaxTextExtent,"<Title>%s</Title>\n",value);
+    (void) FormatLocaleString(buffer,MagickPathExtent,"<Title>%s</Title>\n",value);
   else
     {
       char
-        basename[MaxTextExtent];
+        basename[MagickPathExtent];
 
       GetPathComponent(image->filename,BasePath,basename);
-      (void) FormatLocaleString(buffer,MaxTextExtent,"<Title>%s</Title>\n",
+      (void) FormatLocaleString(buffer,MagickPathExtent,"<Title>%s</Title>\n",
         basename);
     }
   (void) WriteBlobString(image,buffer);
-  (void) FormatLocaleString(buffer,MaxTextExtent,
+  (void) FormatLocaleString(buffer,MagickPathExtent,
     "<LocationX>%.20g</LocationX>\n",(double) image->page.x);
   (void) WriteBlobString(image,buffer);
-  (void) FormatLocaleString(buffer,MaxTextExtent,
+  (void) FormatLocaleString(buffer,MagickPathExtent,
     "<LocationY>%.20g</LocationY>\n",(double) image->page.y);
   (void) WriteBlobString(image,buffer);
-  (void) FormatLocaleString(buffer,MaxTextExtent,"<Width>%.20g</Width>\n",
+  (void) FormatLocaleString(buffer,MagickPathExtent,"<Width>%.20g</Width>\n",
     (double) (image->columns+(image->columns % 2)));
   (void) WriteBlobString(image,buffer);
-  (void) FormatLocaleString(buffer,MaxTextExtent,"<Height>%.20g</Height>\n",
+  (void) FormatLocaleString(buffer,MagickPathExtent,"<Height>%.20g</Height>\n",
     (double) image->rows);
   (void) WriteBlobString(image,buffer);
-  (void) FormatLocaleString(buffer,MaxTextExtent,"<Depth>2</Depth>\n");
+  (void) FormatLocaleString(buffer,MagickPathExtent,"<Depth>2</Depth>\n");
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,"<Data>");
   (void) TransformImageColorspace(image,sRGBColorspace,exception);
@@ -238,7 +238,7 @@ static MagickBooleanType WriteCIPImage(const ImageInfo *image_info,Image *image,
          (((size_t) (3*ClampToQuantum(GetPixelLuma(image,p+2))/QuantumRange) & 0x03) << 4) |
          (((size_t) (3*ClampToQuantum(GetPixelLuma(image,p+1))/QuantumRange) & 0x03) << 2) |
          (((size_t) (3*ClampToQuantum(GetPixelLuma(image,p+0))/QuantumRange) & 0x03) << 0));
-      (void) FormatLocaleString(buffer,MaxTextExtent,"%02x",byte);
+      (void) FormatLocaleString(buffer,MagickPathExtent,"%02x",byte);
       (void) WriteBlobString(image,buffer);
       p+=4;
     }
@@ -250,7 +250,7 @@ static MagickBooleanType WriteCIPImage(const ImageInfo *image_info,Image *image,
            (((size_t) (3*ClampToQuantum(GetPixelLuma(image,p+MagickMin(i,2)))/QuantumRange) & 0x03) << 4) |
            (((size_t) (3*ClampToQuantum(GetPixelLuma(image,p+MagickMin(i,1)))/QuantumRange) & 0x03) << 2) |
            (((size_t) (3*ClampToQuantum(GetPixelLuma(image,p+MagickMin(i,0)))/QuantumRange) & 0x03) << 0));
-        (void) FormatLocaleString(buffer,MaxTextExtent,"%02x",~byte);
+        (void) FormatLocaleString(buffer,MagickPathExtent,"%02x",~byte);
         (void) WriteBlobString(image,buffer);
       }
     status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,

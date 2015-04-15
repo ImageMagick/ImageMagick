@@ -399,11 +399,11 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
 
   (void) CopyMagickString(clone_info->filename+i,".PAL",(size_t)
-    (MaxTextExtent-i));
+    (MagickPathExtent-i));
   if((clone_info->file=fopen_utf8(clone_info->filename,"rb"))==NULL)
     {
       (void) CopyMagickString(clone_info->filename+i,".pal",(size_t)
-        (MaxTextExtent-i));
+        (MagickPathExtent-i));
       if((clone_info->file=fopen_utf8(clone_info->filename,"rb"))==NULL)
         {
           clone_info->filename[i]='\0';

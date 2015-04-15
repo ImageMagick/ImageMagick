@@ -503,7 +503,7 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
     *image_view;
 
   char
-    token[MaxTextExtent];
+    token[MagickPathExtent];
 
   ColorCorrection
     color_correction;

@@ -289,8 +289,8 @@ static Image *ReadTGAImage(const ImageInfo *image_info,
       */
       length=(size_t) tga_info.id_length;
       comment=(char *) NULL;
-      if (~length >= (MaxTextExtent-1))
-        comment=(char *) AcquireQuantumMemory(length+MaxTextExtent,
+      if (~length >= (MagickPathExtent-1))
+        comment=(char *) AcquireQuantumMemory(length+MagickPathExtent,
           sizeof(*comment));
       if (comment == (char *) NULL)
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");

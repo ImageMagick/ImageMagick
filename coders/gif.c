@@ -981,7 +981,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     c,
     flag,
     *global_colormap,
-    header[MaxTextExtent],
+    header[MagickPathExtent],
     magick[12];
 
   /*
@@ -1115,7 +1115,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             else
               {
                 char
-                  name[MaxTextExtent];
+                  name[MagickPathExtent];
 
                 int
                   block_length,
@@ -1732,7 +1732,7 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image,
         if ((image->gamma != 1.0f/2.2f))
           {
             char
-              attributes[MaxTextExtent];
+              attributes[MagickPathExtent];
 
             ssize_t
               count;
@@ -1746,7 +1746,7 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image,
             (void) WriteBlobByte(image,(unsigned char) 0xff);
             (void) WriteBlobByte(image,(unsigned char) 0x0b);
             (void) WriteBlob(image,11,(unsigned char *) "ImageMagick");
-            count=FormatLocaleString(attributes,MaxTextExtent,"gamma=%g",
+            count=FormatLocaleString(attributes,MagickPathExtent,"gamma=%g",
               image->gamma);
             (void) WriteBlobByte(image,(unsigned char) count);
             (void) WriteBlob(image,(size_t) count,(unsigned char *) attributes);
@@ -1821,7 +1821,7 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image,
                    else
                      {
                        char
-                         extension[MaxTextExtent];
+                         extension[MagickPathExtent];
 
                        /*
                          Write generic extension.

@@ -248,7 +248,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
   char
     *comment,
     keyword[9],
-    property[MaxTextExtent],
+    property[MagickPathExtent],
     value[73];
 
   double
@@ -384,7 +384,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
           else
             fits_info.endian=LSBEndian;
         }
-      (void) FormatLocaleString(property,MaxTextExtent,"fits:%s",keyword);
+      (void) FormatLocaleString(property,MagickPathExtent,"fits:%s",keyword);
       (void) SetImageProperty(image,property,p,exception);
     }
     c=0;

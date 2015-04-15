@@ -2764,10 +2764,10 @@ static unsigned short ReadDCMShort(DCMStreamInfo *stream_info,Image *image)
 static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   char
-    explicit_vr[MaxTextExtent],
-    implicit_vr[MaxTextExtent],
-    magick[MaxTextExtent],
-    photometric[MaxTextExtent];
+    explicit_vr[MagickPathExtent],
+    implicit_vr[MagickPathExtent],
+    magick[MagickPathExtent],
+    photometric[MagickPathExtent];
 
   DCMStreamInfo
     *stream_info;
@@ -2876,7 +2876,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read DCM Medical image.
   */
-  (void) CopyMagickString(photometric,"MONOCHROME1 ",MaxTextExtent);
+  (void) CopyMagickString(photometric,"MONOCHROME1 ",MagickPathExtent);
   bits_allocated=8;
   bytes_per_pixel=1;
   polarity=MagickFalse;
@@ -2925,7 +2925,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     for (i=0; dicom_info[i].group < 0xffff; i++)
       if ((group == dicom_info[i].group) && (element == dicom_info[i].element))
         break;
-    (void) CopyMagickString(implicit_vr,dicom_info[i].vr,MaxTextExtent);
+    (void) CopyMagickString(implicit_vr,dicom_info[i].vr,MagickPathExtent);
     count=ReadBlob(image,2,(unsigned char *) explicit_vr);
     if (count != 2)
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
@@ -2939,7 +2939,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     use_explicit=((group == 0x0002) && (explicit_retry == MagickFalse)) ||
       (explicit_file != MagickFalse) ? MagickTrue : MagickFalse;
     if ((use_explicit != MagickFalse) && (strncmp(implicit_vr,"xs",2) == 0))
-      (void) CopyMagickString(implicit_vr,explicit_vr,MaxTextExtent);
+      (void) CopyMagickString(implicit_vr,explicit_vr,MagickPathExtent);
     if ((use_explicit == MagickFalse) || (strncmp(implicit_vr,"!!",2) == 0))
       {
         offset=SeekBlob(image,(MagickOffsetType) -2,SEEK_CUR);
@@ -3104,7 +3104,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           case 0x0010:
           {
             char
-              transfer_syntax[MaxTextExtent];
+              transfer_syntax[MagickPathExtent];
 
             /*
               Transfer Syntax.
@@ -3123,7 +3123,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             *transfer_syntax='\0';
             if (data != (unsigned char *) NULL)
               (void) CopyMagickString(transfer_syntax,(char *) data,
-                MaxTextExtent);
+                MagickPathExtent);
             if (image_info->verbose != MagickFalse)
               (void) FormatLocaleFile(stdout,"transfer_syntax=%s\n",
                 (const char *) transfer_syntax);
@@ -3193,7 +3193,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Photometric interpretation.
             */
-            for (i=0; i < (ssize_t) MagickMin(length,MaxTextExtent-1); i++)
+            for (i=0; i < (ssize_t) MagickMin(length,MagickPathExtent-1); i++)
               photometric[i]=(char) data[i];
             photometric[i]='\0';
             polarity=LocaleCompare(photometric,"MONOCHROME1 ") == 0 ?
@@ -3547,7 +3547,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       for (scene=0; scene < (ssize_t) number_scenes; scene++)
       {
         char
-          filename[MaxTextExtent];
+          filename[MagickPathExtent];
 
         const char
           *property;
@@ -3593,10 +3593,10 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           (void) fputc(c,file);
         }
         (void) fclose(file);
-        (void) FormatLocaleString(read_info->filename,MaxTextExtent,
+        (void) FormatLocaleString(read_info->filename,MagickPathExtent,
           "jpeg:%s",filename);
         if (image->compression == JPEG2000Compression)
-          (void) FormatLocaleString(read_info->filename,MaxTextExtent,
+          (void) FormatLocaleString(read_info->filename,MagickPathExtent,
             "j2k:%s",filename);
         jpeg_image=ReadImage(read_info,exception);
         if (jpeg_image != (Image *) NULL)

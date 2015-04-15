@@ -342,7 +342,7 @@ static inline Image *GetImageCache(const ImageInfo *image_info,const char *path,
   ExceptionInfo *exception)
 {
   char
-    key[MaxTextExtent];
+    key[MagickPathExtent];
 
   ExceptionInfo
     *sans_exception;
@@ -357,14 +357,14 @@ static inline Image *GetImageCache(const ImageInfo *image_info,const char *path,
     Read an image into a image cache (for repeated usage) if not already in
     cache.  Then return the image that is in the cache.
   */
-  (void) FormatLocaleString(key,MaxTextExtent,"cache:%s",path);
+  (void) FormatLocaleString(key,MagickPathExtent,"cache:%s",path);
   sans_exception=AcquireExceptionInfo();
   image=(Image *) GetImageRegistry(ImageRegistryType,key,sans_exception);
   sans_exception=DestroyExceptionInfo(sans_exception);
   if (image != (Image *) NULL)
     return(image);
   read_info=CloneImageInfo(image_info);
-  (void) CopyMagickString(read_info->filename,path,MaxTextExtent);
+  (void) CopyMagickString(read_info->filename,path,MagickPathExtent);
   image=ReadImage(read_info,exception);
   read_info=DestroyImageInfo(read_info);
   if (image != (Image *) NULL)
@@ -386,8 +386,8 @@ static MagickBooleanType MonitorProgress(const char *text,
   void *wand_unused(client_data))
 {
   char
-    message[MaxTextExtent],
-    tag[MaxTextExtent];
+    message[MagickPathExtent],
+    tag[MagickPathExtent];
 
   const char
     *locale_message;
@@ -397,11 +397,11 @@ static MagickBooleanType MonitorProgress(const char *text,
 
   if (extent < 2)
     return(MagickTrue);
-  (void) CopyMagickMemory(tag,text,MaxTextExtent);
+  (void) CopyMagickMemory(tag,text,MagickPathExtent);
   p=strrchr(tag,'/');
   if (p != (char *) NULL)
     *p='\0';
-  (void) FormatLocaleString(message,MaxTextExtent,"Monitor/%s",tag);
+  (void) FormatLocaleString(message,MagickPathExtent,"Monitor/%s",tag);
   locale_message=GetLocaleMessage(message);
   if (locale_message == message)
     locale_message=tag;
@@ -424,7 +424,7 @@ static Image *SparseColorOption(const Image *image,
   const MagickBooleanType color_from_image,ExceptionInfo *exception)
 {
   char
-    token[MaxTextExtent];
+    token[MagickPathExtent];
 
   const char
     *p;
@@ -804,7 +804,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
           {
             char
               *text,
-              geometry[MaxTextExtent];
+              geometry[MagickPathExtent];
 
             /*
               Annotate image.
@@ -820,7 +820,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               break;
             (void) CloneString(&draw_info->text,text);
             text=DestroyString(text);
-            (void) FormatLocaleString(geometry,MaxTextExtent,"%+f%+f",
+            (void) FormatLocaleString(geometry,MagickPathExtent,"%+f%+f",
               geometry_info.xi,geometry_info.psi);
             (void) CloneString(&draw_info->geometry,geometry);
             draw_info->affine.sx=cos(DegreesToRadians(
@@ -1360,7 +1360,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
           {
             char
               *args,
-              token[MaxTextExtent];
+              token[MagickPathExtent];
 
             const char
               *p;
@@ -1680,7 +1680,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
           {
             char
               *arguments,
-              token[MaxTextExtent];
+              token[MagickPathExtent];
 
             const char
               *p;
@@ -1987,7 +1987,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
         if (LocaleCompare("level-colors",option+1) == 0)
           {
             char
-              token[MaxTextExtent];
+              token[MagickPathExtent];
 
             const char
               *p;
@@ -2211,7 +2211,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
         if (LocaleCompare("morphology",option+1) == 0)
           {
             char
-              token[MaxTextExtent];
+              token[MagickPathExtent];
 
             const char
               *p;
@@ -2453,7 +2453,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
 
                 profile_info=CloneImageInfo(mogrify_info);
                 (void) CopyMagickString(profile_info->filename,argv[i+1],
-                  MaxTextExtent);
+                  MagickPathExtent);
                 profile=FileToStringInfo(profile_info->filename,~0UL,exception);
                 if (profile != (StringInfo *) NULL)
                   {
@@ -3820,7 +3820,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
     if (IsCommandOption(option) == MagickFalse)
       {
         char
-          backup_filename[MaxTextExtent],
+          backup_filename[MagickPathExtent],
           *filename;
 
         Image
@@ -3840,11 +3840,11 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
           continue;
         if (format != (char *) NULL)
           (void) CopyMagickString(images->filename,images->magick_filename,
-            MaxTextExtent);
+            MagickPathExtent);
         if (path != (char *) NULL)
           {
             GetPathComponent(option,TailPath,filename);
-            (void) FormatLocaleString(images->filename,MaxTextExtent,"%s%c%s",
+            (void) FormatLocaleString(images->filename,MagickPathExtent,"%s%c%s",
               path,*DirectorySeparator,filename);
           }
         if (format != (char *) NULL)
@@ -3871,10 +3871,10 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
               Rename image file as backup.
             */
             (void) CopyMagickString(backup_filename,image->filename,
-              MaxTextExtent);
+              MagickPathExtent);
             for (i=0; i < 6; i++)
             {
-              (void) ConcatenateMagickString(backup_filename,"~",MaxTextExtent);
+              (void) ConcatenateMagickString(backup_filename,"~",MagickPathExtent);
               if (IsPathAccessible(backup_filename) == MagickFalse)
                 break;
             }
@@ -4793,7 +4793,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("format",option+1) == 0)
           {
-            (void) CopyMagickString(argv[i]+1,"sans",MaxTextExtent);
+            (void) CopyMagickString(argv[i]+1,"sans",MagickPathExtent);
             (void) CloneString(&format,(char *) NULL);
             if (*option == '+')
               break;
@@ -4801,9 +4801,9 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             (void) CloneString(&format,argv[i]);
-            (void) CopyMagickString(image_info->filename,format,MaxTextExtent);
+            (void) CopyMagickString(image_info->filename,format,MagickPathExtent);
             (void) ConcatenateMagickString(image_info->filename,":",
-              MaxTextExtent);
+              MagickPathExtent);
             (void) SetImageInfo(image_info,0,exception);
             if (*image_info->magick == '\0')
               ThrowMogrifyException(OptionError,"UnrecognizedImageFormat",
@@ -5338,7 +5338,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
         if (LocaleCompare("morphology",option+1) == 0)
           {
             char
-              token[MaxTextExtent];
+              token[MagickPathExtent];
 
             KernelInfo
               *kernel_info;
@@ -7120,7 +7120,7 @@ WandExport MagickBooleanType MogrifyImageInfo(ImageInfo *image_info,
           {
             char
               *canonical_page,
-              page[MaxTextExtent];
+              page[MagickPathExtent];
 
             const char
               *image_option;
@@ -7144,10 +7144,10 @@ WandExport MagickBooleanType MogrifyImageInfo(ImageInfo *image_info,
             canonical_page=GetPageGeometry(argv[i+1]);
             flags=ParseAbsoluteGeometry(canonical_page,&geometry);
             canonical_page=DestroyString(canonical_page);
-            (void) FormatLocaleString(page,MaxTextExtent,"%lux%lu",
+            (void) FormatLocaleString(page,MagickPathExtent,"%lux%lu",
               (unsigned long) geometry.width,(unsigned long) geometry.height);
             if (((flags & XValue) != 0) || ((flags & YValue) != 0))
-              (void) FormatLocaleString(page,MaxTextExtent,"%lux%lu%+ld%+ld",
+              (void) FormatLocaleString(page,MagickPathExtent,"%lux%lu%+ld%+ld",
                 (unsigned long) geometry.width,(unsigned long) geometry.height,
                 (long) geometry.x,(long) geometry.y);
             (void) SetImageOption(image_info,option+1,page);
@@ -8336,7 +8336,7 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
           {
             char
               *args,
-              token[MaxTextExtent];
+              token[MagickPathExtent];
 
             const char
               *p;
@@ -8447,8 +8447,8 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
                 */
                 length=strlen(argv[i+1]);
                 token=(char *) NULL;
-                if (~length >= (MaxTextExtent-1))
-                  token=(char *) AcquireQuantumMemory(length+MaxTextExtent,
+                if (~length >= (MagickPathExtent-1))
+                  token=(char *) AcquireQuantumMemory(length+MagickPathExtent,
                     sizeof(*token));
                 if (token == (char *) NULL)
                   break;
@@ -8562,7 +8562,7 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
         if (LocaleCompare("write",option+1) == 0)
           {
             char
-              key[MaxTextExtent];
+              key[MagickPathExtent];
 
             Image
               *write_images;
@@ -8571,7 +8571,7 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
               *write_info;
 
             (void) SyncImagesSettings(mogrify_info,*images,exception);
-            (void) FormatLocaleString(key,MaxTextExtent,"cache:%s",argv[i+1]);
+            (void) FormatLocaleString(key,MagickPathExtent,"cache:%s",argv[i+1]);
             (void) DeleteImageRegistry(key);
             write_images=(*images);
             if (*option == '+')

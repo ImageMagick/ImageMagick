@@ -2645,7 +2645,7 @@ namespace Magick
       *imageInfo;
 
     imageInfo=options.imageInfo();
-    imageSpec_.copy(imageInfo->filename,MaxTextExtent-1);
+    imageSpec_.copy(imageInfo->filename,MagickPathExtent-1);
     imageInfo->filename[imageSpec_.length()] = 0;
     GetPPException;
     images=MagickCore::ReadImage(imageInfo,exceptionInfo);

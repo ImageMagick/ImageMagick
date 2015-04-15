@@ -95,7 +95,7 @@ static MagickBooleanType
 static Image *ReadMTVImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   char
-    buffer[MaxTextExtent];
+    buffer[MagickPathExtent];
 
   Image
     *image;
@@ -324,7 +324,7 @@ static MagickBooleanType WriteMTVImage(const ImageInfo *image_info,Image *image,
   ExceptionInfo *exception)
 {
   char
-    buffer[MaxTextExtent];
+    buffer[MagickPathExtent];
 
   MagickBooleanType
     status;
@@ -375,7 +375,7 @@ static MagickBooleanType WriteMTVImage(const ImageInfo *image_info,Image *image,
     /*
       Initialize raster file header.
     */
-    (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g %.20g\n",(double)
+    (void) FormatLocaleString(buffer,MagickPathExtent,"%.20g %.20g\n",(double)
       image->columns,(double) image->rows);
     (void) WriteBlobString(image,buffer);
     for (y=0; y < (ssize_t) image->rows; y++)

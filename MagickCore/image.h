@@ -319,9 +319,9 @@ struct _Image
     *artifacts;        /* general operational/coder settings, not saved */
 
   char
-    filename[MaxTextExtent],        /* images input filename */
-    magick_filename[MaxTextExtent], /* given image filename (with read mods) */
-    magick[MaxTextExtent];          /* images file format (file magic) */
+    filename[MagickPathExtent],        /* images input filename */
+    magick_filename[MagickPathExtent], /* given image filename (with read mods) */
+    magick[MagickPathExtent];          /* images file format (file magic) */
 
   size_t
     magick_columns,     /* size of image when read/created */
@@ -478,10 +478,10 @@ struct _ImageInfo
     length;
 
   char
-    magick[MaxTextExtent],    /* image file format (file magick) */
-    unique[MaxTextExtent],    /* unique tempory filename - delegates */
-    zero[MaxTextExtent],      /* unique filename ? - delegates */
-    filename[MaxTextExtent];  /* filename when reading/writing image */
+    magick[MagickPathExtent],    /* image file format (file magick) */
+    unique[MagickPathExtent],    /* unique tempory filename - delegates */
+    zero[MagickPathExtent],      /* unique filename ? - delegates */
+    filename[MagickPathExtent];  /* filename when reading/writing image */
 
   MagickBooleanType
     debug;

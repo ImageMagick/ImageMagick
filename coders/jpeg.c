@@ -536,7 +536,7 @@ static boolean ReadICCProfile(j_decompress_ptr jpeg_info)
 static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
 {
   char
-    magick[MaxTextExtent];
+    magick[MagickPathExtent];
 
   ErrorManager
     *error_manager;
@@ -642,7 +642,7 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
 static boolean ReadProfile(j_decompress_ptr jpeg_info)
 {
   char
-    name[MaxTextExtent];
+    name[MagickPathExtent];
 
   const StringInfo
     *previous_profile;
@@ -683,7 +683,7 @@ static boolean ReadProfile(j_decompress_ptr jpeg_info)
     return(TRUE);
   length-=2;
   marker=jpeg_info->unread_marker-JPEG_APP0;
-  (void) FormatLocaleString(name,MaxTextExtent,"APP%d",marker);
+  (void) FormatLocaleString(name,MagickPathExtent,"APP%d",marker);
   error_manager=(ErrorManager *) jpeg_info->client_data;
   exception=error_manager->exception;
   image=error_manager->image;
@@ -703,7 +703,7 @@ static boolean ReadProfile(j_decompress_ptr jpeg_info)
     {
       p=GetStringInfoDatum(profile);
       if ((length > 4) && (LocaleNCompare((char *) p,"exif",4) == 0))
-        (void) CopyMagickString(name,"exif",MaxTextExtent);
+        (void) CopyMagickString(name,"exif",MagickPathExtent);
       if ((length > 5) && (LocaleNCompare((char *) p,"http:",5) == 0))
         {
           ssize_t
@@ -721,7 +721,7 @@ static boolean ReadProfile(j_decompress_ptr jpeg_info)
           }
           if (j < (ssize_t) GetStringInfoLength(profile))
             (void) DestroyStringInfo(SplitStringInfo(profile,(size_t) (j+1)));
-          (void) CopyMagickString(name,"xmp",MaxTextExtent);
+          (void) CopyMagickString(name,"xmp",MagickPathExtent);
         }
     }
   previous_profile=GetImageProfile(image,name);
@@ -935,14 +935,14 @@ static void JPEGSetImageQuality(struct jpeg_decompress_struct *jpeg_info,
 static void JPEGSetImageSamplingFactor(struct jpeg_decompress_struct *jpeg_info,  Image *image,ExceptionInfo *exception)
 {
   char
-    sampling_factor[MaxTextExtent];
+    sampling_factor[MagickPathExtent];
 
   switch (jpeg_info->out_color_space)
   {
     case JCS_CMYK:
     {
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Colorspace: CMYK");
-      (void) FormatLocaleString(sampling_factor,MaxTextExtent,
+      (void) FormatLocaleString(sampling_factor,MagickPathExtent,
         "%dx%d,%dx%d,%dx%d,%dx%d",jpeg_info->comp_info[0].h_samp_factor,
         jpeg_info->comp_info[0].v_samp_factor,
         jpeg_info->comp_info[1].h_samp_factor,
@@ -957,7 +957,7 @@ static void JPEGSetImageSamplingFactor(struct jpeg_decompress_struct *jpeg_info,
     {
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "Colorspace: GRAYSCALE");
-      (void) FormatLocaleString(sampling_factor,MaxTextExtent,"%dx%d",
+      (void) FormatLocaleString(sampling_factor,MagickPathExtent,"%dx%d",
         jpeg_info->comp_info[0].h_samp_factor,
         jpeg_info->comp_info[0].v_samp_factor);
       break;
@@ -965,7 +965,7 @@ static void JPEGSetImageSamplingFactor(struct jpeg_decompress_struct *jpeg_info,
     case JCS_RGB:
     {
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Colorspace: RGB");
-      (void) FormatLocaleString(sampling_factor,MaxTextExtent,
+      (void) FormatLocaleString(sampling_factor,MagickPathExtent,
         "%dx%d,%dx%d,%dx%d",jpeg_info->comp_info[0].h_samp_factor,
         jpeg_info->comp_info[0].v_samp_factor,
         jpeg_info->comp_info[1].h_samp_factor,
@@ -978,7 +978,7 @@ static void JPEGSetImageSamplingFactor(struct jpeg_decompress_struct *jpeg_info,
     {
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Colorspace: %d",
         jpeg_info->out_color_space);
-      (void) FormatLocaleString(sampling_factor,MaxTextExtent,
+      (void) FormatLocaleString(sampling_factor,MagickPathExtent,
         "%dx%d,%dx%d,%dx%d,%dx%d",jpeg_info->comp_info[0].h_samp_factor,
         jpeg_info->comp_info[0].v_samp_factor,
         jpeg_info->comp_info[1].h_samp_factor,
@@ -1000,7 +1000,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
   char
-    value[MaxTextExtent];
+    value[MagickPathExtent];
 
   const char
     *option;
@@ -1291,7 +1291,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
     }
   JPEGSetImageQuality(&jpeg_info,image,exception);
   JPEGSetImageSamplingFactor(&jpeg_info,image,exception);
-  (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
+  (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
     jpeg_info.out_color_space);
   (void) SetImageProperty(image,"jpeg:colorspace",value,exception);
   if (image_info->ping != MagickFalse)
@@ -1516,14 +1516,14 @@ ModuleExport size_t RegisterJPEGImage(void)
 #define JPEGDescription "Joint Photographic Experts Group JFIF format"
 
   char
-    version[MaxTextExtent];
+    version[MagickPathExtent];
 
   MagickInfo
     *entry;
 
   *version='\0';
 #if defined(JPEG_LIB_VERSION)
-  (void) FormatLocaleString(version,MaxTextExtent,"%d",JPEG_LIB_VERSION);
+  (void) FormatLocaleString(version,MagickPathExtent,"%d",JPEG_LIB_VERSION);
 #endif
   entry=AcquireMagickInfo("JPEG","JPE",JPEGDescription);
 #if (JPEG_LIB_VERSION < 80) && !defined(LIBJPEG_TURBO_VERSION)
@@ -2077,7 +2077,7 @@ static char **SamplingFactorToList(const char *text)
   for (p=text; *p != '\0'; p++)
     if (*p == ',')
       lines++;
-  textlist=(char **) AcquireQuantumMemory((size_t) lines+MaxTextExtent,
+  textlist=(char **) AcquireQuantumMemory((size_t) lines+MagickPathExtent,
     sizeof(*textlist));
   if (textlist == (char **) NULL)
     ThrowFatalException(ResourceLimitFatalError,"UnableToConvertText");
@@ -2087,7 +2087,7 @@ static char **SamplingFactorToList(const char *text)
     for (q=(char *) p; *q != '\0'; q++)
       if (*q == ',')
         break;
-    textlist[i]=(char *) AcquireQuantumMemory((size_t) (q-p)+MaxTextExtent,
+    textlist[i]=(char *) AcquireQuantumMemory((size_t) (q-p)+MagickPathExtent,
       sizeof(*textlist[i]));
     if (textlist[i] == (char *) NULL)
       ThrowFatalException(ResourceLimitFatalError,"UnableToConvertText");

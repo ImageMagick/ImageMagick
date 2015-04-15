@@ -146,8 +146,8 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
   char
-    keyword[MaxTextExtent],
-    value[MaxTextExtent];
+    keyword[MagickPathExtent],
+    value[MagickPathExtent];
 
   const void
     *pixels;
@@ -226,7 +226,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
         p=keyword;
         do
         {
-          if ((size_t) (p-keyword) < (MaxTextExtent-1))
+          if ((size_t) (p-keyword) < (MagickPathExtent-1))
             *p++=c;
           c=ReadBlobByte(image);
           count++;
@@ -245,7 +245,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
         p=value;
         while (isalnum(c))
         {
-          if ((size_t) (p-value) < (MaxTextExtent-1))
+          if ((size_t) (p-value) < (MagickPathExtent-1))
             *p++=c;
           c=ReadBlobByte(image);
           count++;
@@ -425,7 +425,7 @@ static MagickBooleanType WriteVICARImage(const ImageInfo *image_info,
   Image *image,ExceptionInfo *exception)
 {
   char
-    header[MaxTextExtent];
+    header[MagickPathExtent];
 
   int
     y;
@@ -466,13 +466,13 @@ static MagickBooleanType WriteVICARImage(const ImageInfo *image_info,
   /*
     Write header.
   */
-  (void) ResetMagickMemory(header,' ',MaxTextExtent);
-  (void) FormatLocaleString(header,MaxTextExtent,
+  (void) ResetMagickMemory(header,' ',MagickPathExtent);
+  (void) FormatLocaleString(header,MagickPathExtent,
     "LBLSIZE=%.20g FORMAT='BYTE' TYPE='IMAGE' BUFSIZE=20000 DIM=2 EOL=0 "
     "RECSIZE=%.20g ORG='BSQ' NL=%.20g NS=%.20g NB=1 N1=0 N2=0 N3=0 N4=0 NBB=0 "
-    "NLB=0 TASK='ImageMagick'",(double) MaxTextExtent,(double) image->columns,
+    "NLB=0 TASK='ImageMagick'",(double) MagickPathExtent,(double) image->columns,
     (double) image->rows,(double) image->columns);
-  (void) WriteBlob(image,MaxTextExtent,(unsigned char *) header);
+  (void) WriteBlob(image,MagickPathExtent,(unsigned char *) header);
   /*
     Write VICAR pixels.
   */

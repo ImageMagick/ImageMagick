@@ -632,10 +632,10 @@ static char* getBinaryCLProgramName(MagickCLEnv clEnv, MagickOpenCLProgram prog,
 {
   char* name;
   char* ptr;
-  char path[MaxTextExtent];
-  char deviceName[MaxTextExtent];
+  char path[MagickPathExtent];
+  char deviceName[MagickPathExtent];
   const char* prefix = "magick_opencl";
-  clEnv->library->clGetDeviceInfo(clEnv->device, CL_DEVICE_NAME, MaxTextExtent, deviceName, NULL);
+  clEnv->library->clGetDeviceInfo(clEnv->device, CL_DEVICE_NAME, MagickPathExtent, deviceName, NULL);
   ptr=deviceName;
   /* strip out illegal characters for file names */
   while (*ptr != '\0')
@@ -647,7 +647,7 @@ static char* getBinaryCLProgramName(MagickCLEnv clEnv, MagickOpenCLProgram prog,
     }
     ptr++;
   }
-  (void) FormatLocaleString(path,MaxTextExtent,"%s%s%s_%s_%02d_%08x_%.20g.bin",
+  (void) FormatLocaleString(path,MagickPathExtent,"%s%s%s_%s_%02d_%08x_%.20g.bin",
          GetOpenCLCachedFilesDirectory(),DirectorySeparator,prefix,deviceName,
          (unsigned int) prog,signature,(double) sizeof(char*)*8);
   name = (char*)AcquireMagickMemory(strlen(path)+1);
@@ -837,7 +837,7 @@ static MagickBooleanType CompileOpenCLKernels(MagickCLEnv clEnv, ExceptionInfo* 
   /* The index of the program strings in this array has to match the value of the enum MagickOpenCLProgram */
   const char* MagickOpenCLProgramStrings[MAGICK_OPENCL_NUM_PROGRAMS]; 
 
-  char options[MaxTextExtent];
+  char options[MagickPathExtent];
   unsigned int optionsSignature;
 
 #ifdef MAGICKCORE_CLPERFMARKER
@@ -845,7 +845,7 @@ static MagickBooleanType CompileOpenCLKernels(MagickCLEnv clEnv, ExceptionInfo* 
 #endif
 
   /* Get additional options */
-  (void) FormatLocaleString(options, MaxTextExtent, CLOptions, (float)QuantumRange,
+  (void) FormatLocaleString(options, MagickPathExtent, CLOptions, (float)QuantumRange,
     (float)QuantumScale, (float)CLCharQuantumScale, (float)MagickEpsilon, (float)MagickPI, (unsigned int)MaxMap, (unsigned int)MAGICKCORE_QUANTUM_DEPTH);
 
   /*
@@ -900,11 +900,11 @@ static MagickBooleanType CompileOpenCLKernels(MagickCLEnv clEnv, ExceptionInfo* 
 
       if (loadSuccessful == MagickFalse)
       {
-        char path[MaxTextExtent];
+        char path[MagickPathExtent];
         FILE* fileHandle;
 
         /*  dump the source into a file */
-        (void) FormatLocaleString(path,MaxTextExtent,"%s%s%s"
+        (void) FormatLocaleString(path,MagickPathExtent,"%s%s%s"
          ,GetOpenCLCachedFilesDirectory()
          ,DirectorySeparator,"magick_badcl.cl");
         fileHandle = fopen(path, "wb");	
@@ -922,7 +922,7 @@ static MagickBooleanType CompileOpenCLKernels(MagickCLEnv clEnv, ExceptionInfo* 
           log = (char*)AcquireMagickMemory(logSize);
           clEnv->library->clGetProgramBuildInfo(clEnv->programs[i], clEnv->device, CL_PROGRAM_BUILD_LOG, logSize, log, &logSize);
 
-          (void) FormatLocaleString(path,MaxTextExtent,"%s%s%s"
+          (void) FormatLocaleString(path,MagickPathExtent,"%s%s%s"
            ,GetOpenCLCachedFilesDirectory()
            ,DirectorySeparator,"magick_badcl_build.log");
           fileHandle = fopen(path, "wb");	
@@ -1073,9 +1073,9 @@ static MagickBooleanType InitOpenCLPlatformDevice(MagickCLEnv clEnv, ExceptionIn
 
     for (i = 0; i < numPlatforms; i++)
     {
-      char version[MaxTextExtent];
+      char version[MagickPathExtent];
       cl_uint numDevices;
-      status = clEnv->library->clGetPlatformInfo(clEnv->platform, CL_PLATFORM_VERSION, MaxTextExtent, version, NULL);
+      status = clEnv->library->clGetPlatformInfo(clEnv->platform, CL_PLATFORM_VERSION, MagickPathExtent, version, NULL);
       if (status != CL_SUCCESS)
       {
         (void) ThrowMagickException(exception, GetMagickModule(), DelegateWarning,
@@ -2169,7 +2169,7 @@ static ds_status AcceleratePerfEvaluator(ds_device *device,
 
     imageInfo=AcquireImageInfo();
     CloneString(&imageInfo->size,ACCELERATE_PERF_DIMEN);
-    CopyMagickString(imageInfo->filename,"xc:none",MaxTextExtent);
+    CopyMagickString(imageInfo->filename,"xc:none",MagickPathExtent);
     inputImage=ReadImage(imageInfo,exception);
 
     initAccelerateTimer(&timer);
@@ -2280,7 +2280,7 @@ static MagickBooleanType autoSelectDevice(MagickCLEnv clEnv, ExceptionInfo* exce
   unsigned int i;
   unsigned int bestDeviceIndex;
   AccelerateScoreType bestScore;
-  char path[MaxTextExtent];
+  char path[MagickPathExtent];
   MagickBooleanType flag;
   ds_evaluation_type profileType;
 
@@ -2305,7 +2305,7 @@ static MagickBooleanType autoSelectDevice(MagickCLEnv clEnv, ExceptionInfo* exce
     goto cleanup;
   }
 
-  (void) FormatLocaleString(path,MaxTextExtent,"%s%s%s"
+  (void) FormatLocaleString(path,MagickPathExtent,"%s%s%s"
          ,GetOpenCLCachedFilesDirectory()
          ,DirectorySeparator,IMAGEMAGICK_PROFILE_FILE);
 
@@ -2512,8 +2512,8 @@ MagickBooleanType OpenCLThrowMagickException(ExceptionInfo *exception,
     cl_device_type dType;
     clEnv->library->clGetDeviceInfo(clEnv->device,CL_DEVICE_TYPE ,sizeof(cl_device_type),&dType,NULL);
     if (dType == CL_DEVICE_TYPE_CPU) {
-      char buffer[MaxTextExtent];
-      clEnv->library->clGetPlatformInfo(clEnv->platform, CL_PLATFORM_NAME, MaxTextExtent, buffer, NULL);
+      char buffer[MagickPathExtent];
+      clEnv->library->clGetPlatformInfo(clEnv->platform, CL_PLATFORM_NAME, MagickPathExtent, buffer, NULL);
 
       /* Workaround for Intel OpenCL CPU runtime bug */
       /* Turn off OpenCL when a problem is detected! */
@@ -2813,7 +2813,7 @@ const char* GetOpenCLCachedFilesDirectory() {
     }
     LockSemaphoreInfo(openclCachedFilesDirectoryLock);
     if (openclCachedFilesDirectory == NULL) {
-      char path[MaxTextExtent];
+      char path[MagickPathExtent];
       char *home = NULL;
       char *temp = NULL;
       struct stat attributes;
@@ -2842,7 +2842,7 @@ const char* GetOpenCLCachedFilesDirectory() {
         */
 
         /* first check if $HOME/.config exists */
-        (void) FormatLocaleString(path,MaxTextExtent,"%s%s.config",
+        (void) FormatLocaleString(path,MagickPathExtent,"%s%s.config",
           home,DirectorySeparator);
         status=GetPathAttributes(path,&attributes);
         if (status == MagickFalse) 
@@ -2858,7 +2858,7 @@ const char* GetOpenCLCachedFilesDirectory() {
         /* first check if $HOME/.config/ImageMagick exists */
         if (mkdirStatus==0) 
         {
-            (void) FormatLocaleString(path,MaxTextExtent,"%s%s.config%sImageMagick",
+            (void) FormatLocaleString(path,MagickPathExtent,"%s%s.config%sImageMagick",
               home,DirectorySeparator,DirectorySeparator);
                     
             status=GetPathAttributes(path,&attributes);
@@ -2943,7 +2943,7 @@ void OpenCLLog(const char* message) {
   if (getenv("MAGICK_OCL_LOG"))
   {
     if (message) {
-      char path[MaxTextExtent];
+      char path[MagickPathExtent];
       unsigned long allocSize;
 
       MagickCLEnv clEnv;
@@ -2951,7 +2951,7 @@ void OpenCLLog(const char* message) {
       clEnv = GetDefaultOpenCLEnv();
 
       /*  dump the source into a file */
-      (void) FormatLocaleString(path,MaxTextExtent,"%s%s%s"
+      (void) FormatLocaleString(path,MagickPathExtent,"%s%s%s"
         ,GetOpenCLCachedFilesDirectory()
         ,DirectorySeparator,OPENCL_LOG_FILE);
 

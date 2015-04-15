@@ -144,9 +144,9 @@ static Image *ReadCALSImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
   char
-    filename[MaxTextExtent],
-    header[MaxTextExtent],
-    message[MaxTextExtent];
+    filename[MagickPathExtent],
+    header[MagickPathExtent],
+    message[MagickPathExtent];
 
   FILE
     *file;
@@ -263,21 +263,21 @@ static Image *ReadCALSImage(const ImageInfo *image_info,
   image=DestroyImage(image);
   read_info=CloneImageInfo(image_info);
   SetImageInfoBlob(read_info,(void *) NULL,0);
-  (void) FormatLocaleString(read_info->filename,MaxTextExtent,"group4:%s",
+  (void) FormatLocaleString(read_info->filename,MagickPathExtent,"group4:%s",
     filename);
-  (void) FormatLocaleString(message,MaxTextExtent,"%lux%lu",width,height);
+  (void) FormatLocaleString(message,MagickPathExtent,"%lux%lu",width,height);
   (void) CloneString(&read_info->size,message);
-  (void) FormatLocaleString(message,MaxTextExtent,"%lu",density);
+  (void) FormatLocaleString(message,MagickPathExtent,"%lu",density);
   (void) CloneString(&read_info->density,message);
   read_info->orientation=(OrientationType) orientation;
   image=ReadImage(read_info,exception);
   if (image != (Image *) NULL)
     {
       (void) CopyMagickString(image->filename,image_info->filename,
-        MaxTextExtent);
+        MagickPathExtent);
       (void) CopyMagickString(image->magick_filename,image_info->filename,
-        MaxTextExtent);
-      (void) CopyMagickString(image->magick,"CALS",MaxTextExtent);
+        MagickPathExtent);
+      (void) CopyMagickString(image->magick,"CALS",MagickPathExtent);
     }
   read_info=DestroyImageInfo(read_info);
   (void) RelinquishUniqueFileResource(filename);
@@ -552,8 +552,8 @@ static MagickBooleanType WriteCALSImage(const ImageInfo *image_info,
     Write CALS pixels.
   */
   write_info=CloneImageInfo(image_info);
-  (void) CopyMagickString(write_info->filename,"GROUP4:",MaxTextExtent);
-  (void) CopyMagickString(write_info->magick,"GROUP4",MaxTextExtent);
+  (void) CopyMagickString(write_info->filename,"GROUP4:",MagickPathExtent);
+  (void) CopyMagickString(write_info->magick,"GROUP4",MagickPathExtent);
   group4_image=CloneImage(image,0,0,MagickTrue,exception);
   if (group4_image == (Image *) NULL)
     {

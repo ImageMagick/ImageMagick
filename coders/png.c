@@ -1350,9 +1350,9 @@ static void png_get_data(png_structp png_ptr,png_bytep data,png_size_t length)
       if (check != length)
         {
           char
-            msg[MaxTextExtent];
+            msg[MagickPathExtent];
 
-          (void) FormatLocaleString(msg,MaxTextExtent,
+          (void) FormatLocaleString(msg,MagickPathExtent,
             "Expected %.20g bytes; found %.20g bytes",(double) length,
             (double) check);
           png_warning(png_ptr,msg);
@@ -2335,12 +2335,12 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   /* Save bit-depth and color-type in case we later want to write a PNG00 */
   {
       char
-        msg[MaxTextExtent];
+        msg[MagickPathExtent];
 
-      (void) FormatLocaleString(msg,MaxTextExtent,"%d",(int) ping_color_type);
+      (void) FormatLocaleString(msg,MagickPathExtent,"%d",(int) ping_color_type);
       (void) SetImageProperty(image,"png:IHDR.color-type-orig",msg,exception);
 
-      (void) FormatLocaleString(msg,MaxTextExtent,"%d",(int) ping_bit_depth);
+      (void) FormatLocaleString(msg,MagickPathExtent,"%d",(int) ping_bit_depth);
       (void) SetImageProperty(image,"png:IHDR.bit-depth-orig",msg,exception);
   }
 
@@ -3043,43 +3043,43 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
    /* Set some properties for reporting by "identify" */
     {
       char
-        msg[MaxTextExtent];
+        msg[MagickPathExtent];
 
      /* encode ping_width, ping_height, ping_file_depth, ping_color_type,
         ping_interlace_method in value */
 
-     (void) FormatLocaleString(msg,MaxTextExtent,
+     (void) FormatLocaleString(msg,MagickPathExtent,
          "%d, %d",(int) ping_width, (int) ping_height);
      (void) SetImageProperty(image,"png:IHDR.width,height",msg,exception);
 
-     (void) FormatLocaleString(msg,MaxTextExtent,"%d",(int) ping_file_depth);
+     (void) FormatLocaleString(msg,MagickPathExtent,"%d",(int) ping_file_depth);
      (void) SetImageProperty(image,"png:IHDR.bit_depth",msg,exception);
 
-     (void) FormatLocaleString(msg,MaxTextExtent,"%d (%s)",
+     (void) FormatLocaleString(msg,MagickPathExtent,"%d (%s)",
          (int) ping_color_type,
          Magick_ColorType_from_PNG_ColorType((int)ping_color_type));
      (void) SetImageProperty(image,"png:IHDR.color_type",msg,exception);
 
      if (ping_interlace_method == 0)
        {
-         (void) FormatLocaleString(msg,MaxTextExtent,"%d (Not interlaced)",
+         (void) FormatLocaleString(msg,MagickPathExtent,"%d (Not interlaced)",
             (int) ping_interlace_method);
        }
      else if (ping_interlace_method == 1)
        {
-         (void) FormatLocaleString(msg,MaxTextExtent,"%d (Adam7 method)",
+         (void) FormatLocaleString(msg,MagickPathExtent,"%d (Adam7 method)",
             (int) ping_interlace_method);
        }
      else
        {
-         (void) FormatLocaleString(msg,MaxTextExtent,"%d (Unknown method)",
+         (void) FormatLocaleString(msg,MagickPathExtent,"%d (Unknown method)",
             (int) ping_interlace_method);
        }
        (void) SetImageProperty(image,"png:IHDR.interlace_method",msg,exception);
 
      if (number_colors != 0)
        {
-         (void) FormatLocaleString(msg,MaxTextExtent,"%d",
+         (void) FormatLocaleString(msg,MagickPathExtent,"%d",
             (int) number_colors);
          (void) SetImageProperty(image,"png:PLTE.number_colors",msg,
             exception);
@@ -3636,7 +3636,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
               *value;
 
             length=text[i].text_length;
-            value=(char *) AcquireQuantumMemory(length+MaxTextExtent,
+            value=(char *) AcquireQuantumMemory(length+MagickPathExtent,
               sizeof(*value));
             if (value == (char *) NULL)
               {
@@ -3789,12 +3789,12 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
    /* Set more properties for identify to retrieve */
    {
      char
-       msg[MaxTextExtent];
+       msg[MagickPathExtent];
 
      if (num_text_total != 0)
        {
          /* libpng doesn't tell us whether they were tEXt, zTXt, or iTXt */
-         (void) FormatLocaleString(msg,MaxTextExtent,
+         (void) FormatLocaleString(msg,MagickPathExtent,
             "%d tEXt/zTXt/iTXt chunks were found", num_text_total);
          (void) SetImageProperty(image,"png:text",msg,
                 exception);
@@ -3802,7 +3802,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
      if (num_raw_profiles != 0)
        {
-         (void) FormatLocaleString(msg,MaxTextExtent,
+         (void) FormatLocaleString(msg,MagickPathExtent,
             "%d were found", num_raw_profiles);
          (void) SetImageProperty(image,"png:text-encoded profiles",msg,
                 exception);
@@ -3810,7 +3810,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
      if (ping_found_cHRM != MagickFalse)
        {
-         (void) FormatLocaleString(msg,MaxTextExtent,"%s",
+         (void) FormatLocaleString(msg,MagickPathExtent,"%s",
             "chunk was found (see Chromaticity, above)");
          (void) SetImageProperty(image,"png:cHRM",msg,
                 exception);
@@ -3818,13 +3818,13 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
      if (png_get_valid(ping,ping_info,PNG_INFO_bKGD))
        {
-         (void) FormatLocaleString(msg,MaxTextExtent,"%s",
+         (void) FormatLocaleString(msg,MagickPathExtent,"%s",
             "chunk was found (see Background color, above)");
          (void) SetImageProperty(image,"png:bKGD",msg,
                 exception);
        }
 
-     (void) FormatLocaleString(msg,MaxTextExtent,"%s",
+     (void) FormatLocaleString(msg,MagickPathExtent,"%s",
         "chunk was found");
 
 #if defined(PNG_iCCP_SUPPORTED)
@@ -3840,7 +3840,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #if defined(PNG_sRGB_SUPPORTED)
      if (ping_found_sRGB != MagickFalse)
        {
-         (void) FormatLocaleString(msg,MaxTextExtent,
+         (void) FormatLocaleString(msg,MagickPathExtent,
             "intent=%d (%s)",
             (int) intent,
             Magick_RenderingIntentString_from_PNG_RenderingIntent(intent));
@@ -3851,7 +3851,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
      if (ping_found_gAMA != MagickFalse)
        {
-         (void) FormatLocaleString(msg,MaxTextExtent,
+         (void) FormatLocaleString(msg,MagickPathExtent,
             "gamma=%.8g (See Gamma, above)",
             file_gamma);
          (void) SetImageProperty(image,"png:gAMA",msg,
@@ -3861,7 +3861,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #if defined(PNG_pHYs_SUPPORTED)
      if (png_get_valid(ping,ping_info,PNG_INFO_pHYs))
        {
-         (void) FormatLocaleString(msg,MaxTextExtent,
+         (void) FormatLocaleString(msg,MagickPathExtent,
             "x_res=%.10g, y_res=%.10g, units=%d",
             (double) x_resolution,(double) y_resolution, unit_type);
          (void) SetImageProperty(image,"png:pHYs",msg,
@@ -3872,7 +3872,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #if defined(PNG_oFFs_SUPPORTED)
      if (png_get_valid(ping,ping_info,PNG_INFO_oFFs))
        {
-         (void) FormatLocaleString(msg,MaxTextExtent,"x_off=%.20g, y_off=%.20g",
+         (void) FormatLocaleString(msg,MagickPathExtent,"x_off=%.20g, y_off=%.20g",
             (double) image->page.x,(double) image->page.y);
          (void) SetImageProperty(image,"png:oFFs",msg,
                 exception);
@@ -3886,7 +3886,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
      if ((image->page.width != 0 && image->page.width != image->columns) ||
          (image->page.height != 0 && image->page.height != image->rows))
        {
-         (void) FormatLocaleString(msg,MaxTextExtent,
+         (void) FormatLocaleString(msg,MagickPathExtent,
             "width=%.20g, height=%.20g",
             (double) image->page.width,(double) image->page.height);
          (void) SetImageProperty(image,"png:vpAg",msg,
@@ -3932,7 +3932,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *mng_info;
 
   char
-    magic_number[MaxTextExtent];
+    magic_number[MagickPathExtent];
 
   ssize_t
     count;
@@ -4175,7 +4175,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
   for (;;)
   {
     char
-      type[MaxTextExtent];
+      type[MagickPathExtent];
 
     unsigned char
       *chunk;
@@ -4193,7 +4193,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
       break;
 
     type[0]='\0';
-    (void) ConcatenateMagickString(type,"errr",MaxTextExtent);
+    (void) ConcatenateMagickString(type,"errr",MagickPathExtent);
     length=ReadBlobMSBLong(image);
     count=(unsigned int) ReadBlob(image,4,(unsigned char *) type);
 
@@ -4600,7 +4600,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
       "    Reading jng_image from color_blob.");
 
   assert(color_image_info != (ImageInfo *) NULL);
-  (void) FormatLocaleString(color_image_info->filename,MaxTextExtent,"%s",
+  (void) FormatLocaleString(color_image_info->filename,MagickPathExtent,"%s",
     color_image->filename);
 
   color_image_info->ping=MagickFalse;   /* To do: avoid this */
@@ -4663,7 +4663,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
              "    Reading alpha from alpha_blob.");
 
-         (void) FormatLocaleString(alpha_image_info->filename,MaxTextExtent,
+         (void) FormatLocaleString(alpha_image_info->filename,MagickPathExtent,
            "%s",alpha_image->filename);
 
          jng_image=ReadImage(alpha_image_info,exception);
@@ -4788,7 +4788,7 @@ static Image *ReadJNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *mng_info;
 
   char
-    magic_number[MaxTextExtent];
+    magic_number[MagickPathExtent];
 
   size_t
     count;
@@ -4865,7 +4865,7 @@ static Image *ReadJNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   char
-    page_geometry[MaxTextExtent];
+    page_geometry[MagickPathExtent];
 
   Image
     *image;
@@ -4997,7 +4997,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (LocaleCompare(image_info->magick,"MNG") == 0)
     {
       char
-        magic_number[MaxTextExtent];
+        magic_number[MagickPathExtent];
 
       /* Verify MNG signature.  */
       count=(size_t) ReadBlob(image,8,(unsigned char *) magic_number);
@@ -5038,7 +5038,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   do
   {
     char
-      type[MaxTextExtent];
+      type[MagickPathExtent];
 
     if (LocaleCompare(image_info->magick,"MNG") == 0)
       {
@@ -5049,7 +5049,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Read a new chunk.
         */
         type[0]='\0';
-        (void) ConcatenateMagickString(type,"errr",MaxTextExtent);
+        (void) ConcatenateMagickString(type,"errr",MagickPathExtent);
         length=ReadBlobMSBLong(image);
         count=(size_t) ReadBlob(image,4,(unsigned char *) type);
 
@@ -5188,7 +5188,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 (mng_info->mng_height > 65535L))
               ThrowReaderException(ImageError,"WidthOrHeightExceedsLimit");
 
-            (void) FormatLocaleString(page_geometry,MaxTextExtent,
+            (void) FormatLocaleString(page_geometry,MagickPathExtent,
               "%.20gx%.20g+0+0",(double) mng_info->mng_width,(double)
               mng_info->mng_height);
 
@@ -7337,7 +7337,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 ModuleExport size_t RegisterPNGImage(void)
 {
   char
-    version[MaxTextExtent];
+    version[MagickPathExtent];
 
   MagickInfo
     *entry;
@@ -7363,14 +7363,14 @@ ModuleExport size_t RegisterPNGImage(void)
   *version='\0';
 
 #if defined(PNG_LIBPNG_VER_STRING)
-  (void) ConcatenateMagickString(version,"libpng ",MaxTextExtent);
-  (void) ConcatenateMagickString(version,PNG_LIBPNG_VER_STRING,MaxTextExtent);
+  (void) ConcatenateMagickString(version,"libpng ",MagickPathExtent);
+  (void) ConcatenateMagickString(version,PNG_LIBPNG_VER_STRING,MagickPathExtent);
 
   if (LocaleCompare(PNG_LIBPNG_VER_STRING,png_get_header_ver(NULL)) != 0)
     {
-      (void) ConcatenateMagickString(version,",",MaxTextExtent);
+      (void) ConcatenateMagickString(version,",",MagickPathExtent);
       (void) ConcatenateMagickString(version,png_get_libpng_ver(NULL),
-            MaxTextExtent);
+            MagickPathExtent);
     }
 #endif
 
@@ -7426,13 +7426,13 @@ ModuleExport size_t RegisterPNGImage(void)
   *version='\0';
 
 #if defined(ZLIB_VERSION)
-  (void) ConcatenateMagickString(version,"zlib ",MaxTextExtent);
-  (void) ConcatenateMagickString(version,ZLIB_VERSION,MaxTextExtent);
+  (void) ConcatenateMagickString(version,"zlib ",MagickPathExtent);
+  (void) ConcatenateMagickString(version,ZLIB_VERSION,MagickPathExtent);
 
   if (LocaleCompare(ZLIB_VERSION,zlib_version) != 0)
     {
-      (void) ConcatenateMagickString(version,",",MaxTextExtent);
-      (void) ConcatenateMagickString(version,zlib_version,MaxTextExtent);
+      (void) ConcatenateMagickString(version,",",MagickPathExtent);
+      (void) ConcatenateMagickString(version,zlib_version,MagickPathExtent);
     }
 #endif
 
@@ -7687,7 +7687,7 @@ Magick_png_write_raw_profile(const ImageInfo *image_info,png_struct *ping,
 #endif
    text[0].key[0]='\0';
    (void) ConcatenateMagickString(text[0].key,
-      "Raw profile type ",MaxTextExtent);
+      "Raw profile type ",MagickPathExtent);
    (void) ConcatenateMagickString(text[0].key,(const char *) profile_type,62);
    sp=profile_data;
    dp=text[0].text;
@@ -7974,9 +7974,9 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
    */
   *im_vers='\0';
   (void) ConcatenateMagickString(im_vers,
-         MagickLibVersionText,MaxTextExtent);
+         MagickLibVersionText,MagickPathExtent);
   (void) ConcatenateMagickString(im_vers,
-         MagickLibAddendum,MaxTextExtent);
+         MagickLibAddendum,MagickPathExtent);
 
   *libpng_vers='\0';
   (void) ConcatenateMagickString(libpng_vers,
@@ -12204,13 +12204,13 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
       jpeg_image=SeparateImage(image,AlphaChannel,exception);
       if (jpeg_image == (Image *) NULL)
         ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
-      (void) CopyMagickString(jpeg_image->magick,"JPEG",MaxTextExtent);
+      (void) CopyMagickString(jpeg_image->magick,"JPEG",MagickPathExtent);
       jpeg_image->alpha_trait=UndefinedPixelTrait;
       jpeg_image->quality=jng_alpha_quality;
       jpeg_image_info->type=GrayscaleType;
       (void) SetImageType(jpeg_image,GrayscaleType,exception);
       (void) AcquireUniqueFilename(jpeg_image->filename);
-      (void) FormatLocaleString(jpeg_image_info->filename,MaxTextExtent,
+      (void) FormatLocaleString(jpeg_image_info->filename,MagickPathExtent,
         "%s",jpeg_image->filename);
     }
   else
@@ -12261,8 +12261,8 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "  Creating PNG blob.");
 
-          (void) CopyMagickString(jpeg_image_info->magick,"PNG",MaxTextExtent);
-          (void) CopyMagickString(jpeg_image->magick,"PNG",MaxTextExtent);
+          (void) CopyMagickString(jpeg_image_info->magick,"PNG",MagickPathExtent);
+          (void) CopyMagickString(jpeg_image->magick,"PNG",MagickPathExtent);
           jpeg_image_info->interlace=NoInterlace;
 
           /* Exclude all ancillary chunks */
@@ -12286,8 +12286,8 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
             ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
  
 
-          (void) CopyMagickString(jpeg_image_info->magick,"JPEG",MaxTextExtent);
-          (void) CopyMagickString(jpeg_image->magick,"JPEG",MaxTextExtent);
+          (void) CopyMagickString(jpeg_image_info->magick,"JPEG",MagickPathExtent);
+          (void) CopyMagickString(jpeg_image->magick,"JPEG",MagickPathExtent);
           jpeg_image_info->interlace=NoInterlace;
           if (logging != MagickFalse)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -12609,10 +12609,10 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
   jpeg_image=CloneImage(image,0,0,MagickTrue,exception);
   if (jpeg_image == (Image *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
-  (void) CopyMagickString(jpeg_image->magick,"JPEG",MaxTextExtent);
+  (void) CopyMagickString(jpeg_image->magick,"JPEG",MagickPathExtent);
 
   (void) AcquireUniqueFilename(jpeg_image->filename);
-  (void) FormatLocaleString(jpeg_image_info->filename,MaxTextExtent,"%s",
+  (void) FormatLocaleString(jpeg_image_info->filename,MagickPathExtent,"%s",
     jpeg_image->filename);
 
   status=OpenBlob(jpeg_image_info,jpeg_image,WriteBinaryBlobMode,
@@ -12631,8 +12631,8 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
 
   jpeg_image_info->quality=jng_quality;
   jpeg_image->quality=jng_quality;
-  (void) CopyMagickString(jpeg_image_info->magick,"JPEG",MaxTextExtent);
-  (void) CopyMagickString(jpeg_image->magick,"JPEG",MaxTextExtent);
+  (void) CopyMagickString(jpeg_image_info->magick,"JPEG",MagickPathExtent);
+  (void) CopyMagickString(jpeg_image->magick,"JPEG",MagickPathExtent);
 
   if (logging != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),

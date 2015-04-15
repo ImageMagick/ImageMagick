@@ -380,9 +380,9 @@ static inline void OpenCLLogException(const char* function,
                         ExceptionInfo* exception) {
 #ifdef OPENCLLOG_ENABLED
   if (exception->severity!=0) {
-    char message[MaxTextExtent];
+    char message[MagickPathExtent];
     /*  dump the source into a file */
-    (void) FormatLocaleString(message,MaxTextExtent,"%s:%d Exception(%d):%s "
+    (void) FormatLocaleString(message,MagickPathExtent,"%s:%d Exception(%d):%s "
         ,function,line,exception->severity,exception->reason);
     OpenCLLog(message);
   }

@@ -1109,7 +1109,7 @@ static void XEditText(Display *display,XWidgetInfo *text_info,
         {
           text_info->cursor--;
           (void) CopyMagickString(text_info->cursor,text_info->cursor+1,
-            MaxTextExtent);
+            MagickPathExtent);
           text_info->highlight=MagickFalse;
           break;
         }
@@ -1149,7 +1149,7 @@ static void XEditText(Display *display,XWidgetInfo *text_info,
         break;
       if (*text == '\0')
         break;
-      if ((Extent(text_info->text)+1) >= (int) MaxTextExtent)
+      if ((Extent(text_info->text)+1) >= (int) MagickPathExtent)
         (void) XBell(display,0);
       else
         {
@@ -1613,9 +1613,9 @@ MagickPrivate void XColorBrowserWidget(Display *display,XWindows *windows,
 
   char
     **colorlist,
-    primary_selection[MaxTextExtent],
-    reset_pattern[MaxTextExtent],
-    text[MaxTextExtent];
+    primary_selection[MagickPathExtent],
+    reset_pattern[MagickPathExtent],
+    text[MagickPathExtent];
 
   ExceptionInfo
     *exception;
@@ -1628,7 +1628,7 @@ MagickPrivate void XColorBrowserWidget(Display *display,XWindows *windows,
     i;
 
   static char
-    glob_pattern[MaxTextExtent] = "*";
+    glob_pattern[MagickPathExtent] = "*";
 
   static MagickStatusType
     mask = (MagickStatusType) (CWWidth | CWHeight | CWX | CWY);
@@ -1688,7 +1688,7 @@ MagickPrivate void XColorBrowserWidget(Display *display,XWindows *windows,
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",action);
   XSetCursorState(display,windows,MagickTrue);
   XCheckRefreshWindows(display,windows);
-  (void) CopyMagickString(reset_pattern,"*",MaxTextExtent);
+  (void) CopyMagickString(reset_pattern,"*",MagickPathExtent);
   exception=AcquireExceptionInfo();
   colorlist=GetColorList(glob_pattern,&colors,exception);
   if (colorlist == (char **) NULL)
@@ -1696,7 +1696,7 @@ MagickPrivate void XColorBrowserWidget(Display *display,XWindows *windows,
       /*
         Pattern failed, obtain all the colors.
       */
-      (void) CopyMagickString(glob_pattern,"*",MaxTextExtent);
+      (void) CopyMagickString(glob_pattern,"*",MagickPathExtent);
       colorlist=GetColorList(glob_pattern,&colors,exception);
       if (colorlist == (char **) NULL)
         {
@@ -1748,7 +1748,7 @@ MagickPrivate void XColorBrowserWidget(Display *display,XWindows *windows,
     Map Color Browser widget.
   */
   (void) CopyMagickString(windows->widget.name,"Browse and Select a Color",
-    MaxTextExtent);
+    MagickPathExtent);
   status=XStringListToTextProperty(&windows->widget.name,1,&window_name);
   if (status != False)
     {
@@ -1911,7 +1911,7 @@ MagickPrivate void XColorBrowserWidget(Display *display,XWindows *windows,
         (void) XDrawString(display,windows->widget.id,
           windows->widget.annotate_context,x,y,ColorPatternText,
           Extent(ColorPatternText));
-        (void) CopyMagickString(text_info.text,glob_pattern,MaxTextExtent);
+        (void) CopyMagickString(text_info.text,glob_pattern,MagickPathExtent);
         XDrawWidgetText(display,&windows->widget,&text_info);
         XDrawBeveledButton(display,&windows->widget,&grab_info);
         XDrawBeveledButton(display,&windows->widget,&reset_info);
@@ -1950,8 +1950,8 @@ MagickPrivate void XColorBrowserWidget(Display *display,XWindows *windows,
             /*
               Reply is a single color name-- exit.
             */
-            (void) CopyMagickString(reply,glob_pattern,MaxTextExtent);
-            (void) CopyMagickString(glob_pattern,reset_pattern,MaxTextExtent);
+            (void) CopyMagickString(reply,glob_pattern,MagickPathExtent);
+            (void) CopyMagickString(glob_pattern,reset_pattern,MagickPathExtent);
             action_info.raised=MagickFalse;
             XDrawBeveledButton(display,&windows->widget,&action_info);
             break;
@@ -1962,7 +1962,7 @@ MagickPrivate void XColorBrowserWidget(Display *display,XWindows *windows,
         checklist=GetColorList(glob_pattern,&number_colors,exception);
         if (number_colors == 0)
           {
-            (void) CopyMagickString(glob_pattern,reset_pattern,MaxTextExtent);
+            (void) CopyMagickString(glob_pattern,reset_pattern,MagickPathExtent);
             (void) XBell(display,0);
           }
         else
@@ -1995,7 +1995,7 @@ MagickPrivate void XColorBrowserWidget(Display *display,XWindows *windows,
         */
         *reply_info.text='\0';
         reply_info.cursor=reply_info.text;
-        (void) CopyMagickString(text_info.text,glob_pattern,MaxTextExtent);
+        (void) CopyMagickString(text_info.text,glob_pattern,MagickPathExtent);
         XDrawWidgetText(display,&windows->widget,&text_info);
         XDrawMatteText(display,&windows->widget,&reply_info);
         XDrawBeveledMatte(display,&windows->widget,&scroll_info);
@@ -2080,7 +2080,7 @@ MagickPrivate void XColorBrowserWidget(Display *display,XWindows *windows,
     if (state & RedrawActionState)
       {
         static char
-          colorname[MaxTextExtent];
+          colorname[MagickPathExtent];
 
         /*
           Display the selected color in a drawing area.
@@ -2092,7 +2092,7 @@ MagickPrivate void XColorBrowserWidget(Display *display,XWindows *windows,
           (unsigned int) windows->widget.visual_info->colormap_size,
           &windows->widget.pixel_info->matte_color);
         mode_info.text=colorname;
-        (void) FormatLocaleString(mode_info.text,MaxTextExtent,"#%02x%02x%02x",
+        (void) FormatLocaleString(mode_info.text,MagickPathExtent,"#%02x%02x%02x",
           windows->widget.pixel_info->matte_color.red,
           windows->widget.pixel_info->matte_color.green,
           windows->widget.pixel_info->matte_color.blue);
@@ -2193,7 +2193,7 @@ MagickPrivate void XColorBrowserWidget(Display *display,XWindows *windows,
             if (id >= (int) colors)
               break;
             (void) CopyMagickString(reply_info.text,colorlist[id],
-              MaxTextExtent);
+              MagickPathExtent);
             reply_info.highlight=MagickFalse;
             reply_info.marker=reply_info.text;
             reply_info.cursor=reply_info.text+Extent(reply_info.text);
@@ -2202,7 +2202,7 @@ MagickPrivate void XColorBrowserWidget(Display *display,XWindows *windows,
             if (id == list_info.id)
               {
                 (void) CopyMagickString(glob_pattern,reply_info.text,
-                  MaxTextExtent);
+                  MagickPathExtent);
                 state|=UpdateListState;
               }
             selection_info.id=(~0);
@@ -2235,9 +2235,9 @@ MagickPrivate void XColorBrowserWidget(Display *display,XWindows *windows,
             */
             if (mode_info.text != (char *) NULL)
               (void) CopyMagickString(reply_info.text,mode_info.text,
-                MaxTextExtent);
+                MagickPathExtent);
             (void) CopyMagickString(primary_selection,reply_info.text,
-              MaxTextExtent);
+              MagickPathExtent);
             (void) XSetSelectionOwner(display,XA_PRIMARY,windows->widget.id,
               event.xbutton.time);
             reply_info.highlight=XGetSelectionOwner(display,XA_PRIMARY) ==
@@ -2288,7 +2288,7 @@ MagickPrivate void XColorBrowserWidget(Display *display,XWindows *windows,
                   Become the XA_PRIMARY selection owner.
                 */
                 (void) CopyMagickString(primary_selection,reply_info.text,
-                  MaxTextExtent);
+                  MagickPathExtent);
                 (void) XSetSelectionOwner(display,XA_PRIMARY,windows->widget.id,
                   event.xbutton.time);
                 reply_info.highlight=XGetSelectionOwner(display,XA_PRIMARY) ==
@@ -2359,7 +2359,7 @@ MagickPrivate void XColorBrowserWidget(Display *display,XWindows *windows,
               if (MatteIsActive(reset_info,event.xbutton))
                 {
                   (void) CopyMagickString(glob_pattern,reset_pattern,
-                    MaxTextExtent);
+                    MagickPathExtent);
                   state|=UpdateListState;
                 }
             reset_info.raised=MagickTrue;
@@ -2454,7 +2454,7 @@ MagickPrivate void XColorBrowserWidget(Display *display,XWindows *windows,
       case KeyPress:
       {
         static char
-          command[MaxTextExtent];
+          command[MagickPathExtent];
 
         static int
           length;
@@ -2524,7 +2524,7 @@ MagickPrivate void XColorBrowserWidget(Display *display,XWindows *windows,
             */
             if (*reply_info.text == '\0')
               break;
-            (void) CopyMagickString(glob_pattern,reply_info.text,MaxTextExtent);
+            (void) CopyMagickString(glob_pattern,reply_info.text,MagickPathExtent);
             state|=UpdateListState;
             break;
           }
@@ -2563,7 +2563,7 @@ MagickPrivate void XColorBrowserWidget(Display *display,XWindows *windows,
       case KeyRelease:
       {
         static char
-          command[MaxTextExtent];
+          command[MagickPathExtent];
 
         static KeySym
           key_symbol;
@@ -2690,7 +2690,7 @@ MagickPrivate void XColorBrowserWidget(Display *display,XWindows *windows,
         if ((status != Success) || (type != XA_STRING) || (format == 32) ||
             (length == 0))
           break;
-        if ((Extent(reply_info.text)+length) >= (MaxTextExtent-1))
+        if ((Extent(reply_info.text)+length) >= (MagickPathExtent-1))
           (void) XBell(display,0);
         else
           {
@@ -2759,7 +2759,7 @@ MagickPrivate void XColorBrowserWidget(Display *display,XWindows *windows,
   if (status != False)
     return;
   XNoticeWidget(display,windows,"Color is unknown to X server:",reply);
-  (void) CopyMagickString(reply,"gray",MaxTextExtent);
+  (void) CopyMagickString(reply,"gray",MagickPathExtent);
 }
 
 /*
@@ -3300,7 +3300,7 @@ MagickPrivate int XConfirmWidget(Display *display,XWindows *windows,
   /*
     Map Confirm widget.
   */
-  (void) CopyMagickString(windows->widget.name,"Confirm",MaxTextExtent);
+  (void) CopyMagickString(windows->widget.name,"Confirm",MagickPathExtent);
   status=XStringListToTextProperty(&windows->widget.name,1,&window_name);
   if (status != False)
     {
@@ -3368,10 +3368,10 @@ MagickPrivate int XConfirmWidget(Display *display,XWindows *windows,
         if (description != (char *) NULL)
           {
             char
-              question[MaxTextExtent];
+              question[MagickPathExtent];
 
-            (void) CopyMagickString(question,description,MaxTextExtent);
-            (void) ConcatenateMagickString(question,"?",MaxTextExtent);
+            (void) CopyMagickString(question,description,MagickPathExtent);
+            (void) ConcatenateMagickString(question,"?",MagickPathExtent);
             width=WidgetTextWidth(font_info,question);
             x=(int) ((windows->widget.width >> 1)-(width >> 1));
             y+=height;
@@ -3518,7 +3518,7 @@ MagickPrivate int XConfirmWidget(Display *display,XWindows *windows,
       case KeyPress:
       {
         static char
-          command[MaxTextExtent];
+          command[MagickPathExtent];
 
         static KeySym
           key_symbol;
@@ -3637,7 +3637,7 @@ MagickPrivate int XDialogWidget(Display *display,XWindows *windows,
 #define CancelButtonText  "Cancel"
 
   char
-    primary_selection[MaxTextExtent];
+    primary_selection[MagickPathExtent];
 
   int
     x;
@@ -3714,7 +3714,7 @@ MagickPrivate int XDialogWidget(Display *display,XWindows *windows,
   /*
     Map Dialog widget.
   */
-  (void) CopyMagickString(windows->widget.name,"Dialog",MaxTextExtent);
+  (void) CopyMagickString(windows->widget.name,"Dialog",MagickPathExtent);
   status=XStringListToTextProperty(&windows->widget.name,1,&window_name);
   if (status != False)
     {
@@ -3876,7 +3876,7 @@ MagickPrivate int XDialogWidget(Display *display,XWindows *windows,
                   Become the XA_PRIMARY selection owner.
                 */
                 (void) CopyMagickString(primary_selection,reply_info.text,
-                  MaxTextExtent);
+                  MagickPathExtent);
                 (void) XSetSelectionOwner(display,XA_PRIMARY,windows->widget.id,
                   event.xbutton.time);
                 reply_info.highlight=XGetSelectionOwner(display,XA_PRIMARY) ==
@@ -3977,7 +3977,7 @@ MagickPrivate int XDialogWidget(Display *display,XWindows *windows,
       case KeyPress:
       {
         static char
-          command[MaxTextExtent];
+          command[MagickPathExtent];
 
         static int
           length;
@@ -4030,7 +4030,7 @@ MagickPrivate int XDialogWidget(Display *display,XWindows *windows,
       case KeyRelease:
       {
         static char
-          command[MaxTextExtent];
+          command[MagickPathExtent];
 
         static KeySym
           key_symbol;
@@ -4115,7 +4115,7 @@ MagickPrivate int XDialogWidget(Display *display,XWindows *windows,
         if ((status != Success) || (type != XA_STRING) || (format == 32) ||
             (length == 0))
           break;
-        if ((Extent(reply_info.text)+length) >= (MaxTextExtent-1))
+        if ((Extent(reply_info.text)+length) >= (MagickPathExtent-1))
           (void) XBell(display,0);
         else
           {
@@ -4220,10 +4220,10 @@ MagickPrivate void XFileBrowserWidget(Display *display,XWindows *windows,
   char
     *directory,
     **filelist,
-    home_directory[MaxTextExtent],
-    primary_selection[MaxTextExtent],
-    text[MaxTextExtent],
-    working_path[MaxTextExtent];
+    home_directory[MagickPathExtent],
+    primary_selection[MagickPathExtent],
+    text[MagickPathExtent],
+    working_path[MagickPathExtent];
 
   int
     x,
@@ -4233,8 +4233,8 @@ MagickPrivate void XFileBrowserWidget(Display *display,XWindows *windows,
     i;
 
   static char
-    glob_pattern[MaxTextExtent] = "*",
-    format[MaxTextExtent] = "miff";
+    glob_pattern[MagickPathExtent] = "*",
+    format[MagickPathExtent] = "miff";
 
   static MagickStatusType
     mask = (MagickStatusType) (CWWidth | CWHeight | CWX | CWY);
@@ -4292,9 +4292,9 @@ MagickPrivate void XFileBrowserWidget(Display *display,XWindows *windows,
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",action);
   XSetCursorState(display,windows,MagickTrue);
   XCheckRefreshWindows(display,windows);
-  directory=getcwd(home_directory,MaxTextExtent);
+  directory=getcwd(home_directory,MagickPathExtent);
   (void) directory;
-  (void) CopyMagickString(working_path,home_directory,MaxTextExtent);
+  (void) CopyMagickString(working_path,home_directory,MagickPathExtent);
   filelist=ListFiles(working_path,glob_pattern,&files);
   if (filelist == (char **) NULL)
     {
@@ -4349,7 +4349,7 @@ MagickPrivate void XFileBrowserWidget(Display *display,XWindows *windows,
     Map File Browser widget.
   */
   (void) CopyMagickString(windows->widget.name,"Browse and Select a File",
-    MaxTextExtent);
+    MagickPathExtent);
   status=XStringListToTextProperty(&windows->widget.name,1,&window_name);
   if (status != False)
     {
@@ -4417,7 +4417,7 @@ MagickPrivate void XFileBrowserWidget(Display *display,XWindows *windows,
             while ((p > (reply+1)) && (*(p-1) != '.'))
               p--;
             if ((p > (reply+1)) && (*(p-1) == '.'))
-              (void) CopyMagickString(format,p,MaxTextExtent);
+              (void) CopyMagickString(format,p,MagickPathExtent);
           }
         XGetWidgetInfo(UpButtonText,&up_info);
         up_info.width=width;
@@ -4521,11 +4521,11 @@ MagickPrivate void XFileBrowserWidget(Display *display,XWindows *windows,
         (void) XDrawString(display,windows->widget.id,
           windows->widget.annotate_context,x,y,DirectoryText,
           Extent(DirectoryText));
-        (void) CopyMagickString(text_info.text,working_path,MaxTextExtent);
+        (void) CopyMagickString(text_info.text,working_path,MagickPathExtent);
         (void) ConcatenateMagickString(text_info.text,DirectorySeparator,
-          MaxTextExtent);
+          MagickPathExtent);
         (void) ConcatenateMagickString(text_info.text,glob_pattern,
-          MaxTextExtent);
+          MagickPathExtent);
         XDrawWidgetText(display,&windows->widget,&text_info);
         XDrawBeveledButton(display,&windows->widget,&up_info);
         XDrawBeveledButton(display,&windows->widget,&home_info);
@@ -4600,11 +4600,11 @@ MagickPrivate void XFileBrowserWidget(Display *display,XWindows *windows,
             *reply_info.text='\0';
             reply_info.cursor=reply_info.text;
           }
-        (void) CopyMagickString(text_info.text,working_path,MaxTextExtent);
+        (void) CopyMagickString(text_info.text,working_path,MagickPathExtent);
         (void) ConcatenateMagickString(text_info.text,DirectorySeparator,
-          MaxTextExtent);
+          MagickPathExtent);
         (void) ConcatenateMagickString(text_info.text,glob_pattern,
-          MaxTextExtent);
+          MagickPathExtent);
         XDrawWidgetText(display,&windows->widget,&text_info);
         XDrawMatteText(display,&windows->widget,&reply_info);
         XDrawBeveledMatte(display,&windows->widget,&scroll_info);
@@ -4779,7 +4779,7 @@ MagickPrivate void XFileBrowserWidget(Display *display,XWindows *windows,
               selection_info.height;
             if (id >= (int) files)
               break;
-            (void) CopyMagickString(reply_info.text,filelist[id],MaxTextExtent);
+            (void) CopyMagickString(reply_info.text,filelist[id],MagickPathExtent);
             reply_info.highlight=MagickFalse;
             reply_info.marker=reply_info.text;
             reply_info.cursor=reply_info.text+Extent(reply_info.text);
@@ -4793,9 +4793,9 @@ MagickPrivate void XFileBrowserWidget(Display *display,XWindows *windows,
                 if (*p == *DirectorySeparator)
                   ChopPathComponents(reply_info.text,1);
                 (void) ConcatenateMagickString(working_path,DirectorySeparator,
-                  MaxTextExtent);
+                  MagickPathExtent);
                 (void) ConcatenateMagickString(working_path,reply_info.text,
-                  MaxTextExtent);
+                  MagickPathExtent);
                 *reply='\0';
                 state|=UpdateListState;
               }
@@ -4872,7 +4872,7 @@ MagickPrivate void XFileBrowserWidget(Display *display,XWindows *windows,
                   Become the XA_PRIMARY selection owner.
                 */
                 (void) CopyMagickString(primary_selection,reply_info.text,
-                  MaxTextExtent);
+                  MagickPathExtent);
                 (void) XSetSelectionOwner(display,XA_PRIMARY,windows->widget.id,
                   event.xbutton.time);
                 reply_info.highlight=XGetSelectionOwner(display,XA_PRIMARY) ==
@@ -4927,7 +4927,7 @@ MagickPrivate void XFileBrowserWidget(Display *display,XWindows *windows,
                   ChopPathComponents(working_path,1);
                   if (*working_path == '\0')
                     (void) CopyMagickString(working_path,DirectorySeparator,
-                      MaxTextExtent);
+                      MagickPathExtent);
                   state|=UpdateListState;
                 }
             up_info.raised=MagickTrue;
@@ -4939,7 +4939,7 @@ MagickPrivate void XFileBrowserWidget(Display *display,XWindows *windows,
               if (MatteIsActive(home_info,event.xbutton))
                 {
                   (void) CopyMagickString(working_path,home_directory,
-                    MaxTextExtent);
+                    MagickPathExtent);
                   state|=UpdateListState;
                 }
             home_info.raised=MagickTrue;
@@ -4988,7 +4988,7 @@ MagickPrivate void XFileBrowserWidget(Display *display,XWindows *windows,
             if (event.xbutton.window == windows->widget.id)
               if (MatteIsActive(special_info,event.xbutton))
                 {
-                  (void) CopyMagickString(working_path,"x:",MaxTextExtent);
+                  (void) CopyMagickString(working_path,"x:",MagickPathExtent);
                   state|=ExitState;
                 }
             special_info.raised=MagickTrue;
@@ -5082,7 +5082,7 @@ MagickPrivate void XFileBrowserWidget(Display *display,XWindows *windows,
       case KeyPress:
       {
         static char
-          command[MaxTextExtent];
+          command[MagickPathExtent];
 
         static int
           length;
@@ -5154,13 +5154,13 @@ MagickPrivate void XFileBrowserWidget(Display *display,XWindows *windows,
               break;
             if (IsGlob(reply_info.text))
               (void) CopyMagickString(glob_pattern,reply_info.text,
-                MaxTextExtent);
+                MagickPathExtent);
             else
               {
                 (void) ConcatenateMagickString(working_path,DirectorySeparator,
-                  MaxTextExtent);
+                  MagickPathExtent);
                 (void) ConcatenateMagickString(working_path,reply_info.text,
-                  MaxTextExtent);
+                  MagickPathExtent);
                 if (*working_path == '~')
                   ExpandFilename(working_path);
                 *reply='\0';
@@ -5199,7 +5199,7 @@ MagickPrivate void XFileBrowserWidget(Display *display,XWindows *windows,
       case KeyRelease:
       {
         static char
-          command[MaxTextExtent];
+          command[MagickPathExtent];
 
         static KeySym
           key_symbol;
@@ -5335,7 +5335,7 @@ MagickPrivate void XFileBrowserWidget(Display *display,XWindows *windows,
         if ((status != Success) || (type != XA_STRING) || (format == 32) ||
             (length == 0))
           break;
-        if ((Extent(reply_info.text)+length) >= (MaxTextExtent-1))
+        if ((Extent(reply_info.text)+length) >= (MagickPathExtent-1))
           (void) XBell(display,0);
         else
           {
@@ -5399,10 +5399,10 @@ MagickPrivate void XFileBrowserWidget(Display *display,XWindows *windows,
   if (*reply != '\0')
     {
       (void) ConcatenateMagickString(working_path,DirectorySeparator,
-        MaxTextExtent);
-      (void) ConcatenateMagickString(working_path,reply,MaxTextExtent);
+        MagickPathExtent);
+      (void) ConcatenateMagickString(working_path,reply,MagickPathExtent);
     }
-  (void) CopyMagickString(reply,working_path,MaxTextExtent);
+  (void) CopyMagickString(reply,working_path,MagickPathExtent);
   if (*reply == '~')
     ExpandFilename(reply);
 }
@@ -5475,12 +5475,12 @@ MagickPrivate void XFontBrowserWidget(Display *display,XWindows *windows,
 #define ResetButtonText  "Reset"
 
   char
-    back_pattern[MaxTextExtent],
+    back_pattern[MagickPathExtent],
     **fontlist,
     **listhead,
-    primary_selection[MaxTextExtent],
-    reset_pattern[MaxTextExtent],
-    text[MaxTextExtent];
+    primary_selection[MagickPathExtent],
+    reset_pattern[MagickPathExtent],
+    text[MagickPathExtent];
 
   int
     fonts,
@@ -5491,7 +5491,7 @@ MagickPrivate void XFontBrowserWidget(Display *display,XWindows *windows,
     i;
 
   static char
-    glob_pattern[MaxTextExtent] = "*";
+    glob_pattern[MagickPathExtent] = "*";
 
   static MagickStatusType
     mask = (MagickStatusType) (CWWidth | CWHeight | CWX | CWY);
@@ -5547,8 +5547,8 @@ MagickPrivate void XFontBrowserWidget(Display *display,XWindows *windows,
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",action);
   XSetCursorState(display,windows,MagickTrue);
   XCheckRefreshWindows(display,windows);
-  (void) CopyMagickString(back_pattern,glob_pattern,MaxTextExtent);
-  (void) CopyMagickString(reset_pattern,"*",MaxTextExtent);
+  (void) CopyMagickString(back_pattern,glob_pattern,MagickPathExtent);
+  (void) CopyMagickString(reset_pattern,"*",MagickPathExtent);
   fontlist=XListFonts(display,glob_pattern,32767,&fonts);
   if (fonts == 0)
     {
@@ -5557,7 +5557,7 @@ MagickPrivate void XFontBrowserWidget(Display *display,XWindows *windows,
       */
       XNoticeWidget(display,windows,"Unable to obtain fonts names:",
         glob_pattern);
-      (void) CopyMagickString(glob_pattern,"*",MaxTextExtent);
+      (void) CopyMagickString(glob_pattern,"*",MagickPathExtent);
       fontlist=XListFonts(display,glob_pattern,32767,&fonts);
       if (fontlist == (char **) NULL)
         {
@@ -5620,7 +5620,7 @@ MagickPrivate void XFontBrowserWidget(Display *display,XWindows *windows,
     Map Font Browser widget.
   */
   (void) CopyMagickString(windows->widget.name,"Browse and Select a Font",
-    MaxTextExtent);
+    MagickPathExtent);
   status=XStringListToTextProperty(&windows->widget.name,1,&window_name);
   if (status != False)
     {
@@ -5780,7 +5780,7 @@ MagickPrivate void XFontBrowserWidget(Display *display,XWindows *windows,
         (void) XDrawString(display,windows->widget.id,
           windows->widget.annotate_context,x,y,FontPatternText,
           Extent(FontPatternText));
-        (void) CopyMagickString(text_info.text,glob_pattern,MaxTextExtent);
+        (void) CopyMagickString(text_info.text,glob_pattern,MagickPathExtent);
         XDrawWidgetText(display,&windows->widget,&text_info);
         XDrawBeveledButton(display,&windows->widget,&back_info);
         XDrawBeveledButton(display,&windows->widget,&reset_info);
@@ -5824,13 +5824,13 @@ MagickPrivate void XFontBrowserWidget(Display *display,XWindows *windows,
                 /*
                   Might be a scaleable font-- exit.
                 */
-                (void) CopyMagickString(reply,glob_pattern,MaxTextExtent);
-                (void) CopyMagickString(glob_pattern,back_pattern,MaxTextExtent);
+                (void) CopyMagickString(reply,glob_pattern,MagickPathExtent);
+                (void) CopyMagickString(glob_pattern,back_pattern,MagickPathExtent);
                 action_info.raised=MagickFalse;
                 XDrawBeveledButton(display,&windows->widget,&action_info);
                 break;
               }
-            (void) CopyMagickString(glob_pattern,back_pattern,MaxTextExtent);
+            (void) CopyMagickString(glob_pattern,back_pattern,MagickPathExtent);
             (void) XBell(display,0);
           }
         else
@@ -5839,8 +5839,8 @@ MagickPrivate void XFontBrowserWidget(Display *display,XWindows *windows,
               /*
                 Reply is a single font name-- exit.
               */
-              (void) CopyMagickString(reply,checklist[0],MaxTextExtent);
-              (void) CopyMagickString(glob_pattern,back_pattern,MaxTextExtent);
+              (void) CopyMagickString(reply,checklist[0],MagickPathExtent);
+              (void) CopyMagickString(glob_pattern,back_pattern,MagickPathExtent);
               (void) XFreeFontNames(checklist);
               action_info.raised=MagickFalse;
               XDrawBeveledButton(display,&windows->widget,&action_info);
@@ -5885,7 +5885,7 @@ MagickPrivate void XFontBrowserWidget(Display *display,XWindows *windows,
         */
         *reply_info.text='\0';
         reply_info.cursor=reply_info.text;
-        (void) CopyMagickString(text_info.text,glob_pattern,MaxTextExtent);
+        (void) CopyMagickString(text_info.text,glob_pattern,MagickPathExtent);
         XDrawWidgetText(display,&windows->widget,&text_info);
         XDrawMatteText(display,&windows->widget,&reply_info);
         XDrawBeveledMatte(display,&windows->widget,&scroll_info);
@@ -6086,7 +6086,7 @@ MagickPrivate void XFontBrowserWidget(Display *display,XWindows *windows,
               selection_info.height;
             if (id >= (int) fonts)
               break;
-            (void) CopyMagickString(reply_info.text,fontlist[id],MaxTextExtent);
+            (void) CopyMagickString(reply_info.text,fontlist[id],MagickPathExtent);
             reply_info.highlight=MagickFalse;
             reply_info.marker=reply_info.text;
             reply_info.cursor=reply_info.text+Extent(reply_info.text);
@@ -6095,7 +6095,7 @@ MagickPrivate void XFontBrowserWidget(Display *display,XWindows *windows,
             if (id == list_info.id)
               {
                 (void) CopyMagickString(glob_pattern,reply_info.text,
-                  MaxTextExtent);
+                  MagickPathExtent);
                 state|=UpdateListState;
               }
             selection_info.id=(~0);
@@ -6162,7 +6162,7 @@ MagickPrivate void XFontBrowserWidget(Display *display,XWindows *windows,
                   Become the XA_PRIMARY selection owner.
                 */
                 (void) CopyMagickString(primary_selection,reply_info.text,
-                  MaxTextExtent);
+                  MagickPathExtent);
                 (void) XSetSelectionOwner(display,XA_PRIMARY,windows->widget.id,
                   event.xbutton.time);
                 reply_info.highlight=XGetSelectionOwner(display,XA_PRIMARY) ==
@@ -6215,7 +6215,7 @@ MagickPrivate void XFontBrowserWidget(Display *display,XWindows *windows,
               if (MatteIsActive(back_info,event.xbutton))
                 {
                   (void) CopyMagickString(glob_pattern,back_pattern,
-                    MaxTextExtent);
+                    MagickPathExtent);
                   state|=UpdateListState;
                 }
             back_info.raised=MagickTrue;
@@ -6226,8 +6226,8 @@ MagickPrivate void XFontBrowserWidget(Display *display,XWindows *windows,
             if (event.xbutton.window == windows->widget.id)
               if (MatteIsActive(reset_info,event.xbutton))
                 {
-                  (void) CopyMagickString(back_pattern,glob_pattern,MaxTextExtent);
-                  (void) CopyMagickString(glob_pattern,reset_pattern,MaxTextExtent);
+                  (void) CopyMagickString(back_pattern,glob_pattern,MagickPathExtent);
+                  (void) CopyMagickString(glob_pattern,reset_pattern,MagickPathExtent);
                   state|=UpdateListState;
                 }
             reset_info.raised=MagickTrue;
@@ -6320,7 +6320,7 @@ MagickPrivate void XFontBrowserWidget(Display *display,XWindows *windows,
       case KeyPress:
       {
         static char
-          command[MaxTextExtent];
+          command[MagickPathExtent];
 
         static int
           length;
@@ -6390,8 +6390,8 @@ MagickPrivate void XFontBrowserWidget(Display *display,XWindows *windows,
             */
             if (*reply_info.text == '\0')
               break;
-            (void) CopyMagickString(back_pattern,glob_pattern,MaxTextExtent);
-            (void) CopyMagickString(glob_pattern,reply_info.text,MaxTextExtent);
+            (void) CopyMagickString(back_pattern,glob_pattern,MagickPathExtent);
+            (void) CopyMagickString(glob_pattern,reply_info.text,MagickPathExtent);
             state|=UpdateListState;
             break;
           }
@@ -6426,7 +6426,7 @@ MagickPrivate void XFontBrowserWidget(Display *display,XWindows *windows,
       case KeyRelease:
       {
         static char
-          command[MaxTextExtent];
+          command[MagickPathExtent];
 
         static KeySym
           key_symbol;
@@ -6553,7 +6553,7 @@ MagickPrivate void XFontBrowserWidget(Display *display,XWindows *windows,
         if ((status != Success) || (type != XA_STRING) || (format == 32) ||
             (length == 0))
           break;
-        if ((Extent(reply_info.text)+length) >= (MaxTextExtent-1))
+        if ((Extent(reply_info.text)+length) >= (MagickPathExtent-1))
           (void) XBell(display,0);
         else
           {
@@ -6750,7 +6750,7 @@ MagickPrivate void XListBrowserWidget(Display *display,XWindows *windows,
 #define CancelButtonText  "Cancel"
 
   char
-    primary_selection[MaxTextExtent];
+    primary_selection[MagickPathExtent];
 
   int
     x;
@@ -6852,7 +6852,7 @@ MagickPrivate void XListBrowserWidget(Display *display,XWindows *windows,
   /*
     Map List Browser widget.
   */
-  (void) CopyMagickString(window_info->name,"Browse",MaxTextExtent);
+  (void) CopyMagickString(window_info->name,"Browse",MagickPathExtent);
   status=XStringListToTextProperty(&window_info->name,1,&window_name);
   if (status != False)
     {
@@ -7154,7 +7154,7 @@ MagickPrivate void XListBrowserWidget(Display *display,XWindows *windows,
               selection_info.height;
             if (id >= (int) entries)
               break;
-            (void) CopyMagickString(reply_info.text,list[id],MaxTextExtent);
+            (void) CopyMagickString(reply_info.text,list[id],MagickPathExtent);
             reply_info.highlight=MagickFalse;
             reply_info.marker=reply_info.text;
             reply_info.cursor=reply_info.text+Extent(reply_info.text);
@@ -7211,7 +7211,7 @@ MagickPrivate void XListBrowserWidget(Display *display,XWindows *windows,
                   Become the XA_PRIMARY selection owner.
                 */
                 (void) CopyMagickString(primary_selection,reply_info.text,
-                  MaxTextExtent);
+                  MagickPathExtent);
                 (void) XSetSelectionOwner(display,XA_PRIMARY,window_info->id,
                   event.xbutton.time);
                 reply_info.highlight=XGetSelectionOwner(display,XA_PRIMARY) ==
@@ -7347,7 +7347,7 @@ MagickPrivate void XListBrowserWidget(Display *display,XWindows *windows,
       case KeyPress:
       {
         static char
-          command[MaxTextExtent];
+          command[MagickPathExtent];
 
         static int
           length;
@@ -7452,7 +7452,7 @@ MagickPrivate void XListBrowserWidget(Display *display,XWindows *windows,
       case KeyRelease:
       {
         static char
-          command[MaxTextExtent];
+          command[MagickPathExtent];
 
         static KeySym
           key_symbol;
@@ -7561,7 +7561,7 @@ MagickPrivate void XListBrowserWidget(Display *display,XWindows *windows,
         if ((status != Success) || (type != XA_STRING) || (format == 32) ||
             (length == 0))
           break;
-        if ((Extent(reply_info.text)+length) >= (MaxTextExtent-1))
+        if ((Extent(reply_info.text)+length) >= (MagickPathExtent-1))
           (void) XBell(display,0);
         else
           {
@@ -8049,7 +8049,7 @@ MagickPrivate int XMenuWidget(Display *display,XWindows *windows,
     }
   if ((selection_info.id < 0) || (selection_info.id >= (int) number_selections))
     return(~0);
-  (void) CopyMagickString(item,selections[selection_info.id],MaxTextExtent);
+  (void) CopyMagickString(item,selections[selection_info.id],MagickPathExtent);
   return(selection_info.id);
 }
 
@@ -8165,7 +8165,7 @@ MagickPrivate void XNoticeWidget(Display *display,XWindows *windows,
   /*
     Map Notice widget.
   */
-  (void) CopyMagickString(windows->widget.name,"Notice",MaxTextExtent);
+  (void) CopyMagickString(windows->widget.name,"Notice",MagickPathExtent);
   status=XStringListToTextProperty(&windows->widget.name,1,&window_name);
   if (status != False)
     {
@@ -8327,7 +8327,7 @@ MagickPrivate void XNoticeWidget(Display *display,XWindows *windows,
       case KeyPress:
       {
         static char
-          command[MaxTextExtent];
+          command[MagickPathExtent];
 
         static KeySym
           key_symbol;
@@ -8436,7 +8436,7 @@ MagickPrivate MagickBooleanType XPreferencesWidget(Display *display,
     };
 
   char
-    cache[MaxTextExtent];
+    cache[MagickPathExtent];
 
   int
     x,
@@ -8510,7 +8510,7 @@ MagickPrivate MagickBooleanType XPreferencesWidget(Display *display,
   /*
     Map Preferences widget.
   */
-  (void) CopyMagickString(windows->widget.name,"Preferences",MaxTextExtent);
+  (void) CopyMagickString(windows->widget.name,"Preferences",MagickPathExtent);
   status=XStringListToTextProperty(&windows->widget.name,1,&window_name);
   if (status != False)
     {
@@ -8578,7 +8578,7 @@ MagickPrivate MagickBooleanType XPreferencesWidget(Display *display,
           SharedColormap ? MagickTrue : MagickFalse;
         preferences_info[7].raised=resource_info->use_pixmap ==
           MagickFalse ? MagickTrue : MagickFalse;
-        (void) FormatLocaleString(cache,MaxTextExtent,CacheButtonText,
+        (void) FormatLocaleString(cache,MagickPathExtent,CacheButtonText,
           (unsigned long) resource_info->undo_cache);
         XGetWidgetInfo(cache,&cache_info);
         cache_info.bevel_width--;
@@ -8652,7 +8652,7 @@ MagickPrivate MagickBooleanType XPreferencesWidget(Display *display,
             resource_info->undo_cache<<=1;
             if (resource_info->undo_cache > 256)
               resource_info->undo_cache=1;
-            (void) FormatLocaleString(cache,MaxTextExtent,CacheButtonText,
+            (void) FormatLocaleString(cache,MagickPathExtent,CacheButtonText,
               (unsigned long) resource_info->undo_cache);
             cache_info.raised=MagickFalse;
             XDrawTriangleEast(display,&windows->widget,&cache_info);
@@ -8746,7 +8746,7 @@ MagickPrivate MagickBooleanType XPreferencesWidget(Display *display,
       case KeyPress:
       {
         static char
-          command[MaxTextExtent];
+          command[MagickPathExtent];
 
         static KeySym
           key_symbol;
@@ -8960,7 +8960,7 @@ MagickPrivate void XTextViewWidget(Display *display,
 #define DismissButtonText  "Dismiss"
 
   char
-    primary_selection[MaxTextExtent];
+    primary_selection[MagickPathExtent];
 
   register int
     i;
@@ -9057,7 +9057,7 @@ MagickPrivate void XTextViewWidget(Display *display,
   /*
     Map Text View widget.
   */
-  (void) CopyMagickString(windows->widget.name,title,MaxTextExtent);
+  (void) CopyMagickString(windows->widget.name,title,MagickPathExtent);
   status=XStringListToTextProperty(&windows->widget.name,1,&window_name);
   if (status != False)
     {
@@ -9364,7 +9364,7 @@ MagickPrivate void XTextViewWidget(Display *display,
               Become the XA_PRIMARY selection owner.
             */
             (void) CopyMagickString(primary_selection,textlist[list_info.id],
-              MaxTextExtent);
+              MagickPathExtent);
             (void) XSetSelectionOwner(display,XA_PRIMARY,windows->widget.id,
               event.xbutton.time);
             if (XGetSelectionOwner(display,XA_PRIMARY) != windows->widget.id)
@@ -9474,7 +9474,7 @@ MagickPrivate void XTextViewWidget(Display *display,
       case KeyPress:
       {
         static char
-          command[MaxTextExtent];
+          command[MagickPathExtent];
 
         static int
           length;

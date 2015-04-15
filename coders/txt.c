@@ -104,7 +104,7 @@ static MagickBooleanType IsTXT(const unsigned char *magick,const size_t length)
 #define MagickID  "# ImageMagick pixel enumeration:"
 
   char
-    colorspace[MaxTextExtent];
+    colorspace[MagickPathExtent];
 
   ssize_t
     count;
@@ -160,8 +160,8 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,Image *image,
   char *text,ExceptionInfo *exception)
 {
   char
-    filename[MaxTextExtent],
-    geometry[MaxTextExtent],
+    filename[MagickPathExtent],
+    geometry[MagickPathExtent],
     *p;
 
   DrawInfo
@@ -241,7 +241,7 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,Image *image,
       read_info=CloneImageInfo(image_info);
       SetImageInfoBlob(read_info,(void *) NULL,0);
       (void) CopyMagickString(read_info->filename,image_info->texture,
-        MaxTextExtent);
+        MagickPathExtent);
       texture=ReadImage(read_info,exception);
       read_info=DestroyImageInfo(read_info);
     }
@@ -251,17 +251,17 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,Image *image,
   (void) SetImageBackgroundColor(image,exception);
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
   (void) CloneString(&draw_info->text,image_info->filename);
-  (void) FormatLocaleString(geometry,MaxTextExtent,"0x0%+ld%+ld",(long) page.x,
+  (void) FormatLocaleString(geometry,MagickPathExtent,"0x0%+ld%+ld",(long) page.x,
     (long) page.y);
   (void) CloneString(&draw_info->geometry,geometry);
   status=GetTypeMetrics(image,draw_info,&metrics,exception);
   if (status == MagickFalse)
     ThrowReaderException(TypeError,"UnableToGetTypeMetrics");
   page.y=(ssize_t) ceil((double) page.y+metrics.ascent-0.5);
-  (void) FormatLocaleString(geometry,MaxTextExtent,"0x0%+ld%+ld",(long) page.x,
+  (void) FormatLocaleString(geometry,MagickPathExtent,"0x0%+ld%+ld",(long) page.x,
     (long) page.y);
   (void) CloneString(&draw_info->geometry,geometry);
-  (void) CopyMagickString(filename,image_info->filename,MaxTextExtent);
+  (void) CopyMagickString(filename,image_info->filename,MagickPathExtent);
   if (*draw_info->text != '\0')
     *draw_info->text='\0';
   p=text;
@@ -310,7 +310,7 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,Image *image,
     image->next->columns=image->columns;
     image->next->rows=image->rows;
     image=SyncNextImageInList(image);
-    (void) CopyMagickString(image->filename,filename,MaxTextExtent);
+    (void) CopyMagickString(image->filename,filename,MagickPathExtent);
     (void) SetImageBackgroundColor(image,exception);
     status=SetImageProgress(image,LoadImagesTag,TellBlob(image),
       GetBlobSize(image));
@@ -364,8 +364,8 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,Image *image,
 static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   char
-    colorspace[MaxTextExtent],
-    text[MaxTextExtent];
+    colorspace[MagickPathExtent],
+    text[MagickPathExtent];
 
   Image
     *image;
@@ -672,9 +672,9 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
   ExceptionInfo *exception)
 {
   char
-    buffer[MaxTextExtent],
-    colorspace[MaxTextExtent],
-    tuple[MaxTextExtent];
+    buffer[MagickPathExtent],
+    colorspace[MagickPathExtent],
+    tuple[MagickPathExtent];
 
   MagickBooleanType
     status;
@@ -713,15 +713,15 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
       compliance;
 
     (void) CopyMagickString(colorspace,CommandOptionToMnemonic(
-      MagickColorspaceOptions,(ssize_t) image->colorspace),MaxTextExtent);
+      MagickColorspaceOptions,(ssize_t) image->colorspace),MagickPathExtent);
     LocaleLower(colorspace);
     image->depth=GetImageQuantumDepth(image,MagickTrue);
     if (image->alpha_trait != UndefinedPixelTrait)
-      (void) ConcatenateMagickString(colorspace,"a",MaxTextExtent);
+      (void) ConcatenateMagickString(colorspace,"a",MagickPathExtent);
     compliance=NoCompliance;
     if (LocaleCompare(image_info->magick,"SPARSE-COLOR") != 0)
       {
-        (void) FormatLocaleString(buffer,MaxTextExtent,
+        (void) FormatLocaleString(buffer,MagickPathExtent,
           "# ImageMagick pixel enumeration: %.20g,%.20g,%.20g,%s\n",(double)
           image->columns,(double) image->rows,(double) ((MagickOffsetType)
           GetQuantumRange(image->depth)),colorspace);
@@ -750,7 +750,7 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
             if (GetPixelAlpha(image,p) == (Quantum) OpaqueAlpha)
               {
                 GetColorTuple(&pixel,MagickFalse,tuple);
-                (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g,%.20g,",
+                (void) FormatLocaleString(buffer,MagickPathExtent,"%.20g,%.20g,",
                   (double) x,(double) y);
                 (void) WriteBlobString(image,buffer);
                 (void) WriteBlobString(image,tuple);
@@ -759,39 +759,39 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
             p+=GetPixelChannels(image);
             continue;
           }
-        (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g,%.20g: ",(double)
+        (void) FormatLocaleString(buffer,MagickPathExtent,"%.20g,%.20g: ",(double)
           x,(double) y);
         (void) WriteBlobString(image,buffer);
-        (void) CopyMagickString(tuple,"(",MaxTextExtent);
+        (void) CopyMagickString(tuple,"(",MagickPathExtent);
         if (pixel.colorspace == GRAYColorspace)
           ConcatenateColorComponent(&pixel,GrayPixelChannel,compliance,
             tuple);
         else
           {
             ConcatenateColorComponent(&pixel,RedPixelChannel,compliance,tuple);
-            (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
+            (void) ConcatenateMagickString(tuple,",",MagickPathExtent);
             ConcatenateColorComponent(&pixel,GreenPixelChannel,compliance,
               tuple);
-            (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
+            (void) ConcatenateMagickString(tuple,",",MagickPathExtent);
             ConcatenateColorComponent(&pixel,BluePixelChannel,compliance,tuple);
           }
         if (pixel.colorspace == CMYKColorspace)
           {
-            (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
+            (void) ConcatenateMagickString(tuple,",",MagickPathExtent);
             ConcatenateColorComponent(&pixel,BlackPixelChannel,compliance,
               tuple);
           }
         if (pixel.alpha_trait != UndefinedPixelTrait)
           {
-            (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
+            (void) ConcatenateMagickString(tuple,",",MagickPathExtent);
             ConcatenateColorComponent(&pixel,AlphaPixelChannel,compliance,
               tuple);
           }
-        (void) ConcatenateMagickString(tuple,")",MaxTextExtent);
+        (void) ConcatenateMagickString(tuple,")",MagickPathExtent);
         (void) WriteBlobString(image,tuple);
         (void) WriteBlobString(image,"  ");
         GetColorTuple(&pixel,MagickTrue,tuple);
-        (void) FormatLocaleString(buffer,MaxTextExtent,"%s",tuple);
+        (void) FormatLocaleString(buffer,MagickPathExtent,"%s",tuple);
         (void) WriteBlobString(image,buffer);
         (void) WriteBlobString(image,"  ");
         (void) QueryColorname(image,&pixel,SVGCompliance,tuple,exception);

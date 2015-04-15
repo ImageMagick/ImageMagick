@@ -98,7 +98,7 @@ static GVC_t
 static Image *ReadDOTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   char
-    command[MaxTextExtent];
+    command[MagickPathExtent];
 
   const char
     *option;
@@ -131,9 +131,9 @@ static Image *ReadDOTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     return((Image *) NULL);
   read_info=CloneImageInfo(image_info);
   SetImageInfoBlob(read_info,(void *) NULL,0);
-  (void) CopyMagickString(read_info->magick,"SVG",MaxTextExtent);
+  (void) CopyMagickString(read_info->magick,"SVG",MagickPathExtent);
   (void) AcquireUniqueFilename(read_info->filename);
-  (void) FormatLocaleString(command,MaxTextExtent,"-Tsvg -o%s %s",
+  (void) FormatLocaleString(command,MagickPathExtent,"-Tsvg -o%s %s",
     read_info->filename,image_info->filename);
 #if !defined(WITH_CGRAPH)
   graph=agread(GetBlobFileHandle(image));

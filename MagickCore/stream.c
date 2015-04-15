@@ -809,7 +809,7 @@ MagickExport MagickBooleanType OpenStream(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  (void) CopyMagickString(stream_info->stream->filename,filename,MaxTextExtent);
+  (void) CopyMagickString(stream_info->stream->filename,filename,MagickPathExtent);
   status=OpenBlob(image_info,stream_info->stream,WriteBinaryBlobMode,exception);
   return(status);
 }

@@ -263,7 +263,7 @@ MagickExport Image *PingImages(ImageInfo *image_info,const char *filename,
   ExceptionInfo *exception)
 {
   char
-    ping_filename[MaxTextExtent];
+    ping_filename[MagickPathExtent];
 
   Image
     *image,
@@ -282,7 +282,7 @@ MagickExport Image *PingImages(ImageInfo *image_info,const char *filename,
       image_info->filename);
   assert(exception != (ExceptionInfo *) NULL);
   (void) SetImageOption(image_info,"filename",filename);
-  (void) CopyMagickString(image_info->filename,filename,MaxTextExtent);
+  (void) CopyMagickString(image_info->filename,filename,MagickPathExtent);
   (void) InterpretImageFilename(image_info,(Image *) NULL,image_info->filename,
     (int) image_info->scene,ping_filename,exception);
   if (LocaleCompare(ping_filename,image_info->filename) != 0)
@@ -306,7 +306,7 @@ MagickExport Image *PingImages(ImageInfo *image_info,const char *filename,
           read_info=DestroyImageInfo(read_info);
           return(PingImage(image_info,exception));
         }
-      (void) CopyMagickString(ping_filename,read_info->filename,MaxTextExtent);
+      (void) CopyMagickString(ping_filename,read_info->filename,MagickPathExtent);
       images=NewImageList();
       extent=(ssize_t) (read_info->scene+read_info->number_scenes);
       for (scene=(ssize_t) read_info->scene; scene < (ssize_t) extent; scene++)
@@ -356,9 +356,9 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
   char
-    filename[MaxTextExtent],
-    magick[MaxTextExtent],
-    magick_filename[MaxTextExtent];
+    filename[MagickPathExtent],
+    magick[MagickPathExtent],
+    magick_filename[MagickPathExtent];
 
   const char
     *value;
@@ -402,10 +402,10 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       image_info->filename);
   assert(exception != (ExceptionInfo *) NULL);
   read_info=CloneImageInfo(image_info);
-  (void) CopyMagickString(magick_filename,read_info->filename,MaxTextExtent);
+  (void) CopyMagickString(magick_filename,read_info->filename,MagickPathExtent);
   (void) SetImageInfo(read_info,0,exception);
-  (void) CopyMagickString(filename,read_info->filename,MaxTextExtent);
-  (void) CopyMagickString(magick,read_info->magick,MaxTextExtent);
+  (void) CopyMagickString(filename,read_info->filename,MagickPathExtent);
+  (void) CopyMagickString(magick,read_info->magick,MagickPathExtent);
   domain=CoderPolicyDomain;
   rights=ReadPolicyRights;
   if (IsRightsAuthorized(domain,rights,read_info->magick) == MagickFalse)
@@ -446,7 +446,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
 
       image=AcquireImage(read_info,exception);
       (void) CopyMagickString(image->filename,read_info->filename,
-        MaxTextExtent);
+        MagickPathExtent);
       status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
       if (status == MagickFalse)
         {
@@ -481,7 +481,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       if (delegate_info == (const DelegateInfo *) NULL)
         {
           (void) SetImageInfo(read_info,0,exception);
-          (void) CopyMagickString(read_info->filename,filename,MaxTextExtent);
+          (void) CopyMagickString(read_info->filename,filename,MagickPathExtent);
           magick_info=GetMagickInfo(read_info->magick,exception);
         }
     }
@@ -517,7 +517,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
           return((Image *) NULL);
         }
       (void) CopyMagickString(image->filename,read_info->filename,
-        MaxTextExtent);
+        MagickPathExtent);
       *read_info->filename='\0';
       if (GetDelegateThreadSupport(delegate_info) == MagickFalse)
         LockSemaphoreInfo(delegate_info->semaphore);
@@ -553,7 +553,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       (void) RelinquishUniqueFileResource(read_info->filename);
       read_info->temporary=MagickFalse;
       if (image != (Image *) NULL)
-        (void) CopyMagickString(image->filename,filename,MaxTextExtent);
+        (void) CopyMagickString(image->filename,filename,MagickPathExtent);
     }
   if (image == (Image *) NULL)
     {
@@ -585,9 +585,9 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
   for (next=image; next != (Image *) NULL; next=GetNextImageInList(next))
   {
     char
-      magick_path[MaxTextExtent],
+      magick_path[MagickPathExtent],
       *property,
-      timestamp[MaxTextExtent];
+      timestamp[MagickPathExtent];
 
     const char
       *option;
@@ -598,11 +598,11 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     next->taint=MagickFalse;
     GetPathComponent(magick_filename,MagickPath,magick_path);
     if (*magick_path == '\0' && *next->magick == '\0')
-      (void) CopyMagickString(next->magick,magick,MaxTextExtent);
+      (void) CopyMagickString(next->magick,magick,MagickPathExtent);
     (void) CopyMagickString(next->magick_filename,magick_filename,
-      MaxTextExtent);
+      MagickPathExtent);
     if (IsBlobTemporary(image) != MagickFalse)
-      (void) CopyMagickString(next->filename,filename,MaxTextExtent);
+      (void) CopyMagickString(next->filename,filename,MagickPathExtent);
     if (next->magick_columns == 0)
       next->magick_columns=next->columns;
     if (next->magick_rows == 0)
@@ -712,10 +712,10 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     profile=GetImageProfile(next,"iptc");
     if (profile == (const StringInfo *) NULL)
       profile=GetImageProfile(next,"8bim");
-    (void) FormatMagickTime(GetBlobProperties(next)->st_mtime,MaxTextExtent,
+    (void) FormatMagickTime(GetBlobProperties(next)->st_mtime,MagickPathExtent,
       timestamp);
     (void) SetImageProperty(next,"date:modify",timestamp,exception);
-    (void) FormatMagickTime(GetBlobProperties(next)->st_ctime,MaxTextExtent,
+    (void) FormatMagickTime(GetBlobProperties(next)->st_ctime,MagickPathExtent,
       timestamp);
     (void) SetImageProperty(next,"date:create",timestamp,exception);
     option=GetImageOption(image_info,"delay");
@@ -784,7 +784,7 @@ MagickExport Image *ReadImages(ImageInfo *image_info,const char *filename,
   ExceptionInfo *exception)
 {
   char
-    read_filename[MaxTextExtent];
+    read_filename[MagickPathExtent];
 
   Image
     *image,
@@ -805,7 +805,7 @@ MagickExport Image *ReadImages(ImageInfo *image_info,const char *filename,
   read_info=CloneImageInfo(image_info);
   *read_info->magick='\0';
   (void) SetImageOption(read_info,"filename",filename);
-  (void) CopyMagickString(read_info->filename,filename,MaxTextExtent);
+  (void) CopyMagickString(read_info->filename,filename,MagickPathExtent);
   (void) InterpretImageFilename(read_info,(Image *) NULL,filename,
     (int) read_info->scene,read_filename,exception);
   if (LocaleCompare(read_filename,read_info->filename) != 0)
@@ -828,7 +828,7 @@ MagickExport Image *ReadImages(ImageInfo *image_info,const char *filename,
           read_info=DestroyImageInfo(read_info);
           return(ReadImage(image_info,exception));
         }
-      (void) CopyMagickString(read_filename,read_info->filename,MaxTextExtent);
+      (void) CopyMagickString(read_filename,read_info->filename,MagickPathExtent);
       images=NewImageList();
       extent=(ssize_t) (read_info->scene+read_info->number_scenes);
       for (scene=(ssize_t) read_info->scene; scene < (ssize_t) extent; scene++)
@@ -954,7 +954,7 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
   Image *image,ExceptionInfo *exception)
 {
   char
-    filename[MaxTextExtent];
+    filename[MagickPathExtent];
 
   const char
     *option;
@@ -994,12 +994,12 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
   assert(exception != (ExceptionInfo *) NULL);
   sans_exception=AcquireExceptionInfo();
   write_info=CloneImageInfo(image_info);
-  (void) CopyMagickString(write_info->filename,image->filename,MaxTextExtent);
+  (void) CopyMagickString(write_info->filename,image->filename,MagickPathExtent);
   (void) SetImageInfo(write_info,1,sans_exception);
   if (*write_info->magick == '\0')
-    (void) CopyMagickString(write_info->magick,image->magick,MaxTextExtent);
-  (void) CopyMagickString(filename,image->filename,MaxTextExtent);
-  (void) CopyMagickString(image->filename,write_info->filename,MaxTextExtent);
+    (void) CopyMagickString(write_info->magick,image->magick,MagickPathExtent);
+  (void) CopyMagickString(filename,image->filename,MagickPathExtent);
+  (void) CopyMagickString(image->filename,write_info->filename,MagickPathExtent);
   domain=CoderPolicyDomain;
   rights=WritePolicyRights;
   if (IsRightsAuthorized(domain,rights,write_info->magick) == MagickFalse)
@@ -1047,11 +1047,11 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
             Process image with bi-modal delegate.
           */
           (void) CopyMagickString(image->filename,image->magick_filename,
-            MaxTextExtent);
+            MagickPathExtent);
           status=InvokeDelegate(write_info,image,image->magick,
             write_info->magick,exception);
           write_info=DestroyImageInfo(write_info);
-          (void) CopyMagickString(image->filename,filename,MaxTextExtent);
+          (void) CopyMagickString(image->filename,filename,MagickPathExtent);
           return(status);
         }
     }
@@ -1061,11 +1061,11 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
       (GetMagickSeekableStream(magick_info) != MagickFalse))
     {
       char
-        filename[MaxTextExtent];
+        filename[MagickPathExtent];
 
-      (void) CopyMagickString(filename,image->filename,MaxTextExtent);
+      (void) CopyMagickString(filename,image->filename,MagickPathExtent);
       status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
-      (void) CopyMagickString(image->filename,filename,MaxTextExtent);
+      (void) CopyMagickString(image->filename,filename,MagickPathExtent);
       if (status != MagickFalse)
         {
           if (IsBlobSeekable(image) == MagickFalse)
@@ -1075,7 +1075,7 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
               */
               write_info->adjoin=MagickTrue;
               (void) CopyMagickString(write_info->filename,image->filename,
-                MaxTextExtent);
+                MagickPathExtent);
               (void) AcquireUniqueFilename(image->filename);
               temporary=MagickTrue;
             }
@@ -1109,7 +1109,7 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
             write_info->magick,exception);
           if (GetDelegateThreadSupport(delegate_info) == MagickFalse)
             UnlockSemaphoreInfo(delegate_info->semaphore);
-          (void) CopyMagickString(image->filename,filename,MaxTextExtent);
+          (void) CopyMagickString(image->filename,filename,MagickPathExtent);
         }
       else
         {
@@ -1120,21 +1120,21 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
               (magick_info == (const MagickInfo *) NULL))
             {
               (void) CopyMagickString(write_info->magick,image->magick,
-                MaxTextExtent);
+                MagickPathExtent);
               magick_info=GetMagickInfo(write_info->magick,exception);
             }
           if ((magick_info == (const MagickInfo *) NULL) ||
               (GetImageEncoder(magick_info) == (EncodeImageHandler *) NULL))
             {
               char
-                extension[MaxTextExtent];
+                extension[MagickPathExtent];
 
               GetPathComponent(image->filename,ExtensionPath,extension);
               if (*extension != '\0')
                 magick_info=GetMagickInfo(extension,exception);
               else
                 magick_info=GetMagickInfo(image->magick,exception);
-              (void) CopyMagickString(image->filename,filename,MaxTextExtent);
+              (void) CopyMagickString(image->filename,filename,MagickPathExtent);
             }
           if ((magick_info == (const MagickInfo *) NULL) ||
               (GetImageEncoder(magick_info) == (EncodeImageHandler *) NULL))
@@ -1178,7 +1178,7 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
       (void) CloseBlob(image);
       (void) RelinquishUniqueFileResource(image->filename);
       (void) CopyMagickString(image->filename,write_info->filename,
-        MaxTextExtent);
+        MagickPathExtent);
     }
   if ((LocaleCompare(write_info->magick,"info") != 0) &&
       (write_info->verbose != MagickFalse))
@@ -1264,14 +1264,14 @@ MagickExport MagickBooleanType WriteImages(const ImageInfo *image_info,
   images=GetFirstImageInList(images);
   if (filename != (const char *) NULL)
     for (p=images; p != (Image *) NULL; p=GetNextImageInList(p))
-      (void) CopyMagickString(p->filename,filename,MaxTextExtent);
-  (void) CopyMagickString(write_info->filename,images->filename,MaxTextExtent);
+      (void) CopyMagickString(p->filename,filename,MagickPathExtent);
+  (void) CopyMagickString(write_info->filename,images->filename,MagickPathExtent);
   sans_exception=AcquireExceptionInfo();
   (void) SetImageInfo(write_info,(unsigned int) GetImageListLength(images),
     sans_exception);
   sans_exception=DestroyExceptionInfo(sans_exception);
   if (*write_info->magick == '\0')
-    (void) CopyMagickString(write_info->magick,images->magick,MaxTextExtent);
+    (void) CopyMagickString(write_info->magick,images->magick,MagickPathExtent);
   p=images;
   for ( ; GetNextImageInList(p) != (Image *) NULL; p=GetNextImageInList(p))
     if (p->scene >= GetNextImageInList(p)->scene)

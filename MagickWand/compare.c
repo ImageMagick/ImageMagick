@@ -1024,7 +1024,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
         (void) IsImagesEqual(image,reconstruct_image,exception);
       if (*difference_image->magick == '\0')
         (void) CopyMagickString(difference_image->magick,image->magick,
-          MaxTextExtent);
+          MagickPathExtent);
       if (image_info->verbose == MagickFalse)
         {
           switch (metric)

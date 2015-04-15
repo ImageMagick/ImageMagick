@@ -1853,8 +1853,8 @@ static MagickBooleanType XAnnotateEditImage(Display *display,
     pen_id = 0;
 
   char
-    command[MaxTextExtent],
-    text[MaxTextExtent];
+    command[MagickPathExtent],
+    text[MagickPathExtent];
 
   const char
     *ColorMenu[MaxNumberPens+1];
@@ -1927,7 +1927,7 @@ static MagickBooleanType XAnnotateEditImage(Display *display,
         /*
           Display pointer position.
         */
-        (void) FormatLocaleString(text,MaxTextExtent," %+d%+d ",
+        (void) FormatLocaleString(text,MagickPathExtent," %+d%+d ",
           x+windows->image.x,y+windows->image.y);
         XInfoWidget(display,windows,text);
       }
@@ -1971,7 +1971,7 @@ static MagickBooleanType XAnnotateEditImage(Display *display,
             if (font_number == (MaxNumberFonts-2))
               {
                 static char
-                  font_name[MaxTextExtent] = "fixed";
+                  font_name[MagickPathExtent] = "fixed";
 
                 /*
                   Select a font name from a browser.
@@ -2020,7 +2020,7 @@ static MagickBooleanType XAnnotateEditImage(Display *display,
             if (pen_number == (MaxNumberPens-1))
               {
                 static char
-                  color_name[MaxTextExtent] = "gray";
+                  color_name[MagickPathExtent] = "gray";
 
                 /*
                   Select a pen color from a dialog.
@@ -2065,7 +2065,7 @@ static MagickBooleanType XAnnotateEditImage(Display *display,
             if (pen_number == (MaxNumberPens-1))
               {
                 static char
-                  color_name[MaxTextExtent] = "gray";
+                  color_name[MagickPathExtent] = "gray";
 
                 /*
                   Select a pen color from a dialog.
@@ -2092,7 +2092,7 @@ static MagickBooleanType XAnnotateEditImage(Display *display,
               entry;
 
             static char
-              angle[MaxTextExtent] = "30.0";
+              angle[MagickPathExtent] = "30.0";
 
             static const char
               *RotateMenu[] =
@@ -2591,7 +2591,7 @@ static MagickBooleanType XAnnotateEditImage(Display *display,
         if (event.xselection.property == (Atom) None)
           break;
         status=XGetWindowProperty(display,event.xselection.requestor,
-          event.xselection.property,0L,(long) MaxTextExtent,True,XA_STRING,
+          event.xselection.property,0L,(long) MagickPathExtent,True,XA_STRING,
           &type,&format,&length,&after,&data);
         if ((status != Success) || (type != XA_STRING) || (format == 32) ||
             (length == 0))
@@ -2715,7 +2715,7 @@ static MagickBooleanType XAnnotateEditImage(Display *display,
       width*(annotate_info->x+windows->image.x)/windows->image.ximage->width;
     annotate_info->y=(int) height*(annotate_info->y-font_info->ascent+
       windows->image.y)/windows->image.ximage->height;
-    (void) FormatLocaleString(annotate_info->geometry,MaxTextExtent,
+    (void) FormatLocaleString(annotate_info->geometry,MagickPathExtent,
       "%ux%u%+d%+d",width*annotate_info->width/windows->image.ximage->width,
       height*annotate_info->height/windows->image.ximage->height,
       annotate_info->x+x,annotate_info->y+y);
@@ -2792,7 +2792,7 @@ static MagickBooleanType XBackgroundImage(Display *display,
     status;
 
   static char
-    window_id[MaxTextExtent] = "root";
+    window_id[MagickPathExtent] = "root";
 
   XResourceInfo
     background_resources;
@@ -2885,7 +2885,7 @@ static MagickBooleanType XChopImage(Display *display,
     };
 
   char
-    text[MaxTextExtent];
+    text[MagickPathExtent];
 
   Image
     *chop_image;
@@ -2938,7 +2938,7 @@ static MagickBooleanType XChopImage(Display *display,
         /*
           Display pointer position.
         */
-        (void) FormatLocaleString(text,MaxTextExtent," %+d%+d ",
+        (void) FormatLocaleString(text,MagickPathExtent," %+d%+d ",
           x+windows->image.x,y+windows->image.y);
         XInfoWidget(display,windows,text);
       }
@@ -2959,7 +2959,7 @@ static MagickBooleanType XChopImage(Display *display,
           case ChopDirectionCommand:
           {
             char
-              command[MaxTextExtent];
+              command[MagickPathExtent];
 
             static const char
               *Directions[] =
@@ -3022,7 +3022,7 @@ static MagickBooleanType XChopImage(Display *display,
       case KeyPress:
       {
         char
-          command[MaxTextExtent];
+          command[MagickPathExtent];
 
         KeySym
           key_symbol;
@@ -3110,7 +3110,7 @@ static MagickBooleanType XChopImage(Display *display,
         */
         if (IfMagickFalse(windows->info.mapped) )
           (void) XMapWindow(display,windows->info.id);
-        (void) FormatLocaleString(text,MaxTextExtent,
+        (void) FormatLocaleString(text,MagickPathExtent,
           " %.20gx%.20g%+.20g%+.20g",(double) chop_info.width,(double)
           chop_info.height,(double) chop_info.x,(double) chop_info.y);
         XInfoWidget(display,windows,text);
@@ -3318,8 +3318,8 @@ static MagickBooleanType XColorEditImage(Display *display,
     border_color = { 0, 0, 0, 0, 0, 0 };
 
   char
-    command[MaxTextExtent],
-    text[MaxTextExtent];
+    command[MagickPathExtent],
+    text[MagickPathExtent];
 
   Cursor
     cursor;
@@ -3380,7 +3380,7 @@ static MagickBooleanType XColorEditImage(Display *display,
         /*
           Display pointer position.
         */
-        (void) FormatLocaleString(text,MaxTextExtent," %+d%+d ",
+        (void) FormatLocaleString(text,MagickPathExtent," %+d%+d ",
           x+windows->image.x,y+windows->image.y);
         XInfoWidget(display,windows,text);
       }
@@ -3445,7 +3445,7 @@ static MagickBooleanType XColorEditImage(Display *display,
             if (pen_number == (MaxNumberPens-2))
               {
                 static char
-                  color_name[MaxTextExtent] = "gray";
+                  color_name[MagickPathExtent] = "gray";
 
                 /*
                   Select a pen color from a dialog.
@@ -3491,7 +3491,7 @@ static MagickBooleanType XColorEditImage(Display *display,
             if (pen_number == (MaxNumberPens-2))
               {
                 static char
-                  color_name[MaxTextExtent] = "gray";
+                  color_name[MagickPathExtent] = "gray";
 
                 /*
                   Select a pen color from a dialog.
@@ -3511,7 +3511,7 @@ static MagickBooleanType XColorEditImage(Display *display,
           case ColorEditFuzzCommand:
           {
             static char
-              fuzz[MaxTextExtent];
+              fuzz[MagickPathExtent];
 
             static const char
               *FuzzMenu[] =
@@ -3538,12 +3538,12 @@ static MagickBooleanType XColorEditImage(Display *display,
                   QuantumRange+1.0);
                 break;
               }
-            (void) (void) CopyMagickString(fuzz,"20%",MaxTextExtent);
+            (void) (void) CopyMagickString(fuzz,"20%",MagickPathExtent);
             (void) XDialogWidget(display,windows,"Ok",
               "Enter fuzz factor (0.0 - 99.9%):",fuzz);
             if (*fuzz == '\0')
               break;
-            (void) ConcatenateMagickString(fuzz,"%",MaxTextExtent);
+            (void) ConcatenateMagickString(fuzz,"%",MagickPathExtent);
             (*image)->fuzz=StringToDoubleInterval(fuzz,(double) QuantumRange+
               1.0);
             break;
@@ -3907,8 +3907,8 @@ static MagickBooleanType XCompositeImage(Display *display,
   ExceptionInfo *exception)
 {
   static char
-    displacement_geometry[MaxTextExtent] = "30x30",
-    filename[MaxTextExtent] = "\0";
+    displacement_geometry[MagickPathExtent] = "30x30",
+    filename[MagickPathExtent] = "\0";
 
   static const char
     *CompositeMenu[] =
@@ -3935,7 +3935,7 @@ static MagickBooleanType XCompositeImage(Display *display,
     };
 
   char
-    text[MaxTextExtent];
+    text[MagickPathExtent];
 
   Cursor
     cursor;
@@ -3979,7 +3979,7 @@ static MagickBooleanType XCompositeImage(Display *display,
   XSetCursorState(display,windows,MagickTrue);
   XCheckRefreshWindows(display,windows);
   (void) CopyMagickString(resource_info->image_info->filename,filename,
-    MaxTextExtent);
+    MagickPathExtent);
   composite_image=ReadImage(resource_info->image_info,exception);
   CatchException(exception);
   XSetCursorState(display,windows,MagickFalse);
@@ -4015,7 +4015,7 @@ static MagickBooleanType XCompositeImage(Display *display,
         /*
           Display pointer position.
         */
-        (void) FormatLocaleString(text,MaxTextExtent," %+ld%+ld ",
+        (void) FormatLocaleString(text,MagickPathExtent," %+ld%+ld ",
           (long) composite_info.x,(long) composite_info.y);
         XInfoWidget(display,windows,text);
       }
@@ -4043,7 +4043,7 @@ static MagickBooleanType XCompositeImage(Display *display,
           case CompositeOperatorsCommand:
           {
             char
-              command[MaxTextExtent],
+              command[MagickPathExtent],
               **operators;
 
             /*
@@ -4063,7 +4063,7 @@ static MagickBooleanType XCompositeImage(Display *display,
           case CompositeDissolveCommand:
           {
             static char
-              factor[MaxTextExtent] = "20.0";
+              factor[MagickPathExtent] = "20.0";
 
             /*
               Dissolve the two images a given percent.
@@ -4168,7 +4168,7 @@ static MagickBooleanType XCompositeImage(Display *display,
       case KeyPress:
       {
         char
-          command[MaxTextExtent];
+          command[MagickPathExtent];
 
         KeySym
           key_symbol;
@@ -4397,7 +4397,7 @@ static MagickBooleanType XConfigureImage(Display *display,
   ExceptionInfo *exception)
 {
   char
-    geometry[MaxTextExtent];
+    geometry[MagickPathExtent];
 
   MagickStatusType
     status;
@@ -4454,10 +4454,10 @@ static MagickBooleanType XConfigureImage(Display *display,
     Notify window manager of the new configuration.
   */
   if (resource_info->image_geometry != (char *) NULL)
-    (void) FormatLocaleString(geometry,MaxTextExtent,"%s>!",
+    (void) FormatLocaleString(geometry,MagickPathExtent,"%s>!",
       resource_info->image_geometry);
   else
-    (void) FormatLocaleString(geometry,MaxTextExtent,"%ux%u+0+0>!",
+    (void) FormatLocaleString(geometry,MagickPathExtent,"%ux%u+0+0>!",
       XDisplayWidth(display,windows->image.screen),
       XDisplayHeight(display,windows->image.screen));
   (void) ParseMetaGeometry(geometry,&x,&y,&width,&height);
@@ -4603,8 +4603,8 @@ static MagickBooleanType XCropImage(Display *display,
     *image_view;
 
   char
-    command[MaxTextExtent],
-    text[MaxTextExtent];
+    command[MagickPathExtent],
+    text[MagickPathExtent];
 
   Cursor
     cursor;
@@ -4686,7 +4686,7 @@ static MagickBooleanType XCropImage(Display *display,
         /*
           Display pointer position.
         */
-        (void) FormatLocaleString(text,MaxTextExtent," %+ld%+ld ",
+        (void) FormatLocaleString(text,MagickPathExtent," %+ld%+ld ",
           (long) crop_info.x,(long) crop_info.y);
         XInfoWidget(display,windows,text);
       }
@@ -4881,7 +4881,7 @@ static MagickBooleanType XCropImage(Display *display,
           */
           if (IfMagickFalse(windows->info.mapped) )
             (void) XMapWindow(display,windows->info.id);
-          (void) FormatLocaleString(text,MaxTextExtent,
+          (void) FormatLocaleString(text,MagickPathExtent,
             " %.20gx%.20g%+.20g%+.20g",(double) crop_info.width,(double)
             crop_info.height,(double) crop_info.x,(double) crop_info.y);
           XInfoWidget(display,windows,text);
@@ -4974,7 +4974,7 @@ static MagickBooleanType XCropImage(Display *display,
           /*
             Display pointer position.
           */
-          (void) FormatLocaleString(text,MaxTextExtent,
+          (void) FormatLocaleString(text,MagickPathExtent,
             " %.20gx%.20g%+.20g%+.20g",(double) crop_info.width,(double)
             crop_info.height,(double) crop_info.x,(double) crop_info.y);
           XInfoWidget(display,windows,text);
@@ -5260,7 +5260,7 @@ static MagickBooleanType XCropImage(Display *display,
           /*
             Set primary selection.
           */
-          (void) FormatLocaleString(text,MaxTextExtent,
+          (void) FormatLocaleString(text,MagickPathExtent,
             "%.20gx%.20g%+.20g%+.20g",(double) crop_info.width,(double)
             crop_info.height,(double) crop_info.x,(double) crop_info.y);
           request=(&(event.xselectionrequest));
@@ -5443,8 +5443,8 @@ static MagickBooleanType XDrawEditImage(Display *display,
     line_width = 1;
 
   char
-    command[MaxTextExtent],
-    text[MaxTextExtent];
+    command[MagickPathExtent],
+    text[MagickPathExtent];
 
   Cursor
     cursor;
@@ -5534,7 +5534,7 @@ static MagickBooleanType XDrawEditImage(Display *display,
           /*
             Display pointer position.
           */
-          (void) FormatLocaleString(text,MaxTextExtent," %+d%+d ",
+          (void) FormatLocaleString(text,MagickPathExtent," %+d%+d ",
             x+windows->image.x,y+windows->image.y);
           XInfoWidget(display,windows,text);
         }
@@ -5616,7 +5616,7 @@ static MagickBooleanType XDrawEditImage(Display *display,
               if (pen_number == (MaxNumberPens-1))
                 {
                   static char
-                    color_name[MaxTextExtent] = "gray";
+                    color_name[MagickPathExtent] = "gray";
 
                   /*
                     Select a pen color from a dialog.
@@ -5650,7 +5650,7 @@ static MagickBooleanType XDrawEditImage(Display *display,
                 status;
 
               static char
-                filename[MaxTextExtent] = "\0";
+                filename[MagickPathExtent] = "\0";
 
               static const char
                 *StipplesMenu[] =
@@ -5738,14 +5738,14 @@ static MagickBooleanType XDrawEditImage(Display *display,
               XCheckRefreshWindows(display,windows);
               image_info=AcquireImageInfo();
               (void) CopyMagickString(image_info->filename,filename,
-                MaxTextExtent);
+                MagickPathExtent);
               stipple_image=ReadImage(image_info,exception);
               CatchException(exception);
               XSetCursorState(display,windows,MagickFalse);
               if (stipple_image == (Image *) NULL)
                 break;
               (void) AcquireUniqueFileResource(filename);
-              (void) FormatLocaleString(stipple_image->filename,MaxTextExtent,
+              (void) FormatLocaleString(stipple_image->filename,MagickPathExtent,
                 "xbm:%s",filename);
               (void) WriteImage(image_info,stipple_image,exception);
               stipple_image=DestroyImage(stipple_image);
@@ -5761,7 +5761,7 @@ static MagickBooleanType XDrawEditImage(Display *display,
             case DrawWidthCommand:
             {
               static char
-                width[MaxTextExtent] = "0";
+                width[MagickPathExtent] = "0";
 
               static const char
                 *WidthsMenu[] =
@@ -5939,7 +5939,7 @@ static MagickBooleanType XDrawEditImage(Display *display,
               (void) XDrawLines(display,windows->image.id,
                 windows->image.highlight_context,coordinate_info,
                 number_coordinates,CoordModeOrigin);
-              (void) FormatLocaleString(text,MaxTextExtent," %+d%+d",
+              (void) FormatLocaleString(text,MagickPathExtent," %+d%+d",
                 coordinate_info[number_coordinates-1].x,
                 coordinate_info[number_coordinates-1].y);
               XInfoWidget(display,windows,text);
@@ -5955,7 +5955,7 @@ static MagickBooleanType XDrawEditImage(Display *display,
               */
               degrees=RadiansToDegrees(-atan2((double) (line_info.y2-
                 line_info.y1),(double) (line_info.x2-line_info.x1)));
-              (void) FormatLocaleString(text,MaxTextExtent," %g",
+              (void) FormatLocaleString(text,MagickPathExtent," %g",
                 (double) degrees);
               XInfoWidget(display,windows,text);
               XHighlightLine(display,windows->image.id,
@@ -5975,7 +5975,7 @@ static MagickBooleanType XDrawEditImage(Display *display,
               /*
                 Display info and draw drawing rectangle.
               */
-              (void) FormatLocaleString(text,MaxTextExtent,
+              (void) FormatLocaleString(text,MagickPathExtent,
                 " %.20gx%.20g%+.20g%+.20g",(double) rectangle_info.width,
                 (double) rectangle_info.height,(double) rectangle_info.x,
                 (double) rectangle_info.y);
@@ -5999,7 +5999,7 @@ static MagickBooleanType XDrawEditImage(Display *display,
               /*
                 Display info and draw drawing rectangle.
               */
-              (void) FormatLocaleString(text,MaxTextExtent,
+              (void) FormatLocaleString(text,MagickPathExtent,
                 " %.20gx%.20g%+.20g%+.20g",(double) rectangle_info.width,
                 (double) rectangle_info.height,(double) rectangle_info.x,
                 (double) rectangle_info.y);
@@ -6027,7 +6027,7 @@ static MagickBooleanType XDrawEditImage(Display *display,
               */
               degrees=RadiansToDegrees(-atan2((double) (line_info.y2-
                 line_info.y1),(double) (line_info.x2-line_info.x1)));
-              (void) FormatLocaleString(text,MaxTextExtent," %g",
+              (void) FormatLocaleString(text,MagickPathExtent," %g",
                 (double) degrees);
               XInfoWidget(display,windows,text);
               XHighlightLine(display,windows->image.id,
@@ -6271,7 +6271,7 @@ static MagickBooleanType XDrawEditImage(Display *display,
     draw_info.height=(unsigned int) rectangle_info.height+(line_width << 1);
     if (draw_info.height > (unsigned int) (*image)->rows)
       draw_info.height=(unsigned int) (*image)->rows;
-    (void) FormatLocaleString(draw_info.geometry,MaxTextExtent,"%ux%u%+d%+d",
+    (void) FormatLocaleString(draw_info.geometry,MagickPathExtent,"%ux%u%+d%+d",
       width*draw_info.width/windows->image.ximage->width,
       height*draw_info.height/windows->image.ximage->height,
       draw_info.x+x,draw_info.y+y);
@@ -6454,7 +6454,7 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
     case UndoCommand:
     {
       char
-        image_geometry[MaxTextExtent];
+        image_geometry[MagickPathExtent];
 
       /*
         Undo the last image transformation.
@@ -6468,7 +6468,7 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
       undo_image=GetPreviousImageInList(undo_image);
       windows->image.window_changes.width=(int) cache_image->columns;
       windows->image.window_changes.height=(int) cache_image->rows;
-      (void) FormatLocaleString(image_geometry,MaxTextExtent,"%dx%d!",
+      (void) FormatLocaleString(image_geometry,MagickPathExtent,"%dx%d!",
         windows->image.ximage->width,windows->image.ximage->height);
       (void) TransformImage(image,windows->image.crop_geometry,image_geometry,
         exception);
@@ -6613,7 +6613,7 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
         {
           cache_image->geometry=AcquireString((char *) NULL);
           (void) CopyMagickString(cache_image->geometry,
-            windows->image.crop_geometry,MaxTextExtent);
+            windows->image.crop_geometry,MagickPathExtent);
         }
       if (undo_image == (Image *) NULL)
         {
@@ -6713,7 +6713,7 @@ static CommandType XImageWindowCommand(Display *display,
   KeySym key_symbol,Image **image,ExceptionInfo *exception)
 {
   static char
-    delta[MaxTextExtent] = "";
+    delta[MagickPathExtent] = "";
 
   static const char
     Digits[] = "01234567890";
@@ -7103,9 +7103,9 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
   ExceptionInfo *exception)
 {
   char
-    filename[MaxTextExtent],
-    geometry[MaxTextExtent],
-    modulate_factors[MaxTextExtent];
+    filename[MagickPathExtent],
+    geometry[MagickPathExtent],
+    modulate_factors[MagickPathExtent];
 
   GeometryInfo
     geometry_info;
@@ -7134,7 +7134,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     i;
 
   static char
-    color[MaxTextExtent] = "gray";
+    color[MagickPathExtent] = "gray";
 
   unsigned int
     height,
@@ -7191,7 +7191,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       if (*resource_info->home_directory == '\0')
         (void) CopyMagickString(resource_info->home_directory,".",
-          MaxTextExtent);
+          MagickPathExtent);
       status=chdir(resource_info->home_directory);
       if (status == -1)
         (void) ThrowMagickException(exception,GetMagickModule(),FileOpenError,
@@ -7208,9 +7208,9 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       if (IfMagickFalse(status) )
         {
           char
-            message[MaxTextExtent];
+            message[MagickPathExtent];
 
-          (void) FormatLocaleString(message,MaxTextExtent,"%s:%s",
+          (void) FormatLocaleString(message,MagickPathExtent,"%s:%s",
             exception->reason != (char *) NULL ? exception->reason : "",
             exception->description != (char *) NULL ? exception->description :
             "");
@@ -7228,9 +7228,9 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       if (IfMagickFalse(status) )
         {
           char
-            message[MaxTextExtent];
+            message[MagickPathExtent];
 
-          (void) FormatLocaleString(message,MaxTextExtent,"%s:%s",
+          (void) FormatLocaleString(message,MagickPathExtent,"%s:%s",
             exception->reason != (char *) NULL ? exception->reason : "",
             exception->description != (char *) NULL ? exception->description :
             "");
@@ -7242,7 +7242,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     case DeleteCommand:
     {
       static char
-        filename[MaxTextExtent] = "\0";
+        filename[MagickPathExtent] = "\0";
 
       /*
         Delete image file.
@@ -7261,8 +7261,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         status;
 
       static char
-        color[MaxTextExtent] = "gray",
-        geometry[MaxTextExtent] = "640x480";
+        color[MagickPathExtent] = "gray",
+        geometry[MagickPathExtent] = "640x480";
 
       static const char
         *format = "gradient";
@@ -7282,7 +7282,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Create canvas.
       */
-      (void) FormatLocaleString(image_info->filename,MaxTextExtent,
+      (void) FormatLocaleString(image_info->filename,MagickPathExtent,
         "%s:%s",format,color);
       (void) CloneString(&image_info->size,geometry);
       nexus=ReadImage(image_info,exception);
@@ -7404,14 +7404,14 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       height=(size_t) windows->image.ximage->height;
       x=0;
       y=0;
-      (void) FormatLocaleString(geometry,MaxTextExtent,"%.20gx%.20g+0+0",
+      (void) FormatLocaleString(geometry,MagickPathExtent,"%.20gx%.20g+0+0",
         (double) width,(double) height);
       status=XDialogWidget(display,windows,"Resize",
         "Enter resize geometry (e.g. 640x480, 200%):",geometry);
       if (*geometry == '\0')
         break;
       if (status == 0)
-        (void) ConcatenateMagickString(geometry,"!",MaxTextExtent);
+        (void) ConcatenateMagickString(geometry,"!",MagickPathExtent);
       (void) ParseMetaGeometry(geometry,&x,&y,&width,&height);
       windows->image.window_changes.width=(int) width;
       windows->image.window_changes.height=(int) height;
@@ -7421,7 +7421,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     case ApplyCommand:
     {
       char
-        image_geometry[MaxTextExtent];
+        image_geometry[MagickPathExtent];
 
       if ((windows->image.crop_geometry == (char *) NULL) &&
           ((int) (*image)->columns == windows->image.ximage->width) &&
@@ -7435,7 +7435,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Crop and/or scale displayed image.
       */
-      (void) FormatLocaleString(image_geometry,MaxTextExtent,"%dx%d!",
+      (void) FormatLocaleString(image_geometry,MagickPathExtent,"%dx%d!",
         windows->image.ximage->width,windows->image.ximage->height);
       (void) TransformImage(image,windows->image.crop_geometry,image_geometry,
         exception);
@@ -7529,7 +7529,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
           height=(unsigned int) (*image)->rows;
           (void) XParseGeometry(windows->image.crop_geometry,&x,&y,
             &width,&height);
-          (void) FormatLocaleString(windows->image.crop_geometry,MaxTextExtent,
+          (void) FormatLocaleString(windows->image.crop_geometry,MagickPathExtent,
             "%ux%u%+d%+d",width,height,(int) (*image)->columns-(int) width-x,y);
         }
       if (IfMagickTrue(windows->image.orphan) )
@@ -7564,7 +7564,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
           height=(unsigned int) (*image)->rows;
           (void) XParseGeometry(windows->image.crop_geometry,&x,&y,
             &width,&height);
-          (void) FormatLocaleString(windows->image.crop_geometry,MaxTextExtent,
+          (void) FormatLocaleString(windows->image.crop_geometry,MagickPathExtent,
             "%ux%u%+d%+d",width,height,x,(int) (*image)->rows-(int) height-y);
         }
       if (IfMagickTrue(windows->image.orphan) )
@@ -7620,7 +7620,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         *shear_image;
 
       static char
-        geometry[MaxTextExtent] = "45.0x45.0";
+        geometry[MagickPathExtent] = "45.0x45.0";
 
       /*
         Query user for shear color and geometry.
@@ -7667,7 +7667,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         *roll_image;
 
       static char
-        geometry[MaxTextExtent] = "+2+2";
+        geometry[MagickPathExtent] = "+2+2";
 
       /*
         Query user for the roll geometry.
@@ -7705,12 +7705,12 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     case TrimCommand:
     {
       static char
-        fuzz[MaxTextExtent];
+        fuzz[MagickPathExtent];
 
       /*
         Query user for the fuzz factor.
       */
-      (void) FormatLocaleString(fuzz,MaxTextExtent,"%g%%",100.0*
+      (void) FormatLocaleString(fuzz,MagickPathExtent,"%g%%",100.0*
         (*image)->fuzz/(QuantumRange+1.0));
       (void) XDialogWidget(display,windows,"Trim","Enter fuzz factor:",fuzz);
       if (*fuzz == '\0')
@@ -7731,7 +7731,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     case HueCommand:
     {
       static char
-        hue_percent[MaxTextExtent] = "110";
+        hue_percent[MagickPathExtent] = "110";
 
       /*
         Query user for percent hue change.
@@ -7745,9 +7745,9 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,MagickTrue);
       XCheckRefreshWindows(display,windows);
-      (void) CopyMagickString(modulate_factors,"100.0/100.0/",MaxTextExtent);
+      (void) CopyMagickString(modulate_factors,"100.0/100.0/",MagickPathExtent);
       (void) ConcatenateMagickString(modulate_factors,hue_percent,
-        MaxTextExtent);
+        MagickPathExtent);
       (void) ModulateImage(*image,modulate_factors,exception);
       XSetCursorState(display,windows,MagickFalse);
       if (IfMagickTrue(windows->image.orphan) )
@@ -7759,7 +7759,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     case SaturationCommand:
     {
       static char
-        saturation_percent[MaxTextExtent] = "110";
+        saturation_percent[MagickPathExtent] = "110";
 
       /*
         Query user for percent saturation change.
@@ -7773,9 +7773,9 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,MagickTrue);
       XCheckRefreshWindows(display,windows);
-      (void) CopyMagickString(modulate_factors,"100.0/",MaxTextExtent);
+      (void) CopyMagickString(modulate_factors,"100.0/",MagickPathExtent);
       (void) ConcatenateMagickString(modulate_factors,saturation_percent,
-        MaxTextExtent);
+        MagickPathExtent);
       (void) ModulateImage(*image,modulate_factors,exception);
       XSetCursorState(display,windows,MagickFalse);
       if (IfMagickTrue(windows->image.orphan) )
@@ -7787,7 +7787,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     case BrightnessCommand:
     {
       static char
-        brightness_percent[MaxTextExtent] = "110";
+        brightness_percent[MagickPathExtent] = "110";
 
       /*
         Query user for percent brightness change.
@@ -7802,7 +7802,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,MagickTrue);
       XCheckRefreshWindows(display,windows);
       (void) CopyMagickString(modulate_factors,brightness_percent,
-        MaxTextExtent);
+        MagickPathExtent);
       (void) ModulateImage(*image,modulate_factors,exception);
       XSetCursorState(display,windows,MagickFalse);
       if (IfMagickTrue(windows->image.orphan) )
@@ -7814,7 +7814,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     case GammaCommand:
     {
       static char
-        factor[MaxTextExtent] = "1.6";
+        factor[MagickPathExtent] = "1.6";
 
       /*
         Query user for gamma value.
@@ -7873,7 +7873,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         white_point;
 
       static char
-        levels[MaxTextExtent] = "1%";
+        levels[MagickPathExtent] = "1%";
 
       /*
         Query user for gamma value.
@@ -7914,7 +7914,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         flags;
 
       static char
-        levels[MaxTextExtent] = "3x50%";
+        levels[MagickPathExtent] = "3x50%";
 
       /*
         Query user for gamma value.
@@ -8009,7 +8009,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         *affinity_image;
 
       static char
-        filename[MaxTextExtent] = "\0";
+        filename[MagickPathExtent] = "\0";
 
       /*
         Request image file name from user.
@@ -8022,7 +8022,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,MagickTrue);
       XCheckRefreshWindows(display,windows);
-      (void) CopyMagickString(image_info->filename,filename,MaxTextExtent);
+      (void) CopyMagickString(image_info->filename,filename,MagickPathExtent);
       affinity_image=ReadImage(image_info,exception);
       if (affinity_image != (Image *) NULL)
         {
@@ -8043,7 +8043,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         status;
 
       static char
-        colors[MaxTextExtent] = "256";
+        colors[MagickPathExtent] = "256";
 
       /*
         Query user for maximum number of colors.
@@ -8098,7 +8098,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         *emboss_image;
 
       static char
-        radius[MaxTextExtent] = "0.0x1.0";
+        radius[MagickPathExtent] = "0.0x1.0";
 
       /*
         Query user for emboss radius.
@@ -8136,7 +8136,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         *noise_image;
 
       static char
-        radius[MaxTextExtent] = "0";
+        radius[MagickPathExtent] = "0";
 
       /*
         Query user for noise radius.
@@ -8175,7 +8175,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         *noise_image;
 
       static char
-        noise_type[MaxTextExtent] = "Gaussian";
+        noise_type[MagickPathExtent] = "Gaussian";
 
       /*
         Add noise to the image.
@@ -8212,7 +8212,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         *sharp_image;
 
       static char
-        radius[MaxTextExtent] = "0.0x1.0";
+        radius[MagickPathExtent] = "0.0x1.0";
 
       /*
         Query user for sharpen radius.
@@ -8248,7 +8248,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         *blur_image;
 
       static char
-        radius[MaxTextExtent] = "0.0x1.0";
+        radius[MagickPathExtent] = "0.0x1.0";
 
       /*
         Query user for blur radius.
@@ -8284,7 +8284,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         threshold;
 
       static char
-        factor[MaxTextExtent] = "128";
+        factor[MagickPathExtent] = "128";
 
       /*
         Query user for threshold value.
@@ -8313,7 +8313,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         *edge_image;
 
       static char
-        radius[MaxTextExtent] = "0";
+        radius[MagickPathExtent] = "0";
 
       /*
         Query user for edge factor.
@@ -8348,7 +8348,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         *spread_image;
 
       static char
-        amount[MaxTextExtent] = "2";
+        amount[MagickPathExtent] = "2";
 
       /*
         Query user for spread amount.
@@ -8386,7 +8386,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         status;
 
       static char
-        geometry[MaxTextExtent] = "30x30";
+        geometry[MagickPathExtent] = "30x30";
 
       /*
         Query user for the shade geometry.
@@ -8421,7 +8421,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     case RaiseCommand:
     {
       static char
-        bevel_width[MaxTextExtent] = "10";
+        bevel_width[MagickPathExtent] = "10";
 
       /*
         Query user for bevel width.
@@ -8449,7 +8449,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     case SegmentCommand:
     {
       static char
-        threshold[MaxTextExtent] = "1.0x1.5";
+        threshold[MagickPathExtent] = "1.0x1.5";
 
       /*
         Query user for smoothing threshold.
@@ -8484,7 +8484,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         *sepia_image;
 
       static char
-        factor[MaxTextExtent] = "80%";
+        factor[MagickPathExtent] = "80%";
 
       /*
         Query user for sepia-tone factor.
@@ -8519,7 +8519,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         threshold;
 
       static char
-        factor[MaxTextExtent] = "60%";
+        factor[MagickPathExtent] = "60%";
 
       /*
         Query user for solarize factor.
@@ -8548,7 +8548,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         *swirl_image;
 
       static char
-        degrees[MaxTextExtent] = "60";
+        degrees[MagickPathExtent] = "60";
 
       /*
         Query user for swirl angle.
@@ -8584,7 +8584,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         *implode_image;
 
       static char
-        factor[MaxTextExtent] = "0.3";
+        factor[MagickPathExtent] = "0.3";
 
       /*
         Query user for implode factor.
@@ -8620,7 +8620,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         *vignette_image;
 
       static char
-        geometry[MaxTextExtent] = "0x20";
+        geometry[MagickPathExtent] = "0x20";
 
       /*
         Query user for the vignette geometry.
@@ -8663,7 +8663,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         *wave_image;
 
       static char
-        geometry[MaxTextExtent] = "25x150";
+        geometry[MagickPathExtent] = "25x150";
 
       /*
         Query user for the wave geometry.
@@ -8701,7 +8701,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         *paint_image;
 
       static char
-        radius[MaxTextExtent] = "0";
+        radius[MagickPathExtent] = "0";
 
       /*
         Query user for circular neighborhood radius.
@@ -8737,7 +8737,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         *charcoal_image;
 
       static char
-        radius[MaxTextExtent] = "0x1";
+        radius[MagickPathExtent] = "0x1";
 
       /*
         Query user for charcoal radius.
@@ -8848,7 +8848,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         *border_image;
 
       static char
-        geometry[MaxTextExtent] = "6x6";
+        geometry[MagickPathExtent] = "6x6";
 
       /*
         Query user for border color and geometry.
@@ -8897,7 +8897,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         *frame_image;
 
       static char
-        geometry[MaxTextExtent] = "6x6";
+        geometry[MagickPathExtent] = "6x6";
 
       /*
         Query user for frame color and geometry.
@@ -9013,7 +9013,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,MagickTrue);
       XCheckRefreshWindows(display,windows);
       (void) AcquireUniqueFilename(filename);
-      (void) FormatLocaleString((*image)->filename,MaxTextExtent,"launch:%s",
+      (void) FormatLocaleString((*image)->filename,MagickPathExtent,"launch:%s",
         filename);
       status=WriteImage(image_info,*image,exception);
       if (IfMagickFalse(status) )
@@ -9067,7 +9067,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         *preview_image;
 
       static char
-        preview_type[MaxTextExtent] = "Gamma";
+        preview_type[MagickPathExtent] = "Gamma";
 
       /*
         Select preview type from menu.
@@ -9092,15 +9092,15 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       (void) DeleteImageProperty(*image,"label");
       (void) SetImageProperty(*image,"label","Preview",exception);
       (void) AcquireUniqueFilename(filename);
-      (void) FormatLocaleString((*image)->filename,MaxTextExtent,"preview:%s",
+      (void) FormatLocaleString((*image)->filename,MagickPathExtent,"preview:%s",
         filename);
       status=WriteImage(image_info,*image,exception);
-      (void) CopyMagickString(image_info->filename,filename,MaxTextExtent);
+      (void) CopyMagickString(image_info->filename,filename,MagickPathExtent);
       preview_image=ReadImage(image_info,exception);
       (void) RelinquishUniqueFileResource(filename);
       if (preview_image == (Image *) NULL)
         break;
-      (void) FormatLocaleString(preview_image->filename,MaxTextExtent,"show:%s",
+      (void) FormatLocaleString(preview_image->filename,MagickPathExtent,"show:%s",
         filename);
       status=WriteImage(image_info,preview_image,exception);
       preview_image=DestroyImage(preview_image);
@@ -9125,15 +9125,15 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       (void) DeleteImageProperty(*image,"label");
       (void) SetImageProperty(*image,"label","Histogram",exception);
       (void) AcquireUniqueFilename(filename);
-      (void) FormatLocaleString((*image)->filename,MaxTextExtent,"histogram:%s",
+      (void) FormatLocaleString((*image)->filename,MagickPathExtent,"histogram:%s",
         filename);
       status=WriteImage(image_info,*image,exception);
-      (void) CopyMagickString(image_info->filename,filename,MaxTextExtent);
+      (void) CopyMagickString(image_info->filename,filename,MagickPathExtent);
       histogram_image=ReadImage(image_info,exception);
       (void) RelinquishUniqueFileResource(filename);
       if (histogram_image == (Image *) NULL)
         break;
-      (void) FormatLocaleString(histogram_image->filename,MaxTextExtent,
+      (void) FormatLocaleString(histogram_image->filename,MagickPathExtent,
         "show:%s",filename);
       status=WriteImage(image_info,histogram_image,exception);
       histogram_image=DestroyImage(histogram_image);
@@ -9164,15 +9164,15 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       (void) DeleteImageProperty(*image,"label");
       (void) SetImageProperty(*image,"label","Matte",exception);
       (void) AcquireUniqueFilename(filename);
-      (void) FormatLocaleString((*image)->filename,MaxTextExtent,"matte:%s",
+      (void) FormatLocaleString((*image)->filename,MagickPathExtent,"matte:%s",
         filename);
       status=WriteImage(image_info,*image,exception);
-      (void) CopyMagickString(image_info->filename,filename,MaxTextExtent);
+      (void) CopyMagickString(image_info->filename,filename,MagickPathExtent);
       matte_image=ReadImage(image_info,exception);
       (void) RelinquishUniqueFileResource(filename);
       if (matte_image == (Image *) NULL)
         break;
-      (void) FormatLocaleString(matte_image->filename,MaxTextExtent,"show:%s",
+      (void) FormatLocaleString(matte_image->filename,MagickPathExtent,"show:%s",
         filename);
       status=WriteImage(image_info,matte_image,exception);
       matte_image=DestroyImage(matte_image);
@@ -9200,7 +9200,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     case SlideShowCommand:
     {
       static char
-        delay[MaxTextExtent] = "5";
+        delay[MagickPathExtent] = "5";
 
       /*
         Display next image after pausing.
@@ -9255,14 +9255,14 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       if (mozilla_window != (Window) NULL)
         {
           char
-            command[MaxTextExtent],
+            command[MagickPathExtent],
             *url;
 
           /*
             Display documentation using Netscape remote control.
           */
           url=GetMagickHomeURL();
-          (void) FormatLocaleString(command,MaxTextExtent,
+          (void) FormatLocaleString(command,MagickPathExtent,
             "openurl(%s,new-tab)",url);
           url=DestroyString(url);
           mozilla_atom=XInternAtom(display,"_MOZILLA_COMMAND",MagickFalse);
@@ -9336,7 +9336,7 @@ static void XMagnifyImage(Display *display,XWindows *windows,XEvent *event,
   ExceptionInfo *exception)
 {
   char
-    text[MaxTextExtent];
+    text[MagickPathExtent];
 
   register int
     x,
@@ -9374,7 +9374,7 @@ static void XMagnifyImage(Display *display,XWindows *windows,XEvent *event,
         /*
           Display pointer position.
         */
-        (void) FormatLocaleString(text,MaxTextExtent," %+d%+d ",
+        (void) FormatLocaleString(text,MagickPathExtent," %+d%+d ",
           windows->magnify.x,windows->magnify.y);
         XInfoWidget(display,windows,text);
       }
@@ -9649,7 +9649,7 @@ static MagickBooleanType XMatteEditImage(Display *display,
   ExceptionInfo *exception)
 {
   static char
-    matte[MaxTextExtent] = "0";
+    matte[MagickPathExtent] = "0";
 
   static const char
     *MatteEditMenu[] =
@@ -9683,8 +9683,8 @@ static MagickBooleanType XMatteEditImage(Display *display,
     border_color = { 0, 0, 0, 0, 0, 0 };
 
   char
-    command[MaxTextExtent],
-    text[MaxTextExtent];
+    command[MagickPathExtent],
+    text[MagickPathExtent];
 
   Cursor
     cursor;
@@ -9742,7 +9742,7 @@ static MagickBooleanType XMatteEditImage(Display *display,
         /*
           Display pointer position.
         */
-        (void) FormatLocaleString(text,MaxTextExtent," %+d%+d ",
+        (void) FormatLocaleString(text,MagickPathExtent," %+d%+d ",
           x+windows->image.x,y+windows->image.y);
         XInfoWidget(display,windows,text);
       }
@@ -9807,7 +9807,7 @@ static MagickBooleanType XMatteEditImage(Display *display,
             if (pen_number == (MaxNumberPens-2))
               {
                 static char
-                  color_name[MaxTextExtent] = "gray";
+                  color_name[MagickPathExtent] = "gray";
 
                 /*
                   Select a pen color from a dialog.
@@ -9827,7 +9827,7 @@ static MagickBooleanType XMatteEditImage(Display *display,
           case MatteEditFuzzCommand:
           {
             static char
-              fuzz[MaxTextExtent];
+              fuzz[MagickPathExtent];
 
             static const char
               *FuzzMenu[] =
@@ -9854,12 +9854,12 @@ static MagickBooleanType XMatteEditImage(Display *display,
                   QuantumRange+1.0);
                 break;
               }
-            (void) CopyMagickString(fuzz,"20%",MaxTextExtent);
+            (void) CopyMagickString(fuzz,"20%",MagickPathExtent);
             (void) XDialogWidget(display,windows,"Ok",
               "Enter fuzz factor (0.0 - 99.9%):",fuzz);
             if (*fuzz == '\0')
               break;
-            (void) ConcatenateMagickString(fuzz,"%",MaxTextExtent);
+            (void) ConcatenateMagickString(fuzz,"%",MagickPathExtent);
             (*image)->fuzz=StringToDoubleInterval(fuzz,(double) QuantumRange+
               1.0);
             break;
@@ -9867,7 +9867,7 @@ static MagickBooleanType XMatteEditImage(Display *display,
           case MatteEditValueCommand:
           {
             static char
-              message[MaxTextExtent];
+              message[MagickPathExtent];
 
             static const char
               *MatteMenu[] =
@@ -9887,14 +9887,14 @@ static MagickBooleanType XMatteEditImage(Display *display,
               break;
             if (entry != 2)
               {
-                (void) FormatLocaleString(matte,MaxTextExtent,QuantumFormat,
+                (void) FormatLocaleString(matte,MagickPathExtent,QuantumFormat,
                   OpaqueAlpha);
                 if (LocaleCompare(MatteMenu[entry],"Transparent") == 0)
-                  (void) FormatLocaleString(matte,MaxTextExtent,QuantumFormat,
+                  (void) FormatLocaleString(matte,MagickPathExtent,QuantumFormat,
                     (Quantum) TransparentAlpha);
                 break;
               }
-            (void) FormatLocaleString(message,MaxTextExtent,
+            (void) FormatLocaleString(message,MagickPathExtent,
               "Enter matte value (0 - " QuantumFormat "):",(Quantum)
               QuantumRange);
             (void) XDialogWidget(display,windows,"Matte",message,matte);
@@ -9972,7 +9972,7 @@ static MagickBooleanType XMatteEditImage(Display *display,
       case KeyPress:
       {
         char
-          command[MaxTextExtent];
+          command[MagickPathExtent];
 
         KeySym
           key_symbol;
@@ -10253,7 +10253,7 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
     *image_info;
 
   static char
-    filename[MaxTextExtent] = "\0";
+    filename[MagickPathExtent] = "\0";
 
   /*
     Request file name from user.
@@ -10306,18 +10306,18 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
   image_info=CloneImageInfo(resource_info->image_info);
   (void) SetImageInfoProgressMonitor(image_info,(MagickProgressMonitor) NULL,
     (void *) NULL);
-  (void) CopyMagickString(image_info->filename,filename,MaxTextExtent);
+  (void) CopyMagickString(image_info->filename,filename,MagickPathExtent);
   exception=AcquireExceptionInfo();
   (void) SetImageInfo(image_info,0,exception);
   if (LocaleCompare(image_info->magick,"X") == 0)
     {
       char
-        seconds[MaxTextExtent];
+        seconds[MagickPathExtent];
 
       /*
         User may want to delay the X server screen grab.
       */
-      (void) CopyMagickString(seconds,"0",MaxTextExtent);
+      (void) CopyMagickString(seconds,"0",MagickPathExtent);
       (void) XDialogWidget(display,windows,"Grab","Enter any delay in seconds:",
         seconds);
       if (*seconds == '\0')
@@ -10329,14 +10329,14 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
       GetMagickRawSupport(magick_info) == MagickTrue)
     {
       char
-        geometry[MaxTextExtent];
+        geometry[MagickPathExtent];
 
       /*
         Request image size from the user.
       */
-      (void) CopyMagickString(geometry,"512x512",MaxTextExtent);
+      (void) CopyMagickString(geometry,"512x512",MagickPathExtent);
       if (image_info->size != (char *) NULL)
-        (void) CopyMagickString(geometry,image_info->size,MaxTextExtent);
+        (void) CopyMagickString(geometry,image_info->size,MagickPathExtent);
       (void) XDialogWidget(display,windows,"Load","Enter the image geometry:",
         geometry);
       (void) CloneString(&image_info->size,geometry);
@@ -10346,7 +10346,7 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
   */
   XSetCursorState(display,windows,MagickTrue);
   XCheckRefreshWindows(display,windows);
-  (void) CopyMagickString(image_info->filename,filename,MaxTextExtent);
+  (void) CopyMagickString(image_info->filename,filename,MagickPathExtent);
   nexus=ReadImage(image_info,exception);
   CatchException(exception);
   XSetCursorState(display,windows,MagickFalse);
@@ -10369,12 +10369,12 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
       if (textlist != (char **) NULL)
         {
           char
-            title[MaxTextExtent];
+            title[MagickPathExtent];
 
           register int
             i;
 
-          (void) FormatLocaleString(title,MaxTextExtent,
+          (void) FormatLocaleString(title,MagickPathExtent,
             "Unknown format: %s",filename);
           XTextViewWidget(display,resource_info,windows,MagickTrue,title,
             (const char **) textlist);
@@ -10424,7 +10424,7 @@ static void XPanImage(Display *display,XWindows *windows,XEvent *event,
   ExceptionInfo *exception)
 {
   char
-    text[MaxTextExtent];
+    text[MagickPathExtent];
 
   Cursor
     cursor;
@@ -10534,7 +10534,7 @@ static void XPanImage(Display *display,XWindows *windows,XEvent *event,
             */
             windows->image.x=(int) pan_info.x;
             windows->image.y=(int) pan_info.y;
-            (void) FormatLocaleString(text,MaxTextExtent," %ux%u%+d%+d ",
+            (void) FormatLocaleString(text,MagickPathExtent," %ux%u%+d%+d ",
               windows->image.width,windows->image.height,windows->image.x,
               windows->image.y);
             XInfoWidget(display,windows,text);
@@ -10619,7 +10619,7 @@ static MagickBooleanType XPasteImage(Display *display,
     compose = CopyCompositeOp;
 
   char
-    text[MaxTextExtent];
+    text[MagickPathExtent];
 
   Cursor
     cursor;
@@ -10686,7 +10686,7 @@ static MagickBooleanType XPasteImage(Display *display,
         /*
           Display pointer position.
         */
-        (void) FormatLocaleString(text,MaxTextExtent," %+ld%+ld ",
+        (void) FormatLocaleString(text,MagickPathExtent," %+ld%+ld ",
           (long) paste_info.x,(long) paste_info.y);
         XInfoWidget(display,windows,text);
       }
@@ -10714,7 +10714,7 @@ static MagickBooleanType XPasteImage(Display *display,
           case PasteOperatorsCommand:
           {
             char
-              command[MaxTextExtent],
+              command[MagickPathExtent],
               **operators;
 
             /*
@@ -10808,7 +10808,7 @@ static MagickBooleanType XPasteImage(Display *display,
       case KeyPress:
       {
         char
-          command[MaxTextExtent];
+          command[MagickPathExtent];
 
         KeySym
           key_symbol;
@@ -10969,8 +10969,8 @@ static MagickBooleanType XPrintImage(Display *display,
   ExceptionInfo *exception)
 {
   char
-    filename[MaxTextExtent],
-    geometry[MaxTextExtent];
+    filename[MagickPathExtent],
+    geometry[MagickPathExtent];
 
   Image
     *print_image;
@@ -10985,9 +10985,9 @@ static MagickBooleanType XPrintImage(Display *display,
     Request Postscript page geometry from user.
   */
   image_info=CloneImageInfo(resource_info->image_info);
-  (void) FormatLocaleString(geometry,MaxTextExtent,"Letter");
+  (void) FormatLocaleString(geometry,MagickPathExtent,"Letter");
   if (image_info->page != (char *) NULL)
-    (void) CopyMagickString(geometry,image_info->page,MaxTextExtent);
+    (void) CopyMagickString(geometry,image_info->page,MagickPathExtent);
   XListBrowserWidget(display,windows,&windows->widget,PageSizes,"Select",
     "Select Postscript Page Geometry:",geometry);
   if (*geometry == '\0')
@@ -11001,7 +11001,7 @@ static MagickBooleanType XPrintImage(Display *display,
   print_image=CloneImage(image,0,0,MagickTrue,exception);
   if (print_image == (Image *) NULL)
     return(MagickFalse);
-  (void) FormatLocaleString(geometry,MaxTextExtent,"%dx%d!",
+  (void) FormatLocaleString(geometry,MagickPathExtent,"%dx%d!",
     windows->image.ximage->width,windows->image.ximage->height);
   (void) TransformImage(&print_image,windows->image.crop_geometry,geometry,
     exception);
@@ -11009,7 +11009,7 @@ static MagickBooleanType XPrintImage(Display *display,
     Print image.
   */
   (void) AcquireUniqueFilename(filename);
-  (void) FormatLocaleString(print_image->filename,MaxTextExtent,"print:%s",
+  (void) FormatLocaleString(print_image->filename,MagickPathExtent,"print:%s",
     filename);
   status=WriteImage(image_info,print_image,exception);
   (void) RelinquishUniqueFileResource(filename);
@@ -11265,8 +11265,8 @@ static MagickBooleanType XROIImage(Display *display,
     };
 
   char
-    command[MaxTextExtent],
-    text[MaxTextExtent];
+    command[MagickPathExtent],
+    text[MagickPathExtent];
 
   CommandType
     command_type;
@@ -11332,7 +11332,7 @@ static MagickBooleanType XROIImage(Display *display,
         /*
           Display pointer position.
         */
-        (void) FormatLocaleString(text,MaxTextExtent," %+ld%+ld ",
+        (void) FormatLocaleString(text,MagickPathExtent," %+ld%+ld ",
           (long) roi_info.x,(long) roi_info.y);
         XInfoWidget(display,windows,text);
       }
@@ -11490,7 +11490,7 @@ static MagickBooleanType XROIImage(Display *display,
           */
           if (IfMagickFalse(windows->info.mapped) )
             (void) XMapWindow(display,windows->info.id);
-          (void) FormatLocaleString(text,MaxTextExtent,
+          (void) FormatLocaleString(text,MagickPathExtent,
             " %.20gx%.20g%+.20g%+.20g",(double) roi_info.width,(double)
             roi_info.height,(double) roi_info.x,(double) roi_info.y);
           XInfoWidget(display,windows,text);
@@ -11588,7 +11588,7 @@ static MagickBooleanType XROIImage(Display *display,
           /*
             Display pointer position.
           */
-          (void) FormatLocaleString(text,MaxTextExtent,
+          (void) FormatLocaleString(text,MagickPathExtent,
             " %.20gx%.20g%+.20g%+.20g",(double) roi_info.width,(double)
             roi_info.height,(double) roi_info.x,(double) roi_info.y);
           XInfoWidget(display,windows,text);
@@ -11689,7 +11689,7 @@ static MagickBooleanType XROIImage(Display *display,
           id=XCommandWidget(display,windows,ApplyMenu,&event);
           if (id >= 0)
             {
-              (void) CopyMagickString(command,ApplyMenu[id],MaxTextExtent);
+              (void) CopyMagickString(command,ApplyMenu[id],MagickPathExtent);
               command_type=ApplyCommands[id];
               if (id < ApplyMenus)
                 {
@@ -11701,7 +11701,7 @@ static MagickBooleanType XROIImage(Display *display,
                   if (entry >= 0)
                     {
                       (void) CopyMagickString(command,Menus[id][entry],
-                        MaxTextExtent);
+                        MagickPathExtent);
                       command_type=Commands[id][entry];
                     }
                 }
@@ -11931,7 +11931,7 @@ static MagickBooleanType XROIImage(Display *display,
           /*
             Set primary selection.
           */
-          (void) FormatLocaleString(text,MaxTextExtent,
+          (void) FormatLocaleString(text,MagickPathExtent,
             "%.20gx%.20g%+.20g%+.20g",(double) roi_info.width,(double)
             roi_info.height,(double) roi_info.x,(double) roi_info.y);
           request=(&(event.xselectionrequest));
@@ -12040,8 +12040,8 @@ static MagickBooleanType XRotateImage(Display *display,
     pen_id = 0;
 
   char
-    command[MaxTextExtent],
-    text[MaxTextExtent];
+    command[MagickPathExtent],
+    text[MagickPathExtent];
 
   Image
     *rotate_image;
@@ -12145,7 +12145,7 @@ static MagickBooleanType XRotateImage(Display *display,
                 if (pen_number == (MaxNumberPens-2))
                   {
                     static char
-                      color_name[MaxTextExtent] = "gray";
+                      color_name[MagickPathExtent] = "gray";
 
                     /*
                       Select a pen color from a dialog.
@@ -12232,7 +12232,7 @@ static MagickBooleanType XRotateImage(Display *display,
           case KeyPress:
           {
             char
-              command[MaxTextExtent];
+              command[MagickPathExtent];
 
             KeySym
               key_symbol;
@@ -12307,7 +12307,7 @@ static MagickBooleanType XRotateImage(Display *display,
             */
             if (IfMagickFalse(windows->info.mapped) )
               (void) XMapWindow(display,windows->info.id);
-            (void) FormatLocaleString(text,MaxTextExtent," %g",
+            (void) FormatLocaleString(text,MagickPathExtent," %g",
               direction == VerticalRotateCommand ? degrees-90.0 : degrees);
             XInfoWidget(display,windows,text);
             XHighlightLine(display,windows->image.id,
@@ -12424,7 +12424,7 @@ static MagickBooleanType XRotateImage(Display *display,
           /*
             Rotate 90 degrees.
           */
-          (void) FormatLocaleString(windows->image.crop_geometry,MaxTextExtent,
+          (void) FormatLocaleString(windows->image.crop_geometry,MagickPathExtent,
             "%ux%u%+d%+d",height,width,(int) (*image)->columns-
             (int) height-y,x);
           break;
@@ -12434,7 +12434,7 @@ static MagickBooleanType XRotateImage(Display *display,
           /*
             Rotate 180 degrees.
           */
-          (void) FormatLocaleString(windows->image.crop_geometry,MaxTextExtent,
+          (void) FormatLocaleString(windows->image.crop_geometry,MagickPathExtent,
             "%ux%u%+d%+d",width,height,(int) width-x,(int) height-y);
           break;
         }
@@ -12443,7 +12443,7 @@ static MagickBooleanType XRotateImage(Display *display,
           /*
             Rotate 270 degrees.
           */
-          (void) FormatLocaleString(windows->image.crop_geometry,MaxTextExtent,
+          (void) FormatLocaleString(windows->image.crop_geometry,MagickPathExtent,
             "%ux%u%+d%+d",height,width,y,(int) (*image)->rows-(int) width-x);
           break;
         }
@@ -12521,8 +12521,8 @@ static MagickBooleanType XSaveImage(Display *display,
   ExceptionInfo *exception)
 {
   char
-    filename[MaxTextExtent],
-    geometry[MaxTextExtent];
+    filename[MagickPathExtent],
+    geometry[MagickPathExtent];
 
   Image
     *save_image;
@@ -12538,11 +12538,11 @@ static MagickBooleanType XSaveImage(Display *display,
   */
   if (resource_info->write_filename != (char *) NULL)
     (void) CopyMagickString(filename,resource_info->write_filename,
-      MaxTextExtent);
+      MagickPathExtent);
   else
     {
       char
-        path[MaxTextExtent];
+        path[MagickPathExtent];
 
       int
         status;
@@ -12573,13 +12573,13 @@ static MagickBooleanType XSaveImage(Display *display,
         return(MagickTrue);
     }
   image_info=CloneImageInfo(resource_info->image_info);
-  (void) CopyMagickString(image_info->filename,filename,MaxTextExtent);
+  (void) CopyMagickString(image_info->filename,filename,MagickPathExtent);
   (void) SetImageInfo(image_info,1,exception);
   if ((LocaleCompare(image_info->magick,"JPEG") == 0) ||
       (LocaleCompare(image_info->magick,"JPG") == 0))
     {
       char
-        quality[MaxTextExtent];
+        quality[MagickPathExtent];
 
       int
         status;
@@ -12587,7 +12587,7 @@ static MagickBooleanType XSaveImage(Display *display,
       /*
         Request JPEG quality from user.
       */
-      (void) FormatLocaleString(quality,MaxTextExtent,"%.20g",(double)
+      (void) FormatLocaleString(quality,MagickPathExtent,"%.20g",(double)
         image->quality);
       status=XDialogWidget(display,windows,"Save","Enter JPEG quality:",
         quality);
@@ -12602,16 +12602,16 @@ static MagickBooleanType XSaveImage(Display *display,
       (LocaleCompare(image_info->magick,"PS2") == 0))
     {
       char
-        geometry[MaxTextExtent];
+        geometry[MagickPathExtent];
 
       /*
         Request page geometry from user.
       */
-      (void) CopyMagickString(geometry,PSPageGeometry,MaxTextExtent);
+      (void) CopyMagickString(geometry,PSPageGeometry,MagickPathExtent);
       if (LocaleCompare(image_info->magick,"PDF") == 0)
-        (void) CopyMagickString(geometry,PSPageGeometry,MaxTextExtent);
+        (void) CopyMagickString(geometry,PSPageGeometry,MagickPathExtent);
       if (image_info->page != (char *) NULL)
-        (void) CopyMagickString(geometry,image_info->page,MaxTextExtent);
+        (void) CopyMagickString(geometry,image_info->page,MagickPathExtent);
       XListBrowserWidget(display,windows,&windows->widget,PageSizes,"Select",
         "Select page geometry:",geometry);
       if (*geometry != '\0')
@@ -12625,14 +12625,14 @@ static MagickBooleanType XSaveImage(Display *display,
   save_image=CloneImage(image,0,0,MagickTrue,exception);
   if (save_image == (Image *) NULL)
     return(MagickFalse);
-  (void) FormatLocaleString(geometry,MaxTextExtent,"%dx%d!",
+  (void) FormatLocaleString(geometry,MagickPathExtent,"%dx%d!",
     windows->image.ximage->width,windows->image.ximage->height);
   (void) TransformImage(&save_image,windows->image.crop_geometry,geometry,
     exception);
   /*
     Write image.
   */
-  (void) CopyMagickString(save_image->filename,filename,MaxTextExtent);
+  (void) CopyMagickString(save_image->filename,filename,MagickPathExtent);
   status=WriteImage(image_info,save_image,exception);
   if (IfMagickTrue(status) )
     image->taint=MagickFalse;
@@ -12838,7 +12838,7 @@ static void XScreenEvent(Display *display,XWindows *windows,XEvent *event,
     case KeyPress:
     {
       char
-        command[MaxTextExtent];
+        command[MagickPathExtent];
 
       KeySym
         key_symbol;
@@ -12951,7 +12951,7 @@ static void XSetCropGeometry(Display *display,XWindows *windows,
   RectangleInfo *crop_info,Image *image)
 {
   char
-    text[MaxTextExtent];
+    text[MagickPathExtent];
 
   int
     x,
@@ -12969,7 +12969,7 @@ static void XSetCropGeometry(Display *display,XWindows *windows,
       /*
         Display info on cropping rectangle.
       */
-      (void) FormatLocaleString(text,MaxTextExtent," %.20gx%.20g%+.20g%+.20g",
+      (void) FormatLocaleString(text,MagickPathExtent," %.20gx%.20g%+.20g%+.20g",
         (double) crop_info->width,(double) crop_info->height,(double)
         crop_info->x,(double) crop_info->y);
       XInfoWidget(display,windows,text);
@@ -13000,7 +13000,7 @@ static void XSetCropGeometry(Display *display,XWindows *windows,
   height=(unsigned int) (scale_factor*crop_info->height+0.5);
   if (height == 0)
     height=1;
-  (void) FormatLocaleString(windows->image.crop_geometry,MaxTextExtent,
+  (void) FormatLocaleString(windows->image.crop_geometry,MagickPathExtent,
     "%ux%u%+d%+d",width,height,x,y);
 }
 
@@ -13068,8 +13068,8 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
     };
 
   char
-    command[MaxTextExtent],
-    filename[MaxTextExtent];
+    command[MagickPathExtent],
+    filename[MagickPathExtent];
 
   Image
     *tile_image;
@@ -13171,9 +13171,9 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
       */
       XCheckRefreshWindows(display,windows);
       (void) CopyMagickString(resource_info->image_info->magick,"MIFF",
-        MaxTextExtent);
+        MagickPathExtent);
       (void) CopyMagickString(resource_info->image_info->filename,filename,
-        MaxTextExtent);
+        MagickPathExtent);
       tile_image=ReadImage(resource_info->image_info,exception);
       CatchException(exception);
       (void) XWithdrawWindow(display,windows->info.id,windows->info.screen);
@@ -13327,7 +13327,7 @@ static void XTranslateImage(Display *display,XWindows *windows,
   Image *image,const KeySym key_symbol)
 {
   char
-    text[MaxTextExtent];
+    text[MagickPathExtent];
 
   int
     x,
@@ -13400,7 +13400,7 @@ static void XTranslateImage(Display *display,XWindows *windows,
   /*
     Refresh Image window.
   */
-  (void) FormatLocaleString(text,MaxTextExtent," %ux%u%+d%+d ",
+  (void) FormatLocaleString(text,MagickPathExtent," %ux%u%+d%+d ",
     windows->image.width,windows->image.height,windows->image.x,
     windows->image.y);
   XInfoWidget(display,windows,text);
@@ -13617,8 +13617,8 @@ static Image *XVisualDirectoryImage(Display *display,
     i;
 
   static char
-    filename[MaxTextExtent] = "\0",
-    filenames[MaxTextExtent] = "*";
+    filename[MagickPathExtent] = "\0",
+    filenames[MagickPathExtent] = "*";
 
   XResourceInfo
     background_resources;
@@ -13656,7 +13656,7 @@ static Image *XVisualDirectoryImage(Display *display,
   */
   background_resources=(*resource_info);
   background_resources.window_id=AcquireString("");
-  (void) FormatLocaleString(background_resources.window_id,MaxTextExtent,
+  (void) FormatLocaleString(background_resources.window_id,MagickPathExtent,
     "0x%lx",windows->image.id);
   background_resources.backdrop=MagickTrue;
   /*
@@ -13674,7 +13674,7 @@ static Image *XVisualDirectoryImage(Display *display,
   XCheckRefreshWindows(display,windows);
   for (i=0; i < (int) number_files; i++)
   {
-    (void) CopyMagickString(read_info->filename,filelist[i],MaxTextExtent);
+    (void) CopyMagickString(read_info->filename,filelist[i],MagickPathExtent);
     filelist[i]=DestroyString(filelist[i]);
     *read_info->magick='\0';
     next_image=ReadImage(read_info,exception);
@@ -13727,7 +13727,7 @@ static Image *XVisualDirectoryImage(Display *display,
   montage_info->pointsize=10;
   if (resource_info->font != (char *) NULL)
     (void) CloneString(&montage_info->font,resource_info->font);
-  (void) CopyMagickString(montage_info->filename,filename,MaxTextExtent);
+  (void) CopyMagickString(montage_info->filename,filename,MagickPathExtent);
   montage_image=MontageImageList(read_info,montage_info,GetFirstImageInList(
     images),exception);
   images=DestroyImageList(images);
@@ -13775,8 +13775,8 @@ MagickExport MagickBooleanType XDisplayBackgroundImage(Display *display,
   XResourceInfo *resource_info,Image *image,ExceptionInfo *exception)
 {
   char
-    geometry[MaxTextExtent],
-    visual_type[MaxTextExtent];
+    geometry[MagickPathExtent],
+    visual_type[MagickPathExtent];
 
   int
     height,
@@ -13844,10 +13844,10 @@ MagickExport MagickBooleanType XDisplayBackgroundImage(Display *display,
   */
   window_attributes.width=XDisplayWidth(display,XDefaultScreen(display));
   window_attributes.height=XDisplayHeight(display,XDefaultScreen(display));
-  (void) CopyMagickString(visual_type,"default",MaxTextExtent);
+  (void) CopyMagickString(visual_type,"default",MagickPathExtent);
   status=XGetWindowAttributes(display,window_info.id,&window_attributes);
   if (status != 0)
-    (void) FormatLocaleString(visual_type,MaxTextExtent,"0x%lx",
+    (void) FormatLocaleString(visual_type,MagickPathExtent,"0x%lx",
       XVisualIDFromVisual(window_attributes.visual));
   if (visual_info == (XVisualInfo *) NULL)
     {
@@ -13914,7 +13914,7 @@ MagickExport MagickBooleanType XDisplayBackgroundImage(Display *display,
       (image->rows != window_info.height))
     ThrowXWindowFatalException(XServerFatalError,"UnableToCreateXImage",
       image->filename);
-  (void) FormatLocaleString(geometry,MaxTextExtent,"%ux%u+0+0>",
+  (void) FormatLocaleString(geometry,MagickPathExtent,"%ux%u+0+0>",
     window_attributes.width,window_attributes.height);
   geometry_info.width=window_info.width;
   geometry_info.height=window_info.height;
@@ -13964,7 +13964,7 @@ MagickExport MagickBooleanType XDisplayBackgroundImage(Display *display,
       (*resources.image_geometry != '\0'))
     {
       char
-        default_geometry[MaxTextExtent];
+        default_geometry[MagickPathExtent];
 
       int
         flags,
@@ -13981,7 +13981,7 @@ MagickExport MagickBooleanType XDisplayBackgroundImage(Display *display,
         ThrowXWindowFatalException(ResourceLimitFatalError,
           "MemoryAllocationFailed",image->filename);
       size_hints->flags=0L;
-      (void) FormatLocaleString(default_geometry,MaxTextExtent,"%dx%d",
+      (void) FormatLocaleString(default_geometry,MagickPathExtent,"%dx%d",
         width,height);
       flags=XWMGeometry(display,visual_info->screen,resources.image_geometry,
         default_geometry,window_info.border_width,size_hints,&window_info.x,
@@ -14413,10 +14413,10 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     };
 
   char
-    command[MaxTextExtent],
+    command[MagickPathExtent],
     *directory,
-    geometry[MaxTextExtent],
-    resource_name[MaxTextExtent];
+    geometry[MagickPathExtent],
+    resource_name[MagickPathExtent];
 
   CommandType
     command_type;
@@ -14443,7 +14443,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     i;
 
   static char
-    working_directory[MaxTextExtent];
+    working_directory[MagickPathExtent];
 
   static XPoint
     vid_info;
@@ -14524,7 +14524,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
         status;
 
       if (*working_directory == '\0')
-        (void) CopyMagickString(working_directory,".",MaxTextExtent);
+        (void) CopyMagickString(working_directory,".",MagickPathExtent);
       status=chdir(working_directory);
       if (status == -1)
         (void) ThrowMagickException(exception,GetMagickModule(),FileOpenError,
@@ -14697,34 +14697,34 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
 
       title=InterpretImageProperties(resource_info->image_info,display_image,
         resource_info->title,exception);
-      (void) CopyMagickString(windows->image.name,title,MaxTextExtent);
-      (void) CopyMagickString(windows->image.icon_name,title,MaxTextExtent);
+      (void) CopyMagickString(windows->image.name,title,MagickPathExtent);
+      (void) CopyMagickString(windows->image.icon_name,title,MagickPathExtent);
       title=DestroyString(title);
     }
   else
     {
       char
-        filename[MaxTextExtent];
+        filename[MagickPathExtent];
 
       /*
         Window name is the base of the filename.
       */
       GetPathComponent(display_image->magick_filename,TailPath,filename);
       if (display_image->scene == 0)
-        (void) FormatLocaleString(windows->image.name,MaxTextExtent,
+        (void) FormatLocaleString(windows->image.name,MagickPathExtent,
           "%s: %s",MagickPackageName,filename);
       else
-        (void) FormatLocaleString(windows->image.name,MaxTextExtent,
+        (void) FormatLocaleString(windows->image.name,MagickPathExtent,
           "%s: %s[scene: %.20g frames: %.20g]",MagickPackageName,filename,
           (double) display_image->scene,(double) GetImageListLength(
           display_image));
-      (void) CopyMagickString(windows->image.icon_name,filename,MaxTextExtent);
+      (void) CopyMagickString(windows->image.icon_name,filename,MagickPathExtent);
     }
   if (resource_info->immutable)
     windows->image.immutable=MagickTrue;
   windows->image.use_pixmap=resource_info->use_pixmap;
   windows->image.geometry=resource_info->image_geometry;
-  (void) FormatLocaleString(geometry,MaxTextExtent,"%ux%u+0+0>!",
+  (void) FormatLocaleString(geometry,MagickPathExtent,"%ux%u+0+0>!",
     XDisplayWidth(display,visual_info->screen),
     XDisplayHeight(display,visual_info->screen));
   geometry_info.width=display_image->columns;
@@ -14851,7 +14851,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     resource_info,&windows->command);
   windows->command.data=MagickMenus;
   (void) XCommandWidget(display,windows,CommandMenu,(XEvent *) NULL);
-  (void) FormatLocaleString(resource_name,MaxTextExtent,"%s.command",
+  (void) FormatLocaleString(resource_name,MagickPathExtent,"%s.command",
     resource_info->client_name);
   windows->command.geometry=XGetResourceClass(resource_info->resource_database,
     resource_name,"geometry",(char *) NULL);
@@ -14883,7 +14883,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   */
   XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->widget);
-  (void) FormatLocaleString(resource_name,MaxTextExtent,"%s.widget",
+  (void) FormatLocaleString(resource_name,MagickPathExtent,"%s.widget",
     resource_info->client_name);
   windows->widget.geometry=XGetResourceClass(resource_info->resource_database,
     resource_name,"geometry",(char *) NULL);
@@ -14938,11 +14938,11 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     resource_info,&windows->magnify);
   if (IfMagickFalse(resource_info->use_shared_memory) )
     windows->magnify.shared_memory=MagickFalse;
-  (void) FormatLocaleString(resource_name,MaxTextExtent,"%s.magnify",
+  (void) FormatLocaleString(resource_name,MagickPathExtent,"%s.magnify",
     resource_info->client_name);
   windows->magnify.geometry=XGetResourceClass(resource_info->resource_database,
     resource_name,"geometry",(char *) NULL);
-  (void) FormatLocaleString(windows->magnify.name,MaxTextExtent,"Magnify %uX",
+  (void) FormatLocaleString(windows->magnify.name,MagickPathExtent,"Magnify %uX",
     resource_info->magnify);
   if (windows->magnify.cursor != (Cursor) NULL)
     (void) XFreeCursor(display,windows->magnify.cursor);
@@ -14982,7 +14982,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   (void) CloneString(&windows->pan.name,"Pan Icon");
   windows->pan.width=windows->icon.width;
   windows->pan.height=windows->icon.height;
-  (void) FormatLocaleString(resource_name,MaxTextExtent,"%s.pan",
+  (void) FormatLocaleString(resource_name,MagickPathExtent,"%s.pan",
     resource_info->client_name);
   windows->pan.geometry=XGetResourceClass(resource_info->resource_database,
     resource_name,"geometry",(char *) NULL);
@@ -15097,7 +15097,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                           Redisplay image.
                         */
                         (void) FormatLocaleString(
-                          resource_info->image_info->filename,MaxTextExtent,
+                          resource_info->image_info->filename,MagickPathExtent,
                           "%s:%s",display_image->magick,
                           display_image->filename);
                         nexus=ReadImage(resource_info->image_info,exception);
@@ -15135,7 +15135,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
         id=XCommandWidget(display,windows,CommandMenu,&event);
         if (id < 0)
           continue;
-        (void) CopyMagickString(command,CommandMenu[id],MaxTextExtent);
+        (void) CopyMagickString(command,CommandMenu[id],MagickPathExtent);
         command_type=CommandMenus[id];
         if (id < MagickMenus)
           {
@@ -15146,7 +15146,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
               command);
             if (entry < 0)
               continue;
-            (void) CopyMagickString(command,Menus[id][entry],MaxTextExtent);
+            (void) CopyMagickString(command,Menus[id][entry],MagickPathExtent);
             command_type=Commands[id][entry];
           }
         if (command_type != NullCommand)
@@ -15464,7 +15464,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
               break;
             selection=XInternAtom(display,"DndSelection",MagickFalse);
             status=XGetWindowProperty(display,root_window,selection,0L,(long)
-              MaxTextExtent,MagickFalse,(Atom) AnyPropertyType,&type,&format,
+              MagickPathExtent,MagickFalse,(Atom) AnyPropertyType,&type,&format,
               &length,&after,&data);
             if ((status != Success) || (length == 0))
               break;
@@ -15474,7 +15474,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                   Offix DND.
                 */
                 (void) CopyMagickString(resource_info->image_info->filename,
-                  (char *) data,MaxTextExtent);
+                  (char *) data,MagickPathExtent);
               }
             else
               {
@@ -15487,7 +15487,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                     break;
                   }
                 (void) CopyMagickString(resource_info->image_info->filename,
-                  ((char *) data)+5,MaxTextExtent);
+                  ((char *) data)+5,MagickPathExtent);
               }
             nexus=ReadImage(resource_info->image_info,exception);
             CatchException(exception);
@@ -15946,7 +15946,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
           Display image named by the remote command protocol.
         */
         status=XGetWindowProperty(display,event.xproperty.window,
-          event.xproperty.atom,0L,(long) MaxTextExtent,MagickFalse,(Atom)
+          event.xproperty.atom,0L,(long) MagickPathExtent,MagickFalse,(Atom)
           AnyPropertyType,&type,&format,&length,&after,&data);
         if ((status != Success) || (length == 0))
           break;
@@ -15958,7 +15958,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
             break;
           }
         (void) CopyMagickString(resource_info->image_info->filename,
-          (char *) data,MaxTextExtent);
+          (char *) data,MagickPathExtent);
         (void) XFree((void *) data);
         nexus=ReadImage(resource_info->image_info,exception);
         CatchException(exception);
@@ -16132,14 +16132,14 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   /*
     Change to home directory.
   */
-  directory=getcwd(working_directory,MaxTextExtent);
+  directory=getcwd(working_directory,MagickPathExtent);
   (void) directory;
   {
     int
       status;
 
     if (*resource_info->home_directory == '\0')
-      (void) CopyMagickString(resource_info->home_directory,".",MaxTextExtent);
+      (void) CopyMagickString(resource_info->home_directory,".",MagickPathExtent);
     status=chdir(resource_info->home_directory);
     if (status == -1)
       (void) ThrowMagickException(exception,GetMagickModule(),FileOpenError,

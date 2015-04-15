@@ -637,9 +637,9 @@ MagickExport Image *DeskewImage(const Image *image,const double threshold,
     return((Image *) NULL);
   {
     char
-      angle[MaxTextExtent];
+      angle[MagickPathExtent];
 
-    (void) FormatLocaleString(angle,MaxTextExtent,"%.20g",degrees);
+    (void) FormatLocaleString(angle,MagickPathExtent,"%.20g",degrees);
     (void) SetImageArtifact(clone_image,"deskew:angle",angle);
   }
   (void) SetImageVirtualPixelMethod(clone_image,BackgroundVirtualPixelMethod,

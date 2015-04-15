@@ -407,7 +407,7 @@ static Image *OverviewImage(const ImageInfo *image_info,Image *image,
   }
   montage_info=CloneMontageInfo(image_info,(MontageInfo *) NULL);
   (void) CopyMagickString(montage_info->filename,image_info->filename,
-    MaxTextExtent);
+    MagickPathExtent);
   montage_image=MontageImageList(image_info,montage_info,image,exception);
   montage_info=DestroyMontageInfo(montage_info);
   if (montage_image == (Image *) NULL)
@@ -636,9 +636,9 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
         progress_monitor=SetImageProgressMonitor(image,
           (MagickProgressMonitor) NULL,image->client_data);
-        (void) FormatLocaleString(image->filename,MaxTextExtent,
+        (void) FormatLocaleString(image->filename,MagickPathExtent,
           "images/img%04ld.pcd",(long) j);
-        (void) FormatLocaleString(image->magick_filename,MaxTextExtent,
+        (void) FormatLocaleString(image->magick_filename,MagickPathExtent,
           "images/img%04ld.pcd",(long) j);
         image->scene=(size_t) j;
         image->columns=width;

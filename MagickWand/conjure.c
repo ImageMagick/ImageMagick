@@ -153,7 +153,7 @@ WandExport MagickBooleanType ConjureImageCommand(ImageInfo *image_info,
 }
 
   char
-    filename[MaxTextExtent],
+    filename[MagickPathExtent],
     *option;
 
   Image
@@ -287,7 +287,7 @@ WandExport MagickBooleanType ConjureImageCommand(ImageInfo *image_info,
     status=SetImageOption(image_info,"filename",argv[i]);
     if (status == MagickFalse)
       ThrowConjureException(ImageError,"UnableToPersistKey",argv[i]);
-    (void) FormatLocaleString(filename,MaxTextExtent,"msl:%s",argv[i]);
+    (void) FormatLocaleString(filename,MagickPathExtent,"msl:%s",argv[i]);
     image=ReadImages(image_info,filename,exception);
     CatchException(exception);
     if (image != (Image *) NULL)

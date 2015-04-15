@@ -127,7 +127,7 @@ static Image *ReadXCImage(const ImageInfo *image_info,ExceptionInfo *exception)
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
     return(DestroyImageList(image));
-  (void) CopyMagickString(image->filename,image_info->filename,MaxTextExtent);
+  (void) CopyMagickString(image->filename,image_info->filename,MagickPathExtent);
   if (*image_info->filename == '\0')
     pixel=image->background_color;
   else

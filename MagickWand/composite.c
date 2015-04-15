@@ -1452,7 +1452,7 @@ WandExport MagickBooleanType CompositeImageCommand(ImageInfo *image_info,
         if (LocaleCompare("tile",option+1) == 0)
           {
             composite_options.tile=(*option == '-') ? MagickTrue : MagickFalse;
-            (void) CopyMagickString(argv[i]+1,"sans",MaxTextExtent);
+            (void) CopyMagickString(argv[i]+1,"sans",MagickPathExtent);
             break;
           }
         if (LocaleCompare("transform",option+1) == 0)

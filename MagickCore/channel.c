@@ -203,7 +203,7 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
     channel_mask;
 
   char
-    token[MaxTextExtent];
+    token[MagickPathExtent];
 
   const char
     *p;

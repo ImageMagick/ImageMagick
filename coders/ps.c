@@ -253,7 +253,7 @@ static MagickBooleanType InvokePostscriptDelegate(
     {
       SetArgsStart(command,args_start);
       if (status == -101) /* quit */
-        (void) FormatLocaleString(message,MaxTextExtent,
+        (void) FormatLocaleString(message,MagickPathExtent,
           "[ghostscript library %.2f]%s: %s",(double)revision.revision / 100,
           args_start,errors);
       else
@@ -413,14 +413,14 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #define SpotColor  "+ "
 
   char
-    command[MaxTextExtent],
+    command[MagickPathExtent],
     *density,
-    filename[MaxTextExtent],
-    geometry[MaxTextExtent],
-    input_filename[MaxTextExtent],
-    message[MaxTextExtent],
+    filename[MagickPathExtent],
+    geometry[MagickPathExtent],
+    input_filename[MagickPathExtent],
+    message[MagickPathExtent],
     *options,
-    postscript_filename[MaxTextExtent];
+    postscript_filename[MagickPathExtent];
 
   const char
     *option;
@@ -593,7 +593,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     *p++=(char) c;
     if ((strchr("\n\r%",c) == (char *) NULL) &&
-        ((size_t) (p-command) < (MaxTextExtent-1)))
+        ((size_t) (p-command) < (MagickPathExtent-1)))
       continue;
     *p='\0';
     p=command;
@@ -677,7 +677,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
           GetStringInfoDatum(profile)[i]=(unsigned char) c;
           *p++=(char) c;
           if ((strchr("\n\r%",c) == (char *) NULL) &&
-              ((size_t) (p-command) < (MaxTextExtent-1)))
+              ((size_t) (p-command) < (MagickPathExtent-1)))
             continue;
           *p='\0';
           p=command;
@@ -710,7 +710,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (LocaleNCompare(SpotColor,command,strlen(SpotColor)) == 0))
       {
         char
-          property[MaxTextExtent],
+          property[MagickPathExtent],
           *value;
 
         register char
@@ -719,7 +719,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Note spot names.
         */
-        (void) FormatLocaleString(property,MaxTextExtent,"ps:SpotColor-%.20g",
+        (void) FormatLocaleString(property,MagickPathExtent,"ps:SpotColor-%.20g",
           (double) (spotcolor++));
         for (p=command; *p != '\0'; p++)
           if (isspace((int) (unsigned char) *p) != 0)
@@ -784,7 +784,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Set Postscript render geometry.
       */
-      (void) FormatLocaleString(geometry,MaxTextExtent,"%gx%g%+.15g%+.15g",
+      (void) FormatLocaleString(geometry,MagickPathExtent,"%gx%g%+.15g%+.15g",
         hires_bounds.x2-hires_bounds.x1,hires_bounds.y2-hires_bounds.y1,
         hires_bounds.x1,hires_bounds.y1);
       (void) SetImageProperty(image,"ps:HiResBoundingBox",geometry,exception);
@@ -835,14 +835,14 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   (void) CopyMagickString(command,"/setpagedevice {pop} bind 1 index where {"
     "dup wcheck {3 1 roll put} {pop def} ifelse} {def} ifelse\n"
-    "<</UseCIEColor true>>setpagedevice\n",MaxTextExtent);
+    "<</UseCIEColor true>>setpagedevice\n",MagickPathExtent);
   count=write(file,command,(unsigned int) strlen(command));
   if (image_info->page == (char *) NULL)
     {
       char
-        translate_geometry[MaxTextExtent];
+        translate_geometry[MagickPathExtent];
 
-      (void) FormatLocaleString(translate_geometry,MaxTextExtent,
+      (void) FormatLocaleString(translate_geometry,MagickPathExtent,
         "%g %g translate\n",-bounds.x1,-bounds.y1);
       count=write(file,translate_geometry,(unsigned int)
         strlen(translate_geometry));
@@ -866,21 +866,21 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   density=AcquireString("");
   options=AcquireString("");
-  (void) FormatLocaleString(density,MaxTextExtent,"%gx%g",resolution.x,
+  (void) FormatLocaleString(density,MagickPathExtent,"%gx%g",resolution.x,
     resolution.y);
-  (void) FormatLocaleString(options,MaxTextExtent,"-g%.20gx%.20g ",(double)
+  (void) FormatLocaleString(options,MagickPathExtent,"-g%.20gx%.20g ",(double)
     page.width,(double) page.height);
   read_info=CloneImageInfo(image_info);
   *read_info->magick='\0';
   if (read_info->number_scenes != 0)
     {
       char
-        pages[MaxTextExtent];
+        pages[MagickPathExtent];
 
-      (void) FormatLocaleString(pages,MaxTextExtent,"-dFirstPage=%.20g "
+      (void) FormatLocaleString(pages,MagickPathExtent,"-dFirstPage=%.20g "
         "-dLastPage=%.20g ",(double) read_info->scene+1,(double)
         (read_info->scene+read_info->number_scenes));
-      (void) ConcatenateMagickString(options,pages,MaxTextExtent);
+      (void) ConcatenateMagickString(options,pages,MagickPathExtent);
       read_info->number_scenes=0;
       if (read_info->scenes != (char *) NULL)
         *read_info->scenes='\0';
@@ -890,15 +890,15 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       option=GetImageOption(image_info,"eps:use-cropbox");
       if ((option == (const char *) NULL) ||
           (IsStringTrue(option) != MagickFalse))
-        (void) ConcatenateMagickString(options,"-dEPSCrop ",MaxTextExtent);
+        (void) ConcatenateMagickString(options,"-dEPSCrop ",MagickPathExtent);
       if (fitPage != MagickFalse)
-        (void) ConcatenateMagickString(options,"-dEPSFitPage ",MaxTextExtent);
+        (void) ConcatenateMagickString(options,"-dEPSFitPage ",MagickPathExtent);
     }
-  (void) CopyMagickString(filename,read_info->filename,MaxTextExtent);
+  (void) CopyMagickString(filename,read_info->filename,MagickPathExtent);
   (void) AcquireUniqueFilename(filename);
   (void) RelinquishUniqueFileResource(filename);
-  (void) ConcatenateMagickString(filename,"%d",MaxTextExtent);
-  (void) FormatLocaleString(command,MaxTextExtent,
+  (void) ConcatenateMagickString(filename,"%d",MagickPathExtent);
+  (void) FormatLocaleString(command,MagickPathExtent,
     GetDelegateCommands(delegate_info),
     read_info->antialias != MagickFalse ? 4 : 1,
     read_info->antialias != MagickFalse ? 4 : 1,density,options,filename,
@@ -912,7 +912,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if ((status == MagickFalse) ||
       (IsPostscriptRendered(read_info->filename) == MagickFalse))
     {
-      (void) ConcatenateMagickString(command," -c showpage",MaxTextExtent);
+      (void) ConcatenateMagickString(command," -c showpage",MagickPathExtent);
       status=InvokePostscriptDelegate(read_info->verbose,command,message,
         exception);
     }
@@ -985,9 +985,9 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   do
   {
-    (void) CopyMagickString(postscript_image->filename,filename,MaxTextExtent);
+    (void) CopyMagickString(postscript_image->filename,filename,MagickPathExtent);
     (void) CopyMagickString(postscript_image->magick,image->magick,
-      MaxTextExtent);
+      MagickPathExtent);
     if (columns != 0)
       postscript_image->magick_columns=columns;
     if (rows != 0)
@@ -1462,10 +1462,10 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
     };
 
   char
-    buffer[MaxTextExtent],
-    date[MaxTextExtent],
+    buffer[MagickPathExtent],
+    date[MagickPathExtent],
     **labels,
-    page_geometry[MaxTextExtent];
+    page_geometry[MagickPathExtent];
 
   CompressionType
     compression;
@@ -1590,20 +1590,20 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
         resolution.y=(double) ((size_t) (100.0*2.54*resolution.y+0.5)/100.0);
       }
     SetGeometry(image,&geometry);
-    (void) FormatLocaleString(page_geometry,MaxTextExtent,"%.20gx%.20g",
+    (void) FormatLocaleString(page_geometry,MagickPathExtent,"%.20gx%.20g",
       (double) image->columns,(double) image->rows);
     if (image_info->page != (char *) NULL)
-      (void) CopyMagickString(page_geometry,image_info->page,MaxTextExtent);
+      (void) CopyMagickString(page_geometry,image_info->page,MagickPathExtent);
     else
       if ((image->page.width != 0) && (image->page.height != 0))
-        (void) FormatLocaleString(page_geometry,MaxTextExtent,
+        (void) FormatLocaleString(page_geometry,MagickPathExtent,
           "%.20gx%.20g%+.20g%+.20g",(double) image->page.width,(double)
           image->page.height,(double) image->page.x,(double) image->page.y);
       else
         if ((image->gravity != UndefinedGravity) &&
             (LocaleCompare(image_info->magick,"PS") == 0))
-          (void) CopyMagickString(page_geometry,PSPageGeometry,MaxTextExtent);
-    (void) ConcatenateMagickString(page_geometry,">",MaxTextExtent);
+          (void) CopyMagickString(page_geometry,PSPageGeometry,MagickPathExtent);
+    (void) ConcatenateMagickString(page_geometry,">",MagickPathExtent);
     (void) ParseMetaGeometry(page_geometry,&geometry.x,&geometry.y,
       &geometry.width,&geometry.height);
     scale.x=(double) (geometry.width*delta.x)/resolution.x;
@@ -1630,18 +1630,18 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
           Output Postscript header.
         */
         if (LocaleCompare(image_info->magick,"PS") == 0)
-          (void) CopyMagickString(buffer,"%!PS-Adobe-3.0\n",MaxTextExtent);
+          (void) CopyMagickString(buffer,"%!PS-Adobe-3.0\n",MagickPathExtent);
         else
           (void) CopyMagickString(buffer,"%!PS-Adobe-3.0 EPSF-3.0\n",
-            MaxTextExtent);
+            MagickPathExtent);
         (void) WriteBlobString(image,buffer);
         (void) WriteBlobString(image,"%%Creator: (ImageMagick)\n");
-        (void) FormatLocaleString(buffer,MaxTextExtent,"%%%%Title: (%s)\n",
+        (void) FormatLocaleString(buffer,MagickPathExtent,"%%%%Title: (%s)\n",
           image->filename);
         (void) WriteBlobString(image,buffer);
         timer=time((time_t *) NULL);
-        (void) FormatMagickTime(timer,MaxTextExtent,date);
-        (void) FormatLocaleString(buffer,MaxTextExtent,
+        (void) FormatMagickTime(timer,MagickPathExtent,date);
+        (void) FormatLocaleString(buffer,MagickPathExtent,
           "%%%%CreationDate: (%s)\n",date);
         (void) WriteBlobString(image,buffer);
         bounds.x1=(double) geometry.x;
@@ -1651,14 +1651,14 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
         if ((image_info->adjoin != MagickFalse) &&
             (GetNextImageInList(image) != (Image *) NULL))
           (void) CopyMagickString(buffer,"%%%%BoundingBox: (atend)\n",
-            MaxTextExtent);
+            MagickPathExtent);
         else
           {
-            (void) FormatLocaleString(buffer,MaxTextExtent,
+            (void) FormatLocaleString(buffer,MagickPathExtent,
               "%%%%BoundingBox: %.20g %.20g %.20g %.20g\n",ceil(bounds.x1-0.5),
               ceil(bounds.y1-0.5),floor(bounds.x2+0.5),floor(bounds.y2+0.5));
             (void) WriteBlobString(image,buffer);
-            (void) FormatLocaleString(buffer,MaxTextExtent,
+            (void) FormatLocaleString(buffer,MagickPathExtent,
               "%%%%HiResBoundingBox: %g %g %g %g\n",bounds.x1,
               bounds.y1,bounds.x2,bounds.y2);
           }
@@ -1669,14 +1669,14 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
             /*
               Embed Photoshop profile.
             */
-            (void) FormatLocaleString(buffer,MaxTextExtent,
+            (void) FormatLocaleString(buffer,MagickPathExtent,
               "%%BeginPhotoshop: %.20g",(double) GetStringInfoLength(profile));
             (void) WriteBlobString(image,buffer);
             for (i=0; i < (ssize_t) GetStringInfoLength(profile); i++)
             {
               if ((i % 32) == 0)
                 (void) WriteBlobString(image,"\n% ");
-              (void) FormatLocaleString(buffer,MaxTextExtent,"%02X",
+              (void) FormatLocaleString(buffer,MagickPathExtent,"%02X",
                 (unsigned int) (GetStringInfoDatum(profile)[i] & 0xff));
               (void) WriteBlobString(image,buffer);
             }
@@ -1691,7 +1691,7 @@ RestoreMSCWarning
               Embed XML profile.
             */
             (void) WriteBlobString(image,"\n%begin_xml_code\n");
-            (void) FormatLocaleString(buffer,MaxTextExtent,
+            (void) FormatLocaleString(buffer,MagickPathExtent,
                "\n%%begin_xml_packet: %.20g\n",(double)
                GetStringInfoLength(profile));
             (void) WriteBlobString(image,buffer);
@@ -1714,7 +1714,7 @@ RestoreMSCWarning
             */
             (void) WriteBlobString(image,"%%Orientation: Portrait\n");
             (void) WriteBlobString(image,"%%PageOrder: Ascend\n");
-            (void) FormatLocaleString(buffer,MaxTextExtent,"%%%%Pages: %.20g\n",
+            (void) FormatLocaleString(buffer,MagickPathExtent,"%%%%Pages: %.20g\n",
               image_info->adjoin != MagickFalse ? (double)
               GetImageListLength(image) : 1.0);
             (void) WriteBlobString(image,buffer);
@@ -1747,7 +1747,7 @@ RestoreMSCWarning
             /*
               Dump image as bitmap.
             */
-            (void) FormatLocaleString(buffer,MaxTextExtent,
+            (void) FormatLocaleString(buffer,MagickPathExtent,
               "%%%%BeginPreview: %.20g %.20g %.20g %.20g\n%%  ",(double)
               preview_image->columns,(double) preview_image->rows,1.0,
               (double) ((((preview_image->columns+7) >> 3)*preview_image->rows+
@@ -1809,7 +1809,7 @@ RestoreMSCWarning
         */
         for (s=PostscriptProlog; *s != (char *) NULL; s++)
         {
-          (void) FormatLocaleString(buffer,MaxTextExtent,"%s\n",*s);
+          (void) FormatLocaleString(buffer,MagickPathExtent,"%s\n",*s);
           (void) WriteBlobString(image,buffer);
         }
         value=GetImageProperty(image,"label",exception);
@@ -1818,13 +1818,13 @@ RestoreMSCWarning
           {
             (void) WriteBlobString(image,"  /label 512 string def\n");
             (void) WriteBlobString(image,"  currentfile label readline pop\n");
-            (void) FormatLocaleString(buffer,MaxTextExtent,
+            (void) FormatLocaleString(buffer,MagickPathExtent,
               "  0 y %g add moveto label show pop\n",j*pointsize+12);
             (void) WriteBlobString(image,buffer);
           }
         for (s=PostscriptEpilog; *s != (char *) NULL; s++)
         {
-          (void) FormatLocaleString(buffer,MaxTextExtent,"%s\n",*s);
+          (void) FormatLocaleString(buffer,MagickPathExtent,"%s\n",*s);
           (void) WriteBlobString(image,buffer);
         }
         if (LocaleCompare(image_info->magick,"PS") == 0)
@@ -1832,10 +1832,10 @@ RestoreMSCWarning
         (void) WriteBlobString(image,"} bind def\n");
         (void) WriteBlobString(image,"%%EndProlog\n");
       }
-    (void) FormatLocaleString(buffer,MaxTextExtent,"%%%%Page:  1 %.20g\n",
+    (void) FormatLocaleString(buffer,MagickPathExtent,"%%%%Page:  1 %.20g\n",
       (double) (page++));
     (void) WriteBlobString(image,buffer);
-    (void) FormatLocaleString(buffer,MaxTextExtent,
+    (void) FormatLocaleString(buffer,MagickPathExtent,
       "%%%%PageBoundingBox: %.20g %.20g %.20g %.20g\n",(double) geometry.x,
       (double) geometry.y,geometry.x+(double) geometry.width,geometry.y+(double)
       (geometry.height+text_size));
@@ -1857,7 +1857,7 @@ RestoreMSCWarning
     /*
       Output image data.
     */
-    (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g %.20g\n%g %g\n%g\n",
+    (void) FormatLocaleString(buffer,MagickPathExtent,"%.20g %.20g\n%g %g\n%g\n",
       (double) geometry.x,(double) geometry.y,scale.x,scale.y,pointsize);
     (void) WriteBlobString(image,buffer);
     labels=(char **) NULL;
@@ -1868,7 +1868,7 @@ RestoreMSCWarning
       {
         for (i=0; labels[i] != (char *) NULL; i++)
         {
-          (void) FormatLocaleString(buffer,MaxTextExtent,"%s \n",
+          (void) FormatLocaleString(buffer,MagickPathExtent,"%s \n",
             labels[i]);
           (void) WriteBlobString(image,buffer);
           labels[i]=DestroyString(labels[i]);
@@ -1890,7 +1890,7 @@ RestoreMSCWarning
             /*
               Dump image as grayscale.
             */
-            (void) FormatLocaleString(buffer,MaxTextExtent,
+            (void) FormatLocaleString(buffer,MagickPathExtent,
               "%.20g %.20g\n1\n1\n1\n8\n",(double) image->columns,(double)
               image->rows);
             (void) WriteBlobString(image,buffer);
@@ -1938,7 +1938,7 @@ RestoreMSCWarning
             /*
               Dump image as bitmap.
             */
-            (void) FormatLocaleString(buffer,MaxTextExtent,
+            (void) FormatLocaleString(buffer,MagickPathExtent,
               "%.20g %.20g\n1\n1\n1\n1\n",(double) image->columns,(double)
               image->rows);
             (void) WriteBlobString(image,buffer);
@@ -2004,7 +2004,7 @@ RestoreMSCWarning
           /*
             Dump DirectClass image.
           */
-          (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g %.20g\n0\n%d\n",
+          (void) FormatLocaleString(buffer,MagickPathExtent,"%.20g %.20g\n0\n%d\n",
             (double) image->columns,(double) image->rows,
             compression == RLECompression ? 1 : 0);
           (void) WriteBlobString(image,buffer);
@@ -2131,7 +2131,7 @@ RestoreMSCWarning
           /*
             Dump PseudoClass image.
           */
-          (void) FormatLocaleString(buffer,MaxTextExtent,
+          (void) FormatLocaleString(buffer,MagickPathExtent,
             "%.20g %.20g\n%d\n%d\n0\n",(double) image->columns,(double)
             image->rows,image->storage_class == PseudoClass ? 1 : 0,
             compression == RLECompression ? 1 : 0);
@@ -2139,12 +2139,12 @@ RestoreMSCWarning
           /*
             Dump number of colors and colormap.
           */
-          (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g\n",(double)
+          (void) FormatLocaleString(buffer,MagickPathExtent,"%.20g\n",(double)
             image->colors);
           (void) WriteBlobString(image,buffer);
           for (i=0; i < (ssize_t) image->colors; i++)
           {
-            (void) FormatLocaleString(buffer,MaxTextExtent,"%02X%02X%02X\n",
+            (void) FormatLocaleString(buffer,MagickPathExtent,"%02X%02X%02X\n",
               ScaleQuantumToChar(ClampToQuantum(image->colormap[i].red)),
               ScaleQuantumToChar(ClampToQuantum(image->colormap[i].green)),
               ScaleQuantumToChar(ClampToQuantum(image->colormap[i].blue)));
@@ -2267,11 +2267,11 @@ RestoreMSCWarning
   (void) WriteBlobString(image,"%%Trailer\n");
   if (page > 2)
     {
-      (void) FormatLocaleString(buffer,MaxTextExtent,
+      (void) FormatLocaleString(buffer,MagickPathExtent,
         "%%%%BoundingBox: %.20g %.20g %.20g %.20g\n",ceil(bounds.x1-0.5),
         ceil(bounds.y1-0.5),floor(bounds.x2-0.5),floor(bounds.y2-0.5));
       (void) WriteBlobString(image,buffer);
-      (void) FormatLocaleString(buffer,MaxTextExtent,
+      (void) FormatLocaleString(buffer,MagickPathExtent,
         "%%%%HiResBoundingBox: %g %g %g %g\n",bounds.x1,bounds.y1,bounds.x2,
         bounds.y2);
       (void) WriteBlobString(image,buffer);

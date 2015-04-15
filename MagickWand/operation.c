@@ -92,8 +92,8 @@ static MagickBooleanType MonitorProgress(const char *text,
   void *wand_unused(cli_wandent_data))
 {
   char
-    message[MaxTextExtent],
-    tag[MaxTextExtent];
+    message[MagickPathExtent],
+    tag[MagickPathExtent];
 
   const char
     *locale_message;
@@ -103,11 +103,11 @@ static MagickBooleanType MonitorProgress(const char *text,
 
   if (extent < 2)
     return(MagickTrue);
-  (void) CopyMagickMemory(tag,text,MaxTextExtent);
+  (void) CopyMagickMemory(tag,text,MagickPathExtent);
   p=strrchr(tag,'/');
   if (p != (char *) NULL)
     *p='\0';
-  (void) FormatLocaleString(message,MaxTextExtent,"Monitor/%s",tag);
+  (void) FormatLocaleString(message,MagickPathExtent,"Monitor/%s",tag);
   locale_message=GetLocaleMessage(message);
   if (locale_message == message)
     locale_message=tag;
@@ -133,7 +133,7 @@ static inline Image *GetImageCache(const ImageInfo *image_info,const char *path,
   ExceptionInfo *exception)
 {
   char
-    key[MaxTextExtent];
+    key[MagickPathExtent];
 
   ExceptionInfo
     *sans_exception;
@@ -144,7 +144,7 @@ static inline Image *GetImageCache(const ImageInfo *image_info,const char *path,
   ImageInfo
     *read_info;
 
-  (void) FormatLocaleString(key,MaxTextExtent,"cache:%s",path);
+  (void) FormatLocaleString(key,MagickPathExtent,"cache:%s",path);
   sans_exception=AcquireExceptionInfo();
   image=(Image *) GetImageRegistry(ImageRegistryType,key,sans_exception);
   sans_exception=DestroyExceptionInfo(sans_exception);
@@ -152,7 +152,7 @@ static inline Image *GetImageCache(const ImageInfo *image_info,const char *path,
     return(image);
   read_info=CloneImageInfo(image_info);
   if (path != (const char *) NULL)
-    (void) CopyMagickString(read_info->filename,path,MaxTextExtent);
+    (void) CopyMagickString(read_info->filename,path,MagickPathExtent);
   image=ReadImage(read_info,exception);
   read_info=DestroyImageInfo(read_info);
   if (image != (Image *) NULL)
@@ -174,7 +174,7 @@ static Image *SparseColorOption(const Image *image,
   const SparseColorMethod method,const char *arguments,ExceptionInfo *exception)
 {
   char
-    token[MaxTextExtent];
+    token[MagickPathExtent];
 
   const char
     *p;
@@ -1160,7 +1160,7 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
           */
           char
             *canonical_page,
-            page[MaxTextExtent];
+            page[MagickPathExtent];
 
           const char
             *image_option;
@@ -1184,10 +1184,10 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
           canonical_page=GetPageGeometry(arg1);
           flags=ParseAbsoluteGeometry(canonical_page,&geometry);
           canonical_page=DestroyString(canonical_page);
-          (void) FormatLocaleString(page,MaxTextExtent,"%lux%lu",
+          (void) FormatLocaleString(page,MagickPathExtent,"%lux%lu",
             (unsigned long) geometry.width,(unsigned long) geometry.height);
           if (((flags & XValue) != 0) || ((flags & YValue) != 0))
-            (void) FormatLocaleString(page,MaxTextExtent,"%lux%lu%+ld%+ld",
+            (void) FormatLocaleString(page,MagickPathExtent,"%lux%lu%+ld%+ld",
               (unsigned long) geometry.width,(unsigned long) geometry.height,
               (long) geometry.x,(long) geometry.y);
           (void) SetImageOption(_image_info,option+1,page);
@@ -1787,7 +1787,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
       if (LocaleCompare("annotate",option+1) == 0)
         {
           char
-            geometry[MaxTextExtent];
+            geometry[MagickPathExtent];
 
           SetGeometryInfo(&geometry_info);
           flags=ParseGeometry(arg1,&geometry_info);
@@ -1796,7 +1796,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           if ((flags & SigmaValue) == 0)
             geometry_info.sigma=geometry_info.rho;
           (void) CloneString(&_draw_info->text,arg2);
-          (void) FormatLocaleString(geometry,MaxTextExtent,"%+f%+f",
+          (void) FormatLocaleString(geometry,MagickPathExtent,"%+f%+f",
             geometry_info.xi,geometry_info.psi);
           (void) CloneString(&_draw_info->geometry,geometry);
           _draw_info->affine.sx=cos(DegreesToRadians(
@@ -2646,7 +2646,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
       if (LocaleCompare("level-colors",option+1) == 0)
         {
           char
-            token[MaxTextExtent];
+            token[MagickPathExtent];
 
           const char
             *p;
@@ -2813,7 +2813,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
       if (LocaleCompare("morphology",option+1) == 0)
         {
           char
-            token[MaxTextExtent];
+            token[MagickPathExtent];
 
           const char
             *p;
@@ -3017,7 +3017,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
 
               profile_info=CloneImageInfo(_image_info);
               (void) CopyMagickString(profile_info->filename,arg1,
-                MaxTextExtent);
+                MagickPathExtent);
               profile=FileToStringInfo(profile_info->filename,~0UL,_exception);
               if (profile != (StringInfo *) NULL)
                 {
@@ -4261,8 +4261,8 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
               assert(arg1 != (const char *) NULL);
               length=strlen(arg1);
               token=(char *) NULL;
-              if (~length >= (MaxTextExtent-1))
-                token=(char *) AcquireQuantumMemory(length+MaxTextExtent,
+              if (~length >= (MagickPathExtent-1))
+                token=(char *) AcquireQuantumMemory(length+MagickPathExtent,
                   sizeof(*token));
               if (token == (char *) NULL)
                 break;
@@ -4355,20 +4355,20 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
 
           if ( new_images != (Image *) NULL ) {
             char
-              result[MaxTextExtent];
+              result[MagickPathExtent];
 
-            (void) FormatLocaleString(result,MaxTextExtent,"%lf",similarity);
+            (void) FormatLocaleString(result,MagickPathExtent,"%lf",similarity);
             (void) SetImageProperty(new_images,"subimage:similarity",result,
                  _exception);
-            (void) FormatLocaleString(result,MaxTextExtent,"%+ld",
+            (void) FormatLocaleString(result,MagickPathExtent,"%+ld",
                 (long) offset.x);
             (void) SetImageProperty(new_images,"subimage:x",result,
                  _exception);
-            (void) FormatLocaleString(result,MaxTextExtent,"%+ld",
+            (void) FormatLocaleString(result,MagickPathExtent,"%+ld",
                 (long) offset.y);
             (void) SetImageProperty(new_images,"subimage:y",result,
                  _exception);
-            (void) FormatLocaleString(result,MaxTextExtent,"%lux%lu%+ld%+ld",
+            (void) FormatLocaleString(result,MagickPathExtent,"%lux%lu%+ld%+ld",
                 (unsigned long) offset.width,(unsigned long) offset.height,
                 (long) offset.x,(long) offset.y);
             (void) SetImageProperty(new_images,"subimage:offset",result,
@@ -4604,7 +4604,7 @@ WandPrivate void CLINoImageOperator(MagickCLI *cli_wand,
     if (LocaleCompare("write",option+1) == 0) {
       /* Note: arguments do not have percent escapes expanded */
       char
-        key[MaxTextExtent];
+        key[MagickPathExtent];
 
       Image
         *write_images;
@@ -4619,7 +4619,7 @@ WandPrivate void CLINoImageOperator(MagickCLI *cli_wand,
         CLIWandExceptArgBreak(OptionError,"NoImagesForWrite",option,arg1);
       }
 
-      (void) FormatLocaleString(key,MaxTextExtent,"cache:%s",arg1);
+      (void) FormatLocaleString(key,MagickPathExtent,"cache:%s",arg1);
       (void) DeleteImageRegistry(key);
       write_images=_images;
       if (IfPlusOp)

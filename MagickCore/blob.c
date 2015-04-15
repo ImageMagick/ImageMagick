@@ -359,9 +359,9 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
         Native blob support for this image format.
       */
       (void) CopyMagickString(blob_info->filename,image_info->filename,
-        MaxTextExtent);
+        MagickPathExtent);
       (void) CopyMagickString(blob_info->magick,image_info->magick,
-        MaxTextExtent);
+        MagickPathExtent);
       image=ReadImage(blob_info,exception);
       if (image != (Image *) NULL)
         (void) DetachBlob(image->blob);
@@ -382,7 +382,7 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
       return((Image *) NULL);
     }
   clone_info=CloneImageInfo(blob_info);
-  (void) FormatLocaleString(clone_info->filename,MaxTextExtent,"%s:%s",
+  (void) FormatLocaleString(clone_info->filename,MagickPathExtent,"%s:%s",
     blob_info->magick,blob_info->filename);
   image=ReadImage(clone_info,exception);
   if (image != (Image *) NULL)
@@ -396,11 +396,11 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
       for (images=GetFirstImageInList(image); images != (Image *) NULL; )
       {
         (void) CopyMagickString(images->filename,image_info->filename,
-          MaxTextExtent);
+          MagickPathExtent);
         (void) CopyMagickString(images->magick_filename,image_info->filename,
-          MaxTextExtent);
+          MagickPathExtent);
         (void) CopyMagickString(images->magick,magick_info->name,
-          MaxTextExtent);
+          MagickPathExtent);
         images=GetNextImageInList(images);
       }
     }
@@ -1042,8 +1042,8 @@ MagickExport void *FileToBlob(const char *filename,const size_t extent,
     }
   *length=(size_t) MagickMin((MagickSizeType) offset,extent);
   blob=(unsigned char *) NULL;
-  if (~(*length) >= (MaxTextExtent-1))
-    blob=(unsigned char *) AcquireQuantumMemory(*length+MaxTextExtent,
+  if (~(*length) >= (MagickPathExtent-1))
+    blob=(unsigned char *) AcquireQuantumMemory(*length+MagickPathExtent,
       sizeof(*blob));
   if (blob == (unsigned char *) NULL)
     {
@@ -1542,7 +1542,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,
   blob_info->adjoin=MagickFalse;
   (void) SetImageInfo(blob_info,1,exception);
   if (*blob_info->magick != '\0')
-    (void) CopyMagickString(image->magick,blob_info->magick,MaxTextExtent);
+    (void) CopyMagickString(image->magick,blob_info->magick,MagickPathExtent);
   magick_info=GetMagickInfo(image->magick,exception);
   if (magick_info == (const MagickInfo *) NULL)
     {
@@ -1552,7 +1552,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,
       blob_info=DestroyImageInfo(blob_info);
       return(blob);
     }
-  (void) CopyMagickString(blob_info->magick,image->magick,MaxTextExtent);
+  (void) CopyMagickString(blob_info->magick,image->magick,MagickPathExtent);
   if (GetMagickBlobSupport(magick_info) != MagickFalse)
     {
       /*
@@ -1582,7 +1582,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,
   else
     {
       char
-        unique[MaxTextExtent];
+        unique[MagickPathExtent];
 
       int
         file;
@@ -1601,7 +1601,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,
           blob_info->file=fdopen(file,"wb");
           if (blob_info->file != (FILE *) NULL)
             {
-              (void) FormatLocaleString(image->filename,MaxTextExtent,"%s:%s",
+              (void) FormatLocaleString(image->filename,MagickPathExtent,"%s:%s",
                 image->magick,unique);
               status=WriteImage(blob_info,image,exception);
               (void) CloseBlob(image);
@@ -1795,7 +1795,7 @@ MagickExport void *ImagesToBlob(const ImageInfo *image_info,Image *images,
   (void) SetImageInfo(blob_info,(unsigned int) GetImageListLength(images),
     exception);
   if (*blob_info->magick != '\0')
-    (void) CopyMagickString(images->magick,blob_info->magick,MaxTextExtent);
+    (void) CopyMagickString(images->magick,blob_info->magick,MagickPathExtent);
   magick_info=GetMagickInfo(images->magick,exception);
   if (magick_info == (const MagickInfo *) NULL)
     {
@@ -1810,7 +1810,7 @@ MagickExport void *ImagesToBlob(const ImageInfo *image_info,Image *images,
       blob_info=DestroyImageInfo(blob_info);
       return(ImageToBlob(image_info,images,length,exception));
     }
-  (void) CopyMagickString(blob_info->magick,images->magick,MaxTextExtent);
+  (void) CopyMagickString(blob_info->magick,images->magick,MagickPathExtent);
   if (GetMagickBlobSupport(magick_info) != MagickFalse)
     {
       /*
@@ -1840,8 +1840,8 @@ MagickExport void *ImagesToBlob(const ImageInfo *image_info,Image *images,
   else
     {
       char
-        filename[MaxTextExtent],
-        unique[MaxTextExtent];
+        filename[MagickPathExtent],
+        unique[MagickPathExtent];
 
       int
         file;
@@ -1860,7 +1860,7 @@ MagickExport void *ImagesToBlob(const ImageInfo *image_info,Image *images,
           blob_info->file=fdopen(file,"wb");
           if (blob_info->file != (FILE *) NULL)
             {
-              (void) FormatLocaleString(filename,MaxTextExtent,"%s:%s",
+              (void) FormatLocaleString(filename,MagickPathExtent,"%s:%s",
                 images->magick,unique);
               status=WriteImages(blob_info,images,filename,exception);
               (void) CloseBlob(images);
@@ -1911,7 +1911,7 @@ MagickExport MagickBooleanType InjectImageBlob(const ImageInfo *image_info,
   Image *image,Image *inject_image,const char *format,ExceptionInfo *exception)
 {
   char
-    filename[MaxTextExtent];
+    filename[MagickPathExtent];
 
   FILE
     *unique_file;
@@ -1961,7 +1961,7 @@ MagickExport MagickBooleanType InjectImageBlob(const ImageInfo *image_info,
     unique_file=fdopen(file,"wb");
   if ((file == -1) || (unique_file == (FILE *) NULL))
     {
-      (void) CopyMagickString(image->filename,filename,MaxTextExtent);
+      (void) CopyMagickString(image->filename,filename,MagickPathExtent);
       ThrowFileException(exception,FileOpenError,"UnableToCreateTemporaryFile",
         image->filename);
       return(MagickFalse);
@@ -1973,7 +1973,7 @@ MagickExport MagickBooleanType InjectImageBlob(const ImageInfo *image_info,
       (void) RelinquishUniqueFileResource(filename);
       return(MagickFalse);
     }
-  (void) FormatLocaleString(byte_image->filename,MaxTextExtent,"%s:%s",format,
+  (void) FormatLocaleString(byte_image->filename,MagickPathExtent,"%s:%s",format,
     filename);
   DestroyBlob(byte_image);
   byte_image->blob=CloneBlobInfo((BlobInfo *) NULL);
@@ -2384,8 +2384,8 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
   Image *image,const BlobMode mode,ExceptionInfo *exception)
 {
   char
-    extension[MaxTextExtent],
-    filename[MaxTextExtent];
+    extension[MagickPathExtent],
+    filename[MagickPathExtent];
 
   const char
     *type;
@@ -2436,7 +2436,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
     Open image file.
   */
   *filename='\0';
-  (void) CopyMagickString(filename,image->filename,MaxTextExtent);
+  (void) CopyMagickString(filename,image->filename,MagickPathExtent);
   rights=ReadPolicyRights;
   if (*type == 'w')
     rights=WritePolicyRights;
@@ -2462,7 +2462,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
   if (LocaleNCompare(filename,"fd:",3) == 0)
     {
       char
-        mode[MaxTextExtent];
+        mode[MagickPathExtent];
 
       *mode=(*type);
       mode[1]='\0';
@@ -2479,7 +2479,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
   if (*filename == '|')
     {
       char
-        mode[MaxTextExtent];
+        mode[MagickPathExtent];
 
       /*
         Pipe image to or from a system command.
@@ -2519,7 +2519,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
   GetPathComponent(image->filename,ExtensionPath,extension);
   if (*type == 'w')
     {
-      (void) CopyMagickString(filename,image->filename,MaxTextExtent);
+      (void) CopyMagickString(filename,image->filename,MagickPathExtent);
       if ((image_info->adjoin == MagickFalse) ||
           (strchr(filename,'%') != (char *) NULL))
         {
@@ -2533,17 +2533,17 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
                (GetNextImageInList(image) != (Image *) NULL)))
             {
               char
-                path[MaxTextExtent];
+                path[MagickPathExtent];
 
               GetPathComponent(image->filename,RootPath,path);
               if (*extension == '\0')
-                (void) FormatLocaleString(filename,MaxTextExtent,"%s-%.20g",
+                (void) FormatLocaleString(filename,MagickPathExtent,"%s-%.20g",
                   path,(double) image->scene);
               else
-                (void) FormatLocaleString(filename,MaxTextExtent,"%s-%.20g.%s",
+                (void) FormatLocaleString(filename,MagickPathExtent,"%s-%.20g.%s",
                   path,(double) image->scene,extension);
             }
-          (void) CopyMagickString(image->filename,filename,MaxTextExtent);
+          (void) CopyMagickString(image->filename,filename,MagickPathExtent);
 #if defined(macintosh)
           SetApplicationType(filename,image_info->magick,'8BIM');
 #endif
@@ -3609,7 +3609,7 @@ MagickExport char *ReadBlobString(Image *image,char *string)
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  for (i=0; i < (MaxTextExtent-1L); i++)
+  for (i=0; i < (MagickPathExtent-1L); i++)
   {
     p=ReadBlobStream(image,1,buffer,&count);
     if (count != 1)

@@ -301,7 +301,7 @@ MagickExport MagickBooleanType GetImageMagick(const unsigned char *magick,
         (p->magick(magick,length) != 0))
       {
         status=MagickTrue;
-        (void) CopyMagickString(format,p->name,MaxTextExtent);
+        (void) CopyMagickString(format,p->name,MagickPathExtent);
         break;
       }
     p=(const MagickInfo *) GetNextValueInSplayTree(magick_list);
@@ -1125,12 +1125,12 @@ MagickExport MagickBooleanType ListMagickInfo(FILE *file,
 #if defined(MAGICKCORE_MODULES_SUPPORT)
     {
       char
-        module[MaxTextExtent];
+        module[MagickPathExtent];
 
       *module='\0';
       if (magick_info[i]->module != (char *) NULL)
-        (void) CopyMagickString(module,magick_info[i]->module,MaxTextExtent);
-      (void) ConcatenateMagickString(module,"          ",MaxTextExtent);
+        (void) CopyMagickString(module,magick_info[i]->module,MagickPathExtent);
+      (void) ConcatenateMagickString(module,"          ",MagickPathExtent);
       module[9]='\0';
       (void) FormatLocaleFile(file,"%9s ",module);
     }
@@ -1383,8 +1383,8 @@ MagickExport void MagickCoreGenesis(const char *path,
 {
   char
     *events,
-    execution_path[MaxTextExtent],
-    filename[MaxTextExtent];
+    execution_path[MagickPathExtent],
+    filename[MagickPathExtent];
 
   /*
     Initialize the Magick environment.
@@ -1418,9 +1418,9 @@ MagickExport void MagickCoreGenesis(const char *path,
   if ((path != (const char *) NULL) && (*path == *DirectorySeparator) &&
       (IsPathAccessible(path) != MagickFalse))
 #endif
-    (void) CopyMagickString(execution_path,path,MaxTextExtent);
+    (void) CopyMagickString(execution_path,path,MagickPathExtent);
   else
-    (void) GetExecutionPath(execution_path,MaxTextExtent);
+    (void) GetExecutionPath(execution_path,MagickPathExtent);
   GetPathComponent(execution_path,TailPath,filename);
   (void) SetClientName(filename);
   GetPathComponent(execution_path,HeadPath,execution_path);

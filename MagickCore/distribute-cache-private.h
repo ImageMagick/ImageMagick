@@ -34,7 +34,7 @@ typedef struct _DistributeCacheInfo
     session_key;
 
   char
-    hostname[MaxTextExtent];
+    hostname[MagickPathExtent];
 
   int
     port;

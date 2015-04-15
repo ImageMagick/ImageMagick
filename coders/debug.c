@@ -165,9 +165,9 @@ static MagickBooleanType WriteDEBUGImage(const ImageInfo *image_info,
   Image *image,ExceptionInfo *exception)
 {
   char
-    buffer[MaxTextExtent],
-    colorspace[MaxTextExtent],
-    tuple[MaxTextExtent];
+    buffer[MagickPathExtent],
+    colorspace[MagickPathExtent],
+    tuple[MagickPathExtent];
 
   ssize_t
     y;
@@ -203,12 +203,12 @@ static MagickBooleanType WriteDEBUGImage(const ImageInfo *image_info,
   do
   {
     (void) CopyMagickString(colorspace,CommandOptionToMnemonic(
-      MagickColorspaceOptions,(ssize_t) image->colorspace),MaxTextExtent);
+      MagickColorspaceOptions,(ssize_t) image->colorspace),MagickPathExtent);
     LocaleLower(colorspace);
     image->depth=GetImageQuantumDepth(image,MagickTrue);
     if (image->alpha_trait != UndefinedPixelTrait)
-      (void) ConcatenateMagickString(colorspace,"a",MaxTextExtent);
-    (void) FormatLocaleString(buffer,MaxTextExtent,
+      (void) ConcatenateMagickString(colorspace,"a",MagickPathExtent);
+    (void) FormatLocaleString(buffer,MagickPathExtent,
       "# ImageMagick pixel debugging: %.20g,%.20g,%.20g,%s\n",(double)
       image->columns,(double) image->rows,(double) ((MagickOffsetType)
       GetQuantumRange(image->depth)),colorspace);
@@ -221,29 +221,29 @@ static MagickBooleanType WriteDEBUGImage(const ImageInfo *image_info,
         break;
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g,%.20g: ",(double)
+        (void) FormatLocaleString(buffer,MagickPathExtent,"%.20g,%.20g: ",(double)
           x,(double) y);
         (void) WriteBlobString(image,buffer);
         GetPixelInfoPixel(image,p,&pixel);
-        (void) FormatLocaleString(tuple,MaxTextExtent,"%.20g,%.20g,%.20g ",
+        (void) FormatLocaleString(tuple,MagickPathExtent,"%.20g,%.20g,%.20g ",
           (double) pixel.red,(double) pixel.green,(double) pixel.blue);
         if (pixel.colorspace == CMYKColorspace)
           {
             char
-              black[MaxTextExtent];
+              black[MagickPathExtent];
 
-            (void) FormatLocaleString(black,MaxTextExtent,",%.20g ",
+            (void) FormatLocaleString(black,MagickPathExtent,",%.20g ",
               (double) pixel.black);
-            (void) ConcatenateMagickString(tuple,black,MaxTextExtent);
+            (void) ConcatenateMagickString(tuple,black,MagickPathExtent);
           }
         if (pixel.alpha_trait != UndefinedPixelTrait)
           {
             char
-              alpha[MaxTextExtent];
+              alpha[MagickPathExtent];
 
-            (void) FormatLocaleString(alpha,MaxTextExtent,",%.20g ",
+            (void) FormatLocaleString(alpha,MagickPathExtent,",%.20g ",
               (double) pixel.alpha);
-            (void) ConcatenateMagickString(tuple,alpha,MaxTextExtent);
+            (void) ConcatenateMagickString(tuple,alpha,MagickPathExtent);
           }
         (void) WriteBlobString(image,tuple);
         (void) WriteBlobString(image,"\n");

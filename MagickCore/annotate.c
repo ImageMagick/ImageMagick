@@ -256,7 +256,7 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
   const DrawInfo *draw_info,ExceptionInfo *exception)
 {
   char
-    primitive[MaxTextExtent],
+    primitive[MagickPathExtent],
     **textlist;
 
   DrawInfo
@@ -489,7 +489,7 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
         undercolor_info->affine=draw_info->affine;
         undercolor_info->affine.tx=offset.x-draw_info->affine.ry*metrics.ascent;
         undercolor_info->affine.ty=offset.y-draw_info->affine.sy*metrics.ascent;
-        (void) FormatLocaleString(primitive,MaxTextExtent,
+        (void) FormatLocaleString(primitive,MagickPathExtent,
           "rectangle -0.5,-0.5 %g,%.20g",metrics.origin.x,(double) height);
         (void) CloneString(&undercolor_info->primitive,primitive);
         (void) DrawImage(image,undercolor_info,exception);
@@ -497,7 +497,7 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
       }
     annotate_info->affine.tx=offset.x;
     annotate_info->affine.ty=offset.y;
-    (void) FormatLocaleString(primitive,MaxTextExtent,"stroke-width %g "
+    (void) FormatLocaleString(primitive,MagickPathExtent,"stroke-width %g "
       "line 0,0 %g,0",metrics.underline_thickness,metrics.width);
     if (annotate->decorate == OverlineDecoration)
       {
@@ -1006,10 +1006,10 @@ static int TraceCubicBezier(FT_Vector *p,FT_Vector *q,FT_Vector *to,
     affine;
 
   char
-    path[MaxTextExtent];
+    path[MagickPathExtent];
 
   affine=draw_info->affine;
-  (void) FormatLocaleString(path,MaxTextExtent,
+  (void) FormatLocaleString(path,MagickPathExtent,
     "C%g,%g %g,%g %g,%g",affine.tx+p->x/64.0,affine.ty-
     p->y/64.0,affine.tx+q->x/64.0,affine.ty-q->y/64.0,affine.tx+to->x/64.0,
     affine.ty-to->y/64.0);
@@ -1023,10 +1023,10 @@ static int TraceLineTo(FT_Vector *to,DrawInfo *draw_info)
     affine;
 
   char
-    path[MaxTextExtent];
+    path[MagickPathExtent];
 
   affine=draw_info->affine;
-  (void) FormatLocaleString(path,MaxTextExtent,"L%g,%g",affine.tx+
+  (void) FormatLocaleString(path,MagickPathExtent,"L%g,%g",affine.tx+
     to->x/64.0,affine.ty-to->y/64.0);
   (void) ConcatenateString(&draw_info->primitive,path);
   return(0);
@@ -1038,10 +1038,10 @@ static int TraceMoveTo(FT_Vector *to,DrawInfo *draw_info)
     affine;
 
   char
-    path[MaxTextExtent];
+    path[MagickPathExtent];
 
   affine=draw_info->affine;
-  (void) FormatLocaleString(path,MaxTextExtent,"M%g,%g",affine.tx+
+  (void) FormatLocaleString(path,MagickPathExtent,"M%g,%g",affine.tx+
     to->x/64.0,affine.ty-to->y/64.0);
   (void) ConcatenateString(&draw_info->primitive,path);
   return(0);
@@ -1054,10 +1054,10 @@ static int TraceQuadraticBezier(FT_Vector *control,FT_Vector *to,
     affine;
 
   char
-    path[MaxTextExtent];
+    path[MagickPathExtent];
 
   affine=draw_info->affine;
-  (void) FormatLocaleString(path,MaxTextExtent,"Q%g,%g %g,%g",
+  (void) FormatLocaleString(path,MagickPathExtent,"Q%g,%g %g,%g",
     affine.tx+control->x/64.0,affine.ty-control->y/64.0,affine.tx+to->x/64.0,
     affine.ty-to->y/64.0);
   (void) ConcatenateString(&draw_info->primitive,path);
@@ -1637,7 +1637,7 @@ static char *EscapeParenthesis(const char *text)
   escapes=0;
   buffer=AcquireString(text);
   p=buffer;
-  for (i=0; i < (ssize_t) MagickMin(strlen(text),MaxTextExtent-escapes-1); i++)
+  for (i=0; i < (ssize_t) MagickMin(strlen(text),MagickPathExtent-escapes-1); i++)
   {
     if ((text[i] == '(') || (text[i] == ')'))
       {
@@ -1655,8 +1655,8 @@ static MagickBooleanType RenderPostscript(Image *image,
   ExceptionInfo *exception)
 {
   char
-    filename[MaxTextExtent],
-    geometry[MaxTextExtent],
+    filename[MagickPathExtent],
+    geometry[MagickPathExtent],
     *text;
 
   FILE
@@ -1756,10 +1756,10 @@ static MagickBooleanType RenderPostscript(Image *image,
   text=DestroyString(text);
   (void) FormatLocaleFile(file,"showpage\n");
   (void) fclose(file);
-  (void) FormatLocaleString(geometry,MaxTextExtent,"%.20gx%.20g+0+0!",
+  (void) FormatLocaleString(geometry,MagickPathExtent,"%.20gx%.20g+0+0!",
     floor(extent.x+0.5),floor(extent.y+0.5));
   annotate_info=AcquireImageInfo();
-  (void) FormatLocaleString(annotate_info->filename,MaxTextExtent,"ps:%s",
+  (void) FormatLocaleString(annotate_info->filename,MagickPathExtent,"ps:%s",
     filename);
   (void) CloneString(&annotate_info->page,geometry);
   if (draw_info->density != (char *) NULL)
@@ -1800,7 +1800,7 @@ static MagickBooleanType RenderPostscript(Image *image,
         ExpandAffine(&draw_info->affine)*draw_info->pointsize+0.5);
       crop_info.y=(ssize_t) ceil((resolution.y/DefaultResolution)*extent.y/8.0-
         0.5);
-      (void) FormatLocaleString(geometry,MaxTextExtent,
+      (void) FormatLocaleString(geometry,MagickPathExtent,
         "%.20gx%.20g%+.20g%+.20g",(double) crop_info.width,(double)
         crop_info.height,(double) crop_info.x,(double) crop_info.y);
       (void) TransformImage(&annotate_image,geometry,(char *) NULL,exception);

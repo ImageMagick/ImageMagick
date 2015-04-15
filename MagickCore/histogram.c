@@ -1085,9 +1085,9 @@ MagickExport size_t GetNumberColors(const Image *image,FILE *file,
 #define HistogramImageTag  "Histogram/Image"
 
   char
-    color[MaxTextExtent],
-    hex[MaxTextExtent],
-    tuple[MaxTextExtent];
+    color[MagickPathExtent],
+    hex[MagickPathExtent],
+    tuple[MagickPathExtent];
 
   PixelInfo
     *histogram;
@@ -1130,25 +1130,25 @@ MagickExport size_t GetNumberColors(const Image *image,FILE *file,
   for (i=0; i < (ssize_t) number_colors; i++)
   {
     pixel=(*p);
-    (void) CopyMagickString(tuple,"(",MaxTextExtent);
+    (void) CopyMagickString(tuple,"(",MagickPathExtent);
     ConcatenateColorComponent(&pixel,RedPixelChannel,X11Compliance,tuple);
-    (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
+    (void) ConcatenateMagickString(tuple,",",MagickPathExtent);
     ConcatenateColorComponent(&pixel,GreenPixelChannel,X11Compliance,tuple);
-    (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
+    (void) ConcatenateMagickString(tuple,",",MagickPathExtent);
     ConcatenateColorComponent(&pixel,BluePixelChannel,X11Compliance,tuple);
     if (pixel.colorspace == CMYKColorspace)
       {
-        (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
+        (void) ConcatenateMagickString(tuple,",",MagickPathExtent);
         ConcatenateColorComponent(&pixel,BlackPixelChannel,X11Compliance,
           tuple);
       }
     if (pixel.alpha_trait != UndefinedPixelTrait)
       {
-        (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
+        (void) ConcatenateMagickString(tuple,",",MagickPathExtent);
         ConcatenateColorComponent(&pixel,AlphaPixelChannel,X11Compliance,
           tuple);
       }
-    (void) ConcatenateMagickString(tuple,")",MaxTextExtent);
+    (void) ConcatenateMagickString(tuple,")",MagickPathExtent);
     (void) QueryColorname(image,&pixel,SVGCompliance,color,exception);
     GetColorTuple(&pixel,MagickTrue,hex);
     (void) FormatLocaleFile(file,"%10.20g",(double) ((MagickOffsetType)
