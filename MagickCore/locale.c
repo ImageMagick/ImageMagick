@@ -745,7 +745,7 @@ MagickExport char **GetLocaleList(const char *pattern,size_t *number_messages,
 MagickExport const char *GetLocaleMessage(const char *tag)
 {
   char
-    name[MagickPathExtent];
+    name[MagickLocaleExtent];
 
   const LocaleInfo
     *locale_info;
@@ -756,7 +756,7 @@ MagickExport const char *GetLocaleMessage(const char *tag)
   if ((tag == (const char *) NULL) || (*tag == '\0'))
     return(tag);
   exception=AcquireExceptionInfo();
-  (void) FormatLocaleString(name,MagickPathExtent,"%s/",tag);
+  (void) FormatLocaleString(name,MagickLocaleExtent,"%s/",tag);
   locale_info=GetLocaleInfo_(name,exception);
   exception=DestroyExceptionInfo(exception);
   if (locale_info != (const LocaleInfo *) NULL)
@@ -821,7 +821,8 @@ MagickExport LinkedListInfo *GetLocaleOptions(const char *filename,
       element=(const char *) GetNextValueInLinkedList(paths);
       while (element != (const char *) NULL)
       {
-        (void) FormatLocaleString(path,MagickPathExtent,"%s%s",element,filename);
+        (void) FormatLocaleString(path,MagickPathExtent,"%s%s",element,
+          filename);
         (void) LogMagickEvent(LocaleEvent,GetMagickModule(),
           "Searching for locale file: \"%s\"",path);
         xml=ConfigureFileToStringInfo(path);
@@ -1148,9 +1149,9 @@ static MagickBooleanType LoadLocaleCache(SplayTreeInfo *locale_cache,
   ExceptionInfo *exception)
 {
   char
-    keyword[MagickPathExtent],
-    message[MagickPathExtent],
-    tag[MagickPathExtent],
+    keyword[MagickLocaleExtent],
+    message[MagickLocaleExtent],
+    tag[MagickLocaleExtent],
     *token;
 
   const char
@@ -1190,7 +1191,7 @@ static MagickBooleanType LoadLocaleCache(SplayTreeInfo *locale_cache,
     GetMagickToken(q,&q,token);
     if (*token == '\0')
       break;
-    (void) CopyMagickString(keyword,token,MagickPathExtent);
+    (void) CopyMagickString(keyword,token,MagickLocaleExtent);
     if (LocaleNCompare(keyword,"<!DOCTYPE",9) == 0)
       {
         /*
@@ -1224,7 +1225,7 @@ static MagickBooleanType LoadLocaleCache(SplayTreeInfo *locale_cache,
         */
         while (((*token != '/') && (*(token+1) != '>')) && (*q != '\0'))
         {
-          (void) CopyMagickString(keyword,token,MagickPathExtent);
+          (void) CopyMagickString(keyword,token,MagickLocaleExtent);
           GetMagickToken(q,&q,token);
           if (*token != '=')
             continue;
@@ -1274,7 +1275,7 @@ static MagickBooleanType LoadLocaleCache(SplayTreeInfo *locale_cache,
         */
         while ((*token != '>') && (*q != '\0'))
         {
-          (void) CopyMagickString(keyword,token,MagickPathExtent);
+          (void) CopyMagickString(keyword,token,MagickLocaleExtent);
           GetMagickToken(q,&q,token);
           if (*token != '=')
             continue;
@@ -1285,7 +1286,7 @@ static MagickBooleanType LoadLocaleCache(SplayTreeInfo *locale_cache,
     if (LocaleCompare(keyword,"</locale>") == 0)
       {
         ChopLocaleComponents(tag,1);
-        (void) ConcatenateMagickString(tag,"/",MagickPathExtent);
+        (void) ConcatenateMagickString(tag,"/",MagickLocaleExtent);
         continue;
       }
     if (LocaleCompare(keyword,"<localemap>") == 0)
@@ -1299,15 +1300,15 @@ static MagickBooleanType LoadLocaleCache(SplayTreeInfo *locale_cache,
         */
         while ((*token != '>') && (*q != '\0'))
         {
-          (void) CopyMagickString(keyword,token,MagickPathExtent);
+          (void) CopyMagickString(keyword,token,MagickLocaleExtent);
           GetMagickToken(q,&q,token);
           if (*token != '=')
             continue;
           GetMagickToken(q,&q,token);
           if (LocaleCompare(keyword,"name") == 0)
             {
-              (void) ConcatenateMagickString(tag,token,MagickPathExtent);
-              (void) ConcatenateMagickString(tag,"/",MagickPathExtent);
+              (void) ConcatenateMagickString(tag,token,MagickLocaleExtent);
+              (void) ConcatenateMagickString(tag,"/",MagickLocaleExtent);
             }
         }
         for (p=(char *) q; (*q != '<') && (*q != '\0'); q++) ;
@@ -1317,7 +1318,7 @@ static MagickBooleanType LoadLocaleCache(SplayTreeInfo *locale_cache,
         while ((isspace((int) ((unsigned char) *q)) != 0) && (q > p))
           q--;
         (void) CopyMagickString(message,p,MagickMin((size_t) (q-p+2),
-          MagickPathExtent));
+          MagickLocaleExtent));
         locale_info=(LocaleInfo *) AcquireMagickMemory(sizeof(*locale_info));
         if (locale_info == (LocaleInfo *) NULL)
           ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
@@ -1331,15 +1332,15 @@ static MagickBooleanType LoadLocaleCache(SplayTreeInfo *locale_cache,
           (void) ThrowMagickException(exception,GetMagickModule(),
             ResourceLimitError,"MemoryAllocationFailed","`%s'",
             locale_info->tag);
-        (void) ConcatenateMagickString(tag,message,MagickPathExtent);
-        (void) ConcatenateMagickString(tag,"\n",MagickPathExtent);
+        (void) ConcatenateMagickString(tag,message,MagickLocaleExtent);
+        (void) ConcatenateMagickString(tag,"\n",MagickLocaleExtent);
         q++;
         continue;
       }
     if (LocaleCompare(keyword,"</message>") == 0)
       {
         ChopLocaleComponents(tag,2);
-        (void) ConcatenateMagickString(tag,"/",MagickPathExtent);
+        (void) ConcatenateMagickString(tag,"/",MagickLocaleExtent);
         continue;
       }
     if (*keyword == '<')
@@ -1353,13 +1354,13 @@ static MagickBooleanType LoadLocaleCache(SplayTreeInfo *locale_cache,
           {
             ChopLocaleComponents(tag,1);
             if (*tag != '\0')
-              (void) ConcatenateMagickString(tag,"/",MagickPathExtent);
+              (void) ConcatenateMagickString(tag,"/",MagickLocaleExtent);
             continue;
           }
         token[strlen(token)-1]='\0';
-        (void) CopyMagickString(token,token+1,MagickPathExtent);
-        (void) ConcatenateMagickString(tag,token,MagickPathExtent);
-        (void) ConcatenateMagickString(tag,"/",MagickPathExtent);
+        (void) CopyMagickString(token,token+1,MagickLocaleExtent);
+        (void) ConcatenateMagickString(tag,token,MagickLocaleExtent);
+        (void) ConcatenateMagickString(tag,"/",MagickLocaleExtent);
         continue;
       }
     GetMagickToken(q,(const char **) NULL,token);
