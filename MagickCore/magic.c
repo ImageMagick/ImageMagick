@@ -243,6 +243,17 @@ static MagickBooleanType
 %    o exception: return any errors or warnings in this structure.
 %
 */
+static int CompareMagickInfoSize(const void *a,const void *b)
+{
+  MagicInfo
+    *ma,
+    *mb;
+
+  ma=(MagicInfo *)a;
+  mb=(MagicInfo *)b;
+  return((mb->offset+mb->length) - (ma->offset+ma->length));
+}
+
 static LinkedListInfo *AcquireMagicCache(const char *filename,
   ExceptionInfo *exception)
 {
@@ -308,7 +319,8 @@ static LinkedListInfo *AcquireMagicCache(const char *filename,
     magic_info->length=p->length;
     magic_info->exempt=MagickTrue;
     magic_info->signature=MagickSignature;
-    status&=AppendValueToLinkedList(magic_cache,magic_info);
+    status&=InsertValueInSortedLinkedList(magic_cache,CompareMagickInfoSize,
+      NULL,magic_info);
     if (status == MagickFalse)
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",magic_info->name);
@@ -321,7 +333,7 @@ static LinkedListInfo *AcquireMagicCache(const char *filename,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   G e t M a g i c I n f o                                                   %
+%   G e t M a g i c I n f o                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -378,6 +390,52 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
       RemoveElementByValueFromLinkedList(magic_cache,p));
   UnlockSemaphoreInfo(magic_semaphore);
   return(p);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t M  a g i c I n f o B u f f e r S i z e                              %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetMagicInfoBufferSize() searches the the size of the buffer that is
+%  necessary to check all the MagickInfos. Returns zero if the list is empty.
+%
+%  The format of the GetMagicInfoBufferSize method is:
+%
+%      size_t GetMagicInfoBufferSize(ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport size_t GetMagicInfoBufferSize(ExceptionInfo *exception)
+{
+  register const MagicInfo
+    *p;
+
+  static size_t
+    size=0;
+
+  assert(exception != (ExceptionInfo *) NULL);
+  if (size != 0 || IsMagicCacheInstantiated(exception) == MagickFalse)
+    return(size);
+  /*
+    The list is sorted so we can use the size of the first value.
+  */
+  LockSemaphoreInfo(magic_semaphore);
+  ResetLinkedListIterator(magic_cache);
+  p=(const MagicInfo *) GetNextValueInLinkedList(magic_cache);
+  if (p != (const MagicInfo *) NULL)
+    size=(size_t) (p->offset+p->length);
+  UnlockSemaphoreInfo(magic_semaphore);
+  return(size);
 }
 
 /*
@@ -868,7 +926,8 @@ static MagickBooleanType LoadMagicCache(LinkedListInfo *magic_cache,
       continue;
     if (LocaleCompare(keyword,"/>") == 0)
       {
-        status=AppendValueToLinkedList(magic_cache,magic_info);
+        status=InsertValueInSortedLinkedList(magic_cache,CompareMagickInfoSize,
+          NULL,magic_info);
         if (status == MagickFalse)
           (void) ThrowMagickException(exception,GetMagickModule(),
             ResourceLimitError,"MemoryAllocationFailed","`%s'",
