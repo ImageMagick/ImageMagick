@@ -59,6 +59,9 @@ extern MagickExport const MagicInfo
   *GetMagicInfo(const unsigned char *,const size_t,ExceptionInfo *),
   **GetMagicInfoList(const char *,size_t *,ExceptionInfo *);
 
+extern MagickExport size_t
+  GetMagicInfoBufferSize(ExceptionInfo *);
+
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif
