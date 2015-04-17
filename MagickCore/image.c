@@ -2584,7 +2584,7 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
       /*
         Determine the image format from the first few bytes of the file.
       */
-      magick_size=GetMagicInfoBufferSize(exception);
+      magick_size=GetMagicPatternExtent(exception);
       if (magick_size == 0)
         return(MagickFalse);
       image=AcquireImage(image_info,exception);

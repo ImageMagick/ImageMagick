@@ -63,7 +63,7 @@
   Define declarations.
 */
 #define MagicFilename  "magic.xml"
-#define MagickString(magic)  (const unsigned char *) (magic), sizeof(magic)-1
+#define MagicPattern(magic)  (const unsigned char *) (magic), sizeof(magic)-1
 
 /*
   Typedef declarations.
@@ -89,118 +89,118 @@ typedef struct _MagicMapInfo
 static const MagicMapInfo
   MagicMap[] =
   {
-    { "8BIMWTEXT", 0, MagickString("8\000B\000I\000M\000#") },
-    { "8BIMTEXT", 0, MagickString("8BIM#") },
-    { "8BIM", 0, MagickString("8BIM") },
-    { "BMP", 0, MagickString("BA") },
-    { "BMP", 0, MagickString("BM") },
-    { "BMP", 0, MagickString("CI") },
-    { "BMP", 0, MagickString("CP") },
-    { "BMP", 0, MagickString("IC") },
-    { "PICT", 0, MagickString("PICT") },
-    { "BMP", 0, MagickString("PI") },
-    { "CALS", 21, MagickString("version: MIL-STD-1840") },
-    { "CALS", 0, MagickString("srcdocid:") },
-    { "CALS", 9, MagickString("srcdocid:") },
-    { "CALS", 8, MagickString("rorient:") },
-    { "CGM", 0, MagickString("BEGMF") },
-    { "CIN", 0, MagickString("\200\052\137\327") },
-    { "CRW", 0, MagickString("II\x1a\x00\x00\x00HEAPCCDR") },
-    { "DCM", 128, MagickString("DICM") },
-    { "DCX", 0, MagickString("\261\150\336\72") },
-    { "DIB", 0, MagickString("\050\000") },
-    { "DDS", 0, MagickString("DDS ") },
-    { "DJVU", 0, MagickString("AT&TFORM") },
-    { "DOT", 0, MagickString("digraph") },
-    { "DPX", 0, MagickString("SDPX") },
-    { "DPX", 0, MagickString("XPDS") },
-    { "EMF", 40, MagickString("\040\105\115\106\000\000\001\000") },
-    { "EPT", 0, MagickString("\305\320\323\306") },
-    { "EXR", 0, MagickString("\166\057\061\001") },
-    { "FAX", 0, MagickString("DFAX") },
-    { "FIG", 0, MagickString("#FIG") },
-    { "FITS", 0, MagickString("IT0") },
-    { "FITS", 0, MagickString("SIMPLE") },
-    { "GIF", 0, MagickString("GIF8") },
-    { "GPLT", 0, MagickString("#!/usr/local/bin/gnuplot") },
-    { "HDF", 1, MagickString("HDF") },
-    { "HDR", 0, MagickString("#?RADIANCE") },
-    { "HDR", 0, MagickString("#?RGBE") },
-    { "HPGL", 0, MagickString("IN;") },
-    { "HTML", 1, MagickString("HTML") },
-    { "HTML", 1, MagickString("html") },
-    { "ILBM", 8, MagickString("ILBM") },
-    { "IPTCWTEXT", 0, MagickString("\062\000#\000\060\000=\000\042\000&\000#\000\060\000;\000&\000#\000\062\000;\000\042\000") },
-    { "IPTCTEXT", 0, MagickString("2#0=\042&#0;&#2;\042") },
-    { "IPTC", 0, MagickString("\034\002") },
-    { "JNG", 0, MagickString("\213JNG\r\n\032\n") },
-    { "JPEG", 0, MagickString("\377\330\377") },
-    { "J2K", 0, MagickString("\xff\x4f\xff\x51") },
-    { "JPC", 0, MagickString("\x0d\x0a\x87\x0a") },
-    { "JP2", 4, MagickString("\x00\x00\x00\x0c\x6a\x50\x20\x20\x0d\x0a\x87\x0a") },
-    { "MAT", 0, MagickString("MATLAB 5.0 MAT-file,") },
-    { "MIFF", 0, MagickString("Id=ImageMagick") },
-    { "MIFF", 0, MagickString("id=ImageMagick") },
-    { "MNG", 0, MagickString("\212MNG\r\n\032\n") },
-    { "MPC", 0, MagickString("id=MagickCache") },
-    { "MPEG", 0, MagickString("\000\000\001\263") },
-    { "MRW", 0, MagickString("\x00MRM") },
-    { "MVG", 0, MagickString("push graphic-context") },
-    { "ORF", 0, MagickString("IIRO\x08\x00\x00\x00") },
-    { "PCD", 2048, MagickString("PCD_") },
-    { "PCL", 0, MagickString("\033E\033") },
-    { "PCX", 0, MagickString("\012\002") },
-    { "PCX", 0, MagickString("\012\005") },
-    { "PDB", 60, MagickString("vIMGView") },
-    { "PDF", 0, MagickString("%PDF-") },
-    { "PES", 0, MagickString("#PES") },
-    { "PFA", 0, MagickString("%!PS-AdobeFont-1.0") },
-    { "PFB", 6, MagickString("%!PS-AdobeFont-1.0") },
-    { "PGX", 0, MagickString("\050\107\020\115\046") },
-    { "PICT", 522, MagickString("\000\021\002\377\014\000") },
-    { "PNG", 0, MagickString("\211PNG\r\n\032\n") },
-    { "PBM", 0, MagickString("P1") },
-    { "PGM", 0, MagickString("P2") },
-    { "PPM", 0, MagickString("P3") },
-    { "PBM", 0, MagickString("P4") },
-    { "PGM", 0, MagickString("P5") },
-    { "PPM", 0, MagickString("P6") },
-    { "PAM", 0, MagickString("P7") },
-    { "PFM", 0, MagickString("PF") },
-    { "PFM", 0, MagickString("Pf") },
-    { "PS", 0, MagickString("%!") },
-    { "PS", 0, MagickString("\004%!") },
-    { "PS", 0, MagickString("\305\320\323\306") },
-    { "PSB", 0, MagickString("8BPB") },
-    { "PSD", 0, MagickString("8BPS") },
-    { "PWP", 0, MagickString("SFW95") },
-    { "RAF", 0, MagickString("FUJIFILMCCD-RAW ") },
-    { "RLE", 0, MagickString("\122\314") },
-    { "SCT", 0, MagickString("CT") },
-    { "SFW", 0, MagickString("SFW94") },
-    { "SGI", 0, MagickString("\001\332") },
-    { "SUN", 0, MagickString("\131\246\152\225") },
-    { "SVG", 1, MagickString("?XML") },
-    { "SVG", 1, MagickString("?xml") },
-    { "TIFF", 0, MagickString("\115\115\000\052") },
-    { "TIFF", 0, MagickString("\111\111\052\000") },
-    { "TIFF64", 0, MagickString("\115\115\000\053\000\010\000\000") },
-    { "TIFF64", 0, MagickString("\111\111\053\000\010\000\000\000") },
-    { "TTF", 0, MagickString("\000\001\000\000\000") },
-    { "TXT", 0, MagickString("# ImageMagick pixel enumeration:") },
-    { "VICAR", 0, MagickString("LBLSIZE") },
-    { "VICAR", 0, MagickString("NJPL1I") },
-    { "VIFF", 0, MagickString("\253\001") },
-    { "WEBP", 8, MagickString("WEBP") },
-    { "WMF", 0, MagickString("\327\315\306\232") },
-    { "WMF", 0, MagickString("\001\000\011\000") },
-    { "WPG", 0, MagickString("\377WPC") },
-    { "XBM", 0, MagickString("#define") },
-    { "XCF", 0, MagickString("gimp xcf") },
-    { "XEF", 0, MagickString("FOVb") },
-    { "XPM", 1, MagickString("* XPM *") },
-    { "XWD", 4, MagickString("\007\000\000") },
-    { "XWD", 5, MagickString("\000\000\007") }
+    { "8BIMWTEXT", 0, MagicPattern("8\000B\000I\000M\000#") },
+    { "8BIMTEXT", 0, MagicPattern("8BIM#") },
+    { "8BIM", 0, MagicPattern("8BIM") },
+    { "BMP", 0, MagicPattern("BA") },
+    { "BMP", 0, MagicPattern("BM") },
+    { "BMP", 0, MagicPattern("CI") },
+    { "BMP", 0, MagicPattern("CP") },
+    { "BMP", 0, MagicPattern("IC") },
+    { "PICT", 0, MagicPattern("PICT") },
+    { "BMP", 0, MagicPattern("PI") },
+    { "CALS", 21, MagicPattern("version: MIL-STD-1840") },
+    { "CALS", 0, MagicPattern("srcdocid:") },
+    { "CALS", 9, MagicPattern("srcdocid:") },
+    { "CALS", 8, MagicPattern("rorient:") },
+    { "CGM", 0, MagicPattern("BEGMF") },
+    { "CIN", 0, MagicPattern("\200\052\137\327") },
+    { "CRW", 0, MagicPattern("II\x1a\x00\x00\x00HEAPCCDR") },
+    { "DCM", 128, MagicPattern("DICM") },
+    { "DCX", 0, MagicPattern("\261\150\336\72") },
+    { "DIB", 0, MagicPattern("\050\000") },
+    { "DDS", 0, MagicPattern("DDS ") },
+    { "DJVU", 0, MagicPattern("AT&TFORM") },
+    { "DOT", 0, MagicPattern("digraph") },
+    { "DPX", 0, MagicPattern("SDPX") },
+    { "DPX", 0, MagicPattern("XPDS") },
+    { "EMF", 40, MagicPattern("\040\105\115\106\000\000\001\000") },
+    { "EPT", 0, MagicPattern("\305\320\323\306") },
+    { "EXR", 0, MagicPattern("\166\057\061\001") },
+    { "FAX", 0, MagicPattern("DFAX") },
+    { "FIG", 0, MagicPattern("#FIG") },
+    { "FITS", 0, MagicPattern("IT0") },
+    { "FITS", 0, MagicPattern("SIMPLE") },
+    { "GIF", 0, MagicPattern("GIF8") },
+    { "GPLT", 0, MagicPattern("#!/usr/local/bin/gnuplot") },
+    { "HDF", 1, MagicPattern("HDF") },
+    { "HDR", 0, MagicPattern("#?RADIANCE") },
+    { "HDR", 0, MagicPattern("#?RGBE") },
+    { "HPGL", 0, MagicPattern("IN;") },
+    { "HTML", 1, MagicPattern("HTML") },
+    { "HTML", 1, MagicPattern("html") },
+    { "ILBM", 8, MagicPattern("ILBM") },
+    { "IPTCWTEXT", 0, MagicPattern("\062\000#\000\060\000=\000\042\000&\000#\000\060\000;\000&\000#\000\062\000;\000\042\000") },
+    { "IPTCTEXT", 0, MagicPattern("2#0=\042&#0;&#2;\042") },
+    { "IPTC", 0, MagicPattern("\034\002") },
+    { "JNG", 0, MagicPattern("\213JNG\r\n\032\n") },
+    { "JPEG", 0, MagicPattern("\377\330\377") },
+    { "J2K", 0, MagicPattern("\xff\x4f\xff\x51") },
+    { "JPC", 0, MagicPattern("\x0d\x0a\x87\x0a") },
+    { "JP2", 4, MagicPattern("\x00\x00\x00\x0c\x6a\x50\x20\x20\x0d\x0a\x87\x0a") },
+    { "MAT", 0, MagicPattern("MATLAB 5.0 MAT-file,") },
+    { "MIFF", 0, MagicPattern("Id=ImageMagick") },
+    { "MIFF", 0, MagicPattern("id=ImageMagick") },
+    { "MNG", 0, MagicPattern("\212MNG\r\n\032\n") },
+    { "MPC", 0, MagicPattern("id=MagickCache") },
+    { "MPEG", 0, MagicPattern("\000\000\001\263") },
+    { "MRW", 0, MagicPattern("\x00MRM") },
+    { "MVG", 0, MagicPattern("push graphic-context") },
+    { "ORF", 0, MagicPattern("IIRO\x08\x00\x00\x00") },
+    { "PCD", 2048, MagicPattern("PCD_") },
+    { "PCL", 0, MagicPattern("\033E\033") },
+    { "PCX", 0, MagicPattern("\012\002") },
+    { "PCX", 0, MagicPattern("\012\005") },
+    { "PDB", 60, MagicPattern("vIMGView") },
+    { "PDF", 0, MagicPattern("%PDF-") },
+    { "PES", 0, MagicPattern("#PES") },
+    { "PFA", 0, MagicPattern("%!PS-AdobeFont-1.0") },
+    { "PFB", 6, MagicPattern("%!PS-AdobeFont-1.0") },
+    { "PGX", 0, MagicPattern("\050\107\020\115\046") },
+    { "PICT", 522, MagicPattern("\000\021\002\377\014\000") },
+    { "PNG", 0, MagicPattern("\211PNG\r\n\032\n") },
+    { "PBM", 0, MagicPattern("P1") },
+    { "PGM", 0, MagicPattern("P2") },
+    { "PPM", 0, MagicPattern("P3") },
+    { "PBM", 0, MagicPattern("P4") },
+    { "PGM", 0, MagicPattern("P5") },
+    { "PPM", 0, MagicPattern("P6") },
+    { "PAM", 0, MagicPattern("P7") },
+    { "PFM", 0, MagicPattern("PF") },
+    { "PFM", 0, MagicPattern("Pf") },
+    { "PS", 0, MagicPattern("%!") },
+    { "PS", 0, MagicPattern("\004%!") },
+    { "PS", 0, MagicPattern("\305\320\323\306") },
+    { "PSB", 0, MagicPattern("8BPB") },
+    { "PSD", 0, MagicPattern("8BPS") },
+    { "PWP", 0, MagicPattern("SFW95") },
+    { "RAF", 0, MagicPattern("FUJIFILMCCD-RAW ") },
+    { "RLE", 0, MagicPattern("\122\314") },
+    { "SCT", 0, MagicPattern("CT") },
+    { "SFW", 0, MagicPattern("SFW94") },
+    { "SGI", 0, MagicPattern("\001\332") },
+    { "SUN", 0, MagicPattern("\131\246\152\225") },
+    { "SVG", 1, MagicPattern("?XML") },
+    { "SVG", 1, MagicPattern("?xml") },
+    { "TIFF", 0, MagicPattern("\115\115\000\052") },
+    { "TIFF", 0, MagicPattern("\111\111\052\000") },
+    { "TIFF64", 0, MagicPattern("\115\115\000\053\000\010\000\000") },
+    { "TIFF64", 0, MagicPattern("\111\111\053\000\010\000\000\000") },
+    { "TTF", 0, MagicPattern("\000\001\000\000\000") },
+    { "TXT", 0, MagicPattern("# ImageMagick pixel enumeration:") },
+    { "VICAR", 0, MagicPattern("LBLSIZE") },
+    { "VICAR", 0, MagicPattern("NJPL1I") },
+    { "VIFF", 0, MagicPattern("\253\001") },
+    { "WEBP", 8, MagicPattern("WEBP") },
+    { "WMF", 0, MagicPattern("\327\315\306\232") },
+    { "WMF", 0, MagicPattern("\001\000\011\000") },
+    { "WPG", 0, MagicPattern("\377WPC") },
+    { "XBM", 0, MagicPattern("#define") },
+    { "XCF", 0, MagicPattern("gimp xcf") },
+    { "XEF", 0, MagicPattern("FOVb") },
+    { "XPM", 1, MagicPattern("* XPM *") },
+    { "XWD", 4, MagicPattern("\007\000\000") },
+    { "XWD", 5, MagicPattern("\000\000\007") }
  };
 
 static LinkedListInfo
@@ -397,34 +397,34 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t M  a g i c I n f o B u f f e r S i z e                              %
+%   G e t M a g i c P a t t e r n E x t e n t                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetMagicInfoBufferSize() searches the the size of the buffer that is
-%  necessary to check all the MagickInfos. Returns zero if the list is empty.
+%  GetMagicPatternExtent() returns the the extent of the buffer that is
+%  required to check all the MagickInfos. It returns zero if the list is empty.
 %
-%  The format of the GetMagicInfoBufferSize method is:
+%  The format of the GetMagicPatternExtent method is:
 %
-%      size_t GetMagicInfoBufferSize(ExceptionInfo *exception)
+%      size_t GetMagicPatternExtent(ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport size_t GetMagicInfoBufferSize(ExceptionInfo *exception)
+MagickExport size_t GetMagicPatternExtent(ExceptionInfo *exception)
 {
   register const MagicInfo
     *p;
 
   static size_t
-    size=0;
+    size = 0;
 
   assert(exception != (ExceptionInfo *) NULL);
-  if (size != 0 || IsMagicCacheInstantiated(exception) == MagickFalse)
+  if ((size != 0) || (IsMagicCacheInstantiated(exception) == MagickFalse))
     return(size);
   /*
     The list is sorted so we can use the size of the first value.
