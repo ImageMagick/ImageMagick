@@ -2180,7 +2180,14 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           "  exit ReadOnePNGImage() with error.");
 
       if (image != (Image *) NULL)
-        image->columns=0;
+        {
+          const char
+            *option;
+
+          option=GetImageOption(image_info,"png:preserve-corrupt-image");
+          if (IsStringTrue(option) == MagickFalse)
+            image->columns=0;
+        }
 
       return(GetFirstImageInList(image));
     }
