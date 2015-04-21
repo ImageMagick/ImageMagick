@@ -294,7 +294,11 @@ static MagickBooleanType CompositeOverImage(Image *image,
     *source_view,
     *image_view;
 
+  const char
+     *value;
+
   MagickBooleanType
+    clamp,
     status;
 
   MagickOffsetType
@@ -308,6 +312,10 @@ static MagickBooleanType CompositeOverImage(Image *image,
   */
   status=MagickTrue;
   progress=0;
+  clamp=MagickTrue;
+  value=GetImageArtifact(image,"compose:clamp");
+  if (value != (const char *) NULL)
+    clamp=IsStringTrue(value);
   source_view=AcquireVirtualCacheView(source_image,exception);
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -457,7 +465,9 @@ static MagickBooleanType CompositeOverImage(Image *image,
             /*
               Set alpha channel.
             */
-            q[i]=ClampPixel(QuantumRange*(Sa+Da-Sa*Da));
+            q[i]=clamp != MagickFalse ?
+              ClampPixel(QuantumRange*(Sa+Da-Sa*Da)) :
+              ClampToQuantum(QuantumRange*(Sa+Da-Sa*Da));
             continue;
           }
         /*
@@ -468,7 +478,9 @@ static MagickBooleanType CompositeOverImage(Image *image,
         Dc=(MagickRealType) q[i];
         Sca=QuantumScale*Sa*Sc;
         Dca=QuantumScale*Da*Dc;
-        q[i]=ClampPixel(QuantumRange*(Sca+Dca*(1.0-Sa)));
+        q[i]=clamp != MagickFalse ?
+          ClampPixel(QuantumRange*(Sca+Dca*(1.0-Sa))) :
+          ClampToQuantum(QuantumRange*(Sca+Dca*(1.0-Sa)));
       }
       p+=GetPixelChannels(source_image);
       channels=GetPixelChannels(source_image);
@@ -508,6 +520,9 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
     *source_view,
     *image_view;
 
+  const char
+    *value;
+
   GeometryInfo
     geometry_info;
 
@@ -516,6 +531,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
     *source_image;
 
   MagickBooleanType
+    clamp,
     status;
 
   MagickOffsetType
@@ -560,9 +576,13 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       source_image=DestroyImage(source_image);
       return(status);
     }
-  canvas_image=(Image *) NULL;
   amount=0.5;
+  canvas_image=(Image *) NULL;
   canvas_dissolve=1.0;
+  clamp=MagickTrue;
+  value=GetImageArtifact(image,"compose:clamp");
+  if (value != (const char *) NULL)
+    clamp=IsStringTrue(value);
   percent_luma=100.0;
   percent_chroma=100.0;
   source_dissolve=1.0;
@@ -704,7 +724,9 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
               q+=GetPixelChannels(image);
               continue;
             }
-          SetPixelAlpha(image,ClampPixel(GetPixelIntensity(source_image,p)),q);
+          SetPixelAlpha(image,clamp != MagickFalse ?
+            ClampPixel(GetPixelIntensity(source_image,p)) :
+            ClampToQuantum(GetPixelIntensity(source_image,p)),q);
           p+=GetPixelChannels(source_image);
           q+=GetPixelChannels(image);
         }
@@ -1378,7 +1400,8 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
                 break;
               }
             }
-            q[i]=ClampPixel(pixel);
+            q[i]=clamp != MagickFalse ? ClampPixel(pixel) :
+              ClampToQuantum(pixel);
           }
           q+=GetPixelChannels(image);
           continue;
@@ -1527,7 +1550,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
             /*
               Copy channel.
             */
-            q[i]=ClampPixel(Sc);
+            q[i]=Sc;
             continue;
           }
         if (channel == AlphaPixelChannel)
@@ -1648,7 +1671,8 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
                 break;
               }
             }
-            q[i]=ClampPixel(pixel);
+            q[i]=clamp != MagickFalse ? ClampPixel(pixel) :
+              ClampToQuantum(pixel);
             continue;
           }
         /*
@@ -2303,7 +2327,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
             break;
           }
         }
-        q[i]=ClampPixel(pixel);
+        q[i]=clamp != MagickFalse ? ClampPixel(pixel) : ClampToQuantum(pixel);
       }
       p+=GetPixelChannels(source_image);
       channels=GetPixelChannels(source_image);
