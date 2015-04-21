@@ -33,7 +33,7 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-% Morphology is the application of various kernels, of any size or shape, to a
+% Morphology is the application of various kernels, of any size or shape, to an
 % image in various ways (typically binary, but not always).
 %
 % Convolution (weighted sum or average) is just one specific type of
