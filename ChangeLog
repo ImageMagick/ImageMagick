@@ -17,7 +17,7 @@
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=27369).
 
 2015-04-06  6.9.1-2 Dirk Lemstra <dirk@lem.....org>
-  * Reduce draw epsilon to increate mathematical stability.
+  * Reduce draw epsilon to increase mathematical stability.
   * Fixed UTF8 issue when determining the current working directory
     on Windows (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=27295).
