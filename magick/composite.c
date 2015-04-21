@@ -1647,6 +1647,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
     *source_image;
 
   MagickBooleanType
+    clamp,
     clip_to_self,
     status;
 
@@ -2262,6 +2263,10 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
   value=GetImageArtifact(source_image,"compose:outside-overlay");
   if (value != (const char *) NULL)
     clip_to_self=IsMagickTrue(value) == MagickFalse ? MagickTrue : MagickFalse;
+  clamp=MagickTrue;
+  value=GetImageArtifact(source_image,"compose:clamp");
+  if (value != (const char *) NULL)
+    clamp=IsMagickTrue(value);
   /*
     Composite image.
   */
@@ -2845,12 +2850,17 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
           composite.blue=(MagickRealType) QuantumRange-composite.blue;
           composite.index=(MagickRealType) QuantumRange-composite.index;
         }
-      SetPixelRed(q,ClampPixel(composite.red));
-      SetPixelGreen(q,ClampPixel(composite.green));
-      SetPixelBlue(q,ClampPixel(composite.blue));
-      SetPixelOpacity(q,ClampPixel(composite.opacity));
+      SetPixelRed(q,clamp != MagickFalse ?
+        ClampPixel(composite.red) : ClampToQuantum(composite.red));
+      SetPixelGreen(q,clamp != MagickFalse ?
+        ClampPixel(composite.green) : ClampToQuantum(composite.green));
+      SetPixelRed(q,clamp != MagickFalse ?
+        ClampPixel(composite.blue) : ClampToQuantum(composite.blue));
+      SetPixelRed(q,clamp != MagickFalse ?
+        ClampPixel(composite.opacity) : ClampToQuantum(composite.opacity));
       if (image->colorspace == CMYKColorspace)
-        SetPixelIndex(indexes+x,ClampPixel(composite.index));
+        SetPixelIndex(indexes+x,clamp != MagickFalse ?
+          ClampPixel(composite.index) : ClampToQuantum(composite.index));
       p++;
       if (p >= (pixels+source_image->columns))
         p=pixels;
