@@ -2860,9 +2860,9 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
         ClampPixel(composite.red) : ClampToQuantum(composite.red));
       SetPixelGreen(q,clamp != MagickFalse ?
         ClampPixel(composite.green) : ClampToQuantum(composite.green));
-      SetPixelRed(q,clamp != MagickFalse ?
+      SetPixelBlue(q,clamp != MagickFalse ?
         ClampPixel(composite.blue) : ClampToQuantum(composite.blue));
-      SetPixelRed(q,clamp != MagickFalse ?
+      SetPixelOpacity(q,clamp != MagickFalse ?
         ClampPixel(composite.opacity) : ClampToQuantum(composite.opacity));
       if (image->colorspace == CMYKColorspace)
         SetPixelIndex(indexes+x,clamp != MagickFalse ?
