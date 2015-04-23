@@ -11507,8 +11507,6 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
   mng_info->write_png64=LocaleCompare(image_info->magick,"PNG64") == 0;
 
   value=GetImageOption(image_info,"png:format");
-  if (value == (char *) NULL)
-    if (LocaleCompare(image_info->magick,"PNG00") == 0)
 
   if (value != (char *) NULL || LocaleCompare(image_info->magick,"PNG00") == 0)
     {
