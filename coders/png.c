@@ -8114,6 +8114,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
       if (image->storage_class == PseudoClass)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "    image->storage_class=PseudoClass");
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "    image_info->magick= %s",image_info->magick);
       (void) LogMagickEvent(CoderEvent,GetMagickModule(), image->taint ?
           "    image->taint=MagickTrue":
           "    image->taint=MagickFalse");
@@ -11476,8 +11478,6 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,Image *image)
   mng_info->write_png64=LocaleCompare(image_info->magick,"PNG64") == 0;
 
   value=GetImageOption(image_info,"png:format");
-  if (value == (char *) NULL)
-    if (LocaleCompare(image_info->magick,"PNG00") == 0)
 
   if (value != (char *) NULL || LocaleCompare(image_info->magick,"PNG00") == 0)
     {
