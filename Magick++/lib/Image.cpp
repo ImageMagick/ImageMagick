@@ -4264,7 +4264,7 @@ void Magick::Image::shear(const double xShearAngle_,const double yShearAngle_)
   ThrowImageException;
 }
 
-void Magick::Image::sigmoidalContrast(const size_t sharpen_,
+void Magick::Image::sigmoidalContrast(const bool sharpen_,
   const double contrast,const double midpoint)
 {
   modifyImage();
