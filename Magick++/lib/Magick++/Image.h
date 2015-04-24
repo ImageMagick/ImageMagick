@@ -1279,7 +1279,7 @@ namespace Magick
     void shear(const double xShearAngle_,const double yShearAngle_);
 
     // adjust the image contrast with a non-linear sigmoidal contrast algorithm
-    void sigmoidalContrast(const size_t sharpen_,const double contrast,
+    void sigmoidalContrast(const bool sharpen_,const double contrast,
       const double midpoint=QuantumRange/2.0);
 
     // Image signature. Set force_ to true in order to re-calculate
