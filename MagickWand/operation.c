@@ -3721,7 +3721,8 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
           /* FUTURE - produce Exception, rather than silent fail */
           if (clut_image == (Image *) NULL)
             break;
-          (void) ClutImage(new_images,clut_image,new_images->interpolate,_exception);
+          (void) ClutImage(new_images,clut_image,new_images->interpolate,
+            _exception);
           clut_image=DestroyImage(clut_image);
           break;
         }
@@ -3732,10 +3733,9 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
         }
       if (LocaleCompare("combine",option+1) == 0)
         {
-          parse = (ssize_t) sRGBColorspace; /* default (backward compatible) */
+          parse=(ssize_t) _images->colorspace;
           if ( IfPlusOp )
-            parse = ParseCommandOption(MagickColorspaceOptions,MagickFalse,
-                 arg1);
+            parse=ParseCommandOption(MagickColorspaceOptions,MagickFalse,arg1);
           if (parse < 0)
             CLIWandExceptArgBreak(OptionError,"UnrecognizedColorspace",option,
               arg1);
@@ -3937,7 +3937,8 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
     {
       if (LocaleCompare("fft",option+1) == 0)
         {
-          new_images=ForwardFourierTransformImage(_images,IsNormalOp,_exception);
+          new_images=ForwardFourierTransformImage(_images,IsNormalOp,
+           _exception);
           break;
         }
       if (LocaleCompare("flatten",option+1) == 0)
@@ -3987,7 +3988,7 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
            if (phase_image == (Image *) NULL)
              break;
            new_images=InverseFourierTransformImage(magnitude_image,phase_image,
-                   IsNormalOp,_exception);
+             IsNormalOp,_exception);
            magnitude_image=DestroyImage(magnitude_image);
            phase_image=DestroyImage(phase_image);
           break;
@@ -4054,7 +4055,7 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
             case TrimBoundsLayer:
             {
               new_images=MergeImageLayers(_images,(LayerMethod) parse,
-                   _exception);
+                _exception);
               break;
             }
             case DisposeLayer:
@@ -4218,7 +4219,8 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
           args = StringToArrayOfDoubles(arg1,&count,_exception);
           if (args == (double *) NULL )
             CLIWandExceptArgBreak(OptionError,"InvalidNumberList",option,arg1);
-          new_images=PolynomialImage(_images,(size_t) (count >> 1),args,_exception);
+          new_images=PolynomialImage(_images,(size_t) (count >> 1),args,
+           _exception);
           args=(double *) RelinquishMagickMemory(args);
           break;
         }
@@ -4328,8 +4330,8 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
             *base_image,
             *compare_image;
 
-          const char *
-            value;
+          const char
+            *value;
 
           MetricType
             metric;
@@ -4351,7 +4353,7 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
               MagickFalse,value);
 
           new_images=SimilarityImage(base_image,compare_image,metric,0.0,
-               &offset,&similarity,_exception);
+            &offset,&similarity,_exception);
 
           if ( new_images != (Image *) NULL ) {
             char
@@ -4376,7 +4378,8 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
           }
           break;
         }
-      if (LocaleCompare("swap",option+1) == 0) {
+      if (LocaleCompare("swap",option+1) == 0)
+        {
         Image
           *p,
           *q,
