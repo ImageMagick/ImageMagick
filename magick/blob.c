@@ -400,8 +400,7 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
           MaxTextExtent);
         (void) CopyMagickString(images->magick_filename,image_info->filename,
           MaxTextExtent);
-        (void) CopyMagickString(images->magick,magick_info->name,
-          MaxTextExtent);
+        (void) CopyMagickString(images->magick,magick_info->name,MaxTextExtent);
         images=GetNextImageInList(images);
       }
     }
