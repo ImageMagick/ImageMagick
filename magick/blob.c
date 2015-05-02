@@ -125,7 +125,6 @@ struct _BlobInfo
 
   MagickBooleanType
     exempt,
-    immutable,
     synchronize,
     status,
     temporary;
@@ -199,7 +198,6 @@ MagickExport void AttachBlob(BlobInfo *blob_info,const void *blob,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   blob_info->length=length;
   blob_info->extent=length;
-  blob_info->immutable=MagickTrue;
   blob_info->quantum=(size_t) MagickMaxBlobExtent;
   blob_info->offset=0;
   blob_info->type=BlobStream;
@@ -3781,8 +3779,7 @@ MagickExport MagickOffsetType SeekBlob(Image *image,
           image->blob->eof=MagickFalse;
           break;
         }
-      if ((image->blob->mapped != MagickFalse) ||
-          (image->blob->immutable != MagickFalse))
+      if (image->blob->mapped != MagickFalse)
         {
           image->blob->eof=MagickTrue;
           return(-1);
