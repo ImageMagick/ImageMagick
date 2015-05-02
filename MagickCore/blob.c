@@ -205,6 +205,7 @@ MagickExport void AttachBlob(BlobInfo *blob_info,const void *blob,
   blob_info->file_info.file=(FILE *) NULL;
   blob_info->data=(unsigned char *) blob;
   blob_info->mapped=MagickFalse;
+  blob_info->immutable=MagickTrue;
 }
 
 /*
@@ -2410,7 +2411,6 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
     {
       if (image_info->stream != (StreamHandler) NULL)
         image->blob->stream=(StreamHandler) image_info->stream;
-      image->immutable=MagickTrue;
       AttachBlob(image->blob,image_info->blob,image_info->length);
       return(MagickTrue);
     }
