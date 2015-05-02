@@ -3767,8 +3767,12 @@ MagickExport MagickOffsetType SeekBlob(Image *image,
           image->blob->eof=MagickFalse;
           break;
         }
-      if (image->blob->mapped != MagickFalse)
-        return(-1);
+      if ((image->blob->type == BlobStream) ||
+          (image->blob->mapped != MagickFalse))
+        {
+          image->blob->eof=MagickTrue;
+          return(-1);
+        }
       if (image->blob->offset < (MagickOffsetType)
           ((off_t) image->blob->extent))
         break;
