@@ -8036,19 +8036,12 @@ WandExport MagickBooleanType MagickPingImageBlob(MagickWand *wand,
   ImageInfo
     *read_info;
 
-  unsigned char
-    *data;
-
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  data=(unsigned char *) AcquireQuantumMemory(length,sizeof(*data));
-  if (data == (unsigned char *) NULL)
-    ThrowWandException(WandError,"MemoryAllocationFailed",wand->name);
-  (void) memcpy(data,blob,length*sizeof(*data));
   read_info=CloneImageInfo(wand->image_info);
-  SetImageInfoBlob(read_info,data,length);
+  SetImageInfoBlob(read_info,blob,length);
   images=PingImage(read_info,wand->exception);
   read_info=DestroyImageInfo(read_info);
   if (images == (Image *) NULL)
