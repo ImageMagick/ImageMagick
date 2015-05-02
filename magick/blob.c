@@ -2417,7 +2417,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
     {
       if (image_info->stream != (StreamHandler) NULL)
         image->blob->stream=(StreamHandler) image_info->stream;
-      image_info->blob->immutable=MagickTrue;
+      image->blob->immutable=MagickTrue;
       AttachBlob(image->blob,image_info->blob,image_info->length);
       return(MagickTrue);
     }
