@@ -1,10 +1,11 @@
-2015-05-03  6.9.0-3 Dirk Lemstra <dirk@lem.....org>
+2015-05-03  6.9.1-3 Dirk Lemstra <dirk@lem.....org>
   * Fixed transparency issue with 16-bit tga files (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=27469).
 
-2015-04-23  6.9.0-3 Glenn Randers-Pehrson <glennrp@image...>
+2015-05-03  6.9.1-3 Glenn Randers-Pehrson <glennrp@image...>
   * Fixed bug with "-define png:format=x" in png.c, introduced in version
     6.8.9-0, that caused the define to be ignored.
+  * Fixed Coverity issue 14306 (Logically dead code) in the JNG decoder.
 
 2015-04-20  6.9.1-3 Cristy  <quetzlzacatenango@image...>
   * Support -define compose:clamp=false option (reference
