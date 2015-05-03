@@ -1184,7 +1184,7 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image)
             (long) image->page.x,(long) image->page.y);
           (void) WriteBlobString(image,buffer);
         }
-    if ((image->page.x != 0) || (image->page.y != 0))
+    if ((image->tile_offset.x != 0) || (image->tile_offset.y != 0))
       {
         (void) FormatLocaleString(buffer,MaxTextExtent,"tile-offset=%+ld%+ld\n",
           (long) image->tile_offset.x,(long) image->tile_offset.y);
