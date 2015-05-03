@@ -558,7 +558,7 @@ ModuleExport size_t RegisterFITSImage(void)
   entry->adjoin=MagickFalse;
   entry->seekable_stream=MagickTrue;
   entry->description=ConstantString("Flexible Image Transport System");
-  entry->module=ConstantString("FTS");
+  entry->module=ConstantString("FITS");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }
