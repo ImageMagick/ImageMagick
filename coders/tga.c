@@ -470,7 +470,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,
             pixel.blue=(MagickRealType) ScaleAnyToQuantum(1UL*(j & 0x1f),range);
             if (image->alpha_trait != UndefinedPixelTrait)
               pixel.alpha=(MagickRealType) ((k & 0x80) == 0 ? (Quantum)
-                OpaqueAlpha : (Quantum) TransparentAlpha); 
+                TransparentAlpha : (Quantum) OpaqueAlpha);
             if (image->storage_class == PseudoClass)
               index=(Quantum) ConstrainColormapIndex(image,((ssize_t) (k << 8))+
                 j,exception);
@@ -669,7 +669,7 @@ static inline void WriteTGAPixel(Image *image,TGAImageType image_type,
               range)) | ((green & 0x07) << 5);
             (void) WriteBlobByte(image,value);
             value=(((image->alpha_trait != UndefinedPixelTrait) &&
-              ((double) GetPixelAlpha(image,p) < midpoint)) ?  80 : 0) |
+              ((double) GetPixelAlpha(image,p) > midpoint)) ? 0x80 : 0) |
               ((unsigned char) ScaleQuantumToAny(GetPixelRed(image,p),range) <<
               2) | ((green & 0x18) >> 3);
             (void) WriteBlobByte(image,value);
@@ -782,7 +782,11 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image,
         */
         tga_info.image_type=compression == RLECompression ? TGARLERGB : TGARGB;
         if (image_info->depth == 5)
-          tga_info.bits_per_pixel=16;
+          {
+            tga_info.bits_per_pixel=16;
+            if (image->alpha_trait != UndefinedPixelTrait)
+              tga_info.attributes=1;  /* # of alpha bits */
+          }
         else
           {
             tga_info.bits_per_pixel=24;
@@ -848,7 +852,7 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image,
             *q++=((unsigned char) ScaleQuantumToAny(ClampToQuantum(
               image->colormap[i].blue),range)) | ((green & 0x07) << 5);
             *q++=(((image->alpha_trait != UndefinedPixelTrait) && ((double)
-              ClampToQuantum(image->colormap[i].alpha) < midpoint)) ? 80 : 0) |
+              ClampToQuantum(image->colormap[i].alpha) > midpoint)) ? 0x80 : 0) |
               ((unsigned char) ScaleQuantumToAny(ClampToQuantum(
               image->colormap[i].red),range) << 2) | ((green & 0x18) >> 3);
           }
