@@ -4613,9 +4613,6 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
   color_image_info->ping=MagickFalse;   /* To do: avoid this */
   jng_image=ReadImage(color_image_info,exception);
 
-  if (jng_image == (Image *) NULL)
-    return((Image *) NULL);
-
   (void) RelinquishUniqueFileResource(color_image->filename);
   color_image=DestroyImage(color_image);
   color_image_info=DestroyImageInfo(color_image_info);
