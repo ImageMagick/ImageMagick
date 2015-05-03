@@ -464,8 +464,8 @@ static Image *ReadTGAImage(const ImageInfo *image_info,
               (1UL*(j & 0xe0) >> 5),range);
             pixel.blue=ScaleAnyToQuantum(1UL*(j & 0x1f),range);
             if (image->matte != MagickFalse)
-              pixel.opacity=(k & 0x80) == 0 ? (Quantum) OpaqueOpacity :
-                (Quantum) TransparentOpacity;
+              pixel.opacity=(k & 0x80) == 0 ? (Quantum) TransparentOpacity :
+                (Quantum) OpaqueOpacity;
             if (image->storage_class == PseudoClass)
               index=ConstrainColormapIndex(image,((size_t) k << 8)+j);
             break;
@@ -671,7 +671,7 @@ static inline void WriteTGAPixel(Image *image,TGAImageType image_type,
                 ((green & 0x07) << 5);
               (void) WriteBlobByte(image,value);
               value=(unsigned char) ((((image->matte != MagickFalse) && 
-                (GetPixelAlpha(p) < midpoint)) ? 80 : 0) | ((unsigned char)
+                (GetPixelOpacity(p) < midpoint)) ? 0x80 : 0) | ((unsigned char)
                 ScaleQuantumToAny(GetPixelRed(p),range) << 2) |
                 ((green & 0x18) >> 3));
               (void) WriteBlobByte(image,value);
@@ -777,7 +777,11 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image)
         */
         tga_info.image_type=compression == RLECompression ? TGARLERGB : TGARGB;
         if (image_info->depth == 5)
-          tga_info.bits_per_pixel=16;
+          {
+            tga_info.bits_per_pixel=16;
+            if (image->matte != MagickFalse)
+              tga_info.attributes=1;  /* # of alpha bits */
+          }
         else
           {
             tga_info.bits_per_pixel=24;
@@ -843,7 +847,7 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image)
             *q++=((unsigned char) ScaleQuantumToAny(image->colormap[i].blue,
               range)) | ((green & 0x07) << 5);
             *q++=(((image->matte != MagickFalse) && (
-              (double) image->colormap[i].opacity > midpoint)) ? 80 : 0) |
+              (double) image->colormap[i].opacity < midpoint)) ? 0x80 : 0) |
               ((unsigned char) ScaleQuantumToAny(image->colormap[i].red,
               range) << 2) | ((green & 0x18) >> 3);
           }
