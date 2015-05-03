@@ -149,7 +149,7 @@ ModuleExport size_t RegisterMPRImage(void)
   entry->format_type=ImplicitFormatType;
   entry->stealth=MagickTrue;
   entry->description=ConstantString("Magick Persistent Registry");
-  entry->module=ConstantString("MPRI");
+  entry->module=ConstantString("MPR");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

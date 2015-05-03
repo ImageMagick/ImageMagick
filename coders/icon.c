@@ -768,7 +768,7 @@ ModuleExport size_t RegisterICONImage(void)
   entry->adjoin=MagickFalse;
   entry->seekable_stream=MagickTrue;
   entry->description=ConstantString("Microsoft icon");
-  entry->module=ConstantString("CUR");
+  entry->module=ConstantString("ICON");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("ICO");
   entry->decoder=(DecodeImageHandler *) ReadICONImage;
