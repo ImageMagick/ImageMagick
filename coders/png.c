@@ -4547,16 +4547,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
        o destroy the secondary image.
   */
 
-  if (color_image == (Image *) NULL)
-    {
-      if (alpha_image != (Image *) NULL)
-        {
-          alpha_image=DestroyImage(alpha_image);
-          alpha_image_info=DestroyImageInfo(alpha_image_info);
-        }
-      return((Image *) NULL);
-    }
-
+  assert(alpha_image != (Image *) NULL);
   (void) SeekBlob(color_image,0,SEEK_SET);
 
   if (logging != MagickFalse)
