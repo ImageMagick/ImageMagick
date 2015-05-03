@@ -63,6 +63,12 @@ AC_SUBST(DISTCHECK_CONFIG_FLAGS)
 CONFIGURE_ARGS="$0 ${ac_configure_args}"
 AC_SUBST(CONFIGURE_ARGS)
 
+AC_ARG_ENABLE([reproducible-build],
+    [AC_HELP_STRING([--enable-reproducible-build],
+                    [enable reproducible build])],
+    [enable_reproducible_build=$enableval],
+    [enable_reproducible_build='no'])
+
 # Source file containing package/library versioning information.
 . ${srcdir}/version.sh
 
@@ -113,7 +119,12 @@ AC_SUBST(PACKAGE_RELEASE)dnl
 AC_SUBST(PACKAGE_CHANGE_DATE)dnl
 AC_SUBST(PACKAGE_LIB_VERSION)dnl
 AC_SUBST(PACKAGE_LIB_VERSION_NUMBER)dnl
+AS_IF([test X$enable_reproducible_build = Xyes],
+ [PACKAGE_RELEASE_DATE=$PACKAGE_RELEASE_DATE_REPRODUCIBLE],
+ [PACKAGE_RELEASE_DATE=$PACKAGE_RELEASE_DATE_RAW],
+)
 AC_SUBST(PACKAGE_RELEASE_DATE)dnl
+
 AC_SUBST(PACKAGE_VERSION_ADDENDUM)dnl
 
 # Ensure that make can run correctly
