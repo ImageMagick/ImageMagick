@@ -24,8 +24,8 @@
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
   <link rel="icon" href="../../images/wand.png">
   <link rel="shortcut icon" href="../../images/wand.ico" type="images/x-icon">
-  <link rel="stylesheet" href="www/css/bootstrap.min.css">
-  <link rel="stylesheet" href="www/css/magick.css">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/magick.css">
 </head>
 
 <body>
@@ -54,43 +54,56 @@
   </div>
 </div>
 <div class="container">
-<h1>Module mogrify Methods</h1>
-<p class="navigation-index">[<a href="mogrify.html#MagickCommandGenesis">MagickCommandGenesis</a>]</p>
+<p class="text-center"><a href="mogrify.html#MagickCommandGenesis">MagickCommandGenesis</a></p>
 
+<div class="magick-header">
 <h2><a href="http://www.imagemagick.org/api/MagickWand/mogrify_8c.html" id="MagickCommandGenesis">MagickCommandGenesis</a></h2>
-<div class="doc-section">
 
 <p>MagickCommandGenesis() applies image processing options to an image as prescribed by command line options.</p>
 
+<p>It wiil look for special options like "-debug", "-bench", and "-distribute-cache" that needs to be applied even before the main processing begins, and may completely overrule normal command processing. Such 'Genesis' Options can only be given on the CLI, (not in a script) and are typically ignored (as they have been handled) if seen later.</p>
+
 <p>The format of the MagickCommandGenesis method is:</p>
 
-<pre class="code">
-  MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
-    MagickCommand command,int argc,char **argv,char **metadata,
-    ExceptionInfo *exception)
+<pre class="text">
+MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
+  MagickCommand command,int argc,char **argv,char **metadata,
+  ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
 
-<h5>image_info</h5>
-<p>the image info.</p>
+<dd>
+</dd>
 
-<h5>command</h5>
-<p>Choose from ConvertImageCommand, IdentifyImageCommand, MogrifyImageCommand, CompositeImageCommand, CompareImageCommand, ConjureImageCommand, StreamImageCommand, ImportImageCommand, DisplayImageCommand, or AnimateImageCommand.</p>
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image_info</dt>
+<dd>the image info. </dd>
 
-<h5>argc</h5>
-<p>Specifies a pointer to an integer describing the number of elements in the argument vector.</p>
+<dd> </dd>
+<dt>command</dt>
+<dd>Choose from ConvertImageCommand, IdentifyImageCommand, MogrifyImageCommand, CompositeImageCommand, CompareImagesCommand, ConjureImageCommand, StreamImageCommand, ImportImageCommand, DisplayImageCommand, or AnimateImageCommand. </dd>
 
-<h5>argv</h5>
-<p>Specifies a pointer to a text array containing the command line arguments.</p>
+<dd> </dd>
+<dt>argc</dt>
+<dd>Specifies a pointer to an integer describing the number of elements in the argument vector. </dd>
 
-<h5>metadata</h5>
-<p>any metadata is returned here.</p>
+<dd> </dd>
+<dt>argv</dt>
+<dd>Specifies a pointer to a text array containing the command line arguments. </dd>
 
-<h5>exception</h5>
-<p>return any errors or warnings in this structure.</p>
+<dd> </dd>
+<dt>metadata</dt>
+<dd>any metadata is returned here. </dd>
 
- </div>
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
+</div>
   <footer class="magick-footer">
     <div class="magick-nav-item navbar-left">
       <a href="../../www/support.html">Donations</a>
@@ -128,4 +141,4 @@
   </script>
 </div>
 </body>
-</html><!-- Magick Cache 4th May 2015 15:10 -->
+</html><!-- Magick Cache 4th May 2015 18:57 -->
