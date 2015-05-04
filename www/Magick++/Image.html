@@ -167,10 +167,10 @@ has been placed within a Blob, it may be read into a Magick++ Image via
 a <a href="Image.html#constructor_blob">constructor</a> or <a href="Image.html#read">read()</a>
 . Likewise, a Magick++ image may be written to a Blob via <a
  href="Image.html#write"> write()</a> .
-<p>An example of using Image to write to a Blob follows: <br>
-&nbsp; </p>
+<p>An example of using Image to write to a Blob follows: <br />
+&#160; </p>
 <pre class="code">
-#include <Magick++.h> 
+#include &gt;Magick++.h> 
 using namespace std; 
 using namespace Magick; 
 int main(int argc,char **argv) 
@@ -222,7 +222,7 @@ in-memory <a href="Blob.html"> BLOB</a> . The available Image
 constructors are shown in the following table: <br />
 &#160; <br />
 &#160;
-<ul><table bgcolor="#ffffff" border="1" width="100%">
+<table bgcolor="#ffffff" border="1" width="100%">
   <caption><b>Image Constructors</b></caption> <tbody>
     <tr>
       <td>
@@ -296,7 +296,7 @@ unsigned red-green-blue character data, use</font>
       <p><font size="-1">&#160;&#160; Image image( 640, 480, "RGB",
 0, pixels );</font> </p>
       <p><font size="-1">The parameters are as follows:</font> <br />
-&#160;
+&#160;</p>
       <table border="0" width="100%">
         <tbody>
           <tr>
@@ -329,11 +329,10 @@ values and type_ parameters.</font></td>
           </tr>
         </tbody>
       </table>
-      </p>
       </td>
     </tr>
   </tbody>
-</table></ul>
+</table>
 <center>
 <h3> <a name="Image Manipulation Methods"></a> Image Manipulation
 Methods</h3>
@@ -353,8 +352,8 @@ image.write("myImage.tiff");
 </pre>
 adds gaussian noise to the image file "myImage.tiff".
 <p>The operations supported by Image are shown in the following table: <br />
-&#160;
-<ul><table nosave="" border="1">
+&#160;</p>
+<table border="1">
   <caption><b>Image Image Manipulation Methods</b></caption> <tbody>
     <tr align="center">
       <td><b>Method</b></td>
@@ -363,7 +362,7 @@ adds gaussian noise to the image file "myImage.tiff".
     </tr>
     <tr>
       <td style="text-align: center;" valign="middle">
-      <div align="center"><a name="adaptiveThreshold"></a> <font
+      <div style="text-align:center"><a name="adaptiveThreshold"></a> <font
  size="-1">adaptiveThreshold<br />
       </font></div>
       </td>
@@ -1100,17 +1099,17 @@ respectively.</font></td>
       <td><font size="-1">Change color of pixels matching opaqueColor_
 to specified penColor_.</font></td>
     </tr>
-    <tr nosave="">
-      <td style="text-align: center;" rowspan="2" nosave="">
+    <tr>
+      <td style="text-align: center;" rowspan="2">
       <center><a name="ping"></a> <font size="-1">ping</font></center>
       </td>
       <td><font size="-1">const std::string &amp;imageSpec_</font></td>
-      <td rowspan="2" nosave=""><font size="-1">Ping is similar to read
+      <td rowspan="2"><font size="-1">Ping is similar to read
 except only enough of the image is read to determine the image columns,
-rows, and filesize.&nbsp; The <a href="Image.html#columns">columns</a> </font>,
+rows, and filesize.&#160; The <a href="Image.html#columns">columns</a> </font>,
       <font size="-1"><a href="Image.html#rows">rows</a> , and <a
  href="Image.html#fileSize">fileSize</a>
-attributes are valid after invoking ping.&nbsp; The image data is not
+attributes are valid after invoking ping.&#160; The image data is not
 valid after calling ping.</font></td>
     </tr>
     <tr>
@@ -1211,7 +1210,7 @@ unsigned red-green-blue character data, use</font>
       <p><font size="-1">&#160; image.read( 640, 480, "RGB", CharPixel,
 pixels );</font> </p>
       <p><font size="-1">The parameters are as follows:</font> <br />
-&#160;
+&#160;</p>
       <table border="0" width="100%">
         <tbody>
           <tr>
@@ -1243,7 +1242,6 @@ values and type_ parameters.</font></td>
           </tr>
         </tbody>
       </table>
-      </p>
       </td>
     </tr>
     <tr>
@@ -1255,10 +1253,10 @@ values and type_ parameters.</font></td>
     </tr>
     <tr>
       <td style="vertical-align: middle; text-align: center;"><small><a
- name="randomThreshold"></a>randomThreshold<br>
+ name="randomThreshold"></a>randomThreshold<br />
       </small></td>
       <td style="vertical-align: middle;"><small>const Geometry
-&amp;thresholds_<br>
+&amp;thresholds_<br />
       </small></td>
       <td style="vertical-align: middle;"><small>Random threshold the
 image. Changes the value of individual pixels based on the intensity of
@@ -1267,19 +1265,19 @@ low-contrast, two color image.&nbsp; The thresholds_ argument is a
 geometry containing LOWxHIGH thresholds.&nbsp; If the string contains
 2x2, 3x3, or 4x4, then an ordered dither of order 2, 3, or 4 will be
 performed instead. This is a very fast alternative to 'quantize' based
-dithering.<br>
+dithering.<br />
       </small></td>
     </tr>
     <tr>
       <td style="vertical-align: middle; text-align: center;"><small><a
- name="randomThresholdChannel"></a>randomThresholdChannel<br>
+ name="randomThresholdChannel"></a>randomThresholdChannel<br />
       </small></td>
       <td style="vertical-align: middle;"><small>const Geometry
-&amp;thresholds_, const ChannelType channel_<br>
+&amp;thresholds_, const ChannelType channel_<br />
       </small></td>
       <td style="vertical-align: middle;"><small>Random threshold an
 image channel. Similar to <a href="Image.html#randomThreshold">randomThreshold</a>()
-but restricted to the specified channel.<br>
+but restricted to the specified channel.<br />
       </small></td>
     </tr>
     <tr>
@@ -1576,7 +1574,7 @@ original if this is a problem.</font></td>
  href="Blob.html"> BLOB</a> stored in <i>blob_</i>. The <i>magick</i>_
 parameter specifies the image format to write (defaults to <a
  href="Image.html#magick">magick</a> ). The depth_ parameter species the image
-depth (defaults to <a href="Image.html#depth"> depth</a> ).</font> <br>
+depth (defaults to <a href="Image.html#depth"> depth</a> ).</font> <br />
       <font size="-1"><b><font color="#ff0000">Caution: </font></b> if
 an image format is selected which is capable of supporting fewer
 colors than the original image or quantization has been requested, the
@@ -1603,7 +1601,7 @@ red-green-blue order:</font>
       <p><font size="-1">&#160; image.write(0,0,640,1,"RGB",0,pixels);</font>
       </p>
       <p><font size="-1">The parameters are as follows:</font> <br />
-&#160;
+&#160;</p>
       <table border="0" width="100%">
         <tbody>
           <tr>
@@ -1647,7 +1645,6 @@ values and type_ parameters.</font></td>
           </tr>
         </tbody>
       </table>
-      </p>
       </td>
     </tr>
     <tr>
@@ -1659,8 +1656,7 @@ values and type_ parameters.</font></td>
       <td><font size="-1">Resize image to specified size.</font></td>
     </tr>
   </tbody>
-</table></ul>
-</p>
+</table>
 <center>
 <h3> <a name="Image Attributes"></a> Image Attributes</h3>
 </center>
@@ -1682,7 +1678,7 @@ image.write(filename)
 The supported image attributes and the method arguments required to
 obtain them are shown in the following table: <br />
 &#160;
-<ul><table border="1">
+<table border="1">
   <caption>Image Attributes</caption> <tbody>
     <tr>
       <td>
@@ -1984,7 +1980,7 @@ are close to the target color in RGB space.</font></td>
     </tr>
     <tr>
       <td valign="middle">
-      <div align="center"><a name="colorMapSize"></a> <font size="-1">colorMapSize<br />
+      <div style="text-align:center"><a name="colorMapSize"></a> <font size="-1">colorMapSize<br />
       </font></div>
       </td>
       <td valign="middle"><font size="-1">size_t<br />
@@ -2558,7 +2554,7 @@ image (such as for a scene in an animation)</font></p>
     </tr>
     <tr>
       <td valign="top">
-      <div align="center"><a name="profile"></a> <small>profile</small><br />
+      <div style="text-align:center"><a name="profile"></a> <small>profile</small><br />
       </div>
       </td>
       <td valign="top"><a href="Blob.html"><small> Blob</small><small><br />
@@ -2841,7 +2837,7 @@ stroke (outlines).</font></td>
     </tr>
     <tr>
       <td valign="middle">
-      <div align="center"><a name="textEncoding"></a> <small>textEncoding</small><br />
+      <div style="text-align:center"><a name="textEncoding"></a> <small>textEncoding</small><br />
       </div>
       </td>
       <td valign="middle"><small>string</small><small><br />
@@ -2947,7 +2943,7 @@ or to capture image from</font></td>
       <td><font size="-1">y resolution of the image</font></td>
     </tr>
   </tbody>
-</table></ul>
+</table>
 <center>
 <h3> <a name="Raw Image Pixel Access"></a> Low-Level Image Pixel Access</h3>
 </center>
@@ -2987,9 +2983,9 @@ supports copying the pixels in the cache to a foreign pixel
 representation according to the format specified by <i>QuantumTypes</i>.</p>
 <p>The pixel region is effectively a small image in which the pixels
 may be accessed, addressed, and updated, as shown in the following
-example:
+example:</p>
 <pre class="code">
-<p><img class="icon" src="Cache.png" name="Graphic1" width="254" border="0" /></p>
+<img class="icon" src="Cache.png" name="Graphic1" width="254" border="0" alt="cache" />
 Image image("cow.png"); 
 // Ensure that there are no other references to this image.
 image.modifyImage();
@@ -3008,10 +3004,9 @@ image.syncPixels();
   // Save updated image to file.
 image.write("horse.png");
 </pre>
-</p>
 <p>The image cache supports the following methods: <br />
-&#160;
-<ul><table border="1" width="100%">
+&#160;</p>
+<table border="1" width="100%">
   <caption>Image Cache Methods</caption> <tbody>
     <tr>
       <td>
@@ -3144,8 +3139,7 @@ used to support image encoders. The region transferred corresponds to
 the region set by a preceding getPixels or getConstPixels call.</font></td>
     </tr>
   </tbody>
-</table></ul>
-</p>
+</table>
 </div>
 </body>
 </html>

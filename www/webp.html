@@ -1,217 +1,61 @@
-
-
-
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
-  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html version="-//W3C//DTD XHTML 1.1//EN"
-      xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:schemaLocation="http://www.w3.org/1999/xhtml
-                          http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html lang="en">
 <head>
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
-  <meta name=viewport content="width=device-width, initial-scale=0.3333334">
-  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"/>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>ImageMagick: WebP Encoding Options</title>
-  <meta http-equiv="content-language" content="en-US"/>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"/>
-  <meta name="application-name" content="ImageMagick"/>
-  <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves."/>
-  <meta name="application-url" content="http://www.imagemagick.org"/>
-  <meta name="generator" content="PHP"/>
-  <meta name="keywords" content="webp, encoding, options, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert"/>
-  <meta name="rating" content="GENERAL"/>
-  <meta name="robots" content="INDEX, FOLLOW"/>
-  <meta name="generator" content="ImageMagick Studio LLC"/>
-  <meta name="author" content="ImageMagick Studio LLC"/>
-  <meta name="revisit-after" content="2 DAYS"/>
-  <meta name="resource-type" content="document"/>
-  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
-  <meta name="distribution" content="Global"/>
-  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
-  <link rel="icon" href="../images/wand.png"/>
-  <link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon"/>
-  <link rel="canonical" href="../index.html" />
-  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
-
-  <!-- Add jQuery library -->
-  <script type="text/javascript" src="http://localhost/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
-  
-  <!-- Add mousewheel plugin (this is optional) -->
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
-  
-  <!-- Add fancyBox -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
-  
-  <!-- Optionally add helpers - button, thumbnail and/or media -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.5" type="text/css" media="screen" />
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
-  
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=1.0.7" type="text/css" media="screen" />
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
-  
-  <script type="text/javascript">
-  	$(document).ready(function() {
-  		$(".fancybox").fancybox();
-  	});
-  </script>
-
-  <!-- ImageMagick style -->
-  <style type="text/css" media="all">
-    @import url("../www/magick.css");
-  </style>
+  <meta http-equiv="content-language" content="en-US">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta http-equiv="reply-to" content="magick-users@imagemagick.org">
+  <meta name="application-name" content="ImageMagick">
+  <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.">
+  <meta name="application-url" content="http://www.imagemagick.org">
+  <meta name="generator" content="PHP">
+  <meta name="keywords" content="webp, encoding, options, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert">
+  <meta name="rating" content="GENERAL">
+  <meta name="robots" content="INDEX, FOLLOW">
+  <meta name="generator" content="ImageMagick Studio LLC">
+  <meta name="author" content="ImageMagick Studio LLC">
+  <meta name="revisit-after" content="2 DAYS">
+  <meta name="resource-type" content="document">
+  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC">
+  <meta name="distribution" content="Global">
+  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
+  <link rel="icon" href="../images/wand.png">
+  <link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon">
+  <link rel="stylesheet" href="www/css/bootstrap.min.css">
+  <link rel="stylesheet" href="www/css/magick.css">
 </head>
 
-<body id="www-imagemagick-org">
-
-<script type="text/javascript">
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'offline-script','//www.google-analytics.com/analytics.js','ga');
-
-  ga('create', 'UA-40133312-1', 'imagemagick.org');
-  ga('send', 'pageview');
-</script>
-
-<div class="titlebar">
-<div style="margin: 17px auto; float: left;">
-  <script type="text/javascript">
-  <!--
-    google_ad_client = "pub-3129977114552745";
-    google_ad_slot = "5439289906";
-    google_ad_width = 728;
-    google_ad_height = 90;
-  //-->
-  </script>
-  <script type="text/javascript"
-    src="http://localhost/pagead/show_ads.js">
-  </script>
-</div>
-<a href="../discourse-server">
-  <img src="../images/logo.jpg"
-  alt="ImageMagick Logo" width="123" height="118"
-  style="width: 123px; height: 118px; border: 0px; float: right;" /></a>
-<a href="../index.html">
-  <img src="../images/sprite.jpg"
-  alt="ImageMagick Sprite" width="114" height="118"
-  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
-</div>
-
-<div class="westbar">
-
-<div class="menu">
-  <a title="About ImageMagick" href="../index.html">About ImageMagick</a>
-</div>
-<div class="menu">
-  <a title="Binary Releases" href="binary-releases.html">Binary Releases</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: Unix" href="binary-releases.html#unix">Unix</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: MacOS X" href="binary-releases.html#macosx">Mac OS X</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: iOS" href="binary-releases.html#iOS">iOS</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: Windows" href="binary-releases.html#windows">Windows</a>
-</div>
-<div class="sep"></div>
-<div class="menu">
-  <a title="Command-line Tools" href="command-line-tools.html">Command-line Tools</a>
-</div>
-<div class="sub">
-    <a title="Command-line Tools: Processing" href="command-line-processing.html">Processing</a>
-</div>
-<div class="sub">
-    <a title="Command-line Tools: Options" href="command-line-options.html">Options</a>
-</div>
-<div class="sub">
-    <a title="Command-line Tools: Usage" href="http://www.imagemagick.org/Usage/">Usage</a>
-</div>
-<div class="menu">
-  <a title="Program Interfaces" href="api.html">Program Interfaces</a>
-</div>
-<div class="sub">
-    <a title="Program Interface: MagickWand" href="magick-wand.html">MagickWand</a>
-</div>
-<div class="sub">
-    <a title="Program Interface: MagickCore" href="magick-core.html">MagickCore</a>
-</div>
-<div class="sub">
-    <a title="Program Interface: PerlMagick" href="perl-magick.html">PerlMagick</a>
-</div>
-<div class="sub">
-    <a title="Program Interface: Magick++" href="magick++.html">Magick++</a>
-</div>
-<div class="sep"></div>
-<div  class="menu">
-   <a title="Install from Source" href="install-source.html">Install from Source</a>
-</div>
-<div class="sub">
-    <a title="Install from Source: Unix" href="install-source.html#unix">Unix</a>
-</div>
-<div class="sub">
-    <a title="Install from Source: Windows" href="install-source.html#windows">Windows</a>
- </div>
-<div class="menu">
-  <a title="Resources" href="resources.html">Resources</a>
-</div>
-<div class="menu">
-  <a title="Architecture" href="architecture.html">Architecture</a>
-</div>
-<div class="menu">
-  <a title="Download" href="download.html">Download</a>
-</div>
-<div class="sep"></div>
-<div class="menu">
-  <a title="Search" href="search.html">Search</a>
-</div>
-<div class="sep"></div>
-<div class="menu">
-  <a title="Site Map" href="sitemap.html">Site Map</a>
-</div>
-<div  class="sub">
-  <a title="Site Map: Links" href="links.html">Links</a>
-</div>
-<div class="sep"></div>
-<div class="menu">
-  <a title="Support ImageMagick Development" href="support.html">Support ImageMagick Development</a>
-</div>
-</div>
-
-<div class="eastbar">
-  <script type="text/javascript">
-    /* <![CDATA[ */
-    (function() {
-        var po = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
-        po.type = 'text/javascript';
-        po.async = true;
-        po.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
-        var script = document.getElementsByTagName('offline-script')[0];
-        script.parentNode.insertBefore(po, script);
-    })();
-    /* ]]> */
-  </script>
-  <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="../index.html"></a>
-  <noscript>
-    <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
-    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0" /></a>
-  </noscript>
-</div>
-
+<body>
 <div class="main">
-
-<h1>ImageMagick WebP Image Format</h1>
-<p class="navigation-index"></p>
-
-<p>ImageMagick's WebP image format accepts a plethora of encoding options as detailed below. As an example, suppose you are interested in these options:</p>
+<div class="magick-masthead">
+  <div class="container">
+    <script type="text/javascript">
+    <!--
+      google_ad_client = "pub-3129977114552745";
+      google_ad_slot = "5439289906";
+      google_ad_width = 728;
+      google_ad_height = 90;
+    //-->
+    </script>
+    <center><script type="text/javascript" src="http://localhost/pagead/show_ads.js">
+    </script></center>
+    <nav class="magick-nav">
+      <a class="magick-nav-item " href="../index.html">Home</a>
+      <a class="magick-nav-item " href="binary-releases.html">Downloads</a>
+      <a class="magick-nav-item " href="command-line-tools.html">Tools</a>
+      <a class="magick-nav-item " href="command-line-options.html">Options</a>
+      <a class="magick-nav-item " href="api.html">Development</a>
+      <a class="magick-nav-item" href="http://www.imagemagick.org/discourse-server/">Community</a>
+      <a class="magick-nav-item navbar-right " href="search.html">Search</a>
+    </nav>
+  </div>
+</div>
+<div class="container">
+<div class="magick-header">
+<p class="lead magick-description">ImageMagick's WebP image format accepts a plethora of encoding options as detailed below. As an example, suppose you are interested in these options:</p>
 
 <ul>
 <li>quality of 50</li>
@@ -220,73 +64,135 @@
 
 <p>Use this command:</p>
 
-<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert wizard.png -quality 50 -define webp:lossless=true wizard.webp</span></p>
+<pre><span class="crtprompt"> </span><span class="crtin">convert wizard.png -quality 50 -define webp:lossless=true wizard.webp</span></pre>
 <p>Here is a complete list of WebP encoding options:</p>
 
-<dl class="doc">
-<dt class="doc">alpha-compression=<em>value</em></dt>
-<dd>encode the alpha plane: 0 = none, 1 = compressed.</dd>
-<dt class="doc">alpha-filtering=<em>value</em></dt>
-<dd>predictive filtering method for alpha plane: 0=none, 1=fast, 2=best.</dd>
-<dt class="doc">alpha-quality=<em>value</em></dt>
-<dd>the compression value for alpha compression between 0 and 100. Lossless compression of alpha is achieved using a value of 100, while the lower values result in a lossy compression. The default is 100.</dd>
-<dt class="doc">auto-filter=<em>true, false</em></dt>
-<dd>when enabled, the algorithm spends additional time optimizing the filtering strength to reach a well-balanced quality.</dd>
-<dt class="doc">emulate-jpeg-size=<em>true, false</em></dt>
-<dd>return a similar compression to that of JPEG but with less degradation.</dd>
-<dt class="doc">filter-sharpness=<em>value</em></dt>
-<dd>filter sharpness.</dd>
-<dt class="doc">filter-strength=<em>value</em></dt>
-<dd>the strength of the deblocking filter, between 0 (no filtering) and 100 (maximum filtering). A value of 0 turns off any filtering. Higher values increase the strength of the filtering process applied after decoding the image. The higher the value, the smoother the image appears. Typical values are usually in the range of 20 to 50.</dd>
-<dt class="doc">filter-type=<em>value</em></dt>
-<dd>filter type: 0 = simple, 1 = strong</dd>
-<dt class="doc">image-hint=<em>default, photo, picture, graph</em></dt>
-<dd>the hint about the image type.</dd>
-<dt class="doc">lossless=<em>true, false</em></dt>
-<dd>encode the image without any loss.</dd>
-<dt class="doc">low-memory=<em>true, false</em></dt>
-<dd>reduce memory usage.</dd>
-<dt class="doc">method=<em>value</em></dt>
-<dd>the compression method to use. It controls the trade off between encoding speed and the compressed file size and quality. Possible values range from 0 to 6. Default value is 4. When higher values are utilized, the encoder spends more time inspecting additional encoding possibilities and decide on the quality gain. Lower value might result in faster processing time at the expense of larger file size and lower compression quality.</dd>
-<dt class="doc">preprocessing=<em>value</em></dt>
-<dd>Choose from: 0=none, 1=segment-smooth, 2=pseudo-random dithering.</dd>
-<dt class="doc">partitions=<em>value</em></dt>
-<dd>progressive decoding: choose 0 to 3.</dd>
-<dt class="doc">partition-limit=<em>value</em></dt>
-<dd>Choose 0 for no quality degradation and 100 for maximum degradation.</dd>
-<dt class="doc">pass=<em>value</em></dt>
-<dd>maximum number of passes to target compression size or PSNR.</dd>
-<dt class="doc">segment=<em>value</em></dt>
-<dd>Choose from 1 to 4, the maximum numbher of segments to use.</dd>
-<dt class="doc">show-compressed=<em>true, false</em></dt>
-<dt class="doc">sns-strength=<em>value</em></dt>
-<dd>the amplitude of the spatial noise shaping. Spatial noise shaping (SNS) refers to a general collection of built-in algorithms used to decide which area of the picture should use relatively less bits, and where else to better transfer these bits. The possible range goes from 0 (algorithm is off) to 100 (the maximal effect). The default value is 80. </dd>
-<dt class="doc">target-size=<em>value</em></dt>
-<dd>a target size (in bytes) to try and reach for the compressed output.  The compressor makes several passes of partial encoding in order to get as close as possible to this target.</dd>
-<dt class="doc">target-psnr=<em>value</em></dt>
-<dd>desired minimal distortion.</dd>
-<dt class="doc">thread-level=<em>value</em></dt>
-<dd>enable multi-threaded encoding.</dd>
-</dl>
-
+<div class=" able-responsive">
+<table class="table table-condensed table-striped">
+  <tr>
+    <td>alpha-compression=<var>value</var></td>
+    <td>encode the alpha plane: 0 = none, 1 = compressed.</td>
+  </tr>
+  <tr>
+    <td>alpha-filtering=<var>value</var></td>
+    <td>predictive filtering method for alpha plane: 0=none, 1=fast, 2=best.</td>
+  </tr>
+  <tr>
+    <td>alpha-quality=<var>value</var></td>
+    <td>the compression value for alpha compression between 0 and 100. Lossless compression of alpha is achieved using a value of 100, while the lower values result in a lossy compression. The default is 100.</td>
+  </tr>
+  <tr>
+    <td>auto-filter=<var>true, false</var></td>
+    <td>when enabled, the algorithm spends additional time optimizing the filtering strength to reach a well-balanced quality.</td>
+  </tr>
+  <tr>
+    <td>emulate-jpeg-size=<var>true, false</var></td>
+    <td>return a similar compression to that of JPEG but with less degradation.</td>
+  </tr>
+  <tr>
+    <td>filter-sharpness=<var>value</var></td>
+    <td>filter sharpness.</td>
+  </tr>
+  <tr>
+    <td>filter-strength=<var>value</var></td>
+    <td>the strength of the deblocking filter, between 0 (no filtering) and 100 (maximum filtering). A value of 0 turns off any filtering. Higher values increase the strength of the filtering process applied after decoding the image. The higher the value, the smoother the image appears. Typical values are usually in the range of 20 to 50.</td>
+  </tr>
+  <tr>
+    <td>filter-type=<var>value</var></td>
+    <td>filter type: 0 = simple, 1 = strong</td>
+  </tr>
+  <tr>
+    <td>image-hint=<var>default, photo, picture, graph</var></td>
+    <td>the hint about the image type.</td>
+  </tr>
+  <tr>
+    <td>lossless=<var>true, false</var></td>
+    <td>encode the image without any loss.</td>
+  </tr>
+  <tr>
+    <td>low-memory=<var>true, false</var></td>
+    <td>reduce memory usage.</td>
+  </tr>
+  <tr>
+    <td>method=<var>value</var></td>
+    <td>the compression method to use. It controls the trade off between encoding speed and the compressed file size and quality. Possible values range from 0 to 6. Default value is 4. When higher values are utilized, the encoder spends more time inspecting additional encoding possibilities and decide on the quality gain. Lower value might result in faster processing time at the expense of larger file size and lower compression quality.</td>
+  </tr>
+  <tr>
+    <td>preprocessing=<var>value</var></td>
+    <td>Choose from: 0=none, 1=segment-smooth, 2=pseudo-random dithering.</td>
+  </tr>
+  <tr>
+    <td>partitions=<var>value</var></td>
+    <td>progressive decoding: choose 0 to 3.</td>
+  </tr>
+  <tr>
+    <td>partition-limit=<var>value</var></td>
+    <td>Choose 0 for no quality degradation and 100 for maximum degradation.</td>
+  </tr>
+  <tr>
+    <td>pass=<var>value</var></td>
+    <td>maximum number of passes to target compression size or PSNR.</td>
+  </tr>
+  <tr>
+    <td>segment=<var>value</var></td>
+    <td>Choose from 1 to 4, the maximum numbher of segments to use.</td>
+  </tr>
+  <tr>
+    <td>show-compressed=<var>true, false</var></td>
+  </tr>
+  <tr>
+    <td>sns-strength=<var>value</var></td>
+    <td>the amplitude of the spatial noise shaping. Spatial noise shaping (SNS) refers to a general collection of built-in algorithms used to decide which area of the picture should use relatively less bits, and where else to better transfer these bits. The possible range goes from 0 (algorithm is off) to 100 (the maximal effect). The default value is 80. </td>
+  </tr>
+  <tr>
+    <td>target-size=<var>value</var></td>
+    <td>a target size (in bytes) to try and reach for the compressed output.  The compressor makes several passes of partial encoding in order to get as close as possible to this target.</td>
+  </tr>
+  <tr>
+    <td>target-psnr=<var>value</var></td>
+    <td>desired minimal distortion.</td>
+  </tr>
+  <tr>
+    <td>thread-level=<var>value</var></td>
+    <td>enable multi-threaded encoding.</td>
+  </tr>
+</table></div>
 </div>
+  <footer class="magick-footer">
+    <div class="magick-nav-item navbar-left">
+      <a href="support.html">Donations</a>
+    </div>
+    <div class="magick-nav-item navbar-right">
+      <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="../index.html"></a>
+      <noscript>
+        <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
+        <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" border="0"></a>
+      </noscript>
+    </div>
+    <p><a href="sitemap.html">Sitemap</a> •
+    <a href="links.html">Related</a> •
+    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Image Studio</a> •
+    <a href="http://jqmagick.imagemagick.org/">JqMagick</a> •
+    <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a>
+</p>
+    <p><a href="webp.html#">Back to top</a> •
+    <a href="contact.html">Contact Us</a></p>
+  </footer>
+</div><!-- /.container -->
 
-<div id="linkbar">
-    <span id="linkbar-west"> </span>
-
-    <span id="linkbar-center">
-      <a href="../discourse-server">Discourse Server</a> •
-      <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-      <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a> •
-      <a href="http://jqmagick.imagemagick.org/">JqMagick</a>
-    </span>
-    <span id="linkbar-east"> </span>
+  <script src="https://localhost/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+  <script src="../js/bootstrap.min.js"></script>
+  <script type="text/javascript">
+    /*  */
+    (function() {
+        var s = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
+        s.type = 'text/javascript';
+        s.async = true;
+        s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
+        t.parentNode.insertBefore(s, t);
+    })();
+    /*  */
+  </script>
 </div>
-<div class="footer">
-  <span id="footer-west">©  1999-2015 ImageMagick Studio LLC</span>
-  <span id="footer-east"> <a href="contact.html">Contact the Wizards</a></span>
-</div>
-<div style="clear: both; margin: 0; width: 100%; "></div>
 </body>
 </html>
-<!-- Magick Cache 8th March 2015 07:30 -->
