@@ -1,254 +1,85 @@
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
-  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html version="-//W3C//DTD XHTML 1.1//EN"
-      xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:schemaLocation="http://www.w3.org/1999/xhtml
-                          http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html lang="en">
 <head>
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
-  <meta name=viewport content="width=device-width, initial-scale=0.3333334">
-  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"/>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>ImageMagick: MagickWand, C API for ImageMagick</title>
-  <meta http-equiv="content-language" content="en-US"/>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"/>
-  <meta name="application-name" content="ImageMagick"/>
-  <meta name="description" content="A collection of tools and libraries to read, write, and manipulate an image in any of the more popular image formats."/>
-  <meta name="application-url" content="http://www.imagemagick.org"/>
-  <meta name="generator" content="PHP"/>
-  <meta name="keywords" content="magickwc, api, for, imagemagick, convert, edit, compose, image, pixel"/>
-  <meta name="rating" content="GENERAL"/>
-  <meta name="robots" content="INDEX, FOLLOW"/>
-  <meta name="generator" content="ImageMagick Studio LLC"/>
-  <meta name="author" content="ImageMagick Studio LLC"/>
-  <meta name="revisit-after" content="2 DAYS"/>
-  <meta name="resource-type" content="document"/>
-  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
-  <meta name="distribution" content="Global"/>
-  <link rel="icon" href="../images/wand.png"/>
-  <link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon"/>
-  <link rel="canonical" href="http://www.imagemagick.org" />
-  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
-
-  <!-- Add jQuery library -->
-  <script type="text/javascript" src="http://localhost/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
-  
-  <!-- Add mousewheel plugin (this is optional) -->
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
-  
-  <!-- Add fancyBox -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
-  
-  <!-- Optionally add helpers - button, thumbnail and/or media -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.5" type="text/css" media="screen" />
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
-  
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=1.0.7" type="text/css" media="screen" />
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
-  
-  <script type="text/javascript">
-  	$(document).ready(function() {
-  		$(".fancybox").fancybox();
-  	});
-  </script>
-
-  <!-- ImageMagick style -->
-  <style type="text/css" media="all">
-    @import url("../www/magick.css");
-  </style>
+  <meta http-equiv="content-language" content="en-US">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta http-equiv="reply-to" content="magick-users@imagemagick.org">
+  <meta name="application-name" content="ImageMagick">
+  <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.">
+  <meta name="application-url" content="http://www.imagemagick.org">
+  <meta name="generator" content="PHP">
+  <meta name="keywords" content="magickwc, api, for, imagemagick, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert">
+  <meta name="rating" content="GENERAL">
+  <meta name="robots" content="INDEX, FOLLOW">
+  <meta name="generator" content="ImageMagick Studio LLC">
+  <meta name="author" content="ImageMagick Studio LLC">
+  <meta name="revisit-after" content="2 DAYS">
+  <meta name="resource-type" content="document">
+  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC">
+  <meta name="distribution" content="Global">
+  <link rel="icon" href="../images/wand.png">
+  <link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon">
+  <link rel="stylesheet" href="www/css/bootstrap.min.css">
+  <link rel="stylesheet" href="www/css/magick.css">
 </head>
 
-<body id="www-imagemagick-org">
-
-<script type="text/javascript">
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'offline-script','//www.google-analytics.com/analytics.js','ga');
-
-  ga('create', 'UA-40133312-1', 'imagemagick.org');
-  ga('send', 'pageview');
-</script>
-
-<div class="titlebar">
-<div style="margin: 17px auto; float: left;">
-  <script type="text/javascript">
-  <!--
-    google_ad_client = "pub-3129977114552745";
-    google_ad_slot = "5439289906";
-    google_ad_width = 728;
-    google_ad_height = 90;
-  //-->
-  </script>
-  <script type="text/javascript"
-    src="http://localhost/pagead/show_ads.js">
-  </script>
-</div>
-<a href="../discourse-server">
-  <img src="../images/logo.jpg"
-  alt="ImageMagick Logo" width="123" height="118"
-  style="width: 123px; height: 118px; border: 0px; float: right;" /></a>
-<a href="http://www.imagemagick.org/ImageMagick-7.0.0/index.html">
-  <img src="../images/sprite.jpg"
-  alt="ImageMagick Sprite" width="114" height="118"
-  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
-</div>
-
-<div class="westbar">
-
-<div class="menu">
-  <a title="About ImageMagick" href="http://www.imagemagick.org/ImageMagick-7.0.0/index.html">About ImageMagick</a>
-</div>
-<div class="menu">
-  <a title="Binary Releases" href="binary-releases.html">Binary Releases</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: Unix" href="binary-releases.html#unix">Unix</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: MacOS X" href="binary-releases.html#macosx">Mac OS X</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: iOS" href="binary-releases.html#iOS">iOS</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: Windows" href="binary-releases.html#windows">Windows</a>
-</div>
-<div class="sep"></div>
-<div class="menu">
-  <a title="Command-line Tools" href="command-line-tools.html">Command-line Tools</a>
-</div>
-<div class="sub">
-    <a title="Command-line Tools: Processing" href="command-line-processing.html">Processing</a>
-</div>
-<div class="sub">
-    <a title="Command-line Tools: Options" href="command-line-options.html">Options</a>
-</div>
-<div class="sub">
-    <a title="Command-line Tools: Usage" href="http://www.imagemagick.org/Usage/">Usage</a>
-</div>
-<div class="menu">
-  <a title="Program Interfaces" href="api.html">Program Interfaces</a>
-</div>
-<div class="sub">
-    <a title="Program Interface: MagickWand" href="magick-wand.html">MagickWand</a>
-</div>
-<div class="sub">
-    <a title="Program Interface: MagickCore" href="magick-core.html">MagickCore</a>
-</div>
-<div class="sub">
-    <a title="Program Interface: PerlMagick" href="perl-magick.html">PerlMagick</a>
-</div>
-<div class="sub">
-    <a title="Program Interface: Magick++" href="magick++.html">Magick++</a>
-</div>
-<div class="sep"></div>
-<div  class="menu">
-   <a title="Install from Source" href="install-source.html">Install from Source</a>
-</div>
-<div class="sub">
-    <a title="Install from Source: Unix" href="install-source.html#unix">Unix</a>
-</div>
-<div class="sub">
-    <a title="Install from Source: Windows" href="install-source.html#windows">Windows</a>
- </div>
-<div class="menu">
-  <a title="Resources" href="resources.html">Resources</a>
-</div>
-<div class="menu">
-  <a title="Architecture" href="architecture.html">Architecture</a>
-</div>
-<div class="menu">
-  <a title="Download" href="download.html">Download</a>
-</div>
-<div class="sep"></div>
-<div class="menu">
-  <a title="Search" href="search.html">Search</a>
-</div>
-<div class="sep"></div>
-<div class="menu">
-  <a title="Site Map" href="sitemap.html">Site Map</a>
-</div>
-<div  class="sub">
-  <a title="Site Map: Links" href="links.html">Links</a>
-</div>
-<div class="sep"></div>
-</div>
-
-<div class="eastbar">
-  <script type="text/javascript">
-    /* <![CDATA[ */
-    window.___gcfg = {
-      lang: 'en-US'
-    };
-
-    (function() {
-      var po = document.createElement('offline-script');
-      po.type = 'text/javascript';
-      po.async = true;
-      po.src = 'https://apis.google.com/js/plusone.js';
-      var script = document.getElementsByTagName('offline-script')[0];
-      script.parentNode.insertBefore(po, script);
-    })();
-    var gplusone = document.getElementById("gplusone");
-    gplusone.setAttribute("data-size","medium");
-    gplusone.setAttribute("data-count","true");
-    /* ]]> */
-  </script>
-  <script type="text/javascript">
-    /* <![CDATA[ */
-    (function() {
-        var po = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
-        po.type = 'text/javascript';
-        po.async = true;
-        po.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
-        var script = document.getElementsByTagName('offline-script')[0];
-        script.parentNode.insertBefore(po, script);
-    })();
-    /* ]]> */
-  </script>
-  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="http://www.imagemagick.org/"></a></div>
-  <noscript>
-    <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
-    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0" /></a>
-  </noscript>
-  <div class="g-plusone" data-size="standard" data-count="true"></div>
-</div>
-
+<body>
 <div class="main">
+<div class="magick-masthead">
+  <div class="container">
+    <script type="text/javascript">
+    <!--
+      google_ad_client = "pub-3129977114552745";
+      google_ad_slot = "5439289906";
+      google_ad_width = 728;
+      google_ad_height = 90;
+    //-->
+    </script>
+    <center><script type="text/javascript" src="http://localhost/pagead/show_ads.js">
+    </script></center>
+    <nav class="magick-nav">
+      <a class="magick-nav-item " href="http://www.imagemagick.org/ImageMagick-7.0.0/index.html">Home</a>
+      <a class="magick-nav-item " href="binary-releases.html">Downloads</a>
+      <a class="magick-nav-item " href="command-line-tools.html">Tools</a>
+      <a class="magick-nav-item " href="command-line-options.html">Options</a>
+      <a class="magick-nav-item " href="api.html">Development</a>
+      <a class="magick-nav-item" href="../discourse-server">Community</a>
+      <a class="magick-nav-item navbar-right " href="search.html">Search</a>
+    </nav>
+  </div>
+</div>
+<div class="container">
+<div class="magick-header">
 
-<h1>MagickWand C API</h1>
-
-<div class="doc-section">
-<p>The <a href="../api/MagickWand/index.html">MagickWand API</a> is the recommended interface between the C programming language and the ImageMagick image processing libraries.  Unlike the <a href="magick-core.html">MagickCore</a> C API, MagickWand uses only a few opaque types.  Accessors are available to set or get important wand properties.  A description of the MagickWand public methods are found here:</p>
+<p class="lead magick-description">The <a href="../api/MagickWand/index.html">MagickWand API</a> is the recommended interface between the C programming language and the ImageMagick image processing libraries.  Unlike the <a href="magick-core.html">MagickCore</a> C API, MagickWand uses only a few opaque types.  Accessors are available to set or get important wand properties.  A description of the MagickWand public methods are found here:</p>
 
 <ul>
-  <li><a href="../api/magick-wand.html">Magick Wand Methods</a></li>
-  <li><a href="../api/magick-property.html">Set or Get Magick Wand Properties</a></li>
-  <li><a href="../api/magick-image.html">Magick Wand Image Methods</a></li>
-  <li><a href="../api/pixel-iterator.html">Pixel Iterator Methods</a></li>
-  <li><a href="../api/pixel-wand.html">Pixel Wand Methods</a></li>
-  <li><a href="../api/drawing-wand.html">Image Vector Drawing</a></li>
-  <li><a href="../api/mogrify.html">Command-line Interface</a></li>
-  <li><a href="../api/wand-view.html">Wand View Methods</a></li>
-  <li><a href="../api/magick-deprecate.html">Deprecated Methods</a></li>
+  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/magick-wand.html">Magick Wand Methods</a></li>
+  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/magick-property.html">Set or Get Magick Wand Properties</a></li>
+  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/magick-image.html">Magick Wand Image Methods</a></li>
+  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/pixel-iterator.html">Pixel Iterator Methods</a></li>
+  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/pixel-wand.html">Pixel Wand Methods</a></li>
+  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/drawing-wand.html">Image Vector Drawing</a></li>
+  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/mogrify.html">Command-line Interface</a></li>
+  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/wand-view.html">Wand View Methods</a></li>
+  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/magick-deprecate.html">Deprecated Methods</a></li>
   <li><a href="exception.html">Error and Warning Codes</a></li>
 </ul>
 
 <p>After you write your MagickWand program, compile it like this:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>cc -o wand `pkg-config --cflags --libs MagickWand` wand.c</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">cc -o wand wand.c `pkg-config --cflags --libs MagickWand`</span></p>
 <p>Set the <code>PKG_CONFIG_PATH</code> environment variable if ImageMagick is not in your default system path:</p>
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig</span></p>
 <p>Here is a example program that utilizes the MagickWand API to get you started, <a href="../source/wand.c">wand.c</a>. It reads an image, creates a thumbnail, and writes the result to disk.</p>
 
-<div class="viewport">#include &lt;stdio.h>
-#include &lt;stdlib.h>
-#include &lt;wand/MagickWand.h>
+<pre class="pre-scrollable">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;wand/MagickWand.h&gt;
 
 int main(int argc,char **argv)
 {
@@ -301,14 +132,14 @@ int main(int argc,char **argv)
   MagickWandTerminus();
   return(0);
 }
-</div>
+</pre>
 
 <p>Here is another program that shows one way to get and set image pixels with the MagickWand API, <a href="../source/contrast.c">contrast.c</a>. It reads an image, applies sigmoidal non-linearity contrast control, and writes the result to disk.</p>
 
-<div class="viewport">#include &lt;stdio.h>
-#include &lt;stdlib.h>
-#include &lt;math.h>
-#include &lt;wand/MagickWand.h>
+<pre class="pre-scrollable">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;math.h&gt;
+#include &lt;wand/MagickWand.h&gt;
 
 int main(int argc,char **argv)
 {
@@ -411,13 +242,13 @@ int main(int argc,char **argv)
   MagickWandTerminus();
   return(0);
 }
-</div>
+</pre>
 <p><a id="wand-view"></a>Now lets perform the same contrast enhancement while taking advantage of our dual or quad-core processing system by running the algorithm in parallel utilizing wand views.  The <a href="../source/wand/sigmoidal-contrast.c">sigmoidal-contrast.c</a> module reads an image, applies sigmoidal non-linearity contrast control, and writes the result to disk just like the previous contrast enhancement program, but now it does its work in parallel (assumes ImageMagick is built with OpenMP support).</p>
 
-<div class="viewport">#include &lt;stdio.h>
-#include &lt;stdlib.h>
-#include &lt;math.h>
-#include &lt;wand/MagickWand.h>
+<pre class="pre-scrollable">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;math.h&gt;
+#include &lt;wand/MagickWand.h&gt;
 
 static MagickBooleanType SigmoidalContrast(WandView *pixel_view,
   const ssize_t y,const int id,void *context)
@@ -520,27 +351,44 @@ int main(int argc,char **argv)
   MagickWandTerminus();
   return(0);
 }
-</div>
+</pre>
 <p><a href="http://members.shaw.ca/el.supremo/MagickWand/">MagickWand Examples in C</a> illustrates how to use the ImageMagick MagickWand API. Each example is presented as a C function, complete with headers, so that it can be copied to a file and then included in your own C project.</p>
 </div>
+  <footer class="magick-footer">
+    <div class="magick-nav-item navbar-left">
+      <a href="support.html">Donations</a>
+    </div>
+    <div class="magick-nav-item navbar-right">
+      <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="http://www.imagemagick.org/"></a>
+      <noscript>
+        <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
+        <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" border="0"></a>
+      </noscript>
+    </div>
+    <p><a href="sitemap.html">Sitemap</a> •
+    <a href="links.html">Related</a> •
+    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Image Studio</a> •
+    <a href="http://jqmagick.imagemagick.org/">JqMagick</a> •
+    <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a>
+</p>
+    <p><a href="magick-wand.html#">Back to top</a> •
+    <a href="contact.html">Contact Us</a></p>
+  </footer>
+</div><!-- /.container -->
 
+  <script src="https://localhost/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+  <script src="../js/bootstrap.min.js"></script>
+  <script type="text/javascript">
+    /*  */
+    (function() {
+        var s = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
+        s.type = 'text/javascript';
+        s.async = true;
+        s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
+        t.parentNode.insertBefore(s, t);
+    })();
+    /*  */
+  </script>
 </div>
-
-<div id="linkbar">
-    <span id="linkbar-west"> </span>
-
-    <span id="linkbar-center">
-      <a href="../discourse-server">Discourse Server</a> •
-      <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-      <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a> •
-      <a href="http://jqmagick.imagemagick.org/">JqMagick</a>
-    </span>
-    <span id="linkbar-east"> </span>
-</div>
-<div class="footer">
-  <span id="footer-west">©  1999-2014 ImageMagick Studio LLC</span>
-  <span id="footer-east"> <a href="contact.html">Contact the Wizards</a></span>
-</div>
-<div style="clear: both; margin: 0; width: 100%; "></div>
 </body>
 </html>
