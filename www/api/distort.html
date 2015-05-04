@@ -24,8 +24,8 @@
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
   <link rel="icon" href="../../images/wand.png">
   <link rel="shortcut icon" href="../../images/wand.ico" type="images/x-icon">
-  <link rel="stylesheet" href="www/css/bootstrap.min.css">
-  <link rel="stylesheet" href="www/css/magick.css">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/magick.css">
 </head>
 
 <body>
@@ -54,35 +54,41 @@
   </div>
 </div>
 <div class="container">
-<h1>Module distort Methods</h1>
-<p class="navigation-index">[<a href="distort.html#AffineTransformImage">AffineTransformImage</a> • <a href="distort.html#DistortImage">DistortImage</a> • <a href="distort.html#RotateImage">RotateImage</a> • <a href="distort.html#SparseColorImage">SparseColorImage</a>]</p>
+<p class="text-center"><a href="distort.html#AffineTransformImage">AffineTransformImage</a> • <a href="distort.html#DistortImage">DistortImage</a> • <a href="distort.html#RotateImage">RotateImage</a> • <a href="distort.html#SparseColorImage">SparseColorImage</a></p>
 
+<div class="magick-header">
 <h2><a href="http://www.imagemagick.org/api/MagickCore/distort_8c.html" id="AffineTransformImage">AffineTransformImage</a></h2>
-<div class="doc-section">
 
 <p>AffineTransformImage() transforms an image as dictated by the affine matrix. It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</p>
 
 <p>The format of the AffineTransformImage method is:</p>
 
-<pre class="code">
-  Image *AffineTransformImage(const Image *image,
-    AffineMatrix *affine_matrix,ExceptionInfo *exception)
+<pre class="text">
+Image *AffineTransformImage(const Image *image,
+  AffineMatrix *affine_matrix,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
 
-<h5>image</h5>
-<p>the image.</p>
+<dd>
+</dd>
 
-<h5>affine_matrix</h5>
-<p>the affine matrix.</p>
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
 
-<h5>exception</h5>
-<p>return any errors or warnings in this structure.</p>
+<dd> </dd>
+<dt>affine_matrix</dt>
+<dd>the affine matrix. </dd>
 
- </div>
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/distort_8c.html" id="DistortImage">DistortImage</a></h2>
-<div class="doc-section">
 
 <p>DistortImage() distorts an image using various distortion methods, by mapping color lookups of the source image to a new destination image usally of the same size as the source image, unless 'bestfit' is set to true.</p>
 
@@ -92,113 +98,129 @@
 
 <p>The format of the DistortImage() method is:</p>
 
-<pre class="code">
-  Image *DistortImage(const Image *image,const DistortImageMethod method,
-    const size_t number_arguments,const double *arguments,
-    MagickBooleanType bestfit, ExceptionInfo *exception)
+<pre class="text">
+Image *DistortImage(const Image *image,const DistortImageMethod method,
+  const size_t number_arguments,const double *arguments,
+  MagickBooleanType bestfit, ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
 
-<h5>image</h5>
-<p>the image to be distorted.</p>
+<dd>
+</dd>
 
-<h5>method</h5>
-<p>the method of image distortion.</p>
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image to be distorted. </dd>
 
-<p>ArcDistortion always ignores source image offset, and always 'bestfit' the destination image with the top left corner offset relative to the polar mapping center.</p>
+<dd> </dd>
+<dt>method</dt>
+<dd>the method of image distortion. </dd>
 
-<p>Affine, Perspective, and Bilinear, do least squares fitting of the distrotion when more than the minimum number of control point pairs are provided.</p>
+<dd> ArcDistortion always ignores source image offset, and always 'bestfit' the destination image with the top left corner offset relative to the polar mapping center. </dd>
 
-<p>Perspective, and Bilinear, fall back to a Affine distortion when less than 4 control point pairs are provided.  While Affine distortions let you use any number of control point pairs, that is Zero pairs is a No-Op (viewport only) distortion, one pair is a translation and two pairs of control points do a scale-rotate-translate, without any shearing.</p>
+<dd> Affine, Perspective, and Bilinear, do least squares fitting of the distrotion when more than the minimum number of control point pairs are provided. </dd>
 
-<h5>number_arguments</h5>
-<p>the number of arguments given.</p>
+<dd> Perspective, and Bilinear, fall back to a Affine distortion when less than 4 control point pairs are provided.  While Affine distortions let you use any number of control point pairs, that is Zero pairs is a No-Op (viewport only) distortion, one pair is a translation and two pairs of control points do a scale-rotate-translate, without any shearing. </dd>
 
-<h5>arguments</h5>
-<p>an array of floating point arguments for this method.</p>
+<dd> </dd>
+<dt>number_arguments</dt>
+<dd>the number of arguments given. </dd>
 
-<h5>bestfit</h5>
-<p>Attempt to 'bestfit' the size of the resulting image. This also forces the resulting image to be a 'layered' virtual canvas image.  Can be overridden using 'distort:viewport' setting.</p>
+<dd> </dd>
+<dt>arguments</dt>
+<dd>an array of floating point arguments for this method. </dd>
 
-<h5>exception</h5>
-<p>return any errors or warnings in this structure</p>
+<dd> </dd>
+<dt>bestfit</dt>
+<dd>Attempt to 'bestfit' the size of the resulting image. This also forces the resulting image to be a 'layered' virtual canvas image.  Can be overridden using 'distort:viewport' setting. </dd>
 
-<p>Extra Controls from Image meta-data (artifacts)...</p>
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure </dd>
 
-<p>o "verbose" Output to stderr alternatives, internal coefficents, and FX equivalents for the distortion operation (if feasible). This forms an extra check of the distortion method, and allows users access to the internal constants IM calculates for the distortion.</p>
+<dd> Extra Controls from Image meta-data (artifacts)... </dd>
 
-<p>o "distort:viewport" Directly set the output image canvas area and offest to use for the resulting image, rather than use the original images canvas, or a calculated 'bestfit' canvas.</p>
+<dd> o "verbose" Output to stderr alternatives, internal coefficents, and FX equivalents for the distortion operation (if feasible). This forms an extra check of the distortion method, and allows users access to the internal constants IM calculates for the distortion. </dd>
 
-<p>o "distort:scale" Scale the size of the output canvas by this amount to provide a method of Zooming, and for super-sampling the results.</p>
+<dd> o "distort:viewport" Directly set the output image canvas area and offest to use for the resulting image, rather than use the original images canvas, or a calculated 'bestfit' canvas. </dd>
 
-<p>Other settings that can effect results include</p>
+<dd> o "distort:scale" Scale the size of the output canvas by this amount to provide a method of Zooming, and for super-sampling the results. </dd>
 
-<p>o 'interpolate' For source image lookups (scale enlargements)</p>
+<dd> Other settings that can effect results include </dd>
 
-<p>o 'filter'      Set filter to use for area-resampling (scale shrinking). Set to 'point' to turn off and use 'interpolate' lookup instead</p>
+<dd> o 'interpolate' For source image lookups (scale enlargements) </dd>
 
- </div>
+<dd> o 'filter'      Set filter to use for area-resampling (scale shrinking). Set to 'point' to turn off and use 'interpolate' lookup instead </dd>
+
+<dd>  </dd>
+</dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/distort_8c.html" id="RotateImage">RotateImage</a></h2>
-<div class="doc-section">
 
 <p>RotateImage() creates a new image that is a rotated copy of an existing one.  Positive angles rotate counter-clockwise (right-hand rule), while negative angles rotate clockwise.  Rotated images are usually larger than the originals and have 'empty' triangular corners.  X axis.  Empty triangles left over from shearing the image are filled with the background color defined by member 'background_color' of the image.  RotateImage allocates the memory necessary for the new Image structure and returns a pointer to the new image.</p>
 
 <p>The format of the RotateImage method is:</p>
 
-<pre class="code">
-  Image *RotateImage(const Image *image,const double degrees,
-    ExceptionInfo *exception)
+<pre class="text">
+Image *RotateImage(const Image *image,const double degrees,
+  ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows.</p>
 
-<h5>image</h5>
+<dt>image</dt>
 <p>the image.</p>
 
-<h5>degrees</h5>
+<dt>degrees</dt>
 <p>Specifies the number of degrees to rotate the image.</p>
 
-<h5>exception</h5>
+<dt>exception</dt>
 <p>return any errors or warnings in this structure.</p>
 
- </div>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/distort_8c.html" id="SparseColorImage">SparseColorImage</a></h2>
-<div class="doc-section">
 
 <p>SparseColorImage(), given a set of coordinates, interpolates the colors found at those coordinates, across the whole image, using various methods.</p>
 
 <p>The format of the SparseColorImage() method is:</p>
 
-<pre class="code">
-  Image *SparseColorImage(const Image *image,const ChannelType channel,
-    const SparseColorMethod method,const size_t number_arguments,
-    const double *arguments,ExceptionInfo *exception)
+<pre class="text">
+Image *SparseColorImage(const Image *image,
+  const SparseColorMethod method,const size_t number_arguments,
+  const double *arguments,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
 
-<h5>image</h5>
-<p>the image to be filled in.</p>
+<dd>
+</dd>
 
-<h5>channel</h5>
-<p>Specify which color values (in RGBKA sequence) are being set. This also determines the number of color_values in above.</p>
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image to be filled in. </dd>
 
-<h5>method</h5>
-<p>the method to fill in the gradient between the control points.</p>
+<dd> </dd>
+<dt>method</dt>
+<dd>the method to fill in the gradient between the control points. </dd>
 
-<p>The methods used for SparseColor() are often simular to methods used for DistortImage(), and even share the same code for determination of the function coefficents, though with more dimensions (or resulting values).</p>
+<dd> The methods used for SparseColor() are often simular to methods used for DistortImage(), and even share the same code for determination of the function coefficents, though with more dimensions (or resulting values). </dd>
 
-<h5>number_arguments</h5>
-<p>the number of arguments given.</p>
+<dd> </dd>
+<dt>number_arguments</dt>
+<dd>the number of arguments given. </dd>
 
-<h5>arguments</h5>
-<p>array of floating point arguments for this method-- x,y,color_values-- with color_values given as normalized values.</p>
+<dd> </dd>
+<dt>arguments</dt>
+<dd>array of floating point arguments for this method-- x,y,color_values-- with color_values given as normalized values. </dd>
 
-<h5>exception</h5>
-<p>return any errors or warnings in this structure</p>
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure </dd>
 
- </div>
+<dd>  </dd>
+</dl>
+</div>
   <footer class="magick-footer">
     <div class="magick-nav-item navbar-left">
       <a href="../../www/support.html">Donations</a>
@@ -236,4 +258,4 @@
   </script>
 </div>
 </body>
-</html><!-- Magick Cache 4th May 2015 15:10 -->
+</html><!-- Magick Cache 4th May 2015 18:48 -->

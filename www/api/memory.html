@@ -24,8 +24,8 @@
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
   <link rel="icon" href="../../images/wand.png">
   <link rel="shortcut icon" href="../../images/wand.ico" type="images/x-icon">
-  <link rel="stylesheet" href="www/css/bootstrap.min.css">
-  <link rel="stylesheet" href="www/css/magick.css">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/magick.css">
 </head>
 
 <body>
@@ -54,294 +54,378 @@
   </div>
 </div>
 <div class="container">
-<h1>Module memory Methods</h1>
-<p class="navigation-index">[<a href="memory.html#AcquireAlignedMemory">AcquireAlignedMemory</a> • <a href="memory.html#AcquireMagickMemory">AcquireMagickMemory</a> • <a href="memory.html#AcquireQuantumMemory">AcquireQuantumMemory</a> • <a href="memory.html#AcquireVirtualMemory">AcquireVirtualMemory</a> • <a href="memory.html#CopyMagickMemory">CopyMagickMemory</a> • <a href="memory.html#GetMagickMemoryMethods">GetMagickMemoryMethods</a> • <a href="memory.html#GetVirtualMemoryBlob">GetVirtualMemoryBlob</a> • <a href="memory.html#RelinquishAlignedMemory">RelinquishAlignedMemory</a> • <a href="memory.html#RelinquishMagickMemory">RelinquishMagickMemory</a> • <a href="memory.html#RelinquishVirtualMemory">RelinquishVirtualMemory</a> • <a href="memory.html#ResetMagickMemory">ResetMagickMemory</a> • <a href="memory.html#ResizeMagickMemory">ResizeMagickMemory</a> • <a href="memory.html#ResizeQuantumMemory">ResizeQuantumMemory</a> • <a href="memory.html#SetMagickMemoryMethods">SetMagickMemoryMethods</a>]</p>
+<p class="text-center"><a href="memory.html#AcquireAlignedMemory">AcquireAlignedMemory</a> • <a href="memory.html#AcquireMagickMemory">AcquireMagickMemory</a> • <a href="memory.html#AcquireQuantumMemory">AcquireQuantumMemory</a> • <a href="memory.html#AcquireVirtualMemory">AcquireVirtualMemory</a> • <a href="memory.html#CopyMagickMemory">CopyMagickMemory</a> • <a href="memory.html#GetMagickMemoryMethods">GetMagickMemoryMethods</a> • <a href="memory.html#GetVirtualMemoryBlob">GetVirtualMemoryBlob</a> • <a href="memory.html#RelinquishAlignedMemory">RelinquishAlignedMemory</a> • <a href="memory.html#RelinquishMagickMemory">RelinquishMagickMemory</a> • <a href="memory.html#RelinquishVirtualMemory">RelinquishVirtualMemory</a> • <a href="memory.html#ResetMagickMemory">ResetMagickMemory</a> • <a href="memory.html#ResizeMagickMemory">ResizeMagickMemory</a> • <a href="memory.html#ResizeQuantumMemory">ResizeQuantumMemory</a> • <a href="memory.html#SetMagickMemoryMethods">SetMagickMemoryMethods</a></p>
 
+<div class="magick-header">
 <h2><a href="http://www.imagemagick.org/api/MagickCore/memory_8c.html" id="AcquireAlignedMemory">AcquireAlignedMemory</a></h2>
-<div class="doc-section">
 
 <p>AcquireAlignedMemory() returns a pointer to a block of memory at least size bytes whose address is a multiple of 16*sizeof(void *).</p>
 
 <p>The format of the AcquireAlignedMemory method is:</p>
 
-<pre class="code">
-  void *AcquireAlignedMemory(const size_t count,const size_t quantum)
+<pre class="text">
+void *AcquireAlignedMemory(const size_t count,const size_t quantum)
 </pre>
 
 <p>A description of each parameter follows:</p>
 
-<h5>count</h5>
-<p>the number of quantum elements to allocate.</p>
+<dd>
+</dd>
 
-<h5>quantum</h5>
-<p>the number of bytes in each quantum.</p>
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>count</dt>
+<dd>the number of quantum elements to allocate. </dd>
 
- </div>
+<dd> </dd>
+<dt>quantum</dt>
+<dd>the number of bytes in each quantum. </dd>
+
+<dd>  </dd>
+</dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/memory_8c.html" id="AcquireMagickMemory">AcquireMagickMemory</a></h2>
-<div class="doc-section">
 
 <p>AcquireMagickMemory() returns a pointer to a block of memory at least size bytes suitably aligned for any use.</p>
 
 <p>The format of the AcquireMagickMemory method is:</p>
 
-<pre class="code">
-  void *AcquireMagickMemory(const size_t size)
+<pre class="text">
+void *AcquireMagickMemory(const size_t size)
 </pre>
 
 <p>A description of each parameter follows:</p>
 
-<h5>size</h5>
-<p>the size of the memory in bytes to allocate.</p>
+<dd>
+</dd>
 
- </div>
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>size</dt>
+<dd>the size of the memory in bytes to allocate. </dd>
+
+<dd>  </dd>
+</dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/memory_8c.html" id="AcquireQuantumMemory">AcquireQuantumMemory</a></h2>
-<div class="doc-section">
 
 <p>AcquireQuantumMemory() returns a pointer to a block of memory at least count * quantum bytes suitably aligned for any use.</p>
 
 <p>The format of the AcquireQuantumMemory method is:</p>
 
-<pre class="code">
-  void *AcquireQuantumMemory(const size_t count,const size_t quantum)
+<pre class="text">
+void *AcquireQuantumMemory(const size_t count,const size_t quantum)
 </pre>
 
 <p>A description of each parameter follows:</p>
 
-<h5>count</h5>
-<p>the number of quantum elements to allocate.</p>
+<dd>
+</dd>
 
-<h5>quantum</h5>
-<p>the number of bytes in each quantum.</p>
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>count</dt>
+<dd>the number of quantum elements to allocate. </dd>
 
- </div>
+<dd> </dd>
+<dt>quantum</dt>
+<dd>the number of bytes in each quantum. </dd>
+
+<dd>  </dd>
+</dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/memory_8c.html" id="AcquireVirtualMemory">AcquireVirtualMemory</a></h2>
-<div class="doc-section">
 
 <p>AcquireVirtualMemory() allocates a pointer to a block of memory at least size bytes suitably aligned for any use.</p>
 
 <p>The format of the AcquireVirtualMemory method is:</p>
 
-<pre class="code">
-  MemoryInfo *AcquireVirtualMemory(const size_t count,const size_t quantum)
+<pre class="text">
+MemoryInfo *AcquireVirtualMemory(const size_t count,const size_t quantum)
 </pre>
 
 <p>A description of each parameter follows:</p>
 
-<h5>count</h5>
-<p>the number of quantum elements to allocate.</p>
+<dd>
+</dd>
 
-<h5>quantum</h5>
-<p>the number of bytes in each quantum.</p>
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>count</dt>
+<dd>the number of quantum elements to allocate. </dd>
 
- </div>
+<dd> </dd>
+<dt>quantum</dt>
+<dd>the number of bytes in each quantum. </dd>
+
+<dd>  </dd>
+</dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/memory_8c.html" id="CopyMagickMemory">CopyMagickMemory</a></h2>
-<div class="doc-section">
 
 <p>CopyMagickMemory() copies size bytes from memory area source to the destination.  Copying between objects that overlap will take place correctly.  It returns destination.</p>
 
 <p>The format of the CopyMagickMemory method is:</p>
 
-<pre class="code">
-  void *CopyMagickMemory(void *destination,const void *source,
-    const size_t size)
+<pre class="text">
+void *CopyMagickMemory(void *destination,const void *source,
+  const size_t size)
 </pre>
 
 <p>A description of each parameter follows:</p>
 
-<h5>destination</h5>
-<p>the destination.</p>
+<dd>
+</dd>
 
-<h5>source</h5>
-<p>the source.</p>
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>destination</dt>
+<dd>the destination. </dd>
 
-<h5>size</h5>
-<p>the size of the memory in bytes to allocate.</p>
+<dd> </dd>
+<dt>source</dt>
+<dd>the source. </dd>
 
- </div>
+<dd> </dd>
+<dt>size</dt>
+<dd>the size of the memory in bytes to allocate. </dd>
+
+<dd>  </dd>
+</dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/memory_8c.html" id="GetMagickMemoryMethods">GetMagickMemoryMethods</a></h2>
-<div class="doc-section">
 
 <p>GetMagickMemoryMethods() gets the methods to acquire, resize, and destroy memory.</p>
 
 <p>The format of the GetMagickMemoryMethods() method is:</p>
 
-<pre class="code">
-  void GetMagickMemoryMethods(AcquireMemoryHandler *acquire_memory_handler,
-    ResizeMemoryHandler *resize_memory_handler,
-    DestroyMemoryHandler *destroy_memory_handler)
+<pre class="text">
+void GetMagickMemoryMethods(AcquireMemoryHandler *acquire_memory_handler,
+  ResizeMemoryHandler *resize_memory_handler,
+  DestroyMemoryHandler *destroy_memory_handler)
 </pre>
 
 <p>A description of each parameter follows:</p>
 
-<h5>acquire_memory_handler</h5>
-<p>method to acquire memory (e.g. malloc).</p>
+<dd>
+</dd>
 
-<h5>resize_memory_handler</h5>
-<p>method to resize memory (e.g. realloc).</p>
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>acquire_memory_handler</dt>
+<dd>method to acquire memory (e.g. malloc). </dd>
 
-<h5>destroy_memory_handler</h5>
-<p>method to destroy memory (e.g. free).</p>
+<dd> </dd>
+<dt>resize_memory_handler</dt>
+<dd>method to resize memory (e.g. realloc). </dd>
 
- </div>
+<dd> </dd>
+<dt>destroy_memory_handler</dt>
+<dd>method to destroy memory (e.g. free). </dd>
+
+<dd>  </dd>
+</dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/memory_8c.html" id="GetVirtualMemoryBlob">GetVirtualMemoryBlob</a></h2>
-<div class="doc-section">
 
 <p>GetVirtualMemoryBlob() returns the virtual memory blob associated with the specified MemoryInfo structure.</p>
 
 <p>The format of the GetVirtualMemoryBlob method is:</p>
 
-<pre class="code">
-  void *GetVirtualMemoryBlob(const MemoryInfo *memory_info)
+<pre class="text">
+void *GetVirtualMemoryBlob(const MemoryInfo *memory_info)
 </pre>
 
 <p>A description of each parameter follows:</p>
 
-<h5>memory_info</h5>
-<p>The MemoryInfo structure. </p>
- </div>
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>memory_info</dt>
+<dd>The MemoryInfo structure.  </dd>
+</dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/memory_8c.html" id="RelinquishAlignedMemory">RelinquishAlignedMemory</a></h2>
-<div class="doc-section">
 
 <p>RelinquishAlignedMemory() frees memory acquired with AcquireAlignedMemory() or reuse.</p>
 
 <p>The format of the RelinquishAlignedMemory method is:</p>
 
-<pre class="code">
-  void *RelinquishAlignedMemory(void *memory)
+<pre class="text">
+void *RelinquishAlignedMemory(void *memory)
 </pre>
 
 <p>A description of each parameter follows:</p>
 
-<h5>memory</h5>
-<p>A pointer to a block of memory to free for reuse.</p>
+<dd>
+</dd>
 
- </div>
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>memory</dt>
+<dd>A pointer to a block of memory to free for reuse. </dd>
+
+<dd>  </dd>
+</dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/memory_8c.html" id="RelinquishMagickMemory">RelinquishMagickMemory</a></h2>
-<div class="doc-section">
 
 <p>RelinquishMagickMemory() frees memory acquired with AcquireMagickMemory() or AcquireQuantumMemory() for reuse.</p>
 
 <p>The format of the RelinquishMagickMemory method is:</p>
 
-<pre class="code">
-  void *RelinquishMagickMemory(void *memory)
+<pre class="text">
+void *RelinquishMagickMemory(void *memory)
 </pre>
 
 <p>A description of each parameter follows:</p>
 
-<h5>memory</h5>
-<p>A pointer to a block of memory to free for reuse.</p>
+<dd>
+</dd>
 
- </div>
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>memory</dt>
+<dd>A pointer to a block of memory to free for reuse. </dd>
+
+<dd>  </dd>
+</dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/memory_8c.html" id="RelinquishVirtualMemory">RelinquishVirtualMemory</a></h2>
-<div class="doc-section">
 
 <p>RelinquishVirtualMemory() frees memory acquired with AcquireVirtualMemory().</p>
 
 <p>The format of the RelinquishVirtualMemory method is:</p>
 
-<pre class="code">
-  MemoryInfo *RelinquishVirtualMemory(MemoryInfo *memory_info)
+<pre class="text">
+MemoryInfo *RelinquishVirtualMemory(MemoryInfo *memory_info)
 </pre>
 
 <p>A description of each parameter follows:</p>
 
-<h5>memory_info</h5>
-<p>A pointer to a block of memory to free for reuse.</p>
+<dd>
+</dd>
 
- </div>
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>memory_info</dt>
+<dd>A pointer to a block of memory to free for reuse. </dd>
+
+<dd>  </dd>
+</dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/memory_8c.html" id="ResetMagickMemory">ResetMagickMemory</a></h2>
-<div class="doc-section">
 
 <p>ResetMagickMemory() fills the first size bytes of the memory area pointed to by memory with the constant byte c.</p>
 
 <p>The format of the ResetMagickMemory method is:</p>
 
-<pre class="code">
-  void *ResetMagickMemory(void *memory,int byte,const size_t size)
+<pre class="text">
+void *ResetMagickMemory(void *memory,int byte,const size_t size)
 </pre>
 
 <p>A description of each parameter follows:</p>
 
-<h5>memory</h5>
-<p>a pointer to a memory allocation.</p>
+<dd>
+</dd>
 
-<h5>byte</h5>
-<p>set the memory to this value.</p>
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>memory</dt>
+<dd>a pointer to a memory allocation. </dd>
 
-<h5>size</h5>
-<p>size of the memory to reset.</p>
+<dd> </dd>
+<dt>byte</dt>
+<dd>set the memory to this value. </dd>
 
- </div>
+<dd> </dd>
+<dt>size</dt>
+<dd>size of the memory to reset. </dd>
+
+<dd>  </dd>
+</dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/memory_8c.html" id="ResizeMagickMemory">ResizeMagickMemory</a></h2>
-<div class="doc-section">
 
 <p>ResizeMagickMemory() changes the size of the memory and returns a pointer to the (possibly moved) block.  The contents will be unchanged up to the lesser of the new and old sizes.</p>
 
 <p>The format of the ResizeMagickMemory method is:</p>
 
-<pre class="code">
-  void *ResizeMagickMemory(void *memory,const size_t size)
+<pre class="text">
+void *ResizeMagickMemory(void *memory,const size_t size)
 </pre>
 
 <p>A description of each parameter follows:</p>
 
-<h5>memory</h5>
-<p>A pointer to a memory allocation.</p>
+<dd>
+</dd>
 
-<h5>size</h5>
-<p>the new size of the allocated memory.</p>
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>memory</dt>
+<dd>A pointer to a memory allocation. </dd>
 
- </div>
+<dd> </dd>
+<dt>size</dt>
+<dd>the new size of the allocated memory. </dd>
+
+<dd>  </dd>
+</dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/memory_8c.html" id="ResizeQuantumMemory">ResizeQuantumMemory</a></h2>
-<div class="doc-section">
 
 <p>ResizeQuantumMemory() changes the size of the memory and returns a pointer to the (possibly moved) block.  The contents will be unchanged up to the lesser of the new and old sizes.</p>
 
 <p>The format of the ResizeQuantumMemory method is:</p>
 
-<pre class="code">
-  void *ResizeQuantumMemory(void *memory,const size_t count,
-    const size_t quantum)
+<pre class="text">
+void *ResizeQuantumMemory(void *memory,const size_t count,
+  const size_t quantum)
 </pre>
 
 <p>A description of each parameter follows:</p>
 
-<h5>memory</h5>
-<p>A pointer to a memory allocation.</p>
+<dd>
+</dd>
 
-<h5>count</h5>
-<p>the number of quantum elements to allocate.</p>
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>memory</dt>
+<dd>A pointer to a memory allocation. </dd>
 
-<h5>quantum</h5>
-<p>the number of bytes in each quantum.</p>
+<dd> </dd>
+<dt>count</dt>
+<dd>the number of quantum elements to allocate. </dd>
 
- </div>
+<dd> </dd>
+<dt>quantum</dt>
+<dd>the number of bytes in each quantum. </dd>
+
+<dd>  </dd>
+</dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/memory_8c.html" id="SetMagickMemoryMethods">SetMagickMemoryMethods</a></h2>
-<div class="doc-section">
 
 <p>SetMagickMemoryMethods() sets the methods to acquire, resize, and destroy memory. Your custom memory methods must be set prior to the MagickCoreGenesis() method.</p>
 
 <p>The format of the SetMagickMemoryMethods() method is:</p>
 
-<pre class="code">
-  SetMagickMemoryMethods(AcquireMemoryHandler acquire_memory_handler,
-    ResizeMemoryHandler resize_memory_handler,
-    DestroyMemoryHandler destroy_memory_handler)
+<pre class="text">
+SetMagickMemoryMethods(AcquireMemoryHandler acquire_memory_handler,
+  ResizeMemoryHandler resize_memory_handler,
+  DestroyMemoryHandler destroy_memory_handler)
 </pre>
 
 <p>A description of each parameter follows:</p>
 
-<h5>acquire_memory_handler</h5>
-<p>method to acquire memory (e.g. malloc).</p>
+<dd>
+</dd>
 
-<h5>resize_memory_handler</h5>
-<p>method to resize memory (e.g. realloc).</p>
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>acquire_memory_handler</dt>
+<dd>method to acquire memory (e.g. malloc). </dd>
 
-<h5>destroy_memory_handler</h5>
-<p>method to destroy memory (e.g. free).</p>
+<dd> </dd>
+<dt>resize_memory_handler</dt>
+<dd>method to resize memory (e.g. realloc). </dd>
 
- </div>
+<dd> </dd>
+<dt>destroy_memory_handler</dt>
+<dd>method to destroy memory (e.g. free). </dd>
+
+<dd>  </dd>
+</dl>
+</div>
   <footer class="magick-footer">
     <div class="magick-nav-item navbar-left">
       <a href="../../www/support.html">Donations</a>
@@ -379,4 +463,4 @@
   </script>
 </div>
 </body>
-</html><!-- Magick Cache 4th May 2015 15:10 -->
+</html><!-- Magick Cache 4th May 2015 18:49 -->

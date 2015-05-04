@@ -24,8 +24,8 @@
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
   <link rel="icon" href="../../images/wand.png">
   <link rel="shortcut icon" href="../../images/wand.ico" type="images/x-icon">
-  <link rel="stylesheet" href="www/css/bootstrap.min.css">
-  <link rel="stylesheet" href="www/css/magick.css">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/magick.css">
 </head>
 
 <body>
@@ -54,85 +54,108 @@
   </div>
 </div>
 <div class="container">
-<h1>Module fourier Methods</h1>
-<p class="navigation-index">[<a href="fourier.html#ComplexImages">ComplexImages</a> • <a href="fourier.html#ForwardFourierTransformImage">ForwardFourierTransformImage</a> • <a href="fourier.html#InverseFourierTransformImage">InverseFourierTransformImage</a>]</p>
+<p class="text-center"><a href="fourier.html#ComplexImages">ComplexImages</a> • <a href="fourier.html#ForwardFourierTransformImage">ForwardFourierTransformImage</a> • <a href="fourier.html#InverseFourierTransformImage">InverseFourierTransformImage</a></p>
 
+<div class="magick-header">
 <h2><a href="http://www.imagemagick.org/api/MagickCore/fourier_8c.html" id="ComplexImages">ComplexImages</a></h2>
-<div class="doc-section">
 
 <p>ComplexImages() performs complex mathematics on an image sequence.</p>
 
 <p>The format of the ComplexImages method is:</p>
 
-<pre class="code">
-  MagickBooleanType ComplexImages(Image *images,
-    const ComplexOperator op,ExceptionInfo *exception)
+<pre class="text">
+MagickBooleanType ComplexImages(Image *images,
+  const ComplexOperator op,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
 
-<h5>image</h5>
-<p>the image.</p>
+<dd>
+</dd>
 
-<h5>op</h5>
-<p>A complex operator.</p>
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
 
-<h5>exception</h5>
-<p>return any errors or warnings in this structure.</p>
+<dd> </dd>
+<dt>op</dt>
+<dd>A complex op. </dd>
 
- </div>
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/fourier_8c.html" id="ForwardFourierTransformImage">ForwardFourierTransformImage</a></h2>
-<div class="doc-section">
 
 <p>ForwardFourierTransformImage() implements the discrete Fourier transform (DFT) of the image either as a magnitude / phase or real / imaginary image pair.</p>
 
 <p>The format of the ForwadFourierTransformImage method is:</p>
 
-<pre class="code">
-  Image *ForwardFourierTransformImage(const Image *image,
-    const MagickBooleanType modulus,ExceptionInfo *exception)
+<pre class="text">
+Image *ForwardFourierTransformImage(const Image *image,
+  const MagickBooleanType modulus,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
 
-<h5>image</h5>
-<p>the image.</p>
+<dd>
+</dd>
 
-<h5>modulus</h5>
-<p>if true, return as transform as a magnitude / phase pair otherwise a real / imaginary image pair.</p>
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
 
-<h5>exception</h5>
-<p>return any errors or warnings in this structure.</p>
+<dd> </dd>
+<dt>modulus</dt>
+<dd>if true, return as transform as a magnitude / phase pair otherwise a real / imaginary image pair. </dd>
 
- </div>
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/fourier_8c.html" id="InverseFourierTransformImage">InverseFourierTransformImage</a></h2>
-<div class="doc-section">
 
 <p>InverseFourierTransformImage() implements the inverse discrete Fourier transform (DFT) of the image either as a magnitude / phase or real / imaginary image pair.</p>
 
 <p>The format of the InverseFourierTransformImage method is:</p>
 
-<pre class="code">
-  Image *InverseFourierTransformImage(const Image *magnitude_image,
-    const Image *phase_image,const MagickBooleanType modulus,
-    ExceptionInfo *exception)
+<pre class="text">
+Image *InverseFourierTransformImage(const Image *magnitude_image,
+  const Image *phase_image,const MagickBooleanType modulus,
+  ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
 
-<h5>magnitude_image</h5>
-<p>the magnitude or real image.</p>
+<dd>
+</dd>
 
-<h5>phase_image</h5>
-<p>the phase or imaginary image.</p>
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>magnitude_image</dt>
+<dd>the magnitude or real image. </dd>
 
-<h5>modulus</h5>
-<p>if true, return transform as a magnitude / phase pair otherwise a real / imaginary image pair.</p>
+<dd> </dd>
+<dt>phase_image</dt>
+<dd>the phase or imaginary image. </dd>
 
-<h5>exception</h5>
-<p>return any errors or warnings in this structure.</p>
+<dd> </dd>
+<dt>modulus</dt>
+<dd>if true, return transform as a magnitude / phase pair otherwise a real / imaginary image pair. </dd>
 
- </div>
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
+</div>
   <footer class="magick-footer">
     <div class="magick-nav-item navbar-left">
       <a href="../../www/support.html">Donations</a>
@@ -170,4 +193,4 @@
   </script>
 </div>
 </body>
-</html><!-- Magick Cache 4th May 2015 15:10 -->
+</html><!-- Magick Cache 4th May 2015 18:57 -->
