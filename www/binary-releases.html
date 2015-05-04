@@ -1,240 +1,70 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
-  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html version="-//W3C//DTD XHTML 1.1//EN"
-      xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:schemaLocation="http://www.w3.org/1999/xhtml
-                          http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html lang="en">
 <head>
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
-  <meta name=viewport content="width=device-width, initial-scale=0.3333334">
-  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"/>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>ImageMagick: Install from Binary Distribution</title>
-  <meta http-equiv="content-language" content="en-US"/>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"/>
-  <meta name="application-name" content="ImageMagick"/>
-  <meta name="description" content="A collection of tools and libraries to read, write, and manipulate an image in any of the more popular image formats."/>
-  <meta name="application-url" content="http://www.imagemagick.org"/>
-  <meta name="generator" content="PHP"/>
-  <meta name="keywords" content="install, from, binary, distribution, convert, edit, compose, image, pixel"/>
-  <meta name="rating" content="GENERAL"/>
-  <meta name="robots" content="INDEX, FOLLOW"/>
-  <meta name="generator" content="ImageMagick Studio LLC"/>
-  <meta name="author" content="ImageMagick Studio LLC"/>
-  <meta name="revisit-after" content="2 DAYS"/>
-  <meta name="resource-type" content="document"/>
-  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
-  <meta name="distribution" content="Global"/>
-  <link rel="icon" href="../images/wand.png"/>
-  <link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon"/>
-  <link rel="canonical" href="http://www.imagemagick.org" />
-  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
-
-  <!-- Add jQuery library -->
-  <script type="text/javascript" src="http://localhost/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
-  
-  <!-- Add mousewheel plugin (this is optional) -->
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
-  
-  <!-- Add fancyBox -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
-  
-  <!-- Optionally add helpers - button, thumbnail and/or media -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.5" type="text/css" media="screen" />
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
-  
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=1.0.7" type="text/css" media="screen" />
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
-  
-  <script type="text/javascript">
-  	$(document).ready(function() {
-  		$(".fancybox").fancybox();
-  	});
-  </script>
-
-  <!-- ImageMagick style -->
-  <style type="text/css" media="all">
-    @import url("../www/magick.css");
-  </style>
+  <meta http-equiv="content-language" content="en-US">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta http-equiv="reply-to" content="magick-users@imagemagick.org">
+  <meta name="application-name" content="ImageMagick">
+  <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.">
+  <meta name="application-url" content="http://www.imagemagick.org">
+  <meta name="generator" content="PHP">
+  <meta name="keywords" content="install, from, binary, distribution, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert">
+  <meta name="rating" content="GENERAL">
+  <meta name="robots" content="INDEX, FOLLOW">
+  <meta name="generator" content="ImageMagick Studio LLC">
+  <meta name="author" content="ImageMagick Studio LLC">
+  <meta name="revisit-after" content="2 DAYS">
+  <meta name="resource-type" content="document">
+  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC">
+  <meta name="distribution" content="Global">
+  <link rel="icon" href="../images/wand.png">
+  <link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon">
+  <link rel="stylesheet" href="www/css/bootstrap.min.css">
+  <link rel="stylesheet" href="www/css/magick.css">
 </head>
 
-<body id="www-imagemagick-org">
-
-<script type="text/javascript">
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'offline-script','//www.google-analytics.com/analytics.js','ga');
-
-  ga('create', 'UA-40133312-1', 'imagemagick.org');
-  ga('send', 'pageview');
-</script>
-
-<div class="titlebar">
-<div style="margin: 17px auto; float: left;">
-  <script type="text/javascript">
-  <!--
-    google_ad_client = "pub-3129977114552745";
-    google_ad_slot = "5439289906";
-    google_ad_width = 728;
-    google_ad_height = 90;
-  //-->
-  </script>
-  <script type="text/javascript"
-    src="http://localhost/pagead/show_ads.js">
-  </script>
-</div>
-<a href="../discourse-server">
-  <img src="../images/logo.jpg"
-  alt="ImageMagick Logo" width="123" height="118"
-  style="width: 123px; height: 118px; border: 0px; float: right;" /></a>
-<a href="http://www.imagemagick.org/ImageMagick-7.0.0/index.html">
-  <img src="../images/sprite.jpg"
-  alt="ImageMagick Sprite" width="114" height="118"
-  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
-</div>
-
-<div class="westbar">
-
-<div class="menu">
-  <a title="About ImageMagick" href="http://www.imagemagick.org/ImageMagick-7.0.0/index.html">About ImageMagick</a>
-</div>
-<div class="menu">
-  <a title="Binary Releases" href="binary-releases.html">Binary Releases</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: Unix" href="binary-releases.html#unix">Unix</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: MacOS X" href="binary-releases.html#macosx">Mac OS X</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: iOS" href="binary-releases.html#iOS">iOS</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: Windows" href="binary-releases.html#windows">Windows</a>
-</div>
-<div class="sep"></div>
-<div class="menu">
-  <a title="Command-line Tools" href="command-line-tools.html">Command-line Tools</a>
-</div>
-<div class="sub">
-    <a title="Command-line Tools: Processing" href="command-line-processing.html">Processing</a>
-</div>
-<div class="sub">
-    <a title="Command-line Tools: Options" href="command-line-options.html">Options</a>
-</div>
-<div class="sub">
-    <a title="Command-line Tools: Usage" href="http://www.imagemagick.org/Usage/">Usage</a>
-</div>
-<div class="menu">
-  <a title="Program Interfaces" href="api.html">Program Interfaces</a>
-</div>
-<div class="sub">
-    <a title="Program Interface: MagickWand" href="magick-wand.html">MagickWand</a>
-</div>
-<div class="sub">
-    <a title="Program Interface: MagickCore" href="magick-core.html">MagickCore</a>
-</div>
-<div class="sub">
-    <a title="Program Interface: PerlMagick" href="perl-magick.html">PerlMagick</a>
-</div>
-<div class="sub">
-    <a title="Program Interface: Magick++" href="magick++.html">Magick++</a>
-</div>
-<div class="sep"></div>
-<div  class="menu">
-   <a title="Install from Source" href="install-source.html">Install from Source</a>
-</div>
-<div class="sub">
-    <a title="Install from Source: Unix" href="install-source.html#unix">Unix</a>
-</div>
-<div class="sub">
-    <a title="Install from Source: Windows" href="install-source.html#windows">Windows</a>
- </div>
-<div class="menu">
-  <a title="Resources" href="resources.html">Resources</a>
-</div>
-<div class="menu">
-  <a title="Architecture" href="architecture.html">Architecture</a>
-</div>
-<div class="menu">
-  <a title="Download" href="download.html">Download</a>
-</div>
-<div class="sep"></div>
-<div class="menu">
-  <a title="Search" href="search.html">Search</a>
-</div>
-<div class="sep"></div>
-<div class="menu">
-  <a title="Site Map" href="sitemap.html">Site Map</a>
-</div>
-<div  class="sub">
-  <a title="Site Map: Links" href="links.html">Links</a>
-</div>
-<div class="sep"></div>
-</div>
-
-<div class="eastbar">
-  <script type="text/javascript">
-    /* <![CDATA[ */
-    window.___gcfg = {
-      lang: 'en-US'
-    };
-
-    (function() {
-      var po = document.createElement('offline-script');
-      po.type = 'text/javascript';
-      po.async = true;
-      po.src = 'https://apis.google.com/js/plusone.js';
-      var script = document.getElementsByTagName('offline-script')[0];
-      script.parentNode.insertBefore(po, script);
-    })();
-    var gplusone = document.getElementById("gplusone");
-    gplusone.setAttribute("data-size","medium");
-    gplusone.setAttribute("data-count","true");
-    /* ]]> */
-  </script>
-  <script type="text/javascript">
-    /* <![CDATA[ */
-    (function() {
-        var po = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
-        po.type = 'text/javascript';
-        po.async = true;
-        po.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
-        var script = document.getElementsByTagName('offline-script')[0];
-        script.parentNode.insertBefore(po, script);
-    })();
-    /* ]]> */
-  </script>
-  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="http://www.imagemagick.org/"></a></div>
-  <noscript>
-    <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
-    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0" /></a>
-  </noscript>
-  <div class="g-plusone" data-size="standard" data-count="true"></div>
-</div>
-
+<body>
 <div class="main">
-
-
-<h1>Download Binary Releases</h1>
-<p class="navigation-index">[<a href="binary-releases.html#unix">Unix Binary Release</a> • <a href="binary-releases.html#macosx">Mac OS X Binary Release</a> • <a href="binary-releases.html#iOS">iOS Binary Release</a> • <a href="binary-releases.html#windows">Windows Binary Release</a>]</p>
-
-<div class="doc-section">
-<p>You can install ImageMagick from <a href="install-source.html">source</a>.  However, if don't have a proper development environment or if you're anxious to get started, download a ready-to-run <a href="binary-releases.html#unix">Unix</a> or <a href="binary-releases.html#windows">Windows</a> executable.  Before you download, you may want to review recent <a href="changelog.html">changes</a> to the ImageMagick distribution.</p>
+<div class="magick-masthead">
+  <div class="container">
+    <script type="text/javascript">
+    <!--
+      google_ad_client = "pub-3129977114552745";
+      google_ad_slot = "5439289906";
+      google_ad_width = 728;
+      google_ad_height = 90;
+    //-->
+    </script>
+    <center><script type="text/javascript" src="http://localhost/pagead/show_ads.js">
+    </script></center>
+    <nav class="magick-nav">
+      <a class="magick-nav-item " href="http://www.imagemagick.org/ImageMagick-7.0.0/index.html">Home</a>
+      <a class="magick-nav-item active" href="binary-releases.html">Downloads</a>
+      <a class="magick-nav-item " href="command-line-tools.html">Tools</a>
+      <a class="magick-nav-item " href="command-line-options.html">Options</a>
+      <a class="magick-nav-item " href="api.html">Development</a>
+      <a class="magick-nav-item" href="../discourse-server">Community</a>
+      <a class="magick-nav-item navbar-right " href="search.html">Search</a>
+    </nav>
+  </div>
 </div>
+<div class="container">
+<div class="magick-header">
+<p class="text-center"><a href="binary-releases.html#unix">Unix Binary Release</a> • <a href="binary-releases.html#macosx">Mac OS X Binary Release</a> • <a href="binary-releases.html#iOS">iOS Binary Release</a> • <a href="binary-releases.html#windows">Windows Binary Release</a></p>
 
-<h2><a id="unix"></a>Unix Binary Release</h2>
-<div class="doc-section">
+<p class="lead magick-description">You can install ImageMagick from <a href="install-source.html">source</a>.  However, if don't have a proper development environment or if you're anxious to get started, download a ready-to-run <a href="binary-releases.html#unix">Unix</a> or <a href="binary-releases.html#windows">Windows</a> executable.  Before you download, you may want to review recent <a href="changelog.html">changes</a> to the ImageMagick distribution.</p>
+
+<h2 class="magick-header"><a id="unix"></a>Unix Binary Release</h2>
 
 <p>These are the Unix variations that we support.  If your system is not on the list, try installing from <a href="install-source.html">source</a>. Although ImageMagick runs fine on a single core computer, it automagically runs in parallel on dual and quad-core systems reducing run times considerably.</p>
 
-<table class="doc">
-  <col width="50%"/> <col width="10%"/> <col width="10%"/> <col width="30%"/>
+<div class="table-responsive">
+<table class="table table-condensed table-striped">
+  <col width="50%"> <col width="10%"> <col width="10%"> <col width="30%">
   <tr>
     <th>Version</th>
     <th>HTTP</th>
@@ -243,86 +73,105 @@
   </tr>
 
   <tr>
-      <td valign="top">ImageMagick-6.8.9-5.i386.rpm</td>
-    <td valign="top"><a href= "http://www.imagemagick.org/download/linux/CentOS/i386/ImageMagick-6.8.9-5.i386.rpm">download</a></td>
-    <td valign="top"><a href="ftp://ftp.imagemagick.org/pub/ImageMagick/linux/CentOS/i386/ImageMagick-6.8.9-5.i386.rpm">download</a></td>
-    <td valign="top">Redhat / CentOS 5.8 i386 RPM</td>
+      <td>ImageMagick-6.9.1-2.i386.rpm</td>
+    <td><a href="http://www.imagemagick.org/download/linux/CentOS/i386/ImageMagick-6.9.1-2.i386.rpm">download</a></td>
+    <td><a href="ftp://ftp.imagemagick.org/pub/ImageMagick/linux/CentOS/i386/ImageMagick-6.9.1-2.i386.rpm">download</a></td>
+    <td>Redhat / CentOS 5.11 i386 RPM</td>
   </tr>
 
   <tr>
-      <td valign="top">ImageMagick-6.8.9-5.x86_64.rpm</td>
-      <td valign="top"><a href= "http://www.imagemagick.org/download/linux/CentOS/x86_64/ImageMagick-6.8.9-5.x86_64.rpm">download</a></td>
-    <td valign="top"><a href="ftp://ftp.imagemagick.org/pub/ImageMagick/linux/CentOS/x86_64/ImageMagick-6.8.9-5.x86_64.rpm">download</a></td>
-    <td valign="top">Redhat / CentOS 5.8 x86_64 RPM</td>
+      <td>ImageMagick-6.9.1-2.x86_64.rpm</td>
+      <td><a href="http://www.imagemagick.org/download/linux/CentOS/x86_64/ImageMagick-6.9.1-2.x86_64.rpm">download</a></td>
+    <td><a href="ftp://ftp.imagemagick.org/pub/ImageMagick/linux/CentOS/x86_64/ImageMagick-6.9.1-2.x86_64.rpm">download</a></td>
+    <td>Redhat / CentOS 5.11 x86_64 RPM</td>
   </tr>
 
   <tr>
-    <td valign="top">ImageMagick RPM's</td>
-    <td valign="top"><a href="http://www.imagemagick.org/download/linux/CentOS">download</a></td>
-    <td valign="top"><a href="ftp://ftp.imagemagick.org/pub/ImageMagick/linux/CentOS">download</a></td>
-    <td valign="top">Development, Perl, C++, and documentation RPM's.</td>
+    <td>ImageMagick RPM's</td>
+    <td><a href="http://www.imagemagick.org/download/linux/CentOS">download</a></td>
+    <td><a href="ftp://ftp.imagemagick.org/pub/ImageMagick/linux/CentOS">download</a></td>
+    <td>Development, Perl, C++, and documentation RPM's.</td>
   </tr>
 
   <tr>
-    <td valign="top">ImageMagick-sparc-sun-solaris2.10.tar.gz</td>
-    <td valign="top"><a href="http://www.imagemagick.org/download/binaries/ImageMagick-sparc-sun-solaris2.10.tar.gz">download</a></td>
-    <td valign="top"><a href="ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-sparc-sun-solaris2.10.tar.gz">download</a></td>
-    <td valign="top">Solaris Sparc 2.10</td>
+    <td>ImageMagick-sparc-sun-solaris2.10.tar.gz</td>
+    <td><a href="http://www.imagemagick.org/download/binaries/ImageMagick-sparc-sun-solaris2.10.tar.gz">download</a></td>
+    <td><a href="ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-sparc-sun-solaris2.10.tar.gz">download</a></td>
+    <td>Solaris Sparc 2.10</td>
   </tr>
 
   <tr>
-    <td valign="top">ImageMagick-i686-pc-cygwin.tar.gz</td>
-    <td valign="top"><a href="http://www.imagemagick.org/download/binaries/ImageMagick-i686-pc-cygwin.tar.gz">download</a></td>
-    <td valign="top"><a href="ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-i686-pc-cygwin.tar.gz">download</a></td>
-    <td valign="top">Cygwin</td>
+    <td>ImageMagick-i686-pc-cygwin.tar.gz</td>
+    <td><a href="http://www.imagemagick.org/download/binaries/ImageMagick-i686-pc-cygwin.tar.gz">download</a></td>
+    <td><a href="ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-i686-pc-cygwin.tar.gz">download</a></td>
+    <td>Cygwin</td>
   </tr>
 
   <tr>
-    <td valign="top">ImageMagick-i686-pc-mingw32.tar.gz</td>
-    <td valign="top"><a href="http://www.imagemagick.org/download/binaries/ImageMagick-i686-pc-mingw32.tar.gz">download</a></td>
-    <td valign="top"><a href="ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-i686-pc-mingw32.tar.gz">download</a></td>
-    <td valign="top">MinGW</td>
+    <td>ImageMagick-i686-pc-mingw32.tar.gz</td>
+    <td><a href="http://www.imagemagick.org/download/binaries/ImageMagick-i686-pc-mingw32.tar.gz">download</a></td>
+    <td><a href="ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-i686-pc-mingw32.tar.gz">download</a></td>
+    <td>MinGW</td>
   </tr>
-</table>
+</table></div>
 
 <p>Verify its <a href="http://www.imagemagick.org/download/binaries/digest.rdf">message digest</a>.</p>
 
 <p>ImageMagick RPM's are self-installing.  Simply type the following command and you're ready to start using ImageMagick:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>rpm -Uvh ImageMagick-6.8.9-5.i386.rpm</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">rpm -Uvh ImageMagick-6.9.1-2.i386.rpm</span></p>
 <p>For other systems, create (or choose) a directory to install the package into and change to that directory, for example:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>cd $HOME</span></p>
+<pre>
+cd $HOME
+</pre>
+
 <p>Next, extract the contents of the package.  For example:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>tar xvzf ImageMagick.tar.gz</span></p>
+<pre>
+tar xvzf ImageMagick.tar.gz
+</pre>
+
 <p>Set the <code>MAGICK_HOME</code> environment variable to the path where you extracted the ImageMagick files. For example:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>export MAGICK_HOME="$HOME/ImageMagick-6.8.9"</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">export MAGICK_HOME="$HOME/ImageMagick-6.9.1"</span></p>
 <p>If the <code>bin</code> subdirectory of the extracted package is not already in your executable search path, add it to your <code>PATH</code> environment variable. For example:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>export PATH="$MAGICK_HOME/bin:$PATH"</span></p>
+<pre>
+export PATH="$MAGICK_HOME/bin:$PATH
+</pre>
+
 
 <p>On Linux and Solaris machines add <code>$MAGICK_HOME/lib</code> to the <code>LD_LIBRARY_PATH</code> environment variable:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>LD_LIBRARY_PATH="${LD_LIBRARY_PATH:+$LD_LIBRARY_PATH:}$MAGICK_HOME/lib"</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>export LD_LIBRARY_PATH</span></p>
+<pre>
+LD_LIBRARY_PATH="${LD_LIBRARY_PATH:+$LD_LIBRARY_PATH:}$MAGICK_HOME/lib
+export LD_LIBRARY_PATH
+</pre>
+
 <p>Finally, to verify ImageMagick is working properly, type the following on the command line:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert logo: logo.gif</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify logo.gif</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>display logo.gif</span></p>
+<pre>
+convert logo: logo.gif
+identify logo.gif
+display logo.gif
+</pre>
+
 <p>Congratulations, you have a working ImageMagick distribution under Unix or Linux and you are ready to use ImageMagick to <a href="http://www.imagemagick.org/Usage/">convert, compose, or edit</a> your images or perhaps you'll want to use one of the <a href="api.html">Application Program Interfaces</a> for C, C++, Perl, and others.</p>
 
-</div>
-
-<h2><a id="macosx"></a>Mac OS X Binary Release</h2>
-<div class="doc-section">
+<h2 class="magick-header"><a id="macosx"></a>Mac OS X Binary Release</h2>
 
 <p>We recommend <a href="http://www.macports.org">MacPorts</a> which custom builds ImageMagick in your environment (some users prefer <a href="http://brew.sh">Homebrew</a>).  Download MacPorts and type:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>sudo port install ImageMagick</span></p>
+<pre>
+sudo port install ImageMagick
+</pre>
+
 <p>The <code>port</code> command downloads ImageMagick and many of its delegate libraries (e.g. JPEG, PNG, Freetype, etc.) and configures, builds, and installs ImageMagick automagically.  Alternatively, you can download the ImageMagick Mac OS X distribution we provide:</p>
 
-<table class="doc">
-  <col width="50%"/> <col width="10%"/> <col width="10%"/> <col width="30%"/>
+<div class="table-responsive">
+<table class="table table-condensed table-striped">
+  <col width="50%"> <col width="10%"> <col width="10%"> <col width="30%">
   <tr>
     <th>Version</th>
     <th>HTTP</th>
@@ -331,44 +180,58 @@
   </tr>
 
   <tr>
-    <td valign="top">ImageMagick-x86_64-apple-darwin13.2.0.tar.gz</td>
-    <td valign="top"><a href="http://www.imagemagick.org/download/binaries/ImageMagick-x86_64-apple-darwin13.2.0.tar.gz">download</a></td>
-    <td valign="top"><a href="ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-x86_64-apple-darwin13.2.0.tar.gz">download</a></td>
-    <td valign="top">Mac OS X Mavericks</td>
+    <td>ImageMagick-x86_64-apple-darwin14.0.0.tar.gz</td>
+    <td><a href="http://www.imagemagick.org/download/binaries/ImageMagick-x86_64-apple-darwin14.0.0.tar.gz">download</a></td>
+    <td><a href="ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-x86_64-apple-darwin14.0.0.tar.gz">download</a></td>
+    <td>Mac OS X Yosemite</td>
   </tr>
-</table>
+</table></div>
 
 <p>Verify its <a href="http://www.imagemagick.org/download/binaries/digest.rdf">message digest</a>.</p>
 
 <p>Create (or choose) a directory to install the package into and change to that directory, for example:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>cd $HOME</span></p>
+<pre>
+cd $HOME
+</pre>
+
 <p>Next, extract the contents of the package.  For example:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>tar xvzf ImageMagick-x86_64-apple-darwin13.2.0.tar.gz</span></p>
+<pre>
+tar xvzf ImageMagick-x86_64-apple-darwin13.2.0.tar.gz
+</pre>
+
 <p>Set the <code>MAGICK_HOME</code> environment variable to the path where you extracted the ImageMagick files. For example:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>export MAGICK_HOME="$HOME/ImageMagick-6.8.9"</span></p>
+<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">export MAGICK_HOME="$HOME/ImageMagick-6.9.1"</span></p>
 <p>If the <code>bin</code> subdirectory of the extracted package is not already in your executable search path, add it to your <code>PATH</code> environment variable. For example:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>export PATH="$MAGICK_HOME/bin:$PATH"</span></p>
+<pre>
+export PATH="$MAGICK_HOME/bin:$PATH"
+</pre>
+
 
 <p>Set the <code>DYLD_LIBRARY_PATH</code> environment variable:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>export DYLD_LIBRARY_PATH="$MAGICK_HOME/lib/"</span></p>
+<pre>
+export DYLD_LIBRARY_PATH="$MAGICK_HOME/lib/
+</pre>
+
 <p>Finally, to verify ImageMagick is working properly, type the following on the command line:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert logo: logo.gif</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify logo.gif</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>display logo.gif</span></p>
-<p><b>Note</b>, the <a href="display.html">display</a> program requires the X11 server available on your Mac OS X installation DVD. Once that is installed, you will also need to "export DISPLAY=:0".</p>
+<pre>
+convert logo: logo.gif
+identify logo.gif
+display logo.gif
+</pre>
+
+<p><b>Note</b>, the <a href="display.html">display</a> program requires the X11 server available on your Mac OS X installation DVD. Once that is installed, you will also need to <code>export DISPLAY=:0</code>.</p>
 
 <p>The best way to deal with all the exports is to put them at the end of your .profile file</p>
 
 <p>Congratulations, you have a working ImageMagick distribution under Mac OS X and you are ready to use ImageMagick to <a href="http://www.imagemagick.org/Usage/">convert, compose, or edit</a> your images or perhaps you'll want to use one of the <a href="api.html">Application Program Interfaces</a> for C, C++, Perl, and others.</p>
 
-</div>
-
-<h2><a id="iOS"></a>iOS Binary Release</h2>
-<div class="doc-section">
+<h2 class="magick-header"><a id="iOS"></a>iOS Binary Release</h2>
 
 <p><a href="http://www.cloudgoessocial.net/2011/03/21/im-xcode4-ios4-3/">~Claudio</a> provides iOS builds of ImageMagick.</p>
 
@@ -388,10 +251,10 @@
 <h4>ImageMagick compiling script for iOS OS and iOS Simulator</h4>
 
 <p>To run the script:</p>
-<pre class="text">
-	./imagemagick_compile.sh <em>VERSION</em>
+<pre>
+	./imagemagick_compile.sh <var>VERSION</var>
 </pre>
-<p>where <em>VERSION</em> is the version of ImageMagick you want to compile (i.e.: 6.8.9-5, svn, ...)</p>
+<p>where <var>VERSION</var> is the version of ImageMagick you want to compile (i.e.: 6.9.1-2, svn, ...)</p>
 
 <p>This script compiles ImageMagick as a static library to be included in iOS projects and adds support for</p>
 <ul>
@@ -420,19 +283,18 @@
 <h5>Sample project</h5>
 
 <p>A <a href="http://www.cloudgoessocial.net/im_iphone/IM_Test.zip">sample project </a> is available for download. It is not updated too often, but it does give an idea of all the settings and some ways to play around with ImageMagick in an iOS application.</p>
-</div>
 
-<h2><a id="windows"></a>Windows Binary Release</h2>
-<div class="doc-section">
+<h2 class="magick-header"><a id="windows"></a>Windows Binary Release</h2>
 
-<p>ImageMagick runs on Windows 8 (x86 &amp; x64), Windows 7 (x86 &amp; x64), Windows XP (x86) with Service Pack 3, Windows Vista (x86 &amp; x64) with Service Pack 2, Windows Server 2003 (x86 &amp; x64) with Service Pack 2 (verify MSXML6 is present), Windows Server 2003 R2 (x86 &amp; x64), Windows Server 2008 (x86 &amp; x64) with Service Pack 2, and Windows Server 2008 R2 (x64).</p>
+<p>ImageMagick runs on Windows 8 (x86 &amp; x64), Windows 7 (x86 &amp; x64), Windows Server 2012, Windows XP (x86) with Service Pack 3, Windows Vista (x86 &amp; x64) with Service Pack 2, Windows Server 2003 (x86 &amp; x64) with Service Pack 2 (verify MSXML6 is present), Windows Server 2003 R2 (x86 &amp; x64), Windows Server 2008 (x86 &amp; x64) with Service Pack 2, and Windows Server 2008 R2 (x64).</p>
 
 <p>The amount of memory can be an important factor, especially if you intend to work on large images.  A minimum of 512 MB of RAM is recommended, but the more RAM the better.  Although ImageMagick runs well on a single core computer, it automagically runs in parallel on multi-core systems reducing run times considerably.</p>
 
-<p>The Windows version of ImageMagick is self-installing.  Simply click on the appropriate version below and it will launch itself and ask you a few installation questions.  Versions with <em>Q8</em> in the name are 8 bits-per-pixel component (e.g. 8-bit red, 8-bit green, etc.), whereas,  <em>Q16</em> in the filename are 16 bits-per-pixel component. A Q16 version permits you to read or write 16-bit images without losing precision but requires twice as much resources as the Q8 version.  Versions with <em>dll</em> in the filename include ImageMagick libraries as <a href="http://www.answers.com/topic/dll">dynamic link libraries</a>. Unless you have a Windows 32-bit OS, we recommend this version of ImageMagick for 64-bit Windows:</p>
+<p>The Windows version of ImageMagick is self-installing.  Simply click on the appropriate version below and it will launch itself and ask you a few installation questions.  Versions with <var>Q8</var> in the name are 8 bits-per-pixel component (e.g. 8-bit red, 8-bit green, etc.), whereas,  <var>Q16</var> in the filename are 16 bits-per-pixel component. A Q16 version permits you to read or write 16-bit images without losing precision but requires twice as much resources as the Q8 version.  Versions with <var>dll</var> in the filename include ImageMagick libraries as <a href="http://www.answers.com/topic/dll">dynamic link libraries</a>. Unless you have a Windows 32-bit OS, we recommend this version of ImageMagick for 64-bit Windows:</p>
 
-<table class="doc">
-  <col width="50%"/> <col width="10%"/> <col width="10%"/> <col width="30%"/>
+<div class="table-responsive">
+<table class="table table-condensed table-striped">
+  <col width="50%"> <col width="10%"> <col width="10%"> <col width="30%">
   <tr>
     <th>Version</th>
     <th>HTTP</th>
@@ -441,17 +303,18 @@
   </tr>
 
   <tr>
-        <td valign="top">ImageMagick-6.8.9-5-Q16-x64-dll.exe</td>
-        <td valign="top"><a href= "http://www.imagemagick.org/download/binaries/ImageMagick-6.8.9-5-Q16-x64-dll.exe">download</a></td>
-      <td valign="top"><a href="ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-6.8.9-5-Q16-x64-dll.exe">download</a></td>
-    <td valign="top">Win64 dynamic at 16 bits-per-pixel</td>
+        <td>ImageMagick-6.9.1-2-Q16-x64-dll.exe</td>
+        <td><a href="http://www.imagemagick.org/download/binaries/ImageMagick-6.9.1-2-Q16-x64-dll.exe">download</a></td>
+      <td><a href="ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-6.9.1-2-Q16-x64-dll.exe">download</a></td>
+    <td>Win64 dynamic at 16 bits-per-pixel</td>
   </tr>
-</table>
+</table></div>
 
 <p>Or choose from these alternate Windows binary distributions:</p>
 
-<table class="doc">
-  <col width="50%"/> <col width="10%"/> <col width="10%"/> <col width="30%"/>
+<div class="table-responsive">
+<table class="table table-condensed table-striped">
+  <col width="50%"> <col width="10%"> <col width="10%"> <col width="30%">
   <tr>
     <th>Version</th>
     <th>HTTP</th>
@@ -460,62 +323,67 @@
   </tr>
 
   <tr>
-        <td valign="top">ImageMagick-6.8.9-5-Q16-x64-static.exe</td>
-        <td valign="top"><a href= "http://www.imagemagick.org/download/binaries/ImageMagick-6.8.9-5-Q16-x64-static.exe">download</a></td>
-      <td valign="top"><a href="ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-6.8.9-5-Q16-x64-static.exe">download</a></td>
-   <td valign="top">Win64 static at 16 bits-per-pixel</td>
+        <td>ImageMagick-6.9.1-2-Q16-x64-static.exe</td>
+        <td><a href="http://www.imagemagick.org/download/binaries/ImageMagick-6.9.1-2-Q16-x64-static.exe">download</a></td>
+      <td><a href="ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-6.9.1-2-Q16-x64-static.exe">download</a></td>
+   <td>Win64 static at 16 bits-per-pixel</td>
   </tr>
 
   <tr>
-        <td valign="top">ImageMagick-6.8.9-5-Q8-x64-dll.exe</td>
-        <td valign="top"><a href= "http://www.imagemagick.org/download/binaries/ImageMagick-6.8.9-5-Q8-x64-dll.exe">download</a></td>
-      <td valign="top"><a href="ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-6.8.9-5-Q8-x64-dll.exe">download</a></td>
-   <td valign="top">Win64 dynamic at 8 bits-per-pixel</td>
+        <td>ImageMagick-6.9.1-2-Q8-x64-dll.exe</td>
+        <td><a href="http://www.imagemagick.org/download/binaries/ImageMagick-6.9.1-2-Q8-x64-dll.exe">download</a></td>
+      <td><a href="ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-6.9.1-2-Q8-x64-dll.exe">download</a></td>
+   <td>Win64 dynamic at 8 bits-per-pixel</td>
   </tr>
 
   <tr>
-        <td valign="top">ImageMagick-6.8.9-5-Q8-x64-static.exe</td>
-        <td valign="top"><a href= "http://www.imagemagick.org/download/binaries/ImageMagick-6.8.9-5-Q8-x64-static.exe">download</a></td>
-      <td valign="top"><a href="ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-6.8.9-5-Q8-x64-static.exe">download</a></td>
-    <td valign="top">Win64 static at 8 bits-per-pixel</td>
+        <td>ImageMagick-6.9.1-2-Q8-x64-static.exe</td>
+        <td><a href="http://www.imagemagick.org/download/binaries/ImageMagick-6.9.1-2-Q8-x64-static.exe">download</a></td>
+      <td><a href="ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-6.9.1-2-Q8-x64-static.exe">download</a></td>
+    <td>Win64 static at 8 bits-per-pixel</td>
   </tr>
 
   <tr>
-        <td valign="top">ImageMagick-6.8.9-5-Q16-x86-dll.exe</td>
-        <td valign="top"><a href= "http://www.imagemagick.org/download/binaries/ImageMagick-6.8.9-5-Q16-x86-dll.exe">download</a></td>
-      <td valign="top"><a href="ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-6.8.9-5-Q16-x86-dll.exe">download</a></td>
-    <td valign="top">Win32 dynamic at 16 bits-per-pixel</td>
+        <td>ImageMagick-6.9.1-2-Q16-x86-dll.exe</td>
+        <td><a href="http://www.imagemagick.org/download/binaries/ImageMagick-6.9.1-2-Q16-x86-dll.exe">download</a></td>
+      <td><a href="ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-6.9.1-2-Q16-x86-dll.exe">download</a></td>
+    <td>Win32 dynamic at 16 bits-per-pixel</td>
   </tr>
 
   <tr>
-        <td valign="top">ImageMagick-6.8.9-5-Q16-x86-static.exe</td>
-        <td valign="top"><a href= "http://www.imagemagick.org/download/binaries/ImageMagick-6.8.9-5-Q16-x86-static.exe">download</a></td>
-      <td valign="top"><a href="ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-6.8.9-5-Q16-x86-static.exe">download</a></td>
-    <td valign="top">Win32 static at 16 bits-per-pixel</td>
+        <td>ImageMagick-6.9.1-2-Q16-x86-static.exe</td>
+        <td><a href="http://www.imagemagick.org/download/binaries/ImageMagick-6.9.1-2-Q16-x86-static.exe">download</a></td>
+      <td><a href="ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-6.9.1-2-Q16-x86-static.exe">download</a></td>
+    <td>Win32 static at 16 bits-per-pixel</td>
   </tr>
 
   <tr>
-        <td valign="top">ImageMagick-6.8.9-5-Q16-x86-windows.zip</td>
-        <td valign="top"><a href= "http://www.imagemagick.org/download/binaries/ImageMagick-6.8.9-5-Q16-x86-windows.zip">download</a></td>
-      <td valign="top"><a href="ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-6.8.9-5-Q16-x86-windows.zip">download</a></td>
-    <td valign="top">Portable Win32 static at 16 bits-per-pixel.  Just copy to your host and run (no installer, no Windows registry entries).</td>
+        <td>ImageMagick-6.9.1-2-Q16-x86-windows.zip</td>
+        <td><a href="http://www.imagemagick.org/download/binaries/ImageMagick-6.9.1-2-Q16-x86-windows.zip">download</a></td>
+      <td><a href="ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-6.9.1-2-Q16-x86-windows.zip">download</a></td>
+    <td>Portable Win32 static at 16 bits-per-pixel.  Just copy to your host and run (no installer, no Windows registry entries).</td>
   </tr>
-
-</table>
+</table></div>
 
 <p>Verify its <a href="http://www.imagemagick.org/download/binaries/digest.rdf">message digest</a>.</p>
 
 <p>To verify ImageMagick is working properly, type the following in an Command Prompt window:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert logo: logo.gif</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify logo.gif</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>imdisplay</span></p>
+<pre>
+convert logo: logo.gif
+identify logo.gif
+imdisplay
+</pre>
+
 <p>If you have any problems, you likely need <code>vcomp100.dll</code>.  To install it, download <a href="http://www.microsoft.com/downloads/details.aspx?familyid=A7B7A05E-6DE6-4D3A-A423-37BF0912DB84">Visual C++ 2010 Redistributable Package (x86)</a> or <a href="http://www.microsoft.com/downloads/details.aspx?familyid=BD512D9E-43C8-4655-81BF-9350143D5867">Visual C++ 2010 Redistributable Package (x64)</a>. 64-bit Windows requires both packages (x86 &amp; x64).</p>
 
 <p>Note, use a double quote (<code>"</code>) rather than a single quote (<code>'</code>) for the ImageMagick command line under Windows:</p>
-<pre class="text">
-  convert "e:/myimages/image.png" "e:/myimages/image.jpg"
+
+<pre>
+convert "e:/myimages/image.png" "e:/myimages/image.jpg"
 </pre>
 <p>Use two double quotes for VBScript scripts:</p>
-<pre class="text">
+<pre>
  Set objShell = wscript.createobject("wscript.shell")
  objShell.Exec("convert ""e:/myimages/image.png"" ""e:/myimages/image.jpg""")
 </pre>
@@ -523,24 +391,41 @@
 <p>Congratulations, you have a working ImageMagick distribution under Windows and you are ready to use ImageMagick to <a href="http://www.imagemagick.org/Usage/">convert, compose, or edit</a> your images or perhaps you'll want to use one of the <a href="api.html">Application Program Interfaces</a> for C, C++, Perl, and others.</p>
 
 </div>
+  <footer class="magick-footer">
+    <div class="magick-nav-item navbar-left">
+      <a href="support.html">Donations</a>
+    </div>
+    <div class="magick-nav-item navbar-right">
+      <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="http://www.imagemagick.org/"></a>
+      <noscript>
+        <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
+        <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" border="0"></a>
+      </noscript>
+    </div>
+    <p><a href="sitemap.html">Sitemap</a> •
+    <a href="links.html">Related</a> •
+    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Image Studio</a> •
+    <a href="http://jqmagick.imagemagick.org/">JqMagick</a> •
+    <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a>
+</p>
+    <p><a href="binary-releases.html#">Back to top</a> •
+    <a href="contact.html">Contact Us</a></p>
+  </footer>
+</div><!-- /.container -->
 
+  <script src="https://localhost/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+  <script src="../js/bootstrap.min.js"></script>
+  <script type="text/javascript">
+    /*  */
+    (function() {
+        var s = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
+        s.type = 'text/javascript';
+        s.async = true;
+        s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
+        t.parentNode.insertBefore(s, t);
+    })();
+    /*  */
+  </script>
 </div>
-
-<div id="linkbar">
-    <span id="linkbar-west"> </span>
-
-    <span id="linkbar-center">
-      <a href="../discourse-server">Discourse Server</a> •
-      <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-      <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a> •
-      <a href="http://jqmagick.imagemagick.org/">JqMagick</a>
-    </span>
-    <span id="linkbar-east"> </span>
-</div>
-<div class="footer">
-  <span id="footer-west">©  1999-2014 ImageMagick Studio LLC</span>
-  <span id="footer-east"> <a href="contact.html">Contact the Wizards</a></span>
-</div>
-<div style="clear: both; margin: 0; width: 100%; "></div>
 </body>
 </html>

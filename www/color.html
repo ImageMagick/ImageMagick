@@ -1,288 +1,117 @@
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
-  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html version="-//W3C//DTD XHTML 1.1//EN"
-      xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:schemaLocation="http://www.w3.org/1999/xhtml
-                          http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html lang="en">
 <head>
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
-  <meta name=viewport content="width=device-width, initial-scale=0.3333334">
-  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"/>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>ImageMagick: Color Names</title>
-  <meta http-equiv="content-language" content="en-US"/>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"/>
-  <meta name="application-name" content="ImageMagick"/>
-  <meta name="description" content="A collection of tools and libraries to read, write, and manipulate an image in any of the more popular image formats."/>
-  <meta name="application-url" content="http://www.imagemagick.org"/>
-  <meta name="generator" content="PHP"/>
-  <meta name="keywords" content="color, names, convert, edit, compose, image, pixel"/>
-  <meta name="rating" content="GENERAL"/>
-  <meta name="robots" content="INDEX, FOLLOW"/>
-  <meta name="generator" content="ImageMagick Studio LLC"/>
-  <meta name="author" content="ImageMagick Studio LLC"/>
-  <meta name="revisit-after" content="2 DAYS"/>
-  <meta name="resource-type" content="document"/>
-  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
-  <meta name="distribution" content="Global"/>
-  <link rel="icon" href="../images/wand.png"/>
-  <link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon"/>
-  <link rel="canonical" href="http://www.imagemagick.org" />
-  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
-
-  <!-- Add jQuery library -->
-  <script type="text/javascript" src="http://localhost/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
-  
-  <!-- Add mousewheel plugin (this is optional) -->
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
-  
-  <!-- Add fancyBox -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
-  
-  <!-- Optionally add helpers - button, thumbnail and/or media -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.5" type="text/css" media="screen" />
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
-  
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=1.0.7" type="text/css" media="screen" />
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
-  
-  <script type="text/javascript">
-  	$(document).ready(function() {
-  		$(".fancybox").fancybox();
-  	});
-  </script>
-
-  <!-- ImageMagick style -->
-  <style type="text/css" media="all">
-    @import url("../www/magick.css");
-  </style>
+  <meta http-equiv="content-language" content="en-US">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta http-equiv="reply-to" content="magick-users@imagemagick.org">
+  <meta name="application-name" content="ImageMagick">
+  <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.">
+  <meta name="application-url" content="http://www.imagemagick.org">
+  <meta name="generator" content="PHP">
+  <meta name="keywords" content="color, names, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert">
+  <meta name="rating" content="GENERAL">
+  <meta name="robots" content="INDEX, FOLLOW">
+  <meta name="generator" content="ImageMagick Studio LLC">
+  <meta name="author" content="ImageMagick Studio LLC">
+  <meta name="revisit-after" content="2 DAYS">
+  <meta name="resource-type" content="document">
+  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC">
+  <meta name="distribution" content="Global">
+  <link rel="icon" href="../images/wand.png">
+  <link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon">
+  <link rel="stylesheet" href="www/css/bootstrap.min.css">
+  <link rel="stylesheet" href="www/css/magick.css">
 </head>
 
-<body id="www-imagemagick-org">
-
-<script type="text/javascript">
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'offline-script','//www.google-analytics.com/analytics.js','ga');
-
-  ga('create', 'UA-40133312-1', 'imagemagick.org');
-  ga('send', 'pageview');
-</script>
-
-<div class="titlebar">
-<div style="margin: 17px auto; float: left;">
-  <script type="text/javascript">
-  <!--
-    google_ad_client = "pub-3129977114552745";
-    google_ad_slot = "5439289906";
-    google_ad_width = 728;
-    google_ad_height = 90;
-  //-->
-  </script>
-  <script type="text/javascript"
-    src="http://localhost/pagead/show_ads.js">
-  </script>
-</div>
-<a href="../discourse-server">
-  <img src="../images/logo.jpg"
-  alt="ImageMagick Logo" width="123" height="118"
-  style="width: 123px; height: 118px; border: 0px; float: right;" /></a>
-<a href="http://www.imagemagick.org/ImageMagick-7.0.0/index.html">
-  <img src="../images/sprite.jpg"
-  alt="ImageMagick Sprite" width="114" height="118"
-  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
-</div>
-
-<div class="westbar">
-
-<div class="menu">
-  <a title="About ImageMagick" href="http://www.imagemagick.org/ImageMagick-7.0.0/index.html">About ImageMagick</a>
-</div>
-<div class="menu">
-  <a title="Binary Releases" href="binary-releases.html">Binary Releases</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: Unix" href="binary-releases.html#unix">Unix</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: MacOS X" href="binary-releases.html#macosx">Mac OS X</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: iOS" href="binary-releases.html#iOS">iOS</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: Windows" href="binary-releases.html#windows">Windows</a>
-</div>
-<div class="sep"></div>
-<div class="menu">
-  <a title="Command-line Tools" href="command-line-tools.html">Command-line Tools</a>
-</div>
-<div class="sub">
-    <a title="Command-line Tools: Processing" href="command-line-processing.html">Processing</a>
-</div>
-<div class="sub">
-    <a title="Command-line Tools: Options" href="command-line-options.html">Options</a>
-</div>
-<div class="sub">
-    <a title="Command-line Tools: Usage" href="http://www.imagemagick.org/Usage/">Usage</a>
-</div>
-<div class="menu">
-  <a title="Program Interfaces" href="api.html">Program Interfaces</a>
-</div>
-<div class="sub">
-    <a title="Program Interface: MagickWand" href="magick-wand.html">MagickWand</a>
-</div>
-<div class="sub">
-    <a title="Program Interface: MagickCore" href="magick-core.html">MagickCore</a>
-</div>
-<div class="sub">
-    <a title="Program Interface: PerlMagick" href="perl-magick.html">PerlMagick</a>
-</div>
-<div class="sub">
-    <a title="Program Interface: Magick++" href="magick++.html">Magick++</a>
-</div>
-<div class="sep"></div>
-<div  class="menu">
-   <a title="Install from Source" href="install-source.html">Install from Source</a>
-</div>
-<div class="sub">
-    <a title="Install from Source: Unix" href="install-source.html#unix">Unix</a>
-</div>
-<div class="sub">
-    <a title="Install from Source: Windows" href="install-source.html#windows">Windows</a>
- </div>
-<div class="menu">
-  <a title="Resources" href="resources.html">Resources</a>
-</div>
-<div class="menu">
-  <a title="Architecture" href="architecture.html">Architecture</a>
-</div>
-<div class="menu">
-  <a title="Download" href="download.html">Download</a>
-</div>
-<div class="sep"></div>
-<div class="menu">
-  <a title="Search" href="search.html">Search</a>
-</div>
-<div class="sep"></div>
-<div class="menu">
-  <a title="Site Map" href="sitemap.html">Site Map</a>
-</div>
-<div  class="sub">
-  <a title="Site Map: Links" href="links.html">Links</a>
-</div>
-<div class="sep"></div>
-</div>
-
-<div class="eastbar">
-  <script type="text/javascript">
-    /* <![CDATA[ */
-    window.___gcfg = {
-      lang: 'en-US'
-    };
-
-    (function() {
-      var po = document.createElement('offline-script');
-      po.type = 'text/javascript';
-      po.async = true;
-      po.src = 'https://apis.google.com/js/plusone.js';
-      var script = document.getElementsByTagName('offline-script')[0];
-      script.parentNode.insertBefore(po, script);
-    })();
-    var gplusone = document.getElementById("gplusone");
-    gplusone.setAttribute("data-size","medium");
-    gplusone.setAttribute("data-count","true");
-    /* ]]> */
-  </script>
-  <script type="text/javascript">
-    /* <![CDATA[ */
-    (function() {
-        var po = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
-        po.type = 'text/javascript';
-        po.async = true;
-        po.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
-        var script = document.getElementsByTagName('offline-script')[0];
-        script.parentNode.insertBefore(po, script);
-    })();
-    /* ]]> */
-  </script>
-  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="http://www.imagemagick.org/"></a></div>
-  <noscript>
-    <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
-    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0" /></a>
-  </noscript>
-  <div class="g-plusone" data-size="standard" data-count="true"></div>
-</div>
-
+<body>
 <div class="main">
-
-<h1>ImageMagick Color Names</h1>
-<p class="navigation-index">[<a href="color.html#usage">Example Usage</a> • <a href="color.html#models">Color Model Specification</a> • <a href="color.html#color_names">List of Color Names</a>]</p>
-
-<div class="doc-section">
-<p>A number of ImageMagick options and methods take a color as an argument. The color can then be given as a color name (there is a limited but large set of these; see below) or it can be given as a set of numbers (in decimal or hexadecimal), each corresponding to a channel in an RGB or RGBA color model.  HSL, HSLA, HSB, HSBA, CMYK, or CMYKA color models may also be specified. These topics are briefly described in the sections below.</p>
+<div class="magick-masthead">
+  <div class="container">
+    <script type="text/javascript">
+    <!--
+      google_ad_client = "pub-3129977114552745";
+      google_ad_slot = "5439289906";
+      google_ad_width = 728;
+      google_ad_height = 90;
+    //-->
+    </script>
+    <center><script type="text/javascript" src="http://localhost/pagead/show_ads.js">
+    </script></center>
+    <nav class="magick-nav">
+      <a class="magick-nav-item " href="http://www.imagemagick.org/ImageMagick-7.0.0/index.html">Home</a>
+      <a class="magick-nav-item " href="binary-releases.html">Downloads</a>
+      <a class="magick-nav-item " href="command-line-tools.html">Tools</a>
+      <a class="magick-nav-item " href="command-line-options.html">Options</a>
+      <a class="magick-nav-item " href="api.html">Development</a>
+      <a class="magick-nav-item" href="../discourse-server">Community</a>
+      <a class="magick-nav-item navbar-right " href="search.html">Search</a>
+    </nav>
+  </div>
 </div>
+<div class="container">
+<div class="magick-header">
+<p class="text-center"><a href="color.html#usage">Example Usage</a> • <a href="color.html#models">Color Model Specification</a> • <a href="color.html#color_names">List of Color Names</a></p>
 
-<h2><a id="color-converter"></a>Interactive Color Converter</h2>
-<div class="doc-section">
+<p class="lead magick-description">A number of ImageMagick options and methods take a color as an argument. The color can then be given as a color name (there is a limited but large set of these; see below) or it can be given as a set of numbers (in decimal or hexadecimal), each corresponding to a channel in an RGB or RGBA color model.  HSL, HSLA, HSB, HSBA, CMYK, or CMYKA color models may also be specified. These topics are briefly described in the sections below.</p>
 
 <p>Use the <a href="../contrib/color-converter.html">Color Converter</a> to supply any valid ImageMagick color specification as described below to see a color swatch of that color and to convert to all the other color models.</p>
-</div>
 
-<h2><a id="usage"></a>Example Usage</h2>
-<div class="doc-section">
+<h2 class="magick-header"><a id="usage"></a>Example Usage</h2>
 
-<p>Each of the following commands produces the same <em>lime</em> border around the image. (Use "double quotes" for Windows.)</p>
+<p>Each of the following commands produces the same <var>lime</var> border around the image. (Use "double quotes" for Windows.)</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -bordercolor lime -border 10 image.jpg image.png</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -bordercolor '#0f0' -border 10 image.jpg image.png</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -bordercolor '#00ff00' -border 10 image.jpg image.png</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -bordercolor 'rgb(0,255,0)' -border 10 image.jpg image.png</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -bordercolor 'rgb(0,100%,0)' -border 10 image.jpg image.png</span></p>
-<p>The list of recognized color names (for example, <em>aqua</em>, <em>black</em>, <em>blue</em>, <em>fuchsia</em>, <em>gray</em>, <em>green</em>, <em>lime</em>, <em>maroon</em>, <em>navy</em>, <em>olive</em>, <em>purple</em>, <em>red</em>, <em>silver</em>, <em>teal</em>, <em>white</em>, <em>yellow</em>, and others) is shown in a table further below.</p>
+<pre>
+convert -bordercolor lime -border 10 image.jpg image.png
+convert -bordercolor '#0f0' -border 10 image.jpg image.png
+convert -bordercolor '#00ff00' -border 10 image.jpg image.png
+convert -bordercolor 'rgb(0,255,0)' -border 10 image.jpg image.png
+convert -bordercolor 'rgb(0,100%,0)' -border 10 image.jpg image.png
+</pre>
 
-</div>
+<p>The list of recognized color names (for example, <var>aqua</var>, <var>black</var>, <var>blue</var>, <var>fuchsia</var>, <var>gray</var>, <var>green</var>, <var>lime</var>, <var>maroon</var>, <var>navy</var>, <var>olive</var>, <var>purple</var>, <var>red</var>, <var>silver</var>, <var>teal</var>, <var>white</var>, <var>yellow</var>, and others) is shown in a table further below.</p>
 
-<h2><a id="models"></a>Color Model Specification</h2>
-<div class="doc-section">
+<h2 class="magick-header"><a id="models"></a>Color Model Specification</h2>
 
 <p>The sRGB, CMYK, HSL and HSB color models are used in numerical color specifications. These examples all specify the same red sRGB color:</p>
 
-<pre class="text">
-  #f00                      #rgb
-  #ff0000                   #rrggbb
-  #ff0000ff                 #rrggbbaa
-  #ffff00000000             #rrrrggggbbbb
-  #ffff00000000ffff         #rrrrggggbbbbaaaa
-  rgb(255, 0, 0)            an integer in the range 0—255 for each component
-  rgb(100.0%, 0.0%, 0.0%)   a float in the range 0—100% for each component
-</pre >
+<pre>
+#f00                      #rgb
+#ff0000                   #rrggbb
+#ff0000ff                 #rrggbbaa
+#ffff00000000             #rrrrggggbbbb
+#ffff00000000ffff         #rrrrggggbbbbaaaa
+rgb(255, 0, 0)            an integer in the range 0—255 for each component
+rgb(100.0%, 0.0%, 0.0%)   a float in the range 0—100% for each component
+</pre>
 
 <p>The format of an sRGB value in hexadecimal notation is a '#' immediately followed by either three, six, or twelve hexadecimal characters. The three-digit sRGB notation (#rgb) is converted into six-digit form (#rrggbb) by replicating digits, not by adding zeros. For example,  #fb0 expands to #ffbb00. This ensures that white (#ffffff) can be specified with the short notation (#fff) and removes any dependencies on the color depth of the image. Use the hexadecimal notation whenever performance is an issue.  ImageMagick does not need to load the expansive color table to interpret a hexadecimal color, e.g., <code>#000000</code>, but it does if <code>black</code> is used instead.</p>
 
-<p>The format of an sRGB value in the functional notation is 'rgb(<em>r</em>,<em>g</em>,<em>b</em>)',  where  <em>r</em>, <em>g</em>, and <em>b</em> are either three integer or float values in the range 0—255 or three integer or float percentage values in the range 0—100%. The value 255 corresponds to 100%, and to #F or #FF in the hexadecimal notation: rgb(255, 255, 255) = rgb(100%, 100%, 100%) = #FFF = #FFFFFF. </p>
+<p>The format of an sRGB value in the functional notation is 'rgb(<var>r</var>,<var>g</var>,<var>b</var>)',  where  <var>r</var>, <var>g</var>, and <var>b</var> are either three integer or float values in the range 0—255 or three integer or float percentage values in the range 0—100%. The value 255 corresponds to 100%, and to #F or #FF in the hexadecimal notation: rgb(255, 255, 255) = rgb(100%, 100%, 100%) = #FFF = #FFFFFF. </p>
 
 <p>White space characters are allowed around the numerical values, at least if the entire color argument is enclosed in quotes ('single quotes' for Unix-like systems, "double quotes" for Windows).</p>
 
-<p>The sRGB color model is extended in this specification to include <em>alpha</em> to allow specification of the transparency of a color. These examples all specify the same color:</p>
+<p>The sRGB color model is extended in this specification to include <var>alpha</var> to allow specification of the transparency of a color. These examples all specify the same color:</p>
 
-<pre class="text">
-  rgb(255, 0, 0)                 range 0 - 255
-  rgba(255, 0, 0, 1.0)           the same, with an explicit alpha value
-  rgb(100%, 0%, 0%)              range 0.0% - 100.0%
-  rgba(100%, 0%, 0%, 1.0)        the same, with an explicit alpha value
+<pre>
+rgb(255, 0, 0)                 range 0 - 255
+rgba(255, 0, 0, 1.0)           the same, with an explicit alpha value
+rgb(100%, 0%, 0%)              range 0.0% - 100.0%
+rgba(100%, 0%, 0%, 1.0)        the same, with an explicit alpha value
 </pre>
 
-<p>The format of an RGBA value in the functional notation is 'rgba(<em>r</em>,<em>g</em>,<em>b</em>,<em>a</em>)',  where  <em>r</em>, <em>g</em>, and <em>b</em> are as described above for the RGB functional notation, and where the alpha value <em>a</em> ranges from 0.0 (fully transparent) to 1.0 (fully opaque).</p>
+<p>The format of an RGBA value in the functional notation is 'rgba(<var>r</var>,<var>g</var>,<var>b</var>,<var>a</var>)',  where  <var>r</var>, <var>g</var>, and <var>b</var> are as described above for the RGB functional notation, and where the alpha value <var>a</var> ranges from 0.0 (fully transparent) to 1.0 (fully opaque).</p>
 
 <p>There is also a color called 'none' that is fully transparent.  This color is shorthand for <code>rgba(0, 0, 0, 0.0)</code>.</p>
 
 <p>Gray values are conviently defined with a single intensity value or an intensity value and an alpha value:</p>
 
-<pre class="text">
-  gray(50%)        mid gray
-  graya(50%, 0.5)  semi-transparent mid gray
+<pre>
+gray(50%)        mid gray
+graya(50%, 0.5)  semi-transparent mid gray
 </pre>
 
 <p>The ImageMagick color model also supports hue-saturation-lightness (HSL) and hue-saturation-brightness (HSB) colors as a complement to numerical sRGB colors. HSL colors are encoding as a triple (hue, saturation, lightness). Likewise HSB colors are encoding as a triple (hue, saturation, brightness). HSL or HSB triples are either direct values (hue 0—360, saturation 0—255, ligthness or brightness 0—255) or as percentage values relative to these ranges.</p>
@@ -293,7 +122,7 @@
 
 <p>See <a href="http://en.wikipedia.org/wiki/HSL_and_HSV">http://en.wikipedia.org/wiki/HSL_and_HSV</a> for more details on HSL and HSB color systems.</p>
 
-<p>Hue is represented as an angle of the color around the circular perimeter of the cone(s) (i.e. the rainbow represented in a circle). Hue values are either integer or floats in the range 0—360 or integer or float percentage values in the range 0—100%. By definition red=0=360 (or 0%=100%),  and the other colors are spread around the circle,  so green=120 (or 33.3333%),  blue=240 (or (66.6667%), etc. As an angle, it implicitly wraps around such that -120=240 and 480=120, for instance. (Students of trigonometry would say that "coterminal angles are equivalent" here; an angle <em>θ</em> can be standardized by computing the equivalent angle, <em>θ</em> mod 360.)</p>
+<p>Hue is represented as an angle of the color around the circular perimeter of the cone(s) (i.e. the rainbow represented in a circle). Hue values are either integer or floats in the range 0—360 or integer or float percentage values in the range 0—100%. By definition red=0=360 (or 0%=100%),  and the other colors are spread around the circle,  so green=120 (or 33.3333%),  blue=240 (or (66.6667%), etc. As an angle, it implicitly wraps around such that -120=240 and 480=120, for instance. (Students of trigonometry would say that "coterminal angles are equivalent" here; an angle <var>θ</var> can be standardized by computing the equivalent angle, <var>θ</var> mod 360.)</p>
 
 <p>Saturation is measure outward from the central axis of the cone(s) toward the perimeter of the cone(s). Saturation may be expressed as an integer or float in the range 0—255 or as an integer or float percentage in the range 0—100. Saturation may be thought of as the absence of any "white" mixed with the base color. Thus 255 or 100% is full saturation and corresponds to a point on the outside surface of the cone (HSB) or double cone (HSL). It will be the most "colorful" region. 0 or 0% is no saturation which results in some shade of gray. It occurs along the central axis of the cone or double cone with black at the bottom apex and white at the top.</p>
 
@@ -301,70 +130,67 @@
 
 <p>The HSB color system is a little easier to understand than the HSL color system. In the HSB color system, black is at the bottom apex and white is at the top center of the cone on the central axis. The most colorful or saturated colors will then be at the outer edge of the top of the cone at the widest part. Thus at Saturation=100% and Brightness=100%</p>
 
-<pre class="text">
-  hsb(0%, 100%,  100%)          or    hsb(0, 255,  255)          full red
-  hsb(33.3333%, 100%,  100%)    or    hsb(120, 255,   255)       full green
-  hsb(33.3333%, 100%,  75%)     or    hsb(120, 255,   191.25)    medium green
-  hsb(33.3333%, 100%,  50%)     or    hsb(120, 255,   127.5)     dark green
-  hsb(33.3333%, 100%,  25%)     or    hsb(120, 255,   63.75)     very dark green
-  hsb(33.3333%, 50%,   50%)     or    hsb(120, 127.5, 127.5)     pastel green
+<pre>
+hsb(0%, 100%,  100%)          or    hsb(0, 255,  255)          full red
+hsb(33.3333%, 100%,  100%)    or    hsb(120, 255,   255)       full green
+hsb(33.3333%, 100%,  75%)     or    hsb(120, 255,   191.25)    medium green
+hsb(33.3333%, 100%,  50%)     or    hsb(120, 255,   127.5)     dark green
+hsb(33.3333%, 100%,  25%)     or    hsb(120, 255,   63.75)     very dark green
+hsb(33.3333%, 50%,   50%)     or    hsb(120, 127.5, 127.5)     pastel green
 </pre>
 
 <p>In the HSL color system, black is at the bottom apex and white is at the top apex. However, saturation is largest at the middle of the double cone on its outer perimeter and thus at a lightness value of 50%. The most colorful or saturated colors will then be at the outer edge of the double cone at its widest part. Thus at Saturation=100% and Brightness=50%</p>
 
-<pre class="text">
-  hsl(0%, 100%,  50%)           or    hsl(0, 255,  127.5)        full red
-  hsl(33.3333%, 100%,  100%)    or    hsl(120, 255,   255)       white
-  hsl(33.3333%, 100%,  75%)     or    hsl(120, 255,   191.25)    pastel green
-  hsl(33.3333%, 100%,  50%)     or    hsl(120, 255,   127.5)     full green
-  hsl(33.3333%, 100%,  25%)     or    hsl(120, 255,   63.75)     dark green
-  hsl(33.3333%, 50%,   50%)     or    hsl(120, 127.5, 127.5)     medium green
+<pre>
+hsl(0%, 100%,  50%)           or    hsl(0, 255,  127.5)        full red
+hsl(33.3333%, 100%,  100%)    or    hsl(120, 255,   255)       white
+hsl(33.3333%, 100%,  75%)     or    hsl(120, 255,   191.25)    pastel green
+hsl(33.3333%, 100%,  50%)     or    hsl(120, 255,   127.5)     full green
+hsl(33.3333%, 100%,  25%)     or    hsl(120, 255,   63.75)     dark green
+hsl(33.3333%, 50%,   50%)     or    hsl(120, 127.5, 127.5)     medium green
 </pre>
 
 <p>One advantage of HSB or HSL over RGB is that it can be more intuitive: you can guess at the colors you want, and then tweak. It is also easier to create sets of matching colors (by keeping the hue the same and varying the brightness or lightness and saturation, for example).</p>
 
 <p>Just as the 'rgb()' functional notation has the 'rgba()' alpha counterpart, the 'hsl()' and 'hsb()' functional notations have their 'hsla()' 'hsba()' alpha counterparts. These examples specify the same color:</p>
 
-<pre class="text">
-  hsb(33.3333%, 100%,  100%)         full green in hsb
-  hsba(33.3333%, 100%,  100%,  1.0)  the same, with an alpha value of 1.0
-  hsb(120, 255,  255)                full green in hsb
-  hsba(120, 255,  255,  1.0)         the same, with an alpha value of 1.0
+<pre>
+hsb(33.3333%, 100%,  100%)         full green in hsb
+hsba(33.3333%, 100%,  100%,  1.0)  the same, with an alpha value of 1.0
+hsb(120, 255,  255)                full green in hsb
+hsba(120, 255,  255,  1.0)         the same, with an alpha value of 1.0
 
-  hsl(33.3333%, 100%,  50%)          full green in hsl
-  hsla(33.3333%, 100%,  50%,  1.0)   the same, with an alpha value of 1.0
-  hsl(120, 255,  127.5)              full green in hsl
-  hsla(120, 255,  127.5,  1.0)       the same, with an alpha value of 1.0
+hsl(33.3333%, 100%,  50%)          full green in hsl
+hsla(33.3333%, 100%,  50%,  1.0)   the same, with an alpha value of 1.0
+hsl(120, 255,  127.5)              full green in hsl
+hsla(120, 255,  127.5,  1.0)       the same, with an alpha value of 1.0
 </pre>
 
 <p>Prior to ImageMagick 6.5.6-6, HSL (HSB) could only be specified with Hue in range 0—360, but Saturation and Lightness (Brightness) as percent in range 0—100%.</p>
 
 <p>Specify the Lab colors like this:</p>
-<pre class="text">
-  cielab(62.253188, 23.950124, 48.410653)
+<pre>
+cielab(62.253188, 23.950124, 48.410653)
 </pre>
 
 <p>Or specify colors generically with the <code>icc-color</code> keyword, for example:</p>
-<pre class="text">
-  icc-color(cmyk, 0.11, 0.48, 0.83, 0.00)
-  icc-color(rgb, white)
+<pre>
+icc-color(cmyk, 0.11, 0.48, 0.83, 0.00)
+icc-color(rgb, white)
 </pre>
 
 <p>Or specify uncalibrated device colors with the <code>device-</code> keyword, for example:</p>
-<pre class="text">
-  device-gray(0.5)
-  device-rgb(0.5, 1.0, 0.0)
-  device-cmyk(0.11, 0.48, 0.83, 0.00)
+<pre>
+device-gray(0.5)
+device-rgb(0.5, 1.0, 0.0)
+device-cmyk(0.11, 0.48, 0.83, 0.00)
 </pre>
 
-</div>
-
-<h2><a id="color_names"></a>List of Color Names</h2>
-<div class="doc-section">
+<h2 class="magick-header"><a id="color_names"></a>List of Color Names</h2>
 
 <p>The table below provides a list of named colors recognized by ImageMagick:</p>
 
-<table class="doc">
+<table class="table table-condensed table-striped">
 <tbody>
   <tr>
     <th align="right">Name</th>
@@ -5095,24 +4921,41 @@
 </table>
 
 </div>
+  <footer class="magick-footer">
+    <div class="magick-nav-item navbar-left">
+      <a href="support.html">Donations</a>
+    </div>
+    <div class="magick-nav-item navbar-right">
+      <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="http://www.imagemagick.org/"></a>
+      <noscript>
+        <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
+        <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" border="0"></a>
+      </noscript>
+    </div>
+    <p><a href="sitemap.html">Sitemap</a> •
+    <a href="links.html">Related</a> •
+    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Image Studio</a> •
+    <a href="http://jqmagick.imagemagick.org/">JqMagick</a> •
+    <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a>
+</p>
+    <p><a href="color.html#">Back to top</a> •
+    <a href="contact.html">Contact Us</a></p>
+  </footer>
+</div><!-- /.container -->
 
+  <script src="https://localhost/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+  <script src="../js/bootstrap.min.js"></script>
+  <script type="text/javascript">
+    /*  */
+    (function() {
+        var s = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
+        s.type = 'text/javascript';
+        s.async = true;
+        s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
+        t.parentNode.insertBefore(s, t);
+    })();
+    /*  */
+  </script>
 </div>
-
-<div id="linkbar">
-    <span id="linkbar-west"> </span>
-
-    <span id="linkbar-center">
-      <a href="../discourse-server">Discourse Server</a> •
-      <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-      <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a> •
-      <a href="http://jqmagick.imagemagick.org/">JqMagick</a>
-    </span>
-    <span id="linkbar-east"> </span>
-</div>
-<div class="footer">
-  <span id="footer-west">©  1999-2014 ImageMagick Studio LLC</span>
-  <span id="footer-east"> <a href="contact.html">Contact the Wizards</a></span>
-</div>
-<div style="clear: both; margin: 0; width: 100%; "></div>
 </body>
 </html>
