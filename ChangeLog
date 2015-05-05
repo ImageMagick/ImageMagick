@@ -14,6 +14,8 @@
     from a.chernij@corp...).
   * Improved reproducible builds (reference
     https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=783933).
+  * Draw a rectangle of width & height of 1 (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=24874).
 
 2015-04-19  6.9.1-2 Cristy  <quetzlzacatenango@image...>
   * New version 6.9.1-2, SVN revision 18429.
