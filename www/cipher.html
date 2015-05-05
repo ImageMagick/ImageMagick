@@ -21,10 +21,11 @@
   <meta name="resource-type" content="document">
   <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC">
   <meta name="distribution" content="Global">
+  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
   <link rel="icon" href="../images/wand.png">
   <link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon">
-  <link rel="stylesheet" href="www/css/bootstrap.min.css">
-  <link rel="stylesheet" href="www/css/magick.css">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/magick.css">
 </head>
 
 <body>
@@ -42,12 +43,12 @@
     <center><script type="text/javascript" src="http://localhost/pagead/show_ads.js">
     </script></center>
     <nav class="magick-nav">
-      <a class="magick-nav-item " href="http://www.imagemagick.org/ImageMagick-7.0.0/index.html">Home</a>
+      <a class="magick-nav-item " href="../index.html">Home</a>
       <a class="magick-nav-item " href="binary-releases.html">Downloads</a>
       <a class="magick-nav-item " href="command-line-tools.html">Tools</a>
       <a class="magick-nav-item " href="command-line-options.html">Options</a>
       <a class="magick-nav-item " href="api.html">Development</a>
-      <a class="magick-nav-item" href="../discourse-server">Community</a>
+      <a class="magick-nav-item" href="http://www.imagemagick.org/discourse-server/">Community</a>
       <a class="magick-nav-item navbar-right " href="search.html">Search</a>
     </nav>
   </div>
@@ -64,15 +65,15 @@
 
 <p>Use the <a href="command-line-options.html#encipher">-encipher</a> option to scramble your image so that it is unrecognizable.  The option requires a filename that contains your passphrase.  In this example we scramble an image and save it in the PNG format:</p>
 
-<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">convert rose.jpg -encipher passphrase.txt rose.png</span></p>
+<pre><span class="crtprompt"> </span><span class="crtin">convert rose.jpg -encipher passphrase.txt rose.png</span></pre>
 <p>Here we encipher an image using another image as the passphrase:</p>
 
-<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">convert rose.jpg -encipher smiley.gif rose.png</span></p>
+<pre><span class="crtprompt"> </span><span class="crtin">convert rose.jpg -encipher smiley.gif rose.png</span></pre>
 <h2 class="magick-header"><a id="decipher"></a>Decipher an Image</h2>
 
 <p>Use the <a href="command-line-options.html#decipher">-decipher</a> option to unscramble your image so that it is recognizable once again.  The option requires a filename that contains your passphrase.  In this example we unscramble an image and save it in the JPEG format:</p>
 
-<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">convert rose.png -decipher passphrase.txt rose.jpg</span></p>
+<pre><span class="crtprompt"> </span><span class="crtin">convert rose.png -decipher passphrase.txt rose.jpg</span></pre>
 <h2 class="magick-header"><a id="caveats"></a>Encipher and Decipher Caveats</h2>
 
 <p>Some formats do not support enciphered pixels-- the JPEG or GIF format, for
@@ -112,7 +113,7 @@ Examples <a href="http://www.imagemagick.org/Usage/transform/#encipher">Encrypti
       <a href="support.html">Donations</a>
     </div>
     <div class="magick-nav-item navbar-right">
-      <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="http://www.imagemagick.org/"></a>
+      <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="../index.html"></a>
       <noscript>
         <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
         <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" border="0"></a>
@@ -144,4 +145,4 @@ Examples <a href="http://www.imagemagick.org/Usage/transform/#encipher">Encrypti
   </script>
 </div>
 </body>
-</html>
+</html><!-- Magick Cache 4th May 2015 17:58 -->

@@ -21,10 +21,11 @@
   <meta name="resource-type" content="document">
   <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC">
   <meta name="distribution" content="Global">
+  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
   <link rel="icon" href="../images/wand.png">
   <link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon">
-  <link rel="stylesheet" href="www/css/bootstrap.min.css">
-  <link rel="stylesheet" href="www/css/magick.css">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/magick.css">
 </head>
 
 <body>
@@ -42,12 +43,12 @@
     <center><script type="text/javascript" src="http://localhost/pagead/show_ads.js">
     </script></center>
     <nav class="magick-nav">
-      <a class="magick-nav-item " href="http://www.imagemagick.org/ImageMagick-7.0.0/index.html">Home</a>
+      <a class="magick-nav-item " href="../index.html">Home</a>
       <a class="magick-nav-item " href="binary-releases.html">Downloads</a>
       <a class="magick-nav-item " href="command-line-tools.html">Tools</a>
       <a class="magick-nav-item " href="command-line-options.html">Options</a>
       <a class="magick-nav-item " href="api.html">Development</a>
-      <a class="magick-nav-item" href="../discourse-server">Community</a>
+      <a class="magick-nav-item" href="http://www.imagemagick.org/discourse-server/">Community</a>
       <a class="magick-nav-item navbar-right " href="search.html">Search</a>
     </nav>
   </div>
@@ -55,68 +56,68 @@
 <div class="container">
 <div class="magick-header">
 
-<p class="lead magick-description">The <a href="../api/MagickCore/index.html">MagickCore API</a> is a low-level interface between the C programming language and the ImageMagick image processing libraries and is recommended for wizard-level programmers only.  Unlike the <a href="magick-wand.html">MagickWand</a> C API which uses only a few opaque types and accessors, with MagickCore you almost exlusively access the structure members directly.  A description of the MagickCore public methods are found here:</p>
+<p class="lead magick-description">The <a href="http://www.imagemagick.org/api/MagickCore/index.html">MagickCore API</a> is a low-level interface between the C programming language and the ImageMagick image processing libraries and is recommended for wizard-level programmers only.  Unlike the <a href="magick-wand.html">MagickWand</a> C API which uses only a few opaque types and accessors, with MagickCore you almost exlusively access the structure members directly.  A description of the MagickCore public methods are found here:</p>
 
 <ul>
-  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/magick.html">Initialize or Destroy the ImageMagick Environment</a></li>
-  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/constitute.html">Constitute an Image</a></li>
-  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/composite.html">Composite an Image</a></li>
-  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/image.html">Image Methods</a></li>
-  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/channel.html">Image Channel Methods</a></li>
-  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/color.html">Count the Colors in an Image</a></li>
-  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/colormap.html">Colormap Methods</a></li>
-  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/colorspace.html">Colorspace Methods</a></li>
-  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/distort.html">Image Distortions</a></li>
-  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/layer.html">Dealing with Image Layers</a></li>
-  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/profile.html">Dealing with Image Profiles</a></li>
-  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/quantize.html">Reduce the Number of Unique Colors in an Image</a></li>
-  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/histogram.html">Image Histograms</a></li>
-  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/segment.html">Segment an Image with Thresholding Fuzzy c-Means</a></li>
-  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/resize.html">Resize an Image</a></li>
-  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/transform.html">Transform an Image</a></li>
-  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/shear.html">Shear or Rotate an Image by an Arbitrary Angle</a></li>
-  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/enhance.html">Enhance an Image</a></li>
-  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/effect.html">Add an Effect</a></li>
-  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/morphology.html">Morphological Erosions, Dilations, Openings, and Closings</a></li>
-  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/fx.html">Add a Special Effect</a></li>
-  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/decorate.html">Decorate an Image</a></li>
-  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/attribute.html">Get/Set an Image Attribute</a></li>
-  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/property.html">Get/Set Image Properties</a></li>
-  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/statistic.html">Get Image Statistics</a></li>
-  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/feature.html">Get Image Features</a></li>
-  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/annotate.html">Annotate an Image</a></li>
-  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/paint.html">Paint on an Image</a></li>
-  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/draw.html">Draw on an Image</a></li>
-  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/montage.html">Create an Image Thumbnail</a></li>
-  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/fourier.html">Compute the discrete Fourier transform (DFT)</a></li>
-  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/compare.html">Compare an Image to a Reconstructed Image</a></li>
-  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/display.html">Interactively Display and Edit an Image</a></li>
-  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/animate.html">Interactively Animate an Image Sequence</a></li>
-  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/cipher.html">Convert to and from Cipher Pixels</a></li>
-  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/list.html">Working with Image Lists</a></li>
-  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/image-view.html">Image View Methods</a></li>
-  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/cache.html">Get or Set Image Pixels</a></li>
-  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/cache-view.html">Working with Cache Views</a></li>
-  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/stream.html">The Pixel FIFO</a></li>
-  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/blob.html">Read or Write Binary Large OBjects</a></li>
-  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/module.html">Loadable Modules</a></li>
-  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/signature.html">Compute a Message Digest for an Image</a></li>
-  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/registry.html">The Image Registry</a></li>
-  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/exception.html">Dealing with Exceptions</a></li>
-  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/memory.html">Memory Allocation</a></li>
-  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/resource.html">Monitor or Limit Resource Consumption</a></li>
-  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/monitor.html">Monitor the Progress of an Image Operation</a></li>
-  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/version.html">Get the Version and Copyrights</a></li>
-  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/mime.html">Mime Methods</a></li>
-  <li><a href="http://www.imagemagick.org/ImageMagick-7.0.0/api/deprecate.html">Deprecated Methods</a></li>
+  <li><a href="www/api/magick.html">Initialize or Destroy the ImageMagick Environment</a></li>
+  <li><a href="www/api/constitute.html">Constitute an Image</a></li>
+  <li><a href="www/api/composite.html">Composite an Image</a></li>
+  <li><a href="www/api/image.html">Image Methods</a></li>
+  <li><a href="www/api/channel.html">Image Channel Methods</a></li>
+  <li><a href="www/api/color.html">Count the Colors in an Image</a></li>
+  <li><a href="www/api/colormap.html">Colormap Methods</a></li>
+  <li><a href="www/api/colorspace.html">Colorspace Methods</a></li>
+  <li><a href="www/api/distort.html">Image Distortions</a></li>
+  <li><a href="www/api/layer.html">Dealing with Image Layers</a></li>
+  <li><a href="www/api/profile.html">Dealing with Image Profiles</a></li>
+  <li><a href="www/api/quantize.html">Reduce the Number of Unique Colors in an Image</a></li>
+  <li><a href="www/api/histogram.html">Image Histograms</a></li>
+  <li><a href="www/api/segment.html">Segment an Image with Thresholding Fuzzy c-Means</a></li>
+  <li><a href="www/api/resize.html">Resize an Image</a></li>
+  <li><a href="www/api/transform.html">Transform an Image</a></li>
+  <li><a href="www/api/shear.html">Shear or Rotate an Image by an Arbitrary Angle</a></li>
+  <li><a href="www/api/enhance.html">Enhance an Image</a></li>
+  <li><a href="www/api/effect.html">Add an Effect</a></li>
+  <li><a href="www/api/morphology.html">Morphological Erosions, Dilations, Openings, and Closings</a></li>
+  <li><a href="www/api/fx.html">Add a Special Effect</a></li>
+  <li><a href="www/api/decorate.html">Decorate an Image</a></li>
+  <li><a href="www/api/attribute.html">Get/Set an Image Attribute</a></li>
+  <li><a href="www/api/property.html">Get/Set Image Properties</a></li>
+  <li><a href="www/api/statistic.html">Get Image Statistics</a></li>
+  <li><a href="www/api/feature.html">Get Image Features</a></li>
+  <li><a href="www/api/annotate.html">Annotate an Image</a></li>
+  <li><a href="www/api/paint.html">Paint on an Image</a></li>
+  <li><a href="www/api/draw.html">Draw on an Image</a></li>
+  <li><a href="www/api/montage.html">Create an Image Thumbnail</a></li>
+  <li><a href="www/api/fourier.html">Compute the discrete Fourier transform (DFT)</a></li>
+  <li><a href="www/api/compare.html">Compare an Image to a Reconstructed Image</a></li>
+  <li><a href="www/api/display.html">Interactively Display and Edit an Image</a></li>
+  <li><a href="www/api/animate.html">Interactively Animate an Image Sequence</a></li>
+  <li><a href="www/api/cipher.html">Convert to and from Cipher Pixels</a></li>
+  <li><a href="www/api/list.html">Working with Image Lists</a></li>
+  <li><a href="www/api/image-view.html">Image View Methods</a></li>
+  <li><a href="www/api/cache.html">Get or Set Image Pixels</a></li>
+  <li><a href="www/api/cache-view.html">Working with Cache Views</a></li>
+  <li><a href="www/api/stream.html">The Pixel FIFO</a></li>
+  <li><a href="www/api/blob.html">Read or Write Binary Large OBjects</a></li>
+  <li><a href="www/api/module.html">Loadable Modules</a></li>
+  <li><a href="www/api/signature.html">Compute a Message Digest for an Image</a></li>
+  <li><a href="www/api/registry.html">The Image Registry</a></li>
+  <li><a href="www/api/exception.html">Dealing with Exceptions</a></li>
+  <li><a href="www/api/memory.html">Memory Allocation</a></li>
+  <li><a href="www/api/resource.html">Monitor or Limit Resource Consumption</a></li>
+  <li><a href="www/api/monitor.html">Monitor the Progress of an Image Operation</a></li>
+  <li><a href="www/api/version.html">Get the Version and Copyrights</a></li>
+  <li><a href="www/api/mime.html">Mime Methods</a></li>
+  <li><a href="www/api/deprecate.html">Deprecated Methods</a></li>
   <li><a href="exception.html">Error and Warning Codes</a></li>
 </ul>
 
 <p>After you write your MagickCore program, compile it like this:</p>
 
-<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">cc -o core core.c `pkg-config --cflags --libs MagickCore`</span></p>
+<pre><span class="crtprompt"> </span><span class="crtin">cc -o core core.c `pkg-config --cflags --libs MagickCore`</span></pre>
 <p>Set the <code>PKG_CONFIG_PATH</code> environment variable if ImageMagick is not in your default system path:</p>
-<p class="crt"><span class="crtprompt"> $magick&gt; </span><span class="crtin">export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig</span></p>
+<pre><span class="crtprompt"> </span><span class="crtin">export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig</span></pre>
 <p>Here is a example program that utilizes the MagickCore API to get you started, <a href="../source/core.c">core.c</a>. It reads a GIF image, creates a thumbnail, and writes it to disk in the PNG image format.</p>
 
 <pre class="pre-scrollable">#include &lt;stdio.h&gt;
@@ -307,7 +308,7 @@ int main(int argc,char **argv)
       <a href="support.html">Donations</a>
     </div>
     <div class="magick-nav-item navbar-right">
-      <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="http://www.imagemagick.org/"></a>
+      <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="../index.html"></a>
       <noscript>
         <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
         <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" border="0"></a>
@@ -339,4 +340,4 @@ int main(int argc,char **argv)
   </script>
 </div>
 </body>
-</html>
+</html><!-- Magick Cache 4th May 2015 17:58 -->
