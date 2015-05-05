@@ -1664,7 +1664,7 @@ static void ParseProcessingInstructions(XMLTreeRoot *root,char *xml,
     j++;
   root->processing_instructions[i]=(char **) ResizeQuantumMemory(
     root->processing_instructions[i],(size_t) (j+3),
-    sizeof(*root->processing_instructions));
+    sizeof(**root->processing_instructions));
   if (root->processing_instructions[i] == (char **) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   root->processing_instructions[i][j+2]=(char *) ResizeQuantumMemory(
@@ -1851,7 +1851,7 @@ static MagickBooleanType ParseInternalDoctype(XMLTreeRoot *root,char *xml,
                     ThrowFatalException(ResourceLimitFatalError,
                       "MemoryAllocationFailed");
                   root->attributes[i]=(char **) AcquireQuantumMemory(2,
-                    sizeof(*root->attributes));
+                    sizeof(**root->attributes));
                   if (root->attributes[i] == (char **) NULL)
                     ThrowFatalException(ResourceLimitFatalError,
                       "MemoryAllocationFailed");
@@ -1861,7 +1861,7 @@ static MagickBooleanType ParseInternalDoctype(XMLTreeRoot *root,char *xml,
                 }
               for (j=1; root->attributes[i][j] != (char *) NULL; j+=3) ;
               root->attributes[i]=(char **) ResizeQuantumMemory(
-                root->attributes[i],(size_t) (j+4),sizeof(*root->attributes));
+                root->attributes[i],(size_t) (j+4),sizeof(**root->attributes));
               if (root->attributes[i] == (char **) NULL)
                 ThrowFatalException(ResourceLimitFatalError,
                   "MemoryAllocationFailed");

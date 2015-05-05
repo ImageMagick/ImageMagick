@@ -935,7 +935,7 @@ static TIFFMethodType GetJPEGMethod(Image* image,TIFF *tiff,uint16 photometric,
         i+=(size_t) length;
       }
     }
-  SeekBlob(image,position,SEEK_SET);
+  (void) SeekBlob(image,position,SEEK_SET);
   return(method);
 }
 
