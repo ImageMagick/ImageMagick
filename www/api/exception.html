@@ -1,535 +1,488 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
-  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html version="-//W3C//DTD XHTML 1.1//EN"
-      xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:schemaLocation="http://www.w3.org/1999/xhtml
-                          http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html lang="en">
 <head>
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
-  <meta name=viewport content="width=device-width, initial-scale=0.3333334">
-  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4"/>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>ImageMagick: MagickCore, C API for ImageMagick: Dealing with Exceptions</title>
-  <meta http-equiv="content-language" content="en-US"/>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"/>
-  <meta name="application-name" content="ImageMagick"/>
-  <meta name="description" content="A collection of tools and libraries to read, write, and manipulate an image in any of the more popular image formats."/>
-  <meta name="application-url" content="http://www.imagemagick.org"/>
-  <meta name="generator" content="PHP"/>
-  <meta name="keywords" content="magickcore, c, api, for, imagemagick:, dealing, with, exceptions, convert, edit, compose, image, pixel"/>
-  <meta name="rating" content="GENERAL"/>
-  <meta name="robots" content="INDEX, FOLLOW"/>
-  <meta name="generator" content="ImageMagick Studio LLC"/>
-  <meta name="author" content="ImageMagick Studio LLC"/>
-  <meta name="revisit-after" content="2 DAYS"/>
-  <meta name="resource-type" content="document"/>
-  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
-  <meta name="distribution" content="Global"/>
-  <link rel="icon" href="../../../../images/wand.png"/>
-  <link rel="shortcut icon" href="../../../../images/wand.ico" type="images/x-icon"/>
-  <link rel="canonical" href="http://www.imagemagick.org" />
-  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
-
-  <!-- Add jQuery library -->
-  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
-  
-  <!-- Add mousewheel plugin (this is optional) -->
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
-  
-  <!-- Add fancyBox -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
-  
-  <!-- Optionally add helpers - button, thumbnail and/or media -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.5" type="text/css" media="screen" />
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
-  
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=1.0.7" type="text/css" media="screen" />
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
-  
-  <script type="text/javascript">
-  	$(document).ready(function() {
-  		$(".fancybox").fancybox();
-  	});
-  </script>
-
-  <!-- ImageMagick style -->
-  <style type="text/css" media="all">
-    @import url("../../../../www/magick.css");
-  </style>
+  <meta http-equiv="content-language" content="en-US">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta http-equiv="reply-to" content="magick-users@imagemagick.org">
+  <meta name="application-name" content="ImageMagick">
+  <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.">
+  <meta name="application-url" content="http://www.imagemagick.org">
+  <meta name="generator" content="PHP">
+  <meta name="keywords" content="magickcore, c, api, for, imagemagick:, dealing, with, exceptions, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert">
+  <meta name="rating" content="GENERAL">
+  <meta name="robots" content="INDEX, FOLLOW">
+  <meta name="generator" content="ImageMagick Studio LLC">
+  <meta name="author" content="ImageMagick Studio LLC">
+  <meta name="revisit-after" content="2 DAYS">
+  <meta name="resource-type" content="document">
+  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC">
+  <meta name="distribution" content="Global">
+  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
+  <link rel="icon" href="../../images/wand.png">
+  <link rel="shortcut icon" href="../../images/wand.ico" type="images/x-icon">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/magick.css">
 </head>
 
-<body id="www-imagemagick-org">
-
-<script type="text/javascript">
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'offline-script','//www.google-analytics.com/analytics.js','ga');
-
-  ga('create', 'UA-40133312-1', 'imagemagick.org');
-  ga('send', 'pageview');
-</script>
-
-<div class="titlebar">
-<div style="margin: 17px auto; float: left;">
-  <script type="text/javascript">
-  <!--
-    google_ad_client = "pub-3129977114552745";
-    google_ad_slot = "5439289906";
-    google_ad_width = 728;
-    google_ad_height = 90;
-  //-->
-  </script>
-  <script type="text/javascript"
-    src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
-  </script>
-</div>
-<a href="../../../../discourse-server">
-  <img src="../../../../images/logo.jpg"
-  alt="ImageMagick Logo" width="123" height="118"
-  style="width: 123px; height: 118px; border: 0px; float: right;" /></a>
-<a href="http://www.imagemagick.org/ImageMagick-7.0.0/index.html">
-  <img src="../../../../images/sprite.jpg"
-  alt="ImageMagick Sprite" width="114" height="118"
-  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
-</div>
-
-<div class="westbar">
-
-<div class="menu">
-  <a title="About ImageMagick" href="http://www.imagemagick.org/ImageMagick-7.0.0/index.html">About ImageMagick</a>
-</div>
-<div class="menu">
-  <a title="Binary Releases" href="../../../../www/binary-releases.html">Binary Releases</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: Unix" href="../../../../www/binary-releases.html#unix">Unix</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: MacOS X" href="../../../../www/binary-releases.html#macosx">Mac OS X</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: iOS" href="../../../../www/binary-releases.html#iOS">iOS</a>
-</div>
-<div class="sub">
-    <a title="Binary Release: Windows" href="../../../../www/binary-releases.html#windows">Windows</a>
-</div>
-<div class="sep"></div>
-<div class="menu">
-  <a title="Command-line Tools" href="../../../../www/command-line-tools.html">Command-line Tools</a>
-</div>
-<div class="sub">
-    <a title="Command-line Tools: Processing" href="../../../../www/command-line-processing.html">Processing</a>
-</div>
-<div class="sub">
-    <a title="Command-line Tools: Options" href="../../../../www/command-line-options.html">Options</a>
-</div>
-<div class="sub">
-    <a title="Command-line Tools: Usage" href="http://www.imagemagick.org/Usage/">Usage</a>
-</div>
-<div class="menu">
-  <a title="Program Interfaces" href="../../../../www/api.html">Program Interfaces</a>
-</div>
-<div class="sub">
-    <a title="Program Interface: MagickWand" href="../../../../www/magick-wand.html">MagickWand</a>
-</div>
-<div class="sub">
-    <a title="Program Interface: MagickCore" href="../../../../www/magick-core.html">MagickCore</a>
-</div>
-<div class="sub">
-    <a title="Program Interface: PerlMagick" href="../../../../www/perl-magick.html">PerlMagick</a>
-</div>
-<div class="sub">
-    <a title="Program Interface: Magick++" href="../../../../www/magick++.html">Magick++</a>
-</div>
-<div class="sep"></div>
-<div  class="menu">
-   <a title="Install from Source" href="../../../../www/install-source.html">Install from Source</a>
-</div>
-<div class="sub">
-    <a title="Install from Source: Unix" href="../../../../www/install-source.html#unix">Unix</a>
-</div>
-<div class="sub">
-    <a title="Install from Source: Windows" href="../../../../www/install-source.html#windows">Windows</a>
- </div>
-<div class="menu">
-  <a title="Resources" href="../../../../www/resources.html">Resources</a>
-</div>
-<div class="menu">
-  <a title="Architecture" href="../../../../www/architecture.html">Architecture</a>
-</div>
-<div class="menu">
-  <a title="Download" href="../../../../www/download.html">Download</a>
-</div>
-<div class="sep"></div>
-<div class="menu">
-  <a title="Search" href="http://www.imagemagick.org/http://www.imagemagick.org/script/search.php">Search</a>
-</div>
-<div class="sep"></div>
-<div class="menu">
-  <a title="Site Map" href="../../../../www/sitemap.html">Site Map</a>
-</div>
-<div  class="sub">
-  <a title="Site Map: Links" href="../../../../www/links.html">Links</a>
-</div>
-<div class="sep"></div>
-</div>
-
-<div class="eastbar">
-  <script type="text/javascript">
-    /* <![CDATA[ */
-    window.___gcfg = {
-      lang: 'en-US'
-    };
-
-    (function() {
-      var po = document.createElement('offline-script');
-      po.type = 'text/javascript';
-      po.async = true;
-      po.src = 'https://apis.google.com/js/plusone.js';
-      var script = document.getElementsByTagName('offline-script')[0];
-      script.parentNode.insertBefore(po, script);
-    })();
-    var gplusone = document.getElementById("gplusone");
-    gplusone.setAttribute("data-size","medium");
-    gplusone.setAttribute("data-count","true");
-    /* ]]> */
-  </script>
-  <script type="text/javascript">
-    /* <![CDATA[ */
-    (function() {
-        var po = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
-        po.type = 'text/javascript';
-        po.async = true;
-        po.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
-        var script = document.getElementsByTagName('offline-script')[0];
-        script.parentNode.insertBefore(po, script);
-    })();
-    /* ]]> */
-  </script>
-  <div> <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="http://www.imagemagick.org/"></a></div>
-  <noscript>
-    <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
-    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" width="93" height="20" border="0" /></a>
-  </noscript>
-  <div class="g-plusone" data-size="standard" data-count="true"></div>
-</div>
-
+<body>
 <div class="main">
+<div class="magick-masthead">
+  <div class="container">
+    <script type="text/javascript">
+    <!--
+      google_ad_client = "pub-3129977114552745";
+      google_ad_slot = "5439289906";
+      google_ad_width = 728;
+      google_ad_height = 90;
+    //-->
+    </script>
+    <center><script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+    </script></center>
+    <nav class="magick-nav">
+      <a class="magick-nav-item " href="../../index.html">Home</a>
+      <a class="magick-nav-item " href="../../www/binary-releases.html">Downloads</a>
+      <a class="magick-nav-item " href="../../www/command-line-tools.html">Tools</a>
+      <a class="magick-nav-item " href="../../www/command-line-options.html">Options</a>
+      <a class="magick-nav-item " href="../../www/api.html">Development</a>
+      <a class="magick-nav-item" href="http://www.imagemagick.org/discourse-server/">Community</a>
+      <a class="magick-nav-item navbar-right " href="http://www.imagemagick.org/script/search.php">Search</a>
+    </nav>
+  </div>
+</div>
+<div class="container">
+<p class="text-center"><a href="exception.html#AcquireExceptionInfo">AcquireExceptionInfo</a> • <a href="exception.html#ClearMagickException">ClearMagickException</a> • <a href="exception.html#CatchException">CatchException</a> • <a href="exception.html#CloneExceptionInfo">CloneExceptionInfo</a> • <a href="exception.html#DestroyExceptionInfo">DestroyExceptionInfo</a> • <a href="exception.html#GetExceptionMessage">GetExceptionMessage</a> • <a href="exception.html#GetLocaleExceptionMessage">GetLocaleExceptionMessage</a> • <a href="exception.html#InheritException">InheritException</a> • <a href="exception.html#InitializeExceptionInfo">InitializeExceptionInfo</a> • <a href="exception.html#MagickError">MagickError</a> • <a href="exception.html#MagickFatalError">MagickFatalError</a> • <a href="exception.html#MagickWarning">MagickWarning</a> • <a href="exception.html#SetErrorHandler">SetErrorHandler</a> • <a href="exception.html#SetFatalErrorHandler">SetFatalErrorHandler</a> • <a href="exception.html#SetWarningHandler">SetWarningHandler</a> • <a href="exception.html#ThrowException">ThrowException</a></p>
 
-<h1>Module exception Methods</h1>
-<p class="navigation-index">[<a href="exception.html#AcquireExceptionInfo">AcquireExceptionInfo</a> &#8226; <a href="exception.html#ClearMagickException">ClearMagickException</a> &#8226; <a href="exception.html#CatchException">CatchException</a> &#8226; <a href="exception.html#DestroyExceptionInfo">DestroyExceptionInfo</a> &#8226; <a href="exception.html#GetExceptionInfo">GetExceptionInfo</a> &#8226; <a href="exception.html#GetExceptionMessage">GetExceptionMessage</a> &#8226; <a href="exception.html#GetLocaleExceptionMessage">GetLocaleExceptionMessage</a> &#8226; <a href="exception.html#InheritException">InheritException</a> &#8226; <a href="exception.html#MagickError">MagickError</a> &#8226; <a href="exception.html#MagickFatalError">MagickFatalError</a> &#8226; <a href="exception.html#MagickWarning">MagickWarning</a> &#8226; <a href="exception.html#SetErrorHandler">SetErrorHandler</a> &#8226; <a href="exception.html#SetFatalErrorHandler">SetFatalErrorHandler</a> &#8226; <a href="exception.html#SetWarningHandler">SetWarningHandler</a> &#8226; <a href="exception.html#ThrowException">ThrowException</a>]</p>
-
+<div class="magick-header">
 <h2><a href="http://www.imagemagick.org/api/MagickCore/exception_8c.html" id="AcquireExceptionInfo">AcquireExceptionInfo</a></h2>
-<div class="doc-section">
 
 <p>AcquireExceptionInfo() allocates the ExceptionInfo structure.</p>
 
 <p>The format of the AcquireExceptionInfo method is:</p>
 
-<pre class="code">
-  ExceptionInfo *AcquireExceptionInfo(void)
+<pre class="text">
+ExceptionInfo *AcquireExceptionInfo(void)
 </pre>
 
- </div>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/exception_8c.html" id="ClearMagickException">ClearMagickException</a></h2>
-<div class="doc-section">
 
 <p>ClearMagickException() clears any exception that may not have been caught yet.</p>
 
 <p>The format of the ClearMagickException method is:</p>
 
-<pre class="code">
-  ClearMagickException(ExceptionInfo *exception)
+<pre class="text">
+ClearMagickException(ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
 
-<h5>exception</h5>
-<p>the exception info.</p>
+<dd>
+</dd>
 
- </div>
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>exception</dt>
+<dd>the exception info. </dd>
+
+<dd>  </dd>
+</dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/exception_8c.html" id="CatchException">CatchException</a></h2>
-<div class="doc-section">
 
 <p>CatchException() returns if no exceptions is found otherwise it reports the exception as a warning, error, or fatal depending on the severity.</p>
 
 <p>The format of the CatchException method is:</p>
 
-<pre class="code">
-  CatchException(ExceptionInfo *exception)
+<pre class="text">
+CatchException(ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
 
-<h5>exception</h5>
-<p>the exception info.</p>
+<dd>
+</dd>
 
- </div>
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>exception</dt>
+<dd>the exception info. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/exception_8c.html" id="CloneExceptionInfo">CloneExceptionInfo</a></h2>
+
+<p>CloneExceptionInfo() clones the ExceptionInfo structure.</p>
+
+<p>The format of the CloneExceptionInfo method is:</p>
+
+<pre class="text">
+ExceptionInfo *CloneException(ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>exception</dt>
+<dd>the exception info. </dd>
+
+<dd>  </dd>
+</dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/exception_8c.html" id="DestroyExceptionInfo">DestroyExceptionInfo</a></h2>
-<div class="doc-section">
 
 <p>DestroyExceptionInfo() deallocates memory associated with an exception.</p>
 
 <p>The format of the DestroyExceptionInfo method is:</p>
 
-<pre class="code">
-  ExceptionInfo *DestroyExceptionInfo(ExceptionInfo *exception)
+<pre class="text">
+ExceptionInfo *DestroyExceptionInfo(ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
 
-<h5>exception</h5>
-<p>the exception info.</p>
+<dd>
+</dd>
 
- </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/exception_8c.html" id="GetExceptionInfo">GetExceptionInfo</a></h2>
-<div class="doc-section">
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>exception</dt>
+<dd>the exception info. </dd>
 
-<p>GetExceptionInfo() initializes an exception to default values.</p>
-
-<p>The format of the GetExceptionInfo method is:</p>
-
-<pre class="code">
-  GetExceptionInfo(ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<h5>exception</h5>
-<p>the exception info.</p>
-
- </div>
+<dd>  </dd>
+</dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/exception_8c.html" id="GetExceptionMessage">GetExceptionMessage</a></h2>
-<div class="doc-section">
 
 <p>GetExceptionMessage() returns the error message defined by the specified error code.</p>
 
 <p>The format of the GetExceptionMessage method is:</p>
 
-<pre class="code">
-  char *GetExceptionMessage(const int error)
+<pre class="text">
+char *GetExceptionMessage(const int error)
 </pre>
 
 <p>A description of each parameter follows:</p>
 
-<h5>error</h5>
-<p>the error code.</p>
+<dd>
+</dd>
 
- </div>
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>error</dt>
+<dd>the error code. </dd>
+
+<dd>  </dd>
+</dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/exception_8c.html" id="GetLocaleExceptionMessage">GetLocaleExceptionMessage</a></h2>
-<div class="doc-section">
 
 <p>GetLocaleExceptionMessage() converts a enumerated exception severity and tag to a message in the current locale.</p>
 
 <p>The format of the GetLocaleExceptionMessage method is:</p>
 
-<pre class="code">
-  const char *GetLocaleExceptionMessage(const ExceptionType severity,
-    const char *tag)
+<pre class="text">
+const char *GetLocaleExceptionMessage(const ExceptionType severity,
+  const char *tag)
 </pre>
 
 <p>A description of each parameter follows:</p>
 
-<h5>severity</h5>
-<p>the severity of the exception.</p>
+<dd>
+</dd>
 
-<h5>tag</h5>
-<p>the message tag.</p>
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>severity</dt>
+<dd>the severity of the exception. </dd>
 
- </div>
+<dd> </dd>
+<dt>tag</dt>
+<dd>the message tag. </dd>
+
+<dd>  </dd>
+</dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/exception_8c.html" id="InheritException">InheritException</a></h2>
-<div class="doc-section">
 
 <p>InheritException() inherits an exception from a related exception.</p>
 
 <p>The format of the InheritException method is:</p>
 
-<pre class="code">
-  InheritException(ExceptionInfo *exception,const ExceptionInfo *relative)
+<pre class="text">
+InheritException(ExceptionInfo *exception,const ExceptionInfo *relative)
 </pre>
 
 <p>A description of each parameter follows:</p>
 
-<h5>exception</h5>
-<p>the exception info.</p>
+<dd>
+</dd>
 
-<h5>relative</h5>
-<p>the related exception info.</p>
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>exception</dt>
+<dd>the exception info. </dd>
 
- </div>
+<dd> </dd>
+<dt>relative</dt>
+<dd>the related exception info. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/exception_8c.html" id="InitializeExceptionInfo">InitializeExceptionInfo</a></h2>
+
+<p>InitializeExceptionInfo() initializes an exception to default values.</p>
+
+<p>The format of the InitializeExceptionInfo method is:</p>
+
+<pre class="text">
+InitializeExceptionInfo(ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>exception</dt>
+<dd>the exception info. </dd>
+
+<dd>  </dd>
+</dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/exception_8c.html" id="MagickError">MagickError</a></h2>
-<div class="doc-section">
 
 <p>MagickError() calls the exception handler methods with an error reason.</p>
 
 <p>The format of the MagickError method is:</p>
 
-<pre class="code">
-  void MagickError(const ExceptionType error,const char *reason,
-    const char *description)
+<pre class="text">
+void MagickError(const ExceptionType error,const char *reason,
+  const char *description)
 </pre>
 
 <p>A description of each parameter follows:</p>
 
-<h5>exception</h5>
-<p>Specifies the numeric error category.</p>
+<dd>
+</dd>
 
-<h5>reason</h5>
-<p>Specifies the reason to display before terminating the program.</p>
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>exception</dt>
+<dd>Specifies the numeric error category. </dd>
 
-<h5>description</h5>
-<p>Specifies any description to the reason.</p>
+<dd> </dd>
+<dt>reason</dt>
+<dd>Specifies the reason to display before terminating the program. </dd>
 
- </div>
+<dd> </dd>
+<dt>description</dt>
+<dd>Specifies any description to the reason. </dd>
+
+<dd>  </dd>
+</dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/exception_8c.html" id="MagickFatalError">MagickFatalError</a></h2>
-<div class="doc-section">
 
 <p>MagickFatalError() calls the fatal exception handler methods with an error reason.</p>
 
 <p>The format of the MagickError method is:</p>
 
-<pre class="code">
-  void MagickFatalError(const ExceptionType error,const char *reason,
-    const char *description)
+<pre class="text">
+void MagickFatalError(const ExceptionType error,const char *reason,
+  const char *description)
 </pre>
 
 <p>A description of each parameter follows:</p>
 
-<h5>exception</h5>
-<p>Specifies the numeric error category.</p>
+<dd>
+</dd>
 
-<h5>reason</h5>
-<p>Specifies the reason to display before terminating the program.</p>
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>exception</dt>
+<dd>Specifies the numeric error category. </dd>
 
-<h5>description</h5>
-<p>Specifies any description to the reason.</p>
+<dd> </dd>
+<dt>reason</dt>
+<dd>Specifies the reason to display before terminating the program. </dd>
 
- </div>
+<dd> </dd>
+<dt>description</dt>
+<dd>Specifies any description to the reason. </dd>
+
+<dd>  </dd>
+</dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/exception_8c.html" id="MagickWarning">MagickWarning</a></h2>
-<div class="doc-section">
 
 <p>MagickWarning() calls the warning handler methods with a warning reason.</p>
 
 <p>The format of the MagickWarning method is:</p>
 
-<pre class="code">
-  void MagickWarning(const ExceptionType warning,const char *reason,
-    const char *description)
+<pre class="text">
+void MagickWarning(const ExceptionType warning,const char *reason,
+  const char *description)
 </pre>
 
 <p>A description of each parameter follows:</p>
 
-<h5>warning</h5>
-<p>the warning severity.</p>
+<dd>
+</dd>
 
-<h5>reason</h5>
-<p>Define the reason for the warning.</p>
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>warning</dt>
+<dd>the warning severity. </dd>
 
-<h5>description</h5>
-<p>Describe the warning.</p>
+<dd> </dd>
+<dt>reason</dt>
+<dd>Define the reason for the warning. </dd>
 
- </div>
+<dd> </dd>
+<dt>description</dt>
+<dd>Describe the warning. </dd>
+
+<dd>  </dd>
+</dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/exception_8c.html" id="SetErrorHandler">SetErrorHandler</a></h2>
-<div class="doc-section">
 
 <p>SetErrorHandler() sets the exception handler to the specified method and returns the previous exception handler.</p>
 
 <p>The format of the SetErrorHandler method is:</p>
 
-<pre class="code">
-  ErrorHandler SetErrorHandler(ErrorHandler handler)
+<pre class="text">
+ErrorHandler SetErrorHandler(ErrorHandler handler)
 </pre>
 
 <p>A description of each parameter follows:</p>
 
-<h5>handler</h5>
-<p>the method to handle errors.</p>
+<dd>
+</dd>
 
- </div>
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>handler</dt>
+<dd>the method to handle errors. </dd>
+
+<dd>  </dd>
+</dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/exception_8c.html" id="SetFatalErrorHandler">SetFatalErrorHandler</a></h2>
-<div class="doc-section">
 
 <p>SetFatalErrorHandler() sets the fatal exception handler to the specified method and returns the previous fatal exception handler.</p>
 
 <p>The format of the SetErrorHandler method is:</p>
 
-<pre class="code">
-  ErrorHandler SetErrorHandler(ErrorHandler handler)
+<pre class="text">
+ErrorHandler SetErrorHandler(ErrorHandler handler)
 </pre>
 
 <p>A description of each parameter follows:</p>
 
-<h5>handler</h5>
-<p>the method to handle errors.</p>
+<dd>
+</dd>
 
- </div>
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>handler</dt>
+<dd>the method to handle errors. </dd>
+
+<dd>  </dd>
+</dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/exception_8c.html" id="SetWarningHandler">SetWarningHandler</a></h2>
-<div class="doc-section">
 
 <p>SetWarningHandler() sets the warning handler to the specified method and returns the previous warning handler.</p>
 
 <p>The format of the SetWarningHandler method is:</p>
 
-<pre class="code">
-  ErrorHandler SetWarningHandler(ErrorHandler handler)
+<pre class="text">
+ErrorHandler SetWarningHandler(ErrorHandler handler)
 </pre>
 
 <p>A description of each parameter follows:</p>
 
-<h5>handler</h5>
-<p>the method to handle warnings.</p>
+<dd>
+</dd>
 
- </div>
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>handler</dt>
+<dd>the method to handle warnings. </dd>
+
+<dd>  </dd>
+</dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/exception_8c.html" id="ThrowException">ThrowException</a></h2>
-<div class="doc-section">
 
 <p>ThrowException() throws an exception with the specified severity code, reason, and optional description.</p>
 
 <p>The format of the ThrowException method is:</p>
 
-<pre class="code">
-  MagickBooleanType ThrowException(ExceptionInfo *exception,
-    const ExceptionType severity,const char *reason,
-    const char *description)
+<pre class="text">
+MagickBooleanType ThrowException(ExceptionInfo *exception,
+  const ExceptionType severity,const char *reason,
+  const char *description)
 </pre>
 
 <p>A description of each parameter follows:</p>
 
-<h5>exception</h5>
-<p>the exception info.</p>
+<dd>
+</dd>
 
-<h5>severity</h5>
-<p>the severity of the exception.</p>
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>exception</dt>
+<dd>the exception info. </dd>
 
-<h5>reason</h5>
-<p>the reason for the exception.</p>
+<dd> </dd>
+<dt>severity</dt>
+<dd>the severity of the exception. </dd>
 
-<h5>description</h5>
-<p>the exception description.</p>
+<dd> </dd>
+<dt>reason</dt>
+<dd>the reason for the exception. </dd>
 
- </div>
+<dd> </dd>
+<dt>description</dt>
+<dd>the exception description. </dd>
 
+<dd>  </dd>
+</dl>
 </div>
+  <footer class="magick-footer">
+    <div class="magick-nav-item navbar-left">
+      <a href="../../www/support.html">Donations</a>
+    </div>
+    <div class="magick-nav-item navbar-right">
+      <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="../../index.html"></a>
+      <noscript>
+        <a href="http://flattr.com/thing/947300/Convert-Edit-And-Compose-Images" target="_blank">
+        <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" border="0"></a>
+      </noscript>
+    </div>
+    <p><a href="../../www/sitemap.html">Sitemap</a> •
+    <a href="../../www/links.html">Related</a> •
+    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Image Studio</a> •
+    <a href="http://jqmagick.imagemagick.org/">JqMagick</a> •
+    <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a>
+</p>
+    <p><a href="exception.html#">Back to top</a> •
+    <a href="../../www/contact.html">Contact Us</a></p>
+  </footer>
+</div><!-- /.container -->
 
-<div id="linkbar">
-    <span id="linkbar-west"> </span>
-
-    <span id="linkbar-center">
-      <a href="../../../../discourse-server">Discourse Server</a> •
-      <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-      <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a> •
-      <a href="http://jqmagick.imagemagick.org/">JqMagick</a>
-    </span>
-    <span id="linkbar-east"> </span>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+  <script src="../../js/bootstrap.min.js"></script>
+  <script type="text/javascript">
+    /*  */
+    (function() {
+        var s = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
+        s.type = 'text/javascript';
+        s.async = true;
+        s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
+        t.parentNode.insertBefore(s, t);
+    })();
+    /*  */
+  </script>
 </div>
-<div class="footer">
-  <span id="footer-west">©  1999-2014 ImageMagick Studio LLC</span>
-  <span id="footer-east"> <a href="../../../../www/contact.html">Contact the Wizards</a></span>
-</div>
-<div style="clear: both; margin: 0; width: 100%; "></div>
 </body>
-</html>
+</html><!-- Magick Cache 4th May 2015 18:48 -->

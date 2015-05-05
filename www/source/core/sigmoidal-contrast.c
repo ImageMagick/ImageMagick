@@ -87,7 +87,7 @@ int main(int argc,char **argv)
   */
   MagickCoreGenesis(*argv,MagickTrue);
   image_info=AcquireImageInfo();
-  (void) CopyMagickString(image_info->filename,argv[1],MagickPathExtent);
+  (void) CopyMagickString(image_info->filename,argv[1],MaxTextExtent);
   exception=AcquireExceptionInfo();
   contrast_image=ReadImage(image_info,exception);
   if (contrast_image == (Image *) NULL)
