@@ -3855,7 +3855,8 @@ RestoreMSCWarning
     image->rows ? (double) image->rows-1 : bounds.y2;
   status=MagickTrue;
   image_view=AcquireAuthenticCacheView(image,exception);
-  if (primitive_info->coordinates == 1)
+  if ((primitive_info->coordinates == 1) ||
+      (polygon_info[0]->number_edges == 0))
     {
       /*
         Draw point.
@@ -3902,7 +3903,7 @@ RestoreMSCWarning
           if ((x == (ssize_t) ceil(primitive_info->point.x-0.5)) &&
               (y == (ssize_t) ceil(primitive_info->point.y-0.5)))
             {
-              (void) GetStrokeColor(draw_info,x,y,&pixel,exception);
+              (void) GetFillColor(draw_info,x,y,&pixel,exception);
               SetPixelViaPixelInfo(image,&pixel,q);
             }
           q+=GetPixelChannels(image);
