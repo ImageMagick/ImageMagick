@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ImageMagick: Exceptions</title>
+  <title>ImageMagick: MagickCore, C API for ImageMagick: Dealing with Exceptions</title>
   <meta http-equiv="content-language" content="en-US">
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   <meta http-equiv="reply-to" content="magick-users@imagemagick.org">
@@ -12,7 +12,7 @@
   <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.">
   <meta name="application-url" content="http://www.imagemagick.org">
   <meta name="generator" content="PHP">
-  <meta name="keywords" content="exceptions, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert">
+  <meta name="keywords" content="magickcore, c, api, for, imagemagick:, dealing, with, exceptions, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert">
   <meta name="rating" content="GENERAL">
   <meta name="robots" content="INDEX, FOLLOW">
   <meta name="generator" content="ImageMagick Studio LLC">
@@ -44,213 +44,413 @@
     </script></center>
     <nav class="magick-nav">
       <a class="magick-nav-item " href="../index.html">Home</a>
-      <a class="magick-nav-item " href="binary-releases.html">Downloads</a>
-      <a class="magick-nav-item " href="command-line-tools.html">Tools</a>
-      <a class="magick-nav-item " href="command-line-options.html">Options</a>
-      <a class="magick-nav-item " href="api.html">Development</a>
+      <a class="magick-nav-item " href="../www/binary-releases.html">Downloads</a>
+      <a class="magick-nav-item " href="../www/command-line-tools.html">Tools</a>
+      <a class="magick-nav-item " href="../www/command-line-options.html">Options</a>
+      <a class="magick-nav-item " href="../www/api.html">Development</a>
       <a class="magick-nav-item" href="http://www.imagemagick.org/discourse-server/">Community</a>
-      <a class="magick-nav-item navbar-right " href="search.html">Search</a>
+      <a class="magick-nav-item navbar-right " href="../www/search.html">Search</a>
     </nav>
   </div>
 </div>
 <div class="container">
+<p class="text-center"><a href="exception.html#AcquireExceptionInfo">AcquireExceptionInfo</a> • <a href="exception.html#ClearMagickException">ClearMagickException</a> • <a href="exception.html#CatchException">CatchException</a> • <a href="exception.html#CloneExceptionInfo">CloneExceptionInfo</a> • <a href="exception.html#DestroyExceptionInfo">DestroyExceptionInfo</a> • <a href="exception.html#GetExceptionMessage">GetExceptionMessage</a> • <a href="exception.html#GetLocaleExceptionMessage">GetLocaleExceptionMessage</a> • <a href="exception.html#InheritException">InheritException</a> • <a href="exception.html#InitializeExceptionInfo">InitializeExceptionInfo</a> • <a href="exception.html#MagickError">MagickError</a> • <a href="exception.html#MagickFatalError">MagickFatalError</a> • <a href="exception.html#MagickWarning">MagickWarning</a> • <a href="exception.html#SetErrorHandler">SetErrorHandler</a> • <a href="exception.html#SetFatalErrorHandler">SetFatalErrorHandler</a> • <a href="exception.html#SetWarningHandler">SetWarningHandler</a> • <a href="exception.html#ThrowException">ThrowException</a></p>
+
 <div class="magick-header">
+<h2><a href="http://www.imagemagick.org/api/MagickCore/exception_8c.html" id="AcquireExceptionInfo">AcquireExceptionInfo</a></h2>
 
-<p class="lead magick-description">ImageMagick returns a status of 0 whenever a command or algorithm successfully complete without complaint.  A warning code generally is typically just a notice that something unusual occurred but the command or algorithm still completed and most likely the results are still usable.  An error means the command or algorithm could not complete as expected and any results are unreliable.  A fatal error means the command or algorithm could not complete and the process exits prematurely and no results are returned.</p>
+<p>AcquireExceptionInfo() allocates the ExceptionInfo structure.</p>
 
-<table class="table table-condensed table-striped">
-  <caption>ImageMagick Error and Warning Codes</caption>
-  <tbody>
-  <tr>
-    <th>Domain</th>
-    <th>Description</th>
-    <th>Warning</th>
-    <th>Error</th>
-    <th>Fatal Error</th>
-  </tr>
+<p>The format of the AcquireExceptionInfo method is:</p>
 
-  <tr>
-    <td>Success</td>
-    <td>the command or algorithm completed successfully without complaint</td>
-    <td>0</td>
-    <td>0</td>
-    <td>0</td>
-  </tr>
+<pre class="text">
+ExceptionInfo *AcquireExceptionInfo(void)
+</pre>
 
-  <tr>
-    <td>Resource Limit</td>
-    <td>a program resource is exhausted (e.g. not enough memory)</td>
-    <td>300</td>
-    <td>400</td>
-    <td>700</td>
-  </tr>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/exception_8c.html" id="ClearMagickException">ClearMagickException</a></h2>
 
-  <tr>
-    <td>Type</td>
-    <td>A font is unavailable; a substitution may have occurred</td>
-    <td>305</td>
-    <td>405</td>
-    <td>705</td>
-  </tr>
+<p>ClearMagickException() clears any exception that may not have been caught yet.</p>
 
-  <tr>
-    <td>Option</td>
-    <td>a command-line option was malformed</td>
-    <td>310</td>
-    <td>410</td>
-    <td>710</td>
-  </tr>
+<p>The format of the ClearMagickException method is:</p>
 
-  <tr>
-    <td>Delegate</td>
-    <td>an ImageMagick <i>delegate</i> failed to complete</td>
-    <td>315</td>
-    <td>415</td>
-    <td>715</td>
-  </tr>
+<pre class="text">
+ClearMagickException(ExceptionInfo *exception)
+</pre>
 
-  <tr>
-    <td>Missing Delegate</td>
-    <td>the image type can not be read or written because the appropriate <i>Delegate</i> is missing</td>
-    <td>320</td>
-    <td>420</td>
-    <td>720</td>
-  </tr>
+<p>A description of each parameter follows:</p>
 
-  <tr>
-    <td>Corrupt Image</td>
-    <td>the image file may be corrupt</td>
-    <td>325</td>
-    <td>425</td>
-    <td>725</td>
-  </tr>
+<dd>
+</dd>
 
-  <tr>
-    <td>FileOpen</td>
-    <td>the image file could not be opened for reading or writing</td>
-    <td>330</td>
-    <td>430</td>
-    <td>730</td>
-  </tr>
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>exception</dt>
+<dd>the exception info. </dd>
 
-  <tr>
-    <td>Blob</td>
-    <td>a binary large object could not be allocated, read, or written</td>
-    <td>335</td>
-    <td>435</td>
-    <td>735</td>
-  </tr>
+<dd>  </dd>
+</dl>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/exception_8c.html" id="CatchException">CatchException</a></h2>
 
-  <tr>
-    <td>Stream</td>
-    <td>there was a problem reading or writing from a stream</td>
-    <td>340</td>
-    <td>440</td>
-    <td>740</td>
-  </tr>
+<p>CatchException() returns if no exceptions is found otherwise it reports the exception as a warning, error, or fatal depending on the severity.</p>
 
-  <tr>
-    <td>Cache</td>
-    <td>pixels could not be read or written to the pixel cache</td>
-    <td>345</td>
-    <td>445</td>
-    <td>745</td>
-  </tr>
+<p>The format of the CatchException method is:</p>
 
-  <tr>
-    <td>Coder</td>
-    <td>there was a problem with an image coder</td>
-    <td>350</td>
-    <td>450</td>
-    <td>750</td>
-  </tr>
+<pre class="text">
+CatchException(ExceptionInfo *exception)
+</pre>
 
-  <tr>
-    <td>Module</td>
-    <td>there was a problem with an image module</td>
-    <td>355</td>
-    <td>455</td>
-    <td>755</td>
-  </tr>
+<p>A description of each parameter follows:</p>
 
-  <tr>
-    <td>Draw</td>
-    <td>a drawing operation failed</td>
-    <td>360</td>
-    <td>460</td>
-    <td>760</td>
-  </tr>
+<dd>
+</dd>
 
-  <tr>
-    <td>Image</td>
-    <td>the operation could not complete due to an incompatible image</td>
-    <td>365</td>
-    <td>465</td>
-    <td>765</td>
-  </tr>
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>exception</dt>
+<dd>the exception info. </dd>
 
-  <tr>
-    <td>Wand</td>
-    <td>there was a problem specific to the MagickWand API</td>
-    <td>370</td>
-    <td>470</td>
-    <td>770</td>
-  </tr>
+<dd>  </dd>
+</dl>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/exception_8c.html" id="CloneExceptionInfo">CloneExceptionInfo</a></h2>
 
-  <tr>
-    <td>Random</td>
-    <td>there is a problem generating a true or pseudo-random number</td>
-    <td>375</td>
-    <td>475</td>
-    <td>775</td>
-  </tr>
+<p>CloneExceptionInfo() clones the ExceptionInfo structure.</p>
 
-  <tr>
-    <td>XServer</td>
-    <td>an X resource is unavailable</td>
-    <td>380</td>
-    <td>480</td>
-    <td>780</td>
-  </tr>
+<p>The format of the CloneExceptionInfo method is:</p>
 
-  <tr>
-    <td>Monitor</td>
-    <td>there was a problem activating the progress monitor</td>
-    <td>385</td>
-    <td>485</td>
-    <td>785</td>
-  </tr>
+<pre class="text">
+ExceptionInfo *CloneException(ExceptionInfo *exception)
+</pre>
 
-  <tr>
-    <td>Registry</td>
-    <td>there was a problem getting or setting the registry</td>
-    <td>390</td>
-    <td>490</td>
-    <td>790</td>
-  </tr>
+<p>A description of each parameter follows:</p>
 
-  <tr>
-    <td>Configure</td>
-    <td>there was a problem getting a configuration file</td>
-    <td>395</td>
-    <td>495</td>
-    <td>795</td>
-  </tr>
+<dd>
+</dd>
 
-  <tr>
-    <td>Policy</td>
-    <td>a policy denies access to a delegate, coder, filter, path, or resource.</td>
-    <td>399</td>
-    <td>499</td>
-    <td>799</td>
-  </tr>
-  </tbody>
-</table>
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>exception</dt>
+<dd>the exception info. </dd>
 
+<dd>  </dd>
+</dl>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/exception_8c.html" id="DestroyExceptionInfo">DestroyExceptionInfo</a></h2>
+
+<p>DestroyExceptionInfo() deallocates memory associated with an exception.</p>
+
+<p>The format of the DestroyExceptionInfo method is:</p>
+
+<pre class="text">
+ExceptionInfo *DestroyExceptionInfo(ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>exception</dt>
+<dd>the exception info. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/exception_8c.html" id="GetExceptionMessage">GetExceptionMessage</a></h2>
+
+<p>GetExceptionMessage() returns the error message defined by the specified error code.</p>
+
+<p>The format of the GetExceptionMessage method is:</p>
+
+<pre class="text">
+char *GetExceptionMessage(const int error)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>error</dt>
+<dd>the error code. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/exception_8c.html" id="GetLocaleExceptionMessage">GetLocaleExceptionMessage</a></h2>
+
+<p>GetLocaleExceptionMessage() converts a enumerated exception severity and tag to a message in the current locale.</p>
+
+<p>The format of the GetLocaleExceptionMessage method is:</p>
+
+<pre class="text">
+const char *GetLocaleExceptionMessage(const ExceptionType severity,
+  const char *tag)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>severity</dt>
+<dd>the severity of the exception. </dd>
+
+<dd> </dd>
+<dt>tag</dt>
+<dd>the message tag. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/exception_8c.html" id="InheritException">InheritException</a></h2>
+
+<p>InheritException() inherits an exception from a related exception.</p>
+
+<p>The format of the InheritException method is:</p>
+
+<pre class="text">
+InheritException(ExceptionInfo *exception,const ExceptionInfo *relative)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>exception</dt>
+<dd>the exception info. </dd>
+
+<dd> </dd>
+<dt>relative</dt>
+<dd>the related exception info. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/exception_8c.html" id="InitializeExceptionInfo">InitializeExceptionInfo</a></h2>
+
+<p>InitializeExceptionInfo() initializes an exception to default values.</p>
+
+<p>The format of the InitializeExceptionInfo method is:</p>
+
+<pre class="text">
+InitializeExceptionInfo(ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>exception</dt>
+<dd>the exception info. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/exception_8c.html" id="MagickError">MagickError</a></h2>
+
+<p>MagickError() calls the exception handler methods with an error reason.</p>
+
+<p>The format of the MagickError method is:</p>
+
+<pre class="text">
+void MagickError(const ExceptionType error,const char *reason,
+  const char *description)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>exception</dt>
+<dd>Specifies the numeric error category. </dd>
+
+<dd> </dd>
+<dt>reason</dt>
+<dd>Specifies the reason to display before terminating the program. </dd>
+
+<dd> </dd>
+<dt>description</dt>
+<dd>Specifies any description to the reason. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/exception_8c.html" id="MagickFatalError">MagickFatalError</a></h2>
+
+<p>MagickFatalError() calls the fatal exception handler methods with an error reason.</p>
+
+<p>The format of the MagickError method is:</p>
+
+<pre class="text">
+void MagickFatalError(const ExceptionType error,const char *reason,
+  const char *description)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>exception</dt>
+<dd>Specifies the numeric error category. </dd>
+
+<dd> </dd>
+<dt>reason</dt>
+<dd>Specifies the reason to display before terminating the program. </dd>
+
+<dd> </dd>
+<dt>description</dt>
+<dd>Specifies any description to the reason. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/exception_8c.html" id="MagickWarning">MagickWarning</a></h2>
+
+<p>MagickWarning() calls the warning handler methods with a warning reason.</p>
+
+<p>The format of the MagickWarning method is:</p>
+
+<pre class="text">
+void MagickWarning(const ExceptionType warning,const char *reason,
+  const char *description)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>warning</dt>
+<dd>the warning severity. </dd>
+
+<dd> </dd>
+<dt>reason</dt>
+<dd>Define the reason for the warning. </dd>
+
+<dd> </dd>
+<dt>description</dt>
+<dd>Describe the warning. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/exception_8c.html" id="SetErrorHandler">SetErrorHandler</a></h2>
+
+<p>SetErrorHandler() sets the exception handler to the specified method and returns the previous exception handler.</p>
+
+<p>The format of the SetErrorHandler method is:</p>
+
+<pre class="text">
+ErrorHandler SetErrorHandler(ErrorHandler handler)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>handler</dt>
+<dd>the method to handle errors. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/exception_8c.html" id="SetFatalErrorHandler">SetFatalErrorHandler</a></h2>
+
+<p>SetFatalErrorHandler() sets the fatal exception handler to the specified method and returns the previous fatal exception handler.</p>
+
+<p>The format of the SetErrorHandler method is:</p>
+
+<pre class="text">
+ErrorHandler SetErrorHandler(ErrorHandler handler)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>handler</dt>
+<dd>the method to handle errors. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/exception_8c.html" id="SetWarningHandler">SetWarningHandler</a></h2>
+
+<p>SetWarningHandler() sets the warning handler to the specified method and returns the previous warning handler.</p>
+
+<p>The format of the SetWarningHandler method is:</p>
+
+<pre class="text">
+ErrorHandler SetWarningHandler(ErrorHandler handler)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>handler</dt>
+<dd>the method to handle warnings. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/exception_8c.html" id="ThrowException">ThrowException</a></h2>
+
+<p>ThrowException() throws an exception with the specified severity code, reason, and optional description.</p>
+
+<p>The format of the ThrowException method is:</p>
+
+<pre class="text">
+MagickBooleanType ThrowException(ExceptionInfo *exception,
+  const ExceptionType severity,const char *reason,
+  const char *description)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>exception</dt>
+<dd>the exception info. </dd>
+
+<dd> </dd>
+<dt>severity</dt>
+<dd>the severity of the exception. </dd>
+
+<dd> </dd>
+<dt>reason</dt>
+<dd>the reason for the exception. </dd>
+
+<dd> </dd>
+<dt>description</dt>
+<dd>the exception description. </dd>
+
+<dd>  </dd>
+</dl>
 </div>
   <footer class="magick-footer">
     <div class="magick-nav-item navbar-left">
-      <a href="support.html">Donations</a>
+      <a href="../www/support.html">Donate</a>
     </div>
     <div class="magick-nav-item navbar-right">
       <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="../index.html"></a>
@@ -259,14 +459,14 @@
         <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" border="0"></a>
       </noscript>
     </div>
-    <p><a href="sitemap.html">Sitemap</a> •
-    <a href="links.html">Related</a> •
+    <p><a href="../www/sitemap.html">Sitemap</a> •
+    <a href="../www/links.html">Related</a> •
     <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Image Studio</a> •
     <a href="http://jqmagick.imagemagick.org/">JqMagick</a> •
     <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a>
 </p>
     <p><a href="exception.html#">Back to top</a> •
-    <a href="contact.html">Contact Us</a></p>
+    <a href="../www/http://www.imagemagick.org/script/contact.php">Contact Us</a></p>
   </footer>
 </div><!-- /.container -->
 
