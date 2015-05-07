@@ -24,7 +24,7 @@
 2015-04-19  6.9.1-2 Cristy  <quetzlzacatenango@image...>
   * New version 6.9.1-2, SVN revision 18429.
 
-2015-04-09  6.9.0-2 Glenn Randers-Pehrson <glennrp@image...>
+2015-04-09  6.9.1-2 Glenn Randers-Pehrson <glennrp@image...>
   * Avoid using a NULL alpha_image or color_image in the JNG decoder.
 
 2015-04-07  6.9.1-2 Cristy  <quetzlzacatenango@image...>
