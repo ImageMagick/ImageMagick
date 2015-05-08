@@ -262,7 +262,8 @@ static Image *ReadTGAImage(const ImageInfo *image_info,
     image->storage_class=PseudoClass;
   image->compression=NoCompression;
   if ((tga_info.image_type == TGARLEColormap) ||
-      (tga_info.image_type == TGARLEMonochrome))
+      (tga_info.image_type == TGARLEMonochrome) ||
+      (tga_info.image_type == TGARLERGB))
     image->compression=RLECompression;
   if (image->storage_class == PseudoClass)
     {
