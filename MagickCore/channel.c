@@ -503,7 +503,8 @@ MagickExport Image *CombineImages(const Image *image,
       combine_image=DestroyImage(combine_image);
       return((Image *) NULL);
     }
-  (void) SetImageColorspace(combine_image,colorspace,exception);
+  (void) SetImageColorspace(combine_image,colorspace == UndefinedColorspace ?
+    sRGBColorspace : colorspace,exception);
   if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
     combine_image->alpha_trait=BlendPixelTrait;
   /*
