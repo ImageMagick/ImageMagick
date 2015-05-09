@@ -7676,8 +7676,10 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
               *combine_image;
 
             (void) SyncImagesSettings(mogrify_info,*images,exception);
-            colorspace=(ColorspaceType) ParseCommandOption(
-              MagickColorspaceOptions,MagickFalse,argv[i+1]);
+            colorspace=UndefinedColorspace;
+            if (*option == '-')
+              colorspace=(ColorspaceType) ParseCommandOption(
+                MagickColorspaceOptions,MagickFalse,argv[i+1]);
             combine_image=CombineImages(*images,colorspace,exception);
             if (combine_image == (Image *) NULL)
               {

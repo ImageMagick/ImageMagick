@@ -48,7 +48,7 @@ extern "C" {
 #define MagickppLibAddendum  "-1"
 #define MagickppLibInterface  0
 #define MagickppLibMinInterface  0
-#define MagickReleaseDate  "2015-05-05"
+#define MagickReleaseDate  "2015-05-09"
 #define MagickChangeDate   "20120427"
 #define MagickAuthoritativeLicense  \
   "http://www.imagemagick.org/script/license.php"
