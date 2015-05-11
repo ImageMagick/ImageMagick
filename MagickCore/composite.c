@@ -1688,13 +1688,15 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           case LightenCompositeOp:
           case ModulusSubtractCompositeOp:
           {
-            gamma=1.0-alpha;
+            gamma=PerceptibleReciprocal(1.0-alpha);
             break;
           }
           default:
+          {          
+            gamma=PerceptibleReciprocal(alpha);
             break;
+          }
         }
-        gamma=PerceptibleReciprocal(alpha);
         pixel=Dc;
         switch (compose)
         {
