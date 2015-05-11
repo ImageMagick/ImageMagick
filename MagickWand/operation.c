@@ -3733,7 +3733,7 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
         }
       if (LocaleCompare("combine",option+1) == 0)
         {
-          parse=(ssize_t) UndefinedColorspace;
+          parse=(ssize_t) _images->colorspace;
           if ( IfPlusOp )
             parse=ParseCommandOption(MagickColorspaceOptions,MagickFalse,arg1);
           if (parse < 0)
