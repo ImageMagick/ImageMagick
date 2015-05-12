@@ -3183,11 +3183,16 @@ MagickExport Image *SparseColorImage(const Image *image,
           }
         }
         /* set the color directly back into the source image */
-        if ( channel & RedChannel     ) pixel.red     *= QuantumRange;
-        if ( channel & GreenChannel   ) pixel.green   *= QuantumRange;
-        if ( channel & BlueChannel    ) pixel.blue    *= QuantumRange;
-        if ( channel & IndexChannel   ) pixel.index   *= QuantumRange;
-        if ( channel & OpacityChannel ) pixel.opacity *= QuantumRange;
+        if ( channel & RedChannel     )
+          pixel.red=ClampPixel(QuantumRange*pixel.red);
+        if ( channel & GreenChannel   )
+          pixel.green=ClampPixel(QuantumRange*pixel.green);
+        if ( channel & BlueChannel    )
+          pixel.blue=ClampPixel(QuantumRange*pixel.blue);
+        if ( channel & IndexChannel   )
+          pixel.index=ClampPixel(QuantumRange*pixel.index);
+        if ( channel & OpacityChannel )
+          pixel.opacity=ClampPixel(QuantumRange*pixel.opacity);
         SetPixelPacket(sparse_image,&pixel,q,indexes);
         q++;
         indexes++;
