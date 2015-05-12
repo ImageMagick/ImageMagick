@@ -49,13 +49,13 @@
       <a class="magick-nav-item " href="../command-line-options.html">Options</a>
       <a class="magick-nav-item " href="api.html">Development</a>
       <a class="magick-nav-item" href="http://www.imagemagick.org/discourse-server/">Community</a>
-      <a class="magick-nav-item navbar-right " href="http://www.imagemagick.org/script/search.php">Search</a>
+      <a class="magick-nav-item pull-right " href="http://www.imagemagick.org/script/search.php">Search</a>
     </nav>
   </div>
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="text-center"><a href="transform.html#AutoOrientImage">AutoOrientImage</a> • <a href="transform.html#ChopImage">ChopImage</a> • <a href="transform.html#CropImage">CropImage</a> • <a href="transform.html#CropImageToTiles">CropImageToTiles</a> • <a href="transform.html#ExcerptImage">ExcerptImage</a> • <a href="transform.html#ExtentImage">ExtentImage</a> • <a href="transform.html#FlipImage">FlipImage</a> • <a href="transform.html#FlopImage">FlopImage</a> • <a href="transform.html#RollImage">RollImage</a> • <a href="transform.html#ShaveImage">ShaveImage</a> • <a href="transform.html#SpliceImage">SpliceImage</a> • <a href="transform.html#TransformImage">TransformImage</a> • <a href="transform.html#TransformImages">TransformImages</a> • <a href="transform.html#TransposeImage">TransposeImage</a> • <a href="transform.html#TransverseImage">TransverseImage</a> • <a href="transform.html#TrimImage">TrimImage</a></p>
+<p class="text-center"><a href="transform.html#AutoOrientImage">AutoOrientImage</a> • <a href="transform.html#ChopImage">ChopImage</a> • <a href="transform.html#CropImage">CropImage</a> • <a href="transform.html#CropImageToTiles">CropImageToTiles</a> • <a href="transform.html#ExcerptImage">ExcerptImage</a> • <a href="transform.html#ExtentImage">ExtentImage</a> • <a href="transform.html#FlipImage">FlipImage</a> • <a href="transform.html#FlopImage">FlopImage</a> • <a href="transform.html#RollImage">RollImage</a> • <a href="transform.html#ShaveImage">ShaveImage</a> • <a href="transform.html#SpliceImage">SpliceImage</a> • <a href="transform.html#TransformImage">TransformImage</a> • <a href="transform.html#to%20CropImageToTiles">to CropImageToTiles</a> • <a href="transform.html#TransformImages">TransformImages</a> • <a href="transform.html#TransposeImage">TransposeImage</a> • <a href="transform.html#TransverseImage">TransverseImage</a> • <a href="transform.html#TrimImage">TrimImage</a></p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/transform_8c.html" id="AutoOrientImage">AutoOrientImage</a></h2>
 
@@ -397,17 +397,11 @@ Image *SpliceImage(const Image *image,const RectangleInfo *geometry,
 
 <p>This should only be used for single images.</p>
 
-<p>This function destroys what it assumes to be a single image list. If the input image is part of a larger list, all other images in that list will be simply 'lost', not destroyed.</p>
-
-<p>Also if the crop generates a list of images only the first image is resized. And finally if the crop succeeds and the resize failed, you will get a cropped image, as well as a 'false' or 'failed' report.</p>
-
-<p>This function and should probably be deprecated in favor of direct calls to CropImageToTiles() or ResizeImage(), as appropriate.</p>
-
 <p>The format of the TransformImage method is:</p>
 
 <pre class="text">
 MagickBooleanType TransformImage(Image **image,const char *crop_geometry,
-  const char *image_geometry,ExceptionInfo *exception)
+  const char *image_geometry)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -428,12 +422,12 @@ MagickBooleanType TransformImage(Image **image,const char *crop_geometry,
 <dt>image_geometry</dt>
 <dd>An image geometry string.  This geometry defines the final size of the image. </dd>
 
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
 <dd>  </dd>
 </dl>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/transform_8c.html" id="to_CropImageToTiles">to CropImageToTiles</a></h2>
+
+<p>to CropImageToTiles() or ResizeImage(), as appropriate.</p>
+
 <h2><a href="http://www.imagemagick.org/api/MagickCore/transform_8c.html" id="TransformImages">TransformImages</a></h2>
 
 <p>TransformImages() calls TransformImage() on each image of a sequence.</p>
@@ -442,8 +436,7 @@ MagickBooleanType TransformImage(Image **image,const char *crop_geometry,
 
 <pre class="text">
 MagickBooleanType TransformImages(Image **image,
-  const char *crop_geometry,const char *image_geometry,
-  ExceptionInfo *exception)
+  const char *crop_geometry,const char *image_geometry)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -463,10 +456,6 @@ MagickBooleanType TransformImages(Image **image,
 <dd> </dd>
 <dt>image_geometry</dt>
 <dd>An image geometry string.  This geometry defines the final size of the image. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
 
 <dd>  </dd>
 </dl>
@@ -550,7 +539,7 @@ Image *TrimImage(const Image *image,ExceptionInfo *exception)
 </dl>
 </div>
   <footer class="magick-footer">
-    <div class="magick-nav-item navbar-left">
+    <div class="magick-nav-item pull-left">
       <a href="../support.html">Donate</a>
     </div>
     <p><a href="../sitemap.html">Sitemap</a> •
@@ -568,7 +557,7 @@ Image *TrimImage(const Image *image,ExceptionInfo *exception)
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
   <script src="../js/bootstrap.min.js"></script>
   <script type="text/javascript">
-    /*  */
+    /* <![CDATA[ */
     (function() {
         var s = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
         s.type = 'text/javascript';
@@ -576,7 +565,7 @@ Image *TrimImage(const Image *image,ExceptionInfo *exception)
         s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
         t.parentNode.insertBefore(s, t);
     })();
-    /*  */
+    /* ]]> */
   </script>
 </div>
 </body>

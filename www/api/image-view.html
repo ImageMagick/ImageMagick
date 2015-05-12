@@ -49,13 +49,13 @@
       <a class="magick-nav-item " href="../command-line-options.html">Options</a>
       <a class="magick-nav-item " href="api.html">Development</a>
       <a class="magick-nav-item" href="http://www.imagemagick.org/discourse-server/">Community</a>
-      <a class="magick-nav-item navbar-right " href="http://www.imagemagick.org/script/search.php">Search</a>
+      <a class="magick-nav-item pull-right " href="http://www.imagemagick.org/script/search.php">Search</a>
     </nav>
   </div>
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="text-center"><a href="image-view.html#CloneImageView">CloneImageView</a> • <a href="image-view.html#DestroyImageView">DestroyImageView</a> • <a href="image-view.html#DuplexTransferImageViewIterator">DuplexTransferImageViewIterator</a> • <a href="image-view.html#GetImageViewAuthenticMetacontent">GetImageViewAuthenticMetacontent</a> • <a href="image-view.html#GetImageViewAuthenticPixels">GetImageViewAuthenticPixels</a> • <a href="image-view.html#GetImageViewException">GetImageViewException</a> • <a href="image-view.html#GetImageViewExtent">GetImageViewExtent</a> • <a href="image-view.html#GetImageViewImage">GetImageViewImage</a> • <a href="image-view.html#GetImageViewIterator">GetImageViewIterator</a> • <a href="image-view.html#GetImageViewVirtualMetacontent">GetImageViewVirtualMetacontent</a> • <a href="image-view.html#GetImageViewVirtualPixels">GetImageViewVirtualPixels</a> • <a href="image-view.html#IsImageView">IsImageView</a> • <a href="image-view.html#NewImageView">NewImageView</a> • <a href="image-view.html#NewImageViewRegion">NewImageViewRegion</a> • <a href="image-view.html#SetImageViewDescription">SetImageViewDescription</a> • <a href="image-view.html#SetImageViewIterator">SetImageViewIterator</a> • <a href="image-view.html#TransferImageViewIterator">TransferImageViewIterator</a> • <a href="image-view.html#UpdateImageViewIterator">UpdateImageViewIterator</a></p>
+<p class="text-center"><a href="image-view.html#CloneImageView">CloneImageView</a> • <a href="image-view.html#DestroyImageView">DestroyImageView</a> • <a href="image-view.html#DuplexTransferImageViewIterator">DuplexTransferImageViewIterator</a> • <a href="image-view.html#GetImageViewAuthenticIndexes">GetImageViewAuthenticIndexes</a> • <a href="image-view.html#GetImageViewAuthenticPixels">GetImageViewAuthenticPixels</a> • <a href="image-view.html#GetImageViewException">GetImageViewException</a> • <a href="image-view.html#GetImageViewExtent">GetImageViewExtent</a> • <a href="image-view.html#GetImageViewImage">GetImageViewImage</a> • <a href="image-view.html#GetImageViewIterator">GetImageViewIterator</a> • <a href="image-view.html#GetImageViewVirtualIndexes">GetImageViewVirtualIndexes</a> • <a href="image-view.html#GetImageViewVirtualPixels">GetImageViewVirtualPixels</a> • <a href="image-view.html#IsImageView">IsImageView</a> • <a href="image-view.html#NewImageView">NewImageView</a> • <a href="image-view.html#NewImageViewRegion">NewImageViewRegion</a> • <a href="image-view.html#SetImageViewDescription">SetImageViewDescription</a> • <a href="image-view.html#SetImageViewIterator">SetImageViewIterator</a> • <a href="image-view.html#SetImageViewThreads">SetImageViewThreads</a> • <a href="image-view.html#TransferImageViewIterator">TransferImageViewIterator</a> • <a href="image-view.html#UpdateImageViewIterator">UpdateImageViewIterator</a></p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/image-view_8c.html" id="CloneImageView">CloneImageView</a></h2>
 
@@ -157,15 +157,14 @@ MagickBooleanType DuplexTransferImageViewIterator(ImageView *source,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/image-view_8c.html" id="GetImageViewAuthenticMetacontent">GetImageViewAuthenticMetacontent</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/image-view_8c.html" id="GetImageViewAuthenticIndexes">GetImageViewAuthenticIndexes</a></h2>
 
-<p>GetImageViewAuthenticMetacontent() returns the image view authentic meta-content.</p>
+<p>GetImageViewAuthenticIndexes() returns the image view authentic indexes.</p>
 
 <p>The format of the GetImageViewAuthenticPixels method is:</p>
 
 <pre class="text">
-void *GetImageViewAuthenticMetacontent(
-  const ImageView *image_view)
+IndexPacket *GetImageViewAuthenticIndexes(const ImageView *image_view)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -187,7 +186,7 @@ void *GetImageViewAuthenticMetacontent(
 <p>The format of the GetImageViewAuthenticPixels method is:</p>
 
 <pre class="text">
-Quantum *GetImageViewAuthenticPixels(const ImageView *image_view)
+PixelPacket *GetImageViewAuthenticPixels(const ImageView *image_view)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -319,14 +318,14 @@ MagickBooleanType GetImageViewIterator(ImageView *source,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/image-view_8c.html" id="GetImageViewVirtualMetacontent">GetImageViewVirtualMetacontent</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/image-view_8c.html" id="GetImageViewVirtualIndexes">GetImageViewVirtualIndexes</a></h2>
 
-<p>GetImageViewVirtualMetacontent() returns the image view virtual meta-content.</p>
+<p>GetImageViewVirtualIndexes() returns the image view virtual indexes.</p>
 
-<p>The format of the GetImageViewVirtualMetacontent method is:</p>
+<p>The format of the GetImageViewVirtualIndexes method is:</p>
 
 <pre class="text">
-const void *GetImageViewVirtualMetacontent(
+const IndexPacket *GetImageViewVirtualIndexes(
   const ImageView *image_view)
 </pre>
 
@@ -349,7 +348,7 @@ const void *GetImageViewVirtualMetacontent(
 <p>The format of the GetImageViewVirtualPixels method is:</p>
 
 <pre class="text">
-const Quantum *GetImageViewVirtualPixels(const ImageView *image_view)
+const PixelPacket *GetImageViewVirtualPixels(const ImageView *image_view)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -393,7 +392,7 @@ MagickBooleanType IsImageView(const ImageView *image_view)
 <p>The format of the NewImageView method is:</p>
 
 <pre class="text">
-ImageView *NewImageView(MagickCore *wand,ExceptionInfo *exception)
+ImageView *NewImageView(MagickCore *wand)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -403,12 +402,8 @@ ImageView *NewImageView(MagickCore *wand,ExceptionInfo *exception)
 
 <dd> </dd>
 <dl class="dl-horizontal">
-<dt>image</dt>
-<dd>the image. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
+<dt>wand</dt>
+<dd>the wand. </dd>
 
 <dd>  </dd>
 </dl>
@@ -420,8 +415,7 @@ ImageView *NewImageView(MagickCore *wand,ExceptionInfo *exception)
 
 <pre class="text">
 ImageView *NewImageViewRegion(MagickCore *wand,const ssize_t x,
-  const ssize_t y,const size_t width,const size_t height,
-  ExceptionInfo *exception)
+  const ssize_t y,const size_t width,const size_t height)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -437,10 +431,6 @@ ImageView *NewImageViewRegion(MagickCore *wand,const ssize_t x,
 <dd> </dd>
 <dt>x,y,columns,rows</dt>
 <dd> These values define the perimeter of a extent of pixel_wands view. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
 
 <dd>  </dd>
 </dl>
@@ -514,6 +504,33 @@ MagickBooleanType SetImageViewIterator(ImageView *destination,
 <dd> </dd>
 <dt>context</dt>
 <dd>the user defined context. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/image-view_8c.html" id="SetImageViewThreads">SetImageViewThreads</a></h2>
+
+<p>SetImageViewThreads() sets the number of threads in a thread team.</p>
+
+<p>The format of the SetImageViewDescription method is:</p>
+
+<pre class="text">
+void SetImageViewThreads(ImageView *image_view,
+  const size_t number_threads)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image_view</dt>
+<dd>the image view. </dd>
+
+<dd> </dd>
+<dt>number_threads</dt>
+<dd>the number of threads in a thread team. </dd>
 
 <dd>  </dd>
 </dl>
@@ -616,7 +633,7 @@ MagickBooleanType UpdateImageViewIterator(ImageView *source,
 </dl>
 </div>
   <footer class="magick-footer">
-    <div class="magick-nav-item navbar-left">
+    <div class="magick-nav-item pull-left">
       <a href="../support.html">Donate</a>
     </div>
     <p><a href="../sitemap.html">Sitemap</a> •
@@ -634,7 +651,7 @@ MagickBooleanType UpdateImageViewIterator(ImageView *source,
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
   <script src="../js/bootstrap.min.js"></script>
   <script type="text/javascript">
-    /*  */
+    /* <![CDATA[ */
     (function() {
         var s = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
         s.type = 'text/javascript';
@@ -642,7 +659,7 @@ MagickBooleanType UpdateImageViewIterator(ImageView *source,
         s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
         t.parentNode.insertBefore(s, t);
     })();
-    /*  */
+    /* ]]> */
   </script>
 </div>
 </body>

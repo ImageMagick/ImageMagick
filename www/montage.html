@@ -49,7 +49,7 @@
       <a class="magick-nav-item " href="command-line-options.html">Options</a>
       <a class="magick-nav-item " href="api.html">Development</a>
       <a class="magick-nav-item" href="http://www.imagemagick.org/discourse-server/">Community</a>
-      <a class="magick-nav-item navbar-right " href="http://www.imagemagick.org/script/search.php">Search</a>
+      <a class="magick-nav-item pull-right " href="http://www.imagemagick.org/script/search.php">Search</a>
     </nav>
   </div>
 </div>
@@ -82,7 +82,10 @@ montage -background '#336699' -geometry +4+4 rose.jpg red-ball.png montage.jpg
 
 <p>Ok, let's add some decorations:</p>
 
-<pre><span class="crtprompt"> </span><span class="crtin">montage -label %f -frame 5 -background '#336699' -geometry +4+4 rose.jpg red-ball.png frame.jpg</span></pre>
+<pre>
+montage -label %f -frame 5 -background '#336699' -geometry +4+4 rose.jpg red-ball.png frame.jpg
+</pre>
+
 <ul>
   <a href="../images/rose.jpg">
   <img style="margin-top:31px; margin-bottom:31px;" src="../images/rose.jpg" width="70" height="46" alt="rose.jpg">
@@ -615,7 +618,7 @@ transparent, extract, background, or shape the alpha channel</td>
 
 </div>
   <footer class="magick-footer">
-    <div class="magick-nav-item navbar-left">
+    <div class="magick-nav-item pull-left">
       <a href="support.html">Donate</a>
     </div>
     <p><a href="sitemap.html">Sitemap</a> •
@@ -633,7 +636,7 @@ transparent, extract, background, or shape the alpha channel</td>
   <script src="https://localhost/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
   <script src="../js/bootstrap.min.js"></script>
   <script type="text/javascript">
-    /*  */
+    /* <![CDATA[ */
     (function() {
         var s = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
         s.type = 'text/javascript';
@@ -641,7 +644,7 @@ transparent, extract, background, or shape the alpha channel</td>
         s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
         t.parentNode.insertBefore(s, t);
     })();
-    /*  */
+    /* ]]> */
   </script>
 </div>
 </body>

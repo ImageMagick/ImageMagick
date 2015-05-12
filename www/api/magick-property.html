@@ -49,7 +49,7 @@
       <a class="magick-nav-item " href="../command-line-options.html">Options</a>
       <a class="magick-nav-item " href="api.html">Development</a>
       <a class="magick-nav-item" href="http://www.imagemagick.org/discourse-server/">Community</a>
-      <a class="magick-nav-item navbar-right " href="http://www.imagemagick.org/script/search.php">Search</a>
+      <a class="magick-nav-item pull-right " href="http://www.imagemagick.org/script/search.php">Search</a>
     </nav>
   </div>
 </div>
@@ -561,7 +561,7 @@ InterlaceType MagickGetInterlaceScheme(MagickWand *wand)
 <p>The format of the MagickGetInterpolateMethod method is:</p>
 
 <pre class="text">
-PixelInterpolateMethod MagickGetInterpolateMethod(MagickWand *wand)
+InterpolatePixelMethod MagickGetInterpolateMethod(MagickWand *wand)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -609,7 +609,7 @@ char *MagickGetOption(MagickWand *wand,const char *key)
 <p>The format of the MagickGetOptions method is:</p>
 
 <pre class="text">
-char *MagickGetOptions(MagickWand *wand,const char *pattern,
+char *MagickGetOptions(MagickWand *wand,const char *pattern,,
   size_t *number_options)
 </pre>
 
@@ -1865,13 +1865,13 @@ MagickBooleanType MagickSetType(MagickWand *wand,
 
 <dd> </dd>
 <dt>image_type</dt>
-<dd>the image type:   UndefinedType, BilevelType, GrayscaleType, GrayscaleAlphaType, PaletteType, PaletteAlphaType, TrueColorType, TrueColorAlphaType, ColorSeparationType, ColorSeparationAlphaType, or OptimizeType. </dd>
+<dd>the image type:   UndefinedType, BilevelType, GrayscaleType, GrayscaleMatteType, PaletteType, PaletteMatteType, TrueColorType, TrueColorMatteType, ColorSeparationType, ColorSeparationMatteType, or OptimizeType. </dd>
 
 <dd>  </dd>
 </dl>
 </div>
   <footer class="magick-footer">
-    <div class="magick-nav-item navbar-left">
+    <div class="magick-nav-item pull-left">
       <a href="../support.html">Donate</a>
     </div>
     <p><a href="../sitemap.html">Sitemap</a> •
@@ -1889,7 +1889,7 @@ MagickBooleanType MagickSetType(MagickWand *wand,
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
   <script src="../js/bootstrap.min.js"></script>
   <script type="text/javascript">
-    /*  */
+    /* <![CDATA[ */
     (function() {
         var s = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
         s.type = 'text/javascript';
@@ -1897,7 +1897,7 @@ MagickBooleanType MagickSetType(MagickWand *wand,
         s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
         t.parentNode.insertBefore(s, t);
     })();
-    /*  */
+    /* ]]> */
   </script>
 </div>
 </body>

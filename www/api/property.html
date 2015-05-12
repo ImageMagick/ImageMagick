@@ -49,7 +49,7 @@
       <a class="magick-nav-item " href="../command-line-options.html">Options</a>
       <a class="magick-nav-item " href="api.html">Development</a>
       <a class="magick-nav-item" href="http://www.imagemagick.org/discourse-server/">Community</a>
-      <a class="magick-nav-item navbar-right " href="http://www.imagemagick.org/script/search.php">Search</a>
+      <a class="magick-nav-item pull-right " href="http://www.imagemagick.org/script/search.php">Search</a>
     </nav>
   </div>
 </div>
@@ -59,7 +59,7 @@
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/property_8c.html" id="CloneImageProperties">CloneImageProperties</a></h2>
 
-<p>CloneImageProperties() clones all the image properties to another image.</p>
+<p>CloneImageProperties() clones one or more image properties.</p>
 
 <p>The format of the CloneImageProperties method is:</p>
 
@@ -86,13 +86,13 @@ MagickBooleanType CloneImageProperties(Image *image,
 </dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/property_8c.html" id="DefineImageProperty">DefineImageProperty</a></h2>
 
-<p>DefineImageProperty() associates an assignment string of the form "key=value" with an artifact or options. It is equivelent to SetImageProperty()</p>
+<p>DefineImageProperty() associates a key/value pair with an image property.</p>
 
 <p>The format of the DefineImageProperty method is:</p>
 
 <pre class="text">
-MagickBooleanType DefineImageProperty(Image *image,const char *property,
-  ExceptionInfo *exception)
+MagickBooleanType DefineImageProperty(Image *image,
+  const char *property)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -108,10 +108,6 @@ MagickBooleanType DefineImageProperty(Image *image,const char *property,
 <dd> </dd>
 <dt>property</dt>
 <dd>the image property. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
 
 <dd>  </dd>
 </dl>
@@ -143,7 +139,7 @@ MagickBooleanType DeleteImageProperty(Image *image,const char *property)
 </dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/property_8c.html" id="DestroyImageProperties">DestroyImageProperties</a></h2>
 
-<p>DestroyImageProperties() destroys all properties and associated memory attached to the given image.</p>
+<p>DestroyImageProperties() releases memory associated with image property values.</p>
 
 <p>The format of the DestroyDefines method is:</p>
 
@@ -189,15 +185,10 @@ MagickBooleanType FormatImageProperty(Image *image,const char *property,
 
 <p>GetImageProperty() gets a value associated with an image property.</p>
 
-<p>This includes,  profile prefixes, such as "exif:", "iptc:" and "8bim:" It does not handle non-prifile prefixes, such as "fx:", "option:", or "artifact:".</p>
-
-<p>The returned string is stored as a properity of the same name for faster lookup later. It should NOT be freed by the caller.</p>
-
 <p>The format of the GetImageProperty method is:</p>
 
 <pre class="text">
-const char *GetImageProperty(const Image *image,const char *key,
-  ExceptionInfo *exception)
+const char *GetImageProperty(const Image *image,const char *key)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -213,10 +204,6 @@ const char *GetImageProperty(const Image *image,const char *key,
 <dd> </dd>
 <dt>key</dt>
 <dd>the key. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
 
 <dd>  </dd>
 </dl>
@@ -252,15 +239,15 @@ char *GetNextImageProperty(const Image *image)
 
 <p>Single letter  substitutions will only happen if the character before the percent is NOT a number. But braced substitutions will always be performed. This prevents the typical usage of percent in a interpreted geometry argument from being substituted when the percent is a geometry flag.</p>
 
-<p>If 'glob-expresions' ('*' or '?' characters) is used for 'name' it may be used as a search pattern to print multiple lines of "name=value\n" pairs of the associacted set of properties.</p>
+<p>If 'glob-expresions' ('*' or '?' characters) is used for 'name' it may be used as a search pattern to print multiple lines of "name=value\n" pairs of the associacted set of properities.</p>
 
 <p>The returned string must be freed using DestoryString() by the caller.</p>
 
 <p>The format of the InterpretImageProperties method is:</p>
 
 <pre class="text">
-char *InterpretImageProperties(ImageInfo *image_info,
-  Image *image,const char *embed_text,ExceptionInfo *exception)
+char *InterpretImageProperties(const ImageInfo *image_info,Image *image,
+  const char *embed_text)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -271,31 +258,27 @@ char *InterpretImageProperties(ImageInfo *image_info,
 <dd> </dd>
 <dl class="dl-horizontal">
 <dt>image_info</dt>
-<dd>the image info. (required) </dd>
+<dd>the image info. </dd>
 
 <dd> </dd>
 <dt>image</dt>
-<dd>the image. (optional) </dd>
+<dd>the image. </dd>
 
 <dd> </dd>
 <dt>embed_text</dt>
 <dd>the address of a character string containing the embedded formatting characters. </dd>
 
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
 <dd>  </dd>
 </dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/property_8c.html" id="(void)_LogMagickEvent(TraceEvent,GetMagickModule">(void) LogMagickEvent(TraceEvent,GetMagickModule</a></h2>
 
-<p>(void) LogMagickEvent(TraceEvent,GetMagickModule(),"s",image-&gt;filename); else if( image_info != (ImageInfo *) NULL &amp;&amp; IfMagickTrue(image_info-&gt;debug)) (void) LogMagickEvent(TraceEvent,GetMagickModule(),"s","no-image");</p>
+<p>(void) LogMagickEvent(TraceEvent,GetMagickModule(),"s",image-&gt;filename);</p>
 
 <p>if (embed_text == (const char *) NULL) return((char *) NULL); p=embed_text;</p>
 
 <p>if (*p == '\0') return(ConstantString(""));</p>
 
-<p>/* handle a '@' replace string from file */ if (*p == '@') { p++; if (*p != '-' &amp;&amp; IfMagickFalse(IsPathAccessible(p)) ) { (void) ThrowMagickException(exception,GetMagickModule(),OptionError, "UnableToAccessPath","s",p); return((char *) NULL); } return(FileToString(p,~0UL,exception)); }</p>
+<p>/* handle a '@' replace string from file */ if (*p == '@') { p++; if (*p != '-' &amp;&amp; (IsPathAccessible(p) == MagickFalse) ) { (void) ThrowMagickException(&amp;image-&gt;exception,GetMagickModule(), OptionError,"UnableToAccessPath","s",p); return((char *) NULL); } return(FileToString(p,~0UL,&amp;image-&gt;exception)); }</p>
 
 <p>/* Translate any embedded format characters. </p>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/property_8c.html" id="RemoveImageProperty">RemoveImageProperty</a></h2>
@@ -352,13 +335,11 @@ ResetImagePropertyIterator(Image *image)
 
 <p>SetImageProperty() saves the given string value either to specific known attribute or to a freeform property string.</p>
 
-<p>Attempting to set a property that is normally calculated will produce an exception.</p>
-
 <p>The format of the SetImageProperty method is:</p>
 
 <pre class="text">
 MagickBooleanType SetImageProperty(Image *image,const char *property,
-  const char *value,ExceptionInfo *exception)
+  const char *value)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -379,15 +360,11 @@ MagickBooleanType SetImageProperty(Image *image,const char *property,
 <dt>values</dt>
 <dd>the image property values. </dd>
 
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
 <dd>  </dd>
 </dl>
 </div>
   <footer class="magick-footer">
-    <div class="magick-nav-item navbar-left">
+    <div class="magick-nav-item pull-left">
       <a href="../support.html">Donate</a>
     </div>
     <p><a href="../sitemap.html">Sitemap</a> •
@@ -405,7 +382,7 @@ MagickBooleanType SetImageProperty(Image *image,const char *property,
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
   <script src="../js/bootstrap.min.js"></script>
   <script type="text/javascript">
-    /*  */
+    /* <![CDATA[ */
     (function() {
         var s = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
         s.type = 'text/javascript';
@@ -413,7 +390,7 @@ MagickBooleanType SetImageProperty(Image *image,const char *property,
         s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
         t.parentNode.insertBefore(s, t);
     })();
-    /*  */
+    /* ]]> */
   </script>
 </div>
 </body>

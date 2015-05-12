@@ -49,7 +49,7 @@
       <a class="magick-nav-item " href="../command-line-options.html">Options</a>
       <a class="magick-nav-item " href="api.html">Development</a>
       <a class="magick-nav-item" href="http://www.imagemagick.org/discourse-server/">Community</a>
-      <a class="magick-nav-item navbar-right " href="http://www.imagemagick.org/script/search.php">Search</a>
+      <a class="magick-nav-item pull-right " href="http://www.imagemagick.org/script/search.php">Search</a>
     </nav>
   </div>
 </div>
@@ -86,7 +86,7 @@
 
 <p>n2: Number of pixels whose color is not represented in a node at lower depth in the tree;  initially,  n2 = 0 for all nodes except leaves of the tree.</p>
 
-<p>Sr, Sg, Sb: Sums of the red, green, and blue component values for all pixels not classified at a lower depth. The combination of these sums and n2 will ultimately characterize the mean color of a set of pixels represented by this node.</p>
+<p>Sr, Sg, Sb: Sums of the red, green, and blue component values for all pixels not classified at a lower depth. The combination of these sums and n2  will ultimately characterize the mean color of a set of pixels represented by this node.</p>
 
 <p>E: the distance squared in RGB space between each pixel contained within a node and the nodes' center.  This represents the quantization error for a node.</p>
 
@@ -173,8 +173,7 @@ QuantizeInfo *CloneQuantizeInfo(const QuantizeInfo *quantize_info)
 <p>The format of the CompressImageColormap method is:</p>
 
 <pre class="text">
-MagickBooleanType CompressImageColormap(Image *image,
-  ExceptionInfo *exception)
+MagickBooleanType CompressImageColormap(Image *image)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -186,10 +185,6 @@ MagickBooleanType CompressImageColormap(Image *image,
 <dl class="dl-horizontal">
 <dt>image</dt>
 <dd>the image. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
 
 <dd>  </dd>
 </dl>
@@ -233,17 +228,13 @@ pixel in the image.
 <p>The format of the GetImageQuantizeError method is:</p>
 
 <pre class="text">
-MagickBooleanType GetImageQuantizeError(Image *image,
-  ExceptionInfo *exception)
+MagickBooleanType GetImageQuantizeError(Image *image)
 </pre>
 
 <p>A description of each parameter follows.</p>
 
 <dt>image</dt>
 <p>the image.</p>
-
-<dt>exception</dt>
-<p>return any errors or warnings in this structure.</p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/quantize_8c.html" id="GetQuantizeInfo">GetQuantizeInfo</a></h2>
 
@@ -275,7 +266,10 @@ GetQuantizeInfo(QuantizeInfo *quantize_info)
 
 <pre class="text">
 MagickBooleanType PosterizeImage(Image *image,const size_t levels,
-  const DitherMethod dither_method,ExceptionInfo *exception)
+  const MagickBooleanType dither)
+MagickBooleanType PosterizeImageChannel(Image *image,
+  const ChannelType channel,const size_t levels,
+  const MagickBooleanType dither)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -293,12 +287,8 @@ MagickBooleanType PosterizeImage(Image *image,const size_t levels,
 <dd>Number of color levels allowed in each channel.  Very low values (2, 3, or 4) have the most visible effect. </dd>
 
 <dd> </dd>
-<dt>dither_method</dt>
-<dd>choose from UndefinedDitherMethod, NoDitherMethod, RiemersmaDitherMethod, FloydSteinbergDitherMethod. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
+<dt>dither</dt>
+<dd>Set this integer value to something other than zero to dither the mapped image. </dd>
 
 <dd>  </dd>
 </dl>
@@ -310,7 +300,7 @@ MagickBooleanType PosterizeImage(Image *image,const size_t levels,
 
 <pre class="text">
 MagickBooleanType QuantizeImage(const QuantizeInfo *quantize_info,
-  Image *image,ExceptionInfo *exception)
+  Image *image)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -327,10 +317,6 @@ MagickBooleanType QuantizeImage(const QuantizeInfo *quantize_info,
 <dt>image</dt>
 <dd>the image. </dd>
 
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
 <dd>  </dd>
 </dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/quantize_8c.html" id="QuantizeImages">QuantizeImages</a></h2>
@@ -341,7 +327,7 @@ MagickBooleanType QuantizeImage(const QuantizeInfo *quantize_info,
 
 <pre class="text">
 MagickBooleanType QuantizeImages(const QuantizeInfo *quantize_info,
-  Image *images,ExceptionInfo *exception)
+  Image *images)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -358,21 +344,17 @@ MagickBooleanType QuantizeImages(const QuantizeInfo *quantize_info,
 <dt>images</dt>
 <dd>Specifies a pointer to a list of Image structures. </dd>
 
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
 <dd>  </dd>
 </dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/quantize_8c.html" id="RemapImage">RemapImage</a></h2>
 
-<p>RemapImage() replaces the colors of an image with the closest of the colors from the reference image.</p>
+<p>RemapImage() replaces the colors of an image with the closest color from a reference image.</p>
 
 <p>The format of the RemapImage method is:</p>
 
 <pre class="text">
 MagickBooleanType RemapImage(const QuantizeInfo *quantize_info,
-  Image *image,const Image *remap_image,ExceptionInfo *exception)
+  Image *image,const Image *remap_image)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -393,10 +375,6 @@ MagickBooleanType RemapImage(const QuantizeInfo *quantize_info,
 <dt>remap_image</dt>
 <dd>the reference image. </dd>
 
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
 <dd>  </dd>
 </dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/quantize_8c.html" id="RemapImages">RemapImages</a></h2>
@@ -407,7 +385,7 @@ MagickBooleanType RemapImage(const QuantizeInfo *quantize_info,
 
 <pre class="text">
 MagickBooleanType RemapImages(const QuantizeInfo *quantize_info,
-  Image *images,Image *remap_image,ExceptionInfo *exception)
+  Image *images,Image *remap_image)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -428,10 +406,6 @@ MagickBooleanType RemapImages(const QuantizeInfo *quantize_info,
 <dt>remap_image</dt>
 <dd>the reference image. </dd>
 
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
 <dd>  </dd>
 </dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/quantize_8c.html" id="SetGrayscaleImage">SetGrayscaleImage</a></h2>
@@ -441,8 +415,7 @@ MagickBooleanType RemapImages(const QuantizeInfo *quantize_info,
 <p>The format of the SetGrayscaleImage method is:</p>
 
 <pre class="text">
-MagickBooleanType SetGrayscaleImage(Image *image,
-  ExceptionInfo *exception)
+MagickBooleanType SetGrayscaleImage(Image *image)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -455,15 +428,11 @@ MagickBooleanType SetGrayscaleImage(Image *image,
 <dt>image</dt>
 <dd>The image. </dd>
 
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
 <dd>  </dd>
 </dl>
 </div>
   <footer class="magick-footer">
-    <div class="magick-nav-item navbar-left">
+    <div class="magick-nav-item pull-left">
       <a href="../support.html">Donate</a>
     </div>
     <p><a href="../sitemap.html">Sitemap</a> •
@@ -481,7 +450,7 @@ MagickBooleanType SetGrayscaleImage(Image *image,
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
   <script src="../js/bootstrap.min.js"></script>
   <script type="text/javascript">
-    /*  */
+    /* <![CDATA[ */
     (function() {
         var s = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
         s.type = 'text/javascript';
@@ -489,7 +458,7 @@ MagickBooleanType SetGrayscaleImage(Image *image,
         s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
         t.parentNode.insertBefore(s, t);
     })();
-    /*  */
+    /* ]]> */
   </script>
 </div>
 </body>
