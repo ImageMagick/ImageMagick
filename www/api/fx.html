@@ -49,7 +49,7 @@
       <a class="magick-nav-item " href="../command-line-options.html">Options</a>
       <a class="magick-nav-item " href="api.html">Development</a>
       <a class="magick-nav-item" href="http://www.imagemagick.org/discourse-server/">Community</a>
-      <a class="magick-nav-item navbar-right " href="http://www.imagemagick.org/script/search.php">Search</a>
+      <a class="magick-nav-item pull-right " href="http://www.imagemagick.org/script/search.php">Search</a>
     </nav>
   </div>
 </div>
@@ -65,7 +65,9 @@
 
 <pre class="text">
 Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
-  const double attenuate,ExceptionInfo *exception)
+  ExceptionInfo *exception)
+Image *AddNoiseImageChannel(const Image *image,const ChannelType channel,
+  const NoiseType noise_type,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -85,10 +87,6 @@ Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
 <dd> </dd>
 <dt>noise_type</dt>
 <dd> The type of noise: Uniform, Gaussian, Multiplicative, Impulse, Laplacian, or Poisson. </dd>
-
-<dd> </dd>
-<dt>attenuate</dt>
-<dd> attenuate the random distribution. </dd>
 
 <dd> </dd>
 <dt>exception</dt>
@@ -169,8 +167,8 @@ Image *CharcoalImage(const Image *image,const double radius,
 <p>The format of the ColorizeImage method is:</p>
 
 <pre class="text">
-Image *ColorizeImage(const Image *image,const char *blend,
-  const PixelInfo *colorize,ExceptionInfo *exception)
+Image *ColorizeImage(const Image *image,const char *opacity,
+  const PixelPacket colorize,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -184,8 +182,8 @@ Image *ColorizeImage(const Image *image,const char *blend,
 <dd>the image. </dd>
 
 <dd> </dd>
-<dt>blend</dt>
-<dd> A character string indicating the level of blending as a percentage. </dd>
+<dt>opacity</dt>
+<dd> A character string indicating the level of opacity as a percentage. </dd>
 
 <dd> </dd>
 <dt>colorize</dt>
@@ -237,6 +235,8 @@ Image *ColorMatrixImage(const Image *image,
 <pre class="text">
 Image *FxImage(const Image *image,const char *expression,
   ExceptionInfo *exception)
+Image *FxImageChannel(const Image *image,const ChannelType channel,
+  const char *expression,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -248,6 +248,10 @@ Image *FxImage(const Image *image,const char *expression,
 <dl class="dl-horizontal">
 <dt>image</dt>
 <dd>the image. </dd>
+
+<dd> </dd>
+<dt>channel</dt>
+<dd>the channel. </dd>
 
 <dd> </dd>
 <dt>expression</dt>
@@ -267,7 +271,7 @@ Image *FxImage(const Image *image,const char *expression,
 
 <pre class="text">
 Image *ImplodeImage(const Image *image,const double amount,
-  const PixelInterpolateMethod method,ExceptionInfo *exception)
+  ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -287,10 +291,6 @@ Image *ImplodeImage(const Image *image,const double amount,
 <dd> </dd>
 <dt>amount</dt>
 <dd> Define the extent of the implosion. </dd>
-
-<dd> </dd>
-<dt>method</dt>
-<dd>the pixel interpolation method. </dd>
 
 <dd> </dd>
 <dt>exception</dt>
@@ -337,7 +337,7 @@ Image *MorphImages(const Image *image,const size_t number_frames,
 
 <pre class="text">
 MagickBooleanType PlasmaImage(Image *image,const SegmentInfo *segment,
-  size_t attenuate,size_t depth,ExceptionInfo *exception)
+  size_t attenuate,size_t depth)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -362,10 +362,6 @@ MagickBooleanType PlasmaImage(Image *image,const SegmentInfo *segment,
 <dt>depth</dt>
 <dd>Limit the plasma recursion depth. </dd>
 
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
 <dd>  </dd>
 </dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/fx_8c.html" id="PolaroidImage">PolaroidImage</a></h2>
@@ -376,8 +372,7 @@ MagickBooleanType PlasmaImage(Image *image,const SegmentInfo *segment,
 
 <pre class="text">
 Image *PolaroidImage(const Image *image,const DrawInfo *draw_info,
-  const char *caption,const double angle,
-  const PixelInterpolateMethod method,ExceptionInfo exception)
+  const double angle,ExceptionInfo exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -395,16 +390,8 @@ Image *PolaroidImage(const Image *image,const DrawInfo *draw_info,
 <dd>the draw info. </dd>
 
 <dd> </dd>
-<dt>caption</dt>
-<dd>the Polaroid caption. </dd>
-
-<dd> </dd>
 <dt>angle</dt>
 <dd>Apply the effect along this angle. </dd>
-
-<dd> </dd>
-<dt>method</dt>
-<dd>the pixel interpolation method. </dd>
 
 <dd> </dd>
 <dt>exception</dt>
@@ -450,7 +437,7 @@ Image *SepiaToneImage(const Image *image,const double threshold,
 <p>The format of the ShadowImage method is:</p>
 
 <pre class="text">
-Image *ShadowImage(const Image *image,const double alpha,
+Image *ShadowImage(const Image *image,const double opacity,
   const double sigma,const ssize_t x_offset,const ssize_t y_offset,
   ExceptionInfo *exception)
 </pre>
@@ -466,7 +453,7 @@ Image *ShadowImage(const Image *image,const double alpha,
 <dd>the image. </dd>
 
 <dd> </dd>
-<dt>alpha</dt>
+<dt>opacity</dt>
 <dd>percentage transparency. </dd>
 
 <dd> </dd>
@@ -518,7 +505,7 @@ const double sigma,const double angle,ExceptionInfo *exception)
 
 <dd> </dd>
 <dt>angle</dt>
-<dd>apply the effect along this angle. </dd>
+<dd>Apply the effect along this angle. </dd>
 
 <dd> </dd>
 <dt>exception</dt>
@@ -533,7 +520,9 @@ const double sigma,const double angle,ExceptionInfo *exception)
 <p>The format of the SolarizeImage method is:</p>
 
 <pre class="text">
-MagickBooleanType SolarizeImage(Image *image,const double threshold,
+MagickBooleanType SolarizeImage(Image *image,const double threshold)
+MagickBooleanType SolarizeImageChannel(Image *image,
+  const ChannelType channel,const double threshold,
   ExceptionInfo *exception)
 </pre>
 
@@ -546,6 +535,10 @@ MagickBooleanType SolarizeImage(Image *image,const double threshold,
 <dl class="dl-horizontal">
 <dt>image</dt>
 <dd>the image. </dd>
+
+<dd> </dd>
+<dt>channel</dt>
+<dd>the channel type. </dd>
 
 <dd> </dd>
 <dt>threshold</dt>
@@ -640,7 +633,7 @@ Image *StereoAnaglyphImage(const Image *left_image,
 
 <pre class="text">
 Image *SwirlImage(const Image *image,double degrees,
-  const PixelInterpolateMethod method,ExceptionInfo *exception)
+  ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -658,10 +651,6 @@ Image *SwirlImage(const Image *image,double degrees,
 <dd>Define the tightness of the swirling effect. </dd>
 
 <dd> </dd>
-<dt>method</dt>
-<dd>the pixel interpolation method. </dd>
-
-<dd> </dd>
 <dt>exception</dt>
 <dd>return any errors or warnings in this structure. </dd>
 
@@ -674,8 +663,8 @@ Image *SwirlImage(const Image *image,double degrees,
 <p>The format of the TintImage method is:</p>
 
 <pre class="text">
-Image *TintImage(const Image *image,const char *blend,
-  const PixelInfo *tint,ExceptionInfo *exception)
+Image *TintImage(const Image *image,const char *opacity,
+  const PixelPacket tint,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -689,7 +678,7 @@ Image *TintImage(const Image *image,const char *blend,
 <dd>the image. </dd>
 
 <dd> </dd>
-<dt>blend</dt>
+<dt>opacity</dt>
 <dd>A color value used for tinting. </dd>
 
 <dd> </dd>
@@ -750,8 +739,7 @@ Image *VignetteImage(const Image *image,const double radius,
 
 <pre class="text">
 Image *WaveImage(const Image *image,const double amplitude,
-  const double wave_length,const PixelInterpolateMethod method,
-  ExceptionInfo *exception)
+  const double wave_length,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -769,10 +757,6 @@ Image *WaveImage(const Image *image,const double amplitude,
 <dd> Define the amplitude and wave length of the sine wave. </dd>
 
 <dd> </dd>
-<dt>interpolate</dt>
-<dd>the pixel interpolation method. </dd>
-
-<dd> </dd>
 <dt>exception</dt>
 <dd>return any errors or warnings in this structure. </dd>
 
@@ -780,7 +764,7 @@ Image *WaveImage(const Image *image,const double amplitude,
 </dl>
 </div>
   <footer class="magick-footer">
-    <div class="magick-nav-item navbar-left">
+    <div class="magick-nav-item pull-left">
       <a href="../support.html">Donate</a>
     </div>
     <p><a href="../sitemap.html">Sitemap</a> •
@@ -798,7 +782,7 @@ Image *WaveImage(const Image *image,const double amplitude,
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
   <script src="../js/bootstrap.min.js"></script>
   <script type="text/javascript">
-    /*  */
+    /* <![CDATA[ */
     (function() {
         var s = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
         s.type = 'text/javascript';
@@ -806,7 +790,7 @@ Image *WaveImage(const Image *image,const double amplitude,
         s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
         t.parentNode.insertBefore(s, t);
     })();
-    /*  */
+    /* ]]> */
   </script>
 </div>
 </body>

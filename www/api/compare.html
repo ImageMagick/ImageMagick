@@ -49,22 +49,23 @@
       <a class="magick-nav-item " href="../command-line-options.html">Options</a>
       <a class="magick-nav-item " href="api.html">Development</a>
       <a class="magick-nav-item" href="http://www.imagemagick.org/discourse-server/">Community</a>
-      <a class="magick-nav-item navbar-right " href="http://www.imagemagick.org/script/search.php">Search</a>
+      <a class="magick-nav-item pull-right " href="http://www.imagemagick.org/script/search.php">Search</a>
     </nav>
   </div>
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="text-center"><a href="compare.html#CompareImages">CompareImages</a> • <a href="compare.html#GetImageDistortion">GetImageDistortion</a> • <a href="compare.html#GetImageDistortions">GetImageDistortions</a> • <a href="compare.html#IsImagesEqual">IsImagesEqual</a> • <a href="compare.html#SimilarityImage">SimilarityImage</a></p>
+<p class="text-center"><a href="compare.html#CompareImageChannels">CompareImageChannels</a> • <a href="compare.html#GetImageChannelDistortion">GetImageChannelDistortion</a> • <a href="compare.html#GetImageChannelDistortions">GetImageChannelDistortions</a> • <a href="compare.html#IsImagesEqual">IsImagesEqual</a> • <a href="compare.html#SimilarityImage">SimilarityImage</a></p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/compare_8c.html" id="CompareImages">CompareImages</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/compare_8c.html" id="CompareImageChannels">CompareImageChannels</a></h2>
 
-<p>CompareImages() compares one or more pixel channels of an image to a reconstructed image and returns the difference image.</p>
+<p>CompareImageChannels() compares one or more image channels of an image to a reconstructed image and returns the difference image.</p>
 
-<p>The format of the CompareImages method is:</p>
+<p>The format of the CompareImageChannels method is:</p>
 
 <pre class="text">
-Image *CompareImages(const Image *image,const Image *reconstruct_image,
+Image *CompareImageChannels(const Image *image,
+  const Image *reconstruct_image,const ChannelType channel,
   const MetricType metric,double *distortion,ExceptionInfo *exception)
 </pre>
 
@@ -83,6 +84,10 @@ Image *CompareImages(const Image *image,const Image *reconstruct_image,
 <dd>the reconstruct image. </dd>
 
 <dd> </dd>
+<dt>channel</dt>
+<dd>the channel. </dd>
+
+<dd> </dd>
 <dt>metric</dt>
 <dd>the metric. </dd>
 
@@ -96,16 +101,16 @@ Image *CompareImages(const Image *image,const Image *reconstruct_image,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/compare_8c.html" id="GetImageDistortion">GetImageDistortion</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/compare_8c.html" id="GetImageChannelDistortion">GetImageChannelDistortion</a></h2>
 
-<p>GetImageDistortion() compares one or more pixel channels of an image to a reconstructed image and returns the specified distortion metric.</p>
+<p>GetImageChannelDistortion() compares one or more image channels of an image to a reconstructed image and returns the specified distortion metric.</p>
 
-<p>The format of the GetImageDistortion method is:</p>
+<p>The format of the GetImageChannelDistortion method is:</p>
 
 <pre class="text">
-MagickBooleanType GetImageDistortion(const Image *image,
-  const Image *reconstruct_image,const MetricType metric,
-  double *distortion,ExceptionInfo *exception)
+MagickBooleanType GetImageChannelDistortion(const Image *image,
+  const Image *reconstruct_image,const ChannelType channel,
+  const MetricType metric,double *distortion,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -123,6 +128,10 @@ MagickBooleanType GetImageDistortion(const Image *image,
 <dd>the reconstruct image. </dd>
 
 <dd> </dd>
+<dt>channel</dt>
+<dd>the channel. </dd>
+
+<dd> </dd>
 <dt>metric</dt>
 <dd>the metric. </dd>
 
@@ -136,14 +145,14 @@ MagickBooleanType GetImageDistortion(const Image *image,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/compare_8c.html" id="GetImageDistortions">GetImageDistortions</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/compare_8c.html" id="GetImageChannelDistortions">GetImageChannelDistortions</a></h2>
 
-<p>GetImageDistortions() compares the pixel channels of an image to a reconstructed image and returns the specified distortion metric for each channel.</p>
+<p>GetImageChannelDistortions() compares the image channels of an image to a reconstructed image and returns the specified distortion metric for each channel.</p>
 
-<p>The format of the GetImageDistortions method is:</p>
+<p>The format of the GetImageChannelDistortions method is:</p>
 
 <pre class="text">
-double *GetImageDistortions(const Image *image,
+double *GetImageChannelDistortions(const Image *image,
   const Image *reconstruct_image,const MetricType metric,
   ExceptionInfo *exception)
 </pre>
@@ -193,7 +202,7 @@ the image.
 
 <pre class="text">
 MagickBooleanType IsImagesEqual(Image *image,
-  const Image *reconstruct_image,ExceptionInfo *exception)
+  const Image *reconstruct_image)
 </pre>
 
 <p>A description of each parameter follows.</p>
@@ -204,9 +213,6 @@ MagickBooleanType IsImagesEqual(Image *image,
 <dt>reconstruct_image</dt>
 <p>the reconstruct image.</p>
 
-<dt>exception</dt>
-<p>return any errors or warnings in this structure.</p>
-
 <h2><a href="http://www.imagemagick.org/api/MagickCore/compare_8c.html" id="SimilarityImage">SimilarityImage</a></h2>
 
 <p>SimilarityImage() compares the reference image of the image and returns the best match offset.  In addition, it returns a similarity image such that an exact match location is completely white and if none of the pixels match, black, otherwise some gray level in-between.</p>
@@ -215,7 +221,6 @@ MagickBooleanType IsImagesEqual(Image *image,
 
 <pre class="text">
 Image *SimilarityImage(const Image *image,const Image *reference,
-  const MetricType metric,const double similarity_threshold,
   RectangleInfo *offset,double *similarity,ExceptionInfo *exception)
 </pre>
 
@@ -233,17 +238,7 @@ Image *SimilarityImage(const Image *image,const Image *reference,
 <dt>reference</dt>
 <dd>find an area of the image that closely resembles this image. </dd>
 
-<dd> </dd>
-<dt>metric</dt>
-<dd>the metric. </dd>
-
-<dd> </dd>
-<dt>similarity_threshold</dt>
-<dd>minimum distortion for (sub)image match. </dd>
-
-<dd> </dd>
-<dt>offset</dt>
-<dd>the best match offset of the reference image within the image. </dd>
+<dd> o the best match offset of the reference image within the image. </dd>
 
 <dd> </dd>
 <dt>similarity</dt>
@@ -257,7 +252,7 @@ Image *SimilarityImage(const Image *image,const Image *reference,
 </dl>
 </div>
   <footer class="magick-footer">
-    <div class="magick-nav-item navbar-left">
+    <div class="magick-nav-item pull-left">
       <a href="../support.html">Donate</a>
     </div>
     <p><a href="../sitemap.html">Sitemap</a> •
@@ -275,7 +270,7 @@ Image *SimilarityImage(const Image *image,const Image *reference,
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
   <script src="../js/bootstrap.min.js"></script>
   <script type="text/javascript">
-    /*  */
+    /* <![CDATA[ */
     (function() {
         var s = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
         s.type = 'text/javascript';
@@ -283,7 +278,7 @@ Image *SimilarityImage(const Image *image,const Image *reference,
         s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
         t.parentNode.insertBefore(s, t);
     })();
-    /*  */
+    /* ]]> */
   </script>
 </div>
 </body>

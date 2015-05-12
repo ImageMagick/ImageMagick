@@ -49,13 +49,13 @@
       <a class="magick-nav-item " href="../command-line-options.html">Options</a>
       <a class="magick-nav-item " href="api.html">Development</a>
       <a class="magick-nav-item" href="http://www.imagemagick.org/discourse-server/">Community</a>
-      <a class="magick-nav-item navbar-right " href="http://www.imagemagick.org/script/search.php">Search</a>
+      <a class="magick-nav-item pull-right " href="http://www.imagemagick.org/script/search.php">Search</a>
     </nav>
   </div>
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="text-center"><a href="effect.html#AdaptiveBlurImage">AdaptiveBlurImage</a> • <a href="effect.html#AdaptiveSharpenImage">AdaptiveSharpenImage</a> • <a href="effect.html#BlurImage">BlurImage</a> • <a href="effect.html#ConvolveImage">ConvolveImage</a> • <a href="effect.html#DespeckleImage">DespeckleImage</a> • <a href="effect.html#EdgeImage">EdgeImage</a> • <a href="effect.html#EmbossImage">EmbossImage</a> • <a href="effect.html#GaussianBlurImage">GaussianBlurImage</a> • <a href="effect.html#KuwaharaImage">KuwaharaImage</a> • <a href="effect.html#MotionBlurImage">MotionBlurImage</a> • <a href="effect.html#PreviewImage">PreviewImage</a> • <a href="effect.html#RotationalBlurImage">RotationalBlurImage</a> • <a href="effect.html#SelectiveBlurImage">SelectiveBlurImage</a> • <a href="effect.html#ShadeImage">ShadeImage</a> • <a href="effect.html#SharpenImage">SharpenImage</a> • <a href="effect.html#SpreadImage">SpreadImage</a> • <a href="effect.html#UnsharpMaskImage">UnsharpMaskImage</a></p>
+<p class="text-center"><a href="effect.html#AdaptiveBlurImage">AdaptiveBlurImage</a> • <a href="effect.html#AdaptiveSharpenImage">AdaptiveSharpenImage</a> • <a href="effect.html#BlurImage">BlurImage</a> • <a href="effect.html#ConvolveImage">ConvolveImage</a> • <a href="effect.html#DespeckleImage">DespeckleImage</a> • <a href="effect.html#EdgeImage">EdgeImage</a> • <a href="effect.html#EmbossImage">EmbossImage</a> • <a href="effect.html#FilterImage">FilterImage</a> • <a href="effect.html#GaussianBlurImage">GaussianBlurImage</a> • <a href="effect.html#MotionBlurImage">MotionBlurImage</a> • <a href="effect.html#KuwaharaImage">KuwaharaImage</a> • <a href="effect.html#PreviewImage">PreviewImage</a> • <a href="effect.html#RotationalBlurImage">RotationalBlurImage</a> • <a href="effect.html#SelectiveBlurImage">SelectiveBlurImage</a> • <a href="effect.html#ShadeImage">ShadeImage</a> • <a href="effect.html#SharpenImage">SharpenImage</a> • <a href="effect.html#SpreadImage">SpreadImage</a> • <a href="effect.html#UnsharpMaskImage">UnsharpMaskImage</a></p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/effect_8c.html" id="AdaptiveBlurImage">AdaptiveBlurImage</a></h2>
 
@@ -66,6 +66,9 @@
 <pre class="text">
 Image *AdaptiveBlurImage(const Image *image,const double radius,
   const double sigma,ExceptionInfo *exception)
+Image *AdaptiveBlurImageChannel(const Image *image,
+  const ChannelType channel,double radius,const double sigma,
+  ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -77,6 +80,10 @@ Image *AdaptiveBlurImage(const Image *image,const double radius,
 <dl class="dl-horizontal">
 <dt>image</dt>
 <dd>the image. </dd>
+
+<dd> </dd>
+<dt>channel</dt>
+<dd>the channel type. </dd>
 
 <dd> </dd>
 <dt>radius</dt>
@@ -101,6 +108,9 @@ Image *AdaptiveBlurImage(const Image *image,const double radius,
 <pre class="text">
 Image *AdaptiveSharpenImage(const Image *image,const double radius,
   const double sigma,ExceptionInfo *exception)
+Image *AdaptiveSharpenImageChannel(const Image *image,
+  const ChannelType channel,double radius,const double sigma,
+  ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -112,6 +122,10 @@ Image *AdaptiveSharpenImage(const Image *image,const double radius,
 <dl class="dl-horizontal">
 <dt>image</dt>
 <dd>the image. </dd>
+
+<dd> </dd>
+<dt>channel</dt>
+<dd>the channel type. </dd>
 
 <dd> </dd>
 <dt>radius</dt>
@@ -136,6 +150,8 @@ Image *AdaptiveSharpenImage(const Image *image,const double radius,
 <pre class="text">
 Image *BlurImage(const Image *image,const double radius,
   const double sigma,ExceptionInfo *exception)
+Image *BlurImageChannel(const Image *image,const ChannelType channel,
+  const double radius,const double sigma,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -147,6 +163,10 @@ Image *BlurImage(const Image *image,const double radius,
 <dl class="dl-horizontal">
 <dt>image</dt>
 <dd>the image. </dd>
+
+<dd> </dd>
+<dt>channel</dt>
+<dd>the channel type. </dd>
 
 <dd> </dd>
 <dt>radius</dt>
@@ -169,8 +189,10 @@ Image *BlurImage(const Image *image,const double radius,
 <p>The format of the ConvolveImage method is:</p>
 
 <pre class="text">
-Image *ConvolveImage(const Image *image,const KernelInfo *kernel,
-  ExceptionInfo *exception)
+Image *ConvolveImage(const Image *image,const size_t order,
+  const double *kernel,ExceptionInfo *exception)
+Image *ConvolveImageChannel(const Image *image,const ChannelType channel,
+  const size_t order,const double *kernel,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -184,8 +206,16 @@ Image *ConvolveImage(const Image *image,const KernelInfo *kernel,
 <dd>the image. </dd>
 
 <dd> </dd>
+<dt>channel</dt>
+<dd>the channel type. </dd>
+
+<dd> </dd>
+<dt>order</dt>
+<dd>the number of columns and rows in the filter kernel. </dd>
+
+<dd> </dd>
 <dt>kernel</dt>
-<dd>the filtering kernel. </dd>
+<dd>An array of double representing the convolution kernel. </dd>
 
 <dd> </dd>
 <dt>exception</dt>
@@ -195,7 +225,7 @@ Image *ConvolveImage(const Image *image,const KernelInfo *kernel,
 </dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/effect_8c.html" id="DespeckleImage">DespeckleImage</a></h2>
 
-<p>DespeckleImage() reduces the speckle noise in an image while perserving the edges of the original image.  A speckle removing filter uses a complementary   hulling technique (raising pixels that are darker than their surrounding neighbors, then complementarily lowering pixels that are brighter than their surrounding neighbors) to reduce the speckle index of that image (reference Crimmins speckle removal).</p>
+<p>DespeckleImage() reduces the speckle noise in an image while perserving the edges of the original image.  A speckle removing filter uses a complementary hulling technique (raising pixels that are darker than their surrounding neighbors, then complementarily lowering pixels that are brighter than their surrounding neighbors) to reduce the speckle index of that image (reference Crimmins speckle removal).</p>
 
 <p>The format of the DespeckleImage method is:</p>
 
@@ -285,6 +315,43 @@ Image *EmbossImage(const Image *image,const double radius,
 
 <dd>  </dd>
 </dl>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/effect_8c.html" id="FilterImage">FilterImage</a></h2>
+
+<p>FilterImage() applies a custom convolution kernel to the image.</p>
+
+<p>The format of the FilterImage method is:</p>
+
+<pre class="text">
+Image *FilterImage(const Image *image,const KernelInfo *kernel,
+  ExceptionInfo *exception)
+Image *FilterImageChannel(const Image *image,const ChannelType channel,
+  const KernelInfo *kernel,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>channel</dt>
+<dd>the channel type. </dd>
+
+<dd> </dd>
+<dt>kernel</dt>
+<dd>the filtering kernel. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/effect_8c.html" id="GaussianBlurImage">GaussianBlurImage</a></h2>
 
 <p>GaussianBlurImage() blurs an image.  We convolve the image with a Gaussian operator of the given radius and standard deviation (sigma). For reasonable results, the radius should be larger than sigma.  Use a radius of 0 and GaussianBlurImage() selects a suitable radius for you</p>
@@ -294,6 +361,9 @@ Image *EmbossImage(const Image *image,const double radius,
 <pre class="text">
 Image *GaussianBlurImage(const Image *image,onst double radius,
   const double sigma,ExceptionInfo *exception)
+Image *GaussianBlurImageChannel(const Image *image,
+  const ChannelType channel,const double radius,const double sigma,
+  ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -305,45 +375,14 @@ Image *GaussianBlurImage(const Image *image,onst double radius,
 <dl class="dl-horizontal">
 <dt>image</dt>
 <dd>the image. </dd>
+
+<dd> </dd>
+<dt>channel</dt>
+<dd>the channel type. </dd>
 
 <dd> </dd>
 <dt>radius</dt>
 <dd>the radius of the Gaussian, in pixels, not counting the center pixel. </dd>
-
-<dd> </dd>
-<dt>sigma</dt>
-<dd>the standard deviation of the Gaussian, in pixels. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
-<dd>  </dd>
-</dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/effect_8c.html" id="KuwaharaImage">KuwaharaImage</a></h2>
-
-<p>KuwaharaImage() is an edge preserving noise reduction filter.</p>
-
-<p>The format of the KuwaharaImage method is:</p>
-
-<pre class="text">
-Image *KuwaharaImage(const Image *image,const double radius,
-  const double sigma,ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<dd>
-</dd>
-
-<dd> </dd>
-<dl class="dl-horizontal">
-<dt>image</dt>
-<dd>the image. </dd>
-
-<dd> </dd>
-<dt>radius</dt>
-<dd>the square window radius. </dd>
 
 <dd> </dd>
 <dt>sigma</dt>
@@ -366,6 +405,9 @@ Image *KuwaharaImage(const Image *image,const double radius,
 <pre class="text">
     Image *MotionBlurImage(const Image *image,const double radius,
 const double sigma,const double angle,ExceptionInfo *exception)
+    Image *MotionBlurImageChannel(const Image *image,const ChannelType channel,
+const double radius,const double sigma,const double angle,
+ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -379,6 +421,10 @@ const double sigma,const double angle,ExceptionInfo *exception)
 <dd>the image. </dd>
 
 <dd> </dd>
+<dt>channel</dt>
+<dd>the channel type. </dd>
+
+<dd> </dd>
 <dt>radius</dt>
 <dd>the radius of the Gaussian, in pixels, not counting the center pixel. </dd>
 
@@ -389,6 +435,47 @@ const double sigma,const double angle,ExceptionInfo *exception)
 <dd> </dd>
 <dt>angle</dt>
 <dd>Apply the effect along this angle. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/effect_8c.html" id="KuwaharaImage">KuwaharaImage</a></h2>
+
+<p>KuwaharaImage() is an edge preserving noise reduction filter.</p>
+
+<p>The format of the KuwaharaImage method is:</p>
+
+<pre class="text">
+Image *KuwaharaImage(const Image *image,const double width,
+  const double sigma,ExceptionInfo *exception)
+Image *KuwaharaImageChannel(const Image *image,const ChannelType channel,
+  const double width,const double sigma,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>channel</dt>
+<dd>the channel type. </dd>
+
+<dd> </dd>
+<dt>radius</dt>
+<dd>the square window radius. </dd>
+
+<dd> </dd>
+<dt>sigma</dt>
+<dd>the standard deviation of the Gaussian, in pixels. </dd>
 
 <dd> </dd>
 <dt>exception</dt>
@@ -429,7 +516,7 @@ Image *PreviewImages(const Image *image,const PreviewType preview,
 </dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/effect_8c.html" id="RotationalBlurImage">RotationalBlurImage</a></h2>
 
-<p>RotationalBlurImage() applies a radial blur to the image.</p>
+<p>RotationalBlurImage() applies a rotational blur to the image.</p>
 
 <p>Andrew Protano contributed this effect.</p>
 
@@ -438,6 +525,8 @@ Image *PreviewImages(const Image *image,const PreviewType preview,
 <pre class="text">
     Image *RotationalBlurImage(const Image *image,const double angle,
 ExceptionInfo *exception)
+    Image *RotationalBlurImageChannel(const Image *image,
+const ChannelType channel,const double angle,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -451,12 +540,12 @@ ExceptionInfo *exception)
 <dd>the image. </dd>
 
 <dd> </dd>
-<dt>angle</dt>
-<dd>the angle of the radial blur. </dd>
+<dt>channel</dt>
+<dd>the channel type. </dd>
 
 <dd> </dd>
-<dt>blur</dt>
-<dd>the blur. </dd>
+<dt>angle</dt>
+<dd>the angle of the rotational blur. </dd>
 
 <dd> </dd>
 <dt>exception</dt>
@@ -473,6 +562,9 @@ ExceptionInfo *exception)
 <pre class="text">
 Image *SelectiveBlurImage(const Image *image,const double radius,
   const double sigma,const double threshold,ExceptionInfo *exception)
+Image *SelectiveBlurImageChannel(const Image *image,
+  const ChannelType channel,const double radius,const double sigma,
+  const double threshold,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -484,6 +576,10 @@ Image *SelectiveBlurImage(const Image *image,const double radius,
 <dl class="dl-horizontal">
 <dt>image</dt>
 <dd>the image. </dd>
+
+<dd> </dd>
+<dt>channel</dt>
+<dd>the channel type. </dd>
 
 <dd> </dd>
 <dt>radius</dt>
@@ -549,6 +645,8 @@ Image *ShadeImage(const Image *image,const MagickBooleanType gray,
 <pre class="text">
     Image *SharpenImage(const Image *image,const double radius,
 const double sigma,ExceptionInfo *exception)
+    Image *SharpenImageChannel(const Image *image,const ChannelType channel,
+const double radius,const double sigma,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -560,6 +658,10 @@ const double sigma,ExceptionInfo *exception)
 <dl class="dl-horizontal">
 <dt>image</dt>
 <dd>the image. </dd>
+
+<dd> </dd>
+<dt>channel</dt>
+<dd>the channel type. </dd>
 
 <dd> </dd>
 <dt>radius</dt>
@@ -583,7 +685,7 @@ const double sigma,ExceptionInfo *exception)
 
 <pre class="text">
 Image *SpreadImage(const Image *image,const double radius,
-  const PixelInterpolateMethod method,ExceptionInfo *exception)
+  ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -598,11 +700,7 @@ Image *SpreadImage(const Image *image,const double radius,
 
 <dd> </dd>
 <dt>radius</dt>
-<dd> choose a random pixel in a neighborhood of this extent. </dd>
-
-<dd> </dd>
-<dt>method</dt>
-<dd> the pixel interpolation method. </dd>
+<dd> Choose a random pixel in a neighborhood of this extent. </dd>
 
 <dd> </dd>
 <dt>exception</dt>
@@ -620,6 +718,9 @@ Image *SpreadImage(const Image *image,const double radius,
     Image *UnsharpMaskImage(const Image *image,const double radius,
 const double sigma,const double amount,const double threshold,
 ExceptionInfo *exception)
+    Image *UnsharpMaskImageChannel(const Image *image,
+const ChannelType channel,const double radius,const double sigma,
+const double gain,const double threshold,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -631,6 +732,10 @@ ExceptionInfo *exception)
 <dl class="dl-horizontal">
 <dt>image</dt>
 <dd>the image. </dd>
+
+<dd> </dd>
+<dt>channel</dt>
+<dd>the channel type. </dd>
 
 <dd> </dd>
 <dt>radius</dt>
@@ -656,7 +761,7 @@ ExceptionInfo *exception)
 </dl>
 </div>
   <footer class="magick-footer">
-    <div class="magick-nav-item navbar-left">
+    <div class="magick-nav-item pull-left">
       <a href="../support.html">Donate</a>
     </div>
     <p><a href="../sitemap.html">Sitemap</a> •
@@ -674,7 +779,7 @@ ExceptionInfo *exception)
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
   <script src="../js/bootstrap.min.js"></script>
   <script type="text/javascript">
-    /*  */
+    /* <![CDATA[ */
     (function() {
         var s = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
         s.type = 'text/javascript';
@@ -682,7 +787,7 @@ ExceptionInfo *exception)
         s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
         t.parentNode.insertBefore(s, t);
     })();
-    /*  */
+    /* ]]> */
   </script>
 </div>
 </body>

@@ -49,44 +49,14 @@
       <a class="magick-nav-item " href="../command-line-options.html">Options</a>
       <a class="magick-nav-item " href="api.html">Development</a>
       <a class="magick-nav-item" href="http://www.imagemagick.org/discourse-server/">Community</a>
-      <a class="magick-nav-item navbar-right " href="http://www.imagemagick.org/script/search.php">Search</a>
+      <a class="magick-nav-item pull-right " href="http://www.imagemagick.org/script/search.php">Search</a>
     </nav>
   </div>
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="text-center"><a href="magick.html#AcquireMagickInfo">AcquireMagickInfo</a> • <a href="magick.html#GetMagickPrecision">GetMagickPrecision</a> • <a href="magick.html#IsMagickCoreInstantiated">IsMagickCoreInstantiated</a> • <a href="magick.html#MagickCoreGenesis">MagickCoreGenesis</a> • <a href="magick.html#MagickCoreTerminus">MagickCoreTerminus</a> • <a href="magick.html#SetMagickPrecision">SetMagickPrecision</a></p>
+<p class="text-center"><a href="magick.html#GetMagickPrecision">GetMagickPrecision</a> • <a href="magick.html#IsMagickCoreInstantiated">IsMagickCoreInstantiated</a> • <a href="magick.html#MagickCoreGenesis">MagickCoreGenesis</a> • <a href="magick.html#MagickCoreTerminus">MagickCoreTerminus</a> • <a href="magick.html#SetMagickPrecision">SetMagickPrecision</a></p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/magick_8c.html" id="AcquireMagickInfo">AcquireMagickInfo</a></h2>
-
-<p>AcquireMagickInfo() allocates a MagickInfo structure and initializes the members to default values.</p>
-
-<p>The format of the AcquireMagickInfo method is:</p>
-
-<pre class="text">
-MagickInfo *AcquireMagickInfo(const char *module, const char *name,)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<dd>
-</dd>
-
-<dd> </dd>
-<dl class="dl-horizontal">
-<dt>module</dt>
-<dd>a character string that represents the module associated with the MagickInfo structure. </dd>
-
-<dd> </dd>
-<dt>name</dt>
-<dd>a character string that represents the image format associated with the MagickInfo structure. </dd>
-
-<dd> </dd>
-<dt>description</dt>
-<dd>a character string that represents the image format associated with the MagickInfo structure. </dd>
-
-<dd>  </dd>
-</dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/magick_8c.html" id="GetMagickPrecision">GetMagickPrecision</a></h2>
 
 <p>GetMagickPrecision() returns the maximum number of significant digits to be printed.</p>
@@ -99,7 +69,7 @@ int GetMagickPrecision(void)
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/magick_8c.html" id="IsMagickCoreInstantiated">IsMagickCoreInstantiated</a></h2>
 
-<p>IsMagickCoreInstantiated() returns MagickTrue if the ImageMagick environment is currently instantiated:  MagickCoreGenesis() has been called but MagickDestroy() has not.</p>
+<p>IsMagickCoreInstantiated() returns MagickTrue if the ImageMagick environment is currently instantiated--  that is, MagickCoreGenesis() has been called but MagickCoreTerminus() has not.</p>
 
 <p>The format of the IsMagickCoreInstantiated method is:</p>
 
@@ -172,7 +142,7 @@ int SetMagickPrecision(const int precision)
 </dl>
 </div>
   <footer class="magick-footer">
-    <div class="magick-nav-item navbar-left">
+    <div class="magick-nav-item pull-left">
       <a href="../support.html">Donate</a>
     </div>
     <p><a href="../sitemap.html">Sitemap</a> •
@@ -190,7 +160,7 @@ int SetMagickPrecision(const int precision)
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
   <script src="../js/bootstrap.min.js"></script>
   <script type="text/javascript">
-    /*  */
+    /* <![CDATA[ */
     (function() {
         var s = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
         s.type = 'text/javascript';
@@ -198,7 +168,7 @@ int SetMagickPrecision(const int precision)
         s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
         t.parentNode.insertBefore(s, t);
     })();
-    /*  */
+    /* ]]> */
   </script>
 </div>
 </body>

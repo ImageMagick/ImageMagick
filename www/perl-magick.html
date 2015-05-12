@@ -49,7 +49,7 @@
       <a class="magick-nav-item " href="command-line-options.html">Options</a>
       <a class="magick-nav-item " href="api.html">Development</a>
       <a class="magick-nav-item" href="http://www.imagemagick.org/discourse-server/">Community</a>
-      <a class="magick-nav-item navbar-right " href="http://www.imagemagick.org/script/search.php">Search</a>
+      <a class="magick-nav-item pull-right " href="http://www.imagemagick.org/script/search.php">Search</a>
     </nav>
   </div>
 </div>
@@ -78,19 +78,32 @@ yum install ImageMagick-perl
 
 <p>Unpack the distribution with this command:</p>
 
-<pre><span class="crtprompt"> </span><span class="crtin">tar xvzf ImageMagick.tar.gz</span></pre>
+<pre>
+tar xvzf ImageMagick.tar.gz
+</pre>
+
 <p>Next configure and compile ImageMagick:</p>
 
 <pre><span class="crtprompt"> </span><span class="crtin">cd ImageMagick-6.9.1</span><span class="crtout"></span><span class="crtprompt"> </span><span class="crtin">./configure -with-perl</span><span class="crtout"></span><span class="crtprompt"> </span><span class="crtin">make</span></pre>
 <p>If ImageMagick / PerlMagick configured and compiled without complaint, you are ready to install it on your system.  Administrator privileges are required to install.  To install, type</p>
 
-<pre><span class="crtprompt"> </span><span class="crtin">sudo make install</span></pre>
+<pre>
+sudo make install
+</pre>
+
 <p>You may need to configure the dynamic linker run-time bindings:</p>
 
-<pre><span class="crtprompt"> </span><span class="crtin">sudo ldconfig /usr/local/lib</span></pre>
+<pre>
+sudo ldconfig /usr/local/lib
+</pre>
+
+
 <p>Finally, verify the PerlMagick install worked properly, type</p>
 
-<pre><span class="crtprompt"> </span><span class="crtin">perl -e "use Image::Magick; print Image::Magick-&gt;QuantumDepth"</span></pre>
+<pre>
+perl -e \"use Image::Magick; print Image::Magick-&gt;QuantumDepth\"
+</pre>
+
 <p>Congratulations, you have a working ImageMagick distribution and you are ready to use PerlMagick to <a href="http://www.imagemagick.org/Usage/">convert, compose, or edit</a> your images.</p>
 
 <p><b>Windows XP / Windows 2000</b></p>
@@ -99,17 +112,30 @@ yum install ImageMagick-perl
 
 <p>Next, type</p>
 
-<pre><span class="crtprompt"> </span><span class="crtin">cd PerlMagick</span><span class="crtout"></span><span class="crtprompt"> </span><span class="crtin">perl Makefile.nt</span><span class="crtout"></span><span class="crtprompt"> </span><span class="crtin">nmake</span><span class="crtout"></span><span class="crtprompt"> </span><span class="crtin">nmake install</span></pre>
+<pre>
+cd PerlMagick
+perl Makefile.nt
+nmake
+nmake install
+</pre>
+
 <p>See the <a href="http://www.dylanbeattie.net/magick/">PerlMagick Windows HowTo</a> page for further installation instructions.</p>
 
 <p><b>Running the Regression Tests</b></p>
 
 <p>To verify a correct installation, type</p>
 
-<pre><span class="crtprompt"> </span><span class="crtin">make test</span></pre>
+<pre>
+make test
+</pre>
+
 <p>Use <code>nmake test</code> under Windows. There are a few demonstration scripts available to exercise many of the functions PerlMagick can perform. Type</p>
 
-<pre><span class="crtprompt"> </span><span class="crtin">cd demo</span><span class="crtout"></span><span class="crtprompt"> </span><span class="crtin">make</span></pre>
+<pre>
+cd demo
+make
+</pre>
+
 <p>You are now ready to utilize the PerlMagick methods from within your Perl scripts.</p>
 
 <h2 class="magick-header"><a id="overview"></a>Overview</h2>
@@ -160,7 +186,10 @@ undef $image-&gt;[$x];
 
 <p>Some of the PerlMagick methods require external programs such as <a href="http://www.cs.wisc.edu/~ghost/">Ghostscript</a>. This may require an explicit path in your PATH environment variable to work properly. For example (in Unix),</p>
 
-<pre><span class="crtprompt"> </span><span class="crtin">$ENV{PATH}='/../bin:/usr/bin:/usr/local/bin';</span></pre>
+<pre>
+$ENV{PATH}' . "='/../bin:/usr/bin:/usr/local/bin';
+</pre>
+
 <h2 class="magick-header"><a id="example"></a>Example Script</h2>
 
 <p>Here is an example script to get you started:</p>
@@ -2460,8 +2489,7 @@ die "unable to continue" if ($1 == ResourceLimitError);
 
 <p>PerlMagick includes these constants:</p>
 
-<pre class="pre-scrollable">
-BlobError
+<pre class="pre-scrollable">BlobError
 BlobWarning
 CacheError
 CacheWarning
@@ -2513,7 +2541,7 @@ Image::Magick-&gt;QuantumDepth
 
 </div>
   <footer class="magick-footer">
-    <div class="magick-nav-item navbar-left">
+    <div class="magick-nav-item pull-left">
       <a href="support.html">Donate</a>
     </div>
     <p><a href="sitemap.html">Sitemap</a> •
@@ -2531,7 +2559,7 @@ Image::Magick-&gt;QuantumDepth
   <script src="https://localhost/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
   <script src="../js/bootstrap.min.js"></script>
   <script type="text/javascript">
-    /*  */
+    /* <![CDATA[ */
     (function() {
         var s = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
         s.type = 'text/javascript';
@@ -2539,7 +2567,7 @@ Image::Magick-&gt;QuantumDepth
         s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
         t.parentNode.insertBefore(s, t);
     })();
-    /*  */
+    /* ]]> */
   </script>
 </div>
 </body>

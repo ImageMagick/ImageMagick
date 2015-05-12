@@ -49,7 +49,7 @@
       <a class="magick-nav-item " href="../command-line-options.html">Options</a>
       <a class="magick-nav-item " href="api.html">Development</a>
       <a class="magick-nav-item" href="http://www.imagemagick.org/discourse-server/">Community</a>
-      <a class="magick-nav-item navbar-right " href="http://www.imagemagick.org/script/search.php">Search</a>
+      <a class="magick-nav-item pull-right " href="http://www.imagemagick.org/script/search.php">Search</a>
     </nav>
   </div>
 </div>
@@ -64,8 +64,7 @@
 <p>The format of the AcquireImageColormap method is:</p>
 
 <pre class="text">
-MagickBooleanType AcquireImageColormap(Image *image,const size_t colors,
-  ExceptionInfo *exception)
+MagickBooleanType AcquireImageColormap(Image *image,const size_t colors)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -82,23 +81,16 @@ MagickBooleanType AcquireImageColormap(Image *image,const size_t colors,
 <dt>colors</dt>
 <dd>the number of colors in the image colormap. </dd>
 
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
 <dd>  </dd>
 </dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/colormap_8c.html" id="CycleColormap">CycleColormap</a></h2>
 
 <p>CycleColormap() displaces an image's colormap by a given number of positions.  If you cycle the colormap a number of times you can produce a psychodelic effect.</p>
 
-<p>WARNING: this assumes an images colormap is in a well know and defined order. Currently Imagemagick has no way of setting that order.</p>
-
 <p>The format of the CycleColormapImage method is:</p>
 
 <pre class="text">
-MagickBooleanType CycleColormapImage(Image *image,const ssize_t displace,
-  ExceptionInfo *exception)
+MagickBooleanType CycleColormapImage(Image *image,const ssize_t displace)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -115,15 +107,11 @@ MagickBooleanType CycleColormapImage(Image *image,const ssize_t displace,
 <dt>displace</dt>
 <dd> displace the colormap this amount. </dd>
 
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
 <dd>  </dd>
 </dl>
 </div>
   <footer class="magick-footer">
-    <div class="magick-nav-item navbar-left">
+    <div class="magick-nav-item pull-left">
       <a href="../support.html">Donate</a>
     </div>
     <p><a href="../sitemap.html">Sitemap</a> •
@@ -141,7 +129,7 @@ MagickBooleanType CycleColormapImage(Image *image,const ssize_t displace,
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
   <script src="../js/bootstrap.min.js"></script>
   <script type="text/javascript">
-    /*  */
+    /* <![CDATA[ */
     (function() {
         var s = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
         s.type = 'text/javascript';
@@ -149,7 +137,7 @@ MagickBooleanType CycleColormapImage(Image *image,const ssize_t displace,
         s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
         t.parentNode.insertBefore(s, t);
     })();
-    /*  */
+    /* ]]> */
   </script>
 </div>
 </body>

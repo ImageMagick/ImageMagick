@@ -49,7 +49,7 @@
       <a class="magick-nav-item " href="command-line-options.html">Options</a>
       <a class="magick-nav-item " href="api.html">Development</a>
       <a class="magick-nav-item" href="http://www.imagemagick.org/discourse-server/">Community</a>
-      <a class="magick-nav-item navbar-right " href="http://www.imagemagick.org/script/search.php">Search</a>
+      <a class="magick-nav-item pull-right " href="http://www.imagemagick.org/script/search.php">Search</a>
     </nav>
   </div>
 </div>
@@ -155,7 +155,7 @@ convert photo.jpg -fx \'iso=32; rone=rand(); rtwo=rand(); \
   <dt> color hex values:</dt>
     <dd> #ccc, #cbfed0, #b9e1cc00, etc.</dd>
   <dt> symbols:</dt><dd><dl>
-     <li><code>u</code>=&gt; first image in list</li>
+     </dl><li><code>u</code>=&gt; first image in list</li>
      <li><code>v</code>=&gt; second image in list</li>
      <li><code>s</code>=&gt; current image in list (for %[fx:] otherwise = u)</li>
      <li><code>t</code>=&gt; index of current image (s) in list</li>
@@ -201,10 +201,10 @@ convert photo.jpg -fx \'iso=32; rone=rand(); rtwo=rand(); \
      <li><code>mean</code>=&gt; image mean</li>
      <li><code>standard_deviation</code>=&gt; image standard deviation</li>
      <li><code>kurtosis</code>=&gt; image kurtosis</li>
-     <li><code>skewness</code>=&gt; image skewness (add a channel specifier to compute a statistic for that channel, e.g. depth.r)</li></dl></dd>
+     <li><code>skewness</code>=&gt; image skewness (add a channel specifier to compute a statistic for that channel, e.g. depth.r)</li></dd></dl>
   <dt> iterators:</dt>
     <dd> while()</dd>
-</dl>
+
 
 
 <h3>The Fx Expression</h3>
@@ -399,7 +399,7 @@ convert rose: -duplicate 29 -virtual-pixel Gray -distort SRT '%[fx:360.0*t/n]' \
 
 </div>
   <footer class="magick-footer">
-    <div class="magick-nav-item navbar-left">
+    <div class="magick-nav-item pull-left">
       <a href="support.html">Donate</a>
     </div>
     <p><a href="sitemap.html">Sitemap</a> •
@@ -417,7 +417,7 @@ convert rose: -duplicate 29 -virtual-pixel Gray -distort SRT '%[fx:360.0*t/n]' \
   <script src="https://localhost/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
   <script src="../js/bootstrap.min.js"></script>
   <script type="text/javascript">
-    /*  */
+    /* <![CDATA[ */
     (function() {
         var s = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
         s.type = 'text/javascript';
@@ -425,7 +425,7 @@ convert rose: -duplicate 29 -virtual-pixel Gray -distort SRT '%[fx:360.0*t/n]' \
         s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
         t.parentNode.insertBefore(s, t);
     })();
-    /*  */
+    /* ]]> */
   </script>
 </div>
 </body>

@@ -49,13 +49,13 @@
       <a class="magick-nav-item " href="../command-line-options.html">Options</a>
       <a class="magick-nav-item " href="api.html">Development</a>
       <a class="magick-nav-item" href="http://www.imagemagick.org/discourse-server/">Community</a>
-      <a class="magick-nav-item navbar-right " href="http://www.imagemagick.org/script/search.php">Search</a>
+      <a class="magick-nav-item pull-right " href="http://www.imagemagick.org/script/search.php">Search</a>
     </nav>
   </div>
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="text-center"><a href="wand-view.html#CloneWandView">CloneWandView</a> • <a href="wand-view.html#DestroyWandView">DestroyWandView</a> • <a href="wand-view.html#DuplexTransferWandViewIterator">DuplexTransferWandViewIterator</a> • <a href="wand-view.html#GetWandViewException">GetWandViewException</a> • <a href="wand-view.html#GetWandViewExtent">GetWandViewExtent</a> • <a href="wand-view.html#GetWandViewIterator">GetWandViewIterator</a> • <a href="wand-view.html#GetWandViewPixels">GetWandViewPixels</a> • <a href="wand-view.html#GetWandViewWand">GetWandViewWand</a> • <a href="wand-view.html#IsWandView">IsWandView</a> • <a href="wand-view.html#NewWandView">NewWandView</a> • <a href="wand-view.html#NewWandViewExtent">NewWandViewExtent</a> • <a href="wand-view.html#SetWandViewDescription">SetWandViewDescription</a> • <a href="wand-view.html#SetWandViewIterator">SetWandViewIterator</a> • <a href="wand-view.html#TransferWandViewIterator">TransferWandViewIterator</a> • <a href="wand-view.html#UpdateWandViewIterator">UpdateWandViewIterator</a></p>
+<p class="text-center"><a href="wand-view.html#CloneWandView">CloneWandView</a> • <a href="wand-view.html#DestroyWandView">DestroyWandView</a> • <a href="wand-view.html#DuplexTransferWandViewIterator">DuplexTransferWandViewIterator</a> • <a href="wand-view.html#GetWandViewException">GetWandViewException</a> • <a href="wand-view.html#GetWandViewExtent">GetWandViewExtent</a> • <a href="wand-view.html#GetWandViewIterator">GetWandViewIterator</a> • <a href="wand-view.html#GetWandViewPixels">GetWandViewPixels</a> • <a href="wand-view.html#GetWandViewWand">GetWandViewWand</a> • <a href="wand-view.html#IsWandView">IsWandView</a> • <a href="wand-view.html#NewWandView">NewWandView</a> • <a href="wand-view.html#NewWandViewExtent">NewWandViewExtent</a> • <a href="wand-view.html#SetWandViewDescription">SetWandViewDescription</a> • <a href="wand-view.html#SetWandViewIterator">SetWandViewIterator</a> • <a href="wand-view.html#SetWandViewThreads">SetWandViewThreads</a> • <a href="wand-view.html#TransferWandViewIterator">TransferWandViewIterator</a> • <a href="wand-view.html#UpdateWandViewIterator">UpdateWandViewIterator</a></p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickWand/wand-view_8c.html" id="CloneWandView">CloneWandView</a></h2>
 
@@ -439,6 +439,33 @@ MagickBooleanType SetWandViewIterator(WandView *destination,
 
 <dd>  </dd>
 </dl>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/wand-view_8c.html" id="SetWandViewThreads">SetWandViewThreads</a></h2>
+
+<p>SetWandViewThreads() sets the number of threads in a thread team.</p>
+
+<p>The format of the SetWandViewDescription method is:</p>
+
+<pre class="text">
+void SetWandViewThreads(WandView *image_view,
+  const size_t number_threads)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image_view</dt>
+<dd>the image view. </dd>
+
+<dd> </dd>
+<dt>number_threads</dt>
+<dd>the number of threads in a thread team. </dd>
+
+<dd>  </dd>
+</dl>
 <h2><a href="http://www.imagemagick.org/api/MagickWand/wand-view_8c.html" id="TransferWandViewIterator">TransferWandViewIterator</a></h2>
 
 <p>TransferWandViewIterator() iterates over two wand views in parallel and calls your transfer method for each scanline of the view.  The source pixel extent is not confined to the image canvas-- that is you can include negative offsets or widths or heights that exceed the image dimension. However, the destination wand view is confined to the image canvas-- that is no negative offsets or widths or heights that exceed the image dimension are permitted.</p>
@@ -538,7 +565,7 @@ MagickBooleanType UpdateWandViewIterator(WandView *source,
 </dl>
 </div>
   <footer class="magick-footer">
-    <div class="magick-nav-item navbar-left">
+    <div class="magick-nav-item pull-left">
       <a href="../support.html">Donate</a>
     </div>
     <p><a href="../sitemap.html">Sitemap</a> •
@@ -556,7 +583,7 @@ MagickBooleanType UpdateWandViewIterator(WandView *source,
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
   <script src="../js/bootstrap.min.js"></script>
   <script type="text/javascript">
-    /*  */
+    /* <![CDATA[ */
     (function() {
         var s = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
         s.type = 'text/javascript';
@@ -564,7 +591,7 @@ MagickBooleanType UpdateWandViewIterator(WandView *source,
         s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
         t.parentNode.insertBefore(s, t);
     })();
-    /*  */
+    /* ]]> */
   </script>
 </div>
 </body>
