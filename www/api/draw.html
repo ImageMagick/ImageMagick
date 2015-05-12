@@ -49,7 +49,7 @@
       <a class="magick-nav-item " href="../command-line-options.html">Options</a>
       <a class="magick-nav-item " href="api.html">Development</a>
       <a class="magick-nav-item" href="http://www.imagemagick.org/discourse-server/">Community</a>
-      <a class="magick-nav-item navbar-right " href="http://www.imagemagick.org/script/search.php">Search</a>
+      <a class="magick-nav-item pull-right " href="http://www.imagemagick.org/script/search.php">Search</a>
     </nav>
   </div>
 </div>
@@ -124,7 +124,7 @@ DrawInfo *DestroyDrawInfo(DrawInfo *draw_info)
 
 <pre class="text">
 MagickBooleanType DrawAffineImage(Image *image,const Image *source,
-  const AffineMatrix *affine,ExceptionInfo *exception)
+  const AffineMatrix *affine)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -145,10 +145,6 @@ MagickBooleanType DrawAffineImage(Image *image,const Image *source,
 <dt>affine</dt>
 <dd>the affine transform. </dd>
 
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
 <dd>  </dd>
 </dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/draw_8c.html" id="DrawClipPath">DrawClipPath</a></h2>
@@ -159,7 +155,7 @@ MagickBooleanType DrawAffineImage(Image *image,const Image *source,
 
 <pre class="text">
 MagickBooleanType DrawClipPath(Image *image,const DrawInfo *draw_info,
-  const char *name,ExceptionInfo *exception)
+  const char *name)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -180,10 +176,6 @@ MagickBooleanType DrawClipPath(Image *image,const DrawInfo *draw_info,
 <dt>name</dt>
 <dd>the name of the clip path. </dd>
 
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
 <dd>  </dd>
 </dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/draw_8c.html" id="DrawImage">DrawImage</a></h2>
@@ -193,8 +185,7 @@ MagickBooleanType DrawClipPath(Image *image,const DrawInfo *draw_info,
 <p>The format of the DrawImage method is:</p>
 
 <pre class="text">
-MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
-  ExceptionInfo *exception)
+MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -210,10 +201,6 @@ MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
 <dd> </dd>
 <dt>draw_info</dt>
 <dd>the draw info. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
 
 <dd>  </dd>
 </dl>
@@ -225,7 +212,7 @@ MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
 
 <pre class="text">
 MagickBooleanType DrawGradientImage(Image *image,
-  const DrawInfo *draw_info,ExceptionInfo *exception)
+  const DrawInfo *draw_info)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -239,12 +226,8 @@ MagickBooleanType DrawGradientImage(Image *image,
 <dd>the image. </dd>
 
 <dd> </dd>
-<dt>draw_info</dt>
+<dt>_info</dt>
 <dd>the draw info. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
 
 <dd>  </dd>
 </dl>
@@ -256,7 +239,7 @@ MagickBooleanType DrawGradientImage(Image *image,
 
 <pre class="text">
 MagickBooleanType DrawPatternPath(Image *image,const DrawInfo *draw_info,
-  const char *name,Image **pattern,ExceptionInfo *exception)
+  const char *name,Image **pattern)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -281,10 +264,6 @@ MagickBooleanType DrawPatternPath(Image *image,const DrawInfo *draw_info,
 <dt>image</dt>
 <dd>the image. </dd>
 
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
 <dd>  </dd>
 </dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/draw_8c.html" id="DrawPrimitive">DrawPrimitive</a></h2>
@@ -295,7 +274,7 @@ MagickBooleanType DrawPatternPath(Image *image,const DrawInfo *draw_info,
 
 <pre class="text">
 MagickBooleanType DrawPrimitive(Image *image,const DrawInfo *draw_info,
-  PrimitiveInfo *primitive_info,ExceptionInfo *exception)
+  PrimitiveInfo *primitive_info)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -315,10 +294,6 @@ MagickBooleanType DrawPrimitive(Image *image,const DrawInfo *draw_info,
 <dd> </dd>
 <dt>primitive_info</dt>
 <dd>Specifies a pointer to a PrimitiveInfo structure. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
 
 <dd>  </dd>
 </dl>
@@ -346,7 +321,7 @@ void GetAffineMatrix(AffineMatrix *affine_matrix)
 </dl>
 </div>
   <footer class="magick-footer">
-    <div class="magick-nav-item navbar-left">
+    <div class="magick-nav-item pull-left">
       <a href="../support.html">Donate</a>
     </div>
     <p><a href="../sitemap.html">Sitemap</a> •
@@ -364,7 +339,7 @@ void GetAffineMatrix(AffineMatrix *affine_matrix)
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
   <script src="../js/bootstrap.min.js"></script>
   <script type="text/javascript">
-    /*  */
+    /* <![CDATA[ */
     (function() {
         var s = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
         s.type = 'text/javascript';
@@ -372,7 +347,7 @@ void GetAffineMatrix(AffineMatrix *affine_matrix)
         s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
         t.parentNode.insertBefore(s, t);
     })();
-    /*  */
+    /* ]]> */
   </script>
 </div>
 </body>

@@ -49,7 +49,7 @@
       <a class="magick-nav-item " href="command-line-options.html">Options</a>
       <a class="magick-nav-item " href="api.html">Development</a>
       <a class="magick-nav-item" href="http://www.imagemagick.org/discourse-server/">Community</a>
-      <a class="magick-nav-item navbar-right " href="http://www.imagemagick.org/script/search.php">Search</a>
+      <a class="magick-nav-item pull-right " href="http://www.imagemagick.org/script/search.php">Search</a>
     </nav>
   </div>
 </div>
@@ -73,9 +73,16 @@
 
 <p>After you write your MagickWand program, compile it like this:</p>
 
-<pre><span class="crtprompt"> </span><span class="crtin">cc -o wand wand.c `pkg-config --cflags --libs MagickWand`</span></pre>
+<pre>
+cc -o wand wand.c `pkg-config --cflags --libs MagickWand`
+</pre>
+
 <p>Set the <code>PKG_CONFIG_PATH</code> environment variable if ImageMagick is not in your default system path:</p>
-<pre><span class="crtprompt"> </span><span class="crtin">export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig</span></pre>
+
+<pre>
+export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
+</pre>
+
 <p>Here is a example program that utilizes the MagickWand API to get you started, <a href="../source/wand.c">wand.c</a>. It reads an image, creates a thumbnail, and writes the result to disk.</p>
 
 <pre class="pre-scrollable">#include &lt;stdio.h&gt;
@@ -356,7 +363,7 @@ int main(int argc,char **argv)
 <p><a href="http://members.shaw.ca/el.supremo/MagickWand/">MagickWand Examples in C</a> illustrates how to use the ImageMagick MagickWand API. Each example is presented as a C function, complete with headers, so that it can be copied to a file and then included in your own C project.</p>
 </div>
   <footer class="magick-footer">
-    <div class="magick-nav-item navbar-left">
+    <div class="magick-nav-item pull-left">
       <a href="support.html">Donate</a>
     </div>
     <p><a href="sitemap.html">Sitemap</a> •
@@ -374,7 +381,7 @@ int main(int argc,char **argv)
   <script src="https://localhost/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
   <script src="../js/bootstrap.min.js"></script>
   <script type="text/javascript">
-    /*  */
+    /* <![CDATA[ */
     (function() {
         var s = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
         s.type = 'text/javascript';
@@ -382,7 +389,7 @@ int main(int argc,char **argv)
         s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
         t.parentNode.insertBefore(s, t);
     })();
-    /*  */
+    /* ]]> */
   </script>
 </div>
 </body>

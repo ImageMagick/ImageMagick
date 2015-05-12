@@ -49,7 +49,7 @@
       <a class="magick-nav-item " href="../command-line-options.html">Options</a>
       <a class="magick-nav-item " href="api.html">Development</a>
       <a class="magick-nav-item" href="http://www.imagemagick.org/discourse-server/">Community</a>
-      <a class="magick-nav-item navbar-right " href="http://www.imagemagick.org/script/search.php">Search</a>
+      <a class="magick-nav-item pull-right " href="http://www.imagemagick.org/script/search.php">Search</a>
     </nav>
   </div>
 </div>
@@ -132,8 +132,9 @@ MagickBooleanType IsPaletteImage(const Image *image,
 <p>The format of the MinMaxStretchImage method is:</p>
 
 <pre class="text">
-MagickBooleanType MinMaxStretchImage(Image *image,const double black,
-  const double white,const double gamma,ExceptionInfo *exception)
+MagickBooleanType MinMaxStretchImage(Image *image,
+  const ChannelType channel, const double black_adjust,
+  const double white_adjust)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -147,16 +148,12 @@ MagickBooleanType MinMaxStretchImage(Image *image,const double black,
 <dd>The image to auto-level </dd>
 
 <dd> </dd>
-<dt>black, white</dt>
-<dd> move the black / white point inward from the minimum and maximum points by this color value. </dd>
+<dt>channel</dt>
+<dd>The channels to auto-level.  If the special 'SyncChannels' flag is set, all the given channels are stretched by the same amount. </dd>
 
 <dd> </dd>
-<dt>gamma</dt>
-<dd>the gamma. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
+<dt>black_adjust, white_adjust</dt>
+<dd> Move the Black/White Point inward from the minimum and maximum points by this color value. </dd>
 
 <dd>  </dd>
 </dl>
@@ -202,7 +199,7 @@ Image *UniqueImageColors(const Image *image,ExceptionInfo *exception)
 
 </div>
   <footer class="magick-footer">
-    <div class="magick-nav-item navbar-left">
+    <div class="magick-nav-item pull-left">
       <a href="../support.html">Donate</a>
     </div>
     <p><a href="../sitemap.html">Sitemap</a> •
@@ -220,7 +217,7 @@ Image *UniqueImageColors(const Image *image,ExceptionInfo *exception)
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
   <script src="../js/bootstrap.min.js"></script>
   <script type="text/javascript">
-    /*  */
+    /* <![CDATA[ */
     (function() {
         var s = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
         s.type = 'text/javascript';
@@ -228,7 +225,7 @@ Image *UniqueImageColors(const Image *image,ExceptionInfo *exception)
         s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
         t.parentNode.insertBefore(s, t);
     })();
-    /*  */
+    /* ]]> */
   </script>
 </div>
 </body>

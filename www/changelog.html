@@ -1,35 +1,31 @@
-
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>ImageMagick: Changelog</title>
-  <meta http-equiv="content-language" content="en-US"/>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"/>
-  <meta name="application-name" content="ImageMagick"/>
-  <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves."/>
-  <meta name="application-url" content="http://www.imagemagick.org"/>
-  <meta name="generator" content="PHP"/>
-  <meta name="keywords" content="changelog, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert"/>
-  <meta name="rating" content="GENERAL"/>
-  <meta name="robots" content="INDEX, FOLLOW"/>
-  <meta name="generator" content="ImageMagick Studio LLC"/>
-  <meta name="author" content="ImageMagick Studio LLC"/>
-  <meta name="revisit-after" content="2 DAYS"/>
-  <meta name="resource-type" content="document"/>
-  <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC"/>
-  <meta name="distribution" content="Global"/>
-  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
-  <link rel="icon" href="../images/wand.png"></link>
-  <link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon"></link>
-  <link rel="stylesheet" href="css/bootstrap.min.css"></link>
-  <link rel="stylesheet" href="css/magick.css"></link>
+  <meta http-equiv="content-language" content="en-US">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta http-equiv="reply-to" content="magick-users@imagemagick.org">
+  <meta name="application-name" content="ImageMagick">
+  <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.">
+  <meta name="application-url" content="http://www.imagemagick.org">
+  <meta name="generator" content="PHP">
+  <meta name="keywords" content="changelog, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert">
+  <meta name="rating" content="GENERAL">
+  <meta name="robots" content="INDEX, FOLLOW">
+  <meta name="generator" content="ImageMagick Studio LLC">
+  <meta name="author" content="ImageMagick Studio LLC">
+  <meta name="revisit-after" content="2 DAYS">
+  <meta name="resource-type" content="document">
+  <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC">
+  <meta name="distribution" content="Global">
+  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
+  <link rel="icon" href="../images/wand.png">
+  <link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/magick.css">
 </head>
 
 <body>
@@ -53,17 +49,19 @@
       <a class="magick-nav-item " href="command-line-options.html">Options</a>
       <a class="magick-nav-item " href="api.html">Development</a>
       <a class="magick-nav-item" href="http://www.imagemagick.org/discourse-server/">Community</a>
-      <a class="magick-nav-item navbar-right " href="http://www.imagemagick.org/script/search.php">Search</a>
+      <a class="magick-nav-item pull-right " href="http://www.imagemagick.org/script/search.php">Search</a>
     </nav>
   </div>
 </div>
 <div class="container">
 <div class="magick-header"><dl><dt>2015-05-03  6.9.1-3 Dirk Lemstra &lt;dirk@lem.....org&gt;</dt>
-  <li> Fixed transparency issue with 16-bit tga files (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=27469).</li>
+  </dl><li> Fixed transparency issue with 16-bit tga files (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=27469).</li>
   <li> Fixed writing label and comment in tiff images (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=25516).</li>
+  <li> Jpeg images no longer have pixels per inch as a default value for density    units when the density is not set (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=27589).</li>
 <dt>2015-05-03  6.9.1-3 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
   <li> Fixed bug with "-define png:format=x" in png.c, introduced in version    6.8.9-0, that caused the define to be ignored.</li>
   <li> Replaced some dead code in ReadJNGImage with an assert().</li>
+  <li> Avoid palette-building when writing a grayscale PNG (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=27580).</li>
 <dt>2015-04-20  6.9.1-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Support -define compose:clamp=false option (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=26946).</li>
   <li> Don't extend any user supplied image buffer in SeekBlob() (bug report    from a.chernij@corp...).</li>
@@ -71,7 +69,7 @@
   <li> Draw a rectangle of width &amp; height of 1 (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=24874).</li>
 <dt>2015-04-19  6.9.1-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> New version 6.9.1-2, SVN revision 18429.</li>
-<dt>2015-04-09  6.9.0-2 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+<dt>2015-04-09  6.9.1-2 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
   <li> Avoid using a NULL alpha_image or color_image in the JNG decoder.</li>
 <dt>2015-04-07  6.9.1-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Fix JPEG-2000 transparency on write (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=27304).</li>
@@ -132,7 +130,7 @@
   <li> Small optimization to pixel cache.</li>
   <li> More image sanity checks.</li>
   <li> Support writing base64-encoded images (e.g<dt>	  convert logo: inline:jpeg:logo.txt).</dt>
-  <li> Repair small TIFF leak when pinging (patch provided by Andrey Cherniy).</li>
+  </li><li> Repair small TIFF leak when pinging (patch provided by Andrey Cherniy).</li>
 <dt>2015-01-16  6.9.0-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> New version 6.9.0-4, SVN revision 17697.</li>
 <dt>2015-01-07  6.9.0-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
@@ -201,7 +199,7 @@
   <li> Off-by-one count when parsing an 8BIM profile.</li>
   <li> Locale.c won't build if uselocale found but strtod_l isn't (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=26362).</li>
   <li> OpenCL no longer benchmarks are run on every initialization (patch    submitted by Jan Steffens).</li>
-  <li> Don't clone a 0x0 image (bug report from Hanno B�ck).</li>
+  <li> Don't clone a 0x0 image (bug report from Hanno BÃÂ¶ck).</li>
 <dt>2014-09-21  6.8.9-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> New version 6.8.9-8, SVN revision 16502.</li>
 <dt>2014-09-16  6.8.9-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
@@ -1025,8 +1023,8 @@
   <li> New version 6.7.9-7, SVN revision 9410.</li>
 <dt>2012-09-20  6.7.9-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> jpeg:sampling-factor might be an image property or an option (reference<dt>http://www.imagemagick.org/discourse-server/viewtopic.html?f=2&amp;t=21884).</dt>
-  <li><dt>2012-09-15  6.7.9-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <li> New version 6.7.9-6, SVN revision 9375.</li>
+  </li><li><dt>2012-09-15  6.7.9-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  </li><li> New version 6.7.9-6, SVN revision 9375.</li>
 <dt>2012-09-14  6.7.9-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Don't compand the YCC colorspace, its already companded.</li>
 <dt>2012-09-12  6.7.9-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
@@ -1157,7 +1155,7 @@
   <li> Set the colorspace to linear gray when reading intensity values (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=21362).</li>
   <li> Don't overrun pixel buffer on inverse fourier for odd image widths.</li>
   <li> Change LAB encoding to permit blurring, resize, etc.    (signed A and B channel values now stored using a 50% bias)</li>
-    Additional.. This removes a non-linear discontinuity from stored LAB space    values. As a result you can now Blur, Compose, Resize and Distort in LAB    colorspace, without problems that previously existed.</li>
+    Additional.. This removes a non-linear discontinuity from stored LAB space    values. As a result you can now Blur, Compose, Resize and Distort in LAB    colorspace, without problems that previously existed.
 <dt>2012-07-04  6.7.8-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> New version 6.7.8-1, SVN revision 8595.</li>
 <dt>2012-07-02  6.7.8-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
@@ -1305,7 +1303,7 @@
   <li> Always unlock the semaphore before returning from the png codec, either    by a "return" or png_error(); changed all Magick*Exception() calls    after setjmp() to png_error() to ensure proper cleanup (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=16883).</li>
 <dt>2012-04-10  6.7.6-6 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
   <li> Fixed log known alpha*kernel normalization bug in morphology convolve.</li>
-    Convolve kernel weights have been separated from alpha blend handling.    Un-normalized kernels applied to images with active alpha will no longer    be auto-normalized due to the effect of alpha blending.  The bug causes    images using the default channel setting and having an alpha channel to    automatically 'normalize' the results of a convolve during the handling    of alpha blending.  This probably would cause severe effects when a    zero-summing kernel is being used on an image containing an active (though    likely fully-opaque) alpha channel, as division by near zero weights    would cause extreme color values in results.  This bug is not normally    seen as convolution, which is normally applied only to fully-opaque    images. And using a zero-summing kernel on an image with alpha also    results in a transparent image!  This is why it was not fixed up until now.</li>
+    Convolve kernel weights have been separated from alpha blend handling.    Un-normalized kernels applied to images with active alpha will no longer    be auto-normalized due to the effect of alpha blending.  The bug causes    images using the default channel setting and having an alpha channel to    automatically 'normalize' the results of a convolve during the handling    of alpha blending.  This probably would cause severe effects when a    zero-summing kernel is being used on an image containing an active (though    likely fully-opaque) alpha channel, as division by near zero weights    would cause extreme color values in results.  This bug is not normally    seen as convolution, which is normally applied only to fully-opaque    images. And using a zero-summing kernel on an image with alpha also    results in a transparent image!  This is why it was not fixed up until now.
 <dt>2012-04-08  6.7.6-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Pixel allocation for Pango is stride*rows not stride*columns.</li>
   <li> Set the image resolution for Postscript files with an embedded Photoshop    profile.</li>
@@ -2134,7 +2132,7 @@
   <li> The default filter for 'distort' was found to be a very blurry inaccurate    filter function.  It was removed and replaced with a correct Gaussian    filter (as used by resize)</li>
   <li> Added a switch so that "-interpolate filter" will force the use of    a cylindrical filter for ALL pixels in distorted images.  That is you can    use that switch to use a cylindrical filter even for images that are    being enlarged by the distortion.  However EWA is still currently using    a fixed 2.0 sampling radius.  This switch complements the use of "-filter    point" which turns off EWA filters in favor of interpolation for all    pixels in a distorted image.  BOTH switches should not be used together.</li>
   <li> A bug in the support radius of the EWA resampling function was found,    now that correctly defined resize filters are being used. Suddenly Normal    Gaussian distortions are not so blurry, and tests with distortions of    the 'Rings' image show extremely good and clear results, with only minimal    blurring.  The filter 'blur' expert option can be used to adjust this    further.</li>
-    The above represents a major improvement forward in the quality of the    image distortion operator. But near-unity distortions (no scaling) are    still overly blurry.</li>
+    The above represents a major improvement forward in the quality of the    image distortion operator. But near-unity distortions (no scaling) are    still overly blurry.
 <dt>2010-09-13  6.6.4-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Don't negate the geometry offset for the -extent option.</li>
 <dt>2010-09-09  6.6.4-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
@@ -3631,19 +3629,19 @@
   <li> Set AppendImage() matte channel only when image has matte attribute set.</li>
   <li> The -crop with negative offsets do not modify the virtual canvas.</li>
   <li> Caption: Given both the width and height ("-size") of the area to fill,    adjust the fonts "-pointsize" until the text just filles the whole space    without overflowing.</li>
-  <li> Generate proper Windows icon image files (patch provided by    Robert M. Jansen).</li></dl></div>  <footer class="magick-footer">
-    <div class="magick-nav-item navbar-left">
+  <li> Generate proper Windows icon image files (patch provided by    Robert M. Jansen).</li></div>  <footer class="magick-footer">
+    <div class="magick-nav-item pull-left">
       <a href="support.html">Donate</a>
     </div>
-    <p><a href="sitemap.html">Sitemap</a> •
-    <a href="links.html">Related</a> •
-    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Image Studio</a> •
-    <a href="http://jqmagick.imagemagick.org/">JqMagick</a> •
+    <p><a href="sitemap.html">Sitemap</a> ÃÂ¢ÃÂÃÂ¢
+    <a href="links.html">Related</a> ÃÂ¢ÃÂÃÂ¢
+    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Image Studio</a> ÃÂ¢ÃÂÃÂ¢
+    <a href="http://jqmagick.imagemagick.org/">JqMagick</a> ÃÂ¢ÃÂÃÂ¢
     <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a>
 </p>
-    <p><a href="changelog.html#">Back to top</a> •
+    <p><a href="changelog.html#">Back to top</a> ÃÂ¢ÃÂÃÂ¢
     <a href="http://www.imagemagick.org/script/contact.php">Contact Us</a></p>
-    <p class="small">©  1999-2015 ImageMagick Studio LLC</p>
+    <p class="small">ÃÂÃÂ©  1999-2015 ImageMagick Studio LLC</p>
   </footer>
 </div><!-- /.container -->
 

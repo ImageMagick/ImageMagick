@@ -49,7 +49,7 @@
       <a class="magick-nav-item " href="../command-line-options.html">Options</a>
       <a class="magick-nav-item " href="api.html">Development</a>
       <a class="magick-nav-item" href="http://www.imagemagick.org/discourse-server/">Community</a>
-      <a class="magick-nav-item navbar-right " href="http://www.imagemagick.org/script/search.php">Search</a>
+      <a class="magick-nav-item pull-right " href="http://www.imagemagick.org/script/search.php">Search</a>
     </nav>
   </div>
 </div>
@@ -114,8 +114,7 @@
 <p>The format of the AnnotateImage method is:</p>
 
 <pre class="text">
-MagickBooleanType AnnotateImage(Image *image,DrawInfo *draw_info,
-  ExceptionInfo *exception)
+MagickBooleanType AnnotateImage(Image *image,DrawInfo *draw_info)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -132,10 +131,6 @@ MagickBooleanType AnnotateImage(Image *image,DrawInfo *draw_info,
 <dt>draw_info</dt>
 <dd>the draw info. </dd>
 
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
 <dd>  </dd>
 </dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/annotate_8c.html" id="FormatMagickCaption">FormatMagickCaption</a></h2>
@@ -146,8 +141,7 @@ MagickBooleanType AnnotateImage(Image *image,DrawInfo *draw_info,
 
 <pre class="text">
 ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
-  const MagickBooleanType split,TypeMetric *metrics,char **caption,
-  ExceptionInfo *exception)
+  const MagickBooleanType split,TypeMetric *metrics,char **caption)
 </pre>
 
 <p>A description of each parameter follows.</p>
@@ -166,9 +160,6 @@ ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
 
 <dt>caption</dt>
 <p>the caption.</p>
-
-<dt>exception</dt>
-<p>return any errors or warnings in this structure.</p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/annotate_8c.html" id="GetMultilineTypeMetrics">GetMultilineTypeMetrics</a></h2>
 
@@ -198,7 +189,7 @@ ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
 
 <pre class="text">
 MagickBooleanType GetMultilineTypeMetrics(Image *image,
-  const DrawInfo *draw_info,TypeMetric *metrics,ExceptionInfo *exception)
+  const DrawInfo *draw_info,TypeMetric *metrics)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -218,10 +209,6 @@ MagickBooleanType GetMultilineTypeMetrics(Image *image,
 <dd> </dd>
 <dt>metrics</dt>
 <dd>Return the font metrics in this structure. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
 
 <dd>  </dd>
 </dl>
@@ -251,7 +238,7 @@ MagickBooleanType GetMultilineTypeMetrics(Image *image,
 
 <pre class="text">
 MagickBooleanType GetTypeMetrics(Image *image,const DrawInfo *draw_info,
-  TypeMetric *metrics,ExceptionInfo *exception)
+  TypeMetric *metrics)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -272,15 +259,11 @@ MagickBooleanType GetTypeMetrics(Image *image,const DrawInfo *draw_info,
 <dt>metrics</dt>
 <dd>Return the font metrics in this structure. </dd>
 
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
 <dd>  </dd>
 </dl>
 </div>
   <footer class="magick-footer">
-    <div class="magick-nav-item navbar-left">
+    <div class="magick-nav-item pull-left">
       <a href="../support.html">Donate</a>
     </div>
     <p><a href="../sitemap.html">Sitemap</a> •
@@ -298,7 +281,7 @@ MagickBooleanType GetTypeMetrics(Image *image,const DrawInfo *draw_info,
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
   <script src="../js/bootstrap.min.js"></script>
   <script type="text/javascript">
-    /*  */
+    /* <![CDATA[ */
     (function() {
         var s = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
         s.type = 'text/javascript';
@@ -306,7 +289,7 @@ MagickBooleanType GetTypeMetrics(Image *image,const DrawInfo *draw_info,
         s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
         t.parentNode.insertBefore(s, t);
     })();
-    /*  */
+    /* ]]> */
   </script>
 </div>
 </body>
