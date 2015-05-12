@@ -49,13 +49,13 @@
       <a class="magick-nav-item " href="../command-line-options.html">Options</a>
       <a class="magick-nav-item " href="api.html">Development</a>
       <a class="magick-nav-item" href="http://www.imagemagick.org/discourse-server/">Community</a>
-      <a class="magick-nav-item navbar-right " href="http://www.imagemagick.org/script/search.php">Search</a>
+      <a class="magick-nav-item pull-right " href="http://www.imagemagick.org/script/search.php">Search</a>
     </nav>
   </div>
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="text-center"><a href="feature.html#CannyEdgeImage">CannyEdgeImage</a> • <a href="feature.html#GetImageFeatures">GetImageFeatures</a> • <a href="feature.html#Use%20HoughLineImage">Use HoughLineImage</a> • <a href="feature.html#MeanShiftImage">MeanShiftImage</a></p>
+<p class="text-center"><a href="feature.html#CannyEdgeImage">CannyEdgeImage</a> • <a href="feature.html#GetImageChannelFeatures">GetImageChannelFeatures</a> • <a href="feature.html#Use%20HoughLineImage">Use HoughLineImage</a> • <a href="feature.html#MeanShiftImage">MeanShiftImage</a></p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/feature_8c.html" id="CannyEdgeImage">CannyEdgeImage</a></h2>
 
@@ -88,7 +88,7 @@ Image *CannyEdgeImage(const Image *image,const double radius,
 <dd>the sigma of the gaussian smoothing filter. </dd>
 
 <dd> </dd>
-<dt>lower_precent</dt>
+<dt>lower_percent</dt>
 <dd>percentage of edge pixels in the lower threshold. </dd>
 
 <dd> </dd>
@@ -101,21 +101,21 @@ Image *CannyEdgeImage(const Image *image,const double radius,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/feature_8c.html" id="GetImageFeatures">GetImageFeatures</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/feature_8c.html" id="GetImageChannelFeatures">GetImageChannelFeatures</a></h2>
 
-<p>GetImageFeatures() returns features for each channel in the image in each of four directions (horizontal, vertical, left and right diagonals) for the specified distance.  The features include the angular second moment, contrast, correlation, sum of squares: variance, inverse difference moment, sum average, sum varience, sum entropy, entropy, difference variance,  difference entropy, information measures of correlation 1, information measures of correlation 2, and maximum correlation coefficient.  You can access the red channel contrast, for example, like this:</p>
+<p>GetImageChannelFeatures() returns features for each channel in the image in each of four directions (horizontal, vertical, left and right diagonals) for the specified distance.  The features include the angular second moment, contrast, correlation, sum of squares: variance, inverse difference moment, sum average, sum varience, sum entropy, entropy, difference variance,  difference entropy, information measures of correlation 1, information measures of correlation 2, and maximum correlation coefficient.  You can access the red channel contrast, for example, like this:</p>
 
 <pre class="text">
-channel_features=GetImageFeatures(image,1,exception);
-contrast=channel_features[RedPixelChannel].contrast[0];
+channel_features=GetImageChannelFeatures(image,1,exception);
+contrast=channel_features[RedChannel].contrast[0];
 </pre>
 
 <p>Use MagickRelinquishMemory() to free the features buffer.</p>
 
-<p>The format of the GetImageFeatures method is:</p>
+<p>The format of the GetImageChannelFeatures method is:</p>
 
 <pre class="text">
-ChannelFeatures *GetImageFeatures(const Image *image,
+ChannelFeatures *GetImageChannelFeatures(const Image *image,
   const size_t distance,ExceptionInfo *exception)
 </pre>
 
@@ -212,7 +212,7 @@ Image *MeanShiftImage(const Image *image,const size_t width,
 </dl>
 </div>
   <footer class="magick-footer">
-    <div class="magick-nav-item navbar-left">
+    <div class="magick-nav-item pull-left">
       <a href="../support.html">Donate</a>
     </div>
     <p><a href="../sitemap.html">Sitemap</a> •
@@ -230,7 +230,7 @@ Image *MeanShiftImage(const Image *image,const size_t width,
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
   <script src="../js/bootstrap.min.js"></script>
   <script type="text/javascript">
-    /*  */
+    /* <![CDATA[ */
     (function() {
         var s = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
         s.type = 'text/javascript';
@@ -238,7 +238,7 @@ Image *MeanShiftImage(const Image *image,const size_t width,
         s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
         t.parentNode.insertBefore(s, t);
     })();
-    /*  */
+    /* ]]> */
   </script>
 </div>
 </body>

@@ -49,30 +49,30 @@
       <a class="magick-nav-item " href="command-line-options.html">Options</a>
       <a class="magick-nav-item " href="api.html">Development</a>
       <a class="magick-nav-item" href="http://www.imagemagick.org/discourse-server/">Community</a>
-      <a class="magick-nav-item navbar-right active" href="http://www.imagemagick.org/script/search.php">Search</a>
+      <a class="magick-nav-item pull-right active" href="http://www.imagemagick.org/script/search.php">Search</a>
     </nav>
   </div>
 </div>
 <div class="container">
 <div class="magick-header">
 <form class="form-inline">
-<CustomSearchEngine id="magick" creator="lexie" keywords="ImageMagick" language="en" visible="false" encoding="UTF-8">
-  <Title>ImageMagick Search</Title>
-  <Description></Description>
-  <Context>
-    <BackgroundLabels>
-      <Label name="_cse_magick" mode="FILTER"></Label>
-      <Label name="_cse_exclude_magick" mode="ELIMINATE"></Label>
-    </BackgroundLabels>
-  </Context>
-  <LookAndFeel nonprofit="false"></LookAndFeel>
-  <ImageSearchSettings enable="true" layout="1"></ImageSearchSettings>
-  <AdSense>
-    <Client id="pub-3129977114552745">
-      <Channel id="1234567890"></Channel>
-    </Client>
-  </AdSense>
-</CustomSearchEngine>
+<customsearchengine id="magick" creator="lexie" keywords="ImageMagick" language="en" visible="false" encoding="UTF-8">
+  <title>ImageMagick Search</title>
+  <description></description>
+  <context>
+    <backgroundlabels>
+      <label name="_cse_magick" mode="FILTER"></label>
+      <label name="_cse_exclude_magick" mode="ELIMINATE"></label>
+    </backgroundlabels>
+  </context>
+  <lookandfeel nonprofit="false"></lookandfeel>
+  <imagesearchsettings enable="true" layout="1"></imagesearchsettings>
+  <adsense>
+    <client id="pub-3129977114552745">
+      <channel id="1234567890"></channel>
+    </client>
+  </adsense>
+</customsearchengine>
 </form>
 <!-- http://www.google.com/cse/manage/all -->
 <script src="http://www.google.com/jsapi" type="text/javascript"></script>
@@ -88,10 +88,10 @@
     s.parentNode.insertBefore(gcse, s);
   })();
 </script>
-<gcse:search></gcse:search>
+<search></search>
 </div>
   <footer class="magick-footer">
-    <div class="magick-nav-item navbar-left">
+    <div class="magick-nav-item pull-left">
       <a href="support.html">Donate</a>
     </div>
     <p><a href="sitemap.html">Sitemap</a> •
@@ -109,7 +109,7 @@
   <script src="https://localhost/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
   <script src="../js/bootstrap.min.js"></script>
   <script type="text/javascript">
-    /*  */
+    /* <![CDATA[ */
     (function() {
         var s = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
         s.type = 'text/javascript';
@@ -117,7 +117,7 @@
         s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
         t.parentNode.insertBefore(s, t);
     })();
-    /*  */
+    /* ]]> */
   </script>
 </div>
 </body>

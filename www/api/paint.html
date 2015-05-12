@@ -49,7 +49,7 @@
       <a class="magick-nav-item " href="../command-line-options.html">Options</a>
       <a class="magick-nav-item " href="api.html">Development</a>
       <a class="magick-nav-item" href="http://www.imagemagick.org/discourse-server/">Community</a>
-      <a class="magick-nav-item navbar-right " href="http://www.imagemagick.org/script/search.php">Search</a>
+      <a class="magick-nav-item pull-right " href="http://www.imagemagick.org/script/search.php">Search</a>
     </nav>
   </div>
 </div>
@@ -61,15 +61,15 @@
 
 <p>FloodfillPaintImage() changes the color value of any pixel that matches target and is an immediate neighbor.  If the method FillToBorderMethod is specified, the color value is changed for any neighbor pixel that does not match the bordercolor member of image.</p>
 
-<p>By default target must match a particular pixel color exactly.  However, in many cases two colors may differ by a small amount.  The fuzz member of image defines how much tolerance is acceptable to consider two colors as the same.  For example, set fuzz to 10 and the color red at intensities of 100 and 102 respectively are now interpreted as the same color for the purposes of the floodfill.</p>
+<p>By default target must match a particular pixel color exactly. However, in many cases two colors may differ by a small amount.  The fuzz member of image defines how much tolerance is acceptable to consider two colors as the same.  For example, set fuzz to 10 and the color red at intensities of 100 and 102 respectively are now interpreted as the same color for the purposes of the floodfill.</p>
 
 <p>The format of the FloodfillPaintImage method is:</p>
 
 <pre class="text">
 MagickBooleanType FloodfillPaintImage(Image *image,
-  const DrawInfo *draw_info,const PixelInfo target,
-  const ssize_t x_offset,const ssize_t y_offset,
-  const MagickBooleanType invert,ExceptionInfo *exception)
+  const ChannelType channel,const DrawInfo *draw_info,
+  const MagickPixelPacket target,const ssize_t x_offset,
+  const ssize_t y_offset,const MagickBooleanType invert)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -81,6 +81,10 @@ MagickBooleanType FloodfillPaintImage(Image *image,
 <dl class="dl-horizontal">
 <dt>image</dt>
 <dd>the image. </dd>
+
+<dd> </dd>
+<dt>channel</dt>
+<dd>the channel(s). </dd>
 
 <dd> </dd>
 <dt>draw_info</dt>
@@ -98,10 +102,6 @@ MagickBooleanType FloodfillPaintImage(Image *image,
 <dt>invert</dt>
 <dd>paint any pixel that does not match the target color. </dd>
 
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
 <dd>  </dd>
 </dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/paint_8c.html" id="OilPaintImage">OilPaintImage</a></h2>
@@ -112,7 +112,7 @@ MagickBooleanType FloodfillPaintImage(Image *image,
 
 <pre class="text">
 Image *OilPaintImage(const Image *image,const double radius,
-  const double sigma,ExceptionInfo *exception)
+  ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -130,10 +130,6 @@ Image *OilPaintImage(const Image *image,const double radius,
 <dd>the radius of the circular neighborhood. </dd>
 
 <dd> </dd>
-<dt>sigma</dt>
-<dd>the standard deviation of the Gaussian, in pixels. </dd>
-
-<dd> </dd>
 <dt>exception</dt>
 <dd>return any errors or warnings in this structure. </dd>
 
@@ -141,16 +137,19 @@ Image *OilPaintImage(const Image *image,const double radius,
 </dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/paint_8c.html" id="OpaquePaintImage">OpaquePaintImage</a></h2>
 
-<p>OpaquePaintImage() changes any pixel that matches color with the color defined by fill argument.</p>
+<p>OpaquePaintImage() changes any pixel that matches color with the color defined by fill.</p>
 
-<p>By default color must match a particular pixel color exactly.  However, in many cases two colors may differ by a small amount.  Fuzz defines how much tolerance is acceptable to consider two colors as the same.  For example, set fuzz to 10 and the color red at intensities of 100 and 102 respectively are now interpreted as the same color.</p>
+<p>By default color must match a particular pixel color exactly.  However, in many cases two colors may differ by a small amount.  Fuzz defines how much tolerance is acceptable to consider two colors as the same. For example, set fuzz to 10 and the color red at intensities of 100 and 102 respectively are now interpreted as the same color.</p>
 
 <p>The format of the OpaquePaintImage method is:</p>
 
 <pre class="text">
-MagickBooleanType OpaquePaintImage(Image *image,const PixelInfo *target,
-  const PixelInfo *fill,const MagickBooleanType invert,
-  ExceptionInfo *exception)
+MagickBooleanType OpaquePaintImage(Image *image,
+  const PixelPacket *target,const PixelPacket *fill,
+  const MagickBooleanType invert)
+MagickBooleanType OpaquePaintImageChannel(Image *image,
+  const ChannelType channel,const PixelPacket *target,
+  const PixelPacket *fill,const MagickBooleanType invert)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -164,6 +163,10 @@ MagickBooleanType OpaquePaintImage(Image *image,const PixelInfo *target,
 <dd>the image. </dd>
 
 <dd> </dd>
+<dt>channel</dt>
+<dd>the channel(s). </dd>
+
+<dd> </dd>
 <dt>target</dt>
 <dd>the RGB value of the target color. </dd>
 
@@ -175,24 +178,20 @@ MagickBooleanType OpaquePaintImage(Image *image,const PixelInfo *target,
 <dt>invert</dt>
 <dd>paint any pixel that does not match the target color. </dd>
 
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
 <dd>  </dd>
 </dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/paint_8c.html" id="TransparentPaintImage">TransparentPaintImage</a></h2>
 
 <p>TransparentPaintImage() changes the opacity value associated with any pixel that matches color to the value defined by opacity.</p>
 
-<p>By default color must match a particular pixel color exactly.  However, in many cases two colors may differ by a small amount.  Fuzz defines how much tolerance is acceptable to consider two colors as the same.  For example, set fuzz to 10 and the color red at intensities of 100 and 102 respectively are now interpreted as the same color.</p>
+<p>By default color must match a particular pixel color exactly.  However, in many cases two colors may differ by a small amount.  Fuzz defines how much tolerance is acceptable to consider two colors as the same. For example, set fuzz to 10 and the color red at intensities of 100 and 102 respectively are now interpreted as the same color.</p>
 
 <p>The format of the TransparentPaintImage method is:</p>
 
 <pre class="text">
 MagickBooleanType TransparentPaintImage(Image *image,
-  const PixelInfo *target,const Quantum opacity,
-  const MagickBooleanType invert,ExceptionInfo *exception)
+  const MagickPixelPacket *target,const Quantum opacity,
+  const MagickBooleanType invert)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -217,24 +216,20 @@ MagickBooleanType TransparentPaintImage(Image *image,
 <dt>invert</dt>
 <dd>paint any pixel that does not match the target color. </dd>
 
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
 <dd>  </dd>
 </dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/paint_8c.html" id="TransparentPaintImageChroma">TransparentPaintImageChroma</a></h2>
 
 <p>TransparentPaintImageChroma() changes the opacity value associated with any pixel that matches color to the value defined by opacity.</p>
 
-<p>As there is one fuzz value for the all the channels, TransparentPaintImage() is not suitable for the operations like chroma, where the tolerance for similarity of two color component (RGB) can be different. Thus we define this method to take two target pixels (one low and one high) and all the pixels of an image which are lying between these two pixels are made transparent.</p>
+<p>As there is one fuzz value for the all the channels, the TransparentPaintImage() API is not suitable for the operations like chroma, where the tolerance for similarity of two color component (RGB) can be different, Thus we define this method take two target pixels (one low and one hight) and all the pixels of an image which are lying between these two pixels are made transparent.</p>
 
-<p>The format of the TransparentPaintImageChroma method is:</p>
+<p>The format of the TransparentPaintImage method is:</p>
 
 <pre class="text">
-MagickBooleanType TransparentPaintImageChroma(Image *image,
-  const PixelInfo *low,const PixelInfo *high,const Quantum opacity,
-  const MagickBooleanType invert,ExceptionInfo *exception)
+MagickBooleanType TransparentPaintImage(Image *image,
+  const MagickPixelPacket *low,const MagickPixelPacket *hight,
+  const Quantum opacity,const MagickBooleanType invert)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -263,15 +258,11 @@ MagickBooleanType TransparentPaintImageChroma(Image *image,
 <dt>invert</dt>
 <dd>paint any pixel that does not match the target color. </dd>
 
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
 <dd>  </dd>
 </dl>
 </div>
   <footer class="magick-footer">
-    <div class="magick-nav-item navbar-left">
+    <div class="magick-nav-item pull-left">
       <a href="../support.html">Donate</a>
     </div>
     <p><a href="../sitemap.html">Sitemap</a> •
@@ -289,7 +280,7 @@ MagickBooleanType TransparentPaintImageChroma(Image *image,
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
   <script src="../js/bootstrap.min.js"></script>
   <script type="text/javascript">
-    /*  */
+    /* <![CDATA[ */
     (function() {
         var s = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
         s.type = 'text/javascript';
@@ -297,7 +288,7 @@ MagickBooleanType TransparentPaintImageChroma(Image *image,
         s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
         t.parentNode.insertBefore(s, t);
     })();
-    /*  */
+    /* ]]> */
   </script>
 </div>
 </body>

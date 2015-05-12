@@ -49,19 +49,19 @@
       <a class="magick-nav-item " href="../command-line-options.html">Options</a>
       <a class="magick-nav-item " href="api.html">Development</a>
       <a class="magick-nav-item" href="http://www.imagemagick.org/discourse-server/">Community</a>
-      <a class="magick-nav-item navbar-right " href="http://www.imagemagick.org/script/search.php">Search</a>
+      <a class="magick-nav-item pull-right " href="http://www.imagemagick.org/script/search.php">Search</a>
     </nav>
   </div>
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="text-center"><a href="statistic.html#EvaluateImage">EvaluateImage</a> • <a href="statistic.html#FunctionImage">FunctionImage</a> • <a href="statistic.html#GetImageEntropy">GetImageEntropy</a> • <a href="statistic.html#GetImageExtrema">GetImageExtrema</a> • <a href="statistic.html#GetImageKurtosis">GetImageKurtosis</a> • <a href="statistic.html#GetImageMean">GetImageMean</a> • <a href="statistic.html#GetImageMoments">GetImageMoments</a> • <a href="statistic.html#GetImagePerceptualHash">GetImagePerceptualHash</a> • <a href="statistic.html#GetImageRange">GetImageRange</a> • <a href="statistic.html#GetImageStatistics">GetImageStatistics</a> • <a href="statistic.html#PolynomialImage">PolynomialImage</a> • <a href="statistic.html#StatisticImage">StatisticImage</a></p>
+<p class="text-center"><a href="statistic.html#EvaluateImage">EvaluateImage</a> • <a href="statistic.html#FunctionImage">FunctionImage</a> • <a href="statistic.html#GetImageChannelEntropy">GetImageChannelEntropy</a> • <a href="statistic.html#GetImageChannelKurtosis">GetImageChannelKurtosis</a> • <a href="statistic.html#GetImageChannelMean">GetImageChannelMean</a> • <a href="statistic.html#GetImageChannelMoments">GetImageChannelMoments</a> • <a href="statistic.html#GetImageChannelPerceptualHash">GetImageChannelPerceptualHash</a> • <a href="statistic.html#GetImageChannelRange">GetImageChannelRange</a> • <a href="statistic.html#GetImageChannelStatistics">GetImageChannelStatistics</a> • <a href="statistic.html#PolynomialImage">PolynomialImage</a> • <a href="statistic.html#StatisticImage">StatisticImage</a></p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/statistic_8c.html" id="EvaluateImage">EvaluateImage</a></h2>
 
 <p>EvaluateImage() applies a value to the image with an arithmetic, relational, or logical operator to an image. Use these operations to lighten or darken an image, to increase or decrease contrast in an image, or to produce the "negative" of an image.</p>
 
-<p>The format of the EvaluateImage method is:</p>
+<p>The format of the EvaluateImageChannel method is:</p>
 
 <pre class="text">
 MagickBooleanType EvaluateImage(Image *image,
@@ -70,6 +70,9 @@ MagickBooleanType EvaluateImage(Image *image,
 MagickBooleanType EvaluateImages(Image *images,
   const MagickEvaluateOperator op,const double value,
   ExceptionInfo *exception)
+MagickBooleanType EvaluateImageChannel(Image *image,
+  const ChannelType channel,const MagickEvaluateOperator op,
+  const double value,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -81,6 +84,10 @@ MagickBooleanType EvaluateImages(Image *images,
 <dl class="dl-horizontal">
 <dt>image</dt>
 <dd>the image. </dd>
+
+<dd> </dd>
+<dt>channel</dt>
+<dd>the channel. </dd>
 
 <dd> </dd>
 <dt>op</dt>
@@ -100,12 +107,16 @@ MagickBooleanType EvaluateImages(Image *images,
 
 <p>FunctionImage() applies a value to the image with an arithmetic, relational, or logical operator to an image. Use these operations to lighten or darken an image, to increase or decrease contrast in an image, or to produce the "negative" of an image.</p>
 
-<p>The format of the FunctionImage method is:</p>
+<p>The format of the FunctionImageChannel method is:</p>
 
 <pre class="text">
 MagickBooleanType FunctionImage(Image *image,
   const MagickFunction function,const ssize_t number_parameters,
   const double *parameters,ExceptionInfo *exception)
+MagickBooleanType FunctionImageChannel(Image *image,
+  const ChannelType channel,const MagickFunction function,
+  const ssize_t number_parameters,const double *argument,
+  ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -117,6 +128,10 @@ MagickBooleanType FunctionImage(Image *image,
 <dl class="dl-horizontal">
 <dt>image</dt>
 <dd>the image. </dd>
+
+<dd> </dd>
+<dt>channel</dt>
+<dd>the channel. </dd>
 
 <dd> </dd>
 <dt>function</dt>
@@ -132,14 +147,50 @@ MagickBooleanType FunctionImage(Image *image,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/statistic_8c.html" id="GetImageEntropy">GetImageEntropy</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/statistic_8c.html" id="GetImageChannelEntropy">GetImageChannelEntropy</a></h2>
 
-<p>GetImageEntropy() returns the entropy of one or more image channels.</p>
+<p>GetImageChannelEntropy() returns the entropy of one or more image channels.</p>
 
-<p>The format of the GetImageEntropy method is:</p>
+<p>The format of the GetImageChannelEntropy method is:</p>
 
 <pre class="text">
-MagickBooleanType GetImageEntropy(const Image *image,double *entropy,
+MagickBooleanType GetImageChannelEntropy(const Image *image,
+  const ChannelType channel,double *entropy,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>channel</dt>
+<dd>the channel. </dd>
+
+<dd> </dd>
+<dt>entropy</dt>
+<dd>the average entropy of the selected channels. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/statistic_8c.html" id="GetImageChannelKurtosis">GetImageChannelKurtosis</a></h2>
+
+<p>GetImageChannelKurtosis() returns the kurtosis and skewness of one or more image channels.</p>
+
+<p>The format of the GetImageChannelKurtosis method is:</p>
+
+<pre class="text">
+MagickBooleanType GetImageChannelKurtosis(const Image *image,
+  const ChannelType channel,double *kurtosis,double *skewness,
   ExceptionInfo *exception)
 </pre>
 
@@ -154,70 +205,8 @@ MagickBooleanType GetImageEntropy(const Image *image,double *entropy,
 <dd>the image. </dd>
 
 <dd> </dd>
-<dt>entropy</dt>
-<dd>the average entropy of the selected channels. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
-<dd>  </dd>
-</dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/statistic_8c.html" id="GetImageExtrema">GetImageExtrema</a></h2>
-
-<p>GetImageExtrema() returns the extrema of one or more image channels.</p>
-
-<p>The format of the GetImageExtrema method is:</p>
-
-<pre class="text">
-MagickBooleanType GetImageExtrema(const Image *image,size_t *minima,
-  size_t *maxima,ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<dd>
-</dd>
-
-<dd> </dd>
-<dl class="dl-horizontal">
-<dt>image</dt>
-<dd>the image. </dd>
-
-<dd> </dd>
-<dt>minima</dt>
-<dd>the minimum value in the channel. </dd>
-
-<dd> </dd>
-<dt>maxima</dt>
-<dd>the maximum value in the channel. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
-<dd>  </dd>
-</dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/statistic_8c.html" id="GetImageKurtosis">GetImageKurtosis</a></h2>
-
-<p>GetImageKurtosis() returns the kurtosis and skewness of one or more image channels.</p>
-
-<p>The format of the GetImageKurtosis method is:</p>
-
-<pre class="text">
-MagickBooleanType GetImageKurtosis(const Image *image,double *kurtosis,
-  double *skewness,ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<dd>
-</dd>
-
-<dd> </dd>
-<dl class="dl-horizontal">
-<dt>image</dt>
-<dd>the image. </dd>
+<dt>channel</dt>
+<dd>the channel. </dd>
 
 <dd> </dd>
 <dt>kurtosis</dt>
@@ -233,15 +222,16 @@ MagickBooleanType GetImageKurtosis(const Image *image,double *kurtosis,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/statistic_8c.html" id="GetImageMean">GetImageMean</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/statistic_8c.html" id="GetImageChannelMean">GetImageChannelMean</a></h2>
 
-<p>GetImageMean() returns the mean and standard deviation of one or more image channels.</p>
+<p>GetImageChannelMean() returns the mean and standard deviation of one or more image channels.</p>
 
-<p>The format of the GetImageMean method is:</p>
+<p>The format of the GetImageChannelMean method is:</p>
 
 <pre class="text">
-MagickBooleanType GetImageMean(const Image *image,double *mean,
-  double *standard_deviation,ExceptionInfo *exception)
+MagickBooleanType GetImageChannelMean(const Image *image,
+  const ChannelType channel,double *mean,double *standard_deviation,
+  ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -253,6 +243,10 @@ MagickBooleanType GetImageMean(const Image *image,double *mean,
 <dl class="dl-horizontal">
 <dt>image</dt>
 <dd>the image. </dd>
+
+<dd> </dd>
+<dt>channel</dt>
+<dd>the channel. </dd>
 
 <dd> </dd>
 <dt>mean</dt>
@@ -268,14 +262,14 @@ MagickBooleanType GetImageMean(const Image *image,double *mean,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/statistic_8c.html" id="GetImageMoments">GetImageMoments</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/statistic_8c.html" id="GetImageChannelMoments">GetImageChannelMoments</a></h2>
 
-<p>GetImageMoments() returns the normalized moments of one or more image channels.</p>
+<p>GetImageChannelMoments() returns the normalized moments of one or more image channels.</p>
 
-<p>The format of the GetImageMoments method is:</p>
+<p>The format of the GetImageChannelMoments method is:</p>
 
 <pre class="text">
-ChannelMoments *GetImageMoments(const Image *image,
+ChannelMoments *GetImageChannelMoments(const Image *image,
   ExceptionInfo *exception)
 </pre>
 
@@ -295,14 +289,14 @@ ChannelMoments *GetImageMoments(const Image *image,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/statistic_8c.html" id="GetImagePerceptualHash">GetImagePerceptualHash</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/statistic_8c.html" id="GetImageChannelPerceptualHash">GetImageChannelPerceptualHash</a></h2>
 
-<p>GetImagePerceptualHash() returns the perceptual hash of one or more image channels.</p>
+<p>GetImageChannelPerceptualHash() returns the perceptual hash of one or more image channels.</p>
 
-<p>The format of the GetImagePerceptualHash method is:</p>
+<p>The format of the GetImageChannelPerceptualHash method is:</p>
 
 <pre class="text">
-ChannelPerceptualHash *GetImagePerceptualHash(const Image *image,
+ChannelPerceptualHash *GetImageChannelPerceptualHash(const Image *image,
   ExceptionInfo *exception)
 </pre>
 
@@ -322,15 +316,16 @@ ChannelPerceptualHash *GetImagePerceptualHash(const Image *image,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/statistic_8c.html" id="GetImageRange">GetImageRange</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/statistic_8c.html" id="GetImageChannelRange">GetImageChannelRange</a></h2>
 
-<p>GetImageRange() returns the range of one or more image channels.</p>
+<p>GetImageChannelRange() returns the range of one or more image channels.</p>
 
-<p>The format of the GetImageRange method is:</p>
+<p>The format of the GetImageChannelRange method is:</p>
 
 <pre class="text">
-MagickBooleanType GetImageRange(const Image *image,double *minima,
-  double *maxima,ExceptionInfo *exception)
+MagickBooleanType GetImageChannelRange(const Image *image,
+  const ChannelType channel,double *minima,double *maxima,
+  ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -342,6 +337,10 @@ MagickBooleanType GetImageRange(const Image *image,double *minima,
 <dl class="dl-horizontal">
 <dt>image</dt>
 <dd>the image. </dd>
+
+<dd> </dd>
+<dt>channel</dt>
+<dd>the channel. </dd>
 
 <dd> </dd>
 <dt>minima</dt>
@@ -357,21 +356,21 @@ MagickBooleanType GetImageRange(const Image *image,double *minima,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/statistic_8c.html" id="GetImageStatistics">GetImageStatistics</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/statistic_8c.html" id="GetImageChannelStatistics">GetImageChannelStatistics</a></h2>
 
-<p>GetImageStatistics() returns statistics for each channel in the image.  The statistics include the channel depth, its minima, maxima, mean, standard deviation, kurtosis and skewness.  You can access the red channel mean, for example, like this:</p>
+<p>GetImageChannelStatistics() returns statistics for each channel in the image.  The statistics include the channel depth, its minima, maxima, mean, standard deviation, kurtosis and skewness.  You can access the red channel mean, for example, like this:</p>
 
 <pre class="text">
-channel_statistics=GetImageStatistics(image,exception);
-red_mean=channel_statistics[RedPixelChannel].mean;
+channel_statistics=GetImageChannelStatistics(image,exception);
+red_mean=channel_statistics[RedChannel].mean;
 </pre>
 
 <p>Use MagickRelinquishMemory() to free the statistics buffer.</p>
 
-<p>The format of the GetImageStatistics method is:</p>
+<p>The format of the GetImageChannelStatistics method is:</p>
 
 <pre class="text">
-ChannelStatistics *GetImageStatistics(const Image *image,
+ChannelStatistics *GetImageChannelStatistics(const Image *image,
   ExceptionInfo *exception)
 </pre>
 
@@ -400,6 +399,9 @@ ChannelStatistics *GetImageStatistics(const Image *image,
 <pre class="text">
 Image *PolynomialImage(const Image *images,const size_t number_terms,
   const double *terms,ExceptionInfo *exception)
+Image *PolynomialImageChannel(const Image *images,
+  const size_t number_terms,const ChannelType channel,
+  const double *terms,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -411,6 +413,10 @@ Image *PolynomialImage(const Image *images,const size_t number_terms,
 <dl class="dl-horizontal">
 <dt>images</dt>
 <dd>the image sequence. </dd>
+
+<dd> </dd>
+<dt>channel</dt>
+<dd>the channel. </dd>
 
 <dd> </dd>
 <dt>number_terms</dt>
@@ -435,6 +441,9 @@ Image *PolynomialImage(const Image *images,const size_t number_terms,
 <pre class="text">
 Image *StatisticImage(const Image *image,const StatisticType type,
   const size_t width,const size_t height,ExceptionInfo *exception)
+Image *StatisticImageChannel(const Image *image,
+  const ChannelType channel,const StatisticType type,
+  const size_t width,const size_t height,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -446,6 +455,10 @@ Image *StatisticImage(const Image *image,const StatisticType type,
 <dl class="dl-horizontal">
 <dt>image</dt>
 <dd>the image. </dd>
+
+<dd> </dd>
+<dt>channel</dt>
+<dd>the image channel. </dd>
 
 <dd> </dd>
 <dt>type</dt>
@@ -467,7 +480,7 @@ Image *StatisticImage(const Image *image,const StatisticType type,
 </dl>
 </div>
   <footer class="magick-footer">
-    <div class="magick-nav-item navbar-left">
+    <div class="magick-nav-item pull-left">
       <a href="../support.html">Donate</a>
     </div>
     <p><a href="../sitemap.html">Sitemap</a> •
@@ -485,7 +498,7 @@ Image *StatisticImage(const Image *image,const StatisticType type,
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
   <script src="../js/bootstrap.min.js"></script>
   <script type="text/javascript">
-    /*  */
+    /* <![CDATA[ */
     (function() {
         var s = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
         s.type = 'text/javascript';
@@ -493,7 +506,7 @@ Image *StatisticImage(const Image *image,const StatisticType type,
         s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
         t.parentNode.insertBefore(s, t);
     })();
-    /*  */
+    /* ]]> */
   </script>
 </div>
 </body>
