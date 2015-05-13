@@ -7491,7 +7491,7 @@ ModuleExport size_t RegisterPNGImage(void)
   (void) RegisterMagickInfo(entry);
 
   entry=AcquireMagickInfo("PNG","PNG00",
-    "PNG inheriting bit-depth and color-type from original");
+    "PNG inheriting bit-depth and color-type from original, if possible");
 
 #if defined(MAGICKCORE_PNG_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadPNGImage;
@@ -11373,8 +11373,9 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 %
 %    o PNG00:   A PNG that inherits its colortype and bit-depth from the input
 %               image, if the input was a PNG, is written.  If these values
-%               cannot be found, then "PNG00" falls back to the regular "PNG"
-%               format.
+%               cannot be found, or if the pixels have been changed in a way
+%               that makes this impossible, then "PNG00" falls back to the
+%               regular "PNG" format.
 %
 %    o -define: For more precise control of the PNG output, you can use the
 %               Image options "png:bit-depth" and "png:color-type".  These
