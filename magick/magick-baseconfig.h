@@ -406,6 +406,11 @@
 #define MAGICKCORE_HAVE_LOCALE_H 1
 #endif
 
+/* Define to 1 if the system has the type `locale_t'. */
+#ifndef MAGICKCORE_HAVE_LOCALE_T
+#define MAGICKCORE_HAVE_LOCALE_T 1
+#endif
+
 /* Define to 1 if you have the `localtime_r' function. */
 #ifndef MAGICKCORE_HAVE_LOCALTIME_R
 #define MAGICKCORE_HAVE_LOCALTIME_R 1
