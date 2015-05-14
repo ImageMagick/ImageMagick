@@ -978,6 +978,8 @@ AC_TYPE_UINTMAX_T
 AC_TYPE_UINTPTR_T
 AC_TYPE_UNSIGNED_LONG_LONG_INT
 
+AC_CHECK_TYPES([locale_t])
+
 # Float_t and double_t are intended to be the the most efficient type.
 AC_CHECK_TYPES([float_t], [], [], [[#include <math.h>]])
 AC_CHECK_TYPES([double_t], [], [], [[#include <math.h>]])
