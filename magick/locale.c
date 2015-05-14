@@ -86,10 +86,12 @@ static SemaphoreInfo
 static SplayTreeInfo
   *locale_cache = (SplayTreeInfo *) NULL;
 
-#if defined(MAGICKCORE_HAVE_LOCALE_H)
+#if !defined(MAGICKCORE_HAVE_LOCALE_T)
+typedef void *locale_t;
+#endif
+
 static volatile locale_t
   c_locale = (locale_t) NULL;
-#endif
 
 /*
   Forward declarations.

@@ -4331,7 +4331,7 @@ MAGICK_PATCHLEVEL_VERSION=3
 
 MAGICK_VERSION=6.9.1-3
 
-MAGICK_SVN_REVISION=18534:18546M
+MAGICK_SVN_REVISION=18534:18549M
 
 
 # Substitute library versioning
@@ -23804,38 +23804,13 @@ $as_echo "#define HAVE_UNSIGNED_LONG_LONG_INT 1" >>confdefs.h
   fi
 
 
-# If the C type char is unsigned, define __CHAR_UNSIGNED__, unless the
-# C compiler predefines it.
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether char is unsigned" >&5
-$as_echo_n "checking whether char is unsigned... " >&6; }
-if ${ac_cv_c_char_unsigned+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-$ac_includes_default
-int
-main ()
-{
-static int test_array [1 - 2 * !(((char) -1) < 0)];
-test_array [0] = 0;
-return test_array [0];
+ac_fn_c_check_type "$LINENO" "locale_t" "ac_cv_type_locale_t" "$ac_includes_default"
+if test "x$ac_cv_type_locale_t" = xyes; then :
 
-  ;
-  return 0;
-}
+cat >>confdefs.h <<_ACEOF
+#define HAVE_LOCALE_T 1
 _ACEOF
-if ac_fn_c_try_compile "$LINENO"; then :
-  ac_cv_c_char_unsigned=no
-else
-  ac_cv_c_char_unsigned=yes
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_c_char_unsigned" >&5
-$as_echo "$ac_cv_c_char_unsigned" >&6; }
-if test $ac_cv_c_char_unsigned = yes && test "$GCC" != yes; then
-  $as_echo "#define __CHAR_UNSIGNED__ 1" >>confdefs.h
+
 
 fi
 

@@ -973,9 +973,7 @@ AC_TYPE_UINTMAX_T
 AC_TYPE_UINTPTR_T
 AC_TYPE_UNSIGNED_LONG_LONG_INT
 
-# If the C type char is unsigned, define __CHAR_UNSIGNED__, unless the
-# C compiler predefines it.
-AC_C_CHAR_UNSIGNED
+AC_CHECK_TYPES([locale_t])
 
 # Float_t and double_t are intended to be the the most efficient type.
 AC_CHECK_TYPES([float_t], [], [], [[#include <math.h>]])
