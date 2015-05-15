@@ -1372,6 +1372,9 @@ namespace Magick
 
     // Splice the background color into the image.
     void splice(const Geometry &geometry_);
+    void splice(const Geometry &geometry_,const Color &backgroundColor_);
+    void splice(const Geometry &geometry_,const Color &backgroundColor_,
+      const GravityType gravity_);
 
     // Spread pixels randomly within image by specified ammount
     void spread(const size_t amount_=3);
