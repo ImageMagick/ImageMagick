@@ -48,8 +48,8 @@
       <a class="magick-nav-item " href="command-line-tools.html">Tools</a>
       <a class="magick-nav-item " href="command-line-options.html">Options</a>
       <a class="magick-nav-item " href="api.html">Development</a>
-      <a class="magick-nav-item" href="http://www.imagemagick.org/discourse-server/">Community</a>
-      <a class="magick-nav-item pull-right " href="http://www.imagemagick.org/script/search.php">Search</a>
+      <a class="magick-nav-item " href="http://www.imagemagick.org/script/search.php">Search</a>
+      <a class="magick-nav-item pull-right" href="http://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
 </div>
@@ -104,8 +104,8 @@ convert rose.jpg \
 
 <pre>
 convert -size 70x70 canvas: \
-       -fx "Xi=i-w/2; Yj=j-h/2; 1.2*(0.5-hypot(Xi,Yj)/70.0)+0.5" 
-       radial-gradient.png'
+  -fx "Xi=i-w/2; Yj=j-h/2; 1.2*(0.5-hypot(Xi,Yj)/70.0)+0.5" 
+  radial-gradient.png'
 </pre>
 
 <p>The command above returns this image:</p>
@@ -348,15 +348,15 @@ convert -channel red logo: -flop logo: -resize "20%" -fx "(u+v)/2" image.jpg
 <p>The pixels are processed one at a time, but a different pixel of an image can be specified using a pixel index represented by <code>p</code>. For example,</p>
 
 <pre>
-   p[-1].g      green value of pixel to the immediate left of the current pixel
-   p[-1,-1].r   red value of the pixel diagonally left and up from current pixel
+p[-1].g      green value of pixel to the immediate left of the current pixel
+p[-1,-1].r   red value of the pixel diagonally left and up from current pixel
 </pre>
 
 <p>To specify an absolute position, use braces, rather than brackets.</p>
 
 <pre>
-  p{0,0}.r     red value of the pixel in the upper left corner of the image
-  p{12,34}.b   blue pixel value at column number 12, row 34 of the image
+p{0,0}.r     red value of the pixel in the upper left corner of the image
+p{12,34}.b   blue pixel value at column number 12, row 34 of the image
 </pre>
 
 <p>Integer values of the position retrieve the color of the pixel referenced, while non-integer position values return a blended color according to the current <a href="command-line-options.html#interpolate">-interpolate</a> setting.</p>
@@ -410,7 +410,7 @@ convert rose: -duplicate 29 -virtual-pixel Gray -distort SRT '%[fx:360.0*t/n]' \
 </p>
     <p><a href="fx.html#">Back to top</a> •
     <a href="http://www.imagemagick.org/script/contact.php">Contact Us</a></p>
-    <p class="small">©  1999-2015 ImageMagick Studio LLC</p>
+    <p><small>©  1999-2015 ImageMagick Studio LLC</small></p>
   </footer>
 </div><!-- /.container -->
 
