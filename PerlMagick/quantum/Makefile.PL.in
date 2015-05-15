@@ -161,7 +161,7 @@ foreach my $delegate (@tested_delegates) {
 }
 
 # defaults for LIBS & INC & CCFLAGS params that we later pass to Writemakefile
-my $INC_magick = '-I../ -I@top_srcdir@ @CPPFLAGS@ -I"' . $Config{'usrinc'} . '/ImageMagick"';
+my $INC_magick = '-I../../ -I@top_srcdir@ @CPPFLAGS@ -I"' . $Config{'usrinc'} . '/ImageMagick"';
 my $LIBS_magick = '-L../../MagickCore/.libs -lMagickCore-@MAGICK_MAJOR_VERSION@.@MAGICK_ABI_SUFFIX@ -lperl @MATH_LIBS@';
 my $CCFLAGS_magick = "$Config{'ccflags'} @CFLAGS@";
 my $LDFLAGS_magick   = "-L../../MagickCore/.libs -lMagickCore-@MAGICK_MAJOR_VERSION@.@MAGICK_ABI_SUFFIX@ $Config{'ldflags'} @LDFLAGS@";
