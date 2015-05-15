@@ -4329,6 +4329,21 @@ void Magick::Image::splice(const Geometry &geometry_)
   ThrowImageException;
 }
 
+void Magick::Image::splice(const Geometry &geometry_,
+  const Color &backgroundColor_)
+{
+  backgroundColor(backgroundColor_);
+  splice(geometry_);
+}
+
+void Magick::Image::splice(const Geometry &geometry_,
+  const Color &backgroundColor_,const GravityType gravity_)
+{
+  backgroundColor(backgroundColor_);
+  image()->gravity=gravity_;
+  splice(geometry_);
+}
+
 void Magick::Image::spread(const size_t amount_)
 {
   MagickCore::Image
