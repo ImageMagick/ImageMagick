@@ -634,7 +634,7 @@ MagickExport MagickBooleanType BlackThresholdImage(Image *image,
           continue;
         if (image->channel_mask != DefaultChannels)
           pixel=(double) q[i];
-        if (pixel <= GetPixelInfoChannel(&threshold,channel))
+        if (pixel < GetPixelInfoChannel(&threshold,channel))
           q[i]=(Quantum) 0;
       }
       q+=GetPixelChannels(image);
