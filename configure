@@ -4331,7 +4331,7 @@ MAGICK_PATCHLEVEL_VERSION=3
 
 MAGICK_VERSION=6.9.1-3
 
-MAGICK_SVN_REVISION=18557:18562M
+MAGICK_SVN_REVISION=18566:18573M
 
 
 # Substitute library versioning
@@ -8921,7 +8921,7 @@ fi # guess arch
 
 if test "x$ax_gcc_arch" != x -a "x$ax_gcc_arch" != xno; then
 for arch in $ax_gcc_arch; do
-  if test "xno" = xyes; then # if we require portable code
+  if test "xyes" = xyes; then # if we require portable code
     flags="-mtune=$arch"
     # -mcpu=$arch and m$arch generate nonportable code on every arch except
     # x86.  And some other arches (e.g. Alpha) don't accept -mtune.  Grrr.
