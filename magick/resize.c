@@ -1959,14 +1959,14 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
     pixel.blue=QuantumRange*(packet[2]/255.0);
     if (image->colorspace != CMYKColorspace)
       {
-        if (image->matte == MagickFalse)
-          pixel.opacity=QuantumRange*(packet[3]/255.0);
+        if (image->matte != MagickFalse)
+          pixel.opacity=QuantumRange-QuantumRange*(packet[3]/255.0);
       }
     else
       {
         pixel.index=QuantumRange*(packet[3]/255.0);
-        if (image->matte == MagickFalse)
-          pixel.opacity=QuantumRange*(packet[4]/255.0);
+        if (image->matte != MagickFalse)
+          pixel.opacity=QuantumRange-QuantumRange*(packet[4]/255.0);
       }
     SetPixelPacket(rescale_image,&pixel,q,rescale_indexes);
     if (SyncCacheViewAuthenticPixels(rescale_view,exception) == MagickFalse)
