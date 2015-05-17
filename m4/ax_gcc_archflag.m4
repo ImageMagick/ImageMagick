@@ -36,7 +36,7 @@
 #
 #   Copyright (c) 2008 Steven G. Johnson <stevenj@alum.mit.edu>
 #   Copyright (c) 2008 Matteo Frigo
-#   Copyright (c) 2012 Tsukasa Oi
+#   Copyright (c) 2014 Tsukasa Oi
 #
 #   This program is free software: you can redistribute it and/or modify it
 #   under the terms of the GNU General Public License as published by the
@@ -64,12 +64,13 @@
 #   modified version of the Autoconf Macro, you may extend this special
 #   exception to the GPL to apply to your modified version as well.
 
-#serial 14
+#serial 17
 
 AC_DEFUN([AX_GCC_ARCHFLAG],
 [AC_REQUIRE([AC_PROG_CC])
 AC_REQUIRE([AC_CANONICAL_HOST])
 AC_REQUIRE([AC_PROG_SED])
+AC_REQUIRE([AX_COMPILER_VENDOR])
 
 AC_ARG_WITH(gcc-arch, [AS_HELP_STRING([--with-gcc-arch=<arch>], [use architecture <arch> for gcc -march/-mtune, instead of guessing])],
 	ax_gcc_arch=$withval, ax_gcc_arch=yes)
@@ -90,59 +91,66 @@ case $host_cpu in
      AX_GCC_X86_CPUID(0)
      AX_GCC_X86_CPUID(1)
      case $ax_cv_gcc_x86_cpuid_0 in
-       *:756e6547:*:*) # Intel
+       *:756e6547:6c65746e:49656e69) # Intel
           case $ax_cv_gcc_x86_cpuid_1 in
-	    *5[[48]]?:*:*:*) ax_gcc_arch="pentium-mmx pentium" ;;
-	    *5??:*:*:*) ax_gcc_arch=pentium ;;
+	    *5[[4578]]?:*:*:*) ax_gcc_arch="pentium-mmx pentium" ;;
+	    *5[[123]]?:*:*:*) ax_gcc_arch=pentium ;;
+	    *0?61?:*:*:*|?61?:*:*:*|61?:*:*:*) ax_gcc_arch=pentiumpro ;;
+	    *0?6[[356]]?:*:*:*|?6[[356]]?:*:*:*|6[[356]]?:*:*:*) ax_gcc_arch="pentium2 pentiumpro" ;;
+	    *0?6[[78ab]]?:*:*:*|?6[[78ab]]?:*:*:*|6[[78ab]]?:*:*:*) ax_gcc_arch="pentium3 pentiumpro" ;;
+	    *0?6[[9d]]?:*:*:*|?6[[9d]]?:*:*:*|6[[9d]]?:*:*:*|*1?65?:*:*:*) ax_gcc_arch="pentium-m pentium3 pentiumpro" ;;
+	    *0?6e?:*:*:*|?6e?:*:*:*|6e?:*:*:*) ax_gcc_arch="yonah pentium-m pentium3 pentiumpro" ;;
+	    *0?6f?:*:*:*|?6f?:*:*:*|6f?:*:*:*|*1?66?:*:*:*) ax_gcc_arch="core2 pentium-m pentium3 pentiumpro" ;;
 	    *1?6[[7d]]?:*:*:*) ax_gcc_arch="penryn core2 pentium-m pentium3 pentiumpro" ;;
-	    *1?6[[aef]]?:*:*:*|*2?6[[5cef]]?:*:*:*) ax_gcc_arch="corei7 core2 pentium-m pentium3 pentiumpro" ;;
-	    *1?6c?:*:*:*|*[[23]]?66?:*:*:*) ax_gcc_arch="atom core2 pentium-m pentium3 pentiumpro" ;;
-	    *2?6[[ad]]?:*:*:*) ax_gcc_arch="corei7-avx corei7 core2 pentium-m pentium3 pentiumpro" ;;
-	    *[[1-9a-f]]?6??:*:*:*) ax_gcc_arch="core2 pentiumpro" ;;
-	    *6[[3456]]?:*:*:*) ax_gcc_arch="pentium2 pentiumpro" ;;
-	    *6a?:*[[01]]:*:*) ax_gcc_arch="pentium2 pentiumpro" ;;
-	    *6a?:*[[234]]:*:*) ax_gcc_arch="pentium3 pentiumpro" ;;
-	    *6[[9de]]?:*:*:*) ax_gcc_arch="pentium-m pentium3 pentiumpro" ;;
-	    *6[[78b]]?:*:*:*) ax_gcc_arch="pentium3 pentiumpro" ;;
-	    *6f?:*:*:*) ax_gcc_arch="core2 pentium-m pentium3 pentiumpro" ;;
+	    *1?6[[aef]]?:*:*:*|*2?6e?:*:*:*) ax_gcc_arch="nehalem corei7 core2 pentium-m pentium3 pentiumpro" ;;
+	    *2?6[[5cf]]?:*:*:*) ax_gcc_arch="westmere corei7 core2 pentium-m pentium3 pentiumpro" ;;
+	    *2?6[[ad]]?:*:*:*) ax_gcc_arch="sandybridge corei7-avx corei7 core2 pentium-m pentium3 pentiumpro" ;;
+	    *3?6[[ae]]?:*:*:*) ax_gcc_arch="ivybridge core-avx-i corei7-avx corei7 core2 pentium-m pentium3 pentiumpro" ;;
+	    *3?6[[cf]]?:*:*:*|*4?6[[56]]?:*:*:*) ax_gcc_arch="haswell core-avx2 core-avx-i corei7-avx corei7 core2 pentium-m pentium3 pentiumpro" ;;
+	    *3?6d?:*:*:*) ax_gcc_arch="broadwell core-avx2 core-avx-i corei7-avx corei7 core2 pentium-m pentium3 pentiumpro" ;;
+	    *1?6c?:*:*:*|*2?6[[67]]?:*:*:*|*3?6[[56]]?:*:*:*) ax_gcc_arch="bonnell atom core2 pentium-m pentium3 pentiumpro" ;;
+	    *3?67?:*:*:*|*[[45]]?6[[ad]]?:*:*:*) ax_gcc_arch="silvermont atom core2 pentium-m pentium3 pentiumpro" ;;
+	    *000?f[[012]]?:*:*:*|?f[[012]]?:*:*:*|f[[012]]?:*:*:*) ax_gcc_arch="pentium4 pentiumpro" ;;
+	    *000?f[[346]]?:*:*:*|?f[[346]]?:*:*:*|f[[346]]?:*:*:*) ax_gcc_arch="nocona prescott pentium4 pentiumpro" ;;
+	    # fallback
+	    *5??:*:*:*) ax_gcc_arch=pentium ;;
+	    *??6??:*:*:*) ax_gcc_arch="core2 pentiumpro" ;;
 	    *6??:*:*:*) ax_gcc_arch=pentiumpro ;;
-	    *f3[[347]]:*:*:*|*f4[1347]:*:*:*|*f6?:*:*:*)
-		case $host_cpu in
-	          x86_64*) ax_gcc_arch="nocona pentium4 pentiumpro" ;;
-	          *) ax_gcc_arch="prescott pentium4 pentiumpro" ;;
-	        esac ;;
-	    *f??:*:*:*) ax_gcc_arch="pentium4 pentiumpro";;
+	    *00??f??:*:*:*|??f??:*:*:*|?f??:*:*:*|f??:*:*:*) ax_gcc_arch="pentium4 pentiumpro" ;;
           esac ;;
-       *:68747541:*:*) # AMD
+       *:68747541:444d4163:69746e65) # AMD
           case $ax_cv_gcc_x86_cpuid_1 in
 	    *5[[67]]?:*:*:*) ax_gcc_arch=k6 ;;
-	    *5[[8d]]?:*:*:*) ax_gcc_arch="k6-2 k6" ;;
-	    *5[[9]]?:*:*:*) ax_gcc_arch="k6-3 k6" ;;
-	    *60?:*:*:*) ax_gcc_arch=k7 ;;
+	    *5[[8]]?:*:*:*) ax_gcc_arch="k6-2 k6" ;;
+	    *5[[9d]]?:*:*:*) ax_gcc_arch="k6-3 k6" ;;
 	    *6[[12]]?:*:*:*) ax_gcc_arch="athlon k7" ;;
 	    *6[[34]]?:*:*:*) ax_gcc_arch="athlon-tbird k7" ;;
-	    *67?:*:*:*) ax_gcc_arch="athlon-4 athlon k7" ;;
-	    *6[[68a]]?:*:*:*)
-	       AX_GCC_X86_CPUID(0x80000006) # L2 cache size
-	       case $ax_cv_gcc_x86_cpuid_0x80000006 in
-                 *:*:*[[1-9a-f]]??????:*) # (L2 = ecx >> 16) >= 256
-			ax_gcc_arch="athlon-xp athlon-4 athlon k7" ;;
-                 *) ax_gcc_arch="athlon-4 athlon k7" ;;
-	       esac ;;
-	    *5??f??:*:*:*) ax_gcc_arch="btver1 amdfam10 k8" ;;
-	    *6??f??:*:*:*) ax_gcc_arch="bdver1 amdfam10 k8" ;;
-	    *[[1-9a-f]]??f??:*:*:*) ax_gcc_arch="amdfam10 k8" ;;
-	    *f[[4cef8b]]?:*:*:*) ax_gcc_arch="athlon64 k8" ;;
-	    *f5?:*:*:*) ax_gcc_arch="opteron k8" ;;
-	    *f7?:*:*:*) ax_gcc_arch="athlon-fx opteron k8" ;;
-	    *f??:*:*:*) ax_gcc_arch="k8" ;;
+	    *6[[678a]]?:*:*:*) ax_gcc_arch="athlon-xp athlon-4 athlon k7" ;;
+	    *000?f[[4578bcef]]?:*:*:*|?f[[4578bcef]]?:*:*:*|f[[4578bcef]]?:*:*:*|*001?f[[4578bcf]]?:*:*:*|1?f[[4578bcf]]?:*:*:*) ax_gcc_arch="athlon64 k8" ;;
+	    *002?f[[13457bcf]]?:*:*:*|2?f[[13457bcf]]?:*:*:*|*004?f[[138bcf]]?:*:*:*|4?f[[138bcf]]?:*:*:*|*005?f[[df]]?:*:*:*|5?f[[df]]?:*:*:*|*006?f[[8bcf]]?:*:*:*|6?f[[8bcf]]?:*:*:*|*007?f[[cf]]?:*:*:*|7?f[[cf]]?:*:*:*|*00c?f1?:*:*:*|c?f1?:*:*:*|*020?f3?:*:*:*|20?f3?:*:*:*) ax_gcc_arch="athlon64-sse3 k8-sse3 athlon64 k8" ;;
+	    *010?f[[245689a]]?:*:*:*|10?f[[245689a]]?:*:*:*|*030?f1?:*:*:*|30?f1?:*:*:*) ax_gcc_arch="barcelona amdfam10 k8" ;;
+	    *050?f[[12]]?:*:*:*|50?f[[12]]?:*:*:*) ax_gcc_arch="btver1 amdfam10 k8" ;;
+	    *060?f1?:*:*:*|60?f1?:*:*:*) ax_gcc_arch="bdver1 amdfam10 k8" ;;
+	    *060?f2?:*:*:*|60?f2?:*:*:*|*061?f[[03]]?:*:*:*|61?f[[03]]?:*:*:*) ax_gcc_arch="bdver2 bdver1 amdfam10 k8" ;;
+	    *063?f0?:*:*:*|63?f0?:*:*:*) ax_gcc_arch="bdver3 bdver2 bdver1 amdfam10 k8" ;;
+	    *07[[03]]?f0?:*:*:*|7[[03]]?f0?:*:*:*) ax_gcc_arch="btver2 btver1 amdfam10 k8" ;;
+	    # fallback
+	    *0[[13]]??f??:*:*:*|[[13]]??f??:*:*:*) ax_gcc_arch="barcelona amdfam10 k8" ;;
+	    *020?f??:*:*:*|20?f??:*:*:*) ax_gcc_arch="athlon64-sse3 k8-sse3 athlon64 k8" ;;
+	    *05??f??:*:*:*|5??f??:*:*:*) ax_gcc_arch="btver1 amdfam10 k8" ;;
+	    *060?f??:*:*:*|60?f??:*:*:*) ax_gcc_arch="bdver1 amdfam10 k8" ;;
+	    *061?f??:*:*:*|61?f??:*:*:*) ax_gcc_arch="bdver2 bdver1 amdfam10 k8" ;;
+	    *06??f??:*:*:*|6??f??:*:*:*) ax_gcc_arch="bdver3 bdver2 bdver1 amdfam10 k8" ;;
+	    *070?f??:*:*:*|70?f??:*:*:*) ax_gcc_arch="btver2 btver1 amdfam10 k8" ;;
+	    *???f??:*:*:*) ax_gcc_arch="amdfam10 k8" ;;
           esac ;;
-	*:746e6543:*:*) # IDT
+	*:746e6543:736c7561:48727561) # IDT / VIA (Centaur)
 	   case $ax_cv_gcc_x86_cpuid_1 in
 	     *54?:*:*:*) ax_gcc_arch=winchip-c6 ;;
-	     *58?:*:*:*) ax_gcc_arch=winchip2 ;;
+	     *5[[89]]?:*:*:*) ax_gcc_arch=winchip2 ;;
+	     *66?:*:*:*) ax_gcc_arch=winchip2 ;;
 	     *6[[78]]?:*:*:*) ax_gcc_arch=c3 ;;
-	     *69?:*:*:*) ax_gcc_arch="c3-2 c3" ;;
+	     *6[[9adf]]?:*:*:*) ax_gcc_arch="c3-2 c3" ;;
 	   esac ;;
      esac
      if test x"$ax_gcc_arch" = x; then # fallback
@@ -198,17 +206,23 @@ fi # not cross-compiling
 fi # guess arch
 
 if test "x$ax_gcc_arch" != x -a "x$ax_gcc_arch" != xno; then
-for arch in $ax_gcc_arch; do
-  if test "x[]m4_default([$1],yes)" = xyes; then # if we require portable code
-    flags="-mtune=$arch"
-    # -mcpu=$arch and m$arch generate nonportable code on every arch except
-    # x86.  And some other arches (e.g. Alpha) don't accept -mtune.  Grrr.
-    case $host_cpu in i*86|x86_64*) flags="$flags -mcpu=$arch -m$arch";; esac
-  else
-    flags="-march=$arch -mcpu=$arch -m$arch"
-  fi
-  for flag in $flags; do
-    AX_CHECK_COMPILE_FLAG($flag, [ax_cv_gcc_archflag=$flag; break])
+if test "x[]m4_default([$1],yes)" = xyes; then # if we require portable code
+  flag_prefixes="-mtune="
+  if test "x$ax_cv_[]_AC_LANG_ABBREV[]_compiler_vendor" = xclang; then flag_prefixes="-march="; fi
+  # -mcpu=$arch and m$arch generate nonportable code on every arch except
+  # x86.  And some other arches (e.g. Alpha) don't accept -mtune.  Grrr.
+  case $host_cpu in i*86|x86_64*|amd64*) flag_prefixes="$flag_prefixes -mcpu= -m";; esac
+else
+  flag_prefixes="-march= -mcpu= -m"
+fi
+for flag_prefix in $flag_prefixes; do
+  for arch in $ax_gcc_arch; do
+    flag="$flag_prefix$arch"
+    AX_CHECK_COMPILE_FLAG($flag, [if test "x$ax_cv_[]_AC_LANG_ABBREV[]_compiler_vendor" = xclang; then
+      if test "x[]m4_default([$1],yes)" = xyes; then
+	if test "x$flag" = "x-march=$arch"; then flag=-mtune=$arch; fi
+      fi
+    fi; ax_cv_gcc_archflag=$flag; break])
   done
   test "x$ax_cv_gcc_archflag" = xunknown || break
 done
