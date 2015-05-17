@@ -4331,7 +4331,7 @@ MAGICK_PATCHLEVEL_VERSION=3
 
 MAGICK_VERSION=6.9.1-3
 
-MAGICK_SVN_REVISION=18534:18549M
+MAGICK_SVN_REVISION=18557:18562M
 
 
 # Substitute library versioning
@@ -23804,7 +23804,8 @@ $as_echo "#define HAVE_UNSIGNED_LONG_LONG_INT 1" >>confdefs.h
   fi
 
 
-ac_fn_c_check_type "$LINENO" "locale_t" "ac_cv_type_locale_t" "$ac_includes_default"
+ac_fn_c_check_type "$LINENO" "locale_t" "ac_cv_type_locale_t" "#include <xlocale.h>
+"
 if test "x$ac_cv_type_locale_t" = xyes; then :
 
 cat >>confdefs.h <<_ACEOF
