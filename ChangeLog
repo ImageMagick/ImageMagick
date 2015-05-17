@@ -984,6 +984,8 @@
     user can specify a newline in the formatting expression.
   * The -level option is no longer returning a darkened image (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23479).
+  * Identify SVG image as "SVG" (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=27654).
 
 2013-05-20  6.8.5-7 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.5-7, SVN revision 12310.
