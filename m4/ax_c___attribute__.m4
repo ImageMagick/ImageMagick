@@ -50,7 +50,7 @@ AC_DEFUN([AX_C___ATTRIBUTE__], [
     [AC_COMPILE_IFELSE(
       [AC_LANG_PROGRAM(
 	[[#include <stdlib.h>
-	  static void foo(void) __attribute__ ((__unused__));
+	  static void foo(void) __attribute__ ((unused));
 	  static void
 	  foo(void) {
 	      exit(1);
