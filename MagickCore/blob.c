@@ -4162,8 +4162,7 @@ MagickExport MagickBooleanType UnmapBlob(void *map,const size_t length)
 %
 %  The format of the WriteBlob method is:
 %
-%      ssize_t WriteBlob(Image *image,const size_t length,
-%        const unsigned char *data)
+%      ssize_t WriteBlob(Image *image,const size_t length,const void *data)
 %
 %  A description of each parameter follows:
 %
@@ -4176,7 +4175,7 @@ MagickExport MagickBooleanType UnmapBlob(void *map,const size_t length)
 %
 */
 MagickExport ssize_t WriteBlob(Image *image,const size_t length,
-  const unsigned char *data)
+  const void *data)
 {
   int
     c;
@@ -4189,13 +4188,13 @@ MagickExport ssize_t WriteBlob(Image *image,const size_t length,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  assert(data != (const unsigned char *) NULL);
+  assert(data != (const void *) NULL);
   assert(image->blob != (BlobInfo *) NULL);
   assert(image->blob->type != UndefinedStream);
   if (length == 0)
     return(0);
   count=0;
-  p=data;
+  p=(const unsigned char *) data;
   switch (image->blob->type)
   {
     case UndefinedStream:
