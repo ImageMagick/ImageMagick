@@ -1707,8 +1707,8 @@ MagickExport MagickBooleanType ImageToFile(Image *image,char *filename,
       return(MagickFalse);
     }
   length=0;
-  p=ReadBlobStream(image,quantum,buffer,&count);
-  for (i=0; count > 0; p=ReadBlobStream(image,quantum,buffer,&count))
+  p=(const unsigned char *) ReadBlobStream(image,quantum,buffer,&count);
+  for (i=0; count > 0; p=(const unsigned char *) ReadBlobStream(image,quantum,buffer,&count))
   {
     length=(size_t) count;
     for (i=0; i < length; i+=count)
@@ -3007,7 +3007,7 @@ MagickExport int ReadBlobByte(Image *image)
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  p=ReadBlobStream(image,1,buffer,&count);
+  p=(const unsigned char *) ReadBlobStream(image,1,buffer,&count);
   if (count != 1)
     return(EOF);
   return((int) (*p));
@@ -3131,7 +3131,7 @@ MagickExport unsigned int ReadBlobLong(Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   *buffer='\0';
-  p=ReadBlobStream(image,4,buffer,&count);
+  p=(const unsigned char *) ReadBlobStream(image,4,buffer,&count);
   if (count != 4)
     return(0UL);
   if (image->endian == LSBEndian)
@@ -3189,7 +3189,7 @@ MagickExport MagickSizeType ReadBlobLongLong(Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   *buffer='\0';
-  p=ReadBlobStream(image,8,buffer,&count);
+  p=(const unsigned char *) ReadBlobStream(image,8,buffer,&count);
   if (count != 8)
     return(MagickULLConstant(0));
   if (image->endian == LSBEndian)
@@ -3255,7 +3255,7 @@ MagickExport unsigned short ReadBlobShort(Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   *buffer='\0';
-  p=ReadBlobStream(image,2,buffer,&count);
+  p=(const unsigned char *) ReadBlobStream(image,2,buffer,&count);
   if (count != 2)
     return((unsigned short) 0U);
   if (image->endian == LSBEndian)
@@ -3309,7 +3309,7 @@ MagickExport unsigned int ReadBlobLSBLong(Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   *buffer='\0';
-  p=ReadBlobStream(image,4,buffer,&count);
+  p=(const unsigned char *) ReadBlobStream(image,4,buffer,&count);
   if (count != 4)
     return(0U);
   value=(unsigned int) (*p++);
@@ -3359,7 +3359,7 @@ MagickExport unsigned short ReadBlobLSBShort(Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   *buffer='\0';
-  p=ReadBlobStream(image,2,buffer,&count);
+  p=(const unsigned char *) ReadBlobStream(image,2,buffer,&count);
   if (count != 2)
     return((unsigned short) 0U);
   value=(unsigned int) (*p++);
@@ -3407,7 +3407,7 @@ MagickExport unsigned int ReadBlobMSBLong(Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   *buffer='\0';
-  p=ReadBlobStream(image,4,buffer,&count);
+  p=(const unsigned char *) ReadBlobStream(image,4,buffer,&count);
   if (count != 4)
     return(0UL);
   value=((unsigned int) (*p++) << 24);
@@ -3457,7 +3457,7 @@ MagickExport MagickSizeType ReadBlobMSBLongLong(Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   *buffer='\0';
-  p=ReadBlobStream(image,8,buffer,&count);
+  p=(const unsigned char *) ReadBlobStream(image,8,buffer,&count);
   if (count != 8)
     return(MagickULLConstant(0));
   value=((MagickSizeType) (*p++)) << 56;
@@ -3511,7 +3511,7 @@ MagickExport unsigned short ReadBlobMSBShort(Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   *buffer='\0';
-  p=ReadBlobStream(image,2,buffer,&count);
+  p=(const unsigned char *) ReadBlobStream(image,2,buffer,&count);
   if (count != 2)
     return((unsigned short) 0U);
   value=(unsigned int) ((*p++) << 8);
@@ -3565,7 +3565,7 @@ MagickExport const void *ReadBlobStream(Image *image,const size_t length,
   if (image->blob->type != BlobStream)
     {
       assert(data != NULL);
-      *count=ReadBlob(image,length,data);
+      *count=ReadBlob(image,length,(unsigned char *) data);
       return(data);
     }
   if (image->blob->offset >= (MagickOffsetType) image->blob->length)
@@ -3626,7 +3626,7 @@ MagickExport char *ReadBlobString(Image *image,char *string)
   assert(image->signature == MagickSignature);
   for (i=0; i < (MaxTextExtent-1L); i++)
   {
-    p=ReadBlobStream(image,1,buffer,&count);
+    p=(const unsigned char *) ReadBlobStream(image,1,buffer,&count);
     if (count != 1)
       {
         if (i == 0)
