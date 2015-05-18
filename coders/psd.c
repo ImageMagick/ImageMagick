@@ -1815,6 +1815,9 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if ((has_merged_image == MagickFalse) && (GetImageListLength(image) == 1) &&
       (length != 0))
     {
+      MagickStatusType
+        status;
+
       SeekBlob(image,offset,SEEK_SET);
       status=ReadPSDLayers(image,image_info,&psd_info,MagickFalse,exception);
       if (status != MagickTrue)
