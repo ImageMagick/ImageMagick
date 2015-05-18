@@ -100,7 +100,7 @@ static MagickBooleanType
 static Image *ReadGRAYImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
-  const void
+  const unsigned char
     *pixels;
 
   Image
@@ -160,7 +160,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
   quantum_info=AcquireQuantumInfo(image_info,canvas_image);
   if (quantum_info == (QuantumInfo *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-  pixels=(const void *) NULL;
+  pixels=(const unsigned char *) NULL;
   if (image_info->number_scenes != 0)
     while (image->scene < image_info->scene)
     {
@@ -171,8 +171,8 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
       length=GetQuantumExtent(canvas_image,quantum_info,quantum_type);
       for (y=0; y < (ssize_t) image->rows; y++)
       {
-        pixels=ReadBlobStream(image,length,GetQuantumPixels(quantum_info),
-          &count);
+        pixels=(const unsigned char *) ReadBlobStream(image,length,
+          GetQuantumPixels(quantum_info),&count);
         if (count != (ssize_t) length)
           break;
       }
@@ -195,8 +195,8 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
     if (scene == 0)
       {
         length=GetQuantumExtent(canvas_image,quantum_info,quantum_type);
-        pixels=ReadBlobStream(image,length,GetQuantumPixels(quantum_info),
-          &count);
+        pixels=(const unsigned char *) ReadBlobStream(image,length,
+          GetQuantumPixels(quantum_info),&count);
       }
     for (y=0; y < (ssize_t) image->extract_info.height; y++)
     {
@@ -248,8 +248,8 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
           if (status == MagickFalse)
             break;
         }
-      pixels=ReadBlobStream(image,length,GetQuantumPixels(quantum_info),
-        &count);
+      pixels=(const unsigned char *) ReadBlobStream(image,length,
+        GetQuantumPixels(quantum_info),&count);
     }
     SetQuantumImageType(image,quantum_type);
     /*
@@ -422,7 +422,7 @@ static MagickBooleanType WriteGRAYImage(const ImageInfo *image_info,
     quantum_info=AcquireQuantumInfo(image_info,image);
     if (quantum_info == (QuantumInfo *) NULL)
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
-    pixels=GetQuantumPixels(quantum_info);
+    pixels=(unsigned char *) GetQuantumPixels(quantum_info);
     for (y=0; y < (ssize_t) image->rows; y++)
     {
       register const Quantum

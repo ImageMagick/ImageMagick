@@ -564,7 +564,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         extent=GetQuantumExtent(image,quantum_info,quantum_type);
         for (y=0; y < (ssize_t) image->rows; y++)
         {
-          const void
+          const unsigned char
             *pixels;
 
           MagickBooleanType
@@ -582,7 +582,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
           if (status == MagickFalse)
             continue;
-          pixels=ReadBlobStream(image,extent,GetQuantumPixels(quantum_info),
+          pixels=(const unsigned char *) ReadBlobStream(image,extent,GetQuantumPixels(quantum_info),
             &count);
           if (count != (ssize_t) extent)
             status=MagickFalse;
@@ -637,7 +637,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         for (y=0; y < (ssize_t) image->rows; y++)
         {
-          const void
+          const unsigned char
             *pixels;
 
           MagickBooleanType
@@ -658,7 +658,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
           if (status == MagickFalse)
             continue;
-          pixels=ReadBlobStream(image,extent,GetQuantumPixels(quantum_info),
+          pixels=(const unsigned char *) ReadBlobStream(image,extent,GetQuantumPixels(quantum_info),
             &count);
           if (count != (ssize_t) extent)
             status=MagickFalse;
@@ -754,7 +754,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) SetQuantumEndian(image,quantum_info,MSBEndian);
         for (y=0; y < (ssize_t) image->rows; y++)
         {
-          const void
+          const unsigned char
             *pixels;
 
           MagickBooleanType
@@ -775,7 +775,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
           if (status == MagickFalse)
             continue;
-          pixels=ReadBlobStream(image,extent,GetQuantumPixels(quantum_info),
+          pixels=(const unsigned char *) ReadBlobStream(image,extent,GetQuantumPixels(quantum_info),
             &count);
           if (count != (ssize_t) extent)
             status=MagickFalse;
@@ -954,7 +954,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         for (y=0; y < (ssize_t) image->rows; y++)
         {
-          const void
+          const unsigned char
             *pixels;
 
           MagickBooleanType
@@ -975,7 +975,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
           if (status == MagickFalse)
             continue;
-          pixels=ReadBlobStream(image,extent,GetQuantumPixels(quantum_info),
+          pixels=(const unsigned char *) ReadBlobStream(image,extent,GetQuantumPixels(quantum_info),
             &count);
           if (count != (ssize_t) extent)
             status=MagickFalse;
@@ -1276,7 +1276,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         extent=GetQuantumExtent(image,quantum_info,quantum_type);
         for (y=0; y < (ssize_t) image->rows; y++)
         {
-          const void
+          const unsigned char
             *pixels;
 
           MagickBooleanType
@@ -1294,7 +1294,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
           if (status == MagickFalse)
             continue;
-          pixels=ReadBlobStream(image,extent,GetQuantumPixels(quantum_info),
+          pixels=(const unsigned char *) ReadBlobStream(image,extent,GetQuantumPixels(quantum_info),
             &count);
           if ((size_t) count != extent)
             status=MagickFalse;
@@ -1909,7 +1909,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
           ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
         (void) SetQuantumEndian(image,quantum_info,MSBEndian);
         quantum_info->min_is_white=MagickTrue;
-        pixels=GetQuantumPixels(quantum_info);
+        pixels=(unsigned char *) GetQuantumPixels(quantum_info);
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           register const Quantum
@@ -1949,7 +1949,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
           ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
         (void) SetQuantumEndian(image,quantum_info,MSBEndian);
         quantum_info->min_is_white=MagickTrue;
-        pixels=GetQuantumPixels(quantum_info);
+        pixels=(unsigned char *) GetQuantumPixels(quantum_info);
         extent=GetQuantumExtent(image,quantum_info,GrayQuantum);
         for (y=0; y < (ssize_t) image->rows; y++)
         {
@@ -2065,7 +2065,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
         if (quantum_info == (QuantumInfo *) NULL)
           ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
         (void) SetQuantumEndian(image,quantum_info,MSBEndian);
-        pixels=GetQuantumPixels(quantum_info);
+        pixels=(unsigned char *) GetQuantumPixels(quantum_info);
         extent=GetQuantumExtent(image,quantum_info,quantum_type);
         for (y=0; y < (ssize_t) image->rows; y++)
         {
@@ -2160,7 +2160,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
         if (quantum_info == (QuantumInfo *) NULL)
           ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
         (void) SetQuantumEndian(image,quantum_info,MSBEndian);
-        pixels=GetQuantumPixels(quantum_info);
+        pixels=(unsigned char *) GetQuantumPixels(quantum_info);
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           register const Quantum
@@ -2409,7 +2409,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
         status=SetQuantumFormat(image,quantum_info,FloatingPointQuantumFormat);
         if (status == MagickFalse)
           ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
-        pixels=GetQuantumPixels(quantum_info);
+        pixels=(unsigned char *) GetQuantumPixels(quantum_info);
         for (y=(ssize_t) image->rows-1; y >= 0; y--)
         {
           register const Quantum

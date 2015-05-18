@@ -3754,6 +3754,9 @@ WandExport MagickBooleanType MagickGetImageBackgroundColor(MagickWand *wand,
 */
 WandExport unsigned char *MagickGetImageBlob(MagickWand *wand,size_t *length)
 {
+  unsigned char
+    *blob;
+
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
   if (IfMagickTrue(wand->debug))
@@ -3764,7 +3767,9 @@ WandExport unsigned char *MagickGetImageBlob(MagickWand *wand,size_t *length)
         "ContainsNoImages","`%s'",wand->name);
       return((unsigned char *) NULL);
     }
-  return(ImageToBlob(wand->image_info,wand->images,length,wand->exception));
+  blob=(unsigned char *) ImageToBlob(wand->image_info,wand->images,length,
+    wand->exception);
+  return(blob);
 }
 
 /*
@@ -3813,8 +3818,8 @@ WandExport unsigned char *MagickGetImagesBlob(MagickWand *wand,size_t *length)
         "ContainsNoImages","`%s'",wand->name);
       return((unsigned char *) NULL);
     }
-  blob=ImagesToBlob(wand->image_info,GetFirstImageInList(wand->images),length,
-    wand->exception);
+  blob=(unsigned char *) ImagesToBlob(wand->image_info,GetFirstImageInList(
+    wand->images),length,wand->exception);
   return(blob);
 }
 

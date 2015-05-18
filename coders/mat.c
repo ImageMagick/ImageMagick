@@ -1267,7 +1267,7 @@ static MagickBooleanType WriteMATImage(const ImageInfo *image_info,Image *image,
     quantum_info=AcquireQuantumInfo(image_info,image);
     if (quantum_info == (QuantumInfo *) NULL)
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
-    pixels=GetQuantumPixels(quantum_info);
+    pixels=(unsigned char *) GetQuantumPixels(quantum_info);
     do
     {
       for (y=0; y < (ssize_t)image->columns; y++)

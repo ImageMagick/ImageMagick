@@ -932,7 +932,7 @@ static MagickBooleanType WriteFPXImage(const ImageInfo *image_info,Image *image,
   quantum_info=AcquireQuantumInfo(image_info,image);
   if (quantum_info == (QuantumInfo *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
-  pixels=GetQuantumPixels(quantum_info);
+  pixels=(unsigned char *) GetQuantumPixels(quantum_info);
   fpx_info.numberOfComponents=colorspace.numberOfComponents;
   for (i=0; i < (ssize_t) fpx_info.numberOfComponents; i++)
   {

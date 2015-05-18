@@ -761,15 +761,16 @@ MagickExport Image *ColorizeImage(const Image *image,const char *blend,
 
       for (i=0; i < (ssize_t) GetPixelChannels(colorize_image); i++)
       {
-        PixelTrait traits=GetPixelChannelTraits(colorize_image,i);
+        PixelTrait traits=GetPixelChannelTraits(colorize_image,
+          (PixelChannel) i);
         if (traits == UndefinedPixelTrait)
           continue;
         if (((traits & CopyPixelTrait) != 0) ||
             (GetPixelReadMask(colorize_image,q) == 0))
           continue;
-        SetPixelChannel(colorize_image,i,ClampToQuantum(Colorize(q[i],
-          GetPixelInfoChannel(&blend_percentage,i),
-          GetPixelInfoChannel(colorize,i))),q);
+        SetPixelChannel(colorize_image,(PixelChannel) i,ClampToQuantum(
+          Colorize(q[i],GetPixelInfoChannel(&blend_percentage,(PixelChannel) i),
+          GetPixelInfoChannel(colorize,(PixelChannel) i))),q);
       }
       q+=GetPixelChannels(colorize_image);
     }

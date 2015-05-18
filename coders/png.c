@@ -12271,8 +12271,8 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
           /* Exclude all ancillary chunks */
           (void) SetImageArtifact(jpeg_image,"png:exclude-chunks","all");
 
-          blob=ImageToBlob(jpeg_image_info,jpeg_image,&length,
-            exception);
+          blob=(unsigned char *) ImageToBlob(jpeg_image_info,jpeg_image,
+            &length,exception);
 
           /* Retrieve sample depth used */
           value=GetImageProperty(jpeg_image,"png:bit-depth-written",exception);
@@ -12295,7 +12295,7 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
           if (logging != MagickFalse)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "  Creating blob.");
-          blob=ImageToBlob(jpeg_image_info,jpeg_image,&length,
+          blob=(unsigned char *) ImageToBlob(jpeg_image_info,jpeg_image,&length,
            exception);
           jng_alpha_sample_depth=8;
 
@@ -12641,7 +12641,8 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
       "  Creating blob.");
 
-  blob=ImageToBlob(jpeg_image_info,jpeg_image,&length,exception);
+  blob=(unsigned char *) ImageToBlob(jpeg_image_info,jpeg_image,&length,
+    exception);
 
   if (logging != MagickFalse)
     {

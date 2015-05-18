@@ -1353,7 +1353,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
       default:
         break;
     }
-    pixels=GetQuantumPixels(quantum_info);
+    pixels=(unsigned char *) GetQuantumPixels(quantum_info);
     length=0;
     for (y=0; y < (ssize_t) image->rows; y++)
     {
@@ -2440,7 +2440,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
         break;
     }
     quantum_type=GetQuantumType(image,exception);
-    pixels=GetQuantumPixels(quantum_info);
+    pixels=(unsigned char *) GetQuantumPixels(quantum_info);
     for (y=0; y < (ssize_t) image->rows; y++)
     {
       register const Quantum

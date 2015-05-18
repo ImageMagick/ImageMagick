@@ -387,7 +387,7 @@ static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
   CINInfo
     cin;
 
-  const void
+  const unsigned char
     *pixels;
 
   Image
@@ -706,7 +706,7 @@ static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         User defined data.
       */
-      profile=BlobToStringInfo((const void *) NULL,cin.file.user_length);
+      profile=BlobToStringInfo((const unsigned char *) NULL,cin.file.user_length);
       if (profile == (StringInfo *) NULL)
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
       offset+=ReadBlob(image,GetStringInfoLength(profile),
@@ -757,8 +757,8 @@ static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
     if (q == (Quantum *) NULL)
       break;
-    pixels=ReadBlobStream(image,length,GetQuantumPixels(quantum_info),
-      &count);
+    pixels=(const unsigned char *) ReadBlobStream(image,length,
+      GetQuantumPixels(quantum_info),&count);
     if ((size_t) count != length)
       break;
     (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
@@ -1201,7 +1201,7 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image,
   quantum_info->quantum=32;
   quantum_info->pack=MagickFalse;
   quantum_type=RGBQuantum;
-  pixels=GetQuantumPixels(quantum_info);
+  pixels=(unsigned char *) GetQuantumPixels(quantum_info);
   length=GetBytesPerRow(image->columns,3,image->depth,MagickTrue);
 DisableMSCWarning(4127)
   if (0)
