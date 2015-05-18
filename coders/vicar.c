@@ -148,7 +148,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
     keyword[MaxTextExtent],
     value[MaxTextExtent];
 
-  const void
+  const unsigned char
     *pixels;
 
   Image
@@ -302,13 +302,14 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
   if (quantum_info == (QuantumInfo *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   length=GetQuantumExtent(image,quantum_info,quantum_type);
+  pixels=(const unsigned char *) NULL;
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
     if (q == (PixelPacket *) NULL)
       break;
-    pixels=ReadBlobStream(image,length,GetQuantumPixels(quantum_info),
-      &count);
+    pixels=(const unsigned char *) ReadBlobStream(image,length,
+      GetQuantumPixels(quantum_info),&count);
     if (count != (ssize_t) length)
       break;
     (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,

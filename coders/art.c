@@ -178,14 +178,14 @@ static Image *ReadARTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
     if (q == (PixelPacket *) NULL)
       break;
-    pixels=ReadBlobStream(image,length,GetQuantumPixels(quantum_info),
-      &count);
+    pixels=(const unsigned char *) ReadBlobStream(image,length,
+      GetQuantumPixels(quantum_info),&count);
     if (count != (ssize_t) length)
       ThrowReaderException(CorruptImageError,"UnableToReadImageData");
     (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
       quantum_type,pixels,exception);
-    pixels=ReadBlobStream(image,(size_t) (-(ssize_t) length) & 0x01,
-      GetQuantumPixels(quantum_info),&count);
+    pixels=(const unsigned char *) ReadBlobStream(image,(size_t) (-(ssize_t)
+      length) & 0x01,GetQuantumPixels(quantum_info),&count);
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
     status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,

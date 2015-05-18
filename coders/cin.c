@@ -392,7 +392,7 @@ static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
   CINInfo
     cin;
 
-  const void
+  const unsigned char
     *pixels;
 
   Image
@@ -764,8 +764,8 @@ static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
     if (q == (PixelPacket *) NULL)
       break;
-    pixels=ReadBlobStream(image,length,GetQuantumPixels(quantum_info),
-      &count);
+    pixels=(const unsigned char *) ReadBlobStream(image,length,
+      GetQuantumPixels(quantum_info),&count);
     if ((size_t) count != length)
       break;
     (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,

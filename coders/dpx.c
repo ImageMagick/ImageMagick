@@ -1235,7 +1235,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       MagickTrue : MagickFalse);
     for (y=0; y < (ssize_t) image->rows; y++)
     {
-      const void
+      const unsigned char
         *pixels;
 
       MagickBooleanType
@@ -1253,8 +1253,8 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
       if (status == MagickFalse)
         continue;
-      pixels=ReadBlobStream(image,extent,GetQuantumPixels(quantum_info),
-        &count);
+      pixels=(const unsigned char *) ReadBlobStream(image,extent,
+        GetQuantumPixels(quantum_info),&count);
       if (count != (ssize_t) extent)
         status=MagickFalse;
       if ((image->progress_monitor != (MagickProgressMonitor) NULL) &&
