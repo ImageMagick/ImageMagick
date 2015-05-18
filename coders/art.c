@@ -98,7 +98,7 @@ static MagickBooleanType
 */
 static Image *ReadARTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-  const void
+  const unsigned char
     *pixels;
 
   Image
