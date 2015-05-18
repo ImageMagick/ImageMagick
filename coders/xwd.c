@@ -384,7 +384,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     }
   count=ReadBlob(image,length,(unsigned char *) ximage->data);
-  if (count != length)
+  if (count != (ssize_t) length)
     {
       ximage->data=DestroyString(ximage->data);
       ximage=(XImage *) RelinquishMagickMemory(ximage);

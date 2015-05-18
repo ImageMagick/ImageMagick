@@ -4114,7 +4114,7 @@ MagickExport size_t ImportQuantumPixels(const Image *image,
   assert(quantum_info != (QuantumInfo *) NULL);
   assert(quantum_info->signature == MagickSignature);
   if (pixels == (const unsigned char *) NULL)
-    pixels=GetQuantumPixels(quantum_info);
+    pixels=(const unsigned char *) GetQuantumPixels(quantum_info);
   x=0;
   p=pixels;
   if (image_view == (CacheView *) NULL)

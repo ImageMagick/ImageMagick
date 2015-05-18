@@ -1480,7 +1480,7 @@ RestoreMSCWarning
       method=ReadTileMethod;
     quantum_info->endian=LSBEndian;
     quantum_type=RGBQuantum;
-    pixels=GetQuantumPixels(quantum_info);
+    pixels=(unsigned char *) GetQuantumPixels(quantum_info);
     switch (method)
     {
       case ReadSingleSampleMethod:
@@ -1516,7 +1516,7 @@ RestoreMSCWarning
             TIFFClose(tiff);
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
           }
-        pixels=GetQuantumPixels(quantum_info);
+        pixels=(unsigned char *) GetQuantumPixels(quantum_info);
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           int
@@ -1573,7 +1573,7 @@ RestoreMSCWarning
             TIFFClose(tiff);
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
           }
-        pixels=GetQuantumPixels(quantum_info);
+        pixels=(unsigned char *) GetQuantumPixels(quantum_info);
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           int
@@ -1660,7 +1660,7 @@ RestoreMSCWarning
       }
       case ReadYCCKMethod:
       {
-        pixels=GetQuantumPixels(quantum_info);
+        pixels=(unsigned char *) GetQuantumPixels(quantum_info);
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           int
@@ -3533,8 +3533,8 @@ RestoreMSCWarning
     if (GetTIFFInfo(image_info,tiff,&tiff_info) == MagickFalse)
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
     quantum_info->endian=LSBEndian;
-    pixels=GetQuantumPixels(quantum_info);
-    tiff_info.scanline=GetQuantumPixels(quantum_info);
+    pixels=(unsigned char *) GetQuantumPixels(quantum_info);
+    tiff_info.scanline=(unsigned char *) GetQuantumPixels(quantum_info);
     switch (photometric)
     {
       case PHOTOMETRIC_CIELAB:

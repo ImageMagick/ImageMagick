@@ -653,7 +653,7 @@ MagickExport MagickBooleanType PasskeyDecipherImage(Image *image,
         image->filename);
     }
   quantum_type=GetQuantumType(image,exception);
-  pixels=GetQuantumPixels(quantum_info);
+  pixels=(unsigned char *) GetQuantumPixels(quantum_info);
   image_view=AcquireAuthenticCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -873,7 +873,7 @@ MagickExport MagickBooleanType PasskeyEncipherImage(Image *image,
         image->filename);
     }
   quantum_type=GetQuantumType(image,exception);
-  pixels=GetQuantumPixels(quantum_info);
+  pixels=(unsigned char *) GetQuantumPixels(quantum_info);
   image_view=AcquireAuthenticCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {

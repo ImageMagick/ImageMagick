@@ -330,7 +330,7 @@ static Image *ReadIPLImage(const ImageInfo *image_info,ExceptionInfo *exception)
      status=SetQuantumFormat(image,quantum_info,quantum_format);
      if (status == MagickFalse)
        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-     pixels=GetQuantumPixels(quantum_info); 
+     pixels=(unsigned char *) GetQuantumPixels(quantum_info); 
      if(image->columns != ipl_info.width){
 /*
      printf("Columns not set correctly!  Wanted: %.20g, got: %.20g\n",
@@ -618,7 +618,7 @@ static MagickBooleanType WriteIPLImage(const ImageInfo *image_info,Image *image,
       /*
   Convert MIFF to IPL raster pixels.
       */
-      pixels=GetQuantumPixels(quantum_info);
+      pixels=(unsigned char *) GetQuantumPixels(quantum_info);
   if(ipl_info.colors == 1){
   /* Red frame */
   for(y = 0; y < (ssize_t) ipl_info.height; y++){

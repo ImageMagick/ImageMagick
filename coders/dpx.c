@@ -1106,7 +1106,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           StringInfo
             *profile;
 
-           profile=BlobToStringInfo((const void *) NULL,
+           profile=BlobToStringInfo((const unsigned char *) NULL,
              dpx.file.user_size-sizeof(dpx.user.id));
            if (profile == (StringInfo *) NULL)
              ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
@@ -1223,7 +1223,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       MagickTrue : MagickFalse);
     for (y=0; y < (ssize_t) image->rows; y++)
     {
-      const void
+      const unsigned char
         *pixels;
 
       MagickBooleanType
@@ -1241,8 +1241,8 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
       if (status == MagickFalse)
         continue;
-      pixels=ReadBlobStream(image,extent,GetQuantumPixels(quantum_info),
-        &count);
+      pixels=(const unsigned char *) ReadBlobStream(image,extent,
+        GetQuantumPixels(quantum_info),&count);
       if (count != (ssize_t) extent)
         status=MagickFalse;
       if ((image->progress_monitor != (MagickProgressMonitor) NULL) &&
@@ -1976,7 +1976,7 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
       extent=GetBytesPerRow(image->columns,1UL,image->depth,
         dpx.image.image_element[0].packing == 0 ? MagickFalse : MagickTrue);
     }
-  pixels=GetQuantumPixels(quantum_info);
+  pixels=(unsigned char *) GetQuantumPixels(quantum_info);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,exception);

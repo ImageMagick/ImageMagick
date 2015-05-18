@@ -724,7 +724,7 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
   /*
     Convert image to fits scale PseudoColor class.
   */
-  pixels=GetQuantumPixels(quantum_info);
+  pixels=(unsigned char *) GetQuantumPixels(quantum_info);
   if (SetImageGray(image,exception) != MagickFalse)
     {
       length=GetQuantumExtent(image,quantum_info,GrayQuantum);

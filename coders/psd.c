@@ -547,7 +547,7 @@ static void ParseImageResourceBlocks(Image *image,
 
   if (length < 16)
     return;
-  profile=BlobToStringInfo((const void *) NULL,length);
+  profile=BlobToStringInfo((const unsigned char *) NULL,length);
   SetStringInfoDatum(profile,blocks);
   (void) SetImageProfile(image,"8bim",profile,exception);
   profile=DestroyStringInfo(profile);
@@ -1829,6 +1829,9 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if ((has_merged_image == MagickFalse) && (GetImageListLength(image) == 1) &&
       (length != 0))
     {
+      MagickStatusType
+        status;
+
       SeekBlob(image,offset,SEEK_SET);
       status=ReadPSDLayers(image,image_info,&psd_info,MagickFalse,exception);
       if (status != MagickTrue)
@@ -2099,7 +2102,7 @@ static void WritePackbitsLength(const PSDInfo *psd_info,
   packet_size=next_image->depth > 8UL ? 2UL : 1UL;
   (void) packet_size;
   quantum_info=AcquireQuantumInfo(image_info,image);
-  pixels=GetQuantumPixels(quantum_info);
+  pixels=(unsigned char *) GetQuantumPixels(quantum_info);
   for (y=0; y < (ssize_t) next_image->rows; y++)
   {
     p=GetVirtualPixels(next_image,0,y,next_image->columns,1,exception);
@@ -2152,7 +2155,7 @@ static void WriteOneChannel(const PSDInfo *psd_info,const ImageInfo *image_info,
   packet_size=next_image->depth > 8UL ? 2UL : 1UL;
   (void) packet_size;
   quantum_info=AcquireQuantumInfo(image_info,image);
-  pixels=GetQuantumPixels(quantum_info);
+  pixels=(unsigned char *) GetQuantumPixels(quantum_info);
   for (y=0; y < (ssize_t) next_image->rows; y++)
   {
     p=GetVirtualPixels(next_image,0,y,next_image->columns,1,exception);

@@ -1114,7 +1114,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
               q+=GetPixelChannels(image);
               p++;
             }
-          if (x < image->columns)
+          if (x < (ssize_t) image->columns)
             break;
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;

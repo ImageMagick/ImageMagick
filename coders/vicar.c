@@ -149,7 +149,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
     keyword[MagickPathExtent],
     value[MagickPathExtent];
 
-  const void
+  const unsigned char
     *pixels;
 
   Image
@@ -305,8 +305,8 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
     if (q == (Quantum *) NULL)
       break;
-    pixels=ReadBlobStream(image,length,GetQuantumPixels(quantum_info),
-      &count);
+    pixels=(const unsigned char *) ReadBlobStream(image,length,
+      GetQuantumPixels(quantum_info),&count);
     if (count != (ssize_t) length)
       break;
     (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
@@ -480,7 +480,7 @@ static MagickBooleanType WriteVICARImage(const ImageInfo *image_info,
   quantum_info=AcquireQuantumInfo(image_info,image);
   if (quantum_info == (QuantumInfo *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
-  pixels=GetQuantumPixels(quantum_info);
+  pixels=(unsigned char *) GetQuantumPixels(quantum_info);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,exception);
