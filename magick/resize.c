@@ -1871,29 +1871,6 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
     return(CloneImage(image,0,0,MagickTrue,exception));
   if ((columns <= 2) || (rows <= 2))
     return(ResizeImage(image,columns,rows,image->filter,image->blur,exception));
-  if ((columns >= (2*image->columns)) || (rows >= (2*image->rows)))
-    {
-      Image
-        *resize_image;
-
-      size_t
-        height,
-        width;
-
-      /*
-        Honor liquid resize size limitations.
-      */
-      for (width=image->columns; columns >= (2*width-1); width*=2);
-      for (height=image->rows; rows >= (2*height-1); height*=2);
-      resize_image=ResizeImage(image,width,height,image->filter,image->blur,
-        exception);
-      if (resize_image == (Image *) NULL)
-        return((Image *) NULL);
-      rescale_image=LiquidRescaleImage(resize_image,columns,rows,delta_x,
-        rigidity,exception);
-      resize_image=DestroyImage(resize_image);
-      return(rescale_image);
-    }
   map="RGB";
   if (image->matte != MagickFalse)
     map="RGBA";
