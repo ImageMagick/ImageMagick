@@ -411,7 +411,7 @@ MagickExport MagickBooleanType GetPathTemplate(char *path)
     directory=GetEnvironmentValue("MAGICK_TEMPORARY_PATH");
   if (directory == (char *) NULL)
     directory=GetEnvironmentValue("MAGICK_TMPDIR");
-#if defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__OS2__)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__OS2__) || defined(__CYGWIN__)
   if (directory == (char *) NULL)
     directory=GetEnvironmentValue("TMP");
   if (directory == (char *) NULL)
