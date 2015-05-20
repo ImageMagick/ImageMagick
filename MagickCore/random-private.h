@@ -25,7 +25,7 @@ extern "C" {
 #endif
 
 extern MagickPrivate double
-  GetRandomInfoNormalize(RandomInfo *);
+  GetRandomInfoNormalize(const RandomInfo *);
 
 extern MagickPrivate MagickBooleanType
   RandomComponentGenesis(void);
