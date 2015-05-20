@@ -624,6 +624,62 @@ MagickExport double GetPseudoRandomValue(RandomInfo *random_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   G e t R a n d o m I n f o N o r m a l i z e                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetRandomInfoNormalize() returns the random normalize value.
+%
+%  The format of the GetRandomInfoNormalize method is:
+%
+%      double GetRandomInfoNormalize(const RandomInfo *random_info)
+%
+%  A description of each parameter follows:
+%
+%    o random_info: the random info.
+%
+*/
+MagickPrivate double GetRandomInfoNormalize(const RandomInfo *random_info)
+{
+  assert(random_info != (const RandomInfo *) NULL);
+  return(random_info->normalize);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   G e t R a n d o m I n f o S e e d                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetRandomInfoSeed() returns the random seed.
+%
+%  The format of the GetRandomInfoSeed method is:
+%
+%      unsigned long *GetRandomInfoSeed(RandomInfo *random_info)
+%
+%  A description of each parameter follows:
+%
+%    o random_info: the random info.
+%
+*/
+MagickPrivate unsigned long *GetRandomInfoSeed(RandomInfo *random_info)
+{
+  assert(random_info != (RandomInfo *) NULL);
+  return(random_info->seed);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t R a n d o m K e y                                                   %
 %                                                                             %
 %                                                                             %
@@ -920,16 +976,4 @@ MagickExport void SetRandomSecretKey(const unsigned long key)
 MagickExport void SetRandomTrueRandom(const MagickBooleanType true_random)
 {
   gather_true_random=true_random;
-}
-
-MagickPrivate unsigned long *GetRandomInfoSeed(RandomInfo *random_info)
-{
-  assert(random_info != (RandomInfo *) NULL);
-  return random_info->seed;
-}
-
-MagickPrivate double GetRandomInfoNormalize(RandomInfo *random_info)
-{
-  assert(random_info != (RandomInfo *) NULL);
-  return random_info->normalize;
 }
