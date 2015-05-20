@@ -668,7 +668,7 @@ MagickPrivate double GetRandomInfoNormalize(const RandomInfo *random_info)
 */
 MagickPrivate unsigned long *GetRandomInfoSeed(RandomInfo *random_info)
 {
-  assert(random_info != (const RandomInfo *) NULL);
+  assert(random_info != (RandomInfo *) NULL);
   return(random_info->seed);
 }
 
