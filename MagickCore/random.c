@@ -381,6 +381,17 @@ static StringInfo *GenerateEntropicChaos(RandomInfo *random_info)
   SetStringInfoLength(chaos,sizeof(tid));
   SetStringInfoDatum(chaos,(unsigned char *) &tid);
   ConcatenateStringInfo(entropy,chaos);
+#if defined(MAGICKCORE_HAVE_SYSCONF) && defined(_SC_PHYS_PAGES)
+  { 
+    ssize_t
+      pages;
+    
+    pages=(ssize_t) sysconf(_SC_PHYS_PAGES);
+    SetStringInfoLength(chaos,sizeof(pages));
+    SetStringInfoDatum(chaos,(unsigned char *) &pages);
+    ConcatenateStringInfo(entropy,chaos);
+  }
+#endif
 #if defined(MAGICKCORE_HAVE_GETRUSAGE) && defined(RUSAGE_SELF)
   {
     struct rusage
