@@ -48,6 +48,7 @@
 #include "magick/cache.h"
 #include "magick/cache-private.h"
 #include "magick/cache-view.h"
+#include "magick/channel.h"
 #include "magick/client.h"
 #include "magick/color.h"
 #include "magick/color-private.h"
@@ -301,7 +302,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
       edge_image=DestroyImage(edge_image);
       return((Image *) NULL);
     }
-  edge_image->matte=MagickFalse;
+  (void) SetImageAlphaChannel(edge_image,DeactivateAlphaChannel);
   /*
     Find the intensity gradient of the image.
   */
