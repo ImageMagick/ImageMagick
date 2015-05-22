@@ -1736,12 +1736,16 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
       case '1':
       {
         unsigned char
-          pixels[2048];
+          *pixels;
 
         /*
           Convert image to a PBM image.
         */
         (void) SetImageType(image,BilevelType);
+        quantum_info=AcquireQuantumInfo(image_info,image);
+        if (quantum_info == (QuantumInfo *) NULL)
+          ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+        pixels=GetQuantumPixels(quantum_info);
         q=pixels;
         for (y=0; y < (ssize_t) image->rows; y++)
         {
@@ -1759,14 +1763,11 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
             *q++=(unsigned char) (GetPixelLuma(image,p) >= (QuantumRange/2.0) ?
               '0' : '1');
             *q++=' ';
-            if ((q-pixels+2) >= 80)
-              {
-                *q++='\n';
-                (void) WriteBlob(image,q-pixels,pixels);
-                q=pixels;
-              }
             p++;
           }
+          *q++='\n';
+          (void) WriteBlob(image,q-pixels,pixels);
+          q=pixels;
           if (image->previous == (Image *) NULL)
             {
               status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
