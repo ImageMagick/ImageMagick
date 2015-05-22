@@ -301,6 +301,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
       edge_image=DestroyImage(edge_image);
       return((Image *) NULL);
     }
+  edge_image->matte=MagickFalse;
   /*
     Find the intensity gradient of the image.
   */
