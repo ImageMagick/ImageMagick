@@ -1464,6 +1464,8 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           break;
         }
         case DstOverCompositeOp:
+        case OverCompositeOp:
+        case SrcOverCompositeOp:
         {
           alpha=Sa+Da-Sa*Da;
           break;
@@ -1477,12 +1479,6 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         case SrcOutCompositeOp:
         {
           alpha=Sa*(1.0-Da);
-          break;
-        }
-        case OverCompositeOp:
-        case SrcOverCompositeOp:
-        {
-          alpha=Sa+Da-Sa*Da;
           break;
         }
         case BlendCompositeOp:
@@ -1692,7 +1688,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
             break;
           }
           default:
-          {          
+          {
             gamma=PerceptibleReciprocal(alpha);
             break;
           }
@@ -1949,14 +1945,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           }
           case HardMixCompositeOp:
           {
-            double
-              gamma;
-
-            if ((Sa+Da) < 1.0)
-              gamma=0.0;
-            else
-              gamma=1.0;
-            pixel=(gamma*(1.0-Sca)*(1.0-Dca))+Sa*(1.0-Sca)*Dca+Da*(1.0-Dca)*Sca;
+            pixel=gamma*(((Sca+Dca) < 1.0) ? 0.0 : QuantumRange);
             break;
           }
           case HueCompositeOp:
