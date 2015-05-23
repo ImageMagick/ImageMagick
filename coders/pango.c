@@ -398,8 +398,9 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
   cairo_paint(cairo_image);
   cairo_set_operator(cairo_image,CAIRO_OPERATOR_OVER);
   cairo_translate(cairo_image,page.x,page.y);
-  cairo_set_source_rgb(cairo_image,QuantumScale*draw_info->fill.red,
-    QuantumScale*draw_info->fill.green,QuantumScale*draw_info->fill.blue);
+  cairo_set_source_rgba(cairo_image,QuantumScale*draw_info->fill.red,
+    QuantumScale*draw_info->fill.green,QuantumScale*draw_info->fill.blue,
+    QuantumScale*draw_info->fill.alpha);
   pango_cairo_show_layout(cairo_image,layout);
   cairo_destroy(cairo_image);
   cairo_surface_destroy(surface);
