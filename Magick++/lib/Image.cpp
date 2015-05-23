@@ -1023,6 +1023,17 @@ Magick::Blob Magick::Image::iptcProfile(void) const
     iptc_profile)));
 }
 
+bool Magick::Image::isOpaque(void) const
+{
+  MagickBooleanType
+    result;
+
+  GetPPException;
+  result=IsImageOpaque(constImage(),exceptionInfo);
+  ThrowImageException;
+  return(result != MagickFalse ? true : false);
+}
+
 void Magick::Image::isValid(const bool isValid_)
 {
   if (!isValid_)

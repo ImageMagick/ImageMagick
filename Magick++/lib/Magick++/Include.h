@@ -1321,6 +1321,7 @@ namespace Magick
   using MagickCore::InvokeDynamicImageFilter;
   using MagickCore::IsEventLogging;
   using MagickCore::IsGeometry;
+  using MagickCore::IsImageOpaque;
   using MagickCore::IsImagesEqual;
   using MagickCore::KuwaharaImage;
   using MagickCore::LevelImage;
