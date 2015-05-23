@@ -318,6 +318,10 @@ namespace Magick
     void iptcProfile(const Blob &iptcProfile_);
     Blob iptcProfile(void) const;
 
+    // Returns true if none of the pixels in the image have an alpha value
+    // other than OpaqueAlpha (QuantumRange).
+    bool isOpaque(void) const;
+
     // Does object contain valid image?
     void isValid(const bool isValid_);
     bool isValid(void) const;
