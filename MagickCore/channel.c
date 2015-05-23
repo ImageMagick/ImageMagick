@@ -1137,6 +1137,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
           status=MagickFalse;
       }
       image_view=DestroyCacheView(image_view);
+      image->alpha_trait=UndefinedPixelTrait;
       return(status);
     }
     case DiscreteAlphaChannel:
