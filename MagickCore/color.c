@@ -2411,13 +2411,12 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
                   geometry_info.psi);
               else
                 if (color->alpha_trait != UndefinedPixelTrait)
-                  color->alpha=(double) ClampToQuantum(QuantumRange*
+                  color->alpha=(double) ClampToQuantum(scale*
                     geometry_info.psi);
             }
           if (((flags & ChiValue) != 0) &&
               (color->alpha_trait != UndefinedPixelTrait))
-            color->alpha=(double) ClampToQuantum(QuantumRange*
-              geometry_info.chi);
+            color->alpha=(double) ClampToQuantum(scale*geometry_info.chi);
           if (color->colorspace == LabColorspace)
             {
               if ((flags & SigmaValue) != 0)
@@ -2434,7 +2433,7 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
               color->blue=color->red;
               if (((flags & SigmaValue) != 0) &&
                   (color->alpha_trait != UndefinedPixelTrait))
-                color->alpha=(double) ClampToQuantum(QuantumRange*
+                color->alpha=(double) ClampToQuantum(scale*
                   geometry_info.sigma);
             }
           if ((LocaleCompare(colorspace,"HCL") == 0) ||
