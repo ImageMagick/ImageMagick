@@ -6,7 +6,7 @@
 %                     PPPP    AAA   N   N   GGGG   OOO                        %
 %                     P   P  A   A  NN  N  G      O   O                       %
 %                     PPPP   AAAAA  N N N  G GGG  O   O                       %
-%                     P   M  A   A  N  NN  G   G  O   O                       %
+%                     P      A   A  N  NN  G   G  O   O                       %
 %                     P      A   A  N   N   GGGG   OOO                        %
 %                                                                             %
 %                                                                             %
