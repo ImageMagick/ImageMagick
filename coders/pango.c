@@ -135,6 +135,9 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
   PangoContext
     *context;
 
+  PangoFontDescription
+    *description;
+
   PangoFontMap
     *fontmap;
 
@@ -321,20 +324,14 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
       (draw_info->direction == RightToLeftDirection))
     align=(PangoAlignment) (PANGO_ALIGN_LEFT+PANGO_ALIGN_RIGHT-align);
   pango_layout_set_alignment(layout,align);
-  if (draw_info->font != (char *) NULL)
-    {
-      PangoFontDescription
-        *description;
-
-      /*
-        Set font.
-      */
-      description=pango_font_description_from_string(draw_info->font);
-      pango_font_description_set_size(description,(int) (PANGO_SCALE*
-        draw_info->pointsize+0.5));
-      pango_layout_set_font_description(layout,description);
-      pango_font_description_free(description);
-    }
+  if (draw_info->font == (char *) NULL)
+    description=pango_font_description_new();
+  else
+    description=pango_font_description_from_string(draw_info->font);
+  pango_font_description_set_size(description,(int) (PANGO_SCALE*
+    draw_info->pointsize+0.5));
+  pango_layout_set_font_description(layout,description);
+  pango_font_description_free(description);
   option=GetImageOption(image_info,"pango:markup");
   if ((option != (const char *) NULL) && (IsStringTrue(option) == MagickFalse))
     pango_layout_set_text(layout,caption,-1);
@@ -401,6 +398,8 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
   cairo_paint(cairo_image);
   cairo_set_operator(cairo_image,CAIRO_OPERATOR_OVER);
   cairo_translate(cairo_image,page.x,page.y);
+  cairo_set_source_rgb(cairo_image,QuantumScale*draw_info->fill.red,
+    QuantumScale*draw_info->fill.green,QuantumScale*draw_info->fill.blue);
   pango_cairo_show_layout(cairo_image,layout);
   cairo_destroy(cairo_image);
   cairo_surface_destroy(surface);
