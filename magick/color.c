@@ -2782,12 +2782,11 @@ MagickExport MagickBooleanType QueryMagickColorCompliance(const char *name,
               else
                 if (color->matte != MagickFalse)
                   color->opacity=(MagickRealType) ClampToQuantum(
-                    (MagickRealType) (QuantumRange-QuantumRange*
-                    geometry_info.psi));
+                    (MagickRealType) (QuantumRange-scale*geometry_info.psi));
             }
           if (((flags & ChiValue) != 0) && (color->matte != MagickFalse))
             color->opacity=(MagickRealType) ClampToQuantum((MagickRealType)
-              (QuantumRange-QuantumRange*geometry_info.chi));
+              (QuantumRange-scale*geometry_info.chi));
           if (color->colorspace == LabColorspace)
             {
               if ((flags & SigmaValue) != 0)
@@ -2804,7 +2803,7 @@ MagickExport MagickBooleanType QueryMagickColorCompliance(const char *name,
               color->blue=color->red;
               if (((flags & SigmaValue) != 0) && (color->matte != MagickFalse))
                 color->opacity=(MagickRealType) ClampToQuantum((MagickRealType)
-                  (QuantumRange-QuantumRange*geometry_info.sigma));
+                  (QuantumRange-scale*geometry_info.sigma));
             }
           if ((LocaleCompare(colorspace,"HCL") == 0) ||
               (LocaleCompare(colorspace,"HSB") == 0) ||
