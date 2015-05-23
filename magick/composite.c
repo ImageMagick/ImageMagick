@@ -619,16 +619,12 @@ static inline void CompositeHardLight(const MagickPixelPacket *p,
 }
 
 static MagickRealType HardMix(const MagickRealType Sca,
-  const MagickRealType Sa,const MagickRealType Dca,const MagickRealType Da)
+  const MagickRealType Dca)
 {
-  MagickRealType
-    gamma;
-
-  if ((Sa+Da) < 1.0)
-    gamma=0.0;
+  if ((Sca+Dca) < QuantumRange)
+    return(0.0);
   else
-    gamma=1.0;
-  return((gamma*(1.0-Sca)*(1.0-Dca))+Sa*(1.0-Sca)*Dca+Da*(1.0-Dca)*Sca);
+    return(1.0);
 }
 
 static inline void CompositeHardMix(const MagickPixelPacket *p,
@@ -644,15 +640,11 @@ static inline void CompositeHardMix(const MagickPixelPacket *p,
   gamma=RoundToUnity(Sa+Da-Sa*Da); /* over blend, as per SVG doc */
   composite->opacity=(MagickRealType) QuantumRange*(1.0-gamma);
   gamma=QuantumRange/(fabs(gamma) < MagickEpsilon ? MagickEpsilon : gamma);
-  composite->red=gamma*HardMix(QuantumScale*p->red*Sa,Sa,QuantumScale*
-    q->red*Da,Da);
-  composite->green=gamma*HardMix(QuantumScale*p->green*Sa,Sa,QuantumScale*
-    q->green*Da,Da);
-  composite->blue=gamma*HardMix(QuantumScale*p->blue*Sa,Sa,QuantumScale*
-    q->blue*Da,Da);
+  composite->red=gamma*HardMix(p->red*Sa,q->red*Da);
+  composite->green=gamma*HardMix(p->green*Sa,q->green*Da);
+  composite->blue=gamma*HardMix(p->blue*Sa,q->blue*Da);
   if (q->colorspace == CMYKColorspace)
-    composite->index=gamma*HardMix(QuantumScale*p->index*Sa,Sa,QuantumScale*
-      q->index*Da,Da);
+    composite->index=gamma*HardMix(p->index*Sa,q->index*Da);
 }
 
 static void HCLComposite(const double hue,const double chroma,const double luma,
