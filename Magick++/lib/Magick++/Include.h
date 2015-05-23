@@ -1284,6 +1284,7 @@ namespace Magick
   using MagickCore::IsEventLogging;
   using MagickCore::IsGeometry;
   using MagickCore::IsImagesEqual;
+  using MagickCore::IsOpaqueImage;
   using MagickCore::KernelInfo;
   using MagickCore::KuwaharaImage;
   using MagickCore::LessValue;
