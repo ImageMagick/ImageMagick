@@ -235,8 +235,6 @@ static inline MagickRealType GetPixelInfoLuma(const PixelInfo *restrict pixel)
   red=gamma*pixel->red;
   green=gamma*pixel->green;
   blue=gamma*pixel->blue;
-  if (pixel->colorspace == GRAYColorspace)
-    return(red);
   if (pixel->colorspace == sRGBColorspace)
     return(0.212656f*red+0.715158f*green+0.072186f*blue);
   red=EncodePixelGamma(red);
@@ -260,8 +258,6 @@ static inline MagickRealType GetPixelInfoLuminance(
   red=gamma*pixel->red;
   green=gamma*pixel->green;
   blue=gamma*pixel->blue;
-  if (pixel->colorspace == GRAYColorspace)
-    return(red);
   if (pixel->colorspace != sRGBColorspace)
     return(0.212656f*red+0.715158f*green+0.072186f*blue);
   red=DecodePixelGamma(red);
@@ -292,8 +288,6 @@ static inline MagickRealType GetPixelLuma(const Image *restrict image,
   red=gamma*pixel[image->channel_map[RedPixelChannel].offset];
   green=gamma*pixel[image->channel_map[GreenPixelChannel].offset];
   blue=gamma*pixel[image->channel_map[BluePixelChannel].offset];
-  if (image->colorspace == GRAYColorspace)
-    return(red);
   return(0.212656f*red+0.715158f*green+0.072186f*blue);
 }
 
@@ -313,8 +307,6 @@ static inline MagickRealType GetPixelLuminance(const Image *restrict image,
   red=gamma*pixel[image->channel_map[RedPixelChannel].offset];
   green=gamma*pixel[image->channel_map[GreenPixelChannel].offset];
   blue=gamma*pixel[image->channel_map[BluePixelChannel].offset];
-  if (image->colorspace == GRAYColorspace)
-    return(red);
   if (image->colorspace != sRGBColorspace)
     return(0.212656f*red+0.715158f*green+0.072186f*blue);
   red=DecodePixelGamma(red);
