@@ -18,7 +18,7 @@
 #ifndef _MAGICKCORE_GEM_PRIVATE_H
 #define _MAGICKCORE_GEM_PRIVATE_H
 
-#include "magick/pixel-private.h"
+#include "magick/pixel-accessor.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
