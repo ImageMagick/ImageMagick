@@ -1412,7 +1412,8 @@ static void ExportLongLongPixel(Image *image,const RectangleInfo *roi,
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
         {
-          *q++=ScaleQuantumToLongLong(ClampToQuantum(GetPixelIntensity(image,p)));
+          *q++=ScaleQuantumToLongLong(ClampToQuantum(
+            GetPixelIntensity(image,p)));
           p+=GetPixelChannels(image);
         }
       }
@@ -2222,6 +2223,7 @@ MagickExport MagickRealType GetPixelInfoIntensity(const Image *restrict image,
 {
   MagickRealType
     blue,
+    gamma,
     green,
     red,
     intensity;
@@ -2232,9 +2234,12 @@ MagickExport MagickRealType GetPixelInfoIntensity(const Image *restrict image,
   method=Rec709LumaPixelIntensityMethod;
   if (image != (const Image *) NULL)
     method=image->intensity;
-  red=pixel->red;
-  green=pixel->green;
-  blue=pixel->blue;
+  gamma=1.0;
+  if (image->alpha_trait != UndefinedPixelTrait)
+    gamma=PerceptibleReciprocal(QuantumScale*pixel->alpha);
+  red=gamma*pixel->red;
+  green=gamma*pixel->green;
+  blue=gamma*pixel->blue;
   switch (method)
   {
     case AveragePixelIntensityMethod:
@@ -2356,15 +2361,17 @@ MagickExport MagickRealType GetPixelIntensity(const Image *restrict image,
 {
   MagickRealType
     blue,
+    gamma,
     green,
     red,
     intensity;
 
-  if (image->colorspace == GRAYColorspace)
-    return((MagickRealType) GetPixelGray(image,pixel));
-  red=(MagickRealType) GetPixelRed(image,pixel);
-  green=(MagickRealType) GetPixelGreen(image,pixel);
-  blue=(MagickRealType) GetPixelBlue(image,pixel);
+  gamma=1.0;
+  if (image->alpha_trait != UndefinedPixelTrait)
+    gamma=PerceptibleReciprocal(QuantumScale*GetPixelAlpha(image,pixel));
+  red=gamma*GetPixelRed(image,pixel);
+  green=gamma*GetPixelGreen(image,pixel);
+  blue=gamma*GetPixelBlue(image,pixel);
   switch (image->intensity)
   {
     case AveragePixelIntensityMethod:
