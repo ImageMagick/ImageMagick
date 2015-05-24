@@ -480,20 +480,6 @@ static void ConvertRGBToLMS(const double red,const double green,
   ConvertXYZToLMS(X,Y,Z,L,M,S);
 }
 
-static inline double PerceptibleReciprocal(const double x)
-{
-  double
-    sign;
-
-  /*
-    Return 1/x where x is perceptible (not unlimited or infinitesimal).
-  */
-  sign=x < 0.0 ? -1.0 : 1.0;
-  if ((sign*x) >= MagickEpsilon)
-    return(1.0/x);
-  return(sign/MagickEpsilon);
-}
-
 static inline void ConvertXYZToLuv(const double X,const double Y,const double Z,
   double *L,double *u,double *v)
 {
