@@ -702,7 +702,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
             gamma;
 
           alpha=QuantumScale*GetPixelAlpha(q);
-          gamma=PerceptibleReciprocal(alpha);
+          gamma=alpha;
           SetPixelRed(q,ClampToQuantum(gamma*GetPixelRed(q)));
           SetPixelGreen(q,ClampToQuantum(gamma*GetPixelGreen(q)));
           SetPixelBlue(q,ClampToQuantum(gamma*GetPixelBlue(q)));
