@@ -302,7 +302,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
       edge_image=DestroyImage(edge_image);
       return((Image *) NULL);
     }
-  (void) SetImageAlphaChannel(edge_image,DisassociateAlphaChannel);
+  (void) SetImageAlphaChannel(edge_image,DeactivateAlphaChannel);
   /*
     Find the intensity gradient of the image.
   */
