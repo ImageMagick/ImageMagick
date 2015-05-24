@@ -993,7 +993,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
               continue;
             }
           Sa=QuantumScale*GetPixelAlpha(image,q);
-          gamma=PerceptibleReciprocal(Sa);
+          gamma=Sa;
           for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
           {
             PixelChannel channel=GetPixelChannelChannel(image,i);
