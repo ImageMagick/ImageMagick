@@ -126,12 +126,36 @@ static inline Quantum ClampPixel(const MagickRealType value)
 #endif
 }
 
+static inline double PerceptibleReciprocal(const double x)
+{ 
+  double
+    sign;
+      
+  /*
+    Return 1/x where x is perceptible (not unlimited or infinitesimal).
+  */
+  sign=x < 0.0 ? -1.0 : 1.0;
+  if ((sign*x) >= MagickEpsilon)
+    return(1.0/x);
+  return(sign/MagickEpsilon);
+}   
+
 static inline MagickRealType GetPixelLuma(const Image *restrict image,
   const PixelPacket *restrict pixel)
 {
-  if (image->colorspace == GRAYColorspace)
-    return((MagickRealType) pixel->red);
-  return(0.212656f*pixel->red+0.715158f*pixel->green+0.072186f*pixel->blue);
+  MagickRealType
+    blue,
+    gamma,
+    green,
+    red;
+
+  gamma=1.0;
+  if (image->matte != MagickFalse)
+    gamma=PerceptibleReciprocal(QuantumScale*GetPixelAlpha(pixel));
+  red=gamma*pixel->red;
+  green=gamma*pixel->green;
+  blue=gamma*pixel->blue;
+  return(0.212656f*red+0.715158f*green+0.072186f*blue);
 }
 
 static inline MagickRealType GetPixelLuminance(const Image *restrict image,
@@ -139,16 +163,21 @@ static inline MagickRealType GetPixelLuminance(const Image *restrict image,
 {
   MagickRealType
     blue,
+    gamma,
     green,
     red;
 
-  if (image->colorspace == GRAYColorspace)
-    return((MagickRealType) pixel->red);
+  gamma=1.0;
+  if (image->matte != MagickFalse)
+    gamma=PerceptibleReciprocal(QuantumScale*GetPixelAlpha(pixel));
+  red=gamma*pixel->red;
+  green=gamma*pixel->green;
+  blue=gamma*pixel->blue;
   if (image->colorspace != sRGBColorspace)
-    return(0.212656f*pixel->red+0.715158f*pixel->green+0.072186f*pixel->blue);
-  red=DecodePixelGamma((MagickRealType) pixel->red);
-  green=DecodePixelGamma((MagickRealType) pixel->green);
-  blue=DecodePixelGamma((MagickRealType) pixel->blue);
+    return(0.212656f*red+0.715158f*green+0.072186f*blue);
+  red=DecodePixelGamma(red);
+  green=DecodePixelGamma(green);
+  blue=DecodePixelGamma(blue);
   return(0.212656f*red+0.715158f*green+0.072186f*blue);
 }
 
