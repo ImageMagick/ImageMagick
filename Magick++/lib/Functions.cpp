@@ -57,6 +57,11 @@ MagickPPExport void Magick::InitializeMagick(const char *path_)
     magick_initialized=true;
 }
 
+MagickPPExport void Magick::SetRandomSeed(const unsigned long seed)
+{
+  MagickCore::SetRandomSecretKey(seed);
+}
+
 //
 // Create a local wrapper around MagickCoreTerminus
 //
