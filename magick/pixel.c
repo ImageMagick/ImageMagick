@@ -2113,13 +2113,17 @@ MagickExport MagickRealType GetMagickPixelIntensity(const Image *image,
 {
   MagickRealType
     blue,
+    gamma,
     green,
     intensity,
     red;
 
-  red=pixel->red;
-  green=pixel->green;
-  blue=pixel->blue;
+  gamma=1.0;
+  if (image->matte != MagickFalse)
+    gamma=PerceptibleReciprocal(QuantumScale*GetPixelAlpha(pixel));
+  red=gamma*pixel->red;
+  green=gamma*pixel->green;
+  blue=gamma*pixel->blue;
   switch (image->intensity)
   {
     case AveragePixelIntensityMethod:
@@ -2287,15 +2291,17 @@ MagickExport MagickRealType GetPixelIntensity(const Image *image,
 {
   MagickRealType
     blue,
+    gamma,
     green,
     intensity,
     red;
 
-  if (image->colorspace == GRAYColorspace)
-    return((MagickRealType) pixel->red);
-  red=(MagickRealType) pixel->red;
-  green=(MagickRealType) pixel->green;
-  blue=(MagickRealType) pixel->blue;
+  gamma=1.0;
+  if (image->matte != MagickFalse)
+    gamma=PerceptibleReciprocal(QuantumScale*GetPixelAlpha(pixel));
+  red=gamma*pixel->red;
+  green=gamma*pixel->green;
+  blue=gamma*pixel->blue;
   switch (image->intensity)
   {
     case AveragePixelIntensityMethod:
