@@ -58,6 +58,11 @@ MagickPPExport void Magick::InitializeMagick(const char *path_)
     magick_initialized=true;
 }
 
+MagickPPExport void Magick::SetRandomSeed(const unsigned long seed)
+{
+  MagickCore::SetRandomSecretKey(seed);
+}
+
 MagickPPExport void Magick::TerminateMagick(void)
 {
   if (magick_initialized)
