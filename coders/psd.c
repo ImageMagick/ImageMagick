@@ -103,7 +103,7 @@ typedef enum
   DuotoneMode = 8,
   LabMode = 9
 } PSDImageType;
-
+
 /*
   Typedef declaractions.
 */
@@ -116,38 +116,51 @@ typedef struct _ChannelInfo
     size;
 } ChannelInfo;
 
+typedef struct _MaskInfo
+{
+  Image
+    *image;
+
+  RectangleInfo
+    page;
+
+  unsigned char
+    background,
+    flags;
+} MaskInfo;
+
 typedef struct _LayerInfo
 {
-  RectangleInfo
-    page,
-    mask;
-
-  unsigned short
-    channels;
-
   ChannelInfo
     channel_info[MaxPSDChannels];
 
   char
     blendkey[4];
 
+  Image
+    *image;
+
+  MaskInfo
+    mask;
+
   Quantum
     opacity;
 
-  unsigned char
-    clipping,
-    visible,
-    flags;
+  RectangleInfo
+    page;
 
   size_t
     offset_x,
     offset_y;
 
   unsigned char
-    name[256];
+    clipping,
+    flags,
+    name[256],
+    visible;
 
-  Image
-    *image;
+  unsigned short
+    channels;
 } LayerInfo;
 
 typedef struct _PSDInfo
@@ -462,6 +475,8 @@ static inline LayerInfo *DestroyLayerInfo(LayerInfo *layer_info,
   {
     if (layer_info[i].image != (Image *) NULL)
       layer_info[i].image=DestroyImage(layer_info[i].image);
+    if (layer_info[i].mask.image != (Image *) NULL)
+      layer_info[i].mask.image=DestroyImage(layer_info[i].mask.image);
   }
 
   return (LayerInfo *) RelinquishMagickMemory(layer_info);
@@ -699,10 +714,11 @@ static MagickStatusType ReadPSDChannelPixels(Image *image,const size_t channels,
         SetPixelAlpha(q,pixel);
         break;
       }
+      case -2:
       case 0:
       {
         SetPixelRed(q,pixel);
-        if (channels == 1)
+        if (channels == 1 || type == -2)
           {
             SetPixelGreen(q,GetPixelRed(q));
             SetPixelBlue(q,GetPixelRed(q));
@@ -1032,47 +1048,64 @@ static MagickStatusType ReadPSDChannelZip(Image *image,const size_t channels,
 #endif
 
 static MagickStatusType ReadPSDChannel(Image *image,const PSDInfo *psd_info,
-  const LayerInfo* layer_info,const size_t channel,
+  LayerInfo* layer_info,const size_t channel,
   const PSDCompressionType compression,ExceptionInfo *exception)
 {
+  Image
+    *channel_image,
+    *mask;
+
   MagickOffsetType
     offset;
 
   MagickStatusType
     status;
 
+  channel_image=image;
+  mask=(Image *) NULL;
   if (layer_info->channel_info[channel].type < -1)
   {
-    /* ignore user supplied layer mask */
-    SeekBlob(image,layer_info->channel_info[channel].size-2,SEEK_CUR);
-    return(MagickTrue);
+    /*
+      Ignore mask that is not a user supplied layer mask, if the mask is
+      disabled or if the flags have unsupported values.
+    */
+    if (layer_info->channel_info[channel].type != -2 ||
+        (layer_info->mask.flags > 3) || (layer_info->mask.flags & 0x02))
+    {
+      SeekBlob(image,layer_info->channel_info[channel].size-2,SEEK_CUR);
+      return(MagickTrue);
+    }
+    mask=CloneImage(image,layer_info->mask.page.width,
+      layer_info->mask.page.height,MagickFalse,exception);
+    mask->matte=MagickFalse;
+    channel_image=mask;
   }
 
-  offset=TellBlob(image);
+  offset=TellBlob(channel_image);
   status=MagickTrue;
   switch(compression)
   {
     case Raw:
-      return(ReadPSDChannelRaw(image,psd_info->channels,
+      return(ReadPSDChannelRaw(channel_image,psd_info->channels,
         layer_info->channel_info[channel].type,exception));
     case RLE:
       {
         MagickOffsetType
           *offsets;
 
-        offsets=ReadPSDRLEOffsets(image,psd_info,image->rows);
+        offsets=ReadPSDRLEOffsets(channel_image,psd_info,channel_image->rows);
         if (offsets == (MagickOffsetType *) NULL)
           ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
             image->filename);
-        status=ReadPSDChannelRLE(image,psd_info,
-                 layer_info->channel_info[channel].type,offsets,exception);
+        status=ReadPSDChannelRLE(channel_image,psd_info,
+          layer_info->channel_info[channel].type,offsets,exception);
         offsets=(MagickOffsetType *) RelinquishMagickMemory(offsets);
       }
       break;
     case ZipWithPrediction:
     case ZipWithoutPrediction:
 #ifdef MAGICKCORE_ZLIB_DELEGATE
-      status=ReadPSDChannelZip(image,layer_info->channels,
+      status=ReadPSDChannelZip(channel_image,layer_info->channels,
         layer_info->channel_info[channel].type,compression,
         layer_info->channel_info[channel].size-2,exception);
 #else
@@ -1091,6 +1124,27 @@ static MagickStatusType ReadPSDChannel(Image *image,const PSDInfo *psd_info,
 
   if (status == MagickFalse)
     SeekBlob(image,offset+layer_info->channel_info[channel].size-2,SEEK_SET);
+  if (mask != (Image *) NULL)
+  {
+    if (status != MagickFalse)
+      {
+        MagickPixelPacket
+          color;
+
+        layer_info->mask.image=CloneImage(image,image->columns,image->rows,
+          MagickTrue,exception);
+        layer_info->mask.image->matte=MagickFalse;
+        GetMagickPixelPacket(layer_info->mask.image,&color);
+        color.red=layer_info->mask.background == 0 ? 0 : QuantumRange;
+        color.green=color.red;
+        color.blue=color.red;
+        color.index=color.red;
+        SetImageColor(layer_info->mask.image,&color);
+        (void) CompositeImage(layer_info->mask.image,OverCompositeOp,mask,
+          layer_info->mask.page.x,layer_info->mask.page.y);
+      }
+    DestroyImage(mask);
+  }
 
   return(status);
 }
@@ -1117,7 +1171,10 @@ static MagickStatusType ReadPSDLayer(Image *image,const PSDInfo *psd_info,
   layer_info->image->compose=PSDBlendModeToCompositeOperator(
     layer_info->blendkey);
   if (layer_info->visible == MagickFalse)
-    layer_info->image->compose=NoCompositeOp;
+    {
+      layer_info->image->compose=NoCompositeOp;
+      (void) SetImageArtifact(layer_info->image,"psd:layer.invisible","true");
+    }
   if (psd_info->mode == CMYKMode)
     SetImageColorspace(layer_info->image,CMYKColorspace);
   if ((psd_info->mode == BitmapMode) || (psd_info->mode == GrayscaleMode) ||
@@ -1126,7 +1183,7 @@ static MagickStatusType ReadPSDLayer(Image *image,const PSDInfo *psd_info,
   /*
     Set up some hidden attributes for folks that need them.
   */
-  (void) FormatLocaleString(message,MaxTextExtent,"%.20gld",
+  (void) FormatLocaleString(message,MaxTextExtent,"%.20g",
     (double) layer_info->page.x);
   (void) SetImageArtifact(layer_info->image,"psd:layer.x",message);
   (void) FormatLocaleString(message,MaxTextExtent,"%.20g",
@@ -1161,7 +1218,14 @@ static MagickStatusType ReadPSDLayer(Image *image,const PSDInfo *psd_info,
     status=CorrectPSDOpacity(layer_info,exception);
 
   if (status != MagickFalse && layer_info->image->colorspace == CMYKColorspace)
-   (void) NegateImage(layer_info->image,MagickFalse);
+    status=NegateImage(layer_info->image,MagickFalse);
+
+  if (status != MagickFalse && layer_info->mask.image != (Image *) NULL)
+    {
+      CompositeImage(layer_info->image,CopyOpacityCompositeOp,
+        layer_info->mask.image,0,0);
+      layer_info->mask.image=DestroyImage(layer_info->mask.image);
+    }
 
   return(status);
 }
@@ -1345,23 +1409,33 @@ static MagickStatusType ReadPSDLayers(Image *image,const ImageInfo *image_info,
                 /*
                   Layer mask info.
                 */
-                layer_info[i].mask.y=(int) ReadBlobMSBLong(image);
-                layer_info[i].mask.x=(int) ReadBlobMSBLong(image);
-                layer_info[i].mask.height=(size_t)
-                  (ReadBlobMSBLong(image)-layer_info[i].mask.y);
-                layer_info[i].mask.width=(size_t)
-                  (ReadBlobMSBLong(image)-layer_info[i].mask.x);
+                layer_info[i].mask.page.y=(int) ReadBlobMSBLong(image);
+                layer_info[i].mask.page.x=(int) ReadBlobMSBLong(image);
+                layer_info[i].mask.page.height=(size_t)
+                  (ReadBlobMSBLong(image)-layer_info[i].mask.page.y);
+                layer_info[i].mask.page.width=(size_t)
+                  (ReadBlobMSBLong(image)-layer_info[i].mask.page.x);
+                layer_info[i].mask.background=(unsigned char) ReadBlobByte(
+                  image);
+                layer_info[i].mask.flags=(unsigned char) ReadBlobByte(image);
+                if (!(layer_info[i].mask.flags & 0x01))
+                  {
+                    layer_info[i].mask.page.y=layer_info[i].mask.page.y-
+                      layer_info[i].page.y;
+                    layer_info[i].mask.page.x=layer_info[i].mask.page.x-
+                      layer_info[i].page.x;
+                  }
                 if (image->debug != MagickFalse)
                   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                     "      layer mask: offset(%.20g,%.20g), size(%.20g,%.20g), length=%.20g",
-                    (double) layer_info[i].mask.x,(double) 
-                    layer_info[i].mask.y,(double) layer_info[i].mask.width,
-                    (double) layer_info[i].mask.height,(double)
-                    ((MagickOffsetType) length)-16);
+                    (double) layer_info[i].mask.page.x,(double) 
+                    layer_info[i].mask.page.y,(double) layer_info[i].mask.page.width,
+                    (double) layer_info[i].mask.page.height,(double)
+                    ((MagickOffsetType) length)-18);
                 /*
                   Skip over the rest of the layer mask information.
                 */
-                if (DiscardBlobBytes(image,(MagickSizeType) (length-16)) == MagickFalse)
+                if (DiscardBlobBytes(image,(MagickSizeType) (length-18)) == MagickFalse)
                   {
                     layer_info=DestroyLayerInfo(layer_info,number_layers);
                     ThrowBinaryException(CorruptImageError,"UnexpectedEndOfFile",
@@ -1397,9 +1471,9 @@ static MagickStatusType ReadPSDLayers(Image *image,const ImageInfo *image_info,
             */
             length=(size_t) ReadBlobByte(image);
             combined_length+=length+1;
-            for (j=0; j < (ssize_t) length; j++)
-              layer_info[i].name[j]=(unsigned char) ReadBlobByte(image);
-            layer_info[i].name[j]='\0';
+            if (length > 0)
+              (void) ReadBlob(image,(size_t) length++,layer_info[i].name);
+            layer_info[i].name[length]='\0';
             if (image->debug != MagickFalse)
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                 "      layer name: %s",layer_info[i].name);
@@ -1468,9 +1542,9 @@ static MagickStatusType ReadPSDLayers(Image *image,const ImageInfo *image_info,
             if (image->debug != MagickFalse)
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                 "  reading data for layer %.20g",(double) i);
-                status=ReadPSDLayer(image,psd_info,&layer_info[i],exception);
-                if (status == MagickFalse)
-                  break;
+            status=ReadPSDLayer(image,psd_info,&layer_info[i],exception);
+            if (status == MagickFalse)
+              break;
 
             status=SetImageProgress(image,LoadImagesTag,i,(MagickSizeType)
               number_layers);
@@ -1578,14 +1652,16 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   MagickBooleanType
     has_merged_image,
-    skip_layers,
-    status;
+    skip_layers;
 
   MagickOffsetType
     offset;
 
   MagickSizeType
     length;
+
+  MagickStatusType
+    status;
 
   PSDInfo
     psd_info;
