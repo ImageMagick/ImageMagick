@@ -75,6 +75,8 @@
 #ifdef MAGICKCORE_ZLIB_DELEGATE
 #include <zlib.h>
 #endif
+#include "psd-private.h"
+
 /*
   Define declaractions.
 */
@@ -163,27 +165,6 @@ typedef struct _LayerInfo
     channels;
 } LayerInfo;
 
-typedef struct _PSDInfo
-{
-  char
-    signature[4];
-
-  unsigned short
-    channels,
-    version;
-
-  unsigned char
-    reserved[6];
-
-  size_t
-    rows,
-    columns;
-
-  unsigned short
-    depth,
-    mode;
-} PSDInfo;
-
 /*
   Forward declarations.
 */
@@ -1230,9 +1211,9 @@ static MagickStatusType ReadPSDLayer(Image *image,const PSDInfo *psd_info,
   return(status);
 }
 
-static MagickStatusType ReadPSDLayers(Image *image,const ImageInfo *image_info,
-  const PSDInfo *psd_info,const MagickBooleanType skip_layers,
-  ExceptionInfo *exception)
+ModuleExport MagickStatusType ReadPSDLayers(Image *image,
+  const ImageInfo *image_info,const PSDInfo *psd_info,
+  const MagickBooleanType skip_layers,ExceptionInfo *exception)
 {
   char
     type[4];

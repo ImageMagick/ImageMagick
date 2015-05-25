@@ -101,7 +101,8 @@
 # if !defined(TIFFTAG_OPIIMAGEID)
 #  define TIFFTAG_OPIIMAGEID  32781
 # endif
-
+#include "psd-private.h"
+
 /*
   Typedef declarations.
 */
@@ -501,7 +502,7 @@ static MagickBooleanType DecodeLabImage(Image *image,ExceptionInfo *exception)
 }
 
 static MagickBooleanType ReadProfile(Image *image,const char *name,
-  unsigned char *datum,ssize_t length)
+  const unsigned char *datum,ssize_t length)
 {
   MagickBooleanType
     status;
@@ -558,7 +559,7 @@ static toff_t TIFFGetBlobSize(thandle_t image)
   return((toff_t) GetBlobSize((Image *) image));
 }
 
-static void TIFFGetProfiles(TIFF *tiff,Image *image)
+static void TIFFGetProfiles(TIFF *tiff,Image *image,MagickBooleanType ping)
 {
   uint32
     length;
@@ -567,36 +568,39 @@ static void TIFFGetProfiles(TIFF *tiff,Image *image)
     *profile;
 
   length=0;
+  if (ping == MagickFalse)
+    {
 #if defined(TIFFTAG_ICCPROFILE)
-  if ((TIFFGetField(tiff,TIFFTAG_ICCPROFILE,&length,&profile) == 1) &&
-      (profile != (unsigned char *) NULL))
-    (void) ReadProfile(image,"icc",profile,(ssize_t) length);
+      if ((TIFFGetField(tiff,TIFFTAG_ICCPROFILE,&length,&profile) == 1) &&
+          (profile != (unsigned char *) NULL))
+        (void) ReadProfile(image,"icc",profile,(ssize_t) length);
 #endif
 #if defined(TIFFTAG_PHOTOSHOP)
-  if ((TIFFGetField(tiff,TIFFTAG_PHOTOSHOP,&length,&profile) == 1) &&
-      (profile != (unsigned char *) NULL))
-    (void) ReadProfile(image,"8bim",profile,(ssize_t) length);
+      if ((TIFFGetField(tiff,TIFFTAG_PHOTOSHOP,&length,&profile) == 1) &&
+          (profile != (unsigned char *) NULL))
+        (void) ReadProfile(image,"8bim",profile,(ssize_t) length);
 #endif
 #if defined(TIFFTAG_RICHTIFFIPTC)
-  if ((TIFFGetField(tiff,TIFFTAG_RICHTIFFIPTC,&length,&profile) == 1) &&
-      (profile != (unsigned char *) NULL))
-    {
-      if (TIFFIsByteSwapped(tiff) != 0)
-        TIFFSwabArrayOfLong((uint32 *) profile,(size_t) length);
-      (void) ReadProfile(image,"iptc",profile,4L*length);
-    }
+      if ((TIFFGetField(tiff,TIFFTAG_RICHTIFFIPTC,&length,&profile) == 1) &&
+          (profile != (unsigned char *) NULL))
+        {
+          if (TIFFIsByteSwapped(tiff) != 0)
+            TIFFSwabArrayOfLong((uint32 *) profile,(size_t) length);
+          (void) ReadProfile(image,"iptc",profile,4L*length);
+        }
 #endif
 #if defined(TIFFTAG_XMLPACKET)
-  if ((TIFFGetField(tiff,TIFFTAG_XMLPACKET,&length,&profile) == 1) &&
-      (profile != (unsigned char *) NULL))
-    (void) ReadProfile(image,"xmp",profile,(ssize_t) length);
+      if ((TIFFGetField(tiff,TIFFTAG_XMLPACKET,&length,&profile) == 1) &&
+          (profile != (unsigned char *) NULL))
+        (void) ReadProfile(image,"xmp",profile,(ssize_t) length);
 #endif
+      if ((TIFFGetField(tiff,34118,&length,&profile) == 1) &&
+          (profile != (unsigned char *) NULL))
+        (void) ReadProfile(image,"tiff:34118",profile,(ssize_t) length);
+    }
   if ((TIFFGetField(tiff,37724,&length,&profile) == 1) &&
       (profile != (unsigned char *) NULL))
     (void) ReadProfile(image,"tiff:37724",profile,(ssize_t) length);
-  if ((TIFFGetField(tiff,34118,&length,&profile) == 1) &&
-      (profile != (unsigned char *) NULL))
-    (void) ReadProfile(image,"tiff:34118",profile,(ssize_t) length);
 }
 
 static void TIFFGetProperties(TIFF *tiff,Image *image)
@@ -939,6 +943,78 @@ static TIFFMethodType GetJPEGMethod(Image* image,TIFF *tiff,uint16 photometric,
   return(method);
 }
 
+static void TIFFReadPhotoshopLayers(Image* image,const ImageInfo *image_info,
+  ExceptionInfo *exception)
+{
+  const char
+    *option;
+
+  const StringInfo
+    *layer_info;
+
+  Image
+    *layers;
+
+  PSDInfo
+    info;
+
+  register ssize_t
+    i;
+
+  if (GetImageListLength(image) != 1)
+    return;
+  option=GetImageOption(image_info,"tiff:ignore-layers");
+  if (IsStringTrue(option) != MagickFalse)
+    return;
+  layer_info=GetImageProfile(image,"tiff:37724");
+  if (layer_info == (const StringInfo *) NULL)
+    return;
+  for (i=0; i < (ssize_t) layer_info->length-8; i++)
+  {
+    if (LocaleNCompare((const char *) (layer_info->datum+i),"8BIM",4) != 0)
+      continue;
+    i+=4;
+    if ((LocaleNCompare((const char *) (layer_info->datum+i),"Layr",4) == 0) ||
+        (LocaleNCompare((const char *) (layer_info->datum+i),"LMsk",4) == 0) ||
+        (LocaleNCompare((const char *) (layer_info->datum+i),"Lr16",4) == 0) ||
+        (LocaleNCompare((const char *) (layer_info->datum+i),"Lr32",4) == 0))
+      break;
+  }
+  i+=4;
+  if (i >= layer_info->length-8)
+    return;
+  layers=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
+  RemoveImageProfile(layers,"tiff:37724");
+  AttachBlob(layers->blob,layer_info->datum,layer_info->length);
+  SeekBlob(layers,(MagickOffsetType) i,SEEK_SET);
+  info.version=1;
+  info.columns=layers->columns;
+  info.rows=layers->rows;
+  if (IsGrayImage(image,&image->exception) != MagickFalse)
+    info.channels=(image->matte != MagickFalse ? 2UL : 1UL);
+  else
+    if (image->storage_class == PseudoClass)
+      info.channels=(image->matte != MagickFalse ? 2UL : 1UL);
+    else
+      {
+        if (image->colorspace != CMYKColorspace)
+          info.channels=(image->matte != MagickFalse ? 4UL : 3UL);
+        else
+          info.channels=(image->matte != MagickFalse ? 5UL : 4UL);
+      }
+  ReadPSDLayers(layers,image_info,&info,MagickFalse,exception);
+  DeleteImageFromList(&layers);
+  if (layers != (Image *) NULL)
+    {
+      AppendImageToList(&image,layers);
+      while (layers != (Image *) NULL)
+      {
+        DetachBlob(layers->blob);
+        layers=GetNextImageInList(layers);
+      }
+    }
+}
+
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif
@@ -1207,8 +1283,7 @@ RestoreMSCWarning
       SetImageColorspace(image,CMYKColorspace);
     if (photometric == PHOTOMETRIC_CIELAB)
       SetImageColorspace(image,LabColorspace);
-    if (image_info->ping == MagickFalse)
-      TIFFGetProfiles(tiff,image);
+    TIFFGetProfiles(tiff,image,image_info->ping);
     TIFFGetProperties(tiff,image);
     option=GetImageOption(image_info,"tiff:exif-properties");
     if ((option == (const char *) NULL) ||
@@ -1986,6 +2061,7 @@ RestoreMSCWarning
   (void) TIFFSetWarningHandler(warning_handler);
   (void) TIFFSetErrorHandler(error_handler);
   TIFFClose(tiff);
+  TIFFReadPhotoshopLayers(image,image_info,exception);
   return(GetFirstImageInList(image));
 }
 #endif
