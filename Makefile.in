@@ -1539,20 +1539,21 @@ am__magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES_D
 	coders/pcx.c coders/pdb.c coders/pdf.c coders/pes.c \
 	coders/pict.c coders/pix.c coders/plasma.c coders/pnm.c \
 	coders/preview.c coders/ps.c coders/ps2.c coders/ps3.c \
-	coders/psd.c coders/pwp.c coders/raw.c coders/rgb.c \
-	coders/rgf.c coders/rla.c coders/rle.c coders/scr.c \
-	coders/screenshot.c coders/sct.c coders/sfw.c coders/sgi.c \
-	coders/sixel.c coders/stegano.c coders/sun.c coders/svg.c \
-	coders/tga.c coders/thumbnail.c coders/tile.c coders/tim.c \
-	coders/ttf.c coders/txt.c coders/uil.c coders/url.c \
-	coders/uyvy.c coders/vicar.c coders/vid.c coders/viff.c \
-	coders/vips.c coders/wbmp.c coders/wpg.c coders/xbm.c \
-	coders/xc.c coders/xcf.c coders/xpm.c coders/xps.c \
-	coders/xtrn.c coders/ycbcr.c coders/yuv.c coders/dps.c \
-	coders/djvu.c coders/exr.c coders/fpx.c coders/clipboard.c \
-	coders/emf.c coders/jbig.c coders/jpeg.c coders/jp2.c \
-	coders/png.c coders/ept.c coders/tiff.c coders/webp.c \
-	coders/wmf.c coders/x.c coders/xwd.c filters/analyze.c
+	coders/psd.c coders/psd-private.h coders/pwp.c coders/raw.c \
+	coders/rgb.c coders/rgf.c coders/rla.c coders/rle.c \
+	coders/scr.c coders/screenshot.c coders/sct.c coders/sfw.c \
+	coders/sgi.c coders/sixel.c coders/stegano.c coders/sun.c \
+	coders/svg.c coders/tga.c coders/thumbnail.c coders/tile.c \
+	coders/tim.c coders/ttf.c coders/txt.c coders/uil.c \
+	coders/url.c coders/uyvy.c coders/vicar.c coders/vid.c \
+	coders/viff.c coders/vips.c coders/wbmp.c coders/wpg.c \
+	coders/xbm.c coders/xc.c coders/xcf.c coders/xpm.c \
+	coders/xps.c coders/xtrn.c coders/ycbcr.c coders/yuv.c \
+	coders/dps.c coders/djvu.c coders/exr.c coders/fpx.c \
+	coders/clipboard.c coders/emf.c coders/jbig.c coders/jpeg.c \
+	coders/jp2.c coders/png.c coders/ept.c coders/tiff.c \
+	coders/webp.c coders/wmf.c coders/x.c coders/xwd.c \
+	filters/analyze.c
 am__objects_1 = magick/magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-accelerate.lo \
 	magick/magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-animate.lo \
 	magick/magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-annotate.lo \
@@ -3197,6 +3198,7 @@ MAGICK_CODER_SRCS = \
 	coders/ps2.c \
 	coders/ps3.c \
 	coders/psd.c \
+	coders/psd-private.h \
 	coders/pwp.c \
 	coders/raw.c \
 	coders/rgb.c \
@@ -3875,7 +3877,7 @@ coders_ps3_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_ps3_la_LIBADD = $(MAGICKCORE_LIBS) $(JBIG_LIBS) $(JPEG_LIBS) $(LZMA_LIBS) $(ZLIB_LIBS) $(MATH_LIBS)
 
 # PSD coder module
-coders_psd_la_SOURCES = coders/psd.c
+coders_psd_la_SOURCES = coders/psd.c coders/psd-private.h
 coders_psd_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_psd_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_psd_la_LIBADD = $(MAGICKCORE_LIBS)
@@ -3977,7 +3979,7 @@ coders_thumbnail_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_thumbnail_la_LIBADD = $(MAGICKCORE_LIBS)
 
 # TIFF coder module
-coders_tiff_la_SOURCES = coders/tiff.c
+coders_tiff_la_SOURCES = coders/tiff.c coders/psd-private.h
 coders_tiff_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_tiff_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_tiff_la_LIBADD = $(MAGICKCORE_LIBS) $(TIFF_LIBS) $(JBIG_LIBS) $(JPEG_LIBS) $(LZMA_LIBS) $(ZLIB_LIBS) $(MATH_LIBS)
