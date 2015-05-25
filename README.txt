@@ -16,6 +16,9 @@ Introduction to ImageMagick
   (PHP), IMagick (PHP), PythonMagick (Python), RMagick (Ruby), or TclMagick
   (Tcl/TK). With a language interface, use ImageMagick to modify or create
   images dynamically and automagically.
+
+  ImageMagick utiilizes multiple computational threads to increase performance
+  and can read, process, or write mega-, giga-, or tera-pixel image sizes.
   
   ImageMagick is free software delivered as a ready-to-run binary distribution
   or as source code that you may freely use, copy, modify, and distribute
