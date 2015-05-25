@@ -42,9 +42,8 @@ typedef struct _PSDInfo
 } PSDInfo;
 
 extern ModuleExport MagickStatusType
-  ReadPSDLayers(Image *image,const ImageInfo *image_info,
-  const PSDInfo *psd_info,const MagickBooleanType skip_layers,
-  ExceptionInfo *exception);
+  ReadPSDLayers(Image *,const ImageInfo *,const PSDInfo *,
+    const MagickBooleanType,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
