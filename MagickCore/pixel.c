@@ -2232,11 +2232,13 @@ MagickExport MagickRealType GetPixelInfoIntensity(const Image *restrict image,
     method;
 
   method=Rec709LumaPixelIntensityMethod;
-  if (image != (const Image *) NULL)
-    method=image->intensity;
   gamma=1.0;
-  if (image->alpha_trait != UndefinedPixelTrait)
-    gamma=PerceptibleReciprocal(QuantumScale*pixel->alpha);
+  if (image != (const Image *) NULL)
+    {
+      method=image->intensity;
+      if (image->alpha_trait != UndefinedPixelTrait)
+        gamma=PerceptibleReciprocal(QuantumScale*pixel->alpha);
+    }
   red=gamma*pixel->red;
   green=gamma*pixel->green;
   blue=gamma*pixel->blue;
