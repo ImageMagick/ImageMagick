@@ -160,6 +160,7 @@ MAGICK_CODER_SRCS = \
 	coders/ps2.c \
 	coders/ps3.c \
 	coders/psd.c \
+	coders/psd-private.h \
 	coders/pwp.c \
 	coders/raw.c \
 	coders/rgb.c \
@@ -840,7 +841,7 @@ coders_ps3_la_LDFLAGS      = $(MODULECOMMONFLAGS)
 coders_ps3_la_LIBADD       = $(MAGICKCORE_LIBS) $(JBIG_LIBS) $(JPEG_LIBS) $(LZMA_LIBS) $(ZLIB_LIBS) $(MATH_LIBS)
 
 # PSD coder module
-coders_psd_la_SOURCES      = coders/psd.c
+coders_psd_la_SOURCES      = coders/psd.c coders/psd-private.h
 coders_psd_la_CPPFLAGS     = $(MAGICK_CODER_CPPFLAGS)
 coders_psd_la_LDFLAGS      = $(MODULECOMMONFLAGS)
 coders_psd_la_LIBADD       = $(MAGICKCORE_LIBS)
@@ -942,7 +943,7 @@ coders_thumbnail_la_LDFLAGS= $(MODULECOMMONFLAGS)
 coders_thumbnail_la_LIBADD = $(MAGICKCORE_LIBS)
 
 # TIFF coder module
-coders_tiff_la_SOURCES     = coders/tiff.c
+coders_tiff_la_SOURCES     = coders/tiff.c coders/psd-private.h
 coders_tiff_la_CPPFLAGS    = $(MAGICK_CODER_CPPFLAGS)
 coders_tiff_la_LDFLAGS     = $(MODULECOMMONFLAGS)
 coders_tiff_la_LIBADD      = $(MAGICKCORE_LIBS) $(TIFF_LIBS) $(JBIG_LIBS) $(JPEG_LIBS) $(LZMA_LIBS) $(ZLIB_LIBS) $(MATH_LIBS)
