@@ -144,41 +144,37 @@ static inline MagickRealType GetPixelLuma(const Image *restrict image,
   const PixelPacket *restrict pixel)
 {
   MagickRealType
-    blue,
     gamma,
-    green,
-    red;
+    intensity;
 
   gamma=1.0;
   if (image->matte != MagickFalse)
-    gamma=PerceptibleReciprocal(QuantumScale*GetPixelAlpha(pixel));
-  red=gamma*pixel->red;
-  green=gamma*pixel->green;
-  blue=gamma*pixel->blue;
-  return(0.212656f*red+0.715158f*green+0.072186f*blue);
+    gamma=PerceptibleReciprocal(QuantumScale*(QuantumRange-pixel->opacity));
+  intensity=0.212656f*gamma*pixel->red+0.715158f*gamma*pixel->green+
+    0.072186f*gamma*pixel->blue;
+  return(intensity);
 }
 
 static inline MagickRealType GetPixelLuminance(const Image *restrict image,
   const PixelPacket *restrict pixel)
 {
   MagickRealType
-    blue,
     gamma,
-    green,
-    red;
+    intensity;
 
   gamma=1.0;
   if (image->matte != MagickFalse)
-    gamma=PerceptibleReciprocal(QuantumScale*GetPixelAlpha(pixel));
-  red=gamma*pixel->red;
-  green=gamma*pixel->green;
-  blue=gamma*pixel->blue;
+    gamma=PerceptibleReciprocal(QuantumScale*(QuantumRange-pixel->opacity));
   if (image->colorspace != sRGBColorspace)
-    return(0.212656f*red+0.715158f*green+0.072186f*blue);
-  red=DecodePixelGamma(red);
-  green=DecodePixelGamma(green);
-  blue=DecodePixelGamma(blue);
-  return(0.212656f*red+0.715158f*green+0.072186f*blue);
+    {
+      intensity=0.212656f*gamma*pixel->red+0.715158f*gamma*pixel->green+
+        0.072186f*gamma*pixel->blue;
+      return(intensity);
+    }
+  intensity=0.212656f*DecodePixelGamma(gamma*pixel->red)+
+    0.715158f*DecodePixelGamma(gamma*pixel->green)+
+    0.072186f*DecodePixelGamma(gamma*pixel->blue);
+  return(intensity);
 }
 
 static inline MagickBooleanType IsPixelAtDepth(const Quantum pixel,
@@ -200,15 +196,13 @@ static inline MagickBooleanType IsPixelAtDepth(const Quantum pixel,
 static inline MagickBooleanType IsPixelGray(const PixelPacket *pixel)
 {
   MagickRealType
-    blue,
-    green,
-    red;
+    green_blue,
+    red_green;
 
-  red=(MagickRealType) pixel->red;
-  green=(MagickRealType) pixel->green;
-  blue=(MagickRealType) pixel->blue;
-  if ((AbsolutePixelValue(red-green) < MagickEpsilon) &&
-      (AbsolutePixelValue(green-blue) < MagickEpsilon))
+  red_green=(MagickRealType) pixel->red-pixel->green;
+  green_blue=(MagickRealType) pixel->green-pixel->blue;
+  if ((AbsolutePixelValue(red_green) < MagickEpsilon) &&
+      (AbsolutePixelValue(green_blue) < MagickEpsilon))
     return(MagickTrue);
   return(MagickFalse);
 }
@@ -220,8 +214,7 @@ static inline Quantum PixelPacketIntensity(const PixelPacket *pixel)
 
   if ((pixel->red  == pixel->green) && (pixel->green == pixel->blue))
     return(pixel->red);
-  intensity=(MagickRealType) (0.212656*pixel->red+0.715158*pixel->green+
-    0.072186*pixel->blue);
+  intensity=0.212656*pixel->red+0.715158*pixel->green+0.072186*pixel->blue;
   return(ClampToQuantum(intensity));
 }
 
