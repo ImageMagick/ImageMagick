@@ -591,8 +591,8 @@ static inline void SetPixelAlphaTraits(Image *image,const PixelTrait traits)
   image->channel_map[AlphaPixelChannel].traits=traits;
 }
 
-static inline void SetPixelb(const Image *restrict image,
-  const Quantum b,Quantum *restrict pixel)
+static inline void SetPixelb(const Image *restrict image,const Quantum b,
+  Quantum *restrict pixel)
 {
   if (image->channel_map[bPixelChannel].traits != UndefinedPixelTrait)
     pixel[image->channel_map[bPixelChannel].offset]=b;
