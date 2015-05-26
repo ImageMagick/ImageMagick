@@ -1637,7 +1637,8 @@ coders_tiff_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
-am_coders_tiff_la_OBJECTS = coders/coders_tiff_la-tiff.lo
+am_coders_tiff_la_OBJECTS = coders/coders_tiff_la-tiff.lo \
+	coders/coders_tiff_la-psd.lo
 coders_tiff_la_OBJECTS = $(am_coders_tiff_la_OBJECTS)
 coders_tiff_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
@@ -4008,7 +4009,7 @@ coders_thumbnail_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_thumbnail_la_LIBADD = $(MAGICKCORE_LIBS)
 
 # TIFF coder module
-coders_tiff_la_SOURCES = coders/tiff.c coders/psd-private.h
+coders_tiff_la_SOURCES = coders/tiff.c coders/psd.c coders/psd-private.h
 coders_tiff_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_tiff_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_tiff_la_LIBADD = $(MAGICKCORE_LIBS) $(TIFF_LIBS) $(JBIG_LIBS) $(JPEG_LIBS) $(LZMA_LIBS) $(ZLIB_LIBS) $(MATH_LIBS)
@@ -6696,6 +6697,8 @@ coders/thumbnail.la: $(coders_thumbnail_la_OBJECTS) $(coders_thumbnail_la_DEPEND
 	$(AM_V_CCLD)$(coders_thumbnail_la_LINK) $(am_coders_thumbnail_la_rpath) $(coders_thumbnail_la_OBJECTS) $(coders_thumbnail_la_LIBADD) $(LIBS)
 coders/coders_tiff_la-tiff.lo: coders/$(am__dirstamp) \
 	coders/$(DEPDIR)/$(am__dirstamp)
+coders/coders_tiff_la-psd.lo: coders/$(am__dirstamp) \
+	coders/$(DEPDIR)/$(am__dirstamp)
 
 coders/tiff.la: $(coders_tiff_la_OBJECTS) $(coders_tiff_la_DEPENDENCIES) $(EXTRA_coders_tiff_la_DEPENDENCIES) coders/$(am__dirstamp)
 	$(AM_V_CCLD)$(coders_tiff_la_LINK) $(am_coders_tiff_la_rpath) $(coders_tiff_la_OBJECTS) $(coders_tiff_la_LIBADD) $(LIBS)
@@ -7590,6 +7593,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/coders_svg_la-svg.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/coders_tga_la-tga.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/coders_thumbnail_la-thumbnail.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/coders_tiff_la-psd.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/coders_tiff_la-tiff.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/coders_tile_la-tile.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/coders_tim_la-tim.Plo@am__quote@
@@ -10085,6 +10089,13 @@ coders/coders_tiff_la-tiff.lo: coders/tiff.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='coders/tiff.c' object='coders/coders_tiff_la-tiff.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(coders_tiff_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o coders/coders_tiff_la-tiff.lo `test -f 'coders/tiff.c' || echo '$(srcdir)/'`coders/tiff.c
+
+coders/coders_tiff_la-psd.lo: coders/psd.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(coders_tiff_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT coders/coders_tiff_la-psd.lo -MD -MP -MF coders/$(DEPDIR)/coders_tiff_la-psd.Tpo -c -o coders/coders_tiff_la-psd.lo `test -f 'coders/psd.c' || echo '$(srcdir)/'`coders/psd.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) coders/$(DEPDIR)/coders_tiff_la-psd.Tpo coders/$(DEPDIR)/coders_tiff_la-psd.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='coders/psd.c' object='coders/coders_tiff_la-psd.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(coders_tiff_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o coders/coders_tiff_la-psd.lo `test -f 'coders/psd.c' || echo '$(srcdir)/'`coders/psd.c
 
 coders/coders_tile_la-tile.lo: coders/tile.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(coders_tile_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT coders/coders_tile_la-tile.lo -MD -MP -MF coders/$(DEPDIR)/coders_tile_la-tile.Tpo -c -o coders/coders_tile_la-tile.lo `test -f 'coders/tile.c' || echo '$(srcdir)/'`coders/tile.c
