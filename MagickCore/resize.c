@@ -3478,20 +3478,20 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
             span.x=1.0;
             next_column=MagickTrue;
           }
-        if (scale.x > 0)
-          {
-            if (next_column != MagickFalse)
-              {
-                for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-                  pixel[i]=0.0;
-                next_column=MagickFalse;
-                t++;
-              }
-            for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-              pixel[i]+=scale.x*scanline[x*GetPixelChannels(image)+i];
-            span.x-=scale.x;
-          }
-      }
+          if (scale.x > 0)
+            {
+              if (next_column != MagickFalse)
+                {
+                  for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+                    pixel[i]=0.0;
+                  next_column=MagickFalse;
+                  t++;
+                }
+              for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+                pixel[i]+=scale.x*scanline[x*GetPixelChannels(image)+i];
+              span.x-=scale.x;
+            }
+        }
       if (span.x > 0)
         {
           for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
