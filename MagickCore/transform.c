@@ -1464,10 +1464,8 @@ MagickExport Image *FlopImage(const Image *image,ExceptionInfo *exception)
 %
 */
 
-static inline MagickBooleanType CopyImageRegion(Image *destination,
-  const Image *source,const size_t columns,const size_t rows,
-  const ssize_t sx,const ssize_t sy,const ssize_t dx,const ssize_t dy,
-  ExceptionInfo *exception)
+static MagickBooleanType CopyImageRegion(Image *destination,const Image *source,  const size_t columns,const size_t rows,const ssize_t sx,const ssize_t sy,
+  const ssize_t dx,const ssize_t dy,ExceptionInfo *exception)
 {
   CacheView
     *source_view,
