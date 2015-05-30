@@ -119,11 +119,12 @@ static MagickBooleanType
   GetOneVirtualPixelFromCache(const Image *,const VirtualPixelMethod,
     const ssize_t,const ssize_t,Quantum *,ExceptionInfo *),
   OpenPixelCache(Image *,const MapMode,ExceptionInfo *),
-  ReadPixelCachePixels(CacheInfo *,NexusInfo *,ExceptionInfo *),
-  ReadPixelCacheMetacontent(CacheInfo *,NexusInfo *,ExceptionInfo *),
+  ReadPixelCachePixels(CacheInfo *restrict,NexusInfo *restrict,ExceptionInfo *),
+  ReadPixelCacheMetacontent(CacheInfo *restrict,NexusInfo *restrict,
+    ExceptionInfo *),
   SyncAuthenticPixelsCache(Image *,ExceptionInfo *),
-  WritePixelCachePixels(CacheInfo *,NexusInfo *,ExceptionInfo *),
-  WritePixelCacheMetacontent(CacheInfo *,NexusInfo *,ExceptionInfo *);
+  WritePixelCachePixels(CacheInfo *,NexusInfo *restrict,ExceptionInfo *),
+  WritePixelCacheMetacontent(CacheInfo *,NexusInfo *restrict,ExceptionInfo *);
 
 static Quantum
   *GetAuthenticPixelsCache(Image *,const ssize_t,const ssize_t,const size_t,
