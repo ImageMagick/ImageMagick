@@ -61,6 +61,11 @@ static inline void MagickCompositeOver(const PixelPacket *p,
   /*
     Compose pixel p over pixel q with the given opacities.
   */
+  if (fabs((double) (alpha-TransparentOpacity)) < MagickEpsilon)
+    { 
+      *composite=(*q);
+      return;
+    }
   Sa=1.0-QuantumScale*alpha;
   Da=1.0-QuantumScale*beta;
   gamma=Sa*(-Da)+Sa+Da;
@@ -68,12 +73,12 @@ static inline void MagickCompositeOver(const PixelPacket *p,
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
   SetPixelOpacity(composite,(MagickRealType) (QuantumRange*
     (1.0-RoundToUnity(Sa+Da-Sa*Da))+0.5));
-  SetPixelRed(composite,gamma*MagickOver_((MagickRealType)
-    GetPixelRed(p),alpha,(MagickRealType) GetPixelRed(q),beta)+0.5);
-  SetPixelGreen(composite,gamma*MagickOver_((MagickRealType)
-    GetPixelGreen(p),alpha,(MagickRealType) GetPixelGreen(q),beta)+0.5);
-  SetPixelBlue(composite,gamma*MagickOver_((MagickRealType)
-    GetPixelBlue(p),alpha,(MagickRealType) GetPixelBlue(q),beta)+0.5);
+  SetPixelRed(composite,ClampToQuantum(gamma*MagickOver_((MagickRealType)
+    GetPixelRed(p),alpha,(MagickRealType) GetPixelRed(q),beta)));
+  SetPixelGreen(composite,ClampToQuantum(gamma*MagickOver_((MagickRealType)
+    GetPixelGreen(p),alpha,(MagickRealType) GetPixelGreen(q),beta)));
+  SetPixelBlue(composite,ClampToQuantum(gamma*MagickOver_((MagickRealType)
+    GetPixelBlue(p),alpha,(MagickRealType) GetPixelBlue(q),beta)));
 #else
   SetPixelOpacity(composite,QuantumRange*(1.0-RoundToUnity(Sa+Da-Sa*Da)));
   SetPixelRed(composite,gamma*MagickOver_((MagickRealType)

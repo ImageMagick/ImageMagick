@@ -4339,7 +4339,7 @@ MAGICK_PATCHLEVEL_VERSION=4
 
 MAGICK_VERSION=6.9.1-4
 
-MAGICK_SVN_REVISION=18658:18661M
+MAGICK_SVN_REVISION=18670M
 
 
 # Substitute library versioning
@@ -21653,6 +21653,7 @@ if test "$enable_cipher" = 'yes'; then
 
 $as_echo "#define CIPHER_SUPPORT 1" >>confdefs.h
 
+    MAGICK_FEATURES="Cipher $MAGICK_FEATURES"
 fi
 
 # Build an zero-configuration version of ImageMagick.
@@ -21668,7 +21669,7 @@ if test "$enable_zero_configuration" = 'yes'; then
 
 $as_echo "#define ZERO_CONFIGURATION_SUPPORT 1" >>confdefs.h
 
-    MAGICK_FEATURES="Zero-Configuration $MAGICK_FEATURES"
+    MAGICK_FEATURES="Zero-configuration $MAGICK_FEATURES"
 fi
 
 # Build a high dynamic range version of ImageMagick.
