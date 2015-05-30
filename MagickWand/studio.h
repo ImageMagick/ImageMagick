@@ -213,6 +213,9 @@ extern int vsnprintf(char *,size_t,const char *,va_list);
 # if defined(MAGICKCORE_HAVE_SYS_MMAN_H)
 #  include <sys/mman.h>
 # endif
+# if defined(MAGICKCORE_HAVE_SYS_SENDFILE_H)
+#  include <sys/sendfile.h>
+# endif
 #endif
 #else
 # include <types.h>
