@@ -65,11 +65,11 @@ extern MagickPrivate MagickOffsetType
   ReadDistributePixelCacheMetacontent(DistributeCacheInfo *,
     const RectangleInfo *,const MagickSizeType,unsigned char *),
   ReadDistributePixelCachePixels(DistributeCacheInfo *,const RectangleInfo *,
-    const MagickSizeType,unsigned char *),
+    const MagickSizeType,unsigned char *restrict),
   WriteDistributePixelCacheMetacontent(DistributeCacheInfo *,
     const RectangleInfo *,const MagickSizeType,const unsigned char *),
   WriteDistributePixelCachePixels(DistributeCacheInfo *,const RectangleInfo *,
-    const MagickSizeType,const unsigned char *);
+    const MagickSizeType,const unsigned char *restrict);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -620,6 +620,11 @@
 #define MAGICKCORE_HAVE_SELECT 1
 #endif
 
+/* Define to 1 if you have the `sendfile' function. */
+#ifndef MAGICKCORE_HAVE_SENDFILE
+#define MAGICKCORE_HAVE_SENDFILE 1
+#endif
+
 /* Define to 1 if you have the `setlocale' function. */
 #ifndef MAGICKCORE_HAVE_SETLOCALE
 #define MAGICKCORE_HAVE_SETLOCALE 1
