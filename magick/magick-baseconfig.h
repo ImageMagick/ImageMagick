@@ -845,6 +845,11 @@
 #define MAGICKCORE_HAVE_SYS_SELECT_H 1
 #endif
 
+/* Define to 1 if you have the <sys/sendfile.h> header file. */
+#ifndef MAGICKCORE_HAVE_SYS_SENDFILE_H
+#define MAGICKCORE_HAVE_SYS_SENDFILE_H 1
+#endif
+
 /* Define to 1 if you have the <sys/socket.h> header file. */
 #ifndef MAGICKCORE_HAVE_SYS_SOCKET_H
 #define MAGICKCORE_HAVE_SYS_SOCKET_H 1
