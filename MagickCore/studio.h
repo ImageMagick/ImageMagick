@@ -46,9 +46,6 @@ extern "C" {
 #if defined(_magickcore_inline) && !defined(inline)
 # define inline  _magickcore_inline
 #endif
-#if defined(_magickcore_restrict) && !defined(restrict)
-# define restrict  _magickcore_restrict
-#endif
 # if defined(__cplusplus) || defined(c_plusplus)
 #  undef inline
 # endif
@@ -74,6 +71,9 @@ extern "C" {
 # if defined(MAGICKCORE_HAVE_STDLIB_H)
 #  include <stdlib.h>
 # endif
+#endif
+#if defined(_magickcore_restrict) && !defined(restrict)
+# define restrict  _magickcore_restrict
 #endif
 #if defined(MAGICKCORE_HAVE_STRING_H)
 # if !defined(STDC_HEADERS) && defined(MAGICKCORE_HAVE_MEMORY_H)
