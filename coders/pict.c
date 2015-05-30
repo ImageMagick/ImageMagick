@@ -1637,6 +1637,7 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
   size_t
     bytes_per_line,
     count,
+    row_bytes,
     storage_class;
 
   ssize_t
@@ -1649,7 +1650,6 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
 
   unsigned short
     base_address,
-    row_bytes,
     transfer_mode;
 
   /*
@@ -1681,7 +1681,7 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
   source_rectangle=size_rectangle;
   destination_rectangle=size_rectangle;
   base_address=0xff;
-  row_bytes=(unsigned short) (image->columns | 0x8000);
+  row_bytes=image->columns;
   bounds.top=0;
   bounds.left=0;
   bounds.bottom=(short) image->rows;
@@ -1711,7 +1711,7 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
       pixmap.bits_per_pixel=32;
       pixmap.pack_type=0x04;
       transfer_mode=0x40;
-      row_bytes=(unsigned short) ((4*image->columns) | 0x8000);
+      row_bytes=4*image->columns;
     }
   /*
     Allocate memory.
