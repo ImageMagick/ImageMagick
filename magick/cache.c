@@ -683,11 +683,7 @@ static MagickBooleanType ClonePixelCacheRepository(
           return(MagickTrue);
         }
       if ((cache_info->type == DiskCache) && (cache_info->type == DiskCache))
-        {
-          status=ClonePixelCacheOnDisk(cache_info,clone_info,exception);
-          if (status != MagickFalse)
-            return(status);
-        }
+        return(ClonePixelCacheOnDisk(cache_info,clone_info,exception));
     }
   /*
     Mismatched pixel cache morphology.
