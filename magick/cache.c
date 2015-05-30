@@ -121,6 +121,7 @@ static MagickBooleanType
   GetOneVirtualPixelFromCache(const Image *,const VirtualPixelMethod,
     const ssize_t,const ssize_t,PixelPacket *,ExceptionInfo *),
   OpenPixelCache(Image *,const MapMode,ExceptionInfo *),
+  OpenPixelCacheOnDisk(CacheInfo *,const MapMode),
   ReadPixelCacheIndexes(CacheInfo *restrict,NexusInfo *restrict,
     ExceptionInfo *),
   ReadPixelCachePixels(CacheInfo *restrict,NexusInfo *restrict,
@@ -585,6 +586,53 @@ MagickExport void ClonePixelCacheMethods(Cache clone,const Cache cache)
 %
 */
 
+static MagickBooleanType ClonePixelCacheOnDisk(CacheInfo *restrict cache_info,
+  CacheInfo *restrict clone_info,ExceptionInfo *exception)
+{
+  MagickSizeType
+    extent;
+
+  ssize_t
+    count;
+
+  unsigned char
+    buffer[MagickMaxBufferExtent];
+
+  /*
+    Clone pixel cache on disk with identical morphology.
+  */
+  if ((OpenPixelCacheOnDisk(cache_info,ReadMode) == MagickFalse) ||
+      (OpenPixelCacheOnDisk(clone_info,IOMode) == MagickFalse))
+    return(MagickFalse);
+#if defined(MAGICKCORE_HAVE_SENDFILE)
+  if (cache_info->length == (MagickSizeType) ((ssize_t) cache_info->length))
+    {
+      off_t
+        offset;
+
+      offset=0;
+      count=sendfile(clone_info->file,cache_info->file,&offset,
+        (size_t) cache_info->length);
+      if (count == (ssize_t) cache_info->length)
+        return(MagickTrue);
+    }
+#endif
+  extent=0;
+  while ((count=read(cache_info->file,buffer,sizeof(buffer))) > 0)
+  { 
+    ssize_t
+      number_bytes;
+    
+    number_bytes=write(clone_info->file,buffer,(size_t) count);
+    if (number_bytes != count)
+      break;
+    extent+=number_bytes;
+  }
+  if (extent != cache_info->length)
+    return(MagickFalse);
+  return(MagickTrue);
+}
+
 static MagickBooleanType ClonePixelCacheRepository(
   CacheInfo *restrict clone_info,CacheInfo *restrict cache_info,
   ExceptionInfo *exception)
@@ -613,22 +661,33 @@ static MagickBooleanType ClonePixelCacheRepository(
   assert(exception != (ExceptionInfo *) NULL);
   if (cache_info->type == PingCache)
     return(MagickTrue);
-  if (((cache_info->type == MemoryCache) || (cache_info->type == MapCache)) &&
-      ((clone_info->type == MemoryCache) || (clone_info->type == MapCache)) &&
-      (cache_info->columns == clone_info->columns) &&
+  if ((cache_info->columns == clone_info->columns) &&
       (cache_info->rows == clone_info->rows) &&
       (cache_info->active_index_channel == clone_info->active_index_channel))
     {
       /*
         Identical pixel cache morphology.
       */
-      (void) memcpy(clone_info->pixels,cache_info->pixels,cache_info->columns*
-        cache_info->rows*sizeof(*cache_info->pixels));
-      if ((cache_info->active_index_channel != MagickFalse) &&
-          (clone_info->active_index_channel != MagickFalse))
-        (void) memcpy(clone_info->indexes,cache_info->indexes,
-          cache_info->columns*cache_info->rows*sizeof(*cache_info->indexes));
-      return(MagickTrue);
+      if (((cache_info->type == MemoryCache) ||
+           (cache_info->type == MapCache)) &&
+          ((clone_info->type == MemoryCache) ||
+           (clone_info->type == MapCache)))
+        {
+          (void) memcpy(clone_info->pixels,cache_info->pixels,
+            cache_info->columns*cache_info->rows*sizeof(*cache_info->pixels));
+          if ((cache_info->active_index_channel != MagickFalse) &&
+              (clone_info->active_index_channel != MagickFalse))
+            (void) memcpy(clone_info->indexes,cache_info->indexes,
+              cache_info->columns*cache_info->rows*
+              sizeof(*cache_info->indexes));
+          return(MagickTrue);
+        }
+      if ((cache_info->type == DiskCache) && (cache_info->type == DiskCache))
+        {
+          status=ClonePixelCacheOnDisk(cache_info,clone_info,exception);
+          if (status != MagickFalse)
+            return(status);
+        }
     }
   /*
     Mismatched pixel cache morphology.
@@ -3349,8 +3408,8 @@ static MagickBooleanType OpenPixelCacheOnDisk(CacheInfo *cache_info,
   /*
     Open pixel cache on disk.
   */
-  if (cache_info->file != -1)
-    return(MagickTrue);  /* cache already open */
+  if ((cache_info->file != -1) && (cache_info->mode == mode))
+    return(MagickTrue);  /* cache already open and in the proper mode */
   if (*cache_info->cache_filename == '\0')
     file=AcquireUniqueFileResource(cache_info->cache_filename);
   else
@@ -3382,6 +3441,8 @@ static MagickBooleanType OpenPixelCacheOnDisk(CacheInfo *cache_info,
   if (file == -1)
     return(MagickFalse);
   (void) AcquireMagickResource(FileResource,1);
+  if (cache_info->file != -1)
+    (void) ClosePixelCacheOnDisk(cache_info);
   cache_info->file=file;
   cache_info->mode=mode;
   return(MagickTrue);
@@ -5303,7 +5364,7 @@ static MagickBooleanType WritePixelCacheIndexes(CacheInfo *cache_info,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   W r i t e C a c h e P i x e l s                                           %
++   W r i t e P i x e l C a c h e P i x e l s                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
