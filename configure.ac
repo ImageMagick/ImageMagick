@@ -642,6 +642,7 @@ AC_ARG_ENABLE([cipher],
 
 if test "$enable_cipher" = 'yes'; then
     AC_DEFINE(CIPHER_SUPPORT,1,[permit enciphering and deciphering image pixels])
+    MAGICK_FEATURES="Cipher $MAGICK_FEATURES"
 fi
 
 # Build an zero-configuration version of ImageMagick.
@@ -653,7 +654,7 @@ AC_ARG_ENABLE([zero-configuration],
 
 if test "$enable_zero_configuration" = 'yes'; then
     AC_DEFINE(ZERO_CONFIGURATION_SUPPORT,1,[Build self-contained, embeddable, zero-configuration ImageMagick])
-    MAGICK_FEATURES="Zero-Configuration $MAGICK_FEATURES"
+    MAGICK_FEATURES="Zero-configuration $MAGICK_FEATURES"
 fi
 
 # Build a high dynamic range version of ImageMagick.
