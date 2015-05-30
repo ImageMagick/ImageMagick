@@ -217,12 +217,15 @@ MagickExport const char *GetMagickDelegates(void)
 */
 MagickExport const char *GetMagickFeatures(void)
 {
-  return "DPC"
+  return ""
 #if defined(MAGICKCORE_CIPHER_SUPPORT)
   " Cipher"
 #endif
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) && defined(_DEBUG)
   " Debug"
+#endif
+#if defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(MAGICKCORE_HAVE_SOCKET) && defined(MAGICKCORE_THREAD_SUPPORT)
+  " DPC"
 #endif
 #if defined(MAGICKCORE_HDRI_SUPPORT)
   " HDRI"
