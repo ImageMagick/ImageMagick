@@ -981,7 +981,7 @@ static void TIFFReadPhotoshopLayers(Image* image,const ImageInfo *image_info,
       break;
   }
   i+=4;
-  if (i >= layer_info->length-8)
+  if (i >= (ssize_t) (layer_info->length-8))
     return;
   layers=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
   RemoveImageProfile(layers,"tiff:37724");
