@@ -514,10 +514,10 @@ static Image *ReadTGAImage(const ImageInfo *image_info,
         SetPixelAlpha(image,ClampToQuantum(pixel.alpha),q);
       q+=GetPixelChannels(image);
     }
-    if (((tga_info.attributes & 0xc0) >> 6) == 4)
+    if (((unsigned char) (tga_info.attributes & 0xc0) >> 6) == 4)
       offset+=4;
     else
-      if (((tga_info.attributes & 0xc0) >> 6) == 2)
+      if (((unsigned char) (tga_info.attributes & 0xc0) >> 6) == 2)
         offset+=2;
       else
         offset++;
