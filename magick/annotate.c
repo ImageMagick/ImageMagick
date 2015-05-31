@@ -481,7 +481,8 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
         undercolor_info->affine.tx=offset.x-draw_info->affine.ry*metrics.ascent;
         undercolor_info->affine.ty=offset.y-draw_info->affine.sy*metrics.ascent;
         (void) FormatLocaleString(primitive,MaxTextExtent,
-          "rectangle -0.5,-0.5 %g,%.20g",metrics.origin.x,(double) height);
+          "rectangle -0.5,-0.5 %g,%.20g",metrics.origin.x+0.5,(double)
+          height+0.5);
         (void) CloneString(&undercolor_info->primitive,primitive);
         (void) DrawImage(image,undercolor_info);
         (void) DestroyDrawInfo(undercolor_info);
