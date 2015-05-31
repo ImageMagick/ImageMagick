@@ -1,4 +1,7 @@
 2015-06-01  6.9.1-4 Cristy  <quetzlzacatenango@image...>
+  * New version 6.9.1-4, SVN revision 18697.
+
+2015-06-01  6.9.1-4 Cristy  <quetzlzacatenango@image...>
   * Support 'restrict' keyword under Windows.
 
 2015-05-25  6.9.1-4 Dirk Lemstra <dirk@lem.....org>
