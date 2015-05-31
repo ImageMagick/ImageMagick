@@ -717,7 +717,7 @@ static MagickStatusType ReadPSDChannelPixels(Image *image,const size_t channels,
                 ssize_t
                   bit,
                   number_bits;
- 
+
                 number_bits=image->columns-x;
                 if (number_bits > 8)
                   number_bits=8;
@@ -1249,7 +1249,7 @@ ModuleExport MagickStatusType ReadPSDLayers(Image *image,
       count=ReadBlob(image,4,(unsigned char *) type);
       if ((count == 0) || (LocaleNCompare(type,"8BIM",4) != 0))
         {
-          if (DiscardBlobBytes(image,(MagickSizeType) (size-quantum-8)) ==
+          if (DiscardBlobBytes(image,((MagickSizeType) size-quantum-8)) ==
               MagickFalse)
             ThrowBinaryException(CorruptImageError,"UnexpectedEndOfFile",
               image->filename);
@@ -1260,7 +1260,7 @@ ModuleExport MagickStatusType ReadPSDLayers(Image *image,
           if ((count != 0) && (LocaleNCompare(type,"Lr16",4) == 0))
             size=GetPSDSize(psd_info,image);
           else
-            if (DiscardBlobBytes(image,(MagickSizeType) (size-quantum-12UL)) ==
+            if (DiscardBlobBytes(image,((MagickSizeType) size-quantum-12)) ==
                 MagickFalse)
               ThrowBinaryException(CorruptImageError,"UnexpectedEndOfFile",
                 image->filename);
@@ -1409,7 +1409,7 @@ ModuleExport MagickStatusType ReadPSDLayers(Image *image,
                 if (image->debug != MagickFalse)
                   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                     "      layer mask: offset(%.20g,%.20g), size(%.20g,%.20g), length=%.20g",
-                    (double) layer_info[i].mask.page.x,(double) 
+                    (double) layer_info[i].mask.page.x,(double)
                     layer_info[i].mask.page.y,(double) layer_info[i].mask.page.width,
                     (double) layer_info[i].mask.page.height,(double)
                     ((MagickOffsetType) length)-18);

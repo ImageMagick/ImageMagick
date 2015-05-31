@@ -657,8 +657,6 @@ static int UnpackWPG2Raster(Image *image,int bpp)
           break;
         default:
           RunCount=bbuf & 0x7F;
-          if (RunCount < 0)
-            break;
 
           if(bbuf & 0x80)     /* REP */
             {

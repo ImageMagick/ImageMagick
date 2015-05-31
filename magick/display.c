@@ -5116,10 +5116,10 @@ static MagickBooleanType XCropImage(Display *display,
             case XK_Home:
             case XK_KP_Home:
             {
-              crop_info.x=(ssize_t) (windows->image.width/2L-
-                crop_info.width/2L);
-              crop_info.y=(ssize_t) (windows->image.height/2L-
-                crop_info.height/2L);
+              crop_info.x=(ssize_t) (windows->image.width/2L-crop_info.width/
+                2L);
+              crop_info.y=(ssize_t) (windows->image.height/2L-crop_info.height/
+                2L);
               break;
             }
             case XK_Left:
