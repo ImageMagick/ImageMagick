@@ -124,7 +124,8 @@ static MagickBooleanType
   ReadPixelCacheMetacontent(CacheInfo *restrict,NexusInfo *restrict,
     ExceptionInfo *),
   SyncAuthenticPixelsCache(Image *,ExceptionInfo *),
-  WritePixelCachePixels(CacheInfo *,NexusInfo *restrict,ExceptionInfo *),
+  WritePixelCachePixels(CacheInfo *restrict,NexusInfo *restrict,
+    ExceptionInfo *),
   WritePixelCacheMetacontent(CacheInfo *,NexusInfo *restrict,ExceptionInfo *);
 
 static Quantum
