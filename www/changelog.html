@@ -44,20 +44,24 @@
     </script></center>
     <nav class="magick-nav">
       <a class="magick-nav-item " href="../index.html">Home</a>
-      <a class="magick-nav-item " href="binary-releases.html">Downloads</a>
+      <a class="magick-nav-item " href="binary-releases.html">Download</a>
       <a class="magick-nav-item " href="command-line-tools.html">Tools</a>
       <a class="magick-nav-item " href="command-line-options.html">Options</a>
-      <a class="magick-nav-item " href="api.html">Development</a>
+      <a class="magick-nav-item " href="resources.html">Resources</a>
+      <a class="magick-nav-item " href="api.html">Develop</a>
       <a class="magick-nav-item " href="http://www.imagemagick.org/script/search.php">Search</a>
       <a class="magick-nav-item pull-right" href="http://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
 </div>
 <div class="container">
-<div class="magick-header"><dl><dt>2015-05-03  6.9.1-3 Dirk Lemstra &lt;dirk@lem.....org&gt;</dt>
-  </dl><li> Fixed transparency issue with 16-bit tga files (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=27469).</li>
+<div class="magick-header"><dl><dt>2015-05-24  6.9.1-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  </dl><li> New version 6.9.1-3, SVN revision 18623.</li>
+<dt>2015-05-03  6.9.1-3 Dirk Lemstra &lt;dirk@lem.....org&gt;</dt>
+  <li> Fixed transparency issue with 16-bit tga files (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=27469).</li>
   <li> Fixed writing label and comment in tiff images (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=25516).</li>
   <li> Jpeg images no longer have pixels per inch as a default value for density    units when the density is not set (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=27589).</li>
+  <li> Added support for setting the font color with -fill to the pango coder.</li>
 <dt>2015-05-03  6.9.1-3 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
   <li> Fixed bug with "-define png:format=x" in png.c, introduced in version    6.8.9-0, that caused the define to be ignored.</li>
   <li> Replaced some dead code in ReadJNGImage with an assert().</li>
@@ -608,6 +612,7 @@
   <li> Fix multi-line PNM comments (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=23442).</li>
   <li> The -format option should not automatically append a newline since the    user can specify a newline in the formatting expression.</li>
   <li> The -level option is no longer returning a darkened image (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=23479).</li>
+  <li> Identify SVG image as "SVG" (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=27654).</li>
 <dt>2013-05-20  6.8.5-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> New version 6.8.5-7, SVN revision 12310.</li>
 <dt>2013-05-14  6.8.5-7 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
@@ -3636,10 +3641,10 @@
     <p><a href="sitemap.html">Sitemap</a> â¢
     <a href="links.html">Related</a> â¢
     <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Image Studio</a> â¢
-    <a href="http://jqmagick.imagemagick.org/">JqMagick</a> â¢
-    <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a>
+    <a href="http://jqmagick.imagemagick.org/">JqMagick</a>
 </p>
     <p><a href="changelog.html#">Back to top</a> â¢
+    <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> â¢
     <a href="http://www.imagemagick.org/script/contact.php">Contact Us</a></p>
     <p><small>Â©  1999-2015 ImageMagick Studio LLC</small></p>
   </footer>
