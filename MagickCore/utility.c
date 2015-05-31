@@ -349,7 +349,7 @@ MagickExport unsigned char *Base64Decode(const char *source,size_t *length)
   assert(source != (char *) NULL);
   assert(length != (size_t *) NULL);
   *length=0;
-  decode=(unsigned char *) AcquireQuantumMemory(strlen(source)/4+4,
+  decode=(unsigned char *) AcquireQuantumMemory((strlen(source)+3)/4,
     3*sizeof(*decode));
   if (decode == (unsigned char *) NULL)
     return((unsigned char *) NULL);
