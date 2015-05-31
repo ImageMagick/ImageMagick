@@ -68,7 +68,13 @@
 #include "magick/string-private.h"
 #include "magick/module.h"
 #if defined(MAGICKCORE_JBIG_DELEGATE)
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
 #include "jbig.h"
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 #endif
 
 /*
