@@ -498,8 +498,8 @@ static MagickBooleanType ClonePixelCacheOnDisk(CacheInfo *restrict cache_info,
         offset;
 
       offset=0;
-      count=sendfile(clone_info->file,cache_info->file,&offset,
-        (size_t) cache_info->length);
+      count=sendfile(clone_info->file,cache_info->file,&offset,(size_t)
+        cache_info->length);
       if (count == (ssize_t) cache_info->length)
         return(MagickTrue);
     }
