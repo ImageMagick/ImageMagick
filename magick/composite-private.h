@@ -61,11 +61,6 @@ static inline void MagickCompositeOver(const PixelPacket *p,
   /*
     Compose pixel p over pixel q with the given opacities.
   */
-  if (fabs((double) (alpha-TransparentOpacity)) < MagickEpsilon)
-    { 
-      *composite=(*q);
-      return;
-    }
   Sa=1.0-QuantumScale*alpha;
   Da=1.0-QuantumScale*beta;
   gamma=Sa*(-Da)+Sa+Da;
