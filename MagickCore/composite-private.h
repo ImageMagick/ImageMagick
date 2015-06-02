@@ -49,7 +49,6 @@ static inline void CompositePixelOver(const Image *image,const PixelInfo *p,
 {
   double
     Da,
-    gamma,
     Sa;
 
   register ssize_t
@@ -59,9 +58,7 @@ static inline void CompositePixelOver(const Image *image,const PixelInfo *p,
     Compose pixel p over pixel q with the given alpha.
   */
   Sa=QuantumScale*alpha;
-  Da=QuantumScale*beta,
-  gamma=Sa*(-Da)+Sa+Da;
-  gamma=PerceptibleReciprocal(gamma);
+  Da=QuantumScale*beta;
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
   {
     PixelChannel
@@ -78,31 +75,31 @@ static inline void CompositePixelOver(const Image *image,const PixelInfo *p,
     {
       case RedPixelChannel:
       {
-        composite[i]=ClampToQuantum(gamma*MagickOver_((double) p->red,alpha,
+        composite[i]=ClampToQuantum(MagickOver_((double) p->red,alpha,
           (double) q[i],beta));
         break;
       }
       case GreenPixelChannel:
       {
-        composite[i]=ClampToQuantum(gamma*MagickOver_((double) p->green,alpha,
+        composite[i]=ClampToQuantum(MagickOver_((double) p->green,alpha,
           (double) q[i],beta));
         break;
       }
       case BluePixelChannel:
       {
-        composite[i]=ClampToQuantum(gamma*MagickOver_((double) p->blue,alpha,
+        composite[i]=ClampToQuantum(MagickOver_((double) p->blue,alpha,
           (double) q[i],beta));
         break;
       }
       case BlackPixelChannel:
       {
-        composite[i]=ClampToQuantum(gamma*MagickOver_((double) p->black,alpha,
+        composite[i]=ClampToQuantum(MagickOver_((double) p->black,alpha,
           (double) q[i],beta));
         break;
       }
       case AlphaPixelChannel:
       {
-        composite[i]=ClampToQuantum(QuantumRange*(Sa*(-Da)+Sa+Da));
+        composite[i]=ClampToQuantum(QuantumRange*(Sa+Da-Sa*-Da));
         break;
       }
       default:
@@ -119,7 +116,6 @@ static inline void CompositePixelInfoOver(const PixelInfo *p,
 {
   double
     Da,
-    gamma,
     Sa;
 
   /*
@@ -127,14 +123,12 @@ static inline void CompositePixelInfoOver(const PixelInfo *p,
   */
   Sa=QuantumScale*alpha;
   Da=QuantumScale*beta,
-  gamma=Sa*(-Da)+Sa+Da;
-  composite->alpha=(double) QuantumRange*gamma;
-  gamma=PerceptibleReciprocal(gamma);
-  composite->red=gamma*MagickOver_(p->red,alpha,q->red,beta);
-  composite->green=gamma*MagickOver_(p->green,alpha,q->green,beta);
-  composite->blue=gamma*MagickOver_(p->blue,alpha,q->blue,beta);
+  composite->alpha=(double) QuantumRange*(Sa+Da-Sa*Da);
+  composite->red=MagickOver_(p->red,alpha,q->red,beta);
+  composite->green=MagickOver_(p->green,alpha,q->green,beta);
+  composite->blue=MagickOver_(p->blue,alpha,q->blue,beta);
   if (q->colorspace == CMYKColorspace)
-    composite->black=gamma*MagickOver_(p->black,alpha,q->black,beta);
+    composite->black=MagickOver_(p->black,alpha,q->black,beta);
 }
 
 static inline double RoundToUnity(const double value)
