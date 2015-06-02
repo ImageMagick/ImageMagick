@@ -2014,7 +2014,7 @@ MagickExport MagickBooleanType IsMagickColorSimilar(const MagickPixelPacket *p,
         angle of 'S'/'W' length with 'L'/'B' forming appropriate cones.  In
         other words this is a hack - Anthony
       */
-      if (fabs((double) pixel) > (QuantumRange/2.))
+      if (fabs((double) pixel) > (QuantumRange/2.0))
         pixel-=QuantumRange;
       pixel*=2.0;
     }
