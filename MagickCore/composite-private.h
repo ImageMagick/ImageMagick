@@ -74,11 +74,6 @@ static inline void CompositePixelOver(const Image *image,const PixelInfo *p,
     traits=GetPixelChannelTraits(image,channel);
     if (traits == UndefinedPixelTrait)
       continue;
-    if (fabs((double) (alpha-TransparentAlpha)) < MagickEpsilon)
-      {
-        composite[i]=q[i];
-        continue;
-      }
     switch (channel)
     {
       case RedPixelChannel:
@@ -130,11 +125,6 @@ static inline void CompositePixelInfoOver(const PixelInfo *p,
   /*
     Compose pixel p over pixel q with the given opacities.
   */
-  if (fabs((double) (alpha-TransparentAlpha)) < MagickEpsilon)
-    {
-      *composite=(*p);
-      return;
-    }
   Sa=QuantumScale*alpha;
   Da=QuantumScale*beta,
   gamma=Sa*(-Da)+Sa+Da;
