@@ -1,3 +1,6 @@
+2015-06-03  6.9.1-5 Cristy  <quetzlzacatenango@image...>
+  * Use correct scale when interpretting alpha (e.g. rgba(0,0,0,1)).
+
 2015-06-01  6.9.1-4 Cristy  <quetzlzacatenango@image...>
   * New version 6.9.1-4, SVN revision 18697.
 
