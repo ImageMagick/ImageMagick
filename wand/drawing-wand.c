@@ -2376,7 +2376,8 @@ WandExport char *DrawGetVectorGraphics(DrawingWand *wand)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   xml_info=NewXMLTreeTag("drawing-wand");
   if (xml_info == (XMLTreeInfo *) NULL)
-    return(char *) NULL;
+    return((char *) NULL);
+  (void) SetXMLTreeContent(xml_info," ");
   GetMagickPixelPacket(wand->image,&pixel);
   child=AddChildToXMLTree(xml_info,"clip-path",0);
   if (child != (XMLTreeInfo *) NULL)
@@ -2385,14 +2386,16 @@ WandExport char *DrawGetVectorGraphics(DrawingWand *wand)
   if (child != (XMLTreeInfo *) NULL)
     {
       (void) CopyMagickString(value,CommandOptionToMnemonic(
-        MagickClipPathOptions,(ssize_t) CurrentContext->clip_units),MaxTextExtent);
+        MagickClipPathOptions,(ssize_t) CurrentContext->clip_units),
+        MaxTextExtent);
       (void) SetXMLTreeContent(child,value);
     }
   child=AddChildToXMLTree(xml_info,"decorate",0);
   if (child != (XMLTreeInfo *) NULL)
     {
       (void) CopyMagickString(value,CommandOptionToMnemonic(
-        MagickDecorateOptions,(ssize_t) CurrentContext->decorate),MaxTextExtent);
+        MagickDecorateOptions,(ssize_t) CurrentContext->decorate),
+        MaxTextExtent);
       (void) SetXMLTreeContent(child,value);
     }
   child=AddChildToXMLTree(xml_info,"encoding",0);
@@ -2461,8 +2464,8 @@ WandExport char *DrawGetVectorGraphics(DrawingWand *wand)
   child=AddChildToXMLTree(xml_info,"gravity",0);
   if (child != (XMLTreeInfo *) NULL)
     {
-      (void) CopyMagickString(value,CommandOptionToMnemonic(MagickGravityOptions,
-        (ssize_t) CurrentContext->gravity),MaxTextExtent);
+      (void) CopyMagickString(value,CommandOptionToMnemonic(
+        MagickGravityOptions,(ssize_t) CurrentContext->gravity),MaxTextExtent);
       (void) SetXMLTreeContent(child,value);
     }
   child=AddChildToXMLTree(xml_info,"stroke",0);
@@ -2512,8 +2515,8 @@ WandExport char *DrawGetVectorGraphics(DrawingWand *wand)
   child=AddChildToXMLTree(xml_info,"stroke-linecap",0);
   if (child != (XMLTreeInfo *) NULL)
     {
-      (void) CopyMagickString(value,CommandOptionToMnemonic(MagickLineCapOptions,
-        (ssize_t) CurrentContext->linecap),MaxTextExtent);
+      (void) CopyMagickString(value,CommandOptionToMnemonic(
+        MagickLineCapOptions,(ssize_t) CurrentContext->linecap),MaxTextExtent);
       (void) SetXMLTreeContent(child,value);
     }
   child=AddChildToXMLTree(xml_info,"stroke-linejoin",0);
