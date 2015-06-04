@@ -50,6 +50,7 @@
 #include "magick/list.h"
 #include "magick/magick.h"
 #include "magick/memory_.h"
+#include "magick/option.h"
 #include "magick/pixel-accessor.h"
 #include "magick/property.h"
 #include "magick/quantum-private.h"
@@ -355,6 +356,10 @@ ModuleExport void UnregisterEXRImage(void)
 */
 static MagickBooleanType WriteEXRImage(const ImageInfo *image_info,Image *image)
 {
+  const char
+    *sampling_factor,
+    *value;
+
   ImageInfo
     *write_info;
 
@@ -371,7 +376,9 @@ static MagickBooleanType WriteEXRImage(const ImageInfo *image_info,Image *image)
     *scanline;
 
   int
-    compression;
+    compression,
+    channels,
+    factors[3];
 
   MagickBooleanType
     status;
@@ -422,9 +429,86 @@ static MagickBooleanType WriteEXRImage(const ImageInfo *image_info,Image *image)
   if (write_info->compression == B44ACompression)
     compression=IMF_B44A_COMPRESSION;
 #endif
+  channels=0;
+  value=GetImageOption(image_info,"exr:color-type");
+  if (value != (const char *) NULL)
+    {
+      if (LocaleCompare(value,"RGB") == 0)
+        channels=IMF_WRITE_RGB;
+      else if (LocaleCompare(value,"RGBA") == 0)
+        channels=IMF_WRITE_RGBA;
+      else if (LocaleCompare(value,"YC") == 0)
+        channels=IMF_WRITE_YC;
+      else if (LocaleCompare(value,"YCA") == 0)
+        channels=IMF_WRITE_YCA;
+      else if (LocaleCompare(value,"Y") == 0)
+        channels=IMF_WRITE_Y;
+      else if (LocaleCompare(value,"YA") == 0)
+        channels=IMF_WRITE_YA;
+      else if (LocaleCompare(value,"R") == 0)
+        channels=IMF_WRITE_R;
+      else if (LocaleCompare(value,"G") == 0)
+        channels=IMF_WRITE_G;
+      else if (LocaleCompare(value,"B") == 0)
+        channels=IMF_WRITE_B;
+      else if (LocaleCompare(value,"A") == 0)
+        channels=IMF_WRITE_A;
+      else
+        (void) ThrowMagickException(&image->exception,GetMagickModule(),
+          CoderWarning,"ignoring invalid defined exr:color-type","=%s",value);
+   }
+  sampling_factor=(const char *) NULL;
+  factors[0]=0;
+  if (image_info->sampling_factor != (char *) NULL)
+    sampling_factor=image_info->sampling_factor;
+  if (sampling_factor != NULL)
+    {
+      /*
+        Sampling factors, valid values are 1x1 or 2x2.
+      */
+      if (sscanf(sampling_factor,"%d:%d:%d",factors,factors+1,factors+2) == 3)
+        {
+          if ((factors[0] == factors[1]) && (factors[1] == factors[2]))
+            factors[0]=1;
+          else
+            if ((factors[0] == (2*factors[1])) && (factors[2] == 0))
+              factors[0]=2;
+        }
+      else
+        if (sscanf(sampling_factor,"%dx%d",factors,factors+1) == 2)
+          {
+            if (factors[0] != factors[1])
+              factors[0]=0;
+          }
+      if ((factors[0] != 1) && (factors[0] != 2))
+        (void) ThrowMagickException(&image->exception,GetMagickModule(),
+          CoderWarning,"ignoring sampling-factor","=%s",sampling_factor);
+      else if (channels != 0)
+        {
+          /*
+            Cross check given color type and subsampling.
+          */
+          factors[1]=((channels == IMF_WRITE_YCA) ||
+            (channels == IMF_WRITE_YC)) ? 2 : 1;
+          if (factors[0] != factors[1])
+            (void) ThrowMagickException(&image->exception,GetMagickModule(),
+              CoderWarning,"sampling-factor and color type mismatch","=%s",
+              sampling_factor);
+        }
+    }
+  if (channels == 0)
+    {
+      /*
+        If no color type given, select it now.
+      */
+      if (factors[0] == 2)
+        channels=image->matte ? IMF_WRITE_YCA : IMF_WRITE_YC;
+      else
+        channels=image->matte ? IMF_WRITE_RGBA : IMF_WRITE_RGB;
+    }
   ImfHeaderSetCompression(hdr_info,compression);
   ImfHeaderSetLineOrder(hdr_info,IMF_INCREASING_Y);
-  file=ImfOpenOutputFile(write_info->filename,hdr_info,IMF_WRITE_RGBA);
+  file=ImfOpenOutputFile(write_info->filename,hdr_info,channels);
   ImfDeleteHeader(hdr_info);
   if (file == (ImfOutputFile *) NULL)
     {
@@ -459,8 +543,7 @@ static MagickBooleanType WriteEXRImage(const ImageInfo *image_info,Image *image)
       if (image->matte == MagickFalse)
         ImfFloatToHalf(1.0,&half_quantum);
       else
-        ImfFloatToHalf(1.0-QuantumScale*GetPixelOpacity(p),
-          &half_quantum);
+        ImfFloatToHalf(1.0-QuantumScale*GetPixelOpacity(p),&half_quantum);
       scanline[x].a=half_quantum;
       p++;
     }
