@@ -204,6 +204,7 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->rows=max_y-min_y+1UL;
   image->matte=MagickTrue;
   SetImageColorspace(image,RGBColorspace);
+  image->gamma=1.0;
   if (image_info->ping != MagickFalse)
     {
       (void) ImfCloseInputFile(file);
@@ -376,8 +377,8 @@ static MagickBooleanType WriteEXRImage(const ImageInfo *image_info,Image *image)
     *scanline;
 
   int
-    compression,
     channels,
+    compression,
     factors[3];
 
   MagickBooleanType
