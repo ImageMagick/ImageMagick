@@ -64,10 +64,10 @@
 #include "MagickWand/MagickWand.h"
 
 #if defined(__CYGWIN__)
-#undef MAGICKCORE_WMF_DELEGATE 
+#undef MAGICKCORE_SANS_DELEGATE 
 #endif
 
-#if defined(MAGICKCORE_WMF_DELEGATE)
+#if defined(MAGICKCORE_SANS_DELEGATE)
 #include "libwmf/api.h"
 #include "libwmf/eps.h"
 
@@ -235,7 +235,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) RelinquishUniqueFileResource(filename);
   return(GetFirstImageInList(image));
 }
-#elif defined(MAGICKCORE_WMFLITE_DELEGATE)
+#elif defined(MAGICKCORE_WMF_DELEGATE)
 
 #define ERR(API)  ((API)->err != wmf_E_None)
 #define XC(x) ((double) x)
@@ -300,7 +300,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #define CENTIMETERS_PER_INCH  2.54
 #define POINTS_PER_INCH       72
 
-#if defined(MAGICKCORE_WMFLITE_DELEGATE)
+#if defined(MAGICKCORE_WMF_DELEGATE)
 # define wmf_api_create(api,flags,options) wmf_lite_create(api,flags,options)
 # define wmf_api_destroy(api) wmf_lite_destroy(api)
 # undef WMF_FONT_PSNAME
@@ -394,7 +394,7 @@ typedef enum
 }
 magick_arc_t;
 
-#if defined(MAGICKCORE_WMFLITE_DELEGATE)
+#if defined(MAGICKCORE_WMF_DELEGATE)
 static void  lite_font_init (wmfAPI* API, wmfAPI_Options* options);
 static void  lite_font_map(wmfAPI* API,wmfFont* font);
 static float lite_font_stringwidth(wmfAPI* API, wmfFont* font, char* str);
@@ -420,7 +420,7 @@ static void         ipa_draw_line(wmfAPI * API, wmfDrawLine_t * draw_line);
 static void         ipa_draw_pie(wmfAPI * API, wmfDrawArc_t * draw_arc);
 static void         ipa_draw_pixel(wmfAPI * API, wmfDrawPixel_t * draw_pixel);
 static void         ipa_draw_polygon(wmfAPI * API, wmfPolyLine_t * poly_line);
-#if defined(MAGICKCORE_WMFLITE_DELEGATE)
+#if defined(MAGICKCORE_WMF_DELEGATE)
 static void         ipa_draw_polypolygon(wmfAPI * API, wmfPolyPoly_t* polypolygon);
 #endif
 static void         ipa_draw_rectangle(wmfAPI * API, wmfDrawRectangle_t * draw_rect);
@@ -439,7 +439,7 @@ static void         ipa_udata_init(wmfAPI * API, wmfUserData_t * userdata);
 static void         ipa_udata_set(wmfAPI * API, wmfUserData_t * userdata);
 static int          magick_progress_callback(void* wand,float quantum);
 static void         util_draw_arc(wmfAPI * API, wmfDrawArc_t * draw_arc,magick_arc_t finish);
-#if defined(MAGICKCORE_WMFLITE_DELEGATE)
+#if defined(MAGICKCORE_WMF_DELEGATE)
 /*static int          util_font_weight( const char* font );*/
 #endif
 static double       util_pointsize( wmfAPI* API, wmfFont* font, char* str, double font_height, ExceptionInfo *);
@@ -1203,7 +1203,7 @@ static void ipa_draw_polygon(wmfAPI * API, wmfPolyLine_t * polyline)
 }
 
 /* Draw a polypolygon.  A polypolygon is a list of polygons */
-#if defined(MAGICKCORE_WMFLITE_DELEGATE)
+#if defined(MAGICKCORE_WMF_DELEGATE)
 static void ipa_draw_polypolygon(wmfAPI * API, wmfPolyPoly_t* polypolygon)
 {
   if (TO_FILL(polypolygon) || TO_DRAW(polypolygon))
@@ -1396,7 +1396,7 @@ static void ipa_functions(wmfAPI *API)
   FR->draw_line = ipa_draw_line;
   FR->poly_line = ipa_poly_line;
   FR->draw_polygon = ipa_draw_polygon;
-#if defined(MAGICKCORE_WMFLITE_DELEGATE)
+#if defined(MAGICKCORE_WMF_DELEGATE)
   FR->draw_polypolygon = ipa_draw_polypolygon;
 #endif
   FR->draw_rectangle = ipa_draw_rectangle;
@@ -1539,7 +1539,7 @@ static void ipa_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
               double
                 text_width = metrics.width * (ddata->scale_y / ddata->scale_x);
 
-#if defined(MAGICKCORE_WMFLITE_DELEGATE)
+#if defined(MAGICKCORE_WMF_DELEGATE)
               point.x -= text_width / 2;
 #else
               point.x += bbox_width / 2 - text_width / 2;
@@ -2203,7 +2203,7 @@ static double util_pointsize( wmfAPI* API, wmfFont* font, char* str, double font
   return floor(pointsize);
 }
 
-#if defined(MAGICKCORE_WMFLITE_DELEGATE)
+#if defined(MAGICKCORE_WMF_DELEGATE)
 /* Estimate weight based on font name */
 /*
 static int util_font_weight( const char* font )
@@ -2523,7 +2523,7 @@ static void lite_font_init( wmfAPI* API, wmfAPI_Options* options)
   ((wmf_magick_font_t*)font_data->user_data)->pointsize = 0;
 }
 
-#endif /* MAGICKCORE_WMFLITE_DELEGATE */
+#endif /* MAGICKCORE_WMF_DELEGATE */
 
 /* BLOB read byte */
 static int ipa_blob_read(void* wand)
@@ -2639,7 +2639,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   ddata->draw_info->text=(char *)
     RelinquishMagickMemory(ddata->draw_info->text);
 
-#if defined(MAGICKCORE_WMFLITE_DELEGATE)
+#if defined(MAGICKCORE_WMF_DELEGATE)
   /* Must initialize font subystem for WMFlite interface */
   lite_font_init (API,&wmf_api_options); /* similar to wmf_ipa_font_init in src/font.c */
   /* wmf_arg_fontdirs (API,options); */ /* similar to wmf_arg_fontdirs in src/wmf.c */
@@ -2830,7 +2830,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     printf("dc->Window.height = %d\n", dc->Window.height);
     printf("dc->pixel_width   = %g\n", dc->pixel_width);
     printf("dc->pixel_height  = %g\n", dc->pixel_height);
-#if defined(MAGICKCORE_WMFLITE_DELEGATE)  /* Only in libwmf 0.3 */
+#if defined(MAGICKCORE_WMF_DELEGATE)  /* Only in libwmf 0.3 */
     printf("dc->Ox            = %.d\n", dc->Ox);
     printf("dc->Oy            = %.d\n", dc->Oy);
     printf("dc->width         = %.d\n", dc->width);
@@ -2949,13 +2949,13 @@ ModuleExport size_t RegisterWMFImage(void)
     *entry;
 
   entry = AcquireMagickInfo("WMF","WMZ","Compressed Windows Meta File");
-#if defined(MAGICKCORE_WMF_DELEGATE) || defined(MAGICKCORE_WMFLITE_DELEGATE)
+#if defined(MAGICKCORE_SANS_DELEGATE) || defined(MAGICKCORE_WMF_DELEGATE)
   entry->decoder=ReadWMFImage;
 #endif
   entry->flags|=CoderSeekableStreamFlag;
   (void) RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("WMF","WMF","Windows Meta File");
-#if defined(MAGICKCORE_WMF_DELEGATE) || defined(MAGICKCORE_WMFLITE_DELEGATE)
+#if defined(MAGICKCORE_SANS_DELEGATE) || defined(MAGICKCORE_WMF_DELEGATE)
   entry->decoder=ReadWMFImage;
 #endif
   (void) RegisterMagickInfo(entry);
