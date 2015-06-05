@@ -371,20 +371,6 @@
 #define MAGICKCORE_HAVE_J1 1
 #endif
 
-/* Define if you have the <lcms2.h> header file. */
-#ifndef MAGICKCORE_HAVE_LCMS2_H
-#define MAGICKCORE_HAVE_LCMS2_H 1
-#endif
-
-/* Define if you have the <lcms2/lcms2.h> header file. */
-/* #undef HAVE_LCMS2_LCMS2_H */
-
-/* Define if you have the <lcms.h> header file. */
-/* #undef HAVE_LCMS_H */
-
-/* Define if you have the <lcms/lcms.h> header file. */
-/* #undef HAVE_LCMS_LCMS_H */
-
 /* Define to 1 if you have the `gcov' library (-lgcov). */
 /* #undef HAVE_LIBGCOV */
 
@@ -1127,7 +1113,7 @@
 #define MAGICKCORE_JPEG_DELEGATE 1
 #endif
 
-/* Define if you have LCMS (v1.11 or later) library */
+/* Define if you have LCMS library */
 #ifndef MAGICKCORE_LCMS_DELEGATE
 #define MAGICKCORE_LCMS_DELEGATE 1
 #endif
@@ -1464,11 +1450,10 @@
 /* Define if using the dmalloc debugging malloc package */
 /* #undef WITH_DMALLOC */
 
-/* Define if you have wmflite library */
-/* #undef WMFLITE_DELEGATE */
-
-/* Define if you have wmf library */
-/* #undef WMF_DELEGATE */
+/* Define if you have WMF library */
+#ifndef MAGICKCORE_WMF_DELEGATE
+#define MAGICKCORE_WMF_DELEGATE 1
+#endif
 
 /* Define WORDS_BIGENDIAN to 1 if your processor stores words with the most
    significant byte first (like Motorola and SPARC, unlike Intel). */
@@ -1503,7 +1488,7 @@
 /* Build self-contained, embeddable, zero-configuration ImageMagick */
 /* #undef ZERO_CONFIGURATION_SUPPORT */
 
-/* Define if you have zlib compression library */
+/* Define if you have ZLIB library */
 #ifndef MAGICKCORE_ZLIB_DELEGATE
 #define MAGICKCORE_ZLIB_DELEGATE 1
 #endif
