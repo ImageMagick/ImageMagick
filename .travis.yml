@@ -1,0 +1,18 @@
+language: c
+
+
+compiler:
+  - clang
+  - gcc
+
+before_script:
+  - sudo add-apt-repository ppa:dns/gnu -y
+  - sudo apt-get update -q
+  - sudo apt-get install --only-upgrade autoconf
+
+script:
+    - export OMP_NUM_THREADS=1
+    - export CFLAGS="-Wno-deprecated-declarations -Wdeclaration-after-statement -Wno-error=unused-variable"
+    - ./configure --disable-openmp --with-quantum-depth=16 --enable-hdri=no
+    - make
+    
