@@ -1703,8 +1703,7 @@ coders_webp_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 @WEBP_DELEGATE_TRUE@@WITH_MODULES_TRUE@am_coders_webp_la_rpath =  \
 @WEBP_DELEGATE_TRUE@@WITH_MODULES_TRUE@	-rpath $(codersdir)
 coders_wmf_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_coders_wmf_la_OBJECTS = coders/coders_wmf_la-wmf.lo
 coders_wmf_la_OBJECTS = $(am_coders_wmf_la_OBJECTS)
 coders_wmf_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
@@ -2614,6 +2613,7 @@ DEFS = @DEFS@
 DEPDIR = @DEPDIR@
 DIRSEP = @DIRSEP@
 DISTCHECK_CONFIG_FLAGS = @DISTCHECK_CONFIG_FLAGS@
+DJVU_CFLAGS = @DJVU_CFLAGS@
 DJVU_LIBS = @DJVU_LIBS@
 DLLTOOL = @DLLTOOL@
 DNGDecodeDelegate = @DNGDecodeDelegate@
@@ -2634,6 +2634,7 @@ EXEC_PREFIX_DIR = @EXEC_PREFIX_DIR@
 EXEEXT = @EXEEXT@
 EchoDelegate = @EchoDelegate@
 EditorDelegate = @EditorDelegate@
+FFTW_CFLAGS = @FFTW_CFLAGS@
 FFTW_LIBS = @FFTW_LIBS@
 FGREP = @FGREP@
 FILTER_DIRNAME = @FILTER_DIRNAME@
@@ -2684,6 +2685,7 @@ JEMALLOC_LIBS = @JEMALLOC_LIBS@
 JPEG_LIBS = @JPEG_LIBS@
 JXRDecodeDelegate = @JXRDecodeDelegate@
 JXREncodeDelegate = @JXREncodeDelegate@
+LCMS_CFLAGS = @LCMS_CFLAGS@
 LCMS_LIBS = @LCMS_LIBS@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
@@ -2819,6 +2821,7 @@ PGPDecodeDelegate = @PGPDecodeDelegate@
 PKG_CONFIG = @PKG_CONFIG@
 PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
 PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
+PNG_CFLAGS = @PNG_CFLAGS@
 PNG_LIBS = @PNG_LIBS@
 POVDelegate = @POVDelegate@
 POW_LIB = @POW_LIB@
@@ -2872,8 +2875,8 @@ UniconvertorDelegate = @UniconvertorDelegate@
 VERSION = @VERSION@
 WEBP_LIBS = @WEBP_LIBS@
 WMFDecodeDelegate = @WMFDecodeDelegate@
+WMF_CFLAGS = @WMF_CFLAGS@
 WMF_LIBS = @WMF_LIBS@
-WMF_LIBS_DEPS = @WMF_LIBS_DEPS@
 WWWDecodeDelegate = @WWWDecodeDelegate@
 WebPDecodeDelegate = @WebPDecodeDelegate@
 WebPEncodeDelegate = @WebPEncodeDelegate@
@@ -2881,6 +2884,7 @@ WinPathScript = @WinPathScript@
 X11_LIBS = @X11_LIBS@
 XEXT_LIBS = @XEXT_LIBS@
 XMKMF = @XMKMF@
+XML_CFLAGS = @XML_CFLAGS@
 XML_LIBS = @XML_LIBS@
 XPSCMYKDevice = @XPSCMYKDevice@
 XPSColorDevice = @XPSColorDevice@
@@ -2892,6 +2896,7 @@ X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_LIBS = @X_LIBS@
 X_PRE_LIBS = @X_PRE_LIBS@
 ZIP = @ZIP@
+ZLIB_CFLAGS = @ZLIB_CFLAGS@
 ZLIB_LIBS = @ZLIB_LIBS@
 ZipDelegate = @ZipDelegate@
 abs_builddir = @abs_builddir@
@@ -2918,12 +2923,16 @@ build_vendor = @build_vendor@
 builddir = @builddir@
 datadir = @datadir@
 datarootdir = @datarootdir@
+ddjvuapi_CFLAGS = @ddjvuapi_CFLAGS@
+ddjvuapi_LIBS = @ddjvuapi_LIBS@
 dejavu_font_dir = @dejavu_font_dir@
 
 # Architecture independent data files installed in the package's data directory
 docdir = $(DOCUMENTATION_PATH)
 dvidir = @dvidir@
 exec_prefix = @exec_prefix@
+fftw3_CFLAGS = @fftw3_CFLAGS@
+fftw3_LIBS = @fftw3_LIBS@
 ghostscript_font_dir = @ghostscript_font_dir@
 host = @host@
 host_alias = @host_alias@
@@ -2962,7 +2971,6 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 type_include_files = @type_include_files@
 windows_font_dir = @windows_font_dir@
-xml2_config = @xml2_config@
 topincludedir = @includedir@/MagickCore
 AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir)
 ACLOCAL_AMFLAGS = -I m4
@@ -4110,7 +4118,7 @@ coders_webp_la_LIBADD = $(MAGICKCORE_LIBS) $(WEBP_LIBS) $(MATH_LIBS)
 coders_wmf_la_SOURCES = coders/wmf.c
 coders_wmf_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_wmf_la_LDFLAGS = $(MODULECOMMONFLAGS)
-coders_wmf_la_LIBADD = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS) $(WMF_LIBS) $(WMF_LIBS_DEPS) $(MATH_LIBS)
+coders_wmf_la_LIBADD = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS) $(WMF_LIBS) $(MATH_LIBS)
 
 # WPG coder module
 coders_wpg_la_SOURCES = coders/wpg.c
