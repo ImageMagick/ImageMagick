@@ -374,7 +374,7 @@ struct _ImageInfo
 
   MagickBooleanType
     temporary,          /* image file to be deleted after read "empemeral:" */
-    adjoin,             /* save images to seperate scene files */
+    adjoin,             /* save images to separate scene files */
     affirm,
     antialias;
 
