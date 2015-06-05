@@ -3947,6 +3947,7 @@ fi
 if test "$have_zlib"   = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES zlib"
 fi
+
 # Remove extraneous spaces from output variables (asthetic)
 MAGICK_DELEGATES=`echo $MAGICK_DELEGATES | sed -e 's/  */ /g'`
 MAGICK_FEATURES=`echo $MAGICK_FEATURES | sed -e 's/  */ /g'`
@@ -4002,22 +4003,28 @@ fi
 AC_SUBST(MAGICK_DEP_LIBS)
 
 #
-# Remove extraneous spaces from output variables (asthetic)
+# Sanitize output variables (asthetic).
 #
-X_CFLAGS=`echo $X_CFLAGS | sed -e 's/  */ /g'`
-X_PRE_LIBS=`echo $X_PRE_LIBS | sed -e 's/  */ /g'`
-X_LIBS=`echo $X_LIBS | sed -e 's/  */ /g'`
-X_EXTRA_LIBS=`echo $X_EXTRA_LIBS | sed -e 's/  */ /g'`
-
-CC=`echo $CC | sed -e 's/  */ /g'`
-CFLAGS=`echo $CFLAGS | sed -e 's/  */ /g'`
-CPPFLAGS=`echo $CPPFLAGS | sed -e 's/  */ /g'`
-CXXFLAGS=`echo $CXXFLAGS | sed -e 's/  */ /g'`
-DISTCHECK_CONFIG_FLAGS=`echo $DISTCHECK_CONFIG_FLAGS | sed -e 's/  */ /g'`
-LDFLAGS=`echo $LDFLAGS | sed -e 's/  */ /g'`
-TESTED_LIBS=`echo $LIBS | sed -e 's/  */ /g'`
-MAGICK_DEP_LIBS=`echo $MAGICK_DEP_LIBS | sed -e 's/  */ /g'`
-#LIBS=`echo $LIBS | sed -e 's/  */ /g'`
+for variable in CC CFLAGS CPPFLAGS CXXFLAGS LDFLAGS MAGICK_DEP_LIBS TESTED_LIBS X_CFLAGS X_PRE_LIBS X_LIBS X_EXTRA_LIBS; do
+  sanitize=''
+  eval value=$`echo $variable`
+  for component in $value
+  do
+    unique=yes
+    for test_component in $sanitize
+    do
+      if test $component = $test_component; then
+        unique=no
+        break
+      fi
+    done
+    if test $unique = yes; then
+      sanitize="$sanitize $component"
+    fi
+  done
+  sanitize=`echo $sanitize | sed -e 's/^ *//g'`
+  eval ${variable}=\${sanitize}
+done
 
 # Pass only user-provided LIBS as "global" libraries
 LIBS=$USER_LIBS
