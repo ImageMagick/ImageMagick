@@ -67,11 +67,16 @@
 #include "MagickCore/token.h"
 #include "MagickCore/utility.h"
 #if defined(MAGICKCORE_LCMS_DELEGATE)
-#if defined(MAGICKCORE_LCMS_VERSION_1)
-#include "lcms.h"
-#else
+#if defined(MAGICKCORE_HAVE_LCMS_LCMS2_H)
+#include <wchar.h>
+#include <lcms/lcms2.h>
+#elif defined(MAGICKCORE_HAVE_LCMS2_H)
 #include <wchar.h>
 #include "lcms2.h"
+#elif defined(MAGICKCORE_HAVE_LCMS_LCMS_H)
+#include <lcms/lcms.h>
+#else
+#include "lcms.h"
 #endif
 #endif
 
