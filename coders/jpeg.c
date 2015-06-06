@@ -2079,6 +2079,9 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
   ExceptionInfo
     *exception;
 
+  Image
+    *volatile volatile_image;
+
   int
     colorspace,
     quality;
@@ -2135,16 +2138,17 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
   (void) ResetMagickMemory(&error_manager,0,sizeof(error_manager));
   (void) ResetMagickMemory(&jpeg_info,0,sizeof(jpeg_info));
   (void) ResetMagickMemory(&jpeg_error,0,sizeof(jpeg_error));
-  jpeg_info.client_data=(void *) image;
+  volatile_image=image;
+  jpeg_info.client_data=(void *) volatile_image;
   jpeg_info.err=jpeg_std_error(&jpeg_error);
   jpeg_info.err->emit_message=(void (*)(j_common_ptr,int)) JPEGWarningHandler;
   jpeg_info.err->error_exit=(void (*)(j_common_ptr)) JPEGErrorHandler;
-  error_manager.image=image;
+  error_manager.image=volatile_image;
   memory_info=(MemoryInfo *) NULL;
   if (setjmp(error_manager.error_recovery) != 0)
     {
       jpeg_destroy_compress(&jpeg_info);
-      (void) CloseBlob(image);
+      (void) CloseBlob(volatile_image);
       return(MagickFalse);
     }
   jpeg_info.client_data=(void *) &error_manager;

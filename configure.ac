@@ -2713,7 +2713,7 @@ dnl ===========================================================================
 
 # Substitute compiler name to build/link PerlMagick
 #
-AC_SUBST(PERLMAINCC)
+AC_SUBST([PERLMAINCC])
 
 #
 # Configure install Paths
