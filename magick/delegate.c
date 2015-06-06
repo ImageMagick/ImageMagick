@@ -1022,7 +1022,7 @@ static MagickBooleanType IsDelegateCacheInstantiated(ExceptionInfo *exception)
 */
 
 static MagickBooleanType CopyDelegateFile(const char *source,
-  const char *destination)
+  const char *destination,const MagickBooleanType overwrite)
 {
   int
     destination_file,
@@ -1052,9 +1052,12 @@ static MagickBooleanType CopyDelegateFile(const char *source,
   */
   assert(source != (const char *) NULL);
   assert(destination != (char *) NULL);
-  status=GetPathAttributes(destination,&attributes);
-  if (status != MagickFalse)
-    return(MagickTrue);
+  if (overwrite == MagickFalse)
+    {
+      status=GetPathAttributes(destination,&attributes);
+      if (status != MagickFalse)
+        return(MagickTrue);
+    }
   destination_file=open_utf8(destination,O_WRONLY | O_BINARY | O_CREAT,S_MODE);
   if (destination_file == -1)
     return(MagickFalse);
@@ -1313,10 +1316,10 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
       }
     if (LocaleCompare(decode,"SCAN") != 0)
       {
-        if (CopyDelegateFile(image->filename,input_filename) == MagickFalse)
+        if (CopyDelegateFile(image->filename,input_filename,MagickFalse) == MagickFalse)
           (void) RelinquishUniqueFileResource(input_filename);
       }
-    if (CopyDelegateFile(image_info->filename,output_filename) == MagickFalse)
+    if (CopyDelegateFile(image_info->filename,output_filename,MagickTrue) == MagickFalse)
       (void) RelinquishUniqueFileResource(output_filename);
     if (image_info->temporary != MagickFalse)
       (void) RelinquishUniqueFileResource(image_info->filename);
