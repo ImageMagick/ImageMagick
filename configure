@@ -4387,7 +4387,7 @@ MAGICK_PATCHLEVEL_VERSION=0
 
 MAGICK_VERSION=7.0.0-0
 
-MAGICK_SVN_REVISION=18759:18763M
+MAGICK_SVN_REVISION=18759:18767M
 
 
 # Substitute library versioning
@@ -30418,6 +30418,7 @@ $as_echo "#define HAVE_LCMS_LCMS_H 1" >>confdefs.h
 $as_echo "#define HAVE_LCMS_H 1" >>confdefs.h
 
     fi
+  fi
 fi
 
  if test "$have_lcms" = 'yes'; then

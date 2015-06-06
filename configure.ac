@@ -2286,6 +2286,7 @@ else
     else
       AC_DEFINE(HAVE_LCMS_H,1,Define if you have the <lcms.h> header file.)
     fi
+  fi
 fi
 
 AM_CONDITIONAL(LCMS_DELEGATE, test "$have_lcms" = 'yes')
