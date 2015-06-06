@@ -4387,7 +4387,7 @@ MAGICK_PATCHLEVEL_VERSION=0
 
 MAGICK_VERSION=7.0.0-0
 
-MAGICK_SVN_REVISION=18759:18773M
+MAGICK_SVN_REVISION=18759:18775M
 
 
 # Substitute library versioning
@@ -29356,9 +29356,9 @@ if test "$have_djvu" = 'yes'; then
 
 $as_echo "#define DJVU_DELEGATE 1" >>confdefs.h
 
-  DJVU_CFLAGS="$DDJVUAPI_CFLAGS"
-  DJVU_LIBS="$DDJVUAPI_LIBS"
-  CFLAGS="$DDJVUAPI_CFLAGS $CFLAGS"
+  DJVU_CFLAGS="$ddjvuapi_CFLAGS"
+  DJVU_LIBS="$ddjvuapi_LIBS"
+  CFLAGS="$ddjvuapi_CFLAGS $CFLAGS"
 fi
 
  if test "$have_djvu" = 'yes'; then
