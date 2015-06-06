@@ -966,7 +966,7 @@ ModuleExport size_t RegisterDJVUImage(void)
   entry->magick=(IsImageFormatHandler *) IsDJVU;
   entry->adjoin=MagickFalse;
   entry->thread_support=MagickTrue;
-  entry->description=AcquireString("Déjà vu");
+  entry->description=AcquireString("Deja vu");
   entry->module=AcquireString("DJVU");
   if (*version != '\0')
     entry->version=AcquireString(version);
