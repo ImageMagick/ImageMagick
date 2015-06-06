@@ -4387,7 +4387,7 @@ MAGICK_PATCHLEVEL_VERSION=0
 
 MAGICK_VERSION=7.0.0-0
 
-MAGICK_SVN_REVISION=18759:18771M
+MAGICK_SVN_REVISION=18759:18773M
 
 
 # Substitute library versioning
@@ -35131,7 +35131,7 @@ fi
 #
 GSAlphaDevice=pngalpha
 GSColorDevice=pnmraw
-GSCMYKDevice=pam
+GSCMYKDevice=pamcmyk32
 GSMonoDevice=pbmraw
 GSPDFDevice=pdfwrite
 GSPSDevice=ps2write
@@ -35154,27 +35154,27 @@ $as_echo_n "checking for Ghostscript version... " >&6; }
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: $GSVersion" >&5
 $as_echo "$GSVersion" >&6; }
 
-    # GSAlphaDevice
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for gs alpha device" >&5
-$as_echo_n "checking for gs alpha device... " >&6; }
-    if $PSDelegate -q -dBATCH -sDEVICE=$GSAlphaDevice -sOutputFile=/dev/null < /dev/null 1>&5 2>&5; then
-        :
-    else
-        GSAlphaDevice=pnmraw
-    fi
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: $GSAlphaDevice" >&5
-$as_echo "$GSAlphaDevice" >&6; }
-
     # GSColorDevice
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for gs color device" >&5
 $as_echo_n "checking for gs color device... " >&6; }
     if $PSDelegate -q -dBATCH -sDEVICE=$GSColorDevice -sOutputFile=/dev/null < /dev/null 1>&5 2>&5; then
         :
     else
-        GSColorDevice=pnmraw
+        GSColorDevice=ppmraw
     fi
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: $GSColorDevice" >&5
 $as_echo "$GSColorDevice" >&6; }
+
+    # GSAlphaDevice
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for gs alpha device" >&5
+$as_echo_n "checking for gs alpha device... " >&6; }
+    if $PSDelegate -q -dBATCH -sDEVICE=$GSAlphaDevice -sOutputFile=/dev/null < /dev/null 1>&5 2>&5; then
+        :
+    else
+        GSAlphaDevice=$GSColorDevice
+    fi
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: $GSAlphaDevice" >&5
+$as_echo "$GSAlphaDevice" >&6; }
 
     # GSCMYKDevice
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for gs CMYK device" >&5
@@ -35182,7 +35182,7 @@ $as_echo_n "checking for gs CMYK device... " >&6; }
     if $PSDelegate -q -dBATCH -sDEVICE=$GSCMYKDevice -sOutputFile=/dev/null < /dev/null 1>&5 2>&5; then
         :
     else
-        GSCMYKDevice=bmpsep8
+        GSCMYKDevice=pam
     fi
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: $GSCMYKDevice" >&5
 $as_echo "$GSCMYKDevice" >&6; }
@@ -35206,7 +35206,7 @@ $as_echo_n "checking for gs PDF writing device... " >&6; }
     else
         GSPDFDevice=nodevice
     fi
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: $GSPDFDevice" >&5
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: $GSPDFDevice" >&5
 $as_echo "$GSPDFDevice" >&6; }
 
     # GSPSDevice
