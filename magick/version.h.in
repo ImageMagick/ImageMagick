@@ -27,7 +27,6 @@ extern "C" {
 */
 #define MagickPackageName "@PACKAGE_NAME@"
 #define MagickCopyright  "Copyright (C) 1999-2015 ImageMagick Studio LLC"
-#define MagickSVNRevision  "@MAGICK_SVN_REVISION@"
 #define MagickLibVersion  @PACKAGE_LIB_VERSION@
 #define MagickLibVersionText  "@MAGICK_LIB_VERSION_TEXT@"
 #define MagickLibVersionNumber  @MAGICK_LIB_VERSION_NUMBER@
@@ -50,8 +49,6 @@ extern "C" {
 #define MagickppLibMinInterface  @MAGICKPP_LIBRARY_CURRENT_MIN@
 #define MagickReleaseDate  "@PACKAGE_RELEASE_DATE@"
 #define MagickChangeDate   "@PACKAGE_CHANGE_DATE@"
-#define MagickFeatures "@MAGICK_FEATURES@"
-#define MagickDelegates "@MAGICK_DELEGATES@"
 #define MagickHomeURL  "file://@DOCUMENTATION_PATH@/index.html"
 #define MagickAuthoritativeLicense  \
   "http://www.imagemagick.org/script/license.php"
