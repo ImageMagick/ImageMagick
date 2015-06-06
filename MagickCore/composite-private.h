@@ -41,7 +41,7 @@ static inline double MagickOver_(const double p,const double alpha,
 
   Sa=QuantumScale*alpha;
   Da=QuantumScale*beta;
-  return(Sa*p-Sa*Da*q+Da*q);
+  return(Sa*p+Da*q*(1.0-Sa));
 }
 
 static inline double RoundToUnity(const double value)
