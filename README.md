@@ -23,19 +23,20 @@
   and can read, process, or write mega-, giga-, or tera-pixel image sizes.
   
   ImageMagick is free software delivered as a ready-to-run binary distribution
-  or as source code that you may freely use, copy, modify, and distribute
-  in both open and proprietary applications. It is distributed under the
-  Apache 2.0 license, approved by the OSI and recommended for use by the OSSCC.
+  or as source code that you may use, copy, modify, and distribute in both open
+  and proprietary applications. It is distributed under the Apache 2.0 license.
   
   The ImageMagick development process ensures a stable API and ABI. Before
   each ImageMagick release, we perform a comprehensive security assessment
-  that includes memory and thread error detection to prevent security
-  vulnerabilities.
+  that includes memory error and thread data race detection to prevent
+  security vulnerabilities.
 
   ImageMagick is available from http://www.imagemagick.org/download to
   download. It runs on Linux, Windows, Mac Os X, iOS, Android OS, and others.
 
-  The authoritative ImageMagick web site is http://www.imagemagick.org.
+  The authoritative ImageMagick web site is
+  http://www.imagemagick.org. The authoritative source code repository is
+  http://subversion.imagemagick.org/subversion/ImageMagick/.
 
 
 #Features and Capabilities
@@ -93,10 +94,9 @@
       * ImageMagick on the iPhone: convert, edit, or compose images on your
         iPhone.
   
-  Examples of ImageMagick Usage, http://www.imagemagick.org/Usage/, shows how
-  to use ImageMagick from the command-line to accomplish any of these tasks and
-  much more. Also, see Fred's ImageMagick Scripts,
-  http://www.fmwconcepts.com/imagemagick/: a plethora of command-line scripts
-  that perform geometric transforms, blurs, sharpens, edging, noise removal,
-  and color manipulations.
-
+  Examples of ImageMagick Usage shows how to use ImageMagick from the
+  command-line to accomplish any of these tasks and much more. Also,
+  see Fred's ImageMagick Scripts: a plethora of command-line scripts that
+  perform geometric transforms, blurs, sharpens, edging, noise removal,
+  and color manipulations. With Magick.NET, use ImageMagick without having
+  to install ImageMagick on your server or desktop.
