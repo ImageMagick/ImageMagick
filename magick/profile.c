@@ -65,7 +65,7 @@
 #include "magick/token.h"
 #include "magick/utility.h"
 #if defined(MAGICKCORE_LCMS_DELEGATE)
-#if defined(LCMS_VERSION) && (LCMS_VERSION < 2000)
+#if defined(MAGICKCORE_LCMS_VERSION_1)
 #include "lcms.h"
 #else
 #include <wchar.h>
