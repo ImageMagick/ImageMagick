@@ -149,7 +149,8 @@ static inline MagickRealType GetPixelLuma(const Image *restrict image,
 
   gamma=1.0;
   if (image->matte != MagickFalse)
-    gamma=PerceptibleReciprocal(QuantumScale*(QuantumRange-pixel->opacity));
+    gamma=(MagickRealType) PerceptibleReciprocal(QuantumScale*(QuantumRange-
+      pixel->opacity));
   intensity=0.212656f*gamma*pixel->red+0.715158f*gamma*pixel->green+
     0.072186f*gamma*pixel->blue;
   return(intensity);
@@ -164,7 +165,8 @@ static inline MagickRealType GetPixelLuminance(const Image *restrict image,
 
   gamma=1.0;
   if (image->matte != MagickFalse)
-    gamma=PerceptibleReciprocal(QuantumScale*(QuantumRange-pixel->opacity));
+    gamma=(MagickRealType) PerceptibleReciprocal(QuantumScale*(QuantumRange-
+      pixel->opacity));
   if (image->colorspace != sRGBColorspace)
     {
       intensity=0.212656f*gamma*pixel->red+0.715158f*gamma*pixel->green+
