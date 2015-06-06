@@ -1853,6 +1853,8 @@ fi
 
 if test "$have_fftw" = 'yes'; then
   AC_DEFINE(FFTW_DELEGATE,1,Define if you have FFTW library)
+  FFTW_CFLAGS="$fftw3_CFLAGS"
+  FFTW_CFLAGS="$fftw3_LIBS"
   CFLAGS="$fftw3_CFLAGS $CFLAGS"
 fi
 
@@ -2259,11 +2261,14 @@ fi
 
 if test "$have_lcms" = 'yes'; then
   AC_DEFINE(LCMS_DELEGATE,1,Define if you have LCMS library)
+  LCMS_CFLAGS="$LCMS2_CFLAGS"
+  LCMS_LIBS="$LCMS2_LIBS"
   CFLAGS="$LCMS2_CFLAGS $CFLAGS"
 else
   PKG_CHECK_MODULES(LCMS,[lcms >= 1.0.0], have_lcms=yes, have_lcms=no)
   if test "$have_lcms" = 'yes'; then
     AC_DEFINE(LCMS_DELEGATE,1,Define if you have LCMS library)
+    AC_DEFINE(LCMS_VERSION_1,1,Define if you have LCMS version 1 library)
     CFLAGS="$LCMS_CFLAGS $CFLAGS"
   fi
 fi

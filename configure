@@ -4385,7 +4385,7 @@ MAGICK_PATCHLEVEL_VERSION=5
 
 MAGICK_VERSION=6.9.1-5
 
-MAGICK_SVN_REVISION=18729:18730M
+MAGICK_SVN_REVISION=18754M
 
 
 # Substitute library versioning
@@ -29096,6 +29096,8 @@ if test "$have_fftw" = 'yes'; then
 
 $as_echo "#define FFTW_DELEGATE 1" >>confdefs.h
 
+  FFTW_CFLAGS="$fftw3_CFLAGS"
+  FFTW_CFLAGS="$fftw3_LIBS"
   CFLAGS="$fftw3_CFLAGS $CFLAGS"
 fi
 
@@ -30286,6 +30288,8 @@ if test "$have_lcms" = 'yes'; then
 
 $as_echo "#define LCMS_DELEGATE 1" >>confdefs.h
 
+  LCMS_CFLAGS="$LCMS2_CFLAGS"
+  LCMS_LIBS="$LCMS2_LIBS"
   CFLAGS="$LCMS2_CFLAGS $CFLAGS"
 else
 
@@ -30362,6 +30366,9 @@ fi
   if test "$have_lcms" = 'yes'; then
 
 $as_echo "#define LCMS_DELEGATE 1" >>confdefs.h
+
+
+$as_echo "#define LCMS_VERSION_1 1" >>confdefs.h
 
     CFLAGS="$LCMS_CFLAGS $CFLAGS"
   fi
