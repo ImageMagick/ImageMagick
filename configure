@@ -4385,7 +4385,7 @@ MAGICK_PATCHLEVEL_VERSION=5
 
 MAGICK_VERSION=6.9.1-5
 
-MAGICK_SVN_REVISION=18754M
+MAGICK_SVN_REVISION=18754:18760M
 
 
 # Substitute library versioning
@@ -30291,6 +30291,17 @@ $as_echo "#define LCMS_DELEGATE 1" >>confdefs.h
   LCMS_CFLAGS="$LCMS2_CFLAGS"
   LCMS_LIBS="$LCMS2_LIBS"
   CFLAGS="$LCMS2_CFLAGS $CFLAGS"
+  ac_fn_c_check_header_mongrel "$LINENO" "lcms2/lcms2.h" "ac_cv_header_lcms2_lcms2_h" "$ac_includes_default"
+if test "x$ac_cv_header_lcms2_lcms2_h" = xyes; then :
+  have_lcms_header='yes'
+fi
+
+
+  if test "$have_lcms_header" = 'yes'; then
+
+$as_echo "#define HAVE_LCMS2_LCMS2_H 1" >>confdefs.h
+
+  fi
 else
 
 pkg_failed=no
@@ -30371,6 +30382,17 @@ $as_echo "#define LCMS_DELEGATE 1" >>confdefs.h
 $as_echo "#define LCMS_VERSION_1 1" >>confdefs.h
 
     CFLAGS="$LCMS_CFLAGS $CFLAGS"
+    ac_fn_c_check_header_mongrel "$LINENO" "lcms/lcms.h" "ac_cv_header_lcms_lcms_h" "$ac_includes_default"
+if test "x$ac_cv_header_lcms_lcms_h" = xyes; then :
+  have_lcms_header='yes'
+fi
+
+
+    if test "$have_lcms_header" = 'yes'; then
+
+$as_echo "#define HAVE_LCMS_LCMS_H 1" >>confdefs.h
+
+    fi
   fi
 fi
 
@@ -38769,8 +38791,7 @@ matches your expectations.
   JBIG              --with-jbig=$with_jbig		$have_jbig
   JPEG v1           --with-jpeg=$with_jpeg		$have_jpeg
   JPEG-2000         --with-jp2=$with_jp2		$have_jp2
-  LCMS v1           --with-lcms=$with_lcms		$have_lcms
-  LCMS v2           --with-lcms2=$with_lcms2		$have_lcms2
+  LCMS              --with-lcms=$with_lcms		$have_lcms
   LQR               --with-lqr=$with_lqr		$have_lqr
   LTDL              --with-ltdl=$with_ltdl		$have_ltdl
   LZMA              --with-lzma=$with_lzma		$have_lzma
@@ -38856,8 +38877,7 @@ matches your expectations.
   JBIG              --with-jbig=$with_jbig		$have_jbig
   JPEG v1           --with-jpeg=$with_jpeg		$have_jpeg
   JPEG-2000         --with-jp2=$with_jp2		$have_jp2
-  LCMS v1           --with-lcms=$with_lcms		$have_lcms
-  LCMS v2           --with-lcms2=$with_lcms2		$have_lcms2
+  LCMS              --with-lcms=$with_lcms		$have_lcms
   LQR               --with-lqr=$with_lqr		$have_lqr
   LTDL              --with-ltdl=$with_ltdl		$have_ltdl
   LZMA              --with-lzma=$with_lzma		$have_lzma
