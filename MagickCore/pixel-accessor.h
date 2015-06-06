@@ -229,7 +229,7 @@ static inline MagickRealType GetPixelInfoLuma(const PixelInfo *restrict pixel)
 
   gamma=1.0;
   if (pixel->alpha_trait != UndefinedPixelTrait)
-    gamma=PerceptibleReciprocal(QuantumScale*pixel->alpha);
+    gamma=(MagickRealType) PerceptibleReciprocal(QuantumScale*pixel->alpha);
   if (pixel->colorspace == sRGBColorspace)
     {
       intensity=0.212656f*gamma*pixel->red+0.715158f*gamma*pixel->green+
@@ -251,7 +251,7 @@ static inline MagickRealType GetPixelInfoLuminance(
 
   gamma=1.0;
   if (pixel->alpha_trait != UndefinedPixelTrait)
-    gamma=PerceptibleReciprocal(QuantumScale*pixel->alpha);
+    gamma=(MagickRealType) PerceptibleReciprocal(QuantumScale*pixel->alpha);
   if (pixel->colorspace != sRGBColorspace)
     {
       intensity=0.212656f*gamma*pixel->red+0.715158f*gamma*pixel->green+
@@ -279,7 +279,7 @@ static inline MagickRealType GetPixelLuma(const Image *restrict image,
 
   gamma=1.0;
   if (image->alpha_trait != UndefinedPixelTrait)
-    gamma=PerceptibleReciprocal(QuantumScale*
+    gamma=(MagickRealType) PerceptibleReciprocal(QuantumScale*
       pixel[image->channel_map[AlphaPixelChannel].offset]);
   intensity=0.212656f*gamma*pixel[image->channel_map[RedPixelChannel].offset]+
     0.715158f*gamma*pixel[image->channel_map[GreenPixelChannel].offset]+
@@ -296,7 +296,7 @@ static inline MagickRealType GetPixelLuminance(const Image *restrict image,
 
   gamma=1.0;
   if (image->alpha_trait != UndefinedPixelTrait)
-    gamma=PerceptibleReciprocal(QuantumScale*
+    gamma=(MagickRealType) PerceptibleReciprocal(QuantumScale*
       pixel[image->channel_map[AlphaPixelChannel].offset]);
   if (image->colorspace != sRGBColorspace)
     {
