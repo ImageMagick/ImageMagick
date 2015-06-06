@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/ImageMagick/ImageMagick.svg?branch=ImageMagick-6)](https://travis-ci.org/ImageMagick/ImageMagick)
+[![Build Status](https://travis-ci.org/ImageMagick/ImageMagick.svg?branch=ImageMagick)](https://travis-ci.org/ImageMagick/ImageMagick)
 
 #Introduction to ImageMagick
 
