@@ -4385,7 +4385,7 @@ MAGICK_PATCHLEVEL_VERSION=5
 
 MAGICK_VERSION=6.9.1-5
 
-MAGICK_SVN_REVISION=18754:18762M
+MAGICK_SVN_REVISION=18754:18768M
 
 
 # Substitute library versioning
@@ -29802,7 +29802,7 @@ fi
 if test "${with_gvc+set}" = set; then :
   withval=$with_gvc; with_gvc=$withval
 else
-  with_gvc='no'
+  with_gvc='yes'
 fi
 
 
@@ -35016,7 +35016,7 @@ $as_echo "" >&6; }
     # PCLColorDevice
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for pcl color device" >&5
 $as_echo_n "checking for pcl color device... " >&6; }
-    if $PCLDelegate -dBATCH -sDEVICE=$PCLColorDevice -sOutputFile=/dev/null < /dev/null 2> /dev/null; then
+    if $PCLDelegate -dBATCH -sDEVICE=$PCLColorDevice -sOutputFile=/dev/null < /dev/null 1>&5 2>&5; then
         :
     else
         PCLColorDevice=ppmraw
@@ -35027,7 +35027,7 @@ $as_echo "$PCLColorDevice" >&6; }
     # PCLCMYKDevice
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for pcl CMYK device" >&5
 $as_echo_n "checking for pcl CMYK device... " >&6; }
-    if $PCLDelegate -dBATCH -sDEVICE=$PCLColorDevice -sOutputFile=/dev/null < /dev/null 2> /dev/null; then
+    if $PCLDelegate -dBATCH -sDEVICE=$PCLColorDevice -sOutputFile=/dev/null < /dev/null 1>&5 2>&5; then
         :
     else
         PCLCMYKDevice=$PCLColorDevice
@@ -35038,7 +35038,7 @@ $as_echo "$PCLCMYKDevice" >&6; }
     # PCLMonoDevice
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for pcl mono device" >&5
 $as_echo_n "checking for pcl mono device... " >&6; }
-    if $PCLDelegate -dBATCH -sDEVICE=$PCLMonoDevice -sOutputFile=/dev/null < /dev/null 2> /dev/null; then
+    if $PCLDelegate -dBATCH -sDEVICE=$PCLMonoDevice -sOutputFile=/dev/null < /dev/null 1>&5 2>&5; then
         :
     else
         PCLMonoDevice=$PCLColorDevice
@@ -35071,7 +35071,7 @@ $as_echo "" >&6; }
     # XPSColorDevice
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for xps color device" >&5
 $as_echo_n "checking for xps color device... " >&6; }
-    if $XPSDelegate -dBATCH -sDEVICE=$XPSColorDevice -sOutputFile=/dev/null < /dev/null 2> /dev/null; then
+    if $XPSDelegate -dBATCH -sDEVICE=$XPSColorDevice -sOutputFile=/dev/null < /dev/null 1>&5 2>&5; then
         :
     else
         XPSColorDevice=ppmraw
@@ -35082,7 +35082,7 @@ $as_echo "$XPSColorDevice" >&6; }
     # XPSCMYKDevice
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for xps CMYK device" >&5
 $as_echo_n "checking for xps CMYK device... " >&6; }
-    if $XPSDelegate -dBATCH -sDEVICE=$XPSColorDevice -sOutputFile=/dev/null < /dev/null 2> /dev/null; then
+    if $XPSDelegate -dBATCH -sDEVICE=$XPSColorDevice -sOutputFile=/dev/null < /dev/null 1>&5 2>&5; then
         :
     else
         XPSCMYKDevice=$XPSColorDevice
@@ -35093,7 +35093,7 @@ $as_echo "$XPSCMYKDevice" >&6; }
     # XPSMonoDevice
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for xps mono device" >&5
 $as_echo_n "checking for xps mono device... " >&6; }
-    if $XPSDelegate -dBATCH -sDEVICE=$XPSMonoDevice -sOutputFile=/dev/null < /dev/null 2> /dev/null; then
+    if $XPSDelegate -dBATCH -sDEVICE=$XPSMonoDevice -sOutputFile=/dev/null < /dev/null 1>&5 2>&5; then
         :
     else
         XPSMonoDevice=$XPSColorDevice
@@ -35138,7 +35138,7 @@ $as_echo "$GSVersion" >&6; }
     # GSAlphaDevice
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for gs alpha device" >&5
 $as_echo_n "checking for gs alpha device... " >&6; }
-    if $PSDelegate -q -dBATCH -sDEVICE=$GSAlphaDevice -sOutputFile=/dev/null < /dev/null 2> /dev/null; then
+    if $PSDelegate -q -dBATCH -sDEVICE=$GSAlphaDevice -sOutputFile=/dev/null < /dev/null 1>&5 2>&5; then
         :
     else
         GSAlphaDevice=pnmraw
@@ -35149,7 +35149,7 @@ $as_echo "$GSAlphaDevice" >&6; }
     # GSColorDevice
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for gs color device" >&5
 $as_echo_n "checking for gs color device... " >&6; }
-    if $PSDelegate -q -dBATCH -sDEVICE=$GSColorDevice -sOutputFile=/dev/null < /dev/null 2> /dev/null; then
+    if $PSDelegate -q -dBATCH -sDEVICE=$GSColorDevice -sOutputFile=/dev/null < /dev/null 1>&5 2>&5; then
         :
     else
         GSColorDevice=pnmraw
@@ -35160,7 +35160,7 @@ $as_echo "$GSColorDevice" >&6; }
     # GSCMYKDevice
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for gs CMYK device" >&5
 $as_echo_n "checking for gs CMYK device... " >&6; }
-    if $PSDelegate -q -dBATCH -sDEVICE=$GSCMYKDevice -sOutputFile=/dev/null < /dev/null 2> /dev/null; then
+    if $PSDelegate -q -dBATCH -sDEVICE=$GSCMYKDevice -sOutputFile=/dev/null < /dev/null 1>&5 2>&5; then
         :
     else
         GSCMYKDevice=bmpsep8
@@ -35171,7 +35171,7 @@ $as_echo "$GSCMYKDevice" >&6; }
     # GSMonoDevice
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for gs mono device" >&5
 $as_echo_n "checking for gs mono device... " >&6; }
-    if $PSDelegate -q -dBATCH -sDEVICE=$GSMonoDevice -sOutputFile=/dev/null < /dev/null 2> /dev/null; then
+    if $PSDelegate -q -dBATCH -sDEVICE=$GSMonoDevice -sOutputFile=/dev/null < /dev/null 1>&5 2>&5; then
         :
     else
         GSMonoDevice=$GSColorDevice
@@ -35182,7 +35182,7 @@ $as_echo "$GSMonoDevice" >&6; }
     # GSPDFDevice
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for gs PDF writing device" >&5
 $as_echo_n "checking for gs PDF writing device... " >&6; }
-    if $PSDelegate -q -dBATCH -sDEVICE=$GSPDFDevice -sOutputFile=/dev/null < /dev/null 2> /dev/null; then
+    if $PSDelegate -q -dBATCH -sDEVICE=$GSPDFDevice -sOutputFile=/dev/null < /dev/null 1>&5 2>&5; then
         :
     else
         GSPDFDevice=nodevice
@@ -35193,7 +35193,7 @@ $as_echo "$GSPDFDevice" >&6; }
     # GSPSDevice
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for gs PS writing device" >&5
 $as_echo_n "checking for gs PS writing device... " >&6; }
-    if $PSDelegate -q -dBATCH -sDEVICE=$GSPSDevice -sOutputFile=/dev/null < /dev/null 2> /dev/null; then
+    if $PSDelegate -q -dBATCH -sDEVICE=$GSPSDevice -sOutputFile=/dev/null < /dev/null 1>&5 2>&5; then
         :
     else
         GSPSDevice=pswrite
@@ -35204,7 +35204,7 @@ $as_echo "$GSPSDevice" >&6; }
     # GSEPSDevice
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for gs EPS writing device" >&5
 $as_echo_n "checking for gs EPS writing device... " >&6; }
-    if $PSDelegate -q -dBATCH -sDEVICE=$GSEPSDevice -sOutputFile=/dev/null < /dev/null 2> /dev/null; then
+    if $PSDelegate -q -dBATCH -sDEVICE=$GSEPSDevice -sOutputFile=/dev/null < /dev/null 1>&5 2>&5; then
         :
     else
         GSEPSDevice=epswrite
@@ -35464,9 +35464,6 @@ if test "$have_jbig"    = 'yes' ; then
 fi
 if test "$have_png$have_jpeg" = 'yesyes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES jng"
-fi
-if test "$have_jp2"   = 'yes' ; then
-   MAGICK_DELEGATES="$MAGICK_DELEGATES jp2"
 fi
 if test "$have_jpeg"   = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES jpeg"
@@ -38798,7 +38795,6 @@ matches your expectations.
   Graphviz          --with-gvc=$with_gvc		$have_gvc
   JBIG              --with-jbig=$with_jbig		$have_jbig
   JPEG v1           --with-jpeg=$with_jpeg		$have_jpeg
-  JPEG-2000         --with-jp2=$with_jp2		$have_jp2
   LCMS              --with-lcms=$with_lcms		$have_lcms
   LQR               --with-lqr=$with_lqr		$have_lqr
   LTDL              --with-ltdl=$with_ltdl		$have_ltdl
@@ -38884,7 +38880,6 @@ matches your expectations.
   Graphviz          --with-gvc=$with_gvc		$have_gvc
   JBIG              --with-jbig=$with_jbig		$have_jbig
   JPEG v1           --with-jpeg=$with_jpeg		$have_jpeg
-  JPEG-2000         --with-jp2=$with_jp2		$have_jp2
   LCMS              --with-lcms=$with_lcms		$have_lcms
   LQR               --with-lqr=$with_lqr		$have_lqr
   LTDL              --with-ltdl=$with_ltdl		$have_ltdl

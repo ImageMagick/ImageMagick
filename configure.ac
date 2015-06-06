@@ -2105,7 +2105,7 @@ AC_ARG_WITH(gvc,
     [AC_HELP_STRING([--with-gvc],
                     [enable GVC support])],
     [with_gvc=$withval],
-    [with_gvc='no'])
+    [with_gvc='yes'])
 
 if test "$with_gvc" != 'yes'; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-gvc=$with_gvc "
@@ -3315,7 +3315,7 @@ if test $have_pcl = 'yes'; then
     AC_MSG_RESULT([])
     # PCLColorDevice
     AC_MSG_CHECKING([for pcl color device])
-    if $PCLDelegate -dBATCH -sDEVICE=$PCLColorDevice -sOutputFile=/dev/null < /dev/null 2> /dev/null; then
+    if $PCLDelegate -dBATCH -sDEVICE=$PCLColorDevice -sOutputFile=/dev/null < /dev/null 1>&AS_MESSAGE_LOG_FD 2>&AS_MESSAGE_LOG_FD; then
         :
     else
         PCLColorDevice=ppmraw
@@ -3324,7 +3324,7 @@ if test $have_pcl = 'yes'; then
 
     # PCLCMYKDevice
     AC_MSG_CHECKING([for pcl CMYK device])
-    if $PCLDelegate -dBATCH -sDEVICE=$PCLColorDevice -sOutputFile=/dev/null < /dev/null 2> /dev/null; then
+    if $PCLDelegate -dBATCH -sDEVICE=$PCLColorDevice -sOutputFile=/dev/null < /dev/null 1>&AS_MESSAGE_LOG_FD 2>&AS_MESSAGE_LOG_FD; then
         :
     else
         PCLCMYKDevice=$PCLColorDevice
@@ -3333,7 +3333,7 @@ if test $have_pcl = 'yes'; then
 
     # PCLMonoDevice
     AC_MSG_CHECKING([for pcl mono device])
-    if $PCLDelegate -dBATCH -sDEVICE=$PCLMonoDevice -sOutputFile=/dev/null < /dev/null 2> /dev/null; then
+    if $PCLDelegate -dBATCH -sDEVICE=$PCLMonoDevice -sOutputFile=/dev/null < /dev/null 1>&AS_MESSAGE_LOG_FD 2>&AS_MESSAGE_LOG_FD; then
         :
     else
         PCLMonoDevice=$PCLColorDevice
@@ -3361,7 +3361,7 @@ if test $have_xps = 'yes'; then
     AC_MSG_RESULT([])
     # XPSColorDevice
     AC_MSG_CHECKING([for xps color device])
-    if $XPSDelegate -dBATCH -sDEVICE=$XPSColorDevice -sOutputFile=/dev/null < /dev/null 2> /dev/null; then
+    if $XPSDelegate -dBATCH -sDEVICE=$XPSColorDevice -sOutputFile=/dev/null < /dev/null 1>&AS_MESSAGE_LOG_FD 2>&AS_MESSAGE_LOG_FD; then
         :
     else
         XPSColorDevice=ppmraw
@@ -3370,7 +3370,7 @@ if test $have_xps = 'yes'; then
 
     # XPSCMYKDevice
     AC_MSG_CHECKING([for xps CMYK device])
-    if $XPSDelegate -dBATCH -sDEVICE=$XPSColorDevice -sOutputFile=/dev/null < /dev/null 2> /dev/null; then
+    if $XPSDelegate -dBATCH -sDEVICE=$XPSColorDevice -sOutputFile=/dev/null < /dev/null 1>&AS_MESSAGE_LOG_FD 2>&AS_MESSAGE_LOG_FD; then
         :
     else
         XPSCMYKDevice=$XPSColorDevice
@@ -3379,7 +3379,7 @@ if test $have_xps = 'yes'; then
 
     # XPSMonoDevice
     AC_MSG_CHECKING([for xps mono device])
-    if $XPSDelegate -dBATCH -sDEVICE=$XPSMonoDevice -sOutputFile=/dev/null < /dev/null 2> /dev/null; then
+    if $XPSDelegate -dBATCH -sDEVICE=$XPSMonoDevice -sOutputFile=/dev/null < /dev/null 1>&AS_MESSAGE_LOG_FD 2>&AS_MESSAGE_LOG_FD; then
         :
     else
         XPSMonoDevice=$XPSColorDevice
@@ -3417,7 +3417,7 @@ if test $have_gs = 'yes'; then
 
     # GSAlphaDevice
     AC_MSG_CHECKING([for gs alpha device])
-    if $PSDelegate -q -dBATCH -sDEVICE=$GSAlphaDevice -sOutputFile=/dev/null < /dev/null 2> /dev/null; then
+    if $PSDelegate -q -dBATCH -sDEVICE=$GSAlphaDevice -sOutputFile=/dev/null < /dev/null 1>&AS_MESSAGE_LOG_FD 2>&AS_MESSAGE_LOG_FD; then
         :
     else
         GSAlphaDevice=pnmraw
@@ -3426,7 +3426,7 @@ if test $have_gs = 'yes'; then
 
     # GSColorDevice
     AC_MSG_CHECKING([for gs color device])
-    if $PSDelegate -q -dBATCH -sDEVICE=$GSColorDevice -sOutputFile=/dev/null < /dev/null 2> /dev/null; then
+    if $PSDelegate -q -dBATCH -sDEVICE=$GSColorDevice -sOutputFile=/dev/null < /dev/null 1>&AS_MESSAGE_LOG_FD 2>&AS_MESSAGE_LOG_FD; then
         :
     else
         GSColorDevice=pnmraw
@@ -3435,7 +3435,7 @@ if test $have_gs = 'yes'; then
 
     # GSCMYKDevice
     AC_MSG_CHECKING([for gs CMYK device])
-    if $PSDelegate -q -dBATCH -sDEVICE=$GSCMYKDevice -sOutputFile=/dev/null < /dev/null 2> /dev/null; then
+    if $PSDelegate -q -dBATCH -sDEVICE=$GSCMYKDevice -sOutputFile=/dev/null < /dev/null 1>&AS_MESSAGE_LOG_FD 2>&AS_MESSAGE_LOG_FD; then
         :
     else
         GSCMYKDevice=bmpsep8
@@ -3444,7 +3444,7 @@ if test $have_gs = 'yes'; then
 
     # GSMonoDevice
     AC_MSG_CHECKING([for gs mono device])
-    if $PSDelegate -q -dBATCH -sDEVICE=$GSMonoDevice -sOutputFile=/dev/null < /dev/null 2> /dev/null; then
+    if $PSDelegate -q -dBATCH -sDEVICE=$GSMonoDevice -sOutputFile=/dev/null < /dev/null 1>&AS_MESSAGE_LOG_FD 2>&AS_MESSAGE_LOG_FD; then
         :
     else
         GSMonoDevice=$GSColorDevice
@@ -3453,7 +3453,7 @@ if test $have_gs = 'yes'; then
 
     # GSPDFDevice
     AC_MSG_CHECKING([for gs PDF writing device])
-    if $PSDelegate -q -dBATCH -sDEVICE=$GSPDFDevice -sOutputFile=/dev/null < /dev/null 2> /dev/null; then
+    if $PSDelegate -q -dBATCH -sDEVICE=$GSPDFDevice -sOutputFile=/dev/null < /dev/null 1>&AS_MESSAGE_LOG_FD 2>&AS_MESSAGE_LOG_FD; then
         :
     else
         GSPDFDevice=nodevice
@@ -3462,7 +3462,7 @@ if test $have_gs = 'yes'; then
 
     # GSPSDevice
     AC_MSG_CHECKING([for gs PS writing device])
-    if $PSDelegate -q -dBATCH -sDEVICE=$GSPSDevice -sOutputFile=/dev/null < /dev/null 2> /dev/null; then
+    if $PSDelegate -q -dBATCH -sDEVICE=$GSPSDevice -sOutputFile=/dev/null < /dev/null 1>&AS_MESSAGE_LOG_FD 2>&AS_MESSAGE_LOG_FD; then
         :
     else
         GSPSDevice=pswrite
@@ -3471,7 +3471,7 @@ if test $have_gs = 'yes'; then
 
     # GSEPSDevice
     AC_MSG_CHECKING([for gs EPS writing device])
-    if $PSDelegate -q -dBATCH -sDEVICE=$GSEPSDevice -sOutputFile=/dev/null < /dev/null 2> /dev/null; then
+    if $PSDelegate -q -dBATCH -sDEVICE=$GSEPSDevice -sOutputFile=/dev/null < /dev/null 1>&AS_MESSAGE_LOG_FD 2>&AS_MESSAGE_LOG_FD; then
         :
     else
         GSEPSDevice=epswrite
@@ -3583,9 +3583,6 @@ if test "$have_jbig"    = 'yes' ; then
 fi
 if test "$have_png$have_jpeg" = 'yesyes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES jng"
-fi
-if test "$have_jp2"   = 'yes' ; then
-   MAGICK_DELEGATES="$MAGICK_DELEGATES jp2"
 fi
 if test "$have_jpeg"   = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES jpeg"
@@ -3873,7 +3870,6 @@ matches your expectations.
   Graphviz          --with-gvc=$with_gvc		$have_gvc
   JBIG              --with-jbig=$with_jbig		$have_jbig
   JPEG v1           --with-jpeg=$with_jpeg		$have_jpeg
-  JPEG-2000         --with-jp2=$with_jp2		$have_jp2
   LCMS              --with-lcms=$with_lcms		$have_lcms
   LQR               --with-lqr=$with_lqr		$have_lqr
   LTDL              --with-ltdl=$with_ltdl		$have_ltdl
