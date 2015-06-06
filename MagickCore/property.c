@@ -85,10 +85,14 @@
 #include "MagickCore/xml-tree.h"
 #include "MagickCore/xml-tree-private.h"
 #if defined(MAGICKCORE_LCMS_DELEGATE)
-#if defined(MAGICKCORE_LCMS_VERSION_1)
-#include "lcms.h"
-#else
+#if defined(MAGICKCORE_HAVE_LCMS_LCMS2_H)
+#include <lcms/lcms2.h>
+#elif defined(MAGICKCORE_HAVE_LCMS2_H)
 #include "lcms2.h"
+#elif defined(MAGICKCORE_HAVE_LCMS_LCMS_H)
+#include <lcms/lcms.h>
+#else
+#include "lcms.h"
 #endif
 #endif
 

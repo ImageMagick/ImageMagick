@@ -2268,13 +2268,20 @@ if test "$have_lcms" = 'yes'; then
   LCMS_CFLAGS="$LCMS2_CFLAGS"
   LCMS_LIBS="$LCMS2_LIBS"
   CFLAGS="$LCMS2_CFLAGS $CFLAGS"
+  AC_CHECK_HEADER(lcms2/lcms2.h,have_lcms_header='yes',,)
+  if test "$have_lcms_header" = 'yes'; then
+    AC_DEFINE(HAVE_LCMS2_LCMS2_H,1,Define if you have the <lcms2/lcms2.h> header file.)
+  fi
 else
   PKG_CHECK_MODULES(LCMS,[lcms >= 1.0.0], have_lcms=yes, have_lcms=no)
   if test "$have_lcms" = 'yes'; then
     AC_DEFINE(LCMS_DELEGATE,1,Define if you have LCMS library)
     AC_DEFINE(LCMS_VERSION_1,1,Define if you have LCMS version 1 library)
     CFLAGS="$LCMS_CFLAGS $CFLAGS"
-  fi
+    AC_CHECK_HEADER(lcms/lcms.h,have_lcms_header='yes',,)
+    if test "$have_lcms_header" = 'yes'; then
+      AC_DEFINE(HAVE_LCMS_LCMS_H,1,Define if you have the <lcms/lcms.h> header file.)
+    fi
 fi
 
 AM_CONDITIONAL(LCMS_DELEGATE, test "$have_lcms" = 'yes')
@@ -3856,8 +3863,7 @@ matches your expectations.
   JBIG              --with-jbig=$with_jbig		$have_jbig
   JPEG v1           --with-jpeg=$with_jpeg		$have_jpeg
   JPEG-2000         --with-jp2=$with_jp2		$have_jp2
-  LCMS v1           --with-lcms=$with_lcms		$have_lcms
-  LCMS v2           --with-lcms2=$with_lcms2		$have_lcms2
+  LCMS              --with-lcms=$with_lcms		$have_lcms
   LIBJPEG2          --with-openjp2=$with_openjp2	$have_openjp2
   LQR               --with-lqr=$with_lqr		$have_lqr
   LTDL              --with-ltdl=$with_ltdl		$have_ltdl
