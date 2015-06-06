@@ -44,7 +44,7 @@ static inline MagickRealType MagickOver_(const MagickRealType p,
 
   Sa=1.0-QuantumScale*alpha;
   Da=1.0-QuantumScale*beta;
-  return(QuantumRange*(QuantumScale*Sa*p+QuantumScale*Da*q*(1.0-Sa)));
+  return(Sa*p+Da*q*(1.0-Sa));
 }
 
 static inline void MagickCompositeOver(const PixelPacket *p,
