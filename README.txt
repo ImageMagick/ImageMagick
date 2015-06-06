@@ -35,7 +35,7 @@ Introduction to ImageMagick
 
   The authoritative ImageMagick web site is
   http://www.imagemagick.org. The authoritative source code repository is
-  http://subversion.imagemagick.org/subversion/ImageMagick/.
+  https://subversion.imagemagick.org/subversion/ImageMagick/.
 
 
 Features and Capabilities
