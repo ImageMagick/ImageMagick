@@ -95,8 +95,7 @@
 #include "jpeglib.h"
 #include "jerror.h"
 #endif
-
-
+
 /*
   Define declarations.
 */
@@ -105,8 +104,7 @@
 #define IPTC_MARKER  (JPEG_APP0+13)
 #define XML_MARKER  (JPEG_APP0+1)
 #define MaxBufferExtent  16384
-
-
+
 /*
   Typedef declarations.
 */
@@ -173,8 +171,7 @@ typedef struct _QuantizationTable
   unsigned int
     *levels;
 } QuantizationTable;
-
-
+
 /*
   Forward declarations.
 */
@@ -182,8 +179,7 @@ typedef struct _QuantizationTable
 static MagickBooleanType
   WriteJPEGImage(const ImageInfo *,Image *,ExceptionInfo *);
 #endif
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -217,8 +213,7 @@ static MagickBooleanType IsJPEG(const unsigned char *magick,const size_t length)
     return(MagickTrue);
   return(MagickFalse);
 }
-
-
+
 #if defined(MAGICKCORE_JPEG_DELEGATE)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1486,8 +1481,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   return(GetFirstImageInList(image));
 }
 #endif
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1598,8 +1592,7 @@ ModuleExport size_t RegisterJPEGImage(void)
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1627,8 +1620,7 @@ ModuleExport void UnregisterJPEGImage(void)
   (void) UnregisterMagickInfo("JPEG");
   (void) UnregisterMagickInfo("JPE");
 }
-
-
+
 #if defined(MAGICKCORE_JPEG_DELEGATE)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2111,6 +2103,9 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
   ErrorManager
     error_manager;
 
+  Image
+    *volatile volatile_image;
+
   int
     colorspace,
     quality;
@@ -2168,17 +2163,18 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
   (void) ResetMagickMemory(&error_manager,0,sizeof(error_manager));
   (void) ResetMagickMemory(&jpeg_info,0,sizeof(jpeg_info));
   (void) ResetMagickMemory(&jpeg_error,0,sizeof(jpeg_error));
-  jpeg_info.client_data=(void *) image;
+  volatile_image=image;
+  jpeg_info.client_data=(void *) volatile_image;
   jpeg_info.err=jpeg_std_error(&jpeg_error);
   jpeg_info.err->emit_message=(void (*)(j_common_ptr,int)) JPEGWarningHandler;
   jpeg_info.err->error_exit=(void (*)(j_common_ptr)) JPEGErrorHandler;
   error_manager.exception=exception;
-  error_manager.image=image;
+  error_manager.image=volatile_image;
   memory_info=(MemoryInfo *) NULL;
   if (setjmp(error_manager.error_recovery) != 0)
     {
       jpeg_destroy_compress(&jpeg_info);
-      (void) CloseBlob(image);
+      (void) CloseBlob(volatile_image);
       return(MagickFalse);
     }
   jpeg_info.client_data=(void *) &error_manager;
