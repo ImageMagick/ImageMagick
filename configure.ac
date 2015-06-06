@@ -3403,7 +3403,7 @@ AC_SUBST(XPSVersion)
 #
 GSAlphaDevice=pngalpha
 GSColorDevice=pnmraw
-GSCMYKDevice=pam
+GSCMYKDevice=pamcmyk32
 GSMonoDevice=pbmraw
 GSPDFDevice=pdfwrite
 GSPSDevice=ps2write
@@ -3421,30 +3421,30 @@ if test $have_gs = 'yes'; then
     fi
     AC_MSG_RESULT([$GSVersion])
 
-    # GSAlphaDevice
-    AC_MSG_CHECKING([for gs alpha device])
-    if $PSDelegate -q -dBATCH -sDEVICE=$GSAlphaDevice -sOutputFile=/dev/null < /dev/null 1>&AS_MESSAGE_LOG_FD 2>&AS_MESSAGE_LOG_FD; then
-        :
-    else
-        GSAlphaDevice=pnmraw
-    fi
-    AC_MSG_RESULT([$GSAlphaDevice])
-
     # GSColorDevice
     AC_MSG_CHECKING([for gs color device])
     if $PSDelegate -q -dBATCH -sDEVICE=$GSColorDevice -sOutputFile=/dev/null < /dev/null 1>&AS_MESSAGE_LOG_FD 2>&AS_MESSAGE_LOG_FD; then
         :
     else
-        GSColorDevice=pnmraw
+        GSColorDevice=ppmraw
     fi
     AC_MSG_RESULT([$GSColorDevice])
+
+    # GSAlphaDevice
+    AC_MSG_CHECKING([for gs alpha device])
+    if $PSDelegate -q -dBATCH -sDEVICE=$GSAlphaDevice -sOutputFile=/dev/null < /dev/null 1>&AS_MESSAGE_LOG_FD 2>&AS_MESSAGE_LOG_FD; then
+        :
+    else
+        GSAlphaDevice=$GSColorDevice
+    fi
+    AC_MSG_RESULT([$GSAlphaDevice])
 
     # GSCMYKDevice
     AC_MSG_CHECKING([for gs CMYK device])
     if $PSDelegate -q -dBATCH -sDEVICE=$GSCMYKDevice -sOutputFile=/dev/null < /dev/null 1>&AS_MESSAGE_LOG_FD 2>&AS_MESSAGE_LOG_FD; then
         :
     else
-        GSCMYKDevice=bmpsep8
+        GSCMYKDevice=pam
     fi
     AC_MSG_RESULT([$GSCMYKDevice])
 
@@ -3464,7 +3464,7 @@ if test $have_gs = 'yes'; then
     else
         GSPDFDevice=nodevice
     fi
-        AC_MSG_RESULT([$GSPDFDevice])
+    AC_MSG_RESULT([$GSPDFDevice])
 
     # GSPSDevice
     AC_MSG_CHECKING([for gs PS writing device])
