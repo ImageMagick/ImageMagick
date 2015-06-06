@@ -1940,9 +1940,9 @@ fi
 
 if test "$have_djvu" = 'yes'; then
   AC_DEFINE(DJVU_DELEGATE,1,Define if you have DJVU library)
-  DJVU_CFLAGS="$DDJVUAPI_CFLAGS"
-  DJVU_LIBS="$DDJVUAPI_LIBS"
-  CFLAGS="$DDJVUAPI_CFLAGS $CFLAGS"
+  DJVU_CFLAGS="$ddjvuapi_CFLAGS"
+  DJVU_LIBS="$ddjvuapi_LIBS"
+  CFLAGS="$ddjvuapi_CFLAGS $CFLAGS"
 fi
 
 AM_CONDITIONAL(DJVU_DELEGATE, test "$have_djvu" = 'yes')
