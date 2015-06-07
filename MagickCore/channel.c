@@ -769,7 +769,7 @@ MagickExport Image *SeparateImage(const Image *image,
   }
   separate_view=DestroyCacheView(separate_view);
   image_view=DestroyCacheView(image_view);
-  (void) SetImageChannelMask(separate_image,GrayPixelChannel);
+  (void) SetImageChannelMask(separate_image,GrayChannel);
   if (status == MagickFalse)
     separate_image=DestroyImage(separate_image);
   return(separate_image);
