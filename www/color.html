@@ -174,7 +174,7 @@ hsla(120, 255,  127.5,  1.0)       the same, with an alpha value of 1.0
 <pre>
 cielab(62.253188, 23.950124, 48.410653)
 </pre>
-<p>Note, the <code>a</code> and <code>b</code> components of any Lab color you specify are biased by 50% to ensure it fits in the quantum range (typically 0 to 65535).</p>
+<p>Note, the <code>a</code> and <code>b</code> components of any Lab color you specify are biased by 50% to ensure it fits in the quantum range (typically 0 to 65535).  The bias is retained when writing to the TIFF and MIFF image formats.  However, the TXT format supports negative pixel values so the bias is removed when writing to this format (e.g. <kbd>convert xc:cyan -colorspace LAB txt:<kbd>).</kbd></kbd></p>
 
 <p>Or specify colors generically with the <code>icc-color</code> keyword, for example:</p>
 <pre>
