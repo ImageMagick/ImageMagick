@@ -204,33 +204,33 @@ options, and more global use of 'image properities' (more commonly known as
 <p>You can access pixel channel as array elements (e.g. <code>pixel[1]</code>) or use convenience accessors to get or set pixel channels:</p>
 
 <pre>
-GetPixela()			SetPixela()
-GetPixelAlpha()		SetPixelAlpha()
-GetPixelb()			SetPixelb()
-GetPixelBlack()		SetPixelBlack()
-GetPixelBlue()		SetPixelBlue()
-GetPixelCb()			SetPixelCb()
-GetPixelCr()			SetPixelCr()
-GetPixelCyan()		SetPixelCyan()
-GetPixelGray()		SetPixelGray()
-GetPixelGreen()		SetPixelGreen()
-GetPixelIndex()		SetPixelIndex()
-GetPixelL()			SetPixelL()
-GetPixelMagenta()		SetPixelMagenta()
-GetPixelReadMask()		SetPixelReadMask()
-GetPixelWriteMask()		SetPixelWriteMask()
-GetPixelMetacontentExtent()	SetPixelMetacontentExtent()
-GetPixelOpacity()		SetPixelOpacity()
-GetPixelRed()			SetPixelRed()
-GetPixelYellow()		SetPixelYellow()
-GetPixelY()			SetPixelY()
+GetPixela()                  SetPixela()
+GetPixelAlpha()              SetPixelAlpha()
+GetPixelb()                  SetPixelb()
+GetPixelBlack()              SetPixelBlack()
+GetPixelBlue()               SetPixelBlue()
+GetPixelCb()                 SetPixelCb()
+GetPixelCr()                 SetPixelCr()
+GetPixelCyan()               SetPixelCyan()
+GetPixelGray()               SetPixelGray()
+GetPixelGreen()              SetPixelGreen()
+GetPixelIndex()              SetPixelIndex()
+GetPixelL()                  SetPixelL()
+GetPixelMagenta()            SetPixelMagenta()
+GetPixelReadMask()           SetPixelReadMask()
+GetPixelWriteMask()          SetPixelWriteMask()
+GetPixelMetacontentExtent()  SetPixelMetacontentExtent()
+GetPixelOpacity()            SetPixelOpacity()
+GetPixelRed()                SetPixelRed()
+GetPixelYellow()             SetPixelYellow()
+GetPixelY()                  SetPixelY()
 </pre>
 
 <p>You can find these accessors defined in the header file, <code>MagickCore/pixel-accessor.h</code></p>
 
 <h4>Pixel Traits</h4>
 <p>Each pixel channel includes one or more of these traits:</p>
-<dl>
+<dl class="dl-horizontal">
 <dt>Undefined</dt>
 <dd>no traits associated with this pixel channel</dd>
 <dt>Copy</dt>
@@ -242,25 +242,23 @@ GetPixelY()			SetPixelY()
 </dl>
 <p>We provide these methods to set and get pixel traits:</p>
 <pre>
-GetPixelAlphaTraits()		SetPixelAlphaTraits()
-GetPixelBlackTraits()		SetPixelBlackTraits()
-GetPixelBlueTraits()		SetPixelBlueTraits()
-GetPixelCbTraits()		SetPixelCbTraits()
-GetPixelChannelTraits()	SetPixelChannelTraits()
-GetPixelCrTraits()		SetPixelCrTraits()
-GetPixelGrayTraits()		SetPixelGrayTraits()
-GetPixelGreenTraits()		SetPixelGreenTraits()
-GetPixelIndexTraits()		SetPixelIndexTraits()
-GetPixelMagentaTraits()	SetPixelMagentaTraits()
-GetPixelRedTraits()		SetPixelRedTraits()
-GetPixelYellowTraits()	SetPixelYellowTraits()
-GetPixelYTraits()		SetPixelYTraits()
+GetPixelAlphaTraits()    SetPixelAlphaTraits()
+GetPixelBlackTraits()    SetPixelBlackTraits()
+GetPixelBlueTraits()     SetPixelBlueTraits()
+GetPixelCbTraits()       SetPixelCbTraits()
+GetPixelChannelTraits()  SetPixelChannelTraits()
+GetPixelCrTraits()       SetPixelCrTraits()
+GetPixelGrayTraits()     SetPixelGrayTraits()
+GetPixelGreenTraits()    SetPixelGreenTraits()
+GetPixelIndexTraits()    SetPixelIndexTraits()
+GetPixelMagentaTraits()  SetPixelMagentaTraits()
+GetPixelRedTraits()      SetPixelRedTraits()
+GetPixelYellowTraits()   SetPixelYellowTraits()
+GetPixelYTraits()        SetPixelYTraits()
 </pre>
-<p>For convenience you can set the active trait for a set of pixel channels with a channel mask and these methods:</p>
+<p>For convenience you can set the active trait for a set of pixel channels with a channel mask and this method:</p>
 <pre>
-PopPixelChannelMap()
-SetPixelChannelMap()
-SetPixelChannelMask()
+SetImageChannelMask()
 </pre>
 
 <p>Previously MagickCore methods had channel analogs, for example, NegateImage() and NegateImageChannels().  The channel analog methods are no longer necessary because the pixel channel traits specify whether to act on a particular pixel channel or whether to blend with the alpha mask.  For example, instead of</p>
@@ -269,15 +267,15 @@ NegateImageChannel(image,channel);
 </pre>
 <p>we use:</p>
 <pre>
-channel_mask=SetPixelChannelMask(image,channel);
+channel_mask=SetImageChannelMask(image,channel);
 NegateImage(image,exception);
-(void) SetPixelChannelMap(image,channel_mask);
+(void) SetImageChannelMask(image,channel_mask);
 </pre>
 
 <h4>Pixel User Channels</h4>
 <p>In version 7, we introduce pixel user channels.  Traditionally we utilize 4 channels, red, green, blue, and alpha.   For CMYK we also have a black channel.  User channels are designed to contain whatever additional channel information that makes sense for your application.  Some examples include extra channels in TIFF or PSD images or perhaps you require a channel with infrared information for the pixel.  You can associate traits with the user channels so that they when they are acted upon by an image processing algorithm (e.g. blur) the pixels are copied, acted upon by the algorithm, or even blended with the alpha channel if that makes sense.</p>
 <h4>Pixel Metacontent</h4>
-<p>In version 7, we introduce pixel metacontent.  Metacontent is content about content. So rather than being the content itself, it's something that describes or is associated with the content.  Here the content is a pixel.  The pixel metacontent is for your exclusive use and is accessed with these MagickCore API methods:</p>
+<p>In version 7, we introduce pixel metacontent.  Metacontent is content about content. So rather than being the content itself, it's something that describes or is associated with the content.  Here the content is a pixel.  The pixel metacontent is for your exclusive use (internally the data is just copied, it is not modified) and is accessed with these MagickCore API methods:</p>
 <pre>
 SetImageMetacontentExtent()
 GetImageMetacontentExtent()
@@ -288,7 +286,7 @@ GetCacheViewVirtualMetacontent()
 </pre>
 
 <h2 class="magick-header"><a id="alpha"></a>Alpha</h2>
-<p>We support alpha now, previously opacity.  With alpha, a value of 0 means that the pixel does not have any coverage information and is transparent; i.e. there was no color contribution from any geometry because the geometry did not overlap this pixel. A value of QuantumRange means that the pixel is opaque because the geometry completely overlapped the pixel. As a consequence, in version 7, the PixelInfo structure member alpha has replaced the previous opacity member.  Another consequence is the alpha part of a sRGB value in hexadecimal notation is now reversed (e.g. #0000 is fully transparent).</p>
+<p>We support alpha now, previously opacity.  With alpha, a value of <kbd>0</kbd> means that the pixel does not have any coverage information and is transparent; i.e. there was no color contribution from any geometry because the geometry did not overlap this pixel. A value of <code>QuantumRange</code> means that the pixel is opaque because the geometry completely overlapped the pixel. As a consequence, in version 7, the PixelInfo structure member alpha has replaced the previous opacity member.  Another consequence is the alpha part of a sRGB value in hexadecimal notation is now reversed (e.g. #0000 is fully transparent).</p>
 <h2 class="magick-header"><a id="colorspace"></a>Colorspace</h2>
 <p>The <code>Rec601Luma</code> and <code>Rec709Luma</code> colorspaces are no longer supported.  Instead, specify the <code>gray</code> colorspace and choose from these intensity options:</p>
 <pre>
@@ -316,7 +314,7 @@ identify -verbose -mask r mask.png statue.tif
 <p>Here are a list of changes to the MagickCore API:</p>
 <ul>
 <li>Almost all image processing algorithms are now channel aware.</li>
-<li>MagickCore, version 7, adds an ExceptionInfo argument to those methods that lacked it in version 6, e.g. <code>NegateImage(image,MagickTrue,exception</code>);</li>
+<li>The MagickCore API adds an <code>ExceptionInfo</code> argument to those methods that lacked it in version 6, e.g. <code>NegateImage(image,MagickTrue,exception</code>);</li>
 <li>All method channel analogs have been removed (e.g. BlurImageChannel()), they are no longer necessary, use pixel traits instead.</li>
 <li>Public and private API calls are now declared with the GCC visibility attribute.  The MagickCore and MagickWand dynamic libraries now only export public struct and function declarations.</li>
 <li>The InterpolatePixelMethod enum is now PixelInterpolateMethod.</li>
@@ -460,12 +458,12 @@ scripts.</p>
 <p>The expression consists of one or more channels, either mnemonic or numeric (e.g. red or 0, green or 1, etc.), separated by certain operation symbols as follows:</p>
 
 <pre>
-&lt;=&gt;     exchange two channels (e.g. red&lt;=&gt;blue)
-=&gt;      copy one channel to another channel (e.g. red=&gt;green)
-=       assign a constant value to a channel (e.g. red=50%)
-,       write new image with channels in the specified order (e.g. red, green)
-;       add a new output image for the next set of channel operations (e.g. red; green; blue)
-|       move to the next input image for the source of channel data (e.g. | gray=&gt;alpha)
+&lt;=&gt;  exchange two channels (e.g. red&lt;=&gt;blue)
+=&gt;   copy one channel to another channel (e.g. red=&gt;green)
+=    assign a constant value to a channel (e.g. red=50%)
+,    write new image with channels in the specified order (e.g. red, green)
+;    add a new output image for the next set of channel operations (e.g. red; green; blue)
+|    move to the next input image for the source of channel data (e.g. | gray=&gt;alpha)
 </pre>
 
 <p>For example, to create 3 grayscale images from the red, green, and blue channels of an image, use:</p>
@@ -602,12 +600,12 @@ example "+annotate", "+resize", "+clut", and "+draw" .</p>
 </ul>
 <h4>Grayscale</h4>
 <ul>
-<li>Grayscale images consume one pixel channel in ImageMagick version 7.  To process RGB, set the colorspace to RGB (e.g. -colorspace rgb).</li>
+<li>Grayscale images consume one pixel channel in ImageMagick version 7.  To process RGB, set the colorspace to RGB (e.g. -colorspace sRGB).</li>
 </ul>
 <h4>MagickCore API</h4>
 <ul>
 <li>Almost all image processing algorithms are now channel aware.</li>
-<li>MagickCore, version 7, adds an ExceptionInfo argument to those methods that lacked it in version 6, e.g. NegateImage(image,MagickTrue,exception);</li>
+<li>MagickCore, version 7, adds an ExceptionInfo argument to those methods that lacked it in version 6, e.g. <code>NegateImage(image,MagickTrue,exception);</code></li>
 <li>All method channel analogs have been removed (e.g. BlurImageChannel()), they are no longer necessary, use pixel traits instead.</li>
 <li>Public and private API calls are now declared with the GCC visibility attribute.  The MagickCore and MagickWand dynamic libraries now only export public struct and function declarations.</li>
 <li>The InterpolatePixelMethod enum is now PixelInterpolateMethod.</li>

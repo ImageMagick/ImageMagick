@@ -3241,10 +3241,10 @@ calculations, to the full range by multiplying by <var>QuantumRange</var>.)</p>
     <tr><td>Exponential  </td>            <td>base-e exponential function</td></tr>
     <tr><td>LeftShift </td>       <td>Shift the pixel values left by <var>value</var> bits (i.e., multiply pixels by 2<sup><var>value</var></sup>).</td></tr>
     <tr><td>Log  </td>            <td>Apply scaled logarithm to normalized pixels.</td></tr>
-    <tr><td>Max  </td>            <td>Clip pixels at upper bound <var>value</var>.</td></tr>
+    <tr><td>Max  </td>            <td>Set pixels to maximum of <var>value</var> and current pixel <var>value</var> (i.e. set any pixels currently less than <var>value</var> to <var>value</var>).</td></tr>
     <tr><td>Mean  </td>            <td>Add the <var>value</var> and divide by 2.</td></tr>
     <tr><td>Median  </td>          <td>Choose the median value from an image sequence.</td></tr>
-    <tr><td>Min  </td>            <td>Clip pixels at lower bound <var>value</var>.</td></tr>
+    <tr><td>Min  </td>            <td>Set pixels to minimum of <var>value</var> and current pixel <var>value</var> (i.e. set any pixels currently greater than <var>value</var> to <var>value</var>).</td></tr>
     <tr><td>Multiply </td>        <td>Multiply pixels by <var>value</var>.</td></tr>
     <tr><td>Or  </td>             <td>Binary OR of pixels with <var>value</var>.</td></tr>
     <tr><td>Pow </td>             <td>Raise normalized pixels to the power <var>value</var>.</td></tr>
@@ -6072,10 +6072,6 @@ chroma channels are not downsampled.
 Use the <a href="command-line-options.html#sampling-factor">-sampling-factor</a> option to specify the
 factors for chroma downsampling.</p>
 
-<p>For the MIFF image format, quality/10 is the zlib compression level, which
-is 0 (worst but fastest compression) to 9 (best but slowest). It has no effect
-on the image appearance, since the compression is always lossless.</p>
-
 <p>For the JPEG-2000 image format, quality is mapped using a non-linear
 equation to the compression ratio required by the Jasper library. This
 non-linear equation is intended to loosely approximate the quality provided by
@@ -6134,6 +6130,8 @@ over values from the -quality option.</p>
 
 <p>For further information, see
 the <a href="http://www.w3.org/pub/WWW/TR">PNG</a> specification.</p>
+
+<p>For the MIFF and TIFF image formats, quality/10 is the <a href="command-line-options.html#compress">Zip/BZip</a> compression level, which is 0 (worst but fastest compression) to 9 (best but slowest). It has no effect on the image appearance, since the compression is always lossless.</p>
 
 <div style="margin: auto;">
   <h3 class="magick-header"><a id="quantize"></a>-quantize <var>colorspace</var></h3>
