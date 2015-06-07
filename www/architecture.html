@@ -134,7 +134,7 @@ if (image == (Image *) NULL)
 
 <p>When the pixel cache is initialized, pixels are scaled from whatever bit depth they originated from to that required by the pixel cache.  For example, a 1-channel 1-bit monochrome PBM image is scaled to a 4 channel 8-bit RGBA image, if you are using the Q8 version of ImageMagick, and 16-bit RGBA for the Q16 version.  You can determine which version you have with the <a href="command-line-options.html#version">‑version</a> option: </p>
 
-<pre><span class="crtprompt"> </span><span class="crtin">identify -version</span><span class="crtout">Version: ImageMagick 6.9.1-3 2015-03-21 Q16 http://www.imagemagick.org</span></pre>
+<pre><span class="crtprompt"> </span><span class="crtin">identify -version</span><span class="crtout">Version: ImageMagick 6.9.1-4 2015-03-21 Q16 http://www.imagemagick.org</span></pre>
 <p>As you can see, the convenience of the pixel cache sometimes comes with a trade-off in storage (e.g. storing a 1-bit monochrome image as 16-bit RGBA is wasteful) and speed (i.e. storing the entire image in memory is generally slower than accessing one scanline of pixels at a time).  In most cases, the benefits of the pixel cache typically outweigh any disadvantages.</p>
 
 <h3><a id="authentic-pixels"></a>Access the Pixel Cache</h3>
@@ -678,7 +678,7 @@ Performance[12]: 10i 4.525ips 0.799e 18.320u 0:02.210
 
 <pre>
 identify -version
-Features: OpenMP OpenCL
+Features: DPC Cipher Modules OpenCL OpenMP
 </pre>
 
 <p>If so, run this command to realize a significant speed-up for image convolution:</p>
