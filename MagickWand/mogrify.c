@@ -1020,11 +1020,11 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             (void) SyncImageSettings(mogrify_info,*image,exception);
             if (*option == '+')
               {
-                SetPixelChannelMask(*image,DefaultChannels);
+                (void) SetPixelChannelMask(*image,DefaultChannels);
                 break;
               }
             channel=(ChannelType) ParseChannelOption(argv[i+1]);
-            SetPixelChannelMask(*image,channel);
+            (void) SetPixelChannelMask(*image,channel);
             break;
           }
         if (LocaleCompare("charcoal",option+1) == 0)

@@ -1945,14 +1945,14 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
         {
           if (IfPlusOp)
             {
-              SetPixelChannelMask(_image,DefaultChannels);
+              (void) SetPixelChannelMask(_image,DefaultChannels);
               break;
             }
           parse=ParseChannelOption(arg1);
           if (parse < 0)
             CLIWandExceptArgBreak(OptionError,"UnrecognizedIntensityMethod",
               option,arg1);
-          SetPixelChannelMask(_image,(ChannelType) parse);
+          (void) SetPixelChannelMask(_image,(ChannelType) parse);
           break;
         }
       if (LocaleCompare("charcoal",option+1) == 0)

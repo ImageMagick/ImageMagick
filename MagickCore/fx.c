@@ -1122,7 +1122,7 @@ static double FxChannelStatistics(FxInfo *fx_info,Image *image,
         {
           channel=(PixelChannel) option;
           channel_mask=(ChannelType) (channel_mask | (1 << channel));
-          SetPixelChannelMask(image,channel_mask);
+          (void) SetPixelChannelMask(image,channel_mask);
         }
     }
   (void) FormatLocaleString(key,MagickPathExtent,"%p.%.20g.%s",(void *) image,
@@ -1131,7 +1131,7 @@ static double FxChannelStatistics(FxInfo *fx_info,Image *image,
   if (value != (const char *) NULL)
     {
       if (channel_mask != UndefinedChannel)
-        SetPixelChannelMask(image,channel_mask);
+        (void) SetPixelChannelMask(image,channel_mask);
       return(QuantumScale*StringToDouble(value,(char **) NULL));
     }
   (void) DeleteNodeFromSplayTree(fx_info->symbols,key);
@@ -1199,7 +1199,7 @@ static double FxChannelStatistics(FxInfo *fx_info,Image *image,
         standard_deviation);
     }
   if (channel_mask != UndefinedChannel)
-    SetPixelChannelMask(image,channel_mask);
+    (void) SetPixelChannelMask(image,channel_mask);
   (void) AddValueToSplayTree(fx_info->symbols,ConstantString(key),
     ConstantString(statistic));
   return(QuantumScale*StringToDouble(statistic,(char **) NULL));
@@ -4343,7 +4343,7 @@ MagickExport Image *ShadowImage(const Image *image,const double alpha,
   border_image=DestroyImage(border_image);
   if (shadow_image == (Image *) NULL)
     return((Image *) NULL);
-  SetPixelChannelMask(shadow_image,channel_mask);
+  (void) SetPixelChannelMask(shadow_image,channel_mask);
   if (shadow_image->page.width == 0)
     shadow_image->page.width=shadow_image->columns;
   if (shadow_image->page.height == 0)

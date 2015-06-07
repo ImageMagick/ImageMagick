@@ -8988,7 +8988,42 @@ WandExport MagickBooleanType MagickSetImageBorderColor(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k S e t I m a g e C l i p M a s k                               %
+%   M a g i c k S e t I m a g e C h a n n e l M a s k                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickSetImageChannelMask() sets image channel mask.
+%
+%  The format of the MagickSetImageChannelMask method is:
+%
+%      ChannelType MagickSetImageChannelMask(MagickWand *wand,
+%        const ChannelType channel_mask)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+%    o channel_mask: the channel_mask wand.
+%
+*/
+WandExport ChannelType MagickSetImageChannelMask(MagickWand *wand,
+  const ChannelType channel_mask)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (IfMagickTrue(wand->debug))
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  return(SetImageChannelMask(wand->images,channel_mask));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k S e t I m a g e M a s k                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %

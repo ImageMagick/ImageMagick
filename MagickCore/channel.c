@@ -274,7 +274,7 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
         Image
           *canvas;
 
-        SetPixelChannelMask(destination_image,channel_mask);
+        (void) SetPixelChannelMask(destination_image,channel_mask);
         if ((channel_op == ExtractChannelOp) && (channels == 1))
           (void) SetImageColorspace(destination_image,GRAYColorspace,exception);
         status=SetImageStorageClass(destination_image,DirectClass,exception);
@@ -424,7 +424,7 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
     if (status == MagickFalse)
       break;
   }
-  SetPixelChannelMask(destination_image,channel_mask);
+  (void) SetPixelChannelMask(destination_image,channel_mask);
   if ((channel_op == ExtractChannelOp) && (channels == 1))
     (void) SetImageColorspace(destination_image,GRAYColorspace,exception);
   status=SetImageStorageClass(destination_image,DirectClass,exception);

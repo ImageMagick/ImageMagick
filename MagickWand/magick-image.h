@@ -26,6 +26,9 @@ extern "C" {
 extern WandExport ChannelFeatures
   *MagickGetImageFeatures(MagickWand *,const size_t);
 
+extern WandExport ChannelType
+   MagickSetImageChannelMask(MagickWand *,const ChannelType);
+
 extern WandExport ChannelStatistics
   *MagickGetImageStatistics(MagickWand *);
 
