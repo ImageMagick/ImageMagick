@@ -208,6 +208,9 @@ typedef struct _CacheView
 /*
   Pixel method declarations.
 */
+extern MagickExport ChannelType
+  SetPixelChannelMask(Image *,const ChannelType);
+
 extern MagickExport MagickBooleanType
   ExportImagePixels(Image *,const ssize_t,const ssize_t,const size_t,
     const size_t,const char *,const StorageType,void *,ExceptionInfo *),
@@ -248,8 +251,7 @@ extern MagickExport MagickRealType
 extern MagickExport void
   ConformPixelInfo(Image *,const PixelInfo *,PixelInfo *,ExceptionInfo *),
   GetPixelInfo(const Image *,PixelInfo *),
-  InitializePixelChannelMap(Image *),
-  SetPixelChannelMask(Image *,const ChannelType);
+  InitializePixelChannelMap(Image *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

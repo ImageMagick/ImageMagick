@@ -2146,13 +2146,7 @@ MagickExport MagickBooleanType SetImageBackgroundColor(Image *image,
 MagickExport ChannelType SetImageChannelMask(Image *image,
   const ChannelType channel_mask)
 {
-  ChannelType
-    mask;
-
-  mask=image->channel_mask;
-  image->channel_mask=channel_mask;
-  SetPixelChannelMask(image,channel_mask);
-  return(mask);
+  return(SetPixelChannelMask(image,channel_mask));
 }
 
 /*

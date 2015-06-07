@@ -6242,7 +6242,8 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixelInfo(const PixelInfo *p,
 %
 %  The format of the SetPixelChannelMask method is:
 %
-%      void SetPixelChannelMask(Image *image,const ChannelType channel_mask)
+%      ChannelType SetPixelChannelMask(Image *image,
+%        const ChannelType channel_mask)
 %
 %  A description of each parameter follows:
 %
@@ -6251,17 +6252,23 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixelInfo(const PixelInfo *p,
 %    o channel_mask: the channel mask.
 %
 */
-MagickExport void SetPixelChannelMask(Image *image,
+MagickExport ChannelType SetPixelChannelMask(Image *image,
   const ChannelType channel_mask)
 {
 #define GetChannelBit(mask,bit)  (((size_t) (mask) >> (size_t) (bit)) & 0x01)
 
+  ChannelType
+    mask;
+
   register ssize_t
     i;
 
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(PixelEvent,GetMagickModule(),"%s[%08x]",
       image->filename,channel_mask);
+  mask=image->channel_mask;
   image->channel_mask=channel_mask;
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
   {
@@ -6297,6 +6304,7 @@ MagickExport void SetPixelChannelMask(Image *image,
     SetPixelChannelTraits(image,WriteMaskPixelChannel,CopyPixelTrait);
   if (image->debug != MagickFalse)
     LogPixelChannels(image);
+  return(mask);
 }
 
 /*
