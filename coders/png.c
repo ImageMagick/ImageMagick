@@ -13121,13 +13121,13 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
 
          if (need_defi && final_delay > 2 && (final_delay != 4) &&
             (final_delay != 5) && (final_delay != 10) && (final_delay != 20) &&
-            (final_delay != 25) && (final_delay != 50) && (1UL*final_delay !=
-               1UL*image->ticks_per_second))
+            (final_delay != 25) && (final_delay != 50) &&
+            (final_delay != image->ticks_per_second))
            mng_info->need_fram=MagickTrue;  /* make it exact; cannot be VLC */
        }
 
      if (mng_info->need_fram != MagickFalse)
-        mng_info->ticks_per_second=1UL*image->ticks_per_second;
+        mng_info->ticks_per_second=image->ticks_per_second;
      /*
         If pseudocolor, we should also check to see if all the
         palettes are identical and write a global PLTE if they are.
