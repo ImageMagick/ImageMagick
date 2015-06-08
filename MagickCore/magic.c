@@ -249,9 +249,9 @@ static int CompareMagickInfoSize(const void *a,const void *b)
     *ma,
     *mb;
 
-  ma=(MagicInfo *)a;
-  mb=(MagicInfo *)b;
-  return((mb->offset+mb->length) - (ma->offset+ma->length));
+  ma=(MagicInfo *) a;
+  mb=(MagicInfo *) b;
+  return((int) ((mb->offset+mb->length)-(ma->offset+ma->length)));
 }
 
 static LinkedListInfo *AcquireMagicCache(const char *filename,
