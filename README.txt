@@ -44,7 +44,7 @@ Features and Capabilities
   
       * Format conversion: convert an image from one format to another (e.g.
         PNG to JPEG).
-      * Transform: resize, rotate, crop, flip or trim an image.
+      * Transform: resize, rotate, deskew, crop, flip or trim an image.
       * Transparency: render portions of an image invisible.
       * Draw: add shapes or text to an image.
       * Decorate: add a border or frame to an image.
