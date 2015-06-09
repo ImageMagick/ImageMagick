@@ -58,6 +58,84 @@
 <div class="magick-header">
 <p class="text-center"><a href="monitor.html#"></a></p>
 
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/monitor_8c.html" id="SetImageProgressMonitor">SetImageProgressMonitor</a></h2>
+
+<p>SetImageProgressMonitor() sets the image progress monitor to the specified method and returns the previous progress monitor if any.  The progress monitor method looks like this:</p>
+
+<pre class="text">
+    MagickBooleanType MagickProgressMonitor(const char *text,
+const MagickOffsetType offset,const MagickSizeType extent,
+void *client_data)
+</pre>
+
+<p>If the progress monitor returns MagickFalse, the current operation is interrupted.</p>
+
+<p>The format of the SetImageProgressMonitor method is:</p>
+
+<pre class="text">
+MagickProgressMonitor SetImageProgressMonitor(Image *image,
+  const MagickProgressMonitor progress_monitor,void *client_data)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>progress_monitor</dt>
+<dd>Specifies a pointer to a method to monitor progress of an image operation. </dd>
+
+<dd> </dd>
+<dt>client_data</dt>
+<dd>Specifies a pointer to any client data. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/monitor_8c.html" id="SetImageInfoProgressMonitor">SetImageInfoProgressMonitor</a></h2>
+
+<p>SetImageInfoProgressMonitor() sets the image_info progress monitor to the specified method and returns the previous progress monitor if any.  The progress monitor method looks like this:</p>
+
+<pre class="text">
+    MagickBooleanType MagickProgressMonitor(const char *text,
+const MagickOffsetType offset,const MagickSizeType extent,
+void *client_data)
+</pre>
+
+<p>If the progress monitor returns MagickFalse, the current operation is interrupted.</p>
+
+<p>The format of the SetImageInfoProgressMonitor method is:</p>
+
+<pre class="text">
+MagickProgressMonitor SetImageInfoProgressMonitor(ImageInfo *image_info,
+  const MagickProgressMonitor progress_monitor,void *client_data)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image_info</dt>
+<dd>the image info. </dd>
+
+<dd> </dd>
+<dt>progress_monitor</dt>
+<dd>Specifies a pointer to a method to monitor progress of an image operation. </dd>
+
+<dd> </dd>
+<dt>client_data</dt>
+<dd>Specifies a pointer to any client data. </dd>
+
+<dd>  </dd>
+</dl>
 </div>
   <footer class="magick-footer">
     <div class="magick-nav-item pull-left">

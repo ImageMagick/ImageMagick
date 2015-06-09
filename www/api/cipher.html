@@ -58,6 +58,239 @@
 <div class="magick-header">
 <p class="text-center"><a href="cipher.html#"></a></p>
 
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/cipher_8c.html" id="AcquireAESInfo">AcquireAESInfo</a></h2>
+
+<p>AcquireAESInfo() allocate the AESInfo structure.</p>
+
+<p>The format of the AcquireAESInfo method is:</p>
+
+<pre class="text">
+AESInfo *AcquireAESInfo(void)
+</pre>
+
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/cipher_8c.html" id="DestroyAESInfo">DestroyAESInfo</a></h2>
+
+<p>DestroyAESInfo() zeros memory associated with the AESInfo structure.</p>
+
+<p>The format of the DestroyAESInfo method is:</p>
+
+<pre class="text">
+AESInfo *DestroyAESInfo(AESInfo *aes_info)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>aes_info</dt>
+<dd>the cipher context. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/cipher_8c.html" id="EncipherAESBlock">EncipherAESBlock</a></h2>
+
+<p>EncipherAESBlock() enciphers a single block of plaintext to produce a block of ciphertext.</p>
+
+<p>The format of the EncipherAESBlock method is:</p>
+
+<pre class="text">
+void EncipherAES(AESInfo *aes_info,const unsigned char *plaintext,
+  unsigned char *ciphertext)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>aes_info</dt>
+<dd>the cipher context. </dd>
+
+<dd> </dd>
+<dt>plaintext</dt>
+<dd>the plain text. </dd>
+
+<dd> </dd>
+<dt>ciphertext</dt>
+<dd>the cipher text. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/cipher_8c.html" id="PasskeyDecipherImage">PasskeyDecipherImage</a></h2>
+
+<p>PasskeyDecipherImage() converts cipher pixels to plain pixels.</p>
+
+<p>The format of the PasskeyDecipherImage method is:</p>
+
+<pre class="text">
+MagickBooleanType PasskeyDecipherImage(Image *image,
+  const StringInfo *passkey,ExceptionInfo *exception)
+MagickBooleanType DecipherImage(Image *image,const char *passphrase,
+  ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>passphrase</dt>
+<dd>decipher cipher pixels with this passphrase. </dd>
+
+<dd> </dd>
+<dt>passkey</dt>
+<dd>decrypt cipher pixels with this passkey. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/cipher_8c.html" id="PasskeyEncipherImage">PasskeyEncipherImage</a></h2>
+
+<p>PasskeyEncipherImage() converts pixels to cipher-pixels.</p>
+
+<p>The format of the PasskeyEncipherImage method is:</p>
+
+<pre class="text">
+MagickBooleanType PasskeyEncipherImage(Image *image,
+  const StringInfo *passkey,ExceptionInfo *exception)
+MagickBooleanType EncipherImage(Image *image,const char *passphrase,
+  ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>passphrase</dt>
+<dd>encipher pixels with this passphrase. </dd>
+
+<dd> </dd>
+<dt>passkey</dt>
+<dd>decrypt cipher pixels with this passkey. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/cipher_8c.html" id="SetAESKey">SetAESKey</a></h2>
+
+<p>SetAESKey() sets the key for the AES cipher.  The key length is specified in bits.  Valid values are 128, 192, or 256 requiring a key buffer length in bytes of 16, 24, and 32 respectively.</p>
+
+<p>The format of the SetAESKey method is:</p>
+
+<pre class="text">
+SetAESKey(AESInfo *aes_info,const StringInfo *key)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>aes_info</dt>
+<dd>the cipher context. </dd>
+
+<dd> </dd>
+<dt>key</dt>
+<dd>the key. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/cipher_8c.html" id="PasskeyDecipherImage">PasskeyDecipherImage</a></h2>
+
+<p>PasskeyDecipherImage() converts cipher pixels to plain pixels.</p>
+
+<p>The format of the PasskeyDecipherImage method is:</p>
+
+<pre class="text">
+MagickBooleanType PasskeyDecipherImage(Image *image,
+  const StringInfo *passkey,ExceptionInfo *exception)
+MagickBooleanType DecipherImage(Image *image,const char *passphrase,
+  ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>passphrase</dt>
+<dd>decipher cipher pixels with this passphrase. </dd>
+
+<dd> </dd>
+<dt>passkey</dt>
+<dd>decrypt cipher pixels with this passkey. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/cipher_8c.html" id="PasskeyEncipherImage">PasskeyEncipherImage</a></h2>
+
+<p>PasskeyEncipherImage() converts pixels to cipher-pixels.</p>
+
+<p>The format of the PasskeyEncipherImage method is:</p>
+
+<pre class="text">
+MagickBooleanType PasskeyEncipherImage(Image *image,
+  const StringInfo *passkey,ExceptionInfo *exception)
+MagickBooleanType EncipherImage(Image *image,const char *passphrase,
+  ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>passphrase</dt>
+<dd>decipher cipher pixels with this passphrase. </dd>
+
+<dd> </dd>
+<dt>passkey</dt>
+<dd>decrypt cipher pixels with this passkey. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
 </div>
   <footer class="magick-footer">
     <div class="magick-nav-item pull-left">

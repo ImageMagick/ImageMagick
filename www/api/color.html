@@ -56,7 +56,145 @@
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="text-center"><a href="color.html#"></a></p>
+<p class="text-center"><a href="color.html#AcquireColorCache">AcquireColorCache</a> • <a href="color.html#GetColorInfoList">GetColorInfoList</a> • <a href="color.html#GetColorList">GetColorList</a> • <a href="color.html#ListColorInfo">ListColorInfo</a> • <a href="color.html#QueryColorname">QueryColorname</a></p>
+
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/color_8c.html" id="AcquireColorCache">AcquireColorCache</a></h2>
+
+<p>AcquireColorCache() caches one or more color configurations which provides a mapping between color attributes and a color name.</p>
+
+<p>The format of the AcquireColorCache method is:</p>
+
+<pre class="text">
+LinkedListInfo *AcquireColorCache(const char *filename,
+  ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>filename</dt>
+<dd>the font file name. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/color_8c.html" id="GetColorInfoList">GetColorInfoList</a></h2>
+
+<p>GetColorInfoList() returns any colors that match the specified pattern.</p>
+
+<p>The format of the GetColorInfoList function is:</p>
+
+<pre class="text">
+const ColorInfo **GetColorInfoList(const char *pattern,
+  size_t *number_colors,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>pattern</dt>
+<dd>Specifies a pointer to a text string containing a pattern. </dd>
+
+<dd> </dd>
+<dt>number_colors</dt>
+<dd> This integer returns the number of colors in the list. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/color_8c.html" id="GetColorList">GetColorList</a></h2>
+
+<p>GetColorList() returns any colors that match the specified pattern.</p>
+
+<p>The format of the GetColorList function is:</p>
+
+<pre class="text">
+char **GetColorList(const char *pattern,size_t *number_colors,
+  ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>pattern</dt>
+<dd>Specifies a pointer to a text string containing a pattern. </dd>
+
+<dd> </dd>
+<dt>number_colors</dt>
+<dd> This integer returns the number of colors in the list. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/color_8c.html" id="ListColorInfo">ListColorInfo</a></h2>
+
+<p>ListColorInfo() lists color names to the specified file.  Color names are a convenience.  Rather than defining a color by its red, green, and blue intensities just use a color name such as white, blue, or yellow.</p>
+
+<p>The format of the ListColorInfo method is:</p>
+
+<pre class="text">
+MagickBooleanType ListColorInfo(FILE *file,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows.</p>
+
+<dt>file</dt>
+<p>List color names to this file handle.</p>
+
+<dt>exception</dt>
+<p>return any errors or warnings in this structure.</p>
+
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/color_8c.html" id="QueryColorname">QueryColorname</a></h2>
+
+<p>QueryColorname() returns a named color for the given color intensity. If an exact match is not found, a hex value is returned instead.  For example an intensity of rgb:(0,0,0) returns black whereas rgb:(223,223,223) returns #dfdfdf.</p>
+
+<p>UPDATE: the 'image' argument is no longer needed as all information should have been preset using GetPixelInfo().</p>
+
+<p>The format of the QueryColorname method is:</p>
+
+<pre class="text">
+MagickBooleanType QueryColorname(const Image *image,
+  const PixelInfo *color,const ComplianceType compliance,char *name,
+  ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows.</p>
+
+<dt>image</dt>
+<p>the image. (not used! - color gets settings from GetPixelInfo()</p>
+
+<dt>color</dt>
+<p>the color intensities.</p>
+
+<dt>Compliance</dt>
+<p>Adhere to this color standard: SVG, X11, or XPM.</p>
+
+<dt>name</dt>
+<p>Return the color name or hex value.</p>
+
+<dt>exception</dt>
+<p>return any errors or warnings in this structure.</p>
 
 </div>
   <footer class="magick-footer">

@@ -58,6 +58,32 @@
 <div class="magick-header">
 <p class="text-center"><a href="signature.html#"></a></p>
 
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/signature_8c.html" id="SignatureImage">SignatureImage</a></h2>
+
+<p>SignatureImage() computes a message digest from an image pixel stream with an implementation of the NIST SHA-256 Message Digest algorithm.  This signature uniquely identifies the image and is convenient for determining if an image has been modified or whether two images are identical.</p>
+
+<p>The format of the SignatureImage method is:</p>
+
+<pre class="text">
+MagickBooleanType SignatureImage(Image *image,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
 </div>
   <footer class="magick-footer">
     <div class="magick-nav-item pull-left">

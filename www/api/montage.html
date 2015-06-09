@@ -58,6 +58,120 @@
 <div class="magick-header">
 <p class="text-center"><a href="montage.html#"></a></p>
 
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/montage_8c.html" id="CloneMontageInfo">CloneMontageInfo</a></h2>
+
+<p>CloneMontageInfo() makes a copy of the given montage info structure.  If NULL is specified, a new image info structure is created initialized to default values.</p>
+
+<p>The format of the CloneMontageInfo method is:</p>
+
+<pre class="text">
+MontageInfo *CloneMontageInfo(const ImageInfo *image_info,
+  const MontageInfo *montage_info)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image_info</dt>
+<dd>the image info. </dd>
+
+<dd> </dd>
+<dt>montage_info</dt>
+<dd>the montage info. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/montage_8c.html" id="DestroyMontageInfo">DestroyMontageInfo</a></h2>
+
+<p>DestroyMontageInfo() deallocates memory associated with montage_info.</p>
+
+<p>The format of the DestroyMontageInfo method is:</p>
+
+<pre class="text">
+MontageInfo *DestroyMontageInfo(MontageInfo *montage_info)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>montage_info</dt>
+<dd>Specifies a pointer to an MontageInfo structure. </dd>
+
+<dd> </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/montage_8c.html" id="GetMontageInfo">GetMontageInfo</a></h2>
+
+<p>GetMontageInfo() initializes montage_info to default values.</p>
+
+<p>The format of the GetMontageInfo method is:</p>
+
+<pre class="text">
+void GetMontageInfo(const ImageInfo *image_info,
+  MontageInfo *montage_info)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image_info</dt>
+<dd>a structure of type ImageInfo. </dd>
+
+<dd> </dd>
+<dt>montage_info</dt>
+<dd>Specifies a pointer to a MontageInfo structure. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/montage_8c.html" id="MontageImageList">MontageImageList</a></h2>
+
+<p>MontageImageList() is a layout manager that lets you tile one or more thumbnails across an image canvas.</p>
+
+<p>The format of the MontageImageList method is:</p>
+
+<pre class="text">
+Image *MontageImageList(const ImageInfo *image_info,
+  const MontageInfo *montage_info,Image *images,
+  ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image_info</dt>
+<dd>the image info. </dd>
+
+<dd> </dd>
+<dt>montage_info</dt>
+<dd>Specifies a pointer to a MontageInfo structure. </dd>
+
+<dd> </dd>
+<dt>images</dt>
+<dd>Specifies a pointer to an array of Image structures. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
 </div>
   <footer class="magick-footer">
     <div class="magick-nav-item pull-left">

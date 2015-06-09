@@ -58,6 +58,367 @@
 <div class="magick-header">
 <p class="text-center"><a href="resize.html#"></a></p>
 
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/resize_8c.html" id="AdaptiveResizeImage">AdaptiveResizeImage</a></h2>
+
+<p>AdaptiveResizeImage() adaptively resize image with pixel resampling.</p>
+
+<p>This is shortcut function for a fast interpolative resize using mesh interpolation.  It works well for small resizes of less than +/- 50 of the original image size.  For larger resizing on images a full filtered and slower resize function should be used instead.</p>
+
+<p>The format of the AdaptiveResizeImage method is:</p>
+
+<pre class="text">
+Image *AdaptiveResizeImage(const Image *image,const size_t columns,
+  const size_t rows,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>columns</dt>
+<dd>the number of columns in the resized image. </dd>
+
+<dd> </dd>
+<dt>rows</dt>
+<dd>the number of rows in the resized image. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/resize_8c.html" id="InterpolativeResizeImage">InterpolativeResizeImage</a></h2>
+
+<p>InterpolativeResizeImage() resizes an image using the specified interpolation method.</p>
+
+<p>The format of the InterpolativeResizeImage method is:</p>
+
+<pre class="text">
+Image *InterpolativeResizeImage(const Image *image,const size_t columns,
+  const size_t rows,const PixelInterpolateMethod method,
+  ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>columns</dt>
+<dd>the number of columns in the resized image. </dd>
+
+<dd> </dd>
+<dt>rows</dt>
+<dd>the number of rows in the resized image. </dd>
+
+<dd> </dd>
+<dt>method</dt>
+<dd>the pixel interpolation method. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/resize_8c.html" id="LiquidRescaleImage">LiquidRescaleImage</a></h2>
+
+<p>LiquidRescaleImage() rescales image with seam carving.</p>
+
+<p>The format of the LiquidRescaleImage method is:</p>
+
+<pre class="text">
+Image *LiquidRescaleImage(const Image *image,const size_t columns,
+  const size_t rows,const double delta_x,const double rigidity,
+  ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>columns</dt>
+<dd>the number of columns in the rescaled image. </dd>
+
+<dd> </dd>
+<dt>rows</dt>
+<dd>the number of rows in the rescaled image. </dd>
+
+<dd> </dd>
+<dt>delta_x</dt>
+<dd>maximum seam transversal step (0 means straight seams). </dd>
+
+<dd> </dd>
+<dt>rigidity</dt>
+<dd>introduce a bias for non-straight seams (typically 0). </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/resize_8c.html" id="MagnifyImage">MagnifyImage</a></h2>
+
+<p>MagnifyImage() doubles the size of the image with a pixel art scaling algorithm.</p>
+
+<p>The format of the MagnifyImage method is:</p>
+
+<pre class="text">
+Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/resize_8c.html" id="MinifyImage">MinifyImage</a></h2>
+
+<p>MinifyImage() is a convenience method that scales an image proportionally to half its size.</p>
+
+<p>The format of the MinifyImage method is:</p>
+
+<pre class="text">
+Image *MinifyImage(const Image *image,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/resize_8c.html" id="ResampleImage">ResampleImage</a></h2>
+
+<p>ResampleImage() resize image in terms of its pixel size, so that when displayed at the given resolution it will be the same size in terms of real world units as the original image at the original resolution.</p>
+
+<p>The format of the ResampleImage method is:</p>
+
+<pre class="text">
+Image *ResampleImage(Image *image,const double x_resolution,
+  const double y_resolution,const FilterTypes filter,
+  ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image to be resized to fit the given resolution. </dd>
+
+<dd> </dd>
+<dt>x_resolution</dt>
+<dd>the new image x resolution. </dd>
+
+<dd> </dd>
+<dt>y_resolution</dt>
+<dd>the new image y resolution. </dd>
+
+<dd> </dd>
+<dt>filter</dt>
+<dd>Image filter to use. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/resize_8c.html" id="ResizeImage">ResizeImage</a></h2>
+
+<p>ResizeImage() scales an image to the desired dimensions, using the given filter (see AcquireFilterInfo()).</p>
+
+<p>If an undefined filter is given the filter defaults to Mitchell for a colormapped image, a image with a matte channel, or if the image is enlarged.  Otherwise the filter defaults to a Lanczos.</p>
+
+<p>ResizeImage() was inspired by Paul Heckbert's "zoom" program.</p>
+
+<p>The format of the ResizeImage method is:</p>
+
+<pre class="text">
+Image *ResizeImage(Image *image,const size_t columns,const size_t rows,
+  const FilterTypes filter,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>columns</dt>
+<dd>the number of columns in the scaled image. </dd>
+
+<dd> </dd>
+<dt>rows</dt>
+<dd>the number of rows in the scaled image. </dd>
+
+<dd> </dd>
+<dt>filter</dt>
+<dd>Image filter to use. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/resize_8c.html" id="SampleImage">SampleImage</a></h2>
+
+<p>SampleImage() scales an image to the desired dimensions with pixel sampling.  Unlike other scaling methods, this method does not introduce any additional color into the scaled image.</p>
+
+<p>The format of the SampleImage method is:</p>
+
+<pre class="text">
+Image *SampleImage(const Image *image,const size_t columns,
+  const size_t rows,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>columns</dt>
+<dd>the number of columns in the sampled image. </dd>
+
+<dd> </dd>
+<dt>rows</dt>
+<dd>the number of rows in the sampled image. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/resize_8c.html" id="ScaleImage">ScaleImage</a></h2>
+
+<p>ScaleImage() changes the size of an image to the given dimensions.</p>
+
+<p>The format of the ScaleImage method is:</p>
+
+<pre class="text">
+Image *ScaleImage(const Image *image,const size_t columns,
+  const size_t rows,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>columns</dt>
+<dd>the number of columns in the scaled image. </dd>
+
+<dd> </dd>
+<dt>rows</dt>
+<dd>the number of rows in the scaled image. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/resize_8c.html" id="ThumbnailImage">ThumbnailImage</a></h2>
+
+<p>ThumbnailImage() changes the size of an image to the given dimensions and removes any associated profiles.  The goal is to produce small low cost thumbnail images suited for display on the Web.</p>
+
+<p>The format of the ThumbnailImage method is:</p>
+
+<pre class="text">
+Image *ThumbnailImage(const Image *image,const size_t columns,
+  const size_t rows,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>columns</dt>
+<dd>the number of columns in the scaled image. </dd>
+
+<dd> </dd>
+<dt>rows</dt>
+<dd>the number of rows in the scaled image. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
 </div>
   <footer class="magick-footer">
     <div class="magick-nav-item pull-left">

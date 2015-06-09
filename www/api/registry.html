@@ -58,6 +58,177 @@
 <div class="magick-header">
 <p class="text-center"><a href="registry.html#"></a></p>
 
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/registry_8c.html" id="DefineImageRegistry">DefineImageRegistry</a></h2>
+
+<p>DefineImageRegistry() associates a key/value pair with the image registry.</p>
+
+<p>The format of the DefineImageRegistry method is:</p>
+
+<pre class="text">
+MagickBooleanType DefineImageRegistry(const RegistryType type,
+  const char *option,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>type</dt>
+<dd>the type. </dd>
+
+<dd> </dd>
+<dt>option</dt>
+<dd>the option. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>the exception. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/registry_8c.html" id="DeleteImageRegistry">DeleteImageRegistry</a></h2>
+
+<p>DeleteImageRegistry() deletes a key from the image registry.</p>
+
+<p>The format of the DeleteImageRegistry method is:</p>
+
+<pre class="text">
+MagickBooleanType DeleteImageRegistry(const char *key)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>key</dt>
+<dd>the registry. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/registry_8c.html" id="GetImageRegistry">GetImageRegistry</a></h2>
+
+<p>GetImageRegistry() returns a value associated with an image registry key.</p>
+
+<p>The format of the GetImageRegistry method is:</p>
+
+<pre class="text">
+void *GetImageRegistry(const RegistryType type,const char *key,
+  ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>type</dt>
+<dd>the type. </dd>
+
+<dd> </dd>
+<dt>key</dt>
+<dd>the key. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>the exception. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/registry_8c.html" id="GetNextImageRegistry">GetNextImageRegistry</a></h2>
+
+<p>GetNextImageRegistry() gets the next image registry value.</p>
+
+<p>The format of the GetNextImageRegistry method is:</p>
+
+<pre class="text">
+char *GetNextImageRegistry(void)
+</pre>
+
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/registry_8c.html" id="RegistryComponentTerminus">RegistryComponentTerminus</a></h2>
+
+<p>RegistryComponentTerminus() destroys the registry component.</p>
+
+<p>The format of the DestroyDefines method is:</p>
+
+<pre class="text">
+void RegistryComponentTerminus(void)
+</pre>
+
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/registry_8c.html" id="RemoveImageRegistry">RemoveImageRegistry</a></h2>
+
+<p>RemoveImageRegistry() removes a key from the image registry and returns its value.</p>
+
+<p>The format of the RemoveImageRegistry method is:</p>
+
+<pre class="text">
+void *RemoveImageRegistry(const char *key)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>key</dt>
+<dd>the registry. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/registry_8c.html" id="ResetImageRegistryIterator">ResetImageRegistryIterator</a></h2>
+
+<p>ResetImageRegistryIterator() resets the registry iterator.  Use it in conjunction with GetNextImageRegistry() to iterate over all the values in the image registry.</p>
+
+<p>The format of the ResetImageRegistryIterator method is:</p>
+
+<pre class="text">
+ResetImageRegistryIterator(void)
+</pre>
+
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/registry_8c.html" id="SetImageRegistry">SetImageRegistry</a></h2>
+
+<p>SetImageRegistry() associates a value with an image registry key.</p>
+
+<p>The format of the SetImageRegistry method is:</p>
+
+<pre class="text">
+MagickBooleanType SetImageRegistry(const RegistryType type,
+  const char *key,const void *value,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>type</dt>
+<dd>the type. </dd>
+
+<dd> </dd>
+<dt>key</dt>
+<dd>the key. </dd>
+
+<dd> </dd>
+<dt>value</dt>
+<dd>the value. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>the exception. </dd>
+
+<dd>  </dd>
+</dl>
 </div>
   <footer class="magick-footer">
     <div class="magick-nav-item pull-left">

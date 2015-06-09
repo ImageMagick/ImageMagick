@@ -58,6 +58,68 @@
 <div class="magick-header">
 <p class="text-center"><a href="stream.html#"></a></p>
 
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/stream_8c.html" id="ReadStream">ReadStream</a></h2>
+
+<p>ReadStream() makes the image pixels available to a user supplied callback method immediately upon reading a scanline with the ReadImage() method.</p>
+
+<p>The format of the ReadStream() method is:</p>
+
+<pre class="text">
+Image *ReadStream(const ImageInfo *image_info,StreamHandler stream,
+  ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image_info</dt>
+<dd>the image info. </dd>
+
+<dd> </dd>
+<dt>stream</dt>
+<dd>a callback method. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/stream_8c.html" id="WriteStream">WriteStream</a></h2>
+
+<p>WriteStream() makes the image pixels available to a user supplied callback method immediately upon writing pixel data with the WriteImage() method.</p>
+
+<p>The format of the WriteStream() method is:</p>
+
+<pre class="text">
+MagickBooleanType WriteStream(const ImageInfo *image_info,Image *,
+  StreamHandler stream,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image_info</dt>
+<dd>the image info. </dd>
+
+<dd> </dd>
+<dt>stream</dt>
+<dd>A callback method. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
 </div>
   <footer class="magick-footer">
     <div class="magick-nav-item pull-left">

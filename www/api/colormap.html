@@ -58,6 +58,70 @@
 <div class="magick-header">
 <p class="text-center"><a href="colormap.html#"></a></p>
 
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/colormap_8c.html" id="AcquireImageColormap">AcquireImageColormap</a></h2>
+
+<p>AcquireImageColormap() allocates an image colormap and initializes it to a linear gray colorspace.  If the image already has a colormap, it is replaced.  AcquireImageColormap() returns MagickTrue if successful, otherwise MagickFalse if there is not enough memory.</p>
+
+<p>The format of the AcquireImageColormap method is:</p>
+
+<pre class="text">
+MagickBooleanType AcquireImageColormap(Image *image,const size_t colors,
+  ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>colors</dt>
+<dd>the number of colors in the image colormap. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/colormap_8c.html" id="CycleColormap">CycleColormap</a></h2>
+
+<p>CycleColormap() displaces an image's colormap by a given number of positions.  If you cycle the colormap a number of times you can produce a psychodelic effect.</p>
+
+<p>WARNING: this assumes an images colormap is in a well know and defined order. Currently Imagemagick has no way of setting that order.</p>
+
+<p>The format of the CycleColormapImage method is:</p>
+
+<pre class="text">
+MagickBooleanType CycleColormapImage(Image *image,const ssize_t displace,
+  ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>displace</dt>
+<dd> displace the colormap this amount. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
 </div>
   <footer class="magick-footer">
     <div class="magick-nav-item pull-left">
