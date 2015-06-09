@@ -324,6 +324,12 @@ identify -verbose -mask r mask.png statue.tif
 <li>The ChannelMoments structure member <code>I</code> is now <code>invariant</code>.  <code>I</code> conflicts with the <code>complex.h</code> header.</li>
 <li>We added a length parameter to FormatMagickSize() to permit variable length buffers.</li>
 </ul>
+<h2 class="magick-header"><a id="core"></a>MagickWand API</h2>
+<p>Here are a list of changes to the MagickWand API:</p>
+<ul>
+<li>The DrawMatte() method is now called DrawAlpha().</li>
+<li>The MagickSetImageBias() and MagickSetImageClipMask() methods are no longer supported.</li>
+</ul>
 <h2 class="magick-header"><a id="headers"></a>Header Files</h2>
 <p>Prior versions of ImageMagick (4-6) reference the ImageMagick header files as <code>magick/</code> and <code>wand/</code>.  ImageMagick 7 instead uses <code>MagickCore/</code> and <code>MagickWand/</code> respectively.  For example,</p>
 <pre><code>#include &lt;MagickCore/MagickCore.h&gt;
