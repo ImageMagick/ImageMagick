@@ -62,45 +62,45 @@ WriteMakefile(
 
 sub MY::postamble
 {
-        '
+	'
 Image-Magick.tar.gz: ppd pure_all #htmlifypods manifypods
 	if exist Image-Magick.tar.gz del Image-Magick.tar.gz
 	if exist Image-Magick.tar del Image-Magick.tar
-        $(TAR) $(TARFLAGS) Image-Magick.tar blib
-        $(COMPRESS) -q Image-Magick.tar
+	$(TAR) $(TARFLAGS) Image-Magick.tar blib
+	$(COMPRESS) -q Image-Magick.tar
 
 release: Image-Magick.tar.gz
 
 ppm: ppd pure_all htmlifypods manifypods
-        if exist PerlMagick.zip del PerlMagick.zip
-        $(TAR) $(TARFLAGS) Image-Magick.tar blib
-        $(COMPRESS) -q Image-Magick.tar
-        if exist x86 del x86 /f /q
-        if exist x86 rd x86
-        md x86
-        copy Image-Magick.tar$(SUFFIX) x86
-        del Image-Magick.tar$(SUFFIX)
-        if exist ppm-readme.txt copy ppm-readme.txt readme
-        $(ZIP) $(ZIPFLAGS) PerlMagick.zip readme Image-Magick.ppd x86/Image-Magick.tar$(SUFFIX)
-        del x86\Image-Magick.tar$(SUFFIX)
-        rd x86
+	if exist PerlMagick.zip del PerlMagick.zip
+	$(TAR) $(TARFLAGS) Image-Magick.tar blib
+	$(COMPRESS) -q Image-Magick.tar
+	if exist x86 del x86 /f /q
+	if exist x86 rd x86
+	md x86
+	copy Image-Magick.tar$(SUFFIX) x86
+	del Image-Magick.tar$(SUFFIX)
+	if exist ppm-readme.txt copy ppm-readme.txt readme
+	$(ZIP) $(ZIPFLAGS) PerlMagick.zip readme Image-Magick.ppd x86/Image-Magick.tar$(SUFFIX)
+	del x86\Image-Magick.tar$(SUFFIX)
+	rd x86
 
 ppm-full: ppd pure_all htmlifypods manifypods
-        if exist PerlMagick-full.zip del PerlMagick-full.zip
-        copy ..\VisualMagick\bin\*.dll blib\arch\auto\Image\Magick
-        copy ..\VisualMagick\bin\*.xml blib\arch\auto\Image\Magick
-        $(TAR) $(TARFLAGS) Image-Magick.tar blib
-        $(COMPRESS) -q Image-Magick.tar
-        if exist x86 del x86 /f /q
-        if exist x86 rd x86
-        md x86
-        copy Image-Magick.tar$(SUFFIX) x86
-        del Image-Magick.tar$(SUFFIX)
-        if exist ppm-readme.txt copy ppm-readme.txt readme
-        $(ZIP) $(ZIPFLAGS) PerlMagick-full.zip readme Image-Magick.ppd x86/Image-Magick.tar$(SUFFIX)
-        del x86\Image-Magick.tar$(SUFFIX)
-        rd x86
-        '
+	if exist PerlMagick-full.zip del PerlMagick-full.zip
+	copy ..\VisualMagick\bin\*.dll blib\arch\auto\Image\Magick
+	copy ..\VisualMagick\bin\*.xml blib\arch\auto\Image\Magick
+	$(TAR) $(TARFLAGS) Image-Magick.tar blib
+	$(COMPRESS) -q Image-Magick.tar
+	if exist x86 del x86 /f /q
+	if exist x86 rd x86
+	md x86
+	copy Image-Magick.tar$(SUFFIX) x86
+	del Image-Magick.tar$(SUFFIX)
+	if exist ppm-readme.txt copy ppm-readme.txt readme
+	$(ZIP) $(ZIPFLAGS) PerlMagick-full.zip readme Image-Magick.ppd x86/Image-Magick.tar$(SUFFIX)
+	del x86\Image-Magick.tar$(SUFFIX)
+	rd x86
+	'
 }
 
 #
@@ -116,7 +116,7 @@ sub MY::test
    #
    #  Feature   Formats Tested		Prerequisites
    #  =======   ======================	======================================
-   #   bzlib    BZip compression        BZip library
+   #   bzlib    BZip compression	BZip library
    #   cgm	CGM format		'ralcgm' program
    #   hdf	HDF format		HDF library
    #   jbig	JBIG format		JBIG library
