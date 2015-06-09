@@ -49,165 +49,14 @@
       <a class="magick-nav-item " href="../command-line-options.html">Options</a>
       <a class="magick-nav-item " href="../resources.html">Resources</a>
       <a class="magick-nav-item " href="api.html">Develop</a>
-      <a class="magick-nav-item " href="http://www.imagemagick.org/script/search.php">Search</a>
+      <a class="magick-nav-item " href="http://nextgen.imagemagick.org/script/search.php">Search</a>
       <a class="magick-nav-item pull-right" href="http://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="text-center"><a href="mime.html#AcquireMimeCache">AcquireMimeCache</a> • <a href="mime.html#GetMimeInfoList">GetMimeInfoList</a> • <a href="mime.html#GetMimeList">GetMimeList</a> • <a href="mime.html#GetMimeDescription">GetMimeDescription</a> • <a href="mime.html#GetMimeType">GetMimeType</a> • <a href="mime.html#ListMimeInfo">ListMimeInfo</a></p>
-
-<h2><a href="http://www.imagemagick.org/api/MagickCore/mime_8c.html" id="AcquireMimeCache">AcquireMimeCache</a></h2>
-
-<p>AcquireMimeCache() caches one or more magic configurations which provides a mapping between magic attributes and a magic name.</p>
-
-<p>The format of the AcquireMimeCache method is:</p>
-
-<pre class="text">
-LinkedListInfo *AcquireMimeCache(const char *filename,
-  ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<dd>
-</dd>
-
-<dd> </dd>
-<dl class="dl-horizontal">
-<dt>filename</dt>
-<dd>the font file name. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
-<dd>  </dd>
-</dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/mime_8c.html" id="GetMimeInfoList">GetMimeInfoList</a></h2>
-
-<p>GetMimeInfoList() returns any image aliases that match the specified pattern.</p>
-
-<p>The magic of the GetMimeInfoList function is:</p>
-
-<pre class="text">
-const MimeInfo **GetMimeInfoList(const char *pattern,
-  size_t *number_aliases,ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<dd>
-</dd>
-
-<dd> </dd>
-<dl class="dl-horizontal">
-<dt>pattern</dt>
-<dd>Specifies a pointer to a text string containing a pattern. </dd>
-
-<dd> </dd>
-<dt>number_aliases</dt>
-<dd> This integer returns the number of magics in the list. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
-<dd>  </dd>
-</dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/mime_8c.html" id="GetMimeList">GetMimeList</a></h2>
-
-<p>GetMimeList() returns any image format alias that matches the specified pattern.</p>
-
-<p>The format of the GetMimeList function is:</p>
-
-<pre class="text">
-char **GetMimeList(const char *pattern,size_t *number_aliases,
-  ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<dd>
-</dd>
-
-<dd> </dd>
-<dl class="dl-horizontal">
-<dt>pattern</dt>
-<dd>Specifies a pointer to a text string containing a pattern. </dd>
-
-<dd> </dd>
-<dt>number_aliases</dt>
-<dd> This integer returns the number of image format aliases in the list. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
-<dd>  </dd>
-</dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/mime_8c.html" id="GetMimeDescription">GetMimeDescription</a></h2>
-
-<p>GetMimeDescription() returns the mime type description.</p>
-
-<p>The format of the GetMimeDescription method is:</p>
-
-<pre class="text">
-const char *GetMimeDescription(const MimeInfo *mime_info)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<dd>
-</dd>
-
-<dd> </dd>
-<dl class="dl-horizontal">
-<dt>mime_info</dt>
-<dd> The magic info. </dd>
-
-<dd>  </dd>
-</dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/mime_8c.html" id="GetMimeType">GetMimeType</a></h2>
-
-<p>GetMimeType() returns the mime type.</p>
-
-<p>The format of the GetMimeType method is:</p>
-
-<pre class="text">
-const char *GetMimeType(const MimeInfo *mime_info)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<dd>
-</dd>
-
-<dd> </dd>
-<dl class="dl-horizontal">
-<dt>mime_info</dt>
-<dd> The magic info. </dd>
-
-<dd>  </dd>
-</dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/mime_8c.html" id="ListMimeInfo">ListMimeInfo</a></h2>
-
-<p>ListMimeInfo() lists the magic info to a file.</p>
-
-<p>The format of the ListMimeInfo method is:</p>
-
-<pre class="text">
-MagickBooleanType ListMimeInfo(FILE *file,ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows.</p>
-
-<dt>file</dt>
-<p>An pointer to a FILE.</p>
-
-<dt>exception</dt>
-<p>return any errors or warnings in this structure.</p>
+<p class="text-center"><a href="mime.html#"></a></p>
 
 </div>
   <footer class="magick-footer">
@@ -221,7 +70,7 @@ MagickBooleanType ListMimeInfo(FILE *file,ExceptionInfo *exception)
 </p>
     <p><a href="mime.html#">Back to top</a> •
     <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-    <a href="http://www.imagemagick.org/script/contact.php">Contact Us</a></p>
+    <a href="http://nextgen.imagemagick.org/script/contact.php">Contact Us</a></p>
     <p><small>©  1999-2015 ImageMagick Studio LLC</small></p>
   </footer>
 </div><!-- /.container -->

@@ -49,228 +49,15 @@
       <a class="magick-nav-item " href="../command-line-options.html">Options</a>
       <a class="magick-nav-item " href="../resources.html">Resources</a>
       <a class="magick-nav-item " href="api.html">Develop</a>
-      <a class="magick-nav-item " href="http://www.imagemagick.org/script/search.php">Search</a>
+      <a class="magick-nav-item " href="http://nextgen.imagemagick.org/script/search.php">Search</a>
       <a class="magick-nav-item pull-right" href="http://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="text-center"><a href="constitute.html#ConstituteImage">ConstituteImage</a> • <a href="constitute.html#PingImage">PingImage</a> • <a href="constitute.html#PingImages">PingImages</a> • <a href="constitute.html#ReadImage">ReadImage</a> • <a href="constitute.html#ReadImages">ReadImages</a> • <a href="constitute.html#WriteImage">WriteImage</a> • <a href="constitute.html#WriteImages">WriteImages</a></p>
+<p class="text-center"><a href="constitute.html#"></a></p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/constitute_8c.html" id="ConstituteImage">ConstituteImage</a></h2>
-
-<p>ConstituteImage() returns an image from the pixel data you supply. The pixel data must be in scanline order top-to-bottom.  The data can be char, short int, int, float, or double.  Float and double require the pixels to be normalized [0..1], otherwise [0..QuantumRange].  For example, to create a 640x480 image from unsigned red-green-blue character data, use:</p>
-
-<pre class="text">
-image = ConstituteImage(640,480,"RGB",CharPixel,pixels,&amp;exception);
-</pre>
-
-<p>The format of the ConstituteImage method is:</p>
-
-<pre class="text">
-Image *ConstituteImage(const size_t columns,const size_t rows,
-  const char *map,const StorageType storage,const void *pixels,
-  ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<dd>
-</dd>
-
-<dd> </dd>
-<dl class="dl-horizontal">
-<dt>columns</dt>
-<dd>width in pixels of the image. </dd>
-
-<dd> </dd>
-<dt>rows</dt>
-<dd>height in pixels of the image. </dd>
-
-<dd> </dd>
-<dt>map</dt>
-<dd> This string reflects the expected ordering of the pixel array. It can be any combination or order of R = red, G = green, B = blue, A = alpha (0 is transparent), O = opacity (0 is opaque), C = cyan, Y = yellow, M = magenta, K = black, I = intensity (for grayscale), P = pad. </dd>
-
-<dd> </dd>
-<dt>storage</dt>
-<dd>Define the data type of the pixels.  Float and double types are expected to be normalized [0..1] otherwise [0..QuantumRange].  Choose from these types: CharPixel, DoublePixel, FloatPixel, IntegerPixel, LongPixel, QuantumPixel, or ShortPixel. </dd>
-
-<dd> </dd>
-<dt>pixels</dt>
-<dd>This array of values contain the pixel components as defined by map and type.  You must preallocate this array where the expected length varies depending on the values of width, height, map, and type. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
-<dd>  </dd>
-</dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/constitute_8c.html" id="PingImage">PingImage</a></h2>
-
-<p>PingImage() returns all the properties of an image or image sequence except for the pixels.  It is much faster and consumes far less memory than ReadImage().  On failure, a NULL image is returned and exception describes the reason for the failure.</p>
-
-<p>The format of the PingImage method is:</p>
-
-<pre class="text">
-Image *PingImage(const ImageInfo *image_info,ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<dd>
-</dd>
-
-<dd> </dd>
-<dl class="dl-horizontal">
-<dt>image_info</dt>
-<dd>Ping the image defined by the file or filename members of this structure. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
-<dd>  </dd>
-</dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/constitute_8c.html" id="PingImages">PingImages</a></h2>
-
-<p>PingImages() pings one or more images and returns them as an image list.</p>
-
-<p>The format of the PingImage method is:</p>
-
-<pre class="text">
-Image *PingImages(const ImageInfo *image_info,ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<dd>
-</dd>
-
-<dd> </dd>
-<dl class="dl-horizontal">
-<dt>image_info</dt>
-<dd>the image info. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
-<dd>  </dd>
-</dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/constitute_8c.html" id="ReadImage">ReadImage</a></h2>
-
-<p>ReadImage() reads an image or image sequence from a file or file handle. The method returns a NULL if there is a memory shortage or if the image cannot be read.  On failure, a NULL image is returned and exception describes the reason for the failure.</p>
-
-<p>The format of the ReadImage method is:</p>
-
-<pre class="text">
-Image *ReadImage(const ImageInfo *image_info,ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<dd>
-</dd>
-
-<dd> </dd>
-<dl class="dl-horizontal">
-<dt>image_info</dt>
-<dd>Read the image defined by the file or filename members of this structure. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
-<dd>  </dd>
-</dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/constitute_8c.html" id="ReadImages">ReadImages</a></h2>
-
-<p>ReadImages() reads one or more images and returns them as an image list.</p>
-
-<p>The format of the ReadImage method is:</p>
-
-<pre class="text">
-Image *ReadImages(const ImageInfo *image_info,ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<dd>
-</dd>
-
-<dd> </dd>
-<dl class="dl-horizontal">
-<dt>image_info</dt>
-<dd>the image info. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
-<dd>  </dd>
-</dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/constitute_8c.html" id="WriteImage">WriteImage</a></h2>
-
-<p>WriteImage() writes an image or an image sequence to a file or file handle. If writing to a file is on disk, the name is defined by the filename member of the image structure.  WriteImage() returns MagickFalse is there is a memory shortage or if the image cannot be written.  Check the exception member of image to determine the cause for any failure.</p>
-
-<p>The format of the WriteImage method is:</p>
-
-<pre class="text">
-MagickBooleanType WriteImage(const ImageInfo *image_info,Image *image)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<dd>
-</dd>
-
-<dd> </dd>
-<dl class="dl-horizontal">
-<dt>image_info</dt>
-<dd>the image info. </dd>
-
-<dd> </dd>
-<dt>image</dt>
-<dd>the image. </dd>
-
-<dd>  </dd>
-</dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/constitute_8c.html" id="WriteImages">WriteImages</a></h2>
-
-<p>WriteImages() writes an image sequence into one or more files.  While WriteImage() can write an image sequence, it is limited to writing the sequence into a single file using a format which supports multiple frames.   WriteImages(), however, does not have this limitation, instead it generates multiple output files if necessary (or when requested).  When ImageInfo's adjoin flag is set to MagickFalse, the file name is expected to include a printf-style formatting string for the frame number (e.g. "image02d.png").</p>
-
-<p>The format of the WriteImages method is:</p>
-
-<pre class="text">
-MagickBooleanType WriteImages(const ImageInfo *image_info,Image *images,
-  const char *filename,ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<dd>
-</dd>
-
-<dd> </dd>
-<dl class="dl-horizontal">
-<dt>image_info</dt>
-<dd>the image info. </dd>
-
-<dd> </dd>
-<dt>images</dt>
-<dd>the image list. </dd>
-
-<dd> </dd>
-<dt>filename</dt>
-<dd>the image filename. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
-<dd>  </dd>
-</dl>
 </div>
   <footer class="magick-footer">
     <div class="magick-nav-item pull-left">
@@ -283,7 +70,7 @@ MagickBooleanType WriteImages(const ImageInfo *image_info,Image *images,
 </p>
     <p><a href="constitute.html#">Back to top</a> •
     <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-    <a href="http://www.imagemagick.org/script/contact.php">Contact Us</a></p>
+    <a href="http://nextgen.imagemagick.org/script/contact.php">Contact Us</a></p>
     <p><small>©  1999-2015 ImageMagick Studio LLC</small></p>
   </footer>
 </div><!-- /.container -->
