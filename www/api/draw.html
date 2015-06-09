@@ -58,6 +58,293 @@
 <div class="magick-header">
 <p class="text-center"><a href="draw.html#"></a></p>
 
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/draw_8c.html" id="AcquireDrawInfo">AcquireDrawInfo</a></h2>
+
+<p>AcquireDrawInfo() returns a DrawInfo structure properly initialized.</p>
+
+<p>The format of the AcquireDrawInfo method is:</p>
+
+<pre class="text">
+DrawInfo *AcquireDrawInfo(void)
+</pre>
+
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/draw_8c.html" id="CloneDrawInfo">CloneDrawInfo</a></h2>
+
+<p>CloneDrawInfo() makes a copy of the given draw_info structure.  If NULL is specified, a new DrawInfo structure is created initialized to default values.</p>
+
+<p>The format of the CloneDrawInfo method is:</p>
+
+<pre class="text">
+DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
+  const DrawInfo *draw_info)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image_info</dt>
+<dd>the image info. </dd>
+
+<dd> </dd>
+<dt>draw_info</dt>
+<dd>the draw info. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/draw_8c.html" id="DestroyDrawInfo">DestroyDrawInfo</a></h2>
+
+<p>DestroyDrawInfo() deallocates memory associated with an DrawInfo structure.</p>
+
+<p>The format of the DestroyDrawInfo method is:</p>
+
+<pre class="text">
+DrawInfo *DestroyDrawInfo(DrawInfo *draw_info)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>draw_info</dt>
+<dd>the draw info. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/draw_8c.html" id="DrawAffineImage">DrawAffineImage</a></h2>
+
+<p>DrawAffineImage() composites the source over the destination image as dictated by the affine transform.</p>
+
+<p>The format of the DrawAffineImage method is:</p>
+
+<pre class="text">
+MagickBooleanType DrawAffineImage(Image *image,const Image *source,
+  const AffineMatrix *affine,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>source</dt>
+<dd>the source image. </dd>
+
+<dd> </dd>
+<dt>affine</dt>
+<dd>the affine transform. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/draw_8c.html" id="DrawClipPath">DrawClipPath</a></h2>
+
+<p>DrawClipPath() draws the clip path on the image mask.</p>
+
+<p>The format of the DrawClipPath method is:</p>
+
+<pre class="text">
+MagickBooleanType DrawClipPath(Image *image,const DrawInfo *draw_info,
+  const char *name,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>draw_info</dt>
+<dd>the draw info. </dd>
+
+<dd> </dd>
+<dt>name</dt>
+<dd>the name of the clip path. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/draw_8c.html" id="DrawImage">DrawImage</a></h2>
+
+<p>DrawImage() draws a graphic primitive on your image.  The primitive may be represented as a string or filename.  Precede the filename with an "at" sign (@) and the contents of the file are drawn on the image.  You can affect how text is drawn by setting one or more members of the draw info structure.</p>
+
+<p>The format of the DrawImage method is:</p>
+
+<pre class="text">
+MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
+  ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>draw_info</dt>
+<dd>the draw info. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/draw_8c.html" id="DrawGradientImage">DrawGradientImage</a></h2>
+
+<p>DrawGradientImage() draws a linear gradient on the image.</p>
+
+<p>The format of the DrawGradientImage method is:</p>
+
+<pre class="text">
+MagickBooleanType DrawGradientImage(Image *image,
+  const DrawInfo *draw_info,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>draw_info</dt>
+<dd>the draw info. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/draw_8c.html" id="DrawPatternPath">DrawPatternPath</a></h2>
+
+<p>DrawPatternPath() draws a pattern.</p>
+
+<p>The format of the DrawPatternPath method is:</p>
+
+<pre class="text">
+MagickBooleanType DrawPatternPath(Image *image,const DrawInfo *draw_info,
+  const char *name,Image **pattern,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>draw_info</dt>
+<dd>the draw info. </dd>
+
+<dd> </dd>
+<dt>name</dt>
+<dd>the pattern name. </dd>
+
+<dd> </dd>
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/draw_8c.html" id="DrawPrimitive">DrawPrimitive</a></h2>
+
+<p>DrawPrimitive() draws a primitive (line, rectangle, ellipse) on the image.</p>
+
+<p>The format of the DrawPrimitive method is:</p>
+
+<pre class="text">
+MagickBooleanType DrawPrimitive(Image *image,const DrawInfo *draw_info,
+  PrimitiveInfo *primitive_info,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>draw_info</dt>
+<dd>the draw info. </dd>
+
+<dd> </dd>
+<dt>primitive_info</dt>
+<dd>Specifies a pointer to a PrimitiveInfo structure. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/draw_8c.html" id="GetAffineMatrix">GetAffineMatrix</a></h2>
+
+<p>GetAffineMatrix() returns an AffineMatrix initialized to the identity matrix.</p>
+
+<p>The format of the GetAffineMatrix method is:</p>
+
+<pre class="text">
+void GetAffineMatrix(AffineMatrix *affine_matrix)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>affine_matrix</dt>
+<dd>the affine matrix. </dd>
+
+<dd>  </dd>
+</dl>
 </div>
   <footer class="magick-footer">
     <div class="magick-nav-item pull-left">

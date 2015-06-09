@@ -58,6 +58,52 @@
 <div class="magick-header">
 <p class="text-center"><a href="mogrify.html#"></a></p>
 
+<h2><a href="http://nextgen.imagemagick.org/api/MagickWand/mogrify_8c.html" id="MagickCommandGenesis">MagickCommandGenesis</a></h2>
+
+<p>MagickCommandGenesis() applies image processing options to an image as prescribed by command line options.</p>
+
+<p>It wiil look for special options like "-debug", "-bench", and "-distribute-cache" that needs to be applied even before the main processing begins, and may completely overrule normal command processing. Such 'Genesis' Options can only be given on the CLI, (not in a script) and are typically ignored (as they have been handled) if seen later.</p>
+
+<p>The format of the MagickCommandGenesis method is:</p>
+
+<pre class="text">
+MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
+  MagickCommand command,int argc,char **argv,char **metadata,
+  ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image_info</dt>
+<dd>the image info. </dd>
+
+<dd> </dd>
+<dt>command</dt>
+<dd>Choose from ConvertImageCommand, IdentifyImageCommand, MogrifyImageCommand, CompositeImageCommand, CompareImagesCommand, ConjureImageCommand, StreamImageCommand, ImportImageCommand, DisplayImageCommand, or AnimateImageCommand. </dd>
+
+<dd> </dd>
+<dt>argc</dt>
+<dd>Specifies a pointer to an integer describing the number of elements in the argument vector. </dd>
+
+<dd> </dd>
+<dt>argv</dt>
+<dd>Specifies a pointer to a text array containing the command line arguments. </dd>
+
+<dd> </dd>
+<dt>metadata</dt>
+<dd>any metadata is returned here. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
 </div>
   <footer class="magick-footer">
     <div class="magick-nav-item pull-left">

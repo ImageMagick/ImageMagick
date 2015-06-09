@@ -56,16 +56,60 @@
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="text-center"><a href="channel.html#CombineImages">CombineImages</a> • <a href="channel.html#GetImageAlphaChannel">GetImageAlphaChannel</a> • <a href="channel.html#SeparateImageChannel">SeparateImageChannel</a> • <a href="channel.html#SeparateImages">SeparateImages</a> • <a href="channel.html#SetImageAlphaChannel">SetImageAlphaChannel</a></p>
+<p class="text-center"><a href="channel.html#ChannelFxImage">ChannelFxImage</a> • <a href="channel.html#CombineImages">CombineImages</a> • <a href="channel.html#GetImageAlphaChannel">GetImageAlphaChannel</a> • <a href="channel.html#SeparateImage">SeparateImage</a> • <a href="channel.html#SeparateImages">SeparateImages</a> • <a href="channel.html#SetImageAlphaChannel">SetImageAlphaChannel</a></p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/channel_8c.html" id="CombineImages">CombineImages</a></h2>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/channel_8c.html" id="ChannelFxImage">ChannelFxImage</a></h2>
+
+<p>ChannelFxImage() applies a channel expression to the specified image.  The expression consists of one or more channels, either mnemonic or numeric (e.g. red, 1), separated by actions as follows:</p>
+
+<dd>
+</dd>
+
+<dd> &lt;=&gt;     exchange two channels (e.g. red&lt;=&gt;blue) =&gt;      copy one channel to another channel (e.g. red=&gt;green) =       assign a constant value to a channel (e.g. red=50) ,       write new image channels in the specified order (e.g. red, green) |       add a new output image for the next set of channel operations ;       move to the next input image for the source of channel data </dd>
+
+<dd> For example, to create 3 grayscale images from the red, green, and blue channels of an image, use: </dd>
+
+<pre class="text">
+    -channel-fx "red; green; blue"
+</pre>
+
+<p>A channel without an operation symbol implies separate (i.e, semicolon). 
+
+</p><dd> The format of the ChannelFxImage method is: </dd>
+
+<pre class="text">
+Image *ChannelFxImage(const Image *image,const char *expression,
+  ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows: 
+
+</p><dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>expression</dt>
+<dd>A channel expression. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/channel_8c.html" id="CombineImages">CombineImages</a></h2>
 
 <p>CombineImages() combines one or more images into a single image.  The grayscale value of the pixels of each image in the sequence is assigned in order to the specified channels of the combined image.   The typical ordering would be image 1 =&gt; Red, 2 =&gt; Green, 3 =&gt; Blue, etc.</p>
 
 <p>The format of the CombineImages method is:</p>
 
 <pre class="text">
-Image *CombineImages(const Image *image,const ChannelType channel,
+Image *CombineImages(const Image *images,const ColorspaceType colorspace,
   ExceptionInfo *exception)
 </pre>
 
@@ -76,8 +120,12 @@ Image *CombineImages(const Image *image,const ChannelType channel,
 
 <dd> </dd>
 <dl class="dl-horizontal">
-<dt>image</dt>
-<dd>the image. </dd>
+<dt>images</dt>
+<dd>the image sequence. </dd>
+
+<dd> </dd>
+<dt>colorspace</dt>
+<dd>the image colorspace. </dd>
 
 <dd> </dd>
 <dt>exception</dt>
@@ -85,7 +133,7 @@ Image *CombineImages(const Image *image,const ChannelType channel,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/channel_8c.html" id="GetImageAlphaChannel">GetImageAlphaChannel</a></h2>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/channel_8c.html" id="GetImageAlphaChannel">GetImageAlphaChannel</a></h2>
 
 <p>GetImageAlphaChannel() returns MagickFalse if the image alpha channel is not activated.  That is, the image is RGB rather than RGBA or CMYK rather than CMYKA.</p>
 
@@ -107,15 +155,15 @@ MagickBooleanType GetImageAlphaChannel(const Image *image)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/channel_8c.html" id="SeparateImageChannel">SeparateImageChannel</a></h2>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/channel_8c.html" id="SeparateImage">SeparateImage</a></h2>
 
-<p>SeparateImageChannel() separates a channel from the image and returns it as a grayscale image.  A channel is a particular color component of each pixel in the image.</p>
+<p>SeparateImage() separates a channel from the image and returns it as a grayscale image.</p>
 
-<p>The format of the SeparateImageChannel method is:</p>
+<p>The format of the SeparateImage method is:</p>
 
 <pre class="text">
-MagickBooleanType SeparateImageChannel(Image *image,
-  const ChannelType channel)
+Image *SeparateImage(const Image *image,const ChannelType channel,
+  ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -130,34 +178,7 @@ MagickBooleanType SeparateImageChannel(Image *image,
 
 <dd> </dd>
 <dt>channel</dt>
-<dd>Identify which channel to extract: RedChannel, GreenChannel, BlueChannel, OpacityChannel, CyanChannel, MagentaChannel, YellowChannel, or BlackChannel. </dd>
-
-<dd>  </dd>
-</dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/channel_8c.html" id="SeparateImages">SeparateImages</a></h2>
-
-<p>SeparateImages() returns a separate grayscale image for each channel specified.</p>
-
-<p>The format of the SeparateImages method is:</p>
-
-<pre class="text">
-MagickBooleanType SeparateImages(const Image *image,
-  const ChannelType channel,ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<dd>
-</dd>
-
-<dd> </dd>
-<dl class="dl-horizontal">
-<dt>image</dt>
-<dd>the image. </dd>
-
-<dd> </dd>
-<dt>channel</dt>
-<dd>Identify which channels to extract: RedChannel, GreenChannel, BlueChannel, OpacityChannel, CyanChannel, MagentaChannel, YellowChannel, or BlackChannel. </dd>
+<dd>the image channel. </dd>
 
 <dd> </dd>
 <dt>exception</dt>
@@ -165,7 +186,33 @@ MagickBooleanType SeparateImages(const Image *image,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/channel_8c.html" id="SetImageAlphaChannel">SetImageAlphaChannel</a></h2>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/channel_8c.html" id="SeparateImages">SeparateImages</a></h2>
+
+<p>SeparateImages() returns a separate grayscale image for each channel specified.</p>
+
+<p>The format of the SeparateImages method is:</p>
+
+<pre class="text">
+Image *SeparateImages(const Image *image,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/channel_8c.html" id="SetImageAlphaChannel">SetImageAlphaChannel</a></h2>
 
 <p>SetImageAlphaChannel() activates, deactivates, resets, or sets the alpha channel.</p>
 
@@ -173,7 +220,7 @@ MagickBooleanType SeparateImages(const Image *image,
 
 <pre class="text">
 MagickBooleanType SetImageAlphaChannel(Image *image,
-  const AlphaChannelType alpha_type)
+  const AlphaChannelOption alpha_type,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -188,7 +235,11 @@ MagickBooleanType SetImageAlphaChannel(Image *image,
 
 <dd> </dd>
 <dt>alpha_type</dt>
-<dd> The alpha channel type: ActivateAlphaChannel, AssociateAlphaChannel, CopyAlphaChannel, Disassociate, DeactivateAlphaChannel, ExtractAlphaChannel, OpaqueAlphaChannel, ResetAlphaChannel, SetAlphaChannel, ShapeAlphaChannel, and TransparentAlphaChannel. </dd>
+<dd> The alpha channel type: ActivateAlphaChannel, AssociateAlphaChannel, CopyAlphaChannel, DeactivateAlphaChannel, DisassociateAlphaChannel,  ExtractAlphaChannel, OffAlphaChannel, OnAlphaChannel, OpaqueAlphaChannel, SetAlphaChannel, ShapeAlphaChannel, and TransparentAlphaChannel. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
 
 <dd>  </dd>
 </dl>

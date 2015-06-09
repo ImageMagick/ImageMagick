@@ -58,6 +58,112 @@
 <div class="magick-header">
 <p class="text-center"><a href="decorate.html#"></a></p>
 
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/decorate_8c.html" id="BorderImage">BorderImage</a></h2>
+
+<p>BorderImage() surrounds the image with a border of the color defined by the bordercolor member of the image structure.  The width and height of the border are defined by the corresponding members of the border_info structure.</p>
+
+<p>The format of the BorderImage method is:</p>
+
+<pre class="text">
+Image *BorderImage(const Image *image,const RectangleInfo *border_info,
+  const CompositeOperator compose,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>border_info</dt>
+<dd> define the width and height of the border. </dd>
+
+<dd> </dd>
+<dt>compose</dt>
+<dd> the composite operator. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/decorate_8c.html" id="FrameImage">FrameImage</a></h2>
+
+<p>FrameImage() adds a simulated three-dimensional border around the image. The color of the border is defined by the matte_color member of image. Members width and height of frame_info specify the border width of the vertical and horizontal sides of the frame.  Members inner and outer indicate the width of the inner and outer shadows of the frame.</p>
+
+<p>The format of the FrameImage method is:</p>
+
+<pre class="text">
+Image *FrameImage(const Image *image,const FrameInfo *frame_info,
+  const CompositeOperator compose,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>frame_info</dt>
+<dd>Define the width and height of the frame and its bevels. </dd>
+
+<dd> </dd>
+<dt>compose</dt>
+<dd>the composite operator. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/decorate_8c.html" id="RaiseImage">RaiseImage</a></h2>
+
+<p>RaiseImage() creates a simulated three-dimensional button-like effect by lightening and darkening the edges of the image.  Members width and height of raise_info define the width of the vertical and horizontal edge of the effect.</p>
+
+<p>The format of the RaiseImage method is:</p>
+
+<pre class="text">
+MagickBooleanType RaiseImage(const Image *image,
+  const RectangleInfo *raise_info,const MagickBooleanType raise,
+  ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>raise_info</dt>
+<dd>Define the width and height of the raise area. </dd>
+
+<dd> </dd>
+<dt>raise</dt>
+<dd>A value other than zero creates a 3-D raise effect, otherwise it has a lowered effect. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
 </div>
   <footer class="magick-footer">
     <div class="magick-nav-item pull-left">

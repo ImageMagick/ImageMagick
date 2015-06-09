@@ -58,6 +58,194 @@
 <div class="magick-header">
 <p class="text-center"><a href="resource.html#"></a></p>
 
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/resource_8c.html" id="AcquireMagickResource">AcquireMagickResource</a></h2>
+
+<p>AcquireMagickResource() acquires resources of the specified type. MagickFalse is returned if the specified resource is exhausted otherwise MagickTrue.</p>
+
+<p>The format of the AcquireMagickResource() method is:</p>
+
+<pre class="text">
+MagickBooleanType AcquireMagickResource(const ResourceType type,
+  const MagickSizeType size)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>type</dt>
+<dd>the type of resource. </dd>
+
+<dd> </dd>
+<dt>size</dt>
+<dd>the number of bytes needed from for this resource. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/resource_8c.html" id="AcquireUniqueFileResource">AcquireUniqueFileResource</a></h2>
+
+<p>AcquireUniqueFileResource() returns a unique file name, and returns a file descriptor for the file open for reading and writing.</p>
+
+<p>The format of the AcquireUniqueFileResource() method is:</p>
+
+<pre class="text">
+int AcquireUniqueFileResource(char *path)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt> path</dt>
+<dd> Specifies a pointer to an array of characters.  The unique path name is returned in this array. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/resource_8c.html" id="GetMagickResource">GetMagickResource</a></h2>
+
+<p>GetMagickResource() returns the specified resource.</p>
+
+<p>The format of the GetMagickResource() method is:</p>
+
+<pre class="text">
+MagickSizeType GetMagickResource(const ResourceType type)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>type</dt>
+<dd>the type of resource. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/resource_8c.html" id="GetMagickResourceLimit">GetMagickResourceLimit</a></h2>
+
+<p>GetMagickResourceLimit() returns the specified resource limit.</p>
+
+<p>The format of the GetMagickResourceLimit() method is:</p>
+
+<pre class="text">
+MagickSizeType GetMagickResourceLimit(const ResourceType type)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>type</dt>
+<dd>the type of resource. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/resource_8c.html" id="ListMagickResourceInfo">ListMagickResourceInfo</a></h2>
+
+<p>ListMagickResourceInfo() lists the resource info to a file.</p>
+
+<p>The format of the ListMagickResourceInfo method is:</p>
+
+<pre class="text">
+MagickBooleanType ListMagickResourceInfo(FILE *file,
+  ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows.</p>
+
+<dt>file</dt>
+<p>An pointer to a FILE.</p>
+
+<dt>exception</dt>
+<p>return any errors or warnings in this structure.</p>
+
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/resource_8c.html" id="RelinquishMagickResource">RelinquishMagickResource</a></h2>
+
+<p>RelinquishMagickResource() relinquishes resources of the specified type.</p>
+
+<p>The format of the RelinquishMagickResource() method is:</p>
+
+<pre class="text">
+void RelinquishMagickResource(const ResourceType type,
+  const MagickSizeType size)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>type</dt>
+<dd>the type of resource. </dd>
+
+<dd> </dd>
+<dt>size</dt>
+<dd>the size of the resource. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/resource_8c.html" id="RelinquishUniqueFileResource">RelinquishUniqueFileResource</a></h2>
+
+<p>RelinquishUniqueFileResource() relinquishes a unique file resource.</p>
+
+<p>The format of the RelinquishUniqueFileResource() method is:</p>
+
+<pre class="text">
+MagickBooleanType RelinquishUniqueFileResource(const char *path)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>name</dt>
+<dd>the name of the temporary resource. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/resource_8c.html" id="SetMagickResourceLimit">SetMagickResourceLimit</a></h2>
+
+<p>SetMagickResourceLimit() sets the limit for a particular resource.</p>
+
+<p>The format of the SetMagickResourceLimit() method is:</p>
+
+<pre class="text">
+MagickBooleanType SetMagickResourceLimit(const ResourceType type,
+  const MagickSizeType limit)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>type</dt>
+<dd>the type of resource. </dd>
+
+<dd> </dd>
+<dt>limit</dt>
+<dd>the maximum limit for the resource. </dd>
+
+<dd>  </dd>
+</dl>
 </div>
   <footer class="magick-footer">
     <div class="magick-nav-item pull-left">

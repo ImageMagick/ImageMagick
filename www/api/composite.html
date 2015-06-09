@@ -56,8 +56,90 @@
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="text-center"><a href="composite.html#"></a></p>
+<p class="text-center"><a href="composite.html#CompositeImage">CompositeImage</a> • <a href="composite.html#TextureImage">TextureImage</a></p>
 
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/composite_8c.html" id="CompositeImage">CompositeImage</a></h2>
+
+<p>CompositeImage() returns the second image composited onto the first at the specified offset, using the specified composite method.</p>
+
+<p>The format of the CompositeImage method is:</p>
+
+<pre class="text">
+MagickBooleanType CompositeImage(Image *image,
+  const Image *source_image,const CompositeOperator compose,
+  const MagickBooleanType clip_to_self,const ssize_t x_offset,
+  const ssize_t y_offset,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the canvas image, modified by he composition </dd>
+
+<dd> </dd>
+<dt>source_image</dt>
+<dd>the source image. </dd>
+
+<dd> </dd>
+<dt>compose</dt>
+<dd>This operator affects how the composite is applied to the image.  The operators and how they are utilized are listed here http://www.w3.org/TR/SVG12/#compositing. </dd>
+
+<dd> </dd>
+<dt>clip_to_self</dt>
+<dd>set to MagickTrue to limit composition to area composed. </dd>
+
+<dd> </dd>
+<dt>x_offset</dt>
+<dd>the column offset of the composited image. </dd>
+
+<dd> </dd>
+<dt>y_offset</dt>
+<dd>the row offset of the composited image. </dd>
+
+<dd> Extra Controls from Image meta-data in 'image' (artifacts) </dd>
+
+<dd> o "compose:args" A string containing extra numerical arguments for specific compose methods, generally expressed as a 'geometry' or a comma separated list of numbers. </dd>
+
+<dd> Compose methods needing such arguments include "BlendCompositeOp" and "DisplaceCompositeOp". </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/composite_8c.html" id="TextureImage">TextureImage</a></h2>
+
+<p>TextureImage() repeatedly tiles the texture image across and down the image canvas.</p>
+
+<p>The format of the TextureImage method is:</p>
+
+<pre class="text">
+MagickBooleanType TextureImage(Image *image,const Image *texture,
+  ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>texture_image</dt>
+<dd>This image is the texture to layer on the background. </dd>
+
+<dd>  </dd>
+</dl>
 </div>
   <footer class="magick-footer">
     <div class="magick-nav-item pull-left">

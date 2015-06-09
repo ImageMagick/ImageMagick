@@ -58,6 +58,396 @@
 <div class="magick-header">
 <p class="text-center"><a href="exception.html#"></a></p>
 
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/exception_8c.html" id="AcquireExceptionInfo">AcquireExceptionInfo</a></h2>
+
+<p>AcquireExceptionInfo() allocates the ExceptionInfo structure.</p>
+
+<p>The format of the AcquireExceptionInfo method is:</p>
+
+<pre class="text">
+ExceptionInfo *AcquireExceptionInfo(void)
+</pre>
+
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/exception_8c.html" id="ClearMagickException">ClearMagickException</a></h2>
+
+<p>ClearMagickException() clears any exception that may not have been caught yet.</p>
+
+<p>The format of the ClearMagickException method is:</p>
+
+<pre class="text">
+ClearMagickException(ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>exception</dt>
+<dd>the exception info. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/exception_8c.html" id="CatchException">CatchException</a></h2>
+
+<p>CatchException() returns if no exceptions is found otherwise it reports the exception as a warning, error, or fatal depending on the severity.</p>
+
+<p>The format of the CatchException method is:</p>
+
+<pre class="text">
+CatchException(ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>exception</dt>
+<dd>the exception info. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/exception_8c.html" id="CloneExceptionInfo">CloneExceptionInfo</a></h2>
+
+<p>CloneExceptionInfo() clones the ExceptionInfo structure.</p>
+
+<p>The format of the CloneExceptionInfo method is:</p>
+
+<pre class="text">
+ExceptionInfo *CloneException(ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>exception</dt>
+<dd>the exception info. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/exception_8c.html" id="DestroyExceptionInfo">DestroyExceptionInfo</a></h2>
+
+<p>DestroyExceptionInfo() deallocates memory associated with an exception.</p>
+
+<p>The format of the DestroyExceptionInfo method is:</p>
+
+<pre class="text">
+ExceptionInfo *DestroyExceptionInfo(ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>exception</dt>
+<dd>the exception info. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/exception_8c.html" id="GetExceptionMessage">GetExceptionMessage</a></h2>
+
+<p>GetExceptionMessage() returns the error message defined by the specified error code.</p>
+
+<p>The format of the GetExceptionMessage method is:</p>
+
+<pre class="text">
+char *GetExceptionMessage(const int error)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>error</dt>
+<dd>the error code. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/exception_8c.html" id="GetLocaleExceptionMessage">GetLocaleExceptionMessage</a></h2>
+
+<p>GetLocaleExceptionMessage() converts a enumerated exception severity and tag to a message in the current locale.</p>
+
+<p>The format of the GetLocaleExceptionMessage method is:</p>
+
+<pre class="text">
+const char *GetLocaleExceptionMessage(const ExceptionType severity,
+  const char *tag)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>severity</dt>
+<dd>the severity of the exception. </dd>
+
+<dd> </dd>
+<dt>tag</dt>
+<dd>the message tag. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/exception_8c.html" id="InheritException">InheritException</a></h2>
+
+<p>InheritException() inherits an exception from a related exception.</p>
+
+<p>The format of the InheritException method is:</p>
+
+<pre class="text">
+InheritException(ExceptionInfo *exception,const ExceptionInfo *relative)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>exception</dt>
+<dd>the exception info. </dd>
+
+<dd> </dd>
+<dt>relative</dt>
+<dd>the related exception info. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/exception_8c.html" id="InitializeExceptionInfo">InitializeExceptionInfo</a></h2>
+
+<p>InitializeExceptionInfo() initializes an exception to default values.</p>
+
+<p>The format of the InitializeExceptionInfo method is:</p>
+
+<pre class="text">
+InitializeExceptionInfo(ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>exception</dt>
+<dd>the exception info. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/exception_8c.html" id="MagickError">MagickError</a></h2>
+
+<p>MagickError() calls the exception handler methods with an error reason.</p>
+
+<p>The format of the MagickError method is:</p>
+
+<pre class="text">
+void MagickError(const ExceptionType error,const char *reason,
+  const char *description)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>exception</dt>
+<dd>Specifies the numeric error category. </dd>
+
+<dd> </dd>
+<dt>reason</dt>
+<dd>Specifies the reason to display before terminating the program. </dd>
+
+<dd> </dd>
+<dt>description</dt>
+<dd>Specifies any description to the reason. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/exception_8c.html" id="MagickFatalError">MagickFatalError</a></h2>
+
+<p>MagickFatalError() calls the fatal exception handler methods with an error reason.</p>
+
+<p>The format of the MagickError method is:</p>
+
+<pre class="text">
+void MagickFatalError(const ExceptionType error,const char *reason,
+  const char *description)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>exception</dt>
+<dd>Specifies the numeric error category. </dd>
+
+<dd> </dd>
+<dt>reason</dt>
+<dd>Specifies the reason to display before terminating the program. </dd>
+
+<dd> </dd>
+<dt>description</dt>
+<dd>Specifies any description to the reason. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/exception_8c.html" id="MagickWarning">MagickWarning</a></h2>
+
+<p>MagickWarning() calls the warning handler methods with a warning reason.</p>
+
+<p>The format of the MagickWarning method is:</p>
+
+<pre class="text">
+void MagickWarning(const ExceptionType warning,const char *reason,
+  const char *description)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>warning</dt>
+<dd>the warning severity. </dd>
+
+<dd> </dd>
+<dt>reason</dt>
+<dd>Define the reason for the warning. </dd>
+
+<dd> </dd>
+<dt>description</dt>
+<dd>Describe the warning. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/exception_8c.html" id="SetErrorHandler">SetErrorHandler</a></h2>
+
+<p>SetErrorHandler() sets the exception handler to the specified method and returns the previous exception handler.</p>
+
+<p>The format of the SetErrorHandler method is:</p>
+
+<pre class="text">
+ErrorHandler SetErrorHandler(ErrorHandler handler)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>handler</dt>
+<dd>the method to handle errors. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/exception_8c.html" id="SetFatalErrorHandler">SetFatalErrorHandler</a></h2>
+
+<p>SetFatalErrorHandler() sets the fatal exception handler to the specified method and returns the previous fatal exception handler.</p>
+
+<p>The format of the SetErrorHandler method is:</p>
+
+<pre class="text">
+ErrorHandler SetErrorHandler(ErrorHandler handler)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>handler</dt>
+<dd>the method to handle errors. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/exception_8c.html" id="SetWarningHandler">SetWarningHandler</a></h2>
+
+<p>SetWarningHandler() sets the warning handler to the specified method and returns the previous warning handler.</p>
+
+<p>The format of the SetWarningHandler method is:</p>
+
+<pre class="text">
+ErrorHandler SetWarningHandler(ErrorHandler handler)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>handler</dt>
+<dd>the method to handle warnings. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/exception_8c.html" id="ThrowException">ThrowException</a></h2>
+
+<p>ThrowException() throws an exception with the specified severity code, reason, and optional description.</p>
+
+<p>The format of the ThrowException method is:</p>
+
+<pre class="text">
+MagickBooleanType ThrowException(ExceptionInfo *exception,
+  const ExceptionType severity,const char *reason,
+  const char *description)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>exception</dt>
+<dd>the exception info. </dd>
+
+<dd> </dd>
+<dt>severity</dt>
+<dd>the severity of the exception. </dd>
+
+<dd> </dd>
+<dt>reason</dt>
+<dd>the reason for the exception. </dd>
+
+<dd> </dd>
+<dt>description</dt>
+<dd>the exception description. </dd>
+
+<dd>  </dd>
+</dl>
 </div>
   <footer class="magick-footer">
     <div class="magick-nav-item pull-left">

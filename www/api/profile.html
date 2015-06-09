@@ -58,6 +58,271 @@
 <div class="magick-header">
 <p class="text-center"><a href="profile.html#"></a></p>
 
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/profile_8c.html" id="CloneImageProfiles">CloneImageProfiles</a></h2>
+
+<p>CloneImageProfiles() clones one or more image profiles.</p>
+
+<p>The format of the CloneImageProfiles method is:</p>
+
+<pre class="text">
+MagickBooleanType CloneImageProfiles(Image *image,
+  const Image *clone_image)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>clone_image</dt>
+<dd>the clone image. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/profile_8c.html" id="DeleteImageProfile">DeleteImageProfile</a></h2>
+
+<p>DeleteImageProfile() deletes a profile from the image by its name.</p>
+
+<p>The format of the DeleteImageProfile method is:</p>
+
+<pre class="text">
+MagickBooleanTyupe DeleteImageProfile(Image *image,const char *name)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>name</dt>
+<dd>the profile name. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/profile_8c.html" id="DestroyImageProfiles">DestroyImageProfiles</a></h2>
+
+<p>DestroyImageProfiles() releases memory associated with an image profile map.</p>
+
+<p>The format of the DestroyProfiles method is:</p>
+
+<pre class="text">
+void DestroyImageProfiles(Image *image)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/profile_8c.html" id="GetImageProfile">GetImageProfile</a></h2>
+
+<p>GetImageProfile() gets a profile associated with an image by name.</p>
+
+<p>The format of the GetImageProfile method is:</p>
+
+<pre class="text">
+const StringInfo *GetImageProfile(const Image *image,const char *name)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>name</dt>
+<dd>the profile name. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/profile_8c.html" id="GetNextImageProfile">GetNextImageProfile</a></h2>
+
+<p>GetNextImageProfile() gets the next profile name for an image.</p>
+
+<p>The format of the GetNextImageProfile method is:</p>
+
+<pre class="text">
+char *GetNextImageProfile(const Image *image)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>hash_info</dt>
+<dd>the hash info. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/profile_8c.html" id="ProfileImage">ProfileImage</a></h2>
+
+<p>ProfileImage() associates, applies, or removes an ICM, IPTC, or generic profile with / to / from an image.  If the profile is NULL, it is removed from the image otherwise added or applied.  Use a name of '*' and a profile of NULL to remove all profiles from the image.</p>
+
+<p>ICC and ICM profiles are handled as follows: If the image does not have an associated color profile, the one you provide is associated with the image and the image pixels are not transformed.  Otherwise, the colorspace transform defined by the existing and new profile are applied to the image pixels and the new profile is associated with the image.</p>
+
+<p>The format of the ProfileImage method is:</p>
+
+<pre class="text">
+MagickBooleanType ProfileImage(Image *image,const char *name,
+  const void *datum,const size_t length,const MagickBooleanType clone)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>name</dt>
+<dd>Name of profile to add or remove: ICC, IPTC, or generic profile. </dd>
+
+<dd> </dd>
+<dt>datum</dt>
+<dd>the profile data. </dd>
+
+<dd> </dd>
+<dt>length</dt>
+<dd>the length of the profile. </dd>
+
+<dd> </dd>
+<dt>clone</dt>
+<dd>should be MagickFalse. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/profile_8c.html" id="RemoveImageProfile">RemoveImageProfile</a></h2>
+
+<p>RemoveImageProfile() removes a named profile from the image and returns its value.</p>
+
+<p>The format of the RemoveImageProfile method is:</p>
+
+<pre class="text">
+void *RemoveImageProfile(Image *image,const char *name)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>name</dt>
+<dd>the profile name. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/profile_8c.html" id="ResetImageProfileIterator">ResetImageProfileIterator</a></h2>
+
+<p>ResetImageProfileIterator() resets the image profile iterator.  Use it in conjunction with GetNextImageProfile() to iterate over all the profiles associated with an image.</p>
+
+<p>The format of the ResetImageProfileIterator method is:</p>
+
+<pre class="text">
+ResetImageProfileIterator(Image *image)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/profile_8c.html" id="SetImageProfile">SetImageProfile</a></h2>
+
+<p>SetImageProfile() adds a named profile to the image.  If a profile with the same name already exists, it is replaced.  This method differs from the ProfileImage() method in that it does not apply CMS color profiles.</p>
+
+<p>The format of the SetImageProfile method is:</p>
+
+<pre class="text">
+MagickBooleanType SetImageProfile(Image *image,const char *name,
+  const StringInfo *profile)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>name</dt>
+<dd>the profile name, for example icc, exif, and 8bim (8bim is the Photoshop wrapper for iptc profiles). </dd>
+
+<dd> </dd>
+<dt>profile</dt>
+<dd>A StringInfo structure that contains the named profile. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/profile_8c.html" id="SyncImageProfiles">SyncImageProfiles</a></h2>
+
+<p>SyncImageProfiles() synchronizes image properties with the image profiles. Currently we only support updating the EXIF resolution and orientation.</p>
+
+<p>The format of the SyncImageProfiles method is:</p>
+
+<pre class="text">
+MagickBooleanType SyncImageProfiles(Image *image)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd>  </dd>
+</dl>
 </div>
   <footer class="magick-footer">
     <div class="magick-nav-item pull-left">
