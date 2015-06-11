@@ -49,16 +49,16 @@
       <a class="magick-nav-item " href="../command-line-options.html">Options</a>
       <a class="magick-nav-item " href="../resources.html">Resources</a>
       <a class="magick-nav-item " href="api.html">Develop</a>
-      <a class="magick-nav-item " href="http://www.imagemagick.org/script/search.php">Search</a>
+      <a class="magick-nav-item " href="http://nextgen.imagemagick.org/script/search.php">Search</a>
       <a class="magick-nav-item pull-right" href="http://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="text-center"><a href="exception.html#AcquireExceptionInfo">AcquireExceptionInfo</a> • <a href="exception.html#ClearMagickException">ClearMagickException</a> • <a href="exception.html#CatchException">CatchException</a> • <a href="exception.html#CloneExceptionInfo">CloneExceptionInfo</a> • <a href="exception.html#DestroyExceptionInfo">DestroyExceptionInfo</a> • <a href="exception.html#GetExceptionMessage">GetExceptionMessage</a> • <a href="exception.html#GetLocaleExceptionMessage">GetLocaleExceptionMessage</a> • <a href="exception.html#InheritException">InheritException</a> • <a href="exception.html#InitializeExceptionInfo">InitializeExceptionInfo</a> • <a href="exception.html#MagickError">MagickError</a> • <a href="exception.html#MagickFatalError">MagickFatalError</a> • <a href="exception.html#MagickWarning">MagickWarning</a> • <a href="exception.html#SetErrorHandler">SetErrorHandler</a> • <a href="exception.html#SetFatalErrorHandler">SetFatalErrorHandler</a> • <a href="exception.html#SetWarningHandler">SetWarningHandler</a> • <a href="exception.html#ThrowException">ThrowException</a></p>
+<p class="text-center"><a href="exception.html#"></a></p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/exception_8c.html" id="AcquireExceptionInfo">AcquireExceptionInfo</a></h2>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/exception_8c.html" id="AcquireExceptionInfo">AcquireExceptionInfo</a></h2>
 
 <p>AcquireExceptionInfo() allocates the ExceptionInfo structure.</p>
 
@@ -68,7 +68,7 @@
 ExceptionInfo *AcquireExceptionInfo(void)
 </pre>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/exception_8c.html" id="ClearMagickException">ClearMagickException</a></h2>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/exception_8c.html" id="ClearMagickException">ClearMagickException</a></h2>
 
 <p>ClearMagickException() clears any exception that may not have been caught yet.</p>
 
@@ -90,7 +90,7 @@ ClearMagickException(ExceptionInfo *exception)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/exception_8c.html" id="CatchException">CatchException</a></h2>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/exception_8c.html" id="CatchException">CatchException</a></h2>
 
 <p>CatchException() returns if no exceptions is found otherwise it reports the exception as a warning, error, or fatal depending on the severity.</p>
 
@@ -112,7 +112,7 @@ CatchException(ExceptionInfo *exception)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/exception_8c.html" id="CloneExceptionInfo">CloneExceptionInfo</a></h2>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/exception_8c.html" id="CloneExceptionInfo">CloneExceptionInfo</a></h2>
 
 <p>CloneExceptionInfo() clones the ExceptionInfo structure.</p>
 
@@ -134,7 +134,7 @@ ExceptionInfo *CloneException(ExceptionInfo *exception)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/exception_8c.html" id="DestroyExceptionInfo">DestroyExceptionInfo</a></h2>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/exception_8c.html" id="DestroyExceptionInfo">DestroyExceptionInfo</a></h2>
 
 <p>DestroyExceptionInfo() deallocates memory associated with an exception.</p>
 
@@ -156,7 +156,7 @@ ExceptionInfo *DestroyExceptionInfo(ExceptionInfo *exception)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/exception_8c.html" id="GetExceptionMessage">GetExceptionMessage</a></h2>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/exception_8c.html" id="GetExceptionMessage">GetExceptionMessage</a></h2>
 
 <p>GetExceptionMessage() returns the error message defined by the specified error code.</p>
 
@@ -178,7 +178,7 @@ char *GetExceptionMessage(const int error)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/exception_8c.html" id="GetLocaleExceptionMessage">GetLocaleExceptionMessage</a></h2>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/exception_8c.html" id="GetLocaleExceptionMessage">GetLocaleExceptionMessage</a></h2>
 
 <p>GetLocaleExceptionMessage() converts a enumerated exception severity and tag to a message in the current locale.</p>
 
@@ -205,7 +205,7 @@ const char *GetLocaleExceptionMessage(const ExceptionType severity,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/exception_8c.html" id="InheritException">InheritException</a></h2>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/exception_8c.html" id="InheritException">InheritException</a></h2>
 
 <p>InheritException() inherits an exception from a related exception.</p>
 
@@ -231,7 +231,7 @@ InheritException(ExceptionInfo *exception,const ExceptionInfo *relative)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/exception_8c.html" id="InitializeExceptionInfo">InitializeExceptionInfo</a></h2>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/exception_8c.html" id="InitializeExceptionInfo">InitializeExceptionInfo</a></h2>
 
 <p>InitializeExceptionInfo() initializes an exception to default values.</p>
 
@@ -253,7 +253,7 @@ InitializeExceptionInfo(ExceptionInfo *exception)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/exception_8c.html" id="MagickError">MagickError</a></h2>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/exception_8c.html" id="MagickError">MagickError</a></h2>
 
 <p>MagickError() calls the exception handler methods with an error reason.</p>
 
@@ -284,7 +284,7 @@ void MagickError(const ExceptionType error,const char *reason,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/exception_8c.html" id="MagickFatalError">MagickFatalError</a></h2>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/exception_8c.html" id="MagickFatalError">MagickFatalError</a></h2>
 
 <p>MagickFatalError() calls the fatal exception handler methods with an error reason.</p>
 
@@ -315,7 +315,7 @@ void MagickFatalError(const ExceptionType error,const char *reason,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/exception_8c.html" id="MagickWarning">MagickWarning</a></h2>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/exception_8c.html" id="MagickWarning">MagickWarning</a></h2>
 
 <p>MagickWarning() calls the warning handler methods with a warning reason.</p>
 
@@ -346,7 +346,7 @@ void MagickWarning(const ExceptionType warning,const char *reason,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/exception_8c.html" id="SetErrorHandler">SetErrorHandler</a></h2>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/exception_8c.html" id="SetErrorHandler">SetErrorHandler</a></h2>
 
 <p>SetErrorHandler() sets the exception handler to the specified method and returns the previous exception handler.</p>
 
@@ -368,7 +368,7 @@ ErrorHandler SetErrorHandler(ErrorHandler handler)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/exception_8c.html" id="SetFatalErrorHandler">SetFatalErrorHandler</a></h2>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/exception_8c.html" id="SetFatalErrorHandler">SetFatalErrorHandler</a></h2>
 
 <p>SetFatalErrorHandler() sets the fatal exception handler to the specified method and returns the previous fatal exception handler.</p>
 
@@ -390,7 +390,7 @@ ErrorHandler SetErrorHandler(ErrorHandler handler)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/exception_8c.html" id="SetWarningHandler">SetWarningHandler</a></h2>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/exception_8c.html" id="SetWarningHandler">SetWarningHandler</a></h2>
 
 <p>SetWarningHandler() sets the warning handler to the specified method and returns the previous warning handler.</p>
 
@@ -412,7 +412,7 @@ ErrorHandler SetWarningHandler(ErrorHandler handler)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/exception_8c.html" id="ThrowException">ThrowException</a></h2>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/exception_8c.html" id="ThrowException">ThrowException</a></h2>
 
 <p>ThrowException() throws an exception with the specified severity code, reason, and optional description.</p>
 
@@ -460,7 +460,7 @@ MagickBooleanType ThrowException(ExceptionInfo *exception,
 </p>
     <p><a href="exception.html#">Back to top</a> •
     <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-    <a href="http://www.imagemagick.org/script/contact.php">Contact Us</a></p>
+    <a href="http://nextgen.imagemagick.org/script/contact.php">Contact Us</a></p>
     <p><small>©  1999-2015 ImageMagick Studio LLC</small></p>
   </footer>
 </div><!-- /.container -->

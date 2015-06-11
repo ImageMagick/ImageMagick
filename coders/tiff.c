@@ -991,7 +991,7 @@ static void TIFFReadPhotoshopLayers(Image* image,const ImageInfo *image_info,
   info.version=1;
   info.columns=layers->columns;
   info.rows=layers->rows;
-  info.channels=layers->number_channels;
+  info.channels=(unsigned short) layers->number_channels;
   ReadPSDLayers(layers,image_info,&info,MagickFalse,exception);
   DeleteImageFromList(&layers);
   if (layers != (Image *) NULL)

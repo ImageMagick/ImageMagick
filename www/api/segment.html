@@ -49,16 +49,16 @@
       <a class="magick-nav-item " href="../command-line-options.html">Options</a>
       <a class="magick-nav-item " href="../resources.html">Resources</a>
       <a class="magick-nav-item " href="api.html">Develop</a>
-      <a class="magick-nav-item " href="http://www.imagemagick.org/script/search.php">Search</a>
+      <a class="magick-nav-item " href="http://nextgen.imagemagick.org/script/search.php">Search</a>
       <a class="magick-nav-item pull-right" href="http://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="text-center"><a href="segment.html#SegmentImage">SegmentImage</a></p>
+<p class="text-center"><a href="segment.html#"></a></p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/segment_8c.html" id="SegmentImage">SegmentImage</a></h2>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/segment_8c.html" id="SegmentImage">SegmentImage</a></h2>
 
 <p>SegmentImage() segment an image by analyzing the histograms of the color components and identifying units that are homogeneous with the fuzzy C-means technique.</p>
 
@@ -67,7 +67,8 @@
 <pre class="text">
 MagickBooleanType SegmentImage(Image *image,
   const ColorspaceType colorspace,const MagickBooleanType verbose,
-  const double cluster_threshold,const double smooth_threshold)
+  const double cluster_threshold,const double smooth_threshold,
+  ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows.</p>
@@ -87,6 +88,9 @@ MagickBooleanType SegmentImage(Image *image,
 <dt>smooth_threshold</dt>
 <p>the smoothing threshold eliminates noise in the second derivative of the histogram.  As the value is increased, you can expect a smoother second derivative.</p>
 
+<dt>exception</dt>
+<p>return any errors or warnings in this structure.</p>
+
 </div>
   <footer class="magick-footer">
     <div class="magick-nav-item pull-left">
@@ -99,7 +103,7 @@ MagickBooleanType SegmentImage(Image *image,
 </p>
     <p><a href="segment.html#">Back to top</a> •
     <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-    <a href="http://www.imagemagick.org/script/contact.php">Contact Us</a></p>
+    <a href="http://nextgen.imagemagick.org/script/contact.php">Contact Us</a></p>
     <p><small>©  1999-2015 ImageMagick Studio LLC</small></p>
   </footer>
 </div><!-- /.container -->

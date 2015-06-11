@@ -2141,10 +2141,10 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
     if ((traits & UpdatePixelTrait) == 0)
       continue;
     channel_statistics[CompositePixelChannel].area+=channel_statistics[i].area;
-    channel_statistics[CompositePixelChannel].minima=MagickMin(
+    channel_statistics[CompositePixelChannel].minima=MagickMax(
       channel_statistics[CompositePixelChannel].minima,
       channel_statistics[i].minima);
-    channel_statistics[CompositePixelChannel].maxima=MagickMax(
+    channel_statistics[CompositePixelChannel].maxima=MagickMin(
       channel_statistics[CompositePixelChannel].maxima,
       channel_statistics[i].maxima);
     channel_statistics[CompositePixelChannel].sum+=channel_statistics[i].sum;

@@ -49,25 +49,23 @@
       <a class="magick-nav-item " href="../command-line-options.html">Options</a>
       <a class="magick-nav-item " href="../resources.html">Resources</a>
       <a class="magick-nav-item " href="api.html">Develop</a>
-      <a class="magick-nav-item " href="http://www.imagemagick.org/script/search.php">Search</a>
+      <a class="magick-nav-item " href="http://nextgen.imagemagick.org/script/search.php">Search</a>
       <a class="magick-nav-item pull-right" href="http://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="text-center"><a href="attribute.html#GetImageChannelDepth">GetImageChannelDepth</a> • <a href="attribute.html#GetImageQuantumDepth">GetImageQuantumDepth</a> • <a href="attribute.html#GetImageType">GetImageType</a> • <a href="attribute.html#IsGrayImage">IsGrayImage</a> • <a href="attribute.html#IsMonochromeImage">IsMonochromeImage</a> • <a href="attribute.html#IsOpaqueImage">IsOpaqueImage</a> • <a href="attribute.html#SetImageChannelDepth">SetImageChannelDepth</a> • <a href="attribute.html#SetImageGray">SetImageGray</a> • <a href="attribute.html#SetImageMonochrome">SetImageMonochrome</a> • <a href="attribute.html#SetImageType">SetImageType</a></p>
+<p class="text-center"><a href="attribute.html#GetImageDepth">GetImageDepth</a> • <a href="attribute.html#GetImageQuantumDepth">GetImageQuantumDepth</a> • <a href="attribute.html#GetImageType">GetImageType</a> • <a href="attribute.html#IsImageGray">IsImageGray</a> • <a href="attribute.html#IsImageMonochrome">IsImageMonochrome</a> • <a href="attribute.html#IsImageOpaque">IsImageOpaque</a> • <a href="attribute.html#SetImageDepth">SetImageDepth</a> • <a href="attribute.html#SetImageGray">SetImageGray</a> • <a href="attribute.html#SetImageMonochrome">SetImageMonochrome</a> • <a href="attribute.html#SetImageType">SetImageType</a></p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/attribute_8c.html" id="GetImageChannelDepth">GetImageChannelDepth</a></h2>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/attribute_8c.html" id="GetImageDepth">GetImageDepth</a></h2>
 
-<p>GetImageChannelDepth() returns the depth of a particular image channel.</p>
+<p>GetImageDepth() returns the depth of a particular image channel.</p>
 
-<p>The format of the GetImageChannelDepth method is:</p>
+<p>The format of the GetImageDepth method is:</p>
 
 <pre class="text">
 size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
-size_t GetImageChannelDepth(const Image *image,
-  const ChannelType channel,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -81,16 +79,12 @@ size_t GetImageChannelDepth(const Image *image,
 <dd>the image. </dd>
 
 <dd> </dd>
-<dt>channel</dt>
-<dd>the channel. </dd>
-
-<dd> </dd>
 <dt>exception</dt>
 <dd>return any errors or warnings in this structure. </dd>
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/attribute_8c.html" id="GetImageQuantumDepth">GetImageQuantumDepth</a></h2>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/attribute_8c.html" id="GetImageQuantumDepth">GetImageQuantumDepth</a></h2>
 
 <p>GetImageQuantumDepth() returns the depth of the image rounded to a legal quantum depth: 8, 16, or 32.</p>
 
@@ -117,7 +111,7 @@ size_t GetImageQuantumDepth(const Image *image,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/attribute_8c.html" id="GetImageType">GetImageType</a></h2>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/attribute_8c.html" id="GetImageType">GetImageType</a></h2>
 
 <p>GetImageType() returns the potential type of image:</p>
 
@@ -151,14 +145,60 @@ ImageType GetImageType(const Image *image,ExceptionInfo *exception)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/attribute_8c.html" id="IsGrayImage">IsGrayImage</a></h2>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/attribute_8c.html" id="IsImageGray">IsImageGray</a></h2>
 
-<p>IsGrayImage() returns MagickTrue if the type of the image is grayscale or bi-level.</p>
+<p>IsImageGray() returns MagickTrue if the type of the image is grayscale or bi-level.</p>
 
-<p>The format of the IsGrayImage method is:</p>
+<p>The format of the IsImageGray method is:</p>
 
 <pre class="text">
-MagickBooleanType IsGrayImage(const Image *image,
+MagickBooleanType IsImageGray(const Image *image)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/attribute_8c.html" id="IsImageMonochrome">IsImageMonochrome</a></h2>
+
+<p>IsImageMonochrome() returns MagickTrue if type of the image is bi-level.</p>
+
+<p>The format of the IsImageMonochrome method is:</p>
+
+<pre class="text">
+MagickBooleanType IsImageMonochrome(const Image *image)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/attribute_8c.html" id="IsImageOpaque">IsImageOpaque</a></h2>
+
+<p>IsImageOpaque() returns MagickTrue if none of the pixels in the image have an alpha value other than OpaqueAlpha (QuantumRange).</p>
+
+<p>Will return true immediatally is alpha channel is not available.</p>
+
+<p>The format of the IsImageOpaque method is:</p>
+
+<pre class="text">
+MagickBooleanType IsImageOpaque(const Image *image,
   ExceptionInfo *exception)
 </pre>
 
@@ -178,70 +218,15 @@ MagickBooleanType IsGrayImage(const Image *image,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/attribute_8c.html" id="IsMonochromeImage">IsMonochromeImage</a></h2>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/attribute_8c.html" id="SetImageDepth">SetImageDepth</a></h2>
 
-<p>IsMonochromeImage() returns MagickTrue if type of the image is bi-level.</p>
+<p>SetImageDepth() sets the depth of the image.</p>
 
-<p>The format of the IsMonochromeImage method is:</p>
+<p>The format of the SetImageDepth method is:</p>
 
 <pre class="text">
-MagickBooleanType IsMonochromeImage(const Image *image,
+MagickBooleanType SetImageDepth(Image *image,const size_t depth,
   ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<dd>
-</dd>
-
-<dd> </dd>
-<dl class="dl-horizontal">
-<dt>image</dt>
-<dd>the image. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
-<dd>  </dd>
-</dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/attribute_8c.html" id="IsOpaqueImage">IsOpaqueImage</a></h2>
-
-<p>IsOpaqueImage() returns MagickTrue if none of the pixels in the image have an opacity value other than opaque (0).</p>
-
-<p>The format of the IsOpaqueImage method is:</p>
-
-<pre class="text">
-MagickBooleanType IsOpaqueImage(const Image *image,
-  ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<dd>
-</dd>
-
-<dd> </dd>
-<dl class="dl-horizontal">
-<dt>image</dt>
-<dd>the image. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
-<dd>  </dd>
-</dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/attribute_8c.html" id="SetImageChannelDepth">SetImageChannelDepth</a></h2>
-
-<p>SetImageChannelDepth() sets the depth of the image.</p>
-
-<p>The format of the SetImageChannelDepth method is:</p>
-
-<pre class="text">
-MagickBooleanType SetImageDepth(Image *image,const size_t depth)
-MagickBooleanType SetImageChannelDepth(Image *image,
-  const ChannelType channel,const size_t depth)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -262,9 +247,13 @@ MagickBooleanType SetImageChannelDepth(Image *image,
 <dt>depth</dt>
 <dd>the image depth. </dd>
 
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/attribute_8c.html" id="SetImageGray">SetImageGray</a></h2>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/attribute_8c.html" id="SetImageGray">SetImageGray</a></h2>
 
 <p>SetImageGray() returns MagickTrue if all the pixels in the image have the same red, green, and blue intensities and changes the type of the image to bi-level or grayscale.</p>
 
@@ -291,7 +280,7 @@ MagickBooleanType SetImageGray(const Image *image,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/attribute_8c.html" id="SetImageMonochrome">SetImageMonochrome</a></h2>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/attribute_8c.html" id="SetImageMonochrome">SetImageMonochrome</a></h2>
 
 <p>SetImageMonochrome() returns MagickTrue if all the pixels in the image have the same red, green, and blue intensities and the intensity is either 0 or QuantumRange and changes the type of the image to bi-level.</p>
 
@@ -318,16 +307,17 @@ MagickBooleanType SetImageMonochrome(const Image *image,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/attribute_8c.html" id="SetImageType">SetImageType</a></h2>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/attribute_8c.html" id="SetImageType">SetImageType</a></h2>
 
 <p>SetImageType() sets the type of image.  Choose from these types:</p>
 
-<p>BilevelType, GrayscaleType, GrayscaleMatteType, PaletteType, PaletteMatteType, TrueColorType, TrueColorMatteType, ColorSeparationType, ColorSeparationMatteType, OptimizeType</p>
+<p>Bilevel        Grayscale       GrayscaleMatte Palette        PaletteMatte    TrueColor TrueColorMatte ColorSeparation ColorSeparationMatte OptimizeType</p>
 
 <p>The format of the SetImageType method is:</p>
 
 <pre class="text">
-MagickBooleanType SetImageType(Image *image,const ImageType type)
+MagickBooleanType SetImageType(Image *image,const ImageType type,
+  ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -344,6 +334,10 @@ MagickBooleanType SetImageType(Image *image,const ImageType type)
 <dt>type</dt>
 <dd>Image type. </dd>
 
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
 <dd>  </dd>
 </dl>
 </div>
@@ -358,7 +352,7 @@ MagickBooleanType SetImageType(Image *image,const ImageType type)
 </p>
     <p><a href="attribute.html#">Back to top</a> •
     <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-    <a href="http://www.imagemagick.org/script/contact.php">Contact Us</a></p>
+    <a href="http://nextgen.imagemagick.org/script/contact.php">Contact Us</a></p>
     <p><small>©  1999-2015 ImageMagick Studio LLC</small></p>
   </footer>
 </div><!-- /.container -->

@@ -49,16 +49,16 @@
       <a class="magick-nav-item " href="../command-line-options.html">Options</a>
       <a class="magick-nav-item " href="../resources.html">Resources</a>
       <a class="magick-nav-item " href="api.html">Develop</a>
-      <a class="magick-nav-item " href="http://www.imagemagick.org/script/search.php">Search</a>
+      <a class="magick-nav-item " href="http://nextgen.imagemagick.org/script/search.php">Search</a>
       <a class="magick-nav-item pull-right" href="http://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="text-center"><a href="blob.html#BlobToImage">BlobToImage</a> • <a href="blob.html#FileToImage">FileToImage</a> • <a href="blob.html#GetBlobProperties">GetBlobProperties</a> • <a href="blob.html#ImageToBlob">ImageToBlob</a> • <a href="blob.html#ImageToFile">ImageToFile</a> • <a href="blob.html#ImagesToBlob">ImagesToBlob</a> • <a href="blob.html#InjectImageBlob">InjectImageBlob</a></p>
+<p class="text-center"><a href="blob.html#"></a></p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/blob_8c.html" id="BlobToImage">BlobToImage</a></h2>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/blob_8c.html" id="BlobToImage">BlobToImage</a></h2>
 
 <p>BlobToImage() implements direct to memory image formats.  It returns the blob as an image.</p>
 
@@ -93,7 +93,7 @@ Image *BlobToImage(const ImageInfo *image_info,const void *blob,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/blob_8c.html" id="FileToImage">FileToImage</a></h2>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/blob_8c.html" id="FileToImage">FileToImage</a></h2>
 
 <p>FileToImage() write the contents of a file to an image.</p>
 
@@ -119,7 +119,7 @@ MagickBooleanType FileToImage(Image *,const char *filename)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/blob_8c.html" id="GetBlobProperties">GetBlobProperties</a></h2>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/blob_8c.html" id="GetBlobProperties">GetBlobProperties</a></h2>
 
 <p>GetBlobProperties() returns information about an image blob.</p>
 
@@ -141,14 +141,14 @@ const struct stat *GetBlobProperties(const Image *image)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/blob_8c.html" id="ImageToBlob">ImageToBlob</a></h2>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/blob_8c.html" id="ImageToBlob">ImageToBlob</a></h2>
 
 <p>ImageToBlob() implements direct to memory image formats.  It returns the image as a formatted blob and its length.  The magick member of the Image structure determines the format of the returned blob (GIF, JPEG, PNG, etc.).  This method is the equivalent of WriteImage(), but writes the formatted "file" to a memory buffer rather than to an actual file.</p>
 
 <p>The format of the ImageToBlob method is:</p>
 
 <pre class="text">
-unsigned char *ImageToBlob(const ImageInfo *image_info,Image *image,
+void *ImageToBlob(const ImageInfo *image_info,Image *image,
   size_t *length,ExceptionInfo *exception)
 </pre>
 
@@ -176,7 +176,7 @@ unsigned char *ImageToBlob(const ImageInfo *image_info,Image *image,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/blob_8c.html" id="ImageToFile">ImageToFile</a></h2>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/blob_8c.html" id="ImageToFile">ImageToFile</a></h2>
 
 <p>ImageToFile() writes an image to a file.  It returns MagickFalse if an error occurs otherwise MagickTrue.</p>
 
@@ -207,7 +207,7 @@ unsigned char *ImageToBlob(const ImageInfo *image_info,Image *image,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/blob_8c.html" id="ImagesToBlob">ImagesToBlob</a></h2>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/blob_8c.html" id="ImagesToBlob">ImagesToBlob</a></h2>
 
 <p>ImagesToBlob() implements direct to memory image formats.  It returns the image sequence as a blob and its length.  The magick member of the ImageInfo structure determines the format of the returned blob (GIF, JPEG,  PNG, etc.)</p>
 
@@ -216,7 +216,7 @@ unsigned char *ImageToBlob(const ImageInfo *image_info,Image *image,
 <p>The format of the ImagesToBlob method is:</p>
 
 <pre class="text">
-unsigned char *ImagesToBlob(const ImageInfo *image_info,Image *images,
+void *ImagesToBlob(const ImageInfo *image_info,Image *images,
   size_t *length,ExceptionInfo *exception)
 </pre>
 
@@ -244,7 +244,7 @@ unsigned char *ImagesToBlob(const ImageInfo *image_info,Image *images,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/blob_8c.html" id="InjectImageBlob">InjectImageBlob</a></h2>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/blob_8c.html" id="InjectImageBlob">InjectImageBlob</a></h2>
 
 <p>InjectImageBlob() injects the image with a copy of itself in the specified format (e.g. inject JPEG into a PDF image).</p>
 
@@ -296,7 +296,7 @@ MagickBooleanType InjectImageBlob(const ImageInfo *image_info,
 </p>
     <p><a href="blob.html#">Back to top</a> •
     <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-    <a href="http://www.imagemagick.org/script/contact.php">Contact Us</a></p>
+    <a href="http://nextgen.imagemagick.org/script/contact.php">Contact Us</a></p>
     <p><small>©  1999-2015 ImageMagick Studio LLC</small></p>
   </footer>
 </div><!-- /.container -->

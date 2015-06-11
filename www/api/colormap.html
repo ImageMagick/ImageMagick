@@ -49,23 +49,24 @@
       <a class="magick-nav-item " href="../command-line-options.html">Options</a>
       <a class="magick-nav-item " href="../resources.html">Resources</a>
       <a class="magick-nav-item " href="api.html">Develop</a>
-      <a class="magick-nav-item " href="http://www.imagemagick.org/script/search.php">Search</a>
+      <a class="magick-nav-item " href="http://nextgen.imagemagick.org/script/search.php">Search</a>
       <a class="magick-nav-item pull-right" href="http://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="text-center"><a href="colormap.html#AcquireImageColormap">AcquireImageColormap</a> • <a href="colormap.html#CycleColormap">CycleColormap</a></p>
+<p class="text-center"><a href="colormap.html#"></a></p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/colormap_8c.html" id="AcquireImageColormap">AcquireImageColormap</a></h2>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/colormap_8c.html" id="AcquireImageColormap">AcquireImageColormap</a></h2>
 
 <p>AcquireImageColormap() allocates an image colormap and initializes it to a linear gray colorspace.  If the image already has a colormap, it is replaced.  AcquireImageColormap() returns MagickTrue if successful, otherwise MagickFalse if there is not enough memory.</p>
 
 <p>The format of the AcquireImageColormap method is:</p>
 
 <pre class="text">
-MagickBooleanType AcquireImageColormap(Image *image,const size_t colors)
+MagickBooleanType AcquireImageColormap(Image *image,const size_t colors,
+  ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -82,16 +83,23 @@ MagickBooleanType AcquireImageColormap(Image *image,const size_t colors)
 <dt>colors</dt>
 <dd>the number of colors in the image colormap. </dd>
 
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/colormap_8c.html" id="CycleColormap">CycleColormap</a></h2>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/colormap_8c.html" id="CycleColormap">CycleColormap</a></h2>
 
 <p>CycleColormap() displaces an image's colormap by a given number of positions.  If you cycle the colormap a number of times you can produce a psychodelic effect.</p>
+
+<p>WARNING: this assumes an images colormap is in a well know and defined order. Currently Imagemagick has no way of setting that order.</p>
 
 <p>The format of the CycleColormapImage method is:</p>
 
 <pre class="text">
-MagickBooleanType CycleColormapImage(Image *image,const ssize_t displace)
+MagickBooleanType CycleColormapImage(Image *image,const ssize_t displace,
+  ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -108,6 +116,10 @@ MagickBooleanType CycleColormapImage(Image *image,const ssize_t displace)
 <dt>displace</dt>
 <dd> displace the colormap this amount. </dd>
 
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
 <dd>  </dd>
 </dl>
 </div>
@@ -122,7 +134,7 @@ MagickBooleanType CycleColormapImage(Image *image,const ssize_t displace)
 </p>
     <p><a href="colormap.html#">Back to top</a> •
     <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-    <a href="http://www.imagemagick.org/script/contact.php">Contact Us</a></p>
+    <a href="http://nextgen.imagemagick.org/script/contact.php">Contact Us</a></p>
     <p><small>©  1999-2015 ImageMagick Studio LLC</small></p>
   </footer>
 </div><!-- /.container -->

@@ -49,98 +49,15 @@
       <a class="magick-nav-item " href="../command-line-options.html">Options</a>
       <a class="magick-nav-item " href="../resources.html">Resources</a>
       <a class="magick-nav-item " href="api.html">Develop</a>
-      <a class="magick-nav-item " href="http://www.imagemagick.org/script/search.php">Search</a>
+      <a class="magick-nav-item " href="http://nextgen.imagemagick.org/script/search.php">Search</a>
       <a class="magick-nav-item pull-right" href="http://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="text-center"><a href="magick.html#GetMagickPrecision">GetMagickPrecision</a> • <a href="magick.html#IsMagickCoreInstantiated">IsMagickCoreInstantiated</a> • <a href="magick.html#MagickCoreGenesis">MagickCoreGenesis</a> • <a href="magick.html#MagickCoreTerminus">MagickCoreTerminus</a> • <a href="magick.html#SetMagickPrecision">SetMagickPrecision</a></p>
+<p class="text-center"><a href="magick.html#"></a></p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/magick_8c.html" id="GetMagickPrecision">GetMagickPrecision</a></h2>
-
-<p>GetMagickPrecision() returns the maximum number of significant digits to be printed.</p>
-
-<p>The format of the GetMagickPrecision method is:</p>
-
-<pre class="text">
-int GetMagickPrecision(void)
-</pre>
-
-<h2><a href="http://www.imagemagick.org/api/MagickCore/magick_8c.html" id="IsMagickCoreInstantiated">IsMagickCoreInstantiated</a></h2>
-
-<p>IsMagickCoreInstantiated() returns MagickTrue if the ImageMagick environment is currently instantiated--  that is, MagickCoreGenesis() has been called but MagickCoreTerminus() has not.</p>
-
-<p>The format of the IsMagickCoreInstantiated method is:</p>
-
-<pre class="text">
-MagickBooleanType IsMagickCoreInstantiated(void)
-</pre>
-
-<h2><a href="http://www.imagemagick.org/api/MagickCore/magick_8c.html" id="MagickCoreGenesis">MagickCoreGenesis</a></h2>
-
-<p>MagickCoreGenesis() initializes the MagickCore environment.</p>
-
-<p>The format of the MagickCoreGenesis function is:</p>
-
-<pre class="text">
-MagickCoreGenesis(const char *path,
-  const MagickBooleanType establish_signal_handlers)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<dd>
-</dd>
-
-<dd> </dd>
-<dl class="dl-horizontal">
-<dt>path</dt>
-<dd>the execution path of the current ImageMagick client. </dd>
-
-<dd> </dd>
-<dt>establish_signal_handlers</dt>
-<dd>set to MagickTrue to use MagickCore's own signal handlers for common signals. </dd>
-
-<dd>  </dd>
-</dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/magick_8c.html" id="MagickCoreTerminus">MagickCoreTerminus</a></h2>
-
-<p>MagickCoreTerminus() destroys the MagickCore environment.</p>
-
-<p>The format of the MagickCoreTerminus function is:</p>
-
-<pre class="text">
-MagickCoreTerminus(void)
-</pre>
-
-<h2><a href="http://www.imagemagick.org/api/MagickCore/magick_8c.html" id="SetMagickPrecision">SetMagickPrecision</a></h2>
-
-<p>SetMagickPrecision() sets the maximum number of significant digits to be printed.</p>
-
-<p>An input argument of 0 returns the current precision setting.</p>
-
-<p>A negative value forces the precision to reset to a default value according to the environment variable "MAGICK_PRECISION", the current 'policy' configuration setting, or the default value of '6', in that order.</p>
-
-<p>The format of the SetMagickPrecision method is:</p>
-
-<pre class="text">
-int SetMagickPrecision(const int precision)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<dd>
-</dd>
-
-<dd> </dd>
-<dl class="dl-horizontal">
-<dt>precision</dt>
-<dd>set the maximum number of significant digits to be printed. </dd>
-
-<dd>  </dd>
-</dl>
 </div>
   <footer class="magick-footer">
     <div class="magick-nav-item pull-left">
@@ -153,7 +70,7 @@ int SetMagickPrecision(const int precision)
 </p>
     <p><a href="magick.html#">Back to top</a> •
     <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-    <a href="http://www.imagemagick.org/script/contact.php">Contact Us</a></p>
+    <a href="http://nextgen.imagemagick.org/script/contact.php">Contact Us</a></p>
     <p><small>©  1999-2015 ImageMagick Studio LLC</small></p>
   </footer>
 </div><!-- /.container -->

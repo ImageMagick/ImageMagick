@@ -25,7 +25,7 @@
   <link rel="icon" href="../images/wand.png">
   <link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon">
   <link rel="stylesheet" href="css/bootstrap.min.css">
-  <link rel="stylesheet" href="css/magick.css">
+  <link rel="stylesheet" href="../css/magick.css">
 </head>
 
 <body>
@@ -49,7 +49,7 @@
       <a class="magick-nav-item " href="command-line-options.html">Options</a>
       <a class="magick-nav-item " href="resources.html">Resources</a>
       <a class="magick-nav-item " href="api.html">Develop</a>
-      <a class="magick-nav-item " href="http://www.imagemagick.org/script/search.php">Search</a>
+      <a class="magick-nav-item " href="http://nextgen.imagemagick.org/script/search.php">Search</a>
       <a class="magick-nav-item pull-right" href="http://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
@@ -63,13 +63,13 @@ ImageMagick<sup><a href="http://tarr.uspto.gov/servlet/tarr?regser=serial&amp;en
 
 <p>The functionality of ImageMagick is typically utilized from the command line or you can use the features from programs written in your favorite language. Choose from these interfaces: <a href="api.html#ada">G2F</a> (Ada), <a href="api.html#c">MagickCore</a> (C), <a href="api.html#c">MagickWand</a> (C), <a href="api.html#ch">ChMagick</a> (Ch), <a href="api.html#com_">ImageMagickObject</a> (COM+), <a href="api.html#c__">Magick++</a> (C++), <a href="api.html#java">JMagick</a> (Java), <a href="api.html#lisp">L-Magick</a> (Lisp), <a href="api.html#lua">Lua</a>, <a href="api.html#neko">NMagick</a> (Neko/haXe), <a href="api.html#dot-net">Magick.NET</a> (.NET), <a href="api.html#pascal">PascalMagick</a> (Pascal),  <a href="api.html#perl">PerlMagick</a> (Perl), <a href="api.html#php">MagickWand for PHP</a> (PHP),  <a href="api.html#php">IMagick</a> (PHP), <a href="api.html#python">PythonMagick</a> (Python), <a href="api.html#ruby">RMagick</a> (Ruby), or <a href="api.html#tcl">TclMagick</a> (Tcl/TK). With a language interface, use ImageMagick to modify or create images dynamically and <var>automagically</var>.</p>
 <p>ImageMagick utilizes multiple computational threads to increase performance and can read, process, or write mega-, giga-, or tera-pixel image sizes.</p>
-<p>ImageMagick is free software delivered as a ready-to-run binary distribution or as source code that you may use, copy, modify, and distribute in both open and proprietary applications. It is distributed under the Apache 2.0 <a href="license.html">license</a>.</p>
+<p>ImageMagick is free software delivered as a ready-to-run binary distribution or as source code that you may use, copy, modify, and distribute in both open and proprietary applications. It is distributed under the Apache 2.0 <a href="http://www.imagemagick.org/www/license.html">license</a>.</p>
 
 <p>The ImageMagick development process ensures a <a href="http://upstream-tracker.org/versions/imagemagick.html">stable API</a> and ABI. Before each ImageMagick release, we perform a comprehensive security assessment that includes <a href="https://code.google.com/p/address-sanitizer/">memory error</a> and <a href="https://code.google.com/p/data-race-test/wiki/ThreadSanitizer">thread data race</a> detection to prevent security vulnerabilities.</p>
 
-<p>The current release is ImageMagick 6.9.1-4 available from <a href="http://www.imagemagick.org/download">http://www.imagemagick.org/download</a>.  It runs on <a href="http://www.imagemagick.org/download/linux/">Linux</a>, <a href="http://www.imagemagick.org/download/binaries/">Windows</a>, <a href="http://www.imagemagick.org/download/binaries/">Mac Os X</a>, <a href="http://www.imagemagick.org/download/iOS/">iOS</a>, Android OS, and others.</p>
+<p>The current release is ImageMagick 6.9.1-4 available from <a href="http://www.imagemagick.org/download/">http://www.imagemagick.org/download</a>.  It runs on <a href="http://www.imagemagick.org/download/linux/">Linux</a>, <a href="http://www.imagemagick.org/download/binaries/">Windows</a>, <a href="http://www.imagemagick.org/download/binaries/">Mac Os X</a>, <a href="http://www.imagemagick.org/download/iOS/">iOS</a>, Android OS, and others.</p>
 
-<p>The authoritative ImageMagick web site is <a href="../index.html">http://www.imagemagick.org</a>. The authoritative source code repository is <a href="https://subversion.imagemagick.org/subversion/ImageMagick/">https://subversion.imagemagick.org/subversion/ImageMagick/</a>.</p>
+<p>The authoritative ImageMagick web site is <a href="http://www.imagemagick.org/">http://www.imagemagick.org</a>. The authoritative source code repository is <a href="https://subversion.imagemagick.org/subversion/ImageMagick/">https://subversion.imagemagick.org/subversion/ImageMagick/</a>.</p>
 
 <h2 class="magick-header">Features and Capabilities</h2>
 <p>Here are just a few <a href="examples.html">examples</a> of what ImageMagick can do for you:</p>
@@ -81,7 +81,7 @@ ImageMagick<sup><a href="http://tarr.uspto.gov/servlet/tarr?regser=serial&amp;en
   </tr>
   <tr>
     <td><a href="http://www.imagemagick.org/Usage/resize/">Transform</a></td>
-    <td>resize, rotate, crop, flip or trim an image.</td>
+    <td>resize, rotate, deskew, crop, flip or trim an image.</td>
   </tr>
   <tr>
     <td><a href="http://www.imagemagick.org/Usage/masking/">Transparency</a></td>
@@ -194,7 +194,7 @@ ImageMagick<sup><a href="http://tarr.uspto.gov/servlet/tarr?regser=serial&amp;en
 
 <h2 class="magick-header"><a id="news"></a>News</h2>
 
-<p>The design of ImageMagick is an evolutionary process, with the design and implementation efforts serving to influence and guide further progress in the other.  With <a href="http://www.imagemagick.org/ImageMagick-7.0.0">ImageMagick version 7</a>, we aim to improve the design based on lessons learned from the version 6 implementation.  See the <a href="porting.html">porting</a> guide to track the progress of the version 7 development effort.</p>
+<p>The design of ImageMagick is an evolutionary process, with the design and implementation efforts serving to influence and guide further progress in the other.  With <a href="../index.html">ImageMagick version 7</a>, we aim to improve the design based on lessons learned from the version 6 implementation.  See the <a href="porting.html">porting</a> guide to track the progress of the version 7 development effort.</p>
 
 <h2 class="magick-header"><a id="community"></a>Community</h2>
 <p>To join the ImageMagick community, try the <a href="http://www.imagemagick.org/discourse-server/">discourse server</a>.  You can review questions or comments (with informed responses) posed by ImageMagick users or ask your own questions.</p>
@@ -210,7 +210,7 @@ ImageMagick<sup><a href="http://tarr.uspto.gov/servlet/tarr?regser=serial&amp;en
 </p>
     <p><a href="index.html#">Back to top</a> •
     <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-    <a href="http://www.imagemagick.org/script/contact.php">Contact Us</a></p>
+    <a href="http://nextgen.imagemagick.org/script/contact.php">Contact Us</a></p>
     <p><small>©  1999-2015 ImageMagick Studio LLC</small></p>
   </footer>
 </div><!-- /.container -->

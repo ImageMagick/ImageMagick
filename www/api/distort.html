@@ -49,16 +49,16 @@
       <a class="magick-nav-item " href="../command-line-options.html">Options</a>
       <a class="magick-nav-item " href="../resources.html">Resources</a>
       <a class="magick-nav-item " href="api.html">Develop</a>
-      <a class="magick-nav-item " href="http://www.imagemagick.org/script/search.php">Search</a>
+      <a class="magick-nav-item " href="http://nextgen.imagemagick.org/script/search.php">Search</a>
       <a class="magick-nav-item pull-right" href="http://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="text-center"><a href="distort.html#AffineTransformImage">AffineTransformImage</a> • <a href="distort.html#DistortImage">DistortImage</a> • <a href="distort.html#RotateImage">RotateImage</a> • <a href="distort.html#SparseColorImage">SparseColorImage</a></p>
+<p class="text-center"><a href="distort.html#"></a></p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/distort_8c.html" id="AffineTransformImage">AffineTransformImage</a></h2>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/distort_8c.html" id="AffineTransformImage">AffineTransformImage</a></h2>
 
 <p>AffineTransformImage() transforms an image as dictated by the affine matrix. It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</p>
 
@@ -89,7 +89,7 @@ Image *AffineTransformImage(const Image *image,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/distort_8c.html" id="DistortImage">DistortImage</a></h2>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/distort_8c.html" id="DistortImage">DistortImage</a></h2>
 
 <p>DistortImage() distorts an image using various distortion methods, by mapping color lookups of the source image to a new destination image usally of the same size as the source image, unless 'bestfit' is set to true.</p>
 
@@ -157,7 +157,7 @@ Image *DistortImage(const Image *image,const DistortImageMethod method,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/distort_8c.html" id="RotateImage">RotateImage</a></h2>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/distort_8c.html" id="RotateImage">RotateImage</a></h2>
 
 <p>RotateImage() creates a new image that is a rotated copy of an existing one.  Positive angles rotate counter-clockwise (right-hand rule), while negative angles rotate clockwise.  Rotated images are usually larger than the originals and have 'empty' triangular corners.  X axis.  Empty triangles left over from shearing the image are filled with the background color defined by member 'background_color' of the image.  RotateImage allocates the memory necessary for the new Image structure and returns a pointer to the new image.</p>
 
@@ -179,14 +179,14 @@ Image *RotateImage(const Image *image,const double degrees,
 <dt>exception</dt>
 <p>return any errors or warnings in this structure.</p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/distort_8c.html" id="SparseColorImage">SparseColorImage</a></h2>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/distort_8c.html" id="SparseColorImage">SparseColorImage</a></h2>
 
 <p>SparseColorImage(), given a set of coordinates, interpolates the colors found at those coordinates, across the whole image, using various methods.</p>
 
 <p>The format of the SparseColorImage() method is:</p>
 
 <pre class="text">
-Image *SparseColorImage(const Image *image,const ChannelType channel,
+Image *SparseColorImage(const Image *image,
   const SparseColorMethod method,const size_t number_arguments,
   const double *arguments,ExceptionInfo *exception)
 </pre>
@@ -200,10 +200,6 @@ Image *SparseColorImage(const Image *image,const ChannelType channel,
 <dl class="dl-horizontal">
 <dt>image</dt>
 <dd>the image to be filled in. </dd>
-
-<dd> </dd>
-<dt>channel</dt>
-<dd>Specify which color values (in RGBKA sequence) are being set. This also determines the number of color_values in above. </dd>
 
 <dd> </dd>
 <dt>method</dt>
@@ -237,7 +233,7 @@ Image *SparseColorImage(const Image *image,const ChannelType channel,
 </p>
     <p><a href="distort.html#">Back to top</a> •
     <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-    <a href="http://www.imagemagick.org/script/contact.php">Contact Us</a></p>
+    <a href="http://nextgen.imagemagick.org/script/contact.php">Contact Us</a></p>
     <p><small>©  1999-2015 ImageMagick Studio LLC</small></p>
   </footer>
 </div><!-- /.container -->

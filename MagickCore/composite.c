@@ -583,6 +583,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
   value=GetImageArtifact(image,"compose:clamp");
   if (value != (const char *) NULL)
     clamp=IsStringTrue(value);
+  SetGeometryInfo(&geometry_info);
   percent_luma=100.0;
   percent_chroma=100.0;
   source_dissolve=1.0;
@@ -803,7 +804,6 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       /*
         Gather the maximum blur sigma values from user.
       */
-      SetGeometryInfo(&geometry_info);
       flags=NoValue;
       value=GetImageArtifact(image,"compose:args");
       if (value != (const char *) NULL)

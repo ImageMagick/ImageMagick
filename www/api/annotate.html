@@ -49,16 +49,16 @@
       <a class="magick-nav-item " href="../command-line-options.html">Options</a>
       <a class="magick-nav-item " href="../resources.html">Resources</a>
       <a class="magick-nav-item " href="api.html">Develop</a>
-      <a class="magick-nav-item " href="http://www.imagemagick.org/script/search.php">Search</a>
+      <a class="magick-nav-item " href="http://nextgen.imagemagick.org/script/search.php">Search</a>
       <a class="magick-nav-item pull-right" href="http://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="text-center"><a href="annotate.html#AnnotateImage">AnnotateImage</a> • <a href="annotate.html#FormatMagickCaption">FormatMagickCaption</a> • <a href="annotate.html#GetMultilineTypeMetrics">GetMultilineTypeMetrics</a> • <a href="annotate.html#GetTypeMetrics">GetTypeMetrics</a></p>
+<p class="text-center"><a href="annotate.html#"></a></p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/annotate_8c.html" id="AnnotateImage">AnnotateImage</a></h2>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/annotate_8c.html" id="AnnotateImage">AnnotateImage</a></h2>
 
 <p>AnnotateImage() annotates an image with text.  Optionally you can include any of the following bits of information about the image by embedding the appropriate special characters:</p>
 
@@ -115,7 +115,8 @@
 <p>The format of the AnnotateImage method is:</p>
 
 <pre class="text">
-MagickBooleanType AnnotateImage(Image *image,DrawInfo *draw_info)
+MagickBooleanType AnnotateImage(Image *image,DrawInfo *draw_info,
+  ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -132,9 +133,13 @@ MagickBooleanType AnnotateImage(Image *image,DrawInfo *draw_info)
 <dt>draw_info</dt>
 <dd>the draw info. </dd>
 
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/annotate_8c.html" id="FormatMagickCaption">FormatMagickCaption</a></h2>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/annotate_8c.html" id="FormatMagickCaption">FormatMagickCaption</a></h2>
 
 <p>FormatMagickCaption() formats a caption so that it fits within the image width.  It returns the number of lines in the formatted caption.</p>
 
@@ -142,7 +147,8 @@ MagickBooleanType AnnotateImage(Image *image,DrawInfo *draw_info)
 
 <pre class="text">
 ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
-  const MagickBooleanType split,TypeMetric *metrics,char **caption)
+  const MagickBooleanType split,TypeMetric *metrics,char **caption,
+  ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows.</p>
@@ -162,7 +168,10 @@ ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
 <dt>caption</dt>
 <p>the caption.</p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/annotate_8c.html" id="GetMultilineTypeMetrics">GetMultilineTypeMetrics</a></h2>
+<dt>exception</dt>
+<p>return any errors or warnings in this structure.</p>
+
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/annotate_8c.html" id="GetMultilineTypeMetrics">GetMultilineTypeMetrics</a></h2>
 
 <p>GetMultilineTypeMetrics() returns the following information for the specified font and text:</p>
 
@@ -190,7 +199,7 @@ ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
 
 <pre class="text">
 MagickBooleanType GetMultilineTypeMetrics(Image *image,
-  const DrawInfo *draw_info,TypeMetric *metrics)
+  const DrawInfo *draw_info,TypeMetric *metrics,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -211,9 +220,13 @@ MagickBooleanType GetMultilineTypeMetrics(Image *image,
 <dt>metrics</dt>
 <dd>Return the font metrics in this structure. </dd>
 
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/annotate_8c.html" id="GetTypeMetrics">GetTypeMetrics</a></h2>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/annotate_8c.html" id="GetTypeMetrics">GetTypeMetrics</a></h2>
 
 <p>GetTypeMetrics() returns the following information for the specified font and text:</p>
 
@@ -239,7 +252,7 @@ MagickBooleanType GetMultilineTypeMetrics(Image *image,
 
 <pre class="text">
 MagickBooleanType GetTypeMetrics(Image *image,const DrawInfo *draw_info,
-  TypeMetric *metrics)
+  TypeMetric *metrics,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -260,6 +273,10 @@ MagickBooleanType GetTypeMetrics(Image *image,const DrawInfo *draw_info,
 <dt>metrics</dt>
 <dd>Return the font metrics in this structure. </dd>
 
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
 <dd>  </dd>
 </dl>
 </div>
@@ -274,7 +291,7 @@ MagickBooleanType GetTypeMetrics(Image *image,const DrawInfo *draw_info,
 </p>
     <p><a href="annotate.html#">Back to top</a> •
     <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-    <a href="http://www.imagemagick.org/script/contact.php">Contact Us</a></p>
+    <a href="http://nextgen.imagemagick.org/script/contact.php">Contact Us</a></p>
     <p><small>©  1999-2015 ImageMagick Studio LLC</small></p>
   </footer>
 </div><!-- /.container -->
