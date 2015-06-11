@@ -196,7 +196,9 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
     x;
 
   size_t
-    bevel_width;
+    bevel_width,
+    height,
+    width;
 
   ssize_t
     y;
