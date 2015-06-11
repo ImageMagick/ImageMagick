@@ -8599,7 +8599,7 @@ WandExport MagickBooleanType MagickRandomThresholdImageChannel(MagickWand *wand,
 %
 %  MagickReadImage() reads an image or image sequence.  The images are inserted
 %  at the current image pointer position.   Use MagickSetFirstIterator(),
-%  MagickSetLastIterator, or MagickSetImageIndex() to specify the current
+%  MagickSetLastIterator, or MagickSetIteratorIndex() to specify the current
 %  image pointer position at the beginning of the image list, the end, or
 %  anywhere in-between respectively.
 %
@@ -9470,7 +9470,7 @@ WandExport MagickBooleanType MagickSepiaToneImage(MagickWand *wand,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickSetImage() replaces the last image returned by MagickSetImageIndex(),
+%  MagickSetImage() replaces the last image returned by MagickSetIteratorIndex(),
 %  MagickNextImage(), MagickPreviousImage() with the images from the specified
 %  wand.
 %
