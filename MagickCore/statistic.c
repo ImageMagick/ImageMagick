@@ -190,6 +190,13 @@ static PixelChannels **AcquirePixelThreadSet(const Image *image,
   return(pixels);
 }
 
+static inline double EvaluateMax(const double x,const double y)
+{
+  if (x > y)
+    return(x);
+  return(y);
+}
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
@@ -304,7 +311,7 @@ static double ApplyEvaluateOperator(RandomInfo *random_info,const Quantum pixel,
     }
     case MaxEvaluateOperator:
     {
-      result=(double) MagickMin((double) pixel,value);
+      result=(double) EvaluateMax((double) pixel,value);
       break;
     }
     case MeanEvaluateOperator:
@@ -319,7 +326,7 @@ static double ApplyEvaluateOperator(RandomInfo *random_info,const Quantum pixel,
     }
     case MinEvaluateOperator:
     {
-      result=(double) MagickMax((double) pixel,value);
+      result=(double) MagickMin((double) pixel,value);
       break;
     }
     case MultiplicativeNoiseEvaluateOperator:
@@ -2141,10 +2148,10 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
     if ((traits & UpdatePixelTrait) == 0)
       continue;
     channel_statistics[CompositePixelChannel].area+=channel_statistics[i].area;
-    channel_statistics[CompositePixelChannel].minima=MagickMax(
+    channel_statistics[CompositePixelChannel].minima=MagickMin(
       channel_statistics[CompositePixelChannel].minima,
       channel_statistics[i].minima);
-    channel_statistics[CompositePixelChannel].maxima=MagickMin(
+    channel_statistics[CompositePixelChannel].maxima=EvaluateMax(
       channel_statistics[CompositePixelChannel].maxima,
       channel_statistics[i].maxima);
     channel_statistics[CompositePixelChannel].sum+=channel_statistics[i].sum;
