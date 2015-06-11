@@ -81,6 +81,7 @@ extern WandExport MagickBooleanType
   MagickDeleteImageProperty(MagickWand *,const char *),
   MagickDeleteOption(MagickWand *,const char *),
   MagickGetAntialias(const MagickWand *),
+  MagickGetHdriEnabled(void),
   MagickGetPage(const MagickWand *,size_t *,size_t *,ssize_t *,ssize_t *),
   MagickGetResolution(const MagickWand *,double *,double *),
   MagickGetSize(const MagickWand *,size_t *,size_t *),
