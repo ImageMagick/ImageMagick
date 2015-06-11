@@ -5,6 +5,7 @@
   * Support writing EXR files with different color types (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=27759).
   * Prefer PKG_CHECK_MODULES() when searching for delegate libraries.
+  * Throw exception if frame option bevel exceeds to the image width / height.
 
 2015-06-01  6.9.1-4 Cristy  <quetzlzacatenango@image...>
   * New version 6.9.1-4, SVN revision 18697.
