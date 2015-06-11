@@ -8004,7 +8004,7 @@ WandExport MagickBooleanType MagickRandomThresholdImage(MagickWand *wand,
 %
 %  Use MagickSetFirstIterator(), to insert new images before all the current
 %  images in the wand, MagickSetLastIterator() to append add to the end,
-%  MagickSetImageIndex() to place images just after the given index.
+%  MagickSetIteratorIndex() to place images just after the given index.
 %
 %  The format of the MagickReadImage method is:
 %
@@ -8788,7 +8788,7 @@ WandExport MagickBooleanType MagickSepiaToneImage(MagickWand *wand,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickSetImage() replaces the last image returned by MagickSetImageIndex(),
+%  MagickSetImage() replaces the last image returned by MagickSetIteratorIndex(),
 %  MagickNextImage(), MagickPreviousImage() with the images from the specified
 %  wand.
 %
