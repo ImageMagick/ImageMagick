@@ -1151,7 +1151,7 @@ MagickPrivate XVisualInfo *XBestVisualInfo(Display *display,
 #define XVisualColormapSize(visual_info) MagickMin((unsigned int) (\
   (visual_info->klass == TrueColor) || (visual_info->klass == DirectColor) ? \
    visual_info->red_mask | visual_info->green_mask | visual_info->blue_mask : \
-   (unsigned int) visual_info->colormap_size),1U << visual_info->depth)
+   (unsigned long) visual_info->colormap_size),1UL << visual_info->depth)
 
   char
     *map_type,

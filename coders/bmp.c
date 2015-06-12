@@ -111,7 +111,7 @@
 */
 typedef struct _BMPInfo
 {
-  unsigned int
+  unsigned long
     file_size,
     ba_offset,
     offset_bits,
@@ -125,7 +125,7 @@ typedef struct _BMPInfo
     planes,
     bits_per_pixel;
 
-  unsigned int
+  unsigned long
     compression,
     image_size,
     x_pixels,
@@ -137,7 +137,7 @@ typedef struct _BMPInfo
     alpha_mask,
     colors_important;
 
-  int
+  long
     colorspace;
 
   PrimaryInfo
@@ -594,7 +594,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     bmp_info.offset_bits=ReadBlobLSBLong(image);
     bmp_info.size=ReadBlobLSBLong(image);
     if (image->debug != MagickFalse)
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  BMP size: %u",
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  BMP size: %lu",
         bmp_info.size);
     if (bmp_info.size == 12)
       {
@@ -690,20 +690,19 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
               default:
               {
                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                  "  Compression: UNKNOWN (%u)",bmp_info.compression);
+                  "  Compression: UNKNOWN (%lu)",bmp_info.compression);
               }
             }
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "  Number of colors: %u",bmp_info.number_colors);
+              "  Number of colors: %lu",bmp_info.number_colors);
           }
         bmp_info.red_mask=ReadBlobLSBLong(image);
         bmp_info.green_mask=ReadBlobLSBLong(image);
         bmp_info.blue_mask=ReadBlobLSBLong(image);
         if (bmp_info.size > 40)
           {
-
             double
-              sum;
+              gamma;
 
             /*
               Read color management information.
@@ -724,24 +723,27 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             bmp_info.blue_primary.y=(double) ReadBlobLSBLong(image)/BMP_DENOM;
             bmp_info.blue_primary.z=(double) ReadBlobLSBLong(image)/BMP_DENOM;
 
-            sum=bmp_info.red_primary.x+bmp_info.red_primary.y+
+            gamma=bmp_info.red_primary.x+bmp_info.red_primary.y+
               bmp_info.red_primary.z;
-            bmp_info.red_primary.x/=sum;
-            bmp_info.red_primary.y/=sum;
+            gamma=PerceptibleReciprocal(gamma);
+            bmp_info.red_primary.x*=gamma;
+            bmp_info.red_primary.y*=gamma;
             image->chromaticity.red_primary.x=bmp_info.red_primary.x;
             image->chromaticity.red_primary.y=bmp_info.red_primary.y;
 
-            sum=bmp_info.green_primary.x+bmp_info.green_primary.y+
+            gamma=bmp_info.green_primary.x+bmp_info.green_primary.y+
               bmp_info.green_primary.z;
-            bmp_info.green_primary.x/=sum;
-            bmp_info.green_primary.y/=sum;
+            gamma=PerceptibleReciprocal(gamma);
+            bmp_info.green_primary.x*=gamma;
+            bmp_info.green_primary.y*=gamma;
             image->chromaticity.green_primary.x=bmp_info.green_primary.x;
             image->chromaticity.green_primary.y=bmp_info.green_primary.y;
 
-            sum=bmp_info.blue_primary.x+bmp_info.blue_primary.y+
+            gamma=bmp_info.blue_primary.x+bmp_info.blue_primary.y+
               bmp_info.blue_primary.z;
-            bmp_info.blue_primary.x/=sum;
-            bmp_info.blue_primary.y/=sum;
+            gamma=PerceptibleReciprocal(gamma);
+            bmp_info.blue_primary.x*=gamma;
+            bmp_info.blue_primary.y*=gamma;
             image->chromaticity.blue_primary.x=bmp_info.blue_primary.x;
             image->chromaticity.blue_primary.y=bmp_info.blue_primary.y;
 
@@ -1975,7 +1977,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
            default:
            {
              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-               "   Compression=UNKNOWN (%u)",bmp_info.compression);
+               "   Compression=UNKNOWN (%lu)",bmp_info.compression);
              break;
            }
         }
@@ -1984,7 +1986,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
             "   Number_colors=unspecified");
         else
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "   Number_colors=%u",bmp_info.number_colors);
+            "   Number_colors=%lu",bmp_info.number_colors);
       }
     (void) WriteBlob(image,2,(unsigned char *) "BM");
     (void) WriteBlobLSBLong(image,bmp_info.file_size);
@@ -2138,7 +2140,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
       }
     if (image->debug != MagickFalse)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "  Pixels:  %u bytes",bmp_info.image_size);
+        "  Pixels:  %lu bytes",bmp_info.image_size);
     (void) WriteBlob(image,(size_t) bmp_info.image_size,pixels);
     pixel_info=RelinquishVirtualMemory(pixel_info);
     if (GetNextImageInList(image) == (Image *) NULL)
