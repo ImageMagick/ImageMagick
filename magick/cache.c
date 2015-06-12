@@ -3573,6 +3573,9 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
       cache_info->storage_class=image->storage_class;
       cache_info->colorspace=image->colorspace;
       cache_info->type=PingCache;
+      cache_info->pixels=(PixelPacket *) NULL;
+      cache_info->indexes=(IndexPacket *) NULL;
+      cache_info->length=0;
       return(MagickTrue);
     }
   number_pixels=(MagickSizeType) cache_info->columns*cache_info->rows;
