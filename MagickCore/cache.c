@@ -3352,8 +3352,6 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
     ThrowBinaryException(CacheError,"NoPixelsDefinedInCache",image->filename);
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
-  if (cache_info->methods.stream != MagickFalse)
-    return(MagickTrue);
   if ((AcquireMagickResource(WidthResource,image->columns) == MagickFalse) ||
       (AcquireMagickResource(HeightResource,image->rows) == MagickFalse))
     ThrowBinaryException(ResourceLimitError,"PixelCacheAllocationFailed",
@@ -3377,10 +3375,9 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
   cache_info->mode=mode;
   if (image->ping != MagickFalse)
     {
+      cache_info->storage_class=image->storage_class;
+      cache_info->colorspace=image->colorspace;
       cache_info->type=PingCache;
-      cache_info->pixels=(Quantum *) NULL;
-      cache_info->metacontent=(void *) NULL;
-      cache_info->length=0;
       return(MagickTrue);
     }
   number_pixels=(MagickSizeType) cache_info->columns*cache_info->rows;
@@ -4474,7 +4471,6 @@ MagickPrivate void SetPixelCacheMethods(Cache cache,CacheMethods *cache_methods)
       (GetOneAuthenticPixelFromHandler) NULL)
     cache_info->methods.get_one_authentic_pixel_from_handler=
       cache_methods->get_one_authentic_pixel_from_handler;
-  cache_info->methods.stream=cache_methods->stream;
 }
 
 /*
