@@ -5417,6 +5417,7 @@ int main(int argc,char **argv)
       (void) FormatLocaleFile(stderr,"Option does not match\n");
       exit(1);
     }
+  option=(char *) MagickRelinquishMemory(option);
   options=MagickGetOptions(magick_wand,"*",&number_options);
   if (options != (char **) NULL)
     {
@@ -5444,6 +5445,7 @@ int main(int argc,char **argv)
       (void) FormatLocaleFile(stderr,"Property does not match\n");
       exit(1);
     }
+  property=(char *) MagickRelinquishMemory(property);
   properties=MagickGetImageProperties(magick_wand,"*",&number_properties);
   if (properties != (char **) NULL)
     {
