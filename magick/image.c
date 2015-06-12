@@ -2435,8 +2435,8 @@ MagickExport MagickBooleanType SetImageClipMask(Image *image,
 %
 %  The format of the SetImageExtent method is:
 %
-%      MagickBooleanType SetImageExtent(Image *image,
-%        const size_t columns,const size_t rows)
+%      MagickBooleanType SetImageExtent(Image *image,const size_t columns,
+%        const size_t rows)
 %
 %  A description of each parameter follows:
 %
@@ -2447,8 +2447,8 @@ MagickExport MagickBooleanType SetImageClipMask(Image *image,
 %    o rows:  The image height in pixels.
 %
 */
-MagickExport MagickBooleanType SetImageExtent(Image *image,
-  const size_t columns,const size_t rows)
+MagickExport MagickBooleanType SetImageExtent(Image *image,const size_t columns,
+  const size_t rows)
 {
   if ((columns == 0) || (rows == 0))
     return(MagickFalse);
