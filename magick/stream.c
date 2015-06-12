@@ -969,7 +969,6 @@ MagickExport Image *ReadStream(const ImageInfo *image_info,StreamHandler stream,
   cache_methods.get_one_authentic_pixel_from_handler=
     GetOneAuthenticPixelFromStream;
   cache_methods.destroy_pixel_handler=DestroyPixelStream;
-  cache_methods.stream=MagickTrue;
   SetPixelCacheMethods(read_info->cache,&cache_methods);
   read_info->stream=stream;
   image=ReadImage(read_info,exception);

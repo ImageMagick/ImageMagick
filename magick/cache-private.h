@@ -98,9 +98,6 @@ typedef struct _CacheMethods
 
   DestroyPixelHandler
     destroy_pixel_handler;
-
-  MagickBooleanType
-    stream;
 } CacheMethods;
 
 typedef struct _NexusInfo
