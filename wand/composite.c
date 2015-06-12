@@ -379,6 +379,9 @@ static void RelinquishCompositeOptions(CompositeOptions *composite_options)
   if (composite_options->compose_args != (char *) NULL)
     composite_options->compose_args=(char *)
       RelinquishMagickMemory(composite_options->compose_args);
+  if (composite_options->geometry != (char *) NULL)
+    composite_options->geometry=(char *)
+      RelinquishMagickMemory(composite_options->geometry);
 }
 
 WandExport MagickBooleanType CompositeImageCommand(ImageInfo *image_info,

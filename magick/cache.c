@@ -3552,12 +3552,14 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if ((image->columns == 0) || (image->rows == 0))
     ThrowBinaryException(CacheError,"NoPixelsDefinedInCache",image->filename);
+  cache_info=(CacheInfo *) image->cache;
+  assert(cache_info->signature == MagickSignature);
+  if (cache_info->methods.stream != MagickFalse)
+    return(MagickTrue);
   if ((AcquireMagickResource(WidthResource,image->columns) == MagickFalse) ||
       (AcquireMagickResource(HeightResource,image->rows) == MagickFalse))
     ThrowBinaryException(ResourceLimitError,"PixelCacheAllocationFailed",
       image->filename);
-  cache_info=(CacheInfo *) image->cache;
-  assert(cache_info->signature == MagickSignature);
   source_info=(*cache_info);
   source_info.file=(-1);
   (void) FormatLocaleString(cache_info->filename,MaxTextExtent,"%s[%.20g]",
@@ -4655,6 +4657,7 @@ MagickExport void SetPixelCacheMethods(Cache cache,CacheMethods *cache_methods)
       (GetOneAuthenticPixelFromHandler) NULL)
     cache_info->methods.get_one_authentic_pixel_from_handler=
       cache_methods->get_one_authentic_pixel_from_handler;
+  cache_info->methods.stream=cache_methods->stream;
 }
 
 /*

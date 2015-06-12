@@ -957,8 +957,8 @@ MagickExport Image *ReadStream(const ImageInfo *image_info,StreamHandler stream,
   read_info->cache=AcquirePixelCache(0);
   GetPixelCacheMethods(&cache_methods);
   cache_methods.get_virtual_pixel_handler=GetVirtualPixelStream;
-  cache_methods.get_virtual_indexes_from_handler=GetVirtualIndexesFromStream;
   cache_methods.get_virtual_pixels_handler=GetVirtualPixelsStream;
+  cache_methods.get_virtual_indexes_from_handler=GetVirtualIndexesFromStream;
   cache_methods.get_authentic_pixels_handler=GetAuthenticPixelsStream;
   cache_methods.queue_authentic_pixels_handler=QueueAuthenticPixelsStream;
   cache_methods.sync_authentic_pixels_handler=SyncAuthenticPixelsStream;
@@ -969,6 +969,7 @@ MagickExport Image *ReadStream(const ImageInfo *image_info,StreamHandler stream,
   cache_methods.get_one_authentic_pixel_from_handler=
     GetOneAuthenticPixelFromStream;
   cache_methods.destroy_pixel_handler=DestroyPixelStream;
+  cache_methods.stream=MagickTrue;
   SetPixelCacheMethods(read_info->cache,&cache_methods);
   read_info->stream=stream;
   image=ReadImage(read_info,exception);
