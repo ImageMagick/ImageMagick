@@ -1,3 +1,6 @@
+2015-06-13  6.9.1-5 Cristy  <quetzlzacatenango@image...>
+  * New version 6.9.1-5, SVN revision 18882.
+
 2015-06-03  6.9.1-5 Cristy  <quetzlzacatenango@image...>
   * Use correct scale when interpretting alpha (e.g. rgba(0,0,0,1)).
   * DrawGetVectorGraphics() now returns proper XML (reference
