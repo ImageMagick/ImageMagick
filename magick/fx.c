@@ -3650,6 +3650,10 @@ static inline Quantum PlasmaPixel(RandomInfo *random_info,
 
   plasma=ClampToQuantum(pixel+noise*GetPseudoRandomValue(random_info)-
     noise/2.0);
+  if (plasma <= 0.0)
+    return((Quantum) 0);
+  if (plasma >= QuantumRange)
+    return(QuantumRange);
   return(plasma);
 }
 
