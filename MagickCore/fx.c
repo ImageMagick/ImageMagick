@@ -3659,10 +3659,14 @@ static MagickBooleanType PlasmaImageProxy(Image *image,CacheView *image_view,
     y,
     y_mid;
 
-  if (((segment->x2-segment->x1) == 0.0) && ((segment->y2-segment->y1) == 0.0))
+  if ((fabs(segment->x2-segment->x1) <= MagickEpsilon) &&
+      (fabs(segment->y2-segment->y1) <= MagickEpsilon))
     return(MagickTrue);
   if (depth != 0)
     {
+      MagickBooleanType
+        status;
+
       SegmentInfo
         local_info;
 
@@ -3691,19 +3695,23 @@ static MagickBooleanType PlasmaImageProxy(Image *image,CacheView *image_view,
       local_info=(*segment);
       local_info.x1=(double) x_mid;
       local_info.y1=(double) y_mid;
-      return(PlasmaImageProxy(image,image_view,u_view,v_view,random_info,
-        &local_info,attenuate,depth,exception));
+      status=PlasmaImageProxy(image,image_view,u_view,v_view,random_info,
+        &local_info,attenuate,depth,exception);
+      return(status);
     }
   x_mid=(ssize_t) ceil((segment->x1+segment->x2)/2-0.5);
   y_mid=(ssize_t) ceil((segment->y1+segment->y2)/2-0.5);
-  if ((segment->x1 == (double) x_mid) && (segment->x2 == (double) x_mid) &&
-      (segment->y1 == (double) y_mid) && (segment->y2 == (double) y_mid))
+  if ((fabs(segment->x1-x_mid) < MagickEpsilon) &&
+      (fabs(segment->x2-x_mid) < MagickEpsilon) &&
+      (fabs(segment->y1-y_mid) < MagickEpsilon) &&
+      (fabs(segment->y2-y_mid) < MagickEpsilon))
     return(MagickFalse);
   /*
     Average pixels and apply plasma.
   */
   plasma=(double) QuantumRange/(2.0*attenuate);
-  if ((segment->x1 != (double) x_mid) || (segment->x2 != (double) x_mid))
+  if ((fabs(segment->x1-x_mid) > MagickEpsilon) ||
+      (fabs(segment->x2-x_mid) > MagickEpsilon))
     {
       /*
         Left pixel.
@@ -3726,7 +3734,7 @@ static MagickBooleanType PlasmaImageProxy(Image *image,CacheView *image_view,
         q[i]=PlasmaPixel(random_info,(u[i]+v[i])/2.0,plasma);
       }
       (void) SyncCacheViewAuthenticPixels(image_view,exception);
-      if (segment->x1 != segment->x2)
+      if (fabs(segment->x1-segment->x2) > MagickEpsilon)
         {
           /*
             Right pixel.
@@ -3751,9 +3759,11 @@ static MagickBooleanType PlasmaImageProxy(Image *image,CacheView *image_view,
           (void) SyncCacheViewAuthenticPixels(image_view,exception);
         }
     }
-  if ((segment->y1 != (double) y_mid) || (segment->y2 != (double) y_mid))
+  if ((fabs(segment->y1-y_mid) > MagickEpsilon) ||
+      (fabs(segment->y2-y_mid) > MagickEpsilon))
     {
-      if ((segment->x1 != (double) x_mid) || (segment->y2 != (double) y_mid))
+      if ((fabs(segment->x1-x_mid) > MagickEpsilon) ||
+          (fabs(segment->y2-y_mid) > MagickEpsilon))
         {
           /*
             Bottom pixel.
@@ -3777,7 +3787,7 @@ static MagickBooleanType PlasmaImageProxy(Image *image,CacheView *image_view,
           }
           (void) SyncCacheViewAuthenticPixels(image_view,exception);
         }
-      if (segment->y1 != segment->y2)
+      if (fabs(segment->y1-segment->y2) > MagickEpsilon)
         {
           /*
             Top pixel.
@@ -3802,7 +3812,8 @@ static MagickBooleanType PlasmaImageProxy(Image *image,CacheView *image_view,
           (void) SyncCacheViewAuthenticPixels(image_view,exception);
         }
     }
-  if ((segment->x1 != segment->x2) || (segment->y1 != segment->y2))
+  if ((fabs(segment->x1-segment->x2) > MagickEpsilon) ||
+      (fabs(segment->y1-segment->y2) > MagickEpsilon))
     {
       /*
         Middle pixel.
@@ -3827,7 +3838,8 @@ static MagickBooleanType PlasmaImageProxy(Image *image,CacheView *image_view,
       }
       (void) SyncCacheViewAuthenticPixels(image_view,exception);
     }
-  if (((segment->x2-segment->x1) < 3.0) && ((segment->y2-segment->y1) < 3.0))
+  if ((fabs(segment->x2-segment->x1) < 3.0) &&
+      (fabs(segment->y2-segment->y1) < 3.0))
     return(MagickTrue);
   return(MagickFalse);
 }
