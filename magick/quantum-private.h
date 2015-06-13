@@ -238,7 +238,7 @@ static inline const unsigned char *PushLongPixel(const EndianType endian,
       quantum|=((unsigned long) *pixels++ << 8);
       quantum|=((unsigned long) *pixels++ << 16);
       quantum|=((unsigned long) *pixels++ << 24);
-      *pixel=(unsigned long) (quantum & 0xffffffff);
+      *pixel=(unsigned int) (quantum & 0xffffffff);
       return(pixels);
     }
   quantum=((unsigned long) *pixels++ << 24);
