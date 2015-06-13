@@ -8321,7 +8321,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
        }
   }
 
-  if (mng_info->write_png_colortype > 1 && mng_info->write_png_colortype < 7)
+  if (mng_info->write_png_colortype < 7)
   {
   /* BUILD_PALETTE
    *
