@@ -489,7 +489,36 @@ WandExport GravityType MagickGetGravity(MagickWand *wand)
   type=(GravityType) ParseCommandOption(MagickGravityOptions,MagickFalse,option);
   return(type);
 }
-
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k G e t H d r i E n a b le d                                    %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickGetHdriEnabled() returns true if ImageMagick was compiled with HDRI 
+%  enabled.
+%
+%  The format of the MagickGetHdriEnabled method is:
+%
+%      MagickBooleanType MagickGetHdriEnabled(void)
+%
+%
+*/
+WandExport MagickBooleanType MagickGetHdriEnabled(void)
+{
+#ifdef MAGICKCORE_HDRI_SUPPORT
+  return MagickTrue;
+#else 
+  return MagickFalse;
+#endif
+}
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
