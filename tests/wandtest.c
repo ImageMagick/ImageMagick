@@ -5165,11 +5165,9 @@ int main(int argc,char **argv)
   char
     *description,
     **options,
-    **profiles,
-    **properties;
-
-  const char
     *option,
+    **profiles,
+    **properties,
     *property;
 
   DrawingWand
