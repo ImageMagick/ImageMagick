@@ -3568,16 +3568,6 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
   cache_info->channels=image->channels;
   cache_info->active_index_channel=((image->storage_class == PseudoClass) ||
     (image->colorspace == CMYKColorspace)) ? MagickTrue : MagickFalse;
-  if (image->ping != MagickFalse)
-    {
-      cache_info->storage_class=image->storage_class;
-      cache_info->colorspace=image->colorspace;
-      cache_info->type=PingCache;
-      cache_info->pixels=(PixelPacket *) NULL;
-      cache_info->indexes=(IndexPacket *) NULL;
-      cache_info->length=0;
-      return(MagickTrue);
-    }
   number_pixels=(MagickSizeType) cache_info->columns*cache_info->rows;
   packet_size=sizeof(PixelPacket);
   if (cache_info->active_index_channel != MagickFalse)
@@ -3589,6 +3579,13 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
     ThrowBinaryException(ResourceLimitError,"PixelCacheAllocationFailed",
       image->filename);
   cache_info->length=length;
+  if (image->ping != MagickFalse)
+    {
+      cache_info->storage_class=image->storage_class;
+      cache_info->colorspace=image->colorspace;
+      cache_info->type=PingCache;
+      return(MagickTrue);
+    }
   status=AcquireMagickResource(AreaResource,cache_info->length);
   length=number_pixels*(sizeof(PixelPacket)+sizeof(IndexPacket));
   if ((status != MagickFalse) && (length == (MagickSizeType) ((size_t) length)))
