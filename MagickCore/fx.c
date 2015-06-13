@@ -3634,7 +3634,7 @@ static inline Quantum PlasmaPixel(RandomInfo *random_info,
     noise/2.0);
   if (plasma <= 0)
     return((Quantum) 0);
-  if (plasma > QuantumRange)
+  if (plasma >= QuantumRange)
     return(QuantumRange);
   return(plasma);
 }
