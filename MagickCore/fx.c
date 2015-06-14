@@ -5302,7 +5302,7 @@ MagickExport Image *TintImage(const Image *image,const char *blend,
       if ((flags & ChiValue) != 0)
         color_vector.alpha=geometry_info.chi;
     }
-  intensity=(double) GetPixelInfoIntensity(image,tint);
+  intensity=(double) GetPixelInfoIntensity((const Image *) NULL,tint);
   color_vector.red=(double) (color_vector.red*tint->red/100.0-intensity);
   color_vector.green=(double) (color_vector.green*tint->green/100.0-intensity);
   color_vector.blue=(double) (color_vector.blue*tint->blue/100.0-intensity);
