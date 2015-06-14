@@ -2012,8 +2012,7 @@ static void util_set_pen(wmfAPI * API, wmfDC * dc)
     pixel_width;
 
   unsigned int
-    pen_style,
-    pen_type;
+    pen_style;
 
   pen = WMF_DC_PEN(dc);
 
@@ -2028,8 +2027,6 @@ static void util_set_pen(wmfAPI * API, wmfDC * dc)
   pen_width = MagickMax(pen_width, pixel_width*0.8);
 
   pen_style = (unsigned int) WMF_PEN_STYLE(pen);
-  pen_type = (unsigned int) WMF_PEN_TYPE(pen);
-  (void) pen_type;
 
   /* Pen style specified? */
   if (pen_style == PS_NULL)
