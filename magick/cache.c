@@ -682,7 +682,7 @@ static MagickBooleanType ClonePixelCacheRepository(
               sizeof(*cache_info->indexes));
           return(MagickTrue);
         }
-      if ((cache_info->type == DiskCache) && (cache_info->type == DiskCache))
+      if ((cache_info->type == DiskCache) && (clone_info->type == DiskCache))
         return(ClonePixelCacheOnDisk(cache_info,clone_info,exception));
     }
   /*

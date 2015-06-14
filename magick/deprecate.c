@@ -7231,6 +7231,7 @@ MagickExport unsigned int ThresholdImageChannel(Image *image,
     return(MagickTrue);
   if (SetImageStorageClass(image,DirectClass) == MagickFalse)
     return(MagickFalse);
+  GetMagickPixelPacket(image,&pixel);
   flags=ParseGeometry(threshold,&geometry_info);
   pixel.red=geometry_info.rho;
   if (flags & SigmaValue)
