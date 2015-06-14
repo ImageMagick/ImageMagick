@@ -797,6 +797,8 @@ MagickExport MagickBooleanType DiscardBlobBytes(Image *image,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  if (length != (MagickSizeType) ((MagickOffsetType) length))
+    return(MagickFalse);
   count=0;
   for (i=0; i < (MagickOffsetType) length; i+=count)
   {
