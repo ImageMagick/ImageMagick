@@ -1254,10 +1254,12 @@ ModuleExport MagickStatusType ReadPSDLayers(Image *image,
       quantum=psd_info->version == 1 ? 4UL : 8UL;
       (void) ReadBlobMSBLong(image);
       count=ReadBlob(image,4,(unsigned char *) type);
+      status=MagickFalse;
       if ((count == 0) || (LocaleNCompare(type,"8BIM",4) != 0))
         {
-          if (DiscardBlobBytes(image,((MagickSizeType) size-quantum-8)) ==
-              MagickFalse)
+          if (size >= (quantum+8))
+            status=DiscardBlobBytes(image,(MagickSizeType) (size-quantum-8));
+          if (status == MagickFalse)
             ThrowBinaryException(CorruptImageError,"UnexpectedEndOfFile",
               image->filename);
         }
@@ -1267,10 +1269,13 @@ ModuleExport MagickStatusType ReadPSDLayers(Image *image,
           if ((count != 0) && (LocaleNCompare(type,"Lr16",4) == 0))
             size=GetPSDSize(psd_info,image);
           else
-            if (DiscardBlobBytes(image,((MagickSizeType) size-quantum-12)) ==
-                MagickFalse)
-              ThrowBinaryException(CorruptImageError,"UnexpectedEndOfFile",
-                image->filename);
+            {
+              if (size >= (quantum+12))
+                status=DiscardBlobBytes(image,(MagickSizeType) (size-quantum-12));
+              if (status == MagickFalse)
+                ThrowBinaryException(CorruptImageError,"UnexpectedEndOfFile",
+                  image->filename);
+            }
         }
     }
   status=MagickTrue;
