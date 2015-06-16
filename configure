@@ -767,10 +767,10 @@ XML_DELEGATE_FALSE
 XML_DELEGATE_TRUE
 XML_LIBS
 XML_CFLAGS
-WMF_DELEGATE_FALSE
-WMF_DELEGATE_TRUE
 WMF_LIBS
 WMF_CFLAGS
+WMF_DELEGATE_FALSE
+WMF_DELEGATE_TRUE
 WEBP_LIBS
 WEBP_DELEGATE_FALSE
 WEBP_DELEGATE_TRUE
@@ -1269,8 +1269,6 @@ RSVG_CFLAGS
 RSVG_LIBS
 CAIRO_SVG_CFLAGS
 CAIRO_SVG_LIBS
-WMF_CFLAGS
-WMF_LIBS
 XML_CFLAGS
 XML_LIBS'
 
@@ -2081,8 +2079,6 @@ Some influential environment variables:
               C compiler flags for CAIRO_SVG, overriding pkg-config
   CAIRO_SVG_LIBS
               linker flags for CAIRO_SVG, overriding pkg-config
-  WMF_CFLAGS  C compiler flags for WMF, overriding pkg-config
-  WMF_LIBS    linker flags for WMF, overriding pkg-config
   XML_CFLAGS  C compiler flags for XML, overriding pkg-config
   XML_LIBS    linker flags for XML, overriding pkg-config
 
@@ -4387,7 +4383,7 @@ MAGICK_PATCHLEVEL_VERSION=0
 
 MAGICK_VERSION=7.0.0-0
 
-MAGICK_SVN_REVISION=18880:18882
+MAGICK_SVN_REVISION=18910M
 
 
 # Substitute library versioning
@@ -31884,94 +31880,92 @@ if test "$with_wmf" != 'yes'; then
 fi
 
 have_wmf='no'
-WMF_CFLAGS=""
-WMF_LIBS=""
-WMF_PKG=""
-if test "x$with_wmf" = "xyes"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
-$as_echo "-------------------------------------------------------------" >&6; }
-
-pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for WMF" >&5
-$as_echo_n "checking for WMF... " >&6; }
-
-if test -n "$WMF_CFLAGS"; then
-    pkg_cv_WMF_CFLAGS="$WMF_CFLAGS"
- elif test -n "$PKG_CONFIG"; then
-    if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"wmf >= 0.2.8\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "wmf >= 0.2.8") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }; then
-  pkg_cv_WMF_CFLAGS=`$PKG_CONFIG --cflags "wmf >= 0.2.8" 2>/dev/null`
-		      test "x$?" != "x0" && pkg_failed=yes
-else
-  pkg_failed=yes
-fi
- else
-    pkg_failed=untried
-fi
-if test -n "$WMF_LIBS"; then
-    pkg_cv_WMF_LIBS="$WMF_LIBS"
- elif test -n "$PKG_CONFIG"; then
-    if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"wmf >= 0.2.8\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "wmf >= 0.2.8") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }; then
-  pkg_cv_WMF_LIBS=`$PKG_CONFIG --libs "wmf >= 0.2.8" 2>/dev/null`
-		      test "x$?" != "x0" && pkg_failed=yes
-else
-  pkg_failed=yes
-fi
- else
-    pkg_failed=untried
-fi
-
-
-
-if test $pkg_failed = yes; then
-   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-
-if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
-        _pkg_short_errors_supported=yes
-else
-        _pkg_short_errors_supported=no
-fi
-        if test $_pkg_short_errors_supported = yes; then
-	        WMF_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "wmf >= 0.2.8" 2>&1`
-        else
-	        WMF_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "wmf >= 0.2.8" 2>&1`
-        fi
-	# Put the nasty error message in config.log where it belongs
-	echo "$WMF_PKG_ERRORS" >&5
-
-	have_wmf=no
-elif test $pkg_failed = untried; then
-     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-	have_wmf=no
-else
-	WMF_CFLAGS=$pkg_cv_WMF_CFLAGS
-	WMF_LIBS=$pkg_cv_WMF_LIBS
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-	have_wmf=yes
-fi
+WMF_LIBS=''
+WMF_CFLAGS=''
+OLIBS="$LIBS"
+if test "$with_wmf" != 'no'; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for WMF support " >&5
+$as_echo_n "checking for WMF support ... " >&6; }
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
 $as_echo "" >&6; }
+
+  have_libwmflite='no'
+  have_libwmf_ipa_h='no'
+
+  ac_fn_c_check_header_compile "$LINENO" "libwmf/ipa.h" "ac_cv_header_libwmf_ipa_h" "$FT2BUILD_H
+"
+if test "x$ac_cv_header_libwmf_ipa_h" = xyes; then :
+  have_libwmf_ipa_h='yes'
 fi
 
-if test "$have_wmf" = 'yes'; then
+
+  if test "$have_libwmf_ipa_h" = 'yes'; then
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for wmf_lite_create in -lwmflite" >&5
+$as_echo_n "checking for wmf_lite_create in -lwmflite... " >&6; }
+if ${ac_cv_lib_wmflite_wmf_lite_create+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lwmflite  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char wmf_lite_create ();
+int
+main ()
+{
+return wmf_lite_create ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_wmflite_wmf_lite_create=yes
+else
+  ac_cv_lib_wmflite_wmf_lite_create=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_wmflite_wmf_lite_create" >&5
+$as_echo "$ac_cv_lib_wmflite_wmf_lite_create" >&6; }
+if test "x$ac_cv_lib_wmflite_wmf_lite_create" = xyes; then :
+  have_libwmflite='yes'
+fi
+
+    if test "$have_libwmflite" = 'yes'; then
 
 $as_echo "#define WMF_DELEGATE 1" >>confdefs.h
 
-  CFLAGS="$WMF_CFLAGS $CFLAGS"
+      WMF_LIBS='-lwmflite'
+      LIBS="$WMF_LIBS $LIBS"
+      have_wmf='yes'
+    else
+      { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
+$as_echo "no -- some components failed test" >&6; }
+      have_wmf='no (failed tests)'
+      have_wmflite='no (failed tests)'
+      LIBS="$OLIBS"
+      WMF_LIBS=''
+    fi
+  fi
 fi
-
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking if WMF package is complete " >&5
+$as_echo_n "checking if WMF package is complete ... " >&6; }
+if test "$have_wmf" = 'yes'; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
  if test "$have_wmf" = 'yes'; then
   WMF_DELEGATE_TRUE=
   WMF_DELEGATE_FALSE='#'
