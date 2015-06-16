@@ -2674,23 +2674,42 @@ if test "$with_wmf" != 'yes'; then
 fi
 
 have_wmf='no'
-WMF_CFLAGS=""
-WMF_LIBS=""
-WMF_PKG=""
-if test "x$with_wmf" = "xyes"; then
-  AC_MSG_RESULT([-------------------------------------------------------------])
-  PKG_CHECK_MODULES(WMF,[wmf >= 0.2.8], have_wmf=yes, have_wmf=no)
+WMF_LIBS=''
+WMF_CFLAGS=''
+OLIBS="$LIBS"
+if test "$with_wmf" != 'no'; then
+  AC_MSG_CHECKING([for WMF support ])
   AC_MSG_RESULT([])
-fi
 
+  have_libwmflite='no'
+  have_libwmf_ipa_h='no'
+
+  AC_CHECK_HEADER([libwmf/ipa.h],[have_libwmf_ipa_h='yes'],[],[$FT2BUILD_H])
+  if test "$have_libwmf_ipa_h" = 'yes'; then
+    AC_CHECK_LIB([wmflite],[wmf_lite_create],[have_libwmflite='yes'],[],[])
+    if test "$have_libwmflite" = 'yes'; then
+      AC_DEFINE(WMF_DELEGATE,1,Define if you have WMF library)
+      WMF_LIBS='-lwmflite'
+      LIBS="$WMF_LIBS $LIBS"
+      have_wmf='yes'
+    else
+      AC_MSG_RESULT([no -- some components failed test])
+      have_wmf='no (failed tests)'
+      have_wmflite='no (failed tests)'
+      LIBS="$OLIBS"
+      WMF_LIBS=''
+    fi
+  fi
+fi
+AC_MSG_CHECKING([if WMF package is complete ])
 if test "$have_wmf" = 'yes'; then
-  AC_DEFINE(WMF_DELEGATE,1,Define if you have WMF library)
-  CFLAGS="$WMF_CFLAGS $CFLAGS"
+  AC_MSG_RESULT([yes])
+else
+  AC_MSG_RESULT([no])
 fi
-
-AM_CONDITIONAL(WMF_DELEGATE, test "$have_wmf" = 'yes')
-AC_SUBST(WMF_CFLAGS)
-AC_SUBST(WMF_LIBS)
+AM_CONDITIONAL([WMF_DELEGATE], [test "$have_wmf" = 'yes'])
+AC_SUBST([WMF_CFLAGS])
+AC_SUBST([WMF_LIBS])
 
 dnl ===========================================================================
 
