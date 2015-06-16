@@ -53,11 +53,11 @@ extern "C" {
 #endif
 
 #define PERL_NO_GET_CONTEXT
+#include <MagickCore/MagickCore.h>
 #include "EXTERN.h"
 #include "perl.h"
 #include "XSUB.h"
 #include <math.h>
-#include <MagickCore/MagickCore.h>
 #undef tainted
 
 #if defined(__cplusplus) || defined(c_plusplus)
