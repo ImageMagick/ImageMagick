@@ -358,12 +358,12 @@ struct _Image
     signature;
 };
 
-/* ImageInfo structure
- * Stores an image list, as well as all global settings used by
- * all images held, -- unless overridden for that specific image.
- * See SyncImagesettings() which maps any global setting that always
- * overrides specific image settings.
- */
+/*
+  ImageInfo structure:
+    Stores an image list, as well as all global settings used by all images
+    held, -- unless overridden for that specific image.  See SyncImagesettings()
+    which maps any global setting that always overrides specific image settings.
+*/
 struct _ImageInfo
 {
   CompressionType

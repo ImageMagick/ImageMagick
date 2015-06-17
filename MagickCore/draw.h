@@ -166,14 +166,14 @@ typedef struct _GradientInfo
   MagickBooleanType
     debug;
 
-  size_t
-    signature;
-
   PointInfo
     center;
 
   double
     radius;
+
+  size_t
+    signature;
 } GradientInfo;
 
 typedef struct _ElementReference
@@ -187,12 +187,12 @@ typedef struct _ElementReference
   GradientInfo
     gradient;
 
-  size_t
-    signature;
-
   struct _ElementReference
     *previous,
     *next;
+
+  size_t
+    signature;
 } ElementReference;
 
 typedef struct _DrawInfo
