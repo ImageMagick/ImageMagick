@@ -1,5 +1,5 @@
 2015-06-14  6.9.1-6 Cristy  <quetzlzacatenango@image...>
-  * Cache cloning on disk optimized with sendfile() (if avalable).
+  * Cache cloning on disk optimized with sendfile() (if available).
 
 2015-06-13  6.9.1-6 Glenn Randers-Pehrson <glennrp@image...>
   * Reverted change to 6.9.1-3 that skipped palette-building.
