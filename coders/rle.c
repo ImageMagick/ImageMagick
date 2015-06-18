@@ -216,8 +216,8 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Read image header.
     */
-    (void) ReadBlobLSBShort(image);
-    (void) ReadBlobLSBShort(image);
+    image->page.x=ReadBlobLSBShort(image);
+    image->page.y=ReadBlobLSBShort(image);
     image->columns=ReadBlobLSBShort(image);
     image->rows=ReadBlobLSBShort(image);
     flags=(MagickStatusType) ReadBlobByte(image);
@@ -253,6 +253,12 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     if ((number_planes & 0x01) == 0)
       (void) ReadBlobByte(image);
+    if (EOFBlob(image) != MagickFalse)
+      {
+        ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
+          image->filename);
+        break;
+      }
     colormap=(unsigned char *) NULL;
     if (number_colormaps != 0)
       {
