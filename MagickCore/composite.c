@@ -1487,7 +1487,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         case BlendCompositeOp:
         case PlusCompositeOp:
         {
-          alpha=RoundToUnity(Sa+Da);
+          alpha=RoundToUnity(source_dissolve*Sa+canvas_dissolve*Da);
           break;
         }
         case XorCompositeOp:
