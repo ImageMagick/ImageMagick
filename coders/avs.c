@@ -100,6 +100,9 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickBooleanType
     status;
 
+  MemoryInfo
+    *pixel_info;
+
   register PixelPacket
     *q;
 
@@ -166,10 +169,10 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         InheritException(exception,&image->exception);
         return(DestroyImageList(image));
       }
-    pixels=(unsigned char *) AcquireQuantumMemory(image->columns,
-      4*sizeof(*pixels));
-    if (pixels == (unsigned char *) NULL)
+    pixel_info=AcquireVirtualMemory(image->columns,4*sizeof(*pixels));
+    if (pixel_info == (MemoryInfo *) NULL)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+    pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
     length=(size_t) 4*image->columns;
     for (y=0; y < (ssize_t) image->rows; y++)
     {
@@ -200,7 +203,7 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
         }
     }
-    pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+    pixel_info=RelinquishVirtualMemory(pixel_info);
     if (EOFBlob(image) != MagickFalse)
       {
         ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
@@ -329,6 +332,9 @@ static MagickBooleanType WriteAVSImage(const ImageInfo *image_info,Image *image)
   MagickOffsetType
     scene;
 
+  MemoryInfo
+    *pixel_info;
+
   register const PixelPacket
     *restrict p;
 
@@ -369,10 +375,10 @@ static MagickBooleanType WriteAVSImage(const ImageInfo *image_info,Image *image)
     /*
       Allocate memory for pixels.
     */
-    pixels=(unsigned char *) AcquireQuantumMemory(image->columns,
-      4*sizeof(*pixels));
-    if (pixels == (unsigned char *) NULL)
+    pixel_info=AcquireVirtualMemory(image->columns,4*sizeof(*pixels));
+    if (pixel_info == (MemoryInfo *) NULL)
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+    pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
     /*
       Convert MIFF to AVS raster pixels.
     */
@@ -402,7 +408,7 @@ static MagickBooleanType WriteAVSImage(const ImageInfo *image_info,Image *image)
             break;
         }
     }
-    pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+    pixel_info=RelinquishVirtualMemory(pixel_info);
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);
