@@ -687,7 +687,7 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image,
   directory=TIFFCurrentDirectory(tiff);
   if (TIFFReadEXIFDirectory(tiff,offset) != 1)
     {
-      directory=TIFFCurrentDirectory(tiff);
+      TIFFSetDirectory(tiff,directory);
       return;
     }
   sans=NULL;
@@ -1195,15 +1195,15 @@ RestoreMSCWarning
         break;
       }
       case PHOTOMETRIC_LOGL:
-      { 
+      {
         (void) SetImageProperty(image,"tiff:photometric","CIE Log2(L)",exception);
         break;
-      } 
+      }
       case PHOTOMETRIC_LOGLUV:
-      { 
+      {
         (void) SetImageProperty(image,"tiff:photometric","LOGLUV",exception);
         break;
-      } 
+      }
 #if defined(PHOTOMETRIC_MASK)
       case PHOTOMETRIC_MASK:
       {
@@ -1391,8 +1391,8 @@ RestoreMSCWarning
       status=SetQuantumFormat(image,quantum_info,FloatingPointQuantumFormat);
     if (status == MagickFalse)
       {
-        quantum_info=DestroyQuantumInfo(quantum_info);
         TIFFClose(tiff);
+        quantum_info=DestroyQuantumInfo(quantum_info);
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
       }
     status=MagickTrue;
