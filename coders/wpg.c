@@ -685,13 +685,13 @@ unsigned Flags;
  (*CTM)[2][2]=1;
 
  Flags=ReadBlobLSBShort(image);
- if(Flags & LCK) x=ReadBlobLSBLong(image);  /*Edit lock*/
+ if(Flags & LCK) (void) ReadBlobLSBLong(image);  /*Edit lock*/
  if(Flags & OID)
   {
   if(Precision==0)
-    {x=ReadBlobLSBShort(image);}  /*ObjectID*/
+    {(void) ReadBlobLSBShort(image);}  /*ObjectID*/
   else
-    {x=ReadBlobLSBLong(image);}  /*ObjectID (Double precision)*/
+    {(void) ReadBlobLSBLong(image);}  /*ObjectID (Double precision)*/
   }
  if(Flags & ROT)
   {
