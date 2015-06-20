@@ -1285,6 +1285,7 @@ WandExport void PixelGetQuantumPacket(const PixelWand *wand,PixelInfo *packet)
   packet->red=(double) ClampToQuantum(wand->pixel.red);
   packet->green=(double) ClampToQuantum(wand->pixel.green);
   packet->blue=(double) ClampToQuantum(wand->pixel.blue);
+  packet->count=wand->pixel.count;
 }
 
 /*
