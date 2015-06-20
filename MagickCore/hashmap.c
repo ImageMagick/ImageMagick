@@ -1420,7 +1420,6 @@ static MagickBooleanType IncreaseHashmapCapacity(HashmapInfo *hashmap_info)
     *entry;
 
   LinkedListInfo
-    *list_info,
     *map_info,
     **map;
 
@@ -1452,6 +1451,9 @@ static MagickBooleanType IncreaseHashmapCapacity(HashmapInfo *hashmap_info)
   */
   for (i=0; i < (ssize_t) hashmap_info->capacity; i++)
   {
+    LinkedListInfo
+      *list_info;
+
     list_info=hashmap_info->map[i];
     if (list_info == (LinkedListInfo *) NULL)
       continue;
