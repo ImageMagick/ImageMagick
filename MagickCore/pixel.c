@@ -5706,7 +5706,10 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
           break;
         }
       for (i=0; i < 4L; i++)
+      {
+        GetPixelInfoPixel(image,p+i*GetPixelChannels(image),pixels+i);
         AlphaBlendPixelInfo(image,p+i*GetPixelChannels(image),pixels+i,alpha+i);
+      }
       gamma=1.0;  /* number of pixels blended together (its variable) */
       for (i=0; i <= 1L; i++)
       {
