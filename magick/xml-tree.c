@@ -1664,7 +1664,7 @@ static void ParseProcessingInstructions(XMLTreeRoot *root,char *xml,
     j++;
   root->processing_instructions[i]=(char **) ResizeQuantumMemory(
     root->processing_instructions[i],(size_t) (j+3),
-    sizeof(**root->processing_instructions));
+    sizeof(*root->processing_instructions));
   if (root->processing_instructions[i] == (char **) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   root->processing_instructions[i][j+2]=(char *) ResizeQuantumMemory(
