@@ -1339,7 +1339,6 @@ WandExport void PixelGetQuantumPixel(const Image *image,const PixelWand *wand,
   SetPixelRed(image,ClampToQuantum(wand->pixel.red),pixel);
   SetPixelGreen(image,ClampToQuantum(wand->pixel.green),pixel);
   SetPixelBlue(image,ClampToQuantum(wand->pixel.blue),pixel);
-  wand->pixel.count=0;
 }
 
 /*
