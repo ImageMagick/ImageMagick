@@ -276,7 +276,7 @@ convert image.ext win:
 
 	<ol>
 	<li>Download and install <a href="http://www.jrsoftware.org/isdl.html">Inno Setup 5</a>.</li>
-	<li>Download and install <a href="http://www.activestate.com/activeperl/downloads">ActiveState ActivePerl</a>.</li>
+	<li>Download and install <a href="http://strawberryperl.com/">Strawberry Perl</a>.</li>
 	</ol>
 
 <h3>Run the Configure Wizard</h3>
@@ -314,8 +314,8 @@ BuildImageMagickObject release
 	<li>Launch the Command Prompt application and move to the <code>PerlMagick</code> folder.</li>
 	<li>Build PerlMagick with these commands:
 <pre>
-perl Makefile.nt
-nmake release
+perl Makefile.PL
+dmake release
 </pre></li>
 	</ol>
 
@@ -330,7 +330,7 @@ nmake release
 
 	<ol>
 	<li>Double-click on
-	<code>VisualMagick/bin/ImageMagick-6.9.1-4-Q16-windows-dll.exe</code>
+	<code>VisualMagick/bin/ImageMagick-7.0.0-0-Q16-windows-dll.exe</code>
 	to launch the ImageMagick binary distribution.</li>
 	<li>Complete the installer screens to install ImageMagick on your system.</li>
 	</ol>
