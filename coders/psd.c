@@ -1245,13 +1245,9 @@ ModuleExport MagickStatusType ReadPSDLayers(Image *image,
   size=GetPSDSize(psd_info,image);
   if (size == 0)
     {
-      size_t
-        quantum;
-
       /*
         Skip layers & masks.
       */
-      quantum=psd_info->version == 1 ? 4UL : 8UL;
       (void) ReadBlobMSBLong(image);
       count=ReadBlob(image,4,(unsigned char *) type);
       status=MagickFalse;
