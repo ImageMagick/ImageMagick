@@ -2718,8 +2718,8 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
             &chroma,&luma);
           luma+=(0.01*percent_luma*offset)/midpoint;
           chroma*=0.01*percent_chroma;
-          HCLComposite(hue,chroma,luma,&composite.red,
-            &composite.green,&composite.blue);
+          HCLComposite(hue,chroma,luma,&composite.red,&composite.green,
+            &composite.blue);
           break;
         }
         case HueCompositeOp:
