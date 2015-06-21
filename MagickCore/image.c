@@ -986,8 +986,10 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
   SetImageInfoFile(clone_info,image_info->file);
   SetImageInfoBlob(clone_info,image_info->blob,image_info->length);
   clone_info->stream=image_info->stream;
-  (void) CopyMagickString(clone_info->magick,image_info->magick,MagickPathExtent);
-  (void) CopyMagickString(clone_info->unique,image_info->unique,MagickPathExtent);
+  (void) CopyMagickString(clone_info->magick,image_info->magick,
+    MagickPathExtent);
+  (void) CopyMagickString(clone_info->unique,image_info->unique,
+    MagickPathExtent);
   (void) CopyMagickString(clone_info->zero,image_info->zero,MagickPathExtent);
   (void) CopyMagickString(clone_info->filename,image_info->filename,
     MagickPathExtent);
@@ -996,6 +998,49 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
   clone_info->debug=IsEventLogging();
   clone_info->signature=image_info->signature;
   return(clone_info);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   C o p y I m a g e P i x e l s                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  CopyImagePixels() copies pixels from the source image as defined by the
+%  geometry the destination image at the specified offset.
+%
+%  The format of the CopyImagePixels method is:
+%
+%      MagickBooleanType CopyImagePixels(Image *image,const Image *source_image,
+%        const RectangleInfo *geometry,const OffsetInfo *offset);
+%
+%  A description of each parameter follows:
+%
+%    o image: the destination image.
+%
+%    o source_image: the source image.
+%
+%    o geometry: define the dimensions of the source pixel rectangle.
+%
+%    o offset: define the offset in the destination image.
+%
+*/
+MagickExport MagickBooleanType CopyImagePixels(Image *image,
+  const Image *source_image,const RectangleInfo *geometry,
+  const OffsetInfo *offset)
+{
+  assert(image != (Image *) NULL);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
+  assert(source_image != (Image *) NULL);
+  assert(geometry != (RectangleInfo *) NULL);
+  assert(offset != (OffsetInfo *) NULL);
+  return(MagickTrue);
 }
 
 /*
