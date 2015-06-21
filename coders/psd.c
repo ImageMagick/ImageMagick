@@ -1249,26 +1249,14 @@ ModuleExport MagickStatusType ReadPSDLayers(Image *image,
       count=ReadBlob(image,4,(unsigned char *) type);
       status=MagickFalse;
       if ((count == 0) || (LocaleNCompare(type,"8BIM",4) != 0))
-        {
-          if (size >= (quantum+8))
-            status=DiscardBlobBytes(image,(MagickSizeType) (size-quantum-8));
-          if (status == MagickFalse)
-            ThrowBinaryException(CorruptImageError,"UnexpectedEndOfFile",
-              image->filename);
-        }
+        return(MagickTrue);
       else
         {
           count=ReadBlob(image,4,(unsigned char *) type);
           if ((count != 0) && (LocaleNCompare(type,"Lr16",4) == 0))
             size=GetPSDSize(psd_info,image);
           else
-            {
-              if (size >= (quantum+12))
-                status=DiscardBlobBytes(image,(MagickSizeType) (size-quantum-12));
-              if (status == MagickFalse)
-                ThrowBinaryException(CorruptImageError,"UnexpectedEndOfFile",
-                  image->filename);
-            }
+            return(MagickTrue);
         }
     }
   status=MagickTrue;
@@ -1290,6 +1278,9 @@ ModuleExport MagickStatusType ReadPSDLayers(Image *image,
           image->matte=MagickTrue;
         }
 
+      /*
+        We only need to know if the image has an alpha channel
+      */
       if (skip_layers != MagickFalse)
         return(MagickTrue);
 
@@ -1686,7 +1677,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if ((count == 0) || (LocaleNCompare(psd_info.signature,"8BPS",4) != 0) ||
       ((psd_info.version != 1) && (psd_info.version != 2)))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-  count=ReadBlob(image,6,psd_info.reserved);
+  (void) ReadBlob(image,6,psd_info.reserved);
   psd_info.channels=ReadBlobMSBShort(image);
   if (psd_info.channels > MaxPSDChannels)
     ThrowReaderException(CorruptImageError,"MaximumChannelsExceeded");
@@ -1762,7 +1753,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             sizeof(*data));
           if (data == (unsigned char *) NULL)
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-          count=ReadBlob(image,(size_t) length,data);
+          (void) ReadBlob(image,(size_t) length,data);
           data=(unsigned char *) RelinquishMagickMemory(data);
         }
       else
@@ -2825,7 +2816,8 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
   /*
     Write composite image.
   */
-  status=WriteImageChannels(&psd_info,image_info,image,image,MagickFalse);
+  if (status != MagickFalse)
+    status=WriteImageChannels(&psd_info,image_info,image,image,MagickFalse);
   (void) CloseBlob(image);
   return(status);
 }
