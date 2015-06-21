@@ -834,6 +834,8 @@ static MagickBooleanType WritePALMImage(const ImageInfo *image_info,
           for (y=0; y < (ssize_t) image->rows; y++)
           {
             q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
+            if (q == (Quantum *) NULL)
+              break;
             for (x=0; x < (ssize_t) image->columns; x++)
             {
               SetPixelIndex(image,(Quantum) FindColor(&image->colormap[(ssize_t)

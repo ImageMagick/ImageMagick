@@ -1326,8 +1326,6 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             {
               case 0xe0:
               {
-                if (length == 0)
-                  break;
                 profile=BlobToStringInfo((const void *) NULL,length);
                 SetStringInfoDatum(profile,info);
                 status=SetImageProfile(image,"icc",profile,exception);
@@ -1339,8 +1337,6 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
               }
               case 0x1f2:
               {
-                if (length == 0)
-                  break;
                 profile=BlobToStringInfo((const void *) NULL,length);
                 SetStringInfoDatum(profile,info);
                 status=SetImageProfile(image,"iptc",profile,exception);

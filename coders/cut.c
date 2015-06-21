@@ -130,8 +130,7 @@ static void InsertRow(Image *image,ssize_t depth,unsigned char *p,ssize_t y,
               }
             p++;
           }
-        if (SyncAuthenticPixels(image,exception) == MagickFalse)
-          break;
+        (void) SyncAuthenticPixels(image,exception);
         break;
       }
     case 2:  /* Convert PseudoColor scanline. */
@@ -177,8 +176,7 @@ static void InsertRow(Image *image,ssize_t depth,unsigned char *p,ssize_t y,
               }
             p++;
           }
-        if (SyncAuthenticPixels(image,exception) == MagickFalse)
-          break;
+        (void) SyncAuthenticPixels(image,exception);
         break;
       }
 
@@ -204,8 +202,7 @@ static void InsertRow(Image *image,ssize_t depth,unsigned char *p,ssize_t y,
             q+=GetPixelChannels(image);
             p++;
           }
-        if (SyncAuthenticPixels(image,exception) == MagickFalse)
-          break;
+        (void) SyncAuthenticPixels(image,exception);
         break;
       }
     case 8: /* Convert PseudoColor scanline. */
@@ -219,11 +216,9 @@ static void InsertRow(Image *image,ssize_t depth,unsigned char *p,ssize_t y,
           p++;
           q+=GetPixelChannels(image);
         }
-        if (SyncAuthenticPixels(image,exception) == MagickFalse)
-          break;
+        (void) SyncAuthenticPixels(image,exception);
+        break;
       }
-      break;
-
     }
 }
 

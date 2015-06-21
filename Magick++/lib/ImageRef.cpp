@@ -56,6 +56,7 @@ size_t Magick::ImageRef::decrease()
       _mutexLock.unlock();
       throwExceptionExplicit(MagickCore::OptionError,
         "Invalid call to decrease");
+      return(0);
     }
   count=--_refCount;
   _mutexLock.unlock();
