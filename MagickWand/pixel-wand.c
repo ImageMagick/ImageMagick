@@ -1266,6 +1266,8 @@ WandExport void PixelGetQuantumPacket(const PixelWand *wand,PixelInfo *packet)
   packet->colorspace=wand->pixel.colorspace;
   packet->depth=wand->pixel.depth;
   packet->fuzz=wand->pixel.fuzz;
+  packet->count=wand->pixel.count;
+  packet->index=wand->pixel.index;
   packet->alpha=(double) ClampToQuantum(wand->pixel.alpha);
   packet->alpha_trait=wand->pixel.alpha_trait;
   if (wand->pixel.colorspace == CMYKColorspace)
@@ -1285,7 +1287,6 @@ WandExport void PixelGetQuantumPacket(const PixelWand *wand,PixelInfo *packet)
   packet->red=(double) ClampToQuantum(wand->pixel.red);
   packet->green=(double) ClampToQuantum(wand->pixel.green);
   packet->blue=(double) ClampToQuantum(wand->pixel.blue);
-  packet->count=wand->pixel.count;
 }
 
 /*
