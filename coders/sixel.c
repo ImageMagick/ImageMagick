@@ -1282,6 +1282,8 @@ static MagickBooleanType WriteSIXELImage(const ImageInfo *image_info,Image *imag
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     q=GetVirtualPixels(image,0,y,image->columns,1,exception);
+    if (q == (Quantum *) NULL)
+      break;
     for (x=0; x < (ssize_t) image->columns; x++)
       {
         sixel_pixels[y * image->columns + x] = ((ssize_t) GetPixelIndex(image, q));

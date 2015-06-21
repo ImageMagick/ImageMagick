@@ -1255,11 +1255,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
         if (LocaleCompare("monitor",option+1) == 0)
           break;
         if (LocaleCompare("monochrome",option+1) == 0)
-          {
-            if (*option == '+')
-              break;
-            break;
-          }
+          break;
         ThrowMontageException(OptionError,"UnrecognizedOption",option)
       }
       case 'n':
