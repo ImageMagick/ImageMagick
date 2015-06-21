@@ -597,8 +597,8 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
         for (i=0; i < (ssize_t) scene; i++)
           for (y=0; y < (ssize_t) image->extract_info.height; y++)
           {
-            pixels=(const unsigned char *) ReadBlobStream(image,length,
-              GetQuantumPixels(quantum_info),&count);
+            (void) ReadBlobStream(image,length,GetQuantumPixels(quantum_info),
+              &count);
             if (count != (ssize_t) length)
               {
                 ThrowFileException(exception,CorruptImageError,
@@ -665,8 +665,8 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
         for (i=0; i < (ssize_t) scene; i++)
           for (y=0; y < (ssize_t) image->extract_info.height; y++)
           {
-            pixels=(const unsigned char *) ReadBlobStream(image,length,
-              GetQuantumPixels(quantum_info),&count);
+            (void) ReadBlobStream(image,length,GetQuantumPixels(quantum_info),
+              &count);
             if (count != (ssize_t) length)
               {
                 ThrowFileException(exception,CorruptImageError,
@@ -733,8 +733,8 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
         for (i=0; i < (ssize_t) scene; i++)
           for (y=0; y < (ssize_t) image->extract_info.height; y++)
           {
-            pixels=(const unsigned char *) ReadBlobStream(image,length,
-              GetQuantumPixels(quantum_info),&count);
+            (void) ReadBlobStream(image,length,GetQuantumPixels(quantum_info),
+              &count);
             if (count != (ssize_t) length)
               {
                 ThrowFileException(exception,CorruptImageError,
@@ -803,7 +803,7 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
             for (i=0; i < (ssize_t) scene; i++)
               for (y=0; y < (ssize_t) image->extract_info.height; y++)
               {
-                pixels=(const unsigned char *) ReadBlobStream(image,length,
+                (void) ReadBlobStream(image,length,
                   GetQuantumPixels(quantum_info),&count);
                 if (count != (ssize_t) length)
                   {

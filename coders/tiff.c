@@ -3212,7 +3212,6 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
           CoderError,"CompressionNotSupported","`%s'",CommandOptionToMnemonic(
           MagickCompressOptions,(ssize_t) compression));
         compress_tag=COMPRESSION_NONE;
-        compression=NoCompression;
       }
 #else
       switch (compress_tag)
@@ -3244,7 +3243,6 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
             CoderError,"CompressionNotSupported","`%s'",CommandOptionToMnemonic(
               MagickCompressOptions,(ssize_t) compression));
           compress_tag=COMPRESSION_NONE;
-          compression=NoCompression;
           break;
         }
       }

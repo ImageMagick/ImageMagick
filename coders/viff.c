@@ -291,7 +291,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
     (void) ReadBlob(image,sizeof(viff_info.machine_dependency),
       &viff_info.machine_dependency);
     (void) ReadBlob(image,sizeof(viff_info.reserve),viff_info.reserve);
-    count=ReadBlob(image,512,(unsigned char *) viff_info.comment);
+    (void) ReadBlob(image,512,(unsigned char *) viff_info.comment);
     viff_info.comment[511]='\0';
     if (strlen(viff_info.comment) > 4)
       (void) SetImageProperty(image,"comment",viff_info.comment);
@@ -414,7 +414,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
         /*
           Read VIFF raster colormap.
         */
-        count=ReadBlob(image,bytes_per_pixel*image->colors*viff_info.map_rows,
+        (void) ReadBlob(image,bytes_per_pixel*image->colors*viff_info.map_rows,
           viff_colormap);
         lsb_first=1;
         if (*(char *) &lsb_first &&
@@ -505,7 +505,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
       bytes_per_pixel*sizeof(*pixels));
     if (pixels == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-    count=ReadBlob(image,bytes_per_pixel*max_packets,pixels);
+    (void) ReadBlob(image,bytes_per_pixel*max_packets,pixels);
     lsb_first=1;
     if (*(char *) &lsb_first &&
         ((viff_info.machine_dependency != VFF_DEP_DECORDER) &&
