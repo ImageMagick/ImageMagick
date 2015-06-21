@@ -1656,11 +1656,6 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
               }
               case ModulateCompositeOp:
               {
-                if (fabs((double) (QuantumRange*Sa-TransparentAlpha)) < MagickEpsilon)
-                  {
-                    pixel=QuantumRange*Da;
-                    break;
-                  }
                 pixel=QuantumRange*Da;
                 break;
               }
