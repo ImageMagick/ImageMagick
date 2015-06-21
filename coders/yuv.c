@@ -243,7 +243,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (interlace == NoInterlace)
         {
           if ((y > 0) || (GetPreviousImageInList(image) == (Image *) NULL))
-            count=ReadBlob(image,(size_t) (2*quantum*image->columns),scanline);
+            (void) ReadBlob(image,(size_t) (2*quantum*image->columns),scanline);
           p=scanline;
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
           if (q == (PixelPacket *) NULL)
@@ -297,7 +297,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
       else
         {
           if ((y > 0) || (GetPreviousImageInList(image) == (Image *) NULL))
-            count=ReadBlob(image,(size_t) quantum*image->columns,scanline);
+            (void) ReadBlob(image,(size_t) quantum*image->columns,scanline);
           p=scanline;
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
           if (q == (PixelPacket *) NULL)
@@ -344,7 +344,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
         for (y=0; y < (ssize_t) chroma_image->rows; y++)
         {
-          count=ReadBlob(image,(size_t) quantum*chroma_image->columns,scanline);
+          (void) ReadBlob(image,(size_t) quantum*chroma_image->columns,scanline);
           p=scanline;
           q=QueueAuthenticPixels(chroma_image,0,y,chroma_image->columns,1,
             exception);
@@ -379,7 +379,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
       for (y=0; y < (ssize_t) chroma_image->rows; y++)
       {
-        count=ReadBlob(image,(size_t) quantum*chroma_image->columns,scanline);
+        (void) ReadBlob(image,(size_t) quantum*chroma_image->columns,scanline);
         p=scanline;
         q=GetAuthenticPixels(chroma_image,0,y,chroma_image->columns,1,
           exception);

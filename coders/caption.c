@@ -186,7 +186,8 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
       image->rows=(size_t) ((i+1)*(metrics.ascent-metrics.descent+
         draw_info->interline_spacing+draw_info->stroke_width)+0.5);
     }
-  status=SetImageExtent(image,image->columns,image->rows);
+  if (status != MagickFalse)
+    status=SetImageExtent(image,image->columns,image->rows);
   if (status == MagickFalse)
     { 
       draw_info=DestroyDrawInfo(draw_info);
