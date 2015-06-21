@@ -1009,6 +1009,49 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   C o p y I m a g e P i x e l s                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  CopyImagePixels() copies pixels from the source image as defined by the
+%  geometry the destination image at the specified offset.
+%
+%  The format of the CopyImagePixels method is:
+%
+%      MagickBooleanType CopyImagePixels(Image *image,const Image *source_image,
+%        const RectangleInfo *geometry,const OffsetInfo *offset);
+%
+%  A description of each parameter follows:
+%
+%    o image: the destination image.
+%
+%    o source_image: the source image.
+%
+%    o geometry: define the dimensions of the source pixel rectangle.
+%
+%    o offset: define the offset in the destination image.
+%
+*/
+MagickExport MagickBooleanType CopyImagePixels(Image *image,
+  const Image *source_image,const RectangleInfo *geometry,
+  const OffsetInfo *offset)
+{
+  assert(image != (Image *) NULL);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
+  assert(source_image != (Image *) NULL);
+  assert(geometry != (RectangleInfo *) NULL);
+  assert(offset != (OffsetInfo *) NULL);
+  return(MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   D e s t r o y I m a g e                                                   %
 %                                                                             %
 %                                                                             %
