@@ -556,6 +556,11 @@ static struct
     { "Kuwahara", { {"geometry", StringReference}, {"radius", RealReference},
       {"sigma", RealReference}, {"channel", MagickChannelOptions} } },
     { "ConnectedComponents", { {"connectivity", IntegerReference} } },
+    { "Copy", { {"geometry", StringReference}, {"width", IntegerReference},
+      {"height", IntegerReference}, {"x", IntegerReference},
+      {"y", IntegerReference}, {"offset", StringReference},
+      {"dx", IntegerReference}, {"dy", IntegerReference},
+      {"image", ImageReference} } },
   };
 
 static SplayTreeInfo
@@ -7550,6 +7555,8 @@ Mogrify(ref,...)
     KuwaharaImage      = 285
     ConnectedComponent = 286
     ConnectedComponentImage = 287
+    CopyPixels         = 288
+    CopyImagePixels    = 289
     MogrifyRegion      = 666
   PPCODE:
   {
@@ -11230,6 +11237,31 @@ Mogrify(ref,...)
           if (attribute_flag[0] != 0)
             connectivity=argument_list[0].integer_reference;
           image=ConnectedComponentsImage(image,connectivity,exception);
+          break;
+        }
+        case 143:  /* Copy */
+        {
+          Image
+            *source_image;
+
+          OffsetInfo
+            offset;
+
+          if (attribute_flag[5] != 0)
+            image->gravity=(GravityType) argument_list[5].integer_reference;
+          if (attribute_flag[0] != 0)
+            flags=ParseGravityGeometry(image,argument_list[0].string_reference,
+              &geometry,exception);
+          if (attribute_flag[1] != 0)
+            geometry.width=argument_list[1].integer_reference;
+          if (attribute_flag[2] != 0)
+            geometry.height=argument_list[2].integer_reference;
+          if (attribute_flag[3] != 0)
+            geometry.x=argument_list[3].integer_reference;
+          if (attribute_flag[4] != 0)
+            geometry.y=argument_list[4].integer_reference;
+          source_image=image;
+          image=CopyImagePixels(image,source_image,&geometry,&offset,exception);
           break;
         }
       }
