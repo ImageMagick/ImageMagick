@@ -687,10 +687,11 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowConvertException(OptionError,"MissingArgument",option);
-            type=ParseCommandOption(MagickAlphaChannelOptions,MagickFalse,argv[i]);
+            type=ParseCommandOption(MagickAlphaChannelOptions,MagickFalse,
+              argv[i]);
             if (type < 0)
-              ThrowConvertException(OptionError,"UnrecognizedAlphaChannelOption",
-                argv[i]);
+              ThrowConvertException(OptionError,
+                "UnrecognizedAlphaChannelOption",argv[i]);
             break;
           }
         if (LocaleCompare("annotate",option+1) == 0)
@@ -1164,6 +1165,23 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (kernel_info == (KernelInfo *) NULL)
               ThrowConvertInvalidArgumentException(option,argv[i]);
             kernel_info=DestroyKernelInfo(kernel_info);
+            break;
+          }
+        if (LocaleCompare("copy",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowConvertException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowConvertInvalidArgumentException(option,argv[i]);
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowConvertException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowConvertInvalidArgumentException(option,argv[i]);
+            i++;
             break;
           }
         if (LocaleCompare("crop",option+1) == 0)

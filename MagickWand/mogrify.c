@@ -1265,6 +1265,29 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             kernel_info=DestroyKernelInfo(kernel_info);
             break;
           }
+        if (LocaleCompare("copy",option+1) == 0)
+          {
+            Image
+              *source_image;
+
+            OffsetInfo
+              offset;
+
+            /*
+              Copy image pixels.
+            */
+            (void) SyncImageSettings(mogrify_info,*image,exception);
+            flags=ParsePageGeometry(*image,argv[i+2],&geometry,exception);
+            offset.x=geometry.x;
+            offset.y=geometry.y;
+            flags=ParsePageGeometry(*image,argv[i+1],&geometry,exception);
+            source_image=(*image);
+            if ((*image)->next != (Image *) NULL)
+              source_image=(*image)->next;
+            status=CopyImagePixels(*image,source_image,&geometry,&offset,
+              exception);
+            break;
+          }
         if (LocaleCompare("crop",option+1) == 0)
           {
             /*
@@ -3539,6 +3562,8 @@ static MagickBooleanType MogrifyUsage(void)
       "-compare             mathematically and visually annotate the difference between an image and its reconstruction",
       "-complex operator    perform complex mathematics on an image sequence",
       "-composite           composite image",
+      "-copy geometry offset",
+      "                     copy pixels from one area of an image to another",
       "-crop geometry       cut out a rectangular region of the image",
       "-deconstruct         break down an image sequence into constituent parts",
       "-evaluate-sequence operator",
@@ -4352,6 +4377,23 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             if (kernel_info == (KernelInfo *) NULL)
               ThrowMogrifyInvalidArgumentException(option,argv[i]);
             kernel_info=DestroyKernelInfo(kernel_info);
+            break;
+          }
+        if (LocaleCompare("copy",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowMogrifyInvalidArgumentException(option,argv[i]);
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowMogrifyInvalidArgumentException(option,argv[i]);
+            i++;
             break;
           }
         if (LocaleCompare("crop",option+1) == 0)
