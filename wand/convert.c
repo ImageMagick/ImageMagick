@@ -1161,8 +1161,6 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
-            if (i == (ssize_t) argc)
-              ThrowConvertException(OptionError,"MissingArgument",option);
             i++;
             break;
           }
