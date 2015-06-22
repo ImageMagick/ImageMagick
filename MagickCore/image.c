@@ -1017,7 +1017,8 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
 %  The format of the CopyImagePixels method is:
 %
 %      MagickBooleanType CopyImagePixels(Image *image,const Image *source_image,
-%        const RectangleInfo *geometry,const OffsetInfo *offset);
+%        const RectangleInfo *geometry,const OffsetInfo *offset,
+%        ExceptionInfo *exception);
 %
 %  A description of each parameter follows:
 %
@@ -1029,18 +1030,106 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
 %
 %    o offset: define the offset in the destination image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 MagickExport MagickBooleanType CopyImagePixels(Image *image,
   const Image *source_image,const RectangleInfo *geometry,
-  const OffsetInfo *offset)
+  const OffsetInfo *offset,ExceptionInfo *exception)
 {
+#define CopyImageTag  "Copy/Image"
+
+  CacheView
+    *image_view,
+    *source_view;
+
+  MagickBooleanType
+    status;
+
+  MagickOffsetType
+    progress;
+
+  ssize_t
+    y;
+
   assert(image != (Image *) NULL);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(source_image != (Image *) NULL);
   assert(geometry != (RectangleInfo *) NULL);
   assert(offset != (OffsetInfo *) NULL);
-  return(MagickTrue);
+  /*
+    Copy image pixels.
+  */
+  status=MagickTrue;
+  progress=0;
+  source_view=AcquireVirtualCacheView(source_image,exception);
+  image_view=AcquireAuthenticCacheView(image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+    magick_threads(image,source_image,image->rows,1)
+#endif
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    MagickBooleanType
+      sync;
+
+    register const Quantum
+      *restrict p;
+
+    register ssize_t
+      x;
+
+    register Quantum
+      *restrict q;
+
+    if (status == MagickFalse)
+      continue;
+    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
+    q=QueueCacheViewAuthenticPixels(source_view,0,y,source_image->columns,1,
+      exception);
+    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
+      {
+        status=MagickFalse;
+        continue;
+      }
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      register ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      { 
+        PixelChannel channel=GetPixelChannelChannel(image,i);
+        PixelTrait traits=GetPixelChannelTraits(image,channel);
+        PixelTrait source_traits=GetPixelChannelTraits(source_image,channel);
+        if ((traits == UndefinedPixelTrait) ||
+            (source_traits == UndefinedPixelTrait))
+          continue;
+        SetPixelChannel(source_image,channel,p[i],q);
+      }
+      p+=GetPixelChannels(image);
+      q+=GetPixelChannels(source_image);
+    }
+    sync=SyncCacheViewAuthenticPixels(source_view,exception);
+    if (sync == MagickFalse)
+      status=MagickFalse;
+    if (image->progress_monitor != (MagickProgressMonitor) NULL)
+      {
+        MagickBooleanType
+          proceed;
+
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp critical (MagickCore_CopyImage)
+#endif
+        proceed=SetImageProgress(image,CopyImageTag,progress++,image->rows);
+        if (proceed == MagickFalse)
+          status=MagickFalse;
+      }
+  }
+  source_view=DestroyCacheView(source_view);
+  image_view=DestroyCacheView(image_view);
+  return(status);
 }
 
 /*

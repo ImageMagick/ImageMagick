@@ -534,7 +534,7 @@ extern MagickExport MagickBooleanType
   ClipImage(Image *,ExceptionInfo *),
   ClipImagePath(Image *,const char *,const MagickBooleanType,ExceptionInfo *),
   CopyImagePixels(Image *,const Image *,const RectangleInfo *,
-    const OffsetInfo *),
+    const OffsetInfo *,ExceptionInfo *),
   IsTaintImage(const Image *),
   IsHighDynamicRangeImage(const Image *,ExceptionInfo *),
   IsImageObject(const Image *),
