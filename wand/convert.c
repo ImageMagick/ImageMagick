@@ -1161,7 +1161,6 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
-            i++;
             break;
           }
         if (LocaleCompare("crop",option+1) == 0)

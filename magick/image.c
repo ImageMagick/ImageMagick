@@ -1062,11 +1062,13 @@ MagickExport MagickBooleanType CopyImagePixels(Image *image,
   assert(source_image != (Image *) NULL);
   assert(geometry != (RectangleInfo *) NULL);
   assert(offset != (OffsetInfo *) NULL);
-  if ((geometry->width == 0) || (geometry->height == 0) || (offset->x < 0) ||
-      (offset->y < 0) || (offset->x >= (ssize_t) geometry->width) ||
-      (offset->y >= (ssize_t) geometry->height))
+  if ((offset->x < 0) || (offset->y < 0) ||
+      ((offset->x+geometry->width) >= (ssize_t) image->columns) ||
+      ((offset->y+geometry->height) >= (ssize_t) image->rows))
     ThrowBinaryException(OptionError,"GeometryDoesNotContainImage",
       image->filename);
+  if (SetImageStorageClass(image,DirectClass) == MagickFalse)
+    return(MagickFalse);
   /*
     Copy image pixels.
   */
@@ -1111,8 +1113,7 @@ MagickExport MagickBooleanType CopyImagePixels(Image *image,
     for (x=0; x < (ssize_t) geometry->width; x++)
     {
       *q=(*p);
-      if ((image->storage_class == PseudoClass) ||
-          (image->colorspace == CMYKColorspace))
+      if (image->colorspace == CMYKColorspace)
         indexes[x]=source_indexes[x];
       p++;
       q++;
