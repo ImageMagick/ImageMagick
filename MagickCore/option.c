@@ -332,6 +332,8 @@ static const OptionInfo
     { "-contrast-stretch", 1L, SimpleOperatorFlag, MagickFalse },
     { "+convolve", 1L, DeprecateOptionFlag, MagickTrue },
     { "-convolve", 1L, SimpleOperatorFlag, MagickFalse },
+    { "+copy", 2L, DeprecateOptionFlag | FireOptionFlag, MagickTrue },
+    { "-copy", 2L, ListOperatorFlag | FireOptionFlag, MagickFalse },
     { "+crop", 1L, DeprecateOptionFlag | FireOptionFlag, MagickTrue },
     { "-crop", 1L, SimpleOperatorFlag | FireOptionFlag, MagickFalse },
     { "+cycle", 1L, DeprecateOptionFlag, MagickTrue },
