@@ -1058,6 +1058,11 @@ MagickExport MagickBooleanType CopyImagePixels(Image *image,
   assert(source_image != (Image *) NULL);
   assert(geometry != (RectangleInfo *) NULL);
   assert(offset != (OffsetInfo *) NULL);
+  if ((geometry->width == 0) || (geometry->height == 0) || (offset->x < 0) ||
+      (offset->y < 0) || (offset->x >= (ssize_t) geometry->width) ||
+      (offset->y >= (ssize_t) geometry->height))
+    ThrowBinaryException(OptionError,"GeometryDoesNotContainImage",
+      image->filename);
   /*
     Copy image pixels.
   */
@@ -1067,9 +1072,9 @@ MagickExport MagickBooleanType CopyImagePixels(Image *image,
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
-    magick_threads(image,source_image,image->rows,1)
+    magick_threads(image,source_image,geometry->height,1)
 #endif
-  for (y=0; y < (ssize_t) image->rows; y++)
+  for (y=0; y < (ssize_t) geometry->height; y++)
   {
     MagickBooleanType
       sync;
@@ -1085,15 +1090,16 @@ MagickExport MagickBooleanType CopyImagePixels(Image *image,
 
     if (status == MagickFalse)
       continue;
-    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
-    q=QueueCacheViewAuthenticPixels(source_view,0,y,source_image->columns,1,
-      exception);
+    p=GetCacheViewVirtualPixels(source_view,geometry->x,y+geometry->y,
+      geometry->width,1,exception);
+    q=QueueCacheViewAuthenticPixels(image_view,offset->x,y+offset->y,
+      geometry->width,1,exception);
     if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
       {
         status=MagickFalse;
         continue;
       }
-    for (x=0; x < (ssize_t) image->columns; x++)
+    for (x=0; x < (ssize_t) geometry->width; x++)
     {
       register ssize_t
         i;
