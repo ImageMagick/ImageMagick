@@ -210,7 +210,7 @@ static void InsertRow(ssize_t depth,unsigned char *p,ssize_t y,Image *image)
           SetPixelIndex(indexes+x,index);
           p++;
         }
-        (void) SyncAuthenticPixels(image,exception) == MagickFalse);
+        (void) SyncAuthenticPixels(image,exception);
         break;
       }
     }
