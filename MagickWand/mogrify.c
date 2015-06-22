@@ -1265,29 +1265,6 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             kernel_info=DestroyKernelInfo(kernel_info);
             break;
           }
-        if (LocaleCompare("copy",option+1) == 0)
-          {
-            Image
-              *source_image;
-
-            OffsetInfo
-              offset;
-
-            /*
-              Copy image pixels.
-            */
-            (void) SyncImageSettings(mogrify_info,*image,exception);
-            flags=ParsePageGeometry(*image,argv[i+2],&geometry,exception);
-            offset.x=geometry.x;
-            offset.y=geometry.y;
-            flags=ParsePageGeometry(*image,argv[i+1],&geometry,exception);
-            source_image=(*image);
-            if ((*image)->next != (Image *) NULL)
-              source_image=(*image)->next;
-            status=CopyImagePixels(*image,source_image,&geometry,&offset,
-              exception);
-            break;
-          }
         if (LocaleCompare("crop",option+1) == 0)
           {
             /*
@@ -4393,7 +4370,6 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowMogrifyInvalidArgumentException(option,argv[i]);
-            i++;
             break;
           }
         if (LocaleCompare("crop",option+1) == 0)
@@ -7871,6 +7847,33 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
             composite_image=DestroyImage(composite_image);
             *images=DestroyImageList(*images);
             *images=image;
+            break;
+          }
+        if (LocaleCompare("copy",option+1) == 0)
+          {
+            Image
+              *source_image;
+
+            OffsetInfo
+              offset;
+
+            RectangleInfo
+              geometry;
+
+            /*
+              Copy image pixels.
+            */
+            (void) SyncImageSettings(mogrify_info,*images,exception);
+            (void) ParsePageGeometry(*images,argv[i+2],&geometry,exception);
+            offset.x=geometry.x;
+            offset.y=geometry.y;
+            source_image=(*images);
+            if (source_image->next != (Image *) NULL)
+              source_image=source_image->next;
+            (void) ParsePageGeometry(source_image,argv[i+1],&geometry,
+              exception);
+            status=CopyImagePixels(*images,source_image,&geometry,&offset,
+              exception);
             break;
           }
         break;

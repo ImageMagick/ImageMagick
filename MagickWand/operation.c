@@ -2165,32 +2165,6 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           kernel_info=DestroyKernelInfo(kernel_info);
           break;
         }
-        if (LocaleCompare("copy",option+1) == 0)
-          {
-            Image
-              *source_image;
-
-            OffsetInfo
-              offset;
-
-            /*
-              Copy image pixels.
-            */
-            if (IfMagickFalse(IsGeometry(arg1)))
-              CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
-            if (IfMagickFalse(IsGeometry(arg2)))
-              CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
-            flags=ParsePageGeometry(_image,arg2,&geometry,exception);
-            offset.x=geometry.x;
-            offset.y=geometry.y;
-            flags=ParsePageGeometry(_image,arg1,&geometry,exception);
-            source_image=_image;
-            if (_image->next != (Image *) NULL)
-              source_image=_image->next;
-            (void) CopyImagePixels(_image,source_image,&geometry,&offset,
-              exception);
-            break;
-          }
       if (LocaleCompare("crop",option+1) == 0)
         {
           /* WARNING: This can generate multiple images! */
@@ -3897,6 +3871,35 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
           source_image=DestroyImage(source_image);
           break;
         }
+        if (LocaleCompare("copy",option+1) == 0)
+          {
+            Image
+              *source_image;
+
+            OffsetInfo
+              offset;
+
+            RectangleInfo
+              geometry;
+
+            /*
+              Copy image pixels.
+            */
+            if (IfMagickFalse(IsGeometry(arg1)))
+              CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
+            if (IfMagickFalse(IsGeometry(arg2)))
+              CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
+            (void) ParsePageGeometry(_images,arg2,&geometry,_exception);
+            offset.x=geometry.x;
+            offset.y=geometry.y;
+            (void) ParsePageGeometry(_images,arg1,&geometry,_exception);
+            source_image=_images;
+            if (source_image->next != (Image *) NULL)
+              source_image=source_image->next;
+            (void) CopyImagePixels(_images,source_image,&geometry,&offset,
+              _exception);
+            break;
+          }
       CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 'd':
