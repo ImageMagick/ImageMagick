@@ -157,6 +157,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
     draw_info->gravity=(GravityType) ParseCommandOption(MagickGravityOptions,
       MagickFalse,gravity);
   split=MagickFalse;
+  status=MagickTrue;
   if (image->columns == 0)
     {
       text=AcquireString(caption);
