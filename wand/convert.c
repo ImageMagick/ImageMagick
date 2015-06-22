@@ -1147,6 +1147,25 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             kernel_info=DestroyKernelInfo(kernel_info);
             break;
           }
+        if (LocaleCompare("copy",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowConvertException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowConvertInvalidArgumentException(option,argv[i]);
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowConvertException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowConvertInvalidArgumentException(option,argv[i]);
+            if (i == (ssize_t) argc)
+              ThrowConvertException(OptionError,"MissingArgument",option);
+            i++;
+            break;
+          }
         if (LocaleCompare("crop",option+1) == 0)
           {
             if (*option == '+')
