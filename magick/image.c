@@ -1021,7 +1021,8 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
 %  The format of the CopyImagePixels method is:
 %
 %      MagickBooleanType CopyImagePixels(Image *image,const Image *source_image,
-%        const RectangleInfo *geometry,const OffsetInfo *offset);
+%        const RectangleInfo *geometry,const OffsetInfo *offset,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1033,19 +1034,18 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
 %
 %    o offset: define the offset in the destination image.
 %
+%    o exception: return the highest severity exception.
+%
 */
 MagickExport MagickBooleanType CopyImagePixels(Image *image,
   const Image *source_image,const RectangleInfo *geometry,
-  const OffsetInfo *offset)
+  const OffsetInfo *offset,ExceptionInfo *exception)
 {
 #define CopyImageTag  "Copy/Image"
 
   CacheView
     *image_view,
     *source_view;
-
-  ExceptionInfo
-    *exception;
 
   MagickBooleanType
     status;
@@ -1066,7 +1066,6 @@ MagickExport MagickBooleanType CopyImagePixels(Image *image,
     Copy image pixels.
   */
   status=MagickTrue;
-  exception=(&image->exception);
   progress=0;
   image_view=AcquireAuthenticCacheView(image,exception);
   source_view=AcquireAuthenticCacheView(source_image,exception);
