@@ -247,14 +247,10 @@ static Image *ReadTGAImage(const ImageInfo *image_info,
   if ((tga_info.image_type != TGAColormap) &&
       (tga_info.image_type != TGARLEColormap))
     image->depth=(size_t) ((tga_info.bits_per_pixel <= 8) ? 8 :
-      (tga_info.bits_per_pixel <= 16) ? 5 :
-      (tga_info.bits_per_pixel == 24) ? 8 :
-      (tga_info.bits_per_pixel == 32) ? 8 : 8);
+      (tga_info.bits_per_pixel <= 16) ? 5 : 8);
   else
     image->depth=(size_t) ((tga_info.colormap_size <= 8) ? 8 :
-      (tga_info.colormap_size <= 16) ? 5 :
-      (tga_info.colormap_size == 24) ? 8 :
-      (tga_info.colormap_size == 32) ? 8 : 8);
+      (tga_info.colormap_size <= 16) ? 5 : 8);
   if ((tga_info.image_type == TGAColormap) ||
       (tga_info.image_type == TGAMonochrome) ||
       (tga_info.image_type == TGARLEColormap) ||
