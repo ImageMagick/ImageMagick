@@ -11261,7 +11261,8 @@ Mogrify(ref,...)
           if (attribute_flag[4] != 0)
             geometry.y=argument_list[4].integer_reference;
           source_image=image;
-          image=CopyImagePixels(image,source_image,&geometry,&offset,exception);
+          (void) CopyImagePixels(image,source_image,&geometry,&offset,
+            exception);
           break;
         }
       }
