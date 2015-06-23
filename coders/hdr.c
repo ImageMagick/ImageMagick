@@ -422,7 +422,7 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if ((size_t) ((((size_t) pixel[2]) << 8) | pixel[3]) != image->columns)
           {
             (void) memcpy(pixels,pixel,4*sizeof(*pixel));
-            count=ReadBlob(image,4*(image->columns-1)*sizeof(*pixels),pixels+4);
+            (void) ReadBlob(image,4*(image->columns-1)*sizeof(*pixels),pixels+4);
             image->compression=NoCompression;
           }
         else
