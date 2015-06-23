@@ -424,7 +424,7 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
     (void) ParseAbsoluteGeometry("0x0+0+0",&image->page);
     progress_monitor=SetImageProgressMonitor(image,(MagickProgressMonitor) NULL,
       image->client_data);
-    flags=ParseRegionGeometry(image,montage_info->geometry,&geometry,exception);
+    (void) ParseRegionGeometry(image,montage_info->geometry,&geometry,exception);
     thumbnail=ThumbnailImage(image,geometry.width,geometry.height,exception);
     if (thumbnail == (Image *) NULL)
       break;
@@ -752,7 +752,7 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
         tile_image->gravity=image->gravity;
       (void) FormatLocaleString(tile_geometry,MaxTextExtent,"%.20gx%.20g+0+0",
         (double) image->columns,(double) image->rows);
-      flags=ParseGravityGeometry(tile_image,tile_geometry,&geometry,exception);
+      (void) ParseGravityGeometry(tile_image,tile_geometry,&geometry,exception);
       x=(ssize_t) (geometry.x+border_width);
       y=(ssize_t) (geometry.y+border_width);
       if ((montage_info->frame != (char *) NULL) && (bevel_width != 0))

@@ -1429,14 +1429,14 @@ MagickExport MagickBooleanType GetImageChannelKurtosis(const Image *image,
       if (((channel & IndexChannel) != 0) &&
           (image->colorspace == CMYKColorspace))
         {
-          mean+=GetPixelIndex(indexes+x);
-          sum_squares+=(double) GetPixelIndex(indexes+x)*
-            GetPixelIndex(indexes+x);
-          sum_cubes+=(double) GetPixelIndex(indexes+x)*GetPixelIndex(indexes+x)*
-            GetPixelIndex(indexes+x);
-          sum_fourth_power+=(double) GetPixelIndex(indexes+x)*
-            GetPixelIndex(indexes+x)*GetPixelIndex(indexes+x)*
-            GetPixelIndex(indexes+x);
+          double
+            index;
+
+          index=GetPixelIndex(indexes+x);
+          mean+=index;
+          sum_squares+=index*index;
+          sum_cubes+=index*index*index;
+          sum_fourth_power+=index*index*index*index;
           area++;
         }
       p++;
