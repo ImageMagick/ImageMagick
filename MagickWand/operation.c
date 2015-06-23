@@ -3892,10 +3892,10 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
             (void) ParsePageGeometry(_images,arg2,&geometry,_exception);
             offset.x=geometry.x;
             offset.y=geometry.y;
-            (void) ParsePageGeometry(_images,arg1,&geometry,_exception);
             source_image=_images;
             if (source_image->next != (Image *) NULL)
               source_image=source_image->next;
+            (void) ParsePageGeometry(source_image,arg1,&geometry,_exception);
             (void) CopyImagePixels(_images,source_image,&geometry,&offset,
               _exception);
             break;
