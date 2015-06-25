@@ -11264,11 +11264,11 @@ Mogrify(ref,...)
           if (attribute_flag[6] != 0)
             source_image->gravity=(GravityType)
               argument_list[6].integer_reference;
-          offset.x=0;
-          offset.y=0;
           if (attribute_flag[7] != 0)
             flags=ParseGravityGeometry(source_image,
               argument_list[0].string_reference,&offset,exception);
+          offset.x=geometry.x;
+          offset.y=geometry.y;
           if (attribute_flag[8] != 0)
             offset.x=argument_list[8].integer_reference;
           if (attribute_flag[9] != 0)
