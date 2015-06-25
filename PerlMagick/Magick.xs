@@ -11247,12 +11247,16 @@ Mogrify(ref,...)
           OffsetInfo
             offset;
 
+          RectangleInfo
+            offset_geometry;
+
           source_image=image;
           if (attribute_flag[0] != 0)
             source_image=argument_list[0].image_reference;
+          SetGeometry(source_image,&geometry);
           if (attribute_flag[1] != 0)
-            flags=ParseGravityGeometry(image,argument_list[1].string_reference,
-              &geometry,exception);
+            flags=ParseGravityGeometry(source_image,
+              argument_list[1].string_reference,&geometry,exception);
           if (attribute_flag[2] != 0)
             geometry.width=argument_list[2].integer_reference;
           if (attribute_flag[3] != 0)
@@ -11262,18 +11266,17 @@ Mogrify(ref,...)
           if (attribute_flag[5] != 0)
             geometry.y=argument_list[5].integer_reference;
           if (attribute_flag[6] != 0)
-            source_image->gravity=(GravityType)
-              argument_list[6].integer_reference;
+            image->gravity=(GravityType) argument_list[6].integer_reference;
+          SetGeometry(image,&offset_geometry)
           if (attribute_flag[7] != 0)
-            flags=ParseGravityGeometry(source_image,
-              argument_list[0].string_reference,&offset,exception);
-          offset.x=geometry.x;
-          offset.y=geometry.y;
+            flags=ParseGravityGeometry(image,argument_list[7].string_reference,
+              &offset_geometry,exception);
+          offset.x=offset_geometry.x;
+          offset.y=offset_geometry.y;
           if (attribute_flag[8] != 0)
             offset.x=argument_list[8].integer_reference;
           if (attribute_flag[9] != 0)
             offset.y=argument_list[9].integer_reference;
-          source_image=image;
           (void) CopyImagePixels(image,source_image,&geometry,&offset,
             exception);
           break;
