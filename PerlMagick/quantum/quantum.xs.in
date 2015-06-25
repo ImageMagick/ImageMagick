@@ -556,11 +556,11 @@ static struct
     { "Kuwahara", { {"geometry", StringReference}, {"radius", RealReference},
       {"sigma", RealReference}, {"channel", MagickChannelOptions} } },
     { "ConnectedComponents", { {"connectivity", IntegerReference} } },
-    { "Copy", { {"geometry", StringReference}, {"width", IntegerReference},
-      {"height", IntegerReference}, {"x", IntegerReference},
-      {"y", IntegerReference}, {"offset", StringReference},
-      {"dx", IntegerReference}, {"dy", IntegerReference},
-      {"image", ImageReference} } },
+    { "CopyPixels", { {"image", ImageReference}, {"geometry", StringReference},
+      {"width", IntegerReference}, {"height", IntegerReference},
+      {"x", IntegerReference}, {"y", IntegerReference},
+      {"gravity", MagickGravityOptions}, {"offset", StringReference}, 
+      {"dx", IntegerReference}, {"dy", IntegerReference} } },
   };
 
 static SplayTreeInfo
@@ -11245,19 +11245,32 @@ Mogrify(ref,...)
           OffsetInfo
             offset;
 
-          if (attribute_flag[5] != 0)
-            image->gravity=(GravityType) argument_list[5].integer_reference;
+          source_image=image;
           if (attribute_flag[0] != 0)
-            flags=ParseGravityGeometry(image,argument_list[0].string_reference,
-              &geometry,exception);
+            source_image=argument_list[0].image_reference;
           if (attribute_flag[1] != 0)
-            geometry.width=argument_list[1].integer_reference;
+            flags=ParseGravityGeometry(image,argument_list[1].string_reference,
+              &geometry,exception);
           if (attribute_flag[2] != 0)
-            geometry.height=argument_list[2].integer_reference;
+            geometry.width=argument_list[2].integer_reference;
           if (attribute_flag[3] != 0)
-            geometry.x=argument_list[3].integer_reference;
+            geometry.height=argument_list[3].integer_reference;
           if (attribute_flag[4] != 0)
-            geometry.y=argument_list[4].integer_reference;
+            geometry.x=argument_list[4].integer_reference;
+          if (attribute_flag[5] != 0)
+            geometry.y=argument_list[5].integer_reference;
+          if (attribute_flag[6] != 0)
+            source_image->gravity=(GravityType)
+              argument_list[6].integer_reference;
+          offset.x=0;
+          offset.y=0;
+          if (attribute_flag[7] != 0)
+            flags=ParseGravityGeometry(source_image,
+              argument_list[0].string_reference,&offset,exception);
+          if (attribute_flag[8] != 0)
+            offset.x=argument_list[8].integer_reference;
+          if (attribute_flag[9] != 0)
+            offset.y=argument_list[9].integer_reference;
           source_image=image;
           (void) CopyImagePixels(image,source_image,&geometry,&offset,
             exception);
