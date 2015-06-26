@@ -1,3 +1,6 @@
+2015-06-25  6.9.1-7 Cristy  <quetzlzacatenango@image...>
+  * Support BPG image format (respects -quality option).
+
 2015-06-13  6.9.1-6 Cristy  <quetzlzacatenango@image...>
   * New version 6.9.1-6, SVN revision 18945.
 
