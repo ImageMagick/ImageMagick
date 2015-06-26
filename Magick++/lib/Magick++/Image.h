@@ -662,6 +662,11 @@ namespace Magick
     void cannyEdge(const double radius_=0.0,const double sigma_=1.0,
       const double lowerPercent_=0.1,const double upperPercent_=0.3);
 
+    // Accepts a lightweight Color Correction Collection
+    // (CCC) file which solely contains one or more color corrections and
+    // applies the correction to the image.
+    void cdl(const std::string &cdl_);
+
     // Extract channel from image
     void channel(const ChannelType channel_);
 
@@ -691,11 +696,6 @@ namespace Magick
     // Chromaticity white point (e.g. x=0.3127, y=0.329)
     void chromaWhitePoint(const double x_,const double y_);
     void chromaWhitePoint(double *x_,double *y_) const;
-
-    // Accepts a lightweight Color Correction Collection
-    // (CCC) file which solely contains one or more color corrections and
-    // applies the correction to the image.
-    void cdl(const std::string &cdl_);
 
     // Set each pixel whose value is below zero to zero and any the
     // pixel whose value is above the quantum range to the quantum range (e.g.
@@ -777,6 +777,11 @@ namespace Magick
     //  order_ represents the number of columns and rows in the filter kernel.
     //  kernel_ is an array of doubles representing the convolution kernel.
     void convolve(const size_t order_,const double *kernel_);
+
+    // Copies pixels from the source image as defined by the geometry the
+    // destination image at the specified offset.
+    void copyPixels(const Image &source_,const Geometry &geometry_,
+      const Offset &offset_);
 
     // Crop image (subregion of original image)
     void crop(const Geometry &geometry_);

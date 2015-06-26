@@ -471,6 +471,104 @@ Magick::Geometry::operator MagickCore::RectangleInfo() const
   return(rectangle);
 }
 
+MagickPPExport int Magick::operator == (const Magick::Offset& left_,
+  const Magick::Offset& right_)
+{
+  return((left_.x() == right_.x()) &&
+    (left_.y() == right_.y()));
+}
+
+MagickPPExport int Magick::operator != (const Magick::Offset& left_,
+  const Magick::Offset& right_)
+{
+  return(!(left_ == right_));
+}
+
+Magick::Offset::Offset(void)
+  : _x(0),
+    _y(0)
+{
+}
+
+Magick::Offset::Offset(const char *offset_)
+  : _x(0),
+    _y(0)
+{
+  *this=offset_; // Use assignment operator
+}
+
+Magick::Offset::Offset(const Offset &offset_)
+  : _x(offset_._x),
+    _y(offset_._y)
+{
+}
+
+Magick::Offset::Offset(const std::string &offset_)
+  : _x(0),
+    _y(0)
+{
+  *this=offset_; // Use assignment operator
+}
+
+Magick::Offset::Offset(ssize_t x_,ssize_t y_)
+  : _x(x_),
+    _y(y_)
+{
+}
+
+Magick::Offset::~Offset(void)
+{
+}
+
+const Magick::Offset& Magick::Offset::operator=(const char *offset_)
+{
+  MagickCore::GeometryInfo
+    geometry_info;
+
+  MagickCore::MagickStatusType
+    flags;
+
+  flags=ParseGeometry(offset_,&geometry_info);
+  _x=geometry_info.rho;
+  _y=geometry_info.sigma;
+  return(*this);
+}
+
+Magick::Offset& Magick::Offset::operator=(const Offset &offset_)
+{
+  // If not being set to ourself
+  if (this != &offset_)
+    {
+      _x=offset_._x;
+      _y=offset_._y;
+    }
+  return(*this);
+}
+
+const Magick::Offset& Magick::Offset::operator=(const std::string &offset_)
+{
+  *this=offset_.c_str();
+  return(*this);
+}
+
+ssize_t Magick::Offset::x(void) const
+{
+  return(_x);
+}
+
+ssize_t Magick::Offset::y(void) const
+{
+  return(_y);
+}
+
+Magick::Offset::operator MagickCore::OffsetInfo() const
+{
+  OffsetInfo offset;
+  offset.x=_x;
+  offset.y=_y;
+  return(offset);
+}
+
 MagickPPExport int Magick::operator == (const Magick::Point& left_,
   const Magick::Point& right_)
 {

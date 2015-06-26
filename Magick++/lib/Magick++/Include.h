@@ -286,6 +286,7 @@ namespace Magick
   using MagickCore::MagickInfo;
   using MagickCore::MagickWand;
   using MagickCore::MontageInfo;
+  using MagickCore::OffsetInfo;
   using MagickCore::PixelInfo;
   using MagickCore::PixelWand;
   using MagickCore::PointInfo;
@@ -1130,6 +1131,7 @@ namespace Magick
   using MagickCore::ConvertHSLToRGB;
   using MagickCore::ConvertRGBToHSL;
   using MagickCore::ConvolveImage;
+  using MagickCore::CopyImagePixels;
   using MagickCore::CopyMagickString;
   using MagickCore::CropImage;
   using MagickCore::CropImageToTiles;
