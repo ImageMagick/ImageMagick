@@ -1748,6 +1748,13 @@ static double FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
         return((double) image->page.y);
       break;
     }
+    case 'Q':
+    case 'q':
+    {
+      if (LocaleCompare(symbol,"quality") == 0)
+        return((double) image->quality);
+      break;
+    }
     case 'R':
     case 'r':
     {
