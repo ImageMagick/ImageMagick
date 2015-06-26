@@ -1052,6 +1052,7 @@ namespace Magick
   using MagickCore::CoderError;
   using MagickCore::CoderFatalError;
   using MagickCore::CoderWarning;
+  using MagickCore::CopyImagePixels;
   using MagickCore::ColorDecisionListImage;
   using MagickCore::ColorizeImage;
   using MagickCore::ColorMatrixImage;
@@ -1327,6 +1328,7 @@ namespace Magick
   using MagickCore::NoiseType;
   using MagickCore::NormalizeImage;
   using MagickCore::NoValue;
+  using MagickCore::OffsetInfo;
   using MagickCore::OilPaintImage;
   using MagickCore::OpaquePaintImage;
   using MagickCore::OrderedPosterizeImage;
