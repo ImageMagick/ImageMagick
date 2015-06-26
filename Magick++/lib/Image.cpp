@@ -2124,6 +2124,13 @@ void Magick::Image::cannyEdge(const double radius_,const double sigma_,
   ThrowImageException;
 }
 
+void Magick::Image::cdl(const std::string &cdl_)
+{
+  modifyImage();
+  (void) ColorDecisionListImage(image(),cdl_.c_str());
+  throwImageException();
+}
+
 void Magick::Image::channel(const ChannelType channel_)
 {
   modifyImage();
@@ -2225,13 +2232,6 @@ void Magick::Image::chromaWhitePoint(double *x_,double *y_) const
 {
   *x_=constImage()->chromaticity.white_point.x;
   *y_=constImage()->chromaticity.white_point.y;
-}
-
-void Magick::Image::cdl(const std::string &cdl_)
-{
-  modifyImage();
-  (void) ColorDecisionListImage(image(),cdl_.c_str());
-  throwImageException();
 }
 
 void Magick::Image::clamp(void)
@@ -2528,6 +2528,22 @@ void Magick::Image::convolve(const size_t order_,const double *kernel_)
   replaceImage(newImage);
   ThrowImageException;
 }
+
+void Magick::Image::copyPixels(const Image &source_,const Geometry &geometry_,
+  const Offset &offset_)
+{
+  const OffsetInfo
+    offset=offset_;
+
+  const RectangleInfo
+    geometry=geometry_;
+
+  GetPPException;
+  (void) CopyImagePixels(image(),source_.constImage(),&geometry,&offset,
+    exceptionInfo);
+  ThrowImageException;
+}
+
 
 void Magick::Image::crop(const Geometry &geometry_)
 {
