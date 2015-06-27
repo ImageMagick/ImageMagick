@@ -505,9 +505,11 @@ static Image *ReadTGAImage(const ImageInfo *image_info,
         SetPixelOpacity(q,pixel.opacity);
       q++;
     }
-    if (((unsigned char) (tga_info.attributes & 0xc0) >> 6) == 4)
-      offset+=4;
-    else
+    /*
+      if (((unsigned char) (tga_info.attributes & 0xc0) >> 6) == 4)
+        offset+=4;
+      else
+    */
       if (((unsigned char) (tga_info.attributes & 0xc0) >> 6) == 2)
         offset+=2;
       else
