@@ -13,5 +13,5 @@ before_script:
 script:
     - export OMP_NUM_THREADS=1
     - export CFLAGS="-Wno-deprecated-declarations -Wdeclaration-after-statement -Wno-error=unused-variable"
-    - ./configure --disable-openmp --with-quantum-depth=16 --enable-hdri=no
+    - ./configure --disable-openmp --with-quantum-depth=16 --enable-hdri=no --with-perl
     - make
