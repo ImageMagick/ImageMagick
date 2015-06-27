@@ -843,7 +843,6 @@ MagickExport void LeastSquaresAddTerms(double **matrix,double **vectors,
     for (i=0; i < (ssize_t) number_vectors; i++)
       vectors[i][j]+=results[i]*terms[j];
   }
-  return;
 }
 
 /*
