@@ -482,13 +482,9 @@ static inline MagickBooleanType IsSameColor(const Image *image,
   return(MagickTrue);
 }
 
-static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info)
+static inline MagickBooleanType PreAssignImageColors(Image *image,
+  CubeInfo *cube_info)
 {
-#define AssignImageTag  "Assign/Image"
-
-  ssize_t
-    y;
-
   /*
     Allocate image colormap.
   */
@@ -500,12 +496,56 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info)
     if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
       (void) TransformImageColorspace((Image *) image,sRGBColorspace);
   if (AcquireImageColormap(image,cube_info->colors) == MagickFalse)
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      image->filename);
+    return(MagickFalse);
   image->colors=0;
   cube_info->transparent_pixels=0;
   cube_info->transparent_index=(-1);
   (void) DefineImageColormap(image,cube_info,cube_info->root);
+  return(MagickTrue);
+}
+
+static inline void PostAssignImageColors(Image *image,CubeInfo *cube_info)
+{
+  if (cube_info->quantize_info->measure_error != MagickFalse)
+    (void) GetImageQuantizeError(image);
+  if ((cube_info->quantize_info->number_colors == 2) &&
+      (cube_info->quantize_info->colorspace == GRAYColorspace))
+    {
+      Quantum
+        intensity;
+
+      register PixelPacket
+        *restrict q;
+
+      register ssize_t
+        i;
+
+      /*
+        Monochrome image.
+      */
+      q=image->colormap;
+      for (i=0; i < (ssize_t) image->colors; i++)
+      {
+        intensity=(Quantum) (GetPixelLuma(image,q) < (QuantumRange/2.0) ? 0 :
+          QuantumRange);
+        SetPixelRed(q,intensity);
+        SetPixelGreen(q,intensity);
+        SetPixelBlue(q,intensity);
+        q++;
+      }
+    }
+}
+
+static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info)
+{
+#define AssignImageTag  "Assign/Image"
+
+  ssize_t
+    y;
+
+  if (PreAssignImageColors(image,cube_info) == MagickFalse)
+    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+      image->filename);
   /*
     Create a reduced color image.
   */
@@ -627,34 +667,7 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info)
       }
       image_view=DestroyCacheView(image_view);
     }
-  if (cube_info->quantize_info->measure_error != MagickFalse)
-    (void) GetImageQuantizeError(image);
-  if ((cube_info->quantize_info->number_colors == 2) &&
-      (cube_info->quantize_info->colorspace == GRAYColorspace))
-    {
-      Quantum
-        intensity;
-
-      register PixelPacket
-        *restrict q;
-
-      register ssize_t
-        i;
-
-      /*
-        Monochrome image.
-      */
-      q=image->colormap;
-      for (i=0; i < (ssize_t) image->colors; i++)
-      {
-        intensity=(Quantum) (GetPixelLuma(image,q) < (QuantumRange/2.0) ? 0 :
-          QuantumRange);
-        SetPixelRed(q,intensity);
-        SetPixelGreen(q,intensity);
-        SetPixelBlue(q,intensity);
-        q++;
-      }
-    }
+  PostAssignImageColors(image,cube_info);
   (void) SyncImage(image);
   if ((cube_info->quantize_info->colorspace != UndefinedColorspace) &&
       (cube_info->quantize_info->colorspace != CMYKColorspace))
@@ -2591,6 +2604,67 @@ static void PruneToCubeDepth(const Image *image,CubeInfo *cube_info,
 %
 */
 
+static MagickBooleanType DirectToPseudoClassImage(Image *image,
+  CubeInfo *cube_info,ExceptionInfo *exception)
+{
+  MagickBooleanType
+    status;
+
+  ssize_t
+    y;
+
+  if (cube_info->colors > cube_info->maximum_colors)
+    return(MagickFalse);
+  if (PreAssignImageColors(image,cube_info) == MagickFalse)
+    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+      image->filename);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static,4) shared(status) \
+     magick_threads(image,image,image->rows,1)
+#endif
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    register IndexPacket
+      *indexes;
+
+    register PixelPacket
+      *restrict q;
+
+    register ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
+    if (q == (PixelPacket *) NULL)
+      continue;
+    indexes=GetAuthenticIndexQueue(image);
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      register ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) image->colors; i++)
+      {
+         if ((GetPixelRed(q) != GetPixelRed(&image->colormap[i])) ||
+             (GetPixelGreen(q) != GetPixelGreen(&image->colormap[i])) ||
+             (GetPixelBlue(q) != GetPixelBlue(&image->colormap[i])) ||
+             ((image->matte != MagickFalse) &&
+              (GetPixelOpacity(q) != GetPixelOpacity(&image->colormap[i]))))
+          continue;
+        SetPixelIndex(indexes+x,i);
+        break;
+      }
+      q++;
+    }
+    if (SyncAuthenticPixels(image,exception) == MagickFalse)
+      status=MagickFalse;
+  }
+  image->storage_class=PseudoClass;
+  PostAssignImageColors(image,cube_info);
+  return(status);
+}
+
 static MagickBooleanType DirectToColormapImage(Image *image,
   ExceptionInfo *exception)
 {
@@ -2728,8 +2802,12 @@ MagickExport MagickBooleanType QuantizeImage(const QuantizeInfo *quantize_info,
       /*
         Reduce the number of colors in the image.
       */
-      ReduceImageColors(image,cube_info);
-      status=AssignImageColors(image,cube_info);
+      status=DirectToPseudoClassImage(image,cube_info,&image->exception);
+      if (status == MagickFalse)
+      {
+        ReduceImageColors(image,cube_info);
+        status=AssignImageColors(image,cube_info);
+      }
     }
   DestroyCubeInfo(cube_info);
   return(status);
