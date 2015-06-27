@@ -4537,7 +4537,9 @@ WandPrivate void CLINoImageOperator(MagickCLI *cli_wand,
 
   if (IfMagickTrue(cli_wand->wand.debug))
     (void) CLILogEvent(cli_wand,CommandEvent,GetMagickModule(),
-         "- NoImage Operator: %s \"%s\" \"%s\"", option,arg1n,arg2n);
+      "- NoImage Operator: %s \"%s\" \"%s\"", option,
+      arg1n != (char *) NULL ? arg1n : "",
+      arg2n != (char *) NULL ? arg2n : "");
 
   arg1 = arg1n;
   arg2 = arg2n;
@@ -5116,7 +5118,7 @@ WandExport void CLIOption(MagickCLI *cli_wand,const char *option,...)
     }
 
     /* Operators that do not need images - read, write, stack, clone */
-    if ( (option_type & NoImageOperatorFlag) != 0)
+    if ((option_type & NoImageOperatorFlag) != 0)
       CLINoImageOperator(cli_wand, option, arg1, arg2);
 
     /* FUTURE: The not a setting part below is a temporary hack due to
