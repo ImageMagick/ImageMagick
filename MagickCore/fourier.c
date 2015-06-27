@@ -196,7 +196,7 @@ MagickExport Image *ComplexImages(const Image *images,const ComplexOperator op,
       return(complex_images);
     }
   AppendImageToList(&complex_images,image);
-  if (SetImageStorageClass(complex_images,image,DirectClass,exception) == MagickFalse)
+  if (SetImageStorageClass(complex_images,DirectClass,exception) == MagickFalse)
     {
       complex_images=DestroyImageList(complex_images);
       return(complex_images);
