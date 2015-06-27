@@ -1115,6 +1115,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
               SetPixelIndex(image,index,q);
               q+=GetPixelChannels(image);
               p++;
+              x++;
             }
           if (x < (ssize_t) image->columns)
             break;
