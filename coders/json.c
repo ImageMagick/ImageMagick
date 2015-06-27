@@ -731,7 +731,8 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
 
         GetPathComponent(image->magick_filename,TailPath,filename);
         escaped_json=EscapeJsonString(filename);
-        (void) FormatLocaleFile(file,"    \"baseName\": \"%s\",\n",escaped_json);
+        (void) FormatLocaleFile(file,"    \"baseName\": \"%s\",\n",
+          escaped_json);
         escaped_json=DestroyString(escaped_json);
       }
   magick_info=GetMagickInfo(image->magick,exception);
@@ -750,8 +751,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
       (GetMagickMimeType(magick_info) != (const char *) NULL))
     {
       escaped_json=EscapeJsonString(GetMagickMimeType(magick_info));
-      (void) FormatLocaleFile(file,"    \"mimeType\": \"%s\",\n",
-        escaped_json);
+      (void) FormatLocaleFile(file,"    \"mimeType\": \"%s\",\n",escaped_json);
       escaped_json=DestroyString(escaped_json);
     }
   escaped_json=EscapeJsonString(
@@ -1468,7 +1468,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
           {
             char
               *attribute,
-              *escaped_attribute;
+              *escaped_json;
 
             const char
               *tag;
@@ -1553,7 +1553,6 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
               length=(size_t) (GetStringInfoDatum(profile)[i++] << 8);
               length|=GetStringInfoDatum(profile)[i++];
               attribute=(char *) NULL;
-              escaped_attribute=(char *) NULL;
               if (~length >= (MaxTextExtent-1))
                 attribute=(char *) AcquireQuantumMemory(length+MaxTextExtent,
                   sizeof(*attribute));
