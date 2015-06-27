@@ -1,3 +1,7 @@
+2015-06-27  6.9.1-7 Eric Dalquist
+  * Fixed and escaped output of the json coder. (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&p=27894).
+
 2015-06-25  6.9.1-7 Cristy  <quetzlzacatenango@image...>
   * Support BPG image format (respects -quality option).
 
@@ -7,7 +11,7 @@
 2015-06-14  6.9.1-6 Cristy  <quetzlzacatenango@image...>
   * Cache cloning on disk optimized with sendfile() (if available).
   * Add an additional check for end-of-file for the RLE coder (reference
-    http://www.imagemagick.org/discourse-server/viewforum.php?f=3).
+    http://www.imagemagick.org/discourse-server/viewforum.php?f=3&t=27870).
   * Respect resource limits in AVS coder.
 
 2015-06-13  6.9.1-6 Glenn Randers-Pehrson <glennrp@image...>
