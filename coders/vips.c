@@ -345,7 +345,7 @@ static MagickBooleanType ReadVIPSPixelsNONE(Image *image,
           if (channels == 4)
             {
               if (image->colorspace == CMYKColorspace)
-                SetPixelIndex(indexes+x,ReadVIPSPixelNONE(image,format,type))
+                SetPixelIndex(indexes+x,ReadVIPSPixelNONE(image,format,type));
               else
                 SetPixelAlpha(q,ReadVIPSPixelNONE(image,format,type));
             }

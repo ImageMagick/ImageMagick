@@ -707,9 +707,9 @@ static MagickStatusType ReadPSDChannelPixels(Image *image,const size_t channels,
         if (image->storage_class == PseudoClass)
           {
             if (packet_size == 1)
-              SetPixelIndex(indexes+x,ScaleQuantumToChar(pixel))
+              SetPixelIndex(indexes+x,ScaleQuantumToChar(pixel));
             else
-              SetPixelIndex(indexes+x,ScaleQuantumToShort(pixel))
+              SetPixelIndex(indexes+x,ScaleQuantumToShort(pixel));
             SetPixelRGBO(q,image->colormap+(ssize_t)
               ConstrainColormapIndex(image,GetPixelIndex(indexes+x)));
             if (image->depth == 1)
@@ -755,7 +755,7 @@ static MagickStatusType ReadPSDChannelPixels(Image *image,const size_t channels,
       case 3:
       {
         if (image->colorspace == CMYKColorspace)
-          SetPixelIndex(indexes+x,pixel)
+          SetPixelIndex(indexes+x,pixel);
         else
           if (image->matte != MagickFalse)
             SetPixelAlpha(q,pixel);

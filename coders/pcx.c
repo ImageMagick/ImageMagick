@@ -616,7 +616,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       for (x=0; x < (ssize_t) image->columns; x++)
       {
         if (image->storage_class == PseudoClass)
-          SetPixelIndex(indexes+x,*r++)
+          SetPixelIndex(indexes+x,*r++);
         else
           {
             SetPixelRed(q,ScaleCharToQuantum(*r++));
