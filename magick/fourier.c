@@ -192,9 +192,9 @@ MagickExport Image *ComplexImages(const Image *images,const ComplexOperator op,
       complex_images=DestroyImageList(complex_images);
       return(complex_images);
     }
-  image->storage_class=DirectClass;
-  image->depth=32UL;
   AppendImageToList(&complex_images,image);
+  complex_images->storage_class=DirectClass;
+  complex_images->depth=32UL;
   /*
     Apply complex mathematics to image pixels.
   */
