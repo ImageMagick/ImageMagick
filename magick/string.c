@@ -954,6 +954,119 @@ MagickExport char *EscapeString(const char *source,const char escape)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   E s c a p e J s o n S t r i n g                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  EscapeJsonString() allocates memory for a json-escaped version of a
+%  source text string, copies the escaped version of the text to that
+%  memory location while adding backslash characters, and returns the
+%  escaped string.
+%
+%  The format of the EscapeJsonString method is:
+%
+%      char *EscapeJsonString(const char *source,const char escape)
+%
+%  A description of each parameter follows:
+%
+%    o allocate_string:  Method EscapeJsonString returns the escaped string.
+%
+%    o source: A character string.
+%
+*/
+MagickExport char *EscapeJsonString(const char *source)
+{
+  char
+    *destination;
+
+  register char
+    *q;
+
+  register const char
+    *p;
+
+  size_t
+    length;
+
+  assert(source != (const char *) NULL);
+  length=strlen(source);
+  // Find all the chars that need escaping and increase the dest length counter
+  for (p=source; *p != '\0'; p++)
+    {
+      switch (*p)
+        {
+          case '"':
+          case '\b':
+          case '\f':
+          case '\n':
+          case '\r':
+          case '\t':
+          case '\\':
+            if (~length < 1)
+              ThrowFatalException(ResourceLimitFatalError,"UnableToEscapeJsonString");
+            length++;
+            break;
+          default:
+            break;
+        }
+    }
+
+  destination=(char *) NULL;
+  if (~length >= (MaxTextExtent-1))
+    destination=(char *) AcquireQuantumMemory(length+MaxTextExtent,
+      sizeof(*destination));
+  if (destination == (char *) NULL)
+    ThrowFatalException(ResourceLimitFatalError,"UnableToEscapeJsonString");
+  *destination='\0';
+  q=destination;
+  for (p=source; *p != '\0'; p++)
+    {
+      switch (*p)
+        {
+          case '"':
+            *q++='\\';
+            *q++=(*p);
+            break;
+          case '\b':
+            *q++='\\';
+            *q++='b';
+            break;
+          case '\f':
+            *q++='\\';
+            *q++='f';
+            break;
+          case '\n':
+            *q++='\\';
+            *q++='n';
+            break;
+          case '\r':
+            *q++='\\';
+            *q++='r';
+            break;
+          case '\t':
+            *q++='\\';
+            *q++='t';
+            break;
+          case '\\':
+            *q++='\\';
+            *q++='\\';
+            break;
+          default:
+            *q++=(*p);
+            break;
+        }
+  }
+  *q='\0';
+  return(destination);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   F i l e T o S t r i n g                                                   %
 %                                                                             %
 %                                                                             %
