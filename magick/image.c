@@ -1103,7 +1103,7 @@ MagickExport MagickBooleanType CopyImagePixels(Image *image,
       geometry->width,1,exception);
     q=GetCacheViewAuthenticPixels(image_view,offset->x,y+offset->y,
       geometry->width,1,exception);
-    if (q == (PixelPacket *) NULL)
+    if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       {
         status=MagickFalse;
         continue;
