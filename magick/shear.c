@@ -1661,6 +1661,7 @@ MagickExport Image *ShearImage(const Image *image,const double x_shear,
     }
   status=CropToFitImage(&shear_image,shear.x,shear.y,(MagickRealType)
     image->columns,(MagickRealType) image->rows,MagickFalse,exception);
+  shear_image->matte=image->matte;
   shear_image->compose=image->compose;
   shear_image->page.width=0;
   shear_image->page.height=0;
@@ -1817,6 +1818,7 @@ MagickExport Image *ShearRotateImage(const Image *image,const double degrees,
     }
   status=CropToFitImage(&rotate_image,shear.x,shear.y,(MagickRealType) width,
     (MagickRealType) height,MagickTrue,exception);
+  rotate_image->matte=image->matte;
   rotate_image->compose=image->compose;
   rotate_image->page.width=0;
   rotate_image->page.height=0;
