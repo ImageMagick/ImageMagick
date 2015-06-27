@@ -1526,8 +1526,7 @@ MagickExport void GetColorTuple(const PixelInfo *pixel,
       ConcatentateHexColorComponent(pixel,BluePixelChannel,tuple);
       if (pixel->colorspace == CMYKColorspace)
         ConcatentateHexColorComponent(pixel,BlackPixelChannel,tuple);
-      if ((pixel->alpha_trait != UndefinedPixelTrait) &&
-          (pixel->alpha != OpaqueAlpha))
+      if (pixel->alpha_trait != UndefinedPixelTrait)
         ConcatentateHexColorComponent(pixel,AlphaPixelChannel,tuple);
       return;
     }
