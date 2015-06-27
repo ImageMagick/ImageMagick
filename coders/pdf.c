@@ -2231,7 +2231,7 @@ RestoreMSCWarning
                 break;
               for (x=0; x < (ssize_t) tile_image->columns; x++)
               {
-                Ascii85Encode(image,ScaleQuantumToChar(ClampToQuantum(
+                Ascii85Encode(tile_image,ScaleQuantumToChar(ClampToQuantum(
                   GetPixelLuma(tile_image,p))));
                 p+=GetPixelChannels(tile_image);
               }
