@@ -2530,6 +2530,8 @@ MagickExport ssize_t ParseCommandOption(const CommandOption option,
   ssize_t
     option_types;
 
+  if (options == (const char *) NULL)
+    return(-1);
   option_info=GetOptionInfo(option);
   if (option_info == (const OptionInfo *) NULL)
     return(-1);
