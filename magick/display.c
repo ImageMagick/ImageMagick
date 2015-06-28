@@ -2900,6 +2900,10 @@ static MagickBooleanType XChopImage(Display *display,
   (void) XSelectInput(display,windows->image.id,
     windows->image.attributes.event_mask | PointerMotionMask);
   state=DefaultState;
+  segment_info.x1=0;
+  segment_info.x2=0;
+  segment_info.y1=0;
+  segment_info.y2=0;
   do
   {
     if (windows->info.mapped != MagickFalse)
@@ -3067,10 +3071,6 @@ static MagickBooleanType XChopImage(Display *display,
   chop_info.height=0;
   chop_info.x=0;
   chop_info.y=0;
-  segment_info.x1=0;
-  segment_info.x2=0;
-  segment_info.y1=0;
-  segment_info.y2=0;
   distance=0;
   (void) XSetFunction(display,windows->image.highlight_context,GXinvert);
   state=DefaultState;
