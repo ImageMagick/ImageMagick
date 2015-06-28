@@ -3634,7 +3634,6 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
             }
           if ((channel & OpacityChannel) != 0)
             {
-              gamma=0.0;
               j=0;
               for (v=0; v < (ssize_t) width; v++)
               {
@@ -3642,15 +3641,11 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
                 {
                   contrast=GetPixelIntensity(luminance_image,l+u+j)-intensity;
                   if (fabs(contrast) < threshold)
-                    {
-                      pixel.opacity+=(*k)*GetPixelOpacity(p+u+j);
-                      gamma+=(*k);
-                    }
+                    pixel.opacity+=(*k)*GetPixelOpacity(p+u+j);
                   k++;
                 }
                 j+=(ssize_t) (image->columns+width);
               }
-              gamma=PerceptibleReciprocal(gamma);
               SetPixelOpacity(q,ClampToQuantum(pixel.opacity));
             }
           if (((channel & IndexChannel) != 0) &&
