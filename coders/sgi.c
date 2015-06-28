@@ -288,7 +288,6 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
     quantum;
 
   ssize_t
-    count,
     y,
     z;
 
@@ -351,8 +350,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
     iris_info.pixel_format=ReadBlobMSBLong(image);
     if (iris_info.pixel_format != 0)
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-    count=ReadBlob(image,sizeof(iris_info.filler),iris_info.filler);
-    (void) count;
+    (void) ReadBlob(image,sizeof(iris_info.filler),iris_info.filler);
     image->columns=iris_info.columns;
     image->rows=iris_info.rows;
     image->depth=(size_t) MagickMin(iris_info.depth,MAGICKCORE_QUANTUM_DEPTH);
@@ -403,7 +401,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
           p=pixels+bytes_per_pixel*z;
           for (y=0; y < (ssize_t) iris_info.rows; y++)
           {
-            count=ReadBlob(image,bytes_per_pixel*iris_info.columns,scanline);
+            (void) ReadBlob(image,bytes_per_pixel*iris_info.columns,scanline);
             if (EOFBlob(image) != MagickFalse)
               break;
             if (bytes_per_pixel == 2)
@@ -496,7 +494,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     offset=offsets[y+z*iris_info.rows];
                     offset=(ssize_t) SeekBlob(image,(ssize_t) offset,SEEK_SET);
                   }
-                count=ReadBlob(image,(size_t) runlength[y+z*iris_info.rows],
+                (void) ReadBlob(image,(size_t) runlength[y+z*iris_info.rows],
                   packets);
                 if (EOFBlob(image) != MagickFalse)
                   break;
@@ -526,7 +524,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     offset=offsets[y+z*iris_info.rows];
                     offset=(ssize_t) SeekBlob(image,(ssize_t) offset,SEEK_SET);
                   }
-                count=ReadBlob(image,(size_t) runlength[y+z*iris_info.rows],
+                (void) ReadBlob(image,(size_t) runlength[y+z*iris_info.rows],
                   packets);
                 if (EOFBlob(image) != MagickFalse)
                   break;

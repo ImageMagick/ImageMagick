@@ -621,7 +621,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       {
         geometry_info.rho=next->x_resolution;
         geometry_info.sigma=1.0;
-        flags=ParseGeometry(value,&geometry_info);
+        (void) ParseGeometry(value,&geometry_info);
         if (geometry_info.sigma != 0)
           next->x_resolution=geometry_info.rho/geometry_info.sigma;
         (void) DeleteImageProperty(next,"exif:XResolution");
@@ -631,7 +631,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       {
         geometry_info.rho=next->y_resolution;
         geometry_info.sigma=1.0;
-        flags=ParseGeometry(value,&geometry_info);
+        (void) ParseGeometry(value,&geometry_info);
         if (geometry_info.sigma != 0)
           next->y_resolution=geometry_info.rho/geometry_info.sigma;
         (void) DeleteImageProperty(next,"exif:YResolution");

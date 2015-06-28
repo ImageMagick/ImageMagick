@@ -1328,7 +1328,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type)
       if (image->colorspace != CMYKColorspace)
         {
           if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
-            status=TransformImageColorspace(image,sRGBColorspace);
+            (void) TransformImageColorspace(image,sRGBColorspace);
           status=TransformImageColorspace(image,CMYKColorspace);
         }
       if (image->storage_class != DirectClass)
@@ -1341,7 +1341,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type)
       if (image->colorspace != CMYKColorspace)
         {
           if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
-            status=TransformImageColorspace(image,sRGBColorspace);
+            (void) TransformImageColorspace(image,sRGBColorspace);
           status=TransformImageColorspace(image,CMYKColorspace);
         }
       if (image->storage_class != DirectClass)

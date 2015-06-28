@@ -7234,7 +7234,7 @@ WandExport MagickBooleanType MogrifyImageInfo(ImageInfo *image_info,
             (void) ResetMagickMemory(&geometry,0,sizeof(geometry));
             image_option=GetImageOption(image_info,"page");
             if (image_option != (const char *) NULL)
-              flags=ParseAbsoluteGeometry(image_option,&geometry);
+              (void) ParseAbsoluteGeometry(image_option,&geometry);
             canonical_page=GetPageGeometry(argv[i+1]);
             flags=ParseAbsoluteGeometry(canonical_page,&geometry);
             canonical_page=DestroyString(canonical_page);

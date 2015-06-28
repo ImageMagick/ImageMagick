@@ -1587,7 +1587,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
       "%%%%BeginData:%13ld %s Bytes\n",(long) length,
       compression == NoCompression ? "ASCII" : "BINARY");
     (void) WriteBlobString(image,buffer);
-    offset=SeekBlob(image,stop,SEEK_SET);
+    (void) SeekBlob(image,stop,SEEK_SET);
     (void) WriteBlobString(image,"%%EndData\n");
     /*
       End private dictionary if this an EPS.

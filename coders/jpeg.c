@@ -2373,7 +2373,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
           {
             (void) AcquireUniqueFilename(jpeg_image->filename);
             jpeg_image->quality=minimum+(maximum-minimum+1)/2;
-            status=WriteJPEGImage(jpeg_info,jpeg_image);
+            (void) WriteJPEGImage(jpeg_info,jpeg_image);
             if (GetBlobSize(jpeg_image) <= extent)
               minimum=jpeg_image->quality+1;
             else

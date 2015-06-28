@@ -301,7 +301,7 @@ static Image *ReadJNXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       tile_image=BlobToImage(read_info,blob,tile_length+2,exception);
       read_info=DestroyImageInfo(read_info);
       blob=(unsigned char *) RelinquishMagickMemory(blob);
-      offset=SeekBlob(image,restore_offset,SEEK_SET);
+      (void) SeekBlob(image,restore_offset,SEEK_SET);
       if (tile_image == (Image *) NULL)
         continue;
       (void) CopyMagickString(tile_image->magick,image->magick,MaxTextExtent);

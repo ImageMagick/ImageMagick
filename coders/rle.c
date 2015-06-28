@@ -294,7 +294,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
             comment=(char *) AcquireQuantumMemory(length,sizeof(*comment));
             if (comment == (char *) NULL)
               ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-            count=ReadBlob(image,length-1,(unsigned char *) comment);
+            (void) ReadBlob(image,length-1,(unsigned char *) comment);
             comment[length-1]='\0';
             (void) SetImageProperty(image,"comment",comment);
             comment=DestroyString(comment);

@@ -509,7 +509,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       return((Image *) NULL);
     }
   for (n=0; n < (ssize_t) (image->columns*image->rows); n++)
-    status=SetMatrixElement(equivalences,n,0,&n);
+    (void) SetMatrixElement(equivalences,n,0,&n);
   /*
     Find connected components.
   */

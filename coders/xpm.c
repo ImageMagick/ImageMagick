@@ -420,7 +420,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       exception);
     if (status == MagickFalse)
       break;
-    status=QueryMagickColorCompliance(target,XPMCompliance,&pixel,exception);
+    (void) QueryMagickColorCompliance(target,XPMCompliance,&pixel,exception);
     if (image->depth < pixel.depth)
       image->depth=pixel.depth;
   }

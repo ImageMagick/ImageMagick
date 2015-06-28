@@ -2029,22 +2029,17 @@ MagickExport Image *MergeImageLayers(Image *image,
         height=page.height;
       for (next=image; next != (Image *) NULL; next=GetNextImageInList(next))
       {
-        if (method == MosaicLayer)
-          {
-            page.x=next->page.x;
-            page.y=next->page.y;
-            if ((ssize_t) width < (next->page.x+(ssize_t) next->columns))
-              width=(size_t) next->page.x+next->columns;
-            if ((ssize_t) height < (next->page.y+(ssize_t) next->rows))
-              height=(size_t) next->page.y+next->rows;
-          }
+        if ((ssize_t) width < (next->page.x+(ssize_t) next->columns))
+          width=(size_t) next->page.x+next->columns;
+        if ((ssize_t) height < (next->page.y+(ssize_t) next->rows))
+          height=(size_t) next->page.y+next->rows;
       }
       page.width=width;
       page.height=height;
       page.x=0;
       page.y=0;
+      break;
     }
-    break;
   }
   /*
     Set virtual canvas size if not defined.

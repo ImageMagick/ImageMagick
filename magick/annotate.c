@@ -1160,7 +1160,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   encoding_type=ft_encoding_unicode;
   ft_status=FT_Select_Charmap(face,encoding_type);
   if ((ft_status != 0) && (face->num_charmaps != 0))
-    ft_status=FT_Set_Charmap(face,face->charmaps[0]);
+    (void) FT_Set_Charmap(face,face->charmaps[0]);
   if (encoding != (const char *) NULL)
     {
       if (LocaleCompare(encoding,"AdobeCustom") == 0)

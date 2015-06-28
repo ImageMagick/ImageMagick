@@ -540,7 +540,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *(--p)='\0';
     p=command;
     if (LocaleNCompare(PDFRotate,command,strlen(PDFRotate)) == 0)
-      count=(ssize_t) sscanf(command,"Rotate %lf",&angle);
+      (void) sscanf(command,"Rotate %lf",&angle);
     /*
       Is this a CMYK document?
     */

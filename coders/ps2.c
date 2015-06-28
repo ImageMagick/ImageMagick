@@ -1108,7 +1108,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
       "%%%%BeginData:%13ld %s Bytes\n",(long) length,
       compression == NoCompression ? "ASCII" : "Binary");
     (void) WriteBlobString(image,buffer);
-    offset=SeekBlob(image,stop,SEEK_SET);
+    (void) SeekBlob(image,stop,SEEK_SET);
     (void) WriteBlobString(image,"%%EndData\n");
     if (LocaleCompare(image_info->magick,"PS2") != 0)
       (void) WriteBlobString(image,"end\n");

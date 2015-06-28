@@ -829,7 +829,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (profile != (StringInfo *) NULL)
             {
               p=GetStringInfoDatum(profile);
-              count=ReadBlob(image,GetStringInfoLength(profile),p);
+              (void) ReadBlob(image,GetStringInfoLength(profile),p);
             }
           name=(const char *) GetNextValueInLinkedList(profiles);
         }
