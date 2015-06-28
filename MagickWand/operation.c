@@ -4384,27 +4384,29 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
           new_images=SimilarityImage(base_image,compare_image,metric,0.0,
             &offset,&similarity,_exception);
 
-          if ( new_images != (Image *) NULL ) {
-            char
-              result[MagickPathExtent];
+          if (new_images != (Image *) NULL)
+            {
+              char
+                result[MagickPathExtent];
 
-            (void) FormatLocaleString(result,MagickPathExtent,"%lf",similarity);
-            (void) SetImageProperty(new_images,"subimage:similarity",result,
-                 _exception);
-            (void) FormatLocaleString(result,MagickPathExtent,"%+ld",
-                (long) offset.x);
-            (void) SetImageProperty(new_images,"subimage:x",result,
-                 _exception);
-            (void) FormatLocaleString(result,MagickPathExtent,"%+ld",
-                (long) offset.y);
-            (void) SetImageProperty(new_images,"subimage:y",result,
-                 _exception);
-            (void) FormatLocaleString(result,MagickPathExtent,"%lux%lu%+ld%+ld",
-                (unsigned long) offset.width,(unsigned long) offset.height,
-                (long) offset.x,(long) offset.y);
-            (void) SetImageProperty(new_images,"subimage:offset",result,
-                 _exception);
-          }
+              (void) FormatLocaleString(result,MagickPathExtent,"%lf",
+                similarity);
+              (void) SetImageProperty(new_images,"subimage:similarity",result,
+                _exception);
+              (void) FormatLocaleString(result,MagickPathExtent,"%+ld",(long)
+                offset.x);
+              (void) SetImageProperty(new_images,"subimage:x",result,
+                _exception);
+              (void) FormatLocaleString(result,MagickPathExtent,"%+ld",(long)
+                offset.y);
+              (void) SetImageProperty(new_images,"subimage:y",result,
+                _exception);
+              (void) FormatLocaleString(result,MagickPathExtent,
+                "%lux%lu%+ld%+ld",(unsigned long) offset.width,(unsigned long)
+                offset.height,(long) offset.x,(long) offset.y);
+              (void) SetImageProperty(new_images,"subimage:offset",result,
+                _exception);
+            }
           break;
         }
       if (LocaleCompare("swap",option+1) == 0)
