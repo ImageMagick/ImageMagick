@@ -2053,6 +2053,73 @@ WandExport MagickBooleanType MagickCompositeImageChannel(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k C o m p o s i t e I m a g e G r a v i t y                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickCompositeImageGravity() composite one image onto another using the
+%  specified gravity.
+%
+%  The format of the MagickCompositeImageGravity method is:
+%
+%      MagickBooleanType MagickCompositeImageGravity(MagickWand *wand,
+%        const MagickWand *source_wand,const CompositeOperator compose,
+%        const GravityType gravity)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand holding the destination images
+%
+%    o source_image: the magick wand holding source image.
+%
+%    o compose: This operator affects how the composite is applied to the
+%      image.  The default is Over.  These are some of the compose methods
+%      availble.
+%
+%        OverCompositeOp       InCompositeOp         OutCompositeOp
+%        AtopCompositeOp       XorCompositeOp        PlusCompositeOp
+%        MinusCompositeOp      AddCompositeOp        SubtractCompositeOp
+%        DifferenceCompositeOp BumpmapCompositeOp    CopyCompositeOp
+%        DisplaceCompositeOp
+%
+%    o gravity: positioning gravity (NorthWestGravity, NorthGravity,
+%               NorthEastGravity, WestGravity, CenterGravity,
+%               EastGravity, SouthWestGravity, SouthGravity,
+%               SouthEastGravity)
+%
+*/
+WandExport MagickBooleanType MagickCompositeImageGravity(MagickWand *wand,
+  const MagickWand *source_wand,const CompositeOperator compose,
+  const GravityType gravity)
+{
+  MagickBooleanType
+    status;
+
+  RectangleInfo
+    geometry;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if ((wand->images == (Image *) NULL) ||
+      (source_wand->images == (Image *) NULL))
+    ThrowWandException(WandError,"ContainsNoImages",wand->name);
+  SetGeometry(source_wand->images,&geometry);
+  GravityAdjustGeometry(wand->images->columns,wand->images->rows,gravity,
+    &geometry);
+  status=CompositeImage(wand->images,compose,source_wand->images,geometry.x,
+    geometry.y);
+  return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k C o m p o s i t e L a y e r s                                 %
 %                                                                             %
 %                                                                             %
