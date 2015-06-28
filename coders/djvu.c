@@ -766,14 +766,14 @@ static Image *ReadDJVUImage(const ImageInfo *image_info,
    * Open image file.
    */
   assert(image_info != (const ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
+  assert(image_info->signature == MagickCoreSignature);
 
 
   if (image_info->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s", image_info->filename);
 
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
 
 
   logging = LogMagickEvent(CoderEvent,GetMagickModule(),"enter ReadDJVUImage()");

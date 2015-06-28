@@ -99,7 +99,7 @@ MagickExport TokenInfo *AcquireTokenInfo(void)
   token_info=(TokenInfo *) AcquireMagickMemory(sizeof(*token_info));
   if (token_info == (TokenInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  token_info->signature=MagickSignature;
+  token_info->signature=MagickCoreSignature;
   return(token_info);
 }
 
@@ -130,8 +130,8 @@ MagickExport TokenInfo *DestroyTokenInfo(TokenInfo *token_info)
 {
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(token_info != (TokenInfo *) NULL);
-  assert(token_info->signature == MagickSignature);
-  token_info->signature=(~MagickSignature);
+  assert(token_info->signature == MagickCoreSignature);
+  token_info->signature=(~MagickCoreSignature);
   token_info=(TokenInfo *) RelinquishMagickMemory(token_info);
   return(token_info);
 }

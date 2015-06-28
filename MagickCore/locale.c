@@ -882,7 +882,7 @@ MagickExport const char *GetLocaleValue(const LocaleInfo *locale_info)
 {
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(locale_info != (LocaleInfo *) NULL);
-  assert(locale_info->signature == MagickSignature);
+  assert(locale_info->signature == MagickCoreSignature);
   return(locale_info->message);
 }
 
@@ -1329,7 +1329,7 @@ static MagickBooleanType LoadLocaleCache(SplayTreeInfo *locale_cache,
         locale_info->path=ConstantString(filename);
         locale_info->tag=ConstantString(tag);
         locale_info->message=ConstantString(message);
-        locale_info->signature=MagickSignature;
+        locale_info->signature=MagickCoreSignature;
         status=AddValueToSplayTree(locale_cache,locale_info->tag,locale_info);
         if (status == MagickFalse)
           (void) ThrowMagickException(exception,GetMagickModule(),

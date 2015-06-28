@@ -109,7 +109,7 @@ WandExport MagickCLI *AcquireMagickCLI(ImageInfo *image_info,
   else
     cli_wand->wand.exception=exception;
   cli_wand->wand.debug=IsEventLogging();
-  cli_wand->wand.signature=WandSignature;
+  cli_wand->wand.signature=MagickWandSignature;
 
   /* Initialize CLI Part of MagickCLI */
   cli_wand->draw_info=CloneDrawInfo(cli_wand->wand.image_info,(DrawInfo *) NULL);
@@ -128,7 +128,7 @@ WandExport MagickCLI *AcquireMagickCLI(ImageInfo *image_info,
   cli_wand->line=0;                   /* line from script OR CLI argument */
   cli_wand->column=0;                 /* column from script */
 
-  cli_wand->signature=WandSignature;
+  cli_wand->signature=MagickWandSignature;
   if (IfMagickTrue(cli_wand->wand.debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",cli_wand->wand.name);
   return(cli_wand);
@@ -160,8 +160,8 @@ WandExport MagickCLI *DestroyMagickCLI(MagickCLI *cli_wand)
     *node;
 
   assert(cli_wand != (MagickCLI *) NULL);
-  assert(cli_wand->signature == WandSignature);
-  assert(cli_wand->wand.signature == WandSignature);
+  assert(cli_wand->signature == MagickWandSignature);
+  assert(cli_wand->wand.signature == MagickWandSignature);
   if (IfMagickTrue(cli_wand->wand.debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",cli_wand->wand.name);
 
@@ -184,7 +184,7 @@ WandExport MagickCLI *DestroyMagickCLI(MagickCLI *cli_wand)
       (void) DestroyImageInfo((ImageInfo *)node->data);
       (void) RelinquishMagickMemory(node);
     }
-  cli_wand->signature=(~WandSignature);
+  cli_wand->signature=(~MagickWandSignature);
 
   /* Destroy Wand part MagickCLI */
   cli_wand->wand.images=DestroyImageList(cli_wand->wand.images);
@@ -193,7 +193,7 @@ WandExport MagickCLI *DestroyMagickCLI(MagickCLI *cli_wand)
   if (cli_wand->wand.exception != (ExceptionInfo *) NULL )
     cli_wand->wand.exception=DestroyExceptionInfo(cli_wand->wand.exception);
   RelinquishWandId(cli_wand->wand.id);
-  cli_wand->wand.signature=(~WandSignature);
+  cli_wand->wand.signature=(~MagickWandSignature);
 
   return((MagickCLI *) NULL);
 }
@@ -237,8 +237,8 @@ WandExport MagickBooleanType CLICatchException(MagickCLI *cli_wand,
   MagickBooleanType
     status;
   assert(cli_wand != (MagickCLI *) NULL);
-  assert(cli_wand->signature == WandSignature);
-  assert(cli_wand->wand.signature == WandSignature);
+  assert(cli_wand->signature == MagickWandSignature);
+  assert(cli_wand->wand.signature == MagickWandSignature);
   if (IfMagickTrue(cli_wand->wand.debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",cli_wand->wand.name);
 

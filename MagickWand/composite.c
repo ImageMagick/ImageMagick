@@ -115,9 +115,9 @@ static MagickBooleanType CompositeImageList(ImageInfo *image_info,Image **image,
     status;
 
   assert(image_info != (ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
+  assert(image_info->signature == MagickCoreSignature);
   assert(image != (Image **) NULL);
-  assert((*image)->signature == MagickSignature);
+  assert((*image)->signature == MagickCoreSignature);
   if ((*image)->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",(*image)->filename);
   assert(exception != (ExceptionInfo *) NULL);
@@ -129,7 +129,7 @@ static MagickBooleanType CompositeImageList(ImageInfo *image_info,Image **image,
 
       channel_mask=SetImageChannelMask(composite_image,
         composite_options->channel);
-      assert(composite_image->signature == MagickSignature);
+      assert(composite_image->signature == MagickCoreSignature);
       switch (composite_options->compose)
       {
         case BlendCompositeOp:
@@ -451,7 +451,7 @@ WandExport MagickBooleanType CompositeImageCommand(ImageInfo *image_info,
     Set default.
   */
   assert(image_info != (ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
+  assert(image_info->signature == MagickCoreSignature);
   if (image_info->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(exception != (ExceptionInfo *) NULL);

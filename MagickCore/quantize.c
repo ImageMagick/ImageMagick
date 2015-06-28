@@ -1200,7 +1200,7 @@ MagickExport MagickBooleanType CompressImageColormap(Image *image,
     quantize_info;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (IsPaletteImage(image,exception) == MagickFalse)
@@ -1395,8 +1395,8 @@ MagickExport QuantizeInfo *DestroyQuantizeInfo(QuantizeInfo *quantize_info)
 {
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(quantize_info != (QuantizeInfo *) NULL);
-  assert(quantize_info->signature == MagickSignature);
-  quantize_info->signature=(~MagickSignature);
+  assert(quantize_info->signature == MagickCoreSignature);
+  quantize_info->signature=(~MagickCoreSignature);
   quantize_info=(QuantizeInfo *) RelinquishMagickMemory(quantize_info);
   return(quantize_info);
 }
@@ -2207,7 +2207,7 @@ MagickExport MagickBooleanType GetImageQuantizeError(Image *image,
     y;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   image->total_colors=GetNumberColors(image,(FILE *) NULL,exception);
@@ -2300,7 +2300,7 @@ MagickExport void GetQuantizeInfo(QuantizeInfo *quantize_info)
   quantize_info->dither_method=RiemersmaDitherMethod;
   quantize_info->colorspace=UndefinedColorspace;
   quantize_info->measure_error=MagickFalse;
-  quantize_info->signature=MagickSignature;
+  quantize_info->signature=MagickCoreSignature;
 }
 
 /*
@@ -2372,11 +2372,11 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
     y;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   if (image->storage_class == PseudoClass)
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
     #pragma omp parallel for schedule(static,4) shared(progress,status) \
@@ -2784,13 +2784,13 @@ MagickExport MagickBooleanType QuantizeImage(const QuantizeInfo *quantize_info,
     maximum_colors;
 
   assert(quantize_info != (const QuantizeInfo *) NULL);
-  assert(quantize_info->signature == MagickSignature);
+  assert(quantize_info->signature == MagickCoreSignature);
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   maximum_colors=quantize_info->number_colors;
   if (maximum_colors == 0)
     maximum_colors=MaxColormapSize;
@@ -2910,13 +2910,13 @@ MagickExport MagickBooleanType QuantizeImages(const QuantizeInfo *quantize_info,
     number_images;
 
   assert(quantize_info != (const QuantizeInfo *) NULL);
-  assert(quantize_info->signature == MagickSignature);
+  assert(quantize_info->signature == MagickCoreSignature);
   assert(images != (Image *) NULL);
-  assert(images->signature == MagickSignature);
+  assert(images->signature == MagickCoreSignature);
   if (images->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   if (GetNextImageInList(images) == (Image *) NULL)
     {
       /*
@@ -3276,13 +3276,13 @@ MagickExport MagickBooleanType RemapImage(const QuantizeInfo *quantize_info,
     Initialize color cube.
   */
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(remap_image != (Image *) NULL);
-  assert(remap_image->signature == MagickSignature);
+  assert(remap_image->signature == MagickCoreSignature);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   cube_info=GetCubeInfo(quantize_info,MaxTreeDepth,
     quantize_info->number_colors);
   if (cube_info == (CubeInfo *) NULL)
@@ -3344,11 +3344,11 @@ MagickExport MagickBooleanType RemapImages(const QuantizeInfo *quantize_info,
     status;
 
   assert(images != (Image *) NULL);
-  assert(images->signature == MagickSignature);
+  assert(images->signature == MagickCoreSignature);
   if (images->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   image=images;
   if (remap_image == (Image *) NULL)
     {
@@ -3456,7 +3456,7 @@ static MagickBooleanType SetGrayscaleImage(Image *image,
     y;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->type != GrayscaleType)
     (void) TransformImageColorspace(image,GRAYColorspace,exception);
   colormap_index=(ssize_t *) AcquireQuantumMemory(MaxMap+1,

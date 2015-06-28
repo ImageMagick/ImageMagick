@@ -190,7 +190,7 @@ MagickExport RandomInfo *AcquireRandomInfo(void)
   random_info->protocol_minor=RandomProtocolMinorVersion;
   random_info->semaphore=AcquireSemaphoreInfo();
   random_info->timestamp=(ssize_t) time(0);
-  random_info->signature=MagickSignature;
+  random_info->signature=MagickCoreSignature;
   /*
     Seed random nonce.
   */
@@ -276,7 +276,7 @@ MagickExport RandomInfo *DestroyRandomInfo(RandomInfo *random_info)
 {
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(random_info != (RandomInfo *) NULL);
-  assert(random_info->signature == MagickSignature);
+  assert(random_info->signature == MagickCoreSignature);
   LockSemaphoreInfo(random_info->semaphore);
   if (random_info->reservoir != (StringInfo *) NULL)
     random_info->reservoir=DestroyStringInfo(random_info->reservoir);
@@ -286,7 +286,7 @@ MagickExport RandomInfo *DestroyRandomInfo(RandomInfo *random_info)
     random_info->signature_info=DestroySignatureInfo(
       random_info->signature_info);
   (void) ResetMagickMemory(random_info->seed,0,sizeof(*random_info->seed));
-  random_info->signature=(~MagickSignature);
+  random_info->signature=(~MagickCoreSignature);
   UnlockSemaphoreInfo(random_info->semaphore);
   RelinquishSemaphoreInfo(&random_info->semaphore);
   random_info=(RandomInfo *) RelinquishMagickMemory(random_info);

@@ -199,11 +199,11 @@ static Image *SparseColorOption(const Image *image,
     number_colors;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (IfMagickTrue(image->debug))
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   /*
     Limit channels according to image
     add up number of values needed per color.
@@ -423,8 +423,8 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
 #define ArgOption(def)    (IfSetOption?arg1:(const char *)(def))
 
   assert(cli_wand != (MagickCLI *) NULL);
-  assert(cli_wand->signature == WandSignature);
-  assert(cli_wand->wand.signature == WandSignature);
+  assert(cli_wand->signature == MagickWandSignature);
+  assert(cli_wand->wand.signature == MagickWandSignature);
 
   if (IfMagickTrue(cli_wand->wand.debug))
     (void) CLILogEvent(cli_wand,CommandEvent,GetMagickModule(),
@@ -1698,8 +1698,8 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
 #define IsPlusOp          IsMagickFalse(IfNormalOp)
 
   assert(cli_wand != (MagickCLI *) NULL);
-  assert(cli_wand->signature == WandSignature);
-  assert(cli_wand->wand.signature == WandSignature);
+  assert(cli_wand->signature == MagickWandSignature);
+  assert(cli_wand->wand.signature == MagickWandSignature);
   assert(_image != (Image *) NULL);             /* an image must be present */
   if (IfMagickTrue(cli_wand->wand.debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",cli_wand->wand.name);
@@ -3556,8 +3556,8 @@ WandPrivate MagickBooleanType CLISimpleOperatorImages(MagickCLI *cli_wand,
 #endif
 
   assert(cli_wand != (MagickCLI *) NULL);
-  assert(cli_wand->signature == WandSignature);
-  assert(cli_wand->wand.signature == WandSignature);
+  assert(cli_wand->signature == MagickWandSignature);
+  assert(cli_wand->wand.signature == MagickWandSignature);
   assert(cli_wand->wand.images != (Image *) NULL); /* images must be present */
 
   if (IfMagickTrue(cli_wand->wand.debug))
@@ -3646,8 +3646,8 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
 #define IsNormalOp       IsMagickTrue(IfNormalOp)
 
   assert(cli_wand != (MagickCLI *) NULL);
-  assert(cli_wand->signature == WandSignature);
-  assert(cli_wand->wand.signature == WandSignature);
+  assert(cli_wand->signature == MagickWandSignature);
+  assert(cli_wand->wand.signature == MagickWandSignature);
   assert(_images != (Image *) NULL);             /* _images must be present */
 
   if (IfMagickTrue(cli_wand->wand.debug))
@@ -4532,8 +4532,8 @@ WandPrivate void CLINoImageOperator(MagickCLI *cli_wand,
 #define IfPlusOp        (*option!='-')
 
   assert(cli_wand != (MagickCLI *) NULL);
-  assert(cli_wand->signature == WandSignature);
-  assert(cli_wand->wand.signature == WandSignature);
+  assert(cli_wand->signature == MagickWandSignature);
+  assert(cli_wand->wand.signature == MagickWandSignature);
 
   if (IfMagickTrue(cli_wand->wand.debug))
     (void) CLILogEvent(cli_wand,CommandEvent,GetMagickModule(),
@@ -5049,8 +5049,8 @@ WandExport void CLIOption(MagickCLI *cli_wand,const char *option,...)
     option_type;
 
   assert(cli_wand != (MagickCLI *) NULL);
-  assert(cli_wand->signature == WandSignature);
-  assert(cli_wand->wand.signature == WandSignature);
+  assert(cli_wand->signature == MagickWandSignature);
+  assert(cli_wand->wand.signature == MagickWandSignature);
 
   do { /* Break Code Block for error handling */
 

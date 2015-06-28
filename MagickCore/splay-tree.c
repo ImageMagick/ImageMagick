@@ -352,7 +352,7 @@ MagickExport SplayTreeInfo *CloneSplayTree(SplayTreeInfo *splay_tree,
     *clone_tree;
 
   assert(splay_tree != (SplayTreeInfo *) NULL);
-  assert(splay_tree->signature == MagickSignature);
+  assert(splay_tree->signature == MagickCoreSignature);
   if (splay_tree->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   clone_tree=NewSplayTree(splay_tree->compare,splay_tree->relinquish_key,
@@ -489,7 +489,7 @@ MagickExport MagickBooleanType DeleteNodeByValueFromSplayTree(
     *node;
 
   assert(splay_tree != (SplayTreeInfo *) NULL);
-  assert(splay_tree->signature == MagickSignature);
+  assert(splay_tree->signature == MagickCoreSignature);
   if (splay_tree->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   LockSemaphoreInfo(splay_tree->semaphore);
@@ -609,7 +609,7 @@ MagickExport MagickBooleanType DeleteNodeFromSplayTree(
     *right;
 
   assert(splay_tree != (SplayTreeInfo *) NULL);
-  assert(splay_tree->signature == MagickSignature);
+  assert(splay_tree->signature == MagickCoreSignature);
   if (splay_tree->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if (splay_tree->root == (NodeInfo *) NULL)
@@ -733,7 +733,7 @@ MagickExport SplayTreeInfo *DestroySplayTree(SplayTreeInfo *splay_tree)
         }
       }
     }
-  splay_tree->signature=(~MagickSignature);
+  splay_tree->signature=(~MagickCoreSignature);
   UnlockSemaphoreInfo(splay_tree->semaphore);
   RelinquishSemaphoreInfo(&splay_tree->semaphore);
   splay_tree=(SplayTreeInfo *) RelinquishMagickMemory(splay_tree);
@@ -773,7 +773,7 @@ MagickExport const void *GetNextKeyInSplayTree(SplayTreeInfo *splay_tree)
     *key;
 
   assert(splay_tree != (SplayTreeInfo *) NULL);
-  assert(splay_tree->signature == MagickSignature);
+  assert(splay_tree->signature == MagickCoreSignature);
   if (splay_tree->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if ((splay_tree->root == (NodeInfo *) NULL) ||
@@ -827,7 +827,7 @@ MagickExport const void *GetNextValueInSplayTree(SplayTreeInfo *splay_tree)
     *value;
 
   assert(splay_tree != (SplayTreeInfo *) NULL);
-  assert(splay_tree->signature == MagickSignature);
+  assert(splay_tree->signature == MagickCoreSignature);
   if (splay_tree->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if ((splay_tree->root == (NodeInfo *) NULL) ||
@@ -885,7 +885,7 @@ MagickExport const void *GetValueFromSplayTree(SplayTreeInfo *splay_tree,
     *value;
 
   assert(splay_tree != (SplayTreeInfo *) NULL);
-  assert(splay_tree->signature == MagickSignature);
+  assert(splay_tree->signature == MagickCoreSignature);
   if (splay_tree->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if (splay_tree->root == (NodeInfo *) NULL)
@@ -934,7 +934,7 @@ MagickExport size_t GetNumberOfNodesInSplayTree(
   const SplayTreeInfo *splay_tree)
 {
   assert(splay_tree != (SplayTreeInfo *) NULL);
-  assert(splay_tree->signature == MagickSignature);
+  assert(splay_tree->signature == MagickCoreSignature);
   if (splay_tree->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   return(splay_tree->nodes);
@@ -1116,7 +1116,7 @@ MagickExport SplayTreeInfo *NewSplayTree(
   splay_tree->nodes=0;
   splay_tree->debug=IsEventLogging();
   splay_tree->semaphore=AcquireSemaphoreInfo();
-  splay_tree->signature=MagickSignature;
+  splay_tree->signature=MagickCoreSignature;
   return(splay_tree);
 }
 
@@ -1157,7 +1157,7 @@ MagickExport void *RemoveNodeByValueFromSplayTree(SplayTreeInfo *splay_tree,
     *key;
 
   assert(splay_tree != (SplayTreeInfo *) NULL);
-  assert(splay_tree->signature == MagickSignature);
+  assert(splay_tree->signature == MagickCoreSignature);
   if (splay_tree->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   key=(void *) NULL;
@@ -1269,7 +1269,7 @@ MagickExport void *RemoveNodeFromSplayTree(SplayTreeInfo *splay_tree,
     *value;
 
   assert(splay_tree != (SplayTreeInfo *) NULL);
-  assert(splay_tree->signature == MagickSignature);
+  assert(splay_tree->signature == MagickCoreSignature);
   if (splay_tree->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   value=(void *) NULL;
@@ -1346,7 +1346,7 @@ MagickExport void ResetSplayTree(SplayTreeInfo *splay_tree)
     *pend;
 
   assert(splay_tree != (SplayTreeInfo *) NULL);
-  assert(splay_tree->signature == MagickSignature);
+  assert(splay_tree->signature == MagickCoreSignature);
   if (splay_tree->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   LockSemaphoreInfo(splay_tree->semaphore);
@@ -1431,7 +1431,7 @@ MagickExport void ResetSplayTree(SplayTreeInfo *splay_tree)
 MagickExport void ResetSplayTreeIterator(SplayTreeInfo *splay_tree)
 {
   assert(splay_tree != (SplayTreeInfo *) NULL);
-  assert(splay_tree->signature == MagickSignature);
+  assert(splay_tree->signature == MagickCoreSignature);
   if (splay_tree->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   LockSemaphoreInfo(splay_tree->semaphore);

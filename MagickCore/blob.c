@@ -330,7 +330,7 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
     status;
 
   assert(image_info != (ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
+  assert(image_info->signature == MagickCoreSignature);
   if (image_info->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
@@ -499,7 +499,7 @@ MagickExport MagickBooleanType CloseBlob(Image *image)
     Close image file.
   */
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(image->blob != (BlobInfo *) NULL);
@@ -628,11 +628,11 @@ MagickExport void DestroyBlob(Image *image)
     destroy;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(image->blob != (BlobInfo *) NULL);
-  assert(image->blob->signature == MagickSignature);
+  assert(image->blob->signature == MagickCoreSignature);
   destroy=MagickFalse;
   LockSemaphoreInfo(image->blob->semaphore);
   image->blob->reference_count--;
@@ -650,7 +650,7 @@ MagickExport void DestroyBlob(Image *image)
     }
   if (image->blob->semaphore != (SemaphoreInfo *) NULL)
     RelinquishSemaphoreInfo(&image->blob->semaphore);
-  image->blob->signature=(~MagickSignature);
+  image->blob->signature=(~MagickCoreSignature);
   image->blob=(BlobInfo *) RelinquishMagickMemory(image->blob);
 }
 
@@ -737,11 +737,11 @@ MagickPrivate void DisassociateBlob(Image *image)
     clone;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(image->blob != (BlobInfo *) NULL);
-  assert(image->blob->signature == MagickSignature);
+  assert(image->blob->signature == MagickCoreSignature);
   clone=MagickFalse;
   LockSemaphoreInfo(image->blob->semaphore);
   assert(image->blob->reference_count >= 0);
@@ -796,7 +796,7 @@ MagickExport MagickBooleanType DiscardBlobBytes(Image *image,
     buffer[16384];
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (length != (MagickSizeType) ((MagickOffsetType) length))
     return(MagickFalse);
   count=0;
@@ -841,11 +841,11 @@ MagickExport MagickBooleanType DiscardBlobBytes(Image *image,
 MagickExport void DuplicateBlob(Image *image,const Image *duplicate)
 {
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(duplicate != (Image *) NULL);
-  assert(duplicate->signature == MagickSignature);
+  assert(duplicate->signature == MagickCoreSignature);
   DestroyBlob(image);
   image->blob=ReferenceBlob(duplicate->blob);
 }
@@ -876,7 +876,7 @@ MagickExport void DuplicateBlob(Image *image,const Image *duplicate)
 MagickExport int EOFBlob(const Image *image)
 {
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(image->blob != (BlobInfo *) NULL);
@@ -1172,7 +1172,7 @@ MagickExport MagickBooleanType FileToImage(Image *image,const char *filename,
     *blob;
 
   assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   assert(filename != (const char *) NULL);
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",filename);
   file=fileno(stdin);
@@ -1245,7 +1245,7 @@ MagickExport MagickBooleanType FileToImage(Image *image,const char *filename,
 MagickPrivate MagickBooleanType GetBlobError(const Image *image)
 {
   assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   return(image->blob->status);
@@ -1276,7 +1276,7 @@ MagickPrivate MagickBooleanType GetBlobError(const Image *image)
 MagickExport FILE *GetBlobFileHandle(const Image *image)
 {
   assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   return(image->blob->file_info.file);
 }
 
@@ -1313,7 +1313,7 @@ MagickPrivate void GetBlobInfo(BlobInfo *blob_info)
   blob_info->debug=IsEventLogging();
   blob_info->reference_count=1;
   blob_info->semaphore=AcquireSemaphoreInfo();
-  blob_info->signature=MagickSignature;
+  blob_info->signature=MagickCoreSignature;
 }
 
 /*
@@ -1341,7 +1341,7 @@ MagickPrivate void GetBlobInfo(BlobInfo *blob_info)
 MagickPrivate const struct stat *GetBlobProperties(const Image *image)
 {
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   return(&image->blob->properties);
@@ -1376,7 +1376,7 @@ MagickExport MagickSizeType GetBlobSize(const Image *image)
     extent;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(image->blob != (BlobInfo *) NULL);
@@ -1451,7 +1451,7 @@ MagickExport MagickSizeType GetBlobSize(const Image *image)
 MagickExport void *GetBlobStreamData(const Image *image)
 {
   assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   return(image->blob->data);
 }
 
@@ -1480,7 +1480,7 @@ MagickExport void *GetBlobStreamData(const Image *image)
 MagickPrivate StreamHandler GetBlobStreamHandler(const Image *image)
 {
   assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   return(image->blob->stream);
@@ -1535,12 +1535,12 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,
     *blob;
 
   assert(image_info != (const ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
+  assert(image_info->signature == MagickCoreSignature);
   if (image_info->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   assert(exception != (ExceptionInfo *) NULL);
   *length=0;
   blob=(unsigned char *) NULL;
@@ -1675,7 +1675,7 @@ MagickExport MagickBooleanType ImageToFile(Image *image,char *filename,
     *buffer;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   assert(image->blob != (BlobInfo *) NULL);
   assert(image->blob->type != UndefinedStream);
   if (image->debug != MagickFalse)
@@ -1787,12 +1787,12 @@ MagickExport void *ImagesToBlob(const ImageInfo *image_info,Image *images,
     *blob;
 
   assert(image_info != (const ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
+  assert(image_info->signature == MagickCoreSignature);
   if (image_info->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
   assert(images != (Image *) NULL);
-  assert(images->signature == MagickSignature);
+  assert(images->signature == MagickCoreSignature);
   assert(exception != (ExceptionInfo *) NULL);
   *length=0;
   blob=(unsigned char *) NULL;
@@ -1951,13 +1951,13 @@ MagickExport MagickBooleanType InjectImageBlob(const ImageInfo *image_info,
     Write inject image to a temporary file.
   */
   assert(image_info != (ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
+  assert(image_info->signature == MagickCoreSignature);
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(inject_image != (Image *) NULL);
-  assert(inject_image->signature == MagickSignature);
+  assert(inject_image->signature == MagickCoreSignature);
   assert(exception != (ExceptionInfo *) NULL);
   unique_file=(FILE *) NULL;
   file=AcquireUniqueFileResource(filename);
@@ -2059,7 +2059,7 @@ MagickExport MagickBooleanType InjectImageBlob(const ImageInfo *image_info,
 MagickPrivate MagickBooleanType IsBlobExempt(const Image *image)
 {
   assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   return(image->blob->exempt);
@@ -2093,7 +2093,7 @@ MagickPrivate MagickBooleanType IsBlobSeekable(const Image *image)
     seekable;
 
   assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   switch (image->blob->type)
@@ -2139,7 +2139,7 @@ MagickPrivate MagickBooleanType IsBlobSeekable(const Image *image)
 MagickPrivate MagickBooleanType IsBlobTemporary(const Image *image)
 {
   assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   return(image->blob->temporary);
@@ -2401,12 +2401,12 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
     rights;
 
   assert(image_info != (ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
+  assert(image_info->signature == MagickCoreSignature);
   if (image_info->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image_info->blob != (void *) NULL)
     {
       if (image_info->stream != (StreamHandler) NULL)
@@ -2749,7 +2749,7 @@ MagickExport Image *PingBlob(const ImageInfo *image_info,const void *blob,
     *ping_info;
 
   assert(image_info != (ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
+  assert(image_info->signature == MagickCoreSignature);
   if (image_info->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
@@ -2820,7 +2820,7 @@ MagickExport ssize_t ReadBlob(Image *image,const size_t length,void *data)
     count;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   assert(image->blob != (BlobInfo *) NULL);
   assert(image->blob->type != UndefinedStream);
   if (length == 0)
@@ -2995,7 +2995,7 @@ MagickExport int ReadBlobByte(Image *image)
     buffer[1];
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   p=(const unsigned char *) ReadBlobStream(image,1,buffer,&count);
   if (count != 1)
     return(EOF);
@@ -3118,7 +3118,7 @@ MagickExport unsigned int ReadBlobLong(Image *image)
     value;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   *buffer='\0';
   p=(const unsigned char *) ReadBlobStream(image,4,buffer,&count);
   if (count != 4)
@@ -3176,7 +3176,7 @@ MagickExport MagickSizeType ReadBlobLongLong(Image *image)
     buffer[8];
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   *buffer='\0';
   p=(const unsigned char *) ReadBlobStream(image,8,buffer,&count);
   if (count != 8)
@@ -3242,7 +3242,7 @@ MagickExport unsigned short ReadBlobShort(Image *image)
     buffer[2];
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   *buffer='\0';
   p=(const unsigned char *) ReadBlobStream(image,2,buffer,&count);
   if (count != 2)
@@ -3296,7 +3296,7 @@ MagickExport unsigned int ReadBlobLSBLong(Image *image)
     buffer[4];
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   *buffer='\0';
   p=(const unsigned char *) ReadBlobStream(image,4,buffer,&count);
   if (count != 4)
@@ -3346,7 +3346,7 @@ MagickExport unsigned short ReadBlobLSBShort(Image *image)
     buffer[2];
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   *buffer='\0';
   p=(const unsigned char *) ReadBlobStream(image,2,buffer,&count);
   if (count != 2)
@@ -3394,7 +3394,7 @@ MagickExport unsigned int ReadBlobMSBLong(Image *image)
     buffer[4];
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   *buffer='\0';
   p=(const unsigned char *) ReadBlobStream(image,4,buffer,&count);
   if (count != 4)
@@ -3444,7 +3444,7 @@ MagickExport MagickSizeType ReadBlobMSBLongLong(Image *image)
     buffer[8];
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   *buffer='\0';
   p=(const unsigned char *) ReadBlobStream(image,8,buffer,&count);
   if (count != 8)
@@ -3498,7 +3498,7 @@ MagickExport unsigned short ReadBlobMSBShort(Image *image)
     buffer[2];
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   *buffer='\0';
   p=(const unsigned char *) ReadBlobStream(image,2,buffer,&count);
   if (count != 2)
@@ -3547,7 +3547,7 @@ MagickExport const void *ReadBlobStream(Image *image,const size_t length,
   void *data,ssize_t *count)
 {
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   assert(image->blob != (BlobInfo *) NULL);
   assert(image->blob->type != UndefinedStream);
   assert(count != (ssize_t *) NULL);
@@ -3612,7 +3612,7 @@ MagickExport char *ReadBlobString(Image *image,char *string)
     buffer[1];
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   for (i=0; i < (MagickPathExtent-1L); i++)
   {
     p=(const unsigned char *) ReadBlobStream(image,1,buffer,&count);
@@ -3658,7 +3658,7 @@ MagickExport char *ReadBlobString(Image *image,char *string)
 MagickExport BlobInfo *ReferenceBlob(BlobInfo *blob)
 {
   assert(blob != (BlobInfo *) NULL);
-  assert(blob->signature == MagickSignature);
+  assert(blob->signature == MagickCoreSignature);
   if (blob->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   LockSemaphoreInfo(blob->semaphore);
@@ -3704,7 +3704,7 @@ MagickExport MagickOffsetType SeekBlob(Image *image,
   const MagickOffsetType offset,const int whence)
 {
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(image->blob != (BlobInfo *) NULL);
@@ -3823,7 +3823,7 @@ MagickExport MagickOffsetType SeekBlob(Image *image,
 MagickPrivate void SetBlobExempt(Image *image,const MagickBooleanType exempt)
 {
   assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   image->blob->exempt=exempt;
@@ -3859,7 +3859,7 @@ MagickPrivate MagickBooleanType SetBlobExtent(Image *image,
   const MagickSizeType extent)
 {
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(image->blob != (BlobInfo *) NULL);
@@ -4005,7 +4005,7 @@ static int SyncBlob(Image *image)
     status;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(image->blob != (BlobInfo *) NULL);
@@ -4072,7 +4072,7 @@ MagickExport MagickOffsetType TellBlob(const Image *image)
     offset;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(image->blob != (BlobInfo *) NULL);
@@ -4191,7 +4191,7 @@ MagickExport ssize_t WriteBlob(Image *image,const size_t length,
     count;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   assert(data != (const void *) NULL);
   assert(image->blob != (BlobInfo *) NULL);
   assert(image->blob->type != UndefinedStream);
@@ -4366,7 +4366,7 @@ MagickExport ssize_t WriteBlob(Image *image,const size_t length,
 MagickExport ssize_t WriteBlobByte(Image *image,const unsigned char value)
 {
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   return(WriteBlobStream(image,1,&value));
 }
 
@@ -4442,7 +4442,7 @@ MagickExport ssize_t WriteBlobLong(Image *image,const unsigned int value)
     buffer[4];
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->endian == LSBEndian)
     {
       buffer[0]=(unsigned char) value;
@@ -4489,7 +4489,7 @@ MagickExport ssize_t WriteBlobShort(Image *image,const unsigned short value)
     buffer[2];
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->endian == LSBEndian)
     {
       buffer[0]=(unsigned char) value;
@@ -4532,7 +4532,7 @@ MagickExport ssize_t WriteBlobLSBLong(Image *image,const unsigned int value)
     buffer[4];
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   buffer[0]=(unsigned char) value;
   buffer[1]=(unsigned char) (value >> 8);
   buffer[2]=(unsigned char) (value >> 16);
@@ -4571,7 +4571,7 @@ MagickExport ssize_t WriteBlobLSBShort(Image *image,const unsigned short value)
     buffer[2];
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   buffer[0]=(unsigned char) value;
   buffer[1]=(unsigned char) (value >> 8);
   return(WriteBlobStream(image,2,buffer));
@@ -4608,7 +4608,7 @@ MagickExport ssize_t WriteBlobMSBLong(Image *image,const unsigned int value)
     buffer[4];
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   buffer[0]=(unsigned char) (value >> 24);
   buffer[1]=(unsigned char) (value >> 16);
   buffer[2]=(unsigned char) (value >> 8);
@@ -4648,7 +4648,7 @@ MagickExport ssize_t WriteBlobMSBLongLong(Image *image,
     buffer[8];
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   buffer[0]=(unsigned char) (value >> 56);
   buffer[1]=(unsigned char) (value >> 48);
   buffer[2]=(unsigned char) (value >> 40);
@@ -4691,7 +4691,7 @@ MagickExport ssize_t WriteBlobMSBShort(Image *image,const unsigned short value)
     buffer[2];
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   buffer[0]=(unsigned char) (value >> 8);
   buffer[1]=(unsigned char) value;
   return(WriteBlobStream(image,2,buffer));
@@ -4725,7 +4725,7 @@ MagickExport ssize_t WriteBlobMSBShort(Image *image,const unsigned short value)
 MagickExport ssize_t WriteBlobString(Image *image,const char *string)
 {
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   assert(string != (const char *) NULL);
   return(WriteBlobStream(image,strlen(string),(const unsigned char *) string));
 }

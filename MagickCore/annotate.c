@@ -289,11 +289,11 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
     number_lines;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(draw_info != (DrawInfo *) NULL);
-  assert(draw_info->signature == MagickSignature);
+  assert(draw_info->signature == MagickCoreSignature);
   if (draw_info->text == (char *) NULL)
     return(MagickFalse);
   if (*draw_info->text == '\0')
@@ -719,12 +719,12 @@ MagickExport MagickBooleanType GetMultilineTypeMetrics(Image *image,
     extent;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(draw_info != (DrawInfo *) NULL);
   assert(draw_info->text != (char *) NULL);
-  assert(draw_info->signature == MagickSignature);
+  assert(draw_info->signature == MagickCoreSignature);
   if (*draw_info->text == '\0')
     return(MagickFalse);
   annotate_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
@@ -824,12 +824,12 @@ MagickExport MagickBooleanType GetTypeMetrics(Image *image,
     offset;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(draw_info != (DrawInfo *) NULL);
   assert(draw_info->text != (char *) NULL);
-  assert(draw_info->signature == MagickSignature);
+  assert(draw_info->signature == MagickCoreSignature);
   annotate_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   annotate_info->render=MagickFalse;
   annotate_info->direction=UndefinedDirection;

@@ -204,7 +204,7 @@ static LinkedListInfo *AcquireConfigureCache(const char *filename,
     configure_info->name=(char *) p->name;
     configure_info->value=(char *) p->value;
     configure_info->exempt=MagickTrue;
-    configure_info->signature=MagickSignature;
+    configure_info->signature=MagickCoreSignature;
     status&=AppendValueToLinkedList(configure_cache,configure_info);
     if (status == MagickFalse)
       (void) ThrowMagickException(exception,GetMagickModule(),
@@ -963,7 +963,7 @@ MagickExport const char *GetConfigureValue(const ConfigureInfo *configure_info)
 {
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(configure_info != (ConfigureInfo *) NULL);
-  assert(configure_info->signature == MagickSignature);
+  assert(configure_info->signature == MagickCoreSignature);
   return(configure_info->value);
 }
 
@@ -1227,7 +1227,7 @@ static MagickBooleanType LoadConfigureCache(LinkedListInfo *configure_cache,
         (void) ResetMagickMemory(configure_info,0,sizeof(*configure_info));
         configure_info->path=ConstantString(filename);
         configure_info->exempt=MagickFalse;
-        configure_info->signature=MagickSignature;
+        configure_info->signature=MagickCoreSignature;
         continue;
       }
     if (configure_info == (ConfigureInfo *) NULL)

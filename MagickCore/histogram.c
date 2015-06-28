@@ -212,7 +212,7 @@ static CubeInfo *ClassifyImageColors(const Image *image,
     Initialize color description tree.
   */
   assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   cube_info=GetCubeInfo();
@@ -667,7 +667,7 @@ MagickExport MagickBooleanType IsHistogramImage(const Image *image,
     y;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if ((image->storage_class == PseudoClass) && (image->colors <= 256))
@@ -827,7 +827,7 @@ MagickExport MagickBooleanType IsPaletteImage(const Image *image,
     y;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if ((image->storage_class == PseudoClass) && (image->colors <= 256))

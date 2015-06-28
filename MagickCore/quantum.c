@@ -118,7 +118,7 @@ MagickExport QuantumInfo *AcquireQuantumInfo(const ImageInfo *image_info,
   quantum_info=(QuantumInfo *) AcquireMagickMemory(sizeof(*quantum_info));
   if (quantum_info == (QuantumInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  quantum_info->signature=MagickSignature;
+  quantum_info->signature=MagickCoreSignature;
   GetQuantumInfo(image_info,quantum_info);
   if (image == (const Image *) NULL)
     return(quantum_info);
@@ -161,7 +161,7 @@ static MagickBooleanType AcquireQuantumPixels(QuantumInfo *quantum_info,
     i;
 
   assert(quantum_info != (QuantumInfo *) NULL);
-  assert(quantum_info->signature == MagickSignature);
+  assert(quantum_info->signature == MagickCoreSignature);
   quantum_info->number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
   quantum_info->pixels=(unsigned char **) AcquireQuantumMemory(
     quantum_info->number_threads,sizeof(*quantum_info->pixels));
@@ -214,12 +214,12 @@ static MagickBooleanType AcquireQuantumPixels(QuantumInfo *quantum_info,
 MagickExport QuantumInfo *DestroyQuantumInfo(QuantumInfo *quantum_info)
 {
   assert(quantum_info != (QuantumInfo *) NULL);
-  assert(quantum_info->signature == MagickSignature);
+  assert(quantum_info->signature == MagickCoreSignature);
   if (quantum_info->pixels != (unsigned char **) NULL)
     DestroyQuantumPixels(quantum_info);
   if (quantum_info->semaphore != (SemaphoreInfo *) NULL)
     RelinquishSemaphoreInfo(&quantum_info->semaphore);
-  quantum_info->signature=(~MagickSignature);
+  quantum_info->signature=(~MagickCoreSignature);
   quantum_info=(QuantumInfo *) RelinquishMagickMemory(quantum_info);
   return(quantum_info);
 }
@@ -255,7 +255,7 @@ static void DestroyQuantumPixels(QuantumInfo *quantum_info)
     extent;
 
   assert(quantum_info != (QuantumInfo *) NULL);
-  assert(quantum_info->signature == MagickSignature);
+  assert(quantum_info->signature == MagickCoreSignature);
   assert(quantum_info->pixels != (unsigned char **) NULL);
   extent=(ssize_t) quantum_info->extent;
   for (i=0; i < (ssize_t) quantum_info->number_threads; i++)
@@ -307,7 +307,7 @@ MagickExport size_t GetQuantumExtent(const Image *image,
     packet_size;
 
   assert(quantum_info != (QuantumInfo *) NULL);
-  assert(quantum_info->signature == MagickSignature);
+  assert(quantum_info->signature == MagickCoreSignature);
   packet_size=1;
   switch (quantum_type)
   {
@@ -352,7 +352,7 @@ MagickExport size_t GetQuantumExtent(const Image *image,
 MagickExport EndianType GetQuantumEndian(const QuantumInfo *quantum_info)
 {
   assert(quantum_info != (QuantumInfo *) NULL);
-  assert(quantum_info->signature == MagickSignature);
+  assert(quantum_info->signature == MagickCoreSignature);
   return(quantum_info->endian);
 }
 
@@ -381,7 +381,7 @@ MagickExport EndianType GetQuantumEndian(const QuantumInfo *quantum_info)
 MagickExport QuantumFormatType GetQuantumFormat(const QuantumInfo *quantum_info)
 {
   assert(quantum_info != (QuantumInfo *) NULL);
-  assert(quantum_info->signature == MagickSignature);
+  assert(quantum_info->signature == MagickCoreSignature);
   return(quantum_info->format);
 }
 
@@ -422,7 +422,7 @@ MagickExport void GetQuantumInfo(const ImageInfo *image_info,
   quantum_info->scale=QuantumRange;
   quantum_info->pack=MagickTrue;
   quantum_info->semaphore=AcquireSemaphoreInfo();
-  quantum_info->signature=MagickSignature;
+  quantum_info->signature=MagickCoreSignature;
   if (image_info == (const ImageInfo *) NULL)
     return;
   option=GetImageOption(image_info,"quantum:format");
@@ -486,7 +486,7 @@ MagickExport unsigned char *GetQuantumPixels(const QuantumInfo *quantum_info)
     id = GetOpenMPThreadId();
 
   assert(quantum_info != (QuantumInfo *) NULL);
-  assert(quantum_info->signature == MagickSignature);
+  assert(quantum_info->signature == MagickCoreSignature);
   return(quantum_info->pixels[id]);
 }
 
@@ -520,7 +520,7 @@ MagickExport QuantumType GetQuantumType(Image *image,ExceptionInfo *exception)
     quantum_type;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   (void) exception;
@@ -584,7 +584,7 @@ MagickPrivate void ResetQuantumState(QuantumInfo *quantum_info)
   };
 
   assert(quantum_info != (QuantumInfo *) NULL);
-  assert(quantum_info->signature == MagickSignature);
+  assert(quantum_info->signature == MagickCoreSignature);
   quantum_info->state.inverse_scale=1.0;
   if (fabs(quantum_info->scale) >= MagickEpsilon)
     quantum_info->state.inverse_scale/=quantum_info->scale;
@@ -622,7 +622,7 @@ MagickExport void SetQuantumAlphaType(QuantumInfo *quantum_info,
   const QuantumAlphaType type)
 {
   assert(quantum_info != (QuantumInfo *) NULL);
-  assert(quantum_info->signature == MagickSignature);
+  assert(quantum_info->signature == MagickCoreSignature);
   quantum_info->alpha_type=type;
 }
 
@@ -664,11 +664,11 @@ MagickExport MagickBooleanType SetQuantumDepth(const Image *image,
     Allocate the quantum pixel buffer.
   */
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(quantum_info != (QuantumInfo *) NULL);
-  assert(quantum_info->signature == MagickSignature);
+  assert(quantum_info->signature == MagickCoreSignature);
   quantum_info->depth=depth;
   if (quantum_info->format == FloatingPointQuantumFormat)
     {
@@ -720,11 +720,11 @@ MagickExport MagickBooleanType SetQuantumEndian(const Image *image,
   QuantumInfo *quantum_info,const EndianType endian)
 {
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(quantum_info != (QuantumInfo *) NULL);
-  assert(quantum_info->signature == MagickSignature);
+  assert(quantum_info->signature == MagickCoreSignature);
   quantum_info->endian=endian;
   return(SetQuantumDepth(image,quantum_info,quantum_info->depth));
 }
@@ -760,11 +760,11 @@ MagickExport MagickBooleanType SetQuantumFormat(const Image *image,
   QuantumInfo *quantum_info,const QuantumFormatType format)
 {
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(quantum_info != (QuantumInfo *) NULL);
-  assert(quantum_info->signature == MagickSignature);
+  assert(quantum_info->signature == MagickCoreSignature);
   quantum_info->format=format;
   return(SetQuantumDepth(image,quantum_info,quantum_info->depth));
 }
@@ -799,7 +799,7 @@ MagickExport void SetQuantumImageType(Image *image,
   const QuantumType quantum_type)
 {
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   switch (quantum_type)
@@ -865,7 +865,7 @@ MagickExport void SetQuantumPack(QuantumInfo *quantum_info,
   const MagickBooleanType pack)
 {
   assert(quantum_info != (QuantumInfo *) NULL);
-  assert(quantum_info->signature == MagickSignature);
+  assert(quantum_info->signature == MagickCoreSignature);
   quantum_info->pack=pack;
 }
 
@@ -901,11 +901,11 @@ MagickExport MagickBooleanType SetQuantumPad(const Image *image,
   QuantumInfo *quantum_info,const size_t pad)
 {
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(quantum_info != (QuantumInfo *) NULL);
-  assert(quantum_info->signature == MagickSignature);
+  assert(quantum_info->signature == MagickCoreSignature);
   quantum_info->pad=pad;
   return(SetQuantumDepth(image,quantum_info,quantum_info->depth));
 }
@@ -939,7 +939,7 @@ MagickExport void SetQuantumMinIsWhite(QuantumInfo *quantum_info,
   const MagickBooleanType min_is_white)
 {
   assert(quantum_info != (QuantumInfo *) NULL);
-  assert(quantum_info->signature == MagickSignature);
+  assert(quantum_info->signature == MagickCoreSignature);
   quantum_info->min_is_white=min_is_white;
 }
 
@@ -972,7 +972,7 @@ MagickExport void SetQuantumQuantum(QuantumInfo *quantum_info,
   const size_t quantum)
 {
   assert(quantum_info != (QuantumInfo *) NULL);
-  assert(quantum_info->signature == MagickSignature);
+  assert(quantum_info->signature == MagickCoreSignature);
   quantum_info->quantum=quantum;
 }
 
@@ -1003,6 +1003,6 @@ MagickExport void SetQuantumQuantum(QuantumInfo *quantum_info,
 MagickExport void SetQuantumScale(QuantumInfo *quantum_info,const double scale)
 {
   assert(quantum_info != (QuantumInfo *) NULL);
-  assert(quantum_info->signature == MagickSignature);
+  assert(quantum_info->signature == MagickCoreSignature);
   quantum_info->scale=scale;
 }

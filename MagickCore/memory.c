@@ -585,7 +585,7 @@ MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(memory_info,0,sizeof(*memory_info));
   memory_info->length=length;
-  memory_info->signature=MagickSignature;
+  memory_info->signature=MagickCoreSignature;
   if (AcquireMagickResource(MemoryResource,length) != MagickFalse)
     {
       memory_info->blob=AcquireAlignedMemory(1,length);
@@ -895,7 +895,7 @@ MagickExport void GetMagickMemoryMethods(
 MagickExport void *GetVirtualMemoryBlob(const MemoryInfo *memory_info)
 {
   assert(memory_info != (const MemoryInfo *) NULL);
-  assert(memory_info->signature == MagickSignature);
+  assert(memory_info->signature == MagickCoreSignature);
   return(memory_info->blob);
 }
 
@@ -1029,7 +1029,7 @@ MagickExport void *RelinquishMagickMemory(void *memory)
 MagickExport MemoryInfo *RelinquishVirtualMemory(MemoryInfo *memory_info)
 {
   assert(memory_info != (MemoryInfo *) NULL);
-  assert(memory_info->signature == MagickSignature);
+  assert(memory_info->signature == MagickCoreSignature);
   if (memory_info->blob != (void *) NULL)
     switch (memory_info->type)
     {
@@ -1058,7 +1058,7 @@ MagickExport MemoryInfo *RelinquishVirtualMemory(MemoryInfo *memory_info)
         break;
       }
     }
-  memory_info->signature=(~MagickSignature);
+  memory_info->signature=(~MagickCoreSignature);
   memory_info=(MemoryInfo *) RelinquishAlignedMemory(memory_info);
   return(memory_info);
 }

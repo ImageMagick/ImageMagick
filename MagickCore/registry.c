@@ -487,7 +487,7 @@ MagickExport MagickBooleanType SetImageRegistry(const RegistryType type,
         *image;
 
       image=(const Image *) value;
-      if (image->signature != MagickSignature)
+      if (image->signature != MagickCoreSignature)
         {
           (void) ThrowMagickException(exception,GetMagickModule(),RegistryError,
             "UnableToSetRegistry","%s",key);
@@ -502,7 +502,7 @@ MagickExport MagickBooleanType SetImageRegistry(const RegistryType type,
         *image_info;
 
       image_info=(const ImageInfo *) value;
-      if (image_info->signature != MagickSignature)
+      if (image_info->signature != MagickCoreSignature)
         {
           (void) ThrowMagickException(exception,GetMagickModule(),RegistryError,
             "UnableToSetRegistry","%s",key);
@@ -520,7 +520,7 @@ MagickExport MagickBooleanType SetImageRegistry(const RegistryType type,
   (void) ResetMagickMemory(registry_info,0,sizeof(*registry_info));
   registry_info->type=type;
   registry_info->value=clone_value;
-  registry_info->signature=MagickSignature;
+  registry_info->signature=MagickCoreSignature;
   if (registry == (SplayTreeInfo *) NULL)
     {
       if (registry_semaphore == (SemaphoreInfo *) NULL)

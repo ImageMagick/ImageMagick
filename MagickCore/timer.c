@@ -92,7 +92,7 @@ MagickExport TimerInfo *AcquireTimerInfo(void)
   if (timer_info == (TimerInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"UnableToAcquireString");
   (void) ResetMagickMemory(timer_info,0,sizeof(*timer_info));
-  timer_info->signature=MagickSignature;
+  timer_info->signature=MagickCoreSignature;
   GetTimerInfo(timer_info);
   return(timer_info);
 }
@@ -123,7 +123,7 @@ MagickExport TimerInfo *AcquireTimerInfo(void)
 MagickExport MagickBooleanType ContinueTimer(TimerInfo *time_info)
 {
   assert(time_info != (TimerInfo *) NULL);
-  assert(time_info->signature == MagickSignature);
+  assert(time_info->signature == MagickCoreSignature);
   if (time_info->state == UndefinedTimerState)
     return(MagickFalse);
   if (time_info->state == StoppedTimerState)
@@ -161,8 +161,8 @@ MagickExport MagickBooleanType ContinueTimer(TimerInfo *time_info)
 MagickExport TimerInfo *DestroyTimerInfo(TimerInfo *timer_info)
 {
   assert(timer_info != (TimerInfo *) NULL);
-  assert(timer_info->signature == MagickSignature);
-  timer_info->signature=(~MagickSignature);
+  assert(timer_info->signature == MagickCoreSignature);
+  timer_info->signature=(~MagickCoreSignature);
   timer_info=(TimerInfo *) RelinquishMagickMemory(timer_info);
   return(timer_info);
 }
@@ -229,7 +229,7 @@ static double ElapsedTime(void)
 MagickExport double GetElapsedTime(TimerInfo *time_info)
 {
   assert(time_info != (TimerInfo *) NULL);
-  assert(time_info->signature == MagickSignature);
+  assert(time_info->signature == MagickCoreSignature);
   if (time_info->state == UndefinedTimerState)
     return(0.0);
   if (time_info->state == RunningTimerState)
@@ -267,7 +267,7 @@ MagickExport void GetTimerInfo(TimerInfo *time_info)
   assert(time_info != (TimerInfo *) NULL);
   (void) ResetMagickMemory(time_info,0,sizeof(*time_info));
   time_info->state=UndefinedTimerState;
-  time_info->signature=MagickSignature;
+  time_info->signature=MagickCoreSignature;
   StartTimer(time_info,MagickTrue);
 }
 
@@ -298,7 +298,7 @@ MagickExport void GetTimerInfo(TimerInfo *time_info)
 MagickExport double GetUserTime(TimerInfo *time_info)
 {
   assert(time_info != (TimerInfo *) NULL);
-  assert(time_info->signature == MagickSignature);
+  assert(time_info->signature == MagickCoreSignature);
   if (time_info->state == UndefinedTimerState)
     return(0.0);
   if (time_info->state == RunningTimerState)
@@ -331,7 +331,7 @@ MagickExport double GetUserTime(TimerInfo *time_info)
 MagickExport void ResetTimer(TimerInfo *time_info)
 {
   assert(time_info != (TimerInfo *) NULL);
-  assert(time_info->signature == MagickSignature);
+  assert(time_info->signature == MagickCoreSignature);
   StopTimer(time_info);
   time_info->elapsed.stop=0.0;
   time_info->user.stop=0.0;
@@ -366,7 +366,7 @@ MagickExport void ResetTimer(TimerInfo *time_info)
 MagickExport void StartTimer(TimerInfo *time_info,const MagickBooleanType reset)
 {
   assert(time_info != (TimerInfo *) NULL);
-  assert(time_info->signature == MagickSignature);
+  assert(time_info->signature == MagickCoreSignature);
   if (reset != MagickFalse)
     {
       /*
@@ -408,7 +408,7 @@ MagickExport void StartTimer(TimerInfo *time_info,const MagickBooleanType reset)
 static void StopTimer(TimerInfo *time_info)
 {
   assert(time_info != (TimerInfo *) NULL);
-  assert(time_info->signature == MagickSignature);
+  assert(time_info->signature == MagickCoreSignature);
   time_info->elapsed.stop=ElapsedTime();
   time_info->user.stop=UserTime();
   if (time_info->state == RunningTimerState)

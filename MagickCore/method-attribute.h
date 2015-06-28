@@ -101,7 +101,7 @@ extern "C" {
 # define ModuleExport  MagickExport
 #endif
 
-#define MagickSignature  0xabacadabUL
+#define MagickCoreSignature  0xabacadabUL
 #if !defined(MagickPathExtent)
 # define MagickPathExtent  4096  /* always >= 4096 */
 #endif

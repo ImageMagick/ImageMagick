@@ -112,7 +112,7 @@ MagickExport Image *BorderImage(const Image *image,
     frame_info;
 
   assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(border_info != (RectangleInfo *) NULL);
@@ -207,7 +207,7 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
     Check frame geometry.
   */
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(frame_info != (FrameInfo *) NULL);
@@ -681,7 +681,7 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
     y;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(raise_info != (RectangleInfo *) NULL);
