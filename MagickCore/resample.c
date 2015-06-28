@@ -211,11 +211,11 @@ MagickExport ResampleFilter *AcquireResampleFilter(const Image *image,
     *resample_filter;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   resample_filter=(ResampleFilter *) AcquireMagickMemory(sizeof(
     *resample_filter));
   if (resample_filter == (ResampleFilter *) NULL)
@@ -228,7 +228,7 @@ MagickExport ResampleFilter *AcquireResampleFilter(const Image *image,
   resample_filter->debug=IsEventLogging();
   resample_filter->image_area=(ssize_t) (image->columns*image->rows);
   resample_filter->average_defined=MagickFalse;
-  resample_filter->signature=MagickSignature;
+  resample_filter->signature=MagickCoreSignature;
   SetResampleFilter(resample_filter,image->filter);
   (void) SetResampleFilterInterpolateMethod(resample_filter,image->interpolate);
   (void) SetResampleFilterVirtualPixelMethod(resample_filter,
@@ -264,7 +264,7 @@ MagickExport ResampleFilter *DestroyResampleFilter(
   ResampleFilter *resample_filter)
 {
   assert(resample_filter != (ResampleFilter *) NULL);
-  assert(resample_filter->signature == MagickSignature);
+  assert(resample_filter->signature == MagickCoreSignature);
   assert(resample_filter->image != (Image *) NULL);
   if (resample_filter->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
@@ -274,7 +274,7 @@ MagickExport ResampleFilter *DestroyResampleFilter(
 #if ! FILTER_LUT
   resample_filter->filter_def=DestroyResizeFilter(resample_filter->filter_def);
 #endif
-  resample_filter->signature=(~MagickSignature);
+  resample_filter->signature=(~MagickCoreSignature);
   resample_filter=(ResampleFilter *) RelinquishMagickMemory(resample_filter);
   return(resample_filter);
 }
@@ -327,7 +327,7 @@ MagickExport MagickBooleanType ResamplePixelColor(
   register double weight;
   register const Quantum *pixels;
   assert(resample_filter != (ResampleFilter *) NULL);
-  assert(resample_filter->signature == MagickSignature);
+  assert(resample_filter->signature == MagickCoreSignature);
 
   status=MagickTrue;
   /* GetPixelInfo(resample_filter->image,pixel); */
@@ -1042,7 +1042,7 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
   double A,B,C,F;
 
   assert(resample_filter != (ResampleFilter *) NULL);
-  assert(resample_filter->signature == MagickSignature);
+  assert(resample_filter->signature == MagickCoreSignature);
 
   resample_filter->limit_reached = MagickFalse;
 
@@ -1246,7 +1246,7 @@ MagickExport void SetResampleFilter(ResampleFilter *resample_filter,
      *resize_filter;
 
   assert(resample_filter != (ResampleFilter *) NULL);
-  assert(resample_filter->signature == MagickSignature);
+  assert(resample_filter->signature == MagickCoreSignature);
 
   resample_filter->do_interpolate = MagickFalse;
   resample_filter->filter = filter;
@@ -1406,7 +1406,7 @@ MagickExport MagickBooleanType SetResampleFilterInterpolateMethod(
   ResampleFilter *resample_filter,const PixelInterpolateMethod method)
 {
   assert(resample_filter != (ResampleFilter *) NULL);
-  assert(resample_filter->signature == MagickSignature);
+  assert(resample_filter->signature == MagickCoreSignature);
   assert(resample_filter->image != (Image *) NULL);
   if (resample_filter->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
@@ -1445,7 +1445,7 @@ MagickExport MagickBooleanType SetResampleFilterVirtualPixelMethod(
   ResampleFilter *resample_filter,const VirtualPixelMethod method)
 {
   assert(resample_filter != (ResampleFilter *) NULL);
-  assert(resample_filter->signature == MagickSignature);
+  assert(resample_filter->signature == MagickCoreSignature);
   assert(resample_filter->image != (Image *) NULL);
   if (resample_filter->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",

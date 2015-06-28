@@ -1674,9 +1674,9 @@ MagickExport MagickBooleanType DisplayImages(const ImageInfo *image_info,
     resource_info;
 
   assert(image_info != (const ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
+  assert(image_info->signature == MagickCoreSignature);
   assert(images != (Image *) NULL);
-  assert(images->signature == MagickSignature);
+  assert(images->signature == MagickCoreSignature);
   if (IfMagickTrue(images->debug) )
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
   display=XOpenDisplay(image_info->server_name);
@@ -1754,7 +1754,7 @@ MagickExport MagickBooleanType RemoteDisplayCommand(const ImageInfo *image_info,
     status;
 
   assert(image_info != (const ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
+  assert(image_info->signature == MagickCoreSignature);
   assert(filename != (char *) NULL);
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",filename);
   display=XOpenDisplay(image_info->server_name);
@@ -13817,7 +13817,7 @@ MagickExport MagickBooleanType XDisplayBackgroundImage(Display *display,
     Determine target window.
   */
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (IfMagickTrue(image->debug) )
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   resources=(*resource_info);
@@ -14512,7 +14512,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     *manager_hints;
 
   assert(image != (Image **) NULL);
-  assert((*image)->signature == MagickSignature);
+  assert((*image)->signature == MagickCoreSignature);
   if (IfMagickTrue((*image)->debug) )
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",(*image)->filename);
   display_image=(*image);
@@ -16183,9 +16183,9 @@ MagickExport MagickBooleanType DisplayImages(const ImageInfo *image_info,
   Image *image,ExceptionInfo *exception)
 {
   assert(image_info != (const ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
+  assert(image_info->signature == MagickCoreSignature);
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   (void) image_info;
   if (IfMagickTrue(image->debug) )
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
@@ -16228,7 +16228,7 @@ MagickExport MagickBooleanType RemoteDisplayCommand(const ImageInfo *image_info,
   const char *window,const char *filename,ExceptionInfo *exception)
 {
   assert(image_info != (const ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
+  assert(image_info->signature == MagickCoreSignature);
   assert(filename != (char *) NULL);
   (void) window;
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",filename);

@@ -131,12 +131,12 @@ MagickExport void *CropImageToHBITMAP(Image *image,
     Check crop geometry.
   */
   assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(geometry != (const RectangleInfo *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   if (((geometry->x+(ssize_t) geometry->width) < 0) ||
       ((geometry->y+(ssize_t) geometry->height) < 0) ||
       (geometry->x >= (ssize_t) image->columns) ||
@@ -381,7 +381,7 @@ MagickExport MagickBooleanType NTAcquireTypeCache(SplayTreeInfo *type_cache,
         (void) ResetMagickMemory(type_info,0,sizeof(TypeInfo));
 
         type_info->path=ConstantString("Windows Fonts");
-        type_info->signature=MagickSignature;
+        type_info->signature=MagickCoreSignature;
 
         /* Name */
         (void) CopyMagickString(buffer,value_name,MagickPathExtent);

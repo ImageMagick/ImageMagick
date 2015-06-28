@@ -453,11 +453,11 @@ MagickExport Image *EvaluateImages(const Image *images,
 #endif
 
   assert(images != (Image *) NULL);
-  assert(images->signature == MagickSignature);
+  assert(images->signature == MagickCoreSignature);
   if (images->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   image=CloneImage(images,images->columns,images->rows,MagickTrue,
     exception);
   if (image == (Image *) NULL)
@@ -778,11 +778,11 @@ MagickExport MagickBooleanType EvaluateImage(Image *image,
 #endif
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   status=MagickTrue;
@@ -1008,11 +1008,11 @@ MagickExport MagickBooleanType FunctionImage(Image *image,
     y;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   status=MagickTrue;
@@ -1120,7 +1120,7 @@ MagickExport MagickBooleanType GetImageEntropy(const Image *image,
     i;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   channel_statistics=GetImageStatistics(image,exception);
@@ -1193,7 +1193,7 @@ MagickExport MagickBooleanType GetImageExtrema(const Image *image,
     status;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   status=GetImageRange(image,&min,&max,exception);
@@ -1253,7 +1253,7 @@ MagickExport MagickBooleanType GetImageKurtosis(const Image *image,
     y;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   status=MagickTrue;
@@ -1383,7 +1383,7 @@ MagickExport MagickBooleanType GetImageMean(const Image *image,double *mean,
     i;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   channel_statistics=GetImageStatistics(image,exception);
@@ -1498,7 +1498,7 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
     y;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   channel_moments=(ChannelMoments *) AcquireQuantumMemory(MaxPixelChannels+1,
@@ -1895,7 +1895,7 @@ MagickExport MagickBooleanType GetImageRange(const Image *image,double *minima,
     y;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   status=MagickTrue;
@@ -2026,7 +2026,7 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
     y;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   histogram=(double *) AcquireQuantumMemory(MaxMap+1UL,MaxPixelChannels*
@@ -2275,11 +2275,11 @@ MagickExport Image *PolynomialImage(const Image *images,
     y;
 
   assert(images != (Image *) NULL);
-  assert(images->signature == MagickSignature);
+  assert(images->signature == MagickCoreSignature);
   if (images->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   image=CloneImage(images,images->columns,images->rows,MagickTrue,
     exception);
   if (image == (Image *) NULL)
@@ -2542,7 +2542,7 @@ static PixelList *AcquirePixelList(const size_t width,const size_t height)
     return(DestroyPixelList(pixel_list));
   (void) ResetMagickMemory(pixel_list->skip_list.nodes,0,65537UL*
     sizeof(*pixel_list->skip_list.nodes));
-  pixel_list->signature=MagickSignature;
+  pixel_list->signature=MagickCoreSignature;
   return(pixel_list);
 }
 
@@ -2956,11 +2956,11 @@ MagickExport Image *StatisticImage(const Image *image,const StatisticType type,
     Initialize statistics image attributes.
   */
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   statistic_image=CloneImage(image,image->columns,image->rows,MagickTrue,
     exception);
   if (statistic_image == (Image *) NULL)

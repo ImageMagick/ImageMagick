@@ -212,7 +212,7 @@ MagickExport MatrixInfo *AcquireMatrixInfo(const size_t columns,
   if (matrix_info == (MatrixInfo *) NULL)
     return((MatrixInfo *) NULL);
   (void) ResetMagickMemory(matrix_info,0,sizeof(*matrix_info));
-  matrix_info->signature=MagickSignature;
+  matrix_info->signature=MagickCoreSignature;
   matrix_info->columns=columns;
   matrix_info->rows=rows;
   matrix_info->stride=stride;
@@ -371,7 +371,7 @@ MagickExport double **AcquireMagickMatrix(const size_t number_rows,
 MagickExport MatrixInfo *DestroyMatrixInfo(MatrixInfo *matrix_info)
 {
   assert(matrix_info != (MatrixInfo *) NULL);
-  assert(matrix_info->signature == MagickSignature);
+  assert(matrix_info->signature == MagickCoreSignature);
   LockSemaphoreInfo(matrix_info->semaphore);
   switch (matrix_info->type)
   {
@@ -611,7 +611,7 @@ MagickExport MagickBooleanType GaussJordanElimination(double **matrix,
 MagickExport size_t GetMatrixColumns(const MatrixInfo *matrix_info)
 {
   assert(matrix_info != (MatrixInfo *) NULL);
-  assert(matrix_info->signature == MagickSignature);
+  assert(matrix_info->signature == MagickCoreSignature);
   return(matrix_info->columns);
 }
 
@@ -712,7 +712,7 @@ MagickExport MagickBooleanType GetMatrixElement(const MatrixInfo *matrix_info,
     i;
 
   assert(matrix_info != (const MatrixInfo *) NULL);
-  assert(matrix_info->signature == MagickSignature);
+  assert(matrix_info->signature == MagickCoreSignature);
   i=(MagickOffsetType) EdgeY(y,matrix_info->rows)*matrix_info->columns+
     EdgeX(x,matrix_info->columns);
   if (matrix_info->type != DiskCache)
@@ -753,7 +753,7 @@ MagickExport MagickBooleanType GetMatrixElement(const MatrixInfo *matrix_info,
 MagickExport size_t GetMatrixRows(const MatrixInfo *matrix_info)
 {
   assert(matrix_info != (const MatrixInfo *) NULL);
-  assert(matrix_info->signature == MagickSignature);
+  assert(matrix_info->signature == MagickCoreSignature);
   return(matrix_info->rows);
 }
 
@@ -893,9 +893,9 @@ MagickExport Image *MatrixToImage(const MatrixInfo *matrix_info,
     y;
 
   assert(matrix_info != (const MatrixInfo *) NULL);
-  assert(matrix_info->signature == MagickSignature);
+  assert(matrix_info->signature == MagickCoreSignature);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   if (matrix_info->stride < sizeof(double))
     return((Image *) NULL);
   /*
@@ -1014,7 +1014,7 @@ MagickExport MagickBooleanType NullMatrix(MatrixInfo *matrix_info)
     value;
 
   assert(matrix_info != (const MatrixInfo *) NULL);
-  assert(matrix_info->signature == MagickSignature);
+  assert(matrix_info->signature == MagickCoreSignature);
   if (matrix_info->type != DiskCache)
     {
       (void) ResetMagickMemory(matrix_info->elements,0,(size_t)
@@ -1116,7 +1116,7 @@ MagickExport MagickBooleanType SetMatrixElement(const MatrixInfo *matrix_info,
     i;
 
   assert(matrix_info != (const MatrixInfo *) NULL);
-  assert(matrix_info->signature == MagickSignature);
+  assert(matrix_info->signature == MagickCoreSignature);
   i=(MagickOffsetType) y*matrix_info->columns+x;
   if ((i < 0) ||
       ((MagickSizeType) (i*matrix_info->stride) >= matrix_info->length))

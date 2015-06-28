@@ -168,11 +168,11 @@ MagickExport MagickBooleanType CloneImageProfiles(Image *image,
   const Image *clone_image)
 {
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(clone_image != (const Image *) NULL);
-  assert(clone_image->signature == MagickSignature);
+  assert(clone_image->signature == MagickCoreSignature);
   if (clone_image->profiles != (void *) NULL)
     {
       if (image->profiles != (void *) NULL)
@@ -210,7 +210,7 @@ MagickExport MagickBooleanType CloneImageProfiles(Image *image,
 MagickExport MagickBooleanType DeleteImageProfile(Image *image,const char *name)
 {
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->profiles == (SplayTreeInfo *) NULL)
@@ -278,7 +278,7 @@ MagickExport const StringInfo *GetImageProfile(const Image *image,
     *profile;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->profiles == (SplayTreeInfo *) NULL)
@@ -313,7 +313,7 @@ MagickExport const StringInfo *GetImageProfile(const Image *image,
 MagickExport char *GetNextImageProfile(const Image *image)
 {
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->profiles == (SplayTreeInfo *) NULL)
@@ -771,7 +771,7 @@ static MagickBooleanType SetsRGBImageProfile(Image *image,
     status;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (GetImageProfile(image,"icc") != (const StringInfo *) NULL)
     return(MagickFalse);
   profile=AcquireStringInfo(sizeof(sRGBProfile));
@@ -801,7 +801,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
     *profile;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(name != (const char *) NULL);
@@ -1298,7 +1298,7 @@ MagickExport StringInfo *RemoveImageProfile(Image *image,const char *name)
     *profile;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->profiles == (SplayTreeInfo *) NULL)
@@ -1336,7 +1336,7 @@ MagickExport StringInfo *RemoveImageProfile(Image *image,const char *name)
 MagickExport void ResetImageProfileIterator(const Image *image)
 {
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->profiles == (SplayTreeInfo *) NULL)
@@ -1684,7 +1684,7 @@ static MagickBooleanType SetImageProfileInternal(Image *image,const char *name,
     status;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->profiles == (SplayTreeInfo *) NULL)

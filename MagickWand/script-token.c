@@ -235,7 +235,7 @@ WandExport ScriptTokenInfo *AcquireScriptTokenInfo(const char *filename)
 
   token_info->status=(token_info->token != (char *) NULL)
                       ? TokenStatusOK : TokenStatusMemoryFailed;
-  token_info->signature=WandSignature;
+  token_info->signature=MagickWandSignature;
 
   return token_info;
 }
@@ -266,7 +266,7 @@ WandExport ScriptTokenInfo *AcquireScriptTokenInfo(const char *filename)
 WandExport ScriptTokenInfo * DestroyScriptTokenInfo(ScriptTokenInfo *token_info)
 {
   assert(token_info != (ScriptTokenInfo *) NULL);
-  assert(token_info->signature == WandSignature);
+  assert(token_info->signature == MagickWandSignature);
 
   if ( token_info->opened != MagickFalse )
     fclose(token_info->stream);

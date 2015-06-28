@@ -13234,12 +13234,12 @@ static MagickBooleanType WriteMAGICKImage(const ImageInfo *image_info,
     Write logo image.
   */
   assert(image_info != (const ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
+  assert(image_info->signature == MagickCoreSignature);
   if (image_info->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   magick_image=CloneImage(image,0,0,MagickTrue,exception);
   if (magick_image == (Image *) NULL)
     ThrowWriterException(ResourceLimitError,exception->reason);

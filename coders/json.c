@@ -109,8 +109,7 @@ ModuleExport size_t RegisterJSONImage(void)
   MagickInfo
     *entry;
 
-  entry=AcquireMagickInfo("JSON","JSON",
-    "The image format and characteristics");
+  entry=AcquireMagickInfo("JSON","JSON","The image format and characteristics");
   entry->encoder=(EncodeImageHandler *) WriteJSONImage;
   entry->flags^=CoderBlobSupportFlag;
   (void) RegisterMagickInfo(entry);
@@ -279,7 +278,7 @@ static ChannelStatistics *GetLocationStatistics(const Image *image,
     y;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   channel_statistics=(ChannelStatistics *) AcquireQuantumMemory(
@@ -649,16 +648,12 @@ static ssize_t PrintChannelStatistics(FILE *file,const PixelChannel channel,
     n;
 
   n=FormatLocaleFile(file,StatisticsFormat,name,ClampToQuantum(scale*
-    channel_statistics[channel].minima),channel_statistics[channel].minima/
-    (double) QuantumRange,ClampToQuantum(scale*
-    channel_statistics[channel].maxima),channel_statistics[channel].maxima/
-    (double) QuantumRange,scale*channel_statistics[channel].mean,
-    channel_statistics[channel].mean/(double) QuantumRange,scale*
-    channel_statistics[channel].standard_deviation,
-    channel_statistics[channel].standard_deviation/(double) QuantumRange,
+    channel_statistics[channel].minima),ClampToQuantum(scale*
+    channel_statistics[channel].maxima),scale*channel_statistics[channel].mean,
+    scale*channel_statistics[channel].standard_deviation,
     channel_statistics[channel].kurtosis,channel_statistics[channel].skewness);
   if (separator != MagickFalse)
-     (void) FormatLocaleFile(file,",");
+    (void) FormatLocaleFile(file,",");
   (void) FormatLocaleFile(file,"\n");
   return(n);
 }
@@ -723,7 +718,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
     y;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   *format='\0';
@@ -732,6 +727,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
   GetTimerInfo(&image->timer);
   p=GetVirtualPixels(image,0,0,1,1,exception);
   ping=p == (const Quantum *) NULL ? MagickTrue : MagickFalse;
+  (void) ping;
   type=GetImageType(image,exception);
   (void) SignatureImage(image,exception);
   JsonFormatLocaleFile(file,"{\n  \"image\": {\n    \"name\": %s,\n",
@@ -1089,7 +1085,8 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
     }
     if (image->colorspace == CMYKColorspace)
       (void) FormatLocaleFile(file,"    \"totalInkDensity\": \"%.*g%%\",\n",
-        GetImageTotalInkDensity(image,exception)/(double) QuantumRange);
+        GetMagickPrecision(),100.0*GetImageTotalInkDensity(image,exception)/
+        (double) QuantumRange);
     x=0;
     if (image->alpha_trait != UndefinedPixelTrait)
       {
@@ -1576,9 +1573,9 @@ static MagickBooleanType WriteJSONImage(const ImageInfo *image_info,
     Open output image file.
   */
   assert(image_info != (const ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
+  assert(image_info->signature == MagickCoreSignature);
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   status=OpenBlob(image_info,image,WriteBlobMode,exception);

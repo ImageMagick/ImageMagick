@@ -124,7 +124,7 @@ WandExport WandView *CloneWandView(const WandView *wand_view)
     i;
 
   assert(wand_view != (WandView *) NULL);
-  assert(wand_view->signature == WandSignature);
+  assert(wand_view->signature == MagickWandSignature);
   if (wand_view->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand_view->name);
   clone_view=(WandView *) AcquireMagickMemory(sizeof(*clone_view));
@@ -148,7 +148,7 @@ WandExport WandView *CloneWandView(const WandView *wand_view)
   clone_view->debug=wand_view->debug;
   if (clone_view->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",clone_view->name);
-  clone_view->signature=WandSignature;
+  clone_view->signature=MagickWandSignature;
   return(clone_view);
 }
 
@@ -192,13 +192,13 @@ static PixelWand ***DestroyPixelsThreadSet(PixelWand ***pixel_wands,
 WandExport WandView *DestroyWandView(WandView *wand_view)
 {
   assert(wand_view != (WandView *) NULL);
-  assert(wand_view->signature == WandSignature);
+  assert(wand_view->signature == MagickWandSignature);
   wand_view->pixel_wands=DestroyPixelsThreadSet(wand_view->pixel_wands,
     wand_view->extent.width);
   wand_view->image=DestroyImage(wand_view->image);
   wand_view->view=DestroyCacheView(wand_view->view);
   wand_view->exception=DestroyExceptionInfo(wand_view->exception);
-  wand_view->signature=(~WandSignature);
+  wand_view->signature=(~MagickWandSignature);
   RelinquishWandId(wand_view->id);
   wand_view=(WandView *) RelinquishMagickMemory(wand_view);
   return(wand_view);
@@ -278,7 +278,7 @@ WandExport MagickBooleanType DuplexTransferWandViewIterator(WandView *source,
     y;
 
   assert(source != (WandView *) NULL);
-  assert(source->signature == WandSignature);
+  assert(source->signature == MagickWandSignature);
   if (transfer == (DuplexTransferWandViewMethod) NULL)
     return(MagickFalse);
   source_image=source->wand->images;
@@ -417,7 +417,7 @@ WandExport char *GetWandViewException(const WandView *wand_view,
     *description;
 
   assert(wand_view != (const WandView *) NULL);
-  assert(wand_view->signature == WandSignature);
+  assert(wand_view->signature == MagickWandSignature);
   if (wand_view->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand_view->name);
   assert(severity != (ExceptionType *) NULL);
@@ -468,7 +468,7 @@ WandExport char *GetWandViewException(const WandView *wand_view,
 WandExport RectangleInfo GetWandViewExtent(const WandView *wand_view)
 {
   assert(wand_view != (WandView *) NULL);
-  assert(wand_view->signature == WandSignature);
+  assert(wand_view->signature == MagickWandSignature);
   return(wand_view->extent);
 }
 
@@ -536,7 +536,7 @@ WandExport MagickBooleanType GetWandViewIterator(WandView *source,
     y;
 
   assert(source != (WandView *) NULL);
-  assert(source->signature == WandSignature);
+  assert(source->signature == MagickWandSignature);
   if (get == (GetWandViewMethod) NULL)
     return(MagickFalse);
   source_image=source->wand->images;
@@ -619,7 +619,7 @@ WandExport PixelWand **GetWandViewPixels(const WandView *wand_view)
     id = GetOpenMPThreadId();
 
   assert(wand_view != (WandView *) NULL);
-  assert(wand_view->signature == WandSignature);
+  assert(wand_view->signature == MagickWandSignature);
   return(wand_view->pixel_wands[id]);
 }
 
@@ -648,7 +648,7 @@ WandExport PixelWand **GetWandViewPixels(const WandView *wand_view)
 WandExport MagickWand *GetWandViewWand(const WandView *wand_view)
 {
   assert(wand_view != (WandView *) NULL);
-  assert(wand_view->signature == WandSignature);
+  assert(wand_view->signature == MagickWandSignature);
   return(wand_view->wand);
 }
 
@@ -682,7 +682,7 @@ WandExport MagickBooleanType IsWandView(const WandView *wand_view)
 
   if (wand_view == (const WandView *) NULL)
     return(MagickFalse);
-  if (wand_view->signature != WandSignature)
+  if (wand_view->signature != MagickWandSignature)
     return(MagickFalse);
   length=strlen(WandViewId);
   if (LocaleNCompare(wand_view->name,WandViewId,length) != 0)
@@ -749,7 +749,7 @@ WandExport WandView *NewWandView(MagickWand *wand)
     *wand_view;
 
   assert(wand != (MagickWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   wand_view=(WandView *) AcquireMagickMemory(sizeof(*wand_view));
   if (wand_view == (WandView *) NULL)
     ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
@@ -770,7 +770,7 @@ WandExport WandView *NewWandView(MagickWand *wand)
     ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
       GetExceptionMessage(errno));
   wand_view->debug=IsEventLogging();
-  wand_view->signature=WandSignature;
+  wand_view->signature=MagickWandSignature;
   return(wand_view);
 }
 
@@ -811,7 +811,7 @@ WandExport WandView *NewWandViewExtent(MagickWand *wand,const ssize_t x,
     *wand_view;
 
   assert(wand != (MagickWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   wand_view=(WandView *) AcquireMagickMemory(sizeof(*wand_view));
   if (wand_view == (WandView *) NULL)
     ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
@@ -834,7 +834,7 @@ WandExport WandView *NewWandViewExtent(MagickWand *wand,const ssize_t x,
     ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
       GetExceptionMessage(errno));
   wand_view->debug=IsEventLogging();
-  wand_view->signature=WandSignature;
+  wand_view->signature=MagickWandSignature;
   return(wand_view);
 }
 
@@ -866,7 +866,7 @@ MagickExport void SetWandViewDescription(WandView *wand_view,
   const char *description)
 {
   assert(wand_view != (WandView *) NULL);
-  assert(wand_view->signature == WandSignature);
+  assert(wand_view->signature == MagickWandSignature);
   wand_view->description=ConstantString(description);
 }
 
@@ -935,7 +935,7 @@ WandExport MagickBooleanType SetWandViewIterator(WandView *destination,
     y;
 
   assert(destination != (WandView *) NULL);
-  assert(destination->signature == WandSignature);
+  assert(destination->signature == MagickWandSignature);
   if (set == (SetWandViewMethod) NULL)
     return(MagickFalse);
   destination_image=destination->wand->images;
@@ -1071,7 +1071,7 @@ WandExport MagickBooleanType TransferWandViewIterator(WandView *source,
     y;
 
   assert(source != (WandView *) NULL);
-  assert(source->signature == WandSignature);
+  assert(source->signature == MagickWandSignature);
   if (transfer == (TransferWandViewMethod) NULL)
     return(MagickFalse);
   source_image=source->wand->images;
@@ -1227,7 +1227,7 @@ WandExport MagickBooleanType UpdateWandViewIterator(WandView *source,
     y;
 
   assert(source != (WandView *) NULL);
-  assert(source->signature == WandSignature);
+  assert(source->signature == MagickWandSignature);
   if (update == (UpdateWandViewMethod) NULL)
     return(MagickFalse);
   source_image=source->wand->images;

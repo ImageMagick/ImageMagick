@@ -94,7 +94,7 @@ extern "C" {
 # endif
 #endif
 
-#define WandSignature  0xabacadabUL
+#define MagickWandSignature  0xabacadabUL
 #if !defined(MagickPathExtent)
 # define MagickPathExtent  4096
 #endif

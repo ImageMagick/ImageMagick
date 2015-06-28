@@ -83,7 +83,7 @@ MagickExport void AppendImageToList(Image **images,const Image *append)
   assert(images != (Image **) NULL);
   if (append == (Image *) NULL)
     return;
-  assert(append->signature == MagickSignature);
+  assert(append->signature == MagickCoreSignature);
   if (append->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",append->filename);
   if ((*images) == (Image *) NULL)
@@ -91,7 +91,7 @@ MagickExport void AppendImageToList(Image **images,const Image *append)
       *images=(Image *) append;
       return;
     }
-  assert((*images)->signature == MagickSignature);
+  assert((*images)->signature == MagickCoreSignature);
   p=GetLastImageInList(*images);
   q=GetFirstImageInList(append);
   p->next=q;
@@ -133,7 +133,7 @@ MagickExport Image *CloneImageList(const Image *images,ExceptionInfo *exception)
 
   if (images == (Image *) NULL)
     return((Image *) NULL);
-  assert(images->signature == MagickSignature);
+  assert(images->signature == MagickCoreSignature);
   while (images->previous != (Image *) NULL)
     images=images->previous;
   image=(Image *) NULL;
@@ -221,12 +221,12 @@ MagickExport Image *CloneImages(const Image *images,const char *scenes,
     length;
 
   assert(images != (const Image *) NULL);
-  assert(images->signature == MagickSignature);
+  assert(images->signature == MagickCoreSignature);
   assert(scenes != (char *) NULL);
   if (images->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   clone_images=NewImageList();
   images=GetFirstImageInList(images);
   length=GetImageListLength(images);
@@ -357,13 +357,13 @@ MagickExport void DeleteImages(Image **images,const char *scenes,
     length;
 
   assert(images != (Image **) NULL);
-  assert((*images)->signature == MagickSignature);
+  assert((*images)->signature == MagickCoreSignature);
   assert(scenes != (char *) NULL);
   if ((*images)->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       (*images)->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   *images=GetFirstImageInList(*images);
   length=GetImageListLength(*images);
   delete_list=(MagickBooleanType *) AcquireQuantumMemory(length,
@@ -444,7 +444,7 @@ MagickExport Image *DestroyImageList(Image *images)
 {
   if (images == (Image *) NULL)
     return((Image *) NULL);
-  assert(images->signature == MagickSignature);
+  assert(images->signature == MagickCoreSignature);
   if (images->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
   while (images != (Image *) NULL)
@@ -502,12 +502,12 @@ MagickExport Image *DuplicateImages(Image *images,
     Duplicate images.
   */
   assert(images != (Image *) NULL);
-  assert(images->signature == MagickSignature);
+  assert(images->signature == MagickCoreSignature);
   assert(scenes != (char *) NULL);
   if (images->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   duplicate_images=NewImageList();
   for (i=0; i < (ssize_t) number_duplicates; i++)
   {
@@ -546,7 +546,7 @@ MagickExport Image *GetFirstImageInList(const Image *images)
 
   if (images == (Image *) NULL)
     return((Image *) NULL);
-  assert(images->signature == MagickSignature);
+  assert(images->signature == MagickCoreSignature);
   for (p=images; p->previous != (Image *) NULL; p=p->previous) ;
   return((Image *) p);
 }
@@ -593,7 +593,7 @@ MagickExport Image *GetImageFromList(const Image *images,const ssize_t index)
 
   if (images == (Image *) NULL)
     return((Image *) NULL);
-  assert(images->signature == MagickSignature);
+  assert(images->signature == MagickCoreSignature);
   if (images->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
 
@@ -649,7 +649,7 @@ MagickExport ssize_t GetImageIndexInList(const Image *images)
 
   if (images == (const Image *) NULL)
     return(-1);
-  assert(images->signature == MagickSignature);
+  assert(images->signature == MagickCoreSignature);
   for (i=0; images->previous != (Image *) NULL; i++)
     images=images->previous;
   return(i);
@@ -685,7 +685,7 @@ MagickExport size_t GetImageListLength(const Image *images)
 
   if (images == (Image *) NULL)
     return(0);
-  assert(images->signature == MagickSignature);
+  assert(images->signature == MagickCoreSignature);
   if (images->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
   images=GetLastImageInList(images);
@@ -723,7 +723,7 @@ MagickExport Image *GetLastImageInList(const Image *images)
 
   if (images == (Image *) NULL)
     return((Image *) NULL);
-  assert(images->signature == MagickSignature);
+  assert(images->signature == MagickCoreSignature);
   for (p=images; p->next != (Image *) NULL; p=p->next) ;
   return((Image *) p);
 }
@@ -754,7 +754,7 @@ MagickExport Image *GetNextImageInList(const Image *images)
 {
   if (images == (Image *) NULL)
     return((Image *) NULL);
-  assert(images->signature == MagickSignature);
+  assert(images->signature == MagickCoreSignature);
   if (images->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
   return(images->next);
@@ -786,7 +786,7 @@ MagickExport Image *GetPreviousImageInList(const Image *images)
 {
   if (images == (Image *) NULL)
     return((Image *) NULL);
-  assert(images->signature == MagickSignature);
+  assert(images->signature == MagickCoreSignature);
   return(images->previous);
 }
 
@@ -834,7 +834,7 @@ MagickExport Image **ImageListToArray(const Image *images,
 
   if (images == (Image *) NULL)
     return((Image **) NULL);
-  assert(images->signature == MagickSignature);
+  assert(images->signature == MagickCoreSignature);
   if (images->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
   group=(Image **) AcquireQuantumMemory((size_t) GetImageListLength(images)+1UL,
@@ -885,12 +885,12 @@ MagickExport void InsertImageInList(Image **images,Image *insert)
 
   assert(images != (Image **) NULL);
   assert(insert != (Image *) NULL);
-  assert(insert->signature == MagickSignature);
+  assert(insert->signature == MagickCoreSignature);
   if (insert->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",insert->filename);
   if ((*images) == (Image *) NULL)
     return;
-  assert((*images)->signature == MagickSignature);
+  assert((*images)->signature == MagickCoreSignature);
   split=SplitImageList(*images);
   AppendImageToList(images,insert);
   AppendImageToList(images,split);
@@ -987,7 +987,7 @@ MagickExport Image *RemoveImageFromList(Image **images)
   assert(images != (Image **) NULL);
   if ((*images) == (Image *) NULL)
     return((Image *) NULL);
-  assert((*images)->signature == MagickSignature);
+  assert((*images)->signature == MagickCoreSignature);
   if ((*images)->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       (*images)->filename);
@@ -1046,7 +1046,7 @@ MagickExport Image *RemoveFirstImageFromList(Image **images)
   assert(images != (Image **) NULL);
   if ((*images) == (Image *) NULL)
     return((Image *) NULL);
-  assert((*images)->signature == MagickSignature);
+  assert((*images)->signature == MagickCoreSignature);
   if ((*images)->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       (*images)->filename);
@@ -1097,7 +1097,7 @@ MagickExport Image *RemoveLastImageFromList(Image **images)
   assert(images != (Image **) NULL);
   if ((*images) == (Image *) NULL)
     return((Image *) NULL);
-  assert((*images)->signature == MagickSignature);
+  assert((*images)->signature == MagickCoreSignature);
   if ((*images)->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       (*images)->filename);
@@ -1146,12 +1146,12 @@ MagickExport void ReplaceImageInList(Image **images,Image *replace)
 {
   assert(images != (Image **) NULL);
   assert(replace != (Image *) NULL);
-  assert(replace->signature == MagickSignature);
+  assert(replace->signature == MagickCoreSignature);
   if (replace->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",replace->filename);
   if ((*images) == (Image *) NULL)
     return;
-  assert((*images)->signature == MagickSignature);
+  assert((*images)->signature == MagickCoreSignature);
 
   /* link next pointer */
   replace=GetLastImageInList(replace);
@@ -1204,12 +1204,12 @@ MagickExport void ReplaceImageInListReturnLast(Image **images,Image *replace)
 {
   assert(images != (Image **) NULL);
   assert(replace != (Image *) NULL);
-  assert(replace->signature == MagickSignature);
+  assert(replace->signature == MagickCoreSignature);
   if (replace->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",replace->filename);
   if ((*images) == (Image *) NULL)
     return;
-  assert((*images)->signature == MagickSignature);
+  assert((*images)->signature == MagickCoreSignature);
 
   /* link previous pointer */
   replace=GetFirstImageInList(replace);
@@ -1262,7 +1262,7 @@ MagickExport void ReverseImageList(Image **images)
   assert(images != (Image **) NULL);
   if ((*images) == (Image *) NULL)
     return;
-  assert((*images)->signature == MagickSignature);
+  assert((*images)->signature == MagickCoreSignature);
   if ((*images)->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       (*images)->filename);
@@ -1316,10 +1316,10 @@ MagickExport Image *SpliceImageIntoList(Image **images,
 
   assert(images != (Image **) NULL);
   assert(splice != (Image *) NULL);
-  assert(splice->signature == MagickSignature);
+  assert(splice->signature == MagickCoreSignature);
   if ((*images) == (Image *) NULL)
     return((Image *) NULL);
-  assert((*images)->signature == MagickSignature);
+  assert((*images)->signature == MagickCoreSignature);
   if ((*images)->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       (*images)->filename);
@@ -1395,7 +1395,7 @@ MagickExport void SyncImageList(Image *images)
 
   if (images == (Image *) NULL)
     return;
-  assert(images->signature == MagickSignature);
+  assert(images->signature == MagickCoreSignature);
   for (p=images; p != (Image *) NULL; p=p->next)
   {
     for (q=p->next; q != (Image *) NULL; q=q->next)
@@ -1437,7 +1437,7 @@ MagickExport Image *SyncNextImageInList(const Image *images)
 {
   if (images == (Image *) NULL)
     return((Image *) NULL);
-  assert(images->signature == MagickSignature);
+  assert(images->signature == MagickCoreSignature);
   if (images->next == (Image *) NULL)
     return((Image *) NULL);
   if (images->blob != images->next->blob)

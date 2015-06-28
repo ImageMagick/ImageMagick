@@ -265,7 +265,7 @@ static void ImportAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
     pixel;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   switch (quantum_info->depth)
   {
     case 8:
@@ -385,7 +385,7 @@ static void ImportBGRQuantum(const Image *image,QuantumInfo *quantum_info,
     pixel;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   switch (quantum_info->depth)
   {
     case 8:
@@ -693,7 +693,7 @@ static void ImportBGRAQuantum(const Image *image,QuantumInfo *quantum_info,
     pixel;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   switch (quantum_info->depth)
   {
     case 8:
@@ -927,7 +927,7 @@ static void ImportBGROQuantum(const Image *image,QuantumInfo *quantum_info,
     pixel;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   switch (quantum_info->depth)
   {
     case 8:
@@ -1282,7 +1282,7 @@ static void ImportBlueQuantum(const Image *image,QuantumInfo *quantum_info,
     pixel;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   switch (quantum_info->depth)
   {
     case 8:
@@ -1399,7 +1399,7 @@ static void ImportCbYCrYQuantum(const Image *image,QuantumInfo *quantum_info,
     pixel;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   switch (quantum_info->depth)
   {
     case 10:
@@ -2023,7 +2023,7 @@ static void ImportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
     pixel;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   switch (quantum_info->depth)
   {
     case 1:
@@ -2337,7 +2337,7 @@ static void ImportGrayAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
     pixel;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   switch (quantum_info->depth)
   {
     case 1:
@@ -2545,7 +2545,7 @@ static void ImportGreenQuantum(const Image *image,QuantumInfo *quantum_info,
     pixel;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   switch (quantum_info->depth)
   {
     case 8:
@@ -3088,7 +3088,7 @@ static void ImportOpacityQuantum(const Image *image,QuantumInfo *quantum_info,
     pixel;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   switch (quantum_info->depth)
   {
     case 8:
@@ -3205,7 +3205,7 @@ static void ImportRedQuantum(const Image *image,QuantumInfo *quantum_info,
     pixel;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   switch (quantum_info->depth)
   {
     case 8:
@@ -3325,7 +3325,7 @@ static void ImportRGBQuantum(const Image *image,QuantumInfo *quantum_info,
     pixel;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   switch (quantum_info->depth)
   {
     case 8:
@@ -3633,7 +3633,7 @@ static void ImportRGBAQuantum(const Image *image,QuantumInfo *quantum_info,
     pixel;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   switch (quantum_info->depth)
   {
     case 8:
@@ -3867,7 +3867,7 @@ static void ImportRGBOQuantum(const Image *image,QuantumInfo *quantum_info,
     pixel;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   switch (quantum_info->depth)
   {
     case 8:
@@ -4108,11 +4108,11 @@ MagickExport size_t ImportQuantumPixels(const Image *image,
     extent;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(quantum_info != (QuantumInfo *) NULL);
-  assert(quantum_info->signature == MagickSignature);
+  assert(quantum_info->signature == MagickCoreSignature);
   if (pixels == (const unsigned char *) NULL)
     pixels=(const unsigned char *) GetQuantumPixels(quantum_info);
   x=0;

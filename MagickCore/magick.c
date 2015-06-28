@@ -181,7 +181,7 @@ MagickExport MagickInfo *AcquireMagickInfo(const char *module,
   magick_info->flags=CoderAdjoinFlag | CoderBlobSupportFlag |
     CoderDecoderThreadSupportFlag | CoderEncoderThreadSupportFlag |
     CoderUseExtensionFlag;
-  magick_info->signature=MagickSignature;
+  magick_info->signature=MagickCoreSignature;
   return(magick_info);
 }
 
@@ -210,7 +210,7 @@ MagickExport MagickInfo *AcquireMagickInfo(const char *module,
 MagickExport DecodeImageHandler *GetImageDecoder(const MagickInfo *magick_info)
 {
   assert(magick_info != (MagickInfo *) NULL);
-  assert(magick_info->signature == MagickSignature);
+  assert(magick_info->signature == MagickCoreSignature);
   return(magick_info->decoder);
 }
 
@@ -239,7 +239,7 @@ MagickExport DecodeImageHandler *GetImageDecoder(const MagickInfo *magick_info)
 MagickExport EncodeImageHandler *GetImageEncoder(const MagickInfo *magick_info)
 {
   assert(magick_info != (MagickInfo *) NULL);
-  assert(magick_info->signature == MagickSignature);
+  assert(magick_info->signature == MagickCoreSignature);
   return(magick_info->encoder);
 }
 
@@ -335,7 +335,7 @@ MagickExport MagickBooleanType GetImageMagick(const unsigned char *magick,
 MagickExport MagickBooleanType GetMagickAdjoin(const MagickInfo *magick_info)
 {
   assert(magick_info != (MagickInfo *) NULL);
-  assert(magick_info->signature == MagickSignature);
+  assert(magick_info->signature == MagickCoreSignature);
   return(((magick_info->flags & CoderAdjoinFlag) == 0) ? MagickFalse :
     MagickTrue);
 }
@@ -366,7 +366,7 @@ MagickExport MagickBooleanType GetMagickBlobSupport(
   const MagickInfo *magick_info)
 {
   assert(magick_info != (MagickInfo *) NULL);
-  assert(magick_info->signature == MagickSignature);
+  assert(magick_info->signature == MagickCoreSignature);
   return(((magick_info->flags & CoderBlobSupportFlag) == 0) ? MagickFalse :
     MagickTrue);
 }
@@ -399,7 +399,7 @@ MagickExport MagickBooleanType GetMagickDecoderThreadSupport(
   const MagickInfo *magick_info)
 {
   assert(magick_info != (MagickInfo *) NULL);
-  assert(magick_info->signature == MagickSignature);
+  assert(magick_info->signature == MagickCoreSignature);
   return(((magick_info->flags & CoderDecoderThreadSupportFlag) == 0) ?
     MagickFalse : MagickTrue);
 }
@@ -429,7 +429,7 @@ MagickExport MagickBooleanType GetMagickDecoderThreadSupport(
 MagickExport const char *GetMagickDescription(const MagickInfo *magick_info)
 {
   assert(magick_info != (MagickInfo *) NULL);
-  assert(magick_info->signature == MagickSignature);
+  assert(magick_info->signature == MagickCoreSignature);
   return(magick_info->description);
 }
 
@@ -461,7 +461,7 @@ MagickExport MagickBooleanType GetMagickEncoderThreadSupport(
   const MagickInfo *magick_info)
 {
   assert(magick_info != (MagickInfo *) NULL);
-  assert(magick_info->signature == MagickSignature);
+  assert(magick_info->signature == MagickCoreSignature);
   return(((magick_info->flags & CoderDecoderThreadSupportFlag) == 0) ?
     MagickFalse : MagickTrue);
 }
@@ -493,7 +493,7 @@ MagickExport MagickBooleanType GetMagickEndianSupport(
   const MagickInfo *magick_info)
 {
   assert(magick_info != (MagickInfo *) NULL);
-  assert(magick_info->signature == MagickSignature);
+  assert(magick_info->signature == MagickCoreSignature);
   return(((magick_info->flags & CoderEndianSupportFlag) == 0) ? MagickFalse :
     MagickTrue);
 }
@@ -784,7 +784,7 @@ MagickExport char **GetMagickList(const char *pattern,
 MagickExport const char *GetMagickMimeType(const MagickInfo *magick_info)
 {
   assert(magick_info != (MagickInfo *) NULL);
-  assert(magick_info->signature == MagickSignature);
+  assert(magick_info->signature == MagickCoreSignature);
   return(magick_info->mime_type);
 }
 
@@ -839,7 +839,7 @@ MagickExport MagickBooleanType GetMagickRawSupport(
   const MagickInfo *magick_info)
 {
   assert(magick_info != (MagickInfo *) NULL);
-  assert(magick_info->signature == MagickSignature);
+  assert(magick_info->signature == MagickCoreSignature);
   return(((magick_info->flags & CoderRawSupportFlag) == 0) ? MagickFalse :
     MagickTrue);
 }
@@ -871,7 +871,7 @@ MagickExport MagickBooleanType GetMagickSeekableStream(
   const MagickInfo *magick_info)
 {
   assert(magick_info != (MagickInfo *) NULL);
-  assert(magick_info->signature == MagickSignature);
+  assert(magick_info->signature == MagickCoreSignature);
   return(((magick_info->flags & CoderSeekableStreamFlag) == 0) ? MagickFalse :
     MagickTrue);
 }
@@ -901,7 +901,7 @@ MagickExport MagickBooleanType GetMagickSeekableStream(
 MagickExport MagickBooleanType GetMagickStealth(const MagickInfo *magick_info)
 {
   assert(magick_info != (MagickInfo *) NULL);
-  assert(magick_info->signature == MagickSignature);
+  assert(magick_info->signature == MagickCoreSignature);
   return(((magick_info->flags & CoderStealthFlag) == 0) ? MagickFalse :
     MagickTrue);
 }
@@ -934,7 +934,7 @@ MagickExport MagickBooleanType GetMagickUseExtension(
   const MagickInfo *magick_info)
 {
   assert(magick_info != (MagickInfo *) NULL);
-  assert(magick_info->signature == MagickSignature);
+  assert(magick_info->signature == MagickCoreSignature);
   return(((magick_info->flags & CoderUseExtensionFlag) == 0) ? MagickFalse :
     MagickTrue);
 }
@@ -1589,7 +1589,7 @@ MagickExport MagickBooleanType RegisterMagickInfo(MagickInfo *magick_info)
     Register a new image format.
   */
   assert(magick_info != (MagickInfo *) NULL);
-  assert(magick_info->signature == MagickSignature);
+  assert(magick_info->signature == MagickCoreSignature);
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",magick_info->name);
   if (magick_list == (SplayTreeInfo *) NULL)
     return(MagickFalse);

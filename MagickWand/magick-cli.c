@@ -127,7 +127,7 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,const char *filename,
 
   assert(filename != (char *) NULL ); /* at least one argument - script name */
   assert(cli_wand != (MagickCLI *) NULL);
-  assert(cli_wand->signature == WandSignature);
+  assert(cli_wand->signature == MagickWandSignature);
   if (IfMagickTrue(cli_wand->wand.debug))
     (void) LogMagickEvent(CommandEvent,GetMagickModule(),
          "Processing script \"%s\"", filename);
@@ -373,7 +373,7 @@ WandExport int ProcessCommandOptions(MagickCLI *cli_wand,int argc,char **argv,
   assert(argv[index] != (char *) NULL);
   assert(argv[argc-1] != (char *) NULL);
   assert(cli_wand != (MagickCLI *) NULL);
-  assert(cli_wand->signature == WandSignature);
+  assert(cli_wand->signature == MagickWandSignature);
 
   /* define the error location string for use in exceptions
      order of localtion format escapes: filename, line, column */

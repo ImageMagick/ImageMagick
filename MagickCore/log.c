@@ -310,7 +310,7 @@ static LinkedListInfo *AcquireLogCache(const char *filename,
     log_info->handler_mask=p->handler_mask;
     log_info->filename=ConstantString(p->filename);
     log_info->format=ConstantString(p->format);
-    log_info->signature=MagickSignature;
+    log_info->signature=MagickCoreSignature;
     status&=AppendValueToLinkedList(log_cache,log_info);
     if (status == MagickFalse)
       (void) ThrowMagickException(exception,GetMagickModule(),
@@ -1525,7 +1525,7 @@ static MagickBooleanType LoadLogCache(LinkedListInfo *log_cache,const char *xml,
         (void) ResetMagickMemory(log_info,0,sizeof(*log_info));
         log_info->path=ConstantString(filename);
         GetTimerInfo((TimerInfo *) &log_info->timer);
-        log_info->signature=MagickSignature;
+        log_info->signature=MagickCoreSignature;
         continue;
       }
     if (log_info == (LogInfo *) NULL)

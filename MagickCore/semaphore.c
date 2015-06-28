@@ -263,7 +263,7 @@ MagickExport SemaphoreInfo *AcquireSemaphoreInfo(void)
 #endif
   semaphore_info->id=GetMagickThreadId();
   semaphore_info->reference_count=0;
-  semaphore_info->signature=MagickSignature;
+  semaphore_info->signature=MagickCoreSignature;
   return(semaphore_info);
 }
 
@@ -292,7 +292,7 @@ MagickExport SemaphoreInfo *AcquireSemaphoreInfo(void)
 MagickExport void LockSemaphoreInfo(SemaphoreInfo *semaphore_info)
 {
   assert(semaphore_info != (SemaphoreInfo *) NULL);
-  assert(semaphore_info->signature == MagickSignature);
+  assert(semaphore_info->signature == MagickCoreSignature);
 #if defined(MAGICKCORE_DEBUG)
   if ((semaphore_info->reference_count > 0) &&
       (IsMagickThreadEqual(semaphore_info->id) != MagickFalse))
@@ -351,7 +351,7 @@ MagickExport void RelinquishSemaphoreInfo(SemaphoreInfo **semaphore_info)
 {
   assert(semaphore_info != (SemaphoreInfo **) NULL);
   assert((*semaphore_info) != (SemaphoreInfo *) NULL);
-  assert((*semaphore_info)->signature == MagickSignature);
+  assert((*semaphore_info)->signature == MagickCoreSignature);
   InitializeMagickMutex();
   LockMagickMutex();
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -372,7 +372,7 @@ MagickExport void RelinquishSemaphoreInfo(SemaphoreInfo **semaphore_info)
 #elif defined(MAGICKCORE_HAVE_WINTHREADS)
   DeleteCriticalSection(&(*semaphore_info)->mutex);
 #endif
-  (*semaphore_info)->signature=(~MagickSignature);
+  (*semaphore_info)->signature=(~MagickCoreSignature);
   *semaphore_info=(SemaphoreInfo *) RelinquishSemaphoreMemory(*semaphore_info);
   UnlockMagickMutex();
 }
@@ -449,7 +449,7 @@ MagickPrivate void SemaphoreComponentTerminus(void)
 MagickExport void UnlockSemaphoreInfo(SemaphoreInfo *semaphore_info)
 {
   assert(semaphore_info != (SemaphoreInfo *) NULL);
-  assert(semaphore_info->signature == MagickSignature);
+  assert(semaphore_info->signature == MagickCoreSignature);
 #if defined(MAGICKCORE_DEBUG)
   assert(IsMagickThreadEqual(semaphore_info->id) != MagickFalse);
   if (semaphore_info->reference_count == 0)

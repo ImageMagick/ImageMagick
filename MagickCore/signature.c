@@ -137,7 +137,7 @@ MagickPrivate SignatureInfo *AcquireSignatureInfo(void)
   signature_info->lsb_first=(int) (*(char *) &lsb_first) == 1 ? MagickTrue :
     MagickFalse;
   signature_info->timestamp=(ssize_t) time(0);
-  signature_info->signature=MagickSignature;
+  signature_info->signature=MagickCoreSignature;
   InitializeSignature(signature_info);
   return(signature_info);
 }
@@ -169,7 +169,7 @@ MagickPrivate SignatureInfo *DestroySignatureInfo(SignatureInfo *signature_info)
 {
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(signature_info != (SignatureInfo *) NULL);
-  assert(signature_info->signature == MagickSignature);
+  assert(signature_info->signature == MagickCoreSignature);
   if (signature_info->accumulator != (unsigned int *) NULL)
     signature_info->accumulator=(unsigned int *) RelinquishMagickMemory(
       signature_info->accumulator);
@@ -177,7 +177,7 @@ MagickPrivate SignatureInfo *DestroySignatureInfo(SignatureInfo *signature_info)
     signature_info->message=DestroyStringInfo(signature_info->message);
   if (signature_info->digest != (StringInfo *) NULL)
     signature_info->digest=DestroyStringInfo(signature_info->digest);
-  signature_info->signature=(~MagickSignature);
+  signature_info->signature=(~MagickCoreSignature);
   signature_info=(SignatureInfo *) RelinquishMagickMemory(signature_info);
   return(signature_info);
 }
@@ -228,7 +228,7 @@ MagickPrivate void FinalizeSignature(SignatureInfo *signature_info)
   */
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(signature_info != (SignatureInfo *) NULL);
-  assert(signature_info->signature == MagickSignature);
+  assert(signature_info->signature == MagickCoreSignature);
   low_order=signature_info->low_order;
   high_order=signature_info->high_order;
   count=((low_order >> 3) & 0x3f);
@@ -293,7 +293,7 @@ MagickPrivate unsigned int GetSignatureBlocksize(
 {
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(signature_info != (SignatureInfo *) NULL);
-  assert(signature_info->signature == MagickSignature);
+  assert(signature_info->signature == MagickCoreSignature);
   return(signature_info->blocksize);
 }
 
@@ -324,7 +324,7 @@ MagickPrivate const StringInfo *GetSignatureDigest(
 {
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(signature_info != (SignatureInfo *) NULL);
-  assert(signature_info->signature == MagickSignature);
+  assert(signature_info->signature == MagickCoreSignature);
   return(signature_info->digest);
 }
 
@@ -355,7 +355,7 @@ MagickPrivate unsigned int GetSignatureDigestsize(
 {
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(signature_info != (SignatureInfo *) NULL);
-  assert(signature_info->signature == MagickSignature);
+  assert(signature_info->signature == MagickCoreSignature);
   return(signature_info->digestsize);
 }
 
@@ -385,7 +385,7 @@ MagickPrivate void InitializeSignature(SignatureInfo *signature_info)
 {
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(signature_info != (SignatureInfo *) NULL);
-  assert(signature_info->signature == MagickSignature);
+  assert(signature_info->signature == MagickCoreSignature);
   signature_info->accumulator[0]=0x6a09e667U;
   signature_info->accumulator[1]=0xbb67ae85U;
   signature_info->accumulator[2]=0x3c6ef372U;
@@ -431,7 +431,7 @@ MagickPrivate void SetSignatureDigest(SignatureInfo *signature_info,
     Set the signature accumulator.
   */
   assert(signature_info != (SignatureInfo *) NULL);
-  assert(signature_info->signature == MagickSignature);
+  assert(signature_info->signature == MagickCoreSignature);
   SetStringInfo(signature_info->digest,digest);
 }
 
@@ -493,7 +493,7 @@ MagickExport MagickBooleanType SignatureImage(Image *image,
     Compute image digital signature.
   */
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   signature_info=AcquireSignatureInfo();
@@ -790,7 +790,7 @@ MagickPrivate void UpdateSignature(SignatureInfo *signature_info,
     Update the Signature accumulator.
   */
   assert(signature_info != (SignatureInfo *) NULL);
-  assert(signature_info->signature == MagickSignature);
+  assert(signature_info->signature == MagickCoreSignature);
   n=GetStringInfoLength(message);
   length=Trunc32((unsigned int) (signature_info->low_order+(n << 3)));
   if (length < signature_info->low_order)

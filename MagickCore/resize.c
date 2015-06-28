@@ -862,12 +862,12 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
     Allocate resize filter.
   */
   assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(UndefinedFilter < filter && filter < SentinelFilter);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   resize_filter=(ResizeFilter *) AcquireMagickMemory(sizeof(*resize_filter));
   if (resize_filter == (ResizeFilter *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
@@ -929,7 +929,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
   resize_filter->support=filters[filter_type].support;
   resize_filter->window=filters[window_type].function;
   resize_filter->scale=filters[window_type].scale;
-  resize_filter->signature=MagickSignature;
+  resize_filter->signature=MagickCoreSignature;
 
   /* Filter Modifications for orthogonal/cylindrical usage */
   if (cylindrical != MagickFalse)
@@ -1469,8 +1469,8 @@ static double BesselOrderOne(double x)
 MagickPrivate ResizeFilter *DestroyResizeFilter(ResizeFilter *resize_filter)
 {
   assert(resize_filter != (ResizeFilter *) NULL);
-  assert(resize_filter->signature == MagickSignature);
-  resize_filter->signature=(~MagickSignature);
+  assert(resize_filter->signature == MagickCoreSignature);
+  resize_filter->signature=(~MagickCoreSignature);
   resize_filter=(ResizeFilter *) RelinquishMagickMemory(resize_filter);
   return(resize_filter);
 }
@@ -1503,21 +1503,21 @@ MagickPrivate double *GetResizeFilterCoefficient(
   const ResizeFilter *resize_filter)
 {
   assert(resize_filter != (ResizeFilter *) NULL);
-  assert(resize_filter->signature == MagickSignature);
+  assert(resize_filter->signature == MagickCoreSignature);
   return((double *) resize_filter->coefficient);
 }
 
 MagickPrivate double GetResizeFilterBlur(const ResizeFilter *resize_filter)
 {
   assert(resize_filter != (ResizeFilter *) NULL);
-  assert(resize_filter->signature == MagickSignature);
+  assert(resize_filter->signature == MagickCoreSignature);
   return(resize_filter->blur);
 }
 
 MagickPrivate double GetResizeFilterScale(const ResizeFilter *resize_filter)
 {
   assert(resize_filter != (ResizeFilter *) NULL);
-  assert(resize_filter->signature == MagickSignature);
+  assert(resize_filter->signature == MagickCoreSignature);
   return(resize_filter->scale);
 }
 
@@ -1525,7 +1525,7 @@ MagickPrivate double GetResizeFilterWindowSupport(
   const ResizeFilter *resize_filter)
 {
   assert(resize_filter != (ResizeFilter *) NULL);
-  assert(resize_filter->signature == MagickSignature);
+  assert(resize_filter->signature == MagickCoreSignature);
   return(resize_filter->window_support);
 }
 
@@ -1533,7 +1533,7 @@ MagickPrivate ResizeWeightingFunctionType GetResizeFilterWeightingType(
   const ResizeFilter *resize_filter)
 {
   assert(resize_filter != (ResizeFilter *) NULL);
-  assert(resize_filter->signature == MagickSignature);
+  assert(resize_filter->signature == MagickCoreSignature);
   return(resize_filter->filterWeightingType);
 }
 
@@ -1541,14 +1541,14 @@ MagickPrivate ResizeWeightingFunctionType GetResizeFilterWindowWeightingType(
   const ResizeFilter *resize_filter)
 {
   assert(resize_filter != (ResizeFilter *) NULL);
-  assert(resize_filter->signature == MagickSignature);
+  assert(resize_filter->signature == MagickCoreSignature);
   return(resize_filter->windowWeightingType);
 }
 
 MagickPrivate double GetResizeFilterSupport(const ResizeFilter *resize_filter)
 {
   assert(resize_filter != (ResizeFilter *) NULL);
-  assert(resize_filter->signature == MagickSignature);
+  assert(resize_filter->signature == MagickCoreSignature);
   return(resize_filter->support*resize_filter->blur);
 }
 
@@ -1591,7 +1591,7 @@ MagickPrivate double GetResizeFilterWeight(const ResizeFilter *resize_filter,
     Windowing function - scale the weighting filter by this amount.
   */
   assert(resize_filter != (ResizeFilter *) NULL);
-  assert(resize_filter->signature == MagickSignature);
+  assert(resize_filter->signature == MagickCoreSignature);
   x_blur=fabs((double) x)/resize_filter->blur;  /* X offset with blur scaling */
   if ((resize_filter->window_support < MagickEpsilon) ||
       (resize_filter->window == Box))
@@ -1667,11 +1667,11 @@ MagickExport Image *InterpolativeResizeImage(const Image *image,
     Interpolatively resize image.
   */
   assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   if ((columns == 0) || (rows == 0))
     return((Image *) NULL);
   if ((columns == image->columns) && (rows == image->rows))
@@ -1844,11 +1844,11 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
     Liquid rescale image.
   */
   assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   if ((columns == 0) || (rows == 0))
     return((Image *) NULL);
   if ((columns == image->columns) && (rows == image->rows))
@@ -1961,11 +1961,11 @@ MagickExport Image *LiquidRescaleImage(const Image *image,
   ExceptionInfo *exception)
 {
   assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   (void) ThrowMagickException(exception,GetMagickModule(),MissingDelegateError,
     "DelegateLibrarySupportNotBuiltIn","'%s' (LQR)",image->filename);
   return((Image *) NULL);
@@ -2021,11 +2021,11 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
     Initialize magnified image attributes.
   */
   assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   magnify_image=CloneImage(image,2*image->columns,2*image->rows,MagickTrue,
     exception);
   if (magnify_image == (Image *) NULL)
@@ -2194,11 +2194,11 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
     *minify_image;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   minify_image=ResizeImage(image,image->columns/2,image->rows/2,SplineFilter,
     exception);
   return(minify_image);
@@ -2254,11 +2254,11 @@ MagickExport Image *ResampleImage(const Image *image,const double x_resolution,
     Initialize sampled image attributes.
   */
   assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   width=(size_t) (x_resolution*image->columns/(image->resolution.x == 0.0 ?
     72.0 : image->resolution.x)+0.5);
   height=(size_t) (y_resolution*image->rows/(image->resolution.y == 0.0 ?
@@ -2822,11 +2822,11 @@ MagickExport Image *ResizeImage(const Image *image,const size_t columns,
     Acquire resize image.
   */
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   if ((columns == 0) || (rows == 0))
     ThrowImageException(ImageError,"NegativeOrZeroImageSize");
   if ((columns == image->columns) && (rows == image->rows) &&
@@ -2967,11 +2967,11 @@ MagickExport Image *SampleImage(const Image *image,const size_t columns,
     Initialize sampled image attributes.
   */
   assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   if ((columns == 0) || (rows == 0))
     ThrowImageException(ImageError,"NegativeOrZeroImageSize");
   if ((columns == image->columns) && (rows == image->rows))
@@ -3189,11 +3189,11 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
     Initialize scaled image attributes.
   */
   assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   if ((columns == 0) || (rows == 0))
     return((Image *) NULL);
   if ((columns == image->columns) && (rows == image->rows))
@@ -3622,11 +3622,11 @@ MagickExport Image *ThumbnailImage(const Image *image,const size_t columns,
     attributes;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   x_factor=(double) columns/(double) image->columns;
   y_factor=(double) rows/(double) image->rows;
   if ((x_factor*y_factor) > 0.1)

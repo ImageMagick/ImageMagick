@@ -212,7 +212,7 @@ MagickExport void ConformPixelInfo(Image *image,const PixelInfo *source,
   PixelInfo *destination,ExceptionInfo *exception)
 {
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   assert(destination != (const PixelInfo *) NULL);
   *destination=(*source);
   if (image->colorspace == CMYKColorspace)
@@ -1970,7 +1970,7 @@ MagickExport MagickBooleanType ExportImagePixels(Image *image,const ssize_t x,
     length;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   length=strlen(map);
@@ -4149,7 +4149,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,const ssize_t x,
     Allocate image structure.
   */
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   length=strlen(map);
@@ -4430,7 +4430,7 @@ MagickExport void InitializePixelChannelMap(Image *image)
     n;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   (void) ResetMagickMemory(image->channel_map,0,MaxPixelChannels*
     sizeof(*image->channel_map));
   trait=UpdatePixelTrait;
@@ -4603,7 +4603,7 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
     y_offset;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   assert(image_view != (CacheView *) NULL);
   status=MagickTrue;
   *pixel=0.0;
@@ -5024,7 +5024,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
     interpolate;
 
   assert(source != (Image *) NULL);
-  assert(source->signature == MagickSignature);
+  assert(source->signature == MagickCoreSignature);
   assert(source_view != (CacheView *) NULL);
   status=MagickTrue;
   x_offset=(ssize_t) floor(x);
@@ -5589,7 +5589,7 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
     interpolate;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   assert(image_view != (CacheView *) NULL);
   status=MagickTrue;
   x_offset=(ssize_t) floor(x);
@@ -6268,7 +6268,7 @@ MagickExport ChannelType SetPixelChannelMask(Image *image,
     i;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(PixelEvent,GetMagickModule(),"%s[%08x]",
       image->filename,channel_mask);

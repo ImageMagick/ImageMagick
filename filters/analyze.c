@@ -110,7 +110,7 @@ ModuleExport size_t analyzeImage(Image **images,const int argc,
 
   assert(images != (Image **) NULL);
   assert(*images != (Image *) NULL);
-  assert((*images)->signature == MagickSignature);
+  assert((*images)->signature == MagickCoreSignature);
   (void) argc;
   (void) argv;
   image=(*images);

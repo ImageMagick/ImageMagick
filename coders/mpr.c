@@ -91,12 +91,12 @@ static Image *ReadMPRImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *image;
 
   assert(image_info != (const ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
+  assert(image_info->signature == MagickCoreSignature);
   if (image_info->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   image=(Image *) GetImageRegistry(ImageRegistryType,image_info->filename,
     exception);
   if (image != (Image *) NULL)
@@ -210,9 +210,9 @@ static MagickBooleanType WriteMPRImage(const ImageInfo *image_info,Image *image,
     status;
 
   assert(image_info != (const ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
+  assert(image_info->signature == MagickCoreSignature);
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   magick_unreferenced(image_info);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);

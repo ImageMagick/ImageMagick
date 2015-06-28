@@ -175,7 +175,7 @@ static int MvgPrintf(DrawingWand *wand,const char *format,...)
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",format);
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   extent=20UL*MagickPathExtent;
   if (wand->mvg == (char *) NULL)
     {
@@ -323,7 +323,7 @@ static void MvgAppendPointsCommand(DrawingWand *wand,const char *command,
 static void AdjustAffine(DrawingWand *wand,const AffineMatrix *affine)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if ((affine->sx != 1.0) || (affine->rx != 0.0) || (affine->ry != 0.0) ||
@@ -369,7 +369,7 @@ static void AdjustAffine(DrawingWand *wand,const AffineMatrix *affine)
 WandExport void ClearDrawingWand(DrawingWand *wand)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   for ( ; wand->index > 0; wand->index--)
@@ -445,7 +445,7 @@ WandExport DrawingWand *CloneDrawingWand(const DrawingWand *wand)
     i;
 
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   clone_wand=(DrawingWand *) AcquireMagickMemory(sizeof(*clone_wand));
@@ -486,7 +486,7 @@ WandExport DrawingWand *CloneDrawingWand(const DrawingWand *wand)
   clone_wand->debug=IsEventLogging();
   if (clone_wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",clone_wand->name);
-  clone_wand->signature=WandSignature;
+  clone_wand->signature=MagickWandSignature;
   return(clone_wand);
 }
 
@@ -517,7 +517,7 @@ WandExport DrawingWand *CloneDrawingWand(const DrawingWand *wand)
 WandExport DrawingWand *DestroyDrawingWand(DrawingWand *wand)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   for ( ; wand->index > 0; wand->index--)
@@ -532,7 +532,7 @@ WandExport DrawingWand *DestroyDrawingWand(DrawingWand *wand)
     wand->image=DestroyImage(wand->image);
   wand->image=(Image *) NULL;
   wand->exception=DestroyExceptionInfo(wand->exception);
-  wand->signature=(~WandSignature);
+  wand->signature=(~MagickWandSignature);
   RelinquishWandId(wand->id);
   wand=(DrawingWand *) RelinquishMagickMemory(wand);
   return(wand);
@@ -567,7 +567,7 @@ WandExport DrawingWand *DestroyDrawingWand(DrawingWand *wand)
 WandExport void DrawAffine(DrawingWand *wand,const AffineMatrix *affine)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   assert(affine != (const AffineMatrix *) NULL);
@@ -664,7 +664,7 @@ WandExport void DrawAlpha(DrawingWand *wand,const double x,const double y,
   const PaintMethod paint_method)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   (void) MvgPrintf(wand,"alpha %.20g %.20g '%s'\n",x,y,CommandOptionToMnemonic(
@@ -707,7 +707,7 @@ WandExport void DrawAnnotation(DrawingWand *wand,const double x,const double y,
     *escaped_text;
 
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   assert(text != (const unsigned char *) NULL);
@@ -759,7 +759,7 @@ WandExport void DrawArc(DrawingWand *wand,const double sx,const double sy,
   const double ex,const double ey,const double sd,const double ed)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   (void) MvgPrintf(wand,"arc %.20g %.20g %.20g %.20g %.20g %.20g\n",sx,sy,ex,
@@ -797,7 +797,7 @@ WandExport void DrawBezier(DrawingWand *wand,
   const size_t number_coordinates,const PointInfo *coordinates)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   assert(coordinates != (const PointInfo *) NULL);
@@ -839,7 +839,7 @@ WandExport void DrawCircle(DrawingWand *wand,const double ox,const double oy,
   const double px,const double py)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   (void) MvgPrintf(wand,"circle %.20g %.20g %.20g %.20g\n",ox,oy,px,py);
@@ -870,7 +870,7 @@ WandExport void DrawCircle(DrawingWand *wand,const double ox,const double oy,
 WandExport MagickBooleanType DrawClearException(DrawingWand *wand)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   ClearMagickException(wand->exception);
@@ -902,7 +902,7 @@ WandExport MagickBooleanType DrawClearException(DrawingWand *wand)
 WandExport ExceptionInfo *DrawCloneExceptionInfo(const DrawingWand *wand)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->exception == (ExceptionInfo*) NULL)
     return (ExceptionInfo*) NULL;
   return CloneExceptionInfo(wand->exception);
@@ -982,7 +982,7 @@ WandExport MagickBooleanType DrawComposite(DrawingWand *wand,
     *blob;
 
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   assert(magick_wand != (MagickWand *) NULL);
@@ -1073,7 +1073,7 @@ WandExport void DrawColor(DrawingWand *wand,const double x,const double y,
   const PaintMethod paint_method)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   (void) MvgPrintf(wand,"color %.20g %.20g '%s'\n",x,y,CommandOptionToMnemonic(
@@ -1148,7 +1148,7 @@ WandExport void DrawEllipse(DrawingWand *wand,const double ox,const double oy,
   const double rx,const double ry,const double start,const double end)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   (void) MvgPrintf(wand,"ellipse %.20g %.20g %.20g %.20g %.20g %.20g\n",ox,oy,
@@ -1185,7 +1185,7 @@ WandExport void DrawGetBorderColor(const DrawingWand *wand,
   PixelWand *border_color)
 {
   assert(wand != (const DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   assert(border_color != (PixelWand *) NULL);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
@@ -1218,7 +1218,7 @@ WandExport void DrawGetBorderColor(const DrawingWand *wand,
 WandExport char *DrawGetClipPath(const DrawingWand *wand)
 {
   assert(wand != (const DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (CurrentContext->clip_mask != (char *) NULL)
@@ -1252,7 +1252,7 @@ WandExport char *DrawGetClipPath(const DrawingWand *wand)
 WandExport FillRule DrawGetClipRule(const DrawingWand *wand)
 {
   assert(wand != (const DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   return(CurrentContext->fill_rule);
@@ -1283,7 +1283,7 @@ WandExport FillRule DrawGetClipRule(const DrawingWand *wand)
 WandExport ClipPathUnits DrawGetClipUnits(const DrawingWand *wand)
 {
   assert(wand != (const DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   return(CurrentContext->clip_units);
@@ -1322,7 +1322,7 @@ WandExport char *DrawGetException(const DrawingWand *wand,
     *description;
 
   assert(wand != (const DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   assert(severity != (ExceptionType *) NULL);
@@ -1374,7 +1374,7 @@ WandExport char *DrawGetException(const DrawingWand *wand,
 WandExport ExceptionType DrawGetExceptionType(const DrawingWand *wand)
 {
   assert(wand != (const DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   return(wand->exception->severity);
@@ -1408,7 +1408,7 @@ WandExport ExceptionType DrawGetExceptionType(const DrawingWand *wand)
 WandExport void DrawGetFillColor(const DrawingWand *wand,PixelWand *fill_color)
 {
   assert(wand != (const DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   assert(fill_color != (PixelWand *) NULL);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
@@ -1444,7 +1444,7 @@ WandExport double DrawGetFillOpacity(const DrawingWand *wand)
     alpha;
 
   assert(wand != (const DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   alpha=(double) QuantumScale*CurrentContext->fill.alpha;
@@ -1476,7 +1476,7 @@ WandExport double DrawGetFillOpacity(const DrawingWand *wand)
 WandExport FillRule DrawGetFillRule(const DrawingWand *wand)
 {
   assert(wand != (const DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   return(CurrentContext->fill_rule);
@@ -1509,7 +1509,7 @@ WandExport FillRule DrawGetFillRule(const DrawingWand *wand)
 WandExport char *DrawGetFont(const DrawingWand *wand)
 {
   assert(wand != (const DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (CurrentContext->font != (char *) NULL)
@@ -1543,7 +1543,7 @@ WandExport char *DrawGetFont(const DrawingWand *wand)
 WandExport char *DrawGetFontFamily(const DrawingWand *wand)
 {
   assert(wand != (const DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (CurrentContext->family != NULL)
@@ -1582,7 +1582,7 @@ WandExport MagickBooleanType DrawGetFontResolution(const DrawingWand *wand,
   double *x,double *y)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   *x=72.0;
@@ -1629,7 +1629,7 @@ WandExport MagickBooleanType DrawGetFontResolution(const DrawingWand *wand,
 WandExport double DrawGetFontSize(const DrawingWand *wand)
 {
   assert(wand != (const DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   return(CurrentContext->pointsize);
@@ -1660,7 +1660,7 @@ WandExport double DrawGetFontSize(const DrawingWand *wand)
 WandExport StretchType DrawGetFontStretch(const DrawingWand *wand)
 {
   assert(wand != (const DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   return(CurrentContext->stretch);
@@ -1691,7 +1691,7 @@ WandExport StretchType DrawGetFontStretch(const DrawingWand *wand)
 WandExport StyleType DrawGetFontStyle(const DrawingWand *wand)
 {
   assert(wand != (const DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   return(CurrentContext->style);
@@ -1722,7 +1722,7 @@ WandExport StyleType DrawGetFontStyle(const DrawingWand *wand)
 WandExport size_t DrawGetFontWeight(const DrawingWand *wand)
 {
   assert(wand != (const DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   return(CurrentContext->weight);
@@ -1754,7 +1754,7 @@ WandExport size_t DrawGetFontWeight(const DrawingWand *wand)
 WandExport GravityType DrawGetGravity(const DrawingWand *wand)
 {
   assert(wand != (const DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   return(CurrentContext->gravity);
@@ -1789,7 +1789,7 @@ WandExport double DrawGetOpacity(const DrawingWand *wand)
     alpha;
 
   assert(wand != (const DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   alpha=(double) QuantumScale*CurrentContext->alpha;
@@ -1824,7 +1824,7 @@ WandExport double DrawGetOpacity(const DrawingWand *wand)
 WandExport MagickBooleanType DrawGetStrokeAntialias(const DrawingWand *wand)
 {
   assert(wand != (const DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   return(CurrentContext->stroke_antialias);
@@ -1859,7 +1859,7 @@ WandExport void DrawGetStrokeColor(const DrawingWand *wand,
   PixelWand *stroke_color)
 {
   assert(wand != (const DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   assert(stroke_color != (PixelWand *) NULL);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
@@ -1912,7 +1912,7 @@ WandExport double *DrawGetStrokeDashArray(const DrawingWand *wand,
     n;
 
   assert(wand != (const DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   assert(number_elements != (size_t *) NULL);
@@ -1962,7 +1962,7 @@ WandExport double *DrawGetStrokeDashArray(const DrawingWand *wand,
 WandExport double DrawGetStrokeDashOffset(const DrawingWand *wand)
 {
   assert(wand != (const DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   return(CurrentContext->dash_offset);
@@ -1995,7 +1995,7 @@ WandExport double DrawGetStrokeDashOffset(const DrawingWand *wand)
 WandExport LineCap DrawGetStrokeLineCap(const DrawingWand *wand)
 {
   assert(wand != (const DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   return(CurrentContext->linecap);
@@ -2029,7 +2029,7 @@ WandExport LineCap DrawGetStrokeLineCap(const DrawingWand *wand)
 WandExport LineJoin DrawGetStrokeLineJoin(const DrawingWand *wand)
 {
   assert(wand != (const DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   return(CurrentContext->linejoin);
@@ -2064,7 +2064,7 @@ WandExport LineJoin DrawGetStrokeLineJoin(const DrawingWand *wand)
 WandExport size_t DrawGetStrokeMiterLimit(const DrawingWand *wand)
 {
   assert(wand != (const DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   return CurrentContext->miterlimit;
@@ -2098,7 +2098,7 @@ WandExport double DrawGetStrokeOpacity(const DrawingWand *wand)
     alpha;
 
   assert(wand != (const DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   alpha=(double) QuantumScale*CurrentContext->stroke.alpha;
@@ -2131,7 +2131,7 @@ WandExport double DrawGetStrokeOpacity(const DrawingWand *wand)
 WandExport double DrawGetStrokeWidth(const DrawingWand *wand)
 {
   assert(wand != (const DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   return(CurrentContext->stroke_width);
@@ -2163,7 +2163,7 @@ WandExport double DrawGetStrokeWidth(const DrawingWand *wand)
 WandExport AlignType DrawGetTextAlignment(const DrawingWand *wand)
 {
   assert(wand != (const DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   return(CurrentContext->align);
@@ -2195,7 +2195,7 @@ WandExport AlignType DrawGetTextAlignment(const DrawingWand *wand)
 WandExport MagickBooleanType DrawGetTextAntialias(const DrawingWand *wand)
 {
   assert(wand != (const DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   return(CurrentContext->text_antialias);
@@ -2227,7 +2227,7 @@ WandExport MagickBooleanType DrawGetTextAntialias(const DrawingWand *wand)
 WandExport DecorationType DrawGetTextDecoration(const DrawingWand *wand)
 {
   assert(wand != (const DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   return(CurrentContext->decorate);
@@ -2259,7 +2259,7 @@ WandExport DecorationType DrawGetTextDecoration(const DrawingWand *wand)
 WandExport DirectionType DrawGetTextDirection(const DrawingWand *wand)
 {
   assert(wand != (const DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   return(CurrentContext->direction);
@@ -2292,7 +2292,7 @@ WandExport DirectionType DrawGetTextDirection(const DrawingWand *wand)
 WandExport char *DrawGetTextEncoding(const DrawingWand *wand)
 {
   assert(wand != (const DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (CurrentContext->encoding != (char *) NULL)
@@ -2325,7 +2325,7 @@ WandExport char *DrawGetTextEncoding(const DrawingWand *wand)
 WandExport double DrawGetTextKerning(DrawingWand *wand)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
 
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
@@ -2357,7 +2357,7 @@ WandExport double DrawGetTextKerning(DrawingWand *wand)
 WandExport double DrawGetTextInterlineSpacing(DrawingWand *wand)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   return(CurrentContext->interline_spacing);
@@ -2388,7 +2388,7 @@ WandExport double DrawGetTextInterlineSpacing(DrawingWand *wand)
 WandExport double DrawGetTextInterwordSpacing(DrawingWand *wand)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   return(CurrentContext->interword_spacing);
@@ -2436,7 +2436,7 @@ WandExport char *DrawGetVectorGraphics(DrawingWand *wand)
     *xml_info;
 
   assert(wand != (const DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   xml_info=NewXMLTreeTag("drawing-wand");
@@ -2676,7 +2676,7 @@ WandExport void DrawGetTextUnderColor(const DrawingWand *wand,
   PixelWand *under_color)
 {
   assert(wand != (const DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   assert(under_color != (PixelWand *) NULL);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
@@ -2719,7 +2719,7 @@ WandExport void DrawLine(DrawingWand *wand,const double sx,const double sy,
   const double ex,const double ey)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   (void) MvgPrintf(wand,"line %.20g %.20g %.20g %.20g\n",sx,sy,ex,ey);
@@ -2753,7 +2753,7 @@ WandExport void DrawLine(DrawingWand *wand,const double sx,const double sy,
 WandExport void DrawPathClose(DrawingWand *wand)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   (void) MvgAutoWrapPrintf(wand,"%s",wand->path_mode == AbsolutePathMode ?
@@ -2806,7 +2806,7 @@ static void DrawPathCurveTo(DrawingWand *wand,const PathMode mode,
   const double x,const double y)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if ((wand->path_operation != PathCurveToOperation) ||
@@ -2826,7 +2826,7 @@ WandExport void DrawPathCurveToAbsolute(DrawingWand *wand,const double x1,
   const double y1,const double x2,const double y2,const double x,const double y)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   DrawPathCurveTo(wand,AbsolutePathMode,x1,y1,x2,y2,x,y);
@@ -2876,7 +2876,7 @@ WandExport void DrawPathCurveToRelative(DrawingWand *wand,const double x1,
   const double y1,const double x2,const double y2,const double x,const double y)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   DrawPathCurveTo(wand,RelativePathMode,x1,y1,x2,y2,x,y);
@@ -2921,7 +2921,7 @@ static void DrawPathCurveToQuadraticBezier(DrawingWand *wand,
   const PathMode mode,const double x1,double y1,const double x,const double y)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if ((wand->path_operation != PathCurveToQuadraticBezierOperation) ||
@@ -2940,7 +2940,7 @@ WandExport void DrawPathCurveToQuadraticBezierAbsolute(DrawingWand *wand,
   const double x1,const double y1,const double x,const double y)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   DrawPathCurveToQuadraticBezier(wand,AbsolutePathMode,x1,y1,x,y);
@@ -2984,7 +2984,7 @@ WandExport void DrawPathCurveToQuadraticBezierRelative(DrawingWand *wand,
   const double x1,const double y1,const double x,const double y)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   DrawPathCurveToQuadraticBezier(wand,RelativePathMode,x1,y1,x,y);
@@ -3033,7 +3033,7 @@ static void DrawPathCurveToQuadraticBezierSmooth(DrawingWand *wand,
   const PathMode mode,const double x,const double y)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if ((wand->path_operation != PathCurveToQuadraticBezierSmoothOperation) ||
@@ -3052,7 +3052,7 @@ WandExport void DrawPathCurveToQuadraticBezierSmoothAbsolute(DrawingWand *wand,
   const double x,const double y)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   DrawPathCurveToQuadraticBezierSmooth(wand,AbsolutePathMode,x,y);
@@ -3147,7 +3147,7 @@ static void DrawPathCurveToSmooth(DrawingWand *wand,const PathMode mode,
   const double x2,const double y2,const double x,const double y)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if ((wand->path_operation != PathCurveToSmoothOperation) ||
@@ -3166,7 +3166,7 @@ WandExport void DrawPathCurveToSmoothAbsolute(DrawingWand *wand,const double x2,
   const double y2,const double x,const double y)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   DrawPathCurveToSmooth(wand,AbsolutePathMode,x2,y2,x,y);
@@ -3216,7 +3216,7 @@ WandExport void DrawPathCurveToSmoothRelative(DrawingWand *wand,const double x2,
   const double y2,const double x,const double y)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   DrawPathCurveToSmooth(wand,RelativePathMode,x2,y2,x,y);
@@ -3277,7 +3277,7 @@ static void DrawPathEllipticArc(DrawingWand *wand, const PathMode mode,
   const double x,const double y)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if ((wand->path_operation != PathEllipticArcOperation) ||
@@ -3300,7 +3300,7 @@ WandExport void DrawPathEllipticArcAbsolute(DrawingWand *wand,const double rx,
   const double x,const double y)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   DrawPathEllipticArc(wand,AbsolutePathMode,rx,ry,x_axis_rotation,
@@ -3388,7 +3388,7 @@ WandExport void DrawPathEllipticArcRelative(DrawingWand *wand,const double rx,
 WandExport void DrawPathFinish(DrawingWand *wand)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   (void) MvgPrintf(wand,"'\n");
@@ -3429,7 +3429,7 @@ static void DrawPathLineTo(DrawingWand *wand,const PathMode mode,
   const double x,const double y)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if ((wand->path_operation != PathLineToOperation) ||
@@ -3448,7 +3448,7 @@ WandExport void DrawPathLineToAbsolute(DrawingWand *wand,const double x,
   const double y)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   DrawPathLineTo(wand,AbsolutePathMode,x,y);
@@ -3487,7 +3487,7 @@ WandExport void DrawPathLineToRelative(DrawingWand *wand,const double x,
   const double y)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   DrawPathLineTo(wand,RelativePathMode,x,y);
@@ -3524,7 +3524,7 @@ static void DrawPathLineToHorizontal(DrawingWand *wand,const PathMode mode,
   const double x)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if ((wand->path_operation != PathLineToHorizontalOperation) ||
@@ -3543,7 +3543,7 @@ WandExport void DrawPathLineToHorizontalAbsolute(DrawingWand *wand,
   const double x)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   DrawPathLineToHorizontal(wand,AbsolutePathMode,x);
@@ -3614,7 +3614,7 @@ static void DrawPathLineToVertical(DrawingWand *wand,const PathMode mode,
   const double y)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if ((wand->path_operation != PathLineToVerticalOperation) ||
@@ -3632,7 +3632,7 @@ static void DrawPathLineToVertical(DrawingWand *wand,const PathMode mode,
 WandExport void DrawPathLineToVerticalAbsolute(DrawingWand *wand,const double y)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   DrawPathLineToVertical(wand,AbsolutePathMode,y);
@@ -3668,7 +3668,7 @@ WandExport void DrawPathLineToVerticalAbsolute(DrawingWand *wand,const double y)
 WandExport void DrawPathLineToVerticalRelative(DrawingWand *wand,const double y)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   DrawPathLineToVertical(wand,RelativePathMode,y);
@@ -3707,7 +3707,7 @@ static void DrawPathMoveTo(DrawingWand *wand,const PathMode mode,const double x,
   const double y)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if ((wand->path_operation != PathMoveToOperation) ||
@@ -3726,7 +3726,7 @@ WandExport void DrawPathMoveToAbsolute(DrawingWand *wand,const double x,
   const double y)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   DrawPathMoveTo(wand,AbsolutePathMode,x,y);
@@ -3765,7 +3765,7 @@ WandExport void DrawPathMoveToRelative(DrawingWand *wand,const double x,
   const double y)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   DrawPathMoveTo(wand,RelativePathMode,x,y);
@@ -3800,7 +3800,7 @@ WandExport void DrawPathMoveToRelative(DrawingWand *wand,const double x,
 WandExport void DrawPathStart(DrawingWand *wand)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   (void) MvgPrintf(wand,"path '");
@@ -3837,7 +3837,7 @@ WandExport void DrawPathStart(DrawingWand *wand)
 WandExport void DrawPoint(DrawingWand *wand,const double x,const double y)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   (void) MvgPrintf(wand,"point %.20g %.20g\n",x,y);
@@ -3875,7 +3875,7 @@ WandExport void DrawPolygon(DrawingWand *wand,
   const size_t number_coordinates,const PointInfo *coordinates)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   MvgAppendPointsCommand(wand,"polygon",number_coordinates,coordinates);
@@ -3913,7 +3913,7 @@ WandExport void DrawPolyline(DrawingWand *wand,
   const size_t number_coordinates,const PointInfo *coordinates)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   MvgAppendPointsCommand(wand,"polyline",number_coordinates,coordinates);
@@ -3944,7 +3944,7 @@ WandExport void DrawPolyline(DrawingWand *wand,
 WandExport void DrawPopClipPath(DrawingWand *wand)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->indent_depth > 0)
@@ -3977,7 +3977,7 @@ WandExport void DrawPopClipPath(DrawingWand *wand)
 WandExport void DrawPopDefs(DrawingWand *wand)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->indent_depth > 0)
@@ -4014,7 +4014,7 @@ WandExport MagickBooleanType DrawPopPattern(DrawingWand *wand)
     key[MagickPathExtent];
 
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->image == (Image *) NULL)
@@ -4073,7 +4073,7 @@ WandExport MagickBooleanType DrawPopPattern(DrawingWand *wand)
 WandExport void DrawPushClipPath(DrawingWand *wand,const char *clip_mask_id)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   assert(clip_mask_id != (const char *) NULL);
@@ -4108,7 +4108,7 @@ WandExport void DrawPushClipPath(DrawingWand *wand,const char *clip_mask_id)
 WandExport void DrawPushDefs(DrawingWand *wand)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   (void) MvgPrintf(wand,"push defs\n");
@@ -4159,7 +4159,7 @@ WandExport MagickBooleanType DrawPushPattern(DrawingWand *wand,
   const double height)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   assert(pattern_id != (const char *) NULL);
@@ -4216,7 +4216,7 @@ WandExport void DrawRectangle(DrawingWand *wand,const double x1,const double y1,
   const double x2,const double y2)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   (void) MvgPrintf(wand,"rectangle %.20g %.20g %.20g %.20g\n",x1,y1,x2,y2);
@@ -4250,7 +4250,7 @@ WandExport MagickBooleanType DrawRender(DrawingWand *wand)
     status;
 
   assert(wand != (const DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   CurrentContext->primitive=wand->mvg;
@@ -4289,7 +4289,7 @@ WandExport MagickBooleanType DrawRender(DrawingWand *wand)
 WandExport void DrawResetVectorGraphics(DrawingWand *wand)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->mvg != (char *) NULL)
@@ -4326,7 +4326,7 @@ WandExport void DrawResetVectorGraphics(DrawingWand *wand)
 WandExport void DrawRotate(DrawingWand *wand,const double degrees)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   (void) MvgPrintf(wand,"rotate %.20g\n",degrees);
@@ -4373,7 +4373,7 @@ WandExport void DrawRoundRectangle(DrawingWand *wand,double x1,double y1,
   double x2,double y2,double rx,double ry)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   (void) MvgPrintf(wand,"roundrectangle %.20g %.20g %.20g %.20g %.20g %.20g\n",
@@ -4410,7 +4410,7 @@ WandExport void DrawRoundRectangle(DrawingWand *wand,double x1,double y1,
 WandExport void DrawScale(DrawingWand *wand,const double x,const double y)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   (void) MvgPrintf(wand,"scale %.20g %.20g\n",x,y);
@@ -4450,7 +4450,7 @@ WandExport void DrawSetBorderColor(DrawingWand *wand,
     new_border;
 
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   assert(border_wand != (const PixelWand *) NULL);
@@ -4500,7 +4500,7 @@ WandExport MagickBooleanType DrawSetClipPath(DrawingWand *wand,
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",clip_mask);
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   assert(clip_mask != (const char *) NULL);
   if ((CurrentContext->clip_mask == (const char *) NULL) ||
       (wand->filter_off != MagickFalse) ||
@@ -4544,7 +4544,7 @@ WandExport MagickBooleanType DrawSetClipPath(DrawingWand *wand,
 WandExport void DrawSetClipRule(DrawingWand *wand,const FillRule fill_rule)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if ((wand->filter_off != MagickFalse) ||
@@ -4586,7 +4586,7 @@ WandExport void DrawSetClipUnits(DrawingWand *wand,
   const ClipPathUnits clip_units)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if ((wand->filter_off != MagickFalse) ||
@@ -4642,7 +4642,7 @@ WandExport void DrawSetFillColor(DrawingWand *wand,const PixelWand *fill_wand)
     new_fill;
 
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   assert(fill_wand != (const PixelWand *) NULL);
@@ -4690,7 +4690,7 @@ WandExport void DrawSetFillOpacity(DrawingWand *wand,const double fill_opacity)
     alpha;
 
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   alpha=(double) ClampToQuantum(QuantumRange*fill_opacity);
@@ -4736,7 +4736,7 @@ WandExport MagickBooleanType DrawSetFontResolution(DrawingWand *wand,
     density[MagickPathExtent];
 
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   (void) FormatLocaleString(density,MagickPathExtent,"%.20gx%.20g",x_resolution,
@@ -4776,7 +4776,7 @@ WandExport void DrawSetOpacity(DrawingWand *wand,const double opacity)
     quantum_alpha;
 
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   quantum_alpha=ClampToQuantum(QuantumRange*opacity);
@@ -4824,7 +4824,7 @@ WandExport MagickBooleanType DrawSetFillPatternURL(DrawingWand *wand,
     pattern_spec[MagickPathExtent];
 
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",fill_url);
   if (wand->image == (Image *) NULL)
@@ -4879,7 +4879,7 @@ WandExport MagickBooleanType DrawSetFillPatternURL(DrawingWand *wand,
 WandExport void DrawSetFillRule(DrawingWand *wand,const FillRule fill_rule)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if ((wand->filter_off != MagickFalse) ||
@@ -4920,7 +4920,7 @@ WandExport MagickBooleanType DrawSetFont(DrawingWand *wand,
   const char *font_name)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   assert(font_name != (const char *) NULL);
@@ -4963,7 +4963,7 @@ WandExport MagickBooleanType DrawSetFontFamily(DrawingWand *wand,
   const char *font_family)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   assert(font_family != (const char *) NULL);
@@ -5004,7 +5004,7 @@ WandExport MagickBooleanType DrawSetFontFamily(DrawingWand *wand,
 WandExport void DrawSetFontSize(DrawingWand *wand,const double pointsize)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if ((wand->filter_off != MagickFalse) ||
@@ -5048,7 +5048,7 @@ WandExport void DrawSetFontStretch(DrawingWand *wand,
   const StretchType font_stretch)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if ((wand->filter_off != MagickFalse) ||
@@ -5088,7 +5088,7 @@ WandExport void DrawSetFontStretch(DrawingWand *wand,
 WandExport void DrawSetFontStyle(DrawingWand *wand,const StyleType style)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if ((wand->filter_off != MagickFalse) ||
@@ -5129,7 +5129,7 @@ WandExport void DrawSetFontWeight(DrawingWand *wand,
   const size_t font_weight)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if ((wand->filter_off != MagickFalse) ||
@@ -5171,7 +5171,7 @@ WandExport void DrawSetFontWeight(DrawingWand *wand,
 WandExport void DrawSetGravity(DrawingWand *wand,const GravityType gravity)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if ((wand->filter_off != MagickFalse) ||
@@ -5217,7 +5217,7 @@ WandExport void DrawSetStrokeColor(DrawingWand *wand,
     stroke_color;
 
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   assert(stroke_wand != (const PixelWand *) NULL);
@@ -5267,7 +5267,7 @@ WandExport MagickBooleanType DrawSetStrokePatternURL(DrawingWand *wand,
     pattern_spec[MagickPathExtent];
 
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->image == (Image *) NULL)
@@ -5324,7 +5324,7 @@ WandExport void DrawSetStrokeAntialias(DrawingWand *wand,
   const MagickBooleanType stroke_antialias)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if ((wand->filter_off != MagickFalse) ||
@@ -5389,7 +5389,7 @@ WandExport MagickBooleanType DrawSetStrokeDashArray(DrawingWand *wand,
     n_old;
 
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   n_new=number_elements;
@@ -5494,7 +5494,7 @@ WandExport void DrawSetStrokeDashOffset(DrawingWand *wand,
   const double dash_offset)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if ((wand->filter_off != MagickFalse) ||
@@ -5535,7 +5535,7 @@ WandExport void DrawSetStrokeDashOffset(DrawingWand *wand,
 WandExport void DrawSetStrokeLineCap(DrawingWand *wand,const LineCap linecap)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if ((wand->filter_off != MagickFalse) ||
@@ -5577,7 +5577,7 @@ WandExport void DrawSetStrokeLineCap(DrawingWand *wand,const LineCap linecap)
 WandExport void DrawSetStrokeLineJoin(DrawingWand *wand,const LineJoin linejoin)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if ((wand->filter_off != MagickFalse) ||
@@ -5622,7 +5622,7 @@ WandExport void DrawSetStrokeMiterLimit(DrawingWand *wand,
   const size_t miterlimit)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (CurrentContext->miterlimit != miterlimit)
@@ -5664,7 +5664,7 @@ WandExport void DrawSetStrokeOpacity(DrawingWand *wand,
     alpha;
 
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   alpha=(double) ClampToQuantum(QuantumRange*opacity);
@@ -5705,7 +5705,7 @@ WandExport void DrawSetStrokeOpacity(DrawingWand *wand,
 WandExport void DrawSetStrokeWidth(DrawingWand *wand,const double stroke_width)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if ((wand->filter_off != MagickFalse) ||
@@ -5746,7 +5746,7 @@ WandExport void DrawSetTextAlignment(DrawingWand *wand,
   const AlignType alignment)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if ((wand->filter_off != MagickFalse) ||
@@ -5789,7 +5789,7 @@ WandExport void DrawSetTextAntialias(DrawingWand *wand,
   const MagickBooleanType text_antialias)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if ((wand->filter_off != MagickFalse) ||
@@ -5831,7 +5831,7 @@ WandExport void DrawSetTextDecoration(DrawingWand *wand,
   const DecorationType decoration)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if ((wand->filter_off != MagickFalse) ||
@@ -5874,7 +5874,7 @@ WandExport void DrawSetTextDirection(DrawingWand *wand,
   const DirectionType direction)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
 
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
@@ -5919,7 +5919,7 @@ WandExport void DrawSetTextDirection(DrawingWand *wand,
 WandExport void DrawSetTextEncoding(DrawingWand *wand,const char *encoding)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   assert(encoding != (char *) NULL);
@@ -5959,7 +5959,7 @@ WandExport void DrawSetTextEncoding(DrawingWand *wand,const char *encoding)
 WandExport void DrawSetTextKerning(DrawingWand *wand,const double kerning)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
 
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
@@ -6000,7 +6000,7 @@ WandExport void DrawSetTextInterlineSpacing(DrawingWand *wand,
   const double interline_spacing)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
 
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
@@ -6041,7 +6041,7 @@ WandExport void DrawSetTextInterwordSpacing(DrawingWand *wand,
   const double interword_spacing)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
 
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
@@ -6086,7 +6086,7 @@ WandExport void DrawSetTextUnderColor(DrawingWand *wand,
     under_color;
 
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   assert(under_wand != (const PixelWand *) NULL);
@@ -6153,7 +6153,7 @@ WandExport MagickBooleanType DrawSetVectorGraphics(DrawingWand *wand,
     *xml_info;
 
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   CurrentContext=DestroyDrawInfo(CurrentContext);
@@ -6435,7 +6435,7 @@ WandExport MagickBooleanType DrawSetVectorGraphics(DrawingWand *wand,
 WandExport void DrawSkewX(DrawingWand *wand,const double degrees)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   (void) MvgPrintf(wand,"skewX %.20g\n",degrees);
@@ -6469,7 +6469,7 @@ WandExport void DrawSkewX(DrawingWand *wand,const double degrees)
 WandExport void DrawSkewY(DrawingWand *wand,const double degrees)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   (void) MvgPrintf(wand,"skewY %.20g\n",degrees);
@@ -6507,7 +6507,7 @@ WandExport void DrawSkewY(DrawingWand *wand,const double degrees)
 WandExport void DrawTranslate(DrawingWand *wand,const double x,const double y)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   (void) MvgPrintf(wand,"translate %.20g %.20g\n",x,y);
@@ -6552,7 +6552,7 @@ WandExport void DrawSetViewbox(DrawingWand *wand,const double x1,
   const double y1,const double x2,const double y2)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   (void) MvgPrintf(wand,"viewbox %.20g %.20g %.20g %.20g\n",x1,y1,x2,y2);
@@ -6584,7 +6584,7 @@ WandExport MagickBooleanType IsDrawingWand(const DrawingWand *wand)
 {
   if (wand == (const DrawingWand *) NULL)
     return(MagickFalse);
-  if (wand->signature != WandSignature)
+  if (wand->signature != MagickWandSignature)
     return(MagickFalse);
   if (LocaleNCompare(wand->name,DrawingWandId,strlen(DrawingWandId)) != 0)
     return(MagickFalse);
@@ -6658,7 +6658,7 @@ WandExport DrawingWand *NewDrawingWand(void)
   wand->image=AcquireImage((const ImageInfo *) NULL,wand->exception);
   wand->destroy=MagickTrue;
   wand->debug=IsEventLogging();
-  wand->signature=WandSignature;
+  wand->signature=MagickWandSignature;
   CurrentContext=CloneDrawInfo((ImageInfo *) NULL,(DrawInfo *) NULL);
   return(wand);
 }
@@ -6691,7 +6691,7 @@ WandExport DrawInfo *PeekDrawingWand(const DrawingWand *wand)
     *draw_info;
 
   assert(wand != (const DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   draw_info=CloneDrawInfo((ImageInfo *) NULL,CurrentContext);
@@ -6728,7 +6728,7 @@ WandExport DrawInfo *PeekDrawingWand(const DrawingWand *wand)
 WandExport MagickBooleanType PopDrawingWand(DrawingWand *wand)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->index == 0)
@@ -6783,7 +6783,7 @@ WandExport MagickBooleanType PopDrawingWand(DrawingWand *wand)
 WandExport MagickBooleanType PushDrawingWand(DrawingWand *wand)
 {
   assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == WandSignature);
+  assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   wand->index++;

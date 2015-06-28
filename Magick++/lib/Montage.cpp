@@ -222,7 +222,7 @@ void Magick::Montage::updateMontageInfo(MontageInfo &montageInfo_ ) const
   montageInfo_.shadow=static_cast<MagickBooleanType>
     (_shadow ? MagickTrue : MagickFalse);
   // signature (validity stamp)
-  montageInfo_.signature=MagickSignature;
+  montageInfo_.signature=MagickCoreSignature;
   // stroke
   montageInfo_.stroke=_stroke;
   // texture

@@ -466,11 +466,11 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
     Initialize connected components image attributes.
   */
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   component_image=CloneImage(image,image->columns,image->rows,MagickTrue,
     exception);
   if (component_image == (Image *) NULL)

@@ -2506,7 +2506,7 @@ MagickBooleanType OpenCLThrowMagickException(ExceptionInfo *exception,
   clEnv = GetDefaultOpenCLEnv();
 
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
 
   if (severity!=0) {
     cl_device_type dType;

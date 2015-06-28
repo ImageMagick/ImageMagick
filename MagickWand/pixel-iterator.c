@@ -119,7 +119,7 @@ struct _PixelIterator
 WandExport void ClearPixelIterator(PixelIterator *iterator)
 {
   assert(iterator != (const PixelIterator *) NULL);
-  assert(iterator->signature == WandSignature);
+  assert(iterator->signature == MagickWandSignature);
   if (iterator->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",iterator->name);
   iterator->pixel_wands=DestroyPixelWands(iterator->pixel_wands,
@@ -159,7 +159,7 @@ WandExport PixelIterator *ClonePixelIterator(const PixelIterator *iterator)
     *clone_iterator;
 
   assert(iterator != (PixelIterator *) NULL);
-  assert(iterator->signature == WandSignature);
+  assert(iterator->signature == MagickWandSignature);
   if (iterator->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",iterator->name);
   clone_iterator=(PixelIterator *) AcquireMagickMemory(sizeof(*clone_iterator));
@@ -182,7 +182,7 @@ WandExport PixelIterator *ClonePixelIterator(const PixelIterator *iterator)
   if (clone_iterator->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",
       clone_iterator->name);
-  clone_iterator->signature=WandSignature;
+  clone_iterator->signature=MagickWandSignature;
   return(clone_iterator);
 }
 
@@ -211,14 +211,14 @@ WandExport PixelIterator *ClonePixelIterator(const PixelIterator *iterator)
 WandExport PixelIterator *DestroyPixelIterator(PixelIterator *iterator)
 {
   assert(iterator != (const PixelIterator *) NULL);
-  assert(iterator->signature == WandSignature);
+  assert(iterator->signature == MagickWandSignature);
   if (iterator->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",iterator->name);
   iterator->view=DestroyCacheView(iterator->view);
   iterator->pixel_wands=DestroyPixelWands(iterator->pixel_wands,
     iterator->region.width);
   iterator->exception=DestroyExceptionInfo(iterator->exception);
-  iterator->signature=(~WandSignature);
+  iterator->signature=(~MagickWandSignature);
   RelinquishWandId(iterator->id);
   iterator=(PixelIterator *) RelinquishMagickMemory(iterator);
   return(iterator);
@@ -254,7 +254,7 @@ WandExport MagickBooleanType IsPixelIterator(const PixelIterator *iterator)
 
   if (iterator == (const PixelIterator *) NULL)
     return(MagickFalse);
-  if (iterator->signature != WandSignature)
+  if (iterator->signature != MagickWandSignature)
     return(MagickFalse);
   length=strlen(PixelIteratorId);
   if (LocaleNCompare(iterator->name,PixelIteratorId,length) != 0)
@@ -336,7 +336,7 @@ WandExport PixelIterator *NewPixelIterator(MagickWand *wand)
   iterator->debug=IsEventLogging();
   if (iterator->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",iterator->name);
-  iterator->signature=WandSignature;
+  iterator->signature=MagickWandSignature;
   return(iterator);
 }
 
@@ -367,7 +367,7 @@ WandExport MagickBooleanType PixelClearIteratorException(
   PixelIterator *iterator)
 {
   assert(iterator != (PixelIterator *) NULL);
-  assert(iterator->signature == WandSignature);
+  assert(iterator->signature == MagickWandSignature);
   if (iterator->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",iterator->name);
   ClearMagickException(iterator->exception);
@@ -455,7 +455,7 @@ WandExport PixelIterator *NewPixelRegionIterator(MagickWand *wand,
   iterator->debug=IsEventLogging();
   if (iterator->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",iterator->name);
-  iterator->signature=WandSignature;
+  iterator->signature=MagickWandSignature;
   return(iterator);
 }
 
@@ -495,7 +495,7 @@ WandExport PixelWand **PixelGetCurrentIteratorRow(PixelIterator *iterator,
     x;
 
   assert(iterator != (PixelIterator *) NULL);
-  assert(iterator->signature == WandSignature);
+  assert(iterator->signature == MagickWandSignature);
   if (iterator->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",iterator->name);
   *number_wands=0;
@@ -548,7 +548,7 @@ WandExport char *PixelGetIteratorException(const PixelIterator *iterator,
     *description;
 
   assert(iterator != (const PixelIterator *) NULL);
-  assert(iterator->signature == WandSignature);
+  assert(iterator->signature == MagickWandSignature);
   if (iterator->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",iterator->name);
   assert(severity != (ExceptionType *) NULL);
@@ -601,7 +601,7 @@ WandExport ExceptionType PixelGetIteratorExceptionType(
   const PixelIterator *iterator)
 {
   assert(iterator != (const PixelIterator *) NULL);
-  assert(iterator->signature == WandSignature);
+  assert(iterator->signature == MagickWandSignature);
   if (iterator->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",iterator->name);
   return(iterator->exception->severity);
@@ -632,7 +632,7 @@ WandExport ExceptionType PixelGetIteratorExceptionType(
 WandExport ssize_t PixelGetIteratorRow(PixelIterator *iterator)
 {
   assert(iterator != (const PixelIterator *) NULL);
-  assert(iterator->signature == WandSignature);
+  assert(iterator->signature == MagickWandSignature);
   if (iterator->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",iterator->name);
   return(iterator->y);
@@ -674,7 +674,7 @@ WandExport PixelWand **PixelGetNextIteratorRow(PixelIterator *iterator,
     x;
 
   assert(iterator != (PixelIterator *) NULL);
-  assert(iterator->signature == WandSignature);
+  assert(iterator->signature == MagickWandSignature);
   if (iterator->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",iterator->name);
   *number_wands=0;
@@ -733,7 +733,7 @@ WandExport PixelWand **PixelGetPreviousIteratorRow(PixelIterator *iterator,
     x;
 
   assert(iterator != (PixelIterator *) NULL);
-  assert(iterator->signature == WandSignature);
+  assert(iterator->signature == MagickWandSignature);
   if (iterator->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",iterator->name);
   *number_wands=0;
@@ -783,7 +783,7 @@ WandExport PixelWand **PixelGetPreviousIteratorRow(PixelIterator *iterator,
 WandExport void PixelResetIterator(PixelIterator *iterator)
 {
   assert(iterator != (PixelIterator *) NULL);
-  assert(iterator->signature == WandSignature);
+  assert(iterator->signature == MagickWandSignature);
   if (iterator->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",iterator->name);
   iterator->active=MagickFalse;
@@ -815,7 +815,7 @@ WandExport void PixelResetIterator(PixelIterator *iterator)
 WandExport void PixelSetFirstIteratorRow(PixelIterator *iterator)
 {
   assert(iterator != (PixelIterator *) NULL);
-  assert(iterator->signature == WandSignature);
+  assert(iterator->signature == MagickWandSignature);
   if (iterator->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",iterator->name);
   iterator->active=MagickFalse;
@@ -849,7 +849,7 @@ WandExport MagickBooleanType PixelSetIteratorRow(PixelIterator *iterator,
   const ssize_t row)
 {
   assert(iterator != (const PixelIterator *) NULL);
-  assert(iterator->signature == WandSignature);
+  assert(iterator->signature == MagickWandSignature);
   if (iterator->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",iterator->name);
   if ((row < 0) || (row >= (ssize_t) iterator->region.height))
@@ -884,7 +884,7 @@ WandExport MagickBooleanType PixelSetIteratorRow(PixelIterator *iterator,
 WandExport void PixelSetLastIteratorRow(PixelIterator *iterator)
 {
   assert(iterator != (PixelIterator *) NULL);
-  assert(iterator->signature == WandSignature);
+  assert(iterator->signature == MagickWandSignature);
   if (iterator->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",iterator->name);
   iterator->active=MagickFalse;
@@ -925,7 +925,7 @@ WandExport MagickBooleanType PixelSyncIterator(PixelIterator *iterator)
     *restrict pixels;
 
   assert(iterator != (const PixelIterator *) NULL);
-  assert(iterator->signature == WandSignature);
+  assert(iterator->signature == MagickWandSignature);
   if (iterator->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",iterator->name);
   status=SetCacheViewStorageClass(iterator->view,DirectClass,

@@ -249,7 +249,7 @@ static void ExportAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
     x;
 
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   switch (quantum_info->depth)
   {
     case 8:
@@ -357,7 +357,7 @@ static void ExportBGRQuantum(const Image *image,QuantumInfo *quantum_info,
     bit;
 
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   switch (quantum_info->depth)
   {
     case 8:
@@ -653,7 +653,7 @@ static void ExportBGRAQuantum(const Image *image,QuantumInfo *quantum_info,
     x;
 
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   switch (quantum_info->depth)
   {
     case 8:
@@ -897,7 +897,7 @@ static void ExportBGROQuantum(const Image *image,QuantumInfo *quantum_info,
     x;
 
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   switch (quantum_info->depth)
   {
     case 8:
@@ -1250,7 +1250,7 @@ static void ExportBlueQuantum(const Image *image,QuantumInfo *quantum_info,
     x;
 
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   switch (quantum_info->depth)
   {
     case 8:
@@ -1365,7 +1365,7 @@ static void ExportCbYCrYQuantum(const Image *image,QuantumInfo *quantum_info,
     n;
 
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   n=0;
   quantum=0;
   switch (quantum_info->depth)
@@ -1945,7 +1945,7 @@ static void ExportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
     x;
 
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   switch (quantum_info->depth)
   {
     case 1:
@@ -2203,7 +2203,7 @@ static void ExportGrayAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
     x;
 
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   switch (quantum_info->depth)
   {
     case 1:
@@ -2409,7 +2409,7 @@ static void ExportGreenQuantum(const Image *image,QuantumInfo *quantum_info,
     x;
 
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   switch (quantum_info->depth)
   {
     case 8:
@@ -2876,7 +2876,7 @@ static void ExportOpacityQuantum(const Image *image,QuantumInfo *quantum_info,
     x;
 
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   switch (quantum_info->depth)
   {
     case 8:
@@ -2981,7 +2981,7 @@ static void ExportRedQuantum(const Image *image,QuantumInfo *quantum_info,
     x;
 
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   switch (quantum_info->depth)
   {
     case 8:
@@ -3089,7 +3089,7 @@ static void ExportRGBQuantum(const Image *image,QuantumInfo *quantum_info,
     bit;
 
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   switch (quantum_info->depth)
   {
     case 8:
@@ -3385,7 +3385,7 @@ static void ExportRGBAQuantum(const Image *image,QuantumInfo *quantum_info,
     x;
 
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   switch (quantum_info->depth)
   {
     case 8:
@@ -3629,7 +3629,7 @@ static void ExportRGBOQuantum(const Image *image,QuantumInfo *quantum_info,
     x;
 
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   switch (quantum_info->depth)
   {
     case 8:
@@ -3883,11 +3883,11 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
     extent;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(quantum_info != (QuantumInfo *) NULL);
-  assert(quantum_info->signature == MagickSignature);
+  assert(quantum_info->signature == MagickCoreSignature);
   if (pixels == (unsigned char *) NULL)
     pixels=(unsigned char *) GetQuantumPixels(quantum_info);
   if (image_view == (CacheView *) NULL)

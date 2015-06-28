@@ -338,7 +338,7 @@ MagickPrivate DistributeCacheInfo *AcquireDistributeCacheInfo(
   if (server_info == (DistributeCacheInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(server_info,0,sizeof(*server_info));
-  server_info->signature=MagickSignature;
+  server_info->signature=MagickCoreSignature;
   server_info->port=0;
   hostname=GetHostname(&server_info->port,exception);
   session_key=0;
@@ -384,10 +384,10 @@ MagickPrivate DistributeCacheInfo *DestroyDistributeCacheInfo(
   DistributeCacheInfo *server_info)
 {
   assert(server_info != (DistributeCacheInfo *) NULL);
-  assert(server_info->signature == MagickSignature);
+  assert(server_info->signature == MagickCoreSignature);
   if (server_info->file > 0)
     CLOSE_SOCKET(server_info->file);
-  server_info->signature=(~MagickSignature);
+  server_info->signature=(~MagickCoreSignature);
   server_info=(DistributeCacheInfo *) RelinquishMagickMemory(server_info);
   return(server_info);
 }
@@ -920,7 +920,7 @@ MagickExport void DistributePixelCacheServer(const int port,
     Launch distributed pixel cache server.
   */
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
   NTInitializeWinsock(MagickFalse);
 #endif
@@ -1024,7 +1024,7 @@ MagickExport void DistributePixelCacheServer(const int port,
 MagickPrivate int GetDistributeCacheFile(const DistributeCacheInfo *server_info)
 {
   assert(server_info != (DistributeCacheInfo *) NULL);
-  assert(server_info->signature == MagickSignature);
+  assert(server_info->signature == MagickCoreSignature);
   return(server_info->file);
 }
 
@@ -1056,7 +1056,7 @@ MagickPrivate const char *GetDistributeCacheHostname(
   const DistributeCacheInfo *server_info)
 {
   assert(server_info != (DistributeCacheInfo *) NULL);
-  assert(server_info->signature == MagickSignature);
+  assert(server_info->signature == MagickCoreSignature);
   return(server_info->hostname);
 }
 
@@ -1086,7 +1086,7 @@ MagickPrivate const char *GetDistributeCacheHostname(
 MagickPrivate int GetDistributeCachePort(const DistributeCacheInfo *server_info)
 {
   assert(server_info != (DistributeCacheInfo *) NULL);
-  assert(server_info->signature == MagickSignature);
+  assert(server_info->signature == MagickCoreSignature);
   return(server_info->port);
 }
 
@@ -1134,9 +1134,9 @@ MagickPrivate MagickBooleanType OpenDistributePixelCache(
     Open distributed pixel cache.
   */
   assert(server_info != (DistributeCacheInfo *) NULL);
-  assert(server_info->signature == MagickSignature);
+  assert(server_info->signature == MagickCoreSignature);
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   p=message;
   *p++='o';  /* open */
   /*
@@ -1225,7 +1225,7 @@ MagickPrivate MagickOffsetType ReadDistributePixelCacheMetacontent(
     Read distributed pixel cache metacontent.
   */
   assert(server_info != (DistributeCacheInfo *) NULL);
-  assert(server_info->signature == MagickSignature);
+  assert(server_info->signature == MagickCoreSignature);
   assert(region != (RectangleInfo *) NULL);
   assert(metacontent != (unsigned char *) NULL);
   if (length > (MagickSizeType) SSIZE_MAX)
@@ -1300,7 +1300,7 @@ MagickPrivate MagickOffsetType ReadDistributePixelCachePixels(
     Read distributed pixel cache pixels.
   */
   assert(server_info != (DistributeCacheInfo *) NULL);
-  assert(server_info->signature == MagickSignature);
+  assert(server_info->signature == MagickCoreSignature);
   assert(region != (RectangleInfo *) NULL);
   assert(pixels != (unsigned char *) NULL);
   if (length > (MagickSizeType) SSIZE_MAX)
@@ -1368,7 +1368,7 @@ MagickPrivate MagickBooleanType RelinquishDistributePixelCache(
     Delete distributed pixel cache.
   */
   assert(server_info != (DistributeCacheInfo *) NULL);
-  assert(server_info->signature == MagickSignature);
+  assert(server_info->signature == MagickCoreSignature);
   p=message;
   *p++='d';
   (void) memcpy(p,&server_info->session_key,sizeof(server_info->session_key));
@@ -1432,7 +1432,7 @@ MagickPrivate MagickOffsetType WriteDistributePixelCacheMetacontent(
     Write distributed pixel cache metacontent.
   */
   assert(server_info != (DistributeCacheInfo *) NULL);
-  assert(server_info->signature == MagickSignature);
+  assert(server_info->signature == MagickCoreSignature);
   assert(region != (RectangleInfo *) NULL);
   assert(metacontent != (unsigned char *) NULL);
   if (length > (MagickSizeType) SSIZE_MAX)
@@ -1507,7 +1507,7 @@ MagickPrivate MagickOffsetType WriteDistributePixelCachePixels(
     Write distributed pixel cache pixels.
   */
   assert(server_info != (DistributeCacheInfo *) NULL);
-  assert(server_info->signature == MagickSignature);
+  assert(server_info->signature == MagickCoreSignature);
   assert(region != (RectangleInfo *) NULL);
   assert(pixels != (const unsigned char *) NULL);
   if (length > (MagickSizeType) SSIZE_MAX)

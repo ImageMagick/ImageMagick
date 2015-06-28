@@ -243,7 +243,7 @@ static KernelInfo *ParseKernelArray(const char *kernel_string)
   kernel->negative_range = kernel->positive_range = 0.0;
   kernel->type = UserDefinedKernel;
   kernel->next = (KernelInfo *) NULL;
-  kernel->signature = MagickSignature;
+  kernel->signature=MagickCoreSignature;
   if (kernel_string == (const char *) NULL)
     return(kernel);
 
@@ -1022,7 +1022,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
       kernel->negative_range = kernel->positive_range = 0.0;
       kernel->type = type;
       kernel->next = (KernelInfo *) NULL;
-      kernel->signature = MagickSignature;
+      kernel->signature=MagickCoreSignature;
       break;
   }
 
@@ -2580,13 +2580,13 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
     progress;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   assert(morphology_image != (Image *) NULL);
-  assert(morphology_image->signature == MagickSignature);
+  assert(morphology_image->signature == MagickCoreSignature);
   assert(kernel != (KernelInfo *) NULL);
-  assert(kernel->signature == MagickSignature);
+  assert(kernel->signature == MagickCoreSignature);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   status=MagickTrue;
   progress=0;
   image_view=AcquireVirtualCacheView(image,exception);
@@ -3257,11 +3257,11 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
     y;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   assert(kernel != (KernelInfo *) NULL);
-  assert(kernel->signature == MagickSignature);
+  assert(kernel->signature == MagickCoreSignature);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
   status=MagickTrue;
   changed=0;
   progress=0;
@@ -3670,11 +3670,11 @@ MagickPrivate Image *MorphologyApply(const Image *image,
     v_info[MagickPathExtent];
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image->signature == MagickCoreSignature);
   assert(kernel != (KernelInfo *) NULL);
-  assert(kernel->signature == MagickSignature);
+  assert(kernel->signature == MagickCoreSignature);
   assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(exception->signature == MagickCoreSignature);
 
   count = 0;      /* number of low-level morphology primitives performed */
   if ( iterations == 0 )
