@@ -2900,10 +2900,7 @@ static MagickBooleanType XChopImage(Display *display,
   (void) XSelectInput(display,windows->image.id,
     windows->image.attributes.event_mask | PointerMotionMask);
   state=DefaultState;
-  segment_info.x1=0;
-  segment_info.x2=0;
-  segment_info.y1=0;
-  segment_info.y2=0;
+  (void) ResetMagickMemory(&segment_info,0,sizeof(segment_info));
   do
   {
     if (windows->info.mapped != MagickFalse)
