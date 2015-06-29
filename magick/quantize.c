@@ -2638,7 +2638,10 @@ static MagickBooleanType DirectToPseudoClassImage(Image *image,
       continue;
     q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
     if (q == (PixelPacket *) NULL)
-      continue;
+      {
+        status=MagickFalse;
+        continue;
+      }
     indexes=GetAuthenticIndexQueue(image);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
