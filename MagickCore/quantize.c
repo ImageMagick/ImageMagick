@@ -2669,7 +2669,7 @@ static MagickBooleanType DirectToPseudoClassImage(Image *image,
   if (PreAssignImageColors(image,cube_info,exception) == MagickFalse)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
-  status=MagickFalse;
+  status=MagickTrue;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
      magick_threads(image,image,image->rows,1)
@@ -2686,7 +2686,10 @@ static MagickBooleanType DirectToPseudoClassImage(Image *image,
       continue;
     q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
     if (q == (Quantum *) NULL)
-      continue;
+      {
+        status=MagickFalse;
+        continue;
+      }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       register ssize_t
