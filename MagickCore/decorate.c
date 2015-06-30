@@ -187,7 +187,6 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
   PixelInfo
     accentuate,
     highlight,
-    interior,
     matte,
     shadow,
     trough;
@@ -245,7 +244,6 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
   /*
     Initialize 3D effects color.
   */
-  interior=image->border_color;
   matte=image->matte_color;
   accentuate=matte;
   accentuate.red=(double) (QuantumScale*((QuantumRange-
@@ -426,56 +424,48 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
       q+=GetPixelChannels(frame_image);
     }
     /*
-      Set frame interior to interior color.
+      Set frame interior pixels.
     */
-    if ((compose != CopyCompositeOp) && ((compose != OverCompositeOp) ||
-        (image->alpha_trait != UndefinedPixelTrait)))
+    {
+      register const Quantum
+        *p;
+
+      p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
+      if (p == (const Quantum *) NULL)
+        {
+          status=MagickFalse;
+          continue;
+        }
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        SetPixelViaPixelInfo(frame_image,&interior,q);
-        q+=GetPixelChannels(frame_image);
-      }
-    else
-      {
-        register const Quantum
-          *p;
+        register ssize_t
+          i;
 
-        p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
-        if (p == (const Quantum *) NULL)
+        if (GetPixelReadMask(image,q) == 0)
           {
-            status=MagickFalse;
+            SetPixelBackgoundColor(frame_image,q);
+            p+=GetPixelChannels(image);
+            q+=GetPixelChannels(frame_image);
             continue;
           }
-        for (x=0; x < (ssize_t) image->columns; x++)
+        for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
         {
-          register ssize_t
-            i;
-
-          if (GetPixelReadMask(image,q) == 0)
-            {
-              SetPixelBackgoundColor(frame_image,q);
-              p+=GetPixelChannels(image);
-              q+=GetPixelChannels(frame_image);
-              continue;
-            }
-          for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-          {
-            PixelChannel channel=GetPixelChannelChannel(image,i);
-            PixelTrait traits=GetPixelChannelTraits(image,channel);
-            PixelTrait frame_traits=GetPixelChannelTraits(frame_image,channel);
-            if ((traits == UndefinedPixelTrait) ||
-                (frame_traits == UndefinedPixelTrait))
-              continue;
-            SetPixelChannel(frame_image,channel,p[i],q);
-          }
-          SetPixelRed(frame_image,GetPixelRed(image,p),q);
-          SetPixelGreen(frame_image,GetPixelGreen(image,p),q);
-          SetPixelBlue(frame_image,GetPixelBlue(image,p),q);
-          SetPixelAlpha(frame_image,GetPixelAlpha(image,p),q);
-          p+=GetPixelChannels(image);
-          q+=GetPixelChannels(frame_image);
+          PixelChannel channel=GetPixelChannelChannel(image,i);
+          PixelTrait traits=GetPixelChannelTraits(image,channel);
+          PixelTrait frame_traits=GetPixelChannelTraits(frame_image,channel);
+          if ((traits == UndefinedPixelTrait) ||
+              (frame_traits == UndefinedPixelTrait))
+            continue;
+          SetPixelChannel(frame_image,channel,p[i],q);
         }
+        SetPixelRed(frame_image,GetPixelRed(image,p),q);
+        SetPixelGreen(frame_image,GetPixelGreen(image,p),q);
+        SetPixelBlue(frame_image,GetPixelBlue(image,p),q);
+        SetPixelAlpha(frame_image,GetPixelAlpha(image,p),q);
+        p+=GetPixelChannels(image);
+        q+=GetPixelChannels(frame_image);
       }
+    }
     for (x=0; x < (ssize_t) frame_info->inner_bevel; x++)
     {
       SetPixelViaPixelInfo(frame_image,&highlight,q);
@@ -605,16 +595,13 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
     }
   frame_view=DestroyCacheView(frame_view);
   image_view=DestroyCacheView(image_view);
-  if ((compose != CopyCompositeOp) && ((compose != OverCompositeOp) ||
-      (image->alpha_trait != UndefinedPixelTrait)))
-    {
-      x=(ssize_t) (frame_info->outer_bevel+(frame_info->x-bevel_width)+
-        frame_info->inner_bevel);
-      y=(ssize_t) (frame_info->outer_bevel+(frame_info->y-bevel_width)+
-        frame_info->inner_bevel);
-      (void) CompositeImage(frame_image,image,compose,MagickTrue,x,y,
-        exception);
-    }
+  x=(ssize_t) (frame_info->outer_bevel+(frame_info->x-bevel_width)+
+    frame_info->inner_bevel);
+  y=(ssize_t) (frame_info->outer_bevel+(frame_info->y-bevel_width)+
+    frame_info->inner_bevel);
+  if (status != MagickFalse)
+    status=CompositeImage(frame_image,image,compose,MagickTrue,x,y,
+      exception);
   if (status == MagickFalse)
     frame_image=DestroyImage(frame_image);
   return(frame_image);
