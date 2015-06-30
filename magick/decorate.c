@@ -184,7 +184,6 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
     accentuate,
     border,
     highlight,
-    interior,
     matte,
     shadow,
     trough;
@@ -243,9 +242,6 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
   /*
     Initialize 3D effects color.
   */
-  GetMagickPixelPacket(frame_image,&interior);
-  SetMagickPixelPacket(frame_image,&image->border_color,(IndexPacket *) NULL,
-    &interior);
   GetMagickPixelPacket(frame_image,&matte);
   matte.colorspace=sRGBColorspace;
   SetMagickPixelPacket(frame_image,&image->matte_color,(IndexPacket *) NULL,
@@ -282,7 +278,6 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
   trough.opacity=matte.opacity;
   if (image->colorspace == CMYKColorspace)
     {
-      ConvertRGBToCMYK(&interior);
       ConvertRGBToCMYK(&matte);
       ConvertRGBToCMYK(&border);
       ConvertRGBToCMYK(&accentuate);
@@ -456,7 +451,7 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
       frame_indexes++;
     }
     /*
-      Set frame interior to interior color.
+      Set frame interior pixels.
     */
     {
       register const IndexPacket
