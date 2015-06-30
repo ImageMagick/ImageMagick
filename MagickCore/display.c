@@ -15103,10 +15103,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                           display_image->filename);
                         nexus=ReadImage(resource_info->image_info,exception);
                         if (nexus != (Image *) NULL)
-                          {
-                            nexus=DestroyImage(nexus);
-                            *state|=NextImageState | ExitState;
-                          }
+                          *state|=NextImageState | ExitState;
                       }
                   delay=display_image->delay/MagickMax(
                     display_image->ticks_per_second,1L);
