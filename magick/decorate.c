@@ -458,39 +458,30 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
     /*
       Set frame interior to interior color.
     */
-    if ((image->compose != CopyCompositeOp) &&
-        ((image->compose != OverCompositeOp) || (image->matte != MagickFalse)))
-      for (x=0; x < (ssize_t) image->columns; x++)
-      {
-        SetPixelPacket(frame_image,&interior,q,frame_indexes);
-        q++;
-        frame_indexes++;
-      }
-    else
-      {
-        register const IndexPacket
-          *indexes;
+    {
+      register const IndexPacket
+        *indexes;
 
-        register const PixelPacket
-          *p;
+      register const PixelPacket
+        *p;
 
-        p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
-        if (p == (const PixelPacket *) NULL)
-          {
-            status=MagickFalse;
-            continue;
-          }
-        indexes=GetCacheViewVirtualIndexQueue(image_view);
-        (void) CopyMagickMemory(q,p,image->columns*sizeof(*p));
-        if ((image->colorspace == CMYKColorspace) &&
-            (frame_image->colorspace == CMYKColorspace))
-          {
-            (void) CopyMagickMemory(frame_indexes,indexes,image->columns*
-              sizeof(*indexes));
-            frame_indexes+=image->columns;
-          }
-        q+=image->columns;
-      }
+      p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
+      if (p == (const PixelPacket *) NULL)
+        {
+          status=MagickFalse;
+          continue;
+        }
+      indexes=GetCacheViewVirtualIndexQueue(image_view);
+      (void) CopyMagickMemory(q,p,image->columns*sizeof(*p));
+      if ((image->colorspace == CMYKColorspace) &&
+          (frame_image->colorspace == CMYKColorspace))
+        {
+          (void) CopyMagickMemory(frame_indexes,indexes,image->columns*
+            sizeof(*indexes));
+          frame_indexes+=image->columns;
+        }
+      q+=image->columns;
+    }
     for (x=0; x < (ssize_t) frame_info->inner_bevel; x++)
     {
       SetPixelPacket(frame_image,&highlight,q,frame_indexes);
@@ -638,15 +629,12 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
     }
   frame_view=DestroyCacheView(frame_view);
   image_view=DestroyCacheView(image_view);
-  if ((image->compose != CopyCompositeOp) &&
-      ((image->compose != OverCompositeOp) || (image->matte != MagickFalse)))
-    {
-      x=(ssize_t) (frame_info->outer_bevel+(frame_info->x-bevel_width)+
-        frame_info->inner_bevel);
-      y=(ssize_t) (frame_info->outer_bevel+(frame_info->y-bevel_width)+
-        frame_info->inner_bevel);
-      (void) CompositeImage(frame_image,image->compose,image,x,y);
-    }
+  x=(ssize_t) (frame_info->outer_bevel+(frame_info->x-bevel_width)+
+    frame_info->inner_bevel);
+  y=(ssize_t) (frame_info->outer_bevel+(frame_info->y-bevel_width)+
+    frame_info->inner_bevel);
+  if (status != MagickFalse)
+    status=CompositeImage(frame_image,image->compose,image,x,y);
   if (status == MagickFalse)
     frame_image=DestroyImage(frame_image);
   return(frame_image);
