@@ -2276,19 +2276,6 @@ if test "$have_lcms" = 'yes'; then
   else
     AC_DEFINE(HAVE_LCMS2_H,1,Define if you have the <lcms2.h> header file.)
   fi
-else
-  PKG_CHECK_MODULES(LCMS,[lcms >= 1.0.0], have_lcms=yes, have_lcms=no)
-  if test "$have_lcms" = 'yes'; then
-    AC_DEFINE(LCMS_DELEGATE,1,Define if you have LCMS library)
-    AC_DEFINE(LCMS_VERSION_1,1,Define if you have LCMS version 1 library)
-    CFLAGS="$LCMS_CFLAGS $CFLAGS"
-    AC_CHECK_HEADER(lcms/lcms.h,have_lcms_header='yes',,)
-    if test "$have_lcms_header" = 'yes'; then
-      AC_DEFINE(HAVE_LCMS_LCMS_H,1,Define if you have the <lcms/lcms.h> header file.)
-    else
-      AC_DEFINE(HAVE_LCMS_H,1,Define if you have the <lcms.h> header file.)
-    fi
-  fi
 fi
 
 AM_CONDITIONAL(LCMS_DELEGATE, test "$have_lcms" = 'yes')
