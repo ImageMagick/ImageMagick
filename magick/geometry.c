@@ -989,17 +989,17 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
       if ((*p == ',') || (*p == '/') || (*p == ':') )
         p++;
       while ((*p == '+') || (*p == '-'))
-        {
-          if (*p == '-')
-            flags^=XiNegative;  /* negate sign */
-          p++;
-        }
+      {
+        if (*p == '-')
+          flags^=XiNegative;  /* negate sign */
+        p++;
+      }
       q=p;
       value=StringToDouble(p,&p);
       if (p != q)
         {
           flags|=XiValue;
-          if ((flags&XiNegative) != 0)
+          if ((flags & XiNegative) != 0)
             value=(-value);
           geometry_info->xi=value;
         }
@@ -1024,7 +1024,7 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
           if (p != q)
             {
               flags|=PsiValue;
-              if ((flags&PsiNegative) != 0)
+              if ((flags & PsiNegative) != 0)
                 value=(-value);
               geometry_info->psi=value;
             }
@@ -1050,7 +1050,7 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
           if (p != q)
             {
               flags|=ChiValue;
-              if ((flags&ChiNegative) != 0)
+              if ((flags & ChiNegative) != 0)
                 value=(-value);
               geometry_info->chi=value;
             }
