@@ -460,18 +460,18 @@ static inline MagickBooleanType IsPixelEquivalent(const Image *restrict image,
   const Quantum *restrict p,const PixelInfo *restrict q)
 {
   MagickRealType
-    blue,
-    green,
-    red;
+    value;
 
-  red=(MagickRealType) p[image->channel_map[RedPixelChannel].offset];
-  green=(MagickRealType) p[image->channel_map[GreenPixelChannel].offset];
-  blue=(MagickRealType) p[image->channel_map[BluePixelChannel].offset];
-  if ((AbsolutePixelValue(red-q->red) < MagickEpsilon) &&
-      (AbsolutePixelValue(green-q->green) < MagickEpsilon) &&
-      (AbsolutePixelValue(blue-q->blue) < MagickEpsilon))
-    return(MagickTrue);
-  return(MagickFalse);
+  value=(MagickRealType) p[image->channel_map[RedPixelChannel].offset];
+  if (AbsolutePixelValue(value-q->red) >= MagickEpsilon)
+    return(MagickFalse);
+  value=(MagickRealType) p[image->channel_map[GreenPixelChannel].offset];
+  if (AbsolutePixelValue(value-q->green) >= MagickEpsilon)
+    return(MagickFalse);
+  value=(MagickRealType) p[image->channel_map[BluePixelChannel].offset];
+  if (AbsolutePixelValue(value-q->blue) >= MagickEpsilon)
+    return(MagickFalse);
+  return(MagickTrue);
 }
 
 static inline MagickBooleanType IsPixelGray(const Image *restrict image,
