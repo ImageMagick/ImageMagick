@@ -2272,19 +2272,6 @@ if test "$have_lcms" = 'yes'; then
   else
     AC_DEFINE(HAVE_LCMS2_H,1,Define if you have the <lcms2.h> header file.)
   fi
-else
-  PKG_CHECK_MODULES(LCMS,[lcms >= 1.0.0], have_lcms=yes, have_lcms=no)
-  if test "$have_lcms" = 'yes'; then
-    AC_DEFINE(LCMS_DELEGATE,1,Define if you have LCMS library)
-    AC_DEFINE(LCMS_VERSION_1,1,Define if you have LCMS version 1 library)
-    CFLAGS="$LCMS_CFLAGS $CFLAGS"
-    AC_CHECK_HEADER(lcms/lcms.h,have_lcms_header='yes',,)
-    if test "$have_lcms_header" = 'yes'; then
-      AC_DEFINE(HAVE_LCMS_LCMS_H,1,Define if you have the <lcms/lcms.h> header file.)
-    else
-      AC_DEFINE(HAVE_LCMS_H,1,Define if you have the <lcms.h> header file.)
-    fi
-  fi
 fi
 
 AM_CONDITIONAL(LCMS_DELEGATE, test "$have_lcms" = 'yes')
@@ -3862,10 +3849,10 @@ AC_MSG_NOTICE([
 ==============================================================================
 ImageMagick is configured as follows. Please verify that this configuration
 matches your expectations.
-  
+
   Host system type: $host
   Build system type: $build
-  
+
                  Option                        Value
   ------------------------------------------------------------------------------
   Shared libraries  --enable-shared=$enable_shared		$libtool_build_shared_libs
@@ -3875,9 +3862,9 @@ matches your expectations.
   Quantum depth     --with-quantum-depth=$with_quantum_depth	$with_quantum_depth
   High Dynamic Range Imagery
                     --enable-hdri=$enable_hdri		$enable_hdri
-  
+
   Install documentation:			$wantdocs
-  
+
   Delegate Library Configuration:
   BZLIB             --with-bzlib=$with_bzlib		$have_bzlib
   Autotrace         --with-autotrace=$with_autotrace		$have_autotrace
@@ -3908,24 +3895,24 @@ matches your expectations.
   X11               --with-x=$with_x			$have_x
   XML               --with-xml=$with_xml		$have_xml
   ZLIB              --with-zlib=$with_zlib		$have_zlib
-  
+
   Delegate Program Configuration:
   GhostPCL          None				$PCLDelegate ($PCLVersion)
   GhostXPS          None				$XPSDelegate ($XPSVersion)
   Ghostscript       None				$PSDelegate ($GSVersion)
-  
+
   Font Configuration:
   Apple fonts       --with-apple-font-dir=$with_apple_font_dir	$result_apple_font_dir
   Dejavu fonts      --with-dejavu-font-dir=$with_dejavu_font_dir	$result_dejavu_font_dir
   Ghostscript fonts --with-gs-font-dir=$with_gs_font_dir	$result_ghostscript_font_dir
   Windows fonts     --with-windows-font-dir=$with_windows_font_dir	$result_windows_font_dir
-  
+
   X11 Configuration:
         X_CFLAGS        = $X_CFLAGS
         X_PRE_LIBS      = $X_PRE_LIBS
         X_LIBS          = $X_LIBS
         X_EXTRA_LIBS    = $X_EXTRA_LIBS
-  
+
   Options used to compile and link:
     PREFIX          = $PREFIX_DIR
     EXEC-PREFIX     = $EXEC_PREFIX_DIR

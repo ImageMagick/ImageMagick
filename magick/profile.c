@@ -68,38 +68,12 @@
 #if defined(MAGICKCORE_HAVE_LCMS_LCMS2_H)
 #include <wchar.h>
 #include <lcms/lcms2.h>
-#elif defined(MAGICKCORE_HAVE_LCMS2_H)
+#else
 #include <wchar.h>
 #include "lcms2.h"
-#elif defined(MAGICKCORE_HAVE_LCMS_LCMS_H)
-#include <lcms/lcms.h>
-#else
-#include "lcms.h"
 #endif
 #endif
 
-/*
-  Define declarations.
-*/
-#if !defined(LCMS_VERSION) || (LCMS_VERSION < 2000)
-#define cmsSigCmykData icSigCmykData
-#define cmsSigGrayData icSigGrayData
-#define cmsSigLabData icSigLabData
-#define cmsSigLuvData icSigLuvData
-#define cmsSigRgbData icSigRgbData
-#define cmsSigXYZData icSigXYZData
-#define cmsSigYCbCrData icSigYCbCrData
-#define cmsSigLinkClass icSigLinkClass
-#define cmsColorSpaceSignature icColorSpaceSignature
-#define cmsUInt32Number  DWORD
-#define cmsSetLogErrorHandler(handler)  cmsSetErrorHandler(handler)
-#define cmsCreateTransformTHR(context,source_profile,source_type, \
-  target_profile,target_type,intent,flags)  cmsCreateTransform(source_profile, \
-  source_type,target_profile,target_type,intent,flags);
-#define cmsOpenProfileFromMemTHR(context,profile,length) \
-  cmsOpenProfileFromMem(profile,length)
-#endif
-
 /*
   Forward declarations
 */
@@ -441,7 +415,6 @@ static cmsHTRANSFORM *AcquireTransformThreadSet(Image *image,
 #endif
 
 #if defined(MAGICKCORE_LCMS_DELEGATE)
-#if defined(LCMS_VERSION) && (LCMS_VERSION >= 2000)
 static void LCMSExceptionHandler(cmsContext context,cmsUInt32Number severity,
   const char *message)
 {
@@ -456,14 +429,6 @@ static void LCMSExceptionHandler(cmsContext context,cmsUInt32Number severity,
       ImageWarning,"UnableToTransformColorspace","`%s'",image->filename);
 
 }
-#else
-static int LCMSExceptionHandler(int severity,const char *message)
-{
-  (void) LogMagickEvent(TransformEvent,GetMagickModule(),"lcms: #%d, %s",
-    severity,message != (char *) NULL ? message : "no message");
-  return(1);
-}
-#endif
 #endif
 
 static MagickBooleanType SetsRGBImageProfile(Image *image)

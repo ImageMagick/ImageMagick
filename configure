@@ -813,10 +813,10 @@ LIBOPENJP2_DELEGATE_FALSE
 LIBOPENJP2_DELEGATE_TRUE
 LIBOPENJP2_LIBS
 LIBOPENJP2_CFLAGS
-LCMS_DELEGATE_FALSE
-LCMS_DELEGATE_TRUE
 LCMS_LIBS
 LCMS_CFLAGS
+LCMS_DELEGATE_FALSE
+LCMS_DELEGATE_TRUE
 LCMS2_LIBS
 LCMS2_CFLAGS
 JPEG_LIBS
@@ -1250,8 +1250,6 @@ GVC_CFLAGS
 GVC_LIBS
 LCMS2_CFLAGS
 LCMS2_LIBS
-LCMS_CFLAGS
-LCMS_LIBS
 LIBOPENJP2_CFLAGS
 LIBOPENJP2_LIBS
 LQR_CFLAGS
@@ -2052,8 +2050,6 @@ Some influential environment variables:
   LCMS2_CFLAGS
               C compiler flags for LCMS2, overriding pkg-config
   LCMS2_LIBS  linker flags for LCMS2, overriding pkg-config
-  LCMS_CFLAGS C compiler flags for LCMS, overriding pkg-config
-  LCMS_LIBS   linker flags for LCMS, overriding pkg-config
   LIBOPENJP2_CFLAGS
               C compiler flags for LIBOPENJP2, overriding pkg-config
   LIBOPENJP2_LIBS
@@ -4381,7 +4377,7 @@ MAGICK_PATCHLEVEL_VERSION=7
 
 MAGICK_VERSION=6.9.1-7
 
-MAGICK_SVN_REVISION=18946:18965M
+MAGICK_SVN_REVISION=19095M
 
 
 # Substitute library versioning
@@ -30303,102 +30299,6 @@ $as_echo "#define HAVE_LCMS2_LCMS2_H 1" >>confdefs.h
 
 $as_echo "#define HAVE_LCMS2_H 1" >>confdefs.h
 
-  fi
-else
-
-pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for LCMS" >&5
-$as_echo_n "checking for LCMS... " >&6; }
-
-if test -n "$LCMS_CFLAGS"; then
-    pkg_cv_LCMS_CFLAGS="$LCMS_CFLAGS"
- elif test -n "$PKG_CONFIG"; then
-    if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"lcms >= 1.0.0\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "lcms >= 1.0.0") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }; then
-  pkg_cv_LCMS_CFLAGS=`$PKG_CONFIG --cflags "lcms >= 1.0.0" 2>/dev/null`
-		      test "x$?" != "x0" && pkg_failed=yes
-else
-  pkg_failed=yes
-fi
- else
-    pkg_failed=untried
-fi
-if test -n "$LCMS_LIBS"; then
-    pkg_cv_LCMS_LIBS="$LCMS_LIBS"
- elif test -n "$PKG_CONFIG"; then
-    if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"lcms >= 1.0.0\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "lcms >= 1.0.0") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }; then
-  pkg_cv_LCMS_LIBS=`$PKG_CONFIG --libs "lcms >= 1.0.0" 2>/dev/null`
-		      test "x$?" != "x0" && pkg_failed=yes
-else
-  pkg_failed=yes
-fi
- else
-    pkg_failed=untried
-fi
-
-
-
-if test $pkg_failed = yes; then
-   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-
-if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
-        _pkg_short_errors_supported=yes
-else
-        _pkg_short_errors_supported=no
-fi
-        if test $_pkg_short_errors_supported = yes; then
-	        LCMS_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "lcms >= 1.0.0" 2>&1`
-        else
-	        LCMS_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "lcms >= 1.0.0" 2>&1`
-        fi
-	# Put the nasty error message in config.log where it belongs
-	echo "$LCMS_PKG_ERRORS" >&5
-
-	have_lcms=no
-elif test $pkg_failed = untried; then
-     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-	have_lcms=no
-else
-	LCMS_CFLAGS=$pkg_cv_LCMS_CFLAGS
-	LCMS_LIBS=$pkg_cv_LCMS_LIBS
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-	have_lcms=yes
-fi
-  if test "$have_lcms" = 'yes'; then
-
-$as_echo "#define LCMS_DELEGATE 1" >>confdefs.h
-
-
-$as_echo "#define LCMS_VERSION_1 1" >>confdefs.h
-
-    CFLAGS="$LCMS_CFLAGS $CFLAGS"
-    ac_fn_c_check_header_mongrel "$LINENO" "lcms/lcms.h" "ac_cv_header_lcms_lcms_h" "$ac_includes_default"
-if test "x$ac_cv_header_lcms_lcms_h" = xyes; then :
-  have_lcms_header='yes'
-fi
-
-
-    if test "$have_lcms_header" = 'yes'; then
-
-$as_echo "#define HAVE_LCMS_LCMS_H 1" >>confdefs.h
-
-    else
-
-$as_echo "#define HAVE_LCMS_H 1" >>confdefs.h
-
-    fi
   fi
 fi
 
