@@ -1419,7 +1419,20 @@ static unsigned int StringToTimeCode(const char *key)
   return(value);
 }
 
-static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image)
+static inline const char *GetDPXProperty(const Image *image,
+  const char *property)
+{
+  const char
+    *value;
+
+  value=GetImageArtifact(image,property);
+  if (value != (const char *) NULL)
+    return(value);
+  return(GetImageProperty(image,property));
+}
+
+static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,
+  Image *image)
 {
   const char
     *value;
@@ -1540,7 +1553,7 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image)
       dpx.file.user_size=(((dpx.file.user_size+0x2000-1)/0x2000)*0x2000);
     }
   offset+=WriteBlobLong(image,dpx.file.user_size);
-  value=GetImageArtifact(image,"dpx:file.filename");
+  value=GetDPXProperty(image,"dpx:file.filename");
   if (value != (const char *) NULL)
     (void) strncpy(dpx.file.filename,value,sizeof(dpx.file.filename)-1);
   offset+=WriteBlob(image,sizeof(dpx.file.filename),(unsigned char *)
@@ -1552,17 +1565,17 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image)
     dpx.file.timestamp);
   (void) strncpy(dpx.file.creator,GetMagickVersion((size_t *) NULL),
     sizeof(dpx.file.creator)-1);
-  value=GetImageArtifact(image,"dpx:file.creator");
+  value=GetDPXProperty(image,"dpx:file.creator");
   if (value != (const char *) NULL)
     (void) strncpy(dpx.file.creator,value,sizeof(dpx.file.creator)-1);
   offset+=WriteBlob(image,sizeof(dpx.file.creator),(unsigned char *)
     dpx.file.creator);
-  value=GetImageArtifact(image,"dpx:file.project");
+  value=GetDPXProperty(image,"dpx:file.project");
   if (value != (const char *) NULL)
     (void) strncpy(dpx.file.project,value,sizeof(dpx.file.project)-1);
   offset+=WriteBlob(image,sizeof(dpx.file.project),(unsigned char *)
     dpx.file.project);
-  value=GetImageArtifact(image,"dpx:file.copyright");
+  value=GetDPXProperty(image,"dpx:file.copyright");
   if (value != (const char *) NULL)
     (void) strncpy(dpx.file.copyright,value,sizeof(dpx.file.copyright)-1);
   offset+=WriteBlob(image,sizeof(dpx.file.copyright),(unsigned char *)
@@ -1680,36 +1693,36 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image)
       (void) DeleteImageProperty(image,"dpx:orientation.y_size");
     }
   dpx.orientation.x_offset=0U;
-  value=GetImageArtifact(image,"dpx:orientation.x_offset");
+  value=GetDPXProperty(image,"dpx:orientation.x_offset");
   if (value != (const char *) NULL)
     dpx.orientation.x_offset=(unsigned int) StringToUnsignedLong(value);
   offset+=WriteBlobLong(image,dpx.orientation.x_offset);
   dpx.orientation.y_offset=0U;
-  value=GetImageArtifact(image,"dpx:orientation.y_offset");
+  value=GetDPXProperty(image,"dpx:orientation.y_offset");
   if (value != (const char *) NULL)
     dpx.orientation.y_offset=(unsigned int) StringToUnsignedLong(value);
   offset+=WriteBlobLong(image,dpx.orientation.y_offset);
   dpx.orientation.x_center=0.0f;
-  value=GetImageArtifact(image,"dpx:orientation.x_center");
+  value=GetDPXProperty(image,"dpx:orientation.x_center");
   if (value != (const char *) NULL)
     dpx.orientation.x_center=StringToDouble(value,(char **) NULL);
   offset+=WriteBlobFloat(image,dpx.orientation.x_center);
   dpx.orientation.y_center=0.0f;
-  value=GetImageArtifact(image,"dpx:orientation.y_center");
+  value=GetDPXProperty(image,"dpx:orientation.y_center");
   if (value != (const char *) NULL)
     dpx.orientation.y_center=StringToDouble(value,(char **) NULL);
   offset+=WriteBlobFloat(image,dpx.orientation.y_center);
   dpx.orientation.x_size=0U;
-  value=GetImageArtifact(image,"dpx:orientation.x_size");
+  value=GetDPXProperty(image,"dpx:orientation.x_size");
   if (value != (const char *) NULL)
     dpx.orientation.x_size=(unsigned int) StringToUnsignedLong(value);
   offset+=WriteBlobLong(image,dpx.orientation.x_size);
   dpx.orientation.y_size=0U;
-  value=GetImageArtifact(image,"dpx:orientation.y_size");
+  value=GetDPXProperty(image,"dpx:orientation.y_size");
   if (value != (const char *) NULL)
     dpx.orientation.y_size=(unsigned int) StringToUnsignedLong(value);
   offset+=WriteBlobLong(image,dpx.orientation.y_size);
-  value=GetImageArtifact(image,"dpx:orientation.filename");
+  value=GetDPXProperty(image,"dpx:orientation.filename");
   if (value != (const char *) NULL)
     (void) strncpy(dpx.orientation.filename,value,
       sizeof(dpx.orientation.filename)-1);
@@ -1717,13 +1730,13 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image)
     dpx.orientation.filename);
   offset+=WriteBlob(image,sizeof(dpx.orientation.timestamp),(unsigned char *)
     dpx.orientation.timestamp);
-  value=GetImageArtifact(image,"dpx:orientation.device");
+  value=GetDPXProperty(image,"dpx:orientation.device");
   if (value != (const char *) NULL)
     (void) strncpy(dpx.orientation.device,value,
       sizeof(dpx.orientation.device)-1);
   offset+=WriteBlob(image,sizeof(dpx.orientation.device),(unsigned char *)
     dpx.orientation.device);
-  value=GetImageArtifact(image,"dpx:orientation.serial");
+  value=GetDPXProperty(image,"dpx:orientation.serial");
   if (value != (const char *) NULL)
     (void) strncpy(dpx.orientation.serial,value,
       sizeof(dpx.orientation.serial)-1);
@@ -1731,7 +1744,7 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image)
     dpx.orientation.serial);
   for (i=0; i < 4; i++)
     dpx.orientation.border[i]=0;
-  value=GetImageArtifact(image,"dpx:orientation.border");
+  value=GetDPXProperty(image,"dpx:orientation.border");
   if (value != (const char *) NULL)
     {
       flags=ParseGeometry(value,&geometry_info);
@@ -1746,7 +1759,7 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image)
     offset+=WriteBlobShort(image,dpx.orientation.border[i]);
   for (i=0; i < 2; i++)
     dpx.orientation.aspect_ratio[i]=0U;
-  value=GetImageArtifact(image,"dpx:orientation.aspect_ratio");
+  value=GetDPXProperty(image,"dpx:orientation.aspect_ratio");
   if (value != (const char *) NULL)
     {
       flags=ParseGeometry(value,&geometry_info);
@@ -1763,72 +1776,72 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image)
     Write film header.
   */
   (void) ResetMagickMemory(dpx.film.id,0,sizeof(dpx.film.id));
-  value=GetImageArtifact(image,"dpx:film.id");
+  value=GetDPXProperty(image,"dpx:film.id");
   if (value != (const char *) NULL)
     (void) strncpy(dpx.film.id,value,sizeof(dpx.film.id)-1);
   offset+=WriteBlob(image,sizeof(dpx.film.id),(unsigned char *) dpx.film.id);
   (void) ResetMagickMemory(dpx.film.type,0,sizeof(dpx.film.type));
-  value=GetImageArtifact(image,"dpx:film.type");
+  value=GetDPXProperty(image,"dpx:film.type");
   if (value != (const char *) NULL)
     (void) strncpy(dpx.film.type,value,sizeof(dpx.film.type)-1);
   offset+=WriteBlob(image,sizeof(dpx.film.type),(unsigned char *)
     dpx.film.type);
   (void) ResetMagickMemory(dpx.film.offset,0,sizeof(dpx.film.offset));
-  value=GetImageArtifact(image,"dpx:film.offset");
+  value=GetDPXProperty(image,"dpx:film.offset");
   if (value != (const char *) NULL)
     (void) strncpy(dpx.film.offset,value,sizeof(dpx.film.offset)-1);
   offset+=WriteBlob(image,sizeof(dpx.film.offset),(unsigned char *)
     dpx.film.offset);
   (void) ResetMagickMemory(dpx.film.prefix,0,sizeof(dpx.film.prefix));
-  value=GetImageArtifact(image,"dpx:film.prefix");
+  value=GetDPXProperty(image,"dpx:film.prefix");
   if (value != (const char *) NULL)
     (void) strncpy(dpx.film.prefix,value,sizeof(dpx.film.prefix)-1);
   offset+=WriteBlob(image,sizeof(dpx.film.prefix),(unsigned char *)
     dpx.film.prefix);
   (void) ResetMagickMemory(dpx.film.count,0,sizeof(dpx.film.count));
-  value=GetImageArtifact(image,"dpx:film.count");
+  value=GetDPXProperty(image,"dpx:film.count");
   if (value != (const char *) NULL)
     (void) strncpy(dpx.film.count,value,sizeof(dpx.film.count)-1);
   offset+=WriteBlob(image,sizeof(dpx.film.count),(unsigned char *)
     dpx.film.count);
   (void) ResetMagickMemory(dpx.film.format,0,sizeof(dpx.film.format));
-  value=GetImageArtifact(image,"dpx:film.format");
+  value=GetDPXProperty(image,"dpx:film.format");
   if (value != (const char *) NULL)
     (void) strncpy(dpx.film.format,value,sizeof(dpx.film.format)-1);
   offset+=WriteBlob(image,sizeof(dpx.film.format),(unsigned char *)
     dpx.film.format);
   dpx.film.frame_position=0U;
-  value=GetImageArtifact(image,"dpx:film.frame_position");
+  value=GetDPXProperty(image,"dpx:film.frame_position");
   if (value != (const char *) NULL)
     dpx.film.frame_position=(unsigned int) StringToUnsignedLong(value);
   offset+=WriteBlobLong(image,dpx.film.frame_position);
   dpx.film.sequence_extent=0U;
-  value=GetImageArtifact(image,"dpx:film.sequence_extent");
+  value=GetDPXProperty(image,"dpx:film.sequence_extent");
   if (value != (const char *) NULL)
     dpx.film.sequence_extent=(unsigned int) StringToUnsignedLong(value);
   offset+=WriteBlobLong(image,dpx.film.sequence_extent);
   dpx.film.held_count=0U;
-  value=GetImageArtifact(image,"dpx:film.held_count");
+  value=GetDPXProperty(image,"dpx:film.held_count");
   if (value != (const char *) NULL)
     dpx.film.held_count=(unsigned int) StringToUnsignedLong(value);
   offset+=WriteBlobLong(image,dpx.film.held_count);
   dpx.film.frame_rate=0.0f;
-  value=GetImageArtifact(image,"dpx:film.frame_rate");
+  value=GetDPXProperty(image,"dpx:film.frame_rate");
   if (value != (const char *) NULL)
     dpx.film.frame_rate=StringToDouble(value,(char **) NULL);
   offset+=WriteBlobFloat(image,dpx.film.frame_rate);
   dpx.film.shutter_angle=0.0f;
-  value=GetImageArtifact(image,"dpx:film.shutter_angle");
+  value=GetDPXProperty(image,"dpx:film.shutter_angle");
   if (value != (const char *) NULL)
     dpx.film.shutter_angle=StringToDouble(value,(char **) NULL);
   offset+=WriteBlobFloat(image,dpx.film.shutter_angle);
   (void) ResetMagickMemory(dpx.film.frame_id,0,sizeof(dpx.film.frame_id));
-  value=GetImageArtifact(image,"dpx:film.frame_id");
+  value=GetDPXProperty(image,"dpx:film.frame_id");
   if (value != (const char *) NULL)
     (void) strncpy(dpx.film.frame_id,value,sizeof(dpx.film.frame_id)-1);
   offset+=WriteBlob(image,sizeof(dpx.film.frame_id),(unsigned char *)
     dpx.film.frame_id);
-  value=GetImageArtifact(image,"dpx:film.slate");
+  value=GetDPXProperty(image,"dpx:film.slate");
   if (value != (const char *) NULL)
     (void) strncpy(dpx.film.slate,value,sizeof(dpx.film.slate)-1);
   offset+=WriteBlob(image,sizeof(dpx.film.slate),(unsigned char *)
@@ -1838,82 +1851,81 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image)
   /*
     Write television header.
   */
-  value=GetImageArtifact(image,"dpx:television.time.code");
+  value=GetDPXProperty(image,"dpx:television.time.code");
   if (value != (const char *) NULL)
     dpx.television.time_code=StringToTimeCode(value);
   offset+=WriteBlobLong(image,dpx.television.time_code);
-  value=GetImageArtifact(image,"dpx:television.user.bits");
+  value=GetDPXProperty(image,"dpx:television.user.bits");
   if (value != (const char *) NULL)
     dpx.television.user_bits=StringToTimeCode(value);
   offset+=WriteBlobLong(image,dpx.television.user_bits);
-  value=GetImageArtifact(image,"dpx:television.interlace");
+  value=GetDPXProperty(image,"dpx:television.interlace");
   if (value != (const char *) NULL)
     dpx.television.interlace=(unsigned char) StringToLong(value);
   offset+=WriteBlobByte(image,dpx.television.interlace);
-  value=GetImageArtifact(image,"dpx:television.field_number");
+  value=GetDPXProperty(image,"dpx:television.field_number");
   if (value != (const char *) NULL)
     dpx.television.field_number=(unsigned char) StringToLong(value);
   offset+=WriteBlobByte(image,dpx.television.field_number);
   dpx.television.video_signal=0;
-  value=GetImageArtifact(image,"dpx:television.video_signal");
+  value=GetDPXProperty(image,"dpx:television.video_signal");
   if (value != (const char *) NULL)
     dpx.television.video_signal=(unsigned char) StringToLong(value);
   offset+=WriteBlobByte(image,dpx.television.video_signal);
   dpx.television.padding=0;
-  value=GetImageArtifact(image,"dpx:television.padding");
+  value=GetDPXProperty(image,"dpx:television.padding");
   if (value != (const char *) NULL)
     dpx.television.padding=(unsigned char) StringToLong(value);
   offset+=WriteBlobByte(image,dpx.television.padding);
   dpx.television.horizontal_sample_rate=0.0f;
-  value=GetImageArtifact(image,
-    "dpx:television.horizontal_sample_rate");
+  value=GetDPXProperty(image,"dpx:television.horizontal_sample_rate");
   if (value != (const char *) NULL)
     dpx.television.horizontal_sample_rate=StringToDouble(value,
       (char **) NULL);
   offset+=WriteBlobFloat(image,dpx.television.horizontal_sample_rate);
   dpx.television.vertical_sample_rate=0.0f;
-  value=GetImageArtifact(image,"dpx:television.vertical_sample_rate");
+  value=GetDPXProperty(image,"dpx:television.vertical_sample_rate");
   if (value != (const char *) NULL)
     dpx.television.vertical_sample_rate=StringToDouble(value,
       (char **) NULL);
   offset+=WriteBlobFloat(image,dpx.television.vertical_sample_rate);
   dpx.television.frame_rate=0.0f;
-  value=GetImageArtifact(image,"dpx:television.frame_rate");
+  value=GetDPXProperty(image,"dpx:television.frame_rate");
   if (value != (const char *) NULL)
     dpx.television.frame_rate=StringToDouble(value,(char **) NULL);
   offset+=WriteBlobFloat(image,dpx.television.frame_rate);
   dpx.television.time_offset=0.0f;
-  value=GetImageArtifact(image,"dpx:television.time_offset");
+  value=GetDPXProperty(image,"dpx:television.time_offset");
   if (value != (const char *) NULL)
     dpx.television.time_offset=StringToDouble(value,(char **) NULL);
   offset+=WriteBlobFloat(image,dpx.television.time_offset);
   dpx.television.gamma=0.0f;
-  value=GetImageArtifact(image,"dpx:television.gamma");
+  value=GetDPXProperty(image,"dpx:television.gamma");
   if (value != (const char *) NULL)
     dpx.television.gamma=StringToDouble(value,(char **) NULL);
   offset+=WriteBlobFloat(image,dpx.television.gamma);
   dpx.television.black_level=0.0f;
-  value=GetImageArtifact(image,"dpx:television.black_level");
+  value=GetDPXProperty(image,"dpx:television.black_level");
   if (value != (const char *) NULL)
     dpx.television.black_level=StringToDouble(value,(char **) NULL);
   offset+=WriteBlobFloat(image,dpx.television.black_level);
   dpx.television.black_gain=0.0f;
-  value=GetImageArtifact(image,"dpx:television.black_gain");
+  value=GetDPXProperty(image,"dpx:television.black_gain");
   if (value != (const char *) NULL)
     dpx.television.black_gain=StringToDouble(value,(char **) NULL);
   offset+=WriteBlobFloat(image,dpx.television.black_gain);
   dpx.television.break_point=0.0f;
-  value=GetImageArtifact(image,"dpx:television.break_point");
+  value=GetDPXProperty(image,"dpx:television.break_point");
   if (value != (const char *) NULL)
     dpx.television.break_point=StringToDouble(value,(char **) NULL);
   offset+=WriteBlobFloat(image,dpx.television.break_point);
   dpx.television.white_level=0.0f;
-  value=GetImageArtifact(image,"dpx:television.white_level");
+  value=GetDPXProperty(image,"dpx:television.white_level");
   if (value != (const char *) NULL)
     dpx.television.white_level=StringToDouble(value,(char **) NULL);
   offset+=WriteBlobFloat(image,dpx.television.white_level);
   dpx.television.integration_times=0.0f;
-  value=GetImageArtifact(image,"dpx:television.integration_times");
+  value=GetDPXProperty(image,"dpx:television.integration_times");
   if (value != (const char *) NULL)
     dpx.television.integration_times=StringToDouble(value,(char **) NULL);
   offset+=WriteBlobFloat(image,dpx.television.integration_times);
@@ -1922,7 +1934,7 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image)
   /*
     Write user header.
   */
-  value=GetImageArtifact(image,"dpx:user.id");
+  value=GetDPXProperty(image,"dpx:user.id");
   if (value != (const char *) NULL)
     (void) strncpy(dpx.user.id,value,sizeof(dpx.user.id)-1);
   offset+=WriteBlob(image,sizeof(dpx.user.id),(unsigned char *) dpx.user.id);
