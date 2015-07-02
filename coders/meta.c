@@ -1807,6 +1807,7 @@ static const tag_spec tags[] = {
   { 80, "Byline" },
   { 85, "Byline Title" },
   { 90, "City" },
+  { 92, "Sub-Location" },
   { 95, "Province State" },
   { 100, "Country Code" },
   { 101, "Country" },

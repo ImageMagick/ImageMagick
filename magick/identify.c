@@ -1338,6 +1338,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
                 case 80: tag="Byline"; break;
                 case 85: tag="Byline Title"; break;
                 case 90: tag="City"; break;
+                case 92: tag="Sub-Location"; break;
                 case 95: tag="Province State"; break;
                 case 100: tag="Country Code"; break;
                 case 101: tag="Country"; break;
