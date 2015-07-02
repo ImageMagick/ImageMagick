@@ -2052,8 +2052,7 @@ static CubeInfo *GetCubeInfo(const QuantizeInfo *quantize_info,
   /*
     Initialize color cache.
   */
-  for (i=0; i < (ssize_t) length; i++)
-    cube_info->cache[i]=(-1);
+  ResetMagickMemory(cube_info->cache,(-1),length);
   /*
     Distribute weights along a curve of exponential decay.
   */
@@ -3470,8 +3469,7 @@ static MagickBooleanType SetGrayscaleImage(Image *image,
       image->filename);
   if (image->storage_class != PseudoClass)
     {
-      for (i=0; i <= (ssize_t) MaxMap; i++)
-        colormap_index[i]=(-1);
+      ResetMagickMemory(colormap_index,(-1),(size_t) MaxMap);
       if (AcquireImageColormap(image,MaxMap+1,exception) == MagickFalse)
         ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
           image->filename);
