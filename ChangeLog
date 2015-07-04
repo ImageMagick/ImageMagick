@@ -1,3 +1,6 @@
+2015-07-04  6.9.1-7 Cristy  <quetzlzacatenango@image...>
+  * New version 6.9.1-7, SVN revision 19118.
+
 2015-06-27  6.9.1-7 Eric Dalquist
   * Fixed and escaped output of the json coder. (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&p=27894).
