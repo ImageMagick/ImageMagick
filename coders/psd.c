@@ -1440,7 +1440,7 @@ ModuleExport MagickStatusType ReadPSDLayers(Image *image,
             */
             length=(size_t) ReadBlobByte(image);
             combined_length+=length+1;
-            if (length != 0)
+            if ((length != 0) && (~length < 1))
               (void) ReadBlob(image,(size_t) length++,layer_info[i].name);
             layer_info[i].name[length]='\0';
             if (image->debug != MagickFalse)
