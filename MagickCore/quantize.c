@@ -2052,7 +2052,8 @@ static CubeInfo *GetCubeInfo(const QuantizeInfo *quantize_info,
   /*
     Initialize color cache.
   */
-  ResetMagickMemory(cube_info->cache,(-1),length);
+  (void) ResetMagickMemory(cube_info->cache,(-1),sizeof(*cube_info->cache)*
+    length);
   /*
     Distribute weights along a curve of exponential decay.
   */
@@ -3462,15 +3463,16 @@ static MagickBooleanType SetGrayscaleImage(Image *image,
   assert(image->signature == MagickCoreSignature);
   if (image->type != GrayscaleType)
     (void) TransformImageColorspace(image,GRAYColorspace,exception);
-  colormap_index=(ssize_t *) AcquireQuantumMemory(MaxMap+1,
+  colormap_index=(ssize_t *) AcquireQuantumMemory(MaxColormapSize,
     sizeof(*colormap_index));
   if (colormap_index == (ssize_t *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
   if (image->storage_class != PseudoClass)
     {
-      ResetMagickMemory(colormap_index,(-1),(size_t) MaxMap);
-      if (AcquireImageColormap(image,MaxMap+1,exception) == MagickFalse)
+      (void) ResetMagickMemory(colormap_index,(-1),MaxColormapSize*
+        sizeof(*colormap_index));
+      if (AcquireImageColormap(image,MaxColormapSize,exception) == MagickFalse)
         ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
           image->filename);
       image->colors=0;
