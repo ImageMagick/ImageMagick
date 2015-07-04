@@ -3652,7 +3652,9 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
 
   if (IfMagickTrue(cli_wand->wand.debug))
     (void) CLILogEvent(cli_wand,CommandEvent,GetMagickModule(),
-         "- List Operator: %s \"%s\" \"%s\"", option,arg1n,arg2n);
+       "- List Operator: %s \"%s\" \"%s\"", option,
+       arg1n == (const char *) NULL ? "null" : arg1n,
+       arg2n == (const char *) NULL ? "null" : arg2n);
 
   arg1 = arg1n;
   arg2 = arg2n;
