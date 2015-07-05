@@ -1074,8 +1074,8 @@ MagickExport MagickBooleanType CopyImagePixels(Image *image,
   */
   status=MagickTrue;
   progress=0;
-  source_view=AcquireAuthenticCacheView(source_image,exception);
-  image_view=AcquireVirtualCacheView(image,exception);
+  source_view=AcquireVirtualCacheView(source_image,exception);
+  image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     magick_threads(source_image,image,geometry->height,1)
