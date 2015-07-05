@@ -642,9 +642,8 @@ MagickPrivate char *FileToXML(const char *filename,const size_t extent)
       */
       offset=(MagickOffsetType) lseek(file,0,SEEK_SET);
       quantum=(size_t) MagickMaxBufferExtent;
-      if ((fstat(file,&file_stats) == 0) && (file_stats.st_size != 0))
-        quantum=(size_t) MagickMin((MagickSizeType) file_stats.st_size,
-          MagickMaxBufferExtent);
+      if ((fstat(file,&file_stats) == 0) && (file_stats.st_size > 0))
+        quantum=(size_t) MagickMin(file_stats.st_size,MagickMaxBufferExtent);
       xml=(char *) AcquireQuantumMemory(quantum,sizeof(*xml));
       for (i=0; xml != (char *) NULL; i+=count)
       {
@@ -677,7 +676,7 @@ MagickPrivate char *FileToXML(const char *filename,const size_t extent)
       xml[length]='\0';
       return(xml);
     }
-  length=(size_t) MagickMin((MagickSizeType) offset,extent);
+  length=(size_t) MagickMin(offset,extent);
   xml=(char *) NULL;
   if (~length >= (MaxTextExtent-1))
     xml=(char *) AcquireQuantumMemory(length+MaxTextExtent,sizeof(*xml));
@@ -697,8 +696,7 @@ MagickPrivate char *FileToXML(const char *filename,const size_t extent)
       (void) lseek(file,0,SEEK_SET);
       for (i=0; i < length; i+=count)
       {
-        count=read(file,xml+i,(size_t) MagickMin(length-i,(MagickSizeType)
-          SSIZE_MAX));
+        count=read(file,xml+i,(size_t) MagickMin(length-i,SSIZE_MAX));
         if (count <= 0)
           {
             count=0;

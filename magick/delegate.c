@@ -1068,7 +1068,7 @@ static MagickBooleanType CopyDelegateFile(const char *source,
       return(MagickFalse);
     }
   quantum=(size_t) MagickMaxBufferExtent;
-  if ((fstat(source_file,&attributes) == 0) && (attributes.st_size != 0))
+  if ((fstat(source_file,&attributes) == 0) && (attributes.st_size > 0))
     quantum=MagickMin((size_t) attributes.st_size,MagickMaxBufferExtent);
   buffer=(unsigned char *) AcquireQuantumMemory(quantum,sizeof(*buffer));
   if (buffer == (unsigned char *) NULL)

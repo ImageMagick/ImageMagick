@@ -2856,7 +2856,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           (void) RelinquishUniqueFileResource(unique);
           (void) RelinquishUniqueFileResource(input_filename);
           if ((status == 0) && (stat(output_filename,&attributes) == 0) &&
-              (attributes.st_size != 0))
+              (attributes.st_size > 0))
             {
               Image
                 *svg_image;

@@ -406,7 +406,7 @@ static MagickBooleanType CopyDelegateFile(const char *source,
   assert(source != (const char *) NULL);
   assert(destination != (char *) NULL);
   status=GetPathAttributes(destination,&attributes);
-  if ((status != MagickFalse) && (attributes.st_size != 0))
+  if ((status != MagickFalse) && (attributes.st_size > 0))
     return(MagickTrue);
   /*
     Copy source file to destination.
@@ -421,7 +421,7 @@ static MagickBooleanType CopyDelegateFile(const char *source,
       return(MagickFalse);
     }
   quantum=(size_t) MagickMaxBufferExtent;
-  if ((fstat(source_file,&attributes) == 0) && (attributes.st_size != 0))
+  if ((fstat(source_file,&attributes) == 0) && (attributes.st_size > 0))
     quantum=(size_t) MagickMin((double) attributes.st_size,
       MagickMaxBufferExtent);
   buffer=(unsigned char *) AcquireQuantumMemory(quantum,sizeof(*buffer));

@@ -3463,10 +3463,10 @@ static inline MagickOffsetType WritePixelCacheRegion(
   {
 #if !defined(MAGICKCORE_HAVE_PWRITE)
     count=write(cache_info->file,buffer+i,(size_t) MagickMin(length-i,
-      (MagickSizeType) SSIZE_MAX));
+      SSIZE_MAX));
 #else
     count=pwrite(cache_info->file,buffer+i,(size_t) MagickMin(length-i,
-      (MagickSizeType) SSIZE_MAX),(off_t) (offset+i));
+      SSIZE_MAX),(off_t) (offset+i));
 #endif
     if (count <= 0)
       {
@@ -4210,10 +4210,10 @@ static inline MagickOffsetType ReadPixelCacheRegion(
   {
 #if !defined(MAGICKCORE_HAVE_PREAD)
     count=read(cache_info->file,buffer+i,(size_t) MagickMin(length-i,
-      (MagickSizeType) SSIZE_MAX));
+      SSIZE_MAX));
 #else
     count=pread(cache_info->file,buffer+i,(size_t) MagickMin(length-i,
-      (MagickSizeType) SSIZE_MAX),(off_t) (offset+i));
+      SSIZE_MAX),(off_t) (offset+i));
 #endif
     if (count <= 0)
       {
