@@ -1114,12 +1114,12 @@ MagickExport MagickBooleanType CopyImagePixels(Image *image,
         if ((traits == UndefinedPixelTrait) ||
             (source_traits == UndefinedPixelTrait))
           continue;
-        SetPixelChannel(source_image,channel,p[i],q);
+        SetPixelChannel(image,channel,p[i],q);
       }
-      p+=GetPixelChannels(image);
-      q+=GetPixelChannels(source_image);
+      p+=GetPixelChannels(source_image);
+      q+=GetPixelChannels(image);
     }
-    sync=SyncCacheViewAuthenticPixels(source_view,exception);
+    sync=SyncCacheViewAuthenticPixels(image_view,exception);
     if (sync == MagickFalse)
       status=MagickFalse;
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
