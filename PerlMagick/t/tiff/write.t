@@ -101,7 +101,7 @@ print("Gray image (4 bits per sample + matte channel) ...\n");
 testReadWrite(  'input_gray_4bit_matte.tiff',
   'output_gray_4bit_matte.tiff',
   q//,
-  '91a3cb9734b88a1c35cfc439493115818d7f49a2fc7bcadec52b2489da0118f9' );
+  'cecaf7f63dbe1df08e6ab653406975b888e9b9a16da555be10ab567cd05d97fa' );
 
 #
 # 10) Test gray 8 bit image (with matte channel)
