@@ -2604,71 +2604,6 @@ static void PruneToCubeDepth(const Image *image,CubeInfo *cube_info,
 %
 */
 
-static MagickBooleanType DirectToPseudoClassImage(Image *image,
-  CubeInfo *cube_info,ExceptionInfo *exception)
-{
-  MagickBooleanType
-    status;
-
-  ssize_t
-    y;
-
-  if (cube_info->colors > cube_info->maximum_colors)
-    return(MagickFalse);
-  if (PreAssignImageColors(image,cube_info) == MagickFalse)
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      image->filename);
-  status=MagickTrue;
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(status) \
-     magick_threads(image,image,image->rows,1)
-#endif
-  for (y=0; y < (ssize_t) image->rows; y++)
-  {
-    register IndexPacket
-      *indexes;
-
-    register PixelPacket
-      *restrict q;
-
-    register ssize_t
-      x;
-
-    if (status == MagickFalse)
-      continue;
-    q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
-    if (q == (PixelPacket *) NULL)
-      {
-        status=MagickFalse;
-        continue;
-      }
-    indexes=GetAuthenticIndexQueue(image);
-    for (x=0; x < (ssize_t) image->columns; x++)
-    {
-      register ssize_t
-        i;
-
-      for (i=0; i < (ssize_t) image->colors; i++)
-      {
-         if ((GetPixelRed(q) != GetPixelRed(&image->colormap[i])) ||
-             (GetPixelGreen(q) != GetPixelGreen(&image->colormap[i])) ||
-             (GetPixelBlue(q) != GetPixelBlue(&image->colormap[i])) ||
-             ((image->matte != MagickFalse) &&
-              (GetPixelOpacity(q) != GetPixelOpacity(&image->colormap[i]))))
-          continue;
-        SetPixelIndex(indexes+x,i);
-        break;
-      }
-      q++;
-    }
-    if (SyncAuthenticPixels(image,exception) == MagickFalse)
-      status=MagickFalse;
-  }
-  image->storage_class=PseudoClass;
-  PostAssignImageColors(image,cube_info);
-  return(status);
-}
-
 static MagickBooleanType DirectToColormapImage(Image *image,
   ExceptionInfo *exception)
 {
@@ -2804,14 +2739,14 @@ MagickExport MagickBooleanType QuantizeImage(const QuantizeInfo *quantize_info,
   if (status != MagickFalse)
     {
       /*
-        Reduce the number of colors in the image.
+        Reduce the number of colors in the image if it contains more than the
+        maximum, otherwise we can disable dithering to improve the performance.
       */
-      status=DirectToPseudoClassImage(image,cube_info,&image->exception);
-      if (status == MagickFalse)
-      {
+      if (cube_info->colors > cube_info->maximum_colors)
         ReduceImageColors(image,cube_info);
-        status=AssignImageColors(image,cube_info);
-      }
+      else
+        cube_info->quantize_info->dither_method=NoDitherMethod;
+      status=AssignImageColors(image,cube_info);
     }
   DestroyCubeInfo(cube_info);
   return(status);
