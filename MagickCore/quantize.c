@@ -492,9 +492,14 @@ static inline size_t ColorToNodeId(const CubeInfo *cube_info,
   return(id);
 }
 
-static inline MagickBooleanType PreAssignImageColors(Image *image,
-  CubeInfo *cube_info,ExceptionInfo *exception)
+static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info,
+  ExceptionInfo *exception)
 {
+#define AssignImageTag  "Assign/Image"
+
+  ssize_t
+    y;
+
   /*
     Allocate image colormap.
   */
@@ -507,58 +512,12 @@ static inline MagickBooleanType PreAssignImageColors(Image *image,
       (void) TransformImageColorspace((Image *) image,sRGBColorspace,
          exception);
   if (AcquireImageColormap(image,cube_info->colors,exception) == MagickFalse)
-    return(MagickFalse);
+    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+      image->filename);;
   image->colors=0;
   cube_info->transparent_pixels=0;
   cube_info->transparent_index=(-1);
   (void) DefineImageColormap(image,cube_info,cube_info->root);
-  return(MagickTrue);
-}
-
-static inline void PostAssignImageColors(Image *image,CubeInfo *cube_info,
-  ExceptionInfo *exception)
-{
-  if (cube_info->quantize_info->measure_error != MagickFalse)
-    (void) GetImageQuantizeError(image,exception);
-  if ((cube_info->quantize_info->number_colors == 2) &&
-      (cube_info->quantize_info->colorspace == GRAYColorspace))
-    {
-      double
-        intensity;
-
-      register PixelInfo
-        *restrict q;
-
-      register ssize_t
-        i;
-
-      /*
-        Monochrome image.
-      */
-      q=image->colormap;
-      for (i=0; i < (ssize_t) image->colors; i++)
-      {
-        intensity=(double) (GetPixelInfoLuma(q) < (QuantumRange/2.0) ? 0 :
-          QuantumRange);
-        q->red=intensity;
-        q->green=q->red;
-        q->blue=q->red;
-        q++;
-      }
-    }
-}
-
-static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info,
-  ExceptionInfo *exception)
-{
-#define AssignImageTag  "Assign/Image"
-
-  ssize_t
-    y;
-
-  if (PreAssignImageColors(image,cube_info,exception) == MagickFalse)
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      image->filename);
   /*
     Create a reduced color image.
   */
@@ -683,7 +642,34 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info,
       }
       image_view=DestroyCacheView(image_view);
     }
-  PostAssignImageColors(image,cube_info,exception);
+  if (cube_info->quantize_info->measure_error != MagickFalse)
+    (void) GetImageQuantizeError(image,exception);
+  if ((cube_info->quantize_info->number_colors == 2) &&
+      (cube_info->quantize_info->colorspace == GRAYColorspace))
+    {
+      double
+        intensity;
+
+      register PixelInfo
+        *restrict q;
+
+      register ssize_t
+        i;
+
+      /*
+        Monochrome image.
+      */
+      q=image->colormap;
+      for (i=0; i < (ssize_t) image->colors; i++)
+      {
+        intensity=(double) (GetPixelInfoLuma(q) < (QuantumRange/2.0) ? 0 :
+          QuantumRange);
+        q->red=intensity;
+        q->green=q->red;
+        q->blue=q->red;
+        q++;
+      }
+    }
   (void) SyncImage(image,exception);
   if ((cube_info->quantize_info->colorspace != UndefinedColorspace) &&
       (cube_info->quantize_info->colorspace != CMYKColorspace))
