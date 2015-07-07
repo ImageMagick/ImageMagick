@@ -3706,30 +3706,6 @@ else
 fi
 AC_SUBST(MAGICK_DEP_LIBS)
 
-#
-# Sanitize output variables (asthetic).
-#
-for variable in CFLAGS CPPFLAGS CXXFLAGS LDFLAGS PCFLAGS X_CFLAGS; do
-  sanitize=''
-  eval value=$`echo $variable`
-  for component in $value
-  do
-    unique=yes
-    for test_component in $sanitize
-    do
-      if test $component = $test_component; then
-        unique=no
-        break
-      fi
-    done
-    if test $unique = yes; then
-      sanitize="$sanitize $component"
-    fi
-  done
-  sanitize=`echo $sanitize | sed -e 's/^ *//g'`
-  eval ${variable}=\${sanitize}
-done
-
 # Pass only user-provided LIBS as "global" libraries
 LIBS=$USER_LIBS
 

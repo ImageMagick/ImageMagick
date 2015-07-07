@@ -4377,7 +4377,7 @@ MAGICK_PATCHLEVEL_VERSION=8
 
 MAGICK_VERSION=6.9.1-8
 
-MAGICK_SVN_REVISION=19135
+MAGICK_SVN_REVISION=19149M
 
 
 # Substitute library versioning
@@ -35562,30 +35562,6 @@ else
     MAGICK_DEP_LIBS="$USER_LIBS $JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $JPEG_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FPX_LIBS $FONTCONFIG_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $LIBOPENJP2_LIBS $PANGO_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $GDI32_LIBS $MATH_LIBS $GOMP_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS"
 fi
 
-
-#
-# Sanitize output variables (asthetic).
-#
-for variable in CFLAGS CPPFLAGS CXXFLAGS LDFLAGS PCFLAGS X_CFLAGS; do
-  sanitize=''
-  eval value=$`echo $variable`
-  for component in $value
-  do
-    unique=yes
-    for test_component in $sanitize
-    do
-      if test $component = $test_component; then
-        unique=no
-        break
-      fi
-    done
-    if test $unique = yes; then
-      sanitize="$sanitize $component"
-    fi
-  done
-  sanitize=`echo $sanitize | sed -e 's/^ *//g'`
-  eval ${variable}=\${sanitize}
-done
 
 # Pass only user-provided LIBS as "global" libraries
 LIBS=$USER_LIBS
