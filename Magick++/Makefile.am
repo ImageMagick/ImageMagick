@@ -120,7 +120,7 @@ magickpptopinc_HEADERS = $(MAGICKPP_TOP_INCHEADERS)
 MAGICKPP_TOP_INCHEADERS_OPT = \
   Magick++/lib/Magick++.h
 
-magickppincdir = $(topincludedir)/Magick++
+magickppincdir = $(INCLUDE_PATH)/Magick++
 
 magickppinc_HEADERS = $(MAGICKPP_INCHEADERS)
 
