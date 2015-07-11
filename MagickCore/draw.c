@@ -1956,6 +1956,12 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
               graphic_context[n]->decorate=(DecorationType) decorate;
             break;
           }
+        if (LocaleCompare("density",keyword) == 0)
+          {
+            GetMagickToken(q,&q,token);
+            (void) CloneString(&graphic_context[n]->density,token);
+            break;
+          }
         if (LocaleCompare("direction",keyword) == 0)
           {
             ssize_t
