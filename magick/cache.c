@@ -604,19 +604,6 @@ static MagickBooleanType ClonePixelCacheOnDisk(CacheInfo *restrict cache_info,
   if ((OpenPixelCacheOnDisk(cache_info,ReadMode) == MagickFalse) ||
       (OpenPixelCacheOnDisk(clone_info,IOMode) == MagickFalse))
     return(MagickFalse);
-#if defined(MAGICKCORE_HAVE_SENDFILE)
-  if (cache_info->length == (MagickSizeType) ((ssize_t) cache_info->length))
-    {
-      off_t
-        offset;
-
-      offset=0;
-      count=sendfile(clone_info->file,cache_info->file,&offset,(size_t)
-        cache_info->length);
-      if (count == (ssize_t) cache_info->length)
-        return(MagickTrue);
-    }
-#endif
   extent=0;
   while ((count=read(cache_info->file,buffer,sizeof(buffer))) > 0)
   { 
