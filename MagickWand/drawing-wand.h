@@ -32,6 +32,7 @@ extern WandExport AlignType
 
 extern WandExport char
   *DrawGetClipPath(const DrawingWand *),
+  *DrawGetDensity(const DrawingWand *),
   *DrawGetException(const DrawingWand *,ExceptionType *),
   *DrawGetFont(const DrawingWand *),
   *DrawGetFontFamily(const DrawingWand *),
@@ -99,6 +100,7 @@ extern WandExport MagickBooleanType
     const double,const double),
   DrawRender(DrawingWand *),
   DrawSetClipPath(DrawingWand *,const char *),
+  DrawSetDensity(DrawingWand *,const char *),
   DrawSetFillPatternURL(DrawingWand *,const char *),
   DrawSetFont(DrawingWand *,const char *),
   DrawSetFontFamily(DrawingWand *,const char *),

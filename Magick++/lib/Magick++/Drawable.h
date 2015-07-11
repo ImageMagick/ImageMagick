@@ -809,6 +809,25 @@ private:
   Image*             _image;
 };
 
+// Density
+class MagickPPExport DrawableDensity : public DrawableBase
+{
+public:
+
+  DrawableDensity(const Point &density_);
+
+  DrawableDensity(const std::string &density_);
+
+  ~DrawableDensity(void);
+
+  void operator()(MagickCore::DrawingWand *context_) const;
+
+  DrawableBase* copy() const;
+
+private:
+  std::string _density;
+};
+
 // Ellipse
 class MagickPPExport DrawableEllipse : public DrawableBase
 {
