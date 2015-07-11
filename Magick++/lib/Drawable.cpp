@@ -552,6 +552,26 @@ Magick::DrawableBase* Magick::DrawableCompositeImage::copy() const
   return new DrawableCompositeImage(*this);
 }
 
+Magick::DrawableDensity::DrawableDensity(const std::string &density_)
+  : _density(density_)
+{
+}
+
+Magick::DrawableDensity::~DrawableDensity(void)
+{
+}
+
+void Magick::DrawableDensity::operator()(
+  MagickCore::DrawingWand *context_) const
+{
+  DrawSetDensity(context_,_density.c_str());
+}
+
+Magick::DrawableBase* Magick::DrawableDensity::copy() const
+{
+  return(new DrawableDensity(*this));
+}
+
 // Ellipse
 Magick::DrawableEllipse::~DrawableEllipse( void )
 {

@@ -1208,7 +1208,41 @@ WandExport ClipPathUnits DrawGetClipUnits(const DrawingWand *wand)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   return(CurrentContext->clip_units);
 }
-
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   D r a w G e t D e n s i t y                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DrawGetDensity() obtains the vertical and horizontal resolution. The value
+%  returned must be deallocated by the user when it is no longer needed.
+%
+%  The format of the DrawGetDensity method is:
+%
+%      char *DrawGetDensity(const DrawingWand *wand)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the drawing wand.
+%
+*/
+WandExport char *DrawGetDensity(const DrawingWand *wand)
+{
+  assert(wand != (const DrawingWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (CurrentContext->density != (char *) NULL)
+    return((char *) AcquireString(CurrentContext->density));
+  return((char *) NULL);
+}
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -4610,7 +4644,50 @@ WandExport void DrawSetClipUnits(DrawingWand *wand,
         MagickClipPathOptions,(ssize_t) clip_units));
     }
 }
-
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   D r a w S e t D e n s i t y                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DrawSetDensity() sets the vertical and horizontal resolution.
+%
+%  The format of the DrawSetDensity method is:
+%
+%      MagickBooleanType DrawSetDensity(DrawingWand *wand,
+%        const char *density)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the drawing wand.
+%
+%    o density: the vertical and horizontal resolution.
+%
+*/
+WandExport MagickBooleanType DrawSetDensity(DrawingWand *wand,
+  const char *density)
+{
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",density);
+  assert(wand != (DrawingWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  assert(density != (const char *) NULL);
+  if ((CurrentContext->density == (const char *) NULL) ||
+      (wand->filter_off != MagickFalse) ||
+      (LocaleCompare(CurrentContext->density,density) != 0))
+    {
+      (void) CloneString(&CurrentContext->density,density);
+      (void) MvgPrintf(wand,"density '%s'\n",density);
+    }
+  return(MagickTrue);
+}
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
