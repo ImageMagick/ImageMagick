@@ -615,7 +615,6 @@ static MagickBooleanType ClonePixelCacheOnDisk(CacheInfo *restrict cache_info,
       break;
     extent+=number_bytes;
   }
-
   if (extent != cache_info->length)
     return(MagickFalse);
   return(MagickTrue);
