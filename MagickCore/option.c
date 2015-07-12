@@ -863,6 +863,8 @@ static const OptionInfo
     { "Xor", XorCompositeOp, UndefinedOptionFlag, MagickFalse },
     { "Divide", DivideDstCompositeOp, DeprecateOptionFlag, MagickTrue },
     { "Minus", MinusDstCompositeOp, DeprecateOptionFlag, MagickTrue },
+    { "Subtract", ModulusSubtractCompositeOp, DeprecateOptionFlag, MagickTrue },
+    { "Add", ModulusAddCompositeOp, DeprecateOptionFlag, MagickTrue },
     { "Threshold", ThresholdCompositeOp, DeprecateOptionFlag, MagickTrue },
     { "CopyOpacity", CopyAlphaCompositeOp, UndefinedOptionFlag, MagickTrue },
     { (char *) NULL, UndefinedCompositeOp, UndefinedOptionFlag, MagickFalse }
