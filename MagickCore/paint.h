@@ -31,8 +31,8 @@ extern MagickExport Image
 extern MagickExport MagickBooleanType
   FloodfillPaintImage(Image *,const DrawInfo *,const PixelInfo *,const ssize_t,
     const ssize_t,const MagickBooleanType,ExceptionInfo *),
-  GradientImage(Image *,const GradientType,const SpreadMethod,const PixelInfo *,
-    const PixelInfo *,ExceptionInfo *),
+  GradientImage(Image *,const GradientType,const SpreadMethod,const StopInfo *,
+    const size_t,ExceptionInfo *),
   OpaquePaintImage(Image *,const PixelInfo *,const PixelInfo *,
     const MagickBooleanType,ExceptionInfo *),
   TransparentPaintImage(Image *,const PixelInfo *,

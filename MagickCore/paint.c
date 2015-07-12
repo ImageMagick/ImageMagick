@@ -405,9 +405,10 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
 MagickExport MagickBooleanType GradientImage(Image *image,
   const GradientType type,const SpreadMethod method,
-  const PixelInfo *start_color,const PixelInfo *stop_color,
+  const StopInfo *stops,const size_t number_stops,
   ExceptionInfo *exception)
 {
   DrawInfo
@@ -419,9 +420,6 @@ MagickExport MagickBooleanType GradientImage(Image *image,
   MagickBooleanType
     status;
 
-  register ssize_t
-    i;
-
   /*
     Set gradient start-stop end points.
   */
@@ -429,8 +427,8 @@ MagickExport MagickBooleanType GradientImage(Image *image,
   assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  assert(start_color != (const PixelInfo *) NULL);
-  assert(stop_color != (const PixelInfo *) NULL);
+  assert(stops != (const StopInfo *) NULL);
+  assert(number_stops > 0);
   draw_info=AcquireDrawInfo();
   gradient=(&draw_info->gradient);
   gradient->type=type;
@@ -447,24 +445,17 @@ MagickExport MagickBooleanType GradientImage(Image *image,
   /*
     Define the gradient to fill between the stops.
   */
-  gradient->number_stops=2;
+  gradient->number_stops=number_stops;
   gradient->stops=(StopInfo *) AcquireQuantumMemory(gradient->number_stops,
     sizeof(*gradient->stops));
   if (gradient->stops == (StopInfo *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
-  (void) ResetMagickMemory(gradient->stops,0,gradient->number_stops*
-    sizeof(*gradient->stops));
-  for (i=0; i < (ssize_t) gradient->number_stops; i++)
-    GetPixelInfo(image,&gradient->stops[i].color);
-  gradient->stops[0].color=(*start_color);
-  gradient->stops[0].offset=0.0;
-  gradient->stops[1].color=(*stop_color);
-  gradient->stops[1].offset=1.0;
+  (void) CopyMagickMemory(gradient->stops,stops,(size_t) number_stops*
+    sizeof(*stops));
   /*
     Draw a gradient on the image.
   */
-  (void) SetImageColorspace(image,start_color->colorspace,exception);
   status=DrawGradientImage(image,draw_info,exception);
   draw_info=DestroyDrawInfo(draw_info);
   return(status);
