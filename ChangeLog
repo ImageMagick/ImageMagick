@@ -1,3 +1,7 @@
+2015-07-12  6.9.1-9 Dirk Lemstra <dirk@lem.....org>
+  * Fixed issue with radial gradient in MVG (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=27995).
+
 2015-07-11  6.9.1-8 Cristy  <quetzlzacatenango@image...>
   * New version 6.9.1-8, SVN revision 19167.
 
