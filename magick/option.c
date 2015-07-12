@@ -1113,6 +1113,13 @@ static const OptionInfo
     { "ArcTan", ArctanFunction, UndefinedOptionFlag, MagickFalse },
     { (char *) NULL, UndefinedFunction, UndefinedOptionFlag, MagickFalse }
   },
+  GradientOptions[] =
+  {
+    { "Undefined", UndefinedGradient, UndefinedOptionFlag, MagickTrue },
+    { "Linear", LinearGradient, UndefinedOptionFlag, MagickFalse },
+    { "Radial", RadialGradient, UndefinedOptionFlag, MagickFalse },
+    { (char *) NULL, UndefinedRule, UndefinedOptionFlag, MagickFalse }
+  },
   GravityOptions[] =
   {
     { "Undefined", UndefinedGravity, UndefinedOptionFlag, MagickTrue },
@@ -1949,6 +1956,7 @@ static const OptionInfo *GetOptionInfo(const CommandOption option)
     case MagickFillRuleOptions: return(FillRuleOptions);
     case MagickFilterOptions: return(FilterOptions);
     case MagickFunctionOptions: return(FunctionOptions);
+    case MagickGradientOptions: return(GradientOptions);
     case MagickGravityOptions: return(GravityOptions);
     case MagickIntensityOptions: return(PixelIntensityOptions);
     case MagickIntentOptions: return(IntentOptions);
