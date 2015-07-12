@@ -2355,6 +2355,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
                   graphic_context[n]->affine.ty;
                 (void) FormatLocaleString(key,MagickPathExtent,"%s",name);
                 (void) SetImageArtifact(image,key,token);
+                (void) FormatLocaleString(key,MagickPathExtent,"%s-type",name);
+                (void) SetImageArtifact(image,key,type);
                 (void) FormatLocaleString(key,MagickPathExtent,"%s-geometry",name);
                 (void) FormatLocaleString(geometry,MagickPathExtent,
                   "%gx%g%+.15g%+.15g",
@@ -2490,14 +2492,20 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
           }
         if (LocaleCompare("stop-color",keyword) == 0)
           {
+            GradientType
+              type;
+
             PixelInfo
               stop_color;
 
             GetMagickToken(q,&q,token);
             (void) QueryColorCompliance(token,AllCompliance,&stop_color,
               exception);
-            (void) GradientImage(image,LinearGradient,ReflectSpread,
-              &start_color,&stop_color,exception);
+            type=LinearGradient;
+            if (draw_info->gradient.type == RadialGradient)
+              type=RadialGradient;
+            (void) GradientImage(image,type,PadSpread,&start_color,&stop_color,
+              exception);
             start_color=stop_color;
             GetMagickToken(q,&q,token);
             break;
@@ -3492,7 +3500,8 @@ MagickExport MagickBooleanType DrawPatternPath(Image *image,
 
   const char
     *geometry,
-    *path;
+    *path,
+    *type;
 
   DrawInfo
     *clone_info;
@@ -3532,6 +3541,11 @@ MagickExport MagickBooleanType DrawPatternPath(Image *image,
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   clone_info->fill_pattern=NewImageList();
   clone_info->stroke_pattern=NewImageList();
+  (void) FormatLocaleString(property,MagickPathExtent,"%s-type",name);
+  type=GetImageArtifact(image,property);
+  if (type != (const char *) NULL)
+    clone_info->gradient.type=(GradientType) ParseCommandOption(
+      MagickGradientOptions,MagickFalse,type);
   (void) CloneString(&clone_info->primitive,path);
   status=DrawImage(*pattern,clone_info,exception);
   clone_info=DestroyDrawInfo(clone_info);
@@ -3816,8 +3830,8 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
     bounds;
 
   ssize_t
-    start,
-    stop,
+    start_y,
+    stop_y,
     y;
 
   /*
@@ -3877,13 +3891,13 @@ RestoreMSCWarning
       /*
         Draw point.
       */
-      start=(ssize_t) ceil(bounds.y1-0.5);
-      stop=(ssize_t) floor(bounds.y2+0.5);
+      start_y=(ssize_t) ceil(bounds.y1-0.5);
+      stop_y=(ssize_t) floor(bounds.y2+0.5);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
         magick_threads(image,image,1,1)
 #endif
-      for (y=start; y <= stop; y++)
+      for (y=start_y; y <= stop_y; y++)
       {
         MagickBooleanType
           sync;
@@ -3898,15 +3912,15 @@ RestoreMSCWarning
           *restrict q;
 
         ssize_t
-          start,
-          stop;
+          start_x,
+          stop_x;
 
         if (status == MagickFalse)
           continue;
-        start=(ssize_t) ceil(bounds.x1-0.5);
-        stop=(ssize_t) floor(bounds.x2+0.5);
-        x=start;
-        q=GetCacheViewAuthenticPixels(image_view,x,y,(size_t) (stop-x+1),1,
+        start_x=(ssize_t) ceil(bounds.x1-0.5);
+        stop_x=(ssize_t) floor(bounds.x2+0.5);
+        x=start_x;
+        q=GetCacheViewAuthenticPixels(image_view,x,y,(size_t) (stop_x-x+1),1,
           exception);
         if (q == (Quantum *) NULL)
           {
@@ -3914,12 +3928,12 @@ RestoreMSCWarning
             continue;
           }
         GetPixelInfo(image,&pixel);
-        for ( ; x <= stop; x++)
+        for ( ; x <= stop_x; x++)
         {
           if ((x == (ssize_t) ceil(primitive_info->point.x-0.5)) &&
               (y == (ssize_t) ceil(primitive_info->point.y-0.5)))
             {
-              (void) GetFillColor(draw_info,x,y,&pixel,exception);
+              (void) GetFillColor(draw_info,x-start_x,y-start_y,&pixel,exception);
               SetPixelViaPixelInfo(image,&pixel,q);
             }
           q+=GetPixelChannels(image);
@@ -3940,13 +3954,13 @@ RestoreMSCWarning
   */
   if (image->alpha_trait == UndefinedPixelTrait)
     (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
-  start=(ssize_t) ceil(bounds.y1-0.5);
-  stop=(ssize_t) floor(bounds.y2+0.5);
+  start_y=(ssize_t) ceil(bounds.y1-0.5);
+  stop_y=(ssize_t) floor(bounds.y2+0.5);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
     magick_threads(image,image,1,1)
 #endif
-  for (y=start; y <= stop; y++)
+  for (y=start_y; y <= stop_y; y++)
   {
     const int
       id = GetOpenMPThreadId();
@@ -3966,21 +3980,21 @@ RestoreMSCWarning
       x;
 
     ssize_t
-      start,
-      stop;
+      start_x,
+      stop_x;
 
     if (status == MagickFalse)
       continue;
-    start=(ssize_t) ceil(bounds.x1-0.5);
-    stop=(ssize_t) floor(bounds.x2+0.5);
-    q=GetCacheViewAuthenticPixels(image_view,start,y,(size_t) (stop-start+1),1,
+    start_x=(ssize_t) ceil(bounds.x1-0.5);
+    stop_x=(ssize_t) floor(bounds.x2+0.5);
+    q=GetCacheViewAuthenticPixels(image_view,start_x,y,(size_t) (stop_x-start_x+1),1,
       exception);
     if (q == (Quantum *) NULL)
       {
         status=MagickFalse;
         continue;
       }
-    for (x=start; x <= stop; x++)
+    for (x=start_x; x <= stop_x; x++)
     {
       /*
         Fill and/or stroke.
@@ -3992,11 +4006,11 @@ RestoreMSCWarning
           fill_alpha=fill_alpha > 0.25 ? 1.0 : 0.0;
           stroke_alpha=stroke_alpha > 0.25 ? 1.0 : 0.0;
         }
-      (void) GetFillColor(draw_info,x,y,&fill_color,exception);
+      (void) GetFillColor(draw_info,x-start_x,y-start_y,&fill_color,exception);
       fill_alpha=fill_alpha*fill_color.alpha;
       CompositePixelOver(image,&fill_color,fill_alpha,q,(double)
         GetPixelAlpha(image,q),q);
-      (void) GetStrokeColor(draw_info,x,y,&stroke_color,exception);
+      (void) GetStrokeColor(draw_info,x-start_x,y-start_y,&stroke_color,exception);
       stroke_alpha=stroke_alpha*stroke_color.alpha;
       CompositePixelOver(image,&stroke_color,stroke_alpha,q,(double)
         GetPixelAlpha(image,q),q);
