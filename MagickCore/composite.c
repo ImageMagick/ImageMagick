@@ -2074,14 +2074,14 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
                Dca' = A*Sca*Dca + B*Sca*Da + C*Dca*Sa + D*Sa*Da + Sca*(1.0-Da) +
                  Dca*(1.0-Sa)
             */
-            pixel=QuantumRange*gamma*(geometry_info.rho*Sca*Dca+
+            pixel=gamma*(geometry_info.rho*Sca*Dca+
               geometry_info.sigma*Sca*Da+geometry_info.xi*Dca*Sa+
               geometry_info.psi*Sa*Da+Sca*(1.0-Da)+Dca*(1.0-Sa));
             break;
           }
           case MinusDstCompositeOp:
           {
-            pixel=QuantumRange*gamma*(Sa*Sc+Da*Dc-2.0*Da*Dc*Sa);
+            pixel=gamma*(Sa*Sc+Da*Dc-2.0*Da*Dc*Sa);
             break;
           }
           case MinusSrcCompositeOp:
@@ -2091,7 +2091,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
 
                 f(Sc,Dc) = Sc - Dc
             */
-            pixel=QuantumRange*gamma*(Da*Dc+Sa*Sc-2.0*Sa*Sc*Da);
+            pixel=gamma*(Da*Dc+Sa*Sc-2.0*Sa*Sc*Da);
             break;
           }
           case ModulateCompositeOp:
