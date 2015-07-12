@@ -4847,7 +4847,7 @@ Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES =
 Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS = \
 	$(MAGICKPP_CPPFLAGS) $(LIBRARY_EXTRA_CPPFLAGS)
 
-magickpptopincdir = $(topincludedir)
+magickpptopincdir = $(INCLUDE_PATH)
 magickpptopinc_HEADERS = $(MAGICKPP_TOP_INCHEADERS)
 MAGICKPP_TOP_INCHEADERS_OPT = \
   Magick++/lib/Magick++.h
