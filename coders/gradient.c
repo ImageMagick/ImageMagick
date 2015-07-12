@@ -108,9 +108,8 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
     icc_color,
     status;
 
-  PixelInfo
-    start_color,
-    stop_color;
+  StopInfo
+    *stops;
 
   /*
     Initialize Image structure.
@@ -141,32 +140,39 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
       (void) sscanf(image_info->filename,"%*[^-]-%[^-]",colorname+4);
       icc_color=MagickTrue;
     }
-  status=QueryColorCompliance(colorname,AllCompliance,&start_color,exception);
+  stops=(StopInfo *) AcquireQuantumMemory(2,sizeof(*stops));
+  if (stops == (StopInfo *) NULL)
+    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+  stops[0].offset=0.0;
+  stops[1].offset=1.0;
+  status=QueryColorCompliance(colorname,AllCompliance,&stops[0].color,exception);
   if (status == MagickFalse)
     {
+      stops=(StopInfo *) RelinquishMagickMemory(stops);
       image=DestroyImage(image);
       return((Image *) NULL);
     }
-  (void) SetImageColorspace(image,start_color.colorspace,exception);
+  (void) SetImageColorspace(image,stops[0].color.colorspace,exception);
   (void) CopyMagickString(colorname,"white",MagickPathExtent);
-  if (GetPixelInfoIntensity(image,&start_color) > (QuantumRange/2.0))
+  if (GetPixelInfoIntensity(image,&stops[0].color) > (QuantumRange/2.0))
     (void) CopyMagickString(colorname,"black",MagickPathExtent);
   if (icc_color == MagickFalse)
     (void) sscanf(image_info->filename,"%*[^-]-%[^-]",colorname);
   else
     (void) sscanf(image_info->filename,"%*[^-]-%*[^-]-%[^-]",colorname);
-  status=QueryColorCompliance(colorname,AllCompliance,&stop_color,exception);
+  status=QueryColorCompliance(colorname,AllCompliance,&stops[1].color,exception);
   if (status == MagickFalse)
     {
+      stops=(StopInfo *) RelinquishMagickMemory(stops);
       image=DestroyImage(image);
       return((Image *) NULL);
     }
-  image->alpha_trait=start_color.alpha_trait;
-  if (stop_color.alpha_trait != UndefinedPixelTrait)
-    image->alpha_trait=stop_color.alpha_trait;
+  image->alpha_trait=stops[0].color.alpha_trait;
+  if (stops[1].color.alpha_trait != UndefinedPixelTrait)
+    image->alpha_trait=stops[1].color.alpha_trait;
   status=GradientImage(image,LocaleCompare(image_info->magick,"GRADIENT") == 0 ?
-    LinearGradient : RadialGradient,PadSpread,&start_color,&stop_color,
-    exception);
+    LinearGradient : RadialGradient,PadSpread,stops,2,exception);
+  stops=(StopInfo *) RelinquishMagickMemory(stops);
   if (status == MagickFalse)
     {
       image=DestroyImageList(image);

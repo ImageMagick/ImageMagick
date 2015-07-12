@@ -1699,9 +1699,6 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
   PointInfo
     point;
 
-  PixelInfo
-    start_color;
-
   PrimitiveInfo
     *primitive_info;
 
@@ -1720,12 +1717,16 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
 
   size_t
     length,
-    number_points;
+    number_points,
+    number_stops;
 
   ssize_t
     j,
     k,
     n;
+
+  StopInfo
+    *stops;
 
   /*
     Ensure the annotation info is valid.
@@ -1752,6 +1753,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
   primitive_extent=(double) strlen(primitive);
   (void) SetImageArtifact(image,"MVG",primitive);
   n=0;
+  number_stops=0;
+  stops=(StopInfo *) NULL;
   /*
     Allocate primitive info memory.
   */
@@ -1783,8 +1786,6 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
       graphic_context[n]->viewbox.height=image->rows;
     }
   token=AcquireString(primitive);
-  (void) QueryColorCompliance("#000000",AllCompliance,&start_color,
-    exception);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   status=MagickTrue;
@@ -2492,22 +2493,28 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
           }
         if (LocaleCompare("stop-color",keyword) == 0)
           {
-            GradientType
-              type;
-
             PixelInfo
               stop_color;
 
+            number_stops++;
+            if (number_stops == 1)
+              stops=(StopInfo *) AcquireQuantumMemory(2,sizeof(*stops));
+            else if (number_stops > 2)
+              stops=(StopInfo *) ResizeQuantumMemory(stops,number_stops,
+                sizeof(*stops));
+            if (stops == (StopInfo *) NULL)
+              {
+                (void) ThrowMagickException(exception,GetMagickModule(),
+                  ResourceLimitError,"MemoryAllocationFailed","`%s'",
+                  image->filename);
+                break;
+              }
             GetMagickToken(q,&q,token);
             (void) QueryColorCompliance(token,AllCompliance,&stop_color,
               exception);
-            type=LinearGradient;
-            if (draw_info->gradient.type == RadialGradient)
-              type=RadialGradient;
-            (void) GradientImage(image,type,PadSpread,&start_color,&stop_color,
-              exception);
-            start_color=stop_color;
+            stops[number_stops-1].color=stop_color;
             GetMagickToken(q,&q,token);
+            stops[number_stops-1].offset=StringToDouble(token,(char **) NULL);
             break;
           }
         if (LocaleCompare("stroke",keyword) == 0)
@@ -2761,6 +2768,22 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
       }
     if (primitive_type == UndefinedPrimitive)
       {
+        if (*q == '\0')
+          {
+            if (number_stops > 1)
+              {
+                GradientType
+                  type;
+
+              type=LinearGradient;
+              if (draw_info->gradient.type == RadialGradient)
+                type=RadialGradient;
+              (void) GradientImage(image,type,PadSpread,stops,number_stops,
+                 exception);
+             }
+           if (number_stops > 0)
+             stops=(StopInfo *) RelinquishMagickMemory(stops);
+          }
         if (image->debug != MagickFalse)
           (void) LogMagickEvent(DrawEvent,GetMagickModule(),"  %.*s",
             (int) (q-p),p);
@@ -3230,6 +3253,22 @@ static inline double GetStopColorOffset(const GradientInfo *gradient,
   return(0.0);
 }
 
+static int StopInfoCompare(const void *x,const void *y)
+{
+  StopInfo
+    *stop_1,
+    *stop_2;
+
+  stop_1=(StopInfo *) x;
+  stop_2=(StopInfo *) y;
+  
+  if (stop_1->offset > stop_2->offset)
+    return(1);
+  if (fabs(stop_1->offset-stop_2->offset) <= MagickEpsilon)
+    return(0);
+  return(-1);
+}
+
 MagickExport MagickBooleanType DrawGradientImage(Image *image,
   const DrawInfo *draw_info,ExceptionInfo *exception)
 {
@@ -3269,6 +3308,8 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(draw_info != (const DrawInfo *) NULL);
   gradient=(&draw_info->gradient);
+  qsort(gradient->stops,gradient->number_stops,sizeof(StopInfo),
+    StopInfoCompare);
   gradient_vector=(&gradient->gradient_vector);
   point.x=gradient_vector->x2-gradient_vector->x1;
   point.y=gradient_vector->y2-gradient_vector->y1;
