@@ -56,6 +56,7 @@ typedef enum
   MagickFontsOptions,
   MagickFormatOptions,
   MagickFunctionOptions,
+  MagickGradientOptions,
   MagickGravityOptions,
   MagickIntensityOptions,
   MagickIntentOptions,
