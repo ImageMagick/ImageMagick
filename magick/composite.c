@@ -1095,7 +1095,7 @@ static inline MagickRealType Minus(const MagickRealType Sca,
   */
   magick_unreferenced(Da);
 
-  return(Sca + Dca - 2*Dca*Sa);
+  return(Sca+Dca-2*Dca*Sa);
 }
 
 static inline void CompositeMinus(const MagickPixelPacket *p,
