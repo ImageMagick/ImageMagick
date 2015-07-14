@@ -964,7 +964,7 @@ static void TIFFReadPhotoshopLayers(Image* image,const ImageInfo *image_info,
   if (GetImageListLength(image) != 1)
     return;
   option=GetImageOption(image_info,"tiff:ignore-layers");
-  if (IsStringTrue(option) != MagickFalse)
+  if (option != (const char * ) NULL)
     return;
   layer_info=GetImageProfile(image,"tiff:37724");
   if (layer_info == (const StringInfo *) NULL)
