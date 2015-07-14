@@ -992,6 +992,8 @@ static void TIFFReadPhotoshopLayers(Image* image,const ImageInfo *image_info,
   info.columns=layers->columns;
   info.rows=layers->rows;
   info.channels=(unsigned short) layers->number_channels;
+  /* Setting the mode to a value that won't change the colorspace */
+  info.mode=10;
   ReadPSDLayers(layers,image_info,&info,MagickFalse,exception);
   DeleteImageFromList(&layers);
   if (layers != (Image *) NULL)
