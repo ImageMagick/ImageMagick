@@ -990,6 +990,8 @@ static void TIFFReadPhotoshopLayers(Image* image,const ImageInfo *image_info,
   info.version=1;
   info.columns=layers->columns;
   info.rows=layers->rows;
+  /* Setting the mode to a value that won't change the colorspace */
+  info.mode=10;
   if (IsGrayImage(image,&image->exception) != MagickFalse)
     info.channels=(image->matte != MagickFalse ? 2UL : 1UL);
   else
