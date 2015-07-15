@@ -23,12 +23,12 @@ extern "C" {
 #endif
 
 extern MagickExport char
-  *GetNextImageProperty(const Image *),
   *InterpretImageProperties(ImageInfo *,Image *,const char *,
     ExceptionInfo *),
   *RemoveImageProperty(Image *,const char *);
 
 extern MagickExport const char
+  *GetNextImageProperty(const Image *),
   *GetImageProperty(const Image *,const char *,ExceptionInfo *),
   *GetMagickProperty(ImageInfo *,Image *,const char *,ExceptionInfo *);
 

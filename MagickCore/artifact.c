@@ -324,15 +324,16 @@ MagickExport const char *GetImageArtifact(const Image *image,
 %    o image: the image.
 %
 */
-MagickExport char *GetNextImageArtifact(const Image *image)
+MagickExport const char *GetNextImageArtifact(const Image *image)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->artifacts == (void *) NULL)
-    return((char *) NULL);
-  return((char *) GetNextKeyInSplayTree((SplayTreeInfo *) image->artifacts));
+    return((const char *) NULL);
+  return((const char *) GetNextKeyInSplayTree(
+   (SplayTreeInfo *) image->artifacts));
 }
 
 /*

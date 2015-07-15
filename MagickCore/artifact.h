@@ -23,10 +23,10 @@ extern "C" {
 #endif
 
 extern MagickExport char
-  *GetNextImageArtifact(const Image *),
   *RemoveImageArtifact(Image *,const char *);
 
 extern MagickExport const char
+  *GetNextImageArtifact(const Image *),
   *GetImageArtifact(const Image *,const char *);
 
 extern MagickExport MagickBooleanType

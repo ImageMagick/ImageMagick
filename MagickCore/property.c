@@ -3100,7 +3100,7 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
 %    o image: the image.
 %
 */
-MagickExport char *GetNextImageProperty(const Image *image)
+MagickExport const char *GetNextImageProperty(const Image *image)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
@@ -3108,8 +3108,9 @@ MagickExport char *GetNextImageProperty(const Image *image)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image->filename);
   if (image->properties == (void *) NULL)
-    return((char *) NULL);
-  return((char *) GetNextKeyInSplayTree((SplayTreeInfo *) image->properties));
+    return((const char *) NULL);
+  return((const char *) GetNextKeyInSplayTree(
+    (SplayTreeInfo *) image->properties));
 }
 
 /*
