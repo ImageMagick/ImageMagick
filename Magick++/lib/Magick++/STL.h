@@ -2019,6 +2019,42 @@ namespace Magick
     ThrowPPException(appendedImage_->quiet());
   }
 
+  // Adds the names of the artifacts of the image to the container.
+  template <class Container>
+  void artifactNames(Container *names_,const Image* image_)
+  {
+    const char*
+      name;
+
+    names_->clear();
+
+    MagickCore::ResetImageArtifactIterator(image_->constImage());
+    name=MagickCore::GetNextImageArtifact(image_->constImage());
+    while (name != (const char *) NULL)
+    {
+      names_->push_back(std::string(name));
+      name=MagickCore::GetNextImageArtifact(image_->constImage());
+    }
+  }
+
+  // Adds the names of the attributes of the image to the container.
+  template <class Container>
+  void attributeNames(Container *names_,const Image* image_)
+  {
+    const char*
+      name;
+
+    names_->clear();
+
+    MagickCore::ResetImagePropertyIterator(image_->constImage());
+    name=MagickCore::GetNextImageProperty(image_->constImage());
+    while (name != (const char *) NULL)
+    {
+      names_->push_back(std::string(name));
+      name=MagickCore::GetNextImageProperty(image_->constImage());
+    }
+  }
+
   // Average a set of images.
   // All the input images must be the same size in pixels.
   template <class InputIterator>
@@ -2582,22 +2618,21 @@ namespace Magick
     ThrowPPException(first_->quiet());
   }
 
-
-  // Adds the names of the profiles from the image to the container.
+  // Adds the names of the profiles of the image to the container.
   template <class Container>
-  void profileNames( Container *names_, const Image* image_ )
+  void profileNames(Container *names_,const Image* image_)
   {
     const char*
       name;
 
     names_->clear();
 
-    MagickCore::ResetImageProfileIterator( image_->constImage() );
-    name=MagickCore::GetNextImageProfile( image_->constImage() );
+    MagickCore::ResetImageProfileIterator(image_->constImage());
+    name=MagickCore::GetNextImageProfile(image_->constImage());
     while (name != (const char *) NULL)
     {
-      names_->push_back( std::string(name) );
-      name=MagickCore::GetNextImageProfile( image_->constImage() );
+      names_->push_back(std::string(name));
+      name=MagickCore::GetNextImageProfile(image_->constImage());
     }
   }
 
