@@ -1,53 +1,98 @@
 Mac OS X-specific Build instructions
+
+In order to install ImageMagick on OSX, you will first need Apple's "Xcode", 
+which you can get by going to the AppStore and searching for "Xcode" and 
+installing it.
+
+Next, you will need to install the "Xcode Command Line Tools" which includes 
+the compiler. You can install those by running the following command in the
+Terminal:
+
+    xcode-select --install
+
+Now that you have the necessary tools, you have a choice of how to install 
+ImageMagick. The simplest method is to use "homebrew", and that method is shown 
+first below. The alternative method is to install from source, which is shown
+afterwards.
+
+################################################################################
+Method 1: Using "homebrew"
+################################################################################
+
+Go to http://brew.sh and copy the one-liner that installs "homebrew".
+
+Paste that into the Terminal and run it.
+
+For the very simplest, fastest, most basic ImageMagick installation, run:
+
+    brew install imagemagick
+
+Test your installation by running:
+
+    identify -version
+
+If you want to add support for extra features, such as HDRI, Perl, JPEG2000, 
+pango,fftw, TIFF or rsvg etc. you can find the necessary switches by running:
+
+    brew options imagemagick
+
+then find the options you need and apply them like this:
+
+    brew reinstall imagemagick --with-jp2 --with-librsvg --with-quantum-depth-16 --with-pango
+ 
+If you have any problems with "homebrew", simply run:
+
+    brew doctor
+
+and follow the doctor's advice.
+
+
+################################################################################
+Method 2: Compile from source - not necessary if you used "homebrew" method
+################################################################################
+
+
+Perform these steps as an administrator or with the sudo command:
   
-  Perform these steps as an administrator or with the sudo command:
-  
-  Install MacPorts. Download and install http://www.macports.org/ and type the
-  following commands:
+Install MacPorts. Download and install http://www.macports.org/ and type the
+following commands:
   
     $magick> sudo port -v install freetype +bytecode
     $magick> sudo port -v install librsvg
     $magick> sudo port -v install graphviz +gs +wmf +jbig +jpeg2 +lcms
   
-  This installs many of the delegate libraries ImageMagick will utilize such as
-  JPEG and FreeType.
+This installs many of the delegate libraries ImageMagick will utilize such as
+JPEG and FreeType.
   
-  Install the latest Xcode from Apple.
-  
-  Use the port command to install any delegate libraries you require, for example:
+Use the port command to install any delegate libraries you require, for example:
   
     $magick> sudo port install jpeg
   
-  Now lets build ImageMagick:
+Now let's build ImageMagick:
   
-  Download the ImageMagick source distribution and verify the distribution
-  against its message digest.
+Download the ImageMagick source distribution and verify the distribution
+against its message digest.
   
-  Unpack and change into the top-level ImageMagick directory:
+Unpack and change into the top-level ImageMagick directory:
   
-    $magick> tar xvfz ImageMagick-6.5.9-0.tar.gz $magick> cd ImageMagick-6.5.9
+    $magick> tar xvfz ImageMagick-6.5.9-0.tar.gz 
+    $magick> cd ImageMagick-6.5.9
   
-  Configure ImageMagick:
+Configure ImageMagick:
   
     $magick> ./configure --prefix=/opt --with-quantum-depth=16 \
-      --disable-dependency-tracking --with-x=yes \
-      --x-includes=/usr/X11R6/include --x-libraries=/usr/X11R6/lib/ \
-      --without-perl
+      --disable-dependency-tracking --without-perl
   
-  Build ImageMagick:
+Build ImageMagick:
   
     $magick> make
   
-  Install ImageMagick:
+Install ImageMagick:
   
     $magick> sudo make install
   
-  To verify your install, type
+To verify your install, type
   
     $magick> /opt/local/bin/identify -list font
   
-  to list all the fonts ImageMagick knows about.
-  
-  To test the ImageMagick GUI, in a new shell, type:
-  
-    $magick> display -display :0
+to list all the fonts ImageMagick knows about.
