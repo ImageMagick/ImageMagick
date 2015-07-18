@@ -1240,6 +1240,7 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
             *text;
 
           text=InterpretImageProperties(image_info,difference_image,format);
+          InheritException(exception,&image->exception);
           if (text == (char *) NULL)
             ThrowCompareException(ResourceLimitError,"MemoryAllocationFailed",
               GetExceptionMessage(errno));

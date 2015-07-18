@@ -1659,6 +1659,7 @@ WandExport MagickBooleanType CompositeImageCommand(ImageInfo *image_info,
         *text;
 
       text=InterpretImageProperties(image_info,images,format);
+      InheritException(exception,&image->exception);
       if (text == (char *) NULL)
         ThrowCompositeException(ResourceLimitError,"MemoryAllocationFailed",
           GetExceptionMessage(errno));

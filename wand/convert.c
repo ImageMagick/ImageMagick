@@ -3239,6 +3239,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
         *text;
 
       text=InterpretImageProperties(image_info,image,format);
+      InheritException(exception,&image->exception);
       if (text == (char *) NULL)
         ThrowConvertException(ResourceLimitError,"MemoryAllocationFailed",
           GetExceptionMessage(errno));

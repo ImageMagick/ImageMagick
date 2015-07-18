@@ -2784,6 +2784,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
                 break;
               }
             value=InterpretImageProperties(mogrify_info,*image,argv[i+2]);
+            InheritException(exception,&(*image)->exception);
             if (value == (char *) NULL)
               break;
             if (LocaleNCompare(argv[i+1],"registry:",9) == 0)
