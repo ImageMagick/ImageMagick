@@ -1811,10 +1811,6 @@ static Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
   }
 
-  if (EOFBlob(image) != MagickFalse)
-    ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
-      image->filename);
-
   (void) CloseBlob(image);
   return(GetFirstImageInList(image));
 }
