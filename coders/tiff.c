@@ -1008,9 +1008,11 @@ static void TIFFReadPhotoshopLayers(Image* image,const ImageInfo *image_info,
   DeleteImageFromList(&layers);
   if (layers != (Image *) NULL)
     {
+      SetImageArtifact(image,"tiff:has-layers","true");
       AppendImageToList(&image,layers);
       while (layers != (Image *) NULL)
       {
+        SetImageArtifact(layers,"tiff:has-layers","true");
         DetachBlob(layers->blob);
         layers=GetNextImageInList(layers);
       }
