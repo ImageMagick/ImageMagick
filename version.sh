@@ -1,4 +1,4 @@
-#
+
 # Package name and versioning information for ImageMagick.
 #
 # This file is sourced by a Bourne shell (/bin/sh) script so it must
@@ -18,7 +18,7 @@ PACKAGE_CHANGE_DATE=`awk '/^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]/ { print 
 PACKAGE_VERSION='6.9.1'
 PACKAGE_PERL_VERSION='6.91'
 PACKAGE_LIB_VERSION="0x691"
-PACKAGE_RELEASE="9"
+PACKAGE_RELEASE="10"
 PACKAGE_LIB_VERSION_NUMBER="6,9,1,${PACKAGE_RELEASE}"
 PACKAGE_RELEASE_DATE_RAW=`date +%F`
 PACKAGE_RELEASE_DATE_REPRODUCIBLE="${PACKAGE_CHANGE_DATE}"
