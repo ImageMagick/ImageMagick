@@ -596,7 +596,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
             if (value < 0)
               value=0;
         }
-      *p=(unsigned char) value;
+      *p=(unsigned char) ((Quantum) value);
       p++;
     }
     /*
