@@ -2004,7 +2004,8 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
             break;
           for (x=0; x < (ssize_t) GetImageExtent(image); x++)
           {
-            *q++=(unsigned int) ScaleQuantumToLong(ClampToQuantum(GetPixelIntensity(image,p)));
+            *q++=(unsigned int) ScaleQuantumToLong(ClampToQuantum(
+              GetPixelIntensity(image,p)));
             p++;
           }
           break;
@@ -2103,7 +2104,8 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
             }
             case IndexQuantum:
             {
-              *q=(unsigned int) ScaleQuantumToLong(ClampToQuantum(GetPixelIntensity(image,p)));
+              *q=(unsigned int) ScaleQuantumToLong(ClampToQuantum(
+                GetPixelIntensity(image,p)));
               break;
             }
             default:
@@ -2483,7 +2485,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
       if (LocaleCompare(stream_info->map,"BGRP") == 0)
         {
           p=GetAuthenticPixelQueue(image);
-            if (p == (const PixelPacket *) NULL)
+          if (p == (const PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) GetImageExtent(image); x++)
           {
@@ -2502,7 +2504,8 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
             break;
           for (x=0; x < (ssize_t) GetImageExtent(image); x++)
           {
-            *q++=ScaleQuantumToShort(ClampToQuantum(GetPixelIntensity(image,p)));
+            *q++=ScaleQuantumToShort(ClampToQuantum(GetPixelIntensity(image,
+              p)));
             p++;
           }
           break;
@@ -2598,7 +2601,8 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
             }
             case IndexQuantum:
             {
-              *q=ScaleQuantumToShort(ClampToQuantum(GetPixelIntensity(image,p)));
+              *q=ScaleQuantumToShort(ClampToQuantum(GetPixelIntensity(image,
+                p)));
               break;
             }
             default:
