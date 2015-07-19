@@ -2414,7 +2414,6 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
         quantum_info=AcquireQuantumInfo(image_info,image);
         if (quantum_info == (QuantumInfo *) NULL)
           ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
-        (void) SetQuantumEndian(image,quantum_info,MSBEndian);
         status=SetQuantumFormat(image,quantum_info,FloatingPointQuantumFormat);
         if (status == MagickFalse)
           ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
