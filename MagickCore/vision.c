@@ -194,7 +194,7 @@ static MagickBooleanType MergeConnectedComponents(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      i=(ssize_t) *p;
+      i=(ssize_t) GetPixelIntensity(image,p);
       if (x < object[i].bounding_box.x)
         object[i].bounding_box.x=x;
       if (x > (ssize_t) object[i].bounding_box.width)
@@ -257,7 +257,7 @@ static MagickBooleanType MergeConnectedComponents(Image *image,
         }
       for (x=0; x < (ssize_t) bounding_box.width+2; x++)
       {
-        j=(ssize_t) *p;
+        j=(ssize_t) GetPixelIntensity(image,p);
         if (j != i)
           object[j].census++;
         p+=GetPixelChannels(image);
@@ -291,7 +291,7 @@ static MagickBooleanType MergeConnectedComponents(Image *image,
         }
       for (x=0; x < (ssize_t) bounding_box.width; x++)
       {
-        if ((ssize_t) *q == i)
+        if ((ssize_t) GetPixelIntensity(image,q) == i)
           *q=(Quantum) id;
         q+=GetPixelChannels(image);
       }
@@ -366,7 +366,7 @@ static MagickBooleanType StatisticsComponentsStatistics(const Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      i=(ssize_t) *q;
+      i=(ssize_t) GetPixelIntensity(image,q);
       if (x < object[i].bounding_box.x)
         object[i].bounding_box.x=x;
       if (x > (ssize_t) object[i].bounding_box.width)
