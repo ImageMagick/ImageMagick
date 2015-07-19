@@ -534,7 +534,7 @@ MagickExport const void *GetStreamInfoClientData(StreamInfo *stream_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   G e t  V i r t u a l P i x e l s F r o m S t r e a m                      %
++   G e t V i r t u a l P i x e l s F r o m S t r e a m                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
