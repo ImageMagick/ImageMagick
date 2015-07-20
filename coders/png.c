@@ -2234,6 +2234,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #if defined(PNG_UNKNOWN_CHUNKS_SUPPORTED)
     else
     {
+       /* Ignore the iCCP chunk */
        png_set_keep_unknown_chunks(ping, 1, mng_iCCP, 1);
     }
 #endif
