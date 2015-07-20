@@ -938,7 +938,7 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
   q=p;
   value=StringToDouble(p,&q);
   if (LocaleNCompare(p,"0x",2) == 0)
-    value=(double) strtol(p,&q,10);
+    (void) strtol(p,&q,10);
   c=(int) ((unsigned char) *q);
   if ((c == 215) || (*q == 'x') || (*q == 'X') || (*q == ',') ||
       (*q == '/') || (*q == ':') || (*q =='\0'))
