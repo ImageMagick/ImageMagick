@@ -13270,28 +13270,28 @@ static MagickBooleanType WriteMAGICKImage(const ImageInfo *image_info,
 
   if ((value == (char *) NULL) || (IsOptionMember("H",value) != MagickFalse) ||
       (IsOptionMember("MAGICK",value) != MagickFalse))
-  { /* Use default GIF or PNM */
-    if (magick_image->storage_class == DirectClass)
-      (void) CopyMagickString(write_info->magick,"PNM",MaxTextExtent);
-    else
-      (void) CopyMagickString(write_info->magick,"GIF",MaxTextExtent);
-  }
+    { /* Use default GIF or PNM */
+      if (magick_image->storage_class == DirectClass)
+        (void) CopyMagickString(write_info->magick,"PNM",MaxTextExtent);
+      else
+        (void) CopyMagickString(write_info->magick,"GIF",MaxTextExtent);
+    }
   else /* Use the requested format */
     (void) CopyMagickString(write_info->magick,value,MaxTextExtent);
 
   blob=ImageToBlob(write_info,magick_image,&length,&image->exception);
   magick_image=DestroyImage(magick_image);
   if (blob == (void *) NULL)
-  {
-    (void) DestroyImageInfo(write_info);
-    return(MagickFalse);
-  }
+    {
+      (void) DestroyImageInfo(write_info);
+      return(MagickFalse);
+    }
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == MagickFalse)
-  {
-    (void) DestroyImageInfo(write_info);
-    return(status);
-  }
+    {
+      (void) DestroyImageInfo(write_info);
+      return(status);
+    }
   (void) WriteBlobString(image,"/*\n");
   (void) FormatLocaleString(buffer,MaxTextExtent,"  %s (%s).\n",
     image->filename, write_info->magick);
