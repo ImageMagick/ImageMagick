@@ -1,9 +1,10 @@
 2015-07-20  6.9.1-10 Glenn Randers-Pehrson <glennrp@image...>
-  * coders/magick.c: added "-define h:format=PNG" option. Format can
-    be GIF, PNM, PNG, JPG, PBM, PGM, or PPM. If this define is omitted,
-    the encoder uses GIF by default for pseudoclass images and PNM for
-    directclass images.  Made "MAGICK" (read-only) and "H" (write-only)
-    visible in the format list.
+  * coders/magick.c: added "-define h:format=FMT" and
+    "-define magick:format=FMT" options. FMT can be any output format
+    supported by ImageMagick except "H" or "MAGICK". If this define is
+    omitted, the encoder uses GIF by default for pseudoclass images and
+    PNM for directclass images, as previously.  Made "MAGICK" (read-write)
+    and "H" (write-only) visible in the format list.
 
 2015-07-18  6.9.1-10 Dirk lemstra <dirk@lem.....org>
   * Removed incorrect EOF check in the DDS reader (reference

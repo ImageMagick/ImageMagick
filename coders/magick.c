@@ -13107,6 +13107,7 @@ ModuleExport size_t RegisterMAGICKImage(void)
   entry->description=ConstantString("Granite texture");
   entry->module=ConstantString("MAGICK");
   (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("H");
   entry->encoder=(EncodeImageHandler *) WriteMAGICKImage;
   entry->adjoin=MagickFalse;
@@ -13114,6 +13115,7 @@ ModuleExport size_t RegisterMAGICKImage(void)
   entry->description=ConstantString("Image expressed as a 'C/C++' char array");
   entry->module=ConstantString("MAGICK");
   (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("LOGO");
   entry->decoder=(DecodeImageHandler *) ReadMAGICKImage;
   entry->adjoin=MagickFalse;
@@ -13121,14 +13123,17 @@ ModuleExport size_t RegisterMAGICKImage(void)
   entry->description=ConstantString("ImageMagick Logo");
   entry->module=ConstantString("MAGICK");
   (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("MAGICK");
   entry->decoder=(DecodeImageHandler *) ReadMAGICKImage;
+  entry->encoder=(EncodeImageHandler *) WriteMAGICKImage;
   entry->adjoin=MagickFalse;
   entry->stealth=MagickFalse;
-  entry->description=
-    ConstantString("Predefined Magick Image (LOGO, ROSE, etc.)");
+  entry->description=ConstantString(
+    "Predefined Magick Image (LOGO, ROSE, etc.); same as 'H' on output");
   entry->module=ConstantString("MAGICK");
   (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("NETSCAPE");
   entry->decoder=(DecodeImageHandler *) ReadMAGICKImage;
   entry->adjoin=MagickFalse;
@@ -13136,6 +13141,7 @@ ModuleExport size_t RegisterMAGICKImage(void)
   entry->description=ConstantString("Netscape 216 color cube");
   entry->module=ConstantString("MAGICK");
   (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("ROSE");
   entry->decoder=(DecodeImageHandler *) ReadMAGICKImage;
   entry->adjoin=MagickFalse;
@@ -13143,6 +13149,7 @@ ModuleExport size_t RegisterMAGICKImage(void)
   entry->description=ConstantString("70x46 Truecolor rose");
   entry->module=ConstantString("MAGICK");
   (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("WIZARD");
   entry->decoder=(DecodeImageHandler *) ReadMAGICKImage;
   /* entry->encoder=(EncodeImageHandler *) WriteMAGICKImage; */
@@ -13253,8 +13260,6 @@ static MagickBooleanType WriteMAGICKImage(const ImageInfo *image_info,
     ThrowWriterException(ResourceLimitError,image->exception.reason);
   write_info=CloneImageInfo(image_info);
 
-  length=(size_t) magick_image->columns*magick_image->rows;
-
   /* Set output format */
   *write_info->filename='\0';
   {
@@ -13262,14 +13267,13 @@ static MagickBooleanType WriteMAGICKImage(const ImageInfo *image_info,
       *value;
 
     value=GetImageOption(image_info,"h:format");
+    if (value == (char *) NULL)
+      value=GetImageOption(image_info,"magick:format");
 
     if (value == (char *) NULL) /* Use default GIF or PNM */
     {
       if (magick_image->storage_class == DirectClass)
-        {
           (void) CopyMagickString(write_info->magick,"PNM",MaxTextExtent);
-          length*=3;
-        }
 
       else
       (void) CopyMagickString(write_info->magick,"GIF",MaxTextExtent);
@@ -13277,25 +13281,12 @@ static MagickBooleanType WriteMAGICKImage(const ImageInfo *image_info,
 
     else /* Use the requested format */
     {
-      if (IsOptionMember("GIF",value) != MagickFalse ||
-          IsOptionMember("PBM",value) != MagickFalse ||
-          IsOptionMember("PGM",value) != MagickFalse ||
-          IsOptionMember("PPM",value) != MagickFalse ||
-          IsOptionMember("PNM",value) != MagickFalse ||
-          IsOptionMember("PNG",value) != MagickFalse ||
-          IsOptionMember("JPG",value) != MagickFalse)
+      if (IsOptionMember("H",value) == MagickFalse &&
+          IsOptionMember("MAGICK",value) == MagickFalse)
         (void) CopyMagickString(write_info->magick,value,MaxTextExtent);
       else
-        /* Unsupported format, fall back on GIF */
+        /* Fall back on GIF */
         (void) CopyMagickString(write_info->magick,"GIF",MaxTextExtent);
-
-      if (IsOptionMember("JPG",value) != MagickFalse ||
-          IsOptionMember("PPM",value) != MagickFalse ||
-          IsOptionMember("PNM",value) != MagickFalse)
-         length *=3;
-
-      if (IsOptionMember("PNG",value) != MagickFalse)
-         length *=4;
     }
   }
 
