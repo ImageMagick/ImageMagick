@@ -7437,7 +7437,7 @@ ModuleExport size_t RegisterPNGImage(void)
   entry->magick=(IsImageFormatHandler *) IsPNG;
   entry->adjoin=MagickFalse;
   entry->description=ConstantString(
-     "PNG inheriting bit-depth and color-type from original if possible");
+     "PNG inheriting bit-depth, color-type from original if possible");
   entry->mime_type=ConstantString("image/png");
   entry->module=ConstantString("PNG");
   (void) RegisterMagickInfo(entry);

@@ -13130,7 +13130,7 @@ ModuleExport size_t RegisterMAGICKImage(void)
   entry->adjoin=MagickFalse;
   entry->stealth=MagickFalse;
   entry->description=ConstantString(
-    "Predefined Magick Image (LOGO, ROSE, etc.); same as 'H' on output");
+    "Predefined Magick Image (LOGO, ROSE, etc.); output same as 'H'");
   entry->module=ConstantString("MAGICK");
   (void) RegisterMagickInfo(entry);
 
