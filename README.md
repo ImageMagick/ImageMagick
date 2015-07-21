@@ -37,7 +37,7 @@ Here are just a few examples of what ImageMagick can do:
 * [Montage](http://www.imagemagick.org/script/montage.php): juxtapose image thumbnails on an image canvas.
 * [Generalized pixel distortion](http://www.imagemagick.org/Usage/distorts/): correct for, or induce image distortions including perspective.
 * [Morphology of shapes](http://www.imagemagick.org/Usage/morphology/): extract features, describe shapes and recognize patterns in images.
-* [Delineate image features(http://www.imagemagick.org/Usage/transform/#vision): Canny edge detection, mean-shift, Hough lines.
+* [Delineate image features](http://www.imagemagick.org/Usage/transform/#vision): Canny edge detection, mean-shift, Hough lines.
 * [Motion picture support](http://www.imagemagick.org/script/motion-picture.php): read and write the common image formats used in digital film work.
 * [Image calculator](http://www.imagemagick.org/script/fx.php): apply a mathematical expression to an image or image channels.
 * [Connected component labeling](http://www.imagemagick.org/script/connected-components.php): uniquely label connected regions in an image.
