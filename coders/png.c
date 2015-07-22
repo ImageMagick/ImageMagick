@@ -7491,7 +7491,7 @@ ModuleExport size_t RegisterPNGImage(void)
   (void) RegisterMagickInfo(entry);
 
   entry=AcquireMagickInfo("PNG","PNG00",
-    "PNG inheriting bit-depth and color-type from original, if possible");
+    "PNG inheriting bit-depth, color-type from original, if possible");
 
 #if defined(MAGICKCORE_PNG_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadPNGImage;
