@@ -3279,7 +3279,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
             (image_info->type != TrueColorAlphaType))
           {
             if ((image_info->type != PaletteType) &&
-                (SetImageGray(image,exception) != MagickFalse))
+                (IsImageGray(image) != MagickFalse))
               {
                 photometric=(uint16) (quantum_info->min_is_white !=
                   MagickFalse ? PHOTOMETRIC_MINISWHITE :
@@ -3287,7 +3287,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
                 (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,1);
                 if ((image_info->depth == 0) &&
                     (image->alpha_trait == UndefinedPixelTrait) &&
-                    (SetImageMonochrome(image,exception) != MagickFalse))
+                    (IsImageMonochrome(image) != MagickFalse))
                   {
                     status=SetQuantumDepth(image,quantum_info,1);
                     if (status == MagickFalse)
