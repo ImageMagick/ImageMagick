@@ -1,11 +1,17 @@
+ImageMagick
+===========
+
+<img align="center" src="http://www.imagemagick.org/image/wizard.png" alt="ImageMagick logo" width="265"/>
+
+ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, TIFF, DPX, EXR, WebP, Postscript, PDF, and SVG.  Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.
+
+
 | Version | *nix | Windows |
 | ------------- | ------------- | ------------- |
 | 7 | [![Build Status](https://travis-ci.org/ImageMagick/ImageMagick.svg?branch=master)](https://travis-ci.org/ImageMagick/ImageMagick) | [![Build status](https://ci.appveyor.com/api/projects/status/jk7yr5plamnuh9g6/branch/master?svg=true)](https://ci.appveyor.com/project/dlemstra/imagemagick-windows/branch/master) |
 | 6 | [![Build Status](https://travis-ci.org/ImageMagick/ImageMagick.svg?branch=ImageMagick-6)](https://travis-ci.org/ImageMagick/ImageMagick) | [![Build status](https://ci.appveyor.com/api/projects/status/jk7yr5plamnuh9g6/branch/ImageMagick-Windows-6?svg=true)](https://ci.appveyor.com/project/dlemstra/imagemagick-windows/branch/ImageMagick-Windows-6) |
 
-#Introduction to ImageMagick
-
-ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, TIFF, DPX, EXR, WebP, Postscript, PDF, and SVG.  Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.
+####What is ImageMagick?
 
 The functionality of ImageMagick is typically utilized from the command line or you can use the features from programs written in your favorite programming language. Choose from these interfaces: G2F (Ada), MagickCore (C), MagickWand (C), ChMagick (Ch), ImageMagickObject (COM+), Magick++ (C++), JMagick (Java), L-Magick (Lisp), NMagick (Neko/haXe), MagickNet (.NET), PascalMagick (Pascal), PerlMagick (Perl), MagickWand for PHP (PHP), IMagick (PHP), PythonMagick (Python), RMagick (Ruby), or TclMagick (Tcl/TK). With a language interface, use ImageMagick to modify or create images dynamically and automagically.
 
@@ -19,8 +25,7 @@ ImageMagick is available from http://www.imagemagick.org/download to download. I
 
 The authoritative ImageMagick web site is http://www.imagemagick.org. The authoritative source code repository is https://subversion.imagemagick.org/subversion/ImageMagick/.
 
-
-#Features and Capabilities
+####Features and Capabilities
 
 Here are just a few examples of what ImageMagick can do:
 
