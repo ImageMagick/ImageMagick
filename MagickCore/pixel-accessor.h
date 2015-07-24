@@ -224,21 +224,17 @@ static inline double PerceptibleReciprocal(const double x)
 static inline MagickRealType GetPixelInfoLuma(const PixelInfo *restrict pixel)
 {
   MagickRealType
-    gamma,
     intensity;
 
-  gamma=1.0;
-  if (pixel->alpha_trait != UndefinedPixelTrait)
-    gamma=(MagickRealType) PerceptibleReciprocal(QuantumScale*pixel->alpha);
   if (pixel->colorspace == sRGBColorspace)
     {
-      intensity=0.212656f*gamma*pixel->red+0.715158f*gamma*pixel->green+
-        0.072186f*gamma*pixel->blue;
+      intensity=0.212656f*pixel->red+0.715158f*pixel->green+
+        0.072186f*pixel->blue;
       return(intensity);
     }
-  intensity=0.212656f*EncodePixelGamma(gamma*pixel->red)+
-    0.715158f*EncodePixelGamma(gamma*pixel->green)+
-    0.072186f*EncodePixelGamma(gamma*pixel->blue);
+  intensity=0.212656f*EncodePixelGamma(pixel->red)+
+    0.715158f*EncodePixelGamma(pixel->green)+
+    0.072186f*EncodePixelGamma(pixel->blue);
   return(intensity);
 }
 
@@ -246,21 +242,17 @@ static inline MagickRealType GetPixelInfoLuminance(
   const PixelInfo *restrict pixel)
 {
   MagickRealType
-    gamma,
     intensity;
 
-  gamma=1.0;
-  if (pixel->alpha_trait != UndefinedPixelTrait)
-    gamma=(MagickRealType) PerceptibleReciprocal(QuantumScale*pixel->alpha);
   if (pixel->colorspace != sRGBColorspace)
     {
-      intensity=0.212656f*gamma*pixel->red+0.715158f*gamma*pixel->green+
-        0.072186f*gamma*pixel->blue;
+      intensity=0.212656f*pixel->red+0.715158f*pixel->green+
+        0.072186f*pixel->blue;
       return(intensity);
     }
-  intensity=0.212656f*DecodePixelGamma(gamma*pixel->red)+
-    0.715158f*DecodePixelGamma(gamma*pixel->green)+
-    0.072186f*DecodePixelGamma(gamma*pixel->blue);
+  intensity=0.212656f*DecodePixelGamma(pixel->red)+
+    0.715158f*DecodePixelGamma(pixel->green)+
+    0.072186f*DecodePixelGamma(pixel->blue);
   return(intensity);
 }
 
@@ -274,16 +266,11 @@ static inline MagickRealType GetPixelLuma(const Image *restrict image,
   const Quantum *restrict pixel)
 {
   MagickRealType
-    gamma,
     intensity;
 
-  gamma=1.0;
-  if (image->alpha_trait != UndefinedPixelTrait)
-    gamma=(MagickRealType) PerceptibleReciprocal(QuantumScale*
-      pixel[image->channel_map[AlphaPixelChannel].offset]);
-  intensity=0.212656f*gamma*pixel[image->channel_map[RedPixelChannel].offset]+
-    0.715158f*gamma*pixel[image->channel_map[GreenPixelChannel].offset]+
-    0.072186f*gamma*pixel[image->channel_map[BluePixelChannel].offset];
+  intensity=0.212656f*pixel[image->channel_map[RedPixelChannel].offset]+
+    0.715158f*pixel[image->channel_map[GreenPixelChannel].offset]+
+    0.072186f*pixel[image->channel_map[BluePixelChannel].offset];
   return(intensity);
 }
 
@@ -291,25 +278,20 @@ static inline MagickRealType GetPixelLuminance(const Image *restrict image,
   const Quantum *restrict pixel)
 {
   MagickRealType
-    gamma,
     intensity;
 
-  gamma=1.0;
-  if (image->alpha_trait != UndefinedPixelTrait)
-    gamma=(MagickRealType) PerceptibleReciprocal(QuantumScale*
-      pixel[image->channel_map[AlphaPixelChannel].offset]);
   if (image->colorspace != sRGBColorspace)
     {
       intensity=
-        0.212656f*gamma*pixel[image->channel_map[RedPixelChannel].offset]+
-        0.715158f*gamma*pixel[image->channel_map[GreenPixelChannel].offset]+
-        0.072186f*gamma*pixel[image->channel_map[BluePixelChannel].offset];
+        0.212656f*pixel[image->channel_map[RedPixelChannel].offset]+
+        0.715158f*pixel[image->channel_map[GreenPixelChannel].offset]+
+        0.072186f*pixel[image->channel_map[BluePixelChannel].offset];
       return(intensity);
     }
-  intensity=0.212656f*DecodePixelGamma(gamma*
+  intensity=0.212656f*DecodePixelGamma(
     pixel[image->channel_map[RedPixelChannel].offset])+0.715158f*
-    DecodePixelGamma(gamma*pixel[image->channel_map[GreenPixelChannel].offset])+
-    0.072186f*DecodePixelGamma(gamma*
+    DecodePixelGamma(pixel[image->channel_map[GreenPixelChannel].offset])+
+    0.072186f*DecodePixelGamma(
     pixel[image->channel_map[BluePixelChannel].offset]);
   return(intensity);
 }
