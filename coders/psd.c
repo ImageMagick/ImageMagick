@@ -2533,7 +2533,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobMSBShort(image,psd_info.version);  /* version */
   for (i=1; i <= 6; i++)
     (void) WriteBlobByte(image, 0);  /* 6 bytes of reserved */
-  if (IsGrayImage(image,&image->exception) != MagickFalse)
+  if (SetImageGray(image,&image->exception) != MagickFalse)
     num_channels=(image->matte != MagickFalse ? 2UL : 1UL);
   else
     if (image->storage_class == PseudoClass)
