@@ -670,7 +670,8 @@ MagickExport MagickBooleanType IsHistogramImage(const Image *image,
   assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if ((image->storage_class == PseudoClass) && (image->colors <= 256))
+  if ((image->storage_class == PseudoClass) &&
+      (image->colors <= MaximumUniqueColors))
     return(MagickTrue);
   if (image->storage_class == PseudoClass)
     return(MagickFalse);
