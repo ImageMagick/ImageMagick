@@ -138,15 +138,9 @@ static inline MagickRealType GetPixelLuma(const Image *restrict image,
   const PixelPacket *restrict pixel)
 {
   MagickRealType
-    gamma,
     intensity;
 
-  gamma=1.0;
-  if (image->matte != MagickFalse)
-    gamma=(MagickRealType) PerceptibleReciprocal(QuantumScale*(QuantumRange-
-      pixel->opacity));
-  intensity=0.212656f*gamma*pixel->red+0.715158f*gamma*pixel->green+
-    0.072186f*gamma*pixel->blue;
+  intensity=0.212656f*pixel->red+0.715158f*pixel->green+0.072186f*pixel->blue;
   return(intensity);
 }
 
@@ -154,22 +148,17 @@ static inline MagickRealType GetPixelLuminance(const Image *restrict image,
   const PixelPacket *restrict pixel)
 {
   MagickRealType
-    gamma,
     intensity;
 
-  gamma=1.0;
-  if (image->matte != MagickFalse)
-    gamma=(MagickRealType) PerceptibleReciprocal(QuantumScale*(QuantumRange-
-      pixel->opacity));
   if (image->colorspace != sRGBColorspace)
     {
-      intensity=0.212656f*gamma*pixel->red+0.715158f*gamma*pixel->green+
-        0.072186f*gamma*pixel->blue;
+      intensity=0.212656f*pixel->red+0.715158f*pixel->green+
+        0.072186f*pixel->blue;
       return(intensity);
     }
-  intensity=0.212656f*DecodePixelGamma(gamma*pixel->red)+
-    0.715158f*DecodePixelGamma(gamma*pixel->green)+
-    0.072186f*DecodePixelGamma(gamma*pixel->blue);
+  intensity=0.212656f*DecodePixelGamma(pixel->red)+
+    0.715158f*DecodePixelGamma(pixel->green)+
+    0.072186f*DecodePixelGamma(pixel->blue);
   return(intensity);
 }
 
