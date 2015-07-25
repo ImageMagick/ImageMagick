@@ -515,8 +515,8 @@ static const OptionInfo
     { "-magnify", 0L, SimpleOperatorFlag, MagickFalse },
     { "+map", 0L, ReplacedOptionFlag | ListOperatorFlag | FireOptionFlag, MagickTrue },
     { "-map", 1L, ReplacedOptionFlag | SimpleOperatorFlag, MagickTrue },
-    { "+mask", 0L, SimpleOperatorFlag | NeverInterpretArgsFlag, MagickFalse },
-    { "-mask", 1L, SimpleOperatorFlag | NeverInterpretArgsFlag, MagickFalse },
+    { "+mask", 0L, DeprecateOptionFlag | NeverInterpretArgsFlag, MagickFalse },
+    { "-mask", 1L, DeprecateOptionFlag | NeverInterpretArgsFlag, MagickFalse },
     { "-matte", 0L, ReplacedOptionFlag | SimpleOperatorFlag, MagickTrue },
     { "+matte", 0L, ReplacedOptionFlag | SimpleOperatorFlag, MagickTrue },
     { "+mattecolor", 0L, ImageInfoOptionFlag, MagickFalse },
@@ -601,6 +601,8 @@ static const OptionInfo
     { "+random-threshold", 1L, DeprecateOptionFlag, MagickTrue },
     { "-random-threshold", 1L, SimpleOperatorFlag, MagickFalse },
     { "-read", 1L, NoImageOperatorFlag | NeverInterpretArgsFlag, MagickFalse },
+    { "+read-mask", 0L, SimpleOperatorFlag | NeverInterpretArgsFlag, MagickFalse },
+    { "-read-mask", 1L, SimpleOperatorFlag | NeverInterpretArgsFlag, MagickFalse },
     { "+recolor", 1L, DeprecateOptionFlag, MagickTrue },
     { "-recolor", 1L, ReplacedOptionFlag | SimpleOperatorFlag, MagickTrue },
     { "+red-primary", 0L, ImageInfoOptionFlag, MagickFalse },
@@ -788,6 +790,8 @@ static const OptionInfo
     { "-window-group", 1L, NonMagickOptionFlag, MagickFalse },
     { "-write", 1L, NoImageOperatorFlag | NeverInterpretArgsFlag | FireOptionFlag, MagickFalse },
     { "+write", 1L, NoImageOperatorFlag | NeverInterpretArgsFlag | FireOptionFlag, MagickFalse },
+    { "+write-mask", 0L, SimpleOperatorFlag | NeverInterpretArgsFlag, MagickFalse },
+    { "-write-mask", 1L, SimpleOperatorFlag | NeverInterpretArgsFlag, MagickFalse },
     { (char *) NULL, 0L, UndefinedOptionFlag, MagickFalse }
   },
   ComposeOptions[] =

@@ -2740,22 +2740,9 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("mask",option+1) == 0)
         {
-          /* Note: arguments do not have percent escapes expanded */
-          Image
-            *mask;
-
-          if (IfPlusOp)
-            { /* Remove a mask. */
-              (void) SetImageMask(_image,ReadPixelMask,(Image *) NULL,
-                _exception);
-              break;
-            }
-          /* Set the image mask. */
-          mask=GetImageCache(_image_info,arg1,_exception);
-          if (mask == (Image *) NULL)
-            break;
-          (void) SetImageMask(_image,ReadPixelMask,mask,_exception);
-          mask=DestroyImage(mask);
+          CLIWandWarnReplaced("-read-mask");
+          (void) CLISimpleOperatorImage(cli_wand,"-read-mask",NULL,NULL,
+            exception);
           break;
         }
       if (LocaleCompare("matte",option+1) == 0)
@@ -3068,6 +3055,26 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           if (IfMagickFalse(IsGeometry(arg1)))
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           (void) RandomThresholdImage(_image,arg1,_exception);
+          break;
+        }
+      if (LocaleCompare("read-mask",option+1) == 0)
+        {
+          /* Note: arguments do not have percent escapes expanded */
+          Image
+            *mask;
+
+          if (IfPlusOp)
+            { /* Remove a mask. */
+              (void) SetImageMask(_image,ReadPixelMask,(Image *) NULL,
+                _exception);
+              break;
+            }
+          /* Set the image mask. */
+          mask=GetImageCache(_image_info,arg1,_exception);
+          if (mask == (Image *) NULL)
+            break;
+          (void) SetImageMask(_image,ReadPixelMask,mask,_exception);
+          mask=DestroyImage(mask);
           break;
         }
       if (LocaleCompare("recolor",option+1) == 0)
@@ -3517,6 +3524,26 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           if (IfMagickFalse(IsGeometry(arg1)))
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           (void) WhiteThresholdImage(_image,arg1,_exception);
+          break;
+        }
+      if (LocaleCompare("write-mask",option+1) == 0)
+        {
+          /* Note: arguments do not have percent escapes expanded */
+          Image
+            *mask;
+
+          if (IfPlusOp)
+            { /* Remove a mask. */
+              (void) SetImageMask(_image,WritePixelMask,(Image *) NULL,
+                _exception);
+              break;
+            }
+          /* Set the image mask. */
+          mask=GetImageCache(_image_info,arg1,_exception);
+          if (mask == (Image *) NULL)
+            break;
+          (void) SetImageMask(_image,WritePixelMask,mask,_exception);
+          mask=DestroyImage(mask);
           break;
         }
       CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);

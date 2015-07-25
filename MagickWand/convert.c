@@ -405,7 +405,6 @@ static MagickBooleanType ConvertUsage(void)
       "-label string        assign a label to an image",
       "-limit type value    pixel cache resource limit",
       "-loop iterations     add Netscape loop extension to your GIF animation",
-      "-mask filename       associate a mask with the image",
       "-matte               store matte channel if the image has one",
       "-mattecolor color    frame color",
       "-moments             report image moments",
@@ -418,6 +417,7 @@ static MagickBooleanType ConvertUsage(void)
       "-preview type        image preview type",
       "-quality value       JPEG/MIFF/PNG compression level",
       "-quiet               suppress all warning messages",
+      "-read-mask filename  associate a read mask with the image",
       "-red-primary point   chromaticity red primary point",
       "-regard-warnings     pay attention to warning messages",
       "-remap filename      transform image colors to match this set of colors",
@@ -448,6 +448,7 @@ static MagickBooleanType ConvertUsage(void)
       "                     virtual pixel access method",
       "-weight type         render text with this font weight",
       "-white-point point   chromaticity white point",
+      "-write-mask filename associate a write mask with the image",
       (char *) NULL
     },
     *stack_operators[]=

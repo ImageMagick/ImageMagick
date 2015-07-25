@@ -2529,6 +2529,31 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             (void) RandomThresholdImage(*image,argv[i+1],exception);
             break;
           }
+        if (LocaleCompare("read-mask",option+1) == 0)
+          {
+            Image
+              *mask;
+
+            (void) SyncImageSettings(mogrify_info,*image,exception);
+            if (*option == '+')
+              {
+                /*
+                  Remove a mask.
+                */
+                (void) SetImageMask(*image,ReadPixelMask,(Image *) NULL,
+                  exception);
+                break;
+              }
+            /*
+              Set the image mask.
+            */
+            mask=GetImageCache(mogrify_info,argv[i+1],exception);
+            if (mask == (Image *) NULL)
+              break;
+            (void) SetImageMask(*image,ReadPixelMask,mask,exception);
+            mask=DestroyImage(mask);
+            break;
+          }
         if (LocaleCompare("region",option+1) == 0)
           {
             (void) SyncImageSettings(mogrify_info,*image,exception);
@@ -3272,6 +3297,31 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             (void) WhiteThresholdImage(*image,argv[i+1],exception);
             break;
           }
+        if (LocaleCompare("write-mask",option+1) == 0)
+          {
+            Image
+              *mask;
+
+            (void) SyncImageSettings(mogrify_info,*image,exception);
+            if (*option == '+')
+              {
+                /*
+                  Remove a mask.
+                */
+                (void) SetImageMask(*image,WritePixelMask,(Image *) NULL,
+                  exception);
+                break;
+              }
+            /*
+              Set the image mask.
+            */
+            mask=GetImageCache(mogrify_info,argv[i+1],exception);
+            if (mask == (Image *) NULL)
+              break;
+            (void) SetImageMask(*image,WritePixelMask,mask,exception);
+            mask=DestroyImage(mask);
+            break;
+          }
         break;
       }
       default:
@@ -3615,7 +3665,6 @@ static MagickBooleanType MogrifyUsage(void)
       "-label string        assign a label to an image",
       "-limit type value    pixel cache resource limit",
       "-loop iterations     add Netscape loop extension to your GIF animation",
-      "-mask filename       associate a mask with the image",
       "-matte               store matte channel if the image has one",
       "-mattecolor color    frame color",
       "-monitor             monitor progress",
@@ -3628,6 +3677,7 @@ static MagickBooleanType MogrifyUsage(void)
       "-preview type        image preview type",
       "-quality value       JPEG/MIFF/PNG compression level",
       "-quiet               suppress all warning messages",
+      "-read-mask filename  associate a read mask with the image",
       "-red-primary point   chromaticity red primary point",
       "-regard-warnings     pay attention to warning messages",
       "-remap filename      transform image colors to match this set of colors",
@@ -3657,6 +3707,7 @@ static MagickBooleanType MogrifyUsage(void)
       "                     virtual pixel access method",
       "-weight type         render text with this font weight",
       "-white-point point   chromaticity white point",
+      "-write-mask filename associate a write mask with the image",
       (char *) NULL
     },
     *stack_operators[]=
@@ -5658,6 +5709,15 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
               ThrowMogrifyInvalidArgumentException(option,argv[i]);
             break;
           }
+        if (LocaleCompare("read-mask",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            break;
+          }
         if (LocaleCompare("red-primary",option+1) == 0)
           {
             if (*option == '+')
@@ -6353,6 +6413,15 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("write",option+1) == 0)
           {
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            break;
+          }
+        if (LocaleCompare("write-mask",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
             i++;
             if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
