@@ -818,7 +818,7 @@ MagickExport ImageType IdentifyImageType(const Image *image,
     }
   if (IdentifyImageMonochrome(image,exception) != MagickFalse)
     return(BilevelType);
-  if (IdentifyImageGray(image,exception) != MagickFalse)
+  if (IdentifyImageGray(image,exception) != UndefinedType)
     {
       if (image->alpha_trait != UndefinedPixelTrait)
         return(GrayscaleAlphaType);
