@@ -1469,41 +1469,40 @@ MagickExport MagickBooleanType IsStringTrue(const char *value)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   I s S t r i n g N o t F a l s e                                           %
+%   I s S t r i n g F a l s e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  IsStringNotFalse() returns MagickTrue, unless the string specifically
-%  has a value that makes this false.  that is if it has a value of
-%  "false", "off", "no" or "0".
+%  IsStringFalse() returns MagickTrue if the value is "false", "off", "no" or
+%  "0". Any other string or undefined returns MagickFalse.
 %
 %  Typically this is used to look at strings (options or artifacts) which
 %  has a default value of "true", when it has not been defined.
 %
-%  The format of the IsStringNotFalse method is:
+%  The format of the IsStringFalse method is:
 %
-%      MagickBooleanType IsStringNotFalse(const char *value)
+%      MagickBooleanType IsStringFalse(const char *value)
 %
 %  A description of each parameter follows:
 %
 %    o value: Specifies a pointer to a character array.
 %
 */
-MagickExport MagickBooleanType IsStringNotFalse(const char *value)
+MagickExport MagickBooleanType IsStringFalse(const char *value)
 {
   if (value == (const char *) NULL)
-    return(MagickTrue);
+    return(MagickFalse);
   if (LocaleCompare(value,"false") == 0)
-    return(MagickFalse);
+    return(MagickTrue);
   if (LocaleCompare(value,"off") == 0)
-    return(MagickFalse);
+    return(MagickTrue);
   if (LocaleCompare(value,"no") == 0)
-    return(MagickFalse);
+    return(MagickTrue);
   if (LocaleCompare(value,"0") == 0)
-    return(MagickFalse);
-  return(MagickTrue);
+    return(MagickTrue);
+  return(MagickFalse);
 }
 
 /*

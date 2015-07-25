@@ -180,7 +180,6 @@ typedef enum
 #  define IsMagickNot(v)   (IfMagickTrue(v)?MagickFalse:MagickTrue)
 #endif
 #define IfStringTrue(v)       IfMagickTrue(IsStringTrue(v))
-#define IfStringNotFalse(v)   IfMagickTrue(IsStringNotFalse(v))
 #define IsMagickNULL(v)       (((void *)(v) == NULL)?MagickTrue:MagickFalse)
 #define IsMagickNotNULL(v)    (((void *)(v) != NULL)?MagickTrue:MagickFalse)
 
