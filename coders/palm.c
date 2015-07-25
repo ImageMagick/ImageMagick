@@ -804,7 +804,7 @@ static MagickBooleanType WritePALMImage(const ImageInfo *image_info,
       {
         if (flags & PALM_HAS_COLORMAP_FLAG)  /* Write out colormap */
           {
-            quantize_info->dither_method=IsPaletteImage(image,exception)
+            quantize_info->dither_method=IdentifyPaletteImage(image,exception)
               == MagickFalse ? RiemersmaDitherMethod : NoDitherMethod;
             quantize_info->number_colors=image->colors;
             (void) QuantizeImage(quantize_info,image,exception);

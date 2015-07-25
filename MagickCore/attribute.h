@@ -26,15 +26,16 @@ extern "C" {
 #endif
 
 extern MagickExport ImageType
-  GetImageType(const Image *,ExceptionInfo *);
+  GetImageType(const Image *),
+  IdentifyImageGray(const Image *,ExceptionInfo *),
+  IdentifyImageType(const Image *,ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
+  IdentifyImageMonochrome(const Image *,ExceptionInfo *),
   IsImageGray(const Image *),
   IsImageMonochrome(const Image *),
   IsImageOpaque(const Image *,ExceptionInfo *),
   SetImageDepth(Image *,const size_t,ExceptionInfo *),
-  SetImageGray(Image *,ExceptionInfo *),
-  SetImageMonochrome(Image *,ExceptionInfo *),
   SetImageType(Image *,const ImageType,ExceptionInfo *);
 
 extern MagickExport RectangleInfo

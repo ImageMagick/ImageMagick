@@ -3004,7 +3004,7 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
         {
           WarnNoImageReturn("\"%%[%s]\"",property);
           string=CommandOptionToMnemonic(MagickTypeOptions,(ssize_t)
-            GetImageType(image,exception));
+            IdentifyImageType(image,exception));
           break;
         }
        break;

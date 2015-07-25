@@ -697,6 +697,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
     user_time;
 
   ImageType
+    base_type,
     type;
 
   MagickBooleanType
@@ -728,7 +729,6 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
   p=GetVirtualPixels(image,0,0,1,1,exception);
   ping=p == (const Quantum *) NULL ? MagickTrue : MagickFalse;
   (void) ping;
-  type=GetImageType(image,exception);
   (void) SignatureImage(image,exception);
   JsonFormatLocaleFile(file,"{\n  \"image\": {\n    \"name\": %s,\n",
     image->filename);
@@ -776,11 +776,17 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
     }
   JsonFormatLocaleFile(file,"    \"units\": %s,\n",CommandOptionToMnemonic(
     MagickResolutionOptions,(ssize_t) image->units));
+  colorspace=image->colorspace;
+  type=IdentifyImageType(image,exception);
+  if ((type == BilevelType) || (type == GrayscaleType) ||
+      (type == GrayscaleAlphaType))
+    colorspace=GRAYColorspace;
   JsonFormatLocaleFile(file,"    \"type\": %s,\n",CommandOptionToMnemonic(
     MagickTypeOptions,(ssize_t) type));
-  if (image->type != UndefinedType)
+  base_type=GetImageType(image);
+  if (type != base_type)
     JsonFormatLocaleFile(file,"    \"baseType\": %s,\n",
-      CommandOptionToMnemonic(MagickTypeOptions,(ssize_t) image->type));
+      CommandOptionToMnemonic(MagickTypeOptions,(ssize_t) base_type));
   JsonFormatLocaleFile(file,"    \"endianess\": %s,\n",
     CommandOptionToMnemonic(MagickEndianOptions,(ssize_t) image->endian));
   locate=GetImageArtifact(image,"identify:locate");
@@ -811,9 +817,6 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
       channel_statistics=GetLocationStatistics(image,type,exception);
       if (channel_statistics == (ChannelStatistics *) NULL)
         return(MagickFalse);
-      colorspace=image->colorspace;
-      if (SetImageGray(image,exception) != MagickFalse)
-        colorspace=GRAYColorspace;
       (void) FormatLocaleFile(file,"    \"channel%s\": {\n",locate);
       if (image->alpha_trait != UndefinedPixelTrait)
         (void) PrintChannelLocations(file,image,AlphaPixelChannel,"Alpha",
@@ -864,7 +867,6 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
   channel_moments=(ChannelMoments *) NULL;
   channel_phash=(ChannelPerceptualHash *) NULL;
   channel_features=(ChannelFeatures *) NULL;
-  colorspace=image->colorspace;
   scale=1;
   channel_statistics=GetImageStatistics(image,exception);
   if (channel_statistics == (ChannelStatistics *) NULL)
@@ -890,8 +892,6 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
   (void) FormatLocaleFile(file,"    \"baseDepth\": %.20g,\n",(double)
     image->depth);
   (void) FormatLocaleFile(file,"    \"channelDepth\": {\n");
-  if (SetImageGray(image,exception) != MagickFalse)
-    colorspace=GRAYColorspace;
   if (image->alpha_trait != UndefinedPixelTrait)
     (void) FormatLocaleFile(file,"      \"alpha\": %.20g,\n",(double)
       channel_statistics[AlphaPixelChannel].depth);

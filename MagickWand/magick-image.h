@@ -68,7 +68,8 @@ extern WandExport Image
   *GetImageFromMagickWand(const MagickWand *);
 
 extern WandExport ImageType
-  MagickGetImageType(MagickWand *);
+  MagickGetImageType(MagickWand *),
+  MagickIdentifyImageType(MagickWand *);
 
 extern WandExport InterlaceType
   MagickGetImageInterlaceScheme(MagickWand *);
