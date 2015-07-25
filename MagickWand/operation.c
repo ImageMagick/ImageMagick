@@ -3823,7 +3823,7 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
           value=GetImageOption(_image_info,"compose:outside-overlay");
           if (value != (const char *) NULL) {   /* or this false */
             /* FUTURE: depreciate warning for "compose:outside-overlay"*/
-            clip_to_self= IsMagickFalse(IsStringNotFalse(value));
+            clip_to_self=IsStringFalse(value);
           }
 
           new_images=RemoveFirstImageFromList(&_images);

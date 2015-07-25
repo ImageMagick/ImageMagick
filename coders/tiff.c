@@ -1281,7 +1281,7 @@ RestoreMSCWarning
     TIFFGetProfiles(tiff,image,image_info->ping,exception);
     TIFFGetProperties(tiff,image,exception);
     option=GetImageOption(image_info,"tiff:exif-properties");
-    if (IfMagickTrue(IsStringNotFalse(option))) /* enabled by default */
+    if (IsStringFalse(option) == MagickFalse) /* enabled by default */
       TIFFGetEXIFProperties(tiff,image,exception);
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_SAMPLESPERPIXEL,
       &samples_per_pixel);
