@@ -1609,10 +1609,7 @@ Magick::ImageType Magick::Image::type(void) const
 {
   if (constOptions()->type() != UndefinedType)
     return(constOptions()->type());
-  else if (constImage()->type != UndefinedType)
-    return(constImage()->type);
-  else
-    return(determineType());
+  return(GetImageType(constImage()));
 }
 
 void Magick::Image::type(const Magick::ImageType type_)
@@ -2692,17 +2689,6 @@ void Magick::Image::despeckle(void)
   ThrowImageException;
 }
 
-Magick::ImageType Magick::Image::determineType(void) const
-{
-  ImageType
-    image_type;
-
-  GetPPException;
-  image_type=GetImageType(constImage(),exceptionInfo);
-  ThrowImageException;
-  return(image_type);
-}
-
 void Magick::Image::display(void)
 {
   GetPPException;
@@ -3232,6 +3218,17 @@ void Magick::Image::houghLine(const size_t width_,const size_t height_,
     exceptionInfo);
   replaceImage(newImage);
   ThrowImageException;
+}
+
+Magick::ImageType Magick::Image::identifyType(void) const
+{
+  ImageType
+    image_type;
+
+  GetPPException;
+  image_type=IdentifyImageType(constImage(),exceptionInfo);
+  ThrowImageException;
+  return(image_type);
 }
 
 void Magick::Image::implode(const double factor_)

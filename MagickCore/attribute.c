@@ -568,19 +568,68 @@ MagickExport size_t GetImageQuantumDepth(const Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetImageType() returns the potential type of image:
+%  GetImageType() returns the type of image:
 %
 %        Bilevel         Grayscale        GrayscaleMatte
 %        Palette         PaletteMatte     TrueColor
 %        TrueColorMatte  ColorSeparation  ColorSeparationMatte
 %
-%  To ensure the image type matches its potential, use SetImageType():
-%
-%    (void) SetImageType(image,GetImageType(image));
-%
 %  The format of the GetImageType method is:
 %
-%      ImageType GetImageType(const Image *image,ExceptionInfo *exception)
+%      ImageType GetImageType(const Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+*/
+MagickExport ImageType GetImageType(const Image *image)
+{
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickCoreSignature);
+  if (image->colorspace == CMYKColorspace)
+    {
+      if (image->alpha_trait == UndefinedPixelTrait)
+        return(ColorSeparationType);
+      return(ColorSeparationAlphaType);
+    }
+  if (IsImageMonochrome(image) != MagickFalse)
+    return(BilevelType);
+  if (IsImageGray(image) != MagickFalse)
+    {
+      if (image->alpha_trait != UndefinedPixelTrait)
+        return(GrayscaleAlphaType);
+      return(GrayscaleType);
+    }
+  if (IsPaletteImage(image) != MagickFalse)
+    {
+      if (image->alpha_trait != UndefinedPixelTrait)
+        return(PaletteAlphaType);
+      return(PaletteType);
+    }
+  if (image->alpha_trait != UndefinedPixelTrait)
+    return(TrueColorAlphaType);
+  return(TrueColorType);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%     I d e n t i f y I m a g e G r a y                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  IdentifyImageGray() returns grayscale if all the pixels in the image have
+%  the same red, green, and blue intensities, and bi-level is the intensity is
+%  either 0 or QuantumRange. Otherwise undefined is returned.
+%
+%  The format of the IdentifyImageGray method is:
+%
+%      ImageType IdentifyImageGray(const Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -589,7 +638,173 @@ MagickExport size_t GetImageQuantumDepth(const Image *image,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport ImageType GetImageType(const Image *image,ExceptionInfo *exception)
+MagickExport ImageType IdentifyImageGray(const Image *image,
+  ExceptionInfo *exception)
+{
+  CacheView
+    *image_view;
+
+  ImageType
+    type;
+
+  register const Quantum
+    *p;
+
+  register ssize_t
+    x;
+
+  ssize_t
+    y;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickCoreSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  if ((image->type == BilevelType) || (image->type == GrayscaleType) ||
+      (image->type == GrayscaleAlphaType))
+    return(image->type);
+  if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
+    return(UndefinedType);
+  type=BilevelType;
+  image_view=AcquireVirtualCacheView(image,exception);
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
+    if (p == (const Quantum *) NULL)
+      break;
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      if (IsPixelGray(image,p) == MagickFalse)
+        {
+          type=UndefinedType;
+          break;
+        }
+      if ((type == BilevelType) &&
+          (IsPixelMonochrome(image,p) == MagickFalse))
+        type=GrayscaleType;
+      p+=GetPixelChannels(image);
+    }
+    if (type == UndefinedType)
+      break;
+  }
+  image_view=DestroyCacheView(image_view);
+  if ((type == GrayscaleType) && (image->alpha_trait != UndefinedPixelTrait))
+    type=GrayscaleAlphaType;
+  return(type);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   I d e n t i f y I m a g e M o n o c h r o m e                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  IdentifyImageMonochrome() returns MagickTrue if all the pixels in the image
+%  have the same red, green, and blue intensities and the intensity is either
+%  0 or QuantumRange.
+%
+%  The format of the IdentifyImageMonochrome method is:
+%
+%      MagickBooleanType IdentifyImageMonochrome(const Image *image,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport MagickBooleanType IdentifyImageMonochrome(const Image *image,
+  ExceptionInfo *exception)
+{
+  CacheView
+    *image_view;
+
+  ImageType
+    type;
+
+  register ssize_t
+    x;
+
+  register const Quantum
+    *p;
+
+  ssize_t
+    y;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickCoreSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  if (image->type == BilevelType)
+    return(MagickTrue);
+  if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
+    return(MagickFalse);
+  type=BilevelType;
+  image_view=AcquireVirtualCacheView(image,exception);
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
+    if (p == (const Quantum *) NULL)
+      break;
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      if (IsPixelMonochrome(image,p) == MagickFalse)
+        {
+          type=UndefinedType;
+          break;
+        }
+      p+=GetPixelChannels(image);
+    }
+    if (type == UndefinedType)
+      break;
+  }
+  image_view=DestroyCacheView(image_view);
+  if (type == BilevelType)
+    return(MagickTrue);
+  return(MagickFalse);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   I d e n t i f y I m a g e T y p e                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  IdentifyImageType() returns the potential type of image:
+%
+%        Bilevel         Grayscale        GrayscaleMatte
+%        Palette         PaletteMatte     TrueColor
+%        TrueColorMatte  ColorSeparation  ColorSeparationMatte
+%
+%  To ensure the image type matches its potential, use SetImageType():
+%
+%    (void) SetImageType(image,IdentifyImageType(image,exception),exception);
+%
+%  The format of the IdentifyImageType method is:
+%
+%      ImageType IdentifyImageType(const Image *image,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport ImageType IdentifyImageType(const Image *image,
+  ExceptionInfo *exception)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
@@ -601,15 +816,15 @@ MagickExport ImageType GetImageType(const Image *image,ExceptionInfo *exception)
         return(ColorSeparationType);
       return(ColorSeparationAlphaType);
     }
-  if (SetImageMonochrome((Image *) image,exception) != MagickFalse)
+  if (IdentifyImageMonochrome(image,exception) != MagickFalse)
     return(BilevelType);
-  if (SetImageGray((Image *) image,exception) != MagickFalse)
+  if (IdentifyImageGray(image,exception) != MagickFalse)
     {
       if (image->alpha_trait != UndefinedPixelTrait)
         return(GrayscaleAlphaType);
       return(GrayscaleType);
     }
-  if (IsPaletteImage(image,exception) != MagickFalse)
+  if (IdentifyPaletteImage(image,exception) != MagickFalse)
     {
       if (image->alpha_trait != UndefinedPixelTrait)
         return(PaletteAlphaType);
@@ -619,7 +834,7 @@ MagickExport ImageType GetImageType(const Image *image,ExceptionInfo *exception)
     return(TrueColorAlphaType);
   return(TrueColorType);
 }
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -976,177 +1191,6 @@ MagickExport MagickBooleanType SetImageDepth(Image *image,
   if (status != MagickFalse)
     image->depth=depth;
   return(status);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%     S e t I m a g e G r a y                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  SetImageGray() returns MagickTrue if all the pixels in the image have the
-%  same red, green, and blue intensities and changes the type of the image to
-%  bi-level or grayscale.
-%
-%  The format of the SetImageGray method is:
-%
-%      MagickBooleanType SetImageGray(const Image *image,
-%        ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-MagickExport MagickBooleanType SetImageGray(Image *image,
-  ExceptionInfo *exception)
-{
-  CacheView
-    *image_view;
-
-  ImageType
-    type;
-
-  register const Quantum
-    *p;
-
-  register ssize_t
-    x;
-
-  ssize_t
-    y;
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if (IsImageGray(image))
-    return(MagickTrue);
-  if ((IsGrayColorspace(image->colorspace) == MagickFalse) &&
-      (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse))
-    return(MagickFalse);
-  type=BilevelType;
-  image_view=AcquireVirtualCacheView(image,exception);
-  for (y=0; y < (ssize_t) image->rows; y++)
-  {
-    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
-    if (p == (const Quantum *) NULL)
-      break;
-    for (x=0; x < (ssize_t) image->columns; x++)
-    {
-      if (IsPixelGray(image,p) == MagickFalse)
-        {
-          type=UndefinedType;
-          break;
-        }
-      if ((type == BilevelType) &&
-          (IsPixelMonochrome(image,p) == MagickFalse))
-        type=GrayscaleType;
-      p+=GetPixelChannels(image);
-    }
-    if (type == UndefinedType)
-      break;
-  }
-  image_view=DestroyCacheView(image_view);
-  if (type == UndefinedType)
-    return(MagickFalse);
-  image->colorspace=GRAYColorspace;
-  if (SyncImagePixelCache((Image *) image,exception) == MagickFalse)
-    return(MagickFalse);
-  image->type=type;
-  if ((type == GrayscaleType) && (image->alpha_trait != UndefinedPixelTrait))
-    image->type=GrayscaleAlphaType;
-  return(MagickTrue);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   S e t I m a g e M o n o c h r o m e                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  SetImageMonochrome() returns MagickTrue if all the pixels in the image have
-%  the same red, green, and blue intensities and the intensity is either
-%  0 or QuantumRange and changes the type of the image to bi-level.
-%
-%  The format of the SetImageMonochrome method is:
-%
-%      MagickBooleanType SetImageMonochrome(const Image *image,
-%        ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-MagickExport MagickBooleanType SetImageMonochrome(Image *image,
-  ExceptionInfo *exception)
-{
-  CacheView
-    *image_view;
-
-  ImageType
-    type;
-
-  register ssize_t
-    x;
-
-  register const Quantum
-    *p;
-
-  ssize_t
-    y;
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if (image->type == BilevelType)
-    return(MagickTrue);
-  if ((IsGrayColorspace(image->colorspace) == MagickFalse) &&
-      (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse))
-    return(MagickFalse);
-  type=BilevelType;
-  image_view=AcquireVirtualCacheView(image,exception);
-  for (y=0; y < (ssize_t) image->rows; y++)
-  {
-    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
-    if (p == (const Quantum *) NULL)
-      break;
-    for (x=0; x < (ssize_t) image->columns; x++)
-    {
-      if (IsPixelMonochrome(image,p) == MagickFalse)
-        {
-          type=UndefinedType;
-          break;
-        }
-      p+=GetPixelChannels(image);
-    }
-    if (type == UndefinedType)
-      break;
-  }
-  image_view=DestroyCacheView(image_view);
-  if (type == UndefinedType)
-    return(MagickFalse);
-  image->colorspace=GRAYColorspace;
-  if (SyncImagePixelCache((Image *) image,exception) == MagickFalse)
-    return(MagickFalse);
-  image->type=type;
-  return(MagickTrue);
 }
 
 /*

@@ -759,8 +759,7 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image,
   if (status == MagickFalse)
     return(status);
   (void) TransformImageColorspace(image,sRGBColorspace,exception);
-  if ((image->colors <= 2) ||
-      (GetImageType(image,exception ) == BilevelType)) {
+  if (SetImageMonochrome(image,exception) != MagickFalse) {
     bits_per_pixel=1;
   } else if (image->colors <= 4) {
     bits_per_pixel=2;

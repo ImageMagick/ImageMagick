@@ -380,7 +380,7 @@ static MagickBooleanType WriteMAPImage(const ImageInfo *image_info,Image *image,
   /*
     Allocate colormap.
   */
-  if (IsPaletteImage(image,exception) == MagickFalse)
+  if (IsPaletteImage(image) == MagickFalse)
     (void) SetImageType(image,PaletteType,exception);
   depth=GetImageQuantumDepth(image,MagickTrue);
   packet_size=(size_t) (depth/8);

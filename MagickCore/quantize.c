@@ -1189,7 +1189,7 @@ MagickExport MagickBooleanType CompressImageColormap(Image *image,
   assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if (IsPaletteImage(image,exception) == MagickFalse)
+  if (image->storage_class != PseudoClass)
     return(MagickFalse);
   GetQuantizeInfo(&quantize_info);
   quantize_info.number_colors=image->colors;

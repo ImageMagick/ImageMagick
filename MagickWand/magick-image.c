@@ -5635,10 +5635,6 @@ WandExport size_t MagickGetImageTicksPerSecond(MagickWand *wand)
 %        Palette        PaletteMatte    TrueColor
 %        TrueColorMatte ColorSeparation ColorSeparationMatte
 %
-%  To ensure the image type matches its potential, use MagickSetImageType():
-%
-%    (void) MagickSetImageType(wand,MagickGetImageType(wand));
-%
 %  The format of the MagickGetImageType method is:
 %
 %      ImageType MagickGetImageType(MagickWand *wand)
@@ -5660,7 +5656,7 @@ WandExport ImageType MagickGetImageType(MagickWand *wand)
         "ContainsNoImages","`%s'",wand->name);
       return(UndefinedType);
     }
-  return(GetImageType(wand->images,wand->exception));
+  return(GetImageType(wand->images));
 }
 
 /*
@@ -6060,7 +6056,52 @@ WandExport char *MagickIdentifyImage(MagickWand *wand)
   (void) RelinquishUniqueFileResource(filename);
   return(description);
 }
-
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k I d e n t i f y I m a g e T y p e                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickIdentifyImageType() gets the potential image type:
+%
+%        Bilevel        Grayscale       GrayscaleMatte
+%        Palette        PaletteMatte    TrueColor
+%        TrueColorMatte ColorSeparation ColorSeparationMatte
+%
+%  To ensure the image type matches its potential, use MagickSetImageType():
+%
+%    (void) MagickSetImageType(wand,MagickIdentifyImageType(wand));
+%
+%  The format of the MagickIdentifyImageType method is:
+%
+%      ImageType MagickIdentifyImageType(MagickWand *wand)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+*/
+WandExport ImageType MagickIdentifyImageType(MagickWand *wand)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickWandSignature);
+  if (IfMagickTrue(wand->debug))
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (wand->images == (Image *) NULL)
+    {
+      (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
+        "ContainsNoImages","`%s'",wand->name);
+      return(UndefinedType);
+    }
+  return(IdentifyImageType(wand->images,wand->exception));
+}
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %

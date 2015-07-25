@@ -29,8 +29,9 @@ extern MagickExport Image
   *UniqueImageColors(const Image *,ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
+  IdentifyPaletteImage(const Image *,ExceptionInfo *),
   IsHistogramImage(const Image *,ExceptionInfo *),
-  IsPaletteImage(const Image *,ExceptionInfo *),
+  IsPaletteImage(const Image *),
   MinMaxStretchImage(Image *,const double,const double,const double,
     ExceptionInfo *);
 

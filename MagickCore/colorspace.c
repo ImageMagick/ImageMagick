@@ -40,6 +40,7 @@
   Include declarations.
 */
 #include "MagickCore/studio.h"
+#include "MagickCore/attribute.h"
 #include "MagickCore/property.h"
 #include "MagickCore/cache.h"
 #include "MagickCore/cache-private.h"
@@ -1118,7 +1119,105 @@ MagickExport MagickBooleanType SetImageColorspace(Image *image,
   image->type=type;
   return(status);
 }
-
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%     S e t I m a g e G r a y                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SetImageGray() returns MagickTrue if all the pixels in the image have the
+%  same red, green, and blue intensities and changes the type of the image to
+%  bi-level or grayscale.
+%
+%  The format of the SetImageGray method is:
+%
+%      MagickBooleanType SetImageGray(const Image *image,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport MagickBooleanType SetImageGray(Image *image,
+  ExceptionInfo *exception)
+{
+  ImageType
+    type;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickCoreSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  if (IsImageGray(image))
+    return(MagickTrue);
+  if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
+    return(MagickFalse);
+  type=IdentifyImageGray(image,exception);
+  if (type == UndefinedType)
+    return(MagickFalse);
+  image->colorspace=GRAYColorspace;
+  if (SyncImagePixelCache((Image *) image,exception) == MagickFalse)
+    return(MagickFalse);
+  image->type=type;
+  return(MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e t I m a g e M o n o c h r o m e                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SetImageMonochrome() returns MagickTrue if all the pixels in the image have
+%  the same red, green, and blue intensities and the intensity is either
+%  0 or QuantumRange and changes the type of the image to bi-level.
+%
+%  The format of the SetImageMonochrome method is:
+%
+%      MagickBooleanType SetImageMonochrome(Image *image,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport MagickBooleanType SetImageMonochrome(Image *image,
+  ExceptionInfo *exception)
+{
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickCoreSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  if (image->type == BilevelType)
+    return(MagickTrue);
+  if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
+    return(MagickFalse);
+  if (IdentifyImageMonochrome(image,exception) == MagickFalse)
+    return(MagickFalse);
+  image->colorspace=GRAYColorspace;
+  if (SyncImagePixelCache((Image *) image,exception) == MagickFalse)
+    return(MagickFalse);
+  image->type=BilevelType;
+  return(MagickTrue);
+}
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %

@@ -3444,7 +3444,8 @@ static MagickBooleanType TraceSVGImage(Image *image,ExceptionInfo *exception)
     */
     fitting_options=at_fitting_opts_new();
     output_options=at_output_opts_new();
-    type=GetImageType(image,exception);
+    (void) SetImageGray(image,exception);
+    type=GetImageType(image);
     number_planes=3;
     if ((type == BilevelType) || (type == GrayscaleType))
       number_planes=1;

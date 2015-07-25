@@ -821,10 +821,6 @@ namespace Magick
     // Despeckle image (reduce speckle noise)
     void despeckle(void);
 
-    // Determines the color type of the image. This method can be used to
-    // automaticly make the type GrayScale.
-    ImageType determineType(void) const;
-
     // Display image on screen
     void display(void);
 
@@ -977,6 +973,10 @@ namespace Magick
     // Identifies lines in the image.
     void houghLine(const size_t width_,const size_t height_,
       const size_t threshold_=40);
+
+    // Identifies the potential color type of the image. This method can be
+    // used to detect if the type can be changed to GrayScale.
+    ImageType identifyType(void) const;
 
     // Implode image (special effect)
     void implode(const double factor_);
