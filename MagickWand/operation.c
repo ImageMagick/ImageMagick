@@ -1986,7 +1986,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           if (IfNormalOp)
             (void) ClipImage(_image,_exception);
           else /* "+mask" remove the write mask */
-            (void) SetImageMask(_image,(Image *) NULL,_exception);
+            (void) SetImageMask(_image,ReadPixelMask,(Image *) NULL,_exception);
           break;
         }
       if (LocaleCompare("clip-mask",option+1) == 0)
@@ -2009,7 +2009,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
 
           if (IfPlusOp) {
             /* use "+clip-mask" Remove the write mask for -clip-path */
-            (void) SetImageMask(_image,(Image *) NULL,_exception);
+            (void) SetImageMask(_image,ReadPixelMask,(Image *) NULL,_exception);
             break;
           }
           mask_image=GetImageCache(_image_info,arg1,_exception);
@@ -2041,7 +2041,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           mask_view=DestroyCacheView(mask_view);
           mask_image->alpha_trait=BlendPixelTrait;
           (void) SetImageColorspace(_image,GRAYColorspace,_exception);
-          (void) SetImageMask(_image,mask_image,_exception);
+          (void) SetImageMask(_image,ReadPixelMask,mask_image,_exception);
           mask_image=DestroyImage(mask_image);
           break;
         }
@@ -2746,14 +2746,15 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
 
           if (IfPlusOp)
             { /* Remove a mask. */
-              (void) SetImageMask(_image,(Image *) NULL,_exception);
+              (void) SetImageMask(_image,ReadPixelMask,(Image *) NULL,
+                _exception);
               break;
             }
           /* Set the image mask. */
           mask=GetImageCache(_image_info,arg1,_exception);
           if (mask == (Image *) NULL)
             break;
-          (void) SetImageMask(_image,mask,_exception);
+          (void) SetImageMask(_image,ReadPixelMask,mask,_exception);
           mask=DestroyImage(mask);
           break;
         }

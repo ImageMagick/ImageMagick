@@ -1428,7 +1428,7 @@ MagickExport MagickBooleanType DrawClipPath(Image *image,
     exception);
   clone_info->clip_mask=(char *) NULL;
   status=NegateImage(clip_mask,MagickFalse,exception);
-  (void) SetImageMask(image,clip_mask,exception);
+  (void) SetImageMask(image,ReadPixelMask,clip_mask,exception);
   clip_mask=DestroyImage(clip_mask);
   status&=DrawImage(image,clone_info,exception);
   clone_info=DestroyDrawInfo(clone_info);
@@ -2262,7 +2262,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
                 if (graphic_context[n]->clip_mask != (char *) NULL)
                   if (LocaleCompare(graphic_context[n]->clip_mask,
                       graphic_context[n-1]->clip_mask) != 0)
-                    (void) SetImageMask(image,(Image *) NULL,exception);
+                    (void) SetImageMask(image,ReadPixelMask,(Image *) NULL,
+                      exception);
                 graphic_context[n]=DestroyDrawInfo(graphic_context[n]);
                 n--;
                 break;

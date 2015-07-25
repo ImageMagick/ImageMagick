@@ -747,7 +747,7 @@ MagickExport MagickBooleanType ClipImagePath(Image *image,const char *pathname,
     (void) NegateImage(clip_mask,MagickFalse,exception);
   (void) FormatLocaleString(clip_mask->magick_filename,MagickPathExtent,
     "8BIM:1999,2998:%s\nPS",pathname);
-  (void) SetImageMask(image,clip_mask,exception);
+  (void) SetImageMask(image,ReadPixelMask,clip_mask,exception);
   clip_mask=DestroyImage(clip_mask);
   return(MagickTrue);
 }
@@ -2899,20 +2899,22 @@ MagickExport void SetImageInfoFile(ImageInfo *image_info,FILE *file)
 %
 %  The format of the SetImageMask method is:
 %
-%      MagickBooleanType SetImageMask(Image *image,const Image *mask,
-%        ExceptionInfo *exception)
+%      MagickBooleanType SetImageMask(Image *image,const PixelMask type,
+%        const Image *mask,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
+%
+%    o type: the mask type, ReadPixelMask or WritePixelMask.
 %
 %    o mask: the image mask.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport MagickBooleanType SetImageMask(Image *image,const Image *mask,
-  ExceptionInfo *exception)
+MagickExport MagickBooleanType SetImageMask(Image *image,const PixelMask type,
+  const Image *mask,ExceptionInfo *exception)
 {
   CacheView
     *mask_view,
@@ -2933,10 +2935,18 @@ MagickExport MagickBooleanType SetImageMask(Image *image,const Image *mask,
   assert(image->signature == MagickCoreSignature);
   if (mask == (const Image *) NULL)
     {
-      image->read_mask=MagickFalse;
+      switch (type)
+      {
+        case WritePixelMask: image->write_mask=MagickFalse; break;
+        default: image->read_mask=MagickFalse; break;
+      }
       return(SyncImagePixelCache(image,exception));
     }
-  image->read_mask=MagickTrue;
+  switch (type)
+  {
+    case WritePixelMask: image->write_mask=MagickTrue; break;
+    default: image->read_mask=MagickTrue; break;
+  }
   if (SyncImagePixelCache(image,exception) == MagickFalse)
     return(MagickFalse);
   status=MagickTrue;
@@ -2968,7 +2978,19 @@ MagickExport MagickBooleanType SetImageMask(Image *image,const Image *mask,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      SetPixelReadMask(image,ClampToQuantum(GetPixelIntensity(mask,p)),q);
+      switch (type)
+      {
+        case WritePixelMask:
+        {
+          SetPixelWriteMask(image,ClampToQuantum(GetPixelIntensity(mask,p)),q);
+          break;
+        }
+        default:
+        {
+          SetPixelReadMask(image,ClampToQuantum(GetPixelIntensity(mask,p)),q);
+          break;
+        }
+      }
       p+=GetPixelChannels(mask);
       q+=GetPixelChannels(image);
     }
