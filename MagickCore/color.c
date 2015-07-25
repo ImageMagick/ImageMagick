@@ -1551,7 +1551,7 @@ MagickExport void GetColorTuple(const PixelInfo *pixel,
         SVGCompliant(color.green))) < MagickEpsilon);
       status&=IsMagickTrue(fabs((double) (color.blue-
         SVGCompliant(color.blue))) < MagickEpsilon);
-      if (color.colorspace-CMYKColorspace)
+      if (color.colorspace == CMYKColorspace)
         status&=IsMagickTrue(fabs((double) (color.black-
           SVGCompliant(color.black))) < MagickEpsilon);
       if (color.alpha_trait != UndefinedPixelTrait)
