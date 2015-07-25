@@ -4086,13 +4086,13 @@ exit_cleanup:
 %
 %  User defined settings include...
 %    * Output Bias for Convolution and correlation ("-define convolve:bias=??")
-%    * Kernel Scale/normalize settings             ("-define convolve:scale=??")
+%    * Kernel Scale/normalize settings            ("-define convolve:scale=??")
 %      This can also includes the addition of a scaled unity kernel.
-%    * Show Kernel being applied                   ("-define showkernel=1")
+%    * Show Kernel being applied            ("-define morphology:showkernel=1")
 %
 %  Other operators that do not want user supplied options interfering,
-%  especially "convolve:bias" and "showkernel" should use MorphologyApply()
-%  directly.
+%  especially "convolve:bias" and "morphology:showkernel" should use
+%  MorphologyApply() directly.
 %
 %  The format of the MorphologyImage method is:
 %
@@ -4120,17 +4120,20 @@ MagickExport Image *MorphologyImage(const Image *image,
   const MorphologyMethod method,const ssize_t iterations,
   const KernelInfo *kernel,ExceptionInfo *exception)
 {
-  KernelInfo
-    *curr_kernel;
+  const char
+    *artifact;
 
   CompositeOperator
     compose;
 
+  double
+    bias;
+
   Image
     *morphology_image;
 
-  double
-    bias;
+  KernelInfo
+    *curr_kernel;
 
   curr_kernel = (KernelInfo *) kernel;
   bias=0.0;
@@ -4173,9 +4176,8 @@ MagickExport Image *MorphologyImage(const Image *image,
     }
 
   /* display the (normalized) kernel via stderr */
-  if ( IfStringTrue(GetImageArtifact(image,"showkernel"))
-    || IfStringTrue(GetImageArtifact(image,"convolve:showkernel"))
-    || IfStringTrue(GetImageArtifact(image,"morphology:showkernel")) )
+  artifact=GetImageArtifact(image,"morphology:showkernel");
+  if (IsStringTrue(artifact) != MagickFalse)
     ShowKernelInfo(curr_kernel);
 
   /* Override the default handling of multi-kernel morphology results
@@ -4184,8 +4186,7 @@ MagickExport Image *MorphologyImage(const Image *image,
    * Otherwise merge resulting images using compose method given.
    * Default for 'HitAndMiss' is 'Lighten'.
    */
-  { const char
-      *artifact;
+  {
     ssize_t
       parse;
 
@@ -4629,7 +4630,8 @@ MagickExport void ScaleKernelInfo(KernelInfo *kernel,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  ShowKernelInfo() outputs the details of the given kernel defination to
-%  standard error, generally due to a users 'showkernel' option request.
+%  standard error, generally due to a users 'morphology:showkernel' option
+%  request.
 %
 %  The format of the ShowKernel method is:
 %

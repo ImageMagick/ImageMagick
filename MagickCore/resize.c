@@ -1117,7 +1117,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
   #pragma omp master
   {
 #endif
-    if (IfStringTrue(GetImageArtifact(image,"filter:verbose")))
+    if (IsStringTrue(GetImageArtifact(image,"filter:verbose")) != MagickFalse)
       {
         double
           support,

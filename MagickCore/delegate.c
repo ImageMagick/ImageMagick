@@ -996,7 +996,7 @@ static MagickBooleanType IsDelegateCacheInstantiated(ExceptionInfo *exception)
         delegate_cache=AcquireDelegateCache(DelegateFilename,exception);
       UnlockSemaphoreInfo(delegate_semaphore);
     }
-  return(IsMagickNotNULL(delegate_cache));
+  return(delegate_cache != (LinkedListInfo *) NULL ? MagickTrue : MagickFalse);
 }
 
 /*

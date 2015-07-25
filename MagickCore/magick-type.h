@@ -161,8 +161,6 @@ typedef enum
    IsMagickTrue()     converts a C integer boolean to a MagickBooleanType
    IsMagickFalse()    converts and is also a MagickBooleanType 'not' operation
 
-   IsMagickNULL()
-   IsMagickNotNULL()  converts C pointers tests MagickBooleanType
 */
 #if 1
 /* Fast C typing method assumes MagickBooleanType match 0,1 values */
@@ -179,9 +177,6 @@ typedef enum
 #  define IsMagickFalse(v) ((v)?MagickFalse:MagickTrue)
 #  define IsMagickNot(v)   (IfMagickTrue(v)?MagickFalse:MagickTrue)
 #endif
-#define IfStringTrue(v)       IfMagickTrue(IsStringTrue(v))
-#define IsMagickNULL(v)       (((void *)(v) == NULL)?MagickTrue:MagickFalse)
-#define IsMagickNotNULL(v)    (((void *)(v) != NULL)?MagickTrue:MagickFalse)
 
 /*
   The IsNaN and IfNan tests for special floating point numbers of

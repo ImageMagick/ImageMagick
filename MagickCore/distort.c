@@ -1956,7 +1956,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
   }
 
   /* Verbose output */
-  if ( IfStringTrue(GetImageArtifact(image,"verbose")) ) {
+  if (IsStringTrue(GetImageArtifact(image,"verbose")) != MagickFalse) {
     register ssize_t
        i;
     char image_gen[MagickPathExtent];
@@ -2943,7 +2943,7 @@ MagickExport Image *SparseColorImage(const Image *image,
   }
 
   /* Verbose output */
-  if ( IfStringTrue(GetImageArtifact(image,"verbose")) ) {
+  if (IsStringTrue(GetImageArtifact(image,"verbose")) != MagickFalse) {
 
     switch (sparse_method) {
       case BarycentricColorInterpolate:
