@@ -115,8 +115,8 @@ typedef struct _FourierInfo
 %
 %  The format of the ComplexImages method is:
 %
-%      MagickBooleanType ComplexImages(Image *images,
-%        const ComplexOperator op,ExceptionInfo *exception)
+%      MagickBooleanType ComplexImages(Image *images,const ComplexOperator op,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -223,8 +223,8 @@ MagickExport Image *ComplexImages(const Image *images,const ComplexOperator op,
   status=MagickTrue;
   progress=0;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-    #pragma omp parallel for schedule(static,4) shared(progress,status) \
-      magick_threads(images,complex_images,images->rows,1)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+    magick_threads(images,complex_images,images->rows,1)
 #endif
   for (y=0; y < (ssize_t) images->rows; y++)
   {
@@ -243,12 +243,12 @@ MagickExport Image *ComplexImages(const Image *images,const ComplexOperator op,
 
     if (status == MagickFalse)
       continue;
-    Ar=GetCacheViewVirtualPixels(Ar_view,0,y,images->columns,1,exception);
-    Ai=GetCacheViewVirtualPixels(Ai_view,0,y,images->columns,1,exception);
-    Br=GetCacheViewVirtualPixels(Br_view,0,y,images->columns,1,exception);
-    Bi=GetCacheViewVirtualPixels(Bi_view,0,y,images->columns,1,exception);
-    Cr=QueueCacheViewAuthenticPixels(Cr_view,0,y,images->columns,1,exception);
-    Ci=QueueCacheViewAuthenticPixels(Ci_view,0,y,images->columns,1,exception);
+    Ar=GetCacheViewVirtualPixels(Ar_view,0,y,Ar_image->columns,1,exception);
+    Ai=GetCacheViewVirtualPixels(Ai_view,0,y,Ai_image->columns,1,exception);
+    Br=GetCacheViewVirtualPixels(Br_view,0,y,Br_image->columns,1,exception);
+    Bi=GetCacheViewVirtualPixels(Bi_view,0,y,Bi_image->columns,1,exception);
+    Cr=QueueCacheViewAuthenticPixels(Cr_view,0,y,Cr_image->columns,1,exception);
+    Ci=QueueCacheViewAuthenticPixels(Ci_view,0,y,Ci_image->columns,1,exception);
     if ((Ar == (const PixelPacket *) NULL) ||
         (Ai == (const PixelPacket *) NULL) ||
         (Br == (const PixelPacket *) NULL) ||
