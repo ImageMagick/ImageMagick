@@ -9142,17 +9142,19 @@ WandExport ChannelType MagickSetImageChannelMask(MagickWand *wand,
 %  The format of the MagickSetImageMask method is:
 %
 %      MagickBooleanType MagickSetImageMask(MagickWand *wand,
-%        const MagickWand *clip_mask)
+%        const PixelMask type,const MagickWand *clip_mask)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the magick wand.
 %
+%    o type: type of mask, ReadPixelMask or WritePixelMask.
+%
 %    o clip_mask: the clip_mask wand.
 %
 */
 WandExport MagickBooleanType MagickSetImageMask(MagickWand *wand,
-  const MagickWand *clip_mask)
+  const PixelMask type,const MagickWand *clip_mask)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickWandSignature);
@@ -9164,7 +9166,7 @@ WandExport MagickBooleanType MagickSetImageMask(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",clip_mask->name);
   if (clip_mask->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",clip_mask->name);
-  return(SetImageMask(wand->images,clip_mask->images,wand->exception));
+  return(SetImageMask(wand->images,type,clip_mask->images,wand->exception));
 }
 
 /*

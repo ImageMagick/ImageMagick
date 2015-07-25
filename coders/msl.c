@@ -6021,8 +6021,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       exception);
                     if (LocaleCompare(property,value) == 0)
                       {
-                        SetImageMask(msl_info->image[n],msl_info->image[j],
-                          exception);
+                        SetImageMask(msl_info->image[n],ReadPixelMask,
+                          msl_info->image[j],exception);
                         break;
                       }
                   }
@@ -6039,8 +6039,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       exception);
                     if (LocaleCompare(property,value) == 0)
                       {
-                        SetImageMask(msl_info->image[n],msl_info->image[j],
-                          exception);
+                        SetImageMask(msl_info->image[n],ReadPixelMask,
+                          msl_info->image[j],exception);
                         break;
                       }
                   }

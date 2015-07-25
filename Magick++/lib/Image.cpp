@@ -1095,9 +1095,10 @@ void Magick::Image::mask(const Magick::Image &mask_)
 
   GetPPException;
   if (mask_.isValid())
-    SetImageMask(image(),mask_.constImage(),exceptionInfo);
+    SetImageMask(image(),ReadPixelMask,mask_.constImage(),exceptionInfo);
   else
-    SetImageMask(image(),(MagickCore::Image *) NULL,exceptionInfo);
+    SetImageMask(image(),ReadPixelMask,(MagickCore::Image *) NULL,
+      exceptionInfo);
   ThrowImageException;
 }
 

@@ -1057,7 +1057,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             (void) SyncImageSettings(mogrify_info,*image,exception);
             if (*option == '+')
               {
-                (void) SetImageMask(*image,(Image *) NULL,exception);
+                (void) SetImageMask(*image,ReadPixelMask,(Image *) NULL,
+                  exception);
                 break;
               }
             (void) ClipImage(*image,exception);
@@ -1086,7 +1087,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
                 /*
                   Remove a mask.
                 */
-                (void) SetImageMask(*image,(Image *) NULL,exception);
+                (void) SetImageMask(*image,ReadPixelMask,(Image *) NULL,
+                  exception);
                 break;
               }
             /*
@@ -1120,7 +1122,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             }
             mask_view=DestroyCacheView(mask_view);
             mask_image->alpha_trait=BlendPixelTrait;
-            (void) SetImageMask(*image,mask_image,exception);
+            (void) SetImageMask(*image,ReadPixelMask,mask_image,exception);
             break;
           }
         if (LocaleCompare("clip-path",option+1) == 0)
@@ -2111,7 +2113,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
                 /*
                   Remove a mask.
                 */
-                (void) SetImageMask(*image,(Image *) NULL,exception);
+                (void) SetImageMask(*image,ReadPixelMask,(Image *) NULL,
+                  exception);
                 break;
               }
             /*
@@ -2120,7 +2123,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             mask=GetImageCache(mogrify_info,argv[i+1],exception);
             if (mask == (Image *) NULL)
               break;
-            (void) SetImageMask(*image,mask,exception);
+            (void) SetImageMask(*image,ReadPixelMask,mask,exception);
             mask=DestroyImage(mask);
             break;
           }

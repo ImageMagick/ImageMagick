@@ -968,6 +968,11 @@ namespace Magick
   using MagickCore::RGBAQuantum;
   using MagickCore::CMYKQuantum;
 
+  // Pixel mask types
+  using MagickCore::UndefinedPixelMask;
+  using MagickCore::ReadPixelMask;
+  using MagickCore::WritePixelMask;
+
   // Rendering intents
   using MagickCore::RenderingIntent;
   using MagickCore::UndefinedIntent;
