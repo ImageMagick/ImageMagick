@@ -1,3 +1,7 @@
+2015-07-25  6.9.2-0 Dirk Lemstra <dirk@lem.....org>
+  * Added "-set colorspace:auto-grayscale=false" that will prevent automatic
+    conversion to grayscale inside coders that support grayscale.
+
 2015-07-25  6.9.1-10 Cristy  <quetzlzacatenango@image...>
   * New version 6.9.1-10, SVN revision 19269.
 

@@ -64,6 +64,8 @@ typedef enum
 extern MagickExport MagickBooleanType
   RGBTransformImage(Image *,const ColorspaceType),
   SetImageColorspace(Image *,const ColorspaceType),
+  SetImageGray(Image *,ExceptionInfo *),
+  SetImageMonochrome(Image *,ExceptionInfo *),
   TransformImageColorspace(Image *,const ColorspaceType),
   TransformRGBImage(Image *,const ColorspaceType);
 

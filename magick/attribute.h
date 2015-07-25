@@ -32,8 +32,6 @@ extern MagickExport MagickBooleanType
   IsGrayImage(const Image *,ExceptionInfo *),
   IsMonochromeImage(const Image *,ExceptionInfo *),
   IsOpaqueImage(const Image *,ExceptionInfo *),
-  SetImageGray(Image *,ExceptionInfo *),
-  SetImageMonochrome(Image *,ExceptionInfo *),
   SetImageChannelDepth(Image *,const ChannelType,const size_t),
   SetImageDepth(Image *,const size_t),
   SetImageType(Image *,const ImageType);
