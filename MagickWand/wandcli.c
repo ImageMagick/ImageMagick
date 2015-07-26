@@ -232,22 +232,24 @@ WandExport MagickCLI *DestroyMagickCLI(MagickCLI *cli_wand)
 %
 */
 WandExport MagickBooleanType CLICatchException(MagickCLI *cli_wand,
-     const MagickBooleanType all_exceptions )
+  const MagickBooleanType all_exceptions)
 {
   MagickBooleanType
     status;
+
   assert(cli_wand != (MagickCLI *) NULL);
   assert(cli_wand->signature == MagickWandSignature);
   assert(cli_wand->wand.signature == MagickWandSignature);
-  if (IfMagickTrue(cli_wand->wand.debug))
+  if (cli_wand->wand.debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",cli_wand->wand.name);
 
   // FUTURE: '-regard_warning' should make this more sensitive.
   // Note pipelined options may like more control over this level
 
-  status = IsMagickTrue(cli_wand->wand.exception->severity > ErrorException);
+  status=cli_wand->wand.exception->severity > ErrorException ? MagickTrue :
+    MagickFalse;
 
-  if ( IfMagickFalse(status) || IfMagickTrue(all_exceptions) )
+  if ((status == MagickFalse) || (all_exceptions != MagickFalse))
     CatchException(cli_wand->wand.exception); /* output and clear exceptions */
 
   return(status);

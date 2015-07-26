@@ -263,7 +263,7 @@ MagickExport MagickBooleanType CompareHashmapString(const void *target,
 
   p=(const char *) target;
   q=(const char *) source;
-  return(IsMagickTrue(LocaleCompare(p,q)));
+  return(LocaleCompare(p,q) == 0 ? MagickTrue : MagickFalse);
 }
 
 /*
@@ -295,8 +295,13 @@ MagickExport MagickBooleanType CompareHashmapString(const void *target,
 MagickExport MagickBooleanType CompareHashmapStringInfo(const void *target,
   const void *source)
 {
-  return(IsMagickTrue(LocaleCompare((const char *)target,
-           (const char *)source)));
+  const StringInfo
+    *p,
+    *q;
+
+  p=(const StringInfo *) target;
+  q=(const StringInfo *) source;
+  return(CompareStringInfo(p,q) == 0 ? MagickTrue : MagickFalse);
 }
 
 /*
@@ -1171,7 +1176,7 @@ MagickExport MagickBooleanType IsHashmapEmpty(const HashmapInfo *hashmap_info)
 {
   assert(hashmap_info != (HashmapInfo *) NULL);
   assert(hashmap_info->signature == MagickCoreSignature);
-  return(IsMagickTrue(hashmap_info->entries == 0));
+  return(hashmap_info->entries == 0 ? MagickTrue : MagickFalse);
 }
 
 /*
@@ -1201,7 +1206,7 @@ MagickExport MagickBooleanType IsLinkedListEmpty(
 {
   assert(list_info != (LinkedListInfo *) NULL);
   assert(list_info->signature == MagickCoreSignature);
-  return(IsMagickTrue(list_info->elements == 0));
+  return(list_info->elements == 0 ? MagickTrue : MagickFalse);
 }
 
 /*
