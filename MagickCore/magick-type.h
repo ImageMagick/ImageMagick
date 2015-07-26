@@ -157,25 +157,15 @@ typedef enum
 
    IfMagickTrue()     converts MagickBooleanType to C integer Boolean
    IfMagickFalse()    Not the MagickBooleanType to C integer Boolean
-
-   IsMagickTrue()     converts a C integer boolean to a MagickBooleanType
-   IsMagickFalse()    converts and is also a MagickBooleanType 'not' operation
-
 */
 #if 1
 /* Fast C typing method assumes MagickBooleanType match 0,1 values */
 #  define IfMagickTrue(v)  ((int)(v))
 #  define IfMagickFalse(v) (!(int)(v))
-#  define IsMagickTrue(v)  ((MagickBooleanType)((int)(v)!=0))
-#  define IsMagickFalse(v) ((MagickBooleanType)(!(int)(v)))
-#  define IsMagickNot(v)   ((MagickBooleanType)(!(int)(v)))
 #else
 /* Do not depend MagickBooleanType's values */
 #  define IfMagickTrue(v)  ((v) != MagickFalse)
 #  define IfMagickFalse(v) ((v) == MagickFalse)
-#  define IsMagickTrue(v)  ((v)?MagickTrue:MagickFalse)
-#  define IsMagickFalse(v) ((v)?MagickFalse:MagickTrue)
-#  define IsMagickNot(v)   (IfMagickTrue(v)?MagickFalse:MagickTrue)
 #endif
 
 /*

@@ -3265,7 +3265,7 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,
   interpret_text=AcquireString(embed_text); /* new string with extra space */
   extent=MagickPathExtent;                     /* allocated space in string */
   number=MagickFalse;                       /* is last char a number? */
-  for (q=interpret_text; *p!='\0'; number=IsMagickTrue(isdigit(*p)),p++)
+  for (q=interpret_text; *p!='\0'; number=isdigit(*p) ? MagickTrue : MagickFalse,p++)
   {
     *q='\0';
     ExtendInterpretText(MagickPathExtent);
@@ -3333,7 +3333,7 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,
         *string;
 
       /* But only if not preceeded by a number! */
-      if ( IfMagickTrue(number) ) {
+      if (number != MagickFalse) {
         *q++='%'; /* do NOT substitute the percent */
         p--;      /* back up one */
         continue;
@@ -3433,7 +3433,7 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,
           status=FxEvaluateChannelExpression(fx_info,IntensityPixelChannel,0,0,
             &value,exception);
           fx_info=DestroyFxInfo(fx_info);
-          if( IfMagickTrue(status) )
+          if (status != MagickFalse)
             {
               char
                 result[MagickPathExtent];
@@ -3485,7 +3485,7 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,
             &value,exception);
           pixel.alpha=(double) QuantumRange*value;
           fx_info=DestroyFxInfo(fx_info);
-          if( IfMagickTrue(status) )
+          if (status != MagickFalse)
             {
               char
                 name[MagickPathExtent];
@@ -3504,11 +3504,11 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,
               OptionWarning,"NoImageForProperty","\"%%[%s]\"",pattern);
           continue; /* else no image to retrieve artifact */
         }
-        if( IfMagickTrue(IsGlob(pattern+7)) )
+        if (IsGlob(pattern+7) != MagickFalse)
         {
           ResetImageOptionIterator(image_info);
           while ((key=GetNextImageOption(image_info)) != (const char *) NULL)
-            if( IfMagickTrue(GlobExpression(key,pattern+7,MagickTrue)) )
+            if (GlobExpression(key,pattern+7,MagickTrue) != MagickFalse)
               {
                 string=GetImageOption(image_info,key);
                 if (string != (const char *) NULL)
@@ -3531,11 +3531,11 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,
               OptionWarning,"NoImageForProperty","\"%%[%s]\"",pattern);
           continue; /* else no image to retrieve artifact */
         }
-        if( IfMagickTrue(IsGlob(pattern+9)) )
+        if (IsGlob(pattern+9) != MagickFalse)
         {
           ResetImageArtifactIterator(image);
           while ((key=GetNextImageArtifact(image)) != (const char *) NULL)
-            if( IfMagickTrue(GlobExpression(key,pattern+9,MagickTrue)) )
+            if (GlobExpression(key,pattern+9,MagickTrue) != MagickFalse)
               {
                 string=GetImageArtifact(image,key);
                 if (string != (const char *) NULL)
@@ -3558,11 +3558,11 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,
               OptionWarning,"NoImageForProperty","\"%%[%s]\"",pattern);
           continue; /* else no image to retrieve artifact */
         }
-        if( IfMagickTrue(IsGlob(pattern+9)) )
+        if (IsGlob(pattern+9) != MagickFalse)
         {
           ResetImagePropertyIterator(image);
           while ((key=GetNextImageProperty(image)) != (const char *) NULL)
-            if( IfMagickTrue(GlobExpression(key,pattern,MagickTrue)) )
+            if (GlobExpression(key,pattern,MagickTrue) != MagickFalse)
               {
                 string=GetImageProperty(image,key,exception);
                 if (string != (const char *) NULL)
@@ -3581,7 +3581,7 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,
          This handles attributes, properties, and profiles such as %[exif:...]
          Note the profile properties may also include a glob expansion pattern.
       */
-      if ( image != (Image *) NULL )
+      if (image != (Image *) NULL)
         {
           string=GetImageProperty(image,pattern,exception);
           if (string != (const char *) NULL)
@@ -3598,13 +3598,13 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,
         Handle property 'glob' patterns
         Such as:  %[*]   %[user:array_??]  %[filename:e*]
       */
-      if( IfMagickTrue(IsGlob(pattern)) )
+      if (IsGlob(pattern) != MagickFalse)
         {
           if (image == (Image *) NULL)
             continue; /* else no image to retrieve proprty - no list */
           ResetImagePropertyIterator(image);
           while ((key=GetNextImageProperty(image)) != (const char *) NULL)
-            if( IfMagickTrue(GlobExpression(key,pattern,MagickTrue)) )
+            if (GlobExpression(key,pattern,MagickTrue) != MagickFalse)
               {
                 string=GetImageProperty(image,key,exception);
                 if (string != (const char *) NULL)

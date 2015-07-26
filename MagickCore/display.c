@@ -1767,7 +1767,7 @@ MagickExport MagickBooleanType RemoteDisplayCommand(const ImageInfo *image_info,
   (void) XSetErrorHandler(XError);
   status=XRemoteCommand(display,window,filename);
   (void) XCloseDisplay(display);
-  return(IsMagickTrue(status));
+  return(status != 0 ? MagickTrue : MagickFalse);
 }
 
 /*
@@ -2811,7 +2811,7 @@ static MagickBooleanType XBackgroundImage(Display *display,
   XCheckRefreshWindows(display,windows);
   background_resources=(*resource_info);
   background_resources.window_id=window_id;
-  background_resources.backdrop=IsMagickTrue(status);
+  background_resources.backdrop=status != 0 ? MagickTrue : MagickFalse;
   status=XDisplayBackgroundImage(display,&background_resources,*image,
     exception);
   if (IfMagickTrue(status))
@@ -3827,7 +3827,7 @@ static MagickBooleanType XColorEditImage(Display *display,
               AllCompliance,&draw_info->fill,exception);
             (void) FloodfillPaintImage(*image,draw_info,&target,
               (ssize_t)x_offset,(ssize_t)y_offset,
-              IsMagickFalse(method == FloodfillMethod),exception);
+              method != FloodfillMethod ? MagickTrue : MagickFalse,exception);
             draw_info=DestroyDrawInfo(draw_info);
             break;
           }
@@ -4527,7 +4527,7 @@ static MagickBooleanType XConfigureImage(Display *display,
   (void) XReconfigureWMWindow(display,windows->icon.id,windows->icon.screen,
     (unsigned int) (CWWidth | CWHeight),&window_changes);
   XSetCursorState(display,windows,MagickFalse);
-  return(IsMagickTrue(status));
+  return(status != 0 ? MagickTrue : MagickFalse);
 }
 
 /*
@@ -6328,7 +6328,7 @@ static MagickBooleanType XDrawEditImage(Display *display,
   }
   XSetCursorState(display,windows,MagickFalse);
   coordinate_info=(XPoint *) RelinquishMagickMemory(coordinate_info);
-  return(IsMagickTrue(status));
+  return(status != 0 ? MagickTrue : MagickFalse);
 }
 
 /*
@@ -8404,7 +8404,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       flags=ParseGeometry(geometry,&geometry_info);
       if ((flags & SigmaValue) == 0)
         geometry_info.sigma=1.0;
-      shade_image=ShadeImage(*image,IsMagickTrue(status),
+      shade_image=ShadeImage(*image,status != 0 ? MagickTrue : MagickFalse,
         geometry_info.rho,geometry_info.sigma,exception);
       if (shade_image != (Image *) NULL)
         {
@@ -10165,7 +10165,7 @@ static MagickBooleanType XMatteEditImage(Display *display,
             channel_mask=SetImageChannelMask(*image,AlphaChannel);
             (void) FloodfillPaintImage(*image,draw_info,&target,(ssize_t)
               x_offset,(ssize_t) y_offset,
-              IsMagickFalse(method == FloodfillMethod),exception);
+              method != FloodfillMethod ? MagickTrue : MagickFalse,exception);
             (void) SetPixelChannelMask(*image,channel_mask);
             draw_info=DestroyDrawInfo(draw_info);
             break;
@@ -11017,7 +11017,7 @@ static MagickBooleanType XPrintImage(Display *display,
   print_image=DestroyImage(print_image);
   image_info=DestroyImageInfo(image_info);
   XSetCursorState(display,windows,MagickFalse);
-  return(IsMagickTrue(status));
+  return(status != 0 ? MagickTrue : MagickFalse);
 }
 
 /*
@@ -12640,7 +12640,7 @@ static MagickBooleanType XSaveImage(Display *display,
   save_image=DestroyImage(save_image);
   image_info=DestroyImageInfo(image_info);
   XSetCursorState(display,windows,MagickFalse);
-  return(IsMagickTrue(status));
+  return(status != 0 ? MagickTrue : MagickFalse);
 }
 
 /*
@@ -13663,8 +13663,8 @@ static Image *XVisualDirectoryImage(Display *display,
   /*
     Read each image and convert them to a tile.
   */
-  backdrop=IsMagickTrue( (windows->visual_info->klass == TrueColor) ||
-    (windows->visual_info->klass == DirectColor) );
+  backdrop=((windows->visual_info->klass == TrueColor) ||
+    (windows->visual_info->klass == DirectColor)) ? MagickTrue : MagickFalse;
   read_info=CloneImageInfo(resource_info->image_info);
   (void) SetImageOption(read_info,"jpeg:size","120x120");
   (void) CloneString(&read_info->size,DefaultTileGeometry);
@@ -14018,7 +14018,7 @@ MagickExport MagickBooleanType XDisplayBackgroundImage(Display *display,
   delay=1000*image->delay/MagickMax(image->ticks_per_second,1L);
   XDelay(display,delay == 0UL ? 10UL : delay);
   (void) XSync(display,MagickFalse);
-  return(IsMagickTrue(window_info.id == root_window));
+  return(window_info.id == root_window ? MagickTrue : MagickFalse);
 }
 
 /*
@@ -15121,10 +15121,15 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
         }
     timestamp=time((time_t *) NULL);
     (void) XNextEvent(display,&event);
-    if (IfMagickFalse(windows->image.stasis) )
-      windows->image.stasis=IsMagickTrue((time((time_t *) NULL)-timestamp) > 0);
-    if (IfMagickFalse(windows->magnify.stasis) )
-      windows->magnify.stasis=IsMagickTrue((time((time_t *) NULL)-timestamp) > 0);
+    if ((windows->image.stasis == MagickFalse) ||
+        (windows->magnify.stasis == MagickFalse))
+      {
+        if ((time((time_t *) NULL)-timestamp) > 0)
+          {
+            windows->image.stasis=MagickTrue;
+            windows->magnify.stasis=MagickTrue;
+          }
+      }
     if (event.xany.window == windows->command.id)
       {
         /*

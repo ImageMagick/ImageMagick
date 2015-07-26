@@ -1303,8 +1303,8 @@ MagickExport const ColorInfo **GetColorInfoList(const char *pattern,
   p=(const ColorInfo *) GetNextValueInLinkedList(color_cache);
   for (i=0; p != (const ColorInfo *) NULL; )
   {
-    if (IsMagickFalse(p->stealth) &&
-        IsMagickTrue(GlobExpression(p->name,pattern,MagickFalse)))
+    if ((p->stealth == MagickFalse) &&
+        (GlobExpression(p->name,pattern,MagickFalse) != MagickFalse))
       colors[i++]=p;
     p=(const ColorInfo *) GetNextValueInLinkedList(color_cache);
   }
@@ -1396,8 +1396,8 @@ MagickExport char **GetColorList(const char *pattern,
   p=(const ColorInfo *) GetNextValueInLinkedList(color_cache);
   for (i=0; p != (const ColorInfo *) NULL; )
   {
-    if (IsMagickFalse(p->stealth) &&
-        IsMagickTrue(GlobExpression(p->name,pattern,MagickFalse)))
+    if ((p->stealth == MagickFalse) &&
+        (GlobExpression(p->name,pattern,MagickFalse) != MagickFalse))
       colors[i++]=ConstantString(p->name);
     p=(const ColorInfo *) GetNextValueInLinkedList(color_cache);
   }
@@ -1436,6 +1436,29 @@ MagickExport char **GetColorList(const char *pattern,
 %    o tuple: Return the color tuple as this string.
 %
 */
+
+static inline MagickBooleanType IsSVGCompliant(const PixelInfo *pixel)
+{
+#define SVGCompliant(component) ((double) \
+   ScaleCharToQuantum(ScaleQuantumToChar(ClampToQuantum(component))))
+
+  /*
+    SVG requires color depths > 8 expressed as percentages.
+  */
+  if (fabs(SVGCompliant(pixel->red)-pixel->red) >= MagickEpsilon)
+    return(MagickFalse);
+  if (fabs(SVGCompliant(pixel->green)-pixel->green) >= MagickEpsilon)
+    return(MagickFalse);
+  if (fabs(SVGCompliant(pixel->blue)-pixel->blue) >= MagickEpsilon)
+    return(MagickFalse);
+  if ((pixel->colorspace == CMYKColorspace) &&
+      (fabs(SVGCompliant(pixel->black)-pixel->black) >= MagickEpsilon))
+    return(MagickFalse);
+  if ((pixel->alpha_trait != UndefinedPixelTrait) &&
+      (fabs(SVGCompliant(pixel->alpha)-pixel->alpha) >= MagickEpsilon))
+    return(MagickFalse);
+  return(MagickTrue);
+}
 
 static void ConcatentateHexColorComponent(const PixelInfo *pixel,
   const PixelChannel channel,char *tuple)
@@ -1534,32 +1557,8 @@ MagickExport void GetColorTuple(const PixelInfo *pixel,
     Convert pixel to rgb() or cmyk() color.
   */
   color=(*pixel);
-  if (color.depth > 8)
-    {
-#define SVGCompliant(component) ((double) \
-   ScaleCharToQuantum(ScaleQuantumToChar(ClampToQuantum(component))))
-
-      MagickStatusType
-        status;
-
-      /*
-        SVG requires color depths > 8 expressed as percentages.
-      */
-      status=IsMagickTrue(fabs((double) (color.red-
-        SVGCompliant(color.red))) < MagickEpsilon);
-      status&=IsMagickTrue(fabs((double) (color.green-
-        SVGCompliant(color.green))) < MagickEpsilon);
-      status&=IsMagickTrue(fabs((double) (color.blue-
-        SVGCompliant(color.blue))) < MagickEpsilon);
-      if (color.colorspace == CMYKColorspace)
-        status&=IsMagickTrue(fabs((double) (color.black-
-          SVGCompliant(color.black))) < MagickEpsilon);
-      if (color.alpha_trait != UndefinedPixelTrait)
-        status&=IsMagickTrue(fabs((double) (color.alpha-
-          SVGCompliant(color.alpha))) < MagickEpsilon);
-      if (IfMagickTrue(status))
-        color.depth=8;
-    }
+  if (color.depth > 8 && IsSVGCompliant(pixel) != MagickFalse)
+    color.depth=8;
   (void) ConcatenateMagickString(tuple,CommandOptionToMnemonic(
     MagickColorspaceOptions,(ssize_t) color.colorspace),MagickPathExtent);
   if (color.alpha_trait != UndefinedPixelTrait)
@@ -1745,7 +1744,7 @@ MagickExport MagickBooleanType IsEquivalentImage(const Image *image,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (IfMagickTrue(image->debug))
+  if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(target_image != (Image *) NULL);
   assert(target_image->signature == MagickCoreSignature);
@@ -1774,7 +1773,7 @@ MagickExport MagickBooleanType IsEquivalentImage(const Image *image,
           if (q == (const Quantum *) NULL)
             break;
           GetPixelInfoPixel(image,q,&target);
-          if (IfMagickFalse(IsFuzzyEquivalencePixelInfo(&pixel,&target)))
+          if (IsFuzzyEquivalencePixelInfo(&pixel,&target) == MagickFalse)
             break;
         }
         if (i < (ssize_t) target_image->columns)
@@ -1792,7 +1791,7 @@ MagickExport MagickBooleanType IsEquivalentImage(const Image *image,
 
         proceed=SetImageProgress(image,SearchImageText,(MagickOffsetType) y,
           image->rows);
-        if( IfMagickFalse(proceed) )
+        if (proceed == MagickFalse)
           status=MagickFalse;
       }
   }
@@ -1800,9 +1799,9 @@ MagickExport MagickBooleanType IsEquivalentImage(const Image *image,
   image_view=DestroyCacheView(image_view);
   *x_offset=x;
   *y_offset=y;
-  if (IfMagickFalse(status))
+  if (status == MagickFalse)
     return(status);
-  return(IsMagickTrue(y < (ssize_t) image->rows));
+  return(y < (ssize_t) image->rows ? MagickTrue : MagickFalse);
 }
 
 /*
@@ -2570,8 +2569,9 @@ MagickExport MagickBooleanType QueryColorname(
       if ( pixel.depth > 16 )
         pixel.depth=16;
     }
-  GetColorTuple(&pixel,IsMagickTrue(compliance != SVGCompliance),name);
-  if (IfMagickFalse(IssRGBColorspace(pixel.colorspace)))
+  GetColorTuple(&pixel,compliance != SVGCompliance ? MagickTrue : MagickFalse,
+    name);
+  if (IssRGBColorspace(pixel.colorspace) == MagickFalse)
     return(MagickFalse);
   alpha=color->alpha_trait != UndefinedPixelTrait ? color->alpha : OpaqueAlpha;
   (void) GetColorInfo("*",exception);

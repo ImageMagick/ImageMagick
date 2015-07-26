@@ -2283,8 +2283,8 @@ MagickExport MagickBooleanType IsCommandOption(const char *option)
   if ((*option != '-') && (*option != '+'))
     return(MagickFalse);
   if (strlen(option) == 1)
-    return(IsMagickTrue((*option == '{') || (*option == '}') ||
-      (*option == '[') || (*option == ']') ));
+    return(((*option == '{') || (*option == '}') || (*option == '[') ||
+      (*option == ']')) ? MagickTrue : MagickFalse);
   option++;
   if (*option == '-')
     return(MagickTrue);

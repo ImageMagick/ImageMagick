@@ -1099,7 +1099,7 @@ static MagickBooleanType CopyDelegateFile(const char *source,
   (void) close(destination_file);
   (void) close(source_file);
   buffer=(unsigned char *) RelinquishMagickMemory(buffer);
-  return(IsMagickTrue(i!=0));
+  return(i != 0 ? MagickTrue : MagickFalse);
 }
 
 MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
@@ -1135,32 +1135,32 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
 
   rights=ExecutePolicyRights;
-  if( IfMagickFalse(IsRightsAuthorized(DelegatePolicyDomain,rights,decode)) )
+  if (IsRightsAuthorized(DelegatePolicyDomain,rights,decode) == MagickFalse)
     {
       errno=EPERM;
       (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
         "NotAuthorized","`%s'",decode);
       return(MagickFalse);
     }
-  if( IfMagickFalse(IsRightsAuthorized(DelegatePolicyDomain,rights,encode)) )
+  if (IsRightsAuthorized(DelegatePolicyDomain,rights,encode) == MagickFalse)
     {
       errno=EPERM;
       (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
         "NotAuthorized","`%s'",encode);
       return(MagickFalse);
     }
-  temporary=IsMagickTrue(*image->filename == '\0');
-  if( IfMagickTrue(temporary) )
-    if( IfMagickFalse(AcquireUniqueFilename(image->filename)) )
-      {
-        ThrowFileException(exception,FileOpenError,
-          "UnableToCreateTemporaryFile",image->filename);
-        return(MagickFalse);
-      }
+  temporary=*image->filename == '\0' ? MagickTrue : MagickFalse;
+  if ((temporary != MagickFalse) && (AcquireUniqueFilename(image->filename) ==
+      MagickFalse))
+    {
+      ThrowFileException(exception,FileOpenError,"UnableToCreateTemporaryFile",
+        image->filename);
+      return(MagickFalse);
+    }
   delegate_info=GetDelegateInfo(decode,encode,exception);
   if (delegate_info == (DelegateInfo *) NULL)
     {
-      if( IfMagickTrue(temporary) )
+      if (temporary != MagickFalse)
         (void) RelinquishUniqueFileResource(image->filename);
       (void) ThrowMagickException(exception,GetMagickModule(),DelegateError,
         "NoTagFound","`%s'",decode ? decode : encode);
@@ -1168,9 +1168,9 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
     }
   if (*image_info->filename == '\0')
     {
-      if( IfMagickFalse(AcquireUniqueFilename(image_info->filename)) )
+      if (AcquireUniqueFilename(image_info->filename) == MagickFalse)
         {
-          if( IfMagickTrue(temporary) )
+          if (temporary != MagickFalse)
             (void) RelinquishUniqueFileResource(image->filename);
           ThrowFileException(exception,FileOpenError,
             "UnableToCreateTemporaryFile",image_info->filename);
@@ -1195,13 +1195,13 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
       /*
         Delegate requires a particular image format.
       */
-      if( IfMagickFalse(AcquireUniqueFilename(image_info->unique)) )
+      if (AcquireUniqueFilename(image_info->unique) == MagickFalse)
         {
           ThrowFileException(exception,FileOpenError,
             "UnableToCreateTemporaryFile",image_info->unique);
           return(MagickFalse);
         }
-      if( IfMagickFalse(AcquireUniqueFilename(image_info->zero)) )
+      if (AcquireUniqueFilename(image_info->zero) == MagickFalse)
         {
           (void) RelinquishUniqueFileResource(image_info->unique);
           ThrowFileException(exception,FileOpenError,
@@ -1214,7 +1214,7 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
         {
           (void) RelinquishUniqueFileResource(image_info->unique);
           (void) RelinquishUniqueFileResource(image_info->zero);
-          if( IfMagickTrue(temporary) )
+          if (temporary != MagickFalse)
             (void) RelinquishUniqueFileResource(image->filename);
           (void) ThrowMagickException(exception,GetMagickModule(),
             DelegateError,"DelegateFailed","`%s'",decode ? decode : encode);
@@ -1240,18 +1240,18 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
         (void) FormatLocaleString(p->filename,MagickPathExtent,"%s:%s",
           delegate_info->decode,clone_info->filename);
         status=WriteImage(clone_info,p,exception);
-        if( IfMagickFalse(status) )
+        if (status == MagickFalse)
           {
             (void) RelinquishUniqueFileResource(image_info->unique);
             (void) RelinquishUniqueFileResource(image_info->zero);
-            if( IfMagickTrue(temporary) )
+            if (temporary != MagickFalse)
               (void) RelinquishUniqueFileResource(image->filename);
             clone_info=DestroyImageInfo(clone_info);
             (void) ThrowMagickException(exception,GetMagickModule(),
               DelegateError,"DelegateFailed","`%s'",decode ? decode : encode);
             return(MagickFalse);
           }
-        if( IfMagickTrue(clone_info->adjoin) )
+        if (clone_info->adjoin != MagickFalse)
           break;
       }
       (void) RelinquishUniqueFileResource(image_info->unique);
@@ -1272,19 +1272,20 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
       return(MagickFalse);
     }
   command=(char *) NULL;
-  status=MagickFalse;
-  (void) CopyMagickString(output_filename,image_info->filename,MagickPathExtent);
+  status=MagickTrue;
+  (void) CopyMagickString(output_filename,image_info->filename,
+    MagickPathExtent);
   (void) CopyMagickString(input_filename,image->filename,MagickPathExtent);
   for (i=0; commands[i] != (char *) NULL; i++)
   {
-    status=AcquireUniqueSymbolicLink(output_filename,image_info->filename);
-    if( IfMagickFalse(AcquireUniqueFilename(image_info->unique)) )
+    (void) AcquireUniqueSymbolicLink(output_filename,image_info->filename);
+    if (AcquireUniqueFilename(image_info->unique) == MagickFalse)
       {
         ThrowFileException(exception,FileOpenError,
           "UnableToCreateTemporaryFile",image_info->unique);
         break;
       }
-    if( IfMagickFalse(AcquireUniqueFilename(image_info->zero)) )
+    if (AcquireUniqueFilename(image_info->zero) == MagickFalse)
       {
         (void) RelinquishUniqueFileResource(image_info->unique);
         ThrowFileException(exception,FileOpenError,
@@ -1294,23 +1295,24 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
     if (LocaleCompare(decode,"SCAN") != 0)
       {
         status=AcquireUniqueSymbolicLink(input_filename,image->filename);
-        if( IfMagickFalse(status) )
+        if (status == MagickFalse)
           {
             ThrowFileException(exception,FileOpenError,
               "UnableToCreateTemporaryFile",input_filename);
             break;
           }
       }
-    status=MagickFalse;
+    status=MagickTrue;
     command=InterpretImageProperties(image_info,image,commands[i],exception);
     if (command != (char *) NULL)
       {
         /*
           Execute delegate.
         */
-        status=IsMagickTrue(ExternalDelegateCommand(delegate_info->spawn,
-          image_info->verbose,command,(char *) NULL,exception) != 0);
-        if (IfMagickTrue(delegate_info->spawn))
+        if (ExternalDelegateCommand(delegate_info->spawn,image_info->verbose,
+          command,(char *) NULL,exception) != 0)
+          status=MagickFalse;
+        if (delegate_info->spawn != MagickFalse)
           {
             ssize_t
               count;
@@ -1331,13 +1333,13 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
       }
     if (CopyDelegateFile(image_info->filename,output_filename,MagickTrue) == MagickFalse)
       (void) RelinquishUniqueFileResource(output_filename);
-    if( IfMagickTrue(image_info->temporary) )
+    if (image_info->temporary != MagickFalse)
       (void) RelinquishUniqueFileResource(image_info->filename);
     (void) RelinquishUniqueFileResource(image_info->unique);
     (void) RelinquishUniqueFileResource(image_info->zero);
     (void) RelinquishUniqueFileResource(image_info->filename);
     (void) RelinquishUniqueFileResource(image->filename);
-    if( IfMagickTrue(status) )
+    if (status == MagickFalse)
       {
         (void) ThrowMagickException(exception,GetMagickModule(),DelegateError,
           "DelegateFailed","`%s'",commands[i]);
@@ -1353,9 +1355,9 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
   for ( ; commands[i] != (char *) NULL; i++)
     commands[i]=DestroyString(commands[i]);
   commands=(char **) RelinquishMagickMemory(commands);
-  if( IfMagickTrue(temporary) )
+  if (temporary != MagickFalse)
     (void) RelinquishUniqueFileResource(image->filename);
-  return(IsMagickFalse(status));
+  return(status);
 }
 
 /*

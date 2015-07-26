@@ -237,14 +237,15 @@ static Image *SparseColorOption(const Image *image,
       x++;   /* floating point argument */
   }
   /* control points and color values */
-  error = IsMagickTrue( x % (2+number_colors) );
+  if ((x % (2+number_colors)) != 0)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+        "InvalidArgument","'%s': %s", "sparse-color",
+        "Invalid number of Arguments");
+      return( (Image *) NULL);
+    }
+  error=MagickFalse;
   number_arguments=x;
-  if ( IfMagickTrue(error) ) {
-    (void) ThrowMagickException(exception,GetMagickModule(),
-               OptionError, "InvalidArgument", "'%s': %s", "sparse-color",
-               "Invalid number of Arguments");
-    return( (Image *) NULL);
-  }
 
   /* Allocate and fill in the floating point arguments */
   sparse_arguments=(double *) AcquireQuantumMemory(number_arguments,
@@ -266,7 +267,7 @@ static Image *SparseColorOption(const Image *image,
       (void) ThrowMagickException(exception,GetMagickModule(),
             OptionError, "InvalidArgument", "'%s': %s", "sparse-color",
             "Color found, instead of X-coord");
-      error = MagickTrue;
+      error=MagickTrue;
       break;
     }
     sparse_arguments[x++]=StringToDouble(token,(char **) NULL);
@@ -277,7 +278,7 @@ static Image *SparseColorOption(const Image *image,
       (void) ThrowMagickException(exception,GetMagickModule(),
             OptionError, "InvalidArgument", "'%s': %s", "sparse-color",
             "Color found, instead of Y-coord");
-      error = MagickTrue;
+      error=MagickTrue;
       break;
     }
     sparse_arguments[x++]=StringToDouble(token,(char **) NULL);
@@ -348,15 +349,18 @@ static Image *SparseColorOption(const Image *image,
       }
     }
   }
-  if ( number_arguments != x && !error ) {
-    (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-      "InvalidArgument","'%s': %s","sparse-color","Argument Parsing Error");
-    sparse_arguments=(double *) RelinquishMagickMemory(sparse_arguments);
-    return( (Image *) NULL);
-  }
-  if ( error )
-    return( (Image *) NULL);
-
+  if (error != MagickFalse)
+    {
+      sparse_arguments=(double *) RelinquishMagickMemory(sparse_arguments);
+      return((Image *) NULL);
+    }
+  if (number_arguments != x)
+    {
+      sparse_arguments=(double *) RelinquishMagickMemory(sparse_arguments);
+      (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+        "InvalidArgument","'%s': %s","sparse-color","Argument Parsing Error");
+      return((Image *) NULL);
+    }
   /* Call the Sparse Color Interpolation function with the parsed arguments */
   sparse_image=SparseColorImage(image,method,number_arguments,sparse_arguments,
     exception);
@@ -417,8 +421,8 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
 #define _draw_info        (cli_wand->draw_info)
 #define _quantize_info    (cli_wand->quantize_info)
 #define IfSetOption       (*option=='-')
-#define ArgBoolean        IsMagickTrue(IfSetOption)
-#define ArgBooleanNot     IsMagickFalse(IfSetOption)
+#define ArgBoolean        IfSetOption ? MagickTrue : MagickFalse
+#define ArgBooleanNot     IfSetOption ? MagickFalse : MagickTrue
 #define ArgBooleanString  (IfSetOption?"true":"false")
 #define ArgOption(def)    (IfSetOption?arg1:(const char *)(def))
 
@@ -692,7 +696,7 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
           /* DefineImageOption() equals SetImageOption() but with '=' */
           if (IfSetOption)
             (void) DefineImageOption(_image_info,arg1);
-          else if (IsMagickFalse(DeleteImageOption(_image_info,arg1)))
+          else if (DeleteImageOption(_image_info,arg1) == MagickFalse)
             CLIWandExceptArgBreak(OptionError,"NoSuchOption",option,arg1);
           break;
         }
@@ -1694,8 +1698,8 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
 #define _option_type      ((CommandOptionFlags) cli_wand->command->flags)
 #define IfNormalOp        (*option=='-')
 #define IfPlusOp          (*option!='-')
-#define IsNormalOp        IsMagickTrue(IfNormalOp)
-#define IsPlusOp          IsMagickFalse(IfNormalOp)
+#define IsNormalOp        IfNormalOp ? MagickTrue : MagickFalse
+#define IsPlusOp          IfNormalOp ? MagickFalse : MagickTrue
 
   assert(cli_wand != (MagickCLI *) NULL);
   assert(cli_wand->signature == MagickWandSignature);
@@ -3671,7 +3675,7 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
 #define _option_type    ((CommandOptionFlags) cli_wand->command->flags)
 #define IfNormalOp      (*option=='-')
 #define IfPlusOp        (*option!='-')
-#define IsNormalOp       IsMagickTrue(IfNormalOp)
+#define IsNormalOp      IfNormalOp ? MagickTrue : MagickFalse
 
   assert(cli_wand != (MagickCLI *) NULL);
   assert(cli_wand->signature == MagickWandSignature);
