@@ -1700,7 +1700,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
           if (SvPOK(sval))
             mask=SetupList(aTHX_ SvRV(sval),&info,(SV ***) NULL,exception);
           for ( ; image; image=image->next)
-            SetImageMask(image,mask,exception);
+            SetImageMask(image,mask,ReadPixelMask,exception);
           break;
         }
       if (LocaleCompare(attribute,"mattecolor") == 0)
@@ -1913,6 +1913,18 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
     case 'R':
     case 'r':
     {
+      if (LocaleCompare(attribute,"read-mask") == 0)
+        {
+          Image
+            *mask;
+
+          mask=(Image *) NULL;
+          if (SvPOK(sval))
+            mask=SetupList(aTHX_ SvRV(sval),&info,(SV ***) NULL,exception);
+          for ( ; image; image=image->next)
+            SetImageMask(image,mask,ReadPixelMask,exception);
+          break;
+        }
       if (LocaleCompare(attribute,"red-primary") == 0)
         {
           for ( ; image; image=image->next)
@@ -2226,6 +2238,18 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
               image->chromaticity.white_point.y=
                 image->chromaticity.white_point.x;
           }
+          break;
+        }
+      if (LocaleCompare(attribute,"write-mask") == 0)
+        {
+          Image
+            *mask;
+
+          mask=(Image *) NULL;
+          if (SvPOK(sval))
+            mask=SetupList(aTHX_ SvRV(sval),&info,(SV ***) NULL,exception);
+          for ( ; image; image=image->next)
+            SetImageMask(image,mask,WritePixelMask,exception);
           break;
         }
       if (info)
