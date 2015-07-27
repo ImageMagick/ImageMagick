@@ -610,7 +610,8 @@ static void TIFFGetProperties(TIFF *tiff,Image *image,ExceptionInfo *exception)
     *text;
 
   uint32
-    count;
+    count,
+    type;
 
   if (TIFFGetField(tiff,TIFFTAG_ARTIST,&text) == 1)
     (void) SetImageProperty(image,"tiff:artist",text,exception);
@@ -652,6 +653,28 @@ static void TIFFGetProperties(TIFF *tiff,Image *image,ExceptionInfo *exception)
         count=MagickPathExtent-1;
       (void) CopyMagickString(message,text,count+1);
       (void) SetImageProperty(image,"tiff:kodak-36867",message,exception);
+    }
+  if (TIFFGetField(tiff,TIFFTAG_SUBFILETYPE,&type) == 1)
+    switch (type)
+    {
+      case 0x01:
+      {
+        (void) SetImageProperty(image,"tiff:subfiletype","REDUCEDIMAGE",
+          exception);
+        break;
+      }
+      case 0x02:
+      {
+        (void) SetImageProperty(image,"tiff:subfiletype","PAGE",exception);
+        break;
+      }
+      case 0x04:
+      {
+        (void) SetImageProperty(image,"tiff:subfiletype","MASK",exception);
+        break;
+      }
+      default:
+        break;
     }
 }
 
@@ -2558,8 +2581,11 @@ static MagickBooleanType WritePTIFImage(const ImageInfo *image_info,
       *clone_image;
 
     clone_image=CloneImage(next,0,0,MagickFalse,exception);
+    if (clone_image == (Image *) NULL)
+      break;
     clone_image->previous=NewImageList();
     clone_image->next=NewImageList();
+    (void) SetImageProperty(clone_image,"tiff:subfiletype","none",exception);
     AppendImageToList(&images,clone_image);
     columns=next->columns;
     rows=next->rows;
@@ -2574,6 +2600,8 @@ static MagickBooleanType WritePTIFImage(const ImageInfo *image_info,
       if (pyramid_image == (Image *) NULL)
         break;
       pyramid_image->resolution=resolution;
+      (void) SetImageProperty(pyramid_image,"tiff:subfiletype","REDUCEDIMAGE",
+        exception);
       AppendImageToList(&images,pyramid_image);
     }
   }
@@ -2873,7 +2901,8 @@ static void TIFFSetProfiles(TIFF *tiff,Image *image)
   }
 }
 
-static void TIFFSetProperties(TIFF *tiff,Image *image,ExceptionInfo *exception)
+static void TIFFSetProperties(TIFF *tiff,const ImageInfo *image_info,
+  Image *image,ExceptionInfo *exception)
 {
   const char
     *value;
@@ -2914,6 +2943,30 @@ static void TIFFSetProperties(TIFF *tiff,Image *image,ExceptionInfo *exception)
   value=GetImageProperty(image,"comment",exception);
   if (value != (const char *) NULL)
     (void) TIFFSetField(tiff,TIFFTAG_IMAGEDESCRIPTION,value);
+  value=GetImageArtifact(image,"tiff:subfiletype");
+  if (value != (const char *) NULL)
+    {
+      if (LocaleCompare(value,"REDUCEDIMAGE") == 0)
+        (void) TIFFSetField(tiff,TIFFTAG_SUBFILETYPE,FILETYPE_REDUCEDIMAGE);
+      else
+        if (LocaleCompare(value,"PAGE") == 0)
+          (void) TIFFSetField(tiff,TIFFTAG_SUBFILETYPE,FILETYPE_PAGE);
+        else
+          if (LocaleCompare(value,"MASK") == 0)
+            (void) TIFFSetField(tiff,TIFFTAG_SUBFILETYPE,FILETYPE_MASK);
+    }
+  else
+    {
+      uint16
+        page,
+        pages;
+      
+      page=(uint16) image->scene;
+      pages=GetImageListLength(image);
+      if ((image_info->adjoin != MagickFalse) && (pages > 1))
+        (void) TIFFSetField(tiff,TIFFTAG_SUBFILETYPE,FILETYPE_PAGE);
+      (void) TIFFSetField(tiff,TIFFTAG_PAGENUMBER,page,pages);
+    }
 }
 
 static void TIFFSetEXIFProperties(TIFF *tiff,Image *image,
@@ -3592,7 +3645,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         (void) TIFFSetField(tiff,TIFFTAG_SUBFILETYPE,FILETYPE_PAGE);
       (void) TIFFSetField(tiff,TIFFTAG_PAGENUMBER,page,pages);
     }
-    (void) TIFFSetProperties(tiff,image,exception);
+    (void) TIFFSetProperties(tiff,image_info,image,exception);
 DisableMSCWarning(4127)
     if (0)
 RestoreMSCWarning
