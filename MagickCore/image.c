@@ -848,6 +848,7 @@ MagickExport Image *CloneImage(const Image *image,const size_t columns,
       (void) CopyMagickMemory(clone_image->colormap,image->colormap,length*
         sizeof(*clone_image->colormap));
     }
+  clone_image->image_info=CloneImageInfo(image->image_info);
   (void) CloneImageProfiles(clone_image,image);
   (void) CloneImageProperties(clone_image,image);
   (void) CloneImageArtifacts(clone_image,image);
@@ -862,7 +863,8 @@ MagickExport Image *CloneImage(const Image *image,const size_t columns,
   (void) CopyMagickString(clone_image->magick_filename,image->magick_filename,
     MagickPathExtent);
   (void) CopyMagickString(clone_image->magick,image->magick,MagickPathExtent);
-  (void) CopyMagickString(clone_image->filename,image->filename,MagickPathExtent);
+  (void) CopyMagickString(clone_image->filename,image->filename,
+    MagickPathExtent);
   clone_image->progress_monitor=image->progress_monitor;
   clone_image->client_data=image->client_data;
   clone_image->reference_count=1;
