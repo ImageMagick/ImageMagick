@@ -2600,7 +2600,9 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"text") == 0)
                     {
-                      CloneString(&draw_info->text,value);
+                      (void) ConcatenateString(&draw_info->primitive," '");
+                      (void) ConcatenateString(&draw_info->primitive,value);
+                      (void) ConcatenateString(&draw_info->primitive,"'");
                       break;
                     }
                   if (LocaleCompare(keyword,"translate") == 0)
