@@ -217,7 +217,8 @@ MagickExport Image *AcquireImage(const ImageInfo *image_info,
   */
   SetBlobExempt(image,image_info->file != (FILE *) NULL ? MagickTrue :
     MagickFalse);
-  (void) CopyMagickString(image->filename,image_info->filename,MagickPathExtent);
+  (void) CopyMagickString(image->filename,image_info->filename,
+    MagickPathExtent);
   (void) CopyMagickString(image->magick_filename,image_info->filename,
     MagickPathExtent);
   (void) CopyMagickString(image->magick,image_info->magick,MagickPathExtent);
@@ -731,8 +732,10 @@ MagickExport MagickBooleanType ClipImagePath(Image *image,const char *pathname,
       return(MagickFalse);
     }
   image_info=AcquireImageInfo();
-  (void) CopyMagickString(image_info->filename,image->filename,MagickPathExtent);
-  (void) ConcatenateMagickString(image_info->filename,pathname,MagickPathExtent);
+  (void) CopyMagickString(image_info->filename,image->filename,
+     MagickPathExtent);
+  (void) ConcatenateMagickString(image_info->filename,pathname,
+    MagickPathExtent);
   clip_mask=BlobToImage(image_info,value,strlen(value),exception);
   image_info=DestroyImageInfo(image_info);
   if (clip_mask == (Image *) NULL)
@@ -848,7 +851,7 @@ MagickExport Image *CloneImage(const Image *image,const size_t columns,
       (void) CopyMagickMemory(clone_image->colormap,image->colormap,length*
         sizeof(*clone_image->colormap));
     }
-  clone_image->image_info=CloneImageInfo(image->image_info);
+  clone_image->image_info=image->image_info;
   (void) CloneImageProfiles(clone_image,image);
   (void) CloneImageProperties(clone_image,image);
   (void) CloneImageArtifacts(clone_image,image);
@@ -899,7 +902,7 @@ MagickExport Image *CloneImage(const Image *image,const size_t columns,
   clone_image->tile_offset.x=(ssize_t) ceil(scale*image->tile_offset.x-0.5);
   scale=1.0;
   if (image->rows != 0)
-  scale=(double) rows/(double) image->rows;
+    scale=(double) rows/(double) image->rows;
   clone_image->page.height=(size_t) floor(scale*image->page.height+0.5);
   clone_image->page.y=(ssize_t) ceil(scale*image->page.y-0.5);
   clone_image->tile_offset.y=(ssize_t) ceil(scale*image->tile_offset.y-0.5);
@@ -1637,8 +1640,8 @@ MagickExport size_t InterpretImageFilename(const ImageInfo *image_info,
         q++;
         c=(*q);
         *q='\0';
-        (void) FormatLocaleString(filename+(p-format),(size_t) (MagickPathExtent-
-          (p-format)),p,value);
+        (void) FormatLocaleString(filename+(p-format),(size_t)
+          (MagickPathExtent-(p-format)),p,value);
         *q=c;
         (void) ConcatenateMagickString(filename,q,MagickPathExtent);
         canonical=MagickTrue;
@@ -1688,16 +1691,6 @@ MagickExport size_t InterpretImageFilename(const ImageInfo *image_info,
         if (LocaleNCompare(pattern,"filename:",9) != 0)
           break;
         value=(const char *) NULL;
-#if 0
-        // FUTURE: remove this code. -- Anthony  29 Arpil 2012
-        // Removed as GetMagickProperty() will will never match a "filename:"
-        // string as this is not a 'known' image property.
-        //
-        if ((image_info != (const ImageInfo *) NULL) &&
-            (image != (const Image *) NULL))
-          value=GetMagickProperty(image_info,image,pattern,exception);
-        else
-#endif
         if (image != (Image *) NULL)
           value=GetImageProperty(image,pattern,exception);
         if ((value == (const char *) NULL) && (image != (Image *) NULL))
@@ -2758,7 +2751,8 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
               image=DestroyImage(image);
               return(MagickFalse);
             }
-          (void) CopyMagickString(image_info->filename,component,MagickPathExtent);
+          (void) CopyMagickString(image_info->filename,component,
+            MagickPathExtent);
           image_info->temporary=MagickTrue;
         }
       magick=(unsigned char *) AcquireMagickMemory(magick_size);
@@ -3849,36 +3843,10 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
         image->chromaticity.white_point.y=image->chromaticity.white_point.x;
     }
   ResetImageOptionIterator(image_info);
-#if 0
-  {
-    /* IMv6: Copy freeform global options into per-image artifacts, so
-     * various operations and coders can access them.
-     *
-     * This has a problem, as per-image artefacts may have been set in
-     * parenthesis, but may not be unset when parenthesis ends.
-     */
-    char
-      property[MagickPathExtent];
-
-    const char
-      *value;
-
-    for (option=GetNextImageOption(image_info); option != (const char *) NULL; )
-    {
-      value=GetImageOption(image_info,option);
-      if (value != (const char *) NULL)
-        {
-          (void) FormatLocaleString(property,MagickPathExtent,"%s",option);
-          (void) SetImageArtifact(image,property,value);
-        }
-      option=GetNextImageOption(image_info);
-    }
-  }
-#else
   /* IMv7: pointer to allow the lookup of pre-image artefact will fallback to
      a global option setting/define.  This saves a lot of duplication of
      global options into per-image artifacts, while ensuring only specifically
-     set per-image artifacts are preverved when parenthesis ends.
+     set per-image artifacts are preserved when parenthesis ends.
 
      This pointer is never explictally freed, as it is only used as a back
      reference, not as the main pointer to the image_info structure.  Images
@@ -3886,6 +3854,5 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
      should have this pointer reset to NULL.
   */
   image->image_info=image_info;
-#endif
   return(MagickTrue);
 }
