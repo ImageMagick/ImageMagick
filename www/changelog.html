@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <title>ImageMagick: Changelog</title>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ImageMagick: Changelog</title>
-  <meta http-equiv="content-language" content="en-US">
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <meta http-equiv="reply-to" content="magick-users@imagemagick.org">
   <meta name="application-name" content="ImageMagick">
   <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.">
   <meta name="application-url" content="http://www.imagemagick.org">
@@ -22,26 +20,19 @@
   <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC">
   <meta name="distribution" content="Global">
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
-  <link rel="icon" href="../images/wand.png">
-  <link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon">
-  <link rel="stylesheet" href="css/bootstrap.min.css">
-  <link rel="stylesheet" href="css/magick.css">
+  <link href="../images/wand.png" rel="icon">
+  <link href="../images/wand.ico" type="images/x-icon" rel="shortcut icon">
+  <link href="../css/magick.html" rel="stylesheet">
 </head>
-
 <body>
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script type="text/javascript">
-    <!--
-      google_ad_client = "pub-3129977114552745";
-      google_ad_slot = "5439289906";
-      google_ad_width = 728;
-      google_ad_height = 90;
-    //-->
+    <script async src="http://localhost/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
-    <center><script type="text/javascript" src="http://localhost/pagead/show_ads.js">
-    </script></center>
     <nav class="magick-nav">
       <a class="magick-nav-item " href="../index.html">Home</a>
       <a class="magick-nav-item " href="binary-releases.html">Download</a>
@@ -55,11 +46,51 @@
   </div>
 </div>
 <div class="container">
-<div class="magick-header"><dl><dt>2015-06-03  6.9.1-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  </dl><li> Use correct scale when interpretting alpha (e.g. rgba(0,0,0,1)).</li>
+<div class="magick-header"><dl><dt>2015-07-25  6.9.1-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  </dl><li> New version 6.9.1-10, SVN revision 19269.</li>
+<dt>2015-07-20  6.9.1-10 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <li> coders/magick.c: added "-define h:format=FMT" and    "-define magick:format=FMT" options. FMT can be any output format    supported by ImageMagick except "H" or "MAGICK". If this define is    omitted, the encoder uses GIF by default for pseudoclass images and    PNM for directclass images, as previously.  Made "MAGICK" (read-write)    and "H" (write-only) visible in the format list.</li>
+<dt>2015-07-18  6.9.1-10 Dirk lemstra &lt;dirk@lem.....org&gt;</dt>
+  <li> Removed incorrect EOF check in the DDS reader (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=28065).</li>
+<dt>2015-07-18  6.9.1-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Fixed undefined behaviors (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=28067).</li>
+  <li> Return exception message for unknown image properties.</li>
+  <li> Color shift removed when reading transparent gray images (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=28081)</li>
+<dt>2015-07-18  6.9.1-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> New version 6.9.1-9, SVN revision 19200.</li>
+<dt>2015-07-12  6.9.1-9 Dirk Lemstra &lt;dirk@lem.....org&gt;</dt>
+  <li> Fixed issue with radial gradient in MVG (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=27995).</li>
+<dt>2015-07-11  6.9.1-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> New version 6.9.1-8, SVN revision 19167.</li>
+<dt>2015-06-25  6.9.1-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Correct install location of the Magick++ headers (reference    https://github.com/ImageMagick/ImageMagick/pull/17/commits).</li>
+  <li> Different gif cropping behavior between versions (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=28013).</li>
+  <li> Cannot read properly simple psd file (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=28002).</li>
+<dt>2015-07-04  6.9.1-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> New version 6.9.1-7, SVN revision 19121.</li>
+<dt>2015-06-27  6.9.1-7 Eric Dalquist</dt>
+  <li> Fixed and escaped output of the json coder. (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;p=27894).</li>
+<dt>2015-06-25  6.9.1-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Support BPG image format (respects -quality option).</li>
+  <li> A bordered transparent image now remains transparent (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=5&amp;t=27937).</li>
+  <li> The -update option behavior restored (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=1&amp;t=27939).</li>
+<dt>2015-06-13  6.9.1-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> New version 6.9.1-6, SVN revision 18945.</li>
+<dt>2015-06-14  6.9.1-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Cache cloning on disk optimized with sendfile() (if available).</li>
+  <li> Add an additional check for end-of-file for the RLE coder (reference    http://www.imagemagick.org/discourse-server/viewforum.html?f=3&amp;t=27870).</li>
+  <li> Respect resource limits in AVS coder.</li>
+<dt>2015-06-13  6.9.1-6 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <li> Reverted change to 6.9.1-3 that skipped palette-building.</li>
+<dt>2015-06-13  6.9.1-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> New version 6.9.1-5, SVN revision 18882.</li>
+<dt>2015-06-03  6.9.1-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Use correct scale when interpretting alpha (e.g. rgba(0,0,0,1)).</li>
   <li> DrawGetVectorGraphics() now returns proper XML (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=27751).</li>
   <li> Support writing EXR files with different color types (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=2&amp;t=27759).</li>
   <li> Prefer PKG_CHECK_MODULES() when searching for delegate libraries.</li>
+  <li> Throw exception if frame option bevel exceeds to the image width / height.</li>
+  <li> Resolve undefined behaviors (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=27811).</li>
 <dt>2015-06-01  6.9.1-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> New version 6.9.1-4, SVN revision 18697.</li>
 <dt>2015-06-01  6.9.1-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
@@ -3647,13 +3678,10 @@
   <li> The -crop with negative offsets do not modify the virtual canvas.</li>
   <li> Caption: Given both the width and height ("-size") of the area to fill,    adjust the fonts "-pointsize" until the text just filles the whole space    without overflowing.</li>
   <li> Generate proper Windows icon image files (patch provided by    Robert M. Jansen).</li></div>  <footer class="magick-footer">
-    <div class="magick-nav-item pull-left">
-      <a href="support.html">Donate</a>
-    </div>
-    <p><a href="sitemap.html">Sitemap</a> â¢
+    <p><a href="support.html">Donate</a> â¢
+     <a href="sitemap.html">Sitemap</a> â¢
     <a href="links.html">Related</a> â¢
-    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Image Studio</a> â¢
-    <a href="http://jqmagick.imagemagick.org/">JqMagick</a>
+    <a href="architecture.html">Architecture</a>
 </p>
     <p><a href="changelog.html#">Back to top</a> â¢
     <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> â¢
@@ -3663,18 +3691,7 @@
 </div><!-- /.container -->
 
   <script src="https://localhost/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-  <script src="../js/bootstrap.min.js"></script>
-  <script type="text/javascript">
-    /* <![CDATA[ */
-    (function() {
-        var s = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
-        t.parentNode.insertBefore(s, t);
-    })();
-    /* ]]> */
-  </script>
+  <script src="http://www.imagemagick.org/js/magick.html"></script>
 </div>
 </body>
 </html>

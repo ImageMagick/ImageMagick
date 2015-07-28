@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <title>ImageMagick: Command-line Processing</title>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ImageMagick: Command-line Processing</title>
-  <meta http-equiv="content-language" content="en-US">
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <meta http-equiv="reply-to" content="magick-users@imagemagick.org">
   <meta name="application-name" content="ImageMagick">
   <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.">
   <meta name="application-url" content="http://www.imagemagick.org">
@@ -22,26 +20,19 @@
   <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC">
   <meta name="distribution" content="Global">
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
-  <link rel="icon" href="../images/wand.png">
-  <link rel="shortcut icon" href="../images/wand.ico" type="images/x-icon">
-  <link rel="stylesheet" href="css/bootstrap.min.css">
-  <link rel="stylesheet" href="css/magick.css">
+  <link href="../images/wand.png" rel="icon">
+  <link href="../images/wand.ico" type="images/x-icon" rel="shortcut icon">
+  <link href="../css/magick.html" rel="stylesheet">
 </head>
-
 <body>
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script type="text/javascript">
-    <!--
-      google_ad_client = "pub-3129977114552745";
-      google_ad_slot = "5439289906";
-      google_ad_width = 728;
-      google_ad_height = 90;
-    //-->
+    <script async src="http://localhost/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
-    <center><script type="text/javascript" src="http://localhost/pagead/show_ads.js">
-    </script></center>
     <nav class="magick-nav">
       <a class="magick-nav-item " href="../index.html">Home</a>
       <a class="magick-nav-item " href="binary-releases.html">Download</a>
@@ -399,7 +390,7 @@ image sequence immediately as it appears on the command line.  Choose from
 these image sequence operators:</p>
 
 <p class="options">
-<a href="command-line-options.html#append">‑append</a>  • <a href="command-line-options.html#affinity">‑affinity</a>  • <a href="command-line-options.html#average">‑average</a>  • <a href="command-line-options.html#clut">‑clut</a>  • <a href="command-line-options.html#coalesce">‑coalesce</a>  • <a href="command-line-options.html#combine">‑combine</a>  • <a href="command-line-options.html#compare">‑compare</a>  • <a href="command-line-options.html#complex">‑complex</a>  • <a href="command-line-options.html#composite">‑composite</a>  • <a href="command-line-options.html#crop">‑crop</a>  • <a href="command-line-options.html#debug">‑debug</a>  • <a href="command-line-options.html#deconstruct">‑deconstruct</a>  • <a href="command-line-options.html#delete">‑delete</a>  • <a href="command-line-options.html#evaluate-sequence">‑evaluate‑sequence</a>  • <a href="command-line-options.html#fft">‑fft</a>  • <a href="command-line-options.html#flatten">‑flatten</a>  • <a href="command-line-options.html#fx">‑fx</a>  • <a href="command-line-options.html#hald-clut">‑hald‑clut</a>  • <a href="command-line-options.html#ift">‑ift</a>  • <a href="command-line-options.html#identify">‑identify</a>  • <a href="command-line-options.html#insert">‑insert</a>  • <a href="command-line-options.html#layers">‑layers</a>  • <a href="command-line-options.html#limit">‑limit</a>  • <a href="command-line-options.html#map">‑map</a>  • <a href="command-line-options.html#maximum">‑maximum</a>  • <a href="command-line-options.html#minimum">‑minimum</a>  • <a href="command-line-options.html#morph">‑morph</a>  • <a href="command-line-options.html#mosaic">‑mosaic</a>  • <a href="command-line-options.html#optimize">‑optimize</a>  • <a href="command-line-options.html#print">‑print</a>  • <a href="command-line-options.html#process">‑process</a>  • <a href="command-line-options.html#quiet">‑quiet</a>  • <a href="command-line-options.html#separate">‑separate</a>  • <a href="command-line-options.html#swap">‑swap</a>  • <a href="command-line-options.html#write">‑write</a> </p>
+<a href="command-line-options.html#append">‑append</a>  • <a href="command-line-options.html#affinity">‑affinity</a>  • <a href="command-line-options.html#average">‑average</a>  • <a href="command-line-options.html#clut">‑clut</a>  • <a href="command-line-options.html#coalesce">‑coalesce</a>  • <a href="command-line-options.html#combine">‑combine</a>  • <a href="command-line-options.html#compare">‑compare</a>  • <a href="command-line-options.html#complex">‑complex</a>  • <a href="command-line-options.html#composite">‑composite</a>  • <a href="command-line-options.html#copy">‑copy</a>  • <a href="command-line-options.html#crop">‑crop</a>  • <a href="command-line-options.html#debug">‑debug</a>  • <a href="command-line-options.html#deconstruct">‑deconstruct</a>  • <a href="command-line-options.html#delete">‑delete</a>  • <a href="command-line-options.html#evaluate-sequence">‑evaluate‑sequence</a>  • <a href="command-line-options.html#fft">‑fft</a>  • <a href="command-line-options.html#flatten">‑flatten</a>  • <a href="command-line-options.html#fx">‑fx</a>  • <a href="command-line-options.html#hald-clut">‑hald‑clut</a>  • <a href="command-line-options.html#ift">‑ift</a>  • <a href="command-line-options.html#identify">‑identify</a>  • <a href="command-line-options.html#insert">‑insert</a>  • <a href="command-line-options.html#layers">‑layers</a>  • <a href="command-line-options.html#limit">‑limit</a>  • <a href="command-line-options.html#map">‑map</a>  • <a href="command-line-options.html#maximum">‑maximum</a>  • <a href="command-line-options.html#minimum">‑minimum</a>  • <a href="command-line-options.html#morph">‑morph</a>  • <a href="command-line-options.html#mosaic">‑mosaic</a>  • <a href="command-line-options.html#optimize">‑optimize</a>  • <a href="command-line-options.html#print">‑print</a>  • <a href="command-line-options.html#process">‑process</a>  • <a href="command-line-options.html#quiet">‑quiet</a>  • <a href="command-line-options.html#separate">‑separate</a>  • <a href="command-line-options.html#swap">‑swap</a>  • <a href="command-line-options.html#write">‑write</a> </p>
 
 <h2 class="magick-header"><a id="geometry"></a>Image Geometry</h2>
 
@@ -651,13 +642,10 @@ convert -define stream:buffer-size=0 logo: gif:- | display gif:-
 </pre>
 </div>
   <footer class="magick-footer">
-    <div class="magick-nav-item pull-left">
-      <a href="support.html">Donate</a>
-    </div>
-    <p><a href="sitemap.html">Sitemap</a> •
+    <p><a href="support.html">Donate</a> •
+     <a href="sitemap.html">Sitemap</a> •
     <a href="links.html">Related</a> •
-    <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Image Studio</a> •
-    <a href="http://jqmagick.imagemagick.org/">JqMagick</a>
+    <a href="architecture.html">Architecture</a>
 </p>
     <p><a href="command-line-processing.html#">Back to top</a> •
     <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
@@ -667,18 +655,7 @@ convert -define stream:buffer-size=0 logo: gif:- | display gif:-
 </div><!-- /.container -->
 
   <script src="https://localhost/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-  <script src="../js/bootstrap.min.js"></script>
-  <script type="text/javascript">
-    /* <![CDATA[ */
-    (function() {
-        var s = document.createElement('offline-script'), t = document.getElementsByTagName('offline-script')[0];
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
-        t.parentNode.insertBefore(s, t);
-    })();
-    /* ]]> */
-  </script>
+  <script src="http://www.imagemagick.org/js/magick.html"></script>
 </div>
 </body>
 </html>
