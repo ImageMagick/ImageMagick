@@ -20,9 +20,9 @@
   <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC">
   <meta name="distribution" content="Global">
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
-  <link href="../images/wand.png" rel="icon">
   <link href="../images/wand.ico" type="images/x-icon" rel="shortcut icon">
-  <link href="../css/magick.html" rel="stylesheet">
+  <link href="../images/wand.png" type="images/png" rel="icon">
+  <link href="css/magick.css" type="text/css" rel="stylesheet">
 </head>
 <body>
 <div class="main">
@@ -46,8 +46,10 @@
   </div>
 </div>
 <div class="container">
-<div class="magick-header"><dl><dt>2015-07-25  6.9.1-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  </dl><li> New version 6.9.1-10, SVN revision 19269.</li>
+<div class="magick-header"><dl><dt>2015-07-25  6.9.2-0 Dirk Lemstra &lt;dirk@lem.....org&gt;</dt>
+  </dl><li> Added "-set colorspace:auto-grayscale=false" that will prevent automatic    conversion to grayscale inside coders that support grayscale.</li>
+<dt>2015-07-25  6.9.1-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> New version 6.9.1-10, SVN revision 19269.</li>
 <dt>2015-07-20  6.9.1-10 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
   <li> coders/magick.c: added "-define h:format=FMT" and    "-define magick:format=FMT" options. FMT can be any output format    supported by ImageMagick except "H" or "MAGICK". If this define is    omitted, the encoder uses GIF by default for pseudoclass images and    PNM for directclass images, as previously.  Made "MAGICK" (read-write)    and "H" (write-only) visible in the format list.</li>
 <dt>2015-07-18  6.9.1-10 Dirk lemstra &lt;dirk@lem.....org&gt;</dt>

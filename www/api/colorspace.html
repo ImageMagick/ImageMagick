@@ -20,9 +20,9 @@
   <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC">
   <meta name="distribution" content="Global">
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
-  <link href="../images/wand.png" rel="icon">
   <link href="../images/wand.ico" type="images/x-icon" rel="shortcut icon">
-  <link href="../css/magick.html" rel="stylesheet">
+  <link href="../images/wand.png" type="images/png" rel="icon">
+  <link href="../css/magick.html" type="text/css" rel="stylesheet">
 </head>
 <body>
 <div class="main">
@@ -47,7 +47,7 @@
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="text-center"><a href="colorspace.html#SetImageColorspace">SetImageColorspace</a> • <a href="colorspace.html#TransformImageColorspace">TransformImageColorspace</a></p>
+<p class="text-center"><a href="colorspace.html#SetImageColorspace">SetImageColorspace</a> • <a href="colorspace.html#SetImageGray">SetImageGray</a> • <a href="colorspace.html#SetImageMonochrome">SetImageMonochrome</a> • <a href="colorspace.html#TransformImageColorspace">TransformImageColorspace</a></p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/colorspace_8c.html" id="SetImageColorspace">SetImageColorspace</a></h2>
 
@@ -73,6 +73,60 @@ MagickBooleanType SetImageColorspace(Image *image,
 <dd> </dd>
 <dt>colorspace</dt>
 <dd>the colorspace. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/colorspace_8c.html" id="SetImageGray">SetImageGray</a></h2>
+
+<p>SetImageGray() returns MagickTrue if all the pixels in the image have the same red, green, and blue intensities and changes the type of the image to bi-level or grayscale.</p>
+
+<p>The format of the SetImageGray method is:</p>
+
+<pre class="text">
+MagickBooleanType SetImageGray(const Image *image,
+  ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/colorspace_8c.html" id="SetImageMonochrome">SetImageMonochrome</a></h2>
+
+<p>SetImageMonochrome() returns MagickTrue if all the pixels in the image have the same red, green, and blue intensities and the intensity is either 0 or QuantumRange and changes the type of the image to bi-level.</p>
+
+<p>The format of the SetImageMonochrome method is:</p>
+
+<pre class="text">
+MagickBooleanType SetImageMonochrome(const Image *image,
+  ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
 
 <dd>  </dd>
 </dl>
