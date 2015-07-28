@@ -49,6 +49,7 @@
 #include "MagickCore/list.h"
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/option.h"
 #include "MagickCore/pixel-accessor.h"
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/static.h"
@@ -13101,43 +13102,46 @@ ModuleExport size_t RegisterMAGICKImage(void)
 
   entry=AcquireMagickInfo("MAGICK","GRANITE","Granite texture");
   entry->decoder=(DecodeImageHandler *) ReadMAGICKImage;
+  entry->flags^=CoderAdjoinFlag;
+  entry->flags|=CoderStealthFlag;
+  (void) RegisterMagickInfo(entry);
+
+  entry=AcquireMagickInfo("MAGICK","H",
+    "Image expressed as a 'C/C++' char array");
   entry->encoder=(EncodeImageHandler *) WriteMAGICKImage;
   entry->flags^=CoderAdjoinFlag;
   entry->flags|=CoderStealthFlag;
   (void) RegisterMagickInfo(entry);
-  entry=AcquireMagickInfo("MAGICK","H","Internal format");
-  entry->decoder=(DecodeImageHandler *) ReadMAGICKImage;
-  entry->encoder=(EncodeImageHandler *) WriteMAGICKImage;
-  entry->flags^=CoderAdjoinFlag;
-  entry->flags|=CoderStealthFlag;
-  (void) RegisterMagickInfo(entry);
+
   entry=AcquireMagickInfo("MAGICK","LOGO","ImageMagick Logo");
   entry->decoder=(DecodeImageHandler *) ReadMAGICKImage;
   entry->encoder=(EncodeImageHandler *) WriteMAGICKImage;
   entry->flags^=CoderAdjoinFlag;
   entry->flags|=CoderStealthFlag;
   (void) RegisterMagickInfo(entry);
-  entry=AcquireMagickInfo("MAGICK","MAGICK","Predefined Magick Image");
+
+  entry=AcquireMagickInfo("MAGICK","MAGICK",
+    "Predefined Magick Image (LOGO, ROSE, etc.); output same as 'H'");
   entry->decoder=(DecodeImageHandler *) ReadMAGICKImage;
   entry->encoder=(EncodeImageHandler *) WriteMAGICKImage;
   entry->flags^=CoderAdjoinFlag;
   entry->flags|=CoderStealthFlag;
   (void) RegisterMagickInfo(entry);
+
   entry=AcquireMagickInfo("MAGICK","NETSCAPE","Netscape 216 color cube");
   entry->decoder=(DecodeImageHandler *) ReadMAGICKImage;
-  entry->encoder=(EncodeImageHandler *) WriteMAGICKImage;
   entry->flags^=CoderAdjoinFlag;
   entry->flags|=CoderStealthFlag;
   (void) RegisterMagickInfo(entry);
+
   entry=AcquireMagickInfo("MAGICK","ROSE","70x46 Truecolor rose");
   entry->decoder=(DecodeImageHandler *) ReadMAGICKImage;
-  entry->encoder=(EncodeImageHandler *) WriteMAGICKImage;
   entry->flags^=CoderAdjoinFlag;
   entry->flags|=CoderStealthFlag;
   (void) RegisterMagickInfo(entry);
+
   entry=AcquireMagickInfo("MAGICK","WIZARD","ImageMagick Wizard");
   entry->decoder=(DecodeImageHandler *) ReadMAGICKImage;
-  entry->encoder=(EncodeImageHandler *) WriteMAGICKImage;
   entry->flags^=CoderAdjoinFlag;
   entry->flags|=CoderStealthFlag;
   (void) RegisterMagickInfo(entry);
@@ -13186,8 +13190,8 @@ ModuleExport void UnregisterMAGICKImage(void)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  WriteMAGICKImage() writes an image in the MAGICK encoded image format.
-%  We use GIF because it is the only format that is compressed without
-%  requiring addition optional delegates (TIFF, ZIP, etc).
+%  We use GIF and PPM by default because they are the only formats that are
+%  compressed without requiring additional optional delegates (TIFF, ZIP, etc).
 %
 %  The format of the WriteMAGICKImage method is:
 %
@@ -13208,6 +13212,9 @@ static MagickBooleanType WriteMAGICKImage(const ImageInfo *image_info,
 {
   char
     buffer[MagickPathExtent];
+
+  const char
+    *value;
 
   Image
     *magick_image;
@@ -13244,25 +13251,41 @@ static MagickBooleanType WriteMAGICKImage(const ImageInfo *image_info,
   if (magick_image == (Image *) NULL)
     ThrowWriterException(ResourceLimitError,exception->reason);
   write_info=CloneImageInfo(image_info);
+
+  /* Set output format */
   *write_info->filename='\0';
-  (void) CopyMagickString(write_info->magick,"GIF",MagickPathExtent);
-  length=(size_t) magick_image->columns*magick_image->rows;
-  if (magick_image->storage_class == DirectClass)
-    {
-      (void) CopyMagickString(write_info->magick,"PNM",MagickPathExtent);
-      length*=3;
+  value=GetImageOption(image_info,"h:format");
+  if (value == (char *) NULL)
+    value=GetImageOption(image_info,"magick:format");
+
+  if ((value == (char *) NULL) || (IsOptionMember("H",value) != MagickFalse) ||
+      (IsOptionMember("MAGICK",value) != MagickFalse))
+    { /* Use default GIF or PNM */
+      if (magick_image->storage_class == DirectClass)
+        (void) CopyMagickString(write_info->magick,"PNM",MagickPathExtent);
+      else
+        (void) CopyMagickString(write_info->magick,"GIF",MagickPathExtent);
     }
+  else /* Use the requested format */
+    (void) CopyMagickString(write_info->magick,value,MagickPathExtent);
+
   blob=ImageToBlob(write_info,magick_image,&length,exception);
   magick_image=DestroyImage(magick_image);
-  (void) DestroyImageInfo(write_info);
   if (blob == (void *) NULL)
-    return(MagickFalse);
+    {
+      (void) DestroyImageInfo(write_info);
+      return(MagickFalse);
+    }
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
-    return(status);
+    {
+      (void) DestroyImageInfo(write_info);
+      return(status);
+    }
   (void) WriteBlobString(image,"/*\n");
   (void) FormatLocaleString(buffer,MagickPathExtent,"  %s (%s).\n",
-    image->filename,image->storage_class == DirectClass ? "PNM" : "GIF");
+    image->filename, write_info->magick);
+  (void) DestroyImageInfo(write_info);
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,"*/\n");
   (void) WriteBlobString(image,"static unsigned char\n");
