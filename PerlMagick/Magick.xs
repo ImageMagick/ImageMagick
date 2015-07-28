@@ -1245,7 +1245,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
           if (SvPOK(sval))
             clip_mask=SetupList(aTHX_ SvRV(sval),&info,(SV ***) NULL,exception);
           for ( ; image; image=image->next)
-            SetImageMask(image,clip_mask,exception);
+            SetImageMask(image,clip_mask,ReadPixelMask,exception);
           break;
         }
       if (LocaleNCompare(attribute,"colormap",8) == 0)
@@ -8772,7 +8772,8 @@ Mogrify(ref,...)
                   */
                   mask_image=CloneImage(argument_list[10].image_reference,0,0,
                     MagickTrue,exception);
-                  (void) SetImageMask(composite_image,mask_image,exception);
+                  (void) SetImageMask(composite_image,mask_image,ReadPixelMask,
+                    exception);
                   mask_image=DestroyImage(mask_image);
                 }
             }
@@ -8810,7 +8811,8 @@ Mogrify(ref,...)
                   (image->compose == DistortCompositeOp))
                 composite_image=DestroyImage(composite_image);
               else
-                (void) SetImageMask(image,(Image *) NULL,exception);
+                (void) SetImageMask(image,(Image *) NULL,ReadPixelMask,
+                  exception);
             }
           (void) SetImageChannelMask(image,channel_mask);
           break;
@@ -10442,7 +10444,7 @@ Mogrify(ref,...)
             }
           mask_image=CloneImage(argument_list[0].image_reference,0,0,MagickTrue,
             exception);
-          (void) SetImageMask(image,mask_image,exception);
+          (void) SetImageMask(image,mask_image,ReadPixelMask,exception);
           mask_image=DestroyImage(mask_image);
           break;
         }
@@ -10535,7 +10537,7 @@ Mogrify(ref,...)
             }
           mask_image=CloneImage(argument_list[0].image_reference,0,0,
             MagickTrue,exception);
-          (void) SetImageMask(image,mask_image,exception);
+          (void) SetImageMask(image,mask_image,ReadPixelMask,exception);
           mask_image=DestroyImage(mask_image);
           break;
         }
