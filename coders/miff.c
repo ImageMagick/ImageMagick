@@ -1404,8 +1404,11 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                 if (version != 0.0)
                   length=(size_t) ReadBlobMSBLong(image);
                 if (length > compress_extent)
-                  ThrowReaderException(CorruptImageError,
-                    "UnableToReadImageData");
+                  {
+                    (void) BZ2_bzDecompressEnd(&bzip_info);
+                    ThrowReaderException(CorruptImageError,
+                      "UnableToReadImageData");
+                  }
                 bzip_info.avail_in=(unsigned int) ReadBlob(image,length,
                   (unsigned char *) bzip_info.next_in);
               }
@@ -1438,8 +1441,11 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                 lzma_info.next_in=compress_pixels;
                 length=(size_t) ReadBlobMSBLong(image);
                 if (length > compress_extent)
-                  ThrowReaderException(CorruptImageError,
-                    "UnableToReadImageData");
+                  {
+                    lzma_end(&lzma_info);
+                    ThrowReaderException(CorruptImageError,
+                      "UnableToReadImageData");
+                  }
                 lzma_info.avail_in=(unsigned int) ReadBlob(image,length,
                   (unsigned char *) lzma_info.next_in);
               }
@@ -1475,8 +1481,11 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                 if (version != 0.0)
                   length=(size_t) ReadBlobMSBLong(image);
                 if (length > compress_extent)
-                  ThrowReaderException(CorruptImageError,
-                    "UnableToReadImageData");
+                  {
+                    (void) inflateEnd(&zip_info);
+                    ThrowReaderException(CorruptImageError,
+                      "UnableToReadImageData");
+                  }
                 zip_info.avail_in=(unsigned int) ReadBlob(image,length,
                   zip_info.next_in);
               }
