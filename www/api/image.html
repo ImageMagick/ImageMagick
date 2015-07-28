@@ -17,9 +17,9 @@
   <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC">
   <meta name="distribution" content="Global">
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
-  <link href="../images/wand.png" rel="icon">
   <link href="../images/wand.ico" type="images/x-icon" rel="shortcut icon">
-  <link href="../css/magick.html" rel="stylesheet">
+  <link href="../images/wand.png" type="images/png" rel="icon">
+  <link href="../css/magick.html" type="text/css" rel="stylesheet">
 </head>
 <body>
 <div class="main">
@@ -44,7 +44,7 @@
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="text-center"><a href="image.html#AcquireImage">AcquireImage</a> • <a href="image.html#AcquireImageInfo">AcquireImageInfo</a> • <a href="image.html#AcquireNextImage">AcquireNextImage</a> • <a href="image.html#AppendImages">AppendImages</a> • <a href="image.html#CatchImageException">CatchImageException</a> • <a href="image.html#ClipImagePath">ClipImagePath</a> • <a href="image.html#CloneImage">CloneImage</a> • <a href="image.html#CloneImageInfo">CloneImageInfo</a> • <a href="image.html#DestroyImage">DestroyImage</a> • <a href="image.html#DestroyImageInfo">DestroyImageInfo</a> • <a href="image.html#GetImageInfo">GetImageInfo</a> • <a href="image.html#GetImageInfoFile">GetImageInfoFile</a> • <a href="image.html#GetImageMask">GetImageMask</a> • <a href="image.html#GetImageVirtualPixelMethod">GetImageVirtualPixelMethod</a> • <a href="image.html#InterpretImageFilename">InterpretImageFilename</a> • <a href="image.html#IsHighDynamicRangeImage">IsHighDynamicRangeImage</a> • <a href="image.html#IsImageObject">IsImageObject</a> • <a href="image.html#IsTaintImage">IsTaintImage</a> • <a href="image.html#ModifyImage">ModifyImage</a> • <a href="image.html#NewMagickImage">NewMagickImage</a> • <a href="image.html#ReferenceImage">ReferenceImage</a> • <a href="image.html#ResetImagePage">ResetImagePage</a> • <a href="image.html#SetImageBackgroundColor">SetImageBackgroundColor</a> • <a href="image.html#SetImageChannelMask">SetImageChannelMask</a> • <a href="image.html#SetImageColor">SetImageColor</a> • <a href="image.html#SetImageStorageClass">SetImageStorageClass</a> • <a href="image.html#SetImageExtent">SetImageExtent</a> • <a href="image.html#SetImageInfoBlob">SetImageInfoBlob</a> • <a href="image.html#SetImageInfoFile">SetImageInfoFile</a> • <a href="image.html#SetImageMask">SetImageMask</a> • <a href="image.html#SetImageAlpha">SetImageAlpha</a> • <a href="image.html#SetImageVirtualPixelMethod">SetImageVirtualPixelMethod</a> • <a href="image.html#SmushImages">SmushImages</a> • <a href="image.html#StripImage">StripImage</a> • <a href="image.html#SyncImageSettings">SyncImageSettings</a></p>
+<p class="text-center"><a href="image.html#AcquireImage">AcquireImage</a> • <a href="image.html#AcquireImageInfo">AcquireImageInfo</a> • <a href="image.html#AcquireNextImage">AcquireNextImage</a> • <a href="image.html#AppendImages">AppendImages</a> • <a href="image.html#CatchImageException">CatchImageException</a> • <a href="image.html#ClipImagePath">ClipImagePath</a> • <a href="image.html#CloneImage">CloneImage</a> • <a href="image.html#CloneImageInfo">CloneImageInfo</a> • <a href="image.html#CopyImagePixels">CopyImagePixels</a> • <a href="image.html#DestroyImage">DestroyImage</a> • <a href="image.html#DestroyImageInfo">DestroyImageInfo</a> • <a href="image.html#GetImageInfo">GetImageInfo</a> • <a href="image.html#GetImageInfoFile">GetImageInfoFile</a> • <a href="image.html#GetImageMask">GetImageMask</a> • <a href="image.html#GetImageVirtualPixelMethod">GetImageVirtualPixelMethod</a> • <a href="image.html#InterpretImageFilename">InterpretImageFilename</a> • <a href="image.html#IsHighDynamicRangeImage">IsHighDynamicRangeImage</a> • <a href="image.html#IsImageObject">IsImageObject</a> • <a href="image.html#IsTaintImage">IsTaintImage</a> • <a href="image.html#ModifyImage">ModifyImage</a> • <a href="image.html#NewMagickImage">NewMagickImage</a> • <a href="image.html#ReferenceImage">ReferenceImage</a> • <a href="image.html#ResetImagePage">ResetImagePage</a> • <a href="image.html#SetImageBackgroundColor">SetImageBackgroundColor</a> • <a href="image.html#SetImageChannelMask">SetImageChannelMask</a> • <a href="image.html#SetImageColor">SetImageColor</a> • <a href="image.html#SetImageStorageClass">SetImageStorageClass</a> • <a href="image.html#SetImageExtent">SetImageExtent</a> • <a href="image.html#SetImageInfoBlob">SetImageInfoBlob</a> • <a href="image.html#SetImageInfoFile">SetImageInfoFile</a> • <a href="image.html#SetImageMask">SetImageMask</a> • <a href="image.html#SetImageAlpha">SetImageAlpha</a> • <a href="image.html#SetImageVirtualPixelMethod">SetImageVirtualPixelMethod</a> • <a href="image.html#SmushImages">SmushImages</a> • <a href="image.html#StripImage">StripImage</a> • <a href="image.html#SyncImageSettings">SyncImageSettings</a></p>
 
 <h2><a href="http://nextgen.imagemagick.org/api/MagickCore/image_8c.html" id="AcquireImage">AcquireImage</a></h2>
 
@@ -264,6 +264,46 @@ ImageInfo *CloneImageInfo(const ImageInfo *image_info)
 <dl class="dl-horizontal">
 <dt>image_info</dt>
 <dd>the image info. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/image_8c.html" id="CopyImagePixels">CopyImagePixels</a></h2>
+
+<p>CopyImagePixels() copies pixels from the source image as defined by the geometry the destination image at the specified offset.</p>
+
+<p>The format of the CopyImagePixels method is:</p>
+
+<pre class="text">
+MagickBooleanType CopyImagePixels(Image *image,const Image *source_image,
+  const RectangleInfo *geometry,const OffsetInfo *offset,
+  ExceptionInfo *exception);
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the destination image. </dd>
+
+<dd> </dd>
+<dt>source_image</dt>
+<dd>the source image. </dd>
+
+<dd> </dd>
+<dt>geometry</dt>
+<dd>define the dimensions of the source pixel rectangle. </dd>
+
+<dd> </dd>
+<dt>offset</dt>
+<dd>define the offset in the destination image. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
 
 <dd>  </dd>
 </dl>
@@ -830,8 +870,8 @@ void SetImageInfoFile(ImageInfo *image_info,FILE *file)
 <p>The format of the SetImageMask method is:</p>
 
 <pre class="text">
-MagickBooleanType SetImageMask(Image *image,const Image *mask,
-  ExceptionInfo *exception)
+MagickBooleanType SetImageMask(Image *image,const PixelMask type,
+  const Image *mask,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -843,6 +883,10 @@ MagickBooleanType SetImageMask(Image *image,const Image *mask,
 <dl class="dl-horizontal">
 <dt>image</dt>
 <dd>the image. </dd>
+
+<dd> </dd>
+<dt>type</dt>
+<dd>the mask type, ReadPixelMask or WritePixelMask. </dd>
 
 <dd> </dd>
 <dt>mask</dt>

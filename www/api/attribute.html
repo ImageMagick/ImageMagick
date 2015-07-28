@@ -17,9 +17,9 @@
   <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC">
   <meta name="distribution" content="Global">
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
-  <link href="../images/wand.png" rel="icon">
   <link href="../images/wand.ico" type="images/x-icon" rel="shortcut icon">
-  <link href="../css/magick.html" rel="stylesheet">
+  <link href="../images/wand.png" type="images/png" rel="icon">
+  <link href="../css/magick.html" type="text/css" rel="stylesheet">
 </head>
 <body>
 <div class="main">
@@ -44,7 +44,7 @@
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="text-center"><a href="attribute.html#GetImageDepth">GetImageDepth</a> • <a href="attribute.html#GetImageQuantumDepth">GetImageQuantumDepth</a> • <a href="attribute.html#GetImageType">GetImageType</a> • <a href="attribute.html#IsImageGray">IsImageGray</a> • <a href="attribute.html#IsImageMonochrome">IsImageMonochrome</a> • <a href="attribute.html#IsImageOpaque">IsImageOpaque</a> • <a href="attribute.html#SetImageDepth">SetImageDepth</a> • <a href="attribute.html#SetImageGray">SetImageGray</a> • <a href="attribute.html#SetImageMonochrome">SetImageMonochrome</a> • <a href="attribute.html#SetImageType">SetImageType</a></p>
+<p class="text-center"><a href="attribute.html#GetImageDepth">GetImageDepth</a> • <a href="attribute.html#GetImageQuantumDepth">GetImageQuantumDepth</a> • <a href="attribute.html#GetImageType">GetImageType</a> • <a href="attribute.html#IdentifyImageGray">IdentifyImageGray</a> • <a href="attribute.html#IdentifyImageMonochrome">IdentifyImageMonochrome</a> • <a href="attribute.html#IdentifyImageType">IdentifyImageType</a> • <a href="attribute.html#IsImageGray">IsImageGray</a> • <a href="attribute.html#IsImageMonochrome">IsImageMonochrome</a> • <a href="attribute.html#IsImageOpaque">IsImageOpaque</a> • <a href="attribute.html#SetImageDepth">SetImageDepth</a> • <a href="attribute.html#SetImageType">SetImageType</a></p>
 
 <h2><a href="http://nextgen.imagemagick.org/api/MagickCore/attribute_8c.html" id="GetImageDepth">GetImageDepth</a></h2>
 
@@ -101,20 +101,97 @@ size_t GetImageQuantumDepth(const Image *image,
 </dl>
 <h2><a href="http://nextgen.imagemagick.org/api/MagickCore/attribute_8c.html" id="GetImageType">GetImageType</a></h2>
 
-<p>GetImageType() returns the potential type of image:</p>
+<p>GetImageType() returns the type of image:</p>
+
+<p>Bilevel         Grayscale        GrayscaleMatte Palette         PaletteMatte     TrueColor TrueColorMatte  ColorSeparation  ColorSeparationMatte</p>
+
+<p>The format of the GetImageType method is:</p>
+
+<pre class="text">
+ImageType GetImageType(const Image *image)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/attribute_8c.html" id="IdentifyImageGray">IdentifyImageGray</a></h2>
+
+<p>IdentifyImageGray() returns grayscale if all the pixels in the image have the same red, green, and blue intensities, and bi-level is the intensity is either 0 or QuantumRange. Otherwise undefined is returned.</p>
+
+<p>The format of the IdentifyImageGray method is:</p>
+
+<pre class="text">
+ImageType IdentifyImageGray(const Image *image,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/attribute_8c.html" id="IdentifyImageMonochrome">IdentifyImageMonochrome</a></h2>
+
+<p>IdentifyImageMonochrome() returns MagickTrue if all the pixels in the image have the same red, green, and blue intensities and the intensity is either 0 or QuantumRange.</p>
+
+<p>The format of the IdentifyImageMonochrome method is:</p>
+
+<pre class="text">
+MagickBooleanType IdentifyImageMonochrome(const Image *image,
+  ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/attribute_8c.html" id="IdentifyImageType">IdentifyImageType</a></h2>
+
+<p>IdentifyImageType() returns the potential type of image:</p>
 
 <p>Bilevel         Grayscale        GrayscaleMatte Palette         PaletteMatte     TrueColor TrueColorMatte  ColorSeparation  ColorSeparationMatte</p>
 
 <p>To ensure the image type matches its potential, use SetImageType():</p>
 
 <pre class="text">
-    (void) SetImageType(image,GetImageType(image));
+    (void) SetImageType(image,IdentifyImageType(image,exception),exception);
 </pre>
 
-<p>The format of the GetImageType method is:</p>
+<p>The format of the IdentifyImageType method is:</p>
 
 <pre class="text">
-ImageType GetImageType(const Image *image,ExceptionInfo *exception)
+ImageType IdentifyImageType(const Image *image,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -234,60 +311,6 @@ MagickBooleanType SetImageDepth(Image *image,const size_t depth,
 <dd> </dd>
 <dt>depth</dt>
 <dd>the image depth. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
-<dd>  </dd>
-</dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/attribute_8c.html" id="SetImageGray">SetImageGray</a></h2>
-
-<p>SetImageGray() returns MagickTrue if all the pixels in the image have the same red, green, and blue intensities and changes the type of the image to bi-level or grayscale.</p>
-
-<p>The format of the SetImageGray method is:</p>
-
-<pre class="text">
-MagickBooleanType SetImageGray(const Image *image,
-  ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<dd>
-</dd>
-
-<dd> </dd>
-<dl class="dl-horizontal">
-<dt>image</dt>
-<dd>the image. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
-<dd>  </dd>
-</dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/attribute_8c.html" id="SetImageMonochrome">SetImageMonochrome</a></h2>
-
-<p>SetImageMonochrome() returns MagickTrue if all the pixels in the image have the same red, green, and blue intensities and the intensity is either 0 or QuantumRange and changes the type of the image to bi-level.</p>
-
-<p>The format of the SetImageMonochrome method is:</p>
-
-<pre class="text">
-MagickBooleanType SetImageMonochrome(const Image *image,
-  ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<dd>
-</dd>
-
-<dd> </dd>
-<dl class="dl-horizontal">
-<dt>image</dt>
-<dd>the image. </dd>
 
 <dd> </dd>
 <dt>exception</dt>

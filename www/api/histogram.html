@@ -17,9 +17,9 @@
   <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC">
   <meta name="distribution" content="Global">
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
-  <link href="../images/wand.png" rel="icon">
   <link href="../images/wand.ico" type="images/x-icon" rel="shortcut icon">
-  <link href="../css/magick.html" rel="stylesheet">
+  <link href="../images/wand.png" type="images/png" rel="icon">
+  <link href="../css/magick.html" type="text/css" rel="stylesheet">
 </head>
 <body>
 <div class="main">
@@ -44,7 +44,7 @@
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="text-center"><a href="histogram.html#GetImageHistogram">GetImageHistogram</a> • <a href="histogram.html#IsHistogramImage">IsHistogramImage</a> • <a href="histogram.html#IsPaletteImage">IsPaletteImage</a> • <a href="histogram.html#MinMaxStretchImage">MinMaxStretchImage</a> • <a href="histogram.html#GetNumberColors">GetNumberColors</a> • <a href="histogram.html#UniqueImageColors">UniqueImageColors</a></p>
+<p class="text-center"><a href="histogram.html#GetImageHistogram">GetImageHistogram</a> • <a href="histogram.html#IdentifyPaletteImage">IdentifyPaletteImage</a> • <a href="histogram.html#IsHistogramImage">IsHistogramImage</a> • <a href="histogram.html#IsPaletteImage">IsPaletteImage</a> • <a href="histogram.html#MinMaxStretchImage">MinMaxStretchImage</a> • <a href="histogram.html#GetNumberColors">GetNumberColors</a> • <a href="histogram.html#UniqueImageColors">UniqueImageColors</a></p>
 
 <h2><a href="http://nextgen.imagemagick.org/api/MagickCore/histogram_8c.html" id="GetImageHistogram">GetImageHistogram</a></h2>
 
@@ -64,6 +64,25 @@ size_t GetImageHistogram(const Image *image,
 
 <dt>file</dt>
 <p>Write a histogram of the color distribution to this file handle.</p>
+
+<dt>exception</dt>
+<p>return any errors or warnings in this structure.</p>
+
+<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/histogram_8c.html" id="IdentifyPaletteImage">IdentifyPaletteImage</a></h2>
+
+<p>IdentifyPaletteImage() returns MagickTrue if the image has 256 unique colors or less.</p>
+
+<p>The format of the IdentifyPaletteImage method is:</p>
+
+<pre class="text">
+MagickBooleanType IdentifyPaletteImage(const Image *image,
+  ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows.</p>
+
+<dt>image</dt>
+<p>the image.</p>
 
 <dt>exception</dt>
 <p>return any errors or warnings in this structure.</p>
@@ -94,17 +113,13 @@ MagickBooleanType IsHistogramImage(const Image *image,
 <p>The format of the IsPaletteImage method is:</p>
 
 <pre class="text">
-MagickBooleanType IsPaletteImage(const Image *image,
-  ExceptionInfo *exception)
+MagickBooleanType IsPaletteImage(const Image *image)
 </pre>
 
 <p>A description of each parameter follows.</p>
 
 <dt>image</dt>
 <p>the image.</p>
-
-<dt>exception</dt>
-<p>return any errors or warnings in this structure.</p>
 
 <h2><a href="http://nextgen.imagemagick.org/api/MagickCore/histogram_8c.html" id="MinMaxStretchImage">MinMaxStretchImage</a></h2>
 

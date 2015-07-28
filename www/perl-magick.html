@@ -17,9 +17,9 @@
   <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC">
   <meta name="distribution" content="Global">
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
-  <link href="../images/wand.png" rel="icon">
   <link href="../images/wand.ico" type="images/x-icon" rel="shortcut icon">
-  <link href="../css/magick.html" rel="stylesheet">
+  <link href="../images/wand.png" type="images/png" rel="icon">
+  <link href="../css/magick.html" type="text/css" rel="stylesheet">
 </head>
 <body>
 <div class="main">
@@ -1547,12 +1547,6 @@ can use the integers 1 and 0.</p>
   </tr>
 
   <tr>
-    <td>mask</td>
-    <td><i>image</i></td>
-    <td>associate a mask with the image.</td>
-  </tr>
-
-  <tr>
     <td>matte</td>
     <td>{True, False}</td>
     <td>enable the image matte channel</td>
@@ -1610,6 +1604,12 @@ can use the integers 1 and 0.</p>
     <td>quality</td>
     <td><i>integer</i></td>
     <td>JPEG/MIFF/PNG compression level</td>
+  </tr>
+
+  <tr>
+    <td>read-mask</td>
+    <td><i>image</i></td>
+    <td>associate a read mask with the image.</td>
   </tr>
 
   <tr>
@@ -1695,6 +1695,13 @@ can use the integers 1 and 0.</p>
     <td><i>x-value</i>, <i>y-value</i></td>
     <td>chromaticity white point (e.g. 0.3127, 0.329)</td>
   </tr>
+
+  <tr>
+    <td>write-mask</td>
+    <td><i>image</i></td>
+    <td>associate a write mask with the image.</td>
+  </tr>
+
   </tbody>
 </table>
 
