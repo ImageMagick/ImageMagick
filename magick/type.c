@@ -367,6 +367,7 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
     };
 
   size_t
+    font_weight,
     max_score,
     score;
 
@@ -376,6 +377,7 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
   (void) GetTypeInfo("*",exception);
   if (type_cache == (SplayTreeInfo *) NULL)
     return((TypeInfo *) NULL);
+  font_weight=weight == 0 ? 400 : weight;
   LockSemaphoreInfo(type_semaphore);
   ResetSplayTreeIterator(type_cache);
   type_info=(const TypeInfo *) NULL;
@@ -413,7 +415,7 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
         p=(const TypeInfo *) GetNextValueInSplayTree(type_cache);
         continue;
       }
-    if ((weight != 0) && (p->weight != weight))
+    if (p->weight != font_weight)
       {
         p=(const TypeInfo *) GetNextValueInSplayTree(type_cache);
         continue;
@@ -460,11 +462,8 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
       if (((style == ItalicStyle) || (style == ObliqueStyle)) &&
           ((p->style == ItalicStyle) || (p->style == ObliqueStyle)))
         score+=25;
-    if (weight == 0)
-      score+=16;
-    else
-      score+=(16*(800-((ssize_t) MagickMax(MagickMin(weight,900),p->weight)-
-        (ssize_t) MagickMin(MagickMin(weight,900),p->weight))))/800;
+    score+=(16*(800-((ssize_t) MagickMax(MagickMin(font_weight,900),p->weight)-
+      (ssize_t) MagickMin(MagickMin(font_weight,900),p->weight))))/800;
     if ((stretch == UndefinedStretch) || (stretch == AnyStretch))
       score+=8;
     else
