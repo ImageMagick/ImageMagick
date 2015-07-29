@@ -5666,7 +5666,7 @@ Get(ref,...)
             {
               if (image == (Image *) NULL)
                 break;
-              j=(ssize_t) GetImageType(image,exception);
+              j=(ssize_t) GetImageType(image);
               s=newSViv(j);
               (void) sv_setpv(s,CommandOptionToMnemonic(MagickTypeOptions,j));
               SvIOK_on(s);
