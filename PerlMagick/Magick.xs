@@ -1245,7 +1245,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
           if (SvPOK(sval))
             clip_mask=SetupList(aTHX_ SvRV(sval),&info,(SV ***) NULL,exception);
           for ( ; image; image=image->next)
-            SetImageMask(image,clip_mask,ReadPixelMask,exception);
+            SetImageMask(image,ReadPixelMask,clip_mask,exception);
           break;
         }
       if (LocaleNCompare(attribute,"colormap",8) == 0)
@@ -1700,7 +1700,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
           if (SvPOK(sval))
             mask=SetupList(aTHX_ SvRV(sval),&info,(SV ***) NULL,exception);
           for ( ; image; image=image->next)
-            SetImageMask(image,mask,ReadPixelMask,exception);
+            SetImageMask(image,ReadPixelMask,mask,exception);
           break;
         }
       if (LocaleCompare(attribute,"mattecolor") == 0)
@@ -1922,7 +1922,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
           if (SvPOK(sval))
             mask=SetupList(aTHX_ SvRV(sval),&info,(SV ***) NULL,exception);
           for ( ; image; image=image->next)
-            SetImageMask(image,mask,ReadPixelMask,exception);
+            SetImageMask(image,ReadPixelMask,mask,exception);
           break;
         }
       if (LocaleCompare(attribute,"red-primary") == 0)
@@ -2249,7 +2249,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
           if (SvPOK(sval))
             mask=SetupList(aTHX_ SvRV(sval),&info,(SV ***) NULL,exception);
           for ( ; image; image=image->next)
-            SetImageMask(image,mask,WritePixelMask,exception);
+            SetImageMask(image,WritePixelMask,mask,exception);
           break;
         }
       if (info)
@@ -8772,7 +8772,7 @@ Mogrify(ref,...)
                   */
                   mask_image=CloneImage(argument_list[10].image_reference,0,0,
                     MagickTrue,exception);
-                  (void) SetImageMask(composite_image,mask_image,ReadPixelMask,
+                  (void) SetImageMask(composite_image,ReadPixelMask,mask_image,
                     exception);
                   mask_image=DestroyImage(mask_image);
                 }
@@ -8811,7 +8811,7 @@ Mogrify(ref,...)
                   (image->compose == DistortCompositeOp))
                 composite_image=DestroyImage(composite_image);
               else
-                (void) SetImageMask(image,(Image *) NULL,ReadPixelMask,
+                (void) SetImageMask(image,ReadPixelMask,(Image *) NULL,
                   exception);
             }
           (void) SetImageChannelMask(image,channel_mask);
@@ -10444,7 +10444,7 @@ Mogrify(ref,...)
             }
           mask_image=CloneImage(argument_list[0].image_reference,0,0,MagickTrue,
             exception);
-          (void) SetImageMask(image,mask_image,ReadPixelMask,exception);
+          (void) SetImageMask(image,ReadPixelMask,mask_image,exception);
           mask_image=DestroyImage(mask_image);
           break;
         }
@@ -10537,7 +10537,7 @@ Mogrify(ref,...)
             }
           mask_image=CloneImage(argument_list[0].image_reference,0,0,
             MagickTrue,exception);
-          (void) SetImageMask(image,mask_image,ReadPixelMask,exception);
+          (void) SetImageMask(image,ReadPixelMask,mask_image,exception);
           mask_image=DestroyImage(mask_image);
           break;
         }
