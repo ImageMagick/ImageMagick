@@ -4907,10 +4907,6 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   option=GetImageOption(clone_info,"kerning");
   if (option != (const char *) NULL)
     draw_info->kerning=StringToDouble(option,(char **) NULL);
-  option=GetImageOption(clone_info,"style");
-  if (option != (const char *) NULL)
-    draw_info->style=(StyleType) ParseCommandOption(MagickStyleOptions,
-      MagickFalse,option);
   option=GetImageOption(clone_info,"stroke");
   if (option != (const char *) NULL)
     (void) QueryColorCompliance(option,AllCompliance,&draw_info->stroke,
@@ -4918,6 +4914,10 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   option=GetImageOption(clone_info,"strokewidth");
   if (option != (const char *) NULL)
     draw_info->stroke_width=StringToDouble(option,(char **) NULL);
+  option=GetImageOption(clone_info,"style");
+  if (option != (const char *) NULL)
+    draw_info->style=(StyleType) ParseCommandOption(MagickStyleOptions,
+      MagickFalse,option);
   option=GetImageOption(clone_info,"undercolor");
   if (option != (const char *) NULL)
     (void) QueryColorCompliance(option,AllCompliance,&draw_info->undercolor,
