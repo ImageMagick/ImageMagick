@@ -384,7 +384,10 @@ namespace Magick
 
   // Command options
   using MagickCore::CommandOption;
+  using MagickCore::MagickDirectionOptions;
+  using MagickCore::MagickGravityOptions;
   using MagickCore::MagickKernelOptions;
+  using MagickCore::MagickStyleOptions;
 
   // Compliance types
   using MagickCore::ComplianceType;
