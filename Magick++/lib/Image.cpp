@@ -734,13 +734,8 @@ off_t Magick::Image::fileSize(void) const
 
 void Magick::Image::fillColor(const Magick::Color &fillColor_)
 {
-  std::string
-    value;
-
   modifyImage();
   options()->fillColor(fillColor_);
-  value=fillColor_;
-  artifact("fill",value);
 }
 
 Magick::Color Magick::Image::fillColor(void) const
@@ -841,6 +836,29 @@ std::string Magick::Image::format(void) const
   throwExceptionExplicit(CorruptImageWarning,"Unrecognized image magick type");
   return(std::string());
 }
+
+void Magick::Image::fontStyle(const StyleType pointSize_)
+{
+  modifyImage();
+  options()->fontStyle(pointSize_);
+}
+
+Magick::StyleType Magick::Image::fontStyle(void) const
+{
+  return(constOptions()->fontStyle());
+}
+
+void Magick::Image::fontWeight(const size_t weight_)
+{
+  modifyImage();
+  options()->fontWeight(weight_);
+}
+
+size_t Magick::Image::fontWeight(void) const
+{
+  return(constOptions()->fontWeight());
+}
+
 
 std::string Magick::Image::formatExpression(const std::string expression)
 {
@@ -1599,6 +1617,17 @@ void Magick::Image::textKerning(double kerning_)
 double Magick::Image::textKerning(void) const
 {
   return(constOptions()->textKerning());
+}
+
+void Magick::Image::textUnderColor(const Color &underColor_)
+{
+  modifyImage();
+  options()->textUnderColor(underColor_);
+}
+
+Magick::Color Magick::Image::textUnderColor(void) const
+{
+  return(constOptions()->textUnderColor());
 }
 
 void Magick::Image::tileName(const std::string &tileName_)

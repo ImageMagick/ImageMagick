@@ -242,6 +242,7 @@ void Magick::Options::fillColor(const Magick::Color &fillColor_)
   _drawInfo->fill=fillColor_;
   if (fillColor_ == Magick::Color())
     fillPattern((const MagickCore::Image*) NULL);
+  setOption("fill",fillColor_);
 }
 
 Magick::Color Magick::Options::fillColor(void) const
@@ -313,6 +314,30 @@ double Magick::Options::fontPointsize(void) const
 {
   return(_imageInfo->pointsize);
 }
+
+void Magick::Options::fontStyle(StyleType style_)
+{
+  _drawInfo->style=style_;
+  (void) SetImageOption(_imageInfo,"style",CommandOptionToMnemonic(
+    MagickStyleOptions,(ssize_t) style_));
+}
+
+Magick::StyleType Magick::Options::fontStyle(void) const
+{
+  return(_drawInfo->style);
+}
+
+void Magick::Options::fontWeight(size_t weight_)
+{
+  _drawInfo->weight=weight_;
+  setOption("weight",(double) weight_);
+}
+
+size_t Magick::Options::fontWeight(void) const
+{
+  return(_drawInfo->weight);
+}
+
 
 std::string Magick::Options::format(void) const
 {
@@ -480,7 +505,7 @@ void Magick::Options::resolutionUnits(Magick::ResolutionType resolutionUnits_)
 
 Magick::ResolutionType Magick::Options::resolutionUnits(void) const
 {
-  return(static_cast<Magick::ResolutionType>(_imageInfo->units));
+  return(_imageInfo->units);
 }
 
 void Magick::Options::samplingFactor(const std::string &samplingFactor_)
@@ -530,6 +555,9 @@ bool Magick::Options::strokeAntiAlias(void) const
 void Magick::Options::strokeColor(const Magick::Color &strokeColor_)
 {
   _drawInfo->stroke=strokeColor_;
+  if (strokeColor_ == Magick::Color())
+    strokePattern((const MagickCore::Image*) NULL);
+  setOption("stroke",strokeColor_);
 }
 
 Magick::Color Magick::Options::strokeColor(void) const
@@ -654,6 +682,8 @@ size_t Magick::Options::subRange(void) const
 void Magick::Options::textDirection(DirectionType direction_)
 {
   _drawInfo->direction=direction_;
+  (void) SetImageOption(_imageInfo,"direction",CommandOptionToMnemonic(
+    MagickDirectionOptions,(ssize_t) direction_));
 }
 
 Magick::DirectionType Magick::Options::textDirection() const
@@ -664,6 +694,7 @@ Magick::DirectionType Magick::Options::textDirection() const
 void Magick::Options::textEncoding(const std::string &encoding_)
 {
   CloneString(&_drawInfo->encoding,encoding_.c_str());
+  (void) SetImageOption(imageInfo(),"encoding",encoding_.c_str());
 }
 
 std::string Magick::Options::textEncoding(void) const
@@ -677,6 +708,8 @@ std::string Magick::Options::textEncoding(void) const
 void Magick::Options::textGravity(GravityType gravity_)
 {
   _drawInfo->gravity=gravity_;
+  (void) SetImageOption(_imageInfo,"gravity",CommandOptionToMnemonic(
+    MagickGravityOptions,(ssize_t) gravity_));
 }
 
 Magick::GravityType Magick::Options::textGravity() const
@@ -687,6 +720,7 @@ Magick::GravityType Magick::Options::textGravity() const
 void Magick::Options::textInterlineSpacing(double spacing_)
 {
   _drawInfo->interline_spacing=spacing_;
+  setOption("interline-spacing",spacing_);
 }
 
 double Magick::Options::textInterlineSpacing(void) const
@@ -697,6 +731,7 @@ double Magick::Options::textInterlineSpacing(void) const
 void Magick::Options::textInterwordSpacing(double spacing_)
 {
   _drawInfo->interword_spacing=spacing_;
+  setOption("interword-spacing",spacing_);
 }
 
 double Magick::Options::textInterwordSpacing(void) const
@@ -707,12 +742,25 @@ double Magick::Options::textInterwordSpacing(void) const
 void Magick::Options::textKerning(double kerning_)
 {
   _drawInfo->kerning=kerning_;
+  setOption("kerning",kerning_);
 }
 
 double Magick::Options::textKerning(void) const
 {
   return(_drawInfo->kerning);
 }
+
+void Magick::Options::textUnderColor(const Magick::Color &undercolor_)
+{
+  _drawInfo->undercolor=undercolor_;
+  setOption("undercolor",undercolor_);
+}
+
+Magick::Color Magick::Options::textUnderColor(void) const
+{
+  return(_drawInfo->undercolor);
+}
+
 
 void Magick::Options::tileName(const std::string &tileName_)
 {
@@ -954,4 +1002,22 @@ Magick::Options::Options(const MagickCore::ImageInfo *imageInfo_,
   _imageInfo=CloneImageInfo(imageInfo_);
   _quantizeInfo=CloneQuantizeInfo(quantizeInfo_);
   _drawInfo=CloneDrawInfo(imageInfo_,drawInfo_);
+}
+
+void Magick::Options::setOption(const char *name,const Color &value_)
+{
+  std::string
+    option;
+
+  option=value_;
+  (void) SetImageOption(imageInfo(),name,option.c_str());
+}
+
+void Magick::Options::setOption(const char *name,const double value_)
+{
+  char
+    option[MaxTextExtent];
+
+  (void) FormatLocaleString(option,MaxTextExtent,"%.20g",value_);
+  (void) SetImageOption(_imageInfo,name,option);
 }

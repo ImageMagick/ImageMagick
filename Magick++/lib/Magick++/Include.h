@@ -363,7 +363,10 @@ namespace Magick
 
   // Command options
   using MagickCore::CommandOption;
+  using MagickCore::MagickDirectionOptions;
+  using MagickCore::MagickGravityOptions;
   using MagickCore::MagickKernelOptions;
+  using MagickCore::MagickStyleOptions;
 
   // Composition operations
   using MagickCore::CompositeOperator;

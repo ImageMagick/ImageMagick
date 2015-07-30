@@ -282,6 +282,15 @@ namespace Magick
     void fontPointsize(const double pointSize_);
     double fontPointsize(void) const;
 
+    // Font style
+    void fontStyle(const StyleType style_);
+    StyleType fontStyle(void) const;
+
+    // Font weight
+    void fontWeight(const size_t weight_);
+    size_t fontWeight(void) const;
+
+
     // Long image format description
     std::string format(void) const;
 
@@ -525,6 +534,10 @@ namespace Magick
     // Text inter-character kerning
     void textKerning(double kerning_);
     double textKerning(void) const;
+
+    // Text undercolor box
+    void textUnderColor(const Color &underColor_);
+    Color textUnderColor(void) const;
 
     // Tile name
     void tileName(const std::string &tileName_);

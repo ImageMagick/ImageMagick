@@ -2,6 +2,8 @@
   * Added "-set colorspace:auto-grayscale=false" that will prevent automatic
     conversion to grayscale inside coders that support grayscale.
   * Fixed -list weight and the options for -weight.
+  * Added fontStyle, fontWeight and textUnderColor to the Image class of
+    Magick++.
 
 2015-07-25  6.9.1-10 Cristy  <quetzlzacatenango@image...>
   * New version 6.9.1-10, SVN revision 19269.
