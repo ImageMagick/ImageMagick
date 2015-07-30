@@ -4881,15 +4881,15 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   draw_info->border_color=clone_info->border_color;
   if (clone_info->server_name != (char *) NULL)
     draw_info->server_name=AcquireString(clone_info->server_name);
-  option=GetImageOption(clone_info,"encoding");
-  if (option != (const char *) NULL)
-    (void) CloneString(&draw_info->encoding,option);
   option=GetImageOption(clone_info,"direction");
   if (option != (const char *) NULL)
     draw_info->direction=(DirectionType) ParseCommandOption(
       MagickDirectionOptions,MagickFalse,option);
   else
     draw_info->direction=UndefinedDirection;
+  option=GetImageOption(clone_info,"encoding");
+  if (option != (const char *) NULL)
+    (void) CloneString(&draw_info->encoding,option);
   option=GetImageOption(clone_info,"fill");
   if (option != (const char *) NULL)
     (void) QueryColorCompliance(option,AllCompliance,&draw_info->fill,
