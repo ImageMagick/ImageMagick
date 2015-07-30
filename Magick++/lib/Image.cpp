@@ -774,13 +774,8 @@ MagickCore::MagickSizeType Magick::Image::fileSize(void) const
 
 void Magick::Image::fillColor(const Magick::Color &fillColor_)
 {
-  std::string
-    value;
-
   modifyImage();
   options()->fillColor(fillColor_);
-  value=fillColor_;
-  artifact("fill",value);
 }
 
 Magick::Color Magick::Image::fillColor(void) const
@@ -863,6 +858,28 @@ void Magick::Image::fontPointsize(const double pointSize_)
 double Magick::Image::fontPointsize(void) const
 {
   return(constOptions()->fontPointsize());
+}
+
+void Magick::Image::fontStyle(const StyleType pointSize_)
+{
+  modifyImage();
+  options()->fontStyle(pointSize_);
+}
+
+Magick::StyleType Magick::Image::fontStyle(void) const
+{
+  return(constOptions()->fontStyle());
+}
+
+void Magick::Image::fontWeight(const size_t weight_)
+{
+  modifyImage();
+  options()->fontWeight(weight_);
+}
+
+size_t Magick::Image::fontWeight(void) const
+{
+  return(constOptions()->fontWeight());
 }
 
 std::string Magick::Image::format(void) const
@@ -1575,6 +1592,17 @@ void Magick::Image::textKerning(double kerning_)
 double Magick::Image::textKerning(void) const
 {
   return(constOptions()->textKerning());
+}
+
+void Magick::Image::textUnderColor(const Color &underColor_)
+{
+  modifyImage();
+  options()->textUnderColor(underColor_);
+}
+
+Magick::Color Magick::Image::textUnderColor(void) const
+{
+  return(constOptions()->textUnderColor());
 }
 
 size_t Magick::Image::totalColors(void) const
