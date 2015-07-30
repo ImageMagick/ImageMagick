@@ -3272,19 +3272,14 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
           }
         if (LocaleCompare("weight",option+1) == 0)
           {
-            draw_info->weight=StringToUnsignedLong(argv[i+1]);
-            if (LocaleCompare(argv[i+1],"all") == 0)
-              draw_info->weight=0;
-            if (LocaleCompare(argv[i+1],"bold") == 0)
-              draw_info->weight=700;
-            if (LocaleCompare(argv[i+1],"bolder") == 0)
-              if (draw_info->weight <= 800)
-                draw_info->weight+=100;
-            if (LocaleCompare(argv[i+1],"lighter") == 0)
-              if (draw_info->weight >= 100)
-                draw_info->weight-=100;
-            if (LocaleCompare(argv[i+1],"normal") == 0)
-              draw_info->weight=400;
+            ssize_t
+              weight;
+
+            weight=ParseCommandOption(MagickWeightOptions,MagickFalse,
+              argv[i+1]);
+            if (weight == -1)
+              weight=StringToUnsignedLong(argv[i+1]);
+            draw_info->weight=(size_t) weight;
             break;
           }
         if (LocaleCompare("white-threshold",option+1) == 0)
@@ -7407,21 +7402,25 @@ WandExport MagickBooleanType MogrifyImageInfo(ImageInfo *image_info,
         if (LocaleCompare("stroke",option+1) == 0)
           {
             if (*option == '+')
-              {
-                (void) SetImageOption(image_info,option+1,"none");
-                break;
-              }
-            (void) SetImageOption(image_info,option+1,argv[i+1]);
+              (void) SetImageOption(image_info,option+1,"none");
+            else
+              (void) SetImageOption(image_info,option+1,argv[i+1]);
             break;
           }
         if (LocaleCompare("strokewidth",option+1) == 0)
           {
             if (*option == '+')
-              {
-                (void) SetImageOption(image_info,option+1,"0");
-                break;
-              }
-            (void) SetImageOption(image_info,option+1,argv[i+1]);
+              (void) SetImageOption(image_info,option+1,"0");
+            else
+              (void) SetImageOption(image_info,option+1,argv[i+1]);
+            break;
+          }
+        if (LocaleCompare("style",option+1) == 0)
+          {
+            if (*option == '+')
+              (void) SetImageOption(image_info,option+1,"none");
+            else
+              (void) SetImageOption(image_info,option+1,argv[i+1]);
             break;
           }
         if (LocaleCompare("synchronize",option+1) == 0)
@@ -7566,6 +7565,14 @@ WandExport MagickBooleanType MogrifyImageInfo(ImageInfo *image_info,
       }
       case 'w':
       {
+        if (LocaleCompare("weight",option+1) == 0)
+          {
+            if (*option == '+')
+              (void) SetImageOption(image_info,option+1,"0");
+            else
+              (void) SetImageOption(image_info,option+1,argv[i+1]);
+            break;
+          }
         if (LocaleCompare("white-point",option+1) == 0)
           {
             if (*option == '+')

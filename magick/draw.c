@@ -4835,39 +4835,55 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
     draw_info->server_name=AcquireString(clone_info->server_name);
   draw_info->render=MagickTrue;
   draw_info->debug=IsEventLogging();
-  option=GetImageOption(clone_info,"encoding");
-  if (option != (const char *) NULL)
-    (void) CloneString(&draw_info->encoding,option);
-  option=GetImageOption(clone_info,"kerning");
-  if (option != (const char *) NULL)
-    draw_info->kerning=StringToDouble(option,(char **) NULL);
-  option=GetImageOption(clone_info,"interline-spacing");
-  if (option != (const char *) NULL)
-    draw_info->interline_spacing=StringToDouble(option,(char **) NULL);
-  draw_info->direction=UndefinedDirection;
-  option=GetImageOption(clone_info,"interword-spacing");
-  if (option != (const char *) NULL)
-    draw_info->interword_spacing=StringToDouble(option,(char **) NULL);
   option=GetImageOption(clone_info,"direction");
   if (option != (const char *) NULL)
     draw_info->direction=(DirectionType) ParseCommandOption(
       MagickDirectionOptions,MagickFalse,option);
+  else
+    draw_info->direction=UndefinedDirection;
+  option=GetImageOption(clone_info,"encoding");
+  if (option != (const char *) NULL)
+    (void) CloneString(&draw_info->encoding,option);
   option=GetImageOption(clone_info,"fill");
   if (option != (const char *) NULL)
     (void) QueryColorDatabase(option,&draw_info->fill,exception);
+  option=GetImageOption(clone_info,"gravity");
+  if (option != (const char *) NULL)
+    draw_info->gravity=(GravityType) ParseCommandOption(MagickGravityOptions,
+      MagickFalse,option);
+  option=GetImageOption(clone_info,"interline-spacing");
+  if (option != (const char *) NULL)
+    draw_info->interline_spacing=StringToDouble(option,(char **) NULL);
+  option=GetImageOption(clone_info,"interword-spacing");
+  if (option != (const char *) NULL)
+    draw_info->interword_spacing=StringToDouble(option,(char **) NULL);
+  option=GetImageOption(clone_info,"kerning");
+  if (option != (const char *) NULL)
+    draw_info->kerning=StringToDouble(option,(char **) NULL);
   option=GetImageOption(clone_info,"stroke");
   if (option != (const char *) NULL)
     (void) QueryColorDatabase(option,&draw_info->stroke,exception);
   option=GetImageOption(clone_info,"strokewidth");
   if (option != (const char *) NULL)
     draw_info->stroke_width=StringToDouble(option,(char **) NULL);
+  option=GetImageOption(clone_info,"style");
+  if (option != (const char *) NULL)
+    draw_info->style=(StyleType) ParseCommandOption(MagickStyleOptions,
+      MagickFalse,option);
   option=GetImageOption(clone_info,"undercolor");
   if (option != (const char *) NULL)
     (void) QueryColorDatabase(option,&draw_info->undercolor,exception);
-  option=GetImageOption(clone_info,"gravity");
+  option=GetImageOption(clone_info,"weight");
   if (option != (const char *) NULL)
-    draw_info->gravity=(GravityType) ParseCommandOption(MagickGravityOptions,
-      MagickFalse,option);
+    {
+      ssize_t
+        weight;
+
+      weight=ParseCommandOption(MagickWeightOptions,MagickFalse,option);
+      if (weight == -1)
+        weight=StringToUnsignedLong(option);
+      draw_info->weight=(size_t) weight;
+    }
   exception=DestroyExceptionInfo(exception);
   draw_info->signature=MagickSignature;
   clone_info=DestroyImageInfo(clone_info);
