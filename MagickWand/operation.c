@@ -1562,23 +1562,13 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
     {
       if (LocaleCompare("weight",option+1) == 0)
         {
-          /* Just what does using a font 'weight' do ???
-             There is no "-list weight" output (reference manual says there is)
-          */
-          arg1=ArgOption("all");
-          _draw_info->weight=StringToUnsignedLong(arg1);
-          if (LocaleCompare(arg1,"all") == 0)
-            _draw_info->weight=0;
-          if (LocaleCompare(arg1,"bold") == 0)
-            _draw_info->weight=700;
-          if (LocaleCompare(arg1,"bolder") == 0)
-            if (_draw_info->weight <= 800)
-              _draw_info->weight+=100;
-          if (LocaleCompare(arg1,"lighter") == 0)
-            if (_draw_info->weight >= 100)
-              _draw_info->weight-=100;
-          if (LocaleCompare(arg1,"normal") == 0)
-            _draw_info->weight=400;
+          ssize_t
+            weight;
+
+          weight=ParseCommandOption(MagickWeightOptions,MagickFalse,arg1);
+          if (weight == -1)
+            weight=StringToUnsignedLong(arg1);
+          _draw_info->weight=(size_t) weight;
           break;
         }
       if (LocaleCompare("white-point",option+1) == 0)

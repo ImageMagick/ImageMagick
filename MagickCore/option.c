@@ -1294,6 +1294,7 @@ static const OptionInfo
     { "Font", MagickFontOptions, UndefinedOptionFlag, MagickFalse },
     { "Format", MagickFormatOptions, UndefinedOptionFlag, MagickFalse },
     { "Function", MagickFunctionOptions, UndefinedOptionFlag, MagickFalse },
+    { "Gradient", MagickGradientOptions, UndefinedOptionFlag, MagickFalse },
     { "Gravity", MagickGravityOptions, UndefinedOptionFlag, MagickFalse },
     { "Intensity", MagickPixelIntensityOptions, UndefinedOptionFlag, MagickFalse },
     { "Intent", MagickIntentOptions, UndefinedOptionFlag, MagickFalse },
@@ -1338,6 +1339,7 @@ static const OptionInfo
     { "Undefined", MagickUndefinedOptions, UndefinedOptionFlag, MagickTrue },
     { "Validate", MagickValidateOptions, UndefinedOptionFlag, MagickFalse },
     { "VirtualPixel", MagickVirtualPixelOptions, UndefinedOptionFlag, MagickFalse },
+    { "Weight", MagickWeightOptions, UndefinedOptionFlag, MagickFalse },
     { (char *) NULL, MagickUndefinedOptions, UndefinedOptionFlag, MagickFalse }
   },
   LogEventOptions[] =
@@ -1746,6 +1748,20 @@ static const OptionInfo
     { "VerticalTileEdge", VerticalTileEdgeVirtualPixelMethod, UndefinedOptionFlag, MagickFalse },
     { "White", WhiteVirtualPixelMethod, UndefinedOptionFlag, MagickFalse },
     { (char *) NULL, UndefinedVirtualPixelMethod, UndefinedOptionFlag, MagickFalse }
+  },
+  WeightOptions[] =
+  {
+    { "Undefined", 0L, UndefinedOptionFlag, MagickTrue },
+    { "Thin", 100L, UndefinedOptionFlag, MagickFalse },
+    { "ExtraLight", 200L, UndefinedOptionFlag, MagickFalse },
+    { "Light", 300L, DeprecateOptionFlag, MagickTrue },
+    { "Normal", 400L, UndefinedOptionFlag, MagickFalse },
+    { "Medium", 500L, UndefinedOptionFlag, MagickFalse },
+    { "DemiBold", 600L, UndefinedOptionFlag, MagickFalse },
+    { "Bold", 700L, UndefinedOptionFlag, MagickFalse },
+    { "ExtraBold", 800L, UndefinedOptionFlag, MagickFalse },
+    { "Heavy", 900L, UndefinedOptionFlag, MagickFalse },
+    { (char *) NULL, 0L, UndefinedOptionFlag, MagickFalse }
   };
 
 /*
@@ -2053,6 +2069,7 @@ static const OptionInfo *GetOptionInfo(const CommandOption option)
     case MagickTypeOptions: return(TypeOptions);
     case MagickValidateOptions: return(ValidateOptions);
     case MagickVirtualPixelOptions: return(VirtualPixelOptions);
+    case MagickWeightOptions: return(WeightOptions);
     default: break;
   }
   return((const OptionInfo *) NULL);
