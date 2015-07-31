@@ -6320,7 +6320,15 @@ WandExport MagickBooleanType DrawSetVectorGraphics(DrawingWand *wand,
     {
       value=GetXMLTreeContent(child);
       if (value != (const char *) NULL)
-        CurrentContext->weight=StringToUnsignedLong(value);
+        {
+          ssize_t
+            weight;
+
+          weight=ParseCommandOption(MagickWeightOptions,MagickFalse,value);
+          if (weight == -1)
+            weight=StringToUnsignedLong(value);
+          CurrentContext->weight=weight;
+        }
     }
   child=GetXMLTreeChild(xml_info,"gravity");
   if (child != (XMLTreeInfo *) NULL)
