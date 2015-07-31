@@ -6447,7 +6447,15 @@ WandExport MagickBooleanType DrawSetVectorGraphics(DrawingWand *wand,
     {
       value=GetXMLTreeContent(child);
       if (value != (const char *) NULL)
-        CurrentContext->stroke_width=StringToDouble(value,(char **) NULL);
+        {
+          ssize_t
+            weight;
+
+          weight=ParseCommandOption(MagickWeightOptions,MagickFalse,value);
+          if (weight == -1)
+            weight=StringToUnsignedLong(value);
+          CurrentContext->stroke_width=(size_t) weight;
+        }
     }
   child=GetXMLTreeChild(xml_info,"text-align");
   if (child != (XMLTreeInfo *) NULL)

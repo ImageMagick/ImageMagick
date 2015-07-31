@@ -2098,20 +2098,15 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
           }
         if (LocaleCompare("font-weight",keyword) == 0)
           {
+            ssize_t
+              weight;
+
             GetMagickToken(q,&q,token);
-            graphic_context[n]->weight=StringToUnsignedLong(token);
-            if (LocaleCompare(token,"all") == 0)
-              graphic_context[n]->weight=0;
-            if (LocaleCompare(token,"bold") == 0)
-              graphic_context[n]->weight=700;
-            if (LocaleCompare(token,"bolder") == 0)
-              if (graphic_context[n]->weight <= 800)
-                graphic_context[n]->weight+=100;
-            if (LocaleCompare(token,"lighter") == 0)
-              if (graphic_context[n]->weight >= 100)
-                graphic_context[n]->weight-=100;
-            if (LocaleCompare(token,"normal") == 0)
-              graphic_context[n]->weight=400;
+            weight=ParseCommandOption(MagickWeightOptions,MagickFalse,
+              token);
+            if (weight == -1)
+              weight=StringToUnsignedLong(token);
+            graphic_context[n]->weight=(size_t) weight;
             break;
           }
         status=MagickFalse;

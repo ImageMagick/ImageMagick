@@ -1308,11 +1308,13 @@ static MagickBooleanType LoadTypeCache(SplayTreeInfo *type_cache,
       {
         if (LocaleCompare((char *) keyword,"weight") == 0)
           {
-            type_info->weight=StringToUnsignedLong(token);
-            if (LocaleCompare(token,"bold") == 0)
-              type_info->weight=700;
-            if (LocaleCompare(token,"normal") == 0)
-              type_info->weight=400;
+            ssize_t
+              weight;
+
+            weight=ParseCommandOption(MagickWeightOptions,MagickFalse,token);
+            if (weight == -1)
+              weight=StringToUnsignedLong(token);
+            type_info->weight=(size_t) weight;
             break;
           }
         break;

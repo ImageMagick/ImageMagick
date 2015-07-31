@@ -1697,12 +1697,16 @@ static const OptionInfo
     { "Undefined", 0L, UndefinedOptionFlag, MagickTrue },
     { "Thin", 100L, UndefinedOptionFlag, MagickFalse },
     { "ExtraLight", 200L, UndefinedOptionFlag, MagickFalse },
+    { "UltraLight", 200L, UndefinedOptionFlag, MagickFalse },
     { "Light", 300L, DeprecateOptionFlag, MagickTrue },
     { "Normal", 400L, UndefinedOptionFlag, MagickFalse },
+    { "Regular", 400L, UndefinedOptionFlag, MagickFalse },
     { "Medium", 500L, UndefinedOptionFlag, MagickFalse },
     { "DemiBold", 600L, UndefinedOptionFlag, MagickFalse },
+    { "SemiBold", 600L, UndefinedOptionFlag, MagickFalse },
     { "Bold", 700L, UndefinedOptionFlag, MagickFalse },
     { "ExtraBold", 800L, UndefinedOptionFlag, MagickFalse },
+    { "UltraBold", 800L, UndefinedOptionFlag, MagickFalse },
     { "Heavy", 900L, UndefinedOptionFlag, MagickFalse },
     { (char *) NULL, 0L, UndefinedOptionFlag, MagickFalse }
   };
