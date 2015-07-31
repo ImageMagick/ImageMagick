@@ -522,7 +522,7 @@ Build
       imperfect for PerlMagick since Perl no longer supports an uninstall
       target.
   
-  In most cases you will simply wand to compile ImageMagick with this command:
+  In most cases you will simply want to compile ImageMagick with this command:
   
     $magick> make
   
