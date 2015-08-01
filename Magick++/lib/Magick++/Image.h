@@ -255,6 +255,10 @@ namespace Magick
     void font(const std::string &font_);
     std::string font(void) const;
 
+    // Font family
+    void fontFamily(const std::string &family_);
+    std::string fontFamily(void) const;
+
     // Font point size
     void fontPointsize(const double pointSize_);
     double fontPointsize(void) const;

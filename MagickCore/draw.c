@@ -4885,6 +4885,9 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   option=GetImageOption(clone_info,"encoding");
   if (option != (const char *) NULL)
     (void) CloneString(&draw_info->encoding,option);
+  option=GetImageOption(clone_info,"family");
+  if (option != (const char *) NULL)
+    (void) CloneString(&draw_info->family,option);
   option=GetImageOption(clone_info,"fill");
   if (option != (const char *) NULL)
     (void) QueryColorCompliance(option,AllCompliance,&draw_info->fill,

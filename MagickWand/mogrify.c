@@ -6835,6 +6835,12 @@ WandExport MagickBooleanType MogrifyImageInfo(ImageInfo *image_info,
       }
       case 'f':
       {
+        if (LocaleCompare("family",option+1) == 0)
+          {
+            if (*option != '+')
+              (void) SetImageOption(image_info,option+1,argv[i+1]);
+            break;
+          }
         if (LocaleCompare("fill",option+1) == 0)
           {
             if (*option == '+')
