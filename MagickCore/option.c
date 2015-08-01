@@ -1765,6 +1765,7 @@ static const OptionInfo
     { "ExtraBold", 800L, UndefinedOptionFlag, MagickFalse },
     { "UltraBold", 800L, UndefinedOptionFlag, MagickFalse },
     { "Heavy", 900L, UndefinedOptionFlag, MagickFalse },
+    { "Black", 900L, UndefinedOptionFlag, MagickFalse },
     { (char *) NULL, 0L, UndefinedOptionFlag, MagickFalse }
   };
 
