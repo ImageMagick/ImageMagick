@@ -810,6 +810,18 @@ std::string Magick::Image::font(void) const
   return(constOptions()->font());
 }
 
+void Magick::Image::fontFamily(const std::string &family_)
+{
+  modifyImage();
+  options()->fontFamily(family_);
+}
+
+std::string Magick::Image::fontFamily(void) const
+{
+  return(constOptions()->fontFamily());
+}
+
+
 void Magick::Image::fontPointsize(const double pointSize_)
 {
   modifyImage();

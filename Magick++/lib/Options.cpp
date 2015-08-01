@@ -304,6 +304,28 @@ std::string Magick::Options::font(void) const
   return(std::string());
 }
 
+void Magick::Options::fontFamily(const std::string &family_)
+{
+  if (family_.length() == 0)
+    {
+      _drawInfo->family=(char *) RelinquishMagickMemory(_drawInfo->font);
+      (void) RemoveImageOption(imageInfo(),"family");
+    }
+  else
+    {
+      Magick::CloneString(&_drawInfo->family,family_);
+      (void) SetImageOption(imageInfo(),"family",family_.c_str());
+    }
+}
+
+std::string Magick::Options::fontFamily(void) const
+{
+  if (_drawInfo->family)
+    return(std::string(_drawInfo->family));
+  
+  return(std::string());
+}
+
 void Magick::Options::fontPointsize(double pointSize_)
 {
   _imageInfo->pointsize=pointSize_;
