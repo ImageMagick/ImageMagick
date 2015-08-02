@@ -2605,14 +2605,12 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,const ChannelType channel,
             exception);
           return(floor(alpha));
         }
-#if defined(MAGICKCORE_HAVE_ISNAN)
       if (LocaleNCompare(expression,"isnan",5) == 0)
         {
           alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+5,beta,
             exception);
-          return((double) !!isnan((double) alpha));
+          return((double) !!IsNaN((double) alpha));
         }
-#endif
       if (LocaleCompare(expression,"i") == 0)
         return(FxGetSymbol(fx_info,channel,x,y,expression,exception));
       break;

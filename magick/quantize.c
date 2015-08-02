@@ -854,7 +854,7 @@ static MagickBooleanType ClassifyImageColors(CubeInfo *cube_info,
           error.opacity=QuantumScale*(pixel.opacity-mid.opacity);
         distance=(double) (error.red*error.red+error.green*error.green+
           error.blue*error.blue+error.opacity*error.opacity);
-        if (IsNaN(distance) != MagickFalse)
+        if (IsNaN(distance))
           distance=0.0;
         node_info->quantize_error+=count*sqrt(distance);
         cube_info->root->quantize_error+=node_info->quantize_error;
@@ -952,7 +952,7 @@ static MagickBooleanType ClassifyImageColors(CubeInfo *cube_info,
           error.opacity=QuantumScale*(pixel.opacity-mid.opacity);
         distance=(double) (error.red*error.red+error.green*error.green+
           error.blue*error.blue+error.opacity*error.opacity);
-        if (IsNaN(distance) != MagickFalse)
+        if (IsNaN(distance))
           distance=0.0;
         node_info->quantize_error+=count*sqrt(distance);
         cube_info->root->quantize_error+=node_info->quantize_error;

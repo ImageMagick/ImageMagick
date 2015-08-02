@@ -22,7 +22,13 @@
 extern "C" {
 #endif
 
-#define IsNaN(a) ((a) != (a) ? MagickTrue : MagickFalse)
+#if defined(MAGICKCORE_HAVE_ISNAN)
+#  define IsNaN(a) isnan(a)
+#elif defined(_MSC_VER) && (_MSC_VER >= 1310)
+#  define IsNaN(a) _isnan(a)
+#else
+#  define IsNaN(a) (a != a)
+#endif
 #define MagickAbsoluteValue(x)  ((x) < 0 ? -(x) : (x))
 #define MagickMax(x,y)  (((x) > (y)) ? (x) : (y))
 #define MagickMin(x,y)  (((x) < (y)) ? (x) : (y))
