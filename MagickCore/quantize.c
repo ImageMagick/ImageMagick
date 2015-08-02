@@ -876,7 +876,7 @@ static MagickBooleanType ClassifyImageColors(CubeInfo *cube_info,
           error.alpha=QuantumScale*(pixel.alpha-mid.alpha);
         distance=(double) (error.red*error.red+error.green*error.green+
           error.blue*error.blue+error.alpha*error.alpha);
-        if (IsNaN(distance) != MagickFalse)
+        if (IsNaN(distance))
           distance=0.0;
         node_info->quantize_error+=count*sqrt(distance);
         cube_info->root->quantize_error+=node_info->quantize_error;

@@ -2399,9 +2399,9 @@ static MagickBooleanType SameKernelInfo(const KernelInfo *kernel1,
   /* check actual kernel values */
   for (i=0; i < (kernel1->width*kernel1->height); i++) {
     /* Test for Nan equivalence */
-    if ( IfNaN(kernel1->values[i]) && !IfNaN(kernel2->values[i]) )
+    if ( IsNaN(kernel1->values[i]) && !IsNaN(kernel2->values[i]) )
       return MagickFalse;
-    if ( IfNaN(kernel2->values[i]) && !IfNaN(kernel1->values[i]) )
+    if ( IsNaN(kernel2->values[i]) && !IsNaN(kernel1->values[i]) )
       return MagickFalse;
     /* Test actual values are equivalent */
     if ( fabs(kernel1->values[i] - kernel2->values[i]) >= MagickEpsilon )
@@ -2731,7 +2731,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
               {
                 for (u=0; u < (ssize_t) kernel->width; u++)
                 {
-                  if (IfNaN(*k) == MagickFalse)
+                  if (!IsNaN(*k))
                     {
                       pixel+=(*k)*pixels[i];
                       gamma+=(*k);
@@ -2746,7 +2746,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
               {
                 for (u=0; u < (ssize_t) kernel->width; u++)
                 {
-                  if (IfNaN(*k) == MagickFalse)
+                  if (!IsNaN(*k))
                     {
                       alpha=(double) (QuantumScale*GetPixelAlpha(image,pixels));
                       pixel+=alpha*(*k)*pixels[i];
@@ -2934,7 +2934,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                 {
                   for (u=0; u < (ssize_t) kernel->width; u++)
                   {
-                    if (IfNaN(*k) == MagickFalse)
+                    if (!IsNaN(*k))
                       {
                         pixel+=(*k)*pixels[i];
                         count++;
@@ -2954,7 +2954,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
             {
               for (u=0; u < (ssize_t) kernel->width; u++)
               {
-                if (IfNaN(*k) == MagickFalse)
+                if (!IsNaN(*k))
                   {
                     alpha=(double) (QuantumScale*GetPixelAlpha(image,pixels));
                     pixel+=alpha*(*k)*pixels[i];
@@ -2983,7 +2983,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
             {
               for (u=0; u < (ssize_t) kernel->width; u++)
               {
-                if ((IfNaN(*k) == MagickFalse) && (*k >= 0.5))
+                if (!IsNaN(*k) && (*k >= 0.5))
                   {
                     if ((double) pixels[i] < pixel)
                       pixel=(double) pixels[i];
@@ -3014,7 +3014,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
             {
               for (u=0; u < (ssize_t) kernel->width; u++)
               {
-                if ((IfNaN(*k) == MagickFalse) && (*k > 0.5))
+                if (!IsNaN(*k) && (*k > 0.5))
                   {
                     if ((double) pixels[i] > pixel)
                       pixel=(double) pixels[i];
@@ -3048,7 +3048,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
             {
               for (u=0; u < (ssize_t) kernel->width; u++)
               {
-                if (IfNaN(*k) == MagickFalse)
+                if (!IsNaN(*k))
                   {
                     if (*k > 0.7)
                       {
@@ -3091,7 +3091,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
             {
               for (u=0; u < (ssize_t) kernel->width; u++)
               {
-                if ((IfNaN(*k) == MagickFalse) && (*k >= 0.5))
+                if (!IsNaN(*k) && (*k >= 0.5))
                   {
                     intensity=(double) GetPixelIntensity(image,pixels);
                     if (intensity < minimum)
@@ -3121,7 +3121,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
             {
               for (u=0; u < (ssize_t) kernel->width; u++)
               {
-                if ((IfNaN(*k) == MagickFalse) && (*k >= 0.5))
+                if (!IsNaN(*k) && (*k >= 0.5))
                   {
                     intensity=(double) GetPixelIntensity(image,pixels);
                     if (intensity > maximum)
@@ -3169,7 +3169,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
             {
               for (u=0; u < (ssize_t) kernel->width; u++)
               {
-                if (IfNaN(*k) == MagickFalse)
+                if (!IsNaN(*k))
                   {
                     if ((pixels[i]+(*k)) < pixel)
                       pixel=(double) pixels[i]+(*k);
@@ -3367,7 +3367,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
             {
               for (u=0; u < (ssize_t) kernel->width; u++)
               {
-                if (IfNaN(*k) == MagickFalse)
+                if (!IsNaN(*k))
                   {
                     if ((pixels[i]+(*k)) < pixel)
                       pixel=(double) pixels[i]+(*k);
@@ -3381,7 +3381,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
             pixels=q-offset.x*GetPixelChannels(image);
             for (u=0; u < offset.x; u++)
             {
-              if ((IfNaN(*k) == MagickFalse) && ((x+u-offset.x) >= 0))
+              if (!IsNaN(*k) && ((x+u-offset.x) >= 0))
                 {
                   if ((pixels[i]+(*k)) < pixel)
                     pixel=(double) pixels[i]+(*k);
@@ -3398,7 +3398,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
             {
               for (u=0; u < (ssize_t) kernel->width; u++)
               {
-                if (IfNaN(*k) == MagickFalse)
+                if (!IsNaN(*k))
                   {
                     if ((pixels[i]+(*k)) < pixel)
                       pixel=(double) pixels[i]+(*k);
@@ -3412,7 +3412,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
             pixels=q-offset.x*GetPixelChannels(image);
             for (u=0; u < offset.x; u++)
             {
-              if ((IfNaN(*k) == MagickFalse) && ((x+u-offset.x) >= 0))
+              if (!IsNaN(*k) && ((x+u-offset.x) >= 0))
                 {
                   if ((pixels[i]+(*k)) < pixel)
                     pixel=(double) pixels[i]+(*k);
@@ -3528,7 +3528,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
             {
               for (u=0; u < (ssize_t) kernel->width; u++)
               {
-                if (IfNaN(*k) == MagickFalse)
+                if (!IsNaN(*k))
                   {
                     if ((pixels[i]+(*k)) < pixel)
                       pixel=(double) pixels[i]+(*k);
@@ -3543,8 +3543,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
             for (u=offset.x+1; u < (ssize_t) kernel->width; u++)
             {
               pixels+=GetPixelChannels(image);
-              if ((IfNaN(*k) == MagickFalse) &&
-                  ((x+u-offset.x) < (ssize_t) image->columns))
+              if (!IsNaN(*k) && ((x+u-offset.x) < (ssize_t) image->columns))
                 {
                   if ((pixels[i]+(*k)) < pixel)
                     pixel=(double) pixels[i]+(*k);
@@ -3560,7 +3559,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
             {
               for (u=0; u < (ssize_t) kernel->width; u++)
               {
-                if (IfNaN(*k) == MagickFalse)
+                if (!IsNaN(*k))
                   {
                     if ((pixels[i]+(*k)) < pixel)
                       pixel=(double) pixels[i]+(*k);
@@ -3575,8 +3574,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
             for (u=offset.x+1; u < (ssize_t) kernel->width; u++)
             {
               pixels+=GetPixelChannels(image);
-              if ((IfNaN(*k) == MagickFalse) &&
-                  ((x+u-offset.x) < (ssize_t) image->columns))
+              if (!IsNaN(*k) && ((x+u-offset.x) < (ssize_t) image->columns))
                 {
                   if ((pixels[i]+(*k)) < pixel)
                     pixel=(double) pixels[i]+(*k);
@@ -4594,7 +4592,7 @@ MagickExport void ScaleKernelInfo(KernelInfo *kernel,
   neg_scale = scaling_factor/neg_scale;
 
   for (i=0; i < (ssize_t) (kernel->width*kernel->height); i++)
-    if ( ! IfNaN(kernel->values[i]) )
+    if (!IsNaN(kernel->values[i]))
       kernel->values[i] *= (kernel->values[i] >= 0) ? pos_scale : neg_scale;
 
   /* convolution output range */
@@ -4678,7 +4676,7 @@ MagickPrivate void ShowKernelInfo(const KernelInfo *kernel)
     for (i=v=0; v < k->height; v++) {
       (void) FormatLocaleFile(stderr, "%2lu:", (unsigned long) v );
       for (u=0; u < k->width; u++, i++)
-        if ( IfNaN(k->values[i]) )
+        if (IsNaN(k->values[i]))
           (void) FormatLocaleFile(stderr," %*s", GetMagickPrecision()+3, "nan");
         else
           (void) FormatLocaleFile(stderr," %*.*lg", GetMagickPrecision()+3,
@@ -4766,12 +4764,12 @@ MagickPrivate void ZeroKernelNans(KernelInfo *kernel)
     i;
 
   /* do the other kernels in a multi-kernel list first */
-  if ( kernel->next != (KernelInfo *) NULL)
+  if (kernel->next != (KernelInfo *) NULL)
     ZeroKernelNans(kernel->next);
 
   for (i=0; i < (kernel->width*kernel->height); i++)
-    if ( IfNaN(kernel->values[i]) )
-      kernel->values[i] = 0.0;
+    if (IsNaN(kernel->values[i]))
+      kernel->values[i]=0.0;
 
   return;
 }
