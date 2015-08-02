@@ -666,7 +666,7 @@ Performance[12]: 10i 4.525ips 0.799e 18.320u 0:02.210
 
 <pre>
 identify -version
-Features: DPC Cipher Modules OpenCL OpenMP
+Features: DPC Cipher HDRI Modules OpenCL OpenMP
 </pre>
 
 <p>If so, run this command to realize a significant speed-up for image convolution:</p>
@@ -737,7 +737,7 @@ __kernel void Convolve(const __global CLPixelType *source,__constant float *filt
   destination[index].w=ClampToQuantum(sum.w);
 };</pre>
 
-<p>See <a href="https://github.com/ImageMagick/ImageMagick/tree/ImageMagick-6/magick/accelerate.c">magick/accelerate.c</a> for a complete implementation of image convolution with an OpenCL kernel.</p>
+<p>See <a href="https://github.com/ImageMagick/ImageMagick/tree/ImageMagick-6/MagickCore/accelerate.c">MagickCore/accelerate.c</a> for a complete implementation of image convolution with an OpenCL kernel.</p>
 
 <p>Note, that under Windows, you might have an issue with TDR (Timeout Detection and Recovery of GPUs). Its purpose is to detect runaway tasks hanging the GPU by using an execution time threshold.  For some older low-end GPUs running the OpenCL filters in ImageMagick, longer execution times might trigger the TDR mechanism and pre-empt the GPU image filter.  When this happens, ImageMagick automatically falls back to the CPU code path and returns the expected results.  To avoid pre-emption, increase the <a href="http://msdn.microsoft.com/en-us/library/windows/hardware/gg487368.aspx">TdrDelay</a> registry key.</p>
 
@@ -750,23 +750,23 @@ __kernel void Convolve(const __global CLPixelType *source,__constant float *filt
 <pre class="pre-scrollable">/*
   Include declarations.
 */
-#include "magick/studio.h"
-#include "magick/blob.h"
-#include "magick/blob-private.h"
-#include "magick/colorspace.h"
-#include "magick/exception.h"
-#include "magick/exception-private.h"
-#include "magick/image.h"
-#include "magick/image-private.h"
-#include "magick/list.h"
-#include "magick/magick.h"
-#include "magick/memory_.h"
-#include "magick/monitor.h"
-#include "magick/monitor-private.h"
-#include "magick/quantum-private.h"
-#include "magick/static.h"
-#include "magick/string_.h"
-#include "magick/module.h"
+#include "MagickCore/studio.h"
+#include "MagickCore/blob.h"
+#include "MagickCore/blob-private.h"
+#include "MagickCore/colorspace.h"
+#include "MagickCore/exception.h"
+#include "MagickCore/exception-private.h"
+#include "MagickCore/image.h"
+#include "MagickCore/image-private.h"
+#include "MagickCore/list.h"
+#include "MagickCore/magick.h"
+#include "MagickCore/memory_.h"
+#include "MagickCore/monitor.h"
+#include "MagickCore/monitor-private.h"
+#include "MagickCore/quantum-private.h"
+#include "MagickCore/static.h"
+#include "MagickCore/string_.h"
+#include "MagickCore/module.h"
 
 /*
   Forward declarations.
@@ -1169,7 +1169,7 @@ display logo.mgk
 #include &lt;time.h&gt;
 #include &lt;assert.h&gt;
 #include &lt;math.h&gt;
-#include "magick/MagickCore.h"
+#include "MagickCore/MagickCore.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
