@@ -49,7 +49,7 @@
 #   modified version of the Autoconf Macro, you may extend this special
 #   exception to the GPL to apply to your modified version as well.
 
-#serial 5
+#serial 6
 
 AC_DEFUN([AX_APPEND_FLAG],
 [dnl
@@ -59,7 +59,7 @@ AS_VAR_SET_IF(FLAGS,[
   AS_CASE([" AS_VAR_GET(FLAGS) "],
     [*" $1 "*], [AC_RUN_LOG([: FLAGS already contains $1])],
     [
-     AS_VAR_APPEND(FLAGS," $1")
+     AS_VAR_APPEND(FLAGS,[" $1"])
      AC_RUN_LOG([: FLAGS="$FLAGS"])
     ])
   ],
