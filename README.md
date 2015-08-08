@@ -24,7 +24,7 @@ The ImageMagick development process ensures a stable API and ABI. Before each Im
 
 ImageMagick is available from http://www.imagemagick.org/download to download. It runs on Linux, Windows, Mac Os X, iOS, Android OS, and others.
 
-The authoritative ImageMagick web site is http://www.imagemagick.org. The authoritative source code repository is https://subversion.imagemagick.org/subversion/ImageMagick/.
+The authoritative ImageMagick web site is http://www.imagemagick.org. The authoritative source code repository is https://git.imagemagick.org/repos/ImageMagick/.
 
 ####Features and Capabilities
 
