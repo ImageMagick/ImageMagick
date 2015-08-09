@@ -2,14 +2,14 @@ language: c
 
 sudo: false
 
+addons:
+  apt:
+    packages:
+    - autoconf
+
 compiler:
   - clang
   - gcc
-
-before_script:
-  - sudo add-apt-repository ppa:dns/gnu -y
-  - sudo apt-get update -q
-  - sudo apt-get install --only-upgrade autoconf
 
 script:
     - export OMP_NUM_THREADS=1
