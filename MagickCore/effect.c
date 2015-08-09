@@ -3515,7 +3515,8 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
 
       point.x=GetPseudoRandomValue(random_info[id]);
       point.y=GetPseudoRandomValue(random_info[id]);
-      status=InterpolatePixelChannels(image,image_view,spread_image,method,
+      status=InterpolatePixelChannels(image,image_view,spread_image,
+        method == UndefinedInterpolatePixel ? NearestInterpolatePixel : method,
         (double) x+width*(point.x-0.5),(double) y+width*(point.y-0.5),q,
         exception);
       q+=GetPixelChannels(spread_image);

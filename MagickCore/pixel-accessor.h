@@ -288,10 +288,11 @@ static inline MagickRealType GetPixelLuminance(const Image *restrict image,
         0.072186f*pixel[image->channel_map[BluePixelChannel].offset];
       return(intensity);
     }
-  intensity=0.212656f*DecodePixelGamma(
+  intensity=0.212656f*DecodePixelGamma((MagickRealType)
     pixel[image->channel_map[RedPixelChannel].offset])+0.715158f*
-    DecodePixelGamma(pixel[image->channel_map[GreenPixelChannel].offset])+
-    0.072186f*DecodePixelGamma(
+    DecodePixelGamma((MagickRealType)
+    pixel[image->channel_map[GreenPixelChannel].offset])+0.072186f*
+    DecodePixelGamma((MagickRealType)
     pixel[image->channel_map[BluePixelChannel].offset]);
   return(intensity);
 }
