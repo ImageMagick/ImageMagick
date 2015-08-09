@@ -4074,6 +4074,27 @@ MagickExport Image *SharpenImageChannel(const Image *image,
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
+static void inline SwapPixelComponent(Quantum *p,Quantum *q)
+{
+  Quantum
+    pixel;
+
+  pixel=(*p);
+  (*p)=(*q);
+  (*q)=pixel;
+}
+
+static void inline SwapIndexComponent(IndexPacket *p,IndexPacket *q)
+{
+  IndexPacket
+    index;
+
+  index=(*p);
+  (*p)=(*q);
+  (*q)=index;
+}
+
 MagickExport Image *SpreadImage(const Image *image,const double radius,
   ExceptionInfo *exception)
 {
@@ -4160,16 +4181,16 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
           status=MagickFalse;
           continue;
         }
-      Swap(p->red,q->red);
-      Swap(p->green,q->green);
-      Swap(p->blue,q->blue);
-      Swap(p->opacity,q->opacity);
+      SwapPixelComponent(&p->red,&q->red);
+      SwapPixelComponent(&p->green,&q->green);
+      SwapPixelComponent(&p->blue,&q->blue);
+      SwapPixelComponent(&p->opacity,&q->opacity);
       if ((image->storage_class == PseudoClass) ||
           (image->colorspace == CMYKColorspace))
         {
           indexes=GetCacheViewAuthenticIndexQueue(image_view);
           spread_indexes=GetCacheViewAuthenticIndexQueue(spread_view);
-          Swap(*indexes,*spread_indexes);
+          SwapIndexComponent(indexes,spread_indexes);
         }
       if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
         status=MagickFalse;
