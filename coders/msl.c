@@ -6755,7 +6755,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
               }
             }
           spread_image=SpreadImage(msl_info->image[n],geometry_info.rho,
-            msl_info->image[n]->interpolate,msl_info->exception);
+            msl_info->exception);
           if (spread_image == (Image *) NULL)
             break;
           msl_info->image[n]=DestroyImage(msl_info->image[n]);

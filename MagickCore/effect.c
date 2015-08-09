@@ -2250,9 +2250,9 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
       }
       case SpreadPreview:
       {
-        preview_image=SpreadImage(thumbnail,radius,thumbnail->interpolate,
-          exception);
-        (void) FormatLocaleString(label,MagickPathExtent,"spread %g",radius+0.5);
+        preview_image=SpreadImage(thumbnail,radius,exception);
+        (void) FormatLocaleString(label,MagickPathExtent,"spread %g",
+          radius+0.5);
         break;
       }
       case SolarizePreview:
@@ -3411,7 +3411,7 @@ MagickExport Image *SharpenImage(const Image *image,const double radius,
 %  The format of the SpreadImage method is:
 %
 %      Image *SpreadImage(const Image *image,const double radius,
-%        const PixelInterpolateMethod method,ExceptionInfo *exception)
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -3419,13 +3419,22 @@ MagickExport Image *SharpenImage(const Image *image,const double radius,
 %
 %    o radius:  choose a random pixel in a neighborhood of this extent.
 %
-%    o method:  the pixel interpolation method.
-%
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
+static void inline SwapPixelComponent(Quantum *p,Quantum *q)
+{
+  Quantum
+    pixel;
+
+  pixel=(*p);
+  (*p)=(*q);
+  (*q)=pixel;
+}
+
 MagickExport Image *SpreadImage(const Image *image,const double radius,
-  const PixelInterpolateMethod method,ExceptionInfo *exception)
+  ExceptionInfo *exception)
 {
 #define SpreadImageTag  "Spread/Image"
 
@@ -3443,18 +3452,13 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
     progress;
 
   RandomInfo
-    **restrict random_info;
+    *restrict random_info;
 
   size_t
     width;
 
   ssize_t
     y;
-
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  unsigned long
-    key;
-#endif
 
   /*
     Initialize spread image attributes.
@@ -3465,72 +3469,65 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
-  spread_image=CloneImage(image,image->columns,image->rows,MagickTrue,
-    exception);
+  spread_image=CloneImage(image,0,0,MagickTrue,exception);
   if (spread_image == (Image *) NULL)
     return((Image *) NULL);
-  if (SetImageStorageClass(spread_image,DirectClass,exception) == MagickFalse)
-    {
-      spread_image=DestroyImage(spread_image);
-      return((Image *) NULL);
-    }
   /*
     Spread image.
   */
   status=MagickTrue;
   progress=0;
   width=GetOptimalKernelWidth1D(radius,0.5);
-  random_info=AcquireRandomInfoThreadSet();
-  image_view=AcquireVirtualCacheView(image,exception);
+  random_info=AcquireRandomInfo();
+  image_view=AcquireAuthenticCacheView(spread_image,exception);
   spread_view=AcquireAuthenticCacheView(spread_image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  key=GetRandomSecretKey(random_info[0]);
-  #pragma omp parallel for schedule(static,4) shared(progress,status) \
-    magick_threads(image,spread_image,image->rows,key == ~0UL)
-#endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    const int
-      id = GetOpenMPThreadId();
-
-    register Quantum
-      *restrict q;
-
     register ssize_t
       x;
 
     if (status == MagickFalse)
       continue;
-    q=QueueCacheViewAuthenticPixels(spread_view,0,y,spread_image->columns,1,
-      exception);
-    if (q == (Quantum *) NULL)
-      {
-        status=MagickFalse;
-        continue;
-      }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      PointInfo
-        point;
+      register Quantum
+        *restrict p,
+        *restrict q;
 
-      point.x=GetPseudoRandomValue(random_info[id]);
-      point.y=GetPseudoRandomValue(random_info[id]);
-      status=InterpolatePixelChannels(image,image_view,spread_image,
-        method == UndefinedInterpolatePixel ? NearestInterpolatePixel : method,
-        (double) x+width*(point.x-0.5),(double) y+width*(point.y-0.5),q,
-        exception);
-      q+=GetPixelChannels(spread_image);
+      register ssize_t
+        i;
+
+      ssize_t
+        x_offset,
+        y_offset;
+
+      for ( ; ; )
+      {
+        x_offset=(ssize_t) (x+width*GetPseudoRandomValue(random_info));
+        y_offset=(ssize_t) (y+width*GetPseudoRandomValue(random_info));
+        if ((x_offset >= 0) && (x_offset < image->columns) &&
+            (y_offset >= 0) && (y_offset < image->rows))
+          break;
+      }
+      p=GetCacheViewAuthenticPixels(image_view,x_offset,y_offset,1,1,exception);
+      q=GetCacheViewAuthenticPixels(spread_view,x,y,1,1,exception);
+      if ((p == (Quantum *) NULL) || (q == (Quantum *) NULL))
+        {
+          status=MagickFalse;
+          continue;
+        }
+      for (i=0; i < (ssize_t) GetPixelChannels(spread_image); i++)
+        SwapPixelComponent(p+i,q+i);
+      if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
+        status=MagickFalse;
+      if (SyncCacheViewAuthenticPixels(spread_view,exception) == MagickFalse)
+        status=MagickFalse;
     }
-    if (SyncCacheViewAuthenticPixels(spread_view,exception) == MagickFalse)
-      status=MagickFalse;
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
       {
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_SpreadImage)
-#endif
         proceed=SetImageProgress(image,SpreadImageTag,progress++,image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
@@ -3538,7 +3535,7 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
   }
   spread_view=DestroyCacheView(spread_view);
   image_view=DestroyCacheView(image_view);
-  random_info=DestroyRandomInfoThreadSet(random_info);
+  random_info=DestroyRandomInfo(random_info);
   if (status == MagickFalse)
     spread_image=DestroyImage(spread_image);
   return(spread_image);

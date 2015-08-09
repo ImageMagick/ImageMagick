@@ -11264,20 +11264,17 @@ WandExport MagickBooleanType MagickSpliceImage(MagickWand *wand,
 %
 %  The format of the MagickSpreadImage method is:
 %
-%      MagickBooleanType MagickSpreadImage(MagickWand *wand,const double radius,
-%        const PixelInterpolateMethod method)
-%
+%      MagickBooleanType MagickSpreadImage(MagickWand *wand,const double radius)
+%        
 %  A description of each parameter follows:
 %
 %    o wand: the magick wand.
 %
 %    o radius:  Choose a random pixel in a neighborhood of this extent.
 %
-%    o method: the pixel interpolation method.
-%
 */
 WandExport MagickBooleanType MagickSpreadImage(MagickWand *wand,
-  const double radius,const PixelInterpolateMethod method)
+  const double radius)
 {
   Image
     *spread_image;
@@ -11288,7 +11285,7 @@ WandExport MagickBooleanType MagickSpreadImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  spread_image=SpreadImage(wand->images,radius,method,wand->exception);
+  spread_image=SpreadImage(wand->images,radius,wand->exception);
   if (spread_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,spread_image);

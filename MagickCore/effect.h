@@ -78,8 +78,7 @@ extern MagickExport Image
   *ShadeImage(const Image *,const MagickBooleanType,const double,const double,
     ExceptionInfo *),
   *SharpenImage(const Image *,const double,const double,ExceptionInfo *),
-  *SpreadImage(const Image *,const double,const PixelInterpolateMethod,
-    ExceptionInfo *),
+  *SpreadImage(const Image *,const double,ExceptionInfo *),
   *UnsharpMaskImage(const Image *,const double,const double,const double,
     const double,ExceptionInfo *);
 

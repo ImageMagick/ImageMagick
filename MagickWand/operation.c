@@ -3320,8 +3320,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           flags=ParseGeometry(arg1,&geometry_info);
           if ((flags & RhoValue) == 0)
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg2);
-          new_image=SpreadImage(_image,geometry_info.rho,_image->interpolate,
-               _exception);
+          new_image=SpreadImage(_image,geometry_info.rho,_exception);
           break;
         }
       if (LocaleCompare("statistic",option+1) == 0)

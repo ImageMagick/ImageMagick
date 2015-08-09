@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuremap [
+<!ELEMENT configuremap (configure)+>
+<!ELEMENT configure (#PCDATA)>
+<!ATTLIST configure name CDATA #REQUIRED>
+<!ATTLIST configure value CDATA #REQUIRED>
+]>
+<configuremap>
+  <configure name="CC" value="gcc"/>
+  <configure name="CFLAGS" value="-I/usr/include/libxml2  -I/usr/include/libpng16   -pthread -I/usr/include/pango-1.0 -I/usr/include/cairo -I/usr/include/glib-2.0 -I/usr/lib64/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/freetype2 -I/usr/include/libdrm -I/usr/include/libpng16  -pthread -I/usr/include/OpenEXR -I/usr/include/libdrm    -I/usr/include/freetype2 -I/usr/include/libpng16  -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/freetype2 -I/usr/include/libpng16  -pthread     -fopenmp -g -O2 -Wall -mtune=sandybridge -fexceptions -pthread -DMAGICKCORE_HDRI_ENABLE=1 -DMAGICKCORE_QUANTUM_DEPTH=16"/>
+  <configure name="CODER_PATH" value="/usr/local/lib/ImageMagick-7.0.0/modules-Q16HDRI/coders"/>
+  <configure name="CONFIGURE_PATH" value="/usr/local/etc/ImageMagick-7/"/>
+  <configure name="CONFIGURE" value="./configure "/>
+  <configure name="COPYRIGHT" value="Copyright (C) 1999-2015 ImageMagick Studio LLC"/>
+  <configure name="CPPFLAGS" value="-I/usr/local/include/ImageMagick-7"/>
+  <configure name="CXXFLAGS" value="-g -O2 -pthread"/>
+  <configure name="CXX" value="g++"/>
+  <configure name="DEFS" value="-DHAVE_CONFIG_H"/>
+  <configure name="DELEGATES" value="bzlib djvu mpeg fftw fpx fontconfig freetype jbig jng jpeg lcms lzma openexr pango png ps tiff webp wmf x xml zlib"/>
+  <configure name="DISTCHECK_CONFIG_FLAGS" value=" --disable-deprecated  --with-quantum-depth=16  --with-jemalloc=no  --with-umem=no  --with-autotrace=no  --with-gslib=no  --with-fontpath=  --with-rsvg=no  --with-perl=no "/>
+  <configure name="DOCUMENTATION_PATH" value="/usr/local/share/doc/ImageMagick-7"/>
+  <configure name="EXEC-PREFIX" value="/usr/local"/>
+  <configure name="EXECUTABLE_PATH" value="/usr/local/bin"/>
+  <configure name="FEATURES" value="DPC HDRI Cipher OpenMP"/>
+  <configure name="FILTER_PATH" value="/usr/local/lib/ImageMagick-7.0.0/modules-Q16HDRI/filters"/>
+  <configure name="HOST" value="x86_64-unknown-linux-gnu"/>
+  <configure name="INCLUDE_PATH" value="/usr/local/include/ImageMagick-7"/>
+  <configure name="LDFLAGS" value="-L/usr/local/lib  "/>
+  <configure name="LIBRARY_PATH" value="/usr/local/lib/ImageMagick-7.0.0"/>
+  <configure name="LIBS" value=" -ljbig -llcms2  -ltiff -lfreetype  -ljpeg   -lpng16   -ldjvulibre  -lfftw3  -lfpx -lfontconfig -lfreetype  -lwebp -lwmflite  -lXext -lXt   -lSM -lICE -lX11  -llzma  -lbz2 -lIlmImf -lImath -lHalf -lIex -lIexMath -lIlmThread -pthread   -lpangocairo-1.0 -lpango-1.0 -lgobject-2.0 -lglib-2.0 -lcairo   -lxml2   -L/usr/lib64 -lz   -lm -lgomp    "/>
+  <configure name="LIB_VERSION_NUMBER" value="7,0,0,0"/>
+  <configure name="LIB_VERSION" value="0x700"/>
+  <configure name="NAME" value="ImageMagick"/>
+  <configure name="PCFLAGS" value="-fopenmp -DMAGICKCORE_HDRI_ENABLE=1 -DMAGICKCORE_QUANTUM_DEPTH=16"/>
+  <configure name="PREFIX" value="/usr/local"/>
+  <configure name="QuantumDepth" value="16"/>
+  <configure name="RELEASE_DATE" value="2015-08-09"/>
+  <configure name="SHAREARCH_PATH" value="/usr/local/lib/ImageMagick-7.0.0/config-Q16HDRI"/>
+  <configure name="SHARE_PATH" value="/usr/local/share/ImageMagick-7"/>
+  <configure name="SVN_REVISION" value="Unversioned" />
+  <configure name="TARGET_CPU" value="x86_64"/>
+  <configure name="TARGET_OS" value="linux-gnu"/>
+  <configure name="TARGET_VENDOR" value="unknown"/>
+  <configure name="VERSION" value="7.0.0"/>
+  <configure name="WEBSITE" value="http://www.imagemagick.org"/>
+</configuremap>
