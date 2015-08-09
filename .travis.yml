@@ -1,5 +1,6 @@
 language: c
 
+sudo: false
 
 compiler:
   - clang
