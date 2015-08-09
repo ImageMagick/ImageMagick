@@ -1,0 +1,6 @@
+/magick/magick-baseconfig.h
+/magick/version.h
+
+/PerlMagick/*.a
+/PerlMagick/Makefile.PL
+/PerlMagick/Zip.ps1

@@ -12,7 +12,7 @@ ImageMagick
 | 7 | [![Build Status](https://travis-ci.org/ImageMagick/ImageMagick.svg?branch=master)](https://travis-ci.org/ImageMagick/ImageMagick) | [![Build status](https://ci.appveyor.com/api/projects/status/jk7yr5plamnuh9g6/branch/master?svg=true)](https://ci.appveyor.com/project/dlemstra/imagemagick-windows/branch/master) |
 | 6 | [![Build Status](https://travis-ci.org/ImageMagick/ImageMagick.svg?branch=ImageMagick-6)](https://travis-ci.org/ImageMagick/ImageMagick) | [![Build status](https://ci.appveyor.com/api/projects/status/jk7yr5plamnuh9g6/branch/ImageMagick-Windows-6?svg=true)](https://ci.appveyor.com/project/dlemstra/imagemagick-windows/branch/ImageMagick-Windows-6) |
 
-####What is ImageMagick?
+#### What is ImageMagick?
 
 The functionality of ImageMagick is typically utilized from the command line or you can use the features from programs written in your favorite programming language. Choose from these interfaces: G2F (Ada), MagickCore (C), MagickWand (C), ChMagick (Ch), ImageMagickObject (COM+), Magick++ (C++), JMagick (Java), L-Magick (Lisp), NMagick (Neko/haXe), MagickNet (.NET), PascalMagick (Pascal), PerlMagick (Perl), MagickWand for PHP (PHP), IMagick (PHP), PythonMagick (Python), RMagick (Ruby), or TclMagick (Tcl/TK). With a language interface, use ImageMagick to modify or create images dynamically and automagically.
 
@@ -24,9 +24,9 @@ The ImageMagick development process ensures a stable API and ABI. Before each Im
 
 ImageMagick is available from http://www.imagemagick.org/download to download. It runs on Linux, Windows, Mac Os X, iOS, Android OS, and others.
 
-The authoritative ImageMagick web site is http://www.imagemagick.org. The authoritative source code repository is https://subversion.imagemagick.org/subversion/ImageMagick/.
+The authoritative ImageMagick web site is http://www.imagemagick.org. The authoritative source code repository is http://git.imagemagick.org/repos/ImageMagick/.
 
-####Features and Capabilities
+#### Features and Capabilities
 
 Here are just a few examples of what ImageMagick can do:
 
@@ -61,6 +61,6 @@ Here are just a few examples of what ImageMagick can do:
 
 [Examples of ImageMagick Usage](http://www.imagemagick.org/Usage/), shows how to use ImageMagick from the command-line to accomplish any of these tasks and much more. Also, see [Fred's ImageMagick Scripts](http://www.fmwconcepts.com/imagemagick/): a plethora of command-line scripts that perform geometric transforms, blurs, sharpens, edging, noise removal, and color manipulations. With [Magick.NET](https://magick.codeplex.com/), use ImageMagick without having to install ImageMagick on your server or desktop.
 
-####News
+#### News
 
 The design of ImageMagick is an evolutionary process, with the design and implementation efforts serving to influence and guide further progress in the other.  With [ImageMagick version 7](http://nextgen.imagemagick.org), we aim to improve the design based on lessons learned from the version 6 implementation.  See the [porting](http://www.imagemagick.org/script/porting.php) guide to track the progress of the version 7 development effort.
