@@ -29,13 +29,12 @@ Introduction to ImageMagick
   that includes memory error and thread data race detection to prevent
   security vulnerabilities.
 
-  The current release is ImageMagick 6.9.1-4 available from
-  http://www.imagemagick.org/download. It runs on Linux, Windows, Mac
-  Os X, iOS, Android OS, and others.
+  ImageMagick is available from http://www.imagemagick.org/download to download.
+  It runs on Linux, Windows, Mac Os X, iOS, Android OS, and others.
 
   The authoritative ImageMagick web site is
   http://www.imagemagick.org. The authoritative source code repository is
-  https://subversion.imagemagick.org/subversion/ImageMagick/.
+  http://git.imagemagick.org/repos/ImageMagick/.
 
 
 Features and Capabilities
