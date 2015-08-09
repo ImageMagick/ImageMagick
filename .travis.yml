@@ -15,6 +15,6 @@ script:
     - export CFLAGS="-Wno-deprecated-declarations -Wdeclaration-after-statement -Wno-error=unused-variable"
     - ./configure --disable-openmp --with-quantum-depth=16 --enable-hdri=no --with-perl
     - make
-    - cd PerlMagick
-    - perl Makefile.PL
-    - make
+#    - cd PerlMagick
+#    - perl Makefile.PL
+#    - make
