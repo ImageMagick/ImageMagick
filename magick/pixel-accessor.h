@@ -156,9 +156,9 @@ static inline MagickRealType GetPixelLuminance(const Image *restrict image,
         0.072186f*pixel->blue;
       return(intensity);
     }
-  intensity=0.212656f*DecodePixelGamma(pixel->red)+
-    0.715158f*DecodePixelGamma(pixel->green)+
-    0.072186f*DecodePixelGamma(pixel->blue);
+  intensity=0.212656f*DecodePixelGamma((MagickRealType) pixel->red)+
+    0.715158f*DecodePixelGamma((MagickRealType) pixel->green)+
+    0.072186f*DecodePixelGamma((MagickRealType) pixel->blue);
   return(intensity);
 }
 
