@@ -593,6 +593,7 @@ static MagickBooleanType WritePS3MaskImage(const ImageInfo *image_info,
       status=SerializeImageChannel(image_info,mask_image,&pixel_info,&length);
       if (status == MagickFalse)
         break;
+      pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
       status=ZLIBEncodeImage(image,length,pixels);
       pixel_info=RelinquishVirtualMemory(pixel_info);
       break;
