@@ -4167,9 +4167,9 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
       for ( ; ; )
       {
         x_offset=(ssize_t) floor((double) x+width*
-          GetPseudoRandomValue(random_info));
+          (GetPseudoRandomValue(random_info)-0.5));
         y_offset=(ssize_t) floor((double) y+width*
-          GetPseudoRandomValue(random_info));
+          (GetPseudoRandomValue(random_info)-0.5));
         if ((x_offset >= 0) && (x_offset < image->columns) &&
             (y_offset >= 0) && (y_offset < image->rows))
           break;
