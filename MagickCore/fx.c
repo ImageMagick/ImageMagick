@@ -2232,14 +2232,26 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
         }
         case LogicalAndOperator:
         {
-          gamma=FxEvaluateSubexpression(fx_info,channel,x,y,++p,beta,exception);
-          *beta=(alpha > 0.0) && (gamma > 0.0) ? 1.0 : 0.0;
+          p++;
+          if (alpha <= 0.0)
+            {
+              *beta=0.0;
+              return(*beta);
+            }
+          gamma=FxEvaluateSubexpression(fx_info,channel,x,y,p,beta,exception);
+          *beta=(gamma > 0.0) ? 1.0 : 0.0;
           return(*beta);
         }
         case LogicalOrOperator:
         {
-          gamma=FxEvaluateSubexpression(fx_info,channel,x,y,++p,beta,exception);
-          *beta=(alpha > 0.0) || (gamma > 0.0) ? 1.0 : 0.0;
+          p++;
+          if (alpha > 0.0)
+            {
+             *beta=1.0;
+             return(*beta);
+            }
+          gamma=FxEvaluateSubexpression(fx_info,channel,x,y,p,beta,exception);
+          *beta=(gamma > 0.0) ? 1.0 : 0.0;
           return(*beta);
         }
         case '?':
