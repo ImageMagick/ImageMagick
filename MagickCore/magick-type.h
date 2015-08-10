@@ -182,6 +182,7 @@ typedef enum
 #if defined(MAGICKCORE_HAVE_ISNAN)
 #  define IsNaN(a) isnan(a)
 #elif defined(_MSC_VER) && (_MSC_VER >= 1310)
+#  include <float.h>
 #  define IsNaN(a) _isnan(a)
 #else
 #  define IsNaN(a) (a != a)
