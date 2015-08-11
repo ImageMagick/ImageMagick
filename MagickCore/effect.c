@@ -3629,8 +3629,8 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
           (GetPseudoRandomValue(random_info)-0.5));
         y_offset=(ssize_t) floor((double) y+width*
           (GetPseudoRandomValue(random_info)-0.5));
-        if ((x_offset >= 0) && (x_offset < image->columns) &&
-            (y_offset >= 0) && (y_offset < image->rows))
+        if ((x_offset >= 0) && (x_offset < (ssize_t) image->columns) &&
+            (y_offset >= 0) && (y_offset < (ssize_t) image->rows))
           break;
       }
       p=GetCacheViewAuthenticPixels(image_view,x_offset,y_offset,1,1,exception);
