@@ -993,13 +993,18 @@ static void TIFFReadPhotoshopLayers(Image* image,const ImageInfo *image_info,
     return;
   for (i=0; i < (ssize_t) layer_info->length-8; i++)
   {
-    if (LocaleNCompare((const char *) (layer_info->datum+i),"8BIM",4) != 0)
+    if (LocaleNCompare((const char *) (layer_info->datum+i),
+        image->endian == MSBEndian ? "8BIM" : "MIB8",4) != 0)
       continue;
     i+=4;
-    if ((LocaleNCompare((const char *) (layer_info->datum+i),"Layr",4) == 0) ||
-        (LocaleNCompare((const char *) (layer_info->datum+i),"LMsk",4) == 0) ||
-        (LocaleNCompare((const char *) (layer_info->datum+i),"Lr16",4) == 0) ||
-        (LocaleNCompare((const char *) (layer_info->datum+i),"Lr32",4) == 0))
+    if ((LocaleNCompare((const char *) (layer_info->datum+i),
+         image->endian == MSBEndian ? "Layr" : "ryaL",4) == 0) ||
+        (LocaleNCompare((const char *) (layer_info->datum+i),
+         image->endian == MSBEndian ? "LMsk" : "ksML",4) == 0) ||
+        (LocaleNCompare((const char *) (layer_info->datum+i),
+         image->endian == MSBEndian ? "Lr16" : "61rL",4) == 0) ||
+        (LocaleNCompare((const char *) (layer_info->datum+i),
+         image->endian == MSBEndian ? "Lr32" : "23rL",4) == 0))
       break;
   }
   i+=4;

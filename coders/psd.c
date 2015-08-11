@@ -479,8 +479,8 @@ static inline size_t GetPSDPacketSize(Image *image)
 static inline MagickSizeType GetPSDSize(const PSDInfo *psd_info,Image *image)
 {
   if (psd_info->version == 1)
-    return((MagickSizeType) ReadBlobMSBLong(image));
-  return((MagickSizeType) ReadBlobMSBLongLong(image));
+    return((MagickSizeType) ReadBlobLong(image));
+  return((MagickSizeType) ReadBlobLongLong(image));
 }
 
 static inline size_t GetPSDRowSize(Image *image)
@@ -643,6 +643,23 @@ static CompositeOperator PSDBlendModeToCompositeOperator(const char *mode)
   if (LocaleNCompare(mode,"hMix",4) == 0)
     return(HardMixCompositeOp);
   return(OverCompositeOp);
+}
+
+static inline void ReversePSDString(Image *image,char *p,size_t length)
+{
+  char
+    *q;
+
+  if (image->endian == MSBEndian)
+    return;
+
+  q=p+length;
+  for(--q; p < q; ++p, --q)
+  {
+    *p = *p ^ *q,
+    *q = *p ^ *q,
+    *p = *p ^ *q;
+  }
 }
 
 static MagickStatusType ReadPSDChannelPixels(Image *image,const size_t channels,
@@ -834,9 +851,9 @@ static inline MagickOffsetType *ReadPSDRLEOffsets(Image *image,
       for (y=0; y < (ssize_t) size; y++)
       {
         if (psd_info->version == 1)
-          offsets[y]=(MagickOffsetType) ReadBlobMSBShort(image);
+          offsets[y]=(MagickOffsetType) ReadBlobShort(image);
         else
-          offsets[y]=(MagickOffsetType) ReadBlobMSBLong(image);
+          offsets[y]=(MagickOffsetType) ReadBlobLong(image);
       }
     }
   return offsets;
@@ -1179,7 +1196,7 @@ static MagickStatusType ReadPSDLayer(Image *image,const PSDInfo *psd_info,
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "    reading data for channel %.20g",(double) j);
 
-    compression=(PSDCompressionType) ReadBlobMSBShort(layer_info->image);
+    compression=(PSDCompressionType) ReadBlobShort(layer_info->image);
     layer_info->image->compression=ConvertPSDCompression(compression);
     if (layer_info->channel_info[j].type == -1)
       layer_info->image->matte=MagickTrue;
@@ -1238,14 +1255,16 @@ ModuleExport MagickStatusType ReadPSDLayers(Image *image,
       /*
         Skip layers & masks.
       */
-      (void) ReadBlobMSBLong(image);
+      (void) ReadBlobLong(image);
       count=ReadBlob(image,4,(unsigned char *) type);
+      ReversePSDString(image,type,4);
       status=MagickFalse;
       if ((count == 0) || (LocaleNCompare(type,"8BIM",4) != 0))
         return(MagickTrue);
       else
         {
           count=ReadBlob(image,4,(unsigned char *) type);
+          ReversePSDString(image,type,4);
           if ((count != 0) && (LocaleNCompare(type,"Lr16",4) == 0))
             size=GetPSDSize(psd_info,image);
           else
@@ -1256,7 +1275,7 @@ ModuleExport MagickStatusType ReadPSDLayers(Image *image,
   if (size != 0)
     {
       layer_info=(LayerInfo *) NULL;
-      number_layers=(short) ReadBlobMSBShort(image);
+      number_layers=(short) ReadBlobShort(image);
 
       if (number_layers < 0)
         {
@@ -1300,20 +1319,20 @@ ModuleExport MagickStatusType ReadPSDLayers(Image *image,
 
       for (i=0; i < number_layers; i++)
       {
-        int
+        ssize_t
           x,
           y;
 
         if (image->debug != MagickFalse)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "  reading layer #%.20g",(double) i+1);
-        layer_info[i].page.y=(int) ReadBlobMSBLong(image);
-        layer_info[i].page.x=(int) ReadBlobMSBLong(image);
-        y=(int) ReadBlobMSBLong(image);
-        x=(int) ReadBlobMSBLong(image);
-        layer_info[i].page.width=(ssize_t) (x-layer_info[i].page.x);
-        layer_info[i].page.height=(ssize_t) (y-layer_info[i].page.y);
-        layer_info[i].channels=ReadBlobMSBShort(image);
+        layer_info[i].page.y=(ssize_t) ReadBlobLong(image);
+        layer_info[i].page.x=(ssize_t) ReadBlobLong(image);
+        y=(ssize_t) ReadBlobLong(image);
+        x=(ssize_t) ReadBlobLong(image);
+        layer_info[i].page.width=x-layer_info[i].page.x;
+        layer_info[i].page.height=y-layer_info[i].page.y;
+        layer_info[i].channels=ReadBlobShort(image);
         if (layer_info[i].channels > MaxPSDChannels)
           {
             layer_info=DestroyLayerInfo(layer_info,number_layers);
@@ -1328,7 +1347,7 @@ ModuleExport MagickStatusType ReadPSDLayers(Image *image,
             layer_info[i].page.width,(double) layer_info[i].channels);
         for (j=0; j < (ssize_t) layer_info[i].channels; j++)
         {
-          layer_info[i].channel_info[j].type=(short) ReadBlobMSBShort(image);
+          layer_info[i].channel_info[j].type=(short) ReadBlobShort(image);
           layer_info[i].channel_info[j].size=(size_t) GetPSDSize(psd_info,
             image);
           if (image->debug != MagickFalse)
@@ -1338,6 +1357,7 @@ ModuleExport MagickStatusType ReadPSDLayers(Image *image,
               (double) layer_info[i].channel_info[j].size);
         }
         count=ReadBlob(image,4,(unsigned char *) type);
+        ReversePSDString(image,type,4);
         if ((count == 0) || (LocaleNCompare(type,"8BIM",4) != 0))
           {
             if (image->debug != MagickFalse)
@@ -1348,6 +1368,7 @@ ModuleExport MagickStatusType ReadPSDLayers(Image *image,
               image->filename);
           }
         (void) ReadBlob(image,4,(unsigned char *) layer_info[i].blendkey);
+        ReversePSDString(image,layer_info[i].blendkey,4);
         layer_info[i].opacity=(Quantum) (QuantumRange-ScaleCharToQuantum(
           (unsigned char) ReadBlobByte(image)));
         layer_info[i].clipping=(unsigned char) ReadBlobByte(image);
@@ -1361,7 +1382,7 @@ ModuleExport MagickStatusType ReadPSDLayers(Image *image,
             layer_info[i].visible ? "true" : "false");
         (void) ReadBlobByte(image);  /* filler */
 
-        size=ReadBlobMSBLong(image);
+        size=ReadBlobLong(image);
         if (size != 0)
           {
             MagickSizeType
@@ -1371,19 +1392,19 @@ ModuleExport MagickStatusType ReadPSDLayers(Image *image,
             if (image->debug != MagickFalse)
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                 "    layer contains additional info");
-            length=ReadBlobMSBLong(image);
+            length=ReadBlobLong(image);
             combined_length=length+4;
             if (length != 0)
               {
                 /*
                   Layer mask info.
                 */
-                layer_info[i].mask.page.y=(int) ReadBlobMSBLong(image);
-                layer_info[i].mask.page.x=(int) ReadBlobMSBLong(image);
-                layer_info[i].mask.page.height=(size_t)
-                  (ReadBlobMSBLong(image)-layer_info[i].mask.page.y);
-                layer_info[i].mask.page.width=(size_t)
-                  (ReadBlobMSBLong(image)-layer_info[i].mask.page.x);
+                layer_info[i].mask.page.y=(ssize_t) ReadBlobLong(image);
+                layer_info[i].mask.page.x=(ssize_t) ReadBlobLong(image);
+                layer_info[i].mask.page.height=(size_t) (ReadBlobLong(image)-
+                  layer_info[i].mask.page.y);
+                layer_info[i].mask.page.width=(size_t) (ReadBlobLong(image)-
+                  layer_info[i].mask.page.x);
                 layer_info[i].mask.background=(unsigned char) ReadBlobByte(
                   image);
                 layer_info[i].mask.flags=(unsigned char) ReadBlobByte(image);
@@ -1411,7 +1432,7 @@ ModuleExport MagickStatusType ReadPSDLayers(Image *image,
                       image->filename);
                   }
               }
-            length=ReadBlobMSBLong(image);
+            length=ReadBlobLong(image);
             combined_length+=length+4;
             if (length != 0)
               {
@@ -1427,8 +1448,8 @@ ModuleExport MagickStatusType ReadPSDLayers(Image *image,
                 */
                 for (j=0; j < (ssize_t) (length); j+=8)
                 {
-                  size_t blend_source=ReadBlobMSBLong(image);
-                  size_t blend_dest=ReadBlobMSBLong(image);
+                  size_t blend_source=ReadBlobLong(image);
+                  size_t blend_dest=ReadBlobLong(image);
                   if (image->debug != MagickFalse)
                     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                       "        source(%x), dest(%x)",(unsigned int)
@@ -1821,6 +1842,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           "  read composite only");
       skip_layers=MagickTrue;
     }
+  image->endian=MSBEndian;
   if (length == 0)
     {
       if (image->debug != MagickFalse)
