@@ -228,13 +228,13 @@ static inline MagickRealType GetPixelInfoLuma(const PixelInfo *restrict pixel)
 
   if (pixel->colorspace == sRGBColorspace)
     {
-      intensity=0.212656f*pixel->red+0.715158f*pixel->green+
-        0.072186f*pixel->blue;
+      intensity=(MagickRealType) (0.212656f*pixel->red+0.715158f*pixel->green+
+        0.072186f*pixel->blue);
       return(intensity);
     }
-  intensity=0.212656f*EncodePixelGamma(pixel->red)+
+  intensity=(MagickRealType) (0.212656f*EncodePixelGamma(pixel->red)+
     0.715158f*EncodePixelGamma(pixel->green)+
-    0.072186f*EncodePixelGamma(pixel->blue);
+    0.072186f*EncodePixelGamma(pixel->blue));
   return(intensity);
 }
 
@@ -246,13 +246,13 @@ static inline MagickRealType GetPixelInfoLuminance(
 
   if (pixel->colorspace != sRGBColorspace)
     {
-      intensity=0.212656f*pixel->red+0.715158f*pixel->green+
-        0.072186f*pixel->blue;
+      intensity=(MagickRealType) (0.212656f*pixel->red+0.715158f*pixel->green+
+        0.072186f*pixel->blue);
       return(intensity);
     }
-  intensity=0.212656f*DecodePixelGamma(pixel->red)+
+  intensity=(MagickRealType) (0.212656f*DecodePixelGamma(pixel->red)+
     0.715158f*DecodePixelGamma(pixel->green)+
-    0.072186f*DecodePixelGamma(pixel->blue);
+    0.072186f*DecodePixelGamma(pixel->blue));
   return(intensity);
 }
 
@@ -268,9 +268,10 @@ static inline MagickRealType GetPixelLuma(const Image *restrict image,
   MagickRealType
     intensity;
 
-  intensity=0.212656f*pixel[image->channel_map[RedPixelChannel].offset]+
+  intensity=(MagickRealType) (
+    0.212656f*pixel[image->channel_map[RedPixelChannel].offset]+
     0.715158f*pixel[image->channel_map[GreenPixelChannel].offset]+
-    0.072186f*pixel[image->channel_map[BluePixelChannel].offset];
+    0.072186f*pixel[image->channel_map[BluePixelChannel].offset]);
   return(intensity);
 }
 
@@ -282,18 +283,18 @@ static inline MagickRealType GetPixelLuminance(const Image *restrict image,
 
   if (image->colorspace != sRGBColorspace)
     {
-      intensity=
+      intensity=(MagickRealType) (
         0.212656f*pixel[image->channel_map[RedPixelChannel].offset]+
         0.715158f*pixel[image->channel_map[GreenPixelChannel].offset]+
-        0.072186f*pixel[image->channel_map[BluePixelChannel].offset];
+        0.072186f*pixel[image->channel_map[BluePixelChannel].offset]);
       return(intensity);
     }
-  intensity=0.212656f*DecodePixelGamma((MagickRealType)
+  intensity=(MagickRealType) (0.212656f*DecodePixelGamma((MagickRealType)
     pixel[image->channel_map[RedPixelChannel].offset])+0.715158f*
     DecodePixelGamma((MagickRealType)
     pixel[image->channel_map[GreenPixelChannel].offset])+0.072186f*
     DecodePixelGamma((MagickRealType)
-    pixel[image->channel_map[BluePixelChannel].offset]);
+    pixel[image->channel_map[BluePixelChannel].offset]));
   return(intensity);
 }
 
