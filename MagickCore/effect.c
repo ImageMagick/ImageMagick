@@ -3433,6 +3433,126 @@ static void inline SwapPixelComponent(Quantum *p,Quantum *q)
   (*q)=pixel;
 }
 
+static Image *InterpolateSpreadImage(const Image *image,
+  const PixelInterpolateMethod method,const double radius,
+  ExceptionInfo *exception)
+{
+#define SpreadImageTag  "Spread/Image"
+
+  CacheView
+    *image_view,
+    *spread_view;
+
+  Image
+    *spread_image;
+
+  MagickBooleanType
+    status;
+
+  MagickOffsetType
+    progress;
+
+  RandomInfo
+    **restrict random_info;
+
+  size_t
+    width;
+
+  ssize_t
+    y;
+
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  unsigned long
+    key;
+#endif
+
+  /*
+    Initialize spread image attributes.
+  */
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickCoreSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickCoreSignature);
+  spread_image=CloneImage(image,image->columns,image->rows,MagickTrue,
+    exception);
+  if (spread_image == (Image *) NULL)
+    return((Image *) NULL);
+  if (SetImageStorageClass(spread_image,DirectClass,exception) == MagickFalse)
+    {
+      spread_image=DestroyImage(spread_image);
+      return((Image *) NULL);
+    }
+  /*
+    Spread image.
+  */
+  status=MagickTrue;
+  progress=0;
+  width=GetOptimalKernelWidth1D(radius,0.5);
+  random_info=AcquireRandomInfoThreadSet();
+  image_view=AcquireVirtualCacheView(image,exception);
+  spread_view=AcquireAuthenticCacheView(spread_image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  key=GetRandomSecretKey(random_info[0]);
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+    magick_threads(image,spread_image,image->rows,key == ~0UL)
+#endif
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    const int
+      id = GetOpenMPThreadId();
+
+    register Quantum
+      *restrict q;
+
+    register ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    q=QueueCacheViewAuthenticPixels(spread_view,0,y,spread_image->columns,1,
+      exception);
+    if (q == (Quantum *) NULL)
+      {
+        status=MagickFalse;
+        continue;
+      }
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      PointInfo
+        point;
+
+      point.x=GetPseudoRandomValue(random_info[id]);
+      point.y=GetPseudoRandomValue(random_info[id]);
+      status=InterpolatePixelChannels(image,image_view,spread_image,method,
+        (double) x+width*(point.x-0.5),(double) y+width*(point.y-0.5),q,
+        exception);
+      q+=GetPixelChannels(spread_image);
+    }
+    if (SyncCacheViewAuthenticPixels(spread_view,exception) == MagickFalse)
+      status=MagickFalse;
+    if (image->progress_monitor != (MagickProgressMonitor) NULL)
+      {
+        MagickBooleanType
+          proceed;
+
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp critical (MagickCore_SpreadImage)
+#endif
+        proceed=SetImageProgress(image,SpreadImageTag,progress++,image->rows);
+        if (proceed == MagickFalse)
+          status=MagickFalse;
+      }
+  }
+  spread_view=DestroyCacheView(spread_view);
+  image_view=DestroyCacheView(image_view);
+  random_info=DestroyRandomInfoThreadSet(random_info);
+  if (status == MagickFalse)
+    spread_image=DestroyImage(spread_image);
+  return(spread_image);
+}
+
 MagickExport Image *SpreadImage(const Image *image,const double radius,
   ExceptionInfo *exception)
 {
@@ -3469,6 +3589,8 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
+  if (image->interpolate != UndefinedInterpolatePixel)
+     return(InterpolateSpreadImage(image,image->interpolate,radius,exception));
   spread_image=CloneImage(image,0,0,MagickTrue,exception);
   if (spread_image == (Image *) NULL)
     return((Image *) NULL);
