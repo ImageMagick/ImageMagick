@@ -140,7 +140,8 @@ static inline MagickRealType GetPixelLuma(const Image *restrict image,
   MagickRealType
     intensity;
 
-  intensity=0.212656f*pixel->red+0.715158f*pixel->green+0.072186f*pixel->blue;
+  intensity=(MagickRealType) (0.212656f*pixel->red+0.715158f*pixel->green+
+    0.072186f*pixel->blue);
   return(intensity);
 }
 
@@ -152,13 +153,13 @@ static inline MagickRealType GetPixelLuminance(const Image *restrict image,
 
   if (image->colorspace != sRGBColorspace)
     {
-      intensity=0.212656f*pixel->red+0.715158f*pixel->green+
-        0.072186f*pixel->blue;
+      intensity=(MagickRealType) (0.212656f*pixel->red+0.715158f*pixel->green+
+        0.072186f*pixel->blue);
       return(intensity);
     }
-  intensity=0.212656f*DecodePixelGamma((MagickRealType) pixel->red)+
-    0.715158f*DecodePixelGamma((MagickRealType) pixel->green)+
-    0.072186f*DecodePixelGamma((MagickRealType) pixel->blue);
+  intensity=(MagickRealType) (0.212656f*DecodePixelGamma((MagickRealType)
+    pixel->red)+0.715158f*DecodePixelGamma((MagickRealType) pixel->green)+
+    0.072186f*DecodePixelGamma((MagickRealType) pixel->blue));
   return(intensity);
 }
 
