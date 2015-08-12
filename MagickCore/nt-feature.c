@@ -538,8 +538,7 @@ MagickExport MagickBooleanType NTAcquireTypeCache(SplayTreeInfo *type_cache,
         type_info->family=ConstantString(buffer);
 
         list_entries++;
-        status=AddValueToSplayTree(type_cache,ConstantString(type_info->name),
-          type_info);
+        status=AddValueToSplayTree(type_cache,type_info->name,type_info);
         if (status == MagickFalse)
           (void) ThrowMagickException(exception,GetMagickModule(),
             ResourceLimitError,"MemoryAllocationFailed","`%s'",type_info->name);
