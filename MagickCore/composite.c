@@ -2127,15 +2127,19 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           case ModulusAddCompositeOp:
           {
             pixel=Sc+Dc;
-            if (pixel > QuantumRange)
+            while (pixel > QuantumRange)
               pixel-=QuantumRange;
+            while (pixel < 0.0)
+              pixel+=QuantumRange;
             pixel=(Sa*Da*pixel+Sa*Sc*(1.0-Da)+Da*Dc*(1.0-Sa));
             break;
           }
           case ModulusSubtractCompositeOp:
           {
             pixel=Sc-Dc;
-            if (pixel < 0.0)
+            while (pixel > QuantumRange)
+              pixel-=QuantumRange;
+            while (pixel < 0.0)
               pixel+=QuantumRange;
             pixel=(Sa*Da*pixel+Sa*Sc*(1.0-Da)+Da*Dc*(1.0-Sa));
             break;
