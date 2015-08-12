@@ -16,6 +16,8 @@
     class of Magick++.
   * Fixed reading Photoshop layers of LSB TIFF files (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=28045).
+  * Fixed memory leak in font cache under Windows (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=6&t=28191).
 
 2015-07-25  6.9.1-10 Cristy  <quetzlzacatenango@image...>
   * New version 6.9.1-10, SVN revision 19269.
