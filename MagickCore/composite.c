@@ -2434,7 +2434,7 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture,
             thread_status;
 
           thread_status=CompositeImage(image,texture_image,image->compose,
-            MagickFalse,x+texture_image->tile_offset.x,y+
+            MagickTrue,x+texture_image->tile_offset.x,y+
             texture_image->tile_offset.y,exception);
           if (thread_status == MagickFalse)
             {
