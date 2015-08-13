@@ -240,6 +240,21 @@ static MagickBooleanType
 %    o exception: return any errors or warnings in this structure.
 %
 */
+static int CompareMagickInfoSize(const void *a,const void *b)
+{
+  MagicInfo
+    *ma,
+    *mb;
+
+  ma=(MagicInfo *) a;
+  mb=(MagicInfo *) b;
+
+  if (ma->offset != mb->offset)
+    return((int) (ma->offset-mb->offset));
+
+  return((int) (mb->length-ma->length));
+}
+
 static LinkedListInfo *AcquireMagicCache(const char *filename,
   ExceptionInfo *exception)
 {
@@ -304,7 +319,8 @@ static LinkedListInfo *AcquireMagicCache(const char *filename,
     magic_info->length=p->length;
     magic_info->exempt=MagickTrue;
     magic_info->signature=MagickSignature;
-    status&=AppendValueToLinkedList(magic_cache,magic_info);
+    status&=InsertValueInSortedLinkedList(magic_cache,CompareMagickInfoSize,
+      NULL,magic_info);
     if (status == MagickFalse)
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",magic_info->name);
