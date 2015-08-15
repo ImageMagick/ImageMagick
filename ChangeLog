@@ -1,3 +1,6 @@
+2015-08-15  6.9.2-0 Cristy  <quetzlzacatenango@image...>
+  * New version 6.9.2-0, GIT revision 10143:3534f6d:20150815.
+
 2015-08-10  6.9.2-0 Cristy  <quetzlzacatenango@image...>
   * Swap pixels for -spread command-line option (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=28043).
