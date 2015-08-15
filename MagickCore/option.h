@@ -37,6 +37,7 @@ typedef enum
   MagickColorspaceOptions,
   MagickCommandOptions,
   MagickComplexOptions,
+  MagickComplianceOptions,
   MagickComposeOptions,
   MagickCompressOptions,
   MagickConfigureOptions,

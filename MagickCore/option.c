@@ -183,6 +183,56 @@ static const OptionInfo
     { "UserSpaceOnUse", UserSpaceOnUse, UndefinedOptionFlag, MagickFalse },
     { (char *) NULL, UndefinedPathUnits, UndefinedOptionFlag, MagickFalse }
   },
+  ColorspaceOptions[] =
+  {
+    { "Undefined", UndefinedColorspace, UndefinedOptionFlag, MagickTrue },
+    { "CIELab", LabColorspace, UndefinedOptionFlag, MagickFalse },
+    { "CMY", CMYColorspace, UndefinedOptionFlag, MagickFalse },
+    { "CMYK", CMYKColorspace, UndefinedOptionFlag, MagickFalse },
+    { "Gray", GRAYColorspace, UndefinedOptionFlag, MagickFalse },
+    { "HCL", HCLColorspace, UndefinedOptionFlag, MagickFalse },
+    { "HCLp", HCLpColorspace, UndefinedOptionFlag, MagickFalse },
+    { "HSB", HSBColorspace, UndefinedOptionFlag, MagickFalse },
+    { "HSI", HSIColorspace, UndefinedOptionFlag, MagickFalse },
+    { "HSL", HSLColorspace, UndefinedOptionFlag, MagickFalse },
+    { "HSV", HSVColorspace, UndefinedOptionFlag, MagickFalse },
+    { "HWB", HWBColorspace, UndefinedOptionFlag, MagickFalse },
+    { "Lab", LabColorspace, UndefinedOptionFlag, MagickFalse },
+    { "LCH", LCHColorspace, UndefinedOptionFlag, MagickFalse },
+    { "LCHab", LCHabColorspace, UndefinedOptionFlag, MagickFalse },
+    { "LCHuv", LCHuvColorspace, UndefinedOptionFlag, MagickFalse },
+    { "LMS", LMSColorspace, UndefinedOptionFlag, MagickFalse },
+    { "Log", LogColorspace, UndefinedOptionFlag, MagickFalse },
+    { "Luv", LuvColorspace, UndefinedOptionFlag, MagickFalse },
+    { "OHTA", OHTAColorspace, UndefinedOptionFlag, MagickFalse },
+    { "Rec601YCbCr", Rec601YCbCrColorspace, UndefinedOptionFlag, MagickFalse },
+    { "Rec709YCbCr", Rec709YCbCrColorspace, UndefinedOptionFlag, MagickFalse },
+    { "RGB", RGBColorspace, UndefinedOptionFlag, MagickFalse },
+    { "scRGB", scRGBColorspace, UndefinedOptionFlag, MagickFalse },
+    { "sRGB", sRGBColorspace, UndefinedOptionFlag, MagickFalse },
+    { "Transparent", TransparentColorspace, UndefinedOptionFlag, MagickFalse },
+    { "xyY", xyYColorspace, UndefinedOptionFlag, MagickFalse },
+    { "XYZ", XYZColorspace, UndefinedOptionFlag, MagickFalse },
+    { "YCbCr", YCbCrColorspace, UndefinedOptionFlag, MagickFalse },
+    { "YDbDr", YDbDrColorspace, UndefinedOptionFlag, MagickFalse },
+    { "YCC", YCCColorspace, UndefinedOptionFlag, MagickFalse },
+    { "YIQ", YIQColorspace, UndefinedOptionFlag, MagickFalse },
+    { "YPbPr", YPbPrColorspace, UndefinedOptionFlag, MagickFalse },
+    { "YUV", YUVColorspace, UndefinedOptionFlag, MagickFalse },
+    { (char *) NULL, UndefinedColorspace, UndefinedOptionFlag, MagickFalse }
+  },
+  ComplexOptions[] =
+  {
+    { "Undefined", UndefinedComplexOperator, UndefinedOptionFlag, MagickTrue },
+    { "Add", AddComplexOperator, UndefinedOptionFlag, MagickFalse },
+    { "Conjugate", ConjugateComplexOperator, UndefinedOptionFlag, MagickFalse },
+    { "Divide", DivideComplexOperator, UndefinedOptionFlag, MagickFalse },
+    { "MagnitudePhase", MagnitudePhaseComplexOperator, UndefinedOptionFlag, MagickFalse },
+    { "Multiply", MultiplyComplexOperator, UndefinedOptionFlag, MagickFalse },
+    { "RealImaginary", RealImaginaryComplexOperator, UndefinedOptionFlag, MagickFalse },
+    { "Subtract", SubtractComplexOperator, UndefinedOptionFlag, MagickFalse },
+    { (char *) NULL, UndefinedComplexOperator, UndefinedOptionFlag, MagickFalse }
+  },
   CommandOptions[] =
   {
     /*
@@ -794,6 +844,16 @@ static const OptionInfo
     { "-write-mask", 1L, SimpleOperatorFlag | NeverInterpretArgsFlag, MagickFalse },
     { (char *) NULL, 0L, UndefinedOptionFlag, MagickFalse }
   },
+  ComplianceOptions[] =
+  {
+    { "Undefined", UndefinedCompliance, UndefinedOptionFlag, MagickTrue },
+    { "CSS", CSSCompliance, UndefinedOptionFlag, MagickFalse },
+    { "No", NoCompliance, UndefinedOptionFlag, MagickFalse },
+    { "SVG", SVGCompliance, UndefinedOptionFlag, MagickFalse },
+    { "X11", X11Compliance, UndefinedOptionFlag, MagickFalse },
+    { "XPM", XPMCompliance, UndefinedOptionFlag, MagickFalse },
+    { (char *) NULL, UndefinedClass, UndefinedOptionFlag, MagickFalse }
+  },
   ComposeOptions[] =
   {
     { "Undefined", UndefinedCompositeOp, UndefinedOptionFlag, MagickTrue },
@@ -900,56 +960,6 @@ static const OptionInfo
     { "RunlengthEncoded", RLECompression, UndefinedOptionFlag, MagickFalse },
     { "ZipS", ZipSCompression, UndefinedOptionFlag, MagickFalse },
     { (char *) NULL, UndefinedCompression, UndefinedOptionFlag, MagickFalse }
-  },
-  ColorspaceOptions[] =
-  {
-    { "Undefined", UndefinedColorspace, UndefinedOptionFlag, MagickTrue },
-    { "CIELab", LabColorspace, UndefinedOptionFlag, MagickFalse },
-    { "CMY", CMYColorspace, UndefinedOptionFlag, MagickFalse },
-    { "CMYK", CMYKColorspace, UndefinedOptionFlag, MagickFalse },
-    { "Gray", GRAYColorspace, UndefinedOptionFlag, MagickFalse },
-    { "HCL", HCLColorspace, UndefinedOptionFlag, MagickFalse },
-    { "HCLp", HCLpColorspace, UndefinedOptionFlag, MagickFalse },
-    { "HSB", HSBColorspace, UndefinedOptionFlag, MagickFalse },
-    { "HSI", HSIColorspace, UndefinedOptionFlag, MagickFalse },
-    { "HSL", HSLColorspace, UndefinedOptionFlag, MagickFalse },
-    { "HSV", HSVColorspace, UndefinedOptionFlag, MagickFalse },
-    { "HWB", HWBColorspace, UndefinedOptionFlag, MagickFalse },
-    { "Lab", LabColorspace, UndefinedOptionFlag, MagickFalse },
-    { "LCH", LCHColorspace, UndefinedOptionFlag, MagickFalse },
-    { "LCHab", LCHabColorspace, UndefinedOptionFlag, MagickFalse },
-    { "LCHuv", LCHuvColorspace, UndefinedOptionFlag, MagickFalse },
-    { "LMS", LMSColorspace, UndefinedOptionFlag, MagickFalse },
-    { "Log", LogColorspace, UndefinedOptionFlag, MagickFalse },
-    { "Luv", LuvColorspace, UndefinedOptionFlag, MagickFalse },
-    { "OHTA", OHTAColorspace, UndefinedOptionFlag, MagickFalse },
-    { "Rec601YCbCr", Rec601YCbCrColorspace, UndefinedOptionFlag, MagickFalse },
-    { "Rec709YCbCr", Rec709YCbCrColorspace, UndefinedOptionFlag, MagickFalse },
-    { "RGB", RGBColorspace, UndefinedOptionFlag, MagickFalse },
-    { "scRGB", scRGBColorspace, UndefinedOptionFlag, MagickFalse },
-    { "sRGB", sRGBColorspace, UndefinedOptionFlag, MagickFalse },
-    { "Transparent", TransparentColorspace, UndefinedOptionFlag, MagickFalse },
-    { "xyY", xyYColorspace, UndefinedOptionFlag, MagickFalse },
-    { "XYZ", XYZColorspace, UndefinedOptionFlag, MagickFalse },
-    { "YCbCr", YCbCrColorspace, UndefinedOptionFlag, MagickFalse },
-    { "YDbDr", YDbDrColorspace, UndefinedOptionFlag, MagickFalse },
-    { "YCC", YCCColorspace, UndefinedOptionFlag, MagickFalse },
-    { "YIQ", YIQColorspace, UndefinedOptionFlag, MagickFalse },
-    { "YPbPr", YPbPrColorspace, UndefinedOptionFlag, MagickFalse },
-    { "YUV", YUVColorspace, UndefinedOptionFlag, MagickFalse },
-    { (char *) NULL, UndefinedColorspace, UndefinedOptionFlag, MagickFalse }
-  },
-  ComplexOptions[] =
-  {
-    { "Undefined", UndefinedComplexOperator, UndefinedOptionFlag, MagickTrue },
-    { "Add", AddComplexOperator, UndefinedOptionFlag, MagickFalse },
-    { "Conjugate", ConjugateComplexOperator, UndefinedOptionFlag, MagickFalse },
-    { "Divide", DivideComplexOperator, UndefinedOptionFlag, MagickFalse },
-    { "MagnitudePhase", MagnitudePhaseComplexOperator, UndefinedOptionFlag, MagickFalse },
-    { "Multiply", MultiplyComplexOperator, UndefinedOptionFlag, MagickFalse },
-    { "RealImaginary", RealImaginaryComplexOperator, UndefinedOptionFlag, MagickFalse },
-    { "Subtract", SubtractComplexOperator, UndefinedOptionFlag, MagickFalse },
-    { (char *) NULL, UndefinedComplexOperator, UndefinedOptionFlag, MagickFalse }
   },
   DataTypeOptions[] =
   {
@@ -1275,6 +1285,7 @@ static const OptionInfo
     { "Color", MagickColorOptions, UndefinedOptionFlag, MagickFalse },
     { "Colorspace", MagickColorspaceOptions, UndefinedOptionFlag, MagickFalse },
     { "Command", MagickCommandOptions, UndefinedOptionFlag, MagickFalse },
+    { "Compliance", MagickComplianceOptions, UndefinedOptionFlag, MagickFalse },
     { "Complex", MagickComplexOptions, UndefinedOptionFlag, MagickFalse },
     { "Compose", MagickComposeOptions, UndefinedOptionFlag, MagickFalse },
     { "Compress", MagickCompressOptions, UndefinedOptionFlag, MagickFalse },
@@ -2023,6 +2034,7 @@ static const OptionInfo *GetOptionInfo(const CommandOption option)
     case MagickClipPathOptions: return(ClipPathOptions);
     case MagickColorspaceOptions: return(ColorspaceOptions);
     case MagickCommandOptions: return(CommandOptions);
+    case MagickComplianceOptions: return(ComplianceOptions);
     case MagickComplexOptions: return(ComplexOptions);
     case MagickComposeOptions: return(ComposeOptions);
     case MagickCompressOptions: return(CompressOptions);
