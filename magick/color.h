@@ -29,6 +29,7 @@ typedef enum
 {
   UndefinedCompliance,
   NoCompliance = 0x0000,
+  CSSCompliance = 0x0001,
   SVGCompliance = 0x0001,
   X11Compliance = 0x0002,
   XPMCompliance = 0x0004,

@@ -97,7 +97,8 @@ typedef enum
   MagickComplexOptions,
   MagickIntensityOptions,
   MagickGradientOptions,
-  MagickWeightOptions
+  MagickWeightOptions,
+  MagickComplianceOptions
 } CommandOption;
 
 typedef enum
