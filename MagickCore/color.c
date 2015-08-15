@@ -2456,10 +2456,6 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
                   else
                     if (LocaleCompare(colorspace,"HWB") == 0)
                       color->colorspace=HWBColorspace;
-              scale=1.0/360.0;
-              if ((flags & PercentValue) != 0)
-                scale=1.0/100.0;
-              geometry_info.rho*=360.0*scale;
               scale=1.0/255.0;
               if ((flags & PercentValue) != 0)
                 scale=1.0/100.0;
