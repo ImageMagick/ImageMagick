@@ -1,3 +1,7 @@
+2015-08-15  6.9.2-1 Cristy  <quetzlzacatenango@image...>
+  * Support color compliance for TXT format (e.g. -define txt:compliance=css)
+    (bug report from Anthony).
+
 2015-08-15  6.9.2-0 Cristy  <quetzlzacatenango@image...>
   * New version 6.9.2-0, GIT revision 10143:3534f6d:20150815.
 
