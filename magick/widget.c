@@ -5632,6 +5632,7 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
   XGetWidgetInfo((char *) NULL,&north_info);
   XGetWidgetInfo((char *) NULL,&south_info);
   XGetWidgetInfo((char *) NULL,&expose_info);
+  XGetWidgetInfo((char *) NULL,&selection_info);
   visible_fonts=0;
   delay=SuspendTime << 2;
   state=UpdateConfigurationState;
