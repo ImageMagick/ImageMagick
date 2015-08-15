@@ -2137,9 +2137,6 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,const ChannelType channel,
     expression++;
   if (*expression == '\0')
     return(0.0);
-  if (*depth > FxMaxParenthesisDepth)
-    (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-      "ParenthesisNestedTooDeeply","`%s'",expression);
   *subexpression='\0';
   p=FxOperatorPrecedence(expression,exception);
   if (p != (const char *) NULL)
@@ -2372,6 +2369,9 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,const ChannelType channel,
   if (strchr("(",(int) *expression) != (char *) NULL)
     {
       (*depth)++;
+      if (*depth >= FxMaxParenthesisDepth)
+        (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+          "ParenthesisNestedTooDeeply","`%s'",expression);
       (void) CopyMagickString(subexpression,expression+1,MaxTextExtent);
       subexpression[strlen(subexpression)-1]='\0';
       gamma=FxEvaluateSubexpression(fx_info,channel,x,y,subexpression,depth,
