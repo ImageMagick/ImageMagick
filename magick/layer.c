@@ -272,6 +272,7 @@ MagickExport Image *CoalesceImages(const Image *image,ExceptionInfo *exception)
     exception);
   if (coalesce_image == (Image *) NULL)
     return((Image *) NULL);
+  coalesce_image->background_color.opacity=(Quantum) TransparentOpacity;
   (void) SetImageBackgroundColor(coalesce_image);
   coalesce_image->matte=next->matte;
   coalesce_image->page=bounds;
