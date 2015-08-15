@@ -1065,6 +1065,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       /*
         Copy pixel intensity to the alpha channel.
       */
+      image->alpha_trait=UpdatePixelTrait;
       status=CompositeImage(image,image,IntensityCompositeOp,MagickTrue,0,0,
         exception);
       if (alpha_type == ShapeAlphaChannel)
@@ -1234,5 +1235,6 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
   }
   if (status == MagickFalse)
     return(status);
+  (void) SetPixelChannelMask(image,image->channel_mask);
   return(SyncImagePixelCache(image,exception));
 }
