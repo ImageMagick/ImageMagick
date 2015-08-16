@@ -37,7 +37,7 @@
   <configure name="RELEASE_DATE" value="@PACKAGE_RELEASE_DATE@"/>
   <configure name="SHAREARCH_PATH" value="@SHAREARCH_PATH@"/>
   <configure name="SHARE_PATH" value="@SHARE_PATH@"/>
-  <configure name="SVN_REVISION" value="@MAGICK_SVN_REVISION@" />
+  <configure name="GIT_REVISION" value="@MAGICK_GIT_REVISION@" />
   <configure name="TARGET_CPU" value="@MAGICK_TARGET_CPU@"/>
   <configure name="TARGET_OS" value="@MAGICK_TARGET_OS@"/>
   <configure name="TARGET_VENDOR" value="@MAGICK_TARGET_VENDOR@"/>
