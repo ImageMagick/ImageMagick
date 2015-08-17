@@ -1158,8 +1158,8 @@ MagickExport void ConcatenateColorComponent(const PixelInfo *pixel,
   }
   if (compliance == NoCompliance)
     {
-      (void) FormatLocaleString(text,MagickPathExtent,"%.*g",GetMagickPrecision(),
-        color);
+      (void) FormatLocaleString(text,MagickPathExtent,"%.*g",
+        GetMagickPrecision(),color);
       (void) ConcatenateMagickString(tuple,text,MagickPathExtent);
       return;
     }
@@ -1167,8 +1167,8 @@ MagickExport void ConcatenateColorComponent(const PixelInfo *pixel,
     {
       if (pixel->depth > 16)
         {
-          (void) FormatLocaleString(text,MagickPathExtent,"%10lu",(unsigned long)
-            ScaleQuantumToLong(ClampToQuantum(color)));
+          (void) FormatLocaleString(text,MagickPathExtent,"%10lu",
+            (unsigned long) ScaleQuantumToLong(ClampToQuantum(color)));
           (void) ConcatenateMagickString(tuple,text,MagickPathExtent);
           return;
         }
@@ -1186,8 +1186,8 @@ MagickExport void ConcatenateColorComponent(const PixelInfo *pixel,
     }
   if (component == AlphaPixelChannel)
     {
-      (void) FormatLocaleString(text,MagickPathExtent,"%.*g",GetMagickPrecision(),
-        (QuantumScale*color));
+      (void) FormatLocaleString(text,MagickPathExtent,"%.*g",
+        GetMagickPrecision(),(QuantumScale*color));
       (void) ConcatenateMagickString(tuple,text,MagickPathExtent);
       return;
     }
@@ -1199,8 +1199,12 @@ MagickExport void ConcatenateColorComponent(const PixelInfo *pixel,
       (pixel->colorspace == HSVColorspace) ||
       (pixel->colorspace == HWBColorspace))
     {
-      (void) FormatLocaleString(text,MagickPathExtent,"%.*g%%",
-        GetMagickPrecision(),(100.0*QuantumScale*color));
+      if (component == RedPixelChannel)
+        (void) FormatLocaleString(text,MagickPathExtent,"%.*g",
+          GetMagickPrecision(),(360.0*QuantumScale*color));
+      else
+        (void) FormatLocaleString(text,MagickPathExtent,"%.*g%%",
+          GetMagickPrecision(),(100.0*QuantumScale*color));
       (void) ConcatenateMagickString(tuple,text,MagickPathExtent);
       return;
     }
