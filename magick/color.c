@@ -1199,8 +1199,12 @@ MagickExport void ConcatenateColorComponent(const MagickPixelPacket *pixel,
       (pixel->colorspace == HSVColorspace) ||
       (pixel->colorspace == HWBColorspace))
     {
-      (void) FormatLocaleString(component,MaxTextExtent,"%.*g%%",
-        GetMagickPrecision(),(100.0*QuantumScale*color));
+      if (channel == RedChannel)
+        (void) FormatLocaleString(component,MaxTextExtent,"%.*g",
+          GetMagickPrecision(),(360.0*QuantumScale*color));
+      else
+        (void) FormatLocaleString(component,MaxTextExtent,"%.*g%%",
+          GetMagickPrecision(),(100.0*QuantumScale*color));
       (void) ConcatenateMagickString(tuple,component,MaxTextExtent);
       return;
     }
