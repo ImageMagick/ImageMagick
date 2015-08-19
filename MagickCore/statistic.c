@@ -1054,9 +1054,6 @@ MagickExport MagickBooleanType FunctionImage(Image *image,
         PixelTrait traits=GetPixelChannelTraits(image,channel);
         if (traits == UndefinedPixelTrait)
           continue;
-        if (((traits & CopyPixelTrait) != 0) ||
-            (GetPixelReadMask(image,q) == 0))
-          continue;
         if ((traits & UpdatePixelTrait) == 0)
           continue;
         q[i]=ApplyFunction(q[i],function,number_parameters,parameters,
