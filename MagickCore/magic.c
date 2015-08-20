@@ -424,20 +424,28 @@ MagickExport size_t GetMagicPatternExtent(ExceptionInfo *exception)
   register const MagicInfo
     *p;
 
+  size_t
+    magickSize,
+    max;
+
   static size_t
-    size = 0;
+    size=0;
 
   assert(exception != (ExceptionInfo *) NULL);
   if ((size != 0) || (IsMagicCacheInstantiated(exception) == MagickFalse))
     return(size);
-  /*
-    The list is sorted so we can use the size of the first value.
-  */
   LockSemaphoreInfo(magic_semaphore);
   ResetLinkedListIterator(magic_cache);
+  max=0;
   p=(const MagicInfo *) GetNextValueInLinkedList(magic_cache);
-  if (p != (const MagicInfo *) NULL)
-    size=(size_t) (p->offset+p->length);
+  while (p != (const MagicInfo *) NULL)
+  {
+    magickSize=(size_t) (p->offset+p->length);
+    if (magickSize > max)
+      max=magickSize;
+    p=(const MagicInfo *) GetNextValueInLinkedList(magic_cache);
+  }
+  size=max;
   UnlockSemaphoreInfo(magic_semaphore);
   return(size);
 }
