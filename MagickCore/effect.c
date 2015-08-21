@@ -3589,7 +3589,7 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
-  if (image->interpolate != IntegerInterpolatePixel)
+  if (image->interpolate != NearestInterpolatePixel)
      return(InterpolateSpreadImage(image,image->interpolate,radius,exception));
   spread_image=CloneImage(image,0,0,MagickTrue,exception);
   if (spread_image == (Image *) NULL)
