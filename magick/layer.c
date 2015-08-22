@@ -188,7 +188,7 @@ static MagickBooleanType IsBoundsCleared(const Image *image1,
     for (x=0; x < (ssize_t) bounds->width; x++)
     {
       if ((GetPixelOpacity(p) <= (Quantum) (QuantumRange/2)) &&
-          (q->opacity > (Quantum) (QuantumRange/2)))
+          (GetPixelOpacity(q) > (Quantum) (QuantumRange/2)))
         break;
       p++;
       q++;

@@ -397,6 +397,8 @@ static inline int MagickReadDirectory(DIR *directory,struct dirent *entry,
 MagickExport char **GetModuleList(const char *pattern,
   const MagickModuleType type,size_t *number_modules,ExceptionInfo *exception)
 {
+#define MaxModules  511
+
   char
     **modules,
     filename[MaxTextExtent],
@@ -443,7 +445,7 @@ MagickExport char **GetModuleList(const char *pattern,
   if (status == MagickFalse)
     return((char **) NULL);
   GetPathComponent(module_path,HeadPath,path);
-  max_entries=255;
+  max_entries=MaxModules;
   modules=(char **) AcquireQuantumMemory((size_t) max_entries+1UL,
     sizeof(*modules));
   if (modules == (char **) NULL)
