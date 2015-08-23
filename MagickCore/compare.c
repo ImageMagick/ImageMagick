@@ -931,7 +931,7 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
     distortion[i]=0.0;
   rows=MagickMax(image->rows,reconstruct_image->rows);
   columns=MagickMax(image->columns,reconstruct_image->columns);
-  area=1.0/((double) columns*rows);
+  area=1.0/((double) columns*rows-1);
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
   for (y=0; y < (ssize_t) rows; y++)
@@ -943,14 +943,12 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
     register ssize_t
       x;
 
-    if (status == MagickFalse)
-      continue;
     p=GetCacheViewVirtualPixels(image_view,0,y,columns,1,exception);
     q=GetCacheViewVirtualPixels(reconstruct_view,0,y,columns,1,exception);
     if ((p == (const Quantum *) NULL) || (q == (const Quantum *) NULL))
       {
         status=MagickFalse;
-        continue;
+        break;
       }
     for (x=0; x < (ssize_t) columns; x++)
     {
@@ -958,17 +956,16 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
         Da,
         Sa;
 
-      register ssize_t
-        i;
-
       if (GetPixelReadMask(image,p) == 0)
         {
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(reconstruct_image);
           continue;
         }
-      Sa=QuantumScale*GetPixelAlpha(image,p);
-      Da=QuantumScale*GetPixelAlpha(reconstruct_image,q);
+      Sa=QuantumScale*(image->alpha_trait != UndefinedPixelTrait ?
+        GetPixelAlpha(image,p) : OpaqueAlpha);
+      Da=QuantumScale*(reconstruct_image->alpha_trait != UndefinedPixelTrait ?
+        GetPixelAlpha(reconstruct_image,p) : OpaqueAlpha);
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel channel=GetPixelChannelChannel(image,i);
@@ -979,9 +976,20 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
             (reconstruct_traits == UndefinedPixelTrait) ||
             ((reconstruct_traits & UpdatePixelTrait) == 0))
           continue;
-        distortion[i]+=area*QuantumScale*(Sa*p[i]-image_statistics[i].mean)*
-          (Da*GetPixelChannel(reconstruct_image,channel,q)-
-          reconstruct_statistics[channel].mean);
+        if (channel == AlphaPixelChannel)
+          {
+            distortion[i]+=area*QuantumScale*(p[i]-
+              image_statistics[channel].mean)*(GetPixelChannel(
+              reconstruct_image,channel,q)-
+              reconstruct_statistics[channel].mean);
+          }
+        else
+          {
+            distortion[i]+=area*QuantumScale*(Sa*p[i]-
+              image_statistics[channel].mean)*(Da*GetPixelChannel(
+              reconstruct_image,channel,q)-
+              reconstruct_statistics[channel].mean);
+          }
       }
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(reconstruct_image);
@@ -993,7 +1001,10 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
 
         proceed=SetImageProgress(image,SimilarityImageTag,progress++,rows);
         if (proceed == MagickFalse)
-          status=MagickFalse;
+          {
+            status=MagickFalse;
+            break;
+          }
       }
   }
   reconstruct_view=DestroyCacheView(reconstruct_view);
@@ -1002,13 +1013,13 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
     Divide by the standard deviation.
   */
   distortion[CompositePixelChannel]=0.0;
-  for (i=0; i < MaxPixelChannels; i++)
+  for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
   {
     double
       gamma;
 
     PixelChannel channel=GetPixelChannelChannel(image,i);
-    gamma=image_statistics[i].standard_deviation*
+    gamma=image_statistics[channel].standard_deviation*
       reconstruct_statistics[channel].standard_deviation;
     gamma=PerceptibleReciprocal(gamma);
     distortion[i]=QuantumRange*gamma*distortion[i];
