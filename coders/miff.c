@@ -2049,16 +2049,16 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
     /*
       Write MIFF header.
     */
-    (void) WriteBlobString(image,"id=ImageMagick  version=1.0\n");
+    (void) WriteBlobString(image,"id=ImageMagick  version=2.0\n");
     (void) FormatLocaleString(buffer,MagickPathExtent,
       "class=%s  colors=%.20g  alpha-trait=%s\n",CommandOptionToMnemonic(
       MagickClassOptions,image->storage_class),(double) image->colors,
       CommandOptionToMnemonic(MagickPixelTraitOptions,(ssize_t)
       image->alpha_trait));
     (void) WriteBlobString(image,buffer);
-    (void) FormatLocaleString(buffer,MagickPathExtent,"columns=%.20g  rows=%.20g  "
-      "depth=%.20g\n",(double) image->columns,(double) image->rows,(double)
-      image->depth);
+    (void) FormatLocaleString(buffer,MagickPathExtent,
+      "columns=%.20g  rows=%.20g  depth=%.20g\n",(double) image->columns,
+      (double) image->rows,(double) image->depth);
     (void) WriteBlobString(image,buffer);
     if (image->type != UndefinedType)
       {
@@ -2074,9 +2074,9 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
       }
     if (image->intensity != UndefinedPixelIntensityMethod)
       {
-        (void) FormatLocaleString(buffer,MagickPathExtent,"pixel-intensity=%s\n",
-          CommandOptionToMnemonic(MagickPixelIntensityOptions,
-          image->intensity));
+        (void) FormatLocaleString(buffer,MagickPathExtent,
+          "pixel-intensity=%s\n",CommandOptionToMnemonic(
+          MagickPixelIntensityOptions,image->intensity));
         (void) WriteBlobString(image,buffer);
       }
     if (image->endian != UndefinedEndian)
@@ -2120,8 +2120,9 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
         }
     if ((image->tile_offset.x != 0) || (image->tile_offset.y != 0))
       {
-        (void) FormatLocaleString(buffer,MagickPathExtent,"tile-offset=%+ld%+ld\n",
-          (long) image->tile_offset.x,(long) image->tile_offset.y);
+        (void) FormatLocaleString(buffer,MagickPathExtent,
+          "tile-offset=%+ld%+ld\n",(long) image->tile_offset.x,(long)
+          image->tile_offset.y);
         (void) WriteBlobString(image,buffer);
       }
     if ((GetNextImageInList(image) != (Image *) NULL) ||
@@ -2148,8 +2149,8 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
           }
         if (image->iterations != 0)
           {
-            (void) FormatLocaleString(buffer,MagickPathExtent,"iterations=%.20g\n",
-              (double) image->iterations);
+            (void) FormatLocaleString(buffer,MagickPathExtent,
+              "iterations=%.20g\n",(double) image->iterations);
             (void) WriteBlobString(image,buffer);
           }
         if (image->delay != 0)
@@ -2179,8 +2180,9 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
       }
     if (image->rendering_intent != UndefinedIntent)
       {
-        (void) FormatLocaleString(buffer,MagickPathExtent,"rendering-intent=%s\n",
-          CommandOptionToMnemonic(MagickIntentOptions,image->rendering_intent));
+        (void) FormatLocaleString(buffer,MagickPathExtent,
+          "rendering-intent=%s\n",CommandOptionToMnemonic(MagickIntentOptions,
+          image->rendering_intent));
         (void) WriteBlobString(image,buffer);
       }
     if (image->gamma != 0.0)
@@ -2404,8 +2406,8 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
         bzip_info.bzalloc=AcquireBZIPMemory;
         bzip_info.bzfree=RelinquishBZIPMemory;
         code=BZ2_bzCompressInit(&bzip_info,(int) (image->quality ==
-          UndefinedCompressionQuality ? 7 : MagickMin(image->quality/10,
-          9)),(int) image_info->verbose,0);
+          UndefinedCompressionQuality ? 7 : MagickMin(image->quality/10,9)),
+          (int) image_info->verbose,0);
         if (code != BZ_OK)
           status=MagickFalse;
         break;
@@ -2682,8 +2684,8 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);
-    status=SetImageProgress(image,SaveImagesTag,scene++,
-      GetImageListLength(image));
+    status=SetImageProgress(image,SaveImagesTag,scene++,GetImageListLength(
+      image));
     if (status == MagickFalse)
       break;
   } while (image_info->adjoin != MagickFalse);

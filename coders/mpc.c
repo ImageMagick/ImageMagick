@@ -1133,9 +1133,9 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image,
       }
     if (image->intensity != UndefinedPixelIntensityMethod)
       {
-        (void) FormatLocaleString(buffer,MagickPathExtent,"pixel-intensity=%s\n",
-          CommandOptionToMnemonic(MagickPixelIntensityOptions,
-          image->intensity));
+        (void) FormatLocaleString(buffer,MagickPathExtent,
+          "pixel-intensity=%s\n",CommandOptionToMnemonic(
+          MagickPixelIntensityOptions,image->intensity));
         (void) WriteBlobString(image,buffer);
       }
     if (image->endian != UndefinedEndian)
@@ -1209,8 +1209,8 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image,
           }
         if (image->iterations != 0)
           {
-            (void) FormatLocaleString(buffer,MagickPathExtent,"iterations=%.20g\n",
-              (double) image->iterations);
+            (void) FormatLocaleString(buffer,MagickPathExtent,
+              "iterations=%.20g\n",(double) image->iterations);
             (void) WriteBlobString(image,buffer);
           }
         if (image->delay != 0)

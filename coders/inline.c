@@ -123,8 +123,21 @@ static Image *ReadINLINEImage(const ImageInfo *image_info,
       image_info->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
-  if (LocaleNCompare(image_info->filename,"data:",5) == 0)
-    return(ReadInlineImage(image_info,image_info->filename,exception));
+  if (LocaleCompare(image_info->magick,"DATA") == 0)
+    {
+      char
+        *filename;
+
+      Image
+        *data_image;
+
+      filename=AcquireString("data:");
+      (void) ConcatenateMagickString(filename,image_info->filename,
+        MagickPathExtent);
+      data_image=ReadInlineImage(image_info,filename,exception);
+      filename=DestroyString(filename);
+      return(data_image);
+    }
   image=AcquireImage(image_info,exception);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFalse)
@@ -196,6 +209,11 @@ ModuleExport size_t RegisterINLINEImage(void)
   MagickInfo
     *entry;
 
+  entry=AcquireMagickInfo("DATA","INLINE","Base64-encoded inline images");
+  entry->decoder=(DecodeImageHandler *) ReadINLINEImage;
+  entry->encoder=(EncodeImageHandler *) WriteINLINEImage;
+  entry->format_type=ImplicitFormatType;
+  (void) RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("INLINE","INLINE","Base64-encoded inline images");
   entry->decoder=(DecodeImageHandler *) ReadINLINEImage;
   entry->encoder=(EncodeImageHandler *) WriteINLINEImage;
@@ -226,6 +244,7 @@ ModuleExport size_t RegisterINLINEImage(void)
 ModuleExport void UnregisterINLINEImage(void)
 {
   (void) UnregisterMagickInfo("INLINE");
+  (void) UnregisterMagickInfo("DATA");
 }
 
 /*
@@ -298,7 +317,8 @@ static MagickBooleanType WriteINLINEImage(const ImageInfo *image_info,
   if ((magick_info == (const MagickInfo *) NULL) ||
       (GetMagickMimeType(magick_info) == (const char *) NULL))
     ThrowWriterException(CorruptImageError,"ImageTypeNotSupported");
-  (void) CopyMagickString(image->filename,write_info->filename,MagickPathExtent);
+  (void) CopyMagickString(image->filename,write_info->filename,
+    MagickPathExtent);
   blob_length=2048;
   write_image=CloneImage(image,0,0,MagickTrue,exception);
   if (write_image == (Image *) NULL)
