@@ -106,6 +106,7 @@ static const CoderMapInfo
     { "CR2", "DNG" },
     { "CRW", "DNG" },
     { "CUR", "ICON" },
+    { "DATA", "INLINE" },
     { "DCR", "DNG" },
     { "DCX", "PCX" },
     { "DFONT", "TTF" },

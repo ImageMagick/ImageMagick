@@ -123,8 +123,21 @@ static Image *ReadINLINEImage(const ImageInfo *image_info,
       image_info->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  if (LocaleNCompare(image_info->filename,"data:",5) == 0)
-    return(ReadInlineImage(image_info,image_info->filename,exception));
+  if (LocaleCompare(image_info->magick,"DATA") == 0)
+    {
+      char
+        *filename;
+
+      Image
+        *data_image;
+
+      filename=AcquireString("data:");
+      (void) ConcatenateMagickString(filename,image_info->filename,
+        MaxTextExtent);
+      data_image=ReadInlineImage(image_info,filename,exception);
+      filename=DestroyString(filename);
+      return(data_image);
+    }
   image=AcquireImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFalse)
@@ -196,6 +209,14 @@ ModuleExport size_t RegisterINLINEImage(void)
   MagickInfo
     *entry;
 
+  entry=SetMagickInfo("DATA");
+  entry->decoder=(DecodeImageHandler *) ReadINLINEImage;
+  entry->encoder=(EncodeImageHandler *) WriteINLINEImage;
+  entry->format_type=ImplicitFormatType;
+  entry->description=ConstantString("Base64-encoded inline images");
+  entry->module=ConstantString("INLINE");
+  (void) RegisterMagickInfo(entry);
+  return(MagickImageCoderSignature);
   entry=SetMagickInfo("INLINE");
   entry->decoder=(DecodeImageHandler *) ReadINLINEImage;
   entry->encoder=(EncodeImageHandler *) WriteINLINEImage;
@@ -228,6 +249,7 @@ ModuleExport size_t RegisterINLINEImage(void)
 ModuleExport void UnregisterINLINEImage(void)
 {
   (void) UnregisterMagickInfo("INLINE");
+  (void) UnregisterMagickInfo("DATA");
 }
 
 /*
