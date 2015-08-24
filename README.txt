@@ -29,8 +29,9 @@ Introduction to ImageMagick
   that includes memory error and thread data race detection to prevent
   security vulnerabilities.
 
-  ImageMagick is available from http://www.imagemagick.org/download to download.
-  It runs on Linux, Windows, Mac Os X, iOS, Android OS, and others.
+  ImageMagick is available from
+  http://www.imagemagick.org/scripts/binary-releases.php.  It runs on Linux,
+  Windows, Mac Os X, iOS, Android OS, and others.
 
   The authoritative ImageMagick web site is
   http://www.imagemagick.org. The authoritative source code repository is
