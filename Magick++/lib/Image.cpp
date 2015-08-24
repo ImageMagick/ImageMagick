@@ -4415,7 +4415,7 @@ void Magick::Image::spread(const size_t amount_)
     *newImage;
 
   GetPPException;
-  newImage=SpreadImage(constImage(),amount_,exceptionInfo);
+  newImage=SpreadImage(constImage(),image()->interpolate,amount_,exceptionInfo);
   replaceImage(newImage);
   ThrowImageException;
 }

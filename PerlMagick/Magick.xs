@@ -260,7 +260,8 @@ static struct
     { "Shear", { {"geometry", StringReference}, {"x", RealReference},
       {"y", RealReference}, { "fill", StringReference},
       {"color", StringReference} } },
-    { "Spread", { {"radius", RealReference} } },
+    { "Spread", { {"radius", RealReference},
+       {"interpolate", MagickInterpolateOptions } },
     { "Swirl", { {"degrees", RealReference},
       {"interpolate", MagickInterpolateOptions} } },
     { "Resize", { {"geometry", StringReference}, {"width", IntegerReference},
@@ -8280,9 +8281,16 @@ Mogrify(ref,...)
         }
         case 29:  /* Spread */
         {
+          PixelInterpolateMethod
+            method;
+
           if (attribute_flag[0] == 0)
             argument_list[0].real_reference=1.0;
-          image=SpreadImage(image,argument_list[0].real_reference,exception);
+          method=UndefinedInterpolatePixel;
+          if (attribute_flag[1] != 0)
+            method=(PixelInterpolateMethod) argument_list[1].integer_reference;
+          image=SpreadImage(image,method,argument_list[0].real_reference,
+            exception);
           break;
         }
         case 30:  /* Swirl */

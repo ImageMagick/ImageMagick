@@ -296,7 +296,7 @@ extern WandExport MagickBooleanType
     const double *),
   MagickSpliceImage(MagickWand *,const size_t,const size_t,const ssize_t,
     const ssize_t),
-  MagickSpreadImage(MagickWand *,const double),
+  MagickSpreadImage(MagickWand *,const PixelInterpolateMethod,const double),
   MagickStatisticImage(MagickWand *,const StatisticType,const size_t,
     const size_t),
   MagickStripImage(MagickWand *),

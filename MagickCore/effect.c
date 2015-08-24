@@ -2250,7 +2250,8 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
       }
       case SpreadPreview:
       {
-        preview_image=SpreadImage(thumbnail,radius,exception);
+        preview_image=SpreadImage(thumbnail,image->interpolate,radius,
+          exception);
         (void) FormatLocaleString(label,MagickPathExtent,"spread %g",
           radius+0.5);
         break;
@@ -3410,30 +3411,22 @@ MagickExport Image *SharpenImage(const Image *image,const double radius,
 %
 %  The format of the SpreadImage method is:
 %
-%      Image *SpreadImage(const Image *image,const double radius,
+%      Image *SpreadImage(const Image *image,
+%        const PixelInterpolateMethod method,const double radius,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
+%    o method:  intepolation method.
+%
 %    o radius:  choose a random pixel in a neighborhood of this extent.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
-static void inline SwapPixelComponent(Quantum *p,Quantum *q)
-{
-  Quantum
-    pixel;
-
-  pixel=(*p);
-  (*p)=(*q);
-  (*q)=pixel;
-}
-
-static Image *InterpolateSpreadImage(const Image *image,
+MagickExport Image *SpreadImage(const Image *image,
   const PixelInterpolateMethod method,const double radius,
   ExceptionInfo *exception)
 {
@@ -3548,118 +3541,6 @@ static Image *InterpolateSpreadImage(const Image *image,
   spread_view=DestroyCacheView(spread_view);
   image_view=DestroyCacheView(image_view);
   random_info=DestroyRandomInfoThreadSet(random_info);
-  if (status == MagickFalse)
-    spread_image=DestroyImage(spread_image);
-  return(spread_image);
-}
-
-MagickExport Image *SpreadImage(const Image *image,const double radius,
-  ExceptionInfo *exception)
-{
-#define SpreadImageTag  "Spread/Image"
-
-  CacheView
-    *image_view,
-    *spread_view;
-
-  Image
-    *spread_image;
-
-  MagickBooleanType
-    status;
-
-  MagickOffsetType
-    progress;
-
-  RandomInfo
-    *restrict random_info;
-
-  size_t
-    width;
-
-  ssize_t
-    y;
-
-  /*
-    Initialize spread image attributes.
-  */
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickCoreSignature);
-  if (image->interpolate != NearestInterpolatePixel)
-    return(InterpolateSpreadImage(image,image->interpolate,radius,exception));
-  spread_image=CloneImage(image,0,0,MagickTrue,exception);
-  if (spread_image == (Image *) NULL)
-    return((Image *) NULL);
-  /*
-    Spread image.
-  */
-  status=MagickTrue;
-  progress=0;
-  width=GetOptimalKernelWidth1D(radius,0.5);
-  random_info=AcquireRandomInfo();
-  image_view=AcquireAuthenticCacheView(spread_image,exception);
-  spread_view=AcquireAuthenticCacheView(spread_image,exception);
-  for (y=0; y < (ssize_t) image->rows; y++)
-  {
-    register ssize_t
-      x;
-
-    if (status == MagickFalse)
-      continue;
-    for (x=0; x < (ssize_t) image->columns; x++)
-    {
-      register Quantum
-        *restrict p,
-        *restrict q;
-
-      register ssize_t
-        i;
-
-      ssize_t
-        x_offset,
-        y_offset;
-
-      for ( ; ; )
-      {
-        x_offset=(ssize_t) floor((double) x+width*
-          (GetPseudoRandomValue(random_info)-0.5));
-        y_offset=(ssize_t) floor((double) y+width*
-          (GetPseudoRandomValue(random_info)-0.5));
-        if ((x_offset >= 0) && (x_offset < (ssize_t) image->columns) &&
-            (y_offset >= 0) && (y_offset < (ssize_t) image->rows))
-          break;
-      }
-      p=GetCacheViewAuthenticPixels(image_view,x_offset,y_offset,1,1,exception);
-      q=GetCacheViewAuthenticPixels(spread_view,x,y,1,1,exception);
-      if ((p == (Quantum *) NULL) || (q == (Quantum *) NULL))
-        {
-          status=MagickFalse;
-          continue;
-        }
-      for (i=0; i < (ssize_t) GetPixelChannels(spread_image); i++)
-        SwapPixelComponent(p+i,q+i);
-      if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
-        status=MagickFalse;
-      if (SyncCacheViewAuthenticPixels(spread_view,exception) == MagickFalse)
-        status=MagickFalse;
-    }
-    if (image->progress_monitor != (MagickProgressMonitor) NULL)
-      {
-        MagickBooleanType
-          proceed;
-
-        proceed=SetImageProgress(image,SpreadImageTag,progress++,image->rows);
-        if (proceed == MagickFalse)
-          status=MagickFalse;
-      }
-  }
-  spread_view=DestroyCacheView(spread_view);
-  image_view=DestroyCacheView(image_view);
-  random_info=DestroyRandomInfo(random_info);
   if (status == MagickFalse)
     spread_image=DestroyImage(spread_image);
   return(spread_image);
