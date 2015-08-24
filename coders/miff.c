@@ -1081,8 +1081,6 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
     /*
       Verify that required image information is defined.
     */
-    if (version >= 2.0)
-      ThrowReaderException(CorruptImageError,"FileFormatVersionMismatch");
     if ((LocaleCompare(id,"ImageMagick") != 0) ||
         (image->storage_class == UndefinedClass) ||
         (image->columns == 0) || (image->rows == 0))
