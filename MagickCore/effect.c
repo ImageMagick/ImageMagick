@@ -3406,7 +3406,7 @@ MagickExport Image *SharpenImage(const Image *image,const double radius,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  SpreadImage() is a special effects method that randomly displaces each
-%  pixel in a block defined by the radius parameter.
+%  pixel in a square area defined by the radius parameter.
 %
 %  The format of the SpreadImage method is:
 %
