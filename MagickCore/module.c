@@ -1354,7 +1354,7 @@ MagickPrivate MagickBooleanType OpenModules(ExceptionInfo *exception)
   (void) GetMagickInfo((char *) NULL,exception);
   number_modules=0;
   modules=GetModuleList("*",MagickImageCoderModule,&number_modules,exception);
-  if ((modules == (char **) NULL) || (*modules == (char *) NULL)
+  if ((modules == (char **) NULL) || (*modules == (char *) NULL))
     {
       if (modules != (char **) NULL) 
         modules=(char **) RelinquishMagickMemory(modules);

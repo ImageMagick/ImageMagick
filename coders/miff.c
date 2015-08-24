@@ -2049,7 +2049,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
     /*
       Write MIFF header.
     */
-    (void) WriteBlobString(image,"id=ImageMagick  version=2.0\n");
+    (void) WriteBlobString(image,"id=ImageMagick  version=1.0\n");
     (void) FormatLocaleString(buffer,MagickPathExtent,
       "class=%s  colors=%.20g  alpha-trait=%s\n",CommandOptionToMnemonic(
       MagickClassOptions,image->storage_class),(double) image->colors,
