@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  
     <title>ImageMagick: Changelog</title>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -28,8 +29,7 @@
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async src="http://localhost/pagead/js/adsbygoogle.js"></script>
-    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
+    <script async src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
     <script>
     (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
@@ -46,10 +46,19 @@
   </div>
 </div>
 <div class="container">
-<div class="magick-header"><dl><dt>2015-07-25  6.9.2-0 Dirk Lemstra &lt;dirk@lem.....org&gt;</dt>
-  </dl><li> Added "-set colorspace:auto-grayscale=false" that will prevent automatic    conversion to grayscale inside coders that support grayscale.</li>
+<div class="magick-header"><dl><dt>2015-08-15  6.9.2-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  </dl><li> New version 6.9.2-0, GIT revision 10143:3534f6d:20150815.</li>
+<dt>2015-08-10  6.9.2-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Swap pixels for -spread command-line option (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=1&amp;t=28043).</li>
+  <li> fx logical operations short circuit (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=28179).</li>
+  <li> Type cast intensity variable (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=28182).</li>
+  <li> Fix ModulusAdd &amp; ModulusSubstract for HDRI compositing (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=28186).</li>
+<dt>2015-07-25  6.9.2-0 Dirk Lemstra &lt;dirk@lem.....org&gt;</dt>
+  <li> Added "-set colorspace:auto-grayscale=false" that will prevent automatic    conversion to grayscale inside coders that support grayscale.</li>
   <li> Fixed -list weight and the options for -weight.</li>
   <li> Added fontFamily, fontStyle, fontWeight and textUnderColor to the Image    class of Magick++.</li>
+  <li> Fixed reading Photoshop layers of LSB TIFF files (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=1&amp;t=28045).</li>
+  <li> Fixed memory leak in font cache under Windows (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=6&amp;t=28191).</li>
 <dt>2015-07-25  6.9.1-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> New version 6.9.1-10, SVN revision 19269.</li>
 <dt>2015-07-20  6.9.1-10 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
@@ -3690,7 +3699,7 @@
     <p><a href="changelog.html#">Back to top</a> â¢
     <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> â¢
     <a href="http://www.imagemagick.org/script/contact.php">Contact Us</a></p>
-    <p><small>Â©  1999-2015 ImageMagick Studio LLC</small></p>
+        <p><small>Â©  1999-2015 ImageMagick Studio LLC</small></p>
   </footer>
 </div><!-- /.container -->
 
