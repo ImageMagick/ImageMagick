@@ -965,7 +965,7 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
       Sa=QuantumScale*(image->alpha_trait != UndefinedPixelTrait ?
         GetPixelAlpha(image,p) : OpaqueAlpha);
       Da=QuantumScale*(reconstruct_image->alpha_trait != UndefinedPixelTrait ?
-        GetPixelAlpha(reconstruct_image,p) : OpaqueAlpha);
+        GetPixelAlpha(reconstruct_image,q) : OpaqueAlpha);
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel channel=GetPixelChannelChannel(image,i);
