@@ -813,7 +813,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
   parameters.tcp_numlayers=1;
   parameters.tcp_rates[0]=0;  /* lossless */
   parameters.cp_disto_alloc=1;
-  if (image_info->quality != 0)
+  if ((image_info->quality != 0) && (image_info->quality != 100))
     {
       parameters.tcp_distoratio[0]=(double) image_info->quality;
       parameters.cp_fixed_quality=OPJ_TRUE;
