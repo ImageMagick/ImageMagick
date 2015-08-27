@@ -216,7 +216,6 @@ ModuleExport size_t RegisterINLINEImage(void)
   entry->description=ConstantString("Base64-encoded inline images");
   entry->module=ConstantString("INLINE");
   (void) RegisterMagickInfo(entry);
-  return(MagickImageCoderSignature);
   entry=SetMagickInfo("INLINE");
   entry->decoder=(DecodeImageHandler *) ReadINLINEImage;
   entry->encoder=(EncodeImageHandler *) WriteINLINEImage;
