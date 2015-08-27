@@ -1143,9 +1143,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
-  option=GetImageOption(image_info,"tiff:ignore-tags");
-  if (option != (const char *)NULL)
-    SetImageArtifact(image,"tiff:ignore-tags",option);
   (void) MagickSetThreadValue(tiff_exception,exception);
   error_handler=TIFFSetErrorHandler(TIFFErrors);
   warning_handler=TIFFSetWarningHandler(TIFFWarnings);
