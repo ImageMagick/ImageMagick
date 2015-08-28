@@ -3843,17 +3843,13 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
       if ((flags & SigmaValue) == 0)
         image->chromaticity.white_point.y=image->chromaticity.white_point.x;
     }
-  ResetImageOptionIterator(image_info);
   /* IMv7: pointer to allow the lookup of pre-image artefact will fallback to
      a global option setting/define.  This saves a lot of duplication of
      global options into per-image artifacts, while ensuring only specifically
      set per-image artifacts are preserved when parenthesis ends.
-
-     This pointer is never explictally freed, as it is only used as a back
-     reference, not as the main pointer to the image_info structure.  Images
-     being removed from a image_info image list (or yet to be added to such),
-     should have this pointer reset to NULL.
   */
+  if (image->image_info != (ImageInfo *) NULL)
+    image->image_info=DestroyImageInfo(image->image_info);
   image->image_info=CloneImageInfo(image_info);
   return(MagickTrue);
 }
