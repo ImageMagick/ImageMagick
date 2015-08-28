@@ -587,13 +587,10 @@ MagickExport void ListMagickVersion(FILE *file)
     GetMagickVersion((size_t *) NULL));
   (void) FormatLocaleFile(file,"Copyright: %s\n",GetMagickCopyright());
   (void) FormatLocaleFile(file,"License: %s\n",GetMagickLicense());
+#if defined(MAGICKCORE_WINDOWS_SUPPORT) && defined(_MSC_FULL_VER)
+  (void) FormatLocaleFile(file,"Visual C++: %d\n",_MSC_FULL_VER);
+#endif
   (void) FormatLocaleFile(file,"Features: %s\n",GetMagickFeatures());
   (void) FormatLocaleFile(file,"Delegates (built-in): %s\n",
     GetMagickDelegates());
-#if defined(MAGICKCORE_WINDOWS_SUPPORT) && defined(_MSC_VER)
-  (void) FormatLocaleFile(file,"Visual C++: %d\n",_MSC_VER);
-#endif
-#if defined(MAGICKCORE_WINDOWS_SUPPORT) && defined(__CLR_VER)
-  (void) FormatLocaleFile(file,"Common Language Runtime: %d\n",__CLR_VER);
-#endif
 }
