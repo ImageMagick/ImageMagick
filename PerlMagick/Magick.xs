@@ -260,7 +260,7 @@ static struct
     { "Shear", { {"geometry", StringReference}, {"x", RealReference},
       {"y", RealReference}, { "fill", StringReference},
       {"color", StringReference} } },
-    { "Spread", { {"radius", RealReference} } },
+    { "Spread", { {"radius", RealReference},
       {"interpolate", MagickInterpolateOptions} } },
     { "Swirl", { {"degrees", RealReference},
       {"interpolate", MagickInterpolateOptions} } },
