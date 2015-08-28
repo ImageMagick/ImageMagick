@@ -2023,7 +2023,6 @@ std::string Magick::Image::attribute(const std::string name_) const
 void Magick::Image::autoGamma(void)
 {
   modifyImage();
-  (void) SyncImageSettings(imageInfo(),image());
   (void) AutoGammaImage(image());
   throwImageException();
 }
@@ -2031,7 +2030,6 @@ void Magick::Image::autoGamma(void)
 void Magick::Image::autoGammaChannel(const ChannelType channel_)
 {
   modifyImage();
-  (void) SyncImageSettings(imageInfo(),image());
   (void) AutoGammaImageChannel(image(),channel_);
   throwImageException();
 }
@@ -2039,7 +2037,6 @@ void Magick::Image::autoGammaChannel(const ChannelType channel_)
 void Magick::Image::autoLevel(void)
 {
   modifyImage();
-  (void) SyncImageSettings(imageInfo(),image());
   (void) AutoLevelImage(image());
   throwImageException();
 }
@@ -2047,7 +2044,6 @@ void Magick::Image::autoLevel(void)
 void Magick::Image::autoLevelChannel(const ChannelType channel_)
 {
   modifyImage();
-  (void) SyncImageSettings(imageInfo(),image());
   (void) AutoLevelImageChannel(image(),channel_);
   throwImageException();
 }
@@ -2062,7 +2058,6 @@ void Magick::Image::autoOrient(void)
     return;
 
   GetPPException;
-  (void) SyncImageSettings(imageInfo(),image());
   newImage=AutoOrientImage(constImage(),image()->orientation,exceptionInfo);
   replaceImage(newImage);
   ThrowImageException;
