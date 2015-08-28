@@ -2024,7 +2024,6 @@ void Magick::Image::autoLevel(void)
 {
   modifyImage();
   GetPPException;
-  (void) SyncImageSettings(imageInfo(),image(),exceptionInfo);
   (void) AutoLevelImage(image(),exceptionInfo);
   ThrowImageException;
 }
@@ -2034,7 +2033,6 @@ void Magick::Image::autoLevelChannel(const ChannelType channel_)
   modifyImage();
   GetPPException;
   GetAndSetPPChannelMask(channel_);
-  (void) SyncImageSettings(imageInfo(),image(),exceptionInfo);
   (void) AutoLevelImage(image(),exceptionInfo);
   RestorePPChannelMask;
   ThrowImageException;
@@ -2050,7 +2048,6 @@ void Magick::Image::autoOrient(void)
     return;
 
   GetPPException;
-  (void) SyncImageSettings(imageInfo(),image(),exceptionInfo);
   newImage=AutoOrientImage(constImage(),image()->orientation,exceptionInfo);
   replaceImage(newImage);
   ThrowImageException;
