@@ -261,7 +261,7 @@ static struct
       {"y", RealReference}, { "fill", StringReference},
       {"color", StringReference} } },
     { "Spread", { {"radius", RealReference},
-       {"interpolate", MagickInterpolateOptions } },
+       {"interpolate", MagickInterpolateOptions} } },
     { "Swirl", { {"degrees", RealReference},
       {"interpolate", MagickInterpolateOptions} } },
     { "Resize", { {"geometry", StringReference}, {"width", IntegerReference},
