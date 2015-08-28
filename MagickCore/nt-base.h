@@ -66,6 +66,10 @@ extern "C" {
     1310 Visual c++ .NET 2003
     1400 Visual C++ 2005
     1500 Visual C++ 2008
+    1600 Visual C++ 2010
+    1700 Visual C++ 2012
+    1800 Visual C++ 2013
+    1900 Visual C++ 2015
 */
 
 #if !defined(chsize)

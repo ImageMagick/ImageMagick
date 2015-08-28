@@ -342,11 +342,10 @@ struct _Image
   SemaphoreInfo
     *semaphore;
 
-  const struct _ImageInfo
+  struct _ImageInfo
     *image_info;       /* (Optional) Image belongs to this ImageInfo 'list'
                         * For access to 'global options' when no per-image
                         * attribute, properity, or artifact has been set.
-                        * It may be set or unset as needed, but never freed.
                         */
 
   struct _Image

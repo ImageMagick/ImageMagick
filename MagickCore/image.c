@@ -289,7 +289,6 @@ MagickExport Image *AcquireImage(const ImageInfo *image_info,
   /*
     Global options that are only set for new images.
   */
-  image->image_info=(ImageInfo *) NULL;
   option=GetImageOption(image_info,"delay");
   if (option != (const char *) NULL)
     {
@@ -851,7 +850,7 @@ MagickExport Image *CloneImage(const Image *image,const size_t columns,
       (void) CopyMagickMemory(clone_image->colormap,image->colormap,length*
         sizeof(*clone_image->colormap));
     }
-  clone_image->image_info=image->image_info;
+  clone_image->image_info=CloneImageInfo(image->image_info);
   (void) CloneImageProfiles(clone_image,image);
   (void) CloneImageProperties(clone_image,image);
   (void) CloneImageArtifacts(clone_image,image);
@@ -1204,8 +1203,10 @@ MagickExport Image *DestroyImage(Image *image)
   DestroyImageProfiles(image);
   DestroyImageProperties(image);
   DestroyImageArtifacts(image);
-  if (image->ascii85 != (Ascii85Info*) NULL)
+  if (image->ascii85 != (Ascii85Info *) NULL)
     image->ascii85=(Ascii85Info *) RelinquishMagickMemory(image->ascii85);
+  if (image->image_info != (ImageInfo *) NULL)
+    image->image_info=DestroyImageInfo(image->image_info);
   DestroyBlob(image);
   if (image->semaphore != (SemaphoreInfo *) NULL)
     RelinquishSemaphoreInfo(&image->semaphore);
@@ -3853,6 +3854,6 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
      being removed from a image_info image list (or yet to be added to such),
      should have this pointer reset to NULL.
   */
-  image->image_info=image_info;
+  image->image_info=CloneImageInfo(image_info);
   return(MagickTrue);
 }
