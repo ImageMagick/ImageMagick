@@ -875,6 +875,15 @@ namespace Magick
     // Erase image to current "background color"
     void erase(void);
 
+    // Apply a value with an arithmetic, relational, or logical operator.
+    void evaluate(const ChannelType channel_,
+      const MagickEvaluateOperator operator_,double rvalue_);
+
+    // Apply a value with an arithmetic, relational, or logical operator.
+    void evaluate(const ::ssize_t x_,const ::ssize_t y_,const size_t columns_,
+      const size_t rows_,const ChannelType channel_,
+      const MagickEvaluateOperator operator_,const double rvalue_);
+
     // Extend the image as defined by the geometry.
     void extent(const Geometry &geometry_);
     void extent(const Geometry &geometry_,const Color &backgroundColor);
@@ -1156,13 +1165,6 @@ namespace Magick
 
     // Quantize image (reduce number of colors)
     void quantize(const bool measureError_=false);
-
-    void quantumOperator(const ChannelType channel_,
-      const MagickEvaluateOperator operator_,double rvalue_);
-
-    void quantumOperator(const ::ssize_t x_,const ::ssize_t y_,
-      const size_t columns_,const size_t rows_,const ChannelType channel_,
-      const MagickEvaluateOperator operator_,const double rvalue_);
 
     // Raise image (lighten or darken the edges of an image to give a
     // 3-D raised or lowered effect)
