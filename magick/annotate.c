@@ -985,10 +985,9 @@ static int TraceCubicBezier(FT_Vector *p,FT_Vector *q,FT_Vector *to,
     path[MaxTextExtent];
 
   affine=draw_info->affine;
-  (void) FormatLocaleString(path,MaxTextExtent,
-    "C%g,%g %g,%g %g,%g",affine.tx+p->x/64.0,affine.ty-
-    p->y/64.0,affine.tx+q->x/64.0,affine.ty-q->y/64.0,affine.tx+to->x/64.0,
-    affine.ty-to->y/64.0);
+  (void) FormatLocaleString(path,MaxTextExtent,"C%g,%g %g,%g %g,%g",affine.tx+
+    p->x/64.0,affine.ty-p->y/64.0,affine.tx+q->x/64.0,affine.ty-q->y/64.0,
+    affine.tx+to->x/64.0,affine.ty-to->y/64.0);
   (void) ConcatenateString(&draw_info->primitive,path);
   return(0);
 }
@@ -1002,8 +1001,8 @@ static int TraceLineTo(FT_Vector *to,DrawInfo *draw_info)
     path[MaxTextExtent];
 
   affine=draw_info->affine;
-  (void) FormatLocaleString(path,MaxTextExtent,"L%g,%g",affine.tx+
-    to->x/64.0,affine.ty-to->y/64.0);
+  (void) FormatLocaleString(path,MaxTextExtent,"L%g,%g",affine.tx+to->x/64.0,
+    affine.ty-to->y/64.0);
   (void) ConcatenateString(&draw_info->primitive,path);
   return(0);
 }
@@ -1017,8 +1016,8 @@ static int TraceMoveTo(FT_Vector *to,DrawInfo *draw_info)
     path[MaxTextExtent];
 
   affine=draw_info->affine;
-  (void) FormatLocaleString(path,MaxTextExtent,"M%g,%g",affine.tx+
-    to->x/64.0,affine.ty-to->y/64.0);
+  (void) FormatLocaleString(path,MaxTextExtent,"M%g,%g",affine.tx+to->x/64.0,
+    affine.ty-to->y/64.0);
   (void) ConcatenateString(&draw_info->primitive,path);
   return(0);
 }
@@ -1033,9 +1032,9 @@ static int TraceQuadraticBezier(FT_Vector *control,FT_Vector *to,
     path[MaxTextExtent];
 
   affine=draw_info->affine;
-  (void) FormatLocaleString(path,MaxTextExtent,"Q%g,%g %g,%g",
-    affine.tx+control->x/64.0,affine.ty-control->y/64.0,affine.tx+to->x/64.0,
-    affine.ty-to->y/64.0);
+  (void) FormatLocaleString(path,MaxTextExtent,"Q%g,%g %g,%g",affine.tx+
+    control->x/64.0,affine.ty-control->y/64.0,affine.tx+to->x/64.0,affine.ty-
+    to->y/64.0);
   (void) ConcatenateString(&draw_info->primitive,path);
   return(0);
 }
@@ -1288,6 +1287,8 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
       affine.yy=(FT_Fixed) (65536L*draw_info->affine.sy+0.5);
     }
   annotate_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
+  if (annotate_info->dash_pattern != (double *) NULL)
+    annotate_info->dash_pattern[0]=0.0;
   (void) CloneString(&annotate_info->primitive,"path '");
   if (draw_info->render != MagickFalse)
     {
@@ -1355,20 +1356,18 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
       metrics->bounds.x2=(double) bounds.xMax;
     if ((p == draw_info->text) || (bounds.yMax > metrics->bounds.y2))
       metrics->bounds.y2=(double) bounds.yMax;
-    if ((draw_info->stroke.opacity != TransparentOpacity) ||
-        (draw_info->stroke_pattern != (Image *) NULL))
+    if (((draw_info->stroke.opacity != TransparentOpacity) ||
+         (draw_info->stroke_pattern != (Image *) NULL)) &&
+        ((status != MagickFalse) && (draw_info->render != MagickFalse)))
       {
-        if ((status != MagickFalse) && (draw_info->render != MagickFalse))
-          {
-            /*
-              Trace the glyph.
-            */
-            annotate_info->affine.tx=glyph.origin.x/64.0;
-            annotate_info->affine.ty=glyph.origin.y/64.0;
-            (void) FT_Outline_Decompose(&((FT_OutlineGlyph) glyph.image)->
-              outline,&OutlineMethods,annotate_info);
-          }
-        }
+        /*
+          Trace the glyph.
+        */
+        annotate_info->affine.tx=glyph.origin.x/64.0;
+        annotate_info->affine.ty=glyph.origin.y/64.0;
+        (void) FT_Outline_Decompose(&((FT_OutlineGlyph) glyph.image)->outline,
+          &OutlineMethods,annotate_info);
+      }
     FT_Vector_Transform(&glyph.origin,&affine);
     (void) FT_Glyph_Transform(glyph.image,&affine,&glyph.origin);
     ft_status=FT_Glyph_To_Bitmap(&glyph.image,ft_render_mode_normal,
@@ -1475,6 +1474,20 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
             status=MagickFalse;
         }
         image_view=DestroyCacheView(image_view);
+        if (((draw_info->stroke.opacity != TransparentOpacity) ||
+             (draw_info->stroke_pattern != (Image *) NULL)) &&
+            (status != MagickFalse))
+          {
+            /*
+              Draw text stroke.
+            */
+            annotate_info->linejoin=RoundJoin;
+            annotate_info->affine.tx=offset->x;
+            annotate_info->affine.ty=offset->y;
+            (void) ConcatenateString(&annotate_info->primitive,"'");
+            (void) DrawImage(image,annotate_info);
+            (void) CloneString(&annotate_info->primitive,"path '");
+         }
       }
     if ((bitmap->left+bitmap->bitmap.width) > metrics->width)
       metrics->width=bitmap->left+bitmap->bitmap.width;
@@ -1495,21 +1508,6 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
     utf8=(unsigned char *) RelinquishMagickMemory(utf8);
   if (last_glyph.id != 0)
     FT_Done_Glyph(last_glyph.image);
-  if ((draw_info->stroke.opacity != TransparentOpacity) ||
-      (draw_info->stroke_pattern != (Image *) NULL))
-    {
-      if ((status != MagickFalse) && (draw_info->render != MagickFalse))
-        {
-          /*
-            Draw text stroke.
-          */
-          annotate_info->linejoin=RoundJoin;
-          annotate_info->affine.tx=offset->x;
-          annotate_info->affine.ty=offset->y;
-          (void) ConcatenateString(&annotate_info->primitive,"'");
-          (void) DrawImage(image,annotate_info);
-        }
-      }
   /*
     Determine font metrics.
   */
