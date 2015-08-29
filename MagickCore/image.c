@@ -3843,10 +3843,11 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
       if ((flags & SigmaValue) == 0)
         image->chromaticity.white_point.y=image->chromaticity.white_point.x;
     }
-  /* IMv7: pointer to allow the lookup of pre-image artefact will fallback to
-     a global option setting/define.  This saves a lot of duplication of
-     global options into per-image artifacts, while ensuring only specifically
-     set per-image artifacts are preserved when parenthesis ends.
+  /*
+    Pointer to allow the lookup of pre-image artifact will fallback to a global
+    option setting/define.  This saves a lot of duplication of global options
+    into per-image artifacts, while ensuring only specifically set per-image
+    artifacts are preserved when parenthesis ends.
   */
   if (image->image_info != (ImageInfo *) NULL)
     image->image_info=DestroyImageInfo(image->image_info);
