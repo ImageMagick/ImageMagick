@@ -239,6 +239,8 @@ static const struct ReferenceFormats
     { "ART", UndefinedCompression, 0.0 },
     { "AVS", UndefinedCompression, 0.0 },
     { "BMP", UndefinedCompression, 0.0 },
+    { "BMP2", UndefinedCompression, 0.0 },
+    { "BMP3", UndefinedCompression, 0.0 },
     { "CIN", UndefinedCompression, 0.0 },
     { "CMYK", UndefinedCompression, 0.0 },
     { "CMYKA", UndefinedCompression, 0.0 },
