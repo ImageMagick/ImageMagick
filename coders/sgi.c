@@ -639,7 +639,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
               {
                 quantum=(*p << 8);
                 quantum|=(*(p+1));
-                SetPixelIndex(image,quantum,q);
+                SetPixelIndex(image,(Quantum) quantum,q);
                 p+=8;
                 q+=GetPixelChannels(image);
               }

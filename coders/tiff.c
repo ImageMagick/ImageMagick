@@ -2967,7 +2967,7 @@ static void TIFFSetProperties(TIFF *tiff,const ImageInfo *image_info,
         pages;
       
       page=(uint16) image->scene;
-      pages=GetImageListLength(image);
+      pages=(uint16) GetImageListLength(image);
       if ((image_info->adjoin != MagickFalse) && (pages > 1))
         (void) TIFFSetField(tiff,TIFFTAG_SUBFILETYPE,FILETYPE_PAGE);
       (void) TIFFSetField(tiff,TIFFTAG_PAGENUMBER,page,pages);
