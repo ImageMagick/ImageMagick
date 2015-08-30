@@ -2056,6 +2056,8 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
       CommandOptionToMnemonic(MagickPixelTraitOptions,(ssize_t)
       image->alpha_trait));
     (void) WriteBlobString(image,buffer);
+    if (image->alpha_trait != UndefinedPixelTrait)
+      (void) WriteBlobString(image,"matte=True\n");
     (void) FormatLocaleString(buffer,MagickPathExtent,
       "columns=%.20g  rows=%.20g  depth=%.20g\n",(double) image->columns,
       (double) image->rows,(double) image->depth);
