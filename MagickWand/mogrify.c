@@ -7926,7 +7926,7 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
                     status&=CompositeImage(image,mask_image,
                       CopyAlphaCompositeOp,MagickTrue,0,0,exception);
                     status&=CompositeImage(clone_image,image,OverCompositeOp,
-                      clip_to_self,geometry.x,geometry.y,exception);
+                      clip_to_self,0,0,exception);
                     image=DestroyImage(image);
                     image=clone_image;
                   }

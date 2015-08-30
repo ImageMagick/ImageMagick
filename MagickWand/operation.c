@@ -3886,7 +3886,7 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
                   status&=CompositeImage(new_images,mask_image,
                     CopyAlphaCompositeOp,MagickTrue,0,0,_exception);
                   status&=CompositeImage(clone_image,new_images,OverCompositeOp,
-                    clip_to_self,geometry.x,geometry.y,_exception);
+                    clip_to_self,0,0,_exception);
                   new_images=DestroyImage(new_images);
                   new_images=clone_image;
                 }
