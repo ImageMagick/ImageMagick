@@ -618,7 +618,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
               SetPixelGreen(image,quantum == 0 ? 0 : QuantumRange,q);
               SetPixelBlue(image,quantum == 0 ? 0 : QuantumRange,q);
               if (image->storage_class == PseudoClass)
-                SetPixelIndex(image,quantum,q);
+                SetPixelIndex(image,(Quantum) quantum,q);
               q+=GetPixelChannels(image);
             }
             p++;
@@ -632,7 +632,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
                 SetPixelGreen(image,quantum == 0 ? 0 : QuantumRange,q);
                 SetPixelBlue(image,quantum == 0 ? 0 : QuantumRange,q);
                 if (image->storage_class == PseudoClass)
-                  SetPixelIndex(image,quantum,q);
+                  SetPixelIndex(image,(Quantum) quantum,q);
                 q+=GetPixelChannels(image);
               }
               p++;
