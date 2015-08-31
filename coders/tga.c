@@ -317,6 +317,8 @@ static Image *ReadTGAImage(const ImageInfo *image_info,
       /*
         Read TGA raster colormap.
       */
+      if (image->colors < tga_info.colormap_index)
+        image->colors=tga_info.colormap_index;
       if (AcquireImageColormap(image,image->colors) == MagickFalse)
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
       for (i=0; i < (ssize_t) tga_info.colormap_index; i++)
@@ -670,8 +672,8 @@ static inline void WriteTGAPixel(Image *image,TGAImageType image_type,
                 ((green & 0x07) << 5);
               (void) WriteBlobByte(image,value);
               value=(unsigned char) ((((image->matte != MagickFalse) && 
-                (GetPixelOpacity(p) < midpoint)) ? 0x80 : 0) | ((unsigned char)
-                ScaleQuantumToAny(GetPixelRed(p),range) << 2) |
+                ((double) GetPixelOpacity(p) < midpoint)) ? 0x80 : 0) |
+                ((unsigned char) ScaleQuantumToAny(GetPixelRed(p),range) << 2) |
                 ((green & 0x18) >> 3));
               (void) WriteBlobByte(image,value);
           }
