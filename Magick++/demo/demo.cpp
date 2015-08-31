@@ -343,7 +343,7 @@ int main( int /*argc*/, char ** argv)
       cout << "  quantum operator ..." << endl;
       example = model;
       example.label( "Quantum Operator\nRed * 0.4" );
-      example.quantumOperator( RedChannel,MultiplyEvaluateOperator,0.40 );
+      example.evaluate( RedChannel,MultiplyEvaluateOperator,0.40 );
       images.push_back( example );
 
       cout << "  raise ..." << endl;
