@@ -30,7 +30,7 @@ m4_define([magick_micro_version], [0])
 m4_define([magick_patchlevel_version], [0])
 m4_define([magick_version],
           [magick_major_version.magick_minor_version.magick_micro_version-magick_patchlevel_version])
-m4_define([magick_svn_revision], esyscmd([sh -c "(svnversion .) | awk '{ print \$1 }' | tr -d '\n'"]))
+m4_define([magick_git_revision], esyscmd([sh -c "(svnversion .) | awk '{ print \$1 }' | tr -d '\n'"]))
 
 # ==============================================================================
 # Initalize Automake
@@ -93,7 +93,7 @@ AC_SUBST([MAGICK_MINOR_VERSION],[magick_minor_version])
 AC_SUBST([MAGICK_MICRO_VERSION],[magick_micro_version])
 AC_SUBST([MAGICK_PATCHLEVEL_VERSION],[magick_patchlevel_version])
 AC_SUBST([MAGICK_VERSION],[magick_version])
-AC_SUBST([MAGICK_SVN_REVISION],[magick_svn_revision])
+AC_SUBST([MAGICK_GIT_REVISION],[magick_git_revision])
 
 # Substitute library versioning
 AC_SUBST(MAGICK_LIBRARY_CURRENT)dnl
