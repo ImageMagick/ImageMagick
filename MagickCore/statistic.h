@@ -108,10 +108,10 @@ typedef enum
 typedef enum
 {
   UndefinedFunction,
-  PolynomialFunction,
-  SinusoidFunction,
   ArcsinFunction,
-  ArctanFunction
+  ArctanFunction,
+  PolynomialFunction,
+  SinusoidFunction
 } MagickFunction;
 
 typedef enum
