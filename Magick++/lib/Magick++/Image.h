@@ -1223,9 +1223,16 @@ namespace Magick
     // Quantize image (reduce number of colors)
     void quantize(const bool measureError_=false);
 
+    // Apply a value with an arithmetic, relational, or logical operator.
     void quantumOperator(const ChannelType channel_,
        const MagickEvaluateOperator operator_,double rvalue_);
 
+    // Apply a value with an arithmetic, relational, or logical operator.
+    void quantumOperator(const ChannelType channel_,
+      const MagickFunction function_,const size_t number_parameters_,
+      const double *parameters_);
+
+    // Apply a value with an arithmetic, relational, or logical operator.
     void quantumOperator(const ::ssize_t x_,const ::ssize_t y_,
       const size_t columns_,const size_t rows_,const ChannelType channel_,
       const MagickEvaluateOperator operator_,const double rvalue_);
