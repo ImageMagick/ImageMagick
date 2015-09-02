@@ -393,7 +393,9 @@ static MagickBooleanType MonitorProgress(const char *text,
 
   wand_unreferenced(client_data);
 
-  if (extent < 2)
+  if ((extent <= 1) || (offset < 0) || (offset >= (MagickOffsetType) extent))
+    return(MagickTrue);
+  if ((offset != (MagickOffsetType) (extent-1)) && ((offset % 50) != 0))
     return(MagickTrue);
   (void) CopyMagickMemory(tag,text,MaxTextExtent);
   p=strrchr(tag,'/');
