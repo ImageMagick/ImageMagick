@@ -2631,6 +2631,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   for (i=0; i < (ssize_t) GetOpenMPMaximumThreads(); i++)
     changes[i]=0;
+
   if ((method == ConvolveMorphology) && (kernel->width == 1))
     {
       register ssize_t
@@ -2701,13 +2702,10 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
               *restrict pixels;
 
             register ssize_t
-              u;
+              v;
 
             size_t
               count;
-
-            ssize_t
-              v;
 
             channel=GetPixelChannelChannel(image,i);
             traits=GetPixelChannelTraits(image,channel);
@@ -2721,7 +2719,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                 SetPixelChannel(morphology_image,channel,p[center+i],q);
                 continue;
               }
-            k=(&kernel->values[kernel->width*kernel->height-1]);
+            k=(&kernel->values[kernel->height-1]);
             pixels=p;
             pixel=bias;
             gamma=0.0;
@@ -2729,39 +2727,33 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
             if ((morphology_traits & BlendPixelTrait) == 0)
               for (v=0; v < (ssize_t) kernel->height; v++)
               {
-                for (u=0; u < (ssize_t) kernel->width; u++)
-                {
-                  if (!IsNaN(*k))
-                    {
-                      pixel+=(*k)*pixels[i];
-                      gamma+=(*k);
-                      count++;
-                    }
-                  k--;
-                  pixels+=GetPixelChannels(image);
-                }
+                if (!IsNaN(*k))
+                  {
+                    pixel+=(*k)*pixels[i];
+                    gamma+=(*k);
+                    count++;
+                  }
+                k--;
+                pixels+=GetPixelChannels(image);
               }
             else
               for (v=0; v < (ssize_t) kernel->height; v++)
               {
-                for (u=0; u < (ssize_t) kernel->width; u++)
-                {
-                  if (!IsNaN(*k))
-                    {
-                      alpha=(double) (QuantumScale*GetPixelAlpha(image,pixels));
-                      pixel+=alpha*(*k)*pixels[i];
-                      gamma+=alpha*(*k);
-                      count++;
-                    }
-                  k--;
-                  pixels+=GetPixelChannels(image);
-                }
+                if (!IsNaN(*k))
+                  {
+                    alpha=(double) (QuantumScale*GetPixelAlpha(image,pixels));
+                    pixel+=alpha*(*k)*pixels[i];
+                    gamma+=alpha*(*k);
+                    count++;
+                  }
+                k--;
+                pixels+=GetPixelChannels(image);
               }
             if (fabs(pixel-p[center+i]) > MagickEpsilon)
               changes[id]++;
             gamma=PerceptibleReciprocal(gamma);
             if (count != 0)
-              gamma*=(double) kernel->height*kernel->width/count;
+              gamma*=(double) kernel->height/count;
             SetPixelChannel(morphology_image,channel,ClampToQuantum(gamma*
               pixel),q);
           }

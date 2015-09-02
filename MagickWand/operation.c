@@ -101,7 +101,9 @@ static MagickBooleanType MonitorProgress(const char *text,
   register char
     *p;
 
-  if (extent < 2)
+  if ((extent <= 1) || (offset < 0) || (offset >= (MagickOffsetType) extent))
+    return(MagickTrue);
+  if ((offset != (MagickOffsetType) (extent-1)) && ((offset % 50) != 0))
     return(MagickTrue);
   (void) CopyMagickMemory(tag,text,MagickPathExtent);
   p=strrchr(tag,'/');
