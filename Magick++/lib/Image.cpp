@@ -3895,7 +3895,17 @@ void Magick::Image::quantumOperator(const ChannelType channel_,
   ThrowImageException;
 }
 
-void Magick::Image::quantumOperator (const ssize_t x_,const ssize_t y_,
+void Magick::Image::quantumOperator(const ChannelType channel_,
+  const MagickFunction function_,const size_t number_parameters_,
+  const double *parameters_)
+{
+  GetPPException;
+  FunctionImageChannel(image(),channel_,function_,number_parameters_,
+    parameters_,exceptionInfo);
+  ThrowImageException;
+}
+
+void Magick::Image::quantumOperator(const ssize_t x_,const ssize_t y_,
   const size_t columns_,const size_t rows_,const ChannelType channel_,
   const MagickEvaluateOperator operator_,const double rvalue_)
 {
