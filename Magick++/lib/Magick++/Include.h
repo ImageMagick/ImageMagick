@@ -789,6 +789,14 @@ namespace Magick
   using MagickCore::CommandEvent;
   using MagickCore::AllEvents;
 
+  // Magick functions
+  using MagickCore::MagickFunction;
+  using MagickCore::UndefinedFunction;
+  using MagickCore::ArcsinFunction;
+  using MagickCore::ArctanFunction;
+  using MagickCore::PolynomialFunction;
+  using MagickCore::SinusoidFunction;
+
   // Metric types
   using MagickCore::MetricType;
   using MagickCore::UndefinedErrorMetric;
