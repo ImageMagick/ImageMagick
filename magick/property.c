@@ -566,8 +566,8 @@ static MagickBooleanType Get8BIMProperty(const Image *image,const char *key)
   profile=GetImageProfile(image,"8bim");
   if (profile == (StringInfo *) NULL)
     return(MagickFalse);
-  count=(ssize_t) sscanf(key,"8BIM:%ld,%ld:%[^\n]\n%[^\n]",&start,&stop,name,
-    format);
+  count=(ssize_t) sscanf(key,"8BIM:%ld,%ld:%1024[^\n]\n%1024[^\n]",&start,&stop,
+    name,format);
   if ((count != 2) && (count != 3) && (count != 4))
     return(MagickFalse);
   if (count < 4)

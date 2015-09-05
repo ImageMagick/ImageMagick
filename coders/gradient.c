@@ -95,7 +95,7 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
   char
-    colorname[MaxTextExtent];
+    colorname[MaxTextExtent+4];
 
   Image
     *image;

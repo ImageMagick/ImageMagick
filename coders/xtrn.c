@@ -169,7 +169,8 @@ static Image *ReadXTRNImage(const ImageInfo *image_info,
       char
         filename[MaxTextExtent];
 
-      (void) sscanf(clone_info->filename,"%lx,%lx,%s",&param1,&param2,&filename);
+      (void) sscanf(clone_info->filename,"%lx,%lx,%2048s",&param1,&param2,
+        filename);
       blob_data=(char **) param1;
       blob_length=(size_t *) param2;
       image=BlobToImage(clone_info,*blob_data,*blob_length,exception);
@@ -195,7 +196,7 @@ static Image *ReadXTRNImage(const ImageInfo *image_info,
         blob_length;
 
       *filename='\0';
-      (void) sscanf(clone_info->filename,"%lx,%s",&param1,&filename);
+      (void) sscanf(clone_info->filename,"%lx,%2048s",&param1,filename);
       hr=S_OK;
       pSafeArray=(SAFEARRAY *) param1;
       if (pSafeArray)
@@ -470,8 +471,8 @@ static MagickBooleanType WriteXTRNImage(const ImageInfo *image_info,
       clone_info=CloneImageInfo(image_info);
       if (clone_info->filename[0])
         {
-          (void) sscanf(clone_info->filename,"%lx,%lx,%s",
-            &param1,&param2,&filename);
+          (void) sscanf(clone_info->filename,"%lx,%lx,%2048s",
+            &param1,&param2,filename);
 
           blob_data=(char **) param1;
           blob_length=(size_t *) param2;
@@ -512,7 +513,7 @@ static MagickBooleanType WriteXTRNImage(const ImageInfo *image_info,
       clone_info=CloneImageInfo(image_info);
       if (*clone_info->filename != '\0')
         {
-          (void) sscanf(clone_info->filename,"%lx,%s",&param1,&filename);
+          (void) sscanf(clone_info->filename,"%lx,%2048s",&param1,filename);
           image->client_data=param1;
           scene=0;
           (void) CopyMagickString(clone_info->filename,filename,MaxTextExtent);

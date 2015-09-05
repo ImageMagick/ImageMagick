@@ -235,12 +235,12 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   width=0;
   height=0;
   while (ReadBlobString(image,buffer) != (char *) NULL)
-    if (sscanf(buffer,"#define %s %u",name,&width) == 2)
+    if (sscanf(buffer,"#define %32s %u",name,&width) == 2)
       if ((strlen(name) >= 6) &&
           (LocaleCompare(name+strlen(name)-6,"_width") == 0))
         break;
   while (ReadBlobString(image,buffer) != (char *) NULL)
-    if (sscanf(buffer,"#define %s %u",name,&height) == 2)
+    if (sscanf(buffer,"#define %32s %u",name,&height) == 2)
       if ((strlen(name) >= 7) &&
           (LocaleCompare(name+strlen(name)-7,"_height") == 0))
         break;
@@ -255,13 +255,13 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   version=11;
   while (ReadBlobString(image,buffer) != (char *) NULL)
   {
-    if (sscanf(buffer,"static short %s = {",name) == 1)
+    if (sscanf(buffer,"static short %32s = {",name) == 1)
       version=10;
     else
       if (sscanf(buffer,"static unsigned char %s = {",name) == 1)
         version=11;
       else
-        if (sscanf(buffer,"static char %s = {",name) == 1)
+        if (sscanf(buffer,"static char %32s = {",name) == 1)
           version=11;
         else
           continue;
