@@ -187,8 +187,8 @@ static inline MagickBooleanType IsPixelGray(const PixelPacket *pixel)
 
   red_green=(MagickRealType) pixel->red-pixel->green;
   green_blue=(MagickRealType) pixel->green-pixel->blue;
-  if ((AbsolutePixelValue(red_green) < MagickEpsilon) &&
-      (AbsolutePixelValue(green_blue) < MagickEpsilon))
+  if ((AbsolutePixelValue(QuantumScale*red_green) < MagickEpsilon) &&
+      (AbsolutePixelValue(QuantumScale*green_blue) < MagickEpsilon))
     return(MagickTrue);
   return(MagickFalse);
 }
