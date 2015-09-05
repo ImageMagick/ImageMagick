@@ -96,7 +96,7 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
   char
-    colorname[MagickPathExtent];
+    colorname[MagickPathExtent+4];
 
   Image
     *image;

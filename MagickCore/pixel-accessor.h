@@ -443,7 +443,7 @@ static inline MagickBooleanType IsPixelAtDepth(const Quantum pixel,
 static inline MagickBooleanType IsPixelEquivalent(const Image *restrict image,
   const Quantum *restrict p,const PixelInfo *restrict q)
 {
-#define ScaleAbsolutePixelValue(alpha)  AbsolutePixelValue(QuantumScale*(alpha))
+#define ScaleAbsolutePixelValue(alpha)  (QuantumScale*AbsolutePixelValue(alpha))
 
   MagickRealType
     value;
