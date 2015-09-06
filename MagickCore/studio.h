@@ -32,11 +32,7 @@ extern "C" {
 
 #if !defined(_MAGICKCORE_CONFIG_H)
 # define _MAGICKCORE_CONFIG_H
-# if !defined(vms) && !defined(macintosh)
-#  include "MagickCore/magick-config.h"
-# else
-#  include "magick-config.h"
-# endif
+# include "MagickCore/magick-config.h"
 #if defined(MAGICKCORE__FILE_OFFSET_BITS) && !defined(_FILE_OFFSET_BITS)
 # define _FILE_OFFSET_BITS MAGICKCORE__FILE_OFFSET_BITS
 #endif
@@ -238,12 +234,6 @@ extern int vsnprintf(char *,size_t,const char *,va_list);
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
 # include "MagickCore/nt-base.h"
 #endif
-#if defined(macintosh)
-# include "MagickCore/mac.h"
-#endif
-#if defined(vms)
-# include "MagickCore/vms.h"
-#endif
 
 #undef HAVE_CONFIG_H
 #undef gamma
@@ -265,21 +255,6 @@ extern int vsnprintf(char *,size_t,const char *,va_list);
 # define ReadCommandlLine(argc,argv)
 # define SetNotifyHandlers
 #else
-# if defined(vms)
-#  define X11_APPLICATION_PATH  "decw$system_defaults:"
-#  define DirectorySeparator  ""
-#  define DirectoryListSeparator  ';'
-#  define EditorOptions  ""
-#  define Exit  exit
-#  define IsBasenameSeparator(c) \
-  (((c) == ']') || ((c) == ':') || ((c) == '/') ? MagickTrue : MagickFalse)
-#  define MAGICKCORE_LIBRARY_PATH  "sys$login:"
-#  define MAGICKCORE_SHARE_PATH  "sys$login:"
-#  define X11_PREFERENCES_PATH  "decw$user_defaults:"
-#  define ProcessPendingEvents(text)
-#  define ReadCommandlLine(argc,argv)
-#  define SetNotifyHandlers
-# endif
 # if defined(__OS2__)
 #   define DirectorySeparator  "\\"
 #   define DirectoryListSeparator  ';'
@@ -292,28 +267,6 @@ extern int vsnprintf(char *,size_t,const char *,va_list);
 # define ReadCommandlLine(argc,argv)
 # define SetNotifyHandlers
 #endif
-# if defined(macintosh)
-#  define X11_APPLICATION_PATH  "/usr/lib/X11/app-defaults/"
-#  define DirectorySeparator  ":"
-#  define DirectoryListSeparator  ';'
-#  define EditorOptions ""
-#  define IsBasenameSeparator(c)  ((c) == ':' ? MagickTrue : MagickFalse)
-#  define MAGICKCORE_LIBRARY_PATH  ""
-#  define MAGICKCORE_SHARE_PATH  ""
-#  define X11_PREFERENCES_PATH  "~/."
-#  if defined(DISABLE_SIOUX)
-#   define ReadCommandlLine(argc,argv)
-#   define SetNotifyHandlers \
-     SetFatalErrorHandler(MacFatalErrorHandler); \
-     SetErrorHandler(MACErrorHandler); \
-     SetWarningHandler(MACWarningHandler)
-#  else
-#   define ReadCommandlLine(argc,argv) argc=ccommand(argv); puts(MagickVersion);
-#   define SetNotifyHandlers \
-     SetErrorHandler(MACErrorHandler); \
-     SetWarningHandler(MACWarningHandler)
-#  endif
-# endif
 # if defined(MAGICKCORE_WINDOWS_SUPPORT)
 #  define DirectorySeparator  "\\"
 #  define DirectoryListSeparator  ';'

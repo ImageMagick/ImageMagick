@@ -34,7 +34,7 @@
   <configure name="PCFLAGS" value="-fopenmp -DMAGICKCORE_HDRI_ENABLE=1 -DMAGICKCORE_QUANTUM_DEPTH=16"/>
   <configure name="PREFIX" value="/usr/local"/>
   <configure name="QuantumDepth" value="16"/>
-  <configure name="RELEASE_DATE" value="2015-09-05"/>
+  <configure name="RELEASE_DATE" value="2015-09-06"/>
   <configure name="SHAREARCH_PATH" value="/usr/local/lib/ImageMagick-7.0.0/config-Q16HDRI"/>
   <configure name="SHARE_PATH" value="/usr/local/share/ImageMagick-7"/>
   <configure name="GIT_REVISION" value="Unversioned" />

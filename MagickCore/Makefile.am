@@ -168,7 +168,6 @@ MAGICKCORE_BASE_SRCS = \
 	MagickCore/locale_.h \
 	MagickCore/log.c \
 	MagickCore/log.h \
-	MagickCore/mac.h \
 	MagickCore/magic.c \
 	MagickCore/magic.h \
 	MagickCore/magick.c \
@@ -286,7 +285,6 @@ MAGICKCORE_BASE_SRCS = \
 	MagickCore/version-private.h \
 	MagickCore/vision.c \
 	MagickCore/vision.h \
-	MagickCore/vms.h \
 	MagickCore/widget.c \
 	MagickCore/widget.h \
 	MagickCore/widget-private.h \
@@ -437,7 +435,6 @@ MAGICKCORE_NOINST_HDRS = \
 	MagickCore/image-private.h \
  	MagickCore/locale-private.h \
  	MagickCore/log-private.h \
-	MagickCore/mac.h \
  	MagickCore/magick-private.h \
  	MagickCore/magic-private.h \
 	MagickCore/matrix-private.h \
@@ -475,7 +472,6 @@ MAGICKCORE_NOINST_HDRS = \
  	MagickCore/type-private.h \
 	MagickCore/utility-private.h \
 	MagickCore/version-private.h \
-	MagickCore/vms.h \
  	MagickCore/widget-private.h \
 	MagickCore/xml-tree-private.h \
 	MagickCore/xwindow-private.h
@@ -489,9 +485,5 @@ MAGICKCORE_EXTRA_DIST = \
 	MagickCore/ImageMagick.pc.in \
 	MagickCore/MagickCore.pc.in \
 	MagickCore/libMagickCore.map \
-	MagickCore/config.h_vms \
-	MagickCore/mac.c \
 	MagickCore/nt-base.c \
-	MagickCore/nt-feature.c \
-	MagickCore/vms.c \
-	MagickCore/xwdfile.h_vms 
+	MagickCore/nt-feature.c
