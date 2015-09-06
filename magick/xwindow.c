@@ -65,7 +65,6 @@
 #include "magick/monitor.h"
 #include "magick/nt-base-private.h"
 #include "magick/option.h"
-#include "magick/PreRvIcccm.h"
 #include "magick/quantize.h"
 #include "magick/quantum.h"
 #include "magick/quantum-private.h"

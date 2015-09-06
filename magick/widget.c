@@ -48,7 +48,6 @@
 #include "magick/image.h"
 #include "magick/magick.h"
 #include "magick/memory_.h"
-#include "magick/PreRvIcccm.h"
 #include "magick/string_.h"
 #include "magick/token.h"
 #include "magick/utility.h"

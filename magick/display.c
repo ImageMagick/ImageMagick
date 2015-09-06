@@ -76,7 +76,6 @@
 #include "magick/paint.h"
 #include "magick/pixel.h"
 #include "magick/pixel-private.h"
-#include "magick/PreRvIcccm.h"
 #include "magick/property.h"
 #include "magick/quantum.h"
 #include "magick/resize.h"
