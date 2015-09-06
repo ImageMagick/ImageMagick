@@ -2963,7 +2963,7 @@ void OpenCLLog(const char* message) {
       if (clEnv->OpenCLInitialized && !clEnv->OpenCLDisabled)
       {
         allocSize = GetOpenCLDeviceMaxMemAllocSize(clEnv);
-        fprintf(log, "Devic Max Memory Alloc Size: %ld\n", allocSize);
+        fprintf(log, "Devic Max Memory Alloc Size: %lu\n", allocSize);
       }
 
       fclose(log);

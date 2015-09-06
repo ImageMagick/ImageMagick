@@ -213,8 +213,6 @@ MAGICKCORE_BASE_SRCS = \
 	MagickCore/pixel-private.h \
 	MagickCore/policy.c \
 	MagickCore/policy.h \
-	MagickCore/PreRvIcccm.c \
-	MagickCore/PreRvIcccm.h \
 	MagickCore/prepress.c \
 	MagickCore/prepress.h \
 	MagickCore/property.c \
@@ -317,7 +315,6 @@ endif # if WIN32_NATIVE_BUILD
 
 MAGICKCORE_INCLUDE_HDRS = \
 	MagickCore/MagickCore.h \
-	MagickCore/PreRvIcccm.h \
 	MagickCore/accelerate.h \
 	MagickCore/animate.h \
 	MagickCore/annotate.h \
