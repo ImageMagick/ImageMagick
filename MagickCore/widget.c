@@ -48,7 +48,6 @@
 #include "MagickCore/image.h"
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
-#include "MagickCore/PreRvIcccm.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/token.h"
 #include "MagickCore/token-private.h"
