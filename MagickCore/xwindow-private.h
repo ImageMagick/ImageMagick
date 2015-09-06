@@ -45,27 +45,6 @@ extern "C" {
 # define klass  class
 #endif
 
-/*
-  Invoke pre-X11R6 ICCCM routines if XlibSpecificationRelease is not 6.
-*/
-#if XlibSpecificationRelease < 6
-#if !defined(PRE_R6_ICCCM)
-#define PRE_R6_ICCCM
-#endif
-#endif
-/*
-  Invoke pre-X11R5 ICCCM routines if XlibSpecificationRelease is not defined.
-*/
-#if !defined(XlibSpecificationRelease)
-#define PRE_R5_ICCCM
-#endif
-/*
-  Invoke pre-X11R4 ICCCM routines if PWinGravity is not defined.
-*/
-#if !defined(PWinGravity)
-#define PRE_R4_ICCCM
-#endif
-
 #define MaxIconSize  96
 #define MaxNumberPens  11
 #define MaxNumberFonts  11
