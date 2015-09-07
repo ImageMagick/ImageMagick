@@ -1521,7 +1521,7 @@ ModuleExport size_t RegisterJPEGImage(void)
 #endif
   entry=AcquireMagickInfo("JPEG","JPE",JPEGDescription);
 #if (JPEG_LIB_VERSION < 80) && !defined(LIBJPEG_TURBO_VERSION)
-  entry->thread_support=NoThreadSupport;
+  entry->flags^=CoderDecoderThreadSupportFlag;
 #endif
 #if defined(MAGICKCORE_JPEG_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadJPEGImage;
@@ -1536,7 +1536,7 @@ ModuleExport size_t RegisterJPEGImage(void)
   (void) RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("JPEG","JPEG",JPEGDescription);
 #if (JPEG_LIB_VERSION < 80) && !defined(LIBJPEG_TURBO_VERSION)
-  entry->thread_support=NoThreadSupport;
+  entry->flags^=CoderDecoderThreadSupportFlag;
 #endif
 #if defined(MAGICKCORE_JPEG_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadJPEGImage;
@@ -1550,7 +1550,7 @@ ModuleExport size_t RegisterJPEGImage(void)
   (void) RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("JPEG","JPG",JPEGDescription);
 #if (JPEG_LIB_VERSION < 80) && !defined(LIBJPEG_TURBO_VERSION)
-  entry->thread_support=NoThreadSupport;
+  entry->flags^=CoderDecoderThreadSupportFlag;
 #endif
 #if defined(MAGICKCORE_JPEG_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadJPEGImage;
@@ -1564,7 +1564,7 @@ ModuleExport size_t RegisterJPEGImage(void)
   (void) RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("JPEG","JPS",JPEGDescription);
 #if (JPEG_LIB_VERSION < 80) && !defined(LIBJPEG_TURBO_VERSION)
-  entry->thread_support=NoThreadSupport;
+  entry->flags^=CoderDecoderThreadSupportFlag;
 #endif
 #if defined(MAGICKCORE_JPEG_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadJPEGImage;
@@ -1578,7 +1578,7 @@ ModuleExport size_t RegisterJPEGImage(void)
   (void) RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("JPEG","PJPEG",JPEGDescription);
 #if (JPEG_LIB_VERSION < 80) && !defined(LIBJPEG_TURBO_VERSION)
-  entry->thread_support=NoThreadSupport;
+  entry->flags^=CoderDecoderThreadSupportFlag;
 #endif
 #if defined(MAGICKCORE_JPEG_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadJPEGImage;

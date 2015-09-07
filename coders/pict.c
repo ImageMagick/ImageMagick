@@ -969,6 +969,9 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
               break;
             image->columns=1UL*(frame.right-frame.left);
             image->rows=1UL*(frame.bottom-frame.top);
+            status=SetImageExtent(image,image->columns,image->rows,exception);
+            if (status == MagickFalse)
+              return(DestroyImageList(image));
             (void) SetImageBackgroundColor(image,exception);
             break;
           }

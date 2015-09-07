@@ -481,7 +481,8 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       if (delegate_info == (const DelegateInfo *) NULL)
         {
           (void) SetImageInfo(read_info,0,exception);
-          (void) CopyMagickString(read_info->filename,filename,MagickPathExtent);
+          (void) CopyMagickString(read_info->filename,filename,
+            MagickPathExtent);
           magick_info=GetMagickInfo(read_info->magick,exception);
         }
     }
