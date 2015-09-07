@@ -939,12 +939,6 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
     if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
         break;
-    status=SetImageExtent(image,image->columns,image->rows);
-    if (status == MagickFalse)
-      {
-        InheritException(exception,&image->exception);
-        return(DestroyImageList(image));
-      }
     if ((version == 1) || ((TellBlob(image) % 2) != 0))
       code=ReadBlobByte(image);
     if (version == 2)
@@ -982,6 +976,12 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
               break;
             image->columns=1UL*(frame.right-frame.left);
             image->rows=1UL*(frame.bottom-frame.top);
+            status=SetImageExtent(image,image->columns,image->rows);
+            if (status == MagickFalse)
+              {
+                InheritException(exception,&image->exception);
+                return(DestroyImageList(image));
+              }
             (void) SetImageBackgroundColor(image);
             break;
           }
