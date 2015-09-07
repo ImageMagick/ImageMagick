@@ -398,7 +398,7 @@ MagickExport MagickBooleanType SeparateImageChannel(Image *image,
   if (SetImageStorageClass(image,DirectClass) == MagickFalse)
     return(MagickFalse);
   if (channel == GrayChannels)
-    image->matte=MagickTrue;
+    (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
   /*
     Separate image channels.
   */
