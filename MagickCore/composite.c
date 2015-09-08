@@ -291,11 +291,11 @@ static MagickBooleanType CompositeOverImage(Image *image,
 #define CompositeImageTag  "Composite/Image"
 
   CacheView
-    *source_view,
-    *image_view;
+    *image_view,
+    *source_view;
 
   const char
-     *value;
+    *value;
 
   MagickBooleanType
     clamp,

@@ -2369,7 +2369,7 @@ MagickExport MagickRealType GetPixelIntensity(const Image *restrict image,
     intensity;
 
   gamma=1.0;
-  if (image->alpha_trait != UndefinedPixelTrait)
+  if (image->alpha_trait == BlendPixelTrait)
     gamma=PerceptibleReciprocal(QuantumScale*GetPixelAlpha(image,pixel));
   red=gamma*GetPixelRed(image,pixel);
   green=gamma*GetPixelGreen(image,pixel);

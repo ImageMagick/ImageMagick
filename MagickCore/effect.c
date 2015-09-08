@@ -3182,9 +3182,6 @@ MagickExport Image *ShadeImage(const Image *image,const MagickBooleanType gray,
       Shade this row of pixels.
     */
     normal.z=2.0*(double) QuantumRange;  /* constant Z of surface normal */
-    pre=p+GetPixelChannels(linear_image);
-    center=pre+(linear_image->columns+2)*GetPixelChannels(linear_image);
-    post=center+(linear_image->columns+2)*GetPixelChannels(linear_image);
     for (x=0; x < (ssize_t) linear_image->columns; x++)
     {
       register ssize_t
@@ -3193,6 +3190,9 @@ MagickExport Image *ShadeImage(const Image *image,const MagickBooleanType gray,
       /*
         Determine the surface normal and compute shading.
       */
+      pre=p+GetPixelChannels(linear_image);
+      center=pre+(linear_image->columns+2)*GetPixelChannels(linear_image);
+      post=center+(linear_image->columns+2)*GetPixelChannels(linear_image);
       normal.x=(double) (
         GetPixelIntensity(linear_image,pre-GetPixelChannels(linear_image))+
         GetPixelIntensity(linear_image,center-GetPixelChannels(linear_image))+
@@ -3207,7 +3207,8 @@ MagickExport Image *ShadeImage(const Image *image,const MagickBooleanType gray,
         GetPixelIntensity(linear_image,pre-GetPixelChannels(linear_image))-
         GetPixelIntensity(linear_image,pre)-
         GetPixelIntensity(linear_image,pre+GetPixelChannels(linear_image)));
-      if ((normal.x == 0.0) && (normal.y == 0.0))
+      if ((fabs(normal.x) <= MagickEpsilon) && 
+          (fabs(normal.y) <= MagickEpsilon))
         shade=light.z;
       else
         {
@@ -3255,9 +3256,7 @@ MagickExport Image *ShadeImage(const Image *image,const MagickBooleanType gray,
         SetPixelChannel(shade_image,channel,ClampToQuantum(QuantumScale*shade*
           center[i]),q);
       }
-      pre+=GetPixelChannels(linear_image);
-      center+=GetPixelChannels(linear_image);
-      post+=GetPixelChannels(linear_image);
+      p+=GetPixelChannels(linear_image);
       q+=GetPixelChannels(shade_image);
     }
     if (SyncCacheViewAuthenticPixels(shade_view,exception) == MagickFalse)
