@@ -2469,8 +2469,8 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
     case 'A': /* Image alpha channel  */
     {
       WarnNoImageReturn("\"%%%c\"",letter);
-      string=CommandOptionToMnemonic(MagickBooleanOptions,
-        (ssize_t) image->alpha_trait);
+      string=CommandOptionToMnemonic(MagickPixelTraitOptions,(ssize_t)
+        image->alpha_trait);
       break;
     }
     case 'C': /* Image compression method.  */
