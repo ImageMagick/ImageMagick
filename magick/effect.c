@@ -3844,14 +3844,14 @@ MagickExport Image *ShadeImage(const Image *image,const MagickBooleanType gray,
       Shade this row of pixels.
     */
     normal.z=2.0*(double) QuantumRange;  /* constant Z of surface normal */
-    s0=p+1;
-    s1=s0+image->columns+2;
-    s2=s1+image->columns+2;
     for (x=0; x < (ssize_t) linear_image->columns; x++)
     {
       /*
         Determine the surface normal and compute shading.
       */
+      s0=p+1;
+      s1=s0+image->columns+2;
+      s2=s1+image->columns+2;
       normal.x=(double) (GetPixelIntensity(linear_image,s0-1)+
         GetPixelIntensity(linear_image,s1-1)+
         GetPixelIntensity(linear_image,s2-1)-
@@ -3864,7 +3864,8 @@ MagickExport Image *ShadeImage(const Image *image,const MagickBooleanType gray,
         GetPixelIntensity(linear_image,s0-1)-
         GetPixelIntensity(linear_image,s0)-
         GetPixelIntensity(linear_image,s0+1));
-      if ((normal.x == 0.0) && (normal.y == 0.0))
+      if ((fabs(normal.x) <= MagickEpsilon) &&
+          (fabs(normal.y) <= MagickEpsilon))
         shade=light.z;
       else
         {
@@ -3891,9 +3892,7 @@ MagickExport Image *ShadeImage(const Image *image,const MagickBooleanType gray,
           SetPixelBlue(q,ClampToQuantum(QuantumScale*shade*GetPixelBlue(s1)));
         }
       q->opacity=s1->opacity;
-      s0++;
-      s1++;
-      s2++;
+      p++;
       q++;
     }
     if (SyncCacheViewAuthenticPixels(shade_view,exception) == MagickFalse)
