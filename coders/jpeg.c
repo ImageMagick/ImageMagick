@@ -1346,7 +1346,8 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
         unsigned short
           scale;
 
-        scale=65535U/GetQuantumRange(jpeg_info.data_precision);
+        scale=65535/(unsigned short) GetQuantumRange((size_t)
+          jpeg_info.data_precision);
         if (jpeg_info.output_components == 1)
           for (x=0; x < (ssize_t) image->columns; x++)
           {
@@ -1364,23 +1365,26 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
           if (image->colorspace != CMYKColorspace)
             for (x=0; x < (ssize_t) image->columns; x++)
             {
-              SetPixelRed(q,ScaleShortToQuantum(scale*GETJSAMPLE(*p++)));
-              SetPixelGreen(q,ScaleShortToQuantum(scale*GETJSAMPLE(*p++)));
-              SetPixelBlue(q,ScaleShortToQuantum(scale*GETJSAMPLE(*p++)));
+              SetPixelRed(q,ScaleShortToQuantum((unsigned short)
+                (scale*GETJSAMPLE(*p++))));
+              SetPixelGreen(q,ScaleShortToQuantum((unsigned short)
+                (scale*GETJSAMPLE(*p++))));
+              SetPixelBlue(q,ScaleShortToQuantum((unsigned short)
+                (scale*GETJSAMPLE(*p++))));
               SetPixelOpacity(q,OpaqueOpacity);
               q++;
             }
           else
             for (x=0; x < (ssize_t) image->columns; x++)
             {
-              SetPixelCyan(q,QuantumRange-ScaleShortToQuantum(scale*
-                GETJSAMPLE(*p++)));
-              SetPixelMagenta(q,QuantumRange-ScaleShortToQuantum(scale*
-                GETJSAMPLE(*p++)));
-              SetPixelYellow(q,QuantumRange-ScaleShortToQuantum(scale*
-                GETJSAMPLE(*p++)));
-              SetPixelBlack(indexes+x,QuantumRange-ScaleShortToQuantum(scale*
-                GETJSAMPLE(*p++)));
+              SetPixelCyan(q,QuantumRange-ScaleShortToQuantum(
+                (unsigned short) (scale*GETJSAMPLE(*p++))));
+              SetPixelMagenta(q,QuantumRange-ScaleShortToQuantum(
+                (unsigned short) (scale*GETJSAMPLE(*p++))));
+              SetPixelYellow(q,QuantumRange-ScaleShortToQuantum(
+                (unsigned short) (scale*GETJSAMPLE(*p++))));
+              SetPixelBlack(indexes+x,QuantumRange-ScaleShortToQuantum(
+                (unsigned short) (scale*GETJSAMPLE(*p++))));
               SetPixelOpacity(q,OpaqueOpacity);
               q++;
             }
@@ -2030,24 +2034,17 @@ static char **SamplingFactorToList(const char *text)
   register ssize_t
     i;
 
-  size_t
-    lines;
-
   if (text == (char *) NULL)
     return((char **) NULL);
   /*
     Convert string to an ASCII list.
   */
-  lines=1;
-  for (p=text; *p != '\0'; p++)
-    if (*p == ',')
-      lines++;
-  textlist=(char **) AcquireQuantumMemory((size_t) lines+MaxTextExtent,
+  textlist=(char **) AcquireQuantumMemory((size_t) MAX_COMPONENTS,
     sizeof(*textlist));
   if (textlist == (char **) NULL)
     ThrowFatalException(ResourceLimitFatalError,"UnableToConvertText");
   p=text;
-  for (i=0; i < (ssize_t) lines; i++)
+  for (i=0; i < (ssize_t) MAX_COMPONENTS; i++)
   {
     for (q=(char *) p; *q != '\0'; q++)
       if (*q == ',')
@@ -2059,9 +2056,12 @@ static char **SamplingFactorToList(const char *text)
     (void) CopyMagickString(textlist[i],p,(size_t) (q-p+1));
     if (*q == '\r')
       q++;
+    if (*q == '\0')
+      break;
     p=q+1;
   }
-  textlist[i]=(char *) NULL;
+  for (i++; i < (ssize_t) MAX_COMPONENTS; i++)
+    textlist[i]=ConstantString("1x1");
   return(textlist);
 }
 
@@ -2669,7 +2669,8 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
       return(MagickFalse);
     }
   scanline[0]=(JSAMPROW) jpeg_pixels;
-  scale=65535U/GetQuantumRange(jpeg_info.data_precision);
+  scale=65535/(unsigned short) GetQuantumRange((size_t)
+    jpeg_info.data_precision);
   if (scale == 0)
     scale=1;
   if (jpeg_info.data_precision <= 8)
