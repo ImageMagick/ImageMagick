@@ -5075,8 +5075,12 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
         if (memcmp(type,mng_MHDR,4) == 0)
           {
-            if (length < 12)
-              ThrowReaderException(CorruptImageError,"CorruptImage");
+            if (length != 28)
+              {
+                if (chunk == (unsigned char *) NULL)
+                  chunk=(unsigned char *) RelinquishMagickMemory(chunk);
+                ThrowReaderException(CorruptImageError,"CorruptImage");
+              }
 
             mng_info->mng_width=(size_t) ((p[0] << 24) | (p[1] << 16) |
                 (p[2] << 8) | p[3]);
@@ -5105,12 +5109,9 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             frame_delay=default_frame_delay;
             simplicity=0;
 
-            if (length > 27)
-              {
-                /* Skip nominal layer count, frame count, and play time */
-                p+=16;
-                simplicity=(size_t) mng_get_long(p);
-              }
+            /* Skip nominal layer count, frame count, and play time */
+            p+=16;
+            simplicity=(size_t) mng_get_long(p);
 
             mng_type=1;    /* Full MNG */
 
@@ -5161,7 +5162,6 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             int
               repeat=0;
-
 
             if (length != 0)
               repeat=p[0];
@@ -5359,7 +5359,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             /* read global tRNS */
 
-            if (length < 257)
+            if (length > 0 && length < 257)
               for (i=0; i < (ssize_t) length; i++)
                 mng_info->global_trns[i]=p[i];
 
@@ -5687,9 +5687,9 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 register ssize_t
                   j;
 
-                for (j=0; j < (ssize_t) length; j+=2)
+                for (j=1; j < (ssize_t) length; j+=2)
                 {
-                  i=p[j] << 8 | p[j+1];
+                  i=p[j-1] << 8 | p[j];
                   MngInfoDiscardObject(mng_info,i);
                 }
               }
