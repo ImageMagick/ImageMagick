@@ -1,3 +1,6 @@
+2015-09-12  6.9.2-1 Cristy  <quetzlzacatenango@image...>
+  * New version 6.9.2-1, GIT revision 10198:e07e6b1:20150912.
+
 2015-08-15  6.9.2-1 Cristy  <quetzlzacatenango@image...>
   * Support color compliance for TXT format (e.g. -define txt:compliance=css)
     (bug report from Anthony).
@@ -9,6 +12,7 @@
   * Report progress less often (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=28299).
   * Don't set image colorspace to gray for -alpha copy option.
+  * Fixed a possible memory leak associated with the -sampling-factor option.
 
 2015-08-15  6.9.2-0 Cristy  <quetzlzacatenango@image...>
   * New version 6.9.2-0, GIT revision 10143:3534f6d:20150815.
