@@ -443,19 +443,17 @@ static inline MagickBooleanType IsPixelAtDepth(const Quantum pixel,
 static inline MagickBooleanType IsPixelEquivalent(const Image *restrict image,
   const Quantum *restrict p,const PixelInfo *restrict q)
 {
-#define FuzzEpsilon  (1.0e-11)
-
   MagickRealType
     value;
 
-  value=(double) p[image->channel_map[RedPixelChannel].offset];
-  if (AbsolutePixelValue(value-q->red) >= FuzzEpsilon)
+  value=(MagickRealType) p[image->channel_map[RedPixelChannel].offset];
+  if (AbsolutePixelValue(value-q->red) >= MagickEpsilon)
     return(MagickFalse);
-  value=(double) p[image->channel_map[GreenPixelChannel].offset];
-  if (AbsolutePixelValue(value-q->green) >= FuzzEpsilon)
+  value=(MagickRealType) p[image->channel_map[GreenPixelChannel].offset];
+  if (AbsolutePixelValue(value-q->green) >= MagickEpsilon)
     return(MagickFalse);
-  value=(double) p[image->channel_map[BluePixelChannel].offset];
-  if (AbsolutePixelValue(value-q->blue) >= FuzzEpsilon)
+  value=(MagickRealType) p[image->channel_map[BluePixelChannel].offset];
+  if (AbsolutePixelValue(value-q->blue) >= MagickEpsilon)
     return(MagickFalse);
   return(MagickTrue);
 }
@@ -472,8 +470,8 @@ static inline MagickBooleanType IsPixelGray(const Image *restrict image,
   green_blue=(MagickRealType)
     pixel[image->channel_map[GreenPixelChannel].offset]-
     pixel[image->channel_map[BluePixelChannel].offset];
-  if ((AbsolutePixelValue(red_green) < FuzzEpsilon) &&
-      (AbsolutePixelValue(green_blue) < FuzzEpsilon))
+  if ((AbsolutePixelValue(red_green) < MagickEpsilon) &&
+      (AbsolutePixelValue(green_blue) < MagickEpsilon))
     return(MagickTrue);
   return(MagickFalse);
 }
@@ -481,30 +479,30 @@ static inline MagickBooleanType IsPixelGray(const Image *restrict image,
 static inline MagickBooleanType IsPixelInfoEquivalent(
   const PixelInfo *restrict p,const PixelInfo *restrict q)
 {
-  if ((p->alpha_trait == BlendPixelTrait) &&
+  if ((p->alpha_trait != UndefinedPixelTrait) &&
       (q->alpha_trait == UndefinedPixelTrait) &&
-      (AbsolutePixelValue(p->alpha-OpaqueAlpha) >= FuzzEpsilon))
+      (AbsolutePixelValue(p->alpha-OpaqueAlpha) >= MagickEpsilon))
     return(MagickFalse);
-  if ((q->alpha_trait == BlendPixelTrait) &&
+  if ((q->alpha_trait != UndefinedPixelTrait) &&
       (p->alpha_trait == UndefinedPixelTrait) &&
-      (AbsolutePixelValue(q->alpha-OpaqueAlpha)) >= FuzzEpsilon)
+      (AbsolutePixelValue(q->alpha-OpaqueAlpha)) >= MagickEpsilon)
     return(MagickFalse);
-  if ((p->alpha_trait == BlendPixelTrait) &&
-      (q->alpha_trait == BlendPixelTrait))
+  if ((p->alpha_trait != UndefinedPixelTrait) &&
+      (q->alpha_trait != UndefinedPixelTrait))
     {
-      if (AbsolutePixelValue(p->alpha-q->alpha) >= FuzzEpsilon)
+      if (AbsolutePixelValue(p->alpha-q->alpha) >= MagickEpsilon)
         return(MagickFalse);
-      if (AbsolutePixelValue(p->alpha-TransparentAlpha) < FuzzEpsilon)
+      if (AbsolutePixelValue(p->alpha-TransparentAlpha) < MagickEpsilon)
         return(MagickTrue);
     }
-  if (AbsolutePixelValue(p->red-q->red) >= FuzzEpsilon)
+  if (AbsolutePixelValue(p->red-q->red) >= MagickEpsilon)
     return(MagickFalse);
-  if (AbsolutePixelValue(p->green-q->green) >= FuzzEpsilon)
+  if (AbsolutePixelValue(p->green-q->green) >= MagickEpsilon)
     return(MagickFalse);
-  if (AbsolutePixelValue(p->blue-q->blue) >= FuzzEpsilon)
+  if (AbsolutePixelValue(p->blue-q->blue) >= MagickEpsilon)
     return(MagickFalse);
   if ((p->colorspace == CMYKColorspace) &&
-      (AbsolutePixelValue(p->black-q->black) >= FuzzEpsilon))
+      (AbsolutePixelValue(p->black-q->black) >= MagickEpsilon))
     return(MagickFalse);
   return(MagickTrue);
 }
@@ -526,19 +524,20 @@ static inline MagickBooleanType IsPixelMonochrome(const Image *restrict image,
   green_blue=(MagickRealType)
     pixel[image->channel_map[GreenPixelChannel].offset]-
     pixel[image->channel_map[BluePixelChannel].offset];
-  if ((AbsolutePixelValue(red_green) < FuzzEpsilon) &&
-      (AbsolutePixelValue(green_blue) < FuzzEpsilon))
+  if ((AbsolutePixelValue(red_green) < MagickEpsilon) &&
+      (AbsolutePixelValue(green_blue) < MagickEpsilon))
     return(MagickTrue);
   return(MagickFalse);
 }
 
-static inline MagickBooleanType IsPixelInfoGray(const PixelInfo *restrict pixel)
+static inline MagickBooleanType IsPixelInfoGray(
+  const PixelInfo *restrict pixel)
 {
   if ((pixel->colorspace != GRAYColorspace) &&
       (pixel->colorspace != RGBColorspace))
     return(MagickFalse);
-  if ((AbsolutePixelValue(pixel->red-pixel->green) < FuzzEpsilon) &&
-      (AbsolutePixelValue(pixel->green-pixel->blue) < FuzzEpsilon))
+  if ((AbsolutePixelValue(pixel->red-pixel->green) < MagickEpsilon) &&
+      (AbsolutePixelValue(pixel->green-pixel->blue) < MagickEpsilon))
     return(MagickTrue);
   return(MagickFalse);
 }
@@ -558,8 +557,8 @@ static inline MagickBooleanType IsPixelInfoMonochrome(
     return(MagickFalse);
   red_green=pixel_info->red-pixel_info->green;
   green_blue=pixel_info->green-pixel_info->blue;
-  if ((AbsolutePixelValue(red_green) < FuzzEpsilon) &&
-      (AbsolutePixelValue(green_blue) < FuzzEpsilon))
+  if ((AbsolutePixelValue(red_green) < MagickEpsilon) &&
+      (AbsolutePixelValue(green_blue) < MagickEpsilon))
     return(MagickTrue);
   return(MagickFalse);
 }
