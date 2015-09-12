@@ -1667,8 +1667,6 @@ MagickExport MagickBooleanType IsColorSimilar(const Image *image,
     distance,
     scale;
 
-  if ((image->fuzz == 0.0) && (image->matte == MagickFalse))
-    return(IsColorEqual(p,q));
   fuzz=(double) MagickMax(image->fuzz,(MagickRealType) MagickSQ1_2);
   fuzz*=fuzz;
   scale=1.0;
