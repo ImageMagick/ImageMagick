@@ -40,6 +40,7 @@
   Include declarations.
 */
 #include "magick/studio.h"
+#include "magick/artifact.h"
 #include "magick/attribute.h"
 #include "magick/blob.h"
 #include "magick/blob-private.h"
@@ -58,6 +59,7 @@
 #include "magick/memory_.h"
 #include "magick/monitor.h"
 #include "magick/monitor-private.h"
+#include "magick/option.h"
 #include "magick/pixel-accessor.h"
 #include "magick/property.h"
 #include "magick/quantum-private.h"
@@ -298,6 +300,20 @@ static Image *ReadTGAImage(const ImageInfo *image_info,
       comment[tga_info.id_length]='\0';
       (void) SetImageProperty(image,"comment",comment);
       comment=DestroyString(comment);
+    }
+  if (tga_info.attributes & (1UL << 4))
+    {
+      if (tga_info.attributes & (1UL << 5))
+        SetImageArtifact(image,"tga:image-origin","TopRight");
+      else
+        SetImageArtifact(image,"tga:image-origin","BottomRight");
+    }
+  else
+    {
+      if (tga_info.attributes & (1UL << 5))
+        SetImageArtifact(image,"tga:image-origin","TopLeft");
+      else
+        SetImageArtifact(image,"tga:image-origin","BottomLeft");
     }
   if (image_info->ping != MagickFalse)
     {
@@ -807,6 +823,19 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image)
         else
           tga_info.colormap_size=24;
       }
+  value=GetImageArtifact(image,"tga:image-origin");
+  if (value != (const char *) NULL)
+    {
+      OrientationType
+        origin;
+
+      origin=(OrientationType) ParseCommandOption(MagickOrientationOptions,
+        MagickFalse,value);
+      if (origin == BottomRightOrientation || origin == TopRightOrientation)
+        tga_info.attributes|=(1UL << 4);
+      if (origin == TopLeftOrientation || origin == TopRightOrientation)
+        tga_info.attributes|=(1UL << 5);
+    }
   /*
     Write TGA header.
   */
