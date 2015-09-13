@@ -641,9 +641,9 @@ MagickExport ImageType GetImageType(const Image *image,ExceptionInfo *exception)
         return(ColorSeparationType);
       return(ColorSeparationMatteType);
     }
-  if (SetImageMonochrome((Image *) image,exception) != MagickFalse)
+  if (IsMonochromeImage(image,exception) != MagickFalse)
     return(BilevelType);
-  if (SetImageGray((Image *) image,exception) != MagickFalse)
+  if (IsGrayImage(image,exception) != MagickFalse)
     {
       if (image->matte != MagickFalse)
         return(GrayscaleMatteType);

@@ -181,16 +181,14 @@ static inline MagickBooleanType IsPixelAtDepth(const Quantum pixel,
 
 static inline MagickBooleanType IsPixelGray(const PixelPacket *pixel)
 {
-#define FuzzEpsilon (1.0e-11)
-
   MagickRealType
     green_blue,
     red_green;
 
   red_green=(MagickRealType) pixel->red-pixel->green;
   green_blue=(MagickRealType) pixel->green-pixel->blue;
-  if (((QuantumScale*AbsolutePixelValue(red_green)) < FuzzEpsilon) &&
-      ((QuantumScale*AbsolutePixelValue(green_blue)) < FuzzEpsilon))
+  if (((QuantumScale*AbsolutePixelValue(red_green)) < MagickEpsilon) &&
+      ((QuantumScale*AbsolutePixelValue(green_blue)) < MagickEpsilon))
     return(MagickTrue);
   return(MagickFalse);
 }

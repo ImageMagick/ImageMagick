@@ -1,5 +1,5 @@
 2015-09-12  6.9.2-1 Cristy  <quetzlzacatenango@image...>
-  * New version 6.9.2-1, GIT revision 10198:e07e6b1:20150912.
+  * New version 6.9.2-1, GIT revision 10201:5879612:20150913.
 
 2015-09-13  6.9.2-1 Dirk Lemstra <dirk@lem.....org>
   * Preserving image origin in TGA files (reference
@@ -17,6 +17,7 @@
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=28299).
   * Don't set image colorspace to gray for -alpha copy option.
   * Fixed a possible memory leak associated with the -sampling-factor option.
+  * GetImageType() no longer has side-effects to match behavior of IMv7.
 
 2015-08-15  6.9.2-0 Cristy  <quetzlzacatenango@image...>
   * New version 6.9.2-0, GIT revision 10143:3534f6d:20150815.

@@ -804,138 +804,13 @@ MagickExport MagickBooleanType IsHistogramImage(const Image *image,
 MagickExport MagickBooleanType IsPaletteImage(const Image *image,
   ExceptionInfo *exception)
 {
-  CacheView
-    *image_view;
-
-  CubeInfo
-    *cube_info;
-
-  MagickPixelPacket
-    pixel,
-    target;
-
-  register const IndexPacket
-    *indexes;
-
-  register const PixelPacket
-    *p;
-
-  register ssize_t
-    x;
-
-  register NodeInfo
-    *node_info;
-
-  register ssize_t
-    i;
-
-  size_t
-    id,
-    index,
-    level;
-
-  ssize_t
-    y;
-
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if ((image->storage_class == PseudoClass) && (image->colors <= 256))
-    return(MagickTrue);
-  if (image->storage_class == PseudoClass)
+  if (image->storage_class != PseudoClass)
     return(MagickFalse);
-  /*
-    Initialize color description tree.
-  */
-  cube_info=GetCubeInfo();
-  if (cube_info == (CubeInfo *) NULL)
-    {
-      (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
-      return(MagickFalse);
-    }
-  GetMagickPixelPacket(image,&pixel);
-  GetMagickPixelPacket(image,&target);
-  image_view=AcquireVirtualCacheView(image,exception);
-  for (y=0; y < (ssize_t) image->rows; y++)
-  {
-    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
-    if (p == (const PixelPacket *) NULL)
-      break;
-    indexes=GetCacheViewVirtualIndexQueue(image_view);
-    for (x=0; x < (ssize_t) image->columns; x++)
-    {
-      /*
-        Start at the root and proceed level by level.
-      */
-      node_info=cube_info->root;
-      index=MaxTreeDepth-1;
-      for (level=1; level < MaxTreeDepth; level++)
-      {
-        SetMagickPixelPacket(image,p,indexes+x,&pixel);
-        id=ColorToNodeId(image,&pixel,index);
-        if (node_info->child[id] == (NodeInfo *) NULL)
-          {
-            node_info->child[id]=GetNodeInfo(cube_info,level);
-            if (node_info->child[id] == (NodeInfo *) NULL)
-              {
-                (void) ThrowMagickException(exception,GetMagickModule(),
-                  ResourceLimitError,"MemoryAllocationFailed","`%s'",
-                  image->filename);
-                break;
-              }
-          }
-        node_info=node_info->child[id];
-        index--;
-      }
-      if (level < MaxTreeDepth)
-        break;
-      for (i=0; i < (ssize_t) node_info->number_unique; i++)
-      {
-        SetMagickPixelPacket(image,&node_info->list[i].pixel,
-          &node_info->list[i].index,&target);
-        if (IsMagickColorEqual(&pixel,&target) != MagickFalse)
-          break;
-      }
-      if (i < (ssize_t) node_info->number_unique)
-        node_info->list[i].count++;
-      else
-        {
-          /*
-            Add this unique color to the color list.
-          */
-          if (node_info->number_unique == 0)
-            node_info->list=(ColorPacket *) AcquireMagickMemory(
-              sizeof(*node_info->list));
-          else
-            node_info->list=(ColorPacket *) ResizeQuantumMemory(node_info->list,
-              (size_t) (i+1),sizeof(*node_info->list));
-          if (node_info->list == (ColorPacket *) NULL)
-            {
-              (void) ThrowMagickException(exception,GetMagickModule(),
-                ResourceLimitError,"MemoryAllocationFailed","`%s'",
-                image->filename);
-              break;
-            }
-          node_info->list[i].pixel=(*p);
-          if ((image->colorspace == CMYKColorspace) ||
-              (image->storage_class == PseudoClass))
-            node_info->list[i].index=GetPixelIndex(indexes+x);
-          node_info->list[i].count=1;
-          node_info->number_unique++;
-          cube_info->colors++;
-          if (cube_info->colors > 256)
-            break;
-        }
-      p++;
-    }
-    if (x < (ssize_t) image->columns)
-      break;
-  }
-  image_view=DestroyCacheView(image_view);
-  cube_info=DestroyCubeInfo(image,cube_info);
-  return(y < (ssize_t) image->rows ? MagickFalse : MagickTrue);
+  return((image->colors <= 256) ? MagickTrue : MagickFalse);
 }
 
 /*
