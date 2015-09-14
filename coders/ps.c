@@ -1145,7 +1145,7 @@ ModuleExport void UnregisterPSImage(void)
 %
 */
 
-static inline unsigned char *PopHexPixel(const char **hex_digits,
+static inline unsigned char *PopHexPixel(const char *const *hex_digits,
   const size_t pixel,unsigned char *pixels)
 {
   register const char
@@ -1179,7 +1179,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
 }
 
   static const char
-    *hex_digits[] =
+    *const hex_digits[] =
     {
       "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "0A", "0B",
       "0C", "0D", "0E", "0F", "10", "11", "12", "13", "14", "15", "16", "17",
@@ -1202,9 +1202,9 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
       "D8", "D9", "DA", "DB", "DC", "DD", "DE", "DF", "E0", "E1", "E2", "E3",
       "E4", "E5", "E6", "E7", "E8", "E9", "EA", "EB", "EC", "ED", "EE", "EF",
       "F0", "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "FA", "FB",
-      "FC", "FD", "FE", "FF",  (char *) NULL
+      "FC", "FD", "FE", "FF",  (const char *) NULL
     },
-    *PostscriptProlog[]=
+    *const PostscriptProlog[]=
     {
       "%%BeginProlog",
       "%",
@@ -1444,9 +1444,9 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
       "  currentfile buffer readline pop",
       "  token pop /pointsize exch def pop",
       "  /Times-Roman findfont pointsize scalefont setfont",
-      (char *) NULL
+      (const char *) NULL
     },
-    *PostscriptEpilog[]=
+    *const PostscriptEpilog[]=
     {
       "  x y scale",
       "  currentfile buffer readline pop",
@@ -1458,7 +1458,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
       "  token pop /compression exch def pop",
       "  class 0 gt { PseudoClassImage } { DirectClassImage } ifelse",
       "  grestore",
-      (char *) NULL
+      (const char *) NULL
     };
 
   char
@@ -1471,7 +1471,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
     compression;
 
   const char
-    **s,
+    *const *s,
     *value;
 
   const StringInfo

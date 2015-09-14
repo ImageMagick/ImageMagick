@@ -224,7 +224,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
   ExceptionInfo *exception)
 {
   static const char
-    *PostscriptProlog[]=
+    *const PostscriptProlog[]=
     {
       "%%%%BeginProlog",
       "%%",
@@ -358,9 +358,9 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
       "  currentfile buffer readline pop",
       "  token pop /pointsize exch def pop",
       "  /Helvetica findfont pointsize scalefont setfont",
-      (char *) NULL
+      (const char *) NULL
     },
-    *PostscriptEpilog[]=
+    *const PostscriptEpilog[]=
     {
       "  x y scale",
       "  currentfile buffer readline pop",
@@ -374,7 +374,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
       "  token pop /compression exch def pop",
       "  class 0 gt { PseudoClassImage } { DirectClassImage } ifelse",
       "  grestore",
-      (char *) NULL
+      (const char *) NULL
     };
 
   char
@@ -387,7 +387,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
     compression;
 
   const char
-    **q,
+    *const *q,
     *value;
 
   double
