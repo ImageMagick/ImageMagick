@@ -1216,12 +1216,12 @@ static void PNGShort(png_bytep p,png_uint_16 value)
   *p++=(png_byte) (value & 0xff);
 }
 
-static void PNGType(png_bytep p,png_const_bytep type)
+static void PNGType(png_bytep p,const png_byte *type)
 {
   (void) CopyMagickMemory(p,type,4*sizeof(png_byte));
 }
 
-static void LogPNGChunk(MagickBooleanType logging, png_const_bytep type,
+static void LogPNGChunk(MagickBooleanType logging, const png_byte *type,
    size_t length)
 {
   if (logging != MagickFalse)
@@ -10472,7 +10472,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 #if (PNG_LIBPNG_VER < 10500)
                          (png_charp) GetStringInfoDatum(profile),
 #else
-                         (png_const_bytep) GetStringInfoDatum(profile),
+                         (const png_byte *) GetStringInfoDatum(profile),
 #endif
                          (png_uint_32) GetStringInfoLength(profile));
                        ping_have_iCCP = MagickTrue;
