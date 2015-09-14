@@ -64,21 +64,24 @@ namespace Magick
     Image(const Blob &blob_,const Geometry &size_);
 
     // Construct Image of specified size and depth from in-memory BLOB
-    Image(const Blob &blob_,const Geometry &size,const size_t depth);
+    Image(const Blob &blob_,const Geometry &size_,const size_t depth_);
 
     // Construct Image of specified size, depth, and format from
     // in-memory BLOB
-    Image(const Blob &blob_,const Geometry &size,const size_t depth_,
+    Image(const Blob &blob_,const Geometry &size_,const size_t depth_,
       const std::string &magick_);
 
     // Construct Image of specified size, and format from in-memory BLOB
-    Image(const Blob &blob_,const Geometry &size,const std::string &magick_);
+    Image(const Blob &blob_,const Geometry &size_,const std::string &magick_);
 
     // Construct a blank image canvas of specified size and color
     Image(const Geometry &size_,const Color &color_);
 
     // Copy constructor
     Image(const Image &image_);
+
+    // Copy constructor to copy part of the image
+    Image(const Image &image_,const Geometry &geometry_);
 
     // Construct an image based on an array of raw pixels, of
     // specified type and mapping, in memory

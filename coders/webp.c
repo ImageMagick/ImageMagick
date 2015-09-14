@@ -410,7 +410,7 @@ ModuleExport size_t RegisterWEBPImage(void)
     (WebPGetDecoderVersion() >> 8) & 0xff,
     (WebPGetDecoderVersion() >> 0) & 0xff,WEBP_DECODER_ABI_VERSION);
 #endif
-  entry->mime_type=ConstantString("image/x-webp");
+  entry->mime_type=ConstantString("image/webp");
   entry->flags^=CoderAdjoinFlag;
   entry->magick=(IsImageFormatHandler *) IsWEBP;
   if (*version != '\0')
