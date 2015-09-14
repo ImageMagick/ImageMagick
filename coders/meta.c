@@ -142,14 +142,15 @@ static MagickBooleanType IsMETA(const unsigned char *magick,const size_t length)
 */
 typedef struct _html_code
 {
-  short
+  const short
     len;
+
   const char
     *code,
     val;
 } html_code;
 
-static html_code html_codes[] = {
+static const html_code html_codes[] = {
 #ifdef HANDLE_GT_LT
   { 4,"&lt;",'<' },
   { 4,"&gt;",'>' },
@@ -1778,7 +1779,7 @@ static void formatString(Image *ofile, const char *s, int len)
 
 typedef struct _tag_spec
 {
-  short
+  const short
     id;
 
   const char

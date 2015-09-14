@@ -89,7 +89,7 @@
 /*
  The 256 color system palette for Palm Computing Devices.
 */
-static unsigned char
+static const unsigned char
   PalmPalette[256][3] =
   {
     {255, 255,255}, {255, 204,255}, {255, 153,255}, {255, 102,255},

@@ -623,7 +623,7 @@ static MagickBooleanType WritePS3MaskImage(const ImageInfo *image_info,
 static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
 {
   static const char
-    *PostscriptProlog[]=
+    *const PostscriptProlog[]=
     {
       "/ByteStreamDecodeFilter",
       "{",
@@ -770,9 +770,9 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
       "  token pop /y exch def pop",
       "  currentfile buffer readline pop",
       "  token pop /pointsize exch def pop",
-      (char *) NULL
+      (const char *) NULL
     },
-    *PostscriptEpilog[]=
+    *const PostscriptEpilog[]=
     {
       "  x y scale",
       "  % Clipping path.",
@@ -811,7 +811,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
       "  grestore",
       "  sp { showpage } if",
       "} bind def",
-      (char *) NULL
+      (const char *) NULL
     };
 
   char
@@ -824,8 +824,8 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
     compression;
 
   const char
+    *const *q,
     *option,
-    **q,
     *value;
 
   double

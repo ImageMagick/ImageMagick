@@ -78,7 +78,7 @@
 
 typedef struct _DicomInfo
 {
-  unsigned short
+  const unsigned short
     group,
     element;
 
@@ -88,7 +88,7 @@ typedef struct _DicomInfo
 } DicomInfo;
 
 static const DicomInfo
-  dicom_info[] =
+  const dicom_info[] =
   {
     { 0x0000, 0x0000, "UL", "Group Length" },
     { 0x0000, 0x0001, "UL", "Command Length to End" },
