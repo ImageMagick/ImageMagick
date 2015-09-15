@@ -67,7 +67,7 @@
   Define declarations.
 */
 #if !defined(MAP_FAILED)
-#define MAP_FAILED      ((void *) -1)
+#define MAP_FAILED      ((void *)(LONG_PTR) -1)
 #endif
 
 /*
@@ -2451,7 +2451,7 @@ MagickPrivate int NTTruncateFile(int file,off_t length)
     low;
 
   file_handle=(HANDLE) _get_osfhandle(file);
-  if (file_handle == (HANDLE) -1L)
+  if (file_handle == INVALID_HANDLE_VALUE)
     return(-1);
   low=(long) (length & 0xffffffffUL);
   high=(long) ((((MagickOffsetType) length) >> 32) & 0xffffffffUL);

@@ -354,9 +354,10 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Extract an area from the image.
       */
-      jp2_status=opj_set_decode_area(jp2_codec,jp2_image,image->extract_info.x,
-        image->extract_info.y,image->extract_info.x+(ssize_t) image->columns,
-        image->extract_info.y+(ssize_t) image->rows);
+      jp2_status=opj_set_decode_area(jp2_codec,jp2_image,
+        (OPJ_INT32) image->extract_info.x,(OPJ_INT32) image->extract_info.y,
+        (OPJ_INT32) image->extract_info.x+(ssize_t) image->columns,
+        (OPJ_INT32) image->extract_info.y+(ssize_t) image->rows);
       if (jp2_status == 0)
         {
           opj_stream_destroy(jp2_stream);
@@ -813,8 +814,8 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
   */
   opj_set_default_encoder_parameters(&parameters);
   for (i=1; i < 6; i++)
-    if (((1 << (i+2)) > (ssize_t) image->columns) &&
-        ((1 << (i+2)) > (ssize_t) image->rows))
+    if (((ssize_t) (1 << (i+2)) > image->columns) &&
+        ((ssize_t) (1 << (i+2)) > image->rows))
       break;
   parameters.numresolution=i;
   option=GetImageOption(image_info,"jp2:number-resolutions");
