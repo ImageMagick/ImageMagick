@@ -84,6 +84,7 @@
 #define HANDLER_RETURN_TYPE void *
 #define HANDLER_RETURN_VALUE (void *) NULL
 #define SOCKET_TYPE int
+#define LENGTH_TYPE size_t
 #define MAGICKCORE_HAVE_DISTRIBUTE_CACHE
 #elif defined(MAGICKCORE_WINDOWS_SUPPORT)
 #define CHAR_TYPE_CAST (char *)
@@ -98,6 +99,7 @@
 #define HANDLER_RETURN_TYPE  void *
 #define HANDLER_RETURN_VALUE  (void *) NULL
 #define SOCKET_TYPE  int
+#define LENGTH_TYPE size_t
 #undef send
 #undef recv
 #define send(file,buffer,length,flags)  0
