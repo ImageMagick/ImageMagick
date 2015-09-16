@@ -100,6 +100,7 @@
 #define HANDLER_RETURN_TYPE  void *
 #define HANDLER_RETURN_VALUE  (void *) NULL
 #define SOCKET_TYPE  int
+#define LENGTH_TYPE size_t
 #undef send
 #undef recv
 #define send(file,buffer,length,flags)  0
