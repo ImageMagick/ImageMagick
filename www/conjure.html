@@ -21,35 +21,35 @@
   <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC">
   <meta name="distribution" content="Global">
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
-  <link rel="icon" href="/www/../images/wand.png">
-  <link rel="shortcut icon" href="/www/../images/wand.ico">
-  <link rel="stylesheet" href="/www/css/magick.css">
+  <link rel="icon" href="../images/wand.png">
+  <link rel="shortcut icon" href="../images/wand.ico">
+  <link rel="stylesheet" href="css/magick.css">
 </head>
 <body>
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async src="//localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
+    <script async src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
     <script>
     (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
     <nav class="magick-nav">
-      <a class="magick-nav-item " href="/www/../index.html">Home</a>
-      <a class="magick-nav-item " href="/www/../www/binary-releases.html">Download</a>
-      <a class="magick-nav-item " href="/www/../www/command-line-tools.html">Tools</a>
-      <a class="magick-nav-item " href="/www/../www/command-line-options.html">Options</a>
-      <a class="magick-nav-item " href="/www/../www/resources.html">Resources</a>
-      <a class="magick-nav-item " href="/www/../www/api.html">Develop</a>
-      <a class="magick-nav-item " href="/www/../www/http://www.imagemagick.org/script/search.php">Search</a>
+      <a class="magick-nav-item " href="../index.html">Home</a>
+      <a class="magick-nav-item " href="binary-releases.html">Download</a>
+      <a class="magick-nav-item " href="command-line-tools.html">Tools</a>
+      <a class="magick-nav-item " href="command-line-options.html">Options</a>
+      <a class="magick-nav-item " href="resources.html">Resources</a>
+      <a class="magick-nav-item " href="api.html">Develop</a>
+      <a class="magick-nav-item " href="http://www.imagemagick.org/script/search.php">Search</a>
       <a class="magick-nav-item pull-right" href="http://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="text-center"><a href="#usage">Example Usage</a> • <a href="#options">Option Summary</a> • <a href="#msl">Magick Scripting Language (MSL)</a> </p>
+<p class="text-center"><a href="conjure.html#usage">Example Usage</a> • <a href="conjure.html#options">Option Summary</a> • <a href="conjure.html#msl">Magick Scripting Language (MSL)</a> </p>
 
-<p class="lead magick-description">The <code>conjure</code> program gives you the ability to perform custom image processing tasks from a script written in the Magick Scripting Language (MSL).  MSL is XML-based and consists of action statements with attributes.  Actions include reading an image, processing an image, getting attributes from an image, writing an image, and more.  An attribute is a key/value pair that modifies the behavior of an action.  See <a href="/www/../www/command-line-processing.html">Command Line Processing</a> for advice on how to structure your <code>conjure</code> command or see below for example usages of the command.</p>
+<p class="lead magick-description">The <code>conjure</code> program gives you the ability to perform custom image processing tasks from a script written in the Magick Scripting Language (MSL).  MSL is XML-based and consists of action statements with attributes.  Actions include reading an image, processing an image, getting attributes from an image, writing an image, and more.  An attribute is a key/value pair that modifies the behavior of an action.  See <a href="command-line-processing.html">Command Line Processing</a> for advice on how to structure your <code>conjure</code> command or see below for example usages of the command.</p>
 
 <h2 class="magick-header"><a id="usage"></a>Example Usage</h2>
 
@@ -59,7 +59,7 @@
 conjure -dimensions 400x400 incantation.msl
 </pre>
 
-<p>The MSL script <a href="/www/../source/incantation.msl">incantation.msl</a> used above is here:</p>
+<p>The MSL script <a href="../source/incantation.msl">incantation.msl</a> used above is here:</p>
 
 <pre>
 &lt;?xml version="1.0" encoding="UTF-8"?&gt;
@@ -123,7 +123,7 @@ msl:font-metrics.origin.x
 msl:font-metrics.origin.y
 </pre>
 
-<p>MSL supports most methods and attributes discussed in the <a href="/www/../www/perl-magick.html">Perl API for ImageMagick</a>.
+<p>MSL supports most methods and attributes discussed in the <a href="perl-magick.html">Perl API for ImageMagick</a>.
 </p>
 
 <p>In addition, MSL supports the <code>swap</code> element with a single <code>indexes</code> element.</p>
@@ -143,47 +143,47 @@ msl:font-metrics.origin.y
   </tr>
 
   <tr>
-    <td><a href="/www/../www/command-line-options.html#debug">-debug <var>events</var></a></td>
+    <td><a href="command-line-options.html#debug">-debug <var>events</var></a></td>
     <td>display copious debugging information</td>
   </tr>
 
   <tr>
-    <td><a href="/www/../www/command-line-options.html#help">-help</a></td>
+    <td><a href="command-line-options.html#help">-help</a></td>
     <td>print program options</td>
   </tr>
 
   <tr>
-    <td><a href="/www/../www/command-line-options.html#log">-log <var>format</var></a></td>
+    <td><a href="command-line-options.html#log">-log <var>format</var></a></td>
     <td>format of debugging information</td>
   </tr>
 
   <tr>
-    <td><a href="/www/../www/command-line-options.html#monitor">-monitor</a></td>
+    <td><a href="command-line-options.html#monitor">-monitor</a></td>
     <td>monitor progress</td>
   </tr>
 
   <tr>
-    <td><a href="/www/../www/command-line-options.html#quiet">-quiet</a></td>
+    <td><a href="command-line-options.html#quiet">-quiet</a></td>
     <td>suppress all warning messages</td>
   </tr>
 
   <tr>
-    <td><a href="/www/../www/command-line-options.html#regard-warnings">-regard-warnings</a></td>
+    <td><a href="command-line-options.html#regard-warnings">-regard-warnings</a></td>
     <td>pay attention to warning messages.</td>
   </tr>
 
   <tr>
-    <td><a href="/www/../www/command-line-options.html#seed">-seed <var>value</var></a></td>
+    <td><a href="command-line-options.html#seed">-seed <var>value</var></a></td>
     <td>seed a new sequence of pseudo-random numbers</td>
   </tr>
 
   <tr>
-    <td><a href="/www/../www/command-line-options.html#verbose">-verbose</a></td>
+    <td><a href="command-line-options.html#verbose">-verbose</a></td>
     <td>print detailed information about the image</td>
   </tr>
 
   <tr>
-    <td><a href="/www/../www/command-line-options.html#version">-version</a></td>
+    <td><a href="command-line-options.html#version">-version</a></td>
     <td>print version information</td>
   </tr>
 
@@ -1110,19 +1110,19 @@ fill="color name", channel="All, Default, Alpha, Black, Blue, CMYK, Cyan, Gray, 
 </table>
 </div>
   <footer class="magick-footer">
-    <p><a href="/www/../www/support.html">Donate</a> •
-     <a href="/www/../www/sitemap.html">Sitemap</a> •
-    <a href="/www/../www/links.html">Related</a> •
-    <a href="/www/../www/architecture.html">Architecture</a>
+    <p><a href="support.html">Donate</a> •
+     <a href="sitemap.html">Sitemap</a> •
+    <a href="links.html">Related</a> •
+    <a href="architecture.html">Architecture</a>
 </p>
-    <p><a href="#">Back to top</a> •
+    <p><a href="conjure.html#">Back to top</a> •
     <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-    <a href="/www/../www/http://www.imagemagick.org/script/contact.php">Contact Us</a></p>
+    <a href="http://www.imagemagick.org/script/contact.php">Contact Us</a></p>
         <p><small>©  1999-2015 ImageMagick Studio LLC</small></p>
   </footer>
 </div><!-- /.container -->
 
-  <script src="/www/../js/magick.html"></script>
+  <script src="../js/magick.html"></script>
 </div>
 </body>
 </html>

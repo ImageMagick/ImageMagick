@@ -21,26 +21,26 @@
   <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC">
   <meta name="distribution" content="Global">
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
-  <link rel="icon" href="/www/../images/wand.png">
-  <link rel="shortcut icon" href="/www/../images/wand.ico">
-  <link rel="stylesheet" href="/www/css/magick.css">
+  <link rel="icon" href="../images/wand.png">
+  <link rel="shortcut icon" href="../images/wand.ico">
+  <link rel="stylesheet" href="css/magick.css">
 </head>
 <body>
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async src="//localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
+    <script async src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
     <script>
     (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
     <nav class="magick-nav">
-      <a class="magick-nav-item " href="/www/../index.html">Home</a>
-      <a class="magick-nav-item " href="/www/../www/binary-releases.html">Download</a>
-      <a class="magick-nav-item " href="/www/../www/command-line-tools.html">Tools</a>
-      <a class="magick-nav-item " href="/www/../www/command-line-options.html">Options</a>
-      <a class="magick-nav-item " href="/www/../www/resources.html">Resources</a>
-      <a class="magick-nav-item " href="/www/../www/api.html">Develop</a>
-      <a class="magick-nav-item " href="/www/../www/http://www.imagemagick.org/script/search.php">Search</a>
+      <a class="magick-nav-item " href="../index.html">Home</a>
+      <a class="magick-nav-item " href="binary-releases.html">Download</a>
+      <a class="magick-nav-item " href="command-line-tools.html">Tools</a>
+      <a class="magick-nav-item " href="command-line-options.html">Options</a>
+      <a class="magick-nav-item " href="resources.html">Resources</a>
+      <a class="magick-nav-item " href="api.html">Develop</a>
+      <a class="magick-nav-item " href="http://www.imagemagick.org/script/search.php">Search</a>
       <a class="magick-nav-item pull-right" href="http://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
@@ -48,7 +48,7 @@
 <div class="container">
 <div class="magick-header">
 
-<p class="text-center"><a href="#imv7">ImageMagick Version 7</a> • <a href="#hdri">High Dynamic Range Imaging</a> • <a href="#channels">Pixel Channels</a> • <a href="#alpha">Alpha</a> • <a href="#grayscale">Grayscale</a> • <a href="#mask">Masks</a> • <a href="#core">MagickCore API</a> • <a href="#headers">Header Files</a>  • <a href="#deprecate">Deprecated Features Removed</a> • <a href="#cli">Command-line Interface</a> • <a href="#summary">Version 7 Change Summary</a> </p>
+<p class="text-center"><a href="porting.html#imv7">ImageMagick Version 7</a> • <a href="porting.html#hdri">High Dynamic Range Imaging</a> • <a href="porting.html#channels">Pixel Channels</a> • <a href="porting.html#alpha">Alpha</a> • <a href="porting.html#grayscale">Grayscale</a> • <a href="porting.html#mask">Masks</a> • <a href="porting.html#core">MagickCore API</a> • <a href="porting.html#headers">Header Files</a>  • <a href="porting.html#deprecate">Deprecated Features Removed</a> • <a href="porting.html#cli">Command-line Interface</a> • <a href="porting.html#summary">Version 7 Change Summary</a> </p>
 
 <p class="lead magick-description">The design of ImageMagick is an evolutionary process, with the design and implementation efforts serving to influence and guide further progress in the other.  With ImageMagick version 7 we aim to improve the design based on lessons learned from the version 6 implementation.  ImageMagick was originally designed to display RGB images to an X Windows server.  Over time we extended support to RGBA images and then to the CMYK and CMYKA image format.  With ImageMagick version 7, we extend support to arbitrary colorspaces with an arbitrary number of pixel channels.  Other design changes are in the works and we will document them here so be sure to revisit periodically.</p>
 
@@ -71,7 +71,7 @@ options, and more global use of 'image properties' (more commonly known as
 <p>Once ImageMagick version 7 is released, we will continue to support and enhance version 6 for a minimum of 10 years.</p>
 
 <h2 class="magick-header"><a id="hdri"></a>High Dynamic Range Imaging</h2>
-<p>ImageMagick version 7 enables <a href="/www/../www/high-dynamic-range.html">high dynamic range imaging</a> (HDRI) by default.  HDRI accurately represents the wide range of intensity levels found in real scenes ranging from the brightest direct sunlight to the deepest darkest shadows.  In addition, image processing results are more accurate.  The disadvantage is it requires more memory and may result in slower processing times.  If you see differences in the results of your version 6 command-line with version 7, it is likely due to HDRI.  You may need to add <code>-clamp</code> to your command-line to constrain pixels to the 0 .. QuantumRange range, or disable HDRI when you build ImageMagick version 7.  To disable HDRI (recommended for smart phone builds such as iOS or production sites where performance is a premium), simply add <code>--disable-hdri</code> to the configure script command line when building ImageMagick.</p>
+<p>ImageMagick version 7 enables <a href="high-dynamic-range.html">high dynamic range imaging</a> (HDRI) by default.  HDRI accurately represents the wide range of intensity levels found in real scenes ranging from the brightest direct sunlight to the deepest darkest shadows.  In addition, image processing results are more accurate.  The disadvantage is it requires more memory and may result in slower processing times.  If you see differences in the results of your version 6 command-line with version 7, it is likely due to HDRI.  You may need to add <code>-clamp</code> to your command-line to constrain pixels to the 0 .. QuantumRange range, or disable HDRI when you build ImageMagick version 7.  To disable HDRI (recommended for smart phone builds such as iOS or production sites where performance is a premium), simply add <code>--disable-hdri</code> to the configure script command line when building ImageMagick.</p>
 
 <h2 class="magick-header"><a id="channels"></a>Pixel Channels</h2>
 <p>A pixel is comprised of one or more color values, or <var>channels</var> (e.g. red pixel channel).</p>
@@ -627,19 +627,19 @@ example "+annotate", "+resize", "+clut", and "+draw" .</p>
 </ul>
 </div>
   <footer class="magick-footer">
-    <p><a href="/www/../www/support.html">Donate</a> •
-     <a href="/www/../www/sitemap.html">Sitemap</a> •
-    <a href="/www/../www/links.html">Related</a> •
-    <a href="/www/../www/architecture.html">Architecture</a>
+    <p><a href="support.html">Donate</a> •
+     <a href="sitemap.html">Sitemap</a> •
+    <a href="links.html">Related</a> •
+    <a href="architecture.html">Architecture</a>
 </p>
-    <p><a href="#">Back to top</a> •
+    <p><a href="porting.html#">Back to top</a> •
     <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-    <a href="/www/../www/http://www.imagemagick.org/script/contact.php">Contact Us</a></p>
+    <a href="http://www.imagemagick.org/script/contact.php">Contact Us</a></p>
         <p><small>©  1999-2015 ImageMagick Studio LLC</small></p>
   </footer>
 </div><!-- /.container -->
 
-  <script src="/www/../js/magick.html"></script>
+  <script src="../js/magick.html"></script>
 </div>
 </body>
 </html>

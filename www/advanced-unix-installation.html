@@ -21,39 +21,39 @@
   <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC">
   <meta name="distribution" content="Global">
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
-  <link rel="icon" href="/www/../images/wand.png">
-  <link rel="shortcut icon" href="/www/../images/wand.ico">
-  <link rel="stylesheet" href="/www/css/magick.css">
+  <link rel="icon" href="../images/wand.png">
+  <link rel="shortcut icon" href="../images/wand.ico">
+  <link rel="stylesheet" href="css/magick.css">
 </head>
 <body>
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async src="//localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
+    <script async src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
     <script>
     (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
     <nav class="magick-nav">
-      <a class="magick-nav-item " href="/www/../index.html">Home</a>
-      <a class="magick-nav-item " href="/www/../www/binary-releases.html">Download</a>
-      <a class="magick-nav-item " href="/www/../www/command-line-tools.html">Tools</a>
-      <a class="magick-nav-item " href="/www/../www/command-line-options.html">Options</a>
-      <a class="magick-nav-item " href="/www/../www/resources.html">Resources</a>
-      <a class="magick-nav-item " href="/www/../www/api.html">Develop</a>
-      <a class="magick-nav-item " href="/www/../www/http://www.imagemagick.org/script/search.php">Search</a>
+      <a class="magick-nav-item " href="../index.html">Home</a>
+      <a class="magick-nav-item " href="binary-releases.html">Download</a>
+      <a class="magick-nav-item " href="command-line-tools.html">Tools</a>
+      <a class="magick-nav-item " href="command-line-options.html">Options</a>
+      <a class="magick-nav-item " href="resources.html">Resources</a>
+      <a class="magick-nav-item " href="api.html">Develop</a>
+      <a class="magick-nav-item " href="http://www.imagemagick.org/script/search.php">Search</a>
       <a class="magick-nav-item pull-right" href="http://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="text-center"><a href="#download">Download &amp; Unpack</a> • <a href="#configure">Configure</a>  • <a href="#build">Build</a> • <a href="#install">Install</a> • <a href="#linux">Linux-specific Build Instructions</a> • <a href="#macosx">Mac OS X-specific Build Instructions</a> • <a href="#mingw">MinGW-specific Build Instructions</a> • <a href="#problems">Dealing with Unexpected Problems</a></p>
+<p class="text-center"><a href="advanced-unix-installation.html#download">Download &amp; Unpack</a> • <a href="advanced-unix-installation.html#configure">Configure</a>  • <a href="advanced-unix-installation.html#build">Build</a> • <a href="advanced-unix-installation.html#install">Install</a> • <a href="advanced-unix-installation.html#linux">Linux-specific Build Instructions</a> • <a href="advanced-unix-installation.html#macosx">Mac OS X-specific Build Instructions</a> • <a href="advanced-unix-installation.html#mingw">MinGW-specific Build Instructions</a> • <a href="advanced-unix-installation.html#problems">Dealing with Unexpected Problems</a></p>
 
-<p class="lead magick-description">It's possible you don't want to concern yourself with advanced installation under Unix or Linux systems.  If so, you also have the option of installing a pre-compiled <a href="/www/../www/binary-releases.html#unix">binary release</a>  or if you still want to install from source without all the fuss see the simple <a href="/www/../www/install-source.html#unix">Install From Source</a> instructions.  However, if you want to customize the configuration and installation of ImageMagick under Unix or Linux systems, lets begin.</p>
+<p class="lead magick-description">It's possible you don't want to concern yourself with advanced installation under Unix or Linux systems.  If so, you also have the option of installing a pre-compiled <a href="binary-releases.html#unix">binary release</a>  or if you still want to install from source without all the fuss see the simple <a href="install-source.html#unix">Install From Source</a> instructions.  However, if you want to customize the configuration and installation of ImageMagick under Unix or Linux systems, lets begin.</p>
 
 <h2 class="magick-header"><a id="download"></a>Download &amp; Unpack</h2>
 
-<p>ImageMagick builds on a variety of Unix and Unix-like operating systems including Linux, Solaris, FreeBSD, Mac OS X, and others.  A compiler is required and fortunately almost all modern Unix systems have one.  Download <a href="http://www.imagemagick.org/download/ImageMagick.tar.gz">ImageMagick.tar.gz</a> from <a href="http://www.imagemagick.org/download">ftp.imagemagick.org</a> or its <a href="/www/../www/download.html">mirrors</a> and verify the distribution against its <a href="http://www.imagemagick.org/download/digest.rdf">message digest</a>.</p>
+<p>ImageMagick builds on a variety of Unix and Unix-like operating systems including Linux, Solaris, FreeBSD, Mac OS X, and others.  A compiler is required and fortunately almost all modern Unix systems have one.  Download <a href="http://www.imagemagick.org/download/ImageMagick.tar.gz">ImageMagick.tar.gz</a> from <a href="http://www.imagemagick.org/download">ftp.imagemagick.org</a> or its <a href="download.html">mirrors</a> and verify the distribution against its <a href="http://www.imagemagick.org/download/digest.rdf">message digest</a>.</p>
 
 <p>Unpack the distribution it with this command:</p>
 
@@ -488,7 +488,7 @@ make check
 
 <h2 class="magick-header"><a id="linux"></a>Linux-specific Build instructions</h2>
 
-<p>Download <a href="http://www.imagemagick.org/download/linux/SRPMS/ImageMagick.src.rpm">ImageMagick.src.rpm</a> from <a href="http://www.imagemagick.org/download">ftp.imagemagick.org</a> or its <a href="/www/../www/download.html">mirrors</a> and verify the distribution against its <a href="http://www.imagemagick.org/download/linux/SRPMS/digest.rdf">message digest</a>.</p>
+<p>Download <a href="http://www.imagemagick.org/download/linux/SRPMS/ImageMagick.src.rpm">ImageMagick.src.rpm</a> from <a href="http://www.imagemagick.org/download">ftp.imagemagick.org</a> or its <a href="download.html">mirrors</a> and verify the distribution against its <a href="http://www.imagemagick.org/download/linux/SRPMS/digest.rdf">message digest</a>.</p>
 
 <p>Build ImageMagick with this command:</p>
 
@@ -523,7 +523,7 @@ sudo port install jpeg
 
 <p>Now lets build ImageMagick:</p>
 
-	  <p><a href="/www/../www/download.html">Download</a> the ImageMagick source distribution and verify the distribution against its <a href="http://www.imagemagick.org/download/digest.rdf">message digest</a>.</p>
+	  <p><a href="download.html">Download</a> the ImageMagick source distribution and verify the distribution against its <a href="http://www.imagemagick.org/download/digest.rdf">message digest</a>.</p>
 	  <p>Unpack and change into the top-level ImageMagick directory:</p>
 		<pre><span class="crtprompt"> </span><span class="crtin">tar xvzf ImageMagick-6.9.2-1.tar.gz</span><span class="crtout"></span><span class="crtprompt"> </span><span class="crtin">cd ImageMagick-6.9.2-1</span></pre>	  <p>Configure ImageMagick:</p>
 <pre>
@@ -609,19 +609,20 @@ identify -list format
 
 </div>
   <footer class="magick-footer">
-    <p><a href="/www/../www/support.html">Donate</a> •
-     <a href="/www/../www/sitemap.html">Sitemap</a> •
-    <a href="/www/../www/links.html">Related</a> •
-    <a href="/www/../www/architecture.html">Architecture</a>
+    <p><a href="support.html">Donate</a> •
+     <a href="sitemap.html">Sitemap</a> •
+    <a href="links.html">Related</a> •
+    <a href="architecture.html">Architecture</a>
 </p>
-    <p><a href="#">Back to top</a> •
+    <p><a href="advanced-unix-installation.html#">Back to top</a> •
     <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-    <a href="/www/../www/http://www.imagemagick.org/script/contact.php">Contact Us</a></p>
+    <a href="http://www.imagemagick.org/script/contact.php">Contact Us</a></p>
         <p><small>©  1999-2015 ImageMagick Studio LLC</small></p>
   </footer>
 </div><!-- /.container -->
 
-  <script src="/www/../js/magick.html"></script>
+  <script src="https://localhost/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="../js/magick.html"></script>
 </div>
 </body>
 </html>

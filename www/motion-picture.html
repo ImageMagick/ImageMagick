@@ -21,33 +21,33 @@
   <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC">
   <meta name="distribution" content="Global">
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
-  <link rel="icon" href="/www/../images/wand.png">
-  <link rel="shortcut icon" href="/www/../images/wand.ico">
-  <link rel="stylesheet" href="/www/css/magick.css">
+  <link rel="icon" href="../images/wand.png">
+  <link rel="shortcut icon" href="../images/wand.ico">
+  <link rel="stylesheet" href="css/magick.css">
 </head>
 <body>
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async src="//localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
+    <script async src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
     <script>
     (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
     <nav class="magick-nav">
-      <a class="magick-nav-item " href="/www/../index.html">Home</a>
-      <a class="magick-nav-item " href="/www/../www/binary-releases.html">Download</a>
-      <a class="magick-nav-item " href="/www/../www/command-line-tools.html">Tools</a>
-      <a class="magick-nav-item " href="/www/../www/command-line-options.html">Options</a>
-      <a class="magick-nav-item " href="/www/../www/resources.html">Resources</a>
-      <a class="magick-nav-item " href="/www/../www/api.html">Develop</a>
-      <a class="magick-nav-item " href="/www/../www/http://www.imagemagick.org/script/search.php">Search</a>
+      <a class="magick-nav-item " href="../index.html">Home</a>
+      <a class="magick-nav-item " href="binary-releases.html">Download</a>
+      <a class="magick-nav-item " href="command-line-tools.html">Tools</a>
+      <a class="magick-nav-item " href="command-line-options.html">Options</a>
+      <a class="magick-nav-item " href="resources.html">Resources</a>
+      <a class="magick-nav-item " href="api.html">Develop</a>
+      <a class="magick-nav-item " href="http://www.imagemagick.org/script/search.php">Search</a>
       <a class="magick-nav-item pull-right" href="http://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="text-center"><a href="#log">Log Format</a> • <a href="#properties">DPX properties</a> • <a href="#settings">DPX Settings</a></p>
+<p class="text-center"><a href="motion-picture.html#log">Log Format</a> • <a href="motion-picture.html#properties">DPX properties</a> • <a href="motion-picture.html#settings">DPX Settings</a></p>
 
 <p class="lead magick-description">DPX (SMPTE 268M-2003) - This format is used in Motion Picture and Effects industry that makes particular use of the extensive header information and the format's flexibility in being able to handle high dynamic range and logarithmic color values at a variety of bit depths using RGB or YCbCr pixel descriptions.  It is based on, but largely supercedes, Kodak's Cineon format that has more a more film specific header.</p>
 
@@ -66,8 +66,8 @@
 <p>The color values for each pixel are often stored logarithmically (particularly if the sequence is destined to be transferred back on to film) which more naturally reflects the density of how color information is stored in the emulsion on the original film. When viewed without alteration logarithmic files appear to have very low contrast (leftmost image), and so require a 'look up table' to translate the logarithmic image to something that resembles what you might see if the image was transferred back to film and projected in a cinema (rightmost image). Apart from making the image linear (like most typical computer images) and adjusting the gamma level this table sets where the black and white point lies.</p>
 
 <ul>
-  <a href="/www/../images/bluebells_log.jpg"><img src="/www/../images/bluebells_log.jpg" width="384" height="288" class="image-slices" alt="bluebells-log"></a>
-  <a href="/www/../images/bluebells_lin.jpg"><img src="/www/../images/bluebells_lin.jpg" width="384" height="288" class="image-slices" alt="bluebells-linear"></a>
+  <a href="../images/bluebells_log.jpg"><img src="../images/bluebells_log.jpg" width="384" height="288" class="image-slices" alt="bluebells-log"></a>
+  <a href="../images/bluebells_lin.jpg"><img src="../images/bluebells_lin.jpg" width="384" height="288" class="image-slices" alt="bluebells-linear"></a>
 </ul>
 
 <p>For a 10 bit logarithmic image where each color component value ranges from 0 to 1023 the black and white points are normally set at 95 for black and 685 for white. What this means is that the logarithmic file stores color values that are lighter than what the linear version will display as pure white and darker than what it will display as pure black. This extra information therefore remains available for an effects artists who might wish to alter the brightness of the image after it has been stored as a DPX file.</p>
@@ -75,8 +75,8 @@
 <p>As an example, had this information been lost, reducing the brightness of a linear image uniformly would result in highlights becoming darker (leftmost image), whereas with this extra information the highlights instead reduce in size and start showing details that were previously too bright to be seen (rightmost image). The latter is far closer to what happens in the real world.</p>
 
 <ul>
-  <a href="/www/../images/bluebells_clipped.jpg"><img src="/www/../images/bluebells_clipped.jpg" width="384" height="288" class="image-slices" alt="bluebells-clipped"></a>
-  <a href="/www/../images/bluebells_darker.jpg"><img src="/www/../images/bluebells_darker.jpg" width="384" height="288" class="image-slices" alt="bluebells-darker"></a>
+  <a href="../images/bluebells_clipped.jpg"><img src="../images/bluebells_clipped.jpg" width="384" height="288" class="image-slices" alt="bluebells-clipped"></a>
+  <a href="../images/bluebells_darker.jpg"><img src="../images/bluebells_darker.jpg" width="384" height="288" class="image-slices" alt="bluebells-darker"></a>
 </ul>
 
 <h2 class="magick-header"><a id="properties"></a>DPX Properties</h2>
@@ -153,7 +153,7 @@ convert bluebells.dpx -define dpx:television.time.code=10:00:02:15 bluebells-001
 
 <h2 class="magick-header"><a id="settings"></a>DPX Settings</h2>
 
-<p>Use <a href="/www/../www/command-line-options.html#set">-set</a> to specify the image or film gamma or black and white points.  For example use:
+<p>Use <a href="command-line-options.html#set">-set</a> to specify the image or film gamma or black and white points.  For example use:
 </p>
 
 <pre>
@@ -166,19 +166,19 @@ convert bluebells.dpx -define dpx:television.time.code=10:00:02:15 bluebells-001
 
 </div>
   <footer class="magick-footer">
-    <p><a href="/www/../www/support.html">Donate</a> •
-     <a href="/www/../www/sitemap.html">Sitemap</a> •
-    <a href="/www/../www/links.html">Related</a> •
-    <a href="/www/../www/architecture.html">Architecture</a>
+    <p><a href="support.html">Donate</a> •
+     <a href="sitemap.html">Sitemap</a> •
+    <a href="links.html">Related</a> •
+    <a href="architecture.html">Architecture</a>
 </p>
-    <p><a href="#">Back to top</a> •
+    <p><a href="motion-picture.html#">Back to top</a> •
     <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-    <a href="/www/../www/http://www.imagemagick.org/script/contact.php">Contact Us</a></p>
+    <a href="http://www.imagemagick.org/script/contact.php">Contact Us</a></p>
         <p><small>©  1999-2015 ImageMagick Studio LLC</small></p>
   </footer>
 </div><!-- /.container -->
 
-  <script src="/www/../js/magick.html"></script>
+  <script src="../js/magick.html"></script>
 </div>
 </body>
 </html>

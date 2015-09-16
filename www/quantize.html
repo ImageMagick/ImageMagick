@@ -21,33 +21,33 @@
   <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC">
   <meta name="distribution" content="Global">
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
-  <link rel="icon" href="/www/../images/wand.png">
-  <link rel="shortcut icon" href="/www/../images/wand.ico">
-  <link rel="stylesheet" href="/www/css/magick.css">
+  <link rel="icon" href="../images/wand.png">
+  <link rel="shortcut icon" href="../images/wand.ico">
+  <link rel="stylesheet" href="css/magick.css">
 </head>
 <body>
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async src="//localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
+    <script async src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
     <script>
     (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
     <nav class="magick-nav">
-      <a class="magick-nav-item " href="/www/../index.html">Home</a>
-      <a class="magick-nav-item " href="/www/../www/binary-releases.html">Download</a>
-      <a class="magick-nav-item " href="/www/../www/command-line-tools.html">Tools</a>
-      <a class="magick-nav-item " href="/www/../www/command-line-options.html">Options</a>
-      <a class="magick-nav-item " href="/www/../www/resources.html">Resources</a>
-      <a class="magick-nav-item " href="/www/../www/api.html">Develop</a>
-      <a class="magick-nav-item " href="/www/../www/http://www.imagemagick.org/script/search.php">Search</a>
+      <a class="magick-nav-item " href="../index.html">Home</a>
+      <a class="magick-nav-item " href="binary-releases.html">Download</a>
+      <a class="magick-nav-item " href="command-line-tools.html">Tools</a>
+      <a class="magick-nav-item " href="command-line-options.html">Options</a>
+      <a class="magick-nav-item " href="resources.html">Resources</a>
+      <a class="magick-nav-item " href="api.html">Develop</a>
+      <a class="magick-nav-item " href="http://www.imagemagick.org/script/search.php">Search</a>
       <a class="magick-nav-item pull-right" href="http://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="text-center"><a href="#describe">Algorithm Description</a> • <a href="#measure">Measuring Color Reduction Error</a></p>
+<p class="text-center"><a href="quantize.html#describe">Algorithm Description</a> • <a href="quantize.html#measure">Measuring Color Reduction Error</a></p>
 
 <p class="lead magick-description">This document describes how ImageMagick performs color reduction on an image. To fully understand what follows, you should have a knowledge of basic imaging techniques and the tree data structure and terminology.</p>
 
@@ -71,7 +71,7 @@
 
 <p><b>Classification</b></p>
 
-<p>Classification builds a color description tree for the image. Reduction collapses the tree until the number it represents, at most, is the number of colors desired in the output image. Assignment defines the output image's color map and sets each pixel's color by reclassification in the reduced tree.  <var>Our goal is to minimize the numerical discrepancies between the original colors and quantized colors</var>. To learn more about quantization error, see <a href="#measure">Measuring Color Reduction Error</a>.</p>
+<p>Classification builds a color description tree for the image. Reduction collapses the tree until the number it represents, at most, is the number of colors desired in the output image. Assignment defines the output image's color map and sets each pixel's color by reclassification in the reduced tree.  <var>Our goal is to minimize the numerical discrepancies between the original colors and quantized colors</var>. To learn more about quantization error, see <a href="quantize.html#measure">Measuring Color Reduction Error</a>.</p>
 
 <p>Classification begins by initializing a color description tree of sufficient depth to represent each possible input color in a leaf. However, it is impractical to generate a fully-formed color description tree in the classification phase for realistic values of <var>Cmax</var>. If color components in the input image are quantized to <var>k</var>-bit precision, so that <var>Cmax</var> = <var>2^k-1</var>, the tree would need <var>k</var> levels below the root node to allow representing each possible input color in a leaf.  This becomes prohibitive because the tree's total number of nodes:</p>
 
@@ -154,7 +154,7 @@ while number of nodes with (n2 &gt; 0) &gt; required maximum number of colors
 
 <p>The normalized error measurement can be used to compare images.  In general, the closer the mean error is to zero the more the quantized image resembles the source image. Ideally, the error should be perceptually-based, since the human eye is the final judge of quantization quality.</p>
 
-<p>These errors are measured and printed when the <a href="/www/../www/command-line-options.html#colors">-colors</a> and <a href="/www/../www/command-line-options.html#verbose">-verbose</a> options are specified on the <a href="/www/../www/convert.html">convert</a> command line:</p>
+<p>These errors are measured and printed when the <a href="command-line-options.html#colors">-colors</a> and <a href="command-line-options.html#verbose">-verbose</a> options are specified on the <a href="convert.html">convert</a> command line:</p>
 
 <div class="table-responsive">
 <table class="table table-condensed table-striped">
@@ -174,19 +174,19 @@ while number of nodes with (n2 &gt; 0) &gt; required maximum number of colors
 
 </div>
   <footer class="magick-footer">
-    <p><a href="/www/../www/support.html">Donate</a> •
-     <a href="/www/../www/sitemap.html">Sitemap</a> •
-    <a href="/www/../www/links.html">Related</a> •
-    <a href="/www/../www/architecture.html">Architecture</a>
+    <p><a href="support.html">Donate</a> •
+     <a href="sitemap.html">Sitemap</a> •
+    <a href="links.html">Related</a> •
+    <a href="architecture.html">Architecture</a>
 </p>
-    <p><a href="#">Back to top</a> •
+    <p><a href="quantize.html#">Back to top</a> •
     <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-    <a href="/www/../www/http://www.imagemagick.org/script/contact.php">Contact Us</a></p>
+    <a href="http://www.imagemagick.org/script/contact.php">Contact Us</a></p>
         <p><small>©  1999-2015 ImageMagick Studio LLC</small></p>
   </footer>
 </div><!-- /.container -->
 
-  <script src="/www/../js/magick.html"></script>
+  <script src="../js/magick.html"></script>
 </div>
 </body>
 </html>
