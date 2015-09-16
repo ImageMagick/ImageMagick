@@ -574,12 +574,13 @@ const double sigma,ExceptionInfo *exception)
 </dl>
 <h2><a href="http://nextgen.imagemagick.org/api/MagickCore/effect_8c.html" id="SpreadImage">SpreadImage</a></h2>
 
-<p>SpreadImage() is a special effects method that randomly displaces each pixel in a block defined by the radius parameter.</p>
+<p>SpreadImage() is a special effects method that randomly displaces each pixel in a square area defined by the radius parameter.</p>
 
 <p>The format of the SpreadImage method is:</p>
 
 <pre class="text">
-Image *SpreadImage(const Image *image,const double radius,
+Image *SpreadImage(const Image *image,
+  const PixelInterpolateMethod method,const double radius,
   ExceptionInfo *exception)
 </pre>
 
@@ -592,6 +593,10 @@ Image *SpreadImage(const Image *image,const double radius,
 <dl class="dl-horizontal">
 <dt>image</dt>
 <dd>the image. </dd>
+
+<dd> </dd>
+<dt>method</dt>
+<dd> intepolation method. </dd>
 
 <dd> </dd>
 <dt>radius</dt>

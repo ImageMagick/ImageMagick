@@ -7048,13 +7048,17 @@ MagickBooleanType MagickSpliceImage(MagickWand *wand,
 <p>The format of the MagickSpreadImage method is:</p>
 
 <pre class="text">
-MagickBooleanType MagickSpreadImage(MagickWand *wand,const double radius)
+MagickBooleanType MagickSpreadImage(MagickWand *wand,
+  const PixelInterpolateMethod method,const double radius)
   
   A description of each parameter follows:
 </pre>
 
 <dt>wand</dt>
 <p>the magick wand.</p>
+
+<dt>method</dt>
+<p>intepolation method.</p>
 
 <dt>radius</dt>
 <p>Choose a random pixel in a neighborhood of this extent.</p>

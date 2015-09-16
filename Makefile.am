@@ -293,18 +293,24 @@ libtool: $(LIBTOOL_DEPS)
 
 # Format C API documentation
 html:
-	$(MKDIR_P) -p $(top_builddir)/www/api
-	cd config && doxygen MagickCore.dox
-	cd config && doxygen MagickWand.dox
-	cd config && doxygen Magick++.dox
+# copy static file
 	for dir in $(DOCDIRSMANUAL) ; do \
 		$(MKDIR_P) $(top_builddir)/$$dir ;\
 		for file in $$dir/*.* ; do \
 			if ! test -f $(top_builddir)/$$file; then \
-				cp -f $(top_srcdir)/$$file $(top_builddir)/$$dir ; \
+				cp -p -f $(top_srcdir)/$$file $(top_builddir)/$$dir ; \
 			fi; \
 		done ; \
 	done;
+# remove old doxygen files
+	for dir in $(DOCDIRDOXYGEN) ; do \
+	    rm -rf $$dir || true; \
+	done;
+# make doxygen doc
+	$(MKDIR_P) $(top_builddir)/www/api
+	cd config && doxygen MagickCore.dox
+	cd config && doxygen MagickWand.dox
+	cd config && doxygen Magick++.dox
 
 #
 # Build Windows source Zip and 7Zip balls

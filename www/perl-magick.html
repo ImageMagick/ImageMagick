@@ -49,7 +49,7 @@
 <a id="introduction"></a>
 <p class="lead magick-description"><a href="download.html">PerlMagick</a> is an objected-oriented <a href="http://www.perl.com/perl/">Perl</a> interface to ImageMagick. Use the module to read, manipulate, or write an image or image sequence from within a Perl script. This makes it very suitable for Web CGI scripts. You must have ImageMagick 6.5.5 or above and Perl version 5.005_02 or greater installed on your system for PerlMagick to build properly.</p>
 
-<p>There are a number of useful scripts available to show you the value of PerlMagick. You can do Web based image manipulation and conversion with <a href="http://www.imagemagick.org/download/perl">MagickStudio</a>, or use <a href="https://www.imagemagick.org/subversion/ImageMagick/trunk/PerlMagick/demo/">L-systems</a> to create images of plants using mathematical constructs, and finally navigate through collections of thumbnail images and select the image to view with the <a href="http://webmagick.sourceforge.net/">WebMagick Image Navigator</a>.</p>
+<p>There are a number of useful scripts available to show you the value of PerlMagick. You can do Web based image manipulation and conversion with <a href="http://www.imagemagick.org/download/perl">MagickStudio</a>, or use <a href="http://git.imagemagick.org/repos/ImageMagick/PerlMagick/demo">L-systems</a> to create images of plants using mathematical constructs, and finally navigate through collections of thumbnail images and select the image to view with the <a href="http://webmagick.sourceforge.net/">WebMagick Image Navigator</a>.</p>
 
 <p>You can try PerlMagick from your Web browser at the <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">ImageMagick Studio</a>. Or, you can see <a href="examples.html">examples</a> of select PerlMagick functions.</p>
 
@@ -1547,6 +1547,12 @@ can use the integers 1 and 0.</p>
   </tr>
 
   <tr>
+    <td>mask</td>
+    <td><i>image</i></td>
+    <td>associate a mask with the image.</td>
+  </tr>
+
+  <tr>
     <td>matte</td>
     <td>{True, False}</td>
     <td>enable the image matte channel</td>
@@ -1604,12 +1610,6 @@ can use the integers 1 and 0.</p>
     <td>quality</td>
     <td><i>integer</i></td>
     <td>JPEG/MIFF/PNG compression level</td>
-  </tr>
-
-  <tr>
-    <td>read-mask</td>
-    <td><i>image</i></td>
-    <td>associate a read mask with the image.</td>
   </tr>
 
   <tr>
@@ -1695,13 +1695,6 @@ can use the integers 1 and 0.</p>
     <td><i>x-value</i>, <i>y-value</i></td>
     <td>chromaticity white point (e.g. 0.3127, 0.329)</td>
   </tr>
-
-  <tr>
-    <td>write-mask</td>
-    <td><i>image</i></td>
-    <td>associate a write mask with the image.</td>
-  </tr>
-
   </tbody>
 </table>
 

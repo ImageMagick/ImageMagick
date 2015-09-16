@@ -927,7 +927,7 @@ and moves the remaining corner blocks leftward and upward to close the gaps.</p>
 
 <p>While it can remove internal rows and columns of pixels, it is more
 typically used with as <a href="command-line-options.html#gravity">-gravity</a> setting and zero
-offsets so as to remove a single edge from an image.  Compare this to <a href="command-line-options.html#shave">-shave</a> which removes equal numbers of pixels from oppisite
+offsets so as to remove a single edge from an image.  Compare this to <a href="command-line-options.html#shave">-shave</a> which removes equal numbers of pixels from opposite
 sides of the image.  </p>
 
 <p>Using <a href="command-line-options.html#chop">-chop</a> effectively undoes the results of a <a href="command-line-options.html#splice">-splice</a> that was given the same <var>geometry</var> and <a href="command-line-options.html#gravity">-gravity</a> settings. </p>
@@ -1348,7 +1348,7 @@ Choose from these operators:
 add
 conjugate
 divide
-magnuitude-phase
+magnitude-phase
 multiply
 real-imaginary
 subtract
@@ -2831,7 +2831,7 @@ convert -size 90x90 pattern:checkerboard -normalize -virtual-pixel tile \
 <p>Note that a infinitely tiled perspective images involving the horizon can
 be very slow, because of the number of pixels that are compressed to generate
 each individual pixel close to the 'horizon'.  You can turn off EWA
-resampling, by specifing the special <a href="command-line-options.html#filter">-filter</a> setting of
+resampling, by specifying the special <a href="command-line-options.html#filter">-filter</a> setting of
 '<code>point</code>' (recommended if you plan to use super-sampling instead).
 </p>
 
@@ -3554,7 +3554,7 @@ images.</p>
 about HDRI go the ImageMagick <a href="http://www.imagemagick.org/Usage/basics/#hdri">Usage</a> pages, <a href="http://www.fmwconcepts.com/imagemagick/fourier_transforms/fourier.html">Fred's Fourier Processing With ImageMagick page</a> or this <a href="http://en.wikipedia.org/wiki/High_dynamic_range_imaging">Wikipedia</a>
  entry.  </p>
 
-<p>By default the FFT is normalized (and the IFT is not). Use "<code><a href="command-line-options.html#define">-define</a> fourier:normalize=forward</code> to explicityly normalize the FFT and unnormalize the IFT.</p>
+<p>By default the FFT is normalized (and the IFT is not). Use "<code><a href="command-line-options.html#define">-define</a> fourier:normalize=forward</code> to explicitly normalize the FFT and unnormalize the IFT.</p>
 
 
 <div style="margin: auto;">
@@ -3642,7 +3642,7 @@ use of these expert settings (see also <a href="command-line-options.html#define
     <td>-define filter:support=<var>radius</var></td>
     <td>Set the filter support radius. Defines how large the filter should be and
     thus directly defines how slow the filtered resampling process is. All
-    filters have a default 'prefered' support size. Some filters like
+    filters have a default 'preferred' support size. Some filters like
     <code>Lagrange</code> and windowed filters adjust themselves depending on
     this value.  With simple filters this value either does nothing (but slow
     the resampling), or will clip the filter function in a detrimental way.
@@ -4433,7 +4433,7 @@ use <a href="command-line-options.html#ift">-ift</a>.</p>
 and imaginary images from the frequency domain to a single image in the normal
 (spatial) domain.</p>
 
-<p>By default the IFT is not normalized (and the FFT is). Use "<code><a href="command-line-options.html#define">-define</a> fourier:normalize=inverse</code> to explictly normalize the IFT and unnormalize the FFT.</p>
+<p>By default the IFT is not normalized (and the FFT is). Use "<code><a href="command-line-options.html#define">-define</a> fourier:normalize=inverse</code> to explicitly normalize the IFT and unnormalize the FFT.</p>
 
 <div style="margin: auto;">
   <h3 class="magick-header"><a id="immutable"></a>-immutable</h3>
@@ -4469,7 +4469,7 @@ Consequently this has no effect on the image sequence order.</p>
 <p class="magick-description">method to generate intensity value from pixel.</p>
 
 <p>ImageMagick provides a number of methods used in situations where an
-operatory needs to determine a single grayscale value for some purpose, from
+operator needs to determine a single grayscale value for some purpose, from
 an image with red, green, and blue pixel components. Typically the linear
 <code>Rec709Luminance</code> formula is used, which is the same formula used when 
 converting images to <code>-colorspace gray</code>. </p>
@@ -5659,7 +5659,7 @@ Random
 Uniform
 </pre>
 
-<p>The amount of noise added can be controled by the <code><a href="command-line-options.html#attunuuate">-attenuate</a></code> setting. If unset the value is
+<p>The amount of noise added can be controled by the <code><a href="command-line-options.html#attenuate">-attenuate</a></code> setting. If unset the value is
 equivalent to 1.0, or a maximum noise addition.</p>
 
 <p>Note that Random will replace the image with noise rather than add noise to the image. Use Uniform, if you wish to add random noise to the image.</p>
@@ -6586,7 +6586,7 @@ Properties</a> in the defined value.  For example:</p>
 Old size = 70x46  New size = 35x23
 </pre>
 
-<p>Other well known 'properties' that are availible include:
+<p>Other well known 'properties' that are available include:
 '<code>date:create</code>' and '<code>date:modify</code>' and
 '<code>signature</code>'. </p>
 
