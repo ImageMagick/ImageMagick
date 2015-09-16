@@ -926,12 +926,13 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
     }
   else
     {
-      (void) TransformImageColorspace(image,sRGBColorspace);
       if (IsGrayColorspace(image->colorspace) != MagickFalse)
         {
           channels=1;
           jp2_colorspace=OPJ_CLRSPC_GRAY;
         }
+      else
+        (void) TransformImageColorspace(image,sRGBColorspace);
       if (image->matte != MagickFalse)
         channels++;
     }
