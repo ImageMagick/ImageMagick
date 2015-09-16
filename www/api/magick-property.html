@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  
     <title>ImageMagick: MagickWand, C API for ImageMagick: Property Methods</title>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -20,34 +21,33 @@
   <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC">
   <meta name="distribution" content="Global">
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
-  <link rel="icon" href="../images/wand.png">
-  <link rel="shortcut icon" href="../images/wand.ico">
-  <link rel="stylesheet" href="../css/magick.html">
+  <link rel="icon" href="/api/../images/wand.png">
+  <link rel="shortcut icon" href="/api/../images/wand.ico">
+  <link rel="stylesheet" href="/api/../css/magick.html">
 </head>
 <body>
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
     <script>
     (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
     <nav class="magick-nav">
-      <a class="magick-nav-item " href="../index.html">Home</a>
-      <a class="magick-nav-item " href="../binary-releases.html">Download</a>
-      <a class="magick-nav-item " href="../command-line-tools.html">Tools</a>
-      <a class="magick-nav-item " href="../command-line-options.html">Options</a>
-      <a class="magick-nav-item " href="../resources.html">Resources</a>
-      <a class="magick-nav-item " href="api.html">Develop</a>
-      <a class="magick-nav-item " href="http://www.imagemagick.org/script/search.php">Search</a>
+      <a class="magick-nav-item " href="/api/../index.html">Home</a>
+      <a class="magick-nav-item " href="/api/../binary-releases.html">Download</a>
+      <a class="magick-nav-item " href="/api/../command-line-tools.html">Tools</a>
+      <a class="magick-nav-item " href="/api/../command-line-options.html">Options</a>
+      <a class="magick-nav-item " href="/api/../resources.html">Resources</a>
+      <a class="magick-nav-item " href="/api/api.html">Develop</a>
+      <a class="magick-nav-item " href="/api/http://www.imagemagick.org/script/search.php">Search</a>
       <a class="magick-nav-item pull-right" href="http://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="text-center"><a href="magick-property.html#MagickDeleteImageArtifact">MagickDeleteImageArtifact</a> • <a href="magick-property.html#MagickDeleteImageProperty">MagickDeleteImageProperty</a> • <a href="magick-property.html#MagickDeleteOption">MagickDeleteOption</a> • <a href="magick-property.html#MagickGetAntialias">MagickGetAntialias</a> • <a href="magick-property.html#MagickGetBackgroundColor">MagickGetBackgroundColor</a> • <a href="magick-property.html#MagickGetColorspace">MagickGetColorspace</a> • <a href="magick-property.html#MagickGetCompression">MagickGetCompression</a> • <a href="magick-property.html#MagickGetCompressionQuality">MagickGetCompressionQuality</a> • <a href="magick-property.html#MagickGetCopyright">MagickGetCopyright</a> • <a href="magick-property.html#MagickGetFilename">MagickGetFilename</a> • <a href="magick-property.html#MagickGetFont">MagickGetFont</a> • <a href="magick-property.html#MagickGetFormat">MagickGetFormat</a> • <a href="magick-property.html#MagickGetGravity">MagickGetGravity</a> • <a href="magick-property.html#MagickGetHomeURL">MagickGetHomeURL</a> • <a href="magick-property.html#MagickGetImageArtifact">MagickGetImageArtifact</a> • <a href="magick-property.html#MagickGetImageArtifacts">MagickGetImageArtifacts</a> • <a href="magick-property.html#MagickGetImageProfile">MagickGetImageProfile</a> • <a href="magick-property.html#MagickGetImageProfiles">MagickGetImageProfiles</a> • <a href="magick-property.html#MagickGetImageProperty">MagickGetImageProperty</a> • <a href="magick-property.html#MagickGetImageProperties">MagickGetImageProperties</a> • <a href="magick-property.html#MagickGetInterlaceScheme">MagickGetInterlaceScheme</a> • <a href="magick-property.html#MagickGetInterpolateMethod">MagickGetInterpolateMethod</a> • <a href="magick-property.html#MagickGetOption">MagickGetOption</a> • <a href="magick-property.html#MagickGetOptions">MagickGetOptions</a> • <a href="magick-property.html#MagickGetOrientation">MagickGetOrientation</a> • <a href="magick-property.html#MagickGetPackageName">MagickGetPackageName</a> • <a href="magick-property.html#MagickGetPage">MagickGetPage</a> • <a href="magick-property.html#MagickGetPointsize">MagickGetPointsize</a> • <a href="magick-property.html#MagickGetQuantumDepth">MagickGetQuantumDepth</a> • <a href="magick-property.html#MagickGetQuantumRange">MagickGetQuantumRange</a> • <a href="magick-property.html#MagickGetReleaseDate">MagickGetReleaseDate</a> • <a href="magick-property.html#MagickGetResolution">MagickGetResolution</a> • <a href="magick-property.html#MagickGetResource">MagickGetResource</a> • <a href="magick-property.html#MagickGetResourceLimit">MagickGetResourceLimit</a> • <a href="magick-property.html#MagickGetSamplingFactors">MagickGetSamplingFactors</a> • <a href="magick-property.html#MagickGetSize">MagickGetSize</a> • <a href="magick-property.html#MagickGetSizeOffset">MagickGetSizeOffset</a> • <a href="magick-property.html#MagickGetType">MagickGetType</a> • <a href="magick-property.html#MagickGetVersion">MagickGetVersion</a> • <a href="magick-property.html#MagickProfileImage">MagickProfileImage</a> • <a href="magick-property.html#MagickRemoveImageProfile">MagickRemoveImageProfile</a> • <a href="magick-property.html#MagickSetAntialias">MagickSetAntialias</a> • <a href="magick-property.html#MagickSetBackgroundColor">MagickSetBackgroundColor</a> • <a href="magick-property.html#MagickSetColorspace">MagickSetColorspace</a> • <a href="magick-property.html#MagickSetCompression">MagickSetCompression</a> • <a href="magick-property.html#MagickSetCompressionQuality">MagickSetCompressionQuality</a> • <a href="magick-property.html#MagickSetDepth">MagickSetDepth</a> • <a href="magick-property.html#MagickSetExtract">MagickSetExtract</a> • <a href="magick-property.html#MagickSetFilename">MagickSetFilename</a> • <a href="magick-property.html#MagickSetFont">MagickSetFont</a> • <a href="magick-property.html#MagickSetFormat">MagickSetFormat</a> • <a href="magick-property.html#MagickSetGravity">MagickSetGravity</a> • <a href="magick-property.html#MagickSetImageArtifact">MagickSetImageArtifact</a> • <a href="magick-property.html#MagickSetImageProfile">MagickSetImageProfile</a> • <a href="magick-property.html#MagickSetImageProperty">MagickSetImageProperty</a> • <a href="magick-property.html#MagickSetInterlaceScheme">MagickSetInterlaceScheme</a> • <a href="magick-property.html#MagickSetInterpolateMethod">MagickSetInterpolateMethod</a> • <a href="magick-property.html#MagickSetOption">MagickSetOption</a> • <a href="magick-property.html#MagickSetOrientation">MagickSetOrientation</a> • <a href="magick-property.html#MagickSetPage">MagickSetPage</a> • <a href="magick-property.html#MagickSetPassphrase">MagickSetPassphrase</a> • <a href="magick-property.html#MagickSetPointsize">MagickSetPointsize</a> • <a href="magick-property.html#MagickSetProgressMonitor">MagickSetProgressMonitor</a> • <a href="magick-property.html#MagickSetResourceLimit">MagickSetResourceLimit</a> • <a href="magick-property.html#MagickSetResolution">MagickSetResolution</a> • <a href="magick-property.html#MagickSetSamplingFactors">MagickSetSamplingFactors</a> • <a href="magick-property.html#MagickSetSize">MagickSetSize</a> • <a href="magick-property.html#MagickSetSizeOffset">MagickSetSizeOffset</a> • <a href="magick-property.html#MagickSetType">MagickSetType</a></p>
+<p class="text-center"><a href="#MagickDeleteImageArtifact">MagickDeleteImageArtifact</a> • <a href="#MagickDeleteImageProperty">MagickDeleteImageProperty</a> • <a href="#MagickDeleteOption">MagickDeleteOption</a> • <a href="#MagickGetAntialias">MagickGetAntialias</a> • <a href="#MagickGetBackgroundColor">MagickGetBackgroundColor</a> • <a href="#MagickGetColorspace">MagickGetColorspace</a> • <a href="#MagickGetCompression">MagickGetCompression</a> • <a href="#MagickGetCompressionQuality">MagickGetCompressionQuality</a> • <a href="#MagickGetCopyright">MagickGetCopyright</a> • <a href="#MagickGetFilename">MagickGetFilename</a> • <a href="#MagickGetFont">MagickGetFont</a> • <a href="#MagickGetFormat">MagickGetFormat</a> • <a href="#MagickGetGravity">MagickGetGravity</a> • <a href="#MagickGetHomeURL">MagickGetHomeURL</a> • <a href="#MagickGetImageArtifact">MagickGetImageArtifact</a> • <a href="#MagickGetImageArtifacts">MagickGetImageArtifacts</a> • <a href="#MagickGetImageProfile">MagickGetImageProfile</a> • <a href="#MagickGetImageProfiles">MagickGetImageProfiles</a> • <a href="#MagickGetImageProperty">MagickGetImageProperty</a> • <a href="#MagickGetImageProperties">MagickGetImageProperties</a> • <a href="#MagickGetInterlaceScheme">MagickGetInterlaceScheme</a> • <a href="#MagickGetInterpolateMethod">MagickGetInterpolateMethod</a> • <a href="#MagickGetOption">MagickGetOption</a> • <a href="#MagickGetOptions">MagickGetOptions</a> • <a href="#MagickGetOrientation">MagickGetOrientation</a> • <a href="#MagickGetPackageName">MagickGetPackageName</a> • <a href="#MagickGetPage">MagickGetPage</a> • <a href="#MagickGetPointsize">MagickGetPointsize</a> • <a href="#MagickGetQuantumDepth">MagickGetQuantumDepth</a> • <a href="#MagickGetQuantumRange">MagickGetQuantumRange</a> • <a href="#MagickGetReleaseDate">MagickGetReleaseDate</a> • <a href="#MagickGetResolution">MagickGetResolution</a> • <a href="#MagickGetResource">MagickGetResource</a> • <a href="#MagickGetResourceLimit">MagickGetResourceLimit</a> • <a href="#MagickGetSamplingFactors">MagickGetSamplingFactors</a> • <a href="#MagickGetSize">MagickGetSize</a> • <a href="#MagickGetSizeOffset">MagickGetSizeOffset</a> • <a href="#MagickGetType">MagickGetType</a> • <a href="#MagickGetVersion">MagickGetVersion</a> • <a href="#MagickProfileImage">MagickProfileImage</a> • <a href="#MagickRemoveImageProfile">MagickRemoveImageProfile</a> • <a href="#MagickSetAntialias">MagickSetAntialias</a> • <a href="#MagickSetBackgroundColor">MagickSetBackgroundColor</a> • <a href="#MagickSetColorspace">MagickSetColorspace</a> • <a href="#MagickSetCompression">MagickSetCompression</a> • <a href="#MagickSetCompressionQuality">MagickSetCompressionQuality</a> • <a href="#MagickSetDepth">MagickSetDepth</a> • <a href="#MagickSetExtract">MagickSetExtract</a> • <a href="#MagickSetFilename">MagickSetFilename</a> • <a href="#MagickSetFont">MagickSetFont</a> • <a href="#MagickSetFormat">MagickSetFormat</a> • <a href="#MagickSetGravity">MagickSetGravity</a> • <a href="#MagickSetImageArtifact">MagickSetImageArtifact</a> • <a href="#MagickSetImageProfile">MagickSetImageProfile</a> • <a href="#MagickSetImageProperty">MagickSetImageProperty</a> • <a href="#MagickSetInterlaceScheme">MagickSetInterlaceScheme</a> • <a href="#MagickSetInterpolateMethod">MagickSetInterpolateMethod</a> • <a href="#MagickSetOption">MagickSetOption</a> • <a href="#MagickSetOrientation">MagickSetOrientation</a> • <a href="#MagickSetPage">MagickSetPage</a> • <a href="#MagickSetPassphrase">MagickSetPassphrase</a> • <a href="#MagickSetPointsize">MagickSetPointsize</a> • <a href="#MagickSetProgressMonitor">MagickSetProgressMonitor</a> • <a href="#MagickSetResourceLimit">MagickSetResourceLimit</a> • <a href="#MagickSetResolution">MagickSetResolution</a> • <a href="#MagickSetSamplingFactors">MagickSetSamplingFactors</a> • <a href="#MagickSetSize">MagickSetSize</a> • <a href="#MagickSetSizeOffset">MagickSetSizeOffset</a> • <a href="#MagickSetType">MagickSetType</a></p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickWand/magick-property_8c.html" id="MagickDeleteImageArtifact">MagickDeleteImageArtifact</a></h2>
 
@@ -1863,19 +1863,19 @@ MagickBooleanType MagickSetType(MagickWand *wand,
 </dl>
 </div>
   <footer class="magick-footer">
-    <p><a href="../support.html">Donate</a> •
-     <a href="../sitemap.html">Sitemap</a> •
-    <a href="../links.html">Related</a> •
-    <a href="../architecture.html">Architecture</a>
+    <p><a href="/api/../support.html">Donate</a> •
+     <a href="/api/../sitemap.html">Sitemap</a> •
+    <a href="/api/../links.html">Related</a> •
+    <a href="/api/../architecture.html">Architecture</a>
 </p>
-    <p><a href="magick-property.html#">Back to top</a> •
+    <p><a href="#">Back to top</a> •
     <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-    <a href="http://www.imagemagick.org/script/contact.php">Contact Us</a></p>
-    <p><small>©  1999-2015 ImageMagick Studio LLC</small></p>
+    <a href="/api/http://www.imagemagick.org/script/contact.php">Contact Us</a></p>
+        <p><small>©  1999-2015 ImageMagick Studio LLC</small></p>
   </footer>
 </div><!-- /.container -->
 
-  <script src="../js/magick.html"></script>
+  <script src="/api/../js/magick.html"></script>
 </div>
 </body>
 </html>

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  
     <title>ImageMagick: MagickWand, C API for ImageMagick: Pixel Wand Methods</title>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -20,34 +21,33 @@
   <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC">
   <meta name="distribution" content="Global">
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
-  <link rel="icon" href="../images/wand.png">
-  <link rel="shortcut icon" href="../images/wand.ico">
-  <link rel="stylesheet" href="../css/magick.html">
+  <link rel="icon" href="/api/../images/wand.png">
+  <link rel="shortcut icon" href="/api/../images/wand.ico">
+  <link rel="stylesheet" href="/api/../css/magick.html">
 </head>
 <body>
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
     <script>
     (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
     <nav class="magick-nav">
-      <a class="magick-nav-item " href="../index.html">Home</a>
-      <a class="magick-nav-item " href="../binary-releases.html">Download</a>
-      <a class="magick-nav-item " href="../command-line-tools.html">Tools</a>
-      <a class="magick-nav-item " href="../command-line-options.html">Options</a>
-      <a class="magick-nav-item " href="../resources.html">Resources</a>
-      <a class="magick-nav-item " href="api.html">Develop</a>
-      <a class="magick-nav-item " href="http://www.imagemagick.org/script/search.php">Search</a>
+      <a class="magick-nav-item " href="/api/../index.html">Home</a>
+      <a class="magick-nav-item " href="/api/../binary-releases.html">Download</a>
+      <a class="magick-nav-item " href="/api/../command-line-tools.html">Tools</a>
+      <a class="magick-nav-item " href="/api/../command-line-options.html">Options</a>
+      <a class="magick-nav-item " href="/api/../resources.html">Resources</a>
+      <a class="magick-nav-item " href="/api/api.html">Develop</a>
+      <a class="magick-nav-item " href="/api/http://www.imagemagick.org/script/search.php">Search</a>
       <a class="magick-nav-item pull-right" href="http://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="text-center"><a href="pixel-wand.html#ClearPixelWand">ClearPixelWand</a> • <a href="pixel-wand.html#ClonePixelWand">ClonePixelWand</a> • <a href="pixel-wand.html#ClonePixelWands">ClonePixelWands</a> • <a href="pixel-wand.html#DestroyPixelWand">DestroyPixelWand</a> • <a href="pixel-wand.html#DestroyPixelWands">DestroyPixelWands</a> • <a href="pixel-wand.html#IsPixelWandSimilar">IsPixelWandSimilar</a> • <a href="pixel-wand.html#IsPixelWand">IsPixelWand</a> • <a href="pixel-wand.html#NewPixelWand">NewPixelWand</a> • <a href="pixel-wand.html#NewPixelWands">NewPixelWands</a> • <a href="pixel-wand.html#PixelClearException">PixelClearException</a> • <a href="pixel-wand.html#PixelGetAlpha">PixelGetAlpha</a> • <a href="pixel-wand.html#PixelGetAlphaQuantum">PixelGetAlphaQuantum</a> • <a href="pixel-wand.html#PixelGetBlack">PixelGetBlack</a> • <a href="pixel-wand.html#PixelGetBlackQuantum">PixelGetBlackQuantum</a> • <a href="pixel-wand.html#PixelGetBlue">PixelGetBlue</a> • <a href="pixel-wand.html#PixelGetBlueQuantum">PixelGetBlueQuantum</a> • <a href="pixel-wand.html#PixelGetColorAsString">PixelGetColorAsString</a> • <a href="pixel-wand.html#PixelGetColorAsNormalizedString">PixelGetColorAsNormalizedString</a> • <a href="pixel-wand.html#PixelGetColorCount">PixelGetColorCount</a> • <a href="pixel-wand.html#PixelGetCyan">PixelGetCyan</a> • <a href="pixel-wand.html#PixelGetCyanQuantum">PixelGetCyanQuantum</a> • <a href="pixel-wand.html#PixelGetException">PixelGetException</a> • <a href="pixel-wand.html#PixelGetExceptionType">PixelGetExceptionType</a> • <a href="pixel-wand.html#PixelGetFuzz">PixelGetFuzz</a> • <a href="pixel-wand.html#PixelGetGreen">PixelGetGreen</a> • <a href="pixel-wand.html#PixelGetGreenQuantum">PixelGetGreenQuantum</a> • <a href="pixel-wand.html#PixelGetHSL">PixelGetHSL</a> • <a href="pixel-wand.html#PixelGetIndex">PixelGetIndex</a> • <a href="pixel-wand.html#PixelGetMagenta">PixelGetMagenta</a> • <a href="pixel-wand.html#PixelGetMagentaQuantum">PixelGetMagentaQuantum</a> • <a href="pixel-wand.html#PixelGetMagickColor">PixelGetMagickColor</a> • <a href="pixel-wand.html#PixelGetOpacity">PixelGetOpacity</a> • <a href="pixel-wand.html#PixelGetOpacityQuantum">PixelGetOpacityQuantum</a> • <a href="pixel-wand.html#PixelGetQuantumColor">PixelGetQuantumColor</a> • <a href="pixel-wand.html#PixelGetRed">PixelGetRed</a> • <a href="pixel-wand.html#PixelGetRedQuantum">PixelGetRedQuantum</a> • <a href="pixel-wand.html#PixelGetYellow">PixelGetYellow</a> • <a href="pixel-wand.html#PixelGetYellowQuantum">PixelGetYellowQuantum</a> • <a href="pixel-wand.html#PixelSetAlpha">PixelSetAlpha</a> • <a href="pixel-wand.html#PixelSetAlphaQuantum">PixelSetAlphaQuantum</a> • <a href="pixel-wand.html#PixelSetBlack">PixelSetBlack</a> • <a href="pixel-wand.html#PixelSetBlackQuantum">PixelSetBlackQuantum</a> • <a href="pixel-wand.html#PixelSetBlue">PixelSetBlue</a> • <a href="pixel-wand.html#PixelSetBlueQuantum">PixelSetBlueQuantum</a> • <a href="pixel-wand.html#PixelSetColor">PixelSetColor</a> • <a href="pixel-wand.html#PixelSetColorCount">PixelSetColorCount</a> • <a href="pixel-wand.html#PixelSetColorFromWand">PixelSetColorFromWand</a> • <a href="pixel-wand.html#PixelSetCyan">PixelSetCyan</a> • <a href="pixel-wand.html#PixelSetCyanQuantum">PixelSetCyanQuantum</a> • <a href="pixel-wand.html#PixelSetFuzz">PixelSetFuzz</a> • <a href="pixel-wand.html#PixelSetGreen">PixelSetGreen</a> • <a href="pixel-wand.html#PixelSetGreenQuantum">PixelSetGreenQuantum</a> • <a href="pixel-wand.html#PixelSetHSL">PixelSetHSL</a> • <a href="pixel-wand.html#PixelSetIndex">PixelSetIndex</a> • <a href="pixel-wand.html#PixelSetMagenta">PixelSetMagenta</a> • <a href="pixel-wand.html#PixelSetMagentaQuantum">PixelSetMagentaQuantum</a> • <a href="pixel-wand.html#PixelSetMagickColor">PixelSetMagickColor</a> • <a href="pixel-wand.html#PixelSetOpacity">PixelSetOpacity</a> • <a href="pixel-wand.html#PixelSetOpacityQuantum">PixelSetOpacityQuantum</a> • <a href="pixel-wand.html#PixelSetQuantumColor">PixelSetQuantumColor</a> • <a href="pixel-wand.html#PixelSetRed">PixelSetRed</a> • <a href="pixel-wand.html#PixelSetRedQuantum">PixelSetRedQuantum</a> • <a href="pixel-wand.html#PixelSetYellow">PixelSetYellow</a> • <a href="pixel-wand.html#PixelSetYellowQuantum">PixelSetYellowQuantum</a></p>
+<p class="text-center"><a href="#ClearPixelWand">ClearPixelWand</a> • <a href="#ClonePixelWand">ClonePixelWand</a> • <a href="#ClonePixelWands">ClonePixelWands</a> • <a href="#DestroyPixelWand">DestroyPixelWand</a> • <a href="#DestroyPixelWands">DestroyPixelWands</a> • <a href="#IsPixelWandSimilar">IsPixelWandSimilar</a> • <a href="#IsPixelWand">IsPixelWand</a> • <a href="#NewPixelWand">NewPixelWand</a> • <a href="#NewPixelWands">NewPixelWands</a> • <a href="#PixelClearException">PixelClearException</a> • <a href="#PixelGetAlpha">PixelGetAlpha</a> • <a href="#PixelGetAlphaQuantum">PixelGetAlphaQuantum</a> • <a href="#PixelGetBlack">PixelGetBlack</a> • <a href="#PixelGetBlackQuantum">PixelGetBlackQuantum</a> • <a href="#PixelGetBlue">PixelGetBlue</a> • <a href="#PixelGetBlueQuantum">PixelGetBlueQuantum</a> • <a href="#PixelGetColorAsString">PixelGetColorAsString</a> • <a href="#PixelGetColorAsNormalizedString">PixelGetColorAsNormalizedString</a> • <a href="#PixelGetColorCount">PixelGetColorCount</a> • <a href="#PixelGetCyan">PixelGetCyan</a> • <a href="#PixelGetCyanQuantum">PixelGetCyanQuantum</a> • <a href="#PixelGetException">PixelGetException</a> • <a href="#PixelGetExceptionType">PixelGetExceptionType</a> • <a href="#PixelGetFuzz">PixelGetFuzz</a> • <a href="#PixelGetGreen">PixelGetGreen</a> • <a href="#PixelGetGreenQuantum">PixelGetGreenQuantum</a> • <a href="#PixelGetHSL">PixelGetHSL</a> • <a href="#PixelGetIndex">PixelGetIndex</a> • <a href="#PixelGetMagenta">PixelGetMagenta</a> • <a href="#PixelGetMagentaQuantum">PixelGetMagentaQuantum</a> • <a href="#PixelGetMagickColor">PixelGetMagickColor</a> • <a href="#PixelGetOpacity">PixelGetOpacity</a> • <a href="#PixelGetOpacityQuantum">PixelGetOpacityQuantum</a> • <a href="#PixelGetQuantumColor">PixelGetQuantumColor</a> • <a href="#PixelGetRed">PixelGetRed</a> • <a href="#PixelGetRedQuantum">PixelGetRedQuantum</a> • <a href="#PixelGetYellow">PixelGetYellow</a> • <a href="#PixelGetYellowQuantum">PixelGetYellowQuantum</a> • <a href="#PixelSetAlpha">PixelSetAlpha</a> • <a href="#PixelSetAlphaQuantum">PixelSetAlphaQuantum</a> • <a href="#PixelSetBlack">PixelSetBlack</a> • <a href="#PixelSetBlackQuantum">PixelSetBlackQuantum</a> • <a href="#PixelSetBlue">PixelSetBlue</a> • <a href="#PixelSetBlueQuantum">PixelSetBlueQuantum</a> • <a href="#PixelSetColor">PixelSetColor</a> • <a href="#PixelSetColorCount">PixelSetColorCount</a> • <a href="#PixelSetColorFromWand">PixelSetColorFromWand</a> • <a href="#PixelSetCyan">PixelSetCyan</a> • <a href="#PixelSetCyanQuantum">PixelSetCyanQuantum</a> • <a href="#PixelSetFuzz">PixelSetFuzz</a> • <a href="#PixelSetGreen">PixelSetGreen</a> • <a href="#PixelSetGreenQuantum">PixelSetGreenQuantum</a> • <a href="#PixelSetHSL">PixelSetHSL</a> • <a href="#PixelSetIndex">PixelSetIndex</a> • <a href="#PixelSetMagenta">PixelSetMagenta</a> • <a href="#PixelSetMagentaQuantum">PixelSetMagentaQuantum</a> • <a href="#PixelSetMagickColor">PixelSetMagickColor</a> • <a href="#PixelSetOpacity">PixelSetOpacity</a> • <a href="#PixelSetOpacityQuantum">PixelSetOpacityQuantum</a> • <a href="#PixelSetQuantumColor">PixelSetQuantumColor</a> • <a href="#PixelSetRed">PixelSetRed</a> • <a href="#PixelSetRedQuantum">PixelSetRedQuantum</a> • <a href="#PixelSetYellow">PixelSetYellow</a> • <a href="#PixelSetYellowQuantum">PixelSetYellowQuantum</a></p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickWand/pixel-wand_8c.html" id="ClearPixelWand">ClearPixelWand</a></h2>
 
@@ -1591,19 +1591,19 @@ void PixelSetYellowQuantum(PixelWand *wand,const Quantum yellow)
 </dl>
 </div>
   <footer class="magick-footer">
-    <p><a href="../support.html">Donate</a> •
-     <a href="../sitemap.html">Sitemap</a> •
-    <a href="../links.html">Related</a> •
-    <a href="../architecture.html">Architecture</a>
+    <p><a href="/api/../support.html">Donate</a> •
+     <a href="/api/../sitemap.html">Sitemap</a> •
+    <a href="/api/../links.html">Related</a> •
+    <a href="/api/../architecture.html">Architecture</a>
 </p>
-    <p><a href="pixel-wand.html#">Back to top</a> •
+    <p><a href="#">Back to top</a> •
     <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-    <a href="http://www.imagemagick.org/script/contact.php">Contact Us</a></p>
-    <p><small>©  1999-2015 ImageMagick Studio LLC</small></p>
+    <a href="/api/http://www.imagemagick.org/script/contact.php">Contact Us</a></p>
+        <p><small>©  1999-2015 ImageMagick Studio LLC</small></p>
   </footer>
 </div><!-- /.container -->
 
-  <script src="../js/magick.html"></script>
+  <script src="/api/../js/magick.html"></script>
 </div>
 </body>
 </html>

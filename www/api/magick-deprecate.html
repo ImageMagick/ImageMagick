@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  
     <title>ImageMagick: MagickWand, C API for ImageMagick: Deprecated Methods</title>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -20,34 +21,33 @@
   <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC">
   <meta name="distribution" content="Global">
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
-  <link rel="icon" href="../images/wand.png">
-  <link rel="shortcut icon" href="../images/wand.ico">
-  <link rel="stylesheet" href="../css/magick.html">
+  <link rel="icon" href="/api/../images/wand.png">
+  <link rel="shortcut icon" href="/api/../images/wand.ico">
+  <link rel="stylesheet" href="/api/../css/magick.html">
 </head>
 <body>
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
     <script>
     (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
     <nav class="magick-nav">
-      <a class="magick-nav-item " href="../index.html">Home</a>
-      <a class="magick-nav-item " href="../binary-releases.html">Download</a>
-      <a class="magick-nav-item " href="../command-line-tools.html">Tools</a>
-      <a class="magick-nav-item " href="../command-line-options.html">Options</a>
-      <a class="magick-nav-item " href="../resources.html">Resources</a>
-      <a class="magick-nav-item " href="api.html">Develop</a>
-      <a class="magick-nav-item " href="http://www.imagemagick.org/script/search.php">Search</a>
+      <a class="magick-nav-item " href="/api/../index.html">Home</a>
+      <a class="magick-nav-item " href="/api/../binary-releases.html">Download</a>
+      <a class="magick-nav-item " href="/api/../command-line-tools.html">Tools</a>
+      <a class="magick-nav-item " href="/api/../command-line-options.html">Options</a>
+      <a class="magick-nav-item " href="/api/../resources.html">Resources</a>
+      <a class="magick-nav-item " href="/api/api.html">Develop</a>
+      <a class="magick-nav-item " href="/api/http://www.imagemagick.org/script/search.php">Search</a>
       <a class="magick-nav-item pull-right" href="http://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="text-center"><a href="magick-deprecate.html#MagickAverageImages">MagickAverageImages</a> • <a href="magick-deprecate.html#ClonePixelView">ClonePixelView</a> • <a href="magick-deprecate.html#DestroyPixelView">DestroyPixelView</a> • <a href="magick-deprecate.html#DuplexTransferPixelViewIterator">DuplexTransferPixelViewIterator</a> • <a href="magick-deprecate.html#GetPixelViewException">GetPixelViewException</a> • <a href="magick-deprecate.html#GetPixelViewHeight">GetPixelViewHeight</a> • <a href="magick-deprecate.html#GetPixelViewIterator">GetPixelViewIterator</a> • <a href="magick-deprecate.html#GetPixelViewPixels">GetPixelViewPixels</a> • <a href="magick-deprecate.html#GetPixelViewWand">GetPixelViewWand</a> • <a href="magick-deprecate.html#GetPixelViewWidth">GetPixelViewWidth</a> • <a href="magick-deprecate.html#GetPixelViewX">GetPixelViewX</a> • <a href="magick-deprecate.html#GetPixelViewY">GetPixelViewY</a> • <a href="magick-deprecate.html#IsPixelView">IsPixelView</a> • <a href="magick-deprecate.html#MagickClipPathImage">MagickClipPathImage</a> • <a href="magick-deprecate.html#DrawGetFillAlpha">DrawGetFillAlpha</a> • <a href="magick-deprecate.html#DrawGetStrokeAlpha">DrawGetStrokeAlpha</a> • <a href="magick-deprecate.html#DrawPeekGraphicWand">DrawPeekGraphicWand</a> • <a href="magick-deprecate.html#DrawPopGraphicContext">DrawPopGraphicContext</a> • <a href="magick-deprecate.html#DrawPushGraphicContext">DrawPushGraphicContext</a> • <a href="magick-deprecate.html#DrawSetFillAlpha">DrawSetFillAlpha</a> • <a href="magick-deprecate.html#DrawSetStrokeAlpha">DrawSetStrokeAlpha</a> • <a href="magick-deprecate.html#MagickColorFloodfillImage">MagickColorFloodfillImage</a> • <a href="magick-deprecate.html#MagickDescribeImage">MagickDescribeImage</a> • <a href="magick-deprecate.html#MagickFlattenImages">MagickFlattenImages</a> • <a href="magick-deprecate.html#MagickGetImageAttribute">MagickGetImageAttribute</a> • <a href="magick-deprecate.html#MagickGetImageMatte">MagickGetImageMatte</a> • <a href="magick-deprecate.html#MagickGetImagePixels">MagickGetImagePixels</a> • <a href="magick-deprecate.html#MagickGetImageSize">MagickGetImageSize</a> • <a href="magick-deprecate.html#MagickMapImage">MagickMapImage</a> • <a href="magick-deprecate.html#MagickMatteFloodfillImage">MagickMatteFloodfillImage</a> • <a href="magick-deprecate.html#MagickMedianFilterImage">MagickMedianFilterImage</a> • <a href="magick-deprecate.html#MagickMinimumImages">MagickMinimumImages</a> • <a href="magick-deprecate.html#MagickModeImage">MagickModeImage</a> • <a href="magick-deprecate.html#MagickMosaicImages">MagickMosaicImages</a> • <a href="magick-deprecate.html#MagickOpaqueImage">MagickOpaqueImage</a> • <a href="magick-deprecate.html#MagickPaintFloodfillImage">MagickPaintFloodfillImage</a> • <a href="magick-deprecate.html#MagickPaintOpaqueImage">MagickPaintOpaqueImage</a> • <a href="magick-deprecate.html#MagickPaintTransparentImage">MagickPaintTransparentImage</a> • <a href="magick-deprecate.html#MagickRadialBlurImage">MagickRadialBlurImage</a> • <a href="magick-deprecate.html#MagickRecolorImage">MagickRecolorImage</a> • <a href="magick-deprecate.html#MagickReduceNoiseImage">MagickReduceNoiseImage</a> • <a href="magick-deprecate.html#MagickMaximumImages">MagickMaximumImages</a> • <a href="magick-deprecate.html#MagickSetImageAttribute">MagickSetImageAttribute</a> • <a href="magick-deprecate.html#MagickSetImageIndex">MagickSetImageIndex</a> • <a href="magick-deprecate.html#MagickTransparentImage">MagickTransparentImage</a> • <a href="magick-deprecate.html#MagickRegionOfInterestImage">MagickRegionOfInterestImage</a> • <a href="magick-deprecate.html#MagickSetImagePixels">MagickSetImagePixels</a> • <a href="magick-deprecate.html#MagickWriteImageBlob">MagickWriteImageBlob</a> • <a href="magick-deprecate.html#NewPixelView">NewPixelView</a> • <a href="magick-deprecate.html#NewPixelViewRegion">NewPixelViewRegion</a> • <a href="magick-deprecate.html#PixelGetNextRow">PixelGetNextRow</a> • <a href="magick-deprecate.html#PixelIteratorGetException">PixelIteratorGetException</a> • <a href="magick-deprecate.html#SetPixelViewIterator">SetPixelViewIterator</a> • <a href="magick-deprecate.html#TransferPixelViewIterator">TransferPixelViewIterator</a> • <a href="magick-deprecate.html#UpdatePixelViewIterator">UpdatePixelViewIterator</a></p>
+<p class="text-center"><a href="#MagickAverageImages">MagickAverageImages</a> • <a href="#ClonePixelView">ClonePixelView</a> • <a href="#DestroyPixelView">DestroyPixelView</a> • <a href="#DuplexTransferPixelViewIterator">DuplexTransferPixelViewIterator</a> • <a href="#GetPixelViewException">GetPixelViewException</a> • <a href="#GetPixelViewHeight">GetPixelViewHeight</a> • <a href="#GetPixelViewIterator">GetPixelViewIterator</a> • <a href="#GetPixelViewPixels">GetPixelViewPixels</a> • <a href="#GetPixelViewWand">GetPixelViewWand</a> • <a href="#GetPixelViewWidth">GetPixelViewWidth</a> • <a href="#GetPixelViewX">GetPixelViewX</a> • <a href="#GetPixelViewY">GetPixelViewY</a> • <a href="#IsPixelView">IsPixelView</a> • <a href="#MagickClipPathImage">MagickClipPathImage</a> • <a href="#DrawGetFillAlpha">DrawGetFillAlpha</a> • <a href="#DrawGetStrokeAlpha">DrawGetStrokeAlpha</a> • <a href="#DrawPeekGraphicWand">DrawPeekGraphicWand</a> • <a href="#DrawPopGraphicContext">DrawPopGraphicContext</a> • <a href="#DrawPushGraphicContext">DrawPushGraphicContext</a> • <a href="#DrawSetFillAlpha">DrawSetFillAlpha</a> • <a href="#DrawSetStrokeAlpha">DrawSetStrokeAlpha</a> • <a href="#MagickColorFloodfillImage">MagickColorFloodfillImage</a> • <a href="#MagickDescribeImage">MagickDescribeImage</a> • <a href="#MagickFlattenImages">MagickFlattenImages</a> • <a href="#MagickGetImageAttribute">MagickGetImageAttribute</a> • <a href="#MagickGetImageMatte">MagickGetImageMatte</a> • <a href="#MagickGetImagePixels">MagickGetImagePixels</a> • <a href="#MagickGetImageSize">MagickGetImageSize</a> • <a href="#MagickMapImage">MagickMapImage</a> • <a href="#MagickMatteFloodfillImage">MagickMatteFloodfillImage</a> • <a href="#MagickMedianFilterImage">MagickMedianFilterImage</a> • <a href="#MagickMinimumImages">MagickMinimumImages</a> • <a href="#MagickModeImage">MagickModeImage</a> • <a href="#MagickMosaicImages">MagickMosaicImages</a> • <a href="#MagickOpaqueImage">MagickOpaqueImage</a> • <a href="#MagickPaintFloodfillImage">MagickPaintFloodfillImage</a> • <a href="#MagickPaintOpaqueImage">MagickPaintOpaqueImage</a> • <a href="#MagickPaintTransparentImage">MagickPaintTransparentImage</a> • <a href="#MagickRadialBlurImage">MagickRadialBlurImage</a> • <a href="#MagickRecolorImage">MagickRecolorImage</a> • <a href="#MagickReduceNoiseImage">MagickReduceNoiseImage</a> • <a href="#MagickMaximumImages">MagickMaximumImages</a> • <a href="#MagickSetImageAttribute">MagickSetImageAttribute</a> • <a href="#MagickSetImageIndex">MagickSetImageIndex</a> • <a href="#MagickTransparentImage">MagickTransparentImage</a> • <a href="#MagickRegionOfInterestImage">MagickRegionOfInterestImage</a> • <a href="#MagickSetImagePixels">MagickSetImagePixels</a> • <a href="#MagickWriteImageBlob">MagickWriteImageBlob</a> • <a href="#NewPixelView">NewPixelView</a> • <a href="#NewPixelViewRegion">NewPixelViewRegion</a> • <a href="#PixelGetNextRow">PixelGetNextRow</a> • <a href="#PixelIteratorGetException">PixelIteratorGetException</a> • <a href="#SetPixelViewIterator">SetPixelViewIterator</a> • <a href="#TransferPixelViewIterator">TransferPixelViewIterator</a> • <a href="#UpdatePixelViewIterator">UpdatePixelViewIterator</a></p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickWand/deprecate_8c.html" id="MagickAverageImages">MagickAverageImages</a></h2>
 
@@ -1665,19 +1665,19 @@ MagickBooleanType UpdatePixelViewIterator(PixelView *source,
 </dl>
 </div>
   <footer class="magick-footer">
-    <p><a href="../support.html">Donate</a> •
-     <a href="../sitemap.html">Sitemap</a> •
-    <a href="../links.html">Related</a> •
-    <a href="../architecture.html">Architecture</a>
+    <p><a href="/api/../support.html">Donate</a> •
+     <a href="/api/../sitemap.html">Sitemap</a> •
+    <a href="/api/../links.html">Related</a> •
+    <a href="/api/../architecture.html">Architecture</a>
 </p>
-    <p><a href="magick-deprecate.html#">Back to top</a> •
+    <p><a href="#">Back to top</a> •
     <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-    <a href="http://www.imagemagick.org/script/contact.php">Contact Us</a></p>
-    <p><small>©  1999-2015 ImageMagick Studio LLC</small></p>
+    <a href="/api/http://www.imagemagick.org/script/contact.php">Contact Us</a></p>
+        <p><small>©  1999-2015 ImageMagick Studio LLC</small></p>
   </footer>
 </div><!-- /.container -->
 
-  <script src="../js/magick.html"></script>
+  <script src="/api/../js/magick.html"></script>
 </div>
 </body>
 </html>

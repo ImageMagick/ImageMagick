@@ -589,7 +589,7 @@ MAKEFLAGS=
 
 # Identity of this package.
 PACKAGE_NAME='ImageMagick'
-PACKAGE_TARNAME='ImageMagick'
+PACKAGE_TARNAME='ImageMagick.6'
 PACKAGE_VERSION='6.9.2-2'
 PACKAGE_STRING='ImageMagick 6.9.2-2'
 PACKAGE_BUGREPORT='http://www.imagemagick.org'
@@ -1856,7 +1856,7 @@ Fine tuning of the installation directories:
   --infodir=DIR           info documentation [DATAROOTDIR/info]
   --localedir=DIR         locale-dependent data [DATAROOTDIR/locale]
   --mandir=DIR            man documentation [DATAROOTDIR/man]
-  --docdir=DIR            documentation root [DATAROOTDIR/doc/ImageMagick]
+  --docdir=DIR            documentation root [DATAROOTDIR/doc/ImageMagick.6]
   --htmldir=DIR           html documentation [DOCDIR]
   --dvidir=DIR            dvi documentation [DOCDIR]
   --pdfdir=DIR            pdf documentation [DOCDIR]
@@ -4178,7 +4178,7 @@ fi
 
 
 # Define the identity of the package.
- PACKAGE='ImageMagick'
+ PACKAGE='ImageMagick.6'
  VERSION='6.9.2-2'
 
 
@@ -4377,7 +4377,7 @@ MAGICK_PATCHLEVEL_VERSION=2
 
 MAGICK_VERSION=6.9.2-2
 
-MAGICK_GIT_REVISION=Unversioned
+MAGICK_GIT_REVISION=10215:2f074e6:20150916
 
 
 # Substitute library versioning
@@ -4554,7 +4554,7 @@ eval "eval LIBEXEC_DIR=$libexecdir"
 
 eval "eval DATA_DIR=$datadir"
 
-eval "eval DOC_DIR=$datadir/doc"
+eval "eval DOC_DIR=$docdir"
 
 eval "eval SYSCONF_DIR=$sysconfdir"
 
@@ -32142,9 +32142,8 @@ FILTER_PATH="${MODULES_PATH}/${FILTER_DIRNAME}"
 
 #
 # Path to ImageMagick documentation files
-DOCUMENTATION_RELATIVE_PATH="${PACKAGE_NAME}-${MAGICK_MAJOR_VERSION}"
-DOCUMENTATION_PATH="${DOC_DIR}/${DOCUMENTATION_RELATIVE_PATH}"
-DEFINE_DOCUMENTATION_PATH="${DOC_DIR}/${DOCUMENTATION_RELATIVE_PATH}/"
+DOCUMENTATION_PATH="${DOC_DIR}"
+DEFINE_DOCUMENTATION_PATH="${DOC_DIR}"
 case "${build_os}" in
   mingw* )
     DEFINE_DOCUMENTATION_PATH=`$WinPathScript "$DEFINE_DOCUMENTATION_PATH" 1`

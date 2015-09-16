@@ -21,33 +21,33 @@
   <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC">
   <meta name="distribution" content="Global">
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
-  <link rel="icon" href="../images/wand.png">
-  <link rel="shortcut icon" href="../images/wand.ico">
-  <link rel="stylesheet" href="css/magick.css">
+  <link rel="icon" href="/www/../images/wand.png">
+  <link rel="shortcut icon" href="/www/../images/wand.ico">
+  <link rel="stylesheet" href="/www/css/magick.css">
 </head>
 <body>
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
+    <script async src="//localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
     <script>
     (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
     <nav class="magick-nav">
-      <a class="magick-nav-item " href="../index.html">Home</a>
-      <a class="magick-nav-item " href="binary-releases.html">Download</a>
-      <a class="magick-nav-item " href="command-line-tools.html">Tools</a>
-      <a class="magick-nav-item " href="command-line-options.html">Options</a>
-      <a class="magick-nav-item " href="resources.html">Resources</a>
-      <a class="magick-nav-item " href="api.html">Develop</a>
-      <a class="magick-nav-item " href="http://www.imagemagick.org/script/search.php">Search</a>
+      <a class="magick-nav-item " href="/www/../index.html">Home</a>
+      <a class="magick-nav-item " href="/www/../www/binary-releases.html">Download</a>
+      <a class="magick-nav-item " href="/www/../www/command-line-tools.html">Tools</a>
+      <a class="magick-nav-item " href="/www/../www/command-line-options.html">Options</a>
+      <a class="magick-nav-item " href="/www/../www/resources.html">Resources</a>
+      <a class="magick-nav-item " href="/www/../www/api.html">Develop</a>
+      <a class="magick-nav-item " href="/www/../www/http://www.imagemagick.org/script/search.php">Search</a>
       <a class="magick-nav-item pull-right" href="http://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="text-center"><a href="formats.html#colorspace">A Word about Colorspaces</a> • <a href="formats.html#supported">Supported Formats</a> • <a href="formats.html#pseudo">Pseudo Formats</a> • <a href="formats.html#builtin-images">Built-in Images</a>  • <a href="formats.html#builtin-patterns">Built-in Patterns</a> • <a href="formats.html#embedded">Embedded Profiles</a></p>
+<p class="text-center"><a href="#colorspace">A Word about Colorspaces</a> • <a href="#supported">Supported Formats</a> • <a href="#pseudo">Pseudo Formats</a> • <a href="#builtin-images">Built-in Images</a>  • <a href="#builtin-patterns">Built-in Patterns</a> • <a href="#embedded">Embedded Profiles</a></p>
 
 <p class="lead magick-description">ImageMagick uses an ASCII string known as <var>magick</var> (e.g. <code>GIF</code>) to identify file formats, algorithms acting as formats, built-in patterns, and embedded profile types.  Support for some of the formats are delegated to libraries or external programs. The Installation Guide describes where to find these distributions and any special configuration options required.</p>
 
@@ -93,7 +93,7 @@ convert image.jpg -colorspace RGB -resize 50% -colorspace sRGB resize.jpg
 </pre>
 
 <p>As of IM 6.7.8-2 one can properly work in LAB colorspace whether or not
-Imagemagick is <a href="high-dynamic-range.html">HDRI</a>-enabled.  Essentually the A and
+Imagemagick is <a href="/www/../www/high-dynamic-range.html">HDRI</a>-enabled.  Essentually the A and
 B channels are stored with a 50% gray bias, to allow it to handle the
 negatives required by the format.</p>
 
@@ -170,7 +170,7 @@ the supported image formats.</p>
     <td><a href="http://bellard.org/bpg/">BPG</a></td>
     <td>RW</td>
     <td>Better Portable Graphics</td>
-    <td>Use <a href="command-line-options.html#quality">-quality</a> to specify the image compression quality.  To meet the requirements of BPG, the compression quality is divided by 2 (e.g. -quality 92 assigns 46 as the BPG compression.</td>
+    <td>Use <a href="/www/../www/command-line-options.html#quality">-quality</a> to specify the image compression quality.  To meet the requirements of BPG, the compression quality is divided by 2 (e.g. -quality 92 assigns 46 as the BPG compression.</td>
   </tr>
 
   <tr>
@@ -198,21 +198,21 @@ the supported image formats.</p>
     <td><a href="http://www.cineon.com/ff_draft.html">CIN</a></td>
     <td>RW</td>
     <td>Kodak Cineon Image Format</td>
-    <td>Use <a href="command-line-options.html#set">-set</a> to specify the image gamma or black and white points (e.g. <code>-set gamma 1.7</code>, <code>-set reference-black 95</code>, <code>-set reference-white 685</code>).  Properties include cin:file.create_date, cin:file.create_time, cin:file.filename, cin:file.version, cin:film.count, cin:film.format, cin:film.frame_id, cin:film.frame_position, cin:film.frame_rate, cin:film.id, cin:film.offset, cin:film.prefix, cin:film.slate_info, cin:film.type, cin:image.label, cin:origination.create_date, cin:origination.create_time, cin:origination.device, cin:origination.filename, cin:origination.model, cin:origination.serial, cin:origination.x_offset, cin:origination.x_pitch, cin:origination.y_offset, cin:origination.y_pitch, cin:user.data.</td>
+    <td>Use <a href="/www/../www/command-line-options.html#set">-set</a> to specify the image gamma or black and white points (e.g. <code>-set gamma 1.7</code>, <code>-set reference-black 95</code>, <code>-set reference-white 685</code>).  Properties include cin:file.create_date, cin:file.create_time, cin:file.filename, cin:file.version, cin:film.count, cin:film.format, cin:film.frame_id, cin:film.frame_position, cin:film.frame_rate, cin:film.id, cin:film.offset, cin:film.prefix, cin:film.slate_info, cin:film.type, cin:image.label, cin:origination.create_date, cin:origination.create_time, cin:origination.device, cin:origination.filename, cin:origination.model, cin:origination.serial, cin:origination.x_offset, cin:origination.x_pitch, cin:origination.y_offset, cin:origination.y_pitch, cin:user.data.</td>
   </tr>
 
   <tr>
     <td>CMYK</td>
     <td>RW</td>
     <td>Raw cyan, magenta, yellow, and black samples</td>
-    <td>Use <a href="command-line-options.html#size">-size</a> and <a href="command-line-options.html#depth">-depth</a> to specify the image width, height, and depth.  To specify a single precision floating-point format, use <code>-define quantum:format=floating-point</code>.  Set the depth to 32 for single precision floats, 64 for double precision, and 16 for half-precision.</td>
+    <td>Use <a href="/www/../www/command-line-options.html#size">-size</a> and <a href="/www/../www/command-line-options.html#depth">-depth</a> to specify the image width, height, and depth.  To specify a single precision floating-point format, use <code>-define quantum:format=floating-point</code>.  Set the depth to 32 for single precision floats, 64 for double precision, and 16 for half-precision.</td>
   </tr>
 
   <tr>
     <td>CMYKA</td>
     <td>RW</td>
     <td>Raw cyan, magenta, yellow, black, and alpha samples</td>
-    <td>Use <a href="command-line-options.html#size">-size</a> and <a href="command-line-options.html#depth">-depth</a> to specify the image width, height, and depth.  To specify a single precision floating-point format, use <code>-define quantum:format=floating-point</code>.  Set the depth to 32 for single precision floats, 64 for double precision, and 16 for half-precision.</td>
+    <td>Use <a href="/www/../www/command-line-options.html#size">-size</a> and <a href="/www/../www/command-line-options.html#depth">-depth</a> to specify the image width, height, and depth.  To specify a single precision floating-point format, use <code>-define quantum:format=floating-point</code>.  Set the depth to 32 for single precision floats, 64 for double precision, and 16 for half-precision.</td>
   </tr>
 
   <tr>
@@ -247,7 +247,7 @@ the supported image formats.</p>
     <td>DCM</td>
     <td>R</td>
     <td>Digital Imaging and Communications in Medicine (DICOM) image</td>
-    <td>Used by the medical community for images like X-rays.  ImageMagick sets the initial display range based on the Window Center (0028,1050) and Window Width (0028,1051) tags. Use <a href="command-line-options.html#define">-define dcm:display-range=reset</a> to set the display range to the minimum and maximum pixel values.</td>
+    <td>Used by the medical community for images like X-rays.  ImageMagick sets the initial display range based on the Window Center (0028,1050) and Window Width (0028,1051) tags. Use <a href="/www/../www/command-line-options.html#define">-define dcm:display-range=reset</a> to set the display range to the minimum and maximum pixel values.</td>
   </tr>
 
   <tr>
@@ -268,7 +268,7 @@ the supported image formats.</p>
     <td><a href="http://en.wikipedia.org/wiki/DirectDraw_Surface">DDS</a></td>
     <td>RW</td>
     <td>Microsoft Direct Draw Surface</td>
-    <td>Use <a href="command-line-options.html#define">-define</a> to specify the compression (e.g. <code>-define dds:compression={dxt1, dxt5, none}</code>). Other defines include <code>dds:cluster-fit={true,false}</code>, <code>dds:weight-by-alpha={true,false}</code>, and use <code>dds:mipmaps</code> to set the number of mipmaps.</td>
+    <td>Use <a href="/www/../www/command-line-options.html#define">-define</a> to specify the compression (e.g. <code>-define dds:compression={dxt1, dxt5, none}</code>). Other defines include <code>dds:cluster-fit={true,false}</code>, <code>dds:weight-by-alpha={true,false}</code>, and use <code>dds:mipmaps</code> to set the number of mipmaps.</td>
 
   </tr>
 
@@ -276,7 +276,7 @@ the supported image formats.</p>
     <td>DIB</td>
     <td>RW</td>
     <td>Microsoft Windows Device Independent Bitmap</td>
-    <td>DIB is a <a href="formats.html#BMP">BMP</a> file without the <a href="formats.html#BMP">BMP</a> header. Used to support embedded images in compound formats like WMF.</td>
+    <td>DIB is a <a href="#BMP">BMP</a> file without the <a href="#BMP">BMP</a> header. Used to support embedded images in compound formats like WMF.</td>
   </tr>
 
   <tr>
@@ -297,14 +297,14 @@ the supported image formats.</p>
     <td><a href="http://www.graphviz.org">DOT</a></td>
     <td>R</td>
     <td>Graph Visualization</td>
-    <td>Use <a href="command-line-options.html#define">-define</a> to specify the layout engine (e.g. <code>-define dot:layout-engine=twopi</code>).</td>
+    <td>Use <a href="/www/../www/command-line-options.html#define">-define</a> to specify the layout engine (e.g. <code>-define dot:layout-engine=twopi</code>).</td>
   </tr>
 
   <tr>
-    <td><a href="motion-picture.html">DPX</a></td>
+    <td><a href="/www/../www/motion-picture.html">DPX</a></td>
     <td>RW</td>
     <td>SMPTE Digital Moving Picture Exchange 2.0 (SMPTE 268M-2003)</td>
-    <td>Use <a href="command-line-options.html#set">-set</a> to specify the image gamma or black and white points (e.g. <code>-set gamma 1.7</code>, <code>-set reference-black 95</code>, <code>-set reference-white 685</code>).</td>
+    <td>Use <a href="/www/../www/command-line-options.html#set">-set</a> to specify the image gamma or black and white points (e.g. <code>-set gamma 1.7</code>, <code>-set reference-black 95</code>, <code>-set reference-white 685</code>).</td>
   </tr>
 
   <tr>
@@ -366,7 +366,7 @@ the supported image formats.</p>
   <tr>
     <td>EPT</td>
     <td>RW</td>
-    <td>Adobe Encapsulated PostScript Interchange format with <a href="formats.html#TIFF">TIFF</a> preview</td>
+    <td>Adobe Encapsulated PostScript Interchange format with <a href="#TIFF">TIFF</a> preview</td>
     <td>Requires <a href="http://www.cs.wisc.edu/%7Eghost">Ghostscript</a> to read.</td>
   </tr>
 
@@ -374,14 +374,14 @@ the supported image formats.</p>
     <td><a href="http://www.openexr.org">EXR</a></td>
     <td>RW</td>
     <td>High dynamic-range (HDR) file format developed by Industrial Light &amp; Magic</td>
-    <td>See <a href="high-dynamic-range.html">High Dynamic-Range Images</a> for details on this image format. To specify the output color type, use <code>-define exr:color-type={RGB,RGBA,YC,YCA,Y,YA,R,G,B,A}</code>. Use <a href="command-line-options.html#sampling-factor">-sampling-factor</a> to specify the sampling rate for YC(A) (e.g. <code>2x2 or 4:2:0</code>). Requires the <a href="http://www.openexr.org/">OpenEXR</a> delegate library.</td>
+    <td>See <a href="/www/../www/high-dynamic-range.html">High Dynamic-Range Images</a> for details on this image format. To specify the output color type, use <code>-define exr:color-type={RGB,RGBA,YC,YCA,Y,YA,R,G,B,A}</code>. Use <a href="/www/../www/command-line-options.html#sampling-factor">-sampling-factor</a> to specify the sampling rate for YC(A) (e.g. <code>2x2 or 4:2:0</code>). Requires the <a href="http://www.openexr.org/">OpenEXR</a> delegate library.</td>
   </tr>
 
   <tr>
     <td>FAX</td>
     <td>RW</td>
     <td>Group 3 TIFF</td>
-    <td>This format is a fixed width of 1728 as required by the standard.  See <a href="formats.html#TIFF">TIFF</a> format. Note that FAX machines use non-square pixels which are 1.5 times wider than they are tall but computer displays use square pixels so FAX images may appear to be narrow unless they are explicitly resized using a resize specification of <code>100x150%</code>.</td>
+    <td>This format is a fixed width of 1728 as required by the standard.  See <a href="#TIFF">TIFF</a> format. Note that FAX machines use non-square pixels which are 1.5 times wider than they are tall but computer displays use square pixels so FAX images may appear to be narrow unless they are explicitly resized using a resize specification of <code>100x150%</code>.</td>
   </tr>
 
   <tr>
@@ -409,7 +409,7 @@ the supported image formats.</p>
     <td><a href="http://www.fileformat.info/format/gif/egff.htm">GIF</a></td>
     <td>RW</td>
     <td>CompuServe Graphics Interchange Format</td>
-    <td>8-bit RGB PseudoColor with up to 256 palette entires. Specify the format <code>GIF87</code> to write the older version 87a of the format.  Use <a href="command-line-options.html#transparent-color">-transparent-color</a> to specify the GIF transparent color (e.g. <code>-transparent-color wheat</code>).</td>
+    <td>8-bit RGB PseudoColor with up to 256 palette entires. Specify the format <code>GIF87</code> to write the older version 87a of the format.  Use <a href="/www/../www/command-line-options.html#transparent-color">-transparent-color</a> to specify the GIF transparent color (e.g. <code>-transparent-color wheat</code>).</td>
   </tr>
 
   <tr>
@@ -423,7 +423,7 @@ the supported image formats.</p>
     <td>GRAY</td>
     <td>RW</td>
     <td>Raw gray samples</td>
-    <td>Use <a href="command-line-options.html#size">-size</a> and <a href="command-line-options.html#depth">-depth</a> to specify the image width, height, and depth.  To specify a single precision floating-point format, use <code>-define quantum:format=floating-point</code>.  Set the depth to 32 for single precision floats, 64 for double precision, and 16 for half-precision.</td>
+    <td>Use <a href="/www/../www/command-line-options.html#size">-size</a> and <a href="/www/../www/command-line-options.html#depth">-depth</a> to specify the image width, height, and depth.  To specify a single precision floating-point format, use <code>-define quantum:format=floating-point</code>.  Set the depth to 32 for single precision floats, 64 for double precision, and 16 for half-precision.</td>
   </tr>
 
   <tr>
@@ -493,35 +493,35 @@ the supported image formats.</p>
     <td><a href="http://www.openjpeg.org/">JP2</a></td>
     <td>RW</td>
     <td>JPEG-2000 JP2 File Format Syntax</td>
-    <td>Specify the encoding options with the <a href="command-line-options.html#define">-define</a> option  See <a href="jp2.html">JP2 Encoding Options</a> for more details.</td>
+    <td>Specify the encoding options with the <a href="/www/../www/command-line-options.html#define">-define</a> option  See <a href="/www/../www/jp2.html">JP2 Encoding Options</a> for more details.</td>
   </tr>
 
   <tr>
     <td><a href="http://www.openjpeg.org/">JPT</a></td>
     <td>RW</td>
     <td>JPEG-2000 Code Stream Syntax</td>
-    <td>Specify the encoding options with the <a href="command-line-options.html#define">-define</a> option  See <a href="jp2.html">JP2 Encoding Options</a> for more details.</td>
+    <td>Specify the encoding options with the <a href="/www/../www/command-line-options.html#define">-define</a> option  See <a href="/www/../www/jp2.html">JP2 Encoding Options</a> for more details.</td>
   </tr>
 
   <tr>
     <td><a href="http://www.openjpeg.org/">J2C</a></td>
     <td>RW</td>
     <td>JPEG-2000 Code Stream Syntax</td>
-    <td>Specify the encoding options with the <a href="command-line-options.html#define">-define</a> option  See <a href="jp2.html">JP2 Encoding Options</a> for more details.</td>
+    <td>Specify the encoding options with the <a href="/www/../www/command-line-options.html#define">-define</a> option  See <a href="/www/../www/jp2.html">JP2 Encoding Options</a> for more details.</td>
   </tr>
 
   <tr>
     <td><a href="http://www.openjpeg.org/">J2K</a></td>
     <td>RW</td>
     <td>JPEG-2000 Code Stream Syntax</td>
-    <td>Specify the encoding options with the <a href="command-line-options.html#define">-define</a> option  See <a href="jp2.html">JP2 Encoding Options</a> for more details.</td>
+    <td>Specify the encoding options with the <a href="/www/../www/command-line-options.html#define">-define</a> option  See <a href="/www/../www/jp2.html">JP2 Encoding Options</a> for more details.</td>
   </tr>
 
   <tr>
     <td><a href="http://www.jpeg.org/">JPEG</a></td>
     <td>RW</td>
     <td>Joint Photographic Experts Group JFIF format</td>
-    <td>Note, JPEG is a lossy compression.  In addition, you cannot create black and white images with JPEG nor can you save transparency.<br><br> Requires <a href="http://www.ijg.org/files/">jpegsrc.v8c.tar.gz</a>.  You can set quality scaling for luminance and chrominance separately (e.g. <a href="command-line-options.html#quality">-quality</a> 90,70). You can optionally define the DCT method, for example to specify the float method, use <a href="command-line-options.html#define">-define jpeg:dct-method=float</a>. By default we compute optimal Huffman coding tables.  Specify <a href="command-line-options.html#define">-define jpeg:optimize-coding=false</a> to use the default Huffman tables. Two other options include <a href="command-line-options.html#define">-define jpeg:block-smoothing</a> and <a href="command-line-options.html#define">-define jpeg:fancy-upsampling</a>. Set the sampling factor with <a href="command-line-options.html#define">-define jpeg:sampling-factor</a>. You can size the image with <code>jpeg:size</code>, for example <a href="command-line-options.html#define">-define jpeg:size=128x128</a>. To restrict the maximum file size, use <code>jpeg:extent</code>, for example <a href="command-line-options.html#define">-define jpeg:extent=400KB</a>.  To define one or more custom quantization tables, use <a href="command-line-options.html#define">-define jpeg:q-table=<i>filename</i></a>. To avoid reading a particular associated image profile, use <a href="command-line-options.html#define">-define profile:skip=<i>name</i></a> (e.g. profile:skip=ICC).</td>
+    <td>Note, JPEG is a lossy compression.  In addition, you cannot create black and white images with JPEG nor can you save transparency.<br><br> Requires <a href="http://www.ijg.org/files/">jpegsrc.v8c.tar.gz</a>.  You can set quality scaling for luminance and chrominance separately (e.g. <a href="/www/../www/command-line-options.html#quality">-quality</a> 90,70). You can optionally define the DCT method, for example to specify the float method, use <a href="/www/../www/command-line-options.html#define">-define jpeg:dct-method=float</a>. By default we compute optimal Huffman coding tables.  Specify <a href="/www/../www/command-line-options.html#define">-define jpeg:optimize-coding=false</a> to use the default Huffman tables. Two other options include <a href="/www/../www/command-line-options.html#define">-define jpeg:block-smoothing</a> and <a href="/www/../www/command-line-options.html#define">-define jpeg:fancy-upsampling</a>. Set the sampling factor with <a href="/www/../www/command-line-options.html#define">-define jpeg:sampling-factor</a>. You can size the image with <code>jpeg:size</code>, for example <a href="/www/../www/command-line-options.html#define">-define jpeg:size=128x128</a>. To restrict the maximum file size, use <code>jpeg:extent</code>, for example <a href="/www/../www/command-line-options.html#define">-define jpeg:extent=400KB</a>.  To define one or more custom quantization tables, use <a href="/www/../www/command-line-options.html#define">-define jpeg:q-table=<i>filename</i></a>. To avoid reading a particular associated image profile, use <a href="/www/../www/command-line-options.html#define">-define profile:skip=<i>name</i></a> (e.g. profile:skip=ICC).</td>
   </tr>
 
   <tr>
@@ -535,7 +535,7 @@ the supported image formats.</p>
     <td><a href="http://www.json.org">JSON</a></td>
     <td>W</td>
     <td>JavaScript Object Notation, a lightweight data-interchange format</td>
-    <td>Include additional attributes about the image with these defines: <a href="command-line-options.html#define">-define json:locate</a>, <a href="command-line-options.html#define">-define json:limit</a>, <a href="command-line-options.html#define">-define json:moments</a>, or <a href="command-line-options.html#define">-define json:features</a>.</td>
+    <td>Include additional attributes about the image with these defines: <a href="/www/../www/command-line-options.html#define">-define json:locate</a>, <a href="/www/../www/command-line-options.html#define">-define json:limit</a>, <a href="/www/../www/command-line-options.html#define">-define json:moments</a>, or <a href="/www/../www/command-line-options.html#define">-define json:features</a>.</td>
   </tr>
 
   <tr>
@@ -553,7 +553,7 @@ the supported image formats.</p>
   </tr>
 
   <tr>
-    <td><a href="miff.html">MIFF</a></td>
+    <td><a href="/www/../www/miff.html">MIFF</a></td>
     <td>RW</td>
     <td>Magick image file format</td>
     <td>This format persists all image attributes known to ImageMagick.  To specify a single precision floating-point format, use <code>-define quantum:format=floating-point</code>.  Set the depth to 32 for single precision floats, 64 for double precision, and 16 for half-precision.</td>
@@ -617,7 +617,7 @@ convert \( -size 15x15 canvas:black canvas:white -append \) \
     <td>MSL</td>
     <td>RW</td>
     <td>Magick Scripting Language</td>
-    <td>MSL is the XML-based scripting language supported by the <a href="conjure.html">conjure</a> utility. MSL requires the <a href="http://xmlsoft.org/">libxml2</a> delegate library.</td>
+    <td>MSL is the XML-based scripting language supported by the <a href="/www/../www/conjure.html">conjure</a> utility. MSL requires the <a href="http://xmlsoft.org/">libxml2</a> delegate library.</td>
   </tr>
 
   <tr>
@@ -628,10 +628,10 @@ convert \( -size 15x15 canvas:black canvas:white -append \) \
   </tr>
 
   <tr>
-    <td><a href="magick-vector-graphics.html">MVG</a></td>
+    <td><a href="/www/../www/magick-vector-graphics.html">MVG</a></td>
     <td>RW</td>
     <td>Magick Vector Graphics.</td>
-    <td>The native ImageMagick vector metafile format. A text file containing vector drawing commands accepted by <a href="convert.html">convert</a>'s <a href="command-line-options.html#draw">-draw</a> option.</td>
+    <td>The native ImageMagick vector metafile format. A text file containing vector drawing commands accepted by <a href="/www/../www/convert.html">convert</a>'s <a href="/www/../www/command-line-options.html#draw">-draw</a> option.</td>
   </tr>
 
   <tr>
@@ -707,7 +707,7 @@ convert \( -size 15x15 canvas:black canvas:white -append \) \
     <td>PCL</td>
     <td>W</td>
     <td>HP Page Control Language</td>
-    <td>Use <a href="command-line-options.html#define">-define</a> to specify fit to page option (e.g. <code>-define pcl:fit-to-page=true</code>).</td>
+    <td>Use <a href="/www/../www/command-line-options.html#define">-define</a> to specify fit to page option (e.g. <code>-define pcl:fit-to-page=true</code>).</td>
   </tr>
 
   <tr>
@@ -728,7 +728,7 @@ convert \( -size 15x15 canvas:black canvas:white -append \) \
     <td>PDF</td>
     <td>RW</td>
     <td>Portable Document Format</td>
-    <td>Requires <a href="http://www.cs.wisc.edu/%7Eghost">Ghostscript</a> to read.  By default, ImageMagick sets the page size to the MediaBox. Some PDF files, however, have a CropBox or TrimBox that is smaller than the MediaBox and may include white space, registration or cutting marks outside the CropBox or TrimBox. To force ImageMagick to use the CropBox or TrimBox rather than the MediaBox, use <a href="command-line-options.html#define">-define</a> (e.g. <code>-define pdf:use-cropbox=true</code> or <code>-define pdf:use-trimbox=true</code>).  Use <a href="command-line-options.html#density">-density</a> to improve the appearance of your PDF rendering (e.g. -density 300x300).  Use <a href="command-line-options.html#alpha">-alpha remove </a> to remove transparency. To specify direct conversion from  Postscript to PDF, use <code>-define delegate:bimodel=true</code>. Use <code>-define pdf:fit-page=true</code> to scale to the page size. To immediately stop processing upon an error, set <code>-define pdf:stop-on-error</code> to <code>true</code>.</td>
+    <td>Requires <a href="http://www.cs.wisc.edu/%7Eghost">Ghostscript</a> to read.  By default, ImageMagick sets the page size to the MediaBox. Some PDF files, however, have a CropBox or TrimBox that is smaller than the MediaBox and may include white space, registration or cutting marks outside the CropBox or TrimBox. To force ImageMagick to use the CropBox or TrimBox rather than the MediaBox, use <a href="/www/../www/command-line-options.html#define">-define</a> (e.g. <code>-define pdf:use-cropbox=true</code> or <code>-define pdf:use-trimbox=true</code>).  Use <a href="/www/../www/command-line-options.html#density">-density</a> to improve the appearance of your PDF rendering (e.g. -density 300x300).  Use <a href="/www/../www/command-line-options.html#alpha">-alpha remove </a> to remove transparency. To specify direct conversion from  Postscript to PDF, use <code>-define delegate:bimodel=true</code>. Use <code>-define pdf:fit-page=true</code> to scale to the page size. To immediately stop processing upon an error, set <code>-define pdf:stop-on-error</code> to <code>true</code>.</td>
   </tr>
 
   <tr>
@@ -791,7 +791,7 @@ convert \( -size 15x15 canvas:black canvas:white -append \) \
     <td><a href="http://www.libpng.org/pub/png/">PNG</a></td>
     <td>RW</td>
     <td>Portable Network Graphics</td>
-    <td>Requires libpng-1.0.11 or later, <a href="http://www.libpng.org/pub/png/libpng.html">libpng-1.2.5</a> or later recommended. The PNG specification does not support pixels-per-inch units, only pixels-per-centimeter. To avoid reading a particular associated image profile, use <a href="command-line-options.html#define">-define profile:skip=<i>name</i></a> (e.g. profile:skip=ICC).</td>
+    <td>Requires libpng-1.0.11 or later, <a href="http://www.libpng.org/pub/png/libpng.html">libpng-1.2.5</a> or later recommended. The PNG specification does not support pixels-per-inch units, only pixels-per-centimeter. To avoid reading a particular associated image profile, use <a href="/www/../www/command-line-options.html#define">-define profile:skip=<i>name</i></a> (e.g. profile:skip=ICC).</td>
   </tr>
 
   <tr>
@@ -840,7 +840,7 @@ convert \( -size 15x15 canvas:black canvas:white -append \) \
     <td><a href="http://netpbm.sourceforge.net/doc/pnm.html">PNM</a></td>
     <td>RW</td>
     <td>Portable anymap</td>
-    <td>PNM is a family of formats supporting portable bitmaps (PBM) , graymaps (PGM), and pixmaps (PPM). There is no file format associated with pnm itself. If PNM is used as the output format specifier, then ImageMagick automagically selects the most appropriate format to represent the image.  The default is to write the binary version of the formats. Use <a href="command-line-options.html#compress">-compress none</a> to write the ASCII version of the formats.</td>
+    <td>PNM is a family of formats supporting portable bitmaps (PBM) , graymaps (PGM), and pixmaps (PPM). There is no file format associated with pnm itself. If PNM is used as the output format specifier, then ImageMagick automagically selects the most appropriate format to represent the image.  The default is to write the binary version of the formats. Use <a href="/www/../www/command-line-options.html#compress">-compress none</a> to write the ASCII version of the formats.</td>
   </tr>
 
   <tr>
@@ -854,7 +854,7 @@ convert \( -size 15x15 canvas:black canvas:white -append \) \
     <td>PS</td>
     <td>RW</td>
     <td>Adobe PostScript file</td>
-    <td>Requires <a href="http://www.cs.wisc.edu/%7Eghost">Ghostscript</a> to read. To force ImageMagick to respect the crop box, use <a href="command-line-options.html#define">-define</a> (e.g. <code>-define eps:use-cropbox=true</code>). Use <a href="command-line-options.html#density">-density</a> to improve the appearance of your Postscript rendering (e.g. -density 300x300). Use <a href="command-line-options.html#alpha">-alpha remove </a> to remove transparency. To specify direct conversion from PDF to Postscript, use <code>-define delegate:bimodel=true</code>.</td>
+    <td>Requires <a href="http://www.cs.wisc.edu/%7Eghost">Ghostscript</a> to read. To force ImageMagick to respect the crop box, use <a href="/www/../www/command-line-options.html#define">-define</a> (e.g. <code>-define eps:use-cropbox=true</code>). Use <a href="/www/../www/command-line-options.html#density">-density</a> to improve the appearance of your Postscript rendering (e.g. -density 300x300). Use <a href="/www/../www/command-line-options.html#alpha">-alpha remove </a> to remove transparency. To specify direct conversion from PDF to Postscript, use <code>-define delegate:bimodel=true</code>.</td>
   </tr>
 
   <tr>
@@ -888,8 +888,8 @@ convert \( -size 15x15 canvas:black canvas:white -append \) \
   <tr>
     <td>PTIF</td>
     <td>RW</td>
-    <td>Pyramid encoded <a href="formats.html#TIFF">TIFF</a></td>
-    <td>Multi-resolution <a href="formats.html#TIFF">TIFF</a> containing successively smaller versions of the image down to the size of an icon.</td>
+    <td>Pyramid encoded <a href="#TIFF">TIFF</a></td>
+    <td>Multi-resolution <a href="#TIFF">TIFF</a> containing successively smaller versions of the image down to the size of an icon.</td>
   </tr>
 
   <tr>
@@ -917,14 +917,14 @@ convert \( -size 15x15 canvas:black canvas:white -append \) \
     <td>RGB</td>
     <td>RW</td>
     <td>Raw red, green, and blue samples</td>
-    <td>Use <a href="command-line-options.html#size">-size</a> and <a href="command-line-options.html#depth">-depth</a> to specify the image width, height, and depth.  To specify a single precision floating-point format, use <code>-define quantum:format=floating-point</code>.  Set the depth to 32 for single precision floats, 64 for double precision, and 16 for half-precision.</td>
+    <td>Use <a href="/www/../www/command-line-options.html#size">-size</a> and <a href="/www/../www/command-line-options.html#depth">-depth</a> to specify the image width, height, and depth.  To specify a single precision floating-point format, use <code>-define quantum:format=floating-point</code>.  Set the depth to 32 for single precision floats, 64 for double precision, and 16 for half-precision.</td>
   </tr>
 
   <tr>
     <td>RGBA</td>
     <td>RW</td>
     <td>Raw red, green, blue, and alpha samples</td>
-    <td>Use <a href="command-line-options.html#size">-size</a> and <a href="command-line-options.html#depth">-depth</a> to specify the image width, height, and depth.  To specify a single precision floating-point format, use <code>-define quantum:format=floating-point</code>.  Set the depth to 32 for single precision floats, 64 for double precision, and 16 for half-precision.</td>
+    <td>Use <a href="/www/../www/command-line-options.html#size">-size</a> and <a href="/www/../www/command-line-options.html#depth">-depth</a> to specify the image width, height, and depth.  To specify a single precision floating-point format, use <code>-define quantum:format=floating-point</code>.  Set the depth to 32 for single precision floats, 64 for double precision, and 16 for half-precision.</td>
   </tr>
 
   <tr>
@@ -973,7 +973,7 @@ convert \( -size 15x15 canvas:black canvas:white -append \) \
     <td>SHTML</td>
     <td>W</td>
     <td>Hypertext Markup Language client-side image map</td>
-    <td>Used to write HTML clickable image maps based on a the output of <a href="montage.html">montage</a> or a format which supports tiled images such as <a href="formats.html#MIFF">MIFF</a>.</td>
+    <td>Used to write HTML clickable image maps based on a the output of <a href="/www/../www/montage.html">montage</a> or a format which supports tiled images such as <a href="#MIFF">MIFF</a>.</td>
   </tr>
 
   <tr>
@@ -987,7 +987,7 @@ convert \( -size 15x15 canvas:black canvas:white -append \) \
     <td>SPARSE-COLOR</td>
     <td>W</td>
     <td>Raw text file</td>
-    <td>Format compatible with the <a href="command-line-options.html#sparse-color">-sparse-color</a> option. Lists only non-fully-transparent pixels.</td>
+    <td>Format compatible with the <a href="/www/../www/command-line-options.html#sparse-color">-sparse-color</a> option. Lists only non-fully-transparent pixels.</td>
   </tr>
 
   <tr>
@@ -1015,7 +1015,7 @@ convert \( -size 15x15 canvas:black canvas:white -append \) \
     <td><a href="http://www.libtiff.org/">TIFF</a></td>
     <td>RW</td>
     <td>Tagged Image File Format</td>
-    <td>Also known as <code>TIF</code>. Requires <a href="http://www.libtiff.org/">tiff-v3.6.1.tar.gz</a> or later.  Use <a href="command-line-options.html#define">-define</a> to specify the rows per strip (e.g. <code>-define tiff:rows-per-strip=8</code>).  To define the tile geometry, use for example, <code>-define tiff:tile-geometry=128x128</code>. To specify a <var>signed</var> format, use  <code>-define quantum:format=signed</code>. To specify a single-precision floating-point format, use <code>-define quantum:format=floating-point</code>.  Set the depth to 64 for a double-precision floating-point format.  Use <code>-define quantum:polarity=min-is-black</code> or <code>-define quantum:polarity=min-is-white</code> toggle the photometric interpretation for a bilevel image.  Specify the extra samples as associated or unassociated alpha with, for example, <code>-define tiff:alpha=unassociated</code>.  Set the fill order with <code>-define tiff:fill-order=msb|lsb</code>. Set the TIFF endianess with <code>-define tiff:endian=msb|lsb</code>. Use <code>-define tiff:exif-properties=false</code> to skip reading the EXIF properties.  You can set a number of TIFF software attributes including document name, host computer, artist, timestamp, make, model, software, and copyright.  For example, <a href="command-line-options.html#set">-set tiff:software "My Company"</a>. If you want to ignore certain TIFF tags, use this option: <code>-define tiff:ignore-tags=comma-separated-list-of-tag-IDs</code>. Since version 6.9.1-4 there is support for reading photoshop layers in TIFF files, this can be disabled with <code>-define tiff:ignore-layers=true</code></td>
+    <td>Also known as <code>TIF</code>. Requires <a href="http://www.libtiff.org/">tiff-v3.6.1.tar.gz</a> or later.  Use <a href="/www/../www/command-line-options.html#define">-define</a> to specify the rows per strip (e.g. <code>-define tiff:rows-per-strip=8</code>).  To define the tile geometry, use for example, <code>-define tiff:tile-geometry=128x128</code>. To specify a <var>signed</var> format, use  <code>-define quantum:format=signed</code>. To specify a single-precision floating-point format, use <code>-define quantum:format=floating-point</code>.  Set the depth to 64 for a double-precision floating-point format.  Use <code>-define quantum:polarity=min-is-black</code> or <code>-define quantum:polarity=min-is-white</code> toggle the photometric interpretation for a bilevel image.  Specify the extra samples as associated or unassociated alpha with, for example, <code>-define tiff:alpha=unassociated</code>.  Set the fill order with <code>-define tiff:fill-order=msb|lsb</code>. Set the TIFF endianess with <code>-define tiff:endian=msb|lsb</code>. Use <code>-define tiff:exif-properties=false</code> to skip reading the EXIF properties.  You can set a number of TIFF software attributes including document name, host computer, artist, timestamp, make, model, software, and copyright.  For example, <a href="/www/../www/command-line-options.html#set">-set tiff:software "My Company"</a>. If you want to ignore certain TIFF tags, use this option: <code>-define tiff:ignore-tags=comma-separated-list-of-tag-IDs</code>. Since version 6.9.1-4 there is support for reading photoshop layers in TIFF files, this can be disabled with <code>-define tiff:ignore-layers=true</code></td>
   </tr>
 
   <tr>
@@ -1029,14 +1029,14 @@ convert \( -size 15x15 canvas:black canvas:white -append \) \
     <td><a href="http://www.freetype.org/">TTF</a></td>
     <td>R</td>
     <td>TrueType font file</td>
-    <td>Requires <a href="http://www.freetype.org/">freetype 2</a>. Opening as file returns a preview image. Use <a href="command-line-options.html#set">-set</a> if you do not want to hint glyph outlines after their scaling to device pixels (e.g. <code>-set type:hinting off</code>).</td>
+    <td>Requires <a href="http://www.freetype.org/">freetype 2</a>. Opening as file returns a preview image. Use <a href="/www/../www/command-line-options.html#set">-set</a> if you do not want to hint glyph outlines after their scaling to device pixels (e.g. <code>-set type:hinting off</code>).</td>
   </tr>
 
   <tr>
     <td>TXT</td>
     <td>RW</td>
     <td>Raw text file</td>
-    <td>Use <a href="command-line-options.html#define">-define</a> to specify the color compliance (e.g. <code>-define txt:compliance=css</code>).</td>
+    <td>Use <a href="/www/../www/command-line-options.html#define">-define</a> to specify the color compliance (e.g. <code>-define txt:compliance=css</code>).</td>
   </tr>
 
   <tr>
@@ -1050,7 +1050,7 @@ convert \( -size 15x15 canvas:black canvas:white -append \) \
     <td>UYVY</td>
     <td>RW</td>
     <td>Interleaved YUV raw image</td>
-    <td>Use <a href="command-line-options.html#size">-size</a> and <a href="command-line-options.html#depth">-depth</a> command line options to specify width and height.  Use <a href="command-line-options.html#sampling-factor">-sampling-factor</a> to set the desired subsampling (e.g. -sampling-factor 4:2:2).</td>
+    <td>Use <a href="/www/../www/command-line-options.html#size">-size</a> and <a href="/www/../www/command-line-options.html#depth">-depth</a> command line options to specify width and height.  Use <a href="/www/../www/command-line-options.html#sampling-factor">-sampling-factor</a> to set the desired subsampling (e.g. -sampling-factor 4:2:2).</td>
   </tr>
 
   <tr>
@@ -1085,7 +1085,7 @@ convert \( -size 15x15 canvas:black canvas:white -append \) \
     <td><a href="http://en.wikipedia.org/wiki/WebP">WEBP</a></td>
     <td>RW</td>
     <td>Weppy image format</td>
-    <td>Requires the <a href="http://code.google.com/p/webp/downloads/list">WEBP</a> delegate library.  Specify the encoding options with the <a href="command-line-options.html#define">-define</a> option  See <a href="webp.html">WebP Encoding Options</a> for more details.</td>
+    <td>Requires the <a href="https://developers.google.com/speed/webp/download">WEBP</a> delegate library.  Specify the encoding options with the <a href="/www/../www/command-line-options.html#define">-define</a> option  See <a href="/www/../www/webp.html">WebP Encoding Options</a> for more details.</td>
   </tr>
 
   <tr>
@@ -1106,7 +1106,7 @@ convert \( -size 15x15 canvas:black canvas:white -append \) \
     <td>X</td>
     <td>RW</td>
     <td>display or import an image to or from an X11 server</td>
-    <td>Use <a href="command-line-options.html#define">-define</a> to obtain the image from the root window (e.g. <code>-define x:screen=true</code>).  Set <code>x:silent=true</code> to turn off the beep when importing an image.</td>
+    <td>Use <a href="/www/../www/command-line-options.html#define">-define</a> to obtain the image from the root window (e.g. <code>-define x:screen=true</code>).  Set <code>x:silent=true</code> to turn off the beep when importing an image.</td>
   </tr>
 
   <tr>
@@ -1148,21 +1148,21 @@ convert \( -size 15x15 canvas:black canvas:white -append \) \
     <td>YCbCr</td>
     <td>RW</td>
     <td>Raw Y, Cb, and Cr samples</td>
-    <td>Use <a href="command-line-options.html#size">-size</a> and <a href="command-line-options.html#depth">-depth</a> to specify the image width, height, and depth.</td>
+    <td>Use <a href="/www/../www/command-line-options.html#size">-size</a> and <a href="/www/../www/command-line-options.html#depth">-depth</a> to specify the image width, height, and depth.</td>
   </tr>
 
   <tr>
     <td>YCbCrA</td>
     <td>RW</td>
     <td>Raw Y, Cb, Cr, and alpha samples</td>
-    <td>Use <a href="command-line-options.html#size">-size</a> and <a href="command-line-options.html#depth">-depth</a> to specify the image width, height, and depth.</td>
+    <td>Use <a href="/www/../www/command-line-options.html#size">-size</a> and <a href="/www/../www/command-line-options.html#depth">-depth</a> to specify the image width, height, and depth.</td>
   </tr>
 
   <tr>
     <td>YUV</td>
     <td>RW</td>
     <td>CCIR 601 4:1:1</td>
-    <td>Use <a href="command-line-options.html#size">-size</a> and <a href="command-line-options.html#depth">-depth</a> command line options to specify width, height, and depth.   Use <a href="command-line-options.html#sampling-factor">-sampling-factor</a> to set the desired subsampling (e.g. -sampling-factor 4:2:2).</td>
+    <td>Use <a href="/www/../www/command-line-options.html#size">-size</a> and <a href="/www/../www/command-line-options.html#depth">-depth</a> command line options to specify width, height, and depth.   Use <a href="/www/../www/command-line-options.html#sampling-factor">-sampling-factor</a> to set the desired subsampling (e.g. -sampling-factor 4:2:2).</td>
   </tr>
   </tbody>
 </table>
@@ -1186,12 +1186,12 @@ convert \( -size 15x15 canvas:black canvas:white -append \) \
     <td>R</td>
     <td>Canvas image of specified color</td>
     <td>Useful to create solid color <var>canvas</var> images. Use
-       <a href="command-line-options.html#size">-size</a> and <a href="command-line-options.html#depth">-depth</a> to specify the
+       <a href="/www/../www/command-line-options.html#size">-size</a> and <a href="/www/../www/command-line-options.html#depth">-depth</a> to specify the
        image width, height, and depth.  Example canvas color specifications
        include <code>canvas:red</code> and <code>canvas:#FF0000</code>.<br>
 
        If no color is specified a '<code>white</code>' canvas image is
-       generated.  If no <a href="command-line-options.html#size">-size</a> is specified
+       generated.  If no <a href="/www/../www/command-line-options.html#size">-size</a> is specified
        a single pixel image of the specified color is generated.</td>
 
   </tr>
@@ -1283,7 +1283,7 @@ convert \( -size 15x15 canvas:black canvas:white -append \) \
     <td>NULL</td>
     <td>RW</td>
     <td>NULL image</td>
-    <td>Useful for creating blank tiles with <a href="montage.html">montage</a> (use <code>NULL:</code>). Also useful as an output format when evaluating image read performance.</td>
+    <td>Useful for creating blank tiles with <a href="/www/../www/montage.html">montage</a> (use <code>NULL:</code>). Also useful as an output format when evaluating image read performance.</td>
   </tr>
 
   <tr>
@@ -1347,14 +1347,14 @@ convert \( -size 15x15 canvas:black canvas:white -append \) \
     <td>STEGANO</td>
     <td>R</td>
     <td>Steganographic image</td>
-    <td>Use <a href="command-line-options.html#size">-size</a> command line option to specify width, height, and offset of the steganographic image</td>
+    <td>Use <a href="/www/../www/command-line-options.html#size">-size</a> command line option to specify width, height, and offset of the steganographic image</td>
   </tr>
 
   <tr>
     <td>TILE</td>
     <td>R</td>
     <td>Tiled image</td>
-    <td>Create a tiled version of an image at by tiling a image. Use <a href="command-line-options.html#size">-size</a> to specify the tiled image size. The image is specified similar to
+    <td>Create a tiled version of an image at by tiling a image. Use <a href="/www/../www/command-line-options.html#size">-size</a> to specify the tiled image size. The image is specified similar to
     <code>TILE:image.miff</code>.</td>
   </tr>
 
@@ -1369,7 +1369,7 @@ convert \( -size 15x15 canvas:black canvas:white -append \) \
     <td>VID</td>
     <td>RW</td>
     <td>Visual Image Directory</td>
-    <td>Used to create a thumbnailed directory (tiled thumbnails) of a set of images which may be used to select images to view via the <a href="display.html">display</a> program, or saved to a <a href="formats.html#MIFF">MIFF</a> or <a href="formats.html#SHTML">SHTML</a> file.</td>
+    <td>Used to create a thumbnailed directory (tiled thumbnails) of a set of images which may be used to select images to view via the <a href="/www/../www/display.html">display</a> program, or saved to a <a href="#MIFF">MIFF</a> or <a href="#SHTML">SHTML</a> file.</td>
   </tr>
 
   <tr>
@@ -1383,7 +1383,7 @@ convert \( -size 15x15 canvas:black canvas:white -append \) \
     <td>X</td>
     <td>RW</td>
     <td>Select image from or display image to your X server screen</td>
-    <td>Also see the <a href="import.html">import</a> and <a href="display.html">display</a>
+    <td>Also see the <a href="/www/../www/import.html">import</a> and <a href="/www/../www/display.html">display</a>
     programs.</td>
   </tr>
 
@@ -1415,42 +1415,42 @@ convert \( -size 15x15 canvas:black canvas:white -append \) \
     <td>GRANITE</td>
     <td>R</td>
     <td>128x128 granite texture pattern</td>
-    <td><img src="../images/granite.png" width="64" height="64" alt="GRANITE"></td>
+    <td><img src="/www/../images/granite.png" width="64" height="64" alt="GRANITE"></td>
   </tr>
 
   <tr>
-    <td><a href="../images/logo.png">LOGO</a></td>
+    <td><a href="/www/../images/logo.png">LOGO</a></td>
     <td>R</td>
     <td>ImageMagick Logo, 640x480</td>
-    <td><img src="../images/logo.jpg" width="123" height="118" alt="Logo"></td>
+    <td><img src="/www/../images/logo.jpg" width="123" height="118" alt="Logo"></td>
   </tr>
 
   <tr>
     <td> NETSCAPE</td>
     <td>R</td>
     <td>image using colors in Netscape 216 (6x6x6 ) color cube, 216x144</td>
-    <td>Most commonly used with the <a href="convert.html">convert</a> and <a href="mogrify.html">mogrify</a> programs with the <a href="command-line-options.html#map">-map</a> option to create <var>web safe</var> images.</td>
+    <td>Most commonly used with the <a href="/www/../www/convert.html">convert</a> and <a href="/www/../www/mogrify.html">mogrify</a> programs with the <a href="/www/../www/command-line-options.html#map">-map</a> option to create <var>web safe</var> images.</td>
   </tr>
 
   <tr>
     <td>ROSE</td>
     <td>R</td>
     <td>Picture of a rose, 70x46</td>
-    <td><img src="../images/rose.png" width="70" height="46" alt="ROSE"></td>
+    <td><img src="/www/../images/rose.png" width="70" height="46" alt="ROSE"></td>
   </tr>
 
   <tr>
-    <td><a href="../images/wizard.png">WIZARD</a></td>
+    <td><a href="/www/../images/wizard.png">WIZARD</a></td>
     <td>R</td>
     <td>ImageMagick Wizard, 480x640</td>
-    <td><img src="../images/wizard.jpg" width="125" height="167" alt="Logo"></td>
+    <td><img src="/www/../images/wizard.jpg" width="125" height="167" alt="Logo"></td>
   </tr>
 
 </table></div>
 
 <h2 class="magick-header"><a id="builtin-patterns"></a>Built-in Patterns</h2>
 
-<p>ImageMagick includes a number of built-in (embedded) patterns which may be referenced as if they were an image file. The <code>pattern:</code> format tag may be used via the syntax <code>pattern:</code><var>name</var> to request an embedded pattern (e.g. <code>pattern:checkerboard</code>). The pattern size is controlled with the <a href="command-line-options.html#size">-size</a> command line option.</p>
+<p>ImageMagick includes a number of built-in (embedded) patterns which may be referenced as if they were an image file. The <code>pattern:</code> format tag may be used via the syntax <code>pattern:</code><var>name</var> to request an embedded pattern (e.g. <code>pattern:checkerboard</code>). The pattern size is controlled with the <a href="/www/../www/command-line-options.html#size">-size</a> command line option.</p>
 
 <div class="table-responsive">
 <table class="table table-condensed table-striped">
@@ -1465,378 +1465,378 @@ convert \( -size 15x15 canvas:black canvas:white -append \) \
     <td>BRICKS</td>
     <td>R</td>
     <td>brick pattern, 16x16</td>
-    <td><img src="../images/patterns/bricks.png" width="100" height="26" alt="BRICKS"></td>
+    <td><img src="/www/../images/patterns/bricks.png" width="100" height="26" alt="BRICKS"></td>
   </tr>
 
   <tr>
     <td>CHECKERBOARD</td>
     <td>R</td>
     <td>checkerboard pattern, 30x30</td>
-    <td><img src="../images/patterns/checkerboard.png" width="100" height="26" alt="CHECKERBOARD"></td>
+    <td><img src="/www/../images/patterns/checkerboard.png" width="100" height="26" alt="CHECKERBOARD"></td>
   </tr>
 
   <tr>
     <td>CIRCLES</td>
     <td>R</td>
     <td>circles pattern, 16x16</td>
-    <td><img src="../images/patterns/circles.png" width="100" height="26" alt="CIRCLES"></td>
+    <td><img src="/www/../images/patterns/circles.png" width="100" height="26" alt="CIRCLES"></td>
   </tr>
 
   <tr>
     <td>CROSSHATCH</td>
     <td>R</td>
     <td>crosshatch pattern, 8x4</td>
-    <td><img src="../images/patterns/crosshatch.png" width="100" height="26" alt="CROSSHATCH"></td>
+    <td><img src="/www/../images/patterns/crosshatch.png" width="100" height="26" alt="CROSSHATCH"></td>
   </tr>
 
   <tr>
     <td>CROSSHATCH30</td>
     <td>R</td>
     <td>crosshatch pattern with lines at 30 degrees, 8x4</td>
-    <td><img src="../images/patterns/crosshatch30.png" width="100" height="26" alt="CROSSHATCH30"></td>
+    <td><img src="/www/../images/patterns/crosshatch30.png" width="100" height="26" alt="CROSSHATCH30"></td>
   </tr>
 
   <tr>
     <td>CROSSHATCH45</td>
     <td>R</td>
     <td>crosshatch pattern with lines at 45 degrees, 8x4</td>
-    <td><img src="../images/patterns/crosshatch45.png" width="100" height="26" alt="CROSSHATCH45"></td>
+    <td><img src="/www/../images/patterns/crosshatch45.png" width="100" height="26" alt="CROSSHATCH45"></td>
   </tr>
 
   <tr>
     <td>FISHSCALES</td>
     <td>R</td>
     <td>fish scales pattern, 16x8</td>
-    <td><img src="../images/patterns/fishscales.png" width="100" height="26" alt="FISHSCALES"></td>
+    <td><img src="/www/../images/patterns/fishscales.png" width="100" height="26" alt="FISHSCALES"></td>
   </tr>
 
   <tr>
     <td>GRAY0</td>
     <td>R</td>
     <td>0% intensity gray, 32x32</td>
-    <td><img src="../images/patterns/gray0.png" width="100" height="32" alt="GRAY0"></td>
+    <td><img src="/www/../images/patterns/gray0.png" width="100" height="32" alt="GRAY0"></td>
   </tr>
 
   <tr>
     <td>GRAY5</td>
     <td>R</td>
     <td>5% intensity gray, 32x32</td>
-    <td><img src="../images/patterns/gray5.png" width="100" height="32" alt="GRAY5"></td>
+    <td><img src="/www/../images/patterns/gray5.png" width="100" height="32" alt="GRAY5"></td>
   </tr>
 
   <tr>
     <td>GRAY10</td>
     <td>R</td>
     <td>10% intensity gray, 32x32</td>
-    <td> <img src="../images/patterns/gray10.png" width="100" height="32" alt="GRAY10"></td>
+    <td> <img src="/www/../images/patterns/gray10.png" width="100" height="32" alt="GRAY10"></td>
   </tr>
 
   <tr>
     <td>GRAY15</td>
     <td>R</td>
     <td>15% intensity gray, 32x32</td>
-    <td><img src="../images/patterns/gray15.png" width="100" height="32" alt="GRAY15"></td>
+    <td><img src="/www/../images/patterns/gray15.png" width="100" height="32" alt="GRAY15"></td>
   </tr>
 
   <tr>
     <td>GRAY20</td>
     <td>R</td>
     <td>20% intensity gray, 32x32</td>
-    <td><img src="../images/patterns/gray20.png" width="100" height="32" alt="GRAY20"></td>
+    <td><img src="/www/../images/patterns/gray20.png" width="100" height="32" alt="GRAY20"></td>
   </tr>
 
   <tr>
     <td>GRAY25</td>
     <td>R</td>
     <td>25% intensity gray, 32x32</td>
-    <td><img src="../images/patterns/gray25.png" width="100" height="32" alt="GRAY25"></td>
+    <td><img src="/www/../images/patterns/gray25.png" width="100" height="32" alt="GRAY25"></td>
   </tr>
 
   <tr>
     <td>GRAY30</td>
     <td>R</td>
     <td>30% intensity gray, 32x32</td>
-    <td><img src="../images/patterns/gray30.png" width="100" height="32" alt="GRAY30"></td>
+    <td><img src="/www/../images/patterns/gray30.png" width="100" height="32" alt="GRAY30"></td>
   </tr>
 
   <tr>
     <td>GRAY35</td>
     <td>R</td>
     <td>35% intensity gray, 32x32</td>
-    <td><img src="../images/patterns/gray35.png" width="100" height="32" alt="GRAY35"></td>
+    <td><img src="/www/../images/patterns/gray35.png" width="100" height="32" alt="GRAY35"></td>
   </tr>
 
   <tr>
     <td>GRAY40</td>
     <td>R</td>
     <td>40% intensity gray, 32x32</td>
-    <td><img src="../images/patterns/gray40.png" width="100" height="32" alt="GRAY40"></td>
+    <td><img src="/www/../images/patterns/gray40.png" width="100" height="32" alt="GRAY40"></td>
   </tr>
 
   <tr>
     <td>GRAY45</td>
     <td>R</td>
     <td>45% intensity gray, 32x32</td>
-    <td><img src="../images/patterns/gray45.png" width="100" height="32" alt="GRAY45"></td>
+    <td><img src="/www/../images/patterns/gray45.png" width="100" height="32" alt="GRAY45"></td>
   </tr>
 
   <tr>
     <td>GRAY50</td>
     <td>R</td>
     <td>50% intensity gray, 32x32</td>
-    <td><img src="../images/patterns/gray50.png" width="100" height="32" alt="GRAY50"></td>
+    <td><img src="/www/../images/patterns/gray50.png" width="100" height="32" alt="GRAY50"></td>
   </tr>
 
   <tr>
     <td>GRAY55</td>
     <td>R</td>
     <td>55% intensity gray, 32x32</td>
-    <td><img src="../images/patterns/gray55.png" width="100" height="32" alt="GRAY55"></td>
+    <td><img src="/www/../images/patterns/gray55.png" width="100" height="32" alt="GRAY55"></td>
   </tr>
 
   <tr>
     <td>GRAY60</td>
     <td>R</td>
     <td>60% intensity gray, 32x32</td>
-    <td><img src="../images/patterns/gray60.png" width="100" height="32" alt="GRAY60"></td>
+    <td><img src="/www/../images/patterns/gray60.png" width="100" height="32" alt="GRAY60"></td>
   </tr>
 
   <tr>
     <td>GRAY65</td>
     <td>R</td>
     <td>65% intensity gray, 32x32</td>
-    <td><img src="../images/patterns/gray65.png" width="100" height="32" alt="GRAY65"></td>
+    <td><img src="/www/../images/patterns/gray65.png" width="100" height="32" alt="GRAY65"></td>
   </tr>
 
   <tr>
     <td>GRAY70</td>
     <td>R</td>
     <td>70% intensity gray, 32x32</td>
-    <td><img src="../images/patterns/gray70.png" width="100" height="32" alt="GRAY70"></td>
+    <td><img src="/www/../images/patterns/gray70.png" width="100" height="32" alt="GRAY70"></td>
   </tr>
 
   <tr>
     <td>GRAY75</td>
     <td>R</td>
     <td>75% intensity gray, 32x32</td>
-    <td><img src="../images/patterns/gray75.png" width="100" height="32" alt="GRAY75"></td>
+    <td><img src="/www/../images/patterns/gray75.png" width="100" height="32" alt="GRAY75"></td>
   </tr>
 
   <tr>
     <td>GRAY80</td>
     <td>R</td>
     <td>80% intensity gray, 32x32</td>
-    <td> <img src="../images/patterns/gray80.png" width="100" height="32" alt="GRAY80"></td>
+    <td> <img src="/www/../images/patterns/gray80.png" width="100" height="32" alt="GRAY80"></td>
   </tr>
 
   <tr>
     <td>GRAY85</td>
     <td>R</td>
     <td>85% intensity gray, 32x32</td>
-    <td><img src="../images/patterns/gray85.png" width="100" height="32" alt="GRAY85"></td>
+    <td><img src="/www/../images/patterns/gray85.png" width="100" height="32" alt="GRAY85"></td>
   </tr>
 
   <tr>
     <td>GRAY90</td>
     <td>R</td>
     <td>100% intensity gray, 32x32</td>
-    <td><img src="../images/patterns/gray90.png" width="100" height="32" alt="GRAY90"></td>
+    <td><img src="/www/../images/patterns/gray90.png" width="100" height="32" alt="GRAY90"></td>
   </tr>
 
   <tr>
     <td>GRAY95</td>
     <td>R</td>
     <td>100% intensity gray, 32x32</td>
-    <td><img src="../images/patterns/gray95.png" width="100" height="32" alt="GRAY95"></td>
+    <td><img src="/www/../images/patterns/gray95.png" width="100" height="32" alt="GRAY95"></td>
   </tr>
 
   <tr>
     <td>GRAY100</td>
     <td>R</td>
     <td>100% intensity gray, 32x32</td>
-    <td><img src="../images/patterns/gray100.png" width="100" height="32" alt="GRAY100"></td>
+    <td><img src="/www/../images/patterns/gray100.png" width="100" height="32" alt="GRAY100"></td>
   </tr>
 
   <tr>
     <td>HEXAGONS</td>
     <td>R</td>
     <td>hexagon pattern, 30x18</td>
-    <td><img src="../images/patterns/hexagons.png" width="100" height="26" alt="HEXAGONS"></td>
+    <td><img src="/www/../images/patterns/hexagons.png" width="100" height="26" alt="HEXAGONS"></td>
   </tr>
 
   <tr>
     <td>HORIZONTAL</td>
     <td>R</td>
     <td>horizontal line pattern, 8x4</td>
-    <td><img src="../images/patterns/horizontal.png" width="100" height="26" alt="HORIZONTAL"></td>
+    <td><img src="/www/../images/patterns/horizontal.png" width="100" height="26" alt="HORIZONTAL"></td>
   </tr>
 
   <tr>
     <td>HORIZONTAL2</td>
     <td>R</td>
     <td>horizontal line pattern, 8x8</td>
-    <td><img src="../images/patterns/horizontal2.png" width="100" height="26" alt="HORIZONTAL2"></td>
+    <td><img src="/www/../images/patterns/horizontal2.png" width="100" height="26" alt="HORIZONTAL2"></td>
   </tr>
 
   <tr>
     <td>HORIZONTAL3</td>
     <td>R</td>
     <td>horizontal line pattern, 9x9</td>
-    <td><img src="../images/patterns/horizontal3.png" width="100" height="26" alt="HORIZONTAL3"></td>
+    <td><img src="/www/../images/patterns/horizontal3.png" width="100" height="26" alt="HORIZONTAL3"></td>
   </tr>
 
   <tr>
     <td>HORIZONTALSAW</td>
     <td>R</td>
     <td>horizontal saw-tooth pattern, 16x8</td>
-    <td><img src="../images/patterns/horizontalsaw.png" width="100" height="26" alt="HORIZONTALSAW"></td>
+    <td><img src="/www/../images/patterns/horizontalsaw.png" width="100" height="26" alt="HORIZONTALSAW"></td>
   </tr>
 
   <tr>
     <td>HS_BDIAGONAL</td>
     <td>R</td>
     <td>backward diagonal line pattern (45 degrees slope), 8x8</td>
-    <td><img src="../images/patterns/hs_bdiagonal.png" width="100" height="26" alt="HS_BDIAGONAL"></td>
+    <td><img src="/www/../images/patterns/hs_bdiagonal.png" width="100" height="26" alt="HS_BDIAGONAL"></td>
   </tr>
 
   <tr>
     <td>HS_CROSS</td>
     <td>R</td>
     <td>cross line pattern, 8x8</td>
-    <td><img src="../images/patterns/hs_cross.png" width="100" height="26" alt="HS_CROSS"></td>
+    <td><img src="/www/../images/patterns/hs_cross.png" width="100" height="26" alt="HS_CROSS"></td>
   </tr>
 
   <tr>
     <td>HS_DIAGCROSS</td>
     <td>R</td>
     <td>diagonal line cross pattern (45 degrees slope), 8x8</td>
-    <td><img src="../images/patterns/hs_diagcross.png" width="100" height="26" alt="HS_DIAGCROSS"></td>
+    <td><img src="/www/../images/patterns/hs_diagcross.png" width="100" height="26" alt="HS_DIAGCROSS"></td>
   </tr>
 
   <tr>
     <td>HS_FDIAGONAL</td>
     <td>R</td>
     <td>forward diagonal line pattern (45 degrees slope), 8x8</td>
-    <td><img src="../images/patterns/hs_fdiagonal.png" width="100" height="26" alt="HS_FDIAGONAL"></td>
+    <td><img src="/www/../images/patterns/hs_fdiagonal.png" width="100" height="26" alt="HS_FDIAGONAL"></td>
   </tr>
 
   <tr>
     <td>HS_HORIZONTAL</td>
     <td>R</td>
     <td>horizontal line pattern, 8x8</td>
-    <td><img src="../images/patterns/hs_horizontal.png" width="100" height="26" alt="HS_HORIZONTAL"></td>
+    <td><img src="/www/../images/patterns/hs_horizontal.png" width="100" height="26" alt="HS_HORIZONTAL"></td>
   </tr>
 
   <tr>
     <td>HS_VERTICAL</td>
     <td>R</td>
     <td>vertical line pattern, 8x8</td>
-    <td><img src="../images/patterns/hs_vertical.png" width="100" height="26" alt="HS_VERTICAL"></td>
+    <td><img src="/www/../images/patterns/hs_vertical.png" width="100" height="26" alt="HS_VERTICAL"></td>
   </tr>
 
   <tr>
     <td>LEFT30</td>
     <td>R</td>
     <td>forward diagonal pattern (30 degrees slope), 8x4</td>
-    <td><img src="../images/patterns/left30.png" width="100" height="26" alt="LEFT0"></td>
+    <td><img src="/www/../images/patterns/left30.png" width="100" height="26" alt="LEFT0"></td>
   </tr>
 
   <tr>
     <td>LEFT45</td>
     <td>R</td>
     <td>forward diagonal line pattern (45 degrees slope), 8x8</td>
-    <td><img src="../images/patterns/left45.png" width="100" height="26" alt="LEFT45"></td>
+    <td><img src="/www/../images/patterns/left45.png" width="100" height="26" alt="LEFT45"></td>
   </tr>
 
   <tr>
     <td>LEFTSHINGLE</td>
     <td>R</td>
     <td>left shingle pattern, 24x24</td>
-    <td><img src="../images/patterns/leftshingle.png" width="100" height="26" alt="LEFTSHINGLE"></td>
+    <td><img src="/www/../images/patterns/leftshingle.png" width="100" height="26" alt="LEFTSHINGLE"></td>
   </tr>
 
   <tr>
     <td>OCTAGONS</td>
     <td>R</td>
     <td>octagons pattern, 16x16</td>
-    <td><img src="../images/patterns/octagons.png" width="100" height="26" alt="OCTAGONS"></td>
+    <td><img src="/www/../images/patterns/octagons.png" width="100" height="26" alt="OCTAGONS"></td>
   </tr>
 
   <tr>
     <td>RIGHT30</td>
     <td>R</td>
     <td>backward diagonal line pattern (30 degrees) 8x4</td>
-    <td><img src="../images/patterns/right30.png" width="100" height="26" alt="RIGHT30"></td>
+    <td><img src="/www/../images/patterns/right30.png" width="100" height="26" alt="RIGHT30"></td>
   </tr>
 
   <tr>
     <td>RIGHT45</td>
     <td>R</td>
     <td>backward diagonal line pattern (30 degrees), 8x8</td>
-    <td><img src="../images/patterns/right45.png" width="100" height="26" alt="RIGHT45"></td>
+    <td><img src="/www/../images/patterns/right45.png" width="100" height="26" alt="RIGHT45"></td>
   </tr>
 
   <tr>
     <td>RIGHTSHINGLE</td>
     <td>R</td>
     <td>right shingle pattern, 24x24</td>
-    <td><img src="../images/patterns/rightshingle.png" width="100" height="26" alt="RIGHTSHINGLE"></td>
+    <td><img src="/www/../images/patterns/rightshingle.png" width="100" height="26" alt="RIGHTSHINGLE"></td>
   </tr>
 
   <tr>
     <td>SMALLFISHSCALES</td>
     <td>R</td>
     <td>small fish scales pattern, 8x8</td>
-    <td><img src="../images/patterns/smallfishscales.png" width="100" height="26" alt="SMALLFISHSCALES"></td>
+    <td><img src="/www/../images/patterns/smallfishscales.png" width="100" height="26" alt="SMALLFISHSCALES"></td>
   </tr>
 
   <tr>
     <td>VERTICAL</td>
     <td>R</td>
     <td>vertical line pattern, 8x8</td>
-    <td><img src="../images/patterns/vertical.png" width="100" height="26" alt="VERTICAL"></td>
+    <td><img src="/www/../images/patterns/vertical.png" width="100" height="26" alt="VERTICAL"></td>
   </tr>
 
   <tr>
     <td>VERTICAL2</td>
     <td>R</td>
     <td>vertical line pattern, 8x8</td>
-    <td><img src="../images/patterns/vertical2.png" width="100" height="26" alt="VERTICAL2"></td>
+    <td><img src="/www/../images/patterns/vertical2.png" width="100" height="26" alt="VERTICAL2"></td>
   </tr>
 
   <tr>
     <td>VERTICAL3</td>
     <td>R</td>
     <td>vertical line pattern, 9x9</td>
-    <td><img src="../images/patterns/vertical3.png" width="100" height="26" alt="VERTICAL3"></td>
+    <td><img src="/www/../images/patterns/vertical3.png" width="100" height="26" alt="VERTICAL3"></td>
   </tr>
 
   <tr>
     <td>VERTICALBRICKS</td>
     <td>R</td>
     <td>vertical brick pattern, 16x16</td>
-    <td><img src="../images/patterns/verticalbricks.png" width="100" height="26" alt="VERTICALBRICKS"></td>
+    <td><img src="/www/../images/patterns/verticalbricks.png" width="100" height="26" alt="VERTICALBRICKS"></td>
   </tr>
 
   <tr>
     <td>VERTICALLEFTSHINGLE</td>
     <td>R</td>
     <td>vertical left shingle pattern, 24x24</td>
-    <td><img src="../images/patterns/verticalleftshingle.png" width="100" height="26" alt="VERTICALLEFTSHINGLE"></td>
+    <td><img src="/www/../images/patterns/verticalleftshingle.png" width="100" height="26" alt="VERTICALLEFTSHINGLE"></td>
   </tr>
 
   <tr>
     <td>VERTICALRIGHTSHINGLE</td>
     <td>R</td>
     <td>vertical right shingle pattern, 24x24</td>
-    <td><img src="../images/patterns/verticalrightshingle.png" width="100" height="26" alt="VERTICALRIGHTSHINGLE"></td>
+    <td><img src="/www/../images/patterns/verticalrightshingle.png" width="100" height="26" alt="VERTICALRIGHTSHINGLE"></td>
   </tr>
 
   <tr>
     <td>VERTICALSAW</td>
     <td>R</td>
     <td>vertical saw-tooth pattern, 8x16</td>
-    <td><img src="../images/patterns/verticalsaw.png" width="100" height="26" alt="VERTICALSAW"></td>
+    <td><img src="/www/../images/patterns/verticalsaw.png" width="100" height="26" alt="VERTICALSAW"></td>
   </tr>
 </table></div>
 
@@ -1886,15 +1886,15 @@ convert \( -size 15x15 canvas:black canvas:white -append \) \
     <td>ICC</td>
     <td>RW</td>
     <td>International Color Consortium color profile</td>
-    <td>Also known as <code>ICM</code>. To read, use <a href="command-line-options.html#profile">-profile</a> with
-      <a href="convert.html">convert</a>.</td>
+    <td>Also known as <code>ICM</code>. To read, use <a href="/www/../www/command-line-options.html#profile">-profile</a> with
+      <a href="/www/../www/convert.html">convert</a>.</td>
   </tr>
 
   <tr>
     <td>IPTC</td>
     <td>RW</td>
     <td>IPTC Newsphoto (binary)</td>
-    <td>To read, use <a href="command-line-options.html#profile">-profile</a> with <a href="convert.html">convert</a></td>
+    <td>To read, use <a href="/www/../www/command-line-options.html#profile">-profile</a> with <a href="/www/../www/convert.html">convert</a></td>
   </tr>
 
   <tr>
@@ -1908,19 +1908,19 @@ convert \( -size 15x15 canvas:black canvas:white -append \) \
 
 </div>
   <footer class="magick-footer">
-    <p><a href="support.html">Donate</a> •
-     <a href="sitemap.html">Sitemap</a> •
-    <a href="links.html">Related</a> •
-    <a href="architecture.html">Architecture</a>
+    <p><a href="/www/../www/support.html">Donate</a> •
+     <a href="/www/../www/sitemap.html">Sitemap</a> •
+    <a href="/www/../www/links.html">Related</a> •
+    <a href="/www/../www/architecture.html">Architecture</a>
 </p>
-    <p><a href="formats.html#">Back to top</a> •
+    <p><a href="#">Back to top</a> •
     <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-    <a href="http://www.imagemagick.org/script/contact.php">Contact Us</a></p>
+    <a href="/www/../www/http://www.imagemagick.org/script/contact.php">Contact Us</a></p>
         <p><small>©  1999-2015 ImageMagick Studio LLC</small></p>
   </footer>
 </div><!-- /.container -->
 
-  <script src="../js/magick.html"></script>
+  <script src="/www/../js/magick.html"></script>
 </div>
 </body>
 </html>

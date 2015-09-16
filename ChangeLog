@@ -1,3 +1,9 @@
+2015-09-16  6.9.2-2 Cristy  <quetzlzacatenango@image...>
+  * Add Bootstrap MIT license to ImageMagick web CSS and JS.
+  * Use modern idiom for autoconf
+    Fix a forgotten dir when regenerating html doc (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=28363).
+
 2015-09-12  6.9.2-1 Cristy  <quetzlzacatenango@image...>
   * New version 6.9.2-1, GIT revision 10201:5879612:20150913.
 
@@ -374,7 +380,7 @@
 
 2014-10-03  6.8.9-9 Dirk Lemstra <dirk@snakeware...>
   * Added sixel coder created by Hayaki Saito (@kefir_).
-  * Fixed buffer overflow in PCX and DCM coder (bug report from Hanno Böck).
+  * Fixed buffer overflow in PCX and DCM coder (bug report from Hanno BÃ¶ck).
   * Added support for reading/writing the tIME chunk in the PNG coder.
   * Added eps:fit-page option to the PS coder to set -dEPSFitPage.
   * Improved reporting tiff:alpha and allowed setting tiff:alpha to
@@ -389,7 +395,7 @@
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=26362).
   * OpenCL no longer benchmarks are run on every initialization (patch
     submitted by Jan Steffens).
-  * Don't clone a 0x0 image (bug report from Hanno Böck).
+  * Don't clone a 0x0 image (bug report from Hanno BÃ¶ck).
 
 2014-09-21  6.8.9-8 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.9-8, SVN revision 16502.

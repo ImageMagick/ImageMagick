@@ -21,26 +21,26 @@
   <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC">
   <meta name="distribution" content="Global">
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
-  <link rel="icon" href="../images/wand.png">
-  <link rel="shortcut icon" href="../images/wand.ico">
-  <link rel="stylesheet" href="css/magick.css">
+  <link rel="icon" href="/www/../images/wand.png">
+  <link rel="shortcut icon" href="/www/../images/wand.ico">
+  <link rel="stylesheet" href="/www/css/magick.css">
 </head>
 <body>
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
+    <script async src="//localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
     <script>
     (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
     <nav class="magick-nav">
-      <a class="magick-nav-item " href="../index.html">Home</a>
-      <a class="magick-nav-item " href="binary-releases.html">Download</a>
-      <a class="magick-nav-item " href="command-line-tools.html">Tools</a>
-      <a class="magick-nav-item " href="command-line-options.html">Options</a>
-      <a class="magick-nav-item " href="resources.html">Resources</a>
-      <a class="magick-nav-item " href="api.html">Develop</a>
-      <a class="magick-nav-item " href="http://www.imagemagick.org/script/search.php">Search</a>
+      <a class="magick-nav-item " href="/www/../index.html">Home</a>
+      <a class="magick-nav-item " href="/www/../www/binary-releases.html">Download</a>
+      <a class="magick-nav-item " href="/www/../www/command-line-tools.html">Tools</a>
+      <a class="magick-nav-item " href="/www/../www/command-line-options.html">Options</a>
+      <a class="magick-nav-item " href="/www/../www/resources.html">Resources</a>
+      <a class="magick-nav-item " href="/www/../www/api.html">Develop</a>
+      <a class="magick-nav-item " href="/www/../www/http://www.imagemagick.org/script/search.php">Search</a>
       <a class="magick-nav-item pull-right" href="http://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
@@ -49,7 +49,7 @@
 <div class="magick-header">
 <p class="lead magick-description">Connected-component labeling (alternatively connected-component analysis, blob extraction, region labeling, blob discovery, or region extraction) uniquely labels connected components in an image.  The labeling process scans the image, pixel-by-pixel from top-left to bottom-right, in order to identify connected pixel regions, i.e. regions of adjacent pixels which share the same set of intensity values.  For example, let's find the objects in this image:</p>
 <ul>
-  <a href="../images/objects.gif"><img src="../images/objects.gif" width="256" height="171" class="image-slices" alt="purse"></a>
+  <a href="/www/../images/objects.gif"><img src="/www/../images/objects.gif" width="256" height="171" class="image-slices" alt="purse"></a>
 </ul>
 <p>To identify the objects in this image, use this command:</p>
 <pre>
@@ -57,7 +57,7 @@ convert objects.gif -connected-components 4 -auto-level -depth 8 objects.png
 </pre>
 <p>The detected objects are uniquely labeled starting with 1.  Use auto leveling to visualize the detected objects:</p>
 <ul>
-  <a href="../images/objects.png"><img src="../images/objects.png" width="256" height="171" class="image-slices" alt="Objects"></a>
+  <a href="/www/../images/objects.png"><img src="/www/../images/objects.png" width="256" height="171" class="image-slices" alt="Objects"></a>
 </ul>
 <p>Note, the <code>-connected-components</code> option requires ImageMagick version 6.8.9-10 or later.</p>
 <p>Object statistics is useful to review.  To display them, use this command:</p>
@@ -73,7 +73,7 @@ Objects (id: bounding-box centroid area mean-color):
   4: 21x23+0+45 +8.8,+55.9 409 gray(255)
   1: 4x10+252+0 +253.9,+4.1 31 gray(255)
 </pre>
-<p>Use <code>-connected-components 8</code> to visit 8 neighbors rather than 4.  By default, neighbor colors must be exact to be part of a unique object. Use <a href="command-line-options.html#fuzz">-fuzz</a> to include pixels that are <var>close</var> in color.</p>
+<p>Use <code>-connected-components 8</code> to visit 8 neighbors rather than 4.  By default, neighbor colors must be exact to be part of a unique object. Use <a href="/www/../www/command-line-options.html#fuzz">-fuzz</a> to include pixels that are <var>close</var> in color.</p>
 <p>You might want to eliminate small objects by merging them with their larger neighbors.  If so, use this command:</p>
 <pre>
 convert objects.gif -define connected-components:area-threshold=410 -connected-components 4 \
@@ -81,24 +81,24 @@ convert objects.gif -define connected-components:area-threshold=410 -connected-c
 </pre>
 <p>Here are the expected results.  Notice, how the small objects are now merged with the background.</p>
 <p class="img-responsive center-block">
-  <a href="../images/objects.jpg"><img src="../images/objects.jpg" width="256" height="171" class="image-slices" alt="Objects"></a>
+  <a href="/www/../images/objects.jpg"><img src="/www/../images/objects.jpg" width="256" height="171" class="image-slices" alt="Objects"></a>
 </p>
-<p>Use the <a href="command-line-options.html#fuzz">-fuzz</a> option to identify objects that are made up of pixels similiar in color (e.g. <code>-fuzz 3%</code>).</p>
+<p>Use the <a href="/www/../www/command-line-options.html#fuzz">-fuzz</a> option to identify objects that are made up of pixels similiar in color (e.g. <code>-fuzz 3%</code>).</p>
 </div>
   <footer class="magick-footer">
-    <p><a href="support.html">Donate</a> •
-     <a href="sitemap.html">Sitemap</a> •
-    <a href="links.html">Related</a> •
-    <a href="architecture.html">Architecture</a>
+    <p><a href="/www/../www/support.html">Donate</a> •
+     <a href="/www/../www/sitemap.html">Sitemap</a> •
+    <a href="/www/../www/links.html">Related</a> •
+    <a href="/www/../www/architecture.html">Architecture</a>
 </p>
-    <p><a href="connected-components.html#">Back to top</a> •
+    <p><a href="#">Back to top</a> •
     <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-    <a href="http://www.imagemagick.org/script/contact.php">Contact Us</a></p>
+    <a href="/www/../www/http://www.imagemagick.org/script/contact.php">Contact Us</a></p>
         <p><small>©  1999-2015 ImageMagick Studio LLC</small></p>
   </footer>
 </div><!-- /.container -->
 
-  <script src="../js/magick.html"></script>
+  <script src="/www/../js/magick.html"></script>
 </div>
 </body>
 </html>
