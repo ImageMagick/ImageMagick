@@ -84,6 +84,7 @@
 #define HANDLER_RETURN_TYPE void *
 #define HANDLER_RETURN_VALUE (void *) NULL
 #define SOCKET_TYPE int
+#define LENGTH_TYPE size_t
 #define MAGICKCORE_HAVE_DISTRIBUTE_CACHE
 #elif defined(MAGICKCORE_WINDOWS_SUPPORT)
 #define CHAR_TYPE_CAST (char *)
@@ -91,12 +92,14 @@
 #define HANDLER_RETURN_TYPE DWORD WINAPI
 #define HANDLER_RETURN_VALUE 0
 #define SOCKET_TYPE SOCKET
+#define LENGTH_TYPE int
 #define MAGICKCORE_HAVE_DISTRIBUTE_CACHE
 #else
 #define CLOSE_SOCKET(socket) 
 #define HANDLER_RETURN_TYPE  void *
 #define HANDLER_RETURN_VALUE  (void *) NULL
 #define SOCKET_TYPE  int
+#define LENGTH_TYPE size_t
 #undef send
 #undef recv
 #define send(file,buffer,length,flags)  0
@@ -154,7 +157,7 @@ static inline MagickOffsetType dpc_read(int file,const MagickSizeType length,
   count=0;
   for (i=0; i < (MagickOffsetType) length; i+=count)
   {
-    count=recv(file,CHAR_TYPE_CAST message+i,(size_t) MagickMin(length-i,
+    count=recv(file,CHAR_TYPE_CAST message+i,(LENGTH_TYPE) MagickMin(length-i,
       (MagickSizeType) SSIZE_MAX),0);
     if (count <= 0)
       {
@@ -227,7 +230,7 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
         "DistributedPixelCache","'%s'",hostname);
       return(-1);
     }
-  status=connect(client_socket,result->ai_addr,result->ai_addrlen);
+  status=connect(client_socket,result->ai_addr,(socklen_t) result->ai_addrlen);
   if (status == -1)
     {
       CLOSE_SOCKET(client_socket);
@@ -448,8 +451,8 @@ static inline MagickOffsetType dpc_send(int file,const MagickSizeType length,
   count=0;
   for (i=0; i < (MagickOffsetType) length; i+=count)
   {
-    count=(MagickOffsetType) send(file,CHAR_TYPE_CAST message+i,(size_t) MagickMin(length-i,
-      (MagickSizeType) SSIZE_MAX),MSG_NOSIGNAL);
+    count=(MagickOffsetType) send(file,CHAR_TYPE_CAST message+i,(LENGTH_TYPE)
+      MagickMin(length-i,(MagickSizeType) SSIZE_MAX),MSG_NOSIGNAL);
     if (count <= 0)
       {
         count=0;
@@ -936,7 +939,7 @@ MagickExport void DistributePixelCacheServer(const int port,
         CLOSE_SOCKET(server_socket);
         continue;
       }
-    status=bind(server_socket,p->ai_addr,p->ai_addrlen);
+    status=bind(server_socket,p->ai_addr,(socklen_t) p->ai_addrlen);
     if (status == -1)
       {
         CLOSE_SOCKET(server_socket);

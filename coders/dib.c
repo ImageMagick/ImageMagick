@@ -540,7 +540,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (dib_info.bits_per_pixel != 24) && (dib_info.bits_per_pixel != 32))
     ThrowReaderException(CorruptImageError,"UnrecognizedBitsPerPixel");
   if (dib_info.bits_per_pixel < 16 &&
-      dib_info.number_colors > (1UL << dib_info.bits_per_pixel))
+      dib_info.number_colors > (size_t) (1UL << dib_info.bits_per_pixel))
     ThrowReaderException(CorruptImageError,"UnrecognizedNumberOfColors");
   if ((dib_info.compression == 1) && (dib_info.bits_per_pixel != 8))
     ThrowReaderException(CorruptImageError,"UnrecognizedBitsPerPixel");

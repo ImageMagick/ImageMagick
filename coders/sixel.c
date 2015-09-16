@@ -817,7 +817,7 @@ static MagickBooleanType sixel_encode_impl(unsigned char *pixels, size_t width,s
                 x = 0;
             }
 
-            x = sixel_put_node(context, x, np, ncolors, keycolor);
+            x = sixel_put_node(context, x, np, (int) ncolors, keycolor);
             sixel_node_del(context, np);
             np = context->node_top;
 
@@ -827,7 +827,7 @@ static MagickBooleanType sixel_encode_impl(unsigned char *pixels, size_t width,s
                     continue;
                 }
 
-                x = sixel_put_node(context, x, np, ncolors, keycolor);
+                x = sixel_put_node(context, x, np, (int) ncolors, keycolor);
                 sixel_node_del(context, np);
                 np = context->node_top;
             }
