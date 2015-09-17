@@ -1,6 +1,8 @@
 2015-09-17  6.9.2-2 Dirk Lemstra <dirk@lem.....org>
   * Added extra checks to avoid out of bounds error when parsing the 8bim 
-    profile. (reference https://github.com/ImageMagick/ImageMagick/issues/31).
+    profile (reference https://github.com/ImageMagick/ImageMagick/issues/31).
+  * Fixed size of memory allocation in RLE coder to avoid segfault (reference
+    https://github.com/ImageMagick/ImageMagick/issues/32).
 
 2015-09-16  6.9.2-2 Cristy  <quetzlzacatenango@image...>
   * Add Bootstrap MIT license to ImageMagick web CSS and JS.
