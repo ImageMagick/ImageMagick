@@ -1532,7 +1532,8 @@ static void GetProfilesFromResourceBlock(Image *image,
       break;
     p=ReadResourceLong(p,&value);
     count=(ssize_t) value;
-    if ((p > (datum+length-count)) || (count > (ssize_t) length))
+    if ((p > (datum+length-count)) || (count > (ssize_t) length) ||
+        (count < 0))
       break;
     switch (id)
     {
@@ -1845,13 +1846,13 @@ static MagickBooleanType Sync8BimProfile(Image *image,StringInfo *profile)
       return(MagickFalse);
     id=ReadProfileMSBShort(&p,&length);
     count=(ssize_t) ReadProfileByte(&p,&length);
-    if (count > (ssize_t) length)
+    if ((count > (ssize_t) length) || (count < 0))
       return(MagickFalse);
     p+=count;
     if ((*p & 0x01) == 0)
       (void) ReadProfileByte(&p,&length);
     count=(ssize_t) ReadProfileMSBLong(&p,&length);
-    if (count > (ssize_t) length)
+    if ((count > (ssize_t) length) || (count < 0))
       return(MagickFalse);
     if ((id == 0x3ED) && (count == 16))
       {
