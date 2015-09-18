@@ -4554,6 +4554,19 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
       return((Image *) NULL);
     }
 
+  if (color_image_info == (ImageInfo *) NULL)
+    {
+      assert(color_image == (Image *) NULL);
+      assert(alpha_image == (Image *) NULL);
+      return((Image *) NULL);
+    }
+
+  if (color_image == (Image *) NULL)
+    {
+      assert(alpha_image == (Image *) NULL);
+      return((Image *) NULL);
+    }
+
   (void) SeekBlob(color_image,0,SEEK_SET);
 
   if (logging != MagickFalse)
