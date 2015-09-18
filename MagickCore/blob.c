@@ -40,6 +40,10 @@
 /*
   Include declarations.
 */
+#ifdef __VMS
+#include  <types.h>
+#include  <mman.h>
+#endif
 #include "MagickCore/studio.h"
 #include "MagickCore/blob.h"
 #include "MagickCore/blob-private.h"

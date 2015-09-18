@@ -32,8 +32,8 @@ extern "C" {
 
 #if !defined(_MAGICKCORE_CONFIG_H)
 # define _MAGICKCORE_CONFIG_H
-# include "MagickCore/magick-config.h"
-#if defined(MAGICKCORE__FILE_OFFSET_BITS) && !defined(_FILE_OFFSET_BITS)
+#include "MagickCore/magick-config.h"
+# if defined(MAGICKCORE__FILE_OFFSET_BITS) && !defined(_FILE_OFFSET_BITS)
 # define _FILE_OFFSET_BITS MAGICKCORE__FILE_OFFSET_BITS
 #endif
 #if defined(_magickcore_const) && !defined(const)
@@ -234,6 +234,9 @@ extern int vsnprintf(char *,size_t,const char *,va_list);
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
 # include "MagickCore/nt-base.h"
 #endif
+#ifdef __VMS
+# include "MagickCore/vms.h"
+#endif
 
 #undef HAVE_CONFIG_H
 #undef gamma
@@ -244,7 +247,7 @@ extern int vsnprintf(char *,size_t,const char *,va_list);
 /*
   Review these platform specific definitions.
 */
-#if defined(MAGICKCORE_POSIX_SUPPORT) && !defined(__OS2__)
+#if defined(MAGICKCORE_POSIX_SUPPORT) &&  !( defined(__OS2__) || defined( vms ) )
 # define DirectorySeparator  "/"
 # define DirectoryListSeparator  ':'
 # define EditorOptions  " -title \"Edit Image Comment\" -e vi"
@@ -255,6 +258,21 @@ extern int vsnprintf(char *,size_t,const char *,va_list);
 # define ReadCommandlLine(argc,argv)
 # define SetNotifyHandlers
 #else
+# ifdef __VMS
+#  define X11_APPLICATION_PATH  "decw$system_defaults:"
+#  define DirectorySeparator  ""
+#  define DirectoryListSeparator  ';'
+#  define EditorOptions  ""
+#  define Exit  exit
+#  define IsBasenameSeparator(c) \
+  (((c) == ']') || ((c) == ':') || ((c) == '/') ? MagickTrue : MagickFalse)
+#  define MAGICKCORE_LIBRARY_PATH  "sys$login:"
+#  define MAGICKCORE_SHARE_PATH  "sys$login:"
+#  define X11_PREFERENCES_PATH  "decw$user_defaults:"
+#  define ProcessPendingEvents(text)
+#  define ReadCommandlLine(argc,argv)
+#  define SetNotifyHandlers
+# endif
 # if defined(__OS2__)
 #   define DirectorySeparator  "\\"
 #   define DirectoryListSeparator  ';'

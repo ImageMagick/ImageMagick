@@ -36,6 +36,10 @@
 %
 */
 
+#ifdef __VMS
+#define JPEG_SUPPORT 1
+#endif
+
 /*
   Include declarations.
 */
@@ -566,6 +570,14 @@ static void TIFFGetProfiles(TIFF *tiff,Image *image,MagickBooleanType ping,
 
   unsigned char
     *profile;
+
+   unsigned long* tietz_tmp;
+
+   length=0;
+   if (TIFFGetField(tiff,37706,&length,&tietz_tmp) == 1)
+     image->tietz_offset = tietz_tmp[0];
+   else
+     image->tietz_offset = 0;
 
   length=0;
   if (ping == MagickFalse)

@@ -314,6 +314,9 @@ struct _Image
   ProfileInfo
     *generic_profile;
 
+  long
+    tietz_offset;
+
   void
     *properties,       /* general settings, to save with image */
     *artifacts;        /* general operational/coder settings, not saved */

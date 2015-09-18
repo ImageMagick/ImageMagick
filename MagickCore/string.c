@@ -60,6 +60,9 @@
 /*
   static declarations.
 */
+#ifdef __VMS
+#define asciimap AsciiMap
+#endif
 #if !defined(MAGICKCORE_HAVE_STRCASECMP) || !defined(MAGICKCORE_HAVE_STRNCASECMP)
 static const unsigned char
   AsciiMap[] =
