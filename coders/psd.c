@@ -1697,6 +1697,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read image header.
   */
+  image->endian=MSBEndian;
   count=ReadBlob(image,4,(unsigned char *) psd_info.signature);
   psd_info.version=ReadBlobMSBShort(image);
   if ((count == 0) || (LocaleNCompare(psd_info.signature,"8BPS",4) != 0) ||
@@ -1854,7 +1855,6 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           "  read composite only");
       skip_layers=MagickTrue;
     }
-  image->endian=MSBEndian;
   if (length == 0)
     {
       if (image->debug != MagickFalse)
