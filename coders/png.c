@@ -4603,6 +4603,21 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
   if (color_image != (Image *) NULL)
     (void) CloseBlob(color_image);
 
+  if (color_image_info == (ImageInfo *) NULL)
+    {
+      assert(color_image == (Image *) NULL);
+      assert(alpha_image == (Image *) NULL);
+      return((Image *) NULL);
+    }
+
+  if (color_image == (Image *) NULL)
+    {
+      assert(alpha_image == (Image *) NULL);
+      return((Image *) NULL);
+    }
+
+  (void) SeekBlob(color_image,0,SEEK_SET);
+
   if (logging != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
       "    Reading jng_image from color_blob.");
