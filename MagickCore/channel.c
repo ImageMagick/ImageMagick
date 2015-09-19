@@ -1217,7 +1217,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       }
       image_view=DestroyCacheView(image_view);
       image->alpha_trait=image->background_color.alpha_trait;
-      return(status);
+      break;
     }
     case SetAlphaChannel:
     {
