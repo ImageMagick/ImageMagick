@@ -47,7 +47,7 @@ const char* accelerateKernels =
   STRINGIFY(
      typedef enum
      {
-       UndefinedChannel,
+       UndefinedChannel = 0x0000,
        RedChannel = 0x0001,
        GrayChannel = 0x0001,
        CyanChannel = 0x0001,
@@ -55,22 +55,28 @@ const char* accelerateKernels =
        MagentaChannel = 0x0002,
        BlueChannel = 0x0004,
        YellowChannel = 0x0004,
-       AlphaChannel = 0x0008,
-       OpacityChannel = 0x0008,
-       MatteChannel = 0x0008,     /* deprecated */
-       BlackChannel = 0x0020,
-       IndexChannel = 0x0020,
+       BlackChannel = 0x0008,
+       AlphaChannel = 0x0010,
+       OpacityChannel = 0x0010,
+       IndexChannel = 0x0020,             /* Color Index Table? */
+       ReadMaskChannel = 0x0040,          /* Pixel is Not Readable? */
+       WriteMaskChannel = 0x0080,         /* Pixel is Write Protected? */
+       MetaChannel = 0x0100,              /* ???? */
        CompositeChannels = 0x002F,
        AllChannels = 0x7ffffff,
        /*
-       Special purpose channel types.
+         Special purpose channel types.
+         FUTURE: are these needed any more - they are more like hacks
+         SyncChannels for example is NOT a real channel but a 'flag'
+         It really says -- "User has not defined channels"
+         Though it does have extra meaning in the "-auto-level" operator
        */
-       TrueAlphaChannel = 0x0040, /* extract actual alpha channel from opacity */
-       RGBChannels = 0x0080,      /* set alpha from  grayscale mask in RGB */
-       GrayChannels = 0x0080,
-       SyncChannels = 0x0100,     /* channels should be modified equally */
-       DefaultChannels = ((AllChannels | SyncChannels) &~ OpacityChannel)
-     } ChannelType;
+       TrueAlphaChannel = 0x0100, /* extract actual alpha channel from opacity */
+       RGBChannels = 0x0200,      /* set alpha from grayscale mask in RGB */
+       GrayChannels = 0x0400,
+       SyncChannels = 0x20000,    /* channels modified as a single unit */
+       DefaultChannels = AllChannels
+     } ChannelType;  /* must correspond to PixelChannel */
   )
 
   OPENCL_IF((MAGICKCORE_QUANTUM_DEPTH == 8))
@@ -142,7 +148,7 @@ const char* accelerateKernels =
     }
   )
 
-  OPENCL_DEFINE(GetPixelAlpha(pixel),(QuantumRange-(pixel).w))
+  OPENCL_DEFINE(GetPixelAlpha(pixel),pixel.w)
 
   STRINGIFY(
   typedef enum
@@ -209,27 +215,27 @@ const char* accelerateKernels =
 
   STRINGIFY(
 
-  inline CLQuantum getBlue(CLPixelType p)		    { return p.x; }
-  inline void setBlue(CLPixelType* p, CLQuantum value)	    { (*p).x = value; }
-  inline float getBlueF4(float4 p)	                    { return p.x; }
-  inline void setBlueF4(float4* p, float value)             { (*p).x = value; }
+  inline CLQuantum getBlue(CLPixelType p)               { return p.x; }
+  inline void setBlue(CLPixelType* p, CLQuantum value)  { (*p).x = value; }
+  inline float getBlueF4(float4 p)                      { return p.x; }
+  inline void setBlueF4(float4* p, float value)         { (*p).x = value; }
 
-  inline CLQuantum getGreen(CLPixelType p)		    { return p.y; }
-  inline void setGreen(CLPixelType* p, CLQuantum value)	    { (*p).y = value; }
-  inline float getGreenF4(float4 p)			    { return p.y; }
-  inline void setGreenF4(float4* p, float value)	    { (*p).y = value; }
+  inline CLQuantum getGreen(CLPixelType p)              { return p.y; }
+  inline void setGreen(CLPixelType* p, CLQuantum value) { (*p).y = value; }
+  inline float getGreenF4(float4 p)                     { return p.y; }
+  inline void setGreenF4(float4* p, float value)        { (*p).y = value; }
 
-  inline CLQuantum getRed(CLPixelType p)		    { return p.z; }
-  inline void setRed(CLPixelType* p, CLQuantum value)	    { (*p).z = value; }
-  inline float getRedF4(float4 p)			    { return p.z; }
-  inline void setRedF4(float4* p, float value)	            { (*p).z = value; }
+  inline CLQuantum getRed(CLPixelType p)                { return p.z; }
+  inline void setRed(CLPixelType* p, CLQuantum value)   { (*p).z = value; }
+  inline float getRedF4(float4 p)                       { return p.z; }
+  inline void setRedF4(float4* p, float value)          { (*p).z = value; }
 
-  inline CLQuantum getOpacity(CLPixelType p)		    { return p.w; }
-  inline void setOpacity(CLPixelType* p, CLQuantum value)   { (*p).w = value; }
-  inline float getOpacityF4(float4 p)			    { return p.w; }
-  inline void setOpacityF4(float4* p, float value)          { (*p).w = value; }
+  inline CLQuantum getAlpha(CLPixelType p)              { return p.w; }
+  inline void setAlpha(CLPixelType* p, CLQuantum value) { (*p).w = value; }
+  inline float getAlphaF4(float4 p)                     { return p.w; }
+  inline void setAlphaF4(float4* p, float value)        { (*p).w = value; }
 
-  inline void setGray(CLPixelType* p, CLQuantum value)	    { (*p).z = value; (*p).y = value; (*p).x = value; }
+  inline void setGray(CLPixelType* p, CLQuantum value)  { (*p).z = value; (*p).y = value; (*p).x = value; }
 
   inline float GetPixelIntensity(const int method, const int colorspace, CLPixelType p)
   {
@@ -400,7 +406,7 @@ const char* accelerateKernels =
       int filterIndex = 0;
       float4 sum = (float4)0.0f;
       float gamma = 0.0f;
-      if (((channel & OpacityChannel) == 0) || (matte == 0)) {
+      if (((channel & AlphaChannel) == 0) || (matte == 0)) {
         int cacheIndexY = get_local_id(1);
         for (int j = 0; j < filterHeight; j++) {
           int cacheIndexX = get_local_id(0);
@@ -427,7 +433,7 @@ const char* accelerateKernels =
           for (int i = 0; i < filterWidth; i++) {
 
             CLPixelType p = pixelLocalCache[cacheIndexY*cachedAreaDimen.x + cacheIndexX];
-            float alpha = QuantumScale*(QuantumRange-p.w);
+            float alpha = QuantumScale*p.w;
             float f = filterCache[filterIndex];
             float g = alpha * f;
 
@@ -449,7 +455,7 @@ const char* accelerateKernels =
       outputPixel.x = ClampToQuantum(sum.x);
       outputPixel.y = ClampToQuantum(sum.y);
       outputPixel.z = ClampToQuantum(sum.z);
-      outputPixel.w = ((channel & OpacityChannel)!=0)?ClampToQuantum(sum.w):input[imageIndex.y * imageWidth + imageIndex.x].w;
+      outputPixel.w = ((channel & AlphaChannel)!=0)?ClampToQuantum(sum.w):input[imageIndex.y * imageWidth + imageIndex.x].w;
 
       output[imageIndex.y * imageWidth + imageIndex.x] = outputPixel;
     }
@@ -481,7 +487,7 @@ const char* accelerateKernels =
       int filterIndex = 0;
       float4 sum = (float4)0.0f;
       float gamma = 0.0f;
-      if (((channel & OpacityChannel) == 0) || (matte == 0)) {
+      if (((channel & AlphaChannel) == 0) || (matte == 0)) {
         for (int j = 0; j < filterHeight; j++) {
           int2 inputPixelIndex;
           inputPixelIndex.y = imageIndex.y - midFilterDimen.y + j;
@@ -515,7 +521,7 @@ const char* accelerateKernels =
             inputPixelIndex.x = ClampToCanvas(inputPixelIndex.x, imageWidth);
         
             CLPixelType p = input[inputPixelIndex.y * imageWidth + inputPixelIndex.x];
-            float alpha = QuantumScale*(QuantumRange-p.w);
+            float alpha = QuantumScale*p.w;
             float f = filter[filterIndex];
             float g = alpha * f;
 
@@ -538,7 +544,7 @@ const char* accelerateKernels =
       outputPixel.x = ClampToQuantum(sum.x);
       outputPixel.y = ClampToQuantum(sum.y);
       outputPixel.z = ClampToQuantum(sum.z);
-      outputPixel.w = ((channel & OpacityChannel)!=0)?ClampToQuantum(sum.w):input[imageIndex.y * imageWidth + imageIndex.x].w;
+      outputPixel.w = ((channel & AlphaChannel)!=0)?ClampToQuantum(sum.w):input[imageIndex.y * imageWidth + imageIndex.x].w;
 
       output[imageIndex.y * imageWidth + imageIndex.x] = outputPixel;
     }
@@ -677,7 +683,7 @@ const char* accelerateKernels =
 
         uint ePos;
         CLPixelType oValue, eValue;
-        CLQuantum red, green, blue, opacity;
+        CLQuantum red, green, blue, alpha;
 
         //read from global
         oValue=im[c];
@@ -712,18 +718,18 @@ const char* accelerateKernels =
           }
         }
 
-        if ((channel & OpacityChannel) != 0)
+        if ((channel & AlphaChannel) != 0)
         {
-          if (getOpacityF4(white) != getOpacityF4(black))
+          if (getAlphaF4(white) != getAlphaF4(black))
           {
-            ePos = ScaleQuantumToMap(getOpacity(oValue)); 
+            ePos = ScaleQuantumToMap(getAlpha(oValue)); 
             eValue = stretch_map[ePos];
-            opacity = getOpacity(eValue);
+            alpha = getAlpha(eValue);
           }
         }
 
         //write back
-        im[c]=(CLPixelType)(blue, green, red, opacity);
+        im[c]=(CLPixelType)(blue, green, red, alpha);
 
       }
     )
@@ -744,7 +750,7 @@ const char* accelerateKernels =
 
         uint ePos;
         CLPixelType oValue, eValue;
-        CLQuantum red, green, blue, opacity;
+        CLQuantum red, green, blue, alpha;
 
         //read from global
         oValue=im[c];
@@ -762,12 +768,12 @@ const char* accelerateKernels =
             ePos = ScaleQuantumToMap(getBlue(oValue)); 
             eValue = equalize_map[ePos];
             blue = getRed(eValue);
-            ePos = ScaleQuantumToMap(getOpacity(oValue)); 
+            ePos = ScaleQuantumToMap(getAlpha(oValue)); 
             eValue = equalize_map[ePos];
-            opacity = getRed(eValue);
+            alpha = getRed(eValue);
  
             //write back
-            im[c]=(CLPixelType)(blue, green, red, opacity);
+            im[c]=(CLPixelType)(blue, green, red, alpha);
           }
 
         }
@@ -1603,7 +1609,7 @@ const char* accelerateKernels =
         result.w = (float)bias.w;
         float normalize = 0.0f;
 
-        if (((channel & OpacityChannel) == 0) || (matte == 0)) {
+        if (((channel & AlphaChannel) == 0) || (matte == 0)) {
           for (unsigned int i=0; i<cossin_theta_size; i+=step)
           {
             result += convert_float4(im[
@@ -1622,7 +1628,7 @@ const char* accelerateKernels =
               ClampToCanvas(blurCenter.x+center_x*cos_theta[i]-center_y*sin_theta[i]+0.5f,columns)+ 
                 ClampToCanvas(blurCenter.y+center_x*sin_theta[i]+center_y*cos_theta[i]+0.5f, rows)*columns]);
             
-            float alpha = (float)(QuantumScale*(QuantumRange-p.w));
+            float alpha = (float)(QuantumScale*p.w);
             result.x += alpha * p.x;
             result.y += alpha * p.y;
             result.z += alpha * p.z;
@@ -1696,7 +1702,7 @@ const char* accelerateKernels =
       float clampedBrightness = ClampToQuantum(QuantumRange*brightness);
       float clamped_t = ClampToQuantum(QuantumRange*t);
       float clamped_p = ClampToQuantum(QuantumRange*p);
-      float clamped_q = ClampToQuantum(QuantumRange*q);     
+      float clamped_q = ClampToQuantum(QuantumRange*q);
       int ih = (int)h;
       setRed(&rgb, (ih == 1)?clamped_q:
         (ih == 2 || ih == 3)?clamped_p:
@@ -2888,7 +2894,7 @@ uint MWC64X_NextUint(mwc64x_state_t *s)
         sigma=gamma*cospi((2.0f*beta));
         tau=gamma*sinpi((2.0f*beta));
         noise=(float)(pixel+sqrt((float) pixel)*SigmaGaussian*sigma+
-                      QuantumRange*TauGaussian*tau);        
+                      QuantumRange*TauGaussian*tau);
         break;
       }
 
@@ -2997,8 +3003,8 @@ uint MWC64X_NextUint(mwc64x_state_t *s)
 			  setBlue(&p,ClampToQuantum(mwcGenerateDifferentialNoise(&rng,getBlue(p),noise_type,attenuate)));
 			}
 
-			if ((channel & OpacityChannel) != 0) {
-			  setOpacity(&p,ClampToQuantum(mwcGenerateDifferentialNoise(&rng,getOpacity(p),noise_type,attenuate)));
+			if ((channel & AlphaChannel) != 0) {
+			  setAlpha(&p,ClampToQuantum(mwcGenerateDifferentialNoise(&rng,getAlpha(p),noise_type,attenuate)));
 			}
 
 			filteredImage[pos] = p;
@@ -3033,7 +3039,7 @@ uint MWC64X_NextUint(mwc64x_state_t *s)
       pixel.z = (float)bias.z;
       pixel.w = (float)bias.w;
 
-      if (((channel & OpacityChannel) == 0) || (matte == 0)) {
+      if (((channel & AlphaChannel) == 0) || (matte == 0)) {
         
         for (int i = 0; i < width; i++) {
           // only support EdgeVirtualPixelMethod through ClampToCanvas
@@ -3068,7 +3074,7 @@ uint MWC64X_NextUint(mwc64x_state_t *s)
 
           CLPixelType samplePixelValue = input[ samplePixel.y * imageWidth + samplePixel.x];
 
-          float alpha = QuantumScale*(QuantumRange-samplePixelValue.w);
+          float alpha = QuantumScale*samplePixelValue.w;
           float k = filter[i];
           pixel.x = pixel.x + k * alpha * samplePixelValue.x;
           pixel.y = pixel.y + k * alpha * samplePixelValue.y;
@@ -3219,10 +3225,10 @@ uint MWC64X_NextUint(mwc64x_state_t *s)
       gamma,
       Sa;
 
-      Sa=1.0f-QuantumScale*getOpacityF4(*p);  /* simplify and speed up equations */
-      Da=1.0f-QuantumScale*getOpacityF4(*q);
+      Sa=QuantumScale*getAlphaF4(*p);  /* simplify and speed up equations */
+      Da=QuantumScale*getAlphaF4(*q);
       gamma=RoundToUnity(Sa+Da-Sa*Da); /* over blend, as per SVG doc */
-      setOpacityF4(composite, QuantumRange*(1.0-gamma));
+      setAlphaF4(composite, QuantumRange*gamma);
       gamma=QuantumRange/(fabs(gamma) < MagickEpsilon ? MagickEpsilon : gamma);
       setRedF4(composite,gamma*ColorDodge(QuantumScale*getRedF4(*p)*Sa,Sa,QuantumScale*
         getRedF4(*q)*Da,Da));
@@ -3247,10 +3253,10 @@ uint MWC64X_NextUint(mwc64x_state_t *s)
       /*
         Add two pixels with the given opacities.
       */
-      Sa=1.0-QuantumScale*alpha;
-      Da=1.0-QuantumScale*beta;
+      Sa=QuantumScale*alpha;
+      Da=QuantumScale*beta;
       gamma=RoundToUnity(Sa+Da);  /* 'Plus' blending -- not 'Over' blending */
-      setOpacityF4(composite,(float) QuantumRange*(1.0-gamma));
+      setAlphaF4(composite,(float) QuantumRange*gamma);
       gamma=PerceptibleReciprocal(gamma);
       setRedF4(composite,gamma*(Sa*getRedF4(*p)+Da*getRedF4(*q)));
       setGreenF4(composite,gamma*(Sa*getGreenF4(*p)+Da*getGreenF4(*q)));
@@ -3263,9 +3269,9 @@ uint MWC64X_NextUint(mwc64x_state_t *s)
       const float alpha,const float4 *q,
       const float beta,float4 *composite)
     {
-      MagickPixelCompositePlus(p,(float) (QuantumRange-alpha*
-      (QuantumRange-getOpacityF4(*p))),q,(float) (QuantumRange-beta*
-      (QuantumRange-getOpacityF4(*q))),composite);
+      MagickPixelCompositePlus(p,(float) (alpha*
+      (getAlphaF4(*p))),q,(float) (beta*
+      (getAlphaF4(*q))),composite);
     }
   )
   
@@ -3307,12 +3313,12 @@ uint MWC64X_NextUint(mwc64x_state_t *s)
       setBlueF4(&source,getBlue(compositePixel));
 
       if (matte != 0) {
-        setOpacityF4(&destination,getOpacity(inputPixel));
-        setOpacityF4(&source,getOpacity(compositePixel));
+        setAlphaF4(&destination,getAlpha(inputPixel));
+        setAlphaF4(&source,getAlpha(compositePixel));
       }
       else {
-        setOpacityF4(&destination,0.0f);
-        setOpacityF4(&source,0.0f);
+        setAlphaF4(&destination,0.0f);
+        setAlphaF4(&source,0.0f);
       }
 
       float4 composite=destination;
@@ -3335,7 +3341,7 @@ uint MWC64X_NextUint(mwc64x_state_t *s)
       setRed(&outputPixel, ClampToQuantum(getRedF4(composite)));
       setGreen(&outputPixel, ClampToQuantum(getGreenF4(composite)));
       setBlue(&outputPixel, ClampToQuantum(getBlueF4(composite)));
-      setOpacity(&outputPixel, ClampToQuantum(getOpacityF4(composite)));
+      setAlpha(&outputPixel, ClampToQuantum(getAlphaF4(composite)));
       image[index.y*imageWidth+index.x] = outputPixel;
     }
   )   

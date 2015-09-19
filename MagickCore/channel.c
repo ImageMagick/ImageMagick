@@ -36,7 +36,7 @@
 %
 %
 */
-
+
 /*
   Include declarations.
 */
@@ -60,7 +60,7 @@
 #include "MagickCore/token.h"
 #include "MagickCore/utility.h"
 #include "MagickCore/version.h"
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -435,7 +435,7 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
     }
   return(GetFirstImageInList(destination_image));
 }
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -591,7 +591,7 @@ MagickExport Image *CombineImages(const Image *image,
     combine_image=DestroyImage(combine_image);
   return(combine_image);
 }
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -624,7 +624,7 @@ MagickExport MagickBooleanType GetImageAlphaChannel(const Image *image)
   assert(image->signature == MagickCoreSignature);
   return(image->alpha_trait != UndefinedPixelTrait ? MagickTrue : MagickFalse);
 }
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -769,12 +769,12 @@ MagickExport Image *SeparateImage(const Image *image,
   }
   separate_view=DestroyCacheView(separate_view);
   image_view=DestroyCacheView(image_view);
-  (void) SetImageChannelMask(separate_image,GrayChannel);
+  (void) SetImageChannelMask(separate_image,DefaultChannels);
   if (status == MagickFalse)
     separate_image=DestroyImage(separate_image);
   return(separate_image);
 }
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -829,7 +829,7 @@ MagickExport Image *SeparateImages(const Image *image,ExceptionInfo *exception)
     images=SeparateImage(image,UndefinedChannel,exception);
   return(images);
 }
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1217,7 +1217,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       }
       image_view=DestroyCacheView(image_view);
       image->alpha_trait=image->background_color.alpha_trait;
-      return(status);
+      break;
     }
     case SetAlphaChannel:
     {
