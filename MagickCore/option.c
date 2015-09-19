@@ -2426,6 +2426,7 @@ MagickExport MagickBooleanType IsOptionMember(const char *option,
   if (option_list == (char **) NULL)
     return(MagickFalse);
   member=MagickFalse;
+  option_list[0]=DestroyString(option_list[0]);
   for (i=1; i < (ssize_t) number_options; i++)
   {
     if ((*option_list[i] == '!') &&
