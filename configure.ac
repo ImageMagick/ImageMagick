@@ -31,7 +31,7 @@ m4_define([magick_patchlevel_version], [0])
 m4_define([magick_version],
           [magick_major_version.magick_minor_version.magick_micro_version-magick_patchlevel_version])
 m4_define([magick_git_revision], esyscmd([sh -c "(gitversion .) | awk '{ print \$1 }' | tr -d '\n'"]))
-m4_define([magick_tar_name],[ImageMagick.magick_major_version])
+m4_define([magick_tar_name],[ImageMagick])
 
 # ==============================================================================
 # Initalize Automake

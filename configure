@@ -589,7 +589,7 @@ MAKEFLAGS=
 
 # Identity of this package.
 PACKAGE_NAME='ImageMagick'
-PACKAGE_TARNAME='ImageMagick.7'
+PACKAGE_TARNAME='ImageMagick'
 PACKAGE_VERSION='7.0.0-0'
 PACKAGE_STRING='ImageMagick 7.0.0-0'
 PACKAGE_BUGREPORT='http://www.imagemagick.org'
@@ -1857,7 +1857,7 @@ Fine tuning of the installation directories:
   --infodir=DIR           info documentation [DATAROOTDIR/info]
   --localedir=DIR         locale-dependent data [DATAROOTDIR/locale]
   --mandir=DIR            man documentation [DATAROOTDIR/man]
-  --docdir=DIR            documentation root [DATAROOTDIR/doc/ImageMagick.7]
+  --docdir=DIR            documentation root [DATAROOTDIR/doc/ImageMagick]
   --htmldir=DIR           html documentation [DOCDIR]
   --dvidir=DIR            dvi documentation [DOCDIR]
   --pdfdir=DIR            pdf documentation [DOCDIR]
@@ -4180,7 +4180,7 @@ fi
 
 
 # Define the identity of the package.
- PACKAGE='ImageMagick.7'
+ PACKAGE='ImageMagick'
  VERSION='7.0.0-0'
 
 
@@ -4379,7 +4379,7 @@ MAGICK_PATCHLEVEL_VERSION=0
 
 MAGICK_VERSION=7.0.0-0
 
-MAGICK_GIT_REVISION=16930:a3b2030:20150916
+MAGICK_GIT_REVISION=16958:6e48959:20150919
 
 
 # Substitute library versioning
