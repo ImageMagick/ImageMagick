@@ -9,6 +9,8 @@
   * Use modern idiom for autoconf
     Fix a forgotten dir when regenerating html doc (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=28363).
+  * The -colorspace gray option no long leaves a ghostly shadow (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=28350).
 
 2015-09-14  6.9.2-1 Cristy  <quetzlzacatenango@image...>
   * New version 6.9.2-1, GIT revision 10201:5879612:20150913.
