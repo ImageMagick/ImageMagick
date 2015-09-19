@@ -2223,7 +2223,6 @@ MagickExport MagickRealType GetPixelInfoIntensity(const Image *restrict image,
 {
   MagickRealType
     blue,
-    gamma,
     green,
     red,
     intensity;
@@ -2232,16 +2231,11 @@ MagickExport MagickRealType GetPixelInfoIntensity(const Image *restrict image,
     method;
 
   method=Rec709LumaPixelIntensityMethod;
-  gamma=1.0;
   if (image != (const Image *) NULL)
-    {
-      method=image->intensity;
-      if (image->alpha_trait != UndefinedPixelTrait)
-        gamma=PerceptibleReciprocal(QuantumScale*pixel->alpha);
-    }
-  red=gamma*pixel->red;
-  green=gamma*pixel->green;
-  blue=gamma*pixel->blue;
+    method=image->intensity;
+  red=pixel->red;
+  green=pixel->green;
+  blue=pixel->blue;
   switch (method)
   {
     case AveragePixelIntensityMethod:
@@ -2363,17 +2357,13 @@ MagickExport MagickRealType GetPixelIntensity(const Image *restrict image,
 {
   MagickRealType
     blue,
-    gamma,
     green,
     red,
     intensity;
 
-  gamma=1.0;
-  if (image->alpha_trait == BlendPixelTrait)
-    gamma=PerceptibleReciprocal(QuantumScale*GetPixelAlpha(image,pixel));
-  red=gamma*GetPixelRed(image,pixel);
-  green=gamma*GetPixelGreen(image,pixel);
-  blue=gamma*GetPixelBlue(image,pixel);
+  red=GetPixelRed(image,pixel);
+  green=GetPixelGreen(image,pixel);
+  blue=GetPixelBlue(image,pixel);
   switch (image->intensity)
   {
     case AveragePixelIntensityMethod:
