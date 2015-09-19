@@ -95,7 +95,11 @@
 #define LENGTH_TYPE int
 #define MAGICKCORE_HAVE_DISTRIBUTE_CACHE
 #else
+#ifdef __VMS
+#define CLOSE_SOCKET(socket) (void) close(socket)
+#else
 #define CLOSE_SOCKET(socket) 
+#endif
 #define HANDLER_RETURN_TYPE  void *
 #define HANDLER_RETURN_VALUE  (void *) NULL
 #define SOCKET_TYPE  int
@@ -1109,7 +1113,11 @@ MagickPrivate MagickBooleanType OpenDistributePixelCache(
   DistributeCacheInfo *server_info,Image *image)
 {
   MagickBooleanType
+#ifdef __VMS
+     status=MagickTrue;
+#else
     status;
+#endif
 
   MagickOffsetType
     count;
@@ -1332,7 +1340,11 @@ MagickPrivate MagickBooleanType RelinquishDistributePixelCache(
   DistributeCacheInfo *server_info)
 {
   MagickBooleanType
+#ifdef __VMS
+     status = MagickTrue;
+#else
     status;
+#endif
 
   MagickOffsetType
     count;

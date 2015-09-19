@@ -40,6 +40,10 @@
 /*
   Include declarations.
 */
+#ifdef __VMS
+#include  <types.h>
+#include  <mman.h>
+#endif
 #include "magick/studio.h"
 #include "magick/blob.h"
 #include "magick/blob-private.h"

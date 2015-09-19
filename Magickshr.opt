@@ -1,5 +1,5 @@
-IDENTIFICATION="Magick V6.5"
-GSMATCH=LEQUAL,6,5
+IDENTIFICATION="Magick V6.9"
+GSMATCH=LEQUAL,6,9
 case_sensitive=YES
 symbol_vector=(AcquireImageInfo=PROCEDURE)
 symbol_vector=(AcquireMemory=PROCEDURE)
@@ -209,7 +209,6 @@ symbol_vector=(DestroyMagick=PROCEDURE)
 symbol_vector=(InitializeMagick=PROCEDURE)
 symbol_vector=(ListTypeInfo=PROCEDURE)
 symbol_vector=(SetImageClipMask=PROCEDURE)
-symbol_vector=(StringToDouble=PROCEDURE)
 symbol_vector=(SetImageType=PROCEDURE)
 symbol_vector=(SetImageOpacity=PROCEDURE)
 symbol_vector=(DestroyImageList=PROCEDURE)
@@ -248,4 +247,6 @@ symbol_vector=(GetUserTime=PROCEDURE)
 symbol_vector=(AcquireTimerInfo=PROCEDURE)
 symbol_vector=(DestroyTimerInfo=PROCEDURE)
 symbol_vector=(MagickCommandGenesis=PROCEDURE)
+symbol_vector=(GetImageOption=PROCEDURE)
+symbol_vector=(IsMagickTrue=PROCEDURE)
 sys$share:decw$xlibshr.exe/share

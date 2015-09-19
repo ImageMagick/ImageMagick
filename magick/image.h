@@ -353,6 +353,9 @@ struct _Image
 
   size_t
     duration;       /* Total animation duration sum(delay*iterations) */
+
+  long
+    tietz_offset;
 };
 
 struct _ImageInfo
