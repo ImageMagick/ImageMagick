@@ -3535,7 +3535,8 @@ static Image *ComputeResizeImage(const Image* image,
     *filteredImage;
 
   unsigned int
-    i;
+    i,
+    matte;
 
   void
     *filteredPixels,
@@ -3649,6 +3650,7 @@ static Image *ComputeResizeImage(const Image* image,
 
   xFactor=(float) resizedColumns/(float) image->columns;
   yFactor=(float) resizedRows/(float) image->rows;
+  matte=(image->alpha_trait != UndefinedPixelTrait)?1:0;
   if (xFactor > yFactor)
   {
 
@@ -3660,14 +3662,14 @@ static Image *ComputeResizeImage(const Image* image,
       goto cleanup;
     }
     
-    status = resizeHorizontalFilter(imageBuffer, (unsigned int) image->columns, (unsigned int) image->rows, (image->alpha_trait == UndefinedPixelTrait)?1:0
+    status = resizeHorizontalFilter(imageBuffer, (unsigned int) image->columns, (unsigned int) image->rows, matte
           , tempImageBuffer, (unsigned int) resizedColumns, (unsigned int) image->rows
           , resizeFilter, cubicCoefficientsBuffer
           , xFactor, clEnv, queue, exception);
     if (status != MagickTrue)
       goto cleanup;
     
-    status = resizeVerticalFilter(tempImageBuffer, (unsigned int) resizedColumns, (unsigned int) image->rows, (image->alpha_trait == UndefinedPixelTrait)?1:0
+    status = resizeVerticalFilter(tempImageBuffer, (unsigned int) resizedColumns, (unsigned int) image->rows, matte
        , filteredImageBuffer, (unsigned int) resizedColumns, (unsigned int) resizedRows
        , resizeFilter, cubicCoefficientsBuffer
        , yFactor, clEnv, queue, exception);
@@ -3684,14 +3686,14 @@ static Image *ComputeResizeImage(const Image* image,
       goto cleanup;
     }
 
-    status = resizeVerticalFilter(imageBuffer, (unsigned int) image->columns, (unsigned int) image->rows, (image->alpha_trait == UndefinedPixelTrait)?1:0
+    status = resizeVerticalFilter(imageBuffer, (unsigned int) image->columns, (unsigned int) image->rows, matte
        , tempImageBuffer, (unsigned int) image->columns, (unsigned int) resizedRows
        , resizeFilter, cubicCoefficientsBuffer
        , yFactor, clEnv, queue, exception);
     if (status != MagickTrue)
       goto cleanup;
 
-    status = resizeHorizontalFilter(tempImageBuffer, (unsigned int) image->columns, (unsigned int) resizedRows, (image->alpha_trait == UndefinedPixelTrait)?1:0
+    status = resizeHorizontalFilter(tempImageBuffer, (unsigned int) image->columns, (unsigned int) resizedRows, matte
        , filteredImageBuffer, (unsigned int) resizedColumns, (unsigned int) resizedRows
        , resizeFilter, cubicCoefficientsBuffer
        , xFactor, clEnv, queue, exception);
