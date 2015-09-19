@@ -3288,7 +3288,7 @@ static MagickBooleanType resizeVerticalFilter(cl_mem image,
   ExceptionInfo *exception)
 {
   cl_kernel
-    horizontalKernel;
+    verticalKernel;
 
   cl_int clStatus;
 
@@ -3328,7 +3328,7 @@ static MagickBooleanType resizeVerticalFilter(cl_mem image,
     i,
     pixelPerWorkgroup;
 
-  horizontalKernel = NULL;
+  verticalKernel = NULL;
   status = MagickFalse;
 
   /*
@@ -3407,53 +3407,53 @@ RestoreMSCWarning
 
   if (resizeFilterType == SincFastWeightingFunction
     && resizeWindowType == SincFastWeightingFunction)
-    horizontalKernel = AcquireOpenCLKernel(clEnv, MAGICK_OPENCL_ACCELERATE, "ResizeVerticalFilterSinc");
+    verticalKernel = AcquireOpenCLKernel(clEnv, MAGICK_OPENCL_ACCELERATE, "ResizeVerticalFilterSinc");
   else 
-    horizontalKernel = AcquireOpenCLKernel(clEnv, MAGICK_OPENCL_ACCELERATE, "ResizeVerticalFilter");
+    verticalKernel = AcquireOpenCLKernel(clEnv, MAGICK_OPENCL_ACCELERATE, "ResizeVerticalFilter");
 
-  if (horizontalKernel == NULL)
+  if (verticalKernel == NULL)
   {
     (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "AcquireOpenCLKernel failed.", "'%s'", ".");
     goto cleanup;
   }
 
   i = 0;
-  clStatus = clEnv->library->clSetKernelArg(horizontalKernel, i++, sizeof(cl_mem), (void*)&image);
-  clStatus |= clEnv->library->clSetKernelArg(horizontalKernel, i++, sizeof(unsigned int), (void*)&imageColumns);
-  clStatus |= clEnv->library->clSetKernelArg(horizontalKernel, i++, sizeof(unsigned int), (void*)&imageRows);
-  clStatus |= clEnv->library->clSetKernelArg(horizontalKernel, i++, sizeof(unsigned int), (void*)&matte);
-  clStatus |= clEnv->library->clSetKernelArg(horizontalKernel, i++, sizeof(float), (void*)&yFactor);
-  clStatus |= clEnv->library->clSetKernelArg(horizontalKernel, i++, sizeof(cl_mem), (void*)&resizedImage);
+  clStatus = clEnv->library->clSetKernelArg(verticalKernel, i++, sizeof(cl_mem), (void*)&image);
+  clStatus |= clEnv->library->clSetKernelArg(verticalKernel, i++, sizeof(unsigned int), (void*)&imageColumns);
+  clStatus |= clEnv->library->clSetKernelArg(verticalKernel, i++, sizeof(unsigned int), (void*)&imageRows);
+  clStatus |= clEnv->library->clSetKernelArg(verticalKernel, i++, sizeof(unsigned int), (void*)&matte);
+  clStatus |= clEnv->library->clSetKernelArg(verticalKernel, i++, sizeof(float), (void*)&yFactor);
+  clStatus |= clEnv->library->clSetKernelArg(verticalKernel, i++, sizeof(cl_mem), (void*)&resizedImage);
 
-  clStatus |= clEnv->library->clSetKernelArg(horizontalKernel, i++, sizeof(unsigned int), (void*)&resizedColumns);
-  clStatus |= clEnv->library->clSetKernelArg(horizontalKernel, i++, sizeof(unsigned int), (void*)&resizedRows);
+  clStatus |= clEnv->library->clSetKernelArg(verticalKernel, i++, sizeof(unsigned int), (void*)&resizedColumns);
+  clStatus |= clEnv->library->clSetKernelArg(verticalKernel, i++, sizeof(unsigned int), (void*)&resizedRows);
 
-  clStatus |= clEnv->library->clSetKernelArg(horizontalKernel, i++, sizeof(int), (void*)&resizeFilterType);
-  clStatus |= clEnv->library->clSetKernelArg(horizontalKernel, i++, sizeof(int), (void*)&resizeWindowType);
-  clStatus |= clEnv->library->clSetKernelArg(horizontalKernel, i++, sizeof(cl_mem), (void*)&resizeFilterCubicCoefficients);
+  clStatus |= clEnv->library->clSetKernelArg(verticalKernel, i++, sizeof(int), (void*)&resizeFilterType);
+  clStatus |= clEnv->library->clSetKernelArg(verticalKernel, i++, sizeof(int), (void*)&resizeWindowType);
+  clStatus |= clEnv->library->clSetKernelArg(verticalKernel, i++, sizeof(cl_mem), (void*)&resizeFilterCubicCoefficients);
 
   resizeFilterScale = (float) GetResizeFilterScale(resizeFilter);
-  clStatus |= clEnv->library->clSetKernelArg(horizontalKernel, i++, sizeof(float), (void*)&resizeFilterScale);
+  clStatus |= clEnv->library->clSetKernelArg(verticalKernel, i++, sizeof(float), (void*)&resizeFilterScale);
 
   resizeFilterSupport = (float) GetResizeFilterSupport(resizeFilter);
-  clStatus |= clEnv->library->clSetKernelArg(horizontalKernel, i++, sizeof(float), (void*)&resizeFilterSupport);
+  clStatus |= clEnv->library->clSetKernelArg(verticalKernel, i++, sizeof(float), (void*)&resizeFilterSupport);
 
   resizeFilterWindowSupport = (float) GetResizeFilterWindowSupport(resizeFilter);
-  clStatus |= clEnv->library->clSetKernelArg(horizontalKernel, i++, sizeof(float), (void*)&resizeFilterWindowSupport);
+  clStatus |= clEnv->library->clSetKernelArg(verticalKernel, i++, sizeof(float), (void*)&resizeFilterWindowSupport);
 
   resizeFilterBlur = (float) GetResizeFilterBlur(resizeFilter);
-  clStatus |= clEnv->library->clSetKernelArg(horizontalKernel, i++, sizeof(float), (void*)&resizeFilterBlur);
+  clStatus |= clEnv->library->clSetKernelArg(verticalKernel, i++, sizeof(float), (void*)&resizeFilterBlur);
 
 
-  clStatus |= clEnv->library->clSetKernelArg(horizontalKernel, i++, imageCacheLocalMemorySize, NULL);
-  clStatus |= clEnv->library->clSetKernelArg(horizontalKernel, i++, sizeof(int), &numCachedPixels);
-  clStatus |= clEnv->library->clSetKernelArg(horizontalKernel, i++, sizeof(unsigned int), &pixelPerWorkgroup);
-  clStatus |= clEnv->library->clSetKernelArg(horizontalKernel, i++, sizeof(unsigned int), &chunkSize);
+  clStatus |= clEnv->library->clSetKernelArg(verticalKernel, i++, imageCacheLocalMemorySize, NULL);
+  clStatus |= clEnv->library->clSetKernelArg(verticalKernel, i++, sizeof(int), &numCachedPixels);
+  clStatus |= clEnv->library->clSetKernelArg(verticalKernel, i++, sizeof(unsigned int), &pixelPerWorkgroup);
+  clStatus |= clEnv->library->clSetKernelArg(verticalKernel, i++, sizeof(unsigned int), &chunkSize);
   
 
-  clStatus |= clEnv->library->clSetKernelArg(horizontalKernel, i++, pixelAccumulatorLocalMemorySize, NULL);
-  clStatus |= clEnv->library->clSetKernelArg(horizontalKernel, i++, weightAccumulatorLocalMemorySize, NULL);
-  clStatus |= clEnv->library->clSetKernelArg(horizontalKernel, i++, gammaAccumulatorLocalMemorySize, NULL);
+  clStatus |= clEnv->library->clSetKernelArg(verticalKernel, i++, pixelAccumulatorLocalMemorySize, NULL);
+  clStatus |= clEnv->library->clSetKernelArg(verticalKernel, i++, weightAccumulatorLocalMemorySize, NULL);
+  clStatus |= clEnv->library->clSetKernelArg(verticalKernel, i++, gammaAccumulatorLocalMemorySize, NULL);
 
   if (clStatus != CL_SUCCESS)
   {
@@ -3466,7 +3466,7 @@ RestoreMSCWarning
 
   local_work_size[0] = 1;
   local_work_size[1] = workgroupSize;
-  clStatus = clEnv->library->clEnqueueNDRangeKernel(queue, horizontalKernel, 2, NULL, global_work_size, local_work_size, 0, NULL, NULL);
+  clStatus = clEnv->library->clEnqueueNDRangeKernel(queue, verticalKernel, 2, NULL, global_work_size, local_work_size, 0, NULL, NULL);
   if (clStatus != CL_SUCCESS)
   {
     (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
@@ -3479,7 +3479,7 @@ RestoreMSCWarning
 cleanup:
   OpenCLLogException(__FUNCTION__,__LINE__,exception);
 
-  if (horizontalKernel != NULL) RelinquishOpenCLKernel(clEnv, horizontalKernel);
+  if (verticalKernel != NULL) RelinquishOpenCLKernel(clEnv, verticalKernel);
 
   return(status);
 }
