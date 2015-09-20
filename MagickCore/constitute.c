@@ -430,7 +430,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
         if ((image_info->endian == UndefinedEndian) &&
             (GetMagickRawSupport(magick_info) != MagickFalse))
           {
-            size_t
+            unsigned long
               lsb_first;
 
             lsb_first=1;
@@ -1023,7 +1023,7 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
         if ((image_info->endian == UndefinedEndian) &&
             (GetMagickRawSupport(magick_info) != MagickFalse))
           {
-            size_t
+            unsigned long
               lsb_first;
 
             lsb_first=1;

@@ -242,11 +242,11 @@ MagickExport const MimeInfo *GetMimeInfo(const char *filename,
   register ssize_t
     i;
 
-  size_t
-    lsb_first;
-
   ssize_t
     value;
+
+  unsigned long
+    lsb_first;
 
   assert(exception != (ExceptionInfo *) NULL);
   if (IsMimeCacheInstantiated(exception) == MagickFalse)

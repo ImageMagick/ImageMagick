@@ -237,7 +237,6 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
 
   size_t
     bytes_per_pixel,
-    lsb_first,
     max_packets,
     quantum;
 
@@ -247,6 +246,9 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
 
   unsigned char
     *pixels;
+
+  unsigned long
+    lsb_first;
 
   ViffInfo
     viff_info;
