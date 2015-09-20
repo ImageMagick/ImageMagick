@@ -117,7 +117,7 @@ MagickExport SignatureInfo *AcquireSignatureInfo(void)
   SignatureInfo
     *signature_info;
 
-  unsigned int
+  unsigned long
     lsb_first;
 
   signature_info=(SignatureInfo *) AcquireMagickMemory(sizeof(*signature_info));

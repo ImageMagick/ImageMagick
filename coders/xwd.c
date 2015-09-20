@@ -186,12 +186,14 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     pixel;
 
   size_t
-    length,
-    lsb_first;
+    length;
 
   ssize_t
     count,
     y;
+
+  unsigned long
+    lsb_first;
 
   XColor
     *colors;
@@ -687,7 +689,6 @@ static MagickBooleanType WriteXWDImage(const ImageInfo *image_info,Image *image)
     bits_per_pixel,
     bytes_per_line,
     length,
-    lsb_first,
     scanline_pad;
 
   ssize_t
@@ -695,6 +696,9 @@ static MagickBooleanType WriteXWDImage(const ImageInfo *image_info,Image *image)
 
   unsigned char
     *pixels;
+
+  unsigned long
+    lsb_first;
 
   XWDFileHeader
     xwd_info;
