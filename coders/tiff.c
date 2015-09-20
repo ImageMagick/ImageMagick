@@ -571,9 +571,6 @@ static void TIFFGetProfiles(TIFF *tiff,Image *image,MagickBooleanType ping,
   unsigned char
     *profile;
 
-  unsigned long
-    *tietz;
-
   length=0;
   if (ping == MagickFalse)
     {
@@ -609,9 +606,6 @@ static void TIFFGetProfiles(TIFF *tiff,Image *image,MagickBooleanType ping,
   if ((TIFFGetField(tiff,37724,&length,&profile) == 1) &&
       (profile != (unsigned char *) NULL))
     (void) ReadProfile(image,"tiff:37724",profile,(ssize_t) length,exception);
-  image->tietz_offset=0;
-  if (TIFFGetField(tiff,37706,&length,&tietz) == 1)
-    image->tietz_offset=tietz[0];
 }
 
 static void TIFFGetProperties(TIFF *tiff,Image *image,ExceptionInfo *exception)
@@ -622,7 +616,12 @@ static void TIFFGetProperties(TIFF *tiff,Image *image,ExceptionInfo *exception)
 
   uint32
     count,
+    length,
     type;
+
+  unsigned long
+    *tietz;
+
 
   if (TIFFGetField(tiff,TIFFTAG_ARTIST,&text) == 1)
     (void) SetImageProperty(image,"tiff:artist",text,exception);
@@ -686,6 +685,11 @@ static void TIFFGetProperties(TIFF *tiff,Image *image,ExceptionInfo *exception)
       }
       default:
         break;
+    }
+  if (TIFFGetField(tiff,37706,&length,&tietz) == 1)
+    {
+      (void) FormatLocaleString(message,MagickPathExtent,"%lu",tietz[0]);
+      (void) SetImageProperty(image,"tiff:tietz_offset",message,exception);
     }
 }
 
@@ -1240,7 +1244,8 @@ RestoreMSCWarning
       }
       case PHOTOMETRIC_LOGL:
       {
-        (void) SetImageProperty(image,"tiff:photometric","CIE Log2(L)",exception);
+        (void) SetImageProperty(image,"tiff:photometric","CIE Log2(L)",
+          exception);
         break;
       }
       case PHOTOMETRIC_LOGLUV:
@@ -1398,8 +1403,8 @@ RestoreMSCWarning
              &horizontal,&vertical);
            if (tiff_status == 1)
              {
-               (void) FormatLocaleString(sampling_factor,MagickPathExtent,"%dx%d",
-                 horizontal,vertical);
+               (void) FormatLocaleString(sampling_factor,MagickPathExtent,
+                 "%dx%d",horizontal,vertical);
                (void) SetImageProperty(image,"jpeg:sampling-factor",
                  sampling_factor,exception);
                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
