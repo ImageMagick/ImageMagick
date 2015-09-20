@@ -858,7 +858,12 @@ MagickExport MagickBooleanType ExpandFilenames(int *number_arguments,
     vector=(char **) ResizeQuantumMemory(vector,(size_t) *number_arguments+
       count+number_files+1,sizeof(*vector));
     if (vector == (char **) NULL)
-      return(MagickFalse);
+      {
+        for (j=0; j < (ssize_t) number_files; j++)
+          filelist[j]=DestroyString(filelist[j]);
+        filelist=(char **) RelinquishMagickMemory(filelist);
+        return(MagickFalse);
+      }
     for (j=0; j < (ssize_t) number_files; j++)
     {
       option=filelist[j];
