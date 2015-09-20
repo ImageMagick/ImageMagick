@@ -567,9 +567,6 @@ static void TIFFGetProfiles(TIFF *tiff,Image *image,MagickBooleanType ping)
   unsigned char
     *profile;
 
-  unsigned long
-    *tietz;
-
   length=0;
   if (ping == MagickFalse)
     {
@@ -604,9 +601,6 @@ static void TIFFGetProfiles(TIFF *tiff,Image *image,MagickBooleanType ping)
   if ((TIFFGetField(tiff,37724,&length,&profile) == 1) &&
       (profile != (unsigned char *) NULL))
     (void) ReadProfile(image,"tiff:37724",profile,(ssize_t) length);
-  image->tietz_offset=0;
-  if (TIFFGetField(tiff,37706,&length,&tietz) == 1)
-    image->tietz_offset=tietz[0];
 }
 
 static void TIFFGetProperties(TIFF *tiff,Image *image)
@@ -617,7 +611,11 @@ static void TIFFGetProperties(TIFF *tiff,Image *image)
 
   uint32
     count,
+    length,
     type;
+
+  unsigned long
+    *tietz;
 
   if (TIFFGetField(tiff,TIFFTAG_ARTIST,&text) == 1)
     (void) SetImageProperty(image,"tiff:artist",text);
@@ -680,6 +678,11 @@ static void TIFFGetProperties(TIFF *tiff,Image *image)
       }
       default:
         break;
+    }
+  if (TIFFGetField(tiff,37706,&length,&tietz) == 1)
+    {
+      (void) FormatLocaleString(message,MaxTextExtent,"%lu",tietz[0]);
+      (void) SetImageProperty(image,"tiff:tietz_offset",message);
     }
 }
 
