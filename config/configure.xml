@@ -18,7 +18,7 @@
   <configure name="DEFS" value="-DHAVE_CONFIG_H"/>
   <configure name="DELEGATES" value="bzlib djvu mpeg fftw fpx fontconfig freetype jbig jng jpeg lcms lzma openexr pango png ps tiff webp wmf x xml zlib"/>
   <configure name="DISTCHECK_CONFIG_FLAGS" value=" --disable-deprecated  --with-quantum-depth=16  --with-jemalloc=no  --with-umem=no  --with-autotrace=no  --with-gslib=no  --with-fontpath=  --with-rsvg=no  --with-perl=no "/>
-  <configure name="DOCUMENTATION_PATH" value="/usr/local/share/doc/ImageMagick.6"/>
+  <configure name="DOCUMENTATION_PATH" value="/usr/local/share/doc/ImageMagick-6"/>
   <configure name="EXEC-PREFIX" value="/usr/local"/>
   <configure name="EXECUTABLE_PATH" value="/usr/local/bin"/>
   <configure name="FEATURES" value="DPC Cipher OpenMP"/>
@@ -28,16 +28,16 @@
   <configure name="LDFLAGS" value="-L/usr/local/lib  "/>
   <configure name="LIBRARY_PATH" value="/usr/local/lib/ImageMagick-6.9.2"/>
   <configure name="LIBS" value=" -ljbig -llcms2  -ltiff -lfreetype  -ljpeg   -lpng16   -ldjvulibre  -lfftw3  -lfpx -lfontconfig -lfreetype  -lwebp -lwmflite  -lXext -lXt   -lSM -lICE -lX11  -llzma  -lbz2 -lIlmImf -lImath -lHalf -lIex -lIexMath -lIlmThread -pthread   -lpangocairo-1.0 -lpango-1.0 -lgobject-2.0 -lglib-2.0 -lcairo   -lxml2   -L/usr/lib64 -lz   -lm -lgomp    "/>
-  <configure name="LIB_VERSION_NUMBER" value="6,9,2,2"/>
+  <configure name="LIB_VERSION_NUMBER" value="6,9,2,3"/>
   <configure name="LIB_VERSION" value="0x692"/>
   <configure name="NAME" value="ImageMagick"/>
   <configure name="PCFLAGS" value="-fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16"/>
   <configure name="PREFIX" value="/usr/local"/>
   <configure name="QuantumDepth" value="16"/>
-  <configure name="RELEASE_DATE" value="2015-09-16"/>
+  <configure name="RELEASE_DATE" value="2015-09-19"/>
   <configure name="SHAREARCH_PATH" value="/usr/local/lib/ImageMagick-6.9.2/config-Q16"/>
   <configure name="SHARE_PATH" value="/usr/local/share/ImageMagick-6"/>
-  <configure name="GIT_REVISION" value="10215:2f074e6:20150916" />
+  <configure name="GIT_REVISION" value="10234:088bf58:20150919" />
   <configure name="TARGET_CPU" value="x86_64"/>
   <configure name="TARGET_OS" value="linux-gnu"/>
   <configure name="TARGET_VENDOR" value="unknown"/>
