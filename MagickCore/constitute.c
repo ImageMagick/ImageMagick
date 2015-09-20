@@ -722,9 +722,6 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     option=GetImageOption(image_info,"delay");
     if (option != (const char *) NULL)
       {
-        GeometryInfo
-          geometry_info;
-
         flags=ParseGeometry(option,&geometry_info);
         if ((flags & GreaterValue) != 0)
           {
@@ -1062,11 +1059,11 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
       (GetMagickSeekableStream(magick_info) != MagickFalse))
     {
       char
-        filename[MagickPathExtent];
+        image_filename[MagickPathExtent];
 
-      (void) CopyMagickString(filename,image->filename,MagickPathExtent);
+      (void) CopyMagickString(image_filename,image->filename,MagickPathExtent);
       status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
-      (void) CopyMagickString(image->filename,filename,MagickPathExtent);
+      (void) CopyMagickString(image->filename, image_filename,MagickPathExtent);
       if (status != MagickFalse)
         {
           if (IsBlobSeekable(image) == MagickFalse)
@@ -1239,7 +1236,7 @@ MagickExport MagickBooleanType WriteImages(const ImageInfo *image_info,
     proceed;
 
   MagickOffsetType
-    i;
+    progress;
 
   MagickProgressMonitor
     progress_monitor;
@@ -1293,7 +1290,7 @@ MagickExport MagickBooleanType WriteImages(const ImageInfo *image_info,
   */
   status=MagickTrue;
   progress_monitor=(MagickProgressMonitor) NULL;
-  i=0;
+  progress=0;
   number_images=GetImageListLength(images);
   for (p=images; p != (Image *) NULL; p=GetNextImageInList(p))
   {
@@ -1307,7 +1304,7 @@ MagickExport MagickBooleanType WriteImages(const ImageInfo *image_info,
       break;
     if (number_images != 1)
       {
-        proceed=SetImageProgress(p,WriteImageTag,i++,number_images);
+        proceed=SetImageProgress(p,WriteImageTag,progress++,number_images);
         if (proceed == MagickFalse)
           break;
       }

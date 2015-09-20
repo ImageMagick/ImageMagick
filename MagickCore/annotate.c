@@ -1236,12 +1236,12 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
         geometry_info;
 
       MagickStatusType
-        flags;
+        geometry_flags;
 
-      flags=ParseGeometry(draw_info->density,&geometry_info);
+      geometry_flags=ParseGeometry(draw_info->density,&geometry_info);
       resolution.x=geometry_info.rho;
       resolution.y=geometry_info.sigma;
-      if ((flags & SigmaValue) == 0)
+      if ((geometry_flags & SigmaValue) == 0)
         resolution.y=resolution.x;
     }
   ft_status=FT_Set_Char_Size(face,(FT_F26Dot6) (64.0*draw_info->pointsize),
@@ -1410,13 +1410,13 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
           *image_view;
 
         register unsigned char
-          *p;
+          *r;
 
         /*
           Rasterize the glyph.
         */
         image_view=AcquireAuthenticCacheView(image,exception);
-        p=bitmap->bitmap.buffer;
+        r=bitmap->bitmap.buffer;
         for (y=0; y < (ssize_t) bitmap->bitmap.rows; y++)
         {
           MagickBooleanType
@@ -1467,9 +1467,9 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
                 continue;
               }
             if (bitmap->bitmap.pixel_mode != ft_pixel_mode_mono)
-              fill_opacity=(double) (p[n])/(bitmap->bitmap.num_grays-1);
+              fill_opacity=(double) (r[n])/(bitmap->bitmap.num_grays-1);
             else
-              fill_opacity=((p[(x >> 3)+y*bitmap->bitmap.pitch] &
+              fill_opacity=((r[(x >> 3)+y*bitmap->bitmap.pitch] &
                 (1 << (~x & 0x07)))) == 0 ? 0.0 : 1.0;
             if (draw_info->text_antialias == MagickFalse)
               fill_opacity=fill_opacity >= 0.5 ? 1.0 : 0.0;

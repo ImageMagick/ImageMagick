@@ -3696,14 +3696,10 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
           ((cache_info->type == DiskCache) || (cache_info->type == MapCache)) &&
           (cache_info->reference_count == 1))
         {
-          int
-            status;
-
           /*
             Usurp existing persistent pixel cache.
           */
-          status=rename_utf8(cache_info->cache_filename,filename);
-          if (status == 0)
+          if (rename_utf8(cache_info->cache_filename, filename) == 0)
             {
               (void) CopyMagickString(cache_info->cache_filename,filename,
                 MagickPathExtent);

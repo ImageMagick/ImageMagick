@@ -1502,12 +1502,6 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
   vertical_factor=4;
   if (image_info->sampling_factor != (char *) NULL)
     {
-      GeometryInfo
-        geometry_info;
-
-      MagickStatusType
-        flags;
-
       flags=ParseGeometry(image_info->sampling_factor,&geometry_info);
       horizontal_factor=(ssize_t) geometry_info.rho;
       vertical_factor=(ssize_t) geometry_info.sigma;

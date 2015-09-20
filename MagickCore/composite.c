@@ -770,11 +770,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
     case BlurCompositeOp:
     {
       CacheView
-        *canvas_view,
-        *source_view;
-
-      const char
-        *value;
+        *canvas_view;
 
       MagickRealType
         angle_range,
@@ -946,12 +942,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
     case DistortCompositeOp:
     {
       CacheView
-        *source_view,
-        *canvas_view,
-        *image_view;
-
-      const char
-        *value;
+        *canvas_view;
 
       MagickRealType
         horizontal_scale,
@@ -1121,9 +1112,6 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
     }
     case DissolveCompositeOp:
     {
-      const char
-        *value;
-
       /*
         Geometry arguments to dissolve factors.
       */
@@ -1149,9 +1137,6 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
     }
     case BlendCompositeOp:
     {
-      const char
-        *value;
-
       value=GetImageArtifact(image,"compose:args");
       if (value != (char *) NULL)
         {
@@ -1165,9 +1150,6 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
     }
     case MathematicsCompositeOp:
     {
-      const char
-        *value;
-
       /*
         Just collect the values from "compose:args", setting.
         Unused values are set to zero automagically.
@@ -1184,9 +1166,6 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
     }
     case ModulateCompositeOp:
     {
-      const char
-        *value;
-
       /*
         Determine the luma and chroma scale.
       */
@@ -1202,9 +1181,6 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
     }
     case ThresholdCompositeOp:
     {
-      const char
-        *value;
-
       /*
         Determine the amount and threshold.
       */

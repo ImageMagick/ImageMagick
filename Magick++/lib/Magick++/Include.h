@@ -69,6 +69,7 @@ namespace MagickCore
 //
 #    if defined(_VISUALC_)
 #      define MagickDLLExplicitTemplate
+#      pragma warning( disable: 4275 )
 #      pragma warning( disable: 4273 )  /* Disable the stupid dll linkage warnings */
 #      pragma warning( disable: 4251 )
 #    endif

@@ -1193,7 +1193,7 @@ static MagickBooleanType LoadConfigureCache(LinkedListInfo *configure_cache,
                 {
                   char
                     path[MagickPathExtent],
-                    *xml;
+                    *fileXml;
 
                   GetPathComponent(filename,HeadPath,path);
                   if (*path != '\0')
@@ -1203,12 +1203,12 @@ static MagickBooleanType LoadConfigureCache(LinkedListInfo *configure_cache,
                     (void) CopyMagickString(path,token,MagickPathExtent);
                   else
                     (void) ConcatenateMagickString(path,token,MagickPathExtent);
-                  xml=FileToXML(path,~0UL);
-                  if (xml != (char *) NULL)
+                  fileXml=FileToXML(path,~0UL);
+                  if (fileXml != (char *) NULL)
                     {
-                      status&=LoadConfigureCache(configure_cache,xml,path,
+                      status&=LoadConfigureCache(configure_cache,fileXml,path,
                         depth+1,exception);
-                      xml=(char *) RelinquishMagickMemory(xml);
+                      fileXml=(char *) RelinquishMagickMemory(fileXml);
                     }
                 }
             }

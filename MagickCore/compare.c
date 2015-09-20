@@ -397,7 +397,7 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
       *restrict q;
 
     register ssize_t
-      i,
+      j,
       x;
 
     if (status == MagickFalse)
@@ -459,8 +459,8 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
     #pragma omp critical (MagickCore_GetAbsoluteError)
 #endif
-    for (i=0; i <= MaxPixelChannels; i++)
-      distortion[i]+=channel_distortion[i];
+    for (j=0; j <= MaxPixelChannels; j++)
+      distortion[j]+=channel_distortion[j];
   }
   reconstruct_view=DestroyCacheView(reconstruct_view);
   image_view=DestroyCacheView(image_view);
@@ -478,7 +478,7 @@ static MagickBooleanType GetFuzzDistortion(const Image *image,
     status;
 
   register ssize_t
-    i;
+    j;
 
   size_t
     columns,
@@ -506,7 +506,6 @@ static MagickBooleanType GetFuzzDistortion(const Image *image,
       *restrict q;
 
     register ssize_t
-      i,
       x;
 
     if (status == MagickFalse)
@@ -560,13 +559,13 @@ static MagickBooleanType GetFuzzDistortion(const Image *image,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
     #pragma omp critical (MagickCore_GetFuzzDistortion)
 #endif
-    for (i=0; i <= MaxPixelChannels; i++)
-      distortion[i]+=channel_distortion[i];
+    for (j=0; j <= MaxPixelChannels; j++)
+      distortion[j]+=channel_distortion[j];
   }
   reconstruct_view=DestroyCacheView(reconstruct_view);
   image_view=DestroyCacheView(image_view);
-  for (i=0; i <= MaxPixelChannels; i++)
-    distortion[i]/=((double) columns*rows);
+  for (j=0; j <= MaxPixelChannels; j++)
+    distortion[j]/=((double) columns*rows);
   distortion[CompositePixelChannel]/=(double) GetImageChannels(image);
   distortion[CompositePixelChannel]=sqrt(distortion[CompositePixelChannel]);
   return(status);
@@ -583,7 +582,7 @@ static MagickBooleanType GetMeanAbsoluteDistortion(const Image *image,
     status;
 
   register ssize_t
-    i;
+    j;
 
   size_t
     columns,
@@ -611,7 +610,6 @@ static MagickBooleanType GetMeanAbsoluteDistortion(const Image *image,
       *restrict q;
 
     register ssize_t
-      i,
       x;
 
     if (status == MagickFalse)
@@ -665,13 +663,13 @@ static MagickBooleanType GetMeanAbsoluteDistortion(const Image *image,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
     #pragma omp critical (MagickCore_GetMeanAbsoluteError)
 #endif
-    for (i=0; i <= MaxPixelChannels; i++)
-      distortion[i]+=channel_distortion[i];
+    for (j=0; j <= MaxPixelChannels; j++)
+      distortion[j]+=channel_distortion[j];
   }
   reconstruct_view=DestroyCacheView(reconstruct_view);
   image_view=DestroyCacheView(image_view);
-  for (i=0; i <= MaxPixelChannels; i++)
-    distortion[i]/=((double) columns*rows);
+  for (j=0; j <= MaxPixelChannels; j++)
+    distortion[j]/=((double) columns*rows);
   distortion[CompositePixelChannel]/=(double) GetImageChannels(image);
   return(status);
 }
@@ -783,7 +781,7 @@ static MagickBooleanType GetMeanSquaredDistortion(const Image *image,
     status;
 
   register ssize_t
-    i;
+    j;
 
   size_t
     columns,
@@ -811,7 +809,6 @@ static MagickBooleanType GetMeanSquaredDistortion(const Image *image,
       *restrict q;
 
     register ssize_t
-      i,
       x;
 
     if (status == MagickFalse)
@@ -865,13 +862,13 @@ static MagickBooleanType GetMeanSquaredDistortion(const Image *image,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
     #pragma omp critical (MagickCore_GetMeanSquaredError)
 #endif
-    for (i=0; i <= MaxPixelChannels; i++)
-      distortion[i]+=channel_distortion[i];
+    for (j=0; j <= MaxPixelChannels; j++)
+      distortion[j]+=channel_distortion[j];
   }
   reconstruct_view=DestroyCacheView(reconstruct_view);
   image_view=DestroyCacheView(image_view);
-  for (i=0; i <= MaxPixelChannels; i++)
-    distortion[i]/=((double) columns*rows);
+  for (j=0; j <= MaxPixelChannels; j++)
+    distortion[j]/=((double) columns*rows);
   distortion[CompositePixelChannel]/=GetImageChannels(image);
   return(status);
 }
@@ -1073,7 +1070,7 @@ static MagickBooleanType GetPeakAbsoluteDistortion(const Image *image,
       *restrict q;
 
     register ssize_t
-      i,
+      j,
       x;
 
     if (status == MagickFalse)
@@ -1129,9 +1126,9 @@ static MagickBooleanType GetPeakAbsoluteDistortion(const Image *image,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
     #pragma omp critical (MagickCore_GetPeakAbsoluteError)
 #endif
-    for (i=0; i <= MaxPixelChannels; i++)
-      if (channel_distortion[i] > distortion[i])
-        distortion[i]=channel_distortion[i];
+    for (j=0; j <= MaxPixelChannels; j++)
+      if (channel_distortion[j] > distortion[j])
+        distortion[j]=channel_distortion[j];
   }
   reconstruct_view=DestroyCacheView(reconstruct_view);
   image_view=DestroyCacheView(image_view);

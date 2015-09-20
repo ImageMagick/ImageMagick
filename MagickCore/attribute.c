@@ -139,7 +139,7 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
     bounds;
 
   register const Quantum
-    *p;
+    *restrict p;
 
   ssize_t
     y;
@@ -184,9 +184,6 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
 
     RectangleInfo
       bounding_box;
-
-    register const Quantum
-      *restrict p;
 
     register ssize_t
       x;

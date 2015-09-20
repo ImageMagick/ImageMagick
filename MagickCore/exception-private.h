@@ -36,30 +36,31 @@ extern "C" {
 #define ThrowFatalException(severity,tag) \
 { \
   char \
-    *message; \
+    *fatal_message; \
  \
   ExceptionInfo \
-    *exception; \
+    *fatal_exception; \
  \
-  exception=AcquireExceptionInfo(); \
-  message=GetExceptionMessage(errno); \
-  (void) ThrowMagickException(exception,GetMagickModule(),severity, \
-    tag == (const char *) NULL ? "unknown" : tag,"`%s'",message); \
-  message=DestroyString(message); \
-  CatchException(exception); \
-  (void) DestroyExceptionInfo(exception); \
+  fatal_exception=AcquireExceptionInfo(); \
+  fatal_message=GetExceptionMessage(errno); \
+  (void) ThrowMagickException(fatal_exception,GetMagickModule(),severity, \
+    tag == (const char *) NULL ? "unknown" : tag,"`%s'",fatal_message); \
+  fatal_message=DestroyString(fatal_message); \
+  CatchException(fatal_exception); \
+  (void) DestroyExceptionInfo(fatal_exception); \
   MagickCoreTerminus(); \
   _exit((int) (severity-FatalErrorException)+1); \
 }
 #define ThrowFileException(exception,severity,tag,context) \
 { \
   char \
-    *message; \
+    *file_message; \
  \
-  message=GetExceptionMessage(errno); \
+  file_message=GetExceptionMessage(errno); \
   (void) ThrowMagickException(exception,GetMagickModule(),severity, \
-    tag == (const char *) NULL ? "unknown" : tag,"'%s': %s",context,message); \
-  message=DestroyString(message); \
+    tag == (const char *) NULL ? "unknown" : tag,"'%s': %s",context, \
+    file_message); \
+  file_message=DestroyString(file_message); \
 }
 #define ThrowImageException(severity,tag) \
 { \

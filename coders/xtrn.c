@@ -110,6 +110,7 @@ static MagickBooleanType
 %
 */
 #if defined(_VISUALC_)
+#  pragma warning(disable : 4477)
 static Image *ReadXTRNImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
@@ -227,6 +228,7 @@ static Image *ReadXTRNImage(const ImageInfo *image_info,
   clone_info=DestroyImageInfo(clone_info);
   return(image);
 }
+#  pragma warning(default : 4477)
 #endif
 
 /*
@@ -398,6 +400,7 @@ static size_t SafeArrayFifo(const Image *image,const void *data,
 #endif
 
 #if defined(_VISUALC_)
+#  pragma warning(disable : 4477)
 static MagickBooleanType WriteXTRNImage(const ImageInfo *image_info,
   Image *image,ExceptionInfo *exception)
 {
@@ -532,4 +535,5 @@ static MagickBooleanType WriteXTRNImage(const ImageInfo *image_info,
     }
   return(MagickTrue);
 }
+#  pragma warning(default : 4477)
 #endif

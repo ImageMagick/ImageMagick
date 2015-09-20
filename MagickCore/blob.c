@@ -2467,11 +2467,11 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
   if (LocaleNCompare(filename,"fd:",3) == 0)
     {
       char
-        mode[MagickPathExtent];
+        fileMode[MagickPathExtent];
 
-      *mode=(*type);
-      mode[1]='\0';
-      image->blob->file_info.file=fdopen(StringToLong(filename+3),mode);
+      *fileMode =(*type);
+      fileMode[1]='\0';
+      image->blob->file_info.file=fdopen(StringToLong(filename+3),fileMode);
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__OS2__)
       if (strchr(type,'b') != (char *) NULL)
         setmode(_fileno(image->blob->file_info.file),_O_BINARY);
@@ -2484,7 +2484,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
   if (*filename == '|')
     {
       char
-        mode[MagickPathExtent];
+        fileMode[MagickPathExtent];
 
       /*
         Pipe image to or from a system command.
@@ -2493,9 +2493,9 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
       if (*type == 'w')
         (void) signal(SIGPIPE,SIG_IGN);
 #endif
-      *mode=(*type);
-      mode[1]='\0';
-      image->blob->file_info.file=(FILE *) popen_utf8(filename+1,mode);
+      *fileMode =(*type);
+      fileMode[1]='\0';
+      image->blob->file_info.file=(FILE *) popen_utf8(filename+1, fileMode);
       if (image->blob->file_info.file == (FILE *) NULL)
         {
           ThrowFileException(exception,BlobError,"UnableToOpenBlob",filename);
