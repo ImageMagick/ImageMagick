@@ -65,7 +65,7 @@
 #undef HAVE_CONFIG_H
 #include <gvc.h>
 static GVC_t
-  *graphic_context;
+  *graphic_context = (GVC_t *) NULL;
 #endif
 
 #if defined(MAGICKCORE_GVC_DELEGATE)
@@ -146,6 +146,7 @@ static Image *ReadDOTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       return ((Image *) NULL);
     }
   option=GetImageOption(image_info,"dot:layout-engine");
+  assert(graphic_context != (GVC_t *) NULL);
   if (option == (const char *) NULL)
     gvLayout(graphic_context,graph,(char *) "dot");
   else
@@ -236,5 +237,6 @@ ModuleExport void UnregisterDOTImage(void)
   (void) UnregisterMagickInfo("DOT");
 #if defined(MAGICKCORE_GVC_DELEGATE)
   gvFreeContext(graphic_context);
+  graphic_context=(GVC_t *) NULL;
 #endif
 }
