@@ -6794,11 +6794,12 @@ MagickExport Image *AccelerateMotionBlurImage(const Image *image,
 
 static MagickBooleanType LaunchCompositeKernel(MagickCLEnv clEnv,
   cl_command_queue queue,cl_mem imageBuffer,const unsigned int inputWidth,
-  const unsigned int inputHeight,const unsigned int matte,
+  const unsigned int inputHeight,const unsigned int inputMatte,
   const ChannelType channel,const CompositeOperator compose,
   const cl_mem compositeImageBuffer,const unsigned int compositeWidth,
-  const unsigned int compositeHeight,const float destination_dissolve,
-  const float source_dissolve,ExceptionInfo *magick_unused(exception))
+  const unsigned int compositeHeight,const unsigned int compositeMatte,
+  const float destination_dissolve,const float source_dissolve,
+  ExceptionInfo *magick_unused(exception))
 {
   cl_int
     clStatus;
@@ -6825,13 +6826,14 @@ static MagickBooleanType LaunchCompositeKernel(MagickCLEnv clEnv,
   clStatus=clEnv->library->clSetKernelArg(compositeKernel,k++,sizeof(cl_mem),(void*)&imageBuffer);
   clStatus|=clEnv->library->clSetKernelArg(compositeKernel,k++,sizeof(unsigned int),(void*)&inputWidth);
   clStatus|=clEnv->library->clSetKernelArg(compositeKernel,k++,sizeof(unsigned int),(void*)&inputHeight);
+  clStatus|=clEnv->library->clSetKernelArg(compositeKernel,k++,sizeof(unsigned int),(void*)&inputMatte);
   clStatus|=clEnv->library->clSetKernelArg(compositeKernel,k++,sizeof(cl_mem),(void*)&compositeImageBuffer);
   clStatus|=clEnv->library->clSetKernelArg(compositeKernel,k++,sizeof(unsigned int),(void*)&compositeWidth);
   clStatus|=clEnv->library->clSetKernelArg(compositeKernel,k++,sizeof(unsigned int),(void*)&compositeHeight);
+  clStatus|=clEnv->library->clSetKernelArg(compositeKernel,k++,sizeof(unsigned int),(void*)&compositeMatte);
   composeOp = (unsigned int)compose;
   clStatus|=clEnv->library->clSetKernelArg(compositeKernel,k++,sizeof(unsigned int),(void*)&composeOp);
   clStatus|=clEnv->library->clSetKernelArg(compositeKernel,k++,sizeof(ChannelType),(void*)&channel);
-  clStatus|=clEnv->library->clSetKernelArg(compositeKernel,k++,sizeof(unsigned int),(void*)&matte);
   clStatus|=clEnv->library->clSetKernelArg(compositeKernel,k++,sizeof(float),(void*)&destination_dissolve);
   clStatus|=clEnv->library->clSetKernelArg(compositeKernel,k++,sizeof(float),(void*)&source_dissolve);
 
@@ -6978,6 +6980,7 @@ static MagickBooleanType ComputeCompositeImage(Image *image,
            channel, compose, compositeImageBuffer,
            (unsigned int) compositeImage->columns,
            (unsigned int) compositeImage->rows,
+           (unsigned int) compositeImage->matte,
            destination_dissolve,source_dissolve,
            exception);
 
