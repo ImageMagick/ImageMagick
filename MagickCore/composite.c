@@ -1738,17 +1738,10 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           }
           case ColorDodgeCompositeOp:
           {
-            if ((Sca == Sa) && (Dca == 0.0))
-              {
-                pixel=QuantumRange*gamma*(Sca*(1.0-Da));
-                break;
-              }
-            if (Sca == Sa)
-              {
-                pixel=QuantumRange*gamma*(Sa*Da+Sca*(1.0-Da)+Dca*(1.0-Sa));
-                break;
-              }
-            pixel=QuantumRange*gamma*(Sa*Da*MagickMin(1.0,Dca/Da*Sa/(Sa-Sca)));
+            if ((Sca*Da+Dca*Sa) >= Sa*Da)
+              pixel=QuantumRange*gamma*(Sa*Da+Sca*(1.0-Da)+Dca*(1.0-Sa));
+            else
+              pixel=QuantumRange*gamma*(Dca*Sa*Sa/(Sa-Sca)+Sca*(1.0-Da)+Dca*(1.0-Sa));
             break;
           }
           case ColorizeCompositeOp:
