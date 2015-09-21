@@ -1909,6 +1909,13 @@ MagickExport MagickBooleanType GetImageRange(const Image *image,double *minima,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
+    double
+      row_maxima,
+      row_minima;
+
+    MagickBooleanType
+      row_initialize;
+
     register const Quantum
       *restrict p;
 
@@ -1923,6 +1930,7 @@ MagickExport MagickBooleanType GetImageRange(const Image *image,double *minima,
         status=MagickFalse;
         continue;
       }
+    row_initialize=MagickTrue;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       register ssize_t
@@ -1941,26 +1949,39 @@ MagickExport MagickBooleanType GetImageRange(const Image *image,double *minima,
           continue;
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_GetImageRange)
-#endif
-        {
-          if (initialize != MagickFalse)
-            {
-              *minima=(double) p[i];
-              *maxima=(double) p[i];
-              initialize=MagickFalse;
-            }
-          else
-            {
-              if ((double) p[i] < *minima)
-                *minima=(double) p[i];
-              if ((double) p[i] > *maxima)
-                *maxima=(double) p[i];
-           }
-        }
+        if (row_initialize != MagickFalse)
+          {
+            row_minima=(double) p[i];
+            row_maxima=(double) p[i];
+            row_initialize=MagickFalse;
+          }
+        else
+          {
+            if ((double) p[i] < row_minima)
+              row_minima=(double) p[i];
+            if ((double) p[i] > row_maxima)
+              row_maxima=(double) p[i];
+         }
       }
       p+=GetPixelChannels(image);
+    }
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#pragma omp critical (MagickCore_GetImageRange)
+#endif
+    {
+      if (initialize != MagickFalse)
+        {
+          *minima=row_minima;
+          *maxima=row_maxima;
+          initialize=MagickFalse;
+        }
+      else
+        {
+          if (row_minima < *minima)
+            *minima=row_minima;
+          if (row_maxima > *maxima)
+            *maxima=row_maxima;
+        }
     }
   }
   image_view=DestroyCacheView(image_view);
