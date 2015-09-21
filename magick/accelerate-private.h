@@ -3220,12 +3220,13 @@ uint MWC64X_NextUint(mwc64x_state_t *s)
     void Composite(__global CLPixelType *image,
                    const unsigned int imageWidth, 
                    const unsigned int imageHeight,
+                   const unsigned int imageMatte,
                    const __global CLPixelType *compositeImage,
                    const unsigned int compositeWidth, 
                    const unsigned int compositeHeight,
+                   const unsigned int compositeMatte,
                    const unsigned int compose,
                    const ChannelType channel, 
-                   const unsigned int matte,
                    const float destination_dissolve,
                    const float source_dissolve) {
 
@@ -3252,12 +3253,17 @@ uint MWC64X_NextUint(mwc64x_state_t *s)
       setGreenF4(&source,getGreen(compositePixel));
       setBlueF4(&source,getBlue(compositePixel));
 
-      if (matte != 0) {
+      if (imageMatte != 0) {
         setOpacityF4(&destination,getOpacity(inputPixel));
-        setOpacityF4(&source,getOpacity(compositePixel));
       }
       else {
         setOpacityF4(&destination,0.0f);
+      }
+
+      if (compositeMatte != 0) {
+        setOpacityF4(&source,getOpacity(compositePixel));
+      }
+      else {
         setOpacityF4(&source,0.0f);
       }
 
