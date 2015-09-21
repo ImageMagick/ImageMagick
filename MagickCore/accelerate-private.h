@@ -3228,7 +3228,7 @@ uint MWC64X_NextUint(mwc64x_state_t *s)
       Sa=QuantumScale*getAlphaF4(*p);  /* simplify and speed up equations */
       Da=QuantumScale*getAlphaF4(*q);
       gamma=RoundToUnity(Sa+Da-Sa*Da); /* over blend, as per SVG doc */
-      setAlphaF4(composite, QuantumRange*gamma);
+      setAlphaF4(composite,QuantumRange*gamma);
       gamma=QuantumRange/(fabs(gamma) < MagickEpsilon ? MagickEpsilon : gamma);
       setRedF4(composite,gamma*ColorDodge(QuantumScale*getRedF4(*p)*Sa,Sa,QuantumScale*
         getRedF4(*q)*Da,Da));
@@ -3317,8 +3317,8 @@ uint MWC64X_NextUint(mwc64x_state_t *s)
         setAlphaF4(&source,getAlpha(compositePixel));
       }
       else {
-        setAlphaF4(&destination,0.0f);
-        setAlphaF4(&source,0.0f);
+        setAlphaF4(&destination,1.0f);
+        setAlphaF4(&source,1.0f);
       }
 
       float4 composite=destination;
