@@ -125,6 +125,7 @@ static Image *ReadDOTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image_info->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
+  assert(graphic_context != (GVC_t *) NULL);
   image=AcquireImage(image_info,exception);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFalse)
@@ -146,7 +147,6 @@ static Image *ReadDOTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       return ((Image *) NULL);
     }
   option=GetImageOption(image_info,"dot:layout-engine");
-  assert(graphic_context != (GVC_t *) NULL);
   if (option == (const char *) NULL)
     gvLayout(graphic_context,graph,(char *) "dot");
   else
@@ -236,7 +236,10 @@ ModuleExport void UnregisterDOTImage(void)
   (void) UnregisterMagickInfo("GV");
   (void) UnregisterMagickInfo("DOT");
 #if defined(MAGICKCORE_GVC_DELEGATE)
-  gvFreeContext(graphic_context);
-  graphic_context=(GVC_t *) NULL;
+  if (graphic_context != (GVC_t *) NULL)
+    {
+      gvFreeContext(graphic_context);
+      graphic_context=(GVC_t *) NULL;
+    }
 #endif
 }
