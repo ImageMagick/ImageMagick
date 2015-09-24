@@ -816,7 +816,7 @@
 2013-11-03  6.8.7-5 Cristy  <quetzlzacatenango@image...>
   * The jpeg:extent option no longer returns double-free exception (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=24366).
-  * Turn off arch-specific optimisations (reference
+  * Turn off arch-specific optimizations (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=24353).
   * The -type bilevel option no longer returns black image (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=24394).
@@ -843,7 +843,7 @@
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=24324).
   * -intensity rec709luma -colorspace gray returns gamma 1.0/2.2 (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=24330).
-  * Handle 16-bit JPEG-comrpessed TIFF images (reference
+  * Handle 16-bit JPEG-compressed TIFF images (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=24331).
   * An image -compose ModulusAdd negate-image returns the original (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=24337).
@@ -1132,7 +1132,7 @@
   * Stopped a "-fsanitize-address" warning in the JNG coder.
 
 2013-05-20  6.8.5-8 Cristy  <quetzlzacatenango@image...>
-  * The -white-threshold option is symetrical with -black-threshold (reference
+  * The -white-threshold option is symmetrical with -black-threshold (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23441);
   * Fix multi-line PNM comments (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23442).
@@ -1356,7 +1356,7 @@
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=17123).
   * Modify the configure script check for the webp delegate library (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=23025).
-  * The -blur, -guassian-blur, and -sharpen are now convenience methods
+  * The -blur, -gaussian-blur, and -sharpen are now convenience methods
     for -morphology convolve.
   * Fix infinite loop for 'display -window' (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=23028).
@@ -1371,7 +1371,7 @@
   * Added IM, libpng, and zlib version info to debug output.
 
 2013-03-10  6.8.3-10 Bastien Roucaries  <roucaries.basti...>
-  * Move PerlMagick arch independant part to 'default' folder.
+  * Move PerlMagick arch independent part to 'default' folder.
   * Move binaries to lib subdirectory and link are created from binary package.
 
 2013-03-10  6.8.3-10 Cristy  <quetzlzacatenango@image...>
@@ -2261,7 +2261,7 @@ http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=21884).
     (after being multiplied by PI).
   * Added resampling 'weight' sanity check in EWA resampling.
   * Set default for histogram:unique-colors to be 'true' when undefined
-    Returning it to previous behaviour.
+    Returning it to previous behavior.
   * Refactor of InterpretImageProperties() (percent escape substitutions)
   * Add "gamma" as a -set and % escape to access image gamma meta-data
 
@@ -2315,7 +2315,7 @@ http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=21884).
   * Allow +-X+-Y as geometry arguments.
 
 2012-04-17  6.7.6-7 Cristy  <quetzlzacatenango@image...>
-  * Distinquish grayscale as sRGB not linear RGB.
+  * Distinguish grayscale as sRGB not linear RGB.
 
 2012-04-16  6.7.6-6 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.6-6, SVN revision 7536.
@@ -2600,7 +2600,7 @@ http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=21884).
 
 2011-12-12  6.7.4-0 Cristy  <quetzlzacatenango@image...>
   * Sped up -noise option when radius is 0.
-  * Read concatentated arcs correctly in a SVG path (reference
+  * Read concatenated arcs correctly in a SVG path (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=19992).
   * PDF's now convert properly with -define pdf:use-cropbox=true (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=20033).
@@ -4095,7 +4095,7 @@ http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=21884).
   * Reporting of Kernel Strings that fail to parse (though not why)
   * Parsing of Multiple Kernel Strings, generating a list of kernels
   * Union of results from Multiple Kernels for HitAndMiss method
-  * Interated Multiple Kernels for all other morphology methods
+  * Iterated Multiple Kernels for all other morphology methods
   * Added many new kernels for HitAndMiss and Convolution
     Sobel, Laplacian, Cross, Peaks, Corners, LineEnds, LineJunctions,
     ConvexHull (for Thicken), Skeleton (for Thinning)
@@ -4326,7 +4326,7 @@ http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=21884).
   * display -immutable to display transparent image without a checkboard.
 
 2010-01-27  6.5.9-1 Glenn Randers-Pehrson <glennrp@image...>
-  * Make -define png:color-type less persnickity about what it will accept.
+  * Make -define png:color-type less persnickety about what it will accept.
 
 2010-01-24  6.5.9-1 Anthony Thyssen <A.Thyssen@griffith...>
   * added use of -precision in 'showkernel' output of -morphology
@@ -4652,7 +4652,7 @@ http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=21884).
     ColorDodge,  VividLight.  And the handling of transparency to follow
     standard 'Over' Blending in Divide.  Only math methods not looked at are
     the addition methods Plus, Add, Minus, and Subtract, which do not follow
-    normal 'Over' alpha blending behaviour, for the purposes of mask handling.
+    normal 'Over' alpha blending behavior, for the purposes of mask handling.
 
 2009-07-12  6.5.4-3 Anthony Thyssen <A.Thyssen@griffith...>
   * Addition of user definable 'Mathematics' compose method
@@ -5230,7 +5230,7 @@ http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=21884).
 2008-12-09  6.4.7-5 Cristy  <quetzlzacatenango@image...>
   * Fix small memory leak in LoadLocaleList().
   * Fix small memory leak in GetProfilesFromResourceBlock().
-  * Don't forget to scale grayscale values when quanum min-is-white is set.
+  * Don't forget to scale grayscale values when quantum min-is-white is set.
 
 2008-12-08  6.4.7-4 Cristy  <quetzlzacatenango@image...>
   * Include delegate libraries in MagickCore-config script.
@@ -5580,7 +5580,7 @@ http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=21884).
   * Added a  LevelizeImageChannels() which is similar to LevelImageChannels()
     Function maps black and white values to the given level values.
     Rather than mapping the given level values to black and white.
-    Bacically a 'reverse-level' function, with different input args.
+    Basically a 'reverse-level' function, with different input args.
   * Set  +level  or a '!' flag in -level or LevelImage() to call
     the new 'reverse-level' function LevelizeImageChannels().
   * More work on IsMagickColorSimilar() to fix relationship between
@@ -5698,7 +5698,7 @@ http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=21884).
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=11098).
 
 2008-04-16  6.4.0-8 Cristy  <quetzlzacatenango@image...>
-  * Distinquish between pre and post processing of image list options.
+  * Distinguish between pre and post processing of image list options.
   * Return MagickTrue if InvokeDynamicImageFilter() does not generate an
     exception (reference
                 http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=11065).
@@ -6001,7 +6001,7 @@ http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=21884).
           file as required under Windows.
 
 2007-09-29  6.3.6-0 Anthony <anthony@griffith...>
-  * Added Scaling 'derivitives' to -distort Arc, so image arcing is now
+  * Added Scaling 'derivatives' to -distort Arc, so image arcing is now
     sharp and clear as you approach the center of the distort.
   * Added  " -set option:distort:viewport 'geometry' " special option
     that can be used to override the output image size and offset.
@@ -6042,7 +6042,7 @@ http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=21884).
     tiling and horizon views.  All virtual pixel methods have been handled
     to minimise computation time involved with area resampling.  To use the
     new function distortions need to be able to determine scaling vectors
-    (distortion function derivitives) for correct working.  All
+    (distortion function derivatives) for correct working.  All
     -distort methods, except Arc, uses scaled area resampling.
   * Improvements to perspective distort method, to include the correct
     differentiation between the 'ground' on which the image lies, and the
@@ -6114,7 +6114,7 @@ http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=21884).
   * Set the -polaroid border color with the -bordercolor option.
 
 2007-07-25  6.3.5-4 Cristy  <quetzlzacatenango@image...>
-  * Remove extranous break statement so -type option properly sets the
+  * Remove extraneous break statement so -type option properly sets the
     image_info->type member (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=9261).
 

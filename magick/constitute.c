@@ -1297,7 +1297,14 @@ MagickExport MagickBooleanType WriteImages(const ImageInfo *image_info,
     (void) CopyMagickString(write_info->magick,images->magick,MaxTextExtent);
   p=images;
   for ( ; GetNextImageInList(p) != (Image *) NULL; p=GetNextImageInList(p))
-    if (p->scene >= GetNextImageInList(p)->scene)
+  {
+    register Image
+      *next;
+
+    next=GetNextImageInList(p);
+    if (next == (Image *) NULL)
+      break;
+    if (p->scene >= next->scene)
       {
         register ssize_t
           i;
@@ -1310,6 +1317,7 @@ MagickExport MagickBooleanType WriteImages(const ImageInfo *image_info,
           p->scene=(size_t) i++;
         break;
       }
+  }
   /*
     Write images.
   */
