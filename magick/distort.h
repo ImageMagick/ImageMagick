@@ -66,7 +66,8 @@ typedef enum
     Methods unique to SparseColor().
   */
   VoronoiColorInterpolate = SentinelDistortion,
-  InverseColorInterpolate
+  InverseColorInterpolate,
+  ManhattanColorInterpolate
 } SparseColorMethod;
 
 extern MagickExport Image

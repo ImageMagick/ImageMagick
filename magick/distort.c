@@ -3153,6 +3153,33 @@ MagickExport Image *SparseColorImage(const Image *image,
             if ( channel & OpacityChannel ) pixel.opacity /= denominator;
             break;
           }
+          case ManhattanColorInterpolate:
+          {
+            size_t
+              k;
+
+            double
+              minimum = MagickMaximumValue;
+
+            /*
+              Just use the closest control point you can find!
+            */
+            for(k=0; k<number_arguments; k+=2+number_colors) {
+              double distance =
+                  fabs((double)i-arguments[ k ])
+                + fabs((double)j-arguments[k+1]);
+              if ( distance < minimum ) {
+                register ssize_t x=(ssize_t) k+2;
+                if ( channel & RedChannel     ) pixel.red     = arguments[x++];
+                if ( channel & GreenChannel   ) pixel.green   = arguments[x++];
+                if ( channel & BlueChannel    ) pixel.blue    = arguments[x++];
+                if ( channel & IndexChannel   ) pixel.index   = arguments[x++];
+                if ( channel & OpacityChannel ) pixel.opacity = arguments[x++];
+                minimum = distance;
+              }
+            }
+            break;
+          }
           case VoronoiColorInterpolate:
           default:
           {
