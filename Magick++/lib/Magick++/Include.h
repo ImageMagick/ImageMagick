@@ -1022,6 +1022,7 @@ namespace Magick
   using MagickCore::ShepardsColorInterpolate;
   using MagickCore::VoronoiColorInterpolate;
   using MagickCore::InverseColorInterpolate;
+  using MagickCore::ManhattanColorInterpolate;
 
   // Statistic type
   using MagickCore::StatisticType;
