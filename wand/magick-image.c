@@ -2486,7 +2486,7 @@ WandExport MagickBooleanType MagickCycleColormapImage(MagickWand *wand,
 %  example, to create a 640x480 image from unsigned red-green-blue character
 %  data, use
 %
-%      MagickConstituteImage(wand,640,640,"RGB",CharPixel,pixels);
+%      MagickConstituteImage(wand,640,480,"RGB",CharPixel,pixels);
 %
 %  The format of the MagickConstituteImage method is:
 %
