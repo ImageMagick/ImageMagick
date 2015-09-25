@@ -1910,8 +1910,8 @@ MagickExport MagickBooleanType GetImageRange(const Image *image,double *minima,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     double
-      row_maxima,
-      row_minima;
+      row_maxima = 0.0,
+      row_minima = 0.0;
 
     MagickBooleanType
       row_initialize;
