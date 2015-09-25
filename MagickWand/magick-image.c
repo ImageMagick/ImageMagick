@@ -2276,12 +2276,13 @@ WandExport MagickBooleanType MagickCycleColormapImage(MagickWand *wand,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  MagickConstituteImage() adds an image to the wand comprised of the pixel
-%  data you supply.  The pixel data must be in scanline order top-to-bottom.
-%  The data can be char, short int, int, float, or double.  Float and double
-%  require the pixels to be normalized [0..1], otherwise [0..Max],  where Max
-%  is the maximum value the type can accomodate (e.g. 255 for char).  For
-%  example, to create a 640x480 image from unsigned red-green-blue character
-%  data, use
+%  data you supply.  The method returns MagickTrue on success otherwise
+%  MagickFalse if an error is encountered.  The pixel data must be in scanline
+%  order top-to-bottom.  The data can be char, short int, int, float, or double.
+%  Float and double require the pixels to be normalized [0..1], otherwise
+%  [0..Max], where Max is the maximum value the type can accomodate
+%  (e.g. 255 for char).  For example, to create a 640x480 image from unsigned
+%  red-green-blue character data, use
 %
 %      MagickConstituteImage(wand,640,480,"RGB",CharPixel,pixels);
 %
