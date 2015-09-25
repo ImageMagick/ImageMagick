@@ -1047,7 +1047,7 @@ MagickExport unsigned char *FileToBlob(const char *filename,const size_t extent,
       blob[*length]='\0';
       return(blob);
     }
-  *length=(size_t) MagickMin(offset,extent);
+  *length=(size_t) MagickMin(offset,(ssize_t) extent);
   blob=(unsigned char *) NULL;
   if (~(*length) >= (MaxTextExtent-1))
     blob=(unsigned char *) AcquireQuantumMemory(*length+MaxTextExtent,

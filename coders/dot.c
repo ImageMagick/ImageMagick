@@ -66,7 +66,7 @@
 #undef HAVE_CONFIG_H
 #include <gvc.h>
 static GVC_t
-  *graphic_context=(GVC_t *) NULL;
+  *graphic_context = (GVC_t *) NULL;
 #endif
 
 #if defined(MAGICKCORE_GVC_DELEGATE)
