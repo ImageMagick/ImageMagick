@@ -1268,7 +1268,7 @@ static void ExportLongPixel(Image *image,const RectangleInfo *roi,
   register const PixelPacket
     *restrict p;
 
-  register unsigned int
+  register unsigned long int
     *q;
 
   register ssize_t
@@ -1280,7 +1280,7 @@ static void ExportLongPixel(Image *image,const RectangleInfo *roi,
   ssize_t
     y;
 
-  q=(unsigned int *) pixels;
+  q=(unsigned long *) pixels;
   if (LocaleCompare(map,"BGR") == 0)
     {
       for (y=0; y < (ssize_t) roi->height; y++)
