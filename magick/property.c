@@ -3073,7 +3073,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
       if (LocaleCompare("type",property) == 0)
         {
           string=CommandOptionToMnemonic(MagickTypeOptions,(ssize_t)
-            GetImageType(image,&image->exception));
+            IdentifyImageType(image,&image->exception));
           break;
         }
        break;

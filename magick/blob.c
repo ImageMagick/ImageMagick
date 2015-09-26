@@ -1047,7 +1047,7 @@ MagickExport unsigned char *FileToBlob(const char *filename,const size_t extent,
       blob[*length]='\0';
       return(blob);
     }
-  *length=(size_t) MagickMin(offset,(ssize_t) extent);
+  *length=(size_t) MagickMin(offset,extent);
   blob=(unsigned char *) NULL;
   if (~(*length) >= (MaxTextExtent-1))
     blob=(unsigned char *) AcquireQuantumMemory(*length+MaxTextExtent,
@@ -2587,7 +2587,6 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
             (void) ResetMagickMemory(magick,0,sizeof(magick));
             count=fread(magick,1,sizeof(magick),image->blob->file_info.file);
             (void) fseek(image->blob->file_info.file,-((off_t) count),SEEK_CUR);
-            (void) fflush(image->blob->file_info.file);
             (void) LogMagickEvent(BlobEvent,GetMagickModule(),
                "  read %.20g magic header bytes",(double) count);
 #if defined(MAGICKCORE_ZLIB_DELEGATE)

@@ -551,6 +551,11 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (file == (FILE *) NULL)
     file=stdout;
+  colorspace=image->colorspace;
+  type=IdentifyImageType(image,exception);
+  if ((type == BilevelType) || (type == GrayscaleType) ||
+      (type == GrayscaleAlphaType))
+    colorspace=GRAYColorspace;
   exception=AcquireExceptionInfo();
   locate=GetImageArtifact(image,"identify:locate");
   if (locate != (const char *) NULL)
@@ -698,7 +703,6 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
   exception=DestroyExceptionInfo(exception);
   ping=pixels == (const PixelPacket *) NULL ? MagickTrue : MagickFalse;
   exception=(&image->exception);
-  type=GetImageType(image,exception);
   (void) SignatureImage(image);
   (void) FormatLocaleFile(file,"Image: %s\n",image->filename);
   if (*image->magick_filename != '\0')
