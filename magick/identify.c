@@ -552,11 +552,11 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
   if (file == (FILE *) NULL)
     file=stdout;
   colorspace=image->colorspace;
+  exception=AcquireExceptionInfo();
   type=IdentifyImageType(image,exception);
   if ((type == BilevelType) || (type == GrayscaleType) ||
-      (type == GrayscaleAlphaType))
+      (type == GrayscaleMatteType))
     colorspace=GRAYColorspace;
-  exception=AcquireExceptionInfo();
   locate=GetImageArtifact(image,"identify:locate");
   if (locate != (const char *) NULL)
     {

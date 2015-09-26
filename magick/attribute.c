@@ -693,7 +693,7 @@ MagickExport ImageType IdentifyImageGray(const Image *image,
   ImageType
     type;
 
-  register const Quantum
+  register const PixelPacket
     *p;
 
   register ssize_t
@@ -703,11 +703,11 @@ MagickExport ImageType IdentifyImageGray(const Image *image,
     y;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickCoreSignature);
+  assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if ((image->type == BilevelType) || (image->type == GrayscaleType) ||
-      (image->type == GrayscaleAlphaType))
+      (image->type == GrayscaleMatteType))
     return(image->type);
   if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
     return(UndefinedType);
@@ -716,26 +716,25 @@ MagickExport ImageType IdentifyImageGray(const Image *image,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
-    if (p == (const Quantum *) NULL)
+    if (p == (const PixelPacket *) NULL)
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if (IsPixelGray(image,p) == MagickFalse)
+      if (IsPixelGray(p) == MagickFalse)
         {
           type=UndefinedType;
           break;
         }
-      if ((type == BilevelType) &&
-          (IsPixelMonochrome(image,p) == MagickFalse))
+      if ((type == BilevelType) && (IsPixelMonochrome(p) == MagickFalse))
         type=GrayscaleType;
-      p+=GetPixelChannels(image);
+      p++;
     }
     if (type == UndefinedType)
       break;
   }
   image_view=DestroyCacheView(image_view);
   if ((type == GrayscaleType) && (image->matte != MagickFalse))
-    type=GrayscaleAlphaType;
+    type=GrayscaleMatteType;
   return(type);
 }
 
@@ -778,14 +777,14 @@ MagickExport MagickBooleanType IdentifyImageMonochrome(const Image *image,
   register ssize_t
     x;
 
-  register const Quantum
+  register const PixelPacket
     *p;
 
   ssize_t
     y;
 
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickCoreSignature);
+  assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->type == BilevelType)
@@ -797,16 +796,16 @@ MagickExport MagickBooleanType IdentifyImageMonochrome(const Image *image,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
-    if (p == (const Quantum *) NULL)
+    if (p == (const PixelPacket *) NULL)
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if (IsPixelMonochrome(image,p) == MagickFalse)
+      if (IsPixelMonochrome(p) == MagickFalse)
         {
           type=UndefinedType;
           break;
         }
-      p+=GetPixelChannels(image);
+      p++;
     }
     if (type == UndefinedType)
       break;
@@ -853,31 +852,31 @@ MagickExport ImageType IdentifyImageType(const Image *image,
   ExceptionInfo *exception)
 {
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickCoreSignature);
+  assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->colorspace == CMYKColorspace)
     {
-      if (image->alpha_trait == UndefinedPixelTrait)
+      if (image->matte == MagickFalse)
         return(ColorSeparationType);
-      return(ColorSeparationAlphaType);
+      return(ColorSeparationMatteType);
     }
   if (IdentifyImageMonochrome(image,exception) != MagickFalse)
     return(BilevelType);
   if (IdentifyImageGray(image,exception) != UndefinedType)
     {
       if (image->matte != MagickFalse)
-        return(GrayscaleAlphaType);
+        return(GrayscaleMatteType);
       return(GrayscaleType);
     }
   if (IdentifyPaletteImage(image,exception) != MagickFalse)
     {
       if (image->matte != MagickFalse)
-        return(PaletteAlphaType);
+        return(PaletteMatteType);
       return(PaletteType);
     }
   if (image->matte != MagickFalse)
-    return(TrueColorAlphaType);
+    return(TrueColorMatteType);
   return(TrueColorType);
 }
 

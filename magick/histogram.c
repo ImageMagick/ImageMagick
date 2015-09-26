@@ -645,11 +645,14 @@ static MagickBooleanType CheckImageColors(const Image *image,
   CubeInfo
     *cube_info;
 
-  PixelInfo
+  MagickPixelPacket
     pixel,
     target;
 
-  register const Quantum
+  register const IndexPacket
+    *indexes;
+
+  register const PixelPacket
     *p;
 
   register ssize_t
@@ -681,14 +684,15 @@ static MagickBooleanType CheckImageColors(const Image *image,
         ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
       return(MagickFalse);
     }
-  GetPixelInfo(image,&pixel);
-  GetPixelInfo(image,&target);
+  GetMagickPixelPacket(image,&pixel);
+  GetMagickPixelPacket(image,&target);
   image_view=AcquireVirtualCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
-    if (p == (const Quantum *) NULL)
+    if (p == (const PixelPacket *) NULL)
       break;
+    indexes=GetCacheViewVirtualIndexQueue(image_view);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       /*
@@ -698,7 +702,7 @@ static MagickBooleanType CheckImageColors(const Image *image,
       index=MaxTreeDepth-1;
       for (level=1; level < MaxTreeDepth; level++)
       {
-        GetPixelInfoPixel(image,p,&pixel);
+        SetMagickPixelPacket(image,p,indexes+x,&pixel);
         id=ColorToNodeId(image,&pixel,index);
         if (node_info->child[id] == (NodeInfo *) NULL)
           {
@@ -718,8 +722,9 @@ static MagickBooleanType CheckImageColors(const Image *image,
         break;
       for (i=0; i < (ssize_t) node_info->number_unique; i++)
       {
-        target=node_info->list[i];
-        if (IsPixelInfoEquivalent(&pixel,&target) != MagickFalse)
+        SetMagickPixelPacket(image,&node_info->list[i].pixel,
+          &node_info->list[i].index,&target);
+        if (IsMagickColorEqual(&pixel,&target) != MagickFalse)
           break;
       }
       if (i < (ssize_t) node_info->number_unique)
@@ -730,31 +735,29 @@ static MagickBooleanType CheckImageColors(const Image *image,
             Add this unique color to the color list.
           */
           if (node_info->number_unique == 0)
-            node_info->list=(PixelInfo *) AcquireMagickMemory(
+            node_info->list=(ColorPacket *) AcquireMagickMemory(
               sizeof(*node_info->list));
           else
-            node_info->list=(PixelInfo *) ResizeQuantumMemory(node_info->list,
+            node_info->list=(ColorPacket *) ResizeQuantumMemory(node_info->list,
               (size_t) (i+1),sizeof(*node_info->list));
-          if (node_info->list == (PixelInfo *) NULL)
+          if (node_info->list == (ColorPacket *) NULL)
             {
               (void) ThrowMagickException(exception,GetMagickModule(),
                 ResourceLimitError,"MemoryAllocationFailed","`%s'",
                 image->filename);
               break;
             }
-          node_info->list[i].red=(double) GetPixelRed(image,p);
-          node_info->list[i].green=(double) GetPixelGreen(image,p);
-          node_info->list[i].blue=(double) GetPixelBlue(image,p);
-          if (image->colorspace == CMYKColorspace)
-            node_info->list[i].black=(double) GetPixelBlack(image,p);
-          node_info->list[i].alpha=(double) GetPixelAlpha(image,p);
+          node_info->list[i].pixel=(*p);
+          if ((image->colorspace == CMYKColorspace) ||
+              (image->storage_class == PseudoClass))
+            node_info->list[i].index=GetPixelIndex(indexes+x);
           node_info->list[i].count=1;
           node_info->number_unique++;
           cube_info->colors++;
           if (cube_info->colors > max_colors)
             break;
         }
-      p+=GetPixelChannels(image);
+      p++;
     }
     if (x < (ssize_t) image->columns)
       break;
@@ -768,7 +771,7 @@ MagickExport MagickBooleanType IdentifyPaletteImage(const Image *image,
   ExceptionInfo *exception)
 {
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickCoreSignature);
+  assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   return(CheckImageColors(image,exception,256));
