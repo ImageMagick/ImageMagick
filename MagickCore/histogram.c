@@ -904,10 +904,22 @@ MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
   MagickStatusType
     status;
 
+  status=MagickTrue;
+  if (image->channel_mask == DefaultChannels)
+    {
+      /*
+        Auto-level all channels equally.
+      */
+      (void) GetImageRange(image,&min,&max,exception);
+      min+=black;
+      max-=white;
+      if (fabs(min-max) >= MagickEpsilon)
+        status&=LevelImage(image,min,max,gamma,exception);
+      return(status != 0 ? MagickTrue : MagickFalse);
+    }
   /*
     Auto-level each channel.
   */
-  status=MagickTrue;
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
   {
     ChannelType

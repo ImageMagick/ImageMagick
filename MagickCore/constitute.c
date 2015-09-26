@@ -1263,7 +1263,8 @@ MagickExport MagickBooleanType WriteImages(const ImageInfo *image_info,
   if (filename != (const char *) NULL)
     for (p=images; p != (Image *) NULL; p=GetNextImageInList(p))
       (void) CopyMagickString(p->filename,filename,MagickPathExtent);
-  (void) CopyMagickString(write_info->filename,images->filename,MagickPathExtent);
+  (void) CopyMagickString(write_info->filename,images->filename,
+    MagickPathExtent);
   sans_exception=AcquireExceptionInfo();
   (void) SetImageInfo(write_info,(unsigned int) GetImageListLength(images),
     sans_exception);
