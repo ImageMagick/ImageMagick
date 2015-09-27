@@ -5,6 +5,8 @@
 2015-09-22  6.9.2-4 Cristy  <quetzlzacatenango@image...>
   * Prevent null pointer access (reference
     https://github.com/ImageMagick/ImageMagick/pull/34).
+  * Specify histogram code image format implictedly (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=28412).
 
 2015-09-19  6.9.2-3 Cristy  <quetzlzacatenango@image...>
   * New version 6.9.2-3, GIT revision 10235:c40ee57:20150919
