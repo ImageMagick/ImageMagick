@@ -210,6 +210,7 @@ static MagickBooleanType WriteTHUMBNAILImage(const ImageInfo *image_info,
     MaxTextExtent);
   write_info=CloneImageInfo(image_info);
   (void) SetImageInfo(write_info,1,&image->exception);
+  *write_info->magick='\0';
   if (LocaleCompare(write_info->magick,"THUMBNAIL") == 0)
     (void) FormatLocaleString(thumbnail_image->filename,MaxTextExtent,
       "miff:%s",write_info->filename);
