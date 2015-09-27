@@ -1063,8 +1063,8 @@ MagickExport MagickBooleanType CopyImagePixels(Image *image,
   assert(geometry != (RectangleInfo *) NULL);
   assert(offset != (OffsetInfo *) NULL);
   if ((offset->x < 0) || (offset->y < 0) ||
-      ((offset->x+(ssize_t) geometry->width) > (ssize_t) image->columns) ||
-      ((offset->y+(ssize_t) geometry->height) > (ssize_t) image->rows))
+      ((ssize_t) (offset->x+geometry->width) > (ssize_t) image->columns) ||
+      ((ssize_t) (offset->y+geometry->height) > (ssize_t) image->rows))
     ThrowBinaryException(OptionError,"GeometryDoesNotContainImage",
       image->filename);
   if (SetImageStorageClass(image,DirectClass) == MagickFalse)
