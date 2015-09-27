@@ -297,8 +297,10 @@ static MagickBooleanType WriteMASKImage(const ImageInfo *image_info,
   mask_image=MaskImage(image,exception);
   if (mask_image == (Image *) NULL)
     return(MagickFalse);
-  (void) CopyMagickString(mask_image->filename,image->filename,MagickPathExtent);
+  (void) CopyMagickString(mask_image->filename,image->filename,
+    MagickPathExtent);
   write_info=CloneImageInfo(image_info);
+  *write_info->magick='\0';
   (void) SetImageInfo(write_info,1,exception);
   if (LocaleCompare(write_info->magick,"MASK") == 0)
     (void) FormatLocaleString(mask_image->filename,MagickPathExtent,"miff:%s",
