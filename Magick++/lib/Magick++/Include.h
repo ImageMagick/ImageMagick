@@ -1304,6 +1304,8 @@ namespace Magick
   using MagickCore::LevelImage;
   using MagickCore::LevelImageChannel;
   using MagickCore::LevelColorsImageChannel;
+  using MagickCore::LevelizeImage;
+  using MagickCore::LevelizeImageChannel;
   using MagickCore::LinearStretchImage;
   using MagickCore::LinkedListInfo;
   using MagickCore::LiquidRescaleImage;

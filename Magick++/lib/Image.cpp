@@ -3445,6 +3445,22 @@ void Magick::Image::levelColorsChannel(const ChannelType channel_,
   throwImageException();
 }
 
+void Magick::Image::levelize(const double blackPoint_,const double whitePoint_,
+  const double gamma_)
+{
+  modifyImage();
+  (void) LevelizeImage(image(),blackPoint_,whitePoint_,gamma_);
+  throwImageException();
+}
+
+void Magick::Image::levelizeChannel(const ChannelType channel_,
+  const double blackPoint_,const double whitePoint_,const double gamma_)
+{
+  modifyImage();
+  (void) LevelizeImageChannel(image(),channel_,blackPoint_,whitePoint_,gamma_);
+  throwImageException();
+}
+
 void Magick::Image::linearStretch(const double blackPoint_,
   const double whitePoint_)
 {
