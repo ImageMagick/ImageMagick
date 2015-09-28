@@ -1346,6 +1346,7 @@ namespace Magick
   using MagickCore::KuwaharaImage;
   using MagickCore::LevelImage;
   using MagickCore::LevelImageColors;
+  using MagickCore::LevelizeImage;
   using MagickCore::LinearStretchImage;
   using MagickCore::LiquidRescaleImage;
   using MagickCore::LocaleCompare;

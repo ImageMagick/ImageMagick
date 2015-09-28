@@ -1049,6 +1049,15 @@ namespace Magick
       const Color &blackColor_,const Color &whiteColor_,
       const bool invert_=true);
 
+    // Levelize applies the reversed level operation to just the specific
+    // channels specified.It compresses the full range of color values, so
+    // that they lie between the given black and white points. Gamma is
+    // applied before the values are mapped.
+    void levelize(const double blackPoint_,const double whitePoint_,
+      const double gamma_=1.0);
+    void levelizeChannel(const ChannelType channel_,const double blackPoint_,
+      const double whitePoint_,const double gamma_=1.0);
+
     // Discards any pixels below the black point and above the white point and
     // levels the remaining pixels.
     void linearStretch(const double blackPoint_,const double whitePoint_);
