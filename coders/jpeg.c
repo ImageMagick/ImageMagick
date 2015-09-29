@@ -2231,16 +2231,15 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
     jpeg_info.data_precision=BITS_IN_JSAMPLE;
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-      "Image resolution: %.20g,%.20g",floor(image->resolution.x+0.5),
-      floor(image->resolution.y+0.5));
+      "Image resolution: %.20g,%.20g",image->resolution.x,image->resolution.y);
   if ((image->resolution.x != 0.0) && (image->resolution.y != 0.0))
     {
       /*
         Set image resolution.
       */
       jpeg_info.write_JFIF_header=TRUE;
-      jpeg_info.X_density=(UINT16) floor(image->resolution.x+0.5);
-      jpeg_info.Y_density=(UINT16) floor(image->resolution.y+0.5);
+      jpeg_info.X_density=(UINT16) image->resolution.x;
+      jpeg_info.Y_density=(UINT16) image->resolution.y;
       /*
         Set image resolution units.
       */
