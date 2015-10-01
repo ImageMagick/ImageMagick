@@ -1465,9 +1465,6 @@ static double FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
         }
         case AlphaPixelChannel:
         {
-          double
-            alpha;
-
           if (pixel.alpha_trait == UndefinedPixelTrait)
             return(1.0);
           alpha=(double) (QuantumScale*pixel.alpha);
@@ -1813,13 +1810,7 @@ static double FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
     case 'z':
     {
       if (LocaleCompare(symbol,"z") == 0)
-        {
-          double
-            depth;
-
-          depth=(double) GetImageDepth(image,fx_info->exception);
-          return(depth);
-        }
+        return((double)GetImageDepth(image, fx_info->exception));
       break;
     }
     default:
@@ -2279,9 +2270,6 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
         }
         case '?':
         {
-          double
-            gamma;
-
           (void) CopyMagickString(subexpression,++p,MagickPathExtent);
           q=subexpression;
           p=StringToken(":",&q);
@@ -2780,9 +2768,6 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
     {
       if (LocaleNCompare(expression,"rand",4) == 0)
         {
-          double
-            alpha;
-
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
         #pragma omp critical (MagickCore_FxEvaluateSubexpression)
 #endif
@@ -3461,7 +3446,7 @@ MagickExport Image *MorphImages(const Image *image,const size_t number_frames,
     *next;
 
   register ssize_t
-    i;
+    n;
 
   ssize_t
     y;
@@ -3483,7 +3468,7 @@ MagickExport Image *MorphImages(const Image *image,const size_t number_frames,
       /*
         Morph single image.
       */
-      for (i=1; i < (ssize_t) number_frames; i++)
+      for (n=1; n < (ssize_t) number_frames; n++)
       {
         morph_image=CloneImage(image,0,0,MagickTrue,exception);
         if (morph_image == (Image *) NULL)
@@ -3497,7 +3482,7 @@ MagickExport Image *MorphImages(const Image *image,const size_t number_frames,
             MagickBooleanType
               proceed;
 
-            proceed=SetImageProgress(image,MorphImageTag,(MagickOffsetType) i,
+            proceed=SetImageProgress(image,MorphImageTag,(MagickOffsetType) n,
               number_frames);
             if (proceed == MagickFalse)
               status=MagickFalse;
@@ -3513,13 +3498,13 @@ MagickExport Image *MorphImages(const Image *image,const size_t number_frames,
   next=image;
   for ( ; GetNextImageInList(next) != (Image *) NULL; next=GetNextImageInList(next))
   {
-    for (i=0; i < (ssize_t) number_frames; i++)
+    for (n=0; n < (ssize_t) number_frames; n++)
     {
       CacheView
         *image_view,
         *morph_view;
 
-      beta=(double) (i+1.0)/(double) (number_frames+1.0);
+      beta=(double) (n+1.0)/(double) (number_frames+1.0);
       alpha=1.0-beta;
       morph_image=ResizeImage(next,(size_t) (alpha*next->columns+beta*
         GetNextImageInList(next)->columns+0.5),(size_t) (alpha*next->rows+beta*
@@ -3608,7 +3593,7 @@ MagickExport Image *MorphImages(const Image *image,const size_t number_frames,
       image_view=DestroyCacheView(image_view);
       morph_image=DestroyImage(morph_image);
     }
-    if (i < (ssize_t) number_frames)
+    if (n < (ssize_t) number_frames)
       break;
     /*
       Clone last frame in sequence.

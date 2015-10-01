@@ -2563,7 +2563,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
     offset;
 
   register ssize_t
-    i;
+    j;
 
   ssize_t
     y;
@@ -2629,8 +2629,8 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
     sizeof(*changes));
   if (changes == (size_t *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  for (i=0; i < (ssize_t) GetOpenMPMaximumThreads(); i++)
-    changes[i]=0;
+  for (j=0; j < (ssize_t) GetOpenMPMaximumThreads(); j++)
+    changes[j]=0;
 
   if ((method == ConvolveMorphology) && (kernel->width == 1))
     {
@@ -2779,8 +2779,8 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
       morphology_image->type=image->type;
       morphology_view=DestroyCacheView(morphology_view);
       image_view=DestroyCacheView(image_view);
-      for (i=0; i < (ssize_t) GetOpenMPMaximumThreads(); i++)
-        changed+=changes[i];
+      for (j=0; j < (ssize_t) GetOpenMPMaximumThreads(); j++)
+        changed+=changes[j];
       changes=(size_t *) RelinquishMagickMemory(changes);
       return(status ? (ssize_t) changed : 0);
     }
@@ -3205,8 +3205,8 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
   }
   morphology_view=DestroyCacheView(morphology_view);
   image_view=DestroyCacheView(image_view);
-  for (i=0; i < (ssize_t) GetOpenMPMaximumThreads(); i++)
-    changed+=changes[i];
+  for (j=0; j < (ssize_t) GetOpenMPMaximumThreads(); j++)
+    changed+=changes[j];
   changes=(size_t *) RelinquishMagickMemory(changes);
   return(status ? (ssize_t) changed : -1);
 }
@@ -4134,9 +4134,6 @@ MagickExport Image *MorphologyImage(const Image *image,
    * users can see the results of the 'option:convolve:scale' option.
    */
   if ( method == ConvolveMorphology || method == CorrelateMorphology ) {
-      const char
-        *artifact;
-
       /* Get the bias value as it will be needed */
       artifact = GetImageArtifact(image,"convolve:bias");
       if ( artifact != (const char *) NULL) {

@@ -858,9 +858,6 @@ static MagickBooleanType LoadMimeCache(LinkedListInfo *mime_cache,
   mime=GetXMLTreeChild(mime_map,"mime");
   while (mime != (XMLTreeInfo *) NULL)
   {
-    const char
-      *attribute;
-
     /*
       Process mime element.
     */

@@ -723,14 +723,14 @@ static boolean ReadProfile(j_decompress_ptr jpeg_info)
   if (previous_profile != (const StringInfo *) NULL)
     {
       size_t
-        length;
+        profile_length;
 
-      length=GetStringInfoLength(profile);
+      profile_length=GetStringInfoLength(profile);
       SetStringInfoLength(profile,GetStringInfoLength(profile)+
         GetStringInfoLength(previous_profile));
       (void) memmove(GetStringInfoDatum(profile)+
         GetStringInfoLength(previous_profile),GetStringInfoDatum(profile),
-        length);
+        profile_length);
       (void) memcpy(GetStringInfoDatum(profile),
         GetStringInfoDatum(previous_profile),
         GetStringInfoLength(previous_profile));
@@ -1938,11 +1938,7 @@ static void WriteProfile(j_compress_ptr jpeg_info,Image *image)
   ResetImageProfileIterator(image);
   for (name=GetNextImageProfile(image); name != (const char *) NULL; )
   {
-    register unsigned char
-      *p;
-
     profile=GetImageProfile(image,name);
-    p=GetStringInfoDatum(custom_profile);
     if (LocaleCompare(name,"EXIF") == 0)
       for (i=0; i < (ssize_t) GetStringInfoLength(profile); i+=65533L)
       {
@@ -1973,10 +1969,14 @@ static void WriteProfile(j_compress_ptr jpeg_info,Image *image)
     if (((LocaleCompare(name,"IPTC") == 0) ||
         (LocaleCompare(name,"8BIM") == 0)) && (iptc == MagickFalse))
       {
+        register unsigned char
+          *p;
+
         size_t
           roundup;
 
         iptc=MagickTrue;
+        p=GetStringInfoDatum(custom_profile);
         for (i=0; i < (ssize_t) GetStringInfoLength(profile); i+=65500L)
         {
           length=MagickMin(GetStringInfoLength(profile)-i,65500L);
@@ -2366,10 +2366,10 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
         *jpeg_image;
 
       ImageInfo
-        *jpeg_info;
+        *extent_info;
 
-      jpeg_info=CloneImageInfo(image_info);
-      jpeg_info->blob=NULL;
+      extent_info=CloneImageInfo(image_info);
+      extent_info->blob=NULL;
       jpeg_image=CloneImage(image,0,0,MagickTrue,exception);
       if (jpeg_image != (Image *) NULL)
         {
@@ -2383,9 +2383,9 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
           /*
             Search for compression quality that does not exceed image extent.
           */
-          jpeg_info->quality=0;
+          extent_info->quality=0;
           extent=(MagickSizeType) SiPrefixToDoubleInterval(option,100.0);
-          (void) DeleteImageOption(jpeg_info,"jpeg:extent");
+          (void) DeleteImageOption(extent_info,"jpeg:extent");
           (void) DeleteImageArtifact(jpeg_image,"jpeg:extent");
           maximum=image->quality;
           if (maximum < 2)
@@ -2394,7 +2394,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
           {
             (void) AcquireUniqueFilename(jpeg_image->filename);
             jpeg_image->quality=minimum+(maximum-minimum+1)/2;
-            status=WriteJPEGImage(jpeg_info,jpeg_image,exception);
+            status=WriteJPEGImage(extent_info,jpeg_image,exception);
             if (GetBlobSize(jpeg_image) <= extent)
               minimum=jpeg_image->quality+1;
             else
@@ -2404,7 +2404,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
           quality=(int) minimum-1;
           jpeg_image=DestroyImage(jpeg_image);
         }
-      jpeg_info=DestroyImageInfo(jpeg_info);
+      extent_info=DestroyImageInfo(extent_info);
     }
   jpeg_set_quality(&jpeg_info,quality,TRUE);
 #if (JPEG_LIB_VERSION >= 70)

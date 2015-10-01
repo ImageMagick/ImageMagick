@@ -1088,8 +1088,7 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
   PointInfo
     extent[4],
     min,
-    max,
-    point;
+    max;
 
   register ssize_t
     i;
@@ -1122,6 +1121,9 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
   extent[3].y=(double) source->rows-1.0;
   for (i=0; i < 4; i++)
   {
+    PointInfo
+      point;
+
     point=extent[i];
     extent[i].x=point.x*affine->sx+point.y*affine->ry+affine->tx;
     extent[i].y=point.x*affine->rx+point.y*affine->sy+affine->ty;
@@ -1671,10 +1673,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
     current;
 
   char
-    key[2*MagickPathExtent],
     keyword[MagickPathExtent],
     geometry[MagickPathExtent],
-    name[MagickPathExtent],
     pattern[MagickPathExtent],
     *primitive,
     *token;
@@ -2366,28 +2366,32 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
               }
             if (LocaleCompare("pattern",token) == 0)
               {
+                char
+                  key[2*MagickPathExtent],
+                  name[MagickPathExtent];
+
                 RectangleInfo
-                  bounds;
+                  pattern_bounds;
 
                 GetMagickToken(q,&q,token);
                 (void) CopyMagickString(name,token,MagickPathExtent);
                 GetMagickToken(q,&q,token);
-                bounds.x=(ssize_t) ceil(StringToDouble(token,(char **) NULL)-
-                  0.5);
+                pattern_bounds.x=(ssize_t) ceil(StringToDouble(token,
+                  (char **) NULL)-0.5);
                 GetMagickToken(q,&q,token);
                 if (*token == ',')
                   GetMagickToken(q,&q,token);
-                bounds.y=(ssize_t) ceil(StringToDouble(token,(char **) NULL)-
-                  0.5);
+                pattern_bounds.y=(ssize_t) ceil(StringToDouble(token,
+                  (char **) NULL)-0.5);
                 GetMagickToken(q,&q,token);
                 if (*token == ',')
                   GetMagickToken(q,&q,token);
-                bounds.width=(size_t) floor(StringToDouble(token,
+                pattern_bounds.width=(size_t) floor(StringToDouble(token,
                   (char **) NULL)+0.5);
                 GetMagickToken(q,&q,token);
                 if (*token == ',')
                   GetMagickToken(q,&q,token);
-                bounds.height=(size_t) floor(StringToDouble(token,
+                pattern_bounds.height=(size_t) floor(StringToDouble(token,
                   (char **) NULL)+0.5);
                 for (p=q; *q != '\0'; )
                 {
@@ -2402,10 +2406,12 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
                 (void) CopyMagickString(token,p,(size_t) (q-p-4+1));
                 (void) FormatLocaleString(key,MagickPathExtent,"%s",name);
                 (void) SetImageArtifact(image,key,token);
-                (void) FormatLocaleString(key,MagickPathExtent,"%s-geometry",name);
+                (void) FormatLocaleString(key,MagickPathExtent,"%s-geometry",
+                  name);
                 (void) FormatLocaleString(geometry,MagickPathExtent,
-                  "%.20gx%.20g%+.20g%+.20g",(double) bounds.width,(double)
-                  bounds.height,(double) bounds.x,(double) bounds.y);
+                  "%.20gx%.20g%+.20g%+.20g",(double)pattern_bounds.width,
+                  (double)pattern_bounds.height,(double)pattern_bounds.x,
+                  (double)pattern_bounds.y);
                 (void) SetImageArtifact(image,key,geometry);
                 GetMagickToken(q,&q,token);
                 break;
@@ -2555,17 +2561,17 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
             if (IsPoint(q) != MagickFalse)
               {
                 const char
-                  *p;
+                  *r;
 
-                p=q;
-                GetMagickToken(p,&p,token);
+                r=q;
+                GetMagickToken(r,&r,token);
                 if (*token == ',')
-                  GetMagickToken(p,&p,token);
+                  GetMagickToken(r,&r,token);
                 for (x=0; IsPoint(token) != MagickFalse; x++)
                 {
-                  GetMagickToken(p,&p,token);
+                  GetMagickToken(r,&r,token);
                   if (*token == ',')
-                    GetMagickToken(p,&p,token);
+                    GetMagickToken(r,&r,token);
                 }
                 graphic_context[n]->dash_pattern=(double *)
                   AcquireQuantumMemory((size_t) (2UL*x+1UL),
@@ -4271,9 +4277,6 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
             register Quantum
               *restrict q;
 
-            register ssize_t
-              x;
-
             q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
               exception);
             if (q == (Quantum *) NULL)
@@ -4332,9 +4335,6 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
           {
             register Quantum
               *restrict q;
-
-            register ssize_t
-              x;
 
             q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
               exception);
@@ -4448,9 +4448,6 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
             register Quantum
               *restrict q;
 
-            register ssize_t
-              x;
-
             q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
               exception);
             if (q == (Quantum *) NULL)
@@ -4513,17 +4510,14 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
       if (((x1 != 0L) && (x1 != (ssize_t) composite_image->columns)) ||
           ((y1 != 0L) && (y1 != (ssize_t) composite_image->rows)))
         {
-          char
-            geometry[MagickPathExtent];
-
           /*
             Resize image.
           */
-          (void) FormatLocaleString(geometry,MagickPathExtent,"%gx%g!",
-            primitive_info[1].point.x,primitive_info[1].point.y);
+          (void) FormatLocaleString(composite_geometry,MagickPathExtent,
+            "%gx%g!",primitive_info[1].point.x,primitive_info[1].point.y);
           composite_image->filter=image->filter;
-          (void) TransformImage(&composite_image,(char *) NULL,geometry,
-            exception);
+          (void) TransformImage(&composite_image,(char *) NULL,
+            composite_geometry,exception);
         }
       if (composite_image->alpha_trait == UndefinedPixelTrait)
         (void) SetImageAlphaChannel(composite_image,OpaqueAlphaChannel,

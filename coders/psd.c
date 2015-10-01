@@ -1896,9 +1896,6 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if ((has_merged_image == MagickFalse) && (GetImageListLength(image) == 1) &&
       (length != 0))
     {
-      MagickStatusType
-        status;
-
       SeekBlob(image,offset,SEEK_SET);
       status=ReadPSDLayers(image,image_info,&psd_info,MagickFalse,exception);
       if (status != MagickTrue)
@@ -2714,10 +2711,10 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image,
     else
       {
         size_t
-          length;
+          layer_length;
 
-        length=strlen(property);
-        layer_info_size+=8+length+(4-(length % 4));
+        layer_length=strlen(property);
+        layer_info_size+=8+layer_length+(4-(layer_length % 4));
       }
     layer_count++;
     next_image=GetNextImageInList(next_image);
@@ -2826,11 +2823,11 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image,
         else
           {
             size_t
-              length;
+              label_length;
 
-            length=strlen(property);
-            (void) WriteBlobMSBLong(image,(unsigned int) (length+(4-
-              (length % 4))+8));
+            label_length=strlen(property);
+            (void) WriteBlobMSBLong(image,(unsigned int) (label_length+(4-
+              (label_length % 4))+8));
             (void) WriteBlobMSBLong(image,0);
             (void) WriteBlobMSBLong(image,0);
             WritePascalString(image,property,4);
