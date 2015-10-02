@@ -3936,7 +3936,7 @@ MagickExport MagickBooleanType PlasmaImage(Image *image,
 %
 %  PolaroidImage() simulates a Polaroid picture.
 %
-%  The format of the AnnotateImage method is:
+%  The format of the PolaroidImage method is:
 %
 %      Image *PolaroidImage(const Image *image,const DrawInfo *draw_info,
 %        const char *caption,const double angle,
