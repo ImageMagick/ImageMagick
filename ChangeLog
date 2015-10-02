@@ -7,6 +7,10 @@
     https://github.com/ImageMagick/ImageMagick/pull/34).
   * Specify histogram code image format implictedly (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=28412).
+  * Don't round up for JPEG image resolution (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=28422).
+  * Read the whole image @ image.jp2[0] or an individual tile @ image.jp2[1],
+    image.jp2[2].
 
 2015-09-19  6.9.2-3 Cristy  <quetzlzacatenango@image...>
   * New version 6.9.2-3, GIT revision 10235:c40ee57:20150919
