@@ -366,9 +366,9 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
           ThrowReaderException(DelegateError,"UnableToDecodeImageFile");
         }
     }
-  if (image_info->number_scenes != 0)
+   if ((image_info->number_scenes != 0) && (image_info->scene != 0))
     jp2_status=opj_get_decoded_tile(jp2_codec,jp2_stream,jp2_image,
-      (unsigned int) image_info->scene);
+      (unsigned int) image_info->scene-1);
   else
     if (image->ping == MagickFalse)
       {
