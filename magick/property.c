@@ -3300,13 +3300,13 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
     *interpret_text;
 
   register char
-    *q;     /* current position in interpret_text */
+    *q;  /* current position in interpret_text */
 
   register const char
-    *p;     /* position in embed_text string being expanded */
+    *p;  /* position in embed_text string being expanded */
 
   size_t
-    extent; /* allocated length of interpret_text */
+    extent;  /* allocated length of interpret_text */
 
   MagickBooleanType
     number;
@@ -3317,22 +3317,19 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
 
   if (embed_text == (const char *) NULL)
-    return((char *) NULL);
+    return(ConstantString(""));
   p=embed_text;
 
   if (*p == '\0')
     return(ConstantString(""));
 
-  /* handle a '@' replace string from file */
-  if (*p == '@') {
-     p++;
-     if (*p != '-' && (IsPathAccessible(p) == MagickFalse) ) {
-       (void) ThrowMagickException(&image->exception,GetMagickModule(),
-           OptionError,"UnableToAccessPath","%s",p);
-       return((char *) NULL);
-     }
-     return(FileToString(p,~0UL,&image->exception));
-  }
+  if ((*p == '@') && (IsPathAccessible(p+1) != MagickFalse))
+    { 
+      /* handle a '@' replace string from file */
+      interpret_text=FileToString(p+1,~0UL,&image->exception);
+      if (interpret_text != (char *) NULL)
+        return(interpret_text);
+    }
 
   /*
     Translate any embedded format characters.
