@@ -139,7 +139,7 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
     bounds;
 
   register const Quantum
-    *restrict p;
+    *r;
 
   ssize_t
     y;
@@ -154,23 +154,23 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
   bounds.y=(ssize_t) image->rows;
   GetPixelInfo(image,&target[0]);
   image_view=AcquireVirtualCacheView(image,exception);
-  p=GetCacheViewVirtualPixels(image_view,0,0,1,1,exception);
-  if (p == (const Quantum *) NULL)
+  r=GetCacheViewVirtualPixels(image_view,0,0,1,1,exception);
+  if (r == (const Quantum *) NULL)
     {
       image_view=DestroyCacheView(image_view);
       return(bounds);
     }
-  GetPixelInfoPixel(image,p,&target[0]);
+  GetPixelInfoPixel(image,r,&target[0]);
   GetPixelInfo(image,&target[1]);
-  p=GetCacheViewVirtualPixels(image_view,(ssize_t) image->columns-1,0,1,1,
+  r=GetCacheViewVirtualPixels(image_view,(ssize_t) image->columns-1,0,1,1,
     exception);
-  if (p != (const Quantum *) NULL)
-    GetPixelInfoPixel(image,p,&target[1]);
+  if (r != (const Quantum *) NULL)
+    GetPixelInfoPixel(image,r,&target[1]);
   GetPixelInfo(image,&target[2]);
-  p=GetCacheViewVirtualPixels(image_view,0,(ssize_t) image->rows-1,1,1,
+  r=GetCacheViewVirtualPixels(image_view,0,(ssize_t) image->rows-1,1,1,
     exception);
-  if (p != (const Quantum *) NULL)
-    GetPixelInfoPixel(image,p,&target[2]);
+  if (r != (const Quantum *) NULL)
+    GetPixelInfoPixel(image,r,&target[2]);
   status=MagickTrue;
   GetPixelInfo(image,&zero);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -184,6 +184,9 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
 
     RectangleInfo
       bounding_box;
+
+    register const Quantum
+      *restrict p;
 
     register ssize_t
       x;
