@@ -105,6 +105,7 @@ extern "C" {
 #if !defined(MagickPathExtent)
 # define MagickPathExtent  4096  /* always >= 4096 */
 #endif
+# define MaxTextExtent  MagickPathExtent
 
 #if defined(MAGICKCORE_HAVE___ATTRIBUTE__)
 #  define magick_aligned(x,y)  x __attribute__((aligned(y)))
