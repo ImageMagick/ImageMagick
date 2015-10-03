@@ -4548,12 +4548,6 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
        o destroy the secondary image.
   */
 
-  if (color_image == (Image *) NULL)
-    {
-      assert(alpha_image == (Image *) NULL);
-      return((Image *) NULL);
-    }
-
   if (color_image_info == (ImageInfo *) NULL)
     {
       assert(color_image == (Image *) NULL);
