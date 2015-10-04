@@ -768,7 +768,8 @@ static MagickBooleanType GetMagickModulePath(const char *filename,
     if ((NTGetModulePath("CORE_RL_MagickCore_.dll",path) != MagickFalse) ||
         (NTGetModulePath("CORE_DB_MagickCore_.dll",path) != MagickFalse))
       {
-        (void) ConcatenateMagickString(path,DirectorySeparator,MagickPathExtent);
+        (void) ConcatenateMagickString(path,DirectorySeparator,
+          MagickPathExtent);
         (void) ConcatenateMagickString(path,filename,MagickPathExtent);
         if (IsPathAccessible(path) != MagickFalse)
           return(MagickTrue);
@@ -779,6 +780,18 @@ static MagickBooleanType GetMagickModulePath(const char *filename,
     char
       *home;
 
+    home=GetEnvironmentValue("XDG_CONFIG_HOME");
+    if (home != (char *) NULL)
+      { 
+        /*
+          Search $XDG_CONFIG_HOME/ImageMagick.
+        */
+        (void) FormatLocaleString(path,MaxTextExtent,"%s%sImageMagick%s%s",
+          home,DirectorySeparator,DirectorySeparator,filename);
+        home=DestroyString(home);
+        if (IsPathAccessible(path) != MagickFalse)
+          return(MagickTrue);
+      }
     home=GetEnvironmentValue("HOME");
     if (home == (char *) NULL)
       home=GetEnvironmentValue("USERPROFILE");

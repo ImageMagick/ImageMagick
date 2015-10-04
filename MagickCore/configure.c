@@ -812,8 +812,8 @@ MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
     key_value=NTRegistryKeyLookup(RegistryKey);
     if (key_value != (unsigned char *) NULL)
       {
-        (void) FormatLocaleString(path,MagickPathExtent,"%s%s",(char *) key_value,
-          DirectorySeparator);
+        (void) FormatLocaleString(path,MagickPathExtent,"%s%s",(char *)
+          key_value,DirectorySeparator);
         (void) AppendValueToLinkedList(paths,ConstantString(path));
         key_value=(unsigned char *) RelinquishMagickMemory(key_value);
       }
@@ -883,6 +883,17 @@ MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
     char
       *home;
 
+    home=GetEnvironmentValue("XDG_CONFIG_HOME");
+    if (home != (char *) NULL)
+      { 
+        /*
+          Search $XDG_CONFIG_HOME/ImageMagick.
+        */
+        (void) FormatLocaleString(path,MaxTextExtent,"%s%sImageMagick%s%s",
+          home,DirectorySeparator,DirectorySeparator,filename);
+        (void) AppendValueToLinkedList(paths,ConstantString(path));
+        home=DestroyString(home);
+      }
     home=GetEnvironmentValue("HOME");
     if (home == (char *) NULL)
       home=GetEnvironmentValue("USERPROFILE");
