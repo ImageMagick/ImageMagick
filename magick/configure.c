@@ -882,6 +882,17 @@ MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
     char
       *home;
 
+    home=GetEnvironmentValue("XDG_CONFIG_HOME");
+    if (home != (char *) NULL)
+      { 
+        /*
+          Search $XDG_CONFIG_HOME/ImageMagick.
+        */
+        (void) FormatLocaleString(path,MaxTextExtent,"%s%sImageMagick%s%s",
+          home,DirectorySeparator,DirectorySeparator,filename);
+        (void) AppendValueToLinkedList(paths,ConstantString(path));
+        home=DestroyString(home);
+      }
     home=GetEnvironmentValue("HOME");
     if (home == (char *) NULL)
       home=GetEnvironmentValue("USERPROFILE");

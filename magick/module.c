@@ -778,6 +778,18 @@ static MagickBooleanType GetMagickModulePath(const char *filename,
     char
       *home;
 
+    home=GetEnvironmentValue("XDG_CONFIG_HOME");
+    if (home != (char *) NULL)
+      {
+        /*
+          Search $XDG_CONFIG_HOME/ImageMagick.
+        */
+        (void) FormatLocaleString(path,MaxTextExtent,"%s%sImageMagick%s%s",
+          home,DirectorySeparator,DirectorySeparator,filename);
+        home=DestroyString(home);
+        if (IsPathAccessible(path) != MagickFalse)
+          return(MagickTrue);
+      }
     home=GetEnvironmentValue("HOME");
     if (home == (char *) NULL)
       home=GetEnvironmentValue("USERPROFILE");

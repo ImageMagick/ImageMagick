@@ -2842,8 +2842,8 @@ const char* GetOpenCLCachedFilesDirectory() {
         /*
         */
 
-        /* first check if $HOME/.config exists */
-        (void) FormatLocaleString(path,MaxTextExtent,"%s%s.config",
+        /* first check if $HOME/.cache exists */
+        (void) FormatLocaleString(path,MaxTextExtent,"%s%s.cache",
           home,DirectorySeparator);
         status=GetPathAttributes(path,&attributes);
         if (status == MagickFalse) 
@@ -2856,11 +2856,12 @@ const char* GetOpenCLCachedFilesDirectory() {
 #endif
         }
         
-        /* first check if $HOME/.config/ImageMagick exists */
+        /* first check if $HOME/.cache/ImageMagick exists */
         if (mkdirStatus==0) 
         {
-            (void) FormatLocaleString(path,MaxTextExtent,"%s%s.config%sImageMagick",
-              home,DirectorySeparator,DirectorySeparator);
+            (void) FormatLocaleString(path,MaxTextExtent,
+              "%s%s.cache%sImageMagick",home,DirectorySeparator,
+              DirectorySeparator);
                     
             status=GetPathAttributes(path,&attributes);
             if (status == MagickFalse) 

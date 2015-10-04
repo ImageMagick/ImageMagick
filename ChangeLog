@@ -13,6 +13,8 @@
     image.jp2[2].
   * The -caption option no longer fails for filenames with @ prefix (reference
     https://github.com/ImageMagick/ImageMagick/issues/43).
+  * Honor $XDG_CONFIG_HOME and $XDG_CACHE_HOME (reference
+    https://github.com/ImageMagick/ImageMagick/issues/44).
 
 2015-09-19  6.9.2-3 Cristy  <quetzlzacatenango@image...>
   * New version 6.9.2-3, GIT revision 10235:c40ee57:20150919
