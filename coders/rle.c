@@ -173,6 +173,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
     map_length,
     number_colormaps,
     number_planes,
+    number_planes_filled,
     one,
     offset,
     pixel_info_length;
@@ -308,9 +309,12 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image->alpha_trait != UndefinedPixelTrait)
       number_planes++;
     number_pixels=(MagickSizeType) image->columns*image->rows;
-    if ((number_pixels*number_planes) != (size_t) (number_pixels*number_planes))
+    number_planes_filled=(number_planes % 2 == 0) ? number_planes :
+      number_planes+1;
+    if ((number_pixels*number_planes_filled) != (size_t) (number_pixels*
+         number_planes_filled))
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-    pixel_info_length=image->columns*image->rows*MagickMax(number_planes,4);
+    pixel_info_length=image->columns*image->rows*number_planes_filled;
     pixel_info=AcquireVirtualMemory(pixel_info_length,sizeof(*pixels));
     if (pixel_info == (MemoryInfo *) NULL)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
