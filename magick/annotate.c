@@ -388,7 +388,7 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
           geometry.height/2.0+i*annotate_info->affine.sy*height-
           annotate_info->affine.rx*(metrics.width+metrics.bounds.x1)/2.0+
           annotate_info->affine.sy*(metrics.ascent+metrics.descent-
-          (number_lines-1.0)*height)/2.0+metrics.descent/2.0;
+          (number_lines-1.0)*height)/2.0;
         break;
       }
       case EastGravity:
