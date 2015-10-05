@@ -265,6 +265,19 @@ Magick::Color::operator std::string() const
   return(std::string(colorbuf));
 }
 
+bool Magick::Color::isFuzzyEquivalent(const Color &color_, const double fuzz_)
+{
+  PixelInfo
+    p,
+    q;
+
+  p=*_pixel;
+  p.fuzz=fuzz_;
+  q=*color_._pixel;
+  q.fuzz=fuzz_;
+  return (IsFuzzyEquivalencePixelInfo(&p, &q) != MagickFalse);
+}
+
 bool Magick::Color::isValid(void) const
 {
   return(_isValid);

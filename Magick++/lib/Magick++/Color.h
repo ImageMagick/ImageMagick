@@ -111,6 +111,10 @@ namespace Magick
     // Return color specification string
     operator std::string() const;
 
+    // Returns true if the distance between the other color is less than the
+    // specified distance in a linear three(or four) % dimensional color space.
+    bool isFuzzyEquivalent(const Color &color_,const double fuzz_);
+
     // Does object contain valid color?
     void isValid(const bool valid_);
     bool isValid(void) const;
