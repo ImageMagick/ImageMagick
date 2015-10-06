@@ -113,7 +113,7 @@ namespace Magick
 
     // Returns true if the distance between the other color is less than the
     // specified distance in a linear three(or four) % dimensional color space.
-    bool isFuzzyEquivalent(const Color &color_,const double fuzz_);
+    bool isFuzzyEquivalent(const Color &color_,const double fuzz_) const;
 
     // Does object contain valid color?
     void isValid(const bool valid_);
