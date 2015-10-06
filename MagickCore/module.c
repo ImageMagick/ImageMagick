@@ -781,8 +781,14 @@ static MagickBooleanType GetMagickModulePath(const char *filename,
       *home;
 
     home=GetEnvironmentValue("XDG_CONFIG_HOME");
+    if (home == (char *) NULL)
+      home=GetEnvironmentValue("LOCALAPPDATA");
+    if (home == (char *) NULL)
+      home=GetEnvironmentValue("APPDATA");
+    if (home == (char *) NULL)
+      home=GetEnvironmentValue("USERPROFILE");
     if (home != (char *) NULL)
-      { 
+      {
         /*
           Search $XDG_CONFIG_HOME/ImageMagick.
         */
@@ -793,8 +799,6 @@ static MagickBooleanType GetMagickModulePath(const char *filename,
           return(MagickTrue);
       }
     home=GetEnvironmentValue("HOME");
-    if (home == (char *) NULL)
-      home=GetEnvironmentValue("USERPROFILE");
     if (home != (char *) NULL)
       {
         /*
@@ -1369,7 +1373,7 @@ MagickPrivate MagickBooleanType OpenModules(ExceptionInfo *exception)
   modules=GetModuleList("*",MagickImageCoderModule,&number_modules,exception);
   if ((modules == (char **) NULL) || (*modules == (char *) NULL))
     {
-      if (modules != (char **) NULL) 
+      if (modules != (char **) NULL)
         modules=(char **) RelinquishMagickMemory(modules);
       return(MagickFalse);
     }
