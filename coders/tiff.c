@@ -1079,7 +1079,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     tiff_status;
 
   MagickBooleanType
-    debug,
     status;
 
   MagickSizeType
@@ -1165,31 +1164,34 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
-  debug=IsEventLogging();
-  (void) debug;
   if (image_info->number_scenes != 0)
     {
       /*
-        Generate blank images for subimage specification (e.g. image.tif[4].
+      Generate blank images for subimage specification (e.g. image.tif[4].
+      We need to check the number of directores because it is possible that
+      the subimage(s) are stored in the photoshop profile.
       */
-      for (i=0; i < (ssize_t) image_info->scene; i++)
-      {
-        status=TIFFReadDirectory(tiff) != 0 ? MagickTrue : MagickFalse;
-        if (status == MagickFalse)
+      if (image_info->scene < (size_t)TIFFNumberOfDirectories(tiff))
+        {
+          for (i=0; i < (ssize_t) image_info->scene; i++)
           {
-            TIFFClose(tiff);
-            image=DestroyImageList(image);
-            return((Image *) NULL);
+            status=TIFFReadDirectory(tiff) != 0 ? MagickTrue : MagickFalse;
+            if (status == MagickFalse)
+              {
+                TIFFClose(tiff);
+                image=DestroyImageList(image);
+                return((Image *) NULL);
+              }
+            AcquireNextImage(image_info,image);
+            if (GetNextImageInList(image) == (Image *) NULL)
+              {
+                TIFFClose(tiff);
+                image=DestroyImageList(image);
+                return((Image *) NULL);
+              }
+            image=SyncNextImageInList(image);
           }
-        AcquireNextImage(image_info,image);
-        if (GetNextImageInList(image) == (Image *) NULL)
-          {
-            TIFFClose(tiff);
-            image=DestroyImageList(image);
-            return((Image *) NULL);
-          }
-        image=SyncNextImageInList(image);
-      }
+        }
     }
   do
   {
@@ -2102,6 +2104,15 @@ RestoreMSCWarning
   (void) TIFFSetErrorHandler(error_handler);
   TIFFClose(tiff);
   TIFFReadPhotoshopLayers(image,image_info,exception);
+  if (image_info->number_scenes != 0)
+  {
+    if (image_info->scene >= GetImageListLength(image))
+    {
+      /* Subimage was not found in the Photoshop layer */
+      image = DestroyImageList(image);
+      return((Image *)NULL);
+    }
+  }
   return(GetFirstImageInList(image));
 }
 #endif
