@@ -1415,7 +1415,7 @@ namespace Magick
 
     // Add matte image to image, setting pixels matching color to
     // transparent
-    void transparent(const Color &color_);
+    void transparent(const Color &color_,const bool inverse_=false);
 
     // Add matte image to image, for all the pixels that lies in between
     // the given two color

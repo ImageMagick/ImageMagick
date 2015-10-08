@@ -4639,7 +4639,7 @@ void Magick::Image::transformScale(const double sx_,const double sy_)
   options()->transformScale(sx_,sy_);
 }
 
-void Magick::Image::transparent(const Color &color_)
+void Magick::Image::transparent(const Color &color_,const bool inverse_)
 {
   PixelInfo
     target;
@@ -4656,8 +4656,8 @@ void Magick::Image::transparent(const Color &color_)
   (void) QueryColorCompliance(color.c_str(),AllCompliance,&target,
     exceptionInfo);
   modifyImage();
-  TransparentPaintImage(image(),&target,TransparentAlpha,MagickFalse,
-    exceptionInfo);
+  TransparentPaintImage(image(),&target,TransparentAlpha,
+    inverse_ == true ? MagickTrue : MagickFalse,exceptionInfo);
   ThrowImageException;
 }
 
