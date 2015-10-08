@@ -2576,10 +2576,13 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image,
   if (SetImageGray(image,exception) != MagickFalse)
     num_channels=(image->alpha_trait != UndefinedPixelTrait ? 2UL : 1UL);
   else
-    if (image->storage_class == PseudoClass)
+    if ((image_info->type != TrueColorType) && (image_info->type !=
+         TrueColorAlphaType) && (image->storage_class == PseudoClass))
       num_channels=(image->alpha_trait != UndefinedPixelTrait ? 2UL : 1UL);
     else
       {
+        if (image->storage_class == PseudoClass)
+          (void) SetImageStorageClass(image,DirectClass,exception);
         if (image->colorspace != CMYKColorspace)
           num_channels=(image->alpha_trait != UndefinedPixelTrait ? 4UL : 3UL);
         else
