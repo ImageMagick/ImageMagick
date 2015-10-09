@@ -1040,7 +1040,8 @@ static void TIFFReadPhotoshopLayers(Image* image,const ImageInfo *image_info,
         else
           info.channels=(image->matte != MagickFalse ? 5UL : 4UL);
       }
-  ReadPSDLayers(layers,image_info,&info,MagickFalse,exception);
+  (void) ReadPSDLayers(layers,image_info,&info,MagickFalse,exception);
+  InheritException(exception,&layers->exception);
   DeleteImageFromList(&layers);
   if (layers != (Image *) NULL)
     {
