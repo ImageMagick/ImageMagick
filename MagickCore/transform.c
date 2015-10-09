@@ -1722,6 +1722,7 @@ MagickExport Image *SpliceImage(const Image *image,
     splice_geometry;
 
   ssize_t
+    columns,
     y;
 
   /*
@@ -1810,6 +1811,7 @@ MagickExport Image *SpliceImage(const Image *image,
   */
   status=MagickTrue;
   progress=0;
+  columns=MagickMin(splice_geometry.x,(ssize_t) splice_image->columns);
   image_view=AcquireVirtualCacheView(image,exception);
   splice_view=AcquireAuthenticCacheView(splice_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -1829,7 +1831,8 @@ MagickExport Image *SpliceImage(const Image *image,
 
     if (status == MagickFalse)
       continue;
-    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
+    p=GetCacheViewVirtualPixels(image_view,0,y,splice_image->columns,1,
+      exception);
     q=QueueCacheViewAuthenticPixels(splice_view,0,y,splice_image->columns,1,
       exception);
     if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
@@ -1837,7 +1840,7 @@ MagickExport Image *SpliceImage(const Image *image,
         status=MagickFalse;
         continue;
       }
-    for (x=0; x < splice_geometry.x; x++)
+    for (x=0; x < columns; x++)
     {
       register ssize_t
         i;
@@ -1931,10 +1934,10 @@ MagickExport Image *SpliceImage(const Image *image,
 
     if (status == MagickFalse)
       continue;
-    p=GetCacheViewVirtualPixels(image_view,0,y-(ssize_t) splice_geometry.height,
-      image->columns,1,exception);
-    if ((y < 0) || (y >= (ssize_t) splice_image->rows))
+    if ((y < 0) || (y >= (ssize_t)splice_image->rows))
       continue;
+    p=GetCacheViewVirtualPixels(image_view,0,y-(ssize_t) splice_geometry.height,
+      splice_image->columns,1,exception);
     q=QueueCacheViewAuthenticPixels(splice_view,0,y,splice_image->columns,1,
       exception);
     if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
@@ -1942,7 +1945,7 @@ MagickExport Image *SpliceImage(const Image *image,
         status=MagickFalse;
         continue;
       }
-    for (x=0; x < splice_geometry.x; x++)
+    for (x=0; x < columns; x++)
     {
       register ssize_t
         i;
