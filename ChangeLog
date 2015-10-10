@@ -1,3 +1,6 @@
+2015-09-10  6.9.2-4 Cristy  <quetzlzacatenango@image...>
+  * New version 6.9.2-4, GIT revision 10273:e00cf21:20151010
+
 2015-10-08  6.9.2-4 Dirk Lemstra <dirk@lem.....org>
   * Fixed accessing subimage in a TIFF photoshop layer (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=28469).
