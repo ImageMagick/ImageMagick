@@ -449,6 +449,8 @@ const Magick::Offset& Magick::Offset::operator=(const char *offset_)
   flags=ParseGeometry(offset_,&geometry_info);
   _x=geometry_info.rho;
   _y=geometry_info.sigma;
+  if ((flags & MagickCore::SigmaValue) == 0)
+    _y=_x;
   return(*this);
 }
 
