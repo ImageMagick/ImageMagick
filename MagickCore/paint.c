@@ -56,9 +56,11 @@
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/paint.h"
 #include "MagickCore/pixel-accessor.h"
+#include "MagickCore/property.h"
 #include "MagickCore/resource_.h"
 #include "MagickCore/statistic.h"
 #include "MagickCore/string_.h"
+#include "MagickCore/string-private.h"
 #include "MagickCore/thread-private.h"
 
 /*
@@ -407,18 +409,26 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
 */
 
 MagickExport MagickBooleanType GradientImage(Image *image,
-  const GradientType type,const SpreadMethod method,
-  const StopInfo *stops,const size_t number_stops,
-  ExceptionInfo *exception)
+  const GradientType type,const SpreadMethod method,const StopInfo *stops,
+  const size_t number_stops,ExceptionInfo *exception)
 {
+  const char
+    *value;
+
   DrawInfo
     *draw_info;
+
+  GeometryInfo
+    geometry_info;
 
   GradientInfo
     *gradient;
 
   MagickBooleanType
     status;
+
+  MagickStatusType
+    flags;
 
   /*
     Set gradient start-stop end points.
@@ -434,13 +444,39 @@ MagickExport MagickBooleanType GradientImage(Image *image,
   gradient->type=type;
   gradient->bounding_box.width=image->columns;
   gradient->bounding_box.height=image->rows;
+  value=GetImageProperty(image,"gradient:bounding-box",exception);
+  if (value != (const char *) NULL)
+    (void) ParseAbsoluteGeometry(value,&gradient->bounding_box);
   gradient->gradient_vector.x2=(double) image->columns-1.0;
   gradient->gradient_vector.y2=(double) image->rows-1.0;
   if ((type == LinearGradient) && (gradient->gradient_vector.y2 != 0.0))
     gradient->gradient_vector.x2=0.0;
+  value=GetImageProperty(image,"gradient:vector",exception);
+  if (value != (const char *) NULL)
+    {
+      flags=ParseGeometry(value,&geometry_info);
+      gradient->gradient_vector.x1=geometry_info.rho;
+      if ((flags & SigmaValue) != 0)
+        gradient->gradient_vector.y1=geometry_info.sigma;
+      if ((flags & XiValue) != 0)
+        gradient->gradient_vector.x2=geometry_info.xi;
+      if ((flags & PsiValue) != 0)
+        gradient->gradient_vector.y2=geometry_info.psi;
+    }
   gradient->center.x=(double) gradient->gradient_vector.x2/2.0;
   gradient->center.y=(double) gradient->gradient_vector.y2/2.0;
+  value=GetImageProperty(image,"gradient:center",exception);
+  if (value != (const char *) NULL)
+    {
+      flags=ParseGeometry(value,&geometry_info);
+      gradient->center.x=geometry_info.rho;
+      if ((flags & SigmaValue) != 0)
+        gradient->center.y=geometry_info.sigma;
+    }
   gradient->radius=MagickMax(gradient->center.x,gradient->center.y);
+  value=GetImageProperty(image,"gradient:radius",exception);
+  if (value != (const char *) NULL)
+    gradient->radius=StringToDouble(value,(char **) NULL);
   gradient->spread=method;
   /*
     Define the gradient to fill between the stops.
