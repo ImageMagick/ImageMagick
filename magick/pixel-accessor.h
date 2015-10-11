@@ -200,7 +200,7 @@ static inline MagickBooleanType IsPixelMonochrome(const PixelPacket *pixel)
     red,
     red_green;
 
-  red=pixel->red;
+  red=(MagickRealType) pixel->red;
   if ((AbsolutePixelValue(red) >= MagickEpsilon) &&
       (AbsolutePixelValue(red-QuantumRange) >= MagickEpsilon))
     return(MagickFalse);
