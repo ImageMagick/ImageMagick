@@ -1326,12 +1326,12 @@ ModuleExport MagickStatusType ReadPSDLayers(Image *image,
         if (image->debug != MagickFalse)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "  reading layer #%.20g",(double) i+1);
-        layer_info[i].page.y=(ssize_t) ReadBlobLong(image);
-        layer_info[i].page.x=(ssize_t) ReadBlobLong(image);
-        y=(ssize_t) ReadBlobLong(image);
-        x=(ssize_t) ReadBlobLong(image);
-        layer_info[i].page.width=x-layer_info[i].page.x;
-        layer_info[i].page.height=y-layer_info[i].page.y;
+        layer_info[i].page.y=(int) ReadBlobLong(image);
+        layer_info[i].page.x=(int) ReadBlobLong(image);
+        y=(int) ReadBlobLong(image);
+        x=(int) ReadBlobLong(image);
+        layer_info[i].page.width=(size_t) (x-layer_info[i].page.x);
+        layer_info[i].page.height=(size_t) (y-layer_info[i].page.y);
         layer_info[i].channels=ReadBlobShort(image);
         if (layer_info[i].channels > MaxPSDChannels)
           {
@@ -1399,8 +1399,8 @@ ModuleExport MagickStatusType ReadPSDLayers(Image *image,
                 /*
                   Layer mask info.
                 */
-                layer_info[i].mask.page.y=(ssize_t) ReadBlobLong(image);
-                layer_info[i].mask.page.x=(ssize_t) ReadBlobLong(image);
+                layer_info[i].mask.page.y=(int) ReadBlobLong(image);
+                layer_info[i].mask.page.x=(int) ReadBlobLong(image);
                 layer_info[i].mask.page.height=(size_t) (ReadBlobLong(image)-
                   layer_info[i].mask.page.y);
                 layer_info[i].mask.page.width=(size_t) (ReadBlobLong(image)-
