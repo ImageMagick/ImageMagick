@@ -982,8 +982,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           double
-            gamma,
-            Sa;
+            gamma;
   
           register ssize_t
             i;
@@ -993,11 +992,12 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
               q+=GetPixelChannels(image);
               continue;
             }
-          Sa=QuantumScale*GetPixelAlpha(image,q);
-          gamma=Sa;
+          gamma=QuantumScale*GetPixelAlpha(image,q);
           for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
           {
             PixelChannel channel=GetPixelChannelChannel(image,i);
+            if (channel == AlphaPixelChannel)
+              continue;
             PixelTrait traits=GetPixelChannelTraits(image,channel);
             if ((traits & UpdatePixelTrait) == 0)
               continue;
@@ -1130,6 +1130,8 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
           for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
           {
             PixelChannel channel=GetPixelChannelChannel(image,i);
+            if (channel == AlphaPixelChannel)
+              continue;
             PixelTrait traits=GetPixelChannelTraits(image,channel);
             if ((traits & UpdatePixelTrait) == 0)
               continue;
