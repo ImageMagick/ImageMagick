@@ -26,9 +26,9 @@
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
+    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
     <script>
-    (adsbygoogle = window.adsbygoogle || []).push({});
+      (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
     <nav class="magick-nav">
       <a class="magick-nav-item " href="../index.html">Home</a>
@@ -46,7 +46,7 @@
 <div class="magick-header">
 <p class="text-center"><a href="mogrify.html#usage">Example Usage</a> • <a href="mogrify.html#options">Option Summary</a></p>
 
-<p class="lead magick-description">Use the <code>mogrify</code> program to resize an image, blur, crop, despeckle, dither, draw on, flip, join, re-sample, and much more.   This tool is similiar to <a href="convert.html">convert</a> except that the original image file is overwritten (unless you change the file suffix with the <a href="command-line-options.html#format">-format</a> option) with any changes you request.  See <a href="command-line-processing.html">Command Line Processing</a> for advice on how to structure your <code>mogrify</code> command or see below for sample usages of the command.</p>
+<p class="lead magick-description">Use the <code>mogrify</code> program to resize an image, blur, crop, despeckle, dither, draw on, flip, join, re-sample, and much more.   This tool is similar to <a href="convert.html">convert</a> except that the original image file is overwritten (unless you change the file suffix with the <a href="command-line-options.html#format">-format</a> option) with any changes you request.  See <a href="command-line-processing.html">Command Line Processing</a> for advice on how to structure your <code>mogrify</code> command or see below for sample usages of the command.</p>
 
 <h2 class="magick-header"><a id="usage"></a>Example Usage</h2>
 
@@ -717,6 +717,11 @@ transparent, extract, background, or shape the alpha channel</td>
   </tr>
 
   <tr>
+    <td><a href="command-line-options.html#mask">-mask <var>filename</var></a></td>
+    <td>associate a mask with the image</td>
+  </tr>
+
+  <tr>
     <td><a href="command-line-options.html#mattecolor">-mattecolor <var>color</var></a></td>
     <td>frame color</td>
   </tr>
@@ -894,11 +899,6 @@ transparent, extract, background, or shape the alpha channel</td>
   <tr>
     <td><a href="command-line-options.html#random-threshold">-random-threshold <var>low,high</var></a></td>
     <td>random threshold the image</td>
-  </tr>
-
-  <tr>
-    <td><a href="command-line-options.html#read-mask">-read-mask <var>filename</var></a></td>
-    <td>associate a read mask with the image</td>
   </tr>
 
   <tr>
@@ -1251,11 +1251,6 @@ transparent, extract, background, or shape the alpha channel</td>
     <td>write images to this file</td>
   </tr>
 
-  <tr>
-    <td><a href="command-line-options.html#write-mask">-write-mask <var>filename</var></a></td>
-    <td>associate a write mask with the image</td>
-  </tr>
-
   </tbody>
 </table>
 
@@ -1273,6 +1268,7 @@ transparent, extract, background, or shape the alpha channel</td>
   </footer>
 </div><!-- /.container -->
 
+  <script src="https://localhost/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script src="http://nextgen.imagemagick.org/js/magick.html"></script>
 </div>
 </body>

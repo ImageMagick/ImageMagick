@@ -26,9 +26,9 @@
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
+    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
     <script>
-    (adsbygoogle = window.adsbygoogle || []).push({});
+      (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
     <nav class="magick-nav">
       <a class="magick-nav-item " href="../index.html">Home</a>
@@ -172,7 +172,7 @@ For example the default compose method can be specified as just 'Over'.</p>
 not overlaid by the source image.  This is to be expected as part of that
 specific composition methods defintion. You can disable this by setting the
 special <a href="command-line-options.html#define">-define</a> 'compose:outside-overlay' to a value of 'false' will turn off
-this behaviour. </p>
+this behavior. </p>
 
 <p>On top of the above 12 Duff-Porter Alpha Composition methods, one special
 related method '<code>Copy</code>' has been provided. This is equivalent to
@@ -180,7 +180,7 @@ using the '<code>Src</code>'  with the special <a href="command-line-options.htm
 '<code>false</code>', so as to only modify the overlaid area, without clearing
 the rest of the image outside the overlaid area.  </p>
 
-<p>The following mathemathical composition methods are also available. </p>
+<p>The following mathematical composition methods are also available. </p>
 
 <table class="table table-condensed table-striped">
   <tbody>
@@ -210,7 +210,7 @@ the rest of the image outside the overlaid area.  </p>
   <tr>
     <td>plus</td>
     <td>The source is added to the destination and replaces the
-        destination. This operator is useful for averaging or a controled
+        destination. This operator is useful for averaging or a controlled
         merger of two images, rather than a direct overlay.</td>
   </tr>
 
@@ -280,7 +280,7 @@ below. </p>
 synchronise its actions with the alpha channel.  Instead the math composition
 will be applied on an individual channel basis as defined by the <a href="command-line-options.html#channel">-channel</a>.  This includes the alpha channel. This special usage
 allows you to perform true mathematics of the image channels, without alpha
-compostion effects, becomming involved. </p>
+composition effects, becoming involved. </p>
 
 <p>This special flag is not applied to the lighting composition methods (see
 below) even though they are closely related to mathematical composition
@@ -369,7 +369,7 @@ methods.</p>
   <tr>
     <td>pegtop-light</td>
     <td>Almost equivalent to 'Soft-Light', but using a
-        continuious mathematical formula rather than two conditionally
+        continuous mathematical formula rather than two conditionally
         selected formulae. Added ImageMagick version 6.5.4-3. </td>
   </tr>
 
@@ -383,7 +383,7 @@ methods.</p>
   <tr>
     <td>pin-light</td>
     <td>Similar to 'Hard-Light', but using sharp linear shadings,
-        to similate the effects of a strong 'pinhole' light source. Added
+        to simulate the effects of a strong 'pinhole' light source. Added
         ImageMagick version 6.5.4-3. </td>
   </tr>
 
@@ -432,7 +432,7 @@ arguments, which are tabled below. </p>
 
 <p>In the "<code>composite</code>" command these composition methods are
 selected using special options with the arguments needed. They are usually,
-but not always, the same name as the composte 'method' they use, and replaces
+but not always, the same name as the composite 'method' they use, and replaces
 the normal use of the <a href="command-line-options.html#compose">-compose</a>
 setting in the "<code>composite</code>" command.  For example... </p>
 
@@ -443,7 +443,7 @@ composite ... -blend 50x50 ...
 <p>As of IM v6.5.3-4 the "<code>convert</code>" command can now also supply
 these extra arguments to its <a href="command-line-options.html#composite">-composite</a> operator, using the special <a href="command-line-options.html#define">-define</a>
 attribute of '<code class="arg">compose:args</code>'.  This means you can now
-make use of these special argumented <a href="command-line-options.html#compose">-compose</a> methods, those the argument and the method both need to be set
+make use of these special augmented <a href="command-line-options.html#compose">-compose</a> methods, those the argument and the method both need to be set
 separately.  For example... </p>
 
 <pre>
@@ -501,7 +501,7 @@ with a brief summary of what they do. For more details see the equivalent
         to ImageMagick version 6.5.4-3.
     <br>As of IM v6.6.1-6 this method will do per-channel math compositions
         if the 'Sync' flag is removed from <a href="command-line-options.html#channel">-channel</a>, just like all
-        the other mathematical compostion methods above.
+        the other mathematical composition methods above.
     </td>
   </tr>
 
@@ -535,7 +535,7 @@ with a brief summary of what they do. For more details see the equivalent
         if given is rolled into green channel of the overlay image. This
         separation allows you to modulate the X and Y lookup displacement
         separately allowing you to do 2-dimensional displacements, rather
-        than 1-dimensional verctored displacements (using grayscale image).
+        than 1-dimensional vectored displacements (using grayscale image).
     <br><br>
         If the overlay image contains transparency this is used as a mask
         of the resulting image to remove 'invalid' pixels.
@@ -581,7 +581,7 @@ with a brief summary of what they do. For more details see the equivalent
         As per 'Displace' and 'Distort', the red channel will modulate the
         width of the ellipse, while the green channel will modulate the height
         of the ellipse. If a single Angle value is given in the arguments,
-        then the ellipse will then be rotated by the angle specifed.
+        then the ellipse will then be rotated by the angle specified.
     <br><br>
         Normally the blue channel of the mapping overlay image is ignored.
         However if a second ellipse angle is given, then it is assumed that
@@ -612,6 +612,7 @@ with a brief summary of what they do. For more details see the equivalent
   </footer>
 </div><!-- /.container -->
 
+  <script src="https://localhost/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script src="http://nextgen.imagemagick.org/js/magick.html"></script>
 </div>
 </body>

@@ -26,9 +26,9 @@
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
+    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
     <script>
-    (adsbygoogle = window.adsbygoogle || []).push({});
+      (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
     <nav class="magick-nav">
       <a class="magick-nav-item " href="../index.html">Home</a>
@@ -97,7 +97,7 @@ rgba(100%, 0%, 0%, 1.0)        the same, with an explicit alpha value
 
 <p>There is also a color called 'none' that is fully transparent.  This color is shorthand for <code>rgba(0, 0, 0, 0.0)</code>.</p>
 
-<p>Gray values are conviently defined with a single intensity value or an intensity value and an alpha value:</p>
+<p>Gray values are conveniently defined with a single intensity value or an intensity value and an alpha value:</p>
 
 <pre>
 gray(50%)        mid gray
@@ -162,7 +162,14 @@ hsla(120, 255,  127.5,  1.0)       the same, with an alpha value of 1.0
 <pre>
 cielab(62.253188, 23.950124, 48.410653)
 </pre>
-<p>Note, the <code>a</code> and <code>b</code> components of any Lab color you specify are biased by 50% to ensure it fits in the quantum range (typically 0 to 65535).  The bias is retained when writing to the TIFF and MIFF image formats.  However, the TXT format supports negative pixel values so the bias is removed when writing to this format (e.g. <kbd>convert xc:cyan -colorspace LAB txt:<kbd>).</kbd></kbd></p>
+<p>Note, the <code>a</code> and <code>b</code> components of any Lab color you specify are biased internally by 50% to ensure it fits in the quantum range (typically 0 to 65535).  The bias is retained when writing to the TIFF and MIFF image formats.  However, the TXT format supports negative pixel values so the bias is removed when writing to this format:</p>
+<pre class="text">
+-&gt; convert xc:cyan -colorspace LAB txt:
+# ImageMagick pixel enumeration: 1,1,65535,cielab
+0,0: (91.1131%,-18.8571%,-5.5436%)  #E93F00000000  cielab(91.1131%,-18.8571%,-5.5436%)
+
+-&gt; convert -size 100x100 xc:"cielab(91.1131%,-18.8571%,-5.5436%)" -colorspace sRGB cyan.png
+</pre>
 
 <p>Or specify colors generically with the <code>icc-color</code> keyword, for example:</p>
 <pre>
@@ -4925,6 +4932,7 @@ device-cmyk(0.11, 0.48, 0.83, 0.00)
   </footer>
 </div><!-- /.container -->
 
+  <script src="https://localhost/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script src="http://nextgen.imagemagick.org/js/magick.html"></script>
 </div>
 </body>

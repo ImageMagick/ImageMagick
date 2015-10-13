@@ -26,9 +26,9 @@
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
+    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
     <script>
-    (adsbygoogle = window.adsbygoogle || []).push({});
+      (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
     <nav class="magick-nav">
       <a class="magick-nav-item " href="../index.html">Home</a>
@@ -54,7 +54,7 @@ convert -limit memory 1GiB -limit map 2GiB -limit disk 4GiB \
   myhugeimage.jpg -sharpen 5x2 myhugeimage.png
 </pre>
 <p>For large image sequences, the servers are contacted in a round-robin fashion to distribute the load over multiple distributed pixel caches (assuming you have a host list rather than a single host).  In our example, some modest resources are available on the desktop as defined by the -limit option.  For smaller images, they are allocated on the desktop up to the specified limits.</p>
-<p>Your image processing tasks are likely to perform slower when utilizing a distributed pixel cache due to pixels shuffling between the client and the server over a network.  Algorithms that access virtual pixels (e.g. -sharpen) are noticably slower, up to 3 times slower, than algorithms that only access authentic pixels (e.g. -negate) due to increased network traffic.</p>
+<p>Your image processing tasks are likely to perform slower when utilizing a distributed pixel cache due to pixels shuffling between the client and the server over a network.  Algorithms that access virtual pixels (e.g. -sharpen) are noticeably slower, up to 3 times slower, than algorithms that only access authentic pixels (e.g. -negate) due to increased network traffic.</p>
 <p>A client can only contact a compatible distributed pixel cache server.  Compatibility requires the same ImageMagick library interface, quantum depth, HDRI status, OS word size, and endianness.  The distributed pixel cache checks these attributes and exits if these requirements are not met.</p>
 </div>
   <footer class="magick-footer">
@@ -70,6 +70,7 @@ convert -limit memory 1GiB -limit map 2GiB -limit disk 4GiB \
   </footer>
 </div><!-- /.container -->
 
+  <script src="https://localhost/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script src="http://nextgen.imagemagick.org/js/magick.html"></script>
 </div>
 </body>

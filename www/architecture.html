@@ -26,9 +26,9 @@
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
+    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
     <script>
-    (adsbygoogle = window.adsbygoogle || []).push({});
+      (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
     <nav class="magick-nav">
       <a class="magick-nav-item " href="../index.html">Home</a>
@@ -296,7 +296,7 @@ Resource limits:
   &lt;policy domain="resource" name="throttle" value="0"/&gt;
   &lt;policy domain="resource" name="time" value="120"/&gt;
   &lt;policy domain="system" name="precision" value="6"/&gt;
-  &lt;policy domain="cache" name="shared-secret" value="********"/&gt;
+  &lt;policy domain="cache" name="shared-secret" value="replace with your secret phrase"/&gt;
 &lt;/policymap&gt;
 </pre>
 <p>Since we process multiple simultaneous sessions, we don't want any one session consuming all the available memory.  Instead large images are cached to disk.  If the image is too large and exceeds the pixel cache disk limit, the program exits.  In addition, we place a time limit to prevent any run-away processing tasks.</p>
@@ -362,7 +362,7 @@ if (y &lt; (ssize_t) source-&gt;rows)
 
 <h3>Best Practices</h3>
 
-<p>Although you can request any pixel from the pixel cache, any block of pixels, any scanline, multiple scanlines, any row, or multiple rows with the GetVirtualPixels(), GetAuthenticPixels(), QueueAuthenticPixels, GetCacheViewVirtualPixels(), GetCacheViewAuthenticPixels(), and QueueCacheViewAuthenticPixels() methods, ImageMagick is optimized to return a few pixels or a few pixels rows at time.  There are additional optimizations if you request a single scanline or a few scanlines at a time.  These methods also permit random access to the pixel cache, however, ImageMagick is optimized for sequential access.  Although you can access scanlines of pixels sequentially from the last row of the image to the first, you may get a performance boost if you access scanlines from the first row of the image to the last, in sequentual order.</p>
+<p>Although you can request any pixel from the pixel cache, any block of pixels, any scanline, multiple scanlines, any row, or multiple rows with the GetVirtualPixels(), GetAuthenticPixels(), QueueAuthenticPixels, GetCacheViewVirtualPixels(), GetCacheViewAuthenticPixels(), and QueueCacheViewAuthenticPixels() methods, ImageMagick is optimized to return a few pixels or a few pixels rows at time.  There are additional optimizations if you request a single scanline or a few scanlines at a time.  These methods also permit random access to the pixel cache, however, ImageMagick is optimized for sequential access.  Although you can access scanlines of pixels sequentially from the last row of the image to the first, you may get a performance boost if you access scanlines from the first row of the image to the last, in sequential order.</p>
 
 <p>You can get, modify, or set pixels in row or column order.  However, it is more efficient to access the pixels by row rather than by column.</p>
 
@@ -666,7 +666,7 @@ Performance[12]: 10i 4.525ips 0.799e 18.320u 0:02.210
 
 <pre>
 identify -version
-Features: DPC Cipher HDRI Modules OpenCL OpenMP
+Features: DPC Cipher Modules OpenCL OpenMP
 </pre>
 
 <p>If so, run this command to realize a significant speed-up for image convolution:</p>
@@ -737,7 +737,7 @@ __kernel void Convolve(const __global CLPixelType *source,__constant float *filt
   destination[index].w=ClampToQuantum(sum.w);
 };</pre>
 
-<p>See <a href="https://github.com/ImageMagick/ImageMagick/tree/ImageMagick-6/MagickCore/accelerate.c">MagickCore/accelerate.c</a> for a complete implementation of image convolution with an OpenCL kernel.</p>
+<p>See <a href="https://github.com/ImageMagick/ImageMagick/tree/ImageMagick-6/magick/accelerate.c">magick/accelerate.c</a> for a complete implementation of image convolution with an OpenCL kernel.</p>
 
 <p>Note, that under Windows, you might have an issue with TDR (Timeout Detection and Recovery of GPUs). Its purpose is to detect runaway tasks hanging the GPU by using an execution time threshold.  For some older low-end GPUs running the OpenCL filters in ImageMagick, longer execution times might trigger the TDR mechanism and pre-empt the GPU image filter.  When this happens, ImageMagick automatically falls back to the CPU code path and returns the expected results.  To avoid pre-emption, increase the <a href="http://msdn.microsoft.com/en-us/library/windows/hardware/gg487368.aspx">TdrDelay</a> registry key.</p>
 
@@ -750,23 +750,23 @@ __kernel void Convolve(const __global CLPixelType *source,__constant float *filt
 <pre class="pre-scrollable">/*
   Include declarations.
 */
-#include "MagickCore/studio.h"
-#include "MagickCore/blob.h"
-#include "MagickCore/blob-private.h"
-#include "MagickCore/colorspace.h"
-#include "MagickCore/exception.h"
-#include "MagickCore/exception-private.h"
-#include "MagickCore/image.h"
-#include "MagickCore/image-private.h"
-#include "MagickCore/list.h"
-#include "MagickCore/magick.h"
-#include "MagickCore/memory_.h"
-#include "MagickCore/monitor.h"
-#include "MagickCore/monitor-private.h"
-#include "MagickCore/quantum-private.h"
-#include "MagickCore/static.h"
-#include "MagickCore/string_.h"
-#include "MagickCore/module.h"
+#include "magick/studio.h"
+#include "magick/blob.h"
+#include "magick/blob-private.h"
+#include "magick/colorspace.h"
+#include "magick/exception.h"
+#include "magick/exception-private.h"
+#include "magick/image.h"
+#include "magick/image-private.h"
+#include "magick/list.h"
+#include "magick/magick.h"
+#include "magick/memory_.h"
+#include "magick/monitor.h"
+#include "magick/monitor-private.h"
+#include "magick/quantum-private.h"
+#include "magick/static.h"
+#include "magick/string_.h"
+#include "magick/module.h"
 
 /*
   Forward declarations.
@@ -1169,7 +1169,7 @@ display logo.mgk
 #include &lt;time.h&gt;
 #include &lt;assert.h&gt;
 #include &lt;math.h&gt;
-#include "MagickCore/MagickCore.h"
+#include "magick/MagickCore.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1397,6 +1397,7 @@ ModuleExport size_t analyzeImage(Image **images,const int argc,const char **argv
   </footer>
 </div><!-- /.container -->
 
+  <script src="https://localhost/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script src="http://nextgen.imagemagick.org/js/magick.html"></script>
 </div>
 </body>
