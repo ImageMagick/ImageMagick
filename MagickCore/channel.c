@@ -996,9 +996,9 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
           for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
           {
             PixelChannel channel=GetPixelChannelChannel(image,i);
+            PixelTrait traits=GetPixelChannelTraits(image,channel);
             if (channel == AlphaPixelChannel)
               continue;
-            PixelTrait traits=GetPixelChannelTraits(image,channel);
             if ((traits & UpdatePixelTrait) == 0)
               continue;
             q[i]=ClampToQuantum(gamma*q[i]);
@@ -1130,9 +1130,9 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
           for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
           {
             PixelChannel channel=GetPixelChannelChannel(image,i);
+            PixelTrait traits=GetPixelChannelTraits(image,channel);
             if (channel == AlphaPixelChannel)
               continue;
-            PixelTrait traits=GetPixelChannelTraits(image,channel);
             if ((traits & UpdatePixelTrait) == 0)
               continue;
             q[i]=ClampToQuantum(gamma*q[i]);
