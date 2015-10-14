@@ -1458,6 +1458,8 @@ MagickExport MagickBooleanType IsPathAccessible(const char *path)
 
   if ((path == (const char *) NULL) || (*path == '\0'))
     return(MagickFalse);
+  if (strcmp(path,"-") == 0)
+    return(MagickTrue);
   status=GetPathAttributes(path,&attributes);
   if (status == MagickFalse)
     return(status);
