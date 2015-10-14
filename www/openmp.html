@@ -29,9 +29,9 @@
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
+    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
     <script>
-    (adsbygoogle = window.adsbygoogle || []).push({});
+      (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
     <nav class="magick-nav">
       <a class="magick-nav-item " href="../index.html">Home</a>
@@ -70,7 +70,7 @@ Performance[6]: 40i 3.802ips 0.842e 15.280u 0:02.630
 Performance[7]: 40i 4.274ips 0.857e 15.540u 0:02.340
 Performance[8]: 40i 4.831ips 0.872e 15.680u 0:02.070
 </pre>
-<p>Better performance correlates with higher values of iterations-per-second.  In our example, 8 cores are optimal.  However, in certain cases it might be optimal to set the number of threads to 1 (e.g. <code>-limit thread 1</code>) or to disable OpenMP completely.  To disable this feature, add <code>--disable-openmp</code> to your configure script command line then rebuild and re-install ImageMagick.</p>
+<p>Better performance correlates with higher values of IPS (iterations-per-second).  In our example, 8 cores are optimal.  However, in certain cases it might be optimal to set the number of threads to 1 (e.g. <code>-limit thread 1</code>) or to disable OpenMP completely.  To disable this feature, add <code>--disable-openmp</code> to your configure script command line then rebuild and re-install ImageMagick.</p>
 </div>
   <footer class="magick-footer">
     <p><a href="support.html">Donate</a> •
@@ -85,6 +85,7 @@ Performance[8]: 40i 4.831ips 0.872e 15.680u 0:02.070
   </footer>
 </div><!-- /.container -->
 
+  <script src="https://localhost/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script src="../js/magick.html"></script>
 </div>
 </body>

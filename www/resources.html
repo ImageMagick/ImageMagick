@@ -29,9 +29,9 @@
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
+    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
     <script>
-    (adsbygoogle = window.adsbygoogle || []).push({});
+      (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
     <nav class="magick-nav">
       <a class="magick-nav-item " href="../index.html">Home</a>
@@ -162,6 +162,7 @@ Define arguments for the memory, map, area, and disk resources with SI prefixes 
 $MAGICK_CONFIGURE_PATH
 $PREFIX/etc/ImageMagick-6 
 $PREFIX/share/ImageMagick-6 
+$XDG_CACHE_HOME/ImageMagick
 $HOME/.config/ImageMagick/
 &lt;<var>client path</var>&gt;/etc/ImageMagick/
 </pre>
@@ -175,6 +176,7 @@ $MAGICK_CONFIGURE_PATH
 $MAGICK_HOME/etc/ImageMagick
 $MAGICK_HOME/share/ImageMagick-6.9.2 
 $PREFIX/share/ImageMagick-6.9.2 
+$XDG_CACHE_HOME/ImageMagick
 $HOME/.config/ImageMagick/
 &lt;<var>client path</var>&gt;/etc/ImageMagick/
 &lt;<var>current directory</var>&gt;
@@ -214,6 +216,7 @@ $MAGICK_HOME/lib/ImageMagick-6.9.2/modules-Q16/coders/
 &lt;<var>client path</var>&gt;/../lib/ImageMagick-6.9.2/modules-Q16/coders/
 $MAGICK_HOME/lib/ImageMagick-6.9.2/modules-Q16/coders
 $MAGICK_HOME/share/ImageMagick-6.9.2/modules-Q16/coders
+$XDG_CACHE_HOME/ImageMagick
 $HOME/.config/ImageMagick/
 &lt;<var>client path</var>&gt;/lib/ImageMagick-6.9.2/modules-Q16/coders
 </pre>
@@ -225,6 +228,7 @@ $MAGICK_HOME/lib/ImageMagick-6.9.2/modules-Q16/filters/
 &lt;<var>client path</var>&gt;/../lib/ImageMagick-6.9.2/modules-Q16/filters/
 $MAGICK_HOME/lib/ImageMagick-6.9.2/modules-Q16/filters
 $MAGICK_HOME/share/ImageMagick-6.9.2/modules-Q16/filters
+$XDG_CACHE_HOME/ImageMagick
 $HOME/.config/ImageMagick/
 &lt;<var>client path</var>&gt;/lib/ImageMagick-6.9.2/modules-Q16/filters
 </pre>
@@ -237,6 +241,7 @@ $HOME/.config/ImageMagick/
 $MAGICK_CONFIGURE_PATH
 $MAGICK_HOME/etc/ImageMagick/
 $MAGICK_HOME/share/ImageMagick-6.9.2/
+$XDG_CACHE_HOME/ImageMagick
 $HOME/.config/ImageMagick/
 &lt;<var>client path</var>&gt;/etc/ImageMagick/
 $MAGICK_FONT_PATH
@@ -330,7 +335,7 @@ $MAGICK_FONT_PATH
   </tr>
   <tr>
     <td>MAGICK_THREAD_LIMIT</td>
-    <td>Set maximum parallel threads.  Many ImageMagick algorithms run in parallel on multi-processor systems.  Use this enviroment variable to set the maximum number of threads that are permitted to run in parallel.</td>
+    <td>Set maximum parallel threads.  Many ImageMagick algorithms run in parallel on multi-processor systems.  Use this environment variable to set the maximum number of threads that are permitted to run in parallel.</td>
   </tr>
   <tr>
     <td>MAGICK_THROTTLE</td>
@@ -362,6 +367,7 @@ $MAGICK_FONT_PATH
   </footer>
 </div><!-- /.container -->
 
+  <script src="https://localhost/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script src="../js/magick.html"></script>
 </div>
 </body>

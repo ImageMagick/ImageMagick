@@ -29,9 +29,9 @@
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
+    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
     <script>
-    (adsbygoogle = window.adsbygoogle || []).push({});
+      (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
     <nav class="magick-nav">
       <a class="magick-nav-item " href="../index.html">Home</a>
@@ -47,7 +47,7 @@
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="lead magick-description">There are copious amounts of extra data assocated with images (metadata), beyond the actual image pixels. This metadata can be useful, either for display, or for various calculations, or in modifying the behaviour of later image processing operations.  You can utilize percent escapes in a number of options, for example in <a href="command-line-options.html#format_identify_">-format</a> or in montage <a href="command-line-options.html#label">-label</a>, to print various properties and other settings associated with an image.</p>
+<p class="lead magick-description">There are copious amounts of extra data associated with images (metadata), beyond the actual image pixels. This metadata can be useful, either for display, or for various calculations, or in modifying the behavior of later image processing operations.  You can utilize percent escapes in a number of options, for example in <a href="command-line-options.html#format_identify_">-format</a> or in montage <a href="command-line-options.html#label">-label</a>, to print various properties and other settings associated with an image.</p>
 
 <div class="table-responsive">
 <table class="table table-striped">
@@ -66,7 +66,7 @@
     </td></tr>
 <tr>
     <td><b>Properties</b></td>
-    <td>These are stored as a table of free form strings, and are (if posible)
+    <td>These are stored as a table of free form strings, and are (if possible)
         saved with the image (especially in MIFF and PNG image file formats).
         These include: Labels, Captions, Comments.
     </td></tr>
@@ -330,7 +330,7 @@ MIFF:bird.miff 512x480
 
 <p>Note that all single letter percent escapes can also be used using long
 form (from IM version 6.7.6-9, see next). For example <code>%[f]</code> is
-equivelent to the <code>%f</code> short form. </p>
+equivalent to the <code>%f</code> short form. </p>
 
 <p><b>WARNING</b>: short form percent escapes are NOT performed when the percent
 is after a number.  For example,  <code>10%x10</code> does not expand the
@@ -386,7 +386,7 @@ when enclosed in braces (long form):</p>
   </tr>
   <tr>
     <td>%[extension]</td>
-    <td>extention part of filename (as %e)</td>
+    <td>extension part of filename (as %e)</td>
   </tr>
   <tr>
     <td>%[gamma]</td>
@@ -511,7 +511,7 @@ up that name specific data sources. </p>
 <p>The primary search space (if not a specific attribute listed above) is
 a free-form property string.  Such strings are associated and saved with
 images, and are typically set using either the <a href="command-line-options.html#set">-set</a>
-CLI option (or API equivelent), or from special convenience options
+CLI option (or API equivalent), or from special convenience options
 (such as <a href="command-line-options.html#label">-label</a>, <a href="command-line-options.html#comment">-comment</a>, <a href="command-line-options.html#caption">-caption</a>). </p>
 
 <p>These convenience options are globally saved (as 'global options' so thay can
@@ -542,7 +542,7 @@ artifacts, being an internal operational setting, is not saved with images (if
 such is possible). </p>
 
 <p>For example when you use <code>-define 'distort:viewport=100x100'</code> you
-are in fact generating a global option, which the <a href="command-line-options.html#distort">-distort</a> operator will use to modify its behaviour (distorted output
+are in fact generating a global option, which the <a href="command-line-options.html#distort">-distort</a> operator will use to modify its behavior (distorted output
 image 'view'). </p>
 
 <p>An Option is essentually a Artifact that has been stored globally as part
@@ -571,16 +571,16 @@ This allows various operators to find its operational 'defines' or Artifacts.
 
 <p>In <b>ImageMagick version 7</b>... sets a link back to the global options
 data, so that if a specific per-image Artifact is not found , then it will
-look for a equivelent global Option for that image list.  directly.  This
+look for a equivalent global Option for that image list.  directly.  This
 saves coping these free-form options into artifacts repeatally, and means you
-can now separally define a global option for a list, and a individual
+can now separately define a global option for a list, and a individual
 overriding artifact for a specific image in that list. </p>
 
 <p>Note that many API's that do not use Wands (PerlMagick for example using
 arrays of images rather than a Wand). In these API's you will not have Global
 Options, only per-image Artifacts. </p>
 
-<p>In summery a Global Option, if available, is equivelent to a per-image
+<p>In summery a Global Option, if available, is equivalent to a per-image
 Artifact. </p>
 
 
@@ -833,6 +833,7 @@ Post ObjectData Descriptor Record
   </footer>
 </div><!-- /.container -->
 
+  <script src="https://localhost/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script src="../js/magick.html"></script>
 </div>
 </body>

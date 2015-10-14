@@ -29,9 +29,9 @@
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
+    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
     <script>
-    (adsbygoogle = window.adsbygoogle || []).push({});
+      (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
     <nav class="magick-nav">
       <a class="magick-nav-item " href="../index.html">Home</a>
@@ -127,7 +127,7 @@ convert photo.jpg -fx \'iso=32; rone=rand(); rtwo=rand(); \
 
 <dl class="dl-horizontal">
   <dt> numbers:</dt>
-  	<dd> integer, floating point, scientfic notation (+/- required, e.g. 3.81469e-06), International System number postfixes (.e.g KB, Mib, GB, etc.)</dd>
+  	<dd> integer, floating point, scientific notation (+/- required, e.g. 3.81469e-06), International System number postfixes (.e.g KB, Mib, GB, etc.)</dd>
   <dt> constants: </dt>
     <dd> E (Euler's number), Epsilon, QuantumRange, QuantumScale, Opaque, Phi (golden ratio), Pi, Transparent</dd>
   <dt> Fx operators (in order of precedence): </dt>
@@ -290,7 +290,7 @@ convert photo.jpg -fx \'iso=32; rone=rand(); rtwo=rand(); \
 <dt> <code>tan(</code><var>x</var><code>)</code></dt><dd> tangent function</dd>
 <dt> <code>tanh(</code><var>x</var><code>)</code></dt><dd> hyperbolic tangent function</dd>
 <dt> <code>trunc(</code><var>x</var><code>)</code></dt><dd> round to integer, towards zero</dd>
-<dt> <code>while(</code><var>condition</var>,<var>expression</var><code>)</code></dt><dd> interate while the condition is not equal to 0</dd>
+<dt> <code>while(</code><var>condition</var>,<var>expression</var><code>)</code></dt><dd> iterate while the condition is not equal to 0</dd>
 </dl>
 <br>
 <p>The expression semantics include these rules:</p>
@@ -317,7 +317,7 @@ convert photo.jpg -fx \'iso=32; rone=rand(); rtwo=rand(); \
 convert image1.jpg image2.jpg image3.jpg -fx "(u+u[2])/2.0" image.jpg
 </pre>
 
-<p>By default, the image to which <code>p</code>, <code>r</code>, <code>g</code>, <code>b</code>, <code>a</code>, etc., are applied is the current image <code>s</code> in the image list. This is equivelent to <code>u</code> except when used in an escape sequence <code>%[fx:...]</code>. </p>
+<p>By default, the image to which <code>p</code>, <code>r</code>, <code>g</code>, <code>b</code>, <code>a</code>, etc., are applied is the current image <code>s</code> in the image list. This is equivalent to <code>u</code> except when used in an escape sequence <code>%[fx:...]</code>. </p>
 
 <p>It is important to note the special role played by the first image. This is the only image in the image sequence that is modified, other images are used only for their data. As an illustrative example, consider the following, and note that the setting <a href="command-line-options.html#channel">-channel red</a> instructs <a href="command-line-options.html#fx">-fx</a> to modify only the red channel; nothing in the green or blue channels will change. It is instructive to ponder why the result is not symmetric.</p>
 
@@ -403,6 +403,7 @@ convert rose: -duplicate 29 -virtual-pixel Gray -distort SRT '%[fx:360.0*t/n]' \
   </footer>
 </div><!-- /.container -->
 
+  <script src="https://localhost/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script src="../js/magick.html"></script>
 </div>
 </body>

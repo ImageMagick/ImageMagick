@@ -29,9 +29,9 @@
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
+    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
     <script>
-    (adsbygoogle = window.adsbygoogle || []).push({});
+      (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
     <nav class="magick-nav">
       <a class="magick-nav-item " href="../index.html">Home</a>
@@ -125,7 +125,7 @@ if (image == (Image *) NULL)
 
 <p>When the pixel cache is initialized, pixels are scaled from whatever bit depth they originated from to that required by the pixel cache.  For example, a 1-channel 1-bit monochrome PBM image is scaled to a 4 channel 8-bit RGBA image, if you are using the Q8 version of ImageMagick, and 16-bit RGBA for the Q16 version.  You can determine which version you have with the <a href="command-line-options.html#version">‑version</a> option: </p>
 
-<pre><span class="crtprompt"> </span><span class="crtin">identify -version</span><span class="crtout">Version: ImageMagick 6.9.2-1 2015-08-15 Q16 http://www.imagemagick.org</span></pre>
+<pre><span class="crtprompt"> </span><span class="crtin">identify -version</span><span class="crtout">Version: ImageMagick 6.9.2-4 2015-10-10 Q16 http://www.imagemagick.org</span></pre>
 <p>As you can see, the convenience of the pixel cache sometimes comes with a trade-off in storage (e.g. storing a 1-bit monochrome image as 16-bit RGBA is wasteful) and speed (i.e. storing the entire image in memory is generally slower than accessing one scanline of pixels at a time).  In most cases, the benefits of the pixel cache typically outweigh any disadvantages.</p>
 
 <h3><a id="authentic-pixels"></a>Access the Pixel Cache</h3>
@@ -299,7 +299,7 @@ Resource limits:
   &lt;policy domain="resource" name="throttle" value="0"/&gt;
   &lt;policy domain="resource" name="time" value="120"/&gt;
   &lt;policy domain="system" name="precision" value="6"/&gt;
-  &lt;policy domain="cache" name="shared-secret" value="********"/&gt;
+  &lt;policy domain="cache" name="shared-secret" value="replace with your secret phrase"/&gt;
 &lt;/policymap&gt;
 </pre>
 <p>Since we process multiple simultaneous sessions, we don't want any one session consuming all the available memory.  Instead large images are cached to disk.  If the image is too large and exceeds the pixel cache disk limit, the program exits.  In addition, we place a time limit to prevent any run-away processing tasks.</p>
@@ -365,7 +365,7 @@ if (y &lt; (ssize_t) source-&gt;rows)
 
 <h3>Best Practices</h3>
 
-<p>Although you can request any pixel from the pixel cache, any block of pixels, any scanline, multiple scanlines, any row, or multiple rows with the GetVirtualPixels(), GetAuthenticPixels(), QueueAuthenticPixels, GetCacheViewVirtualPixels(), GetCacheViewAuthenticPixels(), and QueueCacheViewAuthenticPixels() methods, ImageMagick is optimized to return a few pixels or a few pixels rows at time.  There are additional optimizations if you request a single scanline or a few scanlines at a time.  These methods also permit random access to the pixel cache, however, ImageMagick is optimized for sequential access.  Although you can access scanlines of pixels sequentially from the last row of the image to the first, you may get a performance boost if you access scanlines from the first row of the image to the last, in sequentual order.</p>
+<p>Although you can request any pixel from the pixel cache, any block of pixels, any scanline, multiple scanlines, any row, or multiple rows with the GetVirtualPixels(), GetAuthenticPixels(), QueueAuthenticPixels, GetCacheViewVirtualPixels(), GetCacheViewAuthenticPixels(), and QueueCacheViewAuthenticPixels() methods, ImageMagick is optimized to return a few pixels or a few pixels rows at time.  There are additional optimizations if you request a single scanline or a few scanlines at a time.  These methods also permit random access to the pixel cache, however, ImageMagick is optimized for sequential access.  Although you can access scanlines of pixels sequentially from the last row of the image to the first, you may get a performance boost if you access scanlines from the first row of the image to the last, in sequential order.</p>
 
 <p>You can get, modify, or set pixels in row or column order.  However, it is more efficient to access the pixels by row rather than by column.</p>
 
@@ -1400,6 +1400,7 @@ ModuleExport size_t analyzeImage(Image **images,const int argc,const char **argv
   </footer>
 </div><!-- /.container -->
 
+  <script src="https://localhost/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script src="../js/magick.html"></script>
 </div>
 </body>
