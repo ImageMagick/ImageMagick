@@ -29,9 +29,9 @@
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
+    <script async="async" src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
     <script>
-    (adsbygoogle = window.adsbygoogle || []).push({});
+      (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
     <nav class="magick-nav">
       <a class="magick-nav-item " href="../index.html">Home</a>
@@ -266,11 +266,11 @@ char *InterpretImageProperties(const ImageInfo *image_info,Image *image,
 
 <p>(void) LogMagickEvent(TraceEvent,GetMagickModule(),"s",image-&gt;filename);</p>
 
-<p>if (embed_text == (const char *) NULL) return((char *) NULL); p=embed_text;</p>
+<p>if (embed_text == (const char *) NULL) return(ConstantString("")); p=embed_text;</p>
 
 <p>if (*p == '\0') return(ConstantString(""));</p>
 
-<p>/* handle a '@' replace string from file */ if (*p == '@') { p++; if (*p != '-' &amp;&amp; (IsPathAccessible(p) == MagickFalse) ) { (void) ThrowMagickException(&amp;image-&gt;exception,GetMagickModule(), OptionError,"UnableToAccessPath","s",p); return((char *) NULL); } return(FileToString(p,~0UL,&amp;image-&gt;exception)); }</p>
+<p>if ((*p == '@') &amp;&amp; (IsPathAccessible(p+1) != MagickFalse)) {  /* handle a '@' replace string from file */ interpret_text=FileToString(p+1,~0UL,&amp;image-&gt;exception); if (interpret_text != (char *) NULL) return(interpret_text); }</p>
 
 <p>/* Translate any embedded format characters. </p>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/property_8c.html" id="RemoveImageProperty">RemoveImageProperty</a></h2>
@@ -368,6 +368,7 @@ MagickBooleanType SetImageProperty(Image *image,const char *property,
   </footer>
 </div><!-- /.container -->
 
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script src="../js/magick.html"></script>
 </div>
 </body>

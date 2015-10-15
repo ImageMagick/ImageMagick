@@ -466,8 +466,6 @@ MagickExport MagickBooleanType GradientImage(Image *image,
     (void) ParseAbsoluteGeometry(artifact,&gradient->bounding_box);
   gradient->gradient_vector.x2=(double) image->columns-1.0;
   gradient->gradient_vector.y2=(double) image->rows-1.0;
-  if ((type == LinearGradient) && (gradient->gradient_vector.y2 != 0.0))
-    gradient->gradient_vector.x2=0.0;
   artifact=GetImageArtifact(image,"gradient:vector");
   if (artifact != (const char *) NULL)
     {
@@ -480,6 +478,9 @@ MagickExport MagickBooleanType GradientImage(Image *image,
       if ((flags & PsiValue) != 0)
         gradient->gradient_vector.y2=geometry_info.psi;
     }
+  else
+    if ((type == LinearGradient) && (gradient->gradient_vector.y2 != 0.0))
+      gradient->gradient_vector.x2=0.0;
   gradient->center.x=(double) gradient->gradient_vector.x2/2.0;
   gradient->center.y=(double) gradient->gradient_vector.y2/2.0;
   artifact=GetImageArtifact(image,"gradient:center");

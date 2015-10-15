@@ -29,9 +29,9 @@
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
+    <script async="async" src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
     <script>
-    (adsbygoogle = window.adsbygoogle || []).push({});
+      (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
     <nav class="magick-nav">
       <a class="magick-nav-item " href="../index.html">Home</a>
@@ -47,7 +47,7 @@
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="text-center"><a href="attribute.html#GetImageChannelDepth">GetImageChannelDepth</a> • <a href="attribute.html#GetImageQuantumDepth">GetImageQuantumDepth</a> • <a href="attribute.html#GetImageType">GetImageType</a> • <a href="attribute.html#IsGrayImage">IsGrayImage</a> • <a href="attribute.html#IsMonochromeImage">IsMonochromeImage</a> • <a href="attribute.html#IsOpaqueImage">IsOpaqueImage</a> • <a href="attribute.html#SetImageChannelDepth">SetImageChannelDepth</a> • <a href="attribute.html#SetImageType">SetImageType</a></p>
+<p class="text-center"><a href="attribute.html#GetImageChannelDepth">GetImageChannelDepth</a> • <a href="attribute.html#GetImageQuantumDepth">GetImageQuantumDepth</a> • <a href="attribute.html#GetImageType">GetImageType</a> • <a href="attribute.html#IdentifyImageMonochrome">IdentifyImageMonochrome</a> • <a href="attribute.html#IdentifyImageType">IdentifyImageType</a> • <a href="attribute.html#IsGrayImage">IsGrayImage</a> • <a href="attribute.html#IsMonochromeImage">IsMonochromeImage</a> • <a href="attribute.html#IsOpaqueImage">IsOpaqueImage</a> • <a href="attribute.html#SetImageChannelDepth">SetImageChannelDepth</a> • <a href="attribute.html#SetImageType">SetImageType</a></p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/attribute_8c.html" id="GetImageChannelDepth">GetImageChannelDepth</a></h2>
 
@@ -124,6 +124,67 @@ size_t GetImageQuantumDepth(const Image *image,
 
 <pre class="text">
 ImageType GetImageType(const Image *image,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/attribute_8c.html" id="IdentifyImageMonochrome">IdentifyImageMonochrome</a></h2>
+
+<p>IdentifyImageMonochrome() returns MagickTrue if all the pixels in the image have the same red, green, and blue intensities and the intensity is either 0 or QuantumRange.</p>
+
+<p>The format of the IdentifyImageMonochrome method is:</p>
+
+<pre class="text">
+MagickBooleanType IdentifyImageMonochrome(const Image *image,
+  ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/attribute_8c.html" id="IdentifyImageType">IdentifyImageType</a></h2>
+
+<p>IdentifyImageType() returns the potential type of image:</p>
+
+<p>Bilevel         Grayscale        GrayscaleMatte Palette         PaletteMatte     TrueColor TrueColorMatte  ColorSeparation  ColorSeparationMatte</p>
+
+<p>To ensure the image type matches its potential, use SetImageType():</p>
+
+<pre class="text">
+    (void) SetImageType(image,IdentifyImageType(image,exception),exception);
+</pre>
+
+<p>The format of the IdentifyImageType method is:</p>
+
+<pre class="text">
+ImageType IdentifyImageType(const Image *image,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>

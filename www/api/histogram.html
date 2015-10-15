@@ -29,9 +29,9 @@
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
+    <script async="async" src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
     <script>
-    (adsbygoogle = window.adsbygoogle || []).push({});
+      (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
     <nav class="magick-nav">
       <a class="magick-nav-item " href="../index.html">Home</a>
@@ -47,7 +47,7 @@
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="text-center"><a href="histogram.html#GetImageHistogram">GetImageHistogram</a> • <a href="histogram.html#IsHistogramImage">IsHistogramImage</a> • <a href="histogram.html#IsPaletteImage">IsPaletteImage</a> • <a href="histogram.html#MinMaxStretchImage">MinMaxStretchImage</a> • <a href="histogram.html#GetNumberColors">GetNumberColors</a> • <a href="histogram.html#UniqueImageColors">UniqueImageColors</a></p>
+<p class="text-center"><a href="histogram.html#GetImageHistogram">GetImageHistogram</a> • <a href="histogram.html#IdentifyPaletteImage">IdentifyPaletteImage</a> • <a href="histogram.html#IsHistogramImage">IsHistogramImage</a> • <a href="histogram.html#IsPaletteImage">IsPaletteImage</a> • <a href="histogram.html#MinMaxStretchImage">MinMaxStretchImage</a> • <a href="histogram.html#GetNumberColors">GetNumberColors</a> • <a href="histogram.html#UniqueImageColors">UniqueImageColors</a></p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/histogram_8c.html" id="GetImageHistogram">GetImageHistogram</a></h2>
 
@@ -67,6 +67,25 @@ size_t GetImageHistogram(const Image *image,
 
 <dt>file</dt>
 <p>Write a histogram of the color distribution to this file handle.</p>
+
+<dt>exception</dt>
+<p>return any errors or warnings in this structure.</p>
+
+<h2><a href="http://www.imagemagick.org/api/MagickCore/histogram_8c.html" id="IdentifyPaletteImage">IdentifyPaletteImage</a></h2>
+
+<p>IdentifyPaletteImage() returns MagickTrue if the image has 256 unique colors or less.</p>
+
+<p>The format of the IdentifyPaletteImage method is:</p>
+
+<pre class="text">
+MagickBooleanType IdentifyPaletteImage(const Image *image,
+  ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows.</p>
+
+<dt>image</dt>
+<p>the image.</p>
 
 <dt>exception</dt>
 <p>return any errors or warnings in this structure.</p>
