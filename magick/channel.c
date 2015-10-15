@@ -700,11 +700,9 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           double
-            alpha,
             gamma;
 
-          alpha=QuantumScale*GetPixelAlpha(q);
-          gamma=alpha;
+          gamma=QuantumScale*GetPixelAlpha(q);
           SetPixelRed(q,ClampToQuantum(gamma*GetPixelRed(q)));
           SetPixelGreen(q,ClampToQuantum(gamma*GetPixelGreen(q)));
           SetPixelBlue(q,ClampToQuantum(gamma*GetPixelBlue(q)));
