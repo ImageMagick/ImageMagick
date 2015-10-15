@@ -65,6 +65,7 @@
 #include "MagickCore/memory_.h"
 #include "MagickCore/module.h"
 #include "MagickCore/monitor-private.h"
+#include "MagickCore/option.h"
 #include "MagickCore/pixel.h"
 #include "MagickCore/pixel-accessor.h"
 #include "MagickCore/profile.h"
@@ -72,6 +73,7 @@
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
+#include "MagickCore/thread-private.h"
 #ifdef MAGICKCORE_ZLIB_DELEGATE
 #include <zlib.h>
 #endif
@@ -267,6 +269,76 @@ static const char *CompositeOperatorToPSDBlendMode(CompositeOperator op)
   return(blend_mode);
 }
 
+/*
+  For some reason Photoshop seems to blend semi-transparent pixels with white.
+  This method reverts the blending. This can be disabled by setting the
+  option 'psd:alpha-unblend' to off.
+*/
+static MagickBooleanType CorrectPSDAlphaBlend(const ImageInfo *image_info,
+  Image *image,ExceptionInfo* exception)
+{
+  const char
+    *option;
+
+  MagickBooleanType
+    status;
+
+  ssize_t
+    y;
+
+  if (image->alpha_trait != BlendPixelTrait || image->colorspace != sRGBColorspace)
+    return(MagickTrue);
+  option=GetImageOption(image_info,"psd:alpha-unblend");
+  if (IsStringFalse(option) != MagickFalse)
+    return(MagickTrue);
+  status=MagickTrue;
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#pragma omp parallel for schedule(static,4) shared(status) \
+  magick_threads(image,image,image->rows,1)
+#endif
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    register Quantum
+      *restrict q;
+
+    register ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
+    if (q == (Quantum *) NULL)
+    {
+      status=MagickFalse;
+      continue;
+    }
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      double
+        gamma;
+
+      register ssize_t
+        i;
+
+      gamma=QuantumScale*GetPixelAlpha(image, q);
+      if (gamma != 0.0 && gamma != 1.0)
+        {
+          for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+          {
+            PixelChannel channel=GetPixelChannelChannel(image,i);
+            if (channel != AlphaPixelChannel)
+              q[i]=ClampToQuantum((q[i]-((1.0-gamma)*QuantumRange))/gamma);
+          }
+        }
+      q+=GetPixelChannels(image);
+    }
+    if (SyncAuthenticPixels(image,exception) == MagickFalse)
+      status=MagickFalse;
+  }
+
+  return(status);
+}
+
 static inline CompressionType ConvertPSDCompression(
   PSDCompressionType compression)
 {
@@ -282,14 +354,11 @@ static inline CompressionType ConvertPSDCompression(
   }
 }
 
-static MagickStatusType CorrectPSDOpacity(LayerInfo* layer_info,
+static MagickBooleanType CorrectPSDOpacity(LayerInfo *layer_info,
   ExceptionInfo *exception)
 {
-  register Quantum
-    *q;
-
-  register ssize_t
-    x;
+  MagickBooleanType
+    status;
 
   ssize_t
     y;
@@ -298,12 +367,28 @@ static MagickStatusType CorrectPSDOpacity(LayerInfo* layer_info,
     return(MagickTrue);
 
   layer_info->image->alpha_trait=BlendPixelTrait;
+  status=MagickTrue;
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#pragma omp parallel for schedule(static,4) shared(status) \
+  magick_threads(layer_info->image,layer_info->image,layer_info->image->rows,1)
+#endif
   for (y=0; y < (ssize_t) layer_info->image->rows; y++)
   {
+    register Quantum
+      *restrict q;
+
+    register ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
     q=GetAuthenticPixels(layer_info->image,0,y,layer_info->image->columns,1,
       exception);
-    if (q == (Quantum *) NULL)
-      break;
+    if (q == (Quantum *)NULL)
+      {
+        status=MagickFalse;
+        continue;
+      }
     for (x=0; x < (ssize_t) layer_info->image->columns; x++)
     {
       SetPixelAlpha(layer_info->image,(Quantum) (QuantumScale*(GetPixelAlpha(
@@ -311,10 +396,10 @@ static MagickStatusType CorrectPSDOpacity(LayerInfo* layer_info,
       q+=GetPixelChannels(layer_info->image);
     }
     if (SyncAuthenticPixels(layer_info->image,exception) == MagickFalse)
-      return(MagickFalse);
+      status=MagickFalse;
   }
 
-  return(MagickTrue);
+  return(status);
 }
 
 static ssize_t DecodePSDPixels(const size_t number_compact_pixels,
@@ -511,15 +596,19 @@ static const char *ModeToString(PSDImageType type)
   }
 }
 
-static void NegateCMYK(Image *image,ExceptionInfo *exception)
+static MagickBooleanType NegateCMYK(Image *image,ExceptionInfo *exception)
 {
   ChannelType
     channel_mask;
 
+  MagickBooleanType
+    status;
+
   channel_mask=SetImageChannelMask(image,(ChannelType)(AllChannels &~
     AlphaChannel));
-  NegateImage(image,MagickFalse,exception);
+  status=NegateImage(image,MagickFalse,exception);
   (void) SetImageChannelMask(image,channel_mask);
+  return(status);
 }
 
 static void ParseImageResourceBlocks(Image *image,
@@ -675,7 +764,7 @@ static inline void ReversePSDString(Image *image,char *p,size_t length)
   }
 }
 
-static MagickStatusType ReadPSDChannelPixels(Image *image,
+static MagickBooleanType ReadPSDChannelPixels(Image *image,
   const size_t channels,const size_t row,const ssize_t type,
   const unsigned char *pixels,ExceptionInfo *exception)
 {
@@ -798,10 +887,10 @@ static MagickStatusType ReadPSDChannelPixels(Image *image,
   return(SyncAuthenticPixels(image,exception));
 }
 
-static MagickStatusType ReadPSDChannelRaw(Image *image,const size_t channels,
+static MagickBooleanType ReadPSDChannelRaw(Image *image,const size_t channels,
   const ssize_t type,ExceptionInfo *exception)
 {
-  MagickStatusType
+  MagickBooleanType
     status;
 
   size_t
@@ -865,10 +954,10 @@ static inline MagickOffsetType *ReadPSDRLEOffsets(Image *image,
   return offsets;
 }
 
-static MagickStatusType ReadPSDChannelRLE(Image *image,const PSDInfo *psd_info,
+static MagickBooleanType ReadPSDChannelRLE(Image *image,const PSDInfo *psd_info,
   const ssize_t type,MagickOffsetType *offsets,ExceptionInfo *exception)
 {
-  MagickStatusType
+  MagickBooleanType
     status;
 
   size_t
@@ -941,11 +1030,11 @@ static MagickStatusType ReadPSDChannelRLE(Image *image,const PSDInfo *psd_info,
 }
 
 #ifdef MAGICKCORE_ZLIB_DELEGATE
-static MagickStatusType ReadPSDChannelZip(Image *image,const size_t channels,
+static MagickBooleanType ReadPSDChannelZip(Image *image,const size_t channels,
   const ssize_t type,const PSDCompressionType compression,
   const size_t compact_size,ExceptionInfo *exception)
 {
-  MagickStatusType
+  MagickBooleanType
     status;
 
   register unsigned char
@@ -1055,7 +1144,7 @@ static MagickStatusType ReadPSDChannelZip(Image *image,const size_t channels,
 }
 #endif
 
-static MagickStatusType ReadPSDChannel(Image *image,const PSDInfo *psd_info,
+static MagickBooleanType ReadPSDChannel(Image *image,const PSDInfo *psd_info,
   LayerInfo* layer_info,const size_t channel,
   const PSDCompressionType compression,ExceptionInfo *exception)
 {
@@ -1066,7 +1155,7 @@ static MagickStatusType ReadPSDChannel(Image *image,const PSDInfo *psd_info,
   MagickOffsetType
     offset;
 
-  MagickStatusType
+  MagickBooleanType
     status;
 
   channel_image=image;
@@ -1155,13 +1244,13 @@ static MagickStatusType ReadPSDChannel(Image *image,const PSDInfo *psd_info,
   return(status);
 }
 
-static MagickStatusType ReadPSDLayer(Image *image,const PSDInfo *psd_info,
+static MagickBooleanType ReadPSDLayer(Image *image,const PSDInfo *psd_info,
   LayerInfo* layer_info,ExceptionInfo *exception)
 {
   char
     message[MagickPathExtent];
 
-  MagickStatusType
+  MagickBooleanType
     status;
 
   PSDCompressionType
@@ -1220,22 +1309,21 @@ static MagickStatusType ReadPSDLayer(Image *image,const PSDInfo *psd_info,
   if (status != MagickFalse)
     status=CorrectPSDOpacity(layer_info,exception);
 
-  if (status != MagickFalse)
+  if ((status != MagickFalse) &&
+      (layer_info->image->colorspace == CMYKColorspace))
+    status=NegateCMYK(layer_info->image,exception);
+
+  if ((status != MagickFalse) && (layer_info->mask.image != (Image *) NULL))
     {
-      if (layer_info->image->colorspace == CMYKColorspace)
-        NegateCMYK(layer_info->image,exception);
-      if (layer_info->mask.image != (Image *) NULL)
-        {
-          CompositeImage(layer_info->image,layer_info->mask.image,
-            CopyAlphaCompositeOp,MagickTrue,0,0,exception);
-          layer_info->mask.image=DestroyImage(layer_info->mask.image);
-        }
+      status=CompositeImage(layer_info->image,layer_info->mask.image,
+        CopyAlphaCompositeOp,MagickTrue,0,0,exception);
+      layer_info->mask.image=DestroyImage(layer_info->mask.image);
     }
 
   return(status);
 }
 
-ModuleExport MagickStatusType ReadPSDLayers(Image *image,
+ModuleExport MagickBooleanType ReadPSDLayers(Image *image,
   const ImageInfo *image_info,const PSDInfo *psd_info,
   const MagickBooleanType skip_layers,ExceptionInfo *exception)
 {
@@ -1248,7 +1336,7 @@ ModuleExport MagickStatusType ReadPSDLayers(Image *image,
   MagickSizeType
     size;
 
-  MagickStatusType
+  MagickBooleanType
     status;
 
   register ssize_t
@@ -1587,13 +1675,13 @@ ModuleExport MagickStatusType ReadPSDLayers(Image *image,
   return(status);
 }
 
-static MagickStatusType ReadPSDMergedImage(Image* image,
-  const PSDInfo* psd_info,ExceptionInfo *exception)
+static MagickBooleanType ReadPSDMergedImage(const ImageInfo *image_info,
+  Image *image,const PSDInfo *psd_info,ExceptionInfo *exception)
 {
   MagickOffsetType
     *offsets;
 
-  MagickStatusType
+  MagickBooleanType
     status;
 
   PSDCompressionType
@@ -1630,15 +1718,18 @@ static MagickStatusType ReadPSDMergedImage(Image* image,
     else
       status=ReadPSDChannelRaw(image,psd_info->channels,i,exception);
 
-    if (status == MagickFalse)
-      break;
-    status=SetImageProgress(image,LoadImagesTag,i,psd_info->channels);
+    if (status != MagickFalse)
+      status=SetImageProgress(image,LoadImagesTag,i,psd_info->channels);
+
     if (status == MagickFalse)
       break;
   }
 
-  if (image->colorspace == CMYKColorspace)
-    (void) NegateCMYK(image,exception);
+  if ((status != MagickFalse) && (image->colorspace == CMYKColorspace))
+    status=NegateCMYK(image,exception);
+
+  if (status != MagickFalse)
+    status=CorrectPSDAlphaBlend(image_info,image,exception);
 
   if (offsets != (MagickOffsetType *) NULL)
     offsets=(MagickOffsetType *) RelinquishMagickMemory(offsets);
@@ -1661,7 +1752,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickSizeType
     length;
 
-  MagickStatusType
+  MagickBooleanType
     status;
 
   PSDInfo
@@ -1891,8 +1982,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
       "  reading the precombined layer");
   if ((has_merged_image != MagickFalse) || (GetImageListLength(image) == 1))
-    has_merged_image=(MagickBooleanType) ReadPSDMergedImage(image,&psd_info,
-      exception);
+    has_merged_image=(MagickBooleanType) ReadPSDMergedImage(image_info,image,
+      &psd_info,exception);
   if ((has_merged_image == MagickFalse) && (GetImageListLength(image) == 1) &&
       (length != 0))
     {
