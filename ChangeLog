@@ -1,10 +1,16 @@
-2015-09-12  6.9.2-5 Cristy  <quetzlzacatenango@image...>
+2015-10-15  6.9.2-5 Dirk Lemstra <dirk@lem.....org>
+  * Fixed alpha blending issue with semi-transparent pixels in the merged
+    image of PSD files. This can be disabled by setting the option
+    'psd:alpha-unblend' to 'off' (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=28169).
+
+2015-10-12  6.9.2-5 Cristy  <quetzlzacatenango@image...>
   * Support gradient:bounding-box, gradient:vector, gradient:center, and
     gradient:radius to shape the gradient rendering.
   * Recognize label:@- as stdin (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=28501).
 
-2015-09-10  6.9.2-4 Cristy  <quetzlzacatenango@image...>
+2015-10-10  6.9.2-4 Cristy  <quetzlzacatenango@image...>
   * New version 6.9.2-4, GIT revision 10273:e00cf21:20151010
 
 2015-10-08  6.9.2-4 Dirk Lemstra <dirk@lem.....org>
