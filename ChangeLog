@@ -3,6 +3,8 @@
     image of PSD files. This can be disabled by setting the option
     'psd:alpha-unblend' to 'off' (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=28169).
+  * Fixed issue in jpeg:extent that prevented it from working (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&p=126638).
 
 2015-10-12  6.9.2-5 Cristy  <quetzlzacatenango@image...>
   * Support gradient:bounding-box, gradient:vector, gradient:center, and
