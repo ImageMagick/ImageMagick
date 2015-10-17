@@ -833,15 +833,25 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
     return(flags);
   if (strlen(geometry) >= (MagickPathExtent-1))
     return(flags);
+  c=sscanf(geometry,"%lf%*[ ,]%lf%*[ ,]%lf%*[ ,]%lf",&geometry_info->rho,
+    &geometry_info->sigma,&geometry_info->xi,&geometry_info->psi);
+  if (c == 4)
+    {
+      /*
+        Special case: coordinate (e.g. 0,0 255,255).
+      */
+      flags|=RhoValue | SigmaValue | XiValue | PsiValue;
+      return(flags);
+    }
   (void) CopyMagickString(pedantic_geometry,geometry,MagickPathExtent);
   for (p=pedantic_geometry; *p != '\0'; )
   {
-    if (isspace((int) ((unsigned char) *p)) != 0)
+    c=(int) ((unsigned char) *p);
+    if (isspace(c) != 0)
       {
-        (void) CopyMagickString(p,p+1,MagickPathExtent);
+        (void) CopyMagickString(p,p+1,MaxTextExtent);
         continue;
       }
-    c=(int) ((unsigned char) *p);
     switch (c)
     {
       case '%':
