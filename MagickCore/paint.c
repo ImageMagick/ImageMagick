@@ -559,9 +559,9 @@ MagickExport MagickBooleanType GradientImage(Image *image,
     (void) sscanf(artifact,"%lf%*[ ,]%lf%*[ ,]%lf%*[ ,]%lf",
       &gradient->gradient_vector.x1,&gradient->gradient_vector.y1,
       &gradient->gradient_vector.x2,&gradient->gradient_vector.y2);
-  if ((GetImageArtifact(image,"gradient:direction") != (const char *) NULL) ||
-      (GetImageArtifact(image,"gradient:angle") != (const char *) NULL) ||
-      (GetImageArtifact(image,"gradient:vector") != (const char *) NULL))
+  if ((GetImageArtifact(image,"gradient:direction") == (const char *) NULL) &&
+      (GetImageArtifact(image,"gradient:angle") == (const char *) NULL) &&
+      (GetImageArtifact(image,"gradient:vector") == (const char *) NULL))
     if ((type == LinearGradient) && (gradient->gradient_vector.y2 != 0.0))
       gradient->gradient_vector.x2=0.0;
   gradient->center.x=(double) gradient->gradient_vector.x2/2.0;
