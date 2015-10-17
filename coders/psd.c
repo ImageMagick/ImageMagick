@@ -307,11 +307,11 @@ static MagickBooleanType CorrectPSDAlphaBlend(const ImageInfo *image_info,
     if (status == MagickFalse)
       continue;
     q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
-    if (q == (Quantum *) NULL)
-    {
-      status=MagickFalse;
-      continue;
-    }
+    if (q == (PixelPacket *) NULL)
+      {
+        status=MagickFalse;
+        continue;
+      }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       double
@@ -378,7 +378,7 @@ static MagickBooleanType CorrectPSDOpacity(LayerInfo* layer_info,
       continue;
     q=GetAuthenticPixels(layer_info->image,0,y,layer_info->image->columns,1,
       exception);
-    if (q == (Quantum *)NULL)
+    if (q == (PixelPacket *)NULL)
       {
         status=MagickFalse;
         continue;
