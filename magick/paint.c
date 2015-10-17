@@ -54,6 +54,7 @@
 #include "magick/gem.h"
 #include "magick/monitor.h"
 #include "magick/monitor-private.h"
+#include "magick/option.h"
 #include "magick/paint.h"
 #include "magick/pixel-private.h"
 #include "magick/resource_.h"
@@ -422,6 +423,17 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
 % function and the gradient structure in draw_info.
 %
 */
+
+static inline double MagickRound(double x)
+{
+  /*
+    Round the fraction to nearest integer.
+  */
+  if ((x-floor(x)) < (ceil(x)-x))
+    return(floor(x));
+  return(ceil(x));
+}
+
 MagickExport MagickBooleanType GradientImage(Image *image,
   const GradientType type,const SpreadMethod method,
   const PixelPacket *start_color,const PixelPacket *stop_color)
@@ -432,17 +444,11 @@ MagickExport MagickBooleanType GradientImage(Image *image,
   DrawInfo
     *draw_info;
 
-  GeometryInfo
-    geometry_info;
-
   GradientInfo
     *gradient;
 
   MagickBooleanType
     status;
-
-  MagickStatusType
-    flags;
 
   register ssize_t
     i;
@@ -466,18 +472,111 @@ MagickExport MagickBooleanType GradientImage(Image *image,
     (void) ParseAbsoluteGeometry(artifact,&gradient->bounding_box);
   gradient->gradient_vector.x2=(double) image->columns-1.0;
   gradient->gradient_vector.y2=(double) image->rows-1.0;
-  artifact=GetImageArtifact(image,"gradient:vector");
+  artifact=GetImageArtifact(image,"gradient:direction");
   if (artifact != (const char *) NULL)
     {
-      flags=ParseGeometry(artifact,&geometry_info);
-      gradient->gradient_vector.x1=geometry_info.rho;
-      if ((flags & SigmaValue) != 0)
-        gradient->gradient_vector.y1=geometry_info.sigma;
-      if ((flags & XiValue) != 0)
-        gradient->gradient_vector.x2=geometry_info.xi;
-      if ((flags & PsiValue) != 0)
-        gradient->gradient_vector.y2=geometry_info.psi;
+      GravityType
+        direction;
+
+      direction=(GravityType) ParseCommandOption(MagickGravityOptions,
+        MagickFalse,artifact);
+      switch (direction)
+      {
+        case NorthWestGravity:
+        {
+          gradient->gradient_vector.x1=(double) image->columns-1.0;
+          gradient->gradient_vector.y1=(double) image->rows-1.0;
+          gradient->gradient_vector.x2=0.0;
+          gradient->gradient_vector.y2=0.0;
+          break;
+        }
+        case NorthGravity:
+        {
+          gradient->gradient_vector.x1=0.0;
+          gradient->gradient_vector.y1=(double) image->rows-1.0;
+          gradient->gradient_vector.x2=0.0;
+          gradient->gradient_vector.y2=0.0;
+          break;
+        }
+        case NorthEastGravity:
+        {
+          gradient->gradient_vector.x1=0.0;
+          gradient->gradient_vector.y1=(double) image->rows-1.0;
+          gradient->gradient_vector.x2=(double) image->columns-1.0;
+          gradient->gradient_vector.y2=0.0;
+          break;
+        }
+        case WestGravity:
+        {
+          gradient->gradient_vector.x1=(double) image->columns-1.0;
+          gradient->gradient_vector.y1=0.0;
+          gradient->gradient_vector.x2=0.0;
+          gradient->gradient_vector.y2=0.0;
+          break;
+        }
+        case EastGravity:
+        {
+          gradient->gradient_vector.x1=0.0;
+          gradient->gradient_vector.y1=0.0;
+          gradient->gradient_vector.x2=(double) image->columns-1.0;
+          gradient->gradient_vector.y2=0.0;
+          break;
+        }
+        case SouthWestGravity:
+        {
+          gradient->gradient_vector.x1=(double) image->columns-1.0;
+          gradient->gradient_vector.y1=0.0;
+          gradient->gradient_vector.x2=0.0;
+          gradient->gradient_vector.y2=(double) image->rows-1.0;
+          break;
+        }
+        case SouthGravity:
+        {
+          gradient->gradient_vector.x1=0.0;
+          gradient->gradient_vector.y1=0.0;
+          gradient->gradient_vector.x2=0.0;
+          gradient->gradient_vector.y2=(double) image->columns-1.0;
+          break;
+        }
+        case SouthEastGravity:
+        {
+          gradient->gradient_vector.x1=0.0;
+          gradient->gradient_vector.y1=0.0;
+          gradient->gradient_vector.x2=(double) image->columns-1.0;
+          gradient->gradient_vector.y2=(double) image->rows-1.0;
+          break;
+        }
+        default:
+          break;
+      }
     }
+  artifact=GetImageArtifact(image,"gradient:angle");
+  if (artifact != (const char *) NULL)
+    {
+      double
+        angle,
+        cosine,
+        distance,
+        sine;
+
+      angle=StringToDouble(artifact,(char **) NULL);
+      cosine=cos(MagickPI*angle/180.0);
+      sine=sin(MagickPI*angle/180.0);
+      distance=fabs(sine*image->columns)+fabs(cosine*image->rows);
+      gradient->gradient_vector.x1=MagickRound(0.5*(image->columns-cosine*
+        distance));
+      gradient->gradient_vector.y1=MagickRound(0.5*(image->rows-sine*
+        distance));
+      gradient->gradient_vector.x2=MagickRound(0.5*(image->columns+cosine*
+        distance));
+      gradient->gradient_vector.y2=MagickRound(0.5*(image->rows+sine*
+        distance));
+    }
+  artifact=GetImageArtifact(image,"gradient:vector");
+  if (artifact != (const char *) NULL)
+    (void) sscanf(artifact,"%lf%*[ ,]%lf%*[ ,]%lf%*[ ,]%lf",
+      &gradient->gradient_vector.x1,&gradient->gradient_vector.y1,
+      &gradient->gradient_vector.x2,&gradient->gradient_vector.y2);
   else
     if ((type == LinearGradient) && (gradient->gradient_vector.y2 != 0.0))
       gradient->gradient_vector.x2=0.0;
@@ -485,12 +584,8 @@ MagickExport MagickBooleanType GradientImage(Image *image,
   gradient->center.y=(double) gradient->gradient_vector.y2/2.0;
   artifact=GetImageArtifact(image,"gradient:center");
   if (artifact != (const char *) NULL)
-    {
-      flags=ParseGeometry(artifact,&geometry_info);
-      gradient->center.x=geometry_info.rho;
-      if ((flags & SigmaValue) != 0)
-        gradient->center.y=geometry_info.sigma;
-    }
+    (void) sscanf(artifact,"%lf%*[ ,]%lf",&gradient->center.x,
+      &gradient->center.y);
   gradient->radius=MagickMax(gradient->center.x,gradient->center.y);
   artifact=GetImageArtifact(image,"gradient:radius");
   if (artifact != (const char *) NULL)
