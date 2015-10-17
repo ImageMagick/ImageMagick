@@ -81,8 +81,8 @@
 #include "magick/version.h"
 #include "magick/xml-tree.h"
 #if defined(MAGICKCORE_LCMS_DELEGATE)
-#if defined(MAGICKCORE_HAVE_LCMS_LCMS2_H)
-#include <lcms/lcms2.h>
+#if defined(MAGICKCORE_HAVE_LCMS2_LCMS2_H)
+#include <lcms2/lcms2.h>
 #elif defined(MAGICKCORE_HAVE_LCMS2_H)
 #include "lcms2.h"
 #elif defined(MAGICKCORE_HAVE_LCMS_LCMS_H)
