@@ -446,6 +446,23 @@ static inline MagickBooleanType IsPixelEquivalent(const Image *restrict image,
   MagickRealType
     value;
 
+  value=(MagickRealType) p[image->channel_map[AlphaPixelChannel].offset];
+  if ((image->alpha_trait != UndefinedPixelTrait) &&
+      (q->alpha_trait == UndefinedPixelTrait) &&
+      (AbsolutePixelValue(value-OpaqueAlpha) >= MagickEpsilon))
+    return(MagickFalse);
+  if ((q->alpha_trait != UndefinedPixelTrait) &&
+      (image->alpha_trait == UndefinedPixelTrait) &&
+      (AbsolutePixelValue(q->alpha-OpaqueAlpha)) >= MagickEpsilon)
+    return(MagickFalse);
+  if ((image->alpha_trait != UndefinedPixelTrait) &&
+      (q->alpha_trait != UndefinedPixelTrait))
+    {
+      if (AbsolutePixelValue(value-q->alpha) >= MagickEpsilon)
+        return(MagickFalse);
+      if (AbsolutePixelValue(value-TransparentAlpha) < MagickEpsilon)
+        return(MagickTrue);
+    }
   value=(MagickRealType) p[image->channel_map[RedPixelChannel].offset];
   if (AbsolutePixelValue(value-q->red) >= MagickEpsilon)
     return(MagickFalse);
@@ -455,6 +472,12 @@ static inline MagickBooleanType IsPixelEquivalent(const Image *restrict image,
   value=(MagickRealType) p[image->channel_map[BluePixelChannel].offset];
   if (AbsolutePixelValue(value-q->blue) >= MagickEpsilon)
     return(MagickFalse);
+  if (image->colorspace == CMYKColorspace)
+    {
+      value=(MagickRealType) p[image->channel_map[BlackPixelChannel].offset];
+      if (AbsolutePixelValue(value-q->black) >= MagickEpsilon)
+        return(MagickFalse);
+    }
   return(MagickTrue);
 }
 
