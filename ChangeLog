@@ -11,6 +11,7 @@
     gradient:radius to shape the gradient rendering.
   * Recognize label:@- as stdin (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=28501).
+  * Make commas optional for coordinates (e.g. 0,0 256,256).
 
 2015-10-10  6.9.2-4 Cristy  <quetzlzacatenango@image...>
   * New version 6.9.2-4, GIT revision 10273:e00cf21:20151010
