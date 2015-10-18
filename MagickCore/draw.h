@@ -167,7 +167,8 @@ typedef struct _GradientInfo
     debug;
 
   PointInfo
-    center;
+    center,
+    radii;
 
   double
     radius;
