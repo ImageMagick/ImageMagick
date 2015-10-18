@@ -41,7 +41,7 @@ typedef struct _PSDInfo
     version;
 } PSDInfo;
 
-extern ModuleExport MagickStatusType
+extern ModuleExport MagickBooleanType
   ReadPSDLayers(Image *,const ImageInfo *,const PSDInfo *,
     const MagickBooleanType,ExceptionInfo *);
 
