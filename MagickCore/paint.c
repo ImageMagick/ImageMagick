@@ -567,9 +567,9 @@ MagickExport MagickBooleanType GradientImage(Image *image,
   if (artifact != (const char *) NULL)
     (void) sscanf(artifact,"%lf%*[ ,]%lf",&gradient->center.x,
       &gradient->center.y);
-  gradient->radii.x=gradient->center.x;
-  gradient->radii.y=gradient->center.y;
-  artifact=GetImageArtifact(image,"gradient:radius");
+  gradient->radii.x=MagickMax(gradient->center.x,gradient->center.y);
+  gradient->radii.y=gradient->radii.x;
+  artifact=GetImageArtifact(image,"gradient:radii");
   if (artifact != (const char *) NULL)
     (void) sscanf(artifact,"%lf%*[ ,]%lf",&gradient->radii.x,
       &gradient->radii.y);
