@@ -244,7 +244,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
     *edge_view;
 
   CannyInfo
-    pixel;
+    element;
 
   char
     geometry[MagickPathExtent];
@@ -418,9 +418,9 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
     of an edge.
   */
   progress=0;
-  (void) GetMatrixElement(canny_cache,0,0,&pixel);
-  max=pixel.intensity;
-  min=pixel.intensity;
+  (void) GetMatrixElement(canny_cache,0,0,&element);
+  max=element.intensity;
+  min=element.intensity;
   edge_view=AcquireAuthenticCacheView(edge_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
@@ -660,13 +660,11 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
     status;
 
   register ssize_t
-    i;
+    i,
+    r;
 
   size_t
     length;
-
-  ssize_t
-    y;
 
   unsigned int
     number_grays;
@@ -710,7 +708,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
   #pragma omp parallel for schedule(static,4) shared(status) \
     magick_threads(image,image,image->rows,1)
 #endif
-  for (y=0; y < (ssize_t) image->rows; y++)
+  for (r=0; r < (ssize_t) image->rows; r++)
   {
     register const Quantum
       *restrict p;
@@ -720,7 +718,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
 
     if (status == MagickFalse)
       continue;
-    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
+    p=GetCacheViewVirtualPixels(image_view,0,r,image->columns,1,exception);
     if (p == (const Quantum *) NULL)
       {
         status=MagickFalse;
@@ -881,7 +879,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
   */
   status=MagickTrue;
   image_view=AcquireVirtualCacheView(image,exception);
-  for (y=0; y < (ssize_t) image->rows; y++)
+  for (r=0; r < (ssize_t) image->rows; r++)
   {
     register const Quantum
       *restrict p;
@@ -890,14 +888,13 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
       x;
 
     ssize_t
-      i,
       offset,
       u,
       v;
 
     if (status == MagickFalse)
       continue;
-    p=GetCacheViewVirtualPixels(image_view,-(ssize_t) distance,y,image->columns+
+    p=GetCacheViewVirtualPixels(image_view,-(ssize_t) distance,r,image->columns+
       2*distance,distance+2,exception);
     if (p == (const Quantum *) NULL)
       {

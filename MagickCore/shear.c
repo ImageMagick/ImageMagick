@@ -340,18 +340,16 @@ static MagickBooleanType RadonTransform(const Image *image,
   MagickBooleanType
     status;
 
-  register ssize_t
-    i;
-
   size_t
     count,
     width;
 
   ssize_t
+    j,
     y;
 
   unsigned char
-    byte;
+    c;
 
   unsigned short
     bits[256];
@@ -376,12 +374,12 @@ static MagickBooleanType RadonTransform(const Image *image,
       source_matrixs=DestroyMatrixInfo(source_matrixs);
       return(MagickFalse);
     }
-  for (i=0; i < 256; i++)
+  for (j=0; j < 256; j++)
   {
-    byte=(unsigned char) i;
-    for (count=0; byte != 0; byte>>=1)
-      count+=byte & 0x01;
-    bits[i]=(unsigned short) count;
+    c=(unsigned char) j;
+    for (count=0; c != 0; c>>=1)
+      count+=c & 0x01;
+    bits[j]=(unsigned short) count;
   }
   status=MagickTrue;
   image_view=AcquireVirtualCacheView(image,exception);
@@ -731,9 +729,6 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
   RectangleInfo
     page;
 
-  ssize_t
-    y;
-
   /*
     Initialize rotated image attributes.
   */
@@ -889,6 +884,9 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
     }
     case 2:
     {
+      register ssize_t
+        y;
+
       /*
         Rotate 180 degrees.
       */

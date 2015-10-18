@@ -2563,9 +2563,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
     offset;
 
   register ssize_t
-    j;
-
-  ssize_t
+    j,
     y;
 
   size_t
@@ -2659,7 +2657,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
           *restrict q;
 
         register ssize_t
-          y;
+          r;
 
         ssize_t
           center;
@@ -2676,7 +2674,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
             continue;
           }
         center=(ssize_t) GetPixelChannels(image)*offset.y;
-        for (y=0; y < (ssize_t) image->rows; y++)
+        for (r=0; r < (ssize_t) image->rows; r++)
         {
           register ssize_t
             i;

@@ -1598,7 +1598,7 @@ static MagickBooleanType FloydSteinbergDither(Image *image,CubeInfo *cube_info,
             *node_info;
 
           register size_t
-            id;
+            node_id;
 
           /*
             Identify the deepest node containing the pixel's color.
@@ -1606,10 +1606,10 @@ static MagickBooleanType FloydSteinbergDither(Image *image,CubeInfo *cube_info,
           node_info=cube.root;
           for (index=MaxTreeDepth-1; (ssize_t) index > 0; index--)
           {
-            id=ColorToNodeId(&cube,&pixel,index);
-            if (node_info->child[id] == (NodeInfo *) NULL)
+            node_id=ColorToNodeId(&cube,&pixel,index);
+            if (node_info->child[node_id] == (NodeInfo *) NULL)
               break;
-            node_info=node_info->child[id];
+            node_info=node_info->child[node_id];
           }
           /*
             Find closest color among siblings and their children.
