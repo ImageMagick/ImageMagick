@@ -181,6 +181,9 @@ typedef struct _GradientInfo
 
   MagickRealType
     radius;
+
+  PointInfo
+    radii;
 } GradientInfo;
 
 typedef struct _ElementReference

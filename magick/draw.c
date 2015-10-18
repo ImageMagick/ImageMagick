@@ -3231,20 +3231,18 @@ static inline double GetStopColorOffset(const GradientInfo *gradient,
     }
     case RadialGradient:
     {
-      double
-        length,
-        offset;
-
       PointInfo
         v;
 
-      v.x=(double) x-gradient->center.x;
-      v.y=(double) y-gradient->center.y;
-      length=sqrt(v.x*v.x+v.y*v.y);
       if (gradient->spread == RepeatSpread)
-        return(length);
-      offset=length/gradient->radius;
-      return(offset);
+        {
+          v.x=(double) x-gradient->center.x;
+          v.y=(double) y-gradient->center.y;
+          return(sqrt(v.x*v.x+v.y*v.y));
+        }
+      v.x=(double) (x-gradient->center.x)/gradient->radii.x;
+      v.y=(double) (y-gradient->center.y)/gradient->radii.y;
+      return(sqrt(v.x*v.x+v.y*v.y));
     }
   }
   return(0.0);
