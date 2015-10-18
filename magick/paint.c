@@ -594,7 +594,7 @@ MagickExport MagickBooleanType GradientImage(Image *image,
   if (artifact != (const char *) NULL)
     (void) sscanf(artifact,"%lf%*[ ,]%lf",&gradient->radii.x,
       &gradient->radii.y);
-  gradient_info->radius=MagickMax(gradient->radii.x,gradient->radii.y);
+  gradient->radius=MagickMax(gradient->radii.x,gradient->radii.y);
   gradient->spread=method;
   /*
     Define the gradient to fill between the stops.
