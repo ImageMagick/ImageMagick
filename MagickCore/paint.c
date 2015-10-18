@@ -159,7 +159,6 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
   ssize_t
     offset,
     start,
-    x,
     x1,
     x2,
     y;
@@ -208,12 +207,10 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
     Push initial segment on stack.
   */
   status=MagickTrue;
-  x=x_offset;
-  y=y_offset;
   start=0;
   s=segment_stack;
-  PushSegmentStack(y,x,x,1);
-  PushSegmentStack(y+1,x,x,-1);
+  PushSegmentStack(y_offset,x_offset,x_offset,1);
+  PushSegmentStack(y_offset+1,x_offset,x_offset,-1);
   GetPixelInfo(image,&pixel);
   image_view=AcquireVirtualCacheView(image,exception);
   floodplane_view=AcquireAuthenticCacheView(floodplane_image,exception);
