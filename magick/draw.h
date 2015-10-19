@@ -180,7 +180,8 @@ typedef struct _GradientInfo
     center;
 
   MagickRealType
-    radius;
+    radius,
+    angle;
 
   PointInfo
     radii;

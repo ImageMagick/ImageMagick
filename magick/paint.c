@@ -552,26 +552,7 @@ MagickExport MagickBooleanType GradientImage(Image *image,
     }
   artifact=GetImageArtifact(image,"gradient:angle");
   if (artifact != (const char *) NULL)
-    {
-      double
-        angle,
-        cosine,
-        distance,
-        sine;
-
-      angle=StringToDouble(artifact,(char **) NULL);
-      cosine=cos(DegreesToRadians(angle));
-      sine=sin(DegreesToRadians(angle));
-      distance=fabs(sine*image->columns)+fabs(cosine*image->rows);
-      gradient->gradient_vector.x1=MagickRound(0.5*(image->columns-cosine*
-        distance));
-      gradient->gradient_vector.y1=MagickRound(0.5*(image->rows-sine*
-        distance));
-      gradient->gradient_vector.x2=MagickRound(0.5*(image->columns+cosine*
-        distance));
-      gradient->gradient_vector.y2=MagickRound(0.5*(image->rows+sine*
-        distance));
-    }
+    gradient->angle=(MagickRealType) StringToDouble(artifact,(char **) NULL);
   artifact=GetImageArtifact(image,"gradient:vector");
   if (artifact != (const char *) NULL)
     (void) sscanf(artifact,"%lf%*[ ,]%lf%*[ ,]%lf%*[ ,]%lf",
