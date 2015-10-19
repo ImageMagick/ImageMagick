@@ -171,7 +171,8 @@ typedef struct _GradientInfo
     radii;
 
   double
-    radius;
+    radius,
+    angle;
 
   size_t
     signature;
