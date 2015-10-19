@@ -3240,10 +3240,12 @@ static inline double GetStopColorOffset(const GradientInfo *gradient,
           v.y=(double) y-gradient->center.y;
           return(sqrt(v.x*v.x+v.y*v.y));
         }
-      v.x=(double) (x-gradient->center.x*
-        cos(DegreesToRadians(gradient->angle)))/gradient->radii.x;
-      v.y=(double) (y-gradient->center.y*
-        sin(DegreesToRadians(gradient->angle)))/gradient->radii.y;
+      v.x=(double) (((x-gradient->center.x)*cos(DegreesToRadians(
+        gradient->angle)))+((y-gradient->center.y)*sin(DegreesToRadians(
+        gradient->angle))))/gradient->radii.x;
+      v.y=(double) (((x-gradient->center.x)*sin(DegreesToRadians(
+        gradient->angle)))-((y-gradient->center.y)*cos(DegreesToRadians(
+        gradient->angle))))/gradient->radii.y;
       return(sqrt(v.x*v.x+v.y*v.y));
     }
   }
