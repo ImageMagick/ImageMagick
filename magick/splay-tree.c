@@ -51,6 +51,7 @@
 #include "magick/studio.h"
 #include "magick/exception.h"
 #include "magick/exception-private.h"
+#include "magick/locale_.h"
 #include "magick/log.h"
 #include "magick/memory_.h"
 #include "magick/splay-tree.h"

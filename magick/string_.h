@@ -62,9 +62,7 @@ extern MagickExport double
   *StringToArrayOfDoubles(const char *,ssize_t *, ExceptionInfo *);
 
 extern MagickExport int
-  CompareStringInfo(const StringInfo *,const StringInfo *),
-  LocaleCompare(const char *,const char *),
-  LocaleNCompare(const char *,const char *,const size_t);
+  CompareStringInfo(const StringInfo *,const StringInfo *);
 
 extern MagickExport MagickBooleanType
   ConcatenateString(char **,const char *),
@@ -99,8 +97,6 @@ extern MagickExport unsigned char
 extern MagickExport void
   ConcatenateStringInfo(StringInfo *,const StringInfo *)
     magick_attribute((__nonnull__)),
-  LocaleLower(char *),
-  LocaleUpper(char *),
   PrintStringInfo(FILE *file,const char *,const StringInfo *),
   ResetStringInfo(StringInfo *),
   SetStringInfo(StringInfo *,const StringInfo *),

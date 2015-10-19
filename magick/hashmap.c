@@ -46,6 +46,7 @@
 #include "magick/exception.h"
 #include "magick/exception-private.h"
 #include "magick/hashmap.h"
+#include "magick/locale_.h"
 #include "magick/memory_.h"
 #include "magick/semaphore.h"
 #include "magick/signature-private.h"
