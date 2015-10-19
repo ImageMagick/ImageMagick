@@ -45,6 +45,7 @@
 #include "MagickCore/studio.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
+#include "MagickCore/locale_.h"
 #include "MagickCore/hashmap.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/semaphore.h"
