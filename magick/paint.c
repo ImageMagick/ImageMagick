@@ -560,8 +560,8 @@ MagickExport MagickBooleanType GradientImage(Image *image,
         sine;
 
       angle=StringToDouble(artifact,(char **) NULL);
-      cosine=cos(MagickPI*angle/180.0);
-      sine=sin(MagickPI*angle/180.0);
+      cosine=cos(DegreesToRadians(angle));
+      sine=sin(DegreesToRadians(angle));
       distance=fabs(sine*image->columns)+fabs(cosine*image->rows);
       gradient->gradient_vector.x1=MagickRound(0.5*(image->columns-cosine*
         distance));
@@ -577,8 +577,9 @@ MagickExport MagickBooleanType GradientImage(Image *image,
     (void) sscanf(artifact,"%lf%*[ ,]%lf%*[ ,]%lf%*[ ,]%lf",
       &gradient->gradient_vector.x1,&gradient->gradient_vector.y1,
       &gradient->gradient_vector.x2,&gradient->gradient_vector.y2);
-  if ((GetImageArtifact(image,"gradient:direction") == (const char *) NULL) &&
-      (GetImageArtifact(image,"gradient:angle") == (const char *) NULL) &&
+  if ((GetImageArtifact(image,"gradient:angle") == (const char *) NULL) &&
+      (GetImageArtifact(image,"gradient:direction") == (const char *) NULL) &&
+      (GetImageArtifact(image,"gradient:extent") == (const char *) NULL) &&
       (GetImageArtifact(image,"gradient:vector") == (const char *) NULL))
     if ((type == LinearGradient) && (gradient->gradient_vector.y2 != 0.0))
       gradient->gradient_vector.x2=0.0;
@@ -590,6 +591,25 @@ MagickExport MagickBooleanType GradientImage(Image *image,
       &gradient->center.y);
   gradient->radii.x=MagickMax(gradient->center.x,gradient->center.y);
   gradient->radii.y=gradient->radii.x;
+  artifact=GetImageArtifact(image,"gradient:extent");
+  if (artifact != (const char *) NULL)
+    {
+      if (LocaleCompare(artifact,"Diagonal") == 0)
+        {
+          gradient->radii.x=(double) image->columns-1.0;
+          gradient->radii.y=(double) image->rows-1.0;
+        }
+      if (LocaleCompare(artifact,"Ellipse") == 0)
+        {
+          gradient->radii.x=gradient->center.x;
+          gradient->radii.y=gradient->center.y;
+        }
+      if (LocaleCompare(artifact,"Mininum") == 0)
+        {
+          gradient->radii.x=MagickMin(gradient->center.x,gradient->center.y);
+          gradient->radii.y=gradient->radii.x;
+        }
+    }
   artifact=GetImageArtifact(image,"gradient:radii");
   if (artifact != (const char *) NULL)
     (void) sscanf(artifact,"%lf%*[ ,]%lf",&gradient->radii.x,
