@@ -506,10 +506,10 @@ static MagickBooleanType ClonePixelCacheOnDisk(CacheInfo *restrict cache_info,
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   extent=0;
   while ((count=read(cache_info->file,buffer,quantum)) > 0)
-  { 
+  {
     ssize_t
       number_bytes;
-    
+
     number_bytes=write(clone_info->file,buffer,(size_t) count);
     if (number_bytes != count)
       break;

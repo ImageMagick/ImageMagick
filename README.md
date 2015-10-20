@@ -38,6 +38,7 @@ Here are just a few examples of what ImageMagick can do:
 * [Special effects](http://www.imagemagick.org/Usage/blur/): blur, sharpen, threshold, or tint an image.
 * [Animation](http://www.imagemagick.org/Usage/anim_basics/): create a GIF animation sequence from a group of images.
 * [Text & comments](http://www.imagemagick.org/Usage/text/): insert descriptive or artistic text in an image.
+* [Image gradients](http://www.imagemagick.org/script/gradient.php): create a gradual blend of one color whose shape is horizontal, vertical, circular, or ellipical.
 * [Image identification](http://www.imagemagick.org/script/identify.php): describe the format and attributes of an image.
 * [Composite](http://www.imagemagick.org/script/composite.php): overlap one image over another.
 * [Montage](http://www.imagemagick.org/script/montage.php): juxtapose image thumbnails on an image canvas.
