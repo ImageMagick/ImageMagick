@@ -575,6 +575,12 @@ MagickExport MagickBooleanType GradientImage(Image *image,
   artifact=GetImageArtifact(image,"gradient:extent");
   if (artifact != (const char *) NULL)
     {
+      if (LocaleCompare(artifact,"Circle") == 0)
+        {
+          gradient->radii.x=(double) (MagickMax(image->columns,image->rows))/
+            2.0;
+          gradient->radii.y=gradient->radii.x;
+        }
       if (LocaleCompare(artifact,"Diagonal") == 0)
         {
           gradient->radii.x=(double) (sqrt(image->columns*image->columns+
@@ -585,6 +591,12 @@ MagickExport MagickBooleanType GradientImage(Image *image,
         {
           gradient->radii.x=(double) image->columns/2.0;
           gradient->radii.y=(double) image->rows/2.0;
+        }
+      if (LocaleCompare(artifact,"Maximum") == 0)
+        {
+          gradient->radii.x=(double) (MagickMax(image->columns,image->rows))/
+            2.0;
+          gradient->radii.y=gradient->radii.x;
         }
       if (LocaleCompare(artifact,"Mininum") == 0)
         {
