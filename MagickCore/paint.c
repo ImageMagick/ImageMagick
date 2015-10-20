@@ -560,8 +560,8 @@ MagickExport MagickBooleanType GradientImage(Image *image,
     {
       if (LocaleCompare(artifact,"Diagonal") == 0)
         {
-          gradient->radii.x=sqrt(gradient->radii.x*gradient->radii.x+
-            gradient->radii.y*gradient->radii.y);
+          gradient->radii.x=(double) (sqrt(image->columns*image->columns+
+            image->rows*image->rows))/2.0;
           gradient->radii.y=gradient->radii.x;
         }
       if (LocaleCompare(artifact,"Ellipse") == 0)
@@ -571,7 +571,8 @@ MagickExport MagickBooleanType GradientImage(Image *image,
         }
       if (LocaleCompare(artifact,"Mininum") == 0)
         {
-          gradient->radii.x=MagickMin(gradient->radii.x,gradient->radii.y);
+          gradient->radii.x=(double) (MagickMin(image->columns,image->rows))/
+            2.0;
           gradient->radii.y=gradient->radii.x;
         }
     }
