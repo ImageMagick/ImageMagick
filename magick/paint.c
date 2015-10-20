@@ -598,7 +598,7 @@ MagickExport MagickBooleanType GradientImage(Image *image,
             2.0;
           gradient->radii.y=gradient->radii.x;
         }
-      if (LocaleCompare(artifact,"Mininum") == 0)
+      if (LocaleCompare(artifact,"Minimum") == 0)
         {
           gradient->radii.x=(double) (MagickMin(image->columns,image->rows))/
             2.0;
