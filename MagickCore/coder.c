@@ -875,7 +875,7 @@ static MagickBooleanType LoadCoderCache(SplayTreeInfo *coder_cache,
                 {
                   char
                     path[MagickPathExtent],
-                    *fileXml;
+                    *file_xml;
 
                   GetPathComponent(filename,HeadPath,path);
                   if (*path != '\0')
@@ -885,12 +885,12 @@ static MagickBooleanType LoadCoderCache(SplayTreeInfo *coder_cache,
                     (void) CopyMagickString(path,token,MagickPathExtent);
                   else
                     (void) ConcatenateMagickString(path,token,MagickPathExtent);
-                  fileXml=FileToXML(path,~0UL);
-                  if (fileXml != (char *) NULL)
+                  file_xml=FileToXML(path,~0UL);
+                  if (file_xml != (char *) NULL)
                     {
-                      status&=LoadCoderCache(coder_cache,fileXml,path,depth+1,
+                      status&=LoadCoderCache(coder_cache,file_xml,path,depth+1,
                         exception);
-                      fileXml=(char *) RelinquishMagickMemory(fileXml);
+                      file_xml=DestroyString(file_xml);
                     }
                 }
             }

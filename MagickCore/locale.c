@@ -1248,7 +1248,7 @@ static MagickBooleanType LoadLocaleCache(SplayTreeInfo *locale_cache,
                 {
                   char
                     path[MagickPathExtent],
-                    *xml;
+                    *file_xml;
 
                   *path='\0';
                   GetPathComponent(filename,HeadPath,path);
@@ -1259,12 +1259,12 @@ static MagickBooleanType LoadLocaleCache(SplayTreeInfo *locale_cache,
                     (void) CopyMagickString(path,token,MagickPathExtent);
                   else
                     (void) ConcatenateMagickString(path,token,MagickPathExtent);
-                  xml=FileToXML(path,~0UL);
-                  if (xml != (char *) NULL)
+                  file_xml=FileToXML(path,~0UL);
+                  if (file_xml != (char *) NULL)
                     {
-                      status&=LoadLocaleCache(locale_cache,xml,path,locale,
+                      status&=LoadLocaleCache(locale_cache,file_xml,path,locale,
                         depth+1,exception);
-                      xml=(char *) RelinquishMagickMemory(xml);
+                      file_xml=DestroyString(file_xml);
                     }
                 }
             }
