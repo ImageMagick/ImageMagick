@@ -1574,9 +1574,9 @@ static MagickBooleanType LoadDelegateCache(LinkedListInfo *delegate_cache,
                   file_xml=FileToXML(path,~0UL);
                   if (file_xml != (char *) NULL)
                     {
-                      status&=LoadDelegateCache(delegate_cache, file_xml,path,
+                      status&=LoadDelegateCache(delegate_cache,file_xml,path,
                         depth+1,exception);
-                      file_xml=(char *) RelinquishMagickMemory(file_xml);
+                      file_xml=DestroyString(file_xml);
                     }
                 }
             }

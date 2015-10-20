@@ -835,7 +835,7 @@ static MagickBooleanType LoadMimeCache(LinkedListInfo *mime_cache,
           {
             char
               path[MagickPathExtent],
-              *xml;
+              *file_xml;
 
             GetPathComponent(filename,HeadPath,path);
             if (*path != '\0')
@@ -845,11 +845,11 @@ static MagickBooleanType LoadMimeCache(LinkedListInfo *mime_cache,
               (void) CopyMagickString(path,attribute,MagickPathExtent);
             else
               (void) ConcatenateMagickString(path,attribute,MagickPathExtent);
-            xml=FileToXML(path,~0UL);
-            if (xml != (char *) NULL)
+            file_xml=FileToXML(path,~0UL);
+            if (file_xml != (char *) NULL)
               {
-                status&=LoadMimeCache(mime_cache,xml,path,depth+1,exception);
-                xml=DestroyString(xml);
+                status&=LoadMimeCache(mime_cache,file_xml,path,depth+1,exception);
+                file_xml=DestroyString(file_xml);
               }
           }
       }

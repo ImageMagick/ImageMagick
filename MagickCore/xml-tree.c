@@ -1483,13 +1483,15 @@ static char *ParseEntities(char *xml,char **entities,int state)
                     else
                       {
                         char
-                          *xml;
+                          *extent_xml;
 
-                        xml=(char *) AcquireQuantumMemory(extent,sizeof(*xml));
-                        if (xml != (char *) NULL)
+                        extent_xml=(char *) AcquireQuantumMemory(extent,
+                          sizeof(*extent_xml));
+                        if (extent_xml != (char *) NULL)
                           {
-                            (void) CopyMagickString(xml,p,extent*sizeof(*xml));
-                            p=xml;
+                            (void) CopyMagickString(extent_xml,p,extent*
+                              sizeof(*extent_xml));
+                            p= extent_xml;
                           }
                       }
                     if (p == (char *) NULL)

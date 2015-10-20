@@ -898,7 +898,7 @@ static MagickBooleanType LoadMagicCache(LinkedListInfo *magic_cache,
                 {
                   char
                     path[MagickPathExtent],
-                    *xml;
+                    *file_xml;
 
                   GetPathComponent(filename,HeadPath,path);
                   if (*path != '\0')
@@ -908,12 +908,12 @@ static MagickBooleanType LoadMagicCache(LinkedListInfo *magic_cache,
                     (void) CopyMagickString(path,token,MagickPathExtent);
                   else
                     (void) ConcatenateMagickString(path,token,MagickPathExtent);
-                  xml=FileToXML(path,~0UL);
+                  file_xml=FileToXML(path,~0UL);
                   if (xml != (char *) NULL)
                     {
-                      status&=LoadMagicCache(magic_cache,xml,path,depth+1,
+                      status&=LoadMagicCache(magic_cache,file_xml,path,depth+1,
                         exception);
-                      xml=(char *) RelinquishMagickMemory(xml);
+                      file_xml=DestroyString(file_xml);
                     }
                 }
             }
