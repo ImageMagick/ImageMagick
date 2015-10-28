@@ -783,6 +783,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
       scale,   /* Support when function used as a windowing function
                  Typically equal to the location of the first zero crossing. */
       B,C;     /* BC-spline coefficients, ignored if not a CubicBC filter. */
+    ResizeWeightingFunctionType weightingFunctionType;
   } const filters[SentinelFilter] =
   {
     /*            .---  support window (if used as a Weighting Function)
@@ -790,41 +791,41 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
                   |    |    .--- B value for Cubic Function
                   |    |    |    .---- C value for Cubic Function
                   |    |    |    |                                    */
-    { Box,       0.5, 0.5, 0.0, 0.0 }, /* Undefined (default to Box)  */
-    { Box,       0.0, 0.5, 0.0, 0.0 }, /* Point (special handling)    */
-    { Box,       0.5, 0.5, 0.0, 0.0 }, /* Box                         */
-    { Triangle,  1.0, 1.0, 0.0, 0.0 }, /* Triangle                    */
-    { CubicBC,   1.0, 1.0, 0.0, 0.0 }, /* Hermite (cubic  B=C=0)      */
-    { Hann,      1.0, 1.0, 0.0, 0.0 }, /* Hann, cosine window         */
-    { Hamming,   1.0, 1.0, 0.0, 0.0 }, /* Hamming, '' variation       */
-    { Blackman,  1.0, 1.0, 0.0, 0.0 }, /* Blackman, 2*cosine window   */
-    { Gaussian,  2.0, 1.5, 0.0, 0.0 }, /* Gaussian                    */
-    { Quadratic, 1.5, 1.5, 0.0, 0.0 }, /* Quadratic gaussian          */
-    { CubicBC,   2.0, 2.0, 1.0, 0.0 }, /* General Cubic Filter        */
-    { CubicBC,   2.0, 1.0, 0.0, 0.5 }, /* Catmull-Rom    (B=0,C=1/2)  */
-    { CubicBC,   2.0, 8.0/7.0, 1./3., 1./3. }, /* Mitchell   (B=C=1/3)    */
-    { Jinc,      3.0, 1.2196698912665045, 0.0, 0.0 }, /* Raw 3-lobed Jinc */
-    { Sinc,      4.0, 1.0, 0.0, 0.0 }, /* Raw 4-lobed Sinc            */
-    { SincFast,  4.0, 1.0, 0.0, 0.0 }, /* Raw fast sinc ("Pade"-type) */
-    { Kaiser,    1.0, 1.0, 0.0, 0.0 }, /* Kaiser (square root window) */
-    { Welch,     1.0, 1.0, 0.0, 0.0 }, /* Welch (parabolic window)    */
-    { CubicBC,   2.0, 2.0, 1.0, 0.0 }, /* Parzen (B-Spline window)    */
-    { Bohman,    1.0, 1.0, 0.0, 0.0 }, /* Bohman, 2*Cosine window     */
-    { Triangle,  1.0, 1.0, 0.0, 0.0 }, /* Bartlett (triangle window)  */
-    { Lagrange,  2.0, 1.0, 0.0, 0.0 }, /* Lagrange sinc approximation */
-    { SincFast,  3.0, 1.0, 0.0, 0.0 }, /* Lanczos, 3-lobed Sinc-Sinc  */
-    { SincFast,  3.0, 1.0, 0.0, 0.0 }, /* Lanczos, Sharpened          */
-    { SincFast,  2.0, 1.0, 0.0, 0.0 }, /* Lanczos, 2-lobed            */
-    { SincFast,  2.0, 1.0, 0.0, 0.0 }, /* Lanczos2, sharpened         */
+    { Box,       0.5, 0.5, 0.0, 0.0, BoxWeightingFunction },      /* Undefined (default to Box)  */
+    { Box,       0.0, 0.5, 0.0, 0.0, BoxWeightingFunction },      /* Point (special handling)    */
+    { Box,       0.5, 0.5, 0.0, 0.0, BoxWeightingFunction },      /* Box                         */
+    { Triangle,  1.0, 1.0, 0.0, 0.0, TriangleWeightingFunction }, /* Triangle                    */
+    { CubicBC,   1.0, 1.0, 0.0, 0.0, CubicBCWeightingFunction },  /* Hermite (cubic  B=C=0)      */
+    { Hann,      1.0, 1.0, 0.0, 0.0, HannWeightingFunction },     /* Hann, cosine window         */
+    { Hamming,   1.0, 1.0, 0.0, 0.0, HammingWeightingFunction },  /* Hamming, '' variation       */
+    { Blackman,  1.0, 1.0, 0.0, 0.0, BlackmanWeightingFunction }, /* Blackman, 2*cosine window   */
+    { Gaussian,  2.0, 1.5, 0.0, 0.0, GaussianWeightingFunction }, /* Gaussian                    */
+    { Quadratic, 1.5, 1.5, 0.0, 0.0, QuadraticWeightingFunction },/* Quadratic gaussian          */
+    { CubicBC,   2.0, 2.0, 1.0, 0.0, CubicBCWeightingFunction },  /* General Cubic Filter        */
+    { CubicBC,   2.0, 1.0, 0.0, 0.5, CubicBCWeightingFunction },  /* Catmull-Rom    (B=0,C=1/2)  */
+    { CubicBC,   2.0, 8.0/7.0, 1./3., 1./3., CubicBCWeightingFunction }, /* Mitchell   (B=C=1/3)    */
+    { Jinc,      3.0, 1.2196698912665045, 0.0, 0.0, JincWeightingFunction }, /* Raw 3-lobed Jinc */
+    { Sinc,      4.0, 1.0, 0.0, 0.0, SincWeightingFunction },     /* Raw 4-lobed Sinc            */
+    { SincFast,  4.0, 1.0, 0.0, 0.0, SincFastWeightingFunction }, /* Raw fast sinc ("Pade"-type) */
+    { Kaiser,    1.0, 1.0, 0.0, 0.0, KaiserWeightingFunction },   /* Kaiser (square root window) */
+    { Welch,     1.0, 1.0, 0.0, 0.0, WelchWeightingFunction },    /* Welch (parabolic window)    */
+    { CubicBC,   2.0, 2.0, 1.0, 0.0, CubicBCWeightingFunction },  /* Parzen (B-Spline window)    */
+    { Bohman,    1.0, 1.0, 0.0, 0.0, BohmanWeightingFunction },   /* Bohman, 2*Cosine window     */
+    { Triangle,  1.0, 1.0, 0.0, 0.0, TriangleWeightingFunction }, /* Bartlett (triangle window)  */
+    { Lagrange,  2.0, 1.0, 0.0, 0.0, LagrangeWeightingFunction }, /* Lagrange sinc approximation */
+    { SincFast,  3.0, 1.0, 0.0, 0.0, SincFastWeightingFunction }, /* Lanczos, 3-lobed Sinc-Sinc  */
+    { SincFast,  3.0, 1.0, 0.0, 0.0, SincFastWeightingFunction }, /* Lanczos, Sharpened          */
+    { SincFast,  2.0, 1.0, 0.0, 0.0, SincFastWeightingFunction }, /* Lanczos, 2-lobed            */
+    { SincFast,  2.0, 1.0, 0.0, 0.0, SincFastWeightingFunction }, /* Lanczos2, sharpened         */
     /* Robidoux: Keys cubic close to Lanczos2D sharpened */
     { CubicBC,   2.0, 1.1685777620836932,
-                            0.37821575509399867, 0.31089212245300067 },
+                            0.37821575509399867, 0.31089212245300067, CubicBCWeightingFunction },
     /* RobidouxSharp: Sharper version of Robidoux */
     { CubicBC,   2.0, 1.105822933719019,
-                            0.2620145123990142,  0.3689927438004929  },
-    { Cosine,    1.0, 1.0, 0.0, 0.0 }, /* Low level cosine window     */
-    { CubicBC,   2.0, 2.0, 1.0, 0.0 }, /* Cubic B-Spline (B=1,C=0)    */
-    { SincFast,  3.0, 1.0, 0.0, 0.0 }, /* Lanczos, Interger Radius    */
+                            0.2620145123990142,  0.3689927438004929, CubicBCWeightingFunction },
+    { Cosine,    1.0, 1.0, 0.0, 0.0, CosineWeightingFunction },   /* Low level cosine window     */
+    { CubicBC,   2.0, 2.0, 1.0, 0.0, CubicBCWeightingFunction },  /* Cubic B-Spline (B=1,C=0)    */
+    { SincFast,  3.0, 1.0, 0.0, 0.0, SincFastWeightingFunction }, /* Lanczos, Interger Radius    */
   };
   /*
     The known zero crossings of the Jinc() or more accurately the Jinc(x*PI)
@@ -927,7 +928,9 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
   /* Assign the real functions to use for the filters selected. */
   resize_filter->filter=filters[filter_type].function;
   resize_filter->support=filters[filter_type].support;
+  resize_filter->filterWeightingType=filters[filter_type].weightingFunctionType;
   resize_filter->window=filters[window_type].function;
+  resize_filter->windowWeightingType=filters[window_type].weightingFunctionType;
   resize_filter->scale=filters[window_type].scale;
   resize_filter->signature=MagickCoreSignature;
 
