@@ -2135,7 +2135,7 @@ const char* accelerateKernels =
 
 
   STRINGIFY(
-  float Hanning(const float x)
+  float Hann(const float x)
   {
     /*
     Cosine window function:
@@ -2179,7 +2179,7 @@ const char* accelerateKernels =
     BoxWeightingFunction = 0,
     TriangleWeightingFunction,
     CubicBCWeightingFunction,
-    HanningWeightingFunction,
+    HannWeightingFunction,
     HammingWeightingFunction,
     BlackmanWeightingFunction,
     GaussianWeightingFunction,
@@ -2211,8 +2211,8 @@ const char* accelerateKernels =
       return BoxResizeFilter(x);
     case TriangleWeightingFunction:
       return Triangle(x);
-    case HanningWeightingFunction:
-      return Hanning(x);
+    case HannWeightingFunction:
+      return Hann(x);
     case HammingWeightingFunction:
       return Hamming(x);
     case BlackmanWeightingFunction:

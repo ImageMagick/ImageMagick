@@ -3737,7 +3737,7 @@ const ResizeWeightingFunctionType supportedResizeWeighting[] =
 {
   BoxWeightingFunction,
   TriangleWeightingFunction,
-  HanningWeightingFunction,
+  HannWeightingFunction,
   HammingWeightingFunction,
   BlackmanWeightingFunction,
   CubicBCWeightingFunction,
