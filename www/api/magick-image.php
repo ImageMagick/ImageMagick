@@ -22,21 +22,21 @@
   <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC"/>
   <meta name="distribution" content="Global"/>
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
-  <link rel="icon" href="../image/wand.png">
-  <link rel="shortcut icon" href="../image/wand.ico">
-  <link rel="stylesheet" href="../css/magick.php">
+  <link rel="icon" href="../image/wand.png"/>
+  <link rel="shortcut icon" href="../image/wand.ico"/>
+  <link rel="stylesheet" href="../css/magick.php"/>
 </head>
 <body>
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+    <script async="async" src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
          style="display:block"
          data-ad-client="ca-pub-3129977114552745"
          data-ad-slot="6345125851"
          data-ad-format="auto"></ins>
     <script>
-    (adsbygoogle = window.adsbygoogle || []).push({});
+      (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
     <nav class="magick-nav">
       <a class="magick-nav-item " href="../index.php">Home</a>
@@ -1357,7 +1357,7 @@ MagickBooleanType MagickCycleColormapImage(MagickWand *wand,
 
 <p>MagickConstituteImage() adds an image to the wand comprised of the pixel data you supply.  The pixel data must be in scanline order top-to-bottom. The data can be char, short int, int, float, or double.  Float and double require the pixels to be normalized [0..1], otherwise [0..Max],  where Max is the maximum value the type can accomodate (e.g. 255 for char).  For example, to create a 640x480 image from unsigned red-green-blue character data, use</p>
 
-<p>MagickConstituteImage(wand,640,640,"RGB",CharPixel,pixels);</p>
+<p>MagickConstituteImage(wand,640,480,"RGB",CharPixel,pixels);</p>
 
 <p>The format of the MagickConstituteImage method is:</p>
 
@@ -7778,10 +7778,11 @@ MagickBooleanType MagickWriteImagesFile(MagickWand *wand,FILE *file)
     <p><a href="magick-image.php#">Back to top</a> •
     <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
     <a href="../script/contact.php">Contact Us</a></p>
-        <p><small>&copy; 1999-2015 ImageMagick Studio LLC</small></p>
+        <p><small>©  1999-2015 ImageMagick Studio LLC</small></p>
   </footer>
 </div><!-- /.container -->
 
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script src="http://nextgen.imagemagick.org/js/magick.php"></script>
 </div>
 </body>

@@ -167,7 +167,7 @@ the supported image formats.</p>
     <td><a href="http://bellard.org/bpg/">BPG</a></td>
     <td>RW</td>
     <td>Better Portable Graphics</td>
-    <td>Use <a href="command-line-options.html#quality">-quality</a> to specify the image compression quality.  To meet the requirements of BPG, the compression quality is divided by 2 (e.g. -quality 92 assigns 46 as the BPG compression.</td>
+    <td>Use <a href="command-line-options.html#quality">-quality</a> to specify the image compression quality.  To meet the requirements of BPG, the quality argument divided by 2 (e.g. -quality 92 assigns 46 as the BPG compression.</td>
   </tr>
 
   <tr>
@@ -879,7 +879,7 @@ convert \( -size 15x15 canvas:black canvas:white -append \) \
     <td><a href="http://www.adobe.com/devnet-apps/photoshop/fileformatashtml/">PSD</a></td>
     <td>RW</td>
     <td>Adobe Photoshop bitmap file</td>
-    <td> </td>
+    <td>Use <a href="command-line-options.html#define">-define psd:alpha-unblend=off</a> to disable alpha blenning in the merged image.</td>
   </tr>
 
   <tr>
@@ -1225,12 +1225,7 @@ convert \( -size 15x15 canvas:black canvas:white -append \) \
     <td>GRADIENT</td>
     <td>R</td>
     <td>Gradual passing from one shade to another</td>
-    <td>Returns a rendered linear top-to-bottom gradient image
-       using the specified image size. Specify the desired shading as part of
-       the filename (e.g.  <code>gradient:red-blue</code> or
-       <code>gradient:#F00-#00F</code>).  If the shading colors are omitted, the
-       default gradient is white-black. Use named black/white/grayXX for
-       non-linear gray and gray(XX[%]) for linear gray gradients.</td>
+    <td>Returns a rendered linear top-to-bottom <a href="gradient.html">gradient image</a> using the specified image size.</td>
 
   </tr>
 
@@ -1323,7 +1318,7 @@ convert \( -size 15x15 canvas:black canvas:white -append \) \
     <td>RADIAL_GRADIENT</td>
     <td>R</td>
     <td>Gradual radial passing from one shade to another</td>
-    <td>Returns a rendered radial gradient image using the specified image size. Specify the desired shading as part of the filename (e.g.  <code>radial-gradient:red-blue</code> or <code>radial-gradient:#F00-#00F</code>).</td>
+    <td>Returns a rendered radial top-to-bottom <a href="gradient.html">gradient image</a> using the specified image size.</td>
   </tr>
 
   <tr>

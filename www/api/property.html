@@ -280,11 +280,11 @@ char *InterpretImageProperties(ImageInfo *image_info,
 
 <p>(void) LogMagickEvent(TraceEvent,GetMagickModule(),"s",image-&gt;filename); else if( image_info != (ImageInfo *) NULL &amp;&amp; IfMagickTrue(image_info-&gt;debug)) (void) LogMagickEvent(TraceEvent,GetMagickModule(),"s","no-image");</p>
 
-<p>if (embed_text == (const char *) NULL) return((char *) NULL); p=embed_text;</p>
+<p>if (embed_text == (const char *) NULL) return(ConstantString("")); p=embed_text;</p>
 
 <p>if (*p == '\0') return(ConstantString(""));</p>
 
-<p>/* handle a '@' replace string from file */ if (*p == '@') { p++; if (*p != '-' &amp;&amp; IfMagickFalse(IsPathAccessible(p)) ) { (void) ThrowMagickException(exception,GetMagickModule(),OptionError, "UnableToAccessPath","s",p); return((char *) NULL); } return(FileToString(p,~0UL,exception)); }</p>
+<p>if ((*p == '@') &amp;&amp; (IsPathAccessible(p+1) != MagickFalse)) { /* handle a '@' replace string from file */ interpret_text=FileToString(p+1,~0UL,exception); if (interpret_text != (char *) NULL) return(interpret_text); }</p>
 
 <p>/* Translate any embedded format characters. </p>
 <h2><a href="http://nextgen.imagemagick.org/api/MagickCore/property_8c.html" id="RemoveImageProperty">RemoveImageProperty</a></h2>

@@ -22,21 +22,21 @@
   <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC"/>
   <meta name="distribution" content="Global"/>
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
-  <link rel="icon" href="../image/wand.png">
-  <link rel="shortcut icon" href="../image/wand.ico">
-  <link rel="stylesheet" href="../css/magick.php">
+  <link rel="icon" href="../image/wand.png"/>
+  <link rel="shortcut icon" href="../image/wand.ico"/>
+  <link rel="stylesheet" href="../css/magick.php"/>
 </head>
 <body>
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+    <script async="async" src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
          style="display:block"
          data-ad-client="ca-pub-3129977114552745"
          data-ad-slot="6345125851"
          data-ad-format="auto"></ins>
     <script>
-    (adsbygoogle = window.adsbygoogle || []).push({});
+      (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
     <nav class="magick-nav">
       <a class="magick-nav-item " href="../index.php">Home</a>
@@ -288,11 +288,11 @@ char *InterpretImageProperties(ImageInfo *image_info,
 
 <p>(void) LogMagickEvent(TraceEvent,GetMagickModule(),"s",image-&gt;filename); else if( image_info != (ImageInfo *) NULL &amp;&amp; IfMagickTrue(image_info-&gt;debug)) (void) LogMagickEvent(TraceEvent,GetMagickModule(),"s","no-image");</p>
 
-<p>if (embed_text == (const char *) NULL) return((char *) NULL); p=embed_text;</p>
+<p>if (embed_text == (const char *) NULL) return(ConstantString("")); p=embed_text;</p>
 
 <p>if (*p == '\0') return(ConstantString(""));</p>
 
-<p>/* handle a '@' replace string from file */ if (*p == '@') { p++; if (*p != '-' &amp;&amp; IfMagickFalse(IsPathAccessible(p)) ) { (void) ThrowMagickException(exception,GetMagickModule(),OptionError, "UnableToAccessPath","s",p); return((char *) NULL); } return(FileToString(p,~0UL,exception)); }</p>
+<p>if ((*p == '@') &amp;&amp; (IsPathAccessible(p+1) != MagickFalse)) { /* handle a '@' replace string from file */ interpret_text=FileToString(p+1,~0UL,exception); if (interpret_text != (char *) NULL) return(interpret_text); }</p>
 
 <p>/* Translate any embedded format characters. </p>
 <h2><a href="http://nextgen.imagemagick.org/api/MagickCore/property_8c.html" id="RemoveImageProperty">RemoveImageProperty</a></h2>
@@ -392,10 +392,11 @@ MagickBooleanType SetImageProperty(Image *image,const char *property,
     <p><a href="property.php#">Back to top</a> •
     <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
     <a href="../script/contact.php">Contact Us</a></p>
-        <p><small>&copy; 1999-2015 ImageMagick Studio LLC</small></p>
+        <p><small>©  1999-2015 ImageMagick Studio LLC</small></p>
   </footer>
 </div><!-- /.container -->
 
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script src="http://nextgen.imagemagick.org/js/magick.php"></script>
 </div>
 </body>
