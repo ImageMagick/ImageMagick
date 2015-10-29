@@ -2215,10 +2215,10 @@ MagickExport MagickBooleanType GetImageChannelRange(const Image *image,
       if (((channel & OpacityChannel) != 0) &&
           (image->matte != MagickFalse))
         {
-          if (pixel.opacity < *minima)
-            *minima=(double) pixel.opacity;
-          if (pixel.opacity > *maxima)
-            *maxima=(double) pixel.opacity;
+          if ((QuantumRange-pixel.opacity) < *minima)
+            *minima=(double) (QuantumRange-pixel.opacity);
+          if ((QuantumRange-pixel.opacity) > *maxima)
+            *maxima=(double) (QuantumRange-pixel.opacity);
         }
       if (((channel & IndexChannel) != 0) &&
           (image->colorspace == CMYKColorspace))

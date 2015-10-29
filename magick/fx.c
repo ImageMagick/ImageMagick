@@ -1190,8 +1190,6 @@ static double FxChannelStatistics(FxInfo *fx_info,const Image *image,
         minima;
 
       (void) GetImageChannelRange(image,channel,&minima,&maxima,exception);
-      if (LocaleCompare(channel_symbol,"a") == 0)
-        maxima=QuantumRange-maxima;
       (void) FormatLocaleString(statistic,MaxTextExtent,"%g",maxima);
     }
   if (LocaleNCompare(symbol,"mean",4) == 0)
@@ -1202,8 +1200,6 @@ static double FxChannelStatistics(FxInfo *fx_info,const Image *image,
 
       (void) GetImageChannelMean(image,channel,&mean,&standard_deviation,
         exception);
-      if (LocaleCompare(channel_symbol,"a") == 0)
-        mean=QuantumRange-mean;
       (void) FormatLocaleString(statistic,MaxTextExtent,"%g",mean);
     }
   if (LocaleNCompare(symbol,"minima",6) == 0)
@@ -1213,8 +1209,6 @@ static double FxChannelStatistics(FxInfo *fx_info,const Image *image,
         minima;
 
       (void) GetImageChannelRange(image,channel,&minima,&maxima,exception);
-      if (LocaleCompare(channel_symbol,"a") == 0)
-        minima=QuantumRange-minima;
       (void) FormatLocaleString(statistic,MaxTextExtent,"%g",minima);
     }
   if (LocaleNCompare(symbol,"skewness",8) == 0)
