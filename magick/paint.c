@@ -423,17 +423,6 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
 % function and the gradient structure in draw_info.
 %
 */
-
-static inline double MagickRound(double x)
-{
-  /*
-    Round the fraction to nearest integer.
-  */
-  if ((x-floor(x)) < (ceil(x)-x))
-    return(floor(x));
-  return(ceil(x));
-}
-
 MagickExport MagickBooleanType GradientImage(Image *image,
   const GradientType type,const SpreadMethod method,
   const PixelPacket *start_color,const PixelPacket *stop_color)
