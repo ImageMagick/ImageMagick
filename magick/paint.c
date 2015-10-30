@@ -441,7 +441,7 @@ MagickExport MagickBooleanType GradientImage(Image *image,
 
   register ssize_t
     i;
-
+    
   /*
     Set gradient start-stop end points.
   */
@@ -559,6 +559,26 @@ MagickExport MagickBooleanType GradientImage(Image *image,
   if (artifact != (const char *) NULL)
     (void) sscanf(artifact,"%lf%*[ ,]%lf",&gradient->center.x,
       &gradient->center.y);
+  artifact=GetImageArtifact(image,"gradient:angle");
+  if ((type == LinearGradient) && (artifact != (const char *) NULL))
+    {
+      double
+        sine,
+        cosine,
+        distance;
+
+      /*
+        Reference https://drafts.csswg.org/css-images-3/#linear-gradients.
+      */
+      sine=sin((double) DegreesToRadians(gradient->angle-90.0));
+      cosine=cos((double) DegreesToRadians(gradient->angle-90.0));
+      distance=fabs((double) image->columns*cosine)+
+        fabs((double) image->rows*sine);
+      gradient->gradient_vector.x1=0.5*(image->columns-distance*cosine);
+      gradient->gradient_vector.y1=0.5*(image->rows-distance*sine);
+      gradient->gradient_vector.x2=0.5*(image->columns+distance*cosine);
+      gradient->gradient_vector.y2=0.5*(image->rows+distance*sine);
+    }
   gradient->radii.x=(double) MagickMax(image->columns,image->rows)/2.0;
   gradient->radii.y=gradient->radii.x;
   artifact=GetImageArtifact(image,"gradient:extent");
@@ -572,8 +592,8 @@ MagickExport MagickBooleanType GradientImage(Image *image,
         }
       if (LocaleCompare(artifact,"Diagonal") == 0)
         {
-          gradient->radii.x=(double) (sqrt(image->columns*image->columns+
-            image->rows*image->rows))/2.0;
+          gradient->radii.x=(double) (sqrt((double) image->columns*
+            image->columns+image->rows*image->rows))/2.0;
           gradient->radii.y=gradient->radii.x;
         }
       if (LocaleCompare(artifact,"Ellipse") == 0)
@@ -1273,8 +1293,7 @@ MagickExport MagickBooleanType TransparentPaintImageChroma(Image *image,
       SetMagickPixelPacket(image,q,indexes+x,&pixel);
       match=((pixel.red >= low->red) && (pixel.red <= high->red) &&
         (pixel.green >= low->green) && (pixel.green <= high->green) &&
-        (pixel.blue  >= low->blue) && (pixel.blue <= high->blue)) ?
-        MagickTrue : MagickFalse;
+        (pixel.blue  >= low->blue) && (pixel.blue <= high->blue)) ? MagickTrue :        MagickFalse;
       if (match != invert)
         q->opacity=opacity;
       q++;
