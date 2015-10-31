@@ -1092,9 +1092,6 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
       double
         pixel;
 
-      register ssize_t
-        i;
-
       pixel=GetPixelIntensity(image,p);
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
@@ -1229,21 +1226,21 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       register ssize_t
-        i;
+        j;
 
       if (GetPixelReadMask(image,q) == 0)
         {
           q+=GetPixelChannels(image);
           continue;
         }
-      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
       {
-        PixelChannel channel=GetPixelChannelChannel(image,i);
+        PixelChannel channel=GetPixelChannelChannel(image,j);
         PixelTrait traits=GetPixelChannelTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        q[i]=ClampToQuantum(stretch_map[GetPixelChannels(image)*
-          ScaleQuantumToMap(q[i])+i]);
+        q[j]=ClampToQuantum(stretch_map[GetPixelChannels(image)*
+          ScaleQuantumToMap(q[j])+j]);
       }
       q+=GetPixelChannels(image);
     }
@@ -1570,9 +1567,6 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      register ssize_t
-        i;
-
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
         histogram[GetPixelChannels(image)*ScaleQuantumToMap(p[i])+i]++;
       p+=GetPixelChannels(image);
@@ -1690,21 +1684,21 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       register ssize_t
-        i;
+        j;
 
       if (GetPixelReadMask(image,q) == 0)
         {
           q+=GetPixelChannels(image);
           continue;
         }
-      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
       {
-        PixelChannel channel=GetPixelChannelChannel(image,i);
+        PixelChannel channel=GetPixelChannelChannel(image,j);
         PixelTrait traits=GetPixelChannelTraits(image,channel);
-        if (((traits & UpdatePixelTrait) == 0) || (black[i] == white[i]))
+        if (((traits & UpdatePixelTrait) == 0) || (black[j] == white[j]))
           continue;
-        q[i]=ClampToQuantum(equalize_map[GetPixelChannels(image)*
-          ScaleQuantumToMap(q[i])+i]);
+        q[j]=ClampToQuantum(equalize_map[GetPixelChannels(image)*
+          ScaleQuantumToMap(q[j])+j]);
       }
       q+=GetPixelChannels(image);
     }
@@ -1872,23 +1866,23 @@ MagickExport MagickBooleanType GammaImage(Image *image,const double gamma,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       register ssize_t
-        i;
+        j;
 
       if (GetPixelReadMask(image,q) == 0)
         {
           q+=GetPixelChannels(image);
           continue;
         }
-      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
       {
-        PixelChannel channel=GetPixelChannelChannel(image,i);
+        PixelChannel channel=GetPixelChannelChannel(image,j);
         PixelTrait traits=GetPixelChannelTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
-        q[i]=gamma_map[ScaleQuantumToMap(q[i])];
+        q[j]=gamma_map[ScaleQuantumToMap(q[j])];
 #else
-        q[i]=QuantumRange*gamma_pow(QuantumScale*q[i],1.0/gamma);
+        q[j]=QuantumRange*gamma_pow(QuantumScale*q[j],1.0/gamma);
 #endif
       }
       q+=GetPixelChannels(image);
@@ -2435,21 +2429,21 @@ MagickExport MagickBooleanType LevelImage(Image *image,const double black_point,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       register ssize_t
-        i;
+        j;
 
       if (GetPixelReadMask(image,q) == 0)
         {
           q+=GetPixelChannels(image);
           continue;
         }
-      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
       {
-        PixelChannel channel=GetPixelChannelChannel(image,i);
+        PixelChannel channel=GetPixelChannelChannel(image,j);
         PixelTrait traits=GetPixelChannelTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        q[i]=ClampToQuantum(LevelPixel(black_point,white_point,gamma,
-          (double) q[i]));
+        q[j]=ClampToQuantum(LevelPixel(black_point,white_point,gamma,
+          (double) q[j]));
       }
       q+=GetPixelChannels(image);
     }
@@ -2591,20 +2585,20 @@ MagickExport MagickBooleanType LevelizeImage(Image *image,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       register ssize_t
-        i;
+        j;
 
       if (GetPixelReadMask(image,q) == 0)
         {
           q+=GetPixelChannels(image);
           continue;
         }
-      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
       {
-        PixelChannel channel=GetPixelChannelChannel(image,i);
+        PixelChannel channel=GetPixelChannelChannel(image,j);
         PixelTrait traits=GetPixelChannelTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        q[i]=LevelizeValue(q[i]);
+        q[j]=LevelizeValue(q[j]);
       }
       q+=GetPixelChannels(image);
     }
@@ -2851,9 +2845,6 @@ MagickExport MagickBooleanType LinearStretchImage(Image *image,
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      double
-        intensity;
-
       intensity=GetPixelIntensity(image,p);
       histogram[ScaleQuantumToMap(ClampToQuantum(intensity))]++;
       p+=GetPixelChannels(image);
@@ -2882,7 +2873,8 @@ MagickExport MagickBooleanType LinearStretchImage(Image *image,
     (double) ScaleMapToQuantum((MagickRealType) white),1.0,exception);
   return(status);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -3473,7 +3465,7 @@ MagickExport MagickBooleanType NegateImage(Image *image,
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           register ssize_t
-            i;
+            j;
 
           if ((GetPixelReadMask(image,q) == 0) ||
               IfMagickTrue(IsPixelGray(image,q)))
@@ -3481,13 +3473,13 @@ MagickExport MagickBooleanType NegateImage(Image *image,
               q+=GetPixelChannels(image);
               continue;
             }
-          for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+          for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
           {
-            PixelChannel channel=GetPixelChannelChannel(image,i);
+            PixelChannel channel=GetPixelChannelChannel(image,j);
             PixelTrait traits=GetPixelChannelTraits(image,channel);
             if ((traits & UpdatePixelTrait) == 0)
               continue;
-            q[i]=QuantumRange-q[i];
+            q[j]=QuantumRange-q[j];
           }
           q+=GetPixelChannels(image);
         }
@@ -3537,20 +3529,20 @@ MagickExport MagickBooleanType NegateImage(Image *image,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       register ssize_t
-        i;
+        j;
 
       if (GetPixelReadMask(image,q) == 0)
         {
           q+=GetPixelChannels(image);
           continue;
         }
-      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
       {
-        PixelChannel channel=GetPixelChannelChannel(image,i);
+        PixelChannel channel=GetPixelChannelChannel(image,j);
         PixelTrait traits=GetPixelChannelTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        q[i]=QuantumRange-q[i];
+        q[j]=QuantumRange-q[j];
       }
       q+=GetPixelChannels(image);
     }
