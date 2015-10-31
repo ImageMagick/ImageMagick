@@ -1,3 +1,6 @@
+2015-10-31  6.9.2-5 Cristy  <quetzlzacatenango@image...>
+  * New version 6.9.2-5, GIT revision 10316:86a76b6:20151031.
+
 2015-10-15  6.9.2-5 Dirk Lemstra <dirk@lem.....org>
   * Fixed alpha blending issue with semi-transparent pixels in the merged
     image of PSD files. This can be disabled by setting the option
