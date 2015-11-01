@@ -1590,6 +1590,372 @@ MagickExport Image* AccelerateBlurImage(const Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%     LocalContrastImage  w i t h  O p e n C L                                %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ComputeLocalContrastImage() attempts to increase the appearance of
+%  large-scale light-dark transitions. Local contrast enhancement works
+%  similarly to sharpening with an unsharp mask, however the mask is instead
+%  created using an image with a greater blur distance.
+%
+%  The format of the ComputeLocalContrastImage method is:
+%
+%    Image *ComputeLocalContrastImage(const Image *image,
+%      const ChannelType channel,const double radius,const double strength,
+%      ExceptionInfo *exception)
+%    Image *AccelerateLocalContrastImage(const Image *image,
+%      const ChannelType channel,const double radius,const double strength,
+%      ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o channel: the channel type.
+%
+%    o radius: the radius of the Gaussian blur, in percentage with 100%
+%      resulting in a blur radius of 20% of largest dimension.
+%
+%    o strength: the strength of the blur mask in percentage.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+
+static Image *ComputeLocalContrastImage(const Image *image,
+  const double radius,const double strength,ExceptionInfo *exception)
+{
+  CacheView
+    *filteredImage_view,
+    *image_view;
+
+  cl_command_queue
+    queue;
+
+  cl_context
+    context;
+
+  cl_int
+    clStatus,
+    iRadius;
+
+  cl_kernel
+    blurRowKernel,
+    blurColumnKernel;
+
+  cl_event
+    event;
+
+  cl_mem
+    filteredImageBuffer,
+    imageBuffer,
+    imageKernelBuffer,
+    tempImageBuffer;
+
+  cl_mem_flags
+    mem_flags;
+
+  const void
+    *inputPixels;
+
+  Image
+    *filteredImage;
+
+  MagickBooleanType
+    outputReady;
+
+  MagickCLEnv
+    clEnv;
+
+  MagickSizeType
+    length;
+
+  void
+    *filteredPixels,
+    *hostPtr;
+
+  unsigned int
+    i,
+    imageColumns,
+    imageRows,
+    passes;
+
+  clEnv = NULL;
+  filteredImage = NULL;
+  filteredImage_view = NULL;
+  context = NULL;
+  imageBuffer = NULL;
+  filteredImageBuffer = NULL;
+  tempImageBuffer = NULL;
+  imageKernelBuffer = NULL;
+  blurRowKernel = NULL;
+  blurColumnKernel = NULL;
+  queue = NULL;
+  outputReady = MagickFalse;
+
+  clEnv = GetDefaultOpenCLEnv();
+  context = GetOpenCLContext(clEnv);
+  queue = AcquireOpenCLCommandQueue(clEnv);
+
+  /* Create and initialize OpenCL buffers. */
+  {
+    image_view=AcquireVirtualCacheView(image,exception);
+    inputPixels=GetCacheViewVirtualPixels(image_view,0,0,image->columns,image->rows,exception);
+    if (inputPixels == (const void *) NULL)
+    {
+      (void) OpenCLThrowMagickException(exception,GetMagickModule(),CacheWarning,"UnableToReadPixelCache.","`%s'",image->filename);
+      goto cleanup;
+    }
+
+    /* If the host pointer is aligned to the size of CLPixelPacket, 
+     then use the host buffer directly from the GPU; otherwise, 
+     create a buffer on the GPU and copy the data over */
+    if (ALIGNED(inputPixels,CLPixelPacket)) 
+    {
+      mem_flags = CL_MEM_READ_ONLY|CL_MEM_USE_HOST_PTR;
+    }
+    else 
+    {
+      mem_flags = CL_MEM_READ_ONLY|CL_MEM_COPY_HOST_PTR;
+    }
+    /* create a CL buffer from image pixel buffer */
+    length = image->columns * image->rows;
+    imageBuffer = clEnv->library->clCreateBuffer(context, mem_flags, length * sizeof(CLPixelPacket), (void*)inputPixels, &clStatus);
+    if (clStatus != CL_SUCCESS)
+    {
+      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clCreateBuffer failed.",".");
+      goto cleanup;
+    }
+  }
+
+  /* create output */
+  {
+    filteredImage = CloneImage(image,image->columns,image->rows,MagickTrue,exception);
+    assert(filteredImage != NULL);
+    if (SetImageStorageClass(filteredImage,DirectClass,exception) != MagickTrue)
+    {
+      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "CloneImage failed.", "'%s'", ".");
+      goto cleanup;
+    }
+    filteredImage_view=AcquireAuthenticCacheView(filteredImage,exception);
+    filteredPixels=GetCacheViewAuthenticPixels(filteredImage_view,0,0,filteredImage->columns,filteredImage->rows,exception);
+    if (filteredPixels == (void *) NULL)
+    {
+      (void) OpenCLThrowMagickException(exception,GetMagickModule(),CacheWarning, "UnableToReadPixelCache.","`%s'",filteredImage->filename);
+      goto cleanup;
+    }
+
+    if (ALIGNED(filteredPixels,CLPixelPacket)) 
+    {
+      mem_flags = CL_MEM_WRITE_ONLY|CL_MEM_USE_HOST_PTR;
+      hostPtr = filteredPixels;
+    }
+    else 
+    {
+      mem_flags = CL_MEM_WRITE_ONLY;
+      hostPtr = NULL;
+    }
+
+    /* create a CL buffer from image pixel buffer */
+    length = image->columns * image->rows;
+    filteredImageBuffer = clEnv->library->clCreateBuffer(context, mem_flags, length * sizeof(CLPixelPacket), hostPtr, &clStatus);
+    if (clStatus != CL_SUCCESS)
+    {
+      (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clCreateBuffer failed.",".");
+      goto cleanup;
+    }
+  }
+
+  {
+    /* create temp buffer */
+    {
+      length = image->columns * image->rows;
+      tempImageBuffer = clEnv->library->clCreateBuffer(context, CL_MEM_READ_WRITE, length * sizeof(float), NULL, &clStatus);
+      if (clStatus != CL_SUCCESS)
+      {
+        (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clCreateBuffer failed.",".");
+        goto cleanup;
+      }
+    }
+
+    /* get the opencl kernel */
+    {
+      blurRowKernel = AcquireOpenCLKernel(clEnv, MAGICK_OPENCL_ACCELERATE, "LocalContrastBlurRow");
+      if (blurRowKernel == NULL)
+      {
+        (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "AcquireOpenCLKernel failed.", "'%s'", ".");
+        goto cleanup;
+      };
+
+      blurColumnKernel = AcquireOpenCLKernel(clEnv, MAGICK_OPENCL_ACCELERATE, "LocalContrastBlurApplyColumn");
+      if (blurColumnKernel == NULL)
+      {
+        (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "AcquireOpenCLKernel failed.", "'%s'", ".");
+        goto cleanup;
+      };
+    }
+
+    {
+      imageColumns = (unsigned int) image->columns;
+      imageRows = (unsigned int) image->rows;
+      iRadius = (image->rows > image->columns ? image->rows : image->columns) * 0.002f * radius; // Normalized radius, 100% gives blur radius of 20% of the largest dimension
+
+      passes = ((1.0f * imageColumns) * imageColumns * iRadius) / 4000000000.0f;
+      passes = (passes < 1) ? 1: passes;
+
+      /* set the kernel arguments */
+      i = 0;
+      clStatus=clEnv->library->clSetKernelArg(blurRowKernel,i++,sizeof(cl_mem),(void *)&imageBuffer);
+      clStatus|=clEnv->library->clSetKernelArg(blurRowKernel,i++,sizeof(cl_mem),(void *)&filteredImageBuffer);
+      clStatus|=clEnv->library->clSetKernelArg(blurRowKernel,i++,sizeof(cl_mem),(void *)&tempImageBuffer);
+      clStatus|=clEnv->library->clSetKernelArg(blurRowKernel,i++,sizeof(int),(void *)&iRadius);
+      clStatus|=clEnv->library->clSetKernelArg(blurRowKernel,i++,sizeof(unsigned int),(void *)&imageColumns);
+      clStatus|=clEnv->library->clSetKernelArg(blurRowKernel,i++,sizeof(unsigned int),(void *)&imageRows);
+      
+      if (clStatus != CL_SUCCESS)
+      {
+        (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clSetKernelArg failed.", "'%s'", ".");
+        goto cleanup;
+      }
+    }
+
+    /* launch the kernel */
+    {
+      int x;
+      for (x = 0; x < passes; ++x) {
+        size_t gsize[2];
+        size_t wsize[2];
+        size_t goffset[2];
+
+        gsize[0] = 256;
+        gsize[1] = image->rows / passes;
+        wsize[0] = 256;
+        wsize[1] = 1;
+        goffset[0] = 0;
+        goffset[1] = x * gsize[1];
+
+        clStatus = clEnv->library->clEnqueueNDRangeKernel(queue, blurRowKernel, 2, goffset, gsize, wsize, 0, NULL, &event);
+        if (clStatus != CL_SUCCESS)
+        {
+          (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
+          goto cleanup;
+        }
+      }
+    }
+
+    {
+      cl_float FStrength = strength;
+      i = 0;
+      clStatus=clEnv->library->clSetKernelArg(blurColumnKernel,i++,sizeof(cl_mem),(void *)&imageBuffer);
+      clStatus|=clEnv->library->clSetKernelArg(blurColumnKernel,i++,sizeof(cl_mem),(void *)&filteredImageBuffer);
+      clStatus|=clEnv->library->clSetKernelArg(blurColumnKernel,i++,sizeof(cl_mem),(void *)&tempImageBuffer);
+      clStatus|=clEnv->library->clSetKernelArg(blurColumnKernel,i++,sizeof(unsigned int),(void *)&iRadius);
+      clStatus|=clEnv->library->clSetKernelArg(blurColumnKernel,i++,sizeof(cl_float),(void *)&FStrength);
+      clStatus|=clEnv->library->clSetKernelArg(blurColumnKernel,i++,sizeof(unsigned int),(void *)&imageColumns);
+      clStatus|=clEnv->library->clSetKernelArg(blurColumnKernel,i++,sizeof(unsigned int),(void *)&imageRows);
+
+      if (clStatus != CL_SUCCESS)
+      {
+        (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clSetKernelArg failed.", "'%s'", ".");
+        goto cleanup;
+      }
+    }
+
+    /* launch the kernel */
+    {
+      int x;
+      for (x = 0; x < passes; ++x) {
+        size_t gsize[2];
+        size_t wsize[2];
+        size_t goffset[2];
+
+        gsize[0] = ((image->columns + 3) / 4) * 4;
+        gsize[1] = ((((image->rows + 63) / 64) + (passes + 1)) / passes) * 64;
+        wsize[0] = 4;
+        wsize[1] = 64;
+        goffset[0] = 0;
+        goffset[1] = x * gsize[1];
+
+        clStatus = clEnv->library->clEnqueueNDRangeKernel(queue, blurColumnKernel, 2, goffset, gsize, wsize, 0, NULL, &event);
+        if (clStatus != CL_SUCCESS)
+        {
+          (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
+          goto cleanup;
+        }
+      }
+    }
+  }
+
+  /* get result */
+  if (ALIGNED(filteredPixels,CLPixelPacket)) 
+  {
+    length = image->columns * image->rows;
+    clEnv->library->clEnqueueMapBuffer(queue, filteredImageBuffer, CL_TRUE, CL_MAP_READ|CL_MAP_WRITE, 0, length * sizeof(CLPixelPacket), 0, NULL, NULL, &clStatus);
+  }
+  else 
+  {
+    length = image->columns * image->rows;
+    clStatus = clEnv->library->clEnqueueReadBuffer(queue, filteredImageBuffer, CL_TRUE, 0, length * sizeof(CLPixelPacket), filteredPixels, 0, NULL, NULL);
+  }
+  if (clStatus != CL_SUCCESS)
+  {
+    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "Reading output image from CL buffer failed.", "'%s'", ".");
+    goto cleanup;
+  }
+
+  outputReady=SyncCacheViewAuthenticPixels(filteredImage_view,exception);
+
+cleanup:
+  OpenCLLogException(__FUNCTION__,__LINE__,exception);
+
+  image_view=DestroyCacheView(image_view);
+  if (filteredImage_view != NULL)
+    filteredImage_view=DestroyCacheView(filteredImage_view);
+
+  if (imageBuffer!=NULL)                      clEnv->library->clReleaseMemObject(imageBuffer);
+  if (filteredImageBuffer!=NULL)              clEnv->library->clReleaseMemObject(filteredImageBuffer);
+  if (tempImageBuffer!=NULL)                  clEnv->library->clReleaseMemObject(tempImageBuffer);
+  if (imageKernelBuffer!=NULL)                clEnv->library->clReleaseMemObject(imageKernelBuffer);
+  if (blurRowKernel!=NULL)                    RelinquishOpenCLKernel(clEnv, blurRowKernel);
+  if (blurColumnKernel!=NULL)                 RelinquishOpenCLKernel(clEnv, blurColumnKernel);
+  if (queue != NULL)                          RelinquishOpenCLCommandQueue(clEnv, queue);
+  if (outputReady == MagickFalse)
+  {
+    if (filteredImage != NULL)
+    {
+      DestroyImage(filteredImage);
+      filteredImage = NULL;
+    }
+  }
+  return(filteredImage);
+}
+
+MagickExport Image *AccelerateLocalContrastImage(const Image *image,
+  const double radius,const double strength,ExceptionInfo *exception)
+{
+  Image
+    *filteredImage;
+
+  assert(image != NULL);
+  assert(exception != (ExceptionInfo *) NULL);
+
+  if ((checkOpenCLEnvironment(exception) == MagickFalse) ||
+    (checkAccelerateCondition(image, AllChannels) == MagickFalse))
+    return NULL;
+
+  filteredImage=ComputeLocalContrastImage(image,radius,strength,exception);
+
+  return(filteredImage);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %     R o t a t i o n a l B l u r I m a g e  w i t h  O p e n C L             %
 %                                                                             %
 %                                                                             %

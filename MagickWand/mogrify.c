@@ -2068,6 +2068,19 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               geometry.height,1.0*geometry.x,1.0*geometry.y,exception);
             break;
           }
+        if (LocaleCompare("local-contrast",option+1) == 0)
+          {
+            MagickStatusType
+              flags;
+
+            (void) SyncImageSettings(mogrify_info,*image,exception);
+            flags=ParseGeometry(argv[i+1],&geometry_info);
+            if ((flags & SigmaValue) == 0)
+              geometry_info.sigma=15.0;
+            mogrify_image=LocalContrastImage(*image,geometry_info.rho,
+              geometry_info.sigma,exception);
+            break;
+          }
         if (LocaleCompare("lowlight-color",option+1) == 0)
           {
             (void) SetImageArtifact(*image,option+1,argv[i+1]);
@@ -3497,6 +3510,8 @@ static MagickBooleanType MogrifyUsage(void)
       "                     improve contrast by 'stretching with saturation'",
       "-liquid-rescale geometry",
       "                     rescale image with seam-carving",
+      "-local-contrast geometry",
+      "                     enhance local contrast",
       "-magnify             double the size of the image with pixel art scaling",
       "-mean-shift geometry delineate arbitrarily shaped clusters in the image",
       "-median geometry     apply a median filter to the image",

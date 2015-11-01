@@ -2719,6 +2719,20 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
             geometry.height,1.0*geometry.x,1.0*geometry.y,_exception);
           break;
         }
+      if (LocaleCompare("local-contrast",option+1) == 0)
+        {
+          MagickStatusType
+            flags;
+
+          flags=ParseGeometry(arg1,&geometry_info);
+          if ((flags & RhoValue) == 0)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
+          if ((flags & SigmaValue) == 0)
+            geometry_info.sigma=15.0;
+          new_image=LocalContrastImage(_image,geometry_info.rho,
+            geometry_info.sigma,exception);
+          break;
+        }
       CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 'm':
