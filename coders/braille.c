@@ -104,7 +104,15 @@ ModuleExport size_t RegisterBRAILLEImage(void)
   entry->encoder=(EncodeImageHandler *) WriteBRAILLEImage;
   entry->flags^=CoderAdjoinFlag;
   (void) RegisterMagickInfo(entry);
+  entry=AcquireMagickInfo("BRAILLE","UBRL6","Unicode Text format 6dot");
+  entry->encoder=(EncodeImageHandler *) WriteBRAILLEImage;
+  entry->flags^=CoderAdjoinFlag;
+  (void) RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("BRAILLE","ISOBRL","ISO/TR 11548-1 format");
+  entry->encoder=(EncodeImageHandler *) WriteBRAILLEImage;
+  entry->flags^=CoderAdjoinFlag;
+  (void) RegisterMagickInfo(entry);
+  entry=AcquireMagickInfo("BRAILLE","ISOBRL6","ISO/TR 11548-1 format 6dot");
   entry->encoder=(EncodeImageHandler *) WriteBRAILLEImage;
   entry->flags^=CoderAdjoinFlag;
   (void) RegisterMagickInfo(entry);
@@ -134,7 +142,9 @@ ModuleExport void UnregisterBRAILLEImage(void)
 {
   (void) UnregisterMagickInfo("BRF");
   (void) UnregisterMagickInfo("UBRL");
+  (void) UnregisterMagickInfo("UBRL6");
   (void) UnregisterMagickInfo("ISOBRL");
+  (void) UnregisterMagickInfo("ISOBRL6");
 }
 
 /*
@@ -204,11 +214,20 @@ static MagickBooleanType WriteBRAILLEImage(const ImageInfo *image_info,
   assert(image->signature == MagickCoreSignature);
   if (LocaleCompare(image_info->magick, "UBRL") == 0)
     unicode=1;
-  else
-    if (LocaleCompare(image_info->magick, "ISOBRL") == 0)
-      iso_11548_1=1;
-    else
+  else if (LocaleCompare(image_info->magick, "UBRL6") == 0)
+    {
+      unicode=1;
       cell_height=3;
+    }
+  else if (LocaleCompare(image_info->magick, "ISOBRL") == 0)
+    iso_11548_1=1;
+  else if (LocaleCompare(image_info->magick, "ISOBRL6") == 0)
+    {
+      iso_11548_1=1;
+      cell_height=3;
+    }
+  else
+    cell_height=3;
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);

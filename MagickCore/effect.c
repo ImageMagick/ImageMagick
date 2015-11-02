@@ -1660,8 +1660,8 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
 %
 %    o channel: the channel type.
 %
-%    o radius: the radius of the Gaussian blur, in percentage with 100%
-%      resulting in a blur radius of 20% of largest dimension.
+%    o radius: the radius of the Gaussian, in pixels, not counting
+%      the center pixel.
 %
 %    o strength: the strength of the blur mask in percentage.
 %
@@ -1690,7 +1690,6 @@ MagickExport Image *LocalContrastImage(const Image *image,const double radius,
     *interImage_info;
 
   ssize_t
-    rad,
     scanLineSize,
     thread_count;
 
@@ -1727,8 +1726,7 @@ MagickExport Image *LocalContrastImage(const Image *image,const double radius,
   }
 #endif
   scanLineSize=(ssize_t) MagickMax(image->columns,image->rows);
-  rad=(ssize_t) scanLineSize*0.002f*radius;
-  scanLineSize+=(2*rad);
+  scanLineSize+=(2*radius);
   scanLinePixels_info=AcquireVirtualMemory(thread_count*scanLineSize,
     sizeof(*scanLinePixels));
   if (scanLinePixels_info == (MemoryInfo *) NULL)
@@ -1740,7 +1738,7 @@ MagickExport Image *LocalContrastImage(const Image *image,const double radius,
     }
   scanLinePixels=(float *) GetVirtualMemoryBlob(scanLinePixels_info);
   /* Create intermediate buffer */
-  interImage_info=AcquireVirtualMemory((image->rows+(2*rad))*image->columns,
+  interImage_info=AcquireVirtualMemory((image->rows+(2*radius))*image->columns,
     sizeof(*interImage));
   if (interImage_info == (MemoryInfo *) NULL)
     {
@@ -1751,7 +1749,7 @@ MagickExport Image *LocalContrastImage(const Image *image,const double radius,
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
   interImage=(float *) GetVirtualMemoryBlob(interImage_info);
-  totalWeight=(rad+1)*(rad+1);
+  totalWeight=(radius+1)*(radius+1);
 
   /* Vertical Pass */
   {
@@ -1783,16 +1781,16 @@ MagickExport Image *LocalContrastImage(const Image *image,const double radius,
       pixels+=scanLineSize*omp_get_thread_num();
 #endif
       pix=pixels;
-      p=GetCacheViewVirtualPixels(image_view,x,-rad,1,image->rows+(2*rad),
-        exception);
+      p=GetCacheViewVirtualPixels(image_view,x,-radius,1,image->rows+
+        (2*radius),exception);
 
-      for (y=0; y < (ssize_t) image->rows+(2*rad); y++)
+      for (y=0; y < (ssize_t) image->rows+(2*radius); y++)
       {
         *pix++=(float)GetPixelLuma(image,p);
         p+=image->number_channels;
       }
 
-      out=interImage+x+rad;
+      out=interImage+x+(size_t) radius;
 
       for (y = 0; y < (ssize_t) image->rows; y++)
       {
@@ -1803,12 +1801,12 @@ MagickExport Image *LocalContrastImage(const Image *image,const double radius,
         weight=1.0f;
         sum=0;
         pix=pixels+y;
-        for (i=0; i < rad; i++)
+        for (i=0; i < radius; i++)
         {
           sum+=weight*(*pix++);
           weight+=1.0f;
         }
-        for (i=rad+1; i < (2*rad); i++)
+        for (i=radius+1; i < (2*radius); i++)
         {
           sum+=weight*(*pix++);
           weight-=1.0f;
@@ -1816,12 +1814,12 @@ MagickExport Image *LocalContrastImage(const Image *image,const double radius,
         /* write to output */
         *out=sum/totalWeight;
         /* mirror into padding */
-        if (x <= rad && x != 0)
+        if (x <= radius && x != 0)
           *(out-(x*2))=*out;
-        if ((x > image->columns-rad-2) && (x != (ssize_t) image->columns-1))
+        if ((x > image->columns-radius-2) && (x != (ssize_t) image->columns-1))
           *(out+((image->columns-x-1)*2))=*out;
 
-        out+=image->columns+(rad*2);
+        out+=image->columns+((size_t) radius*2);
       }
     }
   }
@@ -1861,8 +1859,8 @@ MagickExport Image *LocalContrastImage(const Image *image,const double radius,
       q=GetCacheViewAuthenticPixels(contrast_view,0,y,image->columns,1,
         exception);
 
-      memcpy(pixels,interImage+(y*(image->columns+(2*rad))),(image->columns+
-        +(2*rad))*sizeof(float));
+      memcpy(pixels,interImage+(y*(image->columns+(2*(size_t) radius))),
+        (image->columns+(2*radius))*sizeof(float));
 
       for (x=0; x < (ssize_t) image->columns; x++)
       {
@@ -1875,12 +1873,12 @@ MagickExport Image *LocalContrastImage(const Image *image,const double radius,
         weight=1.0f;
         sum=0;
         pix=pixels+x;
-        for (i=0; i < rad; i++)
+        for (i=0; i < radius; i++)
         {
           sum+=weight*(*pix++);
           weight+=1.0f;
         }
-        for (i=rad+1; i < (2*rad); i++)
+        for (i=radius+1; i < (2*radius); i++)
         {
           sum+=weight*(*pix++);
           weight-=1.0f;
