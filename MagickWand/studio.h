@@ -283,8 +283,6 @@ extern int vsnprintf(char *,size_t,const char *,va_list);
 #  define SetNotifyHandlers \
     SetErrorHandler(NTErrorHandler); \
     SetWarningHandler(NTWarningHandler)
-#  undef sleep
-#  define sleep(seconds)  Sleep(seconds*1000)
 #  if !defined(MAGICKCORE_HAVE_TIFFCONF_H)
 #    define HAVE_TIFFCONF_H
 #  endif
