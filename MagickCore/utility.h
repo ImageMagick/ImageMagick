@@ -53,7 +53,8 @@ extern MagickExport unsigned char
 
 extern MagickExport void
   AppendImageFormat(const char *,char *),
-  GetPathComponent(const char *,PathType,char *);
+  GetPathComponent(const char *,PathType,char *),
+  MagickDelay(const MagickSizeType);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

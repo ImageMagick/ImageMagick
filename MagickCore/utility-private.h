@@ -39,8 +39,7 @@ extern MagickPrivate ssize_t
 
 extern MagickPrivate void
   ChopPathComponents(char *,const size_t),
-  ExpandFilename(char *),
-  MagickDelay(const MagickSizeType);
+  ExpandFilename(char *);
 
 /*
   Windows UTF8 compatibility methods.
