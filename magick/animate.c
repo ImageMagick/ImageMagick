@@ -2150,7 +2150,7 @@ MagickExport Image *XAnimateImages(Display *display,
                       break;
                     }
                 }
-              (void) sleep(1);
+              MagickDelay(1000);
             }
           continue;
         }

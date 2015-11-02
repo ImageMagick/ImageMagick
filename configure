@@ -4377,7 +4377,7 @@ MAGICK_PATCHLEVEL_VERSION=6
 
 MAGICK_VERSION=6.9.2-6
 
-MAGICK_GIT_REVISION=10317:a0e3dbf:20151031
+MAGICK_GIT_REVISION=10321:c6b7cef:20151102
 
 
 # Substitute library versioning
@@ -8743,11 +8743,12 @@ int
 main ()
 {
 
-     int op = 0, eax, ebx, ecx, edx;
+     int op = 0, level = 0, eax, ebx, ecx, edx;
      FILE *f;
-      __asm__("cpuid"
+      __asm__ __volatile__ ("cpuid"
         : "=a" (eax), "=b" (ebx), "=c" (ecx), "=d" (edx)
-        : "a" (op));
+        : "a" (op), "2" (level));
+
      f = fopen("conftest_cpuid", "w"); if (!f) return 1;
      fprintf(f, "%x:%x:%x:%x\n", eax, ebx, ecx, edx);
      fclose(f);
@@ -8777,6 +8778,7 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 
+
 ac_ext=c
 ac_cpp='$CPP $CPPFLAGS'
 ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
@@ -8798,11 +8800,12 @@ int
 main ()
 {
 
-     int op = 1, eax, ebx, ecx, edx;
+     int op = 1, level = 0, eax, ebx, ecx, edx;
      FILE *f;
-      __asm__("cpuid"
+      __asm__ __volatile__ ("cpuid"
         : "=a" (eax), "=b" (ebx), "=c" (ecx), "=d" (edx)
-        : "a" (op));
+        : "a" (op), "2" (level));
+
      f = fopen("conftest_cpuid", "w"); if (!f) return 1;
      fprintf(f, "%x:%x:%x:%x\n", eax, ebx, ecx, edx);
      fclose(f);
@@ -8829,6 +8832,7 @@ ac_cpp='$CPP $CPPFLAGS'
 ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
 
 
      case $ax_cv_gcc_x86_cpuid_0 in
