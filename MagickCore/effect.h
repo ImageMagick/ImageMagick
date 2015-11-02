@@ -69,6 +69,7 @@ extern MagickExport Image
   *EmbossImage(const Image *,const double,const double,ExceptionInfo *),
   *GaussianBlurImage(const Image *,const double,const double,ExceptionInfo *),
   *KuwaharaImage(const Image *,const double,const double,ExceptionInfo *),
+  *LocalContrastImage(const Image *,const double,const double,ExceptionInfo *),
   *MotionBlurImage(const Image *,const double,const double,const double,
     ExceptionInfo *),
   *PreviewImage(const Image *,const PreviewType,ExceptionInfo *),

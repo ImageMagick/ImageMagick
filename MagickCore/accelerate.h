@@ -52,6 +52,8 @@ extern MagickExport Image
   *AccelerateConvolveImageChannel(const Image *,const ChannelType,
     const KernelInfo *,ExceptionInfo *),
   *AccelerateDespeckleImage(const Image *,ExceptionInfo *),
+  *AccelerateLocalContrastImage(const Image *,const double,const double,
+    ExceptionInfo *),
   *AccelerateMotionBlurImage(const Image*, const ChannelType,
     const double*,const size_t,const OffsetInfo*,ExceptionInfo*),
   *AccelerateResizeImage(const Image *,const size_t,const size_t,
