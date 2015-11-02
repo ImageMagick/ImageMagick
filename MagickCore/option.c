@@ -555,6 +555,7 @@ static const OptionInfo
     { "-liquid-rescale", 1L, SimpleOperatorFlag, MagickFalse },
     { "+list", 0L, DeprecateOptionFlag, MagickTrue },
     { "-list", 1L, NoImageOperatorFlag, MagickFalse },
+    { "+local-contrast", 0L, DeprecateOptionFlag, MagickTrue },
     { "-local-contrast", 1L, SimpleOperatorFlag, MagickFalse },
     { "+log", 0L, DeprecateOptionFlag, MagickFalse },
     { "-log", 1L, GlobalOptionFlag, MagickFalse },

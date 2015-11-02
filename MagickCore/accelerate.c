@@ -1801,7 +1801,7 @@ static Image *ComputeLocalContrastImage(const Image *image,
     {
       imageColumns = (unsigned int) image->columns;
       imageRows = (unsigned int) image->rows;
-      iRadius = (image->rows > image->columns ? image->rows : image->columns) * 0.002f * radius; // Normalized radius, 100% gives blur radius of 20% of the largest dimension
+      iRadius = (cl_int) radius;
 
       passes = ((1.0f * imageColumns) * imageColumns * iRadius) / 4000000000.0f;
       passes = (passes < 1) ? 1: passes;
@@ -1811,7 +1811,7 @@ static Image *ComputeLocalContrastImage(const Image *image,
       clStatus=clEnv->library->clSetKernelArg(blurRowKernel,i++,sizeof(cl_mem),(void *)&imageBuffer);
       clStatus|=clEnv->library->clSetKernelArg(blurRowKernel,i++,sizeof(cl_mem),(void *)&filteredImageBuffer);
       clStatus|=clEnv->library->clSetKernelArg(blurRowKernel,i++,sizeof(cl_mem),(void *)&tempImageBuffer);
-      clStatus|=clEnv->library->clSetKernelArg(blurRowKernel,i++,sizeof(int),(void *)&iRadius);
+      clStatus|=clEnv->library->clSetKernelArg(blurRowKernel,i++,sizeof(cl_int),(void *)&iRadius);
       clStatus|=clEnv->library->clSetKernelArg(blurRowKernel,i++,sizeof(unsigned int),(void *)&imageColumns);
       clStatus|=clEnv->library->clSetKernelArg(blurRowKernel,i++,sizeof(unsigned int),(void *)&imageRows);
       
@@ -7473,6 +7473,18 @@ MagickExport Image *AccelerateBlurImage(const Image *magick_unused(image),
   magick_unreferenced(channel);
   magick_unreferenced(radius);
   magick_unreferenced(sigma);
+  magick_unreferenced(exception);
+
+  return NULL;
+}
+
+MagickExport Image *AccelerateLocalContrastImage(
+  const Image *magick_unused(image),const double magick_unused(radius),
+  const double magick_unused(strength),ExceptionInfo *magick_unused(exception))
+{
+  magick_unreferenced(image);
+  magick_unreferenced(radius);
+  magick_unreferenced(strength);
   magick_unreferenced(exception);
 
   return NULL;
