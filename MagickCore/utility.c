@@ -1698,7 +1698,7 @@ MagickPrivate char **ListFiles(const char *directory,const char *pattern,
 %      returning.
 %
 */
-MagickPrivate void MagickDelay(const MagickSizeType milliseconds)
+MagickExport void MagickDelay(const MagickSizeType milliseconds)
 {
   if (milliseconds == 0)
     return;

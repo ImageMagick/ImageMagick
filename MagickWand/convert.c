@@ -2052,9 +2052,6 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("local-contrast",option+1) == 0)
           {
-            MagickStatusType
-              flags;
-
             i++;
             if (i == (ssize_t)argc)
               ThrowConvertException(OptionError, "MissingArgument", option);
