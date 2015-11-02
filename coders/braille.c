@@ -108,10 +108,22 @@ ModuleExport size_t RegisterBRAILLEImage(void)
   entry->description=AcquireString("Unicode Text format");
   entry->module=AcquireString("BRAILLE");
   (void) RegisterMagickInfo(entry);
+  entry=SetMagickInfo("UBRL6");
+  entry->encoder=(EncodeImageHandler *) WriteBRAILLEImage;
+  entry->adjoin=MagickFalse;
+  entry->description=AcquireString("Unicode Text format 6dot");
+  entry->module=AcquireString("BRAILLE");
+  (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("ISOBRL");
   entry->encoder=(EncodeImageHandler *) WriteBRAILLEImage;
   entry->adjoin=MagickFalse;
   entry->description=AcquireString("ISO/TR 11548-1 format");
+  entry->module=AcquireString("BRAILLE");
+  (void) RegisterMagickInfo(entry);
+  entry=SetMagickInfo("ISOBRL6");
+  entry->encoder=(EncodeImageHandler *) WriteBRAILLEImage;
+  entry->adjoin=MagickFalse;
+  entry->description=AcquireString("ISO/TR 11548-1 format 6dot");
   entry->module=AcquireString("BRAILLE");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
@@ -140,7 +152,9 @@ ModuleExport void UnregisterBRAILLEImage(void)
 {
   (void) UnregisterMagickInfo("BRF");
   (void) UnregisterMagickInfo("UBRL");
+  (void) UnregisterMagickInfo("UBRL6");
   (void) UnregisterMagickInfo("ISOBRL");
+  (void) UnregisterMagickInfo("ISOBRL6");
 }
 
 /*
@@ -209,13 +223,22 @@ static MagickBooleanType WriteBRAILLEImage(const ImageInfo *image_info,
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if (LocaleCompare(image_info->magick, "UBRL") == 0)
+  if (LocaleCompare(image_info->magick,"UBRL") == 0)
     unicode=1;
-  else
-    if (LocaleCompare(image_info->magick, "ISOBRL") == 0)
-      iso_11548_1=1;
-    else
+  else if (LocaleCompare(image_info->magick,"UBRL6") == 0)
+    {
+      unicode=1;
       cell_height=3;
+    }
+  else if (LocaleCompare(image_info->magick,"ISOBRL") == 0)
+    iso_11548_1=1;
+  else if (LocaleCompare(image_info->magick,"ISOBRL6") == 0)
+    {
+      iso_11548_1=1;
+      cell_height=3;
+    }
+  else
+    cell_height=3;
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
