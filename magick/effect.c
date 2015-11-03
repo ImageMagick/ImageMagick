@@ -2444,7 +2444,280 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
     kuwahara_image=DestroyImage(kuwahara_image);
   return(kuwahara_image);
 }
-
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%     L o c a l C o n t r a s t I m a g e                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  LocalContrastImage() attempts to increase the appearance of large-scale
+%  light-dark transitions. Local contrast enhancement works  similarly to
+%  sharpening with an unsharp mask, however the mask is instead created using
+%  an image with a greater blur distance.
+%
+%  The format of the LocalContrastImage method is:
+%
+%      Image *LocalContrastImage(const Image *image, const double radius,
+%        const double strength, ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o channel: the channel type.
+%
+%    o radius: the radius of the Gaussian, in pixels, not counting
+%      the center pixel.
+%
+%    o strength: the strength of the blur mask in percentage.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport Image *LocalContrastImage(const Image *image,const double radius,
+  const double strength,ExceptionInfo *exception)
+{
+#define LocalContrastImageTag  "LocalContrast/Image"
+
+  CacheView
+    *image_view,
+    *contrast_view;
+
+  float
+    *interImage,
+    *scanLinePixels,
+    totalWeight;
+
+  Image
+    *contrast_image;
+
+  MemoryInfo
+    *scanLinePixels_info,
+    *interImage_info;
+
+  ssize_t
+    scanLineSize,
+    thread_count,
+    width;
+
+  /*
+    Initialize contrast image attributes.
+  */
+  assert(image != (const Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  contrast_image=AccelerateLocalContrastImage(image,radius,strength,exception);
+  if (contrast_image != (Image *) NULL)
+    return(contrast_image);
+  contrast_image=CloneImage(image,0,0,MagickTrue,exception);
+  if (contrast_image == (Image *) NULL)
+    return((Image *) NULL);
+  if (SetImageStorageClass(contrast_image,DirectClass) == MagickFalse)
+    {
+      InheritException(exception,&contrast_image->exception);
+      contrast_image=DestroyImage(contrast_image);
+      return((Image *) NULL);
+    }
+  image_view=AcquireVirtualCacheView(image,exception);
+  contrast_view=AcquireAuthenticCacheView(contrast_image,exception);
+  thread_count=1;
+  width=(ssize_t) fabs(radius);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel magick_threads(image,image,image->rows,1)
+  {
+    #pragma omp single
+    {
+      thread_count=omp_get_num_threads();
+    }
+  }
+#endif
+  scanLineSize=(ssize_t) MagickMax(image->columns,image->rows);
+  scanLineSize+=(2*width);
+  scanLinePixels_info=AcquireVirtualMemory(thread_count*scanLineSize,
+    sizeof(*scanLinePixels));
+  if (scanLinePixels_info == (MemoryInfo *) NULL)
+    {
+      contrast_view=DestroyCacheView(contrast_view);
+      image_view=DestroyCacheView(image_view);
+      contrast_image=DestroyImage(contrast_image);
+      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+    }
+  scanLinePixels=(float *) GetVirtualMemoryBlob(scanLinePixels_info);
+  /* Create intermediate buffer */
+  interImage_info=AcquireVirtualMemory((image->rows+(2*width))*image->columns,
+    sizeof(*interImage));
+  if (interImage_info == (MemoryInfo *) NULL)
+    {
+      scanLinePixels_info=RelinquishVirtualMemory(scanLinePixels_info);
+      contrast_view=DestroyCacheView(contrast_view);
+      image_view=DestroyCacheView(image_view);
+      contrast_image=DestroyImage(contrast_image);
+      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+    }
+  interImage=(float *) GetVirtualMemoryBlob(interImage_info);
+  totalWeight=(width+1)*(width+1);
+
+  /* Vertical Pass */
+  {
+    ssize_t
+      x;
+
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#pragma omp parallel for schedule(static,4) \
+    magick_threads(image,image,image->columns,1)
+#endif
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      const PixelPacket
+        *restrict p;
+
+      float
+        *out,
+        *pix,
+        *pixels;
+
+      register ssize_t
+        y;
+
+      ssize_t
+        i;
+
+      pixels=scanLinePixels;
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+      pixels+=scanLineSize*omp_get_thread_num();
+#endif
+      pix=pixels;
+      p=GetCacheViewVirtualPixels(image_view,x,-width,1,image->rows+(2*width),
+        exception);
+
+      for (y=0; y < (ssize_t) image->rows+(2*width); y++)
+      {
+        *pix++=(float)GetPixelLuma(image,p);
+        p++;
+      }
+
+      out=interImage+x+width;
+
+      for (y = 0; y < (ssize_t) image->rows; y++)
+      {
+        float
+          sum,
+          weight;
+
+        weight=1.0f;
+        sum=0;
+        pix=pixels+y;
+        for (i=0; i < width; i++)
+        {
+          sum+=weight*(*pix++);
+          weight+=1.0f;
+        }
+        for (i=width+1; i < (2*width); i++)
+        {
+          sum+=weight*(*pix++);
+          weight-=1.0f;
+        }
+        /* write to output */
+        *out=sum/totalWeight;
+        /* mirror into padding */
+        if (x <= width && x != 0)
+          *(out-(x*2))=*out;
+        if ((x > image->columns-width-2) && (x != (ssize_t) image->columns-1))
+          *(out+((image->columns-x-1)*2))=*out;
+
+        out+=image->columns+(width*2);
+      }
+    }
+  }
+  /* Horizontal Pass */
+  {
+    ssize_t
+      y;
+
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#pragma omp parallel for schedule(static,4) \
+    magick_threads(image,image,image->rows,1)
+#endif
+    for (y=0; y < (ssize_t) image->rows; y++)
+    {
+      const PixelPacket
+        *restrict p;
+
+      float
+        *pix,
+        *pixels;
+
+      register PixelPacket
+        *restrict q;
+
+      register ssize_t
+        x;
+
+      ssize_t
+        i;
+
+      pixels=scanLinePixels;
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+      pixels+=scanLineSize*omp_get_thread_num();
+#endif
+      p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,
+        exception);
+      q=GetCacheViewAuthenticPixels(contrast_view,0,y,image->columns,1,
+        exception);
+
+      memcpy(pixels,interImage+(y*(image->columns+(2*width))),(image->columns+
+        (2*width))*sizeof(float));
+
+      for (x=0; x < (ssize_t) image->columns; x++)
+      {
+        float
+          mult,
+          srcVal,
+          sum,
+          weight;
+
+        weight=1.0f;
+        sum=0;
+        pix=pixels+x;
+        for (i=0; i < width; i++)
+        {
+          sum+=weight*(*pix++);
+          weight+=1.0f;
+        }
+        for (i=width+1; i < (2*width); i++)
+        {
+          sum+=weight*(*pix++);
+          weight-=1.0f;
+        }
+
+        /* Apply and write */
+        srcVal=(float) GetPixelLuma(image,p);
+        mult=(srcVal-(sum/totalWeight))*(strength/100.0f);
+        mult=(srcVal+mult)/srcVal;
+        SetPixelRed(q,ClampToQuantum(GetPixelRed(p)*mult));
+        SetPixelGreen(q,ClampToQuantum(GetPixelGreen(p)*mult));
+        SetPixelBlue(q,ClampToQuantum(GetPixelBlue(p)*mult));
+        p++;
+        q++;
+      }
+    }
+  }
+  scanLinePixels_info=RelinquishVirtualMemory(scanLinePixels_info);
+  interImage_info=RelinquishVirtualMemory(interImage_info);
+  contrast_view=DestroyCacheView(contrast_view);
+  image_view=DestroyCacheView(image_view);
+  return(contrast_image);
+}
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %

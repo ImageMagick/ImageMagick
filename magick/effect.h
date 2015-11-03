@@ -84,6 +84,7 @@ extern MagickExport Image
   *KuwaharaImage(const Image *,const double,const double,ExceptionInfo *),
   *KuwaharaImageChannel(const Image *,const ChannelType,const double,
     const double,ExceptionInfo *),
+  *LocalContrastImage(const Image *,const double,const double,ExceptionInfo *),
   *MotionBlurImage(const Image *,const double,const double,const double,
     ExceptionInfo *),
   *MotionBlurImageChannel(const Image *,const ChannelType,const double,

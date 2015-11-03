@@ -232,6 +232,8 @@ static MagickBooleanType ConvertUsage(void)
       "                     improve contrast by `stretching with saturation'",
       "-liquid-rescale geometry",
       "                     rescale image with seam-carving",
+      "-local-contrast geometry",
+      "                     enhance local contrast",
       "-magnify             double the size of the image with pixel art scaling",
       "-mean-shift geometry delineate arbitrarily shaped clusters in the image",
       "-median geometry     apply a median filter to the image",
@@ -2045,6 +2047,15 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
               argv+j,exception);
             DestroyConvert();
             return(status == 0 ? MagickTrue : MagickFalse);
+          }
+        if (LocaleCompare("local-contrast",option+1) == 0)
+          {
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowConvertException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowConvertInvalidArgumentException(option,argv[i]);
+            break;
           }
         if (LocaleCompare("log",option+1) == 0)
           {
