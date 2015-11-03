@@ -1310,6 +1310,7 @@ namespace Magick
   using MagickCore::LinkedListInfo;
   using MagickCore::LiquidRescaleImage;
   using MagickCore::LocaleCompare;
+  using MagickCore::LocalContrastImage;
   using MagickCore::LockSemaphoreInfo;
   using MagickCore::LogMagickEvent;
   using MagickCore::MagickCoreTerminus;

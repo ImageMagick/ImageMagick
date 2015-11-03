@@ -1594,10 +1594,8 @@ MagickExport Image* AccelerateBlurImage(const Image *image,
 %
 %    o image: the image.
 %
-%    o channel: the channel type.
-%
-%    o radius: the radius of the Gaussian blur, in percentage with 100%
-%      resulting in a blur radius of 20% of largest dimension.
+%    o radius: the radius of the Gaussian, in pixels, not counting
+%      the center pixel.
 %
 %    o strength: the strength of the blur mask in percentage.
 %

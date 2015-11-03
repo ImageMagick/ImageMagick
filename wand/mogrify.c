@@ -2073,7 +2073,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             MagickStatusType
               flags;
 
-            (void) SyncImageSettings(mogrify_info,*image,exception);
+            (void) SyncImageSettings(mogrify_info,*image);
             flags=ParseGeometry(argv[i+1],&geometry_info);
             if ((flags & RhoValue) == 0)
               geometry_info.rho=10;
