@@ -1645,7 +1645,7 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  LocalContrastImage() attempts to increase the appearance of large-scale
-%  light-dark transitions. Local contrast enhancement works  similarly to
+%  light-dark transitions. Local contrast enhancement works similarly to
 %  sharpening with an unsharp mask, however the mask is instead created using
 %  an image with a greater blur distance.
 %
@@ -1657,8 +1657,6 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
 %  A description of each parameter follows:
 %
 %    o image: the image.
-%
-%    o channel: the channel type.
 %
 %    o radius: the radius of the Gaussian, in pixels, not counting
 %      the center pixel.

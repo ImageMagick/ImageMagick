@@ -1349,6 +1349,7 @@ namespace Magick
   using MagickCore::LevelizeImage;
   using MagickCore::LinearStretchImage;
   using MagickCore::LiquidRescaleImage;
+  using MagickCore::LocalContrastImage;
   using MagickCore::LocaleCompare;
   using MagickCore::LockSemaphoreInfo;
   using MagickCore::LogMagickEvent;

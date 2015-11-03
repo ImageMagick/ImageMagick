@@ -6525,6 +6525,55 @@ WandExport MagickBooleanType MagickLiquidRescaleImage(MagickWand *wand,
   ReplaceImageInList(&wand->images,rescale_image);
   return(MagickTrue);
 }
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%     M a g i c k L o c a l C o n t r a s t I m a g e                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickLocalContrastImage() attempts to increase the appearance of
+%  large-scale light-dark transitions. Local contrast enhancement works
+%  similarly to sharpening with an unsharp mask, however the mask is instead
+%  created using an image with a greater blur distance.
+%
+%      MagickBooleanType MagickLocalContrastImage(MagickWand *wand,
+%        const double radius,const double strength)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o radius: the radius of the Gaussian, in pixels, not counting
+%      the center pixel.
+%
+%    o strength: the strength of the blur mask in percentage.
+%
+*/
+WandExport MagickBooleanType MagickLocalContrastImage(MagickWand *wand,
+  const double radius, const double strength)
+{
+  Image
+    *contrast_image;
+
+  assert(wand != (MagickWand *)NULL);
+  assert(wand->signature == MagickWandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s", wand->name);
+  if (wand->images == (Image *)NULL)
+    ThrowWandException(WandError,"ContainsNoImages",wand->name);
+  contrast_image=LocalContrastImage(wand->images,radius,strength,
+    wand->exception);
+  if (contrast_image == (Image *)NULL)
+    return(MagickFalse);
+  ReplaceImageInList(&wand->images,contrast_image);
+  return(MagickTrue);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

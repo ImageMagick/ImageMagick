@@ -1065,6 +1065,9 @@ namespace Magick
     // Rescales image with seam carving.
     void liquidRescale(const Geometry &geometry_);
 
+    // Local contrast enhancement
+    void localContrast(const double radius_,const double strength_);
+
     // Magnify image by integral size
     void magnify(void);
 

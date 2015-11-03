@@ -188,6 +188,7 @@ extern WandExport MagickBooleanType
   MagickLinearStretchImage(MagickWand *,const double,const double),
   MagickLiquidRescaleImage(MagickWand *,const size_t,const size_t,const double,
     const double),
+  MagickLocalContrastImage(MagickWand *,const double,const double),
   MagickMagnifyImage(MagickWand *),
   MagickMedianConvolveImage(MagickWand *,const double),
   MagickMinifyImage(MagickWand *),
