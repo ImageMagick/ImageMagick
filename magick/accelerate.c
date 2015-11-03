@@ -7572,20 +7572,6 @@ MagickExport Image *AccelerateDespeckleImage(const Image* magick_unused(image),
   return NULL;
 }
 
-MagickExport Image *AccelerateLocalContrastImage(const Image* magick_unused(image),
-  const double magick_unused(radius),
-  const double magick_unused(strength),
-  ExceptionInfo *magick_unused(exception))
-{
-  magick_unreferenced(image);
-  magick_unreferenced(channel);
-  magick_unreferenced(radius);
-  magick_unreferenced(strength);
-  magick_unreferenced(exception);
-
-  return NULL;
-}
-
 MagickExport Image *AccelerateResizeImage(const Image* magick_unused(image),
   const size_t magick_unused(resizedColumns),
   const size_t magick_unused(resizedRows),
