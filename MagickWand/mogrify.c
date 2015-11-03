@@ -2075,8 +2075,13 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
 
             (void) SyncImageSettings(mogrify_info,*image,exception);
             flags=ParseGeometry(argv[i+1],&geometry_info);
+            if ((flags & RhoValue) == 0)
+              geometry_info.rho=10;
             if ((flags & SigmaValue) == 0)
-              geometry_info.sigma=15.0;
+              geometry_info.sigma=12.5;
+            if (((flags & RhoValue) == 0) || ((flags & PercentValue) != 0))
+              geometry_info.rho*=MagickMax((*image)->columns,(*image)->rows)/
+                100.0;
             mogrify_image=LocalContrastImage(*image,geometry_info.rho,
               geometry_info.sigma,exception);
             break;
