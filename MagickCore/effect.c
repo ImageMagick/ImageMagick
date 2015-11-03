@@ -1717,7 +1717,7 @@ MagickExport Image *LocalContrastImage(const Image *image,const double radius,
   image_view=AcquireVirtualCacheView(image,exception);
   contrast_view=AcquireAuthenticCacheView(contrast_image,exception);
   thread_count=1;
-  width=fabs(radius);
+  width=(ssize_t) fabs(radius);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel magick_threads(image,image,image->rows,1)
   {
