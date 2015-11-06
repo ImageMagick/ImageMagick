@@ -344,17 +344,6 @@ Magick::Color Magick::Image::alphaColor(void) const
   return(Color(constImage()->matte_color));
 }
 
-void Magick::Image::antiAlias(const bool flag_)
-{
-  modifyImage();
-  options()->antiAlias(flag_);
-}
-
-bool Magick::Image::antiAlias(void) const
-{
-  return(constOptions()->antiAlias());
-}
-
 void Magick::Image::animationDelay(const size_t delay_)
 {
   modifyImage();
@@ -1561,6 +1550,17 @@ void Magick::Image::subRange(const size_t subRange_)
 size_t Magick::Image::subRange(void) const
 {
   return(constOptions()->subRange());
+}
+
+void Magick::Image::textAntiAlias(const bool flag_)
+{
+  modifyImage();
+  options()->textAntiAlias(flag_);
+}
+
+bool Magick::Image::textAntiAlias(void) const
+{
+  return(constOptions()->textAntiAlias());
 }
 
 void Magick::Image::textDirection(DirectionType direction_)

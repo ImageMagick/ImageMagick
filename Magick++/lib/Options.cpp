@@ -62,17 +62,6 @@ Magick::Options::~Options()
    _drawInfo=DestroyDrawInfo(_drawInfo);
 }
 
-void Magick::Options::antiAlias(bool flag_)
-{
-  _drawInfo->text_antialias=static_cast<MagickBooleanType>(
-    flag_ ? MagickTrue : MagickFalse);
-}
-
-bool Magick::Options::antiAlias(void) const
-{
-  return(static_cast<bool>(_drawInfo->text_antialias));
-}
-
 void Magick::Options::adjoin(bool flag_)
 {
   _imageInfo->adjoin=static_cast<MagickBooleanType>(
@@ -696,6 +685,17 @@ void Magick::Options::subRange(size_t subRange_)
 size_t Magick::Options::subRange(void) const
 {
   return(_imageInfo->number_scenes);
+}
+
+void Magick::Options::textAntiAlias(bool flag_)
+{
+  _drawInfo->text_antialias=static_cast<MagickBooleanType>(
+    flag_ ? MagickTrue : MagickFalse);
+}
+
+bool Magick::Options::textAntiAlias(void) const
+{
+  return(static_cast<bool>(_drawInfo->text_antialias));
 }
 
 void Magick::Options::textDirection(DirectionType direction_)

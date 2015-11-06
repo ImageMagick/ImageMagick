@@ -1154,16 +1154,6 @@ void Magick::zoomImage::operator()( Magick::Image &image_ ) const
 // Function object image attribute accessors
 //
 
-// Anti-alias Postscript and TrueType fonts (default true)
-Magick::antiAliasImage::antiAliasImage( const bool flag_ )
-  : _flag( flag_ )
-{
-}
-void Magick::antiAliasImage::operator()( Magick::Image &image_ ) const
-{
-  image_.antiAlias( _flag );
-}
-
 // Join images into a single multi-image file
 Magick::adjoinImage::adjoinImage( const bool flag_ )
   : _flag( flag_ )
@@ -1606,6 +1596,16 @@ Magick::subRangeImage::subRangeImage( const size_t subRange_ )
 void Magick::subRangeImage::operator()( Magick::Image &image_ ) const
 {
   image_.subRange( _subRange );
+}
+
+// Anti-alias Postscript and TrueType fonts (default true)
+Magick::textAntiAliasImage::textAntiAliasImage( const bool flag_ )
+  : _flag( flag_ )
+{
+}
+void Magick::textAntiAliasImage::operator()( Magick::Image &image_ ) const
+{
+  image_.textAntiAlias( _flag );
 }
 
 // Image storage type

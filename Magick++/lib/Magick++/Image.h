@@ -109,10 +109,6 @@ namespace Magick
     void alphaColor(const Color &alphaColor_);
     Color alphaColor(void) const;
 
-    // Anti-alias Postscript and TrueType fonts (default true)
-    void antiAlias(const bool flag_);
-    bool antiAlias(void) const;
-
     // Time in 1/100ths of a second which must expire before
     // displaying the next image in an animated sequence.
     void animationDelay(const size_t delay_);
@@ -474,6 +470,10 @@ namespace Magick
     // Number of images relative to the base image
     void subRange(const size_t subRange_);
     size_t subRange(void) const;
+
+    // Anti-alias Postscript and TrueType fonts (default true)
+    void textAntiAlias(const bool flag_);
+    bool textAntiAlias(void) const;
 
     // Render text right-to-left or left-to-right.
     void textDirection(DirectionType direction_);

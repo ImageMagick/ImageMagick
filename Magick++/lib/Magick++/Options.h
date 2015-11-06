@@ -38,10 +38,6 @@ namespace Magick
     // Destructor
     ~Options();
 
-    // Remove pixel aliasing
-    void antiAlias(bool flag_);
-    bool antiAlias(void) const;
-
     // Join images into a single multi-image file
     void adjoin(bool flag_);
     bool adjoin(void) const;
@@ -251,6 +247,10 @@ namespace Magick
     // Sub-frame number to return
     void subRange(size_t subRange_);
     size_t subRange(void) const;
+
+    // Remove pixel aliasing
+    void textAntiAlias(bool flag_);
+    bool textAntiAlias(void) const;
 
     // Render text right-to-left or left-to-right.
     void textDirection(DirectionType direction_);

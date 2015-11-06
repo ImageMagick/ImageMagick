@@ -1246,18 +1246,6 @@ namespace Magick
   // Function object image attribute accessors
   //
 
-  // Anti-alias Postscript and TrueType fonts (default true)
-  class MagickPPExport antiAliasImage : public std::unary_function<Image&,void>
-  {
-  public:
-    antiAliasImage( const bool flag_ );
-
-    void operator()( Image &image_ ) const;
-
-  private:
-    bool _flag;
-  };
-
   // Join images into a single multi-image file
   class MagickPPExport adjoinImage : public std::unary_function<Image&,void>
   {
@@ -1812,6 +1800,18 @@ namespace Magick
 
   private:
     size_t _subRange;
+  };
+
+  // Anti-alias Postscript and TrueType fonts (default true)
+  class MagickPPExport textAntiAliasImage : public std::unary_function<Image&,void>
+  {
+  public:
+    textAntiAliasImage( const bool flag_ );
+
+    void operator()( Image &image_ ) const;
+
+  private:
+    bool _flag;
   };
 
   // Image storage type
