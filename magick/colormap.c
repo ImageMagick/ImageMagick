@@ -112,7 +112,7 @@ MagickExport MagickBooleanType AcquireImageColormap(Image *image,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  image->colors=MagickMax(colors,1);
+  image->colors=MagickMax(colors,2);
   if (image->colormap == (PixelPacket *) NULL)
     image->colormap=(PixelPacket *) AcquireQuantumMemory(image->colors,
       sizeof(*image->colormap));
