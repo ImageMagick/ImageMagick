@@ -412,13 +412,13 @@ static ssize_t PrintChannelStatistics(FILE *file,const PixelChannel channel,
   ssize_t
     n;
 
-  n=FormatLocaleFile(file,StatisticsFormat,name,ClampToQuantum(scale*
-    channel_statistics[channel].minima),channel_statistics[channel].minima/
-    (double) QuantumRange,ClampToQuantum(scale*
-    channel_statistics[channel].maxima),channel_statistics[channel].maxima/
-    (double) QuantumRange,scale*channel_statistics[channel].mean,
-    channel_statistics[channel].mean/(double) QuantumRange,scale*
-    channel_statistics[channel].standard_deviation,
+  n=FormatLocaleFile(file,StatisticsFormat,name,ClampToQuantum((MagickRealType)
+    (scale*channel_statistics[channel].minima)),
+    channel_statistics[channel].minima/(double) QuantumRange,ClampToQuantum(
+    (MagickRealType) (scale*channel_statistics[channel].maxima)),
+    channel_statistics[channel].maxima/(double) QuantumRange,scale*
+    channel_statistics[channel].mean,channel_statistics[channel].mean/(double)
+    QuantumRange,scale*channel_statistics[channel].standard_deviation,
     channel_statistics[channel].standard_deviation/(double) QuantumRange,
     channel_statistics[channel].kurtosis,channel_statistics[channel].skewness,
     channel_statistics[channel].entropy);

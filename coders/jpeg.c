@@ -1745,7 +1745,7 @@ static QuantizationTable *GetQuantizationTable(const char *filename,
   if (description == (XMLTreeInfo *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-        "XmlMissingElement", "<description>, slot \"%s\"",slot);
+        "XmlMissingElement","<description>, slot \"%s\"",slot);
       quantization_tables=DestroyXMLTree(quantization_tables);
       xml=DestroyString(xml);
       return(table);
@@ -1754,7 +1754,7 @@ static QuantizationTable *GetQuantizationTable(const char *filename,
   if (levels == (XMLTreeInfo *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-        "XmlMissingElement", "<levels>, slot \"%s\"", slot);
+        "XmlMissingElement","<levels>, slot \"%s\"",slot);
       quantization_tables=DestroyXMLTree(quantization_tables);
       xml=DestroyString(xml);
       return(table);
@@ -1776,7 +1776,7 @@ static QuantizationTable *GetQuantizationTable(const char *filename,
   if (attribute == (char *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-        "XmlMissingAttribute", "<levels width>, slot \"%s\"",slot);
+        "XmlMissingAttribute","<levels width>, slot \"%s\"",slot);
       quantization_tables=DestroyXMLTree(quantization_tables);
       table=DestroyQuantizationTable(table);
       xml=DestroyString(xml);
@@ -1786,7 +1786,7 @@ static QuantizationTable *GetQuantizationTable(const char *filename,
   if (table->width == 0)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-       "XmlInvalidAttribute", "<levels width>, table \"%s\"",slot);
+       "XmlInvalidAttribute","<levels width>, table \"%s\"",slot);
       quantization_tables=DestroyXMLTree(quantization_tables);
       table=DestroyQuantizationTable(table);
       xml=DestroyString(xml);
@@ -1796,7 +1796,7 @@ static QuantizationTable *GetQuantizationTable(const char *filename,
   if (attribute == (char *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-        "XmlMissingAttribute", "<levels height>, table \"%s\"",slot);
+        "XmlMissingAttribute","<levels height>, table \"%s\"",slot);
       quantization_tables=DestroyXMLTree(quantization_tables);
       table=DestroyQuantizationTable(table);
       xml=DestroyString(xml);
@@ -1806,7 +1806,7 @@ static QuantizationTable *GetQuantizationTable(const char *filename,
   if (table->height == 0)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-        "XmlInvalidAttribute", "<levels height>, table \"%s\"",slot);
+        "XmlInvalidAttribute","<levels height>, table \"%s\"",slot);
       quantization_tables=DestroyXMLTree(quantization_tables);
       table=DestroyQuantizationTable(table);
       xml=DestroyString(xml);
@@ -1816,7 +1816,7 @@ static QuantizationTable *GetQuantizationTable(const char *filename,
   if (attribute == (char *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-        "XmlMissingAttribute", "<levels divisor>, table \"%s\"",slot);
+        "XmlMissingAttribute","<levels divisor>, table \"%s\"",slot);
       quantization_tables=DestroyXMLTree(quantization_tables);
       table=DestroyQuantizationTable(table);
       xml=DestroyString(xml);
@@ -1826,7 +1826,7 @@ static QuantizationTable *GetQuantizationTable(const char *filename,
   if (table->divisor == 0.0)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-        "XmlInvalidAttribute", "<levels divisor>, table \"%s\"",slot);
+        "XmlInvalidAttribute","<levels divisor>, table \"%s\"",slot);
       quantization_tables=DestroyXMLTree(quantization_tables);
       table=DestroyQuantizationTable(table);
       xml=DestroyString(xml);
@@ -1836,7 +1836,7 @@ static QuantizationTable *GetQuantizationTable(const char *filename,
   if (content == (char *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-        "XmlMissingContent", "<levels>, table \"%s\"",slot);
+        "XmlMissingContent","<levels>, table \"%s\"",slot);
       quantization_tables=DestroyXMLTree(quantization_tables);
       table=DestroyQuantizationTable(table);
       xml=DestroyString(xml);
@@ -1865,7 +1865,7 @@ static QuantizationTable *GetQuantizationTable(const char *filename,
   if (p != content)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-        "XmlInvalidContent", "<level> too many values, table \"%s\"",slot);
+        "XmlInvalidContent","<level> too many values, table \"%s\"",slot);
      quantization_tables=DestroyXMLTree(quantization_tables);
      table=DestroyQuantizationTable(table);
      xml=DestroyString(xml);
