@@ -1,3 +1,7 @@
+2015-11-08  6.9.2-6 Cristy  <quetzlzacatenango@image...>
+  * PixelColor off by one on i386 (reference
+    https://github.com/ImageMagick/ImageMagick/issues/54).
+
 2015-11-03  6.9.2-6 Dirk Lemstra <dirk@lem.....org>
   * Added local contrast enhancement.
   * Fixed bug in SetPixelCacheExtent that made images all black (reference
