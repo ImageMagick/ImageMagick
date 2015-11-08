@@ -2705,7 +2705,7 @@ MagickExport MagickBooleanType QueryMagickColorCompliance(const char *name,
         if (colorspace[i] == '(')
           break;
       colorspace[i--]='\0';
-      scale=(MagickRealType) ScaleCharToQuantum(1);
+      scale=(double) ScaleCharToQuantum(1);
       icc_color=MagickFalse;
       if (LocaleNCompare(colorspace,"device-",7) == 0)
         {
@@ -2724,7 +2724,7 @@ MagickExport MagickBooleanType QueryMagickColorCompliance(const char *name,
               break;
           colorspace[j--]='\0';
           i+=j+3;
-          scale=(MagickRealType) QuantumRange;
+          scale=(double) QuantumRange;
           icc_color=MagickTrue;
         }
       LocaleLower(colorspace);
