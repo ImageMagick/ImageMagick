@@ -457,11 +457,13 @@ static ssize_t PrintChannelStatistics(FILE *file,const ChannelType channel,
 
   if (channel == AlphaChannel)
     {
-      n=FormatLocaleFile(file,StatisticsFormat,name,ClampToQuantum(scale*
-        (QuantumRange-channel_statistics[channel].maxima)),
-        (QuantumRange-channel_statistics[channel].maxima)/(double) QuantumRange,
-        ClampToQuantum(scale*(QuantumRange-channel_statistics[channel].minima)),
-        (QuantumRange-channel_statistics[channel].minima)/(double) QuantumRange,
+      n=FormatLocaleFile(file,StatisticsFormat,name,ClampToQuantum(
+        (MagickRealType) floor(scale*(QuantumRange-
+        channel_statistics[channel].maxima))),(QuantumRange-
+        channel_statistics[channel].maxima)/(double) QuantumRange,
+        ClampToQuantum((MagickRealType) floor(scale*(QuantumRange-
+        channel_statistics[channel].minima))),(QuantumRange-
+        channel_statistics[channel].minima)/(double) QuantumRange,
         scale*(QuantumRange-channel_statistics[channel].mean),(QuantumRange-
         channel_statistics[channel].mean)/(double) QuantumRange,scale*
         channel_statistics[channel].standard_deviation,
@@ -471,13 +473,13 @@ static ssize_t PrintChannelStatistics(FILE *file,const ChannelType channel,
         channel_statistics[channel].entropy);
       return(n);
     }
-  n=FormatLocaleFile(file,StatisticsFormat,name,ClampToQuantum(scale*
-    channel_statistics[channel].minima),channel_statistics[channel].minima/
-    (double) QuantumRange,ClampToQuantum(scale*
-    channel_statistics[channel].maxima),channel_statistics[channel].maxima/
-    (double) QuantumRange,scale*channel_statistics[channel].mean,
-    channel_statistics[channel].mean/(double) QuantumRange,scale*
-    channel_statistics[channel].standard_deviation,
+  n=FormatLocaleFile(file,StatisticsFormat,name,ClampToQuantum((MagickRealType)
+    floor(scale*channel_statistics[channel].minima)),
+    channel_statistics[channel].minima/(double) QuantumRange,ClampToQuantum(
+    (MagickRealType) (scale*channel_statistics[channel].maxima)),
+    channel_statistics[channel].maxima/(double) QuantumRange,scale*
+    channel_statistics[channel].mean,channel_statistics[channel].mean/(double)
+    QuantumRange,scale*channel_statistics[channel].standard_deviation,
     channel_statistics[channel].standard_deviation/(double) QuantumRange,
     channel_statistics[channel].kurtosis,channel_statistics[channel].skewness,
     channel_statistics[channel].entropy);

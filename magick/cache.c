@@ -3447,6 +3447,11 @@ static inline MagickOffsetType WritePixelCacheRegion(
   const CacheInfo *restrict cache_info,const MagickOffsetType offset,
   const MagickSizeType length,const unsigned char *restrict buffer)
 {
+#if !defined(MAGICKCORE_HAVE_PWRITE)
+  MagickOffsetType
+    current_offset;
+#endif
+
   register MagickOffsetType
     i;
 
@@ -3454,6 +3459,9 @@ static inline MagickOffsetType WritePixelCacheRegion(
     count;
 
 #if !defined(MAGICKCORE_HAVE_PWRITE)
+  current_offset=(MagickOffsetType) lseek(cache_info->file,0,SEEK_CUR);
+  if (current_offset < 0)
+    return((MagickOffsetType) -1);
   if (lseek(cache_info->file,offset,SEEK_SET) < 0)
     return((MagickOffsetType) -1);
 #endif
@@ -3461,10 +3469,10 @@ static inline MagickOffsetType WritePixelCacheRegion(
   for (i=0; i < (MagickOffsetType) length; i+=count)
   {
 #if !defined(MAGICKCORE_HAVE_PWRITE)
-    count=write(cache_info->file,buffer+i,(size_t) MagickMin(length-i,
+    count=write(cache_info->file,buffer+i,(size_t) MagickMin(length-i,(size_t)
       SSIZE_MAX));
 #else
-    count=pwrite(cache_info->file,buffer+i,(size_t) MagickMin(length-i,
+    count=pwrite(cache_info->file,buffer+i,(size_t) MagickMin(length-i,(size_t)
       SSIZE_MAX),(off_t) (offset+i));
 #endif
     if (count <= 0)
@@ -3474,6 +3482,10 @@ static inline MagickOffsetType WritePixelCacheRegion(
           break;
       }
   }
+#if !defined(MAGICKCORE_HAVE_PWRITE)
+  if (lseek(cache_info->file,current_offset,SEEK_SET) < 0)
+    return((MagickOffsetType) -1);
+#endif
   return(i);
 }
 
@@ -3508,8 +3520,8 @@ static MagickBooleanType SetPixelCacheExtent(Image *image,MagickSizeType length)
   else
     {
       extent=(MagickOffsetType) length-1;
-      count=WritePixelCacheRegion(cache_info,extent,1,
-        (const unsigned char *) "");
+      count=WritePixelCacheRegion(cache_info,extent,1,(const unsigned char *)
+        "");
 #if defined(MAGICKCORE_HAVE_POSIX_FALLOCATE)
       if (cache_info->synchronize != MagickFalse)
         (void) posix_fallocate(cache_info->file,offset+1,extent-offset);
@@ -4199,6 +4211,11 @@ static inline MagickOffsetType ReadPixelCacheRegion(
   const CacheInfo *restrict cache_info,const MagickOffsetType offset,
   const MagickSizeType length,unsigned char *restrict buffer)
 {
+#if !defined(MAGICKCORE_HAVE_PREAD)
+  MagickOffsetType
+    current_offset;
+#endif
+
   register MagickOffsetType
     i;
 
@@ -4206,6 +4223,9 @@ static inline MagickOffsetType ReadPixelCacheRegion(
     count;
 
 #if !defined(MAGICKCORE_HAVE_PREAD)
+  current_offset=(MagickOffsetType) lseek(cache_info->file,0,SEEK_CUR);
+  if (current_offset < 0)
+    return((MagickOffsetType) -1);
   if (lseek(cache_info->file,offset,SEEK_SET) < 0)
     return((MagickOffsetType) -1);
 #endif
@@ -4213,10 +4233,10 @@ static inline MagickOffsetType ReadPixelCacheRegion(
   for (i=0; i < (MagickOffsetType) length; i+=count)
   {
 #if !defined(MAGICKCORE_HAVE_PREAD)
-    count=read(cache_info->file,buffer+i,(size_t) MagickMin(length-i,
+    count=read(cache_info->file,buffer+i,(size_t) MagickMin(length-i,(size_t)
       SSIZE_MAX));
 #else
-    count=pread(cache_info->file,buffer+i,(size_t) MagickMin(length-i,
+    count=pread(cache_info->file,buffer+i,(size_t) MagickMin(length-i,(size_t)
       SSIZE_MAX),(off_t) (offset+i));
 #endif
     if (count <= 0)
@@ -4226,6 +4246,10 @@ static inline MagickOffsetType ReadPixelCacheRegion(
           break;
       }
   }
+#if !defined(MAGICKCORE_HAVE_PREAD)
+  if (lseek(cache_info->file,current_offset,SEEK_SET) < 0)
+    return((MagickOffsetType) -1);
+#endif
   return(i);
 }
 
@@ -4419,7 +4443,7 @@ static MagickBooleanType ReadPixelCachePixels(CacheInfo *restrict cache_info,
   if (nexus_info->authentic_pixel_cache != MagickFalse)
     return(MagickTrue);
   offset=(MagickOffsetType) nexus_info->region.y*cache_info->columns;
-  if ((offset/(MagickOffsetType) cache_info->columns) != nexus_info->region.y)
+  if ((offset/cache_info->columns) != (MagickOffsetType) nexus_info->region.y)
     return(MagickFalse);
   offset+=nexus_info->region.x;
   length=(MagickSizeType) nexus_info->region.width*sizeof(PixelPacket);

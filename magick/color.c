@@ -2769,18 +2769,20 @@ MagickExport MagickBooleanType QueryMagickColorCompliance(const char *name,
           if ((flags & PercentValue) != 0)
             scale=(MagickRealType) (QuantumRange/100.0);
           if ((flags & RhoValue) != 0)
-            color->red=(MagickRealType) ClampToQuantum(scale*geometry_info.rho);
+            color->red=(MagickRealType) ClampToQuantum((MagickRealType)
+              floor(scale*geometry_info.rho));
           if ((flags & SigmaValue) != 0)
-            color->green=(MagickRealType) ClampToQuantum(scale*
-              geometry_info.sigma);
+            color->green=(MagickRealType) ClampToQuantum((MagickRealType)
+              floor(scale*geometry_info.sigma));
           if ((flags & XiValue) != 0)
-            color->blue=(MagickRealType) ClampToQuantum(scale*geometry_info.xi);
+            color->blue=(MagickRealType) ClampToQuantum((MagickRealType)
+              floor(scale*geometry_info.xi));
           color->opacity=(MagickRealType) OpaqueOpacity;
           if ((flags & PsiValue) != 0)
             {
               if (color->colorspace == CMYKColorspace)
-                color->index=(MagickRealType) ClampToQuantum(scale*
-                  geometry_info.psi);
+                color->index=(MagickRealType) ClampToQuantum((MagickRealType)
+                  floor(scale*geometry_info.psi));
               else
                 if (color->matte != MagickFalse)
                   color->opacity=(MagickRealType) ClampToQuantum(
@@ -2793,11 +2795,11 @@ MagickExport MagickBooleanType QueryMagickColorCompliance(const char *name,
           if (color->colorspace == LabColorspace)
             {
               if ((flags & SigmaValue) != 0)
-                color->green=(MagickRealType) ClampToQuantum(scale*
-                  geometry_info.sigma+(QuantumRange+1)/2.0);
+                color->green=(MagickRealType) ClampToQuantum((MagickRealType)
+                  floor(scale*geometry_info.sigma+(QuantumRange+1)/2.0));
               if ((flags & XiValue) != 0)
-                color->blue=(MagickRealType) ClampToQuantum(scale*
-                  geometry_info.xi+(QuantumRange+1)/2.0);
+                color->blue=(MagickRealType) ClampToQuantum((MagickRealType)
+                  floor(scale*geometry_info.xi+(QuantumRange+1)/2.0));
             }
           if (LocaleCompare(colorspace,"gray") == 0)
             {
