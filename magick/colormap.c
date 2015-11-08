@@ -131,7 +131,7 @@ MagickExport MagickBooleanType AcquireImageColormap(Image *image,
     size_t
       pixel;
 
-    pixel=(size_t) (i*(QuantumRange/(image->colors-1)));
+    pixel=(size_t) (i*(QuantumRange/MagickMax(colors-1,1)));
     image->colormap[i].red=(Quantum) pixel;
     image->colormap[i].green=(Quantum) pixel;
     image->colormap[i].blue=(Quantum) pixel;
