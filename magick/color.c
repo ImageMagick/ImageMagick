@@ -2767,7 +2767,7 @@ MagickExport MagickBooleanType QueryMagickColorCompliance(const char *name,
       else
         {
           if ((flags & PercentValue) != 0)
-            scale=(MagickRealType) (QuantumRange/100.0);
+            scale=(double) (QuantumRange/100.0);
           if ((flags & RhoValue) != 0)
             color->red=(MagickRealType) ClampToQuantum((MagickRealType)
               (scale*geometry_info.rho));
