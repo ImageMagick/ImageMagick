@@ -458,10 +458,10 @@ static ssize_t PrintChannelStatistics(FILE *file,const ChannelType channel,
   if (channel == AlphaChannel)
     {
       n=FormatLocaleFile(file,StatisticsFormat,name,ClampToQuantum(
-        (MagickRealType) floor(scale*(QuantumRange-
+        (MagickRealType) (scale*(QuantumRange-
         channel_statistics[channel].maxima))),(QuantumRange-
         channel_statistics[channel].maxima)/(double) QuantumRange,
-        ClampToQuantum((MagickRealType) floor(scale*(QuantumRange-
+        ClampToQuantum((MagickRealType) (scale*(QuantumRange-
         channel_statistics[channel].minima))),(QuantumRange-
         channel_statistics[channel].minima)/(double) QuantumRange,
         scale*(QuantumRange-channel_statistics[channel].mean),(QuantumRange-
@@ -474,7 +474,7 @@ static ssize_t PrintChannelStatistics(FILE *file,const ChannelType channel,
       return(n);
     }
   n=FormatLocaleFile(file,StatisticsFormat,name,ClampToQuantum((MagickRealType)
-    floor(scale*channel_statistics[channel].minima)),
+    (scale*channel_statistics[channel].minima)),
     channel_statistics[channel].minima/(double) QuantumRange,ClampToQuantum(
     (MagickRealType) (scale*channel_statistics[channel].maxima)),
     channel_statistics[channel].maxima/(double) QuantumRange,scale*
