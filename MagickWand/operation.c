@@ -2156,8 +2156,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
           for (j=0; j < (ssize_t) (kernel_info->width*kernel_info->height); j++)
             kernel_info->values[j]*=gamma;
-          new_image=MorphologyImage(_image,CorrelateMorphology,1,kernel_info,
-            _exception);
+          new_image=ConvolveImage(_image, kernel_info, _exception);
           kernel_info=DestroyKernelInfo(kernel_info);
           break;
         }

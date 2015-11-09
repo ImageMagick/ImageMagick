@@ -783,6 +783,9 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
   Image
     *blur_image;
 
+  if((blur_image=AccelerateBlurImage(image, DefaultChannels, radius, sigma, exception)))
+    return(blur_image);
+
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
@@ -831,6 +834,9 @@ MagickExport Image *ConvolveImage(const Image *image,
 {
   Image
     *convolve_image;
+
+  if((convolve_image=AccelerateConvolveImage(image, DefaultChannels, kernel_info, exception)))
+    return(convolve_image);
 
   convolve_image=MorphologyApply(image,ConvolveMorphology,1,kernel_info,
     UndefinedCompositeOp,0.0,exception);
@@ -994,6 +1000,9 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
   static const ssize_t
     X[4] = {0, 1, 1,-1},
     Y[4] = {1, 0, 1, 1};
+
+  if((despeckle_image=AccelerateDespeckleImage(image, exception)))
+    return(despeckle_image);
 
   /*
     Allocate despeckled image.
@@ -1688,6 +1697,9 @@ MagickExport Image *LocalContrastImage(const Image *image,const double radius,
     scanLineSize,
     thread_count,
     width;
+
+  if((contrast_image=AccelerateLocalContrastImage(image, radius, strength, exception)))
+    return(contrast_image);
 
   /*
     Initialize contrast image attributes.
@@ -2782,6 +2794,9 @@ MagickExport Image *RotationalBlurImage(const Image *image,const double angle,
 
   ssize_t
     y;
+
+  if((blur_image=AccelerateRotationalBlurImage(image, DefaultChannels, angle, exception)))
+    return(blur_image);
 
   /*
     Allocate blur image.
@@ -3878,6 +3893,9 @@ MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
 
   ssize_t
     y;
+
+  if((unsharp_image=AccelerateUnsharpMaskImage(image, DefaultChannels, radius, sigma, gain, threshold, exception)))
+    return unsharp_image;
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickCoreSignature);
