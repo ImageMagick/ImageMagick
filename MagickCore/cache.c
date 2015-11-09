@@ -3246,11 +3246,6 @@ static inline MagickOffsetType WritePixelCacheRegion(
   const CacheInfo *restrict cache_info,const MagickOffsetType offset,
   const MagickSizeType length,const unsigned char *restrict buffer)
 {
-#if !defined(MAGICKCORE_HAVE_PWRITE)
-  MagickOffsetType
-    current_offset;
-#endif
-
   register MagickOffsetType
     i;
 
@@ -3258,9 +3253,6 @@ static inline MagickOffsetType WritePixelCacheRegion(
     count;
 
 #if !defined(MAGICKCORE_HAVE_PWRITE)
-  current_offset=(MagickOffsetType) lseek(cache_info->file,0,SEEK_CUR);
-  if (current_offset < 0)
-    return((MagickOffsetType) -1);
   if (lseek(cache_info->file,offset,SEEK_SET) < 0)
     return((MagickOffsetType) -1);
 #endif
@@ -3281,10 +3273,6 @@ static inline MagickOffsetType WritePixelCacheRegion(
           break;
       }
   }
-#if !defined(MAGICKCORE_HAVE_PWRITE)
-  if (lseek(cache_info->file,current_offset,SEEK_SET) < 0)
-    return((MagickOffsetType) -1);
-#endif
   return(i);
 }
 
@@ -4024,11 +4012,6 @@ static inline MagickOffsetType ReadPixelCacheRegion(
   const CacheInfo *restrict cache_info,const MagickOffsetType offset,
   const MagickSizeType length,unsigned char *restrict buffer)
 {
-#if !defined(MAGICKCORE_HAVE_PREAD)
-  MagickOffsetType
-    current_offset;
-#endif
-
   register MagickOffsetType
     i;
 
@@ -4036,9 +4019,6 @@ static inline MagickOffsetType ReadPixelCacheRegion(
     count;
 
 #if !defined(MAGICKCORE_HAVE_PREAD)
-  current_offset=(MagickOffsetType) lseek(cache_info->file,0,SEEK_CUR);
-  if (current_offset < 0)
-    return((MagickOffsetType) -1);
   if (lseek(cache_info->file,offset,SEEK_SET) < 0)
     return((MagickOffsetType) -1);
 #endif
@@ -4059,10 +4039,6 @@ static inline MagickOffsetType ReadPixelCacheRegion(
           break;
       }
   }
-#if !defined(MAGICKCORE_HAVE_PREAD)
-  if (lseek(cache_info->file,current_offset,SEEK_SET) < 0)
-    return((MagickOffsetType) -1);
-#endif
   return(i);
 }
 
