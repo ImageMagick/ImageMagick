@@ -41,6 +41,7 @@
   Include declarations.
 */
 #include "MagickCore/studio.h"
+#include "MagickCore/accelerate.h"
 #include "MagickCore/annotate.h"
 #include "MagickCore/artifact.h"
 #include "MagickCore/attribute.h"
@@ -299,6 +300,10 @@ MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
+  noise_image=AccelerateAddNoiseImage(image,DefaultChannels,noise_type,
+    exception);
+  if (noise_image != (Image *) NULL)
+    return(noise_image);
   noise_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
   if (noise_image == (Image *) NULL)
     return((Image *) NULL);

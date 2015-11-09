@@ -41,6 +41,7 @@
   Include declarations.
 */
 #include "MagickCore/studio.h"
+#include "MagickCore/accelerate.h"
 #include "MagickCore/artifact.h"
 #include "MagickCore/attribute.h"
 #include "MagickCore/cache.h"
@@ -886,6 +887,8 @@ MagickExport MagickBooleanType ContrastImage(Image *image,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
+  if (AccelerateContrastImage(image,sharpen,exception) != MagickFalse)
+    return(MagickTrue);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   sign=sharpen != MagickFalse ? 1 : -1;
@@ -1522,6 +1525,8 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
+  if (AccelerateEqualizeImage(image,DefaultChannels,exception) != MagickFalse)
+    return(MagickTrue);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   equalize_map=(double *) AcquireQuantumMemory(MaxMap+1UL,
@@ -1956,6 +1961,8 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
+  if (AccelerateGrayscaleImage(image,method,exception) != MagickFalse)
+    return(MagickTrue);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->storage_class == PseudoClass)
@@ -3255,6 +3262,9 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate,
   /*
     Modulate image.
   */
+  if(AccelerateModulateImage(image,percent_brightness,percent_hue,
+     percent_saturation,colorspace,exception) != MagickFalse)
+    return(MagickTrue);
   status=MagickTrue;
   progress=0;
   image_view=AcquireAuthenticCacheView(image,exception);

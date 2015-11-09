@@ -785,6 +785,9 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
+  blur_image=AccelerateBlurImage(image,DefaultChannels,radius,sigma,exception);
+  if (blur_image != (Image *) NULL)
+    return(blur_image);
   (void) FormatLocaleString(geometry,MagickPathExtent,
     "blur:%.20gx%.20g;blur:%.20gx%.20g+90",radius,sigma,radius,sigma);
   kernel_info=AcquireKernelInfo(geometry,exception);
@@ -827,6 +830,11 @@ MagickExport Image *ConvolveImage(const Image *image,
 {
   Image
     *convolve_image;
+
+  convolve_image=AccelerateConvolveImage(image,DefaultChannels,kernel_info,
+    exception);
+  if (convolve_image != (Image *) NULL)
+    return(convolve_image);
 
   convolve_image=MorphologyImage(image,ConvolveMorphology,1,kernel_info,
     exception);
@@ -1000,6 +1008,9 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
+  despeckle_image=AccelerateDespeckleImage(image,exception);
+  if (despeckle_image != (Image *) NULL)
+    return(despeckle_image);
   despeckle_image=CloneImage(image,0,0,MagickTrue,exception);
   if (despeckle_image == (Image *) NULL)
     return((Image *) NULL);
@@ -2788,6 +2799,10 @@ MagickExport Image *RotationalBlurImage(const Image *image,const double angle,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
+  blur_image=AccelerateRotationalBlurImage(image,DefaultChannels,angle,
+    exception);
+  if (blur_image != (Image *) NULL)
+    return(blur_image);
   blur_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
   if (blur_image == (Image *) NULL)
     return((Image *) NULL);
@@ -3880,6 +3895,10 @@ MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
+  unsharp_image=AccelerateUnsharpMaskImage(image,DefaultChannels,radius,sigma,
+    gain,threshold,exception);
+  if (unsharp_image != (Image *) NULL)
+    return(unsharp_image);
   unsharp_image=BlurImage(image,radius,sigma,exception);
   if (unsharp_image == (Image *) NULL)
     return((Image *) NULL);
