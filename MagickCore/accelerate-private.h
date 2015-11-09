@@ -660,8 +660,8 @@ const char* accelerateKernels =
                                         const ChannelType channel, const MagickFunction function,
                                         const unsigned int number_parameters, __constant float *parameters)
       {
-        const int x = get_global_id(0);  
-        const int y = get_global_id(1);  
+        const int x = get_global_id(0);
+        const int y = get_global_id(1);
         const int columns = get_global_size(0);  
         const int c = x + y * columns;
         im[c] = ApplyFunction(im[c], function, number_parameters, parameters); 

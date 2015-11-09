@@ -783,6 +783,9 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
   Image
     *blur_image;
 
+  if((blur_image=AccelerateBlurImage(image, DefaultChannels, radius, sigma, exception)))
+    return(blur_image);
+
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
@@ -794,8 +797,7 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
   kernel_info=AcquireKernelInfo(geometry,exception);
   if (kernel_info == (KernelInfo *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
-  blur_image=MorphologyApply(image,ConvolveMorphology,1,kernel_info,
-    UndefinedCompositeOp,0.0,exception);
+  blur_image=ConvolveImage(image, kernel_info, exception);
   kernel_info=DestroyKernelInfo(kernel_info);
   return(blur_image);
 }
@@ -832,6 +834,9 @@ MagickExport Image *ConvolveImage(const Image *image,
 {
   Image
     *convolve_image;
+
+  if((convolve_image=AccelerateConvolveImageChannel(image, DefaultChannels, kernel_info, exception)))
+    return(convolve_image);
 
   convolve_image=MorphologyApply(image,ConvolveMorphology,1,kernel_info,
     UndefinedCompositeOp,0.0,exception);
@@ -994,6 +999,9 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
   static const ssize_t
     X[4] = {0, 1, 1,-1},
     Y[4] = {1, 0, 1, 1};
+
+  if((despeckle_image=AccelerateDespeckleImage(image, exception)))
+    return(despeckle_image);
 
   /*
     Allocate despeckled image.
@@ -1212,8 +1220,7 @@ MagickExport Image *EdgeImage(const Image *image,const double radius,
   for (i=0; i < (ssize_t) (kernel_info->width*kernel_info->height); i++)
     kernel_info->values[i]=(-1.0);
   kernel_info->values[i/2]=(double) kernel_info->width*kernel_info->height-1.0;
-  edge_image=MorphologyApply(image,ConvolveMorphology,1,kernel_info,
-    UndefinedCompositeOp,0.0,exception);
+  edge_image=ConvolveImage(image, kernel_info, exception);
   kernel_info=DestroyKernelInfo(kernel_info);
   return(edge_image);
 }
@@ -1320,8 +1327,7 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
   gamma=PerceptibleReciprocal(normalize);
   for (i=0; i < (ssize_t) (kernel_info->width*kernel_info->height); i++)
     kernel_info->values[i]*=gamma;
-  emboss_image=MorphologyApply(image,ConvolveMorphology,1,kernel_info,
-    UndefinedCompositeOp,0.0,exception);
+  emboss_image=ConvolveImage(image, kernel_info, exception);
   kernel_info=DestroyKernelInfo(kernel_info);
   if (emboss_image != (Image *) NULL)
     (void) EqualizeImage(emboss_image,exception);
@@ -1384,8 +1390,7 @@ MagickExport Image *GaussianBlurImage(const Image *image,const double radius,
   kernel_info=AcquireKernelInfo(geometry,exception);
   if (kernel_info == (KernelInfo *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
-  blur_image=MorphologyApply(image,ConvolveMorphology,1,kernel_info,
-    UndefinedCompositeOp,0.0,exception);
+  blur_image=ConvolveImage(image, kernel_info, exception);
   kernel_info=DestroyKernelInfo(kernel_info);
   return(blur_image);
 }
@@ -1691,6 +1696,9 @@ MagickExport Image *LocalContrastImage(const Image *image,const double radius,
     scanLineSize,
     thread_count,
     width;
+
+  if((contrast_image=AccelerateLocalContrastImage(image, radius, strength, exception)))
+    return(contrast_image);
 
   /*
     Initialize contrast image attributes.
@@ -2785,6 +2793,9 @@ MagickExport Image *RotationalBlurImage(const Image *image,const double angle,
   ssize_t
     y;
 
+  if((blur_image=AccelerateRotationalBlurImage(image, DefaultChannels, angle, exception)))
+    return(blur_image);
+
   /*
     Allocate blur image.
   */
@@ -3661,8 +3672,7 @@ MagickExport Image *SharpenImage(const Image *image,const double radius,
   gamma=PerceptibleReciprocal(normalize);
   for (i=0; i < (ssize_t) (kernel_info->width*kernel_info->height); i++)
     kernel_info->values[i]*=gamma;
-  sharp_image=MorphologyApply(image,ConvolveMorphology,1,kernel_info,
-    UndefinedCompositeOp,0.0,exception);
+  sharp_image=ConvolveImage(image, kernel_info, exception);
   kernel_info=DestroyKernelInfo(kernel_info);
   return(sharp_image);
 }
@@ -3881,6 +3891,9 @@ MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
 
   ssize_t
     y;
+
+  if((unsharp_image=AccelerateUnsharpMaskImage(image, DefaultChannels, radius, sigma, gain, threshold, exception)))
+    return unsharp_image;
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickCoreSignature);
