@@ -3137,11 +3137,15 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   subtype,
                   type;
 
-                type=0;
+                type=1;
                 subtype=0;
-                count=sscanf(transfer_syntax+17,".%d.%d",&type,&subtype);
-                if (count < 1)
-                  ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+                if (strlen(transfer_syntax) > 17)
+                  {
+                    count=sscanf(transfer_syntax+17,".%d.%d",&type,&subtype);
+                    if (count < 1)
+                      ThrowReaderException(CorruptImageError,
+                        "ImproperImageHeader");
+                  }
                 switch (type)
                 {
                   case 1:

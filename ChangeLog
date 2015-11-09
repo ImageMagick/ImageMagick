@@ -6,6 +6,8 @@
   * Added local contrast enhancement.
   * Fixed bug in SetPixelCacheExtent that made images all black (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=28514).
+  * Added support for reading DICOM images with implicit vr little-endian
+    transfer syntax.
 
 2015-11-02  6.9.2-6 Samuel Thibault <samuel.thibault@...org> 
   * Added 6dot variant for unicode and iso braille formats (reference
