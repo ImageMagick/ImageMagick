@@ -3963,8 +3963,9 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   else
                     if ((bits_allocated != 12) || (significant_bits != 12))
                       {
-                        pixel_value=(int) (polarity != MagickFalse ? (max_value-                            ReadDCMShort(stream_info,image)) :
-                            ReadDCMShort(stream_info,image));
+                        pixel_value=(int) (polarity != MagickFalse ?
+                          (max_value-ReadDCMShort(stream_info,image)) :
+                          ReadDCMShort(stream_info,image));
                         if (signed_data == 1)
                           pixel_value=((signed short) pixel_value);
                       }
