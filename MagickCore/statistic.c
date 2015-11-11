@@ -1008,7 +1008,7 @@ MagickExport MagickBooleanType FunctionImage(Image *image,
   ssize_t
     y;
 
-  if(AccelerateFunctionImage(image, DefaultChannels, function, number_parameters, parameters, exception) == MagickTrue)
+  if(AccelerateFunctionImage(image, AllChannels & ~AlphaChannel, function, number_parameters, parameters, exception) == MagickTrue)
     return(MagickTrue);
 
   assert(image != (Image *) NULL);

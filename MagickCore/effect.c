@@ -783,7 +783,7 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
   Image
     *blur_image;
 
-  if((blur_image=AccelerateBlurImage(image, DefaultChannels, radius, sigma, exception)))
+  if((blur_image=AccelerateBlurImage(image, AllChannels & ~AlphaChannel, radius, sigma, exception)))
     return(blur_image);
 
   assert(image != (const Image *) NULL);
@@ -835,7 +835,7 @@ MagickExport Image *ConvolveImage(const Image *image,
   Image
     *convolve_image;
 
-  if((convolve_image=AccelerateConvolveImageChannel(image, DefaultChannels, kernel_info, exception)))
+  if((convolve_image=AccelerateConvolveImageChannel(image, AllChannels & ~AlphaChannel, kernel_info, exception)))
     return(convolve_image);
 
   convolve_image=MorphologyApply(image,ConvolveMorphology,1,kernel_info,
@@ -2793,7 +2793,7 @@ MagickExport Image *RotationalBlurImage(const Image *image,const double angle,
   ssize_t
     y;
 
-  if((blur_image=AccelerateRotationalBlurImage(image, DefaultChannels, angle, exception)))
+  if((blur_image=AccelerateRotationalBlurImage(image, AllChannels & ~AlphaChannel, angle, exception)))
     return(blur_image);
 
   /*
@@ -3892,7 +3892,7 @@ MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
   ssize_t
     y;
 
-  if((unsharp_image=AccelerateUnsharpMaskImage(image, DefaultChannels, radius, sigma, gain, threshold, exception)))
+  if((unsharp_image=AccelerateUnsharpMaskImage(image, AllChannels & ~AlphaChannel, radius, sigma, gain, threshold, exception)))
     return unsharp_image;
 
   assert(image != (const Image *) NULL);

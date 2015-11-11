@@ -1521,7 +1521,7 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
   ssize_t
     y;
 
-  if(AccelerateEqualizeImage(image, DefaultChannels, exception) == MagickTrue)
+  if(AccelerateEqualizeImage(image, AllChannels & ~AlphaChannel, exception) == MagickTrue)
     return(MagickTrue);
 
   /*

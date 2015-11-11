@@ -286,7 +286,7 @@ MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
   ssize_t
     y;
 
-  if((noise_image=AccelerateAddNoiseImage(image, DefaultChannels, noise_type, exception)))
+  if((noise_image=AccelerateAddNoiseImage(image, AllChannels & ~AlphaChannel, noise_type, exception)))
     return(noise_image);
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
