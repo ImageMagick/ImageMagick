@@ -33,7 +33,7 @@ extern MagickExport MagickBooleanType
     const Image *,const ssize_t,const ssize_t,const float,const float,
     ExceptionInfo *),
   AccelerateContrastImage(Image *,const MagickBooleanType,ExceptionInfo *),
-  AccelerateContrastStretchImageChannel(Image *, const ChannelType,
+  AccelerateContrastStretchImage(Image *, const ChannelType,
     const double,const double,ExceptionInfo*),
   AccelerateEqualizeImage(Image *,const ChannelType,ExceptionInfo *),
   AccelerateFunctionImage(Image *,const ChannelType,const MagickFunction,
