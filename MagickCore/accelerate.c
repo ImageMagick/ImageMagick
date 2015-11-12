@@ -7309,7 +7309,7 @@ MagickExport MagickBooleanType AccelerateContrastStretchImage(
   return(MagickFalse);
 }
 
-MagickExport Image *AccelerateConvolveImageChannel(
+MagickExport Image *AccelerateConvolveImage(
   const Image *magick_unused(image),const ChannelType magick_unused(channel),
   const KernelInfo *magick_unused(kernel),
   ExceptionInfo *magick_unused(exception))

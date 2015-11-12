@@ -198,6 +198,20 @@ const char* accelerateKernels =
 
   STRINGIFY(
     typedef enum
+    {
+      UndefinedNoise,
+      UniformNoise,
+      GaussianNoise,
+      MultiplicativeGaussianNoise,
+      ImpulseNoise,
+      LaplacianNoise,
+      PoissonNoise,
+      RandomNoise
+    } NoiseType;
+  )
+
+  STRINGIFY(
+    typedef enum
   {
     UndefinedPixelIntensityMethod = 0,
     AveragePixelIntensityMethod,
@@ -605,18 +619,6 @@ uint MWC64X_NextUint(mwc64x_state_t *s)
 //
 // End of MWC64X excerpt
 //
-
-  typedef enum
-  {
-    UndefinedNoise,
-    UniformNoise,
-    GaussianNoise,
-    MultiplicativeGaussianNoise,
-    ImpulseNoise,
-    LaplacianNoise,
-    PoissonNoise,
-    RandomNoise
-  } NoiseType;
 
   float mwcReadPseudoRandomValue(mwc64x_state_t* rng) {
 	return (1.0f * MWC64X_NextUint(rng)) / (float)(0xffffffff);	// normalized to 1.0
@@ -1531,6 +1533,17 @@ uint MWC64X_NextUint(mwc64x_state_t *s)
       }
     )
 
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%    C o n v o l v e                                                          %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+*/
 
   STRINGIFY(
     __kernel 
@@ -1654,18 +1667,6 @@ uint MWC64X_NextUint(mwc64x_state_t *s)
       output[imageIndex.y * imageWidth + imageIndex.x] = outputPixel;
     }
   )
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%    C o n v o l v e                                                          %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-*/
 
   STRINGIFY(
     __kernel 
