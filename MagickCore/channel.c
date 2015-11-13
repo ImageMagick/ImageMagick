@@ -1148,6 +1148,8 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
     }
     case DiscreteAlphaChannel:
     {
+      if (image->alpha_trait == UndefinedPixelTrait)
+        status=SetImageAlpha(image,OpaqueAlpha,exception);
       image->alpha_trait=UpdatePixelTrait;
       break;
     }
