@@ -725,12 +725,8 @@ uint MWC64X_NextUint(mwc64x_state_t *s)
     return noise;
   }
 
-
-
-
-
   __kernel
-  void GenerateNoiseImage(const __global CLPixelType* inputImage, __global CLPixelType* filteredImage
+  void AddNoise(const __global CLPixelType* inputImage, __global CLPixelType* filteredImage
                     ,const unsigned int inputPixelCount, const unsigned int pixelsPerWorkItem
                     ,const ChannelType channel 
                     ,const NoiseType noise_type, const float attenuate
@@ -1484,7 +1480,7 @@ uint MWC64X_NextUint(mwc64x_state_t *s)
     STRINGIFY(
     /*
     */
-    __kernel void Stretch(__global CLPixelType * restrict im,
+    __kernel void ContrastStretch(__global CLPixelType * restrict im,
       const ChannelType channel,  
       __global CLPixelType * restrict stretch_map,
       const float4 white, const float4 black)
@@ -2101,7 +2097,7 @@ uint MWC64X_NextUint(mwc64x_state_t *s)
     number_parameters : numbers of parameters 
     parameters : the parameter
     */
-    __kernel void FunctionImage(__global CLPixelType *im,
+    __kernel void ComputeFunction(__global CLPixelType *im,
                                         const ChannelType channel, const MagickFunction function,
                                         const unsigned int number_parameters, __constant float *parameters)
       {
