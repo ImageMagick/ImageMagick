@@ -29,14 +29,18 @@ extern "C" {
 #endif
 
 #if !defined(MAGICKCORE_OPENCL_SUPPORT)
-  typedef void* cl_platform_id;
-  typedef void* cl_device_id;
   typedef void* cl_context;
   typedef void* cl_command_queue;
+  typedef void* cl_device_id;
+  typedef void* cl_event;
   typedef void* cl_kernel;
   typedef void* cl_mem;
+  typedef void* cl_platform_id;
   typedef struct { unsigned char t[8]; } cl_device_type; /* 64-bit */
 #else
+
+#define MAX_COMMAND_QUEUES 8
+
 /*
  *
  * function pointer typedefs
@@ -218,6 +222,20 @@ typedef CL_API_ENTRY cl_int (CL_API_CALL *MAGICKpfn_clEnqueueNDRangeKernel)(
     const cl_event * event_wait_list,
     cl_event *       event) CL_API_SUFFIX__VERSION_1_0;
 
+typedef CL_API_ENTRY cl_int(CL_API_CALL *MAGICKpfn_clGetEventProfilingInfo)(
+    cl_event event,
+    cl_profiling_info param_name,
+    size_t param_value_size,
+    void *param_value,
+    size_t *param_value_size_ret) CL_API_SUFFIX__VERSION_1_0;
+
+typedef CL_API_ENTRY cl_int(CL_API_CALL *MAGICKpfn_clWaitForEvents)(
+    cl_uint num_events,
+    const cl_event *event_list) CL_API_SUFFIX__VERSION_1_0;
+
+typedef CL_API_ENTRY cl_int(CL_API_CALL *MAGICKpfn_clReleaseEvent)(
+    cl_event event) CL_API_SUFFIX__VERSION_1_0;
+
 /*
  *
  * vendor dispatch table structure
@@ -258,6 +276,9 @@ struct MagickLibraryRec
   MAGICKpfn_clEnqueueMapBuffer                       clEnqueueMapBuffer;
   MAGICKpfn_clEnqueueUnmapMemObject                  clEnqueueUnmapMemObject;
   MAGICKpfn_clEnqueueNDRangeKernel                   clEnqueueNDRangeKernel;
+  MAGICKpfn_clGetEventProfilingInfo                  clGetEventProfilingInfo;
+  MAGICKpfn_clWaitForEvents                          clWaitForEvents;
+  MAGICKpfn_clReleaseEvent                           clReleaseEvent;
 };
 
 struct _MagickCLEnv {
@@ -284,6 +305,10 @@ struct _MagickCLEnv {
   SemaphoreInfo* seedsLock;
 
   SemaphoreInfo* lock;
+
+  cl_command_queue commandQueues[MAX_COMMAND_QUEUES];
+  ssize_t commandQueuesPos;
+  SemaphoreInfo* commandQueuesLock;
 };
 
 #endif
@@ -325,6 +350,33 @@ struct _MagickCLEnv {
 #define CLCharQuantumScale 72340172838076673.0f
 #endif
 
+typedef enum {
+  AddNoiseKernel,
+  BlurRowKernel,
+  BlurColumnKernel,
+  CompositeKernel,
+  ComputeFunctionKernel,
+  ContrastKernel,
+  ContrastStretchKernel,
+  ConvolveKernel,
+  EqualizeKernel,
+  GrayScaleKernel,
+  HistogramKernel,
+  HullPass1Kernel,
+  HullPass2Kernel,
+  LocalContrastBlurRowKernel,
+  LocalContrastBlurApplyColumnKernel,
+  ModulateKernel,
+  MotionBlurKernel,
+  RadialBlurKernel,
+  RandomNumberGeneratorKernel,
+  ResizeHorizontalKernel,
+  ResizeVerticalKernel,
+  UnsharpMaskBlurColumnKernel,
+  UnsharpMaskKernel,
+  KERNEL_COUNT
+} ProfiledKernels;
+
 extern MagickPrivate cl_context 
   GetOpenCLContext(MagickCLEnv);
 
@@ -349,8 +401,8 @@ extern MagickPrivate const char*
   GetOpenCLCachedFilesDirectory();
 
 extern MagickPrivate void
-  UnlockRandSeedBuffer(MagickCLEnv),
-  OpenCLLog(const char*);
+  OpenCLLog(const char*),
+  UnlockRandSeedBuffer(MagickCLEnv);
 
 extern MagickPrivate cl_mem 
   GetAndLockRandSeedBuffer(MagickCLEnv);
@@ -359,20 +411,11 @@ extern MagickPrivate unsigned int
   GetNumRandGenerators(MagickCLEnv);
 
 extern MagickPrivate float 
-  GetRandNormalize(MagickCLEnv clEnv);
+  GetRandNormalize(MagickCLEnv);
 
-typedef struct _AccelerateTimer {
-  long long _freq;	
-  long long _clocks;
-  long long _start;
-} AccelerateTimer;
-
-
-void startAccelerateTimer(AccelerateTimer* timer);
-void stopAccelerateTimer(AccelerateTimer* timer);
-void resetAccelerateTimer(AccelerateTimer* timer);
-void initAccelerateTimer(AccelerateTimer* timer);
-double readAccelerateTimer(AccelerateTimer* timer);
+extern MagickPrivate void
+  OpenCLTerminus(),
+  RecordProfileData(ProfiledKernels,cl_event);
 
 /* #define OPENCLLOG_ENABLED 1 */
 static inline void OpenCLLogException(const char* function, 

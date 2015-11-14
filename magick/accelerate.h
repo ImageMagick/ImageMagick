@@ -28,21 +28,6 @@
 extern "C" {
 #endif
 
-extern MagickExport MagickBooleanType
-  AccelerateCompositeImage(Image *,const ChannelType,const CompositeOperator,
-    const Image *,const ssize_t,const ssize_t,const float,const float,ExceptionInfo *),
-  AccelerateContrastImage(Image *,const MagickBooleanType,ExceptionInfo *),
-  AccelerateContrastStretchImageChannel(Image *, const ChannelType, const double, const double, 
-    ExceptionInfo*),
-  AccelerateEqualizeImage(Image *,const ChannelType,ExceptionInfo *),
-  AccelerateFunctionImage(Image *,const ChannelType,const MagickFunction,
-    const size_t,const double *,ExceptionInfo *),
-  AccelerateGrayscaleImage(Image*, const PixelIntensityMethod,
-    ExceptionInfo *),
-  AccelerateModulateImage(Image*, double, double, double, 
-    ColorspaceType, ExceptionInfo*),
-  AccelerateRandomImage(Image*, ExceptionInfo*);
-
 extern MagickExport Image
   *AccelerateAddNoiseImage(const Image*,const ChannelType,const NoiseType,
     ExceptionInfo *),
@@ -61,6 +46,21 @@ extern MagickExport Image
     const ResizeFilter *,ExceptionInfo *),
   *AccelerateUnsharpMaskImage(const Image *,const ChannelType,const double,
     const double,const double,const double,ExceptionInfo *);
+
+extern MagickExport MagickBooleanType
+  AccelerateCompositeImage(Image *,const ChannelType,const CompositeOperator,
+    const Image *,const ssize_t,const ssize_t,const float,const float,ExceptionInfo *),
+  AccelerateContrastImage(Image *,const MagickBooleanType,ExceptionInfo *),
+  AccelerateContrastStretchImageChannel(Image *, const ChannelType, const double, const double, 
+    ExceptionInfo*),
+  AccelerateEqualizeImage(Image *,const ChannelType,ExceptionInfo *),
+  AccelerateFunctionImage(Image *,const ChannelType,const MagickFunction,
+    const size_t,const double *,ExceptionInfo *),
+  AccelerateGrayscaleImage(Image*, const PixelIntensityMethod,
+    ExceptionInfo *),
+  AccelerateModulateImage(Image*, double, double, double, 
+    ColorspaceType, ExceptionInfo*),
+  AccelerateRandomImage(Image*, ExceptionInfo*);
 
 /* legacy, do not use */
 extern MagickExport MagickBooleanType
