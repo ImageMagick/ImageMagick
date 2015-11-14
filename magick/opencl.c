@@ -183,14 +183,13 @@ double readAccelerateTimer(AccelerateTimer* timer) {
   return (double)timer->_clocks/(double)timer->_freq;
 };
 
-MagickPrivate void RecordProfileData(ProfiledKernels kernel, cl_event event)
+MagickPrivate void RecordProfileData(MagickCLEnv clEnv, ProfiledKernels kernel, cl_event event)
 {
 #if PROFILE_OCL_KERNELS
   cl_int status;
   cl_ulong start = 0;
   cl_ulong end = 0;
   cl_ulong elapsed = 0;
-  MagickCLEnv clEnv = GetDefaultOpenCLEnv();
   clEnv->library->clWaitForEvents(1, &event);
   status = clEnv->library->clGetEventProfilingInfo(event, CL_PROFILING_COMMAND_START, sizeof(cl_ulong), &start, NULL);
   status &= clEnv->library->clGetEventProfilingInfo(event, CL_PROFILING_COMMAND_END, sizeof(cl_ulong), &end, NULL);
@@ -198,14 +197,15 @@ MagickPrivate void RecordProfileData(ProfiledKernels kernel, cl_event event)
     start /= 1000;	// usecs
     end /= 1000;	// usecs
     elapsed = end - start;
-    LockSemaphoreInfo(clEnv->lock);
+    /* we can use the commandQueuesLock to make the code below thread safe */
+    LockSemaphoreInfo(clEnv->commandQueuesLock);
     if ((elapsed < profileRecords[kernel].min) || (profileRecords[kernel].count == 0))
       profileRecords[kernel].min = elapsed;
     if (elapsed > profileRecords[kernel].max)
       profileRecords[kernel].max = elapsed;
     profileRecords[kernel].total += elapsed;
     profileRecords[kernel].count += 1;
-    UnlockSemaphoreInfo(clEnv->lock);
+    UnlockSemaphoreInfo(clEnv->commandQueuesLock);
   }
 #endif
 }

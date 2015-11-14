@@ -415,7 +415,7 @@ extern MagickPrivate float
 
 extern MagickPrivate void
   OpenCLTerminus(),
-  RecordProfileData(ProfiledKernels,cl_event);
+  RecordProfileData(MagickCLEnv,ProfiledKernels,cl_event);
 
 /* #define OPENCLLOG_ENABLED 1 */
 static inline void OpenCLLogException(const char* function, 

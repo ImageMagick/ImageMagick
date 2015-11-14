@@ -469,7 +469,7 @@ static Image *ComputeAddNoiseImage(const Image *image,
 
   clEnv->library->clEnqueueNDRangeKernel(queue,addNoiseKernel,1,NULL,global_work_size,NULL,0,NULL,&event);
 
-  RecordProfileData(AddNoiseKernel, event);
+  RecordProfileData(clEnv,AddNoiseKernel,event);
   clEnv->library->clReleaseEvent(event);
 
   if (ALIGNED(filteredPixels,CLPixelPacket)) 
@@ -799,7 +799,7 @@ static Image *ComputeBlurImage(const Image* image,const ChannelType channel,
         }
         clEnv->library->clFlush(queue);
 
-        RecordProfileData(BlurRowKernel, event);
+        RecordProfileData(clEnv,BlurRowKernel,event);
         clEnv->library->clReleaseEvent(event);
       }
     }
@@ -847,7 +847,7 @@ static Image *ComputeBlurImage(const Image* image,const ChannelType channel,
           goto cleanup;
         }
         clEnv->library->clFlush(queue);
-        RecordProfileData(BlurColumnKernel, event);
+        RecordProfileData(clEnv,BlurColumnKernel,event);
         clEnv->library->clReleaseEvent(event);
       }
     }
@@ -1166,7 +1166,7 @@ static Image* ComputeBlurImageSection(const Image* image,
             goto cleanup;
           }
           clEnv->library->clFlush(queue);
-          RecordProfileData(BlurRowKernel, event);
+          RecordProfileData(clEnv,BlurRowKernel,event);
           clEnv->library->clReleaseEvent(event);
         }
       }
@@ -1222,7 +1222,7 @@ static Image* ComputeBlurImageSection(const Image* image,
             goto cleanup;
           }
           clEnv->library->clFlush(queue);
-          RecordProfileData(BlurColumnKernel, event);
+          RecordProfileData(clEnv,BlurColumnKernel,event);
           clEnv->library->clReleaseEvent(event);
         }
       }
@@ -1378,7 +1378,7 @@ static MagickBooleanType LaunchCompositeKernel(MagickCLEnv clEnv,
   clStatus = clEnv->library->clEnqueueNDRangeKernel(queue, compositeKernel, 2, NULL,
     global_work_size, local_work_size, 0, NULL, &event);
 
-  RecordProfileData(CompositeKernel, event);
+  RecordProfileData(clEnv,CompositeKernel,event);
   clEnv->library->clReleaseEvent(event);
 
   RelinquishOpenCLKernel(clEnv, compositeKernel);
@@ -1709,7 +1709,7 @@ static MagickBooleanType ComputeContrastImage(Image *image,
     goto cleanup;
   }
   clEnv->library->clFlush(queue);
-  RecordProfileData(ContrastKernel, event);
+  RecordProfileData(clEnv,ContrastKernel,event);
   clEnv->library->clReleaseEvent(event);
 
   if (ALIGNED(inputPixels,CLPixelPacket)) 
@@ -1832,7 +1832,7 @@ static MagickBooleanType LaunchHistogramKernel(MagickCLEnv clEnv,
     goto cleanup;
   }
   clEnv->library->clFlush(queue);
-  RecordProfileData(HistogramKernel, event);
+  RecordProfileData(clEnv,HistogramKernel,event);
   clEnv->library->clReleaseEvent(event);
 
   outputReady = MagickTrue;
@@ -2369,7 +2369,7 @@ MagickExport MagickBooleanType ComputeContrastStretchImageChannel(Image *image,
     goto cleanup;
   }
   clEnv->library->clFlush(queue);
-  RecordProfileData(ContrastStretchKernel, event);
+  RecordProfileData(clEnv,ContrastStretchKernel,event);
   clEnv->library->clReleaseEvent(event);
 
   /* read the data back */
@@ -2693,7 +2693,7 @@ static Image *ComputeConvolveImage(const Image* image,
       (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
       goto cleanup;
     }
-    RecordProfileData(ConvolveKernel, event);
+    RecordProfileData(clEnv,ConvolveKernel,event);
     clEnv->library->clReleaseEvent(event);
   }
   else
@@ -2739,7 +2739,7 @@ static Image *ComputeConvolveImage(const Image* image,
       (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
       goto cleanup;
     }
-    RecordProfileData(ConvolveKernel, event);
+    RecordProfileData(clEnv,ConvolveKernel,event);
     clEnv->library->clReleaseEvent(event);
   }
   clEnv->library->clFlush(queue);
@@ -3037,7 +3037,7 @@ static Image *ComputeDespeckleImage(const Image *image,
       (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
       goto cleanup;
     }
-    RecordProfileData(HullPass1Kernel, event);
+    RecordProfileData(clEnv,HullPass1Kernel,event);
     clEnv->library->clReleaseEvent(event);
     /* launch the kernel */
     clStatus = clEnv->library->clEnqueueNDRangeKernel(queue, hullPass2, 2, NULL, global_work_size, NULL, 0, NULL, &event);
@@ -3046,7 +3046,7 @@ static Image *ComputeDespeckleImage(const Image *image,
       (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
       goto cleanup;
     }
-    RecordProfileData(HullPass2Kernel, event);
+    RecordProfileData(clEnv,HullPass2Kernel,event);
     clEnv->library->clReleaseEvent(event);
 
 
@@ -3071,7 +3071,7 @@ static Image *ComputeDespeckleImage(const Image *image,
       (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
       goto cleanup;
     }
-    RecordProfileData(HullPass1Kernel, event);
+    RecordProfileData(clEnv,HullPass1Kernel,event);
     clEnv->library->clReleaseEvent(event);
     /* launch the kernel */
     clStatus = clEnv->library->clEnqueueNDRangeKernel(queue, hullPass2, 2, NULL, global_work_size, NULL, 0, NULL, &event);
@@ -3080,7 +3080,7 @@ static Image *ComputeDespeckleImage(const Image *image,
       (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
       goto cleanup;
     }
-    RecordProfileData(HullPass2Kernel, event);
+    RecordProfileData(clEnv,HullPass2Kernel,event);
     clEnv->library->clReleaseEvent(event);
 
     offset.s[0] = -X[k];
@@ -3102,7 +3102,7 @@ static Image *ComputeDespeckleImage(const Image *image,
       (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
       goto cleanup;
     }
-    RecordProfileData(HullPass1Kernel, event);
+    RecordProfileData(clEnv,HullPass1Kernel,event);
     clEnv->library->clReleaseEvent(event);
     /* launch the kernel */
     clStatus = clEnv->library->clEnqueueNDRangeKernel(queue, hullPass2, 2, NULL, global_work_size, NULL, 0, NULL, &event);
@@ -3111,7 +3111,7 @@ static Image *ComputeDespeckleImage(const Image *image,
       (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
       goto cleanup;
     }
-    RecordProfileData(HullPass2Kernel, event);
+    RecordProfileData(clEnv,HullPass2Kernel,event);
     clEnv->library->clReleaseEvent(event);
 
     offset.s[0] = X[k];
@@ -3137,7 +3137,7 @@ static Image *ComputeDespeckleImage(const Image *image,
       (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
       goto cleanup;
     }
-    RecordProfileData(HullPass1Kernel, event);
+    RecordProfileData(clEnv,HullPass1Kernel,event);
     clEnv->library->clReleaseEvent(event);
     /* launch the kernel */
     clStatus = clEnv->library->clEnqueueNDRangeKernel(queue, hullPass2, 2, NULL, global_work_size, NULL, 0, NULL, &event);
@@ -3146,7 +3146,7 @@ static Image *ComputeDespeckleImage(const Image *image,
       (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
       goto cleanup;
     }
-    RecordProfileData(HullPass2Kernel, event);
+    RecordProfileData(clEnv,HullPass2Kernel,event);
     clEnv->library->clReleaseEvent(event);
   }
 
@@ -3601,7 +3601,7 @@ MagickExport MagickBooleanType ComputeEqualizeImage(Image *image,
     goto cleanup;
   }
   clEnv->library->clFlush(queue);
-  RecordProfileData(EqualizeKernel, event);
+  RecordProfileData(clEnv,EqualizeKernel,event);
   clEnv->library->clReleaseEvent(event);
 
   /* read the data back */
@@ -3833,7 +3833,7 @@ static MagickBooleanType ComputeFunctionImage(Image *image,
     goto cleanup;
   }
   clEnv->library->clFlush(queue);
-  RecordProfileData(ComputeFunctionKernel, event);
+  RecordProfileData(clEnv,ComputeFunctionKernel,event);
   clEnv->library->clReleaseEvent(event);
 
   if (ALIGNED(pixels,CLPixelPacket)) 
@@ -4026,7 +4026,7 @@ MagickBooleanType ComputeGrayscaleImage(Image *image,
       goto cleanup;
     }
     clEnv->library->clFlush(queue);
-    RecordProfileData(GrayScaleKernel, event);
+    RecordProfileData(clEnv,GrayScaleKernel,event);
     clEnv->library->clReleaseEvent(event);
   }
 
@@ -4316,7 +4316,7 @@ static Image *ComputeLocalContrastImage(const Image *image,
           (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
           goto cleanup;
         }
-        RecordProfileData(LocalContrastBlurRowKernel, event);
+        RecordProfileData(clEnv,LocalContrastBlurRowKernel,event);
         clEnv->library->clReleaseEvent(event);
       }
     }
@@ -4360,7 +4360,7 @@ static Image *ComputeLocalContrastImage(const Image *image,
           (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
           goto cleanup;
         }
-        RecordProfileData(LocalContrastBlurApplyColumnKernel, event);
+        RecordProfileData(clEnv,LocalContrastBlurApplyColumnKernel,event);
         clEnv->library->clReleaseEvent(event);
       }
     }
@@ -4576,7 +4576,7 @@ MagickBooleanType ComputeModulateImage(Image *image,
       goto cleanup;
     }
     clEnv->library->clFlush(queue);
-    RecordProfileData(ModulateKernel, event);
+    RecordProfileData(clEnv,ModulateKernel,event);
     clEnv->library->clReleaseEvent(event);
   }
 
@@ -4934,7 +4934,7 @@ static Image* ComputeMotionBlurImage(const Image *image,
     goto cleanup;
   }
   clEnv->library->clFlush(queue);
-  RecordProfileData(MotionBlurKernel, event);
+  RecordProfileData(clEnv,MotionBlurKernel,event);
   clEnv->library->clReleaseEvent(event);
 
   if (ALIGNED(filteredPixels,CLPixelPacket)) 
@@ -5261,7 +5261,7 @@ static Image *ComputeRadialBlurImage(const Image *image,
     goto cleanup;
   }
   clEnv->library->clFlush(queue);
-  RecordProfileData(RadialBlurKernel, event);
+  RecordProfileData(clEnv,RadialBlurKernel,event);
   clEnv->library->clReleaseEvent(event);
 
   if (ALIGNED(filteredPixels,CLPixelPacket)) 
@@ -5389,7 +5389,7 @@ static MagickBooleanType LaunchRandomImageKernel(MagickCLEnv clEnv,
                                       "clEnv->library->clSetKernelArg failed.", "'%s'", ".");
     goto cleanup;
   }
-  RecordProfileData(RandomNumberGeneratorKernel, event);
+  RecordProfileData(clEnv,RandomNumberGeneratorKernel,event);
   clEnv->library->clReleaseEvent(event);
   status = MagickTrue;
 
@@ -5756,7 +5756,7 @@ RestoreMSCWarning
     goto cleanup;
   }
   clEnv->library->clFlush(queue);
-  RecordProfileData(ResizeHorizontalKernel, event);
+  RecordProfileData(clEnv,ResizeHorizontalKernel,event);
   clEnv->library->clReleaseEvent(event);
   status = MagickTrue;
 
@@ -5966,7 +5966,7 @@ RestoreMSCWarning
     goto cleanup;
   }
   clEnv->library->clFlush(queue);
-  RecordProfileData(ResizeVerticalKernel, event);
+  RecordProfileData(clEnv,ResizeVerticalKernel,event);
   clEnv->library->clReleaseEvent(event);
   status = MagickTrue;
 
@@ -6917,7 +6917,7 @@ static Image *ComputeUnsharpMaskImageSection(const Image *image,
           goto cleanup;
         }
         clEnv->library->clFlush(queue);
-        RecordProfileData(BlurRowKernel, event);
+        RecordProfileData(clEnv,BlurRowKernel,event);
         clEnv->library->clReleaseEvent(event);
       }
 
@@ -6978,7 +6978,7 @@ static Image *ComputeUnsharpMaskImageSection(const Image *image,
           goto cleanup;
         }
         clEnv->library->clFlush(queue);
-        RecordProfileData(UnsharpMaskBlurColumnKernel, event);
+        RecordProfileData(clEnv,UnsharpMaskBlurColumnKernel,event);
         clEnv->library->clReleaseEvent(event);
       }
     }
@@ -7275,7 +7275,7 @@ static Image *ComputeUnsharpMaskImageSingle(const Image *image,
         goto cleanup;
       }
       clEnv->library->clFlush(queue);
-      RecordProfileData(UnsharpMaskKernel, event);
+      RecordProfileData(clEnv,UnsharpMaskKernel,event);
       clEnv->library->clReleaseEvent(event);
     }
   }
