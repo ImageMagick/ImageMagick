@@ -7,7 +7,7 @@
 ]>
 <configuremap>
   <configure name="CC" value="gcc"/>
-  <configure name="CFLAGS" value="-I/usr/include/libxml2  -I/usr/include/libpng16   -pthread -I/usr/include/pango-1.0 -I/usr/include/cairo -I/usr/include/glib-2.0 -I/usr/lib64/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/freetype2 -I/usr/include/libdrm -I/usr/include/libpng16  -pthread -I/usr/include/OpenEXR -I/usr/include/libdrm    -I/usr/include/freetype2 -I/usr/include/libpng16  -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/freetype2 -I/usr/include/libpng16  -pthread     -fopenmp -g -O2 -Wall -mtune=sandybridge -fexceptions -pthread -DMAGICKCORE_HDRI_ENABLE=1 -DMAGICKCORE_QUANTUM_DEPTH=16"/>
+  <configure name="CFLAGS" value="-I/usr/include/libxml2  -I/usr/include/libpng16   -I/usr/include/pango-1.0 -I/usr/include/harfbuzz -I/usr/include/pango-1.0 -I/usr/include/cairo -I/usr/include/glib-2.0 -I/usr/lib64/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/freetype2 -I/usr/include/libdrm -I/usr/include/libpng16  -pthread -I/usr/include/OpenEXR -I/usr/include/libdrm    -I/usr/include/freetype2 -I/usr/include/libpng16  -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/freetype2 -I/usr/include/libpng16  -pthread     -fopenmp -g -O2 -Wall -mtune=sandybridge -fexceptions -pthread -DMAGICKCORE_HDRI_ENABLE=1 -DMAGICKCORE_QUANTUM_DEPTH=16"/>
   <configure name="CODER_PATH" value="/usr/local/lib/ImageMagick-7.0.0/modules-Q16HDRI/coders"/>
   <configure name="CONFIGURE_PATH" value="/usr/local/etc/ImageMagick-7/"/>
   <configure name="CONFIGURE" value="./configure "/>
@@ -34,10 +34,10 @@
   <configure name="PCFLAGS" value="-fopenmp -DMAGICKCORE_HDRI_ENABLE=1 -DMAGICKCORE_QUANTUM_DEPTH=16"/>
   <configure name="PREFIX" value="/usr/local"/>
   <configure name="QuantumDepth" value="16"/>
-  <configure name="RELEASE_DATE" value="2015-11-02"/>
+  <configure name="RELEASE_DATE" value="2015-11-14"/>
   <configure name="SHAREARCH_PATH" value="/usr/local/lib/ImageMagick-7.0.0/config-Q16HDRI"/>
   <configure name="SHARE_PATH" value="/usr/local/share/ImageMagick-7"/>
-  <configure name="GIT_REVISION" value="17159:c6b7cef:20151102" />
+  <configure name="GIT_REVISION" value="17221:80472c7:20151114" />
   <configure name="TARGET_CPU" value="x86_64"/>
   <configure name="TARGET_OS" value="linux-gnu"/>
   <configure name="TARGET_VENDOR" value="unknown"/>
