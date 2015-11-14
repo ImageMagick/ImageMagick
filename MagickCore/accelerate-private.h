@@ -2083,7 +2083,7 @@ uint MWC64X_NextUint(mwc64x_state_t *s)
     number_parameters : numbers of parameters 
     parameters : the parameter
     */
-    __kernel void FunctionImage(__global CLPixelType *im,
+    __kernel void ComputeFunction(__global CLPixelType *im,
                                         const ChannelType channel, const MagickFunction function,
                                         const unsigned int number_parameters, __constant float *parameters)
       {

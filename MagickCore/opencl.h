@@ -18,32 +18,22 @@
 #ifndef _MAGICKCORE_OPENCL_H
 #define _MAGICKCORE_OPENCL_H
 
-
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
 
 /* OpenCL program modules */
 typedef enum {
-  MAGICK_OPENCL_ACCELERATE = 0
-  ,MAGICK_OPENCL_NUM_PROGRAMS   /* !!! This has to be the last entry !!! */
+  MAGICK_OPENCL_ACCELERATE = 0,
+  MAGICK_OPENCL_NUM_PROGRAMS   /* !!! This has to be the last entry !!! */
 } MagickOpenCLProgram;
 
-
-typedef struct _MagickCLEnv* MagickCLEnv;
-
-extern MagickExport
-  MagickCLEnv AcquireMagickOpenCLEnv();
-
-extern MagickExport
-  MagickBooleanType RelinquishMagickOpenCLEnv(MagickCLEnv);
-
-extern MagickExport
-  MagickCLEnv GetDefaultOpenCLEnv();
-
-extern MagickExport
-  MagickCLEnv SetDefaultOpenCLEnv(MagickCLEnv);
-
+typedef enum {
+  MAGICK_OPENCL_OFF = 0
+  , MAGICK_OPENCL_DEVICE_SELECT_AUTO = 1
+  , MAGICK_OPENCL_DEVICE_SELECT_USER = 2
+  , MAGICK_OPENCL_DEVICE_SELECT_AUTO_CLEAR_CACHE = 3
+} ImageMagickOpenCLMode;
 
 /* Parameter type accepted by SetMagickOpenCLEnvParm and GetMagickOpenCLEnvParm */
 typedef enum {
@@ -56,25 +46,21 @@ typedef enum {
                                                    /* if true, rerun microbenchmark in auto device selection */
 } MagickOpenCLEnvParam;
 
-extern MagickExport
-  MagickBooleanType SetMagickOpenCLEnvParam(MagickCLEnv, MagickOpenCLEnvParam, size_t, void*, ExceptionInfo*);
+typedef struct _MagickCLEnv* MagickCLEnv;
 
-extern MagickExport
-  MagickBooleanType GetMagickOpenCLEnvParam(MagickCLEnv, MagickOpenCLEnvParam, size_t, void*, ExceptionInfo*);
+extern MagickExport MagickBooleanType
+  GetMagickOpenCLEnvParam(MagickCLEnv,MagickOpenCLEnvParam,size_t,void*,
+    ExceptionInfo*),
+  InitImageMagickOpenCL(ImageMagickOpenCLMode,void*,void*,ExceptionInfo*),
+  InitOpenCLEnv(MagickCLEnv,ExceptionInfo*),
+  RelinquishMagickOpenCLEnv(MagickCLEnv),
+  SetMagickOpenCLEnvParam(MagickCLEnv,MagickOpenCLEnvParam,size_t,void*,
+    ExceptionInfo*);
 
-
-extern MagickExport
-  MagickBooleanType InitOpenCLEnv(MagickCLEnv, ExceptionInfo*);
-
-typedef enum {
-  MAGICK_OPENCL_OFF = 0
-, MAGICK_OPENCL_DEVICE_SELECT_AUTO = 1
-, MAGICK_OPENCL_DEVICE_SELECT_USER = 2
-, MAGICK_OPENCL_DEVICE_SELECT_AUTO_CLEAR_CACHE = 3
-} ImageMagickOpenCLMode ;
-
-extern MagickExport
-MagickBooleanType InitImageMagickOpenCL(ImageMagickOpenCLMode, void*, void*, ExceptionInfo*);
+extern MagickExport MagickCLEnv
+  AcquireMagickOpenCLEnv(),
+  GetDefaultOpenCLEnv(),
+  SetDefaultOpenCLEnv(MagickCLEnv);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
