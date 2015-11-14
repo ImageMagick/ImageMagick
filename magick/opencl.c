@@ -2846,7 +2846,7 @@ MagickExport MagickBooleanType RelinquishMagickOpenCLEnv(
 /*
 * Return the OpenCL environment
 */
-MagickExport MagickCLEnv GetDefaultOpenCLEnv())
+MagickExport MagickCLEnv GetDefaultOpenCLEnv()
 {
   magick_unreferenced(exception);
 
