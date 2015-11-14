@@ -7,7 +7,7 @@
 ]>
 <configuremap>
   <configure name="CC" value="gcc"/>
-  <configure name="CFLAGS" value="-I/usr/include/libxml2  -I/usr/include/libpng16   -pthread -I/usr/include/pango-1.0 -I/usr/include/cairo -I/usr/include/glib-2.0 -I/usr/lib64/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/freetype2 -I/usr/include/libdrm -I/usr/include/libpng16  -pthread -I/usr/include/OpenEXR -I/usr/include/libdrm    -I/usr/include/freetype2 -I/usr/include/libpng16  -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/freetype2 -I/usr/include/libpng16  -pthread     -fopenmp -g -O2 -Wall -mtune=sandybridge -fexceptions -pthread -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16"/>
+  <configure name="CFLAGS" value="-I/usr/include/libxml2  -I/usr/include/libpng16   -I/usr/include/pango-1.0 -I/usr/include/harfbuzz -I/usr/include/pango-1.0 -I/usr/include/cairo -I/usr/include/glib-2.0 -I/usr/lib64/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/freetype2 -I/usr/include/libdrm -I/usr/include/libpng16  -pthread -I/usr/include/OpenEXR -I/usr/include/libdrm    -I/usr/include/freetype2 -I/usr/include/libpng16  -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/freetype2 -I/usr/include/libpng16  -pthread     -fopenmp -g -O2 -Wall -mtune=sandybridge -fexceptions -pthread -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16"/>
   <configure name="CODER_PATH" value="/usr/local/lib/ImageMagick-6.9.2/modules-Q16/coders"/>
   <configure name="CONFIGURE_PATH" value="/usr/local/etc/ImageMagick-6/"/>
   <configure name="CONFIGURE" value="./configure "/>
@@ -28,16 +28,16 @@
   <configure name="LDFLAGS" value="-L/usr/local/lib  "/>
   <configure name="LIBRARY_PATH" value="/usr/local/lib/ImageMagick-6.9.2"/>
   <configure name="LIBS" value=" -ljbig -llcms2  -ltiff -lfreetype  -ljpeg   -lpng16   -ldjvulibre  -lfftw3  -lfpx -lfontconfig -lfreetype  -lwebp -lwmflite  -lXext -lXt   -lSM -lICE -lX11  -llzma  -lbz2 -lIlmImf -lImath -lHalf -lIex -lIexMath -lIlmThread -pthread   -lpangocairo-1.0 -lpango-1.0 -lgobject-2.0 -lglib-2.0 -lcairo   -lxml2   -L/usr/lib64 -lz   -lm -lgomp    "/>
-  <configure name="LIB_VERSION_NUMBER" value="6,9,2,6"/>
+  <configure name="LIB_VERSION_NUMBER" value="6,9,2,7"/>
   <configure name="LIB_VERSION" value="0x692"/>
   <configure name="NAME" value="ImageMagick"/>
   <configure name="PCFLAGS" value="-fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16"/>
   <configure name="PREFIX" value="/usr/local"/>
   <configure name="QuantumDepth" value="16"/>
-  <configure name="RELEASE_DATE" value="2015-11-02"/>
+  <configure name="RELEASE_DATE" value="2015-11-14"/>
   <configure name="SHAREARCH_PATH" value="/usr/local/lib/ImageMagick-6.9.2/config-Q16"/>
   <configure name="SHARE_PATH" value="/usr/local/share/ImageMagick-6"/>
-  <configure name="GIT_REVISION" value="10321:c6b7cef:20151102" />
+  <configure name="GIT_REVISION" value="10343:9a734ce:20151114" />
   <configure name="TARGET_CPU" value="x86_64"/>
   <configure name="TARGET_OS" value="linux-gnu"/>
   <configure name="TARGET_VENDOR" value="unknown"/>
