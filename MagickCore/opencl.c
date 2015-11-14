@@ -3164,6 +3164,7 @@ void OpenCLLog(const char* message) {
 MagickPrivate void OpenCLTerminus()
 {
 #if MAGICKCORE_OPENCL_SUPPORT
+  DumpProfileData();
   if (openclCachedFilesDirectory != (char *) NULL)
     openclCachedFilesDirectory=DestroyString(openclCachedFilesDirectory);
   if (openclCachedFilesDirectoryLock != (SemaphoreInfo*)NULL)
