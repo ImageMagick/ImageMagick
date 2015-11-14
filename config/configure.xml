@@ -28,16 +28,16 @@
   <configure name="LDFLAGS" value="-L/usr/local/lib  "/>
   <configure name="LIBRARY_PATH" value="/usr/local/lib/ImageMagick-6.9.2"/>
   <configure name="LIBS" value=" -ljbig -llcms2  -ltiff -lfreetype  -ljpeg   -lpng16   -ldjvulibre  -lfftw3  -lfpx -lfontconfig -lfreetype  -lwebp -lwmflite  -lXext -lXt   -lSM -lICE -lX11  -llzma  -lbz2 -lIlmImf -lImath -lHalf -lIex -lIexMath -lIlmThread -pthread   -lpangocairo-1.0 -lpango-1.0 -lgobject-2.0 -lglib-2.0 -lcairo   -lxml2   -L/usr/lib64 -lz   -lm -lgomp    "/>
-  <configure name="LIB_VERSION_NUMBER" value="6,9,2,5"/>
+  <configure name="LIB_VERSION_NUMBER" value="6,9,2,6"/>
   <configure name="LIB_VERSION" value="0x692"/>
   <configure name="NAME" value="ImageMagick"/>
   <configure name="PCFLAGS" value="-fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16"/>
   <configure name="PREFIX" value="/usr/local"/>
   <configure name="QuantumDepth" value="16"/>
-  <configure name="RELEASE_DATE" value="2015-10-18"/>
+  <configure name="RELEASE_DATE" value="2015-11-02"/>
   <configure name="SHAREARCH_PATH" value="/usr/local/lib/ImageMagick-6.9.2/config-Q16"/>
   <configure name="SHARE_PATH" value="/usr/local/share/ImageMagick-6"/>
-  <configure name="GIT_REVISION" value="10287:c82e665:20151017" />
+  <configure name="GIT_REVISION" value="10321:c6b7cef:20151102" />
   <configure name="TARGET_CPU" value="x86_64"/>
   <configure name="TARGET_OS" value="linux-gnu"/>
   <configure name="TARGET_VENDOR" value="unknown"/>
