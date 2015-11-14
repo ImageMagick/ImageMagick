@@ -75,8 +75,7 @@
 #  include <urlmon.h>
 #  pragma comment(lib, "urlmon.lib")
 #endif
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -253,6 +252,7 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
     clone_info=DestroyImageInfo(clone_info);
     sans=DestroyExceptionInfo(sans);
   }
+  *read_info->magick='\0';
   image=ReadImage(read_info,exception);
   if (unique_file != -1)
     (void) RelinquishUniqueFileResource(read_info->filename);
@@ -267,8 +267,7 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   return(GetFirstImageInList(image));
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
