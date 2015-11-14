@@ -73,7 +73,7 @@
 #  include <urlmon.h>
 #  pragma comment(lib, "urlmon.lib")
 #endif
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -164,7 +164,8 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) CopyMagickString(filename,image_info->magick,MagickPathExtent);
   (void) ConcatenateMagickString(filename,":",MagickPathExtent);
   LocaleLower(filename);
-  (void) ConcatenateMagickString(filename,image_info->filename,MagickPathExtent);
+  (void) ConcatenateMagickString(filename,image_info->filename,
+    MagickPathExtent);
   if (LocaleCompare(read_info->magick,"file") == 0)
     {
       (void) RelinquishUniqueFileResource(read_info->filename);
@@ -246,10 +247,12 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
     clone_info=CloneImageInfo(image_info);
     sans=AcquireExceptionInfo();
     (void) SetImageInfo(clone_info,0,sans);
-    (void) CopyMagickString(read_info->magick,clone_info->magick,MagickPathExtent);
+    (void) CopyMagickString(read_info->magick,clone_info->magick,
+      MagickPathExtent);
     clone_info=DestroyImageInfo(clone_info);
     sans=DestroyExceptionInfo(sans);
   }
+  *read_info->magick='\0';
   image=ReadImage(read_info,exception);
   if (unique_file != -1)
     (void) RelinquishUniqueFileResource(read_info->filename);
