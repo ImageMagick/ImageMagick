@@ -1,32 +1,40 @@
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
     <title>ImageMagick: Architecture</title>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <meta name="application-name" content="ImageMagick">
-  <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.">
-  <meta name="application-url" content="http://www.imagemagick.org">
-  <meta name="generator" content="PHP">
-  <meta name="keywords" content="architecture, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert">
-  <meta name="rating" content="GENERAL">
-  <meta name="robots" content="INDEX, FOLLOW">
-  <meta name="generator" content="ImageMagick Studio LLC">
-  <meta name="author" content="ImageMagick Studio LLC">
-  <meta name="revisit-after" content="2 DAYS">
-  <meta name="resource-type" content="document">
-  <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC">
-  <meta name="distribution" content="Global">
-  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
-  <link rel="icon" href="../images/wand.png">
-  <link rel="shortcut icon" href="../images/wand.ico">
-  <link rel="stylesheet" href="../css/magick.html">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <meta name="application-name" content="ImageMagick"/>
+  <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves."/>
+  <meta name="application-url" content="http://www.imagemagick.org"/>
+  <meta name="generator" content="PHP"/>
+  <meta name="keywords" content="architecture, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert"/>
+  <meta name="rating" content="GENERAL"/>
+  <meta name="robots" content="INDEX, FOLLOW"/>
+  <meta name="generator" content="ImageMagick Studio LLC"/>
+  <meta name="author" content="ImageMagick Studio LLC"/>
+  <meta name="revisit-after" content="2 DAYS"/>
+  <meta name="resource-type" content="document"/>
+  <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC"/>
+  <meta name="distribution" content="Global"/>
+  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
+  <link rel="icon" href="../images/wand.png"/>
+  <link rel="shortcut icon" href="../images/wand.ico"/>
+  <link rel="stylesheet" href="../css/magick.html"/>
 </head>
 <body>
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
+    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-3129977114552745"
+         data-ad-slot="6345125851"
+         data-ad-format="auto"></ins>
     <script>
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
@@ -97,7 +105,7 @@
 <p>The pixel cache is associated with an image when it is created and it is initialized when you try to get or put pixels.  Here are three common methods to associate a pixel cache with an image:</p>
 
 <dl>
-<dt>Create an image canvas initialized to the background color:</dt><br>
+<dt>Create an image canvas initialized to the background color:</dt><br/>
 <dd><pre>image=AllocateImage(image_info);
 if (SetImageExtent(image,640,480) == MagickFalse)
   { /* an exception was thrown */ }
@@ -105,13 +113,13 @@ if (SetImageExtent(image,640,480) == MagickFalse)
 SetImageBackgroundColor(image);
 </pre></dd>
 
-<dt>Create an image from a JPEG image on disk:</dt><br>
+<dt>Create an image from a JPEG image on disk:</dt><br/>
 <dd><pre>(void) strcpy(image_info-&gt;filename,"image.jpg"):
 image=ReadImage(image_info,exception);
 if (image == (Image *) NULL)
   { /* an exception was thrown */ }
 </pre></dd>
-<dt>Create an image from a memory based image:</dt><br>
+<dt>Create an image from a memory based image:</dt><br/>
 <dd><pre>image=BlobToImage(blob_info,blob,extent,exception);
 if (image == (Image *) NULL)
   { /* an exception was thrown */ }
@@ -120,9 +128,9 @@ if (image == (Image *) NULL)
 
 <p>In our discussion of the pixel cache, we use the <a href="magick-core.html">MagickCore API</a> to illustrate our points, however, the principles are the same for other program interfaces to ImageMagick.</p>
 
-<p>When the pixel cache is initialized, pixels are scaled from whatever bit depth they originated from to that required by the pixel cache.  For example, a 1-channel 1-bit monochrome PBM image is scaled to a 4 channel 8-bit RGBA image, if you are using the Q8 version of ImageMagick, and 16-bit RGBA for the Q16 version.  You can determine which version you have with the <a href="command-line-options.html#version">‑version</a> option: </p>
+<p>When the pixel cache is initialized, pixels are scaled from whatever bit depth they originated from to that required by the pixel cache.  For example, a 1-channel 1-bit monochrome PBM image is scaled to a 4 channel 8-bit RGBA image, if you are using the Q8 version of ImageMagick, and 16-bit RGBA for the Q16 version.  You can determine which version you have with the <a href="command-line-options.html#version">&#x2011;version</a> option: </p>
 
-<pre><span class="crtprompt"> </span><span class="crtin">identify -version</span><span class="crtout">Version: ImageMagick 7.0.0-0 2015-07-04 Q16 http://www.imagemagick.org</span></pre>
+<pre><span class="crtprompt"> </span><span class='crtin'>identify -version</span><span class='crtout'>Version: ImageMagick 7.0.0-0 2015-07-04 Q16 http://www.imagemagick.org</span></pre>
 <p>As you can see, the convenience of the pixel cache sometimes comes with a trade-off in storage (e.g. storing a 1-bit monochrome image as 16-bit RGBA is wasteful) and speed (i.e. storing the entire image in memory is generally slower than accessing one scanline of pixels at a time).  In most cases, the benefits of the pixel cache typically outweigh any disadvantages.</p>
 
 <h3><a id="authentic-pixels"></a>Access the Pixel Cache</h3>
@@ -147,7 +155,7 @@ ssize_t
   x,
   y;
 
-destination=CloneImage(source,source-&gt;columns,source-&gt;rows,MagickTrue,
+destination=CloneImage(source,source->columns,source->rows,MagickTrue,
   exception);
 if (destination == (Image *) NULL)
   { /* an exception was thrown */ }
@@ -203,7 +211,7 @@ if (y &lt; (ssize_t) source-&gt;rows)
 <h3><a id="virtual-pixels"></a>Virtual Pixels</h3>
 
 <p>There are a plethora of image processing algorithms that require a neighborhood of pixels about a pixel of interest.  The algorithm typically includes a caveat concerning how to handle pixels around the image boundaries, known as edge pixels.  With virtual pixels, you do not need to concern yourself about special edge processing other than choosing  which virtual pixel method is most appropriate for your algorithm.</p>
- <p>Access to the virtual pixels are controlled by the <a href="api/cache.html#SetImageVirtualPixelMethod">SetImageVirtualPixelMethod()</a> method from the MagickCore API or the <a href="command-line-options.html#virtual-pixel">‑virtual‑pixel</a> option from the command line.  The methods include:</p>
+ <p>Access to the virtual pixels are controlled by the <a href="api/cache.html#SetImageVirtualPixelMethod">SetImageVirtualPixelMethod()</a> method from the MagickCore API or the <a href="command-line-options.html#virtual-pixel">&#x2011;virtual&#x2011;pixel</a> option from the command line.  The methods include:</p>
 
 <dl class="dl-horizontal">
 <dt>background</dt>
@@ -267,7 +275,7 @@ if (y &lt; (ssize_t) source-&gt;rows)
 <p>To determine the current setting of these limits, use this command:</p>
 
 <pre>
--&gt; identify -list resource
+-> identify -list resource
 Resource limits:
   Width: 100MP
   Height: 100MP
@@ -283,28 +291,28 @@ Resource limits:
 
 <p>You can set these limits either as a <a href="resources.html#configure">policy</a> (see <a href="../source/policy.xml">policy.xml</a>), with an <a href="resources.html#environment">environment variable</a>, with the <a href="command-line-options.html#limit">-limit</a> command line option, or with the <a href="api/resource.html#SetMagickResourceLimit">SetMagickResourceLimit()</a> MagickCore API method. As an example, our online web interface to ImageMagick, <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">ImageMagick Studio</a>, includes these policy limits to help prevent a denial-of-service:</p>
 <pre>
-&lt;policymap&gt;
-  &lt;policy domain="resource" name="temporary-path" value="/tmp"/&gt;
-  &lt;policy domain="resource" name="memory" value="256MiB"/&gt;
-  &lt;policy domain="resource" name="map" value="512MiB"/&gt;
-  &lt;policy domain="resource" name="width" value="8KP"/&gt;
-  &lt;policy domain="resource" name="height" value="8KP"/&gt;
-  &lt;policy domain="resource" name="area" value="128MB"/&gt;
-  &lt;policy domain="resource" name="disk" value="1GiB"/&gt;
-  &lt;policy domain="resource" name="file" value="768"/&gt;
-  &lt;policy domain="resource" name="thread" value="2"/&gt;
-  &lt;policy domain="resource" name="throttle" value="0"/&gt;
-  &lt;policy domain="resource" name="time" value="120"/&gt;
-  &lt;policy domain="system" name="precision" value="6"/&gt;
-  &lt;policy domain="cache" name="shared-secret" value="replace with your secret phrase"/&gt;
-&lt;/policymap&gt;
+&lt;policymap>
+  &lt;policy domain="resource" name="temporary-path" value="/tmp"/>
+  &lt;policy domain="resource" name="memory" value="256MiB"/>
+  &lt;policy domain="resource" name="map" value="512MiB"/>
+  &lt;policy domain="resource" name="width" value="8KP"/>
+  &lt;policy domain="resource" name="height" value="8KP"/>
+  &lt;policy domain="resource" name="area" value="128MB"/>
+  &lt;policy domain="resource" name="disk" value="1GiB"/>
+  &lt;policy domain="resource" name="file" value="768"/>
+  &lt;policy domain="resource" name="thread" value="2"/>
+  &lt;policy domain="resource" name="throttle" value="0"/>
+  &lt;policy domain="resource" name="time" value="120"/>
+  &lt;policy domain="system" name="precision" value="6"/>
+  &lt;policy domain="cache" name="shared-secret" value="replace with your secret phrase"/>
+&lt;/policymap>
 </pre>
 <p>Since we process multiple simultaneous sessions, we don't want any one session consuming all the available memory.  Instead large images are cached to disk.  If the image is too large and exceeds the pixel cache disk limit, the program exits.  In addition, we place a time limit to prevent any run-away processing tasks.</p>
 
 <p>Note, the cache limits are global to each invocation of ImageMagick, meaning if you create several images, the combined resource requirements are compared to the limit to determine the pixel cache storage disposition.</p>
 
 <p>To determine which type and how much resources are consumed by the pixel cache, add the <a href="command-line-options.html#debug">-debug cache</a> option to the command-line:</p>
-<pre>-&gt; convert -debug cache logo: -sharpen 3x2 null:
+<pre>-> convert -debug cache logo: -sharpen 3x2 null:
 2013-12-17T13:33:42-05:00 0:00.000 0.000u 7.0.0 Cache convert: cache.c/DestroyPixelCache/1275/Cache
   destroy 
 2013-12-17T13:33:42-05:00 0:00.000 0.000u 7.0.0 Cache convert: cache.c/OpenPixelCache/3834/Cache
@@ -312,9 +320,9 @@ Resource limits:
 2013-12-17T13:33:42-05:00 0:00.010 0.000u 7.0.0 Cache convert: cache.c/OpenPixelCache/3834/Cache
   open LOGO[0] (Heap Memory, 640x480x3 3.516MiB)
 2013-12-17T13:33:42-05:00 0:00.010 0.000u 7.0.0 Cache convert: cache.c/ClonePixelCachePixels/1044/Cache
-  Memory =&gt; Memory
+  Memory => Memory
 2013-12-17T13:33:42-05:00 0:00.020 0.010u 7.0.0 Cache convert: cache.c/ClonePixelCachePixels/1044/Cache
-  Memory =&gt; Memory
+  Memory => Memory
 2013-12-17T13:33:42-05:00 0:00.020 0.010u 7.0.0 Cache convert: cache.c/OpenPixelCache/3834/Cache
   open LOGO[0] (Heap Memory, 640x480x3 3.516MiB)
 2013-12-17T13:33:42-05:00 0:00.050 0.100u 7.0.0 Cache convert: cache.c/DestroyPixelCache/1275/Cache
@@ -413,7 +421,7 @@ convert image.mpc -crop 100x100+200+0 +repage 3.png
   MyData
     *my_data;
 
-  my_data=(MyData *) image-&gt;client_data;
+  my_data=(MyData *) image->client_data;
   p=(PixelPacket *) pixels;
   if (p != (const PixelPacket *) NULL)
     {
@@ -425,7 +433,7 @@ convert image.mpc -crop 100x100+200+0 +repage 3.png
 ...
 
 /* invoke the pixel stream here */
-image_info-&gt;client_data=(void *) MyData;
+image_info->client_data=(void *) MyData;
 image=ReadStream(image_info,&amp;StreamPixels,exception);
 </pre>
 
@@ -475,7 +483,7 @@ convert logo: -resize 250000x250000 logo.miff
 <p>For large images, ImageMagick will likely create a pixel cache on disk.  Make sure you have plenty of temporary disk space.  If your default temporary disk partition is too small, tell ImageMagick to use another partition with plenty of free space.  For example:</p>
 
 <pre>
-convert -define registry:temporary-path=/data/tmp logo:  \ <br>     -resize 250000x250000 logo.miff
+convert -define registry:temporary-path=/data/tmp logo:  \ <br/>     -resize 250000x250000 logo.miff
 </pre>
 
 <p>To ensure large images do not consume all the memory on your system, force the image pixels to memory-mapped disk with resource limits:</p>
@@ -575,15 +583,15 @@ void ConvertBMPToImage(const BITMAPINFOHEADER *bmp_info,
   /*
     Prepare the image so that we can modify the pixels directly.
   */
-  assert(bmp_info-&gt;biCompression == BI_RGB);
-  assert(bmp_info-&gt;biWidth == image-&gt;columns());
-  assert(abs(bmp_info-&gt;biHeight) == image-&gt;rows());
-  image-&gt;modifyImage();
-  if (bmp_info-&gt;biBitCount == 24)
-    image-&gt;type(MagickCore::TrueColorType);
+  assert(bmp_info->biCompression == BI_RGB);
+  assert(bmp_info->biWidth == image->columns());
+  assert(abs(bmp_info->biHeight) == image->rows());
+  image->modifyImage();
+  if (bmp_info->biBitCount == 24)
+    image->type(MagickCore::TrueColorType);
   else
-    image-&gt;type(MagickCore::TrueColorMatteType);
-  register unsigned int bytes_per_row=bmp_info-&gt;biWidth*bmp_info-&gt;biBitCount/8;
+    image->type(MagickCore::TrueColorMatteType);
+  register unsigned int bytes_per_row=bmp_info->biWidth*bmp_info->biBitCount/8;
   if (bytes_per_row % 4 != 0) {
     bytes_per_row=bytes_per_row+(4-bytes_per_row % 4);  // divisible by 4.
   }
@@ -591,7 +599,7 @@ void ConvertBMPToImage(const BITMAPINFOHEADER *bmp_info,
     Copy all pixel data, row by row.
   */
   #pragma omp parallel for
-  for (int y=0; y &lt; int(image-&gt;rows()); y++)
+  for (int y=0; y &lt; int(image->rows()); y++)
   {
     int
       row;
@@ -602,21 +610,21 @@ void ConvertBMPToImage(const BITMAPINFOHEADER *bmp_info,
     register MagickCore::PixelPacket
       *restrict q;
 
-    row=(bmp_info-&gt;biHeight &gt; 0) ? (image-&gt;rows()-y-1) : y;
+    row=(bmp_info->biHeight > 0) ? (image->rows()-y-1) : y;
     p=pixels+row*bytes_per_row;
-    q=image-&gt;setPixels(0,y,image-&gt;columns(),1);
-    for (int x=0; x &lt; int(image-&gt;columns()); x++)
+    q=image->setPixels(0,y,image->columns(),1);
+    for (int x=0; x &lt; int(image->columns()); x++)
     {
       SetPixelBlue(q,p[0]);
       SetPixelGreen(q,p[1]);
       SetPixelRed(q,p[2]);
-      if (bmp_info-&gt;biBitCount == 32) {
+      if (bmp_info->biBitCount == 32) {
         SetPixelOpacity(q,p[3]);
       }
       q++;
-      p+=bmp_info-&gt;biBitCount/8;
+      p+=bmp_info->biBitCount/8;
     }
-    image-&gt;syncPixels();  // sync pixels to pixel cache.
+    image->syncPixels();  // sync pixels to pixel cache.
   }
   return;
 }</pre>
@@ -628,7 +636,7 @@ void ConvertBMPToImage(const BITMAPINFOHEADER *bmp_info,
 <p>In most circumstances, the default number of threads is set to the number of processor cores on your system for optimal performance.  However, if your system is hyperthreaded or if you are running on a virtual host and only a subset of the processors are available to your server instance, you might get an increase in performance by setting the thread <a href="resources.html#configure">policy</a> or the <a href="resources.html#environment">MAGICK_THREAD_LIMIT</a> environment variable.  For example, your virtual host has 8 processors but only 2 are assigned to your server instance.  The default of 8 threads can cause severe performance problems.  One solution is to limit the number of threads to the available processors in your <a href="../source/policy.xml">policy.xml</a> configuration file:</p>
 
 <pre>
-&lt;policy domain="resource" name="thread" value="2"/&gt;
+&lt;policy domain="resource" name="thread" value="2"/>
 </pre>
 
 <p>Or suppose your 12 core hyperthreaded computer defaults to 24 threads.  Set the MAGICK_THREAD_LIMIT environment variable and you will likely get improved performance:</p>
@@ -683,7 +691,7 @@ convert image.png -convolve '-1, -1, -1, -1, 9, -1, -1, -1, -1' convolve.png
 {
   if (offset &lt; 0L)
     return(0L);
-  if (offset &gt;= range)
+  if (offset >= range)
     return((long) (range-1L));
   return(offset);
 }
@@ -692,7 +700,7 @@ static inline CLQuantum ClampToQuantum(const float value)
 {
   if (value &lt; 0.0)
     return((CLQuantum) 0);
-  if (value &gt;= (float) QuantumRange)
+  if (value >= (float) QuantumRange)
     return((CLQuantum) QuantumRange);
   return((CLQuantum) (value+0.5));
 }
@@ -902,7 +910,7 @@ static Image *ReadMGKImage(const ImageInfo *image_info,
     image-&gt;rows=rows;
     image-&gt;depth=8;
     if ((image_info-&gt;ping != MagickFalse) &amp;&amp; (image_info-&gt;number_scenes != 0))
-      if (image-&gt;scene &gt;= (image_info-&gt;scene+image_info-&gt;number_scenes-1))
+      if (image-&gt;scene >= (image_info-&gt;scene+image_info-&gt;number_scenes-1))
         break;
     /*
       Convert MGK raster image to pixel packets.
@@ -934,7 +942,7 @@ static Image *ReadMGKImage(const ImageInfo *image_info,
       if (SyncAuthenticPixels(image,exception) == MagickFalse)
         break;
       if ((image-&gt;previous == (Image *) NULL) &amp;&amp;
-          (SetImageProgress(image,LoadImageTag,y,image&gt;&gt;rows) == MagickFalse))
+          (SetImageProgress(image,LoadImageTag,y,image&gt;>rows) == MagickFalse))
         break;
     }
     pixels=(unsigned char *) RelinquishMagickMemory(pixels);
@@ -947,7 +955,7 @@ static Image *ReadMGKImage(const ImageInfo *image_info,
       Proceed to next image.
     */
     if (image_info-&gt;number_scenes != 0)
-      if (image-&gt;scene &gt;= (image_info-&gt;scene+image_info-&gt;number_scenes-1))
+      if (image-&gt;scene >= (image_info-&gt;scene+image_info-&gt;number_scenes-1))
         break;
     *buffer='\0';
     (void) ReadBlobString(image,buffer);

@@ -1,32 +1,40 @@
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
     <title>ImageMagick: MagickCore, C API for ImageMagick: Image Methods</title>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <meta name="application-name" content="ImageMagick">
-  <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.">
-  <meta name="application-url" content="http://www.imagemagick.org">
-  <meta name="generator" content="PHP">
-  <meta name="keywords" content="magickcore, c, api, for, imagemagick:, image, methods, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert">
-  <meta name="rating" content="GENERAL">
-  <meta name="robots" content="INDEX, FOLLOW">
-  <meta name="generator" content="ImageMagick Studio LLC">
-  <meta name="author" content="ImageMagick Studio LLC">
-  <meta name="revisit-after" content="2 DAYS">
-  <meta name="resource-type" content="document">
-  <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC">
-  <meta name="distribution" content="Global">
-  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
-  <link rel="icon" href="../images/wand.png">
-  <link rel="shortcut icon" href="../images/wand.ico">
-  <link rel="stylesheet" href="../css/magick.html">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <meta name="application-name" content="ImageMagick"/>
+  <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves."/>
+  <meta name="application-url" content="http://www.imagemagick.org"/>
+  <meta name="generator" content="PHP"/>
+  <meta name="keywords" content="magickcore, c, api, for, imagemagick:, image, methods, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert"/>
+  <meta name="rating" content="GENERAL"/>
+  <meta name="robots" content="INDEX, FOLLOW"/>
+  <meta name="generator" content="ImageMagick Studio LLC"/>
+  <meta name="author" content="ImageMagick Studio LLC"/>
+  <meta name="revisit-after" content="2 DAYS"/>
+  <meta name="resource-type" content="document"/>
+  <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC"/>
+  <meta name="distribution" content="Global"/>
+  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
+  <link rel="icon" href="../images/wand.png"/>
+  <link rel="shortcut icon" href="../images/wand.ico"/>
+  <link rel="stylesheet" href="../css/magick.html"/>
 </head>
 <body>
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async="async" src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
+    <script async="async" src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-3129977114552745"
+         data-ad-slot="6345125851"
+         data-ad-format="auto"></ins>
     <script>
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
@@ -44,7 +52,7 @@
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="text-center"><a href="image.html#AcquireImage">AcquireImage</a> • <a href="image.html#AcquireImageInfo">AcquireImageInfo</a> • <a href="image.html#AcquireNextImage">AcquireNextImage</a> • <a href="image.html#AppendImages">AppendImages</a> • <a href="image.html#CatchImageException">CatchImageException</a> • <a href="image.html#ClipImagePath">ClipImagePath</a> • <a href="image.html#CloneImage">CloneImage</a> • <a href="image.html#CloneImageInfo">CloneImageInfo</a> • <a href="image.html#CopyImagePixels">CopyImagePixels</a> • <a href="image.html#DestroyImage">DestroyImage</a> • <a href="image.html#DestroyImageInfo">DestroyImageInfo</a> • <a href="image.html#GetImageInfo">GetImageInfo</a> • <a href="image.html#GetImageInfoFile">GetImageInfoFile</a> • <a href="image.html#GetImageMask">GetImageMask</a> • <a href="image.html#GetImageVirtualPixelMethod">GetImageVirtualPixelMethod</a> • <a href="image.html#InterpretImageFilename">InterpretImageFilename</a> • <a href="image.html#IsHighDynamicRangeImage">IsHighDynamicRangeImage</a> • <a href="image.html#IsImageObject">IsImageObject</a> • <a href="image.html#IsTaintImage">IsTaintImage</a> • <a href="image.html#ModifyImage">ModifyImage</a> • <a href="image.html#NewMagickImage">NewMagickImage</a> • <a href="image.html#ReferenceImage">ReferenceImage</a> • <a href="image.html#ResetImagePage">ResetImagePage</a> • <a href="image.html#SetImageBackgroundColor">SetImageBackgroundColor</a> • <a href="image.html#SetImageChannelMask">SetImageChannelMask</a> • <a href="image.html#SetImageColor">SetImageColor</a> • <a href="image.html#SetImageStorageClass">SetImageStorageClass</a> • <a href="image.html#SetImageExtent">SetImageExtent</a> • <a href="image.html#SetImageInfoBlob">SetImageInfoBlob</a> • <a href="image.html#SetImageInfoFile">SetImageInfoFile</a> • <a href="image.html#SetImageMask">SetImageMask</a> • <a href="image.html#SetImageAlpha">SetImageAlpha</a> • <a href="image.html#SetImageVirtualPixelMethod">SetImageVirtualPixelMethod</a> • <a href="image.html#SmushImages">SmushImages</a> • <a href="image.html#StripImage">StripImage</a> • <a href="image.html#SyncImageSettings">SyncImageSettings</a></p>
+<p class="text-center"><a href="image.html#AcquireImage">AcquireImage</a> &#8226; <a href="image.html#AcquireImageInfo">AcquireImageInfo</a> &#8226; <a href="image.html#AcquireNextImage">AcquireNextImage</a> &#8226; <a href="image.html#AppendImages">AppendImages</a> &#8226; <a href="image.html#CatchImageException">CatchImageException</a> &#8226; <a href="image.html#ClipImagePath">ClipImagePath</a> &#8226; <a href="image.html#CloneImage">CloneImage</a> &#8226; <a href="image.html#CloneImageInfo">CloneImageInfo</a> &#8226; <a href="image.html#CopyImagePixels">CopyImagePixels</a> &#8226; <a href="image.html#DestroyImage">DestroyImage</a> &#8226; <a href="image.html#DestroyImageInfo">DestroyImageInfo</a> &#8226; <a href="image.html#GetImageInfo">GetImageInfo</a> &#8226; <a href="image.html#GetImageInfoFile">GetImageInfoFile</a> &#8226; <a href="image.html#GetImageMask">GetImageMask</a> &#8226; <a href="image.html#GetImageVirtualPixelMethod">GetImageVirtualPixelMethod</a> &#8226; <a href="image.html#InterpretImageFilename">InterpretImageFilename</a> &#8226; <a href="image.html#IsHighDynamicRangeImage">IsHighDynamicRangeImage</a> &#8226; <a href="image.html#IsImageObject">IsImageObject</a> &#8226; <a href="image.html#IsTaintImage">IsTaintImage</a> &#8226; <a href="image.html#ModifyImage">ModifyImage</a> &#8226; <a href="image.html#NewMagickImage">NewMagickImage</a> &#8226; <a href="image.html#ReferenceImage">ReferenceImage</a> &#8226; <a href="image.html#ResetImagePage">ResetImagePage</a> &#8226; <a href="image.html#SetImageBackgroundColor">SetImageBackgroundColor</a> &#8226; <a href="image.html#SetImageChannelMask">SetImageChannelMask</a> &#8226; <a href="image.html#SetImageColor">SetImageColor</a> &#8226; <a href="image.html#SetImageStorageClass">SetImageStorageClass</a> &#8226; <a href="image.html#SetImageExtent">SetImageExtent</a> &#8226; <a href="image.html#SetImageInfoBlob">SetImageInfoBlob</a> &#8226; <a href="image.html#SetImageInfoFile">SetImageInfoFile</a> &#8226; <a href="image.html#SetImageMask">SetImageMask</a> &#8226; <a href="image.html#SetImageAlpha">SetImageAlpha</a> &#8226; <a href="image.html#SetImageVirtualPixelMethod">SetImageVirtualPixelMethod</a> &#8226; <a href="image.html#SmushImages">SmushImages</a> &#8226; <a href="image.html#StripImage">StripImage</a> &#8226; <a href="image.html#SyncImageSettings">SyncImageSettings</a></p>
 
 <h2><a href="http://nextgen.imagemagick.org/api/MagickCore/image_8c.html" id="AcquireImage">AcquireImage</a></h2>
 
