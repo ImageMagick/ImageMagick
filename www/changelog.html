@@ -1,35 +1,43 @@
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
     <title>ImageMagick: Changelog</title>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <meta name="application-name" content="ImageMagick">
-  <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.">
-  <meta name="application-url" content="http://www.imagemagick.org">
-  <meta name="generator" content="PHP">
-  <meta name="keywords" content="changelog, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert">
-  <meta name="rating" content="GENERAL">
-  <meta name="robots" content="INDEX, FOLLOW">
-  <meta name="generator" content="ImageMagick Studio LLC">
-  <meta name="author" content="ImageMagick Studio LLC">
-  <meta name="revisit-after" content="2 DAYS">
-  <meta name="resource-type" content="document">
-  <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC">
-  <meta name="distribution" content="Global">
-  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
-  <link rel="icon" href="../images/wand.png">
-  <link rel="shortcut icon" href="../images/wand.ico">
-  <link rel="stylesheet" href="css/magick.css">
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <meta name="application-name" content="ImageMagick"/>
+  <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves."/>
+  <meta name="application-url" content="http://www.imagemagick.org"/>
+  <meta name="generator" content="PHP"/>
+  <meta name="keywords" content="changelog, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert"/>
+  <meta name="rating" content="GENERAL"/>
+  <meta name="robots" content="INDEX, FOLLOW"/>
+  <meta name="generator" content="ImageMagick Studio LLC"/>
+  <meta name="author" content="ImageMagick Studio LLC"/>
+  <meta name="revisit-after" content="2 DAYS"/>
+  <meta name="resource-type" content="document"/>
+  <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC"/>
+  <meta name="distribution" content="Global"/>
+  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
+  <link rel="icon" href="../images/wand.png"/>
+  <link rel="shortcut icon" href="../images/wand.ico"/>
+  <link rel="stylesheet" href="css/magick.css"/>
 </head>
 <body>
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
+    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-3129977114552745"
+         data-ad-slot="6345125851"
+         data-ad-format="auto"></ins>
     <script>
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
@@ -46,8 +54,29 @@
   </div>
 </div>
 <div class="container">
-<div class="magick-header"><dl><dt>2015-09-10  6.9.2-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  </dl><li> New version 6.9.2-4, GIT revision 10273:e00cf21:20151010</li>
+<div class="magick-header"><dl><dt>2015-11-14  6.9.2-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> New version 6.9.2-6, GIT revision 10341:f408196:20151113.</li>
+<dt>2015-11-08  6.9.2-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> PixelColor off by one on i386 (reference    https://github.com/ImageMagick/ImageMagick/issues/54).</li>
+  <li> Eliminate stack overflow (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=1&amp;t=28658).</li>
+<dt>2015-11-03  6.9.2-6 Dirk Lemstra &lt;dirk@lem.....org&gt;</dt>
+  <li> Added local contrast enhancement.</li>
+  <li> Fixed bug in SetPixelCacheExtent that made images all black (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=28514).</li>
+  <li> Added support for reading DICOM images with implicit vr little-endian    transfer syntax.</li>
+<dt>2015-11-02  6.9.2-6 Samuel Thibault &lt;samuel.thibault@...org&gt; </dt>
+  <li> Added 6dot variant for unicode and iso braille formats (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=2&amp;p=127111).</li>
+<dt>2015-10-31  6.9.2-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> New version 6.9.2-5, GIT revision 10316:86a76b6:20151031.</li>
+<dt>2015-10-15  6.9.2-5 Dirk Lemstra &lt;dirk@lem.....org&gt;</dt>
+  <li> Fixed alpha blending issue with semi-transparent pixels in the merged    image of PSD files. This can be disabled by setting the option    'psd:alpha-unblend' to 'off' (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=28169).</li>
+  <li> Fixed issue in jpeg:extent that prevented it from working (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;p=126638).</li>
+  <li> Fixed memory leak when reading Photoshop layers in a TIFF file.</li>
+<dt>2015-10-12  6.9.2-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Support gradient:bounding-box, gradient:vector, gradient:center, and    gradient:radius to shape the gradient rendering.</li>
+  <li> Recognize label:@- as stdin (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=28501).</li>
+  <li> Make commas optional for coordinates (e.g. 0,0 256,256).</li>
+<dt>2015-10-10  6.9.2-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> New version 6.9.2-4, GIT revision 10273:e00cf21:20151010</li>
 <dt>2015-10-08  6.9.2-4 Dirk Lemstra &lt;dirk@lem.....org&gt;</dt>
   <li> Fixed accessing subimage in a TIFF photoshop layer (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=28469).</li>
   <li> Fixed out of bounds error in -splice (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=28466).</li>
@@ -226,7 +255,7 @@
   <li> Small optimization to pixel cache.</li>
   <li> More image sanity checks.</li>
   <li> Support writing base64-encoded images (e.g<dt>	  convert logo: inline:jpeg:logo.txt).</dt>
-  </li><li> Repair small TIFF leak when pinging (patch provided by Andrey Cherniy).</li>
+  <li> Repair small TIFF leak when pinging (patch provided by Andrey Cherniy).</li>
 <dt>2015-01-16  6.9.0-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> New version 6.9.0-4, SVN revision 17697.</li>
 <dt>2015-01-07  6.9.0-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
@@ -1120,8 +1149,8 @@
   <li> New version 6.7.9-7, SVN revision 9410.</li>
 <dt>2012-09-20  6.7.9-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> jpeg:sampling-factor might be an image property or an option (reference<dt>http://www.imagemagick.org/discourse-server/viewtopic.html?f=2&amp;t=21884).</dt>
-  </li><li><dt>2012-09-15  6.7.9-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  </li><li> New version 6.7.9-6, SVN revision 9375.</li>
+  <li><dt>2012-09-15  6.7.9-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> New version 6.7.9-6, SVN revision 9375.</li>
 <dt>2012-09-14  6.7.9-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Don't compand the YCC colorspace, its already companded.</li>
 <dt>2012-09-12  6.7.9-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
@@ -1252,7 +1281,7 @@
   <li> Set the colorspace to linear gray when reading intensity values (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=21362).</li>
   <li> Don't overrun pixel buffer on inverse fourier for odd image widths.</li>
   <li> Change LAB encoding to permit blurring, resize, etc.    (signed A and B channel values now stored using a 50% bias)</li>
-    Additional.. This removes a non-linear discontinuity from stored LAB space    values. As a result you can now Blur, Compose, Resize and Distort in LAB    colorspace, without problems that previously existed.
+    Additional.. This removes a non-linear discontinuity from stored LAB space    values. As a result you can now Blur, Compose, Resize and Distort in LAB    colorspace, without problems that previously existed.</li>
 <dt>2012-07-04  6.7.8-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> New version 6.7.8-1, SVN revision 8595.</li>
 <dt>2012-07-02  6.7.8-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
@@ -1400,7 +1429,7 @@
   <li> Always unlock the semaphore before returning from the png codec, either    by a "return" or png_error(); changed all Magick*Exception() calls    after setjmp() to png_error() to ensure proper cleanup (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=16883).</li>
 <dt>2012-04-10  6.7.6-6 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
   <li> Fixed log known alpha*kernel normalization bug in morphology convolve.</li>
-    Convolve kernel weights have been separated from alpha blend handling.    Un-normalized kernels applied to images with active alpha will no longer    be auto-normalized due to the effect of alpha blending.  The bug causes    images using the default channel setting and having an alpha channel to    automatically 'normalize' the results of a convolve during the handling    of alpha blending.  This probably would cause severe effects when a    zero-summing kernel is being used on an image containing an active (though    likely fully-opaque) alpha channel, as division by near zero weights    would cause extreme color values in results.  This bug is not normally    seen as convolution, which is normally applied only to fully-opaque    images. And using a zero-summing kernel on an image with alpha also    results in a transparent image!  This is why it was not fixed up until now.
+    Convolve kernel weights have been separated from alpha blend handling.    Un-normalized kernels applied to images with active alpha will no longer    be auto-normalized due to the effect of alpha blending.  The bug causes    images using the default channel setting and having an alpha channel to    automatically 'normalize' the results of a convolve during the handling    of alpha blending.  This probably would cause severe effects when a    zero-summing kernel is being used on an image containing an active (though    likely fully-opaque) alpha channel, as division by near zero weights    would cause extreme color values in results.  This bug is not normally    seen as convolution, which is normally applied only to fully-opaque    images. And using a zero-summing kernel on an image with alpha also    results in a transparent image!  This is why it was not fixed up until now.</li>
 <dt>2012-04-08  6.7.6-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Pixel allocation for Pango is stride*rows not stride*columns.</li>
   <li> Set the image resolution for Postscript files with an embedded Photoshop    profile.</li>
@@ -2229,7 +2258,7 @@
   <li> The default filter for 'distort' was found to be a very blurry inaccurate    filter function.  It was removed and replaced with a correct Gaussian    filter (as used by resize)</li>
   <li> Added a switch so that "-interpolate filter" will force the use of    a cylindrical filter for ALL pixels in distorted images.  That is you can    use that switch to use a cylindrical filter even for images that are    being enlarged by the distortion.  However EWA is still currently using    a fixed 2.0 sampling radius.  This switch complements the use of "-filter    point" which turns off EWA filters in favor of interpolation for all    pixels in a distorted image.  BOTH switches should not be used together.</li>
   <li> A bug in the support radius of the EWA resampling function was found,    now that correctly defined resize filters are being used. Suddenly Normal    Gaussian distortions are not so blurry, and tests with distortions of    the 'Rings' image show extremely good and clear results, with only minimal    blurring.  The filter 'blur' expert option can be used to adjust this    further.</li>
-    The above represents a major improvement forward in the quality of the    image distortion operator. But near-unity distortions (no scaling) are    still overly blurry.
+    The above represents a major improvement forward in the quality of the    image distortion operator. But near-unity distortions (no scaling) are    still overly blurry.</li>
 <dt>2010-09-13  6.6.4-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Don't negate the geometry offset for the -extent option.</li>
 <dt>2010-09-09  6.6.4-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
@@ -3726,7 +3755,7 @@
   <li> Set AppendImage() matte channel only when image has matte attribute set.</li>
   <li> The -crop with negative offsets do not modify the virtual canvas.</li>
   <li> Caption: Given both the width and height ("-size") of the area to fill,    adjust the fonts "-pointsize" until the text just filles the whole space    without overflowing.</li>
-  <li> Generate proper Windows icon image files (patch provided by    Robert M. Jansen).</li></div>  <footer class="magick-footer">
+  <li> Generate proper Windows icon image files (patch provided by    Robert M. Jansen).</li></dl></div>  <footer class="magick-footer">
     <p><a href="support.html">Donate</a> •
      <a href="sitemap.html">Sitemap</a> •
     <a href="links.html">Related</a> •
@@ -3744,3 +3773,4 @@
 </div>
 </body>
 </html>
+<!-- Magick Cache 15th November 2015 15:07 -->

@@ -1,35 +1,43 @@
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
     <title>ImageMagick: MagickCore, C API for ImageMagick: Dealing with Exceptions</title>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <meta name="application-name" content="ImageMagick">
-  <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.">
-  <meta name="application-url" content="http://www.imagemagick.org">
-  <meta name="generator" content="PHP">
-  <meta name="keywords" content="magickcore, c, api, for, imagemagick:, dealing, with, exceptions, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert">
-  <meta name="rating" content="GENERAL">
-  <meta name="robots" content="INDEX, FOLLOW">
-  <meta name="generator" content="ImageMagick Studio LLC">
-  <meta name="author" content="ImageMagick Studio LLC">
-  <meta name="revisit-after" content="2 DAYS">
-  <meta name="resource-type" content="document">
-  <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC">
-  <meta name="distribution" content="Global">
-  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
-  <link rel="icon" href="../images/wand.png">
-  <link rel="shortcut icon" href="../images/wand.ico">
-  <link rel="stylesheet" href="../css/magick.html">
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <meta name="application-name" content="ImageMagick"/>
+  <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves."/>
+  <meta name="application-url" content="http://www.imagemagick.org"/>
+  <meta name="generator" content="PHP"/>
+  <meta name="keywords" content="magickcore, c, api, for, imagemagick:, dealing, with, exceptions, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert"/>
+  <meta name="rating" content="GENERAL"/>
+  <meta name="robots" content="INDEX, FOLLOW"/>
+  <meta name="generator" content="ImageMagick Studio LLC"/>
+  <meta name="author" content="ImageMagick Studio LLC"/>
+  <meta name="revisit-after" content="2 DAYS"/>
+  <meta name="resource-type" content="document"/>
+  <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC"/>
+  <meta name="distribution" content="Global"/>
+  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
+  <link rel="icon" href="../images/wand.png"/>
+  <link rel="shortcut icon" href="../images/wand.ico"/>
+  <link rel="stylesheet" href="../css/magick.html"/>
 </head>
 <body>
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async="async" src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
+    <script async="async" src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-3129977114552745"
+         data-ad-slot="6345125851"
+         data-ad-format="auto"></ins>
     <script>
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
@@ -47,7 +55,7 @@
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="text-center"><a href="exception.html#AcquireExceptionInfo">AcquireExceptionInfo</a> • <a href="exception.html#ClearMagickException">ClearMagickException</a> • <a href="exception.html#CatchException">CatchException</a> • <a href="exception.html#CloneExceptionInfo">CloneExceptionInfo</a> • <a href="exception.html#DestroyExceptionInfo">DestroyExceptionInfo</a> • <a href="exception.html#GetExceptionMessage">GetExceptionMessage</a> • <a href="exception.html#GetLocaleExceptionMessage">GetLocaleExceptionMessage</a> • <a href="exception.html#InheritException">InheritException</a> • <a href="exception.html#InitializeExceptionInfo">InitializeExceptionInfo</a> • <a href="exception.html#MagickError">MagickError</a> • <a href="exception.html#MagickFatalError">MagickFatalError</a> • <a href="exception.html#MagickWarning">MagickWarning</a> • <a href="exception.html#SetErrorHandler">SetErrorHandler</a> • <a href="exception.html#SetFatalErrorHandler">SetFatalErrorHandler</a> • <a href="exception.html#SetWarningHandler">SetWarningHandler</a> • <a href="exception.html#ThrowException">ThrowException</a></p>
+<p class="text-center"><a href="exception.html#AcquireExceptionInfo">AcquireExceptionInfo</a> &#8226; <a href="exception.html#ClearMagickException">ClearMagickException</a> &#8226; <a href="exception.html#CatchException">CatchException</a> &#8226; <a href="exception.html#CloneExceptionInfo">CloneExceptionInfo</a> &#8226; <a href="exception.html#DestroyExceptionInfo">DestroyExceptionInfo</a> &#8226; <a href="exception.html#GetExceptionMessage">GetExceptionMessage</a> &#8226; <a href="exception.html#GetLocaleExceptionMessage">GetLocaleExceptionMessage</a> &#8226; <a href="exception.html#InheritException">InheritException</a> &#8226; <a href="exception.html#InitializeExceptionInfo">InitializeExceptionInfo</a> &#8226; <a href="exception.html#MagickError">MagickError</a> &#8226; <a href="exception.html#MagickFatalError">MagickFatalError</a> &#8226; <a href="exception.html#MagickWarning">MagickWarning</a> &#8226; <a href="exception.html#SetErrorHandler">SetErrorHandler</a> &#8226; <a href="exception.html#SetFatalErrorHandler">SetFatalErrorHandler</a> &#8226; <a href="exception.html#SetWarningHandler">SetWarningHandler</a> &#8226; <a href="exception.html#ThrowException">ThrowException</a></p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/exception_8c.html" id="AcquireExceptionInfo">AcquireExceptionInfo</a></h2>
 
