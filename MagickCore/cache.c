@@ -526,8 +526,10 @@ static MagickBooleanType ClonePixelCacheRepository(
   ExceptionInfo *exception)
 {
 #define MaxCacheThreads  2
-#define cache_threads(source,destination,chunk) \
-  num_threads((chunk) < (16*GetMagickResourceLimit(ThreadResource)) ? 1 : \
+#define cache_threads(source,destination) \
+  num_threads(((source)->type == DiskCache) || \
+    ((destination)->type == DiskCache) || (((source)->rows) < \
+    (16*GetMagickResourceLimit(ThreadResource))) ? 1 : \
     GetMagickResourceLimit(ThreadResource) < MaxCacheThreads ? \
     GetMagickResourceLimit(ThreadResource) : MaxCacheThreads)
 
@@ -540,9 +542,11 @@ static MagickBooleanType ClonePixelCacheRepository(
     **restrict clone_nexus;
 
   size_t
-    length;
+    length,
+    same_channels;
 
   ssize_t
+    channels,
     y;
 
   assert(cache_info != (CacheInfo *) NULL);
@@ -592,10 +596,23 @@ static MagickBooleanType ClonePixelCacheRepository(
     MagickTrue : MagickFalse;
   length=(size_t) MagickMin(cache_info->columns*cache_info->number_channels,
     clone_info->columns*clone_info->number_channels);
+  if (optimize == MagickFalse)
+  {
+    register ssize_t
+      i;
+
+    channels=(ssize_t)MagickMin(clone_info->number_channels,cache_info->number_channels);
+    for (i = 0; i < channels; i++)
+    {
+      if (clone_info->channel_map[i].channel != cache_info->channel_map[i].channel)
+        break;
+    }
+    same_channels=i;
+  }
   status=MagickTrue;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
-    cache_threads(cache_info,clone_info,cache_info->rows)
+    cache_threads(cache_info,clone_info)
 #endif
   for (y=0; y < (ssize_t) cache_info->rows; y++)
   {
@@ -656,7 +673,20 @@ static MagickBooleanType ClonePixelCacheRepository(
 
           if (x == (ssize_t) clone_info->columns)
             break;
-          for (i=0; i < (ssize_t) clone_info->number_channels; i++)
+
+          if (same_channels > 0)
+            (void) memcpy(q,p,same_channels*sizeof(Quantum));
+
+          if (channels == (ssize_t) same_channels)
+          {
+            q+=clone_info->number_channels;
+            p+=cache_info->number_channels;
+            continue;
+          }
+
+          q+=same_channels;
+
+          for (i = same_channels; i < clone_info->number_channels; i++)
           {
             PixelChannel
               channel;
@@ -667,9 +697,7 @@ static MagickBooleanType ClonePixelCacheRepository(
             channel=clone_info->channel_map[i].channel;
             traits=cache_info->channel_map[channel].traits;
             if (traits != UndefinedPixelTrait)
-              (void) memcpy(q,p+cache_info->channel_map[channel].offset,
-                sizeof(Quantum));
-            q++;
+              *(q++)=*(p+cache_info->channel_map[channel].offset);
           }
           p+=cache_info->number_channels;
         }
@@ -686,7 +714,7 @@ static MagickBooleanType ClonePixelCacheRepository(
         clone_info->metacontent_extent);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
-        cache_threads(cache_info,clone_info,cache_info->rows)
+        cache_threads(cache_info,clone_info)
 #endif
       for (y=0; y < (ssize_t) cache_info->rows; y++)
       {
