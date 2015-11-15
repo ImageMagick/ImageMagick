@@ -542,11 +542,9 @@ static MagickBooleanType ClonePixelCacheRepository(
     **restrict clone_nexus;
 
   size_t
-    length,
-    same_channels;
+    length;
 
   ssize_t
-    channels,
     y;
 
   assert(cache_info != (CacheInfo *) NULL);
@@ -596,19 +594,6 @@ static MagickBooleanType ClonePixelCacheRepository(
     MagickTrue : MagickFalse;
   length=(size_t) MagickMin(cache_info->columns*cache_info->number_channels,
     clone_info->columns*clone_info->number_channels);
-  if (optimize == MagickFalse)
-  {
-    register ssize_t
-      i;
-
-    channels=(ssize_t)MagickMin(clone_info->number_channels,cache_info->number_channels);
-    for (i = 0; i < channels; i++)
-    {
-      if (clone_info->channel_map[i].channel != cache_info->channel_map[i].channel)
-        break;
-    }
-    same_channels=i;
-  }
   status=MagickTrue;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
@@ -636,8 +621,8 @@ static MagickBooleanType ClonePixelCacheRepository(
     region.height=1;
     region.x=0;
     region.y=y;
-    pixels=SetPixelCacheNexusPixels(cache_info,ReadMode,&region,cache_nexus[id],
-      exception);
+    pixels=SetPixelCacheNexusPixels(cache_info,ReadMode,&region,
+      cache_nexus[id],exception);
     if (pixels == (Quantum *) NULL)
       continue;
     status=ReadPixelCachePixels(cache_info,cache_nexus[id],exception);
@@ -673,20 +658,7 @@ static MagickBooleanType ClonePixelCacheRepository(
 
           if (x == (ssize_t) clone_info->columns)
             break;
-
-          if (same_channels > 0)
-            (void) memcpy(q,p,same_channels*sizeof(Quantum));
-
-          if (channels == (ssize_t) same_channels)
-          {
-            q+=clone_info->number_channels;
-            p+=cache_info->number_channels;
-            continue;
-          }
-
-          q+=same_channels;
-
-          for (i = same_channels; i < clone_info->number_channels; i++)
+          for (i=0; i < clone_info->number_channels; i++)
           {
             PixelChannel
               channel;
@@ -697,7 +669,8 @@ static MagickBooleanType ClonePixelCacheRepository(
             channel=clone_info->channel_map[i].channel;
             traits=cache_info->channel_map[channel].traits;
             if (traits != UndefinedPixelTrait)
-              *(q++)=*(p+cache_info->channel_map[channel].offset);
+              *q=*(p+cache_info->channel_map[channel].offset);
+            q++;
           }
           p+=cache_info->number_channels;
         }
