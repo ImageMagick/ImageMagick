@@ -113,7 +113,7 @@ static void ClearBounds(Image *image,RectangleInfo *bounds,
       x;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     q=GetAuthenticPixels(image,bounds->x,bounds->y+y,bounds->width,1,exception);
     if (q == (Quantum *) NULL)

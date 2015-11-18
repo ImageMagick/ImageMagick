@@ -136,7 +136,7 @@ static Image *ReadHALDImage(const ImageInfo *image_info,
       red;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     if (status == MagickFalse)
       continue;

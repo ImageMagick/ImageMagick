@@ -49,7 +49,7 @@ extern MagickExport const LocaleInfo
   **GetLocaleInfoList(const char *,size_t *,ExceptionInfo *);
 
 extern MagickExport double
-  InterpretLocaleValue(const char *restrict,char **restrict);
+  InterpretLocaleValue(const char *magick_restrict,char **magick_restrict);
 
 extern MagickExport int
   LocaleCompare(const char *,const char *),
@@ -63,9 +63,10 @@ extern MagickExport MagickBooleanType
   ListLocaleInfo(FILE *,ExceptionInfo *);
 
 extern MagickExport ssize_t
-  FormatLocaleFile(FILE *,const char *restrict,...)
+  FormatLocaleFile(FILE *,const char *magick_restrict,...)
     magick_attribute((__format__ (__printf__,2,3))),
-  FormatLocaleString(char *restrict,const size_t,const char *restrict,...)
+  FormatLocaleString(char *magick_restrict,const size_t,
+    const char *magick_restrict,...)
     magick_attribute((__format__ (__printf__,3,4)));
 
 extern MagickExport void

@@ -1360,7 +1360,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       x;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     if (jpeg_read_scanlines(&jpeg_info,scanline,1) != 1)
       {

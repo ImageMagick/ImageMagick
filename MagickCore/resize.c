@@ -1703,7 +1703,7 @@ MagickExport Image *InterpolativeResizeImage(const Image *image,
       offset;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -1869,7 +1869,7 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register ssize_t
       x;
@@ -1922,7 +1922,7 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
   while (lqr_carver_scan_ext(carver,&x_offset,&y_offset,(void **) &packet) != 0)
   {
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       i;
@@ -2047,7 +2047,7 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -2070,10 +2070,10 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
         intensity[9];
 
       register const Quantum
-        *restrict p;
+        *magick_restrict p;
 
       register Quantum
-        *restrict r;
+        *magick_restrict r;
 
       register ssize_t
         i;
@@ -2379,7 +2379,7 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
     storage_class;
 
   ContributionInfo
-    **restrict contributions;
+    **magick_restrict contributions;
 
   MagickBooleanType
     status;
@@ -2432,13 +2432,13 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
       density;
 
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register ContributionInfo
-      *restrict contribution;
+      *magick_restrict contribution;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       y;
@@ -2594,7 +2594,7 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
     storage_class;
 
   ContributionInfo
-    **restrict contributions;
+    **magick_restrict contributions;
 
   double
     scale,
@@ -2647,13 +2647,13 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
       density;
 
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register ContributionInfo
-      *restrict contribution;
+      *magick_restrict contribution;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -3033,10 +3033,10 @@ MagickExport Image *SampleImage(const Image *image,const size_t columns,
   for (y=0; y < (ssize_t) sample_image->rows; y++)
   {
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -3246,10 +3246,10 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
   for (y=0; y < (ssize_t) scale_image->rows; y++)
   {
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;

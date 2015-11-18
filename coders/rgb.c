@@ -224,10 +224,10 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (y=0; y < (ssize_t) image->extract_info.height; y++)
         {
           register const Quantum
-            *restrict p;
+            *magick_restrict p;
 
           register Quantum
-            *restrict q;
+            *magick_restrict q;
 
           register ssize_t
             x;
@@ -306,10 +306,10 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (y=0; y < (ssize_t) image->extract_info.height; y++)
         {
           register const Quantum
-            *restrict p;
+            *magick_restrict p;
 
           register Quantum
-            *restrict q;
+            *magick_restrict q;
 
           register ssize_t
             x;
@@ -405,10 +405,10 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (y=0; y < (ssize_t) image->extract_info.height; y++)
         {
           register const Quantum
-            *restrict p;
+            *magick_restrict p;
 
           register Quantum
-            *restrict q;
+            *magick_restrict q;
 
           register ssize_t
             x;
@@ -457,10 +457,10 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (y=0; y < (ssize_t) image->extract_info.height; y++)
         {
           register const Quantum
-            *restrict p;
+            *magick_restrict p;
 
           register Quantum
-            *restrict q;
+            *magick_restrict q;
 
           register ssize_t
             x;
@@ -509,10 +509,10 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (y=0; y < (ssize_t) image->extract_info.height; y++)
         {
           register const Quantum
-            *restrict p;
+            *magick_restrict p;
 
           register Quantum
-            *restrict q;
+            *magick_restrict q;
 
           register ssize_t
             x;
@@ -569,10 +569,10 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
             for (y=0; y < (ssize_t) image->extract_info.height; y++)
             {
               register const Quantum
-                *restrict p;
+                *magick_restrict p;
 
               register Quantum
-                *restrict q;
+                *magick_restrict q;
 
               register ssize_t
                 x;
@@ -662,10 +662,10 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (y=0; y < (ssize_t) image->extract_info.height; y++)
         {
           register const Quantum
-            *restrict p;
+            *magick_restrict p;
 
           register Quantum
-            *restrict q;
+            *magick_restrict q;
 
           register ssize_t
             x;
@@ -738,10 +738,10 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (y=0; y < (ssize_t) image->extract_info.height; y++)
         {
           register const Quantum
-            *restrict p;
+            *magick_restrict p;
 
           register Quantum
-            *restrict q;
+            *magick_restrict q;
 
           register ssize_t
             x;
@@ -814,10 +814,10 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (y=0; y < (ssize_t) image->extract_info.height; y++)
         {
           register const Quantum
-            *restrict p;
+            *magick_restrict p;
 
           register Quantum
-            *restrict q;
+            *magick_restrict q;
 
           register ssize_t
             x;
@@ -892,10 +892,10 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
             for (y=0; y < (ssize_t) image->extract_info.height; y++)
             {
               register const Quantum
-                *restrict p;
+                *magick_restrict p;
 
               register Quantum
-                *restrict q;
+                *magick_restrict q;
 
               register ssize_t
                 x;
@@ -1163,7 +1163,7 @@ static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           register const Quantum
-            *restrict p;
+            *magick_restrict p;
 
           p=GetVirtualPixels(image,0,y,image->columns,1,exception);
           if (p == (const Quantum *) NULL)
@@ -1191,7 +1191,7 @@ static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           register const Quantum
-            *restrict p;
+            *magick_restrict p;
 
           p=GetVirtualPixels(image,0,y,image->columns,1,exception);
           if (p == (const Quantum *) NULL)
@@ -1245,7 +1245,7 @@ static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           register const Quantum
-            *restrict p;
+            *magick_restrict p;
 
           p=GetVirtualPixels(image,0,y,image->columns,1,exception);
           if (p == (const Quantum *) NULL)
@@ -1265,7 +1265,7 @@ static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           register const Quantum
-            *restrict p;
+            *magick_restrict p;
 
           p=GetVirtualPixels(image,0,y,image->columns,1,exception);
           if (p == (const Quantum *) NULL)
@@ -1285,7 +1285,7 @@ static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           register const Quantum
-            *restrict p;
+            *magick_restrict p;
 
           p=GetVirtualPixels(image,0,y,image->columns,1,exception);
           if (p == (const Quantum *) NULL)
@@ -1307,7 +1307,7 @@ static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,
             for (y=0; y < (ssize_t) image->rows; y++)
             {
               register const Quantum
-                *restrict p;
+                *magick_restrict p;
 
               p=GetVirtualPixels(image,0,y,image->columns,1,exception);
               if (p == (const Quantum *) NULL)
@@ -1349,7 +1349,7 @@ static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           register const Quantum
-            *restrict p;
+            *magick_restrict p;
 
           p=GetVirtualPixels(image,0,y,image->columns,1,exception);
           if (p == (const Quantum *) NULL)
@@ -1375,7 +1375,7 @@ static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           register const Quantum
-            *restrict p;
+            *magick_restrict p;
 
           p=GetVirtualPixels(image,0,y,image->columns,1,exception);
           if (p == (const Quantum *) NULL)
@@ -1401,7 +1401,7 @@ static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           register const Quantum
-            *restrict p;
+            *magick_restrict p;
 
           p=GetVirtualPixels(image,0,y,image->columns,1,exception);
           if (p == (const Quantum *) NULL)
@@ -1429,7 +1429,7 @@ static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,
             for (y=0; y < (ssize_t) image->rows; y++)
             {
               register const Quantum
-                *restrict p;
+                *magick_restrict p;
 
               p=GetVirtualPixels(image,0,y,image->columns,1,exception);
               if (p == (const Quantum *) NULL)

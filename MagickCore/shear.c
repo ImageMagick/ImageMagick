@@ -390,7 +390,7 @@ static MagickBooleanType RadonTransform(const Image *image,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register ssize_t
       i,
@@ -447,7 +447,7 @@ static MagickBooleanType RadonTransform(const Image *image,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register ssize_t
       i,
@@ -528,7 +528,7 @@ static void GetImageBackgroundColor(Image *image,const ssize_t offset,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register ssize_t
       x;
@@ -786,10 +786,10 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
             sync;
 
           register const Quantum
-            *restrict p;
+            *magick_restrict p;
 
           register Quantum
-            *restrict q;
+            *magick_restrict q;
 
           register ssize_t
             y;
@@ -814,7 +814,7 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
           for (y=0; y < (ssize_t) width; y++)
           {
             register const Quantum
-              *restrict tile_pixels;
+              *magick_restrict tile_pixels;
 
             register ssize_t
               x;
@@ -900,10 +900,10 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
           sync;
 
         register const Quantum
-          *restrict p;
+          *magick_restrict p;
 
         register Quantum
-          *restrict q;
+          *magick_restrict q;
 
         register ssize_t
           x;
@@ -1000,10 +1000,10 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
             sync;
 
           register const Quantum
-            *restrict p;
+            *magick_restrict p;
 
           register Quantum
-            *restrict q;
+            *magick_restrict q;
 
           register ssize_t
             y;
@@ -1028,7 +1028,7 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
           for (y=0; y < (ssize_t) width; y++)
           {
             register const Quantum
-              *restrict tile_pixels;
+              *magick_restrict tile_pixels;
 
             register ssize_t
               x;
@@ -1197,8 +1197,8 @@ static MagickBooleanType XShearImage(Image *image,const double degrees,
       displacement;
 
     register Quantum
-      *restrict p,
-      *restrict q;
+      *magick_restrict p,
+      *magick_restrict q;
 
     register ssize_t
       i;
@@ -1416,8 +1416,8 @@ static MagickBooleanType YShearImage(Image *image,const double degrees,
       destination;
 
     register Quantum
-      *restrict p,
-      *restrict q;
+      *magick_restrict p,
+      *magick_restrict q;
 
     register ssize_t
       i;

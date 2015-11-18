@@ -125,7 +125,8 @@ static size_t GetImageChannels(const Image *image)
 }
 
 static inline MagickBooleanType ValidateImageMorphology(
-  const Image *restrict image,const Image *restrict reconstruct_image)
+  const Image *magick_restrict image,
+  const Image *magick_restrict reconstruct_image)
 {
   /*
     Does the image match the reconstructed image morphology?
@@ -234,11 +235,11 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
       sync;
 
     register const Quantum
-      *restrict p,
-      *restrict q;
+      *magick_restrict p,
+      *magick_restrict q;
 
     register Quantum
-      *restrict r;
+      *magick_restrict r;
 
     register ssize_t
       x;
@@ -393,8 +394,8 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
       channel_distortion[MaxPixelChannels+1];
 
     register const Quantum
-      *restrict p,
-      *restrict q;
+      *magick_restrict p,
+      *magick_restrict q;
 
     register ssize_t
       j,
@@ -502,8 +503,8 @@ static MagickBooleanType GetFuzzDistortion(const Image *image,
       channel_distortion[MaxPixelChannels+1];
 
     register const Quantum
-      *restrict p,
-      *restrict q;
+      *magick_restrict p,
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -606,8 +607,8 @@ static MagickBooleanType GetMeanAbsoluteDistortion(const Image *image,
       channel_distortion[MaxPixelChannels+1];
 
     register const Quantum
-      *restrict p,
-      *restrict q;
+      *magick_restrict p,
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -707,8 +708,8 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
   for (y=0; y < (ssize_t) rows; y++)
   {
     register const Quantum
-      *restrict p,
-      *restrict q;
+      *magick_restrict p,
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -805,8 +806,8 @@ static MagickBooleanType GetMeanSquaredDistortion(const Image *image,
       channel_distortion[MaxPixelChannels+1];
 
     register const Quantum
-      *restrict p,
-      *restrict q;
+      *magick_restrict p,
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -934,8 +935,8 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
   for (y=0; y < (ssize_t) rows; y++)
   {
     register const Quantum
-      *restrict p,
-      *restrict q;
+      *magick_restrict p,
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -1066,8 +1067,8 @@ static MagickBooleanType GetPeakAbsoluteDistortion(const Image *image,
       channel_distortion[MaxPixelChannels+1];
 
     register const Quantum
-      *restrict p,
-      *restrict q;
+      *magick_restrict p,
+      *magick_restrict q;
 
     register ssize_t
       j,
@@ -1603,8 +1604,8 @@ MagickExport MagickBooleanType IsImagesEqual(Image *image,
   for (y=0; y < (ssize_t) rows; y++)
   {
     register const Quantum
-      *restrict p,
-      *restrict q;
+      *magick_restrict p,
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -1794,7 +1795,7 @@ MagickExport Image *SimilarityImage(Image *image,const Image *reference,
       similarity;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;

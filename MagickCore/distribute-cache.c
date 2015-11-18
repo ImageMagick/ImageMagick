@@ -145,7 +145,7 @@
 */
 
 static inline MagickOffsetType dpc_read(int file,const MagickSizeType length,
-  unsigned char *restrict message)
+  unsigned char *magick_restrict message)
 {
   register MagickOffsetType
     i;
@@ -432,7 +432,7 @@ static MagickBooleanType DestroyDistributeCache(SplayTreeInfo *registry,
 }
 
 static inline MagickOffsetType dpc_send(int file,const MagickSizeType length,
-  const unsigned char *restrict message)
+  const unsigned char *magick_restrict message)
 {
   MagickOffsetType
     count;
@@ -1276,7 +1276,7 @@ MagickPrivate MagickOffsetType ReadDistributePixelCacheMetacontent(
 %
 %      MagickOffsetType ReadDistributePixelCachePixels(
 %        DistributeCacheInfo *server_info,const RectangleInfo *region,
-%        const MagickSizeType length,unsigned char *restrict pixels)
+%        const MagickSizeType length,unsigned char *magick_restrict pixels)
 %
 %  A description of each parameter follows:
 %
@@ -1293,7 +1293,7 @@ MagickPrivate MagickOffsetType ReadDistributePixelCacheMetacontent(
 */
 MagickPrivate MagickOffsetType ReadDistributePixelCachePixels(
   DistributeCacheInfo *server_info,const RectangleInfo *region,
-  const MagickSizeType length,unsigned char *restrict pixels)
+  const MagickSizeType length,unsigned char *magick_restrict pixels)
 {
   MagickOffsetType
     count;
@@ -1487,7 +1487,8 @@ MagickPrivate MagickOffsetType WriteDistributePixelCacheMetacontent(
 %
 %      MagickBooleanType WriteDistributePixelCachePixels(
 %        DistributeCacheInfo *server_info,const RectangleInfo *region,
-%        const MagickSizeType length,const unsigned char *restrict pixels)
+%        const MagickSizeType length,
+%        const unsigned char *magick_restrict pixels)
 %
 %  A description of each parameter follows:
 %
@@ -1504,7 +1505,7 @@ MagickPrivate MagickOffsetType WriteDistributePixelCacheMetacontent(
 */
 MagickPrivate MagickOffsetType WriteDistributePixelCachePixels(
   DistributeCacheInfo *server_info,const RectangleInfo *region,
-  const MagickSizeType length,const unsigned char *restrict pixels)
+  const MagickSizeType length,const unsigned char *magick_restrict pixels)
 {
   MagickOffsetType
     count;

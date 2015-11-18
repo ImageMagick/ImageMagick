@@ -217,10 +217,10 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
   while (s > segment_stack)
   {
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -327,10 +327,10 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -761,10 +761,10 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
   for (y=0; y < (ssize_t) linear_image->rows; y++)
   {
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register size_t
       *histogram;
@@ -955,7 +955,7 @@ MagickExport MagickBooleanType OpaquePaintImage(Image *image,
       pixel;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -1085,7 +1085,7 @@ MagickExport MagickBooleanType TransparentPaintImage(Image *image,
       x;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -1212,7 +1212,7 @@ MagickExport MagickBooleanType TransparentPaintImageChroma(Image *image,
       pixel;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;

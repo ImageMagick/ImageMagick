@@ -468,7 +468,7 @@ static MagickBooleanType DecodeLabImage(Image *image,ExceptionInfo *exception)
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -1641,7 +1641,7 @@ RestoreMSCWarning
             status;
 
           register Quantum
-            *restrict q;
+            *magick_restrict q;
 
           status=TIFFReadPixels(tiff,bits_per_sample,0,y,(char *) pixels);
           if (status == -1)
@@ -1698,7 +1698,7 @@ RestoreMSCWarning
             status;
 
           register Quantum
-            *restrict q;
+            *magick_restrict q;
 
           status=TIFFReadPixels(tiff,bits_per_sample,0,y,(char *) pixels);
           if (status == -1)
@@ -1730,7 +1730,7 @@ RestoreMSCWarning
           for (y=0; y < (ssize_t) image->rows; y++)
           {
             register Quantum
-              *restrict q;
+              *magick_restrict q;
 
             int
               status;
@@ -1785,7 +1785,7 @@ RestoreMSCWarning
             status;
 
           register Quantum
-            *restrict q;
+            *magick_restrict q;
 
           register ssize_t
             x;
@@ -1841,7 +1841,7 @@ RestoreMSCWarning
             x;
 
           register Quantum
-            *restrict q;
+            *magick_restrict q;
 
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
           if (q == (Quantum *) NULL)
@@ -1918,8 +1918,8 @@ RestoreMSCWarning
             x;
 
           register Quantum
-            *restrict q,
-            *restrict tile;
+            *magick_restrict q,
+            *magick_restrict tile;
 
           size_t
             columns_remaining,
@@ -2033,7 +2033,7 @@ RestoreMSCWarning
             x;
 
           register Quantum
-            *restrict q;
+            *magick_restrict q;
 
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
           if (q == (Quantum *) NULL)
@@ -2721,7 +2721,7 @@ static MagickBooleanType EncodeLabImage(Image *image,ExceptionInfo *exception)
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -3713,7 +3713,7 @@ RestoreMSCWarning
             for (y=0; y < (ssize_t) image->rows; y++)
             {
               register const Quantum
-                *restrict p;
+                *magick_restrict p;
 
               p=GetVirtualPixels(image,0,y,image->columns,1,exception);
               if (p == (const Quantum *) NULL)
@@ -3742,7 +3742,7 @@ RestoreMSCWarning
             for (y=0; y < (ssize_t) image->rows; y++)
             {
               register const Quantum
-                *restrict p;
+                *magick_restrict p;
 
               p=GetVirtualPixels(image,0,y,image->columns,1,exception);
               if (p == (const Quantum *) NULL)
@@ -3761,7 +3761,7 @@ RestoreMSCWarning
             for (y=0; y < (ssize_t) image->rows; y++)
             {
               register const Quantum
-                *restrict p;
+                *magick_restrict p;
 
               p=GetVirtualPixels(image,0,y,image->columns,1,exception);
               if (p == (const Quantum *) NULL)
@@ -3780,7 +3780,7 @@ RestoreMSCWarning
             for (y=0; y < (ssize_t) image->rows; y++)
             {
               register const Quantum
-                *restrict p;
+                *magick_restrict p;
 
               p=GetVirtualPixels(image,0,y,image->columns,1,exception);
               if (p == (const Quantum *) NULL)
@@ -3800,7 +3800,7 @@ RestoreMSCWarning
               for (y=0; y < (ssize_t) image->rows; y++)
               {
                 register const Quantum
-                  *restrict p;
+                  *magick_restrict p;
 
                 p=GetVirtualPixels(image,0,y,image->columns,1,exception);
                 if (p == (const Quantum *) NULL)
@@ -3834,7 +3834,7 @@ RestoreMSCWarning
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           register const Quantum
-            *restrict p;
+            *magick_restrict p;
 
           p=GetVirtualPixels(image,0,y,image->columns,1,exception);
           if (p == (const Quantum *) NULL)
@@ -3905,7 +3905,7 @@ RestoreMSCWarning
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           register const Quantum
-            *restrict p;
+            *magick_restrict p;
 
           p=GetVirtualPixels(image,0,y,image->columns,1,exception);
           if (p == (const Quantum *) NULL)

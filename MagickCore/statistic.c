@@ -436,10 +436,10 @@ MagickExport Image *EvaluateImages(const Image *images,
     progress;
 
   PixelChannels
-    **restrict evaluate_pixels;
+    **magick_restrict evaluate_pixels;
 
   RandomInfo
-    **restrict random_info;
+    **magick_restrict random_info;
 
   size_t
     number_images;
@@ -505,7 +505,7 @@ MagickExport Image *EvaluateImages(const Image *images,
           *evaluate_pixel;
 
         register Quantum
-          *restrict q;
+          *magick_restrict q;
 
         register ssize_t
           x;
@@ -611,7 +611,7 @@ MagickExport Image *EvaluateImages(const Image *images,
           *evaluate_pixel;
 
         register Quantum
-          *restrict q;
+          *magick_restrict q;
 
         ssize_t
           j;
@@ -767,7 +767,7 @@ MagickExport MagickBooleanType EvaluateImage(Image *image,
     progress;
 
   RandomInfo
-    **restrict random_info;
+    **magick_restrict random_info;
 
   ssize_t
     y;
@@ -800,7 +800,7 @@ MagickExport MagickBooleanType EvaluateImage(Image *image,
       id = GetOpenMPThreadId();
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -1025,7 +1025,7 @@ MagickExport MagickBooleanType FunctionImage(Image *image,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -1273,7 +1273,7 @@ MagickExport MagickBooleanType GetImageKurtosis(const Image *image,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register ssize_t
       x;
@@ -1523,7 +1523,7 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register ssize_t
       x;
@@ -1581,7 +1581,7 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register ssize_t
       x;
@@ -1917,7 +1917,7 @@ MagickExport MagickBooleanType GetImageRange(const Image *image,double *minima,
       row_initialize;
 
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register ssize_t
       x;
@@ -2077,7 +2077,7 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register ssize_t
       x;
@@ -2287,7 +2287,7 @@ MagickExport Image *PolynomialImage(const Image *images,
     progress;
 
   PixelChannels
-    **restrict polynomial_pixels;
+    **magick_restrict polynomial_pixels;
 
   size_t
     number_images;
@@ -2348,7 +2348,7 @@ MagickExport Image *PolynomialImage(const Image *images,
       *polynomial_pixel;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     ssize_t
       j;
@@ -2967,7 +2967,7 @@ MagickExport Image *StatisticImage(const Image *image,const StatisticType type,
     progress;
 
   PixelList
-    **restrict pixel_list;
+    **magick_restrict pixel_list;
 
   ssize_t
     center,
@@ -3017,10 +3017,10 @@ MagickExport Image *StatisticImage(const Image *image,const StatisticType type,
       id = GetOpenMPThreadId();
 
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -3047,7 +3047,7 @@ MagickExport Image *StatisticImage(const Image *image,const StatisticType type,
           pixel;
 
         register const Quantum
-          *restrict pixels;
+          *magick_restrict pixels;
 
         register ssize_t
           u;

@@ -429,7 +429,7 @@ static MagickBooleanType DecodeImage(Image *image,const ssize_t opacity,
       x;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     q=QueueAuthenticPixels(image,0,offset,image->columns,1,exception);
     if (q == (Quantum *) NULL)
@@ -649,7 +649,7 @@ static MagickBooleanType EncodeImage(const ImageInfo *image_info,Image *image,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register ssize_t
       x;

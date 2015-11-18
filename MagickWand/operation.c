@@ -1995,7 +1995,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
             *mask_image;
 
           register Quantum
-            *restrict q;
+            *magick_restrict q;
 
           register ssize_t
             x;

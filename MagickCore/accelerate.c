@@ -307,7 +307,7 @@ static Image *ComputeAddNoiseImage(const Image *image,
     *filteredImage;
 
   RandomInfo
-    **restrict random_info;
+    **magick_restrict random_info;
 
   size_t
     global_work_size[1],

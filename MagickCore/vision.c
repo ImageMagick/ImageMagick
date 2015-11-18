@@ -179,7 +179,7 @@ static MagickBooleanType MergeConnectedComponents(Image *image,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register ssize_t
       x;
@@ -241,7 +241,7 @@ static MagickBooleanType MergeConnectedComponents(Image *image,
     for (y=0; y < (ssize_t) bounding_box.height+2; y++)
     {
       register const Quantum
-        *restrict p;
+        *magick_restrict p;
 
       register ssize_t
         x;
@@ -275,7 +275,7 @@ static MagickBooleanType MergeConnectedComponents(Image *image,
     for (y=0; y < (ssize_t) bounding_box.height; y++)
     {
       register Quantum
-        *restrict q;
+        *magick_restrict q;
 
       register ssize_t
         x;
@@ -348,8 +348,8 @@ static MagickBooleanType StatisticsComponentsStatistics(const Image *image,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const Quantum
-      *restrict p,
-      *restrict q;
+      *magick_restrict p,
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -521,7 +521,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
     for (y=0; y < (ssize_t) image->rows; y++)
     {
       register const Quantum
-        *restrict p;
+        *magick_restrict p;
 
       register ssize_t
         x;
@@ -620,7 +620,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
   for (y=0; y < (ssize_t) component_image->rows; y++)
   {
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;

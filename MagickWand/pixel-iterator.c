@@ -922,7 +922,7 @@ WandExport MagickBooleanType PixelSyncIterator(PixelIterator *iterator)
     x;
 
   register Quantum
-    *restrict pixels;
+    *_magickcore_restrict pixels;
 
   assert(iterator != (const PixelIterator *) NULL);
   assert(iterator->signature == MagickWandSignature);

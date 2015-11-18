@@ -255,11 +255,11 @@ MagickExport MagickBooleanType DuplexTransferImageViewIterator(
       sync;
 
     register const Quantum
-      *restrict duplex_pixels,
-      *restrict pixels;
+      *magick_restrict duplex_pixels,
+      *magick_restrict pixels;
 
     register Quantum
-      *restrict destination_pixels;
+      *magick_restrict destination_pixels;
 
     if (status == MagickFalse)
       continue;
@@ -915,7 +915,7 @@ MagickExport MagickBooleanType SetImageViewIterator(ImageView *destination,
       sync;
 
     register Quantum
-      *restrict pixels;
+      *magick_restrict pixels;
 
     if (status == MagickFalse)
       continue;
@@ -1043,10 +1043,10 @@ MagickExport MagickBooleanType TransferImageViewIterator(ImageView *source,
       sync;
 
     register const Quantum
-      *restrict pixels;
+      *magick_restrict pixels;
 
     register Quantum
-      *restrict destination_pixels;
+      *magick_restrict destination_pixels;
 
     if (status == MagickFalse)
       continue;
@@ -1171,7 +1171,7 @@ MagickExport MagickBooleanType UpdateImageViewIterator(ImageView *source,
       id = GetOpenMPThreadId();
 
     register Quantum
-      *restrict pixels;
+      *magick_restrict pixels;
 
     if (status == MagickFalse)
       continue;

@@ -33,10 +33,11 @@ extern MagickPrivate void
   LocaleComponentTerminus(void);
 
 extern MagickPrivate ssize_t
-  FormatLocaleFileList(FILE *,const char *restrict,va_list)
+  FormatLocaleFileList(FILE *,const char *magick_restrict,va_list)
     magick_attribute((__format__ (__printf__,2,0))),
-  FormatLocaleStringList(char *restrict,const size_t,const char *restrict,
-    va_list) magick_attribute((__format__ (__printf__,3,0)));
+  FormatLocaleStringList(char *magick_restrict,const size_t,
+    const char *magick_restrict,va_list)
+    magick_attribute((__format__ (__printf__,3,0)));
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

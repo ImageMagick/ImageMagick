@@ -328,10 +328,10 @@ static MagickBooleanType CompositeOverImage(Image *image,
       *pixels;
 
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -874,10 +874,10 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           sync;
 
         register const Quantum
-          *restrict p;
+          *magick_restrict p;
 
         register Quantum
-          *restrict q;
+          *magick_restrict q;
 
         register ssize_t
           x;
@@ -1053,10 +1053,10 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           sync;
 
         register const Quantum
-          *restrict p;
+          *magick_restrict p;
 
         register Quantum
-          *restrict q;
+          *magick_restrict q;
 
         register ssize_t
           x;
@@ -1229,10 +1229,10 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       source_pixel;
 
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;

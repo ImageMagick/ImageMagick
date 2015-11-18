@@ -1140,7 +1140,7 @@ static void UniqueColorsToImage(Image *unique_image,CacheView *unique_view,
         *p;
 
       register Quantum
-        *restrict q;
+        *magick_restrict q;
 
       status=MagickTrue;
       p=node_info->list;

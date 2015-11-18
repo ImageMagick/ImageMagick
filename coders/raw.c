@@ -195,10 +195,10 @@ static Image *ReadRAWImage(const ImageInfo *image_info,ExceptionInfo *exception)
     for (y=0; y < (ssize_t) image->extract_info.height; y++)
     {
       register const Quantum
-        *restrict p;
+        *magick_restrict p;
 
       register Quantum
-        *restrict q;
+        *magick_restrict q;
 
       register ssize_t
         x;

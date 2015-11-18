@@ -206,7 +206,7 @@ MagickExport MagickBooleanType CycleColormapImage(Image *image,
       x;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     ssize_t
       index;
@@ -351,7 +351,7 @@ MagickExport MagickBooleanType SortColormapByIntensity(Image *image,
       x;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
     if (q == (Quantum *) NULL)

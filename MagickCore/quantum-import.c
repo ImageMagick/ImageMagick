@@ -92,7 +92,7 @@
 %
 %      size_t ImportQuantumPixels(const Image *image,CacheView *image_view,
 %        QuantumInfo *quantum_info,const QuantumType quantum_type,
-%        const unsigned char *restrict pixels,ExceptionInfo *exception)
+%        const unsigned char *magick_restrict pixels,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -121,7 +121,7 @@ static inline Quantum PushColormapIndex(const Image *image,const size_t index,
 }
 
 static inline const unsigned char *PushDoublePixel(QuantumInfo *quantum_info,
-  const unsigned char *restrict pixels,double *pixel)
+  const unsigned char *magick_restrict pixels,double *pixel)
 {
   double
     *p;
@@ -161,7 +161,7 @@ static inline const unsigned char *PushDoublePixel(QuantumInfo *quantum_info,
 }
 
 static inline const unsigned char *PushFloatPixel(QuantumInfo *quantum_info,
-  const unsigned char *restrict pixels,float *pixel)
+  const unsigned char *magick_restrict pixels,float *pixel)
 {
   float
     *p;
@@ -193,7 +193,7 @@ static inline const unsigned char *PushFloatPixel(QuantumInfo *quantum_info,
 }
 
 static inline const unsigned char *PushQuantumPixel(QuantumInfo *quantum_info,
-  const unsigned char *restrict pixels,unsigned int *quantum)
+  const unsigned char *magick_restrict pixels,unsigned int *quantum)
 {
   register ssize_t
     i;
@@ -222,7 +222,7 @@ static inline const unsigned char *PushQuantumPixel(QuantumInfo *quantum_info,
 }
 
 static inline const unsigned char *PushQuantumLongPixel(
-  QuantumInfo *quantum_info,const unsigned char *restrict pixels,
+  QuantumInfo *quantum_info,const unsigned char *magick_restrict pixels,
   unsigned int *quantum)
 {
   register ssize_t
@@ -252,8 +252,8 @@ static inline const unsigned char *PushQuantumLongPixel(
 }
 
 static void ImportAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
-  const MagickSizeType number_pixels,const unsigned char *restrict p,
-  Quantum *restrict q,ExceptionInfo *exception)
+  const MagickSizeType number_pixels,const unsigned char *magick_restrict p,
+  Quantum *magick_restrict q,ExceptionInfo *exception)
 {
   QuantumAny
     range;
@@ -369,8 +369,8 @@ static void ImportAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
 }
 
 static void ImportBGRQuantum(const Image *image,QuantumInfo *quantum_info,
-  const MagickSizeType number_pixels,const unsigned char *restrict p,
-  Quantum *restrict q,ExceptionInfo *exception)
+  const MagickSizeType number_pixels,const unsigned char *magick_restrict p,
+  Quantum *magick_restrict q,ExceptionInfo *exception)
 {
   QuantumAny
     range;
@@ -680,8 +680,8 @@ static void ImportBGRQuantum(const Image *image,QuantumInfo *quantum_info,
 }
 
 static void ImportBGRAQuantum(const Image *image,QuantumInfo *quantum_info,
-  const MagickSizeType number_pixels,const unsigned char *restrict p,
-  Quantum *restrict q,ExceptionInfo *exception)
+  const MagickSizeType number_pixels,const unsigned char *magick_restrict p,
+  Quantum *magick_restrict q,ExceptionInfo *exception)
 {
   QuantumAny
     range;
@@ -914,8 +914,8 @@ static void ImportBGRAQuantum(const Image *image,QuantumInfo *quantum_info,
 }
 
 static void ImportBGROQuantum(const Image *image,QuantumInfo *quantum_info,
-  const MagickSizeType number_pixels,const unsigned char *restrict p,
-  Quantum *restrict q,ExceptionInfo *exception)
+  const MagickSizeType number_pixels,const unsigned char *magick_restrict p,
+  Quantum *magick_restrict q,ExceptionInfo *exception)
 {
   QuantumAny
     range;
@@ -1148,8 +1148,8 @@ static void ImportBGROQuantum(const Image *image,QuantumInfo *quantum_info,
 }
 
 static void ImportBlackQuantum(const Image *image,QuantumInfo *quantum_info,
-  const MagickSizeType number_pixels,const unsigned char *restrict p,
-  Quantum *restrict q,ExceptionInfo *exception)
+  const MagickSizeType number_pixels,const unsigned char *magick_restrict p,
+  Quantum *magick_restrict q,ExceptionInfo *exception)
 {
   QuantumAny
     range;
@@ -1269,8 +1269,8 @@ static void ImportBlackQuantum(const Image *image,QuantumInfo *quantum_info,
 }
 
 static void ImportBlueQuantum(const Image *image,QuantumInfo *quantum_info,
-  const MagickSizeType number_pixels,const unsigned char *restrict p,
-  Quantum *restrict q,ExceptionInfo *exception)
+  const MagickSizeType number_pixels,const unsigned char *magick_restrict p,
+  Quantum *magick_restrict q,ExceptionInfo *exception)
 {
   QuantumAny
     range;
@@ -1386,8 +1386,8 @@ static void ImportBlueQuantum(const Image *image,QuantumInfo *quantum_info,
 }
 
 static void ImportCbYCrYQuantum(const Image *image,QuantumInfo *quantum_info,
-  const MagickSizeType number_pixels,const unsigned char *restrict p,
-  Quantum *restrict q,ExceptionInfo *exception)
+  const MagickSizeType number_pixels,const unsigned char *magick_restrict p,
+  Quantum *magick_restrict q,ExceptionInfo *exception)
 {
   QuantumAny
     range;
@@ -1480,8 +1480,8 @@ static void ImportCbYCrYQuantum(const Image *image,QuantumInfo *quantum_info,
 }
 
 static void ImportCMYKQuantum(const Image *image,QuantumInfo *quantum_info,
-  const MagickSizeType number_pixels,const unsigned char *restrict p,
-  Quantum *restrict q,ExceptionInfo *exception)
+  const MagickSizeType number_pixels,const unsigned char *magick_restrict p,
+  Quantum *magick_restrict q,ExceptionInfo *exception)
 {
   QuantumAny
     range;
@@ -1645,8 +1645,8 @@ static void ImportCMYKQuantum(const Image *image,QuantumInfo *quantum_info,
 }
 
 static void ImportCMYKAQuantum(const Image *image,QuantumInfo *quantum_info,
-  const MagickSizeType number_pixels,const unsigned char *restrict p,
-  Quantum *restrict q,ExceptionInfo *exception)
+  const MagickSizeType number_pixels,const unsigned char *magick_restrict p,
+  Quantum *magick_restrict q,ExceptionInfo *exception)
 {
   QuantumAny
     range;
@@ -1826,8 +1826,8 @@ static void ImportCMYKAQuantum(const Image *image,QuantumInfo *quantum_info,
 }
 
 static void ImportCMYKOQuantum(const Image *image,QuantumInfo *quantum_info,
-  const MagickSizeType number_pixels,const unsigned char *restrict p,
-  Quantum *restrict q,ExceptionInfo *exception)
+  const MagickSizeType number_pixels,const unsigned char *magick_restrict p,
+  Quantum *magick_restrict q,ExceptionInfo *exception)
 {
   QuantumAny
     range;
@@ -2007,8 +2007,8 @@ static void ImportCMYKOQuantum(const Image *image,QuantumInfo *quantum_info,
 }
 
 static void ImportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
-  const MagickSizeType number_pixels,const unsigned char *restrict p,
-  Quantum *restrict q,ExceptionInfo *exception)
+  const MagickSizeType number_pixels,const unsigned char *magick_restrict p,
+  Quantum *magick_restrict q,ExceptionInfo *exception)
 {
   QuantumAny
     range;
@@ -2321,8 +2321,8 @@ static void ImportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
 }
 
 static void ImportGrayAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
-  const MagickSizeType number_pixels,const unsigned char *restrict p,
-  Quantum *restrict q,ExceptionInfo *exception)
+  const MagickSizeType number_pixels,const unsigned char *magick_restrict p,
+  Quantum *magick_restrict q,ExceptionInfo *exception)
 {
   QuantumAny
     range;
@@ -2532,8 +2532,8 @@ static void ImportGrayAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
 }
 
 static void ImportGreenQuantum(const Image *image,QuantumInfo *quantum_info,
-  const MagickSizeType number_pixels,const unsigned char *restrict p,
-  Quantum *restrict q,ExceptionInfo *exception)
+  const MagickSizeType number_pixels,const unsigned char *magick_restrict p,
+  Quantum *magick_restrict q,ExceptionInfo *exception)
 {
   QuantumAny
     range;
@@ -2649,8 +2649,8 @@ static void ImportGreenQuantum(const Image *image,QuantumInfo *quantum_info,
 }
 
 static void ImportIndexQuantum(const Image *image,QuantumInfo *quantum_info,
-  const MagickSizeType number_pixels,const unsigned char *restrict p,
-  Quantum *restrict q,ExceptionInfo *exception)
+  const MagickSizeType number_pixels,const unsigned char *magick_restrict p,
+  Quantum *magick_restrict q,ExceptionInfo *exception)
 {
   MagickBooleanType
     range_exception;
@@ -2859,7 +2859,8 @@ static void ImportIndexQuantum(const Image *image,QuantumInfo *quantum_info,
 
 static void ImportIndexAlphaQuantum(const Image *image,
   QuantumInfo *quantum_info,const MagickSizeType number_pixels,
-  const unsigned char *restrict p,Quantum *restrict q,ExceptionInfo *exception)
+  const unsigned char *magick_restrict p,Quantum *magick_restrict q,
+  ExceptionInfo *exception)
 {
   MagickBooleanType
     range_exception;
@@ -3075,8 +3076,8 @@ static void ImportIndexAlphaQuantum(const Image *image,
 }
 
 static void ImportOpacityQuantum(const Image *image,QuantumInfo *quantum_info,
-  const MagickSizeType number_pixels,const unsigned char *restrict p,
-  Quantum *restrict q,ExceptionInfo *exception)
+  const MagickSizeType number_pixels,const unsigned char *magick_restrict p,
+  Quantum *magick_restrict q,ExceptionInfo *exception)
 {
   QuantumAny
     range;
@@ -3192,8 +3193,8 @@ static void ImportOpacityQuantum(const Image *image,QuantumInfo *quantum_info,
 }
 
 static void ImportRedQuantum(const Image *image,QuantumInfo *quantum_info,
-  const MagickSizeType number_pixels,const unsigned char *restrict p,
-  Quantum *restrict q,ExceptionInfo *exception)
+  const MagickSizeType number_pixels,const unsigned char *magick_restrict p,
+  Quantum *magick_restrict q,ExceptionInfo *exception)
 {
   QuantumAny
     range;
@@ -3309,8 +3310,8 @@ static void ImportRedQuantum(const Image *image,QuantumInfo *quantum_info,
 }
 
 static void ImportRGBQuantum(const Image *image,QuantumInfo *quantum_info,
-  const MagickSizeType number_pixels,const unsigned char *restrict p,
-  Quantum *restrict q,ExceptionInfo *exception)
+  const MagickSizeType number_pixels,const unsigned char *magick_restrict p,
+  Quantum *magick_restrict q,ExceptionInfo *exception)
 {
   QuantumAny
     range;
@@ -3620,8 +3621,8 @@ static void ImportRGBQuantum(const Image *image,QuantumInfo *quantum_info,
 }
 
 static void ImportRGBAQuantum(const Image *image,QuantumInfo *quantum_info,
-  const MagickSizeType number_pixels,const unsigned char *restrict p,
-  Quantum *restrict q,ExceptionInfo *exception)
+  const MagickSizeType number_pixels,const unsigned char *magick_restrict p,
+  Quantum *magick_restrict q,ExceptionInfo *exception)
 {
   QuantumAny
     range;
@@ -3854,8 +3855,8 @@ static void ImportRGBAQuantum(const Image *image,QuantumInfo *quantum_info,
 }
 
 static void ImportRGBOQuantum(const Image *image,QuantumInfo *quantum_info,
-  const MagickSizeType number_pixels,const unsigned char *restrict p,
-  Quantum *restrict q,ExceptionInfo *exception)
+  const MagickSizeType number_pixels,const unsigned char *magick_restrict p,
+  Quantum *magick_restrict q,ExceptionInfo *exception)
 {
   QuantumAny
     range;
@@ -4089,20 +4090,20 @@ static void ImportRGBOQuantum(const Image *image,QuantumInfo *quantum_info,
 
 MagickExport size_t ImportQuantumPixels(const Image *image,
   CacheView *image_view,QuantumInfo *quantum_info,
-  const QuantumType quantum_type,const unsigned char *restrict pixels,
+  const QuantumType quantum_type,const unsigned char *magick_restrict pixels,
   ExceptionInfo *exception)
 {
   MagickSizeType
     number_pixels;
 
   register const unsigned char
-    *restrict p;
+    *magick_restrict p;
 
   register ssize_t
     x;
 
   register Quantum
-    *restrict q;
+    *magick_restrict q;
 
   size_t
     extent;
@@ -4245,7 +4246,7 @@ MagickExport size_t ImportQuantumPixels(const Image *image,
         quantum;
 
       register Quantum
-        *restrict q;
+        *magick_restrict q;
 
       q=GetAuthenticPixelQueue(image);
       if (image_view != (CacheView *) NULL)
@@ -4265,7 +4266,7 @@ MagickExport size_t ImportQuantumPixels(const Image *image,
         Sa;
 
       register Quantum
-        *restrict q;
+        *magick_restrict q;
 
       /*
         Disassociate alpha.

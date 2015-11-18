@@ -237,20 +237,20 @@ extern MagickPrivate const Quantum
   *GetVirtualPixelsFromNexus(const Image *,const VirtualPixelMethod,
     const ssize_t,const ssize_t,const size_t,const size_t,NexusInfo *,
     ExceptionInfo *) magick_hot_spot,
-  *GetVirtualPixelsNexus(const Cache,NexusInfo *restrict);
+  *GetVirtualPixelsNexus(const Cache,NexusInfo *magick_restrict);
 
 extern MagickPrivate const void
   *AcquirePixelCachePixels(const Image *,MagickSizeType *,ExceptionInfo *),
-  *GetVirtualMetacontentFromNexus(const Cache,NexusInfo *restrict);
+  *GetVirtualMetacontentFromNexus(const Cache,NexusInfo *magick_restrict);
 
 extern MagickPrivate MagickBooleanType
   CacheComponentGenesis(void),
-  SyncAuthenticPixelCacheNexus(Image *,NexusInfo *restrict,ExceptionInfo *)
-    magick_hot_spot,
+  SyncAuthenticPixelCacheNexus(Image *,NexusInfo *magick_restrict,
+    ExceptionInfo *) magick_hot_spot,
   SyncImagePixelCache(Image *,ExceptionInfo *);
 
 extern MagickPrivate MagickSizeType
-  GetPixelCacheNexusExtent(const Cache,NexusInfo *restrict);
+  GetPixelCacheNexusExtent(const Cache,NexusInfo *magick_restrict);
 
 extern MagickPrivate NexusInfo
   **AcquirePixelCacheNexus(const size_t),

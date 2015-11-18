@@ -1430,7 +1430,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
             fill_color;
 
           register Quantum
-            *restrict q;
+            *magick_restrict q;
 
           register ssize_t
             x;
@@ -1850,7 +1850,7 @@ static MagickBooleanType RenderPostscript(Image *image,
           x;
 
         register Quantum
-          *restrict q;
+          *magick_restrict q;
 
         q=GetCacheViewAuthenticPixels(annotate_view,0,y,annotate_image->columns,
           1,exception);

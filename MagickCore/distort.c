@@ -2297,7 +2297,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
       zero;
 
     ResampleFilter
-      **restrict resample_filter;
+      **magick_restrict resample_filter;
 
     ssize_t
       j;
@@ -2335,7 +2335,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
         i;
 
       register Quantum
-        *restrict q;
+        *magick_restrict q;
 
       q=QueueCacheViewAuthenticPixels(distort_view,0,j,distort_image->columns,1,
         exception);
@@ -3046,7 +3046,7 @@ MagickExport Image *SparseColorImage(const Image *image,
         i;
 
       register Quantum
-        *restrict q;
+        *magick_restrict q;
 
       q=GetCacheViewAuthenticPixels(sparse_view,0,j,sparse_image->columns,
         1,exception);

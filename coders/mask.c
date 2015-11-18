@@ -247,10 +247,10 @@ static Image *MaskImage(const Image *image,ExceptionInfo *exception)
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;

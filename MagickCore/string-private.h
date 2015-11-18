@@ -39,8 +39,8 @@ static inline double SiPrefixToDoubleInterval(const char *string,
   return(value);
 }
 
-static inline double StringToDouble(const char *restrict string,
-  char **restrict sentinal)
+static inline double StringToDouble(const char *magick_restrict string,
+  char **magick_restrict sentinal)
 {
   return(InterpretLocaleValue(string,sentinal));
 }
@@ -60,17 +60,18 @@ static inline double StringToDoubleInterval(const char *string,
   return(value);
 }
 
-static inline int StringToInteger(const char *restrict value)
+static inline int StringToInteger(const char *magick_restrict value)
 {
   return((int) strtol(value,(char **) NULL,10));
 }
 
-static inline long StringToLong(const char *restrict value)
+static inline long StringToLong(const char *magick_restrict value)
 {
   return(strtol(value,(char **) NULL,10));
 }
 
-static inline unsigned long StringToUnsignedLong(const char *restrict value)
+static inline unsigned long StringToUnsignedLong(
+  const char *magick_restrict value)
 {
   return(strtoul(value,(char **) NULL,10));
 }

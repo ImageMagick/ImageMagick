@@ -186,7 +186,7 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
       bounding_box;
 
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register ssize_t
       x;
@@ -395,7 +395,7 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
           id = GetOpenMPThreadId();
 
         register const Quantum
-          *restrict p;
+          *magick_restrict p;
 
         register ssize_t
           x;
@@ -452,7 +452,7 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
       id = GetOpenMPThreadId();
 
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register ssize_t
       x;
@@ -1079,7 +1079,7 @@ MagickExport MagickBooleanType SetImageDepth(Image *image,
           x;
 
         register Quantum
-          *restrict q;
+          *magick_restrict q;
 
         if (status == MagickFalse)
           continue;
@@ -1144,7 +1144,7 @@ MagickExport MagickBooleanType SetImageDepth(Image *image,
       x;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     if (status == MagickFalse)
       continue;

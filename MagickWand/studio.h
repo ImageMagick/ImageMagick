@@ -70,8 +70,12 @@ extern "C" {
 #  include <stdlib.h>
 # endif
 #endif
-#if defined(_magickcore_restrict) && !defined(restrict)
-# define restrict  _magickcore_restrict
+#if !defined(magick_restrict)
+# if !defined(_magickcore_restrict)
+#  define magick_restrict restrict
+# else
+#  define magick_restrict _magickcore_restrict
+# endif
 #endif
 #if defined(MAGICKCORE_HAVE_STRING_H)
 # if !defined(STDC_HEADERS) && defined(MAGICKCORE_HAVE_MEMORY_H)

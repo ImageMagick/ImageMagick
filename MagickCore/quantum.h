@@ -170,10 +170,10 @@ extern MagickExport QuantumType
 
 extern MagickExport size_t
   ExportQuantumPixels(const Image *,CacheView *,QuantumInfo *,const QuantumType,
-    unsigned char *restrict,ExceptionInfo *),
+    unsigned char *magick_restrict,ExceptionInfo *),
   GetQuantumExtent(const Image *,const QuantumInfo *,const QuantumType),
   ImportQuantumPixels(const Image *,CacheView *,QuantumInfo *,const QuantumType,
-    const unsigned char *restrict,ExceptionInfo *);
+    const unsigned char *magick_restrict,ExceptionInfo *);
 
 extern MagickExport unsigned char
   *GetQuantumPixels(const QuantumInfo *);

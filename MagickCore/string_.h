@@ -56,7 +56,7 @@ extern MagickExport const char
   *GetStringInfoPath(const StringInfo *);
 
 extern MagickExport double
-  InterpretSiPrefixValue(const char *restrict,char **restrict),
+  InterpretSiPrefixValue(const char *magick_restrict,char **magick_restrict),
   *StringToArrayOfDoubles(const char *,ssize_t *,ExceptionInfo *);
 
 extern MagickExport int

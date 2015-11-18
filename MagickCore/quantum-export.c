@@ -91,7 +91,7 @@
 %
 %      size_t ExportQuantumPixels(const Image *image,CacheView *image_view,
 %        QuantumInfo *quantum_info,const QuantumType quantum_type,
-%        unsigned char *restrict pixels,ExceptionInfo *exception)
+%        unsigned char *magick_restrict pixels,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -111,7 +111,7 @@
 */
 
 static inline unsigned char *PopDoublePixel(QuantumInfo *quantum_info,
-  const double pixel,unsigned char *restrict pixels)
+  const double pixel,unsigned char *magick_restrict pixels)
 {
   double
     *p;
@@ -146,7 +146,7 @@ static inline unsigned char *PopDoublePixel(QuantumInfo *quantum_info,
 }
 
 static inline unsigned char *PopFloatPixel(QuantumInfo *quantum_info,
-  const float pixel,unsigned char *restrict pixels)
+  const float pixel,unsigned char *magick_restrict pixels)
 {
   float
     *p;
@@ -174,7 +174,7 @@ static inline unsigned char *PopFloatPixel(QuantumInfo *quantum_info,
 }
 
 static inline unsigned char *PopQuantumPixel(QuantumInfo *quantum_info,
-  const QuantumAny pixel,unsigned char *restrict pixels)
+  const QuantumAny pixel,unsigned char *magick_restrict pixels)
 {
   register ssize_t
     i;
@@ -207,7 +207,7 @@ static inline unsigned char *PopQuantumPixel(QuantumInfo *quantum_info,
 }
 
 static inline unsigned char *PopQuantumLongPixel(QuantumInfo *quantum_info,
-  const size_t pixel,unsigned char *restrict pixels)
+  const size_t pixel,unsigned char *magick_restrict pixels)
 {
   register ssize_t
     i;
@@ -239,8 +239,8 @@ static inline unsigned char *PopQuantumLongPixel(QuantumInfo *quantum_info,
 }
 
 static void ExportAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
-  const MagickSizeType number_pixels,const Quantum *restrict p,
-  unsigned char *restrict q,ExceptionInfo *exception)
+  const MagickSizeType number_pixels,const Quantum *magick_restrict p,
+  unsigned char *magick_restrict q,ExceptionInfo *exception)
 {
   QuantumAny
     range;
@@ -344,8 +344,8 @@ static void ExportAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
 }
 
 static void ExportBGRQuantum(const Image *image,QuantumInfo *quantum_info,
-  const MagickSizeType number_pixels,const Quantum *restrict p,
-  unsigned char *restrict q,ExceptionInfo *exception)
+  const MagickSizeType number_pixels,const Quantum *magick_restrict p,
+  unsigned char *magick_restrict q,ExceptionInfo *exception)
 {
   QuantumAny
     range;
@@ -643,8 +643,8 @@ static void ExportBGRQuantum(const Image *image,QuantumInfo *quantum_info,
 }
 
 static void ExportBGRAQuantum(const Image *image,QuantumInfo *quantum_info,
-  const MagickSizeType number_pixels,const Quantum *restrict p,
-  unsigned char *restrict q,ExceptionInfo *exception)
+  const MagickSizeType number_pixels,const Quantum *magick_restrict p,
+  unsigned char *magick_restrict q,ExceptionInfo *exception)
 {
   QuantumAny
     range;
@@ -887,8 +887,8 @@ static void ExportBGRAQuantum(const Image *image,QuantumInfo *quantum_info,
 }
 
 static void ExportBGROQuantum(const Image *image,QuantumInfo *quantum_info,
-  const MagickSizeType number_pixels,const Quantum *restrict p,
-  unsigned char *restrict q,ExceptionInfo *exception)
+  const MagickSizeType number_pixels,const Quantum *magick_restrict p,
+  unsigned char *magick_restrict q,ExceptionInfo *exception)
 {
   QuantumAny
     range;
@@ -1131,8 +1131,8 @@ static void ExportBGROQuantum(const Image *image,QuantumInfo *quantum_info,
 }
 
 static void ExportBlackQuantum(const Image *image,QuantumInfo *quantum_info,
-  const MagickSizeType number_pixels,const Quantum *restrict p,
-  unsigned char *restrict q,ExceptionInfo *exception)
+  const MagickSizeType number_pixels,const Quantum *magick_restrict p,
+  unsigned char *magick_restrict q,ExceptionInfo *exception)
 {
   QuantumAny
     range;
@@ -1240,8 +1240,8 @@ static void ExportBlackQuantum(const Image *image,QuantumInfo *quantum_info,
 }
 
 static void ExportBlueQuantum(const Image *image,QuantumInfo *quantum_info,
-  const MagickSizeType number_pixels,const Quantum *restrict p,
-  unsigned char *restrict q,ExceptionInfo *exception)
+  const MagickSizeType number_pixels,const Quantum *magick_restrict p,
+  unsigned char *magick_restrict q,ExceptionInfo *exception)
 {
   QuantumAny
     range;
@@ -1345,8 +1345,8 @@ static void ExportBlueQuantum(const Image *image,QuantumInfo *quantum_info,
 }
 
 static void ExportCbYCrYQuantum(const Image *image,QuantumInfo *quantum_info,
-  const MagickSizeType number_pixels,const Quantum *restrict p,
-  unsigned char *restrict q,ExceptionInfo *exception)
+  const MagickSizeType number_pixels,const Quantum *magick_restrict p,
+  unsigned char *magick_restrict q,ExceptionInfo *exception)
 {
   Quantum
     cbcr[4];
@@ -1460,8 +1460,8 @@ static void ExportCbYCrYQuantum(const Image *image,QuantumInfo *quantum_info,
 }
 
 static void ExportCMYKQuantum(const Image *image,QuantumInfo *quantum_info,
-  const MagickSizeType number_pixels,const Quantum *restrict p,
-  unsigned char *restrict q,ExceptionInfo *exception)
+  const MagickSizeType number_pixels,const Quantum *magick_restrict p,
+  unsigned char *magick_restrict q,ExceptionInfo *exception)
 {
   register ssize_t
     x;
@@ -1605,8 +1605,8 @@ static void ExportCMYKQuantum(const Image *image,QuantumInfo *quantum_info,
 }
 
 static void ExportCMYKAQuantum(const Image *image,QuantumInfo *quantum_info,
-  const MagickSizeType number_pixels,const Quantum *restrict p,
-  unsigned char *restrict q,ExceptionInfo *exception)
+  const MagickSizeType number_pixels,const Quantum *magick_restrict p,
+  unsigned char *magick_restrict q,ExceptionInfo *exception)
 {
   register ssize_t
     x;
@@ -1770,8 +1770,8 @@ static void ExportCMYKAQuantum(const Image *image,QuantumInfo *quantum_info,
 }
 
 static void ExportCMYKOQuantum(const Image *image,QuantumInfo *quantum_info,
-  const MagickSizeType number_pixels,const Quantum *restrict p,
-  unsigned char *restrict q,ExceptionInfo *exception)
+  const MagickSizeType number_pixels,const Quantum *magick_restrict p,
+  unsigned char *magick_restrict q,ExceptionInfo *exception)
 {
   register ssize_t
     x;
@@ -1935,8 +1935,8 @@ static void ExportCMYKOQuantum(const Image *image,QuantumInfo *quantum_info,
 }
 
 static void ExportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
-  const MagickSizeType number_pixels,const Quantum *restrict p,
-  unsigned char *restrict q,ExceptionInfo *exception)
+  const MagickSizeType number_pixels,const Quantum *magick_restrict p,
+  unsigned char *magick_restrict q,ExceptionInfo *exception)
 {
   QuantumAny
     range;
@@ -2193,8 +2193,8 @@ static void ExportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
 }
 
 static void ExportGrayAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
-  const MagickSizeType number_pixels,const Quantum *restrict p,
-  unsigned char *restrict q,ExceptionInfo *exception)
+  const MagickSizeType number_pixels,const Quantum *magick_restrict p,
+  unsigned char *magick_restrict q,ExceptionInfo *exception)
 {
   QuantumAny
     range;
@@ -2399,8 +2399,8 @@ static void ExportGrayAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
 }
 
 static void ExportGreenQuantum(const Image *image,QuantumInfo *quantum_info,
-  const MagickSizeType number_pixels,const Quantum *restrict p,
-  unsigned char *restrict q,ExceptionInfo *exception)
+  const MagickSizeType number_pixels,const Quantum *magick_restrict p,
+  unsigned char *magick_restrict q,ExceptionInfo *exception)
 {
   QuantumAny
     range;
@@ -2504,8 +2504,8 @@ static void ExportGreenQuantum(const Image *image,QuantumInfo *quantum_info,
 }
 
 static void ExportIndexQuantum(const Image *image,QuantumInfo *quantum_info,
-  const MagickSizeType number_pixels,const Quantum *restrict p,
-  unsigned char *restrict q,ExceptionInfo *exception)
+  const MagickSizeType number_pixels,const Quantum *magick_restrict p,
+  unsigned char *magick_restrict q,ExceptionInfo *exception)
 {
   register ssize_t
     x;
@@ -2672,7 +2672,8 @@ static void ExportIndexQuantum(const Image *image,QuantumInfo *quantum_info,
 
 static void ExportIndexAlphaQuantum(const Image *image,
   QuantumInfo *quantum_info,const MagickSizeType number_pixels,
-  const Quantum *restrict p,unsigned char *restrict q,ExceptionInfo *exception)
+  const Quantum *magick_restrict p,unsigned char *magick_restrict q,
+  ExceptionInfo *exception)
 {
   register ssize_t
     x;
@@ -2866,8 +2867,8 @@ static void ExportIndexAlphaQuantum(const Image *image,
 }
 
 static void ExportOpacityQuantum(const Image *image,QuantumInfo *quantum_info,
-  const MagickSizeType number_pixels,const Quantum *restrict p,
-  unsigned char *restrict q,ExceptionInfo *exception)
+  const MagickSizeType number_pixels,const Quantum *magick_restrict p,
+  unsigned char *magick_restrict q,ExceptionInfo *exception)
 {
   QuantumAny
     range;
@@ -2971,8 +2972,8 @@ static void ExportOpacityQuantum(const Image *image,QuantumInfo *quantum_info,
 }
 
 static void ExportRedQuantum(const Image *image,QuantumInfo *quantum_info,
-  const MagickSizeType number_pixels,const Quantum *restrict p,
-  unsigned char *restrict q,ExceptionInfo *exception)
+  const MagickSizeType number_pixels,const Quantum *magick_restrict p,
+  unsigned char *magick_restrict q,ExceptionInfo *exception)
 {
   QuantumAny
     range;
@@ -3076,8 +3077,8 @@ static void ExportRedQuantum(const Image *image,QuantumInfo *quantum_info,
 }
 
 static void ExportRGBQuantum(const Image *image,QuantumInfo *quantum_info,
-  const MagickSizeType number_pixels,const Quantum *restrict p,
-  unsigned char *restrict q,ExceptionInfo *exception)
+  const MagickSizeType number_pixels,const Quantum *magick_restrict p,
+  unsigned char *magick_restrict q,ExceptionInfo *exception)
 {
   QuantumAny
     range;
@@ -3375,8 +3376,8 @@ static void ExportRGBQuantum(const Image *image,QuantumInfo *quantum_info,
 }
 
 static void ExportRGBAQuantum(const Image *image,QuantumInfo *quantum_info,
-  const MagickSizeType number_pixels,const Quantum *restrict p,
-  unsigned char *restrict q,ExceptionInfo *exception)
+  const MagickSizeType number_pixels,const Quantum *magick_restrict p,
+  unsigned char *magick_restrict q,ExceptionInfo *exception)
 {
   QuantumAny
     range;
@@ -3619,8 +3620,8 @@ static void ExportRGBAQuantum(const Image *image,QuantumInfo *quantum_info,
 }
 
 static void ExportRGBOQuantum(const Image *image,QuantumInfo *quantum_info,
-  const MagickSizeType number_pixels,const Quantum *restrict p,
-  unsigned char *restrict q,ExceptionInfo *exception)
+  const MagickSizeType number_pixels,const Quantum *magick_restrict p,
+  unsigned char *magick_restrict q,ExceptionInfo *exception)
 {
   QuantumAny
     range;
@@ -3864,20 +3865,20 @@ static void ExportRGBOQuantum(const Image *image,QuantumInfo *quantum_info,
 
 MagickExport size_t ExportQuantumPixels(const Image *image,
   CacheView *image_view,QuantumInfo *quantum_info,
-  const QuantumType quantum_type,unsigned char *restrict pixels,
+  const QuantumType quantum_type,unsigned char *magick_restrict pixels,
   ExceptionInfo *exception)
 {
   MagickSizeType
     number_pixels;
 
   register const Quantum
-    *restrict p;
+    *magick_restrict p;
 
   register ssize_t
     x;
 
   register unsigned char
-    *restrict q;
+    *magick_restrict q;
 
   size_t
     extent;
@@ -3906,7 +3907,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
         Sa;
 
       register Quantum
-        *restrict q;
+        *magick_restrict q;
 
       /*
         Associate alpha.
@@ -3942,7 +3943,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
         quantum;
 
       register Quantum
-        *restrict q;
+        *magick_restrict q;
 
       q=GetAuthenticPixelQueue(image);
       if (image_view != (CacheView *) NULL)
@@ -4075,7 +4076,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
         quantum;
 
       register Quantum
-        *restrict q;
+        *magick_restrict q;
 
       q=GetAuthenticPixelQueue(image);
       if (image_view != (CacheView *) NULL)

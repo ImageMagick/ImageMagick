@@ -330,13 +330,13 @@ static MagickBooleanType WriteAAIImage(const ImageInfo *image_info,Image *image,
     scene;
 
   register const Quantum
-    *restrict p;
+    *magick_restrict p;
 
   register ssize_t
     x;
 
   register unsigned char
-    *restrict q;
+    *magick_restrict q;
 
   ssize_t
     count,

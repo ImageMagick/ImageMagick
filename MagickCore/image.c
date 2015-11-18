@@ -556,10 +556,10 @@ MagickExport Image *AppendImages(const Image *images,
         pixel;
 
       register const Quantum
-        *restrict p;
+        *magick_restrict p;
 
       register Quantum
-        *restrict q;
+        *magick_restrict q;
 
       register ssize_t
         x;
@@ -1086,13 +1086,13 @@ MagickExport MagickBooleanType CopyImagePixels(Image *image,
       sync;
 
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register ssize_t
       x;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -1455,10 +1455,10 @@ MagickExport Image *GetImageMask(const Image *image,ExceptionInfo *exception)
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -2042,7 +2042,7 @@ MagickExport Image *NewMagickImage(const ImageInfo *image_info,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -2230,7 +2230,7 @@ MagickExport MagickBooleanType SetImageBackgroundColor(Image *image,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -2344,7 +2344,7 @@ MagickExport MagickBooleanType SetImageColor(Image *image,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -2956,10 +2956,10 @@ MagickExport MagickBooleanType SetImageMask(Image *image,const PixelMask type,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -3051,7 +3051,7 @@ MagickExport MagickBooleanType SetImageAlpha(Image *image,const Quantum alpha,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -3530,7 +3530,7 @@ MagickExport MagickBooleanType SyncImage(Image *image,ExceptionInfo *exception)
       index;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;

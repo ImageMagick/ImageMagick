@@ -542,13 +542,13 @@ static MagickBooleanType Classify(Image *image,short **extrema,
       *cluster;
 
     register const PixelInfo
-      *restrict p;
+      *magick_restrict p;
 
     register ssize_t
       x;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     if (status == MagickFalse)
       continue;

@@ -129,8 +129,8 @@ static void MatrixSignalHandler(int status)
 #endif
 
 static inline MagickOffsetType WriteMatrixElements(
-  const MatrixInfo *restrict matrix_info,const MagickOffsetType offset,
-  const MagickSizeType length,const unsigned char *restrict buffer)
+  const MatrixInfo *magick_restrict matrix_info,const MagickOffsetType offset,
+  const MagickSizeType length,const unsigned char *magick_restrict buffer)
 {
   register MagickOffsetType
     i;
@@ -169,7 +169,8 @@ static inline MagickOffsetType WriteMatrixElements(
   return(i);
 }
 
-static MagickBooleanType SetMatrixExtent(MatrixInfo *restrict matrix_info,
+static MagickBooleanType SetMatrixExtent(
+  MatrixInfo *magick_restrict matrix_info,
   MagickSizeType length)
 {
   MagickOffsetType
@@ -664,8 +665,8 @@ static inline ssize_t EdgeY(const ssize_t y,const size_t rows)
 }
 
 static inline MagickOffsetType ReadMatrixElements(
-  const MatrixInfo *restrict matrix_info,const MagickOffsetType offset,
-  const MagickSizeType length,unsigned char *restrict buffer)
+  const MatrixInfo *magick_restrict matrix_info,const MagickOffsetType offset,
+  const MagickSizeType length,unsigned char *magick_restrict buffer)
 {
   register MagickOffsetType
     i;
