@@ -461,7 +461,9 @@ static StringInfo *GenerateEntropicChaos(RandomInfo *random_info)
     file=mkstemp(path);
     if (file != -1)
       {
+#if defined(MAGICKCORE_HAVE_FCHMOD)
         (void) fchmod(file,0600);
+#endif
 #if defined(__OS2__)
         setmode(file,O_BINARY);
 #endif
