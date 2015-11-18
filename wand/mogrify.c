@@ -1058,7 +1058,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               *mask_image;
 
             register PixelPacket
-              *restrict q;
+              *magick_restrict q;
 
             register ssize_t
               x;

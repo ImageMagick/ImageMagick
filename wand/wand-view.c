@@ -305,21 +305,21 @@ WandExport MagickBooleanType DuplexTransferWandViewIterator(WandView *source,
       sync;
 
     register const IndexPacket
-      *restrict duplex_indexes,
-      *restrict indexes;
+      *magick_restrict duplex_indexes,
+      *magick_restrict indexes;
 
     register const PixelPacket
-      *restrict duplex_pixels,
-      *restrict pixels;
+      *magick_restrict duplex_pixels,
+      *magick_restrict pixels;
 
     register IndexPacket
-      *restrict destination_indexes;
+      *magick_restrict destination_indexes;
 
     register ssize_t
       x;
 
     register PixelPacket
-      *restrict destination_pixels;
+      *magick_restrict destination_pixels;
 
     if (status == MagickFalse)
       continue;
@@ -992,13 +992,13 @@ WandExport MagickBooleanType SetWandViewIterator(WandView *destination,
       sync;
 
     register IndexPacket
-      *restrict indexes;
+      *magick_restrict indexes;
 
     register ssize_t
       x;
 
     register PixelPacket
-      *restrict pixels;
+      *magick_restrict pixels;
 
     if (status == MagickFalse)
       continue;
@@ -1176,19 +1176,19 @@ WandExport MagickBooleanType TransferWandViewIterator(WandView *source,
       sync;
 
     register const IndexPacket
-      *restrict indexes;
+      *magick_restrict indexes;
 
     register const PixelPacket
-      *restrict pixels;
+      *magick_restrict pixels;
 
     register IndexPacket
-      *restrict destination_indexes;
+      *magick_restrict destination_indexes;
 
     register ssize_t
       x;
 
     register PixelPacket
-      *restrict destination_pixels;
+      *magick_restrict destination_pixels;
 
     if (status == MagickFalse)
       continue;
@@ -1348,13 +1348,13 @@ WandExport MagickBooleanType UpdateWandViewIterator(WandView *source,
       id = GetOpenMPThreadId();
 
     register IndexPacket
-      *restrict indexes;
+      *magick_restrict indexes;
 
     register ssize_t
       x;
 
     register PixelPacket
-      *restrict pixels;
+      *magick_restrict pixels;
 
     if (status == MagickFalse)
       continue;

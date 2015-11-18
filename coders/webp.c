@@ -139,7 +139,8 @@ static MagickBooleanType IsWEBP(const unsigned char *magick,const size_t length)
 %
 */
 
-static inline uint32_t ReadWebPLSBWord(const unsigned char *restrict data)
+static inline uint32_t ReadWebPLSBWord(
+  const unsigned char *magick_restrict data)
 {
   register const unsigned char
     *p;
@@ -230,10 +231,10 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
     configure;
 
   WebPDecBuffer
-    *restrict webp_image = &configure.output;
+    *magick_restrict webp_image = &configure.output;
 
   WebPBitstreamFeatures
-    *restrict features = &configure.input;
+    *magick_restrict features = &configure.input;
 
   /*
     Open image file.
@@ -518,7 +519,7 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
     *pixel_info;
 
   register uint32_t
-    *restrict q;
+    *magick_restrict q;
 
   ssize_t
     y;
@@ -663,7 +664,7 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const PixelPacket
-      *restrict p;
+      *magick_restrict p;
 
     register ssize_t
       x;

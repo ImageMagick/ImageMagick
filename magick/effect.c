@@ -285,17 +285,17 @@ MagickExport Image *AdaptiveBlurImageChannel(const Image *image,
   for (y=0; y < (ssize_t) blur_image->rows; y++)
   {
     register const IndexPacket
-      *restrict indexes;
+      *magick_restrict indexes;
 
     register const PixelPacket
-      *restrict p,
-      *restrict r;
+      *magick_restrict p,
+      *magick_restrict r;
 
     register IndexPacket
-      *restrict blur_indexes;
+      *magick_restrict blur_indexes;
 
     register PixelPacket
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -321,7 +321,7 @@ MagickExport Image *AdaptiveBlurImageChannel(const Image *image,
         pixel;
 
       register const double
-        *restrict k;
+        *magick_restrict k;
 
       register ssize_t
         i,
@@ -607,17 +607,17 @@ MagickExport Image *AdaptiveSharpenImageChannel(const Image *image,
   for (y=0; y < (ssize_t) sharp_image->rows; y++)
   {
     register const IndexPacket
-      *restrict indexes;
+      *magick_restrict indexes;
 
     register const PixelPacket
-      *restrict p,
-      *restrict r;
+      *magick_restrict p,
+      *magick_restrict r;
 
     register IndexPacket
-      *restrict sharp_indexes;
+      *magick_restrict sharp_indexes;
 
     register PixelPacket
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -643,7 +643,7 @@ MagickExport Image *AdaptiveSharpenImageChannel(const Image *image,
         pixel;
 
       register const double
-        *restrict k;
+        *magick_restrict k;
 
       register ssize_t
         i,
@@ -944,7 +944,7 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
 
 static void Hull(const Image *image,const ssize_t x_offset,
   const ssize_t y_offset,const size_t columns,const size_t rows,
-  const int polarity,Quantum *restrict f,Quantum *restrict g)
+  const int polarity,Quantum *magick_restrict f,Quantum *magick_restrict g)
 {
   register Quantum
     *p,
@@ -1057,8 +1057,8 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
     i;
 
   Quantum
-    *restrict buffer,
-    *restrict pixels;
+    *magick_restrict buffer,
+    *magick_restrict pixels;
 
   size_t
     length,
@@ -1134,10 +1134,10 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
     for (y=0; y < (ssize_t) image->rows; y++)
     {
       register const IndexPacket
-        *restrict indexes;
+        *magick_restrict indexes;
 
       register const PixelPacket
-        *restrict p;
+        *magick_restrict p;
 
       p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
       if (p == (const PixelPacket *) NULL)
@@ -1175,10 +1175,10 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
         sync;
 
       register IndexPacket
-        *restrict indexes;
+        *magick_restrict indexes;
 
       register PixelPacket
-        *restrict q;
+        *magick_restrict q;
 
       q=GetCacheViewAuthenticPixels(despeckle_view,0,y,despeckle_image->columns,
         1,exception);
@@ -1587,16 +1587,16 @@ MagickExport Image *FilterImageChannel(const Image *image,
       sync;
 
     register const IndexPacket
-      *restrict indexes;
+      *magick_restrict indexes;
 
     register const PixelPacket
-      *restrict p;
+      *magick_restrict p;
 
     register IndexPacket
-      *restrict filter_indexes;
+      *magick_restrict filter_indexes;
 
     register PixelPacket
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -1621,10 +1621,10 @@ MagickExport Image *FilterImageChannel(const Image *image,
         pixel;
 
       register const MagickRealType
-        *restrict k;
+        *magick_restrict k;
 
       register const PixelPacket
-        *restrict kernel_pixels;
+        *magick_restrict kernel_pixels;
 
       register ssize_t
         u;
@@ -1677,7 +1677,7 @@ MagickExport Image *FilterImageChannel(const Image *image,
               (image->colorspace == CMYKColorspace))
             {
               register const IndexPacket
-                *restrict kernel_indexes;
+                *magick_restrict kernel_indexes;
 
               k=filter_kernel;
               kernel_indexes=indexes;
@@ -1740,7 +1740,7 @@ MagickExport Image *FilterImageChannel(const Image *image,
               (image->colorspace == CMYKColorspace))
             {
               register const IndexPacket
-                *restrict kernel_indexes;
+                *magick_restrict kernel_indexes;
 
               k=filter_kernel;
               kernel_pixels=p;
@@ -2058,10 +2058,10 @@ MagickExport Image *MotionBlurImageChannel(const Image *image,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register IndexPacket
-      *restrict blur_indexes;
+      *magick_restrict blur_indexes;
 
     register PixelPacket
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -2085,10 +2085,10 @@ MagickExport Image *MotionBlurImageChannel(const Image *image,
         pixel;
 
       register const IndexPacket
-        *restrict indexes;
+        *magick_restrict indexes;
 
       register double
-        *restrict k;
+        *magick_restrict k;
 
       register ssize_t
         i;
@@ -2301,10 +2301,10 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
   for (y=0; y < (ssize_t) kuwahara_image->rows; y++)
   {
     register IndexPacket
-      *restrict kuwahara_indexes;
+      *magick_restrict kuwahara_indexes;
 
     register PixelPacket
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -2341,7 +2341,7 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
       for (i=0; i < 4; i++)
       {
         const PixelPacket
-          *restrict p;
+          *magick_restrict p;
 
         double
           variance;
@@ -2350,7 +2350,7 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
           mean;
 
         register const PixelPacket
-          *restrict k;
+          *magick_restrict k;
 
         register ssize_t
           n;
@@ -2576,7 +2576,7 @@ MagickExport Image *LocalContrastImage(const Image *image,const double radius,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       const PixelPacket
-        *restrict p;
+        *magick_restrict p;
 
       float
         *out,
@@ -2648,14 +2648,14 @@ MagickExport Image *LocalContrastImage(const Image *image,const double radius,
     for (y=0; y < (ssize_t) image->rows; y++)
     {
       const PixelPacket
-        *restrict p;
+        *magick_restrict p;
 
       float
         *pix,
         *pixels;
 
       register PixelPacket
-        *restrict q;
+        *magick_restrict q;
 
       register ssize_t
         x;
@@ -3381,13 +3381,13 @@ MagickExport Image *RotationalBlurImageChannel(const Image *image,
   for (y=0; y < (ssize_t) blur_image->rows; y++)
   {
     register const IndexPacket
-      *restrict indexes;
+      *magick_restrict indexes;
 
     register IndexPacket
-      *restrict blur_indexes;
+      *magick_restrict blur_indexes;
 
     register PixelPacket
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -3737,17 +3737,17 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
       sync;
 
     register const IndexPacket
-      *restrict indexes;
+      *magick_restrict indexes;
 
     register const PixelPacket
-      *restrict l,
-      *restrict p;
+      *magick_restrict l,
+      *magick_restrict p;
 
     register IndexPacket
-      *restrict blur_indexes;
+      *magick_restrict blur_indexes;
 
     register PixelPacket
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -3780,7 +3780,7 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
         intensity;
 
       register const double
-        *restrict k;
+        *magick_restrict k;
 
       register ssize_t
         u;
@@ -4089,13 +4089,13 @@ MagickExport Image *ShadeImage(const Image *image,const MagickBooleanType gray,
       normal;
 
     register const PixelPacket
-      *restrict p,
-      *restrict s0,
-      *restrict s1,
-      *restrict s2;
+      *magick_restrict p,
+      *magick_restrict s0,
+      *magick_restrict s1,
+      *magick_restrict s2;
 
     register PixelPacket
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -4366,7 +4366,7 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
     bias;
 
   RandomInfo
-    **restrict random_info;
+    **magick_restrict random_info;
 
   size_t
     width;
@@ -4422,10 +4422,10 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
       pixel;
 
     register IndexPacket
-      *restrict indexes;
+      *magick_restrict indexes;
 
     register PixelPacket
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -4596,16 +4596,16 @@ MagickExport Image *UnsharpMaskImageChannel(const Image *image,
       pixel;
 
     register const IndexPacket
-      *restrict indexes;
+      *magick_restrict indexes;
 
     register const PixelPacket
-      *restrict p;
+      *magick_restrict p;
 
     register IndexPacket
-      *restrict unsharp_indexes;
+      *magick_restrict unsharp_indexes;
 
     register PixelPacket
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;

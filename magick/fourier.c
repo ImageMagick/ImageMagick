@@ -229,14 +229,14 @@ MagickExport Image *ComplexImages(const Image *images,const ComplexOperator op,
   for (y=0; y < (ssize_t) images->rows; y++)
   {
     register const PixelPacket
-      *restrict Ai,
-      *restrict Ar,
-      *restrict Bi,
-      *restrict Br;
+      *magick_restrict Ai,
+      *magick_restrict Ar,
+      *magick_restrict Bi,
+      *magick_restrict Br;
 
     register PixelPacket
-      *restrict Ci,
-      *restrict Cr;
+      *magick_restrict Ci,
+      *magick_restrict Cr;
 
     register ssize_t
       x;

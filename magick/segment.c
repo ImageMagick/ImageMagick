@@ -540,16 +540,16 @@ static MagickBooleanType Classify(Image *image,short **extrema,
       *cluster;
 
     register const PixelPacket
-      *restrict p;
+      *magick_restrict p;
 
     register IndexPacket
-      *restrict indexes;
+      *magick_restrict indexes;
 
     register ssize_t
       x;
 
     register PixelPacket
-      *restrict q;
+      *magick_restrict q;
 
     if (status == MagickFalse)
       continue;

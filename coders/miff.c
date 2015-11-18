@@ -1371,13 +1371,13 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
     for (y=0; y < (ssize_t) image->rows; y++)
     {
       register IndexPacket
-        *restrict indexes;
+        *magick_restrict indexes;
 
       register ssize_t
         x;
 
       register PixelPacket
-        *restrict q;
+        *magick_restrict q;
 
       if (status == MagickFalse)
         break;
@@ -2459,10 +2459,10 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
     for (y=0; y < (ssize_t) image->rows; y++)
     {
       register const IndexPacket
-        *restrict indexes;
+        *magick_restrict indexes;
 
       register const PixelPacket
-        *restrict p;
+        *magick_restrict p;
 
       register ssize_t
         x;

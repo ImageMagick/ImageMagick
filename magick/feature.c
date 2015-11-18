@@ -322,7 +322,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
   for (y=0; y < (ssize_t) edge_image->rows; y++)
   {
     register const PixelPacket
-      *restrict p;
+      *magick_restrict p;
 
     register ssize_t
       x;
@@ -346,7 +346,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
         dy;
 
       register const PixelPacket
-        *restrict kernel_pixels;
+        *magick_restrict kernel_pixels;
 
       ssize_t
         v;
@@ -434,7 +434,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
   for (y=0; y < (ssize_t) edge_image->rows; y++)
   {
     register PixelPacket
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -554,7 +554,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
         pixel;
 
       register const PixelPacket
-        *restrict p;
+        *magick_restrict p;
 
       /*
         Edge if pixel gradient higher than upper threshold.
@@ -720,10 +720,10 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const IndexPacket
-      *restrict indexes;
+      *magick_restrict indexes;
 
     register const PixelPacket
-      *restrict p;
+      *magick_restrict p;
 
     register ssize_t
       x;
@@ -895,10 +895,10 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const IndexPacket
-      *restrict indexes;
+      *magick_restrict indexes;
 
     register const PixelPacket
-      *restrict p;
+      *magick_restrict p;
 
     register ssize_t
       x;
@@ -1861,7 +1861,7 @@ MagickExport Image *HoughLineImage(const Image *image,const size_t width,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const PixelPacket
-      *restrict p;
+      *magick_restrict p;
 
     register ssize_t
       x;
@@ -2153,13 +2153,13 @@ MagickExport Image *MeanShiftImage(const Image *image,const size_t width,
   for (y=0; y < (ssize_t) mean_image->rows; y++)
   {
     register const IndexPacket
-      *restrict indexes;
+      *magick_restrict indexes;
 
     register const PixelPacket
-      *restrict p;
+      *magick_restrict p;
 
     register PixelPacket
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;

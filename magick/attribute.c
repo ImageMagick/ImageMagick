@@ -189,10 +189,10 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
       bounding_box;
 
     register const IndexPacket
-      *restrict indexes;
+      *magick_restrict indexes;
 
     register const PixelPacket
-      *restrict p;
+      *magick_restrict p;
 
     register ssize_t
       x;
@@ -410,10 +410,10 @@ RestoreMSCWarning
           id = GetOpenMPThreadId();
 
         register const IndexPacket
-          *restrict indexes;
+          *magick_restrict indexes;
 
         register const PixelPacket
-          *restrict p;
+          *magick_restrict p;
 
         register ssize_t
           x;
@@ -486,10 +486,10 @@ RestoreMSCWarning
       id = GetOpenMPThreadId();
 
     register const IndexPacket
-      *restrict indexes;
+      *magick_restrict indexes;
 
     register const PixelPacket
-      *restrict p;
+      *magick_restrict p;
 
     register ssize_t
       x;
@@ -1142,7 +1142,7 @@ RestoreMSCWarning
           x;
 
         register PixelPacket
-          *restrict q;
+          *magick_restrict q;
 
         if (status == MagickFalse)
           continue;
@@ -1192,7 +1192,7 @@ RestoreMSCWarning
       x;
 
     register PixelPacket
-      *restrict q;
+      *magick_restrict q;
 
     if (status == MagickFalse)
       continue;

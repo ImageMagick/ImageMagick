@@ -536,10 +536,10 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info)
           cube;
 
         register IndexPacket
-          *restrict indexes;
+          *magick_restrict indexes;
 
         register PixelPacket
-          *restrict q;
+          *magick_restrict q;
 
         register ssize_t
           x;
@@ -636,7 +636,7 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info)
         intensity;
 
       register PixelPacket
-        *restrict q;
+        *magick_restrict q;
 
       register ssize_t
         i;
@@ -787,7 +787,7 @@ static MagickBooleanType ClassifyImageColors(CubeInfo *cube_info,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const PixelPacket
-      *restrict p;
+      *magick_restrict p;
 
     register ssize_t
       x;
@@ -885,7 +885,7 @@ static MagickBooleanType ClassifyImageColors(CubeInfo *cube_info,
   for (y++; y < (ssize_t) image->rows; y++)
   {
     register const PixelPacket
-      *restrict p;
+      *magick_restrict p;
 
     register ssize_t
       x;
@@ -1084,10 +1084,10 @@ static void ClosestColor(const Image *image,CubeInfo *cube_info,
         distance;
 
       register PixelPacket
-        *restrict p;
+        *magick_restrict p;
 
       register RealPixelPacket
-        *restrict q;
+        *magick_restrict q;
 
       /*
         Determine if this color is "closest".
@@ -1222,7 +1222,7 @@ static size_t DefineImageColormap(Image *image,CubeInfo *cube_info,
         alpha;
 
       register PixelPacket
-        *restrict q;
+        *magick_restrict q;
 
       /*
         Colormap entry is defined by the mean color in this cube.
@@ -1488,10 +1488,10 @@ static MagickBooleanType FloydSteinbergDither(Image *image,CubeInfo *cube_info)
       *previous;
 
     register IndexPacket
-      *restrict indexes;
+      *magick_restrict indexes;
 
     register PixelPacket
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -1753,10 +1753,10 @@ static MagickBooleanType RiemersmaDither(Image *image,CacheView *image_view,
         *exception;
 
       register IndexPacket
-        *restrict indexes;
+        *magick_restrict indexes;
 
       register PixelPacket
-        *restrict q;
+        *magick_restrict q;
 
       register ssize_t
         i;
@@ -2149,7 +2149,7 @@ MagickExport MagickBooleanType GetImageQuantizeError(Image *image)
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const PixelPacket
-      *restrict p;
+      *magick_restrict p;
 
     register ssize_t
       x;
@@ -2350,10 +2350,10 @@ MagickExport MagickBooleanType PosterizeImageChannel(Image *image,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register IndexPacket
-      *restrict indexes;
+      *magick_restrict indexes;
 
     register PixelPacket
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -2627,10 +2627,10 @@ static MagickBooleanType DirectToColormapImage(Image *image,
       proceed;
 
     register IndexPacket
-      *restrict indexes;
+      *magick_restrict indexes;
 
     register PixelPacket
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -3359,10 +3359,10 @@ static MagickBooleanType SetGrayscaleImage(Image *image)
       for (y=0; y < (ssize_t) image->rows; y++)
       {
         register IndexPacket
-          *restrict indexes;
+          *magick_restrict indexes;
 
         register PixelPacket
-          *restrict q;
+          *magick_restrict q;
 
         register ssize_t
           x;
@@ -3438,10 +3438,10 @@ static MagickBooleanType SetGrayscaleImage(Image *image)
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register IndexPacket
-      *restrict indexes;
+      *magick_restrict indexes;
 
     register const PixelPacket
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;

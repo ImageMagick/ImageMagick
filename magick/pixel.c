@@ -412,14 +412,14 @@ MagickExport MagickRealType EncodePixelGamma(const MagickRealType pixel)
 */
 
 static void ExportCharPixel(Image *image,const RectangleInfo *roi,
-  const char *restrict map,const QuantumType *quantum_map,void *pixels,
+  const char *magick_restrict map,const QuantumType *quantum_map,void *pixels,
   ExceptionInfo *exception)
 {
   register const IndexPacket
-    *restrict indexes;
+    *magick_restrict indexes;
 
   register const PixelPacket
-    *restrict p;
+    *magick_restrict p;
 
   register ssize_t
     x;
@@ -622,14 +622,14 @@ static void ExportCharPixel(Image *image,const RectangleInfo *roi,
 }
 
 static void ExportDoublePixel(Image *image,const RectangleInfo *roi,
-  const char *restrict map,const QuantumType *quantum_map,void *pixels,
+  const char *magick_restrict map,const QuantumType *quantum_map,void *pixels,
   ExceptionInfo *exception)
 {
   register const IndexPacket
-    *restrict indexes;
+    *magick_restrict indexes;
 
   register const PixelPacket
-    *restrict p;
+    *magick_restrict p;
 
   register double
     *q;
@@ -835,14 +835,14 @@ static void ExportDoublePixel(Image *image,const RectangleInfo *roi,
 }
 
 static void ExportFloatPixel(Image *image,const RectangleInfo *roi,
-  const char *restrict map,const QuantumType *quantum_map,void *pixels,
+  const char *magick_restrict map,const QuantumType *quantum_map,void *pixels,
   ExceptionInfo *exception)
 {
   register const IndexPacket
-    *restrict indexes;
+    *magick_restrict indexes;
 
   register const PixelPacket
-    *restrict p;
+    *magick_restrict p;
 
   register float
     *q;
@@ -1045,14 +1045,14 @@ static void ExportFloatPixel(Image *image,const RectangleInfo *roi,
 }
 
 static void ExportIntegerPixel(Image *image,const RectangleInfo *roi,
-  const char *restrict map,const QuantumType *quantum_map,void *pixels,
+  const char *magick_restrict map,const QuantumType *quantum_map,void *pixels,
   ExceptionInfo *exception)
 {
   register const IndexPacket
-    *restrict indexes;
+    *magick_restrict indexes;
 
   register const PixelPacket
-    *restrict p;
+    *magick_restrict p;
 
   register ssize_t
     x;
@@ -1259,14 +1259,14 @@ static void ExportIntegerPixel(Image *image,const RectangleInfo *roi,
 }
 
 static void ExportLongPixel(Image *image,const RectangleInfo *roi,
-  const char *restrict map,const QuantumType *quantum_map,void *pixels,
+  const char *magick_restrict map,const QuantumType *quantum_map,void *pixels,
   ExceptionInfo *exception)
 {
   register const IndexPacket
-    *restrict indexes;
+    *magick_restrict indexes;
 
   register const PixelPacket
-    *restrict p;
+    *magick_restrict p;
 
   register unsigned int
     *q;
@@ -1469,14 +1469,14 @@ static void ExportLongPixel(Image *image,const RectangleInfo *roi,
 }
 
 static void ExportQuantumPixel(Image *image,const RectangleInfo *roi,
-  const char *restrict map,const QuantumType *quantum_map,void *pixels,
+  const char *magick_restrict map,const QuantumType *quantum_map,void *pixels,
   ExceptionInfo *exception)
 {
   register const IndexPacket
-    *restrict indexes;
+    *magick_restrict indexes;
 
   register const PixelPacket
-    *restrict p;
+    *magick_restrict p;
 
   register Quantum
     *q;
@@ -1682,14 +1682,14 @@ static void ExportQuantumPixel(Image *image,const RectangleInfo *roi,
 }
 
 static void ExportShortPixel(Image *image,const RectangleInfo *roi,
-  const char *restrict map,const QuantumType *quantum_map,void *pixels,
+  const char *magick_restrict map,const QuantumType *quantum_map,void *pixels,
   ExceptionInfo *exception)
 {
   register const IndexPacket
-    *restrict indexes;
+    *magick_restrict indexes;
 
   register const PixelPacket
-    *restrict p;
+    *magick_restrict p;
 
   register ssize_t
     x;
@@ -2109,7 +2109,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
 %
 */
 MagickExport MagickRealType GetMagickPixelIntensity(const Image *image,
-  const MagickPixelPacket *restrict pixel)
+  const MagickPixelPacket *magick_restrict pixel)
 {
   MagickRealType
     blue,
@@ -2283,7 +2283,7 @@ MagickExport void GetMagickPixelPacket(const Image *image,
 %
 */
 MagickExport MagickRealType GetPixelIntensity(const Image *image,
-  const PixelPacket *restrict pixel)
+  const PixelPacket *magick_restrict pixel)
 {
   MagickRealType
     blue,
@@ -2427,17 +2427,17 @@ MagickExport MagickRealType GetPixelIntensity(const Image *image,
 */
 
 static void ImportCharPixel(Image *image,const RectangleInfo *roi,
-  const char *restrict map,const QuantumType *quantum_map,const void *pixels,
-  ExceptionInfo *exception)
+  const char *magick_restrict map,const QuantumType *quantum_map,
+  const void *pixels,ExceptionInfo *exception)
 {
   register const unsigned char
-    *restrict p;
+    *magick_restrict p;
 
   register IndexPacket
-    *restrict indexes;
+    *magick_restrict indexes;
 
   register PixelPacket
-    *restrict q;
+    *magick_restrict q;
 
   register ssize_t
     x;
@@ -2695,17 +2695,17 @@ static void ImportCharPixel(Image *image,const RectangleInfo *roi,
 }
 
 static void ImportDoublePixel(Image *image,const RectangleInfo *roi,
-  const char *restrict map,const QuantumType *quantum_map,const void *pixels,
-  ExceptionInfo *exception)
+  const char *magick_restrict map,const QuantumType *quantum_map,
+  const void *pixels,ExceptionInfo *exception)
 {
   register const double
-    *restrict p;
+    *magick_restrict p;
 
   register IndexPacket
-    *restrict indexes;
+    *magick_restrict indexes;
 
   register PixelPacket
-    *restrict q;
+    *magick_restrict q;
 
   register ssize_t
     x;
@@ -2950,17 +2950,17 @@ static void ImportDoublePixel(Image *image,const RectangleInfo *roi,
 }
 
 static void ImportFloatPixel(Image *image,const RectangleInfo *roi,
-  const char *restrict map,const QuantumType *quantum_map,const void *pixels,
-  ExceptionInfo *exception)
+  const char *magick_restrict map,const QuantumType *quantum_map,
+  const void *pixels,ExceptionInfo *exception)
 {
   register const float
-    *restrict p;
+    *magick_restrict p;
 
   register IndexPacket
-    *restrict indexes;
+    *magick_restrict indexes;
 
   register PixelPacket
-    *restrict q;
+    *magick_restrict q;
 
   register ssize_t
     x;
@@ -3200,17 +3200,17 @@ static void ImportFloatPixel(Image *image,const RectangleInfo *roi,
 }
 
 static void ImportIntegerPixel(Image *image,const RectangleInfo *roi,
-  const char *restrict map,const QuantumType *quantum_map,const void *pixels,
-  ExceptionInfo *exception)
+  const char *magick_restrict map,const QuantumType *quantum_map,
+  const void *pixels,ExceptionInfo *exception)
 {
   register const unsigned int
-    *restrict p;
+    *magick_restrict p;
 
   register IndexPacket
-    *restrict indexes;
+    *magick_restrict indexes;
 
   register PixelPacket
-    *restrict q;
+    *magick_restrict q;
 
   register ssize_t
     x;
@@ -3428,17 +3428,17 @@ static void ImportIntegerPixel(Image *image,const RectangleInfo *roi,
 }
 
 static void ImportLongPixel(Image *image,const RectangleInfo *roi,
-  const char *restrict map,const QuantumType *quantum_map,const void *pixels,
-  ExceptionInfo *exception)
+  const char *magick_restrict map,const QuantumType *quantum_map,
+  const void *pixels,ExceptionInfo *exception)
 {
   register const unsigned int
-    *restrict p;
+    *magick_restrict p;
 
   register IndexPacket
-    *restrict indexes;
+    *magick_restrict indexes;
 
   register PixelPacket
-    *restrict q;
+    *magick_restrict q;
 
   register ssize_t
     x;
@@ -3656,17 +3656,17 @@ static void ImportLongPixel(Image *image,const RectangleInfo *roi,
 }
 
 static void ImportQuantumPixel(Image *image,const RectangleInfo *roi,
-  const char *restrict map,const QuantumType *quantum_map,const void *pixels,
-  ExceptionInfo *exception)
+  const char *magick_restrict map,const QuantumType *quantum_map,
+  const void *pixels,ExceptionInfo *exception)
 {
   register const Quantum
-    *restrict p;
+    *magick_restrict p;
 
   register IndexPacket
-    *restrict indexes;
+    *magick_restrict indexes;
 
   register PixelPacket
-    *restrict q;
+    *magick_restrict q;
 
   register ssize_t
     x;
@@ -3884,17 +3884,17 @@ static void ImportQuantumPixel(Image *image,const RectangleInfo *roi,
 }
 
 static void ImportShortPixel(Image *image,const RectangleInfo *roi,
-  const char *restrict map,const QuantumType *quantum_map,const void *pixels,
-  ExceptionInfo *exception)
+  const char *magick_restrict map,const QuantumType *quantum_map,
+  const void *pixels,ExceptionInfo *exception)
 {
   register const unsigned short
-    *restrict p;
+    *magick_restrict p;
 
   register IndexPacket
-    *restrict indexes;
+    *magick_restrict indexes;
 
   register PixelPacket
-    *restrict q;
+    *magick_restrict q;
 
   register ssize_t
     x;

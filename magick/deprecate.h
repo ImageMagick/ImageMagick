@@ -373,8 +373,8 @@ static inline double MagickEpsilonReciprocal(const double x)
   return(sign/MagickEpsilon);
 }
 
-static inline Quantum PixelIntensityToQuantum(const Image *restrict image,
-  const PixelPacket *restrict pixel)
+static inline Quantum PixelIntensityToQuantum(
+  const Image *magick_restrict image,const PixelPacket *magick_restrict pixel)
 {
   return(ClampToQuantum(GetPixelIntensity(image,pixel)));
 }

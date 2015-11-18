@@ -327,10 +327,10 @@ static ChannelStatistics *GetLocationStatistics(const Image *image,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const IndexPacket
-      *restrict indexes;
+      *magick_restrict indexes;
 
     register const PixelPacket
-      *restrict p;
+      *magick_restrict p;
 
     register ssize_t
       x;
@@ -1198,7 +1198,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file)
   if (image->storage_class == PseudoClass)
     {
       register PixelPacket
-        *restrict p;
+        *magick_restrict p;
 
       (void) FormatLocaleFile(file,"    \"colormapEntries\": %.20g,\n",
         (double) image->colors);

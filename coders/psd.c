@@ -299,7 +299,7 @@ static MagickBooleanType CorrectPSDAlphaBlend(const ImageInfo *image_info,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register PixelPacket
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -369,7 +369,7 @@ static MagickBooleanType CorrectPSDOpacity(LayerInfo* layer_info,
   for (y=0; y < (ssize_t) layer_info->image->rows; y++)
   {
     register PixelPacket
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;

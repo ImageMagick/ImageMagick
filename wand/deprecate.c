@@ -366,21 +366,21 @@ WandExport MagickBooleanType DuplexTransferPixelViewIterator(
       sync;
 
     register const IndexPacket
-      *restrict duplex_indexes,
-      *restrict indexes;
+      *magick_restrict duplex_indexes,
+      *magick_restrict indexes;
 
     register const PixelPacket
-      *restrict duplex_pixels,
-      *restrict pixels;
+      *magick_restrict duplex_pixels,
+      *magick_restrict pixels;
 
     register IndexPacket
-      *restrict destination_indexes;
+      *magick_restrict destination_indexes;
 
     register ssize_t
       x;
 
     register PixelPacket
-      *restrict destination_pixels;
+      *magick_restrict destination_pixels;
 
     if (status == MagickFalse)
       continue;
@@ -2768,13 +2768,13 @@ WandExport MagickBooleanType SetPixelViewIterator(PixelView *destination,
       sync;
 
     register IndexPacket
-      *restrict indexes;
+      *magick_restrict indexes;
 
     register ssize_t
       x;
 
     register PixelPacket
-      *restrict pixels;
+      *magick_restrict pixels;
 
     if (status == MagickFalse)
       continue;
@@ -2906,19 +2906,19 @@ WandExport MagickBooleanType TransferPixelViewIterator(PixelView *source,
       sync;
 
     register const IndexPacket
-      *restrict indexes;
+      *magick_restrict indexes;
 
     register const PixelPacket
-      *restrict pixels;
+      *magick_restrict pixels;
 
     register IndexPacket
-      *restrict destination_indexes;
+      *magick_restrict destination_indexes;
 
     register ssize_t
       x;
 
     register PixelPacket
-      *restrict destination_pixels;
+      *magick_restrict destination_pixels;
 
     if (status == MagickFalse)
       continue;
@@ -3068,13 +3068,13 @@ WandExport MagickBooleanType UpdatePixelViewIterator(PixelView *source,
       id = GetOpenMPThreadId();
 
     register IndexPacket
-      *restrict indexes;
+      *magick_restrict indexes;
 
     register ssize_t
       x;
 
     register PixelPacket
-      *restrict pixels;
+      *magick_restrict pixels;
 
     if (status == MagickFalse)
       continue;

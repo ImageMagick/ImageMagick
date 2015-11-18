@@ -1911,13 +1911,13 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
           sync;
 
         register const PixelPacket
-          *restrict p;
+          *magick_restrict p;
 
         register PixelPacket
-          *restrict r;
+          *magick_restrict r;
 
         register IndexPacket
-          *restrict canvas_indexes;
+          *magick_restrict canvas_indexes;
 
         register ssize_t
           x;
@@ -1999,10 +1999,10 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
         offset;
 
       register IndexPacket
-        *restrict canvas_indexes;
+        *magick_restrict canvas_indexes;
 
       register PixelPacket
-        *restrict r;
+        *magick_restrict r;
 
       /*
         Displace/Distort based on overlay gradient map:
@@ -2102,7 +2102,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
           sync;
 
         register const PixelPacket
-          *restrict p;
+          *magick_restrict p;
 
         register ssize_t
           x;
@@ -2297,19 +2297,19 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
       source;
 
     register const IndexPacket
-      *restrict source_indexes;
+      *magick_restrict source_indexes;
 
     register const PixelPacket
-      *restrict p;
+      *magick_restrict p;
 
     register IndexPacket
-      *restrict indexes;
+      *magick_restrict indexes;
 
     register ssize_t
       x;
 
     register PixelPacket
-      *restrict q;
+      *magick_restrict q;
 
     if (status == MagickFalse)
       continue;

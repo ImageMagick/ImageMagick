@@ -1345,8 +1345,8 @@ MagickExport const char *GetStringInfoPath(const StringInfo *string_info)
 %      after the last character used in the conversion.
 %
 */
-MagickExport double InterpretSiPrefixValue(const char *restrict string,
-  char **restrict sentinal)
+MagickExport double InterpretSiPrefixValue(const char *magick_restrict string,
+  char **magick_restrict sentinal)
 {
   char
     *q;

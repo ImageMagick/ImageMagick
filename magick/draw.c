@@ -1177,13 +1177,13 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
       point;
 
     register IndexPacket
-      *restrict indexes;
+      *magick_restrict indexes;
 
     register ssize_t
       x;
 
     register PixelPacket
-      *restrict q;
+      *magick_restrict q;
 
     SegmentInfo
       inverse_edge;
@@ -3318,14 +3318,14 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
       pixel;
 
     register IndexPacket
-      *restrict indexes;
+      *magick_restrict indexes;
 
     register ssize_t
       i,
       x;
 
     register PixelPacket
-      *restrict q;
+      *magick_restrict q;
 
     ssize_t
       j;
@@ -3627,7 +3627,7 @@ static PolygonInfo **AcquirePolygonThreadSet(const DrawInfo *draw_info,
   const PrimitiveInfo *primitive_info)
 {
   PathInfo
-    *restrict path_info;
+    *magick_restrict path_info;
 
   PolygonInfo
     **polygon_info;
@@ -3846,7 +3846,7 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
     status;
 
   PolygonInfo
-    **restrict polygon_info;
+    **magick_restrict polygon_info;
 
   register EdgeInfo
     *p;
@@ -3932,7 +3932,7 @@ RestoreMSCWarning
           sync;
 
         register PixelPacket
-          *restrict q;
+          *magick_restrict q;
 
         register ssize_t
           x;
@@ -3996,7 +3996,7 @@ RestoreMSCWarning
       stroke_color;
 
     register PixelPacket
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -4269,7 +4269,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
           for (y=0; y < (ssize_t) image->rows; y++)
           {
             register PixelPacket
-              *restrict q;
+              *magick_restrict q;
 
             q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
               exception);
@@ -4317,7 +4317,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
           for (y=0; y < (ssize_t) image->rows; y++)
           {
             register PixelPacket
-              *restrict q;
+              *magick_restrict q;
 
             register ssize_t
               x;
@@ -4376,7 +4376,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
           for (y=0; y < (ssize_t) image->rows; y++)
           {
             register PixelPacket
-              *restrict q;
+              *magick_restrict q;
 
             register ssize_t
               x;
@@ -4431,7 +4431,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
           for (y=0; y < (ssize_t) image->rows; y++)
           {
             register PixelPacket
-              *restrict q;
+              *magick_restrict q;
 
             register ssize_t
               x;

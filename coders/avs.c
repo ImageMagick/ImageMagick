@@ -336,13 +336,13 @@ static MagickBooleanType WriteAVSImage(const ImageInfo *image_info,Image *image)
     *pixel_info;
 
   register const PixelPacket
-    *restrict p;
+    *magick_restrict p;
 
   register ssize_t
     x;
 
   register unsigned char
-    *restrict q;
+    *magick_restrict q;
 
   ssize_t
     count,

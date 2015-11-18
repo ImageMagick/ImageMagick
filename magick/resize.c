@@ -1733,10 +1733,10 @@ MagickExport Image *InterpolativeResizeImage(const Image *image,
       offset;
 
     register IndexPacket
-      *restrict resize_indexes;
+      *magick_restrict resize_indexes;
 
     register PixelPacket
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -1922,10 +1922,10 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
   while (lqr_carver_scan(carver,&x,&y,&packet) != 0)
   {
     register IndexPacket
-      *restrict rescale_indexes;
+      *magick_restrict rescale_indexes;
 
     register PixelPacket
-      *restrict q;
+      *magick_restrict q;
 
     q=QueueCacheViewAuthenticPixels(rescale_view,x,y,1,1,exception);
     if (q == (PixelPacket *) NULL)
@@ -2047,10 +2047,10 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register IndexPacket
-      *restrict magnify_indexes;
+      *magick_restrict magnify_indexes;
 
     register PixelPacket
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -2071,13 +2071,13 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
         intensity[9];
 
       register const IndexPacket
-        *restrict indexes;
+        *magick_restrict indexes;
 
       register const PixelPacket
-        *restrict p;
+        *magick_restrict p;
 
       register PixelPacket
-        *restrict r;
+        *magick_restrict r;
 
       register ssize_t
         i;
@@ -2426,7 +2426,7 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
     storage_class;
 
   ContributionInfo
-    **restrict contributions;
+    **magick_restrict contributions;
 
   MagickBooleanType
     status;
@@ -2487,19 +2487,19 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
       density;
 
     register const IndexPacket
-      *restrict indexes;
+      *magick_restrict indexes;
 
     register const PixelPacket
-      *restrict p;
+      *magick_restrict p;
 
     register ContributionInfo
-      *restrict contribution;
+      *magick_restrict contribution;
 
     register IndexPacket
-      *restrict resize_indexes;
+      *magick_restrict resize_indexes;
 
     register PixelPacket
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       y;
@@ -2671,7 +2671,7 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
     storage_class;
 
   ContributionInfo
-    **restrict contributions;
+    **magick_restrict contributions;
 
   MagickBooleanType
     status;
@@ -2732,19 +2732,19 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
       density;
 
     register const IndexPacket
-      *restrict indexes;
+      *magick_restrict indexes;
 
     register const PixelPacket
-      *restrict p;
+      *magick_restrict p;
 
     register ContributionInfo
-      *restrict contribution;
+      *magick_restrict contribution;
 
     register IndexPacket
-      *restrict resize_indexes;
+      *magick_restrict resize_indexes;
 
     register PixelPacket
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -3149,16 +3149,16 @@ MagickExport Image *SampleImage(const Image *image,const size_t columns,
   for (y=0; y < (ssize_t) sample_image->rows; y++)
   {
     register const IndexPacket
-      *restrict indexes;
+      *magick_restrict indexes;
 
     register const PixelPacket
-      *restrict p;
+      *magick_restrict p;
 
     register IndexPacket
-      *restrict sample_indexes;
+      *magick_restrict sample_indexes;
 
     register PixelPacket
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -3344,20 +3344,20 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
   for (y=0; y < (ssize_t) scale_image->rows; y++)
   {
     register const IndexPacket
-      *restrict indexes;
+      *magick_restrict indexes;
 
     register const PixelPacket
-      *restrict p;
+      *magick_restrict p;
 
     register IndexPacket
-      *restrict scale_indexes;
+      *magick_restrict scale_indexes;
 
     register MagickPixelPacket
-      *restrict s,
-      *restrict t;
+      *magick_restrict s,
+      *magick_restrict t;
 
     register PixelPacket
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;

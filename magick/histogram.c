@@ -1303,10 +1303,10 @@ static void UniqueColorsToImage(Image *unique_image,CacheView *unique_view,
         *p;
 
       register IndexPacket
-        *restrict indexes;
+        *magick_restrict indexes;
 
       register PixelPacket
-        *restrict q;
+        *magick_restrict q;
 
       status=MagickTrue;
       p=node_info->list;

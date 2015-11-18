@@ -172,10 +172,10 @@ static ChannelStatistics *GetLocationStatistics(const Image *image,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const IndexPacket
-      *restrict indexes;
+      *magick_restrict indexes;
 
     register const PixelPacket
-      *restrict p;
+      *magick_restrict p;
 
     register ssize_t
       x;
@@ -1063,7 +1063,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
             pixel;
 
           register PixelPacket
-            *restrict p;
+            *magick_restrict p;
 
           GetMagickPixelPacket(image,&pixel);
           p=image->colormap;

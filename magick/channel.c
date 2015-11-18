@@ -159,10 +159,10 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
       *pixels;
 
     register const PixelPacket
-      *restrict p;
+      *magick_restrict p;
 
     register PixelPacket
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -413,10 +413,10 @@ MagickExport MagickBooleanType SeparateImageChannel(Image *image,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register IndexPacket
-      *restrict indexes;
+      *magick_restrict indexes;
 
     register PixelPacket
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -683,7 +683,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       for (y=0; y < (ssize_t) image->rows; y++)
       {
         register PixelPacket
-          *restrict q;
+          *magick_restrict q;
 
         register ssize_t
           x;
@@ -754,10 +754,10 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       for (y=0; y < (ssize_t) image->rows; y++)
       {
         register IndexPacket
-          *restrict indexes;
+          *magick_restrict indexes;
 
         register PixelPacket
-          *restrict q;
+          *magick_restrict q;
 
         register ssize_t
           x;
@@ -836,7 +836,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       for (y=0; y < (ssize_t) image->rows; y++)
       {
         register PixelPacket
-          *restrict q;
+          *magick_restrict q;
 
         register ssize_t
           x;
@@ -911,10 +911,10 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       for (y=0; y < (ssize_t) image->rows; y++)
       {
         register IndexPacket
-          *restrict indexes;
+          *magick_restrict indexes;
 
         register PixelPacket
-          *restrict q;
+          *magick_restrict q;
 
         register ssize_t
           x;

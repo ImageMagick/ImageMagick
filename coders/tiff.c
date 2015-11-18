@@ -465,7 +465,7 @@ static MagickBooleanType DecodeLabImage(Image *image,ExceptionInfo *exception)
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register PixelPacket
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -1638,7 +1638,7 @@ RestoreMSCWarning
             status;
 
           register PixelPacket
-            *restrict q;
+            *magick_restrict q;
 
           status=TIFFReadPixels(tiff,bits_per_sample,0,y,(char *) pixels);
           if (status == -1)
@@ -1695,7 +1695,7 @@ RestoreMSCWarning
             status;
 
           register PixelPacket
-            *restrict q;
+            *magick_restrict q;
 
           status=TIFFReadPixels(tiff,bits_per_sample,0,y,(char *) pixels);
           if (status == -1)
@@ -1727,7 +1727,7 @@ RestoreMSCWarning
           for (y=0; y < (ssize_t) image->rows; y++)
           {
             register PixelPacket
-              *restrict q;
+              *magick_restrict q;
 
             int
               status;
@@ -1785,7 +1785,7 @@ RestoreMSCWarning
             *indexes;
 
           register PixelPacket
-            *restrict q;
+            *magick_restrict q;
 
           register ssize_t
             x;
@@ -1842,7 +1842,7 @@ RestoreMSCWarning
             x;
 
           register PixelPacket
-            *restrict q;
+            *magick_restrict q;
 
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
           if (q == (PixelPacket *) NULL)
@@ -1922,7 +1922,7 @@ RestoreMSCWarning
             x;
 
           register PixelPacket
-            *restrict q;
+            *magick_restrict q;
 
           size_t
             columns_remaining,
@@ -2035,7 +2035,7 @@ RestoreMSCWarning
             x;
 
           register PixelPacket
-            *restrict q;
+            *magick_restrict q;
 
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
           if (q == (PixelPacket *) NULL)
@@ -2720,7 +2720,7 @@ static MagickBooleanType EncodeLabImage(Image *image,ExceptionInfo *exception)
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register PixelPacket
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -3704,7 +3704,7 @@ RestoreMSCWarning
             for (y=0; y < (ssize_t) image->rows; y++)
             {
               register const PixelPacket
-                *restrict p;
+                *magick_restrict p;
 
               p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
               if (p == (const PixelPacket *) NULL)
@@ -3732,7 +3732,7 @@ RestoreMSCWarning
             for (y=0; y < (ssize_t) image->rows; y++)
             {
               register const PixelPacket
-                *restrict p;
+                *magick_restrict p;
 
               p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
               if (p == (const PixelPacket *) NULL)
@@ -3751,7 +3751,7 @@ RestoreMSCWarning
             for (y=0; y < (ssize_t) image->rows; y++)
             {
               register const PixelPacket
-                *restrict p;
+                *magick_restrict p;
 
               p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
               if (p == (const PixelPacket *) NULL)
@@ -3770,7 +3770,7 @@ RestoreMSCWarning
             for (y=0; y < (ssize_t) image->rows; y++)
             {
               register const PixelPacket
-                *restrict p;
+                *magick_restrict p;
 
               p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
               if (p == (const PixelPacket *) NULL)
@@ -3790,7 +3790,7 @@ RestoreMSCWarning
               for (y=0; y < (ssize_t) image->rows; y++)
               {
                 register const PixelPacket
-                  *restrict p;
+                  *magick_restrict p;
 
                 p=GetVirtualPixels(image,0,y,image->columns,1,
                   &image->exception);
@@ -3825,7 +3825,7 @@ RestoreMSCWarning
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           register const PixelPacket
-            *restrict p;
+            *magick_restrict p;
 
           p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
           if (p == (const PixelPacket *) NULL)
@@ -3896,7 +3896,7 @@ RestoreMSCWarning
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           register const PixelPacket
-            *restrict p;
+            *magick_restrict p;
 
           p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
           if (p == (const PixelPacket *) NULL)

@@ -391,7 +391,7 @@ static MagickBooleanType RadonTransform(const Image *image,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const PixelPacket
-      *restrict p;
+      *magick_restrict p;
 
     register ssize_t
       i,
@@ -448,7 +448,7 @@ static MagickBooleanType RadonTransform(const Image *image,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const PixelPacket
-      *restrict p;
+      *magick_restrict p;
 
     register ssize_t
       i,
@@ -529,7 +529,7 @@ static void GetImageBackgroundColor(Image *image,const ssize_t offset,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const PixelPacket
-      *restrict p;
+      *magick_restrict p;
 
     register ssize_t
       x;
@@ -786,16 +786,16 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
             sync;
 
           register const IndexPacket
-            *restrict indexes;
+            *magick_restrict indexes;
 
           register const PixelPacket
-            *restrict p;
+            *magick_restrict p;
 
           register IndexPacket
-            *restrict rotate_indexes;
+            *magick_restrict rotate_indexes;
 
           register PixelPacket
-            *restrict q;
+            *magick_restrict q;
 
           register ssize_t
             y;
@@ -821,7 +821,7 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
           for (y=0; y < (ssize_t) width; y++)
           {
             register const PixelPacket
-              *restrict tile_pixels;
+              *magick_restrict tile_pixels;
 
             register ssize_t
               x;
@@ -847,7 +847,7 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
                 (rotate_indexes != (IndexPacket *) NULL))
               {
                 register const IndexPacket
-                  *restrict tile_indexes;
+                  *magick_restrict tile_indexes;
 
                 tile_indexes=indexes+(height-1)*width+y;
                 for (x=0; x < (ssize_t) height; x++)
@@ -898,16 +898,16 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
           sync;
 
         register const IndexPacket
-          *restrict indexes;
+          *magick_restrict indexes;
 
         register const PixelPacket
-          *restrict p;
+          *magick_restrict p;
 
         register IndexPacket
-          *restrict rotate_indexes;
+          *magick_restrict rotate_indexes;
 
         register PixelPacket
-          *restrict q;
+          *magick_restrict q;
 
         register ssize_t
           x;
@@ -987,16 +987,16 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
             sync;
 
           register const IndexPacket
-            *restrict indexes;
+            *magick_restrict indexes;
 
           register const PixelPacket
-            *restrict p;
+            *magick_restrict p;
 
           register IndexPacket
-            *restrict rotate_indexes;
+            *magick_restrict rotate_indexes;
 
           register PixelPacket
-            *restrict q;
+            *magick_restrict q;
 
           register ssize_t
             y;
@@ -1022,7 +1022,7 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
           for (y=0; y < (ssize_t) width; y++)
           {
             register const PixelPacket
-              *restrict tile_pixels;
+              *magick_restrict tile_pixels;
 
             register ssize_t
               x;
@@ -1047,7 +1047,7 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
                 (rotate_indexes != (IndexPacket *) NULL))
               {
                 register const IndexPacket
-                  *restrict tile_indexes;
+                  *magick_restrict tile_indexes;
 
                 tile_indexes=indexes+(width-1)-y;
                 for (x=0; x < (ssize_t) height; x++)
@@ -1189,12 +1189,12 @@ static MagickBooleanType XShearImage(Image *image,const MagickRealType degrees,
       displacement;
 
     register IndexPacket
-      *restrict indexes,
-      *restrict shear_indexes;
+      *magick_restrict indexes,
+      *magick_restrict shear_indexes;
 
     register PixelPacket
-      *restrict p,
-      *restrict q;
+      *magick_restrict p,
+      *magick_restrict q;
 
     register ssize_t
       i;
@@ -1413,15 +1413,15 @@ static MagickBooleanType YShearImage(Image *image,const MagickRealType degrees,
       displacement;
 
     register IndexPacket
-      *restrict indexes,
-      *restrict shear_indexes;
+      *magick_restrict indexes,
+      *magick_restrict shear_indexes;
 
     register ssize_t
       i;
 
     register PixelPacket
-      *restrict p,
-      *restrict q;
+      *magick_restrict p,
+      *magick_restrict q;
 
     ShearDirection
       direction;

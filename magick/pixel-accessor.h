@@ -134,8 +134,8 @@ static inline double PerceptibleReciprocal(const double x)
   return(sign/MagickEpsilon);
 }   
 
-static inline MagickRealType GetPixelLuma(const Image *restrict image,
-  const PixelPacket *restrict pixel)
+static inline MagickRealType GetPixelLuma(const Image *magick_restrict image,
+  const PixelPacket *magick_restrict pixel)
 {
   MagickRealType
     intensity;
@@ -145,8 +145,8 @@ static inline MagickRealType GetPixelLuma(const Image *restrict image,
   return(intensity);
 }
 
-static inline MagickRealType GetPixelLuminance(const Image *restrict image,
-  const PixelPacket *restrict pixel)
+static inline MagickRealType GetPixelLuminance(
+  const Image *magick_restrict image,const PixelPacket *magick_restrict pixel)
 {
   MagickRealType
     intensity;
@@ -224,8 +224,9 @@ static inline Quantum PixelPacketIntensity(const PixelPacket *pixel)
   return(ClampToQuantum(intensity));
 }
 
-static inline void SetPixelViaMagickPixel(const Image *restrict image,
-  const MagickPixelPacket *restrict magick_pixel,PixelPacket *restrict pixel)
+static inline void SetPixelViaMagickPixel(const Image *magick_restrict image,
+  const MagickPixelPacket *magick_restrict magick_pixel,
+  PixelPacket *magick_restrict pixel)
 { 
   pixel->red=ClampToQuantum(magick_pixel->red);
   pixel->green=ClampToQuantum(magick_pixel->green);

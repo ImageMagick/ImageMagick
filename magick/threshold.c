@@ -231,17 +231,17 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
       channel_sum;
 
     register const IndexPacket
-      *restrict indexes;
+      *magick_restrict indexes;
 
     register const PixelPacket
-      *restrict p,
-      *restrict r;
+      *magick_restrict p,
+      *magick_restrict r;
 
     register IndexPacket
-      *restrict threshold_indexes;
+      *magick_restrict threshold_indexes;
 
     register PixelPacket
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -457,13 +457,13 @@ MagickExport MagickBooleanType BilevelImageChannel(Image *image,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register IndexPacket
-      *restrict indexes;
+      *magick_restrict indexes;
 
     register ssize_t
       x;
 
     register PixelPacket
-      *restrict q;
+      *magick_restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -649,13 +649,13 @@ MagickExport MagickBooleanType BlackThresholdImageChannel(Image *image,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register IndexPacket
-      *restrict indexes;
+      *magick_restrict indexes;
 
     register ssize_t
       x;
 
     register PixelPacket
-      *restrict q;
+      *magick_restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -774,7 +774,7 @@ MagickExport MagickBooleanType ClampImageChannel(Image *image,
         i;
 
       register PixelPacket
-        *restrict q;
+        *magick_restrict q;
 
       q=image->colormap;
       for (i=0; i < (ssize_t) image->colors; i++)
@@ -801,13 +801,13 @@ MagickExport MagickBooleanType ClampImageChannel(Image *image,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register IndexPacket
-      *restrict indexes;
+      *magick_restrict indexes;
 
     register ssize_t
       x;
 
     register PixelPacket
-      *restrict q;
+      *magick_restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -1562,13 +1562,13 @@ printf("DEBUG levels  r=%u g=%u b=%u a=%u i=%u\n",
     for (y=0; y < (ssize_t) image->rows; y++)
     {
       register IndexPacket
-        *restrict indexes;
+        *magick_restrict indexes;
 
       register ssize_t
         x;
 
       register PixelPacket
-        *restrict q;
+        *magick_restrict q;
 
       if (status == MagickFalse)
         continue;
@@ -1744,7 +1744,7 @@ MagickExport MagickBooleanType PerceptibleImageChannel(Image *image,
         i;
 
       register PixelPacket
-        *restrict q;
+        *magick_restrict q;
 
       q=image->colormap;
       for (i=0; i < (ssize_t) image->colors; i++)
@@ -1771,13 +1771,13 @@ MagickExport MagickBooleanType PerceptibleImageChannel(Image *image,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register IndexPacket
-      *restrict indexes;
+      *magick_restrict indexes;
 
     register ssize_t
       x;
 
     register PixelPacket
-      *restrict q;
+      *magick_restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -1899,7 +1899,7 @@ MagickExport MagickBooleanType RandomThresholdImageChannel(Image *image,
     max_threshold;
 
   RandomInfo
-    **restrict random_info;
+    **magick_restrict random_info;
 
   ssize_t
     y;
@@ -1966,13 +1966,13 @@ MagickExport MagickBooleanType RandomThresholdImageChannel(Image *image,
           sync;
 
         register IndexPacket
-          *restrict indexes;
+          *magick_restrict indexes;
 
         register ssize_t
           x;
 
         register PixelPacket
-          *restrict q;
+          *magick_restrict q;
 
         if (status == MagickFalse)
           continue;
@@ -2044,10 +2044,10 @@ MagickExport MagickBooleanType RandomThresholdImageChannel(Image *image,
       id = GetOpenMPThreadId();
 
     register IndexPacket
-      *restrict indexes;
+      *magick_restrict indexes;
 
     register PixelPacket
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -2275,13 +2275,13 @@ MagickExport MagickBooleanType WhiteThresholdImageChannel(Image *image,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register IndexPacket
-      *restrict indexes;
+      *magick_restrict indexes;
 
     register ssize_t
       x;
 
     register PixelPacket
-      *restrict q;
+      *magick_restrict q;
 
     if (status == MagickFalse)
       continue;

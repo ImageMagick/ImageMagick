@@ -848,7 +848,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
               target_profile;
 
             cmsHTRANSFORM
-              *restrict transform;
+              *magick_restrict transform;
 
             cmsUInt32Number
               flags,
@@ -875,8 +875,8 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
               y;
 
             unsigned short
-              **restrict source_pixels,
-              **restrict target_pixels;
+              **magick_restrict source_pixels,
+              **magick_restrict target_pixels;
 
             exception=(&image->exception);
             target_profile=(cmsHPROFILE) NULL;
@@ -1098,13 +1098,13 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
                 sync;
 
               register IndexPacket
-                *restrict indexes;
+                *magick_restrict indexes;
 
               register ssize_t
                 x;
 
               register PixelPacket
-                *restrict q;
+                *magick_restrict q;
 
               register unsigned short
                 *p;

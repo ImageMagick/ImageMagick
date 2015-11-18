@@ -241,8 +241,8 @@ extern MagickExport const PixelPacket
   *GetVirtualPixelsNexus(const Cache,NexusInfo *);
 
 extern MagickExport MagickBooleanType
-  SyncAuthenticPixelCacheNexus(Image *,NexusInfo *restrict,ExceptionInfo *)
-    magick_hot_spot;
+  SyncAuthenticPixelCacheNexus(Image *,NexusInfo *magick_restrict,
+    ExceptionInfo *) magick_hot_spot;
 
 extern MagickExport MagickSizeType
   GetPixelCacheNexusExtent(const Cache,NexusInfo *);

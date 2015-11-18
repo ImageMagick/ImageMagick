@@ -2653,16 +2653,16 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
         id = GetOpenMPThreadId();
 
       register const PixelPacket
-        *restrict p;
+        *magick_restrict p;
 
       register const IndexPacket
-        *restrict p_indexes;
+        *magick_restrict p_indexes;
 
       register PixelPacket
-        *restrict q;
+        *magick_restrict q;
 
       register IndexPacket
-        *restrict q_indexes;
+        *magick_restrict q_indexes;
 
       register ssize_t
         y;
@@ -2695,13 +2695,13 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
           v;
 
         register const double
-          *restrict k;
+          *magick_restrict k;
 
         register const PixelPacket
-          *restrict k_pixels;
+          *magick_restrict k_pixels;
 
         register const IndexPacket
-          *restrict k_indexes;
+          *magick_restrict k_indexes;
 
         /* Copy input image to the output image for unused channels
         * This removes need for 'cloning' a new image every iteration
@@ -2850,16 +2850,16 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
       id = GetOpenMPThreadId();
 
     register const PixelPacket
-      *restrict p;
+      *magick_restrict p;
 
     register const IndexPacket
-      *restrict p_indexes;
+      *magick_restrict p_indexes;
 
     register PixelPacket
-      *restrict q;
+      *magick_restrict q;
 
     register IndexPacket
-      *restrict q_indexes;
+      *magick_restrict q_indexes;
 
     register ssize_t
       x;
@@ -2893,13 +2893,13 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
         u;
 
       register const double
-        *restrict k;
+        *magick_restrict k;
 
       register const PixelPacket
-        *restrict k_pixels;
+        *magick_restrict k_pixels;
 
       register const IndexPacket
-        *restrict k_indexes;
+        *magick_restrict k_indexes;
 
       DoublePixelPacket
         result,
@@ -3437,16 +3437,16 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const PixelPacket
-      *restrict p;
+      *magick_restrict p;
 
     register const IndexPacket
-      *restrict p_indexes;
+      *magick_restrict p_indexes;
 
     register PixelPacket
-      *restrict q;
+      *magick_restrict q;
 
     register IndexPacket
-      *restrict q_indexes;
+      *magick_restrict q_indexes;
 
     register ssize_t
       x;
@@ -3486,13 +3486,13 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
         u;
 
       register const double
-        *restrict k;
+        *magick_restrict k;
 
       register const PixelPacket
-        *restrict k_pixels;
+        *magick_restrict k_pixels;
 
       register const IndexPacket
-        *restrict k_indexes;
+        *magick_restrict k_indexes;
 
       MagickPixelPacket
         result;
@@ -3626,16 +3626,16 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
   for (y=(ssize_t)image->rows-1; y >= 0; y--)
   {
     register const PixelPacket
-      *restrict p;
+      *magick_restrict p;
 
     register const IndexPacket
-      *restrict p_indexes;
+      *magick_restrict p_indexes;
 
     register PixelPacket
-      *restrict q;
+      *magick_restrict q;
 
     register IndexPacket
-      *restrict q_indexes;
+      *magick_restrict q_indexes;
 
     register ssize_t
       x;
@@ -3679,13 +3679,13 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
         u;
 
       register const double
-        *restrict k;
+        *magick_restrict k;
 
       register const PixelPacket
-        *restrict k_pixels;
+        *magick_restrict k_pixels;
 
       register const IndexPacket
-        *restrict k_indexes;
+        *magick_restrict k_indexes;
 
       MagickPixelPacket
         result;

@@ -222,16 +222,16 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
         for (y=0; y < (ssize_t) image->extract_info.height; y++)
         {
           register const IndexPacket
-            *restrict canvas_indexes;
+            *magick_restrict canvas_indexes;
 
           register const PixelPacket
-            *restrict p;
+            *magick_restrict p;
 
           register IndexPacket
-            *restrict indexes;
+            *magick_restrict indexes;
 
           register PixelPacket
-            *restrict q;
+            *magick_restrict q;
 
           register ssize_t
             x;
@@ -314,16 +314,16 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
         for (y=0; y < (ssize_t) image->extract_info.height; y++)
         {
           register const IndexPacket
-            *restrict canvas_indexes;
+            *magick_restrict canvas_indexes;
 
           register const PixelPacket
-            *restrict p;
+            *magick_restrict p;
 
           register IndexPacket
-            *restrict indexes;
+            *magick_restrict indexes;
 
           register PixelPacket
-            *restrict q;
+            *magick_restrict q;
 
           register ssize_t
             x;
@@ -423,10 +423,10 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
         for (y=0; y < (ssize_t) image->extract_info.height; y++)
         {
           register const PixelPacket
-            *restrict p;
+            *magick_restrict p;
 
           register PixelPacket
-            *restrict q;
+            *magick_restrict q;
 
           register ssize_t
             x;
@@ -476,10 +476,10 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
         for (y=0; y < (ssize_t) image->extract_info.height; y++)
         {
           register const PixelPacket
-            *restrict p;
+            *magick_restrict p;
 
           register PixelPacket
-            *restrict q;
+            *magick_restrict q;
 
           register ssize_t
             x;
@@ -529,10 +529,10 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
         for (y=0; y < (ssize_t) image->extract_info.height; y++)
         {
           register const PixelPacket
-            *restrict p;
+            *magick_restrict p;
 
           register PixelPacket
-            *restrict q;
+            *magick_restrict q;
 
           register ssize_t
             x;
@@ -582,16 +582,16 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
         for (y=0; y < (ssize_t) image->extract_info.height; y++)
         {
           register const IndexPacket
-            *restrict canvas_indexes;
+            *magick_restrict canvas_indexes;
 
           register const PixelPacket
-            *restrict p;
+            *magick_restrict p;
 
           register IndexPacket
-            *restrict indexes;
+            *magick_restrict indexes;
 
           register PixelPacket
-            *restrict q;
+            *magick_restrict q;
 
           register ssize_t
             x;
@@ -646,10 +646,10 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
             for (y=0; y < (ssize_t) image->extract_info.height; y++)
             {
               register const PixelPacket
-                *restrict p;
+                *magick_restrict p;
 
               register PixelPacket
-                *restrict q;
+                *magick_restrict q;
 
               register ssize_t
                 x;
@@ -740,10 +740,10 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
         for (y=0; y < (ssize_t) image->extract_info.height; y++)
         {
           register const PixelPacket
-            *restrict p;
+            *magick_restrict p;
 
           register PixelPacket
-            *restrict q;
+            *magick_restrict q;
 
           register ssize_t
             x;
@@ -817,10 +817,10 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
         for (y=0; y < (ssize_t) image->extract_info.height; y++)
         {
           register const PixelPacket
-            *restrict p;
+            *magick_restrict p;
 
           register PixelPacket
-            *restrict q;
+            *magick_restrict q;
 
           register ssize_t
             x;
@@ -894,10 +894,10 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
         for (y=0; y < (ssize_t) image->extract_info.height; y++)
         {
           register const PixelPacket
-            *restrict p;
+            *magick_restrict p;
 
           register PixelPacket
-            *restrict q;
+            *magick_restrict q;
 
           register ssize_t
             x;
@@ -971,16 +971,16 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
         for (y=0; y < (ssize_t) image->extract_info.height; y++)
         {
           register const IndexPacket
-            *restrict canvas_indexes;
+            *magick_restrict canvas_indexes;
 
           register const PixelPacket
-            *restrict p;
+            *magick_restrict p;
 
           register IndexPacket
-            *restrict indexes;
+            *magick_restrict indexes;
 
           register PixelPacket
-            *restrict q;
+            *magick_restrict q;
 
           register ssize_t
             x;
@@ -1059,10 +1059,10 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
             for (y=0; y < (ssize_t) image->extract_info.height; y++)
             {
               register const PixelPacket
-                *restrict p;
+                *magick_restrict p;
 
               register PixelPacket
-                *restrict q;
+                *magick_restrict q;
 
               register ssize_t
                 x;
@@ -1327,7 +1327,7 @@ static MagickBooleanType WriteCMYKImage(const ImageInfo *image_info,
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           register const PixelPacket
-            *restrict p;
+            *magick_restrict p;
 
           p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
           if (p == (const PixelPacket *) NULL)
@@ -1355,7 +1355,7 @@ static MagickBooleanType WriteCMYKImage(const ImageInfo *image_info,
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           register const PixelPacket
-            *restrict p;
+            *magick_restrict p;
 
           p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
           if (p == (const PixelPacket *) NULL)
@@ -1406,7 +1406,7 @@ static MagickBooleanType WriteCMYKImage(const ImageInfo *image_info,
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           register const PixelPacket
-            *restrict p;
+            *magick_restrict p;
 
           p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
           if (p == (const PixelPacket *) NULL)
@@ -1426,7 +1426,7 @@ static MagickBooleanType WriteCMYKImage(const ImageInfo *image_info,
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           register const PixelPacket
-            *restrict p;
+            *magick_restrict p;
 
           p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
           if (p == (const PixelPacket *) NULL)
@@ -1446,7 +1446,7 @@ static MagickBooleanType WriteCMYKImage(const ImageInfo *image_info,
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           register const PixelPacket
-            *restrict p;
+            *magick_restrict p;
 
           p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
           if (p == (const PixelPacket *) NULL)
@@ -1466,7 +1466,7 @@ static MagickBooleanType WriteCMYKImage(const ImageInfo *image_info,
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           register const PixelPacket
-            *restrict p;
+            *magick_restrict p;
 
           p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
           if (p == (const PixelPacket *) NULL)
@@ -1488,7 +1488,7 @@ static MagickBooleanType WriteCMYKImage(const ImageInfo *image_info,
             for (y=0; y < (ssize_t) image->rows; y++)
             {
               register const PixelPacket
-                *restrict p;
+                *magick_restrict p;
 
               p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
               if (p == (const PixelPacket *) NULL)
@@ -1530,7 +1530,7 @@ static MagickBooleanType WriteCMYKImage(const ImageInfo *image_info,
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           register const PixelPacket
-            *restrict p;
+            *magick_restrict p;
 
           p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
           if (p == (const PixelPacket *) NULL)
@@ -1556,7 +1556,7 @@ static MagickBooleanType WriteCMYKImage(const ImageInfo *image_info,
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           register const PixelPacket
-            *restrict p;
+            *magick_restrict p;
 
           p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
           if (p == (const PixelPacket *) NULL)
@@ -1582,7 +1582,7 @@ static MagickBooleanType WriteCMYKImage(const ImageInfo *image_info,
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           register const PixelPacket
-            *restrict p;
+            *magick_restrict p;
 
           p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
           if (p == (const PixelPacket *) NULL)
@@ -1608,7 +1608,7 @@ static MagickBooleanType WriteCMYKImage(const ImageInfo *image_info,
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           register const PixelPacket
-            *restrict p;
+            *magick_restrict p;
 
           p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
           if (p == (const PixelPacket *) NULL)
@@ -1636,7 +1636,7 @@ static MagickBooleanType WriteCMYKImage(const ImageInfo *image_info,
             for (y=0; y < (ssize_t) image->rows; y++)
             {
               register const PixelPacket
-                *restrict p;
+                *magick_restrict p;
 
               p=GetVirtualPixels(image,0,y,image->columns,1,
                 &image->exception);

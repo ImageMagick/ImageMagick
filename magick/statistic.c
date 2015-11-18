@@ -440,11 +440,11 @@ MagickExport Image *EvaluateImages(const Image *images,
     progress;
 
   MagickPixelPacket
-    **restrict evaluate_pixels,
+    **magick_restrict evaluate_pixels,
     zero;
 
   RandomInfo
-    **restrict random_info;
+    **magick_restrict random_info;
 
   size_t
     number_images;
@@ -508,13 +508,13 @@ MagickExport Image *EvaluateImages(const Image *images,
           id = GetOpenMPThreadId();
 
         register IndexPacket
-          *restrict evaluate_indexes;
+          *magick_restrict evaluate_indexes;
 
         register MagickPixelPacket
           *evaluate_pixel;
 
         register PixelPacket
-          *restrict q;
+          *magick_restrict q;
 
         register ssize_t
           x;
@@ -615,7 +615,7 @@ MagickExport Image *EvaluateImages(const Image *images,
           id = GetOpenMPThreadId();
 
         register IndexPacket
-          *restrict evaluate_indexes;
+          *magick_restrict evaluate_indexes;
 
         register ssize_t
           i,
@@ -625,7 +625,7 @@ MagickExport Image *EvaluateImages(const Image *images,
           *evaluate_pixel;
 
         register PixelPacket
-          *restrict q;
+          *magick_restrict q;
 
         if (status == MagickFalse)
           continue;
@@ -768,7 +768,7 @@ MagickExport MagickBooleanType EvaluateImageChannel(Image *image,
     progress;
 
   RandomInfo
-    **restrict random_info;
+    **magick_restrict random_info;
 
   ssize_t
     y;
@@ -804,10 +804,10 @@ MagickExport MagickBooleanType EvaluateImageChannel(Image *image,
       id = GetOpenMPThreadId();
 
     register IndexPacket
-      *restrict indexes;
+      *magick_restrict indexes;
 
     register PixelPacket
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -1076,13 +1076,13 @@ MagickExport MagickBooleanType FunctionImageChannel(Image *image,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register IndexPacket
-      *restrict indexes;
+      *magick_restrict indexes;
 
     register ssize_t
       x;
 
     register PixelPacket
-      *restrict q;
+      *magick_restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -1374,10 +1374,10 @@ MagickExport MagickBooleanType GetImageChannelKurtosis(const Image *image,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const IndexPacket
-      *restrict indexes;
+      *magick_restrict indexes;
 
     register const PixelPacket
-      *restrict p;
+      *magick_restrict p;
 
     register ssize_t
       x;
@@ -1679,10 +1679,10 @@ MagickExport ChannelMoments *GetImageChannelMoments(const Image *image,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const IndexPacket
-      *restrict indexes;
+      *magick_restrict indexes;
 
     register const PixelPacket
-      *restrict p;
+      *magick_restrict p;
 
     register ssize_t
       x;
@@ -1740,10 +1740,10 @@ MagickExport ChannelMoments *GetImageChannelMoments(const Image *image,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const IndexPacket
-      *restrict indexes;
+      *magick_restrict indexes;
 
     register const PixelPacket
-      *restrict p;
+      *magick_restrict p;
 
     register ssize_t
       x;
@@ -2176,10 +2176,10 @@ MagickExport MagickBooleanType GetImageChannelRange(const Image *image,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const IndexPacket
-      *restrict indexes;
+      *magick_restrict indexes;
 
     register const PixelPacket
-      *restrict p;
+      *magick_restrict p;
 
     register ssize_t
       x;
@@ -2326,10 +2326,10 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const IndexPacket
-      *restrict indexes;
+      *magick_restrict indexes;
 
     register const PixelPacket
-      *restrict p;
+      *magick_restrict p;
 
     register ssize_t
       x;
@@ -2667,7 +2667,7 @@ MagickExport Image *PolynomialImageChannel(const Image *images,
     progress;
 
   MagickPixelPacket
-    **restrict polynomial_pixels,
+    **magick_restrict polynomial_pixels,
     zero;
 
   size_t
@@ -2723,13 +2723,13 @@ MagickExport Image *PolynomialImageChannel(const Image *images,
       id = GetOpenMPThreadId();
 
     register IndexPacket
-      *restrict polynomial_indexes;
+      *magick_restrict polynomial_indexes;
 
     register MagickPixelPacket
       *polynomial_pixel;
 
     register PixelPacket
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       i,
@@ -3512,7 +3512,7 @@ MagickExport Image *StatisticImageChannel(const Image *image,
     progress;
 
   PixelList
-    **restrict pixel_list;
+    **magick_restrict pixel_list;
 
   size_t
     neighbor_height,
@@ -3567,16 +3567,16 @@ MagickExport Image *StatisticImageChannel(const Image *image,
       id = GetOpenMPThreadId();
 
     register const IndexPacket
-      *restrict indexes;
+      *magick_restrict indexes;
 
     register const PixelPacket
-      *restrict p;
+      *magick_restrict p;
 
     register IndexPacket
-      *restrict statistic_indexes;
+      *magick_restrict statistic_indexes;
 
     register PixelPacket
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -3600,10 +3600,10 @@ MagickExport Image *StatisticImageChannel(const Image *image,
         pixel;
 
       register const IndexPacket
-        *restrict s;
+        *magick_restrict s;
 
       register const PixelPacket
-        *restrict r;
+        *magick_restrict r;
 
       register ssize_t
         u,

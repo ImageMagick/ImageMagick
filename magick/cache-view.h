@@ -77,16 +77,17 @@ extern MagickExport IndexPacket
   *GetCacheViewAuthenticIndexQueue(CacheView *);
 
 extern MagickExport MagickBooleanType
-  GetOneCacheViewAuthenticPixel(const CacheView *restrict,const ssize_t,
-    const ssize_t,PixelPacket *restrict,ExceptionInfo *),
+  GetOneCacheViewAuthenticPixel(const CacheView *magick_restrict,const ssize_t,
+    const ssize_t,PixelPacket *magick_restrict,ExceptionInfo *),
   GetOneCacheViewVirtualMethodPixel(const CacheView *,
     const VirtualPixelMethod,const ssize_t,const ssize_t,PixelPacket *,
     ExceptionInfo *),
-  GetOneCacheViewVirtualPixel(const CacheView *restrict,const ssize_t,
-    const ssize_t,PixelPacket *restrict,ExceptionInfo *),
+  GetOneCacheViewVirtualPixel(const CacheView *magick_restrict,const ssize_t,
+    const ssize_t,PixelPacket *magick_restrict,ExceptionInfo *),
   SetCacheViewStorageClass(CacheView *,const ClassType),
-  SetCacheViewVirtualPixelMethod(CacheView *restrict,const VirtualPixelMethod),
-  SyncCacheViewAuthenticPixels(CacheView *restrict,ExceptionInfo *)
+  SetCacheViewVirtualPixelMethod(CacheView *magick_restrict,
+    const VirtualPixelMethod),
+  SyncCacheViewAuthenticPixels(CacheView *magick_restrict,ExceptionInfo *)
     magick_hot_spot;
 
 extern MagickExport MagickSizeType
