@@ -2848,8 +2848,6 @@ MagickExport MagickBooleanType RelinquishMagickOpenCLEnv(
 */
 MagickExport MagickCLEnv GetDefaultOpenCLEnv()
 {
-  magick_unreferenced(exception);
-
   return (MagickCLEnv) NULL;
 }
 
