@@ -1448,9 +1448,9 @@ MagickExport Image *GetImageMask(const Image *image,ExceptionInfo *exception)
   if (mask_image == (Image *) NULL)
     return((Image *) NULL);
   status=MagickTrue;
-  (void) SetImageColorspace(mask_image,GRAYColorspace,exception);
   mask_image->read_mask=MagickFalse;
   mask_image->alpha_trait=UndefinedPixelTrait;
+  (void) SetImageColorspace(mask_image,GRAYColorspace,exception);
   image_view=AcquireVirtualCacheView(image,exception);
   mask_view=AcquireAuthenticCacheView(mask_image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
