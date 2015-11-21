@@ -1512,7 +1512,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         if ((source_traits == UndefinedPixelTrait) &&
              (((compose != CopyAlphaCompositeOp) &&
                (compose != ChangeMaskCompositeOp)) ||
-              (channel != AlphaPixelChannel)))
+               (channel != AlphaPixelChannel)))
             continue;
         /*
           Sc: source color.
