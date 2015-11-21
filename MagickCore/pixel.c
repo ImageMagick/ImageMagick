@@ -6042,7 +6042,8 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixel(const Image *source,
   fuzz=GetFuzzyColorDistance(source,destination);
   scale=1.0;
   distance=0.0;
-  if (source->alpha_trait != UndefinedPixelTrait)
+  if (source->alpha_trait != UndefinedPixelTrait ||
+      destination->alpha_trait != UndefinedPixelTrait)
     {
       /*
         Transparencies are involved - set alpha distance
@@ -6055,8 +6056,10 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixel(const Image *source,
         Generate a alpha scaling factor to generate a 4D cone on colorspace
         Note that if one color is transparent, distance has no color component.
       */
-      scale=QuantumScale*GetPixelAlpha(source,p);
-      scale*=QuantumScale*GetPixelAlpha(destination,q);
+      if (source->alpha_trait != UndefinedPixelTrait)
+        scale=QuantumScale*GetPixelAlpha(source,p);
+      if (destination->alpha_trait != UndefinedPixelTrait)
+        scale*=QuantumScale*GetPixelAlpha(destination,q);
       if (scale <= MagickEpsilon)
         return(MagickTrue);
     }
