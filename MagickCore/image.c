@@ -1448,9 +1448,9 @@ MagickExport Image *GetImageMask(const Image *image,ExceptionInfo *exception)
   if (mask_image == (Image *) NULL)
     return((Image *) NULL);
   status=MagickTrue;
-  mask_image->read_mask=MagickFalse;
   mask_image->alpha_trait=UndefinedPixelTrait;
   (void) SetImageColorspace(mask_image,GRAYColorspace,exception);
+  mask_image->read_mask=MagickFalse;
   image_view=AcquireVirtualCacheView(image,exception);
   mask_view=AcquireAuthenticCacheView(mask_image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
@@ -2976,16 +2976,20 @@ MagickExport MagickBooleanType SetImageMask(Image *image,const PixelMask type,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
+      MagickRealType
+        intensity;
+
+      intensity=GetPixelIntensity(mask,p);
       switch (type)
       {
         case WritePixelMask:
         {
-          SetPixelWriteMask(image,ClampToQuantum(GetPixelIntensity(mask,p)),q);
+          SetPixelWriteMask(image,ClampToQuantum(QuantumRange-intensity),q);
           break;
         }
         default:
         {
-          SetPixelReadMask(image,ClampToQuantum(GetPixelIntensity(mask,p)),q);
+          SetPixelReadMask(image,ClampToQuantum(QuantumRange-intensity),q);
           break;
         }
       }
