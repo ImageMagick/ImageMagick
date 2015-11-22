@@ -2900,13 +2900,11 @@ MagickExport MagickBooleanType QuantizeImages(const QuantizeInfo *quantize_info,
 %
 %  The format of the QuantizeErrorFlatten method is:
 %
-%      size_t QuantizeErrorFlatten(const Image *image,const CubeInfo *cube_info,
+%      size_t QuantizeErrorFlatten(const CubeInfo *cube_info,
 %        const NodeInfo *node_info,const ssize_t offset,
 %        MagickRealType *quantize_error)
 %
 %  A description of each parameter follows.
-%
-%    o image: the image.
 %
 %    o cube_info: A pointer to the Cube structure.
 %
@@ -2917,8 +2915,9 @@ MagickExport MagickBooleanType QuantizeImages(const QuantizeInfo *quantize_info,
 %    o quantize_error: the quantization error vector.
 %
 */
-static size_t QuantizeErrorFlatten(const Image *image,const CubeInfo *cube_info,
-  const NodeInfo *node_info,const ssize_t offset,MagickRealType *quantize_error)
+static size_t QuantizeErrorFlatten(const CubeInfo *cube_info,
+  const NodeInfo *node_info,const ssize_t offset,
+  MagickRealType *quantize_error)
 {
   register ssize_t
     i;
@@ -2934,7 +2933,7 @@ static size_t QuantizeErrorFlatten(const Image *image,const CubeInfo *cube_info,
   number_children=cube_info->associate_alpha == MagickFalse ? 8UL : 16UL;
   for (i=0; i < (ssize_t) number_children ; i++)
     if (node_info->child[i] != (NodeInfo *) NULL)
-      n+=QuantizeErrorFlatten(image,cube_info,node_info->child[i],offset+n,
+      n+=QuantizeErrorFlatten(cube_info,node_info->child[i],offset+n,
         quantize_error);
   return(n);
 }
@@ -3092,7 +3091,7 @@ static void ReduceImageColors(const Image *image,CubeInfo *cube_info)
         sizeof(*quantize_error));
       if (quantize_error != (MagickRealType *) NULL)
         {
-          (void) QuantizeErrorFlatten(image,cube_info,cube_info->root,0,
+          (void) QuantizeErrorFlatten(cube_info,cube_info->root,0,
             quantize_error);
           qsort(quantize_error,cube_info->nodes,sizeof(MagickRealType),
             MagickRealTypeCompare);
