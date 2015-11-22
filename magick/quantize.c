@@ -341,8 +341,8 @@ static size_t
 static void
   ClosestColor(const Image *,CubeInfo *,const NodeInfo *),
   DestroyCubeInfo(CubeInfo *),
-  PruneLevel(const Image *,CubeInfo *,const NodeInfo *),
-  PruneToCubeDepth(const Image *,CubeInfo *,const NodeInfo *),
+  PruneLevel(CubeInfo *,const NodeInfo *),
+  PruneToCubeDepth(CubeInfo *,const NodeInfo *),
   ReduceImageColors(const Image *,CubeInfo *);
 
 /*
@@ -800,7 +800,7 @@ static MagickBooleanType ClassifyImageColors(CubeInfo *cube_info,
         /*
           Prune one level if the color tree is too large.
         */
-        PruneLevel(image,cube_info,cube_info->root);
+        PruneLevel(cube_info,cube_info->root);
         cube_info->depth--;
       }
     for (x=0; x < (ssize_t) image->columns; x+=(ssize_t) count)
@@ -874,7 +874,7 @@ static MagickBooleanType ClassifyImageColors(CubeInfo *cube_info,
     }
     if (cube_info->colors > cube_info->maximum_colors)
       {
-        PruneToCubeDepth(image,cube_info,cube_info->root);
+        PruneToCubeDepth(cube_info,cube_info->root);
         break;
       }
     proceed=SetImageProgress(image,ClassifyImageTag,(MagickOffsetType) y,
@@ -898,7 +898,7 @@ static MagickBooleanType ClassifyImageColors(CubeInfo *cube_info,
         /*
           Prune one level if the color tree is too large.
         */
-        PruneLevel(image,cube_info,cube_info->root);
+        PruneLevel(cube_info,cube_info->root);
         cube_info->depth--;
       }
     for (x=0; x < (ssize_t) image->columns; x+=(ssize_t) count)
@@ -2426,20 +2426,16 @@ MagickExport MagickBooleanType PosterizeImageChannel(Image *image,
 %
 %  The format of the PruneSubtree method is:
 %
-%      PruneChild(const Image *image,CubeInfo *cube_info,
-%        const NodeInfo *node_info)
+%      PruneChild(CubeInfo *cube_info,const NodeInfo *node_info)
 %
 %  A description of each parameter follows.
-%
-%    o image: the image.
 %
 %    o cube_info: A pointer to the Cube structure.
 %
 %    o node_info: pointer to node in color cube tree that is to be pruned.
 %
 */
-static void PruneChild(const Image *image,CubeInfo *cube_info,
-  const NodeInfo *node_info)
+static void PruneChild(CubeInfo *cube_info,const NodeInfo *node_info)
 {
   NodeInfo
     *parent;
@@ -2456,7 +2452,7 @@ static void PruneChild(const Image *image,CubeInfo *cube_info,
   number_children=cube_info->associate_alpha == MagickFalse ? 8UL : 16UL;
   for (i=0; i < (ssize_t) number_children; i++)
     if (node_info->child[i] != (NodeInfo *) NULL)
-      PruneChild(image,cube_info,node_info->child[i]);
+      PruneChild(cube_info,node_info->child[i]);
   /*
     Merge color statistics into parent.
   */
@@ -2486,20 +2482,16 @@ static void PruneChild(const Image *image,CubeInfo *cube_info,
 %
 %  The format of the PruneLevel method is:
 %
-%      PruneLevel(const Image *image,CubeInfo *cube_info,
-%        const NodeInfo *node_info)
+%      PruneLevel(CubeInfo *cube_info,const NodeInfo *node_info)
 %
 %  A description of each parameter follows.
-%
-%    o image: the image.
 %
 %    o cube_info: A pointer to the Cube structure.
 %
 %    o node_info: pointer to node in color cube tree that is to be pruned.
 %
 */
-static void PruneLevel(const Image *image,CubeInfo *cube_info,
-  const NodeInfo *node_info)
+static void PruneLevel(CubeInfo *cube_info,const NodeInfo *node_info)
 {
   register ssize_t
     i;
@@ -2513,9 +2505,9 @@ static void PruneLevel(const Image *image,CubeInfo *cube_info,
   number_children=cube_info->associate_alpha == MagickFalse ? 8UL : 16UL;
   for (i=0; i < (ssize_t) number_children; i++)
     if (node_info->child[i] != (NodeInfo *) NULL)
-      PruneLevel(image,cube_info,node_info->child[i]);
+      PruneLevel(cube_info,node_info->child[i]);
   if (node_info->level == cube_info->depth)
-    PruneChild(image,cube_info,node_info);
+    PruneChild(cube_info,node_info);
 }
 
 /*
@@ -2535,8 +2527,7 @@ static void PruneLevel(const Image *image,CubeInfo *cube_info,
 %
 %  The format of the PruneToCubeDepth method is:
 %
-%      PruneToCubeDepth(const Image *image,CubeInfo *cube_info,
-%        const NodeInfo *node_info)
+%      PruneToCubeDepth(CubeInfo *cube_info,const NodeInfo *node_info)
 %
 %  A description of each parameter follows.
 %
@@ -2545,8 +2536,7 @@ static void PruneLevel(const Image *image,CubeInfo *cube_info,
 %    o node_info: pointer to node in color cube tree that is to be pruned.
 %
 */
-static void PruneToCubeDepth(const Image *image,CubeInfo *cube_info,
-  const NodeInfo *node_info)
+static void PruneToCubeDepth(CubeInfo *cube_info,const NodeInfo *node_info)
 {
   register ssize_t
     i;
@@ -2560,9 +2550,9 @@ static void PruneToCubeDepth(const Image *image,CubeInfo *cube_info,
   number_children=cube_info->associate_alpha == MagickFalse ? 8UL : 16UL;
   for (i=0; i < (ssize_t) number_children; i++)
     if (node_info->child[i] != (NodeInfo *) NULL)
-      PruneToCubeDepth(image,cube_info,node_info->child[i]);
+      PruneToCubeDepth(cube_info,node_info->child[i]);
   if (node_info->level > cube_info->depth)
-    PruneChild(image,cube_info,node_info);
+    PruneChild(cube_info,node_info);
 }
 
 /*
@@ -2954,19 +2944,16 @@ static size_t QuantizeErrorFlatten(const CubeInfo *cube_info,
 %
 %  The format of the Reduce method is:
 %
-%      Reduce(const Image *image,CubeInfo *cube_info,const NodeInfo *node_info)
+%      Reduce(CubeInfo *cube_info,const NodeInfo *node_info)
 %
 %  A description of each parameter follows.
-%
-%    o image: the image.
 %
 %    o cube_info: A pointer to the Cube structure.
 %
 %    o node_info: pointer to node in color cube tree that is to be pruned.
 %
 */
-static void Reduce(const Image *image,CubeInfo *cube_info,
-  const NodeInfo *node_info)
+static void Reduce(CubeInfo *cube_info,const NodeInfo *node_info)
 {
   register ssize_t
     i;
@@ -2980,9 +2967,9 @@ static void Reduce(const Image *image,CubeInfo *cube_info,
   number_children=cube_info->associate_alpha == MagickFalse ? 8UL : 16UL;
   for (i=0; i < (ssize_t) number_children; i++)
     if (node_info->child[i] != (NodeInfo *) NULL)
-      Reduce(image,cube_info,node_info->child[i]);
+      Reduce(cube_info,node_info->child[i]);
   if (node_info->quantize_error <= cube_info->pruning_threshold)
-    PruneChild(image,cube_info,node_info);
+    PruneChild(cube_info,node_info);
   else
     {
       /*
@@ -3107,7 +3094,7 @@ static void ReduceImageColors(const Image *image,CubeInfo *cube_info)
     cube_info->pruning_threshold=cube_info->next_threshold;
     cube_info->next_threshold=cube_info->root->quantize_error-1;
     cube_info->colors=0;
-    Reduce(image,cube_info,cube_info->root);
+    Reduce(cube_info,cube_info->root);
     offset=(MagickOffsetType) span-cube_info->colors;
     proceed=SetImageProgress(image,ReduceImageTag,offset,span-
       cube_info->maximum_colors+1);
