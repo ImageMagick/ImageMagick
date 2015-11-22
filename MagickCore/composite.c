@@ -1560,7 +1560,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
                 MagickBooleanType
                   equivalent;
 
-                if (Da > ((MagickRealType) QuantumRange/2.0))
+                if (Da < 0.5)
                   {
                     pixel=(MagickRealType) TransparentAlpha;
                     break;
