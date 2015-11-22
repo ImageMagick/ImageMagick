@@ -981,7 +981,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     c,
     flag,
     *global_colormap,
-    buffer[MagickPathExtent];
+    buffer[257];
 
   /*
     Open image file.
