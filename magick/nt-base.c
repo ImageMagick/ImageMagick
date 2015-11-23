@@ -140,7 +140,8 @@ extern "C" BOOL WINAPI
   DllMain(HINSTANCE handle,DWORD reason,LPVOID lpvReserved);
 #endif
 
-static void NTGhostscriptDeleteInstance(gs_main_instance *instance)
+static void MagickDLLCall NTGhostscriptDeleteInstance(
+  gs_main_instance *instance)
 {
   LockSemaphoreInfo(ghost_semaphore);
   nt_ghost_info.delete_instance(instance);
@@ -148,7 +149,7 @@ static void NTGhostscriptDeleteInstance(gs_main_instance *instance)
   UnlockSemaphoreInfo(ghost_semaphore);
 }
 
-static int NTGhostscriptNewInstance(gs_main_instance **pinstance,
+static int MagickDLLCall NTGhostscriptNewInstance(gs_main_instance **pinstance,
   void *caller_handle)
 {
   int
