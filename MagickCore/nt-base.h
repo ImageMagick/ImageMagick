@@ -310,11 +310,9 @@ extern MagickExport char
 extern MagickExport const GhostInfo_
   *NTGhostscriptDLLVectors(void);
 
-extern MagickExport int
-  NTGhostscriptUnLoadDLL(void);
-
 extern MagickExport void
   NTErrorHandler(const ExceptionType,const char *,const char *),
+  NTGhostscriptUnLoadDLL(void),
   NTWarningHandler(const ExceptionType,const char *,const char *);
 #endif
 
