@@ -237,7 +237,10 @@ static MagickBooleanType InvokePostscriptDelegate(
   code=0;
   argv=StringToArgv(command,&argc);
   if (argv == (char **) NULL)
-    return(MagickFalse);
+    {
+      (ghost_info->delete_instance)(interpreter);
+      return(MagickFalse);
+    }
   (void) (ghost_info->set_stdio)(interpreter,(int(MagickDLLCall *)(void *,
     char *,int)) NULL,PostscriptDelegateMessage,PostscriptDelegateMessage);
   status=(ghost_info->init_with_args)(interpreter,argc-1,argv+1);
