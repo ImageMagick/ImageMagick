@@ -870,6 +870,9 @@ static MagickBooleanType ClassifyImageColors(CubeInfo *cube_info,
       if (cube_info->associate_alpha != MagickFalse)
         node_info->total_color.opacity+=count*QuantumScale*
           ClampPixel(pixel.opacity);
+      else
+        node_info->total_color.opacity+=count*QuantumScale*
+          ClampPixel(OpaqueOpacity);
       p+=count;
     }
     if (cube_info->colors > cube_info->maximum_colors)
@@ -968,6 +971,9 @@ static MagickBooleanType ClassifyImageColors(CubeInfo *cube_info,
       if (cube_info->associate_alpha != MagickFalse)
         node_info->total_color.opacity+=count*QuantumScale*ClampPixel(
           pixel.opacity);
+      else
+        node_info->total_color.opacity+=count*QuantumScale*
+          ClampPixel(OpaqueOpacity);
       p+=count;
     }
     proceed=SetImageProgress(image,ClassifyImageTag,(MagickOffsetType) y,
