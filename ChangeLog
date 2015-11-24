@@ -1,3 +1,6 @@
+2015-11-24  6.9.2-7 Dirk Lemstra <dirk@lem.....org>
+  * The DICOM reader now handles the rescale intercept and slope.
+
 2015-11-14  6.9.2-6 Cristy  <quetzlzacatenango@image...>
   * New version 6.9.2-6, GIT revision 10341:f408196:20151113.
 
