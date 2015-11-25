@@ -550,9 +550,6 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           property[MagickPathExtent],
           *value;
 
-        register ssize_t
-          i;
-
         /*
           Note spot names.
         */
@@ -645,13 +642,11 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (option != (char *) NULL)
   {
     char
-      *geometry;
+      *page_geometry;
 
-    MagickStatusType
-      flags;
-
-    geometry=GetPageGeometry(option);
-    flags=ParseMetaGeometry(geometry,&page.x,&page.y,&page.width,&page.height);
+    page_geometry=GetPageGeometry(option);
+    flags=ParseMetaGeometry(page_geometry,&page.x,&page.y,&page.width,
+      &page.height);
     if (flags == NoValue)
       {
         (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
@@ -663,7 +658,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       -0.5);
     page.height=(size_t) ceil((double) (page.height*image->resolution.y/
       delta.y) -0.5);
-    geometry=DestroyString(geometry);
+    page_geometry=DestroyString(page_geometry);
     fitPage=MagickTrue;
   }
   (void) CloseBlob(image);
@@ -809,9 +804,6 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       Image
         *clone_image;
-
-      register ssize_t
-        i;
 
       /*
         Add place holder images to meet the subimage specification requirement.
@@ -1236,9 +1228,6 @@ RestoreMSCWarning
         modify_date[MagickPathExtent],
         timestamp[MagickPathExtent],
         xmp_profile[MagickPathExtent];
-
-      size_t
-        version;
 
       /*
         Write XMP object.
