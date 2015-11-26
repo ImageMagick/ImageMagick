@@ -1528,7 +1528,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image)
     bmp_info;
 
   const char
-    *value;
+    *option;
 
   const StringInfo
     *profile;
@@ -1586,18 +1586,17 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image)
     if (LocaleCompare(image_info->magick,"BMP3") == 0)
       type=3;
 
-  value=GetImageOption(image_info,"bmp:format");
-
-  if (value != (char *) NULL)
+  option=GetImageOption(image_info,"bmp:format");
+  if (option != (char *) NULL)
     {
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "  Format=%s",value);
+          "  Format=%s",option);
 
-      if (LocaleCompare(value,"bmp2") == 0)
+      if (LocaleCompare(option,"bmp2") == 0)
         type=2;
-      if (LocaleCompare(value,"bmp3") == 0)
+      if (LocaleCompare(option,"bmp3") == 0)
         type=3;
-      if (LocaleCompare(value,"bmp4") == 0)
+      if (LocaleCompare(option,"bmp4") == 0)
         type=4;
     }
 
@@ -1659,6 +1658,12 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image)
           ((type > 3) && (image->matte != MagickFalse) ? 32 : 24);
         bmp_info.compression=(unsigned int) ((type > 3) &&
           (image->matte != MagickFalse) ?  BI_BITFIELDS : BI_RGB);
+        if ((type == 3) && (image->matte != MagickFalse))
+          {
+            option=GetImageOption(image_info,"bmp3:alpha");
+            if (IsStringTrue(option))
+              bmp_info.bits_per_pixel=32;
+          }
       }
     bytes_per_line=4*((image->columns*bmp_info.bits_per_pixel+31)/32);
     bmp_info.ba_offset=0;
