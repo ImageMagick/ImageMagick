@@ -1,8 +1,13 @@
+2015-11-26  6.9.2-7 Cristy  <quetzlzacatenango@image...>
+  * New version 6.9.2-7, GIT revision 10370:eeb7d4e:20151126.
+
 2015-11-24  6.9.2-7 Dirk Lemstra <dirk@lem.....org>
   * The DICOM reader now handles the rescale intercept and slope.
   * Added 'bmp3:alpha' option for including the alpha channel when writing
     an image in the BMP3 format. (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=28733).
+  * Only one thread permitted when delegating to the Ghostscript library
+    under Windows.
 
 2015-11-14  6.9.2-6 Cristy  <quetzlzacatenango@image...>
   * New version 6.9.2-6, GIT revision 10341:f408196:20151113.
