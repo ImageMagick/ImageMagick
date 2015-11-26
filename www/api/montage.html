@@ -33,7 +33,7 @@
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async="async" src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
          style="display:block"
          data-ad-client="ca-pub-3129977114552745"
          data-ad-slot="6345125851"
@@ -45,7 +45,7 @@
       <a class="magick-nav-item " href="../index.html">Home</a>
       <a class="magick-nav-item " href="../binary-releases.html">Download</a>
       <a class="magick-nav-item " href="../command-line-tools.html">Tools</a>
-      <a class="magick-nav-item " href="../command-line-options.html">Options</a>
+      <a class="magick-nav-item " href="../command-line-processing.html">Command-line</a>
       <a class="magick-nav-item " href="../resources.html">Resources</a>
       <a class="magick-nav-item " href="api.html">Develop</a>
       <a class="magick-nav-item " href="http://www.imagemagick.org/script/search.php">Search</a>
@@ -55,122 +55,8 @@
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="text-center"><a href="montage.html#CloneMontageInfo">CloneMontageInfo</a> &#8226; <a href="montage.html#DestroyMontageInfo">DestroyMontageInfo</a> &#8226; <a href="montage.html#GetMontageInfo">GetMontageInfo</a> &#8226; <a href="montage.html#MontageImageList">MontageImageList</a></p>
+<p class="text-center"><a href="montage.html#Unknown method">Unknown method</a></p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/montage_8c.html" id="CloneMontageInfo">CloneMontageInfo</a></h2>
-
-<p>CloneMontageInfo() makes a copy of the given montage info structure.  If NULL is specified, a new image info structure is created initialized to default values.</p>
-
-<p>The format of the CloneMontageInfo method is:</p>
-
-<pre class="text">
-MontageInfo *CloneMontageInfo(const ImageInfo *image_info,
-  const MontageInfo *montage_info)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<dd>
-</dd>
-
-<dd> </dd>
-<dl class="dl-horizontal">
-<dt>image_info</dt>
-<dd>the image info. </dd>
-
-<dd> </dd>
-<dt>montage_info</dt>
-<dd>the montage info. </dd>
-
-<dd>  </dd>
-</dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/montage_8c.html" id="DestroyMontageInfo">DestroyMontageInfo</a></h2>
-
-<p>DestroyMontageInfo() deallocates memory associated with montage_info.</p>
-
-<p>The format of the DestroyMontageInfo method is:</p>
-
-<pre class="text">
-MontageInfo *DestroyMontageInfo(MontageInfo *montage_info)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<dd>
-</dd>
-
-<dd> </dd>
-<dl class="dl-horizontal">
-<dt>montage_info</dt>
-<dd>Specifies a pointer to an MontageInfo structure. </dd>
-
-<dd> </dd>
-
-<dd>  </dd>
-</dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/montage_8c.html" id="GetMontageInfo">GetMontageInfo</a></h2>
-
-<p>GetMontageInfo() initializes montage_info to default values.</p>
-
-<p>The format of the GetMontageInfo method is:</p>
-
-<pre class="text">
-void GetMontageInfo(const ImageInfo *image_info,
-  MontageInfo *montage_info)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<dd>
-</dd>
-
-<dd> </dd>
-<dl class="dl-horizontal">
-<dt>image_info</dt>
-<dd>a structure of type ImageInfo. </dd>
-
-<dd> </dd>
-<dt>montage_info</dt>
-<dd>Specifies a pointer to a MontageInfo structure. </dd>
-
-<dd>  </dd>
-</dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/montage_8c.html" id="MontageImageList">MontageImageList</a></h2>
-
-<p>MontageImageList() is a layout manager that lets you tile one or more thumbnails across an image canvas.</p>
-
-<p>The format of the MontageImageList method is:</p>
-
-<pre class="text">
-Image *MontageImageList(const ImageInfo *image_info,
-  const MontageInfo *montage_info,Image *images,
-  ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<dd>
-</dd>
-
-<dd> </dd>
-<dl class="dl-horizontal">
-<dt>image_info</dt>
-<dd>the image info. </dd>
-
-<dd> </dd>
-<dt>montage_info</dt>
-<dd>Specifies a pointer to a MontageInfo structure. </dd>
-
-<dd> </dd>
-<dt>images</dt>
-<dd>Specifies a pointer to an array of Image structures. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
-<dd>  </dd>
-</dl>
 </div>
   <footer class="magick-footer">
     <p><a href="../support.html">Donate</a> •
@@ -185,7 +71,7 @@ Image *MontageImageList(const ImageInfo *image_info,
   </footer>
 </div><!-- /.container -->
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="https://localhost/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script src="../js/magick.html"></script>
 </div>
 </body>

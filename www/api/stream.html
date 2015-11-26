@@ -33,7 +33,7 @@
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async="async" src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
          style="display:block"
          data-ad-client="ca-pub-3129977114552745"
          data-ad-slot="6345125851"
@@ -45,7 +45,7 @@
       <a class="magick-nav-item " href="../index.html">Home</a>
       <a class="magick-nav-item " href="../binary-releases.html">Download</a>
       <a class="magick-nav-item " href="../command-line-tools.html">Tools</a>
-      <a class="magick-nav-item " href="../command-line-options.html">Options</a>
+      <a class="magick-nav-item " href="../command-line-processing.html">Command-line</a>
       <a class="magick-nav-item " href="../resources.html">Resources</a>
       <a class="magick-nav-item " href="api.html">Develop</a>
       <a class="magick-nav-item " href="http://www.imagemagick.org/script/search.php">Search</a>
@@ -55,17 +55,17 @@
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="text-center"><a href="stream.html#ReadStream">ReadStream</a> &#8226; <a href="stream.html#WriteStream">WriteStream</a></p>
+<p class="text-center"><a href="stream.html#StreamImageCommand">StreamImageCommand</a></p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/stream_8c.html" id="ReadStream">ReadStream</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/stream_8c.html" id="StreamImageCommand">StreamImageCommand</a></h2>
 
-<p>ReadStream() makes the image pixels available to a user supplied callback method immediately upon reading a scanline with the ReadImage() method.</p>
+<p>StreamImageCommand() is a lightweight method designed to extract pixels from large image files to a raw format using a minimum of system resources. The entire image or any regular portion of the image can be extracted.</p>
 
-<p>The format of the ReadStream() method is:</p>
+<p>The format of the StreamImageCommand method is:</p>
 
 <pre class="text">
-Image *ReadStream(const ImageInfo *image_info,StreamHandler stream,
-  ExceptionInfo *exception)
+MagickBooleanType StreamImageCommand(ImageInfo *image_info,int argc,
+  char **argv,char **metadata,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -79,39 +79,20 @@ Image *ReadStream(const ImageInfo *image_info,StreamHandler stream,
 <dd>the image info. </dd>
 
 <dd> </dd>
-<dt>stream</dt>
-<dd>a callback method. </dd>
+<dt>argc</dt>
+<dd>the number of elements in the argument vector. </dd>
+
+<dd> </dd>
+<dt>argv</dt>
+<dd>A text array containing the command line arguments. </dd>
+
+<dd> </dd>
+<dt>metadata</dt>
+<dd>any metadata is returned here. </dd>
 
 <dd> </dd>
 <dt>exception</dt>
 <dd>return any errors or warnings in this structure. </dd>
-
-<dd>  </dd>
-</dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/stream_8c.html" id="WriteStream">WriteStream</a></h2>
-
-<p>WriteStream() makes the image pixels available to a user supplied callback method immediately upon writing pixel data with the WriteImage() method.</p>
-
-<p>The format of the WriteStream() method is:</p>
-
-<pre class="text">
-MagickBooleanType WriteStream(const ImageInfo *image_info,Image *,
-  StreamHandler stream)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<dd>
-</dd>
-
-<dd> </dd>
-<dl class="dl-horizontal">
-<dt>image_info</dt>
-<dd>the image info. </dd>
-
-<dd> </dd>
-<dt>stream</dt>
-<dd>A callback method. </dd>
 
 <dd>  </dd>
 </dl>
@@ -129,7 +110,7 @@ MagickBooleanType WriteStream(const ImageInfo *image_info,Image *,
   </footer>
 </div><!-- /.container -->
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="https://localhost/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script src="../js/magick.html"></script>
 </div>
 </body>
