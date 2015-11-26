@@ -30,7 +30,7 @@
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async="async" src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
          style="display:block"
          data-ad-client="ca-pub-3129977114552745"
          data-ad-slot="6345125851"
@@ -42,7 +42,7 @@
       <a class="magick-nav-item " href="../index.html">Home</a>
       <a class="magick-nav-item " href="../binary-releases.html">Download</a>
       <a class="magick-nav-item " href="../command-line-tools.html">Tools</a>
-      <a class="magick-nav-item " href="../command-line-options.html">Options</a>
+      <a class="magick-nav-item " href="../command-line-processing.html">Command-line</a>
       <a class="magick-nav-item " href="../resources.html">Resources</a>
       <a class="magick-nav-item " href="api.html">Develop</a>
       <a class="magick-nav-item " href="http://nextgen.imagemagick.org/script/search.php">Search</a>
@@ -54,7 +54,7 @@
 <div class="magick-header">
 <p class="text-center"><a href="registry.html#DefineImageRegistry">DefineImageRegistry</a> &#8226; <a href="registry.html#DeleteImageRegistry">DeleteImageRegistry</a> &#8226; <a href="registry.html#GetImageRegistry">GetImageRegistry</a> &#8226; <a href="registry.html#GetNextImageRegistry">GetNextImageRegistry</a> &#8226; <a href="registry.html#RegistryComponentTerminus">RegistryComponentTerminus</a> &#8226; <a href="registry.html#RemoveImageRegistry">RemoveImageRegistry</a> &#8226; <a href="registry.html#ResetImageRegistryIterator">ResetImageRegistryIterator</a> &#8226; <a href="registry.html#SetImageRegistry">SetImageRegistry</a></p>
 
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/registry_8c.html" id="DefineImageRegistry">DefineImageRegistry</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/registry_8c.html" id="DefineImageRegistry">DefineImageRegistry</a></h2>
 
 <p>DefineImageRegistry() associates a key/value pair with the image registry.</p>
 
@@ -85,7 +85,7 @@ MagickBooleanType DefineImageRegistry(const RegistryType type,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/registry_8c.html" id="DeleteImageRegistry">DeleteImageRegistry</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/registry_8c.html" id="DeleteImageRegistry">DeleteImageRegistry</a></h2>
 
 <p>DeleteImageRegistry() deletes a key from the image registry.</p>
 
@@ -107,7 +107,7 @@ MagickBooleanType DeleteImageRegistry(const char *key)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/registry_8c.html" id="GetImageRegistry">GetImageRegistry</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/registry_8c.html" id="GetImageRegistry">GetImageRegistry</a></h2>
 
 <p>GetImageRegistry() returns a value associated with an image registry key.</p>
 
@@ -138,7 +138,7 @@ void *GetImageRegistry(const RegistryType type,const char *key,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/registry_8c.html" id="GetNextImageRegistry">GetNextImageRegistry</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/registry_8c.html" id="GetNextImageRegistry">GetNextImageRegistry</a></h2>
 
 <p>GetNextImageRegistry() gets the next image registry value.</p>
 
@@ -148,7 +148,7 @@ void *GetImageRegistry(const RegistryType type,const char *key,
 char *GetNextImageRegistry(void)
 </pre>
 
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/registry_8c.html" id="RegistryComponentTerminus">RegistryComponentTerminus</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/registry_8c.html" id="RegistryComponentTerminus">RegistryComponentTerminus</a></h2>
 
 <p>RegistryComponentTerminus() destroys the registry component.</p>
 
@@ -158,7 +158,7 @@ char *GetNextImageRegistry(void)
 void RegistryComponentTerminus(void)
 </pre>
 
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/registry_8c.html" id="RemoveImageRegistry">RemoveImageRegistry</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/registry_8c.html" id="RemoveImageRegistry">RemoveImageRegistry</a></h2>
 
 <p>RemoveImageRegistry() removes a key from the image registry and returns its value.</p>
 
@@ -180,7 +180,7 @@ void *RemoveImageRegistry(const char *key)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/registry_8c.html" id="ResetImageRegistryIterator">ResetImageRegistryIterator</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/registry_8c.html" id="ResetImageRegistryIterator">ResetImageRegistryIterator</a></h2>
 
 <p>ResetImageRegistryIterator() resets the registry iterator.  Use it in conjunction with GetNextImageRegistry() to iterate over all the values in the image registry.</p>
 
@@ -190,7 +190,7 @@ void *RemoveImageRegistry(const char *key)
 ResetImageRegistryIterator(void)
 </pre>
 
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/registry_8c.html" id="SetImageRegistry">SetImageRegistry</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/registry_8c.html" id="SetImageRegistry">SetImageRegistry</a></h2>
 
 <p>SetImageRegistry() associates a value with an image registry key.</p>
 
@@ -239,7 +239,7 @@ MagickBooleanType SetImageRegistry(const RegistryType type,
   </footer>
 </div><!-- /.container -->
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="https://localhost/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script src="http://nextgen.imagemagick.org/js/magick.html"></script>
 </div>
 </body>

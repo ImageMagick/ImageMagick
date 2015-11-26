@@ -30,7 +30,7 @@
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async="async" src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
          style="display:block"
          data-ad-client="ca-pub-3129977114552745"
          data-ad-slot="6345125851"
@@ -42,7 +42,7 @@
       <a class="magick-nav-item " href="../index.html">Home</a>
       <a class="magick-nav-item " href="../binary-releases.html">Download</a>
       <a class="magick-nav-item " href="../command-line-tools.html">Tools</a>
-      <a class="magick-nav-item " href="../command-line-options.html">Options</a>
+      <a class="magick-nav-item " href="../command-line-processing.html">Command-line</a>
       <a class="magick-nav-item " href="../resources.html">Resources</a>
       <a class="magick-nav-item " href="api.html">Develop</a>
       <a class="magick-nav-item " href="http://nextgen.imagemagick.org/script/search.php">Search</a>
@@ -54,7 +54,7 @@
 <div class="magick-header">
 <p class="text-center"><a href="histogram.html#GetImageHistogram">GetImageHistogram</a> &#8226; <a href="histogram.html#IdentifyPaletteImage">IdentifyPaletteImage</a> &#8226; <a href="histogram.html#IsHistogramImage">IsHistogramImage</a> &#8226; <a href="histogram.html#IsPaletteImage">IsPaletteImage</a> &#8226; <a href="histogram.html#MinMaxStretchImage">MinMaxStretchImage</a> &#8226; <a href="histogram.html#GetNumberColors">GetNumberColors</a> &#8226; <a href="histogram.html#UniqueImageColors">UniqueImageColors</a></p>
 
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/histogram_8c.html" id="GetImageHistogram">GetImageHistogram</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/histogram_8c.html" id="GetImageHistogram">GetImageHistogram</a></h2>
 
 <p>GetImageHistogram() returns the unique colors in an image.</p>
 
@@ -76,7 +76,7 @@ size_t GetImageHistogram(const Image *image,
 <dt>exception</dt>
 <p>return any errors or warnings in this structure.</p>
 
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/histogram_8c.html" id="IdentifyPaletteImage">IdentifyPaletteImage</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/histogram_8c.html" id="IdentifyPaletteImage">IdentifyPaletteImage</a></h2>
 
 <p>IdentifyPaletteImage() returns MagickTrue if the image has 256 unique colors or less.</p>
 
@@ -95,7 +95,7 @@ MagickBooleanType IdentifyPaletteImage(const Image *image,
 <dt>exception</dt>
 <p>return any errors or warnings in this structure.</p>
 
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/histogram_8c.html" id="IsHistogramImage">IsHistogramImage</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/histogram_8c.html" id="IsHistogramImage">IsHistogramImage</a></h2>
 
 <p>IsHistogramImage() returns MagickTrue if the image has 1024 unique colors or less.</p>
 
@@ -114,7 +114,7 @@ MagickBooleanType IsHistogramImage(const Image *image,
 <dt>exception</dt>
 <p>return any errors or warnings in this structure.</p>
 
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/histogram_8c.html" id="IsPaletteImage">IsPaletteImage</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/histogram_8c.html" id="IsPaletteImage">IsPaletteImage</a></h2>
 
 <p>IsPaletteImage() returns MagickTrue if the image is PseudoClass and has 256 unique colors or less.</p>
 
@@ -129,7 +129,7 @@ MagickBooleanType IsPaletteImage(const Image *image)
 <dt>image</dt>
 <p>the image.</p>
 
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/histogram_8c.html" id="MinMaxStretchImage">MinMaxStretchImage</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/histogram_8c.html" id="MinMaxStretchImage">MinMaxStretchImage</a></h2>
 
 <p>MinMaxStretchImage() uses the exact minimum and maximum values found in each of the channels given, as the BlackPoint and WhitePoint to linearly stretch the colors (and histogram) of the image.  The stretch points are also moved further inward by the adjustment values given.</p>
 
@@ -172,7 +172,7 @@ MagickBooleanType MinMaxStretchImage(Image *image,const double black,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/histogram_8c.html" id="GetNumberColors">GetNumberColors</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/histogram_8c.html" id="GetNumberColors">GetNumberColors</a></h2>
 
 <p>GetNumberColors() returns the number of unique colors in an image.</p>
 
@@ -194,7 +194,7 @@ size_t GetNumberColors(const Image *image,FILE *file,
 <dt>exception</dt>
 <p>return any errors or warnings in this structure.</p>
 
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/histogram_8c.html" id="UniqueImageColors">UniqueImageColors</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/histogram_8c.html" id="UniqueImageColors">UniqueImageColors</a></h2>
 
 <p>UniqueImageColors() returns the unique colors of an image.</p>
 
@@ -226,7 +226,7 @@ Image *UniqueImageColors(const Image *image,ExceptionInfo *exception)
   </footer>
 </div><!-- /.container -->
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="https://localhost/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script src="http://nextgen.imagemagick.org/js/magick.html"></script>
 </div>
 </body>

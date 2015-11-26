@@ -42,7 +42,7 @@
       <a class="magick-nav-item " href="../index.html">Home</a>
       <a class="magick-nav-item " href="binary-releases.html">Download</a>
       <a class="magick-nav-item " href="command-line-tools.html">Tools</a>
-      <a class="magick-nav-item " href="command-line-options.html">Options</a>
+      <a class="magick-nav-item " href="command-line-processing.html">Command-line</a>
       <a class="magick-nav-item " href="resources.html">Resources</a>
       <a class="magick-nav-item " href="api.html">Develop</a>
       <a class="magick-nav-item " href="http://nextgen.imagemagick.org/script/search.php">Search</a>
@@ -54,7 +54,7 @@
 <div class="magick-header">
 <p class="text-center"><a href="identify.html#usage">Example Usage</a> • <a href="identify.html#options">Option Summary</a></p>
 
-<p class="lead magick-description">The <code>identify</code> program describes the format and characteristics of one or more image files. It also reports if an image is incomplete or corrupt. The information returned includes the image number, the file name, the width and height of the image, whether the image is colormapped or not, the number of colors in the image, the number of bytes in the image, the format of the image (JPEG, PNM, etc.), and finally the number of seconds it took to read and process the image.  Many more attributes are available with the verbose option.  See <a href="command-line-processing.html">Command Line Processing</a> for advice on how to structure your <code>identify</code> command or see below for example usages of the command.</p>
+<p class="lead magick-description">The <code>identify</code> program describes the format and characteristics of one or more image files. It also reports if an image is incomplete or corrupt. The information returned includes the image number, the file name, the width and height of the image, whether the image is colormapped or not, the number of colors in the image, the number of bytes in the image, the format of the image (JPEG, PNM, etc.), and finally the number of seconds it took to read and process the image.  Many more attributes are available with the verbose option.  See <a href="command-line-processing.html">Command-line Processing</a> for advice on how to structure your <code>identify</code> command or see below for example usages of the command.</p>
 
 <h2 class="magick-header"><a id="usage"></a>Example Usage</h2>
 
@@ -162,7 +162,7 @@ Image: rose.jpg
 8.5 x 11 inches
 </pre>
 
-<p>The depth and dimensions of a raw image must be specified on the command line:</p>
+<p>The depth and dimensions of a raw image must be specified on the command-line:</p>
 
 <pre>
 -> identify -depth 8 -size 640x480 image.raw

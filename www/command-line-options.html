@@ -42,7 +42,7 @@
       <a class="magick-nav-item " href="../index.html">Home</a>
       <a class="magick-nav-item " href="binary-releases.html">Download</a>
       <a class="magick-nav-item " href="command-line-tools.html">Tools</a>
-      <a class="magick-nav-item active" href="command-line-options.html">Options</a>
+      <a class="magick-nav-item " href="command-line-processing.html">Command-line</a>
       <a class="magick-nav-item " href="resources.html">Resources</a>
       <a class="magick-nav-item " href="api.html">Develop</a>
       <a class="magick-nav-item " href="http://nextgen.imagemagick.org/script/search.php">Search</a>
@@ -1433,7 +1433,7 @@ command.  </p>
 <p>Take the first image 'destination' and overlay the second 'source' image
 according to the current <a href="command-line-options.html#compose">-compose</a> setting. The location
 of the 'source' or 'overlay' image is controlled according to <a
-href="command-line-options.html#geometry" >-geometry</a>, and <a href="command-line-options.html#geometry" >-geometry</a>
+href="command-line-options.html#gravity" >-gravity</a>, and <a href="command-line-options.html#geometry" >-geometry</a>
 settings. </p>
 
 <p>If a third image is given this is treated as a gray-scale blending 'mask' image
@@ -1948,8 +1948,10 @@ available:</p>
      <td>Restrict the maximum JPEG file size, for example <code>-define
     jpeg:extent=400KB</code>.  The JPEG encoder will search for the highest
     compression quality level that results in an output file that does not
-    exceed the value. The <code>-quality</code> option is ignored if it
-    is also present.</td>
+    exceed the value. The <code>-quality</code> option also will be respected 
+    starting with version 6.9.2-5. Between 6.9.1-0 and 6.9.2-4, add -quality 
+    100 in order for the jpeg:extent to work properly. Prior to 6.9.1-0, the 
+    -quality setting was ignored.</td>
   </tr>
 
   <tr>
@@ -6446,7 +6448,6 @@ in the same manner as in <a href="command-line-options.html#crop">-crop</a>.</p>
 
 <p>Use <code>+region</code> to remove any previously set regions.</p>
 
-
 <div style="margin: auto;">
   <h3 class="magick-header"><a id="remote"></a>-remote</h3>
 </div>
@@ -7879,6 +7880,7 @@ href="command-line-options.html#colors">-colors</a> to reduce the number of colo
 <p>Use <a href="command-line-options.html#compress">-compress</a> to specify the type of image compression.</p>
 </div>
 </div>
+
 
 
   <footer class="magick-footer">

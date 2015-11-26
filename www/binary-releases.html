@@ -42,7 +42,7 @@
       <a class="magick-nav-item " href="../index.html">Home</a>
       <a class="magick-nav-item active" href="binary-releases.html">Download</a>
       <a class="magick-nav-item " href="command-line-tools.html">Tools</a>
-      <a class="magick-nav-item " href="command-line-options.html">Options</a>
+      <a class="magick-nav-item " href="command-line-processing.html">Command-line</a>
       <a class="magick-nav-item " href="resources.html">Resources</a>
       <a class="magick-nav-item " href="api.html">Develop</a>
       <a class="magick-nav-item " href="http://nextgen.imagemagick.org/script/search.php">Search</a>
@@ -147,7 +147,7 @@ LD_LIBRARY_PATH="${LD_LIBRARY_PATH:+$LD_LIBRARY_PATH:}$MAGICK_HOME/lib
 export LD_LIBRARY_PATH
 </pre>
 
-<p>Finally, to verify ImageMagick is working properly, type the following on the command line:</p>
+<p>Finally, to verify ImageMagick is working properly, type the following on the command-line:</p>
 
 <pre>
 convert logo: logo.gif
@@ -178,10 +178,10 @@ sudo port install ImageMagick
   </tr>
 
   <tr>
-    <td>ImageMagick-x86_64-apple-darwin14.3.0.tar.gz</td>
-    <td><a href="http://www.imagemagick.org/download/binaries/ImageMagick-x86_64-apple-darwin14.3.0.tar.gz">download</a></td>
-    <td><a href="ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-x86_64-apple-darwin14.3.0.tar.gz">download</a></td>
-    <td>Mac OS X Yosemite</td>
+    <td>ImageMagick-x86_64-apple-darwin15.0.0.tar.gz</td>
+    <td><a href="http://www.imagemagick.org/download/binaries/ImageMagick-x86_64-apple-darwin15.0.0.tar.gz">download</a></td>
+    <td><a href="ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-x86_64-apple-darwin15.0.0.tar.gz">download</a></td>
+    <td>Mac OS X El Capitan</td>
   </tr>
 </table></div>
 
@@ -196,7 +196,7 @@ cd $HOME
 <p>Next, extract the contents of the package.  For example:</p>
 
 <pre>
-tar xvzf ImageMagick-x86_64-apple-darwin13.2.0.tar.gz
+tar xvzf ImageMagick-x86_64-apple-darwin15.0.0.tar.gz
 </pre>
 
 <p>Set the <code>MAGICK_HOME</code> environment variable to the path where you extracted the ImageMagick files. For example:</p>
@@ -212,10 +212,10 @@ export PATH="$MAGICK_HOME/bin:$PATH"
 <p>Set the <code>DYLD_LIBRARY_PATH</code> environment variable:</p>
 
 <pre>
-export DYLD_LIBRARY_PATH="$MAGICK_HOME/lib/
+export DYLD_LIBRARY_PATH="$MAGICK_HOME/lib/"
 </pre>
 
-<p>Finally, to verify ImageMagick is working properly, type the following on the command line:</p>
+<p>Finally, to verify ImageMagick is working properly, type the following on the command-line:</p>
 
 <pre>
 convert logo: logo.gif
@@ -345,14 +345,14 @@ display logo.gif
         <td>ImageMagick-7.0.0-0-Q16-HDRI-x64-dll.exe</td>
         <td><a href= "http://www.imagemagick.org/download/binaries/ImageMagick-7.0.0-0-Q16-HDRI-x64-dll.exe">download</a></td>
       <td><a href="ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-7.0.0-0-Q16-HDRI-x64-dll.exe">download</a></td>
-    <td>Win64 dynamic at 16 bits-per-pixel with high dynamic range enabled</td>
+    <td>Win64 dynamic at 16 bits-per-pixel with <a href="high-dynamic-range.html">high dynamic-range imaging</a> enabled</td>
   </tr>
 
   <tr>
         <td>ImageMagick-7.0.0-0-Q16-HDRI-x64-static.exe</td>
         <td><a href= "http://www.imagemagick.org/download/binaries/ImageMagick-7.0.0-0-Q16-HDRI-x64-static.exe">download</a></td>
       <td><a href="ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-7.0.0-0-Q16-HDRI-x64-static.exe">download</a></td>
-    <td>Win64 static at 16 bits-per-pixel with high dynamic range enabled</td>
+    <td>Win64 static at 16 bits-per-pixel with <a href="high-dynamic-range.html">high dynamic-range imaging</a> enabled</td>
   </tr>
 
   <tr>
@@ -387,14 +387,14 @@ display logo.gif
         <td>ImageMagick-7.0.0-0-Q16-HDRI-x86-dll.exe</td>
         <td><a href= "http://www.imagemagick.org/download/binaries/ImageMagick-7.0.0-0-Q16-HDRI-x86-dll.exe">download</a></td>
       <td><a href="ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-7.0.0-0-Q16-HDRI-x86-dll.exe">download</a></td>
-    <td>Win32 dynamic at 16 bits-per-pixel with high dynamic range enabled</td>
+    <td>Win32 dynamic at 16 bits-per-pixel with <a href="high-dynamic-range.html">high dynamic-range imaging</a> enabled</td>
   </tr>
 
   <tr>
         <td>ImageMagick-7.0.0-0-Q16-HDRI-x86-static.exe</td>
         <td><a href= "http://www.imagemagick.org/download/binaries/ImageMagick-7.0.0-0-Q16-HDRI-x86-static.exe">download</a></td>
       <td><a href="ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-7.0.0-0-Q16-HDRI-x86-static.exe">download</a></td>
-    <td>Win32 static at 16 bits-per-pixel with high dynamic range enabled</td>
+    <td>Win32 static at 16 bits-per-pixel with <a href="high-dynamic-range.html">high dynamic-range imaging</a> enabled</td>
   </tr>
 
   <tr>
@@ -424,7 +424,7 @@ imdisplay
 
 <p>If you have any problems, you likely need <code>vcomp120.dll</code>.  To install it, download <a href="https://www.microsoft.com/en-us/download/details.aspx?id=40784">Visual C++ 2013 Redistributable Package</a>.</p>
 
-<p>Note, use a double quote (<code>"</code>) rather than a single quote (<code>'</code>) for the ImageMagick command line under Windows:</p>
+<p>Note, use a double quote (<code>"</code>) rather than a single quote (<code>'</code>) for the ImageMagick command-line under Windows:</p>
 
 <pre>
 convert "e:/myimages/image.png" "e:/myimages/image.jpg"
@@ -438,6 +438,7 @@ objShell.Exec("convert ""e:/myimages/image.png"" ""e:/myimages/image.jpg""")
 <p>Congratulations, you have a working ImageMagick distribution under Windows and you are ready to use ImageMagick to <a href="http://www.imagemagick.org/Usage/">convert, compose, or edit</a> your images or perhaps you'll want to use one of the <a href="api.html">Application Program Interfaces</a> for C, C++, Perl, and others.</p>
 
 </div>
+
   <footer class="magick-footer">
     <p><a href="support.html">Donate</a> •
      <a href="sitemap.html">Sitemap</a> •

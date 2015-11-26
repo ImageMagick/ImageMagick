@@ -30,7 +30,7 @@
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async="async" src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
          style="display:block"
          data-ad-client="ca-pub-3129977114552745"
          data-ad-slot="6345125851"
@@ -42,7 +42,7 @@
       <a class="magick-nav-item " href="../index.html">Home</a>
       <a class="magick-nav-item " href="../binary-releases.html">Download</a>
       <a class="magick-nav-item " href="../command-line-tools.html">Tools</a>
-      <a class="magick-nav-item " href="../command-line-options.html">Options</a>
+      <a class="magick-nav-item " href="../command-line-processing.html">Command-line</a>
       <a class="magick-nav-item " href="../resources.html">Resources</a>
       <a class="magick-nav-item " href="api.html">Develop</a>
       <a class="magick-nav-item " href="http://nextgen.imagemagick.org/script/search.php">Search</a>
@@ -54,7 +54,7 @@
 <div class="magick-header">
 <p class="text-center"><a href="draw.html#AcquireDrawInfo">AcquireDrawInfo</a> &#8226; <a href="draw.html#CloneDrawInfo">CloneDrawInfo</a> &#8226; <a href="draw.html#DestroyDrawInfo">DestroyDrawInfo</a> &#8226; <a href="draw.html#DrawAffineImage">DrawAffineImage</a> &#8226; <a href="draw.html#DrawClipPath">DrawClipPath</a> &#8226; <a href="draw.html#DrawImage">DrawImage</a> &#8226; <a href="draw.html#DrawGradientImage">DrawGradientImage</a> &#8226; <a href="draw.html#DrawPatternPath">DrawPatternPath</a> &#8226; <a href="draw.html#DrawPrimitive">DrawPrimitive</a> &#8226; <a href="draw.html#GetAffineMatrix">GetAffineMatrix</a></p>
 
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/draw_8c.html" id="AcquireDrawInfo">AcquireDrawInfo</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/draw_8c.html" id="AcquireDrawInfo">AcquireDrawInfo</a></h2>
 
 <p>AcquireDrawInfo() returns a DrawInfo structure properly initialized.</p>
 
@@ -64,7 +64,7 @@
 DrawInfo *AcquireDrawInfo(void)
 </pre>
 
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/draw_8c.html" id="CloneDrawInfo">CloneDrawInfo</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/draw_8c.html" id="CloneDrawInfo">CloneDrawInfo</a></h2>
 
 <p>CloneDrawInfo() makes a copy of the given draw_info structure.  If NULL is specified, a new DrawInfo structure is created initialized to default values.</p>
 
@@ -91,7 +91,7 @@ DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/draw_8c.html" id="DestroyDrawInfo">DestroyDrawInfo</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/draw_8c.html" id="DestroyDrawInfo">DestroyDrawInfo</a></h2>
 
 <p>DestroyDrawInfo() deallocates memory associated with an DrawInfo structure.</p>
 
@@ -113,7 +113,7 @@ DrawInfo *DestroyDrawInfo(DrawInfo *draw_info)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/draw_8c.html" id="DrawAffineImage">DrawAffineImage</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/draw_8c.html" id="DrawAffineImage">DrawAffineImage</a></h2>
 
 <p>DrawAffineImage() composites the source over the destination image as dictated by the affine transform.</p>
 
@@ -148,7 +148,7 @@ MagickBooleanType DrawAffineImage(Image *image,const Image *source,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/draw_8c.html" id="DrawClipPath">DrawClipPath</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/draw_8c.html" id="DrawClipPath">DrawClipPath</a></h2>
 
 <p>DrawClipPath() draws the clip path on the image mask.</p>
 
@@ -183,7 +183,7 @@ MagickBooleanType DrawClipPath(Image *image,const DrawInfo *draw_info,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/draw_8c.html" id="DrawImage">DrawImage</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/draw_8c.html" id="DrawImage">DrawImage</a></h2>
 
 <p>DrawImage() draws a graphic primitive on your image.  The primitive may be represented as a string or filename.  Precede the filename with an "at" sign (@) and the contents of the file are drawn on the image.  You can affect how text is drawn by setting one or more members of the draw info structure.</p>
 
@@ -214,7 +214,7 @@ MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/draw_8c.html" id="DrawGradientImage">DrawGradientImage</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/draw_8c.html" id="DrawGradientImage">DrawGradientImage</a></h2>
 
 <p>DrawGradientImage() draws a linear gradient on the image.</p>
 
@@ -245,7 +245,7 @@ MagickBooleanType DrawGradientImage(Image *image,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/draw_8c.html" id="DrawPatternPath">DrawPatternPath</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/draw_8c.html" id="DrawPatternPath">DrawPatternPath</a></h2>
 
 <p>DrawPatternPath() draws a pattern.</p>
 
@@ -284,7 +284,7 @@ MagickBooleanType DrawPatternPath(Image *image,const DrawInfo *draw_info,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/draw_8c.html" id="DrawPrimitive">DrawPrimitive</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/draw_8c.html" id="DrawPrimitive">DrawPrimitive</a></h2>
 
 <p>DrawPrimitive() draws a primitive (line, rectangle, ellipse) on the image.</p>
 
@@ -319,7 +319,7 @@ MagickBooleanType DrawPrimitive(Image *image,const DrawInfo *draw_info,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/draw_8c.html" id="GetAffineMatrix">GetAffineMatrix</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/draw_8c.html" id="GetAffineMatrix">GetAffineMatrix</a></h2>
 
 <p>GetAffineMatrix() returns an AffineMatrix initialized to the identity matrix.</p>
 
@@ -355,7 +355,7 @@ void GetAffineMatrix(AffineMatrix *affine_matrix)
   </footer>
 </div><!-- /.container -->
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="https://localhost/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script src="http://nextgen.imagemagick.org/js/magick.html"></script>
 </div>
 </body>

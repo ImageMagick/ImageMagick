@@ -42,7 +42,7 @@
       <a class="magick-nav-item " href="../index.html">Home</a>
       <a class="magick-nav-item " href="binary-releases.html">Download</a>
       <a class="magick-nav-item " href="command-line-tools.html">Tools</a>
-      <a class="magick-nav-item " href="command-line-options.html">Options</a>
+      <a class="magick-nav-item " href="command-line-processing.html">Command-line</a>
       <a class="magick-nav-item " href="resources.html">Resources</a>
       <a class="magick-nav-item " href="api.html">Develop</a>
       <a class="magick-nav-item " href="http://nextgen.imagemagick.org/script/search.php">Search</a>
@@ -150,7 +150,7 @@ Options used to compile and link:
   CXXFLAGS        = -g -O2 -Wall -W -pthread
 </pre>
 
-<p>You can influence choice of compiler, compilation flags, or libraries of the configure script by setting initial values for variables in the configure command line. These include, among others:</p>
+<p>You can influence choice of compiler, compilation flags, or libraries of the configure script by setting initial values for variables in the configure command-line. These include, among others:</p>
 
 <dl class="dl-horizontal">
 <dt>CC</dt>
@@ -169,7 +169,7 @@ Options used to compile and link:
   <dd>Extra libraries (.e.g. <code>-l/usr/local/lib</code>) required to link.</dd>
 </dl>
 
-<p>Here is an example of setting configure variables from the command line:</p>
+<p>Here is an example of setting configure variables from the command-line:</p>
 
 <pre>
 configure CC=c99 CFLAGS=-O2 LDFLAGS='-L/usr/local/lib -R/usr/local/lib' LIBS=-lposix
@@ -568,9 +568,9 @@ display -display :0
 <p>Chances are the download, configure, build, and install of ImageMagick went flawlessly as it is intended, however, certain systems and environments may cause one or more steps to fail.  We discuss a few problems we've run across and how to take corrective action to ensure you have a working release of ImageMagick</p>
 
 <h4>Build Problems</h4>
-<p>If the build complains about missing dependencies (e.g. <var>.deps/source.PLO</var>), add <code>--disable-dependency-tracking</code> to your <code>configure</code> command line.</p>
+<p>If the build complains about missing dependencies (e.g. <var>.deps/source.PLO</var>), add <code>--disable-dependency-tracking</code> to your <code>configure</code> command-line.</p>
 
-<p>Some systems may fail to link at build time due to unresolved symbols. Try adding the LDFLAGS to the <code>configure</code> command line:</p>
+<p>Some systems may fail to link at build time due to unresolved symbols. Try adding the LDFLAGS to the <code>configure</code> command-line:</p>
 
 <pre>
 configure LDFLAGS='-L/usr/local/lib -R/usr/local/lib'

@@ -30,7 +30,7 @@
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async="async" src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
          style="display:block"
          data-ad-client="ca-pub-3129977114552745"
          data-ad-slot="6345125851"
@@ -42,7 +42,7 @@
       <a class="magick-nav-item " href="../index.html">Home</a>
       <a class="magick-nav-item " href="../binary-releases.html">Download</a>
       <a class="magick-nav-item " href="../command-line-tools.html">Tools</a>
-      <a class="magick-nav-item " href="../command-line-options.html">Options</a>
+      <a class="magick-nav-item " href="../command-line-processing.html">Command-line</a>
       <a class="magick-nav-item " href="../resources.html">Resources</a>
       <a class="magick-nav-item " href="api.html">Develop</a>
       <a class="magick-nav-item " href="http://nextgen.imagemagick.org/script/search.php">Search</a>
@@ -54,7 +54,7 @@
 <div class="magick-header">
 <p class="text-center"><a href="channel.html#ChannelFxImage">ChannelFxImage</a> &#8226; <a href="channel.html#CombineImages">CombineImages</a> &#8226; <a href="channel.html#GetImageAlphaChannel">GetImageAlphaChannel</a> &#8226; <a href="channel.html#SeparateImage">SeparateImage</a> &#8226; <a href="channel.html#SeparateImages">SeparateImages</a> &#8226; <a href="channel.html#SetImageAlphaChannel">SetImageAlphaChannel</a></p>
 
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/channel_8c.html" id="ChannelFxImage">ChannelFxImage</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/channel_8c.html" id="ChannelFxImage">ChannelFxImage</a></h2>
 
 <p>ChannelFxImage() applies a channel expression to the specified image.  The expression consists of one or more channels, either mnemonic or numeric (e.g. red, 1), separated by actions as follows:</p>
 
@@ -98,7 +98,7 @@ Image *ChannelFxImage(const Image *image,const char *expression,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/channel_8c.html" id="CombineImages">CombineImages</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/channel_8c.html" id="CombineImages">CombineImages</a></h2>
 
 <p>CombineImages() combines one or more images into a single image.  The grayscale value of the pixels of each image in the sequence is assigned in order to the specified channels of the combined image.   The typical ordering would be image 1 =&gt; Red, 2 =&gt; Green, 3 =&gt; Blue, etc.</p>
 
@@ -129,7 +129,7 @@ Image *CombineImages(const Image *images,const ColorspaceType colorspace,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/channel_8c.html" id="GetImageAlphaChannel">GetImageAlphaChannel</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/channel_8c.html" id="GetImageAlphaChannel">GetImageAlphaChannel</a></h2>
 
 <p>GetImageAlphaChannel() returns MagickFalse if the image alpha channel is not activated.  That is, the image is RGB rather than RGBA or CMYK rather than CMYKA.</p>
 
@@ -151,7 +151,7 @@ MagickBooleanType GetImageAlphaChannel(const Image *image)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/channel_8c.html" id="SeparateImage">SeparateImage</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/channel_8c.html" id="SeparateImage">SeparateImage</a></h2>
 
 <p>SeparateImage() separates a channel from the image and returns it as a grayscale image.</p>
 
@@ -182,7 +182,7 @@ Image *SeparateImage(const Image *image,const ChannelType channel,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/channel_8c.html" id="SeparateImages">SeparateImages</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/channel_8c.html" id="SeparateImages">SeparateImages</a></h2>
 
 <p>SeparateImages() returns a separate grayscale image for each channel specified.</p>
 
@@ -208,7 +208,7 @@ Image *SeparateImages(const Image *image,ExceptionInfo *exception)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/channel_8c.html" id="SetImageAlphaChannel">SetImageAlphaChannel</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/channel_8c.html" id="SetImageAlphaChannel">SetImageAlphaChannel</a></h2>
 
 <p>SetImageAlphaChannel() activates, deactivates, resets, or sets the alpha channel.</p>
 
@@ -253,7 +253,7 @@ MagickBooleanType SetImageAlphaChannel(Image *image,
   </footer>
 </div><!-- /.container -->
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="https://localhost/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script src="http://nextgen.imagemagick.org/js/magick.html"></script>
 </div>
 </body>

@@ -30,7 +30,7 @@
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async="async" src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
          style="display:block"
          data-ad-client="ca-pub-3129977114552745"
          data-ad-slot="6345125851"
@@ -42,7 +42,7 @@
       <a class="magick-nav-item " href="../index.html">Home</a>
       <a class="magick-nav-item " href="../binary-releases.html">Download</a>
       <a class="magick-nav-item " href="../command-line-tools.html">Tools</a>
-      <a class="magick-nav-item " href="../command-line-options.html">Options</a>
+      <a class="magick-nav-item " href="../command-line-processing.html">Command-line</a>
       <a class="magick-nav-item " href="../resources.html">Resources</a>
       <a class="magick-nav-item " href="api.html">Develop</a>
       <a class="magick-nav-item " href="http://nextgen.imagemagick.org/script/search.php">Search</a>
@@ -54,7 +54,7 @@
 <div class="magick-header">
 <p class="text-center"><a href="wand-view.html#CloneWandView">CloneWandView</a> &#8226; <a href="wand-view.html#DestroyWandView">DestroyWandView</a> &#8226; <a href="wand-view.html#DuplexTransferWandViewIterator">DuplexTransferWandViewIterator</a> &#8226; <a href="wand-view.html#GetWandViewException">GetWandViewException</a> &#8226; <a href="wand-view.html#GetWandViewExtent">GetWandViewExtent</a> &#8226; <a href="wand-view.html#GetWandViewIterator">GetWandViewIterator</a> &#8226; <a href="wand-view.html#GetWandViewPixels">GetWandViewPixels</a> &#8226; <a href="wand-view.html#GetWandViewWand">GetWandViewWand</a> &#8226; <a href="wand-view.html#IsWandView">IsWandView</a> &#8226; <a href="wand-view.html#NewWandView">NewWandView</a> &#8226; <a href="wand-view.html#NewWandViewExtent">NewWandViewExtent</a> &#8226; <a href="wand-view.html#SetWandViewDescription">SetWandViewDescription</a> &#8226; <a href="wand-view.html#SetWandViewIterator">SetWandViewIterator</a> &#8226; <a href="wand-view.html#TransferWandViewIterator">TransferWandViewIterator</a> &#8226; <a href="wand-view.html#UpdateWandViewIterator">UpdateWandViewIterator</a></p>
 
-<h2><a href="http://nextgen.imagemagick.org/api/MagickWand/wand-view_8c.html" id="CloneWandView">CloneWandView</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/wand-view_8c.html" id="CloneWandView">CloneWandView</a></h2>
 
 <p>CloneWandView() makes a copy of the specified wand view.</p>
 
@@ -76,7 +76,7 @@ WandView *CloneWandView(const WandView *wand_view)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickWand/wand-view_8c.html" id="DestroyWandView">DestroyWandView</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/wand-view_8c.html" id="DestroyWandView">DestroyWandView</a></h2>
 
 <p>DestroyWandView() deallocates memory associated with a wand view.</p>
 
@@ -98,7 +98,7 @@ WandView *DestroyWandView(WandView *wand_view)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickWand/wand-view_8c.html" id="DuplexTransferWandViewIterator">DuplexTransferWandViewIterator</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/wand-view_8c.html" id="DuplexTransferWandViewIterator">DuplexTransferWandViewIterator</a></h2>
 
 <p>DuplexTransferWandViewIterator() iterates over three wand views in parallel and calls your transfer method for each scanline of the view.  The source and duplex pixel extent is not confined to the image canvas-- that is you can include negative offsets or widths or heights that exceed the image dimension.  However, the destination wand view is confined to the image canvas-- that is no negative offsets or widths or heights that exceed the image dimension are permitted.</p>
 
@@ -154,7 +154,7 @@ MagickBooleanType DuplexTransferWandViewIterator(WandView *source,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickWand/wand-view_8c.html" id="GetWandViewException">GetWandViewException</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/wand-view_8c.html" id="GetWandViewException">GetWandViewException</a></h2>
 
 <p>GetWandViewException() returns the severity, reason, and description of any error that occurs when utilizing a wand view.</p>
 
@@ -181,7 +181,7 @@ char *GetWandViewException(const WandView *wand_view,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickWand/wand-view_8c.html" id="GetWandViewExtent">GetWandViewExtent</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/wand-view_8c.html" id="GetWandViewExtent">GetWandViewExtent</a></h2>
 
 <p>GetWandViewExtent() returns the wand view extent.</p>
 
@@ -203,7 +203,7 @@ RectangleInfo GetWandViewExtent(const WandView *wand_view)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickWand/wand-view_8c.html" id="GetWandViewIterator">GetWandViewIterator</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/wand-view_8c.html" id="GetWandViewIterator">GetWandViewIterator</a></h2>
 
 <p>GetWandViewIterator() iterates over the wand view in parallel and calls your get method for each scanline of the view.  The pixel extent is not confined to the image canvas-- that is you can include negative offsets or widths or heights that exceed the image dimension.  Any updates to the pixels in your callback are ignored.</p>
 
@@ -249,7 +249,7 @@ MagickBooleanType GetWandViewIterator(WandView *source,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickWand/wand-view_8c.html" id="GetWandViewPixels">GetWandViewPixels</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/wand-view_8c.html" id="GetWandViewPixels">GetWandViewPixels</a></h2>
 
 <p>GetWandViewPixels() returns the wand view pixel_wands.</p>
 
@@ -271,7 +271,7 @@ PixelWand *GetWandViewPixels(const WandView *wand_view)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickWand/wand-view_8c.html" id="GetWandViewWand">GetWandViewWand</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/wand-view_8c.html" id="GetWandViewWand">GetWandViewWand</a></h2>
 
 <p>GetWandViewWand() returns the magick wand associated with the wand view.</p>
 
@@ -293,7 +293,7 @@ MagickWand *GetWandViewWand(const WandView *wand_view)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickWand/wand-view_8c.html" id="IsWandView">IsWandView</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/wand-view_8c.html" id="IsWandView">IsWandView</a></h2>
 
 <p>IsWandView() returns MagickTrue if the the parameter is verified as a wand view object.</p>
 
@@ -315,7 +315,7 @@ MagickBooleanType IsWandView(const WandView *wand_view)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickWand/wand-view_8c.html" id="NewWandView">NewWandView</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/wand-view_8c.html" id="NewWandView">NewWandView</a></h2>
 
 <p>NewWandView() returns a wand view required for all other methods in the Wand View API.</p>
 
@@ -337,7 +337,7 @@ WandView *NewWandView(MagickWand *wand)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickWand/wand-view_8c.html" id="NewWandViewExtent">NewWandViewExtent</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/wand-view_8c.html" id="NewWandViewExtent">NewWandViewExtent</a></h2>
 
 <p>NewWandViewExtent() returns a wand view required for all other methods in the Wand View API.</p>
 
@@ -364,7 +364,7 @@ WandView *NewWandViewExtent(MagickWand *wand,const ssize_t x,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickWand/wand-view_8c.html" id="SetWandViewDescription">SetWandViewDescription</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/wand-view_8c.html" id="SetWandViewDescription">SetWandViewDescription</a></h2>
 
 <p>SetWandViewDescription() associates a description with an image view.</p>
 
@@ -390,7 +390,7 @@ void SetWandViewDescription(WandView *image_view,const char *description)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickWand/wand-view_8c.html" id="SetWandViewIterator">SetWandViewIterator</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/wand-view_8c.html" id="SetWandViewIterator">SetWandViewIterator</a></h2>
 
 <p>SetWandViewIterator() iterates over the wand view in parallel and calls your set method for each scanline of the view.  The pixel extent is confined to the image canvas-- that is no negative offsets or widths or heights that exceed the image dimension.  The pixels are initiallly undefined and any settings you make in the callback method are automagically synced back to your image.</p>
 
@@ -436,7 +436,7 @@ MagickBooleanType SetWandViewIterator(WandView *destination,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickWand/wand-view_8c.html" id="TransferWandViewIterator">TransferWandViewIterator</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/wand-view_8c.html" id="TransferWandViewIterator">TransferWandViewIterator</a></h2>
 
 <p>TransferWandViewIterator() iterates over two wand views in parallel and calls your transfer method for each scanline of the view.  The source pixel extent is not confined to the image canvas-- that is you can include negative offsets or widths or heights that exceed the image dimension. However, the destination wand view is confined to the image canvas-- that is no negative offsets or widths or heights that exceed the image dimension are permitted.</p>
 
@@ -487,7 +487,7 @@ MagickBooleanType TransferWandViewIterator(WandView *source,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickWand/wand-view_8c.html" id="UpdateWandViewIterator">UpdateWandViewIterator</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/wand-view_8c.html" id="UpdateWandViewIterator">UpdateWandViewIterator</a></h2>
 
 <p>UpdateWandViewIterator() iterates over the wand view in parallel and calls your update method for each scanline of the view.  The pixel extent is confined to the image canvas-- that is no negative offsets or widths or heights that exceed the image dimension are permitted.  Updates to pixels in your callback are automagically synced back to the image.</p>
 
@@ -547,7 +547,7 @@ MagickBooleanType UpdateWandViewIterator(WandView *source,
   </footer>
 </div><!-- /.container -->
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="https://localhost/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script src="http://nextgen.imagemagick.org/js/magick.html"></script>
 </div>
 </body>

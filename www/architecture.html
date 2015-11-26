@@ -42,7 +42,7 @@
       <a class="magick-nav-item " href="../index.html">Home</a>
       <a class="magick-nav-item " href="binary-releases.html">Download</a>
       <a class="magick-nav-item " href="command-line-tools.html">Tools</a>
-      <a class="magick-nav-item " href="command-line-options.html">Options</a>
+      <a class="magick-nav-item " href="command-line-processing.html">Command-line</a>
       <a class="magick-nav-item " href="resources.html">Resources</a>
       <a class="magick-nav-item " href="api.html">Develop</a>
       <a class="magick-nav-item " href="http://nextgen.imagemagick.org/script/search.php">Search</a>
@@ -92,7 +92,7 @@
 
 <p>Given the varied image formats and image processing requirements, we implemented the ImageMagick <a href="architecture.html#cache">pixel cache</a> to provide convenient sequential or parallel access to any pixel on demand anywhere inside the image region (i.e. <a href="architecture.html#authentic-pixels">authentic pixels</a>)  and from any image in a sequence.  In addition, the pixel cache permits access to pixels outside the boundaries defined by the image (i.e. <a href="architecture.html#virtual-pixels">virtual pixels</a>).</p>
 
-<p>In addition to pixels, images have a plethora of <a href="architecture.html#properties">image properties and profiles</a>.  Properties include the well known attributes such as width, height, depth, and colorspace.  An image may have optional properties which might include the image author, a comment, a create date, and others.  Some images also include profiles for color management, or EXIF, IPTC, 8BIM, or XMP informational profiles.  ImageMagick provides command line options and programming methods to get, set, or view image properties or profiles or apply profiles.</p>
+<p>In addition to pixels, images have a plethora of <a href="architecture.html#properties">image properties and profiles</a>.  Properties include the well known attributes such as width, height, depth, and colorspace.  An image may have optional properties which might include the image author, a comment, a create date, and others.  Some images also include profiles for color management, or EXIF, IPTC, 8BIM, or XMP informational profiles.  ImageMagick provides command-line options and programming methods to get, set, or view image properties or profiles or apply profiles.</p>
 
 <p>ImageMagick consists of nearly a half million lines of C code and optionally depends on several million lines of code in dependent libraries (e.g. JPEG, PNG, TIFF libraries).  Given that, one might expect a huge architecture document.  However, a great majority of image processing is simply accessing pixels and its metadata and our simple, elegant, and efficient implementation makes this easy for the ImageMagick developer.  We discuss the implementation of the pixel cache and getting and setting image properties and profiles in the next few sections. Next, we discuss using ImageMagick within a <a href="architecture.html#threads">thread</a> of execution.  In the final sections, we discuss <a href="architecture.html#coders">image coders</a> to read or write a particular image format followed by a few words on creating a <a href="architecture.html#filters">filter</a> to access or update pixels based on your custom requirements.</p>
 
@@ -211,7 +211,7 @@ if (y &lt; (ssize_t) source-&gt;rows)
 <h3><a id="virtual-pixels"></a>Virtual Pixels</h3>
 
 <p>There are a plethora of image processing algorithms that require a neighborhood of pixels about a pixel of interest.  The algorithm typically includes a caveat concerning how to handle pixels around the image boundaries, known as edge pixels.  With virtual pixels, you do not need to concern yourself about special edge processing other than choosing  which virtual pixel method is most appropriate for your algorithm.</p>
- <p>Access to the virtual pixels are controlled by the <a href="api/cache.html#SetImageVirtualPixelMethod">SetImageVirtualPixelMethod()</a> method from the MagickCore API or the <a href="command-line-options.html#virtual-pixel">&#x2011;virtual&#x2011;pixel</a> option from the command line.  The methods include:</p>
+ <p>Access to the virtual pixels are controlled by the <a href="api/cache.html#SetImageVirtualPixelMethod">SetImageVirtualPixelMethod()</a> method from the MagickCore API or the <a href="command-line-options.html#virtual-pixel">&#x2011;virtual&#x2011;pixel</a> option from the command-line.  The methods include:</p>
 
 <dl class="dl-horizontal">
 <dt>background</dt>
@@ -289,7 +289,7 @@ Resource limits:
   Time: unlimited
 </pre>
 
-<p>You can set these limits either as a <a href="resources.html#configure">policy</a> (see <a href="../source/policy.xml">policy.xml</a>), with an <a href="resources.html#environment">environment variable</a>, with the <a href="command-line-options.html#limit">-limit</a> command line option, or with the <a href="api/resource.html#SetMagickResourceLimit">SetMagickResourceLimit()</a> MagickCore API method. As an example, our online web interface to ImageMagick, <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">ImageMagick Studio</a>, includes these policy limits to help prevent a denial-of-service:</p>
+<p>You can set these limits either as a <a href="resources.html#configure">policy</a> (see <a href="../source/policy.xml">policy.xml</a>), with an <a href="resources.html#environment">environment variable</a>, with the <a href="command-line-options.html#limit">-limit</a> command-line option, or with the <a href="api/resource.html#SetMagickResourceLimit">SetMagickResourceLimit()</a> MagickCore API method. As an example, our online web interface to ImageMagick, <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">ImageMagick Studio</a>, includes these policy limits to help prevent a denial-of-service:</p>
 <pre>
 &lt;policymap>
   &lt;policy domain="resource" name="temporary-path" value="/tmp"/>
@@ -645,7 +645,7 @@ void ConvertBMPToImage(const BITMAPINFOHEADER *bmp_info,
 export MAGICK_THREAD_LIMIT=12
 </pre>
 
-<p>The OpenMP committee has not defined the behavior of mixing OpenMP with other threading models such as Posix threads.  However, using modern releases of Linux, OpenMP and Posix threads appear to interoperate without complaint.  If you want to use Posix threads from a program module that calls one of the ImageMagick application programming interfaces (e.g. MagickCore, MagickWand, Magick++, etc.) from Mac OS X or an older Linux release, you may need to disable OpenMP support within ImageMagick.  Add the <code>--disable-openmp</code> option to the configure script command line and rebuild and reinstall ImageMagick.</p>
+<p>The OpenMP committee has not defined the behavior of mixing OpenMP with other threading models such as Posix threads.  However, using modern releases of Linux, OpenMP and Posix threads appear to interoperate without complaint.  If you want to use Posix threads from a program module that calls one of the ImageMagick application programming interfaces (e.g. MagickCore, MagickWand, Magick++, etc.) from Mac OS X or an older Linux release, you may need to disable OpenMP support within ImageMagick.  Add the <code>--disable-openmp</code> option to the configure script command-line and rebuild and reinstall ImageMagick.</p>
 
 <h4>Threading Performance</h4>
 <p>It can be difficult to predict behavior in a parallel environment.   Performance might depend on a number of factors including the compiler, the version of the OpenMP library, the processor type, the number of cores, the amount of memory, whether hyperthreading is enabled, the mix of applications that are executing concurrently with ImageMagick, or the particular image-processing algorithm you utilize.  The only way to be certain of optimal performance, in terms of the number of threads, is to benchmark.   ImageMagick includes progressive threading when benchmarking a command and returns the elapsed time and efficiency for one or more threads.  This can help you identify how many threads is the most efficient in your environment.  For this benchmark we sharpen a 1920x1080 image of a model 10 times with 1 to 12 threads:</p>
@@ -665,7 +665,7 @@ Performance[11]: 10i 4.348ips 0.793e 16.500u 0:02.300
 Performance[12]: 10i 4.525ips 0.799e 18.320u 0:02.210
 </pre>
 <p>The sweet spot for this example is 6 threads. This makes sense since there are 6 physical cores.  The other 6 are hyperthreads. It appears that sharpening does not benefit from hyperthreading.</p>
-<p>In certain cases, it might be optimal to set the number of threads to 1 or to disable OpenMP completely with the <a href="resources.html#environment">MAGICK_THREAD_LIMIT</a> environment variable, <a href="command-line-options.html#limit">-limit</a> command line option,  or the  <a href="resources.html#configure">policy.xml</a> configuration file.</p>
+<p>In certain cases, it might be optimal to set the number of threads to 1 or to disable OpenMP completely with the <a href="resources.html#environment">MAGICK_THREAD_LIMIT</a> environment variable, <a href="command-line-options.html#limit">-limit</a> command-line option,  or the  <a href="resources.html#configure">policy.xml</a> configuration file.</p>
 
 <h2 class="magick-header"><a id="distributed"></a>Heterogeneous Distributed Processing</h2>
 <p>ImageMagick includes support for heterogeneous distributed processing with the <a href="http://en.wikipedia.org/wiki/OpenCL">OpenCL</a> framework.  OpenCL kernels within ImageMagick permit image processing algorithms to execute across heterogeneous platforms consisting of CPUs, GPUs, and other processors.  Depending on your platform, speed-ups can be an order of magnitude faster than the traditional single CPU.</p>
@@ -1157,7 +1157,7 @@ static MagickBooleanType WriteMGKImage(const ImageInfo *image_info,Image *image)
   return(MagickTrue);
 }</pre>
 
-<p>To invoke the custom coder from the command line, use these commands:</p>
+<p>To invoke the custom coder from the command-line, use these commands:</p>
 
 <pre>convert logo: logo.mgk
 display logo.mgk
@@ -1167,7 +1167,7 @@ display logo.mgk
 
 <h2 class="magick-header"><a id="filters"></a>Custom Image Filters</h2>
 
-<p>ImageMagick provides a convenient mechanism for adding your own custom image processing algorithms.  We call these image filters and they are invoked from the command line with the <a href="command-line-options.html#process">-process</a> option or from the MagickCore API method <a href="api/module.html#ExecuteModuleProcess">ExecuteModuleProcess()</a>.</p>
+<p>ImageMagick provides a convenient mechanism for adding your own custom image processing algorithms.  We call these image filters and they are invoked from the command-line with the <a href="command-line-options.html#process">-process</a> option or from the MagickCore API method <a href="api/module.html#ExecuteModuleProcess">ExecuteModuleProcess()</a>.</p>
 
 <p>Here is a listing of a sample <a href="../source/analyze.c">custom image filter</a>.  It computes a few statistics such as the pixel brightness and saturation mean and standard-deviation.</p>
 
@@ -1206,7 +1206,7 @@ display logo.mgk
 %    o argc: Specifies a pointer to an integer describing the number of
 %      elements in the argument vector.
 %
-%    o argv: Specifies a pointer to a text array containing the command line
+%    o argv: Specifies a pointer to a text array containing the command-line
 %      arguments.
 %
 %    o exception: return any errors or warnings in this structure.
@@ -1370,7 +1370,7 @@ ModuleExport size_t analyzeImage(Image **images,const int argc,const char **argv
   return(MagickImageFilterSignature);
 }</pre>
 
-<p>To invoke the custom filter from the command line, use this command:</p>
+<p>To invoke the custom filter from the command-line, use this command:</p>
 
 <pre>convert logo: -process \"analyze\" -verbose info:
   Image: logo:

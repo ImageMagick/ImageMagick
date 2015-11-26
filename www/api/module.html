@@ -30,7 +30,7 @@
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async="async" src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
          style="display:block"
          data-ad-client="ca-pub-3129977114552745"
          data-ad-slot="6345125851"
@@ -42,7 +42,7 @@
       <a class="magick-nav-item " href="../index.html">Home</a>
       <a class="magick-nav-item " href="../binary-releases.html">Download</a>
       <a class="magick-nav-item " href="../command-line-tools.html">Tools</a>
-      <a class="magick-nav-item " href="../command-line-options.html">Options</a>
+      <a class="magick-nav-item " href="../command-line-processing.html">Command-line</a>
       <a class="magick-nav-item " href="../resources.html">Resources</a>
       <a class="magick-nav-item " href="api.html">Develop</a>
       <a class="magick-nav-item " href="http://nextgen.imagemagick.org/script/search.php">Search</a>
@@ -54,7 +54,7 @@
 <div class="magick-header">
 <p class="text-center"><a href="module.html#AcquireModuleInfo">AcquireModuleInfo</a> &#8226; <a href="module.html#DestroyModuleList">DestroyModuleList</a> &#8226; <a href="module.html#GetModuleInfo">GetModuleInfo</a> &#8226; <a href="module.html#GetModuleInfoList">GetModuleInfoList</a> &#8226; <a href="module.html#GetModuleList">GetModuleList</a> &#8226; <a href="module.html#GetMagickModulePath">GetMagickModulePath</a> &#8226; <a href="module.html#IsModuleTreeInstantiated">IsModuleTreeInstantiated</a> &#8226; <a href="module.html#InvokeDynamicImageFilter">InvokeDynamicImageFilter</a> &#8226; <a href="module.html#ListModuleInfo">ListModuleInfo</a> &#8226; <a href="module.html#OpenModule">OpenModule</a> &#8226; <a href="module.html#OpenModules">OpenModules</a> &#8226; <a href="module.html#RegisterModule">RegisterModule</a> &#8226; <a href="module.html#TagToCoderModuleName">TagToCoderModuleName</a> &#8226; <a href="module.html#TagToFilterModuleName">TagToFilterModuleName</a> &#8226; <a href="module.html#TagToModuleName">TagToModuleName</a> &#8226; <a href="module.html#UnregisterModule">UnregisterModule</a></p>
 
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/module_8c.html" id="AcquireModuleInfo">AcquireModuleInfo</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/module_8c.html" id="AcquireModuleInfo">AcquireModuleInfo</a></h2>
 
 <p>AcquireModuleInfo() allocates the ModuleInfo structure.</p>
 
@@ -80,7 +80,7 @@ ModuleInfo *AcquireModuleInfo(const char *path,const char *tag)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/module_8c.html" id="DestroyModuleList">DestroyModuleList</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/module_8c.html" id="DestroyModuleList">DestroyModuleList</a></h2>
 
 <p>DestroyModuleList() unregisters any previously loaded modules and exits the module loaded environment.</p>
 
@@ -90,7 +90,7 @@ ModuleInfo *AcquireModuleInfo(const char *path,const char *tag)
 void DestroyModuleList(void)
 </pre>
 
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/module_8c.html" id="GetModuleInfo">GetModuleInfo</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/module_8c.html" id="GetModuleInfo">GetModuleInfo</a></h2>
 
 <p>GetModuleInfo() returns a pointer to a ModuleInfo structure that matches the specified tag.  If tag is NULL, the head of the module list is returned. If no modules are loaded, or the requested module is not found, NULL is returned.</p>
 
@@ -116,7 +116,7 @@ ModuleInfo *GetModuleInfo(const char *tag,ExceptionInfo *exception)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/module_8c.html" id="GetModuleInfoList">GetModuleInfoList</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/module_8c.html" id="GetModuleInfoList">GetModuleInfoList</a></h2>
 
 <p>GetModuleInfoList() returns any modules that match the specified pattern.</p>
 
@@ -147,7 +147,7 @@ const ModuleInfo **GetModuleInfoList(const char *pattern,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/module_8c.html" id="GetModuleList">GetModuleList</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/module_8c.html" id="GetModuleList">GetModuleList</a></h2>
 
 <p>GetModuleList() returns any image format modules that match the specified pattern.</p>
 
@@ -182,7 +182,7 @@ char **GetModuleList(const char *pattern,const MagickModuleType type,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/module_8c.html" id="GetMagickModulePath">GetMagickModulePath</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/module_8c.html" id="GetMagickModulePath">GetMagickModulePath</a></h2>
 
 <p>GetMagickModulePath() finds a module with the specified module type and filename.</p>
 
@@ -217,7 +217,7 @@ MagickBooleanType GetMagickModulePath(const char *filename,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/module_8c.html" id="IsModuleTreeInstantiated">IsModuleTreeInstantiated</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/module_8c.html" id="IsModuleTreeInstantiated">IsModuleTreeInstantiated</a></h2>
 
 <p>IsModuleTreeInstantiated() determines if the module tree is instantiated. If not, it instantiates the tree and returns it.</p>
 
@@ -232,7 +232,7 @@ IsModuleTreeInstantiated(Exceptioninfo *exception)
 <dt>exception</dt>
 <p>return any errors or warnings in this structure.</p>
 
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/module_8c.html" id="InvokeDynamicImageFilter">InvokeDynamicImageFilter</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/module_8c.html" id="InvokeDynamicImageFilter">InvokeDynamicImageFilter</a></h2>
 
 <p>InvokeDynamicImageFilter() invokes a dynamic image filter.</p>
 
@@ -271,7 +271,7 @@ MagickBooleanType InvokeDynamicImageFilter(const char *tag,Image **image,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/module_8c.html" id="ListModuleInfo">ListModuleInfo</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/module_8c.html" id="ListModuleInfo">ListModuleInfo</a></h2>
 
 <p>ListModuleInfo() lists the module info to a file.</p>
 
@@ -289,7 +289,7 @@ MagickBooleanType ListModuleInfo(FILE *file,ExceptionInfo *exception)
 <dt>exception</dt>
 <p>return any errors or warnings in this structure.</p>
 
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/module_8c.html" id="OpenModule">OpenModule</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/module_8c.html" id="OpenModule">OpenModule</a></h2>
 
 <p>OpenModule() loads a module, and invokes its registration module.  It returns MagickTrue on success, and MagickFalse if there is an error.</p>
 
@@ -315,7 +315,7 @@ MagickBooleanType OpenModule(const char *module,ExceptionInfo *exception)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/module_8c.html" id="OpenModules">OpenModules</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/module_8c.html" id="OpenModules">OpenModules</a></h2>
 
 <p>OpenModules() loads all available modules.</p>
 
@@ -337,7 +337,7 @@ MagickBooleanType OpenModules(ExceptionInfo *exception)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/module_8c.html" id="RegisterModule">RegisterModule</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/module_8c.html" id="RegisterModule">RegisterModule</a></h2>
 
 <p>RegisterModule() adds an entry to the module list.  It returns a pointer to the registered entry on success.</p>
 
@@ -368,7 +368,7 @@ ModuleInfo *RegisterModule(const ModuleInfo *module_info,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/module_8c.html" id="TagToCoderModuleName">TagToCoderModuleName</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/module_8c.html" id="TagToCoderModuleName">TagToCoderModuleName</a></h2>
 
 <p>TagToCoderModuleName() munges a module tag and obtains the filename of the corresponding module.</p>
 
@@ -394,7 +394,7 @@ char *TagToCoderModuleName(const char *tag,char *name)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/module_8c.html" id="TagToFilterModuleName">TagToFilterModuleName</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/module_8c.html" id="TagToFilterModuleName">TagToFilterModuleName</a></h2>
 
 <p>TagToFilterModuleName() munges a module tag and returns the filename of the corresponding filter module.</p>
 
@@ -420,7 +420,7 @@ void TagToFilterModuleName(const char *tag,char name)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/module_8c.html" id="TagToModuleName">TagToModuleName</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/module_8c.html" id="TagToModuleName">TagToModuleName</a></h2>
 
 <p>TagToModuleName() munges the module tag name and returns an upper-case tag name as the input string, and a user-provided format.</p>
 
@@ -450,7 +450,7 @@ TagToModuleName(const char *tag,const char *format,char *module)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/module_8c.html" id="UnregisterModule">UnregisterModule</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/module_8c.html" id="UnregisterModule">UnregisterModule</a></h2>
 
 <p>UnregisterModule() unloads a module, and invokes its de-registration module. Returns MagickTrue on success, and MagickFalse if there is an error.</p>
 
@@ -491,7 +491,7 @@ MagickBooleanType UnregisterModule(const ModuleInfo *module_info,
   </footer>
 </div><!-- /.container -->
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="https://localhost/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script src="http://nextgen.imagemagick.org/js/magick.html"></script>
 </div>
 </body>

@@ -30,7 +30,7 @@
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async="async" src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
          style="display:block"
          data-ad-client="ca-pub-3129977114552745"
          data-ad-slot="6345125851"
@@ -42,7 +42,7 @@
       <a class="magick-nav-item " href="../index.html">Home</a>
       <a class="magick-nav-item " href="../binary-releases.html">Download</a>
       <a class="magick-nav-item " href="../command-line-tools.html">Tools</a>
-      <a class="magick-nav-item " href="../command-line-options.html">Options</a>
+      <a class="magick-nav-item " href="../command-line-processing.html">Command-line</a>
       <a class="magick-nav-item " href="../resources.html">Resources</a>
       <a class="magick-nav-item " href="api.html">Develop</a>
       <a class="magick-nav-item " href="http://nextgen.imagemagick.org/script/search.php">Search</a>
@@ -54,7 +54,7 @@
 <div class="magick-header">
 <p class="text-center"><a href="color.html#AcquireColorCache">AcquireColorCache</a> &#8226; <a href="color.html#GetColorInfoList">GetColorInfoList</a> &#8226; <a href="color.html#GetColorList">GetColorList</a> &#8226; <a href="color.html#ListColorInfo">ListColorInfo</a> &#8226; <a href="color.html#QueryColorname">QueryColorname</a></p>
 
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/color_8c.html" id="AcquireColorCache">AcquireColorCache</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/color_8c.html" id="AcquireColorCache">AcquireColorCache</a></h2>
 
 <p>AcquireColorCache() caches one or more color configurations which provides a mapping between color attributes and a color name.</p>
 
@@ -81,7 +81,7 @@ LinkedListInfo *AcquireColorCache(const char *filename,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/color_8c.html" id="GetColorInfoList">GetColorInfoList</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/color_8c.html" id="GetColorInfoList">GetColorInfoList</a></h2>
 
 <p>GetColorInfoList() returns any colors that match the specified pattern.</p>
 
@@ -112,7 +112,7 @@ const ColorInfo **GetColorInfoList(const char *pattern,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/color_8c.html" id="GetColorList">GetColorList</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/color_8c.html" id="GetColorList">GetColorList</a></h2>
 
 <p>GetColorList() returns any colors that match the specified pattern.</p>
 
@@ -143,7 +143,7 @@ char **GetColorList(const char *pattern,size_t *number_colors,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/color_8c.html" id="ListColorInfo">ListColorInfo</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/color_8c.html" id="ListColorInfo">ListColorInfo</a></h2>
 
 <p>ListColorInfo() lists color names to the specified file.  Color names are a convenience.  Rather than defining a color by its red, green, and blue intensities just use a color name such as white, blue, or yellow.</p>
 
@@ -161,7 +161,7 @@ MagickBooleanType ListColorInfo(FILE *file,ExceptionInfo *exception)
 <dt>exception</dt>
 <p>return any errors or warnings in this structure.</p>
 
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/color_8c.html" id="QueryColorname">QueryColorname</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/color_8c.html" id="QueryColorname">QueryColorname</a></h2>
 
 <p>QueryColorname() returns a named color for the given color intensity. If an exact match is not found, a hex value is returned instead.  For example an intensity of rgb:(0,0,0) returns black whereas rgb:(223,223,223) returns #dfdfdf.</p>
 
@@ -206,7 +206,7 @@ MagickBooleanType QueryColorname(const Image *image,
   </footer>
 </div><!-- /.container -->
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="https://localhost/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script src="http://nextgen.imagemagick.org/js/magick.html"></script>
 </div>
 </body>

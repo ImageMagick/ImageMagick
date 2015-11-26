@@ -30,7 +30,7 @@
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async="async" src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
          style="display:block"
          data-ad-client="ca-pub-3129977114552745"
          data-ad-slot="6345125851"
@@ -42,7 +42,7 @@
       <a class="magick-nav-item " href="../index.html">Home</a>
       <a class="magick-nav-item " href="../binary-releases.html">Download</a>
       <a class="magick-nav-item " href="../command-line-tools.html">Tools</a>
-      <a class="magick-nav-item " href="../command-line-options.html">Options</a>
+      <a class="magick-nav-item " href="../command-line-processing.html">Command-line</a>
       <a class="magick-nav-item " href="../resources.html">Resources</a>
       <a class="magick-nav-item " href="api.html">Develop</a>
       <a class="magick-nav-item " href="http://nextgen.imagemagick.org/script/search.php">Search</a>
@@ -52,17 +52,17 @@
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="text-center"><a href="compare.html#CompareImages">CompareImages</a> &#8226; <a href="compare.html#GetImageDistortion">GetImageDistortion</a> &#8226; <a href="compare.html#GetImageDistortions">GetImageDistortions</a> &#8226; <a href="compare.html#IsImagesEqual">IsImagesEqual</a> &#8226; <a href="compare.html#SimilarityImage">SimilarityImage</a></p>
+<p class="text-center"><a href="compare.html#CompareImagesCommand">CompareImagesCommand</a></p>
 
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/compare_8c.html" id="CompareImages">CompareImages</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/compare_8c.html" id="CompareImagesCommand">CompareImagesCommand</a></h2>
 
-<p>CompareImages() compares one or more pixel channels of an image to a reconstructed image and returns the difference image.</p>
+<p>CompareImagesCommand() compares two images and returns the difference between them as a distortion metric and as a new image visually annotating their differences.</p>
 
-<p>The format of the CompareImages method is:</p>
+<p>The format of the CompareImagesCommand method is:</p>
 
 <pre class="text">
-Image *CompareImages(const Image *image,const Image *reconstruct_image,
-  const MetricType metric,double *distortion,ExceptionInfo *exception)
+MagickBooleanType CompareImagesCommand(ImageInfo *image_info,int argc,
+  char **argv,char **metadata,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -72,179 +72,20 @@ Image *CompareImages(const Image *image,const Image *reconstruct_image,
 
 <dd> </dd>
 <dl class="dl-horizontal">
-<dt>image</dt>
-<dd>the image. </dd>
+<dt>image_info</dt>
+<dd>the image info. </dd>
 
 <dd> </dd>
-<dt>reconstruct_image</dt>
-<dd>the reconstruct image. </dd>
+<dt>argc</dt>
+<dd>the number of elements in the argument vector. </dd>
 
 <dd> </dd>
-<dt>metric</dt>
-<dd>the metric. </dd>
+<dt>argv</dt>
+<dd>A text array containing the command line arguments. </dd>
 
 <dd> </dd>
-<dt>distortion</dt>
-<dd>the computed distortion between the images. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
-<dd>  </dd>
-</dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/compare_8c.html" id="GetImageDistortion">GetImageDistortion</a></h2>
-
-<p>GetImageDistortion() compares one or more pixel channels of an image to a reconstructed image and returns the specified distortion metric.</p>
-
-<p>The format of the GetImageDistortion method is:</p>
-
-<pre class="text">
-MagickBooleanType GetImageDistortion(const Image *image,
-  const Image *reconstruct_image,const MetricType metric,
-  double *distortion,ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<dd>
-</dd>
-
-<dd> </dd>
-<dl class="dl-horizontal">
-<dt>image</dt>
-<dd>the image. </dd>
-
-<dd> </dd>
-<dt>reconstruct_image</dt>
-<dd>the reconstruct image. </dd>
-
-<dd> </dd>
-<dt>metric</dt>
-<dd>the metric. </dd>
-
-<dd> </dd>
-<dt>distortion</dt>
-<dd>the computed distortion between the images. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
-<dd>  </dd>
-</dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/compare_8c.html" id="GetImageDistortions">GetImageDistortions</a></h2>
-
-<p>GetImageDistortions() compares the pixel channels of an image to a reconstructed image and returns the specified distortion metric for each channel.</p>
-
-<p>The format of the GetImageDistortions method is:</p>
-
-<pre class="text">
-double *GetImageDistortions(const Image *image,
-  const Image *reconstruct_image,const MetricType metric,
-  ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<dd>
-</dd>
-
-<dd> </dd>
-<dl class="dl-horizontal">
-<dt>image</dt>
-<dd>the image. </dd>
-
-<dd> </dd>
-<dt>reconstruct_image</dt>
-<dd>the reconstruct image. </dd>
-
-<dd> </dd>
-<dt>metric</dt>
-<dd>the metric. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
-<dd>  </dd>
-</dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/compare_8c.html" id="IsImagesEqual">IsImagesEqual</a></h2>
-
-<p>IsImagesEqual() measures the difference between colors at each pixel location of two images.  A value other than 0 means the colors match exactly.  Otherwise an error measure is computed by summing over all pixels in an image the distance squared in RGB space between each image pixel and its corresponding pixel in the reconstruct image.  The error measure is assigned to these image members:</p>
-
-<pre class="text">
-    o mean_error_per_pixel:  The mean error for any single pixel in
-the image.
-</pre>
-
-<dt>normalized_mean_error</dt>
-<p>The normalized mean quantization error for any single pixel in the image.  This distance measure is normalized to a range between 0 and 1.  It is independent of the range of red, green, and blue values in the image.</p>
-
-<dt>normalized_maximum_error</dt>
-<p>The normalized maximum quantization error for any single pixel in the image.  This distance measure is normalized to a range between 0 and 1.  It is independent of the range of red, green, and blue values in your image.</p>
-
-<p>A small normalized mean square error, accessed as image-&gt;normalized_mean_error, suggests the images are very similar in spatial layout and color.</p>
-
-<p>The format of the IsImagesEqual method is:</p>
-
-<pre class="text">
-MagickBooleanType IsImagesEqual(Image *image,
-  const Image *reconstruct_image,ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows.</p>
-
-<dt>image</dt>
-<p>the image.</p>
-
-<dt>reconstruct_image</dt>
-<p>the reconstruct image.</p>
-
-<dt>exception</dt>
-<p>return any errors or warnings in this structure.</p>
-
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/compare_8c.html" id="SimilarityImage">SimilarityImage</a></h2>
-
-<p>SimilarityImage() compares the reference image of the image and returns the best match offset.  In addition, it returns a similarity image such that an exact match location is completely white and if none of the pixels match, black, otherwise some gray level in-between.</p>
-
-<p>The format of the SimilarityImageImage method is:</p>
-
-<pre class="text">
-Image *SimilarityImage(const Image *image,const Image *reference,
-  const MetricType metric,const double similarity_threshold,
-  RectangleInfo *offset,double *similarity,ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<dd>
-</dd>
-
-<dd> </dd>
-<dl class="dl-horizontal">
-<dt>image</dt>
-<dd>the image. </dd>
-
-<dd> </dd>
-<dt>reference</dt>
-<dd>find an area of the image that closely resembles this image. </dd>
-
-<dd> </dd>
-<dt>metric</dt>
-<dd>the metric. </dd>
-
-<dd> </dd>
-<dt>similarity_threshold</dt>
-<dd>minimum distortion for (sub)image match. </dd>
-
-<dd> </dd>
-<dt>offset</dt>
-<dd>the best match offset of the reference image within the image. </dd>
-
-<dd> </dd>
-<dt>similarity</dt>
-<dd>the computed similarity between the images. </dd>
+<dt>metadata</dt>
+<dd>any metadata is returned here. </dd>
 
 <dd> </dd>
 <dt>exception</dt>
@@ -266,7 +107,7 @@ Image *SimilarityImage(const Image *image,const Image *reference,
   </footer>
 </div><!-- /.container -->
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="https://localhost/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script src="http://nextgen.imagemagick.org/js/magick.html"></script>
 </div>
 </body>

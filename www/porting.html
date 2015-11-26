@@ -42,7 +42,7 @@
       <a class="magick-nav-item " href="../index.html">Home</a>
       <a class="magick-nav-item " href="binary-releases.html">Download</a>
       <a class="magick-nav-item " href="command-line-tools.html">Tools</a>
-      <a class="magick-nav-item " href="command-line-options.html">Options</a>
+      <a class="magick-nav-item " href="command-line-processing.html">Command-line</a>
       <a class="magick-nav-item " href="resources.html">Resources</a>
       <a class="magick-nav-item " href="api.html">Develop</a>
       <a class="magick-nav-item " href="http://nextgen.imagemagick.org/script/search.php">Search</a>
@@ -59,9 +59,9 @@
 
 <p>To support variable pixel channels in the MagickCore API, pixel handling has changed when getting or setting the pixel channels.  You can access channels as an array, <var>pixel[i]</var>, or use an accessor method such as GetPixelRed() or SetPixelRed().  There are some modest changes to the MagickCore and MagickWand API's.   The Magick++ and PerlMagick API's have not changed and matches that of the ImageMagick version 6.</p>
 
-<p>The shell API (command line) of ImageMagick version 7 is also undergoing
+<p>The shell API (command-line) of ImageMagick version 7 is also undergoing
 a major overhaul, with specific emphasis on the ability to read 'options' not
-only from the command line, but also from scripts, and file streams. This
+only from the command-line, but also from scripts, and file streams. This
 allows for the use of 'co-processing' programming techniques or performing
 image handling using 'deamon/server backends', and even multi-machine
 distributed processing.</p>
@@ -73,10 +73,10 @@ options, and more global use of 'image properties' (more commonly known as
 
 <p>ImageMagick version 7 is available now as an <a href="http://www.imagemagick.org/download/beta/">Beta</a> release.  Look for an official release around 1st Q 2016.  An official ImageMagick version 7 release depends on how smoothly the Beta cycle progresses.  During the Beta cycle, version 6 developers can attempt to port their software to version 7.</p>
 
-<p>Once ImageMagick version 7 is released, we will continue to support and enhance version 6 for a minimum of 10 years.</p>
+<p>Once ImageMagick version 7 is released, for the foreseeable future, we’ll be maintaining ImageMagick 6 with critical bug fixes and documentation improvements.</p>
 
 <h2 class="magick-header"><a id="hdri"></a>High Dynamic Range Imaging</h2>
-<p>ImageMagick version 7 enables <a href="high-dynamic-range.html">high dynamic range imaging</a> (HDRI) by default.  HDRI accurately represents the wide range of intensity levels found in real scenes ranging from the brightest direct sunlight to the deepest darkest shadows.  In addition, image processing results are more accurate.  The disadvantage is it requires more memory and may result in slower processing times.  If you see differences in the results of your version 6 command-line with version 7, it is likely due to HDRI.  You may need to add <code>-clamp</code> to your command-line to constrain pixels to the 0 .. QuantumRange range, or disable HDRI when you build ImageMagick version 7.  To disable HDRI (recommended for smart phone builds such as iOS or production sites where performance is a premium), simply add <code>--disable-hdri</code> to the configure script command line when building ImageMagick.</p>
+<p>ImageMagick version 7 enables <a href="high-dynamic-range.html">high dynamic range imaging</a> (HDRI) by default.  HDRI accurately represents the wide range of intensity levels found in real scenes ranging from the brightest direct sunlight to the deepest darkest shadows.  In addition, image processing results are more accurate.  The disadvantage is it requires more memory and may result in slower processing times.  If you see differences in the results of your version 6 command-line with version 7, it is likely due to HDRI.  You may need to add <code>-clamp</code> to your command-line to constrain pixels to the 0 .. QuantumRange range, or disable HDRI when you build ImageMagick version 7.  To disable HDRI (recommended for smart phone builds such as iOS or production sites where performance is a premium), simply add <code>--disable-hdri</code> to the configure script command-line when building ImageMagick.</p>
 
 <h2 class="magick-header"><a id="channels"></a>Pixel Channels</h2>
 <p>A pixel is comprised of one or more color values, or <var>channels</var> (e.g. red pixel channel).</p>
@@ -346,7 +346,7 @@ MagickWand-config
 
 <p>As mentioned the primary focus of the changes to the Shell API or Command
 Line Interface is the abstraction so that not only can <var>options</var> be
-read from command line arguments, but also from a file (script) or from a file
+read from command-line arguments, but also from a file (script) or from a file
 stream (interactive commands, or co-processing). </p>
 
 <p>To do this the CLI parser needed to be re-written, so as to always perform
@@ -357,7 +357,7 @@ before providing an image for the operations to work on.  To do so will now
 produce an error. </p>
 
 <p>Error reporting is now reporting exactly which option (by argument count on
-command line, or line,column in scripts) caused the 'exception'.  This is not
+command-line, or line,column in scripts) caused the 'exception'.  This is not
 complete as yet but getting better. Also not complete is 'regard-warnings'
 handling or its replacement, which will allow you to ignore reported errors
 and continue processing (as appropriate due to error) in co-processes or
@@ -409,7 +409,7 @@ be applied to expand the one channel into separate RGB (or other) channels.
 </dl>
 
 <h3>Behavioral Changes</h3>
-<p>Image settings are applied to each image on the command line.  To associate a setting with a particular image, use parenthesis to remove ambiguity.  In this example we assign a unique page offset to each image:</p>
+<p>Image settings are applied to each image on the command-line.  To associate a setting with a particular image, use parenthesis to remove ambiguity.  In this example we assign a unique page offset to each image:</p>
 <pre>
 convert \( -page +10+20 first.png \) \( -page +100+200 second.png \) ...
 </pre>
@@ -516,7 +516,7 @@ convert wizard.png mask.pgm -channel-fx '| gray=>read-mask' wizard-mask.png
 <dd>not yet implemented in "<code>magick</code>". (very soon)</dd>
 
 <dt>-script {file}</dt>
-<dd>In "<code>magick</code>", stop the processing of command line arguments as
+<dd>In "<code>magick</code>", stop the processing of command-line arguments as
     image operations, and read all further options from the given file or
     pipeline.</dd>
 <dt>-write-mask</dt>
