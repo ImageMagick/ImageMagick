@@ -4405,7 +4405,7 @@ void Magick::Image::sigmoidalContrast(const bool sharpen_,
 
 std::string Magick::Image::signature(const bool force_) const
 {
-  return(_imgRef->signature());
+  return(_imgRef->signature(force_));
 }
 
 void Magick::Image::sketch(const double radius_,const double sigma_,
