@@ -193,7 +193,7 @@ static MagickBooleanType MergeConnectedComponents(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      i=(ssize_t) GetPixelIntensity(image,p);
+      i=GetPixelLabel(p);
       if (x < object[i].bounding_box.x)
         object[i].bounding_box.x=x;
       if (x > (ssize_t) object[i].bounding_box.width)
@@ -256,7 +256,7 @@ static MagickBooleanType MergeConnectedComponents(Image *image,
         }
       for (x=0; x < (ssize_t) bounding_box.width+2; x++)
       {
-        j=(ssize_t) GetPixelIntensity(image,p);
+        j=GetPixelLabel(p);
         if (j != i)
           object[j].census++;
         p++;
@@ -290,7 +290,7 @@ static MagickBooleanType MergeConnectedComponents(Image *image,
         }
       for (x=0; x < (ssize_t) bounding_box.width; x++)
       {
-        if ((ssize_t) GetPixelIntensity(image,q) == i)
+        if (GetPixelLabel(q) == i)
           {
             q->red=(Quantum) id;
             q->green=q->red;
@@ -334,7 +334,7 @@ static MagickBooleanType StatisticsComponentsStatistics(const Image *image,
   if (object == (CCObject *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
-         ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
       return(MagickFalse);
     }
   (void) ResetMagickMemory(object,0,number_objects*sizeof(*object));
@@ -350,12 +350,12 @@ static MagickBooleanType StatisticsComponentsStatistics(const Image *image,
   component_view=AcquireVirtualCacheView(component_image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
+    register const IndexPacket
+      *indexes;
+
     register const PixelPacket
       *magick_restrict p,
       *magick_restrict q;
-
-    register const IndexPacket
-      *indexes;
 
     register ssize_t
       x;
@@ -374,7 +374,7 @@ static MagickBooleanType StatisticsComponentsStatistics(const Image *image,
     indexes=GetVirtualIndexQueue(image);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      i=(ssize_t) GetPixelIntensity(image,q);
+      i=GetPixelLabel(q);
       if (x < object[i].bounding_box.x)
         object[i].bounding_box.x=x;
       if (x > (ssize_t) object[i].bounding_box.width)
@@ -498,10 +498,11 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
     Initialize connected components equivalences.
   */
   size=image->columns*image->rows;
-  if (image->columns != (size/image->rows)) {
-    component_image=DestroyImage(component_image);
-    ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
-  }
+  if (image->columns != (size/image->rows))
+    {
+      component_image=DestroyImage(component_image);
+      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+    }
   equivalences=AcquireMatrixInfo(size,1,sizeof(ssize_t),exception);
   if (equivalences == (MatrixInfo *) NULL)
     {
@@ -639,27 +640,30 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
     for (x=0; x < (ssize_t) component_image->columns; x++)
     {
       ssize_t
-        id,
+        object,
         offset;
 
       offset=y*image->columns+x;
-      status=GetMatrixElement(equivalences,offset,0,&id);
-      if (id == offset)
+      status=GetMatrixElement(equivalences,offset,0,&object);
+      if (object == offset)
         {
-          id=n++;
-          status=SetMatrixElement(equivalences,offset,0,&id);
+          object=n++;
+          if (n > (ssize_t) MaxMap)
+            break;
+          status=SetMatrixElement(equivalences,offset,0,&object);
         }
       else
         {
-          status=GetMatrixElement(equivalences,id,0,&id);
-          status=SetMatrixElement(equivalences,offset,0,&id);
+          status=GetMatrixElement(equivalences,object,0,&object);
+          status=SetMatrixElement(equivalences,offset,0,&object);
         }
-      q->red=(Quantum) (id > (ssize_t) QuantumRange ? (ssize_t) QuantumRange :
-        id);
+      q->red=(Quantum) object;
       q->green=q->red;
       q->blue=q->red;
       q++;
     }
+    if (n > (ssize_t) MaxMap)
+      break;
     if (SyncCacheViewAuthenticPixels(component_view,exception) == MagickFalse)
       status=MagickFalse;
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
@@ -675,7 +679,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
   }
   component_view=DestroyCacheView(component_view);
   equivalences=DestroyMatrixInfo(equivalences);
-  if (n > (ssize_t) QuantumRange)
+  if (n > (ssize_t) MaxMap)
     {
       component_image=DestroyImage(component_image);
       ThrowImageException(ResourceLimitError,"TooManyObjects");

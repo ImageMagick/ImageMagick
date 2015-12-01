@@ -43,6 +43,7 @@ extern "C" {
 #define GetPixelGreen(pixel) ((pixel)->green)
 #define GetPixelIndex(indexes)  (*(indexes))
 #define GetPixelL(pixel) ((pixel)->red)
+#define GetPixelLabel(pixel) ((ssize_t) (pixel)->red)
 #define GetPixelMagenta(pixel) ((pixel)->green)
 #define GetPixelNext(pixel)  ((pixel)+1)
 #define GetPixelOpacity(pixel) ((pixel)->opacity)
