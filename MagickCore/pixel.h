@@ -70,6 +70,7 @@ typedef enum
   CyanPixelChannel = 0,
   GrayPixelChannel = 0,
   LPixelChannel = 0,
+  LabelPixelChannel = 0,
   YPixelChannel = 0,
   aPixelChannel = 1,
   GreenPixelChannel = 1,
