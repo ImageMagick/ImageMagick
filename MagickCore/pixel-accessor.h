@@ -267,6 +267,12 @@ static inline Quantum GetPixelL(const Image *magick_restrict image,
   return(pixel[image->channel_map[LPixelChannel].offset]);
 }
 
+static inline ssize_t GetPixelLabel(const Image *magick_restrict image,
+  const Quantum *magick_restrict pixel)
+{
+  return((ssize_t) pixel[image->channel_map[LabelPixelChannel].offset]);
+}
+
 static inline MagickRealType GetPixelLuma(const Image *magick_restrict image,
   const Quantum *magick_restrict pixel)
 {
