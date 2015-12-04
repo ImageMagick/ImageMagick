@@ -1,3 +1,7 @@
+2015-12-04  6.9.2-8 Cristy  <quetzlzacatenango@image...>
+  * Gray artifacts in large gif when using -layers optimize (reference
+    https://github.com/ImageMagick/ImageMagick/issues/57).
+
 2015-11-26  6.9.2-7 Cristy  <quetzlzacatenango@image...>
   * New version 6.9.2-7, GIT revision 10370:eeb7d4e:20151126.
 
