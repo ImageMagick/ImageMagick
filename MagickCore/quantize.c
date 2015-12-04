@@ -217,14 +217,14 @@
 /*
   Typdef declarations.
 */
-typedef struct _RealPixelInfo
+typedef struct _DoublePixelInfo
 {
   double
     red,
     green,
     blue,
     alpha;
-} RealPixelInfo;
+} DoublePixelInfo;
 
 typedef struct _NodeInfo
 {
@@ -235,7 +235,7 @@ typedef struct _NodeInfo
   MagickSizeType
     number_unique;
 
-  RealPixelInfo
+  DoublePixelInfo
     total_color;
 
   double
@@ -271,7 +271,7 @@ typedef struct _CubeInfo
   MagickSizeType
     transparent_pixels;
 
-  RealPixelInfo
+  DoublePixelInfo
     target;
 
   double
@@ -296,7 +296,7 @@ typedef struct _CubeInfo
   ssize_t
     *cache;
 
-  RealPixelInfo
+  DoublePixelInfo
     error[ErrorQueueLength];
 
   double
@@ -435,7 +435,7 @@ MagickExport QuantizeInfo *AcquireQuantizeInfo(const ImageInfo *image_info)
 */
 
 static inline void AssociateAlphaPixel(const Image *image,
-  const CubeInfo *cube_info,const Quantum *pixel,RealPixelInfo *alpha_pixel)
+  const CubeInfo *cube_info,const Quantum *pixel,DoublePixelInfo *alpha_pixel)
 {
   double
     alpha;
@@ -457,7 +457,7 @@ static inline void AssociateAlphaPixel(const Image *image,
 }
 
 static inline void AssociateAlphaPixelInfo(const CubeInfo *cube_info,
-  const PixelInfo *pixel,RealPixelInfo *alpha_pixel)
+  const PixelInfo *pixel,DoublePixelInfo *alpha_pixel)
 {
   double
     alpha;
@@ -479,7 +479,7 @@ static inline void AssociateAlphaPixelInfo(const CubeInfo *cube_info,
 }
 
 static inline size_t ColorToNodeId(const CubeInfo *cube_info,
-  const RealPixelInfo *pixel,size_t index)
+  const DoublePixelInfo *pixel,size_t index)
 {
   size_t
     id;
@@ -563,7 +563,7 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info,
         cube=(*cube_info);
         for (x=0; x < (ssize_t) image->columns; x+=count)
         {
-          RealPixelInfo
+          DoublePixelInfo
             pixel;
 
           register const NodeInfo
@@ -759,6 +759,12 @@ static MagickBooleanType ClassifyImageColors(CubeInfo *cube_info,
   CacheView
     *image_view;
 
+  DoublePixelInfo
+    error,
+    mid,
+    midpoint,
+    pixel;
+
   MagickBooleanType
     proceed;
 
@@ -767,12 +773,6 @@ static MagickBooleanType ClassifyImageColors(CubeInfo *cube_info,
 
   NodeInfo
     *node_info;
-
-  RealPixelInfo
-    error,
-    mid,
-    midpoint,
-    pixel;
 
   size_t
     count,
@@ -1116,11 +1116,11 @@ static void ClosestColor(const Image *image,CubeInfo *cube_info,
         beta,
         distance;
 
+      register DoublePixelInfo
+        *magick_restrict q;
+
       register PixelInfo
         *magick_restrict p;
-
-      register RealPixelInfo
-        *magick_restrict q;
 
       /*
         Determine if this color is "closest".
@@ -1427,22 +1427,22 @@ MagickExport QuantizeInfo *DestroyQuantizeInfo(QuantizeInfo *quantize_info)
 %
 */
 
-static RealPixelInfo **DestroyPixelThreadSet(RealPixelInfo **pixels)
+static DoublePixelInfo **DestroyPixelThreadSet(DoublePixelInfo **pixels)
 {
   register ssize_t
     i;
 
-  assert(pixels != (RealPixelInfo **) NULL);
+  assert(pixels != (DoublePixelInfo **) NULL);
   for (i=0; i < (ssize_t) GetMagickResourceLimit(ThreadResource); i++)
-    if (pixels[i] != (RealPixelInfo *) NULL)
-      pixels[i]=(RealPixelInfo *) RelinquishMagickMemory(pixels[i]);
-  pixels=(RealPixelInfo **) RelinquishMagickMemory(pixels);
+    if (pixels[i] != (DoublePixelInfo *) NULL)
+      pixels[i]=(DoublePixelInfo *) RelinquishMagickMemory(pixels[i]);
+  pixels=(DoublePixelInfo **) RelinquishMagickMemory(pixels);
   return(pixels);
 }
 
-static RealPixelInfo **AcquirePixelThreadSet(const size_t count)
+static DoublePixelInfo **AcquirePixelThreadSet(const size_t count)
 {
-  RealPixelInfo
+  DoublePixelInfo
     **pixels;
 
   register ssize_t
@@ -1452,22 +1452,23 @@ static RealPixelInfo **AcquirePixelThreadSet(const size_t count)
     number_threads;
 
   number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
-  pixels=(RealPixelInfo **) AcquireQuantumMemory(number_threads,
+  pixels=(DoublePixelInfo **) AcquireQuantumMemory(number_threads,
     sizeof(*pixels));
-  if (pixels == (RealPixelInfo **) NULL)
-    return((RealPixelInfo **) NULL);
+  if (pixels == (DoublePixelInfo **) NULL)
+    return((DoublePixelInfo **) NULL);
   (void) ResetMagickMemory(pixels,0,number_threads*sizeof(*pixels));
   for (i=0; i < (ssize_t) number_threads; i++)
   {
-    pixels[i]=(RealPixelInfo *) AcquireQuantumMemory(count,2*sizeof(**pixels));
-    if (pixels[i] == (RealPixelInfo *) NULL)
+    pixels[i]=(DoublePixelInfo *) AcquireQuantumMemory(count,2*
+      sizeof(**pixels));
+    if (pixels[i] == (DoublePixelInfo *) NULL)
       return(DestroyPixelThreadSet(pixels));
   }
   return(pixels);
 }
 
 static inline ssize_t CacheOffset(CubeInfo *cube_info,
-  const RealPixelInfo *pixel)
+  const DoublePixelInfo *pixel)
 {
 #define RedShift(pixel) (((pixel) >> CacheShift) << (0*(8-CacheShift)))
 #define GreenShift(pixel) (((pixel) >> CacheShift) << (1*(8-CacheShift)))
@@ -1493,11 +1494,11 @@ static MagickBooleanType FloydSteinbergDither(Image *image,CubeInfo *cube_info,
   CacheView
     *image_view;
 
+  DoublePixelInfo
+    **pixels;
+
   MagickBooleanType
     status;
-
-  RealPixelInfo
-    **pixels;
 
   ssize_t
     y;
@@ -1506,7 +1507,7 @@ static MagickBooleanType FloydSteinbergDither(Image *image,CubeInfo *cube_info,
     Distribute quantization error using Floyd-Steinberg.
   */
   pixels=AcquirePixelThreadSet(image->columns);
-  if (pixels == (RealPixelInfo **) NULL)
+  if (pixels == (DoublePixelInfo **) NULL)
     return(MagickFalse);
   status=MagickTrue;
   image_view=AcquireAuthenticCacheView(image,exception);
@@ -1518,7 +1519,7 @@ static MagickBooleanType FloydSteinbergDither(Image *image,CubeInfo *cube_info,
     CubeInfo
       cube;
 
-    RealPixelInfo
+    DoublePixelInfo
       *current,
       *previous;
 
@@ -1548,7 +1549,7 @@ static MagickBooleanType FloydSteinbergDither(Image *image,CubeInfo *cube_info,
     v=(ssize_t) ((y & 0x01) != 0 ? -1 : 1);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      RealPixelInfo
+      DoublePixelInfo
         color,
         pixel;
 
@@ -1810,12 +1811,12 @@ static MagickBooleanType RiemersmaDither(Image *image,CacheView *image_view,
 {
 #define DitherImageTag  "Dither/Image"
 
-  MagickBooleanType
-    proceed;
-
-  RealPixelInfo
+  DoublePixelInfo
     color,
     pixel;
+
+  MagickBooleanType
+    proceed;
 
   register CubeInfo
     *p;
