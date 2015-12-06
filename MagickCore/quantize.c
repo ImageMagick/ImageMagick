@@ -505,12 +505,11 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info,
   */
   if ((cube_info->quantize_info->colorspace != UndefinedColorspace) &&
       (cube_info->quantize_info->colorspace != CMYKColorspace))
-    (void) TransformImageColorspace((Image *) image,
-      cube_info->quantize_info->colorspace,exception);
+    (void) TransformImageColorspace(image,cube_info->quantize_info->colorspace,
+      exception);
   else
     if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
-      (void) TransformImageColorspace((Image *) image,sRGBColorspace,
-         exception);
+      (void) TransformImageColorspace(image,sRGBColorspace,exception);
   if (AcquireImageColormap(image,cube_info->colors,exception) == MagickFalse)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);;
@@ -650,25 +649,19 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info,
       double
         intensity;
 
-      register PixelInfo
-        *magick_restrict q;
-
-      register ssize_t
-        i;
-
       /*
         Monochrome image.
       */
-      q=image->colormap;
-      for (i=0; i < (ssize_t) image->colors; i++)
-      {
-        intensity=(double) (GetPixelInfoLuma(q) < (QuantumRange/2.0) ? 0 :
-          QuantumRange);
-        q->red=intensity;
-        q->green=q->red;
-        q->blue=q->red;
-        q++;
-      }
+      intensity=0.0;
+      if (GetPixelInfoLuma(image->colormap+0) >
+          GetPixelInfoLuma(image->colormap+1))
+        intensity=(double) QuantumRange;
+      image->colormap[0].red=intensity;
+      image->colormap[0].green=intensity;
+      image->colormap[0].blue=intensity;
+      image->colormap[1].red=(double) QuantumRange-intensity;
+      image->colormap[1].green=(double) QuantumRange-intensity;
+      image->colormap[1].blue=(double) QuantumRange-intensity;
     }
   (void) SyncImage(image,exception);
   if ((cube_info->quantize_info->colorspace != UndefinedColorspace) &&
