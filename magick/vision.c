@@ -371,7 +371,7 @@ static MagickBooleanType StatisticsComponentsStatistics(const Image *image,
         status=MagickFalse;
         continue;
       }
-    indexes=GetVirtualIndexQueue(image);
+    indexes=GetCacheViewVirtualIndexQueue(image_view);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       i=GetPixelLabel(q);
