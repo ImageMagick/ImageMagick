@@ -485,11 +485,10 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info)
   */
   if ((cube_info->quantize_info->colorspace != UndefinedColorspace) &&
       (cube_info->quantize_info->colorspace != CMYKColorspace))
-    (void) TransformImageColorspace((Image *) image,
-      cube_info->quantize_info->colorspace);
+    (void) TransformImageColorspace(image,cube_info->quantize_info->colorspace);
   else
     if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
-      (void) TransformImageColorspace((Image *) image,sRGBColorspace);
+      (void) TransformImageColorspace(image,sRGBColorspace);
   if (AcquireImageColormap(image,cube_info->colors) == MagickFalse)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
@@ -623,28 +622,22 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info)
   if ((cube_info->quantize_info->number_colors == 2) &&
       (cube_info->quantize_info->colorspace == GRAYColorspace))
     {
-      Quantum
+      double
         intensity;
-
-      register PixelPacket
-        *magick_restrict q;
-
-      register ssize_t
-        i;
 
       /*
         Monochrome image.
       */
-      q=image->colormap;
-      for (i=0; i < (ssize_t) image->colors; i++)
-      {
-        intensity=(Quantum) (GetPixelLuma(image,q) < (QuantumRange/2.0) ? 0 :
-          QuantumRange);
-        SetPixelRed(q,intensity);
-        SetPixelGreen(q,intensity);
-        SetPixelBlue(q,intensity);
-        q++;
-      }
+      intensity=0.0;
+      if (GetPixelLuma(image,image->colormap+0) > 
+          GetPixelLuma(image,image->colormap+1))
+        intensity=(double) QuantumRange;
+      image->colormap[0].red=intensity;
+      image->colormap[0].green=intensity;
+      image->colormap[0].blue=intensity;
+      image->colormap[1].red=(double) QuantumRange-intensity;
+      image->colormap[1].green=(double) QuantumRange-intensity;
+      image->colormap[1].blue=(double) QuantumRange-intensity;
     }
   (void) SyncImage(image);
   if ((cube_info->quantize_info->colorspace != UndefinedColorspace) &&
