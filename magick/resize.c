@@ -1149,7 +1149,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   {
 #endif
     artifact=GetImageArtifact(image,"filter:verbose");
-    if (IsMagickTrue(artifact))
+    if (IsMagickTrue(artifact) != MagickFalse)
       {
         double
           support,
