@@ -649,7 +649,7 @@ MagickExport Image *DeskewImage(const Image *image,const double threshold,
   affine_matrix.tx=0.0;
   affine_matrix.ty=0.0;
   artifact=GetImageArtifact(image,"deskew:auto-crop");
-  if (artifact == (const char *) NULL)
+  if (IsStringTrue(artifact) != MagickFalse)
     {
       deskew_image=AffineTransformImage(clone_image,&affine_matrix,exception);
       clone_image=DestroyImage(clone_image);

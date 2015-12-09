@@ -886,7 +886,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
 
   /* Expert filter setting override */
   artifact=GetImageArtifact(image,"filter:filter");
-  if (artifact != (const char *) NULL)
+  if (IsStringTrue(artifact) != MagickFalse)
     {
       ssize_t
         option;
