@@ -1197,7 +1197,13 @@ static MagickBooleanType ReadPSDChannel(Image *image,const PSDInfo *psd_info,
   }
 
   if (status == MagickFalse)
-    SeekBlob(image,offset+layer_info->channel_info[channel].size-2,SEEK_SET);
+    {
+      if (mask != (Image *) NULL)
+        DestroyImage(mask);
+      SeekBlob(image,offset+layer_info->channel_info[channel].size-2,SEEK_SET);
+      ThrowBinaryException(CoderError,"UnableToDecompressImage",
+        image->filename);
+    }
   if (mask != (Image *) NULL)
   {
     if (status != MagickFalse)
