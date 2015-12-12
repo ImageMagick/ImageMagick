@@ -9955,7 +9955,7 @@ Mogrify(ref,...)
           if (attribute_flag[1] != 0)
             image->fuzz=StringToDoubleInterval(
               argument_list[1].string_reference,(double) QuantumRange+1.0);
-          (void) IsImagesEqual(image,argument_list[0].image_reference,
+          (void) SetImageColorMetric(image,argument_list[0].image_reference,
             exception);
           break;
         }

@@ -1021,7 +1021,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
   else
     {
       if (image_info->verbose != MagickFalse)
-        (void) IsImagesEqual(image,reconstruct_image,exception);
+        (void) SetImageColorMetric(image,reconstruct_image,exception);
       if (*difference_image->magick == '\0')
         (void) CopyMagickString(difference_image->magick,image->magick,
           MagickPathExtent);
