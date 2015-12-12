@@ -11,7 +11,7 @@
   <configure name="CODER_PATH" value="/usr/local/lib/ImageMagick-6.9.2/modules-Q16/coders"/>
   <configure name="CONFIGURE_PATH" value="/usr/local/etc/ImageMagick-6/"/>
   <configure name="CONFIGURE" value="./configure "/>
-  <configure name="COPYRIGHT" value="Copyright (C) 1999-2015 ImageMagick Studio LLC"/>
+  <configure name="COPYRIGHT" value="Copyright (C) 1999-2016 ImageMagick Studio LLC"/>
   <configure name="CPPFLAGS" value="-I/usr/local/include/ImageMagick-6"/>
   <configure name="CXXFLAGS" value="-g -O2 -pthread"/>
   <configure name="CXX" value="g++"/>
