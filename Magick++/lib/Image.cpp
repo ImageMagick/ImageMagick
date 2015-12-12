@@ -2433,7 +2433,7 @@ void Magick::Image::colorMatrix(const size_t order_,
   ThrowImageException;
 }
 
-bool Magick::Image::compare(const Image &reference_)
+bool Magick::Image::compare(const Image &reference_) const
 {
   bool
     status;
@@ -2442,8 +2442,7 @@ bool Magick::Image::compare(const Image &reference_)
     ref=reference_;
 
   GetPPException;
-  modifyImage();
-  status=static_cast<bool>(IsImagesEqual(image(),ref.constImage(),
+  status=static_cast<bool>(IsImagesEqual(constImage(),ref.constImage(),
     exceptionInfo));
   ThrowImageException;
   return(status);
@@ -4302,6 +4301,22 @@ void Magick::Image::sepiaTone(const double threshold_)
   newImage=SepiaToneImage(constImage(),threshold_,exceptionInfo);
   replaceImage(newImage);
   ThrowImageException;
+}
+
+bool Magick::Image::setColorMetric(const Image &reference_)
+{
+  bool
+    status;
+
+  Image
+    ref=reference_;
+
+  GetPPException;
+  modifyImage();
+  status=static_cast<bool>(SetImageColorMetric(image(),ref.constImage(),
+    exceptionInfo));
+  ThrowImageException;
+  return(status);
 }
 
 Magick::Quantum *Magick::Image::setPixels(const ssize_t x_,const ssize_t y_,
