@@ -2132,13 +2132,14 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           }
           case OverlayCompositeOp:
           {
-            if ((2.0*Dca) <= Da)
+            if ((2.0*Dca) < Da)
               {
-                pixel=QuantumRange*(2.0*Sca*Dca+Sca*(1.0-Da)+Dca*(1.0-Sa));
+                pixel=QuantumRange*gamma*(2.0*Dca*Sca+Dca*(1.0-Sa)+Sca*(1.0-
+                  Da));
                 break;
               }
-            pixel=QuantumRange*(Sa*Da-2.0*(Da-Dca)*(Sa-Sca)+Sca*(1.0-Da)+Dca*
-              (1.0-Sa));
+            pixel=QuantumRange*gamma*(Da*Sa-2.0*(Sa-Sca)*(Da-Dca)+Dca*(1.0-Sa)+
+              Sca*(1.0-Da));
             break;
           }
           case PegtopLightCompositeOp:
