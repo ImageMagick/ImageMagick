@@ -19,12 +19,12 @@
   <meta name="author" content="ImageMagick Studio LLC"/>
   <meta name="revisit-after" content="2 DAYS"/>
   <meta name="resource-type" content="document"/>
-  <meta name="copyright" content="Copyright (c) 1999-2016 ImageMagick Studio LLC"/>
+  <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC"/>
   <meta name="distribution" content="Global"/>
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
   <link rel="icon" href="../images/wand.png"/>
   <link rel="shortcut icon" href="../images/wand.ico"/>
-  <link rel="stylesheet" href="../css/magick.html"/>
+  <link rel="stylesheet" href="css/magick.css"/>
 </head>
 <body>
 <div class="main">
@@ -132,7 +132,7 @@ unzip ImageMagick-windows.zip
 
 <p>The <var>clean</var> step is necessary in order to make sure that all of the target support libraries are updated with any patches needed to get them to compile properly under Visual Studio.</p>
 
-<p>After a successful build, all of the required files that are needed to run any of the <a href="command-line-tools.html">command-line tools</a> are located in the <code>VisualMagick\bin</code> folder.  This includes EXE, DLL libraries, and ImageMagick configuration files.  You should be able to test the build directly from this directory without having to move anything to any of the global SYSTEM or SYSTEM32 areas in the operating system installation.</p>
+<p>After a successful build, all of the required files that are needed to run any of the <a href="command-line-tools.html">command line tools</a> are located in the <code>VisualMagick\bin</code> folder.  This includes EXE, DLL libraries, and ImageMagick configuration files.  You should be able to test the build directly from this directory without having to move anything to any of the global SYSTEM or SYSTEM32 areas in the operating system installation.</p>
 
 <p>The Visual Studio distribution of ImageMagick comes with the Magick++ C++ wrapper by default. This add-on layer has a large number of demo and test files that can be found in <code>ImageMagick\Magick++\demo</code>, and <code>ImageMagick\Magick++\tests</code>. There are also a variety of tests that use the straight C API as well in ImageMagick\tests.</p>
 
@@ -167,7 +167,7 @@ VisualMagick\Magick++\demo\UTIL_demo_xxx_exe.dsp (for C++)
 
 <p>The choice of what to use as a starting point is very easy.</p>
 
-<p>For straight C API command-line applications use something from:</p>
+<p>For straight C API command line applications use something from:</p>
 
 <pre>
 ImageMagick\tests or
@@ -176,7 +176,7 @@ ImageMagick\VisualMagick\tests or
 ImageMagick\Visualmagick\utilities (project - DSP)
 </pre>
 
-<p>For C++ and Magick++ command-line applications use something from:</p>
+<p>For C++ and Magick++ command line applications use something from:</p>
 
 <pre>
 ImageMagick\Magick++\tests or ImageMagick\Magick++\demo (source code) or
@@ -208,7 +208,7 @@ ImageMagick\VisualMagick\contrib\win32\MFC\NtMagick (project - DSP)
 
 <p>The <code>bin</code> folder should contains all EXE's and DLL's as well as the very important <code>modules.xml</code> file.</p>
 
-<p>With this default setup, you can use any of the command-line tools and run scripts as normal. You can actually get by quite nicely this way by doing something like <code>pushd e:\xxx\yyy\bin</code> in any scripts you write to execute <var>out of</var> this directory.</p>
+<p>With this default setup, you can use any of the command line tools and run scripts as normal. You can actually get by quite nicely this way by doing something like <code>pushd e:\xxx\yyy\bin</code> in any scripts you write to execute <var>out of</var> this directory.</p>
 
 <p>By default the core of ImageMagick on Win32 always looks in the place were the exe program is run from in order to find all of the files as well as the DLL's it needs.</p>
 
@@ -261,9 +261,9 @@ convert image.ext win:
 
 <h2 class="magick-header"><a id="Install"></a>Install</h2>
 
-<p>You can run ImageMagick command-line utilities directly from the <code>VisualMagick\bin</code> folder, however, in most cases you may want the convenience of an installer script.  ImageMagick provides <a href="http://www.jrsoftware.org">Inno Setup</a> scripts for this purpose.  Note, you must define MAGICKCORE_INSTALLED_SUPPORT at <a href="advanced-windows-installation.html#configure">configure</a> time to utilize the installer scripts.</p>
+<p>You can run ImageMagick command line utilities directly from the <code>VisualMagick\bin</code> folder, however, in most cases you may want the convenience of an installer script.  ImageMagick provides <a href="http://www.jrsoftware.org">Inno Setup</a> scripts for this purpose.  Note, you must define MAGICKCORE_INSTALLED_SUPPORT at <a href="advanced-windows-installation.html#configure">configure</a> time to utilize the installer scripts.</p>
 
-<p>To get started building a self-installing ImageMagick executable, go to <code>VisualMagick\installer</code> folder and click on a script that matches your build environment.  Press F9 to build and install ImageMagick.  The default location is <code>C:Program Files\ImageMagick-6.?.?\Q?</code>.  The exact folder name depends on the ImageMagick version and quantum depth.  Once installed, ImageMagick command-line utilities and libraries are available to the MS Command Prompt, web scripts, or to meet your development needs.</p>
+<p>To get started building a self-installing ImageMagick executable, go to <code>VisualMagick\installer</code> folder and click on a script that matches your build environment.  Press F9 to build and install ImageMagick.  The default location is <code>C:Program Files\ImageMagick-6.?.?\Q?</code>.  The exact folder name depends on the ImageMagick version and quantum depth.  Once installed, ImageMagick command line utilities and libraries are available to the MS Command Prompt, web scripts, or to meet your development needs.</p>
 
 
 <h2 class="magick-header"><a id="binary"></a>Create a Self-Installing Binary Distribution</h2>
@@ -386,7 +386,7 @@ _MAGICKMOD_
     <p><a href="advanced-windows-installation.html#">Back to top</a> •
     <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
     <a href="http://nextgen.imagemagick.org/script/contact.php">Contact Us</a></p>
-        <p><small>©  1999-2016 ImageMagick Studio LLC</small></p>
+        <p><small>©  1999-2015 ImageMagick Studio LLC</small></p>
   </footer>
 </div><!-- /.container -->
 
