@@ -1006,6 +1006,118 @@ static char *EscapeParenthesis(const char *text)
   return(buffer);
 }
 
+static size_t UTF8ToUTF16(const unsigned char *utf8,wchar_t *utf16)
+{
+  register const unsigned char
+    *p;
+
+  if (utf16 != (wchar_t *) NULL)
+    {
+      register wchar_t
+        *q;
+
+      wchar_t
+        c;
+
+      /*
+        Convert UTF-8 to UTF-16.
+      */
+      q=utf16;
+      for (p=utf8; *p != '\0'; p++)
+      {
+        if ((*p & 0x80) == 0)
+          *q=(*p);
+        else
+          if ((*p & 0xE0) == 0xC0)
+            {
+              c=(*p);
+              *q=(c & 0x1F) << 6;
+              p++;
+              if ((*p & 0xC0) != 0x80)
+                return(0);
+              *q|=(*p & 0x3F);
+            }
+          else
+            if ((*p & 0xF0) == 0xE0)
+              {
+                c=(*p);
+                *q=c << 12;
+                p++;
+                if ((*p & 0xC0) != 0x80)
+                  return(0);
+                c=(*p);
+                *q|=(c & 0x3F) << 6;
+                p++;
+                if ((*p & 0xC0) != 0x80)
+                  return(0);
+                *q|=(*p & 0x3F);
+              }
+            else
+              return(0);
+        q++;
+      }
+      *q++='\0';
+      return(q-utf16);
+    }
+  /*
+    Compute UTF-16 string length.
+  */
+  for (p=utf8; *p != '\0'; p++)
+  {
+    if ((*p & 0x80) == 0)
+      ;
+    else
+      if ((*p & 0xE0) == 0xC0)
+        {
+          p++;
+          if ((*p & 0xC0) != 0x80)
+            return(0);
+        }
+      else
+        if ((*p & 0xF0) == 0xE0)
+          {
+            p++;
+            if ((*p & 0xC0) != 0x80)
+              return(0);
+            p++;
+            if ((*p & 0xC0) != 0x80)
+              return(0);
+         }
+       else
+         return(0);
+  }
+  return(p-utf8);
+}
+
+static wchar_t *ConvertUTF8ToUTF16(const unsigned char *source,size_t *length)
+{
+  wchar_t
+    *utf16;
+
+  *length=UTF8ToUTF16(source,(wchar_t *) NULL);
+  if (*length == 0)
+    {
+      register ssize_t
+        i;
+
+      /*
+        Not UTF-8, just copy.
+      */
+      *length=strlen((const char *) source);
+      utf16=(wchar_t *) AcquireQuantumMemory(*length+1,sizeof(*utf16));
+      if (utf16 == (wchar_t *) NULL)
+        return((wchar_t *) NULL);
+      for (i=0; i <= (ssize_t) *length; i++)
+        utf16[i]=source[i];
+      return(utf16);
+    }
+  utf16=(wchar_t *) AcquireQuantumMemory(*length+1,sizeof(*utf16));
+  if (utf16 == (wchar_t *) NULL)
+    return((wchar_t *) NULL);
+  *length=UTF8ToUTF16(source,utf16);
+  return(utf16);
+}
+
 static MagickBooleanType Huffman2DEncodeImage(const ImageInfo *image_info,
   Image *image,Image *inject_image)
 {
@@ -1173,6 +1285,9 @@ RestoreMSCWarning
 
   unsigned char
     *pixels;
+
+  wchar_t
+    *utf16;
 
   /*
     Open output image file.
@@ -2675,8 +2790,12 @@ RestoreMSCWarning
     object);
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,"<<\n");
-  (void) FormatLocaleString(buffer,MaxTextExtent,"/Title (%s)\n",
-    EscapeParenthesis(basename));
+  utf16=ConvertUTF8ToUTF16((unsigned char *) basename,&length);
+  (void) FormatLocaleString(buffer,MaxTextExtent,"/Title (\xfe\xff");
+  (void) WriteBlobString(image,buffer);
+  for (i=0; i < length; i++)
+    WriteBlobMSBShort(image,(unsigned short) utf16[i]);
+  (void) FormatLocaleString(buffer,MaxTextExtent,")\n");
   (void) WriteBlobString(image,buffer);
   seconds=time((time_t *) NULL);
 #if defined(MAGICKCORE_HAVE_LOCALTIME_R)
