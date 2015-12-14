@@ -2791,12 +2791,16 @@ RestoreMSCWarning
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,"<<\n");
   utf16=ConvertUTF8ToUTF16((unsigned char *) basename,&length);
-  (void) FormatLocaleString(buffer,MaxTextExtent,"/Title (\xfe\xff");
-  (void) WriteBlobString(image,buffer);
-  for (i=0; i < length; i++)
-    WriteBlobMSBShort(image,(unsigned short) utf16[i]);
-  (void) FormatLocaleString(buffer,MaxTextExtent,")\n");
-  (void) WriteBlobString(image,buffer);
+  if (utf16 != (wchar_t *) NULL)
+    {
+      (void) FormatLocaleString(buffer,MaxTextExtent,"/Title (\xfe\xff");
+      (void) WriteBlobString(image,buffer);
+      for (i=0; i < length; i++)
+        WriteBlobMSBShort(image,(unsigned short) utf16[i]);
+      (void) FormatLocaleString(buffer,MaxTextExtent,")\n");
+      (void) WriteBlobString(image,buffer);
+      utf16=(wchar_t *) RelinquishMagickMemory(utf16);
+    }
   seconds=time((time_t *) NULL);
 #if defined(MAGICKCORE_HAVE_LOCALTIME_R)
   (void) localtime_r(&seconds,&local_time);
