@@ -56,6 +56,7 @@
 #include "MagickCore/list.h"
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/memory-private.h"
 #include "MagickCore/monitor.h"
 #include "MagickCore/option.h"
 #include "MagickCore/pixel.h"
@@ -171,7 +172,8 @@ MagickExport PixelInfo *ClonePixelInfo(const PixelInfo *pixel)
   PixelInfo
     *pixel_info;
 
-  pixel_info=(PixelInfo *) AcquireQuantumMemory(1,sizeof(*pixel_info));
+  pixel_info=(PixelInfo *) MagickAssumeAligned(AcquireAlignedMemory(1,
+    sizeof(*pixel_info)));
   if (pixel_info == (PixelInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   *pixel_info=(*pixel);
