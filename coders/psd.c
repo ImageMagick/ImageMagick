@@ -1674,8 +1674,10 @@ ModuleExport MagickBooleanType ReadPSDLayers(Image *image,
             image->next=layer_info[0].image;
             layer_info[0].image->previous=image;
           }
+        layer_info=(LayerInfo *) RelinquishMagickMemory(layer_info);
       }
-      layer_info=(LayerInfo *) RelinquishMagickMemory(layer_info);
+      else
+        layer_info=DestroyLayerInfo(layer_info,number_layers);
     }
 
   return(status);
