@@ -5,6 +5,8 @@
 2015-12-05  6.9.2-9 Cristy  <quetzlzacatenango@image...>
   * Enhance PDF to properly handle unicode titles (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=28786).
+  * Fix memory leak in icon coder (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=6&t=28848).
 
 2015-12-05  6.9.2-8 Cristy  <quetzlzacatenango@image...>
   * New version 6.9.2-8, GIT revision 10374:ac7d144:20151205.
