@@ -1813,7 +1813,8 @@ MagickExport Image *LocalContrastImage(const Image *image,const double radius,
         /* mirror into padding */
         if (x <= width && x != 0)
           *(out-(x*2))=*out;
-        if ((x > image->columns-width-2) && (x != (ssize_t) image->columns-1))
+        if ((x > (ssize_t) image->columns-width-2) &&
+            (x != (ssize_t) image->columns-1))
           *(out+((image->columns-x-1)*2))=*out;
 
         out+=image->columns+(width*2);

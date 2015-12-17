@@ -676,7 +676,7 @@ MagickPrivate char *FileToXML(const char *filename,const size_t extent)
       xml[length]='\0';
       return(xml);
     }
-  length=(size_t) MagickMin(offset,extent);
+  length=(size_t) MagickMin(offset,(MagickOffsetType) extent);
   xml=(char *) NULL;
   if (~length >= (MagickPathExtent-1))
     xml=(char *) AcquireQuantumMemory(length+MagickPathExtent,sizeof(*xml));
