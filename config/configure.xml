@@ -34,10 +34,10 @@
   <configure name="PCFLAGS" value="-fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16"/>
   <configure name="PREFIX" value="/usr/local"/>
   <configure name="QuantumDepth" value="16"/>
-  <configure name="RELEASE_DATE" value="2015-12-14"/>
+  <configure name="RELEASE_DATE" value="2015-12-17"/>
   <configure name="SHAREARCH_PATH" value="/usr/local/lib/ImageMagick-6.9.2/config-Q16"/>
   <configure name="SHARE_PATH" value="/usr/local/share/ImageMagick-6"/>
-  <configure name="GIT_REVISION" value="10381:798c255:20151214" />
+  <configure name="GIT_REVISION" value="10385:2110dd4:20151217" />
   <configure name="TARGET_CPU" value="x86_64"/>
   <configure name="TARGET_OS" value="linux-gnu"/>
   <configure name="TARGET_VENDOR" value="unknown"/>
