@@ -4426,7 +4426,7 @@ static MagickBooleanType ReadPixelCachePixels(
   if (nexus_info->authentic_pixel_cache != MagickFalse)
     return(MagickTrue);
   offset=(MagickOffsetType) nexus_info->region.y*cache_info->columns;
-  if ((offset/cache_info->columns) != (MagickOffsetType) nexus_info->region.y)
+  if ((ssize_t) (offset/cache_info->columns) != nexus_info->region.y)
     return(MagickFalse);
   offset+=nexus_info->region.x;
   length=(MagickSizeType) nexus_info->region.width*sizeof(PixelPacket);

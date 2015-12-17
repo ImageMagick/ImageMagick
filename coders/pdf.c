@@ -2795,7 +2795,7 @@ RestoreMSCWarning
     {
       (void) FormatLocaleString(buffer,MaxTextExtent,"/Title (\xfe\xff");
       (void) WriteBlobString(image,buffer);
-      for (i=0; i < length; i++)
+      for (i=0; i < (ssize_t) length; i++)
         WriteBlobMSBShort(image,(unsigned short) utf16[i]);
       (void) FormatLocaleString(buffer,MaxTextExtent,")\n");
       (void) WriteBlobString(image,buffer);
