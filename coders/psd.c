@@ -1946,6 +1946,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           MagickTrue)
         {
           (void) CloseBlob(image);
+          image=DestroyImageList(image);
           return((Image *) NULL);
         }
       /*
@@ -1978,6 +1979,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (status != MagickTrue)
         {
           (void) CloseBlob(image);
+          image=DestroyImageList(image);
           return((Image *) NULL);
         }
     }
