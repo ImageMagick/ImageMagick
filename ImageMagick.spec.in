@@ -268,8 +268,6 @@ rm -rf %{buildroot}
 %{_libdir}/libMagick++-7.Q16HDRI.so
 %{_libdir}/pkgconfig/Magick++.pc
 %{_libdir}/pkgconfig/Magick++-7.Q16HDRI.pc
-%{_libdir}/pkgconfig/ImageMagick++.pc
-%{_libdir}/pkgconfig/ImageMagick++-7.Q16HDRI.pc
 %{_mandir}/man1/Magick++-config.*
 
 %files perl -f perl-pkg-files
