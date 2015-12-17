@@ -3680,4 +3680,8 @@ STRINGIFY(
 
 #endif // MAGICKCORE_OPENCL_SUPPORT
 
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
+
 #endif // _MAGICKCORE_ACCELERATE_PRIVATE_H
