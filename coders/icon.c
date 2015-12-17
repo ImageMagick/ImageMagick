@@ -988,7 +988,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
 
         png=(unsigned char *) ImageToBlob(write_info,write_image,&length,
           exception);
-        write_image=DestroyImage(write_image);
+        write_image=DestroyImageList(write_image);
         write_info=DestroyImageInfo(write_info);
         if (png == (unsigned char *) NULL)
           {

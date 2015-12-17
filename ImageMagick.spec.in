@@ -218,28 +218,26 @@ rm -rf %{buildroot}
 %files libs
 %defattr(-,root,root,-)
 %doc LICENSE NOTICE AUTHORS.txt QuickStart.txt
-%{_libdir}/libMagickCore-7.Q16.so.*
-%{_libdir}/libMagickWand-7.Q16.so.*
+%{_libdir}/libMagickCore-7.Q16HDRI.so.*
+%{_libdir}/libMagickWand-7.Q16HDRI.so.*
 %{_libdir}/%{name}-%{VERSION}
 %{_datadir}/%{name}-7
-%exclude %{_libdir}/%{name}-%{VERSION}/modules-Q16/coders/djvu.*
+%exclude %{_libdir}/%{name}-%{VERSION}/modules-Q16HDRI/coders/djvu.*
 %{_sysconfdir}/%{name}-7
 
 %files devel
 %defattr(-,root,root,-)
 %{_bindir}/MagickCore-config
-%{_bindir}/Magick-config
 %{_bindir}/MagickWand-config
-%{_bindir}/Wand-config
-%{_libdir}/libMagickCore-7.Q16.so
-%{_libdir}/libMagickWand-7.Q16.so
+%{_libdir}/libMagickCore-7.Q16HDRI.so
+%{_libdir}/libMagickWand-7.Q16HDRI.so
 %{_libdir}/pkgconfig/MagickCore.pc
-%{_libdir}/pkgconfig/MagickCore-7.Q16.pc
+%{_libdir}/pkgconfig/MagickCore-7.Q16HDRI.pc
 %{_libdir}/pkgconfig/ImageMagick.pc
-%{_libdir}/pkgconfig/ImageMagick-7.Q16.pc
+%{_libdir}/pkgconfig/ImageMagick-7.Q16HDRI.pc
 %{_libdir}/pkgconfig/MagickWand.pc
-%{_libdir}/pkgconfig/MagickWand-7.Q16.pc
-%dir %{_includedir}/%{name}-6
+%{_libdir}/pkgconfig/MagickWand-7.Q16HDRI.pc
+%dir %{_includedir}/%{name}-7
 %{_includedir}/%{name}-7/MagickCore
 %{_includedir}/%{name}-7/MagickWand
 %{_mandir}/man1/MagickCore-config.*
@@ -247,7 +245,7 @@ rm -rf %{buildroot}
 
 %files djvu
 %defattr(-,root,root,-)
-%{_libdir}/%{name}-%{VERSION}/modules-Q16/coders/djvu.*
+%{_libdir}/%{name}-%{VERSION}/modules-Q16HDRI/coders/djvu.*
 
 %files doc
 %defattr(-,root,root,-)
@@ -259,7 +257,7 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %doc Magick++/AUTHORS Magick++/ChangeLog Magick++/NEWS Magick++/README
 %doc www/Magick++/COPYING
-%{_libdir}/libMagick++-7.Q16.so.*
+%{_libdir}/libMagick++-7.Q16HDRI.so.*
 
 %files c++-devel
 %defattr(-,root,root,-)
@@ -267,11 +265,11 @@ rm -rf %{buildroot}
 %{_bindir}/Magick++-config
 %{_includedir}/%{name}-7/Magick++
 %{_includedir}/%{name}-7/Magick++.h
-%{_libdir}/libMagick++-7.Q16.so
+%{_libdir}/libMagick++-7.Q16HDRI.so
 %{_libdir}/pkgconfig/Magick++.pc
-%{_libdir}/pkgconfig/Magick++-7.Q16.pc
+%{_libdir}/pkgconfig/Magick++-7.Q16HDRI.pc
 %{_libdir}/pkgconfig/ImageMagick++.pc
-%{_libdir}/pkgconfig/ImageMagick++-7.Q16.pc
+%{_libdir}/pkgconfig/ImageMagick++-7.Q16HDRI.pc
 %{_mandir}/man1/Magick++-config.*
 
 %files perl -f perl-pkg-files
