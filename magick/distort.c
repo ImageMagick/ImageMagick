@@ -1696,17 +1696,17 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
   /*
     Handle Special Compound Distortions
   */
-  if ( method == ResizeDistortion )
+  if (method == ResizeDistortion)
     {
-      if ( number_arguments != 2 )
+      if (number_arguments != 2)
         {
           (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-                    "InvalidArgument","%s : '%s'","Resize",
-                    "Invalid number of args: 2 only");
+            "InvalidArgument","%s : '%s'","Resize",
+            "Invalid number of args: 2 only");
           return((Image *) NULL);
         }
-      distort_image=DistortResizeImage(image,(size_t)arguments[0],
-         (size_t)arguments[1], exception);
+      distort_image=DistortResizeImage(image,(size_t) arguments[0],
+        (size_t) arguments[1],exception);
       return(distort_image);
     }
 
@@ -1717,9 +1717,9 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
     Note that some distortions are mapped to other distortions,
     and as such do not require specific code after this point.
   */
-  coeff = GenerateCoefficients(image, &method, number_arguments,
-      arguments, 0, exception);
-  if ( coeff == (double *) NULL )
+  coeff=GenerateCoefficients(image,&method,number_arguments,arguments,0,
+    exception);
+  if (coeff == (double *) NULL)
     return((Image *) NULL);
 
   /*

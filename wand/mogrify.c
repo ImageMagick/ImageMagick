@@ -1382,19 +1382,20 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             (void) SyncImageSettings(mogrify_info,*image);
             method=(DistortImageMethod) ParseCommandOption(MagickDistortOptions,
               MagickFalse,argv[i+1]);
-            if ( method == ResizeDistortion )
+            if (method == ResizeDistortion)
               {
-                 /* Special Case - Argument is actually a resize geometry!
-                 ** Convert that to an appropriate distortion argument array.
+                double
+                  resize_args[2];
+
+                 /*
+                   Resize distortion.
                  */
-                 double
-                   resize_args[2];
                  (void) ParseRegionGeometry(*image,argv[i+2],&geometry,
-                      exception);
-                 resize_args[0]=(double)geometry.width;
-                 resize_args[1]=(double)geometry.height;
-                 mogrify_image=DistortImage(*image,method,(size_t)2,
-                      resize_args,MagickTrue,exception);
+                   exception);
+                 resize_args[0]=(double) geometry.width;
+                 resize_args[1]=(double) geometry.height;
+                 mogrify_image=DistortImage(*image,method,(size_t) 2,
+                   resize_args,MagickTrue,exception);
                  break;
               }
             args=InterpretImageProperties(mogrify_info,*image,argv[i+2]);
