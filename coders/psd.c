@@ -1160,8 +1160,9 @@ static MagickBooleanType ReadPSDChannel(Image *image,const PSDInfo *psd_info,
   switch(compression)
   {
     case Raw:
-      return(ReadPSDChannelRaw(channel_image,psd_info->channels,
-        layer_info->channel_info[channel].type,exception));
+      status=ReadPSDChannelRaw(channel_image,psd_info->channels,
+        layer_info->channel_info[channel].type,exception);
+      break;
     case RLE:
       {
         MagickOffsetType
