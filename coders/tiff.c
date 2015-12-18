@@ -551,7 +551,7 @@ static void TIFFErrors(const char *module,const char *format,va_list error)
   (void) vsprintf(message,format,error);
 #endif
   (void) ConcatenateMagickString(message,".",MagickPathExtent);
-  exception=(ExceptionInfo *) MagickGetThreadValue(tiff_exception);
+  exception=(ExceptionInfo *) GetMagickThreadValue(tiff_exception);
   if (exception != (ExceptionInfo *) NULL)
     (void) ThrowMagickException(exception,GetMagickModule(),CoderError,message,
       "`%s'",module);
@@ -891,7 +891,7 @@ static void TIFFWarnings(const char *module,const char *format,va_list warning)
   (void) vsprintf(message,format,warning);
 #endif
   (void) ConcatenateMagickString(message,".",MagickPathExtent);
-  exception=(ExceptionInfo *) MagickGetThreadValue(tiff_exception);
+  exception=(ExceptionInfo *) GetMagickThreadValue(tiff_exception);
   if (exception != (ExceptionInfo *) NULL)
     (void) ThrowMagickException(exception,GetMagickModule(),CoderWarning,
       message,"`%s'",module);
@@ -1151,7 +1151,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
-  (void) MagickSetThreadValue(tiff_exception,exception);
+  (void) SetMagickThreadValue(tiff_exception,exception);
   error_handler=TIFFSetErrorHandler(TIFFErrors);
   warning_handler=TIFFSetWarningHandler(TIFFWarnings);
   tiff=TIFFClientOpen(image->filename,"rb",(thandle_t) image,TIFFReadBlob,
@@ -2252,7 +2252,7 @@ ModuleExport size_t RegisterTIFFImage(void)
   LockSemaphoreInfo(tiff_semaphore);
   if (instantiate_key == MagickFalse)
     {
-      if (MagickCreateThreadKey(&tiff_exception) == MagickFalse)
+      if (CreateMagickThreadKey(&tiff_exception,NULL) == MagickFalse)
         ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
 #if defined(MAGICKCORE_HAVE_TIFFMERGEFIELDINFO) && defined(MAGICKCORE_HAVE_TIFFSETTAGEXTENDER)
       if (tag_extender == (TIFFExtendProc) NULL)
@@ -2379,7 +2379,7 @@ ModuleExport void UnregisterTIFFImage(void)
       if (tag_extender == (TIFFExtendProc) NULL)
         (void) TIFFSetTagExtender(tag_extender);
 #endif
-      if (MagickDeleteThreadKey(tiff_exception) == MagickFalse)
+      if (DeleteMagickThreadKey(tiff_exception) == MagickFalse)
         ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
       instantiate_key=MagickFalse;
     }
@@ -3148,7 +3148,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
-  (void) MagickSetThreadValue(tiff_exception,exception);
+  (void) SetMagickThreadValue(tiff_exception,exception);
   error_handler=TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrors);
   warning_handler=TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);
   endian_type=UndefinedEndian;
