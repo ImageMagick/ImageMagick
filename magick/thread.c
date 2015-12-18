@@ -61,18 +61,18 @@ typedef struct _MagickThreadValue
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   A c q u i r e M a g i c k T h r e a d K e y                               %
+%   C r e a t e M a g i c k T h r e a d K e y                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  AcquireMagickThreadKey() creates a thread-specific data key visible to all
+%  CreateMagickThreadKey() creates a thread-specific data key visible to all
 %  threads in the process.
 %
-%  The format of the AcquireMagickThreadKey method is:
+%  The format of the CreateMagickThreadKey method is:
 %
-%      MagickThreadKey AcquireMagickThreadKey(MagickThreadKey *key)
+%      MagickThreadKey CreateMagickThreadKey(MagickThreadKey *key)
 %
 %  A description of each parameter follows:
 %
@@ -81,7 +81,7 @@ typedef struct _MagickThreadValue
 %    o destructor: associate an optional destructor with each key value.
 %
 */
-MagickExport MagickBooleanType AcquireMagickThreadKey(MagickThreadKey *key,
+MagickExport MagickBooleanType CreateMagickThreadKey(MagickThreadKey *key,
   void (*destructor)(void *))
 {
 #if defined(MAGICKCORE_THREAD_SUPPORT)
@@ -118,24 +118,24 @@ MagickExport MagickBooleanType AcquireMagickThreadKey(MagickThreadKey *key,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D e s t r o y  M a g i c k T h r e a d K e y                              %
+%   D e s t r o y M a g i c k T h r e a d K e y                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DestroyMagickThreadKey() destroy a thread key.
+%  DeleteMagickThreadKey() deletes a thread-specific data key.
 %
-%  The format of the DestroyMagickThreadKey method is:
+%  The format of the DeleteMagickThreadKey method is:
 %
-%      MagickBooleanType DestroyMagickThreadKey(MagickThreadKey key)
+%      MagickBooleanType DeleteMagickThreadKey(MagickThreadKey key)
 %
 %  A description of each parameter follows:
 %
 %    o key: the thread key.
 %
 */
-MagickExport MagickBooleanType DestroyMagickThreadKey(MagickThreadKey key)
+MagickExport MagickBooleanType DeleteMagickThreadKey(MagickThreadKey key)
 {
 #if defined(MAGICKCORE_THREAD_SUPPORT)
   return(pthread_key_delete(key) == 0 ? MagickTrue : MagickFalse);
@@ -173,18 +173,19 @@ MagickExport MagickBooleanType DestroyMagickThreadKey(MagickThreadKey key)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetMagickThreadKey() returns a value associated with the thread key.
+%  GetMagickThreadValue() returns the value currently bound to the specified
+%  key on behalf of the calling thread.
 %
-%  The format of the GetMagickThreadKey method is:
+%  The format of the GetMagickThreadValue method is:
 %
-%      void *GetMagickThreadKey(MagickThreadKey key)
+%      void *GetMagickThreadValue(MagickThreadKey key)
 %
 %  A description of each parameter follows:
 %
 %    o key: the thread key.
 %
 */
-MagickExport void *GetMagickThreadKey(MagickThreadKey key)
+MagickExport void *GetMagickThreadValue(MagickThreadKey key)
 {
 #if defined(MAGICKCORE_THREAD_SUPPORT)
   return(pthread_getspecific(key));
@@ -212,11 +213,12 @@ MagickExport void *GetMagickThreadKey(MagickThreadKey key)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SetMagickThreadKey() associates a value with the thread key.
+%  SetMagickThreadValue() binds a value to the specified key on behalf of the
+%  calling thread.
 %
-%  The format of the SetMagickThreadKey method is:
+%  The format of the SetMagickThreadValue method is:
 %
-%      MagickBooleanType SetMagickThreadKey(MagickThreadKey key,
+%      MagickBooleanType SetMagickThreadValue(MagickThreadKey key,
 %        const void *value)
 %
 %  A description of each parameter follows:
@@ -226,7 +228,7 @@ MagickExport void *GetMagickThreadKey(MagickThreadKey key)
 %    o value: the value.
 %
 */
-MagickExport MagickBooleanType SetMagickThreadKey(MagickThreadKey key,
+MagickExport MagickBooleanType SetMagickThreadValue(MagickThreadKey key,
   const void *value)
 {
 #if defined(MAGICKCORE_THREAD_SUPPORT)

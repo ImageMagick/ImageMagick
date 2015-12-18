@@ -39,12 +39,12 @@ typedef void *MagickThreadKey;
 #endif
 
 extern MagickExport MagickBooleanType
-  AcquireMagickThreadKey(MagickThreadKey *,void (*destructor)(void *)),
-  DestroyMagickThreadKey(MagickThreadKey),
-  SetMagickThreadKey(MagickThreadKey,const void *);
+  CreateMagickThreadKey(MagickThreadKey *,void (*destructor)(void *)),
+  DeleteMagickThreadKey(MagickThreadKey),
+  SetMagickThreadValue(MagickThreadKey,const void *);
 
 extern MagickExport void
-  *GetMagickThreadKey(MagickThreadKey);
+  *GetMagickThreadValue(MagickThreadKey);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
