@@ -22,8 +22,6 @@
 extern "C" {
 #endif
 
-#undef MAGICKCORE_THREAD_SUPPORT
-
 #if defined(MAGICKCORE_THREAD_SUPPORT)
 typedef pthread_t MagickThreadType;
 #elif defined(MAGICKCORE_HAVE_WINTHREADS)
