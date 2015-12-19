@@ -154,6 +154,7 @@ extern "C" {
 #include "MagickCore/timer.h"
 #include "MagickCore/token.h"
 #include "MagickCore/transform.h"
+#include "MagickCore/thread_.h"
 #include "MagickCore/threshold.h"
 #include "MagickCore/type.h"
 #include "MagickCore/utility.h"
