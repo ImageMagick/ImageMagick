@@ -24,7 +24,7 @@ extern "C" {
 
 #if defined(MAGICKCORE_THREAD_SUPPORT)
 typedef pthread_t MagickThreadType;
-#elif defined(MAGICKCORE_HAVE_WINTHREADS)
+#elif defined(MAGICKCORE_WINDOWS_SUPPORT)
 typedef DWORD MagickThreadType;
 #else
 typedef pid_t MagickThreadType;
