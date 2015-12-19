@@ -566,6 +566,41 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
           object[i].color.opacity);
       }
     }
+  artifact=GetImageArtifact(image,"connected-components:remove");
+  if (artifact != (const char *) NULL)
+    {
+      char
+        *p;
+
+      long
+        first,
+        last,
+        step;
+
+      /*
+        Remove these objects (make them transparent).
+      */
+      for (p=(char *) artifact; *p != '\0';)
+      {
+        while ((isspace((int) ((unsigned char) *p)) != 0) || (*p == ','))
+          p++;
+        first=strtol(p,&p,10);
+        if (first < 0)
+          first+=(long) component_image->colors;
+        last=first;
+        while (isspace((int) ((unsigned char) *p)) != 0)
+          p++;
+        if (*p == '-')
+          {
+            last=strtol(p+1,&p,10);
+            if (last < 0)
+              last+=(long) component_image->colors;
+          }
+        component_image->matte=MagickTrue;
+        for (step=first > last ? -1 : 1; first != (last+step); first+=step)
+          component_image->colormap[first].opacity=TransparentOpacity;
+      }
+    }
   (void) SyncImage(component_image);
   artifact=GetImageArtifact(image,"connected-components:verbose");
   if (IsMagickTrue(artifact) != MagickFalse)
