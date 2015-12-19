@@ -200,6 +200,10 @@ static MagickThreadKey
 static SemaphoreInfo
   *tiff_semaphore = (SemaphoreInfo *) NULL;
 
+static TIFFErrorHandler
+  error_handler,
+  warning_handler;
+
 static volatile MagickBooleanType
   instantiate_key = MagickFalse;
 
@@ -1105,10 +1109,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   TIFF
     *tiff;
 
-  TIFFErrorHandler
-    error_handler,
-    warning_handler;
-
   TIFFMethodType
     method;
 
@@ -1155,15 +1155,11 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       return((Image *) NULL);
     }
   (void) SetMagickThreadValue(tiff_exception,exception);
-  error_handler=TIFFSetErrorHandler(TIFFErrors);
-  warning_handler=TIFFSetWarningHandler(TIFFWarnings);
   tiff=TIFFClientOpen(image->filename,"rb",(thandle_t) image,TIFFReadBlob,
     TIFFWriteBlob,TIFFSeekBlob,TIFFCloseBlob,TIFFGetBlobSize,TIFFMapBlob,
     TIFFUnmapBlob);
   if (tiff == (TIFF *) NULL)
     {
-      (void) TIFFSetWarningHandler(warning_handler);
-      (void) TIFFSetErrorHandler(error_handler);
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
@@ -2103,8 +2099,6 @@ RestoreMSCWarning
           break;
       }
   } while (status != MagickFalse);
-  (void) TIFFSetWarningHandler(warning_handler);
-  (void) TIFFSetErrorHandler(error_handler);
   TIFFClose(tiff);
   TIFFReadPhotoshopLayers(image,image_info,exception);
   if (image_info->number_scenes != 0)
@@ -2252,6 +2246,8 @@ ModuleExport size_t RegisterTIFFImage(void)
     {
       if (CreateMagickThreadKey(&tiff_exception,NULL) == MagickFalse)
         ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+      error_handler=TIFFSetErrorHandler(TIFFErrors);
+      warning_handler=TIFFSetWarningHandler(TIFFWarnings);
 #if defined(MAGICKCORE_HAVE_TIFFMERGEFIELDINFO) && defined(MAGICKCORE_HAVE_TIFFSETTAGEXTENDER)
       if (tag_extender == (TIFFExtendProc) NULL)
         tag_extender=TIFFSetTagExtender(TIFFTagExtender);
@@ -2384,6 +2380,8 @@ ModuleExport void UnregisterTIFFImage(void)
       if (tag_extender == (TIFFExtendProc) NULL)
         (void) TIFFSetTagExtender(tag_extender);
 #endif
+      (void) TIFFSetWarningHandler(warning_handler);
+      (void) TIFFSetErrorHandler(error_handler);
       instantiate_key=MagickFalse;
     }
   UnlockSemaphoreInfo(tiff_semaphore);
@@ -3110,10 +3108,6 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
   TIFF
     *tiff;
 
-  TIFFErrorHandler
-    error_handler,
-    warning_handler;
-
   TIFFInfo
     tiff_info;
 
@@ -3142,8 +3136,6 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
   if (status == MagickFalse)
     return(status);
   (void) SetMagickThreadValue(tiff_exception,&image->exception);
-  error_handler=TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrors);
-  warning_handler=TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);
   endian_type=UndefinedEndian;
   option=GetImageOption(image_info,"tiff:endian");
   if (option != (const char *) NULL)
@@ -3172,11 +3164,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
     TIFFWriteBlob,TIFFSeekBlob,TIFFCloseBlob,TIFFGetBlobSize,TIFFMapBlob,
     TIFFUnmapBlob);
   if (tiff == (TIFF *) NULL)
-    {
-      (void) TIFFSetWarningHandler(warning_handler);
-      (void) TIFFSetErrorHandler(error_handler);
-      return(MagickFalse);
-    }
+    return(MagickFalse);
   scene=0;
   debug=IsEventLogging();
   (void) debug;
@@ -3933,8 +3921,6 @@ RestoreMSCWarning
     if (status == MagickFalse)
       break;
   } while (image_info->adjoin != MagickFalse);
-  (void) TIFFSetWarningHandler(warning_handler);
-  (void) TIFFSetErrorHandler(error_handler);
   TIFFClose(tiff);
   return(MagickTrue);
 }
