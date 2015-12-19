@@ -596,9 +596,11 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
             if (last < 0)
               last+=(long) component_image->colors;
           }
-        component_image->matte=MagickTrue;
         for (step=first > last ? -1 : 1; first != (last+step); first+=step)
+        {
+          component_image->matte=MagickTrue;
           component_image->colormap[first].opacity=TransparentOpacity;
+        }
       }
     }
   (void) SyncImage(component_image);
