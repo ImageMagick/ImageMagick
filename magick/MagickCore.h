@@ -154,6 +154,7 @@ extern "C" {
 #include "magick/token.h"
 #include "magick/transform.h"
 #include "magick/threshold.h"
+#include "magick/thread_.h"
 #include "magick/type.h"
 #include "magick/utility.h"
 #include "magick/version.h"
