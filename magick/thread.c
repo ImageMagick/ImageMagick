@@ -118,7 +118,7 @@ MagickExport MagickBooleanType CreateMagickThreadKey(MagickThreadKey *key,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D e s t r o y M a g i c k T h r e a d K e y                               %
+%   D e l e t e M a g i c k T h r e a d K e y                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -151,7 +151,8 @@ MagickExport MagickBooleanType DeleteMagickThreadKey(MagickThreadKey key)
 
     keys=(MagickThreadValue *) key;
     for (i=0; i < (ssize_t) keys->number_threads; i++)
-      if (keys->values[i] != (void *) NULL)
+      if ((keys->destructor != (void *) NULL) &&
+          (keys->values[i] != (void *) NULL))
         {
           keys->destructor(keys->values[i]);
           keys->values[i]=(void *) NULL;
