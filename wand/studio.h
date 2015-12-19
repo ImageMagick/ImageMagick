@@ -128,8 +128,6 @@ extern "C" {
 #endif
 #if defined(MAGICKCORE_THREAD_SUPPORT)
 # include <pthread.h>
-#elif defined(MAGICKWAND_WINDOWS_SUPPORT)
-#include <windows.h>
 #endif
 #if defined(MAGICKCORE_HAVE_SYS_SYSLIMITS_H)
 # include <sys/syslimits.h>
