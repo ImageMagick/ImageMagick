@@ -29,7 +29,6 @@
 #include "magick/quantum.h"
 #include "magick/registry.h"
 #include "magick/semaphore.h"
-#include "magick/thread_.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -208,9 +207,6 @@ extern MagickExport MagickBooleanType
     const MagickPixelPacket *, const MagickBooleanType)
     magick_attribute((deprecated)),
   LoadMimeLists(const char *,ExceptionInfo *) magick_attribute((deprecated)),
-  MagickCreateThreadKey(MagickThreadKey *),
-  MagickDeleteThreadKey(MagickThreadKey),
-  MagickSetThreadValue(MagickThreadKey,const void *),
   MagickMonitor(const char *,const MagickOffsetType,const MagickSizeType,
     void *) magick_attribute((deprecated)),
   MapImage(Image *,const Image *,const MagickBooleanType)
@@ -352,7 +348,6 @@ extern MagickExport void
   HSLTransform(const double,const double,const double,Quantum *,Quantum *,
     Quantum *) magick_attribute((deprecated)),
   InitializeMagick(const char *) magick_attribute((deprecated)),
-  *MagickGetThreadValue(MagickThreadKey),
   MagickIncarnate(const char *) magick_attribute((deprecated)),
   ReacquireMemory(void **,const size_t) magick_attribute((deprecated)),
   RelinquishSemaphoreInfo(SemaphoreInfo *) magick_attribute((deprecated)),

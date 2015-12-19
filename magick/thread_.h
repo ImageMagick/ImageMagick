@@ -46,6 +46,15 @@ extern MagickExport MagickBooleanType
 extern MagickExport void
   *GetMagickThreadValue(MagickThreadKey);
 
+/* Deprecated */
+extern MagickExport MagickBooleanType
+  MagickCreateThreadKey(MagickThreadKey *),
+  MagickDeleteThreadKey(MagickThreadKey),
+  MagickSetThreadValue(MagickThreadKey,const void *);
+
+extern MagickExport void
+  *MagickGetThreadValue(MagickThreadKey);
+
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif

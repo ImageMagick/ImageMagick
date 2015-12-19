@@ -55,6 +55,59 @@ typedef struct _MagickThreadValue
     **values,
     (*destructor)(void *);
 } MagickThreadValue;
+
+/* Deprecated */
+MagickExport MagickBooleanType MagickCreateThreadKey(MagickThreadKey *key)
+{
+#if defined(MAGICKCORE_THREAD_SUPPORT)
+  return(pthread_key_create(key,NULL) == 0 ? MagickTrue : MagickFalse);
+#elif defined(MAGICKCORE_HAVE_WINTHREADS)
+  *key=TlsAlloc();
+  return(*key != TLS_OUT_OF_INDEXES ? MagickTrue : MagickFalse);
+#else
+  *key=AcquireMagickMemory(sizeof(key));
+  return(*key != (void *) NULL ? MagickTrue : MagickFalse);
+#endif
+}
+
+/* Deprecated */
+MagickExport MagickBooleanType MagickDeleteThreadKey(MagickThreadKey key)
+{
+#if defined(MAGICKCORE_THREAD_SUPPORT)
+  return(pthread_key_delete(key) == 0 ? MagickTrue : MagickFalse);
+#elif defined(MAGICKCORE_HAVE_WINTHREADS)
+  return(TlsFree(key) != 0 ? MagickTrue : MagickFalse);
+#else
+  key=(MagickThreadKey) RelinquishMagickMemory(key);
+  return(MagickTrue);
+#endif
+}
+
+/* Deprecated */
+MagickExport void *MagickGetThreadValue(MagickThreadKey key)
+{
+#if defined(MAGICKCORE_THREAD_SUPPORT)
+  return(pthread_getspecific(key));
+#elif defined(MAGICKCORE_HAVE_WINTHREADS)
+  return(TlsGetValue(key));
+#else
+  return((void *) (*key));
+#endif
+}
+
+/* Deprecated */
+MagickExport MagickBooleanType MagickSetThreadValue(MagickThreadKey key,
+  const void *value)
+{
+#if defined(MAGICKCORE_THREAD_SUPPORT)
+  return(pthread_setspecific(key,value) == 0 ? MagickTrue : MagickFalse);
+#elif defined(MAGICKCORE_HAVE_WINTHREADS)
+  return(TlsSetValue(key,(void *) value) != 0 ? MagickTrue : MagickFalse);
+#else
+  *key=(size_t) value;
+  return(MagickTrue);
+#endif
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
