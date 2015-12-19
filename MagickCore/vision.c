@@ -581,9 +581,11 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
             if (last < 0)
               last+=(long) component_image->colors;
           }
-        component_image->alpha_trait=BlendPixelTrait;
         for (step=first > last ? -1 : 1; first != (last+step); first+=step)
+        {
+          component_image->alpha_trait=BlendPixelTrait;
           component_image->colormap[first].alpha=TransparentAlpha;
+        }
       }
     }
   (void) SyncImage(component_image,exception);
