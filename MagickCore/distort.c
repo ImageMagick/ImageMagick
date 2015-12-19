@@ -1572,6 +1572,13 @@ MagickExport Image *DistortResizeImage(const Image *image,
   tmp_image=resize_image;
   resize_image=CropImage(tmp_image,&crop_area,exception);
   tmp_image=DestroyImage(tmp_image);
+  if (resize_image != (Image *) NULL)
+    {
+      resize_image->alpha_trait=image->alpha_trait;
+      resize_image->compose=image->compose;
+      resize_image->page.width=0;
+      resize_image->page.height=0;
+    }
   return(resize_image);
 }
 
