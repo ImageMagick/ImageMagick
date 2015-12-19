@@ -32,7 +32,7 @@ typedef pid_t MagickThreadType;
 
 #if defined(MAGICKCORE_THREAD_SUPPORT)
 typedef pthread_key_t MagickThreadKey;
-#elif defined(MAGICKCORE_HAVE_WINTHREADS)
+#elif defined(MAGICKCORE_WINDOWS_SUPPORT)
 typedef DWORD MagickThreadKey;
 #else
 typedef void *MagickThreadKey;
