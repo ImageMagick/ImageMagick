@@ -22,6 +22,10 @@
 extern "C" {
 #endif
 
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
+#include <intsafe.h>
+#endif
+
 #if defined(MAGICKCORE_THREAD_SUPPORT)
 typedef pthread_t MagickThreadType;
 #elif defined(MAGICKCORE_WINDOWS_SUPPORT)
