@@ -1048,7 +1048,8 @@ MagickExport void *FileToBlob(const char *filename,const size_t extent,
       blob[*length]='\0';
       return(blob);
     }
-  *length=(size_t) MagickMin(offset,extent);
+  *length=(size_t) MagickMin(offset,(MagickOffsetType) 
+    MagickMin(extent,SSIZE_MAX));
   blob=(unsigned char *) NULL;
   if (~(*length) >= (MagickPathExtent-1))
     blob=(unsigned char *) AcquireQuantumMemory(*length+MagickPathExtent,
