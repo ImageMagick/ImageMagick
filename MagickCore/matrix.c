@@ -415,7 +415,7 @@ MagickExport MatrixInfo *DestroyMatrixInfo(MatrixInfo *matrix_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G a u s s J o r d a n E l i m i n a t i o n                               %
++   G a u s s J o r d a n E l i m i n a t i o n                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -480,7 +480,7 @@ MagickExport MatrixInfo *DestroyMatrixInfo(MatrixInfo *matrix_info)
 %  details see http://en.wikipedia.org/wiki/Gauss-Jordan_elimination
 %
 */
-MagickExport MagickBooleanType GaussJordanElimination(double **matrix,
+MagickPrivate MagickBooleanType GaussJordanElimination(double **matrix,
   double **vectors,const size_t rank,const size_t number_vectors)
 {
 #define GaussJordanSwap(x,y) \
@@ -763,7 +763,7 @@ MagickExport size_t GetMatrixRows(const MatrixInfo *matrix_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   L e a s t S q u a r e s A d d T e r m s                                   %
++   L e a s t S q u a r e s A d d T e r m s                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -829,7 +829,7 @@ MagickExport size_t GetMatrixRows(const MatrixInfo *matrix_info)
 %     RelinquishMagickMatrix(vectors,2UL);
 %
 */
-MagickExport void LeastSquaresAddTerms(double **matrix,double **vectors,
+MagickPrivate void LeastSquaresAddTerms(double **matrix,double **vectors,
   const double *terms,const double *results,const size_t rank,
   const size_t number_vectors)
 {
