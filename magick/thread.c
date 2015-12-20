@@ -91,7 +91,7 @@ MagickExport void *MagickGetThreadValue(MagickThreadKey key)
 #elif defined(MAGICKCORE_WINDOWS_SUPPORT)
   return(TlsGetValue(key));
 #else
-  return((void *) (*key));
+  return((void *) key);
 #endif
 }
 
@@ -104,7 +104,7 @@ MagickExport MagickBooleanType MagickSetThreadValue(MagickThreadKey key,
 #elif defined(MAGICKCORE_WINDOWS_SUPPORT)
   return(TlsSetValue(key,(void *) value) != 0 ? MagickTrue : MagickFalse);
 #else
-  *key=(size_t) value;
+  key=(void *) value;
   return(MagickTrue);
 #endif
 }
