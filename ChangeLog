@@ -1,5 +1,5 @@
 2015-12-18  6.9.2-10 Cristy  <quetzlzacatenango@image...>
-  * New version 6.9.2-10, GIT revision 10414:adef282:20151219.
+  * New version 6.9.2-10, GIT revision 10415:e31c09d:20151219.
 
 2015-12-19  6.9.2-10 Cristy  <quetzlzacatenango@image...>
   * Fixed compile error when POSIX threads are not defined.
