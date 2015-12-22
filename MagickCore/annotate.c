@@ -165,6 +165,8 @@ static int fallback_shape(const char *text,int size,FT_Face face,
         ft_status=FT_Get_Kerning(face,last_glyph,g_info[count].index,ft_kerning_default,&kerning_vector);
         if (ft_status == 0)
           g_info[count].x_offset=(FT_Pos) (dir*kerning_vector.x);
+        if (kerning_vector.x != 0)
+            g_info[count-1].x_advance+=kerning_vector.x;
       }
       g_info[count].x_offset=(FT_Pos) (64.0*dir*kerning);
     }
