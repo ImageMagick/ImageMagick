@@ -2018,6 +2018,33 @@ AM_CONDITIONAL(FREETYPE_DELEGATE, test "$have_freetype" = 'yes')
 AC_SUBST(FREETYPE_CFLAGS)
 AC_SUBST(FREETYPE_LIBS)
 
+dnl Check for Complex text support
+AC_ARG_ENABLE(ctl,
+    [AS_HELP_STRING([--disable-ctl],
+                    [disable complex text layout support])],
+    [enable_ctl=$enableval],
+    [enable_ctl='yes'])
+
+if test "x$enable_ctl" == "xyes" -a "$have_freetype" != 'yes'; then
+    AC_MSG_ERROR([Complex text support requested but FreeType is missing])
+fi
+
+have_ctl=""
+CTL_CFLAGS=""
+CTL_LIBS=""
+if test "x$enable_ctl" == 'xyes'; then
+    AC_MSG_RESULT([-------------------------------------------------------------])
+    PKG_CHECK_MODULES(CTL, [fribidi harfbuzz], have_ctl="yes", [])
+    AC_DEFINE(CTL_DELEGATE,1,Define if you want complex text support)
+    CFLAGS="$CFLAGS $CTL_CFLAGS"
+    LIBS="$LIBS $CTL_LIBS"
+    AC_MSG_RESULT([])
+fi
+
+AM_CONDITIONAL(CTL_DELEGATE, test "x$have_ctl" == "xyes")
+AC_SUBST(CTL_CFLAGS)
+AC_SUBST(CTL_LIBS)
+
 dnl ===========================================================================
 
 #
@@ -3588,6 +3615,9 @@ fi
 if test "$have_freetype"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES freetype"
 fi
+if test "$have_ctl"    = 'yes' ; then
+   MAGICK_DELEGATES="$MAGICK_DELEGATES ctl"
+fi
 if test "$have_gslib"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES gslib"
 fi
@@ -3706,9 +3736,9 @@ fi
 #
 
 if test "$build_modules" != 'no'; then
-    MAGICK_DEP_LIBS="$USER_LIBS $LCMS_LIBS $FREETYPE_LIBS $LQR_LIBS $FFTW_LIBS $FONTCONFIG_LIBS $XEXT_LIBS $IPC_LIBS $X11_LIBS $XT_LIBS $LZMA_LIBS $BZLIB_LIBS $ZLIB_LIBS $LTDL_LIBS $GDI32_LIBS $MATH_LIBS $GOMP_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS"
+    MAGICK_DEP_LIBS="$USER_LIBS $LCMS_LIBS $FREETYPE_LIBS $CTL_LIBS $LQR_LIBS $FFTW_LIBS $FONTCONFIG_LIBS $XEXT_LIBS $IPC_LIBS $X11_LIBS $XT_LIBS $LZMA_LIBS $BZLIB_LIBS $ZLIB_LIBS $LTDL_LIBS $GDI32_LIBS $MATH_LIBS $GOMP_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS"
 else
-    MAGICK_DEP_LIBS="$USER_LIBS $JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $JPEG_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FPX_LIBS $FONTCONFIG_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $LIBOPENJP2_LIBS $PANGO_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $GDI32_LIBS $MATH_LIBS $GOMP_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS"
+    MAGICK_DEP_LIBS="$USER_LIBS $JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $CTL_LIBS $JPEG_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FPX_LIBS $FONTCONFIG_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $LIBOPENJP2_LIBS $PANGO_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $GDI32_LIBS $MATH_LIBS $GOMP_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS"
 fi
 AC_SUBST(MAGICK_DEP_LIBS)
 
@@ -3833,6 +3863,8 @@ matches your expectations.
   Quantum depth     --with-quantum-depth=$with_quantum_depth	$with_quantum_depth
   High Dynamic Range Imagery
                     --enable-hdri=$enable_hdri		$enable_hdri
+  Comlex text support
+                    --enable-ctl=$enable_ctl		$enable_ctl
 
   Install documentation:			$wantdocs
 

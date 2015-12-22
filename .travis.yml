@@ -1,3 +1,6 @@
+sudo: required # needed for trusty beta
+dist: trusty   # needed for HarfBuzz
+
 language: c
 
 
@@ -9,6 +12,7 @@ before_script:
   - sudo add-apt-repository ppa:dns/gnu -y
   - sudo apt-get update -q
   - sudo apt-get install --only-upgrade autoconf
+  - sudo apt-get install -y libharfbuzz-dev libfribidi-dev
 
 script:
     - export OMP_NUM_THREADS=1

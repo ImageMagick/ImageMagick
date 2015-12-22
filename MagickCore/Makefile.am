@@ -476,6 +476,14 @@ MAGICKCORE_NOINST_HDRS = \
 	MagickCore/xml-tree-private.h \
 	MagickCore/xwindow-private.h
 
+if CTL_DELEGATE
+MAGICKCORE_BASE_SRCS += \
+	MagickCore/raqm.c \
+	MagickCore/raqm.h
+MAGICKCORE_NOINST_HDRS += \
+	MagickCore/raqm.h
+endif
+
 MAGICKCORE_INCLUDEARCH_HDRS = \
 	MagickCore/magick-baseconfig.h
 
