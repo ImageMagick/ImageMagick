@@ -76,6 +76,7 @@ $call Make module.c
 $call Make monitor.c
 $call Make montage.c
 $call Make morphology.c
+$call Make opencl.c
 $call Make option.c
 $call Make paint.c
 $call Make pixel.c
@@ -150,7 +151,7 @@ $library/create libMagick.olb -
   display, distort, draw, effect, enhance, exception, feature, fourier, fx, -
   gem, geometry, hashmap, histogram, identify, image, image-view, layer, list, -
   locale, log, magic, magick, matrix, memory, mime, module, monitor, montage, -
-  morphology, option, paint, pixel, PreRvIcccm, profile, quantize, quantum, -
+  morphology, opencl, option, paint, pixel, PreRvIcccm, profile, quantize, quantum, -
   quantum-export, quantum-import,random, registry, resample, resize, resource, -
   segment, semaphore, shear, signature, splay-tree, static, stream, string, -
   thread, timer, token, transform, threshold, type, utility, version, vms, -
