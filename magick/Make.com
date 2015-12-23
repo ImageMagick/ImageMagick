@@ -11,7 +11,7 @@ $if (f$trnlnm("X11") .eqs. "") then define/nolog X11 decw$include:
 $compile_options="/nodebug/optimize"
 $if (f$search("sys$system:decc$compiler.exe") .nes. "") 
 $then     ! VAX with DEC C
-$  compile_options="/decc/nodebug/optimize/warning=(disable=rightshiftovr)"
+$  compile_options="/decc/nodebug/optimize/warning=disable=(rightshiftovr,badalias)"
 $else     ! VAX with VAX C
 $define/nolog lnk$library sys$library:vaxcrtl
 $define/nolog sys sys$share
@@ -19,7 +19,7 @@ $endif
 $if (f$getsyi("HW_MODEL") .gt. 1023)
 $then     ! Alpha with DEC C
 $  define/nolog sys decc$library_include
-$  compile_options="/nodebug/optimize/prefix=all/warning=(disable=rightshiftovr)/name=(as_is,short)/float=ieee"
+$  compile_options="/nodebug/optimize/prefix=all/warning=disable=(rightshiftovr,badalias)/name=(as_is,short)/float=ieee"
 $endif
 $
 $write sys$output "Making Magick..."
@@ -76,6 +76,7 @@ $call Make module.c
 $call Make monitor.c
 $call Make montage.c
 $call Make morphology.c
+$call Make opencl.c
 $call Make option.c
 $call Make paint.c
 $call Make pixel.c
@@ -149,7 +150,7 @@ $library/create libMagick.olb -
   distort, draw, effect, enhance, exception, feature, fourier, fx, gem, -
   geometry, hashmap, histogram, identify, image, image-view, layer, list, -
   locale, log, magic, magick, matrix, memory, mime, module, monitor, montage, -
-  morphology, option, paint, pixel, profile, quantize, quantum, -
+  morphology, opencl, option, paint, pixel, profile, quantize, quantum, -
   quantum-export, quantum-import,random, registry, resample, resize, resource, -
   segment, semaphore, shear, signature, splay-tree, static, stream, string, -
   thread, timer, token, transform, threshold, type, utility, version, vms, -
