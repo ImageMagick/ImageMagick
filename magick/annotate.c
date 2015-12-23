@@ -997,10 +997,13 @@ static MagickBooleanType RenderType(Image *image,const DrawInfo *draw_info,
 
 #if defined(MAGICKCORE_FREETYPE_DELEGATE)
 
-static size_t ComplexTextLayout(const char *text,const ssize_t size,
+static size_t ComplexTextLayout(const char *text,const size_t length,
   const FT_Face face,const raqm_direction_t direction,const double kerning,
   const FT_Int32 flags,raqm_glyph_info_t **grapheme)
 {
+#if defined(MAGICKCORE_CTL_DELEGATE)
+  return((size_t) raqm_shape(text,length,face,direction,&grapheme));
+#else
   FT_Error
     ft_status;
 
@@ -1013,7 +1016,7 @@ static size_t ComplexTextLayout(const char *text,const ssize_t size,
   /*
     Simple layout for bi-direction text (right-to-left or left-to-right).
   */
-  *grapheme=(raqm_glyph_info_t *) AcquireQuantumMemory(size+1,
+  *grapheme=(raqm_glyph_info_t *) AcquireQuantumMemory(length+1,
     sizeof(**grapheme));
   if (*grapheme == (raqm_glyph_info_t *) NULL)
     return(0);
@@ -1045,6 +1048,7 @@ static size_t ComplexTextLayout(const char *text,const ssize_t size,
     last_glyph=(*grapheme)[i].index;
   }
   return((size_t) i);
+#endif
 }
 
 static int TraceCubicBezier(FT_Vector *p,FT_Vector *q,FT_Vector *to,
@@ -1400,12 +1404,8 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
     if (draw_info->direction == LeftToRightDirection)
       direction=RAQM_DIRECTION_LTR;
   grapheme=(raqm_glyph_info_t *) NULL;
-#if defined(MAGICKCORE_CTL_DELEGATE)
-  length=(size_t) raqm_shape(p,strlen(p),face,direction,&grapheme);
-#else
   length=ComplexTextLayout(p,strlen(p),face,direction,draw_info->kerning,flags,
     &grapheme);
-#endif
   code=0;
   for (i=0; i < (ssize_t) length; i++)
   {
