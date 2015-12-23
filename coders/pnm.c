@@ -1866,7 +1866,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
         if (image->depth <= 8)
           (void) WriteBlobString(image,"255\n");
         else
-          if (image->depth <= 8)
+          if (image->depth <= 16)
             (void) WriteBlobString(image,"65535\n");
           else
             (void) WriteBlobString(image,"4294967295\n");
