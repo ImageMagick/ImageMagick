@@ -89,6 +89,35 @@ struct _PixelView
 };
 
 #if !defined(MAGICKCORE_EXCLUDE_DEPRECATED)
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   D r a w A l l o c a t e W a n d                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DrawAllocateWand() allocates an initial drawing wand which is an opaque
+%  handle required by the remaining drawing methods.
+%
+%  The format of the DrawAllocateWand method is:
+%
+%      DrawingWand DrawAllocateWand(const DrawInfo *draw_info,Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o draw_info: Initial drawing defaults. Set to NULL to use defaults.
+%
+%    o image: the image to draw on.
+%
+*/
+WandExport DrawingWand *DrawAllocateWand(const DrawInfo *draw_info,Image *image)
+{
+  return(AcquireDrawingWand(draw_info,image));
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

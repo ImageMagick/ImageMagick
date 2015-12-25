@@ -816,7 +816,7 @@ static void ipa_device_open(wmfAPI * API)
 
   ddata->push_depth = 0;
 
-  ddata->draw_wand = DrawAllocateWand(ddata->draw_info,ddata->image);
+  ddata->draw_wand = AcquireDrawingWand(ddata->draw_info,ddata->image);
 }
 
 /*

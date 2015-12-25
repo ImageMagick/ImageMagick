@@ -35,6 +35,9 @@ typedef struct _DrawingWand
 typedef struct _PixelView
   PixelView;
 
+extern WandExport DrawingWand
+  *DrawAllocateWand(const DrawInfo *,Image *);
+
 typedef MagickBooleanType
   (*DuplexTransferPixelViewMethod)(const PixelView *,const PixelView *,
     PixelView *,void *),
