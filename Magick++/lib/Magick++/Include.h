@@ -1096,6 +1096,7 @@ namespace Magick
   //
   using MagickCore::AcquireAlignedMemory;
   using MagickCore::AcquireAuthenticCacheView;
+  using MagickCore::AcquireDrawingWand;
   using MagickCore::AcquireExceptionInfo;
   using MagickCore::AcquireVirtualCacheView;
   using MagickCore::AcquireImage;
@@ -1175,7 +1176,6 @@ namespace Magick
   using MagickCore::DisplayImages;
   using MagickCore::DistortImage;
   using MagickCore::DrawAffine;
-  using MagickCore::DrawAllocateWand;
   using MagickCore::DrawAlpha;
   using MagickCore::DrawAnnotation;
   using MagickCore::DrawArc;

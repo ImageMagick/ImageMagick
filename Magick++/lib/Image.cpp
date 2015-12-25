@@ -2776,7 +2776,7 @@ void Magick::Image::draw(const Magick::Drawable &drawable_)
 
   modifyImage();
 
-  wand=DrawAllocateWand(options()->drawInfo(),image());
+  wand=AcquireDrawingWand(options()->drawInfo(),image());
 
   if(wand)
     {
@@ -2797,7 +2797,7 @@ void Magick::Image::draw(const std::vector<Magick::Drawable> &drawable_)
 
   modifyImage();
 
-  wand=DrawAllocateWand(options()->drawInfo(),image());
+  wand= AcquireDrawingWand(options()->drawInfo(),image());
 
   if(wand)
     {
