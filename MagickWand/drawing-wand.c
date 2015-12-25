@@ -349,6 +349,52 @@ static void AdjustAffine(DrawingWand *wand,const AffineMatrix *affine)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   A c q u i r e D r a w i n g W a n d                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  AcquireDrawingWand() allocates an initial drawing wand which is an opaque
+%  handle required by the remaining drawing methods.
+%
+%  The format of the AcquireDrawingWand method is:
+%
+%      DrawingWand AcquireDrawingWand(const DrawInfo *draw_info,Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o draw_info: Initial drawing defaults. Set to NULL to use defaults.
+%
+%    o image: the image to draw on.
+%
+*/
+WandExport DrawingWand *AcquireDrawingWand(const DrawInfo *draw_info,
+  Image *image)
+{
+  DrawingWand
+    *wand;
+
+  wand=NewDrawingWand();
+  if (draw_info != (const DrawInfo *) NULL)
+    {
+      CurrentContext=DestroyDrawInfo(CurrentContext);
+      CurrentContext=CloneDrawInfo((ImageInfo *) NULL,draw_info);
+    }
+  if (image != (Image *) NULL)
+    {
+      wand->image=DestroyImage(wand->image);
+      wand->destroy=MagickFalse;
+    }
+  wand->image=image;
+  return(wand);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   C l e a r D r a w i n g W a n d                                           %
 %                                                                             %
 %                                                                             %
@@ -574,51 +620,6 @@ WandExport void DrawAffine(DrawingWand *wand,const AffineMatrix *affine)
   AdjustAffine(wand,affine);
   (void) MvgPrintf(wand,"affine %.20g %.20g %.20g %.20g %.20g %.20g\n",
     affine->sx,affine->rx,affine->ry,affine->sy,affine->tx,affine->ty);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   D r a w A l l o c a t e W a n d                                           %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  DrawAllocateWand() allocates an initial drawing wand which is an opaque
-%  handle required by the remaining drawing methods.
-%
-%  The format of the DrawAllocateWand method is:
-%
-%      DrawingWand DrawAllocateWand(const DrawInfo *draw_info,Image *image)
-%
-%  A description of each parameter follows:
-%
-%    o draw_info: Initial drawing defaults. Set to NULL to use defaults.
-%
-%    o image: the image to draw on.
-%
-*/
-WandExport DrawingWand *DrawAllocateWand(const DrawInfo *draw_info,Image *image)
-{
-  DrawingWand
-    *wand;
-
-  wand=NewDrawingWand();
-  if (draw_info != (const DrawInfo *) NULL)
-    {
-      CurrentContext=DestroyDrawInfo(CurrentContext);
-      CurrentContext=CloneDrawInfo((ImageInfo *) NULL,draw_info);
-    }
-  if (image != (Image *) NULL)
-    {
-      wand->image=DestroyImage(wand->image);
-      wand->destroy=MagickFalse;
-    }
-  wand->image=image;
-  return(wand);
 }
 
 /*

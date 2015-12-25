@@ -64,9 +64,9 @@ extern WandExport DrawInfo
   *PeekDrawingWand(const DrawingWand *);
 
 extern WandExport DrawingWand
+  *AcquireDrawingWand(const DrawInfo *,Image *),
   *CloneDrawingWand(const DrawingWand *),
   *DestroyDrawingWand(DrawingWand *),
-  *DrawAllocateWand(const DrawInfo *,Image *),
   *NewDrawingWand(void);
 
 extern WandExport ExceptionInfo
