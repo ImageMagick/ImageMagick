@@ -1815,6 +1815,7 @@ MagickPrivate MagickBooleanType ShredFile(const char *path)
       /*
         Don't shred the file, just remove it.
       */
+      passes=DestroyString(passes);
       status=remove_utf8(path);
       if (status == -1)
         {
@@ -1830,6 +1831,7 @@ MagickPrivate MagickBooleanType ShredFile(const char *path)
       /*
         Don't shred the file, just remove it.
       */
+      passes=DestroyString(passes);
       status=remove_utf8(path);
       if (status == -1)
         (void) LogMagickEvent(ExceptionEvent,GetMagickModule(),
@@ -1881,7 +1883,8 @@ MagickPrivate MagickBooleanType ShredFile(const char *path)
   }
   status=close(file);
   status=remove_utf8(path);
-  if (status == -1)
-    return(MagickFalse);
-  return(i < (ssize_t) StringToInteger(passes) ? MagickFalse : MagickTrue);
+  if (status != -1)
+    status=StringToInteger(passes);
+  passes=DestroyString(passes);
+  return((status == -1 || i < (ssize_t) status) ? MagickFalse : MagickTrue);
 }

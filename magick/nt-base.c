@@ -1165,6 +1165,7 @@ static int NTGhostscriptGetString(const char *name,BOOL *is_64_bit,
             directory,DirectorySeparator);
           if (IsPathAccessible(buffer) != MagickFalse)
             {
+              directory=DestroyString(directory);
               (void) CopyMagickString(value,buffer,length);
               if (is_64_bit != NULL)
                 *is_64_bit=FALSE;
@@ -1174,6 +1175,7 @@ static int NTGhostscriptGetString(const char *name,BOOL *is_64_bit,
             directory,DirectorySeparator);
           if (IsPathAccessible(buffer) != MagickFalse)
             {
+              directory=DestroyString(directory);
               (void) CopyMagickString(value,buffer,length);
               if (is_64_bit != NULL)
                 *is_64_bit=TRUE;
