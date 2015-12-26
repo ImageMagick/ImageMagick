@@ -142,29 +142,12 @@ namespace Magick
     DrawableBase* dp;
   };
 
-  // Compare two Drawable objects regardless of LHS/RHS
-  extern MagickPPExport int operator == ( const Drawable& left_,
-                                        const Drawable& right_ );
-  extern MagickPPExport int operator != ( const Drawable& left_,
-                                        const Drawable& right_ );
-  extern MagickPPExport int operator >  ( const Drawable& left_,
-                                        const Drawable& right_ );
-  extern MagickPPExport int operator <  ( const Drawable& left_,
-                                        const Drawable& right_ );
-  extern MagickPPExport int operator >= ( const Drawable& left_,
-                                        const Drawable& right_ );
-  extern MagickPPExport int operator <= ( const Drawable& left_,
-                                        const Drawable& right_ );
-
   typedef std::vector<Magick::Drawable> DrawableList;
 
 #if defined(MagickDLLExplicitTemplate)
 
   MagickDrawableExtern template class MagickPPExport
   std::allocator<Magick::Drawable>;
-
-//   MagickDrawableExtern template class MagickPPExport
-//   std::vector<Magick::Drawable, std::allocator<Magick::Drawable> >;
 
 #endif // MagickDLLExplicitTemplate
 
