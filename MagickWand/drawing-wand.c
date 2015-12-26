@@ -634,9 +634,7 @@ WandExport void DrawAffine(DrawingWand *wand,const AffineMatrix *affine)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  DrawAlpha() paints on the image's alpha channel in order to set effected
-%  pixels to transparent.
-%  to influence the alpha of pixels. The available paint
-%  methods are:
+%  pixels to transparent. The available paint methods are:
 %
 %    PointMethod: Select the target pixel
 %    ReplaceMethod: Select any pixel that matches the target pixel.
@@ -908,6 +906,53 @@ WandExport ExceptionInfo *DrawCloneExceptionInfo(const DrawingWand *wand)
     return (ExceptionInfo*) NULL;
   return CloneExceptionInfo(wand->exception);
 }
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   D r a w C o l o r                                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DrawColor() draws color on image using the current fill color, starting at
+%  specified position, and using specified paint method. The available paint
+%  methods are:
+%
+%    PointMethod: Recolors the target pixel
+%    ReplaceMethod: Recolor any pixel that matches the target pixel.
+%    FloodfillMethod: Recolors target pixels and matching neighbors.
+%    ResetMethod: Recolor all pixels.
+%
+%  The format of the DrawColor method is:
+%
+%      void DrawColor(DrawingWand *wand,const double x,const double y,
+%        const PaintMethod paint_method)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the drawing wand.
+%
+%    o x: x ordinate.
+%
+%    o y: y ordinate.
+%
+%    o paint_method: paint method.
+%
+*/
+WandExport void DrawColor(DrawingWand *wand, const double x, const double y,
+  const PaintMethod paint_method)
+{
+  assert(wand != (DrawingWand *)NULL);
+  assert(wand->signature == MagickWandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent, GetMagickModule(), "%s", wand->name);
+  (void)MvgPrintf(wand, "color %.20g %.20g '%s'\n", x, y, CommandOptionToMnemonic(
+    MagickMethodOptions, (ssize_t)paint_method));
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1032,53 +1077,6 @@ WandExport MagickBooleanType DrawComposite(DrawingWand *wand,
   media_type=DestroyString(media_type);
   base64=DestroyString(base64);
   return(MagickTrue);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   D r a w C o l o r                                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  DrawColor() draws color on image using the current fill color, starting at
-%  specified position, and using specified paint method. The available paint
-%  methods are:
-%
-%    PointMethod: Recolors the target pixel
-%    ReplaceMethod: Recolor any pixel that matches the target pixel.
-%    FloodfillMethod: Recolors target pixels and matching neighbors.
-%    ResetMethod: Recolor all pixels.
-%
-%  The format of the DrawColor method is:
-%
-%      void DrawColor(DrawingWand *wand,const double x,const double y,
-%        const PaintMethod paint_method)
-%
-%  A description of each parameter follows:
-%
-%    o wand: the drawing wand.
-%
-%    o x: x ordinate.
-%
-%    o y: y ordinate.
-%
-%    o paint_method: paint method.
-%
-*/
-WandExport void DrawColor(DrawingWand *wand,const double x,const double y,
-  const PaintMethod paint_method)
-{
-  assert(wand != (DrawingWand *) NULL);
-  assert(wand->signature == MagickWandSignature);
-  if (wand->debug != MagickFalse)
-    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  (void) MvgPrintf(wand,"color %.20g %.20g '%s'\n",x,y,CommandOptionToMnemonic(
-    MagickMethodOptions,(ssize_t) paint_method));
 }
 
 /*
