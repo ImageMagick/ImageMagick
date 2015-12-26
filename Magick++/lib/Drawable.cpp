@@ -1,7 +1,7 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
 // Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003
-// Copyright Dirk Lemstra 2014
+// Copyright Dirk Lemstra 2014-2015
 //
 // Implementation of Drawable (Graphic objects)
 //
@@ -19,86 +19,105 @@
 
 using namespace std;
 
-MagickPPExport int Magick::operator == ( const Magick::Coordinate& left_,
-                                        const Magick::Coordinate& right_ )
+MagickPPExport int Magick::operator == (const Magick::Coordinate& left_,
+  const Magick::Coordinate& right_)
 {
-  return ( ( left_.x() == right_.x() ) && ( left_.y() == right_.y() ) );
+  return((left_.x() == right_.x()) && (left_.y() == right_.y()));
 }
-MagickPPExport int Magick::operator != ( const Magick::Coordinate& left_,
-                                        const Magick::Coordinate& right_ )
+
+MagickPPExport int Magick::operator != (const Magick::Coordinate& left_,
+  const Magick::Coordinate& right_)
 {
-  return ( ! (left_ == right_) );
+  return(!(left_ == right_));
 }
-MagickPPExport int Magick::operator >  ( const Magick::Coordinate& left_,
-                                        const Magick::Coordinate& right_ )
+
+MagickPPExport int Magick::operator > (const Magick::Coordinate& left_,
+  const Magick::Coordinate& right_)
 {
-  return ( !( left_ < right_ ) && ( left_ != right_ ) );
+  return (!(left_ < right_) && (left_ != right_));
 }
-MagickPPExport int Magick::operator <  ( const Magick::Coordinate& left_,
-                                        const Magick::Coordinate& right_ )
+
+MagickPPExport int Magick::operator < (const Magick::Coordinate& left_,
+  const Magick::Coordinate& right_)
 {
   // Based on distance from origin
-  return  ( (sqrt(left_.x()*left_.x() + left_.y()*left_.y())) <
-            (sqrt(right_.x()*right_.x() + right_.y()*right_.y())) );
-}
-MagickPPExport int Magick::operator >= ( const Magick::Coordinate& left_,
-                                        const Magick::Coordinate& right_ )
-{
-  return ( ( left_ > right_ ) || ( left_ == right_ ) );
-}
-MagickPPExport int Magick::operator <= ( const Magick::Coordinate& left_,
-                                        const Magick::Coordinate& right_ )
-{
-  return ( ( left_ < right_ ) || ( left_ == right_ ) );
+  return((sqrt(left_.x()*left_.x() + left_.y()*left_.y())) <
+    (sqrt(right_.x()*right_.x() + right_.y()*right_.y())));
 }
 
-/*virtual*/
-Magick::DrawableBase::~DrawableBase ( void )
+MagickPPExport int Magick::operator >= (const Magick::Coordinate& left_,
+  const Magick::Coordinate& right_)
 {
+  return((left_ > right_) || (left_ == right_));
 }
 
-// Constructor
-Magick::Drawable::Drawable ( void )
-  : dp(0)
+MagickPPExport int Magick::operator <= (const Magick::Coordinate& left_,
+  const Magick::Coordinate& right_)
+{
+  return((left_ < right_) || (left_ == right_));
+}
+
+/* DrawableBase */
+Magick::DrawableBase::DrawableBase()
 {
 }
 
-// Construct from DrawableBase
-Magick::Drawable::Drawable ( const Magick::DrawableBase& original_ )
+Magick::DrawableBase::~DrawableBase(void)
+{
+}
+
+void Magick::DrawableBase::operator()(MagickCore::DrawingWand * context_) const
+{
+}
+
+Magick::DrawableBase* Magick::DrawableBase::copy() const
+{
+  return new DrawableBase(*this);
+}
+
+/* Drawable */
+Magick::Drawable::Drawable(void)
+  : dp((Magick::DrawableBase *) NULL)
+{
+}
+
+Magick::Drawable::Drawable(const Magick::DrawableBase& original_)
   : dp(original_.copy())
 {
 }
 
-// Destructor
-Magick::Drawable::~Drawable ( void )
+Magick::Drawable::~Drawable(void)
 {
   delete dp;
-  dp = 0;
+  dp=(Magick::DrawableBase *) NULL;
 }
 
-// Copy constructor
-Magick::Drawable::Drawable ( const Magick::Drawable& original_ )
-  : dp(original_.dp? original_.dp->copy(): 0)
+Magick::Drawable::Drawable(const Magick::Drawable& original_)
+  : dp((original_.dp != (Magick::DrawableBase *) NULL ? original_.dp->copy() :
+    (Magick::DrawableBase *) NULL))
 {
 }
 
-// Assignment operator
-Magick::Drawable& Magick::Drawable::operator= (const Magick::Drawable& original_ )
+Magick::Drawable& Magick::Drawable::operator= (
+  const Magick::Drawable& original_)
 {
+  DrawableBase
+    *temp_dp;
+
   if (this != &original_)
     {
-      DrawableBase* temp_dp = (original_.dp ? original_.dp->copy() : 0);
+      temp_dp=(original_.dp != (Magick::DrawableBase *) NULL ?
+        original_.dp->copy() : (Magick::DrawableBase *) NULL);
       delete dp;
-      dp = temp_dp;
+      dp=temp_dp;
     }
-  return *this;
+  return(*this);
 }
 
-// Operator to invoke contained object
-void Magick::Drawable::operator()( MagickCore::DrawingWand * context_ ) const
+void Magick::Drawable::operator()(MagickCore::DrawingWand * context_) const
 {
-  if(dp)
-    dp->operator()( context_ );
+  if (dp != (Magick::DrawableBase *) NULL)
+    dp->operator()(context_);
 }
 
 MagickPPExport int Magick::operator == ( const Magick::Drawable& /*left_*/,

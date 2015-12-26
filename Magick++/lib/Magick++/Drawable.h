@@ -1,7 +1,7 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
 // Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
-// Copyright Dirk Lemstra 2014
+// Copyright Dirk Lemstra 2014-2015
 //
 // Definition of Drawable (Graphic objects)
 //
@@ -40,41 +40,28 @@
 
 namespace Magick
 {
-
   //
   // Representation of an x,y coordinate
   //
   class MagickPPExport Coordinate
   {
   public:
-    Coordinate ( void )
+
+    Coordinate(void)
       : _x(0),
-        _y(0)
-      { }
-    Coordinate ( double x_, double y_ )
+        _y(0) {}
+
+    Coordinate(double x_,double y_)
       : _x(x_),
-        _y(y_)
-      { }
-    virtual ~Coordinate ()
-      { }
+        _y(y_) {}
 
-    void   x ( double x_ )
-      {
-        _x = x_;
-      }
-    double x ( void ) const
-      {
-        return _x;
-      }
+    virtual ~Coordinate() {}
 
-    void   y ( double y_ )
-      {
-        _y = y_;
-      }
-    double y ( void ) const
-      {
-        return _y;
-      }
+    void x(double x_) { _x=x_; }
+    double x(void) const { return _x; }
+
+    void y(double y_) { _y=y_; }
+    double y(void) const { return _y; }
 
   private:
     double _x;
@@ -88,74 +75,68 @@ namespace Magick
   MagickDrawableExtern template class MagickPPExport
   std::allocator<Magick::Coordinate>;
 
-//   MagickDrawableExtern template class MagickPPExport
-//   std::vector<Magick::Coordinate, std::allocator<Magick::Coordinate> >;
-
 #endif // MagickDLLExplicitTemplate
 
   // Compare two Coordinate objects regardless of LHS/RHS
-  extern MagickPPExport int operator == ( const Coordinate& left_,
-                                        const Coordinate& right_ );
-  extern MagickPPExport int operator != ( const Coordinate& left_,
-                                        const Coordinate& right_ );
-  extern MagickPPExport int operator >  ( const Coordinate& left_,
-                                        const Coordinate& right_ );
-  extern MagickPPExport int operator <  ( const Coordinate& left_,
-                                        const Coordinate& right_ );
-  extern MagickPPExport int operator >= ( const Coordinate& left_,
-                                        const Coordinate& right_ );
-  extern MagickPPExport int operator <= ( const Coordinate& left_,
-                                        const Coordinate& right_ );
+  extern MagickPPExport int operator ==
+    (const Coordinate& left_,const Coordinate& right_);
+  extern MagickPPExport int operator !=
+    (const Coordinate& left_, const Coordinate& right_);
+  extern MagickPPExport int operator >
+    (const Coordinate& left_, const Coordinate& right_);
+  extern MagickPPExport int operator <
+    (const Coordinate& left_, const Coordinate& right_);
+  extern MagickPPExport int operator >=
+    (const Coordinate& left_, const Coordinate& right_);
+  extern MagickPPExport int operator <=
+    (const Coordinate& left_, const Coordinate& right_);
 
   //
   // Base class for all drawable objects
   //
-  //struct MagickPPExport std::unary_function<MagickCore::DrawingWand,void>;
   class MagickPPExport DrawableBase:
     public std::unary_function<MagickCore::DrawingWand,void>
   {
   public:
-    // Constructor
-    DrawableBase ( void )
-      { }
+
+    // Default constructor
+    DrawableBase(void);
 
     // Destructor
-    virtual ~DrawableBase ( void );
+    virtual ~DrawableBase(void);
 
     // Operator to invoke equivalent draw API call
-    virtual void operator()( MagickCore::DrawingWand *) const = 0;
+    virtual void operator()(MagickCore::DrawingWand *) const;
 
     // Return polymorphic copy of object
-    virtual DrawableBase* copy() const = 0;
-
-  private:
+    virtual DrawableBase* copy() const;
   };
 
   //
   // Representation of a drawable surrogate object to manage drawable objects
   //
-#undef Drawable  // Conflict with <X11/Xproto.h>
+  #undef Drawable // Conflict with <X11/Xproto.h>
   class MagickPPExport Drawable
   {
   public:
 
-    // Constructor
-    Drawable ( void );
+    // Default constructor
+    Drawable(void);
 
     // Construct from DrawableBase
-    Drawable ( const DrawableBase& original_ );
+    Drawable(const DrawableBase& original_);
 
     // Destructor
-    ~Drawable ( void );
+    ~Drawable(void);
 
     // Copy constructor
-    Drawable ( const Drawable& original_ );
+    Drawable(const Drawable& original_);
 
     // Assignment operator
-    Drawable& operator= (const Drawable& original_ );
+    Drawable& operator=(const Drawable& original_);
 
     // Operator to invoke contained object
-    void operator()( MagickCore::DrawingWand *context_ ) const;
+    void operator()(MagickCore::DrawingWand *) const;
 
   private:
     DrawableBase* dp;
