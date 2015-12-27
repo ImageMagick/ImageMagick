@@ -2919,7 +2919,7 @@ WandExport void DrawPathCurveToRelative(DrawingWand *wand,const double x1,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D r a w P a t h C u r v e T o Q u a d r a t i c B e z i e r A b s o l u t e %
+% D r a w P a t h C u r v e T o Q u a d r a t i c B e z i e r A b s o l u t e %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -2983,7 +2983,7 @@ WandExport void DrawPathCurveToQuadraticBezierAbsolute(DrawingWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D r a w P a t h C u r v e T o Q u a d r a t i c B e z i e r R e l a t i v e
+% D r a w P a t h C u r v e T o Q u a d r a t i c B e z i e r R e l a t i v e %
 %                                                                             %
 %                                                                             %
 %                                                                             %
