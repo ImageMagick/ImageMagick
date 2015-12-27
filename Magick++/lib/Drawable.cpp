@@ -301,6 +301,120 @@ Magick::DrawableBase* Magick::DrawableBezier::copy() const
   return new DrawableBezier(*this);
 }
 
+
+/* DrawableBorderColor */
+Magick::DrawableBorderColor::DrawableBorderColor(const Magick::Color &color_)
+  : _color(color_)
+{
+}
+
+Magick::DrawableBorderColor::DrawableBorderColor
+  (const Magick::DrawableBorderColor &original_)
+  : DrawableBase(original_),
+    _color(original_._color)
+{
+}
+
+Magick::DrawableBorderColor::~DrawableBorderColor(void)
+{
+}
+
+void Magick::DrawableBorderColor::operator()(
+  MagickCore::DrawingWand *context_) const
+{
+  PixelInfo
+    color;
+
+  PixelWand
+    *pixel_wand;
+
+  color=static_cast<PixelInfo>(_color);
+  pixel_wand=NewPixelWand();
+  PixelSetPixelColor(pixel_wand,&color);
+  DrawSetBorderColor(context_,pixel_wand);
+  pixel_wand=DestroyPixelWand(pixel_wand);
+}
+
+void Magick::DrawableBorderColor::color(const Color &color_)
+{
+  _color=color_;
+}
+
+Magick::Color Magick::DrawableBorderColor::color(void) const
+{
+  return(_color);
+}
+
+Magick::DrawableBase* Magick::DrawableBorderColor::copy() const
+{
+  return(new DrawableBorderColor(*this));
+}
+
+
+/* DrawableClipRule */
+Magick::DrawableClipRule::DrawableClipRule(const FillRule fillRule_)
+{
+  _fillRule=fillRule_;
+}
+
+Magick::DrawableClipRule::~DrawableClipRule(void)
+{
+}
+
+void Magick::DrawableClipRule::operator()(
+  MagickCore::DrawingWand * context_) const
+{
+  DrawSetClipRule(context_,_fillRule);
+}
+
+void Magick::DrawableClipRule::fillRule(const FillRule fillRule_)
+{
+  _fillRule=fillRule_;
+}
+
+Magick::FillRule Magick::DrawableClipRule::fillRule(void) const
+{
+  return(_fillRule);
+}
+
+Magick::DrawableBase* Magick::DrawableClipRule::copy() const
+{
+  return(new DrawableClipRule(*this));
+}
+
+
+/* DrawableClipUnits */
+Magick::DrawableClipUnits::DrawableClipUnits(const ClipPathUnits units_)
+{
+  _units = units_;
+}
+
+Magick::DrawableClipUnits::~DrawableClipUnits(void)
+{
+}
+
+void Magick::DrawableClipUnits::operator()(
+  MagickCore::DrawingWand * context_) const
+{
+  DrawSetClipUnits(context_, _units);
+}
+
+void Magick::DrawableClipUnits::units(const ClipPathUnits units_)
+{
+  _units = units_;
+}
+
+Magick::ClipPathUnits Magick::DrawableClipUnits::units(void) const
+{
+  return(_units);
+}
+
+Magick::DrawableBase* Magick::DrawableClipUnits::copy() const
+{
+  return(new DrawableClipUnits(*this));
+}
+
+
 //
 //Clip Path 
 //
@@ -620,6 +734,44 @@ void Magick::DrawableFillColor::operator()
 Magick::DrawableBase* Magick::DrawableFillColor::copy() const
 {
   return new DrawableFillColor(*this);
+}
+
+/* DrawableFillPatternUrl */
+Magick::DrawableFillPatternUrl::DrawableFillPatternUrl(const std::string &url_)
+  : _url(url_)
+{
+}
+
+Magick::DrawableFillPatternUrl::DrawableFillPatternUrl(
+  const Magick::DrawableFillPatternUrl& original_)
+  : DrawableBase(original_),
+  _url(original_._url)
+{
+}
+
+Magick::DrawableFillPatternUrl::~DrawableFillPatternUrl(void)
+{
+}
+
+void Magick::DrawableFillPatternUrl::operator()(
+  MagickCore::DrawingWand * context_) const
+{
+  DrawSetFillPatternURL(context_, _url.c_str());
+}
+
+void Magick::DrawableFillPatternUrl::url(const std::string &url_)
+{
+  _url = url_;
+}
+
+std::string Magick::DrawableFillPatternUrl::url(void) const
+{
+  return(_url);
+}
+
+Magick::DrawableBase* Magick::DrawableFillPatternUrl::copy() const
+{
+  return(new DrawableFillPatternUrl(*this));
 }
 
 // Specify drawing fill fule
@@ -1033,15 +1185,16 @@ Magick::DrawableBase* Magick::DrawableSkewY::copy() const
   return new DrawableSkewY(*this);
 }
 
-Magick::DrawableDashArray::DrawableDashArray(const double* dasharray_)
+/* DrawableStrokeDashArray */
+Magick::DrawableStrokeDashArray::DrawableStrokeDashArray(const double* dasharray_)
   : _size(0),
     _dasharray(0)
 {
   dasharray(dasharray_);
 }
 
-Magick::DrawableDashArray::DrawableDashArray(
-  const Magick::DrawableDashArray& original_)
+Magick::DrawableStrokeDashArray::DrawableStrokeDashArray(
+  const Magick::DrawableStrokeDashArray& original_)
   : DrawableBase (original_),
     _size(original_._size),
     _dasharray(new double[_size+1])
@@ -1054,17 +1207,17 @@ Magick::DrawableDashArray::DrawableDashArray(
   }
 }
 
-Magick::DrawableDashArray::~DrawableDashArray(void)
+Magick::DrawableStrokeDashArray::~DrawableStrokeDashArray(void)
 {
   delete [] _dasharray;
   _size=0;
-  _dasharray=0;
+  _dasharray=(double *) NULL;
 }
 
-Magick::DrawableDashArray& Magick::DrawableDashArray::operator=(
-  const Magick::DrawableDashArray &original_)
+Magick::DrawableStrokeDashArray& Magick::DrawableStrokeDashArray::operator=(
+  const Magick::DrawableStrokeDashArray &original_)
 {
-  if( this != &original_ )
+  if (this != &original_)
     {
       delete [] _dasharray;
       _size=original_._size;
@@ -1076,21 +1229,22 @@ Magick::DrawableDashArray& Magick::DrawableDashArray::operator=(
         _dasharray[_size]=0.0;
       }
     }
-  return *this;
+  return(*this);
 }
 
-void Magick::DrawableDashArray::operator()(
+void Magick::DrawableStrokeDashArray::operator()(
   MagickCore::DrawingWand *context_) const
 {
-  (void) DrawSetStrokeDashArray(context_,(const unsigned long) _size,_dasharray);
+  (void) DrawSetStrokeDashArray(context_,(const unsigned long) _size,
+    _dasharray);
 }
 
-Magick::DrawableBase *Magick::DrawableDashArray::copy() const
+Magick::DrawableBase *Magick::DrawableStrokeDashArray::copy() const
 {
-  return(new DrawableDashArray(*this));
+  return(new DrawableStrokeDashArray(*this));
 }
 
-void Magick::DrawableDashArray::dasharray(const double* dasharray_)
+void Magick::DrawableStrokeDashArray::dasharray(const double* dasharray_)
 {
   size_t
     n;
@@ -1099,12 +1253,15 @@ void Magick::DrawableDashArray::dasharray(const double* dasharray_)
   _size=0;
   _dasharray=0;
 
-  if (dasharray_)
+  if (dasharray_ != (const double *) NULL)
     {
+      const double
+        *p;
+
       // Count elements in dash array
       n=0;
       {
-        const double *p = dasharray_;
+        p = dasharray_;
         while(*p++ != 0.0)
           n++;
       }
@@ -1121,18 +1278,35 @@ void Magick::DrawableDashArray::dasharray(const double* dasharray_)
     }
 }
 
-// Stroke dashoffset
-Magick::DrawableDashOffset::~DrawableDashOffset ( void )
+const double* Magick::DrawableStrokeDashArray::dasharray(void) const
+{
+  return(_dasharray);
+}
+
+/* DrawableStrokeDashOffset */
+Magick::DrawableStrokeDashOffset::~DrawableStrokeDashOffset(void)
 {
 }
-void Magick::DrawableDashOffset::operator()
-  ( MagickCore::DrawingWand * context_ ) const
+
+void Magick::DrawableStrokeDashOffset::operator()
+  ( MagickCore::DrawingWand * context_) const
 {
-  DrawSetStrokeDashOffset( context_, _offset );
+  DrawSetStrokeDashOffset(context_,_offset);
 }
-Magick::DrawableBase* Magick::DrawableDashOffset::copy() const
+
+Magick::DrawableBase* Magick::DrawableStrokeDashOffset::copy() const
 {
-  return new DrawableDashOffset(*this);
+  return(new DrawableStrokeDashOffset(*this));
+}
+
+void Magick::DrawableStrokeDashOffset::offset(const double offset_)
+{
+  _offset=offset_;
+}
+
+double Magick::DrawableStrokeDashOffset::offset(void) const
+{
+  return(_offset);
 }
 
 // Stroke linecap
@@ -1175,6 +1349,46 @@ void Magick::DrawableMiterLimit::operator()
 Magick::DrawableBase* Magick::DrawableMiterLimit::copy() const
 {
   return new DrawableMiterLimit(*this);
+}
+
+
+/* DrawableStrokePatternUrl */
+Magick::DrawableStrokePatternUrl::DrawableStrokePatternUrl(
+  const std::string &url_)
+  : _url(url_)
+{
+}
+
+Magick::DrawableStrokePatternUrl::DrawableStrokePatternUrl(
+  const Magick::DrawableStrokePatternUrl& original_)
+  : DrawableBase(original_),
+  _url(original_._url)
+{
+}
+
+Magick::DrawableStrokePatternUrl::~DrawableStrokePatternUrl(void)
+{
+}
+
+void Magick::DrawableStrokePatternUrl::operator()(
+  MagickCore::DrawingWand * context_) const
+{
+  DrawSetStrokePatternURL(context_, _url.c_str());
+}
+
+void Magick::DrawableStrokePatternUrl::url(const std::string &url_)
+{
+  _url = url_;
+}
+
+std::string Magick::DrawableStrokePatternUrl::url(void) const
+{
+  return(_url);
+}
+
+Magick::DrawableBase* Magick::DrawableStrokePatternUrl::copy() const
+{
+  return(new DrawableStrokePatternUrl(*this));
 }
 
 // Stroke antialias
@@ -1290,6 +1504,45 @@ Magick::DrawableBase* Magick::DrawableText::copy() const
   return new DrawableText(*this);
 }
 
+/* DrawableTextAlignment */
+Magick::DrawableTextAlignment::DrawableTextAlignment(
+  Magick::AlignType alignment_)
+  : _alignment(alignment_)
+{
+}
+
+Magick::DrawableTextAlignment::DrawableTextAlignment
+(const Magick::DrawableTextAlignment &original_)
+  : DrawableBase(original_),
+  _alignment(original_._alignment)
+{
+}
+
+Magick::DrawableTextAlignment::~DrawableTextAlignment(void)
+{
+}
+
+void Magick::DrawableTextAlignment::operator()(
+  MagickCore::DrawingWand * context_) const
+{
+  DrawSetTextAlignment(context_, _alignment);
+}
+
+void Magick::DrawableTextAlignment::alignment(AlignType alignment_)
+{
+  _alignment=alignment_;
+}
+
+Magick::AlignType Magick::DrawableTextAlignment::alignment(void) const
+{
+  return(_alignment);
+}
+
+Magick::DrawableBase* Magick::DrawableTextAlignment::copy() const
+{
+  return new DrawableTextAlignment(*this);
+}
+
 // Text antialias
 Magick::DrawableTextAntialias::DrawableTextAntialias ( bool flag_ )
   : _flag(flag_)
@@ -1313,6 +1566,7 @@ Magick::DrawableBase* Magick::DrawableTextAntialias::copy() const
 {
   return new DrawableTextAntialias(*this);
 }
+
 
 // Decoration (text decoration)
 Magick::DrawableTextDecoration::DrawableTextDecoration

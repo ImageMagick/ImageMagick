@@ -297,6 +297,13 @@ namespace Magick
   using MagickCore::RectangleInfo;
   using MagickCore::StringInfo;
 
+  // Alignment types.
+  using MagickCore::AlignType;
+  using MagickCore::UndefinedAlign;
+  using MagickCore::LeftAlign;
+  using MagickCore::CenterAlign;
+  using MagickCore::RightAlign;
+
   // Alpha channel options
   using MagickCore::AlphaChannelOption;
   using MagickCore::UndefinedAlphaChannel;
@@ -315,12 +322,6 @@ namespace Magick
   using MagickCore::SetAlphaChannel;
   using MagickCore::ShapeAlphaChannel;
   using MagickCore::TransparentAlphaChannel;
-
-  // Image class types
-  using MagickCore::ClassType;
-  using MagickCore::UndefinedClass;
-  using MagickCore::DirectClass;
-  using MagickCore::PseudoClass;
 
   // Channel types
   using MagickCore::ChannelType;
@@ -346,6 +347,19 @@ namespace Magick
   using MagickCore::GrayChannels;
   using MagickCore::SyncChannels;
   using MagickCore::DefaultChannels;
+
+  // Image class types
+  using MagickCore::ClassType;
+  using MagickCore::UndefinedClass;
+  using MagickCore::DirectClass;
+  using MagickCore::PseudoClass;
+
+  // Clip path units
+  using MagickCore::ClipPathUnits;
+  using MagickCore::UndefinedPathUnits;
+  using MagickCore::UserSpace;
+  using MagickCore::UserSpaceOnUse;
+  using MagickCore::ObjectBoundingBox;
 
   // Color-space types
   using MagickCore::ColorspaceType;

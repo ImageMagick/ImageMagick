@@ -478,6 +478,73 @@ private:
   CoordinateList _coordinates;
 };
 
+  // Sets the border color to be used for drawing bordered objects.
+  class MagickPPExport DrawableBorderColor : public DrawableBase
+  {
+  public:
+
+    DrawableBorderColor(const Color &color_);
+  
+    DrawableBorderColor(const DrawableBorderColor &original_);
+  
+    ~DrawableBorderColor(void);
+  
+    // Operator to invoke equivalent draw API call
+    void operator()(MagickCore::DrawingWand *context_) const;
+
+    void color(const Color &color_);
+    Color color(void) const;
+  
+    // Return polymorphic copy of object
+    DrawableBase* copy() const;
+  
+  private:
+    Color _color;
+  };
+
+  // Sets the polygon fill rule to be used by the clipping path.
+  class MagickPPExport DrawableClipRule : public DrawableBase
+  {
+  public:
+
+    DrawableClipRule(const FillRule fillRule_);
+
+    ~DrawableClipRule(void);
+
+    // Operator to invoke equivalent draw API call
+    void operator()(MagickCore::DrawingWand *context_) const;
+
+    void fillRule(const FillRule fillRule_);
+    FillRule fillRule(void) const;
+
+    // Return polymorphic copy of object
+    DrawableBase* copy() const;
+
+  private:
+    FillRule _fillRule;
+  };
+
+  // Sets the interpretation of clip path units.
+  class MagickPPExport DrawableClipUnits : public DrawableBase
+  {
+  public:
+
+    DrawableClipUnits(const ClipPathUnits units_);
+
+    ~DrawableClipUnits(void);
+
+    // Operator to invoke equivalent draw API call
+    void operator()(MagickCore::DrawingWand *context_) const;
+
+    void units(const ClipPathUnits units_);
+    ClipPathUnits units(void) const;
+
+    // Return polymorphic copy of object
+    DrawableBase* copy() const;
+
+  private:
+    ClipPathUnits _units;
+  };
 
 // Pop (terminate) clip path definition
 class MagickPPExport DrawablePopClipPath : public DrawableBase
@@ -906,6 +973,33 @@ public:
 private:
   Color _color;
 };
+
+  // Sets the URL to use as a fill pattern for filling objects. Only local
+  // URLs("#identifier") are supported at this time. These local URLs are
+  // normally created by defining a named fill pattern with
+  // DrawablePushPattern/DrawablePopPattern.
+  class MagickPPExport DrawableFillPatternUrl : public DrawableBase
+  {
+  public:
+
+    DrawableFillPatternUrl(const std::string &url_);
+
+    ~DrawableFillPatternUrl(void);
+
+    DrawableFillPatternUrl(const DrawableFillPatternUrl& original_);
+
+    // Operator to invoke equivalent draw API call
+    void operator()(MagickCore::DrawingWand *context_) const;
+
+    void url(const std::string &url_);
+    std::string url(void) const;
+
+    // Return polymorphic copy of object
+    DrawableBase* copy() const;
+  
+  private:
+    std::string _url;
+  };
 
 // Specify fill rule (fill-rule)
 class MagickPPExport DrawableFillRule : public DrawableBase
@@ -1592,20 +1686,47 @@ private:
   double _angle;
 };
 
-// Stroke dasharray
-//
-// dasharray_ is an allocated array terminated by value 0.0 or 0.
-// The array is copied so the original does not need to be preserved.
-// Pass a null pointer to clear an existing dash array setting.
-class MagickPPExport DrawableDashArray : public DrawableBase
-{
-public:
+  // Stroke dasharray
+  //
+  // dasharray_ is an allocated array terminated by value 0.0 or 0.
+  // The array is copied so the original does not need to be preserved.
+  // Pass a null pointer to clear an existing dash array setting.
+  class MagickPPExport DrawableStrokeDashArray : public DrawableBase
+  {
+  public:
 
-    DrawableDashArray(const double* dasharray_);
+      DrawableStrokeDashArray(const double* dasharray_);
 
-    DrawableDashArray(const Magick::DrawableDashArray &original_);
+      DrawableStrokeDashArray(const Magick::DrawableStrokeDashArray &original_);
 
-    ~DrawableDashArray(void);
+      ~DrawableStrokeDashArray(void);
+
+      // Operator to invoke equivalent draw API call
+      void operator()(MagickCore::DrawingWand *context_) const;
+  
+      // Return polymorphic copy of object
+      DrawableBase* copy() const;
+  
+      void dasharray(const double* dasharray_);
+      const double* dasharray(void) const;
+
+      DrawableStrokeDashArray& operator=(
+        const Magick::DrawableStrokeDashArray &original_);
+
+  private:
+      size_t _size;
+      double *_dasharray;
+  };
+
+  // Stroke dashoffset
+  class MagickPPExport DrawableStrokeDashOffset : public DrawableBase
+  {
+  public:
+    DrawableStrokeDashOffset(const double offset_)
+      : _offset(offset_)
+      { }
+
+     ~DrawableStrokeDashOffset(void);
 
     // Operator to invoke equivalent draw API call
     void operator()(MagickCore::DrawingWand *context_) const;
@@ -1613,49 +1734,12 @@ public:
     // Return polymorphic copy of object
     DrawableBase* copy() const;
 
-    void dasharray(const double* dasharray_);
-
-    const double* dasharray(void) const
-    {
-      return _dasharray;
-    }
-
-    DrawableDashArray& operator=(const Magick::DrawableDashArray &original_);
-
-private:
-
-    size_t _size;
-    double *_dasharray;
-};
-
-// Stroke dashoffset
-class MagickPPExport DrawableDashOffset : public DrawableBase
-{
-public:
-  DrawableDashOffset ( const double offset_ )
-    : _offset(offset_)
-    { }
-
-  /*virtual*/ ~DrawableDashOffset ( void );
-
-  // Operator to invoke equivalent draw API call
-  /*virtual*/ void operator()( MagickCore::DrawingWand *context_ ) const;
-
-  // Return polymorphic copy of object
-  /*virtual*/ DrawableBase* copy() const;
-
-  void offset( const double offset_ )
-    {
-      _offset = offset_;
-    }
-  double offset( void ) const
-    {
-      return _offset;
-    }
-
-private:
-  double _offset;
-};
+    void offset(const double offset_);
+    double offset(void) const;
+  
+  private:
+    double _offset;
+  };
 
 // Stroke linecap
 class MagickPPExport DrawableStrokeLineCap : public DrawableBase
@@ -1744,6 +1828,29 @@ private:
   size_t _miterlimit;
 };
 
+// Sets the pattern used for stroking object outlines.
+class MagickPPExport DrawableStrokePatternUrl : public DrawableBase
+{
+public:
+
+  DrawableStrokePatternUrl(const std::string &url_);
+
+  ~DrawableStrokePatternUrl(void);
+
+  DrawableStrokePatternUrl(const DrawableStrokePatternUrl& original_);
+
+  // Operator to invoke equivalent draw API call
+  void operator()(MagickCore::DrawingWand *context_) const;
+
+  void url(const std::string &url_);
+  std::string url(void) const;
+
+  // Return polymorphic copy of object
+  DrawableBase* copy() const;
+
+private:
+  std::string _url;
+};
 
 // Stroke antialias
 class MagickPPExport DrawableStrokeAntialias : public DrawableBase
@@ -1920,6 +2027,30 @@ private:
   double      _y;
   std::string _text;
   std::string _encoding;
+};
+
+// Text alignment
+class MagickPPExport DrawableTextAlignment : public DrawableBase
+{
+public:
+
+  DrawableTextAlignment(AlignType alignment_);
+
+  DrawableTextAlignment(const DrawableTextAlignment& original_);
+
+  ~DrawableTextAlignment(void);
+
+  // Operator to invoke equivalent draw API call
+  void operator()(MagickCore::DrawingWand *context_) const;
+
+  void alignment(AlignType alignment_);
+  AlignType alignment(void) const;
+
+  // Return polymorphic copy of object
+  DrawableBase* copy() const;
+
+private:
+  AlignType _alignment;
 };
 
 // Text antialias
