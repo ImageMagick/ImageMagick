@@ -447,6 +447,7 @@ MagickExport Image *AppendImages(const Image *images,
     *next;
 
   size_t
+    depth,
     height,
     number_images,
     width;
@@ -469,9 +470,12 @@ MagickExport Image *AppendImages(const Image *images,
   number_images=1;
   width=images->columns;
   height=images->rows;
+  depth=images->depth;
   next=GetNextImageInList(images);
   for ( ; next != (Image *) NULL; next=GetNextImageInList(next))
   {
+    if (next->depth > depth)
+      depth=next->depth;
     if (next->matte != MagickFalse)
       matte=MagickTrue;
     number_images++;
@@ -498,6 +502,7 @@ MagickExport Image *AppendImages(const Image *images,
       append_image=DestroyImage(append_image);
       return((Image *) NULL);
     }
+  append_image->depth=depth;
   append_image->matte=matte;
   (void) SetImageBackgroundColor(append_image);
   status=MagickTrue;
