@@ -1022,8 +1022,8 @@ static MagickBooleanType RenderType(Image *image,const DrawInfo *draw_info,
 #if defined(MAGICKCORE_FREETYPE_DELEGATE)
 
 static size_t ComplexTextLayout(const char *text,const size_t length,
-  const FT_Face face,const raqm_direction_t direction,const double kerning,
-  const FT_Int32 flags,raqm_glyph_info_t **grapheme)
+  const FT_Face face,const raqm_direction_t direction,const FT_Int32 flags,
+  raqm_glyph_info_t **grapheme)
 {
 #if defined(MAGICKCORE_CTL_DELEGATE)
   return(raqm_shape(text,length,face,direction,&grapheme));
@@ -1055,16 +1055,14 @@ static size_t ComplexTextLayout(const char *text,const size_t length,
         if (FT_HAS_KERNING(face))
           {
             FT_Vector
-              kerning_vector;
+              kerning;
 
             ft_status=FT_Get_Kerning(face,last_glyph,(*grapheme)[i].index,
-              ft_kerning_default,&kerning_vector);
+              ft_kerning_default,&kerning);
             if (ft_status == 0)
-              (*grapheme)[i].x_offset=(FT_Pos) ((direction ==
-                RAQM_DIRECTION_RTL ? -1.0 : 1.0)*kerning_vector.x);
+              (*grapheme)[i-1].x_advance+=(FT_Pos) ((direction ==
+                RAQM_DIRECTION_RTL ? -1.0 : 1.0)*kerning.x);
           }
-        (*grapheme)[i].x_offset=(FT_Pos) (64.0*(direction ==
-          RAQM_DIRECTION_RTL ? -1.0 : 1.0)*kerning);
       }
     ft_status=FT_Load_Glyph(face,(*grapheme)[i].index,flags);
     (*grapheme)[i].x_advance=face->glyph->advance.x;
@@ -1429,8 +1427,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
     if (draw_info->direction == LeftToRightDirection)
       direction=RAQM_DIRECTION_LTR;
   grapheme=(raqm_glyph_info_t *) NULL;
-  length=ComplexTextLayout(p,strlen(p),face,direction,draw_info->kerning,flags,
-    &grapheme);
+  length=ComplexTextLayout(p,strlen(p),face,direction,flags,&grapheme);
   code=0;
   for (i=0; i < (ssize_t) length; i++)
   {
