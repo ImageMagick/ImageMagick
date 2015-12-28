@@ -1038,7 +1038,7 @@ static size_t ComplexTextLayout(const char *text,const size_t length,
     last_glyph;
 
   /*
-    Simple layout for bi-direction text (right-to-left or left-to-right).
+    Simple layout for bi-directional text (right-to-left or left-to-right).
   */
   *grapheme=(raqm_glyph_info_t *) AcquireQuantumMemory(length+1,
     sizeof(**grapheme));
