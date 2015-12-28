@@ -998,8 +998,8 @@ static MagickBooleanType RenderType(Image *image,const DrawInfo *draw_info,
 #if defined(MAGICKCORE_FREETYPE_DELEGATE)
 
 static size_t ComplexTextLayout(const char *text,const size_t length,
-  const FT_Face face,const raqm_direction_t direction,
-  const FT_Int32 flags,raqm_glyph_info_t **grapheme)
+  const FT_Face face,const raqm_direction_t direction,const FT_Int32 flags,
+  raqm_glyph_info_t **grapheme)
 {
 #if defined(MAGICKCORE_CTL_DELEGATE)
   return((size_t) raqm_shape(text,length,face,direction,&grapheme));
@@ -1014,7 +1014,7 @@ static size_t ComplexTextLayout(const char *text,const size_t length,
     last_glyph;
 
   /*
-    Simple layout for bi-direction text (right-to-left or left-to-right).
+    Simple layout for bi-directional text (right-to-left or left-to-right).
   */
   *grapheme=(raqm_glyph_info_t *) AcquireQuantumMemory(length+1,
     sizeof(**grapheme));
