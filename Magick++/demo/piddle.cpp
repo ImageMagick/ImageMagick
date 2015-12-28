@@ -82,11 +82,11 @@ int main( int /*argc*/, char ** argv)
     //
     {
       const double dash_array[] = {4.0, 3.0, 0.0};
-      drawList.push_back(DrawableDashArray(dash_array));
+      drawList.push_back(DrawableStrokeDashArray(dash_array));
       drawList.push_back(DrawableStrokeColor("red"));
       drawList.push_back(DrawableStrokeWidth(1));
       drawList.push_back(DrawableLine(10,200, 54,182));
-      drawList.push_back(DrawableDashArray((double *) 0));
+      drawList.push_back(DrawableStrokeDashArray((double *) 0));
     }
 
     //
