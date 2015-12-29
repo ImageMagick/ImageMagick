@@ -108,7 +108,7 @@
 %
 */
 
-typedef struct _CCObject
+typedef struct _CCObjectInfo
 {
   ssize_t
     id;
@@ -125,16 +125,16 @@ typedef struct _CCObject
   double
     area,
     census;
-} CCObject;
+} CCObjectInfo;
 
-static int CCObjectCompare(const void *x,const void *y)
+static int CCObjectInfoCompare(const void *x,const void *y)
 {
-  CCObject
+  CCObjectInfo
     *p,
     *q;
 
-  p=(CCObject *) x;
-  q=(CCObject *) y;
+  p=(CCObjectInfo *) x;
+  q=(CCObjectInfo *) y;
   return((int) (q->area-(ssize_t) p->area));
 }
 
@@ -147,11 +147,11 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
     *image_view,
     *component_view;
 
+  CCObjectInfo
+    *object;
+
   char
     *p;
-
-  CCObject
-    *object;
 
   const char
     *artifact;
@@ -220,8 +220,8 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
     }
   for (n=0; n < (ssize_t) (image->columns*image->rows); n++)
     (void) SetMatrixElement(equivalences,n,0,&n);
-  object=(CCObject *) AcquireQuantumMemory(MaxColormapSize,sizeof(*object));
-  if (object == (CCObject *) NULL)
+  object=(CCObjectInfo *) AcquireQuantumMemory(MaxColormapSize,sizeof(*object));
+  if (object == (CCObjectInfo *) NULL)
     {
       equivalences=DestroyMatrixInfo(equivalences);
       component_image=DestroyImage(component_image);
@@ -437,7 +437,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
   equivalences=DestroyMatrixInfo(equivalences);
   if (n > (ssize_t) MaxColormapSize)
     {
-      object=(CCObject *) RelinquishMagickMemory(object);
+      object=(CCObjectInfo *) RelinquishMagickMemory(object);
       component_image=DestroyImage(component_image);
       ThrowImageException(ResourceLimitError,"TooManyObjects");
     }
@@ -703,7 +703,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       }
       component_view=DestroyCacheView(component_view);
       qsort((void *) object,component_image->colors,sizeof(*object),
-        CCObjectCompare);
+        CCObjectInfoCompare);
       (void) fprintf(stdout,
         "Objects (id: bounding-box centroid area mean-color):\n");
       for (i=0; i < (ssize_t) component_image->colors; i++)
@@ -724,6 +724,6 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
           object[i].centroid.y,(double) object[i].area,mean_color);
       }
     }
-  object=(CCObject *) RelinquishMagickMemory(object);
+  object=(CCObjectInfo *) RelinquishMagickMemory(object);
   return(component_image);
 }
