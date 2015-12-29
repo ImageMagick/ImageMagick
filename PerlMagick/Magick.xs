@@ -11271,7 +11271,7 @@ Mogrify(ref,...)
             verbose=argument_list[1].integer_reference != 0 ?
               MagickTrue : MagickFalse;
           image=ConnectedComponentsImage(image,stdout,connectivity,verbose,
-            exception);
+            (CCObjectInfo **) NULLexception);
           break;
         }
         case 143:  /* Copy */

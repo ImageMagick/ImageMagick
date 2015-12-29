@@ -2103,7 +2103,8 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           if (IfMagickFalse(IsGeometry(arg1)))
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           new_image=ConnectedComponentsImage(_image,stdout,(size_t)
-            StringToInteger(arg1),_image_info->verbose,_exception);
+            StringToInteger(arg1),_image_info->verbose,(CCObjectInfo **) NULL,
+            _exception);
           break;
         }
       if (LocaleCompare("contrast",option+1) == 0)

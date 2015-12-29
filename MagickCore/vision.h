@@ -22,9 +22,28 @@
 extern "C" {
 #endif
 
+typedef struct _CCObjectInfo
+{
+  ssize_t
+    id;
+
+  RectangleInfo
+    bounding_box;
+
+  PixelInfo
+    color;
+
+  PointInfo
+    centroid;
+
+  double
+    area,
+    census;
+} CCObjectInfo;
+
 extern MagickExport Image
   *ConnectedComponentsImage(const Image *,FILE *,const size_t,
-    const MagickBooleanType,ExceptionInfo *);
+    const MagickBooleanType,CCObjectInfo **,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

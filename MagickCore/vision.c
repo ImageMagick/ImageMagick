@@ -91,13 +91,19 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  ConnectedComponentsImage() returns the connected-components of the image
-%  uniquely labeled.  Choose from 4 or 8-way connectivity.
+%  uniquely labeled.  The returned connected components image colors member
+%  defines the number of unique objects.  Choose from 4 or 8-way connectivity.
+%
+%  You are responsible for freeing the connected components objects resources
+%  with this statement;
+%
+%    objects = (CCObjectInfo *) RelinquishMagickMemory(objects);
 %
 %  The format of the ConnectedComponentsImage method is:
 %
 %      Image *ConnectedComponentsImage(const Image *image,FILE *file,
 %        const size_t connectivity,const MagickBooleanType verbose,
-%        ExceptionInfo *exception)
+%        CCObjectInfo **objects,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -110,43 +116,26 @@
 %    o verbose: A value other than zero prints more detailed information
 %      about the image.
 %
+%    o objects: return the attributes of each unique object.
+%
 %    o exception: return any errors or warnings in this structure.
 %
 */
 
-typedef struct _CCObject
+static int CCObjectInfoCompare(const void *x,const void *y)
 {
-  ssize_t
-    id;
-
-  RectangleInfo
-    bounding_box;
-
-  PixelInfo
-    color;
-
-  PointInfo
-    centroid;
-
-  double
-    area,
-    census;
-} CCObject;
-
-static int CCObjectCompare(const void *x,const void *y)
-{
-  CCObject
+  CCObjectInfo
     *p,
     *q;
 
-  p=(CCObject *) x;
-  q=(CCObject *) y;
+  p=(CCObjectInfo *) x;
+  q=(CCObjectInfo *) y;
   return((int) (q->area-(ssize_t) p->area));
 }
 
 MagickExport Image *ConnectedComponentsImage(const Image *image,FILE *file,
   const size_t connectivity,const MagickBooleanType verbose,
-  ExceptionInfo *exception)
+  CCObjectInfo **objects,ExceptionInfo *exception)
 {
 #define ConnectedComponentsImageTag  "ConnectedComponents/Image"
 
@@ -154,11 +143,11 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,FILE *file,
     *image_view,
     *component_view;
 
+  CCObjectInfo
+    *object;
+
   char
     *p;
-
-  CCObject
-    *object;
 
   const char
     *artifact;
@@ -200,6 +189,8 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,FILE *file,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
+  if (objects != (CCObjectInfo **) NULL)
+    *objects=(CCObjectInfo *) NULL;
   component_image=CloneImage(image,image->columns,image->rows,MagickTrue,
     exception);
   if (component_image == (Image *) NULL)
@@ -227,8 +218,8 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,FILE *file,
     }
   for (n=0; n < (ssize_t) (image->columns*image->rows); n++)
     (void) SetMatrixElement(equivalences,n,0,&n);
-  object=(CCObject *) AcquireQuantumMemory(MaxColormapSize,sizeof(*object));
-  if (object == (CCObject *) NULL)
+  object=(CCObjectInfo *) AcquireQuantumMemory(MaxColormapSize,sizeof(*object));
+  if (object == (CCObjectInfo *) NULL)
     {
       equivalences=DestroyMatrixInfo(equivalences);
       component_image=DestroyImage(component_image);
@@ -440,7 +431,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,FILE *file,
   equivalences=DestroyMatrixInfo(equivalences);
   if (n > (ssize_t) MaxColormapSize)
     {
-      object=(CCObject *) RelinquishMagickMemory(object);
+      object=(CCObjectInfo *) RelinquishMagickMemory(object);
       component_image=DestroyImage(component_image);
       ThrowImageException(ResourceLimitError,"TooManyObjects");
     }
@@ -464,7 +455,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,FILE *file,
   if (area_threshold > 0.0)
     {
       /*
-        Merge objects below area threshold.
+        Merge object below area threshold.
       */
       component_view=AcquireAuthenticCacheView(component_image,exception);
       for (i=0; i < (ssize_t) component_image->colors; i++)
@@ -557,18 +548,13 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,FILE *file,
         Replace object with mean color.
       */
       for (i=0; i < (ssize_t) component_image->colors; i++)
-      {
-        component_image->colormap[i].red=object[i].color.red;
-        component_image->colormap[i].green=object[i].color.green;
-        component_image->colormap[i].blue=object[i].color.blue;
-        component_image->colormap[i].alpha=object[i].color.alpha;
-      }
+        component_image->colormap[i]=object[i].color;
     }
   artifact=GetImageArtifact(image,"connected-components:keep");
   if (artifact != (const char *) NULL)
     {
       /*
-        Keep these objects (make others transparent).
+        Keep these object (make others transparent).
       */
       for (i=0; i < (ssize_t) component_image->colors; i++)
         object[i].census=0;
@@ -603,7 +589,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,FILE *file,
   if (artifact != (const char *) NULL)
     {
       /*
-        Remove these objects (make them transparent).
+        Remove these object (make them transparent).
       */
       for (p=(char *) artifact; *p != '\0';)
       {
@@ -632,7 +618,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,FILE *file,
   if (verbose != MagickFalse)
     {
       /*
-        Report statistics on unique objects.
+        Report statistics on unique object.
       */
       for (i=0; i < (ssize_t) component_image->colors; i++)
       {
@@ -691,7 +677,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,FILE *file,
       }
       component_view=DestroyCacheView(component_view);
       qsort((void *) object,component_image->colors,sizeof(*object),
-        CCObjectCompare);
+        CCObjectInfoCompare);
       (void) fprintf(file,
         "Objects (id: bounding-box centroid area mean-color):\n");
       for (i=0; i < (ssize_t) component_image->colors; i++)
@@ -712,6 +698,9 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,FILE *file,
           object[i].centroid.y,(double) object[i].area,mean_color);
       }
     }
-  object=(CCObject *) RelinquishMagickMemory(object);
+  if (objects == (CCObjectInfo **) NULL)
+    object=(CCObjectInfo *) RelinquishMagickMemory(object);
+  else
+    *objects=object;
   return(component_image);
 }
