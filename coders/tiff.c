@@ -3352,7 +3352,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
                   MagickFalse ? PHOTOMETRIC_MINISWHITE :
                   PHOTOMETRIC_MINISBLACK);
                 (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,1);
-                if ((image_info->depth == 0) && (image->matte == MagickFalse) &&
+                if ((image->depth == 1) && (image->matte == MagickFalse) &&
                     (SetImageMonochrome(image,&image->exception) != MagickFalse))
                   {
                     status=SetQuantumDepth(image,quantum_info,1);
