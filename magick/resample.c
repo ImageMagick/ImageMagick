@@ -616,7 +616,8 @@ MagickExport MagickBooleanType ResamplePixelColor(
              sqrt(Q));    /* a SquareRoot!  Arrggghhhhh... */
 #endif
 
-        pixel->opacity  += weight*pixels->opacity;
+        if (pixel->matte != MagickFalse)
+          pixel->opacity  += weight*pixels->opacity;
         divisor_m += weight;
 
         if (pixel->matte != MagickFalse)
