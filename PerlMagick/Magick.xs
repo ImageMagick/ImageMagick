@@ -555,7 +555,8 @@ static struct
       {"distance", RealReference} } },
     { "Kuwahara", { {"geometry", StringReference}, {"radius", RealReference},
       {"sigma", RealReference}, {"channel", MagickChannelOptions} } },
-    { "ConnectedComponents", { {"connectivity", IntegerReference} } },
+    { "ConnectedComponents", { {"connectivity", IntegerReference},
+      {"verbose", MagickBooleanOptions} } },
     { "CopyPixels", { {"image", ImageReference}, {"geometry", StringReference},
       {"width", IntegerReference}, {"height", IntegerReference},
       {"x", IntegerReference}, {"y", IntegerReference},
@@ -9131,8 +9132,8 @@ Mogrify(ref,...)
             geometry.height=argument_list[2].integer_reference;
           if (attribute_flag[3] == 0)
             argument_list[3].integer_reference=1;
-          (void) RaiseImage(image,&geometry,argument_list[3].integer_reference !=
-            0 ? MagickTrue : MagickFalse);
+          (void) RaiseImage(image,&geometry,argument_list[3].integer_reference
+            != 0 ? MagickTrue : MagickFalse);
           break;
         }
         case 50:  /* Segment */
@@ -10977,12 +10978,21 @@ Mogrify(ref,...)
         }
         case 145:  /* ConnectedComponent */
         {
+          MagickBooleanType
+            verbose;
+
           size_t
             connectivity;
 
           connectivity=4;
+          verbose=MagickFalse;
           if (attribute_flag[0] != 0)
             connectivity=argument_list[0].integer_reference;
+          if (attribute_flag[1] != 0)
+            verbose=argument_list[4].integer_reference != 0 ?
+              MagickTrue : MagickFalse;
+          if (verbose != MagickFalse)
+            SetImageArtifact(image,"connected-components","true");
           image=ConnectedComponentsImage(image,connectivity,exception);
           break;
         }
