@@ -95,14 +95,20 @@
 %
 %  The format of the ConnectedComponentsImage method is:
 %
-%      Image *ConnectedComponentsImage(const Image *image,
-%        const size_t connectivity,ExceptionInfo *exception)
+%      Image *ConnectedComponentsImage(const Image *image,FILE *file,
+%        const size_t connectivity,const MagickBooleanType verbose,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
+%    o file: the file, typically stdout.
+%
 %    o connectivity: how many neighbors to visit, choose from 4 or 8.
+%
+%    o verbose: A value other than zero prints more detailed information
+%      about the image.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -138,8 +144,9 @@ static int CCObjectCompare(const void *x,const void *y)
   return((int) (q->area-(ssize_t) p->area));
 }
 
-MagickExport Image *ConnectedComponentsImage(const Image *image,
-  const size_t connectivity,ExceptionInfo *exception)
+MagickExport Image *ConnectedComponentsImage(const Image *image,FILE *file,
+  const size_t connectivity,const MagickBooleanType verbose,
+  ExceptionInfo *exception)
 {
 #define ConnectedComponentsImageTag  "ConnectedComponents/Image"
 
@@ -622,8 +629,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       }
     }
   (void) SyncImage(component_image,exception);
-  artifact=GetImageArtifact(image,"connected-components:verbose");
-  if (IsStringTrue(artifact) != MagickFalse)
+  if (verbose != MagickFalse)
     {
       /*
         Report statistics on unique objects.
@@ -686,7 +692,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       component_view=DestroyCacheView(component_view);
       qsort((void *) object,component_image->colors,sizeof(*object),
         CCObjectCompare);
-      (void) fprintf(stdout,
+      (void) fprintf(file,
         "Objects (id: bounding-box centroid area mean-color):\n");
       for (i=0; i < (ssize_t) component_image->colors; i++)
       {
@@ -698,7 +704,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         if (object[i].area < MagickEpsilon)
           continue;
         GetColorTuple(&object[i].color,MagickFalse,mean_color);
-        (void) fprintf(stdout,
+        (void) fprintf(file,
           "  %.20g: %.20gx%.20g%+.20g%+.20g %.1f,%.1f %.20g %s\n",(double)
           object[i].id,(double) object[i].bounding_box.width,(double)
           object[i].bounding_box.height,(double) object[i].bounding_box.x,
