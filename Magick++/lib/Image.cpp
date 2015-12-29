@@ -2565,7 +2565,8 @@ void Magick::Image::connectedComponents(const size_t connectivity_)
     *newImage;
 
   GetPPException;
-  newImage=ConnectedComponentsImage(constImage(),connectivity_,exceptionInfo);
+  newImage=ConnectedComponentsImage(constImage(),stdout,connectivity_,
+    MagickFalse,exceptionInfo);
   replaceImage(newImage);
   ThrowImageException;
 }
