@@ -3352,14 +3352,8 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
                   MagickFalse ? PHOTOMETRIC_MINISWHITE :
                   PHOTOMETRIC_MINISBLACK);
                 (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,1);
-                if ((image->depth == 1) && (image->matte == MagickFalse) &&
-                    (SetImageMonochrome(image,&image->exception) != MagickFalse))
-                  {
-                    status=SetQuantumDepth(image,quantum_info,1);
-                    if (status == MagickFalse)
-                      ThrowWriterException(ResourceLimitError,
-                        "MemoryAllocationFailed");
-                  }
+                if ((image->depth == 1) && (image->matte == MagickFalse))
+                  SetImageMonochrome(image,&image->exception);
               }
             else
               if (image->storage_class == PseudoClass)
