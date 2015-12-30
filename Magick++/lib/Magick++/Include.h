@@ -277,6 +277,7 @@ namespace Magick
   // Structures
   using MagickCore::AffineMatrix;
   using MagickCore::CacheView;
+  using MagickCore::CCObjectInfo;
   using MagickCore::DrawInfo;
   using MagickCore::DrawingWand;
   using MagickCore::ExceptionInfo;
