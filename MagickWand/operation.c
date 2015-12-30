@@ -2102,7 +2102,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
         {
           if (IfMagickFalse(IsGeometry(arg1)))
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
-          new_image=ConnectedComponentsImage(_image,stdout,(size_t)
+          new_image=ConnectedComponentsImage(_image,(size_t)
             StringToInteger(arg1),_image_info->verbose,(CCObjectInfo **) NULL,
             _exception);
           break;

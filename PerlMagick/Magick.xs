@@ -11270,7 +11270,7 @@ Mogrify(ref,...)
           if (attribute_flag[1] != 0)
             verbose=argument_list[1].integer_reference != 0 ?
               MagickTrue : MagickFalse;
-          image=ConnectedComponentsImage(image,stdout,connectivity,verbose,
+          image=ConnectedComponentsImage(image,connectivity,verbose,
             (CCObjectInfo **) NULLexception);
           break;
         }

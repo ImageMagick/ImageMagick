@@ -101,15 +101,13 @@
 %
 %  The format of the ConnectedComponentsImage method is:
 %
-%      Image *ConnectedComponentsImage(const Image *image,FILE *file,
+%      Image *ConnectedComponentsImage(const Image *image,
 %        const size_t connectivity,const MagickBooleanType verbose,
 %        CCObjectInfo **objects,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
-%
-%    o file: the file, typically stdout.
 %
 %    o connectivity: how many neighbors to visit, choose from 4 or 8.
 %
@@ -133,7 +131,7 @@ static int CCObjectInfoCompare(const void *x,const void *y)
   return((int) (q->area-(ssize_t) p->area));
 }
 
-MagickExport Image *ConnectedComponentsImage(const Image *image,FILE *file,
+MagickExport Image *ConnectedComponentsImage(const Image *image,
   const size_t connectivity,const MagickBooleanType verbose,
   CCObjectInfo **objects,ExceptionInfo *exception)
 {
@@ -678,7 +676,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,FILE *file,
       component_view=DestroyCacheView(component_view);
       qsort((void *) object,component_image->colors,sizeof(*object),
         CCObjectInfoCompare);
-      (void) fprintf(file,
+      (void) fprintf(stdout,
         "Objects (id: bounding-box centroid area mean-color):\n");
       for (i=0; i < (ssize_t) component_image->colors; i++)
       {
@@ -690,7 +688,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,FILE *file,
         if (object[i].area < MagickEpsilon)
           continue;
         GetColorTuple(&object[i].color,MagickFalse,mean_color);
-        (void) fprintf(file,
+        (void) fprintf(stdout,
           "  %.20g: %.20gx%.20g%+.20g%+.20g %.1f,%.1f %.20g %s\n",(double)
           object[i].id,(double) object[i].bounding_box.width,(double)
           object[i].bounding_box.height,(double) object[i].bounding_box.x,
