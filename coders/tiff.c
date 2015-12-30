@@ -3194,6 +3194,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
       case Group4Compression:
       {
         (void) SetImageType(image,BilevelType,exception);
+        (void) SetImageDepth(image,1,exception);
         break;
       }
       case JPEGCompression:
