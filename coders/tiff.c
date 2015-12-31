@@ -2486,6 +2486,8 @@ static MagickBooleanType WriteGROUP4Image(const ImageInfo *image_info,
   (void) SetImageType(huffman_image,BilevelType,exception);
   write_info=CloneImageInfo((ImageInfo *) NULL);
   SetImageInfoFile(write_info,file);
+  (void) SetImageType(image,BilevelType,exception);
+  (void) SetImageDepth(image,1,exception);
   write_info->compression=Group4Compression;
   write_info->type=BilevelType;
   (void) SetImageOption(write_info,"quantum:polarity","min-is-white");
