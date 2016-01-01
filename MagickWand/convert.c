@@ -1136,7 +1136,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("concurrent",option+1) == 0)
           break;
-        if (LocaleCompare("connected-component",option+1) == 0)
+        if (LocaleCompare("connected-components",option+1) == 0)
           {
             i++;
             if (i == (ssize_t) argc)

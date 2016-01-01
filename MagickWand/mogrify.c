@@ -1191,7 +1191,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               MagickFalse,argv[i+1]);
             break;
           }
-        if (LocaleCompare("connected-component",option+1) == 0)
+        if (LocaleCompare("connected-components",option+1) == 0)
           {
             (void) SyncImageSettings(mogrify_info,*image,exception);
             mogrify_image=ConnectedComponentsImage(*image,(size_t)
