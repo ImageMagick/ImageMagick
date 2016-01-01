@@ -604,6 +604,7 @@ MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
     *text;
 
   MagickBooleanType
+    digit,
     status;
 
   register char
@@ -620,13 +621,16 @@ MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
   ssize_t
     n;
 
+  digit=MagickFalse;
   text=AcquireString(draw_info->text);
   q=draw_info->text;
   s=(char *) NULL;
   for (p=(*caption); GetUTFCode(p) != 0; p+=GetUTFOctets(p))
   {
-    if (IsUTFSpace(GetUTFCode(p)) != MagickFalse)
+    if ((digit == MagickFalse) && (IsUTFSpace(GetUTFCode(p)) != MagickFalse))
       s=p;
+    digit=((GetUTFCode(p) >= 0x0030) && (GetUTFCode(p) <= 0x0039)) ?
+      MagickTrue : MagickFalse;
     if (GetUTFCode(p) == '\n')
       q=draw_info->text;
     for (i=0; i < (ssize_t) GetUTFOctets(p); i++)
