@@ -294,6 +294,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
           Resolve this equivalence.
         */
         offset=y*image->columns+x;
+        neighbor_offset=dy*image->columns+dx;
         ox=offset;
         status=GetMatrixElement(equivalences,ox,0,&object);
         while (object != ox)
