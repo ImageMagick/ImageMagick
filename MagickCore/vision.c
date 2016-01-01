@@ -102,17 +102,14 @@
 %  The format of the ConnectedComponentsImage method is:
 %
 %      Image *ConnectedComponentsImage(const Image *image,
-%        const size_t connectivity,const MagickBooleanType verbose,
-%        CCObjectInfo **objects,ExceptionInfo *exception)
+%        const size_t connectivity,CCObjectInfo **objects,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
 %    o connectivity: how many neighbors to visit, choose from 4 or 8.
-%
-%    o verbose: A value other than zero prints more detailed information
-%      about the image.
 %
 %    o objects: return the attributes of each unique object.
 %
@@ -132,8 +129,7 @@ static int CCObjectInfoCompare(const void *x,const void *y)
 }
 
 MagickExport Image *ConnectedComponentsImage(const Image *image,
-  const size_t connectivity,const MagickBooleanType verbose,
-  CCObjectInfo **objects,ExceptionInfo *exception)
+  const size_t connectivity,CCObjectInfo **objects,ExceptionInfo *exception)
 {
 #define ConnectedComponentsImageTag  "ConnectedComponents/Image"
 
@@ -613,7 +609,8 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       }
     }
   (void) SyncImage(component_image,exception);
-  if (verbose != MagickFalse)
+  artifact=GetImageArtifact(image,"connected-components:verbose");
+  if (IsStringTrue(artifact) != MagickFalse)
     {
       /*
         Report statistics on unique object.

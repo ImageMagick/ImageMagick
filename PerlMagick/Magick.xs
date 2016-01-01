@@ -555,8 +555,7 @@ static struct
       {"distance", RealReference} } },
     { "Kuwahara", { {"geometry", StringReference}, {"radius", RealReference},
       {"sigma", RealReference}, {"channel", MagickChannelOptions} } },
-    { "ConnectedComponents", { {"connectivity", IntegerReference},
-      {"verbose", MagickBooleanOptions} } },
+    { "ConnectedComponents", { {"connectivity", IntegerReference} } },
     { "CopyPixels", { {"image", ImageReference}, {"geometry", StringReference},
       {"width", IntegerReference}, {"height", IntegerReference},
       {"x", IntegerReference}, {"y", IntegerReference},
@@ -11257,20 +11256,13 @@ Mogrify(ref,...)
         }
         case 142:  /* ConnectedComponent */
         {
-          MagickBooleanType
-            verbose;
-
           size_t
             connectivity;
 
           connectivity=4;
-          verbose=MagickFalse;
           if (attribute_flag[0] != 0)
             connectivity=argument_list[0].integer_reference;
-          if (attribute_flag[1] != 0)
-            verbose=argument_list[1].integer_reference != 0 ?
-              MagickTrue : MagickFalse;
-          image=ConnectedComponentsImage(image,connectivity,verbose,
+          image=ConnectedComponentsImage(image,connectivity,
             (CCObjectInfo **) NULL,exception);
           break;
         }
