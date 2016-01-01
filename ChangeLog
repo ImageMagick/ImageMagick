@@ -1,3 +1,6 @@
+2016-01-01  6.9.3-0 Cristy  <quetzlzacatenango@image...>
+  * New version 6.9.3-0, GIT revision 10445:620328b:20160101.
+
 2015-12-31  6.9.3-0 Cristy  <quetzlzacatenango@image...>
   * Don't break on euro-style numbers (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=28910).
