@@ -611,7 +611,8 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
     }
   (void) SyncImage(component_image,exception);
   artifact=GetImageArtifact(image,"connected-components:verbose");
-  if (IsStringTrue(artifact) != MagickFalse)
+  if ((IsStringTrue(artifact) != MagickFalse) ||
+      (objects != (CCObjectInfo **) NULL))
     {
       /*
         Report statistics on unique object.
@@ -674,24 +675,27 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       component_view=DestroyCacheView(component_view);
       qsort((void *) object,component_image->colors,sizeof(*object),
         CCObjectInfoCompare);
-      (void) fprintf(stdout,
-        "Objects (id: bounding-box centroid area mean-color):\n");
-      for (i=0; i < (ssize_t) component_image->colors; i++)
-      {
-        char
-          mean_color[MaxTextExtent];
+      if (objects == (CCObjectInfo **) NULL)
+        {
+          (void) fprintf(stdout,
+            "Objects (id: bounding-box centroid area mean-color):\n");
+          for (i=0; i < (ssize_t) component_image->colors; i++)
+          {
+            char
+              mean_color[MaxTextExtent];
 
-        if (status == MagickFalse)
-          break;
-        if (object[i].area < MagickEpsilon)
-          continue;
-        GetColorTuple(&object[i].color,MagickFalse,mean_color);
-        (void) fprintf(stdout,
-          "  %.20g: %.20gx%.20g%+.20g%+.20g %.1f,%.1f %.20g %s\n",(double)
-          object[i].id,(double) object[i].bounding_box.width,(double)
-          object[i].bounding_box.height,(double) object[i].bounding_box.x,
-          (double) object[i].bounding_box.y,object[i].centroid.x,
-          object[i].centroid.y,(double) object[i].area,mean_color);
+            if (status == MagickFalse)
+              break;
+            if (object[i].area < MagickEpsilon)
+              continue;
+            GetColorTuple(&object[i].color,MagickFalse,mean_color);
+            (void) fprintf(stdout,
+              "  %.20g: %.20gx%.20g%+.20g%+.20g %.1f,%.1f %.20g %s\n",(double)
+              object[i].id,(double) object[i].bounding_box.width,(double)
+              object[i].bounding_box.height,(double) object[i].bounding_box.x,
+              (double) object[i].bounding_box.y,object[i].centroid.x,
+              object[i].centroid.y,(double) object[i].area,mean_color);
+        }
       }
     }
   if (objects == (CCObjectInfo **) NULL)
