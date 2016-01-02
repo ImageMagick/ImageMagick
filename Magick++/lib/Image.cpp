@@ -2608,6 +2608,8 @@ void Magick::Image::convolve(const size_t order_,const double *kernel_)
   kernel_info=AcquireKernelInfo((const char *) NULL,exceptionInfo);
   kernel_info->width=order_;
   kernel_info->height=order_;
+  kernel_info->x=(ssize_t) (order_-1)/2;
+  kernel_info->y=(ssize_t) (order_-1)/2;
   kernel_info->values=(MagickRealType *) AcquireAlignedMemory(order_,
     order_*sizeof(*kernel_info->values));
   if (kernel_info->values != (MagickRealType *) NULL)
