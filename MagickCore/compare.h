@@ -45,7 +45,7 @@ extern MagickExport double
 extern MagickExport Image
   *CompareImages(Image *,const Image *,const MetricType,double *,
     ExceptionInfo *),
-  *SimilarityImage(Image *,const Image *,const MetricType,const double,
+  *SimilarityImage(const Image *,const Image *,const MetricType,const double,
     RectangleInfo *,double *,ExceptionInfo *);
 
 extern MagickExport MagickBooleanType

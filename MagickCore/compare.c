@@ -1841,7 +1841,7 @@ static double GetSimilarityMetric(const Image *image,const Image *reference,
   return(distortion);
 }
 
-MagickExport Image *SimilarityImage(Image *image,const Image *reference,
+MagickExport Image *SimilarityImage(const Image *image,const Image *reference,
   const MetricType metric,const double similarity_threshold,
   RectangleInfo *offset,double *similarity_metric,ExceptionInfo *exception)
 {
