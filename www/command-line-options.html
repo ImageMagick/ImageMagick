@@ -1794,6 +1794,31 @@ available:</p>
   </tr>
 
   <tr>
+    <td>connected-components:area-threshold=<var>value</var></td>
+    <td>Merges any region with area smaller than <var>value</var> into its surrounding region or largest neighbor.</td>
+  </tr>
+
+  <tr>
+    <td>connected-components:keep=<var>list-of-ids</var></td>
+    <td>Command and/or hyphenated list of id values to keep in the output. Supported in Imagemagick 6.9.3-0.</td>
+  </tr>
+
+  <tr>
+    <td>connected-components:mean-color=<var>true</var></td>
+    <td>Changes the output image from id values to mean color values. Supported in Imagemagick 6.9.2-8.</td>
+  </tr>
+
+  <tr>
+    <td>connected-components:remove=<var>list-of-ids</var></td>
+    <td>Command and/or hyphenated list of id values to remove from the output. Supported in Imagemagick 6.9.2-9.</td>
+  </tr>
+
+  <tr>
+    <td>connected-components:verbose=<var>true</var></td>
+    <td>Lists id, bounding box, centroid, area, mean color for each region.</td>
+  </tr>
+
+  <tr>
     <td>convolve:scale=<var>{kernel_scale}[!^] [,{origin_addition}] [%]</var></td>
      <td>Defines the kernel scaling. The special flag ! automatically scales to 
     full dynamic range. The ! flag can be used in combination with a factor or 
@@ -1952,7 +1977,7 @@ available:</p>
     jpeg:extent=400KB</code>.  The JPEG encoder will search for the highest
     compression quality level that results in an output file that does not
     exceed the value. The <code>-quality</code> option also will be respected 
-    starting with version 6.9.3-5. Between 6.9.1-0 and 6.9.3-4, add -quality 
+    starting with version 6.9.2-5. Between 6.9.1-0 and 6.9.2-4, add -quality 
     100 in order for the jpeg:extent to work properly. Prior to 6.9.1-0, the 
     -quality setting was ignored.</td>
   </tr>
@@ -2248,7 +2273,7 @@ available:</p>
      <td>Disables new automatic un-blending of transparency with the base image 
      for the flattened layer 0 before adding the alpha channel to the output  
      image. This define must be placed before the input psd image. (Available 
-     as of IM 6.9.3.5). The automatic un-blending is new to IM 6.9.3.5 and 
+     as of IM 6.9.2.5). The automatic un-blending is new to IM 6.9.2.5 and 
      prevents the transparency from being applied twice in the output 
      image.</td>
   </tr>
@@ -7895,7 +7920,7 @@ href="command-line-options.html#colors">-colors</a> to reduce the number of colo
     <p><a href="command-line-options.html#">Back to top</a> •
     <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
     <a href="http://www.imagemagick.org/script/contact.php">Contact Us</a></p>
-        <p><small>©  1999-2015 ImageMagick Studio LLC</small></p>
+        <p><small>©  1999-2016 ImageMagick Studio LLC</small></p>
   </footer>
 </div><!-- /.container -->
 
@@ -7904,4 +7929,4 @@ href="command-line-options.html#colors">-colors</a> to reduce the number of colo
 </div>
 </body>
 </html>
-<!-- Magick Cache 9th December 2015 20:01 -->
+<!-- Magick Cache 2nd January 2016 12:46 -->
