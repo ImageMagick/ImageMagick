@@ -749,9 +749,8 @@ namespace Magick
     void colorMatrix(const size_t order_,const double *color_matrix_);
 
     // Compare current image with another image
-    // Sets meanErrorPerPixel, normalizedMaxError, and normalizedMeanError
-    // in the current image. False is returned if the images are identical.
-    bool compare(const Image &reference_);
+    // False is returned if the images are not identical.
+    bool compare(const Image &reference_) const;
 
     // Compare current image with another image
     // Returns the distortion based on the specified metric.
@@ -1295,6 +1294,10 @@ namespace Magick
     // QuantumRange and is a measure of the extent of the sepia toning.
     // A threshold of 80% is a good starting point for a reasonable tone.
     void sepiaTone(const double threshold_);
+
+    // Sets meanErrorPerPixel, normalizedMaxError, and normalizedMeanError
+    // in the current image. False is returned if the images are not identical.
+    bool setColorMetric(const Image &reference_);
 
     // Allocates a pixel cache region to store image pixels as defined
     // by the region rectangle.  This area is subsequently transferred

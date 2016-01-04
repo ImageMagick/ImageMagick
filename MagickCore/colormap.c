@@ -17,7 +17,7 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -114,7 +114,7 @@ MagickExport MagickBooleanType AcquireImageColormap(Image *image,
   assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  image->colors=MagickMax(colors,2);
+  image->colors=MagickMax(colors,1);
   if (image->colormap == (PixelInfo *) NULL)
     image->colormap=(PixelInfo *) AcquireQuantumMemory(image->colors,
       sizeof(*image->colormap));
@@ -133,7 +133,7 @@ MagickExport MagickBooleanType AcquireImageColormap(Image *image,
     double
       pixel;
 
-    pixel=(double) (i*(QuantumRange/(image->colors-1)));
+    pixel=(double) (i*(QuantumRange/MagickMax(colors-1,1)));
     GetPixelInfo(image,image->colormap+i);
     image->colormap[i].alpha_trait=BlendPixelTrait;
     image->colormap[i].red=pixel;
@@ -206,7 +206,7 @@ MagickExport MagickBooleanType CycleColormapImage(Image *image,
       x;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     ssize_t
       index;
@@ -351,7 +351,7 @@ MagickExport MagickBooleanType SortColormapByIntensity(Image *image,
       x;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
     if (q == (Quantum *) NULL)

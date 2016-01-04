@@ -2433,7 +2433,7 @@ void Magick::Image::colorMatrix(const size_t order_,
   ThrowImageException;
 }
 
-bool Magick::Image::compare(const Image &reference_)
+bool Magick::Image::compare(const Image &reference_) const
 {
   bool
     status;
@@ -2442,8 +2442,7 @@ bool Magick::Image::compare(const Image &reference_)
     ref=reference_;
 
   GetPPException;
-  modifyImage();
-  status=static_cast<bool>(IsImagesEqual(image(),ref.constImage(),
+  status=static_cast<bool>(IsImagesEqual(constImage(),ref.constImage(),
     exceptionInfo));
   ThrowImageException;
   return(status);
@@ -2566,7 +2565,8 @@ void Magick::Image::connectedComponents(const size_t connectivity_)
     *newImage;
 
   GetPPException;
-  newImage=ConnectedComponentsImage(constImage(),connectivity_,exceptionInfo);
+  newImage=ConnectedComponentsImage(constImage(),connectivity_,
+    (CCObjectInfo **) NULL,exceptionInfo);
   replaceImage(newImage);
   ThrowImageException;
 }
@@ -2608,6 +2608,8 @@ void Magick::Image::convolve(const size_t order_,const double *kernel_)
   kernel_info=AcquireKernelInfo((const char *) NULL,exceptionInfo);
   kernel_info->width=order_;
   kernel_info->height=order_;
+  kernel_info->x=(ssize_t) (order_-1)/2;
+  kernel_info->y=(ssize_t) (order_-1)/2;
   kernel_info->values=(MagickRealType *) AcquireAlignedMemory(order_,
     order_*sizeof(*kernel_info->values));
   if (kernel_info->values != (MagickRealType *) NULL)
@@ -2777,7 +2779,7 @@ void Magick::Image::draw(const Magick::Drawable &drawable_)
 
   modifyImage();
 
-  wand=DrawAllocateWand(options()->drawInfo(),image());
+  wand=AcquireDrawingWand(options()->drawInfo(),image());
 
   if(wand)
     {
@@ -2798,7 +2800,7 @@ void Magick::Image::draw(const std::vector<Magick::Drawable> &drawable_)
 
   modifyImage();
 
-  wand=DrawAllocateWand(options()->drawInfo(),image());
+  wand= AcquireDrawingWand(options()->drawInfo(),image());
 
   if(wand)
     {
@@ -4304,6 +4306,22 @@ void Magick::Image::sepiaTone(const double threshold_)
   ThrowImageException;
 }
 
+bool Magick::Image::setColorMetric(const Image &reference_)
+{
+  bool
+    status;
+
+  Image
+    ref=reference_;
+
+  GetPPException;
+  modifyImage();
+  status=static_cast<bool>(SetImageColorMetric(image(),ref.constImage(),
+    exceptionInfo));
+  ThrowImageException;
+  return(status);
+}
+
 Magick::Quantum *Magick::Image::setPixels(const ssize_t x_,const ssize_t y_,
   const size_t columns_,const size_t rows_)
 {
@@ -4405,7 +4423,7 @@ void Magick::Image::sigmoidalContrast(const bool sharpen_,
 
 std::string Magick::Image::signature(const bool force_) const
 {
-  return(_imgRef->signature());
+  return(_imgRef->signature(force_));
 }
 
 void Magick::Image::sketch(const double radius_,const double sigma_,

@@ -18,7 +18,7 @@
 %                                 June 2007                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -1572,6 +1572,13 @@ MagickExport Image *DistortResizeImage(const Image *image,
   tmp_image=resize_image;
   resize_image=CropImage(tmp_image,&crop_area,exception);
   tmp_image=DestroyImage(tmp_image);
+  if (resize_image != (Image *) NULL)
+    {
+      resize_image->alpha_trait=image->alpha_trait;
+      resize_image->compose=image->compose;
+      resize_image->page.width=0;
+      resize_image->page.height=0;
+    }
   return(resize_image);
 }
 
@@ -2297,7 +2304,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
       zero;
 
     ResampleFilter
-      **restrict resample_filter;
+      **magick_restrict resample_filter;
 
     ssize_t
       j;
@@ -2335,7 +2342,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
         i;
 
       register Quantum
-        *restrict q;
+        *magick_restrict q;
 
       q=QueueCacheViewAuthenticPixels(distort_view,0,j,distort_image->columns,1,
         exception);
@@ -3046,7 +3053,7 @@ MagickExport Image *SparseColorImage(const Image *image,
         i;
 
       register Quantum
-        *restrict q;
+        *magick_restrict q;
 
       q=GetCacheViewAuthenticPixels(sparse_view,0,j,sparse_image->columns,
         1,exception);

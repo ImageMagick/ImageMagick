@@ -17,7 +17,7 @@
 %                               December 2003                                 %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -1021,7 +1021,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
   else
     {
       if (image_info->verbose != MagickFalse)
-        (void) IsImagesEqual(image,reconstruct_image,exception);
+        (void) SetImageColorMetric(image,reconstruct_image,exception);
       if (*difference_image->magick == '\0')
         (void) CopyMagickString(difference_image->magick,image->magick,
           MagickPathExtent);

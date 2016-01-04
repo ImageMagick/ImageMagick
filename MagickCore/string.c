@@ -17,7 +17,7 @@
 %                               August 2003                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the license.  You may  %
@@ -1363,8 +1363,8 @@ MagickExport const char *GetStringInfoPath(const StringInfo *string_info)
 %      after the last character used in the conversion.
 %
 */
-MagickExport double InterpretSiPrefixValue(const char *restrict string,
-  char **restrict sentinal)
+MagickExport double InterpretSiPrefixValue(const char *magick_restrict string,
+  char **magick_restrict sentinal)
 {
   char
     *q;

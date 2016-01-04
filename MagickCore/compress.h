@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -54,10 +54,12 @@ typedef struct _Ascii85Info
 extern MagickExport MagickBooleanType
   HuffmanDecodeImage(Image *,ExceptionInfo *),
   HuffmanEncodeImage(const ImageInfo *,Image *,Image *,ExceptionInfo *),
-  LZWEncodeImage(Image *,const size_t,unsigned char *restrict,ExceptionInfo *),
-  PackbitsEncodeImage(Image *,const size_t,unsigned char *restrict,
+  LZWEncodeImage(Image *,const size_t,unsigned char *magick_restrict,
     ExceptionInfo *),
-  ZLIBEncodeImage(Image *,const size_t,unsigned char *restrict,ExceptionInfo *);
+  PackbitsEncodeImage(Image *,const size_t,unsigned char *magick_restrict,
+    ExceptionInfo *),
+  ZLIBEncodeImage(Image *,const size_t,unsigned char *magick_restrict,
+    ExceptionInfo *);
 
 extern MagickExport void
   Ascii85Encode(Image *,const unsigned char),

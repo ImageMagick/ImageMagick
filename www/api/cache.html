@@ -1,32 +1,40 @@
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
     <title>ImageMagick: MagickCore, C API for ImageMagick: Get or Set Image Pixels</title>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <meta name="application-name" content="ImageMagick">
-  <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.">
-  <meta name="application-url" content="http://www.imagemagick.org">
-  <meta name="generator" content="PHP">
-  <meta name="keywords" content="magickcore, c, api, for, imagemagick:, get, or, set, image, pixels, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert">
-  <meta name="rating" content="GENERAL">
-  <meta name="robots" content="INDEX, FOLLOW">
-  <meta name="generator" content="ImageMagick Studio LLC">
-  <meta name="author" content="ImageMagick Studio LLC">
-  <meta name="revisit-after" content="2 DAYS">
-  <meta name="resource-type" content="document">
-  <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC">
-  <meta name="distribution" content="Global">
-  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
-  <link rel="icon" href="../images/wand.png">
-  <link rel="shortcut icon" href="../images/wand.ico">
-  <link rel="stylesheet" href="../css/magick.html">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <meta name="application-name" content="ImageMagick"/>
+  <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves."/>
+  <meta name="application-url" content="http://www.imagemagick.org"/>
+  <meta name="generator" content="PHP"/>
+  <meta name="keywords" content="magickcore, c, api, for, imagemagick:, get, or, set, image, pixels, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert"/>
+  <meta name="rating" content="GENERAL"/>
+  <meta name="robots" content="INDEX, FOLLOW"/>
+  <meta name="generator" content="ImageMagick Studio LLC"/>
+  <meta name="author" content="ImageMagick Studio LLC"/>
+  <meta name="revisit-after" content="2 DAYS"/>
+  <meta name="resource-type" content="document"/>
+  <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC"/>
+  <meta name="distribution" content="Global"/>
+  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
+  <link rel="icon" href="../images/wand.png"/>
+  <link rel="shortcut icon" href="../images/wand.ico"/>
+  <link rel="stylesheet" href="../css/magick.html"/>
 </head>
 <body>
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async="async" src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
+    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-3129977114552745"
+         data-ad-slot="6345125851"
+         data-ad-format="auto"></ins>
     <script>
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
@@ -34,7 +42,7 @@
       <a class="magick-nav-item " href="../index.html">Home</a>
       <a class="magick-nav-item " href="../binary-releases.html">Download</a>
       <a class="magick-nav-item " href="../command-line-tools.html">Tools</a>
-      <a class="magick-nav-item " href="../command-line-options.html">Options</a>
+      <a class="magick-nav-item " href="../command-line-processing.html">Command-line</a>
       <a class="magick-nav-item " href="../resources.html">Resources</a>
       <a class="magick-nav-item " href="api.html">Develop</a>
       <a class="magick-nav-item " href="http://nextgen.imagemagick.org/script/search.php">Search</a>
@@ -44,9 +52,9 @@
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="text-center"><a href="cache.html#AcquirePixelCacheNexus">AcquirePixelCacheNexus</a> • <a href="cache.html#GetAuthenticMetacontent">GetAuthenticMetacontent</a> • <a href="cache.html#GetAuthenticPixelQueue">GetAuthenticPixelQueue</a> • <a href="cache.html#GetAuthenticPixels">GetAuthenticPixels</a> • <a href="cache.html#GetOneAuthenticPixel">GetOneAuthenticPixel</a> • <a href="cache.html#GetOneVirtualPixel">GetOneVirtualPixel</a> • <a href="cache.html#GetOneVirtualPixelInfo">GetOneVirtualPixelInfo</a> • <a href="cache.html#GetVirtualMetacontent">GetVirtualMetacontent</a> • <a href="cache.html#GetVirtualPixelQueue">GetVirtualPixelQueue</a> • <a href="cache.html#GetVirtualPixels">GetVirtualPixels</a> • <a href="cache.html#QueueAuthenticPixels">QueueAuthenticPixels</a> • <a href="cache.html#SetPixelCacheVirtualMethod">SetPixelCacheVirtualMethod</a> • <a href="cache.html#SyncAuthenticPixels">SyncAuthenticPixels</a></p>
+<p class="text-center"><a href="cache.html#AcquirePixelCacheNexus">AcquirePixelCacheNexus</a> &#8226; <a href="cache.html#GetAuthenticMetacontent">GetAuthenticMetacontent</a> &#8226; <a href="cache.html#GetAuthenticPixelQueue">GetAuthenticPixelQueue</a> &#8226; <a href="cache.html#GetAuthenticPixels">GetAuthenticPixels</a> &#8226; <a href="cache.html#GetOneAuthenticPixel">GetOneAuthenticPixel</a> &#8226; <a href="cache.html#GetOneVirtualPixel">GetOneVirtualPixel</a> &#8226; <a href="cache.html#GetOneVirtualPixelInfo">GetOneVirtualPixelInfo</a> &#8226; <a href="cache.html#GetVirtualMetacontent">GetVirtualMetacontent</a> &#8226; <a href="cache.html#GetVirtualPixelQueue">GetVirtualPixelQueue</a> &#8226; <a href="cache.html#GetVirtualPixels">GetVirtualPixels</a> &#8226; <a href="cache.html#QueueAuthenticPixels">QueueAuthenticPixels</a> &#8226; <a href="cache.html#SetPixelCacheVirtualMethod">SetPixelCacheVirtualMethod</a> &#8226; <a href="cache.html#SyncAuthenticPixels">SyncAuthenticPixels</a></p>
 
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/cache_8c.html" id="AcquirePixelCacheNexus">AcquirePixelCacheNexus</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/cache_8c.html" id="AcquirePixelCacheNexus">AcquirePixelCacheNexus</a></h2>
 
 <p>AcquirePixelCacheNexus() allocates the NexusInfo structure.</p>
 
@@ -68,7 +76,7 @@ NexusInfo **AcquirePixelCacheNexus(const size_t number_threads)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/cache_8c.html" id="GetAuthenticMetacontent">GetAuthenticMetacontent</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/cache_8c.html" id="GetAuthenticMetacontent">GetAuthenticMetacontent</a></h2>
 
 <p>GetAuthenticMetacontent() returns the authentic metacontent corresponding with the last call to QueueAuthenticPixels() or GetVirtualPixels().  NULL is returned if the associated pixels are not available.</p>
 
@@ -90,7 +98,7 @@ void *GetAuthenticMetacontent(const Image *image)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/cache_8c.html" id="GetAuthenticPixelQueue">GetAuthenticPixelQueue</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/cache_8c.html" id="GetAuthenticPixelQueue">GetAuthenticPixelQueue</a></h2>
 
 <p>GetAuthenticPixelQueue() returns the authentic pixels associated corresponding with the last call to QueueAuthenticPixels() or GetAuthenticPixels().</p>
 
@@ -112,7 +120,7 @@ Quantum *GetAuthenticPixelQueue(const Image image)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/cache_8c.html" id="GetAuthenticPixels">GetAuthenticPixels</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/cache_8c.html" id="GetAuthenticPixels">GetAuthenticPixels</a></h2>
 
 <p>GetAuthenticPixels() obtains a pixel region for read/write access. If the region is successfully accessed, a pointer to a Quantum array representing the region is returned, otherwise NULL is returned.</p>
 
@@ -148,7 +156,7 @@ Quantum *GetAuthenticPixels(Image *image,const ssize_t x,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/cache_8c.html" id="GetOneAuthenticPixel">GetOneAuthenticPixel</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/cache_8c.html" id="GetOneAuthenticPixel">GetOneAuthenticPixel</a></h2>
 
 <p>GetOneAuthenticPixel() returns a single pixel at the specified (x,y) location.  The image background color is returned if an error occurs.</p>
 
@@ -183,7 +191,7 @@ MagickBooleanType GetOneAuthenticPixel(const Image image,const ssize_t x,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/cache_8c.html" id="GetOneVirtualPixel">GetOneVirtualPixel</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/cache_8c.html" id="GetOneVirtualPixel">GetOneVirtualPixel</a></h2>
 
 <p>GetOneVirtualPixel() returns a single virtual pixel at the specified (x,y) location.  The image background color is returned if an error occurs. If you plan to modify the pixel, use GetOneAuthenticPixel() instead.</p>
 
@@ -218,7 +226,7 @@ MagickBooleanType GetOneVirtualPixel(const Image image,const ssize_t x,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/cache_8c.html" id="GetOneVirtualPixelInfo">GetOneVirtualPixelInfo</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/cache_8c.html" id="GetOneVirtualPixelInfo">GetOneVirtualPixelInfo</a></h2>
 
 <p>GetOneVirtualPixelInfo() returns a single pixel at the specified (x,y) location.  The image background color is returned if an error occurs.  If you plan to modify the pixel, use GetOneAuthenticPixel() instead.</p>
 
@@ -258,7 +266,7 @@ MagickBooleanType GetOneVirtualPixelInfo(const Image image,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/cache_8c.html" id="GetVirtualMetacontent">GetVirtualMetacontent</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/cache_8c.html" id="GetVirtualMetacontent">GetVirtualMetacontent</a></h2>
 
 <p>GetVirtualMetacontent() returns the virtual metacontent corresponding with the last call to QueueAuthenticPixels() or GetVirtualPixels().  NULL is returned if the meta-content are not available.</p>
 
@@ -280,7 +288,7 @@ const void *GetVirtualMetacontent(const Image *image)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/cache_8c.html" id="GetVirtualPixelQueue">GetVirtualPixelQueue</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/cache_8c.html" id="GetVirtualPixelQueue">GetVirtualPixelQueue</a></h2>
 
 <p>GetVirtualPixelQueue() returns the virtual pixels associated corresponding with the last call to QueueAuthenticPixels() or GetVirtualPixels().</p>
 
@@ -302,7 +310,7 @@ const Quantum *GetVirtualPixelQueue(const Image image)
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/cache_8c.html" id="GetVirtualPixels">GetVirtualPixels</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/cache_8c.html" id="GetVirtualPixels">GetVirtualPixels</a></h2>
 
 <p>GetVirtualPixels() returns an immutable pixel region. If the region is successfully accessed, a pointer to it is returned, otherwise NULL is returned.  The returned pointer may point to a temporary working copy of the pixels or it may point to the original pixels in memory. Performance is maximized if the selected region is part of one row, or one or more full rows, since there is opportunity to access the pixels in-place (without a copy) if the image is in memory, or in a memory-mapped file.  The returned pointer must *never* be deallocated by the user.</p>
 
@@ -340,7 +348,7 @@ const Quantum *GetVirtualPixels(const Image *image,const ssize_t x,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/cache_8c.html" id="QueueAuthenticPixels">QueueAuthenticPixels</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/cache_8c.html" id="QueueAuthenticPixels">QueueAuthenticPixels</a></h2>
 
 <p>QueueAuthenticPixels() queues a mutable pixel region.  If the region is successfully initialized a pointer to a Quantum array representing the region is returned, otherwise NULL is returned.  The returned pointer may point to a temporary working buffer for the pixels or it may point to the final location of the pixels in memory.</p>
 
@@ -378,7 +386,7 @@ Quantum *QueueAuthenticPixels(Image *image,const ssize_t x,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/cache_8c.html" id="SetPixelCacheVirtualMethod">SetPixelCacheVirtualMethod</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/cache_8c.html" id="SetPixelCacheVirtualMethod">SetPixelCacheVirtualMethod</a></h2>
 
 <p>SetPixelCacheVirtualMethod() sets the "virtual pixels" method for the pixel cache and returns the previous setting.  A virtual pixel is any pixel access that is outside the boundaries of the image cache.</p>
 
@@ -409,7 +417,7 @@ VirtualPixelMethod SetPixelCacheVirtualMethod(Image *image,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/cache_8c.html" id="SyncAuthenticPixels">SyncAuthenticPixels</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/cache_8c.html" id="SyncAuthenticPixels">SyncAuthenticPixels</a></h2>
 
 <p>SyncAuthenticPixels() saves the image pixels to the in-memory or disk cache. The method returns MagickTrue if the pixel region is flushed, otherwise MagickFalse.</p>
 
@@ -446,11 +454,11 @@ MagickBooleanType SyncAuthenticPixels(Image *image,
     <p><a href="cache.html#">Back to top</a> •
     <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
     <a href="http://nextgen.imagemagick.org/script/contact.php">Contact Us</a></p>
-        <p><small>©  1999-2015 ImageMagick Studio LLC</small></p>
+        <p><small>©  1999-2016 ImageMagick Studio LLC</small></p>
   </footer>
 </div><!-- /.container -->
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="https://localhost/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script src="http://nextgen.imagemagick.org/js/magick.html"></script>
 </div>
 </body>

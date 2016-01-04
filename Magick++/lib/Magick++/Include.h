@@ -277,6 +277,7 @@ namespace Magick
   // Structures
   using MagickCore::AffineMatrix;
   using MagickCore::CacheView;
+  using MagickCore::CCObjectInfo;
   using MagickCore::DrawInfo;
   using MagickCore::DrawingWand;
   using MagickCore::ExceptionInfo;
@@ -297,6 +298,13 @@ namespace Magick
   using MagickCore::RectangleInfo;
   using MagickCore::StringInfo;
 
+  // Alignment types.
+  using MagickCore::AlignType;
+  using MagickCore::UndefinedAlign;
+  using MagickCore::LeftAlign;
+  using MagickCore::CenterAlign;
+  using MagickCore::RightAlign;
+
   // Alpha channel options
   using MagickCore::AlphaChannelOption;
   using MagickCore::UndefinedAlphaChannel;
@@ -315,12 +323,6 @@ namespace Magick
   using MagickCore::SetAlphaChannel;
   using MagickCore::ShapeAlphaChannel;
   using MagickCore::TransparentAlphaChannel;
-
-  // Image class types
-  using MagickCore::ClassType;
-  using MagickCore::UndefinedClass;
-  using MagickCore::DirectClass;
-  using MagickCore::PseudoClass;
 
   // Channel types
   using MagickCore::ChannelType;
@@ -346,6 +348,19 @@ namespace Magick
   using MagickCore::GrayChannels;
   using MagickCore::SyncChannels;
   using MagickCore::DefaultChannels;
+
+  // Image class types
+  using MagickCore::ClassType;
+  using MagickCore::UndefinedClass;
+  using MagickCore::DirectClass;
+  using MagickCore::PseudoClass;
+
+  // Clip path units
+  using MagickCore::ClipPathUnits;
+  using MagickCore::UndefinedPathUnits;
+  using MagickCore::UserSpace;
+  using MagickCore::UserSpaceOnUse;
+  using MagickCore::ObjectBoundingBox;
 
   // Color-space types
   using MagickCore::ColorspaceType;
@@ -1096,6 +1111,7 @@ namespace Magick
   //
   using MagickCore::AcquireAlignedMemory;
   using MagickCore::AcquireAuthenticCacheView;
+  using MagickCore::AcquireDrawingWand;
   using MagickCore::AcquireExceptionInfo;
   using MagickCore::AcquireVirtualCacheView;
   using MagickCore::AcquireImage;
@@ -1175,7 +1191,6 @@ namespace Magick
   using MagickCore::DisplayImages;
   using MagickCore::DistortImage;
   using MagickCore::DrawAffine;
-  using MagickCore::DrawAllocateWand;
   using MagickCore::DrawAlpha;
   using MagickCore::DrawAnnotation;
   using MagickCore::DrawArc;

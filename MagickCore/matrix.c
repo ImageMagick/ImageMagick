@@ -17,7 +17,7 @@
 %                              August 2007                                    %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -129,8 +129,8 @@ static void MatrixSignalHandler(int status)
 #endif
 
 static inline MagickOffsetType WriteMatrixElements(
-  const MatrixInfo *restrict matrix_info,const MagickOffsetType offset,
-  const MagickSizeType length,const unsigned char *restrict buffer)
+  const MatrixInfo *magick_restrict matrix_info,const MagickOffsetType offset,
+  const MagickSizeType length,const unsigned char *magick_restrict buffer)
 {
   register MagickOffsetType
     i;
@@ -169,7 +169,8 @@ static inline MagickOffsetType WriteMatrixElements(
   return(i);
 }
 
-static MagickBooleanType SetMatrixExtent(MatrixInfo *restrict matrix_info,
+static MagickBooleanType SetMatrixExtent(
+  MatrixInfo *magick_restrict matrix_info,
   MagickSizeType length)
 {
   MagickOffsetType
@@ -414,7 +415,7 @@ MagickExport MatrixInfo *DestroyMatrixInfo(MatrixInfo *matrix_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G a u s s J o r d a n E l i m i n a t i o n                               %
++   G a u s s J o r d a n E l i m i n a t i o n                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -479,7 +480,7 @@ MagickExport MatrixInfo *DestroyMatrixInfo(MatrixInfo *matrix_info)
 %  details see http://en.wikipedia.org/wiki/Gauss-Jordan_elimination
 %
 */
-MagickExport MagickBooleanType GaussJordanElimination(double **matrix,
+MagickPrivate MagickBooleanType GaussJordanElimination(double **matrix,
   double **vectors,const size_t rank,const size_t number_vectors)
 {
 #define GaussJordanSwap(x,y) \
@@ -664,8 +665,8 @@ static inline ssize_t EdgeY(const ssize_t y,const size_t rows)
 }
 
 static inline MagickOffsetType ReadMatrixElements(
-  const MatrixInfo *restrict matrix_info,const MagickOffsetType offset,
-  const MagickSizeType length,unsigned char *restrict buffer)
+  const MatrixInfo *magick_restrict matrix_info,const MagickOffsetType offset,
+  const MagickSizeType length,unsigned char *magick_restrict buffer)
 {
   register MagickOffsetType
     i;
@@ -762,7 +763,7 @@ MagickExport size_t GetMatrixRows(const MatrixInfo *matrix_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   L e a s t S q u a r e s A d d T e r m s                                   %
++   L e a s t S q u a r e s A d d T e r m s                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -828,7 +829,7 @@ MagickExport size_t GetMatrixRows(const MatrixInfo *matrix_info)
 %     RelinquishMagickMatrix(vectors,2UL);
 %
 */
-MagickExport void LeastSquaresAddTerms(double **matrix,double **vectors,
+MagickPrivate void LeastSquaresAddTerms(double **matrix,double **vectors,
   const double *terms,const double *results,const size_t rank,
   const size_t number_vectors)
 {

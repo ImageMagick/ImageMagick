@@ -17,7 +17,7 @@
 %                               January 2010                                  %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -2651,10 +2651,10 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
           id = GetOpenMPThreadId();
 
         register const Quantum
-          *restrict p;
+          *magick_restrict p;
 
         register Quantum
-          *restrict q;
+          *magick_restrict q;
 
         register ssize_t
           r;
@@ -2694,10 +2694,10 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
               traits;
 
             register const MagickRealType
-              *restrict k;
+              *magick_restrict k;
 
             register const Quantum
-              *restrict pixels;
+              *magick_restrict pixels;
 
             register ssize_t
               v;
@@ -2795,10 +2795,10 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
       id = GetOpenMPThreadId();
 
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -2842,10 +2842,10 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
           traits;
 
         register const MagickRealType
-          *restrict k;
+          *magick_restrict k;
 
         register const Quantum
-          *restrict pixels;
+          *magick_restrict pixels;
 
         register ssize_t
           u;
@@ -3283,10 +3283,10 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -3329,10 +3329,10 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
           traits;
 
         register const MagickRealType
-          *restrict k;
+          *magick_restrict k;
 
         register const Quantum
-          *restrict pixels;
+          *magick_restrict pixels;
 
         register ssize_t
           u;
@@ -3444,10 +3444,10 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
   for (y=(ssize_t) image->rows-1; y >= 0; y--)
   {
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -3490,10 +3490,10 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
           traits;
 
         register const MagickRealType
-          *restrict k;
+          *magick_restrict k;
 
         register const Quantum
-          *restrict pixels;
+          *magick_restrict pixels;
 
         register ssize_t
           u;

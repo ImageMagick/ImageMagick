@@ -17,7 +17,7 @@
 %                                March 2000                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -806,7 +806,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
           {
             char
               *text,
-              geometry[MagickPathExtent];
+              geometry_str[MagickPathExtent];
 
             /*
               Annotate image.
@@ -822,9 +822,9 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               break;
             (void) CloneString(&draw_info->text,text);
             text=DestroyString(text);
-            (void) FormatLocaleString(geometry,MagickPathExtent,"%+f%+f",
+            (void) FormatLocaleString(geometry_str,MagickPathExtent,"%+f%+f",
               geometry_info.xi,geometry_info.psi);
-            (void) CloneString(&draw_info->geometry,geometry);
+            (void) CloneString(&draw_info->geometry,geometry_str);
             draw_info->affine.sx=cos(DegreesToRadians(
               fmod(geometry_info.rho,360.0)));
             draw_info->affine.rx=sin(DegreesToRadians(
@@ -953,12 +953,6 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               brightness,
               contrast;
 
-            GeometryInfo
-              geometry_info;
-
-            MagickStatusType
-              flags;
-
             /*
               Brightness / contrast image.
             */
@@ -1075,7 +1069,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               *mask_image;
 
             register Quantum
-              *restrict q;
+              *magick_restrict q;
 
             register ssize_t
               x;
@@ -1197,11 +1191,11 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               MagickFalse,argv[i+1]);
             break;
           }
-        if (LocaleCompare("connected-component",option+1) == 0)
+        if (LocaleCompare("connected-components",option+1) == 0)
           {
             (void) SyncImageSettings(mogrify_info,*image,exception);
-            mogrify_image=ConnectedComponentsImage(*image,
-              (size_t) StringToInteger(argv[i+1]),exception);
+            mogrify_image=ConnectedComponentsImage(*image,(size_t)
+              StringToInteger(argv[i+1]),(CCObjectInfo **) NULL,exception);
             break;
           }
         if (LocaleCompare("contrast",option+1) == 0)
@@ -1216,9 +1210,6 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             double
               black_point,
               white_point;
-
-            MagickStatusType
-              flags;
 
             /*
               Contrast stretch image.
@@ -1958,9 +1949,6 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               gamma,
               white_point;
 
-            MagickStatusType
-              flags;
-
             /*
               Parse levels.
             */
@@ -2033,9 +2021,6 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               black_point,
               white_point;
 
-            MagickStatusType
-              flags;
-
             (void) SyncImageSettings(mogrify_info,*image,exception);
             flags=ParseGeometry(argv[i+1],&geometry_info);
             black_point=geometry_info.rho;
@@ -2070,9 +2055,6 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
           }
         if (LocaleCompare("local-contrast",option+1) == 0)
           {
-            MagickStatusType
-              flags;
-
             (void) SyncImageSettings(mogrify_info,*image,exception);
             flags=ParseGeometry(argv[i+1],&geometry_info);
             if ((flags & RhoValue) == 0)
@@ -2472,18 +2454,19 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             if (profile_image == (Image *) NULL)
               {
                 StringInfo
-                  *profile;
+                  *file_data;
 
                 profile_info=CloneImageInfo(mogrify_info);
                 (void) CopyMagickString(profile_info->filename,argv[i+1],
                   MagickPathExtent);
-                profile=FileToStringInfo(profile_info->filename,~0UL,exception);
-                if (profile != (StringInfo *) NULL)
+                file_data=FileToStringInfo(profile_info->filename,~0UL,
+                  exception);
+                if (file_data != (StringInfo *) NULL)
                   {
                     (void) ProfileImage(*image,profile_info->magick,
-                      GetStringInfoDatum(profile),(size_t)
-                      GetStringInfoLength(profile),exception);
-                    profile=DestroyStringInfo(profile);
+                      GetStringInfoDatum(file_data),
+                      GetStringInfoLength(file_data),exception);
+                    file_data=DestroyStringInfo(file_data);
                   }
                 profile_info=DestroyImageInfo(profile_info);
                 break;
@@ -2676,7 +2659,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
         if (LocaleCompare("rotate",option+1) == 0)
           {
             char
-              *geometry;
+              *rotation;
 
             /*
               Check for conditional image rotation.
@@ -2691,11 +2674,11 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             /*
               Rotate image.
             */
-            geometry=ConstantString(argv[i+1]);
-            (void) SubstituteString(&geometry,">","");
-            (void) SubstituteString(&geometry,"<","");
-            (void) ParseGeometry(geometry,&geometry_info);
-            geometry=DestroyString(geometry);
+            rotation=ConstantString(argv[i+1]);
+            (void) SubstituteString(&rotation,">","");
+            (void) SubstituteString(&rotation,"<","");
+            (void) ParseGeometry(rotation,&geometry_info);
+            rotation=DestroyString(rotation);
             mogrify_image=RotateImage(*image,geometry_info.rho,exception);
             break;
           }
@@ -3937,15 +3920,12 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
         if ((LocaleCompare(image->filename,"-") != 0) &&
             (IsPathWritable(image->filename) != MagickFalse))
           {
-            register ssize_t
-              i;
-
             /*
               Rename image file as backup.
             */
             (void) CopyMagickString(backup_filename,image->filename,
               MagickPathExtent);
-            for (i=0; i < 6; i++)
+            for (j=0; j < 6; j++)
             {
               (void) ConcatenateMagickString(backup_filename,"~",MagickPathExtent);
               if (IsPathAccessible(backup_filename) == MagickFalse)
@@ -7821,9 +7801,6 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
           }
         if (LocaleCompare("compare",option+1) == 0)
           {
-            const char
-              *option;
-
             double
               distortion;
 
@@ -8587,11 +8564,11 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
                   *token;
 
                 const char
-                  *arguments;
+                  *argument;
 
                 int
                   next,
-                  status;
+                  token_status;
 
                 size_t
                   length;
@@ -8610,18 +8587,18 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
                 if (token == (char *) NULL)
                   break;
                 next=0;
-                arguments=argv[i+1];
+                argument=argv[i+1];
                 token_info=AcquireTokenInfo();
-                status=Tokenizer(token_info,0,token,length,arguments,"","=",
-                  "\"",'\0',&breaker,&next,&quote);
+                token_status=Tokenizer(token_info,0,token,length,argument,"",
+                  "=","\"",'\0',&breaker,&next,&quote);
                 token_info=DestroyTokenInfo(token_info);
-                if (status == 0)
+                if (token_status == 0)
                   {
                     const char
-                      *argv;
+                      *arg;
 
-                    argv=(&(arguments[next]));
-                    (void) InvokeDynamicImageFilter(token,&(*images),1,&argv,
+                    arg=(&(argument[next]));
+                    (void) InvokeDynamicImageFilter(token,&(*images),1,&arg,
                       exception);
                   }
                 token=DestroyString(token);

@@ -17,7 +17,7 @@
 %                               September 2002                                %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -527,7 +527,9 @@ MagickExport int AcquireUniqueFileResource(char *path)
     file=mkstemp(path);
     if (file != -1)
       {
+#if defined(MAGICKCORE_HAVE_FCHMOD)
         (void) fchmod(file,0600);
+#endif
 #if defined(__OS2__)
         setmode(file,O_BINARY);
 #endif

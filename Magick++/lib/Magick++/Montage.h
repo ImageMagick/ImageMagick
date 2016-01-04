@@ -95,7 +95,6 @@ namespace Magick
   private:
 
     Color _backgroundColor;
-    CompositeOperator _compose;
     std::string _fileName;
     Color _fill;
     std::string _font;

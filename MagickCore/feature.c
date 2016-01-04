@@ -17,7 +17,7 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -317,7 +317,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
   for (y=0; y < (ssize_t) edge_image->rows; y++)
   {
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register ssize_t
       x;
@@ -341,7 +341,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
         dy;
 
       register const Quantum
-        *restrict kernel_pixels;
+        *magick_restrict kernel_pixels;
 
       ssize_t
         v;
@@ -429,7 +429,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
   for (y=0; y < (ssize_t) edge_image->rows; y++)
   {
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -534,7 +534,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
         pixel;
 
       register const Quantum
-        *restrict p;
+        *magick_restrict p;
 
       /*
         Edge if pixel gradient higher than upper threshold.
@@ -711,7 +711,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
   for (r=0; r < (ssize_t) image->rows; r++)
   {
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register ssize_t
       x;
@@ -882,7 +882,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
   for (r=0; r < (ssize_t) image->rows; r++)
   {
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register ssize_t
       x;
@@ -1841,7 +1841,7 @@ MagickExport Image *HoughLineImage(const Image *image,const size_t width,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register ssize_t
       x;
@@ -2132,10 +2132,10 @@ MagickExport Image *MeanShiftImage(const Image *image,const size_t width,
   for (y=0; y < (ssize_t) mean_image->rows; y++)
   {
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;

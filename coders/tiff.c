@@ -17,7 +17,7 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -202,6 +202,10 @@ static MagickThreadKey
 
 static SemaphoreInfo
   *tiff_semaphore = (SemaphoreInfo *) NULL;
+
+static TIFFErrorHandler
+  error_handler,
+  warning_handler;
 
 static volatile MagickBooleanType
   instantiate_key = MagickFalse;
@@ -468,7 +472,7 @@ static MagickBooleanType DecodeLabImage(Image *image,ExceptionInfo *exception)
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -551,7 +555,7 @@ static void TIFFErrors(const char *module,const char *format,va_list error)
   (void) vsprintf(message,format,error);
 #endif
   (void) ConcatenateMagickString(message,".",MagickPathExtent);
-  exception=(ExceptionInfo *) MagickGetThreadValue(tiff_exception);
+  exception=(ExceptionInfo *) GetMagickThreadValue(tiff_exception);
   if (exception != (ExceptionInfo *) NULL)
     (void) ThrowMagickException(exception,GetMagickModule(),CoderError,message,
       "`%s'",module);
@@ -891,7 +895,7 @@ static void TIFFWarnings(const char *module,const char *format,va_list warning)
   (void) vsprintf(message,format,warning);
 #endif
   (void) ConcatenateMagickString(message,".",MagickPathExtent);
-  exception=(ExceptionInfo *) MagickGetThreadValue(tiff_exception);
+  exception=(ExceptionInfo *) GetMagickThreadValue(tiff_exception);
   if (exception != (ExceptionInfo *) NULL)
     (void) ThrowMagickException(exception,GetMagickModule(),CoderWarning,
       message,"`%s'",module);
@@ -1102,10 +1106,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   TIFF
     *tiff;
 
-  TIFFErrorHandler
-    error_handler,
-    warning_handler;
-
   TIFFMethodType
     method;
 
@@ -1151,16 +1151,12 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
-  (void) MagickSetThreadValue(tiff_exception,exception);
-  error_handler=TIFFSetErrorHandler(TIFFErrors);
-  warning_handler=TIFFSetWarningHandler(TIFFWarnings);
+  (void) SetMagickThreadValue(tiff_exception,exception);
   tiff=TIFFClientOpen(image->filename,"rb",(thandle_t) image,TIFFReadBlob,
     TIFFWriteBlob,TIFFSeekBlob,TIFFCloseBlob,TIFFGetBlobSize,TIFFMapBlob,
     TIFFUnmapBlob);
   if (tiff == (TIFF *) NULL)
     {
-      (void) TIFFSetWarningHandler(warning_handler);
-      (void) TIFFSetErrorHandler(error_handler);
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
@@ -1641,7 +1637,7 @@ RestoreMSCWarning
             status;
 
           register Quantum
-            *restrict q;
+            *magick_restrict q;
 
           status=TIFFReadPixels(tiff,bits_per_sample,0,y,(char *) pixels);
           if (status == -1)
@@ -1698,7 +1694,7 @@ RestoreMSCWarning
             status;
 
           register Quantum
-            *restrict q;
+            *magick_restrict q;
 
           status=TIFFReadPixels(tiff,bits_per_sample,0,y,(char *) pixels);
           if (status == -1)
@@ -1730,7 +1726,7 @@ RestoreMSCWarning
           for (y=0; y < (ssize_t) image->rows; y++)
           {
             register Quantum
-              *restrict q;
+              *magick_restrict q;
 
             int
               status;
@@ -1785,7 +1781,7 @@ RestoreMSCWarning
             status;
 
           register Quantum
-            *restrict q;
+            *magick_restrict q;
 
           register ssize_t
             x;
@@ -1841,7 +1837,7 @@ RestoreMSCWarning
             x;
 
           register Quantum
-            *restrict q;
+            *magick_restrict q;
 
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
           if (q == (Quantum *) NULL)
@@ -1918,8 +1914,8 @@ RestoreMSCWarning
             x;
 
           register Quantum
-            *restrict q,
-            *restrict tile;
+            *magick_restrict q,
+            *magick_restrict tile;
 
           size_t
             columns_remaining,
@@ -2033,7 +2029,7 @@ RestoreMSCWarning
             x;
 
           register Quantum
-            *restrict q;
+            *magick_restrict q;
 
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
           if (q == (Quantum *) NULL)
@@ -2105,8 +2101,6 @@ RestoreMSCWarning
           break;
       }
   } while (status != MagickFalse);
-  (void) TIFFSetWarningHandler(warning_handler);
-  (void) TIFFSetErrorHandler(error_handler);
   TIFFClose(tiff);
   TIFFReadPhotoshopLayers(image,image_info,exception);
   if (image_info->number_scenes != 0)
@@ -2252,8 +2246,10 @@ ModuleExport size_t RegisterTIFFImage(void)
   LockSemaphoreInfo(tiff_semaphore);
   if (instantiate_key == MagickFalse)
     {
-      if (MagickCreateThreadKey(&tiff_exception) == MagickFalse)
+      if (CreateMagickThreadKey(&tiff_exception,NULL) == MagickFalse)
         ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+      error_handler=TIFFSetErrorHandler(TIFFErrors);
+      warning_handler=TIFFSetWarningHandler(TIFFWarnings);
 #if defined(MAGICKCORE_HAVE_TIFFMERGEFIELDINFO) && defined(MAGICKCORE_HAVE_TIFFSETTAGEXTENDER)
       if (tag_extender == (TIFFExtendProc) NULL)
         tag_extender=TIFFSetTagExtender(TIFFTagExtender);
@@ -2379,8 +2375,10 @@ ModuleExport void UnregisterTIFFImage(void)
       if (tag_extender == (TIFFExtendProc) NULL)
         (void) TIFFSetTagExtender(tag_extender);
 #endif
-      if (MagickDeleteThreadKey(tiff_exception) == MagickFalse)
+      if (DeleteMagickThreadKey(tiff_exception) == MagickFalse)
         ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+      (void) TIFFSetWarningHandler(warning_handler);
+      (void) TIFFSetErrorHandler(error_handler);
       instantiate_key=MagickFalse;
     }
   UnlockSemaphoreInfo(tiff_semaphore);
@@ -2488,6 +2486,8 @@ static MagickBooleanType WriteGROUP4Image(const ImageInfo *image_info,
   (void) SetImageType(huffman_image,BilevelType,exception);
   write_info=CloneImageInfo((ImageInfo *) NULL);
   SetImageInfoFile(write_info,file);
+  (void) SetImageType(image,BilevelType,exception);
+  (void) SetImageDepth(image,1,exception);
   write_info->compression=Group4Compression;
   write_info->type=BilevelType;
   (void) SetImageOption(write_info,"quantum:polarity","min-is-white");
@@ -2721,7 +2721,7 @@ static MagickBooleanType EncodeLabImage(Image *image,ExceptionInfo *exception)
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -3115,10 +3115,6 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
   TIFF
     *tiff;
 
-  TIFFErrorHandler
-    error_handler,
-    warning_handler;
-
   TIFFInfo
     tiff_info;
 
@@ -3148,9 +3144,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
-  (void) MagickSetThreadValue(tiff_exception,exception);
-  error_handler=TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrors);
-  warning_handler=TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);
+  (void) SetMagickThreadValue(tiff_exception,exception);
   endian_type=UndefinedEndian;
   option=GetImageOption(image_info,"tiff:endian");
   if (option != (const char *) NULL)
@@ -3179,11 +3173,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
     TIFFWriteBlob,TIFFSeekBlob,TIFFCloseBlob,TIFFGetBlobSize,TIFFMapBlob,
     TIFFUnmapBlob);
   if (tiff == (TIFF *) NULL)
-    {
-      (void) TIFFSetWarningHandler(warning_handler);
-      (void) TIFFSetErrorHandler(error_handler);
-      return(MagickFalse);
-    }
+    return(MagickFalse);
   scene=0;
   debug=IsEventLogging();
   (void) debug;
@@ -3206,6 +3196,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
       case Group4Compression:
       {
         (void) SetImageType(image,BilevelType,exception);
+        (void) SetImageDepth(image,1,exception);
         break;
       }
       case JPEGCompression:
@@ -3373,15 +3364,9 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
                   MagickFalse ? PHOTOMETRIC_MINISWHITE :
                   PHOTOMETRIC_MINISBLACK);
                 (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,1);
-                if ((image_info->depth == 0) &&
-                    (image->alpha_trait == UndefinedPixelTrait) &&
-                    (SetImageMonochrome(image,exception) != MagickFalse))
-                  {
-                    status=SetQuantumDepth(image,quantum_info,1);
-                    if (status == MagickFalse)
-                      ThrowWriterException(ResourceLimitError,
-                        "MemoryAllocationFailed");
-                  }
+                if ((image->depth == 1) &&
+                    (image->alpha_trait == UndefinedPixelTrait))
+                  SetImageMonochrome(image,exception);
               }
             else
               if (image->storage_class == PseudoClass)
@@ -3713,7 +3698,7 @@ RestoreMSCWarning
             for (y=0; y < (ssize_t) image->rows; y++)
             {
               register const Quantum
-                *restrict p;
+                *magick_restrict p;
 
               p=GetVirtualPixels(image,0,y,image->columns,1,exception);
               if (p == (const Quantum *) NULL)
@@ -3742,7 +3727,7 @@ RestoreMSCWarning
             for (y=0; y < (ssize_t) image->rows; y++)
             {
               register const Quantum
-                *restrict p;
+                *magick_restrict p;
 
               p=GetVirtualPixels(image,0,y,image->columns,1,exception);
               if (p == (const Quantum *) NULL)
@@ -3761,7 +3746,7 @@ RestoreMSCWarning
             for (y=0; y < (ssize_t) image->rows; y++)
             {
               register const Quantum
-                *restrict p;
+                *magick_restrict p;
 
               p=GetVirtualPixels(image,0,y,image->columns,1,exception);
               if (p == (const Quantum *) NULL)
@@ -3780,7 +3765,7 @@ RestoreMSCWarning
             for (y=0; y < (ssize_t) image->rows; y++)
             {
               register const Quantum
-                *restrict p;
+                *magick_restrict p;
 
               p=GetVirtualPixels(image,0,y,image->columns,1,exception);
               if (p == (const Quantum *) NULL)
@@ -3800,7 +3785,7 @@ RestoreMSCWarning
               for (y=0; y < (ssize_t) image->rows; y++)
               {
                 register const Quantum
-                  *restrict p;
+                  *magick_restrict p;
 
                 p=GetVirtualPixels(image,0,y,image->columns,1,exception);
                 if (p == (const Quantum *) NULL)
@@ -3834,7 +3819,7 @@ RestoreMSCWarning
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           register const Quantum
-            *restrict p;
+            *magick_restrict p;
 
           p=GetVirtualPixels(image,0,y,image->columns,1,exception);
           if (p == (const Quantum *) NULL)
@@ -3905,7 +3890,7 @@ RestoreMSCWarning
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           register const Quantum
-            *restrict p;
+            *magick_restrict p;
 
           p=GetVirtualPixels(image,0,y,image->columns,1,exception);
           if (p == (const Quantum *) NULL)
@@ -3942,8 +3927,6 @@ RestoreMSCWarning
     if (status == MagickFalse)
       break;
   } while (image_info->adjoin != MagickFalse);
-  (void) TIFFSetWarningHandler(warning_handler);
-  (void) TIFFSetErrorHandler(error_handler);
   TIFFClose(tiff);
   return(MagickTrue);
 }

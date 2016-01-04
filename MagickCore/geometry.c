@@ -17,7 +17,7 @@
 %                              January 2003                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -818,6 +818,9 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
   double
     value;
 
+  GeometryInfo
+    coordinate;
+
   int
     c;
 
@@ -833,13 +836,17 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
     return(flags);
   if (strlen(geometry) >= (MagickPathExtent-1))
     return(flags);
-  c=sscanf(geometry,"%lf%*[ ,]%lf%*[ ,]%lf%*[ ,]%lf",&geometry_info->rho,
-    &geometry_info->sigma,&geometry_info->xi,&geometry_info->psi);
+  c=sscanf(geometry,"%lf%*[ ,]%lf%*[ ,]%lf%*[ ,]%lf",&coordinate.rho,
+    &coordinate.sigma,&coordinate.xi,&coordinate.psi);
   if (c == 4)
     {
       /*
         Special case: coordinate (e.g. 0,0 255,255).
       */
+      geometry_info->rho=coordinate.rho;
+      geometry_info->sigma=coordinate.sigma;
+      geometry_info->xi=coordinate.xi;
+      geometry_info->psi=coordinate.psi;
       flags|=RhoValue | SigmaValue | XiValue | PsiValue;
       return(flags);
     }

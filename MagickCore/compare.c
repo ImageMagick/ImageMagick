@@ -17,7 +17,7 @@
 %                               December 2003                                 %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -121,11 +121,12 @@ static size_t GetImageChannels(const Image *image)
     if ((traits & UpdatePixelTrait) != 0)
       channels++;
   }
-  return(channels == 0 ? 1 : channels);
+  return(channels == 0 ? (size_t) 1 : channels);
 }
 
 static inline MagickBooleanType ValidateImageMorphology(
-  const Image *restrict image,const Image *restrict reconstruct_image)
+  const Image *magick_restrict image,
+  const Image *magick_restrict reconstruct_image)
 {
   /*
     Does the image match the reconstructed image morphology?
@@ -234,11 +235,11 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
       sync;
 
     register const Quantum
-      *restrict p,
-      *restrict q;
+      *magick_restrict p,
+      *magick_restrict q;
 
     register Quantum
-      *restrict r;
+      *magick_restrict r;
 
     register ssize_t
       x;
@@ -393,8 +394,8 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
       channel_distortion[MaxPixelChannels+1];
 
     register const Quantum
-      *restrict p,
-      *restrict q;
+      *magick_restrict p,
+      *magick_restrict q;
 
     register ssize_t
       j,
@@ -502,8 +503,8 @@ static MagickBooleanType GetFuzzDistortion(const Image *image,
       channel_distortion[MaxPixelChannels+1];
 
     register const Quantum
-      *restrict p,
-      *restrict q;
+      *magick_restrict p,
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -606,8 +607,8 @@ static MagickBooleanType GetMeanAbsoluteDistortion(const Image *image,
       channel_distortion[MaxPixelChannels+1];
 
     register const Quantum
-      *restrict p,
-      *restrict q;
+      *magick_restrict p,
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -707,8 +708,8 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
   for (y=0; y < (ssize_t) rows; y++)
   {
     register const Quantum
-      *restrict p,
-      *restrict q;
+      *magick_restrict p,
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -805,8 +806,8 @@ static MagickBooleanType GetMeanSquaredDistortion(const Image *image,
       channel_distortion[MaxPixelChannels+1];
 
     register const Quantum
-      *restrict p,
-      *restrict q;
+      *magick_restrict p,
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -934,8 +935,8 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
   for (y=0; y < (ssize_t) rows; y++)
   {
     register const Quantum
-      *restrict p,
-      *restrict q;
+      *magick_restrict p,
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -1066,8 +1067,8 @@ static MagickBooleanType GetPeakAbsoluteDistortion(const Image *image,
       channel_distortion[MaxPixelChannels+1];
 
     register const Quantum
-      *restrict p,
-      *restrict q;
+      *magick_restrict p,
+      *magick_restrict q;
 
     register ssize_t
       j,
@@ -1525,7 +1526,114 @@ MagickExport double *GetImageDistortions(Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  IsImagesEqual() measures the difference between colors at each pixel
+%  IsImagesEqual() compare the pixels of two images and returns immediately
+%  if any pixel is not identical.
+%
+%  The format of the IsImagesEqual method is:
+%
+%      MagickBooleanType IsImagesEqual(const Image *image,
+%        const Image *reconstruct_image,ExceptionInfo *exception)
+%
+%  A description of each parameter follows.
+%
+%    o image: the image.
+%
+%    o reconstruct_image: the reconstruct image.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport MagickBooleanType IsImagesEqual(const Image *image,
+  const Image *reconstruct_image,ExceptionInfo *exception)
+{
+  CacheView
+    *image_view,
+    *reconstruct_view;
+
+  size_t
+    columns,
+    rows;
+
+  ssize_t
+    y;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickCoreSignature);
+  assert(reconstruct_image != (const Image *) NULL);
+  assert(reconstruct_image->signature == MagickCoreSignature);
+  if (ValidateImageMorphology(image,reconstruct_image) == MagickFalse)
+    ThrowBinaryException(ImageError,"ImageMorphologyDiffers",image->filename);
+  rows=MagickMax(image->rows,reconstruct_image->rows);
+  columns=MagickMax(image->columns,reconstruct_image->columns);
+  image_view=AcquireVirtualCacheView(image,exception);
+  reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
+  for (y=0; y < (ssize_t) rows; y++)
+  {
+    register const Quantum
+      *magick_restrict p,
+      *magick_restrict q;
+
+    register ssize_t
+      x;
+
+    p=GetCacheViewVirtualPixels(image_view,0,y,columns,1,exception);
+    q=GetCacheViewVirtualPixels(reconstruct_view,0,y,columns,1,exception);
+    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
+      break;
+    for (x=0; x < (ssize_t) columns; x++)
+    {
+      register ssize_t
+        i;
+
+      if (GetPixelReadMask(image,p) == 0)
+        {
+          p+=GetPixelChannels(image);
+          q+=GetPixelChannels(reconstruct_image);
+          continue;
+        }
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        double
+          distance;
+
+        PixelChannel channel=GetPixelChannelChannel(image,i);
+        PixelTrait traits=GetPixelChannelTraits(image,channel);
+        PixelTrait reconstruct_traits=GetPixelChannelTraits(reconstruct_image,
+          channel);
+        if ((traits == UndefinedPixelTrait) ||
+            (reconstruct_traits == UndefinedPixelTrait) ||
+            ((reconstruct_traits & UpdatePixelTrait) == 0))
+          continue;
+        distance=fabs(p[i]-(double) GetPixelChannel(reconstruct_image,
+          channel,q));
+        if (distance >= MagickEpsilon)
+          break;
+      }
+      if (i < (ssize_t) GetPixelChannels(image))
+        break;
+      p+=GetPixelChannels(image);
+      q+=GetPixelChannels(reconstruct_image);
+    }
+    if (x < (ssize_t) columns)
+      break;
+  }
+  reconstruct_view=DestroyCacheView(reconstruct_view);
+  image_view=DestroyCacheView(image_view);
+  return(y < (ssize_t) rows ? MagickFalse : MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  S e t I m a g e C o l o r M e t r i c                                      %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SetImageColorMetric() measures the difference between colors at each pixel
 %  location of two images.  A value other than 0 means the colors match
 %  exactly.  Otherwise an error measure is computed by summing over all
 %  pixels in an image the distance squared in RGB space between each image
@@ -1549,9 +1657,9 @@ MagickExport double *GetImageDistortions(Image *image,
 %  image->normalized_mean_error, suggests the images are very similar in
 %  spatial layout and color.
 %
-%  The format of the IsImagesEqual method is:
+%  The format of the SetImageColorMetric method is:
 %
-%      MagickBooleanType IsImagesEqual(Image *image,
+%      MagickBooleanType SetImageColorMetric(Image *image,
 %        const Image *reconstruct_image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
@@ -1563,21 +1671,21 @@ MagickExport double *GetImageDistortions(Image *image,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport MagickBooleanType IsImagesEqual(Image *image,
+MagickExport MagickBooleanType SetImageColorMetric(Image *image,
   const Image *reconstruct_image,ExceptionInfo *exception)
 {
   CacheView
     *image_view,
     *reconstruct_view;
 
-  MagickBooleanType
-    status;
-
   double
     area,
     maximum_error,
     mean_error,
     mean_error_per_pixel;
+
+  MagickBooleanType
+    status;
 
   size_t
     columns,
@@ -1603,8 +1711,8 @@ MagickExport MagickBooleanType IsImagesEqual(Image *image,
   for (y=0; y < (ssize_t) rows; y++)
   {
     register const Quantum
-      *restrict p,
-      *restrict q;
+      *magick_restrict p,
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -1733,7 +1841,7 @@ static double GetSimilarityMetric(const Image *image,const Image *reference,
   return(distortion);
 }
 
-MagickExport Image *SimilarityImage(Image *image,const Image *reference,
+MagickExport Image *SimilarityImage(const Image *image,const Image *reference,
   const MetricType metric,const double similarity_threshold,
   RectangleInfo *offset,double *similarity_metric,ExceptionInfo *exception)
 {
@@ -1794,7 +1902,7 @@ MagickExport Image *SimilarityImage(Image *image,const Image *reference,
       similarity;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;

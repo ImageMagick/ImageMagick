@@ -23,7 +23,7 @@
 %                             February 1997                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -9955,7 +9955,7 @@ Mogrify(ref,...)
           if (attribute_flag[1] != 0)
             image->fuzz=StringToDoubleInterval(
               argument_list[1].string_reference,(double) QuantumRange+1.0);
-          (void) IsImagesEqual(image,argument_list[0].image_reference,
+          (void) SetImageColorMetric(image,argument_list[0].image_reference,
             exception);
           break;
         }
@@ -11262,7 +11262,8 @@ Mogrify(ref,...)
           connectivity=4;
           if (attribute_flag[0] != 0)
             connectivity=argument_list[0].integer_reference;
-          image=ConnectedComponentsImage(image,connectivity,exception);
+          image=ConnectedComponentsImage(image,connectivity,
+            (CCObjectInfo **) NULL,exception);
           break;
         }
         case 143:  /* Copy */

@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -65,11 +65,11 @@ extern MagickPrivate MagickOffsetType
   ReadDistributePixelCacheMetacontent(DistributeCacheInfo *,
     const RectangleInfo *,const MagickSizeType,unsigned char *),
   ReadDistributePixelCachePixels(DistributeCacheInfo *,const RectangleInfo *,
-    const MagickSizeType,unsigned char *restrict),
+    const MagickSizeType,unsigned char *magick_restrict),
   WriteDistributePixelCacheMetacontent(DistributeCacheInfo *,
     const RectangleInfo *,const MagickSizeType,const unsigned char *),
   WriteDistributePixelCachePixels(DistributeCacheInfo *,const RectangleInfo *,
-    const MagickSizeType,const unsigned char *restrict);
+    const MagickSizeType,const unsigned char *magick_restrict);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

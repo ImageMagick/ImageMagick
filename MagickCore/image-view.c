@@ -22,7 +22,7 @@
 %                                March 2003                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -255,11 +255,11 @@ MagickExport MagickBooleanType DuplexTransferImageViewIterator(
       sync;
 
     register const Quantum
-      *restrict duplex_pixels,
-      *restrict pixels;
+      *magick_restrict duplex_pixels,
+      *magick_restrict pixels;
 
     register Quantum
-      *restrict destination_pixels;
+      *magick_restrict destination_pixels;
 
     if (status == MagickFalse)
       continue;
@@ -915,7 +915,7 @@ MagickExport MagickBooleanType SetImageViewIterator(ImageView *destination,
       sync;
 
     register Quantum
-      *restrict pixels;
+      *magick_restrict pixels;
 
     if (status == MagickFalse)
       continue;
@@ -1043,10 +1043,10 @@ MagickExport MagickBooleanType TransferImageViewIterator(ImageView *source,
       sync;
 
     register const Quantum
-      *restrict pixels;
+      *magick_restrict pixels;
 
     register Quantum
-      *restrict destination_pixels;
+      *magick_restrict destination_pixels;
 
     if (status == MagickFalse)
       continue;
@@ -1171,7 +1171,7 @@ MagickExport MagickBooleanType UpdateImageViewIterator(ImageView *source,
       id = GetOpenMPThreadId();
 
     register Quantum
-      *restrict pixels;
+      *magick_restrict pixels;
 
     if (status == MagickFalse)
       continue;

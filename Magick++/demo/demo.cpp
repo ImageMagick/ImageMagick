@@ -475,13 +475,11 @@ int main( int /*argc*/, char ** argv)
       montageOpts.borderColor( "green" );
       montageOpts.borderWidth( 1 );
       montageOpts.tile( "7x4" );
-      montageOpts.compose( OverCompositeOp );
       montageOpts.backgroundColor( "#ffffff" );
       montageOpts.font( font );
       montageOpts.pointSize( 18 );
       montageOpts.fillColor( "#600" );
       montageOpts.strokeColor( Color() );
-      montageOpts.compose(OverCompositeOp);
       montageOpts.fileName( "Magick++ Demo" );
       montageImages( &montage, images.begin(), images.end(), montageOpts );
     }

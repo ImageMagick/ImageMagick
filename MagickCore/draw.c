@@ -18,7 +18,7 @@
 %                                 July 1998                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -1174,7 +1174,7 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
       x;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     SegmentInfo
       inverse_edge;
@@ -3336,7 +3336,7 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
       offset;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       i,
@@ -3646,7 +3646,7 @@ static PolygonInfo **AcquirePolygonThreadSet(const DrawInfo *draw_info,
   const PrimitiveInfo *primitive_info)
 {
   PathInfo
-    *restrict path_info;
+    *magick_restrict path_info;
 
   PolygonInfo
     **polygon_info;
@@ -3862,7 +3862,7 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
     mid;
 
   PolygonInfo
-    **restrict polygon_info;
+    **magick_restrict polygon_info;
 
   register EdgeInfo
     *p;
@@ -3953,7 +3953,7 @@ RestoreMSCWarning
           x;
 
         register Quantum
-          *restrict q;
+          *magick_restrict q;
 
         ssize_t
           start_x,
@@ -4018,7 +4018,7 @@ RestoreMSCWarning
       stroke_color;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -4276,7 +4276,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
           for (y=0; y < (ssize_t) image->rows; y++)
           {
             register Quantum
-              *restrict q;
+              *magick_restrict q;
 
             q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
               exception);
@@ -4335,7 +4335,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
           for (y=0; y < (ssize_t) image->rows; y++)
           {
             register Quantum
-              *restrict q;
+              *magick_restrict q;
 
             q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
               exception);
@@ -4392,7 +4392,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
           for (y=0; y < (ssize_t) image->rows; y++)
           {
             register Quantum
-              *restrict q;
+              *magick_restrict q;
 
             q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
               exception);
@@ -4447,7 +4447,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
           for (y=0; y < (ssize_t) image->rows; y++)
           {
             register Quantum
-              *restrict q;
+              *magick_restrict q;
 
             q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
               exception);

@@ -34,26 +34,26 @@ int main( int /*argc*/, char ** argv)
     //
 
     // Test default value
-    if ( image.antiAlias() != true )
+    if ( image.textAntiAlias() != true )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", antiAlias default not true" << endl;
+	cout << "Line: " << __LINE__ << ", textAntiAlias default not true" << endl;
       }
 
     // Test setting false
-    image.antiAlias( false );
-    if ( image.antiAlias() != false )
+    image.textAntiAlias( false );
+    if ( image.textAntiAlias() != false )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", antiAlias not false" << endl;
+	cout << "Line: " << __LINE__ << ", textAntiAlias not false" << endl;
       }
 
     // Test setting true
-    image.antiAlias( true );
-    if ( image.antiAlias() != true )
+    image.textAntiAlias( true );
+    if ( image.textAntiAlias() != true )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", antiAlias not true" << endl;
+	cout << "Line: " << __LINE__ << ", textAntiAlias not true" << endl;
       }
 
     //

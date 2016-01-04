@@ -17,7 +17,7 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -988,7 +988,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
 
         png=(unsigned char *) ImageToBlob(write_info,write_image,&length,
           exception);
-        write_image=DestroyImage(write_image);
+        write_image=DestroyImageList(write_image);
         write_info=DestroyImageInfo(write_info);
         if (png == (unsigned char *) NULL)
           {

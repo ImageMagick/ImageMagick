@@ -1,32 +1,40 @@
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
     <title>ImageMagick: MagickCore, C API for ImageMagick: Image Statistics</title>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <meta name="application-name" content="ImageMagick">
-  <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.">
-  <meta name="application-url" content="http://www.imagemagick.org">
-  <meta name="generator" content="PHP">
-  <meta name="keywords" content="magickcore, c, api, for, imagemagick:, image, statistics, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert">
-  <meta name="rating" content="GENERAL">
-  <meta name="robots" content="INDEX, FOLLOW">
-  <meta name="generator" content="ImageMagick Studio LLC">
-  <meta name="author" content="ImageMagick Studio LLC">
-  <meta name="revisit-after" content="2 DAYS">
-  <meta name="resource-type" content="document">
-  <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC">
-  <meta name="distribution" content="Global">
-  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
-  <link rel="icon" href="../images/wand.png">
-  <link rel="shortcut icon" href="../images/wand.ico">
-  <link rel="stylesheet" href="../css/magick.html">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <meta name="application-name" content="ImageMagick"/>
+  <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves."/>
+  <meta name="application-url" content="http://www.imagemagick.org"/>
+  <meta name="generator" content="PHP"/>
+  <meta name="keywords" content="magickcore, c, api, for, imagemagick:, image, statistics, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert"/>
+  <meta name="rating" content="GENERAL"/>
+  <meta name="robots" content="INDEX, FOLLOW"/>
+  <meta name="generator" content="ImageMagick Studio LLC"/>
+  <meta name="author" content="ImageMagick Studio LLC"/>
+  <meta name="revisit-after" content="2 DAYS"/>
+  <meta name="resource-type" content="document"/>
+  <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC"/>
+  <meta name="distribution" content="Global"/>
+  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
+  <link rel="icon" href="../images/wand.png"/>
+  <link rel="shortcut icon" href="../images/wand.ico"/>
+  <link rel="stylesheet" href="../css/magick.html"/>
 </head>
 <body>
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async="async" src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
+    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-3129977114552745"
+         data-ad-slot="6345125851"
+         data-ad-format="auto"></ins>
     <script>
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
@@ -34,7 +42,7 @@
       <a class="magick-nav-item " href="../index.html">Home</a>
       <a class="magick-nav-item " href="../binary-releases.html">Download</a>
       <a class="magick-nav-item " href="../command-line-tools.html">Tools</a>
-      <a class="magick-nav-item " href="../command-line-options.html">Options</a>
+      <a class="magick-nav-item " href="../command-line-processing.html">Command-line</a>
       <a class="magick-nav-item " href="../resources.html">Resources</a>
       <a class="magick-nav-item " href="api.html">Develop</a>
       <a class="magick-nav-item " href="http://nextgen.imagemagick.org/script/search.php">Search</a>
@@ -44,9 +52,9 @@
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="text-center"><a href="statistic.html#EvaluateImage">EvaluateImage</a> • <a href="statistic.html#FunctionImage">FunctionImage</a> • <a href="statistic.html#GetImageEntropy">GetImageEntropy</a> • <a href="statistic.html#GetImageExtrema">GetImageExtrema</a> • <a href="statistic.html#GetImageKurtosis">GetImageKurtosis</a> • <a href="statistic.html#GetImageMean">GetImageMean</a> • <a href="statistic.html#GetImageMoments">GetImageMoments</a> • <a href="statistic.html#GetImagePerceptualHash">GetImagePerceptualHash</a> • <a href="statistic.html#GetImageRange">GetImageRange</a> • <a href="statistic.html#GetImageStatistics">GetImageStatistics</a> • <a href="statistic.html#PolynomialImage">PolynomialImage</a> • <a href="statistic.html#StatisticImage">StatisticImage</a></p>
+<p class="text-center"><a href="statistic.html#EvaluateImage">EvaluateImage</a> &#8226; <a href="statistic.html#FunctionImage">FunctionImage</a> &#8226; <a href="statistic.html#GetImageEntropy">GetImageEntropy</a> &#8226; <a href="statistic.html#GetImageExtrema">GetImageExtrema</a> &#8226; <a href="statistic.html#GetImageKurtosis">GetImageKurtosis</a> &#8226; <a href="statistic.html#GetImageMean">GetImageMean</a> &#8226; <a href="statistic.html#GetImageMoments">GetImageMoments</a> &#8226; <a href="statistic.html#GetImagePerceptualHash">GetImagePerceptualHash</a> &#8226; <a href="statistic.html#GetImageRange">GetImageRange</a> &#8226; <a href="statistic.html#GetImageStatistics">GetImageStatistics</a> &#8226; <a href="statistic.html#PolynomialImage">PolynomialImage</a> &#8226; <a href="statistic.html#StatisticImage">StatisticImage</a></p>
 
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/statistic_8c.html" id="EvaluateImage">EvaluateImage</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/statistic_8c.html" id="EvaluateImage">EvaluateImage</a></h2>
 
 <p>EvaluateImage() applies a value to the image with an arithmetic, relational, or logical operator to an image. Use these operations to lighten or darken an image, to increase or decrease contrast in an image, or to produce the "negative" of an image.</p>
 
@@ -85,7 +93,7 @@ MagickBooleanType EvaluateImages(Image *images,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/statistic_8c.html" id="FunctionImage">FunctionImage</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/statistic_8c.html" id="FunctionImage">FunctionImage</a></h2>
 
 <p>FunctionImage() applies a value to the image with an arithmetic, relational, or logical operator to an image. Use these operations to lighten or darken an image, to increase or decrease contrast in an image, or to produce the "negative" of an image.</p>
 
@@ -121,7 +129,7 @@ MagickBooleanType FunctionImage(Image *image,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/statistic_8c.html" id="GetImageEntropy">GetImageEntropy</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/statistic_8c.html" id="GetImageEntropy">GetImageEntropy</a></h2>
 
 <p>GetImageEntropy() returns the entropy of one or more image channels.</p>
 
@@ -152,7 +160,7 @@ MagickBooleanType GetImageEntropy(const Image *image,double *entropy,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/statistic_8c.html" id="GetImageExtrema">GetImageExtrema</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/statistic_8c.html" id="GetImageExtrema">GetImageExtrema</a></h2>
 
 <p>GetImageExtrema() returns the extrema of one or more image channels.</p>
 
@@ -187,7 +195,7 @@ MagickBooleanType GetImageExtrema(const Image *image,size_t *minima,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/statistic_8c.html" id="GetImageKurtosis">GetImageKurtosis</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/statistic_8c.html" id="GetImageKurtosis">GetImageKurtosis</a></h2>
 
 <p>GetImageKurtosis() returns the kurtosis and skewness of one or more image channels.</p>
 
@@ -222,7 +230,7 @@ MagickBooleanType GetImageKurtosis(const Image *image,double *kurtosis,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/statistic_8c.html" id="GetImageMean">GetImageMean</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/statistic_8c.html" id="GetImageMean">GetImageMean</a></h2>
 
 <p>GetImageMean() returns the mean and standard deviation of one or more image channels.</p>
 
@@ -257,7 +265,7 @@ MagickBooleanType GetImageMean(const Image *image,double *mean,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/statistic_8c.html" id="GetImageMoments">GetImageMoments</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/statistic_8c.html" id="GetImageMoments">GetImageMoments</a></h2>
 
 <p>GetImageMoments() returns the normalized moments of one or more image channels.</p>
 
@@ -284,7 +292,7 @@ ChannelMoments *GetImageMoments(const Image *image,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/statistic_8c.html" id="GetImagePerceptualHash">GetImagePerceptualHash</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/statistic_8c.html" id="GetImagePerceptualHash">GetImagePerceptualHash</a></h2>
 
 <p>GetImagePerceptualHash() returns the perceptual hash of one or more image channels.</p>
 
@@ -311,7 +319,7 @@ ChannelPerceptualHash *GetImagePerceptualHash(const Image *image,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/statistic_8c.html" id="GetImageRange">GetImageRange</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/statistic_8c.html" id="GetImageRange">GetImageRange</a></h2>
 
 <p>GetImageRange() returns the range of one or more image channels.</p>
 
@@ -346,7 +354,7 @@ MagickBooleanType GetImageRange(const Image *image,double *minima,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/statistic_8c.html" id="GetImageStatistics">GetImageStatistics</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/statistic_8c.html" id="GetImageStatistics">GetImageStatistics</a></h2>
 
 <p>GetImageStatistics() returns statistics for each channel in the image.  The statistics include the channel depth, its minima, maxima, mean, standard deviation, kurtosis and skewness.  You can access the red channel mean, for example, like this:</p>
 
@@ -380,7 +388,7 @@ ChannelStatistics *GetImageStatistics(const Image *image,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/statistic_8c.html" id="PolynomialImage">PolynomialImage</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/statistic_8c.html" id="PolynomialImage">PolynomialImage</a></h2>
 
 <p>PolynomialImage() returns a new image where each pixel is the sum of the pixels in the image sequence after applying its corresponding terms (coefficient and degree pairs).</p>
 
@@ -415,7 +423,7 @@ Image *PolynomialImage(const Image *images,const size_t number_terms,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://nextgen.imagemagick.org/api/MagickCore/statistic_8c.html" id="StatisticImage">StatisticImage</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/statistic_8c.html" id="StatisticImage">StatisticImage</a></h2>
 
 <p>StatisticImage() makes each pixel the min / max / median / mode / etc. of the neighborhood of the specified width and height.</p>
 
@@ -464,11 +472,11 @@ Image *StatisticImage(const Image *image,const StatisticType type,
     <p><a href="statistic.html#">Back to top</a> •
     <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
     <a href="http://nextgen.imagemagick.org/script/contact.php">Contact Us</a></p>
-        <p><small>©  1999-2015 ImageMagick Studio LLC</small></p>
+        <p><small>©  1999-2016 ImageMagick Studio LLC</small></p>
   </footer>
 </div><!-- /.container -->
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="https://localhost/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script src="http://nextgen.imagemagick.org/js/magick.html"></script>
 </div>
 </body>

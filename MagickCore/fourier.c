@@ -19,7 +19,7 @@
 %                                 July 2009                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -235,14 +235,14 @@ MagickExport Image *ComplexImages(const Image *images,const ComplexOperator op,
   for (y=0; y < (ssize_t) images->rows; y++)
   {
     register const Quantum
-      *restrict Ai,
-      *restrict Ar,
-      *restrict Bi,
-      *restrict Br;
+      *magick_restrict Ai,
+      *magick_restrict Ar,
+      *magick_restrict Bi,
+      *magick_restrict Br;
 
     register Quantum
-      *restrict Ci,
-      *restrict Cr;
+      *magick_restrict Ci,
+      *magick_restrict Cr;
 
     register ssize_t
       x;

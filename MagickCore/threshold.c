@@ -17,7 +17,7 @@
 %                                 October 1996                                %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -236,11 +236,11 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
       channel_sum[MaxPixelChannels];
 
     register const Quantum
-      *restrict p,
-      *restrict pixels;
+      *magick_restrict p,
+      *magick_restrict pixels;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       i,
@@ -437,7 +437,7 @@ MagickExport MagickBooleanType BilevelImage(Image *image,const double threshold,
       x;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -602,7 +602,7 @@ MagickExport MagickBooleanType BlackThresholdImage(Image *image,
       x;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -712,7 +712,7 @@ MagickExport MagickBooleanType ClampImage(Image *image,ExceptionInfo *exception)
         i;
 
       register PixelInfo
-        *restrict q;
+        *magick_restrict q;
 
       q=image->colormap;
       for (i=0; i < (ssize_t) image->colors; i++)
@@ -741,7 +741,7 @@ MagickExport MagickBooleanType ClampImage(Image *image,ExceptionInfo *exception)
       x;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -1369,7 +1369,7 @@ MagickExport MagickBooleanType OrderedPosterizeImage(Image *image,
       x;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -1504,7 +1504,7 @@ MagickExport MagickBooleanType PerceptibleImage(Image *image,
         i;
 
       register PixelInfo
-        *restrict q;
+        *magick_restrict q;
 
       q=image->colormap;
       for (i=0; i < (ssize_t) image->colors; i++)
@@ -1537,7 +1537,7 @@ MagickExport MagickBooleanType PerceptibleImage(Image *image,
       x;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -1645,7 +1645,7 @@ MagickExport MagickBooleanType RandomThresholdImage(Image *image,
     threshold;
 
   RandomInfo
-    **restrict random_info;
+    **magick_restrict random_info;
 
   ssize_t
     y;
@@ -1696,7 +1696,7 @@ MagickExport MagickBooleanType RandomThresholdImage(Image *image,
       id = GetOpenMPThreadId();
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -1870,7 +1870,7 @@ MagickExport MagickBooleanType WhiteThresholdImage(Image *image,
       x;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     if (status == MagickFalse)
       continue;

@@ -17,7 +17,7 @@
 %                                 July 2003                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -332,7 +332,7 @@ MagickExport LinkedListInfo *DestroyLocaleOptions(LinkedListInfo *messages)
 */
 
 MagickPrivate ssize_t FormatLocaleFileList(FILE *file,
-  const char *restrict format,va_list operands)
+  const char *magick_restrict format,va_list operands)
 {
   ssize_t
     n;
@@ -376,8 +376,8 @@ MagickPrivate ssize_t FormatLocaleFileList(FILE *file,
   return(n);
 }
 
-MagickExport ssize_t FormatLocaleFile(FILE *file,const char *restrict format,
-  ...)
+MagickExport ssize_t FormatLocaleFile(FILE *file,
+  const char *magick_restrict format,...)
 {
   ssize_t
     n;
@@ -422,8 +422,8 @@ MagickExport ssize_t FormatLocaleFile(FILE *file,const char *restrict format,
 %
 */
 
-MagickPrivate ssize_t FormatLocaleStringList(char *restrict string,
-  const size_t length,const char *restrict format,va_list operands)
+MagickPrivate ssize_t FormatLocaleStringList(char *magick_restrict string,
+  const size_t length,const char *magick_restrict format,va_list operands)
 {
   ssize_t
     n;
@@ -471,8 +471,8 @@ MagickPrivate ssize_t FormatLocaleStringList(char *restrict string,
   return(n);
 }
 
-MagickExport ssize_t FormatLocaleString(char *restrict string,
-  const size_t length,const char *restrict format,...)
+MagickExport ssize_t FormatLocaleString(char *magick_restrict string,
+  const size_t length,const char *magick_restrict format,...)
 {
   ssize_t
     n;
@@ -975,8 +975,8 @@ static MagickBooleanType IsLocaleTreeInstantiated(ExceptionInfo *exception)
 %      referenced by sentinal.
 %
 */
-MagickExport double InterpretLocaleValue(const char *restrict string,
-  char **restrict sentinal)
+MagickExport double InterpretLocaleValue(const char *magick_restrict string,
+  char **magick_restrict sentinal)
 {
   char
     *q;

@@ -17,7 +17,7 @@
 %                                December 1996                                %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -70,6 +70,30 @@
 #if !defined(MAP_FAILED)
 #define MAP_FAILED      ((void *)(LONG_PTR)-1)
 #endif
+
+/*
+  Typdef declarations.
+*/
+
+/*
+  We need to make sure only one instance is created for each process and that
+  is why we wrap the new/delete instance methods.
+
+  From: http://www.ghostscript.com/doc/current/API.htm
+  "The Win32 DLL gsdll32.dll can be used by multiple programs simultaneously,
+   but only once within each process"
+*/
+typedef struct _NTGhostInfo
+{
+  void
+    (MagickDLLCall *delete_instance)(gs_main_instance *);
+
+  int
+    (MagickDLLCall *new_instance)(gs_main_instance **,void *);
+
+  MagickBooleanType
+    has_instance;
+} NTGhostInfo;
 
 /*
   Static declarations.
@@ -78,6 +102,9 @@
 static char
   *lt_slsearchpath = (char *) NULL;
 #endif
+
+static NTGhostInfo
+  nt_ghost_info;
 
 static GhostInfo
   ghost_info;
@@ -113,6 +140,33 @@ const registry_roots[2] =
 extern "C" BOOL WINAPI
   DllMain(HINSTANCE handle,DWORD reason,LPVOID lpvReserved);
 #endif
+
+static void MagickDLLCall NTGhostscriptDeleteInstance(
+  gs_main_instance *instance)
+{
+  LockSemaphoreInfo(ghost_semaphore);
+  nt_ghost_info.delete_instance(instance);
+  nt_ghost_info.has_instance=MagickFalse;
+  UnlockSemaphoreInfo(ghost_semaphore);
+}
+
+static int MagickDLLCall NTGhostscriptNewInstance(gs_main_instance **pinstance,
+  void *caller_handle)
+{
+  int
+    status;
+
+  LockSemaphoreInfo(ghost_semaphore);
+  status=-1;
+  if (nt_ghost_info.has_instance == MagickFalse)
+    {
+      status=nt_ghost_info.new_instance(pinstance,caller_handle);
+      if (status >= 0)
+        nt_ghost_info.has_instance=MagickTrue;
+    }
+  UnlockSemaphoreInfo(ghost_semaphore);
+  return(status);
+}
 
 static inline char *create_utf8_string(const wchar_t *wideChar)
 {
@@ -1110,6 +1164,7 @@ static int NTGhostscriptGetString(const char *name,BOOL *is_64_bit,
             directory,DirectorySeparator);
           if (IsPathAccessible(buffer) != MagickFalse)
             {
+              directory=DestroyString(directory);
               (void) CopyMagickString(value,buffer,length);
               if (is_64_bit != NULL)
                 *is_64_bit=FALSE;
@@ -1119,6 +1174,7 @@ static int NTGhostscriptGetString(const char *name,BOOL *is_64_bit,
             directory,DirectorySeparator);
           if (IsPathAccessible(buffer) != MagickFalse)
             {
+              directory=DestroyString(directory);
               (void) CopyMagickString(value,buffer,length);
               if (is_64_bit != NULL)
                 *is_64_bit=TRUE;
@@ -1361,6 +1417,19 @@ MagickPrivate int NTGhostscriptFonts(char *path,int length)
 %      int NTGhostscriptLoadDLL(void)
 %
 */
+static inline int NTGhostscriptHasValidHandle()
+{
+  if ((nt_ghost_info.delete_instance == NULL) || (ghost_info.exit == NULL) ||
+      (ghost_info.init_with_args == NULL) ||
+      (nt_ghost_info.new_instance == NULL) ||
+      (ghost_info.run_string == NULL) || (ghost_info.set_stdio == NULL) ||
+      (ghost_info.revision == NULL))
+    {
+      return(FALSE);
+    }
+  return(TRUE);
+}
+
 MagickPrivate int NTGhostscriptLoadDLL(void)
 {
   char
@@ -1372,7 +1441,7 @@ MagickPrivate int NTGhostscriptLoadDLL(void)
   if (ghost_handle != (void *) NULL)
     {
       UnlockSemaphoreInfo(ghost_semaphore);
-      return(TRUE);
+      return(NTGhostscriptHasValidHandle());
     }
   if (NTGhostscriptDLL(path,sizeof(path)) == FALSE)
     {
@@ -1385,15 +1454,19 @@ MagickPrivate int NTGhostscriptLoadDLL(void)
       UnlockSemaphoreInfo(ghost_semaphore);
       return(FALSE);
     }
-  (void) ResetMagickMemory((void *) &ghost_info,0,sizeof(GhostInfo));
-  ghost_info.delete_instance=(void (MagickDLLCall *)(gs_main_instance *)) (
+  (void) ResetMagickMemory((void *) &nt_ghost_info,0,sizeof(NTGhostInfo));
+  nt_ghost_info.delete_instance=(void (MagickDLLCall *)(gs_main_instance *)) (
     lt_dlsym(ghost_handle,"gsapi_delete_instance"));
+  nt_ghost_info.new_instance=(int (MagickDLLCall *)(gs_main_instance **,
+    void *)) (lt_dlsym(ghost_handle,"gsapi_new_instance"));
+  nt_ghost_info.has_instance=MagickFalse;
+  (void) ResetMagickMemory((void *) &ghost_info,0,sizeof(GhostInfo));
+  ghost_info.delete_instance=NTGhostscriptDeleteInstance;
   ghost_info.exit=(int (MagickDLLCall *)(gs_main_instance*))
     lt_dlsym(ghost_handle,"gsapi_exit");
   ghost_info.init_with_args=(int (MagickDLLCall *)(gs_main_instance *,int,
     char **)) (lt_dlsym(ghost_handle,"gsapi_init_with_args"));
-  ghost_info.new_instance=(int (MagickDLLCall *)(gs_main_instance **,void *)) (
-    lt_dlsym(ghost_handle,"gsapi_new_instance"));
+  ghost_info.new_instance=NTGhostscriptNewInstance;
   ghost_info.run_string=(int (MagickDLLCall *)(gs_main_instance *,const char *,
     int,int *)) (lt_dlsym(ghost_handle,"gsapi_run_string"));
   ghost_info.set_stdio=(int (MagickDLLCall *)(gs_main_instance *,int(
@@ -1403,12 +1476,7 @@ MagickPrivate int NTGhostscriptLoadDLL(void)
   ghost_info.revision=(int (MagickDLLCall *)(gsapi_revision_t *,int)) (
     lt_dlsym(ghost_handle,"gsapi_revision"));
   UnlockSemaphoreInfo(ghost_semaphore);
-  if ((ghost_info.delete_instance == NULL) || (ghost_info.exit == NULL) ||
-      (ghost_info.init_with_args == NULL) ||
-      (ghost_info.new_instance == NULL) || (ghost_info.run_string == NULL) ||
-      (ghost_info.set_stdio == NULL) || (ghost_info.revision == NULL))
-    return(FALSE);
-  return(TRUE);
+  return(NTGhostscriptHasValidHandle());
 }
 
 /*
@@ -1430,24 +1498,19 @@ MagickPrivate int NTGhostscriptLoadDLL(void)
 %      int NTGhostscriptUnLoadDLL(void)
 %
 */
-MagickPrivate int NTGhostscriptUnLoadDLL(void)
+MagickPrivate void NTGhostscriptUnLoadDLL(void)
 {
-  int
-    status;
-
   if (ghost_semaphore == (SemaphoreInfo *) NULL)
     ActivateSemaphoreInfo(&ghost_semaphore);
   LockSemaphoreInfo(ghost_semaphore);
-  status=FALSE;
   if (ghost_handle != (void *) NULL)
     {
-      status=lt_dlclose(ghost_handle);
+      (void) lt_dlclose(ghost_handle);
       ghost_handle=(void *) NULL;
       (void) ResetMagickMemory((void *) &ghost_info,0,sizeof(GhostInfo));
     }
   UnlockSemaphoreInfo(ghost_semaphore);
   RelinquishSemaphoreInfo(&ghost_semaphore);
-  return(status);
 }
 
 /*
@@ -2364,10 +2427,10 @@ MagickPrivate ssize_t NTSystemConfiguration(int name)
       if (module == (LPFNDLLFUNC2) NULL)
         {
           MEMORYSTATUS
-            status;
+            global_status;
 
-          GlobalMemoryStatus(&status);
-          return((ssize_t) status.dwTotalPhys/system_info.dwPageSize/4);
+          GlobalMemoryStatus(&global_status);
+          return((ssize_t) global_status.dwTotalPhys/system_info.dwPageSize/4);
         }
       status.dwLength=sizeof(status);
       if (module(&status) == 0)

@@ -17,7 +17,7 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -359,7 +359,7 @@ MagickExport MagickBooleanType ClutImage(Image *image,const Image *clut_image,
       pixel;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -758,7 +758,7 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
       luma;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -928,7 +928,7 @@ MagickExport MagickBooleanType ContrastImage(Image *image,
       red;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -1074,7 +1074,7 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register ssize_t
       x;
@@ -1210,7 +1210,7 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -1373,10 +1373,10 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
       pixel;
 
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -1408,7 +1408,7 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
         aggregate;
 
       register const Quantum
-        *restrict r;
+        *magick_restrict r;
 
       if (GetPixelReadMask(image,p) == 0)
         {
@@ -1552,7 +1552,7 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register ssize_t
       x;
@@ -1668,7 +1668,7 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -1850,7 +1850,7 @@ MagickExport MagickBooleanType GammaImage(Image *image,const double gamma,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -1978,7 +1978,7 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -2208,7 +2208,7 @@ MagickExport MagickBooleanType HaldClutImage(Image *image,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -2413,7 +2413,7 @@ MagickExport MagickBooleanType LevelImage(Image *image,const double black_point,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -2569,7 +2569,7 @@ MagickExport MagickBooleanType LevelizeImage(Image *image,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -2835,7 +2835,7 @@ MagickExport MagickBooleanType LinearStretchImage(Image *image,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register ssize_t
       x;
@@ -3265,7 +3265,7 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -3448,7 +3448,7 @@ MagickExport MagickBooleanType NegateImage(Image *image,
           sync;
 
         register Quantum
-          *restrict q;
+          *magick_restrict q;
 
         register ssize_t
           x;
@@ -3513,7 +3513,7 @@ MagickExport MagickBooleanType NegateImage(Image *image,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -3817,7 +3817,7 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;

@@ -17,7 +17,7 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -104,6 +104,28 @@
 #else
 #  include <freetype/ftbbox.h>
 #endif /* defined(FT_BBOX_H) */
+#endif
+#if defined(MAGICKCORE_CTL_DELEGATE)
+#include <raqm.h>
+#else
+typedef struct _raqm_glyph_info_t
+{
+  int
+    index,
+    x_offset,
+    x_advance,
+    y_offset;
+
+  unsigned int
+    cluster;
+} raqm_glyph_info_t;
+
+typedef enum
+{
+  RAQM_DIRECTION_DEFAULT,
+  RAQM_DIRECTION_RTL,
+  RAQM_DIRECTION_LTR
+} raqm_direction_t;
 #endif
 
 /*
@@ -582,6 +604,7 @@ MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
     *text;
 
   MagickBooleanType
+    digit,
     status;
 
   register char
@@ -598,13 +621,16 @@ MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
   ssize_t
     n;
 
+  digit=MagickFalse;
   text=AcquireString(draw_info->text);
   q=draw_info->text;
   s=(char *) NULL;
   for (p=(*caption); GetUTFCode(p) != 0; p+=GetUTFOctets(p))
   {
-    if (IsUTFSpace(GetUTFCode(p)) != MagickFalse)
+    if ((digit == MagickFalse) && (IsUTFSpace(GetUTFCode(p)) != MagickFalse))
       s=p;
+    digit=((GetUTFCode(p) >= 0x0030) && (GetUTFCode(p) <= 0x0039)) ?
+      MagickTrue : MagickFalse;
     if (GetUTFCode(p) == '\n')
       q=draw_info->text;
     for (i=0; i < (ssize_t) GetUTFOctets(p); i++)
@@ -999,6 +1025,58 @@ static MagickBooleanType RenderType(Image *image,const DrawInfo *draw_info,
 
 #if defined(MAGICKCORE_FREETYPE_DELEGATE)
 
+static size_t ComplexTextLayout(const char *text,const size_t length,
+  const FT_Face face,const raqm_direction_t direction,const FT_Int32 flags,
+  raqm_glyph_info_t **grapheme)
+{
+#if defined(MAGICKCORE_CTL_DELEGATE)
+  return(raqm_shape(text,length,face,direction,&grapheme));
+#else
+  FT_Error
+    ft_status;
+
+  register ssize_t
+    i;
+
+  ssize_t
+    last_glyph;
+
+  /*
+    Simple layout for bi-directional text (right-to-left or left-to-right).
+  */
+  *grapheme=(raqm_glyph_info_t *) AcquireQuantumMemory(length+1,
+    sizeof(**grapheme));
+  if (*grapheme == (raqm_glyph_info_t *) NULL)
+    return(0);
+  last_glyph=0;
+  for (i=0; GetUTFCode(text) != 0; text+=GetUTFOctets(text), i++)
+  {
+    (*grapheme)[i].index=FT_Get_Char_Index(face,GetUTFCode(text));
+    (*grapheme)[i].x_offset=0;
+    (*grapheme)[i].y_offset=0;
+    if (((*grapheme)[i].index != 0) && (last_glyph != 0))
+      {
+        if (FT_HAS_KERNING(face))
+          {
+            FT_Vector
+              kerning;
+
+            ft_status=FT_Get_Kerning(face,last_glyph,(*grapheme)[i].index,
+              ft_kerning_default,&kerning);
+            if (ft_status == 0)
+              (*grapheme)[i-1].x_advance+=(FT_Pos) ((direction ==
+                RAQM_DIRECTION_RTL ? -1.0 : 1.0)*kerning.x);
+          }
+      }
+    ft_status=FT_Load_Glyph(face,(*grapheme)[i].index,flags);
+    (*grapheme)[i].x_advance=face->glyph->advance.x;
+    (*grapheme)[i].cluster=GetUTFCode(text);
+    last_glyph=(*grapheme)[i].index;
+  }
+  return((size_t) i);
+#endif
+}
+
 static int TraceCubicBezier(FT_Vector *p,FT_Vector *q,FT_Vector *to,
   DrawInfo *draw_info)
 {
@@ -1086,9 +1164,6 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   const char
     *value;
 
-  double
-    direction;
-
   DrawInfo
     *annotate_info;
 
@@ -1133,8 +1208,20 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
     point,
     resolution;
 
+  raqm_direction_t
+    direction;
+
+  raqm_glyph_info_t
+    *grapheme;
+
   register char
     *p;
+
+  register ssize_t
+    i;
+
+  size_t
+    length;
 
   ssize_t
     code,
@@ -1236,12 +1323,12 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
         geometry_info;
 
       MagickStatusType
-        geometry_flags;
+        flags;
 
-      geometry_flags=ParseGeometry(draw_info->density,&geometry_info);
+      flags=ParseGeometry(draw_info->density,&geometry_info);
       resolution.x=geometry_info.rho;
       resolution.y=geometry_info.sigma;
-      if ((geometry_flags & SigmaValue) == 0)
+      if ((flags & SigmaValue) == 0)
         resolution.y=resolution.x;
     }
   ft_status=FT_Set_Char_Size(face,(FT_F26Dot6) (64.0*draw_info->pointsize),
@@ -1322,9 +1409,6 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
       if (image->alpha_trait == UndefinedPixelTrait)
         (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
     }
-  direction=1.0;
-  if (draw_info->direction == RightToLeftDirection)
-    direction=(-1.0);
   point.x=0.0;
   point.y=0.0;
   for (p=draw_info->text; GetUTFCode(p) != 0; p+=GetUTFOctets(p))
@@ -1340,29 +1424,28 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
         p=(char *) utf8;
     }
   status=MagickTrue;
-  for (code=0; GetUTFCode(p) != 0; p+=GetUTFOctets(p))
+  direction=RAQM_DIRECTION_DEFAULT;
+  if (draw_info->direction == RightToLeftDirection)
+    direction=RAQM_DIRECTION_RTL;
+  else
+    if (draw_info->direction == LeftToRightDirection)
+      direction=RAQM_DIRECTION_LTR;
+  grapheme=(raqm_glyph_info_t *) NULL;
+  length=ComplexTextLayout(p,strlen(p),face,direction,flags,&grapheme);
+  code=0;
+  for (i=0; i < (ssize_t) length; i++)
   {
     /*
       Render UTF-8 sequence.
     */
-    glyph.id=FT_Get_Char_Index(face,GetUTFCode(p));
+    glyph.id=grapheme[i].index;
     if (glyph.id == 0)
       glyph.id=FT_Get_Char_Index(face,'?');
     if ((glyph.id != 0) && (last_glyph.id != 0))
-      {
-        if (FT_HAS_KERNING(face))
-          {
-            FT_Vector
-              kerning;
-
-            ft_status=FT_Get_Kerning(face,last_glyph.id,glyph.id,
-              ft_kerning_default,&kerning);
-            if (ft_status == 0)
-              origin.x+=(FT_Pos) (direction*kerning.x);
-          }
-        origin.x+=(FT_Pos) (64.0*direction*draw_info->kerning);
-      }
+      origin.x+=(FT_Pos) (64.0*draw_info->kerning);
     glyph.origin=origin;
+    glyph.origin.x+=grapheme[i].x_offset;
+    glyph.origin.y+=grapheme[i].y_offset;
     ft_status=FT_Load_Glyph(face,glyph.id,flags);
     if (ft_status != 0)
       continue;
@@ -1389,7 +1472,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
           Trace the glyph.
         */
         annotate_info->affine.tx=glyph.origin.x/64.0;
-        annotate_info->affine.ty=glyph.origin.y/64.0;
+        annotate_info->affine.ty=(-glyph.origin.y/64.0);
         (void) FT_Outline_Decompose(&((FT_OutlineGlyph) glyph.image)->outline,
           &OutlineMethods,annotate_info);
       }
@@ -1430,7 +1513,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
             fill_color;
 
           register Quantum
-            *restrict q;
+            *magick_restrict q;
 
           register ssize_t
             x;
@@ -1515,18 +1598,20 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
     if ((bitmap->left+bitmap->bitmap.width) > metrics->width)
       metrics->width=bitmap->left+bitmap->bitmap.width;
     if ((fabs(draw_info->interword_spacing) >= MagickEpsilon) &&
-        (IsUTFSpace(GetUTFCode(p)) != MagickFalse) &&
+        (IsUTFSpace(GetUTFCode(p+grapheme[i].cluster)) != MagickFalse) &&
         (IsUTFSpace(code) == MagickFalse))
-      origin.x+=(FT_Pos) (64.0*direction*draw_info->interword_spacing);
+      origin.x+=(FT_Pos) (64.0*draw_info->interword_spacing);
     else
-      origin.x+=(FT_Pos) (direction*face->glyph->advance.x);
+      origin.x+=(FT_Pos) grapheme[i].x_advance;
     metrics->origin.x=(double) origin.x;
     metrics->origin.y=(double) origin.y;
     if (last_glyph.id != 0)
       FT_Done_Glyph(last_glyph.image);
     last_glyph=glyph;
-    code=GetUTFCode(p);
+    code=GetUTFCode(p+grapheme[i].cluster);
   }
+  if (grapheme != (raqm_glyph_info_t *) NULL)
+    grapheme=(raqm_glyph_info_t *) RelinquishMagickMemory(grapheme);
   if (utf8 != (unsigned char *) NULL)
     utf8=(unsigned char *) RelinquishMagickMemory(utf8);
   if (last_glyph.id != 0)
@@ -1850,7 +1935,7 @@ static MagickBooleanType RenderPostscript(Image *image,
           x;
 
         register Quantum
-          *restrict q;
+          *magick_restrict q;
 
         q=GetCacheViewAuthenticPixels(annotate_view,0,y,annotate_image->columns,
           1,exception);

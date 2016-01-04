@@ -1,32 +1,40 @@
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
     <title>ImageMagick: Command-line Tools: Identify</title>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <meta name="application-name" content="ImageMagick">
-  <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.">
-  <meta name="application-url" content="http://www.imagemagick.org">
-  <meta name="generator" content="PHP">
-  <meta name="keywords" content="command-line, tools:, identify, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert">
-  <meta name="rating" content="GENERAL">
-  <meta name="robots" content="INDEX, FOLLOW">
-  <meta name="generator" content="ImageMagick Studio LLC">
-  <meta name="author" content="ImageMagick Studio LLC">
-  <meta name="revisit-after" content="2 DAYS">
-  <meta name="resource-type" content="document">
-  <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC">
-  <meta name="distribution" content="Global">
-  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
-  <link rel="icon" href="../images/wand.png">
-  <link rel="shortcut icon" href="../images/wand.ico">
-  <link rel="stylesheet" href="../css/magick.html">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <meta name="application-name" content="ImageMagick"/>
+  <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves."/>
+  <meta name="application-url" content="http://www.imagemagick.org"/>
+  <meta name="generator" content="PHP"/>
+  <meta name="keywords" content="command-line, tools:, identify, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert"/>
+  <meta name="rating" content="GENERAL"/>
+  <meta name="robots" content="INDEX, FOLLOW"/>
+  <meta name="generator" content="ImageMagick Studio LLC"/>
+  <meta name="author" content="ImageMagick Studio LLC"/>
+  <meta name="revisit-after" content="2 DAYS"/>
+  <meta name="resource-type" content="document"/>
+  <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC"/>
+  <meta name="distribution" content="Global"/>
+  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
+  <link rel="icon" href="../images/wand.png"/>
+  <link rel="shortcut icon" href="../images/wand.ico"/>
+  <link rel="stylesheet" href="css/magick.css"/>
 </head>
 <body>
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
+    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-3129977114552745"
+         data-ad-slot="6345125851"
+         data-ad-format="auto"></ins>
     <script>
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
@@ -34,7 +42,7 @@
       <a class="magick-nav-item " href="../index.html">Home</a>
       <a class="magick-nav-item " href="binary-releases.html">Download</a>
       <a class="magick-nav-item " href="command-line-tools.html">Tools</a>
-      <a class="magick-nav-item " href="command-line-options.html">Options</a>
+      <a class="magick-nav-item " href="command-line-processing.html">Command-line</a>
       <a class="magick-nav-item " href="resources.html">Resources</a>
       <a class="magick-nav-item " href="api.html">Develop</a>
       <a class="magick-nav-item " href="http://nextgen.imagemagick.org/script/search.php">Search</a>
@@ -53,13 +61,13 @@
 <p>We list a few examples of the <code>identify</code> command here to illustrate its usefulness and ease of use. To get started, lets identify an image in the JPEG format:</p>
 
 <pre>
--&gt; identify rose.jpg
+-> identify rose.jpg
 rose.jpg JPEG 70x46 70x46+0+0 8-bit sRGB 2.36KB 0.000u 0:00.000
 </pre>
 
 <p>Next, we look at the same image in greater detail:</p>
 
-<pre class="pre-scrollable">-&gt; identify -verbose rose.jpg
+<pre class="pre-scrollable">-> identify -verbose rose.jpg
 Image: rose.jpg
   Format: JPEG (Joint Photographic Experts Group JFIF format)
   Mime type: images/jpeg
@@ -150,21 +158,21 @@ Image: rose.jpg
 <p>To get the print size in inches of an image at 72 DPI, use:</p>
 
 <pre>
--&gt; identify -format "%[fx:w/72] by %[fx:h/72] inches" document.png
+-> identify -format "%[fx:w/72] by %[fx:h/72] inches" document.png
 8.5 x 11 inches
 </pre>
 
 <p>The depth and dimensions of a raw image must be specified on the command line:</p>
 
 <pre>
--&gt; identify -depth 8 -size 640x480 image.raw
+-> identify -depth 8 -size 640x480 image.raw
 image.raw RGB 640x480 sRGB 9kb 0.000u 0:01
 </pre>
 
 <p>Here we display the image texture features, moments, perceptual hash, and the number of unique colors in the image:</p>
 
 <pre>
--&gt; identify -verbose -features 1 -moments -unique image.png
+-> identify -verbose -features 1 -moments -unique image.png
 </pre>
 
 <p>Here is a special define that outputs the location of the minimum or maximum pixel of the image:</p>
@@ -313,6 +321,11 @@ transparent, extract, background, or shape the alpha channel</td>
   </tr>
 
   <tr>
+    <td><a href="command-line-options.html#mask">-mask <var>filename</var></a></td>
+    <td>associate a mask with the image</td>
+  </tr>
+
+  <tr>
     <td><a href="command-line-options.html#moments">-moments</a></td>
     <td>display image moments and perceptual hash.</td>
   </tr>
@@ -335,11 +348,6 @@ transparent, extract, background, or shape the alpha channel</td>
   <tr>
     <td><a href="command-line-options.html#quiet">-quiet</a></td>
     <td>suppress all warning messages</td>
-  </tr>
-
-  <tr>
-    <td><a href="command-line-options.html#mask">-read-mask <var>filename</var></a></td>
-    <td>associate a read-mask with the image</td>
   </tr>
 
   <tr>
@@ -410,7 +418,7 @@ transparent, extract, background, or shape the alpha channel</td>
     <p><a href="identify.html#">Back to top</a> •
     <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
     <a href="http://nextgen.imagemagick.org/script/contact.php">Contact Us</a></p>
-        <p><small>©  1999-2015 ImageMagick Studio LLC</small></p>
+        <p><small>©  1999-2016 ImageMagick Studio LLC</small></p>
   </footer>
 </div><!-- /.container -->
 

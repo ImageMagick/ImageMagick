@@ -17,7 +17,7 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -333,13 +333,13 @@ static MagickBooleanType WriteAVSImage(const ImageInfo *image_info,Image *image,
     *pixel_info;
 
   register const Quantum
-    *restrict p;
+    *magick_restrict p;
 
   register ssize_t
     x;
 
   register unsigned char
-    *restrict q;
+    *magick_restrict q;
 
   ssize_t
     count,

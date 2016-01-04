@@ -17,7 +17,7 @@
 %                               September 2011                                %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -1995,7 +1995,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
             *mask_image;
 
           register Quantum
-            *restrict q;
+            *magick_restrict q;
 
           register ssize_t
             x;
@@ -2103,7 +2103,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           if (IfMagickFalse(IsGeometry(arg1)))
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           new_image=ConnectedComponentsImage(_image,(size_t)
-            StringToInteger(arg1),_exception);
+            StringToInteger(arg1),(CCObjectInfo **) NULL,_exception);
           break;
         }
       if (LocaleCompare("contrast",option+1) == 0)

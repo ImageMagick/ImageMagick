@@ -1,32 +1,40 @@
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
     <title>ImageMagick: MagickWand, C API for ImageMagick</title>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <meta name="application-name" content="ImageMagick">
-  <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.">
-  <meta name="application-url" content="http://www.imagemagick.org">
-  <meta name="generator" content="PHP">
-  <meta name="keywords" content="magickwc, api, for, imagemagick, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert">
-  <meta name="rating" content="GENERAL">
-  <meta name="robots" content="INDEX, FOLLOW">
-  <meta name="generator" content="ImageMagick Studio LLC">
-  <meta name="author" content="ImageMagick Studio LLC">
-  <meta name="revisit-after" content="2 DAYS">
-  <meta name="resource-type" content="document">
-  <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC">
-  <meta name="distribution" content="Global">
-  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
-  <link rel="icon" href="../images/wand.png">
-  <link rel="shortcut icon" href="../images/wand.ico">
-  <link rel="stylesheet" href="../css/magick.html">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <meta name="application-name" content="ImageMagick"/>
+  <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves."/>
+  <meta name="application-url" content="http://www.imagemagick.org"/>
+  <meta name="generator" content="PHP"/>
+  <meta name="keywords" content="magickwc, api, for, imagemagick, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert"/>
+  <meta name="rating" content="GENERAL"/>
+  <meta name="robots" content="INDEX, FOLLOW"/>
+  <meta name="generator" content="ImageMagick Studio LLC"/>
+  <meta name="author" content="ImageMagick Studio LLC"/>
+  <meta name="revisit-after" content="2 DAYS"/>
+  <meta name="resource-type" content="document"/>
+  <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC"/>
+  <meta name="distribution" content="Global"/>
+  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
+  <link rel="icon" href="../images/wand.png"/>
+  <link rel="shortcut icon" href="../images/wand.ico"/>
+  <link rel="stylesheet" href="css/magick.css"/>
 </head>
 <body>
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
+    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-3129977114552745"
+         data-ad-slot="6345125851"
+         data-ad-format="auto"></ins>
     <script>
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
@@ -34,7 +42,7 @@
       <a class="magick-nav-item " href="../index.html">Home</a>
       <a class="magick-nav-item " href="binary-releases.html">Download</a>
       <a class="magick-nav-item " href="command-line-tools.html">Tools</a>
-      <a class="magick-nav-item " href="command-line-options.html">Options</a>
+      <a class="magick-nav-item " href="command-line-processing.html">Command-line</a>
       <a class="magick-nav-item " href="resources.html">Resources</a>
       <a class="magick-nav-item " href="api.html">Develop</a>
       <a class="magick-nav-item " href="http://nextgen.imagemagick.org/script/search.php">Search</a>
@@ -74,9 +82,9 @@ export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
 
 <p>Here is a example program that utilizes the MagickWand API to get you started, <a href="../source/wand.c">wand.c</a>. It reads an image, creates a thumbnail, and writes the result to disk.</p>
 
-<pre class="pre-scrollable">#include &lt;stdio.h&gt;
-#include &lt;stdlib.h&gt;
-#include &lt;wand/MagickWand.h&gt;
+<pre class="pre-scrollable">#include &lt;stdio.h>
+#include &lt;stdlib.h>
+#include &lt;wand/MagickWand.h>
 
 int main(int argc,char **argv)
 {
@@ -133,10 +141,10 @@ int main(int argc,char **argv)
 
 <p>Here is another program that shows one way to get and set image pixels with the MagickWand API, <a href="../source/contrast.c">contrast.c</a>. It reads an image, applies sigmoidal non-linearity contrast control, and writes the result to disk.</p>
 
-<pre class="pre-scrollable">#include &lt;stdio.h&gt;
-#include &lt;stdlib.h&gt;
-#include &lt;math.h&gt;
-#include &lt;wand/MagickWand.h&gt;
+<pre class="pre-scrollable">#include &lt;stdio.h>
+#include &lt;stdlib.h>
+#include &lt;math.h>
+#include &lt;wand/MagickWand.h>
 
 int main(int argc,char **argv)
 {
@@ -242,10 +250,10 @@ int main(int argc,char **argv)
 </pre>
 <p><a id="wand-view"></a>Now lets perform the same contrast enhancement while taking advantage of our dual or quad-core processing system by running the algorithm in parallel utilizing wand views.  The <a href="../source/wand/sigmoidal-contrast.c">sigmoidal-contrast.c</a> module reads an image, applies sigmoidal non-linearity contrast control, and writes the result to disk just like the previous contrast enhancement program, but now it does its work in parallel (assumes ImageMagick is built with OpenMP support).</p>
 
-<pre class="pre-scrollable">#include &lt;stdio.h&gt;
-#include &lt;stdlib.h&gt;
-#include &lt;math.h&gt;
-#include &lt;wand/MagickWand.h&gt;
+<pre class="pre-scrollable">#include &lt;stdio.h>
+#include &lt;stdlib.h>
+#include &lt;math.h>
+#include &lt;wand/MagickWand.h>
 
 static MagickBooleanType SigmoidalContrast(WandView *pixel_view,
   const ssize_t y,const int id,void *context)
@@ -360,7 +368,7 @@ int main(int argc,char **argv)
     <p><a href="magick-wand.html#">Back to top</a> •
     <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
     <a href="http://nextgen.imagemagick.org/script/contact.php">Contact Us</a></p>
-        <p><small>©  1999-2015 ImageMagick Studio LLC</small></p>
+        <p><small>©  1999-2016 ImageMagick Studio LLC</small></p>
   </footer>
 </div><!-- /.container -->
 

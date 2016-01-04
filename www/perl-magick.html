@@ -1,32 +1,40 @@
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
     <title>ImageMagick: PerlMagick, Perl API for ImageMagick</title>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <meta name="application-name" content="ImageMagick">
-  <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.">
-  <meta name="application-url" content="http://www.imagemagick.org">
-  <meta name="generator" content="PHP">
-  <meta name="keywords" content="perlmagick, perl, api, for, imagemagick, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert">
-  <meta name="rating" content="GENERAL">
-  <meta name="robots" content="INDEX, FOLLOW">
-  <meta name="generator" content="ImageMagick Studio LLC">
-  <meta name="author" content="ImageMagick Studio LLC">
-  <meta name="revisit-after" content="2 DAYS">
-  <meta name="resource-type" content="document">
-  <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC">
-  <meta name="distribution" content="Global">
-  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
-  <link rel="icon" href="../images/wand.png">
-  <link rel="shortcut icon" href="../images/wand.ico">
-  <link rel="stylesheet" href="../css/magick.html">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <meta name="application-name" content="ImageMagick"/>
+  <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves."/>
+  <meta name="application-url" content="http://www.imagemagick.org"/>
+  <meta name="generator" content="PHP"/>
+  <meta name="keywords" content="perlmagick, perl, api, for, imagemagick, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert"/>
+  <meta name="rating" content="GENERAL"/>
+  <meta name="robots" content="INDEX, FOLLOW"/>
+  <meta name="generator" content="ImageMagick Studio LLC"/>
+  <meta name="author" content="ImageMagick Studio LLC"/>
+  <meta name="revisit-after" content="2 DAYS"/>
+  <meta name="resource-type" content="document"/>
+  <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC"/>
+  <meta name="distribution" content="Global"/>
+  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
+  <link rel="icon" href="../images/wand.png"/>
+  <link rel="shortcut icon" href="../images/wand.ico"/>
+  <link rel="stylesheet" href="css/magick.css"/>
 </head>
 <body>
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
+    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-3129977114552745"
+         data-ad-slot="6345125851"
+         data-ad-format="auto"></ins>
     <script>
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
@@ -34,7 +42,7 @@
       <a class="magick-nav-item " href="../index.html">Home</a>
       <a class="magick-nav-item " href="binary-releases.html">Download</a>
       <a class="magick-nav-item " href="command-line-tools.html">Tools</a>
-      <a class="magick-nav-item " href="command-line-options.html">Options</a>
+      <a class="magick-nav-item " href="command-line-processing.html">Command-line</a>
       <a class="magick-nav-item " href="resources.html">Resources</a>
       <a class="magick-nav-item " href="api.html">Develop</a>
       <a class="magick-nav-item " href="http://nextgen.imagemagick.org/script/search.php">Search</a>
@@ -73,7 +81,7 @@ tar xvzf ImageMagick.tar.gz
 
 <p>Next configure and compile ImageMagick:</p>
 
-<pre><span class="crtprompt"> </span><span class="crtin">cd ImageMagick-7.0.0</span><span class="crtout"></span><span class="crtprompt"> </span><span class="crtin">./configure -with-perl</span><span class="crtout"></span><span class="crtprompt"> </span><span class="crtin">make</span></pre>
+<pre><span class="crtprompt"> </span><span class='crtin'>cd ImageMagick-7.0.0</span><span class='crtout'></span><span class="crtprompt"> </span><span class='crtin'>./configure -with-perl</span><span class='crtout'></span><span class="crtprompt"> </span><span class='crtin'>make</span></pre>
 <p>If ImageMagick / PerlMagick configured and compiled without complaint, you are ready to install it on your system.  Administrator privileges are required to install.  To install, type</p>
 
 <pre>
@@ -90,7 +98,7 @@ sudo ldconfig /usr/local/lib
 <p>Finally, verify the PerlMagick install worked properly, type</p>
 
 <pre>
-perl -e \"use Image::Magick; print Image::Magick-&gt;QuantumDepth\"
+perl -e \"use Image::Magick; print Image::Magick->QuantumDepth\"
 </pre>
 
 <p>Congratulations, you have a working ImageMagick distribution and you are ready to use PerlMagick to <a href="http://www.imagemagick.org/Usage/">convert, compose, or edit</a> your images.</p>
@@ -185,13 +193,13 @@ $ENV{PATH}' . "='/../bin:/usr/bin:/usr/local/bin';
 
 <pre>
 #!/usr/local/bin/perl
-use Image::Magick;<br>
-my($image, $x);<br>
+use Image::Magick;<br />
+my($image, $x);<br />
 $image = Image::Magick-&gt;new;
 $x = $image-&gt;Read('girl.png', 'logo.png', 'rose.png');
-warn "$x" if "$x";<br>
+warn "$x" if "$x";<br />
 $x = $image-&gt;Crop(geometry=&gt;'100x100+100+100');
-warn "$x" if "$x";<br>
+warn "$x" if "$x";<br />
 $x = $image-&gt;Write('x.png');
 warn "$x" if "$x";
 </pre>
@@ -199,8 +207,8 @@ warn "$x" if "$x";
 <p>The script reads three images, crops them, and writes a single image as a GIF animation sequence. In many cases you may want to access individual images of a sequence. The next example illustrates how this done:</p>
 
 <pre class="pre-scrollable">#!/usr/local/bin/perl
-use Image::Magick;<br>
-my($image, $p, $q);<br>
+use Image::Magick;<br />
+my($image, $p, $q);<br />
 $image = new Image::Magick;
 $image-&gt;Read('x1.png');
 $image-&gt;Read('j*.jpg');
@@ -272,10 +280,10 @@ $p-&gt;Convolve([1, 2, 1, 2, 4, 2, 1, 2, 1]);   # 3x3 Gaussian kernel
 <table class="table table-condensed table-striped">
 <caption>Read or Write Methods</caption>
 <colgroup>
-  <col width="20%">
-  <col width="20%">
-  <col width="20%">
-  <col width="40%">
+  <col width="20%"></col>
+  <col width="20%"></col>
+  <col width="20%"></col>
+  <col width="40%"></col>
 </colgroup>
 <tbody>
 
@@ -342,7 +350,7 @@ close(IMAGE);
 
 <pre>
 $filename = "image.png";
-open(IMAGE, "&gt;$filename");
+open(IMAGE, ">$filename");
 $image-&gt;Write(file=&gt;\*IMAGE, filename=&gt;$filename);
 close(IMAGE);
 </pre>
@@ -441,7 +449,7 @@ $image-&gt;[$x]-&gt;Frame("100x200");
 
   <tr>
     <td>AutoOrient</td>
-    <td><br></td>
+    <td><br /></td>
     <td>adjusts an image so that its orientation is suitable for viewing (i.e. top-left orientation)</td>
   </tr>
 
@@ -513,7 +521,7 @@ $image-&gt;[$x]-&gt;Frame("100x200");
 
   <tr>
     <td>Coalesce</td>
-    <td><br></td>
+    <td><br /></td>
     <td>merge a sequence of images</td>
   </tr>
 
@@ -617,7 +625,7 @@ ay connectivity.</td>
 
   <tr>
     <td>Deconstruct</td>
-    <td><br></td>
+    <td><br /></td>
     <td>break down an image sequence into constituent parts</td>
   </tr>
 
@@ -671,13 +679,13 @@ ay connectivity.</td>
 
   <tr>
     <td>Enhance</td>
-    <td><br></td>
+    <td><br /></td>
     <td>apply a digital filter to enhance a noisy image</td>
   </tr>
 
   <tr>
     <td>Equalize</td>
-    <td>channel=&gt;{All, Default, Alpha, Black, Blue, CMYK, Cyan, Gray, Green, Index, Magenta, Opacity, Red, RGB, Yellow}<br></td>
+    <td>channel=&gt;{All, Default, Alpha, Black, Blue, CMYK, Cyan, Gray, Green, Index, Magenta, Opacity, Red, RGB, Yellow}<br /></td>
     <td>perform histogram equalization to the image</td>
   </tr>
 
@@ -701,13 +709,13 @@ ay connectivity.</td>
 
   <tr>
     <td>Flip</td>
-    <td><br></td>
+    <td><br /></td>
     <td>reflect the image scanlines in the vertical direction</td>
   </tr>
 
   <tr>
     <td>Flop</td>
-    <td><br></td>
+    <td><br /></td>
     <td>reflect the image scanlines in the horizontal direction</td>
   </tr>
 
@@ -839,7 +847,7 @@ ay connectivity.</td>
 
   <tr>
     <td>Magnify</td>
-    <td><br></td>
+    <td><br /></td>
     <td>double the size of the image with pixel art scaling</td>
   </tr>
 
@@ -869,7 +877,7 @@ ay connectivity.</td>
 
   <tr>
     <td>Minify</td>
-    <td><br></td>
+    <td><br /></td>
     <td>half the size of an image</td>
   </tr>
 
@@ -905,7 +913,7 @@ ay connectivity.</td>
 
   <tr>
     <td>Normalize</td>
-    <td>channel=&gt;{All, Default, Alpha, Black, Blue, CMYK, Cyan, Gray, Green, Index, Magenta, Opacity, Red, RGB, Yellow}<br></td>
+    <td>channel=&gt;{All, Default, Alpha, Black, Blue, CMYK, Cyan, Gray, Green, Index, Magenta, Opacity, Red, RGB, Yellow}<br /></td>
     <td>transform image to span the full range of color values</td>
   </tr>
 
@@ -1079,7 +1087,7 @@ fill=&gt;<i><a href="color.html">color name</a></i>, channel=&gt;{All, Default, 
 
   <tr>
     <td>Signature</td>
-    <td><br></td>
+    <td><br /></td>
     <td>generate an SHA-256 message digest for the image pixel stream</td>
   </tr>
 
@@ -1132,7 +1140,7 @@ fill=&gt;<i><a href="color.html">color name</a></i>, channel=&gt;{All, Default, 
 
   <tr>
     <td>Strip</td>
-    <td><br></td>
+    <td><br /></td>
     <td>strip an image of all profiles and comments.</td>
   </tr>
 
@@ -1174,19 +1182,19 @@ fill=&gt;<i><a href="color.html">color name</a></i>, channel=&gt;{All, Default, 
 
   <tr>
     <td>Transpose</td>
-    <td><br></td>
+    <td><br /></td>
     <td>flip image in the vertical direction and rotate 90 degrees</td>
   </tr>
 
   <tr>
     <td>Transverse</td>
-    <td><br></td>
+    <td><br /></td>
     <td>flop image in the horizontal direction and rotate 270 degrees</td>
   </tr>
 
   <tr>
     <td>Trim</td>
-    <td><br></td>
+    <td><br /></td>
     <td>remove edges that are the background color from the image</td>
   </tr>
 
@@ -1998,14 +2006,14 @@ $width = $image-&gt;[3]-&gt;Get('columns');
 <pre>
 use Image::Magick;
 
-$logo=Image::Magick-&gt;New();
-$logo-&gt;Read('logo:');
-$sharp=Image::Magick-&gt;New();
-$sharp-&gt;Read('logo:');
-$sharp-&gt;Sharpen('0x1');
-$difference=$logo-&gt;Compare(image=&gt;$sharp, metric=&gt;'rmse');
-print $difference-&gt;Get('error'), "\n";
-$difference-&gt;Display();
+$logo=Image::Magick->New();
+$logo->Read('logo:');
+$sharp=Image::Magick->New();
+$sharp->Read('logo:');
+$sharp->Sharpen('0x1');
+$difference=$logo->Compare(image=>$sharp, metric=>'rmse');
+print $difference->Get('error'), "\n";
+$difference->Display();
 </pre>
 
 <p>In addition to the reported root mean squared error of around 0.024, a difference image is displayed so you can visually identify the difference between the images.</p>
@@ -2069,7 +2077,7 @@ $image-&gt;Montage(geometry=&gt;'160x160', tile=&gt;'2x2', texture=&gt;'granite:
     <td>geometry</td>
     <td><i>geometry</i></td>
     <td>preferred tile and border size of each tile of the composite
-image (e.g. 120x120+4+3&gt;)</td>
+image (e.g. 120x120+4+3>)</td>
   </tr>
 
   <tr>
@@ -2279,7 +2287,7 @@ $p = $image-&gt;EvaluateImages('mean');
 <p>Finally, the Transform() method accepts a fully-qualified geometry specification for cropping or resizing one or more images.  For example,</p>
 
 <pre>
-$p = $images-&gt;Transform(crop=&gt;'100x100+10+60');
+$p = $images-&gt;Transform(crop=>'100x100+10+60');
 </pre>
 
 <p>The Flatten() method flattens a set of images and returns it. For example,</p>
@@ -2552,7 +2560,7 @@ Image::Magick-&gt;QuantumDepth
     <p><a href="perl-magick.html#">Back to top</a> •
     <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
     <a href="http://nextgen.imagemagick.org/script/contact.php">Contact Us</a></p>
-        <p><small>©  1999-2015 ImageMagick Studio LLC</small></p>
+        <p><small>©  1999-2016 ImageMagick Studio LLC</small></p>
   </footer>
 </div><!-- /.container -->
 

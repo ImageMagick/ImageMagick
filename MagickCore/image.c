@@ -17,7 +17,7 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -464,6 +464,7 @@ MagickExport Image *AppendImages(const Image *images,
     *next;
 
   size_t
+    depth,
     height,
     number_images,
     width;
@@ -486,9 +487,12 @@ MagickExport Image *AppendImages(const Image *images,
   number_images=1;
   width=images->columns;
   height=images->rows;
+  depth=images->depth;
   next=GetNextImageInList(images);
   for ( ; next != (Image *) NULL; next=GetNextImageInList(next))
   {
+    if (next->depth > depth)
+      depth=next->depth;
     if (next->alpha_trait != UndefinedPixelTrait)
       alpha_trait=BlendPixelTrait;
     number_images++;
@@ -514,6 +518,7 @@ MagickExport Image *AppendImages(const Image *images,
       append_image=DestroyImage(append_image);
       return((Image *) NULL);
     }
+  append_image->depth=depth;
   append_image->alpha_trait=alpha_trait;
   (void) SetImageBackgroundColor(append_image,exception);
   status=MagickTrue;
@@ -556,10 +561,10 @@ MagickExport Image *AppendImages(const Image *images,
         pixel;
 
       register const Quantum
-        *restrict p;
+        *magick_restrict p;
 
       register Quantum
-        *restrict q;
+        *magick_restrict q;
 
       register ssize_t
         x;
@@ -1086,13 +1091,13 @@ MagickExport MagickBooleanType CopyImagePixels(Image *image,
       sync;
 
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register ssize_t
       x;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -1448,6 +1453,7 @@ MagickExport Image *GetImageMask(const Image *image,ExceptionInfo *exception)
   if (mask_image == (Image *) NULL)
     return((Image *) NULL);
   status=MagickTrue;
+  mask_image->alpha_trait=UndefinedPixelTrait;
   (void) SetImageColorspace(mask_image,GRAYColorspace,exception);
   mask_image->read_mask=MagickFalse;
   image_view=AcquireVirtualCacheView(image,exception);
@@ -1455,10 +1461,10 @@ MagickExport Image *GetImageMask(const Image *image,ExceptionInfo *exception)
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -2042,7 +2048,7 @@ MagickExport Image *NewMagickImage(const ImageInfo *image_info,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -2230,7 +2236,7 @@ MagickExport MagickBooleanType SetImageBackgroundColor(Image *image,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -2344,7 +2350,7 @@ MagickExport MagickBooleanType SetImageColor(Image *image,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -2956,10 +2962,10 @@ MagickExport MagickBooleanType SetImageMask(Image *image,const PixelMask type,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -2975,16 +2981,20 @@ MagickExport MagickBooleanType SetImageMask(Image *image,const PixelMask type,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
+      MagickRealType
+        intensity;
+
+      intensity=GetPixelIntensity(mask,p);
       switch (type)
       {
         case WritePixelMask:
         {
-          SetPixelWriteMask(image,ClampToQuantum(GetPixelIntensity(mask,p)),q);
+          SetPixelWriteMask(image,ClampToQuantum(QuantumRange-intensity),q);
           break;
         }
         default:
         {
-          SetPixelReadMask(image,ClampToQuantum(GetPixelIntensity(mask,p)),q);
+          SetPixelReadMask(image,ClampToQuantum(QuantumRange-intensity),q);
           break;
         }
       }
@@ -3051,7 +3061,7 @@ MagickExport MagickBooleanType SetImageAlpha(Image *image,const Quantum alpha,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -3066,12 +3076,8 @@ MagickExport MagickBooleanType SetImageAlpha(Image *image,const Quantum alpha,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if (GetPixelReadMask(image,q) == 0)
-        {
-          q+=GetPixelChannels(image);
-          continue;
-        }
-      SetPixelAlpha(image,alpha,q);
+      if (GetPixelReadMask(image,q) != 0)
+        SetPixelAlpha(image,alpha,q);
       q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -3462,7 +3468,7 @@ MagickExport MagickBooleanType StripImage(Image *image,ExceptionInfo *exception)
   (void) DeleteImageProperty(image,"date:create");
   (void) DeleteImageProperty(image,"date:modify");
   status=SetImageArtifact(image,"png:exclude-chunk",
-    "EXIF,iCCP,iTXt,sRGB,tEXt,zCCP,zTXt,date");
+    "cHRM,EXIF,gAMA,iCCP,iTXt,sRGB,tEXt,zCCP,zTXt,date");
   return(status);
 }
 
@@ -3534,7 +3540,7 @@ MagickExport MagickBooleanType SyncImage(Image *image,ExceptionInfo *exception)
       index;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;

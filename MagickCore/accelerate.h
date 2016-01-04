@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
 
   You may not use this file except in compliance with the License.
@@ -28,22 +28,6 @@
 extern "C" {
 #endif
 
-extern MagickExport MagickBooleanType
-  AccelerateCompositeImage(Image *,const ChannelType,const CompositeOperator,
-    const Image *,const ssize_t,const ssize_t,const float,const float,
-    ExceptionInfo *),
-  AccelerateContrastImage(Image *,const MagickBooleanType,ExceptionInfo *),
-  AccelerateContrastStretchImageChannel(Image *, const ChannelType,
-    const double,const double,ExceptionInfo*),
-  AccelerateEqualizeImage(Image *,const ChannelType,ExceptionInfo *),
-  AccelerateFunctionImage(Image *,const ChannelType,const MagickFunction,
-    const size_t,const double *,ExceptionInfo *),
-  AccelerateGrayscaleImage(Image*, const PixelIntensityMethod,
-    ExceptionInfo *),
-  AccelerateModulateImage(Image*, double, double, double, 
-    ColorspaceType, ExceptionInfo*),
-  AccelerateRandomImage(Image*, ExceptionInfo*);
-
 extern MagickExport Image
   *AccelerateAddNoiseImage(const Image*,const ChannelType,const NoiseType,
     ExceptionInfo *),
@@ -62,6 +46,22 @@ extern MagickExport Image
     ExceptionInfo *),
   *AccelerateUnsharpMaskImage(const Image *,const ChannelType,const double,
     const double,const double,const double,ExceptionInfo *);
+
+extern MagickExport MagickBooleanType
+  AccelerateCompositeImage(Image *,const ChannelType,const CompositeOperator,
+    const Image *,const ssize_t,const ssize_t,const float,const float,
+    ExceptionInfo *),
+  AccelerateContrastImage(Image *,const MagickBooleanType,ExceptionInfo *),
+  AccelerateContrastStretchImage(Image *, const ChannelType,
+    const double,const double,ExceptionInfo*),
+  AccelerateEqualizeImage(Image *,const ChannelType,ExceptionInfo *),
+  AccelerateFunctionImage(Image *,const ChannelType,const MagickFunction,
+    const size_t,const double *,ExceptionInfo *),
+  AccelerateGrayscaleImage(Image*, const PixelIntensityMethod,
+    ExceptionInfo *),
+  AccelerateModulateImage(Image*, double, double, double,
+    ColorspaceType, ExceptionInfo*),
+  AccelerateRandomImage(Image*, ExceptionInfo*);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -17,7 +17,7 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -2826,6 +2826,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   ssize_t
     count,
+    rescale_intercept,
+    rescale_slope,
     scene,
     window_center,
     y;
@@ -2894,6 +2896,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   max_value=255UL;
   mask=0xffff;
   number_scenes=1;
+  rescale_intercept=0;
+  rescale_slope=1;
   samples_per_pixel=1;
   scale=(Quantum *) NULL;
   sequence=MagickFalse;
@@ -3134,11 +3138,15 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   subtype,
                   type;
 
-                type=0;
+                type=1;
                 subtype=0;
-                count=sscanf(transfer_syntax+17,".%d.%d",&type,&subtype);
-                if (count < 1)
-                  ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+                if (strlen(transfer_syntax) > 17)
+                  {
+                    count=sscanf(transfer_syntax+17,".%d.%d",&type,&subtype);
+                    if (count < 1)
+                      ThrowReaderException(CorruptImageError,
+                        "ImproperImageHeader");
+                  }
                 switch (type)
                 {
                   case 1:
@@ -3295,6 +3303,24 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             */
             if (data != (unsigned char *) NULL)
               window_width=StringToUnsignedLong((char *) data);
+            break;
+          }
+          case 0x1052:
+          {
+            /*
+              Rescale intercept
+            */
+            if (data != (unsigned char *) NULL)
+              rescale_intercept=(ssize_t) StringToLong((char *) data);
+            break;
+          }
+          case 0x1053:
+          {
+            /*
+              Rescale slope
+            */
+            if (data != (unsigned char *) NULL)
+              rescale_slope=(ssize_t) StringToLong((char *) data);
             break;
           }
           case 0x1200:
@@ -3851,9 +3877,15 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     ReadDCMByte(stream_info,image);
                 else
                   if ((bits_allocated != 12) || (significant_bits != 12))
-                    pixel_value=(int) (polarity != MagickFalse ? (max_value-
-                      ReadDCMShort(stream_info,image)) :
-                      ReadDCMShort(stream_info,image));
+                    {
+                      if (signed_data)
+                        pixel_value=(signed short) ReadDCMShort(stream_info,
+                          image);
+                      else
+                        pixel_value=ReadDCMShort(stream_info,image);
+                      if (polarity != MagickFalse)
+                        pixel_value=(int)max_value-pixel_value;
+                    }
                   else
                     {
                       if ((i & 0x01) != 0)
@@ -3867,11 +3899,11 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                         }
                       i++;
                     }
-                index=pixel_value;
+                index=(pixel_value*rescale_slope)+rescale_intercept;
                 if (window_width == 0)
                   {
                     if (signed_data == 1)
-                      index=pixel_value-32767;
+                      index-=32767;
                   }
                 else
                   {
@@ -3883,13 +3915,13 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       (window_width-1.0)/2.0-0.5);
                     window_max=(ssize_t) floor((double) window_center+
                       (window_width-1.0)/2.0+0.5);
-                    if ((ssize_t) pixel_value <= window_min)
+                    if ((ssize_t)index <= window_min)
                       index=0;
                     else
-                      if ((ssize_t) pixel_value > window_max)
+                      if ((ssize_t)index > window_max)
                         index=(int) max_value;
                       else
-                        index=(int) (max_value*(((pixel_value-window_center-
+                        index=(int) (max_value*(((index-window_center-
                           0.5)/(window_width-1))+0.5));
                   }
                 index&=mask;
@@ -3959,8 +3991,9 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   else
                     if ((bits_allocated != 12) || (significant_bits != 12))
                       {
-                        pixel_value=(int) (polarity != MagickFalse ? (max_value-                            ReadDCMShort(stream_info,image)) :
-                            ReadDCMShort(stream_info,image));
+                        pixel_value=(int) (polarity != MagickFalse ?
+                          (max_value-ReadDCMShort(stream_info,image)) :
+                          ReadDCMShort(stream_info,image));
                         if (signed_data == 1)
                           pixel_value=((signed short) pixel_value);
                       }
@@ -3978,11 +4011,11 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                           }
                         i++;
                       }
-                  index=pixel_value;
+                  index=(pixel_value*rescale_slope)+rescale_intercept;
                   if (window_width == 0)
                     {
                       if (signed_data == 1)
-                        index=pixel_value-32767;
+                        index-=32767;
                     }
                   else
                     {
@@ -3994,13 +4027,13 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                         (window_width-1.0)/2.0-0.5);
                       window_max=(ssize_t) floor((double) window_center+
                         (window_width-1.0)/2.0+0.5);
-                      if ((ssize_t) pixel_value <= window_min)
+                      if ((ssize_t)index <= window_min)
                         index=0;
                       else
-                        if ((ssize_t) pixel_value > window_max)
+                        if ((ssize_t)index > window_max)
                           index=(int) max_value;
                         else
-                          index=(int) (max_value*(((pixel_value-window_center-
+                          index=(int) (max_value*(((index-window_center-
                             0.5)/(window_width-1))+0.5));
                     }
                   index&=mask;

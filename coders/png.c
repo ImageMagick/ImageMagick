@@ -18,7 +18,7 @@
 %                               November 1997                                 %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -7810,6 +7810,25 @@ static MagickBooleanType Magick_png_write_chunk_from_profile(Image *image,
    return(MagickTrue);
 }
 
+static inline MagickBooleanType Magick_png_color_equal(const Image *image,
+  const Quantum *p, const PixelInfo *q)
+{
+  MagickRealType
+    value;
+
+  value=(MagickRealType) p[image->channel_map[RedPixelChannel].offset];
+  if (AbsolutePixelValue(value-q->red) >= MagickEpsilon)
+    return(MagickFalse);
+  value=(MagickRealType) p[image->channel_map[GreenPixelChannel].offset];
+  if (AbsolutePixelValue(value-q->green) >= MagickEpsilon)
+    return(MagickFalse);
+  value=(MagickRealType) p[image->channel_map[BluePixelChannel].offset];
+  if (AbsolutePixelValue(value-q->blue) >= MagickEpsilon)
+    return(MagickFalse);
+
+  return(MagickTrue);
+}
+
 #if defined(PNG_tIME_SUPPORTED)
 static void write_tIME_chunk(Image *image,png_struct *ping,png_info *info,
   const char *date,ExceptionInfo *exception)
@@ -8553,7 +8572,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
                    for (i=0; i< (ssize_t) number_opaque; i++)
                      {
-                       if (IsPixelEquivalent(image,q, opaque+i))
+                       if (Magick_png_color_equal(image,q,opaque+i))
                          break;
                      }
 
@@ -8585,7 +8604,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
                    for (i=0; i< (ssize_t) number_transparent; i++)
                      {
-                       if (IsPixelEquivalent(image,q, transparent+i))
+                       if (Magick_png_color_equal(image,q,transparent+i))
                          break;
                      }
 
@@ -8609,7 +8628,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
                    for (i=0; i< (ssize_t) number_semitransparent; i++)
                      {
-                       if (IsPixelEquivalent(image,q, semitransparent+i)
+                       if (Magick_png_color_equal(image,q,semitransparent+i)
                            && GetPixelAlpha(image,q) ==
                            semitransparent[i].alpha)
                          break;

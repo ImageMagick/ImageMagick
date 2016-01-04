@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -310,11 +310,9 @@ extern MagickExport char
 extern MagickExport const GhostInfo_
   *NTGhostscriptDLLVectors(void);
 
-extern MagickExport int
-  NTGhostscriptUnLoadDLL(void);
-
 extern MagickExport void
   NTErrorHandler(const ExceptionType,const char *,const char *),
+  NTGhostscriptUnLoadDLL(void),
   NTWarningHandler(const ExceptionType,const char *,const char *);
 #endif
 

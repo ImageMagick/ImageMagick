@@ -17,7 +17,7 @@
 %                                October 2002                                 %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -186,7 +186,7 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
       bounding_box;
 
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register ssize_t
       x;
@@ -395,7 +395,7 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
           id = GetOpenMPThreadId();
 
         register const Quantum
-          *restrict p;
+          *magick_restrict p;
 
         register ssize_t
           x;
@@ -452,7 +452,7 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
       id = GetOpenMPThreadId();
 
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register ssize_t
       x;
@@ -1079,7 +1079,7 @@ MagickExport MagickBooleanType SetImageDepth(Image *image,
           x;
 
         register Quantum
-          *restrict q;
+          *magick_restrict q;
 
         if (status == MagickFalse)
           continue;
@@ -1144,7 +1144,7 @@ MagickExport MagickBooleanType SetImageDepth(Image *image,
       x;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     if (status == MagickFalse)
       continue;

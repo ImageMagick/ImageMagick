@@ -1,32 +1,40 @@
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
     <title>ImageMagick: Magick Vector Graphics</title>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <meta name="application-name" content="ImageMagick">
-  <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.">
-  <meta name="application-url" content="http://www.imagemagick.org">
-  <meta name="generator" content="PHP">
-  <meta name="keywords" content="magick, vector, graphics, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert">
-  <meta name="rating" content="GENERAL">
-  <meta name="robots" content="INDEX, FOLLOW">
-  <meta name="generator" content="ImageMagick Studio LLC">
-  <meta name="author" content="ImageMagick Studio LLC">
-  <meta name="revisit-after" content="2 DAYS">
-  <meta name="resource-type" content="document">
-  <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC">
-  <meta name="distribution" content="Global">
-  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
-  <link rel="icon" href="../images/wand.png">
-  <link rel="shortcut icon" href="../images/wand.ico">
-  <link rel="stylesheet" href="../css/magick.html">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <meta name="application-name" content="ImageMagick"/>
+  <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves."/>
+  <meta name="application-url" content="http://www.imagemagick.org"/>
+  <meta name="generator" content="PHP"/>
+  <meta name="keywords" content="magick, vector, graphics, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert"/>
+  <meta name="rating" content="GENERAL"/>
+  <meta name="robots" content="INDEX, FOLLOW"/>
+  <meta name="generator" content="ImageMagick Studio LLC"/>
+  <meta name="author" content="ImageMagick Studio LLC"/>
+  <meta name="revisit-after" content="2 DAYS"/>
+  <meta name="resource-type" content="document"/>
+  <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC"/>
+  <meta name="distribution" content="Global"/>
+  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
+  <link rel="icon" href="../images/wand.png"/>
+  <link rel="shortcut icon" href="../images/wand.ico"/>
+  <link rel="stylesheet" href="css/magick.css"/>
 </head>
 <body>
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
+    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-3129977114552745"
+         data-ad-slot="6345125851"
+         data-ad-format="auto"></ins>
     <script>
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
@@ -34,7 +42,7 @@
       <a class="magick-nav-item " href="../index.html">Home</a>
       <a class="magick-nav-item " href="binary-releases.html">Download</a>
       <a class="magick-nav-item " href="command-line-tools.html">Tools</a>
-      <a class="magick-nav-item " href="command-line-options.html">Options</a>
+      <a class="magick-nav-item " href="command-line-processing.html">Command-line</a>
       <a class="magick-nav-item " href="resources.html">Resources</a>
       <a class="magick-nav-item " href="api.html">Develop</a>
       <a class="magick-nav-item " href="http://nextgen.imagemagick.org/script/search.php">Search</a>
@@ -44,10 +52,10 @@
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="text-center"><a href="magick-vector-graphics.html#overview">MVG Overview</a> • <a href="magick-vector-graphics.html#primitives">Drawing Primitives</a></p>
+<p class="text-center"><a href="http://nextgen.imagemagick.org/www/magick-vector-graphics.html#overview">MVG Overview</a> • <a href="http://nextgen.imagemagick.org/www/magick-vector-graphics.html#primitives">Drawing Primitives</a></p>
 
 <p class="lead magick-description">This specification defines the features and syntax for Magick Vector Graphics (MVG), a modularized language for describing two-dimensional vector and mixed vector/raster graphics in ImageMagick.  You can use the language to draw from the
-command line, from an MVG file, from an <a href="http://www.w3.org/TR/SVG/">SVG -- Scalable Vector Graphics</a> file or from one of the ImageMagick <a href="api.html">program interfaces</a>.  Use this command, for example, to render an arc:</p>
+command line, from an MVG file, from an <a href="http://www.w3.org/TR/SVG/">SVG -- Scalable Vector Graphics</a> file or from one of the ImageMagick <a href="http://nextgen.imagemagick.org/www/api.html">program interfaces</a>.  Use this command, for example, to render an arc:</p>
 
 <pre>
 convert -size 100x60 canvas:skyblue -fill white -stroke black \
@@ -236,7 +244,7 @@ convert piechart.svg piechart.jpg
 
 <p>to produce the same pie chart we created with the MVG language.</p>
 
-<p>Drawing is available from many of the ImageMagick <a href="api.html">program interfaces</a> as well.  ImageMagick converts the drawing API calls to MVG and renders it.  Here is example code written in the <a href="magick-wand.html">MagickWand</a> language: </p>
+<p>Drawing is available from many of the ImageMagick <a href="http://nextgen.imagemagick.org/www/api.html">program interfaces</a> as well.  ImageMagick converts the drawing API calls to MVG and renders it.  Here is example code written in the <a href="http://nextgen.imagemagick.org/www/magick-wand.html">MagickWand</a> language: </p>
 
 <pre class="pre-scrollable">(void) PushDrawingWand(draw_wand);
 {
@@ -404,18 +412,18 @@ underline</pre></td>
   </tr>
   <tr>
     <td><a id="ellipse"></a>ellipse <var>center<sub>x</sub></var>,<var>center<sub>y</sub></var>   <var>radius<sub>x</sub></var>,<var>radius<sub>y</sub></var>   <var>arc<sub>start</sub></var>,<var>arc<sub>stop</sub></var></td>
+    <td></td>
+  </tr>
+  <tr>
     <td><a id="fill"></a>fill <var>color</var></td>
+    <td>Choose from any of these <a href="http://nextgen.imagemagick.org/www/color.html">colors</a>.</td>
   </tr>
   <tr>
-    <td>Choose from any of these <a href="color.html">colors</a>.</td>
     <td><a id="fill-opacity"></a>fill-opacity <var>opacity</var></td>
+    <td>The opacity ranges from 0.0 (fully transparent) to 1.0 (fully opaque) or as a percentage (e.g. 50%).</td>
   </tr>
   <tr>
-    <td>The opacity ranges from 0.0 (fully transparent) to 1.0 (fully opaque) or as a percentage (e.g. 50%).
-</td>
     <td><a id="fill-rule"></a>fill-rule <var>rule</var></td>
-  </tr>
-  <tr>
     <td>Choose from these rule types:
 <pre>evenodd
 nonzero</pre></td>
@@ -659,7 +667,7 @@ SouthEast</pre></td>
 
   <tr>
     <td>change-mask</td>
-    <td>Replace any destination pixel that is the similar to the source images pixel (as defined by the current <a href="magick-vector-graphics.html#fuzz">-fuzz</a> factor), with transparency. </td>
+    <td>Replace any destination pixel that is the similar to the source images pixel (as defined by the current <a href="http://nextgen.imagemagick.org/www/magick-vector-graphics.html#fuzz">-fuzz</a> factor), with transparency. </td>
   </tr>
   </tbody>
 </table></td>
@@ -848,8 +856,6 @@ round</pre></td>
     <td></td>
   </tr>
 </table></div>
-
-</div>
   <footer class="magick-footer">
     <p><a href="support.html">Donate</a> •
      <a href="sitemap.html">Sitemap</a> •
@@ -859,7 +865,7 @@ round</pre></td>
     <p><a href="magick-vector-graphics.html#">Back to top</a> •
     <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
     <a href="http://nextgen.imagemagick.org/script/contact.php">Contact Us</a></p>
-        <p><small>©  1999-2015 ImageMagick Studio LLC</small></p>
+        <p><small>©  1999-2016 ImageMagick Studio LLC</small></p>
   </footer>
 </div><!-- /.container -->
 

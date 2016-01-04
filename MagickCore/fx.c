@@ -17,7 +17,7 @@
 %                                 October 1996                                %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -280,7 +280,7 @@ MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
     progress;
 
   RandomInfo
-    **restrict random_info;
+    **magick_restrict random_info;
 
   ssize_t
     y;
@@ -329,13 +329,13 @@ MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
       sync;
 
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register ssize_t
       x;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -487,13 +487,13 @@ MagickExport Image *BlueShiftImage(const Image *image,const double factor,
       quantum;
 
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register ssize_t
       x;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -740,7 +740,7 @@ MagickExport Image *ColorizeImage(const Image *image,const char *blend,
       sync;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -941,10 +941,10 @@ MagickExport Image *ColorMatrixImage(const Image *image,
       pixel;
 
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -3061,7 +3061,7 @@ MagickExport Image *FxImage(const Image *image,const char *expression,
     *image_view;
 
   FxInfo
-    **restrict fx_info;
+    **magick_restrict fx_info;
 
   Image
     *fx_image;
@@ -3111,10 +3111,10 @@ MagickExport Image *FxImage(const Image *image,const char *expression,
       id = GetOpenMPThreadId();
 
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -3303,13 +3303,13 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
       delta;
 
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register ssize_t
       x;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -3541,13 +3541,13 @@ MagickExport Image *MorphImages(const Image *image,const size_t number_frames,
           sync;
 
         register const Quantum
-          *restrict p;
+          *magick_restrict p;
 
         register ssize_t
           x;
 
         register Quantum
-          *restrict q;
+          *magick_restrict q;
 
         if (status == MagickFalse)
           continue;
@@ -3687,11 +3687,11 @@ static MagickBooleanType PlasmaImageProxy(Image *image,CacheView *image_view,
     plasma;
 
   register const Quantum
-    *restrict u,
-    *restrict v;
+    *magick_restrict u,
+    *magick_restrict v;
 
   register Quantum
-    *restrict q;
+    *magick_restrict q;
 
   register ssize_t
     i;
@@ -4197,13 +4197,13 @@ MagickExport Image *SepiaToneImage(const Image *image,const double threshold,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register ssize_t
       x;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -4361,7 +4361,7 @@ MagickExport Image *ShadowImage(const Image *image,const double alpha,
       background_color;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -4463,7 +4463,7 @@ MagickExport Image *SketchImage(const Image *image,const double radius,
     status;
 
   RandomInfo
-    **restrict random_info;
+    **magick_restrict random_info;
 
   ssize_t
     y;
@@ -4497,7 +4497,7 @@ MagickExport Image *SketchImage(const Image *image,const double radius,
       x;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -4662,7 +4662,7 @@ MagickExport MagickBooleanType SolarizeImage(Image *image,
       x;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -4980,14 +4980,14 @@ MagickExport Image *StereoAnaglyphImage(const Image *left_image,
   for (y=0; y < (ssize_t) stereo_image->rows; y++)
   {
     register const Quantum
-      *restrict p,
-      *restrict q;
+      *magick_restrict p,
+      *magick_restrict q;
 
     register ssize_t
       x;
 
     register Quantum
-      *restrict r;
+      *magick_restrict r;
 
     p=GetVirtualPixels(left_image,-x_offset,y-y_offset,image->columns,1,
       exception);
@@ -5140,13 +5140,13 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
       delta;
 
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register ssize_t
       x;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -5361,10 +5361,10 @@ MagickExport Image *TintImage(const Image *image,const char *blend,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -5655,7 +5655,7 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
   for (y=0; y < (ssize_t) wave_image->rows; y++)
   {
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;

@@ -17,7 +17,7 @@
 %                              May  1993                                      %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -489,7 +489,7 @@ MagickExport MagickBooleanType HuffmanDecodeImage(Image *image,
   for (y=0; ((y < (ssize_t) image->rows) && (null_lines < 3)); )
   {
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -892,7 +892,7 @@ RestoreMSCWarning \
 %  The format of the LZWEncodeImage method is:
 %
 %      MagickBooleanType LZWEncodeImage(Image *image,const size_t length,
-%        unsigned char *restrict pixels,ExceptionInfo *exception)
+%        unsigned char *magick_restrict pixels,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -907,7 +907,7 @@ RestoreMSCWarning \
 %
 */
 MagickExport MagickBooleanType LZWEncodeImage(Image *image,const size_t length,
-  unsigned char *restrict pixels,ExceptionInfo *exception)
+  unsigned char *magick_restrict pixels,ExceptionInfo *exception)
 {
 #define LZWClr  256UL  /* Clear Table Marker */
 #define LZWEod  257UL  /* End of Data marker */
@@ -1058,7 +1058,7 @@ MagickExport MagickBooleanType LZWEncodeImage(Image *image,const size_t length,
 %  The format of the PackbitsEncodeImage method is:
 %
 %      MagickBooleanType PackbitsEncodeImage(Image *image,const size_t length,
-%        unsigned char *restrict pixels)
+%        unsigned char *magick_restrict pixels)
 %
 %  A description of each parameter follows:
 %
@@ -1071,7 +1071,8 @@ MagickExport MagickBooleanType LZWEncodeImage(Image *image,const size_t length,
 %
 */
 MagickExport MagickBooleanType PackbitsEncodeImage(Image *image,
-  const size_t length,unsigned char *restrict pixels,ExceptionInfo *exception)
+  const size_t length,unsigned char *magick_restrict pixels,
+  ExceptionInfo *exception)
 {
   int
     count;
@@ -1193,7 +1194,7 @@ MagickExport MagickBooleanType PackbitsEncodeImage(Image *image,
 %  The format of the ZLIBEncodeImage method is:
 %
 %      MagickBooleanType ZLIBEncodeImage(Image *image,const size_t length,
-%        unsigned char *restrict pixels,ExceptionInfo *exception)
+%        unsigned char *magick_restrict pixels,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1223,7 +1224,7 @@ static void RelinquishZIPMemory(voidpf context,voidpf memory)
 }
 
 MagickExport MagickBooleanType ZLIBEncodeImage(Image *image,const size_t length,
-  unsigned char *restrict pixels,ExceptionInfo *exception)
+  unsigned char *magick_restrict pixels,ExceptionInfo *exception)
 {
   int
     status;

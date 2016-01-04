@@ -17,7 +17,7 @@
 %                                 March 2000                                  %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -93,8 +93,164 @@
 #define MAGICKCORE_OPENCL_MACOSX  1
 #endif
 
-
 #define NUM_CL_RAND_GENERATORS 1024  /* number of random number generators running in parallel */
+#define PROFILE_OCL_KERNELS 0
+
+typedef struct
+{
+  cl_ulong min;
+  cl_ulong max;
+  cl_ulong total;
+  cl_ulong count;
+} KernelProfileRecord;
+
+static const char *kernelNames[] = {
+  "AddNoise",
+  "BlurRow",
+  "BlurColumn",
+  "Composite",
+  "ComputeFunction",
+  "Contrast",
+  "ContrastStretch",
+  "Convolve",
+  "Equalize",
+  "GrayScale",
+  "Histogram",
+  "HullPass1",
+  "HullPass2",
+  "LocalContrastBlurRow",
+  "LocalContrastBlurApplyColumn",
+  "Modulate",
+  "MotionBlur",
+  "RandomNumberGenerator",
+  "ResizeHorizontal",
+  "ResizeVertical",
+  "RotationalBlur",
+  "UnsharpMaskBlurColumn",
+  "UnsharpMask",
+  "NONE" };
+
+KernelProfileRecord
+  profileRecords[KERNEL_COUNT];
+
+typedef struct _AccelerateTimer {
+  long long _freq;
+  long long _clocks;
+  long long _start;
+} AccelerateTimer;
+
+void startAccelerateTimer(AccelerateTimer* timer) {
+#ifdef _WIN32
+      QueryPerformanceCounter((LARGE_INTEGER*)&timer->_start);	
+
+
+#else
+      struct timeval s;
+      gettimeofday(&s, 0);
+      timer->_start = (long long)s.tv_sec * (long long)1.0E3 + (long long)s.tv_usec / (long long)1.0E3;
+#endif
+}
+
+void stopAccelerateTimer(AccelerateTimer* timer) {
+      long long n=0;
+#ifdef _WIN32
+      QueryPerformanceCounter((LARGE_INTEGER*)&(n));	
+#else
+      struct timeval s;
+      gettimeofday(&s, 0);
+      n = (long long)s.tv_sec * (long long)1.0E3+ (long long)s.tv_usec / (long long)1.0E3;
+#endif
+      n -= timer->_start;
+      timer->_start = 0;
+      timer->_clocks += n;
+}
+
+void resetAccelerateTimer(AccelerateTimer* timer) {
+   timer->_clocks = 0;
+   timer->_start = 0;
+}
+
+void initAccelerateTimer(AccelerateTimer* timer) {
+#ifdef _WIN32
+    QueryPerformanceFrequency((LARGE_INTEGER*)&timer->_freq);
+#else
+    timer->_freq = (long long)1.0E3;
+#endif
+   resetAccelerateTimer(timer);
+}
+
+double readAccelerateTimer(AccelerateTimer* timer) {
+  return (double)timer->_clocks/(double)timer->_freq;
+};
+
+MagickPrivate void RecordProfileData(MagickCLEnv clEnv, ProfiledKernels kernel, cl_event event)
+{
+#if PROFILE_OCL_KERNELS
+  cl_int status;
+  cl_ulong start = 0;
+  cl_ulong end = 0;
+  cl_ulong elapsed = 0;
+  clEnv->library->clWaitForEvents(1, &event);
+  status = clEnv->library->clGetEventProfilingInfo(event, CL_PROFILING_COMMAND_START, sizeof(cl_ulong), &start, NULL);
+  status &= clEnv->library->clGetEventProfilingInfo(event, CL_PROFILING_COMMAND_END, sizeof(cl_ulong), &end, NULL);
+  if (status == CL_SUCCESS) {
+    start /= 1000;	// usecs
+    end /= 1000;	// usecs
+    elapsed = end - start;
+    /* we can use the commandQueuesLock to make the code below thread safe */
+    LockSemaphoreInfo(clEnv->commandQueuesLock);
+    if ((elapsed < profileRecords[kernel].min) || (profileRecords[kernel].count == 0))
+      profileRecords[kernel].min = elapsed;
+    if (elapsed > profileRecords[kernel].max)
+      profileRecords[kernel].max = elapsed;
+    profileRecords[kernel].total += elapsed;
+    profileRecords[kernel].count += 1;
+    UnlockSemaphoreInfo(clEnv->commandQueuesLock);
+  }
+#endif
+}
+
+void DumpProfileData()
+{
+#if PROFILE_OCL_KERNELS
+  int i;
+
+  OpenCLLog("====================================================");
+
+  // Write out the device info to the profile
+  if (0 == 1)
+  {
+    MagickCLEnv clEnv;
+    char buff[2048];
+    cl_int status;
+
+    clEnv = GetDefaultOpenCLEnv();
+
+    status = clEnv->library->clGetDeviceInfo(clEnv->device, CL_DEVICE_VENDOR, 2048, buff, NULL);
+    OpenCLLog(buff);
+
+    status = clEnv->library->clGetDeviceInfo(clEnv->device, CL_DEVICE_NAME, 2048, buff, NULL);
+    OpenCLLog(buff);
+
+    status = clEnv->library->clGetDeviceInfo(clEnv->device, CL_DRIVER_VERSION, 2048, buff, NULL);
+    OpenCLLog(buff);
+  }
+
+  OpenCLLog("====================================================");
+  OpenCLLog("                        ave\tcalls   \tmin -> max");
+  OpenCLLog("                        ---\t-----   \t----------");
+  for (i = 0; i < KERNEL_COUNT; ++i) {
+    char buf[4096];
+    char indent[160];
+    strcpy(indent, "                              ");
+    strncpy(indent, kernelNames[i], min(strlen(kernelNames[i]), strlen(indent) - 1));
+    sprintf(buf, "%s%d\t(%d calls)   \t%d -> %d", indent, profileRecords[i].count > 0 ? (profileRecords[i].total / profileRecords[i].count) : 0, profileRecords[i].count, profileRecords[i].min, profileRecords[i].max);
+    //printf("%s%d\t(%d calls)   \t%d -> %d\n", indent, profileRecords[i].count > 0 ? (profileRecords[i].total / profileRecords[i].count) : 0, profileRecords[i].count, profileRecords[i].min, profileRecords[i].max);
+    OpenCLLog(buf);
+  }
+  OpenCLLog("====================================================");
+#endif
+}
 
 /*
  *
@@ -167,7 +323,9 @@ MagickExport MagickCLEnv AcquireMagickOpenCLEnv()
   if (clEnv != NULL)
   {
     memset(clEnv, 0, sizeof(struct _MagickCLEnv));
+    clEnv->commandQueuesPos=-1;
     ActivateSemaphoreInfo(&clEnv->lock);
+    ActivateSemaphoreInfo(&clEnv->commandQueuesLock);
   }
   return clEnv;
 }
@@ -200,7 +358,13 @@ MagickExport MagickBooleanType RelinquishMagickOpenCLEnv(MagickCLEnv clEnv)
 {
   if (clEnv != (MagickCLEnv) NULL)
   {
+    while (clEnv->commandQueuesPos >= 0)
+    {
+      clEnv->library->clReleaseCommandQueue(
+        clEnv->commandQueues[clEnv->commandQueuesPos--]);
+    }
     RelinquishSemaphoreInfo(&clEnv->lock);
+    RelinquishSemaphoreInfo(&clEnv->commandQueuesLock);
     RelinquishMagickMemory(clEnv);
     return MagickTrue;
   }
@@ -262,6 +426,10 @@ static MagickBooleanType bindOpenCLFunctions(void* library)
 
   BIND(clCreateCommandQueue);
   BIND(clReleaseCommandQueue);
+
+  BIND(clGetEventProfilingInfo);
+  BIND(clWaitForEvents);
+  BIND(clReleaseEvent);
 
   return MagickTrue;
 }
@@ -344,7 +512,8 @@ MagickExport MagickCLEnv GetDefaultOpenCLEnv()
       ActivateSemaphoreInfo(&defaultCLEnvLock);
     }
     LockSemaphoreInfo(defaultCLEnvLock);
-    defaultCLEnv = AcquireMagickOpenCLEnv();
+    if (defaultCLEnv == NULL)
+        defaultCLEnv = AcquireMagickOpenCLEnv();
     UnlockSemaphoreInfo(defaultCLEnvLock);
   }
   return defaultCLEnv;
@@ -1273,15 +1442,32 @@ MagickBooleanType InitOpenCLEnv(MagickCLEnv clEnv, ExceptionInfo* exception) {
 %
 */
 
-MagickPrivate
-cl_command_queue AcquireOpenCLCommandQueue(MagickCLEnv clEnv)
+MagickPrivate cl_command_queue AcquireOpenCLCommandQueue(MagickCLEnv clEnv)
 {
-  if (clEnv != NULL)
-    return clEnv->library->clCreateCommandQueue(clEnv->context, clEnv->device, 0, NULL);
-  else
-    return NULL;
-}
+  cl_command_queue
+    queue;
 
+  cl_command_queue_properties
+    properties;
+
+  if (clEnv == (MagickCLEnv) NULL)
+    return (cl_command_queue) NULL;
+  LockSemaphoreInfo(clEnv->commandQueuesLock);
+  if (clEnv->commandQueuesPos >= 0) {
+    queue=clEnv->commandQueues[clEnv->commandQueuesPos--];
+    UnlockSemaphoreInfo(clEnv->commandQueuesLock);
+  }
+  else {
+    UnlockSemaphoreInfo(clEnv->commandQueuesLock);
+    properties=0;
+#if PROFILE_OCL_KERNELS
+    properties=CL_QUEUE_PROFILING_ENABLE;
+#endif
+    queue=clEnv->library->clCreateCommandQueue(clEnv->context,clEnv->device,
+      properties,NULL);
+  }
+  return(queue);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1309,18 +1495,31 @@ cl_command_queue AcquireOpenCLCommandQueue(MagickCLEnv clEnv)
 %
 %
 */
-MagickPrivate
-MagickBooleanType RelinquishOpenCLCommandQueue(MagickCLEnv clEnv, cl_command_queue queue)
+
+MagickPrivate MagickBooleanType RelinquishOpenCLCommandQueue(MagickCLEnv clEnv,
+  cl_command_queue queue)
 {
-  if (clEnv != NULL)
-  {
-    return ((clEnv->library->clReleaseCommandQueue(queue) == CL_SUCCESS) ? MagickTrue:MagickFalse);
-  }
+  MagickBooleanType
+    status;
+
+  if (clEnv == NULL)
+    return(MagickFalse);
+
+  LockSemaphoreInfo(clEnv->commandQueuesLock);
+
+  if (clEnv->commandQueuesPos >= MAX_COMMAND_QUEUES)
+    status=(clEnv->library->clReleaseCommandQueue(queue) == CL_SUCCESS) ?
+      MagickTrue : MagickFalse;
   else
-    return MagickFalse;
+    {
+      clEnv->commandQueues[++clEnv->commandQueuesPos]=queue;
+      status=MagickTrue;
+    }
+
+  UnlockSemaphoreInfo(clEnv->commandQueuesLock);
+
+  return(status);
 }
-
-
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2648,11 +2847,8 @@ MagickExport MagickBooleanType RelinquishMagickOpenCLEnv(
 /*
 * Return the OpenCL environment
 */
-MagickExport MagickCLEnv GetDefaultOpenCLEnv(
-  ExceptionInfo *magick_unused(exception))
+MagickExport MagickCLEnv GetDefaultOpenCLEnv()
 {
-  magick_unreferenced(exception);
-
   return (MagickCLEnv) NULL;
 }
 
@@ -2923,52 +3119,6 @@ const char* GetOpenCLCachedFilesDirectory() {
   return openclCachedFilesDirectory;
 }
 
-void startAccelerateTimer(AccelerateTimer* timer) {
-#ifdef _WIN32
-      QueryPerformanceCounter((LARGE_INTEGER*)&timer->_start);	
-
-
-#else
-      struct timeval s;
-      gettimeofday(&s, 0);
-      timer->_start = (long long)s.tv_sec * (long long)1.0E3 + (long long)s.tv_usec / (long long)1.0E3;
-#endif
-}
-
-void stopAccelerateTimer(AccelerateTimer* timer) {
-      long long n=0;
-#ifdef _WIN32
-      QueryPerformanceCounter((LARGE_INTEGER*)&(n));	
-#else
-      struct timeval s;
-      gettimeofday(&s, 0);
-      n = (long long)s.tv_sec * (long long)1.0E3+ (long long)s.tv_usec / (long long)1.0E3;
-#endif
-      n -= timer->_start;
-      timer->_start = 0;
-      timer->_clocks += n;
-}
-
-void resetAccelerateTimer(AccelerateTimer* timer) {
-   timer->_clocks = 0;
-   timer->_start = 0;
-}
-
-
-void initAccelerateTimer(AccelerateTimer* timer) {
-#ifdef _WIN32
-    QueryPerformanceFrequency((LARGE_INTEGER*)&timer->_freq);
-#else
-    timer->_freq = (long long)1.0E3;
-#endif
-   resetAccelerateTimer(timer);
-}
-
-double readAccelerateTimer(AccelerateTimer* timer) {
-  return (double)timer->_clocks/(double)timer->_freq;
-};
-
-
 /* create a function for OpenCL log */
 MagickPrivate
 void OpenCLLog(const char* message) {
@@ -3008,5 +3158,27 @@ void OpenCLLog(const char* message) {
   }
 #else
   magick_unreferenced(message);
+#endif
+}
+
+MagickPrivate void OpenCLTerminus()
+{
+#if MAGICKCORE_OPENCL_SUPPORT
+  DumpProfileData();
+  if (openclCachedFilesDirectory != (char *) NULL)
+    openclCachedFilesDirectory=DestroyString(openclCachedFilesDirectory);
+  if (openclCachedFilesDirectoryLock != (SemaphoreInfo*)NULL)
+    RelinquishSemaphoreInfo(&openclCachedFilesDirectoryLock);
+  if (defaultCLEnv != (MagickCLEnv) NULL)
+    {
+       (void) RelinquishMagickOpenCLEnv(defaultCLEnv);
+       defaultCLEnv=(MagickCLEnv)NULL;
+    }
+  if (defaultCLEnvLock != (SemaphoreInfo*) NULL)
+    RelinquishSemaphoreInfo(&defaultCLEnvLock);
+  if (OpenCLLib != (MagickLibrary *)NULL)
+    OpenCLLib=(MagickLibrary *)RelinquishMagickMemory(OpenCLLib);
+  if (OpenCLLibLock != (SemaphoreInfo*)NULL)
+    RelinquishSemaphoreInfo(&OpenCLLibLock);
 #endif
 }

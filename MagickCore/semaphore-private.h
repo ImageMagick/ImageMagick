@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ static omp_lock_t
 #elif defined(MAGICKCORE_THREAD_SUPPORT)
 static pthread_mutex_t
   semaphore_mutex = PTHREAD_MUTEX_INITIALIZER;
-#elif defined(MAGICKCORE_HAVE_WINTHREADS)
+#elif defined(MAGICKCORE_WINDOWS_SUPPORT)
 static LONG
   semaphore_mutex = 0;
 #else
@@ -79,7 +79,7 @@ static inline void LockMagickMutex(void)
         ThrowFatalException(ResourceLimitFatalError,"UnableToLockSemaphore");
       }
   }
-#elif defined(MAGICKCORE_HAVE_WINTHREADS)
+#elif defined(MAGICKCORE_WINDOWS_SUPPORT)
   while (InterlockedCompareExchange(&semaphore_mutex,1L,0L) != 0)
     Sleep(10);
 #endif
@@ -101,7 +101,7 @@ static inline void UnlockMagickMutex(void)
         ThrowFatalException(ResourceLimitFatalError,"UnableToUnlockSemaphore");
       }
   }
-#elif defined(MAGICKCORE_HAVE_WINTHREADS)
+#elif defined(MAGICKCORE_WINDOWS_SUPPORT)
   InterlockedExchange(&semaphore_mutex,0L);
 #endif
 }

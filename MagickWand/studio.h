@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -70,8 +70,12 @@ extern "C" {
 #  include <stdlib.h>
 # endif
 #endif
-#if defined(_magickcore_restrict) && !defined(restrict)
-# define restrict  _magickcore_restrict
+#if !defined(magick_restrict)
+# if !defined(_magickcore_restrict)
+#  define magick_restrict restrict
+# else
+#  define magick_restrict _magickcore_restrict
+# endif
 #endif
 #if defined(MAGICKCORE_HAVE_STRING_H)
 # if !defined(STDC_HEADERS) && defined(MAGICKCORE_HAVE_MEMORY_H)
@@ -121,9 +125,6 @@ extern "C" {
 #endif
 #if defined(MAGICKCORE_THREAD_SUPPORT)
 # include <pthread.h>
-#elif defined(MAGICKWAND_WINDOWS_SUPPORT)
-#  define MAGICKCORE_HAVE_WINTHREADS  1
-#include <windows.h>
 #endif
 #if defined(MAGICKCORE_HAVE_SYS_SYSLIMITS_H)
 # include <sys/syslimits.h>

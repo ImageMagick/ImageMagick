@@ -17,7 +17,6 @@
 
 Magick::Montage::Montage(void)
   : _backgroundColor("#ffffff"),
-    _compose(OverCompositeOp),
     _fileName(),
     _fill("#000000ff"),
     _font(),
@@ -46,16 +45,6 @@ void Magick::Montage::backgroundColor(const Magick::Color &backgroundColor_)
 Magick::Color Magick::Montage::backgroundColor(void) const
 {
   return(_backgroundColor);
-}
-
-void Magick::Montage::compose(Magick::CompositeOperator compose_)
-{
-  _compose=compose_;
-}
-
-Magick::CompositeOperator Magick::Montage::compose(void) const
-{
-  return(_compose);
 }
 
 void Magick::Montage::fileName(const std::string &fileName_)

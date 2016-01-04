@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -45,13 +45,14 @@ extern MagickExport double
 extern MagickExport Image
   *CompareImages(Image *,const Image *,const MetricType,double *,
     ExceptionInfo *),
-  *SimilarityImage(Image *,const Image *,const MetricType,const double,
+  *SimilarityImage(const Image *,const Image *,const MetricType,const double,
     RectangleInfo *,double *,ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
   GetImageDistortion(Image *,const Image *,const MetricType,double *,
     ExceptionInfo *),
-  IsImagesEqual(Image *,const Image *,ExceptionInfo *);
+  IsImagesEqual(const Image *,const Image *,ExceptionInfo *),
+  SetImageColorMetric(Image *,const Image *,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

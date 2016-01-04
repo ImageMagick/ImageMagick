@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -64,9 +64,9 @@ extern WandExport DrawInfo
   *PeekDrawingWand(const DrawingWand *);
 
 extern WandExport DrawingWand
+  *AcquireDrawingWand(const DrawInfo *,Image *),
   *CloneDrawingWand(const DrawingWand *),
   *DestroyDrawingWand(DrawingWand *),
-  *DrawAllocateWand(const DrawInfo *,Image *),
   *NewDrawingWand(void);
 
 extern WandExport ExceptionInfo

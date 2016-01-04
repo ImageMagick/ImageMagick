@@ -17,7 +17,7 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -873,7 +873,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
               target_profile;
 
             cmsHTRANSFORM
-              *restrict transform;
+              *magick_restrict transform;
 
             cmsUInt32Number
               flags,
@@ -897,8 +897,8 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
               y;
 
             unsigned short
-              **restrict source_pixels,
-              **restrict target_pixels;
+              **magick_restrict source_pixels,
+              **magick_restrict target_pixels;
 
             target_profile=(cmsHPROFILE) NULL;
             if (icc_profile != (StringInfo *) NULL)
@@ -1121,7 +1121,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
                 x;
 
               register Quantum
-                *restrict q;
+                *magick_restrict q;
 
               register unsigned short
                 *p;

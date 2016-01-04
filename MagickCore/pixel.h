@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
 
   You may not use this file except in compliance with the License.
@@ -70,6 +70,7 @@ typedef enum
   CyanPixelChannel = 0,
   GrayPixelChannel = 0,
   LPixelChannel = 0,
+  LabelPixelChannel = 0,
   YPixelChannel = 0,
   aPixelChannel = 1,
   GreenPixelChannel = 1,
@@ -231,10 +232,10 @@ extern MagickExport MagickBooleanType
   SetPixelMetaChannels(Image *,const size_t,ExceptionInfo *);
 
 extern MagickExport MagickRealType
-  GetPixelInfoIntensity(const Image *restrict,const PixelInfo *restrict)
-    magick_hot_spot,
-  GetPixelIntensity(const Image *restrict,const Quantum *restrict)
-    magick_hot_spot;
+  GetPixelInfoIntensity(const Image *magick_restrict,
+    const PixelInfo *magick_restrict) magick_hot_spot,
+  GetPixelIntensity(const Image *magick_restrict,
+    const Quantum *magick_restrict) magick_hot_spot;
 
 extern MagickExport PixelChannelMap
   *AcquirePixelChannelMap(void),

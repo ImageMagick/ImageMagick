@@ -11,7 +11,7 @@
   <configure name="CODER_PATH" value="@CODER_PATH@"/>
   <configure name="CONFIGURE_PATH" value="@CONFIGURE_PATH@"/>
   <configure name="CONFIGURE" value="@CONFIGURE_ARGS@"/>
-  <configure name="COPYRIGHT" value="Copyright (C) 1999-2015 ImageMagick Studio LLC"/>
+  <configure name="COPYRIGHT" value="Copyright (C) 1999-2016 ImageMagick Studio LLC"/>
   <configure name="CPPFLAGS" value="@MAGICK_CPPFLAGS@"/>
   <configure name="CXXFLAGS" value="@CXXFLAGS@"/>
   <configure name="CXX" value="@CXX@"/>
@@ -23,6 +23,7 @@
   <configure name="EXECUTABLE_PATH" value="@EXECUTABLE_PATH@"/>
   <configure name="FEATURES" value="@MAGICK_FEATURES@"/>
   <configure name="FILTER_PATH" value="@FILTER_PATH@"/>
+  <configure name="GIT_REVISION" value="@MAGICK_GIT_REVISION@" />
   <configure name="HOST" value="@host@"/>
   <configure name="INCLUDE_PATH" value="@INCLUDE_PATH@"/>
   <configure name="LDFLAGS" value="@MAGICK_LDFLAGS@"/>
@@ -37,7 +38,6 @@
   <configure name="RELEASE_DATE" value="@PACKAGE_RELEASE_DATE@"/>
   <configure name="SHAREARCH_PATH" value="@SHAREARCH_PATH@"/>
   <configure name="SHARE_PATH" value="@SHARE_PATH@"/>
-  <configure name="GIT_REVISION" value="@MAGICK_GIT_REVISION@" />
   <configure name="TARGET_CPU" value="@MAGICK_TARGET_CPU@"/>
   <configure name="TARGET_OS" value="@MAGICK_TARGET_OS@"/>
   <configure name="TARGET_VENDOR" value="@MAGICK_TARGET_VENDOR@"/>

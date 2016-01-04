@@ -17,7 +17,7 @@
 %                                 October 1996                                %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -260,10 +260,10 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
   for (y=0; y < (ssize_t) blur_image->rows; y++)
   {
     register const Quantum
-      *restrict r;
+      *magick_restrict r;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -281,7 +281,7 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
     for (x=0; x < (ssize_t) blur_image->columns; x++)
     {
       register const Quantum
-        *restrict p;
+        *magick_restrict p;
 
       register ssize_t
         i;
@@ -320,10 +320,10 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
           traits;
 
         register const MagickRealType
-          *restrict k;
+          *magick_restrict k;
 
         register const Quantum
-          *restrict pixels;
+          *magick_restrict pixels;
 
         register ssize_t
           u;
@@ -583,10 +583,10 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
   for (y=0; y < (ssize_t) sharp_image->rows; y++)
   {
     register const Quantum
-      *restrict r;
+      *magick_restrict r;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -604,7 +604,7 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
     for (x=0; x < (ssize_t) sharp_image->columns; x++)
     {
       register const Quantum
-        *restrict p;
+        *magick_restrict p;
 
       register ssize_t
         i;
@@ -643,10 +643,10 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
           traits;
 
         register const MagickRealType
-          *restrict k;
+          *magick_restrict k;
 
         register const Quantum
-          *restrict pixels;
+          *magick_restrict pixels;
 
         register ssize_t
           u;
@@ -794,8 +794,7 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
   kernel_info=AcquireKernelInfo(geometry,exception);
   if (kernel_info == (KernelInfo *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
-  blur_image=MorphologyApply(image,ConvolveMorphology,1,kernel_info,
-    UndefinedCompositeOp,0.0,exception);
+  blur_image=ConvolveImage(image,kernel_info,exception);
   kernel_info=DestroyKernelInfo(kernel_info);
   return(blur_image);
 }
@@ -850,7 +849,8 @@ MagickExport Image *ConvolveImage(const Image *image,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  DespeckleImage() reduces the speckle noise in an image while perserving the
-%  edges of the original image.  A speckle removing filter uses a complementary %  hulling technique (raising pixels that are darker than their surrounding
+%  edges of the original image.  A speckle removing filter uses a complementary
+%  hulling technique (raising pixels that are darker than their surrounding
 %  neighbors, then complementarily lowering pixels that are brighter than their
 %  surrounding neighbors) to reduce the speckle index of that image (reference
 %  Crimmins speckle removal).
@@ -869,7 +869,7 @@ MagickExport Image *ConvolveImage(const Image *image,
 
 static void Hull(const Image *image,const ssize_t x_offset,
   const ssize_t y_offset,const size_t columns,const size_t rows,
-  const int polarity,Quantum *restrict f,Quantum *restrict g)
+  const int polarity,Quantum *magick_restrict f,Quantum *magick_restrict g)
 {
   register Quantum
     *p,
@@ -982,8 +982,8 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
     *pixel_info;
 
   Quantum
-    *restrict buffer,
-    *restrict pixels;
+    *magick_restrict buffer,
+    *magick_restrict pixels;
 
   register ssize_t
     i;
@@ -1069,7 +1069,7 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
     for (y=0; y < (ssize_t) image->rows; y++)
     {
       register const Quantum
-        *restrict p;
+        *magick_restrict p;
 
       p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
       if (p == (const Quantum *) NULL)
@@ -1100,7 +1100,7 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
         sync;
 
       register Quantum
-        *restrict q;
+        *magick_restrict q;
 
       q=GetCacheViewAuthenticPixels(despeckle_view,0,y,despeckle_image->columns,
         1,exception);
@@ -1212,8 +1212,7 @@ MagickExport Image *EdgeImage(const Image *image,const double radius,
   for (i=0; i < (ssize_t) (kernel_info->width*kernel_info->height); i++)
     kernel_info->values[i]=(-1.0);
   kernel_info->values[i/2]=(double) kernel_info->width*kernel_info->height-1.0;
-  edge_image=MorphologyApply(image,ConvolveMorphology,1,kernel_info,
-    UndefinedCompositeOp,0.0,exception);
+  edge_image=ConvolveImage(image,kernel_info,exception);
   kernel_info=DestroyKernelInfo(kernel_info);
   return(edge_image);
 }
@@ -1320,8 +1319,7 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
   gamma=PerceptibleReciprocal(normalize);
   for (i=0; i < (ssize_t) (kernel_info->width*kernel_info->height); i++)
     kernel_info->values[i]*=gamma;
-  emboss_image=MorphologyApply(image,ConvolveMorphology,1,kernel_info,
-    UndefinedCompositeOp,0.0,exception);
+  emboss_image=ConvolveImage(image,kernel_info,exception);
   kernel_info=DestroyKernelInfo(kernel_info);
   if (emboss_image != (Image *) NULL)
     (void) EqualizeImage(emboss_image,exception);
@@ -1384,8 +1382,7 @@ MagickExport Image *GaussianBlurImage(const Image *image,const double radius,
   kernel_info=AcquireKernelInfo(geometry,exception);
   if (kernel_info == (KernelInfo *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
-  blur_image=MorphologyApply(image,ConvolveMorphology,1,kernel_info,
-    UndefinedCompositeOp,0.0,exception);
+  blur_image=ConvolveImage(image,kernel_info,exception);
   kernel_info=DestroyKernelInfo(kernel_info);
   return(blur_image);
 }
@@ -1420,8 +1417,8 @@ MagickExport Image *GaussianBlurImage(const Image *image,const double radius,
 %
 */
 
-static inline MagickRealType GetMeanLuma(const Image *restrict image,
-  const double *restrict pixel)
+static inline MagickRealType GetMeanLuma(const Image *magick_restrict image,
+  const double *magick_restrict pixel)
 {
   if (image->colorspace == GRAYColorspace)
     return((MagickRealType) pixel[image->channel_map[GrayPixelChannel].offset]);
@@ -1495,7 +1492,7 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -1512,7 +1509,7 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       const Quantum
-        *restrict p;
+        *magick_restrict p;
 
       double
         min_variance;
@@ -1531,7 +1528,7 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
       for (i=0; i < 4; i++)
       {
         const Quantum
-          *restrict k;
+          *magick_restrict k;
 
         double
           mean[MaxPixelChannels],
@@ -1763,7 +1760,7 @@ MagickExport Image *LocalContrastImage(const Image *image,const double radius,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       const Quantum
-        *restrict p;
+        *magick_restrict p;
 
       float
         *out,
@@ -1816,7 +1813,8 @@ MagickExport Image *LocalContrastImage(const Image *image,const double radius,
         /* mirror into padding */
         if (x <= width && x != 0)
           *(out-(x*2))=*out;
-        if ((x > image->columns-width-2) && (x != (ssize_t) image->columns-1))
+        if ((x > (ssize_t) image->columns-width-2) &&
+            (x != (ssize_t) image->columns-1))
           *(out+((image->columns-x-1)*2))=*out;
 
         out+=image->columns+(width*2);
@@ -1835,14 +1833,14 @@ MagickExport Image *LocalContrastImage(const Image *image,const double radius,
     for (y=0; y < (ssize_t) image->rows; y++)
     {
       const Quantum
-        *restrict p;
+        *magick_restrict p;
 
       float
         *pix,
         *pixels;
 
       register Quantum
-        *restrict q;
+        *magick_restrict q;
 
       register ssize_t
         x;
@@ -2063,10 +2061,10 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -2101,10 +2099,10 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
           traits;
 
         register const Quantum
-          *restrict r;
+          *magick_restrict r;
 
         register MagickRealType
-          *restrict k;
+          *magick_restrict k;
 
         register ssize_t
           j;
@@ -2838,10 +2836,10 @@ MagickExport Image *RotationalBlurImage(const Image *image,const double angle,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -2898,7 +2896,7 @@ MagickExport Image *RotationalBlurImage(const Image *image,const double angle,
           traits;
 
         register const Quantum
-          *restrict r;
+          *magick_restrict r;
 
         register ssize_t
           j;
@@ -3154,11 +3152,11 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
       sync;
 
     register const Quantum
-      *restrict l,
-      *restrict p;
+      *magick_restrict l,
+      *magick_restrict p;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -3200,11 +3198,11 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
           traits;
 
         register const MagickRealType
-          *restrict k;
+          *magick_restrict k;
 
         register const Quantum
-          *restrict luminance_pixels,
-          *restrict pixels;
+          *magick_restrict luminance_pixels,
+          *magick_restrict pixels;
 
         register ssize_t
           u;
@@ -3429,13 +3427,13 @@ MagickExport Image *ShadeImage(const Image *image,const MagickBooleanType gray,
       normal;
 
     register const Quantum
-      *restrict center,
-      *restrict p,
-      *restrict post,
-      *restrict pre;
+      *magick_restrict center,
+      *magick_restrict p,
+      *magick_restrict post,
+      *magick_restrict pre;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -3661,8 +3659,7 @@ MagickExport Image *SharpenImage(const Image *image,const double radius,
   gamma=PerceptibleReciprocal(normalize);
   for (i=0; i < (ssize_t) (kernel_info->width*kernel_info->height); i++)
     kernel_info->values[i]*=gamma;
-  sharp_image=MorphologyApply(image,ConvolveMorphology,1,kernel_info,
-    UndefinedCompositeOp,0.0,exception);
+  sharp_image=ConvolveImage(image,kernel_info,exception);
   kernel_info=DestroyKernelInfo(kernel_info);
   return(sharp_image);
 }
@@ -3718,7 +3715,7 @@ MagickExport Image *SpreadImage(const Image *image,
     progress;
 
   RandomInfo
-    **restrict random_info;
+    **magick_restrict random_info;
 
   size_t
     width;
@@ -3769,7 +3766,7 @@ MagickExport Image *SpreadImage(const Image *image,
       id = GetOpenMPThreadId();
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -3905,10 +3902,10 @@ MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;

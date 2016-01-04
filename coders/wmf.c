@@ -17,7 +17,7 @@
 %                               December 2000                                 %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -797,7 +797,7 @@ static void ipa_device_open(wmfAPI * API)
 
   ddata->push_depth = 0;
 
-  ddata->draw_wand = DrawAllocateWand(ddata->draw_info,ddata->image);
+  ddata->draw_wand = AcquireDrawingWand(ddata->draw_info,ddata->image);
 }
 
 /*

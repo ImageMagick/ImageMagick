@@ -17,7 +17,7 @@
 %                                   July 1992                                 %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -289,7 +289,7 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
         x;
 
       register Quantum
-        *restrict q;
+        *magick_restrict q;
 
       /*
         Draw top of ornamental border.
@@ -391,7 +391,7 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
       x;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     size_t
       width;
@@ -505,7 +505,7 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
         x;
 
       register Quantum
-        *restrict q;
+        *magick_restrict q;
 
       /*
         Draw bottom of ornamental border.
@@ -702,7 +702,7 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
       x;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -792,7 +792,7 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
       x;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -866,7 +866,7 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
       x;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     if (status == MagickFalse)
       continue;

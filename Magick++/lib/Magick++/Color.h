@@ -282,7 +282,7 @@ namespace Magick
 
     // Construct ColorHSL using the specified HSL values
     ColorHSL(const double hue_,const double saturation_,
-      const double luminosity_);
+      const double lightness_);
 
     // Destructor
     ~ColorHSL();
@@ -294,9 +294,9 @@ namespace Magick
     void hue(const double hue_);
     double hue(void) const;
 
-    // Luminosity color
-    void luminosity(const double luminosity_);
-    double luminosity(void) const;
+    // Lightness color
+    void lightness(const double lightness_);
+    double lightness(void) const;
 
     // Saturation color
     void saturation(const double saturation_);

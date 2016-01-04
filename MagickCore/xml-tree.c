@@ -23,7 +23,7 @@
 %                               December 2004                                 %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -676,7 +676,7 @@ MagickPrivate char *FileToXML(const char *filename,const size_t extent)
       xml[length]='\0';
       return(xml);
     }
-  length=(size_t) MagickMin(offset,extent);
+  length=(size_t) MagickMin(offset,(MagickOffsetType) extent);
   xml=(char *) NULL;
   if (~length >= (MagickPathExtent-1))
     xml=(char *) AcquireQuantumMemory(length+MagickPathExtent,sizeof(*xml));

@@ -18,7 +18,7 @@
 %                                August 2009                                  %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -1140,7 +1140,7 @@ static void UniqueColorsToImage(Image *unique_image,CacheView *unique_view,
         *p;
 
       register Quantum
-        *restrict q;
+        *magick_restrict q;
 
       status=MagickTrue;
       p=node_info->list;

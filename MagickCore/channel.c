@@ -17,7 +17,7 @@
 %                               December 2003                                 %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -148,10 +148,10 @@ static MagickBooleanType ChannelImage(Image *destination_image,
       source_traits;
 
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -527,10 +527,10 @@ MagickExport Image *CombineImages(const Image *image,
       *pixels;
 
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       i;
@@ -709,10 +709,10 @@ MagickExport Image *SeparateImage(const Image *image,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -965,7 +965,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       for (y=0; y < (ssize_t) image->rows; y++)
       {
         register Quantum
-          *restrict q;
+          *magick_restrict q;
 
         register ssize_t
           x;
@@ -1030,7 +1030,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       for (y=0; y < (ssize_t) image->rows; y++)
       {
         register Quantum
-          *restrict q;
+          *magick_restrict q;
 
         register ssize_t
           x;
@@ -1097,7 +1097,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       for (y=0; y < (ssize_t) image->rows; y++)
       {
         register Quantum
-          *restrict q;
+          *magick_restrict q;
 
         register ssize_t
           x;
@@ -1148,6 +1148,8 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
     }
     case DiscreteAlphaChannel:
     {
+      if (image->alpha_trait == UndefinedPixelTrait)
+        status=SetImageAlpha(image,OpaqueAlpha,exception);
       image->alpha_trait=UpdatePixelTrait;
       break;
     }
@@ -1193,7 +1195,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       for (y=0; y < (ssize_t) image->rows; y++)
       {
         register Quantum
-          *restrict q;
+          *magick_restrict q;
 
         register ssize_t
           x;

@@ -16,7 +16,7 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -2399,18 +2399,20 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
           if ((flags & PercentValue) != 0)
             scale=(double) (QuantumRange/100.0);
           if ((flags & RhoValue) != 0)
-            color->red=(double) ClampToQuantum(scale*geometry_info.rho);
+            color->red=(double) ClampToQuantum((MagickRealType) (scale*
+              geometry_info.rho));
           if ((flags & SigmaValue) != 0)
-            color->green=(double) ClampToQuantum(scale*
-              geometry_info.sigma);
+            color->green=(double) ClampToQuantum((MagickRealType) (scale*
+              geometry_info.sigma));
           if ((flags & XiValue) != 0)
-            color->blue=(double) ClampToQuantum(scale*geometry_info.xi);
+            color->blue=(double) ClampToQuantum((MagickRealType) (scale*
+              geometry_info.xi));
           color->alpha=(double) OpaqueAlpha;
           if ((flags & PsiValue) != 0)
             {
               if (color->colorspace == CMYKColorspace)
-                color->black=(double) ClampToQuantum(scale*
-                  geometry_info.psi);
+                color->black=(double) ClampToQuantum((MagickRealType) (
+                  scale*geometry_info.psi));
               else
                 if (color->alpha_trait != UndefinedPixelTrait)
                   color->alpha=(double) ClampToQuantum(QuantumRange*
@@ -2423,11 +2425,11 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
           if (color->colorspace == LabColorspace)
             {
               if ((flags & SigmaValue) != 0)
-                color->green=(MagickRealType) ClampToQuantum(scale*
-                  geometry_info.sigma+(QuantumRange+1)/2.0);
+                color->green=(MagickRealType) ClampToQuantum((MagickRealType)
+                  (scale*geometry_info.sigma+(QuantumRange+1)/2.0));
               if ((flags & XiValue) != 0)
-                color->blue=(MagickRealType) ClampToQuantum(scale*
-                  geometry_info.xi+(QuantumRange+1)/2.0);
+                color->blue=(MagickRealType) ClampToQuantum((MagickRealType)
+                  (scale*geometry_info.xi+(QuantumRange+1)/2.0));
             }
           if (LocaleCompare(colorspace,"gray") == 0)
             {

@@ -17,7 +17,7 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -328,10 +328,10 @@ static MagickBooleanType CompositeOverImage(Image *image,
       *pixels;
 
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -874,10 +874,10 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           sync;
 
         register const Quantum
-          *restrict p;
+          *magick_restrict p;
 
         register Quantum
-          *restrict q;
+          *magick_restrict q;
 
         register ssize_t
           x;
@@ -1053,10 +1053,10 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           sync;
 
         register const Quantum
-          *restrict p;
+          *magick_restrict p;
 
         register Quantum
-          *restrict q;
+          *magick_restrict q;
 
         register ssize_t
           x;
@@ -1229,10 +1229,10 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       source_pixel;
 
     register const Quantum
-      *restrict p;
+      *magick_restrict p;
 
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -1512,7 +1512,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         if ((source_traits == UndefinedPixelTrait) &&
              (((compose != CopyAlphaCompositeOp) &&
                (compose != ChangeMaskCompositeOp)) ||
-              (channel != AlphaPixelChannel)))
+               (channel != AlphaPixelChannel)))
             continue;
         /*
           Sc: source color.
@@ -1560,7 +1560,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
                 MagickBooleanType
                   equivalent;
 
-                if (Da > ((MagickRealType) QuantumRange/2.0))
+                if (Da < 0.5)
                   {
                     pixel=(MagickRealType) TransparentAlpha;
                     break;
@@ -2132,13 +2132,14 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           }
           case OverlayCompositeOp:
           {
-            if ((2.0*Dca) <= Da)
+            if ((2.0*Dca) < Da)
               {
-                pixel=QuantumRange*(2.0*Sca*Dca+Sca*(1.0-Da)+Dca*(1.0-Sa));
+                pixel=QuantumRange*gamma*(2.0*Dca*Sca+Dca*(1.0-Sa)+Sca*(1.0-
+                  Da));
                 break;
               }
-            pixel=QuantumRange*(Sa*Da-2.0*(Da-Dca)*(Sa-Sca)+Sca*(1.0-Da)+Dca*
-              (1.0-Sa));
+            pixel=QuantumRange*gamma*(Da*Sa-2.0*(Sa-Sca)*(Da-Dca)+Dca*(1.0-Sa)+
+              Sca*(1.0-Da));
             break;
           }
           case PegtopLightCompositeOp:

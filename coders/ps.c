@@ -17,7 +17,7 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -237,7 +237,10 @@ static MagickBooleanType InvokePostscriptDelegate(
   code=0;
   argv=StringToArgv(command,&argc);
   if (argv == (char **) NULL)
-    return(MagickFalse);
+    {
+      (ghost_info->delete_instance)(interpreter);
+      return(MagickFalse);
+    }
   (void) (ghost_info->set_stdio)(interpreter,(int(MagickDLLCall *)(void *,
     char *,int)) NULL,PostscriptDelegateMessage,PostscriptDelegateMessage);
   status=(ghost_info->init_with_args)(interpreter,argc-1,argv+1);
@@ -640,7 +643,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (LocaleNCompare(PhotoshopProfile,command,strlen(PhotoshopProfile)) == 0)
       {
         unsigned char
-          *p;
+          *q;
 
         /*
           Read Photoshop profile.
@@ -652,9 +655,9 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         profile=BlobToStringInfo((const void *) NULL,length);
         if (profile != (StringInfo *) NULL)
           {
-            p=GetStringInfoDatum(profile);
+            q=GetStringInfoDatum(profile);
             for (i=0; i < (ssize_t) length; i++)
-              *p++=(unsigned char) ProfileInteger(image,hex_digits);
+              *q++=(unsigned char) ProfileInteger(image,hex_digits);
             (void) SetImageProfile(image,"8bim",profile,exception);
             profile=DestroyStringInfo(profile);
           }
@@ -662,9 +665,6 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     if (LocaleNCompare(BeginXMPPacket,command,strlen(BeginXMPPacket)) == 0)
       {
-        register size_t
-          i;
-
         /*
           Read XMP profile.
         */
@@ -714,17 +714,17 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
           *value;
 
         register char
-          *p;
+          *q;
 
         /*
           Note spot names.
         */
         (void) FormatLocaleString(property,MagickPathExtent,"ps:SpotColor-%.20g",
           (double) (spotcolor++));
-        for (p=command; *p != '\0'; p++)
-          if (isspace((int) (unsigned char) *p) != 0)
+        for (q=command; *q != '\0'; q++)
+          if (isspace((int) (unsigned char) *q) != 0)
             break;
-        value=AcquireString(p);
+        value=AcquireString(q);
         (void) SubstituteString(&value,"(","");
         (void) SubstituteString(&value,")","");
         (void) StripString(value);
@@ -798,13 +798,11 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (option != (char *) NULL)
   {
     char
-      *geometry;
+      *page_geometry;
 
-    MagickStatusType
-      flags;
-
-    geometry=GetPageGeometry(option);
-    flags=ParseMetaGeometry(geometry,&page.x,&page.y,&page.width,&page.height);
+    page_geometry=GetPageGeometry(option);
+    flags=ParseMetaGeometry(page_geometry,&page.x,&page.y,&page.width,
+      &page.height);
     if (flags == NoValue)
       {
         (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
@@ -816,7 +814,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       -0.5);
     page.height=(size_t) ceil((double) (page.height*image->resolution.y/
       delta.y) -0.5);
-    geometry=DestroyString(geometry);
+    page_geometry=DestroyString(page_geometry);
     fitPage=MagickTrue;
   }
   (void) CloseBlob(image);
@@ -969,9 +967,6 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       Image
         *clone_image;
-
-      register ssize_t
-        i;
 
       /*
         Add place holder images to meet the subimage specification requirement.

@@ -1,4 +1,4 @@
-#  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization
+#  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
 #  dedicated to making software imaging solutions freely available.
 #
 #  You may not use this file except in compliance with the License.  You may
@@ -30,7 +30,7 @@ m4_define([magick_micro_version], [0])
 m4_define([magick_patchlevel_version], [0])
 m4_define([magick_version],
           [magick_major_version.magick_minor_version.magick_micro_version-magick_patchlevel_version])
-m4_define([magick_git_revision], esyscmd([sh -c "(gitversion .) | awk '{ print \$1 }' | tr -d '\n'"]))
+m4_define([magick_git_revision], esyscmd([sh -c "(gitversion .) | tr -d '\n'"]))
 m4_define([magick_tar_name],[ImageMagick])
 
 # ==============================================================================
@@ -3824,7 +3824,7 @@ matches your expectations.
   Host system type: $host
   Build system type: $build
 
-                  Option                        Value
+                 Option                        Value
   ------------------------------------------------------------------------------
   Shared libraries  --enable-shared=$enable_shared		$libtool_build_shared_libs
   Static libraries  --enable-static=$enable_static		$libtool_build_static_libs
@@ -3834,7 +3834,7 @@ matches your expectations.
   High Dynamic Range Imagery
                     --enable-hdri=$enable_hdri		$enable_hdri
 
-  Install documentation:    	$wantdocs
+  Install documentation:			$wantdocs
 
   Delegate Library Configuration:
   BZLIB             --with-bzlib=$with_bzlib		$have_bzlib
@@ -3850,12 +3850,12 @@ matches your expectations.
   JBIG              --with-jbig=$with_jbig		$have_jbig
   JPEG v1           --with-jpeg=$with_jpeg		$have_jpeg
   LCMS              --with-lcms=$with_lcms		$have_lcms
-  LIBJPEG2          --with-openjp2=$with_openjp2		$have_openjp2
   LQR               --with-lqr=$with_lqr		$have_lqr
   LTDL              --with-ltdl=$with_ltdl		$have_ltdl
   LZMA              --with-lzma=$with_lzma		$have_lzma
   Magick++          --with-magick-plus-plus=$with_magick_plus_plus	$have_magick_plus_plus
   OpenEXR           --with-openexr=$with_openexr		$have_openexr
+  OpenJP2           --with-openjp2=$with_openjp2		$have_openjp2
   PANGO             --with-pango=$with_pango		$have_pango
   PERL              --with-perl=$with_perl		$have_perl
   PNG               --with-png=$with_png		$have_png

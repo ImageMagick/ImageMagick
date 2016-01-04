@@ -1,32 +1,40 @@
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
     <title>ImageMagick: Resources</title>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <meta name="application-name" content="ImageMagick">
-  <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.">
-  <meta name="application-url" content="http://www.imagemagick.org">
-  <meta name="generator" content="PHP">
-  <meta name="keywords" content="resources, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert">
-  <meta name="rating" content="GENERAL">
-  <meta name="robots" content="INDEX, FOLLOW">
-  <meta name="generator" content="ImageMagick Studio LLC">
-  <meta name="author" content="ImageMagick Studio LLC">
-  <meta name="revisit-after" content="2 DAYS">
-  <meta name="resource-type" content="document">
-  <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC">
-  <meta name="distribution" content="Global">
-  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1">
-  <link rel="icon" href="../images/wand.png">
-  <link rel="shortcut icon" href="../images/wand.ico">
-  <link rel="stylesheet" href="../css/magick.html">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <meta name="application-name" content="ImageMagick"/>
+  <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves."/>
+  <meta name="application-url" content="http://www.imagemagick.org"/>
+  <meta name="generator" content="PHP"/>
+  <meta name="keywords" content="resources, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert"/>
+  <meta name="rating" content="GENERAL"/>
+  <meta name="robots" content="INDEX, FOLLOW"/>
+  <meta name="generator" content="ImageMagick Studio LLC"/>
+  <meta name="author" content="ImageMagick Studio LLC"/>
+  <meta name="revisit-after" content="2 DAYS"/>
+  <meta name="resource-type" content="document"/>
+  <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC"/>
+  <meta name="distribution" content="Global"/>
+  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
+  <link rel="icon" href="../images/wand.png"/>
+  <link rel="shortcut icon" href="../images/wand.ico"/>
+  <link rel="stylesheet" href="css/magick.css"/>
 </head>
 <body>
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3129977114552745" data-ad-slot="6345125851" data-ad-format="auto"></ins>
+    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-3129977114552745"
+         data-ad-slot="6345125851"
+         data-ad-format="auto"></ins>
     <script>
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
@@ -34,7 +42,7 @@
       <a class="magick-nav-item " href="../index.html">Home</a>
       <a class="magick-nav-item " href="binary-releases.html">Download</a>
       <a class="magick-nav-item " href="command-line-tools.html">Tools</a>
-      <a class="magick-nav-item " href="command-line-options.html">Options</a>
+      <a class="magick-nav-item " href="command-line-processing.html">Command-line</a>
       <a class="magick-nav-item active" href="resources.html">Resources</a>
       <a class="magick-nav-item " href="api.html">Develop</a>
       <a class="magick-nav-item " href="http://nextgen.imagemagick.org/script/search.php">Search</a>
@@ -65,7 +73,7 @@
   A number of command line options require a <a href="color.html">color parameter</a>.  It is often convenient to refer to a color by name (e.g. white) rather than by hex value (e.g. #fff).  This file maps a color name to its equivalent red, green, blue, and alpha intensities (e.g. for white, red = 255, green = 255, blue = 255, and alpha = 0).
   </dd>
 
-<dt><a id="configure.xml"></a><a href="../source/configure.xml">configure.xml</a></dt>
+<dt><a id="configure.xml"/><a href="../source/configure.xml">configure.xml</a></dt>
   <dd>Set ImageMagick build parameters and system-wide environment variables (e.g. MAGICK_TEMPORARY_PATH).
   As ImageMagick is built, a number of build parameters are saved to this configuration file.  They include the version, release date, dependent delegate libraries, and quantum depth among others.
   </dd>
@@ -115,7 +123,7 @@ file or data stream.
   By default any coder, delegate, filter, or file path is permitted.  Use a policy to deny access to, for example, the MPEG video delegate, or permit reading images from a file system but deny writing to that same file system.  Or use the resource policy to set resource limits.  Policies are useful for multi-user servers that want to limit the overall impact ImageMagick has on the system.  For example, to limit the maximum image size in memory to 100MB:
 
 <pre>
-&lt;policy domain="resource" name="area" value="100MB"/&gt;
+&lt;policy domain="resource" name="area" value="100MB"/>
 </pre>
 
 Any image larger than this area limit is cached to disk rather than memory.
@@ -123,13 +131,13 @@ Any image larger than this area limit is cached to disk rather than memory.
 Use <code>width</code> to limit the maximum width of an image in pixels.  Exceed this limit and an exception is thrown and processing stops.
 
 <pre>
-&lt;policy domain="resource" name="width" value="100MP"/&gt;
+&lt;policy domain="resource" name="width" value="100MP"/>
 </pre>
 
 To limit the elapsed time of any ImageMagick command to 5 minutes, use this policy:
 
 <pre>
-&lt;policy domain="resource" name="time" value="300"/&gt;
+&lt;policy domain="resource" name="time" value="300"/>
 </pre>
 Define arguments for the memory, map, area, and disk resources with SI prefixes (.e.g 100MB).  In addition, resource policies are maximums for each instance of ImageMagick (e.g. policy memory limit 1GB, the <code>-limit 2GB</code> option exceeds policy maximum so memory limit is 1GB). </dd>
 
@@ -360,7 +368,7 @@ $MAGICK_FONT_PATH
     <p><a href="resources.html#">Back to top</a> •
     <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
     <a href="http://nextgen.imagemagick.org/script/contact.php">Contact Us</a></p>
-        <p><small>©  1999-2015 ImageMagick Studio LLC</small></p>
+        <p><small>©  1999-2016 ImageMagick Studio LLC</small></p>
   </footer>
 </div><!-- /.container -->
 

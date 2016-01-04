@@ -20,7 +20,7 @@
 %                                December 2013                                %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -299,7 +299,7 @@ static MagickBooleanType CorrectPSDAlphaBlend(const ImageInfo *image_info,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -375,7 +375,7 @@ static MagickBooleanType CorrectPSDOpacity(LayerInfo *layer_info,
   for (y=0; y < (ssize_t) layer_info->image->rows; y++)
   {
     register Quantum
-      *restrict q;
+      *magick_restrict q;
 
     register ssize_t
       x;
@@ -1183,8 +1183,9 @@ static MagickBooleanType ReadPSDChannel(Image *image,const PSDInfo *psd_info,
   switch(compression)
   {
     case Raw:
-      return(ReadPSDChannelRaw(channel_image,psd_info->channels,
-        layer_info->channel_info[channel].type,exception));
+      status=ReadPSDChannelRaw(channel_image,psd_info->channels,
+        layer_info->channel_info[channel].type,exception);
+      break;
     case RLE:
       {
         MagickOffsetType
@@ -1220,7 +1221,13 @@ static MagickBooleanType ReadPSDChannel(Image *image,const PSDInfo *psd_info,
   }
 
   if (status == MagickFalse)
-    SeekBlob(image,offset+layer_info->channel_info[channel].size-2,SEEK_SET);
+    {
+      if (mask != (Image *) NULL)
+        DestroyImage(mask);
+      SeekBlob(image,offset+layer_info->channel_info[channel].size-2,SEEK_SET);
+      ThrowBinaryException(CoderError,"UnableToDecompressImage",
+        image->filename);
+    }
   if (mask != (Image *) NULL)
   {
     if (status != MagickFalse)
@@ -1668,8 +1675,10 @@ ModuleExport MagickBooleanType ReadPSDLayers(Image *image,
             image->next=layer_info[0].image;
             layer_info[0].image->previous=image;
           }
+        layer_info=(LayerInfo *) RelinquishMagickMemory(layer_info);
       }
-      layer_info=(LayerInfo *) RelinquishMagickMemory(layer_info);
+      else
+        layer_info=DestroyLayerInfo(layer_info,number_layers);
     }
 
   return(status);
@@ -1992,6 +2001,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (status != MagickTrue)
         {
           (void) CloseBlob(image);
+          image=DestroyImageList(image);
           return((Image *) NULL);
         }
     }

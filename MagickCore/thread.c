@@ -16,7 +16,7 @@
 %                               March  2003                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -44,33 +44,72 @@
 #include "MagickCore/thread-private.h"
 
 /*
+  Typedef declarations.
+*/
+typedef struct _MagickThreadValue
+{
+  size_t
+    number_threads;
+
+  void
+    **values,
+    (*destructor)(void *);
+} MagickThreadValue;
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k C r e a t e T h r e a d K e y                                 %
+%   C r e a t e M a g i c k T h r e a d K e y                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickCreateThreadKey() creates a thread key and returns it.
+%  CreateMagickThreadKey() creates a thread-specific data key visible to all
+%  threads in the process.
 %
-%  The format of the MagickCreateThreadKey method is:
+%  The format of the CreateMagickThreadKey method is:
 %
-%      MagickThreadKey MagickCreateThreadKey(MagickThreadKey *key)
+%      MagickThreadKey CreateMagickThreadKey(MagickThreadKey *key)
+%
+%  A description of each parameter follows:
+%
+%    o key: opaque objects used to locate thread-specific data.
+%
+%    o destructor: associate an optional destructor with each key value.
 %
 */
-MagickExport MagickBooleanType MagickCreateThreadKey(MagickThreadKey *key)
+MagickExport MagickBooleanType CreateMagickThreadKey(MagickThreadKey *key,
+  void (*destructor)(void *))
 {
 #if defined(MAGICKCORE_THREAD_SUPPORT)
-  return(pthread_key_create(key,NULL) == 0 ? MagickTrue : MagickFalse);
-#elif defined(MAGICKCORE_HAVE_WINTHREADS)
+  return(pthread_key_create(key,destructor) == 0 ? MagickTrue : MagickFalse);
+#elif defined(MAGICKCORE_WINDOWS_SUPPORT)
   *key=TlsAlloc();
   return(*key != TLS_OUT_OF_INDEXES ? MagickTrue : MagickFalse);
 #else
-  *key=AcquireMagickMemory(sizeof(key));
-  return(*key != (void *) NULL ? MagickTrue : MagickFalse);
+  {
+    MagickThreadValue
+      **keys;
+
+    keys=(MagickThreadValue **) key;
+    *keys=(MagickThreadValue *) AcquireQuantumMemory(1,sizeof(*keys));
+    if (*keys != (MagickThreadValue *) NULL)
+      {
+        (*keys)->number_threads=GetOpenMPMaximumThreads();
+        (*keys)->values=AcquireQuantumMemory((*keys)->number_threads,
+          sizeof(void *));
+        if ((*keys)->values == (void *) NULL)
+          *keys=RelinquishMagickMemory(*keys);
+        else
+          (void) memset((*keys)->values,0,(*keys)->number_threads*
+            sizeof(void *));
+        (*keys)->destructor=destructor;
+      }
+    return((*keys != (MagickThreadValue *) NULL) ? MagickTrue : MagickFalse);
+  }
 #endif
 }
 
@@ -79,31 +118,47 @@ MagickExport MagickBooleanType MagickCreateThreadKey(MagickThreadKey *key)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D e l e t e T h r e a d K e y                                 %
+%   D e l e t e M a g i c k T h r e a d K e y                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDeleteThreadKey() deletes a thread key.
+%  DeleteMagickThreadKey() deletes a thread-specific data key.
 %
-%  The format of the MagickDeleteThreadKey method is:
+%  The format of the DeleteMagickThreadKey method is:
 %
-%      MagickBooleanType MagickDeleteThreadKey(MagickThreadKey key)
+%      MagickBooleanType DeleteMagickThreadKey(MagickThreadKey key)
 %
 %  A description of each parameter follows:
 %
 %    o key: the thread key.
 %
 */
-MagickExport MagickBooleanType MagickDeleteThreadKey(MagickThreadKey key)
+MagickExport MagickBooleanType DeleteMagickThreadKey(MagickThreadKey key)
 {
 #if defined(MAGICKCORE_THREAD_SUPPORT)
   return(pthread_key_delete(key) == 0 ? MagickTrue : MagickFalse);
-#elif defined(MAGICKCORE_HAVE_WINTHREADS)
+#elif defined(MAGICKCORE_WINDOWS_SUPPORT)
   return(TlsFree(key) != 0 ? MagickTrue : MagickFalse);
 #else
-  key=(MagickThreadKey) RelinquishMagickMemory(key);
+  {
+    MagickThreadValue
+      *keys;
+
+    register ssize_t
+      i;
+
+    keys=(MagickThreadValue *) key;
+    for (i=0; i < (ssize_t) keys->number_threads; i++)
+      if ((keys->destructor != (void *) NULL) &&
+          (keys->values[i] != (void *) NULL))
+        {
+          keys->destructor(keys->values[i]);
+          keys->values[i]=(void *) NULL;
+        }
+    keys=(MagickThreadValue *) RelinquishMagickMemory(keys);
+  }
   return(MagickTrue);
 #endif
 }
@@ -113,31 +168,38 @@ MagickExport MagickBooleanType MagickDeleteThreadKey(MagickThreadKey key)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k G e t T h r e a d V a l u e                                   %
+%   G e t M a g i c k T h r e a d V a l u e                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickGetThreadValue() returns a value associated with the thread key.
+%  GetMagickThreadValue() returns the value currently bound to the specified
+%  key on behalf of the calling thread.
 %
-%  The format of the MagickGetThreadValue method is:
+%  The format of the GetMagickThreadValue method is:
 %
-%      void *MagickGetThreadValue(MagickThreadKey key)
+%      void *GetMagickThreadValue(MagickThreadKey key)
 %
 %  A description of each parameter follows:
 %
 %    o key: the thread key.
 %
 */
-MagickExport void *MagickGetThreadValue(MagickThreadKey key)
+MagickExport void *GetMagickThreadValue(MagickThreadKey key)
 {
 #if defined(MAGICKCORE_THREAD_SUPPORT)
   return(pthread_getspecific(key));
-#elif defined(MAGICKCORE_HAVE_WINTHREADS)
+#elif defined(MAGICKCORE_WINDOWS_SUPPORT)
   return(TlsGetValue(key));
 #else
-  return((void *) (*key));
+  {
+    MagickThreadValue
+      *keys;
+
+    keys=(MagickThreadValue *) key;
+    return(keys->values[GetOpenMPThreadId()]);
+  }
 #endif
 }
 
@@ -146,35 +208,42 @@ MagickExport void *MagickGetThreadValue(MagickThreadKey key)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k S e t T h r e a d V a l u e                                   %
+%   S e t M a g i c k T h r e a d V a l u e                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickSetThreadValue() associates a value with the thread key.
+%  SetMagickThreadValue() binds a value to the specified key on behalf of the
+%  calling thread.
 %
-%  The format of the MagickSetThreadValue method is:
+%  The format of the SetMagickThreadValue method is:
 %
-%      MagickBooleanType MagickSetThreadValue(MagickThreadKey key,
+%      MagickBooleanType SetMagickThreadValue(MagickThreadKey key,
 %        const void *value)
 %
 %  A description of each parameter follows:
 %
 %    o key: the thread key.
 %
-%    o value: the value
+%    o value: the value.
 %
 */
-MagickExport MagickBooleanType MagickSetThreadValue(MagickThreadKey key,
+MagickExport MagickBooleanType SetMagickThreadValue(MagickThreadKey key,
   const void *value)
 {
 #if defined(MAGICKCORE_THREAD_SUPPORT)
   return(pthread_setspecific(key,value) == 0 ? MagickTrue : MagickFalse);
-#elif defined(MAGICKCORE_HAVE_WINTHREADS)
+#elif defined(MAGICKCORE_WINDOWS_SUPPORT)
   return(TlsSetValue(key,(void *) value) != 0 ? MagickTrue : MagickFalse);
 #else
-  *key=(size_t) value;
+  {
+    MagickThreadValue
+      *keys;
+
+    keys=(MagickThreadValue *) key;
+    keys->values[GetOpenMPThreadId()]=(void *) value;
+  }
   return(MagickTrue);
 #endif
 }

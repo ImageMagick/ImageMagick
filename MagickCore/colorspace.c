@@ -17,7 +17,7 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -294,7 +294,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
           x;
 
         register Quantum
-          *restrict q;
+          *magick_restrict q;
 
         if (status == MagickFalse)
           continue;
@@ -350,7 +350,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
           x;
 
         register Quantum
-          *restrict q;
+          *magick_restrict q;
 
         if (status == MagickFalse)
           continue;
@@ -422,7 +422,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
           x;
 
         register Quantum
-          *restrict q;
+          *magick_restrict q;
 
         if (status == MagickFalse)
           continue;
@@ -641,7 +641,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
           x;
 
         register Quantum
-          *restrict q;
+          *magick_restrict q;
 
         if (status == MagickFalse)
           continue;
@@ -708,7 +708,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
           x;
 
         register Quantum
-          *restrict q;
+          *magick_restrict q;
 
         if (status == MagickFalse)
           continue;
@@ -947,7 +947,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
           pixel;
 
         register Quantum
-          *restrict q;
+          *magick_restrict q;
 
         register ssize_t
           x;
@@ -1752,7 +1752,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           x;
 
         register Quantum
-          *restrict q;
+          *magick_restrict q;
 
         if (status == MagickFalse)
           continue;
@@ -1808,7 +1808,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           x;
 
         register Quantum
-          *restrict q;
+          *magick_restrict q;
 
         if (status == MagickFalse)
           continue;
@@ -1888,7 +1888,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           x;
 
         register Quantum
-          *restrict q;
+          *magick_restrict q;
 
         if (status == MagickFalse)
           continue;
@@ -2109,7 +2109,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           x;
 
         register Quantum
-          *restrict q;
+          *magick_restrict q;
 
         if (status == MagickFalse)
           continue;
@@ -2175,7 +2175,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           x;
 
         register Quantum
-          *restrict q;
+          *magick_restrict q;
 
         if (status == MagickFalse)
           continue;
@@ -2415,7 +2415,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           x;
 
         register Quantum
-          *restrict q;
+          *magick_restrict q;
 
         if (status == MagickFalse)
           continue;

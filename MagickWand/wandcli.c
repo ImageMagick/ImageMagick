@@ -3,12 +3,11 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%     M   M  AA   GGG  III  CCC     W     W  AA  N   N DDD   CCC L    III     %
-%     MM MM A  A G      I  C        W     W A  A NN  N D  D C    L     I      %
-%     M M M AAAA G  GG  I  C        W  W  W AAAA N N N D  D C    L     I      %
-%     M   M A  A G   G  I  C         W W W  A  A N  NN D  D C    L     I      %
-%     M   M A  A  GGG  III  CCC       W W   A  A N   N DDD   CCC LLLL III     %
-%                                                                             %
+%                W     W  AA  N   N DDD   CCC L    III                        %
+%                W     W A  A NN  N D  D C    L     I                         %
+%                W  W  W AAAA N N N D  D C    L     I                         %
+%                 W W W  A  A N  NN D  D C    L     I                         %
+%                  W W   A  A N   N DDD   CCC LLLL III                        %
 %                                                                             %
 %                         WandCLI Structure Methods                           %
 %                                                                             %
@@ -16,8 +15,7 @@
 %                              Anthony Thyssen                                %
 %                                 April 2011                                  %
 %                                                                             %
-%                                                                             %
-%  Copyright 1999-2015 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -194,7 +192,7 @@ WandExport MagickCLI *DestroyMagickCLI(MagickCLI *cli_wand)
     cli_wand->wand.exception=DestroyExceptionInfo(cli_wand->wand.exception);
   RelinquishWandId(cli_wand->wand.id);
   cli_wand->wand.signature=(~MagickWandSignature);
-
+  cli_wand=(MagickCLI *) RelinquishMagickMemory(cli_wand);
   return((MagickCLI *) NULL);
 }
 
@@ -297,7 +295,6 @@ WandExport MagickBooleanType CLILogEvent(MagickCLI *cli_wand,
   status=LogMagickEventList(type,module,function,line,new_format,operands);
   va_end(operands);
 
-
   return(status);
 }
 
@@ -316,8 +313,8 @@ WandExport MagickBooleanType CLILogEvent(MagickCLI *cli_wand,
 % it the location of the option that caused the exception to occur.
 */
 WandExport MagickBooleanType CLIThrowException(MagickCLI *cli_wand,
-       const char *module,const char *function,const size_t line,
-       const ExceptionType severity,const char *tag,const char *format,...)
+  const char *module,const char *function,const size_t line,
+  const ExceptionType severity,const char *tag,const char *format,...)
 {
   char
     new_format[MagickPathExtent];
@@ -340,13 +337,12 @@ WandExport MagickBooleanType CLIThrowException(MagickCLI *cli_wand,
   (void) ConcatenateMagickString(new_format," ",MagickPathExtent);
 
   len=strlen(new_format);
-  (void) FormatLocaleString(new_format+len,MagickPathExtent-len,cli_wand->location,
-       cli_wand->filename, cli_wand->line, cli_wand->column);
+  (void) FormatLocaleString(new_format+len,MagickPathExtent-len,
+    cli_wand->location,cli_wand->filename,cli_wand->line,cli_wand->column);
 
   va_start(operands,format);
-  status=ThrowMagickExceptionList(cli_wand->wand.exception,
-              module,function,line,
-              severity,tag,new_format,operands);
+  status=ThrowMagickExceptionList(cli_wand->wand.exception,module,function,
+    line,severity,tag,new_format,operands);
   va_end(operands);
   return(status);
 }

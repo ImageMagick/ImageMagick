@@ -585,7 +585,7 @@ Magick::ColorHSL::ColorHSL(const Magick::Color &color_)
 }
 
 Magick::ColorHSL::ColorHSL(const double hue_,const double saturation_,
-  const double luminosity_)
+  const double lightness_)
   : Color()
 {
   double
@@ -593,7 +593,7 @@ Magick::ColorHSL::ColorHSL(const double hue_,const double saturation_,
     green,
     red;
 
-  ConvertHSLToRGB(hue_,saturation_,luminosity_,&red,&green,&blue);
+  ConvertHSLToRGB(hue_,saturation_,lightness_,&red,&green,&blue);
 
   quantumRed(red);
   quantumGreen(green);
@@ -614,7 +614,7 @@ void Magick::ColorHSL::hue(const double hue_)
 {
   double
     hue,
-    luminosity,
+    lightness,
     saturation;
 
   double
@@ -623,11 +623,11 @@ void Magick::ColorHSL::hue(const double hue_)
     red;
 
   ConvertRGBToHSL(quantumRed(),quantumGreen(),quantumBlue(),&hue,&saturation,
-    &luminosity);
+    &lightness);
 
   hue=hue_;
 
-  ConvertHSLToRGB(hue,saturation,luminosity,&red,&green,&blue);
+  ConvertHSLToRGB(hue,saturation,lightness,&red,&green,&blue);
 
   quantumRed(ClampToQuantum(red));
   quantumGreen(ClampToQuantum(green));
@@ -638,20 +638,20 @@ double Magick::ColorHSL::hue(void) const
 {
   double
     hue,
-    luminosity,
+    lightness,
     saturation;
 
   ConvertRGBToHSL(quantumRed(),quantumGreen(),quantumBlue(),&hue,&saturation,
-    &luminosity);
+    &lightness);
 
   return(hue);
 }
 
-void Magick::ColorHSL::luminosity(const double luminosity_)
+void Magick::ColorHSL::lightness (const double lightness_)
 {
   double
     hue,
-    luminosity,
+    lightness,
     saturation;
 
   double
@@ -660,35 +660,35 @@ void Magick::ColorHSL::luminosity(const double luminosity_)
     red;
 
   ConvertRGBToHSL(quantumRed(),quantumGreen(),quantumBlue(),&hue,&saturation,
-    &luminosity);
+    &lightness);
 
-  luminosity=luminosity_;
+  lightness=lightness_;
 
-  ConvertHSLToRGB(hue,saturation,luminosity,&red,&green,&blue);
+  ConvertHSLToRGB(hue,saturation,lightness,&red,&green,&blue);
 
   quantumRed(ClampToQuantum(red));
   quantumGreen(ClampToQuantum(green));
   quantumBlue(ClampToQuantum(blue));
 }
 
-double Magick::ColorHSL::luminosity ( void ) const
+double Magick::ColorHSL::lightness (void) const
 {
   double
     hue,
-    luminosity,
+    lightness,
     saturation;
 
   ConvertRGBToHSL(quantumRed(),quantumGreen(),quantumBlue(),&hue,&saturation,
-    &luminosity);
+    &lightness);
 
-  return(luminosity);
+  return(lightness);
 }
 
 void Magick::ColorHSL::saturation(const double saturation_)
 {
   double
     hue,
-    luminosity,
+    lightness,
     saturation;
 
   double
@@ -697,11 +697,11 @@ void Magick::ColorHSL::saturation(const double saturation_)
     red;
 
   ConvertRGBToHSL(quantumRed(),quantumGreen(),quantumBlue(),&hue,&saturation,
-    &luminosity);
+    &lightness);
 
   saturation=saturation_;
 
-  ConvertHSLToRGB(hue,saturation,luminosity,&red,&green,&blue);
+  ConvertHSLToRGB(hue,saturation,lightness,&red,&green,&blue);
 
   quantumRed(ClampToQuantum(red));
   quantumGreen(ClampToQuantum(green));
@@ -712,11 +712,11 @@ double Magick::ColorHSL::saturation(void) const
 {
   double
     hue,
-    luminosity,
+    lightness,
     saturation;
 
   ConvertRGBToHSL(quantumRed(),quantumGreen(),quantumBlue(),&hue,&saturation,
-    &luminosity);
+    &lightness);
 
   return(saturation);
 }
