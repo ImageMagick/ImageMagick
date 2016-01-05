@@ -10258,7 +10258,7 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
   /*
     Request file name from user.
   */
-  if ((command == MagickFalse)
+  if (command == MagickFalse)
     XFileBrowserWidget(display,windows,"Open",filename);
   else
     {
