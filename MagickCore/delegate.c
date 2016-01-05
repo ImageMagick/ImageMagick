@@ -202,7 +202,7 @@ static LinkedListInfo *AcquireDelegateCache(const char *filename,
     options=DestroyConfigureOptions(options);
   }
 #endif
-  if (IfMagickTrue(IsLinkedListEmpty(delegate_cache)))
+  if (IsLinkedListEmpty(delegate_cache) != MagickFalse)
     status&=LoadDelegateCache(delegate_cache,DelegateMap,"built-in",0,
       exception);
   return(delegate_cache);
@@ -789,8 +789,8 @@ MagickExport const DelegateInfo **GetDelegateInfoList(const char *pattern,
   for (i=0; p != (const DelegateInfo *) NULL; )
   {
     if( IfMagickFalse(p->stealth) &&
-        ( IfMagickTrue(GlobExpression(p->decode,pattern,MagickFalse)) ||
-          IfMagickTrue(GlobExpression(p->encode,pattern,MagickFalse))) )
+        ( GlobExpression(p->decode,pattern,MagickFalse) != MagickFalse ||
+          GlobExpression(p->encode,pattern,MagickFalse) != MagickFalse) )
       delegates[i++]=p;
     p=(const DelegateInfo *) GetNextValueInLinkedList(delegate_cache);
   }
@@ -883,10 +883,10 @@ MagickExport char **GetDelegateList(const char *pattern,
   for (i=0; p != (const DelegateInfo *) NULL; )
   {
     if( IfMagickFalse(p->stealth) &&
-        IfMagickTrue(GlobExpression(p->decode,pattern,MagickFalse)) )
+        GlobExpression(p->decode,pattern,MagickFalse) != MagickFalse )
       delegates[i++]=ConstantString(p->decode);
     if( IfMagickFalse(p->stealth) &&
-        IfMagickTrue(GlobExpression(p->encode,pattern,MagickFalse)) )
+        GlobExpression(p->encode,pattern,MagickFalse) != MagickFalse )
       delegates[i++]=ConstantString(p->encode);
     p=(const DelegateInfo *) GetNextValueInLinkedList(delegate_cache);
   }
@@ -1264,7 +1264,7 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
   commands=StringToList(delegate_info->commands);
   if (commands == (char **) NULL)
     {
-      if( IfMagickTrue(temporary) )
+      if (temporary != MagickFalse)
         (void) RelinquishUniqueFileResource(image->filename);
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",
@@ -1414,7 +1414,7 @@ MagickExport MagickBooleanType ListDelegateInfo(FILE *file,
   path=(const char *) NULL;
   for (i=0; i < (ssize_t) number_delegates; i++)
   {
-    if( IfMagickTrue(delegate_info[i]->stealth) )
+    if (delegate_info[i]->stealth != MagickFalse)
       continue;
     if ((path == (const char *) NULL) ||
         (LocaleCompare(path,delegate_info[i]->path) != 0))

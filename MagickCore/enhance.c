@@ -326,7 +326,7 @@ MagickExport MagickBooleanType ClutImage(Image *image,const Image *clut_image,
   assert(clut_image->signature == MagickCoreSignature);
   if( IfMagickFalse(SetImageStorageClass(image,DirectClass,exception)) )
     return(MagickFalse);
-  if( IfMagickTrue(IsGrayColorspace(image->colorspace)) &&
+  if( IsGrayColorspace(image->colorspace != MagickFalse) &&
       IfMagickFalse(IsGrayColorspace(clut_image->colorspace)))
     (void) SetImageColorspace(image,sRGBColorspace,exception);
   clut_map=(PixelInfo *) AcquireQuantumMemory(MaxMap+1UL,sizeof(*clut_map));
@@ -888,7 +888,7 @@ MagickExport MagickBooleanType ContrastImage(Image *image,
   assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  sign=IfMagickTrue(sharpen) ? 1 : -1;
+  sign=sharpen != MagickFalse ? 1 : -1;
   if (image->storage_class == PseudoClass)
     {
       /*
@@ -2679,7 +2679,7 @@ MagickExport MagickBooleanType LevelImageColors(Image *image,
   assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if( IfMagickTrue(IsGrayColorspace(image->colorspace)) &&
+  if( IsGrayColorspace(image->colorspace != MagickFalse) &&
       (IfMagickFalse(IsGrayColorspace(black_color->colorspace)) ||
        IfMagickFalse(IsGrayColorspace(white_color->colorspace))))
     (void) SetImageColorspace(image,sRGBColorspace,exception);
@@ -3423,7 +3423,7 @@ MagickExport MagickBooleanType NegateImage(Image *image,
       /*
         Negate colormap.
       */
-      if( IfMagickTrue(grayscale) )
+      if( grayscale != MagickFalse )
         if ((image->colormap[i].red != image->colormap[i].green) ||
             (image->colormap[i].green != image->colormap[i].blue))
           continue;
@@ -3440,7 +3440,7 @@ MagickExport MagickBooleanType NegateImage(Image *image,
   status=MagickTrue;
   progress=0;
   image_view=AcquireAuthenticCacheView(image,exception);
-  if( IfMagickTrue(grayscale) )
+  if( grayscale != MagickFalse )
     {
       for (y=0; y < (ssize_t) image->rows; y++)
       {
@@ -3468,7 +3468,7 @@ MagickExport MagickBooleanType NegateImage(Image *image,
             j;
 
           if ((GetPixelReadMask(image,q) == 0) ||
-              IfMagickTrue(IsPixelGray(image,q)))
+              IsPixelGray(image,q != MagickFalse))
             {
               q+=GetPixelChannels(image);
               continue;
@@ -3771,7 +3771,7 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
       register ssize_t
         i;
 
-      if( IfMagickTrue(sharpen) )
+      if( sharpen != MagickFalse )
         for (i=0; i < (ssize_t) image->colors; i++)
         {
           if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
@@ -3846,7 +3846,7 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
         PixelTrait traits=GetPixelChannelTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        if( IfMagickTrue(sharpen) )
+        if( sharpen != MagickFalse )
           q[i]=ScaledSig(q[i]);
         else
           q[i]=InverseScaledSig(q[i]);

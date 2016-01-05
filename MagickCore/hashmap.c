@@ -745,7 +745,7 @@ MagickExport void *GetValueFromHashmap(HashmapInfo *hashmap_info,
             if (hashmap_info->compare !=
                 (MagickBooleanType (*)(const void *,const void *)) NULL)
               compare=hashmap_info->compare(key,entry->key);
-            if (IfMagickTrue(compare))
+            if (compare != MagickFalse)
               {
                 value=entry->value;
                 UnlockSemaphoreInfo(hashmap_info->semaphore);
@@ -1537,7 +1537,7 @@ MagickExport MagickBooleanType PutEntryInHashmap(HashmapInfo *hashmap_info,
             if (hashmap_info->compare !=
                 (MagickBooleanType (*)(const void *,const void *)) NULL)
               compare=hashmap_info->compare(key,entry->key);
-            if( IfMagickTrue(compare) )
+            if( compare != MagickFalse )
               {
                 (void) RemoveElementFromLinkedList(list_info,i);
                 if (hashmap_info->relinquish_key != (void *(*)(void *)) NULL)
@@ -1778,7 +1778,7 @@ MagickExport void *RemoveEntryFromHashmap(HashmapInfo *hashmap_info,
             if (hashmap_info->compare !=
                 (MagickBooleanType (*)(const void *,const void *)) NULL)
               compare=hashmap_info->compare(key,entry->key);
-            if( IfMagickTrue(compare) )
+            if (compare != MagickFalse)
               {
                 entry=(EntryInfo *) RemoveElementFromLinkedList(list_info,i);
                 if (entry == (EntryInfo *) NULL)

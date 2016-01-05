@@ -160,11 +160,9 @@ typedef enum
 */
 #if 1
 /* Fast C typing method assumes MagickBooleanType match 0,1 values */
-#  define IfMagickTrue(v)  ((int)(v))
 #  define IfMagickFalse(v) (!(int)(v))
 #else
 /* Do not depend MagickBooleanType's values */
-#  define IfMagickTrue(v)  ((v) != MagickFalse)
 #  define IfMagickFalse(v) ((v) == MagickFalse)
 #endif
 

@@ -1542,7 +1542,7 @@ MagickExport void GetColorTuple(const PixelInfo *pixel,
   assert(tuple != (char *) NULL);
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",tuple);
   *tuple='\0';
-  if (IfMagickTrue(hex))
+  if (hex != MagickFalse)
     {
       /*
         Convert pixel to hex color.
@@ -1912,7 +1912,7 @@ MagickExport MagickBooleanType ListColorInfo(FILE *file,
   path=(const char *) NULL;
   for (i=0; i < (ssize_t) number_colors; i++)
   {
-    if (IfMagickTrue(color_info[i]->stealth))
+    if (color_info[i]->stealth != MagickFalse)
       continue;
     if ((path == (const char *) NULL) ||
         (LocaleCompare(path,color_info[i]->path) != 0))
@@ -2119,11 +2119,11 @@ static MagickBooleanType LoadColorCache(LinkedListInfo *color_cache,
               compliance;
 
             compliance=color_info->compliance;
-            if (IfMagickTrue(GlobExpression(token,"*SVG*",MagickTrue)))
+            if (GlobExpression(token,"*SVG*",MagickTrue) != MagickFalse)
               compliance|=SVGCompliance;
-            if (IfMagickTrue(GlobExpression(token,"*X11*",MagickTrue)))
+            if (GlobExpression(token,"*X11*",MagickTrue) != MagickFalse)
               compliance|=X11Compliance;
-            if (IfMagickTrue(GlobExpression(token,"*XPM*",MagickTrue)))
+            if (GlobExpression(token,"*XPM*",MagickTrue) != MagickFalse)
               compliance|=XPMCompliance;
             color_info->compliance=(ComplianceType) compliance;
             break;

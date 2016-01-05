@@ -139,7 +139,7 @@ MagickExport MagickBooleanType CloneImageProperties(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(clone_image != (const Image *) NULL);
   assert(clone_image->signature == MagickCoreSignature);
-  if( IfMagickTrue(clone_image->debug) )
+  if (clone_image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       clone_image->filename);
   (void) CopyMagickString(image->filename,clone_image->filename,MagickPathExtent);
@@ -2084,7 +2084,7 @@ MagickExport const char *GetImageProperty(const Image *image,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (IfMagickTrue(image->debug))
+  if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   p=(const char *) NULL;
   if (image->properties != (void *) NULL)
@@ -2275,9 +2275,9 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
   const char
     *string;     /* return a string already stored somewher */
 
-  if (image != (Image *) NULL && IfMagickTrue(image->debug))
+  if (image != (Image *) NULL && image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  else if( image_info != (ImageInfo *) NULL && IfMagickTrue(image_info->debug))
+  else if( image_info != (ImageInfo *) NULL && image_info->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s","no-images");
 
   *value='\0';           /* formatted string */
@@ -2401,7 +2401,7 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
 
       WarnNoImageReturn("\"%%%c\"",letter);
       colorspace=image->colorspace;
-      if (IfMagickTrue(SetImageGray(image,exception)))
+      if (SetImageGray(image,exception != MagickFalse))
         colorspace=GRAYColorspace;   /* FUTURE: this is IMv6 not IMv7 */
       (void) FormatLocaleString(value,MagickPathExtent,"%s %s %s",
         CommandOptionToMnemonic(MagickClassOptions,(ssize_t) image->storage_class),
@@ -2647,9 +2647,9 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
   if (property[1] == '\0')  /* single letter property request */
     return(GetMagickPropertyLetter(image_info,image,*property,exception));
 
-  if (image != (Image *) NULL && IfMagickTrue(image->debug))
+  if (image != (Image *) NULL && image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  else if( image_info != (ImageInfo *) NULL && IfMagickTrue(image_info->debug))
+  else if( image_info != (ImageInfo *) NULL && image_info->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s","no-images");
 
   *value='\0';           /* formated string */
@@ -3236,9 +3236,9 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,
   assert(image == NULL || image->signature == MagickCoreSignature);
   assert(image_info == NULL || image_info->signature == MagickCoreSignature);
 
-  if (image != (Image *) NULL && IfMagickTrue(image->debug))
+  if (image != (Image *) NULL && image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  else if( image_info != (ImageInfo *) NULL && IfMagickTrue(image_info->debug))
+  else if( image_info != (ImageInfo *) NULL && image_info->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s","no-image");
 
   if (embed_text == (const char *) NULL)

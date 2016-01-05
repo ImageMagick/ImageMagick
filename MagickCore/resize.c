@@ -880,7 +880,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
   window_type=mapping[filter].window;
   resize_filter->blur=1.0;
   /* Promote 1D Windowed Sinc Filters to a 2D Windowed Jinc filters */
-  if ( IfMagickTrue(cylindrical) && (filter_type == SincFastFilter) &&
+  if ( cylindrical != MagickFalse && (filter_type == SincFastFilter) &&
       (filter != SincFastFilter))
     filter_type=JincFilter;  /* 1D Windowed Sinc => 2D Windowed Jinc filters */
 
@@ -918,7 +918,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
           option=ParseCommandOption(MagickFilterOptions,MagickFalse,artifact);
           if ((UndefinedFilter < option) && (option < SentinelFilter))
             {
-              filter_type= IfMagickTrue(cylindrical) ? JincFilter
+              filter_type= cylindrical != MagickFalse ? JincFilter
                                                      : SincFastFilter;
               window_type=(FilterTypes) option;
             }
@@ -3677,7 +3677,7 @@ MagickExport Image *ThumbnailImage(const Image *image,const size_t columns,
       image->magick_filename);
   (void) SetImageProperty(thumbnail_image,"Thumb::URI",value,exception);
   (void) CopyMagickString(value,image->magick_filename,MagickPathExtent);
-  if ( IfMagickTrue(GetPathAttributes(image->filename,&attributes)) )
+  if ( GetPathAttributes(image->filename,&attributes) != MagickFalse )
     {
       (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
         attributes.st_mtime);
