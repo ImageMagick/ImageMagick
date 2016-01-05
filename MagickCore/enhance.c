@@ -326,7 +326,7 @@ MagickExport MagickBooleanType ClutImage(Image *image,const Image *clut_image,
   assert(clut_image->signature == MagickCoreSignature);
   if( IfMagickFalse(SetImageStorageClass(image,DirectClass,exception)) )
     return(MagickFalse);
-  if( IsGrayColorspace(image->colorspace != MagickFalse) &&
+  if( IsGrayColorspace(image->colorspace) != MagickFalse &&
       IfMagickFalse(IsGrayColorspace(clut_image->colorspace)))
     (void) SetImageColorspace(image,sRGBColorspace,exception);
   clut_map=(PixelInfo *) AcquireQuantumMemory(MaxMap+1UL,sizeof(*clut_map));
@@ -2679,7 +2679,7 @@ MagickExport MagickBooleanType LevelImageColors(Image *image,
   assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if( IsGrayColorspace(image->colorspace != MagickFalse) &&
+  if (IsGrayColorspace(image->colorspace) != MagickFalse &&
       (IfMagickFalse(IsGrayColorspace(black_color->colorspace)) ||
        IfMagickFalse(IsGrayColorspace(white_color->colorspace))))
     (void) SetImageColorspace(image,sRGBColorspace,exception);
