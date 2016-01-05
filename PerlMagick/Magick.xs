@@ -5251,8 +5251,8 @@ Get(ref,...)
               j=info ? info->image_info->orientation : image ?
                 image->orientation : UndefinedOrientation;
               s=newSViv(j);
-              (void) sv_setpv(s,CommandOptionToMnemonic(MagickOrientationOptions,
-                j));
+              (void) sv_setpv(s,CommandOptionToMnemonic(
+                MagickOrientationOptions,j));
               SvIOK_on(s);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
@@ -5641,6 +5641,21 @@ Get(ref,...)
         case 'X':
         case 'x':
         {
+          if (LocaleCompare(attribute,"xmp") == 0)
+            {
+              if (image != (Image *) NULL)
+                {
+                  const StringInfo
+                    *profile;
+
+                  profile=GetImageProfile(image,"xmp");
+                  if (profile != (StringInfo *) NULL)
+                    s=newSVpv((const char *) GetStringInfoDatum(profile),
+                      GetStringInfoLength(profile));
+                }
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
+            }
           if (LocaleCompare(attribute,"x-resolution") == 0)
             {
               if (image != (Image *) NULL)
