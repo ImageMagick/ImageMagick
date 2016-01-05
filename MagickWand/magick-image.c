@@ -92,7 +92,7 @@ static MagickWand *CloneMagickWandFromImages(const MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickWandSignature);
-  if (IfMagickTrue(wand->debug))
+  if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   clone_wand=(MagickWand *) AcquireMagickMemory(sizeof(*clone_wand));
   if (clone_wand == (MagickWand *) NULL)

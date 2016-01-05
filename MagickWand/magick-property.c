@@ -1137,7 +1137,7 @@ WandExport char **MagickGetOptions(MagickWand *wand,const char *pattern,
   for (i=0; option != (const char *) NULL; )
   {
     if ((*option != '[') &&
-        (IfMagickTrue(GlobExpression(option,pattern,MagickFalse))))
+        (GlobExpression(option,pattern,MagickFalse) != MagickFalse))
       {
         if ((i+1) >= (ssize_t) length)
           {

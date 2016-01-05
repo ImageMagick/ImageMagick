@@ -12560,7 +12560,7 @@ static MagickBooleanType XSaveImage(Display *display,
   XFileBrowserWidget(display,windows,"Save",filename);
   if (*filename == '\0')
     return(MagickTrue);
-  if (IsPathAccessible(filename != MagickFalse) )
+  if (IsPathAccessible(filename) != MagickFalse )
     {
       int
         status;

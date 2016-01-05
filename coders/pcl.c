@@ -790,7 +790,7 @@ static MagickBooleanType WritePCLImage(const ImageInfo *image_info,Image *image,
           }
         }
     option=GetImageOption(image_info,"pcl:fit-to-page");
-    if (IfMagickTrue(IsStringTrue(option)))
+    if (IsStringTrue(option) != MagickFalse)
       (void) WriteBlobString(image,"\033*r3A");
     else
       (void) WriteBlobString(image,"\033*r1A");  /* start raster graphics */

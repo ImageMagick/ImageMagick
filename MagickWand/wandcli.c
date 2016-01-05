@@ -127,7 +127,7 @@ WandExport MagickCLI *AcquireMagickCLI(ImageInfo *image_info,
   cli_wand->column=0;                 /* column from script */
 
   cli_wand->signature=MagickWandSignature;
-  if (IfMagickTrue(cli_wand->wand.debug))
+  if (cli_wand->wand.debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",cli_wand->wand.name);
   return(cli_wand);
 }

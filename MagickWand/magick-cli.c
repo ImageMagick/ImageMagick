@@ -516,7 +516,7 @@ RestoreMSCWarning
   /* If filename looks like an option,
      Or the common 'end of line' error of a single space.
      -- produce an error */
-  if (IfMagickTrue(IsCommandOption(option)) ||
+  if (IsCommandOption(option) != MagickFalse ||
       (option[0] == ' ' && option[1] == '\0') ) {
     CLIWandException(OptionError,"MissingOutputFilename",option);
     return(argc);

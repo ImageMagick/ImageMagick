@@ -284,10 +284,10 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
         pango_layout_set_ellipsize(layout,PANGO_ELLIPSIZE_START);
     }
   option=GetImageOption(image_info,"pango:justify");
-  if (IfMagickTrue(IsStringTrue(option)))
+  if (IsStringTrue(option) != MagickFalse)
     pango_layout_set_justify(layout,1);
   option=GetImageOption(image_info,"pango:single-paragraph");
-  if (IfMagickTrue(IsStringTrue(option)))
+  if (IsStringTrue(option) != MagickFalse)
     pango_layout_set_single_paragraph_mode(layout,1);
   option=GetImageOption(image_info,"pango:wrap");
   if (option != (const char *) NULL)
