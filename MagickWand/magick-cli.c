@@ -181,7 +181,7 @@ RestoreMSCWarning
         (void) FormatLocaleFile(stderr, "Script %u,%u Non-Option: \"%s\"\n",
                     cli_wand->line, cli_wand->line, option);
 #endif
-        if ( IfMagickFalse(IsCommandOption(option))) {
+        if (IsCommandOption(option) == MagickFalse) {
           /* non-option -- treat as a image read */
           cli_wand->command=(const OptionInfo *) NULL;
           CLIOption(cli_wand,"-read",option);
@@ -192,7 +192,7 @@ RestoreMSCWarning
       }
 
       if ( count >= 1 ) {
-        if( IfMagickFalse(GetScriptToken(token_info)) )
+        if (GetScriptToken(token_info) == MagickFalse)
           CLIWandException(OptionFatalError,"MissingArgument",option);
         CloneString(&arg1,token_info->token);
       }
@@ -200,7 +200,7 @@ RestoreMSCWarning
         CloneString(&arg1,(char *) NULL);
 
       if ( count >= 2 ) {
-        if( IfMagickFalse(GetScriptToken(token_info)) )
+        if (GetScriptToken(token_info) == MagickFalse)
           CLIWandExceptionBreak(OptionFatalError,"MissingArgument",option);
         CloneString(&arg2,token_info->token);
       }
@@ -414,7 +414,7 @@ WandExport int ProcessCommandOptions(MagickCLI *cli_wand,int argc,char **argv,
         (void) FormatLocaleFile(stderr, "CLI arg %d Non-Option: \"%s\"\n",
              i, option);
 #endif
-        if ( IfMagickFalse(IsCommandOption(option)) ) {
+        if (IsCommandOption(option) == MagickFalse) {
           if ( (cli_wand->process_flags & ProcessImplictRead) != 0 ) {
             /* non-option -- treat as a image read */
             cli_wand->command=(const OptionInfo *) NULL;
@@ -601,7 +601,7 @@ static void MagickUsage(MagickBooleanType verbose)
   (void) FormatLocaleFile(stdout,
     "       %s -help | -version | -usage | -list {option}\n\n",name);
 
-  if (IfMagickFalse(verbose))
+  if (verbose == MagickFalse)
     return;
 
   (void) FormatLocaleFile(stdout,"%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s\n",
@@ -648,7 +648,7 @@ static MagickBooleanType ConcatenateImages(int argc,char **argv,
   register ssize_t
     i;
 
-  if (IfMagickFalse(  ExpandFilenames(&argc,&argv)  ))
+  if (ExpandFilenames(&argc,&argv) == MagickFalse)
     ThrowFileException(exception,ResourceLimitError,"MemoryAllocationFailed",
          GetExceptionMessage(errno));
 

@@ -612,7 +612,7 @@ static MagickBooleanType Get8BIMProperty(const Image *image,const char *key,
   status=MagickFalse;
   length=GetStringInfoLength(profile);
   info=GetStringInfoDatum(profile);
-  while ((length > 0) && IfMagickFalse(status))
+  while ((length > 0) && (status == MagickFalse))
   {
     if (ReadPropertyByte(&info,&length) != (unsigned char) '8')
       continue;
@@ -1813,7 +1813,7 @@ static char *TracePSClippath(const unsigned char *blob,size_t length,
           point[i].x=(double) x/4096/4096;
           point[i].y=1.0-(double) y/4096/4096;
         }
-        if( IfMagickFalse(in_subpath) )
+        if (in_subpath == MagickFalse)
           {
             (void) FormatLocaleString(message,MagickPathExtent,"  %g %g m\n",
               point[1].x,point[1].y);

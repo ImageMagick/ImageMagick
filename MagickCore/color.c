@@ -888,7 +888,7 @@ static LinkedListInfo *AcquireColorCache(const char *filename,
     color_info->exempt=MagickTrue;
     color_info->signature=MagickCoreSignature;
     status&=AppendValueToLinkedList(color_cache,color_info);
-    if (IfMagickFalse(status))
+    if (status == MagickFalse)
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",color_info->name);
   }
@@ -945,7 +945,7 @@ static void *DestroyColorElement(void *color_info)
     *p;
 
   p=(ColorInfo *) color_info;
-  if (IfMagickFalse(p->exempt))
+  if (p->exempt == MagickFalse)
     {
       if (p->path != (char *) NULL)
         p->path=DestroyString(p->path);
@@ -1008,7 +1008,7 @@ MagickExport const ColorInfo *GetColorCompliance(const char *name,
     *q;
 
   assert(exception != (ExceptionInfo *) NULL);
-  if (IfMagickFalse(IsColorCacheInstantiated(exception)))
+  if (IsColorCacheInstantiated(exception) == MagickFalse)
     return((const ColorInfo *) NULL);
   /*
     Strip names of whitespace.
@@ -2090,7 +2090,7 @@ static MagickBooleanType LoadColorCache(LinkedListInfo *color_cache,
     if (LocaleCompare(keyword,"/>") == 0)
       {
         status=AppendValueToLinkedList(color_cache,color_info);
-        if (IfMagickFalse(status))
+        if (status == MagickFalse)
           (void) ThrowMagickException(exception,GetMagickModule(),
             ResourceLimitError,"MemoryAllocationFailed","`%s'",
             color_info->name);
@@ -2372,7 +2372,7 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
           return(MagickFalse);
         }
       color->colorspace=(ColorspaceType) type;
-      if (IfMagickFalse(icc_color) && (color->colorspace == RGBColorspace))
+      if ((icc_color == MagickFalse) && (color->colorspace == RGBColorspace))
         {
           color->colorspace=sRGBColorspace;  /* as required by SVG standard */
           color->depth=8;

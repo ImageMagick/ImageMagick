@@ -149,23 +149,6 @@ typedef enum
 } MagickBooleanType;
 
 /*
-   Define some short-hand macros for handling MagickBooleanType
-   and uses fast C typing with C boolean operations
-
-     Is  -- returns a MagickBooleanType (for storage)
-     If  -- returns C integer boolean (for if's and while's)
-
-   IfMagickFalse()    Not the MagickBooleanType to C integer Boolean
-*/
-#if 1
-/* Fast C typing method assumes MagickBooleanType match 0,1 values */
-#  define IfMagickFalse(v) (!(int)(v))
-#else
-/* Do not depend MagickBooleanType's values */
-#  define IfMagickFalse(v) ((v) == MagickFalse)
-#endif
-
-/*
   The IsNaN test is for special floating point numbers of value Nan (not a
   number). NaN's are defined as part of the IEEE standard for floating point
   number representation, and need to be watched out for. Morphology Kernels

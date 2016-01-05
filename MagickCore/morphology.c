@@ -4135,7 +4135,7 @@ MagickExport Image *MorphologyImage(const Image *image,
       /* Get the bias value as it will be needed */
       artifact = GetImageArtifact(image,"convolve:bias");
       if ( artifact != (const char *) NULL) {
-        if (IfMagickFalse(IsGeometry(artifact)))
+        if (IsGeometry(artifact) == MagickFalse)
           (void) ThrowMagickException(exception,GetMagickModule(),
                OptionWarning,"InvalidSetting","'%s' '%s'",
                "convolve:bias",artifact);
@@ -4146,7 +4146,7 @@ MagickExport Image *MorphologyImage(const Image *image,
       /* Scale kernel according to user wishes */
       artifact = GetImageArtifact(image,"convolve:scale");
       if ( artifact != (const char *) NULL ) {
-        if (IfMagickFalse(IsGeometry(artifact)))
+        if (IsGeometry(artifact) == MagickFalse)
           (void) ThrowMagickException(exception,GetMagickModule(),
                OptionWarning,"InvalidSetting","'%s' '%s'",
                "convolve:scale",artifact);

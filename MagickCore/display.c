@@ -2258,10 +2258,10 @@ static MagickBooleanType XAnnotateEditImage(Display *display,
   XGetAnnotateInfo(annotate_info);
   annotate_info->x=x;
   annotate_info->y=y;
-  if (IfMagickFalse(transparent_box) && IfMagickFalse(transparent_pen))
+  if ((transparent_box == MagickFalse) && (transparent_pen == MagickFalse))
     annotate_info->stencil=OpaqueStencil;
   else
-    if (IfMagickFalse(transparent_box) )
+    if (transparent_box == MagickFalse)
       annotate_info->stencil=BackgroundStencil;
     else
       annotate_info->stencil=ForegroundStencil;
@@ -3108,7 +3108,7 @@ static MagickBooleanType XChopImage(Display *display,
         /*
           Display info and draw chopping line.
         */
-        if (IfMagickFalse(windows->info.mapped) )
+        if (windows->info.mapped == MagickFalse)
           (void) XMapWindow(display,windows->info.id);
         (void) FormatLocaleString(text,MagickPathExtent,
           " %.20gx%.20g%+.20g%+.20g",(double) chop_info.width,(double)
@@ -3731,7 +3731,7 @@ static MagickBooleanType XColorEditImage(Display *display,
             /*
               Update color information using point algorithm.
             */
-            if (IfMagickFalse(SetImageStorageClass(*image,DirectClass,exception)) )
+            if (SetImageStorageClass(*image,DirectClass,exception) == MagickFalse)
               return(MagickFalse);
             q=GetCacheViewAuthenticPixels(image_view,(ssize_t)x_offset,
               (ssize_t) y_offset,1,1,exception);
@@ -3776,7 +3776,7 @@ static MagickBooleanType XColorEditImage(Display *display,
                       }
                     q+=GetPixelChannels(*image);
                   }
-                  if (IfMagickFalse(SyncCacheViewAuthenticPixels(image_view,exception)) )
+                  if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
                     break;
                 }
               }
@@ -3835,7 +3835,7 @@ static MagickBooleanType XColorEditImage(Display *display,
             /*
               Update color information using reset algorithm.
             */
-            if (IfMagickFalse(SetImageStorageClass(*image,DirectClass,exception)) )
+            if (SetImageStorageClass(*image,DirectClass,exception) == MagickFalse)
               return(MagickFalse);
             for (y=0; y < (int) (*image)->rows; y++)
             {
@@ -3850,7 +3850,7 @@ static MagickBooleanType XColorEditImage(Display *display,
                 SetPixelBlue(*image,ScaleShortToQuantum(color.blue),q);
                 q+=GetPixelChannels(*image);
               }
-              if (IfMagickFalse(SyncCacheViewAuthenticPixels(image_view,exception)) )
+              if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
                 break;
             }
             break;
@@ -4321,7 +4321,7 @@ static MagickBooleanType XCompositeImage(Display *display,
       (void) SetImageAlphaChannel(composite_image,OpaqueAlphaChannel,exception);
       opacity=(Quantum) (ScaleQuantumToChar(QuantumRange)-
         ((ssize_t) ScaleQuantumToChar(QuantumRange)*blend)/100);
-      if (IfMagickFalse(SetImageStorageClass(image,DirectClass,exception)) )
+      if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
         return(MagickFalse);
       image->alpha_trait=BlendPixelTrait;
       image_view=AcquireAuthenticCacheView(image,exception);
@@ -4336,7 +4336,7 @@ static MagickBooleanType XCompositeImage(Display *display,
           SetPixelAlpha(image,opacity,q);
           q+=GetPixelChannels(image);
         }
-        if (IfMagickFalse(SyncCacheViewAuthenticPixels(image_view,exception)) )
+        if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
           break;
       }
       image_view=DestroyCacheView(image_view);
@@ -4447,7 +4447,7 @@ static MagickBooleanType XConfigureImage(Display *display,
     (height*windows->image.y/windows->image.ximage->height);
   status=XMakeImage(display,resource_info,&windows->image,image,
     (unsigned int) width,(unsigned int) height,exception);
-  if (IfMagickFalse(status) )
+  if (status == MagickFalse)
     XNoticeWidget(display,windows,"Unable to configure X image:",
       windows->image.name);
   /*
@@ -4879,7 +4879,7 @@ static MagickBooleanType XCropImage(Display *display,
           /*
             Display info and draw cropping rectangle.
           */
-          if (IfMagickFalse(windows->info.mapped) )
+          if (windows->info.mapped == MagickFalse)
             (void) XMapWindow(display,windows->info.id);
           (void) FormatLocaleString(text,MagickPathExtent,
             " %.20gx%.20g%+.20g%+.20g",(double) crop_info.width,(double)
@@ -5342,7 +5342,7 @@ static MagickBooleanType XCropImage(Display *display,
   /*
     Cut image.
   */
-  if (IfMagickFalse(SetImageStorageClass(image,DirectClass,exception)) )
+  if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   image->alpha_trait=BlendPixelTrait;
   image_view=AcquireAuthenticCacheView(image,exception);
@@ -5357,7 +5357,7 @@ static MagickBooleanType XCropImage(Display *display,
       SetPixelAlpha(image,TransparentAlpha,q);
       q+=GetPixelChannels(image);
     }
-    if (IfMagickFalse(SyncCacheViewAuthenticPixels(image_view,exception)) )
+    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       break;
   }
   image_view=DestroyCacheView(image_view);
@@ -7205,7 +7205,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         Save image.
       */
       status=XSaveImage(display,resource_info,windows,*image,exception);
-      if (IfMagickFalse(status) )
+      if (status == MagickFalse)
         {
           char
             message[MagickPathExtent];
@@ -7225,7 +7225,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         Print image.
       */
       status=XPrintImage(display,resource_info,windows,*image,exception);
-      if (IfMagickFalse(status) )
+      if (status == MagickFalse)
         {
           char
             message[MagickPathExtent];
@@ -7304,7 +7304,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         exit program.
       */
-      if (IfMagickFalse(resource_info->confirm_exit) )
+      if (resource_info->confirm_exit == MagickFalse)
         XClientMessage(display,windows->image.id,windows->im_protocols,
           windows->im_exit,CurrentTime);
       else
@@ -7346,7 +7346,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         Paste image.
       */
       status=XPasteImage(display,resource_info,windows,*image,exception);
-      if (IfMagickFalse(status) )
+      if (status == MagickFalse)
         {
           XNoticeWidget(display,windows,"Unable to paste X image",
             (*image)->filename);
@@ -7494,7 +7494,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         Chop image.
       */
       status=XChopImage(display,resource_info,windows,image,exception);
-      if (IfMagickFalse(status) )
+      if (status == MagickFalse)
         {
           XNoticeWidget(display,windows,"Unable to cut X image",
             (*image)->filename);
@@ -7578,7 +7578,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         Rotate image 90 degrees clockwise.
       */
       status=XRotateImage(display,resource_info,windows,90.0,image,exception);
-      if (IfMagickFalse(status) )
+      if (status == MagickFalse)
         {
           XNoticeWidget(display,windows,"Unable to rotate X image",
             (*image)->filename);
@@ -7592,7 +7592,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         Rotate image 90 degrees counter-clockwise.
       */
       status=XRotateImage(display,resource_info,windows,-90.0,image,exception);
-      if (IfMagickFalse(status) )
+      if (status == MagickFalse)
         {
           XNoticeWidget(display,windows,"Unable to rotate X image",
             (*image)->filename);
@@ -7606,7 +7606,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         Rotate image.
       */
       status=XRotateImage(display,resource_info,windows,0.0,image,exception);
-      if (IfMagickFalse(status) )
+      if (status == MagickFalse)
         {
           XNoticeWidget(display,windows,"Unable to rotate X image",
             (*image)->filename);
@@ -7720,7 +7720,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         Trim image.
       */
       status=XTrimImage(display,resource_info,windows,*image,exception);
-      if (IfMagickFalse(status) )
+      if (status == MagickFalse)
         {
           XNoticeWidget(display,windows,"Unable to trim X image",
             (*image)->filename);
@@ -8777,7 +8777,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         Annotate the image with text.
       */
       status=XAnnotateEditImage(display,resource_info,windows,*image,exception);
-      if (IfMagickFalse(status) )
+      if (status == MagickFalse)
         {
           XNoticeWidget(display,windows,"Unable to annotate X image",
             (*image)->filename);
@@ -8791,7 +8791,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         Draw image.
       */
       status=XDrawEditImage(display,resource_info,windows,image,exception);
-      if (IfMagickFalse(status) )
+      if (status == MagickFalse)
         {
           XNoticeWidget(display,windows,"Unable to draw on the X image",
             (*image)->filename);
@@ -8805,7 +8805,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         Color edit.
       */
       status=XColorEditImage(display,resource_info,windows,image,exception);
-      if (IfMagickFalse(status) )
+      if (status == MagickFalse)
         {
           XNoticeWidget(display,windows,"Unable to pixel edit X image",
             (*image)->filename);
@@ -8819,7 +8819,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         Matte edit.
       */
       status=XMatteEditImage(display,resource_info,windows,image,exception);
-      if (IfMagickFalse(status) )
+      if (status == MagickFalse)
         {
           XNoticeWidget(display,windows,"Unable to matte edit X image",
             (*image)->filename);
@@ -8834,7 +8834,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       status=XCompositeImage(display,resource_info,windows,*image,
         exception);
-      if (IfMagickFalse(status) )
+      if (status == MagickFalse)
         {
           XNoticeWidget(display,windows,"Unable to composite X image",
             (*image)->filename);
@@ -8986,7 +8986,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XCheckRefreshWindows(display,windows);
       status=InvokeDelegate(image_info,*image,"edit",(char *) NULL,
         exception);
-      if (IfMagickFalse(status) )
+      if (status == MagickFalse)
         XNoticeWidget(display,windows,"Unable to edit image comment",
           (char *) NULL);
       else
@@ -9016,7 +9016,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       (void) FormatLocaleString((*image)->filename,MagickPathExtent,"launch:%s",
         filename);
       status=WriteImage(image_info,*image,exception);
-      if (IfMagickFalse(status) )
+      if (status == MagickFalse)
         XNoticeWidget(display,windows,"Unable to launch image editor",
           (char *) NULL);
       else
@@ -9104,7 +9104,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         filename);
       status=WriteImage(image_info,preview_image,exception);
       preview_image=DestroyImage(preview_image);
-      if (IfMagickFalse(status) )
+      if (status == MagickFalse)
         XNoticeWidget(display,windows,"Unable to show image preview",
           (*image)->filename);
       XDelay(display,1500);
@@ -9137,7 +9137,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         "show:%s",filename);
       status=WriteImage(image_info,histogram_image,exception);
       histogram_image=DestroyImage(histogram_image);
-      if (IfMagickFalse(status) )
+      if (status == MagickFalse)
         XNoticeWidget(display,windows,"Unable to show histogram",
           (*image)->filename);
       XDelay(display,1500);
@@ -9176,7 +9176,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         filename);
       status=WriteImage(image_info,matte_image,exception);
       matte_image=DestroyImage(matte_image);
-      if (IfMagickFalse(status) )
+      if (status == MagickFalse)
         XNoticeWidget(display,windows,"Unable to show matte",
           (*image)->filename);
       XDelay(display,1500);
@@ -9189,7 +9189,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         Background image.
       */
       status=XBackgroundImage(display,resource_info,windows,image,exception);
-      if (IfMagickFalse(status) )
+      if (status == MagickFalse)
         break;
       nexus=CloneImage(*image,0,0,MagickTrue,exception);
       if (nexus != (Image *) NULL)
@@ -9220,7 +9220,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         Set user preferences.
       */
       status=XPreferencesWidget(display,resource_info,windows);
-      if (IfMagickFalse(status) )
+      if (status == MagickFalse)
         break;
       nexus=CloneImage(*image,0,0,MagickTrue,exception);
       if (nexus != (Image *) NULL)
@@ -9275,7 +9275,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XCheckRefreshWindows(display,windows);
       status=InvokeDelegate(image_info,*image,"browse",(char *) NULL,
         exception);
-      if (IfMagickFalse(status) )
+      if (status == MagickFalse)
         XNoticeWidget(display,windows,"Unable to browse documentation",
           (char *) NULL);
       XDelay(display,1500);
@@ -9599,7 +9599,7 @@ static void XMakePanImage(Display *display,XResourceInfo *resource_info,
   windows->pan.y=(int) windows->image.y;
   status=XMakeImage(display,resource_info,&windows->pan,image,
     windows->pan.width,windows->pan.height,exception);
-  if (IfMagickFalse(status) )
+  if (status == MagickFalse)
     ThrowXWindowException(ResourceLimitError,
      "MemoryAllocationFailed",image->filename);
   (void) XSetWindowBackgroundPixmap(display,windows->pan.id,
@@ -10080,7 +10080,7 @@ static MagickBooleanType XMatteEditImage(Display *display,
         if ((x_offset >= (int) (*image)->columns) ||
             (y_offset >= (int) (*image)->rows))
           continue;
-        if (IfMagickFalse(SetImageStorageClass(*image,DirectClass,exception)) )
+        if (SetImageStorageClass(*image,DirectClass,exception) == MagickFalse)
           return(MagickFalse);
         if ((*image)->alpha_trait == UndefinedPixelTrait)
           (void) SetImageAlphaChannel(*image,OpaqueAlphaChannel,exception);
@@ -10125,7 +10125,7 @@ static MagickBooleanType XMatteEditImage(Display *display,
                   SetPixelAlpha(*image,(Quantum) StringToLong(matte),q);
                 q+=GetPixelChannels(*image);
               }
-              if (IfMagickFalse(SyncCacheViewAuthenticPixels(image_view,exception)) )
+              if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
                 break;
             }
             break;
@@ -10174,7 +10174,7 @@ static MagickBooleanType XMatteEditImage(Display *display,
             /*
               Update matte information using reset algorithm.
             */
-            if (IfMagickFalse(SetImageStorageClass(*image,DirectClass,exception)) )
+            if (SetImageStorageClass(*image,DirectClass,exception) == MagickFalse)
               return(MagickFalse);
             for (y=0; y < (int) (*image)->rows; y++)
             {
@@ -10187,7 +10187,7 @@ static MagickBooleanType XMatteEditImage(Display *display,
                 SetPixelAlpha(*image,(Quantum) StringToLong(matte),q);
                 q+=GetPixelChannels(*image);
               }
-              if (IfMagickFalse(SyncCacheViewAuthenticPixels(image_view,exception)) )
+              if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
                 break;
             }
             if (StringToLong(matte) == (long) OpaqueAlpha)
@@ -10258,7 +10258,7 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
   /*
     Request file name from user.
   */
-  if (IfMagickFalse(command) )
+  if ((command == MagickFalse)
     XFileBrowserWidget(display,windows,"Open",filename);
   else
     {
@@ -11488,7 +11488,7 @@ static MagickBooleanType XROIImage(Display *display,
           /*
             Display info and draw region of interest rectangle.
           */
-          if (IfMagickFalse(windows->info.mapped) )
+          if (windows->info.mapped == MagickFalse)
             (void) XMapWindow(display,windows->info.id);
           (void) FormatLocaleString(text,MagickPathExtent,
             " %.20gx%.20g%+.20g%+.20g",(double) roi_info.width,(double)
@@ -12305,7 +12305,7 @@ static MagickBooleanType XRotateImage(Display *display,
             /*
               Display info and draw rotation line.
             */
-            if (IfMagickFalse(windows->info.mapped) )
+            if (windows->info.mapped == MagickFalse)
               (void) XMapWindow(display,windows->info.id);
             (void) FormatLocaleString(text,MagickPathExtent," %g",
               direction == VerticalRotateCommand ? degrees-90.0 : degrees);
@@ -12749,7 +12749,7 @@ static void XScreenEvent(Display *display,XWindows *windows,XEvent *event,
              if (y >= (int) windows->image.height)
                y=(int) (windows->image.height-1);
             windows->magnify.y=windows->image.y+y;
-            if (IfMagickFalse(windows->magnify.mapped) )
+            if (windows->magnify.mapped == MagickFalse)
               (void) XMapRaised(display,windows->magnify.id);
             XMakeMagnifyImage(display,windows,exception);
             if (event->type == ButtonRelease)
@@ -12788,7 +12788,7 @@ static void XScreenEvent(Display *display,XWindows *windows,XEvent *event,
           */
           windows->magnify.width=(unsigned int) event->xconfigure.width;
           windows->magnify.height=(unsigned int) event->xconfigure.height;
-          if (IfMagickFalse(windows->magnify.mapped) )
+          if (windows->magnify.mapped == MagickFalse)
             break;
           magnify=1;
           while ((int) magnify <= event->xconfigure.width)
@@ -13202,7 +13202,7 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
       /*
         Delete tile image.
       */
-      if (IfMagickFalse(IsPathAccessible(filename)) )
+      if (IsPathAccessible(filename) == MagickFalse)
         {
           XNoticeWidget(display,windows,"Image file does not exist:",filename);
           break;
@@ -13271,7 +13271,7 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
             SetPixelViaPixelInfo(image,&pixel,s);
             s+=GetPixelChannels(image);
           }
-          if (IfMagickFalse(SyncCacheViewAuthenticPixels(image_view,exception)) )
+          if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
             break;
         }
         image_view=DestroyCacheView(image_view);
@@ -13642,7 +13642,7 @@ static Image *XVisualDirectoryImage(Display *display,
   number_files=1;
   filelist[0]=filenames;
   status=ExpandFilenames(&number_files,&filelist);
-  if (IfMagickFalse(status) || (number_files == 0))
+  if ((status == MagickFalse) || (number_files == 0))
     {
       if (number_files == 0)
         ThrowXWindowException(ImageError,"NoImagesWereFound",filenames)
@@ -13707,7 +13707,7 @@ static Image *XVisualDirectoryImage(Display *display,
 
             proceed=SetImageProgress(images,LoadImageTag,(MagickOffsetType) i,
               (MagickSizeType) number_files);
-            if (IfMagickFalse(proceed) )
+            if (proceed == MagickFalse)
               break;
           }
       }
@@ -13928,7 +13928,7 @@ MagickExport MagickBooleanType XDisplayBackgroundImage(Display *display,
   window_info.y=(int) geometry_info.y;
   status=XMakeImage(display,&resources,&window_info,image,window_info.width,
     window_info.height,exception);
-  if (IfMagickFalse(status) )
+  if (status == MagickFalse)
     ThrowXWindowFatalException(XServerFatalError,"UnableToCreateXImage",
       image->filename);
   window_info.x=0;
@@ -14688,7 +14688,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   XGetWindowInfo(display,visual_info,map_info,pixel,font_info,resource_info,
     &windows->image);
   windows->image.shape=MagickTrue;  /* non-rectangular shape hint */
-  if (IfMagickFalse(resource_info->use_shared_memory) )
+  if (resource_info->use_shared_memory == MagickFalse)
     windows->image.shared_memory=MagickFalse;
   if ((resource_info->title != (char *) NULL) && !(*state & MontageImageState))
     {
@@ -14936,7 +14936,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   */
   XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->magnify);
-  if (IfMagickFalse(resource_info->use_shared_memory) )
+  if (resource_info->use_shared_memory == MagickFalse)
     windows->magnify.shared_memory=MagickFalse;
   (void) FormatLocaleString(resource_name,MagickPathExtent,"%s.magnify",
     resource_info->client_name);
@@ -15005,7 +15005,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   (void) XSetTransientForHint(display,windows->pan.id,windows->image.id);
   if (windows->info.mapped != MagickFalse )
     (void) XWithdrawWindow(display,windows->info.id,windows->info.screen);
-  if (IfMagickFalse(windows->image.mapped) ||
+  if ((windows->image.mapped == MagickFalse) ||
       (windows->backdrop.id != (Window) NULL))
     (void) XMapWindow(display,windows->image.id);
   /*
@@ -15031,12 +15031,12 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       display_image->filename);
   status=XMakeImage(display,resource_info,&windows->image,display_image,
     width,height,exception);
-  if (IfMagickFalse(status) )
+  if (status == MagickFalse)
     ThrowXWindowFatalException(XServerFatalError,"UnableToCreateXImage",
       display_image->filename);
   status=XMakeImage(display,resource_info,&windows->magnify,(Image *) NULL,
     windows->magnify.width,windows->magnify.height,exception);
-  if (IfMagickFalse(status))
+  if (status == MagickFalse)
     ThrowXWindowFatalException(XServerFatalError,"UnableToCreateXImage",
       display_image->filename);
   if (windows->magnify.mapped != MagickFalse )
@@ -15079,7 +15079,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
         {
           if (timer < time((time_t *) NULL))
             {
-              if (IfMagickFalse(resource_info->update) )
+              if (resource_info->update == MagickFalse)
                 *state|=NextImageState | ExitState;
               else
                 {
@@ -15545,7 +15545,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                   Position the transient windows relative of the Image window.
                 */
                 if (windows->command.geometry == (char *) NULL)
-                  if (IfMagickFalse(windows->command.mapped) )
+                  if (windows->command.mapped == MagickFalse)
                     {
                       windows->command.x=event.xconfigure.x-
                         windows->command.width-25;
@@ -15558,7 +15558,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                         &window_changes);
                     }
                 if (windows->widget.geometry == (char *) NULL)
-                  if (IfMagickFalse(windows->widget.mapped) )
+                  if (windows->widget.mapped == MagickFalse)
                     {
                       windows->widget.x=event.xconfigure.x+
                         event.xconfigure.width/10;
@@ -15572,7 +15572,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                         &window_changes);
                     }
                 if (windows->magnify.geometry == (char *) NULL)
-                  if (IfMagickFalse(windows->magnify.mapped) )
+                  if (windows->magnify.mapped == MagickFalse)
                     {
                       windows->magnify.x=event.xconfigure.x+
                         event.xconfigure.width+25;
@@ -15585,7 +15585,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                         &window_changes);
                     }
                 if (windows->pan.geometry == (char *) NULL)
-                  if (IfMagickFalse(windows->pan.mapped) )
+                  if (windows->pan.mapped == MagickFalse)
                     {
                       windows->pan.x=event.xconfigure.x+
                         event.xconfigure.width+25;
@@ -15647,7 +15647,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
             */
             windows->magnify.width=(unsigned int) event.xconfigure.width;
             windows->magnify.height=(unsigned int) event.xconfigure.height;
-            if (IfMagickFalse(windows->magnify.mapped) )
+            if (windows->magnify.mapped == MagickFalse)
               break;
             magnify=1;
             while ((int) magnify <= event.xconfigure.width)
@@ -16057,7 +16057,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
         /*
           Query user if image has changed.
         */
-        if (IfMagickFalse(resource_info->immutable) &&
+        if ((resource_info->immutable == MagickFalse) &&
             display_image->taint != MagickFalse)
           {
             int
@@ -16091,7 +16091,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     }
   if (windows->pan.mapped != MagickFalse )
     (void) XWithdrawWindow(display,windows->pan.id,windows->pan.screen);
-  if (IfMagickFalse(resource_info->backdrop) )
+  if (resource_info->backdrop == MagickFalse)
     if (windows->backdrop.mapped)
       {
         (void) XWithdrawWindow(display,windows->backdrop.id,

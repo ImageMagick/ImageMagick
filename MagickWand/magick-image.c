@@ -5577,7 +5577,7 @@ WandExport char *MagickGetImageSignature(MagickWand *wand)
       return((char *) NULL);
     }
   status=SignatureImage(wand->images,wand->exception);
-  if (IfMagickFalse(status))
+  if (status == MagickFalse)
     return((char *) NULL);
   value=GetImageProperty(wand->images,"signature",wand->exception);
   if (value == (const char *) NULL)
@@ -11629,7 +11629,7 @@ WandExport MagickWand *MagickTextureImage(MagickWand *wand,
   if (texture_image == (Image *) NULL)
     return((MagickWand *) NULL);
   status=TextureImage(texture_image,texture_wand->images,wand->exception);
-  if (IfMagickFalse(status))
+  if (status == MagickFalse)
     {
       texture_image=DestroyImage(texture_image);
       return((MagickWand *) NULL);
@@ -11864,7 +11864,7 @@ WandExport MagickWand *MagickTransformImage(MagickWand *wand,
   if (transform_image == (Image *) NULL)
     return((MagickWand *) NULL);
   status=TransformImage(&transform_image,crop,geometry,wand->exception);
-  if (IfMagickFalse(status))
+  if (status == MagickFalse)
     {
       transform_image=DestroyImage(transform_image);
       return((MagickWand *) NULL);

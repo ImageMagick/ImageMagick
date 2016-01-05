@@ -500,7 +500,7 @@ MagickExport void *GetNextKeyInHashmap(HashmapInfo *hashmap_info)
     list_info=hashmap_info->map[hashmap_info->next];
     if (list_info != (LinkedListInfo *) NULL)
       {
-        if (IfMagickFalse(hashmap_info->head_of_list))
+        if (hashmap_info->head_of_list == MagickFalse)
           {
             list_info->next=list_info->head;
             hashmap_info->head_of_list=MagickTrue;
@@ -561,7 +561,7 @@ MagickExport void *GetNextValueInHashmap(HashmapInfo *hashmap_info)
     list_info=hashmap_info->map[hashmap_info->next];
     if (list_info != (LinkedListInfo *) NULL)
       {
-        if (IfMagickFalse(hashmap_info->head_of_list))
+        if (hashmap_info->head_of_list == MagickFalse)
           {
             list_info->next=list_info->head;
             hashmap_info->head_of_list=MagickTrue;
@@ -1551,14 +1551,14 @@ MagickExport MagickBooleanType PutEntryInHashmap(HashmapInfo *hashmap_info,
         entry=(EntryInfo *) GetNextValueInLinkedList(list_info);
       }
     }
-  if (IfMagickFalse(InsertValueInLinkedList(list_info,0,next)))
+  if (InsertValueInLinkedList(list_info,0,next) == MagickFalse)
     {
       next=(EntryInfo *) RelinquishMagickMemory(next);
       UnlockSemaphoreInfo(hashmap_info->semaphore);
       return(MagickFalse);
     }
   if (list_info->elements >= (hashmap_info->capacity-1))
-    if (IfMagickFalse(IncreaseHashmapCapacity(hashmap_info)))
+    if (IncreaseHashmapCapacity(hashmap_info) == MagickFalse)
       {
         UnlockSemaphoreInfo(hashmap_info->semaphore);
         return(MagickFalse);

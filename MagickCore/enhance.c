@@ -324,10 +324,10 @@ MagickExport MagickBooleanType ClutImage(Image *image,const Image *clut_image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(clut_image != (Image *) NULL);
   assert(clut_image->signature == MagickCoreSignature);
-  if( IfMagickFalse(SetImageStorageClass(image,DirectClass,exception)) )
+  if( SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
-  if( IsGrayColorspace(image->colorspace) != MagickFalse &&
-      IfMagickFalse(IsGrayColorspace(clut_image->colorspace)))
+  if( (IsGrayColorspace(image->colorspace) != MagickFalse) &&
+      (IsGrayColorspace(clut_image->colorspace) == MagickFalse))
     (void) SetImageColorspace(image,sRGBColorspace,exception);
   clut_map=(PixelInfo *) AcquireQuantumMemory(MaxMap+1UL,sizeof(*clut_map));
   if (clut_map == (PixelInfo *) NULL)
@@ -407,7 +407,7 @@ MagickExport MagickBooleanType ClutImage(Image *image,const Image *clut_image,
       SetPixelViaPixelInfo(image,&pixel,q);
       q+=GetPixelChannels(image);
     }
-    if( IfMagickFalse(SyncCacheViewAuthenticPixels(image_view,exception)) )
+    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
       {
@@ -418,7 +418,7 @@ MagickExport MagickBooleanType ClutImage(Image *image,const Image *clut_image,
         #pragma omp critical (MagickCore_ClutImage)
 #endif
         proceed=SetImageProgress(image,ClutImageTag,progress++,image->rows);
-        if( IfMagickFalse(proceed) )
+        if (proceed == MagickFalse)
           status=MagickFalse;
       }
   }
@@ -783,7 +783,7 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
         (cdl_map[ScaleQuantumToMap(GetPixelBlue(image,q))].blue-luma)),q);
       q+=GetPixelChannels(image);
     }
-    if( IfMagickFalse(SyncCacheViewAuthenticPixels(image_view,exception)) )
+    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
       {
@@ -795,7 +795,7 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
 #endif
         proceed=SetImageProgress(image,ColorDecisionListCorrectImageTag,
           progress++,image->rows);
-        if( IfMagickFalse(proceed) )
+        if (proceed == MagickFalse)
           status=MagickFalse;
       }
   }
@@ -952,7 +952,7 @@ MagickExport MagickBooleanType ContrastImage(Image *image,
       SetPixelBlue(image,ClampToQuantum(blue),q);
       q+=GetPixelChannels(image);
     }
-    if( IfMagickFalse(SyncCacheViewAuthenticPixels(image_view,exception)) )
+    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
       {
@@ -963,7 +963,7 @@ MagickExport MagickBooleanType ContrastImage(Image *image,
         #pragma omp critical (MagickCore_ContrastImage)
 #endif
         proceed=SetImageProgress(image,ContrastImageTag,progress++,image->rows);
-        if( IfMagickFalse(proceed) )
+        if (proceed == MagickFalse)
           status=MagickFalse;
       }
   }
@@ -1702,7 +1702,7 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
       }
       q+=GetPixelChannels(image);
     }
-    if( IfMagickFalse(SyncCacheViewAuthenticPixels(image_view,exception)) )
+    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
       {
@@ -1713,7 +1713,7 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
         #pragma omp critical (MagickCore_EqualizeImage)
 #endif
         proceed=SetImageProgress(image,EqualizeImageTag,progress++,image->rows);
-        if( IfMagickFalse(proceed) )
+        if (proceed == MagickFalse)
           status=MagickFalse;
       }
   }
@@ -1887,7 +1887,7 @@ MagickExport MagickBooleanType GammaImage(Image *image,const double gamma,
       }
       q+=GetPixelChannels(image);
     }
-    if( IfMagickFalse(SyncCacheViewAuthenticPixels(image_view,exception)) )
+    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
       {
@@ -1899,7 +1899,7 @@ MagickExport MagickBooleanType GammaImage(Image *image,const double gamma,
 #endif
         proceed=SetImageProgress(image,GammaCorrectImageTag,progress++,
           image->rows);
-        if( IfMagickFalse(proceed) )
+        if (proceed == MagickFalse)
           status=MagickFalse;
       }
   }
@@ -1960,9 +1960,9 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->storage_class == PseudoClass)
     {
-      if( IfMagickFalse(SyncImage(image,exception)) )
+      if (SyncImage(image,exception) == MagickFalse)
         return(MagickFalse);
-      if( IfMagickFalse(SetImageStorageClass(image,DirectClass,exception)) )
+      if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
         return(MagickFalse);
     }
   /*
@@ -2087,7 +2087,7 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
       SetPixelGray(image,ClampToQuantum(intensity),q);
       q+=GetPixelChannels(image);
     }
-    if (IfMagickFalse(SyncCacheViewAuthenticPixels(image_view,exception)))
+    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
       {
@@ -2099,7 +2099,7 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
 #endif
         proceed=SetImageProgress(image,GrayscaleImageTag,progress++,
            image->rows);
-        if( IfMagickFalse(proceed) )
+        if (proceed == MagickFalse)
           status=MagickFalse;
       }
   }
@@ -2183,7 +2183,7 @@ MagickExport MagickBooleanType HaldClutImage(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(hald_image != (Image *) NULL);
   assert(hald_image->signature == MagickCoreSignature);
-  if( IfMagickFalse(SetImageStorageClass(image,DirectClass,exception)) )
+  if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   if (image->alpha_trait == UndefinedPixelTrait)
     (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
@@ -2277,7 +2277,7 @@ MagickExport MagickBooleanType HaldClutImage(Image *image,
         SetPixelAlpha(image,ClampToQuantum(pixel.alpha),q);
       q+=GetPixelChannels(image);
     }
-    if( IfMagickFalse(SyncCacheViewAuthenticPixels(image_view,exception)) )
+    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
       {
@@ -2288,7 +2288,7 @@ MagickExport MagickBooleanType HaldClutImage(Image *image,
         #pragma omp critical (MagickCore_HaldClutImage)
 #endif
         proceed=SetImageProgress(image,HaldClutImageTag,progress++,image->rows);
-        if( IfMagickFalse(proceed) )
+        if (proceed == MagickFalse)
           status=MagickFalse;
       }
   }
@@ -2447,7 +2447,7 @@ MagickExport MagickBooleanType LevelImage(Image *image,const double black_point,
       }
       q+=GetPixelChannels(image);
     }
-    if( IfMagickFalse(SyncCacheViewAuthenticPixels(image_view,exception)) )
+    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
       {
@@ -2458,7 +2458,7 @@ MagickExport MagickBooleanType LevelImage(Image *image,const double black_point,
         #pragma omp critical (MagickCore_LevelImage)
 #endif
         proceed=SetImageProgress(image,LevelImageTag,progress++,image->rows);
-        if( IfMagickFalse(proceed) )
+        if (proceed == MagickFalse)
           status=MagickFalse;
       }
   }
@@ -2602,7 +2602,7 @@ MagickExport MagickBooleanType LevelizeImage(Image *image,
       }
       q+=GetPixelChannels(image);
     }
-    if( IfMagickFalse(SyncCacheViewAuthenticPixels(image_view,exception)) )
+    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
       {
@@ -2613,7 +2613,7 @@ MagickExport MagickBooleanType LevelizeImage(Image *image,
         #pragma omp critical (MagickCore_LevelizeImage)
 #endif
         proceed=SetImageProgress(image,LevelizeImageTag,progress++,image->rows);
-        if( IfMagickFalse(proceed) )
+        if (proceed == MagickFalse)
           status=MagickFalse;
       }
   }
@@ -2679,12 +2679,12 @@ MagickExport MagickBooleanType LevelImageColors(Image *image,
   assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if (IsGrayColorspace(image->colorspace) != MagickFalse &&
-      (IfMagickFalse(IsGrayColorspace(black_color->colorspace)) ||
-       IfMagickFalse(IsGrayColorspace(white_color->colorspace))))
+  if ((IsGrayColorspace(image->colorspace) != MagickFalse) &&
+      ((IsGrayColorspace(black_color->colorspace) == MagickFalse) ||
+       (IsGrayColorspace(white_color->colorspace) == MagickFalse)))
     (void) SetImageColorspace(image,sRGBColorspace,exception);
   status=MagickTrue;
-  if( IfMagickFalse(invert) )
+  if (invert == MagickFalse)
     {
       if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
         {
@@ -3160,7 +3160,7 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (modulate == (char *) NULL)
     return(MagickFalse);
-  if( IfMagickFalse(IssRGBCompatibleColorspace(image->colorspace)) )
+  if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
     (void) SetImageColorspace(image,sRGBColorspace,exception);
   flags=ParseGeometry(modulate,&geometry_info);
   percent_brightness=geometry_info.rho;
@@ -3346,7 +3346,7 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate,
       SetPixelBlue(image,ClampToQuantum(blue),q);
       q+=GetPixelChannels(image);
     }
-    if( IfMagickFalse(SyncCacheViewAuthenticPixels(image_view,exception)) )
+    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
       {
@@ -3357,7 +3357,7 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate,
         #pragma omp critical (MagickCore_ModulateImage)
 #endif
         proceed=SetImageProgress(image,ModulateImageTag,progress++,image->rows);
-        if( IfMagickFalse(proceed) )
+        if (proceed == MagickFalse)
           status=MagickFalse;
       }
   }
@@ -3484,7 +3484,7 @@ MagickExport MagickBooleanType NegateImage(Image *image,
           q+=GetPixelChannels(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
-        if( IfMagickFalse(sync) )
+        if (sync == MagickFalse)
           status=MagickFalse;
         if (image->progress_monitor != (MagickProgressMonitor) NULL)
           {
@@ -3496,7 +3496,7 @@ MagickExport MagickBooleanType NegateImage(Image *image,
 #endif
             proceed=SetImageProgress(image,NegateImageTag,progress++,
               image->rows);
-            if( IfMagickFalse(proceed) )
+            if (proceed == MagickFalse)
               status=MagickFalse;
           }
       }
@@ -3546,7 +3546,7 @@ MagickExport MagickBooleanType NegateImage(Image *image,
       }
       q+=GetPixelChannels(image);
     }
-    if( IfMagickFalse(SyncCacheViewAuthenticPixels(image_view,exception)) )
+    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
       {
@@ -3557,7 +3557,7 @@ MagickExport MagickBooleanType NegateImage(Image *image,
         #pragma omp critical (MagickCore_NegateImage)
 #endif
         proceed=SetImageProgress(image,NegateImageTag,progress++,image->rows);
-        if( IfMagickFalse(proceed) )
+        if (proceed == MagickFalse)
           status=MagickFalse;
       }
   }
@@ -3853,7 +3853,7 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
       }
       q+=GetPixelChannels(image);
     }
-    if( IfMagickFalse(SyncCacheViewAuthenticPixels(image_view,exception)) )
+    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
       {
@@ -3865,7 +3865,7 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
 #endif
         proceed=SetImageProgress(image,SigmoidalContrastImageTag,progress++,
           image->rows);
-        if( IfMagickFalse(proceed) )
+        if (proceed == MagickFalse)
           status=MagickFalse;
       }
   }

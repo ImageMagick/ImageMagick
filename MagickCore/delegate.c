@@ -644,7 +644,7 @@ MagickExport const DelegateInfo *GetDelegateInfo(const char *decode,
     *p;
 
   assert(exception != (ExceptionInfo *) NULL);
-  if (IfMagickFalse(IsDelegateCacheInstantiated(exception)))
+  if (IsDelegateCacheInstantiated(exception) == MagickFalse)
     return((const DelegateInfo *) NULL);
   /*
     Search for named delegate.
@@ -788,7 +788,7 @@ MagickExport const DelegateInfo **GetDelegateInfoList(const char *pattern,
   p=(const DelegateInfo *) GetNextValueInLinkedList(delegate_cache);
   for (i=0; p != (const DelegateInfo *) NULL; )
   {
-    if( IfMagickFalse(p->stealth) &&
+    if( (p->stealth == MagickFalse) &&
         ( GlobExpression(p->decode,pattern,MagickFalse) != MagickFalse ||
           GlobExpression(p->encode,pattern,MagickFalse) != MagickFalse) )
       delegates[i++]=p;
@@ -882,10 +882,10 @@ MagickExport char **GetDelegateList(const char *pattern,
   p=(const DelegateInfo *) GetNextValueInLinkedList(delegate_cache);
   for (i=0; p != (const DelegateInfo *) NULL; )
   {
-    if( IfMagickFalse(p->stealth) &&
+    if( (p->stealth == MagickFalse) &&
         GlobExpression(p->decode,pattern,MagickFalse) != MagickFalse )
       delegates[i++]=ConstantString(p->decode);
-    if( IfMagickFalse(p->stealth) &&
+    if( (p->stealth == MagickFalse) &&
         GlobExpression(p->encode,pattern,MagickFalse) != MagickFalse )
       delegates[i++]=ConstantString(p->encode);
     p=(const DelegateInfo *) GetNextValueInLinkedList(delegate_cache);
@@ -1603,7 +1603,7 @@ static MagickBooleanType LoadDelegateCache(LinkedListInfo *delegate_cache,
     if (LocaleCompare(keyword,"/>") == 0)
       {
         status=AppendValueToLinkedList(delegate_cache,delegate_info);
-        if( IfMagickFalse(status) )
+        if (status == MagickFalse)
           (void) ThrowMagickException(exception,GetMagickModule(),
             ResourceLimitError,"MemoryAllocationFailed","`%s'",
             delegate_info->commands);
