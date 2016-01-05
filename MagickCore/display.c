@@ -13248,7 +13248,7 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
           q++;
         (void) CopyMagickString(filename,p,(size_t) (q-p+1));
         p=q;
-        if (IsPathAccessible(filename != MagickFalse) )
+        if (IsPathAccessible(filename) != MagickFalse )
           {
             tile++;
             continue;
@@ -14513,7 +14513,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
 
   assert(image != (Image **) NULL);
   assert((*image)->signature == MagickCoreSignature);
-  if ((*image != MagickFalse->debug) )
+  if ((*image)->debug != MagickFalse )
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",(*image)->filename);
   display_image=(*image);
   warning_handler=(WarningHandler) NULL;
