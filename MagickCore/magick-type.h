@@ -155,7 +155,6 @@ typedef enum
      Is  -- returns a MagickBooleanType (for storage)
      If  -- returns C integer boolean (for if's and while's)
 
-   IfMagickTrue()     converts MagickBooleanType to C integer Boolean
    IfMagickFalse()    Not the MagickBooleanType to C integer Boolean
 */
 #if 1

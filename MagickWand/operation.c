@@ -432,7 +432,7 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
   assert(cli_wand->signature == MagickWandSignature);
   assert(cli_wand->wand.signature == MagickWandSignature);
 
-  if (IfMagickTrue(cli_wand->wand.debug))
+  if (cli_wand->wand.debug != MagickFalse)
     (void) CLILogEvent(cli_wand,CommandEvent,GetMagickModule(),
          "- Setting Option: %s \"%s\" \"%s\"", option,arg1n,arg2n);
 
@@ -1697,7 +1697,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
   assert(cli_wand->signature == MagickWandSignature);
   assert(cli_wand->wand.signature == MagickWandSignature);
   assert(_image != (Image *) NULL);             /* an image must be present */
-  if (IfMagickTrue(cli_wand->wand.debug))
+  if (cli_wand->wand.debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",cli_wand->wand.name);
 
   arg1 = arg1n,
@@ -3600,7 +3600,7 @@ WandPrivate MagickBooleanType CLISimpleOperatorImages(MagickCLI *cli_wand,
   assert(cli_wand->wand.signature == MagickWandSignature);
   assert(cli_wand->wand.images != (Image *) NULL); /* images must be present */
 
-  if (IfMagickTrue(cli_wand->wand.debug))
+  if (cli_wand->wand.debug != MagickFalse)
     (void) CLILogEvent(cli_wand,CommandEvent,GetMagickModule(),
          "- Simple Operator: %s \"%s\" \"%s\"", option,arg1,arg2);
 
@@ -3620,7 +3620,7 @@ WandPrivate MagickBooleanType CLISimpleOperatorImages(MagickCLI *cli_wand,
   cli_wand->wand.images=GetFirstImageInList(cli_wand->wand.images);
 #else
   MagickResetIterator(&cli_wand->wand);
-  while ( IfMagickTrue(MagickNextImage(&cli_wand->wand)) )
+  while (MagickNextImage(&cli_wand->wand) != MagickFalse)
     (void) CLISimpleOperatorImage(cli_wand, option, arg1, arg2,exception);
   MagickResetIterator(&cli_wand->wand);
 #endif
@@ -3690,7 +3690,7 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
   assert(cli_wand->wand.signature == MagickWandSignature);
   assert(_images != (Image *) NULL);             /* _images must be present */
 
-  if (IfMagickTrue(cli_wand->wand.debug))
+  if (cli_wand->wand.debug != MagickFalse)
     (void) CLILogEvent(cli_wand,CommandEvent,GetMagickModule(),
        "- List Operator: %s \"%s\" \"%s\"", option,
        arg1n == (const char *) NULL ? "null" : arg1n,
@@ -4579,7 +4579,7 @@ WandPrivate void CLINoImageOperator(MagickCLI *cli_wand,
   assert(cli_wand->signature == MagickWandSignature);
   assert(cli_wand->wand.signature == MagickWandSignature);
 
-  if (IfMagickTrue(cli_wand->wand.debug))
+  if (cli_wand->wand.debug != MagickFalse)
     (void) CLILogEvent(cli_wand,CommandEvent,GetMagickModule(),
       "- NoImage Operator: %s \"%s\" \"%s\"", option,
       arg1n != (char *) NULL ? arg1n : "",
@@ -4666,7 +4666,7 @@ WandPrivate void CLINoImageOperator(MagickCLI *cli_wand,
       for (i=0; i < (ssize_t) argc; i++) {
         Image *
           new_images;
-        if (IfMagickTrue(_image_info->ping))
+        if (_image_info->ping != MagickFalse)
           new_images=PingImages(_image_info,argv[i],_exception);
         else
           new_images=ReadImages(_image_info,argv[i],_exception);
@@ -4736,8 +4736,8 @@ WandPrivate void CLINoImageOperator(MagickCLI *cli_wand,
       cli_wand->wand.images = NewImageList();
 
       /* handle respect-parenthesis */
-      if (IfMagickTrue(IsStringTrue(GetImageOption(cli_wand->wand.image_info,
-                    "respect-parenthesis"))))
+      if (IsStringTrue(GetImageOption(cli_wand->wand.image_info,
+                    "respect-parenthesis")) != MagickFalse)
         option="{"; /* fall-thru so as to push image settings too */
       else
         break;
@@ -4795,8 +4795,8 @@ WandPrivate void CLINoImageOperator(MagickCLI *cli_wand,
       node = cli_wand->image_info_stack;
       if ( node != (Stack *) NULL)
         {
-          if (IfMagickTrue(IsStringTrue(GetImageOption(
-                cli_wand->wand.image_info,"respect-parenthesis"))))
+          if (IsStringTrue(GetImageOption(
+                cli_wand->wand.image_info,"respect-parenthesis")) != MagickFalse)
             option="}"; /* fall-thru so as to pop image settings too */
           else
             break;
@@ -4869,7 +4869,7 @@ WandPrivate void CLINoImageOperator(MagickCLI *cli_wand,
             if (_images != (Image *) NULL)
               {
                 MagickResetIterator(&cli_wand->wand);
-                while ( IfMagickTrue(MagickNextImage(&cli_wand->wand)) )
+                while (MagickNextImage(&cli_wand->wand) != MagickFalse)
                   (void) DeleteImageArtifact(_images,arg1+7);
                 MagickResetIterator(&cli_wand->wand);
               }
@@ -4893,7 +4893,7 @@ WandPrivate void CLINoImageOperator(MagickCLI *cli_wand,
           CLIWandExceptArgBreak(OptionWarning,"NoImageForProperty",option,arg1);
 
         MagickResetIterator(&cli_wand->wand);
-        while ( IfMagickTrue(MagickNextImage(&cli_wand->wand)) )
+        while (MagickNextImage(&cli_wand->wand) != MagickFalse)
           {
             arg2=(char *) NULL;
             if (IfNormalOp)

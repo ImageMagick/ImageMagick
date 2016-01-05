@@ -160,7 +160,7 @@ WandExport MagickCLI *DestroyMagickCLI(MagickCLI *cli_wand)
   assert(cli_wand != (MagickCLI *) NULL);
   assert(cli_wand->signature == MagickWandSignature);
   assert(cli_wand->wand.signature == MagickWandSignature);
-  if (IfMagickTrue(cli_wand->wand.debug))
+  if (cli_wand->wand.debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",cli_wand->wand.name);
 
   /* Destroy CLI part of MagickCLI */

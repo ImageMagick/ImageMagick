@@ -128,7 +128,7 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,const char *filename,
   assert(filename != (char *) NULL ); /* at least one argument - script name */
   assert(cli_wand != (MagickCLI *) NULL);
   assert(cli_wand->signature == MagickWandSignature);
-  if (IfMagickTrue(cli_wand->wand.debug))
+  if (cli_wand->wand.debug != MagickFalse)
     (void) LogMagickEvent(CommandEvent,GetMagickModule(),
          "Processing script \"%s\"", filename);
 
@@ -256,7 +256,7 @@ RestoreMSCWarning
     fprintf(stderr, "Script Image Count = %ld\n",
          GetImageListLength(cli_wand->wand.images) );
 #endif
-    if ( IfMagickTrue(CLICatchException(cli_wand, MagickFalse)) )
+    if (CLICatchException(cli_wand, MagickFalse) != MagickFalse)
       break;  /* exit loop */
   }
 
@@ -295,7 +295,7 @@ loop_exit:
   }
   (void) fflush(stdout);
   (void) fflush(stderr);
-  if (IfMagickTrue(cli_wand->wand.debug))
+  if (cli_wand->wand.debug != MagickFalse)
     (void) LogMagickEvent(CommandEvent,GetMagickModule(),
          "Script End \"%s\"", filename);
 
@@ -381,7 +381,7 @@ WandExport int ProcessCommandOptions(MagickCLI *cli_wand,int argc,char **argv,
   cli_wand->filename="CLI";
   cli_wand->line=index;  /* note first argument we will process */
 
-  if (IfMagickTrue(cli_wand->wand.debug))
+  if (cli_wand->wand.debug != MagickFalse)
     (void) CLILogEvent(cli_wand,CommandEvent,GetMagickModule(),
          "- Starting (\"%s\")", argv[index]);
 
@@ -695,7 +695,7 @@ WandExport MagickBooleanType MagickImageCommand(ImageInfo *image_info,int argc,
   cli_wand->filename=argv[0];
   cli_wand->line=1;
 
-  if (IfMagickTrue(cli_wand->wand.debug))
+  if (cli_wand->wand.debug != MagickFalse)
     (void) CLILogEvent(cli_wand,CommandEvent,GetMagickModule(),
          "\"%s\"",argv[0]);
 
@@ -731,14 +731,14 @@ WandExport MagickBooleanType MagickImageCommand(ImageInfo *image_info,int argc,
     }
     if ((LocaleCompare("-help",argv[1]) == 0)   || /* GNU standard option */
         (LocaleCompare("--help",argv[1]) == 0) ) { /* just a brief summary */
-      if (IfMagickTrue(cli_wand->wand.debug))
+      if (cli_wand->wand.debug != MagickFalse)
         (void) CLILogEvent(cli_wand,CommandEvent,GetMagickModule(),
             "- Special Option \"%s\"", argv[1]);
       MagickUsage(MagickFalse);
       goto Magick_Command_Exit;
     }
     if (LocaleCompare("-usage",argv[1]) == 0) {   /* both version & usage */
-      if (IfMagickTrue(cli_wand->wand.debug))
+      if (cli_wand->wand.debug != MagickFalse)
         (void) CLILogEvent(cli_wand,CommandEvent,GetMagickModule(),
             "- Special Option \"%s\"", argv[1]);
       CLIOption(cli_wand, "-version" );
@@ -757,7 +757,7 @@ WandExport MagickBooleanType MagickImageCommand(ImageInfo *image_info,int argc,
 
   /* Special "concatenate option (hidden) for delegate usage */
   if (LocaleCompare("-concatenate",argv[1]) == 0) {
-    if (IfMagickTrue(cli_wand->wand.debug))
+    if (cli_wand->wand.debug != MagickFalse)
         (void) CLILogEvent(cli_wand,CommandEvent,GetMagickModule(),
             "- Special Option \"%s\"", argv[1]);
     ConcatenateImages(argc,argv,exception);
@@ -790,7 +790,7 @@ WandExport MagickBooleanType MagickImageCommand(ImageInfo *image_info,int argc,
 Magick_Command_Cleanup:
   cli_wand->location="Cleanup";
   cli_wand->filename=argv[0];
-  if (IfMagickTrue(cli_wand->wand.debug))
+  if (cli_wand->wand.debug != MagickFalse)
     (void) CLILogEvent(cli_wand,CommandEvent,GetMagickModule(),
          "\"%s\"",argv[0]);
 
@@ -829,7 +829,7 @@ Magick_Command_Cleanup:
 Magick_Command_Exit:
   cli_wand->location="Exiting";
   cli_wand->filename=argv[0];
-  if (IfMagickTrue(cli_wand->wand.debug))
+  if (cli_wand->wand.debug != MagickFalse)
     (void) CLILogEvent(cli_wand,CommandEvent,GetMagickModule(),
          "\"%s\"",argv[0]);
 
