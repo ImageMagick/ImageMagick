@@ -1334,6 +1334,12 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   ft_status=FT_Set_Char_Size(face,(FT_F26Dot6) (64.0*draw_info->pointsize),
     (FT_F26Dot6) (64.0*draw_info->pointsize),(FT_UInt) resolution.x,
     (FT_UInt) resolution.y);
+  if (ft_status != 0)
+    {
+      (void) FT_Done_Face(face);
+      (void) FT_Done_FreeType(library);
+      ThrowBinaryException(TypeError,"UnableToReadFont",draw_info->font);
+    }
   metrics->pixels_per_em.x=face->size->metrics.x_ppem;
   metrics->pixels_per_em.y=face->size->metrics.y_ppem;
   metrics->ascent=(double) face->size->metrics.ascender/64.0;
