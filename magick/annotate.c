@@ -1142,6 +1142,9 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   DrawInfo
     *annotate_info;
 
+  ExceptionInfo
+    *exception;
+
   FT_BBox
     bounds;
 
@@ -1233,10 +1236,11 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   face=(FT_Face) NULL;
   ft_status=FT_Open_Face(library,&args,(long) draw_info->face,&face);
   args.pathname=DestroyString(args.pathname);
+  exception=(&image->exception);
   if (ft_status != 0)
     {
       (void) FT_Done_FreeType(library);
-      (void) ThrowMagickException(&image->exception,GetMagickModule(),TypeError,
+      (void) ThrowMagickException(exception,GetMagickModule(),TypeError,
         "UnableToReadFont","`%s'",draw_info->font);
       return(RenderPostscript(image,draw_info,offset,metrics));
     }
@@ -1309,6 +1313,12 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   ft_status=FT_Set_Char_Size(face,(FT_F26Dot6) (64.0*draw_info->pointsize),
     (FT_F26Dot6) (64.0*draw_info->pointsize),(FT_UInt) resolution.x,
     (FT_UInt) resolution.y);
+  if (ft_status != 0)
+    {
+      (void) FT_Done_Face(face);
+      (void) FT_Done_FreeType(library);
+      ThrowBinaryException(TypeError,"UnableToReadFont",draw_info->font);
+    }
   metrics->pixels_per_em.x=face->size->metrics.x_ppem;
   metrics->pixels_per_em.y=face->size->metrics.y_ppem;
   metrics->ascent=(double) face->size->metrics.ascender/64.0;
@@ -1467,16 +1477,12 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
         CacheView
           *image_view;
 
-        ExceptionInfo
-          *exception;
-
         register unsigned char
           *p;
 
         /*
           Rasterize the glyph.
         */
-        exception=(&image->exception);
         p=bitmap->bitmap.buffer;
         image_view=AcquireAuthenticCacheView(image,exception);
         for (y=0; y < (ssize_t) bitmap->bitmap.rows; y++)

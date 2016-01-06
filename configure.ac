@@ -45,7 +45,7 @@ AC_CONFIG_HEADERS([config/config.h])
 AX_PREFIX_CONFIG_H([magick/magick-baseconfig.h],[MagickCore])
 AC_CANONICAL_SYSTEM
 AC_CANONICAL_TARGET
-AM_INIT_AUTOMAKE([1.12 nostdinc color-tests foreign parallel-tests silent-rules subdir-objects dist-bzip2 dist-lzip dist-xz dist-zip])
+AM_INIT_AUTOMAKE([1.12 nostdinc color-tests foreign parallel-tests silent-rules subdir-objects dist-bzip2 dist-lzip dist-xz dist-zip tar-ustar])
 m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
 
 #
