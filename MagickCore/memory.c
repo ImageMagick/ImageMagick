@@ -620,7 +620,7 @@ MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
           file=AcquireUniqueFileResource(memory_info->filename);
           if (file != -1)
             {
-              if ((lseek(file,length-1,SEEK_SET) == length-1) &&
+              if ((lseek(file,length-1,SEEK_SET) == (length-1)) &&
                   (write(file,"",1) == 1))
                 {
                   memory_info->blob=MapBlob(file,IOMode,0,length);
