@@ -3169,19 +3169,6 @@ MagickPrivate const Quantum *GetVirtualPixelsNexus(const Cache cache,
 %
 */
 
-static inline void AllocatePixelCachePixels(CacheInfo *cache_info)
-{
-  cache_info->mapped=MagickFalse;
-  cache_info->pixels=(Quantum *) MagickAssumeAligned(AcquireAlignedMemory(1,
-    (size_t) cache_info->length));
-  if (cache_info->pixels == (Quantum *) NULL)
-    {
-      cache_info->mapped=MagickTrue;
-      cache_info->pixels=(Quantum *) MapBlob(-1,IOMode,0,(size_t)
-        cache_info->length);
-    }
-}
-
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
@@ -3411,7 +3398,9 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
       if (((cache_info->type == UndefinedCache) && (status != MagickFalse)) ||
           (cache_info->type == MemoryCache))
         {
-          AllocatePixelCachePixels(cache_info);
+          cache_info->mapped=MagickFalse;
+          cache_info->pixels=(Quantum *) MagickAssumeAligned(
+            AcquireAlignedMemory(1,(size_t) cache_info->length));
           if (cache_info->pixels == (Quantum *) NULL)
             cache_info->pixels=source_info.pixels;
           else
@@ -3603,8 +3592,8 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
     }
   if (image->debug != MagickFalse)
     {
-      (void) FormatMagickSize(cache_info->length,MagickFalse,"B",MagickPathExtent,
-        format);
+      (void) FormatMagickSize(cache_info->length,MagickFalse,"B",
+        MagickPathExtent,format);
       type=CommandOptionToMnemonic(MagickCacheOptions,(ssize_t)
         cache_info->type);
       (void) FormatLocaleString(message,MagickPathExtent,
