@@ -591,57 +591,58 @@ MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
     {
       memory_info->blob=AcquireAlignedMemory(1,length);
       if (memory_info->blob != NULL)
-        memory_info->type=AlignedVirtualMemory;
-      else
-        RelinquishMagickResource(MemoryResource,length);
+        {
+          memory_info->type=AlignedVirtualMemory;
+          return(memory_info);
+        }
     }
-  if ((memory_info->blob == NULL) &&
-      (AcquireMagickResource(MapResource,length) != MagickFalse))
+  RelinquishMagickResource(MemoryResource,length);
+  if (AcquireMagickResource(MapResource,length) != MagickFalse)
     {
       /*
         Heap memory failed, try anonymous memory mapping.
       */
       memory_info->blob=MapBlob(-1,IOMode,0,length);
       if (memory_info->blob != NULL)
-        memory_info->type=MapVirtualMemory;
-      else
-        RelinquishMagickResource(MapResource,length);
-    }
-  if ((memory_info->blob == NULL) &&
-      (AcquireMagickResource(DiskResource,length) != MagickFalse))
-    {
-      int
-        file;
-
-      /*
-        Anonymous memory mapping failed, try file-backed memory mapping.
-      */
-      file=AcquireUniqueFileResource(memory_info->filename);
-      if (file == -1)
-        RelinquishMagickResource(DiskResource,length);
-      else
         {
-          if ((lseek(file,length-1,SEEK_SET) < 0) || (write(file,"",1) != 1))
-            RelinquishMagickResource(DiskResource,length);
-          else
+          memory_info->type=MapVirtualMemory;
+          return(memory_info);
+        }
+      if (AcquireMagickResource(DiskResource,length) != MagickFalse)
+        {
+          int
+            file;
+
+          /*
+            Anonymous memory mapping failed, try file-backed memory mapping.
+            If the MapResource request failed, there is no point in trying
+            file-backed memory mapping.
+          */
+          file=AcquireUniqueFileResource(memory_info->filename);
+          if (file != -1)
             {
-              if (AcquireMagickResource(MapResource,length) == MagickFalse)
-                RelinquishMagickResource(DiskResource,length);
-              else
+              if ((lseek(file,length-1,SEEK_SET) == length-1) &&
+                  (write(file,"",1) == 1))
                 {
                   memory_info->blob=MapBlob(file,IOMode,0,length);
                   if (memory_info->blob != NULL)
-                    memory_info->type=MapVirtualMemory;
-                  else
                     {
-                      RelinquishMagickResource(MapResource,length);
-                      RelinquishMagickResource(DiskResource,length);
+                      (void) close(file);
+                      memory_info->type=MapVirtualMemory;
+                      return(memory_info);
                     }
                 }
+              /*
+                File-backed memory mapping failed, delete the temporary file.
+              */
+              (void) close(file);
+              RelinquishUniqueFileResource(memory_info->filename);
+              *memory_info->filename='\0';
             }
-          (void) close(file);
         }
+      RelinquishMagickResource(DiskResource,length);
     }
+  RelinquishMagickResource(MapResource,length);
   if (memory_info->blob == NULL)
     {
       memory_info->blob=AcquireMagickMemory(length);
