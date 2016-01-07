@@ -636,7 +636,7 @@ MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
                 File-backed memory mapping failed, delete the temporary file.
               */
               (void) close(file);
-              RelinquishUniqueFileResource(memory_info->filename);
+              (void) RelinquishUniqueFileResource(memory_info->filename);
               *memory_info->filename='\0';
             }
         }
