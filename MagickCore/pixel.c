@@ -507,7 +507,7 @@ MagickExport MagickRealType EncodePixelGamma(const MagickRealType pixel)
 %
 */
 
-static void ExportCharPixel(Image *image,const RectangleInfo *roi,
+static void ExportCharPixel(const Image *image,const RectangleInfo *roi,
   const char *magick_restrict map,const QuantumType *quantum_map,void *pixels,
   ExceptionInfo *exception)
 {
@@ -713,7 +713,7 @@ static void ExportCharPixel(Image *image,const RectangleInfo *roi,
   }
 }
 
-static void ExportDoublePixel(Image *image,const RectangleInfo *roi,
+static void ExportDoublePixel(const Image *image,const RectangleInfo *roi,
   const char *magick_restrict map,const QuantumType *quantum_map,void *pixels,
   ExceptionInfo *exception)
 {
@@ -920,7 +920,7 @@ static void ExportDoublePixel(Image *image,const RectangleInfo *roi,
   }
 }
 
-static void ExportFloatPixel(Image *image,const RectangleInfo *roi,
+static void ExportFloatPixel(const Image *image,const RectangleInfo *roi,
   const char *magick_restrict map,const QuantumType *quantum_map,void *pixels,
   ExceptionInfo *exception)
 {
@@ -1126,7 +1126,7 @@ static void ExportFloatPixel(Image *image,const RectangleInfo *roi,
   }
 }
 
-static void ExportLongPixel(Image *image,const RectangleInfo *roi,
+static void ExportLongPixel(const Image *image,const RectangleInfo *roi,
   const char *magick_restrict map,const QuantumType *quantum_map,void *pixels,
   ExceptionInfo *exception)
 {
@@ -1332,7 +1332,7 @@ static void ExportLongPixel(Image *image,const RectangleInfo *roi,
   }
 }
 
-static void ExportLongLongPixel(Image *image,const RectangleInfo *roi,
+static void ExportLongLongPixel(const Image *image,const RectangleInfo *roi,
   const char *magick_restrict map,const QuantumType *quantum_map,void *pixels,
   ExceptionInfo *exception)
 {
@@ -1540,7 +1540,7 @@ static void ExportLongLongPixel(Image *image,const RectangleInfo *roi,
   }
 }
 
-static void ExportQuantumPixel(Image *image,const RectangleInfo *roi,
+static void ExportQuantumPixel(const Image *image,const RectangleInfo *roi,
   const char *magick_restrict map,const QuantumType *quantum_map,void *pixels,
   ExceptionInfo *exception)
 {
@@ -1749,7 +1749,7 @@ static void ExportQuantumPixel(Image *image,const RectangleInfo *roi,
   }
 }
 
-static void ExportShortPixel(Image *image,const RectangleInfo *roi,
+static void ExportShortPixel(const Image *image,const RectangleInfo *roi,
   const char *magick_restrict map,const QuantumType *quantum_map,void *pixels,
   ExceptionInfo *exception)
 {
@@ -1955,7 +1955,7 @@ static void ExportShortPixel(Image *image,const RectangleInfo *roi,
   }
 }
 
-MagickExport MagickBooleanType ExportImagePixels(Image *image,const ssize_t x,
+MagickExport MagickBooleanType ExportImagePixels(const Image *image,const ssize_t x,
   const ssize_t y,const size_t width,const size_t height,const char *map,
   const StorageType type,void *pixels,ExceptionInfo *exception)
 {
@@ -4566,7 +4566,7 @@ static inline ssize_t NearestNeighbor(const double x)
 */
 
 MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
-  const CacheView *image_view,const PixelChannel channel,
+  const CacheView_ *image_view,const PixelChannel channel,
   const PixelInterpolateMethod method,const double x,const double y,
   double *pixel,ExceptionInfo *exception)
 {
@@ -4990,7 +4990,7 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
 %
 */
 MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
-  const CacheView *source_view,const Image *destination,
+  const CacheView_ *source_view,const Image *destination,
   const PixelInterpolateMethod method,const double x,const double y,
   Quantum *pixel,ExceptionInfo *exception)
 {
@@ -5554,7 +5554,7 @@ static inline void AlphaBlendPixelInfo(const Image *image,
 }
 
 MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
-  const CacheView *image_view,const PixelInterpolateMethod method,
+  const CacheView_ *image_view,const PixelInterpolateMethod method,
   const double x,const double y,PixelInfo *pixel,ExceptionInfo *exception)
 {
   MagickBooleanType

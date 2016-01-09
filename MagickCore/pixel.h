@@ -213,7 +213,7 @@ extern MagickExport ChannelType
   SetPixelChannelMask(Image *,const ChannelType);
 
 extern MagickExport MagickBooleanType
-  ExportImagePixels(Image *,const ssize_t,const ssize_t,const size_t,
+  ExportImagePixels(const Image *,const ssize_t,const ssize_t,const size_t,
     const size_t,const char *,const StorageType,void *,ExceptionInfo *),
   ImportImagePixels(Image *,const ssize_t,const ssize_t,const size_t,
     const size_t,const char *,const StorageType,const void *,ExceptionInfo *),
