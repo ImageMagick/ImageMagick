@@ -589,6 +589,7 @@ void Magick::Options::strokeDashArray(const double *strokeDashArray_)
         sizeof(double)));
       // Copy elements
       memcpy(_drawInfo->dash_pattern,strokeDashArray_,(x+1)*sizeof(double));
+      _drawInfo->dash_pattern[x]=0.0;
     }
 }
 
