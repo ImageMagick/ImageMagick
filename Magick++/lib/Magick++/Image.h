@@ -1,7 +1,7 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
 // Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003
-// Copyright Dirk Lemstra 2013-2015
+// Copyright Dirk Lemstra 2013-2016
 //
 // Definition of Image, the representation of a single image in Magick++
 //
