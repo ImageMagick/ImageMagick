@@ -151,14 +151,17 @@ static PixelChannels **DestroyPixelThreadSet(PixelChannels **pixels)
 static PixelChannels **AcquirePixelThreadSet(const Image *image,
   const size_t number_images)
 {
-  register ssize_t
-    i;
+  const Image
+    *next;
 
   PixelChannels
     **pixels;
 
+  register ssize_t
+    i;
+
   size_t
-    length,
+    columns,
     number_threads;
 
   number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
@@ -167,18 +170,23 @@ static PixelChannels **AcquirePixelThreadSet(const Image *image,
   if (pixels == (PixelChannels **) NULL)
     return((PixelChannels **) NULL);
   (void) ResetMagickMemory(pixels,0,number_threads*sizeof(*pixels));
+  next=image;
+  columns=next->columns;
+  for (i=0; i < (ssize_t) number_images; i++)
+  {
+    if (columns < next->columns)
+      columns=next->columns;
+    next=next->next;
+  }
   for (i=0; i < (ssize_t) number_threads; i++)
   {
     register ssize_t
       j;
 
-    length=image->columns;
-    if (length < number_images)
-      length=number_images;
-    pixels[i]=(PixelChannels *) AcquireQuantumMemory(length,sizeof(**pixels));
+    pixels[i]=(PixelChannels *) AcquireQuantumMemory(columns,sizeof(**pixels));
     if (pixels[i] == (PixelChannels *) NULL)
       return(DestroyPixelThreadSet(pixels));
-    for (j=0; j < (ssize_t) length; j++)
+    for (j=0; j < (ssize_t) columns; j++)
     {
       register ssize_t
         k;
