@@ -1696,17 +1696,6 @@ bool Magick::Image::verbose(void) const
   return(constOptions()->verbose());
 }
 
-void Magick::Image::view(const std::string &view_)
-{
-  modifyImage();
-  options()->view(view_);
-}
-
-std::string Magick::Image::view(void) const
-{
-  return(constOptions()->view());
-}
-
 void Magick::Image::virtualPixelMethod(
   const VirtualPixelMethod virtualPixelMethod_)
 {

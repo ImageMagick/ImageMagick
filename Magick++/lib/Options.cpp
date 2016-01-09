@@ -934,22 +934,6 @@ bool Magick::Options::verbose(void) const
   return(static_cast<bool>(_imageInfo->verbose));
 }
 
-void Magick::Options::view(const std::string &view_)
-{
-  if (view_.length() == 0)
-    _imageInfo->view=(char *) RelinquishMagickMemory(_imageInfo->view);
-  else
-    Magick::CloneString(&_imageInfo->view, view_);
-}
-
-std::string Magick::Options::view(void) const
-{
-  if (_imageInfo->view)
-    return(std::string(_imageInfo->view));
-
-  return(std::string());
-}
-
 void Magick::Options::x11Display(const std::string &display_)
 {
   if (display_.length() == 0)

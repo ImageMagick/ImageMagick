@@ -527,10 +527,6 @@ namespace Magick
     void verbose(const bool verboseFlag_);
     bool verbose(void) const;
 
-    // FlashPix viewing parameters
-    void view(const std::string &view_);
-    std::string view(void) const;
-
     // Virtual pixel method
     void virtualPixelMethod(const VirtualPixelMethod virtualPixelMethod_);
     VirtualPixelMethod virtualPixelMethod(void) const;

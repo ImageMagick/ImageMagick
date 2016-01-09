@@ -3119,15 +3119,6 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             ListMagickVersion(stdout);
             break;
           }
-        if (LocaleCompare("view",option+1) == 0)
-          {
-            if (*option == '+')
-              break;
-            i++;
-            if (i == (ssize_t) argc)
-              ThrowConvertException(OptionError,"MissingArgument",option);
-            break;
-          }
         if (LocaleCompare("vignette",option+1) == 0)
           {
             if (*option == '+')

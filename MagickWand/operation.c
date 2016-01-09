@@ -1536,15 +1536,6 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
           _image_info->ping=MagickFalse; /* verbose can't be a ping */
           break;
         }
-      if (LocaleCompare("view",option+1) == 0)
-        {
-          /* FUTURE: Convert from _image_info to ImageOption
-             Only used by coder FPX
-             And it only tests existance, not its content!
-          */
-          (void) CloneString(&_image_info->view,ArgOption(NULL));
-          break;
-        }
       if (LocaleCompare("virtual-pixel",option+1) == 0)
         {
           /* SyncImageSettings() used to set per-image attribute.

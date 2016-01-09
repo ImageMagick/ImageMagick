@@ -1839,18 +1839,6 @@ namespace Magick
     bool _verbose;
   };
 
-  // FlashPix viewing parameters
-  class MagickPPExport viewImage : public std::unary_function<Image&,void>
-  {
-  public:
-    viewImage( const std::string &view_ );
-
-    void operator()( Image &image_ ) const;
-
-  private:
-    std::string _view;
-  };
-
   // X11 display to display to, obtain fonts from, or to capture
   // image from
   class MagickPPExport x11DisplayImage : public std::unary_function<Image&,void>

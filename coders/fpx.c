@@ -113,6 +113,9 @@ static MagickBooleanType
 */
 static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
+  const char
+    *option;
+
   FPXColorspace
     colorspace;
 
@@ -238,7 +241,8 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       FPX_ClearSystem();
       ThrowReaderException(CorruptImageError,"ImageTypeNotSupported");
     }
-  if (image_info->view == (char *) NULL)
+  option=GetImageOption(image_info,"fpx:view");
+  if (option == (char *) NULL)
     {
       float
         aspect_ratio;
@@ -402,7 +406,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Read FPX image tile (with or without viewing affine)..
         */
-        if (image_info->view != (char *) NULL)
+        if (option != (char *) NULL)
           fpx_status=FPX_ReadImageRectangle(flashpix,0,y,image->columns,y+
             tile_height-1,scene,&fpx_info);
         else
@@ -973,7 +977,7 @@ static MagickBooleanType WriteFPXImage(const ImageInfo *image_info,Image *image,
       break;
   }
   quantum_info=DestroyQuantumInfo(quantum_info);
-  if (image_info->view != (char *) NULL)
+  if (option != (char *) NULL)
     {
       FPXAffineMatrix
         affine;

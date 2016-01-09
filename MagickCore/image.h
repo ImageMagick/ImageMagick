@@ -442,9 +442,6 @@ struct _ImageInfo
     ping,                    /* fast read image attributes, not image data */
     verbose;                 /* verbose output enable/disable */
 
-  char
-    *view;
-
   ChannelType
     channel;
 

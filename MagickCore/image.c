@@ -983,7 +983,6 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
   clone_info->group=image_info->group;
   clone_info->ping=image_info->ping;
   clone_info->verbose=image_info->verbose;
-  (void) CloneString(&clone_info->view,image_info->view);
   clone_info->progress_monitor=image_info->progress_monitor;
   clone_info->client_data=image_info->client_data;
   clone_info->cache=image_info->cache;
@@ -1270,8 +1269,6 @@ MagickExport ImageInfo *DestroyImageInfo(ImageInfo *image_info)
     image_info->texture=DestroyString(image_info->texture);
   if (image_info->density != (char *) NULL)
     image_info->density=DestroyString(image_info->density);
-  if (image_info->view != (char *) NULL)
-    image_info->view=DestroyString(image_info->view);
   if (image_info->cache != (void *) NULL)
     image_info->cache=DestroyPixelCache(image_info->cache);
   if (image_info->profile != (StringInfo *) NULL)

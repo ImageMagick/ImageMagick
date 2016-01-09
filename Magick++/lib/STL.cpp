@@ -1628,15 +1628,6 @@ void Magick::verboseImage::operator()( Magick::Image &image_ ) const
   image_.verbose( _verbose );
 }
 
-// FlashPix viewing parameters
-Magick::viewImage::viewImage( const std::string &view_ )
-  : _view( view_ ) { }
-
-void Magick::viewImage::operator()( Magick::Image &image_ ) const
-{
-  image_.view( _view );
-}
-
 // X11 display to display to, obtain fonts from, or to capture image
 // from
 Magick::x11DisplayImage::x11DisplayImage( const std::string &display_ )

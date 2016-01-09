@@ -306,9 +306,6 @@ namespace Magick
     void verbose(bool verboseFlag_);
     bool verbose(void) const;
 
-    void view(const std::string &view_);
-    std::string view(void) const;
-
     // X11 display name
     void x11Display(const std::string &display_);
     std::string x11Display(void) const;

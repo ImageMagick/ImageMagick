@@ -6327,15 +6327,6 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             ListMagickVersion(stdout);
             break;
           }
-        if (LocaleCompare("view",option+1) == 0)
-          {
-            if (*option == '+')
-              break;
-            i++;
-            if (i == (ssize_t) argc)
-              ThrowMogrifyException(OptionError,"MissingArgument",option);
-            break;
-          }
         if (LocaleCompare("vignette",option+1) == 0)
           {
             if (*option == '+')
@@ -7528,17 +7519,6 @@ WandExport MagickBooleanType MogrifyImageInfo(ImageInfo *image_info,
               }
             image_info->verbose=MagickTrue;
             image_info->ping=MagickFalse;
-            break;
-          }
-        if (LocaleCompare("view",option+1) == 0)
-          {
-            if (*option == '+')
-              {
-                if (image_info->view != (char *) NULL)
-                  image_info->view=DestroyString(image_info->view);
-                break;
-              }
-            (void) CloneString(&image_info->view,argv[i+1]);
             break;
           }
         if (LocaleCompare("virtual-pixel",option+1) == 0)
