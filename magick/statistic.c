@@ -152,15 +152,18 @@ static MagickPixelPacket **DestroyPixelThreadSet(MagickPixelPacket **pixels)
 static MagickPixelPacket **AcquirePixelThreadSet(const Image *image,
   const size_t number_images)
 {
-  register ssize_t
-    i,
-    j;
+  const Image
+    *next;
 
   MagickPixelPacket
     **pixels;
 
+  register ssize_t
+    i,
+    j;
+
   size_t
-    length,
+    columns,
     number_threads;
 
   number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
@@ -169,16 +172,21 @@ static MagickPixelPacket **AcquirePixelThreadSet(const Image *image,
   if (pixels == (MagickPixelPacket **) NULL)
     return((MagickPixelPacket **) NULL);
   (void) ResetMagickMemory(pixels,0,number_threads*sizeof(*pixels));
+  next=image;
+  columns=next->columns;
+  for (i=0; i < (ssize_t) number_images; i++)
+  {
+    if (columns < next->columns)
+      columns=next->columns;
+    next=next->next;
+  }
   for (i=0; i < (ssize_t) number_threads; i++)
   {
-    length=image->columns;
-    if (length < number_images)
-      length=number_images;
-    pixels[i]=(MagickPixelPacket *) AcquireQuantumMemory(length,
+    pixels[i]=(MagickPixelPacket *) AcquireQuantumMemory(columns,
       sizeof(**pixels));
     if (pixels[i] == (MagickPixelPacket *) NULL)
       return(DestroyPixelThreadSet(pixels));
-    for (j=0; j < (ssize_t) length; j++)
+    for (j=0; j < (ssize_t) columns; j++)
       GetMagickPixelPacket(image,&pixels[i][j]);
   }
   return(pixels);
@@ -629,8 +637,8 @@ MagickExport Image *EvaluateImages(const Image *images,
 
         if (status == MagickFalse)
           continue;
-        q=QueueCacheViewAuthenticPixels(evaluate_view,0,y,
-          image->columns,1,exception);
+        q=QueueCacheViewAuthenticPixels(evaluate_view,0,y,image->columns,1,
+          exception);
         if (q == (PixelPacket *) NULL)
           {
             status=MagickFalse;
