@@ -765,7 +765,7 @@ static MagickBooleanType WriteFPXImage(const ImageInfo *image_info,Image *image,
   const char
     *comment,
     *label,
-    option;
+    *option;
 
   FPXCompressionOption
     compression;
