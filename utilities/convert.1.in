@@ -108,7 +108,6 @@ Image Settings:
   \-undercolor color    annotation bounding box color
   \-units type          the units of image resolution
   \-verbose             print detailed information about the image
-  \-view                FlashPix viewing transforms
   \-virtual-pixel method
                        virtual pixel access method
   \-weight type         render text with this font weight
