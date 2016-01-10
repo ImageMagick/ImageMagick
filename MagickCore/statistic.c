@@ -151,9 +151,6 @@ static PixelChannels **DestroyPixelThreadSet(PixelChannels **pixels)
 static PixelChannels **AcquirePixelThreadSet(const Image *image,
   const size_t number_images)
 {
-  const Image
-    *next;
-
   PixelChannels
     **pixels;
 
@@ -161,7 +158,6 @@ static PixelChannels **AcquirePixelThreadSet(const Image *image,
     i;
 
   size_t
-    columns,
     number_threads;
 
   number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
@@ -170,23 +166,16 @@ static PixelChannels **AcquirePixelThreadSet(const Image *image,
   if (pixels == (PixelChannels **) NULL)
     return((PixelChannels **) NULL);
   (void) ResetMagickMemory(pixels,0,number_threads*sizeof(*pixels));
-  next=image;
-  columns=next->columns;
-  for (i=0; i < (ssize_t) number_images; i++)
-  {
-    if (columns < next->columns)
-      columns=next->columns;
-    next=next->next;
-  }
   for (i=0; i < (ssize_t) number_threads; i++)
   {
     register ssize_t
       j;
 
-    pixels[i]=(PixelChannels *) AcquireQuantumMemory(columns,sizeof(**pixels));
+    pixels[i]=(PixelChannels *) AcquireQuantumMemory(image->columns,
+      sizeof(**pixels));
     if (pixels[i] == (PixelChannels *) NULL)
       return(DestroyPixelThreadSet(pixels));
-    for (j=0; j < (ssize_t) columns; j++)
+    for (j=0; j < (ssize_t) image->columns; j++)
     {
       register ssize_t
         k;
@@ -644,13 +633,14 @@ MagickExport Image *EvaluateImages(const Image *images,
             *p;
 
           image_view=AcquireVirtualCacheView(next,exception);
-          p=GetCacheViewVirtualPixels(image_view,0,y,next->columns,1,exception);
+          p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,
+            exception);
           if (p == (const Quantum *) NULL)
             {
               image_view=DestroyCacheView(image_view);
               break;
             }
-          for (x=0; x < (ssize_t) next->columns; x++)
+          for (x=0; x < (ssize_t) image->columns; x++)
           {
             register ssize_t
               i;
@@ -663,8 +653,8 @@ MagickExport Image *EvaluateImages(const Image *images,
             for (i=0; i < (ssize_t) GetPixelChannels(next); i++)
             {
               PixelChannel channel=GetPixelChannelChannel(image,i);
-              PixelTrait  traits=GetPixelChannelTraits(next,channel);
-              PixelTrait  evaluate_traits=GetPixelChannelTraits(image,channel);
+              PixelTrait traits=GetPixelChannelTraits(next,channel);
+              PixelTrait evaluate_traits=GetPixelChannelTraits(image,channel);
               if ((traits == UndefinedPixelTrait) ||
                   (evaluate_traits == UndefinedPixelTrait))
                 continue;
