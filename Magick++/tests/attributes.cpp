@@ -1374,32 +1374,6 @@ int main( int /*argc*/, char ** argv)
       }
 
     //
-    // view
-    //
-    if ( image.view().length() != 0 )
-      {
-	++failures;
-	cout << "Line: " << __LINE__
-             << ", view default is not empty string as expected" << endl;
-      }
-    
-    image.view("How now brown cow?");
-    if ( image.view() != "How now brown cow?" )
-      {
-	++failures;
-	cout << "Line: " << __LINE__
-             << ", view set/get failed" << endl;
-      }
-
-    image.view( string() );
-    if ( image.view().length() != 0 )
-      {
-	++failures;
-	cout << "Line: " << __LINE__
-             << ", view failed to unset" << endl;
-      }
-
-    //
     // x11Display
     //
     if ( image.x11Display().length() != 0 )
