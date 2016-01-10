@@ -152,9 +152,6 @@ static MagickPixelPacket **DestroyPixelThreadSet(MagickPixelPacket **pixels)
 static MagickPixelPacket **AcquirePixelThreadSet(const Image *image,
   const size_t number_images)
 {
-  const Image
-    *next;
-
   MagickPixelPacket
     **pixels;
 
@@ -163,7 +160,6 @@ static MagickPixelPacket **AcquirePixelThreadSet(const Image *image,
     j;
 
   size_t
-    columns,
     number_threads;
 
   number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
@@ -173,20 +169,13 @@ static MagickPixelPacket **AcquirePixelThreadSet(const Image *image,
     return((MagickPixelPacket **) NULL);
   (void) ResetMagickMemory(pixels,0,number_threads*sizeof(*pixels));
   next=image;
-  columns=next->columns;
-  for (i=0; i < (ssize_t) number_images; i++)
-  {
-    if (columns < next->columns)
-      columns=next->columns;
-    next=next->next;
-  }
   for (i=0; i < (ssize_t) number_threads; i++)
   {
-    pixels[i]=(MagickPixelPacket *) AcquireQuantumMemory(columns,
+    pixels[i]=(MagickPixelPacket *) AcquireQuantumMemory(image->columns,
       sizeof(**pixels));
     if (pixels[i] == (MagickPixelPacket *) NULL)
       return(DestroyPixelThreadSet(pixels));
-    for (j=0; j < (ssize_t) columns; j++)
+    for (j=0; j < (ssize_t) image->columns; j++)
       GetMagickPixelPacket(image,&pixels[i][j]);
   }
   return(pixels);
@@ -214,8 +203,8 @@ static int IntensityCompare(const void *x,const void *y)
 
   color_1=(const MagickPixelPacket *) x;
   color_2=(const MagickPixelPacket *) y;
-  intensity=(int) MagickPixelIntensity(color_2)-
-    (int) MagickPixelIntensity(color_1);
+  intensity=(int) MagickPixelIntensity(color_2)-(int)
+    MagickPixelIntensity(color_1);
   return(intensity);
 }
 
@@ -529,8 +518,8 @@ MagickExport Image *EvaluateImages(const Image *images,
 
         if (status == MagickFalse)
           continue;
-        q=QueueCacheViewAuthenticPixels(evaluate_view,0,y,
-          image->columns,1,exception);
+        q=QueueCacheViewAuthenticPixels(evaluate_view,0,y,image->columns,1,
+          exception);
         if (q == (PixelPacket *) NULL)
           {
             status=MagickFalse;
@@ -658,14 +647,15 @@ MagickExport Image *EvaluateImages(const Image *images,
             *p;
 
           image_view=AcquireVirtualCacheView(next,exception);
-          p=GetCacheViewVirtualPixels(image_view,0,y,next->columns,1,exception);
+          p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,
+            exception);
           if (p == (const PixelPacket *) NULL)
             {
               image_view=DestroyCacheView(image_view);
               break;
             }
           indexes=GetCacheViewVirtualIndexQueue(image_view);
-          for (x=0; x < (ssize_t) next->columns; x++)
+          for (x=0; x < (ssize_t) image->columns; x++)
           {
             evaluate_pixel[x].red=ApplyEvaluateOperator(random_info[id],
               GetPixelRed(p),i == 0 ? AddEvaluateOperator : op,
