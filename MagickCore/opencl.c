@@ -316,7 +316,7 @@ void OsLibraryUnload(void *library)
 %
 */
 
-MagickExport MagickCLEnv AcquireMagickOpenCLEnv()
+MagickExport MagickCLEnv AcquireMagickOpenCLEnv(void)
 {
   MagickCLEnv clEnv;
   clEnv = (MagickCLEnv) AcquireMagickMemory(sizeof(struct _MagickCLEnv));
@@ -503,7 +503,7 @@ MagickLibrary * GetOpenCLLib()
 %
 */
 
-MagickExport MagickCLEnv GetDefaultOpenCLEnv()
+MagickExport MagickCLEnv GetDefaultOpenCLEnv(void)
 {
   if (defaultCLEnv == NULL)
   {

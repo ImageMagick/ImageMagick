@@ -58,8 +58,8 @@ extern MagickExport MagickBooleanType
     ExceptionInfo*);
 
 extern MagickExport MagickCLEnv
-  AcquireMagickOpenCLEnv(),
-  GetDefaultOpenCLEnv(),
+  AcquireMagickOpenCLEnv(void),
+  GetDefaultOpenCLEnv(void),
   SetDefaultOpenCLEnv(MagickCLEnv);
 
 #if defined(__cplusplus) || defined(c_plusplus)
