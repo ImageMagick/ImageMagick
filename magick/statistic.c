@@ -168,7 +168,6 @@ static MagickPixelPacket **AcquirePixelThreadSet(const Image *image,
   if (pixels == (MagickPixelPacket **) NULL)
     return((MagickPixelPacket **) NULL);
   (void) ResetMagickMemory(pixels,0,number_threads*sizeof(*pixels));
-  next=image;
   for (i=0; i < (ssize_t) number_threads; i++)
   {
     pixels[i]=(MagickPixelPacket *) AcquireQuantumMemory(image->columns,
