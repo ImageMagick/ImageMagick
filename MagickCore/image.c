@@ -1417,14 +1417,18 @@ MagickExport FILE *GetImageInfoFile(const ImageInfo *image_info)
 %
 %  The format of the GetImageMask method is:
 %
-%      Image *GetImageMask(const Image *image,ExceptionInfo *exception)
+%      Image *GetImageMask(const Image *image,const PixelMask type,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
+%    o type: the mask type, ReadPixelMask or WritePixelMask.
+%
 */
-MagickExport Image *GetImageMask(const Image *image,ExceptionInfo *exception)
+MagickExport Image *GetImageMask(const Image *image,const PixelMask type,
+  ExceptionInfo *exception)
 {
   CacheView
     *mask_view,
@@ -1478,7 +1482,19 @@ MagickExport Image *GetImageMask(const Image *image,ExceptionInfo *exception)
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      SetPixelGray(mask_image,GetPixelReadMask(image,p),q);
+      switch (type)
+      {
+        case WritePixelMask:
+        {
+          SetPixelGray(mask_image,GetPixelWriteMask(image,p),q);
+          break;
+        }
+        default:
+        {
+          SetPixelGray(mask_image,GetPixelReadMask(image,p),q);
+          break;
+        }
+      }
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(mask_image);
     }

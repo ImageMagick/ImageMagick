@@ -327,11 +327,6 @@ namespace Magick
     void magick(const std::string &magick_);
     std::string magick(void) const;
 
-    // Associate a mask with the image. The mask must be the same dimensions
-    // as the image. Pass an invalid image to unset an existing mask.
-    void mask(const Image &mask_);
-    Image mask(void) const;
-
     // The mean error per pixel computed when an image is color reduced
     double meanErrorPerPixel(void) const;
 
@@ -1231,6 +1226,11 @@ namespace Magick
     // Read single image frame into current object
     void read(const std::string &imageSpec_);
 
+    // Associate a mask with the image. The mask must be the same dimensions
+    // as the image. Pass an invalid image to unset an existing mask.
+    void readMask(const Image &mask_);
+    Image readMask(void) const;
+
     // Transfers one or more pixel components from a buffer or file
     // into the image pixel cache of an image.
     // Used to support image decoders.
@@ -1482,7 +1482,12 @@ namespace Magick
 
     // Write single image frame to a file
     void write(const std::string &imageSpec_);
-    
+
+    // Associate a mask with the image. The mask must be the same dimensions
+    // as the image. Pass an invalid image to unset an existing mask.
+    void writeMask(const Image &mask_);
+    Image writeMask(void) const;
+
     // Transfers one or more pixel components from the image pixel
     // cache to a buffer or file.
     // Used to support image encoders.
@@ -1524,12 +1529,15 @@ namespace Magick
 
   private:
 
-    void read(MagickCore::Image *image,
-      MagickCore::ExceptionInfo *exceptionInfo);
-
     void floodFill(const ssize_t x_,const ssize_t y_,
       const Magick::Image *fillPattern_,const Color &fill_,
       const PixelInfo *target,const bool invert_);
+
+    void mask(const Image &mask_,const PixelMask);
+    Image mask(const PixelMask) const;
+
+    void read(MagickCore::Image *image,
+      MagickCore::ExceptionInfo *exceptionInfo);
 
     ImageRef *_imgRef;
   };

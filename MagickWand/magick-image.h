@@ -339,6 +339,7 @@ extern WandExport MagickWand
   *MagickEvaluateImages(MagickWand *,const MagickEvaluateOperator),
   *MagickFxImage(MagickWand *,const char *),
   *MagickGetImage(MagickWand *),
+  *MagickGetImageMask(MagickWand *,const PixelMask),
   *MagickGetImageRegion(MagickWand *,const size_t,const size_t,const ssize_t,
     const ssize_t),
   *MagickMergeImageLayers(MagickWand *,const LayerMethod),

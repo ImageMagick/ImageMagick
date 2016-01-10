@@ -996,6 +996,7 @@ namespace Magick
   using MagickCore::CMYKQuantum;
 
   // Pixel mask types
+  using MagickCore::PixelMask;
   using MagickCore::UndefinedPixelMask;
   using MagickCore::ReadPixelMask;
   using MagickCore::WritePixelMask;

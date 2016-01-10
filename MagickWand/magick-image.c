@@ -3727,8 +3727,11 @@ WandExport MagickBooleanType MagickGetImageAlphaChannel(MagickWand *wand)
 %
 %    o wand: the magick wand.
 %
+%    o type: type of mask, ReadPixelMask or WritePixelMask.
+%
 */
-WandExport MagickWand *MagickGetImageMask(MagickWand *wand)
+WandExport MagickWand *MagickGetImageMask(MagickWand *wand,
+  const PixelMask type)
 {
   Image
     *image;
@@ -3743,7 +3746,7 @@ WandExport MagickWand *MagickGetImageMask(MagickWand *wand)
         "ContainsNoImages","`%s'",wand->name);
       return((MagickWand *) NULL);
     }
-  image=GetImageMask(wand->images,wand->exception);
+  image=GetImageMask(wand->images,type,wand->exception);
   if (image == (Image *) NULL)
     return((MagickWand *) NULL);
   return(CloneMagickWandFromImages(wand,image));

@@ -1130,34 +1130,6 @@ void Magick::Image::lowlightColor(const Color color_)
   artifact("lowlight-color",value);
 }
 
-void Magick::Image::mask(const Magick::Image &mask_)
-{
-  modifyImage();
-
-  GetPPException;
-  if (mask_.isValid())
-    SetImageMask(image(),ReadPixelMask,mask_.constImage(),exceptionInfo);
-  else
-    SetImageMask(image(),ReadPixelMask,(MagickCore::Image *) NULL,
-      exceptionInfo);
-  ThrowImageException;
-}
-
-Magick::Image Magick::Image::mask(void) const
-{
-  MagickCore::Image
-    *image;
-
-  GetPPException;
-  image=GetImageMask(constImage(),exceptionInfo);
-  ThrowImageException;
-
-  if (image == (MagickCore::Image *) NULL)
-    return(Magick::Image());
-  else
-    return(Magick::Image(image));
-}
-
 void Magick::Image::magick(const std::string &magick_)
 {
   size_t
@@ -4049,6 +4021,16 @@ void Magick::Image::read(const std::string &imageSpec_)
   read(newImage,exceptionInfo);
 }
 
+void Magick::Image::readMask(const Magick::Image &mask_)
+{
+  mask(mask_,ReadPixelMask);
+}
+
+Magick::Image Magick::Image::readMask(void) const
+{
+  return(mask(ReadPixelMask));
+}
+
 void Magick::Image::readPixels(const Magick::QuantumType quantum_,
   const unsigned char *source_)
 {
@@ -4898,6 +4880,16 @@ void Magick::Image::write(const std::string &imageSpec_)
   ThrowImageException;
 }
 
+void Magick::Image::writeMask(const Magick::Image &mask_)
+{
+  mask(mask_,WritePixelMask);
+}
+
+Magick::Image Magick::Image::writeMask(void) const
+{
+  return(mask(WritePixelMask));
+}
+
 void Magick::Image::writePixels(const Magick::QuantumType quantum_,
   unsigned char *destination_)
 {
@@ -5072,4 +5064,32 @@ void Magick::Image::floodFill(const ssize_t x_,const ssize_t y_,
   options()->fillColor(fillColor);
   options()->fillPattern(fillPattern);
   ThrowImageException;
+}
+
+void Magick::Image::mask(const Magick::Image &mask_,const PixelMask type)
+{
+  modifyImage();
+
+  GetPPException;
+  if (mask_.isValid())
+    SetImageMask(image(),type,mask_.constImage(),exceptionInfo);
+  else
+    SetImageMask(image(),type,(MagickCore::Image *) NULL,
+      exceptionInfo);
+  ThrowImageException;
+}
+
+Magick::Image Magick::Image::mask(const PixelMask type) const
+{
+  MagickCore::Image
+    *image;
+
+  GetPPException;
+  image = GetImageMask(constImage(),type,exceptionInfo);
+  ThrowImageException;
+
+  if (image == (MagickCore::Image *) NULL)
+    return(Magick::Image());
+  else
+    return(Magick::Image(image));
 }
