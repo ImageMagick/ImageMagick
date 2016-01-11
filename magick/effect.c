@@ -243,7 +243,7 @@ MagickExport Image *AdaptiveBlurImageChannel(const Image *image,
     if (kernel[i] == (double *) NULL)
       break;
     normalize=0.0;
-    j=(ssize_t) (width-i)/2;
+    j=(ssize_t) (width-i-1)/2;
     k=0;
     for (v=(-j); v <= j; v++)
     {
