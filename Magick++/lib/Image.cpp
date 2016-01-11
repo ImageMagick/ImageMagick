@@ -1945,6 +1945,7 @@ void Magick::Image::annotate(const std::string &text_,
           (void) CopyMagickString(boundingArea,
             std::string(boundingArea_).c_str(), MaxTextExtent);
         }
+      drawInfo->geometry=DestroyString(drawInfo->geometry);
       drawInfo->geometry=boundingArea;
     }
 
