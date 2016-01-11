@@ -4791,7 +4791,7 @@ Get(ref,...)
                   sv=NULL;
                   if (image->read_mask == MagickFalse)
                     ClipImage(image,exception);
-                  mask_image=GetImageMask(image,exception);
+                  mask_image=GetImageMask(image,ReadPixelMask,exception);
                   if (mask_image != (Image *) NULL)
                     {
                       AddImageToRegistry(sv,mask_image);
@@ -4814,7 +4814,7 @@ Get(ref,...)
                   sv=NULL;
                   if (image->read_mask != MagickFalse)
                     ClipImage(image,exception);
-                  mask_image=GetImageMask(image,exception);
+                  mask_image=GetImageMask(image,ReadPixelMask,exception);
                   if (mask_image != (Image *) NULL)
                     {
                       AddImageToRegistry(sv,mask_image);
