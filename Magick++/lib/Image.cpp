@@ -1919,6 +1919,7 @@ void Magick::Image::annotate(const std::string &text_,
 
   // Restore original values
   drawInfo->affine=oaffine;
+  drawInfo->text=DestroyString(drawInfo->text);
   drawInfo->text=(char *) NULL;
   drawInfo->geometry=(char *) NULL;
 
