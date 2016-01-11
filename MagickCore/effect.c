@@ -138,7 +138,8 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
     *image_view;
 
   double
-    normalize;
+    normalize,
+    **kernel;
 
   Image
     *blur_image,
@@ -150,9 +151,6 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
 
   MagickOffsetType
     progress;
-
-  MagickRealType
-    **kernel;
 
   register ssize_t
     i;
@@ -184,7 +182,7 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
       return((Image *) NULL);
     }
   /*
-    Edge detect the image brighness channel, level, blur, and level again.
+    Edge detect the image brightness channel, level, blur, and level again.
   */
   edge_image=EdgeImage(image,radius,exception);
   if (edge_image == (Image *) NULL)
@@ -204,9 +202,9 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
     Create a set of kernels from maximum (radius,sigma) to minimum.
   */
   width=GetOptimalKernelWidth2D(radius,sigma);
-  kernel=(MagickRealType **) MagickAssumeAligned(AcquireAlignedMemory((size_t)
-    width,sizeof(*kernel)));
-  if (kernel == (MagickRealType  **) NULL)
+  kernel=(double **) MagickAssumeAligned(AcquireAlignedMemory((size_t) width,
+    sizeof(*kernel)));
+  if (kernel == (double **) NULL)
     {
       edge_image=DestroyImage(edge_image);
       blur_image=DestroyImage(blur_image);
@@ -215,9 +213,9 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
   (void) ResetMagickMemory(kernel,0,(size_t) width*sizeof(*kernel));
   for (i=0; i < (ssize_t) width; i+=2)
   {
-    kernel[i]=(MagickRealType *) MagickAssumeAligned(AcquireAlignedMemory(
+    kernel[i]=(double *) MagickAssumeAligned(AcquireAlignedMemory(
       (size_t) (width-i),(width-i)*sizeof(**kernel)));
-    if (kernel[i] == (MagickRealType *) NULL)
+    if (kernel[i] == (double *) NULL)
       break;
     normalize=0.0;
     j=(ssize_t) (width-i-1)/2;
@@ -226,21 +224,21 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
     {
       for (u=(-j); u <= j; u++)
       {
-        kernel[i][k]=(MagickRealType) (exp(-((double) u*u+v*v)/(2.0*MagickSigma*
+        kernel[i][k]=(double) (exp(-((double) u*u+v*v)/(2.0*MagickSigma*
           MagickSigma))/(2.0*MagickPI*MagickSigma*MagickSigma));
         normalize+=kernel[i][k];
         k++;
       }
     }
-    kernel[i][(j-1)/2]+=(1.0-normalize);
+    kernel[i][(k-1)/2]+=(double) (1.0-normalize);
     if (sigma < MagickEpsilon)
-      kernel[i][(j-1)/2]=1.0;
+      kernel[i][(k-1)/2]=1.0;
   }
   if (i < (ssize_t) width)
     {
       for (i-=2; i >= 0; i-=2)
-        kernel[i]=(MagickRealType *) RelinquishAlignedMemory(kernel[i]);
-      kernel=(MagickRealType **) RelinquishAlignedMemory(kernel);
+        kernel[i]=(double *) RelinquishAlignedMemory(kernel[i]);
+      kernel=(double **) RelinquishAlignedMemory(kernel);
       edge_image=DestroyImage(edge_image);
       blur_image=DestroyImage(blur_image);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
@@ -290,8 +288,8 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
         center,
         j;
 
-      j=(ssize_t) ceil((double) width*QuantumScale*
-        GetPixelIntensity(edge_image,r)-0.5);
+      j=(ssize_t) ceil((double) width*(1.0-QuantumScale*
+        GetPixelIntensity(edge_image,r))-0.5);
       if (j < 0)
         j=0;
       else
@@ -304,8 +302,8 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
       if (p == (const Quantum *) NULL)
         break;
       center=(ssize_t) GetPixelChannels(image)*(width-j)*((width-j)/2L)+
-        GetPixelChannels(image)*((width-j)/2L);
-      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+        GetPixelChannels(image)*((width-j)/2);
+      for (i=0; i < (ssize_t) GetPixelChannels(blur_image); i++)
       {
         double
           alpha,
@@ -319,7 +317,7 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
           blur_traits,
           traits;
 
-        register const MagickRealType
+        register const double
           *magick_restrict k;
 
         register const Quantum
@@ -407,9 +405,9 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
   edge_view=DestroyCacheView(edge_view);
   image_view=DestroyCacheView(image_view);
   edge_image=DestroyImage(edge_image);
-  for (i=0; i < (ssize_t) width;  i+=2)
-    kernel[i]=(MagickRealType *) RelinquishAlignedMemory(kernel[i]);
-  kernel=(MagickRealType **) RelinquishAlignedMemory(kernel);
+  for (i=0; i < (ssize_t) width; i+=2)
+    kernel[i]=(double *) RelinquishAlignedMemory(kernel[i]);
+  kernel=(double **) RelinquishAlignedMemory(kernel);
   if (status == MagickFalse)
     blur_image=DestroyImage(blur_image);
   return(blur_image);
@@ -461,7 +459,8 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
     *image_view;
 
   double
-    normalize;
+    normalize,
+    **kernel;
 
   Image
     *sharp_image,
@@ -473,9 +472,6 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
 
   MagickOffsetType
     progress;
-
-  MagickRealType
-    **kernel;
 
   register ssize_t
     i;
@@ -496,7 +492,7 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
-  sharp_image=CloneImage(image,0,0,MagickTrue,exception);
+  sharp_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
   if (sharp_image == (Image *) NULL)
     return((Image *) NULL);
   if (fabs(sigma) < MagickEpsilon)
@@ -527,9 +523,9 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
     Create a set of kernels from maximum (radius,sigma) to minimum.
   */
   width=GetOptimalKernelWidth2D(radius,sigma);
-  kernel=(MagickRealType **) MagickAssumeAligned(AcquireAlignedMemory((size_t)
+  kernel=(double **) MagickAssumeAligned(AcquireAlignedMemory((size_t)
     width,sizeof(*kernel)));
-  if (kernel == (MagickRealType **) NULL)
+  if (kernel == (double **) NULL)
     {
       edge_image=DestroyImage(edge_image);
       sharp_image=DestroyImage(sharp_image);
@@ -538,19 +534,19 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
   (void) ResetMagickMemory(kernel,0,(size_t) width*sizeof(*kernel));
   for (i=0; i < (ssize_t) width; i+=2)
   {
-    kernel[i]=(MagickRealType *) MagickAssumeAligned(AcquireAlignedMemory(
-      (size_t) (width-i),(width-i)*sizeof(**kernel)));
-    if (kernel[i] == (MagickRealType *) NULL)
+    kernel[i]=(double *) MagickAssumeAligned(AcquireAlignedMemory((size_t)
+      (width-i),(width-i)*sizeof(**kernel)));
+    if (kernel[i] == (double *) NULL)
       break;
     normalize=0.0;
-    j=(ssize_t) (width-i)/2;
+    j=(ssize_t) (width-i-1)/2;
     k=0;
     for (v=(-j); v <= j; v++)
     {
       for (u=(-j); u <= j; u++)
       {
-        kernel[i][k]=(MagickRealType) (-exp(-((double) u*u+v*v)/(2.0*
-          MagickSigma*MagickSigma))/(2.0*MagickPI*MagickSigma*MagickSigma));
+        kernel[i][k]=(double) (-exp(-((double) u*u+v*v)/(2.0*MagickSigma*
+          MagickSigma))/(2.0*MagickPI*MagickSigma*MagickSigma));
         normalize+=kernel[i][k];
         k++;
       }
@@ -562,8 +558,8 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
   if (i < (ssize_t) width)
     {
       for (i-=2; i >= 0; i-=2)
-        kernel[i]=(MagickRealType *) RelinquishAlignedMemory(kernel[i]);
-      kernel=(MagickRealType **) RelinquishAlignedMemory(kernel);
+        kernel[i]=(double *) RelinquishAlignedMemory(kernel[i]);
+      kernel=(double **) RelinquishAlignedMemory(kernel);
       edge_image=DestroyImage(edge_image);
       sharp_image=DestroyImage(sharp_image);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
@@ -642,7 +638,7 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
           sharp_traits,
           traits;
 
-        register const MagickRealType
+        register const double
           *magick_restrict k;
 
         register const Quantum
@@ -730,9 +726,9 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
   edge_view=DestroyCacheView(edge_view);
   image_view=DestroyCacheView(image_view);
   edge_image=DestroyImage(edge_image);
-  for (i=0; i < (ssize_t) width;  i+=2)
-    kernel[i]=(MagickRealType *) RelinquishAlignedMemory(kernel[i]);
-  kernel=(MagickRealType **) RelinquishAlignedMemory(kernel);
+  for (i=0; i < (ssize_t) width; i+=2)
+    kernel[i]=(double *) RelinquishAlignedMemory(kernel[i]);
+  kernel=(double **) RelinquishAlignedMemory(kernel);
   if (status == MagickFalse)
     sharp_image=DestroyImage(sharp_image);
   return(sharp_image);
