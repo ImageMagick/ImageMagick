@@ -428,6 +428,7 @@ static inline void AssociateAlphaPixel(const CubeInfo *cube_info,
   MagickRealType
     alpha;
 
+  alpha_pixel->index=0;
   if ((cube_info->associate_alpha == MagickFalse) ||
       (pixel->opacity == OpaqueOpacity))
     {
