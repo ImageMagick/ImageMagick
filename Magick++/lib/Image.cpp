@@ -1945,7 +1945,6 @@ void Magick::Image::annotate(const std::string &text_,
           (void) CopyMagickString(boundingArea,
             std::string(boundingArea_).c_str(), MaxTextExtent);
         }
-      drawInfo->geometry=DestroyString(drawInfo->geometry);
       drawInfo->geometry=boundingArea;
     }
 
@@ -1998,7 +1997,6 @@ void Magick::Image::annotate(const std::string &text_,
   modifyImage();
 
   drawInfo=options()->drawInfo();
-  drawInfo->text=DestroyString(drawInfo->text);
   drawInfo->text=const_cast<char *>(text_.c_str());
   drawInfo->gravity=gravity_;
 
