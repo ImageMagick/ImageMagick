@@ -1865,8 +1865,9 @@ void Magick::Image::annotate(const std::string &text_,
   modifyImage();
 
   drawInfo=options()->drawInfo();
+  drawInfo->text=DestroyString(drawInfo->text);
   drawInfo->text=const_cast<char *>(text_.c_str());
-  drawInfo->geometry=0;
+  drawInfo->geometry=DestroyString(drawInfo->geometry);
 
   if (boundingArea_.isValid())
     {
@@ -1918,8 +1919,8 @@ void Magick::Image::annotate(const std::string &text_,
 
   // Restore original values
   drawInfo->affine=oaffine;
-  drawInfo->text=0;
-  drawInfo->geometry=0;
+  drawInfo->text=(char *) NULL;
+  drawInfo->geometry=(char *) NULL;
 
   ThrowImageException;
 }
