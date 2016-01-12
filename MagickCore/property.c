@@ -2291,6 +2291,9 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
       WarnNoImageReturn("\"%%%c\"",letter);
       (void) FormatMagickSize(image->extent,MagickFalse,"B",MagickPathExtent,
         value);
+      if (image->extent == 0)
+        (void) FormatMagickSize(GetBlobSize(image),MagickFalse,"B",
+          MagickPathExtent,value);
       break;
     }
     case 'c':  /* image comment property - empty string by default */
