@@ -2320,6 +2320,8 @@ static const char *GetMagickPropertyLetter(const ImageInfo *image_info,
         Image size read in - in bytes.
       */
       (void) FormatMagickSize(image->extent,MagickFalse,value);
+      if (image->extent == 0)
+        (void) FormatMagickSize(GetBlobSize(image),MagickFalse,value);
       break;
     }
     case 'c':
