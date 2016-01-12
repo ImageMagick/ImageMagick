@@ -1997,13 +1997,14 @@ void Magick::Image::annotate(const std::string &text_,
   modifyImage();
 
   drawInfo=options()->drawInfo();
+  drawInfo->text=DestroyString(drawInfo->text);
   drawInfo->text=const_cast<char *>(text_.c_str());
   drawInfo->gravity=gravity_;
 
   AnnotateImage(image(),drawInfo);
 
   drawInfo->gravity=NorthWestGravity;
-  drawInfo->text=0;
+  drawInfo->text=(char *) NULL;
 
   throwImageException();
 }
