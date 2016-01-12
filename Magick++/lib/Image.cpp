@@ -1919,7 +1919,6 @@ void Magick::Image::annotate(const std::string &text_,
 
   // Restore original values
   drawInfo->affine=oaffine;
-  drawInfo->text=DestroyString(drawInfo->text);
   drawInfo->text=(char *) NULL;
   drawInfo->geometry=(char *) NULL;
 
@@ -1935,6 +1934,7 @@ void Magick::Image::annotate(const std::string &text_,
   modifyImage();
 
   drawInfo=options()->drawInfo();
+  drawInfo->text=DestroyString(drawInfo->text);
   drawInfo->text=const_cast<char *>(text_.c_str());
   drawInfo->gravity=gravity_;
 
@@ -1942,7 +1942,7 @@ void Magick::Image::annotate(const std::string &text_,
   AnnotateImage(image(),drawInfo,exceptionInfo);
 
   drawInfo->gravity=NorthWestGravity;
-  drawInfo->text=0;
+  drawInfo->text=(char *) NULL;
 
   ThrowImageException;
 }
