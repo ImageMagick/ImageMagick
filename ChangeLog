@@ -2,6 +2,8 @@
   * Pair AcquireMagickResource with calls to RelinquishMagickResource when
     resource limits are hit (reference
     https://github.com/ImageMagick/ImageMagick/pull/75).
+  * Return non-zero for the -format %b option (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=28969).
 
 2016-01-01  6.9.3-0 Cristy  <quetzlzacatenango@image...>
   * New version 6.9.3-0, GIT revision 10445:620328b:20160101.
