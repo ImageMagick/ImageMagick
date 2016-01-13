@@ -2003,8 +2003,7 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
               *opacity++=ScaleQuantumToChar((Quantum) (GetPixelAlpha(image,p)));
             p+=GetPixelChannels(image);
           }
-          count+=EncodeImage(image,scanline,bytes_per_line & 0x7FFF,
-            packed_scanline);
+          count+=EncodeImage(image,scanline,bytes_per_line,packed_scanline);
           if (image->previous == (Image *) NULL)
             {
               status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,

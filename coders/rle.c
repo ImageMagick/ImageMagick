@@ -314,10 +314,13 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if ((number_pixels*number_planes_filled) != (size_t) (number_pixels*
          number_planes_filled))
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-    pixel_info_length=image->columns*image->rows*number_planes_filled;
-    pixel_info=AcquireVirtualMemory(pixel_info_length,sizeof(*pixels));
+    if (image->rows < (image->rows*number_planes_filled*sizeof(*pixels)))
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    pixel_info=AcquireVirtualMemory(image->columns,image->rows*
+      number_planes_filled*sizeof(*pixels));
     if (pixel_info == (MemoryInfo *) NULL)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+    pixel_info_length=image->columns*image->rows*number_planes_filled;
     pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
     if ((flags & 0x01) && !(flags & 0x02))
       {

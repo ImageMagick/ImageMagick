@@ -233,6 +233,21 @@ static MagickBooleanType
 %    o quantum: the number of bytes in each quantum.
 %
 */
+static MagickBooleanType CheckMemoryOverflow(const size_t count,
+  const size_t quantum)
+{
+  size_t
+    size;
+
+  size=count*quantum;
+  if ((count == 0) || (quantum != (size/count)))
+    {
+      errno=ENOMEM;
+      return(MagickTrue);
+    }
+  return(MagickFalse);
+}
+
 MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
 {
 #define AlignedExtent(size,alignment) \
@@ -246,14 +261,11 @@ MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
   void
     *memory;
 
-  size=count*quantum;
-  if ((count == 0) || (quantum != (size/count)))
-    {
-      errno=ENOMEM;
-      return((void *) NULL);
-    }
+  if (CheckMemoryOverflow(count,quantum) != MagickFalse)
+    return((void *) NULL);
   memory=NULL;
   alignment=CACHE_LINE_SIZE;
+  size=count*quantum;
   extent=AlignedExtent(size,alignment);
   if ((size == 0) || (alignment < sizeof(void *)) || (extent < size))
     return((void *) NULL);
@@ -528,15 +540,12 @@ MagickExport void *AcquireMagickMemory(const size_t size)
 MagickExport void *AcquireQuantumMemory(const size_t count,const size_t quantum)
 {
   size_t
-    size;
+    extent;
 
-  size=count*quantum;
-  if ((count == 0) || (quantum != (size/count)))
-    {
-      errno=ENOMEM;
-      return((void *) NULL);
-    }
-  return(AcquireMagickMemory(size));
+  if (CheckMemoryOverflow(count,quantum) != MagickFalse)
+    return((void *) NULL);
+  extent=count*quantum;
+  return(AcquireMagickMemory(extent));
 }
 
 /*
@@ -571,43 +580,40 @@ MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
     *memory_info;
 
   size_t
-    length;
+    extent;
 
-  length=count*quantum;
-  if ((count == 0) || (quantum != (length/count)))
-    {
-      errno=ENOMEM;
-      return((MemoryInfo *) NULL);
-    }
+  if (CheckMemoryOverflow(count,quantum) != MagickFalse)
+    return((MemoryInfo *) NULL);
   memory_info=(MemoryInfo *) MagickAssumeAligned(AcquireAlignedMemory(1,
     sizeof(*memory_info)));
   if (memory_info == (MemoryInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(memory_info,0,sizeof(*memory_info));
-  memory_info->length=length;
+  extent=count*quantum;
+  memory_info->length=extent;
   memory_info->signature=MagickCoreSignature;
-  if (AcquireMagickResource(MemoryResource,length) != MagickFalse)
+  if (AcquireMagickResource(MemoryResource,extent) != MagickFalse)
     {
-      memory_info->blob=AcquireAlignedMemory(1,length);
+      memory_info->blob=AcquireAlignedMemory(1,extent);
       if (memory_info->blob != NULL)
         {
           memory_info->type=AlignedVirtualMemory;
           return(memory_info);
         }
     }
-  RelinquishMagickResource(MemoryResource,length);
-  if (AcquireMagickResource(MapResource,length) != MagickFalse)
+  RelinquishMagickResource(MemoryResource,extent);
+  if (AcquireMagickResource(MapResource,extent) != MagickFalse)
     {
       /*
         Heap memory failed, try anonymous memory mapping.
       */
-      memory_info->blob=MapBlob(-1,IOMode,0,length);
+      memory_info->blob=MapBlob(-1,IOMode,0,extent);
       if (memory_info->blob != NULL)
         {
           memory_info->type=MapVirtualMemory;
           return(memory_info);
         }
-      if (AcquireMagickResource(DiskResource,length) != MagickFalse)
+      if (AcquireMagickResource(DiskResource,extent) != MagickFalse)
         {
           int
             file;
@@ -620,10 +626,10 @@ MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
           file=AcquireUniqueFileResource(memory_info->filename);
           if (file != -1)
             {
-              if ((lseek(file,length-1,SEEK_SET) == (length-1)) &&
+              if ((lseek(file,extent-1,SEEK_SET) == (extent-1)) &&
                   (write(file,"",1) == 1))
                 {
-                  memory_info->blob=MapBlob(file,IOMode,0,length);
+                  memory_info->blob=MapBlob(file,IOMode,0,extent);
                   if (memory_info->blob != NULL)
                     {
                       (void) close(file);
@@ -639,12 +645,12 @@ MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
               *memory_info->filename = '\0';
             }
         }
-      RelinquishMagickResource(DiskResource,length);
+      RelinquishMagickResource(DiskResource,extent);
     }
-  RelinquishMagickResource(MapResource,length);
+  RelinquishMagickResource(MapResource,extent);
   if (memory_info->blob == NULL)
     {
-      memory_info->blob=AcquireMagickMemory(length);
+      memory_info->blob=AcquireMagickMemory(extent);
       if (memory_info->blob != NULL)
         memory_info->type=UnalignedVirtualMemory;
     }
@@ -1208,16 +1214,15 @@ MagickExport void *ResizeQuantumMemory(void *memory,const size_t count,
   const size_t quantum)
 {
   size_t
-    size;
+    extent;
 
-  size=count*quantum;
-  if ((count == 0) || (quantum != (size/count)))
+  if (CheckMemoryOverflow(count,quantum) != MagickFalse)
     {
       memory=RelinquishMagickMemory(memory);
-      errno=ENOMEM;
       return((void *) NULL);
     }
-  return(ResizeMagickMemory(memory,size));
+  extent=count*quantum;
+  return(ResizeMagickMemory(memory,extent));
 }
 
 /*
