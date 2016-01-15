@@ -2363,8 +2363,8 @@ static MagickBooleanType WriteImageChannels(const PSDInfo *psd_info,
   compact_pixels=(unsigned char *) NULL;
   if (next_image->compression == RLECompression)
     {
-      compact_pixels=(unsigned char *) AcquireQuantumMemory(2*channels*
-        next_image->columns,packet_size*sizeof(*compact_pixels));
+      compact_pixels=(unsigned char *) AcquireQuantumMemory((2*channels*
+        next_image->columns)+1,packet_size*sizeof(*compact_pixels));
       if (compact_pixels == (unsigned char *) NULL)
         ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
     }
