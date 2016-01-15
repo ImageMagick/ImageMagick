@@ -835,7 +835,8 @@ static MagickBooleanType ReadPSDChannelPixels(Image *image,
                   SetPixelIndex(image,(((unsigned char) pixel) &
                     (0x01 << (7-bit))) != 0 ? 0 : 255,q);
                   SetPixelViaPixelInfo(image,image->colormap+(ssize_t)
-                    GetPixelIndex(image,q),q);
+                    ConstrainColormapIndex(image,GetPixelIndex(image,q),
+                      exception),q);
                   q+=GetPixelChannels(image);
                   x++;
                 }
