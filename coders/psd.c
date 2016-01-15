@@ -819,7 +819,7 @@ static MagickBooleanType ReadPSDChannelPixels(Image *image,const size_t channels
                   SetPixelIndex(indexes+x,(((unsigned char) pixel) &
                     (0x01 << (7-bit))) != 0 ? 0 : 255);
                   SetPixelRGBO(q,image->colormap+(ssize_t)
-                    ConstrainColormapIndex(GetPixelIndex(indexes+x)));
+                    ConstrainColormapIndex(image,GetPixelIndex(indexes+x)));
                   q++;
                   x++;
                 }
