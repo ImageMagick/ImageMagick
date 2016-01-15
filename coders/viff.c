@@ -407,7 +407,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
         image->colors=viff_info.map_columns;
         if (AcquireImageColormap(image,image->colors,exception) == MagickFalse)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-        if (viff_info.map_rows <
+        if (viff_info.map_rows >
             (viff_info.map_rows*bytes_per_pixel*sizeof(*viff_colormap)))
           ThrowReaderException(CorruptImageError,"ImproperImageHeader");
         viff_colormap=(unsigned char *) AcquireQuantumMemory(image->colors,
