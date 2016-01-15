@@ -1888,6 +1888,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           image->matte=MagickFalse;
         }
     }
+  if ((image->depth == 1) && (image->storage_class != PseudoClass))
+    ThrowReaderException(CorruptImageError, "ImproperImageHeader");
   has_merged_image=MagickTrue;
   length=ReadBlobMSBLong(image);
   if (length != 0)
