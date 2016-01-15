@@ -348,8 +348,8 @@ int main( int /*argc*/, char ** argv)
     //
     {
       // Test default setting
-      double x, y;
-      image.chromaBluePrimary( &x, &y );
+      double x, y, z;
+      image.chromaBluePrimary(&x, &y, &z);
       if ( x == 0.0f || y == 0.0f )
 	{
 	  ++failures;
@@ -359,9 +359,9 @@ int main( int /*argc*/, char ** argv)
 	}
 
       // Test set/get
-      image.chromaBluePrimary( 50, 100 );
-      image.chromaBluePrimary( &x, &y );
-      if ( x != 50 || y != 100 )
+      image.chromaBluePrimary(50, 100, 150 );
+      image.chromaBluePrimary(&x, &y, &z);
+      if ( x != 50 || y != 100 || z != 150 )
 	{
 	  ++failures;
 	  cout << "Line: " << __LINE__
@@ -374,8 +374,8 @@ int main( int /*argc*/, char ** argv)
     //
     {
       // Test default setting
-      double x, y;
-      image.chromaGreenPrimary( &x, &y );
+      double x, y, z;
+      image.chromaGreenPrimary(&x, &y, &z);
       if ( x == 0.0f || y == 0.0f )
 	{
 	  ++failures;
@@ -384,9 +384,9 @@ int main( int /*argc*/, char ** argv)
 	}
 
       // Test set/get
-      image.chromaGreenPrimary( 50, 100 );
-      image.chromaGreenPrimary( &x, &y );
-      if ( x != 50 || y != 100 )
+      image.chromaGreenPrimary(50, 100, 150);
+      image.chromaGreenPrimary(&x, &y, &z);
+      if (x != 50 || y != 100 || z != 150)
 	{
 	  ++failures;
 	  cout << "Line: " << __LINE__
@@ -399,8 +399,8 @@ int main( int /*argc*/, char ** argv)
     //
     {
       // Test default setting
-      double x, y;
-      image.chromaRedPrimary( &x, &y );
+      double x, y, z;
+      image.chromaRedPrimary(&x, &y, &z);
       if ( x == 0.0f || y == 0.0f )
 	{
 	  ++failures;
@@ -409,9 +409,9 @@ int main( int /*argc*/, char ** argv)
 	}
 
       // Test set/get
-      image.chromaRedPrimary( 50, 100 );
-      image.chromaRedPrimary( &x, &y );
-      if ( x != 50 || y != 100 )
+      image.chromaRedPrimary(50, 100, 150);
+      image.chromaRedPrimary(&x, &y, &z);
+      if (x != 50 || y != 100 || z != 150)
 	{
 	  ++failures;
 	  cout << "Line: " << __LINE__
@@ -424,8 +424,8 @@ int main( int /*argc*/, char ** argv)
     //
     {
       // Test default setting
-      double x, y;
-      image.chromaWhitePoint( &x, &y );
+      double x, y, z;
+      image.chromaWhitePoint(&x, &y, &z);
       if ( x == 0.0f || y == 0.0f )
 	{
 	  ++failures;
@@ -434,9 +434,9 @@ int main( int /*argc*/, char ** argv)
 	}
 
       // Test set/get
-      image.chromaWhitePoint( 50, 100 );
-      image.chromaWhitePoint( &x, &y );
-      if ( x != 50 || y != 100 )
+      image.chromaWhitePoint(50, 100, 150);
+      image.chromaWhitePoint(&x, &y, &z);
+      if (x != 50 || y != 100 || z != 150)
 	{
 	  ++failures;
 	  cout << "Line: " << __LINE__
