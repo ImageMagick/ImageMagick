@@ -317,7 +317,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if ((sun_info.maptype == RMT_NONE) && (sun_info.maplength != 0))
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     if ((sun_info.depth != 1) && (sun_info.depth != 8) &&
-        (sun_info.depth != 16) && (sun_info.depth != 32))
+        (sun_info.depth != 24) && (sun_info.depth != 32))
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     if ((sun_info.maptype != RMT_NONE) && (sun_info.maptype != RMT_EQUAL_RGB) &&
         (sun_info.maptype != RMT_RAW))
