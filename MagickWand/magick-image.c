@@ -3910,7 +3910,7 @@ WandExport unsigned char *MagickGetImagesBlob(MagickWand *wand,size_t *length)
 %  The format of the MagickGetImageBluePrimary method is:
 %
 %      MagickBooleanType MagickGetImageBluePrimary(MagickWand *wand,double *x,
-%        double *y)
+%        double *y,double *z)
 %
 %  A description of each parameter follows:
 %
@@ -3920,9 +3920,11 @@ WandExport unsigned char *MagickGetImagesBlob(MagickWand *wand,size_t *length)
 %
 %    o y: the chromaticity blue primary y-point.
 %
+%    o z: the chromaticity blue primary z-point.
+%
 */
 WandExport MagickBooleanType MagickGetImageBluePrimary(MagickWand *wand,
-  double *x,double *y)
+  double *x,double *y,double *z)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickWandSignature);
@@ -3932,6 +3934,7 @@ WandExport MagickBooleanType MagickGetImageBluePrimary(MagickWand *wand,
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   *x=wand->images->chromaticity.blue_primary.x;
   *y=wand->images->chromaticity.blue_primary.y;
+  *z=wand->images->chromaticity.blue_primary.z;
   return(MagickTrue);
 }
 
@@ -4883,7 +4886,7 @@ WandExport GravityType MagickGetImageGravity(MagickWand *wand)
 %  The format of the MagickGetImageGreenPrimary method is:
 %
 %      MagickBooleanType MagickGetImageGreenPrimary(MagickWand *wand,double *x,
-%        double *y)
+%        double *y,double *z)
 %
 %  A description of each parameter follows:
 %
@@ -4893,9 +4896,11 @@ WandExport GravityType MagickGetImageGravity(MagickWand *wand)
 %
 %    o y: the chromaticity green primary y-point.
 %
+%    o z: the chromaticity green primary z-point.
+%
 */
 WandExport MagickBooleanType MagickGetImageGreenPrimary(MagickWand *wand,
-  double *x,double *y)
+  double *x,double *y,double *z)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickWandSignature);
@@ -4905,6 +4910,7 @@ WandExport MagickBooleanType MagickGetImageGreenPrimary(MagickWand *wand,
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   *x=wand->images->chromaticity.green_primary.x;
   *y=wand->images->chromaticity.green_primary.y;
+  *z=wand->images->chromaticity.green_primary.z;
   return(MagickTrue);
 }
 
@@ -5343,7 +5349,7 @@ WandExport MagickBooleanType MagickGetImagePixelColor(MagickWand *wand,
 %  The format of the MagickGetImageRedPrimary method is:
 %
 %      MagickBooleanType MagickGetImageRedPrimary(MagickWand *wand,double *x,
-%        double *y)
+%        double *y, double *z)
 %
 %  A description of each parameter follows:
 %
@@ -5353,9 +5359,11 @@ WandExport MagickBooleanType MagickGetImagePixelColor(MagickWand *wand,
 %
 %    o y: the chromaticity red primary y-point.
 %
+%    o z: the chromaticity red primary z-point.
+%
 */
 WandExport MagickBooleanType MagickGetImageRedPrimary(MagickWand *wand,
-  double *x,double *y)
+  double *x,double *y,double *z)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickWandSignature);
@@ -5365,6 +5373,7 @@ WandExport MagickBooleanType MagickGetImageRedPrimary(MagickWand *wand,
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   *x=wand->images->chromaticity.red_primary.x;
   *y=wand->images->chromaticity.red_primary.y;
+  *z=wand->images->chromaticity.red_primary.z;
   return(MagickTrue);
 }
 
@@ -5753,7 +5762,7 @@ WandExport VirtualPixelMethod MagickGetImageVirtualPixelMethod(MagickWand *wand)
 %  The format of the MagickGetImageWhitePoint method is:
 %
 %      MagickBooleanType MagickGetImageWhitePoint(MagickWand *wand,double *x,
-%        double *y)
+%        double *y,double *z)
 %
 %  A description of each parameter follows:
 %
@@ -5763,9 +5772,11 @@ WandExport VirtualPixelMethod MagickGetImageVirtualPixelMethod(MagickWand *wand)
 %
 %    o y: the chromaticity white y-point.
 %
+%    o z: the chromaticity white z-point.
+%
 */
 WandExport MagickBooleanType MagickGetImageWhitePoint(MagickWand *wand,
-  double *x,double *y)
+  double *x,double *y,double *z)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickWandSignature);
@@ -5775,6 +5786,7 @@ WandExport MagickBooleanType MagickGetImageWhitePoint(MagickWand *wand,
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   *x=wand->images->chromaticity.white_point.x;
   *y=wand->images->chromaticity.white_point.y;
+  *z=wand->images->chromaticity.white_point.z;
   return(MagickTrue);
 }
 
@@ -9080,7 +9092,7 @@ WandExport MagickBooleanType MagickSetImageBackgroundColor(MagickWand *wand,
 %  The format of the MagickSetImageBluePrimary method is:
 %
 %      MagickBooleanType MagickSetImageBluePrimary(MagickWand *wand,
-%        const double x,const double y)
+%        const double x,const double y,const double z)
 %
 %  A description of each parameter follows:
 %
@@ -9090,9 +9102,11 @@ WandExport MagickBooleanType MagickSetImageBackgroundColor(MagickWand *wand,
 %
 %    o y: the blue primary y-point.
 %
+%    o z: the blue primary z-point.
+%
 */
 WandExport MagickBooleanType MagickSetImageBluePrimary(MagickWand *wand,
-  const double x,const double y)
+  const double x,const double y,const double z)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickWandSignature);
@@ -9102,6 +9116,7 @@ WandExport MagickBooleanType MagickSetImageBluePrimary(MagickWand *wand,
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   wand->images->chromaticity.blue_primary.x=x;
   wand->images->chromaticity.blue_primary.y=y;
+  wand->images->chromaticity.blue_primary.z=z;
   return(MagickTrue);
 }
 
@@ -9877,7 +9892,7 @@ WandExport MagickBooleanType MagickSetImageGravity(MagickWand *wand,
 %  The format of the MagickSetImageGreenPrimary method is:
 %
 %      MagickBooleanType MagickSetImageGreenPrimary(MagickWand *wand,
-%        const double x,const double y)
+%        const double x,const double y,const double z)
 %
 %  A description of each parameter follows:
 %
@@ -9887,10 +9902,11 @@ WandExport MagickBooleanType MagickSetImageGravity(MagickWand *wand,
 %
 %    o y: the green primary y-point.
 %
+%    o z: the green primary z-point.
 %
 */
 WandExport MagickBooleanType MagickSetImageGreenPrimary(MagickWand *wand,
-  const double x,const double y)
+  const double x,const double y,const double z)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickWandSignature);
@@ -9900,6 +9916,7 @@ WandExport MagickBooleanType MagickSetImageGreenPrimary(MagickWand *wand,
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   wand->images->chromaticity.green_primary.x=x;
   wand->images->chromaticity.green_primary.y=y;
+  wand->images->chromaticity.green_primary.z=z;
   return(MagickTrue);
 }
 
@@ -10306,7 +10323,7 @@ WandExport MagickProgressMonitor MagickSetImageProgressMonitor(MagickWand *wand,
 %  The format of the MagickSetImageRedPrimary method is:
 %
 %      MagickBooleanType MagickSetImageRedPrimary(MagickWand *wand,
-%        const double x,const double y)
+%        const double x,const double y,const double z)
 %
 %  A description of each parameter follows:
 %
@@ -10316,9 +10333,11 @@ WandExport MagickProgressMonitor MagickSetImageProgressMonitor(MagickWand *wand,
 %
 %    o y: the red primary y-point.
 %
+%    o z: the red primary z-point.
+%
 */
 WandExport MagickBooleanType MagickSetImageRedPrimary(MagickWand *wand,
-  const double x,const double y)
+  const double x,const double y,const double z)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickWandSignature);
@@ -10328,6 +10347,7 @@ WandExport MagickBooleanType MagickSetImageRedPrimary(MagickWand *wand,
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   wand->images->chromaticity.red_primary.x=x;
   wand->images->chromaticity.red_primary.y=y;
+  wand->images->chromaticity.red_primary.z=z;
   return(MagickTrue);
 }
 
@@ -10621,7 +10641,7 @@ WandExport VirtualPixelMethod MagickSetImageVirtualPixelMethod(MagickWand *wand,
 %  The format of the MagickSetImageWhitePoint method is:
 %
 %      MagickBooleanType MagickSetImageWhitePoint(MagickWand *wand,
-%        const double x,const double y)
+%        const double x,const double y,const double z)
 %
 %  A description of each parameter follows:
 %
@@ -10631,9 +10651,11 @@ WandExport VirtualPixelMethod MagickSetImageVirtualPixelMethod(MagickWand *wand,
 %
 %    o y: the white y-point.
 %
+%    o z: the white z-point.
+%
 */
 WandExport MagickBooleanType MagickSetImageWhitePoint(MagickWand *wand,
-  const double x,const double y)
+  const double x,const double y,const double z)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickWandSignature);
@@ -10643,6 +10665,7 @@ WandExport MagickBooleanType MagickSetImageWhitePoint(MagickWand *wand,
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   wand->images->chromaticity.white_point.x=x;
   wand->images->chromaticity.white_point.y=y;
+  wand->images->chromaticity.white_point.z=z;
   return(MagickTrue);
 }
 

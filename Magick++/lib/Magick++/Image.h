@@ -691,21 +691,21 @@ namespace Magick
     // horizontal or vertical subregion of image.
     void chop(const Geometry &geometry_);
 
-    // Chromaticity blue primary point (e.g. x=0.15, y=0.06)
-    void chromaBluePrimary(const double x_,const double y_);
-    void chromaBluePrimary(double *x_,double *y_) const;
+    // Chromaticity blue primary point.
+    void chromaBluePrimary(const double x_,const double y_,const double z_);
+    void chromaBluePrimary(double *x_,double *y_,double *z_) const;
     
-    // Chromaticity green primary point (e.g. x=0.3, y=0.6)
-    void chromaGreenPrimary(const double x_,const double y_);
-    void chromaGreenPrimary(double *x_,double *y_) const;
+    // Chromaticity green primary point.
+    void chromaGreenPrimary(const double x_,const double y_,const double z_);
+    void chromaGreenPrimary(double *x_,double *y_,double *z_) const;
     
-    // Chromaticity red primary point (e.g. x=0.64, y=0.33)
-    void chromaRedPrimary(const double x_,const double y_);
-    void chromaRedPrimary(double *x_,double *y_) const;
+    // Chromaticity red primary point.
+    void chromaRedPrimary(const double x_,const double y_,const double z_);
+    void chromaRedPrimary(double *x_,double *y_,double *z_) const;
     
-    // Chromaticity white point (e.g. x=0.3127, y=0.329)
-    void chromaWhitePoint(const double x_,const double y_);
-    void chromaWhitePoint(double *x_,double *y_) const;
+    // Chromaticity white point.
+    void chromaWhitePoint(const double x_,const double y_,const double z_);
+    void chromaWhitePoint(double *x_,double *y_,double *z_) const;
 
     // Set each pixel whose value is below zero to zero and any the
     // pixel whose value is above the quantum range to the quantum range (e.g.

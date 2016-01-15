@@ -1225,52 +1225,56 @@ void Magick::boxColorImage::operator()( Magick::Image &image_ ) const
   image_.boxColor( _boxColor );
 }
 
-// Chromaticity blue primary point (e.g. x=0.15, y=0.06)
-Magick::chromaBluePrimaryImage::chromaBluePrimaryImage( const double x_,
-                                                        const double y_ )
-  : _x( x_ ),
-    _y( y_ )
+Magick::chromaBluePrimaryImage::chromaBluePrimaryImage(const double x_,
+  const double y_,const double z_)
+  : _x(x_),
+    _y(y_),
+    _z(z_)
 {
-}
-void Magick::chromaBluePrimaryImage::operator()( Magick::Image &image_ ) const
-{
-  image_.chromaBluePrimary( _x, _y );
 }
 
-// Chromaticity green primary point (e.g. x=0.3, y=0.6)
-Magick::chromaGreenPrimaryImage::chromaGreenPrimaryImage( const double x_,
-                                                          const double y_ )
-  : _x( x_ ),
-    _y( y_ )
+void Magick::chromaBluePrimaryImage::operator()(Magick::Image &image_) const
+{
+  image_.chromaBluePrimary(_x,_y,_z);
+}
+
+Magick::chromaGreenPrimaryImage::chromaGreenPrimaryImage(const double x_,
+  const double y_,const double z_)
+  : _x(x_),
+    _y(y_),
+    _z(z_)
 {
 }
+
 void Magick::chromaGreenPrimaryImage::operator()( Magick::Image &image_ ) const
 {
-  image_.chromaGreenPrimary( _x, _y );
+  image_.chromaGreenPrimary(_x,_y,_z);
 }
 
-// Chromaticity red primary point (e.g. x=0.64, y=0.33)
-Magick::chromaRedPrimaryImage::chromaRedPrimaryImage( const double x_,
-                                                      const double y_ )
-  : _x( x_ ),
-    _y( y_ )
+Magick::chromaRedPrimaryImage::chromaRedPrimaryImage(const double x_,
+  const double y_,const double z_)
+  : _x(x_),
+    _y(y_),
+    _z(z_)
 {
-}
-void Magick::chromaRedPrimaryImage::operator()( Magick::Image &image_ ) const
-{
-  image_.chromaRedPrimary( _x, _y );
 }
 
-// Chromaticity white point (e.g. x=0.3127, y=0.329)
-Magick::chromaWhitePointImage::chromaWhitePointImage( const double x_,
-                                                      const double y_ )
-  : _x( x_ ),
-    _y( y_ )
+void Magick::chromaRedPrimaryImage::operator()(Magick::Image &image_) const
+{
+  image_.chromaRedPrimary(_x,_y,_z);
+}
+
+Magick::chromaWhitePointImage::chromaWhitePointImage(const double x_,
+  const double y_,const double z_)
+  : _x(x_),
+    _y(y_),
+    _z(z_)
 {
 }
-void Magick::chromaWhitePointImage::operator()( Magick::Image &image_ ) const
+
+void Magick::chromaWhitePointImage::operator()(Magick::Image &image_) const
 {
-  image_.chromaWhitePoint( _x, _y );
+  image_.chromaWhitePoint(_x,_y,_z);
 }
 
 // Colors within this distance are considered equal

@@ -2188,56 +2188,68 @@ void Magick::Image::chop(const Geometry &geometry_)
   ThrowImageException;
 }
 
-void Magick::Image::chromaBluePrimary(const double x_,const double y_)
+void Magick::Image::chromaBluePrimary(const double x_,const double y_,
+  const double z_)
 {
   modifyImage();
   image()->chromaticity.blue_primary.x=x_;
   image()->chromaticity.blue_primary.y=y_;
+  image()->chromaticity.blue_primary.z=z_;
 }
 
-void Magick::Image::chromaBluePrimary(double *x_,double *y_) const
+void Magick::Image::chromaBluePrimary(double *x_,double *y_,double *z_) const
 {
   *x_=constImage()->chromaticity.blue_primary.x;
   *y_=constImage()->chromaticity.blue_primary.y;
+  *z_=constImage()->chromaticity.blue_primary.z;
 }
 
-void Magick::Image::chromaGreenPrimary(const double x_,const double y_)
+void Magick::Image::chromaGreenPrimary(const double x_,const double y_,
+  const double z_)
 {
   modifyImage();
   image()->chromaticity.green_primary.x=x_;
   image()->chromaticity.green_primary.y=y_;
+  image()->chromaticity.green_primary.z=z_;
 }
 
-void Magick::Image::chromaGreenPrimary(double *x_,double *y_) const
+void Magick::Image::chromaGreenPrimary(double *x_,double *y_,double *z_) const
 {
   *x_=constImage()->chromaticity.green_primary.x;
   *y_=constImage()->chromaticity.green_primary.y;
+  *z_=constImage()->chromaticity.green_primary.z;
 }
 
-void Magick::Image::chromaRedPrimary(const double x_,const double y_)
+void Magick::Image::chromaRedPrimary(const double x_,const double y_,
+  const double z_)
 {
   modifyImage();
   image()->chromaticity.red_primary.x=x_;
   image()->chromaticity.red_primary.y=y_;
+  image()->chromaticity.red_primary.z=z_;
 }
 
-void Magick::Image::chromaRedPrimary(double *x_,double *y_) const
+void Magick::Image::chromaRedPrimary(double *x_,double *y_,double *z_) const
 {
   *x_=constImage()->chromaticity.red_primary.x;
   *y_=constImage()->chromaticity.red_primary.y;
+  *z_=constImage()->chromaticity.red_primary.z;
 }
 
-void Magick::Image::chromaWhitePoint(const double x_,const double y_)
+void Magick::Image::chromaWhitePoint(const double x_,const double y_,
+  const double z_)
 {
   modifyImage();
   image()->chromaticity.white_point.x=x_;
   image()->chromaticity.white_point.y=y_;
+  image()->chromaticity.white_point.z=z_;
 }
 
-void Magick::Image::chromaWhitePoint(double *x_,double *y_) const
+void Magick::Image::chromaWhitePoint(double *x_,double *y_,double *z_) const
 {
   *x_=constImage()->chromaticity.white_point.x;
   *y_=constImage()->chromaticity.white_point.y;
+  *z_=constImage()->chromaticity.white_point.z;
 }
 
 void Magick::Image::clamp(void)

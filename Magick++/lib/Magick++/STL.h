@@ -1332,56 +1332,60 @@ namespace Magick
     Color _boxColor;
   };
 
-  // Chromaticity blue primary point (e.g. x=0.15, y=0.06)
+  // Chromaticity blue primary point.
   class MagickPPExport chromaBluePrimaryImage : public std::unary_function<Image&,void>
   {
   public:
-    chromaBluePrimaryImage( const double x_, const double y_ );
+    chromaBluePrimaryImage(const double x_,const double y_,const double z_);
 
-    void operator()( Image &image_ ) const;
+    void operator()(Image &image_) const;
 
   private:
     double _x;
     double _y;
+    double _z;
   };
 
-  // Chromaticity green primary point (e.g. x=0.3, y=0.6)
+  // Chromaticity green primary point.
   class MagickPPExport chromaGreenPrimaryImage : public std::unary_function<Image&,void>
   {
   public:
-    chromaGreenPrimaryImage( const double x_, const double y_ );
+    chromaGreenPrimaryImage(const double x_,const double y_,const double z_);
 
-    void operator()( Image &image_ ) const;
+    void operator()(Image &image_) const;
 
   private:
     double _x;
     double _y;
+    double _z;
   };
 
-  // Chromaticity red primary point (e.g. x=0.64, y=0.33)
+  // Chromaticity red primary point.
   class MagickPPExport chromaRedPrimaryImage : public std::unary_function<Image&,void>
   {
   public:
-    chromaRedPrimaryImage( const double x_, const double y_ );
+    chromaRedPrimaryImage(const double x_,const double y_,const double z_);
 
-    void operator()( Image &image_ ) const;
+    void operator()(Image &image_) const;
 
   private:
     double _x;
     double _y;
+    double _z;
   };
 
-  // Chromaticity white point (e.g. x=0.3127, y=0.329)
+  // Chromaticity white point.
   class MagickPPExport chromaWhitePointImage : public std::unary_function<Image&,void>
   {
   public:
-    chromaWhitePointImage( const double x_, const double y_ );
+    chromaWhitePointImage(const double x_,const double y_,const double z_);
 
-    void operator()( Image &image_ ) const;
+    void operator()(Image &image_) const;
 
   private:
     double _x;
     double _y;
+    double _z;
   };
 
   // Colors within this distance are considered equal
