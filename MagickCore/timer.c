@@ -188,11 +188,11 @@ MagickExport TimerInfo *DestroyTimerInfo(TimerInfo *timer_info)
 */
 static double ElapsedTime(void)
 {
-#if defined(MAGICKCORE_HAVE_TIMES)
+#if defined(MAGICKCORE_HAVE_TIMES) && defined(MAGICKCORE_HAVE_SYSCONF)
   struct tms
     timer;
 
-  return((double) times(&timer)/CLOCKS_PER_SEC);
+  return((double) times(&timer)/sysconf(_SC_CLK_TCK));
 #else
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
   return(NTElapsedTime());
@@ -442,12 +442,12 @@ static void StopTimer(TimerInfo *time_info)
 */
 static double UserTime(void)
 {
-#if defined(MAGICKCORE_HAVE_TIMES)
+#if defined(MAGICKCORE_HAVE_TIMES) && defined(MAGICKCORE_HAVE_SYSCONF)
   struct tms
     timer;
 
   (void) times(&timer);
-  return((double) (timer.tms_utime+timer.tms_stime)/CLOCKS_PER_SEC);
+  return((double) (timer.tms_utime+timer.tms_stime)/sysconf(_SC_CLK_TCK));
 #else
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
   return(NTUserTime());
