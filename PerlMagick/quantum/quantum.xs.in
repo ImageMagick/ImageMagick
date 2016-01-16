@@ -2198,12 +2198,6 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
             info->image_info->verbose=sp != 0 ? MagickTrue : MagickFalse;
           break;
         }
-      if (LocaleCompare(attribute,"view") == 0)
-        {
-          if (info)
-            (void) CloneString(&info->image_info->view,SvPV(sval,na));
-          break;
-        }
       if (LocaleCompare(attribute,"virtual-pixel") == 0)
         {
           sp=SvPOK(sval) ? ParseCommandOption(MagickVirtualPixelOptions,
