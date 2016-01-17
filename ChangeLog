@@ -1,3 +1,6 @@
+2016-01-17  6.9.3-1 Cristy  <quetzlzacatenango@image...>
+  * New version 6.9.3-1, GIT revision 10488:e4f046e:20160116.
+
 2016-01-06  6.9.3-1 Cristy  <quetzlzacatenango@image...>
   * Pair AcquireMagickResource with calls to RelinquishMagickResource when
     resource limits are hit (reference
