@@ -5718,13 +5718,6 @@ Get(ref,...)
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
-          if (LocaleCompare(attribute,"view") == 0)
-            {
-              if (info && info->image_info->view)
-                s=newSVpv(info->image_info->view,0);
-              PUSHs(s ? sv_2mortal(s) : &sv_undef);
-              continue;
-            }
           if (LocaleCompare(attribute,"virtual-pixel") == 0)
             {
               if (image == (Image *) NULL)
