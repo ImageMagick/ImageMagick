@@ -2719,12 +2719,22 @@ static void WriteDDSInfo(Image *image, const size_t pixelFormat,
   (void) WriteBlobLSBLong(image,(unsigned int) image->rows);
   (void) WriteBlobLSBLong(image,(unsigned int) image->columns);
 
-  if (compression == FOURCC_DXT1)
-    (void) WriteBlobLSBLong(image,
-             (unsigned int) (MagickMax(1,(image->columns+3)/4) * 8));
+  if (pixelFormat == DDPF_FOURCC)
+    {
+      if (compression == FOURCC_DXT1)
+        (void) WriteBlobLSBLong(image,(unsigned int) (MagickMax(1,
+          (image->columns+3)/4)*8));
+      else
+        (void) WriteBlobLSBLong(image,(unsigned int) (MagickMax(1,
+          (image->columns+3)/4)*16));
+    }
   else
-    (void) WriteBlobLSBLong(image,
-             (unsigned int) (MagickMax(1,(image->columns+3)/4) * 16));
+    {
+      if (image->matte != MagickFalse)
+        (void) WriteBlobLSBLong(image,(unsigned int) (image->columns*32));
+      else
+        (void) WriteBlobLSBLong(image,(unsigned int) (image->columns*24));
+    }
 
   (void) WriteBlobLSBLong(image,0x00);
   (void) WriteBlobLSBLong(image,(unsigned int) mipmaps+1);
@@ -2744,7 +2754,7 @@ static void WriteDDSInfo(Image *image, const size_t pixelFormat,
   else
     {
       (void) WriteBlobLSBLong(image,0x00);
-      if (image->matte)
+      if (image->matte != MagickFalse)
         {
           (void) WriteBlobLSBLong(image,32);
           (void) WriteBlobLSBLong(image,0xff0000);
@@ -2755,9 +2765,9 @@ static void WriteDDSInfo(Image *image, const size_t pixelFormat,
       else
         {
           (void) WriteBlobLSBLong(image,24);
+          (void) WriteBlobLSBLong(image,0xff0000);
+          (void) WriteBlobLSBLong(image,0xff00);
           (void) WriteBlobLSBLong(image,0xff);
-          (void) WriteBlobLSBLong(image,0x00);
-          (void) WriteBlobLSBLong(image,0x00);
           (void) WriteBlobLSBLong(image,0x00);
         }
     }
