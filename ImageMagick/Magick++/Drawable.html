@@ -1,0 +1,798 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Magick++ API: Drawing on Images</title>
+<link rel="stylesheet" href="magick.css" type="text/css" />
+</head>
+<body>
+<div class="doc-section">
+<h1 style="text-align:center">Magick::Drawable</h1>
+<p>Drawable provides a convenient interface for preparing vector, image, or text arguments for the Image::draw() method. Each instance of a Drawable sub-class represents a single drawable object. Drawable objects may be drawn "one-by-one" via multiple invocations of the Image <a href="Image.html#draw">draw</a>() method, or may be drawn "all-at-once" by passing a list of Drawable objects to the Image <a href="Image.html#draw">draw</a>() method. The one-by-one approach is convenient for simple drawings, while the list-based approach is appropriate for drawings which require more sophistication.</p>
+<p>The following is an example using the Drawable subclasses with a one-by-one approach to draw the following figure:</p>
+<p class="image"><font color="#000000"><font color="#000000"><img
+ src="Drawable_example_1.png" name="Graphic1" align="bottom" border="3"
+ height="200" width="300" alt="example" /></font></font>
+</p>
+<div class="viewport">
+#include &lt;string> 
+#include &lt;iostream> 
+#include &lt;Magick++.h>
+
+using namespace std; 
+using namespace Magick;
+
+int main(int /*argc*/,char **argv) 
+{ 
+  try { 
+    InitializeMagick(*argv);
+
+    // Create base image (white image of 300 by 200 pixels) 
+    Image image( Geometry(300,200), Color("white") );
+
+    // Set draw options 
+    image.strokeColor("red"); // Outline color 
+    image.fillColor("green"); // Fill color 
+    image.strokeWidth(5);
+
+    // Draw a circle 
+    image.draw( DrawableCircle(100,100, 50,100) );
+
+    // Draw a rectangle 
+    image.draw( DrawableRectangle(200,200, 270,170) );
+
+    // Display the result 
+    image.display( ); 
+  } 
+  catch( exception &amp; error_ ) 
+    { 
+      cout &lt;&lt; "Caught exception: " &lt;&lt; error_.what() &lt;&lt; endl; 
+      return 1; 
+    }
+
+  return 0; 
+}
+</div>
+<p>Since Drawable is an object it may be saved in an array or a list for later (perhaps repeated) use. The following example shows how to draw the same figure using the list-based approach:</p>
+<div class="viewport">
+#include &lt;string> 
+#include &lt;iostream> 
+#include &lt;list> 
+#include &lt;Magick++.h>
+
+using namespace std; 
+using namespace Magick;
+
+int main(int /*argc*/,char **/*argv*/) 
+{ 
+  try { 
+
+    InitializeMagick(*argv);
+
+    // Create base image (white image of 300 by 200 pixels) 
+    Image image( Geometry(300,200), Color("white") );
+
+    // Construct drawing list 
+    std::list&lt;Magick::Drawable> drawList;
+
+    // Add some drawing options to drawing list 
+    drawList.push_back(DrawableStrokeColor("red")); // Outline color 
+    drawList.push_back(DrawableStrokeWidth(5)); // Stroke width 
+    drawList.push_back(DrawableFillColor("green")); // Fill color
+
+    // Add a Circle to drawing list 
+    drawList.push_back(DrawableCircle(100,100, 50,100));
+
+    // Add a Rectangle to drawing list 
+    drawList.push_back(DrawableRectangle(200,100, 270,170));
+
+    // Draw everything using completed drawing list 
+    image.draw(drawList);
+
+    // Display the result 
+    image.display( ); 
+  } 
+  catch( exception &amp; error_ ) 
+    { 
+      cout &lt;&lt; "Caught exception: " &lt;&lt; error_.what() &lt;&lt; endl; 
+      return 1; 
+    }
+
+  return 0; 
+}
+</div>
+<p>Drawable depends on the simple Coordinate structure which represents a pair of x,y coodinates. The methods provided by the Coordinate structure are shown in the following table:</p>
+<p style="text-align:center;margin-bottom: 0in"><b>Coordinate Structure Methods</b></p>
+<table width="100%" border="1" cellpadding="2" cellspacing="2">
+<tr>
+<th>
+<p class="western">Method/Member</p></th>
+<th>
+<p class="western">Signature</p></th>
+<th>
+<p class="western">Description</p></th></tr>
+<tr>
+<td rowspan="2">
+<p class="western" style="text-align:center">Coordinate</p></td>
+<td>
+<p class="western">void</p></td>
+<td>
+<p class="western">Default Constructor</p></td></tr>
+<tr>
+<td>
+<p class="western">double x_, double y_</p></td>
+<td>
+<p class="western">Constructor, setting <i>first</i> &amp; <i>second</i></p></td></tr>
+<tr>
+<td>
+<p class="western" style="text-align:center">x</p></td>
+<td>
+<p class="western">double x_</p></td>
+<td>
+<p class="western">x coordinate member</p></td></tr>
+<tr>
+<td>
+<p class="western" style="text-align:center">y</p></td>
+<td>
+<p class="western">double y_</p></td>
+<td>
+<p class="western">y coordinate member</p></td></tr></table>
+<p>The Drawable classes are shown in the following table. Only constructor signatures are documented here. Each Drawable class also provides methods by which each individual parameter may be adjusted.</p>
+<p style="text-align:center;margin-bottom: 0in"><b>Drawable Classes</b></p>
+<table width="100%" border="1" cellpadding="2" cellspacing="3">
+<col width="68*"/>
+<col width="55*"/>
+<col width="133*"/>
+<tr>
+<th width="27%">
+<p class="western">Sub-Class</p></th>
+<th width="21%">
+<p class="western">Constructor Signature</p></th>
+<th width="52%">
+<p class="western">Description</p></th></tr>
+<tr>
+<td rowspan="2" width="27%">
+<p class="western" style="text-align:center">DrawableAffine</p></td>
+<td width="21%">
+<p class="western">double sx_, double sy_, double rx_, double ry_, double tx_, double ty_</p></td>
+<td width="52%">
+<p class="western">Specify a transformation matrix to adjust scaling, rotation, and translation (coordinate transformation) for subsequently drawn objects in the same or decendent drawing context. The sx_ &amp; sy_ parameters represent the x &amp; y scale factors, the rx_ &amp; ry_ parameters represent the x &amp; y rotation, and the tx_ &amp; ty_ parameters represent the x &amp; y translation.</p></td></tr>
+<tr>
+<td width="21%">
+<p class="western">void</p></td>
+<td width="52%">
+<p class="western">Specify a transformation matrix to adjust scaling, rotation, and translation (coordinate transformation) for subsequently drawn objects in the same or decendent drawing context. Initialized to unity (no effect) affine values. Use class methods (not currently documented) to adjust individual parameters from their unity values.</p></td></tr>
+<tr>
+<td width="27%">
+<p class="western" style="text-align:center">DrawableAngle</p></td>
+<td width="21%">
+<p class="western">double angle_</p></td>
+<td width="52%">
+<p class="western">Set drawing angle</p></td></tr>
+<tr>
+<td width="27%">
+<p class="western" style="text-align:center">DrawableArc</p></td>
+<td width="21%">
+<p class="western">double startX_, double startY_, double endX_, double endY_, double startDegrees, double endDegrees_</p></td>
+<td width="52%">
+<p class="western">Draw an arc using the <i>stroke</i> color and based on the circle starting at coordinates <i>startX_</i>,<i>startY_,</i> and ending with coordinates <i>endX_,</i>endY_, and bounded by the rotational arc <i>startDegrees_,endDegrees_</i></p></td></tr>
+<tr>
+<td width="27%">
+<p class="western" style="text-align:center">DrawableBezier</p></td>
+<td width="21%">
+<p class="western">const std::list&lt;Magick::Coordinate&gt; &amp;coordinates_</p></td>
+<td width="52%">
+<p class="western">Draw a bezier curve using the <i>stroke</i> color and based on the coordinates specified by the <i>coordinates_</i> list.</p></td></tr>
+<tr>
+<td width="27%">
+<p class="western" style="text-align:center">DrawableClipPath</p></td>
+<td width="21%">
+<p class="western">const std::string &amp;id_</p></td>
+<td width="52%">
+<p class="western">Select a drawing clip path matching <em>id_.</em></p></td></tr>
+<tr>
+<td width="27%">
+<p class="western" style="text-align:center">DrawableCircle</p></td>
+<td width="21%">
+<p class="western">double originX_, double originY_, double perimX_, double perimY_</p></td>
+<td width="52%">
+<p class="western">Draw a circle using the <i>stroke</i> color and thickness using specified origin and perimeter coordinates. If a <i>fill</i> color is specified, then the object is filled.</p></td></tr>
+<tr>
+<td width="27%">
+<p class="western" style="text-align:center">DrawableColor</p></td>
+<td width="21%">
+<p class="western"><font size="2">double x_, double y_, <a href="Enumerations.html#PaintMethod">PaintMethod</a> paintMethod_</font></p></td>
+<td width="52%">
+<p class="western">Color image according to paintMethod. The point method recolors the target pixel. The replace method recolors any pixel that matches the color of the target pixel. Floodfill recolors any pixel that matches the color of the target pixel and is a neighbor, whereas filltoborder recolors any neighbor pixel that is not the border color. Finally, reset recolors all pixels.</p></td></tr>
+<tr>
+<td rowspan="6" width="27%">
+<p class="western" style="text-align:center">DrawableCompositeImage</p></td>
+<td width="21%">
+<p class="western">double x_, double y_, const std::string &amp;filename_</p></td>
+<td rowspan="2" width="52%">
+<p class="western">Composite current image with contents of specified image, at specified coordinates. If the <i>matte</i> attribute is set to <i>true</i>, then the image composition will consider an alpha channel, or transparency, present in the image file so that non-opaque portions allow part (or all) of the composite image to show through.</p></td></tr>
+<tr>
+<td width="21%">
+<p class="western">double x_, double y_, const Image &amp;image_</p></td></tr>
+<tr>
+<td width="21%">
+<p class="western">double x_, double y_, double width_, double height_, const std::string &amp;filename_</p></td>
+<td rowspan="2" width="52%">
+<p class="western">Composite current image with contents of specified image, rendered with specified width and height, at specified coordinates. If the <i>matte</i> attribute is set to <i>true</i>, then the image composition will consider an alpha channel, or transparency, present in the image file so that non-opaque portions allow part (or all) of the composite image to show through. If the specified <i>width</i> or <i>height</i> is zero, then the image is composited at its natural size, without enlargement or reduction.</p></td></tr>
+<tr>
+<td width="21%">
+<p class="western">double x_, double y_, double width_, double height_, const Image &amp;image_</p></td></tr>
+<tr>
+<td width="21%">
+<p class="western"><font size="2">double x_, double y_, double width_, double height_, const std::string &amp;filename_, <a href="Enumerations.html#CompositeOperator">CompositeOperator</a> composition_</font></p></td>
+<td rowspan="2" width="52%">
+<p class="western">Composite current image with contents of specified image, rendered with specified width and height, using specified composition algorithm, at specified coordinates. If the <i>matte</i> attribute is set to <i>true</i>, then the image composition will consider an alpha channel, or transparency, present in the image file so that non-opaque portions allow part (or all) of the composite image to show through. If the specified <i>width</i> or <i>height</i> is zero, then the image is composited at its natural size, without enlargement or reduction.</p></td></tr>
+<tr>
+<td width="21%">
+<p class="western"><font size="2">double x_, double y_, double width_, double height_, const Image &amp;image_, <a href="Enumerations.html#CompositeOperator">CompositeOperator</a> composition_</font></p></td></tr>
+<tr>
+<td width="27%">
+<p class="western" style="text-align:center">DrawableDashArray</p></td>
+<td width="21%">
+<p class="western">const double* dasharray_</p></td>
+<td width="52%">
+<p class="western">Specify the pattern of dashes and gaps used to stroke paths. The strokeDashArray represents a zero-terminated array of numbers that specify the lengths of alternating dashes and gaps in pixels. If an odd number of values is provided, then the list of values is repeated to yield an even number of values. A typical strokeDashArray_ array might contain the members 5 3 2 0, where the zero value indicates the end of the pattern array.</p></td></tr>
+<tr>
+<td width="27%">
+<p class="western" style="text-align:center">DrawableDashOffset</p></td>
+<td width="21%">
+<p class="western">double offset_</p></td>
+<td width="52%">
+<p class="western"><font size="2" style="font-size: 11pt">Specify the distance into the dash pattern to start the dash. See documentation on SVG's</font> <a href="http://www.w3.org/TR/SVG/painting.html#StrokeDashoffsetProperty"><font size="2" style="font-size: 11pt">stroke-dashoffset</font></a> <font size="2" style="font-size: 11pt">property for usage details.</font></p></td></tr>
+<tr>
+<td width="27%">
+<p class="western" style="text-align:center">DrawableEllipse</p></td>
+<td width="21%">
+<p class="western">double originX_, double originY_, double radiusX_, double radiusY_, double arcStart_, double arcEnd_</p></td>
+<td width="52%">
+<p class="western">Draw an ellipse using the <i>stroke</i> color and thickness, specified origin, x &amp; y radius, as well as specified start and end of arc in degrees. If a <i>fill</i> color is specified, then the object is filled.</p></td></tr>
+<tr>
+<td width="27%">
+<p class="western" style="text-align:center">DrawableFillColor</p></td>
+<td width="21%">
+<p class="western"><font size="2">const <a href="Color.html">Color</a> &amp;color_</font></p></td>
+<td width="52%">
+<p class="western">Specify drawing object fill color.</p></td></tr>
+<tr>
+<td width="27%">
+<p class="western" style="text-align:center">DrawableFillRule</p></td>
+<td width="21%">
+<p class="western"><font size="2"><a href="Enumerations.html#FillRule">FillRule</a> fillRule_</font></p></td>
+<td width="52%">
+<p class="western"><font size="2" style="font-size: 11pt">Specify the algorithm which is to be used to determine what parts of the canvas are included inside the shape. See documentation on SVG's</font> <a href="http://www.w3.org/TR/SVG/painting.html#FillRuleProperty"><font size="2" style="font-size: 11pt">fill-rule</font></a> <font size="2" style="font-size: 11pt">property for usage details.</font></p></td></tr>
+<tr>
+<td width="27%">
+<p class="western" style="text-align:center">DrawableFillOpacity</p></td>
+<td width="21%">
+<p class="western">double opacity_</p></td>
+<td width="52%">
+<p class="western">Specify opacity to use when drawing using fill color.</p></td></tr>
+<tr>
+<td rowspan="2" width="27%">
+<p class="western" style="text-align:center">DrawableFont</p></td>
+<td width="21%">
+<p class="western">const std::string &amp;font_</p></td>
+<td width="52%">
+<p class="western">Specify font name to use when drawing text.</p></td></tr>
+<tr>
+<td width="21%">
+<p class="western"><font size="2">const std::string &amp;family_,</font><br />
+<font size="2"><a href="Enumerations.html#StyleType">StyleType</a> style_,</font><br />
+<font size="2">unsigned int weight_,</font><br />
+<font size="2"><a href="Enumerations.html#StretchType">StretchType</a> stretch_</font></p></td>
+<td width="52%">
+<p class="western">Specify font family, style, weight (one of the set { 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900 } with 400 being the normal size), and stretch to be used to select the font used when drawing text. Wildcard matches may be applied to style via the AnyStyle enumeration, applied to weight if weight is zero, and applied to stretch via the AnyStretch enumeration.</p></td></tr>
+<tr>
+<td width="27%">
+<p class="western" style="text-align:center">DrawableGravity</p></td>
+<td width="21%">
+<p class="western"><font size="2"><a href="Enumerations.html#GravityType">GravityType</a> gravity_</font></p></td>
+<td width="52%">
+<p class="western">Specify text positioning gravity.</p></td></tr>
+<tr>
+<td width="27%">
+<p class="western" style="text-align:center">DrawableLine</p></td>
+<td width="21%">
+<p class="western">double startX_, double startY_, double endX_, double endY_</p></td>
+<td width="52%">
+<p class="western">Draw a line using <i>stroke</i> color and thickness using starting and ending coordinates</p></td></tr>
+<tr>
+<td width="27%">
+<p class="western" style="text-align:center">DrawableMatte</p></td>
+<td width="21%">
+<p class="western"><font size="2">double x_, double y_, <a href="Enumerations.html#PaintMethod">PaintMethod</a> paintMethod_</font></p></td>
+<td width="52%">
+<p class="western">Change the pixel matte value to transparent. The point method changes the matte value of the target pixel. The replace method changes the matte value of any pixel that matches the color of the target pixel. Floodfill changes the matte value of any pixel that matches the color of the target pixel and is a neighbor, whereas filltoborder changes the matte value of any neighbor pixel that is not the border color, Finally reset changes the matte value of all pixels.</p></td></tr>
+<tr>
+<td width="27%">
+<p class="western" style="text-align:center">DrawableMiterLimit</p></td>
+<td width="21%">
+<p class="western">size_t miterLimit_</p></td>
+<td width="52%">
+<p class="western">Specify miter limit. When two line segments meet at a sharp angle and miter joins have been specified for 'lineJoin', it is possible for the miter to extend far beyond the thickness of the line stroking the path. The miterLimit' imposes a limit on the ratio of the miter length to the 'lineWidth'. The default value of this parameter is 4.</p></td></tr>
+<tr>
+<td width="27%">
+<p class="western" style="text-align:center">DrawablePath</p></td>
+<td width="21%">
+<p class="western">const std::list&lt;Magick::VPath&gt; &amp;path_</p></td>
+<td width="52%">
+<p class="western">Draw on image using vector path.</p></td></tr>
+<tr>
+<td width="27%">
+<p class="western" style="text-align:center">DrawablePoint</p></td>
+<td width="21%">
+<p class="western">double x_, double y_</p></td>
+<td width="52%">
+<p class="western">Draw a point using <i>stroke</i> color and thickness at coordinate</p></td></tr>
+<tr>
+<td width="27%">
+<p class="western" style="text-align:center">DrawablePointSize</p></td>
+<td width="21%">
+<p class="western">double pointSize_</p></td>
+<td width="52%">
+<p class="western">Set font point size.</p></td></tr>
+<tr>
+<td width="27%">
+<p class="western" style="text-align:center">DrawablePolygon</p></td>
+<td width="21%">
+<p class="western">const std::list&lt;Magick::Coordinate&gt; &amp;coordinates_</p></td>
+<td width="52%">
+<p class="western">Draw an arbitrary polygon using <i>stroke</i> color and thickness consisting of three or more coordinates contained in an STL list. If a <i>fill</i> color is specified, then the object is filled.</p></td></tr>
+<tr>
+<td width="27%">
+<p class="western" style="text-align:center">DrawablePolyline</p></td>
+<td width="21%">
+<p class="western">const std::list&lt;Magick::Coordinate&gt; &amp;coordinates_</p></td>
+<td width="52%">
+<p class="western">Draw an arbitrary polyline using <i>stroke</i> color and thickness consisting of three or more coordinates contained in an STL list. If a <i>fill</i> color is specified, then the object is filled.</p></td></tr>
+<tr>
+<td width="27%">
+<p class="western" style="text-align:center">DrawablePopClipPath</p></td>
+<td width="21%">
+<p class="western">void</p></td>
+<td width="52%">
+<p class="western">Pop (terminate) clip path definition started by DrawablePushClipPath.</p></td></tr>
+<tr>
+<td width="27%">
+<p class="western" style="text-align:center">DrawablePopGraphicContext</p></td>
+<td width="21%">
+<p class="western">void</p></td>
+<td width="52%">
+<p class="western"><font size="2" style="font-size: 11pt">Pop Graphic Context. Removing the current graphic context from the graphic context stack restores the options to the values they had prior to the preceding</font> <a href="Drawable.html#DrawablePushGraphicContext"><i><font size="2" style="font-size: 11pt">DrawablePushGraphicContext</font></i></a> <font size="2" style="font-size: 11pt">operation.</font></p></td></tr>
+<tr>
+<td width="27%">
+<p class="western" style="text-align:center">DrawablePushClipPath</p></td>
+<td width="21%">
+<p class="western">const std::string &amp;id_</p></td>
+<td width="52%">
+<p class="western">Push (create) clip path definition with id_. Clip patch definition consists of subsequent drawing commands, terminated by DrawablePopClipPath.</p></td></tr>
+<tr>
+<td width="27%">
+<p class="western" style="text-align:center">DrawablePushGraphicContext</p></td>
+<td width="21%">
+<p class="western">void</p></td>
+<td width="52%">
+<p class="western"><font size="2" style="font-size: 11pt">Push Graphic Context. When a graphic context is pushed, options set after the context is pushed (such as coordinate transformations, color settings, etc.) are saved to a new graphic context. This allows related options to be saved on a graphic context "stack" in order to support heirarchical nesting of options. When</font> <a href="Drawable.html#DrawablePopGraphicContext"><i><font size="2" style="font-size: 11pt">DrawablePopGraphicContext</font></i></a> <font size="2" style="font-size: 11pt">is used to pop the current graphic context, the options in effect during the last <i>DrawablePushGraphicContext</i> operation are restored.</font></p></td></tr>
+<tr>
+<td width="27%">
+<p class="western" style="text-align:center">DrawablePushPattern</p></td>
+<td width="21%">
+<p class="western">std::string &amp;id_, ssize_t x_, ssize_t y_, size_t width_, size_t height_</p></td>
+<td width="52%">
+<p class="western"><font size="2" style="font-size: 11pt">Start a pattern definition with arbitrary pattern name specified by <i>id_</i>, pattern offset specified by <i>x_</i> and <i>y_</i>, and pattern size specified by <i>width_</i> and <i>height_</i>. The pattern is defined within the coordinate system defined by the specified offset and size. Arbitrary drawing objects (including</font> <a href="Drawable.html#DrawableCompositeImage"><font size="2" style="font-size: 11pt">DrawableCompositeImage</font></a><font size="2" style="font-size: 11pt">) may be specified between</font> <a href="Drawable.html#DrawablePushPattern"><font size="2" style="font-size: 11pt">DrawablePushPattern</font></a> <font size="2" style="font-size: 11pt">and</font> <a href="Drawable.html#DrawablePopPattern"><font size="2" style="font-size: 11pt">DrawablePopPattern</font></a> <font size="2" style="font-size: 11pt">in order to draw the pattern. Normally the pair</font> <a href="Drawable.html#DrawablePushGraphicContext"><font size="2" style=
+"font-size: 11pt">DrawablePushGraphicContext</font></a> <font size="2" style="font-size: 11pt">&amp;</font> <a href="Drawable.html#DrawablePopGraphicContext"><font size="2" style="font-size: 11pt">DrawablePopGraphicContext</font></a> <font size="2" style="font-size: 11pt">are used to enclose a pattern definition. Pattern definitions are terminated by a</font> <a href="Drawable.html#DrawablePopPattern"><font size="2" style="font-size: 11pt">DrawablePopPattern</font></a> <font size="2" style="font-size: 11pt">object.</font></p></td></tr>
+<tr>
+<td width="27%">
+<p class="western" style="text-align:center">DrawablePopPattern</p></td>
+<td width="21%">
+<p class="western">void</p></td>
+<td width="52%">
+<p class="western"><font size="2" style="font-size: 11pt">Terminate a pattern definition started via</font> <a href="Drawable.html#DrawablePushPattern"><font size="2" style="font-size: 11pt">DrawablePushPattern</font></a><font size="2" style="font-size: 11pt">.</font></p></td></tr>
+<tr>
+<td width="27%">
+<p class="western" style="text-align:center">DrawableRectangle</p></td>
+<td width="21%">
+<p class="western">double upperLeftX_, double upperLeftY_, double lowerRightX_, double lowerRightY</p></td>
+<td width="52%">
+<p class="western">Draw a rectangle using <i>stroke</i> color and thickness from upper-left coordinates to lower-right coordinates. If a <i>fill</i> color is specified, then the object is filled.</p></td></tr>
+<tr>
+<td width="27%">
+<p class="western" style="text-align:center">DrawableRotation</p></td>
+<td width="21%">
+<p class="western">double angle_</p></td>
+<td width="52%">
+<p class="western">Set rotation to use when drawing (coordinate transformation).</p></td></tr>
+<tr>
+<td width="27%">
+<p class="western" style="text-align:center">DrawableRoundRectangle</p></td>
+<td width="21%">
+<p class="western">double centerX_, double centerY_, double width_, double hight_, double cornerWidth_, double cornerHeight_</p></td>
+<td width="52%">
+<p class="western">Draw a rounded rectangle using <i>stroke</i> color and thickness, with specified center coordinate, specified width and height, and specified corner width and height. If a <i>fill</i> color is specified, then the object is filled.</p></td></tr>
+<tr>
+<td width="27%">
+<p class="western" style="text-align:center">DrawableScaling</p></td>
+<td width="21%">
+<p class="western">double x_, double y_</p></td>
+<td width="52%">
+<p class="western">Apply scaling in x and y direction while drawing objects (coordinate transformation).</p></td></tr>
+<tr>
+<td width="27%">
+<p class="western" style="text-align:center">DrawableSkewX</p></td>
+<td width="21%">
+<p class="western">double angle_</p></td>
+<td width="52%">
+<p class="western">Apply Skew in X direction (coordinate transformation)</p></td></tr>
+<tr>
+<td width="27%">
+<p class="western" style="text-align:center">DrawableSkewY</p></td>
+<td width="21%">
+<p class="western">double angle_</p></td>
+<td width="52%">
+<p class="western">Apply Skew in Y direction</p></td></tr>
+<tr>
+<td width="27%">
+<p class="western" style="text-align:center">DrawableStrokeAntialias</p></td>
+<td width="21%">
+<p class="western">bool flag_</p></td>
+<td width="52%">
+<p class="western">Antialias while drawing lines or object outlines.</p></td></tr>
+<tr>
+<td width="27%">
+<p class="western" style="text-align:center">DrawableStrokeColor</p></td>
+<td width="21%">
+<p class="western"><font size="2">const <a href="Color.html">Color</a> &amp;color_</font></p></td>
+<td width="52%">
+<p class="western">Set color to use when drawing lines or object outlines.</p></td></tr>
+<tr>
+<td width="27%">
+<p class="western" style="text-align:center">DrawableStrokeLineCap</p></td>
+<td width="21%">
+<p class="western"><font size="2"><a href="Enumerations.html#LineCap">LineCap</a> linecap_</font></p></td>
+<td width="52%">
+<p class="western">Specify the shape to be used at the end of open subpaths when they are stroked. Values of LineCap are UndefinedCap, ButtCap, RoundCap, and SquareCap.</p></td></tr>
+<tr>
+<td width="27%">
+<p class="western" style="text-align:center">DrawableStrokeLineJoin</p></td>
+<td width="21%">
+<p class="western"><font size="2"><a href="Enumerations.html#LineJoin">LineJoin</a> linejoin_</font></p></td>
+<td width="52%">
+<p class="western">Specify the shape to be used at the corners of paths (or other vector shapes) when they are stroked. Values of LineJoin are UndefinedJoin, MiterJoin, RoundJoin, and BevelJoin.</p></td></tr>
+<tr>
+<td width="27%">
+<p class="western" style="text-align:center">DrawableStrokeOpacity</p></td>
+<td width="21%">
+<p class="western">double opacity_</p></td>
+<td width="52%">
+<p class="western">Opacity to use when drawing lines or object outlines.</p></td></tr>
+<tr>
+<td width="27%">
+<p class="western" style="text-align:center">DrawableStrokeWidth</p></td>
+<td width="21%">
+<p class="western">double width_</p></td>
+<td width="52%">
+<p class="western">Set width to use when drawing lines or object outlines.</p></td></tr>
+<tr>
+<td rowspan="2" width="27%">
+<p class="western" style="text-align:center">DrawableText</p></td>
+<td width="21%">
+<p class="western">double x_, double y_, std::string text_</p></td>
+<td width="52%">
+<p class="western"><font size="2" style="font-size: 11pt">Annotate image with text using <i>stroke</i> color, font, font pointsize, and <i>box</i> color (text background color), at specified coordinates. If text contains</font> <a href="FormatCharacters.html"><font size="2" style="font-size: 11pt">special format characters</font></a> <font size="2" style="font-size: 11pt">the image filename, type, width, height, or other image attributes may be incorporated in the text (see label()).</font></p></td></tr>
+<tr>
+<td width="21%">
+<p class="western">const double x_, const double y_, const std::string &amp;text_, const std::string &amp;encoding_</p></td>
+<td width="52%">
+<p class="western"><font size="2" style="font-size: 11pt">Annotate image with text represented with text encoding, using current <i>stroke</i> color, font, font pointsize, and <i>box</i> color (text background color), at specified coordinates. If text contains</font> <a href="FormatCharacters.html"><font size="2" style="font-size: 11pt">special format characters</font></a> <font size="2" style="font-size: 11pt">the image filename, type, width, height, or other image attributes may be incorporated in the text (see label()).</font></p>
+<p class="western"><font size="2" style="font-size: 11pt">The text encoding specifies the code set to use for text annotations. The only character encoding which may be specified at this time is "<font face="Courier, monospace">UTF-8</font>" for representing</font> <a href="http://www.unicode.org/"><font size="2" style="font-size: 11pt">Unicode</font></a> <font size="2" style="font-size: 11pt">as a sequence of bytes. Specify an empty string to set text encoding to the system's default. Successful text annotation using Unicode may require fonts designed to support Unicode.</font></p></td></tr>
+<tr>
+<td width="27%">
+<p class="western" style="text-align:center">DrawableTextAntialias</p></td>
+<td width="21%">
+<p class="western">bool flag_</p></td>
+<td width="52%">
+<p class="western">Antialias while drawing text (default true). The main reason to disable text antialiasing is to avoid adding new colors to the image.</p></td></tr>
+<tr>
+<td width="27%">
+<p class="western" style="text-align:center"><a name="DrawableTextDecoration"></a> DrawableTextDecoration</p></td>
+<td width="21%">
+<p class="western"><font size="2"><a href="Enumerations.html#DecorationType">DecorationType</a> decoration_</font></p></td>
+<td width="52%">
+<p class="western">Specify decoration (e.g. UnderlineDecoration) to apply to text.</p></td></tr>
+<tr>
+<td width="27%">
+<p class="western" style="text-align:center">DrawableTextUnderColor</p></td>
+<td width="21%">
+<p class="western">const Color &amp;color_</p></td>
+<td width="52%">
+<p class="western">Draw a box under rendered text using the specified color.</p></td></tr>
+<tr>
+<td width="27%">
+<p class="western" style="text-align:center">DrawableTranslation</p></td>
+<td width="21%">
+<p class="western">double x_, double y_</p></td>
+<td width="52%">
+<p class="western">Apply coordinate translation (set new coordinate origin).</p></td></tr>
+<tr>
+<td width="27%">
+<p class="western" style="text-align:center">DrawableViewbox</p></td>
+<td width="21%">
+<p class="western">ssize_t x1_, ssize_t y1_, ssize_t x2_, ssize_t y2_</p></td>
+<td width="52%">
+<p class="western">Dimensions of the output viewbox. If the image is to be written to a vector format (e.g. MVG or SVG), then a DrawablePushGraphicContext() object should be pushed to the head of the list, followed by a DrawableViewbox() statement to establish the output canvas size. A matching DrawablePopGraphicContext() object should be pushed to the tail of the list.</p></td></tr></table>
+<h2 style="text-align:center">Vector Path Classes</h2>
+<p>The vector paths supported by Magick++ are based on those supported by the <a href="http://www.w3.org/TR/SVG/paths.html">SVG XML specification</a>. Vector paths are not directly drawable, they must first be supplied as a constructor argument to the <a href="Drawable.html#DrawablePath">DrawablePath</a> class in order to create a drawable object. The <a href="Drawable.html#DrawablePath">DrawablePath</a> class effectively creates a drawable compound component which may be replayed as desired. If the drawable compound component consists only of vector path objects using relative coordinates then the object may be positioned on the image by preceding it with a <i>DrawablePath</i> which sets the current drawing coordinate. Alternatively coordinate transforms may be used to <a href="Drawable.html#DrawableTranslation">translate the origin</a> in order to position the object, <a href="Drawable.html#DrawableRotation">rotate</a> it, <a href="Drawable.html#DrawableSkewX">skew</a> it, or <a href="Drawable.html#DrawableScaling">scale</a> it.</p>
+<h3>The "moveto" commands</h3>
+<p style="margin-bottom: 0in">The "moveto" commands establish a new current point. The effect is as if the "pen" were lifted and moved to a new location. A path data segment must begin with either one of the "moveto" commands or one of the "arc" commands. Subsequent "moveto" commands (i.e., when the "moveto" is not the first command) represent the start of a new subpath:</p>
+<p style="margin-bottom: 0in;text-align:center"><b>Moveto Classes</b></p>
+<table width="100%" border="1" cellpadding="2" cellspacing="3">
+<col width="37*" />
+<col width="43*" />
+<col width="177*" />
+<tr>
+<th width="14%">
+<p class="western">Sub-Class</p></th>
+<th width="17%">
+<p class="western">Constructor Signature</p></th>
+<th width="69%">
+<p class="western">Description</p></th></tr>
+<tr>
+<td rowspan="2" width="14%">
+<p class="western" style="text-align:center"><a name="PathMovetoAbs"></a>PathMovetoAbs</p></td>
+<td width="17%">
+<p class="western">const Magick::Coordinate &amp;coordinate_</p></td>
+<td rowspan="4" width="69%">
+<p class="western">Start a new sub-path at the given coordinate. <i>PathMovetoAbs</i> indicates that absolute coordinates will follow; <i>PathMovetoRel</i> indicates that relative coordinates will follow. If a relative moveto appears as the first element of the path, then it is treated as a pair of absolute coordinates. If a moveto is followed by multiple pairs of coordinates, the subsequent pairs are treated as implicit lineto commands.</p></td></tr>
+<tr>
+<td width="17%">
+<p class="western">const std::list&lt;Magick::Coordinate&gt; &amp;coordinates_</p></td></tr>
+<tr>
+<td rowspan="2" width="14%">
+<p class="western" style="text-align:center"><a name="PathMovetoRel"></a>PathMovetoRel</p></td>
+<td width="17%">
+<p class="western">const Magick::Coordinate &amp;coordinate_</p></td></tr>
+<tr>
+<td width="17%">
+<p class="western">const std::list&lt;Magick::Coordinate&gt; &amp;coordinates_</p></td></tr></table>
+<h3>The "closepath" command</h3>
+<p style="margin-bottom: 0in">The "closepath" command causes an automatic straight line to be drawn from the current point to the initial point of the current subpath:</p>
+<p style="text-align:center;margin-bottom: 0in"><b>Closepath Classes</b></p>
+<table width="100%" border="1" cellpadding="2" cellspacing="3">
+<col width="37*" />
+<col width="41*" />
+<col width="178*" />
+<tr>
+<th width="14%">
+<p class="western">Sub-Class</p></th>
+<th width="16%">
+<p class="western">Constructor Signature</p></th>
+<th width="69%">
+<p class="western">Description</p></th></tr>
+<tr>
+<td width="14%">
+<p class="western" style="text-align:center"><a name="PathClosePath"></a>PathClosePath</p></td>
+<td width="16%">
+<p class="western">void</p></td>
+<td width="69%">
+<p class="western">Close the current subpath by drawing a straight line from the current point to current subpath's most recent starting point (usually, the most recent moveto point).</p></td></tr></table>
+<h3>The "lineto" commands</h3>
+<p style="margin-bottom: 0in">The various "lineto" commands draw straight lines from the current point to a new point:</p>
+<p style="text-align:center;margin-bottom: 0in"><b>Lineto Classes</b></p>
+<table width="100%" border="1" cellpadding="2" cellspacing="3">
+<col width="56*" />
+<col width="39*" />
+<col width="161*" />
+<tr>
+<th width="22%">
+<p class="western">Sub-Class</p></th>
+<th width="15%">
+<p class="western">Constructor Signature</p></th>
+<th width="63%">
+<p class="western">Description</p></th></tr>
+<tr>
+<td rowspan="2" width="22%">
+<p class="western" style="text-align:center"><a name="PathLinetoAbs"></a>PathLinetoAbs</p></td>
+<td width="15%">
+<p class="western">const Magick::Coordinate&amp; coordinate_</p></td>
+<td rowspan="4" width="63%">
+<p class="western">Draw a line from the current point to the given coordinate which becomes the new current point. <i>PathLinetoAbs</i> indicates that absolute coordinates are used; <i>PathLinetoRel</i> indicates that relative coordinates are used. A number of coordinates pairs may be specified in a list to draw a polyline. At the end of the command, the new current point is set to the final set of coordinates provided.</p></td></tr>
+<tr>
+<td width="15%">
+<p class="western">const std::list&lt;Magick::Coordinate&gt; &amp;coordinates_</p></td></tr>
+<tr>
+<td rowspan="2" width="22%">
+<p class="western" style="text-align:center"><a name="PathLinetoRel"></a>PathLinetoRel</p></td>
+<td width="15%">
+<p class="western">const Magick::Coordinate&amp; coordinate_</p></td></tr>
+<tr>
+<td width="15%">
+<p class="western">const std::list&lt;Magick::Coordinate&gt; &amp;coordinates_</p></td></tr>
+<tr>
+<td width="22%">
+<p class="western" style="text-align:center"><a name="PathLinetoHorizontalAbs"></a> PathLinetoHorizontalAbs</p></td>
+<td width="15%">
+<p class="western">double x_</p></td>
+<td rowspan="2" width="63%">
+<p class="western">Draws a horizontal line from the current point (cpx, cpy) to (x, cpy). <i>PathLinetoHorizontalAbs</i> indicates that absolute coordinates are supplied; <i>PathLinetoHorizontalRel</i> indicates that relative coordinates are supplied. At the end of the command, the new current point becomes (x, cpy) for the final value of x.</p></td></tr>
+<tr>
+<td width="22%">
+<p class="western" style="text-align:center"><a name="PathLinetoHorizontalRel"></a> PathLinetoHorizontalRel</p></td>
+<td width="15%">
+<p class="western">double x_</p></td></tr>
+<tr>
+<td width="22%">
+<p class="western" style="text-align:center"><a name="PathLinetoVerticalAbs"></a> PathLinetoVerticalAbs</p></td>
+<td width="15%">
+<p class="western">double y_</p></td>
+<td rowspan="2" width="63%">
+<p class="western">Draws a vertical line from the current point (cpx, cpy) to (cpx, y). <i>PathLinetoVerticalAbs</i> indicates that absolute coordinates are supplied; <i>PathLinetoVerticalRel</i> indicates that relative coordinates are supplied. At the end of the command, the new current point becomes (cpx, y) for the final value of y.</p></td></tr>
+<tr>
+<td width="22%">
+<p class="western" style="text-align:center"><a name="PathLinetoVerticalRel"></a> PathLinetoVerticalRel</p></td>
+<td width="15%">
+<p class="western">double y_</p></td></tr></table>
+<h3>The curve commands</h3>
+<p>These three groups of commands draw curves:</p>
+<ul>
+<li>
+<p style="margin-bottom: 0in"><a href="Drawable.html#cubic%20Bezier">Cubic Bézier commands.</a> A cubic Bézier segment is defined by a start point, an end point, and two control points.</p></li>
+<li>
+<p style="margin-bottom: 0in"><a href="Drawable.html#quadratic%20Bezier">Quadratic Bézier commands.</a> A quadratic Bézier segment is defined by a start point, an end point, and one control point.</p></li>
+<li>
+<p><a href="Drawable.html#elliptical%20arc">Elliptical arc commands.</a> An elliptical arc segment draws a segment of an ellipse.</p></li></ul>
+<h3><a name="cubic Bezier"></a>The cubic Bézier curve commands</h3>
+<p>The cubic Bézier commands depend on the <i>PathCurvetoArgs</i> argument class, which has the constructor signature</p>
+<pre class="code">
+  PathCurvetoArgs( double x1_, double y1_, 
+                   double x2_, double y2_, 
+                   double x_, double y_ );
+</pre>
+<p style="margin-bottom: 0in">The commands are as follows:</p>
+<p style="text-align:center;margin-bottom: 0in"><b>Cubic Bézier Curve Classes</b></p>
+<table width="100%" border="1" cellpadding="2" cellspacing="3">
+<col width="54*" />
+<col width="58*" />
+<col width="144*" />
+<tr>
+<th width="21%">
+<p class="western">Sub-Class</p></th>
+<th width="23%">
+<p class="western">Constructor Signature</p></th>
+<th width="56%">
+<p class="western">Description</p></th></tr>
+<tr>
+<td rowspan="2" width="21%">
+<p class="western" style="text-align:center"><a name="PathCurvetoAbs"></a>PathCurvetoAbs</p></td>
+<td width="23%">
+<p class="western">const Magick::PathCurvetoArgs &amp;args_</p></td>
+<td rowspan="4" width="56%">
+<p class="western">Draws a cubic Bézier curve from the current point to (x,y) using (x1,y1) as the control point at the beginning of the curve and (x2,y2) as the control point at the end of the curve. <i>PathCurvetoAbs</i> indicates that absolutecoordinates will follow; <i>PathCurvetoRel</i> indicates that relative coordinates will follow. Multiple sets of coordinates may be specified to draw a polybezier. At the end of the command, the new current point becomes the final (x,y) coordinate pair used in the polybezier.</p></td></tr>
+<tr>
+<td width="23%">
+<p class="western">const std::list&lt;Magick::PathCurvetoArgs&gt; &amp;args_</p></td></tr>
+<tr>
+<td rowspan="2" width="21%">
+<p class="western" style="text-align:center"><a name="PathCurvetoRel"></a>PathCurvetoRel</p></td>
+<td width="23%">
+<p class="western">const Magick::PathCurvetoArgs &amp;args_</p></td></tr>
+<tr>
+<td width="23%">
+<p class="western">const std::list&lt;Magick::PathCurvetoArgs&gt; &amp;args_</p></td></tr>
+<tr>
+<td rowspan="2" width="21%">
+<p class="western" style="text-align:center"><a name="PathSmoothCurvetoAbs"></a> PathSmoothCurvetoAbs</p></td>
+<td width="23%">
+<p class="western">const Magick::Coordinate &amp;coordinates_</p></td>
+<td rowspan="4" width="56%">
+<p class="western">Draws a cubic Bézier curve from the current point to (x,y). The first control point is assumed to be the reflection of the second control point on the previous command relative to the current point. (If there is no previous command or if the previous command was not an <i>PathCurvetoAbs</i>, <i>PathCurvetoRel</i>, <i>PathSmoothCurvetoAbs</i> or <i>PathSmoothCurvetoRel</i>, assume the first control point is coincident with the current point.) (x2,y2) is the second control point (i.e., the control point at the end of the curve). <i>PathSmoothCurvetoAbs</i> indicates that absolute coordinates will follow; <i>PathSmoothCurvetoRel</i> indicates that relative coordinates will follow. Multiple sets of coordinates may be specified to draw a polybezier. At the end of the command, the new current point becomes the final (x,y) coordinate pair used in the polybezier.</p></td></tr>
+<tr>
+<td width="23%">
+<p class="western">const std::list&lt;Magick::Coordinate&gt; &amp;coordinates_</p></td></tr>
+<tr>
+<td rowspan="2" width="21%">
+<p class="western" style="text-align:center"><a name="PathSmoothCurvetoRel"></a> PathSmoothCurvetoRel</p></td>
+<td width="23%">
+<p class="western">const Magick::Coordinate &amp;coordinates_</p></td></tr>
+<tr>
+<td width="23%">
+<p class="western">const std::list&lt;Magick::Coordinate&gt; &amp;coordinates_</p></td></tr></table>
+<h3><a name="quadratic Bezier"></a>The quadratic Bézier curve commands</h3>
+<p>The quadratic Bézier commands depend on the <i>PathQuadraticCurvetoArgs</i> argument class, which has the constructor signature:</p>
+<pre class="code">
+  PathQuadraticCurvetoArgs( double x1_, double y1_, 
+                            double x_, double y_ );
+</pre>
+<p style="margin-bottom: 0in">The quadratic Bézier commands are as follows:</p>
+<p style="text-align:center;margin-bottom: 0in"><b>Quadratic Bézier Curve Classes</b></p>
+<table width="100%" border="1" cellpadding="2" cellspacing="2">
+<tr>
+<th>
+<p class="western">Sub-Class</p></th>
+<th>
+<p class="western">Constructor Signature</p></th>
+<th>
+<p class="western">Description</p></th></tr>
+<tr>
+<td rowspan="2">
+<p class="western" style="text-align:center"><a name="PathQuadraticCurvetoAbs"></a> PathQuadraticCurvetoAbs</p></td>
+<td>
+<p class="western">const Magick::PathQuadraticCurvetoArgs &amp;args_</p></td>
+<td rowspan="4">
+<p class="western">Draws a quadratic Bézier curve from the current point to (x,y) using (x1,y1) as the control point. <i>PathQuadraticCurvetoAbs</i> indicates that absolute coordinates will follow; <i>PathQuadraticCurvetoRel</i> indicates that relative coordinates will follow. Multiple sets of coordinates may be specified to draw a polybezier. At the end of the command, the new current point becomes the final (x,y) coordinate pair used in the polybezier.</p></td></tr>
+<tr>
+<td>
+<p class="western">const std::list&lt;Magick::PathQuadraticCurvetoArgs&gt; &amp;args_</p></td></tr>
+<tr>
+<td rowspan="2">
+<p class="western" style="text-align:center"><a name="PathQuadraticCurvetoRel"></a> PathQuadraticCurvetoRel</p></td>
+<td>
+<p class="western">const Magick::PathQuadraticCurvetoArgs &amp;args_</p></td></tr>
+<tr>
+<td>
+<p class="western">const std::list&lt;Magick::PathQuadraticCurvetoArgs&gt; &amp;args_</p></td></tr>
+<tr>
+<td rowspan="2">
+<p class="western" style="text-align:center"><a name="PathSmoothQuadraticCurvetoAbs"></a> PathSmoothQuadraticCurvetoAbs</p></td>
+<td>
+<p class="western">const Magick::Coordinate &amp;coordinate_</p></td>
+<td rowspan="4">
+<p class="western">Draws a quadratic Bézier curve from the current point to (x,y). The control point is assumed to be the reflection of the control point on the previous<br />
+command relative to the current point. (If there is no previous command or if the previous command was not a <i>PathQuadraticCurvetoAbs</i>, <i>PathQuadraticCurvetoRel</i>, <i>PathSmoothQuadraticCurvetoAbs</i> or <i>PathSmoothQuadraticCurvetoRel</i>, assume the control point is coincident with the current point.) <i>PathSmoothQuadraticCurvetoAbs</i> indicates that absolute coordinates will follow; <i>PathSmoothQuadraticCurvetoRel</i> indicates that relative coordinates will follow. At the end of the command, the new current point becomes the final (x,y) coordinate pair used in the polybezier.</p></td></tr>
+<tr>
+<td>
+<p class="western">const std::list&lt;Magick::Coordinate&gt; &amp;coordinates_</p></td></tr>
+<tr>
+<td rowspan="2">
+<p class="western" style="text-align:center"><a name="PathSmoothQuadraticCurvetoRel"></a> PathSmoothQuadraticCurvetoRel</p></td>
+<td>
+<p class="western">const Magick::Coordinate &amp;coordinate_</p></td></tr>
+<tr>
+<td>
+<p class="western">const std::list&lt;Magick::Coordinate&gt; &amp;coordinates_</p></td></tr></table>
+<h3><a name="elliptical arc"></a>The elliptical arc curve commands</h3>
+<p>The elliptical arc curve commands depend on the <i>PathArcArgs</i> argument class, which has the constructor signature:</p>
+<pre class="code">
+   PathArcArgs( double radiusX_, double radiusY_, 
+                double xAxisRotation_, bool largeArcFlag_, 
+                bool sweepFlag_, double x_, double y_ );
+</pre>
+<p style="margin-bottom: 0in">The elliptical arc commands are as follows:</p>
+<p style="text-align:center;margin-bottom: 0in"><b>Elliptical Arc Curve Classes</b></p>
+<table width="100%" border="1" cellpadding="2" cellspacing="3">
+<col width="35*" />
+<col width="46*" />
+<col width="175*" />
+<tr>
+<th width="14%">
+<p class="western">Sub-Class</p></th>
+<th width="18%">
+<p class="western">Constructor Signature</p></th>
+<th width="68%">
+<p class="western">Description</p></th></tr>
+<tr>
+<td rowspan="2" width="14%">
+<p class="western" style="text-align:center"><a name="PathArcAbs"></a>PathArcAbs</p></td>
+<td width="18%">
+<p class="western">const Magick::PathArcArgs &amp;coordinates_</p></td>
+<td rowspan="4" width="68%">
+<p class="western">Draws an elliptical arc from the current point to (x, y). The size and orientation of the ellipse are defined by two radii (<i>radiusX</i>, <i>radiusY</i>) and an <i>xAxisRotation</i>, which indicates how the ellipse as a whole is rotated relative to the current coordinate system. The center (cx, cy) of the ellipse is calculated automagically to satisfy the constraints imposed by the other parameters. <i>largeArcFlag</i> and <i>sweepFlag</i> contribute to the automatic calculations and help determine how the arc is drawn. If <i>largeArcFlag</i> is true then draw the larger of the available arcs. If <i>sweepFlag</i> is true, then draw the arc matching a clock-wise rotation.</p></td></tr>
+<tr>
+<td width="18%">
+<p class="western">const std::list&lt;Magick::PathArcArgs&gt; &amp;coordinates_</p></td></tr>
+<tr>
+<td rowspan="2" width="14%">
+<p class="western" style="text-align:center"><a name="PathArcRel"></a>PathArcRel</p></td>
+<td width="18%">
+<p class="western">const Magick::PathArcArgs &amp;coordinates_</p></td></tr>
+<tr>
+<td width="18%">
+<p class="western">const std::list&lt;Magick::PathArcArgs&gt; &amp;coordinates_</p></td></tr></table>
+</div>
+</body>
+</html>

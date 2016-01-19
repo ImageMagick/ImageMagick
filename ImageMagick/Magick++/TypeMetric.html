@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Magick++ API: Type Metrics</title>
+<link rel="stylesheet" href="magick.css" type="text/css" />
+</head>
+<body>
+<div class="doc-section">
+<h1 align="center">Magick::TypeMetric</h1>
+<p>The <i>TypeMetric</i> class provides the means to pass data from the Image class's TypeMetric method to the user. It provides information regarding font metrics such as ascent, descent, text width, text height, and maximum horizontal advance. The units of these font metrics are in pixels, and that the metrics are dependent on the current Image font (default Ghostscript's "Helvetica"), pointsize (default 12 points), and x/y resolution (default 72 DPI) settings.</p>
+<p>The pixel units may be converted to points (the standard resolution-independent measure used by the typesetting industry) via the following equation:</p>
+<pre class="text">
+size_points = (size_pixels * 72)/resolution
+</pre>
+<p>where resolution is in dots-per-inch (DPI). This means that at the default image resolution, there is one pixel per point.</p>
+<p>Note that a font's pointsize is only a first-order approximation of the font height (ascender + descender) in points. The relationship between the specified pointsize and the rendered font height is determined by the font designer.</p>
+<p>See <a href="http://freetype.sourceforge.net/freetype2/docs/glyphs/index.html">FreeType Glyph Conventions</a> for a detailed description of font metrics related issues.</p>
+<p style="margin-bottom: 0cm">The methods available in the <i>TypeMetric</i> class are shown in the following table:</p>
+<p align="center" style="margin-bottom: 0cm"><b>TypeMetric Methods</b></p>
+<ul><table width="100%" border="1" cellpadding="2" cellspacing="2">
+<tr>
+<td>
+<p align="center"><b>Method</b></p></td>
+<td>
+<p align="center"><b>Returns</b></p></td>
+<td>
+<p><b>Units</b></p></td>
+<td>
+<p align="center"><b>Signature</b></p></td>
+<td>
+<p align="center"><b>Description</b></p></td></tr>
+<tr>
+<td>
+<p align="center"><a name="ascent"></a><font size="2">ascent</font></p></td>
+<td>
+<p><font size="2">double</font></p></td>
+<td>
+<p><font size="2">Pixels</font></p></td>
+<td>
+<p><font size="2">void</font></p></td>
+<td>
+<p><font size="2">Returns the distance in pixels from the text baseline to the highest/upper grid coordinate used to place an outline point. Always a positive value.</font></p></td></tr>
+<tr>
+<td>
+<p align="center"><a name="descent"></a><font size="2">descent</font></p></td>
+<td>
+<p><font size="2">double</font></p></td>
+<td>
+<p><font size="2">Pixels</font></p></td>
+<td>
+<p><font size="2">void</font></p></td>
+<td>
+<p><font size="2">Returns the the distance in pixels from the baseline to the lowest grid coordinate used to place an outline point. Always a negative value.</font></p></td></tr>
+<tr>
+<td>
+<p align="center"><a name="textWidth"></a><font size="2">textWidth</font></p></td>
+<td>
+<p><font size="2">double</font></p></td>
+<td>
+<p><font size="2">Pixels</font></p></td>
+<td>
+<p><font size="2">void</font></p></td>
+<td>
+<p><font size="2">Returns text width in pixels.</font></p></td></tr>
+<tr>
+<td>
+<p align="center"><a name="textHeight"></a><font size="2">textHeight</font></p></td>
+<td>
+<p><font size="2">double</font></p></td>
+<td>
+<p><font size="2">Pixels</font></p></td>
+<td>
+<p><font size="2">void</font></p></td>
+<td>
+<p><font size="2">Returns text height in pixels.</font></p></td></tr>
+<tr>
+<td>
+<p align="center"><a name="maxHorizontalAdvance"></a><font size="2">maxHorizontalAdvance</font></p></td>
+<td>
+<p><font size="2">double</font></p></td>
+<td>
+<p><font size="2">Pixels</font></p></td>
+<td>
+<p><font size="2">void</font></p></td>
+<td>
+<p><font size="2">Returns the maximum horizontal advance (advance from the beginning of a character to the beginning of the next character) in pixels.</font></p></td></tr></table></ul>
+</div>
+</body>
+</html>

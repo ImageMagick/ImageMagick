@@ -1,0 +1,465 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Magick++ API: Exceptions </title>
+<link rel="stylesheet" href="magick.css" type="text/css" />
+</head>
+<body>
+<div class="doc-section">
+<h1 align="center">Magick::Exception Classes</h1>
+<p><i>Exception</i> represents the base class of objects thrown when
+Magick++reports an error. Magick++ throws C++ exceptions synchronous
+with the operation where the error occurred. This allows errors to be
+trapped within the enclosing code (perhaps the code to process a
+single image) while allowing the code to be written with a simple
+coding style.</p>
+<p>A try/catch block should be placed around any sequence of
+operations which can be considered an important body of work. For
+example, if your program processes lists of images and some of these
+images may be defective, by placing the try/catch block around the
+entire sequence of code that processes one image (including
+instantiating the image object), you can minimize the overhead of
+error checking while ensuring that all objects created to deal with
+that object are safely destroyed (C++ exceptions unroll the stack
+until the enclosing try block, destroying any created objects). 
+</p>
+<p>The pseudo code for the main loop of your program may look like: 
+</p>
+<div class="viewport">
+using namespace std;
+for infile in list
+{
+  try {
+    // Construct an image instance first so that we don't have to worry
+    // about object construction failure due to a minor warning exception
+    // being thrown.
+    Magick::Image image; 
+    try {
+      // Try reading image file
+      image.read(infile);
+    }
+    catch( Magick::WarningCoder &amp;warning )
+    {
+      // Process coder warning while loading file (e.g. TIFF warning)
+      // Maybe the user will be interested in these warnings (or not).
+      // If a warning is produced while loading an image, the image
+      // can normally still be used (but not if the warning was about
+      // something important!)
+      cerr &lt;&lt; "Coder Warning: " &lt;&lt; warning.what() &lt;&lt; endl;
+    }
+    catch( Magick::Warning &amp;warning )
+    {
+      // Handle any other Magick++ warning.
+      cerr &lt;&lt; "Warning: " &lt;&lt; warning.what() &lt;&lt; endl;
+    }
+    catch( Magick::ErrorFileOpen &amp;error ) 
+    { 
+      // Process Magick++ file open error
+      cerr &lt;&lt; "Error: " &lt;&lt; error.what() &lt;&lt; endl;
+      continue; // Try next image.
+    }
+    try {
+      image.rotate(90);
+      image.write("outfile");
+    }
+    catch ( MagickExeption &amp; error)
+    {
+       // Handle problem while rotating or writing outfile.
+       cerr &lt;&lt; "Caught Magick++ exception: " &lt;&lt; error.what() &lt;&lt; endl;
+    }
+  }
+  catch( std::exception &amp; error ) 
+  { 
+     // Process any other exceptions derived from standard C++ exception
+     cerr &lt;&lt; "Caught C++ STD exception: " &lt;&lt; error.what() &lt;&lt; endl;
+  } 
+  catch( ... ) 
+  { 
+    // Process *any* exception (last-ditch effort). There is not a lot
+    // you can do here other to retry the operation that failed, or exit
+  }
+}
+</div>
+<p>The desired location and number of try/catch blocks in your program
+depends how sophisticated its error handling must be. Very simple
+programs may use just one try/catch block.</p>
+<p>The <i>Exception</i> class is derived from the C++ standard
+exception class. This means that it contains a C++ string containing
+additional information about the error (e.g to display to the user).
+Obtain access to this string via the what() method.&#160; For
+example: 
+</p>
+<pre class="code">
+catch( Exception &amp; error_ ) 
+    { 
+      cout &lt;&lt; "Caught exception: " &lt;&lt; error_.what() &lt;&lt; endl; 
+    }
+</pre>
+<p>The classes <i>Warning</i> and <i>Error</i> derive from the
+<i>Exception</i> class. Exceptions derived from <i>Warning</i> are
+thrown to represent non-fatal errors which may effect the
+completeness or quality of the result (e.g. one image provided as an
+argument to montage is defective). In most cases, a <i>Warning</i>
+exception may be ignored by catching it immediately, processing it
+(e.g. printing a diagnostic) and continuing on. Exceptions derived
+from <i>Error</i> are thrown to represent fatal errors that can not
+produce a valid result (e.g. attempting to read a file which does not
+exist). 
+</p>
+<p style="margin-bottom: 0in">The specific derived exception classes
+are shown in the following tables: 
+</p>
+<p align="center" style="margin-bottom: 0in"><b>Warning Sub-Classes</b></p>
+<ul><table width="100%" border="1" cellpadding="2" cellspacing="3">
+	<col width="70*" />
+	<col width="186*" />
+	<tr>
+		<td width="27%">
+			<p align="center"><font size="2"><b>Warning</b></font></p>
+		</td>
+		<td width="73%">
+			<p align="center"><font size="2"><b>Warning Description</b></font></p>
+		</td>
+	</tr>
+	<tr>
+		<td width="27%">
+			<p align="center"><font size="2">WarningUndefined</font></p>
+		</td>
+		<td width="73%">
+			<p><font size="2">Unspecified warning type.</font></p>
+		</td>
+	</tr>
+	<tr>
+		<td width="27%">
+			<p align="center"><font size="2">WarningBlob</font></p>
+		</td>
+		<td width="73%">
+			<p style="font-weight: medium; text-decoration: none"><font size="2">NOT
+			CURRENTLY USED</font></p>
+		</td>
+	</tr>
+	<tr>
+		<td width="27%">
+			<p align="center"><font size="2">WarningCache</font></p>
+		</td>
+		<td width="73%">
+			<p style="font-weight: medium; text-decoration: none"><font size="2">NOT
+			CURRENTLY USED</font></p>
+		</td>
+	</tr>
+	<tr>
+		<td width="27%">
+			<p align="center"><font size="2">WarningCoder</font></p>
+		</td>
+		<td width="73%">
+			<p><font size="2">Warnings issued by some coders.</font></p>
+		</td>
+	</tr>
+	<tr>
+		<td width="27%">
+			<p align="center"><font size="2">WarningConfigure</font></p>
+		</td>
+		<td width="73%">
+			<p style="font-weight: medium; text-decoration: none"><font size="2">NOT
+			CURRENTLY USED</font></p>
+		</td>
+	</tr>
+	<tr>
+		<td width="27%">
+			<p align="center"><font size="2">WarningCorruptImage</font></p>
+		</td>
+		<td width="73%">
+			<p><font size="2">Warning issued when an image is determined to be
+			corrupt.</font></p>
+		</td>
+	</tr>
+	<tr>
+		<td width="27%">
+			<p align="center"><font size="2">WarningDelegate</font></p>
+		</td>
+		<td width="73%">
+			<p><font size="2">Warnings reported by the delegate (interface to
+			external programs) subsystem.</font></p>
+		</td>
+	</tr>
+	<tr>
+		<td width="27%">
+			<p align="center"><font size="2">WarningDraw</font></p>
+		</td>
+		<td width="73%">
+			<p><font size="2">Warnings reported by the rendering subsystem.</font></p>
+		</td>
+	</tr>
+	<tr>
+		<td width="27%">
+			<p align="center"><font size="2">WarningFileOpen</font></p>
+		</td>
+		<td width="73%">
+			<p><font size="2">Warning reported when The image file could not be
+			opened (permission problem, wrong file type, or does not exist).</font></p>
+		</td>
+	</tr>
+	<tr>
+		<td width="27%">
+			<p align="center"><font size="2">WarningImage</font></p>
+		</td>
+		<td width="73%">
+			<p style="font-weight: medium"><font size="2">NOT CURRENTLY USED</font></p>
+		</td>
+	</tr>
+	<tr>
+		<td width="27%">
+			<p align="center"><font size="2">WarningMissingDelegate</font></p>
+		</td>
+		<td width="73%">
+			<p style="font-weight: medium"><font size="2">NOT CURRENTLY USED</font></p>
+		</td>
+	</tr>
+	<tr>
+		<td width="27%">
+			<p align="center"><font size="2">WarningModule</font></p>
+		</td>
+		<td width="73%">
+			<p style="font-weight: medium"><font size="2">NOT CURRENTLY USED</font></p>
+		</td>
+	</tr>
+	<tr>
+		<td width="27%">
+			<p align="center"><font size="2">WarningMonitor</font></p>
+		</td>
+		<td width="73%">
+			<p style="font-weight: medium"><font size="2">NOT CURRENTLY USED</font></p>
+		</td>
+	</tr>
+	<tr>
+		<td width="27%">
+			<p align="center"><font size="2">WarningOption</font></p>
+		</td>
+		<td width="73%">
+			<p><font size="2">Warning reported when an option is malformed or
+			out of range.</font></p>
+		</td>
+	</tr>
+	<tr>
+		<td width="27%">
+			<p align="center"><font size="2">WarningRegistry</font></p>
+		</td>
+		<td width="73%">
+			<p style="font-weight: medium"><font size="2">NOT CURRENTLY USED</font></p>
+		</td>
+	</tr>
+	<tr>
+		<td width="27%">
+			<p align="center"><font size="2">WarningResourceLimit</font></p>
+		</td>
+		<td width="73%">
+			<p><font size="2">Warning reported when a program resource is
+			exhausted (e.g. not enough memory).</font></p>
+		</td>
+	</tr>
+	<tr>
+		<td width="27%">
+			<p align="center"><font size="2">WarningStream</font></p>
+		</td>
+		<td width="73%">
+			<p style="font-weight: medium"><font size="2">NOT CURRENTLY USED</font></p>
+		</td>
+	</tr>
+	<tr>
+		<td width="27%">
+			<p align="center"><font size="2">WarningType</font></p>
+		</td>
+		<td width="73%">
+			<p style="font-weight: medium"><font size="2">NOT CURRENTLY USED</font></p>
+		</td>
+	</tr>
+	<tr>
+		<td width="27%">
+			<p align="center"><font size="2">WarningXServer</font></p>
+		</td>
+		<td width="73%">
+			<p><font size="2">Warnings reported by the X11 subsystem.</font></p>
+		</td>
+	</tr>
+</table></ul>
+<p style="margin-bottom: 0in"><br />
+</p>
+<p align="center" style="margin-bottom: 0in"><b>Error Sub-Classes</b></p>
+<ul><table width="100%" border="1" cellpadding="2" cellspacing="3">
+	<col width="71*" />
+	<col width="185*" />
+	<tr>
+		<td width="28%">
+			<p align="center"><font size="2"><b>Error</b></font></p>
+		</td>
+		<td width="72%">
+			<p align="center"><font size="2"><b>Error Description</b></font></p>
+		</td>
+	</tr>
+	<tr>
+		<td width="28%">
+			<p align="center"><font size="2">ErrorUndefined</font></p>
+		</td>
+		<td width="72%">
+			<p><font size="2">Unspecified error type.</font></p>
+		</td>
+	</tr>
+	<tr>
+		<td width="28%">
+			<p align="center"><font size="2">ErrorBlob</font></p>
+		</td>
+		<td width="72%">
+			<p><font size="2">Error reported by BLOB I/O subsystem.</font></p>
+		</td>
+	</tr>
+	<tr>
+		<td width="28%">
+			<p align="center"><font size="2">ErrorCache</font></p>
+		</td>
+		<td width="72%">
+			<p><font size="2">Error reported by the pixel cache subsystem.</font></p>
+		</td>
+	</tr>
+	<tr>
+		<td width="28%">
+			<p align="center"><font size="2">ErrorCoder</font></p>
+		</td>
+		<td width="72%">
+			<p><font size="2">Error reported by coders (image format support).</font></p>
+		</td>
+	</tr>
+	<tr>
+		<td width="28%">
+			<p align="center"><font size="2">ErrorConfigure</font></p>
+		</td>
+		<td width="72%">
+			<p><font size="2">Errors reported while loading configuration files.</font></p>
+		</td>
+	</tr>
+	<tr>
+		<td width="28%">
+			<p align="center"><font size="2">ErrorCorruptImage</font></p>
+		</td>
+		<td width="72%">
+			<p><font size="2">Error reported when the image file is corrupt.</font></p>
+		</td>
+	</tr>
+	<tr>
+		<td width="28%">
+			<p align="center"><font size="2">ErrorDelegate</font></p>
+		</td>
+		<td width="72%">
+			<p><font size="2">Errors reported by the delegate (interface to
+			external programs) subsystem.</font></p>
+		</td>
+	</tr>
+	<tr>
+		<td width="28%">
+			<p align="center"><font size="2">ErrorDraw</font></p>
+		</td>
+		<td width="72%">
+			<p><font size="2">Error reported while drawing on image.</font></p>
+		</td>
+	</tr>
+	<tr>
+		<td width="28%">
+			<p align="center"><font size="2">ErrorFileOpen</font></p>
+		</td>
+		<td width="72%">
+			<p><font size="2">Error reported when the image file can not be
+			opened.</font></p>
+		</td>
+	</tr>
+	<tr>
+		<td width="28%">
+			<p align="center"><font size="2">ErrorImage</font></p>
+		</td>
+		<td width="72%">
+			<p><font size="2">Errors reported while drawing.</font></p>
+		</td>
+	</tr>
+	<tr>
+		<td width="28%">
+			<p align="center"><font size="2">ErrorMissingDelegate</font></p>
+		</td>
+		<td width="72%">
+			<p><font size="2">Error reported when an add-on library or program
+			is necessary in order to support the requested operation.</font></p>
+		</td>
+	</tr>
+	<tr>
+		<td width="28%">
+			<p align="center"><font size="2">ErrorModule</font></p>
+		</td>
+		<td width="72%">
+			<p><font size="2">Errors reported by the module loader subsystem.</font></p>
+		</td>
+	</tr>
+	<tr>
+		<td width="28%">
+			<p align="center"><font size="2">ErrorMonitor</font></p>
+		</td>
+		<td width="72%">
+			<p style="font-weight: medium"><font size="2">NOT CURRENTLY USED</font></p>
+		</td>
+	</tr>
+	<tr>
+		<td width="28%">
+			<p align="center"><font size="2">ErrorOption</font></p>
+		</td>
+		<td width="72%">
+			<p><font size="2">Error reported when an option is malformed or out
+			of range.</font></p>
+		</td>
+	</tr>
+	<tr>
+		<td width="28%">
+			<p align="center"><font size="2">ErrorRegistry</font></p>
+		</td>
+		<td width="72%">
+			<p><font size="2">Errors reported by the image/BLOB registry
+			subsystem.</font></p>
+		</td>
+	</tr>
+	<tr>
+		<td width="28%">
+			<p align="center"><font size="2">ErrorResourceLimit</font></p>
+		</td>
+		<td width="72%">
+			<p><font size="2">Error reported when a program resource is
+			exhausted (e.g. not enough memory).</font></p>
+		</td>
+	</tr>
+	<tr>
+		<td width="28%">
+			<p align="center"><font size="2">ErrorStream</font></p>
+		</td>
+		<td width="72%">
+			<p><font size="2">Errors reported by the pixel stream subsystem.</font></p>
+		</td>
+	</tr>
+	<tr>
+		<td width="28%">
+			<p align="center"><font size="2">ErrorType</font></p>
+		</td>
+		<td width="72%">
+			<p><font size="2">Errors reported by the type (font) rendering
+			subsystem.</font></p>
+		</td>
+	</tr>
+	<tr>
+		<td width="28%">
+			<p align="center"><font size="2">ErrorXServer</font></p>
+		</td>
+		<td width="72%">
+			<p><font size="2">Errors reported by the X11 subsystem.</font></p>
+		</td>
+	</tr>
+</table></ul>
+<p><br /><br />
+</p>
+</div>
+</body>
+</html>
