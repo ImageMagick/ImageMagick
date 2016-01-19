@@ -1,0 +1,415 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
+    <title>ImageMagick: The Fx Special Effects Image Operator</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <meta name="application-name" content="ImageMagick"/>
+  <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves."/>
+  <meta name="application-url" content="http://www.imagemagick.org"/>
+  <meta name="generator" content="PHP"/>
+  <meta name="keywords" content="the, fx, special, effects, image, operator, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert"/>
+  <meta name="rating" content="GENERAL"/>
+  <meta name="robots" content="INDEX, FOLLOW"/>
+  <meta name="generator" content="ImageMagick Studio LLC"/>
+  <meta name="author" content="ImageMagick Studio LLC"/>
+  <meta name="revisit-after" content="2 DAYS"/>
+  <meta name="resource-type" content="document"/>
+  <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC"/>
+  <meta name="distribution" content="Global"/>
+  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
+  <link rel="icon" href="../image/wand.png"/>
+  <link rel="shortcut icon" href="../image/wand.ico"/>
+  <link rel="stylesheet" href="../css/magick.php"/>
+</head>
+<body>
+<div class="main">
+<div class="magick-masthead">
+  <div class="container">
+    <script async="async" src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-3129977114552745"
+         data-ad-slot="6345125851"
+         data-ad-format="auto"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+    <nav class="magick-nav">
+      <a class="magick-nav-item " href="../index.php">Home</a>
+      <a class="magick-nav-item " href="binary-releases.php">Download</a>
+      <a class="magick-nav-item " href="command-line-tools.php">Tools</a>
+      <a class="magick-nav-item " href="command-line-processing.php">Command-line</a>
+      <a class="magick-nav-item " href="resources.php">Resources</a>
+      <a class="magick-nav-item " href="api.php">Develop</a>
+      <a class="magick-nav-item " href="search.php">Search</a>
+      <a class="magick-nav-item pull-right" href="http://www.imagemagick.org/discourse-server/">Community</a>
+    </nav>
+  </div>
+</div>
+<div class="container">
+<div class="magick-header">
+<p class="text-center"><a href="fx.php#fx">The Fx Special Effects Image Operator</a> • <a href="fx.php#anatomy">The Anatomy of an Fx Expression</a></p>
+
+<a id="fx"></a>
+
+<p class="lead magick-description">Use the Fx special effects image operator to apply a mathematical expression to an image or image channels.  Use Fx to:</p>
+
+<ul>
+  <li>create canvases, gradients, mathematical colormaps</li>
+  <li>move color values between images and channels</li>
+  <li>translate, flip, mirror, rotate, scale, shear and generally distort images</li>
+  <li>merge or composite multiple images together</li>
+  <li>convolve or merge neighboring pixels together</li>
+  <li>generate image metrics or 'fingerprints'</li>
+</ul>
+
+<p>The expression can be simple:</p>
+
+<pre>
+convert -size 64x64 canvas:black -channel blue -fx "1/2" fx_navy.png
+</pre>
+
+<p>Here, we convert a black to a navy blue image:</p>
+
+<ul>
+  <a href="../image/black.png"><img src="../image/black.png" width="64" height="64" alt="black" /></a>
+  <img style="margin-top:22px; margin-bottom:22px;" src="../image/right.gif" width="20" height="20" alt="==>" />
+  <a href="../image/navy.png"><img src="../image/navy.png" width="64" height="64" alt="navy" /></a>
+</ul>
+
+<p>Or the expression can be complex:</p>
+
+<pre>
+convert rose.jpg \  
+  -fx "(1.0/(1.0+exp(10.0*(0.5-u)))-0.006693)*1.0092503" \ 
+  rose-sigmoidal.png'
+</pre>
+
+<p>This expression results in a high contrast version of the image:</p>
+
+<ul>
+  <a href="../image/rose.jpg"><img src="../image/rose.jpg" width="70" height="46" alt="rose" /></a>
+  <img style="margin-top:13px; margin-bottom:13px;" src="../image/right.gif" width="20" height="20" alt="==>" />
+  <a href="../image/rose-sigmoidal.png"><img src="../image/rose-sigmoidal.png" width="70" height="46" alt="rose-sigmoidal" /></a>
+</ul>
+
+<p>The expression can include variable assignments.  Assignments, in most cases, reduce the complexity of an expression and permit some operations that might not be possible any other way.  For example, lets create a radial gradient:</p>
+
+<pre>
+convert -size 70x70 canvas: \
+  -fx "Xi=i-w/2; Yj=j-h/2; 1.2*(0.5-hypot(Xi,Yj)/70.0)+0.5" 
+  radial-gradient.png'
+</pre>
+
+<p>The command above returns this image:</p>
+
+<ul>
+  <a href="../image/radial-gradient.png"><img src="../image/radial-gradient.png" width="70" height="70" alt="radial-gradient" /></a>
+</ul>
+
+<p>This FX expression adds random noise to an image:</p>
+
+<pre>
+convert photo.jpg -fx \'iso=32; rone=rand(); rtwo=rand(); \
+  myn=sqrt(-2*ln(rone))*cos(2*Pi*rtwo); myntwo=sqrt(-2*ln(rtwo))* \
+  cos(2*Pi*rone); pnoise=sqrt(p)*myn*sqrt(iso)* \ 
+  channel(4.28,3.86,6.68,0)/255; max(0,p+pnoise)\' noisy.png
+</pre>
+
+<p>See <a href="http://www.imagemagick.org/Usage/transform/index.html#fx">Using FX, The Special Effects Image Operator</a> for more examples.</p>
+
+<p>The next section discusses the Fx expression language.</p>
+
+<h2 class="magick-header"><a id="anatomy"></a>The Anatomy of an Fx Expression</h2>
+
+<h3>The Fx Expression Language</h3>
+
+<p>The formal Fx expression language is defined here:</p>
+
+<dl class="dl-horizontal">
+  <dt> numbers:</dt>
+  	<dd> integer, floating point, scientific notation (+/- required, e.g. 3.81469e-06), International System number postfixes (.e.g KB, Mib, GB, etc.)</dd>
+  <dt> constants: </dt>
+    <dd> E (Euler's number), Epsilon, QuantumRange, QuantumScale, Opaque, Phi (golden ratio), Pi, Transparent</dd>
+  <dt> Fx operators (in order of precedence): </dt>
+     <dd> ^ (power), unary -, *, /, % (modulo), +, -,
+     &lt;&lt;, &gt;&gt;, &lt;, &lt;=, &gt;, &gt;=, ==, !=,
+     &amp; (bitwise AND),   | (bitwise OR),
+     &amp;&amp; (logical AND),  || (logical OR),
+     ~ (logical NOT),  ?: (ternary conditional)</dd>
+  <dt> math functions: </dt>
+     <dd> abs(), acos(), acosh(), airy(), alt(), asin(), asinh(), atan(), atanh(), atan2(), ceil(), clamp(), cos(), cosh(), debug(), drc(), exp(), floor(), gauss(), gcd(), hypot(), int(), isnan(), j0(), j1(), jinc(), ln(), log(), logtwo(), max(), min(), mod(), not(), pow(), rand(), round(), sign(), sin(), sinc(), sinh(), sqrt(), squish(), tan(), tanh(), trunc()</dd>
+  <dt> channel functions: </dt>
+    <dd> channel(r,g,b,a), channel(c,m,y,k,a)</dd>
+  <dt> color names:</dt>
+    <dd> red, cyan, black, etc.</dd>
+  <dt> color functions:</dt>
+    <dd> srgb(), srgba(), rgb(), rgba(), cmyk(), cmyka(), hsl(), hsla(), etc.</dd>
+  <dt> color hex values:</dt>
+    <dd> #ccc, #cbfed0, #b9e1cc00, etc.</dd>
+  <dt> symbols:</dt><dd><dl>
+     <li><code>u</code>=> first image in list</li>
+     <li><code>v</code>=> second image in list</li>
+     <li><code>s</code>=> current image in list (for %[fx:] otherwise = u)</li>
+     <li><code>t</code>=> index of current image (s) in list</li>
+     <li><code>n</code>=> number of images in list</li>
+
+     <li><code>i</code>=> column offset</li>
+     <li><code>j</code>=> row offset</li>
+     <li><code>p</code>=> pixel to use (absolute or relative to current pixel)</li>
+
+     <li><code>w</code>=> width of this image</li>
+     <li><code>h</code>=> height of this image</li>
+     <li><code>z</code>=> channel depth</li>
+
+     <li><code>r</code>=> red value (from RGBA), of a specific or current pixel</li>
+     <li><code>g</code>=> green    ''</li>
+     <li><code>b</code>=> blue     ''</li>
+     <li><code>a</code>=> alpha    ''</li>
+     <li><code>o</code>=> opacity  ''</li>
+
+     <li><code>c</code>=> cyan value of CMYK color of pixel</li>
+     <li><code>y</code>=> yellow   ''</li>
+     <li><code>m</code>=> magenta  ''</li>
+     <li><code>k</code>=> black    ''</li>
+
+     <li><code>intensity</code>=> pixel intensity</li>
+
+     <li><code>hue</code>=> pixel hue</li>
+     <li><code>saturation</code>=> pixel saturation</li>
+     <li><code>lightness</code>=> pixel lightness</li>
+     <li><code>luma</code>=> pixel luma</li>
+
+     <li><code>page.width</code>=> page width</li>
+     <li><code>page.height</code>=> page height</li>
+     <li><code>page.x</code>=> page x offset</li>
+     <li><code>page.y</code>=> page y offset</li>
+
+     <li><code>resolution.x</code>=> x resolution</li>
+     <li><code>resolution.y</code>=> y resolution</li>
+
+     <li><code>depth</code>=> image depth</li>
+     <li><code>minima</code>=> image minima</li>
+     <li><code>maxima</code>=> image maxima</li>
+     <li><code>mean</code>=> image mean</li>
+     <li><code>standard_deviation</code>=> image standard deviation</li>
+     <li><code>kurtosis</code>=> image kurtosis</li>
+     <li><code>skewness</code>=> image skewness (add a channel specifier to compute a statistic for that channel, e.g. depth.r)</li></dl></dd>
+  <dt> iterators:</dt>
+    <dd> while()</dd>
+</dl>
+
+
+<h3>The Fx Expression</h3>
+
+<p>An Fx expression may include any combination of the following:</p>
+<dl class="dl-horizontal">
+<dt> <var>x</var> <code>^</code> <var>y</var></dt><dd> exponentiation (<var>x<sup>y</sup></var>)</dd>
+<dt> <code>(</code> ... <code>)</code></dt><dd> grouping</dd>
+<dt> <var>x</var> <code>*</code> <var>y</var></dt><dd> multiplication (the asterisk <code>*</code> is optional, for example, <code>2u</code> or <code>2(x+y)</code> are acceptable)</dd>
+<dt> <var>x</var> <code>/</code> <var>y</var></dt><dd> division</dd>
+<dt> <var>x</var> <code>%</code> <var>y</var></dt><dd> modulo</dd>
+<dt> <var>x</var> <code>+</code> <var>y</var></dt><dd> addition</dd>
+<dt> <var>x</var> <code>-</code> <var>y</var></dt><dd> subtraction</dd>
+<dt> <var>x</var> <code>&lt;&lt;</code> <var>y</var></dt><dd> left shift</dd>
+<dt> <var>x</var> <code>&gt;&gt;</code> <var>y</var></dt><dd> right shift</dd>
+<dt> <var>x</var> <code>&lt;</code> <var>y</var></dt><dd> boolean relation, return value 1.0 if <var>x</var> &lt; <var>y</var>,  otherwise 0.0</dd>
+<dt> <var>x</var> <code>&lt;=</code> <var>y</var></dt><dd> boolean relation, return value 1.0 if <var>x</var> &lt;= <var>y</var>,  otherwise 0.0</dd>
+<dt> <var>x</var> <code>&gt;</code> <var>y</var></dt><dd> boolean relation, return value 1.0 if <var>x</var> &gt; <var>y</var>,  otherwise 0.0</dd>
+<dt> <var>x</var> <code>&gt;=</code> <var>y</var></dt><dd> boolean relation, return value 1.0 if <var>x</var> &gt;= <var>y</var>,  otherwise 0.0</dd>
+<dt> <var>x</var> <code>==</code> <var>y</var></dt><dd> boolean relation, return value 1.0 if <var>x </var>==<var> y</var>, otherwise 0.0</dd>
+<dt> <var>x</var> <code>!=</code> <var>y</var></dt><dd> boolean relation, return value 1.0 if <var>x </var>!=<var> y</var>, otherwise 0.0</dd>
+<dt> <var>x</var> <code>&amp;</code> <var>y</var></dt><dd> binary AND</dd>
+<dt> <var>x</var> <code>|</code> <var>y</var></dt><dd> binary OR</dd>
+<dt> <var>x</var> <code>&amp;&amp;</code> <var>y</var></dt><dd> logical AND connective, return value 1.0 if <var>x</var> &gt; 0 and <var>y</var> &gt; 0,  otherwise 0.0</dd>
+<dt> <var>x</var> <code>||</code> <var>y</var></dt><dd> logical OR connective (inclusive), return value 1.0 if <var>x</var> &gt; 0 or <var>y</var> &gt; 0 (or both),  otherwise 0.0</dd>
+<dt> <code>~</code><var>x</var></dt><dd> logical NOT operator, return value 1.0 if <var>not</var> <var>x</var> &gt; 0,  otherwise 0.0</dd>
+<dt> <code>+</code><var>x</var></dt><dd> unary plus, return 1.0*value</dd>
+<dt> <code>-</code><var>x</var></dt><dd> unary minus, return -1.0*value</dd>
+<dt> <var>x</var> <code>?</code> <var>y</var> </dt><dd><var>z</var>: ternary conditional expression, return value <var>y</var> if <var>x</var> != 0, otherwise <var>z</var>; only one ternary conditional permitted per statement</dd>
+<dt> <var>x</var> <code>=</code> <var>y</var></dt><dd>assignment; assignment variables are restricted to letter combinations only (e.g. Xi not X1)</dd>
+<dt> <var>x</var> <code>;</code> <var>y</var></dt><dd>statement separator </dd>
+<dt> <code>phi</code></dt><dd> constant (1.618034...)</dd>
+<dt> <code>pi</code></dt><dd> constant (3.141659...)</dd>
+<dt> <code>e</code></dt><dd> constant (2.71828...)</dd>
+<dt> <code>QuantumRange</code></dt><dd> constant maximum pixel value (255 for Q8, 65535 for Q16)</dd>
+<dt> <code>QuantumScale</code></dt><dd> constant 1.0/<code>QuantumRange</code></dd>
+<dt> <code>intensity</code></dt><dd> pixel intensity; equivalent to 0.299*red+0.587*green+0.114*blue</dd>
+<dt> <code>hue</code></dt><dd> pixel hue</dd>
+<dt> <code>saturation</code></dt><dd> pixel saturation</dd>
+<dt> <code>lightness</code></dt><dd> pixel lightness; equivalent to 0.5*max(red,green,blue) + 0.5*min(red,green,blue)</dd>
+<dt> <code>luminance</code></dt><dd> pixel luminance; equivalent to 0.212656*red + 0.715158*green + 0.072186*blue</dd>
+<dt> <code>red, green, blue</code>, etc.</dt><dd> color names</dd>
+<dt> <code>#ccc, #cbfed0, #b9e1cc00</code>, etc.</dt><dd> color hex values</dd>
+<dt> <code>rgb(), rgba(), cmyk(), cmyka(), hsl(), hsla()</code></dt><dd> color functions</dd>
+<dt> <code>s, t, u, v, n, i, j, w, h, z, r, g, b, a, o, c, y, m, k</code></dt><dd> symbols</dd>
+<dt> <code>abs(</code><var>x</var><code>)</code></dt><dd> absolute value function</dd>
+<dt> <code>acos(</code><var>x</var><code>)</code></dt><dd> arc cosine function</dd>
+<dt> <code>acosh(</code><var>x</var><code>)</code></dt><dd> inverse hyperbolic cosine function</dd>
+<dt> <code>airy(</code><var>x</var><code>)</code></dt><dd> Airy function (max=1, min=0); airy(<var>x</var>)=[jinc(<var>x</var>)]<sup>2</sup>=[2*j1(<var>pi*x</var>)/(<var>pi*x</var>)]<sup>2</sup></dd>
+<dt> <code>alt(</code><var>x</var><code>)</code></dt><dd> sign alternation function (return 1.0 if int(<var>x</var>) is even, -1.0 if int(<var>x</var>) is odd)</dd>
+<dt> <code>asin(</code><var>x</var><code>)</code></dt><dd> arc sine function</dd>
+<dt> <code>asinh(</code><var>x</var><code>)</code></dt><dd> inverse hyperbolic sine function</dd>
+<dt> <code>atan(</code><var>x</var><code>)</code></dt><dd> arc tangent function</dd>
+<dt> <code>atanh(</code><var>x</var><code>)</code></dt><dd> inverse hyperbolic tangent function</dd>
+<dt> <code>atan2(</code><var>x</var>,<var>y</var><code>)</code></dt><dd> arc tangent function of two variables</dd>
+<dt> <code>ceil(</code><var>x</var><code>)</code></dt><dd>smallest integral value not less than argument</dd>
+<dt> <code>channel(</code><var>r</var>,<var>g</var>,<var>b</var>,<var>a</var><code>)</code></dt><dd>select numeric argument based on current channel</dd>
+<dt> <code>channel(</code><var>c</var>,<var>m</var>,<var>y</var>,<var>k</var>,<var>a</var><code>)</code></dt><dd>select numeric argument based on current channel</dd>
+<dt> <code>clamp(</code><var>x</var><code>)</code></dt><dd> clamp value</dd>
+<dt> <code>cos(</code><var>x</var><code>)</code></dt><dd> cosine function</dd>
+<dt> <code>cosh(</code><var>x</var><code>)</code></dt><dd> hyperbolic cosine function</dd>
+<dt> <code>debug(</code><var>x</var><code>)</code></dt><dd> print <var>x</var> (useful for debugging your expression)</dd>
+<dt> <code>drc(</code><var>x</var>,<var>y</var><code>)</code></dt><dd> dynamic range compression (knee curve); drc(<var>x</var>,<var>y</var>)=(<var>x</var>)/(<var>y</var>*(<var>x</var>-1)+1); -1&lt;<var>y</var>&lt;1 </dd>
+<dt> <code>exp(</code><var>x</var><code>)</code></dt><dd> natural exponential function (<var>e<sup>x</sup></var>)</dd>
+<dt> <code>floor(</code><var>x</var><code>)</code></dt><dd> largest integral value not greater than argument</dd>
+<dt> <code>gauss(</code><var>x</var><code>)</code></dt><dd> gaussian function; gauss(<var>x</var>)=exp(<var>-x*x/2</var>)/sqrt(2*pi)</dd>
+<dt> <code>gcd(</code><var>x</var>,<var>y</var><code>)</code></dt><dd> greatest common denominator</dd>
+<dt> <code>hypot(</code><var>x</var>,<var>y</var><code>)</code></dt><dd> the square root of x<sup>2</sup>+y<sup>2</sup></dd>
+<dt> <code>int(</code><var>x</var><code>)</code></dt><dd> greatest integer function (return greatest integer less than or equal to <var>x</var>)</dd>
+<dt> <code>isnan(</code><var>x</var><code>)</code></dt><dd>return 1.0 if <var>x</var> is NAN, 0.0 otherwise</dd>
+<dt> <code>j0(</code><var>x</var><code>)</code></dt><dd> Bessel functions of <var>x</var> of the first kind of order 0</dd>
+<dt> <code>j1(</code><var>x</var><code>)</code></dt><dd> Bessel functions of <var>x</var> of the first kind of order 1</dd>
+<dt> <code>jinc(</code><var>x</var><code>)</code></dt><dd> jinc function (max=1, min=-0.1323); jinc(<var>x</var>)=2*j1(pi*<var>x</var>)/(pi*<var>*x</var>)</dd>
+<dt> <code>ln(</code><var>x</var><code>)</code></dt><dd> natural logarithm function</dd>
+<dt> <code>log(</code><var>x</var><code>)</code></dt><dd> logarithm base 10</dd>
+<dt> <code>logtwo(</code><var>x</var><code>)</code></dt><dd> logarithm base 2</dd>
+<dt> <code>ln(</code><var>x</var><code>)</code></dt><dd> natural logarithm</dd>
+<dt> <code>max(</code><var>x</var>, <var>y</var><code>)</code></dt><dd> maximum of <var>x</var> and <var>y</var></dd>
+<dt> <code>min(</code><var>x</var>, <var>y</var><code>)</code></dt><dd> minimum of <var>x</var> and <var>y</var></dd>
+<dt> <code>mod(</code><var>x</var>, <var>y</var><code>)</code></dt><dd> floating-point remainder function</dd>
+<dt> <code>not(</code><var>x</var><code>)</code></dt><dd> return 1.0 if <var>x</var> is zero, 0.0 otherwise</dd>
+<dt> <code>pow(</code><var>x</var>,<var>y</var><code>)</code></dt><dd> power function (<var>x<sup>y</sup></var>)</dd>
+<dt> <code>rand()</code></dt><dd> value uniformly distributed over the interval [0.0, 1.0) with a 2 to the 128th-1 period</dd>
+<dt> <code>round()</code></dt><dd> round to integral value, regardless of rounding direction</dd>
+<dt> <code>sign(</code><var>x</var><code>)</code></dt><dd> return -1.0 if <var>x</var> is less than 0.0 otherwise 1.0</dd>
+<dt> <code>sin(</code><var>x</var><code>)</code></dt><dd> sine function</dd>
+<dt> <code>sinc(</code><var>x</var><code>)</code></dt><dd> sinc function (max=1, min=-0.21); sinc(<var>x</var>)=sin(<var>pi*x</var>)/(<var>pi*x</var>)</dd>
+<dt> <code>squish(</code><var>x</var><code>)</code></dt><dd> squish function; squish(<var>x</var>)=1.0/(1.0+exp(<var>-x</var>))</dd>
+<dt> <code>sinh(</code><var>x</var><code>)</code></dt><dd> hyperbolic sine function</dd>
+<dt> <code>sqrt(</code><var>x</var><code>)</code></dt><dd> square root function</dd>
+<dt> <code>tan(</code><var>x</var><code>)</code></dt><dd> tangent function</dd>
+<dt> <code>tanh(</code><var>x</var><code>)</code></dt><dd> hyperbolic tangent function</dd>
+<dt> <code>trunc(</code><var>x</var><code>)</code></dt><dd> round to integer, towards zero</dd>
+<dt> <code>while(</code><var>condition</var>,<var>expression</var><code>)</code></dt><dd> iterate while the condition is not equal to 0</dd>
+</dl>
+<br/>
+<p>The expression semantics include these rules:</p>
+
+<ul>
+<li>symbols are case insensitive</li>
+<li>only one ternary conditional (e.g. x ? y : z) per statement</li>
+<li>statements are assignments or the final expression to return</li>
+<li>an assignment starts a statement, it is not an operator</li>
+<li>assignments to built-ins do not throw an exception and have no effect;  e.g. <code>r=3.0; r</code> returns the pixel red color value, not 3.0</li>
+<li>Unary operators have a lower priority than binary operators, that is, the unary minus (negation) has lower precedence than exponentiation, so -3^2 is interpreted as -(3^2) = -9.  Use parentheses to clarify your intent (e.g. (-3)^2 = 9).</li>
+<li>Similarly, care must be exercised when using the slash ('/') symbol. The string of characters <var>1/2x</var> is interpreted as (1/2)x. The contrary interpretation should be written explicitly as 1/(2x). Again, the use of parentheses helps clarify the meaning and should be used whenever there is any chance of misinterpretation.</li>
+</ul>
+<br/>
+
+
+<h3>Source Images</h3>
+
+<p>The symbols <code>u</code> and <code>v</code> refer to the first and second images, respectively, in the current image sequence.  Refer to a particular image in a sequence by appending its index to any image reference (usually <code>u</code>), with a zero index for the beginning of the sequence. A negative index counts from the end.  For example, <code>u[0]</code> is the first image in the sequence, <code>u[2]</code> is the third, <code>u[-1]</code> is the last image, and <code>u[t]</code> is the current image. The current image can also be referenced by <code>s</code>. If the sequence number exceeds the length of the sequence, the count is wrapped. Thus in a 3-image sequence,  <code>u[-1]</code>, <code>u[2]</code>, and <code>u[5]</code> all refer to the same (third) image.</p>
+
+<p>As an example, we form an image by averaging the first image and third images (the second (index 1) image is ignored and just junked):</p>
+
+<pre>
+convert image1.jpg image2.jpg image3.jpg -fx "(u+u[2])/2.0" image.jpg
+</pre>
+
+<p>By default, the image to which <code>p</code>, <code>r</code>, <code>g</code>, <code>b</code>, <code>a</code>, etc., are applied is the current image <code>s</code> in the image list. This is equivalent to <code>u</code> except when used in an escape sequence <code>%[fx:...]</code>. </p>
+
+<p>It is important to note the special role played by the first image. This is the only image in the image sequence that is modified, other images are used only for their data. As an illustrative example, consider the following, and note that the setting <a href="command-line-options.php#channel">-channel red</a> instructs <a href="command-line-options.php#fx">-fx</a> to modify only the red channel; nothing in the green or blue channels will change. It is instructive to ponder why the result is not symmetric.</p>
+
+<pre>
+convert -channel red logo: -flop logo: -resize "20%" -fx "(u+v)/2" image.jpg
+</pre>
+
+<ul>
+  <a href="../image/logo-sm-flop.png"><img src="../image/logo-sm-flop.png" width="128" height="96" alt="logo-sm-flop.png" /></a>
+  <a href="../image/logo-sm.png"><img src="../image/logo-sm.png" width="128" height="96" alt="logo-sm.png" /></a>
+<img style="margin-top:38px; margin-bottom:38px;" src="../image/right.gif" width="20" height="20" alt="==>" />
+  <a href="../image/logo-sm-fx.png"><img src="../image/logo-sm-fx.png" width="128" height="96" alt="logo-sm-fx.png" /></a>
+</ul>
+
+<br/>
+<h3>Accessing Pixels</h3>
+
+<p>All color values are normalized to the range of 0.0 to 1.0.  The alpha channel ranges from 0.0 (fully transparent) to 1.0 (fully opaque).</p>
+
+<p>The pixels are processed one at a time, but a different pixel of an image can be specified using a pixel index represented by <code>p</code>. For example,</p>
+
+<pre>
+p[-1].g      green value of pixel to the immediate left of the current pixel
+p[-1,-1].r   red value of the pixel diagonally left and up from current pixel
+</pre>
+
+<p>To specify an absolute position, use braces, rather than brackets.</p>
+
+<pre>
+p{0,0}.r     red value of the pixel in the upper left corner of the image
+p{12,34}.b   blue pixel value at column number 12, row 34 of the image
+</pre>
+
+<p>Integer values of the position retrieve the color of the pixel referenced, while non-integer position values return a blended color according to the current <a href="command-line-options.php#interpolate">-interpolate</a> setting.</p>
+
+<p>A position outside the boundary of the image retrieves a value dictated by the <a href="command-line-options.php#virtual-pixel">-virtual-pixel</a> option setting.</p>
+
+<h3>Apply an Expression to Select Image Channels</h3>
+
+<p>Use the <a href="command-line-options.php#channel">-channel</a> setting to specify the output channel of the result. If no output channel is given, the result is set over all channels except the opacity channel. For example, to replace the red channel of <code>alpha.png</code> with the average of the green channels from the images <code>alpha.png</code> and <code>beta.png</code>, use:</p>
+
+<pre>
+convert alpha.png beta.png -channel red -fx "(u.g+v.g)/2" gamma.png
+</pre>
+
+
+<h3>Results</h3>
+
+<p>The <a href="command-line-options.php#fx">-fx</a> operator evaluates the given expression for each channel (set by <a href="command-line-options.php#channel">-channel</a>) of each pixel in the first image (<code>u</code>) in the sequence. The computed values are temporarily stored in a copy (clone) of that first image until all the pixels have been processed, after which this single new image replaces the list of images in the current image sequence.  As such, in the previous example the updated version of <code>alpha.png</code> replaces both of the original images, <code>alpha.png</code> and <code>beta.png</code>, before being saved as <code>gamma.png</code>.</p>
+
+<p>The current image <code>s</code> is set to the first image in the sequence (<code>u</code>), and <code>t</code> to its index, 0.  The symbols <code>i</code> and <code>j</code> reference the current pixel being processed.</p>
+
+
+<p>For use with <a href="command-line-options.php#format_identify_">-format</a>, the value-escape <code>%[fx:]</code> is evaluated just once for each image in the current image sequence. As each image in the sequence is being evaluated, <code>s</code> and <code>t</code> successively refer to the current image and its index, while <code>i</code> and <code>j</code> are set to zero, and the current channel set to red (<a href="command-line-options.php#channel">-channel</a> is ignored). An example:</p>
+
+<pre>
+convert  canvas:'rgb(25%,50%,75%)' rose: -colorspace rgb  \ 
+  -format 'Red channel of NW corner of image #%[fx:t] is %[fx:s]' info:
+Red channel of NW corner of image #0 is 0.453758 
+Red channel of NW corner of image #1 is 0.184588
+</pre>
+
+<p>Here we use the image indexes to <var>rotate</var> each image differently, and use <code>-set</code> with the image index to set a different <var>pause delay</var> on the first image in the animation:</p>
+
+<pre>
+convert rose: -duplicate 29 -virtual-pixel Gray -distort SRT '%[fx:360.0*t/n]' \
+  -set delay '%[fx:t == 0 ? 240 : 10]' -loop 0 rose.gif"
+</pre>
+
+<p>The color-escape <code>%[pixel:]</code> is evaluated once per image and per color channel in that image (<a href="command-line-options.php#channel">-channel</a> is ignored), The values generated are then converted into a color string (a named color or hex color value).  The symbols <code>i</code> and <code>j</code> are set to zero, and <code>s</code> and <code>t</code> refer to each successively current image and index.</p>
+
+</div>
+  <footer class="magick-footer">
+    <p><a href="support.php">Donate</a> •
+     <a href="sitemap.php">Sitemap</a> •
+    <a href="links.php">Related</a> •
+    <a href="architecture.php">Architecture</a>
+</p>
+    <p><a href="fx.php#">Back to top</a> •
+    <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
+    <a href="contact.php">Contact Us</a></p>
+        <p><small>©  1999-2016 ImageMagick Studio LLC</small></p>
+  </footer>
+</div><!-- /.container -->
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="http://nextgen.imagemagick.org/js/magick.php"></script>
+</div>
+</body>
+</html>

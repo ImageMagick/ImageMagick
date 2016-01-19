@@ -1,0 +1,346 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
+    <title>ImageMagick: Command-line Tools: Compare</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <meta name="application-name" content="ImageMagick"/>
+  <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves."/>
+  <meta name="application-url" content="http://www.imagemagick.org"/>
+  <meta name="generator" content="PHP"/>
+  <meta name="keywords" content="command-line, tools:, compare, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert"/>
+  <meta name="rating" content="GENERAL"/>
+  <meta name="robots" content="INDEX, FOLLOW"/>
+  <meta name="generator" content="ImageMagick Studio LLC"/>
+  <meta name="author" content="ImageMagick Studio LLC"/>
+  <meta name="revisit-after" content="2 DAYS"/>
+  <meta name="resource-type" content="document"/>
+  <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC"/>
+  <meta name="distribution" content="Global"/>
+  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
+  <link rel="icon" href="../image/wand.png"/>
+  <link rel="shortcut icon" href="../image/wand.ico"/>
+  <link rel="stylesheet" href="../css/magick.php"/>
+</head>
+<body>
+<div class="main">
+<div class="magick-masthead">
+  <div class="container">
+    <script async="async" src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-3129977114552745"
+         data-ad-slot="6345125851"
+         data-ad-format="auto"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+    <nav class="magick-nav">
+      <a class="magick-nav-item " href="../index.php">Home</a>
+      <a class="magick-nav-item " href="binary-releases.php">Download</a>
+      <a class="magick-nav-item " href="command-line-tools.php">Tools</a>
+      <a class="magick-nav-item " href="command-line-processing.php">Command-line</a>
+      <a class="magick-nav-item " href="resources.php">Resources</a>
+      <a class="magick-nav-item " href="api.php">Develop</a>
+      <a class="magick-nav-item " href="search.php">Search</a>
+      <a class="magick-nav-item pull-right" href="http://www.imagemagick.org/discourse-server/">Community</a>
+    </nav>
+  </div>
+</div>
+<div class="container">
+<div class="magick-header">
+<p class="text-center"><a href="compare.php#usage">Example Usage</a> • <a href="compare.php#options">Option Summary</a></p>
+
+<p class="lead magick-description">Use the <code>compare</code> program to mathematically and visually annotate the difference between an image and its reconstruction.  See <a href="command-line-processing.php">Command Line Processing</a> for advice on how to structure your <code>compare</code> command or see below for example usages of the command.</p>
+
+<h2 class="magick-header"><a id="usage"></a>Example Usage</h2>
+
+<p>We list a few examples of the <code>compare</code> command here to illustrate its usefulness and ease of use. To get started, lets compare an image to one thats been sharpened:</p>
+
+<pre>
+convert rose.jpg -sharpen 0x1 reconstruct.jpg
+compare rose.jpg reconstruct.jpg difference.png
+compare -compose src rose.jpg reconstruct.jpg difference.png
+</pre>
+
+<ul>
+  <a href="../image/rose.jpg"><img src="../image/rose.jpg" width="70" height="46" alt="rose" /></a>
+  <a href="../image/reconstruct.jpg"><img src="../image/reconstruct.jpg" width="70" height="46" alt="rose" /></a>
+  <img style="margin:13px 0;" src="../image/right.gif" width="20" height="20" alt="==>" />
+  <a href="../image/difference.png"><img src="../image/difference.png" width="70" height="46" alt="rose" /></a>
+</ul>
+
+<p>The red areas of the difference image emphasizes (highlight) pixels that are affected by the image sharpening, whereas white de-emphasizes (lowlight) pixels that are untouched by the sharpening process.</p>
+
+<p>In addition to the visual interpretation of the difference in an image and its reconstruction, we report a mathematical measure of the difference:</p>
+
+<pre>
+-> compare -verbose -metric mae rose.jpg reconstruct.jpg difference.png
+Image: rose.jpg
+ Channel distortion: MAE
+  red: 2282.91 (0.034835)
+  green: 1853.99 (0.0282901)
+  blue: 2008.67 (0.0306503)
+  all: 1536.39 (0.0234439)
+</pre>
+<p>Or, if you just want the red channel distortion, use this command:</p>
+
+<pre>
+-> compare -channel red -metric PSNR rose.jpg reconstruct.jpg difference.png
+19.63
+</pre>
+
+<p>Or, if you just want the overall image distortion, use this command:</p>
+
+<pre>
+-> compare -metric PSNR rose.jpg reconstruct.jpg difference.png
+28.31
+</pre>
+
+<p>If the reconstructed image is a subimage of the image, the compare program returns the best match offset.  In addition, it returns a similarity image such that an exact match location is completely white and if none of the pixels match, black, otherwise some gray level in-between:</p>
+
+<pre>
+-> compare -metric RMSE -subimage-search logo.png wizard.jpg similarity.gif
+85.05 (0.00129778) @ 353,157
+</pre>
+
+<p>You can find additional examples of using <code>compare</code> in <a href="http://www.ibm.com/developerworks/library/l-graf/?ca=dnt-428">Graphics from the Command Line</a>.  Further discussion is available in <a href="http://www.ibm.com/developerworks/library/l-graf2/?ca=dgr-lnxw15GraphicsLine">More Graphics from the Command Line</a> and <a href="http://www.imagemagick.org/Usage/">Examples of ImageMagick Usage</a>.</p>
+
+<p>The compare program returns 2 on error otherwise 0 if the images are similar or 1 if they are dissimilar.</p>
+
+<h2 class="magick-header"><a id="options"></a>Option Summary</h2>
+
+<p>The <code>compare</code> command recognizes these options.  Click on an option to get more details about how that option works.</p>
+
+<table class="table table-condensed table-striped">
+  <tbody>
+  <tr>
+    <th align="left">Option</th>
+    <th align="left">Description</th>
+  </tr>
+
+  <tr>
+    <td><a href="command-line-options.php#alpha">-alpha</a></td>
+    <td>on, activate, off, deactivate, set, opaque, copy",
+transparent, extract, background, or shape the alpha channel</td>
+  </tr>
+
+  <tr>
+    <td><a href="command-line-options.php#authenticate">-authenticate <var>value</var></a></td>
+    <td>decrypt image with this password</td>
+  </tr>
+
+  <tr>
+    <td><a href="command-line-options.php#channel">-channel <var>type</var></a></td>
+    <td>apply option to select image channels</td>
+  </tr>
+
+  <tr>
+    <td><a href="command-line-options.php#colorspace">-colorspace <var>type</var></a></td>
+    <td>set image colorspace</td>
+  </tr>
+
+  <tr>
+    <td><a href="command-line-options.php#compose">-compose <var>operator</var></a></td>
+    <td>set image composite operator</td>
+  </tr>
+
+  <tr>
+    <td><a href="command-line-options.php#decipher">-decipher <var>filename</var></a></td>
+    <td>convert cipher pixels to plain</td>
+  </tr>
+
+  <tr>
+    <td><a href="command-line-options.php#debug">-debug <var>events</var></a></td>
+    <td>display copious debugging information</td>
+  </tr>
+
+  <tr>
+    <td><a href="command-line-options.php#define">-define <var>format:option</var></a></td>
+    <td>define one or more image format options</td>
+  </tr>
+
+  <tr>
+    <td><a href="command-line-options.php#density">-density <var>geometry</var></a></td>
+    <td>horizontal and vertical density of the image</td>
+  </tr>
+
+  <tr>
+    <td><a href="command-line-options.php#depth">-depth <var>value</var></a></td>
+    <td>image depth</td>
+  </tr>
+
+  <tr>
+    <td><a href="command-line-options.php#dissimilarity-threshold">-dissimilarity-threshold <var>value</var></a></td>
+    <td>maximum distortion for (sub)image match (default 0.2)</td>
+  </tr>
+
+  <tr>
+    <td><a href="command-line-options.php#encipher">-encipher <var>filename</var></a></td>
+    <td>convert plain pixels to cipher pixels</td>
+  </tr>
+
+  <tr>
+    <td><a href="command-line-options.php#extract">-extract <var>geometry</var></a></td>
+    <td>extract area from image</td>
+  </tr>
+
+  <tr>
+    <td><a href="command-line-options.php#fuzz">-fuzz <var>distance</var></a></td>
+    <td>colors within this distance are considered equal</td>
+  </tr>
+
+  <tr>
+    <td><a href="command-line-options.php#help">-help</a></td>
+    <td>print program options</td>
+  </tr>
+
+  <tr>
+    <td><a href="command-line-options.php#highlight-color">-highlight-color <var>color</var></a></td>
+    <td>emphasize pixel differences with this color</td>
+  </tr>
+
+  <tr>
+    <td><a href="command-line-options.php#identify">-identify</a></td>
+    <td>identify the format and characteristics of the image</td>
+  </tr>
+
+  <tr>
+    <td><a href="command-line-options.php#interlace">-interlace <var>type</var></a></td>
+    <td>type of image interlacing scheme</td>
+  </tr>
+
+  <tr>
+    <td><a href="command-line-options.php#limit">-limit <var>type value</var></a></td>
+    <td>pixel cache resource limit</td>
+  </tr>
+
+  <tr>
+    <td><a href="command-line-options.php#log">-log <var>format</var></a></td>
+    <td>format of debugging information</td>
+  </tr>
+
+  <tr>
+    <td><a href="command-line-options.php#lowlight-color">-lowlight-color <var>color</var></a></td>
+    <td>de-emphasize pixel differences with this color</td>
+  </tr>
+
+  <tr>
+    <td><a href="command-line-options.php#metric">-metric <var>type</var></a></td>
+    <td>measure differences between images with this metric</td>
+  </tr>
+
+  <tr>
+    <td><a href="command-line-options.php#profile">-profile <var>filename</var></a></td>
+    <td>add, delete, or apply an image profile</td>
+  </tr>
+
+  <tr>
+    <td><a href="command-line-options.php#quality">-quality <var>value</var></a></td>
+    <td>JPEG/MIFF/PNG compression level</td>
+  </tr>
+
+  <tr>
+    <td><a href="command-line-options.php#quantize">-quantize <var>colorspace</var></a></td>
+    <td>reduce image colors in this colorspace</td>
+  </tr>
+
+  <tr>
+    <td><a href="command-line-options.php#quiet">-quiet</a></td>
+    <td>suppress all warning messages</td>
+  </tr>
+
+  <tr>
+    <td><a href="command-line-options.php#regard-warnings">-regard-warnings</a></td>
+    <td>pay attention to warning messages.</td>
+  </tr>
+
+  <tr>
+    <td><a href="command-line-options.php#respect-parentheses">-respect-parentheses</a></td>
+    <td>settings remain in effect until parenthesis boundary.</td>
+  </tr>
+
+  <tr>
+    <td><a href="command-line-options.php#sampling-factor">-sampling-factor <var>geometry</var></a></td>
+    <td>horizontal and vertical sampling factor</td>
+  </tr>
+
+  <tr>
+    <td><a href="command-line-options.php#seed">-seed <var>value</var></a></td>
+    <td>seed a new sequence of pseudo-random numbers</td>
+  </tr>
+
+  <tr>
+    <td><a href="command-line-options.php#set">-set <var>attribute value</var></a></td>
+    <td>set an image attribute</td>
+  </tr>
+
+  <tr>
+    <td><a href="command-line-options.php#similarity-threshold">-similarity-threshold <var>value</var></a></td>
+    <td>minimum distortion for (sub)image match (default 0.0)</td>
+  </tr>
+
+  <tr>
+    <td><a href="command-line-options.php#size">-size <var>geometry</var></a></td>
+    <td>width and height of image</td>
+  </tr>
+
+  <tr>
+    <td><a href="command-line-options.php#subimage-search">-subimage-search</a></td>
+    <td>search for subimage</td>
+  </tr>
+
+  <tr>
+    <td><a href="command-line-options.php#synchronize">-synchronize</a></td>
+    <td>synchronize image to storage device</td>
+  </tr>
+
+  <tr>
+    <td><a href="command-line-options.php#taint">-taint</a></td>
+    <td>mark the image as modified</td>
+  </tr>
+
+  <tr>
+    <td><a href="command-line-options.php#transparent-color">-transparent-color <var>color</var></a></td>
+    <td>transparent color</td>
+  </tr>
+
+  <tr>
+    <td><a href="command-line-options.php#verbose">-verbose</a></td>
+    <td>print detailed information about the image</td>
+  </tr>
+
+  <tr>
+    <td><a href="command-line-options.php#version">-version</a></td>
+    <td>print version information</td>
+  </tr>
+
+  <tr>
+    <td><a href="command-line-options.php#virtual-pixel">-virtual-pixel <var>method</var></a></td>
+    <td>access method for pixels outside the boundaries of the image</td>
+  </tr>
+
+  </tbody>
+</table>
+</div>
+  <footer class="magick-footer">
+    <p><a href="support.php">Donate</a> •
+     <a href="sitemap.php">Sitemap</a> •
+    <a href="links.php">Related</a> •
+    <a href="architecture.php">Architecture</a>
+</p>
+    <p><a href="compare.php#">Back to top</a> •
+    <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
+    <a href="contact.php">Contact Us</a></p>
+        <p><small>©  1999-2016 ImageMagick Studio LLC</small></p>
+  </footer>
+</div><!-- /.container -->
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="http://nextgen.imagemagick.org/js/magick.php"></script>
+</div>
+</body>
+</html>

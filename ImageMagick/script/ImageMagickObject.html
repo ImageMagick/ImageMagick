@@ -1,0 +1,126 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
+    <title>ImageMagick: Install the ImageMagickObject COM+ Component</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <meta name="application-name" content="ImageMagick"/>
+  <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves."/>
+  <meta name="application-url" content="http://www.imagemagick.org"/>
+  <meta name="generator" content="PHP"/>
+  <meta name="keywords" content="install, the, imagemagickobject, com+, component, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert"/>
+  <meta name="rating" content="GENERAL"/>
+  <meta name="robots" content="INDEX, FOLLOW"/>
+  <meta name="generator" content="ImageMagick Studio LLC"/>
+  <meta name="author" content="ImageMagick Studio LLC"/>
+  <meta name="revisit-after" content="2 DAYS"/>
+  <meta name="resource-type" content="document"/>
+  <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC"/>
+  <meta name="distribution" content="Global"/>
+  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
+  <link rel="icon" href="../image/wand.png"/>
+  <link rel="shortcut icon" href="../image/wand.ico"/>
+  <link rel="stylesheet" href="../css/magick.php"/>
+</head>
+<body>
+<div class="main">
+<div class="magick-masthead">
+  <div class="container">
+    <script async="async" src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-3129977114552745"
+         data-ad-slot="6345125851"
+         data-ad-format="auto"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+    <nav class="magick-nav">
+      <a class="magick-nav-item " href="../index.php">Home</a>
+      <a class="magick-nav-item " href="binary-releases.php">Download</a>
+      <a class="magick-nav-item " href="command-line-tools.php">Tools</a>
+      <a class="magick-nav-item " href="command-line-processing.php">Command-line</a>
+      <a class="magick-nav-item " href="resources.php">Resources</a>
+      <a class="magick-nav-item " href="api.php">Develop</a>
+      <a class="magick-nav-item " href="search.php">Search</a>
+      <a class="magick-nav-item pull-right" href="http://www.imagemagick.org/discourse-server/">Community</a>
+    </nav>
+  </div>
+</div>
+<div class="container">
+<div class="magick-header">
+<p class="text-center"><a href="index.html#build">Build ImageMagickObject From Source</a></p>
+
+<p class="lead magick-description">The ImageMagickObject is a COM+ compatible component that can be invoked from any language capable of using COM objects.  The intended use is for Windows Scripting Host VBS scripts and Visual Basic, but it is also available from to C++, ASP, and other languages like Delphi, Perl and PHP.</p>
+
+<p>The ImageMagickObject COM+ component provides access to the <a href="compare.php">compare</a>, <a href="convert.php">convert</a>, <a href="composite.php">composite</a>, <a href="mogrify.php">mogrify</a>, <a href="identify.php">identify</a>, <a href="montage.php">montage</a>, and <a href="stream.php">stream</a> tools, efficiently executing them as part of your process, rather than as external programs. The way you use it is exactly the same. You pass it a list of strings including filenames and various options and it does the job. In fact, you can take any existing batch scripts that use the command line tools and translate them into the equivalent calls to the COM+ object in a matter of minutes. Beyond that, there is also a way to pass in and retrieve images in memory in the form of standard smart arrays (byte arrays). Samples are provided, to show both the simple and more elaborate forms of access.</p>
+
+<p>ImageMagick provides a statically-built ImageMagick object as part of its <a href="binary-releases.php#windows">Windows installation package</a>.  When this package is installed, ImageMagickObject and its sample programs are installed to this path:</p>
+
+<pre>
+  c:\Program Files\ImageMagick-7.0.0-Q16\ImageMagickObject
+</pre>
+
+<p>The ImageMagickObject is registered if the checkbox, <code>Register ImageMagickObject</code>, is checked at install time.</p>
+
+<p>To execute the sample program from the Windows Command Shell, type:</p>
+
+<pre>
+cscript SimpleTest.vbs
+</pre>
+
+<p>Since the ImageMagick utility command line parsers are incorporated within ImageMagickObject, please refer to the <a href="command-line-tools.php">command-line tools</a> discussion to learn how to use it. The sample VBS scripts show how the object should be called and used and have lots of comments.</p>
+
+<p>C++ programmers should have a look at the <code>MagickCMD.cpp</code> command line utility for an example of how to call the object from C++.  The object requires a variable size list of BSTR's to emulate the command line argc, argv style calling conventions of the COM component which is more complex in C++ then in VBS or VB.</p>
+
+<p>MagickCMD is a C++ sample, but it also serves as a replacement for all the other command line utilities in most applications. Instead of using <code>convert xxxx yyyy</code> you can use <code>MagickCMD convert xxxx yyyy</code> instead. MagickCMD calls the COM object to accomplish the designated task.  This small tight combination replaces the entire usual binary distribution in just a few mebibytes.</p>
+
+<h2 class="magick-header"><a id="build"></a>Build ImageMagickObject From Source</h2>
+
+<p>The source code for ImageMagickObject is available from the ImageMagick <a href="http://git.imagemagick.org/repos/ImageMagick">GIT</a> repository, or as part of the <a href="install-source.php#windows">Windows source</a> distribution. Once the source code has been retrieved and extracted, the source for ImageMagickObject is the directory <code>ImageMagick\contrib\win32\ATL7ImageMagickObject</code>, however, ImageMagick itself must be built using the static-multithread (VisualStaticMT) build configuration.  Building ImageMagickObject requires Microsoft Visual C++ 7.0 as delivered with Microsoft's Visual Studio .NET package. See the <a href="install-source.php#windows">Windows compilation instructions</a> to get ImageMagick itself built before building the ImageMagick COM+ component.</p>
+
+<p>Once the VisualStaticMT project has been built, build the ImageMagickObject with this procedure:</p>
+
+<pre>
+cd ImageMagick/contrib/win32/ATL7/ImageMagickObject
+BuildImageMagickObject release
+</pre>
+
+<p>Here, we assume that the VisualStaticMT project has been built using the release setting for an optimized build. If the debug setting was used for a debug build, specify the argument <code>debug</code>; instead.</p>
+
+<p>To register the DLL as a COM+ server, type</p>
+
+<pre>
+regsvr32 /c /s ImageMagickObject.dll
+</pre>
+
+<p>To unregister the DLL, type</p>
+
+<pre>
+regsvr32 /u /s ImageMagickObject.dll
+</pre>
+
+<p>Use MagickCMD to exercise ImageMagickObject to verify that it is working properly.</p>
+
+</div>
+  <footer class="magick-footer">
+    <p><a href="support.php">Donate</a> •
+     <a href="sitemap.php">Sitemap</a> •
+    <a href="links.php">Related</a> •
+    <a href="architecture.php">Architecture</a>
+</p>
+    <p><a href="ImageMagickObject.php#">Back to top</a> •
+    <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
+    <a href="contact.php">Contact Us</a></p>
+        <p><small>©  1999-2016 ImageMagick Studio LLC</small></p>
+  </footer>
+</div><!-- /.container -->
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="http://nextgen.imagemagick.org/js/magick.php"></script>
+</div>
+</body>
+</html>

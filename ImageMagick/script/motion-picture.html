@@ -1,0 +1,190 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
+    <title>ImageMagick: Motion Picture Digital Images</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <meta name="application-name" content="ImageMagick"/>
+  <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves."/>
+  <meta name="application-url" content="http://www.imagemagick.org"/>
+  <meta name="generator" content="PHP"/>
+  <meta name="keywords" content="motion, picture, digital, images, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert"/>
+  <meta name="rating" content="GENERAL"/>
+  <meta name="robots" content="INDEX, FOLLOW"/>
+  <meta name="generator" content="ImageMagick Studio LLC"/>
+  <meta name="author" content="ImageMagick Studio LLC"/>
+  <meta name="revisit-after" content="2 DAYS"/>
+  <meta name="resource-type" content="document"/>
+  <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC"/>
+  <meta name="distribution" content="Global"/>
+  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
+  <link rel="icon" href="../image/wand.png"/>
+  <link rel="shortcut icon" href="../image/wand.ico"/>
+  <link rel="stylesheet" href="../css/magick.php"/>
+</head>
+<body>
+<div class="main">
+<div class="magick-masthead">
+  <div class="container">
+    <script async="async" src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-3129977114552745"
+         data-ad-slot="6345125851"
+         data-ad-format="auto"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+    <nav class="magick-nav">
+      <a class="magick-nav-item " href="../index.php">Home</a>
+      <a class="magick-nav-item " href="binary-releases.php">Download</a>
+      <a class="magick-nav-item " href="command-line-tools.php">Tools</a>
+      <a class="magick-nav-item " href="command-line-processing.php">Command-line</a>
+      <a class="magick-nav-item " href="resources.php">Resources</a>
+      <a class="magick-nav-item " href="api.php">Develop</a>
+      <a class="magick-nav-item " href="search.php">Search</a>
+      <a class="magick-nav-item pull-right" href="http://www.imagemagick.org/discourse-server/">Community</a>
+    </nav>
+  </div>
+</div>
+<div class="container">
+<div class="magick-header">
+<p class="text-center"><a href="motion-picture.php#log">Log Format</a> • <a href="motion-picture.php#properties">DPX properties</a> • <a href="motion-picture.php#settings">DPX Settings</a></p>
+
+<p class="lead magick-description">DPX (SMPTE 268M-2003) - This format is used in Motion Picture and Effects industry that makes particular use of the extensive header information and the format's flexibility in being able to handle high dynamic range and logarithmic color values at a variety of bit depths using RGB or YCbCr pixel descriptions.  It is based on, but largely supersedes, Kodak's Cineon format that has more a more film specific header.</p>
+
+<p>One example of it's use includes scanning film for use in post production. Each frame is stored as an individual DPX file ranging from 2k (2048 pixels wide) to 8k (8192 pixels wide - for IMAX frames) at anything between 8 to 64 bits per color component. A sequence of these might then be processed using compositing software, altering the color or adding visual effects. Once complete they might then be recorded digitally to tape or projected back on to film.</p>
+
+<p>The color values for each pixel are often stored logarithmically (particularly if the sequence is destined to be transferred back on to film) which more naturally reflects the density of how color information is stored in the emulsion on the original film. When viewed without alteration, logarithmic files appear to have very low contrast and requires a 'look up table' to translate the logarithmic image to something that resembles what you might see if the image was transferred back to film and projected in a cinema. Apart from making the image linear (like most typical computer images) and adjusting the gamma level this table sets where the black and white point lies.</p>
+
+<p>For a 10 bit logarithmic image where each color component value ranges from 0 to 1023 the black and white points are normally set at 95 for black and 685 for white. What this means is that the logarithmic file stores color values that are lighter than what the linear version will display as pure white and darker than what it will display as pure black. This extra information therefore remains available for an effects artists who might wish to alter the brightness of the image after it has been stored as a DPX file.</p>
+
+<p>As an example, had this information been lost, reducing the brightness of an image uniformly would result in highlights becoming darker, whereas with this extra information the highlights instead reduce in size and start showing details that were previously too bright to be seen. The latter is far closer to what happens in the real world.</p>
+
+<p>The header can contain Film and/or Television specific data related to a production. For example the television header can contain a SMPTE time code so that shots exported as a DPX sequence from a production's edit can be easily replaced once any effects have been added. The film header holds information about the reel of film the frames originated from and various camera settings that were used while filming.  All these details usually stay with the images as they are passed between post-production companies.</p>
+
+<h2 class="magick-header"><a id="log"></a>Log Format</h2>
+
+<p>The color values for each pixel are often stored logarithmically (particularly if the sequence is destined to be transferred back on to film) which more naturally reflects the density of how color information is stored in the emulsion on the original film. When viewed without alteration logarithmic files appear to have very low contrast (leftmost image), and so require a 'look up table' to translate the logarithmic image to something that resembles what you might see if the image was transferred back to film and projected in a cinema (rightmost image). Apart from making the image linear (like most typical computer images) and adjusting the gamma level this table sets where the black and white point lies.</p>
+
+<ul>
+  <a href="../image/bluebells_log.jpg"><img src="../image/bluebells_log.jpg" width="384" height="288" class="image-slices" alt="bluebells-log" /></a>
+  <a href="../image/bluebells_lin.jpg"><img src="../image/bluebells_lin.jpg" width="384" height="288" class="image-slices" alt="bluebells-linear" /></a>
+</ul>
+
+<p>For a 10 bit logarithmic image where each color component value ranges from 0 to 1023 the black and white points are normally set at 95 for black and 685 for white. What this means is that the logarithmic file stores color values that are lighter than what the linear version will display as pure white and darker than what it will display as pure black. This extra information therefore remains available for an effects artists who might wish to alter the brightness of the image after it has been stored as a DPX file.</p>
+
+<p>As an example, had this information been lost, reducing the brightness of a linear image uniformly would result in highlights becoming darker (leftmost image), whereas with this extra information the highlights instead reduce in size and start showing details that were previously too bright to be seen (rightmost image). The latter is far closer to what happens in the real world.</p>
+
+<ul>
+  <a href="../image/bluebells_clipped.jpg"><img src="../image/bluebells_clipped.jpg" width="384" height="288" class="image-slices" alt="bluebells-clipped" /></a>
+  <a href="../image/bluebells_darker.jpg"><img src="../image/bluebells_darker.jpg" width="384" height="288" class="image-slices" alt="bluebells-darker" /></a>
+</ul>
+
+<h2 class="magick-header"><a id="properties"></a>DPX Properties</h2>
+
+<p>ImageMagick supports these DPX properties:</p>
+
+<pre class="pre-scrollable">dpx:file.copyright
+dpx:file.creator
+dpx:file.filename
+dpx:file.project
+dpx:file.version
+dpx:film.count
+dpx:film.format
+dpx:film.frame_id
+dpx:film.frame_position
+dpx:film.frame_rate
+dpx:film.held_count
+dpx:film.id
+dpx:film.offset
+dpx:film.prefix
+dpx:film.sequence_length
+dpx:film.shutter_angle
+dpx:film.slate
+dpx:film.type
+dpx:orientation.aspect_ratio
+dpx:orientation.border
+dpx:orientation.device
+dpx:orientation.filename
+dpx:orientation.serial
+dpx:orientation.x_center
+dpx:orientation.x_offset
+dpx:orientation.x_size
+dpx:orientation.y_center
+dpx:orientation.y_offset
+dpx:orientation.y_size
+dpx:television.black_gain
+dpx:television.black_level
+dpx:television.break_point
+dpx:television.field_number
+dpx:television.frame_rate
+dpx:television.gamma
+dpx:television.integration_times
+dpx:television.interlace
+dpx:television.padding
+dpx:television.time.code
+dpx:television.time_offset
+dpx:television.user.bits
+dpx:television.vertical_sample_rate
+dpx:television.video_signal
+dpx:television.white_level
+dpx:user.id
+dpx:user.data
+</pre>
+
+<p>Look for any user data as the <code>dpx:user-data</code> image profile.</p>
+
+<p> To determine which properties are associated with your DPX image, use this command for example:</p>
+
+<pre>
+identify -verbose bluebells.dpx
+</pre>
+
+<p>To identify a particular property, try this:</p>
+
+<pre>
+identify -format "%[dpx:television.time.code]" bluebells.dpx
+</pre>
+
+<p>Finally, to set a property:</p>
+
+<pre>
+convert bluebells.dpx -define dpx:television.time.code=10:00:02:15 bluebells-001.dpx
+</pre>
+
+<h2 class="magick-header"><a id="settings"></a>DPX Settings</h2>
+
+<p>Use <a href="command-line-options.php#set">-set</a> to specify the image or film gamma or black and white points.  For example use:
+</p>
+
+<pre>
+-set gamma 1.7
+-set film-gamma 0.6
+-set reference-black 95
+-set reference-white 685
+-set profile dpx:user.data
+</pre>
+
+</div>
+  <footer class="magick-footer">
+    <p><a href="support.php">Donate</a> •
+     <a href="sitemap.php">Sitemap</a> •
+    <a href="links.php">Related</a> •
+    <a href="architecture.php">Architecture</a>
+</p>
+    <p><a href="motion-picture.php#">Back to top</a> •
+    <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
+    <a href="contact.php">Contact Us</a></p>
+        <p><small>©  1999-2016 ImageMagick Studio LLC</small></p>
+  </footer>
+</div><!-- /.container -->
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="http://nextgen.imagemagick.org/js/magick.php"></script>
+</div>
+</body>
+</html>

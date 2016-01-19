@@ -1,0 +1,265 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
+    <title>ImageMagick: Exceptions</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <meta name="application-name" content="ImageMagick"/>
+  <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves."/>
+  <meta name="application-url" content="http://www.imagemagick.org"/>
+  <meta name="generator" content="PHP"/>
+  <meta name="keywords" content="exceptions, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert"/>
+  <meta name="rating" content="GENERAL"/>
+  <meta name="robots" content="INDEX, FOLLOW"/>
+  <meta name="generator" content="ImageMagick Studio LLC"/>
+  <meta name="author" content="ImageMagick Studio LLC"/>
+  <meta name="revisit-after" content="2 DAYS"/>
+  <meta name="resource-type" content="document"/>
+  <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC"/>
+  <meta name="distribution" content="Global"/>
+  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
+  <link rel="icon" href="../image/wand.png"/>
+  <link rel="shortcut icon" href="../image/wand.ico"/>
+  <link rel="stylesheet" href="../css/magick.php"/>
+</head>
+<body>
+<div class="main">
+<div class="magick-masthead">
+  <div class="container">
+    <script async="async" src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-3129977114552745"
+         data-ad-slot="6345125851"
+         data-ad-format="auto"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+    <nav class="magick-nav">
+      <a class="magick-nav-item " href="../index.php">Home</a>
+      <a class="magick-nav-item " href="binary-releases.php">Download</a>
+      <a class="magick-nav-item " href="command-line-tools.php">Tools</a>
+      <a class="magick-nav-item " href="command-line-processing.php">Command-line</a>
+      <a class="magick-nav-item " href="resources.php">Resources</a>
+      <a class="magick-nav-item " href="api.php">Develop</a>
+      <a class="magick-nav-item " href="search.php">Search</a>
+      <a class="magick-nav-item pull-right" href="http://www.imagemagick.org/discourse-server/">Community</a>
+    </nav>
+  </div>
+</div>
+<div class="container">
+<div class="magick-header">
+
+<p class="lead magick-description">ImageMagick returns a status of 0 whenever a command or algorithm successfully complete without complaint.  A warning code generally is typically just a notice that something unusual occurred but the command or algorithm still completed and most likely the results are still usable.  An error means the command or algorithm could not complete as expected and any results are unreliable.  A fatal error means the command or algorithm could not complete and the process exits prematurely and no results are returned.</p>
+
+<table class="table table-condensed table-striped">
+  <caption>ImageMagick Error and Warning Codes</caption>
+  <tbody>
+  <tr>
+    <th>Domain</th>
+    <th>Description</th>
+    <th>Warning</th>
+    <th>Error</th>
+    <th>Fatal Error</th>
+  </tr>
+
+  <tr>
+    <td>Success</td>
+    <td>the command or algorithm completed successfully without complaint</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+  </tr>
+
+  <tr>
+    <td>Resource Limit</td>
+    <td>a program resource is exhausted (e.g. not enough memory)</td>
+    <td>300</td>
+    <td>400</td>
+    <td>700</td>
+  </tr>
+
+  <tr>
+    <td>Type</td>
+    <td>A font is unavailable; a substitution may have occurred</td>
+    <td>305</td>
+    <td>405</td>
+    <td>705</td>
+  </tr>
+
+  <tr>
+    <td>Option</td>
+    <td>a command-line option was malformed</td>
+    <td>310</td>
+    <td>410</td>
+    <td>710</td>
+  </tr>
+
+  <tr>
+    <td>Delegate</td>
+    <td>an ImageMagick <i>delegate</i> failed to complete</td>
+    <td>315</td>
+    <td>415</td>
+    <td>715</td>
+  </tr>
+
+  <tr>
+    <td>Missing Delegate</td>
+    <td>the image type can not be read or written because the appropriate <i>Delegate</i> is missing</td>
+    <td>320</td>
+    <td>420</td>
+    <td>720</td>
+  </tr>
+
+  <tr>
+    <td>Corrupt Image</td>
+    <td>the image file may be corrupt</td>
+    <td>325</td>
+    <td>425</td>
+    <td>725</td>
+  </tr>
+
+  <tr>
+    <td>FileOpen</td>
+    <td>the image file could not be opened for reading or writing</td>
+    <td>330</td>
+    <td>430</td>
+    <td>730</td>
+  </tr>
+
+  <tr>
+    <td>Blob</td>
+    <td>a binary large object could not be allocated, read, or written</td>
+    <td>335</td>
+    <td>435</td>
+    <td>735</td>
+  </tr>
+
+  <tr>
+    <td>Stream</td>
+    <td>there was a problem reading or writing from a stream</td>
+    <td>340</td>
+    <td>440</td>
+    <td>740</td>
+  </tr>
+
+  <tr>
+    <td>Cache</td>
+    <td>pixels could not be read or written to the pixel cache</td>
+    <td>345</td>
+    <td>445</td>
+    <td>745</td>
+  </tr>
+
+  <tr>
+    <td>Coder</td>
+    <td>there was a problem with an image coder</td>
+    <td>350</td>
+    <td>450</td>
+    <td>750</td>
+  </tr>
+
+  <tr>
+    <td>Module</td>
+    <td>there was a problem with an image module</td>
+    <td>355</td>
+    <td>455</td>
+    <td>755</td>
+  </tr>
+
+  <tr>
+    <td>Draw</td>
+    <td>a drawing operation failed</td>
+    <td>360</td>
+    <td>460</td>
+    <td>760</td>
+  </tr>
+
+  <tr>
+    <td>Image</td>
+    <td>the operation could not complete due to an incompatible image</td>
+    <td>365</td>
+    <td>465</td>
+    <td>765</td>
+  </tr>
+
+  <tr>
+    <td>Wand</td>
+    <td>there was a problem specific to the MagickWand API</td>
+    <td>370</td>
+    <td>470</td>
+    <td>770</td>
+  </tr>
+
+  <tr>
+    <td>Random</td>
+    <td>there is a problem generating a true or pseudo-random number</td>
+    <td>375</td>
+    <td>475</td>
+    <td>775</td>
+  </tr>
+
+  <tr>
+    <td>XServer</td>
+    <td>an X resource is unavailable</td>
+    <td>380</td>
+    <td>480</td>
+    <td>780</td>
+  </tr>
+
+  <tr>
+    <td>Monitor</td>
+    <td>there was a problem activating the progress monitor</td>
+    <td>385</td>
+    <td>485</td>
+    <td>785</td>
+  </tr>
+
+  <tr>
+    <td>Registry</td>
+    <td>there was a problem getting or setting the registry</td>
+    <td>390</td>
+    <td>490</td>
+    <td>790</td>
+  </tr>
+
+  <tr>
+    <td>Configure</td>
+    <td>there was a problem getting a configuration file</td>
+    <td>395</td>
+    <td>495</td>
+    <td>795</td>
+  </tr>
+
+  <tr>
+    <td>Policy</td>
+    <td>a policy denies access to a delegate, coder, filter, path, or resource.</td>
+    <td>399</td>
+    <td>499</td>
+    <td>799</td>
+  </tr>
+  </tbody>
+</table>
+
+</div>
+  <footer class="magick-footer">
+    <p><a href="support.php">Donate</a> •
+     <a href="sitemap.php">Sitemap</a> •
+    <a href="links.php">Related</a> •
+    <a href="architecture.php">Architecture</a>
+</p>
+    <p><a href="exception.php#">Back to top</a> •
+    <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
+    <a href="contact.php">Contact Us</a></p>
+        <p><small>©  1999-2016 ImageMagick Studio LLC</small></p>
+  </footer>
+</div><!-- /.container -->
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="http://nextgen.imagemagick.org/js/magick.php"></script>
+</div>
+</body>
+</html>

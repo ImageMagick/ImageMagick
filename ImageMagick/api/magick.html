@@ -1,0 +1,188 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
+    <title>ImageMagick: MagickCore, C API for ImageMagick: Read or List Image formats</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <meta name="application-name" content="ImageMagick"/>
+  <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves."/>
+  <meta name="application-url" content="http://www.imagemagick.org"/>
+  <meta name="generator" content="PHP"/>
+  <meta name="keywords" content="magickcore, c, api, for, imagemagick:, read, or, list, image, formats, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert"/>
+  <meta name="rating" content="GENERAL"/>
+  <meta name="robots" content="INDEX, FOLLOW"/>
+  <meta name="generator" content="ImageMagick Studio LLC"/>
+  <meta name="author" content="ImageMagick Studio LLC"/>
+  <meta name="revisit-after" content="2 DAYS"/>
+  <meta name="resource-type" content="document"/>
+  <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC"/>
+  <meta name="distribution" content="Global"/>
+  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
+  <link rel="icon" href="../image/wand.png"/>
+  <link rel="shortcut icon" href="../image/wand.ico"/>
+  <link rel="stylesheet" href="../css/magick.php"/>
+</head>
+<body>
+<div class="main">
+<div class="magick-masthead">
+  <div class="container">
+    <script async="async" src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-3129977114552745"
+         data-ad-slot="6345125851"
+         data-ad-format="auto"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+    <nav class="magick-nav">
+      <a class="magick-nav-item " href="../index.php">Home</a>
+      <a class="magick-nav-item " href="../script/binary-releases.php">Download</a>
+      <a class="magick-nav-item " href="../script/command-line-tools.php">Tools</a>
+      <a class="magick-nav-item " href="../script/command-line-processing.php">Command-line</a>
+      <a class="magick-nav-item " href="../script/resources.php">Resources</a>
+      <a class="magick-nav-item " href="../script/api.php">Develop</a>
+      <a class="magick-nav-item " href="../script/search.php">Search</a>
+      <a class="magick-nav-item pull-right" href="http://www.imagemagick.org/discourse-server/">Community</a>
+    </nav>
+  </div>
+</div>
+<div class="container">
+<div class="magick-header">
+<p class="text-center"><a href="magick.php#AcquireMagickInfo">AcquireMagickInfo</a> &bull; <a href="magick.php#GetMagickPrecision">GetMagickPrecision</a> &bull; <a href="magick.php#IsMagickCoreInstantiated">IsMagickCoreInstantiated</a> &bull; <a href="magick.php#MagickCoreGenesis">MagickCoreGenesis</a> &bull; <a href="magick.php#MagickCoreTerminus">MagickCoreTerminus</a> &bull; <a href="magick.php#SetMagickPrecision">SetMagickPrecision</a></p>
+
+<h2><a href="http://www.imagemagick.org/api/MagickCore/magick_8c.html" id="AcquireMagickInfo">AcquireMagickInfo</a></h2>
+
+<p>AcquireMagickInfo() allocates a MagickInfo structure and initializes the members to default values.</p>
+
+<p>The format of the AcquireMagickInfo method is:</p>
+
+<pre class="text">
+MagickInfo *AcquireMagickInfo(const char *module, const char *name,)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>module</dt>
+<dd>a character string that represents the module associated with the MagickInfo structure. </dd>
+
+<dd> </dd>
+<dt>name</dt>
+<dd>a character string that represents the image format associated with the MagickInfo structure. </dd>
+
+<dd> </dd>
+<dt>description</dt>
+<dd>a character string that represents the image format associated with the MagickInfo structure. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/magick_8c.html" id="GetMagickPrecision">GetMagickPrecision</a></h2>
+
+<p>GetMagickPrecision() returns the maximum number of significant digits to be printed.</p>
+
+<p>The format of the GetMagickPrecision method is:</p>
+
+<pre class="text">
+int GetMagickPrecision(void)
+</pre>
+
+<h2><a href="http://www.imagemagick.org/api/MagickCore/magick_8c.html" id="IsMagickCoreInstantiated">IsMagickCoreInstantiated</a></h2>
+
+<p>IsMagickCoreInstantiated() returns MagickTrue if the ImageMagick environment is currently instantiated:  MagickCoreGenesis() has been called but MagickDestroy() has not.</p>
+
+<p>The format of the IsMagickCoreInstantiated method is:</p>
+
+<pre class="text">
+MagickBooleanType IsMagickCoreInstantiated(void)
+</pre>
+
+<h2><a href="http://www.imagemagick.org/api/MagickCore/magick_8c.html" id="MagickCoreGenesis">MagickCoreGenesis</a></h2>
+
+<p>MagickCoreGenesis() initializes the MagickCore environment.</p>
+
+<p>The format of the MagickCoreGenesis function is:</p>
+
+<pre class="text">
+MagickCoreGenesis(const char *path,
+  const MagickBooleanType establish_signal_handlers)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>path</dt>
+<dd>the execution path of the current ImageMagick client. </dd>
+
+<dd> </dd>
+<dt>establish_signal_handlers</dt>
+<dd>set to MagickTrue to use MagickCore's own signal handlers for common signals. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/magick_8c.html" id="MagickCoreTerminus">MagickCoreTerminus</a></h2>
+
+<p>MagickCoreTerminus() destroys the MagickCore environment.</p>
+
+<p>The format of the MagickCoreTerminus function is:</p>
+
+<pre class="text">
+MagickCoreTerminus(void)
+</pre>
+
+<h2><a href="http://www.imagemagick.org/api/MagickCore/magick_8c.html" id="SetMagickPrecision">SetMagickPrecision</a></h2>
+
+<p>SetMagickPrecision() sets the maximum number of significant digits to be printed.</p>
+
+<p>An input argument of 0 returns the current precision setting.</p>
+
+<p>A negative value forces the precision to reset to a default value according to the environment variable "MAGICK_PRECISION", the current 'policy' configuration setting, or the default value of '6', in that order.</p>
+
+<p>The format of the SetMagickPrecision method is:</p>
+
+<pre class="text">
+int SetMagickPrecision(const int precision)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>precision</dt>
+<dd>set the maximum number of significant digits to be printed. </dd>
+
+<dd>  </dd>
+</dl>
+</div>
+  <footer class="magick-footer">
+    <p><a href="../script/support.php">Donate</a> •
+     <a href="../script/sitemap.php">Sitemap</a> •
+    <a href="../script/links.php">Related</a> •
+    <a href="../script/architecture.php">Architecture</a>
+</p>
+    <p><a href="magick.php#">Back to top</a> •
+    <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
+    <a href="../script/contact.php">Contact Us</a></p>
+        <p><small>©  1999-2016 ImageMagick Studio LLC</small></p>
+  </footer>
+</div><!-- /.container -->
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="http://nextgen.imagemagick.org/js/magick.php"></script>
+</div>
+</body>
+</html>

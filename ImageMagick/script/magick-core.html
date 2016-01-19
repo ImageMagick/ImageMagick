@@ -1,0 +1,333 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
+    <title>ImageMagick: MagickCore, Low-level C API for ImageMagick</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <meta name="application-name" content="ImageMagick"/>
+  <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves."/>
+  <meta name="application-url" content="http://www.imagemagick.org"/>
+  <meta name="generator" content="PHP"/>
+  <meta name="keywords" content="magickcore, low-level, c, api, for, imagemagick, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert"/>
+  <meta name="rating" content="GENERAL"/>
+  <meta name="robots" content="INDEX, FOLLOW"/>
+  <meta name="generator" content="ImageMagick Studio LLC"/>
+  <meta name="author" content="ImageMagick Studio LLC"/>
+  <meta name="revisit-after" content="2 DAYS"/>
+  <meta name="resource-type" content="document"/>
+  <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC"/>
+  <meta name="distribution" content="Global"/>
+  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
+  <link rel="icon" href="../image/wand.png"/>
+  <link rel="shortcut icon" href="../image/wand.ico"/>
+  <link rel="stylesheet" href="../css/magick.php"/>
+</head>
+<body>
+<div class="main">
+<div class="magick-masthead">
+  <div class="container">
+    <script async="async" src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-3129977114552745"
+         data-ad-slot="6345125851"
+         data-ad-format="auto"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+    <nav class="magick-nav">
+      <a class="magick-nav-item " href="../index.php">Home</a>
+      <a class="magick-nav-item " href="binary-releases.php">Download</a>
+      <a class="magick-nav-item " href="command-line-tools.php">Tools</a>
+      <a class="magick-nav-item " href="command-line-processing.php">Command-line</a>
+      <a class="magick-nav-item " href="resources.php">Resources</a>
+      <a class="magick-nav-item " href="api.php">Develop</a>
+      <a class="magick-nav-item " href="search.php">Search</a>
+      <a class="magick-nav-item pull-right" href="http://www.imagemagick.org/discourse-server/">Community</a>
+    </nav>
+  </div>
+</div>
+<div class="container">
+<div class="magick-header">
+
+<p  class="lead magick-description">The <a href="http://nextgen.imagemagick.org/api/MagickCore/index.html">MagickCore API</a> is a low-level interface between the C programming language and the ImageMagick image processing libraries and is recommended for wizard-level programmers only.  Unlike the <a href="magick-wand.php">MagickWand</a> C API which uses only a few opaque types and accessors, with MagickCore you almost exlusively access the structure members directly.  A description of the MagickCore public methods are found here:</p>
+
+<ul>
+  <li><a href="../api/magick.php">Initialize or Destroy the ImageMagick Environment</a></li>
+  <li><a href="../api/constitute.php">Constitute an Image</a></li>
+  <li><a href="../api/composite.php">Composite an Image</a></li>
+  <li><a href="../api/image.php">Image Methods</a></li>
+  <li><a href="../api/channel.php">Image Channel Methods</a></li>
+  <li><a href="../api/color.php">Count the Colors in an Image</a></li>
+  <li><a href="../api/colormap.php">Colormap Methods</a></li>
+  <li><a href="../api/colorspace.php">Colorspace Methods</a></li>
+  <li><a href="../api/distort.php">Image Distortions</a></li>
+  <li><a href="../api/layer.php">Dealing with Image Layers</a></li>
+  <li><a href="../api/profile.php">Dealing with Image Profiles</a></li>
+  <li><a href="../api/quantize.php">Reduce the Number of Unique Colors in an Image</a></li>
+  <li><a href="../api/histogram.php">Image Histograms</a></li>
+  <li><a href="../api/segment.php">Segment an Image with Thresholding Fuzzy c-Means</a></li>
+  <li><a href="../api/resize.php">Resize an Image</a></li>
+  <li><a href="../api/transform.php">Transform an Image</a></li>
+  <li><a href="../api/shear.php">Shear or Rotate an Image by an Arbitrary Angle</a></li>
+  <li><a href="../api/enhance.php">Enhance an Image</a></li>
+  <li><a href="../api/effect.php">Add an Effect</a></li>
+  <li><a href="../api/morphology.php">Morphological Erosions, Dilations, Openings, and Closings</a></li>
+  <li><a href="../api/fx.php">Add a Special Effect</a></li>
+  <li><a href="../api/decorate.php">Decorate an Image</a></li>
+  <li><a href="../api/attribute.php">Get/Set an Image Attribute</a></li>
+  <li><a href="../api/property.php">Get/Set Image Properties</a></li>
+  <li><a href="../api/statistic.php">Get Image Statistics</a></li>
+  <li><a href="../api/feature.php">Get Image Features</a></li>
+  <li><a href="../api/annotate.php">Annotate an Image</a></li>
+  <li><a href="../api/paint.php">Paint on an Image</a></li>
+  <li><a href="../api/draw.php">Draw on an Image</a></li>
+  <li><a href="../api/montage.php">Create an Image Thumbnail</a></li>
+  <li><a href="../api/fourier.php">Compute the discrete Fourier transform (DFT)</a></li>
+  <li><a href="../api/compare.php">Compare an Image to a Reconstructed Image</a></li>
+  <li><a href="../api/display.php">Interactively Display and Edit an Image</a></li>
+  <li><a href="../api/animate.php">Interactively Animate an Image Sequence</a></li>
+  <li><a href="../api/cipher.php">Convert to and from Cipher Pixels</a></li>
+  <li><a href="../api/list.php">Working with Image Lists</a></li>
+  <li><a href="../api/image-view.php">Image View Methods</a></li>
+  <li><a href="../api/cache.php">Get or Set Image Pixels</a></li>
+  <li><a href="../api/cache-view.php">Working with Cache Views</a></li>
+  <li><a href="../api/stream.php">The Pixel FIFO</a></li>
+  <li><a href="../api/blob.php">Read or Write Binary Large OBjects</a></li>
+  <li><a href="../api/module.php">Loadable Modules</a></li>
+  <li><a href="../api/signature.php">Compute a Message Digest for an Image</a></li>
+  <li><a href="../api/registry.php">The Image Registry</a></li>
+  <li><a href="../api/exception.php">Dealing with Exceptions</a></li>
+  <li><a href="../api/memory.php">Memory Allocation</a></li>
+  <li><a href="../api/resource.php">Monitor or Limit Resource Consumption</a></li>
+  <li><a href="../api/monitor.php">Monitor the Progress of an Image Operation</a></li>
+  <li><a href="../api/version.php">Get the Version and Copyrights</a></li>
+  <li><a href="../api/mime.php">Mime Methods</a></li>
+  <li><a href="../api/deprecate.php">Deprecated Methods</a></li>
+  <li><a href="exception.php">Error and Warning Codes</a></li>
+</ul>
+
+<p>After you write your MagickCore program, compile it like this:</p>
+
+<pre>
+cc -o core core.c `pkg-config --cflags --libs MagickCore`
+</pre>
+
+<p>Note, if your instance of ImageMagick does not support modules but does include support for the WMF image format, you'll need to link with the <a href="magick-wand.php">MagickWand</a> library instead (since it is a dependency of the WMF image format):</p>
+
+<pre>
+cc -o core core.c `pkg-config --cflags --libs MagickWand`
+</pre>
+
+<p>Set the <code>PKG_CONFIG_PATH</code> environment variable if ImageMagick is not in your default system path:</p>
+
+<pre>
+export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
+</pre>
+
+<p>Here is a example program that utilizes the MagickCore API to get you started, <a href="../source/core.c">core.c</a>. It reads a GIF image, creates a thumbnail, and writes it to disk in the PNG image format.</p>
+
+<pre class="pre-scrollable">#include &lt;stdio.h>
+#include &lt;stdlib.h>
+#include &lt;string.h>
+#include &lt;time.h>
+#include &lt;magick/MagickCore.h>
+
+int main(int argc,char **argv)
+{
+  ExceptionInfo
+    *exception;
+
+  Image
+    *image,
+    *images,
+    *resize_image,
+    *thumbnails;
+
+  ImageInfo
+    *image_info;
+
+  if (argc != 3)
+    {
+      (void) fprintf(stdout,"Usage: %s image thumbnail\n",argv[0]);
+      exit(0);
+    }
+  /*
+    Initialize the image info structure and read an image.
+  */
+  MagickCoreGenesis(*argv,MagickTrue);
+  exception=AcquireExceptionInfo();
+  image_info=CloneImageInfo((ImageInfo *) NULL);
+  (void) strcpy(image_info-&gt;filename,argv[1]);
+  images=ReadImage(image_info,exception);
+  if (exception-&gt;severity != UndefinedException)
+    CatchException(exception);
+  if (images == (Image *) NULL)
+    exit(1);
+  /*
+    Convert the image to a thumbnail.
+  */
+  thumbnails=NewImageList();
+  while ((image=RemoveFirstImageFromList(&amp;images)) != (Image *) NULL)
+  {
+    resize_image=ResizeImage(image,106,80,LanczosFilter,1.0,exception);
+    if (resize_image == (Image *) NULL)
+      MagickError(exception-&gt;severity,exception-&gt;reason,exception-&gt;description);
+    (void) AppendImageToList(&amp;thumbnails,resize_image);
+    DestroyImage(image);
+  }
+  /*
+    Write the image thumbnail.
+  */
+  (void) strcpy(thumbnails-&gt;filename,argv[2]);
+  WriteImage(image_info,thumbnails);
+  /*
+    Destroy the image thumbnail and exit.
+  */
+  thumbnails=DestroyImageList(thumbnails);
+  image_info=DestroyImageInfo(image_info);
+  exception=DestroyExceptionInfo(exception);
+  MagickCoreTerminus();
+  return(0);
+}</pre>
+<p><a id="image-view"></a>Now lets perform the same contrast enhancement while taking advantage of our dual or quad-core processing system by running the algorithm in parallel utilizing wand views.  The <a href="../source/core/sigmoidal-contrast.c">sigmoidal-contrast.c</a> module reads an image, applies sigmoidal non-linearity contrast control, and writes the result to disk just like the previous contrast enhancement program, but now it does its work in parallel (assumes ImageMagick is built with OpenMP support).</p>
+
+<pre class="pre-scrollable">#include &lt;stdio.h>
+#include &lt;stdlib.h>
+#include &lt;math.h>
+#include &lt;magick/MagickCore.h>
+
+static MagickBooleanType SigmoidalContrast(ImageView *contrast_view,
+  const ssize_t y,const int id,void *context)
+{
+#define QuantumScale  ((MagickRealType) 1.0/(MagickRealType) QuantumRange)
+#define SigmoidalContrast(x) \
+  (QuantumRange*(1.0/(1+exp(10.0*(0.5-QuantumScale*x)))-0.0066928509)*1.0092503)
+
+  RectangleInfo
+    extent;
+
+  register IndexPacket
+    *indexes;
+
+  register PixelPacket
+    *pixels;
+
+  register ssize_t
+    x;
+
+  extent=GetImageViewExtent(contrast_view);
+  pixels=GetImageViewAuthenticPixels(contrast_view);
+  for (x=0; x &lt; (ssize_t) (extent.width-extent.x); x++)
+  {
+    SetPixelRed(pixels,RoundToQuantum(SigmoidalContrast(GetPixelRed(pixels)));
+    SetPixelGreen(pixels,RoundToQuantum(SigmoidalContrast(GetPixelGreen(pixels)));
+    SetPixelBlue(pixels,RoundToQuantum(SigmoidalContrast(GetPixelBlue(pixels)));
+    SetPixelOpacity(pixels,RoundToQuantum(SigmoidalContrast(GetPixelOpacity(pixels)));
+    pixels++;
+  }
+  indexes=GetImageViewAuthenticIndexes(contrast_view);
+  if (indexes != (IndexPacket *) NULL)
+    for (x=0; x &lt; (ssize_t) (extent.width-extent.x); x++)
+      SetPixelIndex(indexes+x,RoundToQuantum(SigmoidalContrast(GetPixelIndex(indexes+x))));
+  return(MagickTrue);
+}
+
+int main(int argc,char **argv)
+{
+#define ThrowImageException(image) \
+{ \
+ \
+  CatchException(exception); \
+  if (contrast_image != (Image *) NULL) \
+    contrast_image=DestroyImage(contrast_image); \
+  exit(-1); \
+}
+#define ThrowViewException(view) \
+{ \
+  char \
+    *description; \
+ \
+  ExceptionType \
+    severity; \
+ \
+  description=GetImageViewException(view,&amp;severity); \
+  (void) fprintf(stderr,"%s %s %lu %s\n",GetMagickModule(),description); \
+  description=DestroyString(description); \
+  exit(-1); \
+}
+
+  ExceptionInfo
+    *exception;
+
+  Image
+    *contrast_image;
+
+  ImageInfo
+    *image_info;
+
+  ImageView
+    *contrast_view;
+
+  MagickBooleanType
+    status;
+
+  if (argc != 3)
+    {
+      (void) fprintf(stdout,"Usage: %s image sigmoidal-image\n",argv[0]);
+      exit(0);
+    }
+  /*
+    Read an image.
+  */
+  MagickCoreGenesis(*argv,MagickTrue);
+  image_info=AcquireImageInfo();
+  (void) CopyMagickString(image_info->filename,argv[1],MaxTextExtent);
+  exception=AcquireExceptionInfo();
+  contrast_image=ReadImage(image_info,exception);
+  if (contrast_image == (Image *) NULL)
+    ThrowImageException(contrast_image);
+  /*
+    Sigmoidal non-linearity contrast control.
+  */
+  contrast_view=NewImageView(contrast_image);
+  if (contrast_view == (ImageView *) NULL)
+    ThrowImageException(contrast_image);
+  status=UpdateImageViewIterator(contrast_view,SigmoidalContrast,(void *) NULL);
+  if (status == MagickFalse)
+    ThrowImageException(contrast_image);
+  contrast_view=DestroyImageView(contrast_view);
+  /*
+    Write the image then destroy it.
+  */
+  status=WriteImages(image_info,contrast_image,argv[2],exception);
+  if (status == MagickFalse)
+    ThrowImageException(contrast_image);
+  contrast_image=DestroyImage(contrast_image);
+  exception=DestroyExceptionInfo(exception);
+  image_info=DestroyImageInfo(image_info);
+  MagickCoreTerminus();
+  return(0);
+}</pre>
+</div>
+  <footer class="magick-footer">
+    <p><a href="support.php">Donate</a> •
+     <a href="sitemap.php">Sitemap</a> •
+    <a href="links.php">Related</a> •
+    <a href="architecture.php">Architecture</a>
+</p>
+    <p><a href="magick-core.php#">Back to top</a> •
+    <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
+    <a href="contact.php">Contact Us</a></p>
+        <p><small>©  1999-2016 ImageMagick Studio LLC</small></p>
+  </footer>
+</div><!-- /.container -->
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="http://nextgen.imagemagick.org/js/magick.php"></script>
+</div>
+</body>
+</html>

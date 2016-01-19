@@ -1,0 +1,379 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
+    <title>ImageMagick: Resources</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <meta name="application-name" content="ImageMagick"/>
+  <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves."/>
+  <meta name="application-url" content="http://www.imagemagick.org"/>
+  <meta name="generator" content="PHP"/>
+  <meta name="keywords" content="resources, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert"/>
+  <meta name="rating" content="GENERAL"/>
+  <meta name="robots" content="INDEX, FOLLOW"/>
+  <meta name="generator" content="ImageMagick Studio LLC"/>
+  <meta name="author" content="ImageMagick Studio LLC"/>
+  <meta name="revisit-after" content="2 DAYS"/>
+  <meta name="resource-type" content="document"/>
+  <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC"/>
+  <meta name="distribution" content="Global"/>
+  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
+  <link rel="icon" href="../image/wand.png"/>
+  <link rel="shortcut icon" href="../image/wand.ico"/>
+  <link rel="stylesheet" href="../css/magick.php"/>
+</head>
+<body>
+<div class="main">
+<div class="magick-masthead">
+  <div class="container">
+    <script async="async" src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-3129977114552745"
+         data-ad-slot="6345125851"
+         data-ad-format="auto"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+    <nav class="magick-nav">
+      <a class="magick-nav-item " href="../index.php">Home</a>
+      <a class="magick-nav-item " href="binary-releases.php">Download</a>
+      <a class="magick-nav-item " href="command-line-tools.php">Tools</a>
+      <a class="magick-nav-item " href="command-line-processing.php">Command-line</a>
+      <a class="magick-nav-item active" href="resources.php">Resources</a>
+      <a class="magick-nav-item " href="api.php">Develop</a>
+      <a class="magick-nav-item " href="search.php">Search</a>
+      <a class="magick-nav-item pull-right" href="http://www.imagemagick.org/discourse-server/">Community</a>
+    </nav>
+  </div>
+</div>
+<div class="container">
+<div class="magick-header">
+<p class="text-center"><a href="resources.php#configure">Configuration Files</a> • <a href="resources.php#modules">Modules</a> • <a href="resources.php#fonts">Fonts</a> • <a href="resources.php#environment">Environment Variables</a></p>
+
+<p class="lead magick-description">ImageMagick depends on a number of external resources including configuration files, loadable modules, fonts, and environment variables.</p>
+
+<h2 class="magick-header"><a id="configure"></a>Configuration Files</h2>
+
+<p>ImageMagick depends on a number of external configuration files detailed here:</p>
+
+<dl class="dl-horizontal">
+<dt><a href="../source/coder.xml">coder.xml</a></dt>
+  <dd>Associate an image format with the specified coder module.
+
+  ImageMagick has a number of coder modules to support the reading and/or writing of an image format (e.g. JPEG).  Some coder modules support more than one associated image format and the mapping between an associated format and its respective coder module is defined in this configuration file.  For example, the PNG coder module not only supports the PNG image format, but the JNG and MNG formats as well.
+  </dd>
+
+<dt><a href="../source/colors.xml">colors.xml</a></dt>
+  <dd>Associate a color name with its red, green, blue, and alpha intensities.
+
+  A number of command line options require a <a href="color.php">color parameter</a>.  It is often convenient to refer to a color by name (e.g. white) rather than by hex value (e.g. #fff).  This file maps a color name to its equivalent red, green, blue, and alpha intensities (e.g. for white, red = 255, green = 255, blue = 255, and alpha = 0).
+  </dd>
+
+<dt><a id="configure.xml"/><a href="../source/configure.xml">configure.xml</a></dt>
+  <dd>Set ImageMagick build parameters and system-wide environment variables (e.g. MAGICK_TEMPORARY_PATH).
+  As ImageMagick is built, a number of build parameters are saved to this configuration file.  They include the version, release date, dependent delegate libraries, and quantum depth among others.
+  </dd>
+
+<dt><a href="../source/delegates.xml">delegates.xml</a></dt>
+  <dd>Associate delegate programs with certain image formats.
+
+  ImageMagick relies on a number of delegate programs to support certain image formats such as <a href="http://ufraw.sourceforge.net/">ufraw-batch</a> to read raw camera formats or <a href="http://www.cs.wisc.edu/~ghost/">Ghostscript</a> to read Postscript images.  Use this configuration file to map an input or output format to an external delegate program.
+  </dd>
+
+<dt><a href="../source/english.xml">english.xml</a></dt>
+  <dd>Associate message tags with English translations.</dd>
+
+<dt><a href="../source/francais.xml">francais.xml</a></dt>
+  <dd>Associate message tags with French translations.  </dd>
+
+<dt><a href="../source/locale.xml">locale.xml</a></dt>
+  <dd>Associate message tags with a  translation for your locale.
+
+  ImageMagick has a number of informational, warning, and error messages that are represented as tags.  Tags are short descriptions of a message such as
+  <var>FileNotFound</var> or <var>MemoryAllocationFailed</var>.  This configuration file lists locales that have a translation for each tag recognized by ImageMagick.  Currently only English and French translations are available in the <code>english.xml</code> and <code>francais.xml</code> configuration files.
+  </dd>
+
+<dt><a href="../source/log.xml">log.xml</a></dt>
+  <dd>Configure logging parameters.
+  ImageMagick is capable of spewing copious amounts of informational or debugging statements.  Use this file to configure how the information will appear in a log message and where you want the logging messages posted.
+  </dd>
+
+<dt><a href="../source/magic.xml">magic.xml</a></dt>
+  <dd>Associate an image format with a unique identifier.
+  Many image formats have identifiers that uniquely identify a particular image format.  For example, the GIF image format always begins with <code>GIF8</code> as the first 4 characters of the image.  ImageMagick uses this information to quickly determine the type of image it is dealing with when it reads an image.
+  </dd>
+
+<dt><a href="../source/mime.xml">mime.xml</a></dt>
+  <dd>Associate an internet media type with a unique identifier.
+  Many files and data streams have identifiers that uniquely identify a
+particular internet media type. For example, files in the "Corel Draw
+drawing" format (mime type="application/vnd.corel-draw") are associated with
+the filename pattern <code>*.cdr</code>, and also have an initial string of the
+characters "CDRXvrsn". ImageMagick uses combinations of this information,
+when available, to attempt to quickly determine the internet media type of a
+file or data stream.
+</dd>
+
+<dt><a href="../source/policy.xml">policy.xml</a></dt>
+  <dd>Configure ImageMagick policies.
+  By default any coder, delegate, filter, or file path is permitted.  Use a policy to deny access to, for example, the MPEG video delegate, or permit reading images from a file system but deny writing to that same file system.  Or use the resource policy to set resource limits.  Policies are useful for multi-user servers that want to limit the overall impact ImageMagick has on the system.  For example, to limit the maximum image size in memory to 100MB:
+
+<pre>
+&lt;policy domain="resource" name="area" value="100MB"/>
+</pre>
+
+Any image larger than this area limit is cached to disk rather than memory.
+
+Use <code>width</code> to limit the maximum width of an image in pixels.  Exceed this limit and an exception is thrown and processing stops.
+
+<pre>
+&lt;policy domain="resource" name="width" value="100MP"/>
+</pre>
+
+To limit the elapsed time of any ImageMagick command to 5 minutes, use this policy:
+
+<pre>
+&lt;policy domain="resource" name="time" value="300"/>
+</pre>
+Define arguments for the memory, map, area, and disk resources with SI prefixes (.e.g 100MB).  In addition, resource policies are maximums for each instance of ImageMagick (e.g. policy memory limit 1GB, the <code>-limit 2GB</code> option exceeds policy maximum so memory limit is 1GB). </dd>
+
+<dt><a href="../source/quantization-table.xml">quantization-table.xml</a></dt>
+  <dd>Custom JPEG quantization tables. Activate with <code>-define:q-table=quantization-table.xml</code>.</dd>
+
+<dt><a href="../source/thresholds.xml">thresholds.xml</a></dt>
+  <dd>Set threshold maps for ordered posterized dither.</dd>
+
+<dt><a id="type.xml"></a><a href="../source/type.xml">type.xml</a></dt>
+  <dd>Configure fonts.
+  Define the font name, family, foundry, style, format, metrics, and glyphs for any font you want to use within ImageMagick.
+  </dd>
+
+<dt><a href="../source/type-ghostscript.xml">type-ghostscript.xml</a></dt>
+  <dd>Configure <a href="http://www.cs.wisc.edu/~ghost/">Ghostscript</a> fonts.
+  The Ghostscript package includes a number of <a href="https://sourceforge.net/projects/gs-fonts/">fonts</a> that can be accessed with ImageMagick.
+  </dd>
+
+<dt><a href="../source/type-windows.xml">type-windows.xml</a></dt>
+  <dd>Associate names with Windows font glyphs.</dd>
+</dl>
+
+<p>Under Unix and Linux, ImageMagick searches for each of the configuration files listed above by looking in the locations given below, in order, and loads them if found:</p>
+
+<pre>
+$MAGICK_CONFIGURE_PATH
+$PREFIX/etc/ImageMagick-7 
+$PREFIX/share/ImageMagick-7 
+$XDG_CACHE_HOME/ImageMagick
+$HOME/.config/ImageMagick/
+&lt;<var>client path</var>&gt;/etc/ImageMagick/
+</pre>
+
+<p>The environmental variable $PREFIX is the default install path (e.g. <code>/usr/local</code>). The <var>client path</var> is the execution path of your ImageMagick client (e.g. <code>/usr/local</code>) .</p>
+
+<p>For the Unix or Linux pre-compiled uninstalled binary distributions, the configuration load order is:</p>
+
+<pre>
+$MAGICK_CONFIGURE_PATH
+$MAGICK_HOME/etc/ImageMagick
+$MAGICK_HOME/share/ImageMagick-7.0.0 
+$PREFIX/share/ImageMagick-7.0.0 
+$XDG_CACHE_HOME/ImageMagick
+$HOME/.config/ImageMagick/
+&lt;<var>client path</var>&gt;/etc/ImageMagick/
+&lt;<var>current directory</var>&gt;
+</pre>
+
+<p>Under Windows, ImageMagick searches for these configuration files in the following order, and loads them if found:</p>
+
+<pre>
+$MAGICK_CONFIGURE_PATH
+&lt;<var>windows registry</var>&gt;
+$PREFIX/config
+$USERPROFILE/.config/ImageMagick/
+&lt;<var>client path</var>&gt;
+</pre>
+
+<p>Above, $PREFIX is the default install path, typically <code>c:\\Program Files\\ImageMagick-7.0.0</code>.</p>
+
+<p>For an uninstalled Windows installation, the configuration load order is:</p>
+
+<pre>
+$MAGICK_CONFIGURE_PATH
+$MAGICK_HOME
+$USERPROFILE/.config/ImageMagick/
+<var>client path</var>
+&lt;<var>current directory</var>&gt;
+</pre>
+
+<p>If a configuration file cannot not be found, ImageMagick relies on built-in default values.</p>
+
+<h2 class="magick-header"><a id="modules"></a>Modules</h2>
+
+<h4>Coders</h4>
+<p>An image coder (i.e. encoder / decoder) is responsible for registering, optionally classifying, optionally reading, optionally writing, and unregistering one image format (e.g. PNG, GIF, JPEG, etc.).  ImageMagick searches for coders in the following order and it uses the first match found:</p>
+
+<pre>
+$MAGICK_HOME/lib/ImageMagick-7.0.0/modules-Q16/coders/
+&lt;<var>client path</var>&gt;/../lib/ImageMagick-7.0.0/modules-Q16/coders/
+$MAGICK_HOME/lib/ImageMagick-7.0.0/modules-Q16/coders
+$MAGICK_HOME/share/ImageMagick-7.0.0/modules-Q16/coders
+$XDG_CACHE_HOME/ImageMagick
+$HOME/.config/ImageMagick/
+&lt;<var>client path</var>&gt;/lib/ImageMagick-7.0.0/modules-Q16/coders
+</pre>
+
+<h4>Filters</h4>
+<p>ImageMagick provides a convenient mechanism for adding your own custom image processing algorithms.  ImageMagick searches for filters in the following order and it uses the first match found:</p>
+<pre>
+$MAGICK_HOME/lib/ImageMagick-7.0.0/modules-Q16/filters/
+&lt;<var>client path</var>&gt;/../lib/ImageMagick-7.0.0/modules-Q16/filters/
+$MAGICK_HOME/lib/ImageMagick-7.0.0/modules-Q16/filters
+$MAGICK_HOME/share/ImageMagick-7.0.0/modules-Q16/filters
+$XDG_CACHE_HOME/ImageMagick
+$HOME/.config/ImageMagick/
+&lt;<var>client path</var>&gt;/lib/ImageMagick-7.0.0/modules-Q16/filters
+</pre>
+
+<h2 class="magick-header"><a id="fonts"></a>Fonts</h2>
+
+<p>ImageMagick is able to load raw TrueType and Postscript font files.  It searches for the font configuration file, <a href="resources.php#type.xml">type.xml</a>, in the following order, and loads them if found:</p>
+
+<pre>
+$MAGICK_CONFIGURE_PATH
+$MAGICK_HOME/etc/ImageMagick/
+$MAGICK_HOME/share/ImageMagick-7.0.0/
+$XDG_CACHE_HOME/ImageMagick
+$HOME/.config/ImageMagick/
+&lt;<var>client path</var>&gt;/etc/ImageMagick/
+$MAGICK_FONT_PATH
+</pre>
+
+<h2 class="magick-header"><a id="environment"></a>Environment Variables</h2>
+
+<p>Environment variables recognized by ImageMagick include:</p>
+
+<div class="table-responsive">
+<table class="table table-condensed table-striped">
+  <tr>
+    <td>HOME</td>
+    <td>Set path to search for configuration files in <code>$HOME/.config/ImageMagick</code> if the directory exists.</td>
+  </tr>
+  <tr>
+    <td>LD_LIBRARY_PATH</td>
+    <td>Set path to the ImageMagick shareable libraries and other dependent libraries.</td>
+  </tr>
+  <tr>
+    <td>MAGICK_AREA_LIMIT</td>
+    <td>Set the maximum <var>width * height</var> of an image that can reside in the pixel cache memory.  Images that exceed the area limit are cached to disk (see <a href="resources.php#disk-limit">MAGICK_DISK_LIMIT</a>) and optionally memory-mapped.</td>
+  </tr>
+  <tr>
+    <td>MAGICK_CODER_FILTER_PATH</td>
+    <td>Set search path to use when searching for filter process modules (invoked via  <a href="command-line-options.php#process">-process</a>).  This path permits the user to extend ImageMagick's image processing functionality by adding loadable modules to a preferred location rather than copying them into the ImageMagick installation directory.  The formatting of the search path is similar to operating system search paths (i.e. colon delimited for Unix, and semi-colon delimited for Microsoft Windows). This user specified search path is searched before trying the <a href="resources.php#modules">default search path</a>.</td>
+  </tr>
+  <tr>
+    <td>MAGICK_CODER_MODULE_PATH</td>
+    <td>Set path where ImageMagick can locate its coder modules.  This path permits the user to arbitrarily extend the image formats supported by ImageMagick by adding loadable coder modules from an preferred location rather than copying them into the ImageMagick installation directory.  The formatting of the search path is similar to operating system search paths (i.e. colon delimited for Unix, and semi-colon delimited for Microsoft Windows). This user specified search path is searched before trying the <a href="resources.php#modules">default search path</a>.</td>
+  </tr>
+  <tr>
+    <td>MAGICK_CONFIGURE_PATH</td>
+    <td>Set path where ImageMagick can locate its configuration files.  Use this search path to search for configuration (.xml) files. The formatting of the search path is similar to operating system search paths (i.e. colon delimited for Unix, and semi-colon delimited for Microsoft Windows). This user specified search path is searched before trying the <a href="resources.php#configure">default search path</a>.</td>
+  </tr>
+  <tr>
+    <td>MAGICK_DEBUG</td>
+    <td>Set debug options.  See <a href="command-line-options.php#debug">-debug</a> for a description of debugging options.</td>
+  </tr>
+  <tr>
+    <td><a id="disk-limit"></a>MAGICK_DISK_LIMIT</td>
+    <td>Set maximum amount of disk space in bytes permitted for use by the pixel cache.  When this limit is exceeded, the pixel cache is not be created and an error message is returned.</td>
+  </tr>
+  <tr>
+    <td>MAGICK_ERRORMODE</td>
+    <td>Set the process error mode (Windows only).  A typical use might be a value of 1 to prevent error mode dialogs from displaying a message box and hanging the application.</td>
+  </tr>
+  <tr>
+    <td>MAGICK_FILE_LIMIT</td>
+    <td>Set maximum number of open pixel cache files.  When this limit is exceeded, any subsequent pixels cached to disk are closed and reopened on demand.  This behavior permits a large number of images to be accessed simultaneously on disk, but with a speed penalty due to repeated open/close calls.</td>
+  </tr>
+  <tr>
+    <td>MAGICK_FONT_PATH</td>
+    <td>Set path ImageMagick searches for TrueType and Postscript Type1 font files.  This path is only consulted if a particular font file is not found in the current directory.</td>
+  </tr>
+  <tr>
+    <td>MAGICK_HEIGHT_LIMIT</td>
+    <td>Set the maximum <var>height</var> of an image.</td>
+  </tr>
+  <tr>
+    <td>MAGICK_HOME</td>
+    <td>Set the path at the top of ImageMagick installation directory.  This path is consulted by <var>uninstalled</var> builds of ImageMagick which do not have their location hard-coded or set by an installer.</td>
+  </tr>
+  <tr>
+    <td><a id="map-limit"></a>MAGICK_MAP_LIMIT</td>
+    <td>Set maximum amount of memory map in bytes to allocate for the pixel cache.  When this limit is exceeded, the image pixels are cached to disk (see MAGICK_DISK_LIMIT).</td>
+  </tr>
+  <tr>
+    <td>MAGICK_MEMORY_LIMIT</td>
+    <td>Set maximum amount of memory in bytes to allocate for the pixel cache from the heap.  When this limit is exceeded, the image pixels are cached to memory-mapped disk (see <a href="resources.php#map-limit">MAGICK_MAP_LIMIT</a>).</td>
+  </tr>
+  <tr>
+    <td>MAGICK_OCL_DEVICE</td>
+    <td>Set to <code>off</code> to disable hardware acceleration of certain accelerated algorithms (e.g. blur, convolve, etc.).</td>
+  </tr>
+  <tr>
+    <td>MAGICK_PRECISION</td>
+    <td>Set the maximum number of significant digits to be printed.</td>
+  </tr>
+  <tr>
+    <td>MAGICK_SHRED_PASSES</td>
+    <td>If you want to keep the temporary files ImageMagick creates private, overwrite them with zeros or random data before they are removed.  On the first pass, the file is zeroed.  For subsequent passes, random data is written.</td>
+  </tr>
+  <tr>
+    <td>MAGICK_SYNCHRONIZE</td>
+    <td>Set to "true" to ensure all image data is fully flushed and synchronized to disk. There is a performance penalty, however, the benefits include ensuring a valid image file in the event of a system crash and early reporting if there is not enough disk space for the image pixel cache.</td>
+  </tr>
+  <tr>
+    <td>MAGICK_TEMPORARY_PATH</td>
+    <td>Set path to store temporary files.</td>
+  </tr>
+  <tr>
+    <td>MAGICK_THREAD_LIMIT</td>
+    <td>Set maximum parallel threads.  Many ImageMagick algorithms run in parallel on multi-processor systems.  Use this environment variable to set the maximum number of threads that are permitted to run in parallel.</td>
+  </tr>
+  <tr>
+    <td>MAGICK_THROTTLE</td>
+    <td>Periodically yield the CPU for at least the time specified in milliseconds.</td>
+  </tr>
+  <tr>
+    <td>MAGICK_TIME_LIMIT</td>
+    <td>Set maximum time in seconds.  When this limit is exceeded, an exception is thrown and processing stops.</td>
+  </tr>
+  <tr>
+    <td>MAGICK_WIDTH_LIMIT</td>
+    <td>Set the maximum <var>width</var> of an image.</td>
+  </tr>
+</table></div>
+
+<p>Define arguments for the <code>MAGICK_AREA_LIMIT</code>, <code>MAGICK_DISK_LIMIT</code>, <code>MAGICK_MAP_LIMIT</code>, and <code>MAGICK_MEMORY_LIMIT</code> environment variables with SI prefixes (.e.g <code>100MB</code>). <code>MAGICK_WIDTH_LIMIT</code> and <code>MAGICK_HEIGHT_LIMIT</code> accepts pixel suffixes such as MP for mega-pixels (e.g. 100MP).</p>
+
+</div>
+  <footer class="magick-footer">
+    <p><a href="support.php">Donate</a> •
+     <a href="sitemap.php">Sitemap</a> •
+    <a href="links.php">Related</a> •
+    <a href="architecture.php">Architecture</a>
+</p>
+    <p><a href="resources.php#">Back to top</a> •
+    <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
+    <a href="contact.php">Contact Us</a></p>
+        <p><small>©  1999-2016 ImageMagick Studio LLC</small></p>
+  </footer>
+</div><!-- /.container -->
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="http://nextgen.imagemagick.org/js/magick.php"></script>
+</div>
+</body>
+</html>

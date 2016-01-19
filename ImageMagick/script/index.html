@@ -1,0 +1,227 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
+    <title>ImageMagick: Convert, Edit, Or Compose Bitmap Images</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <meta name="application-name" content="ImageMagick"/>
+  <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves."/>
+  <meta name="application-url" content="http://www.imagemagick.org"/>
+  <meta name="generator" content="PHP"/>
+  <meta name="keywords" content="convert, edit, or, compose, bitmap, images, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert"/>
+  <meta name="rating" content="GENERAL"/>
+  <meta name="robots" content="INDEX, FOLLOW"/>
+  <meta name="generator" content="ImageMagick Studio LLC"/>
+  <meta name="author" content="ImageMagick Studio LLC"/>
+  <meta name="revisit-after" content="2 DAYS"/>
+  <meta name="resource-type" content="document"/>
+  <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC"/>
+  <meta name="distribution" content="Global"/>
+  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
+  <link rel="icon" href="../image/wand.png"/>
+  <link rel="shortcut icon" href="../image/wand.ico"/>
+  <link rel="stylesheet" href="../css/magick.php"/>
+</head>
+<body>
+<div class="main">
+<div class="magick-masthead">
+  <div class="container">
+    <script async="async" src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-3129977114552745"
+         data-ad-slot="6345125851"
+         data-ad-format="auto"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+    <nav class="magick-nav">
+      <a class="magick-nav-item active" href="../index.php">Home</a>
+      <a class="magick-nav-item " href="binary-releases.php">Download</a>
+      <a class="magick-nav-item " href="command-line-tools.php">Tools</a>
+      <a class="magick-nav-item " href="command-line-processing.php">Command-line</a>
+      <a class="magick-nav-item " href="resources.php">Resources</a>
+      <a class="magick-nav-item " href="api.php">Develop</a>
+      <a class="magick-nav-item " href="search.php">Search</a>
+      <a class="magick-nav-item pull-right" href="http://www.imagemagick.org/discourse-server/">Community</a>
+    </nav>
+  </div>
+</div>
+<div class="container">
+<div class="magick-header">
+<p class="text-center"><a href="index.html#features">Features and Capabilities</a> • <a href="index.html#news">News</a> • <a href="index.html#community">Community</a></p>
+
+<p class="lead magick-description"><a href="../image/wizard.png" title="And Now a Touch of Magick"><img class="img-responsive magick-icon" id="logo" alt="And Now a Touch of Magick" width="265" height="352" src="../image/wizard.jpg" /></a> 
+ImageMagick<sup><a href="http://tarr.uspto.gov/servlet/tarr?regser=serial&amp;entry=78333969">&#174;</a></sup> is a software suite to create, edit, compose, or convert bitmap images.  It can read and write images in a variety of <a href="formats.php">formats</a> (over 200) including PNG, JPEG, JPEG-2000, GIF, TIFF, <a href="motion-picture.php">DPX</a>, <a href="high-dynamic-range.php">EXR</a>, WebP, Postscript, PDF, and SVG.  Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.</p>
+
+<p>The functionality of ImageMagick is typically utilized from the <a href="command-line-processing.php">command-line</a> or you can use the features from programs written in your favorite language. Choose from these interfaces: <a href="api.php#ada">G2F</a> (Ada), <a href="api.php#c">MagickCore</a> (C), <a href="api.php#c">MagickWand</a> (C), <a href="api.php#ch">ChMagick</a> (Ch), <a href="api.php#com_">ImageMagickObject</a> (COM+), <a href="api.php#c__">Magick++</a> (C++), <a href="api.php#java">JMagick</a> (Java), <a href="api.php#lisp">L-Magick</a> (Lisp), <a href="api.php#lua">Lua</a> (LuaJIT), <a href="api.php#neko">NMagick</a> (Neko/haXe), <a href="api.php#dot-net">Magick.NET</a> (.NET), <a href="api.php#pascal">PascalMagick</a> (Pascal),  <a href="api.php#perl">PerlMagick</a> (Perl), <a href="api.php#php">MagickWand for PHP</a> (PHP),  <a href="api.php#php">IMagick</a> (PHP), <a href="api.php#python">PythonMagick</a> (Python), <a href="api.php#ruby">RMagick</a> (Ruby), or <a href="api.php#tcl">TclMagick</a> (Tcl/TK). With a language interface, use ImageMagick to modify or create images dynamically and <var>automagically</var>.</p>
+<p>ImageMagick utilizes multiple computational threads to increase performance and can read, process, or write mega-, giga-, or tera-pixel image sizes.</p>
+<p>ImageMagick is free software delivered as a ready-to-run binary distribution or as source code that you may use, copy, modify, and distribute in both open and proprietary applications. It is distributed under the Apache 2.0 <a href="http://www.imagemagick.org/script/license.php">license</a>.</p>
+
+<p>The ImageMagick development process ensures a stable API and ABI. Before each ImageMagick release, we perform a comprehensive security assessment that includes <a href="https://code.google.com/p/address-sanitizer/">memory error</a> and <a href="https://code.google.com/p/data-race-test/wiki/ThreadSanitizer">thread data race</a> detection to prevent security vulnerabilities.</p>
+
+<p>The current release is ImageMagick <a href="http://www.imagemagick.org/script/binary-releases.php">7.0.0-0</a>.  It runs on <a href="http://www.imagemagick.org/script/binary-releases.php#unix">Linux</a>, <a href="http://www.imagemagick.org/script/binary-releases.php#windows">Windows</a>, <a href="http://www.imagemagick.org/script/binary-releases.php#macosx">Mac Os X</a>, <a href="http://www.imagemagick.org/script/binary-releases.php#iOS">iOS</a>, Android OS, and others.</p>
+
+<p>The authoritative ImageMagick web site is <a href="http://www.imagemagick.org/">http://www.imagemagick.org</a>. The authoritative source code repository is <a href="http://git.imagemagick.org/repos/ImageMagick">http://git.imagemagick.org/repos/ImageMagick</a>.  We maintain a source code mirror at <a href="https://gitlab.com/ImageMagick/ImageMagick">GitLab</a> and <a href="https://github.com/ImageMagick/ImageMagick">GitHub</a>.</p>
+
+<h2 class="magick-header"><a id="features"></a>Features and Capabilities</h2>
+<p>Here are just a few <a href="examples.php">examples</a> of what ImageMagick can do for you:</p>
+<div class="table-responsive">
+<table class="table table-condensed table-striped">
+  <tr>
+    <td><a href="http://www.imagemagick.org/Usage/anim_basics/">Animation</a></td>
+    <td>create a GIF animation sequence from a group of images.</td>
+  </tr>
+  <tr>
+    <td><a href="color-management.php">Color management</a></td>
+    <td>accurate color management with color profiles or in lieu of-- built-in gamma compression or expansion as demanded by the colorspace.</td>
+  </tr>
+  <tr>
+    <td><a href="command-line-processing.php">Command-line processing</a></td>
+    <td>utilize ImageMagick from the command-line.</td>
+  </tr>
+  <tr>
+    <td><a href="composite.php">Composite</a></td>
+    <td>overlap one image over another.</td>
+  </tr>
+  <tr>
+    <td><a href="connected-components.php">Connected component labeling</a></td>
+    <td>uniquely label connected regions in an image.</td>
+  </tr>
+  <tr>
+    <td><a href="http://www.imagemagick.org/Usage/crop/">Decorate</a></td>
+    <td>add a border or frame to an image.</td>
+  </tr>
+  <tr>
+    <td><a href="http://www.imagemagick.org/Usage/transform/#vision">Delineate image features</a></td>
+    <td><a href="http://www.imagemagick.org/discourse-server/viewtopic.php?f=4&t=25405">Canny edge detection</a>, <a href="http://www.imagemagick.org/discourse-server/viewtopic.php?f=4&t=25476">Hough lines</a>.</td>
+  </tr>
+  <tr>
+    <td><a href="http://www.imagemagick.org/Usage/fourier/">Discrete Fourier transform</a></td>
+    <td>implements the forward and inverse <a href="http://en.wikipedia.org/wiki/Discrete_Fourier_transform">DFT</a>.</td>
+  </tr>
+  <tr>
+    <td><a href="distribute-pixel-cache.php">Distributed pixel cache</a></td>
+    <td>offload intermediate pixel storage to one or more remote servers.</td>
+  </tr>
+  <tr>
+    <td><a href="http://www.imagemagick.org/Usage/draw/">Draw</a></td>
+    <td>add shapes or text to an image.</td>
+  </tr>
+  <tr>
+    <td><a href="cipher.php">Encipher or decipher an image</a></td>
+    <td>convert ordinary images into unintelligible gibberish and back again.</td>
+  </tr>
+  <tr>
+    <td><a href="convert.php">Format conversion</a></td>
+    <td>convert an image from one <a href="formats.php">format </a> to another (e.g. PNG to JPEG).</td>
+  </tr>
+  <tr>
+    <td><a href="http://www.imagemagick.org/Usage/distorts/">Generalized pixel distortion</a></td>
+    <td>correct for, or induce image distortions including perspective.</td>
+  </tr>
+  <tr>
+    <td><a href="architecture.php#distributed">Heterogeneous distributed processing</a></td>
+    <td>certain algorithms are <a href="opencl.php">OpenCL</a>-enabled to take advantage of speed-ups offered by executing in concert across heterogeneous platforms consisting of CPUs, GPUs, and other processors.</td>
+  </tr>
+  <tr>
+    <td><a href="high-dynamic-range.php">High dynamic-range images</a></td>
+    <td>accurately represent the wide range of intensity levels found in real scenes ranging from the brightest direct sunlight to the deepest darkest shadows.</td>
+  </tr>
+  <tr>
+    <td><a href="fx.php">Image calculator</a></td>
+    <td>apply a mathematical expression to an image or image channels.</td>
+  </tr>
+  <tr>
+    <td><a href="gradient.php">Image gradients</a></td>
+    <td>create a gradual blend of two colors whose shape is horizontal, vertical, circular, or elliptical.</td>
+  </tr>
+  <tr>
+    <td><a href="identify.php">Image identification</a></td>
+    <td>describe the format and attributes of an image.</td>
+  </tr>
+  <tr>
+    <td><a href="binary-releases.php#iOS">ImageMagick on the iPhone</a></td>
+    <td>convert, edit, or compose images on your <a href="http://www.apple.com/ios/">iOS</a> device such as the iPhone or iPad.</td>
+  </tr>
+  <tr>
+    <td><a href="architecture.php#tera-pixel">Large image support</a></td>
+    <td>read, process, or write mega-, giga-, or tera-pixel image sizes.</td>
+  </tr>
+  <tr>
+    <td><a href="montage.php">Montage</a></td>
+    <td>juxtapose image thumbnails on an image canvas.</td>
+  </tr>
+  <tr>
+    <td><a href="http://www.imagemagick.org/Usage/morphology/">Morphology of shapes</a></td>
+    <td>extract features, describe shapes, and recognize patterns in images.</td>
+  </tr>
+  <tr>
+    <td><a href="motion-picture.php">Motion picture support</a></td>
+    <td>read and write the common image formats used in digital film work.</td>
+  </tr>
+  <tr>
+    <td><a href="http://www.imagemagick.org/Usage/transform/#vision">Noise and color reduction</a></td>
+    <td><a href="http://www.imagemagick.org/discourse-server/viewtopic.php?f=4&t=26480">Kuwahara Filter</a>, <a href="http://www.imagemagick.org/discourse-server/viewtopic.php?f=4&t=25504">mean-shift</a>.</td>
+  </tr>
+  <tr>
+    <td><a href="http://www.fmwconcepts.com/misc_tests/perceptual_hash_test_results_510/index.html">Perceptual hash</a></td>
+    <td>map visually identical images to the same or similar hash-- useful in image retrieval, authentication, indexing, or copy detection as well as digital watermarking.</td>
+  </tr>
+  <tr>
+    <td><a href="http://www.imagemagick.org/Usage/blur/">Special effects</a></td>
+    <td>blur, sharpen, threshold, or tint an image.</td>
+  </tr>
+  <tr>
+    <td><a href="http://www.imagemagick.org/Usage/text/">Text &amp; comments</a></td>
+    <td>insert descriptive or artistic text in an image.</td>
+  </tr>
+  <tr>
+    <td><a href="architecture.php#threads">Threads of execution support</a></td>
+    <td>ImageMagick is thread safe and most internal algorithms execute in <a href="openmp.php">parallel</a> to take advantage of speed-ups offered by multicore processor chips.</td>
+  </tr>
+  <tr>
+    <td><a href="http://www.imagemagick.org/Usage/resize/">Transform</a></td>
+    <td>resize, rotate, deskew, crop, flip or trim an image.</td>
+  </tr>
+  <tr>
+    <td><a href="http://www.imagemagick.org/Usage/masking/">Transparency</a></td>
+    <td>render portions of an image invisible.</td>
+  </tr>
+  <tr>
+    <td><a href="architecture.php#virtual-pixels">Virtual pixel support</a></td>
+    <td>convenient access to pixels outside the image region.</td>
+  </tr>
+</table>
+</div>
+
+<p><a href="http://www.imagemagick.org/Usage/">Examples of ImageMagick Usage</a> shows how to use ImageMagick from the <a href="command-line-processing.php">command-line</a> to accomplish any of these tasks and much more. Also, see <a href="http://www.fmwconcepts.com/imagemagick/">Fred's ImageMagick Scripts</a>:  a plethora of command-line scripts that perform geometric transforms, blurs, sharpens, edging, noise removal, and color manipulations. With <a href="https://magick.codeplex.com/">Magick.NET</a>, use ImageMagick without having to install ImageMagick on your server or desktop.</p>
+
+<h2 class="magick-header"><a id="news"></a>News</h2>
+
+<p>The design of ImageMagick is an evolutionary process, with the design and implementation efforts serving to influence and guide further progress in the other.  With <a href="../index.html">ImageMagick version 7</a>, we aim to improve the design based on lessons learned from the version 6 implementation.  See the <a href="porting.php">porting</a> guide to track the progress of the version 7 development effort.</p>
+
+<h2 class="magick-header"><a id="community"></a>Community</h2>
+<p>To join the ImageMagick community, try the <a href="http://www.imagemagick.org/discourse-server/">discourse server</a>.  You can review questions or comments (with informed responses) posed by ImageMagick users or ask your own questions. If you want to contribute image processing algorithms, other enhancements, or bug fixes, open an <a href="http://git.imagemagick.org/repos/ImageMagick/issues">issue</a>. </p>
+</div>
+  <footer class="magick-footer">
+    <p><a href="support.php">Donate</a> •
+     <a href="sitemap.php">Sitemap</a> •
+    <a href="links.php">Related</a> •
+    <a href="architecture.php">Architecture</a>
+</p>
+    <p><a href="index.html#">Back to top</a> •
+    <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
+    <a href="contact.php">Contact Us</a></p>
+        <p><small>©  1999-2016 ImageMagick Studio LLC</small></p>
+  </footer>
+</div><!-- /.container -->
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="http://nextgen.imagemagick.org/js/magick.php"></script>
+</div>
+</body>
+</html>

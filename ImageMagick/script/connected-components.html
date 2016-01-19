@@ -1,0 +1,117 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
+    <title>ImageMagick: Connected Components Labeling</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <meta name="application-name" content="ImageMagick"/>
+  <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves."/>
+  <meta name="application-url" content="http://www.imagemagick.org"/>
+  <meta name="generator" content="PHP"/>
+  <meta name="keywords" content="connected, components, labeling, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert"/>
+  <meta name="rating" content="GENERAL"/>
+  <meta name="robots" content="INDEX, FOLLOW"/>
+  <meta name="generator" content="ImageMagick Studio LLC"/>
+  <meta name="author" content="ImageMagick Studio LLC"/>
+  <meta name="revisit-after" content="2 DAYS"/>
+  <meta name="resource-type" content="document"/>
+  <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC"/>
+  <meta name="distribution" content="Global"/>
+  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
+  <link rel="icon" href="../image/wand.png"/>
+  <link rel="shortcut icon" href="../image/wand.ico"/>
+  <link rel="stylesheet" href="../css/magick.php"/>
+</head>
+<body>
+<div class="main">
+<div class="magick-masthead">
+  <div class="container">
+    <script async="async" src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-3129977114552745"
+         data-ad-slot="6345125851"
+         data-ad-format="auto"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+    <nav class="magick-nav">
+      <a class="magick-nav-item " href="../index.php">Home</a>
+      <a class="magick-nav-item " href="binary-releases.php">Download</a>
+      <a class="magick-nav-item " href="command-line-tools.php">Tools</a>
+      <a class="magick-nav-item " href="command-line-processing.php">Command-line</a>
+      <a class="magick-nav-item " href="resources.php">Resources</a>
+      <a class="magick-nav-item " href="api.php">Develop</a>
+      <a class="magick-nav-item " href="search.php">Search</a>
+      <a class="magick-nav-item pull-right" href="http://www.imagemagick.org/discourse-server/">Community</a>
+    </nav>
+  </div>
+</div>
+<div class="container">
+<div class="magick-header">
+<p class="lead magick-description">Connected-component labeling (alternatively connected-component analysis, blob extraction, region labeling, blob discovery, or region extraction) uniquely labels connected components in an image.  The labeling process scans the image, pixel-by-pixel from top-left to bottom-right, in order to identify connected pixel regions, i.e. regions of adjacent pixels which share the same set of intensity values.  For example, let's find the objects in this image:</p>
+<ul>
+  <a href="../image/objects.gif"><img src="../image/objects.gif" width="256" height="171" class="image-slices" alt="purse" /></a>
+</ul>
+<p>To identify the objects in this image, use this command:</p>
+<pre>
+convert objects.gif -connected-components 4 -auto-level -depth 8 objects.png
+</pre>
+<p>The detected objects are uniquely labeled.  Use auto leveling to visualize the detected objects:</p>
+<ul>
+  <a href="../image/objects.png"><img src="../image/objects.png" width="256" height="171" class="image-slices" alt="Objects" /></a>
+</ul>
+<p>Object statistics is useful to review.  To display them, use this command:</p>
+<pre>
+convert objects.gif -define connected-components:verbose=true -connected-components 4 objects.png
+</pre>
+<p>Five objects were detected in the source image with these statistics:</p>
+<pre>
+Objects (id: bounding-box centroid area mean-color):
+  0: 256x171+0+0 119.2,80.8 33117 srgb(0,0,0)
+  2: 120x135+104+18 159.5,106.5 8690 srgb(255,255,255)
+  3: 50x36+129+44 154.2,63.4 1529 srgb(0,0,0)
+  4: 21x23+0+45 8.8,55.9 409 srgb(255,255,255)
+  1: 4x10+252+0 253.9,4.1 31 srgb(255,255,255)
+</pre>
+<p>Use <code>-connected-components 8</code> to visit 8 neighbors rather than 4.  By default, neighbor colors must be exact to be part of a unique object. Use the <a href="command-line-options.php#fuzz">-fuzz</a> option to include pixels as part of an object that are <var>close</var> in color.</p>
+<p>You might want to eliminate small objects by merging them with their larger neighbors.  If so, use this command:</p>
+<pre>
+convert objects.gif -define connected-components:area-threshold=410 -connected-components 4 \
+  -auto-level objects.jpg
+</pre>
+<p>Here are the expected results.  Notice, how the small objects are now merged with the background.</p>
+<ul>
+  <a href="../image/objects.jpg"><img src="../image/objects.jpg" width="256" height="171" class="image-slices" alt="Objects" /></a>
+</ul>
+<p>Notice how two of the objects were merged leaving three remaining objects:</p>
+<pre>
+Objects (id: bounding-box centroid area mean-color):
+  0: 256x171+0+0 118.0,80.4 33557 srgb(0,0,0)
+  2: 120x135+104+18 159.5,106.5 8690 srgb(255,255,255)
+  3: 50x36+129+44 154.2,63.4 1529 srgb(0,0,0)
+</pre>
+<p>By default, the labeled image is grayscale.  You can instead replace the object color in the labeled image with the mean-color from the source image. Simply add this setting, <code>-define connected-components:mean-color=true</code>, to your command line.</p>
+<p>You may want to remove certain objects by making them transparent.  Use <code>-define connected-components:remove=<em>list-of-ids</em></code> (e.g. -define connected-components:remove=2,4-5).  Or use <code>-define connected-components:keep=<em>list-of-ids</em></code> to keep these objects and make all others transparent.</p>
+</div>
+  <footer class="magick-footer">
+    <p><a href="support.php">Donate</a> •
+     <a href="sitemap.php">Sitemap</a> •
+    <a href="links.php">Related</a> •
+    <a href="architecture.php">Architecture</a>
+</p>
+    <p><a href="connected-components.php#">Back to top</a> •
+    <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
+    <a href="contact.php">Contact Us</a></p>
+        <p><small>©  1999-2016 ImageMagick Studio LLC</small></p>
+  </footer>
+</div><!-- /.container -->
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="http://nextgen.imagemagick.org/js/magick.php"></script>
+</div>
+</body>
+</html>

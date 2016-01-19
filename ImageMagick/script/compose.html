@@ -1,0 +1,640 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
+    <title>ImageMagick: Alpha Compositing</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <meta name="application-name" content="ImageMagick"/>
+  <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves."/>
+  <meta name="application-url" content="http://www.imagemagick.org"/>
+  <meta name="generator" content="PHP"/>
+  <meta name="keywords" content="alpha, compositing, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert"/>
+  <meta name="rating" content="GENERAL"/>
+  <meta name="robots" content="INDEX, FOLLOW"/>
+  <meta name="generator" content="ImageMagick Studio LLC"/>
+  <meta name="author" content="ImageMagick Studio LLC"/>
+  <meta name="revisit-after" content="2 DAYS"/>
+  <meta name="resource-type" content="document"/>
+  <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC"/>
+  <meta name="distribution" content="Global"/>
+  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
+  <link rel="icon" href="../image/wand.png"/>
+  <link rel="shortcut icon" href="../image/wand.ico"/>
+  <link rel="stylesheet" href="../css/magick.php"/>
+</head>
+<body>
+<div class="main">
+<div class="magick-masthead">
+  <div class="container">
+    <script async="async" src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-3129977114552745"
+         data-ad-slot="6345125851"
+         data-ad-format="auto"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+    <nav class="magick-nav">
+      <a class="magick-nav-item " href="../index.php">Home</a>
+      <a class="magick-nav-item " href="binary-releases.php">Download</a>
+      <a class="magick-nav-item " href="command-line-tools.php">Tools</a>
+      <a class="magick-nav-item " href="command-line-processing.php">Command-line</a>
+      <a class="magick-nav-item " href="resources.php">Resources</a>
+      <a class="magick-nav-item " href="api.php">Develop</a>
+      <a class="magick-nav-item " href="search.php">Search</a>
+      <a class="magick-nav-item pull-right" href="http://www.imagemagick.org/discourse-server/">Community</a>
+    </nav>
+  </div>
+</div>
+<div class="container">
+<div class="magick-header">
+
+<p class="lead magick-description">This page descibed the Image composition methods that is used to define how
+two images should be merged together in various image operations.  For the
+Command Line API it is typically set using the <a
+href="command-line-options.php#compose" >-compose</a> setting option. </p>
+
+
+<p>The description of composition uses abstract terminology in order to allow
+the description to be more precise, while avoiding constant values which are
+specific to a particular build configuration. Each image pixel is represented
+by red, green, and blue levels (which are equal for a gray pixel). The
+build-dependent value <var>QuantumRange</var> is the maximum integral
+value which may be stored, per pixel, in the red, green, or blue channels of
+the image. Each image pixel may also optionally (if the image matte channel is
+enabled) have an associated level of opacity, ranging from <var>opaque</var> to
+<var>transparent</var>, which may be used to determine the influence of the pixel
+color when compositing the pixel with another image pixel. If the image matte
+channel is disabled, then all pixels in the image are treated as opaque. The
+color of an opaque pixel is fully visible while the color of a transparent
+pixel color is entirely absent (pixel color is ignored).</p>
+
+<p>By definition, raster images have a rectangular shape. All image rows are of
+equal length, as are all image columns. By treating the alpha channel as a
+visual "mask" the rectangular image may be given a "shape" by treating the
+alpha channel as a cookie-cutter for the image. This is done by setting the
+pixels within the shape to be opaque, with pixels outside the shape set as
+transparent. Pixels on the boundary of the shape may be between opaque and
+transparent in order to provide antialiasing (visually smooth edges). The
+description of the composition operators use this concept of image "shape" in
+order to make the description of the operators easier to understand. While it
+is convenient to describe the operators in terms of "shapes" they are by no
+means limited to mask-style operations since they are based on continuous
+floating-point mathematics rather than simple boolean operations.</p>
+
+<p>The following alpha blending (Duff-Porter) compose methods are available:</p>
+
+<table class="table table-condensed table-striped">
+  <tbody>
+  <tr>
+    <th align="left" style="width: 8%">Method</th>
+    <th align="left">Description</th>
+  </tr>
+
+  <tr>
+    <td>clear</td>
+    <td>Both the color and the alpha of the destination are
+        cleared. Neither the source nor the destination are used (except for
+        destinations size and other meta-data which is always preserved.</td>
+  </tr>
+
+  <tr>
+    <td>src</td>
+    <td>The source is copied to the destination. The destination
+        is not used as input, though it is cleared.</td>
+  </tr>
+
+  <tr>
+    <td>dst</td>
+    <td>The destination is left untouched. The source image is
+        completely ignored.</td>
+  </tr>
+
+  <tr>
+    <td>src-over</td>
+    <td>The source is composited over the destination. this is
+       the default alpha blending compose method, when neither the compose
+       setting is set, nor is set in the image meta-data.</td>
+  </tr>
+
+  <tr>
+    <td>dst-over</td>
+    <td>The destination is composited over the source and the
+        result replaces the destination.</td>
+  </tr>
+
+  <tr>
+    <td>src-in</td>
+    <td>The part of the source lying inside of the destination
+        replaces the destination.</td>
+  </tr>
+
+  <tr>
+    <td>dst-in</td>
+    <td>The part of the destination lying inside of the source
+        replaces the destination. Areas not overlaid are cleared.</td>
+  </tr>
+
+  <tr>
+    <td>src-out</td>
+    <td>The part of the source lying outside of the destination
+        replaces the destination.</td>
+  </tr>
+
+  <tr>
+    <td>dst-out</td>
+    <td>The part of the destination lying outside of the source
+        replaces the destination.</td>
+  </tr>
+
+  <tr>
+    <td>src-atop</td>
+    <td>The part of the source lying inside of the destination is
+        composited onto the destination.</td>
+  </tr>
+
+  <tr>
+    <td>dst-atop</td>
+    <td>The part of the destination lying inside of the source is
+        composited over the source and replaces the destination. Areas not
+        overlaid are cleared. </td>
+  </tr>
+
+  <tr>
+    <td>xor</td>
+    <td>The part of the source that lies outside of the
+        destination is combined with the part of the destination that lies
+        outside of the source.  Source or Destination, but not both. </td>
+  </tr>
+
+  </tbody>
+</table>
+
+<p>Any of the 'Src-*' methods can also be specified without the 'Src-' part.
+For example the default compose method can be specified as just 'Over'.</p>
+
+<p>Many of these compose methods will clear the destination image which was
+not overlaid by the source image.  This is to be expected as part of that
+specific composition methods defintion. You can disable this by setting the
+special <a href="command-line-options.php#define"
+>-define</a> 'compose:outside-overlay' to a value of 'false' will turn off
+this behavior. </p>
+
+<p>On top of the above 12 Duff-Porter Alpha Composition methods, one special
+related method '<code>Copy</code>' has been provided. This is equivalent to
+using the '<code>Src</code>'  with the special <a href="command-line-options.php#define"
+>-define</a> option '<code>compose:outside-overlay</code>' set to
+'<code>false</code>', so as to only modify the overlaid area, without clearing
+the rest of the image outside the overlaid area.  </p>
+
+<p>The following mathematical composition methods are also available. </p>
+
+<table class="table table-condensed table-striped">
+  <tbody>
+  <tr>
+    <th align="left" style="width: 8%">Method</th>
+    <th align="left">Description</th>
+  </tr>
+
+  <tr>
+    <td>multiply</td>
+    <td>The source is multiplied by the destination and replaces
+        the destination. The resultant color is always at least as dark as
+        either of the two constituent colors. Multiplying any color with black
+        produces black. Multiplying any color with white leaves the original
+        color unchanged.</td>
+  </tr>
+
+  <tr>
+    <td>screen</td>
+    <td>The source and destination are complemented and then
+        multiplied and then replace the destination. The resultant color is
+        always at least as light as either of the two constituent colors.
+        Screening any color with white produces white. Screening any color
+        with black leaves the original color unchanged.</td>
+  </tr>
+
+  <tr>
+    <td>plus</td>
+    <td>The source is added to the destination and replaces the
+        destination. This operator is useful for averaging or a controlled
+        merger of two images, rather than a direct overlay.</td>
+  </tr>
+
+  <tr>
+    <td>add</td>
+    <td>As per 'plus' but transparency data is treated as matte
+        values. As such any transparent areas in either image remain
+        transparent. </td>
+  </tr>
+
+  <tr>
+    <td>minus</td>
+    <td>Subtract the colors in the source image from the
+        destination image. When transparency is involved, opaque areas is
+        subtracted from any destination opaque areas. </td>
+  </tr>
+
+  <tr>
+    <td>subtract</td>
+    <td>Subtract the colors in the source image from the
+        destination image. When transparency is involved transparent areas are
+        subtracted, so only the opaque areas in the source remain opaque in
+        the destination image. </td>
+  </tr>
+
+  <tr>
+    <td>difference</td>
+    <td>Subtracts the darker of the two constituent colors from
+        the lighter. Painting with white inverts the destination color.
+        Painting with black produces no change.</td>
+  </tr>
+
+  <tr>
+    <td>exclusion</td>
+    <td>Produces an effect similar to that of 'difference', but
+        appears as lower contrast.  Painting with white inverts the
+        destination color. Painting with black produces no change.</td>
+  </tr>
+
+  <tr>
+    <td>darken</td>
+    <td>Selects the darker of the destination and source colors.
+        The destination is replaced with the source when the source is darker,
+        otherwise it is left unchanged.</td>
+  </tr>
+
+  <tr>
+    <td>lighten</td>
+    <td>Selects the lighter of the destination and source colors.
+        The destination is replaced with the source when the source is
+        lighter, otherwise it is left unchanged. </td>
+  </tr>
+
+  </tbody>
+</table>
+
+<p>Typically these use the default 'Over' alpha blending when transparencies
+are also involved, except for 'Plus' which uses a 'plus' alpha blending.  This
+means the alpha channel  of both images will only be used to ensure that any
+visible input remains visible even in parts not overlaid. It also means that
+any values are weighted by the alpha channel of the input and output images.
+This 'Over' alpha blending is also applied to the lighting composition methods
+below. </p>
+
+<p>As of IM v6.6.1-6, if the special '<code>Sync</code>' flag is not specified
+(enabled by default) with the <a href="command-line-options.php#channel"
+>-channel</a> setting, then the above mathematical compositions will nolonger
+synchronise its actions with the alpha channel.  Instead the math composition
+will be applied on an individual channel basis as defined by the <a
+href="command-line-options.php#channel"
+>-channel</a>.  This includes the alpha channel. This special usage
+allows you to perform true mathematics of the image channels, without alpha
+composition effects, becoming involved. </p>
+
+<p>This special flag is not applied to the lighting composition methods (see
+below) even though they are closely related to mathematical composition
+methods.</p>
+
+<p>The following lighting composition methods are also available. </p>
+
+<table class="table table-condensed table-striped">
+  <tbody>
+  <tr>
+    <th align="left" style="width: 8%">Method</th>
+    <th align="left">Description</th>
+  </tr>
+
+  <tr>
+    <td>linear-dodge</td>
+    <td>This is equivalent to 'Plus' in that the color channels
+        are simply added, however it does not 'Plus' the alpha channel, but
+        uses the normal 'Over' alpha blending, which transparencies are
+        involved.  Produces a sort of additive multiply-like result. Added
+        ImageMagick version 6.5.4-3. </td>
+  </tr>
+
+  <tr>
+    <td>linear-burn</td>
+    <td>As 'Linear-Dodge', but also subtract one from the result.
+        Sort of a additive 'Screen' of the images.  Added ImageMagick version
+        6.5.4-3. </td>
+  </tr>
+
+  <tr>
+    <td>color-dodge</td>
+    <td>Brightens the destination color to reflect the source
+        color. Painting with black produces no change.</td>
+  </tr>
+
+  <tr>
+    <td>color-burn</td>
+    <td>Darkens the destination color to reflect the source
+        color.  Painting with white produces no change. Fixed in ImageMagick
+        version 6.5.4-3. </td>
+  </tr>
+
+  <tr>
+    <td>overlay</td>
+    <td>Multiplies or screens the colors, dependent on the
+        destination color. Source colors overlay the destination whilst
+        preserving its highlights and shadows. The destination color is not
+        replaced, but is mixed with the source color to reflect the lightness
+        or darkness of the destination.</td>
+  </tr>
+
+  <tr>
+    <td>hard-light</td>
+    <td>Multiplies or screens the colors, dependent on the source
+        color value. If the source color is lighter than 0.5, the destination
+        is lightened as if it were screened. If the source color is darker
+        than 0.5, the destination is darkened, as if it were multiplied. The
+        degree of lightening or darkening is proportional to the difference
+        between the source color and 0.5. If it is equal to 0.5 the
+        destination is unchanged.  Painting with pure black or white produces
+        black or white.</td>
+  </tr>
+
+
+  <tr>
+    <td>linear-light</td>
+    <td>Like 'Hard-Light' but using linear-dodge and linear-burn
+        instead.  Increases contrast slightly with an impact on the
+        foreground's tonal values.</td>
+  </tr>
+
+  <tr>
+    <td>soft-light</td>
+    <td>Darkens or lightens the colors, dependent on the source
+        color value. If the source color is lighter than 0.5, the destination
+        is lightened. If the source color is darker than 0.5, the destination
+        is darkened, as if it were burned in. The degree of darkening or
+        lightening is proportional to the difference between the source color
+        and 0.5. If it is equal to 0.5, the destination is unchanged. Painting
+        with pure black or white produces a distinctly darker or lighter area,
+        but does not result in pure black or white. Fixed in ImageMagick
+        version 6.5.4-3. </td>
+  </tr>
+
+  <tr>
+    <td>pegtop-light</td>
+    <td>Almost equivalent to 'Soft-Light', but using a
+        continuous mathematical formula rather than two conditionally
+        selected formulae. Added ImageMagick version 6.5.4-3. </td>
+  </tr>
+
+  <tr>
+    <td>vivid-light</td>
+    <td>A modified 'Linear-Light' designed to preserve very stong
+        primary and secondary colors in the image. Added ImageMagick version
+        6.5.4-3. </td>
+  </tr>
+
+  <tr>
+    <td>pin-light</td>
+    <td>Similar to 'Hard-Light', but using sharp linear shadings,
+        to simulate the effects of a strong 'pinhole' light source. Added
+        ImageMagick version 6.5.4-3. </td>
+  </tr>
+
+  </tbody>
+</table>
+
+<p>Also included are these special purpose compose methods:</p>
+
+<table class="table table-condensed table-striped">
+  <tbody>
+  <tr>
+    <th align="left" style="width: 8%">Method</th>
+    <th align="left">Description</th>
+  </tr>
+
+  <tr>
+    <td>copy</td>
+    <td>This is equivalent to the Duff-Porter composition method
+        '<code>Src,</code>' but without clearing the parts of the destination
+        image that is not overlaid.  </td>
+    </tr>
+
+  <tr>
+    <td>copy-*</td>
+    <td>Copy the specified channel (Red, Green, Blue, Cyan,
+        Magenta, Yellow, Black, or Opacity) in the source image to the
+        same channel in the destination image.  If the channel specified
+        does not exist in the source image, (which can only happen for methods,
+        '<code>copy-opacity</code>' or '<code>copy-black</code>') then it is
+        assumed that the source image is a special grayscale channel image
+        of the values that is to be copied. </td>
+    </tr>
+
+  <tr>
+    <td>change-mask</td>
+    <td>Replace any destination pixel that is the similar to the
+    source images pixel (as defined by the current <a
+    href="command-line-options.php#fuzz">-fuzz</a> factor), with transparency.
+    </td>
+  </tr>
+  </tbody>
+</table>
+
+<p>On top of these composed methods are a few special ones that not only require
+the two images that are being merged or overlaid, but have some extra numerical
+arguments, which are tabled below. </p>
+
+<p>In the "<code>composite</code>" command these composition methods are
+selected using special options with the arguments needed. They are usually,
+but not always, the same name as the composite 'method' they use, and replaces
+the normal use of the <a href="command-line-options.php#compose" >-compose</a>
+setting in the "<code>composite</code>" command.  For example... </p>
+
+<pre>
+composite ... -blend 50x50 ...
+</pre>
+
+<p>As of IM v6.5.3-4 the "<code>convert</code>" command can now also supply
+these extra arguments to its <a href="command-line-options.php#composite"
+>-composite</a> operator, using the special <a href="command-line-options.php#define">-define</a>
+attribute of '<code class="arg">compose:args</code>'.  This means you can now
+make use of these special augmented <a href="command-line-options.php#compose"
+>-compose</a> methods, those the argument and the method both need to be set
+separately.  For example... </p>
+
+<pre>
+convert ... -compose blend  -define compose:args=50,50 -composite ...
+</pre>
+
+<p>The following is a table of these special 'argumented' compose methods,
+with a brief summary of what they do. For more details see the equivalent
+"composite" command option name.  </p>
+
+<table class="table table-condensed table-striped">
+  <tbody>
+  <tr>
+    <th align="left" style="width: 8%">Method</th>
+    <th align="left">Description</th>
+  </tr>
+
+  <tr>
+    <td>dissolve</td>
+    <td>Arguments:
+        <var>src_percent</var>[x<var>dst_percent</var>]
+    <br/>Equivalent to "<code>composite</code>" <a href="command-line-options.php#dissolve">-dissolve</a>
+    <br/>Dissolve the 'source' image by the percentage given before overlaying
+        'over' the 'destination' image. If <var>src_percent</var> is
+        greater than 100, it starts dissolving the main image so it will
+        become transparent at a value of '<code class="arg">200</code>'.  If
+        both percentages are given, each image are dissolved to the
+        percentages given.
+    </td>
+  </tr>
+
+  <tr>
+    <td>blend</td>
+    <td>Arguments:
+        <var>src_percent</var>[x<var>dst_percent</var>]
+    <br/>Equivalent to "<code>composite</code>" <a
+        href="command-line-options.php#blend">-blend</a>
+    <br/>Average the images together ('plus') according to the percentages
+        given and each pixels transparency.  If only a single percentage value
+        is given it sets the weight of the composite or 'source' image, while
+        the background image is weighted by the exact opposite amount. That is
+        a <code>-blend 30</code> merges 30% of the 'source' image with 70% of
+        the 'destination' image.  Thus it is equivalent to <code>-blend
+        30x70</code>.
+    </td>
+  </tr>
+
+  <tr>
+    <td>mathematics</td>
+    <td>Arguments: <var>A, B, C, D</var>
+    <br/>Not available in "<code>composite</code>" at this time.
+    <br/>Merge the source and destination images according to the formula
+    <br/>     <code>A*Sc*Dc + B*Sc + C*Dc + D</code>
+    <br/>Can be used to generate a custom composition method that would
+        otherwise need to be implemented using the slow <a
+        href="command-line-options.php#fx">-fx</a> DIY image operator.   Added
+        to ImageMagick version 6.5.4-3.
+    <br/>As of IM v6.6.1-6 this method will do per-channel math compositions
+        if the 'Sync' flag is removed from <a
+        href="command-line-options.php#channel" >-channel</a>, just like all
+        the other mathematical composition methods above.
+    </td>
+  </tr>
+
+  <tr>
+    <td>modulate</td>
+    <td>Arguments:
+        <var>brightness</var>[x<var>saturation</var>]
+    <br/>Equivalent to "<code>composite</code>" <a href="command-line-options.php#watermark">-watermark</a>
+    <br/>Take a grayscale image (with alpha mask) and modify the destination
+        image's brightness according to watermark image's grayscale value and
+        the <var>brightness</var> percentage.  The destinations
+        color saturation attribute is just direct modified by the <var>saturation</var> percentage, which defaults to 100 percent
+        (no color change).
+
+    </td>
+  </tr>
+
+  <tr>
+    <td>displace</td>
+    <td>Arguments:
+        <var>X-scale</var>[x<var>Y-scale</var>][!][%]
+    <br/>Equivalent to "<code>composite</code>" <a href="command-line-options.php#displace">-displace</a>
+    <br/>With this option, the 'overlay' image, and optionally the 'mask'
+        image, is used as a relative displacement map, which is used to
+        displace the lookup of what part of the destination image is seen at
+        each point of the overlaid area.  Much like the displacement map is a
+        'lens' that distorts the original 'background' image behind it.
+    <br/><br/>
+        The X-scale is modulated by the 'red' channel of the overlay image
+        while the Y-scale is modulated by the green channel, (the mask image
+        if given is rolled into green channel of the overlay image. This
+        separation allows you to modulate the X and Y lookup displacement
+        separately allowing you to do 2-dimensional displacements, rather
+        than 1-dimensional vectored displacements (using grayscale image).
+    <br/><br/>
+        If the overlay image contains transparency this is used as a mask
+        of the resulting image to remove 'invalid' pixels.
+    <br/><br/>
+        The '%' flag makes the displacement scale relative to the size of the
+        overlay image (100% = half width/height of image). Using '!' switches
+        percentage arguments to refer to the destination image size instead.
+    <br/><br/>
+        Special flags were added Added to ImageMagick version 6.5.3-5.
+    </td>
+  </tr>
+
+  <tr>
+    <td>distort</td>
+    <td>Arguments:
+        <var>X-scale</var>[x<var>Y-scale</var>[+<var>X-center</var>+<var>Y-center</var>]][!][%]
+    <br/>Not available in "<code>composite</code>" at this time.
+    <br/>Exactly as per 'Displace' (above), but using absolute coordinates,
+        relative to the center of the overlay (or that given).  Basically
+        allows you to generate absolute distortion maps where 'black' will
+        look up the left/top edge, and 'white' looks up the bottom/right
+        edge of the destination image, according to the scale given.
+    <br/><br/>
+        The '!' flag not only switches percentage scaling, to use the
+        destination image, but also the image the center offset of the lookup.
+        This means the overlay can lookup a completely different region of the
+        destination image.
+    <br/><br/>
+        Added to ImageMagick version 6.5.3-5.
+    </td>
+  </tr>
+
+  <tr>
+    <td>blur</td>
+    <td>Arguments:
+        <var>Width</var>[x<var>Height</var>[+<var>Angle</var>][+<var>Angle2</var>]]
+    <br/>Equivalent to "<code>composite</code>" <a href="command-line-options.php#blur-composite">-blur</a>
+    <br/>A Variable Blur Mapping Composition method, where each pixel in the
+        overlaid region is replaced with an Elliptical Weighted Average (EWA),
+        with an ellipse (typically a circle) of the given sigma size, scaled
+        according to overlay (source image) grayscale mapping.
+    <br/><br/>
+        As per 'Displace' and 'Distort', the red channel will modulate the
+        width of the ellipse, while the green channel will modulate the height
+        of the ellipse. If a single Angle value is given in the arguments,
+        then the ellipse will then be rotated by the angle specified.
+    <br/><br/>
+        Normally the blue channel of the mapping overlay image is ignored.
+        However if a second ellipse angle is given, then it is assumed that
+        the blue channel defines a variable angle for the ellipse ranging from
+        the first angle to the second angle given.  This allows to generate
+        radial blurs, or a rough approximation for rotational blur. Or any mix
+        of the two.
+    <br/><br/>
+        Added to ImageMagick version 6.5.4-0.
+    </td>
+  </tr>
+
+  </tbody>
+</table>
+
+<p>To print a complete list of all the available compose operators, use <a
+href="command-line-options.php#list">-list compose</a>.</p>
+</div>
+  <footer class="magick-footer">
+    <p><a href="support.php">Donate</a> •
+     <a href="sitemap.php">Sitemap</a> •
+    <a href="links.php">Related</a> •
+    <a href="architecture.php">Architecture</a>
+</p>
+    <p><a href="compose.php#">Back to top</a> •
+    <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
+    <a href="contact.php">Contact Us</a></p>
+        <p><small>©  1999-2016 ImageMagick Studio LLC</small></p>
+  </footer>
+</div><!-- /.container -->
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="http://nextgen.imagemagick.org/js/magick.php"></script>
+</div>
+</body>
+</html>

@@ -1,0 +1,118 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
+    <title>ImageMagick: Parallel Execution with OpenCL</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <meta name="application-name" content="ImageMagick"/>
+  <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves."/>
+  <meta name="application-url" content="http://www.imagemagick.org"/>
+  <meta name="generator" content="PHP"/>
+  <meta name="keywords" content="parallel, execution, with, opencl, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert"/>
+  <meta name="rating" content="GENERAL"/>
+  <meta name="robots" content="INDEX, FOLLOW"/>
+  <meta name="generator" content="ImageMagick Studio LLC"/>
+  <meta name="author" content="ImageMagick Studio LLC"/>
+  <meta name="revisit-after" content="2 DAYS"/>
+  <meta name="resource-type" content="document"/>
+  <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC"/>
+  <meta name="distribution" content="Global"/>
+  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
+  <link rel="icon" href="../image/wand.png"/>
+  <link rel="shortcut icon" href="../image/wand.ico"/>
+  <link rel="stylesheet" href="../css/magick.php"/>
+</head>
+<body>
+<div class="main">
+<div class="magick-masthead">
+  <div class="container">
+    <script async="async" src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-3129977114552745"
+         data-ad-slot="6345125851"
+         data-ad-format="auto"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+    <nav class="magick-nav">
+      <a class="magick-nav-item " href="../index.php">Home</a>
+      <a class="magick-nav-item " href="binary-releases.php">Download</a>
+      <a class="magick-nav-item " href="command-line-tools.php">Tools</a>
+      <a class="magick-nav-item " href="command-line-processing.php">Command-line</a>
+      <a class="magick-nav-item " href="resources.php">Resources</a>
+      <a class="magick-nav-item " href="api.php">Develop</a>
+      <a class="magick-nav-item " href="search.php">Search</a>
+      <a class="magick-nav-item pull-right" href="http://www.imagemagick.org/discourse-server/">Community</a>
+    </nav>
+  </div>
+</div>
+<div class="container">
+<div class="magick-header">
+
+<p class="lead magick-description">The following is a list of image operators that have been <a href="http://en.wikipedia.org/wiki/OpenCL">OpenCL</a>-accelerated:</p>
+<pre class="pre-scrollable">
+blur
+charcoal
+contrast
+constrast-stretch
+convolve
+despeckle
+edge
+equalize
+emboss
+function
+gaussian-blur
+grayscale
+modulate
+motion-blur
+negate
+noise
+radial-blur
+resize
+sketch
+unsharp
+</pre>
+<p>When the OpenCL acceleration is invoked for the first time, ImageMagick conducts a series of tests to configure the OpenCL environment according to the system hardware; therefore, it is normal to experience a higher latency the first time you use an accelerated option.  The OpenCL kernels are embedded inside ImageMagick in source format.  During the initial setup, ImageMagick discovers all the available OpenCL devices and compiles the kernels for each of these targets.  ImageMagick also runs several performance tests internally to determine the preferred device to use.  The compiled kernel code and the performance test results are stored into the cache directory so that the data can be reused by subsequent invocations of the OpenCL path.  By default, the OpenCL cached data is stored in <code>$HOME/.cache/ImageMagick</code> on Linux and on MacOSX or in <code>%LOCALAPPDATA%\.cache\ImageMagick</code> on Windows.  To change the cache directory, set the IMAGEMAGICK_OPENCL_CACHE_DIR environment variable.  ImageMagick is able to detect hardware changes, driver updates, and new kernel sources and re-run the setup and the calibration test.  You can also force ImageMagick to re-run the process by removing the content from the cache directory.</p>
+<p>If ImageMagick includes OpenCL support, the OpenCL path is enable by default.  You can disable it, simply set the environment variable MAGICK_OCL_DEVICE to <code>OFF</code>.  You could also force the OpenCL path to use a particular class of devices by setting it to <code>GPU</code> or <code>CPU</code>.</p>
+<p>In addition to the environment variables just mentioned, ImageMagick provides a set of APIs that allow developers to gain a finer grain control of the OpenCL acceleration.  For example, use the InitImageMagickOpenCL) function to turn off OpenCL:</p>
+<pre>
+InitImageMagickOpenCL(MAGICK_OPENCL_OFF, NULL, NULL, exception); 
+</pre>
+<p>Use InitImageMagickOpenCL() to find out which OpenCL device are automagically selected by ImageMagick:</p>
+<pre>
+cl_device_id selectedDevice;  // OpenCL device used by ImageMagick
+InitImageMagickOpenCL(MAGICK_OPENCL_DEVICE_SELECT_AUTO, NULL, (void*)&amp;selectedDevice, exception);
+</pre>
+
+<p>Or you could request ImageMagick to use a specific OpenCL device:</p>
+<pre>
+cl_device_id myDevices[4];
+cl_uint numDevices;
+// Get all the available OpenCL devices from the runtime
+clGetDeviceIDs(myPlatform, CL_DEVICE_TYPE_ALL, 4, myDevices, &amp;numDevices);
+// ask ImageMagick to use the 3rd device
+InitImageMagickOpenCL(MAGICK_OPENCL_DEVICE_SELECT_USER, (void*)(myDevices+2), NULL, exception);
+</pre>
+</div>
+  <footer class="magick-footer">
+    <p><a href="support.php">Donate</a> •
+     <a href="sitemap.php">Sitemap</a> •
+    <a href="links.php">Related</a> •
+    <a href="architecture.php">Architecture</a>
+</p>
+    <p><a href="opencl.php#">Back to top</a> •
+    <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
+    <a href="contact.php">Contact Us</a></p>
+        <p><small>©  1999-2016 ImageMagick Studio LLC</small></p>
+  </footer>
+</div><!-- /.container -->
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="http://nextgen.imagemagick.org/js/magick.php"></script>
+</div>
+</body>
+</html>
