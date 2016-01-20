@@ -254,7 +254,8 @@ typedef struct _DrawInfo
     *text,
     *font,
     *metrics,
-    *family;
+    *family,
+    *font_features;
 
   size_t
     face;

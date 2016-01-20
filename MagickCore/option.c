@@ -475,6 +475,8 @@ static const OptionInfo
     { "-flop", 0L, SimpleOperatorFlag, MagickFalse },
     { "+font", 0L, ImageInfoOptionFlag | DrawInfoOptionFlag, MagickFalse },
     { "-font", 1L, ImageInfoOptionFlag | DrawInfoOptionFlag, MagickFalse },
+    { "+font-features", 0L, ImageInfoOptionFlag | DrawInfoOptionFlag, MagickFalse },
+    { "-font-features", 1L, ImageInfoOptionFlag | DrawInfoOptionFlag, MagickFalse },
     { "+foreground", 0L, NonMagickOptionFlag, MagickFalse },
     { "-foreground", 1L, NonMagickOptionFlag, MagickFalse },
     { "+frame", 1L, DeprecateOptionFlag, MagickTrue },
