@@ -962,10 +962,10 @@ namespace Magick
 
     // Gaussian blur image
     // The number of neighbor pixels to be included in the convolution
-    // mask is specified by 'width_'. The standard deviation of the
+    // mask is specified by 'radius_'. The standard deviation of the
     // gaussian bell curve is specified by 'sigma_'.
-    void gaussianBlur(const double width_,const double sigma_);
-    void gaussianBlurChannel(const ChannelType channel_,const double width_,
+    void gaussianBlur(const double radius_,const double sigma_);
+    void gaussianBlurChannel(const ChannelType channel_,const double radius_,
       const double sigma_);
 
     // Transfers read-only pixels from the image to the pixel cache as

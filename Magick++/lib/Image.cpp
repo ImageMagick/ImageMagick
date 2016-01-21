@@ -3199,26 +3199,26 @@ void Magick::Image::gamma(const double gammaRed_,const double gammaGreen_,
   ThrowImageException;
 }
 
-void Magick::Image::gaussianBlur(const double width_,const double sigma_)
+void Magick::Image::gaussianBlur(const double radius_,const double sigma_)
 {
   MagickCore::Image
     *newImage;
 
   GetPPException;
-  newImage=GaussianBlurImage(constImage(),width_,sigma_,exceptionInfo);
+  newImage=GaussianBlurImage(constImage(),radius_,sigma_,exceptionInfo);
   replaceImage(newImage);
   ThrowImageException;
 }
 
 void Magick::Image::gaussianBlurChannel(const ChannelType channel_,
-  const double width_,const double sigma_)
+  const double radius_,const double sigma_)
 {
   MagickCore::Image
     *newImage;
 
   GetPPException;
   GetAndSetPPChannelMask(channel_);
-  newImage=GaussianBlurImage(constImage(),width_,sigma_,exceptionInfo);
+  newImage=GaussianBlurImage(constImage(),radius_,sigma_,exceptionInfo);
   RestorePPChannelMask;
   replaceImage(newImage);
   ThrowImageException;
