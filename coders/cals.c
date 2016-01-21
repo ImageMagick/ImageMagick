@@ -475,7 +475,7 @@ static MagickBooleanType WriteCALSImage(const ImageInfo *image_info,
   count=WriteCALSRecord(image,"txtfilid: NONE");
   count=WriteCALSRecord(image,"figid: NONE");
   count=WriteCALSRecord(image,"srcgph: NONE");
-  count=WriteCALSRecord(image,"docls: NONE");
+  count=WriteCALSRecord(image,"doccls: NONE");
   count=WriteCALSRecord(image,"rtype: 1");
   orient_x=0;
   orient_y=0;
