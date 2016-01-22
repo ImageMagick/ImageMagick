@@ -1,3 +1,7 @@
+2016-01-17  6.9.3-2 Cristy  <quetzlzacatenango@image...>
+  * Don't reuse lock after free (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=29031).
+
 2016-01-21  6.9.3-2 Dirk Lemstra <dirk@lem.....org>
   * Fixed writing DocClass in CALS coder (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&p=129478).
