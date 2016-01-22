@@ -1550,10 +1550,9 @@ MagickExport void MagickCoreTerminus(void)
   RandomComponentTerminus();
   LocaleComponentTerminus();
   LogComponentTerminus();
-  SemaphoreComponentTerminus();
   instantiate_magickcore=MagickFalse;
   UnlockMagickMutex();
-  DestroyMagickMutex();
+  SemaphoreComponentTerminus();
 }
 
 /*
