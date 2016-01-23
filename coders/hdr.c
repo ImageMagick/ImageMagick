@@ -743,10 +743,11 @@ static MagickBooleanType WriteHDRImage(const ImageInfo *image_info,Image *image)
   /*
     Write HDR pixels.
   */
-  pixels=(unsigned char *) AcquireQuantumMemory(image->columns,4*
+  pixels=(unsigned char *) AcquireQuantumMemory(image->columns+128,4*
     sizeof(*pixels));
   if (pixels == (unsigned char *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+  (void) ResetMagickMemory(pixels,0,4*(image->columns+128)*sizeof(*pixels));
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
