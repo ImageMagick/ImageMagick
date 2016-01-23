@@ -1357,7 +1357,7 @@ namespace Magick
       const GravityType gravity_);
 
     // Spread pixels randomly within image by specified ammount
-    void spread(const size_t amount_=3);
+    void spread(const double amount_=3.0);
 
     // Returns the statistics for this image.
     Magick::ImageStatistics statistics() const;

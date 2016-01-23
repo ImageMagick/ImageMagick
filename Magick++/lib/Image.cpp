@@ -4476,7 +4476,7 @@ void Magick::Image::splice(const Geometry &geometry_,
   splice(geometry_);
 }
 
-void Magick::Image::spread(const size_t amount_)
+void Magick::Image::spread(const double amount_)
 {
   MagickCore::Image
     *newImage;
