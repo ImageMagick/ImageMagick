@@ -653,15 +653,19 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info,
         Monochrome image.
       */
       intensity=0.0;
-      if (GetPixelInfoLuma(image->colormap+0) >
-          GetPixelInfoLuma(image->colormap+1))
+      if ((image->colors > 1) &&
+          (GetPixelInfoLuma(image->colormap+0) >
+           GetPixelInfoLuma(image->colormap+1)))
         intensity=(double) QuantumRange;
       image->colormap[0].red=intensity;
       image->colormap[0].green=intensity;
       image->colormap[0].blue=intensity;
-      image->colormap[1].red=(double) QuantumRange-intensity;
-      image->colormap[1].green=(double) QuantumRange-intensity;
-      image->colormap[1].blue=(double) QuantumRange-intensity;
+      if (image->colors > 1)
+        {
+          image->colormap[1].red=(double) QuantumRange-intensity;
+          image->colormap[1].green=(double) QuantumRange-intensity;
+          image->colormap[1].blue=(double) QuantumRange-intensity;
+        }
     }
   (void) SyncImage(image,exception);
   if ((cube_info->quantize_info->colorspace != UndefinedColorspace) &&
