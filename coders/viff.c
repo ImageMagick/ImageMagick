@@ -506,8 +506,8 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
       max_packets=((image->columns+7UL) >> 3UL)*image->rows;
     else
       max_packets=(size_t) (number_pixels*viff_info.number_data_bands);
-    pixels=(unsigned char *) AcquireQuantumMemory(max_packets,
-      bytes_per_pixel*sizeof(*pixels));
+    pixels=(unsigned char *) AcquireQuantumMemory(MagickMax(number_pixels,
+      max_packets),bytes_per_pixel*sizeof(*pixels));
     if (pixels == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     (void) ReadBlob(image,bytes_per_pixel*max_packets,pixels);
