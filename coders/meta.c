@@ -461,7 +461,7 @@ static ssize_t parse8BIM(Image *ifile, Image *ofile)
 
                     next=0;
                     outputlen += len;
-                    while (len--)
+                    while (len-- > 0)
                       (void) WriteBlobByte(ofile,(unsigned char) token[next++]);
 
                     if (outputlen & 1)
@@ -492,7 +492,7 @@ static ssize_t parse8BIM(Image *ifile, Image *ofile)
                     outputlen += 5;
                     next=0;
                     outputlen += len;
-                    while (len--)
+                    while (len-- > 0)
                       (void) WriteBlobByte(ofile,(unsigned char) token[next++]);
                   }
               }
