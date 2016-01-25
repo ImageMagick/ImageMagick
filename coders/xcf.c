@@ -54,6 +54,7 @@
 #include "magick/memory_.h"
 #include "magick/pixel.h"
 #include "magick/pixel-accessor.h"
+#include "magick/property.h"
 #include "magick/quantize.h"
 #include "magick/quantum-private.h"
 #include "magick/static.h"
@@ -766,6 +767,15 @@ static MagickBooleanType load_hierarchy(Image *image,XCFDocInfo *inDocInfo,
   return(MagickTrue);
 }
 
+static void InitXCFImage(XCFLayerInfo *outLayer)
+{
+  outLayer->image->page.x=outLayer->offset_x;
+  outLayer->image->page.y=outLayer->offset_y;
+  outLayer->image->page.width=outLayer->width;
+  outLayer->image->page.height=outLayer->height;
+  (void) SetImageProperty(outLayer->image,"label",(char *)outLayer->name);
+}
+
 static MagickBooleanType ReadOneLayer(const ImageInfo *image_info,Image* image,
   XCFDocInfo* inDocInfo,XCFLayerInfo *outLayer,const ssize_t layer)
 {
@@ -891,10 +901,7 @@ static MagickBooleanType ReadOneLayer(const ImageInfo *image_info,Image* image,
           outLayer->image=CloneImage(image,0,0,MagickTrue,&image->exception);
           if (outLayer->image == (Image *) NULL)
             return(MagickFalse);
-          outLayer->image->page.x=outLayer->offset_x;
-          outLayer->image->page.y=outLayer->offset_y;
-          outLayer->image->page.width=outLayer->width;
-          outLayer->image->page.height=outLayer->height;
+          InitXCFImage(outLayer);
           return(MagickTrue);
         }
     }
@@ -908,10 +915,8 @@ static MagickBooleanType ReadOneLayer(const ImageInfo *image_info,Image* image,
     ScaleCharToQuantum((unsigned char) (255-outLayer->alpha));
   (void) SetImageBackgroundColor(outLayer->image);
 
-  outLayer->image->page.x=outLayer->offset_x;
-  outLayer->image->page.y=outLayer->offset_y;
-  outLayer->image->page.width=outLayer->width;
-  outLayer->image->page.height=outLayer->height;
+  InitXCFImage(outLayer);
+
   /* set the compositing mode */
   outLayer->image->compose = GIMPBlendModeToCompositeOperator( outLayer->mode );
   if ( outLayer->visible == MagickFalse )
