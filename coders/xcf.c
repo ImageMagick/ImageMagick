@@ -54,6 +54,7 @@
 #include "MagickCore/memory_.h"
 #include "MagickCore/pixel.h"
 #include "MagickCore/pixel-accessor.h"
+#include "MagickCore/property.h"
 #include "MagickCore/quantize.h"
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/static.h"
@@ -746,9 +747,19 @@ static MagickBooleanType load_hierarchy(Image *image,XCFDocInfo *inDocInfo,
   return(MagickTrue);
 }
 
+static void InitXCFImage(XCFLayerInfo *outLayer,ExceptionInfo *exception)
+{
+  outLayer->image->page.x=outLayer->offset_x;
+  outLayer->image->page.y=outLayer->offset_y;
+  outLayer->image->page.width=outLayer->width;
+  outLayer->image->page.height=outLayer->height;
+  (void) SetImageProperty(outLayer->image,"label",(char *)outLayer->name,
+    exception);
+}
+
 static MagickBooleanType ReadOneLayer(const ImageInfo *image_info,Image* image,
   XCFDocInfo* inDocInfo,XCFLayerInfo *outLayer,const ssize_t layer,
-  ExceptionInfo *exception )
+  ExceptionInfo *exception)
 {
   MagickOffsetType
     offset;
@@ -872,10 +883,7 @@ static MagickBooleanType ReadOneLayer(const ImageInfo *image_info,Image* image,
           outLayer->image=CloneImage(image,0,0,MagickTrue,exception);
           if (outLayer->image == (Image *) NULL)
             return(MagickFalse);
-          outLayer->image->page.x=outLayer->offset_x;
-          outLayer->image->page.y=outLayer->offset_y;
-          outLayer->image->page.width=outLayer->width;
-          outLayer->image->page.height=outLayer->height;
+          InitXCFImage(outLayer,exception);
           return(MagickTrue);
         }
     }
@@ -888,10 +896,8 @@ static MagickBooleanType ReadOneLayer(const ImageInfo *image_info,Image* image,
     ScaleCharToQuantum((unsigned char) outLayer->alpha);
   (void) SetImageBackgroundColor(outLayer->image,exception);
 
-  outLayer->image->page.x=outLayer->offset_x;
-  outLayer->image->page.y=outLayer->offset_y;
-  outLayer->image->page.width=outLayer->width;
-  outLayer->image->page.height=outLayer->height;
+  InitXCFImage(outLayer,exception);
+
   /* set the compositing mode */
   outLayer->image->compose = GIMPBlendModeToCompositeOperator( outLayer->mode );
   if ( outLayer->visible == MagickFalse )
