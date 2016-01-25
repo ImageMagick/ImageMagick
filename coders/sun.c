@@ -418,7 +418,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     bytes_per_line=sun_info.width*sun_info.depth;
     sun_data=(unsigned char *) AcquireQuantumMemory((size_t) MagickMax(
-      sun_info.length,bytes_per_line*sun_info.width),sizeof(*sun_data));
+      sun_info.length,bytes_per_line*sun_info.width)+3,sizeof(*sun_data));
     if (sun_data == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     count=(ssize_t) ReadBlob(image,sun_info.length,sun_data);
