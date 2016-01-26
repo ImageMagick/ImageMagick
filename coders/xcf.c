@@ -1347,17 +1347,6 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       offset=SeekBlob(image, saved_pos, SEEK_SET);
       current_layer++;
     }
-    if (number_layers == 1)
-      {
-        /*
-          Composite the layer data onto the main image, dispose the layer.
-        */
-        (void) CompositeImage(image,CopyCompositeOp,layer_info[0].image,
-          layer_info[0].offset_x,layer_info[0].offset_y);
-        layer_info[0].image =DestroyImage( layer_info[0].image);
-      }
-    else
-      {
 #if 0
         {
         /* NOTE: XCF layers are REVERSED from composite order! */
@@ -1385,22 +1374,13 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /* NOTE: XCF layers are REVERSED from composite order! */
         ssize_t  j;
 
-        /* first we copy the last layer on top of the main image */
-        (void) CompositeImage(image,CopyCompositeOp,
-          layer_info[number_layers-1].image,
-          layer_info[number_layers-1].offset_x,
-          layer_info[number_layers-1].offset_y);
-        layer_info[number_layers-1].image=DestroyImage(
-          layer_info[number_layers-1].image);
-
         /* now reverse the order of the layers as they are put
            into subimages
         */
-        for (j=(long) number_layers-2; j >= 0; j--)
+        for (j=(long) number_layers-1; j >= 0; j--)
           AppendImageToList(&image,layer_info[j].image);
       }
 #endif
-    }
 
     layer_info=(XCFLayerInfo *) RelinquishMagickMemory(layer_info);
 
@@ -1444,6 +1424,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   }
 
   (void) CloseBlob(image);
+  DestroyImage(RemoveFirstImageFromList(&image));
   if (image_type == GIMP_GRAY)
     image->type=GrayscaleType;
   return(GetFirstImageInList(image));
