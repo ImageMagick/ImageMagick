@@ -3624,7 +3624,7 @@ MagickExport MagickBooleanType SyncImage(Image *image)
   image->taint=taint;
   if ((image->ping == MagickFalse) && (range_exception != MagickFalse))
     (void) ThrowMagickException(&image->exception,GetMagickModule(),
-      CorruptImageError,"InvalidColormapIndex","`%s'",image->filename);
+      CorruptImageWarning,"InvalidColormapIndex","`%s'",image->filename);
   return(status);
 }
 
