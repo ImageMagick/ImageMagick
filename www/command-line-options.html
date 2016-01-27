@@ -497,13 +497,17 @@ consider the following command and its output.  Modify the benchmark with the
 to run the benchmark in parallel (requires the OpenMP feature).</p>
 
 <pre>
--> convert logo: -resize 1000% -bench 5 logo.png
+-> convert logo: -resize 200% -bench 5 logo.png
+Performance[1]: 5i 1.344ips 1.000e 3.710u 0:03.720
+Performance[2]: 5i 1.634ips 0.549e 3.890u 0:03.060
+Performance[3]: 5i 2.174ips 0.618e 3.190u 0:02.300
+Performance[4]: 5i 1.678ips 0.555e 3.810u 0:02.980
 Performance[4]: 5i 0.875657ips 6.880u 0:05.710
 </pre>
 
-<p>In this example, 5 iterations were completed at 0.875657 iterations per
-second, using 4 threads and 6.88 seconds of the user's allotted time, for
-a total elapsed time of 5.71 seconds.</p>
+<p>In this example, 5 iterations were completed at 2.174 iterations per
+second, using 3 threads and 3.190 seconds of the user allotted time, for
+a total elapsed time of 2.300 seconds.</p>
 
 <div style="margin: auto;">
   <h3 class="magick-header"><a id="bias"></a>-bias <var>value</var>{<var>%</var>}</h3>
@@ -7929,4 +7933,4 @@ href="command-line-options.html#colors">-colors</a> to reduce the number of colo
 </div>
 </body>
 </html>
-<!-- Magick Cache 17th January 2016 17:33 -->
+<!-- Magick Cache 27th January 2016 08:35 -->
