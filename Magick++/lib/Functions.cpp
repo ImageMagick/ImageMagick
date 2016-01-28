@@ -20,7 +20,8 @@ using namespace std;
 static bool magick_initialized=false;
 
 // Clone C++ string as allocated C string, de-allocating any existing string
-void Magick::CloneString(char **destination_, const std::string &source_)
+MagickPPExport void Magick::CloneString(char **destination_,
+  const std::string &source_)
 {
   MagickCore::CloneString(destination_,source_.c_str());
 }
