@@ -1386,6 +1386,12 @@ AC_DEFINE_UNQUOTED(X11_CONFIGURE_PATH,"$X11ConfigurePath",[Location of X11 confi
 GOMP_LIBS=''
 if test "$enable_openmp" != 'no'; then
   if test "${GCC}" = "yes"; then
+    # Clang 3.8 and later defaults to the LLVM OpenMP implementation
+    if test "x$GOMP_LIBS" = x ; then
+      if $CC --version 2>&1 | grep clang > /dev/null ; then
+        AC_CHECK_LIB(omp,omp_get_num_procs,GOMP_LIBS="-lomp",,)
+      fi
+    fi
     # Open64 (passes for GCC but uses different OpenMP implementation)
     if test "x$GOMP_LIBS" = x ; then
       if $CC --version 2>&1 | grep Open64 > /dev/null ; then

@@ -4503,7 +4503,7 @@ MAGICK_PATCHLEVEL_VERSION=0
 
 MAGICK_VERSION=7.0.0-0
 
-MAGICK_GIT_REVISION=17520:5d5208d:20160115
+MAGICK_GIT_REVISION=17573:8bc3ab6:20160128
 
 
 # Substitute library versioning
@@ -27470,6 +27470,51 @@ _ACEOF
 GOMP_LIBS=''
 if test "$enable_openmp" != 'no'; then
   if test "${GCC}" = "yes"; then
+    # Clang 3.8 and later defaults to the LLVM OpenMP implementation
+    if test "x$GOMP_LIBS" = x ; then
+      if $CC --version 2>&1 | grep clang > /dev/null ; then
+        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for omp_get_num_procs in -lomp" >&5
+$as_echo_n "checking for omp_get_num_procs in -lomp... " >&6; }
+if ${ac_cv_lib_omp_omp_get_num_procs+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lomp  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char omp_get_num_procs ();
+int
+main ()
+{
+return omp_get_num_procs ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_omp_omp_get_num_procs=yes
+else
+  ac_cv_lib_omp_omp_get_num_procs=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_omp_omp_get_num_procs" >&5
+$as_echo "$ac_cv_lib_omp_omp_get_num_procs" >&6; }
+if test "x$ac_cv_lib_omp_omp_get_num_procs" = xyes; then :
+  GOMP_LIBS="-lomp"
+fi
+
+      fi
+    fi
     # Open64 (passes for GCC but uses different OpenMP implementation)
     if test "x$GOMP_LIBS" = x ; then
       if $CC --version 2>&1 | grep Open64 > /dev/null ; then
