@@ -30,5 +30,8 @@ namespace Magick
 
   // Seed a new sequence of pseudo-random numbers
   MagickPPExport void SetRandomSeed(const unsigned long seed);
+
+  // C library initialization routine
+  MagickPPExport void TerminateMagick();
 }
 #endif // Magick_Functions_header
