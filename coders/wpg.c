@@ -317,7 +317,7 @@ static void InsertRow(Image *image,unsigned char *p,ssize_t y,int bpp,
         q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
         if (q == (Quantum *) NULL)
           break;
-        for (x=0; x < ((ssize_t) image->columns-1); x+=2)
+        for (x=0; x < ((ssize_t) image->columns-1); x+=4)
         {
             index=ConstrainColormapIndex(image,(*p >> 6) & 0x3,exception);
             SetPixelIndex(image,index,q);
