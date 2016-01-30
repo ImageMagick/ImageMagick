@@ -347,7 +347,8 @@ static MagickBooleanType load_tile(Image *image,Image *tile_image,
     *xcfdata,
     *xcfodata;
 
-  xcfdata=(XCFPixelInfo *) AcquireQuantumMemory(data_length,sizeof(*xcfdata));
+  xcfdata=(XCFPixelInfo *) AcquireQuantumMemory(MagickMax(data_length,
+    tile_image->columns*tile_image->rows),sizeof(*xcfdata));
   if (xcfdata == (XCFPixelInfo *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
