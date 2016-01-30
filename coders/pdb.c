@@ -823,7 +823,7 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image,
     image->rows*sizeof(*runlength));
   if (runlength == (unsigned char *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
-  buffer=(unsigned char *) AcquireQuantumMemory(256UL,sizeof(*buffer));
+  buffer=(unsigned char *) AcquireQuantumMemory(2*256,sizeof(*buffer));
   if (buffer == (unsigned char *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
   packet_size=(size_t) (image->depth > 8 ? 2: 1);
