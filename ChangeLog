@@ -1,4 +1,4 @@
-2016-01-30  7.0.0-0 	ShamsaHamed
+2016-01-30  7.0.0-0 	Fahad-Alsaidi & ShamsaHamed
   * Add support for languages that require complex text layout (reference
     https://github.com/ImageMagick/ImageMagick/pull/88).
 
