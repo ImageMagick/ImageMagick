@@ -3,14 +3,14 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%                H   H   AAA   SSSSS  H   H  M   M   AAA   PPPP               %
-%                H   H  A   A  SS     H   H  MM MM  A   A  P   P              %
-%                HHHHH  AAAAA   SSS   HHHHH  M M M  AAAAA  PPPP               %
-%                H   H  A   A     SS  H   H  M   M  A   A  P                  %
-%                H   H  A   A  SSSSS  H   H  M   M  A   A  P                  %
+%   L      IIIII  N   N  K   K  EEEEE  DDDD      L      IIIII  SSSSS  TTTTT   %
+%   L        I    NN  N  K  K   E      D   D     L        I    SS       T     %
+%   L        I    N N N  KKK    EEE    D   D  =  L        I     SSS     T     %
+%   L        I    N  NN  K  K   E      D   D     L        I       SS    T     %
+%   LLLLL  IIIII  N   N  K   K  EEEEE  DDDD      LLLLL  IIIII  SSSSS    T     %
 %                                                                             %
 %                                                                             %
-%                  MagickCore Hash-map and Linked-list Methods                %
+%                  MagickCore Linked-list Methods                             %
 %                                                                             %
 %                              Software Design                                %
 %                                   Cristy                                    %
@@ -45,8 +45,8 @@
 #include "MagickCore/studio.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
+#include "MagickCore/linked-list.h"
 #include "MagickCore/locale_.h"
-#include "MagickCore/hashmap.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/semaphore.h"
 #include "MagickCore/signature-private.h"
@@ -64,16 +64,6 @@ typedef struct _ElementInfo
     *next;
 } ElementInfo;
 
-typedef struct _EntryInfo
-{
-  size_t
-    hash;
-
-  void
-    *key,
-    *value;
-} EntryInfo;
-
 struct _LinkedListInfo
 {
   size_t
@@ -84,36 +74,6 @@ struct _LinkedListInfo
     *head,
     *tail,
     *next;
-
-  SemaphoreInfo
-    *semaphore;
-
-  size_t
-    signature;
-};
-
-struct _HashmapInfo
-{
-  size_t
-    (*hash)(const void *);
-
-  MagickBooleanType
-    (*compare)(const void *,const void *);
-
-  void
-    *(*relinquish_key)(void *),
-    *(*relinquish_value)(void *);
-
-  size_t
-    capacity,
-    entries,
-    next;
-
-  MagickBooleanType
-    head_of_list;
-
-  LinkedListInfo
-    **map;
 
   SemaphoreInfo
     *semaphore;
@@ -228,147 +188,7 @@ MagickExport void ClearLinkedList(LinkedListInfo *list_info,
   list_info->elements=0;
   UnlockSemaphoreInfo(list_info->semaphore);
 }
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   C o m p a r e H a s h m a p S t r i n g                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  CompareHashmapString() finds an entry in a hash-map based on the contents
-%  of a string.
-%
-%  The format of the CompareHashmapString method is:
-%
-%      MagickBooleanType CompareHashmapString(const void *target,
-%        const void *source)
-%
-%  A description of each parameter follows:
-%
-%    o target: the target string.
-%
-%    o source: the source string.
-%
-*/
-MagickExport MagickBooleanType CompareHashmapString(const void *target,
-  const void *source)
-{
-  const char
-    *p,
-    *q;
 
-  p=(const char *) target;
-  q=(const char *) source;
-  return(LocaleCompare(p,q) == 0 ? MagickTrue : MagickFalse);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   C o m p a r e H a s h m a p S t r i n g I n f o                           %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  CompareHashmapStringInfo() finds an entry in a hash-map based on the
-%  contents of a string.
-%
-%  The format of the CompareHashmapStringInfo method is:
-%
-%      MagickBooleanType CompareHashmapStringInfo(const void *target,
-%        const void *source)
-%
-%  A description of each parameter follows:
-%
-%    o target: the target string.
-%
-%    o source: the source string.
-%
-*/
-MagickExport MagickBooleanType CompareHashmapStringInfo(const void *target,
-  const void *source)
-{
-  const StringInfo
-    *p,
-    *q;
-
-  p=(const StringInfo *) target;
-  q=(const StringInfo *) source;
-  return(CompareStringInfo(p,q) == 0 ? MagickTrue : MagickFalse);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   D e s t r o y H a s h m a p                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  DestroyHashmap() frees the hash-map and all associated resources.
-%
-%  The format of the DestroyHashmap method is:
-%
-%      HashmapInfo *DestroyHashmap(HashmapInfo *hashmap_info)
-%
-%  A description of each parameter follows:
-%
-%    o hashmap_info: the hashmap info.
-%
-*/
-MagickExport HashmapInfo *DestroyHashmap(HashmapInfo *hashmap_info)
-{
-  LinkedListInfo
-    *list_info;
-
-  register EntryInfo
-    *entry;
-
-  register ssize_t
-    i;
-
-  assert(hashmap_info != (HashmapInfo *) NULL);
-  assert(hashmap_info->signature == MagickCoreSignature);
-  LockSemaphoreInfo(hashmap_info->semaphore);
-  for (i=0; i < (ssize_t) hashmap_info->capacity; i++)
-  {
-    list_info=hashmap_info->map[i];
-    if (list_info != (LinkedListInfo *) NULL)
-      {
-        list_info->next=list_info->head;
-        entry=(EntryInfo *) GetNextValueInLinkedList(list_info);
-        while (entry != (EntryInfo *) NULL)
-        {
-          if (hashmap_info->relinquish_key != (void *(*)(void *)) NULL)
-            entry->key=hashmap_info->relinquish_key(entry->key);
-          if (hashmap_info->relinquish_value != (void *(*)(void *)) NULL)
-            entry->value=hashmap_info->relinquish_value(entry->value);
-          entry=(EntryInfo *) GetNextValueInLinkedList(list_info);
-        }
-      }
-    if (list_info != (LinkedListInfo *) NULL)
-      list_info=DestroyLinkedList(list_info,RelinquishMagickMemory);
-  }
-  hashmap_info->map=(LinkedListInfo **) RelinquishMagickMemory(
-    hashmap_info->map);
-  hashmap_info->signature=(~MagickCoreSignature);
-  UnlockSemaphoreInfo(hashmap_info->semaphore);
-  RelinquishSemaphoreInfo(&hashmap_info->semaphore);
-  hashmap_info=(HashmapInfo *) RelinquishMagickMemory(hashmap_info);
-  return(hashmap_info);
-}
-
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -458,129 +278,7 @@ MagickExport void *GetLastValueInLinkedList(LinkedListInfo *list_info)
   UnlockSemaphoreInfo(list_info->semaphore);
   return(value);
 }
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   G e t N e x t K e y I n H a s h m a p                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetNextKeyInHashmap() gets the next key in the hash-map.
-%
-%  The format of the GetNextKeyInHashmap method is:
-%
-%      void *GetNextKeyInHashmap(HashmapInfo *hashmap_info)
-%
-%  A description of each parameter follows:
-%
-%    o hashmap_info: the hashmap info.
-%
-*/
-MagickExport void *GetNextKeyInHashmap(HashmapInfo *hashmap_info)
-{
-  LinkedListInfo
-    *list_info;
 
-  register EntryInfo
-    *entry;
-
-  void
-    *key;
-
-  assert(hashmap_info != (HashmapInfo *) NULL);
-  assert(hashmap_info->signature == MagickCoreSignature);
-  LockSemaphoreInfo(hashmap_info->semaphore);
-  while (hashmap_info->next < hashmap_info->capacity)
-  {
-    list_info=hashmap_info->map[hashmap_info->next];
-    if (list_info != (LinkedListInfo *) NULL)
-      {
-        if (hashmap_info->head_of_list == MagickFalse)
-          {
-            list_info->next=list_info->head;
-            hashmap_info->head_of_list=MagickTrue;
-          }
-        entry=(EntryInfo *) GetNextValueInLinkedList(list_info);
-        if (entry != (EntryInfo *) NULL)
-          {
-            key=entry->key;
-            UnlockSemaphoreInfo(hashmap_info->semaphore);
-            return(key);
-          }
-        hashmap_info->head_of_list=MagickFalse;
-      }
-    hashmap_info->next++;
-  }
-  UnlockSemaphoreInfo(hashmap_info->semaphore);
-  return((void *) NULL);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   G e t N e x t V a l u e I n H a s h m a p                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetNextValueInHashmap() gets the next value in the hash-map.
-%
-%  The format of the GetNextValueInHashmap method is:
-%
-%      void *GetNextValueInHashmap(HashmapInfo *hashmap_info)
-%
-%  A description of each parameter follows:
-%
-%    o hashmap_info: the hashmap info.
-%
-*/
-MagickExport void *GetNextValueInHashmap(HashmapInfo *hashmap_info)
-{
-  LinkedListInfo
-    *list_info;
-
-  register EntryInfo
-    *entry;
-
-  void
-    *value;
-
-  assert(hashmap_info != (HashmapInfo *) NULL);
-  assert(hashmap_info->signature == MagickCoreSignature);
-  LockSemaphoreInfo(hashmap_info->semaphore);
-  while (hashmap_info->next < hashmap_info->capacity)
-  {
-    list_info=hashmap_info->map[hashmap_info->next];
-    if (list_info != (LinkedListInfo *) NULL)
-      {
-        if (hashmap_info->head_of_list == MagickFalse)
-          {
-            list_info->next=list_info->head;
-            hashmap_info->head_of_list=MagickTrue;
-          }
-        entry=(EntryInfo *) GetNextValueInLinkedList(list_info);
-        if (entry != (EntryInfo *) NULL)
-          {
-            value=entry->value;
-            UnlockSemaphoreInfo(hashmap_info->semaphore);
-            return(value);
-          }
-        hashmap_info->head_of_list=MagickFalse;
-      }
-    hashmap_info->next++;
-  }
-  UnlockSemaphoreInfo(hashmap_info->semaphore);
-  return((void *) NULL);
-}
-
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -627,36 +325,6 @@ MagickExport void *GetNextValueInLinkedList(LinkedListInfo *list_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t N u m b e r O f E n t r i e s I n H a s h m a p                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetNumberOfEntriesInHashmap() returns the number of entries in the hash-map.
-%
-%  The format of the GetNumberOfEntriesInHashmap method is:
-%
-%      size_t GetNumberOfEntriesInHashmap(const HashmapInfo *hashmap_info)
-%
-%  A description of each parameter follows:
-%
-%    o hashmap_info: the hashmap info.
-%
-*/
-MagickExport size_t GetNumberOfEntriesInHashmap(
-  const HashmapInfo *hashmap_info)
-{
-  assert(hashmap_info != (HashmapInfo *) NULL);
-  assert(hashmap_info->signature == MagickCoreSignature);
-  return(hashmap_info->entries);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   G e t N u m b e r O f E l e m e n t s I n L i n k e d L i s t             %
 %                                                                             %
 %                                                                             %
@@ -683,82 +351,7 @@ MagickExport size_t GetNumberOfElementsInLinkedList(
   assert(list_info->signature == MagickCoreSignature);
   return(list_info->elements);
 }
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   G e t V a l u e F r o m H a s h m a p                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetValueFromHashmap() gets an entry from the hash-map by its key.
-%
-%  The format of the GetValueFromHashmap method is:
-%
-%      void *GetValueFromHashmap(HashmapInfo *hashmap_info,const void *key)
-%
-%  A description of each parameter follows:
-%
-%    o hashmap_info: the hashmap info.
-%
-%    o key: the key.
-%
-*/
-MagickExport void *GetValueFromHashmap(HashmapInfo *hashmap_info,
-  const void *key)
-{
-  LinkedListInfo
-    *list_info;
 
-  register EntryInfo
-    *entry;
-
-  size_t
-    hash;
-
-  void
-    *value;
-
-  assert(hashmap_info != (HashmapInfo *) NULL);
-  assert(hashmap_info->signature == MagickCoreSignature);
-  if (key == (const void *) NULL)
-    return((void *) NULL);
-  LockSemaphoreInfo(hashmap_info->semaphore);
-  hash=hashmap_info->hash(key);
-  list_info=hashmap_info->map[hash % hashmap_info->capacity];
-  if (list_info != (LinkedListInfo *) NULL)
-    {
-      list_info->next=list_info->head;
-      entry=(EntryInfo *) GetNextValueInLinkedList(list_info);
-      while (entry != (EntryInfo *) NULL)
-      {
-        if (entry->hash == hash)
-          {
-            MagickBooleanType
-              compare;
-
-            compare=MagickTrue;
-            if (hashmap_info->compare !=
-                (MagickBooleanType (*)(const void *,const void *)) NULL)
-              compare=hashmap_info->compare(key,entry->key);
-            if (compare != MagickFalse)
-              {
-                value=entry->value;
-                UnlockSemaphoreInfo(hashmap_info->semaphore);
-                return(value);
-              }
-          }
-        entry=(EntryInfo *) GetNextValueInLinkedList(list_info);
-      }
-    }
-  UnlockSemaphoreInfo(hashmap_info->semaphore);
-  return((void *) NULL);
-}
-
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -821,144 +414,7 @@ MagickExport void *GetValueFromLinkedList(LinkedListInfo *list_info,
   UnlockSemaphoreInfo(list_info->semaphore);
   return(value);
 }
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   H a s h P o i n t e r T y p e                                             %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  HashPointerType() finds an entry in a hash-map based on the address of a
-%  pointer.
-%
-%  The format of the HashPointerType method is:
-%
-%      size_t HashPointerType(const void *pointer)
-%
-%  A description of each parameter follows:
-%
-%    o pointer: compute the hash entry location from this pointer address.
-%
-*/
-MagickExport size_t HashPointerType(const void *pointer)
-{
-  size_t
-    hash;
 
-  hash=(size_t) pointer;
-  hash+=(~(hash << 9));
-  hash^=(hash >> 14);
-  hash+=(hash << 4);
-  hash^=(hash >> 10);
-  return(hash);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   H a s h S t r i n g T y p e                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  HashStringType() finds an entry in a hash-map based on the contents of a
-%  string.
-%
-%  The format of the HashStringType method is:
-%
-%      size_t HashStringType(const void *string)
-%
-%  A description of each parameter follows:
-%
-%    o string: compute the hash entry location from this string.
-%
-*/
-MagickExport size_t HashStringType(const void *string)
-{
-  const unsigned char
-    *digest;
-
-  register ssize_t
-    i;
-
-  SignatureInfo
-    *signature_info;
-
-  size_t
-    hash;
-
-  StringInfo
-    *signature;
-
-  signature_info=AcquireSignatureInfo();
-  signature=StringToStringInfo((const char *) string);
-  UpdateSignature(signature_info,signature);
-  FinalizeSignature(signature_info);
-  digest=GetStringInfoDatum(GetSignatureDigest(signature_info));
-  hash=0;
-  for (i=0; i < 8; i++)
-    hash^=digest[i];
-  signature=DestroyStringInfo(signature);
-  signature_info=DestroySignatureInfo(signature_info);
-  return(hash);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   H a s h S t r i n g I n f o T y p e                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Specify the HashStringInfoType() method in NewHashmap() to find an entry
-%  in a hash-map based on the contents of a string.
-%
-%  The format of the HashStringInfoType method is:
-%
-%      size_t HashStringInfoType(const void *string_info)
-%
-%  A description of each parameter follows:
-%
-%    o string_info: compute the hash entry location from this string.
-%
-*/
-MagickExport size_t HashStringInfoType(const void *string_info)
-{
-  const unsigned char
-    *digest;
-
-  register ssize_t
-    i;
-
-  SignatureInfo
-    *signature_info;
-
-  size_t
-    hash;
-
-  signature_info=AcquireSignatureInfo();
-  UpdateSignature(signature_info,(const StringInfo *) string_info);
-  FinalizeSignature(signature_info);
-  digest=GetStringInfoDatum(GetSignatureDigest(signature_info));
-  hash=0;
-  for (i=0; i < 8; i++)
-    hash^=digest[i];
-  signature_info=DestroySignatureInfo(signature_info);
-  return(hash);
-}
-
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1150,36 +606,7 @@ MagickExport MagickBooleanType InsertValueInSortedLinkedList(
   UnlockSemaphoreInfo(list_info->semaphore);
   return(MagickTrue);
 }
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   I s H a s h m a p E m p t y                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  IsHashmapEmpty() returns MagickTrue if the hash-map is empty.
-%
-%  The format of the IsHashmapEmpty method is:
-%
-%      MagickBooleanType IsHashmapEmpty(const HashmapInfo *hashmap_info)
-%
-%  A description of each parameter follows:
-%
-%    o hashmap_info: the hashmap info.
-%
-*/
-MagickExport MagickBooleanType IsHashmapEmpty(const HashmapInfo *hashmap_info)
-{
-  assert(hashmap_info != (HashmapInfo *) NULL);
-  assert(hashmap_info->signature == MagickCoreSignature);
-  return(hashmap_info->entries == 0 ? MagickTrue : MagickFalse);
-}
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1264,84 +691,6 @@ MagickExport MagickBooleanType LinkedListToArray(LinkedListInfo *list_info,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   N e w H a s h m a p                                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  NewHashmap() returns a pointer to a HashmapInfo structure initialized
-%  to default values.  The capacity is an initial estimate.  The hashmap will
-%  increase capacity dynamically as the demand requires.
-%
-%  The format of the NewHashmap method is:
-%
-%      HashmapInfo *NewHashmap(const size_t capacity,
-%        size_t (*hash)(const void *),
-%        MagickBooleanType (*compare)(const void *,const void *),
-%        void *(*relinquish_key)(void *),void *(*relinquish_value)(void *))
-%
-%  A description of each parameter follows:
-%
-%    o capacity: the initial number entries in the hash-map: typically
-%      SmallHashmapSize, MediumHashmapSize, or LargeHashmapSize.  The
-%      hashmap will dynamically increase its capacity on demand.
-%
-%    o hash: the hash method, typically HashPointerType(), HashStringType(),
-%      or HashStringInfoType().
-%
-%    o compare: the compare method, typically NULL, CompareHashmapString(),
-%      or CompareHashmapStringInfo().
-%
-%    o relinquish_key: the key deallocation method, typically
-%      RelinquishMagickMemory(), called whenever a key is removed from the
-%      hash-map.
-%
-%    o relinquish_value: the value deallocation method;  typically
-%      RelinquishMagickMemory(), called whenever a value object is removed from
-%      the hash-map.
-%
-*/
-MagickExport HashmapInfo *NewHashmap(const size_t capacity,
-  size_t (*hash)(const void *),
-  MagickBooleanType (*compare)(const void *,const void *),
-  void *(*relinquish_key)(void *),void *(*relinquish_value)(void *))
-{
-  HashmapInfo
-    *hashmap_info;
-
-  hashmap_info=(HashmapInfo *) AcquireMagickMemory(sizeof(*hashmap_info));
-  if (hashmap_info == (HashmapInfo *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  (void) ResetMagickMemory(hashmap_info,0,sizeof(*hashmap_info));
-  hashmap_info->hash=HashPointerType;
-  if (hash != (size_t (*)(const void *)) NULL)
-    hashmap_info->hash=hash;
-  hashmap_info->compare=(MagickBooleanType (*)(const void *,const void *)) NULL;
-  if (compare != (MagickBooleanType (*)(const void *,const void *)) NULL)
-    hashmap_info->compare=compare;
-  hashmap_info->relinquish_key=relinquish_key;
-  hashmap_info->relinquish_value=relinquish_value;
-  hashmap_info->entries=0;
-  hashmap_info->capacity=capacity;
-  hashmap_info->map=(LinkedListInfo **) NULL;
-  if (~capacity >= 1UL)
-    hashmap_info->map=(LinkedListInfo **) AcquireQuantumMemory((size_t)
-      capacity+1UL,sizeof(*hashmap_info->map));
-  if (hashmap_info->map == (LinkedListInfo **) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  (void) ResetMagickMemory(hashmap_info->map,0,(size_t) capacity*
-    sizeof(*hashmap_info->map));
-  hashmap_info->semaphore=AcquireSemaphoreInfo();
-  hashmap_info->signature=MagickCoreSignature;
-  return(hashmap_info);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   N e w L i n k e d L i s t I n f o                                         %
 %                                                                             %
 %                                                                             %
@@ -1377,195 +726,6 @@ MagickExport LinkedListInfo *NewLinkedList(const size_t capacity)
   list_info->semaphore=AcquireSemaphoreInfo();
   list_info->signature=MagickCoreSignature;
   return(list_info);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   P u t E n t r y I n H a s h m a p                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  PutEntryInHashmap() puts an entry in the hash-map.  If the key already
-%  exists in the map it is first removed.
-%
-%  The format of the PutEntryInHashmap method is:
-%
-%      MagickBooleanType PutEntryInHashmap(HashmapInfo *hashmap_info,
-%        const void *key,const void *value)
-%
-%  A description of each parameter follows:
-%
-%    o hashmap_info: the hashmap info.
-%
-%    o key: the key.
-%
-%    o value: the value.
-%
-*/
-
-static MagickBooleanType IncreaseHashmapCapacity(HashmapInfo *hashmap_info)
-{
-#define MaxCapacities  20
-
-  const size_t
-    capacities[MaxCapacities] =
-    {
-      17, 31, 61, 131, 257, 509, 1021, 2053, 4099, 8191, 16381, 32771,
-      65537, 131071, 262147, 524287, 1048573, 2097143, 4194301, 8388617
-    };
-
-  ElementInfo
-    *element;
-
-  EntryInfo
-    *entry;
-
-  LinkedListInfo
-    *map_info,
-    **map;
-
-  register ElementInfo
-    *next;
-
-  register ssize_t
-    i;
-
-  size_t
-    capacity;
-
-  /*
-    Increase to the next prime capacity.
-  */
-  for (i=0; i < MaxCapacities; i++)
-    if (hashmap_info->capacity < capacities[i])
-      break;
-  if (i >= (MaxCapacities-1))
-    return(MagickFalse);
-  capacity=capacities[i+1];
-  map=(LinkedListInfo **) AcquireQuantumMemory((size_t) capacity+1UL,
-    sizeof(*map));
-  if (map == (LinkedListInfo **) NULL)
-    return(MagickFalse);
-  (void) ResetMagickMemory(map,0,(size_t) capacity*sizeof(*map));
-  /*
-    Copy entries to new hashmap with increased capacity.
-  */
-  for (i=0; i < (ssize_t) hashmap_info->capacity; i++)
-  {
-    LinkedListInfo
-      *list_info;
-
-    list_info=hashmap_info->map[i];
-    if (list_info == (LinkedListInfo *) NULL)
-      continue;
-    LockSemaphoreInfo(list_info->semaphore);
-    for (next=list_info->head; next != (ElementInfo *) NULL; )
-    {
-      element=next;
-      next=next->next;
-      entry=(EntryInfo *) element->value;
-      map_info=map[entry->hash % capacity];
-      if (map_info == (LinkedListInfo *) NULL)
-        {
-          map_info=NewLinkedList(0);
-          map[entry->hash % capacity]=map_info;
-        }
-      map_info->next=element;
-      element->next=map_info->head;
-      map_info->head=element;
-      map_info->elements++;
-    }
-    list_info->signature=(~MagickCoreSignature);
-    UnlockSemaphoreInfo(list_info->semaphore);
-    RelinquishSemaphoreInfo(&list_info->semaphore);
-    list_info=(LinkedListInfo *) RelinquishMagickMemory(list_info);
-  }
-  hashmap_info->map=(LinkedListInfo **) RelinquishMagickMemory(
-    hashmap_info->map);
-  hashmap_info->map=map;
-  hashmap_info->capacity=capacity;
-  return(MagickTrue);
-}
-
-MagickExport MagickBooleanType PutEntryInHashmap(HashmapInfo *hashmap_info,
-  const void *key,const void *value)
-{
-  EntryInfo
-    *entry,
-    *next;
-
-  LinkedListInfo
-    *list_info;
-
-  register size_t
-    i;
-
-  assert(hashmap_info != (HashmapInfo *) NULL);
-  assert(hashmap_info->signature == MagickCoreSignature);
-  if ((key == (void *) NULL) || (value == (void *) NULL))
-    return(MagickFalse);
-  next=(EntryInfo *) AcquireMagickMemory(sizeof(*next));
-  if (next == (EntryInfo *) NULL)
-    return(MagickFalse);
-  LockSemaphoreInfo(hashmap_info->semaphore);
-  next->hash=hashmap_info->hash(key);
-  next->key=(void *) key;
-  next->value=(void *) value;
-  list_info=hashmap_info->map[next->hash % hashmap_info->capacity];
-  if (list_info == (LinkedListInfo *) NULL)
-    {
-      list_info=NewLinkedList(0);
-      hashmap_info->map[next->hash % hashmap_info->capacity]=list_info;
-    }
-  else
-    {
-      list_info->next=list_info->head;
-      entry=(EntryInfo *) GetNextValueInLinkedList(list_info);
-      for (i=0; entry != (EntryInfo *) NULL; i++)
-      {
-        if (entry->hash == next->hash)
-          {
-            MagickBooleanType
-              compare;
-
-            compare=MagickTrue;
-            if (hashmap_info->compare !=
-                (MagickBooleanType (*)(const void *,const void *)) NULL)
-              compare=hashmap_info->compare(key,entry->key);
-            if( compare != MagickFalse )
-              {
-                (void) RemoveElementFromLinkedList(list_info,i);
-                if (hashmap_info->relinquish_key != (void *(*)(void *)) NULL)
-                  entry->key=hashmap_info->relinquish_key(entry->key);
-                if (hashmap_info->relinquish_value != (void *(*)(void *)) NULL)
-                  entry->value=hashmap_info->relinquish_value(entry->value);
-                entry=(EntryInfo *) RelinquishMagickMemory(entry);
-                break;
-              }
-          }
-        entry=(EntryInfo *) GetNextValueInLinkedList(list_info);
-      }
-    }
-  if (InsertValueInLinkedList(list_info,0,next) == MagickFalse)
-    {
-      next=(EntryInfo *) RelinquishMagickMemory(next);
-      UnlockSemaphoreInfo(hashmap_info->semaphore);
-      return(MagickFalse);
-    }
-  if (list_info->elements >= (hashmap_info->capacity-1))
-    if (IncreaseHashmapCapacity(hashmap_info) == MagickFalse)
-      {
-        UnlockSemaphoreInfo(hashmap_info->semaphore);
-        return(MagickFalse);
-      }
-  hashmap_info->entries++;
-  UnlockSemaphoreInfo(hashmap_info->semaphore);
-  return(MagickTrue);
 }
 
 /*
@@ -1713,95 +873,7 @@ MagickExport void *RemoveElementFromLinkedList(LinkedListInfo *list_info,
   UnlockSemaphoreInfo(list_info->semaphore);
   return(value);
 }
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   R e m o v e E n t r y F r o m H a s h m a p                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  RemoveEntryFromHashmap() removes an entry from the hash-map by its key.
-%
-%  The format of the RemoveEntryFromHashmap method is:
-%
-%      void *RemoveEntryFromHashmap(HashmapInfo *hashmap_info,void *key)
-%
-%  A description of each parameter follows:
-%
-%    o hashmap_info: the hashmap info.
-%
-%    o key: the key.
-%
-*/
-MagickExport void *RemoveEntryFromHashmap(HashmapInfo *hashmap_info,
-  const void *key)
-{
-  EntryInfo
-    *entry;
 
-  LinkedListInfo
-    *list_info;
-
-  register size_t
-    i;
-
-  size_t
-    hash;
-
-  void
-    *value;
-
-  assert(hashmap_info != (HashmapInfo *) NULL);
-  assert(hashmap_info->signature == MagickCoreSignature);
-  if (key == (const void *) NULL)
-    return((void *) NULL);
-  LockSemaphoreInfo(hashmap_info->semaphore);
-  hash=hashmap_info->hash(key);
-  list_info=hashmap_info->map[hash % hashmap_info->capacity];
-  if (list_info != (LinkedListInfo *) NULL)
-    {
-      list_info->next=list_info->head;
-      entry=(EntryInfo *) GetNextValueInLinkedList(list_info);
-      for (i=0; entry != (EntryInfo *) NULL; i++)
-      {
-        if (entry->hash == hash)
-          {
-            MagickBooleanType
-              compare;
-
-            compare=MagickTrue;
-            if (hashmap_info->compare !=
-                (MagickBooleanType (*)(const void *,const void *)) NULL)
-              compare=hashmap_info->compare(key,entry->key);
-            if (compare != MagickFalse)
-              {
-                entry=(EntryInfo *) RemoveElementFromLinkedList(list_info,i);
-                if (entry == (EntryInfo *) NULL)
-                  {
-                    UnlockSemaphoreInfo(hashmap_info->semaphore);
-                    return((void *) NULL);
-                  }
-                if (hashmap_info->relinquish_key != (void *(*)(void *)) NULL)
-                  entry->key=hashmap_info->relinquish_key(entry->key);
-                value=entry->value;
-                entry=(EntryInfo *) RelinquishMagickMemory(entry);
-                hashmap_info->entries--;
-                UnlockSemaphoreInfo(hashmap_info->semaphore);
-                return(value);
-              }
-          }
-        entry=(EntryInfo *) GetNextValueInLinkedList(list_info);
-      }
-    }
-  UnlockSemaphoreInfo(hashmap_info->semaphore);
-  return((void *) NULL);
-}
-
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1859,39 +931,6 @@ MagickExport void *RemoveLastElementFromLinkedList(LinkedListInfo *list_info)
   list_info->elements--;
   UnlockSemaphoreInfo(list_info->semaphore);
   return(value);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   R e s e t H a s h m a p I t e r a t o r                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  ResetHashmapIterator() resets the hash-map iterator.  Use it in conjunction
-%  with GetNextKeyInHashmap() to iterate over all the keys in the hash-map.
-%
-%  The format of the ResetHashmapIterator method is:
-%
-%      ResetHashmapIterator(HashmapInfo *hashmap_info)
-%
-%  A description of each parameter follows:
-%
-%    o hashmap_info: the hashmap info.
-%
-*/
-MagickExport void ResetHashmapIterator(HashmapInfo *hashmap_info)
-{
-  assert(hashmap_info != (HashmapInfo *) NULL);
-  assert(hashmap_info->signature == MagickCoreSignature);
-  LockSemaphoreInfo(hashmap_info->semaphore);
-  hashmap_info->next=0;
-  hashmap_info->head_of_list=MagickFalse;
-  UnlockSemaphoreInfo(hashmap_info->semaphore);
 }
 
 /*

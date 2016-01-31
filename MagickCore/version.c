@@ -40,7 +40,7 @@
 #include "MagickCore/configure.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
-#include "MagickCore/hashmap.h"
+#include "MagickCore/linked-list.h"
 #include "MagickCore/locale_.h"
 #include "MagickCore/option.h"
 #include "MagickCore/string_.h"

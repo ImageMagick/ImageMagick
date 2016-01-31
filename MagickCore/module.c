@@ -48,7 +48,7 @@
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
 #include "MagickCore/log.h"
-#include "MagickCore/hashmap.h"
+#include "MagickCore/linked-list.h"
 #include "MagickCore/magic.h"
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"

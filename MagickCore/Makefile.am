@@ -149,8 +149,6 @@ MAGICKCORE_BASE_SRCS = \
 	MagickCore/gem-private.h \
 	MagickCore/geometry.c \
 	MagickCore/geometry.h \
-	MagickCore/hashmap.c \
-	MagickCore/hashmap.h \
 	MagickCore/histogram.c \
 	MagickCore/histogram.h \
 	MagickCore/identify.c \
@@ -162,6 +160,8 @@ MAGICKCORE_BASE_SRCS = \
 	MagickCore/image-view.h \
 	MagickCore/layer.c \
 	MagickCore/layer.h \
+	MagickCore/linked-list.c \
+	MagickCore/linked-list.h \
 	MagickCore/list.c \
 	MagickCore/list.h \
 	MagickCore/locale.c \

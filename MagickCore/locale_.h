@@ -18,7 +18,7 @@
 #ifndef _MAGICKCORE_LOCALE_H
 #define _MAGICKCORE_LOCALE_H
 
-#include "MagickCore/hashmap.h"
+#include "MagickCore/linked-list.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

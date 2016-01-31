@@ -44,7 +44,7 @@
 #include "MagickCore/configure-private.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
-#include "MagickCore/hashmap.h"
+#include "MagickCore/linked-list.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/mime.h"
 #include "MagickCore/mime-private.h"
