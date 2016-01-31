@@ -70,11 +70,13 @@
 #include "magick/semaphore.h"
 #include "magick/statistic.h"
 #include "magick/string_.h"
+#include "magick/token.h"
 #include "magick/token-private.h"
 #include "magick/transform.h"
 #include "magick/type.h"
 #include "magick/utility.h"
 #include "magick/xwindow-private.h"
+
 #if defined(MAGICKCORE_FREETYPE_DELEGATE)
 #if defined(__MINGW32__) || defined(__MINGW64__)
 #  undef interface
@@ -101,10 +103,19 @@
 #  include <freetype/ftbbox.h>
 #endif /* defined(FT_BBOX_H) */
 #endif
-#if defined(MAGICKCORE_CTL_DELEGATE)
+#if defined(MAGICKCORE_RAQM_DELEGATE)
 #include <raqm.h>
 #else
-typedef struct _raqm_glyph_info_t
+typedef enum
+{
+  RAQM_DIRECTION_DEFAULT,
+  RAQM_DIRECTION_RTL,
+  RAQM_DIRECTION_LTR,
+  RAQM_DIRECTION_TTB
+} raqm_direction_t;
+#endif
+
+typedef struct _GraphemeInfo
 {
   int
     index,
@@ -114,16 +125,8 @@ typedef struct _raqm_glyph_info_t
 
   unsigned int
     cluster;
-} raqm_glyph_info_t;
+} GraphemeInfo;
 
-typedef enum
-{
-  RAQM_DIRECTION_DEFAULT,
-  RAQM_DIRECTION_RTL,
-  RAQM_DIRECTION_LTR
-} raqm_direction_t;
-#endif
-
 /*
   Annotate semaphores.
 */
@@ -1002,11 +1005,95 @@ static MagickBooleanType RenderType(Image *image,const DrawInfo *draw_info,
 #if defined(MAGICKCORE_FREETYPE_DELEGATE)
 
 static size_t ComplexTextLayout(const char *text,const size_t length,
-  const FT_Face face,const raqm_direction_t direction,const FT_Int32 flags,
-  raqm_glyph_info_t **grapheme)
+  const FT_Face face,const raqm_direction_t direction,const char *features,
+  const FT_Int32 flags,GraphemeInfo **grapheme)
 {
-#if defined(MAGICKCORE_CTL_DELEGATE)
-  return((size_t) raqm_shape(text,length,face,direction,&grapheme));
+#if defined(MAGICKCORE_RAQM_DELEGATE)
+  int
+    i;
+
+  size_t
+    count;
+
+  raqm_t
+    *rq;
+
+  raqm_glyph_t
+    *glyphs;
+
+  count = 0;
+  rq = raqm_create();
+  if (rq == (raqm_t *) NULL)
+    goto cleanup;
+
+  if (!raqm_set_text_utf8(rq,text,length))
+    goto cleanup;
+
+  if (!raqm_set_par_direction(rq,direction))
+    goto cleanup;
+
+  if (!raqm_set_freetype_face(rq,face))
+    goto cleanup;
+
+  if (features)
+    {
+      char
+        breaker,
+        quote,
+        *token;
+
+      TokenInfo
+        *token_info;
+
+      int
+        next,
+        status_token;
+
+      next=0;
+      token_info=AcquireTokenInfo();
+      token=(char *) AcquireQuantumMemory(50,sizeof(*token));
+      status_token = Tokenizer(token_info,0,token,50,features,
+                               "",",","",'\0',&breaker,&next,&quote);
+      while (status_token == 0)
+        {
+          raqm_add_font_feature(rq, token, strlen(token));
+          status_token = Tokenizer(token_info,0,token,50,features,
+                                   "",",","",'\0',&breaker,&next,&quote);
+        }
+      token_info=DestroyTokenInfo(token_info);
+      token=DestroyString(token);
+    }
+
+  if (!raqm_layout(rq))
+    goto cleanup;
+
+  glyphs = raqm_get_glyphs(rq,&count);
+  if (glyphs == (raqm_glyph_t *) NULL)
+    {
+      count = 0;
+      goto cleanup;
+    }
+
+  *grapheme=(GraphemeInfo *) AcquireQuantumMemory(count,sizeof(**grapheme));
+  if (*grapheme == (GraphemeInfo *) NULL)
+    {
+      count = 0;
+      goto cleanup;
+    }
+
+  for (i = 0; i < count; i++)
+    {
+      (*grapheme)[i].index = glyphs[i].index;
+      (*grapheme)[i].x_offset = glyphs[i].x_offset;
+      (*grapheme)[i].x_advance = glyphs[i].x_advance;
+      (*grapheme)[i].y_offset = glyphs[i].y_offset;
+      (*grapheme)[i].cluster = glyphs[i].cluster;
+    }
+
+cleanup:
+  raqm_destroy (rq);
+
+  return(count);
 #else
   FT_Error
     ft_status;
@@ -1020,9 +1107,9 @@ static size_t ComplexTextLayout(const char *text,const size_t length,
   /*
     Simple layout for bi-directional text (right-to-left or left-to-right).
   */
-  *grapheme=(raqm_glyph_info_t *) AcquireQuantumMemory(length+1,
+  *grapheme=(GraphemeInfo *) AcquireQuantumMemory(length+1,
     sizeof(**grapheme));
-  if (*grapheme == (raqm_glyph_info_t *) NULL)
+  if (*grapheme == (GraphemeInfo *) NULL)
     return(0);
   last_glyph=0;
   for (i=0; GetUTFCode(text) != 0; text+=GetUTFOctets(text), i++)
@@ -1179,6 +1266,9 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
     glyph,
     last_glyph;
 
+  GraphemeInfo
+    *grapheme;
+
   MagickBooleanType
     status;
 
@@ -1188,9 +1278,6 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
 
   raqm_direction_t
     direction;
-
-  raqm_glyph_info_t
-    *grapheme;
 
   register char
     *p;
@@ -1415,8 +1502,8 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   else
     if (draw_info->direction == LeftToRightDirection)
       direction=RAQM_DIRECTION_LTR;
-  grapheme=(raqm_glyph_info_t *) NULL;
-  length=ComplexTextLayout(p,strlen(p),face,direction,flags,&grapheme);
+  grapheme=(GraphemeInfo *) NULL;
+  length=ComplexTextLayout(p,strlen(p),face,direction,draw_info->font_features,flags,&grapheme);
   code=0;
   for (i=0; i < (ssize_t) length; i++)
   {
@@ -1593,8 +1680,8 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
     last_glyph=glyph;
     code=GetUTFCode(p+grapheme[i].cluster);
   }
-  if (grapheme != (raqm_glyph_info_t *) NULL)
-    grapheme=(raqm_glyph_info_t *) RelinquishMagickMemory(grapheme);
+  if (grapheme != (GraphemeInfo *) NULL)
+    grapheme=(GraphemeInfo *) RelinquishMagickMemory(grapheme);
   if (utf8 != (unsigned char *) NULL)
     utf8=(unsigned char *) RelinquishMagickMemory(utf8);
   if (last_glyph.id != 0)

@@ -262,7 +262,8 @@ typedef struct _DrawInfo
     compose;
 
   char
-    *text;
+    *text,
+    *font_features;
 
   size_t
     face;

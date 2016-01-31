@@ -459,6 +459,8 @@ static const OptionInfo
     { "-foreground", 1L, NonConvertOptionFlag, MagickFalse },
     { "+frame", 1L, DeprecateOptionFlag, MagickFalse },
     { "-frame", 1L, SimpleOperatorOptionFlag, MagickFalse },
+    { "+font-features", 0L, ImageInfoOptionFlag | DrawInfoOptionFlag, MagickFalse },
+    { "-font-features", 1L, ImageInfoOptionFlag | DrawInfoOptionFlag, MagickFalse },
     { "+fuzz", 0L, ImageInfoOptionFlag, MagickFalse },
     { "-fuzz", 1L, ImageInfoOptionFlag, MagickFalse },
     { "+fx", 1L, DeprecateOptionFlag | FireOptionFlag, MagickFalse },
