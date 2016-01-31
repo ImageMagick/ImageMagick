@@ -1,3 +1,7 @@
+2016-01-30  7.0.0-0 	ShamsaHamed
+  * Add support for languages that require complex text layout (reference
+    https://github.com/ImageMagick/ImageMagick/pull/88).
+
 2012-04-27  7.0.0-0 Anthony thyssen <A.Thyssen@griffith...>
   * Allow the use of set and escapes when no images in memory
     (unless you attempt to access per-image meta-data)

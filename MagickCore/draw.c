@@ -282,6 +282,8 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
     (void) CloneString(&clone_info->text,draw_info->text);
   if (draw_info->font != (char *) NULL)
     (void) CloneString(&clone_info->font,draw_info->font);
+  if (draw_info->font_features != (char *) NULL)
+    (void) CloneString(&clone_info->font_features,draw_info->font_features);
   if (draw_info->metrics != (char *) NULL)
     (void) CloneString(&clone_info->metrics,draw_info->metrics);
   if (draw_info->family != (char *) NULL)
@@ -836,6 +838,8 @@ MagickExport DrawInfo *DestroyDrawInfo(DrawInfo *draw_info)
     draw_info->stroke_pattern=DestroyImage(draw_info->stroke_pattern);
   if (draw_info->font != (char *) NULL)
     draw_info->font=DestroyString(draw_info->font);
+  if (draw_info->font_features != (char *) NULL)
+    draw_info->font_features=DestroyString(draw_info->font_features);
   if (draw_info->metrics != (char *) NULL)
     draw_info->metrics=DestroyString(draw_info->metrics);
   if (draw_info->family != (char *) NULL)
@@ -2062,6 +2066,15 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
           {
             GetMagickToken(q,&q,token);
             (void) CloneString(&graphic_context[n]->family,token);
+            break;
+          }
+        if (LocaleCompare("font-features",keyword) == 0)
+          {
+            GetMagickToken(q,&q,token);
+            (void) CloneString(&graphic_context[n]->font_features,token);
+            if (LocaleCompare("none",token) == 0)
+              graphic_context[n]->font_features=(char *)
+                RelinquishMagickMemory(graphic_context[n]->font_features);
             break;
           }
         if (LocaleCompare("font-size",keyword) == 0)
@@ -4863,6 +4876,9 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   draw_info->stroke_antialias=clone_info->antialias;
   if (clone_info->font != (char *) NULL)
     draw_info->font=AcquireString(clone_info->font);
+  option=GetImageOption(clone_info,"font-features");
+  if (option != (char *) NULL)
+    draw_info->font_features=AcquireString(option);
   if (clone_info->density != (char *) NULL)
     draw_info->density=AcquireString(clone_info->density);
   draw_info->text_antialias=clone_info->antialias;

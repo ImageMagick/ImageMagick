@@ -1645,6 +1645,11 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             (void) CloneString(&draw_info->font,argv[i+1]);
             break;
           }
+        if (LocaleCompare("font-features",option+1) == 0)
+          {
+            (void) CloneString(&draw_info->font_features,argv[i+1]);
+            break;
+          }
         if (LocaleCompare("format",option+1) == 0)
           {
             format=argv[i+1];
@@ -4870,7 +4875,8 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             (void) CloneString(&format,argv[i]);
-            (void) CopyMagickString(image_info->filename,format,MagickPathExtent);
+            (void) CopyMagickString(image_info->filename,format,
+              MagickPathExtent);
             (void) ConcatenateMagickString(image_info->filename,":",
               MagickPathExtent);
             (void) SetImageInfo(image_info,0,exception);

@@ -885,6 +885,11 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
           (void) CloneString(&_image_info->font,_draw_info->font);
           break;
         }
+      if (LocaleCompare("font-features",option+1) == 0)
+        {
+          (void) CloneString(&_draw_info->font_features,ArgOption(NULL));
+          break;
+        }
       if (LocaleCompare("format",option+1) == 0)
         {
           /* FUTURE: why the ping test, you could set ping after this! */
