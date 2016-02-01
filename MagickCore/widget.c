@@ -1504,7 +1504,7 @@ static void XSetMatteColor(Display *display,const XWindowInfo *window_info,
   else
     if (raised)
       (void) XSetForeground(display,window_info->widget_context,
-        window_info->pixel_info->matte_color.pixel);
+        window_info->pixel_info->alpha_color.pixel);
     else
       (void) XSetForeground(display,window_info->widget_context,
         window_info->pixel_info->depth_color.pixel);
@@ -1560,7 +1560,7 @@ static void XSetTextColor(Display *display,const XWindowInfo *window_info,
     }
   foreground=(ssize_t) XPixelIntensity(
     &window_info->pixel_info->foreground_color);
-  matte=(ssize_t) XPixelIntensity(&window_info->pixel_info->matte_color);
+  matte=(ssize_t) XPixelIntensity(&window_info->pixel_info->alpha_color);
   if (MagickAbsoluteValue((int) (foreground-matte)) > (65535L >> 3))
     (void) XSetForeground(display,window_info->widget_context,
       window_info->pixel_info->foreground_color.pixel);
@@ -2084,19 +2084,19 @@ MagickPrivate void XColorBrowserWidget(Display *display,XWindows *windows,
         /*
           Display the selected color in a drawing area.
         */
-        color=windows->widget.pixel_info->matte_color;
+        color=windows->widget.pixel_info->alpha_color;
         (void) XParseColor(display,windows->widget.map_info->colormap,
-          reply_info.text,&windows->widget.pixel_info->matte_color);
+          reply_info.text,&windows->widget.pixel_info->alpha_color);
         XBestPixel(display,windows->widget.map_info->colormap,(XColor *) NULL,
           (unsigned int) windows->widget.visual_info->colormap_size,
-          &windows->widget.pixel_info->matte_color);
+          &windows->widget.pixel_info->alpha_color);
         mode_info.text=colorname;
         (void) FormatLocaleString(mode_info.text,MagickPathExtent,"#%02x%02x%02x",
-          windows->widget.pixel_info->matte_color.red,
-          windows->widget.pixel_info->matte_color.green,
-          windows->widget.pixel_info->matte_color.blue);
+          windows->widget.pixel_info->alpha_color.red,
+          windows->widget.pixel_info->alpha_color.green,
+          windows->widget.pixel_info->alpha_color.blue);
         XDrawBeveledButton(display,&windows->widget,&mode_info);
-        windows->widget.pixel_info->matte_color=color;
+        windows->widget.pixel_info->alpha_color=color;
         state&=(~RedrawActionState);
       }
     /*
