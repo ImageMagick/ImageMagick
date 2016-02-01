@@ -41,6 +41,7 @@
 */
 #include "MagickCore/studio.h"
 #include "MagickCore/cache.h"
+#include "MagickCore/cache-private.h"
 #include "MagickCore/configure.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
@@ -1324,6 +1325,7 @@ MagickExport MagickBooleanType SetMagickResourceLimit(const ResourceType type,
       value=GetPolicyValue("time");
       if (value != (char *) NULL)
         resource_info.time_limit=MagickMin(limit,StringToSizeType(value,100.0));
+      ResetPixelCacheEpoch();
       break;
     }
     default:

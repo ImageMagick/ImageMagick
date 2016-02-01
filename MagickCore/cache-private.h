@@ -276,6 +276,7 @@ extern MagickPrivate void
   *GetPixelCachePixels(Image *,MagickSizeType *,ExceptionInfo *),
   GetPixelCacheTileSize(const Image *,size_t *,size_t *),
   GetPixelCacheMethods(CacheMethods *),
+  ResetPixelCacheEpoch(void),
   SetPixelCacheMethods(Cache,CacheMethods *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
