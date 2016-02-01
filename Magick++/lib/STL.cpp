@@ -1362,7 +1362,7 @@ void Magick::fileNameImage::operator()( Magick::Image &image_ ) const
 }
 
 // Filter to use when resizing image
-Magick::filterTypeImage::filterTypeImage( const FilterTypes filterType_ )
+Magick::filterTypeImage::filterTypeImage( const FilterType filterType_ )
   : _filterType( filterType_ )
 {
 }

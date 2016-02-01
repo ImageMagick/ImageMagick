@@ -779,7 +779,7 @@ static inline double MagickRound(double x)
 }
 
 MagickExport Image *CropImageToTiles(const Image *image,
-  const char *crop_geometry,ExceptionInfo *exception)
+  const RectangleInfo *crop_geometry,ExceptionInfo *exception)
 {
   Image
     *next,

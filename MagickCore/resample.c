@@ -113,7 +113,7 @@ struct _ResampleFilter
   VirtualPixelMethod
     virtual_pixel;
 
-  FilterTypes
+  FilterType
     filter;
 
   /* processing settings needed */
@@ -1230,7 +1230,7 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
 %  The format of the SetResampleFilter method is:
 %
 %    void SetResampleFilter(ResampleFilter *resample_filter,
-%      const FilterTypes filter)
+%      const FilterType filter)
 %
 %  A description of each parameter follows:
 %
@@ -1240,7 +1240,7 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
 %
 */
 MagickExport void SetResampleFilter(ResampleFilter *resample_filter,
-  const FilterTypes filter)
+  const FilterType filter)
 {
   ResizeFilter
      *resize_filter;

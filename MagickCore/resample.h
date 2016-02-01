@@ -63,7 +63,7 @@ typedef enum
   SplineFilter,
   LanczosRadiusFilter,
   SentinelFilter  /* a count of all the filters, not a real filter */
-} FilterTypes;
+} FilterType;
 
 /*
   Backward compatibility for the more correctly named Jinc Filter.  Original
@@ -94,7 +94,7 @@ extern MagickExport ResampleFilter
 extern MagickExport void
   ScaleResampleFilter(ResampleFilter *,const double,const double,const double,
     const double),
-  SetResampleFilter(ResampleFilter *,const FilterTypes);
+  SetResampleFilter(ResampleFilter *,const FilterType);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -8419,7 +8419,7 @@ WandExport MagickBooleanType MagickRemoveImage(MagickWand *wand)
 %
 %      MagickBooleanType MagickResampleImage(MagickWand *wand,
 %        const double x_resolution,const double y_resolution,
-%        const FilterTypes filter)
+%        const FilterType filter)
 %
 %  A description of each parameter follows:
 %
@@ -8433,7 +8433,7 @@ WandExport MagickBooleanType MagickRemoveImage(MagickWand *wand)
 %
 */
 WandExport MagickBooleanType MagickResampleImage(MagickWand *wand,
-  const double x_resolution,const double y_resolution,const FilterTypes filter)
+  const double x_resolution,const double y_resolution,const FilterType filter)
 {
   Image
     *resample_image;
@@ -8521,7 +8521,7 @@ WandExport MagickBooleanType MagickResetImagePage(MagickWand *wand,
 %  The format of the MagickResizeImage method is:
 %
 %      MagickBooleanType MagickResizeImage(MagickWand *wand,
-%        const size_t columns,const size_t rows,const FilterTypes filter)
+%        const size_t columns,const size_t rows,const FilterType filter)
 %
 %  A description of each parameter follows:
 %
@@ -8535,7 +8535,7 @@ WandExport MagickBooleanType MagickResetImagePage(MagickWand *wand,
 %
 */
 WandExport MagickBooleanType MagickResizeImage(MagickWand *wand,
-  const size_t columns,const size_t rows,const FilterTypes filter)
+  const size_t columns,const size_t rows,const FilterType filter)
 {
   Image
     *resize_image;

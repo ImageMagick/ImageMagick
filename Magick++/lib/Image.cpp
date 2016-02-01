@@ -840,13 +840,13 @@ Magick::Image Magick::Image::fillPattern(void) const
   return(texture);
 }
 
-void Magick::Image::filterType(const Magick::FilterTypes filterType_)
+void Magick::Image::filterType(const Magick::FilterType filterType_)
 {
   modifyImage();
   image()->filter=filterType_;
 }
 
-Magick::FilterTypes Magick::Image::filterType(void) const
+Magick::FilterType Magick::Image::filterType(void) const
 {
   return(constImage()->filter);
 }

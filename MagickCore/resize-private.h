@@ -52,7 +52,7 @@ extern MagickPrivate double
   GetResizeFilterWeight(const ResizeFilter *,const double);
 
 extern MagickPrivate ResizeFilter
-  *AcquireResizeFilter(const Image *,const FilterTypes,const MagickBooleanType,
+  *AcquireResizeFilter(const Image *,const FilterType,const MagickBooleanType,
     ExceptionInfo *),
   *DestroyResizeFilter(ResizeFilter *);
 

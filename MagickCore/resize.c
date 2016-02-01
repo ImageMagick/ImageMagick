@@ -673,7 +673,7 @@ static double Welch(const double x,
 %  The format of the AcquireResizeFilter method is:
 %
 %      ResizeFilter *AcquireResizeFilter(const Image *image,
-%        const FilterTypes filter_type,const MagickBooleanType cylindrical,
+%        const FilterType filter_type,const MagickBooleanType cylindrical,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -694,13 +694,13 @@ static double Welch(const double x,
 %
 */
 MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
-  const FilterTypes filter,const MagickBooleanType cylindrical,
+  const FilterType filter,const MagickBooleanType cylindrical,
   ExceptionInfo *exception)
 {
   const char
     *artifact;
 
-  FilterTypes
+  FilterType
     filter_type,
     window_type;
 
@@ -719,7 +719,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
     "cylindrical" is requested, unless a 'Sinc' or 'SincFast' filter was
     specifically requested by the user.
 
-    WARNING: The order of this table must match the order of the FilterTypes
+    WARNING: The order of this table must match the order of the FilterType
     enumeration specified in "resample.h", or the filter names will not match
     the filter being setup.
 
@@ -727,7 +727,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
   */
   static struct
   {
-    FilterTypes
+    FilterType
       filter,
       window;
   } const mapping[SentinelFilter] =
@@ -894,7 +894,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
       option=ParseCommandOption(MagickFilterOptions,MagickFalse,artifact);
       if ((UndefinedFilter < option) && (option < SentinelFilter))
         { /* Raw filter request - no window function. */
-          filter_type=(FilterTypes) option;
+          filter_type=(FilterType) option;
           window_type=BoxFilter;
         }
       /* Filter override with a specific window function. */
@@ -903,7 +903,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
         {
           option=ParseCommandOption(MagickFilterOptions,MagickFalse,artifact);
           if ((UndefinedFilter < option) && (option < SentinelFilter))
-            window_type=(FilterTypes) option;
+            window_type=(FilterType) option;
         }
     }
   else
@@ -920,7 +920,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
             {
               filter_type= cylindrical != MagickFalse ? JincFilter
                                                      : SincFastFilter;
-              window_type=(FilterTypes) option;
+              window_type=(FilterType) option;
             }
         }
     }
@@ -2225,7 +2225,7 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
 %  The format of the ResampleImage method is:
 %
 %      Image *ResampleImage(Image *image,const double x_resolution,
-%        const double y_resolution,const FilterTypes filter,
+%        const double y_resolution,const FilterType filter,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -2242,7 +2242,7 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
 %
 */
 MagickExport Image *ResampleImage(const Image *image,const double x_resolution,
-  const double y_resolution,const FilterTypes filter,ExceptionInfo *exception)
+  const double y_resolution,const FilterType filter,ExceptionInfo *exception)
 {
 #define ResampleImageTag  "Resample/Image"
 
@@ -2298,7 +2298,7 @@ MagickExport Image *ResampleImage(const Image *image,const double x_resolution,
 %  The format of the ResizeImage method is:
 %
 %      Image *ResizeImage(Image *image,const size_t columns,const size_t rows,
-%        const FilterTypes filter,ExceptionInfo *exception)
+%        const FilterType filter,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -2796,13 +2796,13 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
 }
 
 MagickExport Image *ResizeImage(const Image *image,const size_t columns,
-  const size_t rows,const FilterTypes filter,ExceptionInfo *exception)
+  const size_t rows,const FilterType filter,ExceptionInfo *exception)
 {
   double
     x_factor,
     y_factor;
 
-  FilterTypes
+  FilterType
     filter_type;
 
   Image

@@ -1491,12 +1491,12 @@ namespace Magick
   class MagickPPExport filterTypeImage : public std::unary_function<Image&,void>
   {
   public:
-    filterTypeImage( const FilterTypes filterType_ );
+    filterTypeImage( const FilterType filterType_ );
 
     void operator()( Image &image_ ) const;
 
   private:
-    FilterTypes _filterType;
+    FilterType _filterType;
   };
 
   // Text rendering font

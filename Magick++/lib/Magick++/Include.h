@@ -613,7 +613,7 @@ namespace Magick
   using MagickCore::NonZeroRule;
 
   // Filter types
-  using MagickCore::FilterTypes;
+  using MagickCore::FilterType;
   using MagickCore::UndefinedFilter;
   using MagickCore::PointFilter;
   using MagickCore::BoxFilter;

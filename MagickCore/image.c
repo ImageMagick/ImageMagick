@@ -3723,7 +3723,7 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
       MagickFalse,option);
   option=GetImageOption(image_info,"filter");
   if (option != (const char *) NULL)
-    image->filter=(FilterTypes) ParseCommandOption(MagickFilterOptions,
+    image->filter=(FilterType) ParseCommandOption(MagickFilterOptions,
       MagickFalse,option);
   option=GetImageOption(image_info,"fuzz");
   if (option != (const char *) NULL)

@@ -5363,7 +5363,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
     }
       if (LocaleCompare((const char *) tag,"resize") == 0)
         {
-          FilterTypes
+          FilterType
             filter;
 
           Image
@@ -5399,7 +5399,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       if (option < 0)
                         ThrowMSLException(OptionError,"UnrecognizedNoiseType",
                           value);
-                      filter=(FilterTypes) option;
+                      filter=(FilterType) option;
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",

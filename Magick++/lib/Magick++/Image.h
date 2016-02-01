@@ -247,8 +247,8 @@ namespace Magick
     Image fillPattern(void) const;
 
     // Filter to use when resizing image
-    void filterType(const FilterTypes filterType_);
-    FilterTypes filterType(void) const;
+    void filterType(const FilterType filterType_);
+    FilterType filterType(void) const;
 
     // Text rendering font
     void font(const std::string &font_);

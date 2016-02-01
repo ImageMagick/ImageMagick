@@ -218,7 +218,7 @@ struct _Image
   double
     fuzz;           /* current color fuzz attribute - move to image_info */
 
-  FilterTypes
+  FilterType
     filter;         /* resize/distort filter to apply */
 
   PixelIntensityMethod
