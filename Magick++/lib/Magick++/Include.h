@@ -1383,7 +1383,7 @@ namespace Magick
   using MagickCore::NormalizeImage;
   using MagickCore::OilPaintImage;
   using MagickCore::OpaquePaintImage;
-  using MagickCore::OrderedPosterizeImage;
+  using MagickCore::OrderedDitherImage;
   using MagickCore::OptimizeImageLayers;
   using MagickCore::OptimizeImageTransparency;
   using MagickCore::OptimizePlusImageLayers;

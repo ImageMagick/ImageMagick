@@ -3739,7 +3739,7 @@ void Magick::Image::orderedDither(std::string thresholdMap_)
 {
   modifyImage();
   GetPPException;
-  (void) OrderedPosterizeImage(image(),thresholdMap_.c_str(),exceptionInfo);
+  (void) OrderedDitherImage(image(),thresholdMap_.c_str(),exceptionInfo);
   ThrowImageException;
 }
 
@@ -3749,7 +3749,7 @@ void Magick::Image::orderedDitherChannel(const ChannelType channel_,
   modifyImage();
   GetPPException;
   GetAndSetPPChannelMask(channel_);
-  (void) OrderedPosterizeImage(image(),thresholdMap_.c_str(),exceptionInfo);
+  (void)OrderedDitherImage(image(),thresholdMap_.c_str(),exceptionInfo);
   RestorePPChannelMask;
   ThrowImageException;
 }

@@ -2333,7 +2333,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
         if (LocaleCompare("ordered-dither",option+1) == 0)
           {
             (void) SyncImageSettings(mogrify_info,*image,exception);
-            (void) OrderedPosterizeImage(*image,argv[i+1],exception);
+            (void) OrderedDitherImage(*image,argv[i+1],exception);
             break;
           }
         break;

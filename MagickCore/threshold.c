@@ -1237,20 +1237,20 @@ MagickExport MagickBooleanType ListThresholdMaps(FILE *file,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%     O r d e r e d P o s t e r i z e I m a g e                               %
+%     O r d e r e d D i t h e r I m a g e                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  OrderedPosterizeImage() will perform a ordered dither based on a number
+%  OrderedDitherImage() will perform a ordered dither based on a number
 %  of pre-defined dithering threshold maps, but over multiple intensity
 %  levels, which can be different for different channels, according to the
 %  input argument.
 %
-%  The format of the OrderedPosterizeImage method is:
+%  The format of the OrderedDitherImage method is:
 %
-%      MagickBooleanType OrderedPosterizeImage(Image *image,
+%      MagickBooleanType OrderedDitherImage(Image *image,
 %        const char *threshold_map,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -1279,7 +1279,7 @@ MagickExport MagickBooleanType ListThresholdMaps(FILE *file,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport MagickBooleanType OrderedPosterizeImage(Image *image,
+MagickExport MagickBooleanType OrderedDitherImage(Image *image,
   const char *threshold_map,ExceptionInfo *exception)
 {
 #define DitherImageTag  "Dither/Image"
@@ -1423,7 +1423,7 @@ MagickExport MagickBooleanType OrderedPosterizeImage(Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_OrderedPosterizeImage)
+        #pragma omp critical (MagickCore_OrderedDitherImage)
 #endif
         proceed=SetImageProgress(image,DitherImageTag,progress++,image->rows);
         if (proceed == MagickFalse)

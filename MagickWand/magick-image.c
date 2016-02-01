@@ -7449,20 +7449,20 @@ WandExport MagickBooleanType MagickOptimizeImageTransparency(MagickWand *wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%     M a g i c k O r d e r e d P o s t e r i z e I m a g e                   %
+%     M a g i c k O r d e r e d D i t h e r I m a g e                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickOrderedPosterizeImage() performs an ordered dither based on a number
+%  MagickOrderedDitherImage() performs an ordered dither based on a number
 %  of pre-defined dithering threshold maps, but over multiple intensity levels,
 %  which can be different for different channels, according to the input
 %  arguments.
 %
-%  The format of the MagickOrderedPosterizeImage method is:
+%  The format of the MagickOrderedDitherImage method is:
 %
-%      MagickBooleanType MagickOrderedPosterizeImage(MagickWand *wand,
+%      MagickBooleanType MagickOrderedDitherImage(MagickWand *wand,
 %        const char *threshold_map)
 %
 %  A description of each parameter follows:
@@ -7489,7 +7489,7 @@ WandExport MagickBooleanType MagickOptimizeImageTransparency(MagickWand *wand)
 %      minimim of dithering.
 %
 */
-WandExport MagickBooleanType MagickOrderedPosterizeImage(MagickWand *wand,
+WandExport MagickBooleanType MagickOrderedDitherImage(MagickWand *wand,
   const char *threshold_map)
 {
   MagickBooleanType
@@ -7501,7 +7501,7 @@ WandExport MagickBooleanType MagickOrderedPosterizeImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  status=OrderedPosterizeImage(wand->images,threshold_map,wand->exception);
+  status=OrderedDitherImage(wand->images,threshold_map,wand->exception);
   return(status);
 }
 

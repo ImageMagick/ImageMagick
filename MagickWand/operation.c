@@ -2907,7 +2907,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("ordered-dither",option+1) == 0)
         {
-          (void) OrderedPosterizeImage(_image,arg1,_exception);
+          (void) OrderedDitherImage(_image,arg1,_exception);
           break;
         }
       CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
