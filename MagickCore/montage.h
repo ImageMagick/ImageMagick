@@ -50,11 +50,11 @@ typedef struct _MontageInfo
     shadow;
 
   PixelInfo
-    fill,
-    stroke,
+    alpha_color,
     background_color,
     border_color,
-    matte_color;
+    fill,
+    stroke;
 
   GravityType
     gravity;

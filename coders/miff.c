@@ -623,6 +623,12 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               case 'a':
               case 'A':
               {
+                if (LocaleCompare(keyword,"alpha-color") == 0)
+                  {
+                    (void) QueryColorCompliance(options,AllCompliance,
+                      &image->alpha_color,exception);
+                    break;
+                  }
                 if (LocaleCompare(keyword,"alpha-trait") == 0)
                   {
                     ssize_t
@@ -827,12 +833,6 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                       break;
                     image->alpha_trait=matte == 0 ? UndefinedPixelTrait :
                       BlendPixelTrait;
-                    break;
-                  }
-                if (LocaleCompare(keyword,"matte-color") == 0)
-                  {
-                    (void) QueryColorCompliance(options,AllCompliance,
-                      &image->matte_color,exception);
                     break;
                   }
                 if (LocaleCompare(keyword,"montage") == 0)

@@ -3108,31 +3108,31 @@ MagickPrivate void XGetPixelInfo(Display *display,
   /*
     Set matte color.
   */
-  pixel->matte_color=pixel->background_color;
-  if (resource_info->matte_color != (char *) NULL)
+  pixel->alpha_color=pixel->background_color;
+  if (resource_info->alpha_color != (char *) NULL)
     {
       /*
         Matte color is specified as a X resource or command line argument.
       */
-      status=XParseColor(display,colormap,resource_info->matte_color,
-        &pixel->matte_color);
+      status=XParseColor(display,colormap,resource_info->alpha_color,
+        &pixel->alpha_color);
       if (status == False)
         ThrowXWindowException(XServerError,"ColorIsNotKnownToServer",
-          resource_info->matte_color);
-      pixel->matte_color.pixel=XStandardPixel(map_info,&pixel->matte_color);
-      pixel->matte_color.flags=(char) (DoRed | DoGreen | DoBlue);
+          resource_info->alpha_color);
+      pixel->alpha_color.pixel=XStandardPixel(map_info,&pixel->alpha_color);
+      pixel->alpha_color.flags=(char) (DoRed | DoGreen | DoBlue);
     }
   /*
     Set highlight color.
   */
   pixel->highlight_color.red=(unsigned short) (((double) 
-    pixel->matte_color.red*ScaleQuantumToShort(HighlightModulate))/65535L+
+    pixel->alpha_color.red*ScaleQuantumToShort(HighlightModulate))/65535L+
     (ScaleQuantumToShort((Quantum) (QuantumRange-HighlightModulate))));
   pixel->highlight_color.green=(unsigned short) (((double) 
-    pixel->matte_color.green*ScaleQuantumToShort(HighlightModulate))/65535L+
+    pixel->alpha_color.green*ScaleQuantumToShort(HighlightModulate))/65535L+
     (ScaleQuantumToShort((Quantum) (QuantumRange-HighlightModulate))));
   pixel->highlight_color.blue=(unsigned short) (((double) 
-    pixel->matte_color.blue*ScaleQuantumToShort(HighlightModulate))/65535L+
+    pixel->alpha_color.blue*ScaleQuantumToShort(HighlightModulate))/65535L+
     (ScaleQuantumToShort((Quantum) (QuantumRange-HighlightModulate))));
   pixel->highlight_color.pixel=XStandardPixel(map_info,&pixel->highlight_color);
   pixel->highlight_color.flags=(char) (DoRed | DoGreen | DoBlue);
@@ -3140,33 +3140,33 @@ MagickPrivate void XGetPixelInfo(Display *display,
     Set shadow color.
   */
   pixel->shadow_color.red=(unsigned short) (((double)
-    pixel->matte_color.red*ScaleQuantumToShort(ShadowModulate))/65535L);
+    pixel->alpha_color.red*ScaleQuantumToShort(ShadowModulate))/65535L);
   pixel->shadow_color.green=(unsigned short) (((double)
-    pixel->matte_color.green*ScaleQuantumToShort(ShadowModulate))/65535L);
+    pixel->alpha_color.green*ScaleQuantumToShort(ShadowModulate))/65535L);
   pixel->shadow_color.blue=(unsigned short) (((double)
-    pixel->matte_color.blue*ScaleQuantumToShort(ShadowModulate))/65535L);
+    pixel->alpha_color.blue*ScaleQuantumToShort(ShadowModulate))/65535L);
   pixel->shadow_color.pixel=XStandardPixel(map_info,&pixel->shadow_color);
   pixel->shadow_color.flags=(char) (DoRed | DoGreen | DoBlue);
   /*
     Set depth color.
   */
   pixel->depth_color.red=(unsigned short) (((double)
-    pixel->matte_color.red*ScaleQuantumToShort(DepthModulate))/65535L);
+    pixel->alpha_color.red*ScaleQuantumToShort(DepthModulate))/65535L);
   pixel->depth_color.green=(unsigned short) (((double)
-    pixel->matte_color.green*ScaleQuantumToShort(DepthModulate))/65535L);
+    pixel->alpha_color.green*ScaleQuantumToShort(DepthModulate))/65535L);
   pixel->depth_color.blue=(unsigned short) (((double)
-    pixel->matte_color.blue*ScaleQuantumToShort(DepthModulate))/65535L);
+    pixel->alpha_color.blue*ScaleQuantumToShort(DepthModulate))/65535L);
   pixel->depth_color.pixel=XStandardPixel(map_info,&pixel->depth_color);
   pixel->depth_color.flags=(char) (DoRed | DoGreen | DoBlue);
   /*
     Set trough color.
   */
   pixel->trough_color.red=(unsigned short) (((double)
-    pixel->matte_color.red*ScaleQuantumToShort(TroughModulate))/65535L);
+    pixel->alpha_color.red*ScaleQuantumToShort(TroughModulate))/65535L);
   pixel->trough_color.green=(unsigned short) (((double)
-    pixel->matte_color.green*ScaleQuantumToShort(TroughModulate))/65535L);
+    pixel->alpha_color.green*ScaleQuantumToShort(TroughModulate))/65535L);
   pixel->trough_color.blue=(unsigned short) (((double)
-    pixel->matte_color.blue*ScaleQuantumToShort(TroughModulate))/65535L);
+    pixel->alpha_color.blue*ScaleQuantumToShort(TroughModulate))/65535L);
   pixel->trough_color.pixel=XStandardPixel(map_info,&pixel->trough_color);
   pixel->trough_color.flags=(char) (DoRed | DoGreen | DoBlue);
   /*
@@ -3479,6 +3479,8 @@ MagickExport void XGetResourceInfo(const ImageInfo *image_info,
   resource_info->quantize_info=CloneQuantizeInfo((QuantizeInfo *) NULL);
   resource_info->close_server=MagickTrue;
   resource_info->client_name=AcquireString(client_name);
+  resource_info->alpha_color=XGetResourceInstance(database,client_name,
+    "alpha-color",(char *) NULL);
   resource_value=XGetResourceClass(database,client_name,"backdrop",
     (char *) "False");
   resource_info->backdrop=IsStringTrue(resource_value);
@@ -3569,8 +3571,6 @@ MagickExport void XGetResourceInfo(const ImageInfo *image_info,
   resource_info->magnify=(unsigned int) StringToUnsignedLong(resource_value);
   resource_info->map_type=XGetResourceClass(database,client_name,"map",
     (char *) NULL);
-  resource_info->matte_color=XGetResourceInstance(database,client_name,
-    "mattecolor",(char *) NULL);
   resource_info->name=ConstantString(XGetResourceClass(database,client_name,
     "name",(char *) NULL));
   resource_info->pen_colors[0]=XGetResourceClass(database,client_name,"pen1",
@@ -7920,7 +7920,7 @@ MagickPrivate void XMakeStandardColormap(Display *display,
       (void) XAllocColor(display,colormap,&pixel->foreground_color);
       (void) XAllocColor(display,colormap,&pixel->background_color);
       (void) XAllocColor(display,colormap,&pixel->border_color);
-      (void) XAllocColor(display,colormap,&pixel->matte_color);
+      (void) XAllocColor(display,colormap,&pixel->alpha_color);
       (void) XAllocColor(display,colormap,&pixel->highlight_color);
       (void) XAllocColor(display,colormap,&pixel->shadow_color);
       (void) XAllocColor(display,colormap,&pixel->depth_color);
@@ -8255,7 +8255,7 @@ MagickPrivate void XMakeStandardColormap(Display *display,
       XBestPixel(display,colormap,colors,(unsigned int) number_colors,
         &pixel->border_color);
       XBestPixel(display,colormap,colors,(unsigned int) number_colors,
-        &pixel->matte_color);
+        &pixel->alpha_color);
       XBestPixel(display,colormap,colors,(unsigned int) number_colors,
         &pixel->highlight_color);
       XBestPixel(display,colormap,colors,(unsigned int) number_colors,

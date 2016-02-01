@@ -209,8 +209,8 @@ static MagickBooleanType AnimateUsage(void)
   (void) printf(
     "resources as command line options:  -background, -bordercolor,\n");
   (void) printf(
-    "-borderwidth, -font, -foreground, -iconGeometry, -iconic, -name,\n");
-  (void) printf("-mattecolor, -shared-memory, or -title.\n");
+    "-alpha-color, -borderwidth, -font, -foreground, -iconGeometry,\n");
+  (void) printf("-iconic, -name, -shared-memory, or -title.\n");
   (void) printf(
     "\nBy default, the image format of 'file' is determined by its magic\n");
   (void) printf(
@@ -465,6 +465,16 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
             if (type < 0)
               ThrowAnimateException(OptionError,"UnrecognizedAlphaChannelOption",
                 argv[i]);
+            break;
+          }
+        if (LocaleCompare("alpha-color",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowAnimateException(OptionError,"MissingArgument",option);
+            resource_info.alpha_color=argv[i];
             break;
           }
         if (LocaleCompare("authenticate",option+1) == 0)
@@ -1052,16 +1062,6 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("matte",option+1) == 0)
           break;
-        if (LocaleCompare("mattecolor",option+1) == 0)
-          {
-            if (*option == '+')
-              break;
-            i++;
-            if (i == (ssize_t) argc)
-              ThrowAnimateException(OptionError,"MissingArgument",option);
-            resource_info.matte_color=argv[i];
-            break;
-          }
         if (LocaleCompare("monitor",option+1) == 0)
           break;
         if (LocaleCompare("monochrome",option+1) == 0)

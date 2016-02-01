@@ -3081,7 +3081,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                   if (LocaleCompare(keyword, "fill") == 0)
                     {
                       (void) QueryColorCompliance(value,AllCompliance,
-                        &msl_info->image[n]->matte_color,exception);
+                        &msl_info->image[n]->alpha_color,exception);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -7977,6 +7977,12 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
               exception);
           break;
         }
+      if (LocaleCompare(keyword,"alpha-color") == 0)
+        {
+          (void) QueryColorCompliance(value,AllCompliance,
+            &image_info->alpha_color,exception);
+          break;
+        }
       if (LocaleCompare(keyword,"antialias") == 0)
         {
           ssize_t
@@ -8106,12 +8112,6 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
       if (LocaleCompare(keyword,"magick") == 0)
         {
           (void) CopyMagickString(image_info->magick,value,MagickPathExtent);
-          break;
-        }
-      if (LocaleCompare(keyword,"mattecolor") == 0)
-        {
-          (void) QueryColorCompliance(value,AllCompliance,
-            &image_info->matte_color,exception);
           break;
         }
       ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);

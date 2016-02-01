@@ -129,9 +129,9 @@ MagickExport MontageInfo *CloneMontageInfo(const ImageInfo *image_info,
   clone_info->shadow=montage_info->shadow;
   clone_info->fill=montage_info->fill;
   clone_info->stroke=montage_info->stroke;
+  clone_info->alpha_color=montage_info->alpha_color;
   clone_info->background_color=montage_info->background_color;
   clone_info->border_color=montage_info->border_color;
-  clone_info->matte_color=montage_info->matte_color;
   clone_info->gravity=montage_info->gravity;
   (void) CopyMagickString(clone_info->filename,montage_info->filename,
     MagickPathExtent);
@@ -231,9 +231,9 @@ MagickExport void GetMontageInfo(const ImageInfo *image_info,
   montage_info->pointsize=image_info->pointsize;
   montage_info->fill.alpha=OpaqueAlpha;
   montage_info->stroke.alpha=(Quantum) TransparentAlpha;
+  montage_info->alpha_color=image_info->alpha_color;
   montage_info->background_color=image_info->background_color;
   montage_info->border_color=image_info->border_color;
-  montage_info->matte_color=image_info->matte_color;
   montage_info->debug=IsEventLogging();
   montage_info->signature=MagickCoreSignature;
 }

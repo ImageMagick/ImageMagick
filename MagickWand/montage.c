@@ -132,6 +132,7 @@ static MagickBooleanType MontageUsage(void)
       "-affine matrix       affine transform matrix",
       "-alpha option        on, activate, off, deactivate, set, opaque, copy",
       "                     transparent, extract, background, or shape",
+      "-alpha-color color   frame color",
       "-authenticate password",
       "                     decipher image with this password",
       "-blue-primary point  chromaticity blue primary point",
@@ -168,7 +169,6 @@ static MagickBooleanType MontageUsage(void)
       "-label string        assign a label to an image",
       "-limit type value    pixel cache resource limit",
       "-matte               store matte channel if the image has one",
-      "-mattecolor color    frame color",
       "-mode type           framing style",
       "-monitor             monitor progress",
       "-page geometry       size and location of an image canvas (setting)",
@@ -247,7 +247,7 @@ static MagickBooleanType MontageUsage(void)
   (void) printf(
     "resources as command line options:  -background, -bordercolor,\n");
   (void) printf(
-    "-borderwidth, -font, -mattecolor, or -title\n");
+    "-alpha-color, -borderwidth, -font, or -title\n");
   (void) printf(
     "\nBy default, the image format of 'file' is determined by its magic\n");
   (void) printf(
@@ -470,6 +470,17 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
             if (type < 0)
               ThrowMontageException(OptionError,"UnrecognizedAlphaChannelOption",
                 argv[i]);
+            break;
+          }
+        if (LocaleCompare("alpha-color",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowMontageException(OptionError,"MissingArgument",option);
+            (void) QueryColorCompliance(argv[i],AllCompliance,
+              &montage_info->alpha_color,exception);
             break;
           }
         if (LocaleCompare("annotate",option+1) == 0)
@@ -1199,17 +1210,6 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
       {
         if (LocaleCompare("matte",option+1) == 0)
           break;
-        if (LocaleCompare("mattecolor",option+1) == 0)
-          {
-            if (*option == '+')
-              break;
-            i++;
-            if (i == (ssize_t) argc)
-              ThrowMontageException(OptionError,"MissingArgument",option);
-            (void) QueryColorCompliance(argv[i],AllCompliance,
-              &montage_info->matte_color,exception);
-            break;
-          }
         if (LocaleCompare("mode",option+1) == 0)
           {
             MontageMode

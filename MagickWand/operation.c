@@ -65,9 +65,9 @@
   Constant declaration.
 */
 static const char
+  MogrifyAlphaColor[] = "#bdbdbd",  /* slightly darker gray */
   MogrifyBackgroundColor[] = "#fff",  /* white */
-  MogrifyBorderColor[] = "#dfdfdf",  /* sRGB gray */
-  MogrifyMatteColor[] = "#bdbdbd";  /* slightly darker gray */
+  MogrifyBorderColor[] = "#dfdfdf";  /* sRGB gray */
 
 /*
   Define declarations.
@@ -482,6 +482,14 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
             (void) ParseAffineGeometry(arg1,&_draw_info->affine,_exception);
           else
             GetAffineMatrix(&_draw_info->affine);
+          break;
+        }
+      if (LocaleCompare("alpha-color",option+1) == 0)
+        {
+          /* SyncImageSettings() used to set per-image attribute. */
+          (void) SetImageOption(_image_info,option+1,ArgOption(NULL));
+          (void) QueryColorCompliance(ArgOption(MogrifyAlphaColor),AllCompliance,
+             &_image_info->alpha_color,_exception);
           break;
         }
       if (LocaleCompare("antialias",option+1) == 0)
@@ -1097,14 +1105,6 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
     }
     case 'm':
     {
-      if (LocaleCompare("mattecolor",option+1) == 0)
-        {
-          /* SyncImageSettings() used to set per-image attribute. */
-          (void) SetImageOption(_image_info,option+1,ArgOption(NULL));
-          (void) QueryColorCompliance(ArgOption(MogrifyMatteColor),AllCompliance,
-             &_image_info->matte_color,_exception);
-          break;
-        }
       if (LocaleCompare("metric",option+1) == 0)
         {
           /* FUTURE: this is only used by CompareImages() which is used

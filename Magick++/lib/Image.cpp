@@ -327,21 +327,21 @@ void Magick::Image::alphaColor(const Color &alphaColor_)
 
   if (alphaColor_.isValid())
     {
-      image()->matte_color=alphaColor_;
-      options()->matteColor(alphaColor_);
+      image()->alpha_color=alphaColor_;
+      options()->alphaColor(alphaColor_);
     }
   else
     {
       // Set to default matte color
       Color tmpColor("#BDBDBD");
-      image()->matte_color=tmpColor;
-      options()->matteColor(tmpColor);
+      image()->alpha_color=tmpColor;
+      options()->alphaColor(tmpColor);
     }
 }
 
 Magick::Color Magick::Image::alphaColor(void) const
 {
-  return(Color(constImage()->matte_color));
+  return(Color(constImage()->alpha_color));
 }
 
 void Magick::Image::animationDelay(const size_t delay_)

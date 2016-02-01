@@ -3386,7 +3386,7 @@ WandExport MagickBooleanType MagickForwardFourierTransformImage(
 %  The format of the MagickFrameImage method is:
 %
 %      MagickBooleanType MagickFrameImage(MagickWand *wand,
-%        const PixelWand *matte_color,const size_t width,
+%        const PixelWand *alpha_color,const size_t width,
 %        const size_t height,const ssize_t inner_bevel,
 %        const ssize_t outer_bevel,const CompositeOperator compose)
 %
@@ -3394,7 +3394,7 @@ WandExport MagickBooleanType MagickForwardFourierTransformImage(
 %
 %    o wand: the magick wand.
 %
-%    o matte_color: the frame color pixel wand.
+%    o alpha_color: the frame color pixel wand.
 %
 %    o width: the border width.
 %
@@ -3408,7 +3408,7 @@ WandExport MagickBooleanType MagickForwardFourierTransformImage(
 %
 */
 WandExport MagickBooleanType MagickFrameImage(MagickWand *wand,
-  const PixelWand *matte_color,const size_t width,const size_t height,
+  const PixelWand *alpha_color,const size_t width,const size_t height,
   const ssize_t inner_bevel,const ssize_t outer_bevel,
   const CompositeOperator compose)
 {
@@ -3431,7 +3431,7 @@ WandExport MagickBooleanType MagickFrameImage(MagickWand *wand,
   frame_info.y=(ssize_t) height;
   frame_info.inner_bevel=inner_bevel;
   frame_info.outer_bevel=outer_bevel;
-  PixelGetQuantumPacket(matte_color,&wand->images->matte_color);
+  PixelGetQuantumPacket(alpha_color,&wand->images->alpha_color);
   frame_image=FrameImage(wand->images,&frame_info,compose,wand->exception);
   if (frame_image == (Image *) NULL)
     return(MagickFalse);
@@ -3704,6 +3704,44 @@ WandExport MagickBooleanType MagickGetImageAlphaChannel(MagickWand *wand)
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   return(GetImageAlphaChannel(wand->images));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k G e t I m a g e A l p h a C o l o r                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickGetImageAlhpaColor() returns the image alpha color.
+%
+%  The format of the MagickGetImageAlhpaColor method is:
+%
+%      MagickBooleanType MagickGetImageAlhpaColor(MagickWand *wand,
+%        PixelWand *alpha_color)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+%    o alpha_color: return the alpha color.
+%
+*/
+WandExport MagickBooleanType MagickGetImageAlhpaColor(MagickWand *wand,
+  PixelWand *alpha_color)
+{
+  assert(wand != (MagickWand *)NULL);
+  assert(wand->signature == MagickWandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent, GetMagickModule(), "%s", wand->name);
+  if (wand->images == (Image *)NULL)
+    ThrowWandException(WandError, "ContainsNoImages", wand->name);
+  PixelSetPixelColor(alpha_color, &wand->images->alpha_color);
+  return(MagickTrue);
 }
 
 /*
@@ -5154,44 +5192,6 @@ WandExport MagickBooleanType MagickGetImageLength(MagickWand *wand,
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   *length=GetBlobSize(wand->images);
-  return(MagickTrue);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   M a g i c k G e t I m a g e M a t t e C o l o r                           %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  MagickGetImageMatteColor() returns the image matte color.
-%
-%  The format of the MagickGetImageMatteColor method is:
-%
-%      MagickBooleanType MagickGetImagematteColor(MagickWand *wand,
-%        PixelWand *matte_color)
-%
-%  A description of each parameter follows:
-%
-%    o wand: the magick wand.
-%
-%    o matte_color: Return the matte color.
-%
-*/
-WandExport MagickBooleanType MagickGetImageMatteColor(MagickWand *wand,
-  PixelWand *matte_color)
-{
-  assert(wand != (MagickWand *) NULL);
-  assert(wand->signature == MagickWandSignature);
-  if (wand->debug != MagickFalse)
-    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  if (wand->images == (Image *) NULL)
-    ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  PixelSetPixelColor(matte_color,&wand->images->matte_color);
   return(MagickTrue);
 }
 
@@ -9037,6 +9037,44 @@ WandExport MagickBooleanType MagickSetImageAlphaChannel(MagickWand *wand,
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   return(SetImageAlphaChannel(wand->images,alpha_type,wand->exception));
 }
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k S e t I m a g e A l p h a C o l o r                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickSetImageAlphaColor() sets the image alpha color.
+%
+%  The format of the MagickSetImageAlphaColor method is:
+%
+%      MagickBooleanType MagickSetImageAlphaColor(MagickWand *wand,
+%        const PixelWand *matte)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+%    o matte: the alpha pixel wand.
+%
+*/
+WandExport MagickBooleanType MagickSetImageAlphaColor(MagickWand *wand,
+  const PixelWand *alpha)
+{
+  assert(wand != (MagickWand *)NULL);
+  assert(wand->signature == MagickWandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent, GetMagickModule(), "%s", wand->name);
+  if (wand->images == (Image *)NULL)
+    ThrowWandException(WandError, "ContainsNoImages", wand->name);
+  PixelGetQuantumPacket(alpha, &wand->images->alpha_color);
+  return(MagickTrue);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -10050,9 +10088,9 @@ WandExport MagickBooleanType MagickSetImageIterations(MagickWand *wand,
 %
 %  MagickSetImageMatte() sets the image matte channel.
 %
-%  The format of the MagickSetImageMatteColor method is:
+%  The format of the MagickSetImageMatte method is:
 %
-%      MagickBooleanType MagickSetImageMatteColor(MagickWand *wand,
+%      MagickBooleanType MagickSetImageMatte(MagickWand *wand,
 %        const MagickBooleanType *matte)
 %
 %  A description of each parameter follows:
@@ -10080,44 +10118,6 @@ WandExport MagickBooleanType MagickSetImageMatte(MagickWand *wand,
         (void) SetImageAlpha(wand->images,OpaqueAlpha,wand->exception);
       wand->images->alpha_trait=BlendPixelTrait;
     }
-  return(MagickTrue);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   M a g i c k S e t I m a g e M a t t e C o l o r                           %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  MagickSetImageMatteColor() sets the image matte color.
-%
-%  The format of the MagickSetImageMatteColor method is:
-%
-%      MagickBooleanType MagickSetImageMatteColor(MagickWand *wand,
-%        const PixelWand *matte)
-%
-%  A description of each parameter follows:
-%
-%    o wand: the magick wand.
-%
-%    o matte: the matte pixel wand.
-%
-*/
-WandExport MagickBooleanType MagickSetImageMatteColor(MagickWand *wand,
-  const PixelWand *matte)
-{
-  assert(wand != (MagickWand *) NULL);
-  assert(wand->signature == MagickWandSignature);
-  if (wand->debug != MagickFalse)
-    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  if (wand->images == (Image *) NULL)
-    ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  PixelGetQuantumPacket(matte,&wand->images->matte_color);
   return(MagickTrue);
 }
 

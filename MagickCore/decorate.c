@@ -125,11 +125,11 @@ MagickExport Image *BorderImage(const Image *image,
   clone_image=CloneImage(image,0,0,MagickTrue,exception);
   if (clone_image == (Image *) NULL)
     return((Image *) NULL);
-  clone_image->matte_color=image->border_color;
+  clone_image->alpha_color=image->border_color;
   border_image=FrameImage(clone_image,&frame_info,compose,exception);
   clone_image=DestroyImage(clone_image);
   if (border_image != (Image *) NULL)
-    border_image->matte_color=image->matte_color;
+    border_image->alpha_color=image->alpha_color;
   return(border_image);
 }
 
@@ -145,7 +145,7 @@ MagickExport Image *BorderImage(const Image *image,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  FrameImage() adds a simulated three-dimensional border around the image.
-%  The color of the border is defined by the matte_color member of image.
+%  The color of the border is defined by the alpha_color member of image.
 %  Members width and height of frame_info specify the border width of the
 %  vertical and horizontal sides of the frame.  Members inner and outer
 %  indicate the width of the inner and outer shadows of the frame.
@@ -232,7 +232,7 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
   if ((IsPixelInfoGray(&frame_image->border_color) == MagickFalse) &&
       (IsGrayColorspace(frame_image->colorspace) != MagickFalse))
     (void) SetImageColorspace(frame_image,sRGBColorspace,exception);
-  if ((frame_image->matte_color.alpha_trait != UndefinedPixelTrait) &&
+  if ((frame_image->alpha_color.alpha_trait != UndefinedPixelTrait) &&
       (frame_image->alpha_trait == UndefinedPixelTrait))
     (void) SetImageAlpha(frame_image,OpaqueAlpha,exception);
   frame_image->page=image->page;
@@ -244,7 +244,7 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
   /*
     Initialize 3D effects color.
   */
-  matte=image->matte_color;
+  matte=image->alpha_color;
   accentuate=matte;
   accentuate.red=(double) (QuantumScale*((QuantumRange-
     AccentuateModulate)*matte.red+(QuantumRange*AccentuateModulate)));

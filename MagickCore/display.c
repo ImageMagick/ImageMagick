@@ -8916,7 +8916,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         exception);
       XSetCursorState(display,windows,MagickTrue);
       XCheckRefreshWindows(display,windows);
-      (void) QueryColorCompliance(color,AllCompliance,&(*image)->matte_color,
+      (void) QueryColorCompliance(color,AllCompliance,&(*image)->alpha_color,
         exception);
       (void) ParsePageGeometry(*image,geometry,&page_geometry,
         exception);

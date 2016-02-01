@@ -103,6 +103,7 @@
   Constant declaration.
 */
 const char
+  AlphaColor[] = "#bdbdbd",  /* gray */
   BackgroundColor[] = "#ffffff",  /* white */
   BorderColor[] = "#dfdfdf",  /* gray */
   DefaultTileFrame[] = "15x15+3+3",
@@ -111,7 +112,6 @@ const char
   ForegroundColor[] = "#000",  /* black */
   LoadImageTag[] = "Load/Image",
   LoadImagesTag[] = "Load/Images",
-  MatteColor[] = "#bdbdbd",  /* gray */
   PSDensityGeometry[] = "72.0x72.0",
   PSPageGeometry[] = "612x792",
   SaveImageTag[] = "Save/Image",
@@ -192,11 +192,11 @@ MagickExport Image *AcquireImage(const ImageInfo *image_info,
   image->interlace=NoInterlace;
   image->ticks_per_second=UndefinedTicksPerSecond;
   image->compose=OverCompositeOp;
+  (void) QueryColorCompliance(AlphaColor,AllCompliance,&image->alpha_color,
+    exception);
   (void) QueryColorCompliance(BackgroundColor,AllCompliance,
     &image->background_color,exception);
   (void) QueryColorCompliance(BorderColor,AllCompliance,&image->border_color,
-    exception);
-  (void) QueryColorCompliance(MatteColor,AllCompliance,&image->matte_color,
     exception);
   (void) QueryColorCompliance(TransparentColor,AllCompliance,
     &image->transparent_color,exception);
@@ -273,9 +273,9 @@ MagickExport Image *AcquireImage(const ImageInfo *image_info,
   if (image_info->depth != 0)
     image->depth=image_info->depth;
   image->dither=image_info->dither;
+  image->alpha_color=image_info->alpha_color;
   image->background_color=image_info->background_color;
   image->border_color=image_info->border_color;
-  image->matte_color=image_info->matte_color;
   image->transparent_color=image_info->transparent_color;
   image->ping=image_info->ping;
   image->progress_monitor=image_info->progress_monitor;
@@ -970,9 +970,9 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
   (void) CloneString(&clone_info->density,image_info->density);
   clone_info->pointsize=image_info->pointsize;
   clone_info->fuzz=image_info->fuzz;
+  clone_info->alpha_color=image_info->alpha_color;
   clone_info->background_color=image_info->background_color;
   clone_info->border_color=image_info->border_color;
-  clone_info->matte_color=image_info->matte_color;
   clone_info->transparent_color=image_info->transparent_color;
   clone_info->dither=image_info->dither;
   clone_info->monochrome=image_info->monochrome;
@@ -1362,12 +1362,12 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
       synchronize=DestroyString(synchronize);
     }
   exception=AcquireExceptionInfo();
+  (void) QueryColorCompliance(AlphaColor,AllCompliance,&image_info->alpha_color,
+    exception);
   (void) QueryColorCompliance(BackgroundColor,AllCompliance,
     &image_info->background_color,exception);
   (void) QueryColorCompliance(BorderColor,AllCompliance,
     &image_info->border_color,exception);
-  (void) QueryColorCompliance(MatteColor,AllCompliance,&image_info->matte_color,
-    exception);
   (void) QueryColorCompliance(TransparentColor,AllCompliance,
     &image_info->transparent_color,exception);
   exception=DestroyExceptionInfo(exception);
@@ -3663,6 +3663,10 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
   assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  option=GetImageOption(image_info,"alpha-color");
+  if (option != (const char *) NULL)
+    (void) QueryColorCompliance(option,AllCompliance,&image->alpha_color,
+      exception);
   option=GetImageOption(image_info,"background");
   if (option != (const char *) NULL)
     (void) QueryColorCompliance(option,AllCompliance,&image->background_color,
@@ -3756,10 +3760,6 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
   option=GetImageOption(image_info,"loop");
   if (option != (const char *) NULL)
     image->iterations=StringToUnsignedLong(option);
-  option=GetImageOption(image_info,"mattecolor");
-  if (option != (const char *) NULL)
-    (void) QueryColorCompliance(option,AllCompliance,&image->matte_color,
-      exception);
   option=GetImageOption(image_info,"orient");
   if (option != (const char *) NULL)
     image->orientation=(OrientationType) ParseCommandOption(

@@ -73,6 +73,16 @@ bool Magick::Options::adjoin(void) const
   return(static_cast<bool>(_imageInfo->adjoin));
 }
 
+void Magick::Options::alphaColor(const Color &alphaColor_)
+{
+  _imageInfo->alpha_color=alphaColor_;
+}
+
+Magick::Color Magick::Options::alphaColor(void) const
+{
+  return(Magick::Color(_imageInfo->alpha_color));
+}
+
 void Magick::Options::backgroundColor(const Color &color_)
 {
   _imageInfo->background_color=color_;
@@ -396,16 +406,6 @@ std::string Magick::Options::magick(void) const
     return(std::string(_imageInfo->magick));
 
   return(std::string());
-}
-
-void Magick::Options::matteColor(const Color &matteColor_)
-{
-  _imageInfo->matte_color=matteColor_;
-}
-
-Magick::Color Magick::Options::matteColor(void) const
-{
-  return(Magick::Color(_imageInfo->matte_color));
 }
 
 void Magick::Options::monochrome(bool monochromeFlag_)

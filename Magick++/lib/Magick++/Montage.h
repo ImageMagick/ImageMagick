@@ -120,6 +120,10 @@ namespace Magick
     MontageFramed(void);
     ~MontageFramed(void);
 
+    // Frame foreground color
+    void alphaColor(const Color &alphaColor_);
+    Color alphaColor(void) const;
+
     // Frame border color
     void borderColor(const Color &borderColor_);
     Color borderColor(void) const;
@@ -132,10 +136,6 @@ namespace Magick
     void frameGeometry(const Geometry &frame_);
     Geometry frameGeometry(void) const;
 
-    // Frame foreground color
-    void matteColor(const Color &matteColor_);
-    Color matteColor(void) const;
-
     //
     // Implementation methods/members
     //
@@ -145,10 +145,10 @@ namespace Magick
 
   private:
 
+    Color _alphaColor;
     Color _borderColor;
     size_t _borderWidth;
     Geometry _frame;
-    Color _matteColor;
   };
 } // namespace Magick
 

@@ -198,10 +198,10 @@ typedef struct _XPixelInfo
     *pixels;
 
   XColor
+    alpha_color,
     foreground_color,
     background_color,
     border_color,
-    matte_color,
     highlight_color,
     shadow_color,
     depth_color,
@@ -282,8 +282,8 @@ typedef struct _XResourceInfo
     *image_geometry;
 
   char
+    *alpha_color,
     *map_type,
-    *matte_color,
     *name;
 
   unsigned int

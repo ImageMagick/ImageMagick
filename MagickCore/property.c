@@ -148,9 +148,9 @@ MagickExport MagickBooleanType CloneImageProperties(Image *image,
   image->compression=clone_image->compression;
   image->quality=clone_image->quality;
   image->depth=clone_image->depth;
+  image->alpha_color=clone_image->alpha_color;
   image->background_color=clone_image->background_color;
   image->border_color=clone_image->border_color;
-  image->matte_color=clone_image->matte_color;
   image->transparent_color=clone_image->transparent_color;
   image->gamma=clone_image->gamma;
   image->chromaticity=clone_image->chromaticity;

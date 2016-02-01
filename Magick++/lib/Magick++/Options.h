@@ -42,6 +42,10 @@ namespace Magick
     void adjoin(bool flag_);
     bool adjoin(void) const;
 
+    // Transparent color
+    void alphaColor(const Color &alphaColor_);
+    Color alphaColor(void) const;
+
     // Image background color
     void backgroundColor(const Color &color_);
     Color backgroundColor(void) const;
@@ -138,10 +142,6 @@ namespace Magick
    // Image format to write or read
     void magick(const std::string &magick_);
     std::string magick(void) const;
-
-    // Transparent color
-    void matteColor(const Color &matteColor_);
-    Color matteColor(void) const;
 
    // Write as a monochrome image
     void monochrome(bool monochromeFlag_);

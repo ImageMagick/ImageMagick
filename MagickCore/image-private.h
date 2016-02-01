@@ -36,13 +36,13 @@ extern "C" {
 #define UndefinedCompressionQuality  0UL
 
 extern MagickExport const char
+  AlphaColor[],
   BackgroundColor[],
   BorderColor[],
   DefaultTileFrame[],
   DefaultTileGeometry[],
   DefaultTileLabel[],
   ForegroundColor[],
-  MatteColor[],
   LoadImageTag[],
   LoadImagesTag[],
   PSDensityGeometry[],

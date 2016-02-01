@@ -2368,13 +2368,13 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
       }
 
       /* Initialize default pixel validity
-      *    negative:         pixel is invalid  output 'matte_color'
+      *    negative:         pixel is invalid  output 'alpha_color'
       *    0.0 to 1.0:       antialiased, mix with resample output
       *    1.0 or greater:   use resampled output.
       */
       validity = 1.0;
 
-      ConformPixelInfo(distort_image,&distort_image->matte_color,&invalid,
+      ConformPixelInfo(distort_image,&distort_image->alpha_color,&invalid,
         exception);
       for (i=0; i < (ssize_t) distort_image->columns; i++)
       {
