@@ -7,6 +7,7 @@ compiler:
 
 before_script:
   - sudo add-apt-repository ppa:dns/gnu -y
+  - sudo apt-key update -q
   - sudo apt-get update -q
   - sudo apt-get install --only-upgrade autoconf
 
