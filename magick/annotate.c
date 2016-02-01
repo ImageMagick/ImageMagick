@@ -1104,6 +1104,9 @@ cleanup:
   ssize_t
     last_glyph;
 
+  const char
+    *p;
+
   /*
     Simple layout for bi-directional text (right-to-left or left-to-right).
   */
@@ -1112,9 +1115,10 @@ cleanup:
   if (*grapheme == (GraphemeInfo *) NULL)
     return(0);
   last_glyph=0;
-  for (i=0; GetUTFCode(text) != 0; text+=GetUTFOctets(text), i++)
+  p=text;
+  for (i=0; GetUTFCode(p) != 0; p+=GetUTFOctets(p), i++)
   {
-    (*grapheme)[i].index=FT_Get_Char_Index(face,GetUTFCode(text));
+    (*grapheme)[i].index=FT_Get_Char_Index(face,GetUTFCode(p));
     (*grapheme)[i].x_offset=0;
     (*grapheme)[i].y_offset=0;
     if (((*grapheme)[i].index != 0) && (last_glyph != 0))
@@ -1133,7 +1137,7 @@ cleanup:
       }
     ft_status=FT_Load_Glyph(face,(*grapheme)[i].index,flags);
     (*grapheme)[i].x_advance=face->glyph->advance.x;
-    (*grapheme)[i].cluster=GetUTFCode(text);
+    (*grapheme)[i].cluster=p-text;
     last_glyph=(*grapheme)[i].index;
   }
   return((size_t) i);
