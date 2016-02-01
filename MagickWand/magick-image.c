@@ -8140,24 +8140,20 @@ WandExport MagickBooleanType MagickRaiseImage(MagickWand *wand,
 %
 %    o wand: the magick wand.
 %
-%    o low,high: Specify the high and low thresholds.  These values range from
+%    o low,high: Specify the high and low thresholds. These values range from
 %      0 to QuantumRange.
 %
 */
 WandExport MagickBooleanType MagickRandomThresholdImage(MagickWand *wand,
   const double low,const double high)
 {
-  char
-    threshold[MagickPathExtent];
-
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  (void) FormatLocaleString(threshold,MagickPathExtent,"%gx%g",low,high);
-  return(RandomThresholdImage(wand->images,threshold,wand->exception));
+  return(RandomThresholdImage(wand->images,low,high,wand->exception));
 }
 
 /*

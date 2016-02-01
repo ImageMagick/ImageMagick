@@ -3939,22 +3939,20 @@ void Magick::Image::raise(const Geometry &geometry_,const bool raisedFlag_)
   ThrowImageException;
 }
 
-void Magick::Image::randomThreshold(const Geometry &thresholds_)
+void Magick::Image::randomThreshold(const double low_,const double high_)
 {
   GetPPException;
-  (void) RandomThresholdImage(image(),static_cast<std::string>(
-    thresholds_).c_str(),exceptionInfo);
+  (void) RandomThresholdImage(image(),low_,high_,exceptionInfo);
   ThrowImageException;
 }
 
 void Magick::Image::randomThresholdChannel(const ChannelType channel_,
-  const Geometry &thresholds_)
+  const double low_,const double high_)
 {
   modifyImage();
   GetPPException;
   GetAndSetPPChannelMask(channel_);
-  (void) RandomThresholdImage(image(),static_cast<std::string>(
-    thresholds_).c_str(),exceptionInfo);
+  (void) RandomThresholdImage(image(),low_,high_,exceptionInfo);
   RestorePPChannelMask;
   ThrowImageException;
 }

@@ -1610,30 +1610,19 @@ MagickExport MagickBooleanType PerceptibleImage(Image *image,
 %
 %    o image: the image.
 %
-%    o thresholds: a geometry string containing low,high thresholds.  If the
-%      string contains 2x2, 3x3, or 4x4, an ordered dither of order 2, 3, or 4
-%      is performed instead.
+%    o low,high: Specify the high and low thresholds. These values range from
+%      0 to QuantumRange.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
 MagickExport MagickBooleanType RandomThresholdImage(Image *image,
-  const char *thresholds,ExceptionInfo *exception)
+  const double min_threshold, const double max_threshold,ExceptionInfo *exception)
 {
 #define ThresholdImageTag  "Threshold/Image"
 
   CacheView
     *image_view;
-
-  double
-    min_threshold,
-    max_threshold;
-
-  GeometryInfo
-    geometry_info;
-
-  MagickStatusType
-    flags;
 
   MagickBooleanType
     status;
@@ -1661,23 +1650,9 @@ MagickExport MagickBooleanType RandomThresholdImage(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
-  if (thresholds == (const char *) NULL)
-    return(MagickTrue);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   GetPixelInfo(image,&threshold);
-  min_threshold=0.0;
-  max_threshold=(double) QuantumRange;
-  flags=ParseGeometry(thresholds,&geometry_info);
-  min_threshold=geometry_info.rho;
-  max_threshold=geometry_info.sigma;
-  if ((flags & SigmaValue) == 0)
-    max_threshold=min_threshold;
-  if (strchr(thresholds,'%') != (char *) NULL)
-    {
-      max_threshold*=(double) (0.01*QuantumRange);
-      min_threshold*=(double) (0.01*QuantumRange);
-    }
   /*
     Random threshold image.
   */

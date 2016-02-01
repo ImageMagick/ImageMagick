@@ -40,7 +40,7 @@ extern MagickExport MagickBooleanType
   ListThresholdMaps(FILE *,ExceptionInfo *),
   OrderedDitherImage(Image *,const char *,ExceptionInfo *),
   PerceptibleImage(Image *,const double,ExceptionInfo *),
-  RandomThresholdImage(Image *,const char *,ExceptionInfo *),
+  RandomThresholdImage(Image *,const double,const double,ExceptionInfo *),
   WhiteThresholdImage(Image *,const char *,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)

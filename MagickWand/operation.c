@@ -3060,9 +3060,26 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("random-threshold",option+1) == 0)
         {
+          double
+            min_threshold,
+            max_threshold;
+
           if (IsGeometry(arg1) == MagickFalse)
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
-          (void) RandomThresholdImage(_image,arg1,_exception);
+          min_threshold=0.0;
+          max_threshold=(double) QuantumRange;
+          flags=ParseGeometry(arg1,&geometry_info);
+          min_threshold=geometry_info.rho;
+          max_threshold=geometry_info.sigma;
+          if ((flags & SigmaValue) == 0)
+            max_threshold=min_threshold;
+          if (strchr(arg1,'%') != (char *) NULL)
+            {
+              max_threshold*=(double) (0.01*QuantumRange);
+              min_threshold*=(double) (0.01*QuantumRange);
+            }
+          (void) RandomThresholdImage(_image,min_threshold,max_threshold,
+            _exception);
           break;
         }
       if (LocaleCompare("read-mask",option+1) == 0)

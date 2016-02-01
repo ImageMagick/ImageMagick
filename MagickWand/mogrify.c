@@ -2533,8 +2533,25 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             /*
               Threshold image.
             */
+            double
+              min_threshold,
+              max_threshold;
+
             (void) SyncImageSettings(mogrify_info,*image,exception);
-            (void) RandomThresholdImage(*image,argv[i+1],exception);
+            min_threshold=0.0;
+            max_threshold=(double) QuantumRange;
+            flags=ParseGeometry(argv[i+1],&geometry_info);
+            min_threshold=geometry_info.rho;
+            max_threshold=geometry_info.sigma;
+            if ((flags & SigmaValue) == 0)
+              max_threshold=min_threshold;
+            if (strchr(argv[i+1],'%') != (char *) NULL)
+              {
+                max_threshold*=(double) (0.01*QuantumRange);
+                min_threshold*=(double) (0.01*QuantumRange);
+              }
+            (void) RandomThresholdImage(*image,min_threshold,max_threshold,
+              exception);
             break;
           }
         if (LocaleCompare("read-mask",option+1) == 0)

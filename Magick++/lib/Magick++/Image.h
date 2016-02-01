@@ -1184,15 +1184,10 @@ namespace Magick
     //
     // Changes the value of individual pixels based on the intensity
     // of each pixel compared to a random threshold.  The result is a
-    // low-contrast, two color image.  The thresholds_ argument is a
-    // geometry containing LOWxHIGH thresholds.  If the string
-    // contains 2x2, 3x3, or 4x4, then an ordered dither of order 2,
-    // 3, or 4 will be performed instead.  If a channel_ argument is
-    // specified then only the specified channel is altered.  This is
-    // a very fast alternative to 'quantize' based dithering.
-    void randomThreshold(const Geometry &thresholds_);
-    void randomThresholdChannel(const ChannelType channel_,
-      const Geometry &thresholds_);
+    // low-contrast, two color image.
+    void randomThreshold(const double low_,const double high_);
+    void randomThresholdChannel(const ChannelType channel_,const double low_,
+      const double high_);
 
     // Read single image frame from in-memory BLOB
     void read(const Blob &blob_);
