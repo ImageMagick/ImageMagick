@@ -48,7 +48,7 @@ int main(int argc,char **argv)
 
   {
     Geometry geometry;
-    Magick::FilterTypes filter(LanczosFilter);
+    Magick::FilterType filter(LanczosFilter);
     Point density;
     Point resample;
     ResizeAlgorithm resize_algorithm=Zoom;
