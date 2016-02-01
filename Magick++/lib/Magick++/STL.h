@@ -351,19 +351,19 @@ namespace Magick
   class MagickPPExport distortImage : public std::unary_function<Image&,void>
   {
   public:
-    distortImage( const Magick::DistortImageMethod method_,
+    distortImage( const Magick::DistortMethod method_,
       const size_t number_arguments_,
       const double *arguments_,
       const bool bestfit_ );
           
-    distortImage( const Magick::DistortImageMethod method_,
+    distortImage( const Magick::DistortMethod method_,
       const size_t number_arguments_,
       const double *arguments_ );
 
     void operator()( Image &image_ ) const;
 
   private:
-    DistortImageMethod _method;
+    DistortMethod _method;
     size_t _number_arguments;
     const double *_arguments;
     bool _bestfit;

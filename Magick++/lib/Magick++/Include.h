@@ -530,7 +530,7 @@ namespace Magick
   using MagickCore::PreviousDispose;
 
   // Distort methods
-  using MagickCore::DistortImageMethod;
+  using MagickCore::DistortMethod;
   using MagickCore::UndefinedDistortion;
   using MagickCore::AffineDistortion;
   using MagickCore::AffineProjectionDistortion;

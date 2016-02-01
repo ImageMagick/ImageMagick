@@ -2734,7 +2734,7 @@ void Magick::Image::display(void)
   ThrowImageException;
 }
 
-void Magick::Image::distort(const DistortImageMethod method_,
+void Magick::Image::distort(const DistortMethod method_,
   const size_t numberArguments_,const double *arguments_,const bool bestfit_)
 {
   MagickCore::Image

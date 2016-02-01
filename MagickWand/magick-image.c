@@ -2642,7 +2642,7 @@ WandExport MagickBooleanType MagickDisplayImages(MagickWand *wand,
 %  The format of the MagickDistortImage method is:
 %
 %      MagickBooleanType MagickDistortImage(MagickWand *wand,
-%        const DistortImageMethod method,const size_t number_arguments,
+%        const DistortMethod method,const size_t number_arguments,
 %        const double *arguments,const MagickBooleanType bestfit)
 %
 %  A description of each parameter follows:
@@ -2678,7 +2678,7 @@ WandExport MagickBooleanType MagickDisplayImages(MagickWand *wand,
 %
 */
 WandExport MagickBooleanType MagickDistortImage(MagickWand *wand,
-  const DistortImageMethod method,const size_t number_arguments,
+  const DistortMethod method,const size_t number_arguments,
   const double *arguments,const MagickBooleanType bestfit)
 {
   Image

@@ -297,7 +297,7 @@ void Magick::despeckleImage::operator()( Magick::Image &image_ ) const
 // mapping color lookups of the source image to a new destination image
 // usally of the same size as the source image, unless 'bestfit' is set to
 // true.
-Magick::distortImage::distortImage( const Magick::DistortImageMethod method_,
+Magick::distortImage::distortImage( const Magick::DistortMethod method_,
                                     const size_t number_arguments_,
                                     const double *arguments_,
                                     const bool bestfit_ )
@@ -307,7 +307,7 @@ Magick::distortImage::distortImage( const Magick::DistortImageMethod method_,
     _bestfit( bestfit_ )
 {
 }
-Magick::distortImage::distortImage( const Magick::DistortImageMethod method_,
+Magick::distortImage::distortImage( const Magick::DistortMethod method_,
                                     const size_t number_arguments_,
                                     const double *arguments_ )
   : _method ( method_ ),

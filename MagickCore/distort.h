@@ -53,7 +53,7 @@ typedef enum
   ShepardsDistortion,
   ResizeDistortion,
   SentinelDistortion
-} DistortImageMethod;
+} DistortMethod;
 
 typedef enum
 {
@@ -72,7 +72,7 @@ typedef enum
 
 extern MagickExport Image
   *AffineTransformImage(const Image *,const AffineMatrix *,ExceptionInfo *),
-  *DistortImage(const Image *,const DistortImageMethod,const size_t,
+  *DistortImage(const Image *,const DistortMethod,const size_t,
     const double *,MagickBooleanType,ExceptionInfo *exception),
   *DistortResizeImage(const Image *,const size_t,const size_t,ExceptionInfo *),
   *RotateImage(const Image *,const double,ExceptionInfo *),

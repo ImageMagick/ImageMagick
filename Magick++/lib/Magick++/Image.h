@@ -837,7 +837,7 @@ namespace Magick
     // mapping color lookups of the source image to a new destination image
     // usally of the same size as the source image, unless 'bestfit' is set to
     // true.
-    void distort(const DistortImageMethod method_,
+    void distort(const DistortMethod method_,
       const size_t numberArguments_,const double *arguments_,
       const bool bestfit_=false);
 

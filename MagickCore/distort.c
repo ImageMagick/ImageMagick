@@ -328,7 +328,7 @@ MagickExport Image *AffineTransformImage(const Image *image,
 %
 %  The format of the GenerateCoefficients() method is:
 %
-%    Image *GenerateCoefficients(const Image *image,DistortImageMethod method,
+%    Image *GenerateCoefficients(const Image *image,DistortMethod method,
 %        const size_t number_arguments,const double *arguments,
 %        size_t number_values, ExceptionInfo *exception)
 %
@@ -371,8 +371,8 @@ static inline double MagickRound(double x)
 }
 
 static double *GenerateCoefficients(const Image *image,
-  DistortImageMethod *method,const size_t number_arguments,
-  const double *arguments,size_t number_values,ExceptionInfo *exception)
+  DistortMethod *method,const size_t number_arguments,const double *arguments,
+  size_t number_values,ExceptionInfo *exception)
 {
   double
     *coeff;
@@ -1609,7 +1609,7 @@ MagickExport Image *DistortResizeImage(const Image *image,
 %
 %  The format of the DistortImage() method is:
 %
-%      Image *DistortImage(const Image *image,const DistortImageMethod method,
+%      Image *DistortImage(const Image *image,const DistortMethod method,
 %        const size_t number_arguments,const double *arguments,
 %        MagickBooleanType bestfit, ExceptionInfo *exception)
 %
@@ -1670,7 +1670,7 @@ MagickExport Image *DistortResizeImage(const Image *image,
 %                    instead
 %
 */
-MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
+MagickExport Image *DistortImage(const Image *image, DistortMethod method,
   const size_t number_arguments,const double *arguments,
   MagickBooleanType bestfit,ExceptionInfo *exception)
 {
@@ -2923,10 +2923,10 @@ MagickExport Image *SparseColorImage(const Image *image,
     Convert input arguments into mapping coefficients, this this case
     we are mapping (distorting) colors, rather than coordinates.
   */
-  { DistortImageMethod
+  { DistortMethod
       distort_method;
 
-    distort_method=(DistortImageMethod) method;
+    distort_method=(DistortMethod) method;
     if ( distort_method >= SentinelDistortion )
       distort_method = ShepardsDistortion; /* Pretend to be Shepards */
     coeff = GenerateCoefficients(image, &distort_method, number_arguments,

@@ -2236,7 +2236,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           if ( parse < 0 )
              CLIWandExceptArgBreak(OptionError,"UnrecognizedDistortMethod",
                                       option,arg1);
-          if ((DistortImageMethod) parse == ResizeDistortion)
+          if ((DistortMethod) parse == ResizeDistortion)
             {
                double
                  resize_args[2];
@@ -2250,7 +2250,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
                (void) ParseRegionGeometry(_image,arg2,&geometry,_exception);
                resize_args[0]=(double) geometry.width;
                resize_args[1]=(double) geometry.height;
-               new_image=DistortImage(_image,(DistortImageMethod) parse,
+               new_image=DistortImage(_image,(DistortMethod) parse,
                     (size_t)2,resize_args,MagickTrue,_exception);
                break;
             }
@@ -2259,7 +2259,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           if (args == (double *) NULL )
             CLIWandExceptArgBreak(OptionError,"InvalidNumberList",option,arg2);
 
-          new_image=DistortImage(_image,(DistortImageMethod) parse,(size_t)
+          new_image=DistortImage(_image,(DistortMethod) parse,(size_t)
              count,args,IsPlusOp,_exception);
           args=(double *) RelinquishMagickMemory(args);
           break;

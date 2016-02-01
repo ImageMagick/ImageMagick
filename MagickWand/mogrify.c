@@ -1360,7 +1360,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             const char
               *p;
 
-            DistortImageMethod
+            DistortMethod
               method;
 
             double
@@ -1376,7 +1376,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               Distort image.
             */
             (void) SyncImageSettings(mogrify_info,*image,exception);
-            method=(DistortImageMethod) ParseCommandOption(MagickDistortOptions,
+            method=(DistortMethod) ParseCommandOption(MagickDistortOptions,
               MagickFalse,argv[i+1]);
             if (method == ResizeDistortion)
               {
