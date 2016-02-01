@@ -4506,12 +4506,12 @@ MAGICKCORE_INCLUDE_HDRS = \
 	MagickCore/fx.h \
 	MagickCore/gem.h \
 	MagickCore/geometry.h \
-	MagickCore/hashmap.h \
 	MagickCore/histogram.h \
 	MagickCore/identify.h \
 	MagickCore/image.h \
 	MagickCore/image-view.h \
 	MagickCore/layer.h \
+	MagickCore/linked-list.h \
 	MagickCore/list.h \
 	MagickCore/locale_.h \
 	MagickCore/log.h \

@@ -22,6 +22,10 @@
 extern "C" {
 #endif
 
+#if defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(MAGICKCORE_POSIX_SUPPORT)
+# include <sys/stat.h>
+#endif
+
 typedef enum
 {
   UndefinedPath,
