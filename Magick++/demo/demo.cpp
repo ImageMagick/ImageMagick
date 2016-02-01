@@ -306,25 +306,25 @@ int main( int /*argc*/, char ** argv)
       cout << "  ordered dither 2x2 ..." << endl;
       example = model;
       example.label( "Ordered Dither\n(2x2)" );
-      example.randomThreshold( Geometry(2,2) );
+      example.randomThreshold(2,2);
       images.push_back( example );
 
       cout << "  ordered dither 3x3..." << endl;
       example = model;
       example.label( "Ordered Dither\n(3x3)" );
-      example.randomThreshold( Geometry(3,3) );
+      example.randomThreshold(3,3);
       images.push_back( example );
 
       cout << "  ordered dither 4x4..." << endl;
       example = model;
       example.label( "Ordered Dither\n(4x4)" );
-      example.randomThreshold( Geometry(4,4) );
+      example.randomThreshold(4,4);
       images.push_back( example );
     
       cout << "  ordered dither red 4x4..." << endl;
       example = model;
       example.label( "Ordered Dither\n(Red 4x4)" );
-      example.randomThresholdChannel( RedChannel, Geometry(4,4));
+      example.randomThresholdChannel(RedChannel,4,4);
       images.push_back( example );
 
       cout << "  plasma ..." << endl;
