@@ -399,6 +399,11 @@ static ssize_t DecodePSDPixels(const size_t number_compact_pixels,
   const unsigned char *compact_pixels,const ssize_t depth,
   const size_t number_pixels,unsigned char *pixels)
 {
+#define CheckNumberCompactPixels \
+  if (packets == 0) \
+    return(i); \
+  packets--
+
 #define CheckNumberPixels(count) \
   if (((ssize_t) i + count) > (ssize_t) number_pixels) \
     return(i); \
@@ -427,7 +432,7 @@ static ssize_t DecodePSDPixels(const size_t number_compact_pixels,
     if (length > 128)
       {
         length=256-length+1;
-        packets--;
+        CheckNumberCompactPixels;
         pixel=(*compact_pixels++);
         for (j=0; j < (ssize_t) length; j++)
         {
@@ -475,6 +480,7 @@ static ssize_t DecodePSDPixels(const size_t number_compact_pixels,
     length++;
     for (j=0; j < (ssize_t) length; j++)
     {
+      CheckNumberCompactPixels;
       switch (depth)
       {
         case 1:
@@ -513,9 +519,6 @@ static ssize_t DecodePSDPixels(const size_t number_compact_pixels,
           break;
         }
       }
-      if (packets == 0)
-        return(i);
-      packets--;
       compact_pixels++;
     }
   }
