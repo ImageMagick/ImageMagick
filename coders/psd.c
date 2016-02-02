@@ -1936,7 +1936,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (blocks == (unsigned char *) NULL)
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
       count=ReadBlob(image,(size_t) length,blocks);
-      if ((count != (ssize_t) length) ||
+      if ((count != (ssize_t) length) || (length < 4) ||
           (LocaleNCompare((char *) blocks,"8BIM",4) != 0))
         {
           blocks=(unsigned char *) RelinquishMagickMemory(blocks);
