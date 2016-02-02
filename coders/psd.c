@@ -487,6 +487,7 @@ static ssize_t DecodePSDPixels(const size_t number_compact_pixels,
     length++;
     for (j=0; j < (ssize_t) length; j++)
     {
+      CheckNumberCompactPixels;
       switch (depth)
       {
         case 1:
@@ -525,7 +526,6 @@ static ssize_t DecodePSDPixels(const size_t number_compact_pixels,
           break;
         }
       }
-      CheckNumberCompactPixels;
       compact_pixels++;
     }
   }
