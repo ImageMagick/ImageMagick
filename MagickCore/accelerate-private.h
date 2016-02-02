@@ -1553,8 +1553,8 @@ uint MWC64X_NextUint(mwc64x_state_t *s)
     const uint matte, const ChannelType channel, __local CLPixelType *pixelLocalCache, __local float* filterCache) {
 
       int2 blockID;
-      blockID.x = get_group_id(0);
-      blockID.y = get_group_id(1);
+      blockID.x = get_global_id(0) / get_local_size(0);
+      blockID.y = get_global_id(1) / get_local_size(1);
 
       // image area processed by this workgroup
       int2 imageAreaOrg;

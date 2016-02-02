@@ -41,6 +41,7 @@
   Include declarations.
 */
 #include "MagickCore/studio.h"
+#include "MagickCore/accelerate.h"
 #include "MagickCore/artifact.h"
 #include "MagickCore/attribute.h"
 #include "MagickCore/cache.h"
@@ -884,6 +885,9 @@ MagickExport MagickBooleanType ContrastImage(Image *image,
   ssize_t
     y;
 
+  if(AccelerateContrastImage(image, sharpen, exception) == MagickTrue)
+    return(MagickTrue);
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
@@ -1517,6 +1521,9 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
   ssize_t
     y;
 
+  if(AccelerateEqualizeImage(image, AllChannels & ~AlphaChannel, exception) == MagickTrue)
+    return(MagickTrue);
+
   /*
     Allocate and initialize histogram arrays.
   */
@@ -1953,6 +1960,9 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
 
   ssize_t
     y;
+
+  if(AccelerateGrayscaleImage(image, method, exception) == MagickTrue)
+    return(MagickTrue);
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
@@ -3255,6 +3265,10 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate,
   /*
     Modulate image.
   */
+
+  if(AccelerateModulateImage(image, percent_brightness, percent_hue, percent_saturation, colorspace, exception) == MagickTrue)
+    return(MagickTrue);
+
   status=MagickTrue;
   progress=0;
   image_view=AcquireAuthenticCacheView(image,exception);

@@ -41,6 +41,7 @@
   Include declarations.
 */
 #include "MagickCore/studio.h"
+#include "MagickCore/accelerate.h"
 #include "MagickCore/annotate.h"
 #include "MagickCore/artifact.h"
 #include "MagickCore/attribute.h"
@@ -284,6 +285,9 @@ MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
 
   ssize_t
     y;
+
+  if((noise_image=AccelerateAddNoiseImage(image, AllChannels & ~AlphaChannel, noise_type, exception)))
+    return(noise_image);
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   unsigned long

@@ -42,6 +42,7 @@
 */
 #include "MagickCore/studio.h"
 #include "MagickCore/property.h"
+#include "MagickCore/accelerate.h"
 #include "MagickCore/animate.h"
 #include "MagickCore/blob.h"
 #include "MagickCore/blob-private.h"
@@ -1004,6 +1005,9 @@ MagickExport MagickBooleanType FunctionImage(Image *image,
 
   ssize_t
     y;
+
+  if(AccelerateFunctionImage(image, AllChannels & ~AlphaChannel, function, number_parameters, parameters, exception) == MagickTrue)
+    return(MagickTrue);
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
