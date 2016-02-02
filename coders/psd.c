@@ -2605,18 +2605,23 @@ static void RemoveResolutionFromResourceBlock(StringInfo *bim_profile)
     register unsigned char
       *q;
 
+    ssize_t
+      cnt;
+
     q=(unsigned char *) p;
     if (LocaleNCompare((const char *) p,"8BIM",4) != 0)
-      break;
+      return;
     p=PushLongPixel(MSBEndian,p,&long_sans);
     p=PushShortPixel(MSBEndian,p,&id);
     p=PushShortPixel(MSBEndian,p,&short_sans);
     p=PushLongPixel(MSBEndian,p,&count);
-    if ((id == 0x000003ed) && (PSDQuantum(count) < (ssize_t) (length-12)))
+    cnt=PSDQuantum(count);
+    if (cnt < 0)
+      return;
+    if ((id == 0x000003ed) && (cnt < (ssize_t) (length-12)))
       {
-        (void) CopyMagickMemory(q,q+PSDQuantum(count)+12,length-
-          (PSDQuantum(count)+12)-(q-datum));
-        SetStringInfoLength(bim_profile,length-(PSDQuantum(count)+12));
+        (void) CopyMagickMemory(q,q+cnt+12,length-(cnt+12)-(q-datum));
+        SetStringInfoLength(bim_profile,length-(cnt+12));
         break;
       }
     p+=count;
@@ -2625,8 +2630,8 @@ static void RemoveResolutionFromResourceBlock(StringInfo *bim_profile)
   }
 }
 
-static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image,
-  ExceptionInfo *exception)
+static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
+  Image *image,ExceptionInfo *exception)
 {
   const char
     *property;
