@@ -230,10 +230,10 @@ void Magick::Montage::updateMontageInfo(MontageInfo &montageInfo_ ) const
 //
 
 Magick::MontageFramed::MontageFramed(void)
-  : _borderColor("#dfdfdf"),
+  : _alphaColor("#bdbdbd"),
+    _borderColor("#dfdfdf"),
     _borderWidth(0),
-    _frame(),
-    _alphaColor("#bdbdbd")
+    _frame()
 {
 }
 
