@@ -887,7 +887,7 @@ static MagickBooleanType ReadPSDChannelPixels(Image *image,
           q+=GetPixelChannels(image);
           x++;
         }
-        if (x != image->columns)
+        if (x != (ssize_t) image->columns)
           x--;
         continue;
       }
