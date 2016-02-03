@@ -1708,9 +1708,9 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
           (void) QueryColorCompliance(SvPV(sval,na),AllCompliance,&target_color,
             exception);
           if (info)
-            info->image_info->matte_color=target_color;
+            info->image_info->alpha_color=target_color;
           for ( ; image; image=image->next)
-            image->matte_color=target_color;
+            image->alpha_color=target_color;
           break;
         }
       if (LocaleCompare(attribute,"matte") == 0)
@@ -5336,10 +5336,10 @@ Get(ref,...)
               if (image == (Image *) NULL)
                 break;
               (void) FormatLocaleString(color,MagickPathExtent,
-                "%.20g,%.20g,%.20g,%.20g",(double) image->matte_color.red,
-                (double) image->matte_color.green,
-                (double) image->matte_color.blue,
-                (double) image->matte_color.alpha);
+                "%.20g,%.20g,%.20g,%.20g",(double) image->alpha_color.red,
+                (double) image->alpha_color.green,
+                (double) image->alpha_color.blue,
+                (double) image->alpha_color.alpha);
               s=newSVpv(color,0);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
@@ -8082,7 +8082,7 @@ Mogrify(ref,...)
           frame_info.width=image->columns+2*frame_info.x;
           frame_info.height=image->rows+2*frame_info.y;
           if ((attribute_flag[5] != 0) || (attribute_flag[6] != 0))
-            image->matte_color=fill_color;
+            image->alpha_color=fill_color;
           compose=image->compose;
           if (attribute_flag[7] != 0)
             compose=(CompositeOperator) argument_list[7].integer_reference;
@@ -8325,7 +8325,7 @@ Mogrify(ref,...)
             SetImageArtifact(image,"filter:support",
               argument_list[4].string_reference);
           image=ResizeImage(image,geometry.width,geometry.height,
-            (FilterTypes) argument_list[3].integer_reference,
+            (FilterType) argument_list[3].integer_reference,
             exception);
           break;
         }
@@ -10006,7 +10006,7 @@ Mogrify(ref,...)
             (image->resolution.x == 0.0 ? 72.0 : image->resolution.x)+0.5);
           height=(size_t) (geometry_info.sigma*image->rows/
             (image->resolution.y == 0.0 ? 72.0 : image->resolution.y)+0.5);
-          image=ResizeImage(image,width,height,(FilterTypes)
+          image=ResizeImage(image,width,height,(FilterType)
             argument_list[3].integer_reference,exception);
           if (image != (Image *) NULL)
             {
@@ -10425,7 +10425,7 @@ Mogrify(ref,...)
           if (attribute_flag[2] != 0)
             geometry.height=argument_list[2].integer_reference;
           if (attribute_flag[3] != 0)
-            image->filter=(FilterTypes) argument_list[4].integer_reference;
+            image->filter=(FilterType) argument_list[4].integer_reference;
           if (attribute_flag[4] != 0)
             SetImageArtifact(image,"filter:support",
               argument_list[4].string_reference);
@@ -10645,7 +10645,7 @@ Mogrify(ref,...)
           double
             *coordinates;
 
-          DistortImageMethod
+          DistortMethod
             method;
 
           size_t
@@ -10658,7 +10658,7 @@ Mogrify(ref,...)
             break;
           method=UndefinedDistortion;
           if (attribute_flag[1] != 0)
-            method=(DistortImageMethod) argument_list[1].integer_reference;
+            method=(DistortMethod) argument_list[1].integer_reference;
           av=(AV *) argument_list[0].array_reference;
           number_coordinates=(size_t) av_len(av)+1;
           coordinates=(double *) AcquireQuantumMemory(number_coordinates,
@@ -11600,9 +11600,9 @@ Montage(ref,...)
           if (LocaleCompare(attribute,"mattecolor") == 0)
             {
               (void) QueryColorCompliance(SvPV(ST(i),na),AllCompliance,
-                &montage_info->matte_color,exception);
+                &montage_info->alpha_color,exception);
               for (next=image; next; next=next->next)
-                next->matte_color=montage_info->matte_color;
+                next->alpha_color=montage_info->alpha_color;
               break;
             }
           if (LocaleCompare(attribute,"mode") == 0)
