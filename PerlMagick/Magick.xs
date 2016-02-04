@@ -9754,7 +9754,7 @@ Mogrify(ref,...)
           if (attribute_flag[1] != 0)
             channel=(ChannelType) argument_list[1].integer_reference;
           channel_mask=SetImageChannelMask(image,channel);
-          (void) OrderedPosterizeImage(image,argument_list[0].string_reference,
+          (void) OrderedDitherImage(image,argument_list[0].string_reference,
             exception);
           (void) SetImageChannelMask(image,channel_mask);
           break;
