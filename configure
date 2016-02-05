@@ -832,6 +832,10 @@ GVC_CFLAGS
 GS_LIBS
 GS_DELEGATE_FALSE
 GS_DELEGATE_TRUE
+RAQM_DELEGATE_FALSE
+RAQM_DELEGATE_TRUE
+RAQM_LIBS
+RAQM_CFLAGS
 FREETYPE_DELEGATE_FALSE
 FREETYPE_DELEGATE_TRUE
 FREETYPE_LIBS
@@ -1198,6 +1202,7 @@ with_fpx
 with_djvu
 with_fontconfig
 with_freetype
+with_raqm
 with_gslib
 with_fontpath
 with_gs_font_dir
@@ -1249,6 +1254,8 @@ FONTCONFIG_CFLAGS
 FONTCONFIG_LIBS
 FREETYPE_CFLAGS
 FREETYPE_LIBS
+RAQM_CFLAGS
+RAQM_LIBS
 GVC_CFLAGS
 GVC_LIBS
 LCMS2_CFLAGS
@@ -1991,6 +1998,7 @@ Optional Packages:
   --without-djvu          disable DjVu support
   --without-fontconfig    disable fontconfig support
   --without-freetype      disable Freetype support
+  --without-raqm          disable Raqm support
   --with-gslib            enable Ghostscript library support
   --with-fontpath=DIR     prepend to default font search path
   --with-gs-font-dir=DIR  Ghostscript font directory
@@ -2053,6 +2061,8 @@ Some influential environment variables:
               C compiler flags for FREETYPE, overriding pkg-config
   FREETYPE_LIBS
               linker flags for FREETYPE, overriding pkg-config
+  RAQM_CFLAGS C compiler flags for RAQM, overriding pkg-config
+  RAQM_LIBS   linker flags for RAQM, overriding pkg-config
   GVC_CFLAGS  C compiler flags for GVC, overriding pkg-config
   GVC_LIBS    linker flags for GVC, overriding pkg-config
   LCMS2_CFLAGS
@@ -4501,7 +4511,7 @@ MAGICK_PATCHLEVEL_VERSION=3
 
 MAGICK_VERSION=6.9.3-3
 
-MAGICK_GIT_REVISION=10511:6b0168b:20160128
+MAGICK_GIT_REVISION=10528:81c05a0:20160205
 
 
 # Substitute library versioning
@@ -30350,6 +30360,123 @@ fi
 
 
 #
+# Check for the raqm delegate library.
+#
+
+# Check whether --with-raqm was given.
+if test "${with_raqm+set}" = set; then :
+  withval=$with_raqm; with_raqm=$withval
+else
+  with_raqm='yes'
+fi
+
+
+if test "$with_raqm" != 'yes'; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-raqm=$with_raqm "
+fi
+
+have_raqm='no'
+RAQM_CFLAGS=""
+RAQM_LIBS=""
+RAQM_PKG=""
+if test "x$with_raqm" = "xyes"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
+$as_echo "-------------------------------------------------------------" >&6; }
+
+pkg_failed=no
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for RAQM" >&5
+$as_echo_n "checking for RAQM... " >&6; }
+
+if test -n "$RAQM_CFLAGS"; then
+    pkg_cv_RAQM_CFLAGS="$RAQM_CFLAGS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"raqm\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "raqm") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_RAQM_CFLAGS=`$PKG_CONFIG --cflags "raqm" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+if test -n "$RAQM_LIBS"; then
+    pkg_cv_RAQM_LIBS="$RAQM_LIBS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"raqm\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "raqm") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_RAQM_LIBS=`$PKG_CONFIG --libs "raqm" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+
+
+
+if test $pkg_failed = yes; then
+   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
+else
+        _pkg_short_errors_supported=no
+fi
+        if test $_pkg_short_errors_supported = yes; then
+	        RAQM_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "raqm" 2>&1`
+        else
+	        RAQM_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "raqm" 2>&1`
+        fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$RAQM_PKG_ERRORS" >&5
+
+	have_raqm=no
+elif test $pkg_failed = untried; then
+     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+	have_raqm=no
+else
+	RAQM_CFLAGS=$pkg_cv_RAQM_CFLAGS
+	RAQM_LIBS=$pkg_cv_RAQM_LIBS
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+	have_raqm=yes
+fi
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
+$as_echo "" >&6; }
+fi
+
+if test "$have_raqm" = 'yes'; then
+
+$as_echo "#define RAQM_DELEGATE 1" >>confdefs.h
+
+  CFLAGS="$RAQM_CFLAGS $CFLAGS"
+fi
+
+ if test "$have_raqm" = 'yes'; then
+  RAQM_DELEGATE_TRUE=
+  RAQM_DELEGATE_FALSE='#'
+else
+  RAQM_DELEGATE_TRUE='#'
+  RAQM_DELEGATE_FALSE=
+fi
+
+
+
+
+
+#
 # Check for Ghostscript library or framework.
 #
 # Test for iapi.h & test for gsapi_new_instance in -lgs
@@ -36325,9 +36452,9 @@ fi
 #
 
 if test "$build_modules" != 'no'; then
-    MAGICK_DEP_LIBS="$USER_LIBS $LCMS_LIBS $FREETYPE_LIBS $LQR_LIBS $FFTW_LIBS $FONTCONFIG_LIBS $XEXT_LIBS $IPC_LIBS $X11_LIBS $XT_LIBS $LZMA_LIBS $BZLIB_LIBS $ZLIB_LIBS $LTDL_LIBS $GDI32_LIBS $MATH_LIBS $GOMP_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS"
+    MAGICK_DEP_LIBS="$USER_LIBS $LCMS_LIBS $FREETYPE_LIBS $RAQM_LIBS $LQR_LIBS $FFTW_LIBS $FONTCONFIG_LIBS $XEXT_LIBS $IPC_LIBS $X11_LIBS $XT_LIBS $LZMA_LIBS $BZLIB_LIBS $ZLIB_LIBS $LTDL_LIBS $GDI32_LIBS $MATH_LIBS $GOMP_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS"
 else
-    MAGICK_DEP_LIBS="$USER_LIBS $JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $JPEG_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FPX_LIBS $FONTCONFIG_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $LIBOPENJP2_LIBS $PANGO_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $GDI32_LIBS $MATH_LIBS $GOMP_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS"
+    MAGICK_DEP_LIBS="$USER_LIBS $JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $RAQM_LIBS $JPEG_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FPX_LIBS $FONTCONFIG_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $LIBOPENJP2_LIBS $PANGO_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $GDI32_LIBS $MATH_LIBS $GOMP_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS"
 fi
 
 
@@ -36645,6 +36772,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${FREETYPE_DELEGATE_TRUE}" && test -z "${FREETYPE_DELEGATE_FALSE}"; then
   as_fn_error $? "conditional \"FREETYPE_DELEGATE\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${RAQM_DELEGATE_TRUE}" && test -z "${RAQM_DELEGATE_FALSE}"; then
+  as_fn_error $? "conditional \"RAQM_DELEGATE\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${GS_DELEGATE_TRUE}" && test -z "${GS_DELEGATE_FALSE}"; then

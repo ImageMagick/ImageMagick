@@ -826,6 +826,9 @@
 /* Number of bits in a pixel Quantum (8/16/32/64) */
 #undef QUANTUM_DEPTH_OBSOLETE_IN_H
 
+/* Define if you have RAQM library */
+#undef RAQM_DELEGATE
+
 /* Define as the return type of signal handlers (`int' or `void'). */
 #undef RETSIGTYPE
 
