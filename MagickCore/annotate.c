@@ -108,15 +108,14 @@
 #endif
 #if defined(MAGICKCORE_RAQM_DELEGATE)
 #include <raqm.h>
-#else
+#endif
 typedef enum
 {
-  RAQM_DIRECTION_DEFAULT,
-  RAQM_DIRECTION_RTL,
-  RAQM_DIRECTION_LTR,
-  RAQM_DIRECTION_TTB
-} raqm_direction_t;
-#endif
+  GRAPHEME_DIRECTION_DEFAULT,
+  GRAPHEME_DIRECTION_RTL,
+  GRAPHEME_DIRECTION_LTR,
+  GRAPHEME_DIRECTION_TTB
+} GraphemeDirection;
 
 typedef struct _GraphemeInfo
 {
@@ -1028,7 +1027,7 @@ static MagickBooleanType RenderType(Image *image,const DrawInfo *draw_info,
 #if defined(MAGICKCORE_FREETYPE_DELEGATE)
 
 static size_t ComplexTextLayout(const Image *image,const char *text,
-  const size_t length,const FT_Face face,const raqm_direction_t direction,
+  const size_t length,const FT_Face face,const GraphemeDirection direction,
   const FT_Int32 flags,GraphemeInfo **grapheme,ExceptionInfo *exception)
 {
 #if defined(MAGICKCORE_RAQM_DELEGATE)
@@ -1053,7 +1052,7 @@ static size_t ComplexTextLayout(const Image *image,const char *text,
     goto cleanup;
   if (raqm_set_text_utf8(rq,text,length) == 0)
     goto cleanup;
-  if (raqm_set_par_direction(rq,direction) == 0)
+  if (raqm_set_par_direction(rq,(raqm_direction_t) direction) == 0)
     goto cleanup;
   if (raqm_set_freetype_face(rq,face) == 0)
     goto cleanup;
@@ -1149,7 +1148,7 @@ cleanup:
               ft_kerning_default,&kerning);
             if (ft_status == 0)
               (*grapheme)[i-1].x_advance+=(FT_Pos) ((direction ==
-                RAQM_DIRECTION_RTL ? -1.0 : 1.0)*kerning.x);
+                GRAPHEME_DIRECTION_RTL ? -1.0 : 1.0)*kerning.x);
           }
       }
     ft_status=FT_Load_Glyph(face,(*grapheme)[i].index,flags);
@@ -1285,6 +1284,9 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
     glyph,
     last_glyph;
 
+  GraphemeDirection
+    direction;
+
   GraphemeInfo
     *grapheme;
 
@@ -1294,9 +1296,6 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   PointInfo
     point,
     resolution;
-
-  raqm_direction_t
-    direction;
 
   register char
     *p;
@@ -1514,12 +1513,12 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
         p=(char *) utf8;
     }
   status=MagickTrue;
-  direction=RAQM_DIRECTION_DEFAULT;
+  direction=GRAPHEME_DIRECTION_DEFAULT;
   if (draw_info->direction == RightToLeftDirection)
-    direction=RAQM_DIRECTION_RTL;
+    direction=GRAPHEME_DIRECTION_RTL;
   else
     if (draw_info->direction == LeftToRightDirection)
-      direction=RAQM_DIRECTION_LTR;
+      direction=GRAPHEME_DIRECTION_LTR;
   grapheme=(GraphemeInfo *) NULL;
   length=ComplexTextLayout(image,p,strlen(p),face,direction,flags,&grapheme,
     exception);
