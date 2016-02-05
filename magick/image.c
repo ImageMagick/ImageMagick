@@ -524,9 +524,6 @@ MagickExport Image *AppendImages(const Image *images,
     image=CloneImage(next,0,0,MagickTrue,exception);
     if (image == (Image *) NULL)
       break;
-    status=TransformImageColorspace(image,append_image->colorspace);
-    if (status == MagickFalse)
-      break;
     SetGeometry(append_image,&geometry);
     GravityAdjustGeometry(image->columns,image->rows,image->gravity,&geometry);
     if (stack != MagickFalse)
