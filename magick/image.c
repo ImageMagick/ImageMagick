@@ -515,27 +515,21 @@ MagickExport Image *AppendImages(const Image *images,
     CacheView
       *image_view;
 
-    Image
-      *image;
-
     MagickBooleanType
       proceed;
 
-    image=CloneImage(next,0,0,MagickTrue,exception);
-    if (image == (Image *) NULL)
-      break;
     SetGeometry(append_image,&geometry);
-    GravityAdjustGeometry(image->columns,image->rows,image->gravity,&geometry);
+    GravityAdjustGeometry(next->columns,next->rows,next->gravity,&geometry);
     if (stack != MagickFalse)
       x_offset-=geometry.x;
     else
       y_offset-=geometry.y;
-    image_view=AcquireVirtualCacheView(image,exception);
+    image_view=AcquireVirtualCacheView(next,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
     #pragma omp parallel for schedule(static,4) shared(status) \
-      magick_threads(image,image,image->rows,1)
+      magick_threads(next,next,next->rows,1)
 #endif
-    for (y=0; y < (ssize_t) image->rows; y++)
+    for (y=0; y < (ssize_t) next->rows; y++)
     {
       MagickBooleanType
         sync;
@@ -557,9 +551,9 @@ MagickExport Image *AppendImages(const Image *images,
 
       if (status == MagickFalse)
         continue;
-      p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
+      p=GetCacheViewVirtualPixels(image_view,0,y,next->columns,1,exception);
       q=QueueCacheViewAuthenticPixels(append_view,x_offset,y+y_offset,
-        image->columns,1,exception);
+        next->columns,1,exception);
       if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
         {
           status=MagickFalse;
@@ -567,15 +561,15 @@ MagickExport Image *AppendImages(const Image *images,
         }
       indexes=GetCacheViewVirtualIndexQueue(image_view);
       append_indexes=GetCacheViewAuthenticIndexQueue(append_view);
-      for (x=0; x < (ssize_t) image->columns; x++)
+      for (x=0; x < (ssize_t) next->columns; x++)
       {
         SetPixelRed(q,GetPixelRed(p));
         SetPixelGreen(q,GetPixelGreen(p));
         SetPixelBlue(q,GetPixelBlue(p));
         SetPixelOpacity(q,OpaqueOpacity);
-        if (image->matte != MagickFalse)
+        if (next->matte != MagickFalse)
           SetPixelOpacity(q,GetPixelOpacity(p));
-        if ((image->colorspace == CMYKColorspace) &&
+        if ((next->colorspace == CMYKColorspace) &&
             (append_image->colorspace == CMYKColorspace))
           SetPixelIndex(append_indexes+x,GetPixelIndex(indexes+x));
         p++;
@@ -588,15 +582,14 @@ MagickExport Image *AppendImages(const Image *images,
     image_view=DestroyCacheView(image_view);
     if (stack == MagickFalse)
       {
-        x_offset+=(ssize_t) image->columns;
+        x_offset+=(ssize_t) next->columns;
         y_offset=0;
       }
     else
       {
         x_offset=0;
-        y_offset+=(ssize_t) image->rows;
+        y_offset+=(ssize_t) next->rows;
       }
-    image=DestroyImage(image);
     proceed=SetImageProgress(append_image,AppendImageTag,n,number_images);
     if (proceed == MagickFalse)
       break;
