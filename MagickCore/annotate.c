@@ -1027,11 +1027,14 @@ static MagickBooleanType RenderType(Image *image,const DrawInfo *draw_info,
 
 #if defined(MAGICKCORE_FREETYPE_DELEGATE)
 
-static size_t ComplexTextLayout(const char *text,const size_t length,
-  const FT_Face face,const raqm_direction_t direction,const char *features,
+static size_t ComplexTextLayout(const Image *image,const char *text,
+  const size_t length,const FT_Face face,const raqm_direction_t direction,
   const FT_Int32 flags,GraphemeInfo **grapheme)
 {
 #if defined(MAGICKCORE_RAQM_DELEGATE)
+  const char
+    *features;
+
   int
     i;
 
@@ -1044,21 +1047,18 @@ static size_t ComplexTextLayout(const char *text,const size_t length,
   raqm_glyph_t
     *glyphs;
 
-  count = 0;
-  rq = raqm_create();
+  count=0;
+  rq=raqm_create();
   if (rq == (raqm_t *) NULL)
     goto cleanup;
-
-  if (!raqm_set_text_utf8(rq,text,length))
+  if (raqm_set_text_utf8(rq,text,length) == 0)
     goto cleanup;
-
-  if (!raqm_set_par_direction(rq,direction))
+  if (raqm_set_par_direction(rq,direction) == 0)
     goto cleanup;
-
-  if (!raqm_set_freetype_face(rq,face))
+  if (raqm_set_freetype_face(rq,face) == 0)
     goto cleanup;
-
-  if (features)
+  features=GetImageProperty(image,"type:features",exception);
+  if (features != (const char *) NULL)
     {
       char
         breaker,
@@ -1075,47 +1075,42 @@ static size_t ComplexTextLayout(const char *text,const size_t length,
       next=0;
       token_info=AcquireTokenInfo();
       token=(char *) AcquireQuantumMemory(50,sizeof(*token));
-      status_token = Tokenizer(token_info,0,token,50,features,
-                               "",",","",'\0',&breaker,&next,&quote);
+      status_token=Tokenizer(token_info,0,token,50,features,"",",","",'\0',
+        &breaker,&next,&quote);
       while (status_token == 0)
-        {
-          raqm_add_font_feature(rq, token, strlen(token));
-          status_token = Tokenizer(token_info,0,token,50,features,
-                                   "",",","",'\0',&breaker,&next,&quote);
-        }
+      {
+        raqm_add_font_feature(rq,token,strlen(token));
+        status_token=Tokenizer(token_info,0,token,50,features,"",",","",'\0',
+          &breaker,&next,&quote);
+      }
       token_info=DestroyTokenInfo(token_info);
       token=DestroyString(token);
     }
-
-  if (!raqm_layout(rq))
+  if (raqm_layout(rq) == 0)
     goto cleanup;
-
-  glyphs = raqm_get_glyphs(rq,&count);
+  glyphs=raqm_get_glyphs(rq,&count);
   if (glyphs == (raqm_glyph_t *) NULL)
     {
-      count = 0;
+      count=0;
       goto cleanup;
     }
-
   *grapheme=(GraphemeInfo *) AcquireQuantumMemory(count,sizeof(**grapheme));
   if (*grapheme == (GraphemeInfo *) NULL)
     {
-      count = 0;
+      count=0;
       goto cleanup;
     }
-
   for (i = 0; i < count; i++)
-    {
-      (*grapheme)[i].index = glyphs[i].index;
-      (*grapheme)[i].x_offset = glyphs[i].x_offset;
-      (*grapheme)[i].x_advance = glyphs[i].x_advance;
-      (*grapheme)[i].y_offset = glyphs[i].y_offset;
-      (*grapheme)[i].cluster = glyphs[i].cluster;
-    }
+  {
+    (*grapheme)[i].index=glyphs[i].index;
+    (*grapheme)[i].x_offset=glyphs[i].x_offset;
+    (*grapheme)[i].x_advance=glyphs[i].x_advance;
+    (*grapheme)[i].y_offset=glyphs[i].y_offset;
+    (*grapheme)[i].cluster=glyphs[i].cluster;
+  }
 
 cleanup:
-  raqm_destroy (rq);
-
+  raqm_destroy(rq);
   return(count);
 #else
   FT_Error
@@ -1133,8 +1128,7 @@ cleanup:
   /*
     Simple layout for bi-directional text (right-to-left or left-to-right).
   */
-  *grapheme=(GraphemeInfo *) AcquireQuantumMemory(length+1,
-    sizeof(**grapheme));
+  *grapheme=(GraphemeInfo *) AcquireQuantumMemory(length+1,sizeof(**grapheme));
   if (*grapheme == (GraphemeInfo *) NULL)
     return(0);
   last_glyph=0;
@@ -1527,7 +1521,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
     if (draw_info->direction == LeftToRightDirection)
       direction=RAQM_DIRECTION_LTR;
   grapheme=(GraphemeInfo *) NULL;
-  length=ComplexTextLayout(p,strlen(p),face,direction,draw_info->font_features,flags,&grapheme);
+  length=ComplexTextLayout(image,p,strlen(p),face,direction,flags,&grapheme);
   code=0;
   for (i=0; i < (ssize_t) length; i++)
   {

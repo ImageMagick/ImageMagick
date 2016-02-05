@@ -1645,11 +1645,6 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             (void) CloneString(&draw_info->font,argv[i+1]);
             break;
           }
-        if (LocaleCompare("font-features",option+1) == 0)
-          {
-            (void) CloneString(&draw_info->font_features,argv[i+1]);
-            break;
-          }
         if (LocaleCompare("format",option+1) == 0)
           {
             format=argv[i+1];
