@@ -129,7 +129,7 @@ typedef struct _GraphemeInfo
   unsigned int
     cluster;
 } GraphemeInfo;
-
+
 /*
   Annotate semaphores.
 */
@@ -1029,7 +1029,7 @@ static MagickBooleanType RenderType(Image *image,const DrawInfo *draw_info,
 
 static size_t ComplexTextLayout(const Image *image,const char *text,
   const size_t length,const FT_Face face,const raqm_direction_t direction,
-  const FT_Int32 flags,GraphemeInfo **grapheme)
+  const FT_Int32 flags,GraphemeInfo **grapheme,ExceptionInfo *exception)
 {
 #if defined(MAGICKCORE_RAQM_DELEGATE)
   const char
@@ -1521,7 +1521,8 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
     if (draw_info->direction == LeftToRightDirection)
       direction=RAQM_DIRECTION_LTR;
   grapheme=(GraphemeInfo *) NULL;
-  length=ComplexTextLayout(image,p,strlen(p),face,direction,flags,&grapheme);
+  length=ComplexTextLayout(image,p,strlen(p),face,direction,flags,&grapheme,
+    exception);
   code=0;
   for (i=0; i < (ssize_t) length; i++)
   {
