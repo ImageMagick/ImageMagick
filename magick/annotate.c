@@ -1041,6 +1041,8 @@ static size_t ComplexTextLayout(const Image *image,const DrawInfo *draw_info,
       next=0;
       token_info=AcquireTokenInfo();
       token=(char *) AcquireQuantumMemory(50,sizeof(*token));
+      if (token == (char *) NULL)
+        ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
       status_token=Tokenizer(token_info,0,token,50,features,"",",","",'\0',
         &breaker,&next,&quote);
       while (status_token == 0)
