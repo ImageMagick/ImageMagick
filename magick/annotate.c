@@ -106,13 +106,13 @@
 #endif
 typedef struct _GraphemeInfo
 {
-  int
+  ssize_t
     index,
     x_offset,
     x_advance,
     y_offset;
 
-  unsigned int
+  size_t
     cluster;
 } GraphemeInfo;
 

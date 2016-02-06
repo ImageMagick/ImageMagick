@@ -814,8 +814,8 @@ MagickExport Image *BlurImageChannel(const Image *image,
   kernel_info=AcquireKernelInfo(geometry);
   if (kernel_info == (KernelInfo *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
-  blur_image=MorphologyApply(image,channel,ConvolveMorphology,1,kernel_info,
-    UndefinedCompositeOp,0.0,exception);
+  blur_image=MorphologyImageChannel(image,channel,ConvolveMorphology,1,
+    kernel_info,exception);
   kernel_info=DestroyKernelInfo(kernel_info);
   return(blur_image);
 }
@@ -906,8 +906,8 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
   convolve_image=AccelerateConvolveImageChannel(image,channel,kernel_info,
     exception);
   if (convolve_image == (Image *) NULL)
-    convolve_image=MorphologyApply(image,channel,ConvolveMorphology,1,
-      kernel_info,UndefinedCompositeOp,0.0,exception);
+    convolve_image=MorphologyImageChannel(image,channel,ConvolveMorphology,1,
+      kernel_info,exception);
   kernel_info=DestroyKernelInfo(kernel_info);
   return(convolve_image);
 }
@@ -1302,8 +1302,8 @@ MagickExport Image *EdgeImage(const Image *image,const double radius,
   edge_image=AccelerateConvolveImageChannel(image,DefaultChannels,kernel_info,
     exception);
   if (edge_image == (Image *) NULL)
-    edge_image=MorphologyApply(image,DefaultChannels,ConvolveMorphology,1,
-      kernel_info,UndefinedCompositeOp,0.0,exception);
+    edge_image=MorphologyImageChannel(image,DefaultChannels,ConvolveMorphology,
+      1,kernel_info,exception);
   kernel_info=DestroyKernelInfo(kernel_info);
   return(edge_image);
 }
@@ -1411,8 +1411,8 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
     kernel_info->values[i]*=gamma;
   emboss_image=AccelerateConvolveImageChannel(image,DefaultChannels,kernel_info,    exception);
   if (emboss_image == (Image *) NULL)
-    emboss_image=MorphologyApply(image,DefaultChannels,ConvolveMorphology,1,
-      kernel_info,UndefinedCompositeOp,0.0,exception);
+    emboss_image=MorphologyImageChannel(image,DefaultChannels,
+      ConvolveMorphology,1,kernel_info,exception);
   kernel_info=DestroyKernelInfo(kernel_info);
   if (emboss_image != (Image *) NULL)
     (void) EqualizeImageChannel(emboss_image,(ChannelType)
@@ -1869,8 +1869,8 @@ MagickExport Image *GaussianBlurImageChannel(const Image *image,
   blur_image=AccelerateConvolveImageChannel(image,channel,kernel_info,
     exception);
   if (blur_image == (Image *) NULL)
-    blur_image=MorphologyApply(image,channel,ConvolveMorphology,1,kernel_info,
-      UndefinedCompositeOp,0.0,exception);
+    blur_image=MorphologyImageChannel(image,channel,ConvolveMorphology,1,
+      kernel_info,exception);
   kernel_info=DestroyKernelInfo(kernel_info);
   return(blur_image);
 }
@@ -4311,8 +4311,8 @@ MagickExport Image *SharpenImageChannel(const Image *image,
   gamma=PerceptibleReciprocal(normalize);
   for (i=0; i < (ssize_t) (kernel_info->width*kernel_info->height); i++)
     kernel_info->values[i]*=gamma;
-  sharp_image=MorphologyApply(image,channel,ConvolveMorphology,1,kernel_info,
-    UndefinedCompositeOp,0.0,exception);
+  sharp_image=MorphologyImageChannel(image,channel,ConvolveMorphology,1,
+    kernel_info,exception);
   kernel_info=DestroyKernelInfo(kernel_info);
   return(sharp_image);
 }

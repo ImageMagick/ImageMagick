@@ -292,8 +292,8 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
   kernel_info=AcquireKernelInfo(geometry);
   if (kernel_info == (KernelInfo *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
-  edge_image=MorphologyApply(image,DefaultChannels,ConvolveMorphology,1,
-    kernel_info,UndefinedCompositeOp,0.0,exception);
+  edge_image=MorphologyImageChannel(image,DefaultChannels,ConvolveMorphology,1,
+    kernel_info,exception);
   kernel_info=DestroyKernelInfo(kernel_info);
   if (edge_image == (Image *) NULL)
     return((Image *) NULL);
