@@ -828,8 +828,8 @@ MagickExport Image *ConvolveImage(const Image *image,
   Image
     *convolve_image;
 
-  convolve_image=MorphologyApply(image,ConvolveMorphology,1,kernel_info,
-    UndefinedCompositeOp,0.0,exception);
+  convolve_image=MorphologyImage(image,ConvolveMorphology,1,kernel_info,
+    exception);
   return(convolve_image);
 }
 
@@ -1720,8 +1720,8 @@ MagickExport Image *LocalContrastImage(const Image *image,const double radius,
 #endif
   scanLineSize=(ssize_t) MagickMax(image->columns,image->rows);
   scanLineSize+=(2*width);
-  scanLinePixels_info=AcquireVirtualMemory(thread_count*scanLineSize,
-    sizeof(*scanLinePixels));
+  scanLinePixels_info=AcquireVirtualMemory((size_t) thread_count*
+    scanLineSize,sizeof(*scanLinePixels));
   if (scanLinePixels_info == (MemoryInfo *) NULL)
     {
       contrast_view=DestroyCacheView(contrast_view);
@@ -1742,7 +1742,7 @@ MagickExport Image *LocalContrastImage(const Image *image,const double radius,
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
   interImage=(float *) GetVirtualMemoryBlob(interImage_info);
-  totalWeight=(width+1)*(width+1);
+  totalWeight=(float) ((width+1)*(width+1));
 
   /* Vertical Pass */
   {
@@ -1899,7 +1899,7 @@ MagickExport Image *LocalContrastImage(const Image *image,const double radius,
   image_view=DestroyCacheView(image_view);
   return(contrast_image);
 }
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
