@@ -1331,7 +1331,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                   {
                     ldblk=(ssize_t) ((bpp*image->columns+7)/8);
                     BImgBuff=(unsigned char *) AcquireQuantumMemory((size_t)
-                      ldblk,sizeof(*BImgBuff));
+                      ldblk+1,sizeof(*BImgBuff));
                     if (BImgBuff == (unsigned char *) NULL)
                       goto NoMemory;
 
