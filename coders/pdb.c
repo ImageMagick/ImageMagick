@@ -818,7 +818,7 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image)
     pdb_image.width=(short) (16*(image->columns/16+1));
   pdb_image.height=(short) image->rows;
   packets=((bits_per_pixel*image->columns+7)/8);
-  runlength=(unsigned char *) AcquireQuantumMemory(3UL*packets,
+  runlength=(unsigned char *) AcquireQuantumMemory(4UL*packets,
     image->rows*sizeof(*runlength));
   if (runlength == (unsigned char *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
