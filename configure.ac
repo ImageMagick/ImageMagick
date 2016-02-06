@@ -3622,9 +3622,6 @@ fi
 if test "$have_freetype"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES freetype"
 fi
-if test "$have_raqm"    = 'yes' ; then
-   MAGICK_DELEGATES="$MAGICK_DELEGATES raqm"
-fi
 if test "$have_gslib"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES gslib"
 fi
@@ -3666,6 +3663,9 @@ if test "$have_dps"    = 'yes' || \
 fi
 if test "$have_ps"     = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES ps"
+fi
+if test "$have_raqm"    = 'yes' ; then
+   MAGICK_DELEGATES="$MAGICK_DELEGATES raqm"
 fi
 if test "$have_ra_ppm" = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES rad"
@@ -3882,7 +3882,6 @@ matches your expectations.
   FlashPIX          --with-fpx=$with_fpx		$have_fpx
   FontConfig        --with-fontconfig=$with_fontconfig	$have_fontconfig
   FreeType          --with-freetype=$with_freetype		$have_freetype
-  Raqm              --with-raqm=$with_raqm		$have_raqm
   Ghostscript lib   --with-gslib=$with_gslib		$have_gslib
   Graphviz          --with-gvc=$with_gvc		$have_gvc
   JBIG              --with-jbig=$with_jbig		$have_jbig
@@ -3897,6 +3896,7 @@ matches your expectations.
   PANGO             --with-pango=$with_pango		$have_pango
   PERL              --with-perl=$with_perl		$have_perl
   PNG               --with-png=$with_png		$have_png
+  RAQM              --with-raqm=$with_raqm		$have_raqm
   RSVG              --with-rsvg=$with_rsvg		$have_rsvg
   TIFF              --with-tiff=$with_tiff		$have_tiff
   WEBP              --with-webp=$with_webp		$have_webp
