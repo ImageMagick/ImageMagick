@@ -784,7 +784,7 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
   if(exception->severity != UndefinedException) goto FINISH_UNL;     
   if(magic_info->name == (char *) NULL) goto FINISH_UNL;
     
-  (void) CopyMagickMemory(clone_info->magick,magic_info->name,MagickPathExtent);
+  (void) strncpy(clone_info->magick,magic_info->name,MagickPathExtent);
   
     /* Read nested image */
   /*FormatString(clone_info->filename,"%s:%s",magic_info->name,postscript_file);*/
