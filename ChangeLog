@@ -1,6 +1,12 @@
 2016-02-05  6.9.3-3 Cristy  <quetzlzacatenango@image...>
   * New version 6.9.3-3, GIT revision 10532:33693a8:20160205.
 
+2016-02-04  6.9.3-3 Cristy  <quetzlzacatenango@image...>
+  * Numerous bugs fixed from fuzzed images (reference
+    https://github.com/ImageMagick/ImageMagick/issues/123).
+  * The -bias option is no longer a noop (reference
+    https://github.com/ImageMagick/ImageMagick/issues/125).
+
 2016-01-25  6.9.3-3 Dirk Lemstra <dirk@lem.....org>
   * Read XCF layer name (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&p=129638).
