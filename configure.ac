@@ -3669,6 +3669,9 @@ fi
 if test "$have_ra_ppm" = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES rad"
 fi
+if test "$have_raqm"   = 'yes' ; then
+   MAGICK_DELEGATES="$MAGICK_DELEGATES raqm"
+fi
 if test "$have_rsvg"   = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES rsvg"
 fi
@@ -3905,6 +3908,7 @@ matches your expectations.
   PANGO             --with-pango=$with_pango		$have_pango
   PERL              --with-perl=$with_perl		$have_perl
   PNG               --with-png=$with_png		$have_png
+  RAMQ              --with-raqm=$with_raqm		$have_raqm
   RSVG              --with-rsvg=$with_rsvg		$have_rsvg
   TIFF              --with-tiff=$with_tiff		$have_tiff
   WEBP              --with-webp=$with_webp		$have_webp
