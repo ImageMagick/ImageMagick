@@ -325,7 +325,7 @@ static void InsertRow(unsigned char *p,ssize_t y,Image *image, int bpp)
         if (q == (PixelPacket *) NULL)
           break;
         indexes=GetAuthenticIndexQueue(image);
-        for (x=0; x < ((ssize_t) image->columns-1); x+=4)
+        for (x=0; x < ((ssize_t) image->columns-3); x+=4)
         {
             index=ConstrainColormapIndex(image,(*p >> 6) & 0x3);
             SetPixelIndex(indexes+x,index);
@@ -342,8 +342,8 @@ static void InsertRow(unsigned char *p,ssize_t y,Image *image, int bpp)
             index=ConstrainColormapIndex(image,(*p) & 0x3);
             SetPixelIndex(indexes+x+1,index);
             SetPixelRGBO(q,image->colormap+(ssize_t) index);
-            p++;
             q++;
+            p++;
         }
        if ((image->columns % 4) != 0)
           {
@@ -351,15 +351,13 @@ static void InsertRow(unsigned char *p,ssize_t y,Image *image, int bpp)
             SetPixelIndex(indexes+x,index);
             SetPixelRGBO(q,image->colormap+(ssize_t) index);
             q++;
-            if ((image->columns % 4) >= 1)
-
+            if ((image->columns % 4) > 1)
               {
                 index=ConstrainColormapIndex(image,(*p >> 4) & 0x3);
                 SetPixelIndex(indexes+x,index);
                 SetPixelRGBO(q,image->colormap+(ssize_t) index);
                 q++;
-                if ((image->columns % 4) >= 2)
-
+                if ((image->columns % 4) > 2)
                   {
                     index=ConstrainColormapIndex(image,(*p >> 2) & 0x3);
                     SetPixelIndex(indexes+x,index);
@@ -1196,8 +1194,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                         AppendImageToList(&image,flip_image);
                       }
                     }
-
-      /* rotate command */
+                  /* rotate command */
                   if(BitmapHeader2.RotAngle & 0x0FFF)
                     {
                       Image
@@ -1219,7 +1216,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
               if (image->next == (Image *) NULL)
                 goto Finish;
               image=SyncNextImageInList(image);
-              image->columns=image->rows=0;
+              image->columns=image->rows=1;
               image->colors=0;
               break;
 
@@ -1352,7 +1349,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                       }
 
                     if(BImgBuff)
-                      BImgBuff=(unsigned char *) RelinquishMagickMemory(BImgBuff);;
+                      BImgBuff=(unsigned char *) RelinquishMagickMemory(BImgBuff);
                     break;
                   }
                 case 1:    /*RLE for WPG2 */
