@@ -317,7 +317,7 @@ static void InsertRow(Image *image,unsigned char *p,ssize_t y,int bpp,
         q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
         if (q == (Quantum *) NULL)
           break;
-        for (x=0; x < ((ssize_t) image->columns-1); x+=4)
+        for (x=0; x < ((ssize_t) image->columns-3); x+=4)
         {
             index=ConstrainColormapIndex(image,(*p >> 6) & 0x3,exception);
             SetPixelIndex(image,index,q);
@@ -334,8 +334,8 @@ static void InsertRow(Image *image,unsigned char *p,ssize_t y,int bpp,
             index=ConstrainColormapIndex(image,(*p) & 0x3,exception);
             SetPixelIndex(image,index,q);
             SetPixelViaPixelInfo(image,image->colormap+(ssize_t) index,q);
-            p++;
             q+=GetPixelChannels(image);
+            p++;
         }
        if ((image->columns % 4) != 0)
           {
@@ -343,15 +343,13 @@ static void InsertRow(Image *image,unsigned char *p,ssize_t y,int bpp,
             SetPixelIndex(image,index,q);
             SetPixelViaPixelInfo(image,image->colormap+(ssize_t) index,q);
             q+=GetPixelChannels(image);
-            if ((image->columns % 4) >= 1)
-
+            if ((image->columns % 4) > 1)
               {
                 index=ConstrainColormapIndex(image,(*p >> 4) & 0x3,exception);
                 SetPixelIndex(image,index,q);
                 SetPixelViaPixelInfo(image,image->colormap+(ssize_t) index,q);
                 q+=GetPixelChannels(image);
-                if ((image->columns % 4) >= 2)
-
+                if ((image->columns % 4) > 2)
                   {
                     index=ConstrainColormapIndex(image,(*p >> 2) & 0x3,
                       exception);
@@ -427,7 +425,7 @@ static void InsertRow(Image *image,unsigned char *p,ssize_t y,int bpp,
         }
       if (!SyncAuthenticPixels(image,exception))
         break;
-      break;     
+      break;
     }
 }
 
@@ -1183,11 +1181,10 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                       if (flip_image != (Image *) NULL) {
                         DuplicateBlob(flip_image,image);
                         (void) RemoveLastImageFromList(&image);
-                        AppendImageToList(&image,flip_image);    
+                        AppendImageToList(&image,flip_image);
                       }
                     }
-    
-      /* rotate command */
+                  /* rotate command */
                   if(BitmapHeader2.RotAngle & 0x0FFF)
                     {
                       Image
@@ -1198,9 +1195,9 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                       if (rotate_image != (Image *) NULL) {
                         DuplicateBlob(rotate_image,image);
                         (void) RemoveLastImageFromList(&image);
-                        AppendImageToList(&image,rotate_image);    
+                        AppendImageToList(&image,rotate_image);
                       }
-                    }                
+                    }
                 }
 
               /* Allocate next image structure. */
@@ -1209,7 +1206,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
               if (image->next == (Image *) NULL)
                 goto Finish;
               image=SyncNextImageInList(image);
-              image->columns=image->rows=0;
+              image->columns=image->rows=1;
               image->colors=0;
               break;
 
@@ -1303,7 +1300,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                   continue;  /*Ignore raster with unknown depth*/
                 }
               image->columns=Bitmap2Header1.Width;
-              image->rows=Bitmap2Header1.Height;  
+              image->rows=Bitmap2Header1.Height;
 
               if ((image->colors == 0) && (bpp != 24))
                 {
@@ -1342,7 +1339,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                       }
 
                     if(BImgBuff)
-                      BImgBuff=(unsigned char *) RelinquishMagickMemory(BImgBuff);;
+                      BImgBuff=(unsigned char *) RelinquishMagickMemory(BImgBuff);
                     break;
                   }
                 case 1:    /*RLE for WPG2 */
@@ -1364,11 +1361,11 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                     (void) RemoveLastImageFromList(&image);
                     AppendImageToList(&image,flop_image);
                   }
-                  /* Try to change CTM according to Flip - I am not sure, must be checked.      
+                  /* Try to change CTM according to Flip - I am not sure, must be checked.
                      Tx(0,0)=-1;      Tx(1,0)=0;   Tx(2,0)=0;
                      Tx(0,1)= 0;      Tx(1,1)=1;   Tx(2,1)=0;
                      Tx(0,2)=(WPG._2Rect.X_ur+WPG._2Rect.X_ll);
-                     Tx(1,2)=0;   Tx(2,2)=1; */                  
+                     Tx(1,2)=0;   Tx(2,2)=1; */
                 }
               if(CTM[1][1]<0 && !image_info->ping)
                 {    /*?? RotAngle=360-RotAngle;*/
@@ -1386,9 +1383,9 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                      Tx(0,0)= 1;   Tx(1,0)= 0;   Tx(2,0)=0;
                      Tx(0,1)= 0;   Tx(1,1)=-1;   Tx(2,1)=0;
                      Tx(0,2)= 0;   Tx(1,2)=(WPG._2Rect.Y_ur+WPG._2Rect.Y_ll);
-                     Tx(2,2)=1; */      
-              }    
-    
+                     Tx(2,2)=1; */
+              }
+
 
               /* Allocate next image structure. */
               AcquireNextImage(image_info,image,exception);
