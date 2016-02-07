@@ -321,6 +321,9 @@ MagickExport size_t GetQuantumExtent(const Image *image,
     case BGRAQuantum: packet_size=4; break;
     case CMYKQuantum: packet_size=4; break;
     case CMYKAQuantum: packet_size=5; break;
+    case CbYCrAQuantum: packet_size=4; break;
+    case CbYCrQuantum: packet_size=3; break;
+    case CbYCrYQuantum: packet_size=4; break;
     default: break;
   }
   extent=MagickMax(image->columns,image->rows);
@@ -871,7 +874,6 @@ MagickExport void SetQuantumPack(QuantumInfo *quantum_info,
   assert(quantum_info->signature == MagickCoreSignature);
   quantum_info->pack=pack;
 }
-
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
