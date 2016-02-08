@@ -303,8 +303,7 @@ CONFIG_CLEAN_FILES = common.shi config/configure.xml \
 	config/type-dejavu.xml config/type-ghostscript.xml \
 	config/type-windows.xml config/type.xml ImageMagick.spec \
 	Magick++/bin/Magick++-config magick/ImageMagick.pc \
-	Magick++/lib/ImageMagick++.pc Magick++/lib/Magick++.pc \
-	magick/Magick-config magick/MagickCore-config \
+	Magick++/lib/Magick++.pc magick/MagickCore-config \
 	magick/MagickCore.pc magick/version.h magick.sh \
 	PerlMagick/check.sh PerlMagick/default/Magick.pm \
 	PerlMagick/Makefile.PL PerlMagick/default/Makefile.PL \
@@ -314,8 +313,7 @@ CONFIG_CLEAN_FILES = common.shi config/configure.xml \
 	utilities/conjure.1 utilities/convert.1 utilities/display.1 \
 	utilities/identify.1 utilities/ImageMagick.1 \
 	utilities/import.1 utilities/mogrify.1 utilities/montage.1 \
-	utilities/stream.1 wand/MagickWand-config wand/MagickWand.pc \
-	wand/Wand-config wand/Wand.pc
+	utilities/stream.1 wand/MagickWand-config wand/MagickWand.pc
 CONFIG_CLEAN_VPATH_FILES =
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
 am__vpath_adj = case $$p in \
@@ -2461,7 +2459,6 @@ am__DIST_COMMON = $(srcdir)/ImageMagick.spec.in \
 	$(srcdir)/tests/Makefile.am $(srcdir)/utilities/Makefile.am \
 	$(srcdir)/wand/Makefile.am \
 	$(top_srcdir)/Magick++/bin/Magick++-config.in \
-	$(top_srcdir)/Magick++/lib/ImageMagick++.pc.in \
 	$(top_srcdir)/Magick++/lib/Magick++.pc.in \
 	$(top_srcdir)/PerlMagick/Makefile.PL.in \
 	$(top_srcdir)/PerlMagick/check.sh.in \
@@ -2492,7 +2489,6 @@ am__DIST_COMMON = $(srcdir)/ImageMagick.spec.in \
 	$(top_srcdir)/config/type-windows.xml.in \
 	$(top_srcdir)/config/type.xml.in \
 	$(top_srcdir)/magick/ImageMagick.pc.in \
-	$(top_srcdir)/magick/Magick-config.in \
 	$(top_srcdir)/magick/MagickCore-config.in \
 	$(top_srcdir)/magick/MagickCore.pc.in \
 	$(top_srcdir)/magick/version.h.in \
@@ -2509,9 +2505,7 @@ am__DIST_COMMON = $(srcdir)/ImageMagick.spec.in \
 	$(top_srcdir)/utilities/montage.1.in \
 	$(top_srcdir)/utilities/stream.1.in \
 	$(top_srcdir)/wand/MagickWand-config.in \
-	$(top_srcdir)/wand/MagickWand.pc.in \
-	$(top_srcdir)/wand/Wand-config.in \
-	$(top_srcdir)/wand/Wand.pc.in ChangeLog config/ar-lib \
+	$(top_srcdir)/wand/MagickWand.pc.in ChangeLog config/ar-lib \
 	config/compile config/config.guess config/config.sub \
 	config/depcomp config/install-sh config/ltmain.sh \
 	config/missing config/mkinstalldirs
@@ -2548,8 +2542,6 @@ AutotraceDecodeDelegate = @AutotraceDecodeDelegate@
 BGPDecodeDelegate = @BGPDecodeDelegate@
 BGPEncodeDelegate = @BGPEncodeDelegate@
 BIN_DIR = @BIN_DIR@
-BPGDecodeDelegate = @BPGDecodeDelegate@
-BPGEncodeDelegate = @BPGEncodeDelegate@
 BZIPDelegate = @BZIPDelegate@
 BZLIB_LIBS = @BZLIB_LIBS@
 BlenderDecodeDelegate = @BlenderDecodeDelegate@
@@ -5276,11 +5268,7 @@ Magick++/bin/Magick++-config: $(top_builddir)/config.status $(top_srcdir)/Magick
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 magick/ImageMagick.pc: $(top_builddir)/config.status $(top_srcdir)/magick/ImageMagick.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
-Magick++/lib/ImageMagick++.pc: $(top_builddir)/config.status $(top_srcdir)/Magick++/lib/ImageMagick++.pc.in
-	cd $(top_builddir) && $(SHELL) ./config.status $@
 Magick++/lib/Magick++.pc: $(top_builddir)/config.status $(top_srcdir)/Magick++/lib/Magick++.pc.in
-	cd $(top_builddir) && $(SHELL) ./config.status $@
-magick/Magick-config: $(top_builddir)/config.status $(top_srcdir)/magick/Magick-config.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 magick/MagickCore-config: $(top_builddir)/config.status $(top_srcdir)/magick/MagickCore-config.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
@@ -5333,10 +5321,6 @@ utilities/stream.1: $(top_builddir)/config.status $(top_srcdir)/utilities/stream
 wand/MagickWand-config: $(top_builddir)/config.status $(top_srcdir)/wand/MagickWand-config.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 wand/MagickWand.pc: $(top_builddir)/config.status $(top_srcdir)/wand/MagickWand.pc.in
-	cd $(top_builddir) && $(SHELL) ./config.status $@
-wand/Wand-config: $(top_builddir)/config.status $(top_srcdir)/wand/Wand-config.in
-	cd $(top_builddir) && $(SHELL) ./config.status $@
-wand/Wand.pc: $(top_builddir)/config.status $(top_srcdir)/wand/Wand.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 
 install-codersLTLIBRARIES: $(coders_LTLIBRARIES)

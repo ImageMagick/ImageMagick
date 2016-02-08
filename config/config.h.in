@@ -740,7 +740,7 @@
 #undef LIBRARY_PATH
 
 /* Subdirectory of lib where ImageMagick architecture dependent files are
-   installed */
+   installed. */
 #undef LIBRARY_RELATIVE_PATH
 
 /* Binaries in libraries path base name (will be during install linked to bin)

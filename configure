@@ -683,8 +683,6 @@ RPM
 PERL
 TAR
 ShowImageDelegate
-BPGEncodeDelegate
-BPGDecodeDelegate
 type_include_files
 windows_font_dir
 ghostscript_font_dir
@@ -725,13 +723,13 @@ HTMLDecodeDelegate
 HPGLDecodeDelegate
 GVCDecodeDelegate
 GnuplotDecodeDelegate
-DisplayDelegate
 EditorDelegate
 EchoDelegate
+DisplayDelegate
+ConvertDelegate
 DVIDecodeDelegate
 DOCDecodeDelegate
 DNGDecodeDelegate
-ConvertDelegate
 CatDelegate
 BrowseDelegate
 BZIPDelegate
@@ -922,6 +920,8 @@ PERL_MAKE_OPTIONS
 MAGICK_LT_RELEASE_OPTS
 MAGICK_ABI_SUFFIX
 QUANTUM_DEPTH
+LEGACY_SUPPORT_FALSE
+LEGACY_SUPPORT_TRUE
 MAINT
 MAINTAINER_MODE_FALSE
 MAINTAINER_MODE_TRUE
@@ -1180,6 +1180,7 @@ enable_prof
 enable_gprof
 enable_gcov
 with_method_prefix
+enable_legacy_support
 with_quantum_depth
 with_cache
 with_frozenpaths
@@ -1944,6 +1945,7 @@ Optional Features:
   --enable-prof           enable 'prof' profiling support
   --enable-gprof          enable 'gprof' profiling support
   --enable-gcov           enable 'gcov' profiling support
+  --enable-legacy-support  install legacy command-line utilities (default disabled)
   --disable-assert        turn off assertions
   --disable-docs          disable building of documentation
 
@@ -2451,52 +2453,6 @@ fi
 
 } # ac_fn_cxx_try_compile
 
-# ac_fn_c_try_link LINENO
-# -----------------------
-# Try to link conftest.$ac_ext, and return whether this succeeded.
-ac_fn_c_try_link ()
-{
-  as_lineno=${as_lineno-"$1"} as_lineno_stack=as_lineno_stack=$as_lineno_stack
-  rm -f conftest.$ac_objext conftest$ac_exeext
-  if { { ac_try="$ac_link"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval ac_try_echo="\"\$as_me:${as_lineno-$LINENO}: $ac_try_echo\""
-$as_echo "$ac_try_echo"; } >&5
-  (eval "$ac_link") 2>conftest.err
-  ac_status=$?
-  if test -s conftest.err; then
-    grep -v '^ *+' conftest.err >conftest.er1
-    cat conftest.er1 >&5
-    mv -f conftest.er1 conftest.err
-  fi
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; } && {
-	 test -z "$ac_c_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest$ac_exeext && {
-	 test "$cross_compiling" = yes ||
-	 test -x conftest$ac_exeext
-       }; then :
-  ac_retval=0
-else
-  $as_echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	ac_retval=1
-fi
-  # Delete the IPA/IPO (Inter Procedural Analysis/Optimization) information
-  # created by the PGI compiler (conftest_ipa8_conftest.oo), as it would
-  # interfere with the next link command; also delete a directory that is
-  # left behind by Apple's compiler.  We do this before executing the actions.
-  rm -rf conftest.dSYM conftest_ipa8_conftest.oo
-  eval $as_lineno_stack; ${as_lineno_stack:+:} unset as_lineno
-  as_fn_set_status $ac_retval
-
-} # ac_fn_c_try_link
-
 # ac_fn_c_compute_int LINENO EXPR VAR INCLUDES
 # --------------------------------------------
 # Tries to find the compile-time value of EXPR in a program that includes
@@ -2679,6 +2635,52 @@ rm -f conftest.val
   as_fn_set_status $ac_retval
 
 } # ac_fn_c_compute_int
+
+# ac_fn_c_try_link LINENO
+# -----------------------
+# Try to link conftest.$ac_ext, and return whether this succeeded.
+ac_fn_c_try_link ()
+{
+  as_lineno=${as_lineno-"$1"} as_lineno_stack=as_lineno_stack=$as_lineno_stack
+  rm -f conftest.$ac_objext conftest$ac_exeext
+  if { { ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:${as_lineno-$LINENO}: $ac_try_echo\""
+$as_echo "$ac_try_echo"; } >&5
+  (eval "$ac_link") 2>conftest.err
+  ac_status=$?
+  if test -s conftest.err; then
+    grep -v '^ *+' conftest.err >conftest.er1
+    cat conftest.er1 >&5
+    mv -f conftest.er1 conftest.err
+  fi
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext && {
+	 test "$cross_compiling" = yes ||
+	 test -x conftest$ac_exeext
+       }; then :
+  ac_retval=0
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_retval=1
+fi
+  # Delete the IPA/IPO (Inter Procedural Analysis/Optimization) information
+  # created by the PGI compiler (conftest_ipa8_conftest.oo), as it would
+  # interfere with the next link command; also delete a directory that is
+  # left behind by Apple's compiler.  We do this before executing the actions.
+  rm -rf conftest.dSYM conftest_ipa8_conftest.oo
+  eval $as_lineno_stack; ${as_lineno_stack:+:} unset as_lineno
+  as_fn_set_status $ac_retval
+
+} # ac_fn_c_try_link
 
 # ac_fn_c_check_func LINENO FUNC VAR
 # ----------------------------------
@@ -4511,7 +4513,7 @@ MAGICK_PATCHLEVEL_VERSION=4
 
 MAGICK_VERSION=6.9.3-4
 
-MAGICK_GIT_REVISION=10542:55c1114:20160206
+MAGICK_GIT_REVISION=10544:76a73a2:20160208
 
 
 # Substitute library versioning
@@ -4523,7 +4525,6 @@ MAGICK_LIBRARY_VERSION_INFO=$MAGICK_LIBRARY_CURRENT:$MAGICK_LIBRARY_REVISION:$MA
 MAGICKPP_LIBRARY_CURRENT_MIN=`expr $MAGICKPP_LIBRARY_CURRENT - $MAGICKPP_LIBRARY_AGE`
 
 MAGICKPP_LIBRARY_VERSION_INFO=$MAGICKPP_LIBRARY_CURRENT:$MAGICKPP_LIBRARY_REVISION:$MAGICKPP_LIBRARY_AGE
-
 
 
 if test X$enable_reproducible_build = Xyes; then :
@@ -9321,85 +9322,6 @@ fi
 
 
 
-# Check for linker script support
-
-  # Check whether --enable-ld-version-script was given.
-if test "${enable_ld_version_script+set}" = set; then :
-  enableval=$enable_ld_version_script; have_ld_version_script=$enableval
-fi
-
-  if test -z "$have_ld_version_script"; then
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking if LD -Wl,--version-script works" >&5
-$as_echo_n "checking if LD -Wl,--version-script works... " >&6; }
-    save_LDFLAGS="$LDFLAGS"
-    LDFLAGS="$LDFLAGS -Wl,--version-script=conftest.map"
-    cat > conftest.map <<EOF
-foo
-EOF
-    cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main ()
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  accepts_syntax_errors=yes
-else
-  accepts_syntax_errors=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-    if test "$accepts_syntax_errors" = no; then
-      cat > conftest.map <<EOF
-VERS_1 {
-        global: sym;
-};
-
-VERS_2 {
-        global: sym;
-} VERS_1;
-EOF
-      cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main ()
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  have_ld_version_script=yes
-else
-  have_ld_version_script=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-    else
-      have_ld_version_script=no
-    fi
-    rm -f conftest.map
-    LDFLAGS="$save_LDFLAGS"
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: $have_ld_version_script" >&5
-$as_echo "$have_ld_version_script" >&6; }
-  fi
-   if test "$have_ld_version_script" = "yes"; then
-  HAVE_LD_VERSION_SCRIPT_TRUE=
-  HAVE_LD_VERSION_SCRIPT_FALSE='#'
-else
-  HAVE_LD_VERSION_SCRIPT_TRUE='#'
-  HAVE_LD_VERSION_SCRIPT_FALSE=
-fi
-
-
-
 # Test for 64-bit build.
 # The cast to long int works around a bug in the HP C Compiler
 # version HP92453-01 B.11.11.23709.GP, which incorrectly rejects
@@ -9589,6 +9511,85 @@ set CC_FOR_TARGET "$CC"
 EOF
 fi
 
+# Check for linker script support
+
+  # Check whether --enable-ld-version-script was given.
+if test "${enable_ld_version_script+set}" = set; then :
+  enableval=$enable_ld_version_script; have_ld_version_script=$enableval
+fi
+
+  if test -z "$have_ld_version_script"; then
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking if LD -Wl,--version-script works" >&5
+$as_echo_n "checking if LD -Wl,--version-script works... " >&6; }
+    save_LDFLAGS="$LDFLAGS"
+    LDFLAGS="$LDFLAGS -Wl,--version-script=conftest.map"
+    cat > conftest.map <<EOF
+foo
+EOF
+    cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  accepts_syntax_errors=yes
+else
+  accepts_syntax_errors=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+    if test "$accepts_syntax_errors" = no; then
+      cat > conftest.map <<EOF
+VERS_1 {
+        global: sym;
+};
+
+VERS_2 {
+        global: sym;
+} VERS_1;
+EOF
+      cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  have_ld_version_script=yes
+else
+  have_ld_version_script=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+    else
+      have_ld_version_script=no
+    fi
+    rm -f conftest.map
+    LDFLAGS="$save_LDFLAGS"
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: $have_ld_version_script" >&5
+$as_echo "$have_ld_version_script" >&6; }
+  fi
+   if test "$have_ld_version_script" = "yes"; then
+  HAVE_LD_VERSION_SCRIPT_TRUE=
+  HAVE_LD_VERSION_SCRIPT_FALSE='#'
+else
+  HAVE_LD_VERSION_SCRIPT_TRUE='#'
+  HAVE_LD_VERSION_SCRIPT_FALSE=
+fi
+
+
+
 #
 # Enable run-time checking.
 #
@@ -9739,8 +9740,8 @@ Please re-run configure with these options:
       CFLAGS="$CFLAGS -isysroot /Developer/SDKs/MacOSX10.5.sdk -arch ppc -arch i386"
       CXXFLAGS="$CXXFLAGS -isysroot /Developer/SDKs/MacOSX10.5.sdk -arch ppc -arch i386"
       LDFLAGS="$LDFLAGS -Wl,-syslibroot,/Developer/SDKs/MacOSX10.5.sdk -arch ppc -arch i386"
-    fi
-    ;;
+  fi
+  ;;
 esac
 
 #
@@ -9784,6 +9785,7 @@ fi
 
 
 
+#
 # Enable support for threads
 #
 # Find Posix threads library
@@ -10247,7 +10249,7 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
         DEF_THREAD="$PTHREAD_CFLAGS"
         CFLAGS="$CFLAGS $DEF_THREAD"
         CXXFLAGS="$CXXFLAGS $DEF_THREAD"
-        THREAD_LIBS="$PTHREAD_LIBS"
+	THREAD_LIBS="$PTHREAD_LIBS"
         if test "$CC" != "$PTHREAD_CC"; then
             { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Replacing compiler $CC with compiler $PTHREAD_CC to support pthreads." >&5
 $as_echo "$as_me: WARNING: Replacing compiler $CC with compiler $PTHREAD_CC to support pthreads." >&2;}
@@ -22347,10 +22349,10 @@ if test "$with_modules" != 'no' ; then
     if test "$libtool_build_shared_libs" = 'no'; then
         { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Modules may only be built if building shared libraries is enabled." >&5
 $as_echo "$as_me: WARNING: Modules may only be built if building shared libraries is enabled." >&2;}
-        build_modules='no'
-    else
-        build_modules='yes'
-    fi
+    build_modules='no'
+  else
+    build_modules='yes'
+  fi
 fi
 if test "$build_modules" != 'no' ; then
 
@@ -22368,7 +22370,7 @@ fi
 
 
 # Enable build using delegate libraries built in subdirectories rather than installed
-# delegate libraries (bzlib fftw fpx gslib jp2 jbig jpeg lcms lzma png tiff ttf webp wmf xml zlib)
+# delegate libraries (bzlib fftw fpx gslib jp2 jbig jpeg lcms lzma png tiff ttf wmf xml zlib)
 # Check whether --enable-delegate-build was given.
 if test "${enable_delegate_build+set}" = set; then :
   enableval=$enable_delegate_build; enable_delegate_build=$enableval
@@ -22427,7 +22429,7 @@ $as_echo "#define CIPHER_SUPPORT 1" >>confdefs.h
     MAGICK_FEATURES="Cipher $MAGICK_FEATURES"
 fi
 
-# Build an zero-configuration version of ImageMagick.
+# Build a zero-configuration version of ImageMagick.
 # Check whether --enable-zero-configuration was given.
 if test "${enable_zero_configuration+set}" = set; then :
   enableval=$enable_zero_configuration; enable_zero_configuration=$enableval
@@ -22484,9 +22486,7 @@ $as_echo "#define NDEBUG 1" >>confdefs.h
 
 fi
 
-# Add configure option --enable-maintainer-mode which enables dependency
-# checking and generation useful to package maintainers.  This is made an
-# option to avoid confusing end users.
+# Don't emit "rebuild rules" for configure, Makefile.ins, etc.
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to enable maintainer-specific portions of Makefiles" >&5
 $as_echo_n "checking whether to enable maintainer-specific portions of Makefiles... " >&6; }
@@ -22591,6 +22591,23 @@ _ACEOF
 
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-method-prefix "
 fi
+
+# Enable legacy support (default no)
+# Check whether --enable-legacy-support was given.
+if test "${enable_legacy_support+set}" = set; then :
+  enableval=$enable_legacy_support; with_legacy_support=$enableval
+else
+  with_legacy_support='no'
+fi
+
+ if test "$with_legacy_support" != 'no'; then
+  LEGACY_SUPPORT_TRUE=
+  LEGACY_SUPPORT_FALSE='#'
+else
+  LEGACY_SUPPORT_TRUE='#'
+  LEGACY_SUPPORT_FALSE=
+fi
+
 
 # Number of bits in a Quantum
 
@@ -26080,98 +26097,6 @@ cat >>confdefs.h <<_ACEOF
 _ACEOF
 
 
-ac_fn_c_check_decl "$LINENO" "strerror_r" "ac_cv_have_decl_strerror_r" "$ac_includes_default"
-if test "x$ac_cv_have_decl_strerror_r" = xyes; then :
-  ac_have_decl=1
-else
-  ac_have_decl=0
-fi
-
-cat >>confdefs.h <<_ACEOF
-#define HAVE_DECL_STRERROR_R $ac_have_decl
-_ACEOF
-
-for ac_func in strerror_r
-do :
-  ac_fn_c_check_func "$LINENO" "strerror_r" "ac_cv_func_strerror_r"
-if test "x$ac_cv_func_strerror_r" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_STRERROR_R 1
-_ACEOF
-
-fi
-done
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether strerror_r returns char *" >&5
-$as_echo_n "checking whether strerror_r returns char *... " >&6; }
-if ${ac_cv_func_strerror_r_char_p+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-
-    ac_cv_func_strerror_r_char_p=no
-    if test $ac_cv_have_decl_strerror_r = yes; then
-      cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-$ac_includes_default
-int
-main ()
-{
-
-	  char buf[100];
-	  char x = *strerror_r (0, buf, sizeof buf);
-	  char *p = strerror_r (0, buf, sizeof buf);
-	  return !p || x;
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_compile "$LINENO"; then :
-  ac_cv_func_strerror_r_char_p=yes
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-    else
-      # strerror_r is not declared.  Choose between
-      # systems that have relatively inaccessible declarations for the
-      # function.  BeOS and DEC UNIX 4.0 fall in this category, but the
-      # former has a strerror_r that returns char*, while the latter
-      # has a strerror_r that returns `int'.
-      # This test should segfault on the DEC system.
-      if test "$cross_compiling" = yes; then :
-  :
-else
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-$ac_includes_default
-	extern char *strerror_r ();
-int
-main ()
-{
-char buf[100];
-	  char x = *strerror_r (0, buf, sizeof buf);
-	  return ! isalpha (x);
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_run "$LINENO"; then :
-  ac_cv_func_strerror_r_char_p=yes
-fi
-rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
-  conftest.$ac_objext conftest.beam conftest.$ac_ext
-fi
-
-    fi
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_func_strerror_r_char_p" >&5
-$as_echo "$ac_cv_func_strerror_r_char_p" >&6; }
-if test $ac_cv_func_strerror_r_char_p = yes; then
-
-$as_echo "#define STRERROR_R_CHAR_P 1" >>confdefs.h
-
-fi
-
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for working strtod" >&5
 $as_echo_n "checking for working strtod... " >&6; }
 if ${ac_cv_func_strtod+:} false; then :
@@ -26282,6 +26207,98 @@ $as_echo "$as_me: WARNING: cannot find library containing definition of pow" >&2
 fi
 
 fi
+
+fi
+
+ac_fn_c_check_decl "$LINENO" "strerror_r" "ac_cv_have_decl_strerror_r" "$ac_includes_default"
+if test "x$ac_cv_have_decl_strerror_r" = xyes; then :
+  ac_have_decl=1
+else
+  ac_have_decl=0
+fi
+
+cat >>confdefs.h <<_ACEOF
+#define HAVE_DECL_STRERROR_R $ac_have_decl
+_ACEOF
+
+for ac_func in strerror_r
+do :
+  ac_fn_c_check_func "$LINENO" "strerror_r" "ac_cv_func_strerror_r"
+if test "x$ac_cv_func_strerror_r" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_STRERROR_R 1
+_ACEOF
+
+fi
+done
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether strerror_r returns char *" >&5
+$as_echo_n "checking whether strerror_r returns char *... " >&6; }
+if ${ac_cv_func_strerror_r_char_p+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+    ac_cv_func_strerror_r_char_p=no
+    if test $ac_cv_have_decl_strerror_r = yes; then
+      cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+$ac_includes_default
+int
+main ()
+{
+
+	  char buf[100];
+	  char x = *strerror_r (0, buf, sizeof buf);
+	  char *p = strerror_r (0, buf, sizeof buf);
+	  return !p || x;
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"; then :
+  ac_cv_func_strerror_r_char_p=yes
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+    else
+      # strerror_r is not declared.  Choose between
+      # systems that have relatively inaccessible declarations for the
+      # function.  BeOS and DEC UNIX 4.0 fall in this category, but the
+      # former has a strerror_r that returns char*, while the latter
+      # has a strerror_r that returns `int'.
+      # This test should segfault on the DEC system.
+      if test "$cross_compiling" = yes; then :
+  :
+else
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+$ac_includes_default
+	extern char *strerror_r ();
+int
+main ()
+{
+char buf[100];
+	  char x = *strerror_r (0, buf, sizeof buf);
+	  return ! isalpha (x);
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_run "$LINENO"; then :
+  ac_cv_func_strerror_r_char_p=yes
+fi
+rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
+  conftest.$ac_objext conftest.beam conftest.$ac_ext
+fi
+
+    fi
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_func_strerror_r_char_p" >&5
+$as_echo "$ac_cv_func_strerror_r_char_p" >&6; }
+if test $ac_cv_func_strerror_r_char_p = yes; then
+
+$as_echo "#define STRERROR_R_CHAR_P 1" >>confdefs.h
 
 fi
 
@@ -26473,7 +26490,7 @@ $as_echo "#define HAVE_SOCKET 1" >>confdefs.h
 fi
 
 
-for ac_func in acosh _aligned_malloc asinh atanh atoll atexit cabs carg cimag creal clock ctime_r directio _exit execvp fchmod floor fork ftime ftruncate getc_unlocked getcwd getpid getexecname getdtablesize getpagesize getrlimit getrusage gettimeofday gmtime_r isnan j0 j1 lltostr localtime_r lstat memmove memset mkstemp munmap nanosleep newlocale _NSGetExecutablePath pclose _pclose poll popen _popen posix_fadvise posix_fallocate posix_madvise posix_memalign posix_spawnp pow pread pwrite qsort_r raise rand_r readlink readdir_r realpath select seekdir sendfile setlocale socket sqrt setvbuf stat strchr strerror_r strrchr strcspn strdup strpbrk strspn strstr strtod strtod_l strtol strtoul symlink sysconf sigemptyset sigaction spawnvp strerror strlcat strlcpy strcasecmp strncasecmp telldir tempnam times ulltostr uselocale usleep utime vfprintf vfprintf_l vsprintf vsnprintf vsnprintf_l waitpid _wfopen _wstat
+for ac_func in acosh _aligned_malloc asinh atanh atoll atexit cabs carg cimag creal clock ctime_r directio _exit execvp fchmod floor fork ftime ftruncate getc_unlocked getcwd getpid getexecname getdtablesize getpagesize getrlimit getrusage gettimeofday gmtime_r isnan j0 j1 lltostr localtime_r lstat memmove memset mkstemp munmap nanosleep newlocale _NSGetExecutablePath pclose _pclose poll popen _popen posix_fadvise posix_fallocate posix_madvise posix_memalign posix_spawnp pow pread pwrite qsort_r raise rand_r readlink readdir_r realpath select seekdir sendfile setlocale socket sqrt setvbuf stat strchr strrchr strcspn strdup strpbrk strspn strstr strtod strtod_l strtol strtoul symlink sysconf sigemptyset sigaction spawnvp strerror strlcat strlcpy strcasecmp strncasecmp telldir tempnam times ulltostr uselocale usleep utime vfprintf vfprintf_l vsprintf vsnprintf vsnprintf_l waitpid _wfopen _wstat
 do :
   as_ac_var=`$as_echo "ac_cv_func_$ac_func" | $as_tr_sh`
 ac_fn_c_check_func "$LINENO" "$ac_func" "$as_ac_var"
@@ -27368,7 +27385,7 @@ if test "$enable_delegate_build" != 'no'; then
     done
 
     # Libraries
-    for dir in bzlib fftw fpx gslib/src jp2 jbig/libjbig jpeg lcms/src lzma magick openjp2 png tiff/libtiff ttf/objs wand webp wmf/src xml zlib; do
+    for dir in bzlib fftw fpx gslib/src jbig/libjbig jpeg lcms/src lzma magick openjp2 png tiff/libtiff ttf/objs wand webp wmf/src xml zlib; do
     if test -d "$builddir/$dir/.libs"; then
         LDFLAGS="$LDFLAGS -L$builddir/$dir/.libs"
     else
@@ -27463,51 +27480,6 @@ _ACEOF
 GOMP_LIBS=''
 if test "$enable_openmp" != 'no'; then
   if test "${GCC}" = "yes"; then
-    # Clang 3.8 and later defaults to the LLVM OpenMP implementation
-    if test "x$GOMP_LIBS" = x ; then
-      if $CC --version 2>&1 | grep clang > /dev/null ; then
-        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for omp_get_num_procs in -lomp" >&5
-$as_echo_n "checking for omp_get_num_procs in -lomp... " >&6; }
-if ${ac_cv_lib_omp_omp_get_num_procs+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lomp  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char omp_get_num_procs ();
-int
-main ()
-{
-return omp_get_num_procs ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_omp_omp_get_num_procs=yes
-else
-  ac_cv_lib_omp_omp_get_num_procs=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_omp_omp_get_num_procs" >&5
-$as_echo "$ac_cv_lib_omp_omp_get_num_procs" >&6; }
-if test "x$ac_cv_lib_omp_omp_get_num_procs" = xyes; then :
-  GOMP_LIBS="-lomp"
-fi
-
-      fi
-    fi
     # Open64 (passes for GCC but uses different OpenMP implementation)
     if test "x$GOMP_LIBS" = x ; then
       if $CC --version 2>&1 | grep Open64 > /dev/null ; then
@@ -27962,17 +27934,6 @@ fi
 
 
 #
-# Add support for 'huge pages' if requested
-#
-if test "x$enable_hugepages" != "xno"; then :
-
-
-$as_echo "#define HAVE_HUGEPAGES 1" >>confdefs.h
-
-
-fi
-
-#
 # Add support for ccmalloc memory debugging library if requested
 #
 have_ccmalloc='no'
@@ -28071,6 +28032,17 @@ fi
             LIBS="$OLIBS"
         fi
     fi
+fi
+
+#
+# Add support for 'huge pages' if requested
+#
+if test "x$enable_hugepages" != "xno"; then :
+
+
+$as_echo "#define HAVE_HUGEPAGES 1" >>confdefs.h
+
+
 fi
 
 #
@@ -29247,6 +29219,7 @@ fi
 
 
 
+# whether modules are built or not.
 with_ltdl='yes'
 have_ltdl='no'
 LTDL_LIBS=''
@@ -31078,7 +31051,6 @@ fi
 #
 # Check for LCMS delegate library.
 #
-# Disable LCMS.
 
 # Check whether --with-lcms was given.
 if test "${with_lcms+set}" = set; then :
@@ -31667,7 +31639,6 @@ else
   OPENEXR_DELEGATE_TRUE='#'
   OPENEXR_DELEGATE_FALSE=
 fi
-
 
 
 
@@ -33139,6 +33110,7 @@ SHAREARCH_RELATIVE_PATH="${SHAREARCH_DIRNAME}"
 
 SHAREARCH_PATH="${LIBRARY_PATH}/${SHAREARCH_RELATIVE_PATH}"
 
+
 #
 # program_transform_name is formed for use in a Makefile, so create a
 # modified version for use in a shell script.
@@ -33248,8 +33220,8 @@ $as_echo "no" >&6; }
 fi
 
 
-# Extract the first word of ""$BPGDecodeDelegateDefault"", so it can be a program name with args.
-set dummy "$BPGDecodeDelegateDefault"; ac_word=$2
+# Extract the first word of ""$BGPDecodeDelegateDefault"", so it can be a program name with args.
+set dummy "$BGPDecodeDelegateDefault"; ac_word=$2
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
 $as_echo_n "checking for $ac_word... " >&6; }
 if ${ac_cv_path_BGPDecodeDelegate+:} false; then :
@@ -33275,7 +33247,7 @@ done
   done
 IFS=$as_save_IFS
 
-  test -z "$ac_cv_path_BGPDecodeDelegate" && ac_cv_path_BGPDecodeDelegate=""$BPGDecodeDelegateDefault""
+  test -z "$ac_cv_path_BGPDecodeDelegate" && ac_cv_path_BGPDecodeDelegate=""$BGPDecodeDelegateDefault""
   ;;
 esac
 fi
@@ -33289,8 +33261,8 @@ $as_echo "no" >&6; }
 fi
 
 
-# Extract the first word of ""$BPGEncodeDelegateDefault"", so it can be a program name with args.
-set dummy "$BPGEncodeDelegateDefault"; ac_word=$2
+# Extract the first word of ""$BGPEncodeDelegateDefault"", so it can be a program name with args.
+set dummy "$BGPEncodeDelegateDefault"; ac_word=$2
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
 $as_echo_n "checking for $ac_word... " >&6; }
 if ${ac_cv_path_BGPEncodeDelegate+:} false; then :
@@ -33316,7 +33288,7 @@ done
   done
 IFS=$as_save_IFS
 
-  test -z "$ac_cv_path_BGPEncodeDelegate" && ac_cv_path_BGPEncodeDelegate=""$BPGEncodeDelegateDefault""
+  test -z "$ac_cv_path_BGPEncodeDelegate" && ac_cv_path_BGPEncodeDelegate=""$BGPEncodeDelegateDefault""
   ;;
 esac
 fi
@@ -33499,47 +33471,6 @@ $as_echo "no" >&6; }
 fi
 
 
-# Extract the first word of ""$ConvertDelegateDefault"", so it can be a program name with args.
-set dummy "$ConvertDelegateDefault"; ac_word=$2
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
-$as_echo_n "checking for $ac_word... " >&6; }
-if ${ac_cv_path_ConvertDelegate+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  case $ConvertDelegate in
-  [\\/]* | ?:[\\/]*)
-  ac_cv_path_ConvertDelegate="$ConvertDelegate" # Let the user override the test with a path.
-  ;;
-  *)
-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-    for ac_exec_ext in '' $ac_executable_extensions; do
-  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_path_ConvertDelegate="$as_dir/$ac_word$ac_exec_ext"
-    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-  done
-IFS=$as_save_IFS
-
-  test -z "$ac_cv_path_ConvertDelegate" && ac_cv_path_ConvertDelegate=""$ConvertDelegateDefault""
-  ;;
-esac
-fi
-ConvertDelegate=$ac_cv_path_ConvertDelegate
-if test -n "$ConvertDelegate"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ConvertDelegate" >&5
-$as_echo "$ConvertDelegate" >&6; }
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
-
-
 # Extract the first word of ""$DNGDecodeDelegateDefault"", so it can be a program name with args.
 set dummy "$DNGDecodeDelegateDefault"; ac_word=$2
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
@@ -33663,6 +33594,88 @@ $as_echo "no" >&6; }
 fi
 
 
+# Extract the first word of ""$ConvertDelegateDefault"", so it can be a program name with args.
+set dummy "$ConvertDelegateDefault"; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_ConvertDelegate+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $ConvertDelegate in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_ConvertDelegate="$ConvertDelegate" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_ConvertDelegate="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  test -z "$ac_cv_path_ConvertDelegate" && ac_cv_path_ConvertDelegate=""$ConvertDelegateDefault""
+  ;;
+esac
+fi
+ConvertDelegate=$ac_cv_path_ConvertDelegate
+if test -n "$ConvertDelegate"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ConvertDelegate" >&5
+$as_echo "$ConvertDelegate" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+# Extract the first word of ""$DisplayDelegateDefault"", so it can be a program name with args.
+set dummy "$DisplayDelegateDefault"; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_DisplayDelegate+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $DisplayDelegate in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_DisplayDelegate="$DisplayDelegate" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_DisplayDelegate="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  test -z "$ac_cv_path_DisplayDelegate" && ac_cv_path_DisplayDelegate=""$DisplayDelegateDefault""
+  ;;
+esac
+fi
+DisplayDelegate=$ac_cv_path_DisplayDelegate
+if test -n "$DisplayDelegate"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $DisplayDelegate" >&5
+$as_echo "$DisplayDelegate" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
 # Extract the first word of ""$EchoDelegateDefault"", so it can be a program name with args.
 set dummy "$EchoDelegateDefault"; ac_word=$2
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
@@ -33739,47 +33752,6 @@ EditorDelegate=$ac_cv_path_EditorDelegate
 if test -n "$EditorDelegate"; then
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: $EditorDelegate" >&5
 $as_echo "$EditorDelegate" >&6; }
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
-
-
-# Extract the first word of ""$DisplayDelegateDefault"", so it can be a program name with args.
-set dummy "$DisplayDelegateDefault"; ac_word=$2
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
-$as_echo_n "checking for $ac_word... " >&6; }
-if ${ac_cv_path_DisplayDelegate+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  case $DisplayDelegate in
-  [\\/]* | ?:[\\/]*)
-  ac_cv_path_DisplayDelegate="$DisplayDelegate" # Let the user override the test with a path.
-  ;;
-  *)
-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-    for ac_exec_ext in '' $ac_executable_extensions; do
-  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_path_DisplayDelegate="$as_dir/$ac_word$ac_exec_ext"
-    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-  done
-IFS=$as_save_IFS
-
-  test -z "$ac_cv_path_DisplayDelegate" && ac_cv_path_DisplayDelegate=""$DisplayDelegateDefault""
-  ;;
-esac
-fi
-DisplayDelegate=$ac_cv_path_DisplayDelegate
-if test -n "$DisplayDelegate"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $DisplayDelegate" >&5
-$as_echo "$DisplayDelegate" >&6; }
 else
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
@@ -35302,7 +35274,7 @@ have_xps='no'        ; if test "$XPSDelegate" != "$XPSDelegateDefault"; then hav
 #
 type_include_files=''
 
-# Apple fonts.
+ Apple fonts.
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for Apple fonts directory" >&5
 $as_echo_n "checking for Apple fonts directory... " >&6; }
 apple_font_dir=''
@@ -35430,9 +35402,9 @@ fi
 if test "$with_frozenpaths" != 'yes'; then
   # Re-set delegate definitions to default (no paths)
   AutotraceDecodeDelegate="$AutotraceDecodeDelegateDefault"
+  BGPDecodeDelegate="$BGPDecodeDelegateDefault"
+  BGPEncodeDelegate="$BGPEncodeDelegateDefault"
   BlenderDecodeDelegate="$BlenderDecodeDelegateDefault"
-  BPGDecodeDelegate="$BPGDecodeDelegateDefault"
-  BPGEncodeDelegate="$BPGEncodeDelegateDefault"
   BZIPDelegate="$BZIPDelegateDefault"
   BrowseDelegate="$BrowseDelegateDefault"
   CatDelegate="$CatDelegateDefault"
@@ -35467,8 +35439,8 @@ if test "$with_frozenpaths" != 'yes'; then
   RMDelegate="$RMDelegateDefault"
   RSVGDecodeDelegate="$RSVGDecodeDelegateDefault"
   SCANDecodeDelegate="$SCANDecodeDelegateDefault"
-  ShowImageDelegate="$ShowImageDelegateDefault"
   SVGDecodeDelegate="$SVGDecodeDelegateDefault"
+  ShowImageDelegate="$ShowImageDelegateDefault"
   TXTDelegate="$TXTDelegateDefault"
   UniconvertorDelegate="$UniconvertorDelegateDefault"
   WebPDecodeDelegate="$WebPDecodeDelegateDefault"
@@ -36289,11 +36261,11 @@ fi
 if test "$have_ps"     = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES ps"
 fi
+if test "$have_raqm"    = 'yes' ; then
+   MAGICK_DELEGATES="$MAGICK_DELEGATES raqm"
+fi
 if test "$have_ra_ppm" = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES rad"
-fi
-if test "$have_raqm"   = 'yes' ; then
-   MAGICK_DELEGATES="$MAGICK_DELEGATES raqm"
 fi
 if test "$have_rsvg"   = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES rsvg"
@@ -36319,6 +36291,7 @@ fi
 if test "$have_zlib"   = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES zlib"
 fi
+
 # Remove extraneous spaces from output variables (asthetic)
 MAGICK_DELEGATES=`echo $MAGICK_DELEGATES | sed -e 's/  */ /g'`
 MAGICK_FEATURES=`echo $MAGICK_FEATURES | sed -e 's/  */ /g'`
@@ -36492,11 +36465,7 @@ ac_config_commands="$ac_config_commands magick.sh.in"
 
 ac_config_commands="$ac_config_commands MagickCore-config.in"
 
-ac_config_commands="$ac_config_commands Magick-config.in"
-
 ac_config_commands="$ac_config_commands MagickWand-config.in"
-
-ac_config_commands="$ac_config_commands Wand-config.in"
 
 ac_config_commands="$ac_config_commands Magick++-config.in"
 
@@ -36520,11 +36489,6 @@ if test "${ghostscript_font_dir}x" != 'x'; then
     result_ghostscript_font_dir=$ghostscript_font_dir
 fi
 
-result_apple_font_dir='none'
-if test "${apple_font_dir}x" != 'x'; then
-    result_apple_font_dir=${apple_font_dir}
-fi
-
 result_windows_font_dir='none'
 if test "${windows_font_dir}x" != 'x'; then
     result_windows_font_dir=${windows_font_dir}
@@ -36533,7 +36497,7 @@ fi
 # ==============================================================================
 # Generate build environment
 # ==============================================================================
-ac_config_files="$ac_config_files common.shi config/configure.xml config/delegates.xml config/ImageMagick.rdf config/MagickCore.dox config/MagickWand.dox config/Magick++.dox config/type-apple.xml config/type-dejavu.xml config/type-ghostscript.xml config/type-windows.xml config/type.xml ImageMagick.spec Magick++/bin/Magick++-config magick/ImageMagick.pc Magick++/lib/ImageMagick++.pc Magick++/lib/Magick++.pc magick/Magick-config magick/MagickCore-config magick/MagickCore.pc magick/version.h Makefile magick.sh PerlMagick/check.sh PerlMagick/default/Magick.pm PerlMagick/Makefile.PL PerlMagick/default/Makefile.PL PerlMagick/quantum/Makefile.PL PerlMagick/quantum/quantum.pm PerlMagick/quantum/quantum.xs PerlMagick/quantum/typemap utilities/animate.1 utilities/compare.1 utilities/composite.1 utilities/conjure.1 utilities/convert.1 utilities/display.1 utilities/identify.1 utilities/ImageMagick.1 utilities/import.1 utilities/mogrify.1 utilities/montage.1 utilities/stream.1 wand/MagickWand-config wand/MagickWand.pc wand/Wand-config wand/Wand.pc"
+ac_config_files="$ac_config_files common.shi config/configure.xml config/delegates.xml config/ImageMagick.rdf config/MagickCore.dox config/MagickWand.dox config/Magick++.dox config/type-apple.xml config/type-dejavu.xml config/type-ghostscript.xml config/type-windows.xml config/type.xml ImageMagick.spec Magick++/bin/Magick++-config magick/ImageMagick.pc Magick++/lib/Magick++.pc magick/MagickCore-config magick/MagickCore.pc magick/version.h Makefile magick.sh PerlMagick/check.sh PerlMagick/default/Magick.pm PerlMagick/Makefile.PL PerlMagick/default/Makefile.PL PerlMagick/quantum/Makefile.PL PerlMagick/quantum/quantum.pm PerlMagick/quantum/quantum.xs PerlMagick/quantum/typemap utilities/animate.1 utilities/compare.1 utilities/composite.1 utilities/conjure.1 utilities/convert.1 utilities/display.1 utilities/identify.1 utilities/ImageMagick.1 utilities/import.1 utilities/mogrify.1 utilities/montage.1 utilities/stream.1 wand/MagickWand-config wand/MagickWand.pc"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -36714,6 +36678,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${MAINTAINER_MODE_TRUE}" && test -z "${MAINTAINER_MODE_FALSE}"; then
   as_fn_error $? "conditional \"MAINTAINER_MODE\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${LEGACY_SUPPORT_TRUE}" && test -z "${LEGACY_SUPPORT_FALSE}"; then
+  as_fn_error $? "conditional \"LEGACY_SUPPORT\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 
@@ -37864,9 +37832,7 @@ do
     "default") CONFIG_COMMANDS="$CONFIG_COMMANDS default" ;;
     "magick.sh.in") CONFIG_COMMANDS="$CONFIG_COMMANDS magick.sh.in" ;;
     "MagickCore-config.in") CONFIG_COMMANDS="$CONFIG_COMMANDS MagickCore-config.in" ;;
-    "Magick-config.in") CONFIG_COMMANDS="$CONFIG_COMMANDS Magick-config.in" ;;
     "MagickWand-config.in") CONFIG_COMMANDS="$CONFIG_COMMANDS MagickWand-config.in" ;;
-    "Wand-config.in") CONFIG_COMMANDS="$CONFIG_COMMANDS Wand-config.in" ;;
     "Magick++-config.in") CONFIG_COMMANDS="$CONFIG_COMMANDS Magick++-config.in" ;;
     "PerlMagick/check.sh.in") CONFIG_COMMANDS="$CONFIG_COMMANDS PerlMagick/check.sh.in" ;;
     "common.shi") CONFIG_FILES="$CONFIG_FILES common.shi" ;;
@@ -37884,9 +37850,7 @@ do
     "ImageMagick.spec") CONFIG_FILES="$CONFIG_FILES ImageMagick.spec" ;;
     "Magick++/bin/Magick++-config") CONFIG_FILES="$CONFIG_FILES Magick++/bin/Magick++-config" ;;
     "magick/ImageMagick.pc") CONFIG_FILES="$CONFIG_FILES magick/ImageMagick.pc" ;;
-    "Magick++/lib/ImageMagick++.pc") CONFIG_FILES="$CONFIG_FILES Magick++/lib/ImageMagick++.pc" ;;
     "Magick++/lib/Magick++.pc") CONFIG_FILES="$CONFIG_FILES Magick++/lib/Magick++.pc" ;;
-    "magick/Magick-config") CONFIG_FILES="$CONFIG_FILES magick/Magick-config" ;;
     "magick/MagickCore-config") CONFIG_FILES="$CONFIG_FILES magick/MagickCore-config" ;;
     "magick/MagickCore.pc") CONFIG_FILES="$CONFIG_FILES magick/MagickCore.pc" ;;
     "magick/version.h") CONFIG_FILES="$CONFIG_FILES magick/version.h" ;;
@@ -37914,8 +37878,6 @@ do
     "utilities/stream.1") CONFIG_FILES="$CONFIG_FILES utilities/stream.1" ;;
     "wand/MagickWand-config") CONFIG_FILES="$CONFIG_FILES wand/MagickWand-config" ;;
     "wand/MagickWand.pc") CONFIG_FILES="$CONFIG_FILES wand/MagickWand.pc" ;;
-    "wand/Wand-config") CONFIG_FILES="$CONFIG_FILES wand/Wand-config" ;;
-    "wand/Wand.pc") CONFIG_FILES="$CONFIG_FILES wand/Wand.pc" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;
   esac
@@ -39408,9 +39370,7 @@ _LT_EOF
  ;;
     "magick.sh.in":C) chmod +x magick.sh ;;
     "MagickCore-config.in":C) chmod +x magick/MagickCore-config ;;
-    "Magick-config.in":C) chmod +x magick/Magick-config ;;
     "MagickWand-config.in":C) chmod +x wand/MagickWand-config ;;
-    "Wand-config.in":C) chmod +x wand/Wand-config ;;
     "Magick++-config.in":C) chmod +x Magick++/bin/Magick++-config ;;
     "PerlMagick/check.sh.in":C) chmod +x PerlMagick/check.sh ;;
 
@@ -39498,7 +39458,7 @@ matches your expectations.
   PANGO             --with-pango=$with_pango		$have_pango
   PERL              --with-perl=$with_perl		$have_perl
   PNG               --with-png=$with_png		$have_png
-  RAMQ              --with-raqm=$with_raqm		$have_raqm
+  RAQM              --with-raqm=$with_raqm		$have_raqm
   RSVG              --with-rsvg=$with_rsvg		$have_rsvg
   TIFF              --with-tiff=$with_tiff		$have_tiff
   WEBP              --with-webp=$with_webp		$have_webp
@@ -39584,7 +39544,7 @@ matches your expectations.
   PANGO             --with-pango=$with_pango		$have_pango
   PERL              --with-perl=$with_perl		$have_perl
   PNG               --with-png=$with_png		$have_png
-  RAMQ              --with-raqm=$with_raqm		$have_raqm
+  RAQM              --with-raqm=$with_raqm		$have_raqm
   RSVG              --with-rsvg=$with_rsvg		$have_rsvg
   TIFF              --with-tiff=$with_tiff		$have_tiff
   WEBP              --with-webp=$with_webp		$have_webp

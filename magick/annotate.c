@@ -70,6 +70,7 @@
 #include "magick/semaphore.h"
 #include "magick/statistic.h"
 #include "magick/string_.h"
+#include "magick/token.h"
 #include "magick/token-private.h"
 #include "magick/transform.h"
 #include "magick/type.h"
