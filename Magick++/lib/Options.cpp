@@ -62,7 +62,7 @@ Magick::Options::~Options()
    _drawInfo=DestroyDrawInfo(_drawInfo);
 }
 
-void Magick::Options::adjoin(bool flag_)
+void Magick::Options::adjoin(const bool flag_)
 {
   _imageInfo->adjoin=static_cast<MagickBooleanType>(
     flag_ ? MagickTrue : MagickFalse);
@@ -130,7 +130,7 @@ Magick::Color Magick::Options::boxColor(void) const
   return(Color(_drawInfo->undercolor));
 }
 
-void Magick::Options::colorspaceType(ColorspaceType colorspace_)
+void Magick::Options::colorspaceType(const ColorspaceType colorspace_)
 {
   _imageInfo->colorspace=colorspace_;
 }
@@ -140,7 +140,7 @@ Magick::ColorspaceType Magick::Options::colorspaceType(void) const
   return(static_cast<Magick::ColorspaceType>(_imageInfo->colorspace));
 }
 
-void Magick::Options::compressType(CompressionType compressType_)
+void Magick::Options::compressType(const CompressionType compressType_)
 {
   _imageInfo->compression=compressType_;
 }
@@ -150,7 +150,7 @@ Magick::CompressionType Magick::Options::compressType(void) const
   return(static_cast<Magick::CompressionType>(_imageInfo->compression));
 }
 
-void Magick::Options::colorFuzz(double fuzz_)
+void Magick::Options::colorFuzz(const double fuzz_)
 {
   _imageInfo->fuzz=fuzz_;
 }
@@ -160,7 +160,7 @@ double Magick::Options::colorFuzz(void) const
   return(_imageInfo->fuzz);
 }
 
-void Magick::Options::debug(bool flag_)
+void Magick::Options::debug(const bool flag_)
 {
   if  (flag_)
     SetLogEventMask("All");
@@ -191,7 +191,7 @@ Magick::Point Magick::Options::density(void) const
   return(Point());
 }
 
-void Magick::Options::depth(size_t depth_)
+void Magick::Options::depth(const size_t depth_)
 {
   _imageInfo->depth=depth_;
 }
@@ -201,7 +201,7 @@ size_t Magick::Options::depth(void) const
   return(_imageInfo->depth);
 }
 
-void Magick::Options::endian(Magick::EndianType endian_)
+void Magick::Options::endian(const Magick::EndianType endian_)
 {
   _imageInfo->endian=endian_;
 }
@@ -322,7 +322,7 @@ std::string Magick::Options::fontFamily(void) const
   return(std::string());
 }
 
-void Magick::Options::fontPointsize(double pointSize_)
+void Magick::Options::fontPointsize(const double pointSize_)
 {
   _imageInfo->pointsize=pointSize_;
   _drawInfo->pointsize=pointSize_;
@@ -333,7 +333,7 @@ double Magick::Options::fontPointsize(void) const
   return(_imageInfo->pointsize);
 }
 
-void Magick::Options::fontStyle(StyleType style_)
+void Magick::Options::fontStyle(const StyleType style_)
 {
   _drawInfo->style=style_;
   (void) SetImageOption(_imageInfo,"style",CommandOptionToMnemonic(
@@ -345,7 +345,7 @@ Magick::StyleType Magick::Options::fontStyle(void) const
   return(_drawInfo->style);
 }
 
-void Magick::Options::fontWeight(size_t weight_)
+void Magick::Options::fontWeight(const size_t weight_)
 {
   _drawInfo->weight=weight_;
   setOption("weight",(double) weight_);
@@ -372,7 +372,7 @@ std::string Magick::Options::format(void) const
   return(std::string());
 }
 
-void Magick::Options::interlaceType(InterlaceType interlace_)
+void Magick::Options::interlaceType(const InterlaceType interlace_)
 {
   _imageInfo->interlace=interlace_;
 }
@@ -408,7 +408,7 @@ std::string Magick::Options::magick(void) const
   return(std::string());
 }
 
-void Magick::Options::monochrome(bool monochromeFlag_)
+void Magick::Options::monochrome(const bool monochromeFlag_)
 {
   _imageInfo->monochrome=(MagickBooleanType) monochromeFlag_;
 }
@@ -434,7 +434,7 @@ Magick::Geometry Magick::Options::page(void) const
   return(Geometry());
 }
 
-void Magick::Options::quality(size_t quality_)
+void Magick::Options::quality(const size_t quality_)
 {
   _imageInfo->quality=quality_;
 }
@@ -444,7 +444,7 @@ size_t Magick::Options::quality(void) const
   return(_imageInfo->quality);
 }
 
-void Magick::Options::quantizeColors(size_t colors_)
+void Magick::Options::quantizeColors(const size_t colors_)
 {
   _quantizeInfo->number_colors=colors_;
 }
@@ -454,7 +454,7 @@ size_t Magick::Options::quantizeColors(void) const
   return(_quantizeInfo->number_colors);
 }
 
-void Magick::Options::quantizeColorSpace(ColorspaceType colorSpace_)
+void Magick::Options::quantizeColorSpace(const ColorspaceType colorSpace_)
 {
   _quantizeInfo->colorspace=colorSpace_;
 }
@@ -464,7 +464,7 @@ Magick::ColorspaceType Magick::Options::quantizeColorSpace(void) const
   return(static_cast<Magick::ColorspaceType>(_quantizeInfo->colorspace));
 }
 
-void Magick::Options::quantizeDither(bool ditherFlag_)
+void Magick::Options::quantizeDither(const bool ditherFlag_)
 {
   _imageInfo->dither=(MagickBooleanType) ditherFlag_;
   _quantizeInfo->dither_method=ditherFlag_ ? RiemersmaDitherMethod :
@@ -476,7 +476,7 @@ bool Magick::Options::quantizeDither(void) const
   return(static_cast<bool>(_imageInfo->dither));
 }
 
-void Magick::Options::quantizeDitherMethod(DitherMethod ditherMethod_)
+void Magick::Options::quantizeDitherMethod(const DitherMethod ditherMethod_)
 {
   _quantizeInfo->dither_method=ditherMethod_;
 }
@@ -486,7 +486,7 @@ MagickCore::DitherMethod Magick::Options::quantizeDitherMethod(void) const
   return(_quantizeInfo->dither_method);
 }
 
-void Magick::Options::quantizeTreeDepth(size_t treeDepth_)
+void Magick::Options::quantizeTreeDepth(const size_t treeDepth_)
 {
   _quantizeInfo->tree_depth=treeDepth_;
 }
@@ -506,7 +506,7 @@ bool Magick::Options::quiet(void) const
   return(_quiet);
 }
 
-void Magick::Options::resolutionUnits(ResolutionType resolutionUnits_)
+void Magick::Options::resolutionUnits(const ResolutionType resolutionUnits_)
 {
   _imageInfo->units=resolutionUnits_;
 }
@@ -549,7 +549,7 @@ Magick::Geometry Magick::Options::size(void) const
   return(Geometry());
 }
 
-void Magick::Options::strokeAntiAlias(bool flag_)
+void Magick::Options::strokeAntiAlias(const bool flag_)
 {
   flag_ ? _drawInfo->stroke_antialias=MagickTrue :
     _drawInfo->stroke_antialias=MagickFalse;
@@ -598,7 +598,7 @@ const double *Magick::Options::strokeDashArray(void) const
   return(_drawInfo->dash_pattern);
 }
 
-void Magick::Options::strokeDashOffset(double strokeDashOffset_)
+void Magick::Options::strokeDashOffset(const double strokeDashOffset_)
 {
   _drawInfo->dash_offset=strokeDashOffset_;
 }
@@ -608,7 +608,7 @@ double Magick::Options::strokeDashOffset(void) const
   return(_drawInfo->dash_offset);
 }
 
-void Magick::Options::strokeLineCap(LineCap lineCap_)
+void Magick::Options::strokeLineCap(const LineCap lineCap_)
 {
   _drawInfo->linecap=lineCap_;
 }
@@ -618,7 +618,7 @@ Magick::LineCap Magick::Options::strokeLineCap(void) const
   return(_drawInfo->linecap);
 }
 
-void Magick::Options::strokeLineJoin(LineJoin lineJoin_)
+void Magick::Options::strokeLineJoin(const LineJoin lineJoin_)
 {
   _drawInfo->linejoin=lineJoin_;
 }
@@ -628,7 +628,7 @@ Magick::LineJoin Magick::Options::strokeLineJoin(void) const
   return(_drawInfo->linejoin);
 }
 
-void Magick::Options::strokeMiterLimit(size_t miterLimit_)
+void Magick::Options::strokeMiterLimit(const size_t miterLimit_)
 {
   _drawInfo->miterlimit=miterLimit_;
 }
@@ -657,7 +657,7 @@ const MagickCore::Image *Magick::Options::strokePattern(void) const
   return(_drawInfo->stroke_pattern);
 }
 
-void Magick::Options::strokeWidth(double strokeWidth_)
+void Magick::Options::strokeWidth(const double strokeWidth_)
 {
   _drawInfo->stroke_width=strokeWidth_;
   setOption("strokewidth",strokeWidth_);
@@ -668,7 +668,7 @@ double Magick::Options::strokeWidth(void) const
   return(_drawInfo->stroke_width);
 }
 
-void Magick::Options::subImage(size_t subImage_)
+void Magick::Options::subImage(const size_t subImage_)
 {
   _imageInfo->scene=subImage_;
 }
@@ -678,7 +678,7 @@ size_t Magick::Options::subImage(void) const
   return(_imageInfo->scene);
 }
 
-void Magick::Options::subRange(size_t subRange_)
+void Magick::Options::subRange(const size_t subRange_)
 {
   _imageInfo->number_scenes=subRange_;
 }
@@ -688,7 +688,7 @@ size_t Magick::Options::subRange(void) const
   return(_imageInfo->number_scenes);
 }
 
-void Magick::Options::textAntiAlias(bool flag_)
+void Magick::Options::textAntiAlias(const bool flag_)
 {
   _drawInfo->text_antialias=static_cast<MagickBooleanType>(
     flag_ ? MagickTrue : MagickFalse);
@@ -699,7 +699,7 @@ bool Magick::Options::textAntiAlias(void) const
   return(static_cast<bool>(_drawInfo->text_antialias));
 }
 
-void Magick::Options::textDirection(DirectionType direction_)
+void Magick::Options::textDirection(const DirectionType direction_)
 {
   _drawInfo->direction=direction_;
   (void) SetImageOption(_imageInfo,"direction",CommandOptionToMnemonic(
@@ -725,7 +725,7 @@ std::string Magick::Options::textEncoding(void) const
   return(std::string());
 }
 
-void Magick::Options::textGravity(GravityType gravity_)
+void Magick::Options::textGravity(const GravityType gravity_)
 {
   _drawInfo->gravity=gravity_;
   (void) SetImageOption(_imageInfo,"gravity",CommandOptionToMnemonic(
@@ -737,7 +737,7 @@ Magick::GravityType Magick::Options::textGravity() const
   return(_drawInfo->gravity);
 }
 
-void Magick::Options::textInterlineSpacing(double spacing_)
+void Magick::Options::textInterlineSpacing(const double spacing_)
 {
   _drawInfo->interline_spacing=spacing_;
   setOption("interline-spacing",spacing_);
@@ -748,7 +748,7 @@ double Magick::Options::textInterlineSpacing(void) const
   return(_drawInfo->interline_spacing);
 }
 
-void Magick::Options::textInterwordSpacing(double spacing_)
+void Magick::Options::textInterwordSpacing(const double spacing_)
 {
   _drawInfo->interword_spacing=spacing_;
   setOption("interword-spacing",spacing_);
@@ -759,7 +759,7 @@ double Magick::Options::textInterwordSpacing(void) const
   return(_drawInfo->interword_spacing);
 }
 
-void Magick::Options::textKerning(double kerning_)
+void Magick::Options::textKerning(const double kerning_)
 {
   _drawInfo->kerning=kerning_;
   setOption("kerning",kerning_);
@@ -781,7 +781,7 @@ Magick::Color Magick::Options::textUnderColor(void) const
   return(_drawInfo->undercolor);
 }
 
-void Magick::Options::transformOrigin(double tx_,double ty_)
+void Magick::Options::transformOrigin(const double tx_,const double ty_)
 {
   AffineMatrix
     affine,
@@ -815,7 +815,7 @@ void Magick::Options::transformReset(void)
   _drawInfo->affine.ty=0.0;
 }
 
-void Magick::Options::transformRotation(double angle_)
+void Magick::Options::transformRotation(const double angle_)
 {
   AffineMatrix
     affine,
@@ -841,7 +841,7 @@ void Magick::Options::transformRotation(double angle_)
   _drawInfo->affine.ty=current.rx*affine.tx+current.sy*affine.ty+current.ty;
 }
 
-void Magick::Options::transformScale(double sx_,double sy_)
+void Magick::Options::transformScale(const double sx_,const double sy_)
 {
   AffineMatrix
     affine,
@@ -865,7 +865,7 @@ void Magick::Options::transformScale(double sx_,double sy_)
   _drawInfo->affine.ty=current.rx*affine.tx+current.sy*affine.ty+current.ty;
 }
 
-void Magick::Options::transformSkewX(double skewx_)
+void Magick::Options::transformSkewX(const double skewx_)
 {
   AffineMatrix
     affine,
@@ -890,7 +890,7 @@ void Magick::Options::transformSkewX(double skewx_)
   _drawInfo->affine.ty=current.rx*affine.tx+current.sy*affine.ty+current.ty;
 }
 
-void Magick::Options::transformSkewY(double skewy_)
+void Magick::Options::transformSkewY(const double skewy_)
 {
   AffineMatrix
     affine,
@@ -925,7 +925,7 @@ Magick::ImageType Magick::Options::type(void) const
   return(_imageInfo->type);
 }
 
-void Magick::Options::verbose(bool verboseFlag_)
+void Magick::Options::verbose(const bool verboseFlag_)
 {
   _imageInfo->verbose=(MagickBooleanType) verboseFlag_;
 }
