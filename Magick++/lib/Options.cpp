@@ -337,7 +337,7 @@ double Magick::Options::fontPointsize(void) const
   return(_imageInfo->pointsize);
 }
 
-void Magick::Options::fontStyle(StyleType style_)
+void Magick::Options::fontStyle(const StyleType style_)
 {
   _drawInfo->style=style_;
   (void) SetImageOption(_imageInfo,"style",CommandOptionToMnemonic(
@@ -349,7 +349,7 @@ Magick::StyleType Magick::Options::fontStyle(void) const
   return(_drawInfo->style);
 }
 
-void Magick::Options::fontWeight(size_t weight_)
+void Magick::Options::fontWeight(const size_t weight_)
 {
   _drawInfo->weight=weight_;
   setOption("weight",(double) weight_);
