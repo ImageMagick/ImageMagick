@@ -1,3 +1,6 @@
+2016-02-09  6.9.3-4 Cristy  <quetzlzacatenango@image...>
+  * Fix compiler error for complext text layout.
+
 2016-02-05  6.9.3-3 Cristy  <quetzlzacatenango@image...>
   * New version 6.9.3-3, GIT revision 10540:6b4c918:20160206.
 
