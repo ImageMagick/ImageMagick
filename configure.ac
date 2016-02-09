@@ -36,7 +36,11 @@ m4_define([magick_tar_name],[ImageMagick])
 # ==============================================================================
 # Initalize Automake
 # ==============================================================================
-AC_INIT([ImageMagick],[magick_version],[http://www.imagemagick.org],[magick_tar_name])
+AC_INIT([ImageMagick],
+        [magick_version],
+        [https://github.com/ImageMagick/ImageMagick/issues],
+        [magick_tar_name],
+        [http://www.imagemagick.org])
 AC_CONFIG_SRCDIR([MagickCore/MagickCore.h])
 AC_CONFIG_AUX_DIR([config])
 AC_REQUIRE_AUX_FILE([tap-driver.sh])
@@ -45,8 +49,8 @@ AC_CONFIG_HEADERS([config/config.h])
 AX_PREFIX_CONFIG_H([MagickCore/magick-baseconfig.h],[MagickCore])
 AC_CANONICAL_SYSTEM
 AC_CANONICAL_TARGET
-AM_INIT_AUTOMAKE([1.12 nostdinc color-tests foreign parallel-tests silent-rules subdir-objects dist-bzip2 dist-lzip dist-xz dist-zip tar-ustar])
-m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
+AM_INIT_AUTOMAKE([foreign color-tests -Wall -Wno-portability subdir-objects])
+AM_SILENT_RULES([yes])
 
 #
 # Save initial user-tunable values
@@ -294,7 +298,7 @@ AC_PROG_AWK
 AM_WITH_DMALLOC
 AX_C___ATTRIBUTE__
 AX_GCC_ARCHFLAG([yes])
-PKG_PROG_PKG_CONFIG
+PKG_PROG_PKG_CONFIG([0.20])
 AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
 
@@ -302,6 +306,7 @@ AC_CANONICAL_HOST
 AC_CHECK_SIZEOF([size_t])
 
 AX_COMPILER_VENDOR
+AX_COMPILER_FLAGS
 # The AX_CFLAGS_WARN_ALL macro doesn't currently work for sunpro
 # compiler.
 if test "$ax_cv_c_compiler_vendor" != "sun"; then

@@ -1035,10 +1035,10 @@ static size_t ComplexTextLayout(const Image *image,const DrawInfo *draw_info,
   register size_t
     i;
 
-  ssize_t
-    count;
+  size_t
+    extent;
 
-  count=0;
+  extent=0;
   rq=raqm_create();
   if (rq == (raqm_t *) NULL)
     goto cleanup;
@@ -1079,19 +1079,19 @@ static size_t ComplexTextLayout(const Image *image,const DrawInfo *draw_info,
     }
   if (raqm_layout(rq) == 0)
     goto cleanup;
-  glyphs=raqm_get_glyphs(rq,&count);
+  glyphs=raqm_get_glyphs(rq,&extent);
   if (glyphs == (raqm_glyph_t *) NULL)
     {
-      count=0;
+      extent=0;
       goto cleanup;
     }
-  *grapheme=(GraphemeInfo *) AcquireQuantumMemory(count,sizeof(**grapheme));
+  *grapheme=(GraphemeInfo *) AcquireQuantumMemory(extent,sizeof(**grapheme));
   if (*grapheme == (GraphemeInfo *) NULL)
     {
-      count=0;
+      extent=0;
       goto cleanup;
     }
-  for (i=0; i < (ssize_t) count; i++)
+  for (i=0; i < (ssize_t) extent; i++)
   {
     (*grapheme)[i].index=glyphs[i].index;
     (*grapheme)[i].x_offset=glyphs[i].x_offset;
@@ -1102,7 +1102,7 @@ static size_t ComplexTextLayout(const Image *image,const DrawInfo *draw_info,
 
 cleanup:
   raqm_destroy(rq);
-  return(count);
+  return(extent);
 #else
   const char
     *p;
