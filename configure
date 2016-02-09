@@ -4513,7 +4513,7 @@ MAGICK_PATCHLEVEL_VERSION=4
 
 MAGICK_VERSION=6.9.3-4
 
-MAGICK_GIT_REVISION=10544:76a73a2:20160208
+MAGICK_GIT_REVISION=10545:80353a3:20160208
 
 
 # Substitute library versioning
@@ -36465,7 +36465,11 @@ ac_config_commands="$ac_config_commands magick.sh.in"
 
 ac_config_commands="$ac_config_commands MagickCore-config.in"
 
+ac_config_commands="$ac_config_commands Magick-config.in"
+
 ac_config_commands="$ac_config_commands MagickWand-config.in"
+
+ac_config_commands="$ac_config_commands Wand-config.in"
 
 ac_config_commands="$ac_config_commands Magick++-config.in"
 
@@ -36497,7 +36501,7 @@ fi
 # ==============================================================================
 # Generate build environment
 # ==============================================================================
-ac_config_files="$ac_config_files common.shi config/configure.xml config/delegates.xml config/ImageMagick.rdf config/MagickCore.dox config/MagickWand.dox config/Magick++.dox config/type-apple.xml config/type-dejavu.xml config/type-ghostscript.xml config/type-windows.xml config/type.xml ImageMagick.spec Magick++/bin/Magick++-config magick/ImageMagick.pc Magick++/lib/Magick++.pc magick/MagickCore-config magick/MagickCore.pc magick/version.h Makefile magick.sh PerlMagick/check.sh PerlMagick/default/Magick.pm PerlMagick/Makefile.PL PerlMagick/default/Makefile.PL PerlMagick/quantum/Makefile.PL PerlMagick/quantum/quantum.pm PerlMagick/quantum/quantum.xs PerlMagick/quantum/typemap utilities/animate.1 utilities/compare.1 utilities/composite.1 utilities/conjure.1 utilities/convert.1 utilities/display.1 utilities/identify.1 utilities/ImageMagick.1 utilities/import.1 utilities/mogrify.1 utilities/montage.1 utilities/stream.1 wand/MagickWand-config wand/MagickWand.pc"
+ac_config_files="$ac_config_files common.shi config/configure.xml config/delegates.xml config/ImageMagick.rdf config/MagickCore.dox config/MagickWand.dox config/Magick++.dox config/type-apple.xml config/type-dejavu.xml config/type-ghostscript.xml config/type-windows.xml config/type.xml ImageMagick.spec Magick++/bin/Magick++-config magick/ImageMagick.pc Magick++/lib/ImageMagick++.pc Magick++/lib/Magick++.pc magick/Magick-config magick/MagickCore-config magick/MagickCore.pc magick/version.h Makefile magick.sh PerlMagick/check.sh PerlMagick/default/Magick.pm PerlMagick/Makefile.PL PerlMagick/default/Makefile.PL PerlMagick/quantum/Makefile.PL PerlMagick/quantum/quantum.pm PerlMagick/quantum/quantum.xs PerlMagick/quantum/typemap utilities/animate.1 utilities/compare.1 utilities/composite.1 utilities/conjure.1 utilities/convert.1 utilities/display.1 utilities/identify.1 utilities/ImageMagick.1 utilities/import.1 utilities/mogrify.1 utilities/montage.1 utilities/stream.1 wand/MagickWand-config wand/MagickWand.pc wand/Wand-config wand/Wand.pc"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -37832,7 +37836,9 @@ do
     "default") CONFIG_COMMANDS="$CONFIG_COMMANDS default" ;;
     "magick.sh.in") CONFIG_COMMANDS="$CONFIG_COMMANDS magick.sh.in" ;;
     "MagickCore-config.in") CONFIG_COMMANDS="$CONFIG_COMMANDS MagickCore-config.in" ;;
+    "Magick-config.in") CONFIG_COMMANDS="$CONFIG_COMMANDS Magick-config.in" ;;
     "MagickWand-config.in") CONFIG_COMMANDS="$CONFIG_COMMANDS MagickWand-config.in" ;;
+    "Wand-config.in") CONFIG_COMMANDS="$CONFIG_COMMANDS Wand-config.in" ;;
     "Magick++-config.in") CONFIG_COMMANDS="$CONFIG_COMMANDS Magick++-config.in" ;;
     "PerlMagick/check.sh.in") CONFIG_COMMANDS="$CONFIG_COMMANDS PerlMagick/check.sh.in" ;;
     "common.shi") CONFIG_FILES="$CONFIG_FILES common.shi" ;;
@@ -37850,7 +37856,9 @@ do
     "ImageMagick.spec") CONFIG_FILES="$CONFIG_FILES ImageMagick.spec" ;;
     "Magick++/bin/Magick++-config") CONFIG_FILES="$CONFIG_FILES Magick++/bin/Magick++-config" ;;
     "magick/ImageMagick.pc") CONFIG_FILES="$CONFIG_FILES magick/ImageMagick.pc" ;;
+    "Magick++/lib/ImageMagick++.pc") CONFIG_FILES="$CONFIG_FILES Magick++/lib/ImageMagick++.pc" ;;
     "Magick++/lib/Magick++.pc") CONFIG_FILES="$CONFIG_FILES Magick++/lib/Magick++.pc" ;;
+    "magick/Magick-config") CONFIG_FILES="$CONFIG_FILES magick/Magick-config" ;;
     "magick/MagickCore-config") CONFIG_FILES="$CONFIG_FILES magick/MagickCore-config" ;;
     "magick/MagickCore.pc") CONFIG_FILES="$CONFIG_FILES magick/MagickCore.pc" ;;
     "magick/version.h") CONFIG_FILES="$CONFIG_FILES magick/version.h" ;;
@@ -37878,6 +37886,8 @@ do
     "utilities/stream.1") CONFIG_FILES="$CONFIG_FILES utilities/stream.1" ;;
     "wand/MagickWand-config") CONFIG_FILES="$CONFIG_FILES wand/MagickWand-config" ;;
     "wand/MagickWand.pc") CONFIG_FILES="$CONFIG_FILES wand/MagickWand.pc" ;;
+    "wand/Wand-config") CONFIG_FILES="$CONFIG_FILES wand/Wand-config" ;;
+    "wand/Wand.pc") CONFIG_FILES="$CONFIG_FILES wand/Wand.pc" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;
   esac
@@ -39370,7 +39380,9 @@ _LT_EOF
  ;;
     "magick.sh.in":C) chmod +x magick.sh ;;
     "MagickCore-config.in":C) chmod +x magick/MagickCore-config ;;
+    "Magick-config.in":C) chmod +x magick/Magick-config ;;
     "MagickWand-config.in":C) chmod +x wand/MagickWand-config ;;
+    "Wand-config.in":C) chmod +x wand/Wand-config ;;
     "Magick++-config.in":C) chmod +x Magick++/bin/Magick++-config ;;
     "PerlMagick/check.sh.in":C) chmod +x PerlMagick/check.sh ;;
 

@@ -3777,7 +3777,9 @@ AC_SUBST(MAGICK_LIBS)
 AC_CONFIG_COMMANDS([default],[],[])
 AC_CONFIG_COMMANDS([magick.sh.in],[chmod +x magick.sh])
 AC_CONFIG_COMMANDS([MagickCore-config.in],[chmod +x magick/MagickCore-config])
+AC_CONFIG_COMMANDS([Magick-config.in],[chmod +x magick/Magick-config])
 AC_CONFIG_COMMANDS([MagickWand-config.in],[chmod +x wand/MagickWand-config])
+AC_CONFIG_COMMANDS([Wand-config.in],[chmod +x wand/Wand-config])
 AC_CONFIG_COMMANDS([Magick++-config.in],[chmod +x Magick++/bin/Magick++-config])
 AC_CONFIG_COMMANDS([PerlMagick/check.sh.in],[chmod +x PerlMagick/check.sh])
 
@@ -3820,7 +3822,9 @@ AC_CONFIG_FILES([\
     ImageMagick.spec \
     Magick++/bin/Magick++-config \
     magick/ImageMagick.pc \
+    Magick++/lib/ImageMagick++.pc \
     Magick++/lib/Magick++.pc \
+    magick/Magick-config \
     magick/MagickCore-config \
     magick/MagickCore.pc \
     magick/version.h \
@@ -3847,7 +3851,9 @@ AC_CONFIG_FILES([\
     utilities/montage.1 \
     utilities/stream.1 \
     wand/MagickWand-config \
-    wand/MagickWand.pc ])
+    wand/MagickWand.pc \
+    wand/Wand-config \
+    wand/Wand.pc ])
 AC_OUTPUT
 
 # ==============================================================================
