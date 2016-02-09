@@ -291,7 +291,7 @@ libtool: $(LIBTOOL_DEPS)
 	$(SHELL) ./config.status --recheck
 
 # Format C API documentation
-html:
+html-local:
 # copy static file
 	for dir in $(DOCDIRSMANUAL) ; do \
 		$(MKDIR_P) $(top_builddir)/$$dir ;\
