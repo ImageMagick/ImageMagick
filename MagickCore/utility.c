@@ -1834,7 +1834,6 @@ MagickPrivate MagickBooleanType ShredFile(const char *path)
       /*
         Don't shred the file, just remove it.
       */
-      passes=DestroyString(passes);
       status=remove_utf8(path);
       if (status == -1)
         {
