@@ -6,8 +6,9 @@ includearchdir=@INCLUDEARCH_DIR@/ImageMagick-@MAGICK_MAJOR_VERSION@
 libname=MagickCore-@MAGICK_MAJOR_VERSION@.@MAGICK_ABI_SUFFIX@
  
 Name: ImageMagick
-Description: ImageMagick - Convert, Edit, and Compose Images (ABI @MAGICK_ABI_SUFFIX@)
+Description: ImageMagick - convert, edit, and compose images (ABI @MAGICK_ABI_SUFFIX@)
+URL: https://www.imagemagick.org
 Version: @PACKAGE_VERSION@
+Cflags:  -I${includearchdir} -I${includedir} @MAGICK_PCFLAGS@
 Libs: -L${libdir} -l${libname}
 Libs.private: -L${libdir} -l${libname} @MAGICK_LIBS@ @MATH_LIBS@
-Cflags:  -I${includearchdir} -I${includedir} @MAGICK_PCFLAGS@
