@@ -51,7 +51,7 @@ Features and Capabilities
       * Special effects: blur, sharpen, threshold, or tint an image.
       * Animation: create a GIF animation sequence from a group of images.
       * Text & comments: insert descriptive or artistic text in an image.
-      * Image gradients: create a gradual blend of one color whose shape is
+      * Image gradients: create a gradual blend of one color whose shape is 
         horizontal, vertical, circular, or ellipical.
       * Image identification: describe the format and attributes of an image.
       * Composite: overlap one image over another.
@@ -71,6 +71,7 @@ Features and Capabilities
       * Perceptual hash: maps visually identical images to the same or similar
         hash-- useful in image retrieval, authentication, indexing, or copy
         detection as well as digital watermarking.
+      * Complex text layout: bidirectional text support and shaping.
       * Color management: accurate color management with color profiles or in
         lieu of-- built-in gamma compression or expansion as demanded by the
         colorspace.

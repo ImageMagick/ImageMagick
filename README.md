@@ -50,6 +50,7 @@ Here are just a few examples of what ImageMagick can do:
 * [Connected component labeling](http://www.imagemagick.org/script/connected-components.php): uniquely label connected regions in an image.
 * [Discrete Fourier transform](http://www.imagemagick.org/Usage/fourier/): implements the forward and inverse [DFT](http://en.wikipedia.org/wiki/Discrete_Fourier_transform).
 * [Perceptual hash](http://www.fmwconcepts.com/misc_tests/perceptual_hash_test_results_510/index.html): maps visually identical images to the same or similar hash-- useful in image retrieval, authentication, indexing, or copy detection as well as digital watermarking.
+* [Complex text layout](https://en.wikipedia.org/wiki/Complex_text_layout) bidirectional text support and shaping.
 * [Color management](http://www.imagemagick.org/script/color-management.php): accurate color management with color profiles or in lieu of-- built-in gamma compression or expansion as demanded by the colorspace.
 * [High dynamic-range images](http://www.imagemagick.org/script/high-dynamic-range.php): accurately represent the wide range of intensity levels found in real scenes ranging from the brightest direct sunlight to the deepest darkest shadows.
 * [Encipher or decipher an image](http://www.imagemagick.org/script/cipher.php): convert ordinary images into unintelligible gibberish and back again.
