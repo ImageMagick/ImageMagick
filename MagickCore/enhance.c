@@ -1525,7 +1525,7 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (AccelerateEqualizeImage(image,DefaultChannels,exception) != MagickFalse)
+  if (AccelerateEqualizeImage(image,exception) != MagickFalse)
     return(MagickTrue);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);

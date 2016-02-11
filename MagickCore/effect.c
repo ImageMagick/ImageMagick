@@ -785,7 +785,7 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
-  blur_image=AccelerateBlurImage(image,DefaultChannels,radius,sigma,exception);
+  blur_image=AccelerateBlurImage(image,radius,sigma,exception);
   if (blur_image != (Image *) NULL)
     return(blur_image);
   (void) FormatLocaleString(geometry,MagickPathExtent,
@@ -831,8 +831,7 @@ MagickExport Image *ConvolveImage(const Image *image,
   Image
     *convolve_image;
 
-  convolve_image=AccelerateConvolveImage(image,DefaultChannels,kernel_info,
-    exception);
+  convolve_image=AccelerateConvolveImage(image,kernel_info,exception);
   if (convolve_image != (Image *) NULL)
     return(convolve_image);
 
@@ -2799,8 +2798,7 @@ MagickExport Image *RotationalBlurImage(const Image *image,const double angle,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
-  blur_image=AccelerateRotationalBlurImage(image,DefaultChannels,angle,
-    exception);
+  blur_image=AccelerateRotationalBlurImage(image,angle,exception);
   if (blur_image != (Image *) NULL)
     return(blur_image);
   blur_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
@@ -3895,8 +3893,8 @@ MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  unsharp_image=AccelerateUnsharpMaskImage(image,DefaultChannels,radius,sigma,
-    gain,threshold,exception);
+  unsharp_image=AccelerateUnsharpMaskImage(image,radius,sigma,gain,threshold,
+    exception);
   if (unsharp_image != (Image *) NULL)
     return(unsharp_image);
   unsharp_image=BlurImage(image,radius,sigma,exception);

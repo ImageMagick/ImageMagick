@@ -113,25 +113,18 @@ static const ResizeWeightingFunctionType supportedResizeWeighting[] =
   Forward declarations.
 */
 static Image *ComputeUnsharpMaskImageSingle(const Image *image,
-  const ChannelType channel,const double radius,const double sigma,
-  const double gain,const double threshold,int blurOnly, ExceptionInfo *exception);
+  const double radius,const double sigma,const double gain,
+  const double threshold,int blurOnly,ExceptionInfo *exception);
 
 /*
   Helper functions.
 */
-static MagickBooleanType checkAccelerateCondition(const Image* image,
-  const ChannelType channel)
+static MagickBooleanType checkAccelerateCondition(const Image* image)
 {
   /* check if the image's colorspace is supported */
   if (image->colorspace != RGBColorspace &&
       image->colorspace != sRGBColorspace &&
       image->colorspace != GRAYColorspace)
-    return(MagickFalse);
-
-  /* check if the channel is supported */
-  if (((channel & RedChannel) == 0) ||
-      ((channel & GreenChannel) == 0) ||
-      ((channel & BlueChannel) == 0))
     return(MagickFalse);
 
   /* check if the virtual pixel method is compatible with the OpenCL implementation */
@@ -151,20 +144,19 @@ static MagickBooleanType checkAccelerateCondition(const Image* image,
     return(MagickFalse);
 
   /* check if all channels are available */
-  if (((GetPixelRedTraits(image) & UpdatePixelTrait) == 0) ||
-      ((GetPixelGreenTraits(image) & UpdatePixelTrait) == 0) ||
-      ((GetPixelBlueTraits(image) & UpdatePixelTrait) == 0) ||
+  if ((GetPixelRedTraits(image) == UndefinedPixelTrait) ||
+      (GetPixelGreenTraits(image) == UndefinedPixelTrait) ||
+      (GetPixelBlueTraits(image) == UndefinedPixelTrait) ||
       (GetPixelAlphaTraits(image) == UndefinedPixelTrait))
     return(MagickFalse);
 
   return(MagickTrue);
 }
 
-static MagickBooleanType checkHistogramCondition(Image *image,
-  const ChannelType channel)
+static MagickBooleanType checkHistogramCondition(Image *image)
 {
   /* ensure this is the only pass get in for now. */
-  if ((channel & SyncChannels) == 0)
+  if ((image->channel_mask & SyncChannels) == 0)
     return MagickFalse;
 
   if (image->intensity == Rec601LuminancePixelIntensityMethod ||
@@ -250,8 +242,7 @@ static MagickBooleanType splitImage(const Image* image)
 */
 
 static Image *ComputeAddNoiseImage(const Image *image,
-  const ChannelType channel,const NoiseType noise_type,
-  ExceptionInfo *exception)
+  const NoiseType noise_type,ExceptionInfo *exception)
 {
   CacheView
     *filteredImage_view,
@@ -341,7 +332,7 @@ static Image *ComputeAddNoiseImage(const Image *image,
   clEnv = GetDefaultOpenCLEnv();
   context = GetOpenCLContext(clEnv);
   queue = AcquireOpenCLCommandQueue(clEnv);
- 
+
   image_view=AcquireVirtualCacheView(image,exception);
   inputPixels=GetCacheViewVirtualPixels(image_view,0,0,image->columns,image->rows,exception);
   if (inputPixels == (void *) NULL)
@@ -422,13 +413,13 @@ static Image *ComputeAddNoiseImage(const Image *image,
       break;
     };
 
-    if ((channel & RedChannel) != 0)
+    if ((image->channel_mask & RedChannel) != 0)
       numRandomNumberPerPixel+=numRandPerChannel;
-    if ((channel & GreenChannel) != 0)
+    if ((image->channel_mask & GreenChannel) != 0)
       numRandomNumberPerPixel+=numRandPerChannel;
-    if ((channel & BlueChannel) != 0)
+    if ((image->channel_mask & BlueChannel) != 0)
       numRandomNumberPerPixel+=numRandPerChannel;
-    if ((channel & OpacityChannel) != 0)
+    if ((image->channel_mask & AlphaChannel) != 0)
       numRandomNumberPerPixel+=numRandPerChannel;
   }
 
@@ -470,8 +461,8 @@ static Image *ComputeAddNoiseImage(const Image *image,
   clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(cl_mem),(void *)&imageBuffer);
   clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(cl_mem),(void *)&filteredImageBuffer);
   clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(cl_uint),(void *)&inputPixelCount);
-  clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(cl_uint),(void *)&pixelsPerWorkitem);  
-  clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(ChannelType),(void *)&channel);
+  clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(cl_uint),(void *)&pixelsPerWorkitem);
+  clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(ChannelType),(void *)&image->channel_mask);
   clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(NoiseType),(void *)&noise_type);
   attenuate=1.0f;
   option=GetImageArtifact(image,"attenuate");
@@ -523,8 +514,7 @@ cleanup:
 }
 
 MagickExport Image *AccelerateAddNoiseImage(const Image *image,
-  const ChannelType channel,const NoiseType noise_type,
-  ExceptionInfo *exception) 
+  const NoiseType noise_type,ExceptionInfo *exception)
 {
   Image
     *filteredImage;
@@ -532,12 +522,11 @@ MagickExport Image *AccelerateAddNoiseImage(const Image *image,
   assert(image != NULL);
   assert(exception != (ExceptionInfo *) NULL);
 
-  if ((checkOpenCLEnvironment(exception) == MagickFalse) ||
-      (checkAccelerateCondition(image, channel) == MagickFalse))
+  if ((checkAccelerateCondition(image) == MagickFalse) ||
+      (checkOpenCLEnvironment(exception) == MagickFalse))
     return NULL;
 
-  filteredImage = ComputeAddNoiseImage(image,channel,noise_type,exception);
-  
+  filteredImage=ComputeAddNoiseImage(image,noise_type,exception);
   return(filteredImage);
 }
 
@@ -553,8 +542,8 @@ MagickExport Image *AccelerateAddNoiseImage(const Image *image,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
 
-static Image *ComputeBlurImage(const Image* image,const ChannelType channel,
-  const double radius,const double sigma,ExceptionInfo *exception)
+static Image *ComputeBlurImage(const Image* image,const double radius,
+  const double sigma,ExceptionInfo *exception)
 {
   CacheView
     *filteredImage_view,
@@ -782,7 +771,7 @@ static Image *ComputeBlurImage(const Image* image,const ChannelType channel,
         i = 0;
         clStatus=clEnv->library->clSetKernelArg(blurRowKernel,i++,sizeof(cl_mem),(void *)&imageBuffer);
         clStatus|=clEnv->library->clSetKernelArg(blurRowKernel,i++,sizeof(cl_mem),(void *)&tempImageBuffer);
-        clStatus|=clEnv->library->clSetKernelArg(blurRowKernel,i++,sizeof(ChannelType),&channel);
+        clStatus|=clEnv->library->clSetKernelArg(blurRowKernel,i++,sizeof(ChannelType),&image->channel_mask);
         clStatus|=clEnv->library->clSetKernelArg(blurRowKernel,i++,sizeof(cl_mem),(void *)&imageKernelBuffer);
         kernelWidth = (unsigned int) kernel->width;
         clStatus|=clEnv->library->clSetKernelArg(blurRowKernel,i++,sizeof(unsigned int),(void *)&kernelWidth);
@@ -830,7 +819,7 @@ static Image *ComputeBlurImage(const Image* image,const ChannelType channel,
         i = 0;
         clStatus=clEnv->library->clSetKernelArg(blurColumnKernel,i++,sizeof(cl_mem),(void *)&tempImageBuffer);
         clStatus|=clEnv->library->clSetKernelArg(blurColumnKernel,i++,sizeof(cl_mem),(void *)&filteredImageBuffer);
-        clStatus|=clEnv->library->clSetKernelArg(blurColumnKernel,i++,sizeof(ChannelType),&channel);
+        clStatus|=clEnv->library->clSetKernelArg(blurColumnKernel,i++,sizeof(ChannelType),&image->channel_mask);
         clStatus|=clEnv->library->clSetKernelArg(blurColumnKernel,i++,sizeof(cl_mem),(void *)&imageKernelBuffer);
         kernelWidth = (unsigned int) kernel->width;
         clStatus|=clEnv->library->clSetKernelArg(blurColumnKernel,i++,sizeof(unsigned int),(void *)&kernelWidth);
@@ -908,8 +897,7 @@ cleanup:
 }
 
 static Image* ComputeBlurImageSection(const Image* image,
-  const ChannelType channel,const double radius,const double sigma,
-  ExceptionInfo *exception)
+  const double radius,const double sigma,ExceptionInfo *exception)
 {
   CacheView
     *filteredImage_view,
@@ -1148,7 +1136,7 @@ static Image* ComputeBlurImageSection(const Image* image,
           i = 0;
           clStatus=clEnv->library->clSetKernelArg(blurRowKernel,i++,sizeof(cl_mem),(void *)&imageBuffer);
           clStatus|=clEnv->library->clSetKernelArg(blurRowKernel,i++,sizeof(cl_mem),(void *)&tempImageBuffer);
-          clStatus|=clEnv->library->clSetKernelArg(blurRowKernel,i++,sizeof(ChannelType),&channel);
+          clStatus|=clEnv->library->clSetKernelArg(blurRowKernel,i++,sizeof(ChannelType),&image->channel_mask);
           clStatus|=clEnv->library->clSetKernelArg(blurRowKernel,i++,sizeof(cl_mem),(void *)&imageKernelBuffer);
           clStatus|=clEnv->library->clSetKernelArg(blurRowKernel,i++,sizeof(unsigned int),(void *)&kernelWidth);
           clStatus|=clEnv->library->clSetKernelArg(blurRowKernel,i++,sizeof(unsigned int),(void *)&imageColumns);
@@ -1204,7 +1192,7 @@ static Image* ComputeBlurImageSection(const Image* image,
           i = 0;
           clStatus=clEnv->library->clSetKernelArg(blurColumnKernel,i++,sizeof(cl_mem),(void *)&tempImageBuffer);
           clStatus|=clEnv->library->clSetKernelArg(blurColumnKernel,i++,sizeof(cl_mem),(void *)&filteredImageBuffer);
-          clStatus|=clEnv->library->clSetKernelArg(blurColumnKernel,i++,sizeof(ChannelType),&channel);
+          clStatus|=clEnv->library->clSetKernelArg(blurColumnKernel,i++,sizeof(ChannelType),&image->channel_mask);
           clStatus|=clEnv->library->clSetKernelArg(blurColumnKernel,i++,sizeof(cl_mem),(void *)&imageKernelBuffer);
           clStatus|=clEnv->library->clSetKernelArg(blurColumnKernel,i++,sizeof(unsigned int),(void *)&kernelWidth);
           clStatus|=clEnv->library->clSetKernelArg(blurColumnKernel,i++,sizeof(unsigned int),(void *)&imageColumns);
@@ -1290,15 +1278,13 @@ cleanup:
 }
 
 static Image* ComputeBlurImageSingle(const Image* image,
-  const ChannelType channel,const double radius,const double sigma,
-  ExceptionInfo *exception)
+  const double radius,const double sigma,ExceptionInfo *exception)
 {
-  return ComputeUnsharpMaskImageSingle(image, channel, radius, sigma, 0.0, 0.0, 1, exception);
+  return ComputeUnsharpMaskImageSingle(image,radius,sigma,0.0,0.0,1,exception);
 }
 
 MagickExport Image* AccelerateBlurImage(const Image *image,
-  const ChannelType channel,const double radius,const double sigma,
-  ExceptionInfo *exception)
+  const double radius,const double sigma,ExceptionInfo *exception)
 {
   Image
     *filteredImage;
@@ -1306,17 +1292,16 @@ MagickExport Image* AccelerateBlurImage(const Image *image,
   assert(image != NULL);
   assert(exception != (ExceptionInfo *) NULL);
 
-  if ((checkOpenCLEnvironment(exception) == MagickFalse) ||
-      (checkAccelerateCondition(image, channel) == MagickFalse))
+  if ((checkAccelerateCondition(image) == MagickFalse) ||
+      (checkOpenCLEnvironment(exception) == MagickFalse))
     return NULL;
 
   if (radius < 12.1)
-	filteredImage=ComputeBlurImageSingle(image, channel, radius, sigma, exception);
+    filteredImage=ComputeBlurImageSingle(image,radius,sigma,exception);
   else if (splitImage(image) && (image->rows / 2 > radius)) 
-    filteredImage=ComputeBlurImageSection(image, channel, radius, sigma, exception);
+    filteredImage=ComputeBlurImageSection(image,radius,sigma,exception);
   else
-    filteredImage=ComputeBlurImage(image, channel, radius, sigma, exception);
-
+    filteredImage=ComputeBlurImage(image,radius,sigma,exception);
   return(filteredImage);
 }
 
@@ -1399,10 +1384,8 @@ static MagickBooleanType LaunchCompositeKernel(MagickCLEnv clEnv,
 }
 
 static MagickBooleanType ComputeCompositeImage(Image *image,
-  const ChannelType channel,const CompositeOperator compose,
-  const Image *compositeImage,const ssize_t magick_unused(x_offset),
-  const ssize_t magick_unused(y_offset),const float destination_dissolve,
-  const float source_dissolve,ExceptionInfo *exception)
+  const CompositeOperator compose,const Image *compositeImage,
+  const float destination_dissolve,const float source_dissolve,ExceptionInfo *exception)
 {
   CacheView
     *image_view;
@@ -1438,9 +1421,6 @@ static MagickBooleanType ComputeCompositeImage(Image *image,
 
   void
     *inputPixels;
-
-  magick_unreferenced(x_offset);
-  magick_unreferenced(y_offset);
 
   status = MagickFalse;
   outputReady = MagickFalse;
@@ -1520,7 +1500,7 @@ static MagickBooleanType ComputeCompositeImage(Image *image,
            (unsigned int) image->columns,
            (unsigned int) image->rows,
            (unsigned int) (image->alpha_trait > CopyPixelTrait) ? 1 : 0,
-           channel, compose, compositeImageBuffer,
+           image->channel_mask, compose, compositeImageBuffer,
            (unsigned int) compositeImage->columns,
            (unsigned int) compositeImage->rows,
            destination_dissolve,source_dissolve,
@@ -1555,8 +1535,7 @@ cleanup:
 }
 
 MagickExport MagickBooleanType AccelerateCompositeImage(Image *image,
-  const ChannelType channel,const CompositeOperator compose,
-  const Image *composite,const ssize_t x_offset,const ssize_t y_offset,
+  const CompositeOperator compose,const Image *composite,
   const float destination_dissolve,const float source_dissolve,
   ExceptionInfo *exception)
 {
@@ -1566,30 +1545,27 @@ MagickExport MagickBooleanType AccelerateCompositeImage(Image *image,
   assert(image != NULL);
   assert(exception != (ExceptionInfo *) NULL);
 
-  if ((checkOpenCLEnvironment(exception) == MagickFalse) ||
-      (checkAccelerateCondition(image, channel) == MagickFalse))
+  if ((checkAccelerateCondition(image) == MagickFalse) ||
+      (checkOpenCLEnvironment(exception) == MagickFalse))
     return(MagickFalse);
 
-  /* only support zero offset and
-     images with the size for now */
-  if (x_offset!=0
-    || y_offset!=0
-    || image->columns!=composite->columns
-    || image->rows!=composite->rows)
+  /* only support images with the size for now */
+  if ((image->columns != composite->columns) ||
+      (image->rows != composite->rows))
     return MagickFalse;
 
-  switch(compose) {
-  case ColorDodgeCompositeOp: 
-  case BlendCompositeOp:
-    break;
-  default:
-    // unsupported compose operator, quit
-    return MagickFalse;
+  switch(compose)
+  {
+    case ColorDodgeCompositeOp: 
+    case BlendCompositeOp:
+      break;
+    default:
+      // unsupported compose operator, quit
+      return MagickFalse;
   };
 
-  status = ComputeCompositeImage(image,channel,compose,composite,
-    x_offset,y_offset,destination_dissolve,source_dissolve,exception);
-
+  status=ComputeCompositeImage(image,compose,composite,destination_dissolve,
+    source_dissolve,exception);
   return(status);
 }
 
@@ -1760,11 +1736,11 @@ MagickExport MagickBooleanType AccelerateContrastImage(Image *image,
   assert(image != NULL);
   assert(exception != (ExceptionInfo *) NULL);
 
-  if ((checkOpenCLEnvironment(exception) == MagickFalse) ||
-      (checkAccelerateCondition(image, AllChannels) == MagickFalse))
+  if ((checkAccelerateCondition(image) == MagickFalse) ||
+      (checkOpenCLEnvironment(exception) == MagickFalse))
     return(MagickFalse);
 
-  status = ComputeContrastImage(image,sharpen,exception);
+  status=ComputeContrastImage(image,sharpen,exception);
   return(status);
 }
 
@@ -1858,8 +1834,7 @@ cleanup:
 }
 
 static MagickBooleanType ComputeContrastStretchImage(Image *image,
-  const ChannelType channel,const double black_point,const double white_point, 
-  ExceptionInfo *exception) 
+  const double black_point,const double white_point,ExceptionInfo *exception)
 {
 #define ContrastStretchImageTag  "ContrastStretch/Image"
 #define MaxRange(color)  ((MagickRealType) ScaleQuantumToMap((Quantum) (color)))
@@ -2026,7 +2001,7 @@ static MagickBooleanType ComputeContrastStretchImage(Image *image,
     goto cleanup;
   }
 
-  status = LaunchHistogramKernel(clEnv, queue, imageBuffer, histogramBuffer, image, channel, exception);
+  status = LaunchHistogramKernel(clEnv, queue, imageBuffer, histogramBuffer, image, image->channel_mask, exception);
   if (status == MagickFalse)
     goto cleanup;
 
@@ -2070,7 +2045,7 @@ static MagickBooleanType ComputeContrastStretchImage(Image *image,
   */
   black.red=0.0;
   white.red=MaxRange(QuantumRange);
-  if ((channel & RedChannel) != 0)
+  if ((image->channel_mask & RedChannel) != 0)
   {
     intensity=0.0;
     for (i=0; i <= (ssize_t) MaxMap; i++)
@@ -2091,7 +2066,7 @@ static MagickBooleanType ComputeContrastStretchImage(Image *image,
   }
   black.green=0.0;
   white.green=MaxRange(QuantumRange);
-  if ((channel & GreenChannel) != 0)
+  if ((image->channel_mask & GreenChannel) != 0)
   {
     intensity=0.0;
     for (i=0; i <= (ssize_t) MaxMap; i++)
@@ -2112,7 +2087,7 @@ static MagickBooleanType ComputeContrastStretchImage(Image *image,
   }
   black.blue=0.0;
   white.blue=MaxRange(QuantumRange);
-  if ((channel & BlueChannel) != 0)
+  if ((image->channel_mask & BlueChannel) != 0)
   {
     intensity=0.0;
     for (i=0; i <= (ssize_t) MaxMap; i++)
@@ -2133,7 +2108,7 @@ static MagickBooleanType ComputeContrastStretchImage(Image *image,
   }
   black.alpha=0.0;
   white.alpha=MaxRange(QuantumRange);
-  if ((channel & OpacityChannel) != 0)
+  if ((image->channel_mask & AlphaChannel) != 0)
   {
     intensity=0.0;
     for (i=0; i <= (ssize_t) MaxMap; i++)
@@ -2190,7 +2165,7 @@ static MagickBooleanType ComputeContrastStretchImage(Image *image,
   (void) ResetMagickMemory(stretch_map,0,(MaxMap+1)*sizeof(*stretch_map));
   for (i=0; i <= (ssize_t) MaxMap; i++)
   {
-    if ((channel & RedChannel) != 0)
+    if ((image->channel_mask & RedChannel) != 0)
     {
       if (i < (ssize_t) black.red)
         stretch_map[i].red=(Quantum) 0;
@@ -2202,7 +2177,7 @@ static MagickBooleanType ComputeContrastStretchImage(Image *image,
             stretch_map[i].red=ScaleMapToQuantum((MagickRealType) (MaxMap*
                   (i-black.red)/(white.red-black.red)));
     }
-    if ((channel & GreenChannel) != 0)
+    if ((image->channel_mask & GreenChannel) != 0)
     {
       if (i < (ssize_t) black.green)
         stretch_map[i].green=0;
@@ -2214,7 +2189,7 @@ static MagickBooleanType ComputeContrastStretchImage(Image *image,
             stretch_map[i].green=ScaleMapToQuantum((MagickRealType) (MaxMap*
                   (i-black.green)/(white.green-black.green)));
     }
-    if ((channel & BlueChannel) != 0)
+    if ((image->channel_mask & BlueChannel) != 0)
     {
       if (i < (ssize_t) black.blue)
         stretch_map[i].blue=0;
@@ -2226,7 +2201,7 @@ static MagickBooleanType ComputeContrastStretchImage(Image *image,
             stretch_map[i].blue=ScaleMapToQuantum((MagickRealType) (MaxMap*
                   (i-black.blue)/(white.blue-black.blue)));
     }
-    if ((channel & OpacityChannel) != 0)
+    if ((image->channel_mask & AlphaChannel) != 0)
     {
       if (i < (ssize_t) black.alpha)
         stretch_map[i].alpha=0;
@@ -2258,7 +2233,7 @@ static MagickBooleanType ComputeContrastStretchImage(Image *image,
   /*
     Stretch the image.
   */
-  if (((channel & OpacityChannel) != 0) || (((channel & IndexChannel) != 0) &&
+  if (((image->channel_mask & AlphaChannel) != 0) || (((image->channel_mask & IndexChannel) != 0) &&
       (image->colorspace == CMYKColorspace)))
     image->storage_class=DirectClass;
   if (image->storage_class == PseudoClass)
@@ -2268,25 +2243,25 @@ static MagickBooleanType ComputeContrastStretchImage(Image *image,
        */
     for (i=0; i < (ssize_t) image->colors; i++)
     {
-      if ((channel & RedChannel) != 0)
+      if ((image->channel_mask & RedChannel) != 0)
       {
         if (black.red != white.red)
           image->colormap[i].red=stretch_map[
             ScaleQuantumToMap(image->colormap[i].red)].red;
       }
-      if ((channel & GreenChannel) != 0)
+      if ((image->channel_mask & GreenChannel) != 0)
       {
         if (black.green != white.green)
           image->colormap[i].green=stretch_map[
             ScaleQuantumToMap(image->colormap[i].green)].green;
       }
-      if ((channel & BlueChannel) != 0)
+      if ((image->channel_mask & BlueChannel) != 0)
       {
         if (black.blue != white.blue)
           image->colormap[i].blue=stretch_map[
             ScaleQuantumToMap(image->colormap[i].blue)].blue;
       }
-      if ((channel & OpacityChannel) != 0)
+      if ((image->channel_mask & AlphaChannel) != 0)
       {
         if (black.alpha != white.alpha)
           image->colormap[i].alpha=stretch_map[
@@ -2358,7 +2333,7 @@ static MagickBooleanType ComputeContrastStretchImage(Image *image,
   /* set the kernel arguments */
   i = 0;
   clStatus=clEnv->library->clSetKernelArg(stretchKernel,i++,sizeof(cl_mem),(void *)&imageBuffer);
-  clStatus|=clEnv->library->clSetKernelArg(stretchKernel,i++,sizeof(ChannelType),&channel);
+  clStatus|=clEnv->library->clSetKernelArg(stretchKernel,i++,sizeof(ChannelType),&image->channel_mask);
   clStatus|=clEnv->library->clSetKernelArg(stretchKernel,i++,sizeof(cl_mem),(void *)&stretchMapBuffer);
   clStatus|=clEnv->library->clSetKernelArg(stretchKernel,i++,sizeof(FloatPixelPacket),&white);
   clStatus|=clEnv->library->clSetKernelArg(stretchKernel,i++,sizeof(FloatPixelPacket),&black);
@@ -2435,8 +2410,8 @@ cleanup:
 }
 
 MagickExport MagickBooleanType AccelerateContrastStretchImage(
-  Image *image,const ChannelType channel,const double black_point,
-  const double white_point,ExceptionInfo *exception)
+  Image *image,const double black_point,const double white_point,
+  ExceptionInfo *exception)
 {
   MagickBooleanType
     status;
@@ -2444,12 +2419,12 @@ MagickExport MagickBooleanType AccelerateContrastStretchImage(
   assert(image != NULL);
   assert(exception != (ExceptionInfo *) NULL);
 
-  if ((checkOpenCLEnvironment(exception) == MagickFalse) ||
-      (checkAccelerateCondition(image, channel) == MagickFalse) ||
-      (checkHistogramCondition(image, channel) == MagickFalse))
+  if ((checkAccelerateCondition(image) == MagickFalse) ||
+      (checkHistogramCondition(image) == MagickFalse) ||
+      (checkOpenCLEnvironment(exception) == MagickFalse))
     return(MagickFalse);
 
-  status=ComputeContrastStretchImage(image,channel, black_point, white_point, exception);
+  status=ComputeContrastStretchImage(image,black_point,white_point,exception);
   return(status);
 }
 
@@ -2465,8 +2440,8 @@ MagickExport MagickBooleanType AccelerateContrastStretchImage(
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
 
-static Image *ComputeConvolveImage(const Image* image,
-  const ChannelType channel,const KernelInfo *kernel,ExceptionInfo *exception)
+static Image *ComputeConvolveImage(const Image* image,const KernelInfo *kernel,
+  ExceptionInfo *exception)
 {
   CacheView
     *filteredImage_view,
@@ -2685,7 +2660,7 @@ static Image *ComputeConvolveImage(const Image* image,
     clStatus|=clEnv->library->clSetKernelArg(clkernel,i++,sizeof(unsigned int),(void *)&filterHeight);
     matte = (image->alpha_trait > CopyPixelTrait)?1:0;
     clStatus|=clEnv->library->clSetKernelArg(clkernel,i++,sizeof(unsigned int),(void *)&matte);
-    clStatus|=clEnv->library->clSetKernelArg(clkernel,i++,sizeof(ChannelType),(void *)&channel);
+    clStatus|=clEnv->library->clSetKernelArg(clkernel,i++,sizeof(ChannelType),(void *)&image->channel_mask);
     clStatus|=clEnv->library->clSetKernelArg(clkernel,i++, (localGroupSize[0] + kernel->width-1)*(localGroupSize[1] + kernel->height-1)*sizeof(CLPixelPacket),NULL);
     clStatus|=clEnv->library->clSetKernelArg(clkernel,i++, kernel->width*kernel->height*sizeof(float),NULL);
     if (clStatus != CL_SUCCESS)
@@ -2733,7 +2708,7 @@ static Image *ComputeConvolveImage(const Image* image,
     clStatus|=clEnv->library->clSetKernelArg(clkernel,i++,sizeof(unsigned int),(void *)&filterHeight);
     matte = (image->alpha_trait > CopyPixelTrait)?1:0;
     clStatus|=clEnv->library->clSetKernelArg(clkernel,i++,sizeof(unsigned int),(void *)&matte);
-    clStatus|=clEnv->library->clSetKernelArg(clkernel,i++,sizeof(ChannelType),(void *)&channel);
+    clStatus|=clEnv->library->clSetKernelArg(clkernel,i++,sizeof(ChannelType),(void *)&image->channel_mask);
     if (clStatus != CL_SUCCESS)
     {
       (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clSetKernelArg failed.", "'%s'", ".");
@@ -2809,7 +2784,7 @@ cleanup:
 }
 
 MagickExport Image *AccelerateConvolveImage(const Image *image,
-  const ChannelType channel,const KernelInfo *kernel,ExceptionInfo *exception)
+  const KernelInfo *kernel,ExceptionInfo *exception)
 {
   Image
     *filteredImage;
@@ -2818,11 +2793,11 @@ MagickExport Image *AccelerateConvolveImage(const Image *image,
   assert(kernel != (KernelInfo *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
 
-  if ((checkOpenCLEnvironment(exception) == MagickFalse) ||
-      (checkAccelerateCondition(image, channel) == MagickFalse))
+  if ((checkAccelerateCondition(image) == MagickFalse) ||
+      (checkOpenCLEnvironment(exception) == MagickFalse))
     return NULL;
 
-  filteredImage=ComputeConvolveImage(image, channel, kernel, exception);
+  filteredImage=ComputeConvolveImage(image,kernel,exception);
   return(filteredImage);
 }
 
@@ -3216,8 +3191,8 @@ MagickExport Image *AccelerateDespeckleImage(const Image* image,
   assert(image != NULL);
   assert(exception != (ExceptionInfo *) NULL);
 
-  if ((checkOpenCLEnvironment(exception) == MagickFalse) ||
-      (checkAccelerateCondition(image, AllChannels) == MagickFalse))
+  if ((checkAccelerateCondition(image) == MagickFalse) ||
+      (checkOpenCLEnvironment(exception) == MagickFalse))
     return NULL;
 
   filteredImage=ComputeDespeckleImage(image,exception);
@@ -3237,7 +3212,7 @@ MagickExport Image *AccelerateDespeckleImage(const Image* image,
 */
 
 static MagickBooleanType ComputeEqualizeImage(Image *image,
-  const ChannelType channel,ExceptionInfo *exception)
+  ExceptionInfo *exception)
 {
 #define EqualizeImageTag  "Equalize/Image"
 
@@ -3388,7 +3363,7 @@ static MagickBooleanType ComputeEqualizeImage(Image *image,
     goto cleanup;
   }
 
-  status = LaunchHistogramKernel(clEnv, queue, imageBuffer, histogramBuffer, image, channel, exception);
+  status = LaunchHistogramKernel(clEnv, queue, imageBuffer, histogramBuffer, image, image->channel_mask, exception);
   if (status == MagickFalse)
     goto cleanup;
 
@@ -3441,19 +3416,19 @@ static MagickBooleanType ComputeEqualizeImage(Image *image,
   (void) ResetMagickMemory(&intensity,0,sizeof(intensity));
   for (i=0; i <= (ssize_t) MaxMap; i++)
   {
-    if ((channel & SyncChannels) != 0)
+    if ((image->channel_mask & SyncChannels) != 0)
     {
       intensity.red+=histogram[i].s[2];
       map[i]=intensity;
       continue;
     }
-    if ((channel & RedChannel) != 0)
+    if ((image->channel_mask & RedChannel) != 0)
       intensity.red+=histogram[i].s[2];
-    if ((channel & GreenChannel) != 0)
+    if ((image->channel_mask & GreenChannel) != 0)
       intensity.green+=histogram[i].s[1];
-    if ((channel & BlueChannel) != 0)
+    if ((image->channel_mask & BlueChannel) != 0)
       intensity.blue+=histogram[i].s[0];
-    if ((channel & OpacityChannel) != 0)
+    if ((image->channel_mask & AlphaChannel) != 0)
       intensity.alpha+=histogram[i].s[3];
     /*
     if (((channel & IndexChannel) != 0) &&
@@ -3469,23 +3444,23 @@ static MagickBooleanType ComputeEqualizeImage(Image *image,
   (void) ResetMagickMemory(equalize_map,0,(MaxMap+1)*sizeof(*equalize_map));
   for (i=0; i <= (ssize_t) MaxMap; i++)
   {
-    if ((channel & SyncChannels) != 0)
+    if ((image->channel_mask & SyncChannels) != 0)
     {
       if (white.red != black.red)
         equalize_map[i].red=ScaleMapToQuantum((MagickRealType) ((MaxMap*
                 (map[i].red-black.red))/(white.red-black.red)));
       continue;
     }
-    if (((channel & RedChannel) != 0) && (white.red != black.red))
+    if (((image->channel_mask & RedChannel) != 0) && (white.red != black.red))
       equalize_map[i].red=ScaleMapToQuantum((MagickRealType) ((MaxMap*
               (map[i].red-black.red))/(white.red-black.red)));
-    if (((channel & GreenChannel) != 0) && (white.green != black.green))
+    if (((image->channel_mask & GreenChannel) != 0) && (white.green != black.green))
       equalize_map[i].green=ScaleMapToQuantum((MagickRealType) ((MaxMap*
               (map[i].green-black.green))/(white.green-black.green)));
-    if (((channel & BlueChannel) != 0) && (white.blue != black.blue))
+    if (((image->channel_mask & BlueChannel) != 0) && (white.blue != black.blue))
       equalize_map[i].blue=ScaleMapToQuantum((MagickRealType) ((MaxMap*
               (map[i].blue-black.blue))/(white.blue-black.blue)));
-    if (((channel & OpacityChannel) != 0) && (white.alpha != black.alpha))
+    if (((image->channel_mask & AlphaChannel) != 0) && (white.alpha != black.alpha))
       equalize_map[i].alpha=ScaleMapToQuantum((MagickRealType) ((MaxMap*
               (map[i].alpha-black.alpha))/(white.alpha-black.alpha)));
     /*
@@ -3504,7 +3479,7 @@ static MagickBooleanType ComputeEqualizeImage(Image *image,
        */
     for (i=0; i < (ssize_t) image->colors; i++)
     {
-      if ((channel & SyncChannels) != 0)
+      if ((image->channel_mask & SyncChannels) != 0)
       {
         if (white.red != black.red)
         {
@@ -3519,16 +3494,16 @@ static MagickBooleanType ComputeEqualizeImage(Image *image,
         }
         continue;
       }
-      if (((channel & RedChannel) != 0) && (white.red != black.red))
+      if (((image->channel_mask & RedChannel) != 0) && (white.red != black.red))
         image->colormap[i].red=equalize_map[
           ScaleQuantumToMap(image->colormap[i].red)].red;
-      if (((channel & GreenChannel) != 0) && (white.green != black.green))
+      if (((image->channel_mask & GreenChannel) != 0) && (white.green != black.green))
         image->colormap[i].green=equalize_map[
           ScaleQuantumToMap(image->colormap[i].green)].green;
-      if (((channel & BlueChannel) != 0) && (white.blue != black.blue))
+      if (((image->channel_mask & BlueChannel) != 0) && (white.blue != black.blue))
         image->colormap[i].blue=equalize_map[
           ScaleQuantumToMap(image->colormap[i].blue)].blue;
-      if (((channel & OpacityChannel) != 0) &&
+      if (((image->channel_mask & AlphaChannel) != 0) &&
           (white.alpha != black.alpha))
         image->colormap[i].alpha=equalize_map[
           ScaleQuantumToMap(image->colormap[i].alpha)].alpha;
@@ -3597,7 +3572,7 @@ static MagickBooleanType ComputeEqualizeImage(Image *image,
   /* set the kernel arguments */
   i = 0;
   clStatus=clEnv->library->clSetKernelArg(equalizeKernel,i++,sizeof(cl_mem),(void *)&imageBuffer);
-  clStatus|=clEnv->library->clSetKernelArg(equalizeKernel,i++,sizeof(ChannelType),&channel);
+  clStatus|=clEnv->library->clSetKernelArg(equalizeKernel,i++,sizeof(ChannelType),&image->channel_mask);
   clStatus|=clEnv->library->clSetKernelArg(equalizeKernel,i++,sizeof(cl_mem),(void *)&equalizeMapBuffer);
   clStatus|=clEnv->library->clSetKernelArg(equalizeKernel,i++,sizeof(FloatPixelPacket),&white);
   clStatus|=clEnv->library->clSetKernelArg(equalizeKernel,i++,sizeof(FloatPixelPacket),&black);
@@ -3674,7 +3649,7 @@ cleanup:
 }
 
 MagickExport MagickBooleanType AccelerateEqualizeImage(Image *image,
-  const ChannelType channel,ExceptionInfo *exception)
+  ExceptionInfo *exception)
 {
   MagickBooleanType
     status;
@@ -3682,12 +3657,12 @@ MagickExport MagickBooleanType AccelerateEqualizeImage(Image *image,
   assert(image != NULL);
   assert(exception != (ExceptionInfo *) NULL);
 
-  if ((checkOpenCLEnvironment(exception) == MagickFalse) ||
-      (checkAccelerateCondition(image, channel) == MagickFalse) ||
-      (checkHistogramCondition(image, channel) == MagickFalse))
+  if ((checkAccelerateCondition(image) == MagickFalse) ||
+      (checkHistogramCondition(image) == MagickFalse) ||
+      (checkOpenCLEnvironment(exception) == MagickFalse))
     return(MagickFalse);
 
-  status=ComputeEqualizeImage(image,channel,exception);
+  status=ComputeEqualizeImage(image,exception);
   return(status);
 }
 
@@ -3704,9 +3679,8 @@ MagickExport MagickBooleanType AccelerateEqualizeImage(Image *image,
 */
 
 static MagickBooleanType ComputeFunctionImage(Image *image,
-  const ChannelType channel,const MagickFunction function,
-  const size_t number_parameters,const double *parameters,
-  ExceptionInfo *exception)
+  const MagickFunction function,const size_t number_parameters,
+  const double *parameters,ExceptionInfo *exception)
 {
   CacheView
     *image_view;
@@ -3831,7 +3805,7 @@ static MagickBooleanType ComputeFunctionImage(Image *image,
   /* set the kernel arguments */
   i = 0;
   clStatus =clEnv->library->clSetKernelArg(clkernel,i++,sizeof(cl_mem),(void *)&imageBuffer);
-  clStatus|=clEnv->library->clSetKernelArg(clkernel,i++,sizeof(ChannelType),(void *)&channel);
+  clStatus|=clEnv->library->clSetKernelArg(clkernel,i++,sizeof(ChannelType),(void *)&image->channel_mask);
   clStatus|=clEnv->library->clSetKernelArg(clkernel,i++,sizeof(MagickFunction),(void *)&function);
   clStatus|=clEnv->library->clSetKernelArg(clkernel,i++,sizeof(unsigned int),(void *)&number_parameters);
   clStatus|=clEnv->library->clSetKernelArg(clkernel,i++,sizeof(cl_mem),(void *)&parametersBuffer);
@@ -3885,9 +3859,8 @@ cleanup:
 }
 
 MagickExport MagickBooleanType AccelerateFunctionImage(Image *image,
-  const ChannelType channel,const MagickFunction function,
-  const size_t number_parameters,const double *parameters,
-  ExceptionInfo *exception)
+  const MagickFunction function,const size_t number_parameters,
+  const double *parameters,ExceptionInfo *exception)
 {
   MagickBooleanType
     status;
@@ -3895,11 +3868,12 @@ MagickExport MagickBooleanType AccelerateFunctionImage(Image *image,
   assert(image != NULL);
   assert(exception != (ExceptionInfo *) NULL);
 
-  if ((checkOpenCLEnvironment(exception) == MagickFalse) ||
-      (checkAccelerateCondition(image, channel) == MagickFalse))
+  if ((checkAccelerateCondition(image) == MagickFalse) ||
+      (checkOpenCLEnvironment(exception) == MagickFalse))
     return(MagickFalse);
 
-  status=ComputeFunctionImage(image, channel, function, number_parameters, parameters, exception);
+  status=ComputeFunctionImage(image,function,number_parameters,parameters,
+    exception);
   return(status);
 }
 
@@ -4091,11 +4065,12 @@ MagickExport MagickBooleanType AccelerateGrayscaleImage(Image* image,
   assert(image != NULL);
   assert(exception != (ExceptionInfo *) NULL);
 
-  if ((checkOpenCLEnvironment(exception) == MagickFalse) ||
-      (checkAccelerateCondition(image, AllChannels) == MagickFalse))
+  if ((checkAccelerateCondition(image) == MagickFalse) ||
+      (checkOpenCLEnvironment(exception) == MagickFalse))
     return(MagickFalse);
 
-  if (method == Rec601LuminancePixelIntensityMethod || method == Rec709LuminancePixelIntensityMethod)
+  if ((method == Rec601LuminancePixelIntensityMethod) ||
+      (method == Rec709LuminancePixelIntensityMethod))
     return(MagickFalse);
 
   if (image->colorspace != sRGBColorspace)
@@ -4438,12 +4413,11 @@ MagickExport Image *AccelerateLocalContrastImage(const Image *image,
   assert(image != NULL);
   assert(exception != (ExceptionInfo *) NULL);
 
-  if ((checkOpenCLEnvironment(exception) == MagickFalse) ||
-    (checkAccelerateCondition(image, AllChannels) == MagickFalse))
+  if ((checkAccelerateCondition(image) == MagickFalse) ||
+      (checkOpenCLEnvironment(exception) == MagickFalse))
     return NULL;
 
   filteredImage=ComputeLocalContrastImage(image,radius,strength,exception);
-
   return(filteredImage);
 }
 
@@ -4460,8 +4434,9 @@ MagickExport Image *AccelerateLocalContrastImage(const Image *image,
 */
 
 static MagickBooleanType ComputeModulateImage(Image *image,
-  double percent_brightness,double percent_hue,double percent_saturation,
-  ColorspaceType colorspace,ExceptionInfo *exception)
+  const double percent_brightness,const double percent_hue,
+  const double percent_saturation,const ColorspaceType colorspace,
+  ExceptionInfo *exception)
 {
   CacheView
     *image_view;
@@ -4635,8 +4610,9 @@ cleanup:
 }
 
 MagickExport MagickBooleanType AccelerateModulateImage(Image *image,
-  double percent_brightness,double percent_hue,double percent_saturation,
-  ColorspaceType colorspace,ExceptionInfo *exception)
+  const double percent_brightness,const double percent_hue,
+  const double percent_saturation,const ColorspaceType colorspace,
+  ExceptionInfo *exception)
 {
   MagickBooleanType
     status;
@@ -4644,14 +4620,15 @@ MagickExport MagickBooleanType AccelerateModulateImage(Image *image,
   assert(image != NULL);
   assert(exception != (ExceptionInfo *) NULL);
 
-  if ((checkOpenCLEnvironment(exception) == MagickFalse) ||
-      (checkAccelerateCondition(image, AllChannels) == MagickFalse))
+  if ((checkAccelerateCondition(image) == MagickFalse) ||
+      (checkOpenCLEnvironment(exception) == MagickFalse))
     return(MagickFalse);
 
-  if ((colorspace != HSLColorspace && colorspace != UndefinedColorspace))
+  if ((colorspace != HSLColorspace) && (colorspace != UndefinedColorspace))
     return(MagickFalse);
 
-  status = ComputeModulateImage(image,percent_brightness, percent_hue, percent_saturation, colorspace, exception);
+  status=ComputeModulateImage(image,percent_brightness,percent_hue,
+    percent_saturation,colorspace,exception);
   return(status);
 }
 
@@ -4667,9 +4644,8 @@ MagickExport MagickBooleanType AccelerateModulateImage(Image *image,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
 
-static Image* ComputeMotionBlurImage(const Image *image,
-  const ChannelType channel,const double *kernel,const size_t width, 
-  const OffsetInfo *offset,ExceptionInfo *exception)
+static Image* ComputeMotionBlurImage(const Image *image,const double *kernel,
+  const size_t width,const OffsetInfo *offset,ExceptionInfo *exception)
 {
   CacheView
     *filteredImage_view,
@@ -4928,7 +4904,7 @@ static Image* ComputeMotionBlurImage(const Image *image,
   biasPixel.s[3] = bias.alpha;
   clStatus|=clEnv->library->clSetKernelArg(motionBlurKernel,i++,sizeof(cl_float4), &biasPixel);
 
-  clStatus|=clEnv->library->clSetKernelArg(motionBlurKernel,i++,sizeof(ChannelType), &channel);
+  clStatus|=clEnv->library->clSetKernelArg(motionBlurKernel,i++,sizeof(ChannelType), &image->channel_mask);
   matte = (image->alpha_trait > CopyPixelTrait)?1:0;
   clStatus|=clEnv->library->clSetKernelArg(motionBlurKernel,i++,sizeof(unsigned int), &matte);
   if (clStatus != CL_SUCCESS)
@@ -4997,8 +4973,8 @@ cleanup:
 }
 
 MagickExport Image *AccelerateMotionBlurImage(const Image *image,
-  const ChannelType channel,const double* kernel,const size_t width,
-  const OffsetInfo *offset,ExceptionInfo *exception)
+  const double* kernel,const size_t width,const OffsetInfo *offset,
+  ExceptionInfo *exception)
 {
   Image
     *filteredImage;
@@ -5008,12 +4984,11 @@ MagickExport Image *AccelerateMotionBlurImage(const Image *image,
   assert(offset != (OffsetInfo *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
 
-  if ((checkOpenCLEnvironment(exception) == MagickFalse) ||
-      (checkAccelerateCondition(image, channel) == MagickFalse))
+  if ((checkAccelerateCondition(image) == MagickFalse) ||
+      (checkOpenCLEnvironment(exception) == MagickFalse))
     return NULL;
 
-  filteredImage=ComputeMotionBlurImage(image, channel, kernel, width,
-    offset, exception);
+  filteredImage=ComputeMotionBlurImage(image,kernel,width,offset,exception);
   return(filteredImage);
 }
 
@@ -5230,8 +5205,8 @@ MagickExport MagickBooleanType AccelerateRandomImage(Image *image,
   assert(image != NULL);
   assert(exception != (ExceptionInfo *) NULL);
 
-  if ((checkOpenCLEnvironment(exception) == MagickFalse) ||
-      (checkAccelerateCondition(image, AllChannels) == MagickFalse))
+  if ((checkAccelerateCondition(image) == MagickFalse) ||
+      (checkOpenCLEnvironment(exception) == MagickFalse))
     return(MagickFalse);
 
   status=ComputeRandomImage(image,exception);
@@ -5950,15 +5925,18 @@ MagickExport Image *AccelerateResizeImage(const Image *image,
   assert(image != NULL);
   assert(exception != (ExceptionInfo *) NULL);
 
-  if ((checkOpenCLEnvironment(exception) == MagickFalse) ||
-      (checkAccelerateCondition(image, AllChannels) == MagickFalse))
+  if ((checkAccelerateCondition(image) == MagickFalse) ||
+      (checkOpenCLEnvironment(exception) == MagickFalse))
     return NULL;
 
-  if (gpuSupportedResizeWeighting(GetResizeFilterWeightingType(resizeFilter)) == MagickFalse ||
-      gpuSupportedResizeWeighting(GetResizeFilterWindowWeightingType(resizeFilter)) == MagickFalse)
+  if ((gpuSupportedResizeWeighting(GetResizeFilterWeightingType(
+         resizeFilter)) == MagickFalse) ||
+      (gpuSupportedResizeWeighting(GetResizeFilterWindowWeightingType(
+         resizeFilter)) == MagickFalse))
     return NULL;
 
-  filteredImage=ComputeResizeImage(image,resizedColumns,resizedRows,resizeFilter,exception);
+  filteredImage=ComputeResizeImage(image,resizedColumns,resizedRows,
+    resizeFilter,exception);
   return(filteredImage);
 }
 
@@ -5974,8 +5952,8 @@ MagickExport Image *AccelerateResizeImage(const Image *image,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
 
-static Image* ComputeRotationalBlurImage(const Image *image,
-  const ChannelType channel,const double angle,ExceptionInfo *exception)
+static Image* ComputeRotationalBlurImage(const Image *image,const double angle,
+  ExceptionInfo *exception)
 {
   CacheView
     *image_view,
@@ -6200,7 +6178,7 @@ static Image* ComputeRotationalBlurImage(const Image *image,
   biasPixel.s[2] = bias.blue;
   biasPixel.s[3] = bias.alpha;
   clStatus|=clEnv->library->clSetKernelArg(rotationalBlurKernel,i++,sizeof(cl_float4), &biasPixel);
-  clStatus|=clEnv->library->clSetKernelArg(rotationalBlurKernel,i++,sizeof(ChannelType), &channel);
+  clStatus|=clEnv->library->clSetKernelArg(rotationalBlurKernel,i++,sizeof(ChannelType), &image->channel_mask);
 
   matte = (image->alpha_trait > CopyPixelTrait)?1:0;
   clStatus|=clEnv->library->clSetKernelArg(rotationalBlurKernel,i++,sizeof(unsigned int), &matte);
@@ -6272,7 +6250,7 @@ cleanup:
 }
 
 MagickExport Image* AccelerateRotationalBlurImage(const Image *image,
-  const ChannelType channel,const double angle,ExceptionInfo *exception)
+  const double angle,ExceptionInfo *exception)
 {
   Image
     *filteredImage;
@@ -6280,11 +6258,11 @@ MagickExport Image* AccelerateRotationalBlurImage(const Image *image,
   assert(image != NULL);
   assert(exception != (ExceptionInfo *) NULL);
 
-  if ((checkOpenCLEnvironment(exception) == MagickFalse) ||
-      (checkAccelerateCondition(image, channel) == MagickFalse))
+  if ((checkAccelerateCondition(image) == MagickFalse) ||
+      (checkOpenCLEnvironment(exception) == MagickFalse))
     return NULL;
 
-  filteredImage=ComputeRotationalBlurImage(image, channel, angle, exception);
+  filteredImage=ComputeRotationalBlurImage(image,angle,exception);
   return filteredImage;
 }
 
@@ -6300,9 +6278,9 @@ MagickExport Image* AccelerateRotationalBlurImage(const Image *image,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
 
-static Image *ComputeUnsharpMaskImage(const Image *image,
-  const ChannelType channel,const double radius,const double sigma,
-  const double gain,const double threshold,ExceptionInfo *exception)
+static Image *ComputeUnsharpMaskImage(const Image *image,const double radius,
+  const double sigma,const double gain,const double threshold,
+  ExceptionInfo *exception)
 {
   CacheView
     *filteredImage_view,
@@ -6536,7 +6514,7 @@ static Image *ComputeUnsharpMaskImage(const Image *image,
       i = 0;
       clStatus=clEnv->library->clSetKernelArg(blurRowKernel,i++,sizeof(cl_mem),(void *)&imageBuffer);
       clStatus|=clEnv->library->clSetKernelArg(blurRowKernel,i++,sizeof(cl_mem),(void *)&tempImageBuffer);
-      clStatus|=clEnv->library->clSetKernelArg(blurRowKernel,i++,sizeof(ChannelType),&channel);
+      clStatus|=clEnv->library->clSetKernelArg(blurRowKernel,i++,sizeof(ChannelType),&image->channel_mask);
       clStatus|=clEnv->library->clSetKernelArg(blurRowKernel,i++,sizeof(cl_mem),(void *)&imageKernelBuffer);
       clStatus|=clEnv->library->clSetKernelArg(blurRowKernel,i++,sizeof(unsigned int),(void *)&kernelWidth);
       clStatus|=clEnv->library->clSetKernelArg(blurRowKernel,i++,sizeof(unsigned int),(void *)&imageColumns);
@@ -6587,7 +6565,7 @@ static Image *ComputeUnsharpMaskImage(const Image *image,
       clStatus|=clEnv->library->clSetKernelArg(unsharpMaskBlurColumnKernel,i++,sizeof(unsigned int),(void *)&imageRows);
       clStatus|=clEnv->library->clSetKernelArg(unsharpMaskBlurColumnKernel,i++, (chunkSize+kernelWidth-1)*sizeof(cl_float4),NULL);
       clStatus|=clEnv->library->clSetKernelArg(unsharpMaskBlurColumnKernel,i++, kernelWidth*sizeof(float),NULL);
-      clStatus|=clEnv->library->clSetKernelArg(unsharpMaskBlurColumnKernel,i++,sizeof(ChannelType),&channel);
+      clStatus|=clEnv->library->clSetKernelArg(unsharpMaskBlurColumnKernel,i++,sizeof(ChannelType),&image->channel_mask);
       clStatus|=clEnv->library->clSetKernelArg(unsharpMaskBlurColumnKernel,i++,sizeof(cl_mem),(void *)&imageKernelBuffer);
       clStatus|=clEnv->library->clSetKernelArg(unsharpMaskBlurColumnKernel,i++,sizeof(unsigned int),(void *)&kernelWidth);
       clStatus|=clEnv->library->clSetKernelArg(unsharpMaskBlurColumnKernel,i++,sizeof(float),(void *)&fGain);
@@ -6669,8 +6647,8 @@ cleanup:
 }
 
 static Image *ComputeUnsharpMaskImageSection(const Image *image,
-  const ChannelType channel,const double radius,const double sigma,
-  const double gain,const double threshold,ExceptionInfo *exception)
+  const double radius,const double sigma,const double gain,
+  const double threshold,ExceptionInfo *exception)
 {
   CacheView
     *filteredImage_view,
@@ -6914,7 +6892,7 @@ static Image *ComputeUnsharpMaskImageSection(const Image *image,
         i = 0;
         clStatus=clEnv->library->clSetKernelArg(blurRowKernel,i++,sizeof(cl_mem),(void *)&imageBuffer);
         clStatus|=clEnv->library->clSetKernelArg(blurRowKernel,i++,sizeof(cl_mem),(void *)&tempImageBuffer);
-        clStatus|=clEnv->library->clSetKernelArg(blurRowKernel,i++,sizeof(ChannelType),&channel);
+        clStatus|=clEnv->library->clSetKernelArg(blurRowKernel,i++,sizeof(ChannelType),&image->channel_mask);
         clStatus|=clEnv->library->clSetKernelArg(blurRowKernel,i++,sizeof(cl_mem),(void *)&imageKernelBuffer);
         clStatus|=clEnv->library->clSetKernelArg(blurRowKernel,i++,sizeof(unsigned int),(void *)&kernelWidth);
         clStatus|=clEnv->library->clSetKernelArg(blurRowKernel,i++,sizeof(unsigned int),(void *)&imageColumns);
@@ -6974,7 +6952,7 @@ static Image *ComputeUnsharpMaskImageSection(const Image *image,
         clStatus|=clEnv->library->clSetKernelArg(unsharpMaskBlurColumnKernel,i++,sizeof(unsigned int),(void *)&imageRows);
         clStatus|=clEnv->library->clSetKernelArg(unsharpMaskBlurColumnKernel,i++, (chunkSize+kernelWidth-1)*sizeof(cl_float4),NULL);
         clStatus|=clEnv->library->clSetKernelArg(unsharpMaskBlurColumnKernel,i++, kernelWidth*sizeof(float),NULL);
-        clStatus|=clEnv->library->clSetKernelArg(unsharpMaskBlurColumnKernel,i++,sizeof(ChannelType),&channel);
+        clStatus|=clEnv->library->clSetKernelArg(unsharpMaskBlurColumnKernel,i++,sizeof(ChannelType),&image->channel_mask);
         clStatus|=clEnv->library->clSetKernelArg(unsharpMaskBlurColumnKernel,i++,sizeof(cl_mem),(void *)&imageKernelBuffer);
         clStatus|=clEnv->library->clSetKernelArg(unsharpMaskBlurColumnKernel,i++,sizeof(unsigned int),(void *)&kernelWidth);
         clStatus|=clEnv->library->clSetKernelArg(unsharpMaskBlurColumnKernel,i++,sizeof(float),(void *)&fGain);
@@ -7058,8 +7036,8 @@ cleanup:
 }
 
 static Image *ComputeUnsharpMaskImageSingle(const Image *image,
-  const ChannelType channel,const double radius,const double sigma,
-  const double gain,const double threshold,int blurOnly, ExceptionInfo *exception)
+  const double radius,const double sigma,const double gain,
+  const double threshold,int blurOnly, ExceptionInfo *exception)
 {
   CacheView
     *filteredImage_view,
@@ -7350,8 +7328,8 @@ cleanup:
 }
 
 MagickExport Image *AccelerateUnsharpMaskImage(const Image *image,
-  const ChannelType channel,const double radius,const double sigma,
-  const double gain,const double threshold,ExceptionInfo *exception)
+  const double radius,const double sigma,const double gain,
+  const double threshold,ExceptionInfo *exception)
 {
   Image
     *filteredImage;
@@ -7359,39 +7337,39 @@ MagickExport Image *AccelerateUnsharpMaskImage(const Image *image,
   assert(image != NULL);
   assert(exception != (ExceptionInfo *) NULL);
 
-  if ((checkOpenCLEnvironment(exception) == MagickFalse) ||
-      (checkAccelerateCondition(image, channel) == MagickFalse))
+  if ((checkAccelerateCondition(image) == MagickFalse) ||
+      (checkOpenCLEnvironment(exception) == MagickFalse))
     return NULL;
 
   if (radius < 12.1)
-    filteredImage = ComputeUnsharpMaskImageSingle(image,channel,radius,sigma,gain,threshold, 0, exception);
-  else if (splitImage(image) && (image->rows / 2 > radius)) 
-    filteredImage = ComputeUnsharpMaskImageSection(image,channel,radius,sigma,gain,threshold,exception);
+    filteredImage=ComputeUnsharpMaskImageSingle(image,radius,sigma,gain,
+      threshold,0,exception);
+  else if (splitImage(image) && (image->rows / 2 > radius))
+    filteredImage=ComputeUnsharpMaskImageSection(image,radius,sigma,gain,
+      threshold,exception);
   else
-    filteredImage = ComputeUnsharpMaskImage(image,channel,radius,sigma,gain,threshold,exception);
+    filteredImage=ComputeUnsharpMaskImage(image,radius,sigma,gain,threshold,
+      exception);
   return(filteredImage);
 }
 
 #else  /* MAGICKCORE_OPENCL_SUPPORT  */
 
 MagickExport Image *AccelerateAddNoiseImage(const Image *magick_unused(image),
-  const ChannelType magick_unused(channel),
   const NoiseType magick_unused(noise_type),
-  ExceptionInfo *magick_unused(exception)) 
+  ExceptionInfo *magick_unused(exception))
 {
   magick_unreferenced(image);
-  magick_unreferenced(channel);
   magick_unreferenced(noise_type);
   magick_unreferenced(exception);
   return((Image *) NULL);
 }
 
 MagickExport Image *AccelerateBlurImage(const Image *magick_unused(image),
-  const ChannelType magick_unused(channel),const double magick_unused(radius),
-  const double magick_unused(sigma),ExceptionInfo *magick_unused(exception))
+  const double magick_unused(radius),const double magick_unused(sigma),
+  ExceptionInfo *magick_unused(exception))
 {
   magick_unreferenced(image);
-  magick_unreferenced(channel);
   magick_unreferenced(radius);
   magick_unreferenced(sigma);
   magick_unreferenced(exception);
@@ -7400,8 +7378,7 @@ MagickExport Image *AccelerateBlurImage(const Image *magick_unused(image),
 }
 
 MagickExport MagickBooleanType AccelerateCompositeImage(
-  Image *magick_unused(image),const ChannelType magick_unused(channel),
-  const CompositeOperator magick_unused(compose),
+  Image *magick_unused(image),const CompositeOperator magick_unused(compose),
   const Image *magick_unused(composite),const ssize_t magick_unused(x_offset),
   const ssize_t magick_unused(y_offset),
   const float magick_unused(destination_dissolve),
@@ -7409,7 +7386,6 @@ MagickExport MagickBooleanType AccelerateCompositeImage(
   ExceptionInfo *magick_unused(exception))
 {
   magick_unreferenced(image);
-  magick_unreferenced(channel);
   magick_unreferenced(compose);
   magick_unreferenced(composite);
   magick_unreferenced(x_offset);
@@ -7433,13 +7409,11 @@ MagickExport MagickBooleanType AccelerateContrastImage(
 }
 
 MagickExport MagickBooleanType AccelerateContrastStretchImage(
-  Image *magick_unused(image),const ChannelType magick_unused(channel),
-  const double magick_unused(black_point),
+  Image *magick_unused(image),const double magick_unused(black_point),
   const double magick_unused(white_point),
   ExceptionInfo* magick_unused(exception))
 {
   magick_unreferenced(image);
-  magick_unreferenced(channel);
   magick_unreferenced(black_point);
   magick_unreferenced(white_point);
   magick_unreferenced(exception);
@@ -7447,13 +7421,11 @@ MagickExport MagickBooleanType AccelerateContrastStretchImage(
   return(MagickFalse);
 }
 
-MagickExport Image *AccelerateConvolveImage(
-  const Image *magick_unused(image),const ChannelType magick_unused(channel),
+MagickExport Image *AccelerateConvolveImage(const Image *magick_unused(image),
   const KernelInfo *magick_unused(kernel),
   ExceptionInfo *magick_unused(exception))
 {
   magick_unreferenced(image);
-  magick_unreferenced(channel);
   magick_unreferenced(kernel);
   magick_unreferenced(exception);
 
@@ -7461,11 +7433,9 @@ MagickExport Image *AccelerateConvolveImage(
 }
 
 MagickExport MagickBooleanType AccelerateEqualizeImage(
-  Image* magick_unused(image), const ChannelType magick_unused(channel),
-  ExceptionInfo* magick_unused(exception))
+  Image* magick_unused(image),ExceptionInfo* magick_unused(exception))
 {
   magick_unreferenced(image);
-  magick_unreferenced(channel);
   magick_unreferenced(exception);
 
   return(MagickFalse);
@@ -7481,14 +7451,13 @@ MagickExport Image *AccelerateDespeckleImage(const Image* magick_unused(image),
 }
 
 MagickExport MagickBooleanType AccelerateFunctionImage(
-  Image *magick_unused(image),const ChannelType magick_unused(channel),
+  Image *magick_unused(image),
   const MagickFunction magick_unused(function),
   const size_t magick_unused(number_parameters),
   const double *magick_unused(parameters),
   ExceptionInfo *magick_unused(exception))
 {
   magick_unreferenced(image);
-  magick_unreferenced(channel);
   magick_unreferenced(function);
   magick_unreferenced(number_parameters);
   magick_unreferenced(parameters);
@@ -7537,13 +7506,11 @@ MagickExport MagickBooleanType AccelerateModulateImage(
 }
 
 MagickExport Image *AccelerateMotionBlurImage(
-  const Image *magick_unused(image),const ChannelType magick_unused(channel),
-  const double *magick_unused(kernel),const size_t magick_unused(width),
-  const OffsetInfo *magick_unused(offset),
+  const Image *magick_unused(image),const double *magick_unused(kernel),
+  const size_t magick_unused(width),const OffsetInfo *magick_unused(offset),
   ExceptionInfo *magick_unused(exception))
 {
   magick_unreferenced(image);
-  magick_unreferenced(channel);
   magick_unreferenced(kernel);
   magick_unreferenced(width);
   magick_unreferenced(offset);
@@ -7577,11 +7544,10 @@ MagickExport Image *AccelerateResizeImage(const Image *magick_unused(image),
 }
 
 MagickExport Image *AccelerateRotationalBlurImage(
-  const Image *magick_unused(image),const ChannelType magick_unused(channel),
-  const double magick_unused(angle),ExceptionInfo *magick_unused(exception))
+  const Image *magick_unused(image),const double magick_unused(angle),
+  ExceptionInfo *magick_unused(exception))
 {
   magick_unreferenced(image);
-  magick_unreferenced(channel);
   magick_unreferenced(angle);
   magick_unreferenced(exception);
 
@@ -7589,13 +7555,12 @@ MagickExport Image *AccelerateRotationalBlurImage(
 }
 
 MagickExport Image *AccelerateUnsharpMaskImage(
-  const Image *magick_unused(image),const ChannelType magick_unused(channel),
-  const double magick_unused(radius),const double magick_unused(sigma),
-  const double magick_unused(gain),const double magick_unused(threshold),
+  const Image *magick_unused(image),const double magick_unused(radius),
+  const double magick_unused(sigma),const double magick_unused(gain),
+  const double magick_unused(threshold),
   ExceptionInfo *magick_unused(exception))
 {
   magick_unreferenced(image);
-  magick_unreferenced(channel);
   magick_unreferenced(radius);
   magick_unreferenced(sigma);
   magick_unreferenced(gain);

@@ -29,39 +29,34 @@ extern "C" {
 #endif
 
 extern MagickExport Image
-  *AccelerateAddNoiseImage(const Image*,const ChannelType,const NoiseType,
-    ExceptionInfo *),
-  *AccelerateBlurImage(const Image *,const ChannelType,const double,
-    const double,ExceptionInfo *),
-  *AccelerateConvolveImage(const Image *,const ChannelType,
-    const KernelInfo *,ExceptionInfo *),
+  *AccelerateAddNoiseImage(const Image*,const NoiseType,ExceptionInfo *),
+  *AccelerateBlurImage(const Image *,const double,const double,ExceptionInfo *),
+  *AccelerateConvolveImage(const Image *,const KernelInfo *,ExceptionInfo *),
   *AccelerateDespeckleImage(const Image *,ExceptionInfo *),
   *AccelerateLocalContrastImage(const Image *,const double,const double,
     ExceptionInfo *),
-  *AccelerateMotionBlurImage(const Image*, const ChannelType,
-    const double*,const size_t,const OffsetInfo*,ExceptionInfo*),
+  *AccelerateMotionBlurImage(const Image*,const double*,const size_t,
+    const OffsetInfo*,ExceptionInfo*),
   *AccelerateResizeImage(const Image *,const size_t,const size_t,
     const ResizeFilter *,ExceptionInfo *),
-  *AccelerateRotationalBlurImage(const Image *,const ChannelType,const double,
-    ExceptionInfo *),
-  *AccelerateUnsharpMaskImage(const Image *,const ChannelType,const double,
-    const double,const double,const double,ExceptionInfo *);
+  *AccelerateRotationalBlurImage(const Image *,const double,ExceptionInfo *),
+  *AccelerateUnsharpMaskImage(const Image *,const double,const double,
+    const double,const double,ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
-  AccelerateCompositeImage(Image *,const ChannelType,const CompositeOperator,
-    const Image *,const ssize_t,const ssize_t,const float,const float,
-    ExceptionInfo *),
+  AccelerateCompositeImage(Image *,const CompositeOperator,const Image *,
+    const float,const float,ExceptionInfo *),
   AccelerateContrastImage(Image *,const MagickBooleanType,ExceptionInfo *),
-  AccelerateContrastStretchImage(Image *, const ChannelType,
-    const double,const double,ExceptionInfo*),
-  AccelerateEqualizeImage(Image *,const ChannelType,ExceptionInfo *),
-  AccelerateFunctionImage(Image *,const ChannelType,const MagickFunction,
-    const size_t,const double *,ExceptionInfo *),
-  AccelerateGrayscaleImage(Image*, const PixelIntensityMethod,
+  AccelerateContrastStretchImage(Image *,const double,const double,
+    ExceptionInfo*),
+  AccelerateEqualizeImage(Image *,ExceptionInfo *),
+  AccelerateFunctionImage(Image *,const MagickFunction,const size_t,
+    const double *,ExceptionInfo *),
+  AccelerateGrayscaleImage(Image*,const PixelIntensityMethod,
     ExceptionInfo *),
-  AccelerateModulateImage(Image*, double, double, double,
-    ColorspaceType, ExceptionInfo*),
-  AccelerateRandomImage(Image*, ExceptionInfo*);
+  AccelerateModulateImage(Image*,const double,const double,const double,
+    const ColorspaceType, ExceptionInfo*),
+  AccelerateRandomImage(Image*,ExceptionInfo*);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
