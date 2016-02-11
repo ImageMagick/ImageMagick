@@ -7379,8 +7379,7 @@ MagickExport Image *AccelerateBlurImage(const Image *magick_unused(image),
 
 MagickExport MagickBooleanType AccelerateCompositeImage(
   Image *magick_unused(image),const CompositeOperator magick_unused(compose),
-  const Image *magick_unused(composite),const ssize_t magick_unused(x_offset),
-  const ssize_t magick_unused(y_offset),
+  const Image *magick_unused(composite),
   const float magick_unused(destination_dissolve),
   const float magick_unused(source_dissolve),
   ExceptionInfo *magick_unused(exception))
@@ -7388,8 +7387,6 @@ MagickExport MagickBooleanType AccelerateCompositeImage(
   magick_unreferenced(image);
   magick_unreferenced(compose);
   magick_unreferenced(composite);
-  magick_unreferenced(x_offset);
-  magick_unreferenced(y_offset);
   magick_unreferenced(destination_dissolve);
   magick_unreferenced(source_dissolve);
   magick_unreferenced(exception);
