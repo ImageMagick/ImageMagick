@@ -10873,7 +10873,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
           png_write_row(ping,ping_pixels);
 
-          status=SetImageProgress(image,LoadImageTag,
+          status=SetImageProgress(image,SaveImageTag,
               (MagickOffsetType) (pass * image->rows + y),
               num_passes * image->rows);
           if (status == MagickFalse)
@@ -10934,7 +10934,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
             png_write_row(ping,ping_pixels);
 
-            status=SetImageProgress(image,LoadImageTag,
+            status=SetImageProgress(image,SaveImageTag,
               (MagickOffsetType) (pass * image->rows + y),
               num_passes * image->rows);
             if (status == MagickFalse)
@@ -11001,7 +11001,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
                 png_write_row(ping,ping_pixels);
 
-                status=SetImageProgress(image,LoadImageTag,
+                status=SetImageProgress(image,SaveImageTag,
                   (MagickOffsetType) (pass * image->rows + y),
                   num_passes * image->rows);
                 if (status == MagickFalse)
@@ -11075,7 +11075,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                   }
                 png_write_row(ping,ping_pixels);
 
-                status=SetImageProgress(image,LoadImageTag,
+                status=SetImageProgress(image,SaveImageTag,
                   (MagickOffsetType) (pass * image->rows + y),
                   num_passes * image->rows);
                 if (status == MagickFalse)
