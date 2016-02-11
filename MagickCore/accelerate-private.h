@@ -63,6 +63,8 @@ const char* accelerateKernels =
   OPENCL_DEFINE(SigmaPoisson, (attenuate*12.5f))
   OPENCL_DEFINE(SigmaRandom, (attenuate))
   OPENCL_DEFINE(TauGaussian, (attenuate*0.078125f))
+  OPENCL_DEFINE(MagickMax(x,y), (((x) > (y)) ? (x) : (y)))
+  OPENCL_DEFINE(MagickMin(x,y), (((x) < (y)) ? (x) : (y)))
 
 /*
   Typedef declarations.
@@ -405,13 +407,13 @@ OPENCL_ENDIF()
         }
       case BrightnessPixelIntensityMethod:
         {
-          intensity=max(max(red,green),blue);
+          intensity=MagickMax(MagickMax(red,green),blue);
           break;
         }
       case LightnessPixelIntensityMethod:
         {
-          intensity=(min(min(red,green),blue)+
-              max(max(red,green),blue))/2.0;
+          intensity=(MagickMin(MagickMin(red,green),blue)+
+              MagickMax(MagickMax(red,green),blue))/2.0;
           break;
         }
       case MSPixelIntensityMethod:
@@ -1344,8 +1346,8 @@ uint MWC64X_NextUint(mwc64x_state_t *s)
     float g=(float) getGreen(pixel);
     float b=(float) getBlue(pixel);
 
-    float tmin=min(min(r,g),b);
-    float tmax=max(max(r,g),b);
+    float tmin=MagickMin(MagickMin(r,g),b);
+    float tmax=MagickMax(MagickMax(r,g),b);
 
     if (tmax!=0.0f) {
       float delta=tmax-tmin;
@@ -2142,13 +2144,13 @@ uint MWC64X_NextUint(mwc64x_state_t *s)
         }
       case BrightnessPixelIntensityMethod:
         {
-          intensity=max(max(red,green),blue);
+          intensity=MagickMax(MagickMax(red,green),blue);
           break;
         }
       case LightnessPixelIntensityMethod:
         {
-          intensity=(min(min(red,green),blue)+
-              max(max(red,green),blue))/2.0;
+          intensity=(MagickMin(MagickMin(red,green),blue)+
+              MagickMax(MagickMax(red,green),blue))/2.0;
           break;
         }
       case MSPixelIntensityMethod:
@@ -2378,8 +2380,8 @@ uint MWC64X_NextUint(mwc64x_state_t *s)
   /*
      Convert RGB to HSL colorspace.
      */
-  tmax=max(QuantumScale*red,max(QuantumScale*green, QuantumScale*blue));
-  tmin=min(QuantumScale*red,min(QuantumScale*green, QuantumScale*blue));
+  tmax=MagickMax(QuantumScale*red,MagickMax(QuantumScale*green, QuantumScale*blue));
+  tmin=MagickMin(QuantumScale*red,MagickMin(QuantumScale*green, QuantumScale*blue));
 
   c=tmax-tmin;
 
@@ -2935,16 +2937,16 @@ STRINGIFY(
 
     // calculate the range of resized image pixels computed by this workgroup
     const unsigned int startX = get_group_id(0)*pixelPerWorkgroup;
-    const unsigned int stopX = min(startX + pixelPerWorkgroup,filteredColumns);
+    const unsigned int stopX = MagickMin(startX + pixelPerWorkgroup,filteredColumns);
     const unsigned int actualNumPixelToCompute = stopX - startX;
 
     // calculate the range of input image pixels to cache
-    float scale = max(1.0f/xFactor+MagickEpsilon ,1.0f);
-    const float support = max(scale*resizeFilterSupport,0.5f);
+    float scale = MagickMax(1.0f/xFactor+MagickEpsilon ,1.0f);
+    const float support = MagickMax(scale*resizeFilterSupport,0.5f);
     scale = PerceptibleReciprocal(scale);
 
-    const int cacheRangeStartX = max((int)((startX+0.5f)/xFactor+MagickEpsilon-support+0.5f),(int)(0));
-    const int cacheRangeEndX = min((int)(cacheRangeStartX + numCachedPixels), (int)inputColumns);
+    const int cacheRangeStartX = MagickMax((int)((startX+0.5f)/xFactor+MagickEpsilon-support+0.5f),(int)(0));
+    const int cacheRangeEndX = MagickMin((int)(cacheRangeStartX + numCachedPixels), (int)inputColumns);
 
     // cache the input pixels into local memory
     const unsigned int y = get_global_id(1);
@@ -2956,7 +2958,7 @@ STRINGIFY(
     {
 
       const unsigned int chunkStartX = startX + chunk*pixelChunkSize;
-      const unsigned int chunkStopX = min(chunkStartX + pixelChunkSize, stopX);
+      const unsigned int chunkStopX = MagickMin(chunkStartX + pixelChunkSize, stopX);
       const unsigned int actualNumPixelInThisChunk = chunkStopX - chunkStartX;
 
       // determine which resized pixel computed by this workitem
@@ -2976,8 +2978,8 @@ STRINGIFY(
 
         // calculate how many steps required for this pixel
         const float bisect = (x+0.5)/xFactor+MagickEpsilon;
-        const unsigned int start = (unsigned int)max(bisect-support+0.5f,0.0f);
-        const unsigned int stop  = (unsigned int)min(bisect+support+0.5f,(float)inputColumns);
+        const unsigned int start = (unsigned int)MagickMax(bisect-support+0.5f,0.0f);
+        const unsigned int stop  = (unsigned int)MagickMin(bisect+support+0.5f,(float)inputColumns);
         const unsigned int n = stop - start;
 
         // calculate how many steps this workitem will contribute
@@ -2986,7 +2988,7 @@ STRINGIFY(
 
         const unsigned int startStep = (itemID%numItems)*numStepsPerWorkItem;
         if (startStep < n) {
-          const unsigned int stopStep = min(startStep+numStepsPerWorkItem, n);
+          const unsigned int stopStep = MagickMin(startStep+numStepsPerWorkItem, n);
 
           unsigned int cacheIndex = start+startStep-cacheRangeStartX;
           if (matte == 0) {
@@ -3128,16 +3130,16 @@ STRINGIFY(
 
     // calculate the range of resized image pixels computed by this workgroup
     const unsigned int startY = get_group_id(1)*pixelPerWorkgroup;
-    const unsigned int stopY = min(startY + pixelPerWorkgroup,filteredRows);
+    const unsigned int stopY = MagickMin(startY + pixelPerWorkgroup,filteredRows);
     const unsigned int actualNumPixelToCompute = stopY - startY;
 
     // calculate the range of input image pixels to cache
-    float scale = max(1.0f/yFactor+MagickEpsilon ,1.0f);
-    const float support = max(scale*resizeFilterSupport,0.5f);
+    float scale = MagickMax(1.0f/yFactor+MagickEpsilon ,1.0f);
+    const float support = MagickMax(scale*resizeFilterSupport,0.5f);
     scale = PerceptibleReciprocal(scale);
 
-    const int cacheRangeStartY = max((int)((startY+0.5f)/yFactor+MagickEpsilon-support+0.5f),(int)(0));
-    const int cacheRangeEndY = min((int)(cacheRangeStartY + numCachedPixels), (int)inputRows);
+    const int cacheRangeStartY = MagickMax((int)((startY+0.5f)/yFactor+MagickEpsilon-support+0.5f),(int)(0));
+    const int cacheRangeEndY = MagickMin((int)(cacheRangeStartY + numCachedPixels), (int)inputRows);
 
     // cache the input pixels into local memory
     const unsigned int x = get_global_id(0);
@@ -3149,7 +3151,7 @@ STRINGIFY(
     {
 
       const unsigned int chunkStartY = startY + chunk*pixelChunkSize;
-      const unsigned int chunkStopY = min(chunkStartY + pixelChunkSize, stopY);
+      const unsigned int chunkStopY = MagickMin(chunkStartY + pixelChunkSize, stopY);
       const unsigned int actualNumPixelInThisChunk = chunkStopY - chunkStartY;
 
       // determine which resized pixel computed by this workitem
@@ -3169,8 +3171,8 @@ STRINGIFY(
 
         // calculate how many steps required for this pixel
         const float bisect = (y+0.5)/yFactor+MagickEpsilon;
-        const unsigned int start = (unsigned int)max(bisect-support+0.5f,0.0f);
-        const unsigned int stop  = (unsigned int)min(bisect+support+0.5f,(float)inputRows);
+        const unsigned int start = (unsigned int)MagickMax(bisect-support+0.5f,0.0f);
+        const unsigned int stop  = (unsigned int)MagickMin(bisect+support+0.5f,(float)inputRows);
         const unsigned int n = stop - start;
 
         // calculate how many steps this workitem will contribute
@@ -3179,7 +3181,7 @@ STRINGIFY(
 
         const unsigned int startStep = (itemID%numItems)*numStepsPerWorkItem;
         if (startStep < n) {
-          const unsigned int stopStep = min(startStep+numStepsPerWorkItem, n);
+          const unsigned int stopStep = MagickMin(startStep+numStepsPerWorkItem, n);
 
           unsigned int cacheIndex = start+startStep-cacheRangeStartY;
           if (matte == 0) {
