@@ -271,9 +271,9 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
   */
   i=FormatMagickCaption(image,draw_info,split,&metrics,&caption);
   (void) CloneString(&draw_info->text,caption);
-  (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",
+  (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",MagickMax(
     draw_info->direction == RightToLeftDirection ? image->columns-
-    metrics.bounds.x2 : -metrics.bounds.x1,draw_info->gravity ==
+    metrics.bounds.x2 : -metrics.bounds.x1,0.0),draw_info->gravity ==
     UndefinedGravity ? metrics.ascent : 0.0);
   draw_info->geometry=AcquireString(geometry);
   status=AnnotateImage(image,draw_info);
