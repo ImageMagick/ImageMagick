@@ -1,3 +1,6 @@
+2016-02-12  6.9.3-4 Cristy  <quetzlzacatenango@image...>j
+  * New version 6.9.3-4, GIT revision 10560:09f5f5d:20160212.
+
 2016-02-12  6.9.3-4 Dirk Lemstra <dirk@lem.....org>
   * Fixed memory leak when reading an SVG without width/height (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=27&p=130197).
