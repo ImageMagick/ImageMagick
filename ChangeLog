@@ -1,3 +1,7 @@
+2016-02-12  6.9.3-4 Dirk Lemstra <dirk@lem.....org>
+  * Fixed memory leak when reading an SVG without width/height (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=27&p=130197).
+
 2016-02-09  6.9.3-4 Cristy  <quetzlzacatenango@image...>
   * Fix compiler error for complext text layout.
 
