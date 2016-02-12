@@ -2954,13 +2954,11 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image->columns=gdk_pixbuf_get_width(pixel_buffer);
         image->rows=gdk_pixbuf_get_height(pixel_buffer);
 #endif
-        status=SetImageExtent(image,image->columns,image->rows,exception);
-        if (status == MagickFalse)
-          return(DestroyImageList(image));
         image->alpha_trait=BlendPixelTrait;
         SetImageProperty(image,"svg:base-uri",
           rsvg_handle_get_base_uri(svg_handle),exception);
-        if ((image->columns == 0) || (image->rows == 0))
+        status=SetImageExtent(image,image->columns,image->rows,exception);
+        if (status == MagickFalse)
           {
 #if !defined(MAGICKCORE_CAIRO_DELEGATE)
             g_object_unref(G_OBJECT(pixel_buffer));
