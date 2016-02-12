@@ -3556,6 +3556,7 @@ static MagickBooleanType TraceSVGImage(Image *image,ExceptionInfo *exception)
     (void) WriteBlobString(image,"</svg>\n");
   }
 #endif
+  CloseBlob(image);
   return(MagickTrue);
 }
 
