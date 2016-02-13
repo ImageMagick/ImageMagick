@@ -1501,18 +1501,18 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
   CacheView
     *image_view;
 
-  MagickBooleanType
-    status;
-
-  MagickOffsetType
-    progress;
-
   double
     black[CompositePixelChannel+1],
     *equalize_map,
     *histogram,
     *map,
     white[CompositePixelChannel+1];
+
+  MagickBooleanType
+    status;
+
+  MagickOffsetType
+    progress;
 
   register ssize_t
     i;
