@@ -1573,7 +1573,10 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-        histogram[GetPixelChannels(image)*ScaleQuantumToMap(p[i])+i]++;
+      {
+        double intensity=GetPixelIntensity(image,p);
+        histogram[GetPixelChannels(image)*ScaleQuantumToMap(intensity)+i]++;
+      }
       p+=GetPixelChannels(image);
     }
   }
@@ -1630,8 +1633,8 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
             PixelChannel channel=GetPixelChannelChannel(image,RedPixelChannel);
             if (black[channel] != white[channel])
               image->colormap[j].red=equalize_map[GetPixelChannels(image)*
-                ScaleQuantumToMap(ClampToQuantum(image->colormap[j].red))]+
-                channel;
+                ScaleQuantumToMap(ClampToQuantum(image->colormap[j].red))+
+                channel];
           }
         if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
           {
@@ -1639,16 +1642,16 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
               GreenPixelChannel);
             if (black[channel] != white[channel])
               image->colormap[j].green=equalize_map[GetPixelChannels(image)*
-                ScaleQuantumToMap(ClampToQuantum(image->colormap[j].green))]+
-                channel;
+                ScaleQuantumToMap(ClampToQuantum(image->colormap[j].green))+
+                channel];
           }
         if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
           {
             PixelChannel channel=GetPixelChannelChannel(image,BluePixelChannel);
             if (black[channel] != white[channel])
               image->colormap[j].blue=equalize_map[GetPixelChannels(image)*
-                ScaleQuantumToMap(ClampToQuantum(image->colormap[j].blue))]+
-                channel;
+                ScaleQuantumToMap(ClampToQuantum(image->colormap[j].blue))+
+                channel];
           }
         if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
           {
@@ -1656,8 +1659,8 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
               AlphaPixelChannel);
             if (black[channel] != white[channel])
               image->colormap[j].alpha=equalize_map[GetPixelChannels(image)*
-                ScaleQuantumToMap(ClampToQuantum(image->colormap[j].alpha))]+
-                channel;
+                ScaleQuantumToMap(ClampToQuantum(image->colormap[j].alpha))+
+                channel];
           }
       }
     }
