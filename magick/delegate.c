@@ -1110,11 +1110,11 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
     status,
     temporary;
 
-  register ssize_t
-    i;
-
   PolicyRights
     rights;
+
+  register ssize_t
+    i;
 
   /*
     Get delegate.
