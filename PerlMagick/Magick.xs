@@ -261,7 +261,7 @@ static struct
       {"y", RealReference}, { "fill", StringReference},
       {"color", StringReference} } },
     { "Spread", { {"radius", RealReference},
-       {"interpolate", MagickInterpolateOptions} } },
+      {"interpolate", MagickInterpolateOptions} } },
     { "Swirl", { {"degrees", RealReference},
       {"interpolate", MagickInterpolateOptions} } },
     { "Resize", { {"geometry", StringReference}, {"width", IntegerReference},
@@ -7559,30 +7559,28 @@ Mogrify(ref,...)
     BrightnessContrastImage = 262
     Morphology         = 263
     MorphologyImage    = 264
-    Color              = 265
-    ColorImage         = 266
-    Mode               = 267
-    ModeImage          = 268
-    Statistic          = 269
-    StatisticImage     = 270
-    Perceptible        = 271
-    PerceptibleImage   = 272
-    Poly               = 273
-    PolyImage          = 274
-    Grayscale          = 275
-    GrayscaleImage     = 276
-    CannyEdge          = 278
-    CannyEdgeImage     = 279
-    HoughLine          = 280
-    HoughLineImage     = 281
-    MeanShift          = 282
-    MeanShiftImage     = 283
-    Kuwahara           = 284
-    KuwaharaImage      = 285
-    ConnectedComponent = 286
-    ConnectedComponentImage = 287
-    CopyPixels         = 288
-    CopyImagePixels    = 289
+    Mode               = 265
+    ModeImage          = 266
+    Statistic          = 267
+    StatisticImage     = 268
+    Perceptible        = 269
+    PerceptibleImage   = 270
+    Poly               = 271
+    PolyImage          = 272
+    Grayscale          = 273
+    GrayscaleImage     = 274
+    CannyEdge          = 275
+    CannyEdgeImage     = 276
+    HoughLine          = 277
+    HoughLineImage     = 278
+    MeanShift          = 279
+    MeanShiftImage     = 280
+    Kuwahara           = 281
+    KuwaharaImage      = 282
+    ConnectedComponent = 283
+    ConnectedComponentImage = 284
+    CopyPixels         = 285
+    CopyImagePixels    = 286
     MogrifyRegion      = 666
   PPCODE:
   {
