@@ -531,8 +531,6 @@ static struct
     { "Morphology", { {"kernel", StringReference},
       {"channel", MagickChannelOptions}, {"method", MagickMorphologyOptions},
       {"iterations", IntegerReference} } },
-    { "Sans", { {"matrix", ArrayReference} } },
-    { "Color", { {"color", StringReference} } },
     { "Mode", { {"geometry", StringReference},
       {"width", IntegerReference},{"height", IntegerReference},
       {"channel", MagickChannelOptions} } },
@@ -561,6 +559,7 @@ static struct
       {"x", IntegerReference}, {"y", IntegerReference},
       {"gravity", MagickGravityOptions}, {"offset", StringReference}, 
       {"dx", IntegerReference}, {"dy", IntegerReference} } },
+    { "Color", { {"color", StringReference} } },
   };
 
 static SplayTreeInfo
@@ -7581,6 +7580,8 @@ Mogrify(ref,...)
     ConnectedComponentImage = 284
     CopyPixels         = 285
     CopyImagePixels    = 286
+    Color              = 287
+    ColorImage         = 288
     MogrifyRegion      = 666
   PPCODE:
   {
@@ -11306,6 +11307,18 @@ Mogrify(ref,...)
             offset.y=argument_list[9].integer_reference;
           (void) CopyImagePixels(image,source_image,&geometry,&offset,
             exception);
+          break;
+        }
+        case 144:  /* Color */
+        {
+          PixelInfo
+            color;
+
+          (void) QueryMagickColor("none",&color,exception);
+          if (attribute_flag[0] != 0)
+            (void) QueryMagickColor(argument_list[0].string_reference,
+              &color,exception);
+          (void) SetImageColor(image,&color,exception);
           break;
         }
       }
