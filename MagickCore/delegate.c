@@ -1118,11 +1118,11 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
     status,
     temporary;
 
-  register ssize_t
-    i;
-
   PolicyRights
     rights;
+
+  register ssize_t
+    i;
 
   /*
     Get delegate.
@@ -1331,7 +1331,8 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
         if (CopyDelegateFile(image->filename,input_filename,MagickFalse) == MagickFalse)
           (void) RelinquishUniqueFileResource(input_filename);
       }
-    if (CopyDelegateFile(image_info->filename,output_filename,MagickTrue) == MagickFalse)
+    if ((strcmp(input_filename,output_filename) != 0) &&
+        (CopyDelegateFile(image_info->filename,output_filename,MagickTrue) == MagickFalse))
       (void) RelinquishUniqueFileResource(output_filename);
     if (image_info->temporary != MagickFalse)
       (void) RelinquishUniqueFileResource(image_info->filename);
