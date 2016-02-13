@@ -4497,11 +4497,11 @@ MagickExport Image *SketchImage(const Image *image,const double radius,
     const int
       id = GetOpenMPThreadId();
 
-    register ssize_t
-      x;
-
     register Quantum
       *magick_restrict q;
+
+    register ssize_t
+      x;
 
     if (status == MagickFalse)
       continue;
@@ -4572,6 +4572,8 @@ MagickExport Image *SketchImage(const Image *image,const double radius,
       sketch_image=DestroyImage(sketch_image);
       return((Image *) NULL);
     }
+  if (blend_image->alpha_trait != BlendPixelTrait)
+    (void) SetImageAlpha(blend_image,TransparentAlpha,exception);
   (void) SetImageArtifact(blend_image,"compose:args","20x80");
   (void) CompositeImage(sketch_image,blend_image,BlendCompositeOp,MagickTrue,
     0,0,exception);
