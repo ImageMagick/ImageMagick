@@ -2786,17 +2786,14 @@ cleanup:
 MagickExport Image *AccelerateConvolveImage(const Image *image,
   const KernelInfo *kernel,ExceptionInfo *exception)
 {
+  /* Temporary disabled due to access violation
+
   Image
     *filteredImage;
 
   assert(image != NULL);
   assert(kernel != (KernelInfo *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
-
-  return((Image *) NULL);
-
-  /* Temporary disabled due to access violation
-
   if ((checkAccelerateCondition(image) == MagickFalse) ||
       (checkOpenCLEnvironment(exception) == MagickFalse))
     return((Image *) NULL);
@@ -2804,6 +2801,10 @@ MagickExport Image *AccelerateConvolveImage(const Image *image,
   filteredImage=ComputeConvolveImage(image,kernel,exception);
   return(filteredImage);
   */
+  magick_unreferenced(image);
+  magick_unreferenced(kernel);
+  magick_unreferenced(exception);
+  return((Image *)NULL);
 }
 
 /*
