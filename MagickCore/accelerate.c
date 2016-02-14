@@ -2793,12 +2793,17 @@ MagickExport Image *AccelerateConvolveImage(const Image *image,
   assert(kernel != (KernelInfo *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
 
+  return((Image *) NULL);
+
+  /* Temporary disabled due to access violation
+
   if ((checkAccelerateCondition(image) == MagickFalse) ||
       (checkOpenCLEnvironment(exception) == MagickFalse))
-    return NULL;
+    return((Image *) NULL);
 
   filteredImage=ComputeConvolveImage(image,kernel,exception);
   return(filteredImage);
+  */
 }
 
 /*
