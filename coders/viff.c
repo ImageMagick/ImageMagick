@@ -137,6 +137,22 @@ static MagickBooleanType IsVIFF(const unsigned char *magick,const size_t length)
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
+static MagickBooleanType CheckMemoryOverflow(const size_t count,
+  const size_t quantum)
+{
+  size_t
+    size;
+
+  size=count*quantum;
+  if ((count == 0) || (quantum != (size/count)))
+    {
+      errno=ENOMEM;
+      return(MagickTrue);
+    }
+  return(MagickFalse);
+}
+
 static Image *ReadVIFFImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
@@ -475,7 +491,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
     /*
       Initialize image structure.
     */
-    image->alpha_trait=viff_info.number_data_bands == 4 ? BlendPixelTrait : 
+    image->alpha_trait=viff_info.number_data_bands == 4 ? BlendPixelTrait :
       UndefinedPixelTrait;
     image->storage_class=(viff_info.number_data_bands < 3 ? PseudoClass :
       DirectClass);
@@ -499,9 +515,17 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
       default: bytes_per_pixel=1; break;
     }
     if (viff_info.data_storage_type == VFF_TYP_BIT)
-      max_packets=((image->columns+7UL) >> 3UL)*image->rows;
+      {
+        if (CheckMemoryOverflow((image->columns+7UL) >> 3UL,image->rows) != MagickFalse)
+          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+        max_packets=((image->columns+7UL) >> 3UL)*image->rows;
+      }
     else
-      max_packets=(size_t) (number_pixels*viff_info.number_data_bands);
+      {
+        if (CheckMemoryOverflow(number_pixels,viff_info.number_data_bands) != MagickFalse)
+          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+        max_packets=(size_t) (number_pixels*viff_info.number_data_bands);
+      }
     pixels=(unsigned char *) AcquireQuantumMemory(MagickMax(number_pixels,
       max_packets),bytes_per_pixel*sizeof(*pixels));
     if (pixels == (unsigned char *) NULL)
@@ -695,7 +719,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
                 {
                   ssize_t
                     index;
-                  
+
                   index=(ssize_t) GetPixelRed(image,q);
                   SetPixelRed(image,image->colormap[
                     ConstrainColormapIndex(image,index,exception)].red,q);

@@ -233,6 +233,7 @@ static MagickBooleanType
 %    o quantum: the number of bytes in each quantum.
 %
 */
+
 static MagickBooleanType CheckMemoryOverflow(const size_t count,
   const size_t quantum)
 {

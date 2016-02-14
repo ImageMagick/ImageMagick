@@ -2024,6 +2024,7 @@ static void ImportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
+  pixel=0;
   switch (quantum_info->depth)
   {
     case 1:
