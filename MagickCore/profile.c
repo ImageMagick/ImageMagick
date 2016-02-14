@@ -1442,7 +1442,8 @@ static void WriteTo8BimProfile(Image *image,const char *name,
     count=(ssize_t) value;
     if ((count & 0x01) != 0)
       count++;
-    if ((p > (datum+length-count)) || (count > (ssize_t) length))
+    if ((count < 0) || (p > (datum+length-count)) ||
+        (count > (ssize_t) length))
       break;
     if (id != profile_id)
       p+=count;
