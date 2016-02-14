@@ -11314,10 +11314,10 @@ Mogrify(ref,...)
           PixelInfo
             color;
 
-          (void) QueryMagickColor("none",&color,exception);
+          (void) QueryColorCompliance("none",AllCompliance,&color,exception);
           if (attribute_flag[0] != 0)
-            (void) QueryMagickColor(argument_list[0].string_reference,
-              &color,exception);
+            (void) QueryColorCompliance(argument_list[0].string_reference,
+              AllCompliance,&color,exception);
           (void) SetImageColor(image,&color,exception);
           break;
         }
