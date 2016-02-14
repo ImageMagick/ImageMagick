@@ -136,6 +136,10 @@ static MagickBooleanType checkAccelerateCondition(const Image* image)
   if (image->read_mask != MagickFalse || image->write_mask != MagickFalse)
     return(MagickFalse);
 
+  /* check if the image has an alpha channel */
+  if (image->alpha_trait == UndefinedPixelTrait)
+    return(MagickFalse);
+
   /* check if pixel order is RGBA */
   if (GetPixelChannelOffset(image,RedPixelChannel) != 0 ||
       GetPixelChannelOffset(image,GreenPixelChannel) != 1 ||
