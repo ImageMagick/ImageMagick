@@ -883,9 +883,6 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
             int
               intent;
 
-            MagickBooleanType
-              status;
-
             MagickOffsetType
               progress;
 
@@ -1102,7 +1099,6 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
               }
             if (target_colorspace == CMYKColorspace)
               (void) SetImageColorspace(image,target_colorspace,exception);
-            status=MagickTrue;
             progress=0;
             image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -1218,7 +1214,8 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
             target_pixels=DestroyPixelThreadSet(target_pixels);
             source_pixels=DestroyPixelThreadSet(source_pixels);
             transform=DestroyTransformThreadSet(transform);
-            if (cmsGetDeviceClass(source_profile) != cmsSigLinkClass)
+            if ((status != MagickFalse) &&
+                (cmsGetDeviceClass(source_profile) != cmsSigLinkClass))
               status=SetImageProfile(image,name,profile,exception);
             if (target_profile != (cmsHPROFILE) NULL)
               (void) cmsCloseProfile(target_profile);
@@ -2010,9 +2007,6 @@ MagickBooleanType SyncExifProfile(Image *image,StringInfo *profile)
         p=q+8;
       else
         {
-          ssize_t
-            offset;
-
           /*
             The directory entry contains an offset.
           */
@@ -2063,9 +2057,6 @@ MagickBooleanType SyncExifProfile(Image *image,StringInfo *profile)
       }
       if ((tag_value == TAG_EXIF_OFFSET) || (tag_value == TAG_INTEROP_OFFSET))
         {
-          ssize_t
-            offset;
-
           offset=(ssize_t) ((int) ReadProfileLong(endian,p));
           if (((size_t) offset < length) && (level < (MaxDirectoryStack-2)))
             {
