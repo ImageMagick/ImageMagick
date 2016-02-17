@@ -1195,6 +1195,7 @@ RestoreMSCWarning
     compression;
 
   const char
+    *option,
     *value;
 
   double
@@ -1321,8 +1322,8 @@ RestoreMSCWarning
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,"<<\n");
   if (LocaleCompare(image_info->magick,"PDFA") != 0)
-    (void) FormatLocaleString(buffer,MagickPathExtent,"/Pages %.20g 0 R\n",(double)
-      object+1);
+    (void) FormatLocaleString(buffer,MagickPathExtent,"/Pages %.20g 0 R\n",
+      (double) object+1);
   else
     {
       (void) FormatLocaleString(buffer,MagickPathExtent,"/Metadata %.20g 0 R\n",
@@ -1332,7 +1333,12 @@ RestoreMSCWarning
         (double) object+2);
     }
   (void) WriteBlobString(image,buffer);
-  (void) WriteBlobString(image,"/Type /Catalog\n");
+  (void) WriteBlobString(image,"/Type /Catalog");
+  option=GetImageOption(image_info,"pdf:page-direction");
+  if ((option != (const char *) NULL) &&
+      (LocaleCompare(option,"right-to-left") != MagickFalse))
+    (void) WriteBlobString(image,"/ViewerPreferences<</PageDirection/R2L>>\n");
+  (void) WriteBlobString(image,"\n");
   (void) WriteBlobString(image,">>\n");
   (void) WriteBlobString(image,"endobj\n");
   GetPathComponent(image->filename,BasePath,basename);
@@ -1366,8 +1372,8 @@ RestoreMSCWarning
         XMPProfileMagick,modify_date,create_date,timestamp,
         GetMagickVersion(&version),EscapeParenthesis(basename),
         GetMagickVersion(&version));
-      (void) FormatLocaleString(buffer,MagickPathExtent,"/Length %.20g\n",(double)
-        i);
+      (void) FormatLocaleString(buffer,MagickPathExtent,"/Length %.20g\n",
+        (double) i);
       (void) WriteBlobString(image,buffer);
       (void) WriteBlobString(image,"/Type /Metadata\n");
       (void) WriteBlobString(image,">>\nstream\n");
@@ -1385,8 +1391,8 @@ RestoreMSCWarning
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,"<<\n");
   (void) WriteBlobString(image,"/Type /Pages\n");
-  (void) FormatLocaleString(buffer,MagickPathExtent,"/Kids [ %.20g 0 R ",(double)
-    object+1);
+  (void) FormatLocaleString(buffer,MagickPathExtent,"/Kids [ %.20g 0 R ",
+    (double) object+1);
   (void) WriteBlobString(image,buffer);
   count=(ssize_t) (pages_id+ObjectsPerImage+1);
   if (image_info->adjoin != MagickFalse)
@@ -1508,8 +1514,8 @@ RestoreMSCWarning
         resolution.y=(double) ((size_t) (100.0*2.54*resolution.y+0.5)/100.0);
       }
     SetGeometry(image,&geometry);
-    (void) FormatLocaleString(page_geometry,MagickPathExtent,"%.20gx%.20g",(double)
-      image->columns,(double) image->rows);
+    (void) FormatLocaleString(page_geometry,MagickPathExtent,"%.20gx%.20g",
+      (double) image->columns,(double) image->rows);
     if (image_info->page != (char *) NULL)
       (void) CopyMagickString(page_geometry,image_info->page,MagickPathExtent);
     else
@@ -1520,7 +1526,8 @@ RestoreMSCWarning
       else
         if ((image->gravity != UndefinedGravity) &&
             (LocaleCompare(image_info->magick,"PDF") == 0))
-          (void) CopyMagickString(page_geometry,PSPageGeometry,MagickPathExtent);
+          (void) CopyMagickString(page_geometry,PSPageGeometry,
+            MagickPathExtent);
     (void) ConcatenateMagickString(page_geometry,">",MagickPathExtent);
     (void) ParseMetaGeometry(page_geometry,&geometry.x,&geometry.y,
       &geometry.width,&geometry.height);
@@ -1616,13 +1623,15 @@ RestoreMSCWarning
           (double) geometry.x,(double) (geometry.y+geometry.height+i*pointsize+
           12));
         (void) WriteBlobString(image,buffer);
-        (void) FormatLocaleString(buffer,MagickPathExtent,"(%s) Tj\n",labels[i]);
+        (void) FormatLocaleString(buffer,MagickPathExtent,"(%s) Tj\n",
+           labels[i]);
         (void) WriteBlobString(image,buffer);
         (void) WriteBlobString(image,"ET\n");
         labels[i]=DestroyString(labels[i]);
       }
-    (void) FormatLocaleString(buffer,MagickPathExtent,"%g 0 0 %g %.20g %.20g cm\n",
-      scale.x,scale.y,(double) geometry.x,(double) geometry.y);
+    (void) FormatLocaleString(buffer,MagickPathExtent,
+      "%g 0 0 %g %.20g %.20g cm\n",scale.x,scale.y,(double) geometry.x,
+      (double) geometry.y);
     (void) WriteBlobString(image,buffer);
     (void) FormatLocaleString(buffer,MagickPathExtent,"/Im%.20g Do\n",(double)
       image->scene);
@@ -1638,7 +1647,8 @@ RestoreMSCWarning
     (void) FormatLocaleString(buffer,MagickPathExtent,"%.20g 0 obj\n",(double)
       object);
     (void) WriteBlobString(image,buffer);
-    (void) FormatLocaleString(buffer,MagickPathExtent,"%.20g\n",(double) offset);
+    (void) FormatLocaleString(buffer,MagickPathExtent,"%.20g\n",
+      (double) offset);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"endobj\n");
     /*
@@ -1726,7 +1736,8 @@ RestoreMSCWarning
       }
       case ZipCompression:
       {
-        (void) FormatLocaleString(buffer,MagickPathExtent,CFormat,"FlateDecode");
+        (void) FormatLocaleString(buffer,MagickPathExtent,CFormat,
+          "FlateDecode");
         break;
       }
       case FaxCompression:
@@ -2113,7 +2124,8 @@ RestoreMSCWarning
     (void) FormatLocaleString(buffer,MagickPathExtent,"%.20g 0 obj\n",(double)
       object);
     (void) WriteBlobString(image,buffer);
-    (void) FormatLocaleString(buffer,MagickPathExtent,"%.20g\n",(double) offset);
+    (void) FormatLocaleString(buffer,MagickPathExtent,"%.20g\n",(double)
+      offset);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"endobj\n");
     /*
@@ -2160,7 +2172,8 @@ RestoreMSCWarning
     {
       case NoCompression:
       {
-        (void) FormatLocaleString(buffer,MagickPathExtent,CFormat,"ASCII85Decode");
+        (void) FormatLocaleString(buffer,MagickPathExtent,CFormat,
+          "ASCII85Decode");
         break;
       }
       case JPEGCompression:
@@ -2190,7 +2203,8 @@ RestoreMSCWarning
       }
       case ZipCompression:
       {
-        (void) FormatLocaleString(buffer,MagickPathExtent,CFormat,"FlateDecode");
+        (void) FormatLocaleString(buffer,MagickPathExtent,CFormat,
+          "FlateDecode");
         break;
       }
       case FaxCompression:
@@ -2554,7 +2568,8 @@ RestoreMSCWarning
     (void) FormatLocaleString(buffer,MagickPathExtent,"%.20g 0 obj\n",(double)
       object);
     (void) WriteBlobString(image,buffer);
-    (void) FormatLocaleString(buffer,MagickPathExtent,"%.20g\n",(double) offset);
+    (void) FormatLocaleString(buffer,MagickPathExtent,"%.20g\n",(double)
+      offset);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"endobj\n");
     xref[object++]=TellBlob(image);
@@ -2643,7 +2658,8 @@ RestoreMSCWarning
           }
           case LZWCompression:
           {
-            (void) FormatLocaleString(buffer,MagickPathExtent,CFormat,"LZWDecode");
+            (void) FormatLocaleString(buffer,MagickPathExtent,CFormat,
+              "LZWDecode");
             break;
           }
           case ZipCompression:
@@ -2660,16 +2676,16 @@ RestoreMSCWarning
           }
         }
         (void) WriteBlobString(image,buffer);
-        (void) FormatLocaleString(buffer,MagickPathExtent,"/Width %.20g\n",(double)
-          image->columns);
+        (void) FormatLocaleString(buffer,MagickPathExtent,"/Width %.20g\n",
+          (double) image->columns);
         (void) WriteBlobString(image,buffer);
         (void) FormatLocaleString(buffer,MagickPathExtent,"/Height %.20g\n",
           (double) image->rows);
         (void) WriteBlobString(image,buffer);
         (void) WriteBlobString(image,"/ColorSpace /DeviceGray\n");
-        (void) FormatLocaleString(buffer,MagickPathExtent,"/BitsPerComponent %d\n",
-          (compression == FaxCompression) || (compression == Group4Compression)
-          ? 1 : 8);
+        (void) FormatLocaleString(buffer,MagickPathExtent,
+          "/BitsPerComponent %d\n",(compression == FaxCompression) ||
+          (compression == Group4Compression) ? 1 : 8);
         (void) WriteBlobString(image,buffer);
         (void) FormatLocaleString(buffer,MagickPathExtent,"/Length %.20g 0 R\n",
           (double) object+1);
@@ -2762,7 +2778,8 @@ RestoreMSCWarning
     (void) FormatLocaleString(buffer,MagickPathExtent,"%.20g 0 obj\n",(double)
       object);
     (void) WriteBlobString(image,buffer);
-    (void) FormatLocaleString(buffer,MagickPathExtent,"%.20g\n",(double) offset);
+    (void) FormatLocaleString(buffer,MagickPathExtent,"%.20g\n",(double)
+      offset);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"endobj\n");
     if (GetNextImageInList(image) == (Image *) NULL)
@@ -2802,7 +2819,8 @@ RestoreMSCWarning
   (void) FormatLocaleString(date,MagickPathExtent,"D:%04d%02d%02d%02d%02d%02d",
     local_time.tm_year+1900,local_time.tm_mon+1,local_time.tm_mday,
     local_time.tm_hour,local_time.tm_min,local_time.tm_sec);
-  (void) FormatLocaleString(buffer,MagickPathExtent,"/CreationDate (%s)\n",date);
+  (void) FormatLocaleString(buffer,MagickPathExtent,"/CreationDate (%s)\n",
+    date);
   (void) WriteBlobString(image,buffer);
   (void) FormatLocaleString(buffer,MagickPathExtent,"/ModDate (%s)\n",date);
   (void) WriteBlobString(image,buffer);
