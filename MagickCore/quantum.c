@@ -304,7 +304,6 @@ MagickExport size_t GetQuantumExtent(const Image *image,
   const QuantumInfo *quantum_info,const QuantumType quantum_type)
 {
   size_t
-    extent,
     packet_size;
 
   assert(quantum_info != (QuantumInfo *) NULL);
@@ -326,10 +325,9 @@ MagickExport size_t GetQuantumExtent(const Image *image,
     case CbYCrYQuantum: packet_size=4; break;
     default: break;
   }
-  extent=MagickMax(image->columns,image->rows);
   if (quantum_info->pack == MagickFalse)
-    return((size_t) (packet_size*extent*((quantum_info->depth+7)/8)));
-  return((size_t) ((packet_size*extent*quantum_info->depth+7)/8));
+    return((size_t) (packet_size*image->columns*((quantum_info->depth+7)/8)));
+  return((size_t) ((packet_size*image->columns*quantum_info->depth+7)/8));
 }
 
 /*
