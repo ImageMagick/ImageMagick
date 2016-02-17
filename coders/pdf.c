@@ -653,29 +653,30 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   fitPage=MagickFalse;
   option=GetImageOption(image_info,"pdf:fit-page");
   if (option != (char *) NULL)
-  {
-    char
-      *geometry;
+    {
+      char
+        *geometry;
 
-    MagickStatusType
-      flags;
+      MagickStatusType
+        flags;
 
-    geometry=GetPageGeometry(option);
-    flags=ParseMetaGeometry(geometry,&page.x,&page.y,&page.width,&page.height);
-    if (flags == NoValue)
-      {
-        (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-          "InvalidGeometry","`%s'",option);
-        image=DestroyImage(image);
-        return((Image *) NULL);
-      }
-    page.width=(size_t) ceil((double) (page.width*image->x_resolution/delta.x)
-      -0.5);
-    page.height=(size_t) ceil((double) (page.height*image->y_resolution/
-      delta.y) -0.5);
-    geometry=DestroyString(geometry);
-    fitPage=MagickTrue;
-  }
+      geometry=GetPageGeometry(option);
+      flags=ParseMetaGeometry(geometry,&page.x,&page.y,&page.width,
+        &page.height);
+      if (flags == NoValue)
+        {
+          (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+            "InvalidGeometry","`%s'",option);
+          image=DestroyImage(image);
+          return((Image *) NULL);
+        }
+      page.width=(size_t) ceil((double) (page.width*image->x_resolution/delta.x)
+        -0.5);
+      page.height=(size_t) ceil((double) (page.height*image->y_resolution/
+        delta.y) -0.5);
+      geometry=DestroyString(geometry);
+      fitPage=MagickTrue;
+    }
   (void) CloseBlob(image);
   if ((fabs(angle) == 90.0) || (fabs(angle) == 270.0))
     {
@@ -1215,6 +1216,7 @@ RestoreMSCWarning
     compression;
 
   const char
+    *option,
     *value;
 
   double
@@ -1353,7 +1355,12 @@ RestoreMSCWarning
         (double) object+2);
     }
   (void) WriteBlobString(image,buffer);
-  (void) WriteBlobString(image,"/Type /Catalog\n");
+  (void) WriteBlobString(image,"/Type /Catalog");
+  option=GetImageOption(image_info,"pdf:page-direction");
+  if ((option != (const char *) NULL) &&
+      (LocaleCompare(option,"right-to-left") != MagickFalse))
+    (void) WriteBlobString(image,"/ViewerPreferences<</PageDirection/R2L>>\n");
+  (void) WriteBlobString(image,"\n");
   (void) WriteBlobString(image,">>\n");
   (void) WriteBlobString(image,"endobj\n");
   GetPathComponent(image->filename,BasePath,basename);
