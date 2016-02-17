@@ -1,3 +1,7 @@
+2016-02-16  6.9.3-5 Cristy  <quetzlzacatenango@image...>j
+  * Too many bytes when writing raw image formats (reference
+    https://github.com/ImageMagick/ImageMagick/issues/132).
+
 2016-02-12  6.9.3-4 Cristy  <quetzlzacatenango@image...>j
   * New version 6.9.3-4, GIT revision 10560:09f5f5d:20160212.
 
