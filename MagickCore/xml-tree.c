@@ -1306,7 +1306,7 @@ static char *ConvertUTF16ToUTF8(const char *content,size_t *length)
   ssize_t
     j;
 
-  utf8=(char *) AcquireQuantumMemory(*length,sizeof(*utf8));
+  utf8=(char *) AcquireQuantumMemory(*length+1,sizeof(*utf8));
   if (utf8 == (char *) NULL)
     return((char *) NULL);
   encoding=(*content == '\xFE') ? 1 : (*content == '\xFF') ? 0 : -1;
@@ -1316,6 +1316,7 @@ static char *ConvertUTF16ToUTF8(const char *content,size_t *length)
         Already UTF-8.
       */
       (void) CopyMagickMemory(utf8,content,*length*sizeof(*utf8));
+      utf8[*length]='\0';
       return(utf8);
     }
   j=0;
@@ -1360,7 +1361,10 @@ static char *ConvertUTF16ToUTF8(const char *content,size_t *length)
     }
   }
   *length=(size_t) j;
-  return((char *) ResizeQuantumMemory(utf8,*length,sizeof(*utf8)));
+  utf8=(char *) ResizeQuantumMemory(utf8,*length,sizeof(*utf8));
+  if (utf8 != (char *) NULL)
+    utf8[*length]='\0';
+  return(utf8);
 }
 
 static char *ParseEntities(char *xml,char **entities,int state)
