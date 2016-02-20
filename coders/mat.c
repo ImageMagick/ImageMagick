@@ -936,6 +936,7 @@ ImportQuantumPixelsFailed:
   }
       }
     } while(z-- >= 2);
+    quantum_info=DestroyQuantumInfo(quantum_info);
 ExitLoop:
 
 
