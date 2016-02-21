@@ -11050,8 +11050,10 @@ Mogrify(ref,...)
         {
           if (attribute_flag[0] == 0)
             argument_list[0].string_reference="50%";
-          image=WaveletDenoiseImage(image,argument_list[0].string_reference,
-            exception);
+          flags=ParseGeometry(argument_list[0].string_reference,&geometry_info);
+          if ((flags & PercentValue) != 0)
+            geometry_info.rho*=(double) (QuantumRange/100.0);
+          image=WaveletDenoiseImage(image,geometry_info.rho,exception);
           break;
         }
       }
