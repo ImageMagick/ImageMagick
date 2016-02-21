@@ -57,7 +57,7 @@ int main( int /*argc*/, char ** argv)
     // Vertical
     appendImages( &appended, imageList.begin(), imageList.end(), true );
     if (( appended.signature() != "d73d25ccd6011936d08b6d0d89183b7a61790544c2195269aff4db2f782ffc08" ) &&
-        ( appended.signature() != "f3590c183018757da798613a23505ab9600b35935988eee12f096cb6219f2bc3" ) &&
+        ( appended.signature() != "0909f7ffa7c6ea410fb2ebfdbcb19d61b19c4bd271851ce3bd51662519dc2b58" ) &&
         ( appended.signature() != "11b97ba6ac1664aa1c2faed4c86195472ae9cce2ed75402d975bb4ffcf1de751" ) &&
         ( appended.signature() != "cae4815eeb3cb689e73b94d897a9957d3414d1d4f513e8b5e52579b05d164bfe" ))
       {
