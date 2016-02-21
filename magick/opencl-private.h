@@ -374,6 +374,7 @@ typedef enum {
   ResizeVerticalKernel,
   UnsharpMaskBlurColumnKernel,
   UnsharpMaskKernel,
+  WaveletDenoiseKernel,
   KERNEL_COUNT
 } ProfiledKernels;
 

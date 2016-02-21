@@ -127,6 +127,10 @@ static MagickBooleanType checkAccelerateCondition(const Image* image,
       image->colorspace != GRAYColorspace)
     return(MagickFalse);
 
+  /* check if the storage class is direct class */
+  if (image->storage_class != DirectClass)
+    return(MagickFalse);
+
   /* check if the channel is supported */
   if (((channel & RedChannel) == 0) ||
       ((channel & GreenChannel) == 0) ||
@@ -7347,6 +7351,251 @@ MagickExport Image *AccelerateUnsharpMaskImage(const Image *image,
   return(filteredImage);
 }
 
+static Image *ComputeWaveletDenoiseImage(const Image *image,
+  const double threshold,ExceptionInfo *exception)
+{
+  CacheView
+    *filteredImage_view,
+    *image_view;
+
+  char
+    geometry[MaxTextExtent];
+
+  cl_command_queue
+    queue;
+
+  cl_context
+  context;
+
+  cl_int
+    pass,
+    clStatus;
+
+  cl_kernel
+    denoiseKernel;
+
+  cl_event
+    event;
+
+  cl_mem
+    filteredImageBuffer,
+    imageBuffer;
+
+  cl_mem_flags
+    mem_flags;
+
+  const void
+    *inputPixels;
+
+  Image
+    *filteredImage;
+
+  MagickBooleanType
+    outputReady;
+
+  MagickCLEnv
+    clEnv;
+
+  MagickSizeType
+    length;
+
+  void
+    *filteredPixels,
+    *hostPtr;
+
+  unsigned int
+    i,
+    imageColumns,
+    imageRows;
+
+  clEnv = NULL;
+  filteredImage = NULL;
+  filteredImage_view = NULL;
+  context = NULL;
+  imageBuffer = NULL;
+  filteredImageBuffer = NULL;
+  denoiseKernel = NULL;
+  queue = NULL;
+  outputReady = MagickFalse;
+
+  clEnv = GetDefaultOpenCLEnv();
+  context = GetOpenCLContext(clEnv);
+  queue = AcquireOpenCLCommandQueue(clEnv);
+
+  /* Create and initialize OpenCL buffers. */
+  image_view = AcquireVirtualCacheView(image, exception);
+  inputPixels = GetCacheViewVirtualPixels(image_view, 0, 0, image->columns, image->rows, exception);
+  if (inputPixels == (const void *)NULL)
+  {
+    (void)OpenCLThrowMagickException(exception, GetMagickModule(), CacheWarning, "UnableToReadPixelCache.", "`%s'", image->filename);
+    goto cleanup;
+  }
+
+  /* If the host pointer is aligned to the size of CLPixelPacket,
+  then use the host buffer directly from the GPU; otherwise,
+  create a buffer on the GPU and copy the data over */
+  if (ALIGNED(inputPixels, CLPixelPacket))
+  {
+    mem_flags = CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR;
+  }
+  else
+  {
+    mem_flags = CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR;
+  }
+  /* create a CL buffer from image pixel buffer */
+  length = image->columns * image->rows;
+  imageBuffer = clEnv->library->clCreateBuffer(context, mem_flags, length * sizeof(CLPixelPacket), (void*)inputPixels, &clStatus);
+  if (clStatus != CL_SUCCESS)
+  {
+    (void)OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clCreateBuffer failed.", ".");
+    goto cleanup;
+  }
+
+  /* create output */
+  filteredImage = CloneImage(image, image->columns, image->rows, MagickTrue, exception);
+  assert(filteredImage != NULL);
+  if (SetImageStorageClass(filteredImage, DirectClass, exception) != MagickTrue)
+  {
+    (void)OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "CloneImage failed.", "'%s'", ".");
+    goto cleanup;
+  }
+  filteredImage_view = AcquireAuthenticCacheView(filteredImage, exception);
+  filteredPixels = GetCacheViewAuthenticPixels(filteredImage_view, 0, 0, filteredImage->columns, filteredImage->rows, exception);
+  if (filteredPixels == (void *)NULL)
+  {
+    (void)OpenCLThrowMagickException(exception, GetMagickModule(), CacheWarning, "UnableToReadPixelCache.", "`%s'", filteredImage->filename);
+    goto cleanup;
+  }
+
+  if (ALIGNED(filteredPixels, CLPixelPacket))
+  {
+    mem_flags = CL_MEM_WRITE_ONLY | CL_MEM_USE_HOST_PTR;
+    hostPtr = filteredPixels;
+  }
+  else
+  {
+    mem_flags = CL_MEM_WRITE_ONLY;
+    hostPtr = NULL;
+  }
+
+  /* create a CL buffer from image pixel buffer */
+  length = image->columns * image->rows;
+  filteredImageBuffer = clEnv->library->clCreateBuffer(context, mem_flags, length * sizeof(CLPixelPacket), hostPtr, &clStatus);
+  if (clStatus != CL_SUCCESS)
+  {
+    (void)OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clCreateBuffer failed.", ".");
+    goto cleanup;
+  }
+
+  /* get the opencl kernel */
+  denoiseKernel = AcquireOpenCLKernel(clEnv, MAGICK_OPENCL_ACCELERATE, "WaveletDenoise");
+  if (denoiseKernel == NULL)
+  {
+    (void)OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "AcquireOpenCLKernel failed.", "'%s'", ".");
+    goto cleanup;
+  };
+
+  // Process image
+  {
+    const int PASSES = 5;
+    cl_int width = (cl_int)image->columns;
+    cl_int height = (cl_int)image->rows;
+    cl_int planeStride = width * height;
+    cl_float thresh = threshold;
+
+    /* set the kernel arguments */
+    i = 0;
+    clStatus |= clEnv->library->clSetKernelArg(denoiseKernel, i++, sizeof(cl_mem), (void *)&imageBuffer);
+    clStatus |= clEnv->library->clSetKernelArg(denoiseKernel, i++, sizeof(cl_mem), (void *)&filteredImageBuffer);
+    clStatus |= clEnv->library->clSetKernelArg(denoiseKernel, i++, sizeof(cl_float), (void *)&thresh);
+    clStatus |= clEnv->library->clSetKernelArg(denoiseKernel, i++, sizeof(cl_int), (void *)&PASSES);
+    clStatus |= clEnv->library->clSetKernelArg(denoiseKernel, i++, sizeof(cl_int), (void *)&width);
+    clStatus |= clEnv->library->clSetKernelArg(denoiseKernel, i++, sizeof(cl_int), (void *)&height);
+
+    {
+      const int TILESIZE = 64;
+      const int PAD = 1 << (PASSES - 1);
+      const int SIZE = TILESIZE - 2 * PAD;
+
+      size_t gsize[2];
+      size_t wsize[2];
+
+      gsize[0] = ((width + (SIZE - 1)) / SIZE) * TILESIZE;
+      gsize[1] = ((height + (SIZE - 1)) / SIZE) * 4;
+      wsize[0] = TILESIZE;
+      wsize[1] = 4;
+
+      clStatus = clEnv->library->clEnqueueNDRangeKernel(queue, denoiseKernel, 2, NULL, gsize, wsize, 0, NULL, &event);
+      if (clStatus != CL_SUCCESS)
+      {
+        (void)OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
+        goto cleanup;
+      }
+    }
+    RecordProfileData(clEnv, WaveletDenoiseKernel, event);
+    clEnv->library->clReleaseEvent(event);
+  }
+
+
+  /* get result */
+  if (ALIGNED(filteredPixels, CLPixelPacket))
+  {
+    length = image->columns * image->rows;
+    clEnv->library->clEnqueueMapBuffer(queue, filteredImageBuffer, CL_TRUE, CL_MAP_READ | CL_MAP_WRITE, 0, length * sizeof(CLPixelPacket), 0, NULL, NULL, &clStatus);
+  }
+  else
+  {
+    length = image->columns * image->rows;
+    clStatus = clEnv->library->clEnqueueReadBuffer(queue, filteredImageBuffer, CL_TRUE, 0, length * sizeof(CLPixelPacket), filteredPixels, 0, NULL, NULL);
+  }
+  if (clStatus != CL_SUCCESS)
+  {
+    (void)OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "Reading output image from CL buffer failed.", "'%s'", ".");
+    goto cleanup;
+  }
+
+  outputReady = SyncCacheViewAuthenticPixels(filteredImage_view, exception);
+
+cleanup:
+  OpenCLLogException(__FUNCTION__, __LINE__, exception);
+
+  image_view = DestroyCacheView(image_view);
+  if (filteredImage_view != NULL)
+    filteredImage_view = DestroyCacheView(filteredImage_view);
+
+  if (imageBuffer != NULL)			clEnv->library->clReleaseMemObject(imageBuffer);
+  if (filteredImageBuffer != NULL)	clEnv->library->clReleaseMemObject(filteredImageBuffer);
+  if (denoiseKernel != NULL)		RelinquishOpenCLKernel(clEnv, denoiseKernel);
+  if (queue != NULL)				RelinquishOpenCLCommandQueue(clEnv, queue);
+  if (outputReady == MagickFalse)
+  {
+    if (filteredImage != NULL)
+    {
+      DestroyImage(filteredImage);
+      filteredImage = NULL;
+    }
+  }
+  return(filteredImage);
+}
+
+MagickExport Image *AccelerateWaveletDenoiseImage(const Image *image,
+  const double threshold,ExceptionInfo *exception)
+{
+  Image
+  *filteredImage;
+
+  assert(image != NULL);
+  assert(exception != (ExceptionInfo *)NULL);
+
+  if ((checkAccelerateCondition(image,DefaultChannels) == MagickFalse) ||
+      (checkOpenCLEnvironment(exception) == MagickFalse))
+    return (Image *) NULL;
+
+  filteredImage=ComputeWaveletDenoiseImage(image,threshold,exception);
+
+  return(filteredImage);
+}
+
 #else  /* MAGICKCORE_OPENCL_SUPPORT  */
 
 MagickExport Image *AccelerateAddNoiseImage(const Image *magick_unused(image),
@@ -7578,6 +7827,17 @@ MagickExport Image *AccelerateUnsharpMaskImage(
   magick_unreferenced(exception);
 
   return((Image *) NULL);
+}
+
+MagickExport Image *AccelerateWaveletDenoiseImage(
+  const Image *magick_unused(image),const double magick_unused(threshold),
+  ExceptionInfo *magick_unused(exception))
+{
+  magick_unreferenced(image);
+  magick_unreferenced(threshold);
+  magick_unreferenced(exception);
+
+  return((Image *)NULL);
 }
 
 #endif /* MAGICKCORE_OPENCL_SUPPORT */

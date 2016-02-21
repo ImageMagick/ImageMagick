@@ -62,7 +62,8 @@ extern MagickExport Image
   *TintImage(const Image *,const char *,const PixelPacket,ExceptionInfo *),
   *VignetteImage(const Image *,const double,const double,const ssize_t,
     const ssize_t,ExceptionInfo *),
-  *WaveImage(const Image *,const double,const double,ExceptionInfo *);
+  *WaveImage(const Image *,const double,const double,ExceptionInfo *),
+  *WaveletDenoiseImage(const Image *,const double,ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
   PlasmaImage(Image *,const SegmentInfo *,size_t,size_t),

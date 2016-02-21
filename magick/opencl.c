@@ -128,6 +128,7 @@ static const char *kernelNames[] = {
   "ResizeVertical",
   "UnsharpMaskBlurColumn",
   "UnsharpMask",
+  "WaveletDenoise",
   "NONE" };
 
 KernelProfileRecord

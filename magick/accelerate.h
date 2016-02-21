@@ -45,7 +45,8 @@ extern MagickExport Image
   *AccelerateResizeImage(const Image *,const size_t,const size_t,
     const ResizeFilter *,ExceptionInfo *),
   *AccelerateUnsharpMaskImage(const Image *,const ChannelType,const double,
-    const double,const double,const double,ExceptionInfo *);
+    const double,const double,const double,ExceptionInfo *),
+  *AccelerateWaveletDenoiseImage(const Image *,const double,ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
   AccelerateCompositeImage(Image *,const ChannelType,const CompositeOperator,

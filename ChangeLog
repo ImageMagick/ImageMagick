@@ -1,11 +1,14 @@
-2016-02-20  6.9.3-5 Cristy  <quetzlzacatenango@image...>j
+2016-02-21  6.9.2-6 Dirk Lemstra <dirk@lem.....org>
+  * Added wavelet denoise.
+
+2016-02-20  6.9.3-5 Cristy  <quetzlzacatenango@image...>
   * New version 6.9.3-5, GIT revision 10572:cb24a69:20160219.
 
-2016-02-16  6.9.3-5 Cristy  <quetzlzacatenango@image...>j
+2016-02-16  6.9.3-5 Cristy  <quetzlzacatenango@image...>
   * Too many bytes when writing raw image formats (reference
     https://github.com/ImageMagick/ImageMagick/issues/132).
 
-2016-02-12  6.9.3-4 Cristy  <quetzlzacatenango@image...>j
+2016-02-12  6.9.3-4 Cristy  <quetzlzacatenango@image...>
   * New version 6.9.3-4, GIT revision 10560:09f5f5d:20160212.
 
 2016-02-12  6.9.3-4 Dirk Lemstra <dirk@lem.....org>

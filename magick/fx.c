@@ -5690,3 +5690,253 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
     wave_image=DestroyImage(wave_image);
   return(wave_image);
 }
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%     W a v e l e t D e n o i s e I m a g e                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  WaveletDenoiseImage() removes noise from the image using a wavelet
+%  transform. Adapted from dcraw.c by David Coffin.
+%
+%  The format of the WaveletDenoiseImage method is:
+%
+%      Image *WaveletDenoiseImage(const Image *image, const double threshold,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o threahold: defines the threshold for smoothing.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+
+static inline void hat_transform(double *temp,double *base,ssize_t st,
+  ssize_t size,ssize_t sc)
+{
+  ssize_t
+    i;
+
+  for (i = 0; i < sc; i++)
+    temp[i]=2*base[st * i]+base[st*(sc - i)]+base[st*(i+sc)];
+  for (; i + sc < size; i++)
+    temp[i]=2*base[st*i]+base[st*(i-sc)]+base[st*(i+sc)];
+  for (; i < size; i++)
+    temp[i]=2*base[st*i]+base[st*(i-sc)]+base[st*(2*size-2-(i+sc))];
+}
+
+MagickExport Image *WaveletDenoiseImage(const Image *image, const double threshold,
+  ExceptionInfo *exception)
+{
+  CacheView
+    *image_view,
+    *noise_view;
+
+  const PixelPacket
+    *magick_restrict p;
+
+  double
+    *interImage;
+
+  Image
+    *noise_image;
+
+  MemoryInfo
+    *interImage_info;
+
+  PixelPacket
+    *magick_restrict q;
+
+  size_t
+    channel;
+
+  ssize_t
+    size,
+    thread_count;
+
+  static const double
+    noise[]={0.8002,0.2735,0.1202,0.0585,0.0291,0.0152,0.0080,0.0044};
+
+  /*
+    Initialize noise image attributes.
+  */
+  assert(image != (const Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+
+  noise_image=(Image *) NULL;
+  noise_image=AccelerateWaveletDenoiseImage(image,threshold,exception);
+  if (noise_image != (Image *) NULL)
+    return(noise_image);
+
+  noise_image=CloneImage(image,0,0,MagickTrue,exception);
+  if (noise_image == (Image *) NULL)
+    return((Image *) NULL);
+  if (SetImageStorageClass(noise_image,DirectClass,exception) == MagickFalse)
+    {
+      noise_image=DestroyImage(noise_image);
+      return((Image *) NULL);
+    }
+
+  image_view=AcquireAuthenticCacheView(image,exception);
+  noise_view=AcquireAuthenticCacheView(noise_image,exception);
+
+  p=GetCacheViewAuthenticPixels(image_view,0,0,image->columns,image->rows,
+    exception);
+  q=GetCacheViewAuthenticPixels(noise_view,0,0,noise_image->columns,
+    noise_image->rows,exception);
+
+  thread_count=1;
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#pragma omp parallel magick_threads(image,image,image->rows,1)
+  {
+#pragma omp single
+    {
+      thread_count = omp_get_num_threads();
+    }
+  }
+#endif
+
+  /* Create intermediate buffer */
+  size=image->columns*image->rows;
+  interImage_info=AcquireVirtualMemory((size*3+(image->rows+image->columns)*
+    thread_count),sizeof(*interImage));
+  if (interImage_info == (MemoryInfo *) NULL)
+    {
+      interImage_info=RelinquishVirtualMemory(interImage_info);
+      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+    }
+  interImage=(double *)GetVirtualMemoryBlob(interImage_info);
+
+  for (channel = 0; channel < 3; ++channel)
+  {
+    double
+      thold,
+      *tmpBase;
+
+    register const PixelPacket
+      *magick_restrict pp;
+
+    size_t
+      hpass,
+      lev,
+      lpass;
+
+    ssize_t
+      i,
+      x,
+      y;
+
+    tmpBase=interImage+3*size;
+
+    pp=p;
+    switch (channel)
+    {
+      case 0:
+        for (i = 0; i < (ssize_t) size; ++i)
+          interImage[i]=GetPixelRed(pp++);
+        break;
+      case 1:
+        for (i = 0; i < (ssize_t) size; ++i)
+          interImage[i]=GetPixelGreen(pp++);
+        break;
+      case 2:
+        for (i = 0; i < (ssize_t) size; ++i)
+          interImage[i]=GetPixelBlue(pp++);
+        break;
+    }
+    hpass=0;
+    for (lev = 0; lev < 5; lev++)
+    {
+      lpass=size*((lev & 1)+1);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+      #pragma omp parallel for schedule(static,1) private(x,y) \
+        magick_threads(image,image,image->rows,1)
+#endif
+      for (y = 0; y < (ssize_t) image->rows; ++y)
+      {
+        double
+          *tmp;
+
+        tmp=tmpBase;
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        tmp+=(image->rows+image->columns)*omp_get_thread_num();
+#endif
+        hat_transform(tmp,interImage+hpass+y*image->columns,1,
+          (ssize_t) image->columns,(ssize_t)(1 << lev));
+        for (x = 0; x < (ssize_t) image->columns; ++x)
+        {
+          interImage[lpass+y*image->columns+x]=tmp[x]*0.25;
+        }
+      }
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+      #pragma omp parallel for schedule(static,1) private(x,y) \
+        magick_threads(image,image,image->columns,1)
+#endif
+      for (x = 0; x < (ssize_t) image->columns; ++x)
+      {
+        double
+          *tmp;
+
+        tmp=tmpBase;
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        tmp+=(image->rows+image->columns)*omp_get_thread_num();
+#endif
+        hat_transform(tmp,interImage+lpass+x,(ssize_t) image->columns,
+          (ssize_t) image->rows,(ssize_t)(1 << lev));
+        for (y = 0; y < (ssize_t) image->rows; ++y)
+        {
+          interImage[lpass+y*image->columns+x]=tmp[y]*0.25;
+        }
+      }
+      thold=threshold*noise[lev];
+      for (i = 0; i < (ssize_t) size; ++i)
+      {
+        interImage[hpass+i]-=interImage[lpass+i];
+        if (interImage[hpass+i] < -thold)
+          interImage[hpass+i]+=thold;
+        else if (interImage[hpass+i] > thold)
+          interImage[hpass+i]-=thold;
+        else
+          interImage[hpass+i]=0;
+        if (hpass)
+          interImage[i]+=interImage[hpass+i];
+      }
+      hpass=lpass;
+    }
+
+    /* copy out of interImage */
+    switch (channel)
+    {
+      case 0:
+        for (i = 0; i < (ssize_t) size; ++i)
+          SetPixelRed(q+i,ClampToQuantum(interImage[i]+interImage[i+lpass]));
+        break;
+      case 1:
+        for (i = 0; i < (ssize_t) size; ++i)
+          SetPixelGreen(q+i,ClampToQuantum(interImage[i]+interImage[i+lpass]));
+        break;
+      case 2:
+        for (i = 0; i < (ssize_t) size; ++i)
+          SetPixelBlue(q+i,ClampToQuantum(interImage[i]+interImage[i+lpass]));
+        break;
+    }
+  }
+
+  noise_view=DestroyCacheView(noise_view);
+  image_view=DestroyCacheView(image_view);
+  interImage_info=RelinquishVirtualMemory(interImage_info);
+
+  return(noise_image);
+}
