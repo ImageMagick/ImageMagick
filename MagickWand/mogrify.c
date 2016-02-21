@@ -3291,6 +3291,19 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               geometry_info.sigma,interpolate_method,exception);
             break;
           }
+        if (LocaleCompare("wavelet-denoise",option+1) == 0)
+          {
+            /*
+              Wavelet denoise image.
+            */
+            (void) SyncImageSettings(mogrify_info,*image,exception);
+            flags=ParseGeometry(argv[i+1],&geometry_info);
+            if ((flags & PercentValue) != 0)
+              geometry_info.rho*=(double) (QuantumRange/100.0);
+            mogrify_image=WaveletDenoiseImage(*image,geometry_info.rho,
+              exception);
+            break;
+          }
         if (LocaleCompare("weight",option+1) == 0)
           {
             ssize_t
@@ -3595,6 +3608,8 @@ static MagickBooleanType MogrifyUsage(void)
       "-unsharp geometry    sharpen the image",
       "-vignette geometry   soften the edges of the image in vignette style",
       "-wave geometry       alter an image along a sine wave",
+      "-wavelet-denoise threshold",
+      "                     removes noise from the image using a wavelet transform.",
       "-white-threshold value",
       "                     force all pixels above the threshold into white",
       (char *) NULL
@@ -6378,6 +6393,15 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
       case 'w':
       {
         if (LocaleCompare("wave",option+1) == 0)
+          {
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowMogrifyInvalidArgumentException(option,argv[i]);
+            break;
+          }
+        if (LocaleCompare("wavelet-denoise",option+1) == 0)
           {
             i++;
             if (i == (ssize_t) argc)

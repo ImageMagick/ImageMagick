@@ -36,7 +36,8 @@
 %
 %
 */
-
+
+
 /*
   Include declarations.
 */
@@ -92,7 +93,8 @@
 #include "MagickCore/thread-private.h"
 #include "MagickCore/transform.h"
 #include "MagickCore/utility.h"
-
+
+
 /*
   Define declarations.
 */
@@ -130,7 +132,8 @@ struct _FxInfo
   ExceptionInfo
     *exception;
 };
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -229,7 +232,8 @@ MagickPrivate FxInfo *AcquireFxInfo(const Image *image,const char *expression,
   (void) SubstituteString(&fx_info->expression,"**",fx_op);
   return(fx_info);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -401,7 +405,8 @@ MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
     noise_image=DestroyImage(noise_image);
   return(noise_image);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -556,7 +561,8 @@ MagickExport Image *BlueShiftImage(const Image *image,const double factor,
     shift_image=DestroyImage(shift_image);
   return(shift_image);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -618,7 +624,8 @@ MagickExport Image *CharcoalImage(const Image *image,const double radius,
   (void) GrayscaleImage(charcoal_image,image->intensity,exception);
   return(charcoal_image);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -800,7 +807,8 @@ MagickExport Image *ColorizeImage(const Image *image,const char *blend,
     colorize_image=DestroyImage(colorize_image);
   return(colorize_image);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1022,7 +1030,8 @@ MagickExport Image *ColorMatrixImage(const Image *image,
     color_image=DestroyImage(color_image);
   return(color_image);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1061,7 +1070,8 @@ MagickPrivate FxInfo *DestroyFxInfo(FxInfo *fx_info)
   fx_info=(FxInfo *) RelinquishMagickMemory(fx_info);
   return(fx_info);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -2964,7 +2974,8 @@ MagickPrivate MagickBooleanType FxEvaluateChannelExpression(FxInfo *fx_info,
     &beta,exception);
   return(exception->severity == OptionError ? MagickFalse : MagickTrue);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -3184,7 +3195,8 @@ MagickExport Image *FxImage(const Image *image,const char *expression,
     fx_image=DestroyImage(fx_image);
   return(fx_image);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -3396,7 +3408,8 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
     implode_image=DestroyImage(implode_image);
   return(implode_image);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -3632,7 +3645,8 @@ MagickExport Image *MorphImages(const Image *image,const size_t number_frames,
     }
   return(GetFirstImageInList(morph_images));
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -3926,7 +3940,8 @@ MagickExport MagickBooleanType PlasmaImage(Image *image,
   image_view=DestroyCacheView(image_view);
   return(status);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -4118,7 +4133,8 @@ MagickExport Image *PolaroidImage(const Image *image,const DrawInfo *draw_info,
   polaroid_image=trim_image;
   return(polaroid_image);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -4267,7 +4283,8 @@ MagickExport Image *SepiaToneImage(const Image *image,const double threshold,
     sepia_image=DestroyImage(sepia_image);
   return(sepia_image);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -4413,7 +4430,8 @@ MagickExport Image *ShadowImage(const Image *image,const double alpha,
   shadow_image->page.y+=y_offset-(ssize_t) border_info.height;
   return(shadow_image);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -4580,7 +4598,8 @@ MagickExport Image *SketchImage(const Image *image,const double radius,
   blend_image=DestroyImage(blend_image);
   return(sketch_image);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -4717,7 +4736,8 @@ MagickExport MagickBooleanType SolarizeImage(Image *image,
   image_view=DestroyCacheView(image_view);
   return(status);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -4888,7 +4908,8 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
     stegano_image=DestroyImage(stegano_image);
   return(stegano_image);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -5031,7 +5052,8 @@ MagickExport Image *StereoAnaglyphImage(const Image *left_image,
     stereo_image=DestroyImage(stereo_image);
   return(stereo_image);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -5237,7 +5259,8 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
     swirl_image=DestroyImage(swirl_image);
   return(swirl_image);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -5449,7 +5472,8 @@ MagickExport Image *TintImage(const Image *image,const char *blend,
     tint_image=DestroyImage(tint_image);
   return(tint_image);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -5550,7 +5574,8 @@ MagickExport Image *VignetteImage(const Image *image,const double radius,
     (void) TransformImageColorspace(vignette_image,image->colorspace,exception);
   return(vignette_image);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -5702,4 +5727,267 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
   if (status == MagickFalse)
     wave_image=DestroyImage(wave_image);
   return(wave_image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%     W a v e l e t D e n o i s e I m a g e                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  WaveletDenoiseImage() removes noise from the image using a wavelet
+%  transform. Adapted from dcraw.c by David Coffin.
+%
+%  The format of the WaveletDenoiseImage method is:
+%
+%      Image *WaveletDenoiseImage(const Image *image, const double threshold,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o threahold: defines the threshold for smoothing.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+
+static inline void hat_transform(double *temp,double *base,ssize_t st,
+  ssize_t size,ssize_t sc)
+{
+  ssize_t
+    i;
+
+  for (i = 0; i < sc; i++)
+    temp[i]=2*base[st * i]+base[st*(sc - i)]+base[st*(i+sc)];
+  for (; i + sc < size; i++)
+    temp[i]=2*base[st*i]+base[st*(i-sc)]+base[st*(i+sc)];
+  for (; i < size; i++)
+    temp[i]=2*base[st*i]+base[st*(i-sc)]+base[st*(2*size-2-(i+sc))];
+}
+
+MagickExport Image *WaveletDenoiseImage(const Image *image, const double threshold,
+  ExceptionInfo *exception)
+{
+  CacheView
+    *image_view,
+    *noise_view;
+
+  const Quantum
+    *magick_restrict p;
+
+  double
+    *interImage;
+
+  Image
+    *noise_image;
+
+  MemoryInfo
+    *interImage_info;
+
+  Quantum
+    *magick_restrict q;
+
+  size_t
+    channel;
+
+  ssize_t
+    size,
+    thread_count;
+
+  static const double
+    noise[]={0.8002,0.2735,0.1202,0.0585,0.0291,0.0152,0.0080,0.0044};
+
+  /*
+    Initialize noise image attributes.
+  */
+  assert(image != (const Image *) NULL);
+  assert(image->signature == MagickCoreSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickCoreSignature);
+
+  noise_image=(Image *) NULL;
+  noise_image=AccelerateWaveletDenoiseImage(image,threshold,exception);
+  if (noise_image != (Image *) NULL)
+    return(noise_image);
+
+  noise_image=CloneImage(image,0,0,MagickTrue,exception);
+  if (noise_image == (Image *) NULL)
+    return((Image *) NULL);
+  if (SetImageStorageClass(noise_image,DirectClass,exception) == MagickFalse)
+    {
+      noise_image=DestroyImage(noise_image);
+      return((Image *) NULL);
+    }
+
+  image_view=AcquireAuthenticCacheView(image,exception);
+  noise_view=AcquireAuthenticCacheView(noise_image,exception);
+
+  p=GetCacheViewAuthenticPixels(image_view,0,0,image->columns,image->rows,
+    exception);
+  q=GetCacheViewAuthenticPixels(noise_view,0,0,noise_image->columns,
+    noise_image->rows,exception);
+
+  thread_count=1;
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#pragma omp parallel magick_threads(image,image,image->rows,1)
+  {
+#pragma omp single
+    {
+      thread_count = omp_get_num_threads();
+    }
+  }
+#endif
+
+  /* Create intermediate buffer */
+  size=image->columns*image->rows;
+  interImage_info=AcquireVirtualMemory((size*3+(image->rows+image->columns)*
+    thread_count),sizeof(*interImage));
+  if (interImage_info == (MemoryInfo *) NULL)
+    {
+      interImage_info=RelinquishVirtualMemory(interImage_info);
+      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+    }
+  interImage=(double *)GetVirtualMemoryBlob(interImage_info);
+
+  for (channel = 0; channel < 3; ++channel)
+  {
+    double
+      thold,
+      *tmpBase;
+
+    register const Quantum
+      *magick_restrict pp;
+
+    size_t
+      hpass,
+      lev,
+      lpass;
+
+    ssize_t
+      i,
+      x,
+      y;
+
+    tmpBase=interImage+3*size;
+
+    pp=p;
+    switch (channel)
+    {
+      case 0:
+        for (i = 0; i < (ssize_t) size; ++i)
+        {
+          interImage[i]=GetPixelRed(image,pp);
+          pp+=image->number_channels;
+        }
+        break;
+      case 1:
+        for (i = 0; i < (ssize_t) size; ++i)
+        {
+          interImage[i]=GetPixelGreen(image,pp);
+          pp+=image->number_channels;
+        }
+        break;
+      case 2:
+        for (i = 0; i < (ssize_t) size; ++i)
+        {
+          interImage[i]=GetPixelBlue(image,pp);
+          pp+=image->number_channels;
+        }
+        break;
+    }
+    hpass=0;
+    for (lev = 0; lev < 5; lev++)
+    {
+      lpass=size*((lev & 1)+1);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+      #pragma omp parallel for schedule(static,1) private(x,y) \
+        magick_threads(image,image,image->rows,1)
+#endif
+      for (y = 0; y < (ssize_t) image->rows; ++y)
+      {
+        double
+          *tmp;
+
+        tmp=tmpBase;
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        tmp+=(image->rows+image->columns)*omp_get_thread_num();
+#endif
+        hat_transform(tmp,interImage+hpass+y*image->columns,1,
+          (ssize_t) image->columns,(ssize_t)(1 << lev));
+        for (x = 0; x < (ssize_t) image->columns; ++x)
+        {
+          interImage[lpass+y*image->columns+x]=tmp[x]*0.25;
+        }
+      }
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+      #pragma omp parallel for schedule(static,1) private(x,y) \
+        magick_threads(image,image,image->columns,1)
+#endif
+      for (x = 0; x < (ssize_t) image->columns; ++x)
+      {
+        double
+          *tmp;
+
+        tmp=tmpBase;
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        tmp+=(image->rows+image->columns)*omp_get_thread_num();
+#endif
+        hat_transform(tmp,interImage+lpass+x,(ssize_t) image->columns,
+          (ssize_t) image->rows,(ssize_t)(1 << lev));
+        for (y = 0; y < (ssize_t) image->rows; ++y)
+        {
+          interImage[lpass+y*image->columns+x]=tmp[y]*0.25;
+        }
+      }
+      thold=threshold*noise[lev];
+      for (i = 0; i < (ssize_t) size; ++i)
+      {
+        interImage[hpass+i]-=interImage[lpass+i];
+        if (interImage[hpass+i] < -thold)
+          interImage[hpass+i]+=thold;
+        else if (interImage[hpass+i] > thold)
+          interImage[hpass+i]-=thold;
+        else
+          interImage[hpass+i]=0;
+        if (hpass)
+          interImage[i]+=interImage[hpass+i];
+      }
+      hpass=lpass;
+    }
+
+    /* copy out of interImage */
+    switch (channel)
+    {
+      case 0:
+        for (i = 0; i < (ssize_t) size; ++i)
+          SetPixelRed(noise_image,ClampToQuantum(interImage[i]+
+            interImage[i+lpass]),q+i*noise_image->number_channels);
+        break;
+      case 1:
+        for (i = 0; i < (ssize_t) size; ++i)
+          SetPixelGreen(noise_image,ClampToQuantum(interImage[i]+
+            interImage[i+lpass]),q+i*noise_image->number_channels);
+        break;
+      case 2:
+        for (i = 0; i < (ssize_t) size; ++i)
+          SetPixelBlue(noise_image,ClampToQuantum(interImage[i]+
+            interImage[i+lpass]),q+i*noise_image->number_channels);
+        break;
+    }
+  }
+
+  noise_view=DestroyCacheView(noise_view);
+  image_view=DestroyCacheView(image_view);
+  interImage_info=RelinquishVirtualMemory(interImage_info);
+
+  return(noise_image);
 }

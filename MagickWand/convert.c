@@ -318,6 +318,8 @@ static MagickBooleanType ConvertUsage(void)
       "-unsharp geometry    sharpen the image",
       "-vignette geometry   soften the edges of the image in vignette style",
       "-wave geometry       alter an image along a sine wave",
+      "-wavelet-denoise threshold",
+      "                     removes noise from the image using a wavelet transform.",
       "-white-threshold value",
       "                     force all pixels above the threshold into white",
       (char *) NULL
@@ -3152,6 +3154,15 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
       case 'w':
       {
         if (LocaleCompare("wave",option+1) == 0)
+          {
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowConvertException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowConvertInvalidArgumentException(option,argv[i]);
+            break;
+          }
+        if (LocaleCompare("wavelet-denoise",option+1) == 0)
           {
             i++;
             if (i == (ssize_t) argc)

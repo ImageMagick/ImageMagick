@@ -830,6 +830,8 @@ static const OptionInfo
     { "-watermark", 1L, NonMagickOptionFlag, MagickFalse },
     { "+wave", 1L, DeprecateOptionFlag, MagickTrue },
     { "-wave", 1L, SimpleOperatorFlag, MagickFalse },
+    { "+wavelet-denoise", 0L, DeprecateOptionFlag, MagickTrue },
+    { "-wavelet-denoise", 1L, SimpleOperatorFlag, MagickFalse },
     { "+weight", 1L, DeprecateOptionFlag, MagickTrue },
     { "-weight", 1L, DrawInfoOptionFlag, MagickFalse },
     { "+white-point", 0L, ImageInfoOptionFlag, MagickFalse },
