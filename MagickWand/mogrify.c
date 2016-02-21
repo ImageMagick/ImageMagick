@@ -3609,7 +3609,7 @@ static MagickBooleanType MogrifyUsage(void)
       "-vignette geometry   soften the edges of the image in vignette style",
       "-wave geometry       alter an image along a sine wave",
       "-wavelet-denoise threshold",
-      "                     removes noise from the image using a wavelet transform.",
+      "                     removes noise from the image using a wavelet transform",
       "-white-threshold value",
       "                     force all pixels above the threshold into white",
       (char *) NULL

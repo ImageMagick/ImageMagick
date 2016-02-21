@@ -560,6 +560,8 @@ static struct
       {"gravity", MagickGravityOptions}, {"offset", StringReference}, 
       {"dx", IntegerReference}, {"dy", IntegerReference} } },
     { "Color", { {"color", StringReference} } },
+    { "WaveletDenoise", { {"threshold", StringReference},
+      {"channel", MagickChannelOptions} } },
   };
 
 static SplayTreeInfo
@@ -7582,6 +7584,8 @@ Mogrify(ref,...)
     CopyImagePixels    = 286
     Color              = 287
     ColorImage         = 288
+    WaveletDenoise     = 289
+    WaveletDenoiseImage= 290
     MogrifyRegion      = 666
   PPCODE:
   {
@@ -11319,6 +11323,19 @@ Mogrify(ref,...)
             (void) QueryColorCompliance(argument_list[0].string_reference,
               AllCompliance,&color,exception);
           (void) SetImageColor(image,&color,exception);
+          break;
+        }
+        case 145:  /* WaveletDenoise */
+        {
+          if (attribute_flag[0] == 0)
+            argument_list[0].string_reference="50%";
+          if (attribute_flag[2] != 0)
+            channel=(ChannelType) argument_list[2].integer_reference;
+          channel_mask=SetImageChannelMask(image,channel);
+          image=WaveletDenoiseImage(image,argument_list[0].string_reference,
+            exception);
+          if (image != (Image *) NULL)
+            (void) SetImageChannelMask(image,channel_mask);
           break;
         }
       }

@@ -480,6 +480,13 @@ $example=$model->Clone();
 $example->Label('Wave');
 $example->Wave('25x150');
 push(@$images,$example);
+
+print "WaveletDenoise...\n";
+$example=$model->Clone();
+$example->Label('WaveletDenoise');
+$example->WaveletDenoise();
+push(@$images,$example);
+
 #
 # Create image montage.
 #
