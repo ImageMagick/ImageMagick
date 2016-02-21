@@ -5733,8 +5733,8 @@ static inline void hat_transform(double *temp,double *base,ssize_t st,
     temp[i]=2*base[st*i]+base[st*(i-sc)]+base[st*(2*size-2-(i+sc))];
 }
 
-MagickExport Image *WaveletDenoiseImage(const Image *image, const double threshold,
-  ExceptionInfo *exception)
+MagickExport Image *WaveletDenoiseImage(const Image *image,
+  const double threshold,ExceptionInfo *exception)
 {
   CacheView
     *image_view,

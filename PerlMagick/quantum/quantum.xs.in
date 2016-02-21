@@ -561,6 +561,7 @@ static struct
       {"x", IntegerReference}, {"y", IntegerReference},
       {"gravity", MagickGravityOptions}, {"offset", StringReference}, 
       {"dx", IntegerReference}, {"dy", IntegerReference} } },
+    { "WaveletDenoise", { {"threshold", StringReference} } },
   };
 
 static SplayTreeInfo
@@ -7484,6 +7485,8 @@ Mogrify(ref,...)
     ConnectedComponentsImage = 290
     CopyPixels         = 291
     CopyImagePixels    = 292
+    WaveletDenoise     = 293
+    WaveletDenoiseImage= 294
     MogrifyRegion      = 666
   PPCODE:
   {
@@ -11048,6 +11051,14 @@ Mogrify(ref,...)
           if (attribute_flag[9] != 0)
             offset.y=argument_list[9].integer_reference;
           (void) CopyImagePixels(image,source_image,&geometry,&offset,
+            exception);
+          break;
+        }
+        case 147:  /* WaveletDenoise */
+        {
+          if (attribute_flag[0] == 0)
+            argument_list[0].string_reference="50%";
+          image=WaveletDenoiseImage(image,argument_list[0].string_reference,
             exception);
           break;
         }
