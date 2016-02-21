@@ -11328,12 +11328,14 @@ Mogrify(ref,...)
         case 145:  /* WaveletDenoise */
         {
           if (attribute_flag[0] == 0)
-            argument_list[0].string_reference="50%";
+            argument_list[0].string_reference="5%";
           if (attribute_flag[2] != 0)
             channel=(ChannelType) argument_list[2].integer_reference;
+          flags=ParseGeometry(argument_list[0].string_reference,&geometry_info);
+          if ((flags & PercentValue) != 0)
+            geometry_info.rho*=(double) (QuantumRange/100.0);
           channel_mask=SetImageChannelMask(image,channel);
-          image=WaveletDenoiseImage(image,argument_list[0].string_reference,
-            exception);
+          image=WaveletDenoiseImage(image,geometry_info.rho,exception);
           if (image != (Image *) NULL)
             (void) SetImageChannelMask(image,channel_mask);
           break;
