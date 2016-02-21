@@ -5783,7 +5783,7 @@ MagickExport Image *WaveletDenoiseImage(const Image *image, const double thresho
   noise_image=CloneImage(image,0,0,MagickTrue,exception);
   if (noise_image == (Image *) NULL)
     return((Image *) NULL);
-  if (SetImageStorageClass(noise_image,DirectClass,exception) == MagickFalse)
+  if (SetImageStorageClass(noise_image,DirectClass) == MagickFalse)
     {
       noise_image=DestroyImage(noise_image);
       return((Image *) NULL);

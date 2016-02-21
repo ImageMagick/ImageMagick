@@ -127,10 +127,6 @@ static MagickBooleanType checkAccelerateCondition(const Image* image,
       image->colorspace != GRAYColorspace)
     return(MagickFalse);
 
-  /* check if the storage class is direct class */
-  if (image->storage_class != DirectClass)
-    return(MagickFalse);
-
   /* check if the channel is supported */
   if (((channel & RedChannel) == 0) ||
       ((channel & GreenChannel) == 0) ||
@@ -7358,9 +7354,6 @@ static Image *ComputeWaveletDenoiseImage(const Image *image,
     *filteredImage_view,
     *image_view;
 
-  char
-    geometry[MaxTextExtent];
-
   cl_command_queue
     queue;
 
@@ -7368,7 +7361,6 @@ static Image *ComputeWaveletDenoiseImage(const Image *image,
   context;
 
   cl_int
-    pass,
     clStatus;
 
   cl_kernel
@@ -7404,9 +7396,7 @@ static Image *ComputeWaveletDenoiseImage(const Image *image,
     *hostPtr;
 
   unsigned int
-    i,
-    imageColumns,
-    imageRows;
+    i;
 
   clEnv = NULL;
   filteredImage = NULL;
@@ -7454,7 +7444,7 @@ static Image *ComputeWaveletDenoiseImage(const Image *image,
   /* create output */
   filteredImage = CloneImage(image, image->columns, image->rows, MagickTrue, exception);
   assert(filteredImage != NULL);
-  if (SetImageStorageClass(filteredImage, DirectClass, exception) != MagickTrue)
+  if (SetImageStorageClass(filteredImage, DirectClass) != MagickTrue)
   {
     (void)OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "CloneImage failed.", "'%s'", ".");
     goto cleanup;
@@ -7500,7 +7490,6 @@ static Image *ComputeWaveletDenoiseImage(const Image *image,
     const int PASSES = 5;
     cl_int width = (cl_int)image->columns;
     cl_int height = (cl_int)image->rows;
-    cl_int planeStride = width * height;
     cl_float thresh = threshold;
 
     /* set the kernel arguments */
