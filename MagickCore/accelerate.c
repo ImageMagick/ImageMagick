@@ -127,6 +127,10 @@ static MagickBooleanType checkAccelerateCondition(const Image* image)
       image->colorspace != GRAYColorspace)
     return(MagickFalse);
 
+  /* check if the storage class is direct class */
+  if (image->storage_class != DirectClass)
+    return(MagickFalse);
+
   /* check if the virtual pixel method is compatible with the OpenCL implementation */
   if ((GetImageVirtualPixelMethod(image) != UndefinedVirtualPixelMethod) &&
       (GetImageVirtualPixelMethod(image) != EdgeVirtualPixelMethod))
