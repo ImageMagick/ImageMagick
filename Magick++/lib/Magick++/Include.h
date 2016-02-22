@@ -1479,6 +1479,7 @@ namespace Magick
   using MagickCore::UnsharpMaskImage;
   using MagickCore::VignetteImage;
   using MagickCore::WaveImage;
+  using MagickCore::WaveletDenoiseImage;
   using MagickCore::WhiteThresholdImage;
   using MagickCore::WriteImage;
 

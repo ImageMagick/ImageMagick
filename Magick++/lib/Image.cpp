@@ -4802,6 +4802,17 @@ void Magick::Image::wave(const double amplitude_,const double wavelength_)
   ThrowImageException;
 }
 
+void Magick::Image::waveletDenoise(const double threshold_)
+{
+  MagickCore::Image
+    *newImage;
+
+  GetPPException;
+  newImage=WaveletDenoiseImage(constImage(),threshold_,exceptionInfo);
+  replaceImage(newImage);
+  ThrowImageException;
+}
+
 void Magick::Image::whiteThreshold(const std::string &threshold_)
 {
   modifyImage();
