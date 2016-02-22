@@ -1481,6 +1481,7 @@ namespace Magick
   using MagickCore::VignetteImage;
   using MagickCore::CacheView;
   using MagickCore::WaveImage;
+  using MagickCore::WaveletDenoiseImage;
   using MagickCore::WhiteThresholdImage;
   using MagickCore::WhiteThresholdImageChannel;
   using MagickCore::WidthValue;
