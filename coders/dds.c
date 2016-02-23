@@ -2731,9 +2731,9 @@ static void WriteDDSInfo(Image *image, const size_t pixelFormat,
     {
       // Uncompressed DDS requires byte pitch of first image
       if (image->alpha_trait != UndefinedPixelTrait)
-        (void) WriteBlobLSBLong(image,(unsigned int) (image->columns * 32));
+        (void) WriteBlobLSBLong(image,(unsigned int) (image->columns * 4));
       else
-        (void) WriteBlobLSBLong(image,(unsigned int) (image->columns * 24));
+        (void) WriteBlobLSBLong(image,(unsigned int) (image->columns * 3));
     }
 
   (void) WriteBlobLSBLong(image,0x00);
