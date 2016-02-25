@@ -749,10 +749,15 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image)
         MagickFalse,value);
     if (LocaleCompare(image_info->magick,"SPARSE-COLOR") != 0)
       {
+        ssize_t
+          depth;
+
+        depth=compliance == SVGCompliance ? image->depth :
+          MAGICKCORE_QUANTUM_DEPTH;
         (void) FormatLocaleString(buffer,MaxTextExtent,
           "# ImageMagick pixel enumeration: %.20g,%.20g,%.20g,%s\n",(double)
           image->columns,(double) image->rows,(double) ((MagickOffsetType)
-          GetQuantumRange(image->depth)),colorspace);
+          GetQuantumRange(depth)),colorspace);
         (void) WriteBlobString(image,buffer);
       }
     GetMagickPixelPacket(image,&pixel);
