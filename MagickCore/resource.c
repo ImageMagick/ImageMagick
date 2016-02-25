@@ -528,6 +528,7 @@ MagickExport int AcquireUniqueFileResource(char *path)
     file=mkstemp(path);
     if (file != -1)
       {
+        unlink(path);
 #if defined(MAGICKCORE_HAVE_FCHMOD)
         (void) fchmod(file,0600);
 #endif
