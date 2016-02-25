@@ -728,10 +728,15 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
         MagickFalse,value);
     if (LocaleCompare(image_info->magick,"SPARSE-COLOR") != 0)
       {
+        ssize_t
+          depth;
+
+        depth=compliance == SVGCompliance ? image->depth :
+          MAGICKCORE_QUANTUM_DEPTH;
         (void) FormatLocaleString(buffer,MagickPathExtent,
           "# ImageMagick pixel enumeration: %.20g,%.20g,%.20g,%s\n",(double)
           image->columns,(double) image->rows,(double) ((MagickOffsetType)
-          GetQuantumRange(image->depth)),colorspace);
+          GetQuantumRange(depth)),colorspace);
         (void) WriteBlobString(image,buffer);
       }
     GetPixelInfo(image,&pixel);
@@ -756,8 +761,8 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
             if (GetPixelAlpha(image,p) == (Quantum) OpaqueAlpha)
               {
                 GetColorTuple(&pixel,MagickFalse,tuple);
-                (void) FormatLocaleString(buffer,MagickPathExtent,"%.20g,%.20g,",
-                  (double) x,(double) y);
+                (void) FormatLocaleString(buffer,MagickPathExtent,
+                  "%.20g,%.20g,",(double) x,(double) y);
                 (void) WriteBlobString(image,buffer);
                 (void) WriteBlobString(image,tuple);
                 (void) WriteBlobString(image," ");
@@ -765,8 +770,8 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
             p+=GetPixelChannels(image);
             continue;
           }
-        (void) FormatLocaleString(buffer,MagickPathExtent,"%.20g,%.20g: ",(double)
-          x,(double) y);
+        (void) FormatLocaleString(buffer,MagickPathExtent,"%.20g,%.20g: ",
+          (double) x,(double) y);
         (void) WriteBlobString(image,buffer);
         (void) CopyMagickString(tuple,"(",MagickPathExtent);
         if (pixel.colorspace == GRAYColorspace)
