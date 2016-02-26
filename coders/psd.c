@@ -883,7 +883,7 @@ static MagickBooleanType ReadPSDChannelPixels(Image *image,
         for (bit = 0; bit < number_bits; bit++)
         {
           SetPSDPixel(image,channels,type,packet_size,(((unsigned char) pixel)
-            & (0x01 << (7-bit))) != 0 ? 0 : 255,q,exception);
+            & (0x01 << (7-bit))) != 0 ? 0 : QuantumRange,q,exception);
           q+=GetPixelChannels(image);
           x++;
         }
