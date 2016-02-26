@@ -869,7 +869,8 @@ static MagickBooleanType ReadPSDChannelPixels(Image *image,const size_t channels
           number_bits=8;
         for (bit=0; bit < number_bits; bit++)
         {
-          SetPSDPixel(image,channels,type,packet_size,pixel,q++,indexes,x++,
+          SetPSDPixel(image,channels,type,packet_size,(((unsigned char) pixel)
+            & (0x01 << (7-bit))) != 0 ? 0 : QuantumRange,q++,indexes,x++,
             exception);
         }
         if (x != image->columns)
