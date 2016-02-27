@@ -5774,8 +5774,10 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
     *pixels_info;
 
   size_t
-    channel,
     max_channels;
+
+  ssize_t
+    channel;
 
   static const double
     noise_levels[]= {
@@ -5822,7 +5824,7 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
   max_channels=(size_t) (image->colorspace == CMYKColorspace ? 4 : 3);
   image_view=AcquireAuthenticCacheView(image,exception);
   noise_view=AcquireAuthenticCacheView(noise_image,exception);
-  for (channel=0; channel < max_channels; channel++)
+  for (channel=0; channel < (ssize_t) max_channels; channel++)
   {
     register ssize_t
       i;
