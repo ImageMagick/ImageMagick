@@ -3544,6 +3544,10 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           flags=ParseGeometry(arg1,&geometry_info);
           if ((flags & RhoValue) == 0)
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
+          if ((flags & PercentValue) != 0)
+            geometry_info.rho=(double) QuantumRange*geometry_info.rho/100.0;
+          if ((flags & SigmaValue) == 0)
+            geometry_info.sigma=0.0;
           new_image=WaveletDenoiseImage(_image,geometry_info.rho,
             geometry_info.sigma,_exception);
           break;

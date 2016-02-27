@@ -3298,6 +3298,10 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             */
             (void) SyncImageSettings(mogrify_info,*image,exception);
             flags=ParseGeometry(argv[i+1],&geometry_info);
+            if ((flags & PercentValue) != 0)
+              geometry_info.rho=(double) QuantumRange*geometry_info.rho/100.0;
+            if ((flags & SigmaValue) == 0)
+              geometry_info.sigma=0.0;
             mogrify_image=WaveletDenoiseImage(*image,geometry_info.rho,
               geometry_info.sigma,exception);
             break;

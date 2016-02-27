@@ -5814,6 +5814,10 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
   size_t
     channel;
 
+  static const double
+    noise_levels[]= {
+      0.8002, 0.2735, 0.1202, 0.0585, 0.0291, 0.0152, 0.0080, 0.0044 };
+
   /*
     Initialize noise image attributes.
   */
@@ -5970,7 +5974,6 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
         double
           sample_squared;
 
-        wavelet_pixels[high_pass+i]-=wavelet_pixels[low_pass+i];
         if ((wavelet_pixels[high_pass+i] > magnitude) &&
             (wavelet_pixels[high_pass+i] < -magnitude))
           continue;
@@ -6010,21 +6013,10 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
         To threshold, each coefficient is compared to a threshold value and
         attenuated / shrunk by some factor.
       */
+      magnitude=threshold*noise_levels[level];
       for (i=0; i < (ssize_t) number_pixels; ++i)
       {
-        if (wavelet_pixels[low_pass+i] > 0.8)
-          magnitude=threshold*standard_deviation[4];
-        else
-         if (wavelet_pixels[low_pass+i] > 0.6)
-           magnitude=threshold*standard_deviation[3];
-         else
-           if (wavelet_pixels[low_pass+i] > 0.4)
-             magnitude=threshold*standard_deviation[2];
-           else
-             if (wavelet_pixels[low_pass+i] > 0.2)
-               magnitude=threshold*standard_deviation[1];
-             else
-               magnitude=threshold*standard_deviation[0];
+        wavelet_pixels[high_pass+i]-=wavelet_pixels[low_pass+i];
         if (wavelet_pixels[high_pass+i] < -magnitude)
           wavelet_pixels[high_pass+i]+=magnitude-softness*magnitude;
         else
