@@ -5765,24 +5765,24 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
 */
 
 static inline void HatTransform(const float *restrict pixels,const size_t width,
-  const size_t height,const size_t radius,double *coefficients)
+  const size_t height,const size_t radius,double *kernel)
 {
   register ssize_t
     i;
 
   /*
-    Lowpass filter outputs are called approximation coefficients & highigh_pass
-    filters are referred to as detail coefficients.  The detail coefficients
+    Lowpass filter outputs are called approximation kernel & highigh_pass
+    filters are referred to as detail kernel.  The detail kernel
     have high values in the noisy parts of the signal.
   */
   for (i=0; i < (ssize_t) radius; i++)
-    coefficients[i]=2.0*pixels[width*i]+pixels[width*(radius-i)]+
+    kernel[i]=2.0*pixels[width*i]+pixels[width*(radius-i)]+
       pixels[width*(i+radius)];
   for ( ; (i+radius) < (ssize_t) height; i++)
-    coefficients[i]=2.0*pixels[width*i]+pixels[width*(i-radius)]+
+    kernel[i]=2.0*pixels[width*i]+pixels[width*(i-radius)]+
       pixels[width*(i+radius)];
   for ( ; i < (ssize_t) height; i++)
-    coefficients[i]=2.0*pixels[width*i]+pixels[width*(i-radius)]+
+    kernel[i]=2.0*pixels[width*i]+pixels[width*(i-radius)]+
       pixels[width*(2*height-2-(i+radius))];
 }
 
@@ -5794,10 +5794,10 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
     *noise_view;
 
   double
-    *coefficients;
+    *kernel;
 
   float
-    *wavelet_pixels;
+    *pixels;
 
   Image
     *noise_image;
@@ -5809,7 +5809,7 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
     number_pixels;
 
   MemoryInfo
-    *wavelet_pixels_info;
+    *pixels_info;
 
   size_t
     channel;
@@ -5841,20 +5841,19 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
     }
   if (AcquireMagickResource(WidthResource,3*image->columns) == MagickFalse)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
-  wavelet_pixels_info=AcquireVirtualMemory(3*image->columns,
-    image->rows*sizeof(*wavelet_pixels));
-  coefficients=(double *) AcquireQuantumMemory(MagickMax(image->rows,
-    image->columns),GetOpenMPMaximumThreads()*sizeof(*coefficients));
-  if ((wavelet_pixels_info == (MemoryInfo *) NULL) ||
-      (coefficients == (double *) NULL))
+  pixels_info=AcquireVirtualMemory(3*image->columns,image->rows*
+    sizeof(*pixels));
+  kernel=(double *) AcquireQuantumMemory(MagickMax(image->rows,image->columns),
+    GetOpenMPMaximumThreads()*sizeof(*kernel));
+  if ((pixels_info == (MemoryInfo *) NULL) || (kernel == (double *) NULL))
     {
-      if (coefficients != (double *) NULL)
-        coefficients=(double *) RelinquishMagickMemory(coefficients);
-      if (wavelet_pixels_info != (MemoryInfo *) NULL)
-        wavelet_pixels_info=RelinquishVirtualMemory(wavelet_pixels_info);
+      if (kernel != (double *) NULL)
+        kernel=(double *) RelinquishMagickMemory(kernel);
+      if (pixels_info != (MemoryInfo *) NULL)
+        pixels_info=RelinquishVirtualMemory(pixels_info);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
-  wavelet_pixels=(float *) GetVirtualMemoryBlob(wavelet_pixels_info);
+  pixels=(float *) GetVirtualMemoryBlob(pixels_info);
   status=MagickTrue;
   number_pixels=image->columns*image->rows;
   image_view=AcquireAuthenticCacheView(image,exception);
@@ -5896,14 +5895,14 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
         }
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        wavelet_pixels[i]=(float) p[channel];
+        pixels[i]=(float) p[channel];
         i++;
         p+=GetPixelChannels(image);
       }
     }
     /*
-      Low pass filter outputs are called approximation coefficients & high pass
-      filters are referred to as detail coefficients. The detail coefficients
+      Low pass filter outputs are called approximation kernel & high pass
+      filters are referred to as detail kernel. The detail kernel
       have high values in the noisy parts of the signal.
     */
     high_pass=0;
@@ -5930,17 +5929,13 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
         const int
           id = GetOpenMPThreadId();
 
-        double
-          *p;
-
         register ssize_t
           x;
 
-        p=coefficients+id*image->columns;
-        HatTransform(wavelet_pixels+y*image->columns+high_pass,1,image->columns,
-          1UL << level,p);
+        HatTransform(pixels+y*image->columns+high_pass,1,image->columns,
+          1UL << level,kernel+id*image->columns);
         for (x=0; x < (ssize_t) image->columns; x++)
-          wavelet_pixels[y*image->columns+x+low_pass]=0.25*p[x];
+          pixels[y*image->columns+x+low_pass]=0.25*kernel[id*image->columns+x];
       }
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,1) \
@@ -5951,17 +5946,13 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
         const int
           id = GetOpenMPThreadId();
 
-        double
-          *p;
-
         register ssize_t
           y;
 
-        p=coefficients+id*image->rows;
-        HatTransform(wavelet_pixels+x+low_pass,image->columns,image->rows,
-          1UL << level,p);
+        HatTransform(pixels+x+low_pass,image->columns,image->rows,1UL << level,
+          kernel+id*image->rows);
         for (y=0; y < (ssize_t) image->rows; y++)
-          wavelet_pixels[y*image->columns+x+low_pass]=0.25*p[y];
+          pixels[y*image->columns+x+low_pass]=0.25*kernel[id*image->rows+y];
       }
       /*
         Compute standard deviations for all intensities.
@@ -5974,29 +5965,29 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
         double
           sample_squared;
 
-        if ((wavelet_pixels[high_pass+i] > magnitude) &&
-            (wavelet_pixels[high_pass+i] < -magnitude))
+        if ((pixels[high_pass+i] > magnitude) &&
+            (pixels[high_pass+i] < -magnitude))
           continue;
-        sample_squared=wavelet_pixels[high_pass+i]*wavelet_pixels[high_pass+i];
-        if (wavelet_pixels[low_pass+i] > 0.8)
+        sample_squared=pixels[high_pass+i]*pixels[high_pass+i];
+        if (pixels[low_pass+i] > 0.8)
           {
             standard_deviation[4]+=sample_squared;
             samples[4]++;
           }
         else
-          if (wavelet_pixels[low_pass+i] > 0.6)
+          if (pixels[low_pass+i] > 0.6)
             {
               standard_deviation[3]+=sample_squared;
               samples[3]++;
             }
           else
-            if (wavelet_pixels[low_pass+i] > 0.4)
+            if (pixels[low_pass+i] > 0.4)
               {
                 standard_deviation[2]+=sample_squared;
                 samples[2]++;
               }
             else
-              if (wavelet_pixels[low_pass+i] > 0.2)
+              if (pixels[low_pass+i] > 0.2)
                 {
                   standard_deviation[1]+=sample_squared;
                   samples[1]++;
@@ -6016,21 +6007,21 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
       magnitude=threshold*noise_levels[level];
       for (i=0; i < (ssize_t) number_pixels; ++i)
       {
-        wavelet_pixels[high_pass+i]-=wavelet_pixels[low_pass+i];
-        if (wavelet_pixels[high_pass+i] < -magnitude)
-          wavelet_pixels[high_pass+i]+=magnitude-softness*magnitude;
+        pixels[high_pass+i]-=pixels[low_pass+i];
+        if (pixels[high_pass+i] < -magnitude)
+          pixels[high_pass+i]+=magnitude-softness*magnitude;
         else
-          if (wavelet_pixels[high_pass+i] > magnitude)
-            wavelet_pixels[high_pass+i]-=magnitude-softness*magnitude;
+          if (pixels[high_pass+i] > magnitude)
+            pixels[high_pass+i]-=magnitude-softness*magnitude;
           else
-            wavelet_pixels[high_pass+i]*=softness;
+            pixels[high_pass+i]*=softness;
         if (high_pass != 0)
-          wavelet_pixels[i]+=wavelet_pixels[high_pass+i];
+          pixels[i]+=pixels[high_pass+i];
       }
       high_pass=low_pass;
     }
     /*
-      Reconstruct image from the thresholded wavelet coefficients.
+      Reconstruct image from the thresholded wavelet kernel.
     */
     i=0;
     for (y=0; y < (ssize_t) image->rows; y++)
@@ -6061,7 +6052,7 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
         float
           pixel;
 
-        pixel=wavelet_pixels[i]+wavelet_pixels[low_pass+i];
+        pixel=pixels[i]+pixels[low_pass+i];
         q[offset]=ClampToQuantum(pixel);
         i++;
         q+=GetPixelChannels(noise_image);
@@ -6083,7 +6074,7 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
   }
   noise_view=DestroyCacheView(noise_view);
   image_view=DestroyCacheView(image_view);
-  coefficients=(double *) RelinquishMagickMemory(coefficients);
-  wavelet_pixels_info=RelinquishVirtualMemory(wavelet_pixels_info);
+  kernel=(double *) RelinquishMagickMemory(kernel);
+  pixels_info=RelinquishVirtualMemory(pixels_info);
   return(noise_image);
 }
