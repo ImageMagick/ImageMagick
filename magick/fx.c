@@ -5935,8 +5935,7 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
       /*
         Compute standard deviations for all intensities.
       */
-      magnitude=5.0/0.8002*(1 << 6)*exp(-2.6*sqrt((double) level+1.0))/
-        exp(-2.6);
+      magnitude=5.0/(1 << 6)*exp(-2.6*sqrt(level+1))*0.8002/exp(-2.6);
       (void) ResetMagickMemory(standard_deviation,0,sizeof(standard_deviation));
       (void) ResetMagickMemory(samples,0,sizeof(samples));
       for (i=0; i < (ssize_t) number_pixels; i++)
