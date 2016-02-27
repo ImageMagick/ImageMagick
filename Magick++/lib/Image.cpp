@@ -4808,7 +4808,7 @@ void Magick::Image::waveletDenoise(const double threshold_)
     *newImage;
 
   GetPPException;
-  newImage=WaveletDenoiseImage(constImage(),threshold_,exceptionInfo);
+  newImage=WaveletDenoiseImage(constImage(),threshold_,0.0,exceptionInfo);
   replaceImage(newImage);
   ThrowImageException;
 }

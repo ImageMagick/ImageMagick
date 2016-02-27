@@ -5728,7 +5728,7 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
     wave_image=DestroyImage(wave_image);
   return(wave_image);
 }
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -5741,68 +5741,78 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  WaveletDenoiseImage() removes noise from the image using a wavelet
-%  transform. Adapted from dcraw.c by David Coffin.
+%  transform.  The wavelet transform is a fast hierarchical scheme for
+%  processing an image using a set of consecutive lowpass and high_pass filters,
+%  followed by a decimation.  This results in a decomposition into different
+%  scales which can be regarded as different “frequency bands”, determined by
+%  the mother wavelet.  Adapted from dcraw.c by David Coffin.
 %
 %  The format of the WaveletDenoiseImage method is:
 %
-%      Image *WaveletDenoiseImage(const Image *image, const double threshold,
-%        ExceptionInfo *exception)
+%      Image *WaveletDenoiseImage(const Image *image,const double threshold,
+%        const double softness,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
-%    o threahold: defines the threshold for smoothing.
+%    o threshold: set the threshold for smoothing.
+%
+%    o softness: attenuate the smoothing threshold.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
 
-static inline void hat_transform(double *temp,double *base,ssize_t st,
-  ssize_t size,ssize_t sc)
+static inline void HatTransform(const float *restrict pixels,const size_t width,
+  const size_t height,const size_t radius,double *coefficients)
 {
-  ssize_t
+  register ssize_t
     i;
 
-  for (i = 0; i < sc; i++)
-    temp[i]=2*base[st * i]+base[st*(sc - i)]+base[st*(i+sc)];
-  for (; i + sc < size; i++)
-    temp[i]=2*base[st*i]+base[st*(i-sc)]+base[st*(i+sc)];
-  for (; i < size; i++)
-    temp[i]=2*base[st*i]+base[st*(i-sc)]+base[st*(2*size-2-(i+sc))];
+  /*
+    Lowpass filter outputs are called approximation coefficients & highigh_pass
+    filters are referred to as detail coefficients.  The detail coefficients
+    have high values in the noisy parts of the signal.
+  */
+  for (i=0; i < (ssize_t) radius; i++)
+    coefficients[i]=2.0*pixels[width*i]+pixels[width*(radius-i)]+
+      pixels[width*(i+radius)];
+  for ( ; (i+radius) < (ssize_t) height; i++)
+    coefficients[i]=2.0*pixels[width*i]+pixels[width*(i-radius)]+
+      pixels[width*(i+radius)];
+  for ( ; i < (ssize_t) height; i++)
+    coefficients[i]=2.0*pixels[width*i]+pixels[width*(i-radius)]+
+      pixels[width*(2*height-2-(i+radius))];
 }
 
 MagickExport Image *WaveletDenoiseImage(const Image *image,
-  const double threshold,ExceptionInfo *exception)
+  const double threshold,const double softness,ExceptionInfo *exception)
 {
   CacheView
     *image_view,
     *noise_view;
 
-  const Quantum
-    *magick_restrict p;
-
   double
-    *interImage;
+    *coefficients;
+
+  float
+    *wavelet_pixels;
 
   Image
     *noise_image;
 
-  MemoryInfo
-    *interImage_info;
+  MagickBooleanType
+    status;
 
-  Quantum
-    *magick_restrict q;
+  MagickSizeType
+    number_pixels;
+
+  MemoryInfo
+    *wavelet_pixels_info;
 
   size_t
     channel;
-
-  ssize_t
-    size,
-    thread_count;
-
-  static const double
-    noise[]={0.8002,0.2735,0.1202,0.0585,0.0291,0.0152,0.0080,0.0044};
 
   /*
     Initialize noise image attributes.
@@ -5813,12 +5823,10 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
-
   noise_image=(Image *) NULL;
   noise_image=AccelerateWaveletDenoiseImage(image,threshold,exception);
   if (noise_image != (Image *) NULL)
     return(noise_image);
-
   noise_image=CloneImage(image,0,0,MagickTrue,exception);
   if (noise_image == (Image *) NULL)
     return((Image *) NULL);
@@ -5827,167 +5835,259 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
       noise_image=DestroyImage(noise_image);
       return((Image *) NULL);
     }
-
-  image_view=AcquireAuthenticCacheView(image,exception);
-  noise_view=AcquireAuthenticCacheView(noise_image,exception);
-
-  p=GetCacheViewAuthenticPixels(image_view,0,0,image->columns,image->rows,
-    exception);
-  q=GetCacheViewAuthenticPixels(noise_view,0,0,noise_image->columns,
-    noise_image->rows,exception);
-
-  thread_count=1;
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-#pragma omp parallel magick_threads(image,image,image->rows,1)
-  {
-#pragma omp single
+  if (AcquireMagickResource(WidthResource,3*image->columns) == MagickFalse)
+    ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+  wavelet_pixels_info=AcquireVirtualMemory(3*image->columns,
+    image->rows*sizeof(*wavelet_pixels));
+  coefficients=(double *) AcquireQuantumMemory(MagickMax(image->rows,
+    image->columns),GetOpenMPMaximumThreads()*sizeof(*coefficients));
+  if ((wavelet_pixels_info == (MemoryInfo *) NULL) ||
+      (coefficients == (double *) NULL))
     {
-      thread_count = omp_get_num_threads();
-    }
-  }
-#endif
-
-  /* Create intermediate buffer */
-  size=image->columns*image->rows;
-  interImage_info=AcquireVirtualMemory((size*3+(image->rows+image->columns)*
-    thread_count),sizeof(*interImage));
-  if (interImage_info == (MemoryInfo *) NULL)
-    {
-      interImage_info=RelinquishVirtualMemory(interImage_info);
+      if (coefficients != (double *) NULL)
+        coefficients=(double *) RelinquishMagickMemory(coefficients);
+      if (wavelet_pixels_info != (MemoryInfo *) NULL)
+        wavelet_pixels_info=RelinquishVirtualMemory(wavelet_pixels_info);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
-  interImage=(double *)GetVirtualMemoryBlob(interImage_info);
-
-  for (channel = 0; channel < 3; ++channel)
+  wavelet_pixels=(float *) GetVirtualMemoryBlob(wavelet_pixels_info);
+  status=MagickTrue;
+  number_pixels=image->columns*image->rows;
+  image_view=AcquireAuthenticCacheView(image,exception);
+  noise_view=AcquireAuthenticCacheView(noise_image,exception);
+  for (channel=0; channel < GetPixelChannels(image); channel++)
   {
-    double
-      thold,
-      *tmpBase;
-
-    register const Quantum
-      *magick_restrict pp;
+    register ssize_t
+      i;
 
     size_t
-      hpass,
-      lev,
-      lpass;
+      high_pass,
+      low_pass;
 
     ssize_t
-      i,
-      x,
+      level,
       y;
 
-    tmpBase=interImage+3*size;
+    if (status == MagickFalse)
+      continue;
+    if (GetPixelChannelTraits(image,channel) == UndefinedPixelTrait)
+      continue;
+    /*
+      Copy channel from image to wavelet pixel array.
+    */
+    i=0;
+    for (y=0; y < (ssize_t) image->rows; y++)
+    {
+      register const Quantum
+        *magick_restrict p;
 
-    pp=p;
-    switch (channel)
-    {
-      case 0:
-        for (i = 0; i < (ssize_t) size; ++i)
+      ssize_t
+        x;
+
+      p=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
+      if (p == (const Quantum *) NULL)
         {
-          interImage[i]=GetPixelRed(image,pp);
-          pp+=image->number_channels;
+          status=MagickFalse;
+          break;
         }
-        break;
-      case 1:
-        for (i = 0; i < (ssize_t) size; ++i)
-        {
-          interImage[i]=GetPixelGreen(image,pp);
-          pp+=image->number_channels;
-        }
-        break;
-      case 2:
-        for (i = 0; i < (ssize_t) size; ++i)
-        {
-          interImage[i]=GetPixelBlue(image,pp);
-          pp+=image->number_channels;
-        }
-        break;
+      for (x=0; x < (ssize_t) image->columns; x++)
+      {
+        wavelet_pixels[i]=(float) p[channel]; break;
+        i++;
+        p+=GetPixelChannels(image);
+      }
     }
-    hpass=0;
-    for (lev = 0; lev < 5; lev++)
+    /*
+      Low pass filter outputs are called approximation coefficients & high pass
+      filters are referred to as detail coefficients. The detail coefficients
+      have high values in the noisy parts of the signal.
+    */
+    high_pass=0;
+    for (level=0; level < 5; level++)
     {
-      lpass=size*((lev & 1)+1);
+      double
+        magnitude,
+        standard_deviation[5];
+
+      ssize_t
+        x,
+        y;
+
+      size_t
+        samples[5];
+
+      low_pass=(size_t) (((level & 1)+1)*number_pixels);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static,1) private(x,y) \
+      #pragma omp parallel for schedule(static,1) \
         magick_threads(image,image,image->rows,1)
 #endif
-      for (y = 0; y < (ssize_t) image->rows; ++y)
+      for (y=0; y < (ssize_t) image->rows; y++)
       {
-        double
-          *tmp;
+        const int
+          id = GetOpenMPThreadId();
 
-        tmp=tmpBase;
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-        tmp+=(image->rows+image->columns)*omp_get_thread_num();
-#endif
-        hat_transform(tmp,interImage+hpass+y*image->columns,1,
-          (ssize_t) image->columns,(ssize_t)(1 << lev));
-        for (x = 0; x < (ssize_t) image->columns; ++x)
-        {
-          interImage[lpass+y*image->columns+x]=tmp[x]*0.25;
-        }
+        double
+          *p;
+
+        register ssize_t
+          x;
+
+        p=coefficients+id*image->columns;
+        HatTransform(wavelet_pixels+y*image->columns+high_pass,1,image->columns,
+          1UL << level,p);
+        for (x=0; x < (ssize_t) image->columns; x++)
+          wavelet_pixels[y*image->columns+x+low_pass]=0.25*p[x];
       }
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static,1) private(x,y) \
+      #pragma omp parallel for schedule(static,1) \
         magick_threads(image,image,image->columns,1)
 #endif
-      for (x = 0; x < (ssize_t) image->columns; ++x)
+      for (x=0; x < (ssize_t) image->columns; x++)
+      {
+        const int
+          id = GetOpenMPThreadId();
+
+        double
+          *p;
+
+        register ssize_t
+          y;
+
+        p=coefficients+id*image->rows;
+        HatTransform(wavelet_pixels+x+low_pass,image->columns,image->rows,
+          1UL << level,p);
+        for (y=0; y < (ssize_t) image->rows; y++)
+          wavelet_pixels[y*image->columns+x+low_pass]=0.25*p[y];
+      }
+      /*
+        Compute standard deviations for all intensities.
+      */
+      magnitude=5.0/0.8002*(1 << 6)*exp(-2.6*sqrt((double) level+1.0))/
+        exp(-2.6);
+      (void) ResetMagickMemory(standard_deviation,0,sizeof(standard_deviation));
+      (void) ResetMagickMemory(samples,0,sizeof(samples));
+      for (i=0; i < (ssize_t) number_pixels; i++)
       {
         double
-          *tmp;
+          sample_squared;
 
-        tmp=tmpBase;
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-        tmp+=(image->rows+image->columns)*omp_get_thread_num();
-#endif
-        hat_transform(tmp,interImage+lpass+x,(ssize_t) image->columns,
-          (ssize_t) image->rows,(ssize_t)(1 << lev));
-        for (y = 0; y < (ssize_t) image->rows; ++y)
-        {
-          interImage[lpass+y*image->columns+x]=tmp[y]*0.25;
-        }
-      }
-      thold=threshold*noise[lev];
-      for (i = 0; i < (ssize_t) size; ++i)
-      {
-        interImage[hpass+i]-=interImage[lpass+i];
-        if (interImage[hpass+i] < -thold)
-          interImage[hpass+i]+=thold;
-        else if (interImage[hpass+i] > thold)
-          interImage[hpass+i]-=thold;
+        wavelet_pixels[high_pass+i]-=wavelet_pixels[low_pass+i];
+        if ((wavelet_pixels[high_pass+i] > magnitude) &&
+            (wavelet_pixels[high_pass+i] < -magnitude))
+          continue;
+        sample_squared=wavelet_pixels[high_pass+i]*wavelet_pixels[high_pass+i];
+        if (wavelet_pixels[low_pass+i] > 0.8)
+          {
+            standard_deviation[4]+=sample_squared;
+            samples[4]++;
+          }
         else
-          interImage[hpass+i]=0;
-        if (hpass)
-          interImage[i]+=interImage[hpass+i];
+          if (wavelet_pixels[low_pass+i] > 0.6)
+            {
+              standard_deviation[3]+=sample_squared;
+              samples[3]++;
+            }
+          else
+            if (wavelet_pixels[low_pass+i] > 0.4)
+              {
+                standard_deviation[2]+=sample_squared;
+                samples[2]++;
+              }
+            else
+              if (wavelet_pixels[low_pass+i] > 0.2)
+                {
+                  standard_deviation[1]+=sample_squared;
+                  samples[1]++;
+                }
+              else
+                {
+                  standard_deviation[0]+=sample_squared;
+                  samples[0]++;
+                }
       }
-      hpass=lpass;
+      for (i=0; i < 5; ++i)
+        standard_deviation[i]=sqrt(standard_deviation[i]/(samples[i]+1));
+      /*
+        To threshold, each coefficient is compared to a threshold value and
+        attenuated / shrunk by some factor.
+      */
+      for (i=0; i < (ssize_t) number_pixels; ++i)
+      {
+        if (wavelet_pixels[low_pass+i] > 0.8)
+          magnitude=threshold*standard_deviation[4];
+        else
+         if (wavelet_pixels[low_pass+i] > 0.6)
+           magnitude=threshold*standard_deviation[3];
+         else
+           if (wavelet_pixels[low_pass+i] > 0.4)
+             magnitude=threshold*standard_deviation[2];
+           else
+             if (wavelet_pixels[low_pass+i] > 0.2)
+               magnitude=threshold*standard_deviation[1];
+             else
+               magnitude=threshold*standard_deviation[0];
+        if (wavelet_pixels[high_pass+i] < -magnitude)
+          wavelet_pixels[high_pass+i]+=magnitude-softness*magnitude;
+        else
+          if (wavelet_pixels[high_pass+i] > magnitude)
+            wavelet_pixels[high_pass+i]-=magnitude-softness*magnitude;
+          else
+            wavelet_pixels[high_pass+i]*=softness;
+        if (high_pass != 0)
+          wavelet_pixels[i]+=wavelet_pixels[high_pass+i];
+      }
+      high_pass=low_pass;
     }
-
-    /* copy out of interImage */
-    switch (channel)
+    /*
+      Reconstruct image from the thresholded wavelet coefficients.
+    */
+    i=0;
+    for (y=0; y < (ssize_t) image->rows; y++)
     {
-      case 0:
-        for (i = 0; i < (ssize_t) size; ++i)
-          SetPixelRed(noise_image,ClampToQuantum(interImage[i]+
-            interImage[i+lpass]),q+i*noise_image->number_channels);
-        break;
-      case 1:
-        for (i = 0; i < (ssize_t) size; ++i)
-          SetPixelGreen(noise_image,ClampToQuantum(interImage[i]+
-            interImage[i+lpass]),q+i*noise_image->number_channels);
-        break;
-      case 2:
-        for (i = 0; i < (ssize_t) size; ++i)
-          SetPixelBlue(noise_image,ClampToQuantum(interImage[i]+
-            interImage[i+lpass]),q+i*noise_image->number_channels);
-        break;
-    }
-  }
+      MagickBooleanType
+        sync;
 
+      register Quantum
+        *magick_restrict q;
+
+      register ssize_t
+        x;
+
+      q=GetCacheViewAuthenticPixels(noise_view,0,y,noise_image->columns,1,
+        exception);
+      if (q == (Quantum *) NULL)
+        {
+          status=MagickFalse;
+          break;
+        }
+      for (x=0; x < (ssize_t) image->columns; x++)
+      {
+        float
+          pixel;
+
+        pixel=wavelet_pixels[i]+wavelet_pixels[low_pass+i];
+        q[channel]=ClampToQuantum(pixel);
+        i++;
+        q+=GetPixelChannels(noise_image);
+      }
+      sync=SyncCacheViewAuthenticPixels(noise_view,exception);
+      if (sync == MagickFalse)
+        status=MagickFalse;
+    }
+    if (image->progress_monitor != (MagickProgressMonitor) NULL)
+      {
+        MagickBooleanType
+          proceed;
+
+        proceed=SetImageProgress(image,AddNoiseImageTag,(MagickOffsetType)
+          channel,GetPixelChannels(image));
+        if (proceed == MagickFalse)
+          status=MagickFalse;
+      }
+  }
   noise_view=DestroyCacheView(noise_view);
   image_view=DestroyCacheView(image_view);
-  interImage_info=RelinquishVirtualMemory(interImage_info);
-
+  coefficients=(double *) RelinquishMagickMemory(coefficients);
+  wavelet_pixels_info=RelinquishVirtualMemory(wavelet_pixels_info);
   return(noise_image);
 }

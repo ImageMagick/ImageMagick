@@ -560,7 +560,8 @@ static struct
       {"gravity", MagickGravityOptions}, {"offset", StringReference}, 
       {"dx", IntegerReference}, {"dy", IntegerReference} } },
     { "Color", { {"color", StringReference} } },
-    { "WaveletDenoise", { {"threshold", StringReference},
+    { "WaveletDenoise", {  {"geometry", StringReference},
+      {"threshold", RealReference}, {"softness", RealReference},
       {"channel", MagickChannelOptions} } },
   };
 
@@ -11327,15 +11328,18 @@ Mogrify(ref,...)
         }
         case 145:  /* WaveletDenoise */
         {
-          if (attribute_flag[0] == 0)
-            argument_list[0].string_reference="5%";
+          if (attribute_flag[0] != 0)
+            flags=ParseGeometry(argument_list[0].string_reference,
+              &geometry_info);
+          if (attribute_flag[1] != 0)
+            geometry_info.rho=argument_list[1].real_reference;
           if (attribute_flag[2] != 0)
-            channel=(ChannelType) argument_list[2].integer_reference;
-          flags=ParseGeometry(argument_list[0].string_reference,&geometry_info);
-          if ((flags & PercentValue) != 0)
-            geometry_info.rho*=(double) (QuantumRange/100.0);
+            geometry_info.sigma=argument_list[2].real_reference;
+          if (attribute_flag[3] != 0)
+            channel=(ChannelType) argument_list[3].integer_reference;
           channel_mask=SetImageChannelMask(image,channel);
-          image=WaveletDenoiseImage(image,geometry_info.rho,exception);
+          image=WaveletDenoiseImage(image,geometry_info.rho,geometry_info.sigma,
+            exception);
           if (image != (Image *) NULL)
             (void) SetImageChannelMask(image,channel_mask);
           break;

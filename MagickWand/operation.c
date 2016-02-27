@@ -3544,9 +3544,8 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           flags=ParseGeometry(arg1,&geometry_info);
           if ((flags & RhoValue) == 0)
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
-          if ((flags & PercentValue) != 0)
-            geometry_info.rho*=(double) (QuantumRange/100.0);
-          new_image=WaveletDenoiseImage(_image,geometry_info.rho,_exception);
+          new_image=WaveletDenoiseImage(_image,geometry_info.rho,
+            geometry_info.sigma,_exception);
           break;
         }
       if (LocaleCompare("white-threshold",option+1) == 0)

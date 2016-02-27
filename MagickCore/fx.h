@@ -64,7 +64,7 @@ extern MagickExport Image
     const ssize_t,ExceptionInfo *),
   *WaveImage(const Image *,const double,const double,
     const PixelInterpolateMethod,ExceptionInfo *),
-  *WaveletDenoiseImage(const Image *,const double,ExceptionInfo *);
+  *WaveletDenoiseImage(const Image *,const double,const double,ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
   PlasmaImage(Image *,const SegmentInfo *,size_t,size_t,ExceptionInfo *),
