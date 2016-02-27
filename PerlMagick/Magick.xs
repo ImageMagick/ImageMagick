@@ -11050,8 +11050,14 @@ Mogrify(ref,...)
         case 147:  /* WaveletDenoise */
         {
           if (attribute_flag[0] != 0)
-            flags=ParseGeometry(argument_list[0].string_reference,
-              &geometry_info);
+            {
+              flags=ParseGeometry(argument_list[0].string_reference,
+                &geometry_info);
+              if ((flags & PercentValue) != 0)
+                geometry_info.rho=QuantumRange*geometry_info.rho/100.0;
+              if ((flags & SigmaValue) == 0)
+                geometry_info.sigma=0.0;
+            }
           if (attribute_flag[1] != 0)
             geometry_info.rho=argument_list[1].real_reference;
           if (attribute_flag[2] != 0)

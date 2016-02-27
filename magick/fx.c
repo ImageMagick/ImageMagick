@@ -5777,6 +5777,10 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
     channel,
     max_channels;
 
+  static const double
+    noise_levels[]= {
+      0.8002, 0.2735, 0.1202, 0.0585, 0.0291, 0.0152, 0.0080, 0.0044 };
+
   /*
     Initialize noise image attributes.
   */
@@ -5879,15 +5883,11 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
     for (level=0; level < 5; level++)
     {
       double
-        magnitude,
-        standard_deviation[5];
+        magnitude;
 
       ssize_t
         x,
         y;
-
-      size_t
-        samples[5];
 
       low_pass=(size_t) (((level & 1)+1)*number_pixels);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -5933,71 +5933,13 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
           wavelet_pixels[y*image->columns+x+low_pass]=0.25*p[y];
       }
       /*
-        Compute standard deviations for all intensities.
-      */
-      magnitude=5.0/(1 << 6)*exp(-2.6*sqrt(level+1))*0.8002/exp(-2.6);
-      (void) ResetMagickMemory(standard_deviation,0,sizeof(standard_deviation));
-      (void) ResetMagickMemory(samples,0,sizeof(samples));
-      for (i=0; i < (ssize_t) number_pixels; i++)
-      {
-        double
-          sample_squared;
-
-        wavelet_pixels[high_pass+i]-=wavelet_pixels[low_pass+i];
-        if ((wavelet_pixels[high_pass+i] > magnitude) &&
-            (wavelet_pixels[high_pass+i] < -magnitude))
-          continue;
-        sample_squared=wavelet_pixels[high_pass+i]*wavelet_pixels[high_pass+i];
-        if (wavelet_pixels[low_pass+i] > 0.8)
-          {
-            standard_deviation[4]+=sample_squared;
-            samples[4]++;
-          }
-        else
-          if (wavelet_pixels[low_pass+i] > 0.6)
-            {
-              standard_deviation[3]+=sample_squared;
-              samples[3]++;
-            }
-          else
-            if (wavelet_pixels[low_pass+i] > 0.4)
-              {
-                standard_deviation[2]+=sample_squared;
-                samples[2]++;
-              }
-            else
-              if (wavelet_pixels[low_pass+i] > 0.2)
-                {
-                  standard_deviation[1]+=sample_squared;
-                  samples[1]++;
-                }
-              else
-                {
-                  standard_deviation[0]+=sample_squared;
-                  samples[0]++;
-                }
-      }
-      for (i=0; i < 5; ++i)
-        standard_deviation[i]=sqrt(standard_deviation[i]/(samples[i]+1));
-      /*
         To threshold, each coefficient is compared to a threshold value and
         attenuated / shrunk by some factor.
       */
+      magnitude=threshold*noise_levels[level];
       for (i=0; i < (ssize_t) number_pixels; ++i)
       {
-        if (wavelet_pixels[low_pass+i] > 0.8)
-          magnitude=threshold*standard_deviation[4];
-        else
-         if (wavelet_pixels[low_pass+i] > 0.6)
-           magnitude=threshold*standard_deviation[3];
-         else
-           if (wavelet_pixels[low_pass+i] > 0.4)
-             magnitude=threshold*standard_deviation[2];
-           else
-             if (wavelet_pixels[low_pass+i] > 0.2)
-               magnitude=threshold*standard_deviation[1];
-             else
-               magnitude=threshold*standard_deviation[0];
+        wavelet_pixels[high_pass+i]-=wavelet_pixels[low_pass+i];
         if (wavelet_pixels[high_pass+i] < -magnitude)
           wavelet_pixels[high_pass+i]+=magnitude-softness*magnitude;
         else
