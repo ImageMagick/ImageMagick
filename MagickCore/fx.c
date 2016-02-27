@@ -5811,7 +5811,7 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
   MemoryInfo
     *pixels_info;
 
-  size_t
+  ssize_t
     channel;
 
   static const double
@@ -5858,7 +5858,7 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
   number_pixels=image->columns*image->rows;
   image_view=AcquireAuthenticCacheView(image,exception);
   noise_view=AcquireAuthenticCacheView(noise_image,exception);
-  for (channel=0; channel < GetPixelChannels(image); channel++)
+  for (channel=0; channel < (ssize_t) GetPixelChannels(image); channel++)
   {
     register ssize_t
       i;
