@@ -561,7 +561,8 @@ static struct
       {"x", IntegerReference}, {"y", IntegerReference},
       {"gravity", MagickGravityOptions}, {"offset", StringReference},
       {"dx", IntegerReference}, {"dy", IntegerReference} } },
-    { "WaveletDenoise", { {"threshold", StringReference} } },
+    { "WaveletDenoise", {  {"geometry", StringReference},
+      {"threshold", RealReference}, {"softness", RealReference} } },
   };
 
 static SplayTreeInfo
@@ -11048,12 +11049,15 @@ Mogrify(ref,...)
         }
         case 147:  /* WaveletDenoise */
         {
-          if (attribute_flag[0] == 0)
-            argument_list[0].string_reference="50%";
-          flags=ParseGeometry(argument_list[0].string_reference,&geometry_info);
-          if ((flags & PercentValue) != 0)
-            geometry_info.rho*=(double) (QuantumRange/100.0);
-          image=WaveletDenoiseImage(image,geometry_info.rho,exception);
+          if (attribute_flag[0] != 0)
+            flags=ParseGeometry(argument_list[0].string_reference,
+              &geometry_info);
+          if (attribute_flag[1] != 0)
+            geometry_info.rho=argument_list[1].real_reference;
+          if (attribute_flag[2] != 0)
+            geometry_info.sigma=argument_list[2].real_reference;
+          image=WaveletDenoiseImage(image,geometry_info.rho,geometry_info.sigma,
+            exception);
           break;
         }
       }

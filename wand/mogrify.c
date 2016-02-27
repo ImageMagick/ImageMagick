@@ -3298,10 +3298,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             */
             (void) SyncImageSettings(mogrify_info,*image);
             flags=ParseGeometry(argv[i+1],&geometry_info);
-            if ((flags & PercentValue) != 0)
-              geometry_info.rho*=(double) (QuantumRange/100.0);
             mogrify_image=WaveletDenoiseImage(*image,geometry_info.rho,
-              exception);
+              geometry_info.sigma,exception);
             break;
           }
         if (LocaleCompare("weight",option+1) == 0)
