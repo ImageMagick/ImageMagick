@@ -5892,7 +5892,7 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
         }
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        wavelet_pixels[i]=(float) p[channel]; break;
+        wavelet_pixels[i]=(float) p[channel];
         i++;
         p+=GetPixelChannels(image);
       }
@@ -6053,6 +6053,9 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
       register ssize_t
         x;
 
+      ssize_t
+        offset;
+
       q=GetCacheViewAuthenticPixels(noise_view,0,y,noise_image->columns,1,
         exception);
       if (q == (Quantum *) NULL)
@@ -6060,13 +6063,15 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
           status=MagickFalse;
           break;
         }
+      offset=GetPixelChannelOffset(noise_image,GetPixelChannelChannel(image,
+        channel));
       for (x=0; x < (ssize_t) image->columns; x++)
       {
         float
           pixel;
 
         pixel=wavelet_pixels[i]+wavelet_pixels[low_pass+i];
-        q[channel]=ClampToQuantum(pixel);
+        q[offset]=ClampToQuantum(pixel);
         i++;
         q+=GetPixelChannels(noise_image);
       }
