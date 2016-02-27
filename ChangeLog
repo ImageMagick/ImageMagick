@@ -1,3 +1,6 @@
+2016-02-27  6.9.3-6 Cristy  <quetzlzacatenango@image...>
+  * New version 6.9.3-6, GIT revision 10593:a712582:20160227.
+
 2016-02-25  6.9.3-6 Cristy  <quetzlzacatenango@image...>
   * Ensure TXT: image format survives round-trip (reference
     https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=29206).
