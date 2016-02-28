@@ -5764,8 +5764,8 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
 %
 */
 
-static inline void HatTransform(const float *restrict pixels,const size_t width,
-  const size_t height,const size_t radius,double *kernel)
+static inline void HatTransform(const float *magick_restrict pixels,
+  const size_t width,const size_t height,const size_t radius,double *kernel)
 {
   register ssize_t
     i;
