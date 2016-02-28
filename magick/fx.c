@@ -5973,10 +5973,10 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
       noise_indexes=GetCacheViewAuthenticIndexQueue(noise_view);
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        float
+        MagickRealType
           pixel;
 
-        pixel=pixels[i]+pixels[low_pass+i];
+        pixel=(MagickRealType) pixels[i]+pixels[low_pass+i];
         switch (channel)
         {
           case 0: SetPixelRed(q,ClampToQuantum(pixel)); break;
