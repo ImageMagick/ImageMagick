@@ -5999,10 +5999,10 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
         channel));
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        float
+        MagickRealType
           pixel;
 
-        pixel=pixels[i]+pixels[low_pass+i];
+        pixel=(MagickRealType) pixels[i]+pixels[low_pass+i];
         q[offset]=ClampToQuantum(pixel);
         i++;
         q+=GetPixelChannels(noise_image);
