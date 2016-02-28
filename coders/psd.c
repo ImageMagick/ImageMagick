@@ -2806,10 +2806,10 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
   layer_count=0;
   layer_info_size=2;
   base_image=GetNextImageInList(image);
-  if ((image->alpha_trait != UndefinedPixelTrait) && (base_image == (Image *) NULL))
+  if (base_image == (Image *) NULL)
     base_image=image;
   next_image=base_image;
-  while ( next_image != NULL )
+  while (next_image != (Image *) NULL)
   {
     packet_size=next_image->depth > 8 ? 2UL : 1UL;
     if (IsImageGray(next_image) != MagickFalse)
