@@ -6007,5 +6007,7 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
   image_view=DestroyCacheView(image_view);
   kernel=(double *) RelinquishMagickMemory(kernel);
   pixels_info=RelinquishVirtualMemory(pixels_info);
+  if (status == MagickFalse)
+    noise_image=DestroyImage(noise_image);
   return(noise_image);
 }
