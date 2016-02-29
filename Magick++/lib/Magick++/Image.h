@@ -1529,7 +1529,7 @@ namespace Magick
     void wave(const double amplitude_=25.0,const double wavelength_=150.0);
 
     // Removes noise from the image using a wavelet transform.
-    void waveletDenoise(const double threshold_);
+    void waveletDenoise(const double threshold_,const double softness_);
 
     // Forces all pixels above the threshold into white while leaving all
     // pixels at or below the threshold unchanged.
