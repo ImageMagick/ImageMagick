@@ -1560,7 +1560,7 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
 
           weight=ParseCommandOption(MagickWeightOptions,MagickFalse,arg1);
           if (weight == -1)
-            weight=StringToUnsignedLong(arg1);
+            weight=(ssize_t) StringToUnsignedLong(arg1);
           _draw_info->weight=(size_t) weight;
           break;
         }
@@ -3536,7 +3536,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           if ((flags & SigmaValue) == 0)
             geometry_info.sigma=1.0;
           new_image=WaveImage(_image,geometry_info.rho,geometry_info.sigma,
-               _image->interpolate,_exception);
+            _image->interpolate,_exception);
           break;
         }
       if (LocaleCompare("wavelet-denoise",option+1) == 0)
@@ -3545,7 +3545,10 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           if ((flags & RhoValue) == 0)
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           if ((flags & PercentValue) != 0)
-            geometry_info.rho=(double) QuantumRange*geometry_info.rho/100.0;
+            {
+              geometry_info.rho=QuantumRange*geometry_info.rho/100.0;
+              geometry_info.sigma=QuantumRange*geometry_info.sigma/100.0;
+            }
           if ((flags & SigmaValue) == 0)
             geometry_info.sigma=0.0;
           new_image=WaveletDenoiseImage(_image,geometry_info.rho,

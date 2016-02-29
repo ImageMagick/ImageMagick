@@ -11333,7 +11333,10 @@ Mogrify(ref,...)
               flags=ParseGeometry(argument_list[0].string_reference,
                 &geometry_info);
               if ((flags & PercentValue) != 0)
-                geometry_info.rho=QuantumRange*geometry_info.rho/100.0;
+                {
+                  geometry_info.rho=QuantumRange*geometry_info.rho/100.0;
+                  geometry_info.sigma=QuantumRange*geometry_info.sigma/100.0;
+                }
               if ((flags & SigmaValue) == 0)
                 geometry_info.sigma=0.0;
             }
