@@ -1717,6 +1717,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
     }
   metrics->width-=metrics->bounds.x1/64.0;
   metrics->width+=annotate_info->stroke_width;
+  metrics->width+=metrics.max_advance/8;
   metrics->bounds.x1/=64.0;
   metrics->bounds.y1/=64.0;
   metrics->bounds.x2/=64.0;
