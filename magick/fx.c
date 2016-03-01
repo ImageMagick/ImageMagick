@@ -5727,7 +5727,7 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
 */
 
 static inline void HatTransform(const float *magick_restrict pixels,
-  const size_t stride,const size_t size,const size_t scale,double *kernel)
+  const size_t stride,const size_t size,const size_t scale,float *kernel)
 {
   const float
     *restrict p = pixels,
@@ -5767,10 +5767,8 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
     *image_view,
     *noise_view;
 
-  double
-    *kernel;
-
   float
+    *kernel,
     *pixels;
 
   Image
@@ -5791,9 +5789,9 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
   ssize_t
     channel;
 
-  static const double
+  static const float
     noise_levels[]= {
-      0.8002, 0.2735, 0.1202, 0.0585, 0.0291, 0.0152, 0.0080, 0.0044 };
+      0.8002f, 0.2735f, 0.1202f, 0.0585f, 0.0291f, 0.0152f, 0.0080f, 0.0044f };
 
   /*
     Initialize noise image attributes.
@@ -5820,12 +5818,12 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
   pixels_info=AcquireVirtualMemory(3*image->columns,image->rows*
     sizeof(*pixels));
-  kernel=(double *) AcquireQuantumMemory(MagickMax(image->rows,image->columns),
+  kernel=(float *) AcquireQuantumMemory(MagickMax(image->rows,image->columns),
     GetOpenMPMaximumThreads()*sizeof(*kernel));
-  if ((pixels_info == (MemoryInfo *) NULL) || (kernel == (double *) NULL))
+  if ((pixels_info == (MemoryInfo *) NULL) || (kernel == (float *) NULL))
     {
-      if (kernel != (double *) NULL)
-        kernel=(double *) RelinquishMagickMemory(kernel);
+      if (kernel != (float *) NULL)
+        kernel=(float *) RelinquishMagickMemory(kernel);
       if (pixels_info != (MemoryInfo *) NULL)
         pixels_info=RelinquishVirtualMemory(pixels_info);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
@@ -5898,11 +5896,15 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
       double
         magnitude;
 
+      register float
+        *p,
+        *q;
+
       ssize_t
         x,
         y;
 
-      low_pass=(size_t) (((level & 1)+1)*number_pixels);
+      low_pass=(size_t) (number_pixels*((level & 0x01)+1));
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,1) \
         magick_threads(image,image,image->rows,1)
@@ -5915,10 +5917,12 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
         register ssize_t
           x;
 
-        HatTransform(pixels+y*image->columns+high_pass,1,image->columns,
-          1UL << level,kernel+id*image->columns);
+        p=kernel+id*image->columns;
+        q=pixels+y*image->columns;
+        HatTransform(q+high_pass,1,image->columns,1UL << level,p);
+        q+=low_pass;
         for (x=0; x < (ssize_t) image->columns; x++)
-          pixels[y*image->columns+x+low_pass]=kernel[id*image->columns+x];
+          *q++=(*p++);
       }
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,1) \
@@ -5932,10 +5936,14 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
         register ssize_t
           y;
 
-        HatTransform(pixels+x+low_pass,image->columns,image->rows,1UL << level,
-          kernel+id*image->rows);
+        p=kernel+id*image->rows;
+        q=pixels+x+low_pass;
+        HatTransform(q,image->columns,image->rows,1UL << level,p);
         for (y=0; y < (ssize_t) image->rows; y++)
-          pixels[y*image->columns+x+low_pass]=kernel[id*image->rows+y];
+        {
+          *q=(*p++);
+          q+=image->columns;
+        }
       }
       /*
         To threshold, each coefficient is compared to a threshold value and
@@ -6017,7 +6025,7 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
   }
   noise_view=DestroyCacheView(noise_view);
   image_view=DestroyCacheView(image_view);
-  kernel=(double *) RelinquishMagickMemory(kernel);
+  kernel=(float *) RelinquishMagickMemory(kernel);
   pixels_info=RelinquishVirtualMemory(pixels_info);
   if (status == MagickFalse)
     noise_image=DestroyImage(noise_image);
