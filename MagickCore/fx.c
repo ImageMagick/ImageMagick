@@ -5765,25 +5765,37 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
 */
 
 static inline void HatTransform(const float *magick_restrict pixels,
-  const size_t width,const size_t height,const size_t radius,double *kernel)
+  const size_t stride,const size_t size,const size_t scale,double *kernel)
 {
+  const float
+    *restrict p = pixels,
+    *restrict q = pixels+scale*stride,
+    *restrict r = pixels+scale*stride;
+
   register ssize_t
     i;
 
-  /*
-    Lowpass filter outputs are called approximation kernel & highigh_pass
-    filters are referred to as detail kernel.  The detail kernel
-    have high values in the noisy parts of the signal.
-  */
-  for (i=0; i < (ssize_t) radius; i++)
-    kernel[i]=2.0*pixels[width*i]+pixels[width*(radius-i)]+
-      pixels[width*(i+radius)];
-  for ( ; (i+radius) < (ssize_t) height; i++)
-    kernel[i]=2.0*pixels[width*i]+pixels[width*(i-radius)]+
-      pixels[width*(i+radius)];
-  for ( ; i < (ssize_t) height; i++)
-    kernel[i]=2.0*pixels[width*i]+pixels[width*(i-radius)]+
-      pixels[width*(2*height-2-(i+radius))];
+  for (i=0; i < (ssize_t) scale; i++)
+  {
+    kernel[i]=0.25f*(*p+*p+*q+*r);
+    p+=stride;
+    q-=stride;
+    r+=stride;
+  }
+  for ( ; i < (ssize_t) (size-scale); i++)
+  {
+    kernel[i]=0.25f*(2.0f**p+*(p-scale*stride)+*(p+scale*stride));
+    p+=stride;
+  }
+  q=p-scale*stride;
+  r=pixels+stride*(size-2);
+  for ( ; i < (ssize_t) size; i++)
+  {
+    kernel[i]=0.25f*(*p+*p+*q+*r);
+    p+=stride;
+    q+=stride;
+    r-=stride;
+  }
 }
 
 MagickExport Image *WaveletDenoiseImage(const Image *image,
@@ -5931,7 +5943,7 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
         HatTransform(pixels+y*image->columns+high_pass,1,image->columns,
           1UL << level,kernel+id*image->columns);
         for (x=0; x < (ssize_t) image->columns; x++)
-          pixels[y*image->columns+x+low_pass]=0.25*kernel[id*image->columns+x];
+          pixels[y*image->columns+x+low_pass]=kernel[id*image->columns+x];
       }
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,1) \
@@ -5948,7 +5960,7 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
         HatTransform(pixels+x+low_pass,image->columns,image->rows,1UL << level,
           kernel+id*image->rows);
         for (y=0; y < (ssize_t) image->rows; y++)
-          pixels[y*image->columns+x+low_pass]=0.25*kernel[id*image->rows+y];
+          pixels[y*image->columns+x+low_pass]=kernel[id*image->rows+y];
       }
       /*
         To threshold, each coefficient is compared to a threshold value and
