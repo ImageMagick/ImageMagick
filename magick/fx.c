@@ -5935,8 +5935,8 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
           difference;
 
         difference=pixels[low_pass]-pixels[high_pass];
-        pixels[i]+=copysignf(fmaxf(fabsf(difference)-magnitude,0.0f),
-          difference);
+        pixels[i]+=copysignf(fmaxf(fabsf(difference)-magnitude-
+          softness*magnitude,0.0f),difference);
       }
     }
     /*
