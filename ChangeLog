@@ -1,3 +1,7 @@
+2016-02-29  6.9.3-7 Cristy  <quetzlzacatenango@image...>
+  * Fixed text alignment issue for label: / coder: (reference
+    https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=29223).
+
 2016-02-27  6.9.3-6 Cristy  <quetzlzacatenango@image...>
   * New version 6.9.3-6, GIT revision 10597:83584a1:20160228.
 
