@@ -5765,7 +5765,7 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
 */
 
 static inline void HatTransform(const float *magick_restrict pixels,
-  const size_t stride,const size_t size,const size_t scale,double *kernel)
+  const size_t stride,const size_t size,const size_t scale,float *kernel)
 {
   const float
     *restrict p,
@@ -5808,10 +5808,8 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
     *image_view,
     *noise_view;
 
-  double
-    *kernel;
-
   float
+    *kernel,
     *pixels;
 
   Image
@@ -5858,12 +5856,12 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
   pixels_info=AcquireVirtualMemory(3*image->columns,image->rows*
     sizeof(*pixels));
-  kernel=(double *) AcquireQuantumMemory(MagickMax(image->rows,image->columns),
+  kernel=(float *) AcquireQuantumMemory(MagickMax(image->rows,image->columns),
     GetOpenMPMaximumThreads()*sizeof(*kernel));
-  if ((pixels_info == (MemoryInfo *) NULL) || (kernel == (double *) NULL))
+  if ((pixels_info == (MemoryInfo *) NULL) || (kernel == (float *) NULL))
     {
-      if (kernel != (double *) NULL)
-        kernel=(double *) RelinquishMagickMemory(kernel);
+      if (kernel != (float *) NULL)
+        kernel=(float *) RelinquishMagickMemory(kernel);
       if (pixels_info != (MemoryInfo *) NULL)
         pixels_info=RelinquishVirtualMemory(pixels_info);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
@@ -6039,7 +6037,7 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
   }
   noise_view=DestroyCacheView(noise_view);
   image_view=DestroyCacheView(image_view);
-  kernel=(double *) RelinquishMagickMemory(kernel);
+  kernel=(float *) RelinquishMagickMemory(kernel);
   pixels_info=RelinquishVirtualMemory(pixels_info);
   if (status == MagickFalse)
     noise_image=DestroyImage(noise_image);
