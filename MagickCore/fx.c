@@ -5768,13 +5768,16 @@ static inline void HatTransform(const float *magick_restrict pixels,
   const size_t stride,const size_t size,const size_t scale,float *kernel)
 {
   const float
-    *restrict p = pixels,
-    *restrict q = pixels+scale*stride,
-    *restrict r = pixels+scale*stride;
+    *restrict p,
+    *restrict q,
+    *restrict r;
 
   register ssize_t
     i;
 
+  p=pixels;
+  q=pixels+scale*stride;
+  r=pixels+scale*stride;
   for (i=0; i < (ssize_t) scale; i++)
   {
     kernel[i]=0.25f*(*p+*p+*q+*r);
