@@ -5765,7 +5765,7 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
 */
 
 static inline void HatTransform(const float *magick_restrict pixels,
-  const size_t stride,const size_t size,const size_t scale,float *kernel)
+  const size_t stride,const size_t size,const size_t scale,double *kernel)
 {
   const float
     *restrict p,
@@ -5807,6 +5807,9 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
   CacheView
     *image_view,
     *noise_view;
+
+  double
+    *kernel;
 
   float
     *pixels;
@@ -5855,8 +5858,16 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
   pixels_info=AcquireVirtualMemory(3*image->columns,image->rows*
     sizeof(*pixels));
-  if (pixels_info == (MemoryInfo *) NULL)
-    ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+  kernel=(double *) AcquireQuantumMemory(MagickMax(image->rows,image->columns),
+    GetOpenMPMaximumThreads()*sizeof(*kernel));
+  if ((pixels_info == (MemoryInfo *) NULL) || (kernel == (double *) NULL))
+    {
+      if (kernel != (double *) NULL)
+        kernel=(double *) RelinquishMagickMemory(kernel);
+      if (pixels_info != (MemoryInfo *) NULL)
+        pixels_info=RelinquishVirtualMemory(pixels_info);
+      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+    }
   pixels=(float *) GetVirtualMemoryBlob(pixels_info);
   status=MagickTrue;
   number_pixels=image->columns*image->rows;
@@ -5868,6 +5879,7 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
       i;
 
     size_t
+      high_pass,
       low_pass;
 
     ssize_t
@@ -5908,64 +5920,70 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
       filters are referred to as detail kernel. The detail kernel
       have high values in the noisy parts of the signal.
     */
-    low_pass=0;
+    high_pass=0;
     for (level=0; level < 5; level++)
     {
-      float
+      double
         magnitude;
-
-      register ssize_t
-        i;
-
-      size_t
-        pass,
-        high_pass;
 
       ssize_t
         x,
         y;
 
-      /*
-        Filter horizontally and transpose.
-      */
-      low_pass=(size_t) number_pixels*(2*(level & 0x01)+1),
-      pass=2*(size_t) number_pixels,
-      high_pass=4*(size_t) number_pixels-low_pass;
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static,1) \
-        magick_threads(image,image,image->columns,1)
-#endif
-      for (x=0; x < (ssize_t) image->columns; x++)
-        HatTransform(pixels+pass+x*image->rows,image->columns,image->rows,
-          (size_t) (1 << level),pixels+low_pass+x);
-      /*
-        Filter vertically and transpose.
-      */
+      low_pass=(size_t) (((level & 1)+1)*number_pixels);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,1) \
         magick_threads(image,image,image->rows,1)
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
-        HatTransform(pixels+high_pass+y*image->columns,image->rows,
-          image->columns,(size_t) (1 << level),pixels+pass+y);
+      {
+        const int
+          id = GetOpenMPThreadId();
+
+        register ssize_t
+          x;
+
+        HatTransform(pixels+y*image->columns+high_pass,1,image->columns,
+          (size_t) (1 << level),kernel+id*image->columns);
+        for (x=0; x < (ssize_t) image->columns; x++)
+          pixels[y*image->columns+x+low_pass]=kernel[id*image->columns+x];
+      }
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+      #pragma omp parallel for schedule(static,1) \
+        magick_threads(image,image,image->columns,1)
+#endif
+      for (x=0; x < (ssize_t) image->columns; x++)
+      {
+        const int
+          id = GetOpenMPThreadId();
+
+        register ssize_t
+          y;
+
+        HatTransform(pixels+x+low_pass,image->columns,image->rows,(size_t)
+          (1 << level),kernel+id*image->rows);
+        for (y=0; y < (ssize_t) image->rows; y++)
+          pixels[y*image->columns+x+low_pass]=kernel[id*image->rows+y];
+      }
       /*
         To threshold, each coefficient is compared to a threshold value and
         attenuated / shrunk by some factor.
       */
       magnitude=threshold*noise_levels[level];
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static,1) \
-        magick_threads(image,image,image->columns,1)
-#endif
-      for (i=0; i < (ssize_t) number_pixels; i++)
+      for (i=0; i < (ssize_t) number_pixels; ++i)
       {
-        float
-          difference;
-
-        difference=pixels[low_pass]-pixels[high_pass];
-        pixels[i]+=copysignf(fmaxf(fabsf(difference)-magnitude-
-          softness*magnitude,0.0f),difference);
+        pixels[high_pass+i]-=pixels[low_pass+i];
+        if (pixels[high_pass+i] < -magnitude)
+          pixels[high_pass+i]+=magnitude-softness*magnitude;
+        else
+          if (pixels[high_pass+i] > magnitude)
+            pixels[high_pass+i]-=magnitude-softness*magnitude;
+          else
+            pixels[high_pass+i]*=softness;
+        if (high_pass != 0)
+          pixels[i]+=pixels[high_pass+i];
       }
+      high_pass=low_pass;
     }
     /*
       Reconstruct image from the thresholded wavelet kernel.
@@ -6021,6 +6039,7 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
   }
   noise_view=DestroyCacheView(noise_view);
   image_view=DestroyCacheView(image_view);
+  kernel=(double *) RelinquishMagickMemory(kernel);
   pixels_info=RelinquishVirtualMemory(pixels_info);
   if (status == MagickFalse)
     noise_image=DestroyImage(noise_image);
