@@ -7735,8 +7735,9 @@ MagickExport Image *AccelerateLocalContrastImage(
 }
 
 MagickExport MagickBooleanType AccelerateModulateImage(
-  Image *magick_unused(image),double magick_unused(percent_brightness),
-  double magick_unused(percent_hue),double magick_unused(percent_saturation),
+  Image *magick_unused(image),const double magick_unused(percent_brightness),
+  const double magick_unused(percent_hue),
+  const double magick_unused(percent_saturation),
   ColorspaceType magick_unused(colorspace),
   ExceptionInfo *magick_unused(exception))
 {

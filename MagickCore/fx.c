@@ -5937,7 +5937,7 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
 #endif
       for (x=0; x < (ssize_t) image->columns; x++)
         HatTransform(pixels+pass+x*image->rows,image->columns,image->rows,
-          1UL << level,pixels+low_pass+x);
+          (size_t) (1 << level),pixels+low_pass+x);
       /*
         Filter vertically and transpose.
       */
@@ -5947,7 +5947,7 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
         HatTransform(pixels+high_pass+y*image->columns,image->rows,
-          image->columns,1UL << level,pixels+pass+y);
+          image->columns,(size_t) (1 << level),pixels+pass+y);
       /*
         To threshold, each coefficient is compared to a threshold value and
         attenuated / shrunk by some factor.

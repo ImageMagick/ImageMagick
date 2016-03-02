@@ -53,9 +53,9 @@ extern MagickExport MagickBooleanType
   AccelerateEqualizeImage(Image *,ExceptionInfo *),
   AccelerateFunctionImage(Image *,const MagickFunction,const size_t,
     const double *,ExceptionInfo *),
-  AccelerateGrayscaleImage(Image*,const PixelIntensityMethod,
+  AccelerateGrayscaleImage(Image *,const PixelIntensityMethod,
     ExceptionInfo *),
-  AccelerateModulateImage(Image*,const double,const double,const double,
+  AccelerateModulateImage(Image *,const double,const double,const double,
     const ColorspaceType, ExceptionInfo*),
   AccelerateRandomImage(Image*,ExceptionInfo*);
 
