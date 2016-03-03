@@ -1136,8 +1136,8 @@ cleanup:
             FT_Vector
               kerning;
 
-            ft_status=FT_Get_Kerning(face,last_glyph,(*grapheme)[i].index,
-              ft_kerning_default,&kerning);
+            ft_status=FT_Get_Kerning(face,(FT_UInt) last_glyph,(FT_UInt)
+              (*grapheme)[i].index,ft_kerning_default,&kerning);
             if (ft_status == 0)
               (*grapheme)[i-1].x_advance+=(FT_Pos) ((draw_info->direction ==
                 RightToLeftDirection ? -1.0 : 1.0)*kerning.x);
