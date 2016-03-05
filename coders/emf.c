@@ -500,14 +500,10 @@ static Image *ReadEMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   if (image_info->size != (char *) NULL)
     {
-      ssize_t
-        x;
-
       image->columns=width;
       image->rows=height;
-      x=0;
-      y=0;
-      (void) GetGeometry(image_info->size,&x,&y,&image->columns,&image->rows);
+      (void) GetGeometry(image_info->size,(ssize_t *) NULL,(ssize_t *) NULL,
+        &image->columns,&image->rows);
     }
   status=SetImageExtent(image,image->columns,image->rows);
   if (status == MagickFalse)
