@@ -722,7 +722,10 @@ static Image *ReadEMFImage(const ImageInfo *image_info,
   image->y_resolution=source->GetVerticalResolution();
   if (image_info->size != (char *) NULL)
     {
-      (void) GetGeometry(image_info->size,&x,&y,&image->columns,&image->rows);
+      ssize_t
+        v;
+
+      (void) GetGeometry(image_info->size,&v,&v,&image->columns,&image->rows);
 
       image->x_resolution=source->GetHorizontalResolution()*image->columns/
         source->GetWidth();
