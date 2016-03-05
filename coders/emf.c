@@ -645,6 +645,9 @@ static Image *ReadEMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
 static inline void EMFSetDimensions(Image * image,Gdiplus::Image *source)
 {
+  if ((image->x_resolution <= 0.0) || (image->y_resolution <= 0.0))
+    return;
+
   image->columns=(size_t) floor((Gdiplus::REAL) source->GetWidth()/
     source->GetHorizontalResolution()*image->x_resolution+0.5);
   image->rows=(size_t)floor((Gdiplus::REAL) source->GetHeight()/
@@ -720,13 +723,12 @@ static Image *ReadEMFImage(const ImageInfo *image_info,
 
   image->x_resolution=source->GetHorizontalResolution();
   image->y_resolution=source->GetVerticalResolution();
+  image->columns=(size_t) source->GetWidth();
+  image->rows=(size_t) source->GetHeight();
   if (image_info->size != (char *) NULL)
     {
-      ssize_t
-        v;
-
-      (void) GetGeometry(image_info->size,&v,&v,&image->columns,&image->rows);
-
+      (void) GetGeometry(image_info->size,(ssize_t *) NULL,(ssize_t *) NULL,
+        &image->columns,&image->rows);
       image->x_resolution=source->GetHorizontalResolution()*image->columns/
         source->GetWidth();
       image->y_resolution=source->GetVerticalResolution()*image->rows/
@@ -738,23 +740,16 @@ static Image *ReadEMFImage(const ImageInfo *image_info,
       else
         image->x_resolution=image->y_resolution=MagickMin(
           image->x_resolution,image->y_resolution);
-
       EMFSetDimensions(image,source);
     }
-  else
+  else if (image_info->density != (char *) NULL)
     {
-      image->columns=(size_t) source->GetWidth();
-      image->rows=(size_t) source->GetHeight();
-      if (image_info->density != (char *) NULL)
-        {
-          flags=ParseGeometry(image_info->density,&geometry_info);
-          image->x_resolution=geometry_info.rho;
-          image->y_resolution=geometry_info.sigma;
-          if ((flags & SigmaValue) == 0)
-            image->y_resolution=image->x_resolution;
-          if ((image->x_resolution > 0.0) && (image->y_resolution > 0.0))
-            EMFSetDimensions(image, source);
-        }
+      flags=ParseGeometry(image_info->density,&geometry_info);
+      image->x_resolution=geometry_info.rho;
+      image->y_resolution=geometry_info.sigma;
+      if ((flags & SigmaValue) == 0)
+        image->y_resolution=image->x_resolution;
+      EMFSetDimensions(image,source);
     }
   if (SetImageExtent(image,image->columns,image->rows) == MagickFalse)
     {

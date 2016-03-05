@@ -223,10 +223,13 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,
             Parse width.
           */
           q=p;
-          if (LocaleNCompare(p,"0x",2) == 0)
-            *width=(size_t) strtol(p,&p,10);
-          else
-            *width=(size_t) floor(StringToDouble(p,&p)+0.5);
+          if (width != (size_t *) NULL)
+            {
+              if (LocaleNCompare(p,"0x",2) == 0)
+                *width=(size_t) strtol(p,&p,10);
+              else
+                *width=(size_t) floor(StringToDouble(p,&p)+0.5);
+            }
           if (p != q)
             flags|=WidthValue;
         }
@@ -243,7 +246,8 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,
                 Parse height.
               */
               q=p;
-              *height=(size_t) floor(StringToDouble(p,&p)+0.5);
+              if (height != (size_t *) NULL)
+                *height=(size_t) floor(StringToDouble(p,&p)+0.5);
               if (p != q)
                 flags|=HeightValue;
             }
@@ -261,11 +265,12 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,
         p++;
       }
       q=p;
-      *x=(ssize_t) ceil(StringToDouble(p,&p)-0.5);
+      if (x != (ssize_t *) NULL)
+        *x=(ssize_t) ceil(StringToDouble(p,&p)-0.5);
       if (p != q)
         {
           flags|=XValue;
-          if ((flags & XNegative) != 0)
+          if (((flags & XNegative) != 0) && (x != (ssize_t *) NULL))
             *x=(-*x);
         }
     }
@@ -281,11 +286,12 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,
         p++;
       }
       q=p;
-      *y=(ssize_t) ceil(StringToDouble(p,&p)-0.5);
+      if (y != (ssize_t *) NULL)
+        *y=(ssize_t) ceil(StringToDouble(p,&p)-0.5);
       if (p != q)
         {
           flags|=YValue;
-          if ((flags & YNegative) != 0)
+          if (((flags & YNegative) != 0) && (y != (ssize_t *) NULL))
             *y=(-*y);
         }
     }
@@ -293,11 +299,13 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,
     {
       if (((flags & SeparatorValue) == 0) && ((flags & HeightValue) == 0))
         {
-          *height=(*width);
+          if ((height != (size_t *) NULL) && (width != (size_t *) NULL))
+            *height=(*width);
           flags|=HeightValue;
         }
-      if (((flags & SeparatorValue) != 0) && ((flags & WidthValue) == 0))
-        *width=(*height);
+      if (((flags & SeparatorValue) != 0) && ((flags & WidthValue) == 0) &&
+          (height != (size_t *) NULL) && (width != (size_t *) NULL))
+            *width=(*height);
     }
 #if 0
   /*
