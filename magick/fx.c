@@ -5730,9 +5730,9 @@ static inline void HatTransform(const float *magick_restrict pixels,
   const size_t stride,const size_t extent,const size_t scale,float *kernel)
 {
   const float
-    *restrict p,
-    *restrict q,
-    *restrict r;
+    *magick_restrict p,
+    *magick_restrict q,
+    *magick_restrict r;
 
   register ssize_t
     i;
