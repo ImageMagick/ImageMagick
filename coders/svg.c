@@ -2910,9 +2910,6 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         GError
           *error;
 
-        ssize_t
-          y;
-
         PixelInfo
           fill_color;
 
@@ -2924,6 +2921,9 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
         RsvgHandle
           *svg_handle;
+
+        ssize_t
+          y;
 
         svg_handle=rsvg_handle_new();
         if (svg_handle == (RsvgHandle *) NULL)
@@ -2945,8 +2945,14 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           g_error_free(error);
 #if defined(MAGICKCORE_CAIRO_DELEGATE)
         rsvg_handle_get_dimensions(svg_handle,&dimension_info);
-        if ((image->columns != 0) || (image->rows != 0))
+        if (image_info->size != (char *) NULL)
           {
+            ssize_t
+              v;
+
+            (void) GetGeometry(image_info->size,&v,&v,&image->columns,
+              &image->rows);
+
             image->resolution.x=90.0*image->columns/dimension_info.width;
             image->resolution.y=90.0*image->rows/dimension_info.height;
             if (image->resolution.x == 0)
