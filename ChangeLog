@@ -1,3 +1,7 @@
+2016-03-05  6.9.3-7 Dirk Lemstra <dirk@lem.....org>
+  * -size can now be used the specify the maximum width/height of an SVG image
+    when librsvg and cairo are being used.
+
 2016-02-29  6.9.3-7 Cristy  <quetzlzacatenango@image...>
   * Fixed text alignment issue for label: / coder: (reference
     https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=29223).

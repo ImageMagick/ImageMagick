@@ -2953,6 +2953,18 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           g_error_free(error);
 #if defined(MAGICKCORE_CAIRO_DELEGATE)
         rsvg_handle_get_dimensions(svg_handle,&dimension_info);
+        if ((image->columns != 0) || (image->rows != 0))
+          {
+            image->x_resolution=90.0*image->columns/dimension_info.width;
+            image->y_resolution=90.0*image->rows/dimension_info.height;
+            if (image->x_resolution == 0)
+              image->x_resolution=image->y_resolution;
+            else if (image->y_resolution == 0)
+              image->y_resolution=image->x_resolution;
+            else
+              image->x_resolution=image->y_resolution=MagickMin(
+                image->x_resolution,image->y_resolution);
+          }
         image->columns=image->x_resolution*dimension_info.width/90.0;
         image->rows=image->y_resolution*dimension_info.height/90.0;
         pixel_info=(MemoryInfo *) NULL;
