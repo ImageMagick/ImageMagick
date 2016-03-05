@@ -639,6 +639,15 @@ static Image *ReadEMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   return(GetFirstImageInList(image));
 }
 #  else
+
+static inline void EMFSetDimensions(Image * image,Gdiplus::Image *source)
+{
+  image->columns=(size_t) floor((Gdiplus::REAL) source->GetWidth()/
+    source->GetHorizontalResolution()*image->resolution.x+0.5);
+  image->rows=(size_t)floor((Gdiplus::REAL) source->GetHeight()/
+    source->GetVerticalResolution()*image->resolution.y+0.5);
+}
+
 static Image *ReadEMFImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
@@ -708,22 +717,51 @@ static Image *ReadEMFImage(const ImageInfo *image_info,
 
   image->resolution.x=source->GetHorizontalResolution();
   image->resolution.y=source->GetVerticalResolution();
-  image->columns=(size_t) source->GetWidth();
-  image->rows=(size_t) source->GetHeight();
-  if (image_info->density != (char *) NULL)
+  if (image_info->size != (char *) NULL)
     {
-      flags=ParseGeometry(image_info->density,&geometry_info);
-      image->resolution.x=geometry_info.rho;
-      image->resolution.y=geometry_info.sigma;
-      if ((flags & SigmaValue) == 0)
+      (void) GetGeometry(image_info->size,&x,&y,&image->columns,&image->rows);
+
+      image->resolution.x=source->GetHorizontalResolution()*image->columns/
+        source->GetWidth();
+      image->resolution.y=source->GetVerticalResolution()*image->rows/
+        source->GetHeight();
+      if (image->resolution.x == 0)
+        image->resolution.x=image->resolution.y;
+      else if (image->resolution.y == 0)
         image->resolution.y=image->resolution.x;
-      if ((image->resolution.x > 0.0) && (image->resolution.y > 0.0))
+      else
+        image->resolution.x=image->resolution.y=MagickMin(
+          image->resolution.x,image->resolution.y);
+
+      EMFSetDimensions(image,source);
+    }
+  else
+    {
+      image->columns=(size_t) source->GetWidth();
+      image->rows=(size_t) source->GetHeight();
+      if (image_info->density != (char *) NULL)
         {
-          image->columns=(size_t) floor((Gdiplus::REAL) source->GetWidth() /
-            source->GetHorizontalResolution() * image->resolution.x + 0.5);
-          image->rows=(size_t)floor((Gdiplus::REAL) source->GetHeight() /
-            source->GetVerticalResolution() * image->resolution.y + 0.5);
-        }
+          flags=ParseGeometry(image_info->density,&geometry_info);
+          image->resolution.x=geometry_info.rho;
+          image->resolution.y=geometry_info.sigma;
+          if ((flags & SigmaValue) == 0)
+            image->resolution.y=image->resolution.x;
+          if ((image->resolution.x > 0.0) && (image->resolution.y > 0.0))
+            EMFSetDimensions(image, source);
+         }
+    }
+  if (SetImageExtent(image,image->columns,image->rows,exception) == MagickFalse)
+    {
+      delete source;
+      Gdiplus::GdiplusShutdown(token);
+      return(DestroyImageList(image));
+    }
+  image->alpha_trait=BlendPixelTrait;
+  if (image->ping != MagickFalse)
+    {
+      delete source;
+      Gdiplus::GdiplusShutdown(token);
+      return(image);
     }
 
   bitmap=new Gdiplus::Bitmap((INT) image->columns,(INT) image->rows,
@@ -750,7 +788,6 @@ static Image *ReadEMFImage(const ImageInfo *image_info,
     ThrowReaderException(FileOpenError,"UnableToReadImageData");
   }
 
-  image->alpha_trait=BlendPixelTrait;
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=(unsigned char *) bitmap_data.Scan0+(y*abs(bitmap_data.Stride));
