@@ -5913,10 +5913,8 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
         const int
           id = GetOpenMPThreadId();
 
-        register const float
-          *magick_restrict p;
-
         register float
+          *magick_restrict p,
           *magick_restrict q;
 
         register ssize_t
@@ -5938,10 +5936,8 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
         const int
           id = GetOpenMPThreadId();
 
-        register const float
-          *magick_restrict p;
-
         register float
+          *magick_restrict p,
           *magick_restrict q;
 
         register ssize_t
