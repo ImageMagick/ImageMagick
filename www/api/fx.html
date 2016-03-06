@@ -49,13 +49,13 @@
       <a class="magick-nav-item " href="../resources.html">Resources</a>
       <a class="magick-nav-item " href="api.html">Develop</a>
       <a class="magick-nav-item " href="http://www.imagemagick.org/script/search.php">Search</a>
-      <a class="magick-nav-item pull-right" href="http://www.imagemagick.org/discourse-server/">Community</a>
+      <a class="magick-nav-item pull-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="text-center"><a href="fx.html#AddNoiseImage">AddNoiseImage</a> &#8226; <a href="fx.html#BlueShiftImage">BlueShiftImage</a> &#8226; <a href="fx.html#CharcoalImage">CharcoalImage</a> &#8226; <a href="fx.html#ColorizeImage">ColorizeImage</a> &#8226; <a href="fx.html#ColorMatrixImage">ColorMatrixImage</a> &#8226; <a href="fx.html#FxImage">FxImage</a> &#8226; <a href="fx.html#ImplodeImage">ImplodeImage</a> &#8226; <a href="fx.html#The MorphImages">The MorphImages</a> &#8226; <a href="fx.html#PlasmaImage">PlasmaImage</a> &#8226; <a href="fx.html#PolaroidImage">PolaroidImage</a> &#8226; <a href="fx.html#MagickSepiaToneImage">MagickSepiaToneImage</a> &#8226; <a href="fx.html#ShadowImage">ShadowImage</a> &#8226; <a href="fx.html#SketchImage">SketchImage</a> &#8226; <a href="fx.html#SolarizeImage">SolarizeImage</a> &#8226; <a href="fx.html#SteganoImage">SteganoImage</a> &#8226; <a href="fx.html#StereoAnaglyphImage">StereoAnaglyphImage</a> &#8226; <a href="fx.html#SwirlImage">SwirlImage</a> &#8226; <a href="fx.html#TintImage">TintImage</a> &#8226; <a href="fx.html#VignetteImage">VignetteImage</a> &#8226; <a href="fx.html#WaveImage">WaveImage</a></p>
+<p class="text-center"><a href="fx.html#AddNoiseImage">AddNoiseImage</a> &#8226; <a href="fx.html#BlueShiftImage">BlueShiftImage</a> &#8226; <a href="fx.html#CharcoalImage">CharcoalImage</a> &#8226; <a href="fx.html#ColorizeImage">ColorizeImage</a> &#8226; <a href="fx.html#ColorMatrixImage">ColorMatrixImage</a> &#8226; <a href="fx.html#FxImage">FxImage</a> &#8226; <a href="fx.html#ImplodeImage">ImplodeImage</a> &#8226; <a href="fx.html#The MorphImages">The MorphImages</a> &#8226; <a href="fx.html#PlasmaImage">PlasmaImage</a> &#8226; <a href="fx.html#PolaroidImage">PolaroidImage</a> &#8226; <a href="fx.html#MagickSepiaToneImage">MagickSepiaToneImage</a> &#8226; <a href="fx.html#ShadowImage">ShadowImage</a> &#8226; <a href="fx.html#SketchImage">SketchImage</a> &#8226; <a href="fx.html#SolarizeImage">SolarizeImage</a> &#8226; <a href="fx.html#SteganoImage">SteganoImage</a> &#8226; <a href="fx.html#StereoAnaglyphImage">StereoAnaglyphImage</a> &#8226; <a href="fx.html#SwirlImage">SwirlImage</a> &#8226; <a href="fx.html#TintImage">TintImage</a> &#8226; <a href="fx.html#VignetteImage">VignetteImage</a> &#8226; <a href="fx.html#WaveImage">WaveImage</a> &#8226; <a href="fx.html#WaveletDenoiseImage">WaveletDenoiseImage</a></p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/fx_8c.html" id="AddNoiseImage">AddNoiseImage</a></h2>
 
@@ -755,6 +755,41 @@ Image *WaveImage(const Image *image,const double amplitude,
 <dd> </dd>
 <dt>amplitude, wave_length</dt>
 <dd> Define the amplitude and wave length of the sine wave. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/fx_8c.html" id="WaveletDenoiseImage">WaveletDenoiseImage</a></h2>
+
+<p>WaveletDenoiseImage() removes noise from the image using a wavelet transform.  The wavelet transform is a fast hierarchical scheme for processing an image using a set of consecutive lowpass and high_pass filters, followed by a decimation.  This results in a decomposition into different scales which can be regarded as different “frequency bands”, determined by the mother wavelet.  Adapted from dcraw.c by David Coffin.</p>
+
+<p>The format of the WaveletDenoiseImage method is:</p>
+
+<pre class="text">
+Image *WaveletDenoiseImage(const Image *image,const double threshold,
+  const double softness,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image. </dd>
+
+<dd> </dd>
+<dt>threshold</dt>
+<dd>set the threshold for smoothing. </dd>
+
+<dd> </dd>
+<dt>softness</dt>
+<dd>attenuate the smoothing threshold. </dd>
 
 <dd> </dd>
 <dt>exception</dt>
