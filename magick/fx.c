@@ -5920,7 +5920,7 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
         register ssize_t
           x;
 
-        p=(const float *) kernel+id*image->columns;
+        p=(float *) kernel+id*image->columns;
         q=pixels+y*image->columns;
         HatTransform(q+high_pass,1,image->columns,(size_t) (1 << level),p);
         q+=low_pass;
@@ -5943,7 +5943,7 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
         register ssize_t
           y;
 
-        p=(const float *) kernel+id*image->rows;
+        p=(float *) kernel+id*image->rows;
         q=pixels+x+low_pass;
         HatTransform(q,image->columns,image->rows,(size_t) (1 << level),p);
         for (y=0; y < (ssize_t) image->rows; y++)
