@@ -52,7 +52,7 @@
 </div>
 <div class="container">
 <h1> Magick::Image Class</h1>
-<p class="navigation-index">[<a href="Image++.html#BLOBs">BLOBs</a> &#8226; <a href="Image++.html#Constructors">Constructors</a> &#8226; <a href="Image++.html#Image%20Manipulation%20Methods">Image Manipulation Methods</a> &#8226; <a href="Image++.html#Image%20Attributes">Image Attributes</a> &#8226; <a href="Image++.html#Raw%20Image%20Pixel%20Access">Low-Level Image Pixel Access</a>]</p>
+<p class="navigation-index">[<a href="Image.html#BLOBs">BLOBs</a> &#8226; <a href="Image.html#Constructors">Constructors</a> &#8226; <a href="Image.html#Image%20Manipulation%20Methods">Image Manipulation Methods</a> &#8226; <a href="Image.html#Image%20Attributes">Image Attributes</a> &#8226; <a href="Image.html#Raw%20Image%20Pixel%20Access">Low-Level Image Pixel Access</a>]</p>
 <div class="doc-section">
 <p>Image is the primary object in Magick++ and represents
 a single image frame (see <a href="http://www.imagemagick.org/Magick++/ImageDesign.html">design</a> ). The
@@ -198,9 +198,9 @@ image may be initially placed in memory by reading it directly from a
 file, reading the image from a database, memory-mapped from a disk
 file, or could be written to memory by Magick++. Once the encoded image
 has been placed within a Blob, it may be read into a Magick++ Image via
-a <a href="Image++.html#constructor_blob">constructor</a> or <a href="Image++.html#read">read()</a>
+a <a href="Image.html#constructor_blob">constructor</a> or <a href="Image.html#read">read()</a>
 . Likewise, a Magick++ image may be written to a Blob via <a
- href="Image++.html#write"> write()</a> .
+ href="Image.html#write"> write()</a> .
 <p>An example of using Image to write to a Blob follows: <br>
   </p>
 <pre class="code">
@@ -283,8 +283,8 @@ size and color</font></td>
  href="http://www.imagemagick.org/Magick++/Blob.html">Blob</a> &amp;blob_</font></td>
       <td rowspan="5"><font size="-1">Construct Image by reading from
 encoded image data contained in an in-memory <a href="http://www.imagemagick.org/Magick++/Blob.html">BLOB</a>
-. Depending on the constructor arguments, the Blob <a href="Image++.html#size">size</a>
-, <a href="Image++.html#depth">depth</a> , <a href="Image++.html#magick">magick</a> (format)
+. Depending on the constructor arguments, the Blob <a href="Image.html#size">size</a>
+, <a href="Image.html#depth">depth</a> , <a href="Image.html#magick">magick</a> (format)
 may
 also be specified. Some image formats require that size be specified.
 The default ImageMagick uses for depth depends on the compiled-in
@@ -292,7 +292,7 @@ Quantum size (8 or 16).  If ImageMagick's Quantum size does not
 match that of the image, the depth may need to be specified.
 ImageMagick can usually automagically detect the image's format.
 When a format can't be automagically detected, the format (<a
- href="Image++.html#magick">magick</a> ) must be specified.</font></td>
+ href="Image.html#magick">magick</a> ) must be specified.</font></td>
     </tr>
     <tr>
       <td><font size="-1">const <a href="http://www.imagemagick.org/Magick++/Blob.html">Blob</a>
@@ -590,9 +590,9 @@ width, height, or other  image  attributes by embedding <a
       <td valign="middle"><font size="-1">const Image &amp;reference_<br>
       </font></td>
       <td valign="top"><font size="-1">Compare current image with
-another image. Sets <a href="Image++.html#meanErrorPerPixel">meanErrorPerPixel</a>
-, <a href="Image++.html#normalizedMaxError">normalizedMaxError</a> , and <a
- href="Image++.html#normalizedMeanError">normalizedMeanError</a> in the current
+another image. Sets <a href="Image.html#meanErrorPerPixel">meanErrorPerPixel</a>
+, <a href="Image.html#normalizedMaxError">normalizedMaxError</a> , and <a
+ href="Image.html#normalizedMeanError">normalizedMeanError</a> in the current
 image. False is returned if the images are identical. An ErrorOption
 exception is thrown if the reference image columns, rows, colorspace,
 or
@@ -603,7 +603,7 @@ matte differ from the current image.</font><br>
       <td style="text-align: center;" rowspan="3">
       <center><a name="composite"></a> <font size="-1">composite</font></center>
       </td>
-      <td><font size="-1">const <a href="http://www.imagemagick.org/Magick++/Image++.html">Image</a>
+      <td><font size="-1">const <a href="http://www.imagemagick.org/Magick++/Image.html">Image</a>
 &amp;compositeImage_, ssize_t xOffset_, ssize_t yOffset_, <a
  href="http://www.imagemagick.org/Magick++/Enumerations.html#CompositeOperator"> CompositeOperator</a>
 compose_ = <i>InCompositeOp</i></font></td>
@@ -612,7 +612,7 @@ offset specified by <i>xOffset_</i>, <i>yOffset_ </i>using the
 composition algorithm specified by <i>compose_</i>. </font></td>
     </tr>
     <tr>
-      <td><font size="-1">const <a href="http://www.imagemagick.org/Magick++/Image++.html">Image</a>
+      <td><font size="-1">const <a href="http://www.imagemagick.org/Magick++/Image.html">Image</a>
 &amp;compositeImage_, const <a href="http://www.imagemagick.org/Magick++/Geometry.html">Geometry</a>
 &amp;offset_, <a href="http://www.imagemagick.org/Magick++/Enumerations.html#CompositeOperator">CompositeOperator</a>
 compose_ = <i>InCompositeOp</i></font></td>
@@ -621,7 +621,7 @@ offset specified by <i>offset_</i> using the composition algorithm
 specified by <i>compose_</i> . </font></td>
     </tr>
     <tr>
-      <td><font size="-1">const <a href="http://www.imagemagick.org/Magick++/Image++.html">Image</a>
+      <td><font size="-1">const <a href="http://www.imagemagick.org/Magick++/Image.html">Image</a>
 &amp;compositeImage_, <a href="http://www.imagemagick.org/Magick++/Enumerations.html#GravityType">GravityType</a>
 gravity_, <a href="http://www.imagemagick.org/Magick++/Enumerations.html#CompositeOperator">CompositeOperator</a>
 compose_ = <i>InCompositeOp</i></font></td>
@@ -1140,9 +1140,9 @@ to specified penColor_.</font></td>
       <td><font size="-1">const std::string &amp;imageSpec_</font></td>
       <td rowspan="2" nosave=""><font size="-1">Ping is similar to read
 except only enough of the image is read to determine the image columns,
-rows, and filesize.  The <a href="Image++.html#columns">columns</a> </font>,
-      <font size="-1"><a href="Image++.html#rows">rows</a> , and <a
- href="Image++.html#fileSize">fileSize</a>
+rows, and filesize.  The <a href="Image.html#columns">columns</a> </font>,
+      <font size="-1"><a href="Image.html#rows">rows</a> , and <a
+ href="Image.html#fileSize">fileSize</a>
 attributes are valid after invoking ping.  The image data is not
 valid after calling ping.</font></td>
     </tr>
@@ -1311,7 +1311,7 @@ dithering.<br>
 &amp;thresholds_, const ChannelType channel_<br>
       </small></td>
       <td style="vertical-align: middle;"><small>Random threshold an
-image channel. Similar to <a href="Image++.html#randomThreshold">randomThreshold</a>()
+image channel. Similar to <a href="Image.html#randomThreshold">randomThreshold</a>()
 but restricted to the specified channel.<br>
       </small></td>
     </tr>
@@ -1608,8 +1608,8 @@ original if this is a problem.</font></td>
       <td rowspan="3"><font size="-1">Write image to a in-memory <a
  href="http://www.imagemagick.org/Magick++/Blob.html"> BLOB</a> stored in <i>blob_</i>. The <i>magick</i>_
 parameter specifies the image format to write (defaults to <a
- href="Image++.html#magick">magick</a> ). The depth_ parameter species the image
-depth (defaults to <a href="Image++.html#depth"> depth</a> ).</font> <br>
+ href="Image.html#magick">magick</a> ). The depth_ parameter species the image
+depth (defaults to <a href="Image.html#depth"> depth</a> ).</font> <br>
       <font size="-1"><b><font color="#ff0000">Caution: </font></b> if
 an image format is selected which is capable of supporting fewer
 colors than the original image or quantization has been requested, the
@@ -2300,8 +2300,8 @@ server. To use a TrueType font, precede the TrueType filename with an
  href="http://www.imagemagick.org/Magick++/TypeMetric.html"> TypeMetric</a> *metrics</font></td>
       <td bgcolor="#666666"><font size="-1"> </font></td>
       <td><font size="-1">Update metrics with font type metrics using
-specified <i>text</i>, and current <a href="Image++.html#font">font</a> and <a
- href="Image++.html#fontPointsize">fontPointSize</a> settings.</font></td>
+specified <i>text</i>, and current <a href="Image.html#font">font</a> and <a
+ href="Image.html#fontPointsize">fontPointSize</a> settings.</font></td>
     </tr>
     <tr>
       <td>
@@ -2574,7 +2574,7 @@ canvas.</font>
       <p><font size="-1">Use this option to specify the dimensions
 and position of the Postscript page in dots per inch or a TEXT page in
 pixels. This option is typically used in concert with <i><a
- href="Image++.html#density"> density</a> </i>.</font> </p>
+ href="Image.html#density"> density</a> </i>.</font> </p>
       <p><font size="-1">Page may also be used to position a GIF
 image (such as for a scene in an animation)</font></p>
       </td>
@@ -3002,7 +3002,7 @@ stdio's gets() relates to fgets(). The <i><a href="http://www.imagemagick.org/Ma
 <p>Obtain existing image pixels via <i>getPixels()</i>. Create a new
 pixel region using <i>setPixels().</i></p>
 <p>In order to ensure that only the current generation of the image is
-modified, the Image's <a href="Image++.html#modifyImage">modifyImage()</a> method
+modified, the Image's <a href="Image.html#modifyImage">modifyImage()</a> method
 should be invoked to reduce the reference count on the underlying image
 to one. If this is not done, then it is possible for a previous
 generation of the image to be modified due to the use of reference
@@ -3089,7 +3089,7 @@ or setPixels call and should never be deallocated by the user.</font><font
  size="-1"> Only valid for PseudoClass images or CMYKA images. The
 pixel indexes represent an array of type IndexPacket, with each entry
 corresponding to an x,y pixel position. For PseudoClass images, the
-entry's value is the offset into the colormap (see <a href="Image++.html#colorMap">colorMap</a>
+entry's value is the offset into the colormap (see <a href="Image.html#colorMap">colorMap</a>
 ) for that pixel. For CMYKA images, the indexes are used to contain the
 alpha channel.</font></td>
     </tr>
@@ -3101,8 +3101,8 @@ alpha channel.</font></td>
       <td><font size="-1">void</font></td>
       <td><font size="-1">Returns a pointer to the Image pixel indexes
 corresponding to the pixel region requested by the last <a
- href="Image++.html#getConstPixels">getConstPixels</a> , <a href="Image++.html#getPixels">getPixels</a>
-, or <a href="Image++.html#setPixels">setPixels</a> call. </font><font
+ href="Image.html#getConstPixels">getConstPixels</a> , <a href="Image.html#getPixels">getPixels</a>
+, or <a href="Image.html#setPixels">setPixels</a> call. </font><font
  size="-1">The
 returned pointer remains valid until the next getPixel, getConstPixels,
 or setPixels call and should never be deallocated by the user.</font><font
@@ -3111,7 +3111,7 @@ or
 CMYKA images. The pixel indexes represent an array of type
 IndexPacket, with each entry corresponding to a pixel x,y position. For
 PseudoClass images, the entry's value is the offset into the colormap
-(see <a href="Image++.html#colorMap">colorMap</a> )  for that pixel. For
+(see <a href="Image.html#colorMap">colorMap</a> )  for that pixel. For
 CMYKA
 images, the indexes are used to contain the alpha channel.</font></td>
     </tr>
@@ -3187,7 +3187,7 @@ the region set by a preceding getPixels or getConstPixels call.</font></td>
     <a href="../links.html">Related</a> •
     <a href="../architecture.html">Architecture</a>
 </p>
-    <p><a href="Image++.html#">Back to top</a> •
+    <p><a href="Image.html#">Back to top</a> •
     <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
     <a href="http://nextgen.imagemagick.org/script/contact.php">Contact Us</a></p>
         <p><small>©  1999-2016 ImageMagick Studio LLC</small></p>

@@ -46,7 +46,7 @@
       <a class="magick-nav-item " href="../resources.html">Resources</a>
       <a class="magick-nav-item " href="api.html">Develop</a>
       <a class="magick-nav-item " href="http://nextgen.imagemagick.org/script/search.php">Search</a>
-      <a class="magick-nav-item pull-right" href="http://www.imagemagick.org/discourse-server/">Community</a>
+      <a class="magick-nav-item pull-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
 </div>
@@ -410,7 +410,8 @@ FILE *GetImageInfoFile(const ImageInfo *image_info)
 <p>The format of the GetImageMask method is:</p>
 
 <pre class="text">
-Image *GetImageMask(const Image *image,ExceptionInfo *exception)
+Image *GetImageMask(const Image *image,const PixelMask type,
+  ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -422,6 +423,10 @@ Image *GetImageMask(const Image *image,ExceptionInfo *exception)
 <dl class="dl-horizontal">
 <dt>image</dt>
 <dd>the image. </dd>
+
+<dd> </dd>
+<dt>type</dt>
+<dd>the mask type, ReadPixelMask or WritePixelMask. </dd>
 
 <dd>  </dd>
 </dl>

@@ -46,7 +46,7 @@
       <a class="magick-nav-item " href="../resources.html">Resources</a>
       <a class="magick-nav-item " href="api.html">Develop</a>
       <a class="magick-nav-item " href="http://nextgen.imagemagick.org/script/search.php">Search</a>
-      <a class="magick-nav-item pull-right" href="http://www.imagemagick.org/discourse-server/">Community</a>
+      <a class="magick-nav-item pull-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
 </div>
@@ -2252,6 +2252,10 @@ MagickWand *MagickGetImageMask(MagickWand *wand)
 <dt>wand</dt>
 <dd>the magick wand. </dd>
 
+<dd> </dd>
+<dt>type</dt>
+<dd>type of mask, ReadPixelMask or WritePixelMask. </dd>
+
 <dd>  </dd>
 </dl>
 <h2><a href="http://www.imagemagick.org/api/MagickWand/magick-image_8c.html" id="MagickGetImageBackgroundColor">MagickGetImageBackgroundColor</a></h2>
@@ -2347,7 +2351,7 @@ unsigned char *MagickGetImagesBlob(MagickWand *wand,size_t *length)
 
 <pre class="text">
 MagickBooleanType MagickGetImageBluePrimary(MagickWand *wand,double *x,
-  double *y)
+  double *y,double *z)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -2367,6 +2371,10 @@ MagickBooleanType MagickGetImageBluePrimary(MagickWand *wand,double *x,
 <dd> </dd>
 <dt>y</dt>
 <dd>the chromaticity blue primary y-point. </dd>
+
+<dd> </dd>
+<dt>z</dt>
+<dd>the chromaticity blue primary z-point. </dd>
 
 <dd>  </dd>
 </dl>
@@ -2973,7 +2981,7 @@ GravityType MagickGetImageGravity(MagickWand *wand)
 
 <pre class="text">
 MagickBooleanType MagickGetImageGreenPrimary(MagickWand *wand,double *x,
-  double *y)
+  double *y,double *z)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -2993,6 +3001,10 @@ MagickBooleanType MagickGetImageGreenPrimary(MagickWand *wand,double *x,
 <dd> </dd>
 <dt>y</dt>
 <dd>the chromaticity green primary y-point. </dd>
+
+<dd> </dd>
+<dt>z</dt>
+<dd>the chromaticity green primary z-point. </dd>
 
 <dd>  </dd>
 </dl>
@@ -3266,7 +3278,7 @@ MagickBooleanType MagickGetImagePixelColor(MagickWand *wand,
 
 <pre class="text">
 MagickBooleanType MagickGetImageRedPrimary(MagickWand *wand,double *x,
-  double *y)
+  double *y, double *z)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -3286,6 +3298,10 @@ MagickBooleanType MagickGetImageRedPrimary(MagickWand *wand,double *x,
 <dd> </dd>
 <dt>y</dt>
 <dd>the chromaticity red primary y-point. </dd>
+
+<dd> </dd>
+<dt>z</dt>
+<dd>the chromaticity red primary z-point. </dd>
 
 <dd>  </dd>
 </dl>
@@ -3524,7 +3540,7 @@ VirtualPixelMethod MagickGetImageVirtualPixelMethod(MagickWand *wand)
 
 <pre class="text">
 MagickBooleanType MagickGetImageWhitePoint(MagickWand *wand,double *x,
-  double *y)
+  double *y,double *z)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -3544,6 +3560,10 @@ MagickBooleanType MagickGetImageWhitePoint(MagickWand *wand,double *x,
 <dd> </dd>
 <dt>y</dt>
 <dd>the chromaticity white y-point. </dd>
+
+<dd> </dd>
+<dt>z</dt>
+<dd>the chromaticity white z-point. </dd>
 
 <dd>  </dd>
 </dl>
@@ -5538,7 +5558,7 @@ MagickBooleanType MagickSetImageBackgroundColor(MagickWand *wand,
 
 <pre class="text">
 MagickBooleanType MagickSetImageBluePrimary(MagickWand *wand,
-  const double x,const double y)
+  const double x,const double y,const double z)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -5558,6 +5578,10 @@ MagickBooleanType MagickSetImageBluePrimary(MagickWand *wand,
 <dd> </dd>
 <dt>y</dt>
 <dd>the blue primary y-point. </dd>
+
+<dd> </dd>
+<dt>z</dt>
+<dd>the blue primary z-point. </dd>
 
 <dd>  </dd>
 </dl>
@@ -6094,7 +6118,7 @@ MagickBooleanType MagickSetImageGravity(MagickWand *wand,
 
 <pre class="text">
 MagickBooleanType MagickSetImageGreenPrimary(MagickWand *wand,
-  const double x,const double y)
+  const double x,const double y,const double z)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -6116,6 +6140,8 @@ MagickBooleanType MagickSetImageGreenPrimary(MagickWand *wand,
 <dd>the green primary y-point. </dd>
 
 <dd> </dd>
+<dt>z</dt>
+<dd>the green primary z-point. </dd>
 
 <dd>  </dd>
 </dl>
@@ -6393,7 +6419,7 @@ MagickProgressMonitor MagickSetImageProgressMonitor(MagickWand *wand
 
 <pre class="text">
 MagickBooleanType MagickSetImageRedPrimary(MagickWand *wand,
-  const double x,const double y)
+  const double x,const double y,const double z)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -6413,6 +6439,10 @@ MagickBooleanType MagickSetImageRedPrimary(MagickWand *wand,
 <dd> </dd>
 <dt>y</dt>
 <dd>the red primary y-point. </dd>
+
+<dd> </dd>
+<dt>z</dt>
+<dd>the red primary z-point. </dd>
 
 <dd>  </dd>
 </dl>
@@ -6617,7 +6647,7 @@ VirtualPixelMethod MagickSetImageVirtualPixelMethod(MagickWand *wand,
 
 <pre class="text">
 MagickBooleanType MagickSetImageWhitePoint(MagickWand *wand,
-  const double x,const double y)
+  const double x,const double y,const double z)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -6637,6 +6667,10 @@ MagickBooleanType MagickSetImageWhitePoint(MagickWand *wand,
 <dd> </dd>
 <dt>y</dt>
 <dd>the white y-point. </dd>
+
+<dd> </dd>
+<dt>z</dt>
+<dd>the white z-point. </dd>
 
 <dd>  </dd>
 </dl>

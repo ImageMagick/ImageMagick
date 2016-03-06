@@ -46,7 +46,7 @@
       <a class="magick-nav-item " href="../resources.html">Resources</a>
       <a class="magick-nav-item " href="api.html">Develop</a>
       <a class="magick-nav-item " href="http://nextgen.imagemagick.org/script/search.php">Search</a>
-      <a class="magick-nav-item pull-right" href="http://www.imagemagick.org/discourse-server/">Community</a>
+      <a class="magick-nav-item pull-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
 </div>
@@ -286,7 +286,7 @@ char *InterpretImageProperties(ImageInfo *image_info,
 </dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/property_8c.html" id="(void)_LogMagickEvent(TraceEvent,GetMagickModule">(void) LogMagickEvent(TraceEvent,GetMagickModule</a></h2>
 
-<p>(void) LogMagickEvent(TraceEvent,GetMagickModule(),"s",image-&gt;filename); else if( image_info != (ImageInfo *) NULL &amp;&amp; IfMagickTrue(image_info-&gt;debug)) (void) LogMagickEvent(TraceEvent,GetMagickModule(),"s","no-image");</p>
+<p>(void) LogMagickEvent(TraceEvent,GetMagickModule(),"s",image-&gt;filename); else if( image_info != (ImageInfo *) NULL &amp;&amp; image_info-&gt;debug != MagickFalse) (void) LogMagickEvent(TraceEvent,GetMagickModule(),"s","no-image");</p>
 
 <p>if (embed_text == (const char *) NULL) return(ConstantString("")); p=embed_text;</p>
 
