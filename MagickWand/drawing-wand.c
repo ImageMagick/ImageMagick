@@ -4858,7 +4858,7 @@ WandExport void DrawSetOpacity(DrawingWand *wand,const double opacity)
   if ((wand->filter_off != MagickFalse) ||
       (CurrentContext->alpha != quantum_alpha))
     {
-      CurrentContext->alpha=(Quantum) opacity;
+      CurrentContext->alpha=quantum_alpha;
       (void) MVGPrintf(wand,"opacity %.20g\n",opacity);
     }
 }
