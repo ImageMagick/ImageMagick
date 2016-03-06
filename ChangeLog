@@ -1,3 +1,6 @@
+2016-03-26  6.9.3-7 Cristy  <quetzlzacatenango@image...>
+  * New version 6.9.3-7, GIT revision 10628:810a9fe:20160306
+
 2016-03-05  6.9.3-7 Dirk Lemstra <dirk@lem.....org>
   * -size can now be used the specify the maximum width/height for the
     following vector formats:
