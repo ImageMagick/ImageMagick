@@ -420,7 +420,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       return(DestroyImageList(image));
     }
   packets=(bits_per_pixel*image->columns+7)/8;
-  pixels=(unsigned char *) AcquireQuantumMemory(packets+256UL,image->rows*
+  pixels=(unsigned char *) AcquireQuantumMemory(packets+257UL,image->rows*
     sizeof(*pixels));
   if (pixels == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
@@ -822,7 +822,7 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image)
     image->rows*sizeof(*runlength));
   if (runlength == (unsigned char *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
-  buffer=(unsigned char *) AcquireQuantumMemory(256,sizeof(*buffer));
+  buffer=(unsigned char *) AcquireQuantumMemory(257,sizeof(*buffer));
   if (buffer == (unsigned char *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
   packet_size=(size_t) (image->depth > 8 ? 2: 1);
