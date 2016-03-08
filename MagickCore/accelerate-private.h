@@ -2436,7 +2436,7 @@ uint MWC64X_NextUint(mwc64x_state_t *s)
     h-=360.0*floor(h/360.0);
     h/=60.0;
     x=c*(1.0-fabs(h-2.0*floor(h/2.0)-1.0));
-    switch ((int) floor(h))
+    switch ((int) floor(h) % 6)
     {
       case 0:
         {
