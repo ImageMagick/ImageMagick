@@ -1444,7 +1444,7 @@ static double *GenerateCoefficients(const Image *image,
 %
 %  The format of the DistortResizeImage method is:
 %
-%      Image *AdaptiveResizeImage(const Image *image,const size_t columns,
+%      Image *DistortResizeImage(const Image *image,const size_t columns,
 %        const size_t rows,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:

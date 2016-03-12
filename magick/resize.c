@@ -2963,32 +2963,31 @@ MagickExport Image *ResizeImage(const Image *image,const size_t columns,
       if ((image->storage_class == PseudoClass) ||
           (image->matte != MagickFalse) || ((x_factor*y_factor) > 1.0))
         filter_type=MitchellFilter;
-  resize_filter=AcquireResizeFilter(image,filter_type,blur,MagickFalse,exception);
+  resize_filter=AcquireResizeFilter(image,filter_type,blur,MagickFalse,
+    exception);
 
-  resize_image = AccelerateResizeImage(image,columns,rows,resize_filter,exception);
+  resize_image=AccelerateResizeImage(image,columns,rows,resize_filter,
+    exception);
   if (resize_image != NULL)
-  {
-    resize_filter=DestroyResizeFilter(resize_filter);
-    return resize_image;
-  }
-
+    {
+      resize_filter=DestroyResizeFilter(resize_filter);
+      return(resize_image);
+    }
   resize_image=CloneImage(image,columns,rows,MagickTrue,exception);
   if (resize_image == (Image *) NULL)
-  {
-    resize_filter=DestroyResizeFilter(resize_filter);
-    return(resize_image);
-  }
-
+    {
+      resize_filter=DestroyResizeFilter(resize_filter);
+      return(resize_image);
+    }
   if (x_factor > y_factor)
     filter_image=CloneImage(image,columns,image->rows,MagickTrue,exception);
   else
     filter_image=CloneImage(image,image->columns,rows,MagickTrue,exception);
   if (filter_image == (Image *) NULL)
-  {
-    resize_filter=DestroyResizeFilter(resize_filter);
-    return(DestroyImage(resize_image));
-  }
-
+    {
+      resize_filter=DestroyResizeFilter(resize_filter);
+      return(DestroyImage(resize_image));
+    }
   /*
     Resize image.
   */
