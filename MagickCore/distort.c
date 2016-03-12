@@ -1443,7 +1443,7 @@ static double *GenerateCoefficients(const Image *image,
 %
 %  The format of the DistortResizeImage method is:
 %
-%      Image *AdaptiveResizeImage(const Image *image,const size_t columns,
+%      Image *DistortResizeImage(const Image *image,const size_t columns,
 %        const size_t rows,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -1515,7 +1515,8 @@ MagickExport Image *DistortResizeImage(const Image *image,
       if ( resize_image == (Image *) NULL )
         return((Image *) NULL);
 
-      (void) SetImageAlphaChannel(resize_image,DeactivateAlphaChannel,exception);
+      (void) SetImageAlphaChannel(resize_image,DeactivateAlphaChannel,
+        exception);
     }
   else
     {
@@ -1551,10 +1552,8 @@ MagickExport Image *DistortResizeImage(const Image *image,
           return((Image *) NULL);
         }
       /* replace resize images alpha with the separally distorted alpha */
-      (void) SetImageAlphaChannel(resize_image,DeactivateAlphaChannel,
-        exception);
-      (void) SetImageAlphaChannel(resize_alpha,DeactivateAlphaChannel,
-        exception);
+      (void) SetImageAlphaChannel(resize_image,OffAlphaChannel,exception);
+      (void) SetImageAlphaChannel(resize_alpha,OffAlphaChannel,exception);
       (void) CompositeImage(resize_image,resize_alpha,CopyAlphaCompositeOp,
         MagickTrue,0,0,exception);
       resize_alpha=DestroyImage(resize_alpha);
