@@ -4520,7 +4520,6 @@ MAGICKCORE_INCLUDE_HDRS = \
 	MagickCore/locale_.h \
 	MagickCore/log.h \
 	MagickCore/magic.h \
-	MagickCore/magic-private.h \
 	MagickCore/magick.h \
 	MagickCore/magick-config.h \
 	MagickCore/magick-type.h \
@@ -4631,6 +4630,7 @@ MAGICKCORE_NOINST_HDRS = \
 	MagickCore/thread_.h \
 	MagickCore/thread-private.h \
 	MagickCore/token-private.h \
+	MagickCore/transform-private.h \
  	MagickCore/type-private.h \
 	MagickCore/utility-private.h \
 	MagickCore/version-private.h \
