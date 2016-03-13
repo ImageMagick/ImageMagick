@@ -1079,26 +1079,6 @@ void Magick::thresholdImage::operator()( Magick::Image &image_ ) const
   image_.threshold( _threshold );
 }
 
-// Transform image based on image and crop geometries
-Magick::transformImage::transformImage( const Magick::Geometry &imageGeometry_ )
-  : _imageGeometry( imageGeometry_ ),
-    _cropGeometry( )
-{
-}
-Magick::transformImage::transformImage( const Magick::Geometry &imageGeometry_,
-                                        const Geometry &cropGeometry_  )
-  : _imageGeometry( imageGeometry_ ),
-    _cropGeometry( cropGeometry_ )
-{
-}
-void Magick::transformImage::operator()( Magick::Image &image_ ) const
-{
-  if ( _cropGeometry.isValid() )
-    image_.transform( _imageGeometry, _cropGeometry );
-  else
-    image_.transform( _imageGeometry );
-}
-
 // Set image color to transparent
 Magick::transparentImage::transparentImage( const Magick::Color& color_ )
   : _color( color_ )

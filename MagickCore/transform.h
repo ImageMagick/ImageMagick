@@ -39,10 +39,6 @@ extern MagickExport Image
   *TransverseImage(const Image *,ExceptionInfo *),
   *TrimImage(const Image *,ExceptionInfo *);
 
-extern MagickExport MagickBooleanType
-  TransformImage(Image **,const char *,const char *,ExceptionInfo *),
-  TransformImages(Image **,const char *,const char *,ExceptionInfo *);
-
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif

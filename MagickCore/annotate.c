@@ -74,7 +74,7 @@
 #include "MagickCore/string_.h"
 #include "MagickCore/token.h"
 #include "MagickCore/token-private.h"
-#include "MagickCore/transform.h"
+#include "MagickCore/transform-private.h"
 #include "MagickCore/type.h"
 #include "MagickCore/utility.h"
 #include "MagickCore/utility-private.h"

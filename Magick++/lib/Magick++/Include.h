@@ -1466,7 +1466,6 @@ namespace Magick
   using MagickCore::TextureImage;
   using MagickCore::ThrowException;
   using MagickCore::TintImage;
-  using MagickCore::TransformImage;
   using MagickCore::TransformImageColorspace;
   using MagickCore::TransparentPaintImage;
   using MagickCore::TransparentPaintImageChroma;

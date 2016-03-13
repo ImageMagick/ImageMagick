@@ -1177,22 +1177,6 @@ namespace Magick
     double _threshold;
   };
 
-  // Transform image based on image and crop geometries
-  class MagickPPExport transformImage : public std::unary_function<Image&,void>
-  {
-  public:
-    transformImage( const Geometry &imageGeometry_ );
-
-    transformImage( const Geometry &imageGeometry_,
-        const Geometry &cropGeometry_  );
-
-    void operator()( Image &image_ ) const;
-
-  private:
-    Geometry _imageGeometry;
-    Geometry _cropGeometry;
-  };
-
   // Set image color to transparent
   class MagickPPExport transparentImage : public std::unary_function<Image&,void>
   {

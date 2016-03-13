@@ -59,11 +59,11 @@
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/quantize.h"
 #include "MagickCore/resource_.h"
+#include "MagickCore/resize.h"
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/module.h"
-#include "MagickCore/transform.h"
 #include "MagickCore/utility.h"
 
 /*
@@ -418,7 +418,19 @@ static MagickBooleanType WriteEPTImage(const ImageInfo *image_info,Image *image,
   (void) FormatLocaleString(filename,MagickPathExtent,"tiff:%s",
     write_info->filename); 
   (void) CopyMagickString(write_info->filename,filename,MagickPathExtent);
-  (void) TransformImage(&write_image,(char *) NULL,"512x512>",exception);
+  if ((write_image->columns > 512) || (write_image->rows > 512))
+    {
+      Image
+        *resize_image;
+
+      resize_image=ResizeImage(write_image,512,512,write_image->filter,
+        exception);
+      if (resize_image != (Image *) NULL)
+        {
+          write_image=DestroyImage(write_image);
+          write_image=resize_image;
+        }
+    }
   if ((write_image->storage_class == DirectClass) ||
       (write_image->colors > 256))
     {

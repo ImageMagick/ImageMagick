@@ -68,7 +68,6 @@
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/module.h"
-#include "MagickCore/transform.h"
 #include "MagickCore/utility.h"
 
 /*
@@ -939,7 +938,7 @@ ModuleExport void UnregisterPCDImage(void)
 */
 
 static MagickBooleanType WritePCDTile(Image *image,const char *page_geometry,
-  const char *tile_geometry,ExceptionInfo *exception)
+  const size_t tile_columns,const size_t tile_rows,ExceptionInfo *exception)
 {
   GeometryInfo
     geometry_info;
@@ -1008,7 +1007,19 @@ static MagickBooleanType WritePCDTile(Image *image,const char *page_geometry,
       tile_image=DestroyImage(tile_image);
       tile_image=bordered_image;
     }
-  (void) TransformImage(&tile_image,(char *) NULL,tile_geometry,exception);
+  if ((tile_image->columns != tile_columns) || (tile_image->rows != tile_rows))
+    {
+      Image
+        *resize_image;
+
+      resize_image=ResizeImage(tile_image,tile_columns,tile_rows,
+        tile_image->filter,exception);
+      if (resize_image != (Image *) NULL)
+        {
+          tile_image=DestroyImage(tile_image);
+          tile_image=resize_image;
+        }
+    }
   (void) TransformImageColorspace(tile_image,YCCColorspace,exception);
   downsample_image=ResizeImage(tile_image,tile_image->columns/2,
     tile_image->rows/2,TriangleFilter,exception);
@@ -1134,9 +1145,9 @@ static MagickBooleanType WritePCDImage(const ImageInfo *image_info,Image *image,
   /*
     Write PCD tiles.
   */
-  status=WritePCDTile(pcd_image,"768x512>","192x128",exception);
-  status=WritePCDTile(pcd_image,"768x512>","384x256",exception);
-  status=WritePCDTile(pcd_image,"768x512>","768x512",exception);
+  status=WritePCDTile(pcd_image,"768x512>",192,128,exception);
+  status=WritePCDTile(pcd_image,"768x512>",384,256,exception);
+  status=WritePCDTile(pcd_image,"768x512>",768,512,exception);
   (void) CloseBlob(pcd_image);
   if (pcd_image != image)
     pcd_image=DestroyImage(pcd_image);

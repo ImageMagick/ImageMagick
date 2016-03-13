@@ -358,8 +358,7 @@ extern WandExport MagickWand
   *MagickSmushImages(MagickWand *,const MagickBooleanType,const ssize_t),
   *MagickSteganoImage(MagickWand *,const MagickWand *,const ssize_t),
   *MagickStereoImage(MagickWand *,const MagickWand *),
-  *MagickTextureImage(MagickWand *,const MagickWand *),
-  *MagickTransformImage(MagickWand *,const char *,const char *);
+  *MagickTextureImage(MagickWand *,const MagickWand *);
 
 extern WandExport OrientationType
   MagickGetImageOrientation(MagickWand *);

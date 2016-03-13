@@ -11840,65 +11840,6 @@ WandExport MagickBooleanType MagickTintImage(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k T r a n s f o r m I m a g e                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  MagickTransformImage() is a convenience method that behaves like
-%  MagickResizeImage() or MagickCropImage() but accepts scaling and/or cropping
-%  information as a region geometry specification.  If the operation fails,
-%  a NULL image handle is returned.
-%
-%  The format of the MagickTransformImage method is:
-%
-%      MagickWand *MagickTransformImage(MagickWand *wand,const char *crop,
-%        const char *geometry)
-%
-%  A description of each parameter follows:
-%
-%    o wand: the magick wand.
-%
-%    o crop: A crop geometry string.  This geometry defines a subregion of the
-%      image to crop.
-%
-%    o geometry: An image geometry string.  This geometry defines the final
-%      size of the image.
-%
-*/
-WandExport MagickWand *MagickTransformImage(MagickWand *wand,
-  const char *crop,const char *geometry)
-{
-  Image
-    *transform_image;
-
-  MagickBooleanType
-    status;
-
-  assert(wand != (MagickWand *) NULL);
-  assert(wand->signature == MagickWandSignature);
-  if (wand->debug != MagickFalse)
-    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  if (wand->images == (Image *) NULL)
-    return((MagickWand *) NULL);
-  transform_image=CloneImage(wand->images,0,0,MagickTrue,wand->exception);
-  if (transform_image == (Image *) NULL)
-    return((MagickWand *) NULL);
-  status=TransformImage(&transform_image,crop,geometry,wand->exception);
-  if (status == MagickFalse)
-    {
-      transform_image=DestroyImage(transform_image);
-      return((MagickWand *) NULL);
-    }
-  return(CloneMagickWandFromImages(wand,transform_image));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   M a g i c k T r a n s f o r m I m a g e C o l o r s p a c e               %
 %                                                                             %
 %                                                                             %

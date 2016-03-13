@@ -2075,15 +2075,12 @@ MagickExport Image *SpliceImage(const Image *image,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport MagickBooleanType TransformImage(Image **image,
+MagickPrivate MagickBooleanType TransformImage(Image **image,
   const char *crop_geometry,const char *image_geometry,ExceptionInfo *exception)
 {
   Image
     *resize_image,
     *transform_image;
-
-  MagickStatusType
-    flags;
 
   RectangleInfo
     geometry;
@@ -2117,8 +2114,7 @@ MagickExport MagickBooleanType TransformImage(Image **image,
   /*
     Scale image to a user specified size.
   */
-  flags=ParseRegionGeometry(transform_image,image_geometry,&geometry,exception);
-  (void) flags;
+  (void) ParseRegionGeometry(transform_image,image_geometry,&geometry,exception);
   if ((transform_image->columns == geometry.width) &&
       (transform_image->rows == geometry.height))
     return(MagickTrue);
@@ -2130,73 +2126,6 @@ MagickExport MagickBooleanType TransformImage(Image **image,
   transform_image=resize_image;
   *image=transform_image;
   return(MagickTrue);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   T r a n s f o r m I m a g e s                                             %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  TransformImages() calls TransformImage() on each image of a sequence.
-%
-%  The format of the TransformImage method is:
-%
-%      MagickBooleanType TransformImages(Image **image,
-%        const char *crop_geometry,const char *image_geometry,
-%        ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image The transformed image is returned as this parameter.
-%
-%    o crop_geometry: A crop geometry string.  This geometry defines a
-%      subregion of the image to crop.
-%
-%    o image_geometry: An image geometry string.  This geometry defines the
-%      final size of the image.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-MagickExport MagickBooleanType TransformImages(Image **images,
-  const char *crop_geometry,const char *image_geometry,ExceptionInfo *exception)
-{
-  Image
-    *image,
-    **image_list,
-    *transform_images;
-
-  MagickStatusType
-    status;
-
-  register ssize_t
-    i;
-
-  assert(images != (Image **) NULL);
-  assert((*images)->signature == MagickCoreSignature);
-  if ((*images)->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
-      (*images)->filename);
-  image_list=ImageListToArray(*images,exception);
-  if (image_list == (Image **) NULL)
-    return(MagickFalse);
-  status=MagickTrue;
-  transform_images=NewImageList();
-  for (i=0; image_list[i] != (Image *) NULL; i++)
-  {
-    image=image_list[i];
-    status&=TransformImage(&image,crop_geometry,image_geometry,exception);
-    AppendImageToList(&transform_images,image);
-  }
-  *images=transform_images;
-  image_list=(Image **) RelinquishMagickMemory(image_list);
-  return(status != 0 ? MagickTrue : MagickFalse);
 }
 
 /*

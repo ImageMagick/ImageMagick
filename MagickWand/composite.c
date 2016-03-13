@@ -1622,8 +1622,28 @@ WandExport MagickBooleanType CompositeImageCommand(ImageInfo *image_info,
   */
   RemoveImageStack(composite_image);
   RemoveImageStack(images);
-  (void) TransformImage(&composite_image,(char *) NULL,
-    composite_image->geometry,exception);
+  if (composite_image->geometry != (char *) NULL)
+    {
+      RectangleInfo
+        resize_geometry;
+
+      (void) ParseRegionGeometry(composite_image,composite_image->geometry,
+        &resize_geometry,exception);
+      if ((composite_image->columns != resize_geometry.width) ||
+          (composite_image->rows != resize_geometry.height))
+        {
+          Image
+            *resize_image;
+
+          resize_image=ResizeImage(composite_image,resize_geometry.width,
+            resize_geometry.height,composite_image->filter,exception);
+          if (resize_image != (Image *) NULL)
+            {
+              composite_image=DestroyImage(composite_image);
+              composite_image=resize_image;
+            }
+        }
+    }
   RemoveImageStack(mask_image);
   if (mask_image != (Image *) NULL)
     {

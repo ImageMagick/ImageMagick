@@ -1395,12 +1395,6 @@ namespace Magick
     // The vector weighting function is f(x)=(1-(4.0*((x-0.5)*(x-0.5))))
     void tint(const std::string opacity_);
 
-    // Transform image based on image and crop geometries
-    // Crop geometry is optional
-    void transform(const Geometry &imageGeometry_);
-    void transform(const Geometry &imageGeometry_,
-      const Geometry &cropGeometry_);
-
     // Origin of coordinate system to use when annotating with text or drawing
     void transformOrigin(const double x_,const double y_);
 

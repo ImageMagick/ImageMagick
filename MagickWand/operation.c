@@ -51,15 +51,15 @@
 #include "MagickWand/MagickWand.h"
 #include "MagickWand/magick-wand-private.h"
 #include "MagickWand/mogrify.h"
+#include "MagickWand/operation.h"
 #include "MagickWand/wand.h"
 #include "MagickWand/wandcli.h"
 #include "MagickWand/wandcli-private.h"
 #include "MagickCore/image-private.h"
 #include "MagickCore/monitor-private.h"
-#include "MagickWand/operation.h"
-#include "MagickCore/thread-private.h"
-#include "MagickCore/string-private.h"
 #include "MagickCore/pixel-private.h"
+#include "MagickCore/string-private.h"
+#include "MagickCore/thread-private.h"
 
 /*
   Constant declaration.
@@ -3895,8 +3895,28 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
             break; /* FUTURE - produce Exception, rather than silent fail */
 
           /* FUTURE - this should not be here! - should be part of -geometry */
-          (void) TransformImage(&source_image,(char *) NULL,
-            source_image->geometry,_exception);
+          if (source_image->geometry != (char *) NULL)
+            {
+              RectangleInfo
+                resize_geometry;
+
+              (void) ParseRegionGeometry(source_image,source_image->geometry,
+                &resize_geometry,_exception);
+              if ((source_image->columns != resize_geometry.width) ||
+                  (source_image->rows != resize_geometry.height))
+                {
+                  Image
+                    *resize_image;
+
+                  resize_image=ResizeImage(source_image,resize_geometry.width,
+                    resize_geometry.height,source_image->filter,_exception);
+                  if (resize_image != (Image *) NULL)
+                    {
+                      source_image=DestroyImage(source_image);
+                      source_image=resize_image;
+                    }
+                }
+            }
           SetGeometry(source_image,&geometry);
           (void) ParseAbsoluteGeometry(source_image->geometry,&geometry);
           GravityAdjustGeometry(new_images->columns,new_images->rows,

@@ -81,7 +81,7 @@
 #include "MagickCore/string-private.h"
 #include "MagickCore/thread-private.h"
 #include "MagickCore/token.h"
-#include "MagickCore/transform.h"
+#include "MagickCore/transform-private.h"
 #include "MagickCore/utility.h"
 
 /*

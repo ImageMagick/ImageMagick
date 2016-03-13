@@ -4614,25 +4614,6 @@ void Magick::Image::tint(const std::string opacity_)
   ThrowImageException;
 }
 
-void Magick::Image::transform(const Geometry &imageGeometry_)
-{
-  modifyImage();
-  GetPPException;
-  TransformImage(&(image()),0,std::string(imageGeometry_).c_str(),
-    exceptionInfo);
-  ThrowImageException;
-}
-
-void Magick::Image::transform(const Geometry &imageGeometry_,
-  const Geometry &cropGeometry_)
-{
-  modifyImage();
-  GetPPException;
-  TransformImage(&(image()),std::string(cropGeometry_).c_str(),std::string(
-    imageGeometry_).c_str(), exceptionInfo);
-  ThrowImageException;
-}
-
 void Magick::Image::transformOrigin(const double x_,const double y_)
 {
   modifyImage();
