@@ -351,7 +351,7 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
     {
       if (GetPixelGray(floodplane_image,p) != 0)
         {
-          (void) GetFillColor(draw_info,x,y,&fill_color,exception);
+          GetFillColor(draw_info,x,y,&fill_color,exception);
           SetPixelViaPixelInfo(image,&fill_color,q);
         }
       p+=GetPixelChannels(floodplane_image);

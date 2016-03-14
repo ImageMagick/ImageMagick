@@ -1635,8 +1635,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
             if (q == (Quantum *) NULL)
               continue;
             GetPixelInfo(image,&fill_color);
-            (void) GetFillColor(draw_info,x_offset,y_offset,&fill_color,
-              exception);
+            GetFillColor(draw_info,x_offset,y_offset,&fill_color,exception);
             fill_opacity=fill_opacity*fill_color.alpha;
             CompositePixelOver(image,&fill_color,fill_opacity,q,
               GetPixelAlpha(image,q),q);
@@ -2015,7 +2014,7 @@ static MagickBooleanType RenderPostscript(Image *image,
           break;
         for (x=0; x < (ssize_t) annotate_image->columns; x++)
         {
-          (void) GetFillColor(draw_info,x,y,&fill_color,exception);
+          GetFillColor(draw_info,x,y,&fill_color,exception);
           SetPixelAlpha(annotate_image,ClampToQuantum((((double) QuantumScale*
             GetPixelIntensity(annotate_image,q)*fill_color.alpha))),q);
           SetPixelRed(annotate_image,fill_color.red,q);

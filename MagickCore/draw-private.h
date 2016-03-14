@@ -26,47 +26,39 @@
 extern "C" {
 #endif
 
-static inline MagickBooleanType GetFillColor(const DrawInfo *draw_info,
-  const ssize_t x,const ssize_t y,PixelInfo *fill,ExceptionInfo *exception)
+static inline void GetFillColor(const DrawInfo *draw_info,const ssize_t x,
+  const ssize_t y,PixelInfo *fill,ExceptionInfo *exception)
 {
   if (draw_info->fill_pattern == (Image *) NULL)
     {
       *fill=draw_info->fill;
-      return(MagickTrue);
+      return;
     }
   {
     Image
       *pattern;
 
-    MagickBooleanType
-      status;
-
     pattern=draw_info->fill_pattern;
-    status=GetOneVirtualPixelInfo(pattern,TileVirtualPixelMethod,x+
+    (void) GetOneVirtualPixelInfo(pattern,TileVirtualPixelMethod,x+
       pattern->tile_offset.x,y+pattern->tile_offset.y,fill,exception);
-    return(status);
   }
 }
 
-static inline MagickBooleanType GetStrokeColor(const DrawInfo *draw_info,
-  const ssize_t x,const ssize_t y,PixelInfo *stroke,ExceptionInfo *exception)
+static inline void GetStrokeColor(const DrawInfo *draw_info,const ssize_t x,
+  const ssize_t y,PixelInfo *stroke,ExceptionInfo *exception)
 {
   if (draw_info->stroke_pattern == (Image *) NULL)
     {
       *stroke=draw_info->stroke;
-      return(MagickTrue);
+      return;
     }
   {
     Image
       *pattern;
 
-    MagickBooleanType
-      status;
-
     pattern=draw_info->stroke_pattern;
-    status=GetOneVirtualPixelInfo(pattern,TileVirtualPixelMethod,x+
+    (void) GetOneVirtualPixelInfo(pattern,TileVirtualPixelMethod,x+
       pattern->tile_offset.x,y+pattern->tile_offset.y,stroke,exception);
-    return(status);
   }
 }
 

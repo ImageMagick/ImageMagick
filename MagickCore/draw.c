@@ -3977,7 +3977,7 @@ RestoreMSCWarning
           if ((x == (ssize_t) ceil(primitive_info->point.x-0.5)) &&
               (y == (ssize_t) ceil(primitive_info->point.y-0.5)))
             {
-              (void) GetFillColor(draw_info,x-start_x,y-start_y,&pixel,exception);
+              GetFillColor(draw_info,x-start_x,y-start_y,&pixel,exception);
               SetPixelViaPixelInfo(image,&pixel,q);
             }
           q+=GetPixelChannels(image);
@@ -4050,11 +4050,11 @@ RestoreMSCWarning
           fill_alpha=fill_alpha > 0.25 ? 1.0 : 0.0;
           stroke_alpha=stroke_alpha > 0.25 ? 1.0 : 0.0;
         }
-      (void) GetFillColor(draw_info,x-start_x,y-start_y,&fill_color,exception);
+      GetFillColor(draw_info,x-start_x,y-start_y,&fill_color,exception);
       fill_alpha=fill_alpha*fill_color.alpha;
       CompositePixelOver(image,&fill_color,fill_alpha,q,(double)
         GetPixelAlpha(image,q),q);
-      (void) GetStrokeColor(draw_info,x-start_x,y-start_y,&stroke_color,exception);
+      GetStrokeColor(draw_info,x-start_x,y-start_y,&stroke_color,exception);
       stroke_alpha=stroke_alpha*stroke_color.alpha;
       CompositePixelOver(image,&stroke_color,stroke_alpha,q,(double)
         GetPixelAlpha(image,q),q);
@@ -4256,7 +4256,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
           q=GetCacheViewAuthenticPixels(image_view,x,y,1,1,exception);
           if (q == (Quantum *) NULL)
             break;
-          (void) GetFillColor(draw_info,x,y,&pixel,exception);
+          GetFillColor(draw_info,x,y,&pixel,exception);
           SetPixelAlpha(image,ClampToQuantum(pixel.alpha),q);
           (void) SyncCacheViewAuthenticPixels(image_view,exception);
           break;
@@ -4290,7 +4290,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
                   q+=GetPixelChannels(image);
                   continue;
                 }
-              (void) GetFillColor(draw_info,x,y,&pixel,exception);
+              GetFillColor(draw_info,x,y,&pixel,exception);
               SetPixelAlpha(image,ClampToQuantum(pixel.alpha),q);
               q+=GetPixelChannels(image);
             }
@@ -4343,7 +4343,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
               break;
             for (x=0; x < (ssize_t) image->columns; x++)
             {
-              (void) GetFillColor(draw_info,x,y,&pixel,exception);
+              GetFillColor(draw_info,x,y,&pixel,exception);
               SetPixelAlpha(image,ClampToQuantum(pixel.alpha),q);
               q+=GetPixelChannels(image);
             }
@@ -4373,7 +4373,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
           if (q == (Quantum *) NULL)
             break;
           GetPixelInfo(image,&pixel);
-          (void) GetFillColor(draw_info,x,y,&pixel,exception);
+          GetFillColor(draw_info,x,y,&pixel,exception);
           SetPixelViaPixelInfo(image,&pixel,q);
           (void) SyncCacheViewAuthenticPixels(image_view,exception);
           break;
@@ -4406,7 +4406,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
                   q+=GetPixelChannels(image);
                   continue;
                 }
-              (void) GetFillColor(draw_info,x,y,&pixel,exception);
+              GetFillColor(draw_info,x,y,&pixel,exception);
               SetPixelViaPixelInfo(image,&pixel,q);
               q+=GetPixelChannels(image);
             }
@@ -4455,7 +4455,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
               break;
             for (x=0; x < (ssize_t) image->columns; x++)
             {
-              (void) GetFillColor(draw_info,x,y,&pixel,exception);
+              GetFillColor(draw_info,x,y,&pixel,exception);
               SetPixelViaPixelInfo(image,&pixel,q);
               q+=GetPixelChannels(image);
             }
@@ -4560,7 +4560,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
       q=GetCacheViewAuthenticPixels(image_view,x,y,1,1,exception);
       if (q == (Quantum *) NULL)
         break;
-      (void) GetFillColor(draw_info,x,y,&fill_color,exception);
+      GetFillColor(draw_info,x,y,&fill_color,exception);
       CompositePixelOver(image,&fill_color,(double) fill_color.alpha,q,
         (double) GetPixelAlpha(image,q),q);
       (void) SyncCacheViewAuthenticPixels(image_view,exception);
