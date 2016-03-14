@@ -839,8 +839,12 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     switch (bmp_info.compression)
     {
       case BI_RGB:
+        image->compression=NoCompression;
+        break;
       case BI_RLE8:
       case BI_RLE4:
+        image->compression=RLECompression;
+        break;
       case BI_BITFIELDS:
         break;
       case BI_JPEG:
