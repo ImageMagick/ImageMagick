@@ -4615,8 +4615,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
           break;
         }
       mid=ExpandAffine(&draw_info->affine)*draw_info->stroke_width/2.0;
-      if ((mid > 1.0) &&
-          (draw_info->stroke.alpha != (Quantum) TransparentAlpha))
+      if (mid > 1.0)
         {
           MagickBooleanType
             closed_path;
