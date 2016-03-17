@@ -44,9 +44,9 @@ extern "C" {
   __builtin_prefetch(address,mode,locality)
 #else
 #define MagickCachePrefetch(address,mode,locality) \
-  (void) address; \
-  (void) mode; \
-  (void) locality;
+  magick_unreferenced(address); \
+  magick_unreferenced(mode); \
+  magick_unreferenced(locality);
 #endif
 
 #if defined(MAGICKCORE_THREAD_SUPPORT)

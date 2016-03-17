@@ -209,9 +209,9 @@ MagickPrivate void RecordProfileData(MagickCLEnv clEnv, ProfiledKernels kernel, 
     UnlockSemaphoreInfo(clEnv->commandQueuesLock);
   }
 #else
-  (void) clEnv;
-  (void) kernel;
-  (void) event;
+  magick_unreferenced(clEnv);
+  magick_unreferenced(kernel);
+  magick_unreferenced(event);
 #endif
 }
 

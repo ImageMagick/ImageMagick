@@ -284,7 +284,7 @@ MagickExport ExceptionInfo *CloneExceptionInfo(ExceptionInfo *exception)
 static void DefaultErrorHandler(const ExceptionType magick_unused(severity),
   const char *reason,const char *description)
 {
-  (void) severity;
+  magick_unreferenced(severity);
 
   if (reason == (char *) NULL)
     return;
@@ -368,7 +368,7 @@ static void DefaultFatalErrorHandler(const ExceptionType severity,
 static void DefaultWarningHandler(const ExceptionType magick_unused(severity),
   const char *reason,const char *description)
 {
-  (void) severity;
+  magick_unreferenced(severity);
 
   if (reason == (char *) NULL)
     return;
