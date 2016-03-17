@@ -68,6 +68,7 @@ Magick::DrawableBase::~DrawableBase(void)
 
 void Magick::DrawableBase::operator()(MagickCore::DrawingWand * context_) const
 {
+  (void) context_;
 }
 
 Magick::DrawableBase* Magick::DrawableBase::copy() const

@@ -2683,6 +2683,7 @@ MagickPrivate void NTWarningHandler(const ExceptionType severity,
 
 static LONG WINAPI NTUncaughtException(EXCEPTION_POINTERS *info)
 {
+  (void) info;
   AsynchronousResourceComponentTerminus();
   return(EXCEPTION_CONTINUE_SEARCH);
 }

@@ -208,6 +208,10 @@ MagickPrivate void RecordProfileData(MagickCLEnv clEnv, ProfiledKernels kernel, 
     profileRecords[kernel].count += 1;
     UnlockSemaphoreInfo(clEnv->commandQueuesLock);
   }
+#else
+  (void) clEnv;
+  (void) kernel;
+  (void) event;
 #endif
 }
 

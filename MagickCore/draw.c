@@ -455,8 +455,7 @@ static void ReversePoints(PointInfo *points,const size_t number_points)
   }
 }
 
-static PolygonInfo *ConvertPathToPolygon(
-  const DrawInfo *magick_unused(draw_info),const PathInfo *path_info)
+static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info)
 {
   long
     direction,
@@ -702,8 +701,7 @@ static void LogPathInfo(const PathInfo *path_info)
   (void) LogMagickEvent(DrawEvent,GetMagickModule(),"    end vector-path");
 }
 
-static PathInfo *ConvertPrimitiveToPath(
-  const DrawInfo *magick_unused(draw_info),const PrimitiveInfo *primitive_info)
+static PathInfo *ConvertPrimitiveToPath(const PrimitiveInfo *primitive_info)
 {
   PathInfo
     *path_info;
@@ -3642,7 +3640,7 @@ static PolygonInfo **DestroyPolygonThreadSet(PolygonInfo **polygon_info)
   return(polygon_info);
 }
 
-static PolygonInfo **AcquirePolygonThreadSet(const DrawInfo *draw_info,
+static PolygonInfo **AcquirePolygonThreadSet(
   const PrimitiveInfo *primitive_info)
 {
   PathInfo
@@ -3663,12 +3661,12 @@ static PolygonInfo **AcquirePolygonThreadSet(const DrawInfo *draw_info,
   if (polygon_info == (PolygonInfo **) NULL)
     return((PolygonInfo **) NULL);
   (void) ResetMagickMemory(polygon_info,0,number_threads*sizeof(*polygon_info));
-  path_info=ConvertPrimitiveToPath(draw_info,primitive_info);
+  path_info=ConvertPrimitiveToPath(primitive_info);
   if (path_info == (PathInfo *) NULL)
     return(DestroyPolygonThreadSet(polygon_info));
   for (i=0; i < (ssize_t) number_threads; i++)
   {
-    polygon_info[i]=ConvertPathToPolygon(draw_info,path_info);
+    polygon_info[i]=ConvertPathToPolygon(path_info);
     if (polygon_info[i] == (PolygonInfo *) NULL)
       return(DestroyPolygonThreadSet(polygon_info));
   }
@@ -3890,7 +3888,7 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
   assert(primitive_info != (PrimitiveInfo *) NULL);
   if (primitive_info->coordinates == 0)
     return(MagickTrue);
-  polygon_info=AcquirePolygonThreadSet(draw_info,primitive_info);
+  polygon_info=AcquirePolygonThreadSet(primitive_info);
   if (polygon_info == (PolygonInfo **) NULL)
     return(MagickFalse);
 DisableMSCWarning(4127)

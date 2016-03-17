@@ -923,9 +923,8 @@ MagickPrivate void LogComponentTerminus(void)
 %    o format: the output format.
 %
 */
-static char *TranslateEvent(const LogEventType magick_unused(type),
-  const char *module,const char *function,const size_t line,
-  const char *domain,const char *event)
+static char *TranslateEvent(const char *module,const char *function,
+  const size_t line,const char *domain,const char *event)
 {
   char
     *text;
@@ -1287,7 +1286,7 @@ MagickBooleanType LogMagickEventList(const LogEventType type,const char *module,
 #endif
   if (n < 0)
     event[MagickPathExtent-1]='\0';
-  text=TranslateEvent(type,module,function,line,domain,event);
+  text=TranslateEvent(module,function,line,domain,event);
   if (text == (char *) NULL)
     {
       (void) ContinueTimer((TimerInfo *) &log_info->timer);

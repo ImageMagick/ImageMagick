@@ -415,8 +415,7 @@ MagickExport MagickBooleanType FormatImageProperty(Image *image,
 */
 
 static char
-  *TracePSClippath(const unsigned char *,size_t,const size_t,
-    const size_t),
+  *TracePSClippath(const unsigned char *,size_t),
   *TraceSVGClippath(const unsigned char *,size_t,const size_t,
     const size_t);
 
@@ -691,8 +690,7 @@ static MagickBooleanType Get8BIMProperty(const Image *image,const char *key,
               path=TraceSVGClippath((unsigned char *) attribute,(size_t) count,
                 image->columns,image->rows);
             else
-              path=TracePSClippath((unsigned char *) attribute,(size_t) count,
-                image->columns,image->rows);
+              path=TracePSClippath((unsigned char *) attribute,(size_t) count);
             (void) SetImageProperty((Image *) image,key,(const char *) path,
               exception);
             path=DestroyString(path);
@@ -1699,8 +1697,7 @@ static MagickBooleanType GetXMPProperty(const Image *image,const char *property)
   return(status);
 }
 
-static char *TracePSClippath(const unsigned char *blob,size_t length,
-  const size_t magick_unused(columns),const size_t magick_unused(rows))
+static char *TracePSClippath(const unsigned char *blob,size_t length)
 {
   char
     *path,

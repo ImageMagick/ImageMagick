@@ -102,7 +102,7 @@ static const ModuleInfo
 
 static MagickBooleanType
   GetMagickModulePath(const char *,MagickModuleType,char *,ExceptionInfo *),
-  IsModuleTreeInstantiated(ExceptionInfo *),
+  IsModuleTreeInstantiated(),
   UnregisterModule(const ModuleInfo *,ExceptionInfo *);
 
 static void
@@ -218,7 +218,7 @@ MagickExport ModuleInfo *GetModuleInfo(const char *tag,ExceptionInfo *exception)
   ModuleInfo
     *module_info;
 
-  if (IsModuleTreeInstantiated(exception) == MagickFalse)
+  if (IsModuleTreeInstantiated() == MagickFalse)
     return((ModuleInfo *) NULL);
   LockSemaphoreInfo(module_semaphore);
   ResetSplayTreeIterator(module_list);
@@ -840,11 +840,7 @@ static MagickBooleanType GetMagickModulePath(const char *filename,
 %
 %  The format of the IsModuleTreeInstantiated() method is:
 %
-%      IsModuleTreeInstantiated(Exceptioninfo *exception)
-%
-%  A description of each parameter follows.
-%
-%    o exception: return any errors or warnings in this structure.
+%      IsModuleTreeInstantiated()
 %
 */
 
@@ -868,8 +864,7 @@ static void *DestroyModuleNode(void *module_info)
   return(RelinquishMagickMemory(p));
 }
 
-static MagickBooleanType IsModuleTreeInstantiated(
-  ExceptionInfo *magick_unused(exception))
+static MagickBooleanType IsModuleTreeInstantiated()
 {
   if (module_list == (SplayTreeInfo *) NULL)
     {
@@ -1161,17 +1156,12 @@ MagickExport MagickBooleanType ListModuleInfo(FILE *file,
 */
 MagickPrivate MagickBooleanType ModuleComponentGenesis(void)
 {
-  ExceptionInfo
-    *exception;
-
   MagickBooleanType
     status;
 
   if (module_semaphore == (SemaphoreInfo *) NULL)
     module_semaphore=AcquireSemaphoreInfo();
-  exception=AcquireExceptionInfo();
-  status=IsModuleTreeInstantiated(exception);
-  exception=DestroyExceptionInfo(exception);
+  status=IsModuleTreeInstantiated();
   return(status);
 }
 
