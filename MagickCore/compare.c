@@ -124,16 +124,6 @@ static size_t GetImageChannels(const Image *image)
   return(channels == 0 ? (size_t) 1 : channels);
 }
 
-static inline MagickBooleanType ValidateImageMorphology(
-  const Image *magick_restrict image,
-  const Image *magick_restrict reconstruct_image)
-{
-  /*
-    Does the image match the reconstructed image morphology?
-  */
-  return(MagickTrue);
-}
-
 MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
   const MetricType metric,double *distortion,ExceptionInfo *exception)
 {
@@ -179,9 +169,6 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
   *distortion=0.0;
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if (metric != PerceptualHashErrorMetric)
-    if (ValidateImageMorphology(image,reconstruct_image) == MagickFalse)
-      ThrowImageException(ImageError,"ImageMorphologyDiffers");
   status=GetImageDistortion(image,reconstruct_image,metric,distortion,
     exception);
   if (status == MagickFalse)
@@ -1288,9 +1275,6 @@ MagickExport MagickBooleanType GetImageDistortion(Image *image,
   *distortion=0.0;
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if (metric != PerceptualHashErrorMetric)
-    if (ValidateImageMorphology(image,reconstruct_image) == MagickFalse)
-      ThrowBinaryException(ImageError,"ImageMorphologyDiffers",image->filename);
   /*
     Get image distortion.
   */
@@ -1425,13 +1409,6 @@ MagickExport double *GetImageDistortions(Image *image,
   assert(reconstruct_image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if (metric != PerceptualHashErrorMetric)
-    if (ValidateImageMorphology(image,reconstruct_image) == MagickFalse)
-      {
-        (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
-          "ImageMorphologyDiffers","`%s'",image->filename);
-        return((double *) NULL);
-      }
   /*
     Get image distortion.
   */
@@ -1561,8 +1538,6 @@ MagickExport MagickBooleanType IsImagesEqual(const Image *image,
   assert(image->signature == MagickCoreSignature);
   assert(reconstruct_image != (const Image *) NULL);
   assert(reconstruct_image->signature == MagickCoreSignature);
-  if (ValidateImageMorphology(image,reconstruct_image) == MagickFalse)
-    ThrowBinaryException(ImageError,"ImageMorphologyDiffers",image->filename);
   rows=MagickMax(image->rows,reconstruct_image->rows);
   columns=MagickMax(image->columns,reconstruct_image->columns);
   image_view=AcquireVirtualCacheView(image,exception);
@@ -1698,8 +1673,6 @@ MagickExport MagickBooleanType SetImageColorMetric(Image *image,
   assert(image->signature == MagickCoreSignature);
   assert(reconstruct_image != (const Image *) NULL);
   assert(reconstruct_image->signature == MagickCoreSignature);
-  if (ValidateImageMorphology(image,reconstruct_image) == MagickFalse)
-    ThrowBinaryException(ImageError,"ImageMorphologyDiffers",image->filename);
   area=0.0;
   maximum_error=0.0;
   mean_error_per_pixel=0.0;
@@ -1871,8 +1844,6 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reference,
   assert(offset != (RectangleInfo *) NULL);
   SetGeometry(reference,offset);
   *similarity_metric=MagickMaximumValue;
-  if (ValidateImageMorphology(image,reference) == MagickFalse)
-    ThrowImageException(ImageError,"ImageMorphologyDiffers");
   similarity_image=CloneImage(image,image->columns-reference->columns+1,
     image->rows-reference->rows+1,MagickTrue,exception);
   if (similarity_image == (Image *) NULL)
