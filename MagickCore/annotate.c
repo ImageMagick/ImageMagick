@@ -1143,7 +1143,7 @@ cleanup:
                 RightToLeftDirection ? -1.0 : 1.0)*kerning.x);
           }
       }
-    ft_status=FT_Load_Glyph(face,(*grapheme)[i].index,flags);
+    ft_status=FT_Load_Glyph(face,(FT_UInt) (*grapheme)[i].index,flags);
     (*grapheme)[i].x_advance=face->glyph->advance.x;
     (*grapheme)[i].cluster=p-text;
     last_glyph=(*grapheme)[i].index;
@@ -1511,14 +1511,14 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
     /*
       Render UTF-8 sequence.
     */
-    glyph.id=grapheme[i].index;
+    glyph.id=(FT_UInt) grapheme[i].index;
     if (glyph.id == 0)
       glyph.id=FT_Get_Char_Index(face,'?');
     if ((glyph.id != 0) && (last_glyph.id != 0))
       origin.x+=(FT_Pos) (64.0*draw_info->kerning);
     glyph.origin=origin;
-    glyph.origin.x+=grapheme[i].x_offset;
-    glyph.origin.y+=grapheme[i].y_offset;
+    glyph.origin.x+=(FT_Pos) grapheme[i].x_offset;
+    glyph.origin.y+=(FT_Pos) grapheme[i].y_offset;
     ft_status=FT_Load_Glyph(face,glyph.id,flags);
     if (ft_status != 0)
       continue;

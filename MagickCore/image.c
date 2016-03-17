@@ -1638,10 +1638,10 @@ MagickExport size_t InterpretImageFilename(const ImageInfo *image_info,
     if (*q == '0')
       {
         ssize_t
-          value;
+          foo;
 
-        value=(ssize_t) strtol(q,&q,10);
-        (void) value;
+        foo=(ssize_t) strtol(q,&q,10);
+        (void) foo;
       }
     switch (*q)
     {
@@ -1668,7 +1668,7 @@ MagickExport size_t InterpretImageFilename(const ImageInfo *image_info,
           pattern[MagickPathExtent];
 
         const char
-          *value;
+          *option;
 
         register char
           *r;
@@ -1702,20 +1702,20 @@ MagickExport size_t InterpretImageFilename(const ImageInfo *image_info,
         pattern[i]='\0';
         if (LocaleNCompare(pattern,"filename:",9) != 0)
           break;
-        value=(const char *) NULL;
+        option=(const char *) NULL;
         if (image != (Image *) NULL)
-          value=GetImageProperty(image,pattern,exception);
-        if ((value == (const char *) NULL) && (image != (Image *) NULL))
-          value=GetImageArtifact(image,pattern);
-        if ((value == (const char *) NULL) &&
+          option=GetImageProperty(image,pattern,exception);
+        if ((option == (const char *) NULL) && (image != (Image *) NULL))
+          option=GetImageArtifact(image,pattern);
+        if ((option == (const char *) NULL) &&
             (image_info != (ImageInfo *) NULL))
-          value=GetImageOption(image_info,pattern);
-        if (value == (const char *) NULL)
+          option=GetImageOption(image_info,pattern);
+        if (option == (const char *) NULL)
           break;
         q--;
         c=(*q);
         *q='\0';
-        (void) CopyMagickString(filename+(p-format-length),value,(size_t)
+        (void) CopyMagickString(filename+(p-format-length),option,(size_t)
           (MagickPathExtent-(p-format-length)));
         length+=strlen(pattern)-1;
         *q=c;
