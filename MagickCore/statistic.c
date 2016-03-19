@@ -149,8 +149,7 @@ static PixelChannels **DestroyPixelThreadSet(PixelChannels **pixels)
   return(pixels);
 }
 
-static PixelChannels **AcquirePixelThreadSet(const Image *image,
-  const size_t number_images)
+static PixelChannels **AcquirePixelThreadSet(const Image *image)
 {
   PixelChannels
     **pixels;
@@ -466,7 +465,7 @@ MagickExport Image *EvaluateImages(const Image *images,
       return((Image *) NULL);
     }
   number_images=GetImageListLength(images);
-  evaluate_pixels=AcquirePixelThreadSet(images,number_images);
+  evaluate_pixels=AcquirePixelThreadSet(images);
   if (evaluate_pixels == (PixelChannels **) NULL)
     {
       image=DestroyImage(image);
@@ -2313,7 +2312,7 @@ MagickExport Image *PolynomialImage(const Image *images,
       return((Image *) NULL);
     }
   number_images=GetImageListLength(images);
-  polynomial_pixels=AcquirePixelThreadSet(images,number_images);
+  polynomial_pixels=AcquirePixelThreadSet(images);
   if (polynomial_pixels == (PixelChannels **) NULL)
     {
       image=DestroyImage(image);

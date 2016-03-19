@@ -718,6 +718,8 @@ static const Quantum *GetVirtualPixelStream(const Image *image,
   size_t
     length;
 
+  magick_unreferenced(virtual_pixel_method);
+
   /*
     Validate pixel cache geometry.
   */

@@ -1116,6 +1116,8 @@ cleanup:
   ssize_t
     last_glyph;
 
+  magick_unreferenced(exception);
+
   /*
     Simple layout for bi-directional text (right-to-left or left-to-right).
   */

@@ -89,7 +89,7 @@ static const char
 */
 static MagickBooleanType MonitorProgress(const char *text,
   const MagickOffsetType offset,const MagickSizeType extent,
-  void *wand_unused(cli_wandent_data))
+  void *wand_unused(client_data))
 {
   char
     message[MagickPathExtent],
@@ -100,6 +100,8 @@ static MagickBooleanType MonitorProgress(const char *text,
 
   register char
     *p;
+
+  magick_unreferenced(client_data);
 
   if ((extent <= 1) || (offset < 0) || (offset >= (MagickOffsetType) extent))
     return(MagickTrue);

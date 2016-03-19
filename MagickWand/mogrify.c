@@ -395,6 +395,8 @@ static MagickBooleanType MonitorProgress(const char *text,
   register char
     *p;
 
+  magick_unreferenced(client_data);
+
   if ((extent <= 1) || (offset < 0) || (offset >= (MagickOffsetType) extent))
     return(MagickTrue);
   if ((offset != (MagickOffsetType) (extent-1)) && ((offset % 50) != 0))

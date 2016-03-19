@@ -149,6 +149,8 @@ static double
 static double Blackman(const double x,
   const ResizeFilter *magick_unused(resize_filter))
 {
+  magick_unreferenced(resize_filter);
+
   /*
     Blackman: 2nd order cosine windowing function:
       0.42 + 0.5 cos(pi x) + 0.08 cos(2pi x)
@@ -163,6 +165,8 @@ static double Blackman(const double x,
 static double Bohman(const double x,
   const ResizeFilter *magick_unused(resize_filter))
 {
+  magick_unreferenced(resize_filter);
+
   /*
     Bohman: 2rd Order cosine windowing function:
       (1-x) cos(pi x) + sin(pi x) / pi.
@@ -179,6 +183,9 @@ static double Bohman(const double x,
 static double Box(const double magick_unused(x),
   const ResizeFilter *magick_unused(resize_filter))
 {
+  magick_unreferenced(x);
+  magick_unreferenced(resize_filter);
+
   /*
     A Box filter is a equal weighting function (all weights equal).
     DO NOT LIMIT results by support or resize point sampling will work
@@ -190,6 +197,8 @@ static double Box(const double magick_unused(x),
 static double Cosine(const double x,
   const ResizeFilter *magick_unused(resize_filter))
 {
+  magick_unreferenced(resize_filter);
+
   /*
     Cosine window function:
       cos((pi/2)*x).
@@ -275,6 +284,8 @@ static double Gaussian(const double x,const ResizeFilter *resize_filter)
 static double Hann(const double x,
   const ResizeFilter *magick_unused(resize_filter))
 {
+  magick_unreferenced(resize_filter);
+
   /*
     Cosine window function:
       0.5+0.5*cos(pi*x).
@@ -286,6 +297,8 @@ static double Hann(const double x,
 static double Hamming(const double x,
   const ResizeFilter *magick_unused(resize_filter))
 {
+  magick_unreferenced(resize_filter);
+
   /*
     Offset cosine window function:
      .54 + .46 cos(pi x).
@@ -297,6 +310,8 @@ static double Hamming(const double x,
 static double Jinc(const double x,
   const ResizeFilter *magick_unused(resize_filter))
 {
+  magick_unreferenced(resize_filter);
+
   /*
     See Pratt "Digital Image Processing" p.97 for Jinc/Bessel functions.
     http://mathworld.wolfram.com/JincFunction.html and page 11 of
@@ -364,6 +379,8 @@ static double Lagrange(const double x,const ResizeFilter *resize_filter)
 static double Quadratic(const double x,
   const ResizeFilter *magick_unused(resize_filter))
 {
+  magick_unreferenced(resize_filter);
+
   /*
     2rd order (quadratic) B-Spline approximation of Gaussian.
   */
@@ -377,6 +394,8 @@ static double Quadratic(const double x,
 static double Sinc(const double x,
   const ResizeFilter *magick_unused(resize_filter))
 {
+  magick_unreferenced(resize_filter);
+
   /*
     Scaled sinc(x) function using a trig call:
       sinc(x) == sin(pi x)/(pi x).
@@ -392,6 +411,8 @@ static double Sinc(const double x,
 static double SincFast(const double x,
   const ResizeFilter *magick_unused(resize_filter))
 {
+  magick_unreferenced(resize_filter);
+
   /*
     Approximations of the sinc function sin(pi x)/(pi x) over the interval
     [-4,4] constructed by Nicolas Robidoux and Chantal Racette with funding
@@ -486,6 +507,8 @@ static double SincFast(const double x,
 static double Triangle(const double x,
   const ResizeFilter *magick_unused(resize_filter))
 {
+  magick_unreferenced(resize_filter);
+
   /*
     1st order (linear) B-Spline, bilinear interpolation, Tent 1D filter, or
     a Bartlett 2D Cone filter.  Also used as a Bartlett Windowing function
@@ -499,6 +522,8 @@ static double Triangle(const double x,
 static double Welch(const double x,
   const ResizeFilter *magick_unused(resize_filter))
 {
+  magick_unreferenced(resize_filter);
+
   /*
     Welch parabolic windowing filter.
   */

@@ -793,7 +793,7 @@ static void JPEGSourceManager(j_decompress_ptr cinfo,Image *image)
 }
 
 static void JPEGSetImageQuality(struct jpeg_decompress_struct *jpeg_info,
-  Image *image, ExceptionInfo *exception)
+  Image *image)
 {
   image->quality=UndefinedCompressionQuality;
 #if defined(D_PROGRESSIVE_SUPPORTED)
@@ -1284,7 +1284,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Geometry: %dx%d",
         (int) jpeg_info.output_width,(int) jpeg_info.output_height);
     }
-  JPEGSetImageQuality(&jpeg_info,image,exception);
+  JPEGSetImageQuality(&jpeg_info,image);
   JPEGSetImageSamplingFactor(&jpeg_info,image,exception);
   (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
     jpeg_info.out_color_space);
