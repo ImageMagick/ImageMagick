@@ -1512,7 +1512,7 @@ MagickPrivate MagickBooleanType RelinquishOpenCLCommandQueue(MagickCLEnv clEnv,
 
   LockSemaphoreInfo(clEnv->commandQueuesLock);
 
-  if (clEnv->commandQueuesPos >= MAX_COMMAND_QUEUES)
+  if (clEnv->commandQueuesPos >= MAX_COMMAND_QUEUES-1)
     status=(clEnv->library->clReleaseCommandQueue(queue) == CL_SUCCESS) ?
       MagickTrue : MagickFalse;
   else

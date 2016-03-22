@@ -39,7 +39,7 @@ extern "C" {
   typedef struct { unsigned char t[8]; } cl_device_type; /* 64-bit */
 #else
 
-#define MAX_COMMAND_QUEUES 8
+#define MAX_COMMAND_QUEUES 16
 
 /*
  *
