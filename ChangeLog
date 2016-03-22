@@ -1,4 +1,7 @@
-2016-03-26  6.9.3-7 Cristy  <quetzlzacatenango@image...>
+2016-03-22  6.9.3-8 Cristy  <quetzlzacatenango@image...>
+  * Respect gravity when rendering text (e.g. convert -gravity center my.txt ...)
+
+2016-03-06  6.9.3-7 Cristy  <quetzlzacatenango@image...>
   * New version 6.9.3-7, GIT revision 10628:810a9fe:20160306
 
 2016-03-05  6.9.3-7 Dirk Lemstra <dirk@lem.....org>

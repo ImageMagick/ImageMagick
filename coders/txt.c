@@ -262,8 +262,8 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,Image *image,
   if (status == MagickFalse)
     ThrowReaderException(TypeError,"UnableToGetTypeMetrics");
   page.y=(ssize_t) ceil((double) page.y+metrics.ascent-0.5);
-  (void) FormatLocaleString(geometry,MaxTextExtent,"0x0%+ld%+ld",(long) page.x,
-    (long) page.y);
+  (void) FormatLocaleString(geometry,MaxTextExtent,"%lux%lu%+ld%+ld",
+    image->columns,image->rows,(long) page.x,(long) page.y);
   (void) CloneString(&draw_info->geometry,geometry);
   (void) CopyMagickString(filename,image_info->filename,MaxTextExtent);
   if (*draw_info->text != '\0')
@@ -279,7 +279,8 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,Image *image,
     offset+=(ssize_t) (metrics.ascent-metrics.descent);
     if (image->previous == (Image *) NULL)
       {
-        status=SetImageProgress(image,LoadImageTag,offset,image->rows);
+        status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) offset,
+          image->rows);
         if (status == MagickFalse)
           break;
       }
@@ -378,9 +379,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *indexes;
 
   long
-    type,
     x_offset,
-    y,
     y_offset;
 
   MagickBooleanType
@@ -400,7 +399,9 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *q;
 
   ssize_t
-    count;
+    count,
+    type,
+    y;
 
   unsigned long
     depth,
@@ -540,12 +541,18 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
             green+=(range+1)/2.0;
             blue+=(range+1)/2.0;
           }
-        pixel.red=ScaleAnyToQuantum((QuantumAny) (red+0.5),range);
-        pixel.green=ScaleAnyToQuantum((QuantumAny) (green+0.5),range);
-        pixel.blue=ScaleAnyToQuantum((QuantumAny) (blue+0.5),range);
-        pixel.index=ScaleAnyToQuantum((QuantumAny) (index+0.5),range);
-        pixel.opacity=ScaleAnyToQuantum((QuantumAny) (opacity+0.5),range);
-        q=GetAuthenticPixels(image,x_offset,y_offset,1,1,exception);
+        pixel.red=(MagickRealType) ScaleAnyToQuantum((QuantumAny) (red+0.5),
+          range);
+        pixel.green=(MagickRealType) ScaleAnyToQuantum((QuantumAny) (green+0.5),
+          range);
+        pixel.blue=(MagickRealType) ScaleAnyToQuantum((QuantumAny) (blue+0.5),
+          range);
+        pixel.index=(MagickRealType) ScaleAnyToQuantum((QuantumAny) (index+0.5),
+          range);
+        pixel.opacity=(MagickRealType) ScaleAnyToQuantum((QuantumAny) (opacity+
+          0.5),range);
+        q=GetAuthenticPixels(image,(ssize_t) x_offset,(ssize_t) y_offset,1,1,
+          exception);
         if (q == (PixelPacket *) NULL)
           continue;
         SetPixelRed(q,pixel.red);
@@ -749,7 +756,7 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image)
         MagickFalse,value);
     if (LocaleCompare(image_info->magick,"SPARSE-COLOR") != 0)
       {
-        ssize_t
+        size_t
           depth;
 
         depth=compliance == SVGCompliance ? image->depth :
