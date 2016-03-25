@@ -350,118 +350,136 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,
 */
 MagickExport char *GetPageGeometry(const char *page_geometry)
 {
-  static const char
-    *PageSizes[][2]=
+#define MagickPageSize(name,geometry) { (name), sizeof(name)-1, (geometry) }
+
+  typedef struct _PageInfo
+  {
+    char
+      *name;
+
+    size_t
+      extent;
+
+    char
+      *geometry;
+  } PageInfo;
+
+  static const PageInfo
+    const PageSizes[] =
     {
-      { "4x6",  "288x432" },
-      { "5x7",  "360x504" },
-      { "7x9",  "504x648" },
-      { "8x10", "576x720" },
-      { "9x11",  "648x792" },
-      { "9x12",  "648x864" },
-      { "10x13",  "720x936" },
-      { "10x14",  "720x1008" },
-      { "11x17",  "792x1224" },
-      { "a0",  "2384x3370" },
-      { "a1",  "1684x2384" },
-      { "a10", "73x105" },
-      { "a2",  "1191x1684" },
-      { "a3",  "842x1191" },
-      { "a4",  "595x842" },
-      { "a4small", "595x842" },
-      { "a5",  "420x595" },
-      { "a6",  "297x420" },
-      { "a7",  "210x297" },
-      { "a8",  "148x210" },
-      { "a9",  "105x148" },
-      { "archa", "648x864" },
-      { "archb", "864x1296" },
-      { "archC", "1296x1728" },
-      { "archd", "1728x2592" },
-      { "arche", "2592x3456" },
-      { "b0",  "2920x4127" },
-      { "b1",  "2064x2920" },
-      { "b10", "91x127" },
-      { "b2",  "1460x2064" },
-      { "b3",  "1032x1460" },
-      { "b4",  "729x1032" },
-      { "b5",  "516x729" },
-      { "b6",  "363x516" },
-      { "b7",  "258x363" },
-      { "b8",  "181x258" },
-      { "b9",  "127x181" },
-      { "c0",  "2599x3676" },
-      { "c1",  "1837x2599" },
-      { "c2",  "1298x1837" },
-      { "c3",  "918x1296" },
-      { "c4",  "649x918" },
-      { "c5",  "459x649" },
-      { "c6",  "323x459" },
-      { "c7",  "230x323" },
-      { "executive", "540x720" },
-      { "flsa", "612x936" },
-      { "flse", "612x936" },
-      { "folio",  "612x936" },
-      { "halfletter", "396x612" },
-      { "isob0", "2835x4008" },
-      { "isob1", "2004x2835" },
-      { "isob10", "88x125" },
-      { "isob2", "1417x2004" },
-      { "isob3", "1001x1417" },
-      { "isob4", "709x1001" },
-      { "isob5", "499x709" },
-      { "isob6", "354x499" },
-      { "isob7", "249x354" },
-      { "isob8", "176x249" },
-      { "isob9", "125x176" },
-      { "jisb0", "1030x1456" },
-      { "jisb1", "728x1030" },
-      { "jisb2", "515x728" },
-      { "jisb3", "364x515" },
-      { "jisb4", "257x364" },
-      { "jisb5", "182x257" },
-      { "jisb6", "128x182" },
-      { "ledger",  "1224x792" },
-      { "legal",  "612x1008" },
-      { "letter", "612x792" },
-      { "lettersmall",  "612x792" },
-      { "quarto",  "610x780" },
-      { "statement",  "396x612" },
-      { "tabloid",  "792x1224" },
-      { (char *) NULL, (char *) NULL }
+      MagickPageSize("4x6", "288x432"),
+      MagickPageSize("5x7", "360x504"),
+      MagickPageSize("7x9", "504x648"),
+      MagickPageSize("8x10", "576x720"),
+      MagickPageSize("9x11", "648x792"),
+      MagickPageSize("9x12", "648x864"),
+      MagickPageSize("10x13", "720x936"),
+      MagickPageSize("10x14", "720x1008"),
+      MagickPageSize("11x17", "792x1224"),
+      MagickPageSize("a0", "2384x3370"),
+      MagickPageSize("a1", "1684x2384"),
+      MagickPageSize("a10", "73x105"),
+      MagickPageSize("a2", "1191x1684"),
+      MagickPageSize("a3", "842x1191"),
+      MagickPageSize("a4", "595x842"),
+      MagickPageSize("a4small", "595x842"),
+      MagickPageSize("a5", "420x595"),
+      MagickPageSize("a6", "297x420"),
+      MagickPageSize("a7", "210x297"),
+      MagickPageSize("a8", "148x210"),
+      MagickPageSize("a9", "105x148"),
+      MagickPageSize("archa", "648x864"),
+      MagickPageSize("archb", "864x1296"),
+      MagickPageSize("archC", "1296x1728"),
+      MagickPageSize("archd", "1728x2592"),
+      MagickPageSize("arche", "2592x3456"),
+      MagickPageSize("b0", "2920x4127"),
+      MagickPageSize("b1", "2064x2920"),
+      MagickPageSize("b10", "91x127"),
+      MagickPageSize("b2", "1460x2064"),
+      MagickPageSize("b3", "1032x1460"),
+      MagickPageSize("b4", "729x1032"),
+      MagickPageSize("b5", "516x729"),
+      MagickPageSize("b6", "363x516"),
+      MagickPageSize("b7", "258x363"),
+      MagickPageSize("b8", "181x258"),
+      MagickPageSize("b9", "127x181"),
+      MagickPageSize("c0", "2599x3676"),
+      MagickPageSize("c1", "1837x2599"),
+      MagickPageSize("c2", "1298x1837"),
+      MagickPageSize("c3", "918x1296"),
+      MagickPageSize("c4", "649x918"),
+      MagickPageSize("c5", "459x649"),
+      MagickPageSize("c6", "323x459"),
+      MagickPageSize("c7", "230x323"),
+      MagickPageSize("executive", "540x720"),
+      MagickPageSize("flsa", "612x936"),
+      MagickPageSize("flse", "612x936"),
+      MagickPageSize("folio", "612x936"),
+      MagickPageSize("halfletter", "396x612"),
+      MagickPageSize("isob0", "2835x4008"),
+      MagickPageSize("isob1", "2004x2835"),
+      MagickPageSize("isob10", "88x125"),
+      MagickPageSize("isob2", "1417x2004"),
+      MagickPageSize("isob3", "1001x1417"),
+      MagickPageSize("isob4", "709x1001"),
+      MagickPageSize("isob5", "499x709"),
+      MagickPageSize("isob6", "354x499"),
+      MagickPageSize("isob7", "249x354"),
+      MagickPageSize("isob8", "176x249"),
+      MagickPageSize("isob9", "125x176"),
+      MagickPageSize("jisb0", "1030x1456"),
+      MagickPageSize("jisb1", "728x1030"),
+      MagickPageSize("jisb2", "515x728"),
+      MagickPageSize("jisb3", "364x515"),
+      MagickPageSize("jisb4", "257x364"),
+      MagickPageSize("jisb5", "182x257"),
+      MagickPageSize("jisb6", "128x182"),
+      MagickPageSize("ledger", "1224x792"),
+      MagickPageSize("legal", "612x1008"),
+      MagickPageSize("letter", "612x792"),
+      MagickPageSize("lettersmall", "612x792"),
+      MagickPageSize("quarto", "610x780"),
+      MagickPageSize("statement", "396x612"),
+      MagickPageSize("tabloid", "792x1224")
     };
 
   char
-    *page;
+    page[MaxTextExtent];
 
   register ssize_t
     i;
 
   assert(page_geometry != (char *) NULL);
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",page_geometry);
-  page=AcquireString(page_geometry);
-  for (i=0; *PageSizes[i] != (char *) NULL; i++)
-    if (LocaleNCompare(PageSizes[i][0],page,strlen(PageSizes[i][0])) == 0)
+  CopyMagickMemory(page,page_geometry,MaxTextExtent);
+  for (i=0; i < sizeof(PageSizes)/sizeof(PageSizes[0]); i++)
+  {
+    int
+      status;
+    
+    status=LocaleNCompare(PageSizes[i].name,page_geometry,PageSizes[i].extent);
+    if (status == 0)
       {
-        RectangleInfo
-          geometry;
-
         MagickStatusType
           flags;
+
+        RectangleInfo
+          geometry;
 
         /*
           Replace mneumonic with the equivalent size in dots-per-inch.
         */
-        (void) CopyMagickString(page,PageSizes[i][1],MaxTextExtent);
-        (void) ConcatenateMagickString(page,page_geometry+
-          strlen(PageSizes[i][0]),MaxTextExtent);
+        (void) FormatLocaleString(page,MaxTextExtent,"%s%.80s",
+          PageSizes[i].geometry,page_geometry+PageSizes[i].extent);
         flags=GetGeometry(page,&geometry.x,&geometry.y,&geometry.width,
           &geometry.height);
         if ((flags & GreaterValue) == 0)
           (void) ConcatenateMagickString(page,">",MaxTextExtent);
         break;
       }
-  return(page);
+  }
+  return(AcquireString(page));
 }
 
 /*
