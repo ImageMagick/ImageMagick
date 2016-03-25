@@ -176,6 +176,10 @@ MagickExport void GetMagickToken(const char *start,const char **end,char *token)
   register ssize_t
     i;
 
+  size_t
+    extent = MaxTextExtent-1;
+
+
   assert(start != (const char *) NULL);
   assert(token != (char *) NULL);
   i=0;
@@ -212,15 +216,18 @@ MagickExport void GetMagickToken(const char *start,const char **end,char *token)
               p++;
               break;
             }
-        token[i++]=(*p);
+        if (i < extent)
+          token[i++]=(*p);
       }
       break;
     }
     case '/':
     {
-      token[i++]=(*p++);
-      if ((*p == '>') || (*p == '/'))
+      if (i < extent)
         token[i++]=(*p++);
+      if ((*p == '>') || (*p == '/'))
+        if (i < extent)
+          token[i++]=(*p++);
       break;
     }
     default:
@@ -233,15 +240,18 @@ MagickExport void GetMagickToken(const char *start,const char **end,char *token)
       if ((p != q) && (*p != ','))
         {
           for ( ; (p < q) && (*p != ','); p++)
-            token[i++]=(*p);
+            if (i < extent)
+              token[i++]=(*p);
           if (*p == '%')
-            token[i++]=(*p++);
+            if (i < extent)
+              token[i++]=(*p++);
           break;
         }
       if ((*p != '\0') && (isalpha((int) ((unsigned char) *p)) == 0) &&
           (*p != *DirectorySeparator) && (*p != '#') && (*p != '<'))
         {
-          token[i++]=(*p++);
+          if (i < extent)
+            token[i++]=(*p++);
           break;
         }
       for ( ; *p != '\0'; p++)
@@ -251,13 +261,15 @@ MagickExport void GetMagickToken(const char *start,const char **end,char *token)
           break;
         if ((i > 0) && (*p == '<'))
           break;
-        token[i++]=(*p);
+        if (i < extent)
+          token[i++]=(*p);
         if (*p == '>')
           break;
         if (*p == '(')
           for (p++; *p != '\0'; p++)
           {
-            token[i++]=(*p);
+            if (i < extent)
+              token[i++]=(*p);
             if ((*p == ')') && (*(p-1) != '\\'))
               break;
           }
