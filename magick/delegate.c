@@ -959,6 +959,41 @@ MagickExport MagickBooleanType GetDelegateThreadSupport(
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   G e t M a g i c k T o k e n                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickToken() gets a token from the token stream.  A token is defined as
+%  a sequence of characters delimited by whitespace (e.g. clip-path), a
+%  sequence delimited with quotes (.e.g "Quote me"), or a sequence enclosed in
+%  parenthesis (e.g. rgb(0,0,0)).  GetTokenLexeme() also recognizes these
+%  separator characters: ':', '=', ',', and ';'.
+%
+%  The format of the MagickToken method is:
+%
+%      void MagickToken(const char *start,const char **end,char *token)
+%
+%  A description of each parameter follows:
+%
+%    o start: the start of the token sequence.
+%
+%    o end: point to the end of the token sequence.
+%
+%    o token: copy the token to this buffer.
+%
+*/
+MagickExport void GetMagickToken(const char *start,const char **end,char *token)
+{
+  GetTokenLexeme(start,end,~0UL,token);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   I s D e l e g a t e C a c h e I n s t a n t i a t e d                     %
 %                                                                             %
 %                                                                             %
@@ -1507,7 +1542,7 @@ static MagickBooleanType LoadDelegateCache(LinkedListInfo *delegate_cache,
     /*
       Interpret XML.
     */
-    GetMagickToken(q,&q,token);
+    GetTokenLexeme(q,&q,MaxTextExtent,token);
     if (*token == '\0')
       break;
     (void) CopyMagickString(keyword,token,MaxTextExtent);
@@ -1517,7 +1552,7 @@ static MagickBooleanType LoadDelegateCache(LinkedListInfo *delegate_cache,
           Doctype element.
         */
         while ((LocaleNCompare(q,"]>",2) != 0) && (*q != '\0'))
-          GetMagickToken(q,&q,token);
+          GetTokenLexeme(q,&q,MaxTextExtent,token);
         continue;
       }
     if (LocaleNCompare(keyword,"<!--",4) == 0)
@@ -1526,7 +1561,7 @@ static MagickBooleanType LoadDelegateCache(LinkedListInfo *delegate_cache,
           Comment element.
         */
         while ((LocaleNCompare(q,"->",2) != 0) && (*q != '\0'))
-          GetMagickToken(q,&q,token);
+          GetTokenLexeme(q,&q,MaxTextExtent,token);
         continue;
       }
     if (LocaleCompare(keyword,"<include") == 0)
@@ -1537,10 +1572,10 @@ static MagickBooleanType LoadDelegateCache(LinkedListInfo *delegate_cache,
         while (((*token != '/') && (*(token+1) != '>')) && (*q != '\0'))
         {
           (void) CopyMagickString(keyword,token,MaxTextExtent);
-          GetMagickToken(q,&q,token);
+          GetTokenLexeme(q,&q,MaxTextExtent,token);
           if (*token != '=')
             continue;
-          GetMagickToken(q,&q,token);
+          GetTokenLexeme(q,&q,MaxTextExtent,token);
           if (LocaleCompare(keyword,"file") == 0)
             {
               if (depth > 200)
@@ -1599,11 +1634,11 @@ static MagickBooleanType LoadDelegateCache(LinkedListInfo *delegate_cache,
         delegate_info=(DelegateInfo *) NULL;
         continue;
       }
-    GetMagickToken(q,(const char **) NULL,token);
+    GetTokenLexeme(q,(const char **) NULL,MaxTextExtent,token);
     if (*token != '=')
       continue;
-    GetMagickToken(q,&q,token);
-    GetMagickToken(q,&q,token);
+    GetTokenLexeme(q,&q,MaxTextExtent,token);
+    GetTokenLexeme(q,&q,MaxTextExtent,token);
     switch (*keyword)
     {
       case 'C':

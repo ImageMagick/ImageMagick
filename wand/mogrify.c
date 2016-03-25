@@ -491,7 +491,7 @@ static Image *SparseColorOption(const Image *image,const ChannelType channel,
   x=0;
   while( *p != '\0' )
   {
-    GetMagickToken(p,&p,token);
+    GetTokenLexeme(p,&p,MaxTextExtent,token);
     if ( token[0] == ',' ) continue;
     if ( isalpha((int) token[0]) || token[0] == '#' ) {
       if ( color_from_image ) {
@@ -538,7 +538,7 @@ static Image *SparseColorOption(const Image *image,const ChannelType channel,
   x=0;
   while( *p != '\0' && x < number_arguments ) {
     /* X coordinate */
-    token[0]=','; while ( token[0] == ',' ) GetMagickToken(p,&p,token);
+    token[0]=','; while ( token[0] == ',' ) GetTokenLexeme(p,&p,MaxTextExtent,token);
     if ( token[0] == '\0' ) break;
     if ( isalpha((int) token[0]) || token[0] == '#' ) {
       (void) ThrowMagickException(exception,GetMagickModule(),
@@ -549,7 +549,7 @@ static Image *SparseColorOption(const Image *image,const ChannelType channel,
     }
     sparse_arguments[x++]=StringToDouble(token,(char **) NULL);
     /* Y coordinate */
-    token[0]=','; while ( token[0] == ',' ) GetMagickToken(p,&p,token);
+    token[0]=','; while ( token[0] == ',' ) GetTokenLexeme(p,&p,MaxTextExtent,token);
     if ( token[0] == '\0' ) break;
     if ( isalpha((int) token[0]) || token[0] == '#' ) {
       (void) ThrowMagickException(exception,GetMagickModule(),
@@ -569,7 +569,7 @@ static Image *SparseColorOption(const Image *image,const ChannelType channel,
 #endif
     {
       /* color name or function given in string argument */
-      token[0]=','; while ( token[0] == ',' ) GetMagickToken(p,&p,token);
+      token[0]=','; while ( token[0] == ',' ) GetTokenLexeme(p,&p,MaxTextExtent,token);
       if ( token[0] == '\0' ) break;
       if ( isalpha((int) token[0]) || token[0] == '#' ) {
         /* Color string given */
@@ -589,35 +589,35 @@ static Image *SparseColorOption(const Image *image,const ChannelType channel,
         /* Colors given as a set of floating point values - experimental */
         /* NB: token contains the first floating point value to use! */
         if ( channels & RedChannel ) {
-          while ( token[0] == ',' ) GetMagickToken(p,&p,token);
+          while ( token[0] == ',' ) GetTokenLexeme(p,&p,MaxTextExtent,token);
           if ( token[0] == '\0' || isalpha((int)token[0]) || token[0] == '#' )
             break;
           sparse_arguments[x++]=StringToDouble(token,(char **) NULL);
           token[0] = ','; /* used this token - get another */
         }
         if ( channels & GreenChannel ) {
-          while ( token[0] == ',' ) GetMagickToken(p,&p,token);
+          while ( token[0] == ',' ) GetTokenLexeme(p,&p,MaxTextExtent,token);
           if ( token[0] == '\0' || isalpha((int)token[0]) || token[0] == '#' )
             break;
           sparse_arguments[x++]=StringToDouble(token,(char **) NULL);
           token[0] = ','; /* used this token - get another */
         }
         if ( channels & BlueChannel ) {
-          while ( token[0] == ',' ) GetMagickToken(p,&p,token);
+          while ( token[0] == ',' ) GetTokenLexeme(p,&p,MaxTextExtent,token);
           if ( token[0] == '\0' || isalpha((int)token[0]) || token[0] == '#' )
             break;
           sparse_arguments[x++]=StringToDouble(token,(char **) NULL);
           token[0] = ','; /* used this token - get another */
         }
         if ( channels & IndexChannel ) {
-          while ( token[0] == ',' ) GetMagickToken(p,&p,token);
+          while ( token[0] == ',' ) GetTokenLexeme(p,&p,MaxTextExtent,token);
           if ( token[0] == '\0' || isalpha((int)token[0]) || token[0] == '#' )
             break;
           sparse_arguments[x++]=StringToDouble(token,(char **) NULL);
           token[0] = ','; /* used this token - get another */
         }
         if ( channels & OpacityChannel ) {
-          while ( token[0] == ',' ) GetMagickToken(p,&p,token);
+          while ( token[0] == ',' ) GetTokenLexeme(p,&p,MaxTextExtent,token);
           if ( token[0] == '\0' || isalpha((int)token[0]) || token[0] == '#' )
             break;
           sparse_arguments[x++]=StringToDouble(token,(char **) NULL);
@@ -1405,9 +1405,9 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             p=(char *) args;
             for (x=0; *p != '\0'; x++)
             {
-              GetMagickToken(p,&p,token);
+              GetTokenLexeme(p,&p,MaxTextExtent,token);
               if (*token == ',')
-                GetMagickToken(p,&p,token);
+                GetTokenLexeme(p,&p,MaxTextExtent,token);
             }
             number_arguments=(size_t) x;
             arguments=(double *) AcquireQuantumMemory(number_arguments,
@@ -1420,9 +1420,9 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             p=(char *) args;
             for (x=0; (x < (ssize_t) number_arguments) && (*p != '\0'); x++)
             {
-              GetMagickToken(p,&p,token);
+              GetTokenLexeme(p,&p,MaxTextExtent,token);
               if (*token == ',')
-                GetMagickToken(p,&p,token);
+                GetTokenLexeme(p,&p,MaxTextExtent,token);
               arguments[x]=StringToDouble(token,(char **) NULL);
             }
             args=DestroyString(args);
@@ -1710,9 +1710,9 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             p=(char *) arguments;
             for (x=0; *p != '\0'; x++)
             {
-              GetMagickToken(p,&p,token);
+              GetTokenLexeme(p,&p,MaxTextExtent,token);
               if (*token == ',')
-                GetMagickToken(p,&p,token);
+                GetTokenLexeme(p,&p,MaxTextExtent,token);
             }
             number_parameters=(size_t) x;
             parameters=(double *) AcquireQuantumMemory(number_parameters,
@@ -1725,9 +1725,9 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             p=(char *) arguments;
             for (x=0; (x < (ssize_t) number_parameters) && (*p != '\0'); x++)
             {
-              GetMagickToken(p,&p,token);
+              GetTokenLexeme(p,&p,MaxTextExtent,token);
               if (*token == ',')
-                GetMagickToken(p,&p,token);
+                GetTokenLexeme(p,&p,MaxTextExtent,token);
               parameters[x]=StringToDouble(token,(char **) NULL);
             }
             arguments=DestroyString(arguments);
@@ -2000,19 +2000,19 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               white_point;
 
             p=(const char *) argv[i+1];
-            GetMagickToken(p,&p,token);  /* get black point color */
+            GetTokenLexeme(p,&p,MaxTextExtent,token);  /* get black point color */
             if ((isalpha((int) *token) != 0) || ((*token == '#') != 0))
               (void) QueryMagickColor(token,&black_point,exception);
             else
               (void) QueryMagickColor("#000000",&black_point,exception);
             if (isalpha((int) token[0]) || (token[0] == '#'))
-              GetMagickToken(p,&p,token);
+              GetTokenLexeme(p,&p,MaxTextExtent,token);
             if (*token == '\0')
               white_point=black_point; /* set everything to that color */
             else
               {
                 if ((isalpha((int) *token) == 0) && ((*token == '#') == 0))
-                  GetMagickToken(p,&p,token); /* Get white point color. */
+                  GetTokenLexeme(p,&p,MaxTextExtent,token); /* Get white point color. */
                 if ((isalpha((int) *token) != 0) || ((*token == '#') != 0))
                   (void) QueryMagickColor(token,&white_point,exception);
                 else
@@ -2255,13 +2255,13 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             */
             (void) SyncImageSettings(mogrify_info,*image);
             p=argv[i+1];
-            GetMagickToken(p,&p,token);
+            GetTokenLexeme(p,&p,MaxTextExtent,token);
             method=(MorphologyMethod) ParseCommandOption(
               MagickMorphologyOptions,MagickFalse,token);
             iterations=1L;
-            GetMagickToken(p,&p,token);
+            GetTokenLexeme(p,&p,MaxTextExtent,token);
             if ((*p == ':') || (*p == ','))
-              GetMagickToken(p,&p,token);
+              GetTokenLexeme(p,&p,MaxTextExtent,token);
             if ((*p != '\0'))
               iterations=(ssize_t) StringToLong(p);
             kernel=AcquireKernelInfo(argv[i+2]);
@@ -5453,7 +5453,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
-            GetMagickToken(argv[i],NULL,token);
+            GetTokenLexeme(argv[i],(const char **) NULL,MaxTextExtent,token);
             op=ParseCommandOption(MagickMorphologyOptions,MagickFalse,token);
             if (op < 0)
               ThrowMogrifyException(OptionError,"UnrecognizedMorphologyMethod",
@@ -8552,9 +8552,9 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
             p=(char *) args;
             for (x=0; *p != '\0'; x++)
             {
-              GetMagickToken(p,&p,token);
+              GetTokenLexeme(p,&p,MaxTextExtent,token);
               if (*token == ',')
-                GetMagickToken(p,&p,token);
+                GetTokenLexeme(p,&p,MaxTextExtent,token);
             }
             number_arguments=(size_t) x;
             arguments=(double *) AcquireQuantumMemory(number_arguments,
@@ -8567,9 +8567,9 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
             p=(char *) args;
             for (x=0; (x < (ssize_t) number_arguments) && (*p != '\0'); x++)
             {
-              GetMagickToken(p,&p,token);
+              GetTokenLexeme(p,&p,MaxTextExtent,token);
               if (*token == ',')
-                GetMagickToken(p,&p,token);
+                GetTokenLexeme(p,&p,MaxTextExtent,token);
               arguments[x]=StringToDouble(token,(char **) NULL);
             }
             args=DestroyString(args);

@@ -42,7 +42,7 @@ extern MagickExport TokenInfo
   *DestroyTokenInfo(TokenInfo *);
 
 extern MagickExport void
-  GetMagickToken(const char *,const char **,char *);
+  GetTokenLexeme(const char *,const char **,const size_t,char *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -336,6 +336,7 @@ extern MagickExport void
   GetExceptionInfo(ExceptionInfo *),
   *GetMagickRegistry(const ssize_t,RegistryType *,size_t *,ExceptionInfo *)
     magick_attribute((deprecated)),
+  GetTokenToken(const char *,const char **,char *),
   IdentityAffine(AffineMatrix *) magick_attribute((deprecated)),
   LiberateMemory(void **) magick_attribute((deprecated)),
   LiberateSemaphoreInfo(SemaphoreInfo **) magick_attribute((deprecated)),
