@@ -1452,7 +1452,7 @@ static MagickBooleanType LoadLogCache(LinkedListInfo *log_cache,const char *xml,
     /*
       Interpret XML.
     */
-    GetMagickToken(q,&q,extent,token);
+    GetNextToken(q,&q,extent,token);
     if (*token == '\0')
       break;
     (void) CopyMagickString(keyword,token,MagickPathExtent);
@@ -1462,7 +1462,7 @@ static MagickBooleanType LoadLogCache(LinkedListInfo *log_cache,const char *xml,
           Doctype element.
         */
         while ((LocaleNCompare(q,"]>",2) != 0) && (*q != '\0'))
-          GetMagickToken(q,&q,extent,token);
+          GetNextToken(q,&q,extent,token);
         continue;
       }
     if (LocaleNCompare(keyword,"<!--",4) == 0)
@@ -1471,7 +1471,7 @@ static MagickBooleanType LoadLogCache(LinkedListInfo *log_cache,const char *xml,
           Comment element.
         */
         while ((LocaleNCompare(q,"->",2) != 0) && (*q != '\0'))
-          GetMagickToken(q,&q,extent,token);
+          GetNextToken(q,&q,extent,token);
         continue;
       }
     if (LocaleCompare(keyword,"<include") == 0)
@@ -1482,10 +1482,10 @@ static MagickBooleanType LoadLogCache(LinkedListInfo *log_cache,const char *xml,
         while (((*token != '/') && (*(token+1) != '>')) && (*q != '\0'))
         {
           (void) CopyMagickString(keyword,token,MagickPathExtent);
-          GetMagickToken(q,&q,extent,token);
+          GetNextToken(q,&q,extent,token);
           if (*token != '=')
             continue;
-          GetMagickToken(q,&q,extent,token);
+          GetNextToken(q,&q,extent,token);
           if (LocaleCompare(keyword,"file") == 0)
             {
               if (depth > 200)
@@ -1542,11 +1542,11 @@ static MagickBooleanType LoadLogCache(LinkedListInfo *log_cache,const char *xml,
         log_info=(LogInfo *) NULL;
         continue;
       }
-    GetMagickToken(q,(const char **) NULL,extent,token);
+    GetNextToken(q,(const char **) NULL,extent,token);
     if (*token != '=')
       continue;
-    GetMagickToken(q,&q,extent,token);
-    GetMagickToken(q,&q,extent,token);
+    GetNextToken(q,&q,extent,token);
+    GetNextToken(q,&q,extent,token);
     switch (*keyword)
     {
       case 'E':

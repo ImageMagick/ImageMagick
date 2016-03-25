@@ -141,21 +141,21 @@ MagickExport TokenInfo *DestroyTokenInfo(TokenInfo *token_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   G e t M a g i c k T o k e n                                               %
++   G e t N e x t T o k e n                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetMagickToken() gets a token from the token stream.  A token is defined as
+%  GetNextToken() gets a lexeme from the token stream.  A token is defined as
 %  a sequence of characters delimited by whitespace (e.g. clip-path), a
 %  sequence delimited with quotes (.e.g "Quote me"), or a sequence enclosed in
-%  parenthesis (e.g. rgb(0,0,0)).  GetMagickToken() also recognizes these
+%  parenthesis (e.g. rgb(0,0,0)).  GetNextToken() also recognizes these
 %  separator characters: ':', '=', ',', and ';'.
 %
-%  The format of the GetMagickToken method is:
+%  The format of the GetNextToken method is:
 %
-%      void GetMagickToken(const char *start,const char **end,
+%      void GetNextToken(const char *start,const char **end,
 %        const size_t extent,char *token)
 %
 %  A description of each parameter follows:
@@ -169,7 +169,7 @@ MagickExport TokenInfo *DestroyTokenInfo(TokenInfo *token_info)
 %    o token: copy the token to this buffer.
 %
 */
-MagickExport void GetMagickToken(const char *start,const char **end,
+MagickExport void GetNextToken(const char *start,const char **end,
   const size_t extent,char *token)
 {
   double

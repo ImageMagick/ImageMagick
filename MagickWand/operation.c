@@ -233,7 +233,7 @@ static Image *SparseColorOption(const Image *image,
   x=0;
   while( *p != '\0' )
   {
-    GetMagickToken(p,&p,MagickPathExtent,token);
+    GetNextToken(p,&p,MagickPathExtent,token);
     if ( token[0] == ',' ) continue;
     if ( isalpha((int) token[0]) || token[0] == '#' )
       x += number_colors;  /* color argument found */
@@ -265,7 +265,7 @@ static Image *SparseColorOption(const Image *image,
   x=0;
   while( *p != '\0' && x < number_arguments ) {
     /* X coordinate */
-    token[0]=','; while ( token[0] == ',' ) GetMagickToken(p,&p,MagickPathExtent,token);
+    token[0]=','; while ( token[0] == ',' ) GetNextToken(p,&p,MagickPathExtent,token);
     if ( token[0] == '\0' ) break;
     if ( isalpha((int) token[0]) || token[0] == '#' ) {
       (void) ThrowMagickException(exception,GetMagickModule(),
@@ -276,7 +276,7 @@ static Image *SparseColorOption(const Image *image,
     }
     sparse_arguments[x++]=StringToDouble(token,(char **) NULL);
     /* Y coordinate */
-    token[0]=','; while ( token[0] == ',' ) GetMagickToken(p,&p,MagickPathExtent,token);
+    token[0]=','; while ( token[0] == ',' ) GetNextToken(p,&p,MagickPathExtent,token);
     if ( token[0] == '\0' ) break;
     if ( isalpha((int) token[0]) || token[0] == '#' ) {
       (void) ThrowMagickException(exception,GetMagickModule(),
@@ -287,7 +287,7 @@ static Image *SparseColorOption(const Image *image,
     }
     sparse_arguments[x++]=StringToDouble(token,(char **) NULL);
     /* color name or function given in string argument */
-    token[0]=','; while ( token[0] == ',' ) GetMagickToken(p,&p,MagickPathExtent,token);
+    token[0]=','; while ( token[0] == ',' ) GetNextToken(p,&p,MagickPathExtent,token);
     if ( token[0] == '\0' ) break;
     if ( isalpha((int) token[0]) || token[0] == '#' ) {
       /* Color string given */
@@ -311,7 +311,7 @@ static Image *SparseColorOption(const Image *image,
       /* NB: token contains the first floating point value to use! */
       if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
         {
-        while ( token[0] == ',' ) GetMagickToken(p,&p,MagickPathExtent,token);
+        while ( token[0] == ',' ) GetNextToken(p,&p,MagickPathExtent,token);
         if ( token[0] == '\0' || isalpha((int)token[0]) || token[0] == '#' )
           break;
         sparse_arguments[x++]=StringToDouble(token,(char **) NULL);
@@ -319,7 +319,7 @@ static Image *SparseColorOption(const Image *image,
       }
       if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
         {
-        while ( token[0] == ',' ) GetMagickToken(p,&p,MagickPathExtent,token);
+        while ( token[0] == ',' ) GetNextToken(p,&p,MagickPathExtent,token);
         if ( token[0] == '\0' || isalpha((int)token[0]) || token[0] == '#' )
           break;
         sparse_arguments[x++]=StringToDouble(token,(char **) NULL);
@@ -327,7 +327,7 @@ static Image *SparseColorOption(const Image *image,
       }
       if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
         {
-        while ( token[0] == ',' ) GetMagickToken(p,&p,MagickPathExtent,token);
+        while ( token[0] == ',' ) GetNextToken(p,&p,MagickPathExtent,token);
         if ( token[0] == '\0' || isalpha((int)token[0]) || token[0] == '#' )
           break;
         sparse_arguments[x++]=StringToDouble(token,(char **) NULL);
@@ -336,7 +336,7 @@ static Image *SparseColorOption(const Image *image,
       if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
           (image->colorspace == CMYKColorspace))
         {
-        while ( token[0] == ',' ) GetMagickToken(p,&p,MagickPathExtent,token);
+        while ( token[0] == ',' ) GetNextToken(p,&p,MagickPathExtent,token);
         if ( token[0] == '\0' || isalpha((int)token[0]) || token[0] == '#' )
           break;
         sparse_arguments[x++]=StringToDouble(token,(char **) NULL);
@@ -345,7 +345,7 @@ static Image *SparseColorOption(const Image *image,
       if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
           image->alpha_trait != UndefinedPixelTrait)
         {
-        while ( token[0] == ',' ) GetMagickToken(p,&p,MagickPathExtent,token);
+        while ( token[0] == ',' ) GetNextToken(p,&p,MagickPathExtent,token);
         if ( token[0] == '\0' || isalpha((int)token[0]) || token[0] == '#' )
           break;
         sparse_arguments[x++]=StringToDouble(token,(char **) NULL);
@@ -2645,7 +2645,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
             white_point;
 
           p=(const char *) arg1;
-          GetMagickToken(p,&p,MagickPathExtent,token);  /* get black point color */
+          GetNextToken(p,&p,MagickPathExtent,token);  /* get black point color */
           if ((isalpha((int) *token) != 0) || ((*token == '#') != 0))
             (void) QueryColorCompliance(token,AllCompliance,
                       &black_point,_exception);
@@ -2653,13 +2653,13 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
             (void) QueryColorCompliance("#000000",AllCompliance,
                       &black_point,_exception);
           if (isalpha((int) token[0]) || (token[0] == '#'))
-            GetMagickToken(p,&p,MagickPathExtent,token);
+            GetNextToken(p,&p,MagickPathExtent,token);
           if (*token == '\0')
             white_point=black_point; /* set everything to that color */
           else
             {
               if ((isalpha((int) *token) == 0) && ((*token == '#') == 0))
-                GetMagickToken(p,&p,MagickPathExtent,token); /* Get white point color. */
+                GetNextToken(p,&p,MagickPathExtent,token); /* Get white point color. */
               if ((isalpha((int) *token) != 0) || ((*token == '#') != 0))
                 (void) QueryColorCompliance(token,AllCompliance,
                            &white_point,_exception);
@@ -2818,15 +2818,15 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
             iterations;
 
           p=arg1;
-          GetMagickToken(p,&p,MagickPathExtent,token);
+          GetNextToken(p,&p,MagickPathExtent,token);
           parse=ParseCommandOption(MagickMorphologyOptions,MagickFalse,token);
           if ( parse < 0 )
             CLIWandExceptArgBreak(OptionError,"UnrecognizedFunction",option,
               arg1);
           iterations=1L;
-          GetMagickToken(p,&p,MagickPathExtent,token);
+          GetNextToken(p,&p,MagickPathExtent,token);
           if ((*p == ':') || (*p == ','))
-            GetMagickToken(p,&p,MagickPathExtent,token);
+            GetNextToken(p,&p,MagickPathExtent,token);
           if ((*p != '\0'))
             iterations=(ssize_t) StringToLong(p);
           kernel=AcquireKernelInfo(arg2,exception);

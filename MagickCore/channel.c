@@ -243,7 +243,7 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
   channel_mask=UndefinedChannel;
   pixel=0.0;
   p=(char *) expression;
-  GetMagickToken(p,&p,MagickPathExtent,token);
+  GetNextToken(p,&p,MagickPathExtent,token);
   channel_op=ExtractChannelOp;
   for (channels=0; *token != '\0'; )
   {
@@ -257,7 +257,7 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
     {
       case ',':
       {
-        GetMagickToken(p,&p,MagickPathExtent,token);
+        GetNextToken(p,&p,MagickPathExtent,token);
         break;
       }
       case '|':
@@ -266,7 +266,7 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
           source_image=GetNextImageInList(source_image);
         else
           source_image=GetFirstImageInList(source_image);
-        GetMagickToken(p,&p,MagickPathExtent,token);
+        GetNextToken(p,&p,MagickPathExtent,token);
         break;
       }
       case ';':
@@ -291,7 +291,7 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
           }
         AppendImageToList(&destination_image,canvas);
         destination_image=GetLastImageInList(destination_image);
-        GetMagickToken(p,&p,MagickPathExtent,token);
+        GetNextToken(p,&p,MagickPathExtent,token);
         channels=0;
         destination_channel=RedPixelChannel;
         channel_mask=UndefinedChannel;
@@ -310,30 +310,30 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
       }
     source_channel=(PixelChannel) i;
     channel_op=ExtractChannelOp;
-    GetMagickToken(p,&p,MagickPathExtent,token);
+    GetNextToken(p,&p,MagickPathExtent,token);
     if (*token == '<')
       {
         channel_op=ExchangeChannelOp;
-        GetMagickToken(p,&p,MagickPathExtent,token);
+        GetNextToken(p,&p,MagickPathExtent,token);
       }
     if (*token == '=')
       {
         if (channel_op != ExchangeChannelOp)
           channel_op=AssignChannelOp;
-        GetMagickToken(p,&p,MagickPathExtent,token);
+        GetNextToken(p,&p,MagickPathExtent,token);
       }
     if (*token == '>')
       {
         if (channel_op != ExchangeChannelOp)
           channel_op=TransferChannelOp;
-        GetMagickToken(p,&p,MagickPathExtent,token);
+        GetNextToken(p,&p,MagickPathExtent,token);
       }
     switch (channel_op)
     {
       case AssignChannelOp:
       {
         pixel=StringToDoubleInterval(token,(double) QuantumRange+1.0);
-        GetMagickToken(p,&p,MagickPathExtent,token);
+        GetNextToken(p,&p,MagickPathExtent,token);
         break;
       }
       case ExchangeChannelOp:
@@ -383,7 +383,7 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
         if (((channels >= 1)  || (destination_channel >= 1)) &&
             (IsGrayColorspace(destination_image->colorspace) != MagickFalse))
           (void) SetImageColorspace(destination_image,sRGBColorspace,exception);
-        GetMagickToken(p,&p,MagickPathExtent,token);
+        GetNextToken(p,&p,MagickPathExtent,token);
         break;
       }
       default:
