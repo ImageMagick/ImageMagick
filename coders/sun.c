@@ -139,10 +139,9 @@ static MagickBooleanType IsSUN(const unsigned char *magick,const size_t length)
 %
 */
 static MagickBooleanType DecodeImage(const unsigned char *compressed_pixels,
-  const size_t length,unsigned char *pixels,size_t maxpixels)
+  const size_t length,unsigned char *pixels,size_t extent)
 {
   register const unsigned char
-    *l,
     *p;
 
   register unsigned char
@@ -159,8 +158,8 @@ static MagickBooleanType DecodeImage(const unsigned char *compressed_pixels,
   assert(pixels != (unsigned char *) NULL);
   p=compressed_pixels;
   q=pixels;
-  l=q+maxpixels;
-  while (((size_t) (p-compressed_pixels) < length) && (q < l))
+  while (((size_t) (p-compressed_pixels) < length) &&
+         ((size_t) (q-pixels) < extent))
   {
     byte=(*p++);
     if (byte != 128U)
@@ -168,19 +167,25 @@ static MagickBooleanType DecodeImage(const unsigned char *compressed_pixels,
     else
       {
         /*
-          Runlength-encoded packet: <count><byte>
+          Runlength-encoded packet: <count><byte>.
         */
-        count=(ssize_t) (*p++);
+        if (((size_t) (p-compressed_pixels) >= length))
+          break;
+        count=(*p++);
         if (count > 0)
-          byte=(*p++);
-        while ((count >= 0) && (q < l))
+          {
+            if (((size_t) (p-compressed_pixels) >= length))
+              break;
+            byte=(*p++);
+          }
+        while ((count >= 0) && ((size_t) (q-pixels) < extent))
         {
           *q++=byte;
           count--;
         }
      }
   }
-  return(MagickTrue);
+  return(((size_t) (q-pixels) == extent) ? MagickTrue : MagickFalse);
 }
 
 /*
