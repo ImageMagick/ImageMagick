@@ -792,7 +792,7 @@ static MagickBooleanType GetMagickModulePath(const char *filename,
         /*
           Search $XDG_CONFIG_HOME/ImageMagick.
         */
-        (void) FormatLocaleString(path,MaxTextExtent,"%s%sImageMagick%s%s",
+        (void) FormatLocaleString(path,MagickPathExtent,"%s%sImageMagick%s%s",
           home,DirectorySeparator,DirectorySeparator,filename);
         home=DestroyString(home);
         if (IsPathAccessible(path) != MagickFalse)

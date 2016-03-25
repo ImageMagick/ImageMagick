@@ -1448,7 +1448,7 @@ static MagickBooleanType LoadLogCache(LinkedListInfo *log_cache,const char *xml,
     /*
       Interpret XML.
     */
-    GetMagickToken(q,&q,token);
+    GetMagickToken(q,&q,MagickPathExtent,token);
     if (*token == '\0')
       break;
     (void) CopyMagickString(keyword,token,MagickPathExtent);
@@ -1458,7 +1458,7 @@ static MagickBooleanType LoadLogCache(LinkedListInfo *log_cache,const char *xml,
           Doctype element.
         */
         while ((LocaleNCompare(q,"]>",2) != 0) && (*q != '\0'))
-          GetMagickToken(q,&q,token);
+          GetMagickToken(q,&q,MagickPathExtent,token);
         continue;
       }
     if (LocaleNCompare(keyword,"<!--",4) == 0)
@@ -1467,7 +1467,7 @@ static MagickBooleanType LoadLogCache(LinkedListInfo *log_cache,const char *xml,
           Comment element.
         */
         while ((LocaleNCompare(q,"->",2) != 0) && (*q != '\0'))
-          GetMagickToken(q,&q,token);
+          GetMagickToken(q,&q,MagickPathExtent,token);
         continue;
       }
     if (LocaleCompare(keyword,"<include") == 0)
@@ -1478,10 +1478,10 @@ static MagickBooleanType LoadLogCache(LinkedListInfo *log_cache,const char *xml,
         while (((*token != '/') && (*(token+1) != '>')) && (*q != '\0'))
         {
           (void) CopyMagickString(keyword,token,MagickPathExtent);
-          GetMagickToken(q,&q,token);
+          GetMagickToken(q,&q,MagickPathExtent,token);
           if (*token != '=')
             continue;
-          GetMagickToken(q,&q,token);
+          GetMagickToken(q,&q,MagickPathExtent,token);
           if (LocaleCompare(keyword,"file") == 0)
             {
               if (depth > 200)
@@ -1538,11 +1538,11 @@ static MagickBooleanType LoadLogCache(LinkedListInfo *log_cache,const char *xml,
         log_info=(LogInfo *) NULL;
         continue;
       }
-    GetMagickToken(q,(const char **) NULL,token);
+    GetMagickToken(q,(const char **) NULL,MagickPathExtent,token);
     if (*token != '=')
       continue;
-    GetMagickToken(q,&q,token);
-    GetMagickToken(q,&q,token);
+    GetMagickToken(q,&q,MagickPathExtent,token);
+    GetMagickToken(q,&q,MagickPathExtent,token);
     switch (*keyword)
     {
       case 'E':

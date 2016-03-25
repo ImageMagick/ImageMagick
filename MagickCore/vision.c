@@ -682,7 +682,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
           for (i=0; i < (ssize_t) component_image->colors; i++)
           {
             char
-              mean_color[MaxTextExtent];
+              mean_color[MagickPathExtent];
 
             if (status == MagickFalse)
               break;

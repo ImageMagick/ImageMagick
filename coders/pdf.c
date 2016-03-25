@@ -2802,11 +2802,11 @@ RestoreMSCWarning
   utf16=ConvertUTF8ToUTF16((unsigned char *) basename,&length);
   if (utf16 != (wchar_t *) NULL)
     {
-      (void) FormatLocaleString(buffer,MaxTextExtent,"/Title (\xfe\xff");
+      (void) FormatLocaleString(buffer,MagickPathExtent,"/Title (\xfe\xff");
       (void) WriteBlobString(image,buffer);
       for (i=0; i < (ssize_t) length; i++)
         WriteBlobMSBShort(image,(unsigned short) utf16[i]);
-      (void) FormatLocaleString(buffer,MaxTextExtent,")\n");
+      (void) FormatLocaleString(buffer,MagickPathExtent,")\n");
       (void) WriteBlobString(image,buffer);
       utf16=(wchar_t *) RelinquishMagickMemory(utf16);
     }

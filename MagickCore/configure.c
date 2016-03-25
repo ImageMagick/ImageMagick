@@ -895,7 +895,7 @@ MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
         /*
           Search $XDG_CONFIG_HOME/ImageMagick.
         */
-        (void) FormatLocaleString(path,MaxTextExtent,"%s%sImageMagick%s",
+        (void) FormatLocaleString(path,MagickPathExtent,"%s%sImageMagick%s",
           home,DirectorySeparator,DirectorySeparator);
         (void) AppendValueToLinkedList(paths,ConstantString(path));
         home=DestroyString(home);
@@ -1165,7 +1165,7 @@ static MagickBooleanType LoadConfigureCache(LinkedListInfo *configure_cache,
     /*
       Interpret XML.
     */
-    GetMagickToken(q,&q,token);
+    GetMagickToken(q,&q,MagickPathExtent,token);
     if (*token == '\0')
       break;
     (void) CopyMagickString(keyword,token,MagickPathExtent);
@@ -1175,7 +1175,7 @@ static MagickBooleanType LoadConfigureCache(LinkedListInfo *configure_cache,
           Doctype element.
         */
         while ((LocaleNCompare(q,"]>",2) != 0) && (*q != '\0'))
-          GetMagickToken(q,&q,token);
+          GetMagickToken(q,&q,MagickPathExtent,token);
         continue;
       }
     if (LocaleNCompare(keyword,"<!--",4) == 0)
@@ -1184,7 +1184,7 @@ static MagickBooleanType LoadConfigureCache(LinkedListInfo *configure_cache,
           Comment element.
         */
         while ((LocaleNCompare(q,"->",2) != 0) && (*q != '\0'))
-          GetMagickToken(q,&q,token);
+          GetMagickToken(q,&q,MagickPathExtent,token);
         continue;
       }
     if (LocaleCompare(keyword,"<include") == 0)
@@ -1195,10 +1195,10 @@ static MagickBooleanType LoadConfigureCache(LinkedListInfo *configure_cache,
         while (((*token != '/') && (*(token+1) != '>')) && (*q != '\0'))
         {
           (void) CopyMagickString(keyword,token,MagickPathExtent);
-          GetMagickToken(q,&q,token);
+          GetMagickToken(q,&q,MagickPathExtent,token);
           if (*token != '=')
             continue;
-          GetMagickToken(q,&q,token);
+          GetMagickToken(q,&q,MagickPathExtent,token);
           if (LocaleCompare(keyword,"file") == 0)
             {
               if (depth > 200)
@@ -1260,11 +1260,11 @@ static MagickBooleanType LoadConfigureCache(LinkedListInfo *configure_cache,
     /*
       Parse configure element.
     */
-    GetMagickToken(q,(const char **) NULL,token);
+    GetMagickToken(q,(const char **) NULL,MagickPathExtent,token);
     if (*token != '=')
       continue;
-    GetMagickToken(q,&q,token);
-    GetMagickToken(q,&q,token);
+    GetMagickToken(q,&q,MagickPathExtent,token);
+    GetMagickToken(q,&q,MagickPathExtent,token);
     switch (*keyword)
     {
       case 'N':

@@ -1346,9 +1346,9 @@ MagickExport MagickBooleanType OrderedDitherImage(Image *image,
   if ((p != (char *) NULL) && (isdigit((int) ((unsigned char) *(++p))) != 0))
     for (i=0; (*p != '\0') && (i < MaxPixelChannels); i++)
     {
-      GetMagickToken(p,&p,token);
+      GetMagickToken(p,&p,MagickPathExtent,token);
       if (*token == ',')
-        GetMagickToken(p,&p,token);
+        GetMagickToken(p,&p,MagickPathExtent,token);
       levels[i]=StringToDouble(token,(char **) NULL);
     }
   for (i=0; i < MaxPixelChannels; i++)
