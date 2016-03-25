@@ -423,7 +423,7 @@ MagickExport MagickBooleanType NTAcquireTypeCache(SplayTreeInfo *type_cache,
 
         for (q=value_name; *q != '\0'; )
           {
-            GetMagickToken(q,(const char **) &q,token);
+            GetMagickToken(q,(const char **) &q,MagickPathExtent,token);
             if (*token == '\0')
               break;
 
