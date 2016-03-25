@@ -1082,8 +1082,16 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
     */
     if ((LocaleCompare(id,"ImageMagick") != 0) ||
         (image->storage_class == UndefinedClass) ||
+        (image->compression == UndefinedCompression) ||
+        (image->colorspace == UndefinedColorspace) ||
         (image->columns == 0) || (image->rows == 0))
-      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+      {
+        if (image->previous == (Image *) NULL)
+          ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+        (void) ThrowMagickException(exception,GetMagickModule(),
+          CorruptImageError,"ImproperImageHeader","`%s'",image->filename);
+        break;
+      }
     if (image->montage != (char *) NULL)
       {
         register char
