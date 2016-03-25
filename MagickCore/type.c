@@ -1003,7 +1003,7 @@ MagickExport MagickBooleanType ListTypeInfo(FILE *file,ExceptionInfo *exception)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   L o a d T y p e L i s t                                                   %
++   L o a d T y p e C a c h e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1082,6 +1082,9 @@ static MagickBooleanType LoadTypeCache(SplayTreeInfo *type_cache,
   MagickStatusType
     status;
 
+  size_t
+    extent;
+
   TypeInfo
     *type_info;
 
@@ -1095,6 +1098,7 @@ static MagickBooleanType LoadTypeCache(SplayTreeInfo *type_cache,
   status=MagickTrue;
   type_info=(TypeInfo *) NULL;
   token=AcquireString(xml);
+  extent=strlen(token)+MagickPathExtent;
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
   /*
     Determine the Ghostscript font path.
@@ -1108,7 +1112,7 @@ static MagickBooleanType LoadTypeCache(SplayTreeInfo *type_cache,
     /*
       Interpret XML.
     */
-    GetMagickToken(q,&q,MagickPathExtent,token);
+    GetMagickToken(q,&q,extent,token);
     if (*token == '\0')
       break;
     (void) CopyMagickString(keyword,token,MagickPathExtent);
@@ -1118,7 +1122,7 @@ static MagickBooleanType LoadTypeCache(SplayTreeInfo *type_cache,
           Doctype element.
         */
         while ((LocaleNCompare(q,"]>",2) != 0) && (*q != '\0'))
-          GetMagickToken(q,&q,MagickPathExtent,token);
+          GetMagickToken(q,&q,extent,token);
         continue;
       }
     if (LocaleNCompare(keyword,"<!--",4) == 0)
@@ -1127,7 +1131,7 @@ static MagickBooleanType LoadTypeCache(SplayTreeInfo *type_cache,
           Comment element.
         */
         while ((LocaleNCompare(q,"->",2) != 0) && (*q != '\0'))
-          GetMagickToken(q,&q,MagickPathExtent,token);
+          GetMagickToken(q,&q,extent,token);
         continue;
       }
     if (LocaleCompare(keyword,"<include") == 0)
@@ -1138,10 +1142,10 @@ static MagickBooleanType LoadTypeCache(SplayTreeInfo *type_cache,
         while (((*token != '/') && (*(token+1) != '>')) && (*q != '\0'))
         {
           (void) CopyMagickString(keyword,token,MagickPathExtent);
-          GetMagickToken(q,&q,MagickPathExtent,token);
+          GetMagickToken(q,&q,extent,token);
           if (*token != '=')
             continue;
-          GetMagickToken(q,&q,MagickPathExtent,token);
+          GetMagickToken(q,&q,extent,token);
           if (LocaleCompare(keyword,"file") == 0)
             {
               if (depth > 200)
@@ -1203,11 +1207,11 @@ static MagickBooleanType LoadTypeCache(SplayTreeInfo *type_cache,
         type_info=(TypeInfo *) NULL;
         continue;
       }
-    GetMagickToken(q,(const char **) NULL,MagickPathExtent,token);
+    GetMagickToken(q,(const char **) NULL,extent,token);
     if (*token != '=')
       continue;
-    GetMagickToken(q,&q,MagickPathExtent,token);
-    GetMagickToken(q,&q,MagickPathExtent,token);
+    GetMagickToken(q,&q,extent,token);
+    GetMagickToken(q,&q,extent,token);
     switch (*keyword)
     {
       case 'E':

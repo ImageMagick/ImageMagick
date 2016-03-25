@@ -1461,7 +1461,7 @@ MagickExport MagickBooleanType ListDelegateInfo(FILE *file,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   L o a d D e l e g a t e L i s t                                           %
++   L o a d D e l e g a t e C a c h e                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1504,6 +1504,9 @@ static MagickBooleanType LoadDelegateCache(LinkedListInfo *delegate_cache,
   MagickStatusType
     status;
 
+  size_t
+    extent;
+
   /*
     Load the delegate map file.
   */
@@ -1514,12 +1517,13 @@ static MagickBooleanType LoadDelegateCache(LinkedListInfo *delegate_cache,
   status=MagickTrue;
   delegate_info=(DelegateInfo *) NULL;
   token=AcquireString(xml);
+  extent=strlen(token)+MagickPathExtent;
   for (q=(const char *) xml; *q != '\0'; )
   {
     /*
       Interpret XML.
     */
-    GetMagickToken(q,&q,MagickPathExtent,token);
+    GetMagickToken(q,&q,extent,token);
     if (*token == '\0')
       break;
     (void) CopyMagickString(keyword,token,MagickPathExtent);
@@ -1529,7 +1533,7 @@ static MagickBooleanType LoadDelegateCache(LinkedListInfo *delegate_cache,
           Doctype element.
         */
         while ((LocaleNCompare(q,"]>",2) != 0) && (*q != '\0'))
-          GetMagickToken(q,&q,MagickPathExtent,token);
+          GetMagickToken(q,&q,extent,token);
         continue;
       }
     if (LocaleNCompare(keyword,"<!--",4) == 0)
@@ -1538,7 +1542,7 @@ static MagickBooleanType LoadDelegateCache(LinkedListInfo *delegate_cache,
           Comment element.
         */
         while ((LocaleNCompare(q,"->",2) != 0) && (*q != '\0'))
-          GetMagickToken(q,&q,MagickPathExtent,token);
+          GetMagickToken(q,&q,extent,token);
         continue;
       }
     if (LocaleCompare(keyword,"<include") == 0)
@@ -1549,10 +1553,10 @@ static MagickBooleanType LoadDelegateCache(LinkedListInfo *delegate_cache,
         while (((*token != '/') && (*(token+1) != '>')) && (*q != '\0'))
         {
           (void) CopyMagickString(keyword,token,MagickPathExtent);
-          GetMagickToken(q,&q,MagickPathExtent,token);
+          GetMagickToken(q,&q,extent,token);
           if (*token != '=')
             continue;
-          GetMagickToken(q,&q,MagickPathExtent,token);
+          GetMagickToken(q,&q,extent,token);
           if (LocaleCompare(keyword,"file") == 0)
             {
               if (depth > 200)
@@ -1611,11 +1615,11 @@ static MagickBooleanType LoadDelegateCache(LinkedListInfo *delegate_cache,
         delegate_info=(DelegateInfo *) NULL;
         continue;
       }
-    GetMagickToken(q,(const char **) NULL,MagickPathExtent,token);
+    GetMagickToken(q,(const char **) NULL,extent,token);
     if (*token != '=')
       continue;
-    GetMagickToken(q,&q,MagickPathExtent,token);
-    GetMagickToken(q,&q,MagickPathExtent,token);
+    GetMagickToken(q,&q,extent,token);
+    GetMagickToken(q,&q,extent,token);
     switch (*keyword)
     {
       case 'C':
