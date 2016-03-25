@@ -179,7 +179,6 @@ MagickExport void GetMagickToken(const char *start,const char **end,char *token)
   size_t
     extent = MaxTextExtent-1;
 
-
   assert(start != (const char *) NULL);
   assert(token != (char *) NULL);
   i=0;
