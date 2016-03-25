@@ -405,8 +405,11 @@ static char **GetTransformTokens(void *context,const char *text,
     *p,
     *q;
 
-  register ssize_t
+  register size_t
     i;
+
+  size_t
+    extent;
 
   SVGInfo
     *svg_info;
@@ -415,15 +418,8 @@ static char **GetTransformTokens(void *context,const char *text,
   *number_tokens=0;
   if (text == (const char *) NULL)
     return((char **) NULL);
-  /*
-    Determine the number of arguments.
-  */
-  for (p=text; *p != '\0'; p++)
-  {
-    if (*p == '(')
-      (*number_tokens)+=2;
-  }
-  tokens=(char **) AcquireQuantumMemory(*number_tokens+2UL,sizeof(*tokens));
+  extent=8;
+  tokens=(char **) AcquireQuantumMemory(extent+2UL,sizeof(*tokens));
   if (tokens == (char **) NULL)
     {
       (void) ThrowMagickException(svg_info->exception,GetMagickModule(),
@@ -439,15 +435,28 @@ static char **GetTransformTokens(void *context,const char *text,
   {
     if ((*q != '(') && (*q != ')') && (*q != '\0'))
       continue;
+    if (i == extent)
+      {
+        extent<<=1;
+        tokens=(char **) ResizeQuantumMemory(tokens,extent+2,sizeof(*tokens));
+        if (tokens == (char **) NULL)
+          {
+            (void) ThrowMagickException(svg_info->exception,GetMagickModule(),
+              ResourceLimitError,"MemoryAllocationFailed","`%s'",text);
+            return((char **) NULL);
+          }
+      }
     tokens[i]=AcquireString(p);
     (void) CopyMagickString(tokens[i],p,(size_t) (q-p+1));
-    StripString(tokens[i++]);
+    StripString(tokens[i]);
+    i++;
     p=q+1;
   }
   tokens[i]=AcquireString(p);
   (void) CopyMagickString(tokens[i],p,(size_t) (q-p+1));
   StripString(tokens[i++]);
   tokens[i]=(char *) NULL;
+  *number_tokens=i;
   return(tokens);
 }
 
@@ -1289,6 +1298,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
               GetAffineMatrix(&transform);
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  ");
               tokens=GetTransformTokens(context,value,&number_tokens);
+              if (tokens == (char **) NULL)
+                break;
               for (j=0; j < (number_tokens-1); j+=2)
               {
                 keyword=(char *) tokens[j];
@@ -1908,6 +1919,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
               GetAffineMatrix(&transform);
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  ");
               tokens=GetTransformTokens(context,value,&number_tokens);
+              if (tokens == (char **) NULL)
+                break;
               for (j=0; j < (number_tokens-1); j+=2)
               {
                 keyword=(char *) tokens[j];
