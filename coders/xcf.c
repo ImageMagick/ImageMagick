@@ -341,6 +341,9 @@ static MagickBooleanType load_tile(Image *image,Image *tile_image,
   register PixelPacket
     *q;
 
+  size_t
+    extent;
+
   ssize_t
     count;
 
@@ -351,6 +354,15 @@ static MagickBooleanType load_tile(Image *image,Image *tile_image,
     *xcfdata,
     *xcfodata;
 
+  extent=0;
+  if (inDocInfo->image_type == GIMP_GRAY)
+    extent=tile_image->columns*tile_image->rows*sizeof(*graydata);
+  else
+    if (inDocInfo->image_type == GIMP_RGB)
+      extent=tile_image->columns*tile_image->rows*sizeof(*xcfdata);
+  if (extent > data_length)
+    ThrowBinaryException(CorruptImageError,"NotEnoughPixelData",
+      image->filename);
   xcfdata=(XCFPixelPacket *) AcquireQuantumMemory(MagickMax(data_length,
     tile_image->columns*tile_image->rows),sizeof(*xcfdata));
   if (xcfdata == (XCFPixelPacket *) NULL)
