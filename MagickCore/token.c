@@ -155,7 +155,8 @@ MagickExport TokenInfo *DestroyTokenInfo(TokenInfo *token_info)
 %
 %  The format of the GetMagickToken method is:
 %
-%      void GetMagickToken(const char *start,const char **end,char *token)
+%      void GetMagickToken(const char *start,const char **end,
+%        const size_t extent,char *token)
 %
 %  A description of each parameter follows:
 %
