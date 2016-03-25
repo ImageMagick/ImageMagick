@@ -968,7 +968,7 @@ MagickExport MagickBooleanType GetDelegateThreadSupport(
 %  MagickToken() gets a token from the token stream.  A token is defined as
 %  a sequence of characters delimited by whitespace (e.g. clip-path), a
 %  sequence delimited with quotes (.e.g "Quote me"), or a sequence enclosed in
-%  parenthesis (e.g. rgb(0,0,0)).  GetTokenLexeme() also recognizes these
+%  parenthesis (e.g. rgb(0,0,0)).  GetNextToken() also recognizes these
 %  separator characters: ':', '=', ',', and ';'.
 %
 %  The format of the MagickToken method is:
@@ -986,7 +986,7 @@ MagickExport MagickBooleanType GetDelegateThreadSupport(
 */
 MagickExport void GetMagickToken(const char *start,const char **end,char *token)
 {
-  GetTokenLexeme(start,end,~0UL,token);
+  GetNextToken(start,end,~0UL,token);
 }
 
 /*
@@ -1542,7 +1542,7 @@ static MagickBooleanType LoadDelegateCache(LinkedListInfo *delegate_cache,
     /*
       Interpret XML.
     */
-    GetTokenLexeme(q,&q,MaxTextExtent,token);
+    GetNextToken(q,&q,MaxTextExtent,token);
     if (*token == '\0')
       break;
     (void) CopyMagickString(keyword,token,MaxTextExtent);
@@ -1552,7 +1552,7 @@ static MagickBooleanType LoadDelegateCache(LinkedListInfo *delegate_cache,
           Doctype element.
         */
         while ((LocaleNCompare(q,"]>",2) != 0) && (*q != '\0'))
-          GetTokenLexeme(q,&q,MaxTextExtent,token);
+          GetNextToken(q,&q,MaxTextExtent,token);
         continue;
       }
     if (LocaleNCompare(keyword,"<!--",4) == 0)
@@ -1561,7 +1561,7 @@ static MagickBooleanType LoadDelegateCache(LinkedListInfo *delegate_cache,
           Comment element.
         */
         while ((LocaleNCompare(q,"->",2) != 0) && (*q != '\0'))
-          GetTokenLexeme(q,&q,MaxTextExtent,token);
+          GetNextToken(q,&q,MaxTextExtent,token);
         continue;
       }
     if (LocaleCompare(keyword,"<include") == 0)
@@ -1572,10 +1572,10 @@ static MagickBooleanType LoadDelegateCache(LinkedListInfo *delegate_cache,
         while (((*token != '/') && (*(token+1) != '>')) && (*q != '\0'))
         {
           (void) CopyMagickString(keyword,token,MaxTextExtent);
-          GetTokenLexeme(q,&q,MaxTextExtent,token);
+          GetNextToken(q,&q,MaxTextExtent,token);
           if (*token != '=')
             continue;
-          GetTokenLexeme(q,&q,MaxTextExtent,token);
+          GetNextToken(q,&q,MaxTextExtent,token);
           if (LocaleCompare(keyword,"file") == 0)
             {
               if (depth > 200)
@@ -1634,11 +1634,11 @@ static MagickBooleanType LoadDelegateCache(LinkedListInfo *delegate_cache,
         delegate_info=(DelegateInfo *) NULL;
         continue;
       }
-    GetTokenLexeme(q,(const char **) NULL,MaxTextExtent,token);
+    GetNextToken(q,(const char **) NULL,MaxTextExtent,token);
     if (*token != '=')
       continue;
-    GetTokenLexeme(q,&q,MaxTextExtent,token);
-    GetTokenLexeme(q,&q,MaxTextExtent,token);
+    GetNextToken(q,&q,MaxTextExtent,token);
+    GetNextToken(q,&q,MaxTextExtent,token);
     switch (*keyword)
     {
       case 'C':

@@ -2238,7 +2238,7 @@ static MagickBooleanType LoadColorCache(LinkedListInfo *color_cache,
     /*
       Interpret XML.
     */
-    GetTokenLexeme(q,&q,MaxTextExtent,token);
+    GetNextToken(q,&q,MaxTextExtent,token);
     if (*token == '\0')
       break;
     (void) CopyMagickString(keyword,token,MaxTextExtent);
@@ -2248,7 +2248,7 @@ static MagickBooleanType LoadColorCache(LinkedListInfo *color_cache,
           Doctype element.
         */
         while ((LocaleNCompare(q,"]>",2) != 0) && (*q != '\0'))
-          GetTokenLexeme(q,&q,MaxTextExtent,token);
+          GetNextToken(q,&q,MaxTextExtent,token);
         continue;
       }
     if (LocaleNCompare(keyword,"<!--",4) == 0)
@@ -2257,7 +2257,7 @@ static MagickBooleanType LoadColorCache(LinkedListInfo *color_cache,
           Comment element.
         */
         while ((LocaleNCompare(q,"->",2) != 0) && (*q != '\0'))
-          GetTokenLexeme(q,&q,MaxTextExtent,token);
+          GetNextToken(q,&q,MaxTextExtent,token);
         continue;
       }
     if (LocaleCompare(keyword,"<include") == 0)
@@ -2268,10 +2268,10 @@ static MagickBooleanType LoadColorCache(LinkedListInfo *color_cache,
         while (((*token != '/') && (*(token+1) != '>')) && (*q != '\0'))
         {
           (void) CopyMagickString(keyword,token,MaxTextExtent);
-          GetTokenLexeme(q,&q,MaxTextExtent,token);
+          GetNextToken(q,&q,MaxTextExtent,token);
           if (*token != '=')
             continue;
-          GetTokenLexeme(q,&q,MaxTextExtent,token);
+          GetNextToken(q,&q,MaxTextExtent,token);
           if (LocaleCompare(keyword,"file") == 0)
             {
               if (depth > 200)
@@ -2329,11 +2329,11 @@ static MagickBooleanType LoadColorCache(LinkedListInfo *color_cache,
         color_info=(ColorInfo *) NULL;
         continue;
       }
-    GetTokenLexeme(q,(const char **) NULL,MaxTextExtent,token);
+    GetNextToken(q,(const char **) NULL,MaxTextExtent,token);
     if (*token != '=')
       continue;
-    GetTokenLexeme(q,&q,MaxTextExtent,token);
-    GetTokenLexeme(q,&q,MaxTextExtent,token);
+    GetNextToken(q,&q,MaxTextExtent,token);
+    GetNextToken(q,&q,MaxTextExtent,token);
     switch (*keyword)
     {
       case 'C':

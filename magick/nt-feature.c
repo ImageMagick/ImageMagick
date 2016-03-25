@@ -410,7 +410,7 @@ MagickExport MagickBooleanType NTAcquireTypeCache(SplayTreeInfo *type_cache,
         family_extent=value_name;
         for (q=value_name; *q != '\0'; )
         {
-            GetTokenLexeme(q,(const char **) &q,token);
+            GetNextToken(q,(const char **) &q,token);
             if (*token == '\0')
               break;
 

@@ -1189,7 +1189,7 @@ static MagickBooleanType LoadLocaleCache(SplayTreeInfo *locale_cache,
     /*
       Interpret XML.
     */
-    GetTokenLexeme(q,&q,MaxTextExtent,token);
+    GetNextToken(q,&q,MaxTextExtent,token);
     if (*token == '\0')
       break;
     (void) CopyMagickString(keyword,token,MaxTextExtent);
@@ -1200,7 +1200,7 @@ static MagickBooleanType LoadLocaleCache(SplayTreeInfo *locale_cache,
         */
         while ((LocaleNCompare(q,"]>",2) != 0) && (*q != '\0'))
         {
-          GetTokenLexeme(q,&q,MaxTextExtent,token);
+          GetNextToken(q,&q,MaxTextExtent,token);
           while (isspace((int) ((unsigned char) *q)) != 0)
             q++;
         }
@@ -1213,7 +1213,7 @@ static MagickBooleanType LoadLocaleCache(SplayTreeInfo *locale_cache,
         */
         while ((LocaleNCompare(q,"->",2) != 0) && (*q != '\0'))
         {
-          GetTokenLexeme(q,&q,MaxTextExtent,token);
+          GetNextToken(q,&q,MaxTextExtent,token);
           while (isspace((int) ((unsigned char) *q)) != 0)
             q++;
         }
@@ -1227,10 +1227,10 @@ static MagickBooleanType LoadLocaleCache(SplayTreeInfo *locale_cache,
         while (((*token != '/') && (*(token+1) != '>')) && (*q != '\0'))
         {
           (void) CopyMagickString(keyword,token,MaxTextExtent);
-          GetTokenLexeme(q,&q,MaxTextExtent,token);
+          GetNextToken(q,&q,MaxTextExtent,token);
           if (*token != '=')
             continue;
-          GetTokenLexeme(q,&q,MaxTextExtent,token);
+          GetNextToken(q,&q,MaxTextExtent,token);
           if (LocaleCompare(keyword,"locale") == 0)
             {
               if (LocaleCompare(locale,token) != 0)
@@ -1277,10 +1277,10 @@ static MagickBooleanType LoadLocaleCache(SplayTreeInfo *locale_cache,
         while ((*token != '>') && (*q != '\0'))
         {
           (void) CopyMagickString(keyword,token,MaxTextExtent);
-          GetTokenLexeme(q,&q,MaxTextExtent,token);
+          GetNextToken(q,&q,MaxTextExtent,token);
           if (*token != '=')
             continue;
-          GetTokenLexeme(q,&q,MaxTextExtent,token);
+          GetNextToken(q,&q,MaxTextExtent,token);
         }
         continue;
       }
@@ -1302,10 +1302,10 @@ static MagickBooleanType LoadLocaleCache(SplayTreeInfo *locale_cache,
         while ((*token != '>') && (*q != '\0'))
         {
           (void) CopyMagickString(keyword,token,MaxTextExtent);
-          GetTokenLexeme(q,&q,MaxTextExtent,token);
+          GetNextToken(q,&q,MaxTextExtent,token);
           if (*token != '=')
             continue;
-          GetTokenLexeme(q,&q,MaxTextExtent,token);
+          GetNextToken(q,&q,MaxTextExtent,token);
           if (LocaleCompare(keyword,"name") == 0)
             {
               (void) ConcatenateMagickString(tag,token,MaxTextExtent);
@@ -1364,7 +1364,7 @@ static MagickBooleanType LoadLocaleCache(SplayTreeInfo *locale_cache,
         (void) ConcatenateMagickString(tag,"/",MaxTextExtent);
         continue;
       }
-    GetTokenLexeme(q,(const char **) NULL,MaxTextExtent,token);
+    GetNextToken(q,(const char **) NULL,MaxTextExtent,token);
     if (*token != '=')
       continue;
   }

@@ -507,7 +507,7 @@ extern "C" {
 #define GetMagickResource  PrependMagickMethod(GetMagickResource)
 #define GetMagickSeekableStream  PrependMagickMethod(GetMagickSeekableStream)
 #define GetMagickThreadSupport  PrependMagickMethod(GetMagickThreadSupport)
-#define GetTokenLexeme  PrependMagickMethod(GetTokenLexeme)
+#define GetNextToken  PrependMagickMethod(GetNextToken)
 #define GetMagickVersion  PrependMagickMethod(GetMagickVersion)
 #define GetMagicList  PrependMagickMethod(GetMagicList)
 #define GetMagicName  PrependMagickMethod(GetMagicName)
