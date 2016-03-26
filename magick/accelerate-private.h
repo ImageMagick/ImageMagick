@@ -2963,7 +2963,7 @@ STRINGIFY(
     /* Call Sinc even for SincFast to get better precision on GPU 
        and to avoid thread divergence.  Sinc is pretty fast on GPU anyway...*/
     case SincWeightingFunction:
-    case SincFastWeightingFunction:  
+    case SincFastWeightingFunction:
       return Sinc(x);
     case CubicBCWeightingFunction:
       return CubicBC(x,filterCoefficients);
@@ -3198,29 +3198,6 @@ STRINGIFY(
   )
 
 
-
-  STRINGIFY(
- __kernel __attribute__((reqd_work_group_size(256, 1, 1)))
- void ResizeHorizontalFilterSinc(const __global CLPixelType* inputImage, const unsigned int inputColumns, const unsigned int inputRows, const unsigned int matte
-  , const float xFactor, __global CLPixelType* filteredImage, const unsigned int filteredColumns, const unsigned int filteredRows
-  , const int resizeFilterType, const int resizeWindowType
-  , const __global float* resizeFilterCubicCoefficients
-  , const float resizeFilterScale, const float resizeFilterSupport, const float resizeFilterWindowSupport, const float resizeFilterBlur
-  , __local CLPixelType* inputImageCache, const int numCachedPixels, const unsigned int pixelPerWorkgroup, const unsigned int pixelChunkSize
-  , __local float4* outputPixelCache, __local float* densityCache, __local float* gammaCache) {
-    
-    ResizeHorizontalFilter(inputImage,inputColumns,inputRows,matte
-    ,xFactor, filteredImage, filteredColumns, filteredRows
-    ,SincWeightingFunction, SincWeightingFunction
-    ,resizeFilterCubicCoefficients
-    ,resizeFilterScale, resizeFilterSupport, resizeFilterWindowSupport, resizeFilterBlur
-    ,inputImageCache, numCachedPixels, pixelPerWorkgroup, pixelChunkSize
-    ,outputPixelCache, densityCache, gammaCache);
-
-  }
-  )
-
-
   STRINGIFY(
  __kernel __attribute__((reqd_work_group_size(1, 256, 1)))
  void ResizeVerticalFilter(const __global CLPixelType* inputImage, const unsigned int inputColumns, const unsigned int inputRows, const unsigned int matte
@@ -3387,27 +3364,6 @@ STRINGIFY(
     }
 
     } // end of chunking loop
-  }
-  )
-
-
-
-  STRINGIFY(
- __kernel __attribute__((reqd_work_group_size(1, 256, 1)))
- void ResizeVerticalFilterSinc(const __global CLPixelType* inputImage, const unsigned int inputColumns, const unsigned int inputRows, const unsigned int matte
-  , const float yFactor, __global CLPixelType* filteredImage, const unsigned int filteredColumns, const unsigned int filteredRows
-  , const int resizeFilterType, const int resizeWindowType
-  , const __global float* resizeFilterCubicCoefficients
-  , const float resizeFilterScale, const float resizeFilterSupport, const float resizeFilterWindowSupport, const float resizeFilterBlur
-  , __local CLPixelType* inputImageCache, const int numCachedPixels, const unsigned int pixelPerWorkgroup, const unsigned int pixelChunkSize
-  , __local float4* outputPixelCache, __local float* densityCache, __local float* gammaCache) {
-    ResizeVerticalFilter(inputImage,inputColumns,inputRows,matte
-      ,yFactor,filteredImage,filteredColumns,filteredRows
-      ,SincWeightingFunction, SincWeightingFunction
-      ,resizeFilterCubicCoefficients
-      ,resizeFilterScale,resizeFilterSupport,resizeFilterWindowSupport,resizeFilterBlur
-      ,inputImageCache,numCachedPixels,pixelPerWorkgroup,pixelChunkSize
-      ,outputPixelCache,densityCache,gammaCache);
   }
   )
 
