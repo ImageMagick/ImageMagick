@@ -3696,7 +3696,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image,
     /*
       Interpret graphic primitive.
     */
-    GetNextToken(q,&q,token,keyword);
+    GetNextToken(q,&q,MaxPathExtent,keyword);
     if (*keyword == '\0')
       break;
     if (*keyword == '#')
