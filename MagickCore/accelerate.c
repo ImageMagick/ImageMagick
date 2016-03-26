@@ -5395,16 +5395,7 @@ RestoreMSCWarning
   resizeFilterType = (int)GetResizeFilterWeightingType(resizeFilter);
   resizeWindowType = (int)GetResizeFilterWindowWeightingType(resizeFilter);
 
-
-  if (resizeFilterType == SincFastWeightingFunction
-    && resizeWindowType == SincFastWeightingFunction)
-  {
-    horizontalKernel = AcquireOpenCLKernel(clEnv, MAGICK_OPENCL_ACCELERATE, "ResizeHorizontalFilterSinc");
-  }
-  else
-  {
-    horizontalKernel = AcquireOpenCLKernel(clEnv, MAGICK_OPENCL_ACCELERATE, "ResizeHorizontalFilter");
-  }
+  horizontalKernel = AcquireOpenCLKernel(clEnv, MAGICK_OPENCL_ACCELERATE, "ResizeHorizontalFilter");
   if (horizontalKernel == NULL)
   {
     (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "AcquireOpenCLKernel failed.", "'%s'", ".");
@@ -5610,12 +5601,7 @@ RestoreMSCWarning
   resizeFilterType = (int)GetResizeFilterWeightingType(resizeFilter);
   resizeWindowType = (int)GetResizeFilterWindowWeightingType(resizeFilter);
 
-  if (resizeFilterType == SincFastWeightingFunction
-    && resizeWindowType == SincFastWeightingFunction)
-    verticalKernel = AcquireOpenCLKernel(clEnv, MAGICK_OPENCL_ACCELERATE, "ResizeVerticalFilterSinc");
-  else 
-    verticalKernel = AcquireOpenCLKernel(clEnv, MAGICK_OPENCL_ACCELERATE, "ResizeVerticalFilter");
-
+  verticalKernel = AcquireOpenCLKernel(clEnv, MAGICK_OPENCL_ACCELERATE, "ResizeVerticalFilter");
   if (verticalKernel == NULL)
   {
     (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "AcquireOpenCLKernel failed.", "'%s'", ".");
