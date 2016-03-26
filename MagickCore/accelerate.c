@@ -4065,12 +4065,10 @@ static MagickBooleanType ComputeGrayscaleImage(Image *image,
 
   if (ALIGNED(inputPixels,CLQuantum))
   {
-    length = image->columns * image->rows;
     clEnv->library->clEnqueueMapBuffer(queue, imageBuffer, CL_TRUE, CL_MAP_READ|CL_MAP_WRITE, 0, length * sizeof(CLQuantum), 0, NULL, NULL, &clStatus);
   }
   else 
   {
-    length = image->columns * image->rows;
     clStatus = clEnv->library->clEnqueueReadBuffer(queue, imageBuffer, CL_TRUE, 0, length * sizeof(CLQuantum), inputPixels, 0, NULL, NULL);
   }
   if (clStatus != CL_SUCCESS)
