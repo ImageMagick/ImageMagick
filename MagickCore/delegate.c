@@ -1201,19 +1201,11 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
             "UnableToCreateTemporaryFile",image_info->unique);
           return(MagickFalse);
         }
-      if (AcquireUniqueFilename(image_info->zero) == MagickFalse)
-        {
-          (void) RelinquishUniqueFileResource(image_info->unique);
-          ThrowFileException(exception,FileOpenError,
-            "UnableToCreateTemporaryFile",image_info->zero);
-          return(MagickFalse);
-        }
       magick=InterpretImageProperties(image_info,image,decode != (char *) NULL ?
         delegate_info->encode : delegate_info->decode,exception);
       if (magick == (char *) NULL)
         {
           (void) RelinquishUniqueFileResource(image_info->unique);
-          (void) RelinquishUniqueFileResource(image_info->zero);
           if (temporary != MagickFalse)
             (void) RelinquishUniqueFileResource(image->filename);
           (void) ThrowMagickException(exception,GetMagickModule(),
@@ -1243,7 +1235,6 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
         if (status == MagickFalse)
           {
             (void) RelinquishUniqueFileResource(image_info->unique);
-            (void) RelinquishUniqueFileResource(image_info->zero);
             if (temporary != MagickFalse)
               (void) RelinquishUniqueFileResource(image->filename);
             clone_info=DestroyImageInfo(clone_info);
@@ -1255,7 +1246,6 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
           break;
       }
       (void) RelinquishUniqueFileResource(image_info->unique);
-      (void) RelinquishUniqueFileResource(image_info->zero);
       clone_info=DestroyImageInfo(clone_info);
     }
   /*
@@ -1283,13 +1273,6 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
       {
         ThrowFileException(exception,FileOpenError,
           "UnableToCreateTemporaryFile",image_info->unique);
-        break;
-      }
-    if (AcquireUniqueFilename(image_info->zero) == MagickFalse)
-      {
-        (void) RelinquishUniqueFileResource(image_info->unique);
-        ThrowFileException(exception,FileOpenError,
-          "UnableToCreateTemporaryFile",image_info->zero);
         break;
       }
     if (LocaleCompare(decode,"SCAN") != 0)
@@ -1337,7 +1320,6 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
     if (image_info->temporary != MagickFalse)
       (void) RelinquishUniqueFileResource(image_info->filename);
     (void) RelinquishUniqueFileResource(image_info->unique);
-    (void) RelinquishUniqueFileResource(image_info->zero);
     (void) RelinquishUniqueFileResource(image_info->filename);
     (void) RelinquishUniqueFileResource(image->filename);
     if (status == MagickFalse)

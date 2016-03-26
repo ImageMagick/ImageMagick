@@ -2581,10 +2581,6 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
         image->page.y);
       break;
     }
-    case 'Z': /* Zero filename ??? */
-      WarnNoImageInfoReturn("\"%%%c\"",letter);
-      string=image_info->zero;
-      break;
     case '%': /* percent escaped */
       string="%";
       break;
@@ -3043,16 +3039,6 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
           WarnNoImageReturn("\"%%[%s]\"",property);
           (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
             (image->magick_columns != 0 ? image->magick_columns : 256));
-          break;
-        }
-      break;
-    }
-    case 'z':
-    {
-      if (LocaleCompare("zero",property) == 0)
-        {
-          WarnNoImageInfoReturn("\"%%[%s]\"",property);
-          string=image_info->zero;
           break;
         }
       break;

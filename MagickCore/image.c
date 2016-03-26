@@ -990,7 +990,6 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
     MagickPathExtent);
   (void) CopyMagickString(clone_info->unique,image_info->unique,
     MagickPathExtent);
-  (void) CopyMagickString(clone_info->zero,image_info->zero,MagickPathExtent);
   (void) CopyMagickString(clone_info->filename,image_info->filename,
     MagickPathExtent);
   clone_info->channel=image_info->channel;
