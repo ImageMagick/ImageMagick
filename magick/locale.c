@@ -1079,7 +1079,7 @@ MagickExport MagickBooleanType ListLocaleInfo(FILE *file,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   L o a d L o c a l e L i s t                                               %
++   L o a d L o c a l e C a c h e                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1170,6 +1170,9 @@ static MagickBooleanType LoadLocaleCache(SplayTreeInfo *locale_cache,
   register char
     *p;
 
+  size_t
+    extent;
+
   /*
     Read the locale configure file.
   */
@@ -1184,12 +1187,13 @@ static MagickBooleanType LoadLocaleCache(SplayTreeInfo *locale_cache,
   *keyword='\0';
   fatal_handler=SetFatalErrorHandler(LocaleFatalErrorHandler);
   token=AcquireString(xml);
+  extent=strlen(token)+MaxTextExtent;
   for (q=(char *) xml; *q != '\0'; )
   {
     /*
       Interpret XML.
     */
-    GetNextToken(q,&q,MaxTextExtent,token);
+    GetNextToken(q,&q,extent,token);
     if (*token == '\0')
       break;
     (void) CopyMagickString(keyword,token,MaxTextExtent);
@@ -1200,7 +1204,7 @@ static MagickBooleanType LoadLocaleCache(SplayTreeInfo *locale_cache,
         */
         while ((LocaleNCompare(q,"]>",2) != 0) && (*q != '\0'))
         {
-          GetNextToken(q,&q,MaxTextExtent,token);
+          GetNextToken(q,&q,extent,token);
           while (isspace((int) ((unsigned char) *q)) != 0)
             q++;
         }
@@ -1213,7 +1217,7 @@ static MagickBooleanType LoadLocaleCache(SplayTreeInfo *locale_cache,
         */
         while ((LocaleNCompare(q,"->",2) != 0) && (*q != '\0'))
         {
-          GetNextToken(q,&q,MaxTextExtent,token);
+          GetNextToken(q,&q,extent,token);
           while (isspace((int) ((unsigned char) *q)) != 0)
             q++;
         }
@@ -1227,10 +1231,10 @@ static MagickBooleanType LoadLocaleCache(SplayTreeInfo *locale_cache,
         while (((*token != '/') && (*(token+1) != '>')) && (*q != '\0'))
         {
           (void) CopyMagickString(keyword,token,MaxTextExtent);
-          GetNextToken(q,&q,MaxTextExtent,token);
+          GetNextToken(q,&q,extent,token);
           if (*token != '=')
             continue;
-          GetNextToken(q,&q,MaxTextExtent,token);
+          GetNextToken(q,&q,extent,token);
           if (LocaleCompare(keyword,"locale") == 0)
             {
               if (LocaleCompare(locale,token) != 0)
@@ -1277,10 +1281,10 @@ static MagickBooleanType LoadLocaleCache(SplayTreeInfo *locale_cache,
         while ((*token != '>') && (*q != '\0'))
         {
           (void) CopyMagickString(keyword,token,MaxTextExtent);
-          GetNextToken(q,&q,MaxTextExtent,token);
+          GetNextToken(q,&q,extent,token);
           if (*token != '=')
             continue;
-          GetNextToken(q,&q,MaxTextExtent,token);
+          GetNextToken(q,&q,extent,token);
         }
         continue;
       }
@@ -1302,10 +1306,10 @@ static MagickBooleanType LoadLocaleCache(SplayTreeInfo *locale_cache,
         while ((*token != '>') && (*q != '\0'))
         {
           (void) CopyMagickString(keyword,token,MaxTextExtent);
-          GetNextToken(q,&q,MaxTextExtent,token);
+          GetNextToken(q,&q,extent,token);
           if (*token != '=')
             continue;
-          GetNextToken(q,&q,MaxTextExtent,token);
+          GetNextToken(q,&q,extent,token);
           if (LocaleCompare(keyword,"name") == 0)
             {
               (void) ConcatenateMagickString(tag,token,MaxTextExtent);
@@ -1364,7 +1368,7 @@ static MagickBooleanType LoadLocaleCache(SplayTreeInfo *locale_cache,
         (void) ConcatenateMagickString(tag,"/",MaxTextExtent);
         continue;
       }
-    GetNextToken(q,(const char **) NULL,MaxTextExtent,token);
+    GetNextToken(q,(const char **) NULL,extent,token);
     if (*token != '=')
       continue;
   }

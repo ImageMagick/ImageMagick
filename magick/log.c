@@ -1396,7 +1396,7 @@ MagickBooleanType LogMagickEvent(const LogEventType type,const char *module,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   L o a d L o g L i s t                                                     %
++   L o a d L o g C a c h e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1437,19 +1437,23 @@ static MagickBooleanType LoadLogCache(LinkedListInfo *log_cache,const char *xml,
   MagickStatusType
     status;
 
+  size_t
+    extent;
+
   /*
     Load the log map file.
   */
   if (xml == (const char *) NULL)
     return(MagickFalse);
   status=MagickTrue;
-  token=AcquireString((const char *) xml);
+  token=AcquireString(xml);
+  extent=strlen(token)+MaxTextExtent;
   for (q=(const char *) xml; *q != '\0'; )
   {
     /*
       Interpret XML.
     */
-    GetNextToken(q,&q,MaxTextExtent,token);
+    GetNextToken(q,&q,extent,token);
     if (*token == '\0')
       break;
     (void) CopyMagickString(keyword,token,MaxTextExtent);
@@ -1459,7 +1463,7 @@ static MagickBooleanType LoadLogCache(LinkedListInfo *log_cache,const char *xml,
           Doctype element.
         */
         while ((LocaleNCompare(q,"]>",2) != 0) && (*q != '\0'))
-          GetNextToken(q,&q,MaxTextExtent,token);
+          GetNextToken(q,&q,extent,token);
         continue;
       }
     if (LocaleNCompare(keyword,"<!--",4) == 0)
@@ -1468,7 +1472,7 @@ static MagickBooleanType LoadLogCache(LinkedListInfo *log_cache,const char *xml,
           Comment element.
         */
         while ((LocaleNCompare(q,"->",2) != 0) && (*q != '\0'))
-          GetNextToken(q,&q,MaxTextExtent,token);
+          GetNextToken(q,&q,extent,token);
         continue;
       }
     if (LocaleCompare(keyword,"<include") == 0)
@@ -1479,10 +1483,10 @@ static MagickBooleanType LoadLogCache(LinkedListInfo *log_cache,const char *xml,
         while (((*token != '/') && (*(token+1) != '>')) && (*q != '\0'))
         {
           (void) CopyMagickString(keyword,token,MaxTextExtent);
-          GetNextToken(q,&q,MaxTextExtent,token);
+          GetNextToken(q,&q,extent,token);
           if (*token != '=')
             continue;
-          GetNextToken(q,&q,MaxTextExtent,token);
+          GetNextToken(q,&q,extent,token);
           if (LocaleCompare(keyword,"file") == 0)
             {
               if (depth > 200)
@@ -1539,11 +1543,11 @@ static MagickBooleanType LoadLogCache(LinkedListInfo *log_cache,const char *xml,
         log_info=(LogInfo *) NULL;
         continue;
       }
-    GetNextToken(q,(const char **) NULL,MaxTextExtent,token);
+    GetNextToken(q,(const char **) NULL,extent,token);
     if (*token != '=')
       continue;
-    GetNextToken(q,&q,MaxTextExtent,token);
-    GetNextToken(q,&q,MaxTextExtent,token);
+    GetNextToken(q,&q,extent,token);
+    GetNextToken(q,&q,extent,token);
     switch (*keyword)
     {
       case 'E':

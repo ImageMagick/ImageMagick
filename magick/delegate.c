@@ -959,41 +959,6 @@ MagickExport MagickBooleanType GetDelegateThreadSupport(
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   G e t M a g i c k T o k e n                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  MagickToken() gets a token from the token stream.  A token is defined as
-%  a sequence of characters delimited by whitespace (e.g. clip-path), a
-%  sequence delimited with quotes (.e.g "Quote me"), or a sequence enclosed in
-%  parenthesis (e.g. rgb(0,0,0)).  GetNextToken() also recognizes these
-%  separator characters: ':', '=', ',', and ';'.
-%
-%  The format of the MagickToken method is:
-%
-%      void MagickToken(const char *start,const char **end,char *token)
-%
-%  A description of each parameter follows:
-%
-%    o start: the start of the token sequence.
-%
-%    o end: point to the end of the token sequence.
-%
-%    o token: copy the token to this buffer.
-%
-*/
-MagickExport void GetMagickToken(const char *start,const char **end,char *token)
-{
-  GetNextToken(start,end,~0UL,token);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 +   I s D e l e g a t e C a c h e I n s t a n t i a t e d                     %
 %                                                                             %
 %                                                                             %

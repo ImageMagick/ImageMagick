@@ -774,7 +774,7 @@ MagickExport MagickBooleanType ListCoderInfo(FILE *file,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   L o a d C o d e r L i s t                                                 %
++   L o a d C o d e r C a c h e                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -817,6 +817,9 @@ static MagickBooleanType LoadCoderCache(SplayTreeInfo *coder_cache,
   MagickStatusType
     status;
 
+  size_t
+    extent;
+
   /*
     Load the coder map file.
   */
@@ -827,12 +830,13 @@ static MagickBooleanType LoadCoderCache(SplayTreeInfo *coder_cache,
   status=MagickTrue;
   coder_info=(CoderInfo *) NULL;
   token=AcquireString(xml);
+  extent=strlen(token)+MaxTextExtent;
   for (q=(char *) xml; *q != '\0'; )
   {
     /*
       Interpret XML.
     */
-    GetNextToken(q,&q,MaxTextExtent,token);
+    GetNextToken(q,&q,extent,token);
     if (*token == '\0')
       break;
     (void) CopyMagickString(keyword,token,MaxTextExtent);
@@ -842,7 +846,7 @@ static MagickBooleanType LoadCoderCache(SplayTreeInfo *coder_cache,
           Doctype element.
         */
         while ((LocaleNCompare(q,"]>",2) != 0) && (*q != '\0'))
-          GetNextToken(q,&q,MaxTextExtent,token);
+          GetNextToken(q,&q,extent,token);
         continue;
       }
     if (LocaleNCompare(keyword,"<!--",4) == 0)
@@ -851,7 +855,7 @@ static MagickBooleanType LoadCoderCache(SplayTreeInfo *coder_cache,
           Comment element.
         */
         while ((LocaleNCompare(q,"->",2) != 0) && (*q != '\0'))
-          GetNextToken(q,&q,MaxTextExtent,token);
+          GetNextToken(q,&q,extent,token);
         continue;
       }
     if (LocaleCompare(keyword,"<include") == 0)
@@ -862,10 +866,10 @@ static MagickBooleanType LoadCoderCache(SplayTreeInfo *coder_cache,
         while (((*token != '/') && (*(token+1) != '>')) && (*q != '\0'))
         {
           (void) CopyMagickString(keyword,token,MaxTextExtent);
-          GetNextToken(q,&q,MaxTextExtent,token);
+          GetNextToken(q,&q,extent,token);
           if (*token != '=')
             continue;
-          GetNextToken(q,&q,MaxTextExtent,token);
+          GetNextToken(q,&q,extent,token);
           if (LocaleCompare(keyword,"file") == 0)
             {
               if (depth > 200)
@@ -924,11 +928,11 @@ static MagickBooleanType LoadCoderCache(SplayTreeInfo *coder_cache,
         coder_info=(CoderInfo *) NULL;
         continue;
       }
-    GetNextToken(q,(const char **) NULL,MaxTextExtent,token);
+    GetNextToken(q,(const char **) NULL,extent,token);
     if (*token != '=')
       continue;
-    GetNextToken(q,&q,MaxTextExtent,token);
-    GetNextToken(q,&q,MaxTextExtent,token);
+    GetNextToken(q,&q,extent,token);
+    GetNextToken(q,&q,extent,token);
     switch (*keyword)
     {
       case 'M':

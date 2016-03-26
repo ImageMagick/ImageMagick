@@ -3656,13 +3656,12 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
     i;
 
   size_t
-    length;
+    extent,
+    length,
+    number_points;
 
   SVGInfo
     svg_info;
-
-  size_t
-    number_points;
 
   /*
     Open output image file.
@@ -3708,6 +3707,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
   GetAffineMatrix(&affine);
   token=AcquireString(value);
+  extent=strlen(token)+MaxTextExtent;
   active=MagickFalse;
   n=0;
   status=MagickTrue;
@@ -3716,7 +3716,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
     /*
       Interpret graphic primitive.
     */
-    GetNextToken(q,&q,MaxTextExtent,keyword);
+    GetNextToken(q,&q,extent,keyword);
     if (*keyword == '\0')
       break;
     if (*keyword == '#')
@@ -3752,33 +3752,33 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
       {
         if (LocaleCompare("affine",keyword) == 0)
           {
-            GetNextToken(q,&q,MaxTextExtent,token);
+            GetNextToken(q,&q,extent,token);
             affine.sx=StringToDouble(token,(char **) NULL);
-            GetNextToken(q,&q,MaxTextExtent,token);
+            GetNextToken(q,&q,extent,token);
             if (*token == ',')
-              GetNextToken(q,&q,MaxTextExtent,token);
+              GetNextToken(q,&q,extent,token);
             affine.rx=StringToDouble(token,(char **) NULL);
-            GetNextToken(q,&q,MaxTextExtent,token);
+            GetNextToken(q,&q,extent,token);
             if (*token == ',')
-              GetNextToken(q,&q,MaxTextExtent,token);
+              GetNextToken(q,&q,extent,token);
             affine.ry=StringToDouble(token,(char **) NULL);
-            GetNextToken(q,&q,MaxTextExtent,token);
+            GetNextToken(q,&q,extent,token);
             if (*token == ',')
-              GetNextToken(q,&q,MaxTextExtent,token);
+              GetNextToken(q,&q,extent,token);
             affine.sy=StringToDouble(token,(char **) NULL);
-            GetNextToken(q,&q,MaxTextExtent,token);
+            GetNextToken(q,&q,extent,token);
             if (*token == ',')
-              GetNextToken(q,&q,MaxTextExtent,token);
+              GetNextToken(q,&q,extent,token);
             affine.tx=StringToDouble(token,(char **) NULL);
-            GetNextToken(q,&q,MaxTextExtent,token);
+            GetNextToken(q,&q,extent,token);
             if (*token == ',')
-              GetNextToken(q,&q,MaxTextExtent,token);
+              GetNextToken(q,&q,extent,token);
             affine.ty=StringToDouble(token,(char **) NULL);
             break;
           }
         if (LocaleCompare("angle",keyword) == 0)
           {
-            GetNextToken(q,&q,MaxTextExtent,token);
+            GetNextToken(q,&q,extent,token);
             affine.rx=StringToDouble(token,(char **) NULL);
             affine.ry=StringToDouble(token,(char **) NULL);
             break;
@@ -3807,7 +3807,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
       {
         if (LocaleCompare("clip-path",keyword) == 0)
           {
-            GetNextToken(q,&q,MaxTextExtent,token);
+            GetNextToken(q,&q,extent,token);
             (void) FormatLocaleString(message,MaxTextExtent,
               "clip-path:url(#%s);",token);
             (void) WriteBlobString(image,message);
@@ -3815,7 +3815,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
           }
         if (LocaleCompare("clip-rule",keyword) == 0)
           {
-            GetNextToken(q,&q,MaxTextExtent,token);
+            GetNextToken(q,&q,extent,token);
             (void) FormatLocaleString(message,MaxTextExtent,
               "clip-rule:%s;",token);
             (void) WriteBlobString(image,message);
@@ -3823,7 +3823,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
           }
         if (LocaleCompare("clip-units",keyword) == 0)
           {
-            GetNextToken(q,&q,MaxTextExtent,token);
+            GetNextToken(q,&q,extent,token);
             (void) FormatLocaleString(message,MaxTextExtent,
               "clipPathUnits=%s;",token);
             (void) WriteBlobString(image,message);
@@ -3847,7 +3847,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
       {
         if (LocaleCompare("decorate",keyword) == 0)
           {
-            GetNextToken(q,&q,MaxTextExtent,token);
+            GetNextToken(q,&q,extent,token);
             (void) FormatLocaleString(message,MaxTextExtent,
               "text-decoration:%s;",token);
             (void) WriteBlobString(image,message);
@@ -3872,7 +3872,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
       {
         if (LocaleCompare("fill",keyword) == 0)
           {
-            GetNextToken(q,&q,MaxTextExtent,token);
+            GetNextToken(q,&q,extent,token);
             (void) FormatLocaleString(message,MaxTextExtent,"fill:%s;",
               token);
             (void) WriteBlobString(image,message);
@@ -3880,7 +3880,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
           }
         if (LocaleCompare("fill-rule",keyword) == 0)
           {
-            GetNextToken(q,&q,MaxTextExtent,token);
+            GetNextToken(q,&q,extent,token);
             (void) FormatLocaleString(message,MaxTextExtent,
               "fill-rule:%s;",token);
             (void) WriteBlobString(image,message);
@@ -3888,7 +3888,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
           }
         if (LocaleCompare("fill-opacity",keyword) == 0)
           {
-            GetNextToken(q,&q,MaxTextExtent,token);
+            GetNextToken(q,&q,extent,token);
             (void) FormatLocaleString(message,MaxTextExtent,
               "fill-opacity:%s;",token);
             (void) WriteBlobString(image,message);
@@ -3896,7 +3896,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
           }
         if (LocaleCompare("font-family",keyword) == 0)
           {
-            GetNextToken(q,&q,MaxTextExtent,token);
+            GetNextToken(q,&q,extent,token);
             (void) FormatLocaleString(message,MaxTextExtent,
               "font-family:%s;",token);
             (void) WriteBlobString(image,message);
@@ -3904,7 +3904,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
           }
         if (LocaleCompare("font-stretch",keyword) == 0)
           {
-            GetNextToken(q,&q,MaxTextExtent,token);
+            GetNextToken(q,&q,extent,token);
             (void) FormatLocaleString(message,MaxTextExtent,
               "font-stretch:%s;",token);
             (void) WriteBlobString(image,message);
@@ -3912,7 +3912,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
           }
         if (LocaleCompare("font-style",keyword) == 0)
           {
-            GetNextToken(q,&q,MaxTextExtent,token);
+            GetNextToken(q,&q,extent,token);
             (void) FormatLocaleString(message,MaxTextExtent,
               "font-style:%s;",token);
             (void) WriteBlobString(image,message);
@@ -3920,7 +3920,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
           }
         if (LocaleCompare("font-size",keyword) == 0)
           {
-            GetNextToken(q,&q,MaxTextExtent,token);
+            GetNextToken(q,&q,extent,token);
             (void) FormatLocaleString(message,MaxTextExtent,
               "font-size:%s;",token);
             (void) WriteBlobString(image,message);
@@ -3928,7 +3928,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
           }
         if (LocaleCompare("font-weight",keyword) == 0)
           {
-            GetNextToken(q,&q,MaxTextExtent,token);
+            GetNextToken(q,&q,extent,token);
             (void) FormatLocaleString(message,MaxTextExtent,
               "font-weight:%s;",token);
             (void) WriteBlobString(image,message);
@@ -3942,12 +3942,12 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
       {
         if (LocaleCompare("gradient-units",keyword) == 0)
           {
-            GetNextToken(q,&q,MaxTextExtent,token);
+            GetNextToken(q,&q,extent,token);
             break;
           }
         if (LocaleCompare("text-align",keyword) == 0)
           {
-            GetNextToken(q,&q,MaxTextExtent,token);
+            GetNextToken(q,&q,extent,token);
             (void) FormatLocaleString(message,MaxTextExtent,
               "text-align %s ",token);
             (void) WriteBlobString(image,message);
@@ -3955,7 +3955,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
           }
         if (LocaleCompare("text-anchor",keyword) == 0)
           {
-            GetNextToken(q,&q,MaxTextExtent,token);
+            GetNextToken(q,&q,extent,token);
             (void) FormatLocaleString(message,MaxTextExtent,
               "text-anchor %s ",token);
             (void) WriteBlobString(image,message);
@@ -3969,7 +3969,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
       {
         if (LocaleCompare("image",keyword) == 0)
           {
-            GetNextToken(q,&q,MaxTextExtent,token);
+            GetNextToken(q,&q,extent,token);
             primitive_type=ImagePrimitive;
             break;
           }
@@ -4003,7 +4003,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
       {
         if (LocaleCompare("opacity",keyword) == 0)
           {
-            GetNextToken(q,&q,MaxTextExtent,token);
+            GetNextToken(q,&q,extent,token);
             (void) FormatLocaleString(message,MaxTextExtent,"opacity %s ",
               token);
             (void) WriteBlobString(image,message);
@@ -4037,7 +4037,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
           }
         if (LocaleCompare("pop",keyword) == 0)
           {
-            GetNextToken(q,&q,MaxTextExtent,token);
+            GetNextToken(q,&q,extent,token);
             if (LocaleCompare("clip-path",token) == 0)
               {
                 (void) WriteBlobString(image,"</clipPath>\n");
@@ -4074,10 +4074,10 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
           }
         if (LocaleCompare("push",keyword) == 0)
           {
-            GetNextToken(q,&q,MaxTextExtent,token);
+            GetNextToken(q,&q,extent,token);
             if (LocaleCompare("clip-path",token) == 0)
               {
-                GetNextToken(q,&q,MaxTextExtent,token);
+                GetNextToken(q,&q,extent,token);
                 (void) FormatLocaleString(message,MaxTextExtent,
                   "<clipPath id=\"%s\">\n",token);
                 (void) WriteBlobString(image,message);
@@ -4090,27 +4090,27 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
               }
             if (LocaleCompare("gradient",token) == 0)
               {
-                GetNextToken(q,&q,MaxTextExtent,token);
+                GetNextToken(q,&q,extent,token);
                 (void) CopyMagickString(name,token,MaxTextExtent);
-                GetNextToken(q,&q,MaxTextExtent,token);
+                GetNextToken(q,&q,extent,token);
                 (void) CopyMagickString(type,token,MaxTextExtent);
-                GetNextToken(q,&q,MaxTextExtent,token);
+                GetNextToken(q,&q,extent,token);
                 svg_info.segment.x1=StringToDouble(token,(char **) NULL);
                 svg_info.element.cx=StringToDouble(token,(char **) NULL);
-                GetNextToken(q,&q,MaxTextExtent,token);
+                GetNextToken(q,&q,extent,token);
                 if (*token == ',')
-                  GetNextToken(q,&q,MaxTextExtent,token);
+                  GetNextToken(q,&q,extent,token);
                 svg_info.segment.y1=StringToDouble(token,(char **) NULL);
                 svg_info.element.cy=StringToDouble(token,(char **) NULL);
-                GetNextToken(q,&q,MaxTextExtent,token);
+                GetNextToken(q,&q,extent,token);
                 if (*token == ',')
-                  GetNextToken(q,&q,MaxTextExtent,token);
+                  GetNextToken(q,&q,extent,token);
                 svg_info.segment.x2=StringToDouble(token,(char **) NULL);
                 svg_info.element.major=StringToDouble(token,
                   (char **) NULL);
-                GetNextToken(q,&q,MaxTextExtent,token);
+                GetNextToken(q,&q,extent,token);
                 if (*token == ',')
-                  GetNextToken(q,&q,MaxTextExtent,token);
+                  GetNextToken(q,&q,extent,token);
                 svg_info.segment.y2=StringToDouble(token,(char **) NULL);
                 svg_info.element.minor=StringToDouble(token,
                   (char **) NULL);
@@ -4120,9 +4120,9 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
                   svg_info.segment.y1,svg_info.segment.x2,svg_info.segment.y2);
                 if (LocaleCompare(type,"radial") == 0)
                   {
-                    GetNextToken(q,&q,MaxTextExtent,token);
+                    GetNextToken(q,&q,extent,token);
                     if (*token == ',')
-                      GetNextToken(q,&q,MaxTextExtent,token);
+                      GetNextToken(q,&q,extent,token);
                     svg_info.element.angle=StringToDouble(token,
                       (char **) NULL);
                     (void) FormatLocaleString(message,MaxTextExtent,
@@ -4148,22 +4148,22 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
               }
             if (LocaleCompare("pattern",token) == 0)
               {
-                GetNextToken(q,&q,MaxTextExtent,token);
+                GetNextToken(q,&q,extent,token);
                 (void) CopyMagickString(name,token,MaxTextExtent);
-                GetNextToken(q,&q,MaxTextExtent,token);
+                GetNextToken(q,&q,extent,token);
                 svg_info.bounds.x=StringToDouble(token,(char **) NULL);
-                GetNextToken(q,&q,MaxTextExtent,token);
+                GetNextToken(q,&q,extent,token);
                 if (*token == ',')
-                  GetNextToken(q,&q,MaxTextExtent,token);
+                  GetNextToken(q,&q,extent,token);
                 svg_info.bounds.y=StringToDouble(token,(char **) NULL);
-                GetNextToken(q,&q,MaxTextExtent,token);
+                GetNextToken(q,&q,extent,token);
                 if (*token == ',')
-                  GetNextToken(q,&q,MaxTextExtent,token);
+                  GetNextToken(q,&q,extent,token);
                 svg_info.bounds.width=StringToDouble(token,
                   (char **) NULL);
-                GetNextToken(q,&q,MaxTextExtent,token);
+                GetNextToken(q,&q,extent,token);
                 if (*token == ',')
-                  GetNextToken(q,&q,MaxTextExtent,token);
+                  GetNextToken(q,&q,extent,token);
                 svg_info.bounds.height=StringToDouble(token,
                   (char **) NULL);
                 (void) FormatLocaleString(message,MaxTextExtent,
@@ -4194,7 +4194,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
           }
         if (LocaleCompare("rotate",keyword) == 0)
           {
-            GetNextToken(q,&q,MaxTextExtent,token);
+            GetNextToken(q,&q,extent,token);
             (void) FormatLocaleString(message,MaxTextExtent,"rotate(%s) ",
               token);
             (void) WriteBlobString(image,message);
@@ -4208,17 +4208,17 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
       {
         if (LocaleCompare("scale",keyword) == 0)
           {
-            GetNextToken(q,&q,MaxTextExtent,token);
+            GetNextToken(q,&q,extent,token);
             affine.sx=StringToDouble(token,(char **) NULL);
-            GetNextToken(q,&q,MaxTextExtent,token);
+            GetNextToken(q,&q,extent,token);
             if (*token == ',')
-              GetNextToken(q,&q,MaxTextExtent,token);
+              GetNextToken(q,&q,extent,token);
             affine.sy=StringToDouble(token,(char **) NULL);
             break;
           }
         if (LocaleCompare("skewX",keyword) == 0)
           {
-            GetNextToken(q,&q,MaxTextExtent,token);
+            GetNextToken(q,&q,extent,token);
             (void) FormatLocaleString(message,MaxTextExtent,"skewX(%s) ",
               token);
             (void) WriteBlobString(image,message);
@@ -4226,7 +4226,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
           }
         if (LocaleCompare("skewY",keyword) == 0)
           {
-            GetNextToken(q,&q,MaxTextExtent,token);
+            GetNextToken(q,&q,extent,token);
             (void) FormatLocaleString(message,MaxTextExtent,"skewY(%s) ",
               token);
             (void) WriteBlobString(image,message);
@@ -4237,9 +4237,9 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
             char
               color[MaxTextExtent];
 
-            GetNextToken(q,&q,MaxTextExtent,token);
+            GetNextToken(q,&q,extent,token);
             (void) CopyMagickString(color,token,MaxTextExtent);
-            GetNextToken(q,&q,MaxTextExtent,token);
+            GetNextToken(q,&q,extent,token);
             (void) FormatLocaleString(message,MaxTextExtent,
               "  <stop offset=\"%s\" stop-color=\"%s\" />\n",token,color);
             (void) WriteBlobString(image,message);
@@ -4247,7 +4247,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
           }
         if (LocaleCompare("stroke",keyword) == 0)
           {
-            GetNextToken(q,&q,MaxTextExtent,token);
+            GetNextToken(q,&q,extent,token);
             (void) FormatLocaleString(message,MaxTextExtent,"stroke:%s;",
               token);
             (void) WriteBlobString(image,message);
@@ -4255,7 +4255,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
           }
         if (LocaleCompare("stroke-antialias",keyword) == 0)
           {
-            GetNextToken(q,&q,MaxTextExtent,token);
+            GetNextToken(q,&q,extent,token);
             (void) FormatLocaleString(message,MaxTextExtent,
               "stroke-antialias:%s;",token);
             (void) WriteBlobString(image,message);
@@ -4269,13 +4269,13 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
                   k;
 
                 p=q;
-                GetNextToken(p,&p,MaxTextExtent,token);
+                GetNextToken(p,&p,extent,token);
                 for (k=0; IsPoint(token); k++)
-                  GetNextToken(p,&p,MaxTextExtent,token);
+                  GetNextToken(p,&p,extent,token);
                 (void) WriteBlobString(image,"stroke-dasharray:");
                 for (j=0; j < k; j++)
                 {
-                  GetNextToken(q,&q,MaxTextExtent,token);
+                  GetNextToken(q,&q,extent,token);
                   (void) FormatLocaleString(message,MaxTextExtent,"%s ",
                     token);
                   (void) WriteBlobString(image,message);
@@ -4283,7 +4283,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
                 (void) WriteBlobString(image,";");
                 break;
               }
-            GetNextToken(q,&q,MaxTextExtent,token);
+            GetNextToken(q,&q,extent,token);
             (void) FormatLocaleString(message,MaxTextExtent,
               "stroke-dasharray:%s;",token);
             (void) WriteBlobString(image,message);
@@ -4291,7 +4291,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
           }
         if (LocaleCompare("stroke-dashoffset",keyword) == 0)
           {
-            GetNextToken(q,&q,MaxTextExtent,token);
+            GetNextToken(q,&q,extent,token);
             (void) FormatLocaleString(message,MaxTextExtent,
               "stroke-dashoffset:%s;",token);
             (void) WriteBlobString(image,message);
@@ -4299,7 +4299,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
           }
         if (LocaleCompare("stroke-linecap",keyword) == 0)
           {
-            GetNextToken(q,&q,MaxTextExtent,token);
+            GetNextToken(q,&q,extent,token);
             (void) FormatLocaleString(message,MaxTextExtent,
               "stroke-linecap:%s;",token);
             (void) WriteBlobString(image,message);
@@ -4307,7 +4307,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
           }
         if (LocaleCompare("stroke-linejoin",keyword) == 0)
           {
-            GetNextToken(q,&q,MaxTextExtent,token);
+            GetNextToken(q,&q,extent,token);
             (void) FormatLocaleString(message,MaxTextExtent,
               "stroke-linejoin:%s;",token);
             (void) WriteBlobString(image,message);
@@ -4315,7 +4315,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
           }
         if (LocaleCompare("stroke-miterlimit",keyword) == 0)
           {
-            GetNextToken(q,&q,MaxTextExtent,token);
+            GetNextToken(q,&q,extent,token);
             (void) FormatLocaleString(message,MaxTextExtent,
               "stroke-miterlimit:%s;",token);
             (void) WriteBlobString(image,message);
@@ -4323,7 +4323,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
           }
         if (LocaleCompare("stroke-opacity",keyword) == 0)
           {
-            GetNextToken(q,&q,MaxTextExtent,token);
+            GetNextToken(q,&q,extent,token);
             (void) FormatLocaleString(message,MaxTextExtent,
               "stroke-opacity:%s;",token);
             (void) WriteBlobString(image,message);
@@ -4331,7 +4331,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
           }
         if (LocaleCompare("stroke-width",keyword) == 0)
           {
-            GetNextToken(q,&q,MaxTextExtent,token);
+            GetNextToken(q,&q,extent,token);
             (void) FormatLocaleString(message,MaxTextExtent,
               "stroke-width:%s;",token);
             (void) WriteBlobString(image,message);
@@ -4350,7 +4350,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
           }
         if (LocaleCompare("text-antialias",keyword) == 0)
           {
-            GetNextToken(q,&q,MaxTextExtent,token);
+            GetNextToken(q,&q,extent,token);
             (void) FormatLocaleString(message,MaxTextExtent,
               "text-antialias:%s;",token);
             (void) WriteBlobString(image,message);
@@ -4363,11 +4363,11 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
           }
         if (LocaleCompare("translate",keyword) == 0)
           {
-            GetNextToken(q,&q,MaxTextExtent,token);
+            GetNextToken(q,&q,extent,token);
             affine.tx=StringToDouble(token,(char **) NULL);
-            GetNextToken(q,&q,MaxTextExtent,token);
+            GetNextToken(q,&q,extent,token);
             if (*token == ',')
-              GetNextToken(q,&q,MaxTextExtent,token);
+              GetNextToken(q,&q,extent,token);
             affine.ty=StringToDouble(token,(char **) NULL);
             break;
           }
@@ -4379,16 +4379,16 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
       {
         if (LocaleCompare("viewbox",keyword) == 0)
           {
-            GetNextToken(q,&q,MaxTextExtent,token);
+            GetNextToken(q,&q,extent,token);
             if (*token == ',')
-              GetNextToken(q,&q,MaxTextExtent,token);
-            GetNextToken(q,&q,MaxTextExtent,token);
+              GetNextToken(q,&q,extent,token);
+            GetNextToken(q,&q,extent,token);
             if (*token == ',')
-              GetNextToken(q,&q,MaxTextExtent,token);
-            GetNextToken(q,&q,MaxTextExtent,token);
+              GetNextToken(q,&q,extent,token);
+            GetNextToken(q,&q,extent,token);
             if (*token == ',')
-              GetNextToken(q,&q,MaxTextExtent,token);
-            GetNextToken(q,&q,MaxTextExtent,token);
+              GetNextToken(q,&q,extent,token);
+            GetNextToken(q,&q,extent,token);
             break;
           }
         status=MagickFalse;
@@ -4416,15 +4416,15 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
       */
       if (IsPoint(q) == MagickFalse)
         break;
-      GetNextToken(q,&q,MaxTextExtent,token);
+      GetNextToken(q,&q,extent,token);
       point.x=StringToDouble(token,(char **) NULL);
-      GetNextToken(q,&q,MaxTextExtent,token);
+      GetNextToken(q,&q,extent,token);
       if (*token == ',')
-        GetNextToken(q,&q,MaxTextExtent,token);
+        GetNextToken(q,&q,extent,token);
       point.y=StringToDouble(token,(char **) NULL);
-      GetNextToken(q,(const char **) NULL,MaxTextExtent,token);
+      GetNextToken(q,(const char **) NULL,extent,token);
       if (*token == ',')
-        GetNextToken(q,&q,MaxTextExtent,token);
+        GetNextToken(q,&q,extent,token);
       primitive_info[i].primitive=primitive_type;
       primitive_info[i].point=point;
       primitive_info[i].coordinates=0;
@@ -4621,7 +4621,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
         int
           number_attributes;
 
-        GetNextToken(q,&q,MaxTextExtent,token);
+        GetNextToken(q,&q,extent,token);
         number_attributes=1;
         for (p=token; *p != '\0'; p++)
           if (isalpha((int) *p))
@@ -4652,7 +4652,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
             status=MagickFalse;
             break;
           }
-        GetNextToken(q,&q,MaxTextExtent,token);
+        GetNextToken(q,&q,extent,token);
         if (LocaleCompare("point",token) == 0)
           primitive_info[j].method=PointMethod;
         if (LocaleCompare("replace",token) == 0)
@@ -4675,7 +4675,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
             status=MagickFalse;
             break;
           }
-        GetNextToken(q,&q,MaxTextExtent,token);
+        GetNextToken(q,&q,extent,token);
         (void) FormatLocaleString(message,MaxTextExtent,
           "  <text x=\"%g\" y=\"%g\">",primitive_info[j].point.x,
           primitive_info[j].point.y);
@@ -4698,7 +4698,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
             status=MagickFalse;
             break;
           }
-        GetNextToken(q,&q,MaxTextExtent,token);
+        GetNextToken(q,&q,extent,token);
         (void) FormatLocaleString(message,MaxTextExtent,
           "  <image x=\"%g\" y=\"%g\" width=\"%g\" height=\"%g\" "
           "xlink:href=\"%s\"/>\n",primitive_info[j].point.x,
