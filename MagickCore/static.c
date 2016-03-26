@@ -268,7 +268,6 @@ MagickExport void RegisterStaticModules(void)
   (void) RegisterPNGImage();
 #endif
   (void) RegisterPNMImage();
-  (void) RegisterPREVIEWImage();
   (void) RegisterPSImage();
   (void) RegisterPS2Image();
   (void) RegisterPS3Image();
@@ -451,7 +450,6 @@ MagickExport void UnregisterStaticModules(void)
   UnregisterPNGImage();
 #endif
   UnregisterPNMImage();
-  UnregisterPREVIEWImage();
   UnregisterPSImage();
   UnregisterPS2Image();
   UnregisterPS3Image();
