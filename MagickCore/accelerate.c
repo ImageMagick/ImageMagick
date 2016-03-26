@@ -3942,10 +3942,9 @@ static MagickBooleanType ComputeGrayscaleImage(Image *image,
 
   cl_int
     clStatus,
+    number_channels,
+    colorspace,
     intensityMethod;
-
-  cl_int
-    colorspace;
 
   cl_kernel
     grayscaleKernel;
@@ -4008,7 +4007,7 @@ static MagickBooleanType ComputeGrayscaleImage(Image *image,
    then use the host buffer directly from the GPU; otherwise, 
    create a buffer on the GPU and copy the data over
    */
-  if (ALIGNED(inputPixels,CLPixelPacket)) 
+  if (ALIGNED(inputPixels,CLQuantum))
   {
     mem_flags = CL_MEM_READ_WRITE|CL_MEM_USE_HOST_PTR;
   }
@@ -4017,16 +4016,13 @@ static MagickBooleanType ComputeGrayscaleImage(Image *image,
     mem_flags = CL_MEM_READ_WRITE|CL_MEM_COPY_HOST_PTR;
   }
   /* create a CL buffer from image pixel buffer */
-  length = image->columns * image->rows;
-  imageBuffer = clEnv->library->clCreateBuffer(context, mem_flags, length * sizeof(CLPixelPacket), (void*)inputPixels, &clStatus);
+  length = image->columns * image->rows * image->number_channels;
+  imageBuffer = clEnv->library->clCreateBuffer(context, mem_flags, length * sizeof(CLQuantum), (void*)inputPixels, &clStatus);
   if (clStatus != CL_SUCCESS)
   {
     (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clCreateBuffer failed.",".");
     goto cleanup;
   }
-
-  intensityMethod = method;
-  colorspace = image->colorspace;
 
   grayscaleKernel = AcquireOpenCLKernel(clEnv, MAGICK_OPENCL_ACCELERATE, "Grayscale");
   if (grayscaleKernel == NULL)
@@ -4035,8 +4031,13 @@ static MagickBooleanType ComputeGrayscaleImage(Image *image,
     goto cleanup;
   }
 
+  number_channels = (cl_int) image->number_channels;
+  intensityMethod = (cl_int) method;
+  colorspace = (cl_int) image->colorspace;
+
   i = 0;
   clStatus=clEnv->library->clSetKernelArg(grayscaleKernel,i++,sizeof(cl_mem),(void *)&imageBuffer);
+  clStatus|=clEnv->library->clSetKernelArg(grayscaleKernel,i++,sizeof(cl_int),&number_channels);
   clStatus|=clEnv->library->clSetKernelArg(grayscaleKernel,i++,sizeof(cl_int),&intensityMethod);
   clStatus|=clEnv->library->clSetKernelArg(grayscaleKernel,i++,sizeof(cl_int),&colorspace);
   if (clStatus != CL_SUCCESS)
@@ -4062,15 +4063,15 @@ static MagickBooleanType ComputeGrayscaleImage(Image *image,
     clEnv->library->clReleaseEvent(event);
   }
 
-  if (ALIGNED(inputPixels,CLPixelPacket)) 
+  if (ALIGNED(inputPixels,CLQuantum))
   {
     length = image->columns * image->rows;
-    clEnv->library->clEnqueueMapBuffer(queue, imageBuffer, CL_TRUE, CL_MAP_READ|CL_MAP_WRITE, 0, length * sizeof(CLPixelPacket), 0, NULL, NULL, &clStatus);
+    clEnv->library->clEnqueueMapBuffer(queue, imageBuffer, CL_TRUE, CL_MAP_READ|CL_MAP_WRITE, 0, length * sizeof(CLQuantum), 0, NULL, NULL, &clStatus);
   }
   else 
   {
     length = image->columns * image->rows;
-    clStatus = clEnv->library->clEnqueueReadBuffer(queue, imageBuffer, CL_TRUE, 0, length * sizeof(CLPixelPacket), inputPixels, 0, NULL, NULL);
+    clStatus = clEnv->library->clEnqueueReadBuffer(queue, imageBuffer, CL_TRUE, 0, length * sizeof(CLQuantum), inputPixels, 0, NULL, NULL);
   }
   if (clStatus != CL_SUCCESS)
   {
@@ -4085,11 +4086,11 @@ cleanup:
 
   image_view=DestroyCacheView(image_view);
 
-  if (imageBuffer!=NULL)		      
+  if (imageBuffer!=NULL)
     clEnv->library->clReleaseMemObject(imageBuffer);
-  if (grayscaleKernel!=NULL)                     
+  if (grayscaleKernel!=NULL)
     RelinquishOpenCLKernel(clEnv, grayscaleKernel);
-  if (queue != NULL)                          
+  if (queue != NULL)
     RelinquishOpenCLCommandQueue(clEnv, queue);
 
   return( outputReady);
@@ -4104,7 +4105,7 @@ MagickExport MagickBooleanType AccelerateGrayscaleImage(Image* image,
   assert(image != NULL);
   assert(exception != (ExceptionInfo *) NULL);
 
-  if ((checkAccelerateConditionRGBA(image) == MagickFalse) ||
+  if ((checkAccelerateCondition(image) == MagickFalse) ||
       (checkOpenCLEnvironment(exception) == MagickFalse))
     return(MagickFalse);
 
@@ -4113,6 +4114,9 @@ MagickExport MagickBooleanType AccelerateGrayscaleImage(Image* image,
     return(MagickFalse);
 
   if (image->colorspace != sRGBColorspace)
+    return(MagickFalse);
+
+  if (image->number_channels < 3)
     return(MagickFalse);
 
   status=ComputeGrayscaleImage(image,method,exception);

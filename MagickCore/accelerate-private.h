@@ -385,8 +385,6 @@ OPENCL_ENDIF()
   inline float getAlphaF4(float4 p)                     { return p.w; }
   inline void setAlphaF4(float4* p, float value)        { (*p).w = value; }
 
-  inline void setGray(CLPixelType* p, CLQuantum value)  { (*p).z = value; (*p).y = value; (*p).x = value; }
-
   inline float GetPixelIntensity(const int method, const int colorspace, CLPixelType p)
   {
     float red = getRed(p);
@@ -2110,16 +2108,13 @@ uint MWC64X_NextUint(mwc64x_state_t *s)
 */
 
   STRINGIFY(
-  __kernel void Grayscale(__global CLPixelType *im, 
-    const int method, const int colorspace)
+  __kernel void Grayscale(__global CLQuantum *im,const int number_channels,
+    const int method,const int colorspace)
   {
-
-    const int x = get_global_id(0);  
+    const int x = get_global_id(0);
     const int y = get_global_id(1);
     const int columns = get_global_size(0);
-    const int c = x + y * columns;
-
-    CLPixelType pixel = im[c];
+    const int c = (x * number_channels) + (y * columns * number_channels);
 
     float
         blue,
@@ -2127,14 +2122,12 @@ uint MWC64X_NextUint(mwc64x_state_t *s)
         intensity,
         red;
 
-    red=(float)getRed(pixel);
-    green=(float)getGreen(pixel);
-    blue=(float)getBlue(pixel);
+    red=(float)im[c];
+    green=(float)im[c+1];
+    blue=(float)im[c+2];
 
     intensity=0.0;
 
-    CLPixelType filteredPixel;
- 
     switch (method)
     {
       case AveragePixelIntensityMethod:
@@ -2221,11 +2214,7 @@ uint MWC64X_NextUint(mwc64x_state_t *s)
 
     }
 
-    setGray(&filteredPixel, ClampToQuantum(intensity));
-
-    filteredPixel.w = pixel.w;
-
-    im[c] = filteredPixel;
+    im[c] = im[c+1] = im[c+2] = ClampToQuantum(intensity);
   }
   )
 
