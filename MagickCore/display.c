@@ -9098,7 +9098,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       (void) SetImageProperty(*image,"group",value,exception);
       (void) DeleteImageProperty(*image,"label");
       (void) SetImageProperty(*image,"label","Preview",exception);
-      preview_image=PreviewImage(*image,preview,exception)
+      preview_image=PreviewImage(*image,preview,exception);
       if (preview_image == (Image *) NULL)
         break;
       (void) AcquireUniqueFilename(filename);
