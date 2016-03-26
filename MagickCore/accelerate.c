@@ -136,25 +136,54 @@ static MagickBooleanType checkAccelerateCondition(const Image* image)
   if (image->read_mask != MagickFalse || image->write_mask != MagickFalse)
     return(MagickFalse);
 
-  /* check if the image has an alpha channel */
-  if (image->alpha_trait == UndefinedPixelTrait)
+  if (image->number_channels > 4)
     return(MagickFalse);
+
+  /* check if pixel order is R */
+  if ((GetPixelChannelOffset(image,RedPixelChannel) != 0) ||
+      (GetPixelRedTraits(image) == UndefinedPixelTrait))
+    return(MagickFalse);
+
+  if (image->number_channels == 1)
+    return(MagickTrue);
+
+  /* check if pixel order is RA */
+  if ((image->number_channels == 2) &&
+      (GetPixelChannelOffset(image,AlphaPixelChannel) == 1) &&
+      (GetPixelAlphaTraits(image) != UndefinedPixelTrait))
+    return(MagickTrue);
+
+  if (image->number_channels == 2)
+    return(MagickFalse);
+
+  /* check if pixel order is RGB */
+  if ((GetPixelChannelOffset(image,GreenPixelChannel) != 1) ||
+      (GetPixelGreenTraits(image) == UndefinedPixelTrait) ||
+      (GetPixelChannelOffset(image,BluePixelChannel) != 2) ||
+      (GetPixelBlueTraits(image) == UndefinedPixelTrait))
+    return(MagickFalse);
+
+  if (image->number_channels == 3)
+    return(MagickTrue);
 
   /* check if pixel order is RGBA */
-  if (GetPixelChannelOffset(image,RedPixelChannel) != 0 ||
-      GetPixelChannelOffset(image,GreenPixelChannel) != 1 ||
-      GetPixelChannelOffset(image,BluePixelChannel) != 2 ||
-      GetPixelChannelOffset(image,AlphaPixelChannel) != 3)
-    return(MagickFalse);
-
-  /* check if all channels are available */
-  if ((GetPixelRedTraits(image) == UndefinedPixelTrait) ||
-      (GetPixelGreenTraits(image) == UndefinedPixelTrait) ||
-      (GetPixelBlueTraits(image) == UndefinedPixelTrait) ||
+  if ((GetPixelChannelOffset(image,AlphaPixelChannel) != 3) ||
       (GetPixelAlphaTraits(image) == UndefinedPixelTrait))
     return(MagickFalse);
 
   return(MagickTrue);
+}
+
+static MagickBooleanType checkAccelerateConditionRGBA(const Image* image)
+{
+  if (checkAccelerateCondition(image) == MagickFalse)
+    return(MagickFalse);
+
+  /* the order will be RGBA if the image has 4 channels */
+  if (image->number_channels == 4)
+    return(MagickTrue);
+
+  return(MagickFalse);
 }
 
 static MagickBooleanType checkHistogramCondition(Image *image)
@@ -526,7 +555,7 @@ MagickExport Image *AccelerateAddNoiseImage(const Image *image,
   assert(image != NULL);
   assert(exception != (ExceptionInfo *) NULL);
 
-  if ((checkAccelerateCondition(image) == MagickFalse) ||
+  if ((checkAccelerateConditionRGBA(image) == MagickFalse) ||
       (checkOpenCLEnvironment(exception) == MagickFalse))
     return NULL;
 
@@ -1296,7 +1325,7 @@ MagickExport Image* AccelerateBlurImage(const Image *image,
   assert(image != NULL);
   assert(exception != (ExceptionInfo *) NULL);
 
-  if ((checkAccelerateCondition(image) == MagickFalse) ||
+  if ((checkAccelerateConditionRGBA(image) == MagickFalse) ||
       (checkOpenCLEnvironment(exception) == MagickFalse))
     return NULL;
 
@@ -1549,7 +1578,7 @@ MagickExport MagickBooleanType AccelerateCompositeImage(Image *image,
   assert(image != NULL);
   assert(exception != (ExceptionInfo *) NULL);
 
-  if ((checkAccelerateCondition(image) == MagickFalse) ||
+  if ((checkAccelerateConditionRGBA(image) == MagickFalse) ||
       (checkOpenCLEnvironment(exception) == MagickFalse))
     return(MagickFalse);
 
@@ -1740,7 +1769,7 @@ MagickExport MagickBooleanType AccelerateContrastImage(Image *image,
   assert(image != NULL);
   assert(exception != (ExceptionInfo *) NULL);
 
-  if ((checkAccelerateCondition(image) == MagickFalse) ||
+  if ((checkAccelerateConditionRGBA(image) == MagickFalse) ||
       (checkOpenCLEnvironment(exception) == MagickFalse))
     return(MagickFalse);
 
@@ -2423,7 +2452,7 @@ MagickExport MagickBooleanType AccelerateContrastStretchImage(
   assert(image != NULL);
   assert(exception != (ExceptionInfo *) NULL);
 
-  if ((checkAccelerateCondition(image) == MagickFalse) ||
+  if ((checkAccelerateConditionRGBA(image) == MagickFalse) ||
       (checkHistogramCondition(image) == MagickFalse) ||
       (checkOpenCLEnvironment(exception) == MagickFalse))
     return(MagickFalse);
@@ -2798,7 +2827,7 @@ MagickExport Image *AccelerateConvolveImage(const Image *image,
   assert(image != NULL);
   assert(kernel != (KernelInfo *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
-  if ((checkAccelerateCondition(image) == MagickFalse) ||
+  if ((checkAccelerateConditionRGBA(image) == MagickFalse) ||
       (checkOpenCLEnvironment(exception) == MagickFalse))
     return((Image *) NULL);
 
@@ -3201,7 +3230,7 @@ MagickExport Image *AccelerateDespeckleImage(const Image* image,
   assert(image != NULL);
   assert(exception != (ExceptionInfo *) NULL);
 
-  if ((checkAccelerateCondition(image) == MagickFalse) ||
+  if ((checkAccelerateConditionRGBA(image) == MagickFalse) ||
       (checkOpenCLEnvironment(exception) == MagickFalse))
     return NULL;
 
@@ -3667,7 +3696,7 @@ MagickExport MagickBooleanType AccelerateEqualizeImage(Image *image,
   assert(image != NULL);
   assert(exception != (ExceptionInfo *) NULL);
 
-  if ((checkAccelerateCondition(image) == MagickFalse) ||
+  if ((checkAccelerateConditionRGBA(image) == MagickFalse) ||
       (checkHistogramCondition(image) == MagickFalse) ||
       (checkOpenCLEnvironment(exception) == MagickFalse))
     return(MagickFalse);
@@ -3878,7 +3907,7 @@ MagickExport MagickBooleanType AccelerateFunctionImage(Image *image,
   assert(image != NULL);
   assert(exception != (ExceptionInfo *) NULL);
 
-  if ((checkAccelerateCondition(image) == MagickFalse) ||
+  if ((checkAccelerateConditionRGBA(image) == MagickFalse) ||
       (checkOpenCLEnvironment(exception) == MagickFalse))
     return(MagickFalse);
 
@@ -4075,7 +4104,7 @@ MagickExport MagickBooleanType AccelerateGrayscaleImage(Image* image,
   assert(image != NULL);
   assert(exception != (ExceptionInfo *) NULL);
 
-  if ((checkAccelerateCondition(image) == MagickFalse) ||
+  if ((checkAccelerateConditionRGBA(image) == MagickFalse) ||
       (checkOpenCLEnvironment(exception) == MagickFalse))
     return(MagickFalse);
 
@@ -4423,7 +4452,7 @@ MagickExport Image *AccelerateLocalContrastImage(const Image *image,
   assert(image != NULL);
   assert(exception != (ExceptionInfo *) NULL);
 
-  if ((checkAccelerateCondition(image) == MagickFalse) ||
+  if ((checkAccelerateConditionRGBA(image) == MagickFalse) ||
       (checkOpenCLEnvironment(exception) == MagickFalse))
     return NULL;
 
@@ -4630,7 +4659,7 @@ MagickExport MagickBooleanType AccelerateModulateImage(Image *image,
   assert(image != NULL);
   assert(exception != (ExceptionInfo *) NULL);
 
-  if ((checkAccelerateCondition(image) == MagickFalse) ||
+  if ((checkAccelerateConditionRGBA(image) == MagickFalse) ||
       (checkOpenCLEnvironment(exception) == MagickFalse))
     return(MagickFalse);
 
@@ -4994,7 +5023,7 @@ MagickExport Image *AccelerateMotionBlurImage(const Image *image,
   assert(offset != (OffsetInfo *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
 
-  if ((checkAccelerateCondition(image) == MagickFalse) ||
+  if ((checkAccelerateConditionRGBA(image) == MagickFalse) ||
       (checkOpenCLEnvironment(exception) == MagickFalse))
     return NULL;
 
@@ -5215,7 +5244,7 @@ MagickExport MagickBooleanType AccelerateRandomImage(Image *image,
   assert(image != NULL);
   assert(exception != (ExceptionInfo *) NULL);
 
-  if ((checkAccelerateCondition(image) == MagickFalse) ||
+  if ((checkAccelerateConditionRGBA(image) == MagickFalse) ||
       (checkOpenCLEnvironment(exception) == MagickFalse))
     return(MagickFalse);
 
@@ -5935,7 +5964,7 @@ MagickExport Image *AccelerateResizeImage(const Image *image,
   assert(image != NULL);
   assert(exception != (ExceptionInfo *) NULL);
 
-  if ((checkAccelerateCondition(image) == MagickFalse) ||
+  if ((checkAccelerateConditionRGBA(image) == MagickFalse) ||
       (checkOpenCLEnvironment(exception) == MagickFalse))
     return NULL;
 
@@ -6268,7 +6297,7 @@ MagickExport Image* AccelerateRotationalBlurImage(const Image *image,
   assert(image != NULL);
   assert(exception != (ExceptionInfo *) NULL);
 
-  if ((checkAccelerateCondition(image) == MagickFalse) ||
+  if ((checkAccelerateConditionRGBA(image) == MagickFalse) ||
       (checkOpenCLEnvironment(exception) == MagickFalse))
     return NULL;
 
@@ -7347,7 +7376,7 @@ MagickExport Image *AccelerateUnsharpMaskImage(const Image *image,
   assert(image != NULL);
   assert(exception != (ExceptionInfo *) NULL);
 
-  if ((checkAccelerateCondition(image) == MagickFalse) ||
+  if ((checkAccelerateConditionRGBA(image) == MagickFalse) ||
       (checkOpenCLEnvironment(exception) == MagickFalse))
     return NULL;
 
@@ -7592,7 +7621,7 @@ MagickExport Image *AccelerateWaveletDenoiseImage(const Image *image,
   assert(image != NULL);
   assert(exception != (ExceptionInfo *)NULL);
 
-  if ((checkAccelerateCondition(image) == MagickFalse) ||
+  if ((checkAccelerateConditionRGBA(image) == MagickFalse) ||
       (checkOpenCLEnvironment(exception) == MagickFalse))
     return (Image *) NULL;
 
