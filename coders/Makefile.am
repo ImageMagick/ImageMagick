@@ -155,7 +155,6 @@ MAGICKCORE_CODER_SRCS = \
 	coders/pix.c \
 	coders/plasma.c \
 	coders/pnm.c \
-	coders/preview.c \
 	coders/ps.c \
 	coders/ps2.c \
 	coders/ps3.c \
@@ -283,7 +282,6 @@ coders_LTLIBRARIES = \
 	coders/pix.la \
 	coders/plasma.la \
 	coders/pnm.la \
-	coders/preview.la \
 	coders/ps.la \
 	coders/ps2.la \
 	coders/ps3.la \
@@ -815,12 +813,6 @@ coders_pnm_la_SOURCES      = coders/pnm.c
 coders_pnm_la_CPPFLAGS     = $(MAGICK_CODER_CPPFLAGS)
 coders_pnm_la_LDFLAGS      = $(MODULECOMMONFLAGS)
 coders_pnm_la_LIBADD       = $(MAGICKCORE_LIBS) $(GOMP_LIBS)
-
-# PREVIEW coder module
-coders_preview_la_SOURCES  = coders/preview.c
-coders_preview_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
-coders_preview_la_LDFLAGS  = $(MODULECOMMONFLAGS)
-coders_preview_la_LIBADD   = $(MAGICKCORE_LIBS)
 
 # PS coder module
 coders_ps_la_SOURCES       = coders/ps.c
