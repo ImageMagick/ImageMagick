@@ -91,6 +91,7 @@
 #include "magick/threshold.h"
 #include "magick/thread_.h"
 #include "magick/thread-private.h"
+#include "magick/token.h"
 #include "magick/transform.h"
 #include "magick/utility.h"
 
