@@ -971,7 +971,6 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
   clone_info->colorspace=image_info->colorspace;
   clone_info->type=image_info->type;
   clone_info->orientation=image_info->orientation;
-  clone_info->preview_type=image_info->preview_type;
   clone_info->ping=image_info->ping;
   clone_info->verbose=image_info->verbose;
   clone_info->progress_monitor=image_info->progress_monitor;

@@ -432,9 +432,6 @@ struct _ImageInfo
   ImageType
     type;
 
-  PreviewType
-    preview_type;
-
   MagickBooleanType
     ping,                    /* fast read image attributes, not image data */
     verbose;                 /* verbose output enable/disable */

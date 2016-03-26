@@ -7303,20 +7303,6 @@ WandExport MagickBooleanType MogrifyImageInfo(ImageInfo *image_info,
             (void) SetMagickPrecision(StringToInteger(argv[i+1]));
             break;
           }
-        if (LocaleCompare("preview",option+1) == 0)
-          {
-            /*
-              Preview image.
-            */
-            if (*option == '+')
-              {
-                image_info->preview_type=UndefinedPreview;
-                break;
-              }
-            image_info->preview_type=(PreviewType) ParseCommandOption(
-              MagickPreviewOptions,MagickFalse,argv[i+1]);
-            break;
-          }
         break;
       }
       case 'q':

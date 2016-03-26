@@ -1230,17 +1230,6 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
           (void) SetMagickPrecision(StringToInteger(arg1));
           break;
         }
-      /* FUTURE: Only the 'preview' coder appears to use this
-       * DEPRECIATE the coder?  Leaving only the 'preview' operator.
-      if (LocaleCompare("preview",option+1) == 0)
-        {
-          _image_info->preview_type=UndefinedPreview;
-          if (IfSetOption)
-            _image_info->preview_type=(PreviewType) ParseCommandOption(
-                MagickPreviewOptions,MagickFalse,arg1);
-          break;
-        }
-      */
       CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 'q':
