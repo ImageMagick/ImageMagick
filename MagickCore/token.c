@@ -147,7 +147,7 @@ MagickExport TokenInfo *DestroyTokenInfo(TokenInfo *token_info)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetNextToken() gets a lexeme from the token stream.  A token is defined as
+%  GetNextToken() gets a token from the token stream.  A token is defined as
 %  a sequence of characters delimited by whitespace (e.g. clip-path), a
 %  sequence delimited with quotes (.e.g "Quote me"), or a sequence enclosed in
 %  parenthesis (e.g. rgb(0,0,0)).  GetNextToken() also recognizes these
