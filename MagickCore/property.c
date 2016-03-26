@@ -2747,13 +2747,6 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
             GetMagickPrecision(),image->gamma);
           break;
         }
-      if (LocaleCompare("group",property) == 0)
-        {
-          WarnNoImageInfoReturn("\"%%[%s]\"",property);
-          (void) FormatLocaleString(value,MagickPathExtent,"0x%lx",(unsigned long)
-            image_info->group);
-          break;
-        }
       break;
     }
     case 'h':
