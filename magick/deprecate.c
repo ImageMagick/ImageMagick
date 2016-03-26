@@ -2891,15 +2891,15 @@ MagickExport void *GetMagickRegistry(const ssize_t id,RegistryType *type,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickToken() gets a token from the token stream.  A token is defined as
+%  GetMagickToken() gets a token from the token stream.  A token is defined as
 %  a sequence of characters delimited by whitespace (e.g. clip-path), a
 %  sequence delimited with quotes (.e.g "Quote me"), or a sequence enclosed in
-%  parenthesis (e.g. rgb(0,0,0)).  GetNextToken() also recognizes these
+%  parenthesis (e.g. rgb(0,0,0)).  GetMagickToken() also recognizes these
 %  separator characters: ':', '=', ',', and ';'.
 %
-%  The format of the MagickToken method is:
+%  The format of the GetMagickToken method is:
 %
-%      void MagickToken(const char *start,const char **end,char *token)
+%      void GetMagickToken(const char *start,const char **end,char *token)
 %
 %  A description of each parameter follows:
 %

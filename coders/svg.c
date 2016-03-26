@@ -3816,16 +3816,16 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
         if (LocaleCompare("clip-rule",keyword) == 0)
           {
             GetNextToken(q,&q,extent,token);
-            (void) FormatLocaleString(message,MaxTextExtent,
-              "clip-rule:%s;",token);
+            (void) FormatLocaleString(message,MaxTextExtent,"clip-rule:%s;",
+              token);
             (void) WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("clip-units",keyword) == 0)
           {
             GetNextToken(q,&q,extent,token);
-            (void) FormatLocaleString(message,MaxTextExtent,
-              "clipPathUnits=%s;",token);
+            (void) FormatLocaleString(message,MaxTextExtent,"clipPathUnits=%s;",
+              token);
             (void) WriteBlobString(image,message);
             break;
           }
@@ -3873,64 +3873,63 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
         if (LocaleCompare("fill",keyword) == 0)
           {
             GetNextToken(q,&q,extent,token);
-            (void) FormatLocaleString(message,MaxTextExtent,"fill:%s;",
-              token);
+            (void) FormatLocaleString(message,MaxTextExtent,"fill:%s;",token);
             (void) WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("fill-rule",keyword) == 0)
           {
             GetNextToken(q,&q,extent,token);
-            (void) FormatLocaleString(message,MaxTextExtent,
-              "fill-rule:%s;",token);
+            (void) FormatLocaleString(message,MaxTextExtent,"fill-rule:%s;",
+              token);
             (void) WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("fill-opacity",keyword) == 0)
           {
             GetNextToken(q,&q,extent,token);
-            (void) FormatLocaleString(message,MaxTextExtent,
-              "fill-opacity:%s;",token);
+            (void) FormatLocaleString(message,MaxTextExtent,"fill-opacity:%s;",
+              token);
             (void) WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("font-family",keyword) == 0)
           {
             GetNextToken(q,&q,extent,token);
-            (void) FormatLocaleString(message,MaxTextExtent,
-              "font-family:%s;",token);
+            (void) FormatLocaleString(message,MaxTextExtent,"font-family:%s;",
+              token);
             (void) WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("font-stretch",keyword) == 0)
           {
             GetNextToken(q,&q,extent,token);
-            (void) FormatLocaleString(message,MaxTextExtent,
-              "font-stretch:%s;",token);
+            (void) FormatLocaleString(message,MaxTextExtent,"font-stretch:%s;",
+              token);
             (void) WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("font-style",keyword) == 0)
           {
             GetNextToken(q,&q,extent,token);
-            (void) FormatLocaleString(message,MaxTextExtent,
-              "font-style:%s;",token);
+            (void) FormatLocaleString(message,MaxTextExtent,"font-style:%s;",
+              token);
             (void) WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("font-size",keyword) == 0)
           {
             GetNextToken(q,&q,extent,token);
-            (void) FormatLocaleString(message,MaxTextExtent,
-              "font-size:%s;",token);
+            (void) FormatLocaleString(message,MaxTextExtent,"font-size:%s;",
+              token);
             (void) WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("font-weight",keyword) == 0)
           {
             GetNextToken(q,&q,extent,token);
-            (void) FormatLocaleString(message,MaxTextExtent,
-              "font-weight:%s;",token);
+            (void) FormatLocaleString(message,MaxTextExtent,"font-weight:%s;",
+              token);
             (void) WriteBlobString(image,message);
             break;
           }
@@ -3948,16 +3947,16 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
         if (LocaleCompare("text-align",keyword) == 0)
           {
             GetNextToken(q,&q,extent,token);
-            (void) FormatLocaleString(message,MaxTextExtent,
-              "text-align %s ",token);
+            (void) FormatLocaleString(message,MaxTextExtent,"text-align %s ",
+              token);
             (void) WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("text-anchor",keyword) == 0)
           {
             GetNextToken(q,&q,extent,token);
-            (void) FormatLocaleString(message,MaxTextExtent,
-              "text-anchor %s ",token);
+            (void) FormatLocaleString(message,MaxTextExtent, "text-anchor %s ",
+              token);
             (void) WriteBlobString(image,message);
             break;
           }
@@ -4219,16 +4218,14 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
         if (LocaleCompare("skewX",keyword) == 0)
           {
             GetNextToken(q,&q,extent,token);
-            (void) FormatLocaleString(message,MaxTextExtent,"skewX(%s) ",
-              token);
+            (void) FormatLocaleString(message,MaxTextExtent,"skewX(%s) ",token);
             (void) WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("skewY",keyword) == 0)
           {
             GetNextToken(q,&q,extent,token);
-            (void) FormatLocaleString(message,MaxTextExtent,"skewY(%s) ",
-              token);
+            (void) FormatLocaleString(message,MaxTextExtent,"skewY(%s) ",token);
             (void) WriteBlobString(image,message);
             break;
           }
@@ -4248,8 +4245,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
         if (LocaleCompare("stroke",keyword) == 0)
           {
             GetNextToken(q,&q,extent,token);
-            (void) FormatLocaleString(message,MaxTextExtent,"stroke:%s;",
-              token);
+            (void) FormatLocaleString(message,MaxTextExtent,"stroke:%s;",token);
             (void) WriteBlobString(image,message);
             break;
           }
@@ -4276,8 +4272,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
                 for (j=0; j < k; j++)
                 {
                   GetNextToken(q,&q,extent,token);
-                  (void) FormatLocaleString(message,MaxTextExtent,"%s ",
-                    token);
+                  (void) FormatLocaleString(message,MaxTextExtent,"%s ",token);
                   (void) WriteBlobString(image,message);
                 }
                 (void) WriteBlobString(image,";");
@@ -4332,8 +4327,8 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
         if (LocaleCompare("stroke-width",keyword) == 0)
           {
             GetNextToken(q,&q,extent,token);
-            (void) FormatLocaleString(message,MaxTextExtent,
-              "stroke-width:%s;",token);
+            (void) FormatLocaleString(message,MaxTextExtent,"stroke-width:%s;",
+              token);
             (void) WriteBlobString(image,message);
             continue;
           }

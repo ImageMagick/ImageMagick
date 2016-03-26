@@ -438,11 +438,11 @@ static Image *SparseColorOption(const Image *image,const ChannelType channel,
   Image
     *sparse_image;
 
-  MagickPixelPacket
-    color;
-
   MagickBooleanType
     error;
+
+  MagickPixelPacket
+    color;
 
   register size_t
     x;
@@ -538,7 +538,9 @@ static Image *SparseColorOption(const Image *image,const ChannelType channel,
   x=0;
   while( *p != '\0' && x < number_arguments ) {
     /* X coordinate */
-    token[0]=','; while ( token[0] == ',' ) GetNextToken(p,&p,MaxTextExtent,token);
+    token[0]=',';
+    while ( token[0] == ',' )
+      GetNextToken(p,&p,MaxTextExtent,token);
     if ( token[0] == '\0' ) break;
     if ( isalpha((int) token[0]) || token[0] == '#' ) {
       (void) ThrowMagickException(exception,GetMagickModule(),
@@ -569,7 +571,9 @@ static Image *SparseColorOption(const Image *image,const ChannelType channel,
 #endif
     {
       /* color name or function given in string argument */
-      token[0]=','; while ( token[0] == ',' ) GetNextToken(p,&p,MaxTextExtent,token);
+      token[0]=',';
+      while ( token[0] == ',' )
+        GetNextToken(p,&p,MaxTextExtent,token);
       if ( token[0] == '\0' ) break;
       if ( isalpha((int) token[0]) || token[0] == '#' ) {
         /* Color string given */
@@ -589,35 +593,40 @@ static Image *SparseColorOption(const Image *image,const ChannelType channel,
         /* Colors given as a set of floating point values - experimental */
         /* NB: token contains the first floating point value to use! */
         if ( channels & RedChannel ) {
-          while ( token[0] == ',' ) GetNextToken(p,&p,MaxTextExtent,token);
+          while ( token[0] == ',' )
+            GetNextToken(p,&p,MaxTextExtent,token);
           if ( token[0] == '\0' || isalpha((int)token[0]) || token[0] == '#' )
             break;
           sparse_arguments[x++]=StringToDouble(token,(char **) NULL);
           token[0] = ','; /* used this token - get another */
         }
         if ( channels & GreenChannel ) {
-          while ( token[0] == ',' ) GetNextToken(p,&p,MaxTextExtent,token);
+          while ( token[0] == ',' )
+            GetNextToken(p,&p,MaxTextExtent,token);
           if ( token[0] == '\0' || isalpha((int)token[0]) || token[0] == '#' )
             break;
           sparse_arguments[x++]=StringToDouble(token,(char **) NULL);
           token[0] = ','; /* used this token - get another */
         }
         if ( channels & BlueChannel ) {
-          while ( token[0] == ',' ) GetNextToken(p,&p,MaxTextExtent,token);
+          while ( token[0] == ',' )
+            GetNextToken(p,&p,MaxTextExtent,token);
           if ( token[0] == '\0' || isalpha((int)token[0]) || token[0] == '#' )
             break;
           sparse_arguments[x++]=StringToDouble(token,(char **) NULL);
           token[0] = ','; /* used this token - get another */
         }
         if ( channels & IndexChannel ) {
-          while ( token[0] == ',' ) GetNextToken(p,&p,MaxTextExtent,token);
+          while ( token[0] == ',' )
+            GetNextToken(p,&p,MaxTextExtent,token);
           if ( token[0] == '\0' || isalpha((int)token[0]) || token[0] == '#' )
             break;
           sparse_arguments[x++]=StringToDouble(token,(char **) NULL);
           token[0] = ','; /* used this token - get another */
         }
         if ( channels & OpacityChannel ) {
-          while ( token[0] == ',' ) GetNextToken(p,&p,MaxTextExtent,token);
+          while ( token[0] == ',' )
+            GetNextToken(p,&p,MaxTextExtent,token);
           if ( token[0] == '\0' || isalpha((int)token[0]) || token[0] == '#' )
             break;
           sparse_arguments[x++]=StringToDouble(token,(char **) NULL);
