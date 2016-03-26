@@ -2470,8 +2470,8 @@ MagickExport Image *KuwaharaImageChannel(const Image *image,
 %
 %    o image: the image.
 %
-%    o radius: the radius of the Gaussian, in pixels, not counting
-%      the center pixel.
+%    o radius: the radius of the Gaussian blur, in percentage with 100%
+%      resulting in a blur radius of 20% of largest dimension.
 %
 %    o strength: the strength of the blur mask in percentage.
 %
@@ -2528,7 +2528,6 @@ MagickExport Image *LocalContrastImage(const Image *image,const double radius,
   image_view=AcquireVirtualCacheView(image,exception);
   contrast_view=AcquireAuthenticCacheView(contrast_image,exception);
   thread_count=1;
-  width=(ssize_t) fabs(radius);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel magick_threads(image,image,image->rows,1)
   {
@@ -2539,6 +2538,7 @@ MagickExport Image *LocalContrastImage(const Image *image,const double radius,
   }
 #endif
   scanLineSize=(ssize_t) MagickMax(image->columns,image->rows);
+  width=(ssize_t) scanLineSize*0.002f*fabs(radius);
   scanLineSize+=(2*width);
   scanLinePixels_info=AcquireVirtualMemory(thread_count*scanLineSize,
     sizeof(*scanLinePixels));

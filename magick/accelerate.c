@@ -4274,7 +4274,7 @@ static Image *ComputeLocalContrastImage(const Image *image,
     {
       imageColumns = (unsigned int) image->columns;
       imageRows = (unsigned int) image->rows;
-      iRadius = (cl_int) fabs(radius);
+      iRadius = (cl_int) (image->rows > image->columns ? image->rows : image->columns) * 0.002f * fabs(radius); // Normalized radius, 100% gives blur radius of 20% of the largest dimension
 
       passes = ((1.0f * imageColumns) * imageColumns * iRadius) / 4000000000.0f;
       passes = (passes < 1) ? 1: passes;
