@@ -5885,9 +5885,18 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
       level,
       y;
 
+    PixelChannel
+      pixel_channel;
+
+
     if (status == MagickFalse)
       continue;
     if (GetPixelChannelTraits(image,channel) == UndefinedPixelTrait)
+      continue;
+    pixel_channel=GetPixelChannelChannel(image,channel);
+    if ((pixel_channel != RedPixelChannel) &&
+        (pixel_channel != GreenPixelChannel) &&
+        (pixel_channel != BluePixelChannel))
       continue;
     /*
       Copy channel from image to wavelet pixel array.
@@ -5909,8 +5918,7 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
         }
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        pixels[i]=(float) p[channel];
-        i++;
+        pixels[i++]=(float) p[channel];
         p+=GetPixelChannels(image);
       }
     }
@@ -6023,8 +6031,7 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
           status=MagickFalse;
           break;
         }
-      offset=GetPixelChannelOffset(noise_image,GetPixelChannelChannel(image,
-        channel));
+      offset=GetPixelChannelOffset(noise_image,pixel_channel);
       for (x=0; x < (ssize_t) image->columns; x++)
       {
         MagickRealType
