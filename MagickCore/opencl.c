@@ -1554,16 +1554,24 @@ MagickPrivate MagickBooleanType RelinquishOpenCLCommandQueue(MagickCLEnv clEnv,
 %
 */
 
-MagickPrivate
-  cl_kernel AcquireOpenCLKernel(MagickCLEnv clEnv, MagickOpenCLProgram program, const char* kernelName)
+MagickPrivate cl_kernel AcquireOpenCLKernel(MagickCLEnv clEnv,
+  MagickOpenCLProgram program, const char* kernelName)
 {
-  cl_int clStatus;
-  cl_kernel kernel = NULL;
-  if (clEnv != NULL && kernelName!=NULL)
+  cl_int
+    clStatus;
+
+  cl_kernel
+    kernel;
+
+  kernel=(cl_kernel) NULL;
+  if ((clEnv != (MagickCLEnv) NULL) &&
+      (kernelName != (MagickOpenCLProgram) NULL))
   {
-    kernel = clEnv->library->clCreateKernel(clEnv->programs[program], kernelName, &clStatus);
+    kernel=clEnv->library->clCreateKernel(clEnv->programs[program],kernelName,
+      &clStatus);
+    assert(kernel != (cl_kernel) NULL);
   }
-  return kernel;
+  return(kernel);
 }
 
 
