@@ -1964,8 +1964,6 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (AccelerateGrayscaleImage(image,method,exception) != MagickFalse)
-    return(MagickTrue);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->storage_class == PseudoClass)
@@ -1974,6 +1972,12 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
         return(MagickFalse);
       if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
         return(MagickFalse);
+    }
+  if (AccelerateGrayscaleImage(image,method,exception) != MagickFalse)
+    {
+      image->intensity=method;
+      image->type=GrayscaleType;
+      return(SetImageColorspace(image,GRAYColorspace,exception));
     }
   /*
     Grayscale image.
