@@ -187,20 +187,35 @@ static MagickBooleanType checkAccelerateConditionRGBA(const Image* image)
   return(MagickTrue);
 }
 
-static MagickBooleanType checkHistogramCondition(Image *image)
+static MagickBooleanType checkPixelIntensity(const Image *image,
+  const PixelIntensityMethod method)
+{
+  /* EncodePixelGamma and DecodePixelGamma are not supported */
+  if ((method == Rec601LumaPixelIntensityMethod) ||
+      (method == Rec709LumaPixelIntensityMethod))
+    {
+      if (image->colorspace == RGBColorspace)
+        return(MagickFalse);
+    }
+
+  if ((method == Rec601LuminancePixelIntensityMethod) ||
+      (method == Rec709LuminancePixelIntensityMethod))
+    {
+      if (image->colorspace == sRGBColorspace)
+        return(MagickFalse);
+    }
+
+  return(MagickTrue);
+}
+
+static MagickBooleanType checkHistogramCondition(const Image *image,
+  const PixelIntensityMethod method)
 {
   /* ensure this is the only pass get in for now. */
   if ((image->channel_mask & SyncChannels) == 0)
     return MagickFalse;
 
-  if (image->intensity == Rec601LuminancePixelIntensityMethod ||
-      image->intensity == Rec709LuminancePixelIntensityMethod)
-    return MagickFalse;
-
-  if (image->colorspace != sRGBColorspace)
-    return MagickFalse;
-
-  return MagickTrue;
+  return(checkPixelIntensity(image,method));
 }
 
 static MagickBooleanType checkOpenCLEnvironment(ExceptionInfo* exception)
@@ -1798,15 +1813,17 @@ static MagickBooleanType LaunchHistogramKernel(MagickCLEnv clEnv,
     outputReady;
 
   cl_int
-    clStatus,
-    colorspace,
-    method;
+    clStatus;
 
   cl_kernel
     histogramKernel; 
 
   cl_event
     event;
+
+  cl_uint
+    colorspace,
+    method;
 
   register ssize_t
     i;
@@ -1817,8 +1834,8 @@ static MagickBooleanType LaunchHistogramKernel(MagickCLEnv clEnv,
   histogramKernel = NULL; 
 
   outputReady = MagickFalse;
-  method = image->intensity;
   colorspace = image->colorspace;
+  method = image->intensity;
 
   /* get the OpenCL kernel */
   histogramKernel = AcquireOpenCLKernel(clEnv, MAGICK_OPENCL_ACCELERATE, "Histogram");
@@ -1832,8 +1849,8 @@ static MagickBooleanType LaunchHistogramKernel(MagickCLEnv clEnv,
   i = 0;
   clStatus=clEnv->library->clSetKernelArg(histogramKernel,i++,sizeof(cl_mem),(void *)&imageBuffer);
   clStatus|=clEnv->library->clSetKernelArg(histogramKernel,i++,sizeof(ChannelType),&channel);
-  clStatus|=clEnv->library->clSetKernelArg(histogramKernel,i++,sizeof(cl_int),&method);
-  clStatus|=clEnv->library->clSetKernelArg(histogramKernel,i++,sizeof(cl_int),&colorspace);
+  clStatus|=clEnv->library->clSetKernelArg(histogramKernel,i++,sizeof(cl_uint),&colorspace);
+  clStatus|=clEnv->library->clSetKernelArg(histogramKernel,i++,sizeof(cl_uint),&method);
   clStatus|=clEnv->library->clSetKernelArg(histogramKernel,i++,sizeof(cl_mem),(void *)&histogramBuffer);
   if (clStatus != CL_SUCCESS)
   {
@@ -2454,7 +2471,7 @@ MagickExport MagickBooleanType AccelerateContrastStretchImage(
   assert(exception != (ExceptionInfo *) NULL);
 
   if ((checkAccelerateConditionRGBA(image) == MagickFalse) ||
-      (checkHistogramCondition(image) == MagickFalse) ||
+      (checkHistogramCondition(image,image->intensity) == MagickFalse) ||
       (checkOpenCLEnvironment(exception) == MagickFalse))
     return(MagickFalse);
 
@@ -3698,7 +3715,7 @@ MagickExport MagickBooleanType AccelerateEqualizeImage(Image *image,
   assert(exception != (ExceptionInfo *) NULL);
 
   if ((checkAccelerateConditionRGBA(image) == MagickFalse) ||
-      (checkHistogramCondition(image) == MagickFalse) ||
+      (checkHistogramCondition(image,image->intensity) == MagickFalse) ||
       (checkOpenCLEnvironment(exception) == MagickFalse))
     return(MagickFalse);
 
@@ -3942,10 +3959,7 @@ static MagickBooleanType ComputeGrayscaleImage(Image *image,
     context;
 
   cl_int
-    clStatus,
-    number_channels,
-    colorspace,
-    intensityMethod;
+    clStatus;
 
   cl_kernel
     grayscaleKernel;
@@ -3958,6 +3972,11 @@ static MagickBooleanType ComputeGrayscaleImage(Image *image,
 
   cl_mem_flags
     mem_flags;
+
+  cl_uint
+    number_channels,
+    colorspace,
+    intensityMethod;
 
   MagickBooleanType
     outputReady;
@@ -4032,15 +4051,15 @@ static MagickBooleanType ComputeGrayscaleImage(Image *image,
     goto cleanup;
   }
 
-  number_channels = (cl_int) image->number_channels;
-  intensityMethod = (cl_int) method;
-  colorspace = (cl_int) image->colorspace;
+  number_channels = (cl_uint) image->number_channels;
+  intensityMethod = (cl_uint) method;
+  colorspace = (cl_uint) image->colorspace;
 
   i = 0;
   clStatus=clEnv->library->clSetKernelArg(grayscaleKernel,i++,sizeof(cl_mem),(void *)&imageBuffer);
-  clStatus|=clEnv->library->clSetKernelArg(grayscaleKernel,i++,sizeof(cl_int),&number_channels);
-  clStatus|=clEnv->library->clSetKernelArg(grayscaleKernel,i++,sizeof(cl_int),&intensityMethod);
-  clStatus|=clEnv->library->clSetKernelArg(grayscaleKernel,i++,sizeof(cl_int),&colorspace);
+  clStatus|=clEnv->library->clSetKernelArg(grayscaleKernel,i++,sizeof(cl_uint),&number_channels);
+  clStatus|=clEnv->library->clSetKernelArg(grayscaleKernel,i++,sizeof(cl_uint),&colorspace);
+  clStatus|=clEnv->library->clSetKernelArg(grayscaleKernel,i++,sizeof(cl_uint),&intensityMethod);
   if (clStatus != CL_SUCCESS)
   {
     (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clSetKernelArg failed.", "'%s'", ".");
@@ -4105,14 +4124,8 @@ MagickExport MagickBooleanType AccelerateGrayscaleImage(Image* image,
   assert(exception != (ExceptionInfo *) NULL);
 
   if ((checkAccelerateCondition(image) == MagickFalse) ||
+      (checkPixelIntensity(image,method) == MagickFalse) ||
       (checkOpenCLEnvironment(exception) == MagickFalse))
-    return(MagickFalse);
-
-  if ((method == Rec601LuminancePixelIntensityMethod) ||
-      (method == Rec709LuminancePixelIntensityMethod))
-    return(MagickFalse);
-
-  if (image->colorspace != sRGBColorspace)
     return(MagickFalse);
 
   if (image->number_channels < 3)

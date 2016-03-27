@@ -385,12 +385,9 @@ OPENCL_ENDIF()
   inline float getAlphaF4(float4 p)                     { return p.w; }
   inline void setAlphaF4(float4* p, float value)        { (*p).w = value; }
 
-  inline float GetPixelIntensity(const int method, const int colorspace, CLPixelType p)
+  inline float GetPixelIntensity(const unsigned int colorspace,
+    const unsigned int method,float red,float green,float blue)
   {
-    float red = getRed(p);
-    float green = getGreen(p);
-    float blue = getBlue(p);
-
     float intensity;
 
     if (colorspace == GRAYColorspace)
@@ -481,8 +478,7 @@ OPENCL_ENDIF()
         }
     }
 
-    return intensity; 
- 
+    return intensity;
   }
   )
 
@@ -1443,8 +1439,8 @@ OPENCL_ENDIF()
     */
     __kernel void Histogram(__global CLPixelType * restrict im,
       const ChannelType channel, 
-      const int method,
-      const int colorspace,
+      const unsigned int colorspace,
+      const unsigned int method,
       __global uint4 * restrict histogram)
       {
         const int x = get_global_id(0);  
@@ -1453,7 +1449,11 @@ OPENCL_ENDIF()
         const int c = x + y * columns;
         if ((channel & SyncChannels) != 0)
         {
-          float intensity = GetPixelIntensity(method, colorspace,im[c]);
+          float red=(float)getRed(im[c]);
+          float green=(float)getGreen(im[c]);
+          float blue=(float)getBlue(im[c]);
+
+          float intensity = GetPixelIntensity(colorspace, method, red, green, blue);
           uint pos = ScaleQuantumToMap(ClampToQuantum(intensity));
           atomic_inc((__global uint *)(&(histogram[pos]))+2); //red position
         }
@@ -2107,7 +2107,7 @@ OPENCL_ENDIF()
 
   STRINGIFY(
   __kernel void Grayscale(__global CLQuantum *im,const int number_channels,
-    const int method,const int colorspace)
+    const unsigned int colorspace,const unsigned int method)
   {
     const int x = get_global_id(0);
     const int y = get_global_id(1);
@@ -2124,94 +2124,7 @@ OPENCL_ENDIF()
     green=(float)im[c+1];
     blue=(float)im[c+2];
 
-    intensity=0.0;
-
-    switch (method)
-    {
-      case AveragePixelIntensityMethod:
-        {
-          intensity=(red+green+blue)/3.0;
-          break;
-        }
-      case BrightnessPixelIntensityMethod:
-        {
-          intensity=MagickMax(MagickMax(red,green),blue);
-          break;
-        }
-      case LightnessPixelIntensityMethod:
-        {
-          intensity=(MagickMin(MagickMin(red,green),blue)+
-              MagickMax(MagickMax(red,green),blue))/2.0;
-          break;
-        }
-      case MSPixelIntensityMethod:
-        {
-          intensity=(float) (((float) red*red+green*green+
-                blue*blue)/(3.0*QuantumRange));
-          break;
-        }
-      case Rec601LumaPixelIntensityMethod:
-        {
-          /*
-          if (colorspace == RGBColorspace)
-          {
-            red=EncodePixelGamma(red);
-            green=EncodePixelGamma(green);
-            blue=EncodePixelGamma(blue);
-          }
-          */
-          intensity=0.298839*red+0.586811*green+0.114350*blue;
-          break;
-        }
-      case Rec601LuminancePixelIntensityMethod:
-        {
-          /*
-          if (image->colorspace == sRGBColorspace)
-          {
-            red=DecodePixelGamma(red);
-            green=DecodePixelGamma(green);
-            blue=DecodePixelGamma(blue);
-          }
-          */
-          intensity=0.298839*red+0.586811*green+0.114350*blue;
-          break;
-        }
-      case Rec709LumaPixelIntensityMethod:
-      default:
-        {
-          /*
-          if (image->colorspace == RGBColorspace)
-          {
-            red=EncodePixelGamma(red);
-            green=EncodePixelGamma(green);
-            blue=EncodePixelGamma(blue);
-          }
-          */
-          intensity=0.212656*red+0.715158*green+0.072186*blue;
-          break;
-        }
-      case Rec709LuminancePixelIntensityMethod:
-        {
-          /*
-          if (image->colorspace == sRGBColorspace)
-          {
-            red=DecodePixelGamma(red);
-            green=DecodePixelGamma(green);
-            blue=DecodePixelGamma(blue);
-          }
-          */
-          intensity=0.212656*red+0.715158*green+0.072186*blue;
-          break;
-        }
-      case RMSPixelIntensityMethod:
-        {
-          intensity=(float) (sqrt((float) red*red+green*green+
-                blue*blue)/sqrt(3.0));
-          break;
-        }
-
-    }
-
+    intensity = GetPixelIntensity(colorspace, method, red, green, blue);
     im[c] = im[c+1] = im[c+2] = ClampToQuantum(intensity);
   }
   )
