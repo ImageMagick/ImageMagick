@@ -365,6 +365,16 @@ OPENCL_ENDIF()
 
   STRINGIFY(
 
+  inline CLQuantum getPixelRed(const __global CLQuantum *p)   { return *p; }
+  inline CLQuantum getPixelGreen(const __global CLQuantum *p) { return *(p+1); }
+  inline CLQuantum getPixelBlue(const __global CLQuantum *p)  { return *(p+2); }
+  inline CLQuantum getPixelAlpha(const __global CLQuantum *p) { return *(p+3); }
+
+  inline void setPixelRed(__global CLQuantum *p,const CLQuantum value)   { *p=value; }
+  inline void setPixelGreen(__global CLQuantum *p,const CLQuantum value) { *(p+1)=value; }
+  inline void setPixelBlue(__global CLQuantum *p,const CLQuantum value)  { *(p+2)=value; }
+  inline void setPixelAlpha(__global CLQuantum *p,const CLQuantum value) { *(p+3)=value; }
+
   inline CLQuantum getBlue(CLPixelType p)               { return p.x; }
   inline void setBlue(CLPixelType* p, CLQuantum value)  { (*p).x = value; }
   inline float getBlueF4(float4 p)                      { return p.x; }
@@ -2106,26 +2116,28 @@ OPENCL_ENDIF()
 */
 
   STRINGIFY(
-  __kernel void Grayscale(__global CLQuantum *im,const int number_channels,
+  __kernel void Grayscale(__global CLQuantum *image,const int number_channels,
     const unsigned int colorspace,const unsigned int method)
   {
     const int x = get_global_id(0);
     const int y = get_global_id(1);
     const int columns = get_global_size(0);
-    const int c = (x * number_channels) + (y * columns * number_channels);
+    __global CLQuantum *p = image+(x * number_channels) + (y * columns * number_channels);
 
     float
-        blue,
-        green,
-        intensity,
-        red;
+      blue,
+      green,
+      red;
 
-    red=(float)im[c];
-    green=(float)im[c+1];
-    blue=(float)im[c+2];
+    red=(float)getPixelRed(p);
+    green=(float)getPixelGreen(p);
+    blue=(float)getPixelBlue(p);
 
-    intensity = GetPixelIntensity(colorspace, method, red, green, blue);
-    im[c] = im[c+1] = im[c+2] = ClampToQuantum(intensity);
+    CLQuantum intensity=ClampToQuantum(GetPixelIntensity(colorspace, method, red, green, blue));
+
+    setPixelRed(p,intensity);
+    setPixelGreen(p,intensity);
+    setPixelBlue(p,intensity);
   }
   )
 
