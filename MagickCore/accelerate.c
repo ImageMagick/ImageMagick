@@ -303,14 +303,11 @@ static Image *ComputeAddNoiseImage(const Image *image,
   cl_context
     context;
 
-  cl_int
-    inputPixelCount,
-    pixelsPerWorkitem,
-    clStatus;
+  cl_float
+    attenuate;
 
-  cl_uint
-    seed0,
-    seed1;
+  cl_int
+    clStatus;
 
   cl_kernel
     addNoiseKernel;
@@ -325,14 +322,20 @@ static Image *ComputeAddNoiseImage(const Image *image,
     filteredImageBuffer,
     imageBuffer;
 
+  cl_uint
+    bufferLength,
+    inputPixelCount,
+    number_channels,
+    numRandomNumberPerPixel,
+    pixelsPerWorkitem,
+    seed0,
+    seed1;
+
   const char
     *option;
 
   const void
     *inputPixels;
-
-  float
-    attenuate;
 
   MagickBooleanType
     outputReady;
@@ -346,21 +349,12 @@ static Image *ComputeAddNoiseImage(const Image *image,
   Image
     *filteredImage;
 
-  RandomInfo
-    **magick_restrict random_info;
-
   size_t
     global_work_size[1],
     local_work_size[1];
 
   unsigned int
-    k,
-    numRandomNumberPerPixel;
-
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  unsigned long
-    key;
-#endif
+    k;
 
   void
     *filteredPixels,
@@ -390,7 +384,7 @@ static Image *ComputeAddNoiseImage(const Image *image,
     goto cleanup;
   }
 
-  if (ALIGNED(inputPixels,CLPixelPacket)) 
+  if (ALIGNED(inputPixels,CLQuantum))
   {
     mem_flags = CL_MEM_READ_ONLY|CL_MEM_USE_HOST_PTR;
   }
@@ -399,8 +393,8 @@ static Image *ComputeAddNoiseImage(const Image *image,
     mem_flags = CL_MEM_READ_ONLY|CL_MEM_COPY_HOST_PTR;
   }
   /* create a CL buffer from image pixel buffer */
-  length = image->columns * image->rows;
-  imageBuffer = clEnv->library->clCreateBuffer(context, mem_flags, length * sizeof(CLPixelPacket), (void*)inputPixels, &clStatus);
+  length = image->columns * image->rows * image->number_channels;
+  imageBuffer = clEnv->library->clCreateBuffer(context, mem_flags, length * sizeof(CLQuantum), (void*)inputPixels, &clStatus);
   if (clStatus != CL_SUCCESS)
   {
     (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clCreateBuffer failed.",".");
@@ -423,7 +417,7 @@ static Image *ComputeAddNoiseImage(const Image *image,
     goto cleanup;
   }
 
-  if (ALIGNED(filteredPixels,CLPixelPacket)) 
+  if (ALIGNED(filteredPixels,CLQuantum))
   {
     mem_flags = CL_MEM_WRITE_ONLY|CL_MEM_USE_HOST_PTR;
     hostPtr = filteredPixels;
@@ -434,8 +428,7 @@ static Image *ComputeAddNoiseImage(const Image *image,
     hostPtr = NULL;
   }
   /* create a CL buffer from image pixel buffer */
-  length = image->columns * image->rows;
-  filteredImageBuffer = clEnv->library->clCreateBuffer(context, mem_flags, length * sizeof(CLPixelPacket), hostPtr, &clStatus);
+  filteredImageBuffer = clEnv->library->clCreateBuffer(context, mem_flags, length * sizeof(CLQuantum), hostPtr, &clStatus);
   if (clStatus != CL_SUCCESS)
   {
     (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clCreateBuffer failed.",".");
@@ -462,26 +455,15 @@ static Image *ComputeAddNoiseImage(const Image *image,
       break;
     };
 
-    if ((image->channel_mask & RedChannel) != 0)
+    if (GetPixelRedTraits(image) != UndefinedPixelTrait)
       numRandomNumberPerPixel+=numRandPerChannel;
-    if ((image->channel_mask & GreenChannel) != 0)
+    if (GetPixelGreenTraits(image) != UndefinedPixelTrait)
       numRandomNumberPerPixel+=numRandPerChannel;
-    if ((image->channel_mask & BlueChannel) != 0)
+    if (GetPixelBlueTraits(image) != UndefinedPixelTrait)
       numRandomNumberPerPixel+=numRandPerChannel;
-    if ((image->channel_mask & AlphaChannel) != 0)
+    if (GetPixelAlphaTraits(image) != UndefinedPixelTrait)
       numRandomNumberPerPixel+=numRandPerChannel;
   }
-
-  /* set up the random number generators */
-  attenuate=1.0;
-  option=GetImageArtifact(image,"attenuate");
-  if (option != (char *) NULL)
-    attenuate=StringToDouble(option,(char **) NULL);
-  random_info=AcquireRandomInfoThreadSet();
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  key=GetRandomSecretKey(random_info[0]);
-  (void) key;
-#endif
 
   addNoiseKernel = AcquireOpenCLKernel(clEnv,MAGICK_OPENCL_ACCELERATE,"AddNoise");
 
@@ -489,7 +471,7 @@ static Image *ComputeAddNoiseImage(const Image *image,
     cl_uint computeUnitCount;
     cl_uint workItemCount;
     clEnv->library->clGetDeviceInfo(clEnv->device, CL_DEVICE_MAX_COMPUTE_UNITS, sizeof(cl_uint), &computeUnitCount, NULL);
-    workItemCount = computeUnitCount * 2 * 256;			// 256 work items per group, 2 groups per CU
+    workItemCount = computeUnitCount * 2 * 256; // 256 work items per group, 2 groups per CU
     inputPixelCount = (cl_int) (image->columns * image->rows);
     pixelsPerWorkitem = (inputPixelCount + workItemCount - 1) / workItemCount;
     pixelsPerWorkitem = ((pixelsPerWorkitem + 3) / 4) * 4;
@@ -499,43 +481,45 @@ static Image *ComputeAddNoiseImage(const Image *image,
   }
   {
     RandomInfo* randomInfo = AcquireRandomInfo();
-	const unsigned long* s = GetRandomInfoSeed(randomInfo);
-	seed0 = s[0];
-	GetPseudoRandomValue(randomInfo);
-	seed1 = s[0];
-	randomInfo = DestroyRandomInfo(randomInfo);
+    const unsigned long* s = GetRandomInfoSeed(randomInfo);
+    seed0 = s[0];
+    (void) GetPseudoRandomValue(randomInfo);
+    seed1 = s[0];
+    randomInfo = DestroyRandomInfo(randomInfo);
   }
 
-  k = 0;
-  clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(cl_mem),(void *)&imageBuffer);
-  clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(cl_mem),(void *)&filteredImageBuffer);
-  clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(cl_uint),(void *)&inputPixelCount);
-  clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(cl_uint),(void *)&pixelsPerWorkitem);
-  clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(ChannelType),(void *)&image->channel_mask);
-  clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(NoiseType),(void *)&noise_type);
+  number_channels = (cl_uint) image->number_channels;
+  bufferLength = (cl_uint)length;
   attenuate=1.0f;
   option=GetImageArtifact(image,"attenuate");
   if (option != (char *) NULL)
     attenuate=(float)StringToDouble(option,(char **) NULL);
-  clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(float),(void *)&attenuate);
+
+  k = 0;
+  clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(cl_mem),(void *)&imageBuffer);
+  clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(cl_uint),(void *)&number_channels);
+  clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(ChannelType),(void *)&image->channel_mask);
+  clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(cl_uint),(void *)&bufferLength);
+  clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(cl_uint),(void *)&pixelsPerWorkitem);
+  clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(NoiseType),(void *)&noise_type);
+  clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(cl_float),(void *)&attenuate);
   clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(cl_uint),(void *)&seed0);
   clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(cl_uint),(void *)&seed1);
-  clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(unsigned int),(void *)&numRandomNumberPerPixel);
+  clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(cl_uint),(void *)&numRandomNumberPerPixel);
+  clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(cl_mem),(void *)&filteredImageBuffer);
 
-  clEnv->library->clEnqueueNDRangeKernel(queue,addNoiseKernel,1,NULL,global_work_size,NULL,0,NULL,&event);
+  clEnv->library->clEnqueueNDRangeKernel(queue,addNoiseKernel,1,NULL,global_work_size,local_work_size,0,NULL,&event);
 
   RecordProfileData(clEnv,AddNoiseKernel,event);
   clEnv->library->clReleaseEvent(event);
 
-  if (ALIGNED(filteredPixels,CLPixelPacket)) 
+  if (ALIGNED(filteredPixels,CLQuantum))
   {
-    length = image->columns * image->rows;
-    clEnv->library->clEnqueueMapBuffer(queue, filteredImageBuffer, CL_TRUE, CL_MAP_READ|CL_MAP_WRITE, 0, length * sizeof(CLPixelPacket), 0, NULL, NULL, &clStatus);
+    clEnv->library->clEnqueueMapBuffer(queue, filteredImageBuffer, CL_TRUE, CL_MAP_READ|CL_MAP_WRITE, 0, length * sizeof(CLQuantum), 0, NULL, NULL, &clStatus);
   }
   else 
   {
-    length = image->columns * image->rows;
-    clStatus = clEnv->library->clEnqueueReadBuffer(queue, filteredImageBuffer, CL_TRUE, 0, length * sizeof(CLPixelPacket), filteredPixels, 0, NULL, NULL);
+    clStatus = clEnv->library->clEnqueueReadBuffer(queue, filteredImageBuffer, CL_TRUE, 0, length * sizeof(CLQuantum), filteredPixels, 0, NULL, NULL);
   }
   if (clStatus != CL_SUCCESS)
   {
@@ -571,7 +555,7 @@ MagickExport Image *AccelerateAddNoiseImage(const Image *image,
   assert(image != NULL);
   assert(exception != (ExceptionInfo *) NULL);
 
-  if ((checkAccelerateConditionRGBA(image) == MagickFalse) ||
+  if ((checkAccelerateCondition(image) == MagickFalse) ||
       (checkOpenCLEnvironment(exception) == MagickFalse))
     return((Image *) NULL);
 
@@ -4063,7 +4047,6 @@ static MagickBooleanType ComputeGrayscaleImage(Image *image,
   if (clStatus != CL_SUCCESS)
   {
     (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clSetKernelArg failed.", "'%s'", ".");
-    printf("no kernel\n");
     goto cleanup;
   }
 
@@ -4072,7 +4055,7 @@ static MagickBooleanType ComputeGrayscaleImage(Image *image,
     global_work_size[0] = image->columns;
     global_work_size[1] = image->rows;
     /* launch the kernel */
-	clStatus = clEnv->library->clEnqueueNDRangeKernel(queue, grayscaleKernel, 2, NULL, global_work_size, NULL, 0, NULL, &event);
+    clStatus = clEnv->library->clEnqueueNDRangeKernel(queue, grayscaleKernel, 2, NULL, global_work_size, NULL, 0, NULL, &event);
     if (clStatus != CL_SUCCESS)
     {
       (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
@@ -4615,7 +4598,6 @@ static MagickBooleanType ComputeModulateImage(Image *image,
   if (clStatus != CL_SUCCESS)
   {
     (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clSetKernelArg failed.", "'%s'", ".");
-    printf("no kernel\n");
     goto cleanup;
   }
 

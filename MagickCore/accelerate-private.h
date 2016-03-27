@@ -726,12 +726,12 @@ OPENCL_ENDIF()
   }
 
   __kernel
-  void AddNoiseImage(const __global CLPixelType* inputImage, __global CLPixelType* filteredImage
-                    ,const unsigned int inputPixelCount, const unsigned int pixelsPerWorkItem
-                    ,const ChannelType channel 
-                    ,const NoiseType noise_type, const float attenuate
-                    ,const unsigned int seed0, const unsigned int seed1
-                    ,const unsigned int numRandomNumbersPerPixel)
+  void AddNoise(const __global CLQuantum *image,
+    const unsigned int number_channels,const ChannelType channel,
+    const unsigned int length,const unsigned int pixelsPerWorkItem,
+    const NoiseType noise_type,const float attenuate,const unsigned int seed0,
+    const unsigned int seed1,const unsigned int numRandomNumbersPerPixel,
+    __global CLQuantum *filteredImage)
   {
     mwc64x_state_t rng;
     rng.x = seed0;
@@ -739,39 +739,34 @@ OPENCL_ENDIF()
 
     uint span = pixelsPerWorkItem * numRandomNumbersPerPixel; // length of RNG substream each workitem will use
     uint offset = span * get_local_size(0) * get_group_id(0); // offset of this workgroup's RNG substream (in master stream);
-
     MWC64X_SeedStreams(&rng, offset, span); // Seed the RNG streams
 
-    uint pos = get_local_size(0) * get_group_id(0) * pixelsPerWorkItem + get_local_id(0); // pixel to process
-
+    uint pos = get_group_id(0) * get_local_size(0) * pixelsPerWorkItem * number_channels + (get_local_id(0) * number_channels);
     uint count = pixelsPerWorkItem;
 
-    while (count > 0)
+    while (count > 0 && pos < length)
     {
-      if (pos < inputPixelCount)
+      const __global CLQuantum *p = image + pos;
+      __global CLQuantum *q = filteredImage + pos;
+
+      if ((channel & RedChannel) != 0)
+        setPixelRed(q,ClampToQuantum(mwcGenerateDifferentialNoise(&rng,getPixelRed(p),noise_type,attenuate)));
+
+      if (number_channels > 2)
       {
-        CLPixelType p = inputImage[pos];
+        if ((channel & GreenChannel) != 0)
+          setPixelGreen(q,ClampToQuantum(mwcGenerateDifferentialNoise(&rng,getPixelGreen(p),noise_type,attenuate)));
 
-        if ((channel&RedChannel)!=0) {
-          setRed(&p,ClampToQuantum(mwcGenerateDifferentialNoise(&rng,getRed(p),noise_type,attenuate)));
-        }
-
-        if ((channel&GreenChannel)!=0) {
-          setGreen(&p,ClampToQuantum(mwcGenerateDifferentialNoise(&rng,getGreen(p),noise_type,attenuate)));
-        }
-
-        if ((channel&BlueChannel)!=0) {
-          setBlue(&p,ClampToQuantum(mwcGenerateDifferentialNoise(&rng,getBlue(p),noise_type,attenuate)));
-        }
-
-        if ((channel & AlphaChannel) != 0) {
-          setAlpha(&p,ClampToQuantum(mwcGenerateDifferentialNoise(&rng,getAlpha(p),noise_type,attenuate)));
-        }
-
-        filteredImage[pos] = p;
+        if ((channel & BlueChannel) != 0)
+          setPixelBlue(q,ClampToQuantum(mwcGenerateDifferentialNoise(&rng,getPixelBlue(p),noise_type,attenuate)));
       }
-      pos += get_local_size(0);
-      --count;
+
+      if (((number_channels == 2) || (number_channels == 4)) &&
+          ((channel & AlphaChannel) != 0))
+        setPixelAlpha(q,ClampToQuantum(mwcGenerateDifferentialNoise(&rng,getPixelAlpha(p),noise_type,attenuate)));
+
+      pos += (get_local_size(0) * number_channels);
+      count--;
     }
   }
   )
