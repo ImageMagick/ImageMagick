@@ -294,6 +294,9 @@ static cl_mem createBuffer(const Image *image,CacheView *image_view,
   size_t
     length;
 
+  void
+    *hostPtr;
+
   pixels=(void *) GetCacheViewVirtualPixels(image_view,0,0,image->columns,
     image->rows,exception);
   if (pixels == (void *) NULL)
@@ -304,16 +307,17 @@ static cl_mem createBuffer(const Image *image,CacheView *image_view,
     }
 
   mem_flags=flags;
+  hostPtr=pixels;
   if (ALIGNED(pixels,CLQuantum))
     mem_flags=mem_flags | CL_MEM_USE_HOST_PTR;
   else if ((mem_flags == CL_MEM_READ_ONLY) || (mem_flags == CL_MEM_READ_WRITE))
     mem_flags=mem_flags | CL_MEM_COPY_HOST_PTR;
   else if (mem_flags == CL_MEM_WRITE_ONLY)
-    pixels=NULL;
+    hostPtr=NULL;
 
   length=image->columns*image->rows*image->number_channels;
   buffer=clEnv->library->clCreateBuffer(context,mem_flags,length*
-    sizeof(CLQuantum),pixels,&status);
+    sizeof(CLQuantum),hostPtr,&status);
   if (status != CL_SUCCESS)
     {
       (void) OpenCLThrowMagickException(exception,GetMagickModule(),
