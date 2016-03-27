@@ -1875,20 +1875,6 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
             }
           break;
         }
-      if (LocaleCompare(attribute,"preview") == 0)
-        {
-          sp=SvPOK(sval) ? ParseCommandOption(MagickPreviewOptions,MagickFalse,
-            SvPV(sval,na)) : SvIV(sval);
-          if (sp < 0)
-            {
-              ThrowPerlException(exception,OptionError,"UnrecognizedType",
-                SvPV(sval,na));
-              break;
-            }
-          if (info)
-            info->image_info->preview_type=(PreviewType) sp;
-          break;
-        }
       if (info)
         SetImageOption(info->image_info,attribute,SvPV(sval,na));
       for ( ; image; image=image->next)
@@ -5491,15 +5477,6 @@ Get(ref,...)
             {
               if (info)
                 s=newSViv((ssize_t) info->image_info->pointsize);
-              PUSHs(s ? sv_2mortal(s) : &sv_undef);
-              continue;
-            }
-          if (LocaleCompare(attribute,"preview") == 0)
-            {
-              s=newSViv(info->image_info->preview_type);
-              (void) sv_setpv(s,CommandOptionToMnemonic(MagickPreviewOptions,
-                info->image_info->preview_type));
-              SvIOK_on(s);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
