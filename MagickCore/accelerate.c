@@ -404,6 +404,9 @@ static Image *ComputeAddNoiseImage(const Image *image,
   cl_float
     attenuate;
 
+  cl_int
+    clStatus;
+
   cl_kernel
     addNoiseKernel;
 
@@ -536,19 +539,29 @@ static Image *ComputeAddNoiseImage(const Image *image,
     attenuate=(float)StringToDouble(option,(char **) NULL);
 
   k = 0;
-  (void) clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(cl_mem),(void *)&imageBuffer);
-  (void) clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(cl_uint),(void *)&number_channels);
-  (void) clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(ChannelType),(void *)&image->channel_mask);
-  (void) clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(cl_uint),(void *)&bufferLength);
-  (void) clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(cl_uint),(void *)&pixelsPerWorkitem);
-  (void) clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(NoiseType),(void *)&noise_type);
-  (void) clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(cl_float),(void *)&attenuate);
-  (void) clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(cl_uint),(void *)&seed0);
-  (void) clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(cl_uint),(void *)&seed1);
-  (void) clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(cl_uint),(void *)&numRandomNumberPerPixel);
-  (void) clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(cl_mem),(void *)&filteredImageBuffer);
+  clStatus=clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(cl_mem),(void *)&imageBuffer);
+  clStatus|=clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(cl_uint),(void *)&number_channels);
+  clStatus|=clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(ChannelType),(void *)&image->channel_mask);
+  clStatus|=clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(cl_uint),(void *)&bufferLength);
+  clStatus|=clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(cl_uint),(void *)&pixelsPerWorkitem);
+  clStatus|=clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(NoiseType),(void *)&noise_type);
+  clStatus|=clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(cl_float),(void *)&attenuate);
+  clStatus|=clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(cl_uint),(void *)&seed0);
+  clStatus|=clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(cl_uint),(void *)&seed1);
+  clStatus|=clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(cl_uint),(void *)&numRandomNumberPerPixel);
+  clStatus|=clEnv->library->clSetKernelArg(addNoiseKernel,k++,sizeof(cl_mem),(void *)&filteredImageBuffer);
+  if (clStatus != CL_SUCCESS)
+  {
+    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clSetKernelArg failed.", "'%s'", ".");
+    goto cleanup;
+  }
 
-  (void) clEnv->library->clEnqueueNDRangeKernel(queue,addNoiseKernel,1,NULL,global_work_size,local_work_size,0,NULL,&event);
+  clStatus=clEnv->library->clEnqueueNDRangeKernel(queue,addNoiseKernel,1,NULL,global_work_size,local_work_size,0,NULL,&event);
+  if (clStatus != CL_SUCCESS)
+  {
+    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
+    goto cleanup;
+  }
 
   RecordProfileData(clEnv,AddNoiseKernel,event);
   clEnv->library->clReleaseEvent(event);
@@ -3970,6 +3983,9 @@ static MagickBooleanType ComputeGrayscaleImage(Image *image,
   cl_context
     context;
 
+  cl_int
+    clStatus;
+
   cl_kernel
     grayscaleKernel;
 
@@ -4037,14 +4053,18 @@ static MagickBooleanType ComputeGrayscaleImage(Image *image,
   colorspace = (cl_uint) image->colorspace;
 
   i = 0;
-  (void) clEnv->library->clSetKernelArg(grayscaleKernel,i++,sizeof(cl_mem),(void *)&imageBuffer);
-  (void) clEnv->library->clSetKernelArg(grayscaleKernel,i++,sizeof(cl_uint),&number_channels);
-  (void) clEnv->library->clSetKernelArg(grayscaleKernel,i++,sizeof(cl_uint),&colorspace);
-  (void) clEnv->library->clSetKernelArg(grayscaleKernel,i++,sizeof(cl_uint),&intensityMethod);
+  clStatus=clEnv->library->clSetKernelArg(grayscaleKernel,i++,sizeof(cl_mem),(void *)&imageBuffer);
+  clStatus|=clEnv->library->clSetKernelArg(grayscaleKernel,i++,sizeof(cl_uint),&number_channels);
+  clStatus|=clEnv->library->clSetKernelArg(grayscaleKernel,i++,sizeof(cl_uint),&colorspace);
+  clStatus|=clEnv->library->clSetKernelArg(grayscaleKernel,i++,sizeof(cl_uint),&intensityMethod);
+  if (clStatus != CL_SUCCESS)
+  {
+    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clSetKernelArg failed.", "'%s'", ".");
+    goto cleanup;
+  }
 
   {
     size_t global_work_size[2];
-    cl_int clStatus;
     global_work_size[0] = image->columns;
     global_work_size[1] = image->rows;
     /* launch the kernel */
