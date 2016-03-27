@@ -783,358 +783,358 @@ OPENCL_ENDIF()
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
 
-    STRINGIFY(
-      /*
-      Reduce image noise and reduce detail levels by line
-      im: input pixels filtered_in  filtered_im: output pixels
-      filter : convolve kernel  width: convolve kernel size
-      channel : define which channel is blured\
-      is_RGBA_BGRA : define the input is RGBA or BGRA
-      */
-      __kernel void BlurSectionColumn(const __global float4 *blurRowData, __global CLPixelType *filtered_im,
-                                const ChannelType channel, __constant float *filter,
-                                const unsigned int width, 
-                                const unsigned int imageColumns, const unsigned int imageRows,
-                                __local float4 *temp, 
-                                const unsigned int offsetRows, const unsigned int section)
+  STRINGIFY(
+    /*
+    Reduce image noise and reduce detail levels by line
+    im: input pixels filtered_in  filtered_im: output pixels
+    filter : convolve kernel  width: convolve kernel size
+    channel : define which channel is blured\
+    is_RGBA_BGRA : define the input is RGBA or BGRA
+    */
+    __kernel void BlurSectionColumn(const __global float4 *blurRowData, __global CLPixelType *filtered_im,
+                              const ChannelType channel, __constant float *filter,
+                              const unsigned int width, 
+                              const unsigned int imageColumns, const unsigned int imageRows,
+                              __local float4 *temp, 
+                              const unsigned int offsetRows, const unsigned int section)
+    {
+      const int x = get_global_id(0);  
+      const int y = get_global_id(1);
+
+      //const int columns = get_global_size(0);
+      //const int rows = get_global_size(1);  
+      const int columns = imageColumns;  
+      const int rows = imageRows;  
+
+      unsigned int radius = (width-1)/2;
+      const int wsize = get_local_size(1);  
+      const unsigned int loadSize = wsize+width;
+
+      //group coordinate
+      const int groupX=get_local_size(0)*get_group_id(0);
+      const int groupY=get_local_size(1)*get_group_id(1);
+      //notice that get_local_size(0) is 1, so
+      //groupX=get_group_id(0);
+     
+      // offset the input data
+      blurRowData += imageColumns * radius * section;
+
+      //parallel load and clamp
+      for (int i = get_local_id(1); i < loadSize; i=i+get_local_size(1))
       {
-        const int x = get_global_id(0);  
-        const int y = get_global_id(1);
+        int pos = ClampToCanvasWithHalo(i+groupY-radius, rows, radius, section) * columns + groupX;
+        temp[i] = *(blurRowData+pos);
+      }
+      
+      // barrier        
+      barrier(CLK_LOCAL_MEM_FENCE);
 
-        //const int columns = get_global_size(0);
-        //const int rows = get_global_size(1);  
-        const int columns = imageColumns;  
-        const int rows = imageRows;  
+      // only do the work if this is not a patched item
+      if (get_global_id(1) < rows)
+      {
+        // compute
+        float4 result = (float4) 0;
 
-        unsigned int radius = (width-1)/2;
-        const int wsize = get_local_size(1);  
-        const unsigned int loadSize = wsize+width;
-
-        //group coordinate
-        const int groupX=get_local_size(0)*get_group_id(0);
-        const int groupY=get_local_size(1)*get_group_id(1);
-        //notice that get_local_size(0) is 1, so
-        //groupX=get_group_id(0);
-       
-        // offset the input data
-        blurRowData += imageColumns * radius * section;
-
-        //parallel load and clamp
-        for (int i = get_local_id(1); i < loadSize; i=i+get_local_size(1))
-        {
-          int pos = ClampToCanvasWithHalo(i+groupY-radius, rows, radius, section) * columns + groupX;
-          temp[i] = *(blurRowData+pos);
-        }
+        int i = 0;
         
-        // barrier        
-        barrier(CLK_LOCAL_MEM_FENCE);
-
-        // only do the work if this is not a patched item
-        if (get_global_id(1) < rows)
+        \n #ifndef UFACTOR   \n 
+        \n #define UFACTOR 8 \n 
+        \n #endif                  \n 
+        
+        for ( ; i+UFACTOR < width; ) 
         {
-          // compute
-          float4 result = (float4) 0;
-
-          int i = 0;
-          
-          \n #ifndef UFACTOR   \n 
-          \n #define UFACTOR 8 \n 
-          \n #endif                  \n 
-          
-          for ( ; i+UFACTOR < width; ) 
-          {
-            \n #pragma unroll UFACTOR \n
-            for (int j=0; j < UFACTOR; j++, i++)
-            {
-              result+=filter[i]*temp[i+get_local_id(1)];
-            }
-          }
-          for ( ; i < width; i++)
+          \n #pragma unroll UFACTOR \n
+          for (int j=0; j < UFACTOR; j++, i++)
           {
             result+=filter[i]*temp[i+get_local_id(1)];
           }
-
-          result.x = ClampToQuantum(result.x);
-          result.y = ClampToQuantum(result.y);
-          result.z = ClampToQuantum(result.z);
-          result.w = ClampToQuantum(result.w);
-
-          // offset the output data
-          filtered_im += imageColumns * offsetRows;
-
-          // write back to global
-          filtered_im[y*columns+x] = (CLPixelType) (result.x,result.y,result.z,result.w);
+        }
+        for ( ; i < width; i++)
+        {
+          result+=filter[i]*temp[i+get_local_id(1)];
         }
 
+        result.x = ClampToQuantum(result.x);
+        result.y = ClampToQuantum(result.y);
+        result.z = ClampToQuantum(result.z);
+        result.w = ClampToQuantum(result.w);
+
+        // offset the output data
+        filtered_im += imageColumns * offsetRows;
+
+        // write back to global
+        filtered_im[y*columns+x] = (CLPixelType) (result.x,result.y,result.z,result.w);
       }
-    )
 
-    STRINGIFY(
-      /*
-      Reduce image noise and reduce detail levels by row
-      im: input pixels filtered_in  filtered_im: output pixels
-      filter : convolve kernel  width: convolve kernel size
-      channel : define which channel is blured
-      is_RGBA_BGRA : define the input is RGBA or BGRA
-      */
-      __kernel void BlurSectionRow(__global CLPixelType *im, __global float4 *filtered_im,
-                         const ChannelType channel, __constant float *filter,
-                         const unsigned int width, 
-                         const unsigned int imageColumns, const unsigned int imageRows,
-                         __local CLPixelType *temp, 
-                         const unsigned int offsetRows, const unsigned int section)
+    }
+  )
+
+  STRINGIFY(
+    /*
+    Reduce image noise and reduce detail levels by row
+    im: input pixels filtered_in  filtered_im: output pixels
+    filter : convolve kernel  width: convolve kernel size
+    channel : define which channel is blured
+    is_RGBA_BGRA : define the input is RGBA or BGRA
+    */
+    __kernel void BlurSectionRow(__global CLPixelType *im, __global float4 *filtered_im,
+                       const ChannelType channel, __constant float *filter,
+                       const unsigned int width, 
+                       const unsigned int imageColumns, const unsigned int imageRows,
+                       __local CLPixelType *temp, 
+                       const unsigned int offsetRows, const unsigned int section)
+    {
+      const int x = get_global_id(0);  
+      const int y = get_global_id(1);  
+
+      const int columns = imageColumns;  
+
+      const unsigned int radius = (width-1)/2;
+      const int wsize = get_local_size(0);  
+      const unsigned int loadSize = wsize+width;
+
+      //group coordinate
+      const int groupX=get_local_size(0)*get_group_id(0);
+      const int groupY=get_local_size(1)*get_group_id(1);
+
+      //offset the input data, assuming section is 0, 1 
+      im += imageColumns * (offsetRows - radius * section);
+
+      //parallel load and clamp
+      for (int i=get_local_id(0); i < loadSize; i=i+get_local_size(0))
       {
-        const int x = get_global_id(0);  
-        const int y = get_global_id(1);  
+        //int cx = ClampToCanvas(groupX+i, columns);
+        temp[i] = im[y * columns + ClampToCanvas(i+groupX-radius, columns)];
 
-        const int columns = imageColumns;  
-
-        const unsigned int radius = (width-1)/2;
-        const int wsize = get_local_size(0);  
-        const unsigned int loadSize = wsize+width;
-
-        //group coordinate
-        const int groupX=get_local_size(0)*get_group_id(0);
-        const int groupY=get_local_size(1)*get_group_id(1);
-
-        //offset the input data, assuming section is 0, 1 
-        im += imageColumns * (offsetRows - radius * section);
-
-        //parallel load and clamp
-        for (int i=get_local_id(0); i < loadSize; i=i+get_local_size(0))
+        /*if (0 && y==0 && get_group_id(1) == 0)
         {
-          //int cx = ClampToCanvas(groupX+i, columns);
-          temp[i] = im[y * columns + ClampToCanvas(i+groupX-radius, columns)];
+          printf("(%d %d) temp %d load %d groupX %d\n", x, y, i, ClampToCanvas(groupX+i, columns), groupX);
+        }*/
+      }
 
-          /*if (0 && y==0 && get_group_id(1) == 0)
-          {
-            printf("(%d %d) temp %d load %d groupX %d\n", x, y, i, ClampToCanvas(groupX+i, columns), groupX);
-          }*/
-        }
+      // barrier        
+      barrier(CLK_LOCAL_MEM_FENCE);
 
-        // barrier        
-        barrier(CLK_LOCAL_MEM_FENCE);
+      // only do the work if this is not a patched item
+      if (get_global_id(0) < columns) 
+      {
+        // compute
+        float4 result = (float4) 0;
 
-        // only do the work if this is not a patched item
-        if (get_global_id(0) < columns) 
+        int i = 0;
+        
+        \n #ifndef UFACTOR   \n 
+        \n #define UFACTOR 8 \n 
+        \n #endif                  \n 
+
+        for ( ; i+UFACTOR < width; ) 
         {
-          // compute
-          float4 result = (float4) 0;
-
-          int i = 0;
-          
-          \n #ifndef UFACTOR   \n 
-          \n #define UFACTOR 8 \n 
-          \n #endif                  \n 
-
-          for ( ; i+UFACTOR < width; ) 
-          {
-            \n #pragma unroll UFACTOR\n
-            for (int j=0; j < UFACTOR; j++, i++)
-            {
-              result+=filter[i]*convert_float4(temp[i+get_local_id(0)]);
-            }
-          }
-
-          for ( ; i < width; i++)
+          \n #pragma unroll UFACTOR\n
+          for (int j=0; j < UFACTOR; j++, i++)
           {
             result+=filter[i]*convert_float4(temp[i+get_local_id(0)]);
           }
-
-          result.x = ClampToQuantum(result.x);
-          result.y = ClampToQuantum(result.y);
-          result.z = ClampToQuantum(result.z);
-          result.w = ClampToQuantum(result.w);
-
-          // write back to global
-          filtered_im[y*columns+x] = result;
         }
 
+        for ( ; i < width; i++)
+        {
+          result+=filter[i]*convert_float4(temp[i+get_local_id(0)]);
+        }
+
+        result.x = ClampToQuantum(result.x);
+        result.y = ClampToQuantum(result.y);
+        result.z = ClampToQuantum(result.z);
+        result.w = ClampToQuantum(result.w);
+
+        // write back to global
+        filtered_im[y*columns+x] = result;
       }
-    )
 
-    STRINGIFY(
-      /*
-      Reduce image noise and reduce detail levels by line
-      im: input pixels filtered_in  filtered_im: output pixels
-      filter : convolve kernel  width: convolve kernel size
-      channel : define which channel is blured\
-      is_RGBA_BGRA : define the input is RGBA or BGRA
-      */
-      __kernel void BlurColumn(const __global float4 *blurRowData, __global CLPixelType *filtered_im,
-                                const ChannelType channel, __constant float *filter,
-                                const unsigned int width, 
-                                const unsigned int imageColumns, const unsigned int imageRows,
-                                __local float4 *temp)
+    }
+  )
+
+  STRINGIFY(
+    /*
+    Reduce image noise and reduce detail levels by line
+    im: input pixels filtered_in  filtered_im: output pixels
+    filter : convolve kernel  width: convolve kernel size
+    channel : define which channel is blured\
+    is_RGBA_BGRA : define the input is RGBA or BGRA
+    */
+    __kernel void BlurColumn(const __global float4 *blurRowData, __global CLPixelType *filtered_im,
+                              const ChannelType channel, __constant float *filter,
+                              const unsigned int width, 
+                              const unsigned int imageColumns, const unsigned int imageRows,
+                              __local float4 *temp)
+    {
+      const int x = get_global_id(0);  
+      const int y = get_global_id(1);
+
+      //const int columns = get_global_size(0);
+      //const int rows = get_global_size(1);  
+      const int columns = imageColumns;  
+      const int rows = imageRows;  
+
+      unsigned int radius = (width-1)/2;
+      const int wsize = get_local_size(1);  
+      const unsigned int loadSize = wsize+width;
+
+      //group coordinate
+      const int groupX=get_local_size(0)*get_group_id(0);
+      const int groupY=get_local_size(1)*get_group_id(1);
+      //notice that get_local_size(0) is 1, so
+      //groupX=get_group_id(0);
+      
+      //parallel load and clamp
+      for (int i = get_local_id(1); i < loadSize; i=i+get_local_size(1))
       {
-        const int x = get_global_id(0);  
-        const int y = get_global_id(1);
+        temp[i] = blurRowData[ClampToCanvas(i+groupY-radius, rows) * columns + groupX];
+      }
+      
+      // barrier        
+      barrier(CLK_LOCAL_MEM_FENCE);
 
-        //const int columns = get_global_size(0);
-        //const int rows = get_global_size(1);  
-        const int columns = imageColumns;  
-        const int rows = imageRows;  
+      // only do the work if this is not a patched item
+      if (get_global_id(1) < rows)
+      {
+        // compute
+        float4 result = (float4) 0;
 
-        unsigned int radius = (width-1)/2;
-        const int wsize = get_local_size(1);  
-        const unsigned int loadSize = wsize+width;
-
-        //group coordinate
-        const int groupX=get_local_size(0)*get_group_id(0);
-        const int groupY=get_local_size(1)*get_group_id(1);
-        //notice that get_local_size(0) is 1, so
-        //groupX=get_group_id(0);
+        int i = 0;
         
-        //parallel load and clamp
-        for (int i = get_local_id(1); i < loadSize; i=i+get_local_size(1))
-        {
-          temp[i] = blurRowData[ClampToCanvas(i+groupY-radius, rows) * columns + groupX];
-        }
+        \n #ifndef UFACTOR   \n 
+        \n #define UFACTOR 8 \n 
+        \n #endif                  \n 
         
-        // barrier        
-        barrier(CLK_LOCAL_MEM_FENCE);
-
-        // only do the work if this is not a patched item
-        if (get_global_id(1) < rows)
+        for ( ; i+UFACTOR < width; ) 
         {
-          // compute
-          float4 result = (float4) 0;
-
-          int i = 0;
-          
-          \n #ifndef UFACTOR   \n 
-          \n #define UFACTOR 8 \n 
-          \n #endif                  \n 
-          
-          for ( ; i+UFACTOR < width; ) 
-          {
-            \n #pragma unroll UFACTOR \n
-            for (int j=0; j < UFACTOR; j++, i++)
-            {
-              result+=filter[i]*temp[i+get_local_id(1)];
-            }
-          }
-
-          for ( ; i < width; i++)
+          \n #pragma unroll UFACTOR \n
+          for (int j=0; j < UFACTOR; j++, i++)
           {
             result+=filter[i]*temp[i+get_local_id(1)];
           }
-
-          result.x = ClampToQuantum(result.x);
-          result.y = ClampToQuantum(result.y);
-          result.z = ClampToQuantum(result.z);
-          result.w = ClampToQuantum(result.w);
-
-          // write back to global
-          filtered_im[y*columns+x] = (CLPixelType) (result.x,result.y,result.z,result.w);
         }
 
+        for ( ; i < width; i++)
+        {
+          result+=filter[i]*temp[i+get_local_id(1)];
+        }
+
+        result.x = ClampToQuantum(result.x);
+        result.y = ClampToQuantum(result.y);
+        result.z = ClampToQuantum(result.z);
+        result.w = ClampToQuantum(result.w);
+
+        // write back to global
+        filtered_im[y*columns+x] = (CLPixelType) (result.x,result.y,result.z,result.w);
       }
-    )
 
-    STRINGIFY(
+    }
+  )
+
+  STRINGIFY(
+    /*
+    Reduce image noise and reduce detail levels by row
+    im: input pixels filtered_in  filtered_im: output pixels
+    filter : convolve kernel  width: convolve kernel size
+    channel : define which channel is blured
+    is_RGBA_BGRA : define the input is RGBA or BGRA
+    */
+    __kernel void BlurRow(__global CLPixelType *im, __global float4 *filtered_im,
+                       const ChannelType channel, __constant float *filter,
+                       const unsigned int width, 
+                       const unsigned int imageColumns, const unsigned int imageRows,
+                       __local CLPixelType *temp)
+    {
+      const int x = get_global_id(0);  
+      const int y = get_global_id(1);  
+
+      const int columns = imageColumns;  
+
+      const unsigned int radius = (width-1)/2;
+      const int wsize = get_local_size(0);  
+      const unsigned int loadSize = wsize+width;
+
+      //load chunk only for now
+      //event_t e = async_work_group_copy(temp+radius, im+x+y*columns, wsize, 0);
+      //wait_group_events(1,&e);
+
+      //parallel load and clamp
       /*
-      Reduce image noise and reduce detail levels by row
-      im: input pixels filtered_in  filtered_im: output pixels
-      filter : convolve kernel  width: convolve kernel size
-      channel : define which channel is blured
-      is_RGBA_BGRA : define the input is RGBA or BGRA
-      */
-      __kernel void BlurRow(__global CLPixelType *im, __global float4 *filtered_im,
-                         const ChannelType channel, __constant float *filter,
-                         const unsigned int width, 
-                         const unsigned int imageColumns, const unsigned int imageRows,
-                         __local CLPixelType *temp)
+      int count = 0;
+      for (int i=0; i < loadSize; i=i+wsize)
       {
-        const int x = get_global_id(0);  
-        const int y = get_global_id(1);  
+        int currentX = x + wsize*(count++);
 
-        const int columns = imageColumns;  
+        int localId = get_local_id(0);
 
-        const unsigned int radius = (width-1)/2;
-        const int wsize = get_local_size(0);  
-        const unsigned int loadSize = wsize+width;
+        if ((localId+i) > loadSize)
+          break;
 
-        //load chunk only for now
-        //event_t e = async_work_group_copy(temp+radius, im+x+y*columns, wsize, 0);
-        //wait_group_events(1,&e);
+        temp[localId+i] = im[y*columns+ClampToCanvas(currentX-radius, columns)];
 
-        //parallel load and clamp
-        /*
-        int count = 0;
-        for (int i=0; i < loadSize; i=i+wsize)
+        if (y==0 && get_group_id(0) == 0)
         {
-          int currentX = x + wsize*(count++);
-
-          int localId = get_local_id(0);
-
-          if ((localId+i) > loadSize)
-            break;
-
-          temp[localId+i] = im[y*columns+ClampToCanvas(currentX-radius, columns)];
-
-          if (y==0 && get_group_id(0) == 0)
-          {
-            printf("(%d %d) temp %d load %d currentX %d\n", x, y, localId+i, ClampToCanvas(currentX-radius, columns), currentX);
-          }
+          printf("(%d %d) temp %d load %d currentX %d\n", x, y, localId+i, ClampToCanvas(currentX-radius, columns), currentX);
         }
-        */
+      }
+      */
 
-        //group coordinate
-        const int groupX=get_local_size(0)*get_group_id(0);
-        const int groupY=get_local_size(1)*get_group_id(1);
+      //group coordinate
+      const int groupX=get_local_size(0)*get_group_id(0);
+      const int groupY=get_local_size(1)*get_group_id(1);
 
-        //parallel load and clamp
-        for (int i=get_local_id(0); i < loadSize; i=i+get_local_size(0))
+      //parallel load and clamp
+      for (int i=get_local_id(0); i < loadSize; i=i+get_local_size(0))
+      {
+        //int cx = ClampToCanvas(groupX+i, columns);
+        temp[i] = im[y * columns + ClampToCanvas(i+groupX-radius, columns)];
+
+        /*if (0 && y==0 && get_group_id(1) == 0)
         {
-          //int cx = ClampToCanvas(groupX+i, columns);
-          temp[i] = im[y * columns + ClampToCanvas(i+groupX-radius, columns)];
+          printf("(%d %d) temp %d load %d groupX %d\n", x, y, i, ClampToCanvas(groupX+i, columns), groupX);
+        }*/
+      }
 
-          /*if (0 && y==0 && get_group_id(1) == 0)
-          {
-            printf("(%d %d) temp %d load %d groupX %d\n", x, y, i, ClampToCanvas(groupX+i, columns), groupX);
-          }*/
-        }
+      // barrier        
+      barrier(CLK_LOCAL_MEM_FENCE);
 
-        // barrier        
-        barrier(CLK_LOCAL_MEM_FENCE);
+      // only do the work if this is not a patched item
+      if (get_global_id(0) < columns) 
+      {
+        // compute
+        float4 result = (float4) 0;
 
-        // only do the work if this is not a patched item
-        if (get_global_id(0) < columns) 
+        int i = 0;
+        
+        \n #ifndef UFACTOR   \n 
+        \n #define UFACTOR 8 \n 
+        \n #endif                  \n 
+
+        for ( ; i+UFACTOR < width; ) 
         {
-          // compute
-          float4 result = (float4) 0;
-
-          int i = 0;
-          
-          \n #ifndef UFACTOR   \n 
-          \n #define UFACTOR 8 \n 
-          \n #endif                  \n 
-
-          for ( ; i+UFACTOR < width; ) 
-          {
-            \n #pragma unroll UFACTOR\n
-            for (int j=0; j < UFACTOR; j++, i++)
-            {
-              result+=filter[i]*convert_float4(temp[i+get_local_id(0)]);
-            }
-          }
-
-          for ( ; i < width; i++)
+          \n #pragma unroll UFACTOR\n
+          for (int j=0; j < UFACTOR; j++, i++)
           {
             result+=filter[i]*convert_float4(temp[i+get_local_id(0)]);
           }
-
-          result.x = ClampToQuantum(result.x);
-          result.y = ClampToQuantum(result.y);
-          result.z = ClampToQuantum(result.z);
-          result.w = ClampToQuantum(result.w);
-
-          // write back to global
-          filtered_im[y*columns+x] = result;
         }
+
+        for ( ; i < width; i++)
+        {
+          result+=filter[i]*convert_float4(temp[i+get_local_id(0)]);
+        }
+
+        result.x = ClampToQuantum(result.x);
+        result.y = ClampToQuantum(result.y);
+        result.z = ClampToQuantum(result.z);
+        result.w = ClampToQuantum(result.w);
+
+        // write back to global
+        filtered_im[y*columns+x] = result;
       }
-    )
+    }
+  )
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
