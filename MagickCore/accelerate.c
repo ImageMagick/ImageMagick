@@ -140,8 +140,7 @@ static MagickBooleanType checkAccelerateCondition(const Image* image)
     return(MagickFalse);
 
   /* check if pixel order is R */
-  if ((GetPixelChannelOffset(image,RedPixelChannel) != 0) ||
-      (GetPixelRedTraits(image) == UndefinedPixelTrait))
+  if (GetPixelChannelOffset(image,RedPixelChannel) != 0)
     return(MagickFalse);
 
   if (image->number_channels == 1)
@@ -149,8 +148,7 @@ static MagickBooleanType checkAccelerateCondition(const Image* image)
 
   /* check if pixel order is RA */
   if ((image->number_channels == 2) &&
-      (GetPixelChannelOffset(image,AlphaPixelChannel) == 1) &&
-      (GetPixelAlphaTraits(image) != UndefinedPixelTrait))
+      (GetPixelChannelOffset(image,AlphaPixelChannel) == 1))
     return(MagickTrue);
 
   if (image->number_channels == 2)
@@ -158,17 +156,14 @@ static MagickBooleanType checkAccelerateCondition(const Image* image)
 
   /* check if pixel order is RGB */
   if ((GetPixelChannelOffset(image,GreenPixelChannel) != 1) ||
-      (GetPixelGreenTraits(image) == UndefinedPixelTrait) ||
-      (GetPixelChannelOffset(image,BluePixelChannel) != 2) ||
-      (GetPixelBlueTraits(image) == UndefinedPixelTrait))
+      (GetPixelChannelOffset(image,BluePixelChannel) != 2))
     return(MagickFalse);
 
   if (image->number_channels == 3)
     return(MagickTrue);
 
   /* check if pixel order is RGBA */
-  if ((GetPixelChannelOffset(image,AlphaPixelChannel) != 3) ||
-      (GetPixelAlphaTraits(image) == UndefinedPixelTrait))
+  if (GetPixelChannelOffset(image,AlphaPixelChannel) != 3)
     return(MagickFalse);
 
   return(MagickTrue);
@@ -180,10 +175,16 @@ static MagickBooleanType checkAccelerateConditionRGBA(const Image* image)
     return(MagickFalse);
 
   /* the order will be RGBA if the image has 4 channels */
-  if (image->number_channels == 4)
-    return(MagickTrue);
+  if (image->number_channels != 4)
+    return(MagickFalse);
 
-  return(MagickFalse);
+  if ((GetPixelRedTraits(image) == UndefinedPixelTrait) ||
+      (GetPixelGreenTraits(image) == UndefinedPixelTrait) ||
+      (GetPixelBlueTraits(image) == UndefinedPixelTrait) ||
+      (GetPixelAlphaTraits(image) == UndefinedPixelTrait))
+    return(MagickFalse);
+
+  return(MagickTrue);
 }
 
 static MagickBooleanType checkHistogramCondition(Image *image)
@@ -557,7 +558,7 @@ MagickExport Image *AccelerateAddNoiseImage(const Image *image,
 
   if ((checkAccelerateConditionRGBA(image) == MagickFalse) ||
       (checkOpenCLEnvironment(exception) == MagickFalse))
-    return NULL;
+    return((Image *) NULL);
 
   filteredImage=ComputeAddNoiseImage(image,noise_type,exception);
   return(filteredImage);
@@ -4115,6 +4116,11 @@ MagickExport MagickBooleanType AccelerateGrayscaleImage(Image* image,
     return(MagickFalse);
 
   if (image->number_channels < 3)
+    return(MagickFalse);
+
+  if ((GetPixelRedTraits(image) == UndefinedPixelTrait) ||
+      (GetPixelGreenTraits(image) == UndefinedPixelTrait) ||
+      (GetPixelBlueTraits(image) == UndefinedPixelTrait))
     return(MagickFalse);
 
   status=ComputeGrayscaleImage(image,method,exception);
