@@ -498,135 +498,134 @@ OPENCL_ENDIF()
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
 
-    STRINGIFY(
+  STRINGIFY(
+  /*
+  Part of MWC64X by David Thomas, dt10@imperial.ac.uk
+  This is provided under BSD, full license is with the main package.
+  See http://www.doc.ic.ac.uk/~dt10/research
+  */
 
-/*
-Part of MWC64X by David Thomas, dt10@imperial.ac.uk
-This is provided under BSD, full license is with the main package.
-See http://www.doc.ic.ac.uk/~dt10/research
-*/
-
-// Pre: a<M, b<M
-// Post: r=(a+b) mod M
-ulong MWC_AddMod64(ulong a, ulong b, ulong M)
-{
-	ulong v=a+b;
-	//if( (v>=M) || (v<a) )
-	if( (v>=M) || (convert_float(v) < convert_float(a)) )	// workaround for what appears to be an optimizer bug.
-		v=v-M;
-	return v;
-}
-
-// Pre: a<M,b<M
-// Post: r=(a*b) mod M
-// This could be done more efficently, but it is portable, and should
-// be easy to understand. It can be replaced with any of the better
-// modular multiplication algorithms (for example if you know you have
-// double precision available or something).
-ulong MWC_MulMod64(ulong a, ulong b, ulong M)
-{	
-	ulong r=0;
-	while(a!=0){
-		if(a&1)
-			r=MWC_AddMod64(r,b,M);
-		b=MWC_AddMod64(b,b,M);
-		a=a>>1;
-	}
-	return r;
-}
-
-
-// Pre: a<M, e>=0
-// Post: r=(a^b) mod M
-// This takes at most ~64^2 modular additions, so probably about 2^15 or so instructions on
-// most architectures
-ulong MWC_PowMod64(ulong a, ulong e, ulong M)
-{
-	ulong sqr=a, acc=1;
-	while(e!=0){
-		if(e&1)
-			acc=MWC_MulMod64(acc,sqr,M);
-		sqr=MWC_MulMod64(sqr,sqr,M);
-		e=e>>1;
-	}
-	return acc;
-}
-
-uint2 MWC_SkipImpl_Mod64(uint2 curr, ulong A, ulong M, ulong distance)
-{
-	ulong m=MWC_PowMod64(A, distance, M);
-	ulong x=curr.x*(ulong)A+curr.y;
-	x=MWC_MulMod64(x, m, M);
-	return (uint2)((uint)(x/A), (uint)(x%A));
-}
-
-uint2 MWC_SeedImpl_Mod64(ulong A, ulong M, uint vecSize, uint vecOffset, ulong streamBase, ulong streamGap)
-{
-	// This is an arbitrary constant for starting LCG jumping from. I didn't
-	// want to start from 1, as then you end up with the two or three first values
-	// being a bit poor in ones - once you've decided that, one constant is as
-	// good as any another. There is no deep mathematical reason for it, I just
-	// generated a random number.
-	enum{ MWC_BASEID = 4077358422479273989UL };
-	
-	ulong dist=streamBase + (get_global_id(0)*vecSize+vecOffset)*streamGap;
-	ulong m=MWC_PowMod64(A, dist, M);
-	
-	ulong x=MWC_MulMod64(MWC_BASEID, m, M);
-	return (uint2)((uint)(x/A), (uint)(x%A));
-}
-
-//! Represents the state of a particular generator
-typedef struct{ uint x; uint c; } mwc64x_state_t;
-
-enum{ MWC64X_A = 4294883355U };
-enum{ MWC64X_M = 18446383549859758079UL };
-
-void MWC64X_Step(mwc64x_state_t *s)
-{
-	uint X=s->x, C=s->c;
-	
-	uint Xn=MWC64X_A*X+C;
-	uint carry=(uint)(Xn<C);				// The (Xn<C) will be zero or one for scalar
-	uint Cn=mad_hi(MWC64X_A,X,carry);  
-	
-	s->x=Xn;
-	s->c=Cn;
-}
-
-void MWC64X_Skip(mwc64x_state_t *s, ulong distance)
-{
-	uint2 tmp=MWC_SkipImpl_Mod64((uint2)(s->x,s->c), MWC64X_A, MWC64X_M, distance);
-	s->x=tmp.x;
-	s->c=tmp.y;
-}
-
-void MWC64X_SeedStreams(mwc64x_state_t *s, ulong baseOffset, ulong perStreamOffset)
-{
-	uint2 tmp=MWC_SeedImpl_Mod64(MWC64X_A, MWC64X_M, 1, 0, baseOffset, perStreamOffset);
-	s->x=tmp.x;
-	s->c=tmp.y;
-}
-
-//! Return a 32-bit integer in the range [0..2^32)
-uint MWC64X_NextUint(mwc64x_state_t *s)
-{
-	uint res=s->x ^ s->c;
-	MWC64X_Step(s);
-	return res;
-}
-
-//
-// End of MWC64X excerpt
-//
-
-  float mwcReadPseudoRandomValue(mwc64x_state_t* rng) {
-	return (1.0f * MWC64X_NextUint(rng)) / (float)(0xffffffff);	// normalized to 1.0
+  // Pre: a<M, b<M
+  // Post: r=(a+b) mod M
+  ulong MWC_AddMod64(ulong a, ulong b, ulong M)
+  {
+    ulong v=a+b;
+    //if( (v>=M) || (v<a) )
+    if( (v>=M) || (convert_float(v) < convert_float(a)) ) // workaround for what appears to be an optimizer bug.
+      v=v-M;
+    return v;
   }
 
-  float mwcGenerateDifferentialNoise(mwc64x_state_t* r, CLQuantum pixel, NoiseType noise_type, float attenuate) {
- 
-    float 
+  // Pre: a<M,b<M
+  // Post: r=(a*b) mod M
+  // This could be done more efficently, but it is portable, and should
+  // be easy to understand. It can be replaced with any of the better
+  // modular multiplication algorithms (for example if you know you have
+  // double precision available or something).
+  ulong MWC_MulMod64(ulong a, ulong b, ulong M)
+  {
+    ulong r=0;
+    while(a!=0){
+      if(a&1)
+        r=MWC_AddMod64(r,b,M);
+      b=MWC_AddMod64(b,b,M);
+      a=a>>1;
+    }
+    return r;
+  }
+
+  // Pre: a<M, e>=0
+  // Post: r=(a^b) mod M
+  // This takes at most ~64^2 modular additions, so probably about 2^15 or so instructions on
+  // most architectures
+  ulong MWC_PowMod64(ulong a, ulong e, ulong M)
+  {
+    ulong sqr=a, acc=1;
+    while(e!=0){
+      if(e&1)
+        acc=MWC_MulMod64(acc,sqr,M);
+        sqr=MWC_MulMod64(sqr,sqr,M);
+      e=e>>1;
+    }
+    return acc;
+  }
+
+  uint2 MWC_SkipImpl_Mod64(uint2 curr, ulong A, ulong M, ulong distance)
+  {
+    ulong m=MWC_PowMod64(A, distance, M);
+    ulong x=curr.x*(ulong)A+curr.y;
+    x=MWC_MulMod64(x, m, M);
+    return (uint2)((uint)(x/A), (uint)(x%A));
+  }
+
+  uint2 MWC_SeedImpl_Mod64(ulong A, ulong M, uint vecSize, uint vecOffset, ulong streamBase, ulong streamGap)
+  {
+    // This is an arbitrary constant for starting LCG jumping from. I didn't
+    // want to start from 1, as then you end up with the two or three first values
+    // being a bit poor in ones - once you've decided that, one constant is as
+    // good as any another. There is no deep mathematical reason for it, I just
+    // generated a random number.
+    enum{ MWC_BASEID = 4077358422479273989UL };
+
+    ulong dist=streamBase + (get_global_id(0)*vecSize+vecOffset)*streamGap;
+    ulong m=MWC_PowMod64(A, dist, M);
+
+    ulong x=MWC_MulMod64(MWC_BASEID, m, M);
+    return (uint2)((uint)(x/A), (uint)(x%A));
+  }
+
+  //! Represents the state of a particular generator
+  typedef struct{ uint x; uint c; } mwc64x_state_t;
+
+  enum{ MWC64X_A = 4294883355U };
+  enum{ MWC64X_M = 18446383549859758079UL };
+
+  void MWC64X_Step(mwc64x_state_t *s)
+  {
+    uint X=s->x, C=s->c;
+
+    uint Xn=MWC64X_A*X+C;
+    uint carry=(uint)(Xn<C); // The (Xn<C) will be zero or one for scalar
+    uint Cn=mad_hi(MWC64X_A,X,carry);
+
+    s->x=Xn;
+    s->c=Cn;
+  }
+
+  void MWC64X_Skip(mwc64x_state_t *s, ulong distance)
+  {
+    uint2 tmp=MWC_SkipImpl_Mod64((uint2)(s->x,s->c), MWC64X_A, MWC64X_M, distance);
+    s->x=tmp.x;
+    s->c=tmp.y;
+  }
+
+  void MWC64X_SeedStreams(mwc64x_state_t *s, ulong baseOffset, ulong perStreamOffset)
+  {
+    uint2 tmp=MWC_SeedImpl_Mod64(MWC64X_A, MWC64X_M, 1, 0, baseOffset, perStreamOffset);
+    s->x=tmp.x;
+    s->c=tmp.y;
+  }
+
+  //! Return a 32-bit integer in the range [0..2^32)
+  uint MWC64X_NextUint(mwc64x_state_t *s)
+  {
+    uint res=s->x ^ s->c;
+    MWC64X_Step(s);
+    return res;
+  }
+
+  //
+  // End of MWC64X excerpt
+  //
+
+  float mwcReadPseudoRandomValue(mwc64x_state_t* rng)
+  {
+    return (1.0f * MWC64X_NextUint(rng)) / (float)(0xffffffff); // normalized to 1.0
+  }
+
+  float mwcGenerateDifferentialNoise(mwc64x_state_t* r, CLQuantum pixel, NoiseType noise_type, float attenuate)
+  {
+    float
       alpha,
       beta,
       noise,
@@ -634,91 +633,89 @@ uint MWC64X_NextUint(mwc64x_state_t *s)
 
     noise = 0.0f;
     alpha=mwcReadPseudoRandomValue(r);
-    switch(noise_type) {
-    case UniformNoise:
-    default:
-      {
-        noise=(pixel+QuantumRange*SigmaUniform*(alpha-0.5f));
-        break;
-      }
-    case GaussianNoise:
-      {
-        float
-          gamma,
-          tau;
-
-        if (alpha == 0.0f)
-          alpha=1.0f;
-        beta=mwcReadPseudoRandomValue(r);
-        gamma=sqrt(-2.0f*log(alpha));
-        sigma=gamma*cospi((2.0f*beta));
-        tau=gamma*sinpi((2.0f*beta));
-        noise=(float)(pixel+sqrt((float) pixel)*SigmaGaussian*sigma+
-                      QuantumRange*TauGaussian*tau);
-        break;
-      }
-
-
-    case ImpulseNoise:
+    switch(noise_type)
     {
-      if (alpha < (SigmaImpulse/2.0f))
-        noise=0.0f;
-      else
-        if (alpha >= (1.0f-(SigmaImpulse/2.0f)))
-          noise=(float)QuantumRange;
-        else
-          noise=(float)pixel;
-      break;
-    }
-    case LaplacianNoise:
-    {
-      if (alpha <= 0.5f)
+      case UniformNoise:
+      default:
         {
-          if (alpha <= MagickEpsilon)
-            noise=(float) (pixel-QuantumRange);
-          else
-            noise=(float) (pixel+QuantumRange*SigmaLaplacian*log(2.0f*alpha)+
-              0.5f);
+          noise=(pixel+QuantumRange*SigmaUniform*(alpha-0.5f));
           break;
         }
-      beta=1.0f-alpha;
-      if (beta <= (0.5f*MagickEpsilon))
-        noise=(float) (pixel+QuantumRange);
-      else
-        noise=(float) (pixel-QuantumRange*SigmaLaplacian*log(2.0f*beta)+0.5f);
-      break;
-    }
-    case MultiplicativeGaussianNoise:
-    {
-      sigma=1.0f;
-      if (alpha > MagickEpsilon)
-        sigma=sqrt(-2.0f*log(alpha));
-      beta=mwcReadPseudoRandomValue(r);
-      noise=(float) (pixel+pixel*SigmaMultiplicativeGaussian*sigma*
-        cospi((float) (2.0f*beta))/2.0f);
-      break;
-    }
-    case PoissonNoise:
-    {
-      float 
-        poisson;
-      unsigned int i;
-      poisson=exp(-SigmaPoisson*QuantumScale*pixel);
-      for (i=0; alpha > poisson; i++)
-      {
-        beta=mwcReadPseudoRandomValue(r);
-        alpha*=beta;
-      }
-      noise=(float) (QuantumRange*i/SigmaPoisson);
-      break;
-    }
-    case RandomNoise:
-    {
-      noise=(float) (QuantumRange*SigmaRandom*alpha);
-      break;
-    }
+      case GaussianNoise:
+        {
+          float
+            gamma,
+            tau;
 
-    };
+          if (alpha == 0.0f)
+            alpha=1.0f;
+          beta=mwcReadPseudoRandomValue(r);
+          gamma=sqrt(-2.0f*log(alpha));
+          sigma=gamma*cospi((2.0f*beta));
+          tau=gamma*sinpi((2.0f*beta));
+          noise=(float)(pixel+sqrt((float) pixel)*SigmaGaussian*sigma+
+                        QuantumRange*TauGaussian*tau);
+          break;
+        }
+      case ImpulseNoise:
+      {
+        if (alpha < (SigmaImpulse/2.0f))
+          noise=0.0f;
+        else
+          if (alpha >= (1.0f-(SigmaImpulse/2.0f)))
+            noise=(float)QuantumRange;
+          else
+            noise=(float)pixel;
+        break;
+      }
+      case LaplacianNoise:
+      {
+        if (alpha <= 0.5f)
+          {
+            if (alpha <= MagickEpsilon)
+              noise=(float) (pixel-QuantumRange);
+            else
+              noise=(float) (pixel+QuantumRange*SigmaLaplacian*log(2.0f*alpha)+
+                0.5f);
+            break;
+          }
+        beta=1.0f-alpha;
+        if (beta <= (0.5f*MagickEpsilon))
+          noise=(float) (pixel+QuantumRange);
+        else
+          noise=(float) (pixel-QuantumRange*SigmaLaplacian*log(2.0f*beta)+0.5f);
+        break;
+      }
+      case MultiplicativeGaussianNoise:
+      {
+        sigma=1.0f;
+        if (alpha > MagickEpsilon)
+          sigma=sqrt(-2.0f*log(alpha));
+        beta=mwcReadPseudoRandomValue(r);
+        noise=(float) (pixel+pixel*SigmaMultiplicativeGaussian*sigma*
+          cospi((float) (2.0f*beta))/2.0f);
+        break;
+      }
+      case PoissonNoise:
+      {
+        float 
+          poisson;
+        unsigned int i;
+        poisson=exp(-SigmaPoisson*QuantumScale*pixel);
+        for (i=0; alpha > poisson; i++)
+        {
+          beta=mwcReadPseudoRandomValue(r);
+          alpha*=beta;
+        }
+        noise=(float) (QuantumRange*i/SigmaPoisson);
+        break;
+      }
+      case RandomNoise:
+      {
+        noise=(float) (QuantumRange*SigmaRandom*alpha);
+        break;
+      }
+    }
     return noise;
   }
 
@@ -728,47 +725,48 @@ uint MWC64X_NextUint(mwc64x_state_t *s)
                     ,const ChannelType channel 
                     ,const NoiseType noise_type, const float attenuate
                     ,const unsigned int seed0, const unsigned int seed1
-					,const unsigned int numRandomNumbersPerPixel) {
+                    ,const unsigned int numRandomNumbersPerPixel)
+  {
+    mwc64x_state_t rng;
+    rng.x = seed0;
+    rng.c = seed1;
 
-	mwc64x_state_t rng;
-	rng.x = seed0;
-	rng.c = seed1;
+    uint span = pixelsPerWorkItem * numRandomNumbersPerPixel; // length of RNG substream each workitem will use
+    uint offset = span * get_local_size(0) * get_group_id(0); // offset of this workgroup's RNG substream (in master stream);
 
-	uint span = pixelsPerWorkItem * numRandomNumbersPerPixel;	// length of RNG substream each workitem will use
-	uint offset = span * get_local_size(0) * get_group_id(0);	// offset of this workgroup's RNG substream (in master stream);
+    MWC64X_SeedStreams(&rng, offset, span); // Seed the RNG streams
 
-	MWC64X_SeedStreams(&rng, offset, span);						// Seed the RNG streams
+    uint pos = get_local_size(0) * get_group_id(0) * pixelsPerWorkItem + get_local_id(0); // pixel to process
 
-	uint pos = get_local_size(0) * get_group_id(0) * pixelsPerWorkItem + get_local_id(0);	// pixel to process
+    uint count = pixelsPerWorkItem;
 
-	uint count = pixelsPerWorkItem;
+    while (count > 0)
+    {
+      if (pos < inputPixelCount)
+      {
+        CLPixelType p = inputImage[pos];
 
-	while (count > 0) {
-		if (pos < inputPixelCount) {
-			CLPixelType p = inputImage[pos];
+        if ((channel&RedChannel)!=0) {
+          setRed(&p,ClampToQuantum(mwcGenerateDifferentialNoise(&rng,getRed(p),noise_type,attenuate)));
+        }
 
-			if ((channel&RedChannel)!=0) {
-			  setRed(&p,ClampToQuantum(mwcGenerateDifferentialNoise(&rng,getRed(p),noise_type,attenuate)));
-			}
-    
-			if ((channel&GreenChannel)!=0) {
-			  setGreen(&p,ClampToQuantum(mwcGenerateDifferentialNoise(&rng,getGreen(p),noise_type,attenuate)));
-			}
+        if ((channel&GreenChannel)!=0) {
+          setGreen(&p,ClampToQuantum(mwcGenerateDifferentialNoise(&rng,getGreen(p),noise_type,attenuate)));
+        }
 
-			if ((channel&BlueChannel)!=0) {
-			  setBlue(&p,ClampToQuantum(mwcGenerateDifferentialNoise(&rng,getBlue(p),noise_type,attenuate)));
-			}
+        if ((channel&BlueChannel)!=0) {
+          setBlue(&p,ClampToQuantum(mwcGenerateDifferentialNoise(&rng,getBlue(p),noise_type,attenuate)));
+        }
 
-			if ((channel & AlphaChannel) != 0) {
-			  setAlpha(&p,ClampToQuantum(mwcGenerateDifferentialNoise(&rng,getAlpha(p),noise_type,attenuate)));
-			}
+        if ((channel & AlphaChannel) != 0) {
+          setAlpha(&p,ClampToQuantum(mwcGenerateDifferentialNoise(&rng,getAlpha(p),noise_type,attenuate)));
+        }
 
-			filteredImage[pos] = p;
-			//filteredImage[pos] = (CLPixelType)(MWC64X_NextUint(&rng) % 256, MWC64X_NextUint(&rng) % 256, MWC64X_NextUint(&rng) % 256, 255);
-		}
-		pos += get_local_size(0);
-		--count;
-	}
+        filteredImage[pos] = p;
+      }
+      pos += get_local_size(0);
+      --count;
+    }
   }
   )
 
