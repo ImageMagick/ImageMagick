@@ -1569,7 +1569,6 @@ MagickPrivate cl_kernel AcquireOpenCLKernel(MagickCLEnv clEnv,
   {
     kernel=clEnv->library->clCreateKernel(clEnv->programs[program],kernelName,
       &clStatus);
-    assert(kernel != (cl_kernel) NULL);
   }
   return(kernel);
 }

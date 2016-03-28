@@ -490,6 +490,16 @@ OPENCL_ENDIF()
 
     return intensity;
   }
+
+  inline int mirrorBottom(int value)
+  {
+      return (value < 0) ? - (value) : value;
+  }
+
+  inline int mirrorTop(int value, int width)
+  {
+      return (value >= width) ? (2 * width - value - 1) : value;
+  }
   )
 
 /*
@@ -2149,14 +2159,6 @@ OPENCL_ENDIF()
 */
 
     STRINGIFY(
-      inline int mirrorBottom(int value)
-      {
-          return (value < 0) ? - (value) : value;
-      }
-      inline int mirrorTop(int value, int width)
-      {
-          return (value >= width) ? (2 * width - value - 1) : value;
-      }
 
       __kernel void LocalContrastBlurRow(__global CLPixelType *srcImage, __global CLPixelType *dstImage, __global float *tmpImage,
           const int radius, 
@@ -3526,15 +3528,17 @@ STRINGIFY(
 
   STRINGIFY(
     __kernel __attribute__((reqd_work_group_size(64, 4, 1)))
-    void WaveletDenoise(__global CLPixelType *srcImage, __global CLPixelType *dstImage,
-      const float threshold,const int passes,const int imageWidth,const int imageHeight)
+    void WaveletDenoise(__global CLQuantum *srcImage,__global CLQuantum *dstImage,
+      const unsigned int number_channels,const unsigned int max_channels,
+      const float threshold,const int passes,const unsigned int imageWidth,
+      const unsigned int imageHeight)
   {
-    const int pad = (1 << (passes - 1));;
+    const int pad = (1 << (passes - 1));
     const int tileSize = 64;
     const int tileRowPixels = 64;
     const float noise[] = { 0.8002, 0.2735, 0.1202, 0.0585, 0.0291, 0.0152, 0.0080, 0.0044 };
 
-    CLPixelType stage[16];
+    CLQuantum stage[48]; // 16 * 3 (we only need 3 channels)
 
     local float buffer[64 * 64];
 
@@ -3542,27 +3546,17 @@ STRINGIFY(
     int srcy = get_group_id(1) * (tileSize - 2 * pad) - pad;
 
     for (int i = get_local_id(1); i < tileSize; i += get_local_size(1)) {
-      stage[i / 4] = srcImage[mirrorTop(mirrorBottom(srcx), imageWidth) + (mirrorTop(mirrorBottom(srcy + i) , imageHeight)) * imageWidth];
+      int pos = (mirrorTop(mirrorBottom(srcx), imageWidth) * number_channels) +
+                (mirrorTop(mirrorBottom(srcy + i), imageHeight)) * imageWidth * number_channels;
+    
+      for (int channel = 0; channel < max_channels; ++channel)
+        stage[(i / 4) + (16 * channel)] = srcImage[pos + channel];
     }
 
-
-    for (int channel = 0; channel < 3; ++channel) {
+    for (int channel = 0; channel < max_channels; ++channel) {
       // Load LDS
-      switch (channel) {
-      case 0:
-        for (int i = get_local_id(1); i < tileSize; i += get_local_size(1))
-          buffer[get_local_id(0) + i * tileRowPixels] = convert_float(stage[i / 4].s0);
-        break;
-      case 1:
-        for (int i = get_local_id(1); i < tileSize; i += get_local_size(1))
-          buffer[get_local_id(0) + i * tileRowPixels] = convert_float(stage[i / 4].s1);
-        break;
-      case 2:
-        for (int i = get_local_id(1); i < tileSize; i += get_local_size(1))
-          buffer[get_local_id(0) + i * tileRowPixels] = convert_float(stage[i / 4].s2);
-        break;
-      }
-
+      for (int i = get_local_id(1); i < tileSize; i += get_local_size(1))
+        buffer[get_local_id(0) + i * tileRowPixels] = convert_float(stage[(i / 4) + (16 * channel)]);
 
       // Process
 
@@ -3570,15 +3564,13 @@ STRINGIFY(
       float accum[16];
       float pixel;
 
+      for (int i = 0; i < 16; i++)
+        accum[i]=0.0f;
+
       for (int pass = 0; pass < passes; ++pass) {
         const int radius = 1 << pass;
         const int x = get_local_id(0);
         const float thresh = threshold * noise[pass];
-
-        if (pass == 0)
-          accum[0] = accum[1] = accum[2] = accum[3] = accum[4] = accum[5] = accum[6] = accum[6] = accum[7] = accum[8] = accum[9] = accum[10] = accum[11] = accum[12] = accum[13] = accum[14] = accum[15] = 0.0f;
-
-        // Snapshot input
 
         // Apply horizontal hat
         for (int i = get_local_id(1); i < tileSize; i += get_local_size(1)) {
@@ -3590,6 +3582,7 @@ STRINGIFY(
           buffer[x + offset] = pixel;
         }
         barrier(CLK_LOCAL_MEM_FENCE);
+
         // Apply vertical hat
         for (int i = get_local_id(1); i < tileSize; i += get_local_size(1)) {
           pixel = 0.5f * buffer[x + i * tileRowPixels] + 0.25 * (buffer[x + mirrorBottom(i - radius) * tileRowPixels] + buffer[x + mirrorTop(i + radius, tileRowPixels) * tileRowPixels]);
@@ -3602,43 +3595,33 @@ STRINGIFY(
           else
             delta = 0;
           accum[i / 4] += delta;
-
         }
         barrier(CLK_LOCAL_MEM_FENCE);
+
         if (pass < passes - 1)
           for (int i = get_local_id(1); i < tileSize; i += get_local_size(1))
-            buffer[x + i * tileRowPixels] = tmp[i / 4];		// store lowpass for next pass
+            buffer[x + i * tileRowPixels] = tmp[i / 4]; // store lowpass for next pass
         else  // last pass
           for (int i = get_local_id(1); i < tileSize; i += get_local_size(1))
-            accum[i / 4] += tmp[i / 4];							// add the lowpass signal back to output
+            accum[i / 4] += tmp[i / 4]; // add the lowpass signal back to output
         barrier(CLK_LOCAL_MEM_FENCE);
       }
 
-      switch (channel) {
-      case 0:
-        for (int i = get_local_id(1); i < tileSize; i += get_local_size(1))
-          stage[i / 4].s0 = ClampToQuantum(accum[i / 4]);
-        break;
-      case 1:
-        for (int i = get_local_id(1); i < tileSize; i += get_local_size(1))
-          stage[i / 4].s1 = ClampToQuantum(accum[i / 4]);
-        break;
-      case 2:
-        for (int i = get_local_id(1); i < tileSize; i += get_local_size(1))
-          stage[i / 4].s2 = ClampToQuantum(accum[i / 4]);
-        break;
-      }
+      for (int i = get_local_id(1); i < tileSize; i += get_local_size(1))
+        stage[(i / 4) + (16 * channel)] = ClampToQuantum(accum[i / 4]);
 
       barrier(CLK_LOCAL_MEM_FENCE);
     }
 
     // Write from stage to output
 
-    if ((get_local_id(0) >= pad) && (get_local_id(0) < tileSize - pad) && (srcx >= 0) && (srcx  < imageWidth)) {
-      //for (int i = pad + get_local_id(1); i < tileSize - pad; i += get_local_size(1)) {
+    if ((get_local_id(0) >= pad) && (get_local_id(0) < tileSize - pad) && (srcx >= 0) && (srcx < imageWidth)) {
       for (int i = get_local_id(1); i < tileSize; i += get_local_size(1)) {
-        if ((i >= pad) && (i < tileSize - pad) && (srcy + i > 0) && (srcy + i < imageHeight)) {
-          dstImage[srcx + (srcy + i) * imageWidth] = stage[i / 4];
+        if ((i >= pad) && (i < tileSize - pad) && (srcy + i >= 0) && (srcy + i < imageHeight)) {
+          int pos = (srcx * number_channels) + ((srcy + i) * (imageWidth * number_channels));
+          for (int channel = 0; channel < max_channels; ++channel) {
+            dstImage[pos + channel] = stage[(i / 4) + (16 * channel)];
+          }
         }
       }
     }

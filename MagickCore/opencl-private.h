@@ -317,7 +317,7 @@ struct _MagickCLEnv {
 #define CLOptions "-cl-single-precision-constant -cl-mad-enable -DMAGICKCORE_HDRI_SUPPORT=1 "\
   "-DCLQuantum=float -DCLSignedQuantum=float -DCLPixelType=float4 -DQuantumRange=%f " \
   "-DQuantumScale=%f -DCharQuantumScale=%f -DMagickEpsilon=%f -DMagickPI=%f "\
-  " -DMaxMap=%u -DMAGICKCORE_QUANTUM_DEPTH=%u"
+  "-DMaxMap=%u -DMAGICKCORE_QUANTUM_DEPTH=%u"
 #define CLQuantum  cl_float
 #define CLPixelPacket  cl_float4
 #define CLCharQuantumScale 1.0f
