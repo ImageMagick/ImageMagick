@@ -3749,7 +3749,7 @@ STRINGIFY(
 		if ((get_local_id(0) >= pad) && (get_local_id(0) < tileSize - pad) && (srcx >= 0) && (srcx  < imageWidth)) {
 			//for (int i = pad + get_local_id(1); i < tileSize - pad; i += get_local_size(1)) {
 			for (int i = get_local_id(1); i < tileSize; i += get_local_size(1)) {
-				if ((i >= pad) && (i < tileSize - pad) && (srcy + i > 0) && (srcy + i < imageHeight)) {
+				if ((i >= pad) && (i < tileSize - pad) && (srcy + i >= 0) && (srcy + i < imageHeight)) {
 					dstImage[srcx + (srcy + i) * imageWidth] = stage[i / 4];
 				}
 			}
