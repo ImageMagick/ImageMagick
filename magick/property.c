@@ -2350,6 +2350,8 @@ static const char *GetMagickPropertyLetter(const ImageInfo *image_info,
         Filename extension (suffix) of image file.
       */
       GetPathComponent(image->magick_filename,ExtensionPath,value);
+      if (*value == '\0')
+        string="";
       break;
     }
     case 'f':
@@ -2358,6 +2360,8 @@ static const char *GetMagickPropertyLetter(const ImageInfo *image_info,
         Filename without directory component.
       */
       GetPathComponent(image->magick_filename,TailPath,value);
+      if (*value == '\0')
+        string="";
       break;
     }
     case 'g':
