@@ -2388,7 +2388,7 @@ static const char *GetMagickPropertyLetter(const ImageInfo *image_info,
       /*
         Filename last used for image (read or write).
       */
-      string=image->filename;
+      string=image->magick_filename;
       break;
     }
     case 'k':
