@@ -2325,9 +2325,9 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
     case 'g': /* Image geometry, canvas and offset  %Wx%H+%X+%Y */
     {
       WarnNoImageReturn("\"%%%c\"",letter);
-      (void) FormatLocaleString(value,MagickPathExtent,"%.20gx%.20g%+.20g%+.20g",
-        (double) image->page.width,(double) image->page.height,
-        (double) image->page.x,(double) image->page.y);
+      (void) FormatLocaleString(value,MagickPathExtent,
+        "%.20gx%.20g%+.20g%+.20g",(double) image->page.width,(double)
+        image->page.height,(double) image->page.x,(double) image->page.y);
       break;
     }
     case 'h': /* Image height (current) */
@@ -2340,7 +2340,7 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
     case 'i': /* Filename last used for an image (read or write) */
     {
       WarnNoImageReturn("\"%%%c\"",letter);
-      string=image->filename;
+      string=image->magick_filename;
       break;
     }
     case 'k': /* Number of unique colors  */
