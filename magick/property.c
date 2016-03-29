@@ -2340,6 +2340,8 @@ static const char *GetMagickPropertyLetter(const ImageInfo *image_info,
         Directory component of filename.
       */
       GetPathComponent(image->magick_filename,HeadPath,value);
+      if (*value == '\0')
+        string="";
       break;
     }
     case 'e':
