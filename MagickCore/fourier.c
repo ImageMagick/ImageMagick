@@ -460,14 +460,14 @@ static MagickBooleanType ForwardQuadrantSwap(const size_t width,
   if (status == MagickFalse)
     return(MagickFalse);
   for (y=0L; y < (ssize_t) height; y++)
-    for (x=0L; x < (ssize_t) (width/2L-1L); x++)
+    for (x=0L; x < (ssize_t) (width/2L); x++)
       forward_pixels[y*width+x+width/2L]=source_pixels[y*center+x];
   for (y=1; y < (ssize_t) height; y++)
-    for (x=0L; x < (ssize_t) (width/2L-1L); x++)
+    for (x=0L; x < (ssize_t) (width/2L); x++)
       forward_pixels[(height-y)*width+width/2L-x-1L]=
         source_pixels[y*center+x+1L];
   for (x=0L; x < (ssize_t) (width/2L); x++)
-    forward_pixels[-x+width/2L-1L]=forward_pixels[x+width/2L+1L];
+    forward_pixels[width/2L-x-1L]=source_pixels[x+1L];
   return(MagickTrue);
 }
 
