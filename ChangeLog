@@ -4,6 +4,8 @@
     https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=29365)
   * Return filename for the %i property (reference
     https://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=29364).
+  * Fixed lost pixels in frequency space (reference
+    https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=29374).
 
 2016-03-06  6.9.3-7 Cristy  <quetzlzacatenango@image...>
   * New version 6.9.3-7, GIT revision 10628:810a9fe:20160306
