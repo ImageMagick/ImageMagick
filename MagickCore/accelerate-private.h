@@ -3436,94 +3436,91 @@ STRINGIFY(
     )
 
 
-    STRINGIFY(
-      __kernel void UnsharpMask(__global CLPixelType *im, __global CLPixelType *filtered_im,
-                         __constant float *filter,
-                         const unsigned int width, 
-                         const unsigned int imageColumns, const unsigned int imageRows,
-                         __local float4 *pixels, 
-                         const float gain, const float threshold, const unsigned int justBlur)
-      {
-        const int x = get_global_id(0);
-        const int y = get_global_id(1);
+  STRINGIFY(
+    __kernel void UnsharpMask(__global CLPixelType *im,
+      __global CLPixelType *filtered_im,__constant float *filter,
+      const unsigned int width,const unsigned int imageColumns,
+      const unsigned int imageRows,__local float4 *pixels,const float gain,
+      const float threshold, const unsigned int justBlur)
+    {
+      const int x = get_global_id(0);
+      const int y = get_global_id(1);
 
-        const unsigned int radius = (width - 1) / 2;
-				
-		int row = y - radius;
-		int baseRow = get_group_id(1) * get_local_size(1) - radius;
-		int endRow = (get_group_id(1) + 1) * get_local_size(1) + radius;
-				
-		while (row < endRow) {
-			int srcy =  (row < 0) ? -row : row;			// mirror pad
-			srcy = (srcy >= imageRows) ? (2 * imageRows - srcy - 1) : srcy;
-					
-			float4 value = 0.0f;
-					
-			int ix = x - radius;
-			int i = 0;
+      const unsigned int radius = (width - 1) / 2;
 
-			while (i + 7 < width) {
-				for (int j = 0; j < 8; ++j) {		// unrolled
-					int srcx = ix + j;
-					srcx = (srcx < 0) ? -srcx : srcx;
-					srcx = (srcx >= imageColumns) ? (2 * imageColumns - srcx - 1) : srcx;
-					value += filter[i + j] * convert_float4(im[srcx + srcy * imageColumns]);
-				}
-				ix += 8;
-				i += 8;
-			}
+      int row = y - radius;
+      int baseRow = get_group_id(1) * get_local_size(1) - radius;
+      int endRow = (get_group_id(1) + 1) * get_local_size(1) + radius;
 
-			while (i < width) {
-				int srcx = (ix < 0) ? -ix : ix;			// mirror pad
-				srcx = (srcx >= imageColumns) ? (2 * imageColumns - srcx - 1) : srcx;
-				value += filter[i] * convert_float4(im[srcx + srcy * imageColumns]);
-				++i;
-				++ix;
-			}	
-			pixels[(row - baseRow) * get_local_size(0) + get_local_id(0)] = value;
-			row += get_local_size(1);
-		}
-				
-			
-		barrier(CLK_LOCAL_MEM_FENCE);
+      while (row < endRow) {
+        int srcy =  (row < 0) ? -row : row;	 // mirror pad
+        srcy = (srcy >= imageRows) ? (2 * imageRows - srcy - 1) : srcy;
 
-						
-		const int px = get_local_id(0);
-		const int py = get_local_id(1);
-		const int prp = get_local_size(0);
-		float4 value = (float4)(0.0f);
-			
-		int i = 0;
-		while (i + 7 < width) {			// unrolled
-			value += (float4)(filter[i]) * pixels[px + (py + i) * prp];
-			value += (float4)(filter[i]) * pixels[px + (py + i + 1) * prp];
-			value += (float4)(filter[i]) * pixels[px + (py + i + 2) * prp];
-			value += (float4)(filter[i]) * pixels[px + (py + i + 3) * prp];
-			value += (float4)(filter[i]) * pixels[px + (py + i + 4) * prp];
-			value += (float4)(filter[i]) * pixels[px + (py + i + 5) * prp];
-			value += (float4)(filter[i]) * pixels[px + (py + i + 6) * prp];
-			value += (float4)(filter[i]) * pixels[px + (py + i + 7) * prp];
-			i += 8;
-		}
-		while (i < width) {
-			value += (float4)(filter[i]) * pixels[px + (py + i) * prp];
-			++i;
-		}
+        float4 value = 0.0f;
 
-		if (justBlur == 0) {		// apply sharpening
-			float4 srcPixel = convert_float4(im[x + y * imageColumns]);
-			float4 diff = srcPixel - value;
+        int ix = x - radius;
+        int i = 0;
 
-			float quantumThreshold = QuantumRange*threshold;
+        while (i + 7 < width) {
+          for (int j = 0; j < 8; ++j) { // unrolled
+            int srcx = ix + j;
+            srcx = (srcx < 0) ? -srcx : srcx;
+            srcx = (srcx >= imageColumns) ? (2 * imageColumns - srcx - 1) : srcx;
+            value += filter[i + j] * convert_float4(im[srcx + srcy * imageColumns]);
+          }
+          ix += 8;
+          i += 8;
+        }
 
-			int4 mask = isless(fabs(2.0f * diff), (float4)quantumThreshold);
-			value = select(srcPixel + diff * gain, srcPixel, mask);
-		}
-	
-		if ((x < imageColumns) && (y < imageRows))
-			filtered_im[x + y * imageColumns] = (CLPixelType)(ClampToQuantum(value.s0), ClampToQuantum(value.s1), ClampToQuantum(value.s2), ClampToQuantum(value.s3));
-		}	
-	)
+        while (i < width) {
+          int srcx = (ix < 0) ? -ix : ix; // mirror pad
+          srcx = (srcx >= imageColumns) ? (2 * imageColumns - srcx - 1) : srcx;
+          value += filter[i] * convert_float4(im[srcx + srcy * imageColumns]);
+          ++i;
+          ++ix;
+        }
+        pixels[(row - baseRow) * get_local_size(0) + get_local_id(0)] = value;
+        row += get_local_size(1);
+      }
+
+    barrier(CLK_LOCAL_MEM_FENCE);
+
+    const int px = get_local_id(0);
+    const int py = get_local_id(1);
+    const int prp = get_local_size(0);
+    float4 value = (float4)(0.0f);
+
+    int i = 0;
+    while (i + 7 < width) { // unrolled
+      value += (float4)(filter[i]) * pixels[px + (py + i) * prp];
+      value += (float4)(filter[i]) * pixels[px + (py + i + 1) * prp];
+      value += (float4)(filter[i]) * pixels[px + (py + i + 2) * prp];
+      value += (float4)(filter[i]) * pixels[px + (py + i + 3) * prp];
+      value += (float4)(filter[i]) * pixels[px + (py + i + 4) * prp];
+      value += (float4)(filter[i]) * pixels[px + (py + i + 5) * prp];
+      value += (float4)(filter[i]) * pixels[px + (py + i + 6) * prp];
+      value += (float4)(filter[i]) * pixels[px + (py + i + 7) * prp];
+      i += 8;
+    }
+    while (i < width) {
+      value += (float4)(filter[i]) * pixels[px + (py + i) * prp];
+      ++i;
+    }
+
+    if (justBlur == 0) { // apply sharpening
+      float4 srcPixel = convert_float4(im[x + y * imageColumns]);
+      float4 diff = srcPixel - value;
+
+      float quantumThreshold = QuantumRange*threshold;
+
+      int4 mask = isless(fabs(2.0f * diff), (float4)quantumThreshold);
+      value = select(srcPixel + diff * gain, srcPixel, mask);
+    }
+
+    if ((x < imageColumns) && (y < imageRows))
+      filtered_im[x + y * imageColumns] = (CLPixelType)(ClampToQuantum(value.s0), ClampToQuantum(value.s1), ClampToQuantum(value.s2), ClampToQuantum(value.s3));
+  }
+  )
 
 
   STRINGIFY(
