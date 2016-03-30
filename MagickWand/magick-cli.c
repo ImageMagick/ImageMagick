@@ -796,9 +796,11 @@ Magick_Command_Cleanup:
 
   /* recover original image_info and clean up stacks
      FUTURE: "-reset stacks" option  */
-  while (cli_wand->image_list_stack != (Stack *) NULL)
+  while ((cli_wand->image_list_stack != (Stack *) NULL) &&
+         (cli_wand->image_list_stack->next != (Stack *) NULL))
     CLIOption(cli_wand,")");
-  while (cli_wand->image_info_stack != (Stack *) NULL)
+  while ((cli_wand->image_info_stack != (Stack *) NULL) &&
+         (cli_wand->image_info_stack->next != (Stack *) NULL))
     CLIOption(cli_wand,"}");
 
   /* assert we have recovered the original structures */
