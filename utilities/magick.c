@@ -9,6 +9,7 @@
 %                 M   M  A   A  G   G    I    C      K  K                     %
 %                 M   M  A   A   GGGG  IIIII   CCCC  K   K                    %
 %                                                                             %
+%                                                                             %
 %       Perform "Magick" on Images via the Command Line Interface             %
 %                                                                             %
 %                             Dragon Computing                                %
@@ -59,6 +60,37 @@
 
 static int MagickMain(int argc,char **argv)
 {
+#define MagickCommandSize(name,command) { (name), sizeof(name)-1, (command) }
+
+  typedef struct _CommandInfo
+  {
+    char
+      *name;
+
+    size_t
+      extent;
+
+    MagickCommand
+      command;
+  } CommandInfo;
+
+  static const CommandInfo
+    MagickCommands[] =
+    {
+      MagickCommandSize("magick", MagickImageCommand),  /* fallback command */
+      MagickCommandSize("animate", AnimateImageCommand),
+      MagickCommandSize("compare", CompareImagesCommand),
+      MagickCommandSize("conjure", ConjureImageCommand),
+      MagickCommandSize("convert", ConvertImageCommand),
+      MagickCommandSize("display", DisplayImageCommand),
+      MagickCommandSize("identify", IdentifyImageCommand),
+      MagickCommandSize("import", ImportImageCommand),
+      MagickCommandSize("magick-script", MagickImageCommand),
+      MagickCommandSize("mogrify", MogrifyImageCommand),
+      MagickCommandSize("montage", MontageImageCommand),
+      MagickCommandSize("stream", StreamImageCommand)
+    };
+
   ExceptionInfo
     *exception;
 
@@ -68,10 +100,24 @@ static int MagickMain(int argc,char **argv)
   MagickBooleanType
     status;
 
+  register ssize_t
+    i;
+
   MagickCoreGenesis(*argv,MagickTrue);
   exception=AcquireExceptionInfo();
   image_info=AcquireImageInfo();
-  status=MagickCommandGenesis(image_info,MagickImageCommand,argc,argv,
+  for (i=0; i < (sizeof(MagickCommands)/sizeof(MagickCommands[0])); i++)
+  {
+    int
+      offset;
+
+    offset=LocaleNCompare(MagickCommands[i].name,argv[0],
+      MagickCommands[i].extent);
+    if (offset == 0)
+      break;
+  }
+  i%=(sizeof(MagickCommands)/sizeof(MagickCommands[0]));
+  status=MagickCommandGenesis(image_info,MagickCommands[i].command,argc,argv,
     (char **) NULL,exception);
   image_info=DestroyImageInfo(image_info);
   exception=DestroyExceptionInfo(exception);

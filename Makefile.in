@@ -1790,12 +1790,7 @@ filters_analyze_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(filters_analyze_la_LDFLAGS) \
 	$(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_filters_analyze_la_rpath = -rpath $(filtersdir)
-am__EXEEXT_1 = utilities/animate$(EXEEXT) utilities/compare$(EXEEXT) \
-	utilities/composite$(EXEEXT) utilities/conjure$(EXEEXT) \
-	utilities/display$(EXEEXT) utilities/identify$(EXEEXT) \
-	utilities/import$(EXEEXT) utilities/magick$(EXEEXT) \
-	utilities/mogrify$(EXEEXT) utilities/montage$(EXEEXT) \
-	utilities/stream$(EXEEXT)
+am__EXEEXT_1 = utilities/magick$(EXEEXT)
 am__EXEEXT_2 = tests/validate$(EXEEXT) tests/drawtest$(EXEEXT) \
 	tests/wandtest$(EXEEXT)
 am__EXEEXT_3 = Magick++/demo/analyze$(EXEEXT) \
@@ -1936,84 +1931,12 @@ tests_wandtest_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(AM_CFLAGS) $(CFLAGS) $(tests_wandtest_LDFLAGS) $(LDFLAGS) -o \
 	$@
-am_utilities_animate_OBJECTS = utilities/animate.$(OBJEXT)
-utilities_animate_OBJECTS = $(am_utilities_animate_OBJECTS)
-utilities_animate_DEPENDENCIES = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
-utilities_animate_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
-	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(AM_CFLAGS) $(CFLAGS) $(utilities_animate_LDFLAGS) $(LDFLAGS) \
-	-o $@
-am_utilities_compare_OBJECTS = utilities/compare.$(OBJEXT)
-utilities_compare_OBJECTS = $(am_utilities_compare_OBJECTS)
-utilities_compare_DEPENDENCIES = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
-utilities_compare_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
-	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(AM_CFLAGS) $(CFLAGS) $(utilities_compare_LDFLAGS) $(LDFLAGS) \
-	-o $@
-am_utilities_composite_OBJECTS = utilities/composite.$(OBJEXT)
-utilities_composite_OBJECTS = $(am_utilities_composite_OBJECTS)
-utilities_composite_DEPENDENCIES = $(MAGICKCORE_LIBS) \
-	$(MAGICKWAND_LIBS)
-utilities_composite_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
-	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(AM_CFLAGS) $(CFLAGS) $(utilities_composite_LDFLAGS) \
-	$(LDFLAGS) -o $@
-am_utilities_conjure_OBJECTS = utilities/conjure.$(OBJEXT)
-utilities_conjure_OBJECTS = $(am_utilities_conjure_OBJECTS)
-utilities_conjure_DEPENDENCIES = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
-utilities_conjure_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
-	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(AM_CFLAGS) $(CFLAGS) $(utilities_conjure_LDFLAGS) $(LDFLAGS) \
-	-o $@
-am_utilities_display_OBJECTS = utilities/display.$(OBJEXT)
-utilities_display_OBJECTS = $(am_utilities_display_OBJECTS)
-utilities_display_DEPENDENCIES = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
-utilities_display_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
-	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(AM_CFLAGS) $(CFLAGS) $(utilities_display_LDFLAGS) $(LDFLAGS) \
-	-o $@
-am_utilities_identify_OBJECTS = utilities/identify.$(OBJEXT)
-utilities_identify_OBJECTS = $(am_utilities_identify_OBJECTS)
-utilities_identify_DEPENDENCIES = $(MAGICKCORE_LIBS) \
-	$(MAGICKWAND_LIBS)
-utilities_identify_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
-	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(AM_CFLAGS) $(CFLAGS) $(utilities_identify_LDFLAGS) \
-	$(LDFLAGS) -o $@
-am_utilities_import_OBJECTS = utilities/import.$(OBJEXT)
-utilities_import_OBJECTS = $(am_utilities_import_OBJECTS)
-utilities_import_DEPENDENCIES = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
-utilities_import_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
-	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(AM_CFLAGS) $(CFLAGS) $(utilities_import_LDFLAGS) $(LDFLAGS) \
-	-o $@
 am_utilities_magick_OBJECTS = utilities/magick.$(OBJEXT)
 utilities_magick_OBJECTS = $(am_utilities_magick_OBJECTS)
 utilities_magick_DEPENDENCIES = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
 utilities_magick_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(AM_CFLAGS) $(CFLAGS) $(utilities_magick_LDFLAGS) $(LDFLAGS) \
-	-o $@
-am_utilities_mogrify_OBJECTS = utilities/mogrify.$(OBJEXT)
-utilities_mogrify_OBJECTS = $(am_utilities_mogrify_OBJECTS)
-utilities_mogrify_DEPENDENCIES = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
-utilities_mogrify_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
-	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(AM_CFLAGS) $(CFLAGS) $(utilities_mogrify_LDFLAGS) $(LDFLAGS) \
-	-o $@
-am_utilities_montage_OBJECTS = utilities/montage.$(OBJEXT)
-utilities_montage_OBJECTS = $(am_utilities_montage_OBJECTS)
-utilities_montage_DEPENDENCIES = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
-utilities_montage_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
-	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(AM_CFLAGS) $(CFLAGS) $(utilities_montage_LDFLAGS) $(LDFLAGS) \
-	-o $@
-am_utilities_stream_OBJECTS = utilities/stream.$(OBJEXT)
-utilities_stream_OBJECTS = $(am_utilities_stream_OBJECTS)
-utilities_stream_DEPENDENCIES = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
-utilities_stream_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
-	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(AM_CFLAGS) $(CFLAGS) $(utilities_stream_LDFLAGS) $(LDFLAGS) \
 	-o $@
 SCRIPTS = $(bin_SCRIPTS)
 AM_V_P = $(am__v_P_@AM_V@)
@@ -2154,12 +2077,7 @@ SOURCES = $(Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_
 	$(Magick___tests_readWriteBlob_SOURCES) \
 	$(Magick___tests_readWriteImages_SOURCES) \
 	$(tests_drawtest_SOURCES) $(tests_validate_SOURCES) \
-	$(tests_wandtest_SOURCES) $(utilities_animate_SOURCES) \
-	$(utilities_compare_SOURCES) $(utilities_composite_SOURCES) \
-	$(utilities_conjure_SOURCES) $(utilities_display_SOURCES) \
-	$(utilities_identify_SOURCES) $(utilities_import_SOURCES) \
-	$(utilities_magick_SOURCES) $(utilities_mogrify_SOURCES) \
-	$(utilities_montage_SOURCES) $(utilities_stream_SOURCES)
+	$(tests_wandtest_SOURCES) $(utilities_magick_SOURCES)
 DIST_SOURCES = $(Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES) \
 	$(am__MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES_DIST) \
 	$(MagickWand_libMagickWand_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES) \
@@ -2246,12 +2164,7 @@ DIST_SOURCES = $(Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUF
 	$(Magick___tests_readWriteBlob_SOURCES) \
 	$(Magick___tests_readWriteImages_SOURCES) \
 	$(tests_drawtest_SOURCES) $(tests_validate_SOURCES) \
-	$(tests_wandtest_SOURCES) $(utilities_animate_SOURCES) \
-	$(utilities_compare_SOURCES) $(utilities_composite_SOURCES) \
-	$(utilities_conjure_SOURCES) $(utilities_display_SOURCES) \
-	$(utilities_identify_SOURCES) $(utilities_import_SOURCES) \
-	$(utilities_magick_SOURCES) $(utilities_mogrify_SOURCES) \
-	$(utilities_montage_SOURCES) $(utilities_stream_SOURCES)
+	$(tests_wandtest_SOURCES) $(utilities_magick_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -5004,55 +4917,15 @@ filters_analyze_la_CPPFLAGS = $(MAGICK_FILTER_CPPFLAGS)
 filters_analyze_la_LDFLAGS = $(MODULECOMMONFLAGS)
 filters_analyze_la_LIBADD = $(MAGICKCORE_LIBS) $(MATH_LIBS)
 UTILITIES_PGMS = \
-	utilities/animate \
-	utilities/compare \
-	utilities/composite \
-	utilities/conjure \
-	utilities/display \
-	utilities/identify \
-	utilities/import \
-	utilities/magick \
-	utilities/mogrify \
-	utilities/montage \
-	utilities/stream
+	utilities/magick 
 
 UTILITIES_XFAIL_TESTS = \
   $(UTILITIES_TTF_XFAIL_TESTS) \
   $(UTILITIES_XML_XFAIL_TESTS)
 
-utilities_animate_LDADD = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
-utilities_animate_LDFLAGS = $(LDFLAGS)
-utilities_animate_SOURCES = utilities/animate.c
-utilities_compare_LDADD = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
-utilities_compare_LDFLAGS = $(LDFLAGS)
-utilities_compare_SOURCES = utilities/compare.c
-utilities_composite_LDADD = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
-utilities_composite_LDFLAGS = $(LDFLAGS)
-utilities_composite_SOURCES = utilities/composite.c
-utilities_conjure_LDADD = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
-utilities_conjure_LDFLAGS = $(LDFLAGS)
-utilities_conjure_SOURCES = utilities/conjure.c
-utilities_display_LDADD = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
-utilities_display_LDFLAGS = $(LDFLAGS)
-utilities_display_SOURCES = utilities/display.c
-utilities_identify_LDADD = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
-utilities_identify_LDFLAGS = $(LDFLAGS)
-utilities_identify_SOURCES = utilities/identify.c
-utilities_import_LDADD = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
-utilities_import_LDFLAGS = $(LDFLAGS)
-utilities_import_SOURCES = utilities/import.c
 utilities_magick_LDADD = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
 utilities_magick_LDFLAGS = $(LDFLAGS)
 utilities_magick_SOURCES = utilities/magick.c
-utilities_mogrify_LDADD = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
-utilities_mogrify_LDFLAGS = $(LDFLAGS)
-utilities_mogrify_SOURCES = utilities/mogrify.c
-utilities_montage_LDADD = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
-utilities_montage_LDFLAGS = $(LDFLAGS)
-utilities_montage_SOURCES = utilities/montage.c
-utilities_stream_LDADD = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
-utilities_stream_LDFLAGS = $(LDFLAGS)
-utilities_stream_SOURCES = utilities/stream.c
 UTILITIES_MANS = \
 	utilities/ImageMagick.1 \
 	utilities/animate.1 \
@@ -5090,7 +4963,7 @@ UTILITIES_EXTRA_DIST = \
 UTILITIES_CLEANFILES = 
 
 # Link these utilities to 'magick'.
-MAGICK_UTILITIES = convert magick-script
+MAGICK_UTILITIES = animate compare composite conjure display identify import magick-script mogrify montage stream
 UTILITIES_INSTALL_EXEC_LOCAL_TARGETS = install-exec-local-utilities
 UTILITIES_UNINSTALL_LOCAL_TARGETS = uninstall-local-utilities
 
@@ -7075,72 +6948,12 @@ utilities/$(am__dirstamp):
 utilities/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) utilities/$(DEPDIR)
 	@: > utilities/$(DEPDIR)/$(am__dirstamp)
-utilities/animate.$(OBJEXT): utilities/$(am__dirstamp) \
-	utilities/$(DEPDIR)/$(am__dirstamp)
-
-utilities/animate$(EXEEXT): $(utilities_animate_OBJECTS) $(utilities_animate_DEPENDENCIES) $(EXTRA_utilities_animate_DEPENDENCIES) utilities/$(am__dirstamp)
-	@rm -f utilities/animate$(EXEEXT)
-	$(AM_V_CCLD)$(utilities_animate_LINK) $(utilities_animate_OBJECTS) $(utilities_animate_LDADD) $(LIBS)
-utilities/compare.$(OBJEXT): utilities/$(am__dirstamp) \
-	utilities/$(DEPDIR)/$(am__dirstamp)
-
-utilities/compare$(EXEEXT): $(utilities_compare_OBJECTS) $(utilities_compare_DEPENDENCIES) $(EXTRA_utilities_compare_DEPENDENCIES) utilities/$(am__dirstamp)
-	@rm -f utilities/compare$(EXEEXT)
-	$(AM_V_CCLD)$(utilities_compare_LINK) $(utilities_compare_OBJECTS) $(utilities_compare_LDADD) $(LIBS)
-utilities/composite.$(OBJEXT): utilities/$(am__dirstamp) \
-	utilities/$(DEPDIR)/$(am__dirstamp)
-
-utilities/composite$(EXEEXT): $(utilities_composite_OBJECTS) $(utilities_composite_DEPENDENCIES) $(EXTRA_utilities_composite_DEPENDENCIES) utilities/$(am__dirstamp)
-	@rm -f utilities/composite$(EXEEXT)
-	$(AM_V_CCLD)$(utilities_composite_LINK) $(utilities_composite_OBJECTS) $(utilities_composite_LDADD) $(LIBS)
-utilities/conjure.$(OBJEXT): utilities/$(am__dirstamp) \
-	utilities/$(DEPDIR)/$(am__dirstamp)
-
-utilities/conjure$(EXEEXT): $(utilities_conjure_OBJECTS) $(utilities_conjure_DEPENDENCIES) $(EXTRA_utilities_conjure_DEPENDENCIES) utilities/$(am__dirstamp)
-	@rm -f utilities/conjure$(EXEEXT)
-	$(AM_V_CCLD)$(utilities_conjure_LINK) $(utilities_conjure_OBJECTS) $(utilities_conjure_LDADD) $(LIBS)
-utilities/display.$(OBJEXT): utilities/$(am__dirstamp) \
-	utilities/$(DEPDIR)/$(am__dirstamp)
-
-utilities/display$(EXEEXT): $(utilities_display_OBJECTS) $(utilities_display_DEPENDENCIES) $(EXTRA_utilities_display_DEPENDENCIES) utilities/$(am__dirstamp)
-	@rm -f utilities/display$(EXEEXT)
-	$(AM_V_CCLD)$(utilities_display_LINK) $(utilities_display_OBJECTS) $(utilities_display_LDADD) $(LIBS)
-utilities/identify.$(OBJEXT): utilities/$(am__dirstamp) \
-	utilities/$(DEPDIR)/$(am__dirstamp)
-
-utilities/identify$(EXEEXT): $(utilities_identify_OBJECTS) $(utilities_identify_DEPENDENCIES) $(EXTRA_utilities_identify_DEPENDENCIES) utilities/$(am__dirstamp)
-	@rm -f utilities/identify$(EXEEXT)
-	$(AM_V_CCLD)$(utilities_identify_LINK) $(utilities_identify_OBJECTS) $(utilities_identify_LDADD) $(LIBS)
-utilities/import.$(OBJEXT): utilities/$(am__dirstamp) \
-	utilities/$(DEPDIR)/$(am__dirstamp)
-
-utilities/import$(EXEEXT): $(utilities_import_OBJECTS) $(utilities_import_DEPENDENCIES) $(EXTRA_utilities_import_DEPENDENCIES) utilities/$(am__dirstamp)
-	@rm -f utilities/import$(EXEEXT)
-	$(AM_V_CCLD)$(utilities_import_LINK) $(utilities_import_OBJECTS) $(utilities_import_LDADD) $(LIBS)
 utilities/magick.$(OBJEXT): utilities/$(am__dirstamp) \
 	utilities/$(DEPDIR)/$(am__dirstamp)
 
 utilities/magick$(EXEEXT): $(utilities_magick_OBJECTS) $(utilities_magick_DEPENDENCIES) $(EXTRA_utilities_magick_DEPENDENCIES) utilities/$(am__dirstamp)
 	@rm -f utilities/magick$(EXEEXT)
 	$(AM_V_CCLD)$(utilities_magick_LINK) $(utilities_magick_OBJECTS) $(utilities_magick_LDADD) $(LIBS)
-utilities/mogrify.$(OBJEXT): utilities/$(am__dirstamp) \
-	utilities/$(DEPDIR)/$(am__dirstamp)
-
-utilities/mogrify$(EXEEXT): $(utilities_mogrify_OBJECTS) $(utilities_mogrify_DEPENDENCIES) $(EXTRA_utilities_mogrify_DEPENDENCIES) utilities/$(am__dirstamp)
-	@rm -f utilities/mogrify$(EXEEXT)
-	$(AM_V_CCLD)$(utilities_mogrify_LINK) $(utilities_mogrify_OBJECTS) $(utilities_mogrify_LDADD) $(LIBS)
-utilities/montage.$(OBJEXT): utilities/$(am__dirstamp) \
-	utilities/$(DEPDIR)/$(am__dirstamp)
-
-utilities/montage$(EXEEXT): $(utilities_montage_OBJECTS) $(utilities_montage_DEPENDENCIES) $(EXTRA_utilities_montage_DEPENDENCIES) utilities/$(am__dirstamp)
-	@rm -f utilities/montage$(EXEEXT)
-	$(AM_V_CCLD)$(utilities_montage_LINK) $(utilities_montage_OBJECTS) $(utilities_montage_LDADD) $(LIBS)
-utilities/stream.$(OBJEXT): utilities/$(am__dirstamp) \
-	utilities/$(DEPDIR)/$(am__dirstamp)
-
-utilities/stream$(EXEEXT): $(utilities_stream_OBJECTS) $(utilities_stream_DEPENDENCIES) $(EXTRA_utilities_stream_DEPENDENCIES) utilities/$(am__dirstamp)
-	@rm -f utilities/stream$(EXEEXT)
-	$(AM_V_CCLD)$(utilities_stream_LINK) $(utilities_stream_OBJECTS) $(utilities_stream_LDADD) $(LIBS)
 install-binSCRIPTS: $(bin_SCRIPTS)
 	@$(NORMAL_INSTALL)
 	@list='$(bin_SCRIPTS)'; test -n "$(bindir)" || list=; \
@@ -7611,17 +7424,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@tests/$(DEPDIR)/tests_drawtest-drawtest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@tests/$(DEPDIR)/tests_validate-validate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@tests/$(DEPDIR)/tests_wandtest-wandtest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@utilities/$(DEPDIR)/animate.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@utilities/$(DEPDIR)/compare.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@utilities/$(DEPDIR)/composite.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@utilities/$(DEPDIR)/conjure.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@utilities/$(DEPDIR)/display.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@utilities/$(DEPDIR)/identify.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@utilities/$(DEPDIR)/import.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@utilities/$(DEPDIR)/magick.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@utilities/$(DEPDIR)/mogrify.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@utilities/$(DEPDIR)/montage.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@utilities/$(DEPDIR)/stream.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\

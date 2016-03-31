@@ -15,65 +15,15 @@
 #  Makefile for building ImageMagick utilities.
 
 UTILITIES_PGMS = \
-	utilities/animate \
-	utilities/compare \
-	utilities/composite \
-	utilities/conjure \
-	utilities/display \
-	utilities/identify \
-	utilities/import \
-	utilities/magick \
-	utilities/mogrify \
-	utilities/montage \
-	utilities/stream
+	utilities/magick 
 
 UTILITIES_XFAIL_TESTS = \
   $(UTILITIES_TTF_XFAIL_TESTS) \
   $(UTILITIES_XML_XFAIL_TESTS)
 
-utilities_animate_LDADD	= $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
-utilities_animate_LDFLAGS	= $(LDFLAGS)
-utilities_animate_SOURCES	= utilities/animate.c
-
-utilities_compare_LDADD	= $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
-utilities_compare_LDFLAGS	= $(LDFLAGS)
-utilities_compare_SOURCES	= utilities/compare.c
-
-utilities_composite_LDADD	= $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
-utilities_composite_LDFLAGS	= $(LDFLAGS)
-utilities_composite_SOURCES	= utilities/composite.c
-
-utilities_conjure_LDADD	= $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
-utilities_conjure_LDFLAGS	= $(LDFLAGS)
-utilities_conjure_SOURCES	= utilities/conjure.c
-
-utilities_display_LDADD	= $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
-utilities_display_LDFLAGS	= $(LDFLAGS)
-utilities_display_SOURCES	= utilities/display.c
-
-utilities_identify_LDADD	= $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
-utilities_identify_LDFLAGS	= $(LDFLAGS)
-utilities_identify_SOURCES	= utilities/identify.c
-
-utilities_import_LDADD	= $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
-utilities_import_LDFLAGS	= $(LDFLAGS)
-utilities_import_SOURCES	= utilities/import.c
-
 utilities_magick_LDADD	= $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
 utilities_magick_LDFLAGS	= $(LDFLAGS)
 utilities_magick_SOURCES	= utilities/magick.c
-
-utilities_mogrify_LDADD	= $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
-utilities_mogrify_LDFLAGS	= $(LDFLAGS)
-utilities_mogrify_SOURCES	= utilities/mogrify.c
-
-utilities_montage_LDADD	= $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
-utilities_montage_LDFLAGS	= $(LDFLAGS)
-utilities_montage_SOURCES	= utilities/montage.c
-
-utilities_stream_LDADD	= $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
-utilities_stream_LDFLAGS	= $(LDFLAGS)
-utilities_stream_SOURCES	= utilities/stream.c
 
 UTILITIES_MANS = \
 	utilities/ImageMagick.1 \
@@ -112,7 +62,7 @@ UTILITIES_EXTRA_DIST = \
 UTILITIES_CLEANFILES = 
 
 # Link these utilities to 'magick'.
-MAGICK_UTILITIES=convert magick-script
+MAGICK_UTILITIES=animate compare composite conjure display identify import magick-script mogrify montage stream
 UTILITIES_INSTALL_EXEC_LOCAL_TARGETS=install-exec-local-utilities
 install-exec-local-utilities:
 	$(mkdir_p) $(DESTDIR)$(bindir)
