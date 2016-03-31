@@ -232,7 +232,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
     one=1;
     map_length=one << map_length;
     if ((number_planes == 0) || (number_planes == 2) ||
-        ((flags & 0x04) && (number)colormaps > 254)) || (bits_per_pixel != 8) ||
+        ((flags & 0x04) && (number_colormaps > 254)) || (bits_per_pixel != 8) ||
         (image->columns == 0))
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     if (flags & 0x02)
