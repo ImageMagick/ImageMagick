@@ -4957,6 +4957,7 @@ UTILITIES_CONFIGURE = \
 	utilities/stream.1.in
 
 UTILITIES_EXTRA_DIST = \
+  animate compare composite conjure convert display identify import magick-script mogrify montage stream \
 	$(UTILITIES_MANS) \
 	$(UTILITIES_TESTS) 
 
