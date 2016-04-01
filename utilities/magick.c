@@ -115,6 +115,17 @@ static int MagickMain(int argc,char **argv)
       MagickCommands[i].extent);
     if (offset == 0)
       break;
+    if (argc > 1)
+      {
+        offset=LocaleNCompare(MagickCommands[i].name,argv[1],
+          MagickCommands[i].extent);
+        if (offset == 0)
+          {
+            argc--;
+            argv++;
+            break;
+          }
+      }
   }
   i%=(sizeof(MagickCommands)/sizeof(MagickCommands[0]));
   status=MagickCommandGenesis(image_info,MagickCommands[i].command,argc,argv,

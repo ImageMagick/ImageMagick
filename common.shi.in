@@ -3,14 +3,14 @@ top_srcdir='@abs_top_srcdir@'
 top_builddir='@abs_top_builddir@'
 
 set -a
-COMPARE="@abs_top_builddir@/utilities/compare"
-COMPOSITE="@abs_top_builddir@/utilities/composite"
-CONJURE="@abs_top_builddir@/utilities/conjure"
-CONVERT="@abs_top_builddir@/utilities/convert"
-DISPLAY="@abs_top_builddir@/utilities/display"
-IDENTIFY="@abs_top_builddir@/utilities/identify"
+COMPARE="@abs_top_builddir@/utilities/magick compare"
+COMPOSITE="@abs_top_builddir@/utilities/magick composite"
+CONJURE="@abs_top_builddir@/utilities/magick conjure"
+CONVERT="@abs_top_builddir@/utilities/magick convert"
+DISPLAY="@abs_top_builddir@/utilities/magick display"
+IDENTIFY="@abs_top_builddir@/utilities/magick identify"
 MAGICK="@abs_top_builddir@/utilities/magick"
-MONTAGE="@abs_top_builddir@/utilities/montage"
+MONTAGE="@abs_top_builddir@/utilities/magick montage"
 VALIDATE="@abs_top_builddir@/tests/validate"
 DRAWTEST="@abs_top_builddir@/tests/drawtest"
 WANDTEST="@abs_top_builddir@/tests/wandtest"
