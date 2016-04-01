@@ -395,7 +395,7 @@ OPENCL_ENDIF()
   inline float getAlphaF4(float4 p)                     { return p.w; }
   inline void setAlphaF4(float4* p, float value)        { (*p).w = value; }
 
-  inline void ReadChannels(__global CLQuantum *p, const unsigned int number_channels,
+  inline void ReadChannels(const __global CLQuantum *p, const unsigned int number_channels,
     const ChannelType channel, float *red, float *green, float *blue, float *alpha)
   {
     if ((channel & RedChannel) != 0)
@@ -3485,51 +3485,51 @@ STRINGIFY(
 
 
   STRINGIFY(
-    __kernel void UnsharpMask(__global CLPixelType *im,
-      __global CLPixelType *filtered_im,__constant float *filter,
-      const unsigned int width,const unsigned int imageColumns,
-      const unsigned int imageRows,__local float4 *pixels,const float gain,
-      const float threshold, const unsigned int justBlur)
-    {
-      const int x = get_global_id(0);
-      const int y = get_global_id(1);
+  __kernel void UnsharpMask(__global CLPixelType *im,
+    __global CLPixelType *filtered_im,__constant float *filter,
+    const unsigned int width,const unsigned int imageColumns,
+    const unsigned int imageRows,__local float4 *pixels,const float gain,
+    const float threshold, const unsigned int justBlur)
+  {
+    const int x = get_global_id(0);
+    const int y = get_global_id(1);
 
-      const unsigned int radius = (width - 1) / 2;
+    const unsigned int radius = (width - 1) / 2;
 
-      int row = y - radius;
-      int baseRow = get_group_id(1) * get_local_size(1) - radius;
-      int endRow = (get_group_id(1) + 1) * get_local_size(1) + radius;
+    int row = y - radius;
+    int baseRow = get_group_id(1) * get_local_size(1) - radius;
+    int endRow = (get_group_id(1) + 1) * get_local_size(1) + radius;
 
-      while (row < endRow) {
-        int srcy =  (row < 0) ? -row : row;	 // mirror pad
-        srcy = (srcy >= imageRows) ? (2 * imageRows - srcy - 1) : srcy;
+    while (row < endRow) {
+      int srcy =  (row < 0) ? -row : row;	 // mirror pad
+      srcy = (srcy >= imageRows) ? (2 * imageRows - srcy - 1) : srcy;
 
-        float4 value = 0.0f;
+      float4 value = 0.0f;
 
-        int ix = x - radius;
-        int i = 0;
+      int ix = x - radius;
+      int i = 0;
 
-        while (i + 7 < width) {
-          for (int j = 0; j < 8; ++j) { // unrolled
-            int srcx = ix + j;
-            srcx = (srcx < 0) ? -srcx : srcx;
-            srcx = (srcx >= imageColumns) ? (2 * imageColumns - srcx - 1) : srcx;
-            value += filter[i + j] * convert_float4(im[srcx + srcy * imageColumns]);
-          }
-          ix += 8;
-          i += 8;
-        }
-
-        while (i < width) {
-          int srcx = (ix < 0) ? -ix : ix; // mirror pad
+      while (i + 7 < width) {
+        for (int j = 0; j < 8; ++j) { // unrolled
+          int srcx = ix + j;
+          srcx = (srcx < 0) ? -srcx : srcx;
           srcx = (srcx >= imageColumns) ? (2 * imageColumns - srcx - 1) : srcx;
-          value += filter[i] * convert_float4(im[srcx + srcy * imageColumns]);
-          ++i;
-          ++ix;
+          value += filter[i + j] * convert_float4(im[srcx + srcy * imageColumns]);
         }
-        pixels[(row - baseRow) * get_local_size(0) + get_local_id(0)] = value;
-        row += get_local_size(1);
+        ix += 8;
+        i += 8;
       }
+
+      while (i < width) {
+        int srcx = (ix < 0) ? -ix : ix; // mirror pad
+        srcx = (srcx >= imageColumns) ? (2 * imageColumns - srcx - 1) : srcx;
+        value += filter[i] * convert_float4(im[srcx + srcy * imageColumns]);
+        ++i;
+        ++ix;
+      }
+      pixels[(row - baseRow) * get_local_size(0) + get_local_id(0)] = value;
+      row += get_local_size(1);
+    }
 
     barrier(CLK_LOCAL_MEM_FENCE);
 
@@ -3572,11 +3572,11 @@ STRINGIFY(
 
 
   STRINGIFY(
-    __kernel __attribute__((reqd_work_group_size(64, 4, 1)))
-    void WaveletDenoise(__global CLQuantum *srcImage,__global CLQuantum *dstImage,
-      const unsigned int number_channels,const unsigned int max_channels,
-      const float threshold,const int passes,const unsigned int imageWidth,
-      const unsigned int imageHeight)
+  __kernel __attribute__((reqd_work_group_size(64, 4, 1)))
+  void WaveletDenoise(__global CLQuantum *srcImage,__global CLQuantum *dstImage,
+    const unsigned int number_channels,const unsigned int max_channels,
+    const float threshold,const int passes,const unsigned int imageWidth,
+    const unsigned int imageHeight)
   {
     const int pad = (1 << (passes - 1));
     const int tileSize = 64;
