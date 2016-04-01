@@ -771,7 +771,7 @@ OPENCL_ENDIF()
           setPixelBlue(q,ClampToQuantum(mwcGenerateDifferentialNoise(&rng,getPixelBlue(p),noise_type,attenuate)));
       }
 
-      if (((number_channels == 2) || (number_channels == 4)) &&
+      if (((number_channels == 4) || (number_channels == 2)) &&
           ((channel & AlphaChannel) != 0))
         setPixelAlpha(q,ClampToQuantum(mwcGenerateDifferentialNoise(&rng,getPixelAlpha(p),noise_type,attenuate)));
 
@@ -2003,110 +2003,109 @@ OPENCL_ENDIF()
 
   STRINGIFY(
 
-    /*
-    apply FunctionImageChannel(braightness-contrast)
-    */
-    CLPixelType ApplyFunction(CLPixelType pixel,const MagickFunction function,
-        const unsigned int number_parameters,
-        __constant float *parameters)
+  /*
+  apply FunctionImageChannel(braightness-contrast)
+  */
+  CLPixelType ApplyFunction(CLPixelType pixel,const MagickFunction function,
+    const unsigned int number_parameters,__constant float *parameters)
+  {
+    float4 result = (float4) 0.0f;
+    switch (function)
+    {
+    case PolynomialFunction:
       {
-        float4 result = (float4) 0.0f;
-        switch (function)
-        {
-        case PolynomialFunction:
-          {
-            for (unsigned int i=0; i < number_parameters; i++)
-              result = result*(float4)QuantumScale*convert_float4(pixel) + parameters[i];
-            result *= (float4)QuantumRange;
-            break;
-          }
-        case SinusoidFunction:
-          {
-            float  freq,phase,ampl,bias;
-            freq  = ( number_parameters >= 1 ) ? parameters[0] : 1.0f;
-            phase = ( number_parameters >= 2 ) ? parameters[1] : 0.0f;
-            ampl  = ( number_parameters >= 3 ) ? parameters[2] : 0.5f;
-            bias  = ( number_parameters >= 4 ) ? parameters[3] : 0.5f;
-            result.x = QuantumRange*(ampl*sin(2.0f*MagickPI*
-              (freq*QuantumScale*(float)pixel.x + phase/360.0f)) + bias);
-            result.y = QuantumRange*(ampl*sin(2.0f*MagickPI*
-              (freq*QuantumScale*(float)pixel.y + phase/360.0f)) + bias);
-            result.z = QuantumRange*(ampl*sin(2.0f*MagickPI*
-              (freq*QuantumScale*(float)pixel.z + phase/360.0f)) + bias);
-            result.w = QuantumRange*(ampl*sin(2.0f*MagickPI*
-              (freq*QuantumScale*(float)pixel.w + phase/360.0f)) + bias);
-            break;
-          }
-        case ArcsinFunction:
-          {
-            float  width,range,center,bias;
-            width  = ( number_parameters >= 1 ) ? parameters[0] : 1.0f;
-            center = ( number_parameters >= 2 ) ? parameters[1] : 0.5f;
-            range  = ( number_parameters >= 3 ) ? parameters[2] : 1.0f;
-            bias   = ( number_parameters >= 4 ) ? parameters[3] : 0.5f;
-
-            result.x = 2.0f/width*(QuantumScale*(float)pixel.x - center);
-            result.x = range/MagickPI*asin(result.x)+bias;
-            result.x = ( result.x <= -1.0f ) ? bias - range/2.0f : result.x;
-            result.x = ( result.x >= 1.0f ) ? bias + range/2.0f : result.x;
-
-            result.y = 2.0f/width*(QuantumScale*(float)pixel.y - center);
-            result.y = range/MagickPI*asin(result.y)+bias;
-            result.y = ( result.y <= -1.0f ) ? bias - range/2.0f : result.y;
-            result.y = ( result.y >= 1.0f ) ? bias + range/2.0f : result.y;
-
-            result.z = 2.0f/width*(QuantumScale*(float)pixel.z - center);
-            result.z = range/MagickPI*asin(result.z)+bias;
-            result.z = ( result.z <= -1.0f ) ? bias - range/2.0f : result.x;
-            result.z = ( result.z >= 1.0f ) ? bias + range/2.0f : result.x;
-
-
-            result.w = 2.0f/width*(QuantumScale*(float)pixel.w - center);
-            result.w = range/MagickPI*asin(result.w)+bias;
-            result.w = ( result.w <= -1.0f ) ? bias - range/2.0f : result.w;
-            result.w = ( result.w >= 1.0f ) ? bias + range/2.0f : result.w;
-
-            result *= (float4)QuantumRange;
-            break;
-          }
-        case ArctanFunction:
-          {
-            float slope,range,center,bias;
-            slope  = ( number_parameters >= 1 ) ? parameters[0] : 1.0f;
-            center = ( number_parameters >= 2 ) ? parameters[1] : 0.5f;
-            range  = ( number_parameters >= 3 ) ? parameters[2] : 1.0f;
-            bias   = ( number_parameters >= 4 ) ? parameters[3] : 0.5f;
-            result = (float4)MagickPI*(float4)slope*((float4)QuantumScale*convert_float4(pixel)-(float4)center);
-            result = (float4)QuantumRange*((float4)range/(float4)MagickPI*atan(result) + (float4)bias);
-            break;
-          }
-        case UndefinedFunction:
-          break;
-        }
-        return (CLPixelType) (ClampToQuantum(result.x), ClampToQuantum(result.y),
-          ClampToQuantum(result.z), ClampToQuantum(result.w));
+        for (unsigned int i=0; i < number_parameters; i++)
+          result = result*(float4)QuantumScale*convert_float4(pixel) + parameters[i];
+        result *= (float4)QuantumRange;
+        break;
       }
-    )
-
-    STRINGIFY(
-    /*
-    Improve brightness / contrast of the image
-    channel : define which channel is improved
-    function : the function called to enchance the brightness contrast
-    number_parameters : numbers of parameters 
-    parameters : the parameter
-    */
-    __kernel void ComputeFunction(__global CLPixelType *im,
-                                        const ChannelType channel, const MagickFunction function,
-                                        const unsigned int number_parameters, __constant float *parameters)
+    case SinusoidFunction:
       {
-        const int x = get_global_id(0);  
-        const int y = get_global_id(1);  
-        const int columns = get_global_size(0);  
-        const int c = x + y * columns;
-        im[c] = ApplyFunction(im[c], function, number_parameters, parameters); 
+        float  freq,phase,ampl,bias;
+        freq  = ( number_parameters >= 1 ) ? parameters[0] : 1.0f;
+        phase = ( number_parameters >= 2 ) ? parameters[1] : 0.0f;
+        ampl  = ( number_parameters >= 3 ) ? parameters[2] : 0.5f;
+        bias  = ( number_parameters >= 4 ) ? parameters[3] : 0.5f;
+        result.x = QuantumRange*(ampl*sin(2.0f*MagickPI*
+          (freq*QuantumScale*(float)pixel.x + phase/360.0f)) + bias);
+        result.y = QuantumRange*(ampl*sin(2.0f*MagickPI*
+          (freq*QuantumScale*(float)pixel.y + phase/360.0f)) + bias);
+        result.z = QuantumRange*(ampl*sin(2.0f*MagickPI*
+          (freq*QuantumScale*(float)pixel.z + phase/360.0f)) + bias);
+        result.w = QuantumRange*(ampl*sin(2.0f*MagickPI*
+          (freq*QuantumScale*(float)pixel.w + phase/360.0f)) + bias);
+        break;
       }
-    )
+    case ArcsinFunction:
+      {
+        float  width,range,center,bias;
+        width  = ( number_parameters >= 1 ) ? parameters[0] : 1.0f;
+        center = ( number_parameters >= 2 ) ? parameters[1] : 0.5f;
+        range  = ( number_parameters >= 3 ) ? parameters[2] : 1.0f;
+        bias   = ( number_parameters >= 4 ) ? parameters[3] : 0.5f;
+
+        result.x = 2.0f/width*(QuantumScale*(float)pixel.x - center);
+        result.x = range/MagickPI*asin(result.x)+bias;
+        result.x = ( result.x <= -1.0f ) ? bias - range/2.0f : result.x;
+        result.x = ( result.x >= 1.0f ) ? bias + range/2.0f : result.x;
+
+        result.y = 2.0f/width*(QuantumScale*(float)pixel.y - center);
+        result.y = range/MagickPI*asin(result.y)+bias;
+        result.y = ( result.y <= -1.0f ) ? bias - range/2.0f : result.y;
+        result.y = ( result.y >= 1.0f ) ? bias + range/2.0f : result.y;
+
+        result.z = 2.0f/width*(QuantumScale*(float)pixel.z - center);
+        result.z = range/MagickPI*asin(result.z)+bias;
+        result.z = ( result.z <= -1.0f ) ? bias - range/2.0f : result.x;
+        result.z = ( result.z >= 1.0f ) ? bias + range/2.0f : result.x;
+
+
+        result.w = 2.0f/width*(QuantumScale*(float)pixel.w - center);
+        result.w = range/MagickPI*asin(result.w)+bias;
+        result.w = ( result.w <= -1.0f ) ? bias - range/2.0f : result.w;
+        result.w = ( result.w >= 1.0f ) ? bias + range/2.0f : result.w;
+
+        result *= (float4)QuantumRange;
+        break;
+      }
+    case ArctanFunction:
+      {
+        float slope,range,center,bias;
+        slope  = ( number_parameters >= 1 ) ? parameters[0] : 1.0f;
+        center = ( number_parameters >= 2 ) ? parameters[1] : 0.5f;
+        range  = ( number_parameters >= 3 ) ? parameters[2] : 1.0f;
+        bias   = ( number_parameters >= 4 ) ? parameters[3] : 0.5f;
+        result = (float4)MagickPI*(float4)slope*((float4)QuantumScale*convert_float4(pixel)-(float4)center);
+        result = (float4)QuantumRange*((float4)range/(float4)MagickPI*atan(result) + (float4)bias);
+        break;
+      }
+    case UndefinedFunction:
+      break;
+    }
+    return (CLPixelType) (ClampToQuantum(result.x), ClampToQuantum(result.y),
+      ClampToQuantum(result.z), ClampToQuantum(result.w));
+  }
+  )
+
+  STRINGIFY(
+  /*
+  Improve brightness / contrast of the image
+  channel : define which channel is improved
+  function : the function called to enchance the brightness contrast
+  number_parameters : numbers of parameters 
+  parameters : the parameter
+  */
+  __kernel void ComputeFunction(__global CLPixelType *im,
+    const ChannelType channel,const MagickFunction function,
+    const unsigned int number_parameters, __constant float *parameters)
+  {
+    const int x = get_global_id(0);
+    const int y = get_global_id(1);
+    const int columns = get_global_size(0);
+    const int c = x + y * columns;
+    im[c] = ApplyFunction(im[c], function, number_parameters, parameters);
+  }
+  )
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -3545,7 +3544,7 @@ STRINGIFY(
     for (int i = get_local_id(1); i < tileSize; i += get_local_size(1)) {
       int pos = (mirrorTop(mirrorBottom(srcx), imageWidth) * number_channels) +
                 (mirrorTop(mirrorBottom(srcy + i), imageHeight)) * imageWidth * number_channels;
-    
+
       for (int channel = 0; channel < max_channels; ++channel)
         stage[(i / 4) + (16 * channel)] = srcImage[pos + channel];
     }
