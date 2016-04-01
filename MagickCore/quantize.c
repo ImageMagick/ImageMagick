@@ -2637,69 +2637,6 @@ static void PruneToCubeDepth(CubeInfo *cube_info,const NodeInfo *node_info)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
-static MagickBooleanType DirectToColormapImage(Image *image,
-  ExceptionInfo *exception)
-{
-  CacheView
-    *image_view;
-
-  MagickBooleanType
-    status;
-
-  register ssize_t
-    i;
-
-  size_t
-    number_colors;
-
-  ssize_t
-    y;
-
-  status=MagickTrue;
-  number_colors=(size_t) (image->columns*image->rows);
-  if (AcquireImageColormap(image,number_colors,exception) == MagickFalse)
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      image->filename);
-  if (image->colors != number_colors)
-    return(MagickFalse);
-  i=0;
-  image_view=AcquireAuthenticCacheView(image,exception);
-  for (y=0; y < (ssize_t) image->rows; y++)
-  {
-    MagickBooleanType
-      proceed;
-
-    register Quantum
-      *magick_restrict q;
-
-    register ssize_t
-      x;
-
-    q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
-    if (q == (Quantum *) NULL)
-      break;
-    for (x=0; x < (ssize_t) image->columns; x++)
-    {
-      image->colormap[i].red=(double) GetPixelRed(image,q);
-      image->colormap[i].green=(double) GetPixelGreen(image,q);
-      image->colormap[i].blue=(double) GetPixelBlue(image,q);
-      image->colormap[i].alpha=(double) GetPixelAlpha(image,q);
-      SetPixelIndex(image,(Quantum) i,q);
-      i++;
-      q+=GetPixelChannels(image);
-    }
-    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
-      break;
-    proceed=SetImageProgress(image,AssignImageTag,(MagickOffsetType) y,
-      image->rows);
-    if (proceed == MagickFalse)
-      status=MagickFalse;
-  }
-  image_view=DestroyCacheView(image_view);
-  return(status);
-}
-
 MagickExport MagickBooleanType QuantizeImage(const QuantizeInfo *quantize_info,
   Image *image,ExceptionInfo *exception)
 {
@@ -2728,8 +2665,6 @@ MagickExport MagickBooleanType QuantizeImage(const QuantizeInfo *quantize_info,
     maximum_colors=MaxColormapSize;
   if (image->alpha_trait != BlendPixelTrait)
     {
-      if ((image->columns*image->rows) <= maximum_colors)
-        (void) DirectToColormapImage(image,exception);
       if (SetImageGray(image,exception) != MagickFalse)
         (void) SetGrayscaleImage(image,exception);
     }
