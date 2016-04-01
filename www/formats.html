@@ -22,7 +22,7 @@
   <meta name="author" content="ImageMagick Studio LLC"/>
   <meta name="revisit-after" content="2 DAYS"/>
   <meta name="resource-type" content="document"/>
-  <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC"/>
+  <meta name="copyright" content="Copyright (c) 1999-2016 ImageMagick Studio LLC"/>
   <meta name="distribution" content="Global"/>
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
   <link rel="icon" href="../images/wand.png"/>
@@ -319,7 +319,7 @@ the supported image formats.</p>
     <td>EMF</td>
     <td>R</td>
     <td>Microsoft Enhanced Metafile (32-bit)</td>
-    <td>Only available under Microsoft Windows.</td>
+    <td>Only available under Microsoft Windows.  Use <a href="command-line-options.html#size">-size</a> command line option to specify the maximum width and height.</td>
   </tr>
 
   <tr>
@@ -1009,7 +1009,7 @@ convert \( -size 15x15 canvas:black canvas:white -append \) \
     <td><a href="http://www.w3.org/Graphics/SVG">SVG</a></td>
     <td>RW</td>
     <td>Scalable Vector Graphics</td>
-    <td>ImageMagick utilizes <a href="http://www.inkscape.org/">inkscape</a> if its in your execution path otherwise <a href="http://developer.gnome.org/rsvg/">RSVG</a>. If neither are available, ImageMagick reverts to its internal SVG renderer. The default resolution is 90dpi.</td>
+    <td>ImageMagick utilizes <a href="http://www.inkscape.org/">inkscape</a> if its in your execution path otherwise <a href="http://developer.gnome.org/rsvg/">RSVG</a>. If neither are available, ImageMagick reverts to its internal SVG renderer. The default resolution is 90 DPI. Use <a href="command-line-options.html#size">-size</a> command line option to specify the maximum width and height.</td>
   </tr>
 
   <tr>
@@ -1929,4 +1929,3 @@ convert \( -size 15x15 canvas:black canvas:white -append \) \
 </div>
 </body>
 </html>
-<!-- Magick Cache 28th February 2016 19:19 -->
