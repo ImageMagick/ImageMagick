@@ -55,15 +55,16 @@ UTILITIES_CONFIGURE = \
 	utilities/montage.1.in \
 	utilities/stream.1.in
 
+MAGICK_UTILITIES=animate compare composite conjure display identify import magick-script mogrify montage stream
+
 UTILITIES_EXTRA_DIST = \
-  animate compare composite conjure convert display identify import magick-script mogrify montage stream \
+  $(MAGICK_UTILITIES) \
 	$(UTILITIES_MANS) \
 	$(UTILITIES_TESTS) 
 
 UTILITIES_CLEANFILES = 
 
 # Link these utilities to 'magick'.
-MAGICK_UTILITIES=animate compare composite conjure display identify import magick-script mogrify montage stream
 UTILITIES_INSTALL_EXEC_LOCAL_TARGETS=install-exec-local-utilities
 install-exec-local-utilities:
 	$(mkdir_p) $(DESTDIR)$(bindir)
