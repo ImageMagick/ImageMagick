@@ -1,13 +1,16 @@
 .TH magick 1 "Date: 2009/01/10 01:00:00" "ImageMagick"
 .SH NAME
-magick \- convert between image formats as well as resize an image, blur, crop, despeckle, dither, draw on, flip, join, re-sample, and much more.
+magick-script \- scripting language that converts between image formats as well as resize an image, blur, crop, despeckle, dither, draw on, flip, join, re-sample, and much more.
 .SH SYNOPSIS
 .TP
-\fBmagick\fP [\fIinput-options\fP] \fIinput-file\fP [\fIoutput-options\fP] \fIoutput-file\fP
+\fBmagick-script\fP [\fIinput-options\fP] \fIinput-file\fP [\fIoutput-options\fP] \fIoutput-file\fP
 .SH OVERVIEW
-The \fBmagick\fP program is a member of the ImageMagick(1) suite of tools.  Use it to convert between image formats as well as resize an image, blur, crop, despeckle, dither, draw on, flip, join, re-sample, and much more.  
+The \fBmagick-script\fP program is a member of the ImageMagick(1) suite of tools.  Use it to convert between image formats as well as resize an image, blur, crop, despeckle, dither, draw on, flip, join, re-sample, and much more.  Here is an example script:
 
-For more information about the magick command, point your browser to file://@DOCUMENTATION_PATH@/www/convert.html or http://www.imagemagick.org/script/convert.php.
+    #!/bin/env magick-script
+    -size 100x100 xc:red ( rose: -rotate -90 ) +append  -write show:
+
+For more information about the magick-script command, point your browser to file://@DOCUMENTATION_PATH@/www/magick-script.html or http://www.imagemagick.org/script/magick-script.php.
 .SH DESCRIPTION
 Image Settings:
   \-adjoin              join images into a single multi-image file
