@@ -118,6 +118,7 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
   ExceptionInfo *exception)
 {
   char
+    client_name[MaxTextExtent],
     *option;
 
   double
@@ -141,6 +142,8 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
 
   (void) setlocale(LC_ALL,"");
   (void) setlocale(LC_NUMERIC,"C");
+  GetPathComponent(argv[0],TailPath,client_name);
+  SetClientName(client_name);
   concurrent=MagickFalse;
   duration=(-1.0);
   iterations=1;
