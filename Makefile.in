@@ -311,9 +311,10 @@ CONFIG_CLEAN_FILES = common.shi config/configure.xml \
 	utilities/animate.1 utilities/compare.1 utilities/composite.1 \
 	utilities/conjure.1 utilities/convert.1 utilities/display.1 \
 	utilities/identify.1 utilities/ImageMagick.1 \
-	utilities/import.1 utilities/mogrify.1 utilities/montage.1 \
-	utilities/stream.1 MagickWand/MagickWand-config \
-	MagickWand/MagickWand.pc
+	utilities/import.1 utilities/magick.1 \
+	utilities/magick-script.1 utilities/mogrify.1 \
+	utilities/montage.1 utilities/stream.1 \
+	MagickWand/MagickWand-config MagickWand/MagickWand.pc
 CONFIG_CLEAN_VPATH_FILES =
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
 am__vpath_adj = case $$p in \
@@ -2444,6 +2445,8 @@ am__DIST_COMMON = $(srcdir)/ImageMagick.spec.in \
 	$(top_srcdir)/utilities/display.1.in \
 	$(top_srcdir)/utilities/identify.1.in \
 	$(top_srcdir)/utilities/import.1.in \
+	$(top_srcdir)/utilities/magick-script.1.in \
+	$(top_srcdir)/utilities/magick.1.in \
 	$(top_srcdir)/utilities/mogrify.1.in \
 	$(top_srcdir)/utilities/montage.1.in \
 	$(top_srcdir)/utilities/stream.1.in ChangeLog config/ar-lib \
@@ -4937,6 +4940,7 @@ UTILITIES_MANS = \
 	utilities/identify.1 \
 	utilities/import.1 \
 	utilities/magick.1 \
+	utilities/magick-script.1 \
 	utilities/mogrify.1 \
 	utilities/montage.1 \
 	utilities/stream.1
@@ -4952,6 +4956,7 @@ UTILITIES_CONFIGURE = \
 	utilities/identify.1.in \
 	utilities/import.1.in \
 	utilities/magick.1.in \
+	utilities/magick-script.1.in \
 	utilities/mogrify.1.in \
 	utilities/montage.1.in \
 	utilities/stream.1.in
@@ -4963,7 +4968,7 @@ UTILITIES_EXTRA_DIST = \
 UTILITIES_CLEANFILES = 
 
 # Link these utilities to 'magick'.
-MAGICK_UTILITIES = animate compare composite conjure display identify import magick-script mogrify montage stream
+MAGICK_UTILITIES = animate compare composite conjure convert display identify import magick-script mogrify montage stream
 UTILITIES_INSTALL_EXEC_LOCAL_TARGETS = install-exec-local-utilities
 UTILITIES_UNINSTALL_LOCAL_TARGETS = uninstall-local-utilities
 
@@ -5237,6 +5242,10 @@ utilities/identify.1: $(top_builddir)/config.status $(top_srcdir)/utilities/iden
 utilities/ImageMagick.1: $(top_builddir)/config.status $(top_srcdir)/utilities/ImageMagick.1.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 utilities/import.1: $(top_builddir)/config.status $(top_srcdir)/utilities/import.1.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+utilities/magick.1: $(top_builddir)/config.status $(top_srcdir)/utilities/magick.1.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+utilities/magick-script.1: $(top_builddir)/config.status $(top_srcdir)/utilities/magick-script.1.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 utilities/mogrify.1: $(top_builddir)/config.status $(top_srcdir)/utilities/mogrify.1.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@

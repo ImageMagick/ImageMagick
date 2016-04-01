@@ -3848,6 +3848,8 @@ AC_CONFIG_FILES([\
     utilities/identify.1 \
     utilities/ImageMagick.1 \
     utilities/import.1 \
+    utilities/magick.1 \
+    utilities/magick-script.1 \
     utilities/mogrify.1 \
     utilities/montage.1 \
     utilities/stream.1 \

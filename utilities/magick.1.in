@@ -5,9 +5,9 @@ magick \- convert between image formats as well as resize an image, blur, crop, 
 .TP
 \fBmagick\fP [\fIinput-options\fP] \fIinput-file\fP [\fIoutput-options\fP] \fIoutput-file\fP
 .SH OVERVIEW
-The \fBmagick\fP program is a member of the ImageMagick(1) suite of tools.  Use it to convert between image formats as well as resize an image, blur, crop, despeckle, dither, draw on, flip, join, re-sample, and much more.  
+The \fBmagickscript\fP program is a member of the ImageMagick(1) suite of tools.  Use it to convert between image formats as well as resize an image, blur, crop, despeckle, dither, draw on, flip, join, re-sample, and much more.  
 
-For more information about the magick command, point your browser to file://@DOCUMENTATION_PATH@/www/convert.html or http://www.imagemagick.org/script/convert.php.
+For more information about the magick command, point your browser to file://@DOCUMENTATION_PATH@/www/magick.html or http://www.imagemagick.org/script/magick.php.
 .SH DESCRIPTION
 Image Settings:
   \-adjoin              join images into a single multi-image file

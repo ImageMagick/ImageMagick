@@ -1,13 +1,13 @@
-.TH convert 1 "Date: 2009/01/10 01:00:00" "ImageMagick"
+.TH magick 1 "Date: 2009/01/10 01:00:00" "ImageMagick"
 .SH NAME
-convert \- convert between image formats as well as resize an image, blur, crop, despeckle, dither, draw on, flip, join, re-sample, and much more.
+magick \- convert between image formats as well as resize an image, blur, crop, despeckle, dither, draw on, flip, join, re-sample, and much more.
 .SH SYNOPSIS
 .TP
-\fBconvert\fP [\fIinput-options\fP] \fIinput-file\fP [\fIoutput-options\fP] \fIoutput-file\fP
+\fBmagick\fP [\fIinput-options\fP] \fIinput-file\fP [\fIoutput-options\fP] \fIoutput-file\fP
 .SH OVERVIEW
-The \fBconvert\fP program is a member of the ImageMagick(1) suite of tools.  Use it to convert between image formats as well as resize an image, blur, crop, despeckle, dither, draw on, flip, join, re-sample, and much more.  
+The \fBmagick\fP program is a member of the ImageMagick(1) suite of tools.  Use it to convert between image formats as well as resize an image, blur, crop, despeckle, dither, draw on, flip, join, re-sample, and much more.  
 
-For more information about the convert command, point your browser to file:///usr/local/share/doc/ImageMagick//www/convert.html or http://www.imagemagick.org/script/convert.php.
+For more information about the magick command, point your browser to file:///usr/local/share/doc/ImageMagick-7/www/convert.html or http://www.imagemagick.org/script/convert.php.
 .SH DESCRIPTION
 Image Settings:
   \-adjoin              join images into a single multi-image file
@@ -22,13 +22,12 @@ Image Settings:
   \-bordercolor color   border color
   \-caption string      assign a caption to an image
   \-cdl filename        color correct with a color decision list
-  \-channel type        apply option to select image channels
   \-colors value        preferred number of colors in the image
   \-colorspace type     alternate image colorspace
   \-comment string      annotate image with comment
   \-compose operator    set image composite operator
   \-compress type       type of pixel compression when writing the image
-  \-decipher filename   convert cipher pixels to plain pixels
+  \-decipher filename   magick cipher pixels to plain pixels
   \-define format:option
                        define one or more image format options
   \-delay value         display the next image after pausing
@@ -38,7 +37,7 @@ Image Settings:
   \-display server      get image or font from this X server
   \-dispose method      layer disposal method
   \-dither method       apply error diffusion to image
-  \-encipher filename   convert plain pixels to cipher pixels
+  \-encipher filename   magick plain pixels to cipher pixels
   \-encoding type       text encoding type
   \-endian type         endianness (MSB or LSB) of the image
   \-family name         render text with this font family
@@ -114,6 +113,7 @@ Image Operators:
                        force all pixels below the threshold into black
   \-blur geometry       reduce image noise and reduce detail levels
   \-border geometry     surround image with a border of color
+  \-channel mask        set the image channel mask
   \-charcoal radius     simulate a charcoal drawing
   \-chop geometry       remove pixels from the image interior
   \-clip                clip along the first path from the 8BIM profile
@@ -277,4 +277,4 @@ By default, the image format of `file' is determined by its magic number.  To sp
 ImageMagick(1)
 
 .SH COPYRIGHT
-\fBCopyright (C) 1999-2016 ImageMagick Studio LLC. Additional copyrights and licenses apply to this software, see file:///usr/local/share/doc/ImageMagick//www/license.html or http://www.imagemagick.org/script/license.php\fP
+\fBCopyright (C) 1999-2016 ImageMagick Studio LLC. Additional copyrights and licenses apply to this software, see file:///usr/local/share/doc/ImageMagick-7/www/license.html or http://www.imagemagick.org/script/license.php\fP
