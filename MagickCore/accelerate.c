@@ -3799,6 +3799,9 @@ static MagickBooleanType ComputeFunctionImage(Image *image,
   cl_mem_flags
     mem_flags;
 
+  cl_uint
+    number_channels;
+
   float
     *parametersBufferPtr;
 
@@ -3827,37 +3830,16 @@ static MagickBooleanType ComputeFunctionImage(Image *image,
   queue = NULL;
   imageBuffer = NULL;
   parametersBuffer = NULL;
+  pixels = NULL;
 
   clEnv = GetDefaultOpenCLEnv();
   context = GetOpenCLContext(clEnv);
 
   image_view=AcquireAuthenticCacheView(image,exception);
-  pixels=GetCacheViewAuthenticPixels(image_view,0,0,image->columns,image->rows,exception);
-  if (pixels == (void *) NULL)
-  {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), CacheWarning,
-      "GetPixelCachePixels failed.",
-      "'%s'", image->filename);
+  imageBuffer=createReadWriteBuffer(image,image_view,clEnv,context,pixels,
+    exception);
+  if (imageBuffer == (cl_mem) NULL)
     goto cleanup;
-  }
-
-
-  if (ALIGNED(pixels,CLPixelPacket)) 
-  {
-    mem_flags = CL_MEM_READ_WRITE|CL_MEM_USE_HOST_PTR;
-  }
-  else 
-  {
-    mem_flags = CL_MEM_READ_WRITE|CL_MEM_COPY_HOST_PTR;
-  }
-  /* create a CL buffer from image pixel buffer */
-  length = image->columns * image->rows;
-  imageBuffer = clEnv->library->clCreateBuffer(context, mem_flags, length * sizeof(CLPixelPacket), (void*)pixels, &clStatus);
-  if (clStatus != CL_SUCCESS)
-  {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clCreateBuffer failed.",".");
-    goto cleanup;
-  }
 
   parametersBuffer = clEnv->library->clCreateBuffer(context, CL_MEM_READ_ONLY|CL_MEM_ALLOC_HOST_PTR, number_parameters * sizeof(float), NULL, &clStatus);
   if (clStatus != CL_SUCCESS)
@@ -3894,9 +3876,12 @@ static MagickBooleanType ComputeFunctionImage(Image *image,
     goto cleanup;
   }
 
+  number_channels = (cl_uint) image->number_channels;
+
   /* set the kernel arguments */
   i = 0;
   clStatus =clEnv->library->clSetKernelArg(clkernel,i++,sizeof(cl_mem),(void *)&imageBuffer);
+  clStatus|=clEnv->library->clSetKernelArg(clkernel,i++,sizeof(cl_uint),(void *)&number_channels);
   clStatus|=clEnv->library->clSetKernelArg(clkernel,i++,sizeof(ChannelType),(void *)&image->channel_mask);
   clStatus|=clEnv->library->clSetKernelArg(clkernel,i++,sizeof(MagickFunction),(void *)&function);
   clStatus|=clEnv->library->clSetKernelArg(clkernel,i++,sizeof(unsigned int),(void *)&number_parameters);
@@ -3920,21 +3905,9 @@ static MagickBooleanType ComputeFunctionImage(Image *image,
   RecordProfileData(clEnv,ComputeFunctionKernel,event);
   clEnv->library->clReleaseEvent(event);
 
-  if (ALIGNED(pixels,CLPixelPacket)) 
-  {
-    length = image->columns * image->rows;
-    clEnv->library->clEnqueueMapBuffer(queue, imageBuffer, CL_TRUE, CL_MAP_READ|CL_MAP_WRITE, 0, length * sizeof(CLPixelPacket), 0, NULL, NULL, &clStatus);
-  }
-  else 
-  {
-    length = image->columns * image->rows;
-    clStatus = clEnv->library->clEnqueueReadBuffer(queue, imageBuffer, CL_TRUE, 0, length * sizeof(CLPixelPacket), pixels, 0, NULL, NULL);
-  }
-  if (clStatus != CL_SUCCESS)
-  {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "Reading output image from CL buffer failed.", "'%s'", ".");
-    goto cleanup;
-  }
+  if (copyWriteBuffer(image,clEnv,queue,imageBuffer,pixels,exception) == MagickFalse)
+      goto cleanup;
+
   status=SyncCacheViewAuthenticPixels(image_view,exception);
 
 cleanup:
@@ -3960,7 +3933,7 @@ MagickExport MagickBooleanType AccelerateFunctionImage(Image *image,
   assert(image != NULL);
   assert(exception != (ExceptionInfo *) NULL);
 
-  if ((checkAccelerateConditionRGBA(image) == MagickFalse) ||
+  if ((checkAccelerateCondition(image) == MagickFalse) ||
       (checkOpenCLEnvironment(exception) == MagickFalse))
     return(MagickFalse);
 

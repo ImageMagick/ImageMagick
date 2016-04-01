@@ -315,7 +315,7 @@ struct _MagickCLEnv {
 
 #if defined(MAGICKCORE_HDRI_SUPPORT)
 #define CLOptions "-cl-single-precision-constant -cl-mad-enable -DMAGICKCORE_HDRI_SUPPORT=1 "\
-  "-DCLQuantum=float -DCLSignedQuantum=float -DCLPixelType=float4 -DQuantumRange=%f " \
+  "-DCLQuantum=float -DCLSignedQuantum=float -DCLPixelType=float4 -DQuantumRange=%ff " \
   "-DQuantumScale=%f -DCharQuantumScale=%f -DMagickEpsilon=%f -DMagickPI=%f "\
   "-DMaxMap=%u -DMAGICKCORE_QUANTUM_DEPTH=%u"
 #define CLQuantum  cl_float
@@ -331,7 +331,7 @@ struct _MagickCLEnv {
 #define CLCharQuantumScale 1.0f
 #elif (MAGICKCORE_QUANTUM_DEPTH == 16)
 #define CLOptions "-cl-single-precision-constant -cl-mad-enable " \
-  "-DCLQuantum=ushort -DCLSignedQuantum=short -DCLPixelType=ushort4 -DQuantumRange=%f "\
+  "-DCLQuantum=ushort -DCLSignedQuantum=short -DCLPixelType=ushort4 -DQuantumRange=%ff "\
   "-DQuantumScale=%f -DCharQuantumScale=%f -DMagickEpsilon=%f -DMagickPI=%f "\
   "-DMaxMap=%u -DMAGICKCORE_QUANTUM_DEPTH=%u"
 #define CLQuantum  cl_ushort
@@ -339,7 +339,7 @@ struct _MagickCLEnv {
 #define CLCharQuantumScale 257.0f
 #elif (MAGICKCORE_QUANTUM_DEPTH == 32)
 #define CLOptions "-cl-single-precision-constant -cl-mad-enable " \
-  "-DCLQuantum=uint -DCLSignedQuantum=int -DCLPixelType=uint4 -DQuantumRange=%f "\
+  "-DCLQuantum=uint -DCLSignedQuantum=int -DCLPixelType=uint4 -DQuantumRange=%ff "\
   "-DQuantumScale=%f -DCharQuantumScale=%f -DMagickEpsilon=%f -DMagickPI=%f "\
   "-DMaxMap=%u -DMAGICKCORE_QUANTUM_DEPTH=%u"
 #define CLQuantum  cl_uint
@@ -347,7 +347,7 @@ struct _MagickCLEnv {
 #define CLCharQuantumScale 16843009.0f
 #elif (MAGICKCORE_QUANTUM_DEPTH == 64)
 #define CLOptions "-cl-single-precision-constant -cl-mad-enable " \
-  "-DCLQuantum=ulong -DCLSignedQuantum=long -DCLPixelType=ulong4 -DQuantumRange=%f "\
+  "-DCLQuantum=ulong -DCLSignedQuantum=long -DCLPixelType=ulong4 -DQuantumRange=%ff "\
   "-DQuantumScale=%f -DCharQuantumScale=%f -DMagickEpsilon=%f -DMagickPI=%f "\
   "-DMaxMap=%u -DMAGICKCORE_QUANTUM_DEPTH=%u"
 #define CLQuantum  cl_ulong

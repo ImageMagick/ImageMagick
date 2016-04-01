@@ -191,10 +191,10 @@ const char* accelerateKernels =
      typedef enum
      {
        UndefinedFunction,
-       PolynomialFunction,
-       SinusoidFunction,
        ArcsinFunction,
-       ArctanFunction
+       ArctanFunction,
+       PolynomialFunction,
+       SinusoidFunction
      } MagickFunction;
   )
 
@@ -334,7 +334,7 @@ OPENCL_ENDIF()
   STRINGIFY(
     inline CLQuantum ClampToQuantum(const float value)
       {
-        return (CLQuantum) (clamp(value, 0.0f, (float) QuantumRange) + 0.5f);
+        return (CLQuantum) (clamp(value, 0.0f, QuantumRange) + 0.5f);
       }
   )
 
@@ -365,10 +365,10 @@ OPENCL_ENDIF()
 
   STRINGIFY(
 
-  inline CLQuantum getPixelRed(const __global CLQuantum *p)   { return *p; }
-  inline CLQuantum getPixelGreen(const __global CLQuantum *p) { return *(p+1); }
-  inline CLQuantum getPixelBlue(const __global CLQuantum *p)  { return *(p+2); }
-  inline CLQuantum getPixelAlpha(const __global CLQuantum *p) { return *(p+3); }
+  inline float getPixelRed(const __global CLQuantum *p)   { return (float)*p; }
+  inline float getPixelGreen(const __global CLQuantum *p) { return (float)*(p+1); }
+  inline float getPixelBlue(const __global CLQuantum *p)  { return (float)*(p+2); }
+  inline float getPixelAlpha(const __global CLQuantum *p) { return (float)*(p+3); }
 
   inline void setPixelRed(__global CLQuantum *p,const CLQuantum value)   { *p=value; }
   inline void setPixelGreen(__global CLQuantum *p,const CLQuantum value) { *(p+1)=value; }
@@ -394,6 +394,46 @@ OPENCL_ENDIF()
   inline void setAlpha(CLPixelType* p, CLQuantum value) { (*p).w = value; }
   inline float getAlphaF4(float4 p)                     { return p.w; }
   inline void setAlphaF4(float4* p, float value)        { (*p).w = value; }
+
+  inline void ReadChannels(__global CLQuantum *p, const unsigned int number_channels,
+    const ChannelType channel, float *red, float *green, float *blue, float *alpha)
+  {
+    if ((channel & RedChannel) != 0)
+      *red=getPixelRed(p);
+
+    if (number_channels > 2)
+      {
+        if ((channel & GreenChannel) != 0)
+          *green=getPixelGreen(p);
+
+        if ((channel & BlueChannel) != 0)
+          *blue=getPixelBlue(p);
+      }
+
+    if (((number_channels == 4) || (number_channels == 2)) &&
+        ((channel & AlphaChannel) != 0))
+      *alpha=getPixelAlpha(p);
+  }
+
+  inline void WriteChannels(__global CLQuantum *p, const unsigned int number_channels,
+    const ChannelType channel, float red, float green, float blue, float alpha)
+  {
+    if ((channel & RedChannel) != 0)
+      setPixelRed(p,red);
+
+    if (number_channels > 2)
+      {
+        if ((channel & GreenChannel) != 0)
+          setPixelGreen(p,green);
+
+        if ((channel & BlueChannel) != 0)
+          setPixelBlue(p,blue);
+      }
+
+    if (((number_channels == 4) || (number_channels == 2)) &&
+        ((channel & AlphaChannel) != 0))
+      setPixelAlpha(p,alpha);
+  }
 
   inline float GetPixelIntensity(const unsigned int colorspace,
     const unsigned int method,float red,float green,float blue)
@@ -639,7 +679,7 @@ OPENCL_ENDIF()
     return (1.0f * MWC64X_NextUint(rng)) / (float)(0xffffffff); // normalized to 1.0
   }
 
-  float mwcGenerateDifferentialNoise(mwc64x_state_t* r, CLQuantum pixel, NoiseType noise_type, float attenuate)
+  float mwcGenerateDifferentialNoise(mwc64x_state_t* r, float pixel, NoiseType noise_type, float attenuate)
   {
     float
       alpha,
@@ -669,8 +709,7 @@ OPENCL_ENDIF()
           gamma=sqrt(-2.0f*log(alpha));
           sigma=gamma*cospi((2.0f*beta));
           tau=gamma*sinpi((2.0f*beta));
-          noise=(float)(pixel+sqrt((float) pixel)*SigmaGaussian*sigma+
-                        QuantumRange*TauGaussian*tau);
+          noise=pixel+sqrt(pixel)*SigmaGaussian*sigma+QuantumRange*TauGaussian*tau;
           break;
         }
       case ImpulseNoise:
@@ -679,9 +718,9 @@ OPENCL_ENDIF()
           noise=0.0f;
         else
           if (alpha >= (1.0f-(SigmaImpulse/2.0f)))
-            noise=(float)QuantumRange;
+            noise=QuantumRange;
           else
-            noise=(float)pixel;
+            noise=pixel;
         break;
       }
       case LaplacianNoise:
@@ -689,17 +728,17 @@ OPENCL_ENDIF()
         if (alpha <= 0.5f)
           {
             if (alpha <= MagickEpsilon)
-              noise=(float) (pixel-QuantumRange);
+              noise=(pixel-QuantumRange);
             else
-              noise=(float) (pixel+QuantumRange*SigmaLaplacian*log(2.0f*alpha)+
+              noise=(pixel+QuantumRange*SigmaLaplacian*log(2.0f*alpha)+
                 0.5f);
             break;
           }
         beta=1.0f-alpha;
         if (beta <= (0.5f*MagickEpsilon))
-          noise=(float) (pixel+QuantumRange);
+          noise=(pixel+QuantumRange);
         else
-          noise=(float) (pixel-QuantumRange*SigmaLaplacian*log(2.0f*beta)+0.5f);
+          noise=(pixel-QuantumRange*SigmaLaplacian*log(2.0f*beta)+0.5f);
         break;
       }
       case MultiplicativeGaussianNoise:
@@ -708,8 +747,8 @@ OPENCL_ENDIF()
         if (alpha > MagickEpsilon)
           sigma=sqrt(-2.0f*log(alpha));
         beta=mwcReadPseudoRandomValue(r);
-        noise=(float) (pixel+pixel*SigmaMultiplicativeGaussian*sigma*
-          cospi((float) (2.0f*beta))/2.0f);
+        noise=(pixel+pixel*SigmaMultiplicativeGaussian*sigma*
+          cospi((2.0f*beta))/2.0f);
         break;
       }
       case PoissonNoise:
@@ -723,12 +762,12 @@ OPENCL_ENDIF()
           beta=mwcReadPseudoRandomValue(r);
           alpha*=beta;
         }
-        noise=(float) (QuantumRange*i/SigmaPoisson);
+        noise=(QuantumRange*i/SigmaPoisson);
         break;
       }
       case RandomNoise:
       {
-        noise=(float) (QuantumRange*SigmaRandom*alpha);
+        noise=(QuantumRange*SigmaRandom*alpha);
         break;
       }
     }
@@ -759,21 +798,30 @@ OPENCL_ENDIF()
       const __global CLQuantum *p = image + pos;
       __global CLQuantum *q = filteredImage + pos;
 
+      float red;
+      float green;
+      float blue;
+      float alpha;
+
+      ReadChannels(p, number_channels, channel, &red, &green, &blue, &alpha);
+
       if ((channel & RedChannel) != 0)
-        setPixelRed(q,ClampToQuantum(mwcGenerateDifferentialNoise(&rng,getPixelRed(p),noise_type,attenuate)));
+        red=mwcGenerateDifferentialNoise(&rng,red,noise_type,attenuate);
 
       if (number_channels > 2)
       {
         if ((channel & GreenChannel) != 0)
-          setPixelGreen(q,ClampToQuantum(mwcGenerateDifferentialNoise(&rng,getPixelGreen(p),noise_type,attenuate)));
+          green=mwcGenerateDifferentialNoise(&rng,green,noise_type,attenuate);
 
         if ((channel & BlueChannel) != 0)
-          setPixelBlue(q,ClampToQuantum(mwcGenerateDifferentialNoise(&rng,getPixelBlue(p),noise_type,attenuate)));
+          blue=mwcGenerateDifferentialNoise(&rng,blue,noise_type,attenuate);
       }
 
       if (((number_channels == 4) || (number_channels == 2)) &&
           ((channel & AlphaChannel) != 0))
-        setPixelAlpha(q,ClampToQuantum(mwcGenerateDifferentialNoise(&rng,getPixelAlpha(p),noise_type,attenuate)));
+        alpha=mwcGenerateDifferentialNoise(&rng,alpha,noise_type,attenuate);
+
+      WriteChannels(q, number_channels, channel, red, green, blue, alpha);
 
       pos += (get_local_size(0) * number_channels);
       count--;
@@ -1239,7 +1287,7 @@ OPENCL_ENDIF()
       Sa=QuantumScale*alpha;
       Da=QuantumScale*beta;
       gamma=RoundToUnity(Sa+Da);  /* 'Plus' blending -- not 'Over' blending */
-      setAlphaF4(composite,(float) QuantumRange*gamma);
+      setAlphaF4(composite,QuantumRange*gamma);
       gamma=PerceptibleReciprocal(gamma);
       setRedF4(composite,gamma*(Sa*getRedF4(*p)+Da*getRedF4(*q)));
       setGreenF4(composite,gamma*(Sa*getGreenF4(*p)+Da*getGreenF4(*q)));
@@ -2002,21 +2050,21 @@ OPENCL_ENDIF()
 */
 
   STRINGIFY(
-
   /*
   apply FunctionImageChannel(braightness-contrast)
   */
-  CLPixelType ApplyFunction(CLPixelType pixel,const MagickFunction function,
+  CLQuantum ApplyFunction(float pixel,const MagickFunction function,
     const unsigned int number_parameters,__constant float *parameters)
   {
-    float4 result = (float4) 0.0f;
+    float result = 0.0f;
+
     switch (function)
     {
     case PolynomialFunction:
       {
         for (unsigned int i=0; i < number_parameters; i++)
-          result = result*(float4)QuantumScale*convert_float4(pixel) + parameters[i];
-        result *= (float4)QuantumRange;
+          result = result*QuantumScale*pixel + parameters[i];
+        result *= QuantumRange;
         break;
       }
     case SinusoidFunction:
@@ -2026,14 +2074,8 @@ OPENCL_ENDIF()
         phase = ( number_parameters >= 2 ) ? parameters[1] : 0.0f;
         ampl  = ( number_parameters >= 3 ) ? parameters[2] : 0.5f;
         bias  = ( number_parameters >= 4 ) ? parameters[3] : 0.5f;
-        result.x = QuantumRange*(ampl*sin(2.0f*MagickPI*
-          (freq*QuantumScale*(float)pixel.x + phase/360.0f)) + bias);
-        result.y = QuantumRange*(ampl*sin(2.0f*MagickPI*
-          (freq*QuantumScale*(float)pixel.y + phase/360.0f)) + bias);
-        result.z = QuantumRange*(ampl*sin(2.0f*MagickPI*
-          (freq*QuantumScale*(float)pixel.z + phase/360.0f)) + bias);
-        result.w = QuantumRange*(ampl*sin(2.0f*MagickPI*
-          (freq*QuantumScale*(float)pixel.w + phase/360.0f)) + bias);
+        result = QuantumRange*(ampl*sin(2.0f*MagickPI*
+          (freq*QuantumScale*pixel + phase/360.0f)) + bias);
         break;
       }
     case ArcsinFunction:
@@ -2044,28 +2086,11 @@ OPENCL_ENDIF()
         range  = ( number_parameters >= 3 ) ? parameters[2] : 1.0f;
         bias   = ( number_parameters >= 4 ) ? parameters[3] : 0.5f;
 
-        result.x = 2.0f/width*(QuantumScale*(float)pixel.x - center);
-        result.x = range/MagickPI*asin(result.x)+bias;
-        result.x = ( result.x <= -1.0f ) ? bias - range/2.0f : result.x;
-        result.x = ( result.x >= 1.0f ) ? bias + range/2.0f : result.x;
-
-        result.y = 2.0f/width*(QuantumScale*(float)pixel.y - center);
-        result.y = range/MagickPI*asin(result.y)+bias;
-        result.y = ( result.y <= -1.0f ) ? bias - range/2.0f : result.y;
-        result.y = ( result.y >= 1.0f ) ? bias + range/2.0f : result.y;
-
-        result.z = 2.0f/width*(QuantumScale*(float)pixel.z - center);
-        result.z = range/MagickPI*asin(result.z)+bias;
-        result.z = ( result.z <= -1.0f ) ? bias - range/2.0f : result.x;
-        result.z = ( result.z >= 1.0f ) ? bias + range/2.0f : result.x;
-
-
-        result.w = 2.0f/width*(QuantumScale*(float)pixel.w - center);
-        result.w = range/MagickPI*asin(result.w)+bias;
-        result.w = ( result.w <= -1.0f ) ? bias - range/2.0f : result.w;
-        result.w = ( result.w >= 1.0f ) ? bias + range/2.0f : result.w;
-
-        result *= (float4)QuantumRange;
+        result = 2.0f/width*(QuantumScale*pixel - center);
+        result = range/MagickPI*asin(result)+bias;
+        result = ( result <= -1.0f ) ? bias - range/2.0f : result;
+        result = ( result >= 1.0f ) ? bias + range/2.0f : result;
+        result *= QuantumRange;
         break;
       }
     case ArctanFunction:
@@ -2075,15 +2100,14 @@ OPENCL_ENDIF()
         center = ( number_parameters >= 2 ) ? parameters[1] : 0.5f;
         range  = ( number_parameters >= 3 ) ? parameters[2] : 1.0f;
         bias   = ( number_parameters >= 4 ) ? parameters[3] : 0.5f;
-        result = (float4)MagickPI*(float4)slope*((float4)QuantumScale*convert_float4(pixel)-(float4)center);
-        result = (float4)QuantumRange*((float4)range/(float4)MagickPI*atan(result) + (float4)bias);
+        result = MagickPI*slope*(QuantumScale*pixel-center);
+        result = QuantumRange*(range/MagickPI*atan(result) + bias);
         break;
       }
     case UndefinedFunction:
       break;
     }
-    return (CLPixelType) (ClampToQuantum(result.x), ClampToQuantum(result.y),
-      ClampToQuantum(result.z), ClampToQuantum(result.w));
+    return(ClampToQuantum(result));
   }
   )
 
@@ -2095,15 +2119,40 @@ OPENCL_ENDIF()
   number_parameters : numbers of parameters 
   parameters : the parameter
   */
-  __kernel void ComputeFunction(__global CLPixelType *im,
-    const ChannelType channel,const MagickFunction function,
-    const unsigned int number_parameters, __constant float *parameters)
+  __kernel void ComputeFunction(__global CLQuantum *image,
+    const unsigned int number_channels,const ChannelType channel,
+    const MagickFunction function,const unsigned int number_parameters,
+    __constant float *parameters)
   {
     const int x = get_global_id(0);
     const int y = get_global_id(1);
     const int columns = get_global_size(0);
-    const int c = x + y * columns;
-    im[c] = ApplyFunction(im[c], function, number_parameters, parameters);
+    __global CLQuantum *p = image+(x * number_channels) + (y * columns * number_channels);
+
+    float red;
+    float green;
+    float blue;
+    float alpha;
+
+    ReadChannels(p, number_channels, channel, &red, &green, &blue, &alpha);
+
+    if ((channel & RedChannel) != 0)
+      red=ApplyFunction(red, function, number_parameters, parameters);
+
+    if (number_channels > 2)
+      {
+        if ((channel & GreenChannel) != 0)
+          green=ApplyFunction(green, function, number_parameters, parameters);
+
+        if ((channel & BlueChannel) != 0)
+          blue=ApplyFunction(blue, function, number_parameters, parameters);
+      }
+
+    if (((number_channels == 4) || (number_channels == 2)) &&
+        ((channel & AlphaChannel) != 0))
+      alpha=ApplyFunction(alpha, function, number_parameters, parameters);
+
+    WriteChannels(p, number_channels, channel, red, green, blue, alpha);
   }
   )
 
@@ -2133,9 +2182,9 @@ OPENCL_ENDIF()
       green,
       red;
 
-    red=(float)getPixelRed(p);
-    green=(float)getPixelGreen(p);
-    blue=(float)getPixelBlue(p);
+    red=getPixelRed(p);
+    green=getPixelGreen(p);
+    blue=getPixelBlue(p);
 
     CLQuantum intensity=ClampToQuantum(GetPixelIntensity(colorspace, method, red, green, blue));
 
