@@ -52,7 +52,7 @@
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="text-center"><a href="command-line-processing.html#anatomy">The Anatomy of the Command-line</a> • <a href="command-line-processing.html#input">Input Filename</a> • <a href="command-line-processing.html#setting">Image Setting</a> • <a href="command-line-processing.html#operator">Image Operator</a> • <a href="command-line-processing.html#sequence">Image Sequence Operator</a> • <a href="command-line-processing.html#geometry">Image Geometry</a> •  <a href="command-line-processing.html#stack">Image Stack</a> • <a href="command-line-processing.html#output">Output Filename</a></p>
+<p class="text-center"><a href="command-line-processing.html#anatomy">The Anatomy of the Command-line</a> • <a href="command-line-processing.html#input">Input Filename</a> • <a href="command-line-processing.html#option">Command-line Options</a> • <a href="command-line-processing.html#output">Output Filename</a></p>
 
 <p class="lead magick-description">The ImageMagick command-line can be as simple as this:</p>
 
@@ -60,7 +60,7 @@
 convert image.jpg image.png
 </pre>
 
-<p>Or it can be complex with a plethora of <a href="command-line-options.html">options</a>, as in the following:</p>
+<p>Or it can be complex with a plethora of <a href="command-line-processing.html#option">options</a>, as in the following:</p>
 
 <pre>
 convert label.gif +matte \
@@ -146,7 +146,7 @@ convert -size 320x90 canvas:none -stroke snow4 -size 1x90 -tile gradient:white-s
 
 <p>These extensions are explained in the next few paragraphs.</p>
 
-<h3>Filename Globbing</h3>
+<h4>Filename Globbing</h4>
 <p>In Unix shells, certain characters such as the asterisk (<code>*</code>) and question mark (<code>?</code>) automagically cause lists of filenames to be generated based on pattern matches. This feature is known as globbing.  ImageMagick supports filename globbing for systems, such as Windows, that does not natively support it.  For example, suppose you want to convert <code>1.jpg</code>, <code>2.jpg</code>, <code>3.jpg</code>, <code>4.jpg</code>, and <code>5.jpg</code> in your current directory to a GIF animation.  You can conveniently  refer to all of the JPEG files with this command:
 </p>
 
@@ -154,7 +154,7 @@ convert -size 320x90 canvas:none -stroke snow4 -size 1x90 -tile gradient:white-s
 convert *.jpg images.gif
 </pre>
 
-<h3>Explicit Image Format</h3>
+<h4>Explicit Image Format</h4>
 <p>Images are stored in a myriad of image formats including
 the better known JPEG, PNG, TIFF and others.  ImageMagick must know the format
 of the image before it can be read and processed.  Most formats have a
@@ -175,7 +175,7 @@ so we explicitly set one:
 convert -size 640x480 -depth 8 rgb:image image.png
 </pre>
 
-<h3>Built-in Images and Patterns</h3>
+<h4>Built-in Images and Patterns</h4>
 
 <p>ImageMagick has a number of built-in <a href="formats.html#builtin-images">images</a> and <a href="formats.html#builtin-patterns">patterns</a>.  To utilize the checkerboard pattern, for example, use:
 </p>
@@ -184,7 +184,7 @@ convert -size 640x480 -depth 8 rgb:image image.png
 convert -size 640x480 pattern:checkerboard checkerboard.png
 </pre>
 
-<h3>STDIN, STDOUT, and file descriptors</h3>
+<h4>STDIN, STDOUT, and file descriptors</h4>
 <p>Unix and Windows permit the output of one command to be piped to the input of another. ImageMagick permits image data to be read and written from the <a href="http://en.wikipedia.org/wiki/Standard_streams">standard streams</a> STDIN (<var>standard in</var>) and STDOUT (<var>standard out</var>), respectively, using a pseudo-filename of <code>-</code>.  In this example we pipe the output of
   <a href="convert.html">convert</a> to the <a href="display.html">display</a> program:
 </p>
@@ -214,7 +214,7 @@ convert fd:3 fd:4 -append fd:5
 convert gif:fd:3 jpg:fd:4 -append tif:fd:5
 </pre>
 
-<h3>Selecting Frames</h3>
+<h4>Selecting Frames</h4>
 <p>Some images formats contain more than one image frame.  Perhaps you only want the first image, or the last, or some number of images in-between.  You can specify which image frames to read by appending the image filename with the frame range enclosed in brackets.  Here our image (an animated GIF) contains more than one frame but we only want the first:
 </p>
 
@@ -243,7 +243,7 @@ convert 'images.gif[3,2,4]' images.mng
 <p>Notice that in the last two commands, a single image is written. The output in this case, where the image type is MNG, is a multi-frame file because the MNG format supports multiple frames. Had the output format been JPG, which only supports single frames, the output would have consisted of separate frames. More about that below, in the section about the <a href="command-line-processing.html#output">Output Filename</a>.
 </p>
 
-<h3>Selecting an Image Region</h3>
+<h4>Selecting an Image Region</h4>
 <p>Raw images are a sequence of color intensities without additional meta information such as width, height, or image signature.  With raw image formats, you must specify the image width and height but you can also specify a region of the image to read.  In our example, the image is in the raw 8-bit RGB format and is 6000 pixels wide and 4000 pixels high.  However, we only want a region of 600 by 400 near the center of the image:
 </p>
 
@@ -261,7 +261,7 @@ convert -size 6000x4000 -depth 8 \
   -extract 600x400+1900+2900 rgb:image image.jpg
 </pre>
 
-<h3>Inline Image Resize</h3>
+<h4>Inline Image Resize</h4>
 <p>It is sometimes convenient to resize an image as they are read.  Suppose you have hundreds of large JPEG images you want to convert to a sequence of PNG thumbails:
 </p>
 
@@ -278,7 +278,7 @@ is read:
 convert '*.jpg[120x120]' thumbnail%03d.png
 </pre>
 
-<h3>Inline Image Crop</h3>
+<h4>Inline Image Crop</h4>
 <p>It is sometimes convenient to crop an image as they are read.  Suppose you have hundreds of large JPEG images you want to convert to a sequence of PNG thumbails:
 </p>
 
@@ -294,7 +294,7 @@ convert '*.jpg[120x120+10+5]' thumbnail%03d.png
 </pre>
 
 
-<h3>Filename References</h3>
+<h4>Filename References</h4>
 
 <p>There are two methods to use a filename to reference other image filenames.
 The first is with '<code>@</code>' which reads image filenames separated by white space from the specified file.  Assume the file <code>myimages.txt</code> consists of a list of filenames, like so:
@@ -345,14 +345,26 @@ image-4.jpg
 image-5.jpg
 </pre>
 
-<h3>Stream Buffering</h3>
+<h4>Stream Buffering</h4>
 <p>By default, the input stream is buffered.  To ensure information on the source file or terminal is read as soon as its available, set the buffer size to 0:</p>
 
 <pre>
 convert logo: gif:- | display -define stream:buffer-size=0 gif:-
 </pre>
 
-<h2 class="magick-header"><a id="setting"></a>Image Setting</h2>
+<h2 class="magick-header"><a id="option"></a>Command-line Options</h2>
+
+<p>You can direct the behavior of ImageMagick utilities with these command-line <a href="command-line-options.html">options</a>.  The behavior of an option falls into one of these categories:</p>
+
+<ul>
+<li><a href="command-line-processing.html#setting">Image Setting</a></li>
+<li><a href="command-line-processing.html#operator">Image Operator</a></li>
+<li><a href="command-line-processing.html#sequence">Image Sequence Operator</a></li>
+<li><a href="command-line-processing.html#geometry">Image Geometry</a></li>
+<li><a href="command-line-processing.html#stack">Image Stack</a></li>
+</ul>
+
+<h4 class="magick-header"><a id="setting"></a>Image Setting</h4>
 
 <p>An image setting persists as it appears on the command-line and may affect
 subsequent processing such as reading an image, an image operator, or when
@@ -360,7 +372,7 @@ writing an image as appropriate.  An image setting stays in effect until it
 is reset or the command-line terminates.  The image settings include:</p>
 
 <ul>
-<a href="command-line-options.html#adjoin">&#x2011;adjoin</a>  • <a href="command-line-options.html#affine">&#x2011;affine</a>  • <a href="command-line-options.html#alpha">&#x2011;alpha</a>  • <a href="command-line-options.html#antialias">&#x2011;antialias</a>  • <a href="command-line-options.html#authenticate">&#x2011;authenticate</a>  • <a href="command-line-options.html#background">&#x2011;background</a>  • <a href="command-line-options.html#bias">&#x2011;bias</a>  • <a href="command-line-options.html#black-point-compensation">&#x2011;black&#x2011;point&#x2011;compensation</a>  • <a href="command-line-options.html#blue-primary">&#x2011;blue&#x2011;primary</a>  • <a href="command-line-options.html#bordercolor">&#x2011;bordercolor</a>  • <a href="command-line-options.html#caption">&#x2011;caption</a>  • <a href="command-line-options.html#channel">&#x2011;channel</a>  • <a href="command-line-options.html#comment">&#x2011;comment</a>  • <a href="command-line-options.html#compress">&#x2011;compress</a>  • <a href="command-line-options.html#debug">&#x2011;debug</a>  • <a href="command-line-options.html#define">&#x2011;define</a>  • <a href="command-line-options.html#delay">&#x2011;delay</a>  • <a href="command-line-options.html#density">&#x2011;density</a>  • <a href="command-line-options.html#depth">&#x2011;depth</a>  • <a href="command-line-options.html#direction">&#x2011;direction</a>  • <a href="command-line-options.html#display">&#x2011;display</a>  • <a href="command-line-options.html#dispose">&#x2011;dispose</a>  • <a href="command-line-options.html#dither">&#x2011;dither</a>  • <a href="command-line-options.html#encoding">&#x2011;encoding</a>  • <a href="command-line-options.html#endian">&#x2011;endian</a>  • <a href="command-line-options.html#extract">&#x2011;extract</a>  • <a href="command-line-options.html#family">&#x2011;family</a>  • <a href="command-line-options.html#fill">&#x2011;fill</a>  • <a href="command-line-options.html#filter">&#x2011;filter</a>  • <a href="command-line-options.html#font">&#x2011;font</a>  • <a href="command-line-options.html#format">&#x2011;format</a>  • <a href="command-line-options.html#fuzz">&#x2011;fuzz</a>  • <a href="command-line-options.html#geometry">&#x2011;geometry</a>  • <a href="command-line-options.html#gravity">&#x2011;gravity</a>  • <a href="command-line-options.html#green-primary">&#x2011;green&#x2011;primary</a>  • <a href="command-line-options.html#interlace">&#x2011;interlace</a>  • <a href="command-line-options.html#intent">&#x2011;intent</a>  • <a href="command-line-options.html#interpolate">&#x2011;interpolate</a>  • <a href="command-line-options.html#label">&#x2011;label</a>  • <a href="command-line-options.html#limit">&#x2011;limit</a>  • <a href="command-line-options.html#linewidth">&#x2011;linewidth</a>  • <a href="command-line-options.html#log">&#x2011;log</a>  • <a href="command-line-options.html#loop">&#x2011;loop</a>  • <a href="command-line-options.html#mask">&#x2011;mask</a>  • <a href="command-line-options.html#mattecolor">&#x2011;mattecolor</a>  • <a href="command-line-options.html#monitor">&#x2011;monitor</a>  • <a href="command-line-options.html#orient">&#x2011;orient</a>  • <a href="command-line-options.html#page">&#x2011;page</a>  • <a href="command-line-options.html#pointsize">&#x2011;pointsize</a>  • <a href="command-line-options.html#preview">&#x2011;preview</a>  • <a href="command-line-options.html#quality">&#x2011;quality</a>  • <a href="command-line-options.html#quiet">&#x2011;quiet</a>  • <a href="command-line-options.html#red-primary">&#x2011;red&#x2011;primary</a>  • <a href="command-line-options.html#region">&#x2011;region</a>  • <a href="command-line-options.html#render">&#x2011;render</a>  • <a href="command-line-options.html#repage">&#x2011;repage</a>  • <a href="command-line-options.html#sampling-factor">&#x2011;sampling&#x2011;factor</a>  • <a href="command-line-options.html#scene">&#x2011;scene</a>  • <a href="command-line-options.html#seed">&#x2011;seed</a>  • <a href="command-line-options.html#size">&#x2011;size</a>  • <a href="command-line-options.html#stretch">&#x2011;stretch</a>  • <a href="command-line-options.html#stroke">&#x2011;stroke</a>  • <a href="command-line-options.html#strokewidth">&#x2011;strokewidth</a>  • <a href="command-line-options.html#style">&#x2011;style</a>  • <a href="command-line-options.html#texture">&#x2011;texture</a>  • <a href="command-line-options.html#tile">&#x2011;tile</a>  • <a href="command-line-options.html#transparent-color">&#x2011;transparent&#x2011;color</a>  • <a href="command-line-options.html#treedepth">&#x2011;treedepth</a>  • <a href="command-line-options.html#type">&#x2011;type</a>  • <a href="command-line-options.html#undercolor">&#x2011;undercolor</a>  • <a href="command-line-options.html#units">&#x2011;units</a>  • <a href="command-line-options.html#verbose">&#x2011;verbose</a>  • <a href="command-line-options.html#virtual-pixel">&#x2011;virtual&#x2011;pixel</a>  • <a href="command-line-options.html#weight">&#x2011;weight</a> </ul>
+<a href="command-line-options.html#adjoin">&#x2011;adjoin</a>  • <a href="command-line-options.html#affine">&#x2011;affine</a>  • <a href="command-line-options.html#alpha">&#x2011;alpha</a>  • <a href="command-line-options.html#alpha-color">&#x2011;alpha&#x2011;color</a>  • <a href="command-line-options.html#antialias">&#x2011;antialias</a>  • <a href="command-line-options.html#authenticate">&#x2011;authenticate</a>  • <a href="command-line-options.html#background">&#x2011;background</a>  • <a href="command-line-options.html#bias">&#x2011;bias</a>  • <a href="command-line-options.html#black-point-compensation">&#x2011;black&#x2011;point&#x2011;compensation</a>  • <a href="command-line-options.html#blue-primary">&#x2011;blue&#x2011;primary</a>  • <a href="command-line-options.html#bordercolor">&#x2011;bordercolor</a>  • <a href="command-line-options.html#caption">&#x2011;caption</a>  • <a href="command-line-options.html#channel">&#x2011;channel</a>  • <a href="command-line-options.html#comment">&#x2011;comment</a>  • <a href="command-line-options.html#compress">&#x2011;compress</a>  • <a href="command-line-options.html#debug">&#x2011;debug</a>  • <a href="command-line-options.html#define">&#x2011;define</a>  • <a href="command-line-options.html#delay">&#x2011;delay</a>  • <a href="command-line-options.html#density">&#x2011;density</a>  • <a href="command-line-options.html#depth">&#x2011;depth</a>  • <a href="command-line-options.html#direction">&#x2011;direction</a>  • <a href="command-line-options.html#display">&#x2011;display</a>  • <a href="command-line-options.html#dispose">&#x2011;dispose</a>  • <a href="command-line-options.html#dither">&#x2011;dither</a>  • <a href="command-line-options.html#encoding">&#x2011;encoding</a>  • <a href="command-line-options.html#endian">&#x2011;endian</a>  • <a href="command-line-options.html#extract">&#x2011;extract</a>  • <a href="command-line-options.html#family">&#x2011;family</a>  • <a href="command-line-options.html#fill">&#x2011;fill</a>  • <a href="command-line-options.html#filter">&#x2011;filter</a>  • <a href="command-line-options.html#font">&#x2011;font</a>  • <a href="command-line-options.html#format">&#x2011;format</a>  • <a href="command-line-options.html#fuzz">&#x2011;fuzz</a>  • <a href="command-line-options.html#geometry">&#x2011;geometry</a>  • <a href="command-line-options.html#gravity">&#x2011;gravity</a>  • <a href="command-line-options.html#green-primary">&#x2011;green&#x2011;primary</a>  • <a href="command-line-options.html#interlace">&#x2011;interlace</a>  • <a href="command-line-options.html#intent">&#x2011;intent</a>  • <a href="command-line-options.html#interpolate">&#x2011;interpolate</a>  • <a href="command-line-options.html#label">&#x2011;label</a>  • <a href="command-line-options.html#limit">&#x2011;limit</a>  • <a href="command-line-options.html#linewidth">&#x2011;linewidth</a>  • <a href="command-line-options.html#log">&#x2011;log</a>  • <a href="command-line-options.html#loop">&#x2011;loop</a>  • <a href="command-line-options.html#mask">&#x2011;mask</a>  • <a href="command-line-options.html#mattecolor">&#x2011;mattecolor</a>  • <a href="command-line-options.html#monitor">&#x2011;monitor</a>  • <a href="command-line-options.html#orient">&#x2011;orient</a>  • <a href="command-line-options.html#page">&#x2011;page</a>  • <a href="command-line-options.html#pointsize">&#x2011;pointsize</a>  • <a href="command-line-options.html#preview">&#x2011;preview</a>  • <a href="command-line-options.html#quality">&#x2011;quality</a>  • <a href="command-line-options.html#quiet">&#x2011;quiet</a>  • <a href="command-line-options.html#red-primary">&#x2011;red&#x2011;primary</a>  • <a href="command-line-options.html#region">&#x2011;region</a>  • <a href="command-line-options.html#render">&#x2011;render</a>  • <a href="command-line-options.html#repage">&#x2011;repage</a>  • <a href="command-line-options.html#sampling-factor">&#x2011;sampling&#x2011;factor</a>  • <a href="command-line-options.html#scene">&#x2011;scene</a>  • <a href="command-line-options.html#seed">&#x2011;seed</a>  • <a href="command-line-options.html#size">&#x2011;size</a>  • <a href="command-line-options.html#stretch">&#x2011;stretch</a>  • <a href="command-line-options.html#stroke">&#x2011;stroke</a>  • <a href="command-line-options.html#strokewidth">&#x2011;strokewidth</a>  • <a href="command-line-options.html#style">&#x2011;style</a>  • <a href="command-line-options.html#texture">&#x2011;texture</a>  • <a href="command-line-options.html#tile">&#x2011;tile</a>  • <a href="command-line-options.html#transparent-color">&#x2011;transparent&#x2011;color</a>  • <a href="command-line-options.html#treedepth">&#x2011;treedepth</a>  • <a href="command-line-options.html#type">&#x2011;type</a>  • <a href="command-line-options.html#undercolor">&#x2011;undercolor</a>  • <a href="command-line-options.html#units">&#x2011;units</a>  • <a href="command-line-options.html#verbose">&#x2011;verbose</a>  • <a href="command-line-options.html#virtual-pixel">&#x2011;virtual&#x2011;pixel</a>  • <a href="command-line-options.html#weight">&#x2011;weight</a> </ul>
 
 <p>In this example, <var>-channel</var> applies to each of the images, since, as we mentioned, settings persist:
 </p>
@@ -369,7 +381,7 @@ is reset or the command-line terminates.  The image settings include:</p>
 convert -channel RGB wand.png wizard.png images.png
 </pre>
 
-<h2 class="magick-header"><a id="operator"></a>Image Operator</h2>
+<h4 class="magick-header"><a id="operator"></a>Image Operator</h4>
 
 <p>An image operator differs from a setting in that it affects the image
 immediately as it appears on the command-line.  An operator is
@@ -389,7 +401,7 @@ include:</p>
 convert wand.png -negate wizard.png images.png
 </pre>
 
-<h2 class="magick-header"><a id="sequence"></a>Image Sequence Operator</h2>
+<h4 class="magick-header"><a id="sequence"></a>Image Sequence Operator</h4>
 
 <p>An image sequence operator differs from a setting in that it affects an
 image sequence immediately as it appears on the command-line.  Choose from
@@ -397,8 +409,13 @@ these image sequence operators:</p>
 
 <ul>
 <a href="command-line-options.html#append">&#x2011;append</a>  • <a href="command-line-options.html#affinity">&#x2011;affinity</a>  • <a href="command-line-options.html#average">&#x2011;average</a>  • <a href="command-line-options.html#clut">&#x2011;clut</a>  • <a href="command-line-options.html#coalesce">&#x2011;coalesce</a>  • <a href="command-line-options.html#combine">&#x2011;combine</a>  • <a href="command-line-options.html#compare">&#x2011;compare</a>  • <a href="command-line-options.html#complex">&#x2011;complex</a>  • <a href="command-line-options.html#composite">&#x2011;composite</a>  • <a href="command-line-options.html#copy">&#x2011;copy</a>  • <a href="command-line-options.html#crop">&#x2011;crop</a>  • <a href="command-line-options.html#debug">&#x2011;debug</a>  • <a href="command-line-options.html#deconstruct">&#x2011;deconstruct</a>  • <a href="command-line-options.html#delete">&#x2011;delete</a>  • <a href="command-line-options.html#evaluate-sequence">&#x2011;evaluate&#x2011;sequence</a>  • <a href="command-line-options.html#fft">&#x2011;fft</a>  • <a href="command-line-options.html#flatten">&#x2011;flatten</a>  • <a href="command-line-options.html#fx">&#x2011;fx</a>  • <a href="command-line-options.html#hald-clut">&#x2011;hald&#x2011;clut</a>  • <a href="command-line-options.html#ift">&#x2011;ift</a>  • <a href="command-line-options.html#identify">&#x2011;identify</a>  • <a href="command-line-options.html#insert">&#x2011;insert</a>  • <a href="command-line-options.html#layers">&#x2011;layers</a>  • <a href="command-line-options.html#limit">&#x2011;limit</a>  • <a href="command-line-options.html#map">&#x2011;map</a>  • <a href="command-line-options.html#maximum">&#x2011;maximum</a>  • <a href="command-line-options.html#minimum">&#x2011;minimum</a>  • <a href="command-line-options.html#morph">&#x2011;morph</a>  • <a href="command-line-options.html#mosaic">&#x2011;mosaic</a>  • <a href="command-line-options.html#optimize">&#x2011;optimize</a>  • <a href="command-line-options.html#print">&#x2011;print</a>  • <a href="command-line-options.html#process">&#x2011;process</a>  • <a href="command-line-options.html#quiet">&#x2011;quiet</a>  • <a href="command-line-options.html#separate">&#x2011;separate</a>  • <a href="command-line-options.html#swap">&#x2011;swap</a>  • <a href="command-line-options.html#write">&#x2011;write</a> </ul>
+<p>In this example, <var>-append</var> appends three images into one:</p>
 
-<h2 class="magick-header"><a id="geometry"></a>Image Geometry</h2>
+<pre>
+convert mikayla.png picnic.png beach.png -append vacation.png
+</pre>
+
+<h4 class="magick-header"><a id="geometry"></a>Image Geometry</h4>
 
 <p>Many command-line <a href="command-line-options.html">options</a> take a <var>geometry</var> argument
 to specify such things as the desired width and height of an image and other
@@ -481,7 +498,7 @@ setting for more specifics.</p>
 </table></div>
 
 
-<h3>Basic adjustments to width and height; the operators <code>%</code>, <code>^</code>, and <code>!</code> </h3>
+<h4>Basic adjustments to width and height; the operators <code>%</code>, <code>^</code>, and <code>!</code> </h4>
 <p>Here, just below, are a few simple examples of <var>geometry</var>, showing how it might be used as an argument to the <a href="command-line-options.html#resize">&#x2011;resize</a> option. We'll use the internal image <code>logo:</code> for our input image.
 <a href="../images/logo.png">
 This fine image</a> is 640 pixels wide and 480 pixels high. We say its <var>dimensions</var> are 640x480. When we give dimensions of an image, the width (the horizontal dimension) always precedes the height (the vertical dimension). This will be true when we speak of coordinates or <var>offsets</var> into an image, which will always be <var>x</var>–value followed by <var>y</var>. Just think of your high school algebra classes and the <var>xy</var>–plane. (Well, almost: our <var>y</var>–axis will always go downward!)
@@ -504,7 +521,7 @@ convert logo: -resize '100x200!' dochThinWiz.png
 
 <p>We see that ImageMagick is very good about preserving aspect ratios of images, to prevent distortion of your favorite photos and images. But you might really want the dimensions to be <code>100x200</code>, thereby stretching the image. In this case just tell ImageMagick you really mean it (!) by appending an exclamation operator to the geometry. This will force the image size to exactly what you specify. So, for example, if you specify <code>100x200!</code> the dimensions will become exactly 100x200 (giving a small, vertically elongated wizard).</p>
 
-<h3>Bounding the width, height, and area; the operators <code>&gt;</code>, <code>&lt;</code>, and <code>@</code> </h3>
+<h4>Bounding the width, height, and area; the operators <code>&gt;</code>, <code>&lt;</code>, and <code>@</code> </h4>
 <p>
 Here are a few more examples:
 </p>
@@ -530,7 +547,7 @@ convert logo: -resize '10000@' wiz10000.png
 <p class="bg-info">In all the examples above and below, we have enclosed the <var>geometry</var> arguments  within quotation marks. Doing so is optional in many cases, but not always. We <var>must</var> enclose the geometry specifications in quotation marks when using <code>&lt;</code> or <code>&gt;</code> to prevent these characters from being interpreted by the shell as <var>file redirection</var>. On Windows systems, the carat <code>^</code>  needs to be within quotes, else it is ignored. To be safe, one should probably maintain a habit of enclosing all <var>geometry</var> arguments in quotes, as we have here.
 </p>
 
-<h3>Offsets in geometry</h3>
+<h4>Offsets in geometry</h4>
 <p>
 Here are some examples to illustrate the use of <var>offsets</var> in <var>geometry</var> arguments. One typical use of offsets is in conjunction with the
 <a href="command-line-options.html#region">&#x2011;region</a> option. This option allows many other options to modify the pixels within a specified rectangular subregion of an image. As such, it needs to be given the width and height of that region, and also an <var>offset</var> into the image, which is a pair of coordinates that indicate the location of the region within the larger image. Below, in the first example, we specify a region of size <code>100x200</code> to be located at the <var>xy</var>–coordinates <var>x</var>=10, <var>y</var>=20. Let's use the usual algebraic notation (<var>x</var>,<var>y</var>)=(10,20), for convenience.
@@ -551,7 +568,7 @@ convert logo: -gravity center -region '100x200-10+20' \
 </p>
 
 
-<h2 class="magick-header"><a id="stack"></a>Image Stack</h2>
+<h4 class="magick-header"><a id="stack"></a>Image Stack</h4>
 
 <p>In school, your teacher probably permitted you to work on problems on a scrap of paper and then copy the results to your test paper.  An image stack is similar.  It permits you to work on an image or image sequence in isolation and subsequently introduce the results back into the command-line.  The image stack is delineated with parenthesis.  Image operators only affect images in the current stack.  For example, we can limit the image rotation to just the wizard image like this:</p>
 
@@ -587,7 +604,7 @@ above.</p>
 
 <p>Each of these extensions are explained in the next few paragraphs.</p>
 
-<h3>Explicit Image Format</h3>
+<h4>Explicit Image Format</h4>
   <p>Images can be stored in a mryiad of image formats including the better known JPEG, PNG, TIFF and others.  ImageMagick must know the desired format of the image before it is written.  ImageMagick leverages the filename extension to determine the format.  For example, <code>image.jpg</code> tells ImageMagick to write the image in the JPEG format.  In some cases the filename does not identify the image format.  In these cases, the image is written in the format it was originally read unless an explicit image format is specified.  For example, suppose we want to write our image to a filename of <code>image</code> in the raw red, green, and blue intensity format:
   </p>
 
@@ -596,7 +613,7 @@ convert image.jpg rgb:image
 </pre>
 
 
-<h3>Standard Out</h3>
+<h4>Standard Out</h4>
   <p>Unix permits the output of one command to be piped to another.  ImageMagick permits piping one command to another with a filename of <code>-</code>.  In this example we pipe the output of <a href="convert.html">convert</a> to the <a href="display.html">display</a> program:
   </p>
 
@@ -606,7 +623,7 @@ convert logo: gif:- | display gif:-
 
 <p>Here the explicit format is optional.  The GIF image format has a signature that uniquely identifies it so ImageMagick can readily recognize the format as GIF.</p>
 
-<h3>Filename References</h3>
+<h4>Filename References</h4>
 <p>Optionally, use an embedded formatting character to write a sequential image list.  Suppose our output filename is <code>image-%d.jpg</code> and our image list includes 3 images.  You can expect these images files to be written:
 </p>
 
@@ -636,7 +653,7 @@ convert rose: -set filename:area '%wx%h' 'rose-%[filename:area].png'
   convert *.jpg +adjoin page-%d.pdf
 </pre>
 
-<h3>Stream Buffering</h3>
+<h4>Stream Buffering</h4>
 
 <p>By default, the output stream is buffered.  To ensure information appears on the destination file or terminal as soon as written, set the buffer size to 0:</p>
 

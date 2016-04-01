@@ -57,7 +57,7 @@
 
 <p>The ImageMagick <a href="command-line-processing.html">command-line</a> tools exit with a status of 0 if the command line arguments have a proper syntax and no problems are encountered.  Expect a descriptive message and an exit status of 1 if any exception occurs such as improper syntax, a problem reading or writing an image, or any other problem that prevents the command from completing successfully.</p>
 
-<p>Here is a short description for each command-line tool. Click on the program name to get details about the program usage and a list of command-line options that alters how the program behaves.  If you are just getting acquainted with ImageMagick, start with the <a href="command-line-tools.html#convert">convert</a> program.  Be sure to peruse Anthony Thyssen's tutorial on how to use ImageMagick utilities to <a href="http://www.imagemagick.org/Usage/">create, edit, compose, or convert</a> images from the command-line.</p>
+<p>Here is a short description for each command-line tool. Click on the program name to get details about the program usage and a list of command-line options that alters how the program behaves.  If you are just getting acquainted with ImageMagick, start with the <a href="command-line-tools.html#magick">magick</a> program.  Be sure to peruse Anthony Thyssen's tutorial on how to use ImageMagick utilities to <a href="http://www.imagemagick.org/Usage/">create, edit, compose, or convert</a> images from the command-line.</p>
 
 <dl class="dl-horizontal">
   <dt><a href="animate.html">animate</a></dt><dd>animate an image sequence on any X server.</dd>
@@ -68,6 +68,7 @@
   <dt><a id="display"></a><a href="display.html">display</a></dt><dd>display an image or image sequence on any X server.</dd>
   <dt><a id="identify"></a><a href="identify.html">identify</a></dt><dd>describe the format and characteristics of one or more image files.</dd>
   <dt><a id="import"></a><a href="import.html">import</a></dt><dd>save any visible window on an X server and outputs it as an image file. You can capture a single window, the entire screen, or any rectangular portion of the screen.</dd>
+  <dt><a id="magick"></a><a href="http://nextgen.imagemagick.org/www/magick.html">magick</a></dt><dd>convert between image formats as well as resize an image, blur, crop, despeckle, dither, draw on, flip, join, re-sample, and much more.</dd>
   <dt><a id="mogrify"></a><a href="mogrify.html">mogrify</a></dt><dd>resize an image, blur, crop, despeckle, dither, draw on, flip, join, re-sample, and much more.  Mogrify overwrites the original image file, whereas, <a href="convert.html">convert</a> writes to a different image file.</dd>
   <dt><a id="montage"></a><a href="montage.html">montage</a></dt><dd>create a composite image by combining several separate images.  The images are tiled on the composite image optionally adorned with a border, frame, image name, and more.</dd>
   <dt><a id="stream"></a><a href="stream.html">stream</a></dt><dd>a lightweight tool to stream one or more pixel components of the image or portion of the image to your choice of storage formats.  It writes the pixel components as they are read from the input image a row at a time making <code>stream</code> desirable when working with large images or when you require raw pixel components.</dd>
