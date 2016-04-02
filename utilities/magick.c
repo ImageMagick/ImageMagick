@@ -64,7 +64,7 @@ static int MagickMain(int argc,char **argv)
 
   typedef struct _CommandInfo
   {
-    char
+    const char
       *name;
 
     size_t
@@ -74,7 +74,7 @@ static int MagickMain(int argc,char **argv)
       command;
   } CommandInfo;
 
-  static const CommandInfo
+  static CommandInfo
     MagickCommands[] =
     {
       MagickCommandSize("magick", MagickImageCommand),  /* fallback command */
@@ -111,10 +111,6 @@ static int MagickMain(int argc,char **argv)
     int
       offset;
 
-    offset=LocaleNCompare(MagickCommands[i].name,argv[0],
-      MagickCommands[i].extent);
-    if (offset == 0)
-      break;
     if (argc > 1)
       {
         offset=LocaleNCompare(MagickCommands[i].name,argv[1],
@@ -126,6 +122,10 @@ static int MagickMain(int argc,char **argv)
             break;
           }
       }
+    offset=LocaleNCompare(MagickCommands[i].name,argv[0],
+      MagickCommands[i].extent);
+    if (offset == 0)
+      break;
   }
   i%=(sizeof(MagickCommands)/sizeof(MagickCommands[0]));
   status=MagickCommandGenesis(image_info,MagickCommands[i].command,argc,argv,
