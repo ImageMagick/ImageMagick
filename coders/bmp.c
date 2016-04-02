@@ -1110,21 +1110,18 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           indexes=GetAuthenticIndexQueue(image);
           for (x=0; x < ((ssize_t) image->columns-1); x+=2)
           {
-            if (IsValidColormapIndex(image,(*p >> 4) & 0x0f,&index,exception)
-                == MagickFalse)
+            (void) IsValidColormapIndex(image,(*p >> 4) & 0x0f,&index,
+              exception);
               break;
             SetPixelIndex(indexes+x,index);
-            if (IsValidColormapIndex(image,*p & 0x0f,&index,exception) ==
-                MagickFalse)
-              break;
+            (void) IsValidColormapIndex(image,*p & 0x0f,&index,exception);
             SetPixelIndex(indexes+x+1,index);
             p++;
           }
           if ((image->columns % 2) != 0)
             {
-              if (IsValidColormapIndex(image,(*p >> 4) & 0xf,&index,exception)
-                  == MagickFalse)
-                break;
+              (void) IsValidColormapIndex(image,(*p >> 4) & 0xf,&index,
+                exception);
               SetPixelIndex(indexes+(x++),index);
               p++;
             }
@@ -1160,8 +1157,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           indexes=GetAuthenticIndexQueue(image);
           for (x=(ssize_t) image->columns; x != 0; --x)
           {
-            if (IsValidColormapIndex(image,*p,&index,exception) == MagickFalse)
-              break;
+            (void) IsValidColormapIndex(image,*p,&index,exception);
             SetPixelIndex(indexes,index);
             indexes++;
             p++;
