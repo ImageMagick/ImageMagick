@@ -87,8 +87,7 @@ static int MagickMain(int argc,char **argv)
       MagickCommandSize("magick-script", MagickImageCommand),
       MagickCommandSize("mogrify", MogrifyImageCommand),
       MagickCommandSize("montage", MontageImageCommand),
-      MagickCommandSize("stream", StreamImageCommand),
-      MagickCommandSize("magick", MagickImageCommand)
+      MagickCommandSize("stream", StreamImageCommand)
     };
 
   char
@@ -131,9 +130,12 @@ static int MagickMain(int argc,char **argv)
     if (offset == 0)
       break;
   }
-  i%=(sizeof(MagickCommands)/sizeof(MagickCommands[0]));
-  status=MagickCommandGenesis(image_info,MagickCommands[i].command,argc,argv,
-    (char **) NULL,exception);
+  if (i == (sizeof(MagickCommands)/sizeof(MagickCommands[0])))
+    status=MagickCommandGenesis(image_info,MagickImageCommand,argc,argv,
+      (char **) NULL,exception);
+  else
+    status=MagickCommandGenesis(image_info,MagickCommands[i].command,argc,argv,
+      (char **) NULL,exception);
   image_info=DestroyImageInfo(image_info);
   exception=DestroyExceptionInfo(exception);
   MagickCoreTerminus();
