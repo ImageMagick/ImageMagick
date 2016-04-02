@@ -1099,23 +1099,18 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           for (x=0; x < ((ssize_t) image->columns-1); x+=2)
           {
-            if (IsValidColormapIndex(image,(*p >> 4) & 0x0f,&index,exception)
-                == MagickFalse)
-              break;
+            (void) IsValidColormapIndex(image,(*p >> 4) & 0x0f,&index,
+              exception);
             SetPixelIndex(image,index,q);
             q+=GetPixelChannels(image);
-            if (IsValidColormapIndex(image,*p & 0x0f,&index,exception) ==
-                MagickFalse)
-              break;
+            (void) IsValidColormapIndex(image,*p & 0x0f,&index,exception);
             SetPixelIndex(image,index,q);
             q+=GetPixelChannels(image);
             p++;
           }
           if ((image->columns % 2) != 0)
             {
-              if (IsValidColormapIndex(image,(*p >> 4) & 0xf,&index,exception)
-                  == MagickFalse)
-                break;
+              IsValidColormapIndex(image,(*p >> 4) & 0xf,&index,exception);
               SetPixelIndex(image,index,q);
               q+=GetPixelChannels(image);
               p++;
@@ -1152,9 +1147,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           for (x=(ssize_t) image->columns; x != 0; --x)
           {
-            if (IsValidColormapIndex(image,*p++,&index,exception) ==
-                MagickFalse)
-              break;
+            (void) IsValidColormapIndex(image,*p++,&index,exception);
             SetPixelIndex(image,index,q);
             q+=GetPixelChannels(image);
           }
