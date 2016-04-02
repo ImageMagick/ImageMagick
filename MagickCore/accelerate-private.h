@@ -432,20 +432,20 @@ OPENCL_ENDIF()
     const ChannelType channel, float red, float green, float blue, float alpha)
   {
     if ((channel & RedChannel) != 0)
-      setPixelRed(p,red);
+      setPixelRed(p,ClampToQuantum(red));
 
     if (number_channels > 2)
       {
         if ((channel & GreenChannel) != 0)
-          setPixelGreen(p,green);
+          setPixelGreen(p,ClampToQuantum(green));
 
         if ((channel & BlueChannel) != 0)
-          setPixelBlue(p,blue);
+          setPixelBlue(p,ClampToQuantum(blue));
       }
 
     if (((number_channels == 4) || (number_channels == 2)) &&
         ((channel & AlphaChannel) != 0))
-      setPixelAlpha(p,alpha);
+      setPixelAlpha(p,ClampToQuantum(alpha));
   }
 
   inline void WriteFloat4(__global CLQuantum *image, const unsigned int number_channels,
@@ -865,16 +865,12 @@ OPENCL_ENDIF()
   STRINGIFY(
   /*
   Reduce image noise and reduce detail levels by row
-  im: input pixels filtered_in  filtered_im: output pixels
-  filter : convolve kernel  width: convolve kernel size
-  channel : define which channel is blured
-  is_RGBA_BGRA : define the input is RGBA or BGRA
   */
-  __kernel void BlurRow(__global CLPixelType *im, __global float4 *filtered_im,
-                      const ChannelType channel, __constant float *filter,
-                      const unsigned int width, 
-                      const unsigned int imageColumns, const unsigned int imageRows,
-                      __local CLPixelType *temp)
+  __kernel void BlurRow(__global CLQuantum *image,
+    const unsigned int number_channels,const ChannelType channel,
+    __constant float *filter,const unsigned int width,
+    const unsigned int imageColumns,const unsigned int imageRows,
+    __local float4 *temp,__global float4 *tempImage)
   {
     const int x = get_global_id(0);
     const int y = get_global_id(1);
@@ -887,51 +883,37 @@ OPENCL_ENDIF()
 
     //group coordinate
     const int groupX=get_local_size(0)*get_group_id(0);
-    const int groupY=get_local_size(1)*get_group_id(1);
 
     //parallel load and clamp
     for (int i=get_local_id(0); i < loadSize; i=i+get_local_size(0))
     {
-      //int cx = ClampToCanvas(groupX+i, columns);
-      temp[i] = im[y * columns + ClampToCanvas(i+groupX-radius, columns)];
+      int cx = ClampToCanvas(i + groupX - radius, columns);
+      temp[i] = ReadFloat4(image, number_channels, columns, cx, y, channel);
     }
 
     // barrier
     barrier(CLK_LOCAL_MEM_FENCE);
 
     // only do the work if this is not a patched item
-    if (get_global_id(0) < columns) 
+    if (get_global_id(0) < columns)
     {
       // compute
       float4 result = (float4) 0;
 
       int i = 0;
 
-      \n #ifndef UFACTOR   \n
-      \n #define UFACTOR 8 \n
-      \n #endif                  \n
-
-      for ( ; i+UFACTOR < width; )
+      for ( ; i+7 < width; )
       {
-        \n #pragma unroll UFACTOR\n
-        for (int j=0; j < UFACTOR; j++, i++)
-        {
-          result+=filter[i]*convert_float4(temp[i+get_local_id(0)]);
-        }
+        for (int j=0; j < 8; j++)
+          result+=filter[i+j]*temp[i+j+get_local_id(0)];
+        i+=8;
       }
 
       for ( ; i < width; i++)
-      {
-        result+=filter[i]*convert_float4(temp[i+get_local_id(0)]);
-      }
-
-      result.x = ClampToQuantum(result.x);
-      result.y = ClampToQuantum(result.y);
-      result.z = ClampToQuantum(result.z);
-      result.w = ClampToQuantum(result.w);
+        result+=filter[i]*temp[i+get_local_id(0)];
 
       // write back to global
-      filtered_im[y*columns+x] = result;
+      tempImage[y*columns+x] = result;
     }
   }
   )
@@ -939,16 +921,12 @@ OPENCL_ENDIF()
   STRINGIFY(
   /*
   Reduce image noise and reduce detail levels by line
-  im: input pixels filtered_in  filtered_im: output pixels
-  filter : convolve kernel  width: convolve kernel size
-  channel : define which channel is blured\
-  is_RGBA_BGRA : define the input is RGBA or BGRA
   */
-  __kernel void BlurColumn(const __global float4 *blurRowData, __global CLPixelType *filtered_im,
-                            const ChannelType channel, __constant float *filter,
-                            const unsigned int width, 
-                            const unsigned int imageColumns, const unsigned int imageRows,
-                            __local float4 *temp)
+  __kernel void BlurColumn(const __global float4 *blurRowData,
+    const unsigned int number_channels,const ChannelType channel,
+    __constant float *filter,const unsigned int width,
+    const unsigned int imageColumns,const unsigned int imageRows,
+    __local float4 *temp,__global CLQuantum *filteredImage)
   {
     const int x = get_global_id(0);
     const int y = get_global_id(1);
@@ -968,9 +946,7 @@ OPENCL_ENDIF()
 
     //parallel load and clamp
     for (int i = get_local_id(1); i < loadSize; i=i+get_local_size(1))
-    {
       temp[i] = blurRowData[ClampToCanvas(i+groupY-radius, rows) * columns + groupX];
-    }
 
     // barrier
     barrier(CLK_LOCAL_MEM_FENCE);
@@ -983,31 +959,18 @@ OPENCL_ENDIF()
 
       int i = 0;
 
-      \n #ifndef UFACTOR   \n
-      \n #define UFACTOR 8 \n
-      \n #endif                  \n
-
-      for ( ; i+UFACTOR < width; )
+      for ( ; i+7 < width; )
       {
-        \n #pragma unroll UFACTOR \n
-        for (int j=0; j < UFACTOR; j++, i++)
-        {
-          result+=filter[i]*temp[i+get_local_id(1)];
-        }
+        for (int j=0; j < 8; j++)
+          result+=filter[i+j]*temp[i+j+get_local_id(1)];
+        i+=8;
       }
 
       for ( ; i < width; i++)
-      {
         result+=filter[i]*temp[i+get_local_id(1)];
-      }
-
-      result.x = ClampToQuantum(result.x);
-      result.y = ClampToQuantum(result.y);
-      result.z = ClampToQuantum(result.z);
-      result.w = ClampToQuantum(result.w);
 
       // write back to global
-      filtered_im[y*columns+x] = (CLPixelType) (result.x,result.y,result.z,result.w);
+      WriteFloat4(filteredImage, number_channels, columns, x, y, channel, result);
     }
   }
   )
@@ -1942,9 +1905,9 @@ OPENCL_ENDIF()
     const MagickFunction function,const unsigned int number_parameters,
     __constant float *parameters)
   {
-    const int x = get_global_id(0);
-    const int y = get_global_id(1);
-    const int columns = get_global_size(0);
+    const unsigned int x = get_global_id(0);
+    const unsigned int y = get_global_id(1);
+    const unsigned int columns = get_global_size(0);
     __global CLQuantum *p = getPixel(image, number_channels, columns, x, y);
 
     float red;
@@ -1990,9 +1953,9 @@ OPENCL_ENDIF()
   __kernel void Grayscale(__global CLQuantum *image,const int number_channels,
     const unsigned int colorspace,const unsigned int method)
   {
-    const int x = get_global_id(0);
-    const int y = get_global_id(1);
-    const int columns = get_global_size(0);
+    const unsigned int x = get_global_id(0);
+    const unsigned int y = get_global_id(1);
+    const unsigned int columns = get_global_size(0);
     __global CLQuantum *p = getPixel(image, number_channels, columns, x, y);
 
     float
@@ -3218,12 +3181,12 @@ STRINGIFY(
   STRINGIFY(
   __kernel void UnsharpMask(__global CLQuantum *image,const unsigned int number_channels,
     const ChannelType channel,__constant float *filter,const unsigned int width,
-    const unsigned int imageColumns,const unsigned int imageRows,__local float4 *pixels,
+    const unsigned int columns,const unsigned int rows,__local float4 *pixels,
     const float gain,const float threshold, const unsigned int justBlur,
     __global CLQuantum *filteredImage)
   {
-    const int x = get_global_id(0);
-    const int y = get_global_id(1);
+    const unsigned int x = get_global_id(0);
+    const unsigned int y = get_global_id(1);
 
     const unsigned int radius = (width - 1) / 2;
 
@@ -3232,8 +3195,8 @@ STRINGIFY(
     int endRow = (get_group_id(1) + 1) * get_local_size(1) + radius;
 
     while (row < endRow) {
-      int srcy = (row < 0) ? -row : row;	 // mirror pad
-      srcy = (srcy >= imageRows) ? (2 * imageRows - srcy - 1) : srcy;
+      int srcy = (row < 0) ? -row : row; // mirror pad
+      srcy = (srcy >= rows) ? (2 * rows - srcy - 1) : srcy;
 
       float4 value = 0.0f;
 
@@ -3244,8 +3207,8 @@ STRINGIFY(
         for (int j = 0; j < 8; ++j) { // unrolled
           int srcx = ix + j;
           srcx = (srcx < 0) ? -srcx : srcx;
-          srcx = (srcx >= imageColumns) ? (2 * imageColumns - srcx - 1) : srcx;
-          value += filter[i + j] * ReadFloat4(image, number_channels, imageColumns, srcx, srcy, channel);
+          srcx = (srcx >= columns) ? (2 * columns - srcx - 1) : srcx;
+          value += filter[i + j] * ReadFloat4(image, number_channels, columns, srcx, srcy, channel);
         }
         ix += 8;
         i += 8;
@@ -3253,8 +3216,8 @@ STRINGIFY(
 
       while (i < width) {
         int srcx = (ix < 0) ? -ix : ix; // mirror pad
-        srcx = (srcx >= imageColumns) ? (2 * imageColumns - srcx - 1) : srcx;
-        value += filter[i] * ReadFloat4(image, number_channels, imageColumns, srcx, srcy, channel);
+        srcx = (srcx >= columns) ? (2 * columns - srcx - 1) : srcx;
+        value += filter[i] * ReadFloat4(image, number_channels, columns, srcx, srcy, channel);
         ++i;
         ++ix;
       }
@@ -3281,7 +3244,7 @@ STRINGIFY(
     }
 
     if (justBlur == 0) { // apply sharpening
-      float4 srcPixel = ReadFloat4(image, number_channels, imageColumns, x, y, channel);
+      float4 srcPixel = ReadFloat4(image, number_channels, columns, x, y, channel);
       float4 diff = srcPixel - value;
 
       float quantumThreshold = QuantumRange*threshold;
@@ -3290,8 +3253,8 @@ STRINGIFY(
       value = select(srcPixel + diff * gain, srcPixel, mask);
     }
 
-    if ((x < imageColumns) && (y < imageRows))
-      WriteFloat4(filteredImage, number_channels, imageColumns, x, y, channel, value);
+    if ((x < columns) && (y < rows))
+      WriteFloat4(filteredImage, number_channels, columns, x, y, channel, value);
   }
   )
 
