@@ -358,10 +358,10 @@ OPENCL_ENDIF()
 
   STRINGIFY(
 
-  inline __global CLQuantum *getPixel(__global CLQuantum *image, const unsigned int number_channels,
+  inline unsigned int getPixelIndex(const unsigned int number_channels,
     const unsigned int columns, const unsigned int x, const unsigned int y)
   {
-    return image + (x * number_channels) + (y * columns * number_channels);
+    return (x * number_channels) + (y * columns * number_channels);
   }
 
   inline float getPixelRed(const __global CLQuantum *p)   { return (float)*p; }
@@ -414,10 +414,10 @@ OPENCL_ENDIF()
       *alpha=getPixelAlpha(p);
   }
 
-  inline float4 ReadFloat4(__global CLQuantum *image, const unsigned int number_channels,
+  inline float4 ReadFloat4(const __global CLQuantum *image, const unsigned int number_channels,
     const unsigned int columns, const unsigned int x, const unsigned int y, const ChannelType channel)
   {
-    const __global CLQuantum *p = getPixel(image, number_channels, columns, x, y);
+    const __global CLQuantum *p = image + getPixelIndex(number_channels, columns, x, y);
 
     float red = 0.0f;
     float green = 0.0f;
@@ -452,7 +452,7 @@ OPENCL_ENDIF()
     const unsigned int columns, const unsigned int x, const unsigned int y, const ChannelType channel,
     float4 pixel)
   {
-    __global CLQuantum *p = getPixel(image, number_channels, columns, x, y);
+    __global CLQuantum *p = image + getPixelIndex(number_channels, columns, x, y);
     WriteChannels(p, number_channels, channel, pixel.x, pixel.y, pixel.z, pixel.w);
   }
 
@@ -866,7 +866,7 @@ OPENCL_ENDIF()
   /*
   Reduce image noise and reduce detail levels by row
   */
-  __kernel void BlurRow(__global CLQuantum *image,
+  __kernel void BlurRow(const __global CLQuantum *image,
     const unsigned int number_channels,const ChannelType channel,
     __constant float *filter,const unsigned int width,
     const unsigned int imageColumns,const unsigned int imageRows,
@@ -1900,15 +1900,14 @@ OPENCL_ENDIF()
   number_parameters : numbers of parameters 
   parameters : the parameter
   */
-  __kernel void ComputeFunction(__global CLQuantum *image,
-    const unsigned int number_channels,const ChannelType channel,
-    const MagickFunction function,const unsigned int number_parameters,
+  __kernel void ComputeFunction(__global CLQuantum *image,const unsigned int number_channels,
+    const ChannelType channel,const MagickFunction function,const unsigned int number_parameters,
     __constant float *parameters)
   {
     const unsigned int x = get_global_id(0);
     const unsigned int y = get_global_id(1);
     const unsigned int columns = get_global_size(0);
-    __global CLQuantum *p = getPixel(image, number_channels, columns, x, y);
+    __global CLQuantum *p = image + getPixelIndex(number_channels, columns, x, y);
 
     float red;
     float green;
@@ -1956,7 +1955,7 @@ OPENCL_ENDIF()
     const unsigned int x = get_global_id(0);
     const unsigned int y = get_global_id(1);
     const unsigned int columns = get_global_size(0);
-    __global CLQuantum *p = getPixel(image, number_channels, columns, x, y);
+    __global CLQuantum *p = image + getPixelIndex(number_channels, columns, x, y);
 
     float
       blue,
@@ -3101,12 +3100,13 @@ STRINGIFY(
 */
 
   STRINGIFY(
-  __kernel void UnsharpMaskBlurColumn(const __global CLPixelType* inputImage, 
-        const __global float4 *blurRowData, __global CLPixelType *filtered_im,
-        const unsigned int imageColumns, const unsigned int imageRows, 
-        __local float4* cachedData, __local float* cachedFilter,
-        const ChannelType channel, const __global float *filter, const unsigned int width, 
-        const float gain, const float threshold)
+  __kernel void UnsharpMaskBlurColumn(const __global CLQuantum* image,
+    const __global float4 *blurRowData,const unsigned int number_channels,
+    const ChannelType channel,const unsigned int columns,
+    const unsigned int rows,__local float4* cachedData,
+    __local float* cachedFilter,const __global float *filter,
+    const unsigned int width,const float gain, const float threshold,
+    __global CLQuantum *filteredImage)
   {
     const unsigned int radius = (width-1)/2;
 
@@ -3115,17 +3115,17 @@ STRINGIFY(
     const int groupStartY = get_group_id(1)*get_local_size(1) - radius;
     const int groupStopY = (get_group_id(1)+1)*get_local_size(1) + radius;
 
-    if (groupStartY >= 0
-        && groupStopY < imageRows) {
-      event_t e = async_work_group_strided_copy(cachedData
-                                              ,blurRowData+groupStartY*imageColumns+groupX
-                                              ,groupStopY-groupStartY,imageColumns,0);
+    if ((groupStartY >= 0) && (groupStopY < rows))
+    {
+      event_t e = async_work_group_strided_copy(cachedData,
+        blurRowData+groupStartY*columns+groupX,groupStopY-groupStartY,columns,0);
       wait_group_events(1,&e);
     }
-    else {
-      for (int i = get_local_id(1); i < (groupStopY - groupStartY); i+=get_local_size(1)) {
-        cachedData[i] = blurRowData[ClampToCanvas(groupStartY+i,imageRows)*imageColumns+ groupX];
-      }
+    else
+    {
+      for (int i = get_local_id(1); i < (groupStopY - groupStartY); i+=get_local_size(1))
+        cachedData[i] = blurRowData[ClampToCanvas(groupStartY+i,rows)*columns + groupX];
+
       barrier(CLK_LOCAL_MEM_FENCE);
     }
     // cache the filter as well
@@ -3133,36 +3133,24 @@ STRINGIFY(
     wait_group_events(1,&e);
 
     // only do the work if this is not a patched item
-    //const int cy = get_group_id(1)*get_local_size(1)+get_local_id(1);
     const int cy = get_global_id(1);
 
-    if (cy < imageRows) {
+    if (cy < rows)
+    {
       float4 blurredPixel = (float4) 0.0f;
 
       int i = 0;
 
-      \n #ifndef UFACTOR   \n 
-        \n #define UFACTOR 8 \n 
-        \n #endif                  \n 
-
-        for ( ; i+UFACTOR < width; ) 
-        {
-          \n #pragma unroll UFACTOR \n
-            for (int j=0; j < UFACTOR; j++, i++)
-            {
-              blurredPixel+=cachedFilter[i]*cachedData[i+get_local_id(1)];
-            }
-        }
-
-      for ( ; i < width; i++)
+      for ( ; i+7 < width; )
       {
-        blurredPixel+=cachedFilter[i]*cachedData[i+get_local_id(1)];
+        for (int j=0; j < 8; j++, i++)
+          blurredPixel+=cachedFilter[i+j]*cachedData[i+j+get_local_id(1)];
       }
 
-      blurredPixel = floor((float4)(ClampToQuantum(blurredPixel.x), ClampToQuantum(blurredPixel.y)
-                                    ,ClampToQuantum(blurredPixel.z), ClampToQuantum(blurredPixel.w)));
+      for ( ; i < width; i++)
+        blurredPixel+=cachedFilter[i]*cachedData[i+get_local_id(1)];
 
-      float4 inputImagePixel = convert_float4(inputImage[cy*imageColumns+groupX]);
+      float4 inputImagePixel = ReadFloat4(image,number_channels,columns,groupX,cy,channel);
       float4 outputPixel = inputImagePixel - blurredPixel;
 
       float quantumThreshold = QuantumRange*threshold;
@@ -3171,15 +3159,13 @@ STRINGIFY(
       outputPixel = select(inputImagePixel + outputPixel * gain, inputImagePixel, mask);
 
       //write back
-      filtered_im[cy*imageColumns+groupX] = (CLPixelType) (ClampToQuantum(outputPixel.x), ClampToQuantum(outputPixel.y)
-                                                          ,ClampToQuantum(outputPixel.z), ClampToQuantum(outputPixel.w));
-
+      WriteFloat4(filteredImage,number_channels,columns,groupX,cy,channel,outputPixel);
     }
   }
   )
 
   STRINGIFY(
-  __kernel void UnsharpMask(__global CLQuantum *image,const unsigned int number_channels,
+  __kernel void UnsharpMask(const __global CLQuantum *image,const unsigned int number_channels,
     const ChannelType channel,__constant float *filter,const unsigned int width,
     const unsigned int columns,const unsigned int rows,__local float4 *pixels,
     const float gain,const float threshold, const unsigned int justBlur,
