@@ -570,7 +570,7 @@ static MagickBooleanType ForwardFourier(const FourierInfo *fourier_info,
   i=0L;
   for (y=0L; y < (ssize_t) fourier_info->height; y++)
   {
-    q=GetCacheViewAuthenticPixels(magnitude_view,0L,y,fourier_info->height,1UL,
+    q=GetCacheViewAuthenticPixels(magnitude_view,0L,y,fourier_info->width,1UL,
       exception);
     if (q == (Quantum *) NULL)
       break;
@@ -622,7 +622,7 @@ static MagickBooleanType ForwardFourier(const FourierInfo *fourier_info,
   phase_view=AcquireAuthenticCacheView(phase_image,exception);
   for (y=0L; y < (ssize_t) fourier_info->height; y++)
   {
-    q=GetCacheViewAuthenticPixels(phase_view,0L,y,fourier_info->height,1UL,
+    q=GetCacheViewAuthenticPixels(phase_view,0L,y,fourier_info->width,1UL,
       exception);
     if (q == (Quantum *) NULL)
       break;
@@ -1127,7 +1127,7 @@ static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
   /*
     Inverse fourier - read image and break down into a double array.
   */
-  magnitude_info=AcquireVirtualMemory((size_t)fourier_info->height,
+  magnitude_info=AcquireVirtualMemory((size_t) fourier_info->height,
     fourier_info->width*sizeof(*magnitude_pixels));
   phase_info=AcquireVirtualMemory((size_t) fourier_info->height,
     fourier_info->width*sizeof(*phase_pixels));
