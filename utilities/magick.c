@@ -65,7 +65,7 @@ static int MagickMain(int argc,char **argv)
   typedef struct _CommandInfo
   {
     const char
-      *name;
+      *client_name;
 
     size_t
       extent;
@@ -91,6 +91,9 @@ static int MagickMain(int argc,char **argv)
       MagickCommandSize("magick", MagickImageCommand)
     };
 
+  char
+    client_name[MagickPathExtent];
+
   ExceptionInfo
     *exception;
 
@@ -106,6 +109,7 @@ static int MagickMain(int argc,char **argv)
   MagickCoreGenesis(*argv,MagickTrue);
   exception=AcquireExceptionInfo();
   image_info=AcquireImageInfo();
+  GetPathComponent(argv[0],TailPath,client_name);
   for (i=0; i < (sizeof(MagickCommands)/sizeof(MagickCommands[0])); i++)
   {
     int
@@ -113,7 +117,7 @@ static int MagickMain(int argc,char **argv)
 
     if (argc > 1)
       {
-        offset=LocaleNCompare(MagickCommands[i].name,argv[1],
+        offset=LocaleNCompare(MagickCommands[i].client_name,argv[1],
           MagickCommands[i].extent);
         if (offset == 0)
           {
@@ -122,7 +126,7 @@ static int MagickMain(int argc,char **argv)
             break;
           }
       }
-    offset=LocaleNCompare(MagickCommands[i].name,argv[0],
+    offset=LocaleNCompare(MagickCommands[i].client_name,client_name,
       MagickCommands[i].extent);
     if (offset == 0)
       break;
