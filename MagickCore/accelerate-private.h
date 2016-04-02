@@ -365,6 +365,12 @@ OPENCL_ENDIF()
 
   STRINGIFY(
 
+  inline __global CLQuantum *getPixel(__global CLQuantum *image, const unsigned int number_channels,
+    const unsigned int columns, const unsigned int x, const unsigned int y)
+  {
+    return image + (x * number_channels) + (y * columns * number_channels);
+  }
+
   inline float getPixelRed(const __global CLQuantum *p)   { return (float)*p; }
   inline float getPixelGreen(const __global CLQuantum *p) { return (float)*(p+1); }
   inline float getPixelBlue(const __global CLQuantum *p)  { return (float)*(p+2); }
@@ -415,6 +421,20 @@ OPENCL_ENDIF()
       *alpha=getPixelAlpha(p);
   }
 
+  inline float4 ReadFloat4(__global CLQuantum *image, const unsigned int number_channels,
+    const unsigned int columns, const unsigned int x, const unsigned int y, const ChannelType channel)
+  {
+    const __global CLQuantum *p = getPixel(image, number_channels, columns, x, y);
+
+    float red = 0.0f;
+    float green = 0.0f;
+    float blue = 0.0f;
+    float alpha = 0.0f;
+
+    ReadChannels(p, number_channels, channel, &red, &green, &blue, &alpha);
+    return (float4)(red, green, blue, alpha);
+  }
+
   inline void WriteChannels(__global CLQuantum *p, const unsigned int number_channels,
     const ChannelType channel, float red, float green, float blue, float alpha)
   {
@@ -433,6 +453,14 @@ OPENCL_ENDIF()
     if (((number_channels == 4) || (number_channels == 2)) &&
         ((channel & AlphaChannel) != 0))
       setPixelAlpha(p,alpha);
+  }
+
+  inline void WriteFloat4(__global CLQuantum *image, const unsigned int number_channels,
+    const unsigned int columns, const unsigned int x, const unsigned int y, const ChannelType channel,
+    float4 pixel)
+  {
+    __global CLQuantum *p = getPixel(image, number_channels, columns, x, y);
+    WriteChannels(p, number_channels, channel, pixel.x, pixel.y, pixel.z, pixel.w);
   }
 
   inline float GetPixelIntensity(const unsigned int colorspace,
@@ -2127,7 +2155,7 @@ OPENCL_ENDIF()
     const int x = get_global_id(0);
     const int y = get_global_id(1);
     const int columns = get_global_size(0);
-    __global CLQuantum *p = image+(x * number_channels) + (y * columns * number_channels);
+    __global CLQuantum *p = getPixel(image, number_channels, columns, x, y);
 
     float red;
     float green;
@@ -2175,7 +2203,7 @@ OPENCL_ENDIF()
     const int x = get_global_id(0);
     const int y = get_global_id(1);
     const int columns = get_global_size(0);
-    __global CLQuantum *p = image+(x * number_channels) + (y * columns * number_channels);
+    __global CLQuantum *p = getPixel(image, number_channels, columns, x, y);
 
     float
       blue,
@@ -3485,11 +3513,11 @@ STRINGIFY(
 
 
   STRINGIFY(
-  __kernel void UnsharpMask(__global CLPixelType *im,
-    __global CLPixelType *filtered_im,__constant float *filter,
-    const unsigned int width,const unsigned int imageColumns,
-    const unsigned int imageRows,__local float4 *pixels,const float gain,
-    const float threshold, const unsigned int justBlur)
+  __kernel void UnsharpMask(__global CLQuantum *image,const unsigned int number_channels,
+    const ChannelType channel,__constant float *filter,const unsigned int width,
+    const unsigned int imageColumns,const unsigned int imageRows,__local float4 *pixels,
+    const float gain,const float threshold, const unsigned int justBlur,
+    __global CLQuantum *filteredImage)
   {
     const int x = get_global_id(0);
     const int y = get_global_id(1);
@@ -3501,7 +3529,7 @@ STRINGIFY(
     int endRow = (get_group_id(1) + 1) * get_local_size(1) + radius;
 
     while (row < endRow) {
-      int srcy =  (row < 0) ? -row : row;	 // mirror pad
+      int srcy = (row < 0) ? -row : row;	 // mirror pad
       srcy = (srcy >= imageRows) ? (2 * imageRows - srcy - 1) : srcy;
 
       float4 value = 0.0f;
@@ -3514,7 +3542,7 @@ STRINGIFY(
           int srcx = ix + j;
           srcx = (srcx < 0) ? -srcx : srcx;
           srcx = (srcx >= imageColumns) ? (2 * imageColumns - srcx - 1) : srcx;
-          value += filter[i + j] * convert_float4(im[srcx + srcy * imageColumns]);
+          value += filter[i + j] * ReadFloat4(image, number_channels, imageColumns, srcx, srcy, channel);
         }
         ix += 8;
         i += 8;
@@ -3523,7 +3551,7 @@ STRINGIFY(
       while (i < width) {
         int srcx = (ix < 0) ? -ix : ix; // mirror pad
         srcx = (srcx >= imageColumns) ? (2 * imageColumns - srcx - 1) : srcx;
-        value += filter[i] * convert_float4(im[srcx + srcy * imageColumns]);
+        value += filter[i] * ReadFloat4(image, number_channels, imageColumns, srcx, srcy, channel);
         ++i;
         ++ix;
       }
@@ -3539,15 +3567,9 @@ STRINGIFY(
     float4 value = (float4)(0.0f);
 
     int i = 0;
-    while (i + 7 < width) { // unrolled
-      value += (float4)(filter[i]) * pixels[px + (py + i) * prp];
-      value += (float4)(filter[i]) * pixels[px + (py + i + 1) * prp];
-      value += (float4)(filter[i]) * pixels[px + (py + i + 2) * prp];
-      value += (float4)(filter[i]) * pixels[px + (py + i + 3) * prp];
-      value += (float4)(filter[i]) * pixels[px + (py + i + 4) * prp];
-      value += (float4)(filter[i]) * pixels[px + (py + i + 5) * prp];
-      value += (float4)(filter[i]) * pixels[px + (py + i + 6) * prp];
-      value += (float4)(filter[i]) * pixels[px + (py + i + 7) * prp];
+    while (i + 7 < width) {
+      for (int j = 0; j < 8; ++j) // unrolled
+        value += (float4)(filter[i]) * pixels[px + (py + i + j) * prp];
       i += 8;
     }
     while (i < width) {
@@ -3556,7 +3578,7 @@ STRINGIFY(
     }
 
     if (justBlur == 0) { // apply sharpening
-      float4 srcPixel = convert_float4(im[x + y * imageColumns]);
+      float4 srcPixel = ReadFloat4(image, number_channels, imageColumns, x, y, channel);
       float4 diff = srcPixel - value;
 
       float quantumThreshold = QuantumRange*threshold;
@@ -3566,17 +3588,17 @@ STRINGIFY(
     }
 
     if ((x < imageColumns) && (y < imageRows))
-      filtered_im[x + y * imageColumns] = (CLPixelType)(ClampToQuantum(value.s0), ClampToQuantum(value.s1), ClampToQuantum(value.s2), ClampToQuantum(value.s3));
+      WriteFloat4(filteredImage, number_channels, imageColumns, x, y, channel, value);
   }
   )
 
 
   STRINGIFY(
-  __kernel __attribute__((reqd_work_group_size(64, 4, 1)))
-  void WaveletDenoise(__global CLQuantum *srcImage,__global CLQuantum *dstImage,
-    const unsigned int number_channels,const unsigned int max_channels,
-    const float threshold,const int passes,const unsigned int imageWidth,
-    const unsigned int imageHeight)
+    __kernel __attribute__((reqd_work_group_size(64, 4, 1)))
+    void WaveletDenoise(__global CLQuantum *srcImage,__global CLQuantum *dstImage,
+      const unsigned int number_channels,const unsigned int max_channels,
+      const float threshold,const int passes,const unsigned int imageWidth,
+      const unsigned int imageHeight)
   {
     const int pad = (1 << (passes - 1));
     const int tileSize = 64;
