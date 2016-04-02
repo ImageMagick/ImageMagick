@@ -3100,82 +3100,82 @@ STRINGIFY(
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
 
-    STRINGIFY(
-    __kernel void UnsharpMaskBlurColumn(const __global CLPixelType* inputImage, 
-          const __global float4 *blurRowData, __global CLPixelType *filtered_im,
-          const unsigned int imageColumns, const unsigned int imageRows, 
-          __local float4* cachedData, __local float* cachedFilter,
-          const ChannelType channel, const __global float *filter, const unsigned int width, 
-          const float gain, const float threshold)
-    {
-      const unsigned int radius = (width-1)/2;
+  STRINGIFY(
+  __kernel void UnsharpMaskBlurColumn(const __global CLPixelType* inputImage, 
+        const __global float4 *blurRowData, __global CLPixelType *filtered_im,
+        const unsigned int imageColumns, const unsigned int imageRows, 
+        __local float4* cachedData, __local float* cachedFilter,
+        const ChannelType channel, const __global float *filter, const unsigned int width, 
+        const float gain, const float threshold)
+  {
+    const unsigned int radius = (width-1)/2;
 
-      // cache the pixel shared by the workgroup
-      const int groupX = get_group_id(0);
-      const int groupStartY = get_group_id(1)*get_local_size(1) - radius;
-      const int groupStopY = (get_group_id(1)+1)*get_local_size(1) + radius;
+    // cache the pixel shared by the workgroup
+    const int groupX = get_group_id(0);
+    const int groupStartY = get_group_id(1)*get_local_size(1) - radius;
+    const int groupStopY = (get_group_id(1)+1)*get_local_size(1) + radius;
 
-      if (groupStartY >= 0
-          && groupStopY < imageRows) {
-        event_t e = async_work_group_strided_copy(cachedData
-                                                ,blurRowData+groupStartY*imageColumns+groupX
-                                                ,groupStopY-groupStartY,imageColumns,0);
-        wait_group_events(1,&e);
-      }
-      else {
-        for (int i = get_local_id(1); i < (groupStopY - groupStartY); i+=get_local_size(1)) {
-          cachedData[i] = blurRowData[ClampToCanvas(groupStartY+i,imageRows)*imageColumns+ groupX];
-        }
-        barrier(CLK_LOCAL_MEM_FENCE);
-      }
-      // cache the filter as well
-      event_t e = async_work_group_copy(cachedFilter,filter,width,0);
+    if (groupStartY >= 0
+        && groupStopY < imageRows) {
+      event_t e = async_work_group_strided_copy(cachedData
+                                              ,blurRowData+groupStartY*imageColumns+groupX
+                                              ,groupStopY-groupStartY,imageColumns,0);
       wait_group_events(1,&e);
+    }
+    else {
+      for (int i = get_local_id(1); i < (groupStopY - groupStartY); i+=get_local_size(1)) {
+        cachedData[i] = blurRowData[ClampToCanvas(groupStartY+i,imageRows)*imageColumns+ groupX];
+      }
+      barrier(CLK_LOCAL_MEM_FENCE);
+    }
+    // cache the filter as well
+    event_t e = async_work_group_copy(cachedFilter,filter,width,0);
+    wait_group_events(1,&e);
 
-      // only do the work if this is not a patched item
-      //const int cy = get_group_id(1)*get_local_size(1)+get_local_id(1);
-      const int cy = get_global_id(1);
+    // only do the work if this is not a patched item
+    //const int cy = get_group_id(1)*get_local_size(1)+get_local_id(1);
+    const int cy = get_global_id(1);
 
-      if (cy < imageRows) {
-        float4 blurredPixel = (float4) 0.0f;
+    if (cy < imageRows) {
+      float4 blurredPixel = (float4) 0.0f;
 
-        int i = 0;
+      int i = 0;
 
-        \n #ifndef UFACTOR   \n 
-          \n #define UFACTOR 8 \n 
-          \n #endif                  \n 
+      \n #ifndef UFACTOR   \n 
+        \n #define UFACTOR 8 \n 
+        \n #endif                  \n 
 
-          for ( ; i+UFACTOR < width; ) 
-          {
-            \n #pragma unroll UFACTOR \n
-              for (int j=0; j < UFACTOR; j++, i++)
-              {
-                blurredPixel+=cachedFilter[i]*cachedData[i+get_local_id(1)];
-              }
-          }
-
-        for ( ; i < width; i++)
+        for ( ; i+UFACTOR < width; ) 
         {
-          blurredPixel+=cachedFilter[i]*cachedData[i+get_local_id(1)];
+          \n #pragma unroll UFACTOR \n
+            for (int j=0; j < UFACTOR; j++, i++)
+            {
+              blurredPixel+=cachedFilter[i]*cachedData[i+get_local_id(1)];
+            }
         }
 
-        blurredPixel = floor((float4)(ClampToQuantum(blurredPixel.x), ClampToQuantum(blurredPixel.y)
-                                      ,ClampToQuantum(blurredPixel.z), ClampToQuantum(blurredPixel.w)));
-
-        float4 inputImagePixel = convert_float4(inputImage[cy*imageColumns+groupX]);
-        float4 outputPixel = inputImagePixel - blurredPixel;
-
-        float quantumThreshold = QuantumRange*threshold;
-
-        int4 mask = isless(fabs(2.0f*outputPixel), (float4)quantumThreshold);
-        outputPixel = select(inputImagePixel + outputPixel * gain, inputImagePixel, mask);
-
-        //write back
-        filtered_im[cy*imageColumns+groupX] = (CLPixelType) (ClampToQuantum(outputPixel.x), ClampToQuantum(outputPixel.y)
-                                                            ,ClampToQuantum(outputPixel.z), ClampToQuantum(outputPixel.w));
-
+      for ( ; i < width; i++)
+      {
+        blurredPixel+=cachedFilter[i]*cachedData[i+get_local_id(1)];
       }
+
+      blurredPixel = floor((float4)(ClampToQuantum(blurredPixel.x), ClampToQuantum(blurredPixel.y)
+                                    ,ClampToQuantum(blurredPixel.z), ClampToQuantum(blurredPixel.w)));
+
+      float4 inputImagePixel = convert_float4(inputImage[cy*imageColumns+groupX]);
+      float4 outputPixel = inputImagePixel - blurredPixel;
+
+      float quantumThreshold = QuantumRange*threshold;
+
+      int4 mask = isless(fabs(2.0f*outputPixel), (float4)quantumThreshold);
+      outputPixel = select(inputImagePixel + outputPixel * gain, inputImagePixel, mask);
+
+      //write back
+      filtered_im[cy*imageColumns+groupX] = (CLPixelType) (ClampToQuantum(outputPixel.x), ClampToQuantum(outputPixel.y)
+                                                          ,ClampToQuantum(outputPixel.z), ClampToQuantum(outputPixel.w));
+
     }
+  }
   )
 
   STRINGIFY(
@@ -3257,7 +3257,6 @@ STRINGIFY(
       WriteFloat4(filteredImage, number_channels, columns, x, y, channel, value);
   }
   )
-
 
   STRINGIFY(
     __kernel __attribute__((reqd_work_group_size(64, 4, 1)))
