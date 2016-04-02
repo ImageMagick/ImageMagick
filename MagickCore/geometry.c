@@ -362,7 +362,7 @@ MagickExport char *GetPageGeometry(const char *page_geometry)
       *geometry;
   } PageInfo;
 
-  static PageInfo
+  static const PageInfo
     PageSizes[] =
     {
       MagickPageSize("4x6", "288x432"),

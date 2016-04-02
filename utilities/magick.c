@@ -74,21 +74,21 @@ static int MagickMain(int argc,char **argv)
       command;
   } CommandInfo;
 
-  static CommandInfo
+  const CommandInfo
     MagickCommands[] =
     {
-      MagickCommandSize("magick", MagickImageCommand),  /* fallback command */
+      MagickCommandSize("convert", ConvertImageCommand),
       MagickCommandSize("animate", AnimateImageCommand),
       MagickCommandSize("compare", CompareImagesCommand),
       MagickCommandSize("conjure", ConjureImageCommand),
-      MagickCommandSize("convert", ConvertImageCommand),
       MagickCommandSize("display", DisplayImageCommand),
       MagickCommandSize("identify", IdentifyImageCommand),
       MagickCommandSize("import", ImportImageCommand),
       MagickCommandSize("magick-script", MagickImageCommand),
       MagickCommandSize("mogrify", MogrifyImageCommand),
       MagickCommandSize("montage", MontageImageCommand),
-      MagickCommandSize("stream", StreamImageCommand)
+      MagickCommandSize("stream", StreamImageCommand),
+      MagickCommandSize("magick", MagickImageCommand)
     };
 
   ExceptionInfo
