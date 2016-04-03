@@ -119,6 +119,7 @@ static int MagickMain(int argc,char **argv)
     if (offset == 0)
       break;
   }
+  i%=(sizeof(MagickCommands)/sizeof(MagickCommands[0]));
   if ((i == 0) && (argc > 1))
     {
       for (i=1; i < (sizeof(MagickCommands)/sizeof(MagickCommands[0])); i++)
@@ -131,8 +132,8 @@ static int MagickMain(int argc,char **argv)
             break;
           }
       }
+      i%=(sizeof(MagickCommands)/sizeof(MagickCommands[0]));
     }
-  i%=(sizeof(MagickCommands)/sizeof(MagickCommands[0]));
   status=MagickCommandGenesis(image_info,MagickCommands[i].command,argc,argv,
     (char **) NULL,exception);
   image_info=DestroyImageInfo(image_info);
