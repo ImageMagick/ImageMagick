@@ -122,7 +122,7 @@ typedef struct _FourierInfo
 %
 %    o image: the image.
 %
-%    o op: A complex op.
+%    o op: A complex operator.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -187,6 +187,7 @@ MagickExport Image *ComplexImages(const Image *images,const ComplexOperator op,
       image=DestroyImageList(image);
       return(image);
     }
+  image->depth=32UL;
   complex_images=NewImageList();
   AppendImageToList(&complex_images,image);
   image=CloneImage(images,images->columns,images->rows,MagickTrue,exception);
@@ -196,11 +197,8 @@ MagickExport Image *ComplexImages(const Image *images,const ComplexOperator op,
       return(complex_images);
     }
   AppendImageToList(&complex_images,image);
-  if (SetImageStorageClass(complex_images,DirectClass,exception) == MagickFalse)
-    {
-      complex_images=DestroyImageList(complex_images);
-      return(complex_images);
-    }
+  complex_images->storage_class=DirectClass;
+  complex_images->depth=32UL;
   /*
     Apply complex mathematics to image pixels.
   */
@@ -410,7 +408,7 @@ static MagickBooleanType RollFourier(const size_t width,const size_t height,
   /*
     Move zero frequency (DC, average color) from (0,0) to (width/2,height/2).
   */
-  source_info=AcquireVirtualMemory(height,width*sizeof(*source_pixels));
+  source_info=AcquireVirtualMemory(width,height*sizeof(*source_pixels));
   if (source_info == (MemoryInfo *) NULL)
     return(MagickFalse);
   source_pixels=(double *) GetVirtualMemoryBlob(source_info);
@@ -454,7 +452,7 @@ static MagickBooleanType ForwardQuadrantSwap(const size_t width,
   /*
     Swap quadrants.
   */
-  center=(ssize_t) floor((double) width/2L)+1L;
+  center=(ssize_t) (width/2L)+1L;
   status=RollFourier((size_t) center,height,0L,(ssize_t) height/2L,
     source_pixels);
   if (status == MagickFalse)
@@ -522,16 +520,16 @@ static MagickBooleanType ForwardFourier(const FourierInfo *fourier_info,
   if (phase_image == (Image *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
-        "TwoOrMoreImagesRequired","`%s'",image->filename);
+        "ImageSequenceRequired","`%s'",image->filename);
       return(MagickFalse);
     }
   /*
     Create "Fourier Transform" image from constituent arrays.
   */
-  magnitude_info=AcquireVirtualMemory((size_t) fourier_info->height,
-    fourier_info->width*sizeof(*magnitude_pixels));
-  phase_info=AcquireVirtualMemory((size_t) fourier_info->height,
-    fourier_info->width*sizeof(*phase_pixels));
+  magnitude_info=AcquireVirtualMemory((size_t) fourier_info->width,
+    fourier_info->height*sizeof(*magnitude_pixels));
+  phase_info=AcquireVirtualMemory((size_t) fourier_info->width,
+    fourier_info->height*sizeof(*phase_pixels));
   if ((magnitude_info == (MemoryInfo *) NULL) ||
       (phase_info == (MemoryInfo *) NULL))
     {
@@ -711,8 +709,8 @@ static MagickBooleanType ForwardFourierTransform(FourierInfo *fourier_info,
   /*
     Generate the forward Fourier transform.
   */
-  source_info=AcquireVirtualMemory((size_t) fourier_info->height,
-    fourier_info->width*sizeof(*source_pixels));
+  source_info=AcquireVirtualMemory((size_t) fourier_info->width,
+    fourier_info->height*sizeof(*source_pixels));
   if (source_info == (MemoryInfo *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
@@ -767,7 +765,7 @@ static MagickBooleanType ForwardFourierTransform(FourierInfo *fourier_info,
   }
   image_view=DestroyCacheView(image_view);
   forward_info=AcquireVirtualMemory((size_t) fourier_info->width,
-    2*(fourier_info->height/2+1)*sizeof(*forward_pixels));
+    (fourier_info->height/2+1)*sizeof(*forward_pixels));
   if (forward_info == (MemoryInfo *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
@@ -791,7 +789,7 @@ static MagickBooleanType ForwardFourierTransform(FourierInfo *fourier_info,
         gamma;
 
       /*
-        Normalize Fourier transform.
+        Normalize fourier transform.
       */
       i=0L;
       gamma=PerceptibleReciprocal((double) fourier_info->width*
@@ -850,25 +848,15 @@ static MagickBooleanType ForwardFourierTransformChannel(const Image *image,
     *magnitude_info,
     *phase_info;
 
-  size_t
-    extent;
-
   fourier_info.width=image->columns;
   fourier_info.height=image->rows;
-  if ((image->columns != image->rows) || ((image->columns % 2) != 0) ||
-      ((image->rows % 2) != 0))
-    {
-      extent=image->columns < image->rows ? image->rows : image->columns;
-      fourier_info.width=(extent & 0x01) == 1 ? extent+1UL : extent;
-    }
-  fourier_info.height=fourier_info.width;
-  fourier_info.center=(ssize_t) floor((double) fourier_info.width/2L)+1L;
+  fourier_info.center=(ssize_t) (fourier_info.width/2L)+1L;
   fourier_info.channel=channel;
   fourier_info.modulus=modulus;
-  magnitude_info=AcquireVirtualMemory((size_t) fourier_info.height,
-    fourier_info.center*sizeof(*magnitude_pixels));
-  phase_info=AcquireVirtualMemory((size_t) fourier_info.height,
-    fourier_info.center*sizeof(*phase_pixels));
+  magnitude_info=AcquireVirtualMemory((size_t) fourier_info.width,
+    (fourier_info.height/2+1)*sizeof(*magnitude_pixels));
+  phase_info=AcquireVirtualMemory((size_t) fourier_info.width,
+    (fourier_info.height/2+1)*sizeof(*phase_pixels));
   if ((magnitude_info == (MemoryInfo *) NULL) ||
       (phase_info == (MemoryInfo *) NULL))
     {
@@ -903,7 +891,7 @@ MagickExport Image *ForwardFourierTransformImage(const Image *image,
 #if !defined(MAGICKCORE_FFTW_DELEGATE)
   (void) modulus;
   (void) ThrowMagickException(exception,GetMagickModule(),
-    MissingDelegateWarning,"DelegateLibrarySupportNotBuiltIn","'%s' (FFTW)",
+    MissingDelegateWarning,"DelegateLibrarySupportNotBuiltIn","`%s' (FFTW)",
     image->filename);
 #else
   {
@@ -911,19 +899,11 @@ MagickExport Image *ForwardFourierTransformImage(const Image *image,
       *magnitude_image;
 
     size_t
-      extent,
       height,
       width;
 
     width=image->columns;
     height=image->rows;
-    if ((image->columns != image->rows) || ((image->columns % 2) != 0) ||
-        ((image->rows % 2) != 0))
-      {
-        extent=image->columns < image->rows ? image->rows : image->columns;
-        width=(extent & 0x01) == 1 ? extent+1UL : extent;
-      }
-    height=width;
     magnitude_image=CloneImage(image,width,height,MagickTrue,exception);
     if (magnitude_image != (Image *) NULL)
       {
@@ -1082,7 +1062,7 @@ static MagickBooleanType InverseQuadrantSwap(const size_t width,
   /*
     Swap quadrants.
   */
-  center=(ssize_t) floor((double) width/2L)+1L;
+  center=(ssize_t) (width/2L)+1L;
   for (y=1L; y < (ssize_t) height; y++)
     for (x=0L; x < (ssize_t) (width/2L+1L); x++)
       destination[(height-y)*center-x+width/2L]=source[y*width+x];
@@ -1127,12 +1107,12 @@ static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
   /*
     Inverse fourier - read image and break down into a double array.
   */
-  magnitude_info=AcquireVirtualMemory((size_t) fourier_info->height,
-    fourier_info->width*sizeof(*magnitude_pixels));
-  phase_info=AcquireVirtualMemory((size_t) fourier_info->height,
-    fourier_info->width*sizeof(*phase_pixels));
-  inverse_info=AcquireVirtualMemory((size_t) fourier_info->height,
-    fourier_info->center*sizeof(*inverse_pixels));
+  magnitude_info=AcquireVirtualMemory((size_t) fourier_info->width,
+    fourier_info->height*sizeof(*magnitude_pixels));
+  phase_info=AcquireVirtualMemory((size_t) fourier_info->width,
+    fourier_info->height*sizeof(*phase_pixels));
+  inverse_info=AcquireVirtualMemory((size_t) fourier_info->width,
+    (fourier_info->height/2+1)*sizeof(*inverse_pixels));
   if ((magnitude_info == (MemoryInfo *) NULL) ||
       (phase_info == (MemoryInfo *) NULL) ||
       (inverse_info == (MemoryInfo *) NULL))
@@ -1323,8 +1303,8 @@ static MagickBooleanType InverseFourierTransform(FourierInfo *fourier_info,
   ssize_t
     y;
 
-  source_info=AcquireVirtualMemory((size_t) fourier_info->height,
-    fourier_info->width*sizeof(*source_pixels));
+  source_info=AcquireVirtualMemory((size_t) fourier_info->width,
+    fourier_info->height*sizeof(*source_pixels));
   if (source_info == (MemoryInfo *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
@@ -1437,25 +1417,13 @@ static MagickBooleanType InverseFourierTransformChannel(
   MemoryInfo
     *inverse_info;
 
-  size_t
-    extent;
-
   fourier_info.width=magnitude_image->columns;
   fourier_info.height=magnitude_image->rows;
-  if ((magnitude_image->columns != magnitude_image->rows) ||
-      ((magnitude_image->columns % 2) != 0) ||
-      ((magnitude_image->rows % 2) != 0))
-    {
-      extent=magnitude_image->columns < magnitude_image->rows ?
-        magnitude_image->rows : magnitude_image->columns;
-      fourier_info.width=(extent & 0x01) == 1 ? extent+1UL : extent;
-    }
-  fourier_info.height=fourier_info.width;
-  fourier_info.center=(ssize_t) floor((double) fourier_info.width/2L)+1L;
+  fourier_info.center=(ssize_t) (fourier_info.width/2L)+1L;
   fourier_info.channel=channel;
   fourier_info.modulus=modulus;
-  inverse_info=AcquireVirtualMemory((size_t) fourier_info.height,
-    fourier_info.center*sizeof(*inverse_pixels));
+  inverse_info=AcquireVirtualMemory((size_t) fourier_info.width,
+    (fourier_info.height/2+1)*sizeof(*inverse_pixels));
   if (inverse_info == (MemoryInfo *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
@@ -1489,14 +1457,14 @@ MagickExport Image *InverseFourierTransformImage(const Image *magnitude_image,
   if (phase_image == (Image *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
-        "TwoOrMoreImagesRequired","`%s'",magnitude_image->filename);
+        "ImageSequenceRequired","`%s'",magnitude_image->filename);
       return((Image *) NULL);
     }
 #if !defined(MAGICKCORE_FFTW_DELEGATE)
   fourier_image=(Image *) NULL;
   (void) modulus;
   (void) ThrowMagickException(exception,GetMagickModule(),
-    MissingDelegateWarning,"DelegateLibrarySupportNotBuiltIn","'%s' (FFTW)",
+    MissingDelegateWarning,"DelegateLibrarySupportNotBuiltIn","`%s' (FFTW)",
     magnitude_image->filename);
 #else
   {
