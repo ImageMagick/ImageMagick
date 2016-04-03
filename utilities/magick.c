@@ -119,7 +119,7 @@ static int MagickMain(int argc,char **argv)
     if (offset == 0)
       break;
   }
-  if (i == 0 && argc > 1)
+  if ((i == 0) && (argc > 1))
     {
       for (i=1; i < (sizeof(MagickCommands)/sizeof(MagickCommands[0])); i++)
       {
