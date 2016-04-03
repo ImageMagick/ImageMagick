@@ -77,14 +77,14 @@ static int MagickMain(int argc,char **argv)
   const CommandInfo
     MagickCommands[] =
     {
+      MagickCommandSize("magick", MagickImageCommand),
       MagickCommandSize("convert", ConvertImageCommand),
+      MagickCommandSize("identify", IdentifyImageCommand),
       MagickCommandSize("animate", AnimateImageCommand),
       MagickCommandSize("compare", CompareImagesCommand),
       MagickCommandSize("conjure", ConjureImageCommand),
       MagickCommandSize("display", DisplayImageCommand),
-      MagickCommandSize("identify", IdentifyImageCommand),
       MagickCommandSize("import", ImportImageCommand),
-      MagickCommandSize("magick-script", MagickImageCommand),
       MagickCommandSize("mogrify", MogrifyImageCommand),
       MagickCommandSize("montage", MontageImageCommand),
       MagickCommandSize("stream", StreamImageCommand)
@@ -99,6 +99,9 @@ static int MagickMain(int argc,char **argv)
   ImageInfo
     *image_info;
 
+  int
+    offset;
+
   MagickBooleanType
     status;
 
@@ -111,13 +114,16 @@ static int MagickMain(int argc,char **argv)
   GetPathComponent(argv[0],TailPath,client_name);
   for (i=0; i < (sizeof(MagickCommands)/sizeof(MagickCommands[0])); i++)
   {
-    int
-      offset;
-
-    if (argc > 1)
+    offset=LocaleNCompare(MagickCommands[i].client_name,client_name,
+      MagickCommands[i].extent);
+    if (offset == 0)
+      break;
+  }
+  if (i == 0 && argc > 1)
+    {
+      for (i=1; i < (sizeof(MagickCommands)/sizeof(MagickCommands[0])); i++)
       {
-        offset=LocaleNCompare(MagickCommands[i].client_name,argv[1],
-          MagickCommands[i].extent);
+        offset=LocaleCompare(MagickCommands[i].client_name,argv[1]);
         if (offset == 0)
           {
             argc--;
@@ -125,17 +131,10 @@ static int MagickMain(int argc,char **argv)
             break;
           }
       }
-    offset=LocaleNCompare(MagickCommands[i].client_name,client_name,
-      MagickCommands[i].extent);
-    if (offset == 0)
-      break;
-  }
-  if (i == (sizeof(MagickCommands)/sizeof(MagickCommands[0])))
-    status=MagickCommandGenesis(image_info,MagickImageCommand,argc,argv,
-      (char **) NULL,exception);
-  else
-    status=MagickCommandGenesis(image_info,MagickCommands[i].command,argc,argv,
-      (char **) NULL,exception);
+    }
+  i%=(sizeof(MagickCommands)/sizeof(MagickCommands[0]));
+  status=MagickCommandGenesis(image_info,MagickCommands[i].command,argc,argv,
+    (char **) NULL,exception);
   image_info=DestroyImageInfo(image_info);
   exception=DestroyExceptionInfo(exception);
   MagickCoreTerminus();
