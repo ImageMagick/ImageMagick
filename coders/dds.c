@@ -2715,21 +2715,17 @@ static void WriteDDSInfo(Image *image, const size_t pixelFormat,
 
   if (pixelFormat == DDPF_FOURCC)
     {
-      // Compressed DDS requires linear compressed size of first image
+      /* Compressed DDS requires linear compressed size of first image */
       if (compression == FOURCC_DXT1)
-        (void) WriteBlobLSBLong(image,
-                 (unsigned int) (MagickMax(1,(image->columns+3)/4) *
-                                 MagickMax(1,(image->rows+3)/4) *
-                                 8));
+        (void) WriteBlobLSBLong(image,(unsigned int) (MagickMax(1,
+          (image->columns+3)/4)*MagickMax(1,(image->rows+3)/4)*8));
       else /* DXT5 */
-        (void) WriteBlobLSBLong(image,
-                 (unsigned int) (MagickMax(1,(image->columns+3)/4) *
-                                 MagickMax(1,(image->rows+3)/4) *
-                                 16));
+        (void) WriteBlobLSBLong(image,(unsigned int) (MagickMax(1,
+          (image->columns+3)/4)*MagickMax(1,(image->rows+3)/4)*16));
     }
   else
     {
-      // Uncompressed DDS requires byte pitch of first image
+      /* Uncompressed DDS requires byte pitch of first image */
       if (image->alpha_trait != UndefinedPixelTrait)
         (void) WriteBlobLSBLong(image,(unsigned int) (image->columns * 4));
       else
