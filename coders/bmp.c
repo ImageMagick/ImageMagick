@@ -1112,7 +1112,6 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             (void) IsValidColormapIndex(image,(*p >> 4) & 0x0f,&index,
               exception);
-              break;
             SetPixelIndex(indexes+x,index);
             (void) IsValidColormapIndex(image,*p & 0x0f,&index,exception);
             SetPixelIndex(indexes+x+1,index);
