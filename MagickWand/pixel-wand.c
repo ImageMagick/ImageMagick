@@ -747,9 +747,8 @@ WandExport char *PixelGetColorAsNormalizedString(const PixelWand *wand)
   assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  (void) FormatLocaleString(color,MagickPathExtent,"%g,%g,%g",
-    (double) (QuantumScale*wand->pixel.red),
-    (double) (QuantumScale*wand->pixel.green),
+  (void) FormatLocaleString(color,MagickPathExtent,"%g,%g,%g",(double)
+    (QuantumScale*wand->pixel.red),(double) (QuantumScale*wand->pixel.green),
     (double) (QuantumScale*wand->pixel.blue));
   if (wand->pixel.colorspace == CMYKColorspace)
     (void) FormatLocaleString(color+strlen(color),MagickPathExtent,",%g",
@@ -903,7 +902,8 @@ WandExport char *PixelGetException(const PixelWand *wand,
     {
       (void) ConcatenateMagickString(description," (",MagickPathExtent);
       (void) ConcatenateMagickString(description,GetLocaleExceptionMessage(
-        wand->exception->severity,wand->exception->description),MagickPathExtent);
+        wand->exception->severity,wand->exception->description),
+        MagickPathExtent);
       (void) ConcatenateMagickString(description,")",MagickPathExtent);
     }
   return(description);
@@ -1272,15 +1272,12 @@ WandExport void PixelGetQuantumPacket(const PixelWand *wand,PixelInfo *packet)
   packet->alpha_trait=wand->pixel.alpha_trait;
   if (wand->pixel.colorspace == CMYKColorspace)
     {
-      packet->red=(double) ClampToQuantum(QuantumRange-
-        (wand->pixel.red*(QuantumRange-wand->pixel.black)+
-        wand->pixel.black));
-      packet->green=(double) ClampToQuantum(QuantumRange-
-        (wand->pixel.green*(QuantumRange-wand->pixel.black)+
-        wand->pixel.black));
-      packet->blue=(double) ClampToQuantum(QuantumRange-
-        (wand->pixel.blue*(QuantumRange-wand->pixel.black)+
-        wand->pixel.black));
+      packet->red=(double) ClampToQuantum(QuantumRange-(wand->pixel.red*
+        (QuantumRange-wand->pixel.black)+wand->pixel.black));
+      packet->green=(double) ClampToQuantum(QuantumRange-(wand->pixel.green*
+        (QuantumRange-wand->pixel.black)+wand->pixel.black));
+      packet->blue=(double) ClampToQuantum(QuantumRange-(wand->pixel.blue*
+        (QuantumRange-wand->pixel.black)+wand->pixel.black));
       packet->black=(double) ClampToQuantum(wand->pixel.black);
       return;
     }
