@@ -2762,69 +2762,69 @@ STRINGIFY(
               density+=weight;
               gamma+=alpha;
             }
-         }
-      }
-    }
-
-    // initialize the accumulators to zero
-    if (itemID < actualNumPixelInThisChunk) {
-      outputPixelCache[itemID] = (float4)0.0f;
-      densityCache[itemID] = 0.0f;
-      if (matte != 0)
-        gammaCache[itemID] = 0.0f;
-    }
-    barrier(CLK_LOCAL_MEM_FENCE);
-
-    // accumulatte the filtered pixel value and the density
-    for (unsigned int i = 0; i < numItems; i++) {
-      if (pixelIndex != -1) {
-        if (itemID%numItems == i) {
-          outputPixelCache[pixelIndex]+=filteredPixel;
-          densityCache[pixelIndex]+=density;
-          if (matte!=0) {
-            gammaCache[pixelIndex]+=gamma;
           }
         }
       }
+
+      // initialize the accumulators to zero
+      if (itemID < actualNumPixelInThisChunk) {
+        outputPixelCache[itemID] = (float4)0.0f;
+        densityCache[itemID] = 0.0f;
+        if (matte != 0)
+          gammaCache[itemID] = 0.0f;
+      }
       barrier(CLK_LOCAL_MEM_FENCE);
-    }
 
-    if (itemID < actualNumPixelInThisChunk) {
-      if (matte==0) {
-        float density = densityCache[itemID];
-        float4 filteredPixel = outputPixelCache[itemID];
-        if (density!= 0.0f && density != 1.0)
-        {
-          density = PerceptibleReciprocal(density);
-          filteredPixel *= (float4)density;
+      // accumulatte the filtered pixel value and the density
+      for (unsigned int i = 0; i < numItems; i++) {
+        if (pixelIndex != -1) {
+          if (itemID%numItems == i) {
+            outputPixelCache[pixelIndex]+=filteredPixel;
+            densityCache[pixelIndex]+=density;
+            if (matte!=0) {
+              gammaCache[pixelIndex]+=gamma;
+            }
+          }
         }
-        filteredImage[y*filteredColumns+chunkStartX+itemID] = (CLPixelType) (ClampToQuantum(filteredPixel.x)
-                                                                       , ClampToQuantum(filteredPixel.y)
-                                                                       , ClampToQuantum(filteredPixel.z)
-                                                                       , ClampToQuantum(filteredPixel.w));
+        barrier(CLK_LOCAL_MEM_FENCE);
       }
-      else {
-        float density = densityCache[itemID];
-        float gamma = gammaCache[itemID];
-        float4 filteredPixel = outputPixelCache[itemID];
 
-        if (density!= 0.0f && density != 1.0) {
-          density = PerceptibleReciprocal(density);
-          filteredPixel *= (float4)density;
-          gamma *= density;
+      if (itemID < actualNumPixelInThisChunk) {
+        if (matte==0) {
+          float density = densityCache[itemID];
+          float4 filteredPixel = outputPixelCache[itemID];
+          if (density!= 0.0f && density != 1.0)
+          {
+            density = PerceptibleReciprocal(density);
+            filteredPixel *= (float4)density;
+          }
+          filteredImage[y*filteredColumns+chunkStartX+itemID] = (CLPixelType) (ClampToQuantum(filteredPixel.x)
+                                                                         , ClampToQuantum(filteredPixel.y)
+                                                                         , ClampToQuantum(filteredPixel.z)
+                                                                         , ClampToQuantum(filteredPixel.w));
         }
-        gamma = PerceptibleReciprocal(gamma);
+        else {
+          float density = densityCache[itemID];
+          float gamma = gammaCache[itemID];
+          float4 filteredPixel = outputPixelCache[itemID];
 
-        CLPixelType fp;
-        fp = (CLPixelType) ( ClampToQuantum(gamma*filteredPixel.x)
-          , ClampToQuantum(gamma*filteredPixel.y)
-          , ClampToQuantum(gamma*filteredPixel.z)
-          , ClampToQuantum(filteredPixel.w));
+          if (density!= 0.0f && density != 1.0) {
+            density = PerceptibleReciprocal(density);
+            filteredPixel *= (float4)density;
+            gamma *= density;
+          }
+          gamma = PerceptibleReciprocal(gamma);
 
-        filteredImage[y*filteredColumns+chunkStartX+itemID] = fp;
+          CLPixelType fp;
+          fp = (CLPixelType) ( ClampToQuantum(gamma*filteredPixel.x)
+            , ClampToQuantum(gamma*filteredPixel.y)
+            , ClampToQuantum(gamma*filteredPixel.z)
+            , ClampToQuantum(filteredPixel.w));
 
+          filteredImage[y*filteredColumns+chunkStartX+itemID] = fp;
+
+        }
       }
-    }
 
     } // end of chunking loop
   }
@@ -2932,69 +2932,69 @@ STRINGIFY(
               density+=weight;
               gamma+=alpha;
             }
-         }
-      }
-    }
-
-    // initialize the accumulators to zero
-    if (itemID < actualNumPixelInThisChunk) {
-      outputPixelCache[itemID] = (float4)0.0f;
-      densityCache[itemID] = 0.0f;
-      if (matte != 0)
-        gammaCache[itemID] = 0.0f;
-    }
-    barrier(CLK_LOCAL_MEM_FENCE);
-
-    // accumulatte the filtered pixel value and the density
-    for (unsigned int i = 0; i < numItems; i++) {
-      if (pixelIndex != -1) {
-        if (itemID%numItems == i) {
-          outputPixelCache[pixelIndex]+=filteredPixel;
-          densityCache[pixelIndex]+=density;
-          if (matte!=0) {
-            gammaCache[pixelIndex]+=gamma;
           }
         }
       }
+
+      // initialize the accumulators to zero
+      if (itemID < actualNumPixelInThisChunk) {
+        outputPixelCache[itemID] = (float4)0.0f;
+        densityCache[itemID] = 0.0f;
+        if (matte != 0)
+          gammaCache[itemID] = 0.0f;
+      }
       barrier(CLK_LOCAL_MEM_FENCE);
-    }
 
-    if (itemID < actualNumPixelInThisChunk) {
-      if (matte==0) {
-        float density = densityCache[itemID];
-        float4 filteredPixel = outputPixelCache[itemID];
-        if (density!= 0.0f && density != 1.0)
-        {
-          density = PerceptibleReciprocal(density);
-          filteredPixel *= (float4)density;
+      // accumulatte the filtered pixel value and the density
+      for (unsigned int i = 0; i < numItems; i++) {
+        if (pixelIndex != -1) {
+          if (itemID%numItems == i) {
+            outputPixelCache[pixelIndex]+=filteredPixel;
+            densityCache[pixelIndex]+=density;
+            if (matte!=0) {
+              gammaCache[pixelIndex]+=gamma;
+            }
+          }
         }
-        filteredImage[(chunkStartY+itemID)*filteredColumns+x] = (CLPixelType) (ClampToQuantum(filteredPixel.x)
-                                                                       , ClampToQuantum(filteredPixel.y)
-                                                                       , ClampToQuantum(filteredPixel.z)
-                                                                       , ClampToQuantum(filteredPixel.w));
+        barrier(CLK_LOCAL_MEM_FENCE);
       }
-      else {
-        float density = densityCache[itemID];
-        float gamma = gammaCache[itemID];
-        float4 filteredPixel = outputPixelCache[itemID];
 
-        if (density!= 0.0f && density != 1.0) {
-          density = PerceptibleReciprocal(density);
-          filteredPixel *= (float4)density;
-          gamma *= density;
+      if (itemID < actualNumPixelInThisChunk) {
+        if (matte==0) {
+          float density = densityCache[itemID];
+          float4 filteredPixel = outputPixelCache[itemID];
+          if (density!= 0.0f && density != 1.0)
+          {
+            density = PerceptibleReciprocal(density);
+            filteredPixel *= (float4)density;
+          }
+          filteredImage[(chunkStartY+itemID)*filteredColumns+x] = (CLPixelType) (ClampToQuantum(filteredPixel.x)
+                                                                         , ClampToQuantum(filteredPixel.y)
+                                                                         , ClampToQuantum(filteredPixel.z)
+                                                                         , ClampToQuantum(filteredPixel.w));
         }
-        gamma = PerceptibleReciprocal(gamma);
+        else {
+          float density = densityCache[itemID];
+          float gamma = gammaCache[itemID];
+          float4 filteredPixel = outputPixelCache[itemID];
 
-        CLPixelType fp;
-        fp = (CLPixelType) ( ClampToQuantum(gamma*filteredPixel.x)
-          , ClampToQuantum(gamma*filteredPixel.y)
-          , ClampToQuantum(gamma*filteredPixel.z)
-          , ClampToQuantum(filteredPixel.w));
+          if (density!= 0.0f && density != 1.0) {
+            density = PerceptibleReciprocal(density);
+            filteredPixel *= (float4)density;
+            gamma *= density;
+          }
+          gamma = PerceptibleReciprocal(gamma);
 
-        filteredImage[(chunkStartY+itemID)*filteredColumns+x] = fp;
+          CLPixelType fp;
+          fp = (CLPixelType) ( ClampToQuantum(gamma*filteredPixel.x)
+            , ClampToQuantum(gamma*filteredPixel.y)
+            , ClampToQuantum(gamma*filteredPixel.z)
+            , ClampToQuantum(filteredPixel.w));
 
+          filteredImage[(chunkStartY+itemID)*filteredColumns+x] = fp;
+
+        }
       }
-    }
 
     } // end of chunking loop
   }
