@@ -458,9 +458,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (number_colormaps == 1)
           for (i=0; i < (ssize_t) number_pixels; i++)
           {
-            if (IsValidColormapIndex(image,*p & mask,&index,exception) ==
-                MagickFalse)
-              break;
+            ValidateColormapValue(image,*p & mask,&index,exception);
             *p=colormap[(ssize_t) index];
             p++;
           }
@@ -469,9 +467,8 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
             for (i=0; i < (ssize_t) number_pixels; i++)
               for (x=0; x < (ssize_t) number_planes; x++)
               {
-                if (IsValidColormapIndex(image,(size_t) (x*map_length+
-                    (*p & mask)),&index,exception) == MagickFalse)
-                  break;
+                ValidateColormapValue(image,(size_t) (x*map_length+
+                    (*p & mask)),&index,exception);
                 *p=colormap[(ssize_t) index];
                 p++;
               }
@@ -591,19 +588,13 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                if (IsValidColormapIndex(image,(ssize_t) *p++,&index,
-                    exception) == MagickFalse)
-                  break;
+                ValidateColormapValue(image,(ssize_t) *p++,&index,exception);
                 SetPixelRed(image,ClampToQuantum(image->colormap[(ssize_t)
                   index].red),q);
-                if (IsValidColormapIndex(image,(ssize_t) *p++,&index,
-                    exception) == MagickFalse)
-                  break;
+                ValidateColormapValue(image,(ssize_t) *p++,&index,exception);
                 SetPixelGreen(image,ClampToQuantum(image->colormap[(ssize_t)
                   index].green),q);
-                if (IsValidColormapIndex(image,(ssize_t) *p++,&index,
-                    exception) == MagickFalse)
-                  break;
+                ValidateColormapValue(image,(ssize_t) *p++,&index,exception);
                 SetPixelBlue(image,ClampToQuantum(image->colormap[(ssize_t)
                   index].blue),q);
                 SetPixelAlpha(image,ScaleCharToQuantum(*p++),q);

@@ -38,7 +38,7 @@ static inline ssize_t ConstrainColormapIndex(Image *image,const ssize_t index,
   return((ssize_t) index);
 }
 
-static inline MagickBooleanType IsValidColormapIndex(Image *image,
+static inline void ValidateColormapValue(Image *image,
   const ssize_t index,Quantum *target,ExceptionInfo *exception)
 { 
   if ((index < 0) || (index >= (ssize_t) image->colors))
@@ -46,10 +46,9 @@ static inline MagickBooleanType IsValidColormapIndex(Image *image,
       (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
         "InvalidColormapIndex","`%s'",image->filename);
       *target=(Quantum) 0;
-      return(MagickFalse);
     }
-  *target=(Quantum) index;
-  return(MagickTrue);
+  else
+    *target=(Quantum) index;
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
