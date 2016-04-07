@@ -4803,13 +4803,11 @@ MagickExport MagickBooleanType AccelerateRandomImage(Image *image,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
 
-static MagickBooleanType resizeHorizontalFilter(cl_mem image,
-  const unsigned int imageColumns,const unsigned int imageRows,
-  const unsigned int matte,cl_mem resizedImage,
-  const unsigned int resizedColumns,const unsigned int resizedRows,
+static MagickBooleanType resizeHorizontalFilter(MagickCLEnv clEnv,
+  cl_command_queue queue,cl_mem image,cl_uint number_channels,cl_uint columns,
+  cl_uint rows,cl_mem resizedImage,cl_uint resizedColumns,cl_uint resizedRows,
   const ResizeFilter *resizeFilter,cl_mem resizeFilterCubicCoefficients,
-  const float xFactor,MagickCLEnv clEnv,cl_command_queue queue,
-  ExceptionInfo *exception)
+  const float xFactor,ExceptionInfo *exception)
 {
   cl_kernel
     horizontalKernel;
@@ -4896,7 +4894,7 @@ RestoreMSCWarning
     cacheRangeStart = (int) (((0 + 0.5)/xFactor+MagickEpsilon)-support+0.5);
     cacheRangeEnd = (int) ((((pixelPerWorkgroup-1) + 0.5)/xFactor+MagickEpsilon)+support+0.5);
     numCachedPixels = cacheRangeEnd - cacheRangeStart + 1;
-    imageCacheLocalMemorySize = numCachedPixels * sizeof(CLPixelPacket);
+    imageCacheLocalMemorySize = numCachedPixels * sizeof(CLQuantum) * number_channels;
     totalLocalMemorySize = imageCacheLocalMemorySize;
 
     /* local size for the pixel accumulator */
@@ -4908,10 +4906,10 @@ RestoreMSCWarning
     totalLocalMemorySize+=weightAccumulatorLocalMemorySize;
 
     /* local memory size for the gamma accumulator */
-    if (matte == 0)
-      gammaAccumulatorLocalMemorySize = sizeof(float);
-    else
+    if ((number_channels == 4) || (number_channels == 2))
       gammaAccumulatorLocalMemorySize = chunkSize * sizeof(float);
+    else
+      gammaAccumulatorLocalMemorySize = sizeof(float);
     totalLocalMemorySize+=gammaAccumulatorLocalMemorySize;
 
     if (totalLocalMemorySize <= deviceLocalMemorySize)
@@ -4941,14 +4939,13 @@ RestoreMSCWarning
 
   i = 0;
   clStatus = clEnv->library->clSetKernelArg(horizontalKernel, i++, sizeof(cl_mem), (void*)&image);
-  clStatus |= clEnv->library->clSetKernelArg(horizontalKernel, i++, sizeof(unsigned int), (void*)&imageColumns);
-  clStatus |= clEnv->library->clSetKernelArg(horizontalKernel, i++, sizeof(unsigned int), (void*)&imageRows);
-  clStatus |= clEnv->library->clSetKernelArg(horizontalKernel, i++, sizeof(unsigned int), (void*)&matte);
-  clStatus |= clEnv->library->clSetKernelArg(horizontalKernel, i++, sizeof(float), (void*)&xFactor);
+  clStatus |= clEnv->library->clSetKernelArg(horizontalKernel, i++, sizeof(cl_uint), (void*)&number_channels);
+  clStatus |= clEnv->library->clSetKernelArg(horizontalKernel, i++, sizeof(cl_uint), (void*)&columns);
+  clStatus |= clEnv->library->clSetKernelArg(horizontalKernel, i++, sizeof(cl_uint), (void*)&rows);
   clStatus |= clEnv->library->clSetKernelArg(horizontalKernel, i++, sizeof(cl_mem), (void*)&resizedImage);
-
-  clStatus |= clEnv->library->clSetKernelArg(horizontalKernel, i++, sizeof(unsigned int), (void*)&resizedColumns);
-  clStatus |= clEnv->library->clSetKernelArg(horizontalKernel, i++, sizeof(unsigned int), (void*)&resizedRows);
+  clStatus |= clEnv->library->clSetKernelArg(horizontalKernel, i++, sizeof(cl_uint), (void*)&resizedColumns);
+  clStatus |= clEnv->library->clSetKernelArg(horizontalKernel, i++, sizeof(cl_uint), (void*)&resizedRows);
+  clStatus |= clEnv->library->clSetKernelArg(horizontalKernel, i++, sizeof(float), (void*)&xFactor);
 
   clStatus |= clEnv->library->clSetKernelArg(horizontalKernel, i++, sizeof(int), (void*)&resizeFilterType);
   clStatus |= clEnv->library->clSetKernelArg(horizontalKernel, i++, sizeof(int), (void*)&resizeWindowType);
@@ -5009,13 +5006,11 @@ cleanup:
   return(status);
 }
 
-static MagickBooleanType resizeVerticalFilter(cl_mem image,
-  const unsigned int imageColumns,const unsigned int imageRows,
-  const unsigned int matte,cl_mem resizedImage,
-  const unsigned int resizedColumns,const unsigned int resizedRows,
+static MagickBooleanType resizeVerticalFilter(MagickCLEnv clEnv,
+  cl_command_queue queue,cl_mem image,cl_uint number_channels,cl_uint columns,
+  cl_uint rows,cl_mem resizedImage,cl_uint resizedColumns,cl_uint resizedRows,
   const ResizeFilter *resizeFilter,cl_mem resizeFilterCubicCoefficients,
-  const float yFactor,MagickCLEnv clEnv,cl_command_queue queue,
-  ExceptionInfo *exception)
+  const float yFactor,ExceptionInfo *exception)
 {
   cl_kernel
     verticalKernel;
@@ -5102,7 +5097,7 @@ RestoreMSCWarning
     cacheRangeStart = (int) (((0 + 0.5)/yFactor+MagickEpsilon)-support+0.5);
     cacheRangeEnd = (int) ((((pixelPerWorkgroup-1) + 0.5)/yFactor+MagickEpsilon)+support+0.5);
     numCachedPixels = cacheRangeEnd - cacheRangeStart + 1;
-    imageCacheLocalMemorySize = numCachedPixels * sizeof(CLPixelPacket);
+    imageCacheLocalMemorySize = numCachedPixels * sizeof(CLQuantum) * number_channels;
     totalLocalMemorySize = imageCacheLocalMemorySize;
 
     /* local size for the pixel accumulator */
@@ -5114,10 +5109,10 @@ RestoreMSCWarning
     totalLocalMemorySize+=weightAccumulatorLocalMemorySize;
 
     /* local memory size for the gamma accumulator */
-    if (matte == 0)
-      gammaAccumulatorLocalMemorySize = sizeof(float);
-    else
+    if ((number_channels == 4) || (number_channels == 2))
       gammaAccumulatorLocalMemorySize = chunkSize * sizeof(float);
+    else
+      gammaAccumulatorLocalMemorySize = sizeof(float);
     totalLocalMemorySize+=gammaAccumulatorLocalMemorySize;
 
     if (totalLocalMemorySize <= deviceLocalMemorySize)
@@ -5147,14 +5142,13 @@ RestoreMSCWarning
 
   i = 0;
   clStatus = clEnv->library->clSetKernelArg(verticalKernel, i++, sizeof(cl_mem), (void*)&image);
-  clStatus |= clEnv->library->clSetKernelArg(verticalKernel, i++, sizeof(unsigned int), (void*)&imageColumns);
-  clStatus |= clEnv->library->clSetKernelArg(verticalKernel, i++, sizeof(unsigned int), (void*)&imageRows);
-  clStatus |= clEnv->library->clSetKernelArg(verticalKernel, i++, sizeof(unsigned int), (void*)&matte);
-  clStatus |= clEnv->library->clSetKernelArg(verticalKernel, i++, sizeof(float), (void*)&yFactor);
+  clStatus |= clEnv->library->clSetKernelArg(verticalKernel, i++, sizeof(cl_uint), (void*)&number_channels);
+  clStatus |= clEnv->library->clSetKernelArg(verticalKernel, i++, sizeof(cl_uint), (void*)&columns);
+  clStatus |= clEnv->library->clSetKernelArg(verticalKernel, i++, sizeof(cl_uint), (void*)&rows);
   clStatus |= clEnv->library->clSetKernelArg(verticalKernel, i++, sizeof(cl_mem), (void*)&resizedImage);
-
-  clStatus |= clEnv->library->clSetKernelArg(verticalKernel, i++, sizeof(unsigned int), (void*)&resizedColumns);
-  clStatus |= clEnv->library->clSetKernelArg(verticalKernel, i++, sizeof(unsigned int), (void*)&resizedRows);
+  clStatus |= clEnv->library->clSetKernelArg(verticalKernel, i++, sizeof(cl_uint), (void*)&resizedColumns);
+  clStatus |= clEnv->library->clSetKernelArg(verticalKernel, i++, sizeof(cl_uint), (void*)&resizedRows);
+  clStatus |= clEnv->library->clSetKernelArg(verticalKernel, i++, sizeof(float), (void*)&yFactor);
 
   clStatus |= clEnv->library->clSetKernelArg(verticalKernel, i++, sizeof(int), (void*)&resizeFilterType);
   clStatus |= clEnv->library->clSetKernelArg(verticalKernel, i++, sizeof(int), (void*)&resizeWindowType);
@@ -5237,14 +5231,11 @@ static Image *ComputeResizeImage(const Image* image,
     imageBuffer,
     tempImageBuffer;
 
-  cl_mem_flags
-    mem_flags;
+  cl_uint
+    number_channels;
 
   const double
     *resizeFilterCoefficient;
-
-  const void
-    *inputPixels;
 
   float
     *mappedCoefficientBuffer,
@@ -5265,12 +5256,10 @@ static Image *ComputeResizeImage(const Image* image,
     *filteredImage;
 
   unsigned int
-    i,
-    matte;
+    i;
 
   void
-    *filteredPixels,
-    *hostPtr;
+    *filteredPixels;
 
   outputReady = MagickFalse;
   filteredImage = NULL;
@@ -5280,40 +5269,17 @@ static Image *ComputeResizeImage(const Image* image,
   imageBuffer = NULL;
   tempImageBuffer = NULL;
   filteredImageBuffer = NULL;
+  filteredPixels = NULL;
   cubicCoefficientsBuffer = NULL;
   queue = NULL;
 
   clEnv = GetDefaultOpenCLEnv();
   context = GetOpenCLContext(clEnv);
 
-  /* Create and initialize OpenCL buffers. */
-  image_view=AcquireVirtualCacheView(image,exception);
-  inputPixels=GetCacheViewVirtualPixels(image_view,0,0,image->columns,image->rows,exception);
-  if (inputPixels == (const void *) NULL)
-  {
-    (void) OpenCLThrowMagickException(exception,GetMagickModule(),CacheWarning,"UnableToReadPixelCache.","`%s'",image->filename);
+  image_view = AcquireVirtualCacheView(image, exception);
+  imageBuffer=createReadBuffer(image,image_view,clEnv,context,exception);
+  if (imageBuffer == (cl_mem) NULL)
     goto cleanup;
-  }
-
-  /* If the host pointer is aligned to the size of CLPixelPacket, 
-     then use the host buffer directly from the GPU; otherwise, 
-     create a buffer on the GPU and copy the data over */
-  if (ALIGNED(inputPixels,CLPixelPacket)) 
-  {
-    mem_flags = CL_MEM_READ_ONLY|CL_MEM_USE_HOST_PTR;
-  }
-  else 
-  {
-    mem_flags = CL_MEM_READ_ONLY|CL_MEM_COPY_HOST_PTR;
-  }
-  /* create a CL buffer from image pixel buffer */
-  length = image->columns * image->rows;
-  imageBuffer = clEnv->library->clCreateBuffer(context, mem_flags, length * sizeof(CLPixelPacket), (void*)inputPixels, &clStatus);
-  if (clStatus != CL_SUCCESS)
-  {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clCreateBuffer failed.",".");
-    goto cleanup;
-  }
 
   cubicCoefficientsBuffer = clEnv->library->clCreateBuffer(context, CL_MEM_READ_ONLY, 7 * sizeof(float), NULL, &clStatus);
   if (clStatus != CL_SUCCESS)
@@ -5342,108 +5308,74 @@ static Image *ComputeResizeImage(const Image* image,
   }
 
   filteredImage = CloneImage(image,resizedColumns,resizedRows,MagickTrue,exception);
-  if (filteredImage == NULL)
+  if (filteredImage == (Image *) NULL)
     goto cleanup;
-
-  if (SetImageStorageClass(filteredImage,DirectClass,exception) != MagickTrue)
+  if (SetImageStorageClass(filteredImage, DirectClass, exception) != MagickTrue)
   {
     (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "CloneImage failed.", "'%s'", ".");
     goto cleanup;
   }
-  filteredImage_view=AcquireAuthenticCacheView(filteredImage,exception);
-  filteredPixels=GetCacheViewAuthenticPixels(filteredImage_view,0,0,filteredImage->columns,filteredImage->rows,exception);
-  if (filteredPixels == (void *) NULL)
-  {
-    (void) OpenCLThrowMagickException(exception,GetMagickModule(),CacheWarning, "UnableToReadPixelCache.","`%s'",filteredImage->filename);
+  filteredImage_view = AcquireAuthenticCacheView(filteredImage, exception);
+  filteredImageBuffer=createWriteBuffer(filteredImage,filteredImage_view,clEnv,
+    context,filteredPixels,exception);
+  if (filteredImageBuffer == (cl_mem) NULL)
     goto cleanup;
-  }
 
-  if (ALIGNED(filteredPixels,CLPixelPacket)) 
-  {
-    mem_flags = CL_MEM_WRITE_ONLY|CL_MEM_USE_HOST_PTR;
-    hostPtr = filteredPixels;
-  }
-  else 
-  {
-    mem_flags = CL_MEM_WRITE_ONLY;
-    hostPtr = NULL;
-  }
-
-  /* create a CL buffer from image pixel buffer */
-  length = filteredImage->columns * filteredImage->rows;
-  filteredImageBuffer = clEnv->library->clCreateBuffer(context, mem_flags, length * sizeof(CLPixelPacket), hostPtr, &clStatus);
-  if (clStatus != CL_SUCCESS)
-  {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clCreateBuffer failed.",".");
-    goto cleanup;
-  }
-
+  number_channels = image->number_channels;
   xFactor=(float) resizedColumns/(float) image->columns;
   yFactor=(float) resizedRows/(float) image->rows;
-  matte=(image->alpha_trait > CopyPixelTrait)?1:0;
   if (xFactor > yFactor)
   {
-
-    length = resizedColumns*image->rows;
-    tempImageBuffer = clEnv->library->clCreateBuffer(context, CL_MEM_READ_WRITE, length*sizeof(CLPixelPacket), NULL, &clStatus);
+    length = resizedColumns*image->rows*number_channels;
+    tempImageBuffer = clEnv->library->clCreateBuffer(context, CL_MEM_READ_WRITE, length*sizeof(CLQuantum), NULL, &clStatus);
     if (clStatus != CL_SUCCESS)
     {
       (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clCreateBuffer failed.",".");
       goto cleanup;
     }
-    
-    status = resizeHorizontalFilter(imageBuffer, (unsigned int) image->columns, (unsigned int) image->rows, matte
-          , tempImageBuffer, (unsigned int) resizedColumns, (unsigned int) image->rows
-          , resizeFilter, cubicCoefficientsBuffer
-          , xFactor, clEnv, queue, exception);
+
+    status = resizeHorizontalFilter(clEnv,queue,imageBuffer,number_channels,
+      (cl_uint) image->columns,(cl_uint) image->rows,tempImageBuffer,
+      (cl_uint) resizedColumns,(cl_uint) image->rows,resizeFilter,
+      cubicCoefficientsBuffer,xFactor,exception);
     if (status != MagickTrue)
       goto cleanup;
-    
-    status = resizeVerticalFilter(tempImageBuffer, (unsigned int) resizedColumns, (unsigned int) image->rows, matte
-       , filteredImageBuffer, (unsigned int) resizedColumns, (unsigned int) resizedRows
-       , resizeFilter, cubicCoefficientsBuffer
-       , yFactor, clEnv, queue, exception);
+
+    status = resizeVerticalFilter(clEnv,queue,tempImageBuffer,number_channels,
+      (cl_uint) resizedColumns,(cl_uint) image->rows,filteredImageBuffer,
+      (cl_uint) resizedColumns,(cl_uint) resizedRows,resizeFilter,
+      cubicCoefficientsBuffer,yFactor,exception);
     if (status != MagickTrue)
       goto cleanup;
   }
   else
   {
-    length = image->columns*resizedRows;
-    tempImageBuffer = clEnv->library->clCreateBuffer(context, CL_MEM_READ_WRITE, length*sizeof(CLPixelPacket), NULL, &clStatus);
+    length = image->columns*resizedRows*number_channels;
+    tempImageBuffer = clEnv->library->clCreateBuffer(context, CL_MEM_READ_WRITE, length*sizeof(CLQuantum), NULL, &clStatus);
     if (clStatus != CL_SUCCESS)
     {
       (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clCreateBuffer failed.",".");
       goto cleanup;
     }
 
-    status = resizeVerticalFilter(imageBuffer, (unsigned int) image->columns, (unsigned int) image->rows, matte
-       , tempImageBuffer, (unsigned int) image->columns, (unsigned int) resizedRows
-       , resizeFilter, cubicCoefficientsBuffer
-       , yFactor, clEnv, queue, exception);
+    status = resizeVerticalFilter(clEnv,queue,imageBuffer,number_channels,
+      (cl_uint) image->columns,(cl_int) image->rows,tempImageBuffer,
+      (cl_uint) image->columns,(cl_uint) resizedRows,resizeFilter,
+      cubicCoefficientsBuffer,yFactor,exception);
     if (status != MagickTrue)
       goto cleanup;
 
-    status = resizeHorizontalFilter(tempImageBuffer, (unsigned int) image->columns, (unsigned int) resizedRows, matte
-       , filteredImageBuffer, (unsigned int) resizedColumns, (unsigned int) resizedRows
-       , resizeFilter, cubicCoefficientsBuffer
-       , xFactor, clEnv, queue, exception);
+    status = resizeHorizontalFilter(clEnv,queue,tempImageBuffer,number_channels,
+      (cl_uint) image->columns, (cl_uint) resizedRows,filteredImageBuffer,
+      (cl_uint) resizedColumns, (cl_uint) resizedRows,resizeFilter,
+      cubicCoefficientsBuffer,xFactor,exception);
     if (status != MagickTrue)
       goto cleanup;
   }
-  length = resizedColumns*resizedRows;
-  if (ALIGNED(filteredPixels,CLPixelPacket)) 
-  {
-    clEnv->library->clEnqueueMapBuffer(queue, filteredImageBuffer, CL_TRUE, CL_MAP_READ|CL_MAP_WRITE, 0, length * sizeof(CLPixelPacket), 0, NULL, NULL, &clStatus);
-  }
-  else 
-  {
-    clStatus = clEnv->library->clEnqueueReadBuffer(queue, filteredImageBuffer, CL_TRUE, 0, length * sizeof(CLPixelPacket), filteredPixels, 0, NULL, NULL);
-  }
-  if (clStatus != CL_SUCCESS)
-  {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "Reading output image from CL buffer failed.", "'%s'", ".");
+
+  if (copyWriteBuffer(filteredImage,clEnv,queue,filteredImageBuffer,filteredPixels,exception) == MagickFalse)
     goto cleanup;
-  }
+
   outputReady=SyncCacheViewAuthenticPixels(filteredImage_view,exception);
 
 cleanup:
@@ -5489,7 +5421,7 @@ MagickExport Image *AccelerateResizeImage(const Image *image,
   assert(image != NULL);
   assert(exception != (ExceptionInfo *) NULL);
 
-  if ((checkAccelerateConditionRGBA(image) == MagickFalse) ||
+  if ((checkAccelerateCondition(image) == MagickFalse) ||
       (checkOpenCLEnvironment(exception) == MagickFalse))
     return NULL;
 
@@ -6070,7 +6002,7 @@ static Image *ComputeUnsharpMaskImage(const Image *image,const double radius,
   }
 
   /* get result */
-  if (copyWriteBuffer(image,clEnv,queue,filteredImageBuffer,filteredPixels,exception) == MagickFalse)
+  if (copyWriteBuffer(filteredImage,clEnv,queue,filteredImageBuffer,filteredPixels,exception) == MagickFalse)
   {
     (void)OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "Reading output image from CL buffer failed.", "'%s'", ".");
     goto cleanup;
