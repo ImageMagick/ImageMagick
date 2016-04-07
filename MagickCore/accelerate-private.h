@@ -2987,78 +2987,77 @@ STRINGIFY(
 */
 
   STRINGIFY(
-    __kernel void RotationalBlur(const __global CLPixelType *im, __global CLPixelType *filtered_im,
-                                 const float4 bias,
-                                 const unsigned int channel, const unsigned int matte,
-                                 const float2 blurCenter,
-                                 __constant float *cos_theta, __constant float *sin_theta, 
-                                 const unsigned int cossin_theta_size)
+  __kernel void RotationalBlur(const __global CLPixelType *im, __global CLPixelType *filtered_im,
+                                const float4 bias,
+                                const unsigned int channel, const unsigned int matte,
+                                const float2 blurCenter,
+                                __constant float *cos_theta, __constant float *sin_theta, 
+                                const unsigned int cossin_theta_size)
+  {
+    const int x = get_global_id(0);
+    const int y = get_global_id(1);
+    const int columns = get_global_size(0);
+    const int rows = get_global_size(1);
+    unsigned int step = 1;
+    float center_x = (float) x - blurCenter.x;
+    float center_y = (float) y - blurCenter.y;
+    float radius = hypot(center_x, center_y);
+
+    float blur_radius = hypot(blurCenter.x, blurCenter.y);
+
+    if (radius > MagickEpsilon)
+    {
+      step = (unsigned int) (blur_radius / radius);
+      if (step == 0)
+        step = 1;
+      if (step >= cossin_theta_size)
+        step = cossin_theta_size-1;
+    }
+
+    float4 result;
+    result.x = (float)bias.x;
+    result.y = (float)bias.y;
+    result.z = (float)bias.z;
+    result.w = (float)bias.w;
+    float normalize = 0.0f;
+
+    if (((channel & AlphaChannel) == 0) || (matte == 0)) {
+      for (unsigned int i=0; i<cossin_theta_size; i+=step)
       {
-        const int x = get_global_id(0);  
-        const int y = get_global_id(1);
-        const int columns = get_global_size(0);
-        const int rows = get_global_size(1);  
-        unsigned int step = 1;
-        float center_x = (float) x - blurCenter.x;
-        float center_y = (float) y - blurCenter.y;
-        float radius = hypot(center_x, center_y);
-        
-        //float blur_radius = hypot((float) columns/2.0f, (float) rows/2.0f);
-        float blur_radius = hypot(blurCenter.x, blurCenter.y);
-
-        if (radius > MagickEpsilon)
-        {
-          step = (unsigned int) (blur_radius / radius);
-          if (step == 0)
-            step = 1;
-          if (step >= cossin_theta_size)
-            step = cossin_theta_size-1;
-        }
-
-        float4 result;
-        result.x = (float)bias.x;
-        result.y = (float)bias.y;
-        result.z = (float)bias.z;
-        result.w = (float)bias.w;
-        float normalize = 0.0f;
-
-        if (((channel & AlphaChannel) == 0) || (matte == 0)) {
-          for (unsigned int i=0; i<cossin_theta_size; i+=step)
-          {
-            result += convert_float4(im[
-              ClampToCanvas(blurCenter.x+center_x*cos_theta[i]-center_y*sin_theta[i]+0.5f,columns)+ 
-                ClampToCanvas(blurCenter.y+center_x*sin_theta[i]+center_y*cos_theta[i]+0.5f, rows)*columns]);
-              normalize += 1.0f;
-          }
-          normalize = PerceptibleReciprocal(normalize);
-          result = result * normalize;
-        }
-        else {
-          float gamma = 0.0f;
-          for (unsigned int i=0; i<cossin_theta_size; i+=step)
-          {
-            float4 p = convert_float4(im[
-              ClampToCanvas(blurCenter.x+center_x*cos_theta[i]-center_y*sin_theta[i]+0.5f,columns)+ 
-                ClampToCanvas(blurCenter.y+center_x*sin_theta[i]+center_y*cos_theta[i]+0.5f, rows)*columns]);
-            
-            float alpha = (float)(QuantumScale*p.w);
-            result.x += alpha * p.x;
-            result.y += alpha * p.y;
-            result.z += alpha * p.z;
-            result.w += p.w;
-            gamma+=alpha;
-            normalize += 1.0f;
-          }
-          gamma = PerceptibleReciprocal(gamma);
-          normalize = PerceptibleReciprocal(normalize);
-          result.x = gamma*result.x;
-          result.y = gamma*result.y;
-          result.z = gamma*result.z;
-          result.w = normalize*result.w;
-        }
-        filtered_im[y * columns + x] = (CLPixelType) (ClampToQuantum(result.x), ClampToQuantum(result.y),
-          ClampToQuantum(result.z), ClampToQuantum(result.w)); 
+        result += convert_float4(im[
+          ClampToCanvas(blurCenter.x+center_x*cos_theta[i]-center_y*sin_theta[i]+0.5f,columns)+ 
+            ClampToCanvas(blurCenter.y+center_x*sin_theta[i]+center_y*cos_theta[i]+0.5f, rows)*columns]);
+          normalize += 1.0f;
       }
+      normalize = PerceptibleReciprocal(normalize);
+      result = result * normalize;
+    }
+    else {
+      float gamma = 0.0f;
+      for (unsigned int i=0; i<cossin_theta_size; i+=step)
+      {
+        float4 p = convert_float4(im[
+          ClampToCanvas(blurCenter.x+center_x*cos_theta[i]-center_y*sin_theta[i]+0.5f,columns)+ 
+            ClampToCanvas(blurCenter.y+center_x*sin_theta[i]+center_y*cos_theta[i]+0.5f, rows)*columns]);
+            
+        float alpha = (float)(QuantumScale*p.w);
+        result.x += alpha * p.x;
+        result.y += alpha * p.y;
+        result.z += alpha * p.z;
+        result.w += p.w;
+        gamma+=alpha;
+        normalize += 1.0f;
+      }
+      gamma = PerceptibleReciprocal(gamma);
+      normalize = PerceptibleReciprocal(normalize);
+      result.x = gamma*result.x;
+      result.y = gamma*result.y;
+      result.z = gamma*result.z;
+      result.w = normalize*result.w;
+    }
+    filtered_im[y * columns + x] = (CLPixelType) (ClampToQuantum(result.x), ClampToQuantum(result.y),
+      ClampToQuantum(result.z), ClampToQuantum(result.w)); 
+  }
   )
 
 /*
