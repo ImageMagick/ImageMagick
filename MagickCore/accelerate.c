@@ -5476,17 +5476,15 @@ static Image* ComputeRotationalBlurImage(const Image *image,const double angle,
     imageBuffer,
     sinThetaBuffer;
 
-  cl_mem_flags
-    mem_flags;
-
   cl_kernel
     rotationalBlurKernel;
 
   cl_event
     event;
 
-  const void
-    *inputPixels;
+  cl_uint
+    cossin_theta_size,
+    number_channels;
 
   float
     blurRadius,
@@ -5507,25 +5505,20 @@ static Image* ComputeRotationalBlurImage(const Image *image,const double angle,
   PixelInfo
     bias;
 
-  MagickSizeType
-    length;
-
   size_t
     global_work_size[2];
 
   unsigned int
-    cossin_theta_size,
-    i,
-    matte;
+    i;
 
   void
-    *filteredPixels,
-    *hostPtr;
+    *filteredPixels;
 
   outputReady = MagickFalse;
   context = NULL;
   filteredImage = NULL;
   filteredImage_view = NULL;
+  filteredPixels = NULL;
   imageBuffer = NULL;
   filteredImageBuffer = NULL;
   sinThetaBuffer = NULL;
@@ -5533,75 +5526,27 @@ static Image* ComputeRotationalBlurImage(const Image *image,const double angle,
   queue = NULL;
   rotationalBlurKernel = NULL;
 
-
   clEnv = GetDefaultOpenCLEnv();
   context = GetOpenCLContext(clEnv);
 
-
-  /* Create and initialize OpenCL buffers. */
-
-  image_view=AcquireVirtualCacheView(image,exception);
-  inputPixels=GetCacheViewVirtualPixels(image_view,0,0,image->columns,image->rows,exception);
-  if (inputPixels == (const void *) NULL)
-  {
-    (void) OpenCLThrowMagickException(exception,GetMagickModule(),CacheWarning,"UnableToReadPixelCache.","`%s'",image->filename);
+  image_view=AcquireVirtualCacheView(image, exception);
+  imageBuffer=createReadBuffer(image,image_view,clEnv,context,exception);
+  if (imageBuffer == (cl_mem) NULL)
     goto cleanup;
-  }
-
-  /* If the host pointer is aligned to the size of CLPixelPacket, 
-     then use the host buffer directly from the GPU; otherwise, 
-     create a buffer on the GPU and copy the data over */
-  if (ALIGNED(inputPixels,CLPixelPacket)) 
-  {
-    mem_flags = CL_MEM_READ_ONLY|CL_MEM_USE_HOST_PTR;
-  }
-  else 
-  {
-    mem_flags = CL_MEM_READ_ONLY|CL_MEM_COPY_HOST_PTR;
-  }
-  /* create a CL buffer from image pixel buffer */
-  length = image->columns * image->rows;
-  imageBuffer = clEnv->library->clCreateBuffer(context, mem_flags, length * sizeof(CLPixelPacket), (void*)inputPixels, &clStatus);
-  if (clStatus != CL_SUCCESS)
-  {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clCreateBuffer failed.",".");
-    goto cleanup;
-  }
-
 
   filteredImage = CloneImage(image,image->columns,image->rows,MagickTrue,exception);
-  assert(filteredImage != NULL);
-  if (SetImageStorageClass(filteredImage,DirectClass,exception) != MagickTrue)
+  if (filteredImage == (Image *) NULL)
+    goto cleanup;
+  if (SetImageStorageClass(filteredImage, DirectClass, exception) != MagickTrue)
   {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "CloneImage failed.", "'%s'", ".");
+    (void)OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "CloneImage failed.", "'%s'", ".");
     goto cleanup;
   }
-  filteredImage_view=AcquireAuthenticCacheView(filteredImage,exception);
-  filteredPixels=GetCacheViewAuthenticPixels(filteredImage_view,0,0,filteredImage->columns,filteredImage->rows,exception);
-  if (filteredPixels == (void *) NULL)
-  {
-    (void) OpenCLThrowMagickException(exception,GetMagickModule(),CacheWarning, "UnableToReadPixelCache.","`%s'",filteredImage->filename);
+  filteredImage_view = AcquireAuthenticCacheView(filteredImage, exception);
+  filteredImageBuffer=createWriteBuffer(filteredImage,filteredImage_view,clEnv,
+    context,filteredPixels,exception);
+  if (filteredImageBuffer == (cl_mem) NULL)
     goto cleanup;
-  }
-
-  if (ALIGNED(filteredPixels,CLPixelPacket)) 
-  {
-    mem_flags = CL_MEM_WRITE_ONLY|CL_MEM_USE_HOST_PTR;
-    hostPtr = filteredPixels;
-  }
-  else 
-  {
-    mem_flags = CL_MEM_WRITE_ONLY;
-    hostPtr = NULL;
-  }
-  /* create a CL buffer from image pixel buffer */
-  length = image->columns * image->rows;
-  filteredImageBuffer = clEnv->library->clCreateBuffer(context, mem_flags, length * sizeof(CLPixelPacket), hostPtr, &clStatus);
-  if (clStatus != CL_SUCCESS)
-  {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clCreateBuffer failed.",".");
-    goto cleanup;
-  }
 
   blurCenter.s[0] = (float) (image->columns-1)/2.0;
   blurCenter.s[1] = (float) (image->rows-1)/2.0;
@@ -5662,34 +5607,30 @@ static Image* ComputeRotationalBlurImage(const Image *image,const double angle,
     goto cleanup;
   }
 
-  
-  /* set the kernel arguments */
-  i = 0;
-  clStatus=clEnv->library->clSetKernelArg(rotationalBlurKernel,i++,sizeof(cl_mem),(void *)&imageBuffer);
-  clStatus|=clEnv->library->clSetKernelArg(rotationalBlurKernel,i++,sizeof(cl_mem),(void *)&filteredImageBuffer);
-
   GetPixelInfo(image,&bias);
   biasPixel.s[0] = bias.red;
   biasPixel.s[1] = bias.green;
   biasPixel.s[2] = bias.blue;
   biasPixel.s[3] = bias.alpha;
-  clStatus|=clEnv->library->clSetKernelArg(rotationalBlurKernel,i++,sizeof(cl_float4), &biasPixel);
+
+  number_channels = image->number_channels;
+
+  /* set the kernel arguments */
+  i = 0;
+  clStatus=clEnv->library->clSetKernelArg(rotationalBlurKernel,i++,sizeof(cl_mem),(void *)&imageBuffer);
+  clStatus|=clEnv->library->clSetKernelArg(rotationalBlurKernel,i++,sizeof(cl_uint),&number_channels);
   clStatus|=clEnv->library->clSetKernelArg(rotationalBlurKernel,i++,sizeof(ChannelType), &image->channel_mask);
-
-  matte = (image->alpha_trait > CopyPixelTrait)?1:0;
-  clStatus|=clEnv->library->clSetKernelArg(rotationalBlurKernel,i++,sizeof(unsigned int), &matte);
-
-  clStatus=clEnv->library->clSetKernelArg(rotationalBlurKernel,i++,sizeof(cl_float2), &blurCenter);
-
+  clStatus|=clEnv->library->clSetKernelArg(rotationalBlurKernel,i++,sizeof(cl_float4), &biasPixel);
+  clStatus|=clEnv->library->clSetKernelArg(rotationalBlurKernel,i++,sizeof(cl_float2), &blurCenter);
   clStatus|=clEnv->library->clSetKernelArg(rotationalBlurKernel,i++,sizeof(cl_mem),(void *)&cosThetaBuffer);
   clStatus|=clEnv->library->clSetKernelArg(rotationalBlurKernel,i++,sizeof(cl_mem),(void *)&sinThetaBuffer);
-  clStatus|=clEnv->library->clSetKernelArg(rotationalBlurKernel,i++,sizeof(unsigned int), &cossin_theta_size);
+  clStatus|=clEnv->library->clSetKernelArg(rotationalBlurKernel,i++,sizeof(cl_uint), &cossin_theta_size);
+  clStatus|=clEnv->library->clSetKernelArg(rotationalBlurKernel,i++,sizeof(cl_mem),(void *)&filteredImageBuffer);
   if (clStatus != CL_SUCCESS)
   {
     (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clSetKernelArg failed.", "'%s'", ".");
     goto cleanup;
   }
-
 
   global_work_size[0] = image->columns;
   global_work_size[1] = image->rows;
@@ -5704,21 +5645,12 @@ static Image* ComputeRotationalBlurImage(const Image *image,const double angle,
   RecordProfileData(clEnv,RotationalBlurKernel,event);
   clEnv->library->clReleaseEvent(event);
 
-  if (ALIGNED(filteredPixels,CLPixelPacket)) 
+  if (copyWriteBuffer(filteredImage,clEnv,queue,filteredImageBuffer,filteredPixels,exception) == MagickFalse)
   {
-    length = image->columns * image->rows;
-    clEnv->library->clEnqueueMapBuffer(queue, filteredImageBuffer, CL_TRUE, CL_MAP_READ|CL_MAP_WRITE, 0, length * sizeof(CLPixelPacket), 0, NULL, NULL, &clStatus);
-  }
-  else 
-  {
-    length = image->columns * image->rows;
-    clStatus = clEnv->library->clEnqueueReadBuffer(queue, filteredImageBuffer, CL_TRUE, 0, length * sizeof(CLPixelPacket), filteredPixels, 0, NULL, NULL);
-  }
-  if (clStatus != CL_SUCCESS)
-  {
-    (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "Reading output image from CL buffer failed.", "'%s'", ".");
+    (void)OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "Reading output image from CL buffer failed.", "'%s'", ".");
     goto cleanup;
   }
+
   outputReady=SyncCacheViewAuthenticPixels(filteredImage_view,exception);
 
 cleanup:
@@ -5754,7 +5686,7 @@ MagickExport Image* AccelerateRotationalBlurImage(const Image *image,
   assert(image != NULL);
   assert(exception != (ExceptionInfo *) NULL);
 
-  if ((checkAccelerateConditionRGBA(image) == MagickFalse) ||
+  if ((checkAccelerateCondition(image) == MagickFalse) ||
       (checkOpenCLEnvironment(exception) == MagickFalse))
     return NULL;
 
@@ -6366,7 +6298,7 @@ static Image *ComputeWaveletDenoiseImage(const Image *image,
     clEnv->library->clReleaseEvent(event);
   }
 
-  if (copyWriteBuffer(image,clEnv,queue,filteredImageBuffer,filteredPixels,exception) == MagickFalse)
+  if (copyWriteBuffer(filteredImage,clEnv,queue,filteredImageBuffer,filteredPixels,exception) == MagickFalse)
   {
     (void)OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "Reading output image from CL buffer failed.", "'%s'", ".");
     goto cleanup;

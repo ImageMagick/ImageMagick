@@ -2987,12 +2987,9 @@ STRINGIFY(
 */
 
   STRINGIFY(
-  __kernel void RotationalBlur(const __global CLPixelType *im, __global CLPixelType *filtered_im,
-                                const float4 bias,
-                                const unsigned int channel, const unsigned int matte,
-                                const float2 blurCenter,
-                                __constant float *cos_theta, __constant float *sin_theta, 
-                                const unsigned int cossin_theta_size)
+  __kernel void RotationalBlur(const __global CLQuantum *image,const unsigned int number_channels,
+    const unsigned int channel,const float4 bias,const float2 blurCenter,__constant float *cos_theta,
+    __constant float *sin_theta,const unsigned int cossin_theta_size,__global CLQuantum *filteredImage)
   {
     const int x = get_global_id(0);
     const int y = get_global_id(1);
@@ -3014,49 +3011,49 @@ STRINGIFY(
         step = cossin_theta_size-1;
     }
 
-    float4 result;
-    result.x = (float)bias.x;
-    result.y = (float)bias.y;
-    result.z = (float)bias.z;
-    result.w = (float)bias.w;
-    float normalize = 0.0f;
+    float4 result = bias;
 
-    if (((channel & AlphaChannel) == 0) || (matte == 0)) {
-      for (unsigned int i=0; i<cossin_theta_size; i+=step)
+    float normalize = 0.0f;
+    float gamma = 0.0f;
+
+    for (unsigned int i=0; i<cossin_theta_size; i+=step)
+    {
+      int cx = ClampToCanvas(blurCenter.x+center_x*cos_theta[i]-center_y*sin_theta[i]+0.5f,columns);
+      int cy = ClampToCanvas(blurCenter.y+center_x*sin_theta[i]+center_y*cos_theta[i]+0.5f,rows);
+
+      float4 pixel = ReadFloat4(image, number_channels, columns, cx, cy, channel);
+
+      if ((number_channels == 4) || (number_channels == 2))
       {
-        result += convert_float4(im[
-          ClampToCanvas(blurCenter.x+center_x*cos_theta[i]-center_y*sin_theta[i]+0.5f,columns)+ 
-            ClampToCanvas(blurCenter.y+center_x*sin_theta[i]+center_y*cos_theta[i]+0.5f, rows)*columns]);
-          normalize += 1.0f;
+        float alpha = (float)(QuantumScale*pixel.w);
+
+        gamma += alpha;
+
+        result.x += alpha * pixel.x;
+        result.y += alpha * pixel.y;
+        result.z += alpha * pixel.z;
+        result.w += pixel.w;
       }
-      normalize = PerceptibleReciprocal(normalize);
-      result = result * normalize;
+      else
+        result += pixel;
+
+      normalize += 1.0f;
     }
-    else {
-      float gamma = 0.0f;
-      for (unsigned int i=0; i<cossin_theta_size; i+=step)
-      {
-        float4 p = convert_float4(im[
-          ClampToCanvas(blurCenter.x+center_x*cos_theta[i]-center_y*sin_theta[i]+0.5f,columns)+ 
-            ClampToCanvas(blurCenter.y+center_x*sin_theta[i]+center_y*cos_theta[i]+0.5f, rows)*columns]);
-            
-        float alpha = (float)(QuantumScale*p.w);
-        result.x += alpha * p.x;
-        result.y += alpha * p.y;
-        result.z += alpha * p.z;
-        result.w += p.w;
-        gamma+=alpha;
-        normalize += 1.0f;
-      }
+
+    normalize = PerceptibleReciprocal(normalize);
+
+    if ((number_channels == 4) || (number_channels == 2))
+    {
       gamma = PerceptibleReciprocal(gamma);
-      normalize = PerceptibleReciprocal(normalize);
-      result.x = gamma*result.x;
-      result.y = gamma*result.y;
-      result.z = gamma*result.z;
-      result.w = normalize*result.w;
+      result.x *= gamma;
+      result.y *= gamma;
+      result.z *= gamma;
+      result.w *= normalize;
     }
-    filtered_im[y * columns + x] = (CLPixelType) (ClampToQuantum(result.x), ClampToQuantum(result.y),
-      ClampToQuantum(result.z), ClampToQuantum(result.w)); 
+    else
+      result *= normalize;
+
+    WriteFloat4(filteredImage, number_channels, columns, x, y, channel, result);
   }
   )
 
