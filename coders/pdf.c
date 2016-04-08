@@ -705,8 +705,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Render Postscript with the Ghostscript delegate.
   */
-  if ((image_info->ping != MagickFalse) ||
-      (image_info->monochrome != MagickFalse))
+  if (image_info->monochrome != MagickFalse)
     delegate_info=GetDelegateInfo("ps:mono",(char *) NULL,exception);
   else
      if (cmyk != MagickFalse)
