@@ -689,8 +689,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Render Postscript with the Ghostscript delegate.
   */
-  if ((image_info->ping != MagickFalse) ||
-      (image_info->monochrome != MagickFalse))
+  if (image_info->monochrome != MagickFalse)
     delegate_info=GetDelegateInfo("ps:mono",(char *) NULL,exception);
   else
      if (cmyk != MagickFalse)
@@ -705,8 +704,8 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   density=AcquireString("");
   options=AcquireString("");
-  (void) FormatLocaleString(density,MagickPathExtent,"%gx%g",image->resolution.x,
-    image->resolution.y);
+  (void) FormatLocaleString(density,MagickPathExtent,"%gx%g",
+    image->resolution.x,image->resolution.y);
   if ((image_info->page != (char *) NULL) || (fitPage != MagickFalse))
     (void) FormatLocaleString(options,MagickPathExtent,"-g%.20gx%.20g ",(double)
       page.width,(double) page.height);
@@ -717,7 +716,8 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (cropbox != MagickFalse)
     (void) ConcatenateMagickString(options,"-dUseCropBox ",MagickPathExtent);
   if (stop_on_error != MagickFalse)
-    (void) ConcatenateMagickString(options,"-dPDFSTOPONERROR ",MagickPathExtent);
+    (void) ConcatenateMagickString(options,"-dPDFSTOPONERROR ",
+      MagickPathExtent);
   if (trimbox != MagickFalse)
     (void) ConcatenateMagickString(options,"-dUseTrimBox ",MagickPathExtent);
   read_info=CloneImageInfo(image_info);
