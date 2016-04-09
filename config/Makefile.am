@@ -42,6 +42,7 @@ configlib_DATA = \
 	config/quantization-table.xml \
 	config/thresholds.xml \
 	config/type.xml \
+	config/type-apple.xml \
 	config/type-dejavu.xml \
 	config/type-ghostscript.xml \
 	config/type-windows.xml
@@ -65,6 +66,7 @@ CONFIG_EXTRA_DIST = \
 	config/quantization-table.xml \
 	config/sRGB.icm \
 	config/thresholds.xml \
+	config/type-apple.xml.in \
 	config/type-dejavu.xml.in \
 	config/type-ghostscript.xml.in \
 	config/type-windows.xml.in \
