@@ -26,7 +26,7 @@ To do so, use the procedure documented by the package, typically 'autoreconf'.])
 #
 # SYNOPSIS
 #
-#   AX_APPEND_COMPILE_FLAGS([FLAG1 FLAG2 ...], [FLAGS-VARIABLE], [EXTRA-FLAGS])
+#   AX_APPEND_COMPILE_FLAGS([FLAG1 FLAG2 ...], [FLAGS-VARIABLE], [EXTRA-FLAGS], [INPUT])
 #
 # DESCRIPTION
 #
@@ -41,6 +41,8 @@ To do so, use the procedure documented by the package, typically 'autoreconf'.])
 #   flags (e.g. CFLAGS) when the check is done.  The check is thus made with
 #   the flags: "CFLAGS EXTRA-FLAGS FLAG".  This can for example be used to
 #   force the compiler to issue an error when a bad flag is given.
+#
+#   INPUT gives an alternative input source to AC_COMPILE_IFELSE.
 #
 #   NOTE: This macro depends on the AX_APPEND_FLAG and
 #   AX_CHECK_COMPILE_FLAG. Please keep this macro in sync with
@@ -76,13 +78,13 @@ To do so, use the procedure documented by the package, typically 'autoreconf'.])
 #   modified version of the Autoconf Macro, you may extend this special
 #   exception to the GPL to apply to your modified version as well.
 
-#serial 4
+#serial 5
 
 AC_DEFUN([AX_APPEND_COMPILE_FLAGS],
 [AX_REQUIRE_DEFINED([AX_CHECK_COMPILE_FLAG])
 AX_REQUIRE_DEFINED([AX_APPEND_FLAG])
 for flag in $1; do
-  AX_CHECK_COMPILE_FLAG([$flag], [AX_APPEND_FLAG([$flag], [$2])], [], [$3])
+  AX_CHECK_COMPILE_FLAG([$flag], [AX_APPEND_FLAG([$flag], [$2])], [], [$3], [$4])
 done
 ])dnl AX_APPEND_COMPILE_FLAGS
 
@@ -92,7 +94,7 @@ done
 #
 # SYNOPSIS
 #
-#   AX_APPEND_LINK_FLAGS([FLAG1 FLAG2 ...], [FLAGS-VARIABLE], [EXTRA-FLAGS])
+#   AX_APPEND_LINK_FLAGS([FLAG1 FLAG2 ...], [FLAGS-VARIABLE], [EXTRA-FLAGS], [INPUT])
 #
 # DESCRIPTION
 #
@@ -106,6 +108,8 @@ done
 #   when the check is done.  The check is thus made with the flags: "LDFLAGS
 #   EXTRA-FLAGS FLAG".  This can for example be used to force the linker to
 #   issue an error when a bad flag is given.
+#
+#   INPUT gives an alternative input source to AC_COMPILE_IFELSE.
 #
 #   NOTE: This macro depends on the AX_APPEND_FLAG and AX_CHECK_LINK_FLAG.
 #   Please keep this macro in sync with AX_APPEND_COMPILE_FLAGS.
@@ -140,13 +144,13 @@ done
 #   modified version of the Autoconf Macro, you may extend this special
 #   exception to the GPL to apply to your modified version as well.
 
-#serial 4
+#serial 5
 
 AC_DEFUN([AX_APPEND_LINK_FLAGS],
 [AX_REQUIRE_DEFINED([AX_CHECK_LINK_FLAG])
 AX_REQUIRE_DEFINED([AX_APPEND_FLAG])
 for flag in $1; do
-  AX_CHECK_LINK_FLAG([$flag], [AX_APPEND_FLAG([$flag], [m4_default([$2], [LDFLAGS])])], [], [$3])
+  AX_CHECK_LINK_FLAG([$flag], [AX_APPEND_FLAG([$flag], [m4_default([$2], [LDFLAGS])])], [], [$3], [$4])
 done
 ])dnl AX_APPEND_LINK_FLAGS
 
