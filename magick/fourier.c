@@ -197,8 +197,6 @@ MagickExport Image *ComplexImages(const Image *images,const ComplexOperator op,
       return(complex_images);
     }
   AppendImageToList(&complex_images,image);
-  complex_images->storage_class=DirectClass;
-  complex_images->depth=32UL;
   /*
     Apply complex mathematics to image pixels.
   */
@@ -613,11 +611,11 @@ static MagickBooleanType ForwardFourier(const FourierInfo *fourier_info,
       return(MagickFalse);
     }
   magnitude_pixels=(double *) GetVirtualMemoryBlob(magnitude_info);
-  (void) ResetMagickMemory(magnitude_pixels,0,fourier_info->height*
-    fourier_info->width*sizeof(*magnitude_pixels));
+  (void) ResetMagickMemory(magnitude_pixels,0,fourier_info->width*
+    fourier_info->height*sizeof(*magnitude_pixels));
   phase_pixels=(double *) GetVirtualMemoryBlob(phase_info);
-  (void) ResetMagickMemory(phase_pixels,0,fourier_info->height*
-    fourier_info->width*sizeof(*phase_pixels));
+  (void) ResetMagickMemory(phase_pixels,0,fourier_info->width*
+    fourier_info->height*sizeof(*phase_pixels));
   status=ForwardQuadrantSwap(fourier_info->width,fourier_info->height,
     magnitude,magnitude_pixels);
   if (status != MagickFalse)
@@ -795,7 +793,7 @@ static MagickBooleanType ForwardFourierTransform(FourierInfo *fourier_info,
       return(MagickFalse);
     }
   source_pixels=(double *) GetVirtualMemoryBlob(source_info);
-  ResetMagickMemory(source_pixels,0,fourier_info->height*fourier_info->width*
+  ResetMagickMemory(source_pixels,0,fourier_info->width*fourier_info->height*
     sizeof(*source_pixels));
   i=0L;
   image_view=AcquireVirtualCacheView(image,exception);
@@ -872,7 +870,7 @@ static MagickBooleanType ForwardFourierTransform(FourierInfo *fourier_info,
         gamma;
 
       /*
-        Normalize fourier transform.
+        Normalize Fourier transform.
       */
       i=0L;
       gamma=PerceptibleReciprocal((double) fourier_info->width*
@@ -933,6 +931,13 @@ static MagickBooleanType ForwardFourierTransformChannel(const Image *image,
 
   fourier_info.width=image->columns;
   fourier_info.height=image->rows;
+  if ((image->columns != image->rows) || ((image->columns % 2) != 0) ||
+      ((image->rows % 2) != 0))
+    {
+      size_t extent=image->columns < image->rows ? image->rows : image->columns;
+      fourier_info.width=(extent & 0x01) == 1 ? extent+1UL : extent;
+    }
+  fourier_info.height=fourier_info.width;
   fourier_info.center=(ssize_t) (fourier_info.width/2L)+1L;
   fourier_info.channel=channel;
   fourier_info.modulus=modulus;
@@ -987,6 +992,14 @@ MagickExport Image *ForwardFourierTransformImage(const Image *image,
 
     width=image->columns;
     height=image->rows;
+    if ((image->columns != image->rows) || ((image->columns % 2) != 0) ||
+        ((image->rows % 2) != 0))
+      {
+        size_t extent=image->columns < image->rows ? image->rows :
+          image->columns;
+        width=(extent & 0x01) == 1 ? extent+1UL : extent;
+      }
+    height=width;
     magnitude_image=CloneImage(image,width,height,MagickTrue,exception);
     if (magnitude_image != (Image *) NULL)
       {
@@ -1191,7 +1204,7 @@ static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
     y;
 
   /*
-    Inverse fourier - read image and break down into a double array.
+    Inverse Fourier - read image and break down into a double array.
   */
   magnitude_info=AcquireVirtualMemory((size_t) fourier_info->width,
     fourier_info->height*sizeof(*magnitude_pixels));
@@ -1523,6 +1536,15 @@ static MagickBooleanType InverseFourierTransformChannel(
 
   fourier_info.width=magnitude_image->columns;
   fourier_info.height=magnitude_image->rows;
+  if ((magnitude_image->columns != magnitude_image->rows) ||
+      ((magnitude_image->columns % 2) != 0) ||
+      ((magnitude_image->rows % 2) != 0))
+    {
+      size_t extent=magnitude_image->columns < magnitude_image->rows ?
+        magnitude_image->rows : magnitude_image->columns;
+      fourier_info.width=(extent & 0x01) == 1 ? extent+1UL : extent;
+    }
+  fourier_info.height=fourier_info.width;
   fourier_info.center=(ssize_t) (fourier_info.width/2L)+1L;
   fourier_info.channel=channel;
   fourier_info.modulus=modulus;
