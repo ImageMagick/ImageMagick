@@ -2736,6 +2736,7 @@ static void WriteDDSInfo(Image *image, const size_t pixelFormat,
     }
   else
     {
+      /* Uncompressed DDS requires byte pitch of first image */
       if (image->matte != MagickFalse)
         (void) WriteBlobLSBLong(image,(unsigned int) (image->columns * 4));
       else
