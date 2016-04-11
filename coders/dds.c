@@ -728,7 +728,7 @@ if (min > max) \
 if (max - min < steps) \
   max = MagickMin(min + steps, 255); \
 if (max - min < steps) \
-  min = MagickMax(min - steps, 0)
+  min = MagickMax(0, max - steps)
 
 #define Dot(left, right) (left.x*right.x) + (left.y*right.y) + (left.z*right.z)
 
@@ -2700,9 +2700,14 @@ static void WriteDDSInfo(Image *image, const size_t pixelFormat,
     flags;
 
   flags=(unsigned int) (DDSD_CAPS | DDSD_WIDTH | DDSD_HEIGHT |
-    DDSD_PIXELFORMAT | DDSD_LINEARSIZE);
+    DDSD_PIXELFORMAT);
   caps=(unsigned int) DDSCAPS_TEXTURE;
   format=(unsigned int) pixelFormat;
+
+  if (format == DDPF_FOURCC)
+      flags=flags | DDSD_LINEARSIZE;
+  else
+      flags=flags | DDSD_PITCH;
 
   if (mipmaps > 0)
     {
@@ -2721,19 +2726,20 @@ static void WriteDDSInfo(Image *image, const size_t pixelFormat,
 
   if (pixelFormat == DDPF_FOURCC)
     {
+      /* Compressed DDS requires linear compressed size of first image */
       if (compression == FOURCC_DXT1)
         (void) WriteBlobLSBLong(image,(unsigned int) (MagickMax(1,
-          (image->columns+3)/4)*8));
-      else
+          (image->columns+3)/4)*MagickMax(1,(image->rows+3)/4)*8));
+      else /* DXT5 */
         (void) WriteBlobLSBLong(image,(unsigned int) (MagickMax(1,
-          (image->columns+3)/4)*16));
+          (image->columns+3)/4)*MagickMax(1,(image->rows+3)/4)*16));
     }
   else
     {
       if (image->matte != MagickFalse)
-        (void) WriteBlobLSBLong(image,(unsigned int) (image->columns*32));
+        (void) WriteBlobLSBLong(image,(unsigned int) (image->columns * 4));
       else
-        (void) WriteBlobLSBLong(image,(unsigned int) (image->columns*24));
+        (void) WriteBlobLSBLong(image,(unsigned int) (image->columns * 3));
     }
 
   (void) WriteBlobLSBLong(image,0x00);
@@ -2845,6 +2851,18 @@ static void WriteFourCC(Image *image, const size_t compression,
           else
             alpha = 255;
 
+          if (compression == FOURCC_DXT5)
+            {
+              if (alpha < min7)
+                min7 = alpha;
+              if (alpha > max7)
+                max7 = alpha;
+              if (alpha != 0 && alpha < min5)
+                min5 = alpha;
+              if (alpha != 255 && alpha > max5)
+                max5 = alpha;
+            }
+          
           alphas[4*by + bx] = (size_t)alpha;
 
           point.x = (float)ScaleQuantumToChar(GetPixelRed(p)) / 255.0f;
@@ -2866,31 +2884,19 @@ static void WriteFourCC(Image *image, const size_t compression,
                 match = MagickTrue;
                 break;
               }
-            }
-
-            if (match != MagickFalse)
-              continue;
-
-            points[count].x = point.x;
-            points[count].y = point.y;
-            points[count].z = point.z;
-            points[count].w = point.w;
-            map[4*by + bx] = count;
-            count++;
-
-            if (compression == FOURCC_DXT5)
-              {
-                if (alpha < min7)
-                  min7 = alpha;
-                if (alpha > max7)
-                  max7 = alpha;
-                if (alpha != 0 && alpha < min5)
-                  min5 = alpha;
-                if (alpha != 255 && alpha > max5)
-                  max5 = alpha;
-              }
           }
+
+          if (match != MagickFalse)
+            continue;
+
+          points[count].x = point.x;
+          points[count].y = point.y;
+          points[count].z = point.z;
+          points[count].w = point.w;
+          map[4*by + bx] = count;
+          count++;
         }
+      }
 
       for (i=0; i < (ssize_t) count; i++)
         points[i].w = sqrt(points[i].w);
