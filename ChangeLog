@@ -1,3 +1,6 @@
+2016-04-11  6.9.3-8 Cristy  <quetzlzacatenango@image...>
+  * New version 6.9.3-8, GIT revision 10690:d058a53:20160411
+
 2016-03-22  6.9.3-8 Cristy  <quetzlzacatenango@image...>
   * Respect gravity when rendering text (e.g. convert -gravity center my.txt)
   * Return empty string for %d property and no directory (reference
