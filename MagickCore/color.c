@@ -1158,6 +1158,13 @@ MagickExport void ConcatenateColorComponent(const PixelInfo *pixel,
   }
   if (compliance == NoCompliance)
     {
+      if (pixel->colorspace == LabColorspace)
+        {
+          (void) FormatLocaleString(text,MagickPathExtent,"%.*g",
+            GetMagickPrecision(),(double) color);
+          (void) ConcatenateMagickString(tuple,text,MagickPathExtent);
+          return;
+        }
       (void) FormatLocaleString(text,MagickPathExtent,"%.*g",
         GetMagickPrecision(),(double) ClampToQuantum(color));
       (void) ConcatenateMagickString(tuple,text,MagickPathExtent);
@@ -1210,7 +1217,14 @@ MagickExport void ConcatenateColorComponent(const PixelInfo *pixel,
       (void) ConcatenateMagickString(tuple,text,MagickPathExtent);
       return;
     }
-  if ((pixel->colorspace == LabColorspace) || (pixel->depth > 8))
+  if (pixel->colorspace == LabColorspace)
+    {
+      (void) FormatLocaleString(text,MagickPathExtent,"%.*g%%",
+        GetMagickPrecision(),100.0*QuantumScale*color);
+      (void) ConcatenateMagickString(tuple,text,MagickPathExtent);
+      return;
+    }
+  if (pixel->depth > 8)
     {
       (void) FormatLocaleString(text,MagickPathExtent,"%.*g%%",
         GetMagickPrecision(),(double) ClampToQuantum(100.0*QuantumScale*color));
