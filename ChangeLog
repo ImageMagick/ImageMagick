@@ -1,3 +1,7 @@
+2016-04-12  6.9.3-9 Cristy  <quetzlzacatenango@image...>
+  * The txt coder now properly reports Lab colors (reference
+    https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=2944).
+
 2016-04-11  6.9.3-8 Cristy  <quetzlzacatenango@image...>
   * New version 6.9.3-8, GIT revision 10690:d058a53:20160411
 
