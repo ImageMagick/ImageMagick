@@ -1102,14 +1102,14 @@ MagickExport const ColorInfo *GetColorInfo(const char *name,
 %  The format of the ConcatenateColorComponent() method is:
 %
 %      void ConcatenateColorComponent(const PixelInfo *pixel,
-%        const PixelChannel component,const ComplianceType compliance,
+%        const PixelChannel channel,const ComplianceType compliance,
 %        char *tuple)
 %
 %  A description of each parameter follows.
 %
 %    o pixel:  The pixel.
 %
-%    o component:  The pixel component.
+%    o channel:  The pixel channel.
 %
 %    o compliance: Adhere to this color standard: SVG, X11, or XPM.
 %
@@ -1117,16 +1117,16 @@ MagickExport const ColorInfo *GetColorInfo(const char *name,
 %
 */
 MagickExport void ConcatenateColorComponent(const PixelInfo *pixel,
-  const PixelChannel component,const ComplianceType compliance,char *tuple)
+  const PixelChannel channel,const ComplianceType compliance,char *tuple)
 {
   char
-    text[MagickPathExtent];
+    component[MagickPathExtent];
 
   double
     color;
 
   color=0.0;
-  switch (component)
+  switch (channel)
   {
     case RedPixelChannel:
     {
@@ -1160,42 +1160,42 @@ MagickExport void ConcatenateColorComponent(const PixelInfo *pixel,
     {
       if (pixel->colorspace == LabColorspace)
         {
-          (void) FormatLocaleString(text,MagickPathExtent,"%.*g",
+          (void) FormatLocaleString(component,MagickPathExtent,"%.*g",
             GetMagickPrecision(),(double) color);
-          (void) ConcatenateMagickString(tuple,text,MagickPathExtent);
+          (void) ConcatenateMagickString(tuple,component,MagickPathExtent);
           return;
         }
-      (void) FormatLocaleString(text,MagickPathExtent,"%.*g",
+      (void) FormatLocaleString(component,MagickPathExtent,"%.*g",
         GetMagickPrecision(),(double) ClampToQuantum(color));
-      (void) ConcatenateMagickString(tuple,text,MagickPathExtent);
+      (void) ConcatenateMagickString(tuple,component,MagickPathExtent);
       return;
     }
   if (compliance != SVGCompliance)
     {
       if (pixel->depth > 16)
         {
-          (void) FormatLocaleString(text,MagickPathExtent,"%10lu",
+          (void) FormatLocaleString(component,MagickPathExtent,"%10lu",
             (unsigned long) ScaleQuantumToLong(ClampToQuantum(color)));
-          (void) ConcatenateMagickString(tuple,text,MagickPathExtent);
+          (void) ConcatenateMagickString(tuple,component,MagickPathExtent);
           return;
         }
       if (pixel->depth > 8)
         {
-          (void) FormatLocaleString(text,MagickPathExtent,"%5d",
+          (void) FormatLocaleString(component,MagickPathExtent,"%5d",
             ScaleQuantumToShort(ClampToQuantum(color)));
-          (void) ConcatenateMagickString(tuple,text,MagickPathExtent);
+          (void) ConcatenateMagickString(tuple,component,MagickPathExtent);
           return;
         }
-      (void) FormatLocaleString(text,MagickPathExtent,"%3d",
+      (void) FormatLocaleString(component,MagickPathExtent,"%3d",
         ScaleQuantumToChar(ClampToQuantum(color)));
-      (void) ConcatenateMagickString(tuple,text,MagickPathExtent);
+      (void) ConcatenateMagickString(tuple,component,MagickPathExtent);
       return;
     }
-  if (component == AlphaPixelChannel)
+  if (channel == AlphaPixelChannel)
     {
-      (void) FormatLocaleString(text,MagickPathExtent,"%.*g",
+      (void) FormatLocaleString(component,MagickPathExtent,"%.*g",
         GetMagickPrecision(),(double) ClampToQuantum(QuantumScale*color));
-      (void) ConcatenateMagickString(tuple,text,MagickPathExtent);
+      (void) ConcatenateMagickString(tuple,component,MagickPathExtent);
       return;
     }
   if ((pixel->colorspace == HCLColorspace) ||
@@ -1206,34 +1206,34 @@ MagickExport void ConcatenateColorComponent(const PixelInfo *pixel,
       (pixel->colorspace == HSVColorspace) ||
       (pixel->colorspace == HWBColorspace))
     {
-      if (component == RedPixelChannel)
-        (void) FormatLocaleString(text,MagickPathExtent,"%.*g",
+      if (channel == RedPixelChannel)
+        (void) FormatLocaleString(component,MagickPathExtent,"%.*g",
           GetMagickPrecision(),(double) ClampToQuantum(360.0*QuantumScale*
             color));
       else
-        (void) FormatLocaleString(text,MagickPathExtent,"%.*g%%",
+        (void) FormatLocaleString(component,MagickPathExtent,"%.*g%%",
           GetMagickPrecision(),(double) ClampToQuantum(100.0*QuantumScale*
             color));
-      (void) ConcatenateMagickString(tuple,text,MagickPathExtent);
+      (void) ConcatenateMagickString(tuple,component,MagickPathExtent);
       return;
     }
   if (pixel->colorspace == LabColorspace)
     {
-      (void) FormatLocaleString(text,MagickPathExtent,"%.*g%%",
+      (void) FormatLocaleString(component,MagickPathExtent,"%.*g%%",
         GetMagickPrecision(),100.0*QuantumScale*color);
-      (void) ConcatenateMagickString(tuple,text,MagickPathExtent);
+      (void) ConcatenateMagickString(tuple,component,MagickPathExtent);
       return;
     }
   if (pixel->depth > 8)
     {
-      (void) FormatLocaleString(text,MagickPathExtent,"%.*g%%",
+      (void) FormatLocaleString(component,MagickPathExtent,"%.*g%%",
         GetMagickPrecision(),(double) ClampToQuantum(100.0*QuantumScale*color));
-      (void) ConcatenateMagickString(tuple,text,MagickPathExtent);
+      (void) ConcatenateMagickString(tuple,component,MagickPathExtent);
       return;
     }
-  (void) FormatLocaleString(text,MagickPathExtent,"%d",ScaleQuantumToChar(
+  (void) FormatLocaleString(component,MagickPathExtent,"%d",ScaleQuantumToChar(
     ClampToQuantum(color)));
-  (void) ConcatenateMagickString(tuple,text,MagickPathExtent);
+  (void) ConcatenateMagickString(tuple,component,MagickPathExtent);
 }
 
 /*
