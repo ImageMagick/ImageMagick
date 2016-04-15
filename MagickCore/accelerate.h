@@ -56,8 +56,7 @@ extern MagickExport MagickBooleanType
   AccelerateGrayscaleImage(Image *,const PixelIntensityMethod,
     ExceptionInfo *),
   AccelerateModulateImage(Image *,const double,const double,const double,
-    const ColorspaceType, ExceptionInfo*),
-  AccelerateRandomImage(Image*,ExceptionInfo*);
+    const ColorspaceType, ExceptionInfo*);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

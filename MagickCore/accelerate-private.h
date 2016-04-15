@@ -49,7 +49,7 @@ typedef struct _FloatPixelPacket
     black;
 } FloatPixelPacket;
 
-const char* accelerateKernels =
+const char *accelerateKernels =
 
 /*
   Define declarations.
@@ -2392,79 +2392,6 @@ OPENCL_ENDIF()
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%     R a n d o m                                                             %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-*/
-
-STRINGIFY(
-
-  inline float GetPseudoRandomValue(uint4* seed, const float normalizeRand) {
-    uint4 s = *seed;
-    do {
-      unsigned int alpha = (unsigned int)(s.y ^ (s.y << 11));
-      s.y = s.z;
-      s.z = s.w;
-      s.w = s.x;
-      s.x = (s.x ^ (s.x >> 19)) ^ (alpha ^ (alpha >> 8));
-    } while (s.x == ~0UL);
-    *seed = s;
-    return (normalizeRand*s.x);
-  }
-
-  __kernel void RandomNumberGenerator(__global uint* seeds, const float normalizeRand
-    , __global float* randomNumbers, const uint init
-    , const uint numRandomNumbers) {
-
-    unsigned int id = get_global_id(0);
-    unsigned int seed[4];
-
-    if (init != 0) {
-      seed[0] = seeds[id * 4];
-      seed[1] = 0x50a7f451;
-      seed[2] = 0x5365417e;
-      seed[3] = 0xc3a4171a;
-    }
-    else {
-      seed[0] = seeds[id * 4];
-      seed[1] = seeds[id * 4 + 1];
-      seed[2] = seeds[id * 4 + 2];
-      seed[3] = seeds[id * 4 + 3];
-    }
-
-    unsigned int numRandomNumbersPerItem = (numRandomNumbers + get_global_size(0) - 1) / get_global_size(0);
-    for (unsigned int i = 0; i < numRandomNumbersPerItem; i++) {
-      do
-      {
-        unsigned int alpha = (unsigned int)(seed[1] ^ (seed[1] << 11));
-        seed[1] = seed[2];
-        seed[2] = seed[3];
-        seed[3] = seed[0];
-        seed[0] = (seed[0] ^ (seed[0] >> 19)) ^ (alpha ^ (alpha >> 8));
-      } while (seed[0] == ~0UL);
-      unsigned int pos = (get_group_id(0)*get_local_size(0)*numRandomNumbersPerItem)
-        + get_local_size(0) * i + get_local_id(0);
-
-      if (pos >= numRandomNumbers)
-        break;
-      randomNumbers[pos] = normalizeRand*seed[0];
-    }
-
-    /* save the seeds for the time*/
-    seeds[id * 4] = seed[0];
-    seeds[id * 4 + 1] = seed[1];
-    seeds[id * 4 + 2] = seed[2];
-    seeds[id * 4 + 3] = seed[3];
-  }
-  )
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %     R e s i z e                                                             %
 %                                                                             %
 %                                                                             %
@@ -2641,7 +2568,7 @@ STRINGIFY(
   )
 
   ;
-  const char* accelerateKernels2 =
+  const char *accelerateKernels2 =
 
   STRINGIFY(
 
@@ -2740,17 +2667,17 @@ STRINGIFY(
 
             float4 cp = (float4) 0;
 
-            __local float *p = inputImageCache + (cacheIndex*number_channels);
-            cp.x = *(p);
+            __local CLQuantum *p = inputImageCache + (cacheIndex*number_channels);
+            cp.x = (float) *(p);
             if (number_channels > 2)
             {
-              cp.y = *(p + 1);
-              cp.z = *(p + 2);
+              cp.y = (float) *(p + 1);
+              cp.z = (float) *(p + 2);
             }
 
             if ((number_channels == 4) || (number_channels == 2))
             {
-              cp.w = *(p + number_channels - 1);
+              cp.w = (float) *(p + number_channels - 1);
 
               float alpha = weight * QuantumScale * cp.w;
 
@@ -2793,17 +2720,19 @@ STRINGIFY(
       if (itemID < actualNumPixelInThisChunk)
       {
         float density = densityCache[itemID];
+        float gamma = gammaCache[itemID];
         float4 filteredPixel = outputPixelCache[itemID];
 
         if ((density != 0.0f) && (density != 1.0f))
         {
           density = PerceptibleReciprocal(density);
           filteredPixel *= (float4) density;
+          gamma *= density;
         }
 
         if ((number_channels == 4) || (number_channels == 2))
         {
-          float gamma = PerceptibleReciprocal(gammaCache[itemID]*density);
+          gamma = PerceptibleReciprocal(gamma);
           filteredPixel.x *= gamma;
           filteredPixel.y *= gamma;
           filteredPixel.z *= gamma;
@@ -2899,17 +2828,17 @@ STRINGIFY(
 
             float4 cp = (float4)0.0f;
 
-            __local float *p = inputImageCache + cacheIndex;
-            cp.x = *(p);
+            __local CLQuantum *p = inputImageCache + cacheIndex;
+            cp.x = (float) *(p);
             if (number_channels > 2)
             {
-              cp.y = *(p + rangeLength);
-              cp.z = *(p + (rangeLength * 2));
+              cp.y = (float) *(p + rangeLength);
+              cp.z = (float) *(p + (rangeLength * 2));
             }
 
             if ((number_channels == 4) || (number_channels == 2))
             {
-              cp.w = *(p + (rangeLength * (number_channels - 1)));
+              cp.w = (float) *(p + (rangeLength * (number_channels - 1)));
 
               float alpha = weight * QuantumScale * cp.w;
 
@@ -2952,17 +2881,19 @@ STRINGIFY(
       if (itemID < actualNumPixelInThisChunk)
       {
         float density = densityCache[itemID];
+        float gamma = gammaCache[itemID];
         float4 filteredPixel = outputPixelCache[itemID];
 
         if ((density != 0.0f) && (density != 1.0f))
         {
           density = PerceptibleReciprocal(density);
           filteredPixel *= (float4) density;
+          gamma *= density;
         }
 
         if ((number_channels == 4) || (number_channels == 2))
         {
-          float gamma = PerceptibleReciprocal(gammaCache[itemID]*density);
+          gamma = PerceptibleReciprocal(gamma);
           filteredPixel.x *= gamma;
           filteredPixel.y *= gamma;
           filteredPixel.z *= gamma;
@@ -3138,8 +3069,7 @@ STRINGIFY(
   __kernel void UnsharpMask(const __global CLQuantum *image,const unsigned int number_channels,
     const ChannelType channel,__constant float *filter,const unsigned int width,
     const unsigned int columns,const unsigned int rows,__local float4 *pixels,
-    const float gain,const float threshold, const unsigned int justBlur,
-    __global CLQuantum *filteredImage)
+    const float gain,const float threshold,__global CLQuantum *filteredImage)
   {
     const unsigned int x = get_global_id(0);
     const unsigned int y = get_global_id(1);
@@ -3199,15 +3129,13 @@ STRINGIFY(
       ++i;
     }
 
-    if (justBlur == 0) { // apply sharpening
-      float4 srcPixel = ReadFloat4(image, number_channels, columns, x, y, channel);
-      float4 diff = srcPixel - value;
+    float4 srcPixel = ReadFloat4(image, number_channels, columns, x, y, channel);
+    float4 diff = srcPixel - value;
 
-      float quantumThreshold = QuantumRange*threshold;
+    float quantumThreshold = QuantumRange*threshold;
 
-      int4 mask = isless(fabs(2.0f * diff), (float4)quantumThreshold);
-      value = select(srcPixel + diff * gain, srcPixel, mask);
-    }
+    int4 mask = isless(fabs(2.0f * diff), (float4)quantumThreshold);
+    value = select(srcPixel + diff * gain, srcPixel, mask);
 
     if ((x < columns) && (y < rows))
       WriteFloat4(filteredImage, number_channels, columns, x, y, channel, value);
