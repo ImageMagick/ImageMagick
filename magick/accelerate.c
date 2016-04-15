@@ -1275,13 +1275,6 @@ cleanup:
   return filteredImage;
 }
 
-static Image* ComputeBlurImageSingle(const Image* image,
-  const ChannelType channel,const double radius,const double sigma,
-  ExceptionInfo *exception)
-{
-  return ComputeUnsharpMaskImageSingle(image, channel, radius, sigma, 0.0, 0.0, 1, exception);
-}
-
 MagickExport Image* AccelerateBlurImage(const Image *image,
   const ChannelType channel,const double radius,const double sigma,
   ExceptionInfo *exception)
@@ -1296,9 +1289,7 @@ MagickExport Image* AccelerateBlurImage(const Image *image,
       (checkAccelerateCondition(image, channel) == MagickFalse))
     return NULL;
 
-  if (radius < 12.1)
-	filteredImage=ComputeBlurImageSingle(image, channel, radius, sigma, exception);
-  else if (splitImage(image) && (image->rows / 2 > radius)) 
+  if (splitImage(image) && (image->rows / 2 > radius)) 
     filteredImage=ComputeBlurImageSection(image, channel, radius, sigma, exception);
   else
     filteredImage=ComputeBlurImage(image, channel, radius, sigma, exception);

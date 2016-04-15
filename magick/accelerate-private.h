@@ -3129,9 +3129,9 @@ STRINGIFY(
               density+=weight;
               gamma+=alpha;
             }
-         }
+          }
+        }
       }
-    }
 
     // initialize the accumulators to zero
     if (itemID < actualNumPixelInThisChunk) {
