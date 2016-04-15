@@ -343,8 +343,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Remove unquoted characters.
   */
   active=MagickFalse;
-  q=xpm_buffer;
-  while (*p != '\0')
+  while (q=xpm_buffer; *p != '\0'; )
   {
     if (*p++ == '"')
       {
