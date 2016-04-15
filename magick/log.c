@@ -922,8 +922,8 @@ MagickExport void LogComponentTerminus(void)
 %
 */
 static char *TranslateEvent(const LogEventType magick_unused(type),
-  const char *module,const char *function,const size_t line,
-  const char *domain,const char *event)
+  const char *module,const char *function,const size_t line,const char *domain,
+  const char *event)
 {
   char
     *text;
