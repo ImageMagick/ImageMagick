@@ -1701,7 +1701,7 @@ MagickExport Image *InterpolativeResizeImage(const Image *image,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
   if ((columns == 0) || (rows == 0))
-    return((Image *) NULL);
+    ThrowImageException(ImageError,"NegativeOrZeroImageSize");
   if ((columns == image->columns) && (rows == image->rows))
     return(CloneImage(image,0,0,MagickTrue,exception));
   resize_image=CloneImage(image,columns,rows,MagickTrue,exception);
@@ -1878,7 +1878,7 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
   if ((columns == 0) || (rows == 0))
-    return((Image *) NULL);
+    ThrowImageException(ImageError,"NegativeOrZeroImageSize");
   if ((columns == image->columns) && (rows == image->rows))
     return(CloneImage(image,0,0,MagickTrue,exception));
   if ((columns <= 2) || (rows <= 2))
@@ -3224,7 +3224,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
   if ((columns == 0) || (rows == 0))
-    return((Image *) NULL);
+    ThrowImageException(ImageError,"NegativeOrZeroImageSize");
   if ((columns == image->columns) && (rows == image->rows))
     return(CloneImage(image,0,0,MagickTrue,exception));
   scale_image=CloneImage(image,columns,rows,MagickTrue,exception);
