@@ -29,6 +29,19 @@ typedef enum
   GpuCLDeviceType
 } MagickCLDeviceType;
 
+struct _KernelProfileRecord
+{
+  char
+    *kernel_name;
+
+  unsigned long
+    count,
+    max,
+    min,
+    total;
+};
+
+typedef struct _KernelProfileRecord* KernelProfileRecord;
 typedef struct _MagickCLDevice* MagickCLDevice;
 typedef struct _MagickCLEnv* MagickCLEnv;
 
@@ -36,11 +49,14 @@ extern MagickExport const char
   *GetOpenCLDeviceName(const MagickCLDevice),
   *GetOpenCLDeviceVersion(const MagickCLDevice);
 
-extern MagickExport const MagickCLDevice
-  *GetOpenCLDevices(size_t *);
+extern MagickExport const KernelProfileRecord
+  *GetOpenCLKernelProfilesRecords(const MagickCLDevice,size_t *);
 
 extern MagickExport double
   GetOpenCLDeviceBenchmarkScore(const MagickCLDevice);
+
+extern MagickExport MagickCLDevice
+  *GetOpenCLDevices(size_t *,ExceptionInfo *);
 
 extern MagickExport MagickCLDeviceType
   GetOpenCLDeviceType(const MagickCLDevice);
@@ -51,9 +67,10 @@ extern MagickExport MagickBooleanType
   SetOpenCLEnabled(const MagickBooleanType);
 
 extern MagickExport void
-  SetOpenCLDeviceEnabled(const MagickCLDevice,
+  SetOpenCLDeviceEnabled(MagickCLDevice,
+    const MagickBooleanType),
+  SetOpenCLKernelProfileEnabled(MagickCLDevice,
     const MagickBooleanType);
-
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

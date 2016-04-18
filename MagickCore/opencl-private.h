@@ -29,35 +29,6 @@ Include declarations.
 extern "C" {
 #endif
 
-typedef enum
-{
-  AddNoiseKernel,
-  BlurColumnKernel,
-  BlurRowKernel,
-  CompositeKernel,
-  ContrastKernel,
-  ContrastStretchKernel,
-  ConvolveKernel,
-  ConvolveOptimizedKernel,
-  ComputeFunctionKernel,
-  EqualizeKernel,
-  GrayScaleKernel,
-  HistogramKernel,
-  HullPass1Kernel,
-  HullPass2Kernel,
-  LocalContrastBlurApplyColumnKernel,
-  LocalContrastBlurRowKernel,
-  ModulateKernel,
-  MotionBlurKernel,
-  ResizeHorizontalKernel,
-  ResizeVerticalKernel,
-  RotationalBlurKernel,
-  UnsharpMaskKernel,
-  UnsharpMaskBlurColumnKernel,
-  WaveletDenoiseKernel,
-  KERNEL_COUNT
-} ProfiledKernels;
-
 #if !defined(MAGICKCORE_OPENCL_SUPPORT)
   typedef void* cl_context;
   typedef void* cl_command_queue;
@@ -73,18 +44,7 @@ typedef enum
   Define declarations.
 */
 #define MAGICKCORE_OPENCL_UNDEFINED_SCORE -1.0
-#define MAGICKCORE_OPENCL_PROFILE_KERNELS 0
 #define MAGICKCORE_OPENCL_COMMAND_QUEUES 16
-
-#if MAGICKCORE_OPENCL_PROFILE_KERNELS
-typedef struct
-{
-  cl_ulong min;
-  cl_ulong max;
-  cl_ulong total;
-  cl_ulong count;
-} KernelProfileRecord;
-#endif
 
 /* Platform APIs */
 typedef CL_API_ENTRY cl_int
@@ -190,6 +150,11 @@ typedef CL_API_ENTRY cl_int
   (CL_API_CALL *MAGICKpfn_clSetKernelArg)(cl_kernel kernel,cl_uint arg_index,
   size_t arg_size,const void * arg_value) CL_API_SUFFIX__VERSION_1_0;
 
+typedef CL_API_ENTRY cl_int
+  (CL_API_CALL *MAGICKpfn_clGetKernelInfo)(cl_kernel kernel,
+    cl_kernel_info param_name,size_t param_value_size,void *param_value,
+    size_t *param_value_size_ret) CL_API_SUFFIX__VERSION_1_0;
+
 
 /* Enqueued Commands APIs */
 typedef CL_API_ENTRY cl_int
@@ -268,6 +233,7 @@ struct MagickLibraryRec
   MAGICKpfn_clCreateKernel            clCreateKernel;
   MAGICKpfn_clReleaseKernel           clReleaseKernel;
   MAGICKpfn_clSetKernelArg            clSetKernelArg;
+  MAGICKpfn_clGetKernelInfo           clGetKernelInfo;
 
   MAGICKpfn_clEnqueueReadBuffer       clEnqueueReadBuffer;
   MAGICKpfn_clEnqueueMapBuffer        clEnqueueMapBuffer;
@@ -315,8 +281,12 @@ struct _MagickCLDevice
   double
     score;
 
+  KernelProfileRecord
+    *profile_records;
+
   MagickBooleanType
-    enabled;
+    enabled,
+    profile_kernels;
 
   SemaphoreInfo
     *lock;
@@ -324,11 +294,6 @@ struct _MagickCLDevice
   ssize_t
     command_queues_index,
     created_queues;
-
-#if MAGICKCORE_OPENCL_PROFILE_KERNELS
-  KernelProfileRecord
-    profileRecords[KERNEL_COUNT];
-#endif
 };
 
 struct _MagickCLEnv
@@ -424,7 +389,7 @@ extern MagickPrivate unsigned long
 extern MagickPrivate void
   DumpOpenCLProfileData(),
   OpenCLTerminus(),
-  RecordProfileData(MagickCLDevice,ProfiledKernels,cl_event),
+  RecordProfileData(MagickCLDevice,cl_kernel,cl_event),
   RelinquishOpenCLCommandQueue(MagickCLDevice,cl_command_queue),
   RelinquishOpenCLKernel(cl_kernel);
 

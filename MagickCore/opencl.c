@@ -577,9 +577,8 @@ MagickPrivate cl_command_queue AcquireOpenCLCommandQueue(MagickCLDevice device)
   {
     UnlockSemaphoreInfo(device->lock);
     properties=(cl_command_queue_properties) NULL;
-#if MAGICKCORE_OPENCL_PROFILE_KERNELS
-    properties=CL_QUEUE_PROFILING_ENABLE;
-#endif
+    if (device->profile_kernels != MagickFalse)
+      properties=CL_QUEUE_PROFILING_ENABLE;
     queue=openCL_library->clCreateCommandQueue(device->context,
       device->deviceID,properties,NULL);
   }
@@ -1324,7 +1323,6 @@ static MagickBooleanType CompileOpenCLKernel(MagickCLDevice device,
 
 MagickPrivate void DumpOpenCLProfileData()
 {
-#if MAGICKCORE_OPENCL_PROFILE_KERNELS
 #define OpenCLLog(message) \
    fwrite(message,sizeof(char),strlen(message),log); \
    fwrite("\n",sizeof(char),1,log);
@@ -1346,6 +1344,12 @@ MagickPrivate void DumpOpenCLProfileData()
 
   clEnv=GetCurrentOpenCLEnv();
 
+  for (i = 0; i < clEnv->number_devices; i++)
+    if (clEnv->devices[i]->profile_kernels != MagickFalse)
+      break;
+  if (i == clEnv->number_devices)
+    return;
+
   (void) FormatLocaleString(filename,MagickPathExtent,"%s%s%s",
     GetOpenCLCacheDirectory(),DirectorySeparator,"ImageMagickOpenCL.log");
 
@@ -1357,33 +1361,36 @@ MagickPrivate void DumpOpenCLProfileData()
       device;
 
     device=clEnv->devices[i];
+    if ((device->profile_kernels == MagickFalse) ||
+        (device->profile_records == (KernelProfileRecord *) NULL))
+      continue;
+
     OpenCLLog("====================================================");
     fprintf(log,"Device:  %s\n",device->name);
     fprintf(log,"Version: %s\n",device->version);
     OpenCLLog("====================================================");
     OpenCLLog("                     average   calls     min     max");
     OpenCLLog("                     -------   -----     ---     ---");
-    for (j = 0; j < KERNEL_COUNT; j++)
+    j=0;
+    while (device->profile_records[j] != (KernelProfileRecord) NULL)
     {
       KernelProfileRecord
         profile;
 
-      profile=device->profileRecords[j];
-      if (profile.count == 0)
-        continue;
+      profile=device->profile_records[j];
       strcpy(indent,"                    ");
       strncpy(indent,kernelNames[j],min(strlen(kernelNames[j]),
         strlen(indent)-1));
-      sprintf(buf,"%s %7d %7d %7d %7d",indent,(int) (profile.total/
-        profile.count),(int) profile.count,(int) profile.min,
-        (int) profile.max);
+      sprintf(buf,"%s %7d %7d %7d %7d",indent,(int) (profile->total/
+        profile->count),(int) profile->count,(int) profile->min,
+        (int) profile->max);
       OpenCLLog(buf);
+      j++;
     }
     OpenCLLog("====================================================");
     fwrite("\n\n",sizeof(char),2,log);
   }
   fclose(log);
-#endif
 }
 
 /*
@@ -1599,25 +1606,31 @@ MagickExport const char *GetOpenCLDeviceName(const MagickCLDevice device)
 %
 %  The format of the GetOpenCLDevices method is:
 %
-%      MagickBooleanType GetOpenCLDevices()
+%      const MagickCLDevice *GetOpenCLDevices(size_t *length,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o device: the OpenCL device.
+%    o length: the number of device.
+%
+%    o exception: return any errors or warnings in this structure.
+%
 */
 
-MagickExport const MagickCLDevice *GetOpenCLDevices(size_t *length)
+MagickExport MagickCLDevice *GetOpenCLDevices(size_t *length,
+  ExceptionInfo *exception)
 {
   MagickCLEnv
     clEnv;
 
   clEnv=GetCurrentOpenCLEnv();
   if (clEnv == (MagickCLEnv) NULL)
-  {
-    if (length != (size_t *) NULL)
-      *length=0;
-    return((MagickCLDevice *) NULL);
-  }
+    {
+      if (length != (size_t *) NULL)
+        *length=0;
+      return((MagickCLDevice *) NULL);
+    }
+  InitializeOpenCL(clEnv,exception);
   if (length != (size_t *) NULL)
     *length=clEnv->number_devices;
   return(clEnv->devices);
@@ -1672,7 +1685,7 @@ MagickExport MagickCLDeviceType GetOpenCLDeviceType(
 %
 %  The format of the GetOpenCLDeviceName method is:
 %
-%      MagickBooleanType GetOpenCLDeviceVersion(MagickCLDevice device)
+%      const char *GetOpenCLDeviceVersion(MagickCLDevice device)
 %
 %  A description of each parameter follows:
 %
@@ -1714,6 +1727,48 @@ MagickExport MagickBooleanType GetOpenCLEnabled(void)
   if (clEnv == (MagickCLEnv) NULL)
     return(MagickFalse);
   return(clEnv->enabled);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t O p e n C L K e r n e l P r o f i l e R e c o r d s                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetOpenCLKernelProfileRecords() returns the profile records for the
+%  specified device and sets length to the number of profile records.
+%
+%  The format of the GetOpenCLKernelProfileRecords method is:
+%
+%      const KernelProfileRecord *GetOpenCLKernelProfileRecords(size *length)
+%
+%  A description of each parameter follows:
+%
+%    o length: the number of profiles records.
+*/
+
+MagickExport const KernelProfileRecord *GetOpenCLKernelProfileRecords(
+  const MagickCLDevice device,size_t *length)
+{
+  if ((device == (const MagickCLDevice) NULL) || (device->profile_records ==
+      (KernelProfileRecord *) NULL))
+  {
+    if (length != (size_t *) NULL)
+      *length=0;
+    return((const KernelProfileRecord *) NULL);
+  }
+  if (length != (size_t *) NULL)
+    {
+      length=0;
+      while (device->profile_records[*length] != (KernelProfileRecord) NULL)
+        *length=*length+1;
+    }
+  return(device->profile_records);
 }
 
 /*
@@ -2077,6 +2132,7 @@ static MagickBooleanType BindOpenCLFunctions(MagickLibrary *openCL_library)
   BIND(clCreateKernel);
   BIND(clReleaseKernel);
   BIND(clSetKernelArg);
+  BIND(clGetKernelInfo);
 
   BIND(clEnqueueReadBuffer);
   BIND(clEnqueueMapBuffer);
@@ -2252,16 +2308,16 @@ MagickPrivate MagickBooleanType OpenCLThrowMagickException(
 %
 %    o device: the OpenCL device that did the operation.
 %
-%    o kernel: the kernel that was executed.
-%
 %    o event: the event that contains the profiling data.
 %
 */
 
 MagickPrivate void RecordProfileData(MagickCLDevice device,
-  ProfiledKernels kernel,cl_event event)
+  cl_kernel kernel,cl_event event)
 {
-#if MAGICKCORE_OPENCL_PROFILE_KERNELS
+  char
+    *name;
+
   cl_int
     status;
 
@@ -2270,31 +2326,75 @@ MagickPrivate void RecordProfileData(MagickCLDevice device,
     end,
     start;
 
+  KernelProfileRecord
+    profile_record;
+
+  size_t
+    i,
+    length;
+
+  if (device->profile_kernels == MagickFalse)
+    {
+      openCL_library->clReleaseEvent(event);
+      return;
+    }
+  status=openCL_library->clGetKernelInfo(kernel,CL_KERNEL_FUNCTION_NAME,0,NULL,
+    &length);
+  if (status != CL_SUCCESS)
+    {
+      openCL_library->clReleaseEvent(event);
+      return;
+    }
+  name=AcquireQuantumMemory(length,sizeof(*name));
+  (void) openCL_library->clGetKernelInfo(kernel,CL_KERNEL_FUNCTION_NAME,length,
+    name,NULL);
   start=end=elapsed=0;
   openCL_library->clWaitForEvents(1,&event);
   status=openCL_library->clGetEventProfilingInfo(event,
     CL_PROFILING_COMMAND_START,sizeof(cl_ulong),&start,NULL);
   status&=openCL_library->clGetEventProfilingInfo(event,
     CL_PROFILING_COMMAND_END,sizeof(cl_ulong),&end,NULL);
+  openCL_library->clReleaseEvent(event);
   if (status != CL_SUCCESS)
-    return;
+    {
+      name=DestroyString(name);
+      return;
+    }
   start/=1000; // usecs
   end/=1000;   // usecs
   elapsed=end-start;
   LockSemaphoreInfo(device->lock);
-  if ((elapsed < device->profileRecords[kernel].min) ||
-      (device->profileRecords[kernel].count == 0))
-    device->profileRecords[kernel].min=elapsed;
-  if (elapsed > device->profileRecords[kernel].max)
-    device->profileRecords[kernel].max = elapsed;
-  device->profileRecords[kernel].total += elapsed;
-  device->profileRecords[kernel].count += 1;
+  i=0;
+  profile_record=(KernelProfileRecord) NULL;
+  if (device->profile_records != (KernelProfileRecord *) NULL)
+    {
+      while (device->profile_records[i] != ((KernelProfileRecord) NULL))
+      {
+        if (LocaleCompare(device->profile_records[i]->kernel_name,name))
+          {
+            profile_record=device->profile_records[i];
+            break;
+          }
+        i++;
+      }
+    }
+  if (profile_record == ((KernelProfileRecord) NULL))
+    {
+      profile_record=AcquireMagickMemory(sizeof(*profile_record));
+      (void) ResetMagickMemory(profile_record,0,sizeof(*profile_record));
+      profile_record->kernel_name=AcquireString(name);
+      device->profile_records=ResizeMagickMemory(device->profile_records,i+2);
+      device->profile_records[i]=profile_record;
+      device->profile_records[i+1]=(KernelProfileRecord) NULL;
+    }
+  if ((elapsed < profile_record->min) || (profile_record->count == 0))
+    profile_record->min=elapsed;
+  if (elapsed > profile_record->max)
+    profile_record->max=elapsed;
+  profile_record->total+=elapsed;
+  profile_record->count+=1;
   UnlockSemaphoreInfo(device->lock);
-#else
-  magick_unreferenced(device);
-  magick_unreferenced(kernel);
-#endif
-  openCL_library->clReleaseEvent(event);
+  name=DestroyString(name);
 }
 
 /*
@@ -2459,7 +2559,7 @@ MagickPrivate void RelinquishOpenCLKernel(cl_kernel kernel)
 %
 %  The format of the SetOpenCLDeviceEnabled method is:
 %
-%      void SetOpenCLDeviceEnabled(const MagickCLDevice device,
+%      void SetOpenCLDeviceEnabled(MagickCLDevice device,
 %        MagickBooleanType value)
 %
 %  A description of each parameter follows:
@@ -2469,12 +2569,47 @@ MagickPrivate void RelinquishOpenCLKernel(cl_kernel kernel)
 %    o value: determines if the device should be enabled or disabled.
 */
 
-MagickExport void SetOpenCLDeviceEnabled(const MagickCLDevice device,
+MagickExport void SetOpenCLDeviceEnabled(MagickCLDevice device,
   const MagickBooleanType value)
 {
   if (device == (MagickCLDevice) NULL)
     return;
   device->enabled=value;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e t O p e n C L K e r n e l P r o f i l e E n a b l e d                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SetOpenCLKernelProfileEnabled() can be used to enable or disabled the
+%  kernel profiling of a device.
+%
+%  The format of the SetOpenCLKernelProfileEnabled method is:
+%
+%      void SetOpenCLKernelProfileEnabled(MagickCLDevice device,
+%        MagickBooleanType value)
+%
+%  A description of each parameter follows:
+%
+%    o device: the OpenCL device.
+%
+%    o value: determines if kernel profiling for the device should be enabled
+%             or disabled.
+*/
+
+MagickExport void SetOpenCLKernelProfileEnabled(MagickCLDevice device,
+  const MagickBooleanType value)
+{
+  if (device == (MagickCLDevice) NULL)
+    return;
+  device->profile_kernels=value;
 }
 
 /*
@@ -2534,8 +2669,10 @@ MagickExport const char *GetOpenCLDeviceName(
   return((const char *) NULL);
 }
 
-MagickExport const MagickCLDevice *GetOpenCLDevices(size_t *length)
+MagickExport MagickCLDevice *GetOpenCLDevices(size_t *length,
+  ExceptionInfo *magick_unused(exception))
 {
+  magick_unreferenced(exception);
   if (length != (size_t *) NULL)
     *length=0;
   return((MagickCLDevice *) NULL);
@@ -2546,6 +2683,14 @@ MagickExport MagickCLDeviceType GetOpenCLDeviceType(
 {
   magick_unreferenced(device);
   return(UndefinedCLDeviceType);
+}
+
+MagickExport const KernelProfileRecord *GetOpenCLKernelProfileRecords(
+  size_t *length)
+{
+  if (length != (size_t *) NULL)
+    *length=0;
+  return((MagickCLDevice *) NULL);
 }
 
 MagickExport const char *GetOpenCLDeviceVersion(
@@ -2561,7 +2706,7 @@ MagickExport MagickBooleanType GetOpenCLEnabled(void)
 }
 
 MagickExport void SetOpenCLDeviceEnabled(
-  const MagickCLDevice magick_unused(device),
+  MagickCLDevice magick_unused(device),
   const MagickBooleanType magick_unused(value))
 {
   magick_unreferenced(device);
@@ -2575,4 +2720,11 @@ MagickExport MagickBooleanType SetOpenCLEnabled(
   return(MagickFalse);
 }
 
+MagickExport SetOpenCLKernelProfileEnabled(
+  MagickCLDevice magick_unused(device),
+  const MagickBooleanType magick_unused(value))
+{
+  magick_unreferenced(device);
+  magick_unreferenced(value);
+}
 #endif

@@ -472,7 +472,7 @@ static MagickBooleanType LaunchHistogramKernel(MagickCLEnv clEnv,
     (void) OpenCLThrowMagickException(device,exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
     goto cleanup;
   }
-  RecordProfileData(device,HistogramKernel,event);
+  RecordProfileData(device,histogramKernel,event);
 
   outputReady = MagickTrue;
 
@@ -671,7 +671,7 @@ static Image *ComputeAddNoiseImage(const Image *image,MagickCLEnv clEnv,
     goto cleanup;
   }
 
-  RecordProfileData(device,AddNoiseKernel,event);
+  RecordProfileData(device,addNoiseKernel,event);
   if (copyWriteBuffer(filteredImage,clEnv,device,queue,filteredImageBuffer,filteredPixels,exception) == MagickFalse)
     goto cleanup;
 
@@ -889,7 +889,7 @@ static Image *ComputeBlurImage(const Image* image,MagickCLEnv clEnv,
           (void) OpenCLThrowMagickException(device,exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
           goto cleanup;
         }
-        RecordProfileData(device,BlurRowKernel,event);
+        RecordProfileData(device,blurRowKernel,event);
       }
     }
 
@@ -932,7 +932,7 @@ static Image *ComputeBlurImage(const Image* image,MagickCLEnv clEnv,
           (void) OpenCLThrowMagickException(device,exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
           goto cleanup;
         }
-        RecordProfileData(device,BlurColumnKernel,event);
+        RecordProfileData(device,blurColumnKernel,event);
       }
     }
 
@@ -1052,7 +1052,7 @@ static MagickBooleanType LaunchCompositeKernel(MagickCLEnv clEnv,
   clStatus = clEnv->library->clEnqueueNDRangeKernel(queue, compositeKernel, 2, NULL, 
     global_work_size, local_work_size, 0, NULL, &event);
 
-  RecordProfileData(device,CompositeKernel,event);
+  RecordProfileData(device,compositeKernel,event);
 
   RelinquishOpenCLKernel(compositeKernel);
 
@@ -1366,7 +1366,7 @@ static MagickBooleanType ComputeContrastImage(Image *image,MagickCLEnv clEnv,
     (void) OpenCLThrowMagickException(device,exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
     goto cleanup;
   }
-  RecordProfileData(device,ContrastKernel,event);
+  RecordProfileData(device,filterKernel,event);
 
   if (ALIGNED(inputPixels,CLPixelPacket)) 
   {
@@ -1947,7 +1947,7 @@ static MagickBooleanType ComputeContrastStretchImage(Image *image,
     (void) OpenCLThrowMagickException(device,exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
     goto cleanup;
   }
-  RecordProfileData(device,ContrastStretchKernel,event);
+  RecordProfileData(device,stretchKernel,event);
 
   /* read the data back */
   if (ALIGNED(inputPixels,CLPixelPacket)) 
@@ -2265,7 +2265,7 @@ static Image *ComputeConvolveImage(const Image* image,MagickCLEnv clEnv,
       (void) OpenCLThrowMagickException(device,exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
       goto cleanup;
     }
-    RecordProfileData(device,ConvolveOptimizedKernel,event);
+    RecordProfileData(device,clkernel,event);
   }
   else
   {
@@ -2311,7 +2311,7 @@ static Image *ComputeConvolveImage(const Image* image,MagickCLEnv clEnv,
       goto cleanup;
     }
   }
-  RecordProfileData(device,ConvolveKernel,event);
+  RecordProfileData(device,clkernel,event);
 
   if (ALIGNED(filteredPixels,CLPixelPacket)) 
   {
@@ -2609,7 +2609,7 @@ static Image *ComputeDespeckleImage(const Image *image,MagickCLEnv clEnv,
       (void) OpenCLThrowMagickException(device,exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
       goto cleanup;
     }
-    RecordProfileData(device,HullPass1Kernel,event);
+    RecordProfileData(device,hullPass1,event);
 
     /* launch the kernel */
 	clStatus = clEnv->library->clEnqueueNDRangeKernel(queue, hullPass2, 2, NULL, global_work_size, NULL, 0, NULL, &event);
@@ -2618,7 +2618,7 @@ static Image *ComputeDespeckleImage(const Image *image,MagickCLEnv clEnv,
       (void) OpenCLThrowMagickException(device,exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
       goto cleanup;
     }
-    RecordProfileData(device,HullPass2Kernel,event);
+    RecordProfileData(device,hullPass2,event);
 
     if (k == 0)
       clStatus =clEnv->library->clSetKernelArg(hullPass1,0,sizeof(cl_mem),(void *)(tempImageBuffer));
@@ -2641,7 +2641,7 @@ static Image *ComputeDespeckleImage(const Image *image,MagickCLEnv clEnv,
       (void) OpenCLThrowMagickException(device,exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
       goto cleanup;
     }
-    RecordProfileData(device,HullPass1Kernel,event);
+    RecordProfileData(device,hullPass1,event);
 
     /* launch the kernel */
 	clStatus = clEnv->library->clEnqueueNDRangeKernel(queue, hullPass2, 2, NULL, global_work_size, NULL, 0, NULL, &event);
@@ -2650,7 +2650,7 @@ static Image *ComputeDespeckleImage(const Image *image,MagickCLEnv clEnv,
       (void) OpenCLThrowMagickException(device,exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
       goto cleanup;
     }
-    RecordProfileData(device,HullPass2Kernel,event);
+    RecordProfileData(device,hullPass2,event);
 
     offset.s[0] = -X[k];
     offset.s[1] = -Y[k];
@@ -2671,7 +2671,7 @@ static Image *ComputeDespeckleImage(const Image *image,MagickCLEnv clEnv,
       (void) OpenCLThrowMagickException(device,exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
       goto cleanup;
     }
-    RecordProfileData(device,HullPass1Kernel,event);
+    RecordProfileData(device,hullPass1,event);
 
     /* launch the kernel */
 	clStatus = clEnv->library->clEnqueueNDRangeKernel(queue, hullPass2, 2, NULL, global_work_size, NULL, 0, NULL, &event);
@@ -2680,7 +2680,7 @@ static Image *ComputeDespeckleImage(const Image *image,MagickCLEnv clEnv,
       (void) OpenCLThrowMagickException(device,exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
       goto cleanup;
     }
-    RecordProfileData(device,HullPass2Kernel,event);
+    RecordProfileData(device,hullPass2,event);
 
     offset.s[0] = X[k];
     offset.s[1] = Y[k];
@@ -2705,7 +2705,7 @@ static Image *ComputeDespeckleImage(const Image *image,MagickCLEnv clEnv,
       (void) OpenCLThrowMagickException(device,exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
       goto cleanup;
     }
-    RecordProfileData(device,HullPass1Kernel,event);
+    RecordProfileData(device,hullPass1,event);
 
     /* launch the kernel */
 	clStatus = clEnv->library->clEnqueueNDRangeKernel(queue, hullPass2, 2, NULL, global_work_size, NULL, 0, NULL, &event);
@@ -2714,7 +2714,7 @@ static Image *ComputeDespeckleImage(const Image *image,MagickCLEnv clEnv,
       (void) OpenCLThrowMagickException(device,exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
       goto cleanup;
     }
-    RecordProfileData(device,HullPass2Kernel,event);
+    RecordProfileData(device,hullPass2,event);
   }
 
   if (ALIGNED(filteredPixels,CLPixelPacket)) 
@@ -3167,7 +3167,7 @@ static MagickBooleanType ComputeEqualizeImage(Image *image,MagickCLEnv clEnv,
     (void) OpenCLThrowMagickException(device,exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
     goto cleanup;
   }
-  RecordProfileData(device,EqualizeKernel,event);
+  RecordProfileData(device,equalizeKernel,event);
 
   /* read the data back */
   if (ALIGNED(inputPixels,CLPixelPacket)) 
@@ -3374,7 +3374,7 @@ static MagickBooleanType ComputeFunctionImage(Image *image,MagickCLEnv clEnv,
     (void) OpenCLThrowMagickException(device,exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
     goto cleanup;
   }
-  RecordProfileData(device,ComputeFunctionKernel,event);
+  RecordProfileData(device,clkernel,event);
 
   if (copyWriteBuffer(image,clEnv,device,queue,imageBuffer,pixels,exception) == MagickFalse)
       goto cleanup;
@@ -3526,7 +3526,7 @@ static MagickBooleanType ComputeGrayscaleImage(Image *image,MagickCLEnv clEnv,
       (void) OpenCLThrowMagickException(device,exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
       goto cleanup;
     }
-    RecordProfileData(device,GrayScaleKernel,event);
+    RecordProfileData(device,grayscaleKernel,event);
   }
 
   if (copyWriteBuffer(image,clEnv,device,queue,imageBuffer,inputPixels,exception) == MagickFalse)
@@ -3804,7 +3804,7 @@ static Image *ComputeLocalContrastImage(const Image *image,MagickCLEnv clEnv,
           (void) OpenCLThrowMagickException(device,exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
           goto cleanup;
         }
-        RecordProfileData(device,LocalContrastBlurRowKernel,event);
+        RecordProfileData(device,blurRowKernel,event);
       }
     }
 
@@ -3847,7 +3847,7 @@ static Image *ComputeLocalContrastImage(const Image *image,MagickCLEnv clEnv,
           (void) OpenCLThrowMagickException(device,exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
           goto cleanup;
         }
-        RecordProfileData(device,LocalContrastBlurApplyColumnKernel,event);
+        RecordProfileData(device,blurColumnKernel,event);
       }
     }
   }
@@ -4063,7 +4063,7 @@ static MagickBooleanType ComputeModulateImage(Image *image,MagickCLEnv clEnv,
       (void) OpenCLThrowMagickException(device,exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
       goto cleanup;
     }
-    RecordProfileData(device,ModulateKernel,event);
+    RecordProfileData(device,modulateKernel,event);
   }
 
   if (ALIGNED(inputPixels,CLPixelPacket)) 
@@ -4421,7 +4421,7 @@ static Image* ComputeMotionBlurImage(const Image *image,MagickCLEnv clEnv,
       "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
     goto cleanup;
   }
-  RecordProfileData(device,MotionBlurKernel,event);
+  RecordProfileData(device,motionBlurKernel,event);
 
   if (ALIGNED(filteredPixels,CLPixelPacket)) 
   {
@@ -4686,7 +4686,7 @@ RestoreMSCWarning
     (void) OpenCLThrowMagickException(device,exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
     goto cleanup;
   }
-  RecordProfileData(device,ResizeHorizontalKernel,event);
+  RecordProfileData(device,horizontalKernel,event);
   status = MagickTrue;
 
 
@@ -4882,7 +4882,7 @@ RestoreMSCWarning
     (void) OpenCLThrowMagickException(device,exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
     goto cleanup;
   }
-  RecordProfileData(device,ResizeVerticalKernel,event);
+  RecordProfileData(device,verticalKernel,event);
   status = MagickTrue;
 
 
@@ -5320,7 +5320,7 @@ static Image* ComputeRotationalBlurImage(const Image *image,MagickCLEnv clEnv,
     (void) OpenCLThrowMagickException(device,exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
     goto cleanup;
   }
-  RecordProfileData(device,RotationalBlurKernel,event);
+  RecordProfileData(device,rotationalBlurKernel,event);
 
   if (copyWriteBuffer(filteredImage,clEnv,device,queue,filteredImageBuffer,filteredPixels,exception) == MagickFalse)
   {
@@ -5553,7 +5553,7 @@ static Image *ComputeUnsharpMaskImage(const Image *image,MagickCLEnv clEnv,
         (void) OpenCLThrowMagickException(device,exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
         goto cleanup;
       }
-      RecordProfileData(device,BlurRowKernel,event);
+      RecordProfileData(device,blurRowKernel,event);
     }
 
 
@@ -5600,7 +5600,7 @@ static Image *ComputeUnsharpMaskImage(const Image *image,MagickCLEnv clEnv,
         (void) OpenCLThrowMagickException(device,exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
         goto cleanup;
       }
-      RecordProfileData(device,UnsharpMaskBlurColumnKernel,event);
+      RecordProfileData(device,unsharpMaskBlurColumnKernel,event);
     }
 
   }
@@ -5771,7 +5771,7 @@ static Image *ComputeUnsharpMaskImageSingle(const Image *image,
         (void) OpenCLThrowMagickException(device,exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
         goto cleanup;
       }
-      RecordProfileData(device,UnsharpMaskKernel,event);
+      RecordProfileData(device,unsharpMaskKernel,event);
     }
   }
 
@@ -5955,7 +5955,7 @@ static Image *ComputeWaveletDenoiseImage(const Image *image,MagickCLEnv clEnv,
         goto cleanup;
       }
     }
-    RecordProfileData(device,WaveletDenoiseKernel,event);
+    RecordProfileData(device,denoiseKernel,event);
   }
 
   if (copyWriteBuffer(filteredImage,clEnv,device,queue,filteredImageBuffer,filteredPixels,exception) == MagickFalse)
