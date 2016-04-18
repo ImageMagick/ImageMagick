@@ -2690,7 +2690,7 @@ MagickExport const KernelProfileRecord *GetOpenCLKernelProfileRecords(
 {
   if (length != (size_t *) NULL)
     *length=0;
-  return((MagickCLDevice *) NULL);
+  return((const KernelProfileRecord *) NULL);
 }
 
 MagickExport const char *GetOpenCLDeviceVersion(
@@ -2720,7 +2720,7 @@ MagickExport MagickBooleanType SetOpenCLEnabled(
   return(MagickFalse);
 }
 
-MagickExport SetOpenCLKernelProfileEnabled(
+MagickExport void SetOpenCLKernelProfileEnabled(
   MagickCLDevice magick_unused(device),
   const MagickBooleanType magick_unused(value))
 {
