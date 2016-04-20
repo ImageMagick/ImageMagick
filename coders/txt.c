@@ -251,15 +251,15 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,Image *image,
   (void) SetImageBackgroundColor(image,exception);
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
   (void) CloneString(&draw_info->text,image_info->filename);
-  (void) FormatLocaleString(geometry,MagickPathExtent,"%lux%lu%+ld%+ld",
-    image->columns,image->rows,(long) page.x,(long) page.y);
+  (void) FormatLocaleString(geometry,MagickPathExtent,"%gx%g%+g%+g",(double)
+    image->columns,(double) image->rows,(double) page.x,(double) page.y);
   (void) CloneString(&draw_info->geometry,geometry);
   status=GetTypeMetrics(image,draw_info,&metrics,exception);
   if (status == MagickFalse)
     ThrowReaderException(TypeError,"UnableToGetTypeMetrics");
   page.y=(ssize_t) ceil((double) page.y+metrics.ascent-0.5);
-  (void) FormatLocaleString(geometry,MagickPathExtent,"%lux%lu%+ld%+ld",
-    image->columns,image->rows,(long) page.x,(long) page.y);
+  (void) FormatLocaleString(geometry,MagickPathExtent,"%gx%g%+g%+g",(double)
+    image->columns,(double) image->rows,(double) page.x,(double) page.y);
   (void) CloneString(&draw_info->geometry,geometry);
   (void) CopyMagickString(filename,image_info->filename,MagickPathExtent);
   if (*draw_info->text != '\0')
