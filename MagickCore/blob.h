@@ -29,108 +29,43 @@ extern "C" {
 
 typedef enum
 {
-  UndefinedBlobMode,
-  ReadBlobMode,
-  ReadBinaryBlobMode,
-  WriteBlobMode,
-  WriteBinaryBlobMode,
-  AppendBlobMode,
-  AppendBinaryBlobMode
-} BlobMode;
-
-typedef enum
-{
   ReadMode,
   WriteMode,
   IOMode
 } MapMode;
 
-typedef int
-  *(*BlobFifo)(const Image *,const void *,const size_t);
-
-extern MagickExport BlobInfo
-  *CloneBlobInfo(const BlobInfo *),
-  *ReferenceBlob(BlobInfo *);
-
-extern MagickExport char
-  *ReadBlobString(Image *,char *);
-
-extern MagickExport const void
-  *ReadBlobStream(Image *,const size_t,void *,ssize_t *);
-
-extern MagickExport double
-  ReadBlobDouble(Image *);
-
 extern MagickExport FILE
   *GetBlobFileHandle(const Image *);
-
-extern MagickExport float
-  ReadBlobFloat(Image *);
 
 extern MagickExport Image
   *BlobToImage(const ImageInfo *,const void *,const size_t,ExceptionInfo *),
   *PingBlob(const ImageInfo *,const void *,const size_t,ExceptionInfo *);
 
-extern MagickExport int
-  EOFBlob(const Image *),
-  ReadBlobByte(Image *);
-
 extern MagickExport MagickBooleanType
   BlobToFile(char *,const void *,const size_t,ExceptionInfo *),
-  CloseBlob(Image *),
-  DiscardBlobBytes(Image *,const MagickSizeType),
   FileToImage(Image *,const char *,ExceptionInfo *),
+  GetBlobError(const Image *),
   ImageToFile(Image *,char *,ExceptionInfo *),
   InjectImageBlob(const ImageInfo *,Image *,Image *,const char *,
     ExceptionInfo *),
-  OpenBlob(const ImageInfo *,Image *,const BlobMode,ExceptionInfo *),
-  UnmapBlob(void *,const size_t);
-
-extern MagickExport MagickOffsetType
-  SeekBlob(Image *,const MagickOffsetType,const int),
-  TellBlob(const Image *);
+  IsBlobExempt(const Image *),
+  IsBlobSeekable(const Image *),
+  IsBlobTemporary(const Image *);
 
 extern MagickExport MagickSizeType
-  GetBlobSize(const Image *),
-  ReadBlobLongLong(Image *),
-  ReadBlobMSBLongLong(Image *);
+  GetBlobSize(const Image *);
 
-extern MagickExport ssize_t
-  ReadBlob(Image *,const size_t,void *),
-  WriteBlob(Image *,const size_t,const void *),
-  WriteBlobByte(Image *,const unsigned char),
-  WriteBlobFloat(Image *,const float),
-  WriteBlobLong(Image *,const unsigned int),
-  WriteBlobShort(Image *,const unsigned short),
-  WriteBlobLSBLong(Image *,const unsigned int),
-  WriteBlobLSBShort(Image *,const unsigned short),
-  WriteBlobMSBLong(Image *,const unsigned int),
-  WriteBlobMSBLongLong(Image *,const MagickSizeType),
-  WriteBlobMSBShort(Image *,const unsigned short),
-  WriteBlobString(Image *,const char *);
-
-extern MagickExport unsigned int
-  ReadBlobLong(Image *),
-  ReadBlobLSBLong(Image *),
-  ReadBlobMSBLong(Image *);
-
-extern MagickExport unsigned short
-  ReadBlobShort(Image *),
-  ReadBlobLSBShort(Image *),
-  ReadBlobMSBShort(Image *);
+extern MagickExport StreamHandler
+  GetBlobStreamHandler(const Image *);
 
 extern MagickExport void
-  AttachBlob(BlobInfo *,const void *,const size_t),
-  DestroyBlob(Image *),
-  *DetachBlob(BlobInfo *),
-  DuplicateBlob(Image *,const Image *),
   *GetBlobStreamData(const Image *),
+  DestroyBlob(Image *),
+  DuplicateBlob(Image *,const Image *),
   *FileToBlob(const char *,const size_t,size_t *,ExceptionInfo *),
   *ImageToBlob(const ImageInfo *,Image *,size_t *,ExceptionInfo *),
   *ImagesToBlob(const ImageInfo *,Image *,size_t *,ExceptionInfo *),
-  *MapBlob(int,const MapMode,const MagickOffsetType,const size_t),
-  MSBOrderLong(unsigned char *,const size_t),
-  MSBOrderShort(unsigned char *,const size_t);
+  SetBlobExempt(Image *,const MagickBooleanType);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

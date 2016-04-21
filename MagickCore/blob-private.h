@@ -18,7 +18,8 @@
 #ifndef _MAGICKCORE_BLOB_PRIVATE_H
 #define _MAGICKCORE_BLOB_PRIVATE_H
 
-#include "MagickCore/nt-feature.h"
+#include "MagickCore/image.h"
+#include "MagickCore/stream.h"
 #include "MagickCore/nt-base-private.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
@@ -33,9 +34,20 @@ extern "C" {
 
 typedef enum
 {
+  UndefinedBlobMode,
+  ReadBlobMode,
+  ReadBinaryBlobMode,
+  WriteBlobMode,
+  WriteBinaryBlobMode,
+  AppendBlobMode,
+  AppendBinaryBlobMode
+} BlobMode;
+
+typedef enum
+{
   UndefinedStream,
-  StandardStream,
   FileStream,
+  StandardStream,
   PipeStream,
   ZipStream,
   BZipStream,
@@ -43,23 +55,79 @@ typedef enum
   BlobStream
 } StreamType;
 
-extern MagickPrivate MagickBooleanType
-  GetBlobError(const Image *),
-  IsBlobExempt(const Image *),
-  IsBlobSeekable(const Image *),
-  IsBlobTemporary(const Image *),
-  SetBlobExtent(Image *,const MagickSizeType);
+typedef int
+  *(*BlobFifo)(const Image *,const void *,const size_t);
+
+extern MagickPrivate BlobInfo
+  *CloneBlobInfo(const BlobInfo *),
+  *ReferenceBlob(BlobInfo *);
+
+extern MagickPrivate char
+  *ReadBlobString(Image *,char *);
 
 extern MagickPrivate const struct stat
   *GetBlobProperties(const Image *);
 
-extern MagickPrivate StreamHandler
-  GetBlobStreamHandler(const Image *);
+extern MagickPrivate const void
+  *ReadBlobStream(Image *,const size_t,void *,ssize_t *);
+
+extern MagickPrivate double
+  ReadBlobDouble(Image *);
+
+extern MagickPrivate float
+  ReadBlobFloat(Image *);
+
+extern MagickPrivate int
+  EOFBlob(const Image *),
+  ReadBlobByte(Image *);
+
+extern MagickPrivate  MagickBooleanType
+  CloseBlob(Image *),
+  DiscardBlobBytes(Image *,const MagickSizeType),
+  OpenBlob(const ImageInfo *,Image *,const BlobMode,ExceptionInfo *),
+  SetBlobExtent(Image *,const MagickSizeType),
+  UnmapBlob(void *,const size_t);
+
+extern MagickPrivate MagickOffsetType
+  SeekBlob(Image *,const MagickOffsetType,const int),
+  TellBlob(const Image *);
+
+extern MagickPrivate MagickSizeType
+  ReadBlobLongLong(Image *),
+  ReadBlobMSBLongLong(Image *);
+
+extern MagickPrivate ssize_t
+  ReadBlob(Image *,const size_t,void *),
+  WriteBlob(Image *,const size_t,const void *),
+  WriteBlobByte(Image *,const unsigned char),
+  WriteBlobFloat(Image *,const float),
+  WriteBlobLong(Image *,const unsigned int),
+  WriteBlobShort(Image *,const unsigned short),
+  WriteBlobLSBLong(Image *,const unsigned int),
+  WriteBlobLSBShort(Image *,const unsigned short),
+  WriteBlobMSBLong(Image *,const unsigned int),
+  WriteBlobMSBLongLong(Image *,const MagickSizeType),
+  WriteBlobMSBShort(Image *,const unsigned short),
+  WriteBlobString(Image *,const char *);
+
+extern MagickPrivate unsigned int
+  ReadBlobLong(Image *),
+  ReadBlobLSBLong(Image *),
+  ReadBlobMSBLong(Image *);
+
+extern MagickPrivate unsigned short
+  ReadBlobShort(Image *),
+  ReadBlobLSBShort(Image *),
+  ReadBlobMSBShort(Image *);
 
 extern MagickPrivate void
+  AttachBlob(BlobInfo *,const void *,const size_t),
+  *DetachBlob(BlobInfo *),
   DisassociateBlob(Image *),
   GetBlobInfo(BlobInfo *),
-  SetBlobExempt(Image *,const MagickBooleanType);
+  *MapBlob(int,const MapMode,const MagickOffsetType,const size_t),
+  MSBOrderLong(unsigned char *,const size_t),
+  MSBOrderShort(unsigned char *,const size_t);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
