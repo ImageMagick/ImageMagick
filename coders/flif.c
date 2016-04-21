@@ -297,7 +297,7 @@ ModuleExport size_t RegisterFLIFImage(void)
     (FLIF_VERSION  >> 0) & 0xff,FLIF_ABI_VERSION);
 #endif
   entry->mime_type=ConstantString("image/flif");
-  entry->flags^=CoderAdjoinFlag;
+//  entry->flags^=CoderAdjoinFlag;
   entry->magick=(IsImageFormatHandler *) IsFLIF;
   if (*version != '\0')
     entry->version=ConstantString(version);
