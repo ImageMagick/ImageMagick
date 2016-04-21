@@ -1764,7 +1764,7 @@ MagickExport const KernelProfileRecord *GetOpenCLKernelProfileRecords(
   }
   if (length != (size_t *) NULL)
     {
-      length=0;
+      *length=0;
       while (device->profile_records[*length] != (KernelProfileRecord) NULL)
         *length=*length+1;
     }
@@ -2370,7 +2370,7 @@ MagickPrivate void RecordProfileData(MagickCLDevice device,
     {
       while (device->profile_records[i] != ((KernelProfileRecord) NULL))
       {
-        if (LocaleCompare(device->profile_records[i]->kernel_name,name))
+        if (LocaleCompare(device->profile_records[i]->kernel_name,name) == 0)
           {
             profile_record=device->profile_records[i];
             break;
@@ -2383,7 +2383,8 @@ MagickPrivate void RecordProfileData(MagickCLDevice device,
       profile_record=AcquireMagickMemory(sizeof(*profile_record));
       (void) ResetMagickMemory(profile_record,0,sizeof(*profile_record));
       profile_record->kernel_name=AcquireString(name);
-      device->profile_records=ResizeMagickMemory(device->profile_records,i+2);
+      device->profile_records=ResizeMagickMemory(device->profile_records,(i+2)*
+        sizeof(KernelProfileRecord));
       device->profile_records[i]=profile_record;
       device->profile_records[i+1]=(KernelProfileRecord) NULL;
     }
