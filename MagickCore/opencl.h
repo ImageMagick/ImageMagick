@@ -50,7 +50,7 @@ extern MagickExport const char
   *GetOpenCLDeviceVersion(const MagickCLDevice);
 
 extern MagickExport const KernelProfileRecord
-  *GetOpenCLKernelProfilesRecords(const MagickCLDevice,size_t *);
+  *GetOpenCLKernelProfileRecords(const MagickCLDevice,size_t *);
 
 extern MagickExport double
   GetOpenCLDeviceBenchmarkScore(const MagickCLDevice);
