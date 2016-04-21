@@ -32,6 +32,11 @@ MAGICKCORE_EXR_MODULES = coders/exr.la
 MAGICKCORE_EXR_SRCS = coders/exr.c
 endif
 
+if FLIF_DELEGATE
+MAGICKCORE_FLIF_MODULES = coders/flif.la
+MAGICKCORE_FLIF_SRCS = coders/flif.c
+endif
+
 if FPX_DELEGATE
 MAGICKCORE_FPX_MODULES = coders/fpx.la
 MAGICKCORE_FPX_SRCS = coders/fpx.c
@@ -201,6 +206,7 @@ MAGICKCORE_CODER_SRCS = \
 	$(MAGICKCORE_DPS_SRCS) \
 	$(MAGICKCORE_DJVU_SRCS) \
 	$(MAGICKCORE_EXR_SRCS) \
+	$(MAGICKCORE_FLIF_SRCS) \
 	$(MAGICKCORE_FPX_SRCS) \
 	$(MAGICKCORE_GDI32_SRCS) \
 	$(MAGICKCORE_JBIG_SRCS) \
@@ -326,6 +332,7 @@ coders_LTLIBRARIES = \
 	$(MAGICKCORE_DPS_MODULES) \
 	$(MAGICKCORE_DJVU_MODULES) \
 	$(MAGICKCORE_EXR_MODULES) \
+	$(MAGICKCORE_FLIF_MODULES) \
 	$(MAGICKCORE_FPX_MODULES) \
 	$(MAGICKCORE_GDI32_MODULES)  \
 	$(MAGICKCORE_JBIG_MODULES) \
@@ -513,6 +520,12 @@ coders_fits_la_SOURCES     = coders/fits.c
 coders_fits_la_CPPFLAGS    = $(MAGICK_CODER_CPPFLAGS)
 coders_fits_la_LDFLAGS     = $(MODULECOMMONFLAGS)
 coders_fits_la_LIBADD      = $(MAGICKCORE_LIBS) $(MATH_LIBS)
+
+# FLIF coder module
+coders_flif_la_SOURCES      = coders/flif.c
+coders_flif_la_CPPFLAGS     = $(MAGICK_CODER_CPPFLAGS)
+coders_flif_la_LDFLAGS      = $(MODULECOMMONFLAGS)
+coders_flif_la_LIBADD       = $(MAGICKCORE_LIBS) $(FLIF_LIBS)
 
 # FPX coder module
 coders_fpx_la_SOURCES      = coders/fpx.c
