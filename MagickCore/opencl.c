@@ -568,7 +568,8 @@ MagickPrivate cl_command_queue AcquireOpenCLCommandQueue(MagickCLDevice device)
   assert(device != (MagickCLDevice) NULL);
   LockSemaphoreInfo(device->lock);
   device->created_queues++;
-  if (device->command_queues_index >= 0)
+  if ((device->profile_kernels == MagickFalse) &&
+      (device->command_queues_index >= 0))
   {
     queue=device->command_queues[device->command_queues_index--];
     UnlockSemaphoreInfo(device->lock);
@@ -1765,8 +1766,10 @@ MagickExport const KernelProfileRecord *GetOpenCLKernelProfileRecords(
   if (length != (size_t *) NULL)
     {
       *length=0;
+      LockSemaphoreInfo(device->lock);
       while (device->profile_records[*length] != (KernelProfileRecord) NULL)
         *length=*length+1;
+      UnlockSemaphoreInfo(device->lock);
     }
   return(device->profile_records);
 }
@@ -2508,7 +2511,8 @@ MagickPrivate void RelinquishOpenCLCommandQueue(MagickCLDevice device,
   assert(device != (MagickCLDevice) NULL);
   LockSemaphoreInfo(device->lock);
   device->created_queues--;
-  if (device->command_queues_index >= MAGICKCORE_OPENCL_COMMAND_QUEUES-1)
+  if ((device->profile_kernels == MagickFalse) ||
+      (device->command_queues_index >= MAGICKCORE_OPENCL_COMMAND_QUEUES-1))
     (void) openCL_library->clReleaseCommandQueue(queue);
   else
     device->command_queues[++device->command_queues_index]=queue;
