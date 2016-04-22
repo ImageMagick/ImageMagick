@@ -928,7 +928,7 @@ MagickExport int EOFBlob(const Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   F i l e T o B l o b                                                       %
+%   F i l e T o B l o b                                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -2049,7 +2049,7 @@ MagickExport MagickBooleanType InjectImageBlob(const ImageInfo *image_info,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   I s B l o b E x e m p t                                                   %
+%   I s B l o b E x e m p t                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -2129,7 +2129,7 @@ MagickExport MagickBooleanType IsBlobSeekable(const Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   I s B l o b T e m p o r a r y                                             %
+%   I s B l o b T e m p o r a r y                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -2514,7 +2514,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
         }
       image->blob->type=PipeStream;
       image->blob->exempt=MagickTrue;
-			return(SetStreamBuffering(image_info,image));
+      return(SetStreamBuffering(image_info,image));
     }
 #endif
   status=GetPathAttributes(filename,&image->blob->properties);
@@ -3908,8 +3908,15 @@ MagickExport MagickBooleanType SetBlobExtent(Image *image,
         image->blob->file_info.file);
 #if defined(MAGICKCORE_HAVE_POSIX_FALLOCATE)
       if (image->blob->synchronize != MagickFalse)
-        (void) posix_fallocate(fileno(image->blob->file_info.file),offset,
-          extent-offset);
+        {
+          int
+            file;
+
+          file=fileno(image->blob->file_info.file);
+          if ((file == -1) || (offset < 0))
+            return(MagickFalse);
+          (void) posix_fallocate(file,offset,extent-offset);
+        }
 #endif
       offset=SeekBlob(image,offset,SEEK_SET);
       if (count != 1)
