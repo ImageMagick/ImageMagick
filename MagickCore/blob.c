@@ -1219,8 +1219,7 @@ MagickExport MagickBooleanType FileToImage(Image *image,const char *filename,
   blob=(unsigned char *) RelinquishMagickMemory(blob);
   return(MagickTrue);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -2459,7 +2458,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
       image->blob->file_info.file=(*type == 'r') ? stdin : stdout;
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__OS2__)
       if (strchr(type,'b') != (char *) NULL)
-        setmode(_fileno(image->blob->file_info.file),_O_BINARY);
+        setmode(fileno(image->blob->file_info.file),_O_BINARY);
 #endif
       image->blob->type=StandardStream;
       image->blob->exempt=MagickTrue;
@@ -2475,7 +2474,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
       image->blob->file_info.file=fdopen(StringToLong(filename+3),fileMode);
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__OS2__)
       if (strchr(type,'b') != (char *) NULL)
-        setmode(_fileno(image->blob->file_info.file),_O_BINARY);
+        setmode(fileno(image->blob->file_info.file),_O_BINARY);
 #endif
       image->blob->type=StandardStream;
       image->blob->exempt=MagickTrue;
