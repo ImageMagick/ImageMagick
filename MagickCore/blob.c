@@ -358,7 +358,7 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
       blob_info=DestroyImageInfo(blob_info);
       return((Image *) NULL);
     }
-  if (GetMagickExportSupport(magick_info) != MagickFalse)
+  if (GetMagickBlobSupport(magick_info) != MagickFalse)
     {
       /*
         Native blob support for this image format.
@@ -1561,7 +1561,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,
       return(blob);
     }
   (void) CopyMagickString(blob_info->magick,image->magick,MagickPathExtent);
-  if (GetMagickExportSupport(magick_info) != MagickFalse)
+  if (GetMagickBlobSupport(magick_info) != MagickFalse)
     {
       /*
         Native blob support for this image format.
@@ -1818,7 +1818,7 @@ MagickExport void *ImagesToBlob(const ImageInfo *image_info,Image *images,
       return(ImageToBlob(image_info,images,length,exception));
     }
   (void) CopyMagickString(blob_info->magick,images->magick,MagickPathExtent);
-  if (GetMagickExportSupport(magick_info) != MagickFalse)
+  if (GetMagickBlobSupport(magick_info) != MagickFalse)
     {
       /*
         Native blob support for this images format.
@@ -2622,7 +2622,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
                 sans_exception=DestroyExceptionInfo(sans_exception);
                 length=(size_t) image->blob->properties.st_size;
                 if ((magick_info != (const MagickInfo *) NULL) &&
-                    (GetMagickExportSupport(magick_info) != MagickFalse) &&
+                    (GetMagickBlobSupport(magick_info) != MagickFalse) &&
                     (length > MagickMaxBufferExtent) &&
                     (AcquireMagickResource(MapResource,length) != MagickFalse))
                   {
