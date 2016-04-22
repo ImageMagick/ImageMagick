@@ -195,7 +195,7 @@ static int
 %    o length: This size_t integer reflects the length in bytes of the blob.
 %
 */
-MagickPrivate void AttachBlob(BlobInfo *blob_info,const void *blob,
+MagickBlob void AttachBlob(BlobInfo *blob_info,const void *blob,
   const size_t length)
 {
   assert(blob_info != (BlobInfo *) NULL);
@@ -438,7 +438,7 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
 %    o blob_info: the blob info.
 %
 */
-MagickPrivate BlobInfo *CloneBlobInfo(const BlobInfo *blob_info)
+MagickBlob BlobInfo *CloneBlobInfo(const BlobInfo *blob_info)
 {
   BlobInfo
     *clone_info;
@@ -493,7 +493,7 @@ MagickPrivate BlobInfo *CloneBlobInfo(const BlobInfo *blob_info)
 %    o image: the image.
 %
 */
-MagickPrivate MagickBooleanType CloseBlob(Image *image)
+MagickBlob MagickBooleanType CloseBlob(Image *image)
 {
   int
     status;
@@ -679,7 +679,7 @@ MagickExport void DestroyBlob(Image *image)
 %    o blob_info: Specifies a pointer to a BlobInfo structure.
 %
 */
-MagickPrivate void *DetachBlob(BlobInfo *blob_info)
+MagickBlob void *DetachBlob(BlobInfo *blob_info)
 {
   void
     *data;
@@ -731,7 +731,7 @@ MagickPrivate void *DetachBlob(BlobInfo *blob_info)
 %    o image: the image.
 %
 */
-MagickPrivate void DisassociateBlob(Image *image)
+MagickBlob void DisassociateBlob(Image *image)
 {
   BlobInfo
     *blob;
@@ -783,7 +783,7 @@ MagickPrivate void DisassociateBlob(Image *image)
 %    o length:  the number of bytes to skip.
 %
 */
-MagickPrivate MagickBooleanType DiscardBlobBytes(Image *image,
+MagickBlob MagickBooleanType DiscardBlobBytes(Image *image,
   const MagickSizeType length)
 {
   register MagickOffsetType
@@ -876,7 +876,7 @@ MagickExport void DuplicateBlob(Image *image,const Image *duplicate)
 %    o image: the image.
 %
 */
-MagickPrivate int EOFBlob(const Image *image)
+MagickBlob int EOFBlob(const Image *image)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
@@ -1304,7 +1304,7 @@ MagickExport FILE *GetBlobFileHandle(const Image *image)
 %    o blob_info: Specifies a pointer to a BlobInfo structure.
 %
 */
-MagickPrivate void GetBlobInfo(BlobInfo *blob_info)
+MagickBlob void GetBlobInfo(BlobInfo *blob_info)
 {
   assert(blob_info != (BlobInfo *) NULL);
   (void) ResetMagickMemory(blob_info,0,sizeof(*blob_info));
@@ -1340,7 +1340,7 @@ MagickPrivate void GetBlobInfo(BlobInfo *blob_info)
 %    o image: the image.
 %
 */
-MagickPrivate const struct stat *GetBlobProperties(const Image *image)
+MagickBlob const struct stat *GetBlobProperties(const Image *image)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
@@ -2176,7 +2176,7 @@ MagickExport MagickBooleanType IsBlobTemporary(const Image *image)
 %    o length: the length of the mapping is returned in this pointer.
 %
 */
-MagickPrivate void *MapBlob(int file,const MapMode mode,
+MagickBlob void *MapBlob(int file,const MapMode mode,
   const MagickOffsetType offset,const size_t length)
 {
 #if defined(MAGICKCORE_HAVE_MMAP)
@@ -2264,7 +2264,7 @@ MagickPrivate void *MapBlob(int file,const MapMode mode,
 %   o  length:  Specifies the length of the buffer.
 %
 */
-MagickPrivate void MSBOrderLong(unsigned char *buffer,const size_t length)
+MagickBlob void MSBOrderLong(unsigned char *buffer,const size_t length)
 {
   int
     c;
@@ -2314,7 +2314,7 @@ MagickPrivate void MSBOrderLong(unsigned char *buffer,const size_t length)
 %   o  length:  Specifies the length of the buffer.
 %
 */
-MagickPrivate void MSBOrderShort(unsigned char *p,const size_t length)
+MagickBlob void MSBOrderShort(unsigned char *p,const size_t length)
 {
   int
     c;
@@ -2386,7 +2386,7 @@ static inline MagickBooleanType SetStreamBuffering(const ImageInfo *image_info,
   return(status == 0 ? MagickTrue : MagickFalse);
 }
 
-MagickPrivate MagickBooleanType OpenBlob(const ImageInfo *image_info,
+MagickBlob MagickBooleanType OpenBlob(const ImageInfo *image_info,
   Image *image,const BlobMode mode,ExceptionInfo *exception)
 {
   char
@@ -2814,7 +2814,7 @@ MagickExport Image *PingBlob(const ImageInfo *image_info,const void *blob,
 %      file.
 %
 */
-MagickPrivate ssize_t ReadBlob(Image *image,const size_t length,void *data)
+MagickBlob ssize_t ReadBlob(Image *image,const size_t length,void *data)
 {
   int
     c;
@@ -2988,7 +2988,7 @@ MagickPrivate ssize_t ReadBlob(Image *image,const size_t length,void *data)
 %    o image: the image.
 %
 */
-MagickPrivate int ReadBlobByte(Image *image)
+MagickBlob int ReadBlobByte(Image *image)
 {
   register const unsigned char
     *p;
@@ -3030,7 +3030,7 @@ MagickPrivate int ReadBlobByte(Image *image)
 %    o image: the image.
 %
 */
-MagickPrivate double ReadBlobDouble(Image *image)
+MagickBlob double ReadBlobDouble(Image *image)
 {
   union
   {
@@ -3069,7 +3069,7 @@ MagickPrivate double ReadBlobDouble(Image *image)
 %    o image: the image.
 %
 */
-MagickPrivate float ReadBlobFloat(Image *image)
+MagickBlob float ReadBlobFloat(Image *image)
 {
   union
   {
@@ -3108,7 +3108,7 @@ MagickPrivate float ReadBlobFloat(Image *image)
 %    o image: the image.
 %
 */
-MagickPrivate unsigned int ReadBlobLong(Image *image)
+MagickBlob unsigned int ReadBlobLong(Image *image)
 {
   register const unsigned char
     *p;
@@ -3166,7 +3166,7 @@ MagickPrivate unsigned int ReadBlobLong(Image *image)
 %    o image: the image.
 %
 */
-MagickPrivate MagickSizeType ReadBlobLongLong(Image *image)
+MagickBlob MagickSizeType ReadBlobLongLong(Image *image)
 {
   MagickSizeType
     value;
@@ -3232,7 +3232,7 @@ MagickPrivate MagickSizeType ReadBlobLongLong(Image *image)
 %    o image: the image.
 %
 */
-MagickPrivate unsigned short ReadBlobShort(Image *image)
+MagickBlob unsigned short ReadBlobShort(Image *image)
 {
   register const unsigned char
     *p;
@@ -3286,7 +3286,7 @@ MagickPrivate unsigned short ReadBlobShort(Image *image)
 %    o image: the image.
 %
 */
-MagickPrivate unsigned int ReadBlobLSBLong(Image *image)
+MagickBlob unsigned int ReadBlobLSBLong(Image *image)
 {
   register const unsigned char
     *p;
@@ -3336,7 +3336,7 @@ MagickPrivate unsigned int ReadBlobLSBLong(Image *image)
 %    o image: the image.
 %
 */
-MagickPrivate unsigned short ReadBlobLSBShort(Image *image)
+MagickBlob unsigned short ReadBlobLSBShort(Image *image)
 {
   register const unsigned char
     *p;
@@ -3384,7 +3384,7 @@ MagickPrivate unsigned short ReadBlobLSBShort(Image *image)
 %    o image: the image.
 %
 */
-MagickPrivate unsigned int ReadBlobMSBLong(Image *image)
+MagickBlob unsigned int ReadBlobMSBLong(Image *image)
 {
   register const unsigned char
     *p;
@@ -3434,7 +3434,7 @@ MagickPrivate unsigned int ReadBlobMSBLong(Image *image)
 %    o image: the image.
 %
 */
-MagickPrivate MagickSizeType ReadBlobMSBLongLong(Image *image)
+MagickBlob MagickSizeType ReadBlobMSBLongLong(Image *image)
 {
   register const unsigned char
     *p;
@@ -3488,7 +3488,7 @@ MagickPrivate MagickSizeType ReadBlobMSBLongLong(Image *image)
 %    o image: the image.
 %
 */
-MagickPrivate unsigned short ReadBlobMSBShort(Image *image)
+MagickBlob unsigned short ReadBlobMSBShort(Image *image)
 {
   register const unsigned char
     *p;
@@ -3548,7 +3548,7 @@ MagickPrivate unsigned short ReadBlobMSBShort(Image *image)
 %      file.
 %
 */
-MagickPrivate const void *ReadBlobStream(Image *image,const size_t length,
+MagickBlob const void *ReadBlobStream(Image *image,const size_t length,
   void *data,ssize_t *count)
 {
   assert(image != (Image *) NULL);
@@ -3601,7 +3601,7 @@ MagickPrivate const void *ReadBlobStream(Image *image,const size_t length,
 %    o string: the address of a character buffer.
 %
 */
-MagickPrivate char *ReadBlobString(Image *image,char *string)
+MagickBlob char *ReadBlobString(Image *image,char *string)
 {
   register const unsigned char
     *p;
@@ -3659,7 +3659,7 @@ MagickPrivate char *ReadBlobString(Image *image,char *string)
 %    o blob_info: the blob_info.
 %
 */
-MagickPrivate BlobInfo *ReferenceBlob(BlobInfo *blob)
+MagickBlob BlobInfo *ReferenceBlob(BlobInfo *blob)
 {
   assert(blob != (BlobInfo *) NULL);
   assert(blob->signature == MagickCoreSignature);
@@ -3704,7 +3704,7 @@ MagickPrivate BlobInfo *ReferenceBlob(BlobInfo *blob)
 %        SEEK_END  Set position to EOF plus offset.
 %
 */
-MagickPrivate MagickOffsetType SeekBlob(Image *image,
+MagickBlob MagickOffsetType SeekBlob(Image *image,
   const MagickOffsetType offset,const int whence)
 {
   assert(image != (Image *) NULL);
@@ -3859,7 +3859,7 @@ MagickExport void SetBlobExempt(Image *image,const MagickBooleanType exempt)
 %    o extent:  the blob maximum extent.
 %
 */
-MagickPrivate MagickBooleanType SetBlobExtent(Image *image,
+MagickBlob MagickBooleanType SetBlobExtent(Image *image,
   const MagickSizeType extent)
 {
   assert(image != (Image *) NULL);
@@ -4070,7 +4070,7 @@ static int SyncBlob(Image *image)
 %    o image: the image.
 %
 */
-MagickPrivate MagickOffsetType TellBlob(const Image *image)
+MagickBlob MagickOffsetType TellBlob(const Image *image)
 {
   MagickOffsetType
     offset;
@@ -4139,7 +4139,7 @@ MagickPrivate MagickOffsetType TellBlob(const Image *image)
 %    o length: the length of the binary large object.
 %
 */
-MagickPrivate MagickBooleanType UnmapBlob(void *map,const size_t length)
+MagickBlob MagickBooleanType UnmapBlob(void *map,const size_t length)
 {
 #if defined(MAGICKCORE_HAVE_MMAP)
   int
@@ -4182,7 +4182,7 @@ MagickPrivate MagickBooleanType UnmapBlob(void *map,const size_t length)
 %    o data:  The address of the data to write to the blob or file.
 %
 */
-MagickPrivate ssize_t WriteBlob(Image *image,const size_t length,
+MagickBlob ssize_t WriteBlob(Image *image,const size_t length,
   const void *data)
 {
   int
@@ -4367,7 +4367,7 @@ MagickPrivate ssize_t WriteBlob(Image *image,const size_t length,
 %    o value: Specifies the value to write.
 %
 */
-MagickPrivate ssize_t WriteBlobByte(Image *image,const unsigned char value)
+MagickBlob ssize_t WriteBlobByte(Image *image,const unsigned char value)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
@@ -4399,7 +4399,7 @@ MagickPrivate ssize_t WriteBlobByte(Image *image,const unsigned char value)
 %    o value: Specifies the value to write.
 %
 */
-MagickPrivate ssize_t WriteBlobFloat(Image *image,const float value)
+MagickBlob ssize_t WriteBlobFloat(Image *image,const float value)
 {
   union
   {
@@ -4440,7 +4440,7 @@ MagickPrivate ssize_t WriteBlobFloat(Image *image,const float value)
 %    o value: Specifies the value to write.
 %
 */
-MagickPrivate ssize_t WriteBlobLong(Image *image,const unsigned int value)
+MagickBlob ssize_t WriteBlobLong(Image *image,const unsigned int value)
 {
   unsigned char
     buffer[4];
@@ -4487,7 +4487,7 @@ MagickPrivate ssize_t WriteBlobLong(Image *image,const unsigned int value)
 %    o value:  Specifies the value to write.
 %
 */
-MagickPrivate ssize_t WriteBlobShort(Image *image,const unsigned short value)
+MagickBlob ssize_t WriteBlobShort(Image *image,const unsigned short value)
 {
   unsigned char
     buffer[2];
@@ -4530,7 +4530,7 @@ MagickPrivate ssize_t WriteBlobShort(Image *image,const unsigned short value)
 %    o value: Specifies the value to write.
 %
 */
-MagickPrivate ssize_t WriteBlobLSBLong(Image *image,const unsigned int value)
+MagickBlob ssize_t WriteBlobLSBLong(Image *image,const unsigned int value)
 {
   unsigned char
     buffer[4];
@@ -4569,7 +4569,7 @@ MagickPrivate ssize_t WriteBlobLSBLong(Image *image,const unsigned int value)
 %    o value:  Specifies the value to write.
 %
 */
-MagickPrivate ssize_t WriteBlobLSBShort(Image *image,const unsigned short value)
+MagickBlob ssize_t WriteBlobLSBShort(Image *image,const unsigned short value)
 {
   unsigned char
     buffer[2];
@@ -4606,7 +4606,7 @@ MagickPrivate ssize_t WriteBlobLSBShort(Image *image,const unsigned short value)
 %    o image: the image.
 %
 */
-MagickPrivate ssize_t WriteBlobMSBLong(Image *image,const unsigned int value)
+MagickBlob ssize_t WriteBlobMSBLong(Image *image,const unsigned int value)
 {
   unsigned char
     buffer[4];
@@ -4645,7 +4645,7 @@ MagickPrivate ssize_t WriteBlobMSBLong(Image *image,const unsigned int value)
 %    o image: the image.
 %
 */
-MagickPrivate ssize_t WriteBlobMSBLongLong(Image *image,
+MagickBlob ssize_t WriteBlobMSBLongLong(Image *image,
   const MagickSizeType value)
 {
   unsigned char
@@ -4689,7 +4689,7 @@ MagickPrivate ssize_t WriteBlobMSBLongLong(Image *image,
 %   o  file:  Specifies the file to write the data to.
 %
 */
-MagickPrivate ssize_t WriteBlobMSBShort(Image *image,const unsigned short value)
+MagickBlob ssize_t WriteBlobMSBShort(Image *image,const unsigned short value)
 {
   unsigned char
     buffer[2];
@@ -4726,7 +4726,7 @@ MagickPrivate ssize_t WriteBlobMSBShort(Image *image,const unsigned short value)
 %    o string: Specifies the string to write.
 %
 */
-MagickPrivate ssize_t WriteBlobString(Image *image,const char *string)
+MagickBlob ssize_t WriteBlobString(Image *image,const char *string)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);

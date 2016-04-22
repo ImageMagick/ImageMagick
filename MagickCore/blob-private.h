@@ -58,45 +58,45 @@ typedef enum
 typedef int
   *(*BlobFifo)(const Image *,const void *,const size_t);
 
-extern MagickPrivate BlobInfo
+extern MagickExport BlobInfo
   *CloneBlobInfo(const BlobInfo *),
   *ReferenceBlob(BlobInfo *);
 
-extern MagickPrivate char
+extern MagickExport char
   *ReadBlobString(Image *,char *);
 
-extern MagickPrivate const struct stat
+extern MagickExport const struct stat
   *GetBlobProperties(const Image *);
 
-extern MagickPrivate const void
+extern MagickExport const void
   *ReadBlobStream(Image *,const size_t,void *,ssize_t *);
 
-extern MagickPrivate double
+extern MagickExport double
   ReadBlobDouble(Image *);
 
-extern MagickPrivate float
+extern MagickExport float
   ReadBlobFloat(Image *);
 
-extern MagickPrivate int
+extern MagickExport int
   EOFBlob(const Image *),
   ReadBlobByte(Image *);
 
-extern MagickPrivate  MagickBooleanType
+extern MagickExport  MagickBooleanType
   CloseBlob(Image *),
   DiscardBlobBytes(Image *,const MagickSizeType),
   OpenBlob(const ImageInfo *,Image *,const BlobMode,ExceptionInfo *),
   SetBlobExtent(Image *,const MagickSizeType),
   UnmapBlob(void *,const size_t);
 
-extern MagickPrivate MagickOffsetType
+extern MagickExport MagickOffsetType
   SeekBlob(Image *,const MagickOffsetType,const int),
   TellBlob(const Image *);
 
-extern MagickPrivate MagickSizeType
+extern MagickExport MagickSizeType
   ReadBlobLongLong(Image *),
   ReadBlobMSBLongLong(Image *);
 
-extern MagickPrivate ssize_t
+extern MagickExport ssize_t
   ReadBlob(Image *,const size_t,void *),
   WriteBlob(Image *,const size_t,const void *),
   WriteBlobByte(Image *,const unsigned char),
@@ -110,17 +110,17 @@ extern MagickPrivate ssize_t
   WriteBlobMSBShort(Image *,const unsigned short),
   WriteBlobString(Image *,const char *);
 
-extern MagickPrivate unsigned int
+extern MagickExport unsigned int
   ReadBlobLong(Image *),
   ReadBlobLSBLong(Image *),
   ReadBlobMSBLong(Image *);
 
-extern MagickPrivate unsigned short
+extern MagickExport unsigned short
   ReadBlobShort(Image *),
   ReadBlobLSBShort(Image *),
   ReadBlobMSBShort(Image *);
 
-extern MagickPrivate void
+extern MagickExport void
   AttachBlob(BlobInfo *,const void *,const size_t),
   *DetachBlob(BlobInfo *),
   DisassociateBlob(Image *),
