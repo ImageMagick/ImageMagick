@@ -2511,7 +2511,7 @@ MagickPrivate void RelinquishOpenCLCommandQueue(MagickCLDevice device,
   assert(device != (MagickCLDevice) NULL);
   LockSemaphoreInfo(device->lock);
   device->created_queues--;
-  if ((device->profile_kernels == MagickFalse) ||
+  if ((device->profile_kernels != MagickFalse) ||
       (device->command_queues_index >= MAGICKCORE_OPENCL_COMMAND_QUEUES-1))
     (void) openCL_library->clReleaseCommandQueue(queue);
   else
