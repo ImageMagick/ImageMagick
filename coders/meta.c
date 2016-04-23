@@ -549,7 +549,7 @@ static char *super_fgets_w(char **b, int *blen, Image *file)
   p=(unsigned char *) (*b);
   for (q=p; ; q++)
   {
-    c=(int) ReadBlobLSBShort(file);
+    c=ReadBlobLSBSignedShort(file);
     if ((c == -1) || (c == '\n'))
       break;
    if (EOFBlob(file))
@@ -2121,7 +2121,7 @@ static int format8BIM(Image *ifile, Image *ofile)
     /*
       We found the OSType (8BIM) and now grab the ID, PString, and Size fields.
     */
-    ID=(int) ReadBlobMSBShort(ifile);
+    ID=ReadBlobMSBSignedShort(ifile);
     if (ID < 0)
       return(-1);
     {
@@ -2153,7 +2153,7 @@ static int format8BIM(Image *ifile, Image *ofile)
           return(-1);
       }
     }
-    count = (int) ReadBlobMSBLong(ifile);
+    count=ReadBlobMSBSignedLong(ifile);
     if (count < 0) return -1;
     /* make a buffer to hold the datand snag it from the input stream */
     str=(unsigned char *) AcquireQuantumMemory((size_t) count,sizeof(*str));

@@ -935,7 +935,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
     if ((version == 1) || ((TellBlob(image) % 2) != 0))
       code=ReadBlobByte(image);
     if (version == 2)
-      code=(int) ReadBlobMSBShort(image);
+      code=ReadBlobMSBSignedShort(image);
     if (code < 0)
       break;
     if (code > 0xa1)

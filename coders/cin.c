@@ -584,7 +584,7 @@ static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Image origination information.
   */
-  cin.origination.x_offset=(int) ReadBlobLong(image);
+  cin.origination.x_offset=ReadBlobSignedLong(image);
   offset+=4;
   if ((size_t) cin.origination.x_offset != ~0UL)
     (void) FormatImageProperty(image,"dpx:origination.x_offset","%.20g",

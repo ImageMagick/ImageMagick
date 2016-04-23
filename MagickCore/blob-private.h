@@ -81,7 +81,7 @@ extern MagickExport int
   EOFBlob(const Image *),
   ReadBlobByte(Image *);
 
-extern MagickExport  MagickBooleanType
+extern MagickExport MagickBooleanType
   CloseBlob(Image *),
   DiscardBlobBytes(Image *,const MagickSizeType),
   OpenBlob(const ImageInfo *,Image *,const BlobMode,ExceptionInfo *),
@@ -95,6 +95,16 @@ extern MagickExport MagickOffsetType
 extern MagickExport MagickSizeType
   ReadBlobLongLong(Image *),
   ReadBlobMSBLongLong(Image *);
+
+extern MagickExport signed int
+  ReadBlobLSBSignedLong(Image *),
+  ReadBlobMSBSignedLong(Image *),
+  ReadBlobSignedLong(Image *);
+
+extern MagickExport signed short
+  ReadBlobLSBSignedShort(Image *),
+  ReadBlobMSBSignedShort(Image *),
+  ReadBlobSignedShort(Image *);
 
 extern MagickExport ssize_t
   ReadBlob(Image *,const size_t,void *),

@@ -354,7 +354,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read record header.
   */
-  img_offset=(ssize_t) ((int) ReadBlobMSBLong(image));
+  img_offset=(ssize_t) ReadBlobMSBSignedLong(image);
   attributes=(unsigned char) ReadBlobByte(image);
   (void) attributes;
   count=ReadBlob(image,3,(unsigned char *) tag);
@@ -362,7 +362,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(CorruptImageError,"CorruptImage");
   if (pdb_info.number_records > 1)
     {
-      comment_offset=(ssize_t) ((int) ReadBlobMSBLong(image));
+      comment_offset=(ssize_t) ReadBlobMSBSignedLong(image);
       attributes=(unsigned char) ReadBlobByte(image);
       count=ReadBlob(image,3,(unsigned char *) tag);
       if (count != 3  ||  memcmp(tag,"\x6f\x80\x01",3) != 0)
@@ -385,7 +385,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (count != sizeof(pdb_image.name))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   pdb_image.version=ReadBlobByte(image);
-  pdb_image.type=(unsigned char) ((int) ReadBlobByte(image));
+  pdb_image.type=(unsigned char) (ReadBlobByte(image));
   pdb_image.reserved_1=ReadBlobMSBLong(image);
   pdb_image.note=ReadBlobMSBLong(image);
   pdb_image.x_last=(short) ReadBlobMSBShort(image);

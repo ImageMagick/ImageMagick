@@ -458,7 +458,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         packets=(unsigned char *) GetVirtualMemoryBlob(packet_info);
         for (i=0; i < (ssize_t) (iris_info.rows*iris_info.depth); i++)
-          offsets[i]=(int) ReadBlobMSBLong(image);
+          offsets[i]=ReadBlobMSBSignedLong(image);
         for (i=0; i < (ssize_t) (iris_info.rows*iris_info.depth); i++)
         {
           runlength[i]=ReadBlobMSBLong(image);
