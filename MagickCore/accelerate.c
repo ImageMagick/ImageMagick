@@ -4534,7 +4534,7 @@ static MagickBooleanType resizeHorizontalFilter(MagickCLEnv clEnv,
     resizeWindowType;
 
   MagickBooleanType
-    status = MagickFalse;
+    status;
 
   size_t
     gammaAccumulatorLocalMemorySize,
@@ -4680,7 +4680,6 @@ RestoreMSCWarning
   local_work_size[0] = workgroupSize;
   local_work_size[1] = 1;
   clStatus = clEnv->library->clEnqueueNDRangeKernel(queue, horizontalKernel, 2, NULL, global_work_size, local_work_size, 0, NULL, &event);
-  (void) local_work_size;
   if (clStatus != CL_SUCCESS)
   {
     (void) OpenCLThrowMagickException(device,exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
@@ -4731,7 +4730,7 @@ static MagickBooleanType resizeVerticalFilter(MagickCLEnv clEnv,
     resizeWindowType;
 
   MagickBooleanType
-    status = MagickFalse;
+    status;
 
   size_t
     gammaAccumulatorLocalMemorySize,

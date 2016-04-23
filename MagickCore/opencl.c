@@ -1202,7 +1202,7 @@ static MagickBooleanType LoadCachedOpenCLKernel(MagickCLDevice device,
     MagickTrue);
 }
 
-static void LogOpenCLBuildFature(MagickCLDevice device,const char *kernel,
+static void LogOpenCLBuildFailure(MagickCLDevice device,const char *kernel,
   ExceptionInfo *exception)
 {
   char
@@ -1215,6 +1215,7 @@ static void LogOpenCLBuildFature(MagickCLDevice device,const char *kernel,
   (void) FormatLocaleString(filename,MagickPathExtent,"%s%s%s",
     GetOpenCLCacheDirectory(),DirectorySeparator,"magick_badcl.cl");
 
+  (void) remove_utf8(filename);
   (void) BlobToFile(filename,kernel,strlen(kernel),exception);
 
   openCL_library->clGetProgramBuildInfo(device->program,device->deviceID,
@@ -1226,6 +1227,7 @@ static void LogOpenCLBuildFature(MagickCLDevice device,const char *kernel,
   (void) FormatLocaleString(filename,MagickPathExtent,"%s%s%s",
     GetOpenCLCacheDirectory(),DirectorySeparator,"magick_badcl.log");
 
+  (void) remove_utf8(filename);
   (void) BlobToFile(filename,log,logSize,exception);
 }
 
@@ -1292,7 +1294,7 @@ static MagickBooleanType CompileOpenCLKernel(MagickCLDevice device,
   {
     (void) ThrowMagickException(exception,GetMagickModule(),DelegateWarning,
       "clBuildProgram failed.","(%d)",(int)status);
-    LogOpenCLBuildFature(device,kernel,exception);
+    LogOpenCLBuildFailure(device,kernel,exception);
     return(MagickFalse);
   }
 

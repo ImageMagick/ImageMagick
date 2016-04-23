@@ -2719,10 +2719,13 @@ OPENCL_ENDIF()
 
       if (itemID < actualNumPixelInThisChunk)
       {
-        float density = densityCache[itemID];
-        float gamma = gammaCache[itemID];
         float4 filteredPixel = outputPixelCache[itemID];
 
+        float gamma = 0.0f;
+        if ((number_channels == 4) || (number_channels == 2))
+          gamma = gammaCache[itemID];
+
+        float density = densityCache[itemID];
         if ((density != 0.0f) && (density != 1.0f))
         {
           density = PerceptibleReciprocal(density);
@@ -2880,10 +2883,13 @@ OPENCL_ENDIF()
 
       if (itemID < actualNumPixelInThisChunk)
       {
-        float density = densityCache[itemID];
-        float gamma = gammaCache[itemID];
         float4 filteredPixel = outputPixelCache[itemID];
 
+        float gamma = 0.0f;
+        if ((number_channels == 4) || (number_channels == 2))
+          gamma = gammaCache[itemID];
+
+        float density = densityCache[itemID];
         if ((density != 0.0f) && (density != 1.0f))
         {
           density = PerceptibleReciprocal(density);
