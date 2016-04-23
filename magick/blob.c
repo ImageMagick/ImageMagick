@@ -3108,8 +3108,8 @@ MagickExport float ReadBlobFloat(Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ReadBlobLong() reads a ssize_t value as a 32-bit quantity in the byte-order
-%  specified by the endian member of the image structure.
+%  ReadBlobLong() reads a unsigned int value as a 32-bit quantity in the
+%  byte-order specified by the endian member of the image structure.
 %
 %  The format of the ReadBlobLong method is:
 %
@@ -3146,13 +3146,13 @@ MagickExport unsigned int ReadBlobLong(Image *image)
       value|=((unsigned int) (*p++)) << 8;
       value|=((unsigned int) (*p++)) << 16;
       value|=((unsigned int) (*p++)) << 24;
-      return(value);
+      return(value & 0xffffffff);
     }
   value=((unsigned int) (*p++)) << 24;
   value|=((unsigned int) (*p++)) << 16;
   value|=((unsigned int) (*p++)) << 8;
   value|=((unsigned int) (*p++));
-  return(value);
+  return(value & 0xffffffff);
 }
 
 /*
@@ -3249,7 +3249,7 @@ MagickExport unsigned short ReadBlobShort(Image *image)
   register const unsigned char
     *p;
 
-  register unsigned int
+  register unsigned short
     value;
 
   ssize_t
@@ -3266,13 +3266,13 @@ MagickExport unsigned short ReadBlobShort(Image *image)
     return((unsigned short) 0U);
   if (image->endian == LSBEndian)
     {
-      value=(unsigned int) (*p++);
-      value|=((unsigned int) (*p++)) << 8;
-      return((unsigned short) (value & 0xffff));
+      value=(unsigned short) (*p++);
+      value|=((unsigned short) (*p++)) << 8;
+      return(value & 0xffff);
     }
-  value=(unsigned int) ((*p++) << 8);
-  value|=(unsigned int) (*p++);
-  return((unsigned short) (value & 0xffff));
+  value=(unsigned short) ((*p++) << 8);
+  value|=(unsigned short) (*p++);
+  return(value & 0xffff);
 }
 
 /*
@@ -3286,7 +3286,7 @@ MagickExport unsigned short ReadBlobShort(Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ReadBlobLSBLong() reads a ssize_t value as a 32-bit quantity in
+%  ReadBlobLSBLong() reads a unsigned int value as a 32-bit quantity in
 %  least-significant byte first order.
 %
 %  The format of the ReadBlobLSBLong method is:
@@ -3322,7 +3322,45 @@ MagickExport unsigned int ReadBlobLSBLong(Image *image)
   value|=((unsigned int) (*p++)) << 8;
   value|=((unsigned int) (*p++)) << 16;
   value|=((unsigned int) (*p++)) << 24;
-  return(value);
+  return(value & 0xffffffff);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++  R e a d B l o b L S B S i g n e d L o n g                                  %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ReadBlobLSBSignedLong() reads a signed int value as a 32-bit quantity in
+%  least-significant byte first order.
+%
+%  The format of the ReadBlobLSBSignedLong method is:
+%
+%      signed int ReadBlobLSBSignedLong(Image *image)
+%
+%  A description of each parameter follows.
+%
+%    o image: the image.
+%
+*/
+MagickExport signed int ReadBlobLSBSignedLong(Image *image)
+{
+  union
+  {
+    unsigned int
+      unsigned_value;
+
+    signed int
+      signed_value;
+  } quantum;
+
+  quantum.unsigned_value=ReadBlobLSBLong(image);
+  return(quantum.signed_value);
 }
 
 /*
@@ -3371,6 +3409,44 @@ MagickExport unsigned short ReadBlobLSBShort(Image *image)
   value=(unsigned int) (*p++);
   value|=((unsigned int) ((*p++)) << 8);
   return((unsigned short) (value & 0xffff));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++  R e a d B l o b L S B S i g n e d S h o r t                                %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ReadBlobLSBSignedShort() reads a signed short value as a 16-bit quantity in
+%  least-significant byte-order.
+%
+%  The format of the ReadBlobLSBSignedShort method is:
+%
+%      signed short ReadBlobLSBSignedShort(Image *image)
+%
+%  A description of each parameter follows.
+%
+%    o image: the image.
+%
+*/
+MagickExport signed short ReadBlobLSBSignedShort(Image *image)
+{
+  union
+  {
+    unsigned short
+      unsigned_value;
+
+    signed short
+      signed_value;
+  } quantum;
+
+  quantum.unsigned_value=ReadBlobLSBShort(image);
+  return(quantum.signed_value);
 }
 
 /*
@@ -3523,6 +3599,158 @@ MagickExport unsigned short ReadBlobMSBShort(Image *image)
   value=(unsigned int) ((*p++) << 8);
   value|=(unsigned int) (*p++);
   return((unsigned short) (value & 0xffff));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++  R e a d B l o b M S B S i g n e d L o n g                                  %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ReadBlobMSBSignedLong() reads a signed int value as a 32-bit quantity in
+%  most-significant byte-order.
+%
+%  The format of the ReadBlobMSBSignedLong method is:
+%
+%      signed int ReadBlobMSBSignedLong(Image *image)
+%
+%  A description of each parameter follows.
+%
+%    o image: the image.
+%
+*/
+MagickExport signed int ReadBlobMSBSignedLong(Image *image)
+{
+  union
+  {
+    unsigned int
+      unsigned_value;
+
+    signed int
+      signed_value;
+  } quantum;
+
+  quantum.unsigned_value=ReadBlobMSBLong(image);
+  return(quantum.signed_value);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++  R e a d B l o b M S B S i g n e d S h o r t                                %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ReadBlobMSBSignedShort() reads a signed short value as a 16-bit quantity in
+%  most-significant byte-order.
+%
+%  The format of the ReadBlobMSBSignedShort method is:
+%
+%      signed short ReadBlobMSBSignedShort(Image *image)
+%
+%  A description of each parameter follows.
+%
+%    o image: the image.
+%
+*/
+MagickExport signed short ReadBlobMSBSignedShort(Image *image)
+{
+  union
+  {
+    unsigned short
+      unsigned_value;
+
+    signed short
+      signed_value;
+  } quantum;
+
+  quantum.unsigned_value=ReadBlobMSBShort(image);
+  return(quantum.signed_value);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++  R e a d B l o b S i g n e d L o n g                                        %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ReadBlobSignedLong() reads a signed int value as a 32-bit quantity in the
+%  byte-order specified by the endian member of the image structure.
+%
+%  The format of the ReadBlobSignedLong method is:
+%
+%      signed int ReadBlobSignedLong(Image *image)
+%
+%  A description of each parameter follows.
+%
+%    o image: the image.
+%
+*/
+MagickExport signed int ReadBlobSignedLong(Image *image)
+{
+  union
+  {
+    unsigned int
+      unsigned_value;
+
+    signed int
+      signed_value;
+  } quantum;
+
+  quantum.unsigned_value=ReadBlobLong(image);
+  return(quantum.signed_value);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++  R e a d B l o b S i g n e d S h o r t                                      %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ReadBlobSignedShort() reads a signed short value as a 16-bit quantity in the
+%  byte-order specified by the endian member of the image structure.
+%
+%  The format of the ReadBlobSignedShort method is:
+%
+%      signed short ReadBlobSignedShort(Image *image)
+%
+%  A description of each parameter follows.
+%
+%    o image: the image.
+%
+*/
+MagickExport signed short ReadBlobSignedShort(Image *image)
+{
+  union
+  {
+    unsigned short
+      unsigned_value;
+
+    signed short
+      signed_value;
+  } quantum;
+
+  quantum.unsigned_value=ReadBlobShort(image);
+  return(quantum.signed_value);
 }
 
 /*

@@ -866,7 +866,7 @@ static MagickBooleanType IsGIF(const unsigned char *magick,const size_t length)
 %
 %  The format of the ReadBlobBlock method is:
 %
-%      size_t ReadBlobBlock(Image *image,unsigned char *data)
+%      ssize_t ReadBlobBlock(Image *image,unsigned char *data)
 %
 %  A description of each parameter follows:
 %
@@ -1095,7 +1095,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             comments=AcquireString((char *) NULL);
             for (length=0; ; length+=count)
             {
-              count=(ssize_t) ReadBlobBlock(image,header);
+              count=ReadBlobBlock(image,header);
               if (count == 0)
                 break;
               header[count]='\0';

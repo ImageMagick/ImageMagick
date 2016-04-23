@@ -366,7 +366,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           operand=ReadBlobByte(image);
           if (opcode & 0x40)
-            operand=(int) ReadBlobLSBShort(image);
+            operand=ReadBlobLSBSignedShort(image);
           x=0;
           y+=operand;
           break;
@@ -384,7 +384,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           operand=ReadBlobByte(image);
           if (opcode & 0x40)
-            operand=(int) ReadBlobLSBShort(image);
+            operand=ReadBlobLSBSignedShort(image);
           x+=operand;
           break;
         }
@@ -392,7 +392,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           operand=ReadBlobByte(image);
           if (opcode & 0x40)
-            operand=(int) ReadBlobLSBShort(image);
+            operand=ReadBlobLSBSignedShort(image);
           offset=((image->rows-y-1)*image->columns*number_planes)+x*
             number_planes+plane;
           operand++;
@@ -421,7 +421,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           operand=ReadBlobByte(image);
           if (opcode & 0x40)
-            operand=(int) ReadBlobLSBShort(image);
+            operand=ReadBlobLSBSignedShort(image);
           pixel=(unsigned char) ReadBlobByte(image);
           (void) ReadBlobByte(image);
           operand++;

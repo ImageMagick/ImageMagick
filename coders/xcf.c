@@ -848,8 +848,8 @@ static MagickBooleanType ReadOneLayer(const ImageInfo *image_info,Image* image,
       outLayer->show_mask = ReadBlobMSBLong(image);
       break;
     case PROP_OFFSETS:
-      outLayer->offset_x = (int) ReadBlobMSBLong(image);
-      outLayer->offset_y = (int) ReadBlobMSBLong(image);
+      outLayer->offset_x = ReadBlobMSBSignedLong(image);
+      outLayer->offset_y = ReadBlobMSBSignedLong(image);
       break;
     case PROP_MODE:
       outLayer->mode = ReadBlobMSBLong(image);
@@ -1297,7 +1297,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       do
       {
-        ssize_t offset = (int) ReadBlobMSBLong(image);
+        ssize_t offset = ReadBlobMSBSignedLong(image);
         if (offset == 0)
           foundAllLayers=MagickTrue;
         else

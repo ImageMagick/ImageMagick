@@ -321,8 +321,8 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
     viff_info.rows=ReadBlobLong(image);
     viff_info.columns=ReadBlobLong(image);
     viff_info.subrows=ReadBlobLong(image);
-    viff_info.x_offset=(int) ReadBlobLong(image);
-    viff_info.y_offset=(int) ReadBlobLong(image);
+    viff_info.x_offset=ReadBlobSignedLong(image);
+    viff_info.y_offset=ReadBlobSignedLong(image);
     viff_info.x_bits_per_pixel=(float) ReadBlobLong(image);
     viff_info.y_bits_per_pixel=(float) ReadBlobLong(image);
     viff_info.location_type=ReadBlobLong(image);

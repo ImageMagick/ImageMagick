@@ -1743,25 +1743,45 @@ static inline int ReadProfileByte(unsigned char **p,size_t *length)
   return(c);
 }
 
-static inline unsigned short ReadProfileShort(const EndianType endian,
+static inline signed short ReadProfileShort(const EndianType endian,
   unsigned char *buffer)
 {
+  union
+  {
+    unsigned int
+      unsigned_value;
+
+    signed int
+      signed_value;
+  } quantum;
+
   unsigned short
     value;
 
   if (endian == LSBEndian)
     {
       value=(unsigned short) ((buffer[1] << 8) | buffer[0]);
-      return((unsigned short) (value & 0xffff));
+      quantum.unsigned_value=(value & 0xffff);
+      return(quantum.signed_value);
     }
   value=(unsigned short) ((((unsigned char *) buffer)[0] << 8) |
     ((unsigned char *) buffer)[1]);
-  return((unsigned short) (value & 0xffff));
+  quantum.unsigned_value=(value & 0xffff);
+  return(quantum.signed_value);
 }
 
-static inline unsigned int ReadProfileLong(const EndianType endian,
+static inline signed int ReadProfileLong(const EndianType endian,
   unsigned char *buffer)
 {
+  union
+  {
+    unsigned int
+      unsigned_value;
+
+    signed int
+      signed_value;
+  } quantum;
+
   unsigned int
     value;
 
@@ -1769,16 +1789,18 @@ static inline unsigned int ReadProfileLong(const EndianType endian,
     {
       value=(unsigned int) ((buffer[3] << 24) | (buffer[2] << 16) |
         (buffer[1] << 8 ) | (buffer[0]));
-      return((unsigned int) (value & 0xffffffff));
+      quantum.unsigned_value=(value & 0xffffffff);
+      return(quantum.signed_value);
     }
   value=(unsigned int) ((buffer[0] << 24) | (buffer[1] << 16) |
     (buffer[2] << 8) | buffer[3]);
-  return((unsigned int) (value & 0xffffffff));
+  quantum.unsigned_value=(value & 0xffffffff);
+  return(quantum.signed_value);
 }
 
-static inline unsigned int ReadProfileMSBLong(unsigned char **p,size_t *length)
+static inline signed int ReadProfileMSBLong(unsigned char **p,size_t *length)
 {
-  unsigned int
+  signed int
     value;
 
   if (*length < 4)
@@ -1789,10 +1811,10 @@ static inline unsigned int ReadProfileMSBLong(unsigned char **p,size_t *length)
   return(value);
 }
 
-static inline unsigned short ReadProfileMSBShort(unsigned char **p,
+static inline signed short ReadProfileMSBShort(unsigned char **p,
   size_t *length)
 {
-  unsigned short
+  signed short
     value;
 
   if (*length < 2)
@@ -1990,7 +2012,7 @@ static MagickBooleanType SyncExifProfile(Image *image, StringInfo *profile)
   /*
     This the offset to the first IFD.
   */
-  offset=(ssize_t) ((int) ReadProfileLong(endian,exif+4));
+  offset=(ssize_t) ReadProfileLong(endian,exif+4);
   if ((offset < 0) || ((size_t) offset >= length))
     return(MagickFalse);
   directory=exif+offset;
@@ -2034,7 +2056,7 @@ static MagickBooleanType SyncExifProfile(Image *image, StringInfo *profile)
       format=(ssize_t) ReadProfileShort(endian,q+2);
       if ((format-1) >= EXIF_NUM_FORMATS)
         break;
-      components=(ssize_t) ((int) ReadProfileLong(endian,q+4));
+      components=(ssize_t) ReadProfileLong(endian,q+4);
       number_bytes=(size_t) components*format_bytes[format];
       if ((ssize_t) number_bytes < components)
         break;  /* prevent overflow */
@@ -2045,7 +2067,7 @@ static MagickBooleanType SyncExifProfile(Image *image, StringInfo *profile)
           /*
             The directory entry contains an offset.
           */
-          offset=(ssize_t) ((int) ReadProfileLong(endian,q+8));
+          offset=(ssize_t) ReadProfileLong(endian,q+8);
           if ((ssize_t) (offset+number_bytes) < offset)
             continue;  /* prevent overflow */
           if ((size_t) (offset+number_bytes) > length)
@@ -2092,7 +2114,7 @@ static MagickBooleanType SyncExifProfile(Image *image, StringInfo *profile)
       }
       if ((tag_value == TAG_EXIF_OFFSET) || (tag_value == TAG_INTEROP_OFFSET))
         {
-          offset=(ssize_t) ((int) ReadProfileLong(endian,p));
+          offset=(ssize_t) ReadProfileLong(endian,p);
           if (((size_t) offset < length) && (level < (MaxDirectoryStack-2)))
             {
               directory_stack[level].directory=directory;
@@ -2104,8 +2126,8 @@ static MagickBooleanType SyncExifProfile(Image *image, StringInfo *profile)
               level++;
               if ((directory+2+(12*number_entries)) > (exif+length))
                 break;
-              offset=(ssize_t) ((int) ReadProfileLong(endian,directory+2+(12*
-                number_entries)));
+              offset=(ssize_t) ReadProfileLong(endian,directory+2+(12*
+                number_entries));
               if ((offset != 0) && ((size_t) offset < length) &&
                   (level < (MaxDirectoryStack-2)))
                 {

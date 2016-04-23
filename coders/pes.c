@@ -493,7 +493,7 @@ static Image *ReadPESImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if ((count != 4) || (LocaleNCompare((char *) magick,"#PES",4) != 0))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   count=ReadBlob(image,4,version);
-  offset=(int) ReadBlobLSBLong(image);
+  offset=ReadBlobLSBSignedLong(image);
   if (DiscardBlobBytes(image,offset+36) == MagickFalse)
     ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
       image->filename);
@@ -505,7 +505,7 @@ static Image *ReadPESImage(const ImageInfo *image_info,ExceptionInfo *exception)
   number_colors=(size_t) ReadBlobByte(image)+1;
   for (i=0; i < (ssize_t) number_colors; i++)
   {
-    j=(int) ReadBlobByte(image);
+    j=ReadBlobByte(image);
     blocks[i].color=PESColor+(j < 0 ? 0 : j);
     blocks[i].offset=0;
   }
@@ -534,8 +534,8 @@ static Image *ReadPESImage(const ImageInfo *image_info,ExceptionInfo *exception)
   delta_y=0;
   while (EOFBlob(image) != EOF)
   {
-    x=(int) ReadBlobByte(image);
-    y=(int) ReadBlobByte(image);
+    x=ReadBlobByte(image);
+    y=ReadBlobByte(image);
     if ((x == 0xff) && (y == 0))
       break;
     if ((x == 254) && (y == 176))

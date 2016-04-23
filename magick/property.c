@@ -471,8 +471,18 @@ static inline int ReadPropertyByte(const unsigned char **p,size_t *length)
   return(c);
 }
 
-static inline size_t ReadPropertyMSBLong(const unsigned char **p,size_t *length)
+static inline signed int ReadPropertyMSBLong(const unsigned char **p,
+  size_t *length)
 {
+  union
+  {
+    unsigned int
+      unsigned_value;
+
+    signed int
+      signed_value;
+  } quantum;
+
   int
     c;
 
@@ -486,7 +496,7 @@ static inline size_t ReadPropertyMSBLong(const unsigned char **p,size_t *length)
     value;
 
   if (*length < 4)
-    return(~0UL);
+    return(-1);
   for (i=0; i < 4; i++)
   {
     c=(int) (*(*p)++);
@@ -497,12 +507,22 @@ static inline size_t ReadPropertyMSBLong(const unsigned char **p,size_t *length)
   value|=buffer[1] << 16;
   value|=buffer[2] << 8;
   value|=buffer[3];
-  return(value & 0xffffffff);
+  quantum.unsigned_value=(value & 0xffffffff);
+  return(quantum.signed_value);
 }
 
-static inline unsigned short ReadPropertyMSBShort(const unsigned char **p,
+static inline signed short ReadPropertyMSBShort(const unsigned char **p,
   size_t *length)
 {
+  union
+  {
+    unsigned short
+      unsigned_value;
+
+    signed short
+      signed_value;
+  } quantum;
+
   int
     c;
 
@@ -525,7 +545,8 @@ static inline unsigned short ReadPropertyMSBShort(const unsigned char **p,
   }
   value=(unsigned short) (buffer[0] << 8);
   value|=buffer[1];
-  return((unsigned short) (value & 0xffff));
+  quantum.unsigned_value=(value & 0xffff);
+  return(quantum.signed_value);
 }
 
 static MagickBooleanType Get8BIMProperty(const Image *image,const char *key)
@@ -592,7 +613,7 @@ static MagickBooleanType Get8BIMProperty(const Image *image,const char *key)
       continue;
     if (ReadPropertyByte(&info,&length) != (unsigned char) 'M')
       continue;
-    id=(ssize_t) ((int) ReadPropertyMSBShort(&info,&length));
+    id=(ssize_t) ReadPropertyMSBShort(&info,&length);
     if (id < (ssize_t) start)
       continue;
     if (id > (ssize_t) stop)
@@ -615,7 +636,7 @@ static MagickBooleanType Get8BIMProperty(const Image *image,const char *key)
       }
     if ((count & 0x01) == 0)
       (void) ReadPropertyByte(&info,&length);
-    count=(ssize_t) ((int) ReadPropertyMSBLong(&info,&length));
+    count=(ssize_t) ReadPropertyMSBLong(&info,&length);
     if ((*name != '\0') && (*name != '#'))
       if ((resource == (char *) NULL) || (LocaleCompare(name,resource) != 0))
         {
@@ -675,37 +696,59 @@ static MagickBooleanType Get8BIMProperty(const Image *image,const char *key)
   return(status);
 }
 
-static inline unsigned short ReadPropertyShort(const EndianType endian,
+static inline signed short ReadPropertyShort(const EndianType endian,
   const unsigned char *buffer)
 {
+  union
+  {
+    unsigned short
+      unsigned_value;
+
+    signed short
+      signed_value;
+  } quantum;
+
   unsigned short
     value;
 
   if (endian == LSBEndian)
     {
       value=(unsigned short) ((buffer[1] << 8) | buffer[0]);
-      return((unsigned short) (value & 0xffff));
+      quantum.unsigned_value=(value & 0xffff);
+      return(quantum.signed_value);
     }
   value=(unsigned short) ((((unsigned char *) buffer)[0] << 8) |
     ((unsigned char *) buffer)[1]);
-  return((unsigned short) (value & 0xffff));
+  quantum.unsigned_value=(value & 0xffff);
+  return(quantum.signed_value);
 }
 
-static inline size_t ReadPropertyLong(const EndianType endian,
+static inline signed int ReadPropertyLong(const EndianType endian,
   const unsigned char *buffer)
 {
-  size_t
+  union
+  {
+    unsigned int
+      unsigned_value;
+
+    signed int
+      signed_value;
+  } quantum;
+
+  unsigned int
     value;
 
   if (endian == LSBEndian)
     {
-      value=(size_t) ((buffer[3] << 24) | (buffer[2] << 16) |
+      value=(unsigned int) ((buffer[3] << 24) | (buffer[2] << 16) |
         (buffer[1] << 8 ) | (buffer[0]));
-      return((size_t) (value & 0xffffffff));
+      quantum.unsigned_value=(value & 0xffffffff);
+      return(quantum.signed_value);
     }
-  value=(size_t) ((buffer[0] << 24) | (buffer[1] << 16) |
+  value=(unsigned int) ((buffer[0] << 24) | (buffer[1] << 16) |
     (buffer[2] << 8) | buffer[3]);
-  return((size_t) (value & 0xffffffff));
+  quantum.unsigned_value=(value & 0xffffffff);
+  return(quantum.signed_value);
 }
 
 static MagickBooleanType GetEXIFProperty(const Image *image,
@@ -1230,7 +1273,7 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
   }
   if (length < 16)
     return(MagickFalse);
-  id=(ssize_t) ((int) ReadPropertyShort(LSBEndian,exif));
+  id=(ssize_t) ReadPropertyShort(LSBEndian,exif);
   endian=LSBEndian;
   if (id == 0x4949)
     endian=LSBEndian;
@@ -1244,7 +1287,7 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
   /*
     This the offset to the first IFD.
   */
-  offset=(ssize_t) ((int) ReadPropertyLong(endian,exif+4));
+  offset=(ssize_t) ReadPropertyLong(endian,exif+4);
   if ((offset < 0) || (size_t) offset >= length)
     return(MagickFalse);
   /*
@@ -1274,7 +1317,7 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
     /*
       Determine how many entries there are in the current IFD.
     */
-    number_entries=(size_t) ((int) ReadPropertyShort(endian,directory));
+    number_entries=(size_t) ReadPropertyShort(endian,directory);
     for ( ; entry < number_entries; entry++)
     {
       register unsigned char
@@ -1292,11 +1335,11 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
       if (GetValueFromSplayTree(exif_resources,q) == q)
         break;
       (void) AddValueToSplayTree(exif_resources,q,q);
-      tag_value=(ssize_t) ((int) ReadPropertyShort(endian,q)+tag_offset);
-      format=(size_t) ((int) ReadPropertyShort(endian,q+2));
+      tag_value=(ssize_t) ReadPropertyShort(endian,q)+tag_offset;
+      format=(size_t) ReadPropertyShort(endian,q+2);
       if (format >= (sizeof(tag_bytes)/sizeof(*tag_bytes)))
         break;
-      components=(ssize_t) ((int) ReadPropertyLong(endian,q+4));
+      components=(ssize_t) ReadPropertyLong(endian,q+4);
       number_bytes=(size_t) components*tag_bytes[format];
       if (number_bytes < components)
         break;  /* prevent overflow */
@@ -1310,7 +1353,7 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
           /*
             The directory entry contains an offset.
           */
-          offset=(ssize_t) ((int) ReadPropertyLong(endian,q+8));
+          offset=(ssize_t) ReadPropertyLong(endian,q+8);
           if ((offset < 0) || (size_t) offset >= length)
             continue;
           if ((ssize_t) (offset+number_bytes) < offset)
@@ -1353,27 +1396,27 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
             case EXIF_FMT_ULONG:
             {
               EXIFMultipleValues(4,"%.20g",(double)
-                ((int) ReadPropertyLong(endian,p1)));
+                ReadPropertyLong(endian,p1));
               break;
             }
             case EXIF_FMT_SLONG:
             {
               EXIFMultipleValues(4,"%.20g",(double)
-                ((int) ReadPropertyLong(endian,p1)));
+                ReadPropertyLong(endian,p1));
               break;
             }
             case EXIF_FMT_URATIONAL:
             {
               EXIFMultipleFractions(8,"%.20g/%.20g",(double)
-                ((int) ReadPropertyLong(endian,p1)),(double)
-                ((int) ReadPropertyLong(endian,p1+4)));
+                ReadPropertyLong(endian,p1),(double)
+                ReadPropertyLong(endian,p1+4));
               break;
             }
             case EXIF_FMT_SRATIONAL:
             {
               EXIFMultipleFractions(8,"%.20g/%.20g",(double)
-                ((int) ReadPropertyLong(endian,p1)),(double)
-                ((int) ReadPropertyLong(endian,p1+4)));
+                ReadPropertyLong(endian,p1),(double)
+                ReadPropertyLong(endian,p1+4));
               break;
             }
             case EXIF_FMT_SINGLE:
@@ -1480,7 +1523,7 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
             ssize_t
               offset;
 
-            offset=(ssize_t) ((int) ReadPropertyLong(endian,p));
+            offset=(ssize_t) ReadPropertyLong(endian,p);
             if (((size_t) offset < length) && (level < (MaxDirectoryStack-2)))
               {
                 ssize_t
@@ -1499,8 +1542,8 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
                 level++;
                 if ((directory+2+(12*number_entries)) > (exif+length))
                   break;
-                offset=(ssize_t) ((int) ReadPropertyLong(endian,directory+2+(12*
-                  number_entries)));
+                offset=(ssize_t) ReadPropertyLong(endian,directory+2+(12*
+                  number_entries));
                 if ((offset != 0) && ((size_t) offset < length) &&
                     (level < (MaxDirectoryStack-2)))
                   {
@@ -1728,7 +1771,7 @@ static char *TracePSClippath(const unsigned char *blob,size_t length,
   in_subpath=MagickFalse;
   while (length > 0)
   {
-    selector=(ssize_t) ((int) ReadPropertyMSBShort(&blob,&length));
+    selector=(ssize_t) ReadPropertyMSBShort(&blob,&length);
     switch (selector)
     {
       case 0:
@@ -1743,7 +1786,7 @@ static char *TracePSClippath(const unsigned char *blob,size_t length,
         /*
           Expected subpath length record.
         */
-        knot_count=(ssize_t) ((int) ReadPropertyMSBShort(&blob,&length));
+        knot_count=(ssize_t) ReadPropertyMSBShort(&blob,&length);
         blob+=22;
         length-=MagickMin(22,(ssize_t) length);
         break;
@@ -1771,8 +1814,8 @@ static char *TracePSClippath(const unsigned char *blob,size_t length,
             xx,
             yy;
 
-          yy=(size_t) ((int) ReadPropertyMSBLong(&blob,&length));
-          xx=(size_t) ((int) ReadPropertyMSBLong(&blob,&length));
+          yy=(size_t) ReadPropertyMSBLong(&blob,&length);
+          xx=(size_t) ReadPropertyMSBLong(&blob,&length);
           x=(ssize_t) xx;
           if (xx > 2147483647)
             x=(ssize_t) xx-4294967295U-1;
@@ -1920,7 +1963,7 @@ static char *TraceSVGClippath(const unsigned char *blob,size_t length,
   in_subpath=MagickFalse;
   while (length != 0)
   {
-    selector=(ssize_t) ((int) ReadPropertyMSBShort(&blob,&length));
+    selector=(ssize_t) ReadPropertyMSBShort(&blob,&length);
     switch (selector)
     {
       case 0:
@@ -1935,7 +1978,7 @@ static char *TraceSVGClippath(const unsigned char *blob,size_t length,
         /*
           Expected subpath length record.
         */
-        knot_count=(ssize_t) ((int) ReadPropertyMSBShort(&blob,&length));
+        knot_count=(ssize_t) ReadPropertyMSBShort(&blob,&length);
         blob+=22;
         length-=MagickMin(22,(ssize_t) length);
         break;
@@ -1963,8 +2006,8 @@ static char *TraceSVGClippath(const unsigned char *blob,size_t length,
             xx,
             yy;
 
-          yy=(unsigned int) ((int) ReadPropertyMSBLong(&blob,&length));
-          xx=(unsigned int) ((int) ReadPropertyMSBLong(&blob,&length));
+          yy=(unsigned int) ReadPropertyMSBLong(&blob,&length);
+          xx=(unsigned int) ReadPropertyMSBLong(&blob,&length);
           x=(ssize_t) xx;
           if (xx > 2147483647)
             x=(ssize_t) xx-4294967295U-1;

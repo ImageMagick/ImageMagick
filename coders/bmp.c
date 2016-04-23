@@ -636,8 +636,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         if (bmp_info.size < 40)
           ThrowReaderException(CorruptImageError,"NonOS2HeaderSizeError");
-        bmp_info.width=(ssize_t) ((int) ReadBlobLSBLong(image));
-        bmp_info.height=(ssize_t) ((int) ReadBlobLSBLong(image));
+        bmp_info.width=(ssize_t) ReadBlobLSBSignedLong(image);
+        bmp_info.height=(ssize_t) ReadBlobLSBSignedLong(image);
         bmp_info.planes=ReadBlobLSBShort(image);
         bmp_info.bits_per_pixel=ReadBlobLSBShort(image);
         bmp_info.compression=ReadBlobLSBLong(image);
@@ -716,7 +716,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
               Read color management information.
             */
             bmp_info.alpha_mask=ReadBlobLSBLong(image);
-            bmp_info.colorspace=(int) ReadBlobLSBLong(image);
+            bmp_info.colorspace=ReadBlobLSBSignedLong(image);
             /*
               Decode 2^30 fixed point formatted CIE primaries.
             */

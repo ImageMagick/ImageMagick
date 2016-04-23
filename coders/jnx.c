@@ -169,24 +169,24 @@ static Image *ReadJNXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Read JNX header.
   */
   (void) ResetMagickMemory(&jnx_info,0,sizeof(jnx_info));
-  jnx_info.version=(int) ReadBlobLSBLong(image);
+  jnx_info.version=ReadBlobLSBSignedLong(image);
   if ((jnx_info.version != 3) && (jnx_info.version != 4))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-  jnx_info.serial=(int) ReadBlobLSBLong(image);
-  jnx_info.northeast.x=180.0*((int) ReadBlobLSBLong(image))/0x7fffffff;
-  jnx_info.northeast.y=180.0*((int) ReadBlobLSBLong(image))/0x7fffffff;
-  jnx_info.southwest.x=180.0*((int) ReadBlobLSBLong(image))/0x7fffffff;
-  jnx_info.southwest.y=180.0*((int) ReadBlobLSBLong(image))/0x7fffffff;
-  jnx_info.levels=(int) ReadBlobLSBLong(image);
+  jnx_info.serial=ReadBlobLSBSignedLong(image);
+  jnx_info.northeast.x=180.0*ReadBlobLSBSignedLong(image)/0x7fffffff;
+  jnx_info.northeast.y=180.0*ReadBlobLSBSignedLong(image)/0x7fffffff;
+  jnx_info.southwest.x=180.0*ReadBlobLSBSignedLong(image)/0x7fffffff;
+  jnx_info.southwest.y=180.0*ReadBlobLSBSignedLong(image)/0x7fffffff;
+  jnx_info.levels=ReadBlobLSBSignedLong(image);
   if (jnx_info.levels > JNXMaxLevels)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-  jnx_info.expire=(int) ReadBlobLSBLong(image);
-  jnx_info.id=(int) ReadBlobLSBLong(image);
-  jnx_info.crc=(int) ReadBlobLSBLong(image);
-  jnx_info.signature=(int) ReadBlobLSBLong(image);
+  jnx_info.expire=ReadBlobLSBSignedLong(image);
+  jnx_info.id=ReadBlobLSBSignedLong(image);
+  jnx_info.crc=ReadBlobLSBSignedLong(image);
+  jnx_info.signature=ReadBlobLSBSignedLong(image);
   jnx_info.offset=ReadBlobLSBLong(image);
   if (jnx_info.version > 3)
-    jnx_info.order=(int) ReadBlobLSBLong(image);
+    jnx_info.order=ReadBlobLSBSignedLong(image);
   else
     if (jnx_info.version == 3)
       jnx_info.order=30;
@@ -196,10 +196,10 @@ static Image *ReadJNXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) ResetMagickMemory(&jnx_level_info,0,sizeof(jnx_level_info));
   for (i=0; i < (ssize_t) jnx_info.levels; i++)
   {
-    jnx_level_info[i].count=(int) ReadBlobLSBLong(image);
+    jnx_level_info[i].count=ReadBlobLSBSignedLong(image);
     if (jnx_level_info[i].count > 50000)
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-    jnx_level_info[i].offset=(int) ReadBlobLSBLong(image);
+    jnx_level_info[i].offset=ReadBlobLSBSignedLong(image);
     jnx_level_info[i].scale=ReadBlobLSBLong(image);
     if (jnx_info.version > 3)
       {
@@ -259,14 +259,14 @@ static Image *ReadJNXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       unsigned int
         tile_length;
 
-      northeast.x=180.0*((int) ReadBlobLSBLong(image))/0x7fffffff;
-      northeast.y=180.0*((int) ReadBlobLSBLong(image))/0x7fffffff;
-      southwest.x=180.0*((int) ReadBlobLSBLong(image))/0x7fffffff;
-      southwest.y=180.0*((int) ReadBlobLSBLong(image))/0x7fffffff;
+      northeast.x=180.0*ReadBlobLSBSignedLong(image)/0x7fffffff;
+      northeast.y=180.0*ReadBlobLSBSignedLong(image)/0x7fffffff;
+      southwest.x=180.0*ReadBlobLSBSignedLong(image)/0x7fffffff;
+      southwest.y=180.0*ReadBlobLSBSignedLong(image)/0x7fffffff;
       (void) ReadBlobLSBShort(image); /* width */
       (void) ReadBlobLSBShort(image); /* height */
       tile_length=ReadBlobLSBLong(image);
-      tile_offset=(int) ReadBlobLSBLong(image);
+      tile_offset=ReadBlobLSBSignedLong(image);
       if (tile_offset == -1)
         continue;
       restore_offset=TellBlob(image);
