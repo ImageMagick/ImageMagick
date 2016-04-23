@@ -2870,6 +2870,8 @@ MagickPrivate const Quantum *GetVirtualPixelsFromNexus(const Image *image,
           s+=length*cache_info->metacontent_extent;
         }
     }
+    if (u < (ssize_t) columns)
+      break;
   }
   /*
     Free resources.
@@ -2877,6 +2879,8 @@ MagickPrivate const Quantum *GetVirtualPixelsFromNexus(const Image *image,
   if (virtual_metacontent != (void *) NULL)
     virtual_metacontent=(void *) RelinquishMagickMemory(virtual_metacontent);
   virtual_nexus=DestroyPixelCacheNexus(virtual_nexus,1);
+  if (v < (ssize_t) rows)
+    return((const Quantum *) NULL);
   return(pixels);
 }
 
