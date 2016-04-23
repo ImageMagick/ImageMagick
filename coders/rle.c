@@ -321,8 +321,6 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if ((number_pixels*number_planes_filled) != (size_t) (number_pixels*
          number_planes_filled))
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-    if (image->rows < (image->rows*number_planes_filled*sizeof(*pixels)))
-      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     pixel_info=AcquireVirtualMemory(image->columns,image->rows*
       number_planes_filled*sizeof(*pixels));
     if (pixel_info == (MemoryInfo *) NULL)
