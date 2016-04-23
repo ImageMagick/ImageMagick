@@ -2951,8 +2951,15 @@ MagickExport const PixelPacket *GetVirtualPixelsFromNexus(const Image *image,
           indexes+=length;
         }
     }
+    if (u < (ssize_t) columns)
+      break;
   }
+  /*
+    Free resources.
+  */
   virtual_nexus=DestroyPixelCacheNexus(virtual_nexus,1);
+  if (v < (ssize_t) rows)
+    return((const PixelPacket *) NULL);
   return(pixels);
 }
 
