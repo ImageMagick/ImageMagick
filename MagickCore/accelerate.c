@@ -560,7 +560,7 @@ static Image *ComputeAddNoiseImage(const Image *image,MagickCLEnv clEnv,
   filteredImageBuffer = NULL;
   addNoiseKernel = NULL;
 
-  device = GetOpenCLDevice(clEnv);
+  device = RequestOpenCLDevice(clEnv);
   queue = AcquireOpenCLCommandQueue(device);
 
   image_view=AcquireAuthenticCacheView(image,exception);
@@ -683,10 +683,16 @@ cleanup:
   if (filteredImage_view != NULL)
     filteredImage_view=DestroyCacheView(filteredImage_view);
 
-  if (queue!=NULL)                  RelinquishOpenCLCommandQueue(device, queue);
-  if (addNoiseKernel!=NULL)         RelinquishOpenCLKernel(addNoiseKernel);
-  if (imageBuffer!=NULL)		    clEnv->library->clReleaseMemObject(imageBuffer);
-  if (filteredImageBuffer!=NULL)	  clEnv->library->clReleaseMemObject(filteredImageBuffer);
+  if (queue!=NULL)
+    RelinquishOpenCLCommandQueue(device,queue);
+  if (device != NULL)
+    ReleaseOpenCLDevice(clEnv,device);
+  if (addNoiseKernel!=NULL)
+    RelinquishOpenCLKernel(addNoiseKernel);
+  if (imageBuffer!=NULL)
+    clEnv->library->clReleaseMemObject(imageBuffer);
+  if (filteredImageBuffer!=NULL)
+    clEnv->library->clReleaseMemObject(filteredImageBuffer);
   if (outputReady == MagickFalse && filteredImage != NULL) 
     filteredImage=DestroyImage(filteredImage);
 
@@ -791,7 +797,7 @@ static Image *ComputeBlurImage(const Image* image,MagickCLEnv clEnv,
 
   outputReady = MagickFalse;
 
-  device = GetOpenCLDevice(clEnv);
+  device = RequestOpenCLDevice(clEnv);
   queue = AcquireOpenCLCommandQueue(device);
 
   image_view=AcquireAuthenticCacheView(image,exception);
@@ -950,15 +956,25 @@ cleanup:
   if (filteredImage_view != NULL)
     filteredImage_view=DestroyCacheView(filteredImage_view);
 
-  if (imageBuffer!=NULL)     clEnv->library->clReleaseMemObject(imageBuffer);
-  if (tempImageBuffer!=NULL)      clEnv->library->clReleaseMemObject(tempImageBuffer);
-  if (filteredImageBuffer!=NULL)  clEnv->library->clReleaseMemObject(filteredImageBuffer);
-  if (imageKernelBuffer!=NULL)    clEnv->library->clReleaseMemObject(imageKernelBuffer);
-  if (blurRowKernel!=NULL)        RelinquishOpenCLKernel(blurRowKernel);
-  if (blurColumnKernel!=NULL)     RelinquishOpenCLKernel(blurColumnKernel);
-  if (queue != NULL)              RelinquishOpenCLCommandQueue(device, queue);
+  if (imageBuffer!=NULL)
+    clEnv->library->clReleaseMemObject(imageBuffer);
+  if (tempImageBuffer!=NULL)
+    clEnv->library->clReleaseMemObject(tempImageBuffer);
+  if (filteredImageBuffer!=NULL)
+    clEnv->library->clReleaseMemObject(filteredImageBuffer);
+  if (imageKernelBuffer!=NULL)
+    clEnv->library->clReleaseMemObject(imageKernelBuffer);
+  if (blurRowKernel!=NULL)
+    RelinquishOpenCLKernel(blurRowKernel);
+  if (blurColumnKernel!=NULL)
+    RelinquishOpenCLKernel(blurColumnKernel);
+  if (queue != NULL)
+    RelinquishOpenCLCommandQueue(device,queue);
+  if (device != NULL)
+    ReleaseOpenCLDevice(clEnv,device);
   if (outputReady == MagickFalse && filteredImage != NULL)
     filteredImage=DestroyImage(filteredImage);
+
   return(filteredImage);
 }
 
@@ -1101,7 +1117,7 @@ static MagickBooleanType ComputeCompositeImage(Image *image,MagickCLEnv clEnv,
   imageBuffer = NULL;
   compositeImageBuffer = NULL;
 
-  device = GetOpenCLDevice(clEnv);
+  device = RequestOpenCLDevice(clEnv);
   queue = AcquireOpenCLCommandQueue(device);
 
   /* Create and initialize OpenCL buffers. */
@@ -1198,9 +1214,14 @@ static MagickBooleanType ComputeCompositeImage(Image *image,MagickCLEnv clEnv,
 cleanup:
 
   image_view=DestroyCacheView(image_view);
-  if (imageBuffer!=NULL)      clEnv->library->clReleaseMemObject(imageBuffer);
-  if (compositeImageBuffer!=NULL)  clEnv->library->clReleaseMemObject(compositeImageBuffer);
-  if (queue != NULL)               RelinquishOpenCLCommandQueue(device,queue);
+  if (imageBuffer!=NULL)
+    clEnv->library->clReleaseMemObject(imageBuffer);
+  if (compositeImageBuffer!=NULL)
+    clEnv->library->clReleaseMemObject(compositeImageBuffer);
+  if (queue != NULL)
+    RelinquishOpenCLCommandQueue(device,queue);
+  if (device != NULL)
+    ReleaseOpenCLDevice(clEnv,device);
 
   return(outputReady);
 }
@@ -1307,7 +1328,7 @@ static MagickBooleanType ComputeContrastImage(Image *image,MagickCLEnv clEnv,
   filterKernel = NULL;
   queue = NULL;
 
-  device = GetOpenCLDevice(clEnv);
+  device = RequestOpenCLDevice(clEnv);
 
   /* Create and initialize OpenCL buffers. */
   image_view=AcquireAuthenticCacheView(image,exception);
@@ -1389,9 +1410,15 @@ cleanup:
 
   image_view=DestroyCacheView(image_view);
 
-  if (imageBuffer!=NULL)		      clEnv->library->clReleaseMemObject(imageBuffer);
-  if (filterKernel!=NULL)                     RelinquishOpenCLKernel(filterKernel);
-  if (queue != NULL)                          RelinquishOpenCLCommandQueue(device,queue);
+  if (imageBuffer!=NULL)
+    clEnv->library->clReleaseMemObject(imageBuffer);
+  if (filterKernel!=NULL)
+    RelinquishOpenCLKernel(filterKernel);
+  if (queue != NULL)
+    RelinquishOpenCLCommandQueue(device,queue);
+  if (device != NULL)
+    ReleaseOpenCLDevice(clEnv,device);
+
   return(outputReady);
 }
 
@@ -1516,7 +1543,7 @@ static MagickBooleanType ComputeContrastStretchImage(Image *image,
   /*
    * initialize opencl env
    */
-  device = GetOpenCLDevice(clEnv);
+  device = RequestOpenCLDevice(clEnv);
   queue = AcquireOpenCLCommandQueue(device);
 
   /*
@@ -1979,21 +2006,18 @@ cleanup:
     clEnv->library->clReleaseMemObject(stretchMapBuffer);
   if (stretch_map!=NULL)
     stretch_map=(PixelPacket *) RelinquishMagickMemory(stretch_map);
-
-
   if (histogramBuffer!=NULL)
     clEnv->library->clReleaseMemObject(histogramBuffer);
   if (histogram!=NULL)
     histogram=(cl_uint4 *) RelinquishMagickMemory(histogram);
-
-
-  if (histogramKernel!=NULL)                     
+  if (histogramKernel!=NULL)
     RelinquishOpenCLKernel(histogramKernel);
-  if (stretchKernel!=NULL)                     
+  if (stretchKernel!=NULL)
     RelinquishOpenCLKernel(stretchKernel);
-
-  if (queue != NULL)                          
-    RelinquishOpenCLCommandQueue(device, queue);
+  if (queue != NULL)
+    RelinquishOpenCLCommandQueue(device,queue);
+  if (device != NULL)
+    ReleaseOpenCLDevice(clEnv,device);
 
   return(outputReady);
 }
@@ -2112,7 +2136,7 @@ static Image *ComputeConvolveImage(const Image* image,MagickCLEnv clEnv,
   filteredImage_view = NULL;
   outputReady = MagickFalse;
 
-  device = GetOpenCLDevice(clEnv);
+  device = RequestOpenCLDevice(clEnv);
 
   image_view=AcquireAuthenticCacheView(image,exception);
   inputPixels=GetCacheViewAuthenticPixels(image_view,0,0,image->columns,image->rows,exception);
@@ -2336,22 +2360,18 @@ cleanup:
   image_view=DestroyCacheView(image_view);
   if (filteredImage_view != NULL)
     filteredImage_view=DestroyCacheView(filteredImage_view);
-
   if (imageBuffer != NULL)
     clEnv->library->clReleaseMemObject(imageBuffer);
-
   if (filteredImageBuffer != NULL)
     clEnv->library->clReleaseMemObject(filteredImageBuffer);
-
   if (convolutionKernel != NULL)
     clEnv->library->clReleaseMemObject(convolutionKernel);
-
   if (clkernel != NULL)
     RelinquishOpenCLKernel(clkernel);
-
   if (queue != NULL)
-    RelinquishOpenCLCommandQueue(device, queue);
-
+    RelinquishOpenCLCommandQueue(device,queue);
+  if (device != NULL)
+    ReleaseOpenCLDevice(clEnv,device);
   if (outputReady == MagickFalse)
   {
     if (filteredImage != NULL)
@@ -2474,7 +2494,7 @@ static Image *ComputeDespeckleImage(const Image *image,MagickCLEnv clEnv,
   queue = NULL;
   tempImageBuffer[0] = tempImageBuffer[1] = NULL;
 
-  device = GetOpenCLDevice(clEnv);
+  device = RequestOpenCLDevice(clEnv);
   queue = AcquireOpenCLCommandQueue(device);
  
   image_view=AcquireAuthenticCacheView(image,exception);
@@ -2741,17 +2761,26 @@ cleanup:
   if (filteredImage_view != NULL)
     filteredImage_view=DestroyCacheView(filteredImage_view);
 
-  if (queue != NULL)                          RelinquishOpenCLCommandQueue(device, queue);
-  if (imageBuffer!=NULL)		      clEnv->library->clReleaseMemObject(imageBuffer);
+  if (queue != NULL)
+    RelinquishOpenCLCommandQueue(device,queue);
+  if (device != NULL)
+    ReleaseOpenCLDevice(clEnv,device);
+  if (imageBuffer!=NULL)
+    clEnv->library->clReleaseMemObject(imageBuffer);
   for (k = 0; k < 2; k++)
   {
-    if (tempImageBuffer[k]!=NULL)	      clEnv->library->clReleaseMemObject(tempImageBuffer[k]);
+    if (tempImageBuffer[k]!=NULL)
+      clEnv->library->clReleaseMemObject(tempImageBuffer[k]);
   }
-  if (filteredImageBuffer!=NULL)	      clEnv->library->clReleaseMemObject(filteredImageBuffer);
-  if (hullPass1!=NULL)			      RelinquishOpenCLKernel(hullPass1);
-  if (hullPass2!=NULL)			      RelinquishOpenCLKernel(hullPass2);
+  if (filteredImageBuffer!=NULL)
+    clEnv->library->clReleaseMemObject(filteredImageBuffer);
+  if (hullPass1!=NULL)
+    RelinquishOpenCLKernel(hullPass1);
+  if (hullPass2!=NULL)
+    RelinquishOpenCLKernel(hullPass2);
   if (outputReady == MagickFalse && filteredImage != NULL)
     filteredImage=DestroyImage(filteredImage);
+
   return(filteredImage);
 }
 
@@ -2871,7 +2900,7 @@ static MagickBooleanType ComputeEqualizeImage(Image *image,MagickCLEnv clEnv,
   /*
    * initialize opencl env
    */
-  device = GetOpenCLDevice(clEnv);
+  device = RequestOpenCLDevice(clEnv);
   queue = AcquireOpenCLCommandQueue(device);
 
   /*
@@ -3192,29 +3221,26 @@ cleanup:
 
   image_view=DestroyCacheView(image_view);
 
-  if (imageBuffer!=NULL)		      
+  if (imageBuffer!=NULL)
     clEnv->library->clReleaseMemObject(imageBuffer);
-
   if (map!=NULL)
     map=(FloatPixelPacket *) RelinquishMagickMemory(map);
-
   if (equalizeMapBuffer!=NULL)
     clEnv->library->clReleaseMemObject(equalizeMapBuffer);
   if (equalize_map!=NULL)
     equalize_map=(PixelPacket *) RelinquishMagickMemory(equalize_map);
-
-  if (histogramBuffer!=NULL)		      
+  if (histogramBuffer!=NULL)
     clEnv->library->clReleaseMemObject(histogramBuffer);
   if (histogram!=NULL)
     histogram=(cl_uint4 *) RelinquishMagickMemory(histogram);
-
-  if (histogramKernel!=NULL)                     
+  if (histogramKernel!=NULL)
     RelinquishOpenCLKernel(histogramKernel);
-  if (equalizeKernel!=NULL)                     
+  if (equalizeKernel!=NULL)
     RelinquishOpenCLKernel(equalizeKernel);
-
-  if (queue != NULL)                          
+  if (queue != NULL)
     RelinquishOpenCLCommandQueue(device, queue);
+  if (device != NULL)
+    ReleaseOpenCLDevice(clEnv,device);
 
   return(outputReady);
 }
@@ -3307,7 +3333,7 @@ static MagickBooleanType ComputeFunctionImage(Image *image,MagickCLEnv clEnv,
   parametersBuffer = NULL;
   pixels = NULL;
 
-  device = GetOpenCLDevice(clEnv);
+  device = RequestOpenCLDevice(clEnv);
 
   image_view=AcquireAuthenticCacheView(image,exception);
   imageBuffer=createReadWriteBuffer(image,image_view,clEnv,device,pixels,
@@ -3385,10 +3411,16 @@ cleanup:
 
   image_view=DestroyCacheView(image_view);
   
-  if (clkernel != NULL) RelinquishOpenCLKernel(clkernel);
-  if (queue != NULL) RelinquishOpenCLCommandQueue(device, queue);
-  if (imageBuffer != NULL) clEnv->library->clReleaseMemObject(imageBuffer);
-  if (parametersBuffer != NULL) clEnv->library->clReleaseMemObject(parametersBuffer);
+  if (clkernel != NULL)
+    RelinquishOpenCLKernel(clkernel);
+  if (queue != NULL)
+    RelinquishOpenCLCommandQueue(device,queue);
+  if (device != NULL)
+    ReleaseOpenCLDevice(clEnv,device);
+  if (imageBuffer != NULL)
+    clEnv->library->clReleaseMemObject(imageBuffer);
+  if (parametersBuffer != NULL)
+    clEnv->library->clReleaseMemObject(parametersBuffer);
 
   return(status);
 }
@@ -3480,7 +3512,7 @@ static MagickBooleanType ComputeGrayscaleImage(Image *image,MagickCLEnv clEnv,
   /*
    * initialize opencl env
    */
-  device = GetOpenCLDevice(clEnv);
+  device = RequestOpenCLDevice(clEnv);
   queue = AcquireOpenCLCommandQueue(device);
 
   /* Create and initialize OpenCL buffers.
@@ -3543,7 +3575,9 @@ cleanup:
   if (grayscaleKernel!=NULL)
     RelinquishOpenCLKernel(grayscaleKernel);
   if (queue != NULL)
-    RelinquishOpenCLCommandQueue(device, queue);
+    RelinquishOpenCLCommandQueue(device,queue);
+  if (device != NULL)
+    ReleaseOpenCLDevice(clEnv,device);
 
   return( outputReady);
 }
@@ -3658,7 +3692,7 @@ static Image *ComputeLocalContrastImage(const Image *image,MagickCLEnv clEnv,
   queue = NULL;
   outputReady = MagickFalse;
 
-  device = GetOpenCLDevice(clEnv);
+  device = RequestOpenCLDevice(clEnv);
   queue = AcquireOpenCLCommandQueue(device);
 
   /* Create and initialize OpenCL buffers. */
@@ -3877,13 +3911,22 @@ cleanup:
   if (filteredImage_view != NULL)
     filteredImage_view=DestroyCacheView(filteredImage_view);
 
-  if (imageBuffer!=NULL)                      clEnv->library->clReleaseMemObject(imageBuffer);
-  if (filteredImageBuffer!=NULL)              clEnv->library->clReleaseMemObject(filteredImageBuffer);
-  if (tempImageBuffer!=NULL)                  clEnv->library->clReleaseMemObject(tempImageBuffer);
-  if (imageKernelBuffer!=NULL)                clEnv->library->clReleaseMemObject(imageKernelBuffer);
-  if (blurRowKernel!=NULL)                    RelinquishOpenCLKernel(blurRowKernel);
-  if (blurColumnKernel!=NULL)                 RelinquishOpenCLKernel(blurColumnKernel);
-  if (queue != NULL)                          RelinquishOpenCLCommandQueue(device, queue);
+  if (imageBuffer!=NULL)
+    clEnv->library->clReleaseMemObject(imageBuffer);
+  if (filteredImageBuffer!=NULL)
+    clEnv->library->clReleaseMemObject(filteredImageBuffer);
+  if (tempImageBuffer!=NULL)
+    clEnv->library->clReleaseMemObject(tempImageBuffer);
+  if (imageKernelBuffer!=NULL)
+    clEnv->library->clReleaseMemObject(imageKernelBuffer);
+  if (blurRowKernel!=NULL)
+    RelinquishOpenCLKernel(blurRowKernel);
+  if (blurColumnKernel!=NULL)
+    RelinquishOpenCLKernel(blurColumnKernel);
+  if (queue != NULL)
+    RelinquishOpenCLCommandQueue(device, queue);
+  if (device != NULL)
+    ReleaseOpenCLDevice(clEnv,device);
   if (outputReady == MagickFalse)
   {
     if (filteredImage != NULL)
@@ -3892,6 +3935,7 @@ cleanup:
       filteredImage = NULL;
     }
   }
+
   return(filteredImage);
 }
 
@@ -3990,7 +4034,7 @@ static MagickBooleanType ComputeModulateImage(Image *image,MagickCLEnv clEnv,
   /*
    * initialize opencl env
    */
-  device = GetOpenCLDevice(clEnv);
+  device = RequestOpenCLDevice(clEnv);
   queue = AcquireOpenCLCommandQueue(device);
 
   outputReady = MagickFalse;
@@ -4088,12 +4132,14 @@ cleanup:
 
   image_view=DestroyCacheView(image_view);
 
-  if (imageBuffer!=NULL)		      
+  if (imageBuffer!=NULL)
     clEnv->library->clReleaseMemObject(imageBuffer);
-  if (modulateKernel!=NULL)                     
+  if (modulateKernel!=NULL)
     RelinquishOpenCLKernel(modulateKernel);
-  if (queue != NULL)                          
+  if (queue != NULL)
     RelinquishOpenCLCommandQueue(device,queue);
+  if (device != NULL)
+    ReleaseOpenCLDevice(clEnv,device);
 
   return outputReady;
 
@@ -4219,7 +4265,7 @@ static Image* ComputeMotionBlurImage(const Image *image,MagickCLEnv clEnv,
   motionBlurKernel = NULL;
   queue = NULL;
 
-  device = GetOpenCLDevice(clEnv);
+  device = RequestOpenCLDevice(clEnv);
 
   /* Create and initialize OpenCL buffers. */
 
@@ -4450,11 +4496,18 @@ cleanup:
   if (filteredImage_view != NULL)
     filteredImage_view=DestroyCacheView(filteredImage_view);
 
-  if (filteredImageBuffer!=NULL)  clEnv->library->clReleaseMemObject(filteredImageBuffer);
-  if (imageBuffer!=NULL)     clEnv->library->clReleaseMemObject(imageBuffer);
-  if (imageKernelBuffer!=NULL)    clEnv->library->clReleaseMemObject(imageKernelBuffer);
-  if (motionBlurKernel!=NULL)  RelinquishOpenCLKernel(motionBlurKernel);
-  if (queue != NULL)           RelinquishOpenCLCommandQueue(device,queue);
+  if (filteredImageBuffer!=NULL)
+    clEnv->library->clReleaseMemObject(filteredImageBuffer);
+  if (imageBuffer!=NULL)
+    clEnv->library->clReleaseMemObject(imageBuffer);
+  if (imageKernelBuffer!=NULL)
+    clEnv->library->clReleaseMemObject(imageKernelBuffer);
+  if (motionBlurKernel!=NULL)
+    RelinquishOpenCLKernel(motionBlurKernel);
+  if (queue != NULL)
+    RelinquishOpenCLCommandQueue(device,queue);
+  if (device != NULL)
+    ReleaseOpenCLDevice(clEnv,device);
   if (outputReady == MagickFalse && filteredImage != NULL)
     filteredImage=DestroyImage(filteredImage);
 
@@ -4952,7 +5005,7 @@ static Image *ComputeResizeImage(const Image* image,MagickCLEnv clEnv,
   cubicCoefficientsBuffer = NULL;
   queue = NULL;
 
-  device = GetOpenCLDevice(clEnv);
+  device = RequestOpenCLDevice(clEnv);
 
   image_view = AcquireAuthenticCacheView(image, exception);
   imageBuffer=createReadBuffer(image,image_view,clEnv,device,exception);
@@ -5062,13 +5115,21 @@ cleanup:
   if (filteredImage_view != NULL)
     filteredImage_view=DestroyCacheView(filteredImage_view);
 
-  if (imageBuffer!=NULL)		  clEnv->library->clReleaseMemObject(imageBuffer);
-  if (tempImageBuffer!=NULL)		  clEnv->library->clReleaseMemObject(tempImageBuffer);
-  if (filteredImageBuffer!=NULL)	  clEnv->library->clReleaseMemObject(filteredImageBuffer);
-  if (cubicCoefficientsBuffer!=NULL)      clEnv->library->clReleaseMemObject(cubicCoefficientsBuffer);
-  if (queue != NULL)  	                  RelinquishOpenCLCommandQueue(device, queue);
+  if (imageBuffer!=NULL)
+    clEnv->library->clReleaseMemObject(imageBuffer);
+  if (tempImageBuffer!=NULL)
+    clEnv->library->clReleaseMemObject(tempImageBuffer);
+  if (filteredImageBuffer!=NULL)
+    clEnv->library->clReleaseMemObject(filteredImageBuffer);
+  if (cubicCoefficientsBuffer!=NULL)
+    clEnv->library->clReleaseMemObject(cubicCoefficientsBuffer);
+  if (queue != NULL)
+    RelinquishOpenCLCommandQueue(device,queue);
+  if (device != NULL)
+    ReleaseOpenCLDevice(clEnv,device);
   if (outputReady == MagickFalse && filteredImage != NULL)
     filteredImage=DestroyImage(filteredImage);
+
   return(filteredImage);
 }
 
@@ -5205,7 +5266,7 @@ static Image* ComputeRotationalBlurImage(const Image *image,MagickCLEnv clEnv,
   queue = NULL;
   rotationalBlurKernel = NULL;
 
-  device = GetOpenCLDevice(clEnv);
+  device = RequestOpenCLDevice(clEnv);
 
   image_view=AcquireAuthenticCacheView(image, exception);
   imageBuffer=createReadBuffer(image,image_view,clEnv,device,exception);
@@ -5335,12 +5396,20 @@ cleanup:
   if (filteredImage_view != NULL)
     filteredImage_view=DestroyCacheView(filteredImage_view);
 
-  if (filteredImageBuffer!=NULL)  clEnv->library->clReleaseMemObject(filteredImageBuffer);
-  if (imageBuffer!=NULL)     clEnv->library->clReleaseMemObject(imageBuffer);
-  if (sinThetaBuffer!=NULL)       clEnv->library->clReleaseMemObject(sinThetaBuffer);
-  if (cosThetaBuffer!=NULL)       clEnv->library->clReleaseMemObject(cosThetaBuffer);
-  if (rotationalBlurKernel!=NULL) RelinquishOpenCLKernel(rotationalBlurKernel);
-  if (queue != NULL)              RelinquishOpenCLCommandQueue(device,queue);
+  if (filteredImageBuffer!=NULL)
+    clEnv->library->clReleaseMemObject(filteredImageBuffer);
+  if (imageBuffer!=NULL)
+    clEnv->library->clReleaseMemObject(imageBuffer);
+  if (sinThetaBuffer!=NULL)
+    clEnv->library->clReleaseMemObject(sinThetaBuffer);
+  if (cosThetaBuffer!=NULL)
+    clEnv->library->clReleaseMemObject(cosThetaBuffer);
+  if (rotationalBlurKernel!=NULL)
+    RelinquishOpenCLKernel(rotationalBlurKernel);
+  if (queue != NULL)
+    RelinquishOpenCLCommandQueue(device,queue);
+  if (device != NULL)
+    ReleaseOpenCLDevice(clEnv,device);
   if (outputReady == MagickFalse)
   {
     if (filteredImage != NULL)
@@ -5349,6 +5418,7 @@ cleanup:
       filteredImage = NULL;
     }
   }
+
   return filteredImage;
 }
 
@@ -5457,7 +5527,7 @@ static Image *ComputeUnsharpMaskImage(const Image *image,MagickCLEnv clEnv,
   queue = NULL;
   outputReady = MagickFalse;
 
-  device = GetOpenCLDevice(clEnv);
+  device = RequestOpenCLDevice(clEnv);
   queue = AcquireOpenCLCommandQueue(device);
 
   image_view = AcquireAuthenticCacheView(image, exception);
@@ -5619,13 +5689,22 @@ cleanup:
   if (filteredImage_view != NULL)
     filteredImage_view=DestroyCacheView(filteredImage_view);
 
-  if (imageBuffer!=NULL)		      clEnv->library->clReleaseMemObject(imageBuffer);
-  if (filteredImageBuffer!=NULL)              clEnv->library->clReleaseMemObject(filteredImageBuffer);
-  if (tempImageBuffer!=NULL)                  clEnv->library->clReleaseMemObject(tempImageBuffer);
-  if (imageKernelBuffer!=NULL)                clEnv->library->clReleaseMemObject(imageKernelBuffer);
-  if (blurRowKernel!=NULL)                    RelinquishOpenCLKernel(blurRowKernel);
-  if (unsharpMaskBlurColumnKernel!=NULL)      RelinquishOpenCLKernel(unsharpMaskBlurColumnKernel);
-  if (queue != NULL)                          RelinquishOpenCLCommandQueue(device,queue);
+  if (imageBuffer!=NULL)
+    clEnv->library->clReleaseMemObject(imageBuffer);
+  if (filteredImageBuffer!=NULL)
+    clEnv->library->clReleaseMemObject(filteredImageBuffer);
+  if (tempImageBuffer!=NULL)
+    clEnv->library->clReleaseMemObject(tempImageBuffer);
+  if (imageKernelBuffer!=NULL)
+    clEnv->library->clReleaseMemObject(imageKernelBuffer);
+  if (blurRowKernel!=NULL)
+    RelinquishOpenCLKernel(blurRowKernel);
+  if (unsharpMaskBlurColumnKernel!=NULL)
+    RelinquishOpenCLKernel(unsharpMaskBlurColumnKernel);
+  if (queue != NULL)
+    RelinquishOpenCLCommandQueue(device,queue);
+  if (device != NULL)
+    ReleaseOpenCLDevice(clEnv,device);
   if (outputReady == MagickFalse)
   {
     if (filteredImage != NULL)
@@ -5634,6 +5713,7 @@ cleanup:
       filteredImage = NULL;
     }
   }
+
   return(filteredImage);
 }
 
@@ -5695,7 +5775,7 @@ static Image *ComputeUnsharpMaskImageSingle(const Image *image,
   queue = NULL;
   outputReady = MagickFalse;
 
-  device = GetOpenCLDevice(clEnv);
+  device = RequestOpenCLDevice(clEnv);
   queue = AcquireOpenCLCommandQueue(device);
 
   image_view=AcquireAuthenticCacheView(image,exception);
@@ -5785,11 +5865,18 @@ cleanup:
   if (filteredImage_view != NULL)
     filteredImage_view=DestroyCacheView(filteredImage_view);
 
-  if (imageBuffer!=NULL)		      clEnv->library->clReleaseMemObject(imageBuffer);
-  if (filteredImageBuffer!=NULL)              clEnv->library->clReleaseMemObject(filteredImageBuffer);
-  if (imageKernelBuffer!=NULL)                clEnv->library->clReleaseMemObject(imageKernelBuffer);
-  if (unsharpMaskKernel!=NULL)                RelinquishOpenCLKernel(unsharpMaskKernel);
-  if (queue != NULL)                          RelinquishOpenCLCommandQueue(device,queue);
+  if (imageBuffer!=NULL)
+    clEnv->library->clReleaseMemObject(imageBuffer);
+  if (filteredImageBuffer!=NULL)
+    clEnv->library->clReleaseMemObject(filteredImageBuffer);
+  if (imageKernelBuffer!=NULL)
+    clEnv->library->clReleaseMemObject(imageKernelBuffer);
+  if (unsharpMaskKernel!=NULL)
+    RelinquishOpenCLKernel(unsharpMaskKernel);
+  if (queue != NULL)
+    RelinquishOpenCLCommandQueue(device,queue);
+  if (device != NULL)
+    ReleaseOpenCLDevice(clEnv,device);
   if (outputReady == MagickFalse)
   {
     if (filteredImage != NULL)
@@ -5798,6 +5885,7 @@ cleanup:
       filteredImage = NULL;
     }
   }
+
   return(filteredImage);
 }
 
@@ -5875,7 +5963,7 @@ static Image *ComputeWaveletDenoiseImage(const Image *image,MagickCLEnv clEnv,
   denoiseKernel = NULL;
   outputReady = MagickFalse;
 
-  device = GetOpenCLDevice(clEnv);
+  device = RequestOpenCLDevice(clEnv);
   queue = AcquireOpenCLCommandQueue(device);
 
   /* Create and initialize OpenCL buffers. */
@@ -5971,10 +6059,16 @@ cleanup:
   if (filteredImage_view != NULL)
     filteredImage_view = DestroyCacheView(filteredImage_view);
 
-  if (imageBuffer != NULL)			clEnv->library->clReleaseMemObject(imageBuffer);
-  if (filteredImageBuffer != NULL)	clEnv->library->clReleaseMemObject(filteredImageBuffer);
-  if (denoiseKernel != NULL)		RelinquishOpenCLKernel(denoiseKernel);
-  if (queue != NULL)				RelinquishOpenCLCommandQueue(device,queue);
+  if (imageBuffer != NULL)
+    clEnv->library->clReleaseMemObject(imageBuffer);
+  if (filteredImageBuffer != NULL)
+    clEnv->library->clReleaseMemObject(filteredImageBuffer);
+  if (denoiseKernel != NULL)
+    RelinquishOpenCLKernel(denoiseKernel);
+  if (queue != NULL)
+    RelinquishOpenCLCommandQueue(device,queue);
+  if (device != NULL)
+    ReleaseOpenCLDevice(clEnv,device);
   if (outputReady == MagickFalse)
   {
     if (filteredImage != NULL)
@@ -5983,6 +6077,7 @@ cleanup:
       filteredImage = NULL;
     }
   }
+
   return(filteredImage);
 }
 

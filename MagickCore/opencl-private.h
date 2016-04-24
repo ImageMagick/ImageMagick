@@ -291,9 +291,11 @@ struct _MagickCLDevice
   SemaphoreInfo
     *lock;
 
+  size_t
+    requested;
+
   ssize_t
-    command_queues_index,
-    created_queues;
+    command_queues_index;
 };
 
 struct _MagickCLEnv
@@ -378,7 +380,7 @@ extern MagickPrivate MagickBooleanType
     const char *,...);
 
 extern MagickPrivate MagickCLDevice
-  GetOpenCLDevice(MagickCLEnv);
+  RequestOpenCLDevice(MagickCLEnv);
 
 extern MagickPrivate MagickCLEnv
   GetCurrentOpenCLEnv(void);
@@ -390,13 +392,9 @@ extern MagickPrivate void
   DumpOpenCLProfileData(),
   OpenCLTerminus(),
   RecordProfileData(MagickCLDevice,cl_kernel,cl_event),
+  ReleaseOpenCLDevice(MagickCLEnv,MagickCLDevice),
   RelinquishOpenCLCommandQueue(MagickCLDevice,cl_command_queue),
   RelinquishOpenCLKernel(cl_kernel);
-
-extern MagickPrivate cl_mem
-  GetAndLockRandSeedBuffer(MagickCLEnv,MagickCLDevice);
-extern MagickPrivate void
-  UnlockRandSeedBuffer(MagickCLEnv);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

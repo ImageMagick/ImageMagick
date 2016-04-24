@@ -2618,6 +2618,7 @@ OPENCL_ENDIF()
     event_t e = async_work_group_copy(inputImageCache, inputImage + pos, num_elements, 0);
     wait_group_events(1, &e);
 
+    unsigned int alpha_index = (number_channels == 4) || (number_channels == 2) ? number_channels - 1 : 0;
     unsigned int totalNumChunks = (actualNumPixelToCompute+pixelChunkSize-1)/pixelChunkSize;
     for (unsigned int chunk = 0; chunk < totalNumChunks; chunk++)
     {
@@ -2675,9 +2676,9 @@ OPENCL_ENDIF()
               cp.z = (float) *(p + 2);
             }
 
-            if ((number_channels == 4) || (number_channels == 2))
+            if (alpha_index != 0)
             {
-              cp.w = (float) *(p + number_channels - 1);
+              cp.w = (float) *(p + alpha_index);
 
               float alpha = weight * QuantumScale * cp.w;
 
@@ -2699,7 +2700,7 @@ OPENCL_ENDIF()
       if (itemID < actualNumPixelInThisChunk) {
         outputPixelCache[itemID] = (float4)0.0f;
         densityCache[itemID] = 0.0f;
-        if ((number_channels == 4) || (number_channels == 2))
+        if (alpha_index != 0)
           gammaCache[itemID] = 0.0f;
       }
       barrier(CLK_LOCAL_MEM_FENCE);
@@ -2710,7 +2711,7 @@ OPENCL_ENDIF()
           if (itemID%numItems == i) {
             outputPixelCache[pixelIndex]+=filteredPixel;
             densityCache[pixelIndex]+=density;
-            if ((number_channels == 4) || (number_channels == 2))
+            if (alpha_index != 0)
               gammaCache[pixelIndex]+=gamma;
           }
         }
@@ -2722,7 +2723,7 @@ OPENCL_ENDIF()
         float4 filteredPixel = outputPixelCache[itemID];
 
         float gamma = 0.0f;
-        if ((number_channels == 4) || (number_channels == 2))
+        if (alpha_index != 0)
           gamma = gammaCache[itemID];
 
         float density = densityCache[itemID];
@@ -2733,7 +2734,7 @@ OPENCL_ENDIF()
           gamma *= density;
         }
 
-        if ((number_channels == 4) || (number_channels == 2))
+        if (alpha_index != 0)
         {
           gamma = PerceptibleReciprocal(gamma);
           filteredPixel.x *= gamma;
@@ -2783,6 +2784,7 @@ OPENCL_ENDIF()
       wait_group_events(1,&e);
     }
 
+    unsigned int alpha_index = (number_channels == 4) || (number_channels == 2) ? number_channels - 1 : 0;
     unsigned int totalNumChunks = (actualNumPixelToCompute+pixelChunkSize-1)/pixelChunkSize;
     for (unsigned int chunk = 0; chunk < totalNumChunks; chunk++)
     {
@@ -2839,9 +2841,9 @@ OPENCL_ENDIF()
               cp.z = (float) *(p + (rangeLength * 2));
             }
 
-            if ((number_channels == 4) || (number_channels == 2))
+            if (alpha_index != 0)
             {
-              cp.w = (float) *(p + (rangeLength * (number_channels - 1)));
+              cp.w = (float) *(p + (rangeLength * alpha_index));
 
               float alpha = weight * QuantumScale * cp.w;
 
@@ -2863,7 +2865,7 @@ OPENCL_ENDIF()
       if (itemID < actualNumPixelInThisChunk) {
         outputPixelCache[itemID] = (float4)0.0f;
         densityCache[itemID] = 0.0f;
-        if ((number_channels == 4) || (number_channels == 2))
+        if (alpha_index != 0)
           gammaCache[itemID] = 0.0f;
       }
       barrier(CLK_LOCAL_MEM_FENCE);
@@ -2874,7 +2876,7 @@ OPENCL_ENDIF()
           if (itemID%numItems == i) {
             outputPixelCache[pixelIndex]+=filteredPixel;
             densityCache[pixelIndex]+=density;
-            if ((number_channels == 4) || (number_channels == 2))
+            if (alpha_index != 0)
               gammaCache[pixelIndex]+=gamma;
           }
         }
@@ -2886,7 +2888,7 @@ OPENCL_ENDIF()
         float4 filteredPixel = outputPixelCache[itemID];
 
         float gamma = 0.0f;
-        if ((number_channels == 4) || (number_channels == 2))
+        if (alpha_index != 0)
           gamma = gammaCache[itemID];
 
         float density = densityCache[itemID];
@@ -2897,7 +2899,7 @@ OPENCL_ENDIF()
           gamma *= density;
         }
 
-        if ((number_channels == 4) || (number_channels == 2))
+        if (alpha_index != 0)
         {
           gamma = PerceptibleReciprocal(gamma);
           filteredPixel.x *= gamma;

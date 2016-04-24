@@ -567,7 +567,6 @@ MagickPrivate cl_command_queue AcquireOpenCLCommandQueue(MagickCLDevice device)
 
   assert(device != (MagickCLDevice) NULL);
   LockSemaphoreInfo(device->lock);
-  device->created_queues++;
   if ((device->profile_kernels == MagickFalse) &&
       (device->command_queues_index >= 0))
   {
@@ -1442,71 +1441,6 @@ MagickPrivate MagickCLEnv GetCurrentOpenCLEnv(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t O p e n C L D e v i c e                                             %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetOpenCLDevice() returns one of the enabled OpenCL devices.
-%
-%  The format of the GetOpenCLDevice method is:
-%
-%      MagickCLDevice GetOpenCLDevice(MagickCLEnv clEnv)
-%
-%  A description of each parameter follows:
-%
-%    o clEnv: the OpenCL environment.
-*/
-
-MagickPrivate MagickCLDevice GetOpenCLDevice(MagickCLEnv clEnv)
-{
-  MagickCLDevice
-    device;
-
-  double
-    score,
-    best_score;
-
-  size_t
-    i;
-
-  if (clEnv == (MagickCLEnv) NULL)
-    return((MagickCLDevice) NULL);
-
-  if (clEnv->number_devices == 1)
-  {
-    if (clEnv->devices[0]->enabled)
-      return(clEnv->devices[0]);
-    else
-      return((MagickCLDevice) NULL);
-  }
-
-  device=(MagickCLDevice) NULL;
-  best_score=0.0;
-  for (i = 0; i < clEnv->number_devices; i++)
-  {
-    if (clEnv->devices[i]->enabled == MagickFalse)
-      continue;
-
-    LockSemaphoreInfo(clEnv->devices[i]->lock);
-    score=clEnv->devices[i]->score+(clEnv->devices[i]->score*
-      clEnv->devices[i]->created_queues);
-    UnlockSemaphoreInfo(clEnv->devices[i]->lock);
-    if ((device == (MagickCLDevice) NULL) || (score < best_score))
-    {
-      device=clEnv->devices[i];
-      best_score=score;
-    }
-  }
-  return(device);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   G e t O p e n C L D e v i c e B e n c h m a r k D u r a t i o n           %
 %                                                                             %
 %                                                                             %
@@ -1830,13 +1764,17 @@ static MagickBooleanType HasOpenCLDevices(MagickCLEnv clEnv,
     return(MagickFalse);
 
   /* Check if we need to compile a kernel for one of the devices */
+  status=MagickTrue;
   for (i = 0; i < clEnv->number_devices; i++)
   {
     if ((clEnv->devices[i]->enabled != MagickFalse) &&
         (clEnv->devices[i]->program == (cl_program) NULL))
+    {
+      status=MagickFalse;
       break;
+    }
   }
-  if (i == clEnv->number_devices)
+  if (status != MagickFalse)
     return(MagickTrue);
 
   /* Get additional options */
@@ -2408,6 +2346,38 @@ MagickPrivate void RecordProfileData(MagickCLDevice device,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   R e l e a s e  M a g i c k C L D e v i c e                                %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ReleaseOpenCLDevice() returns the OpenCL device to the environment
+%
+%  The format of the ReleaseOpenCLDevice method is:
+%
+%      void ReleaseOpenCLDevice(MagickCLEnv clEnv,MagickCLDevice device)
+%
+%  A description of each parameter follows:
+%
+%    o clEnv: the OpenCL environment.
+%
+%    o device: the OpenCL device to be released.
+%
+*/
+
+MagickPrivate void ReleaseOpenCLDevice(MagickCLEnv clEnv,MagickCLDevice device)
+{
+  LockSemaphoreInfo(clEnv->lock);
+  device->requested--;
+  UnlockSemaphoreInfo(clEnv->lock);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   R e l i n q u i s h M a g i c k C L D e v i c e                           %
 %                                                                             %
 %                                                                             %
@@ -2512,13 +2482,17 @@ MagickPrivate void RelinquishOpenCLCommandQueue(MagickCLDevice device,
 
   assert(device != (MagickCLDevice) NULL);
   LockSemaphoreInfo(device->lock);
-  device->created_queues--;
   if ((device->profile_kernels != MagickFalse) ||
-      (device->command_queues_index >= MAGICKCORE_OPENCL_COMMAND_QUEUES-1))
-    (void) openCL_library->clReleaseCommandQueue(queue);
+      (device->command_queues_index >= MAGICKCORE_OPENCL_COMMAND_QUEUES - 1))
+  {
+    UnlockSemaphoreInfo(device->lock);
+    (void)openCL_library->clReleaseCommandQueue(queue);
+  }
   else
-    device->command_queues[++device->command_queues_index]=queue;
-  UnlockSemaphoreInfo(device->lock);
+  {
+    device->command_queues[++device->command_queues_index] = queue;
+    UnlockSemaphoreInfo(device->lock);
+  }
 }
 
 /*
@@ -2549,6 +2523,74 @@ MagickPrivate void RelinquishOpenCLKernel(cl_kernel kernel)
 {
   if (kernel != (cl_kernel) NULL)
     (void) openCL_library->clReleaseKernel(kernel);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e q u e s t O p e n C L D e v i c e                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  RequestOpenCLDevice() returns one of the enabled OpenCL devices.
+%
+%  The format of the RequestOpenCLDevice method is:
+%
+%      MagickCLDevice RequestOpenCLDevice(MagickCLEnv clEnv)
+%
+%  A description of each parameter follows:
+%
+%    o clEnv: the OpenCL environment.
+*/
+
+MagickPrivate MagickCLDevice RequestOpenCLDevice(MagickCLEnv clEnv)
+{
+  MagickCLDevice
+    device;
+
+  double
+    score,
+    best_score;
+
+  size_t
+    i;
+
+  if (clEnv == (MagickCLEnv) NULL)
+    return((MagickCLDevice) NULL);
+
+  if (clEnv->number_devices == 1)
+  {
+    if (clEnv->devices[0]->enabled)
+      return(clEnv->devices[0]);
+    else
+      return((MagickCLDevice) NULL);
+  }
+
+  device=(MagickCLDevice) NULL;
+  best_score=0.0;
+  LockSemaphoreInfo(clEnv->lock);
+  for (i = 0; i < clEnv->number_devices; i++)
+  {
+    if (clEnv->devices[i]->enabled == MagickFalse)
+      continue;
+
+    score=clEnv->devices[i]->score+(clEnv->devices[i]->score*
+      clEnv->devices[i]->requested);
+    if ((device == (MagickCLDevice) NULL) || (score < best_score))
+    {
+      device=clEnv->devices[i];
+      best_score=score;
+    }
+  }
+  if (device != (MagickCLDevice)NULL)
+    device->requested++;
+  UnlockSemaphoreInfo(clEnv->lock);
+
+  return(device);
 }
 
 /*
