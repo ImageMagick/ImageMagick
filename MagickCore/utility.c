@@ -1159,8 +1159,7 @@ MagickExport MagickBooleanType GetPathAttributes(const char *path,
       return(MagickFalse);
     }
   (void) ResetMagickMemory(attributes,0,sizeof(*attributes));
-  status=stat_utf8(path,attributes) == 0 ? MagickTrue :
-    MagickFalse;
+  status=stat_utf8(path,attributes) == 0 ? MagickTrue : MagickFalse;
   return(status);
 }
 

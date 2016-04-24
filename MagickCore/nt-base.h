@@ -264,6 +264,9 @@ extern "C" {
 #if !defined(unlink)
 #  define unlink  _unlink
 #endif
+#if !defined(utime)
+#  define utime  _utime
+#endif
 #if !defined(vfprintf_l)
 #define vfprintf_l  _vfprintf_l
 #endif

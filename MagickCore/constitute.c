@@ -994,12 +994,14 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
   assert(exception != (ExceptionInfo *) NULL);
   sans_exception=AcquireExceptionInfo();
   write_info=CloneImageInfo(image_info);
-  (void) CopyMagickString(write_info->filename,image->filename,MagickPathExtent);
+  (void) CopyMagickString(write_info->filename,image->filename,
+    MagickPathExtent);
   (void) SetImageInfo(write_info,1,sans_exception);
   if (*write_info->magick == '\0')
     (void) CopyMagickString(write_info->magick,image->magick,MagickPathExtent);
   (void) CopyMagickString(filename,image->filename,MagickPathExtent);
-  (void) CopyMagickString(image->filename,write_info->filename,MagickPathExtent);
+  (void) CopyMagickString(image->filename,write_info->filename,
+    MagickPathExtent);
   domain=CoderPolicyDomain;
   rights=WritePolicyRights;
   if (IsRightsAuthorized(domain,rights,write_info->magick) == MagickFalse)
@@ -1134,7 +1136,8 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
                 magick_info=GetMagickInfo(extension,exception);
               else
                 magick_info=GetMagickInfo(image->magick,exception);
-              (void) CopyMagickString(image->filename,filename,MagickPathExtent);
+              (void) CopyMagickString(image->filename,filename,
+                MagickPathExtent);
             }
           if ((magick_info == (const MagickInfo *) NULL) ||
               (GetImageEncoder(magick_info) == (EncodeImageHandler *) NULL))

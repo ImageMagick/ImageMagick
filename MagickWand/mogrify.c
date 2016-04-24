@@ -3939,8 +3939,8 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
         if (path != (char *) NULL)
           {
             GetPathComponent(option,TailPath,filename);
-            (void) FormatLocaleString(images->filename,MagickPathExtent,"%s%c%s",
-              path,*DirectorySeparator,filename);
+            (void) FormatLocaleString(images->filename,MagickPathExtent,
+              "%s%c%s",path,*DirectorySeparator,filename);
           }
         if (format != (char *) NULL)
           AppendImageFormat(format,images->filename);
@@ -3966,7 +3966,8 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
               MagickPathExtent);
             for (j=0; j < 6; j++)
             {
-              (void) ConcatenateMagickString(backup_filename,"~",MagickPathExtent);
+              (void) ConcatenateMagickString(backup_filename,"~",
+                MagickPathExtent);
               if (IsPathAccessible(backup_filename) == MagickFalse)
                 break;
             }
@@ -4035,10 +4036,11 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
-            type=ParseCommandOption(MagickAlphaChannelOptions,MagickFalse,argv[i]);
+            type=ParseCommandOption(MagickAlphaChannelOptions,MagickFalse,
+              argv[i]);
             if (type < 0)
-              ThrowMogrifyException(OptionError,"UnrecognizedAlphaChannelOption",
-                argv[i]);
+              ThrowMogrifyException(OptionError,
+                "UnrecognizedAlphaChannelOption",argv[i]);
             break;
           }
         if (LocaleCompare("alpha-color",option+1) == 0)
@@ -4637,7 +4639,8 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
-            dispose=ParseCommandOption(MagickDisposeOptions,MagickFalse,argv[i]);
+            dispose=ParseCommandOption(MagickDisposeOptions,MagickFalse,
+              argv[i]);
             if (dispose < 0)
               ThrowMogrifyException(OptionError,"UnrecognizedDisposeMethod",
                 argv[i]);
@@ -5501,7 +5504,8 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
                 ssize_t
                   noise;
 
-                noise=ParseCommandOption(MagickNoiseOptions,MagickFalse,argv[i]);
+                noise=ParseCommandOption(MagickNoiseOptions,MagickFalse,
+                  argv[i]);
                 if (noise < 0)
                   ThrowMogrifyException(OptionError,"UnrecognizedNoiseType",
                     argv[i]);
@@ -6124,7 +6128,8 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
-            stretch=ParseCommandOption(MagickStretchOptions,MagickFalse,argv[i]);
+            stretch=ParseCommandOption(MagickStretchOptions,MagickFalse,
+              argv[i]);
             if (stretch < 0)
               ThrowMogrifyException(OptionError,"UnrecognizedStyleType",
                 argv[i]);
@@ -8741,7 +8746,8 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
               *write_info;
 
             (void) SyncImagesSettings(mogrify_info,*images,exception);
-            (void) FormatLocaleString(key,MagickPathExtent,"cache:%s",argv[i+1]);
+            (void) FormatLocaleString(key,MagickPathExtent,"cache:%s",
+              argv[i+1]);
             (void) DeleteImageRegistry(key);
             write_images=(*images);
             if (*option == '+')
