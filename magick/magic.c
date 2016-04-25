@@ -118,6 +118,7 @@ static const MagicMapInfo
     { "FIG", 0, MagicPattern("#FIG") },
     { "FITS", 0, MagicPattern("IT0") },
     { "FITS", 0, MagicPattern("SIMPLE") },
+    { "FLIF", 0, MagicPattern("FLIF") },
     { "GIF", 0, MagicPattern("GIF8") },
     { "GPLT", 0, MagicPattern("#!/usr/local/bin/gnuplot") },
     { "HDF", 1, MagicPattern("HDF") },
