@@ -121,14 +121,17 @@ MagickExport const char *GetMagickDelegates(void)
 #if defined(MAGICKCORE_FFTW_DELEGATE)
   "fftw "
 #endif
+#if defined(MAGICKCORE_FLIF_DELEGATE)
+  "flif "
+#endif
 #if defined(MAGICKCORE_FONTCONFIG_DELEGATE)
   "fontconfig "
 #endif
-#if defined(MAGICKCORE_FREETYPE_DELEGATE)
-  "freetype "
-#endif
 #if defined(MAGICKCORE_FPX_DELEGATE)
   "fpx "
+#endif
+#if defined(MAGICKCORE_FREETYPE_DELEGATE)
+  "freetype "
 #endif
 #if defined(MAGICKCORE_GS_DELEGATE)
   "gslib "

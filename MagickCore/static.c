@@ -208,6 +208,9 @@ MagickExport void RegisterStaticModules(void)
   (void) RegisterFAXImage();
   (void) RegisterFDImage();
   (void) RegisterFITSImage();
+#if defined(MAGICKCORE_FLIF_DELEGATE)
+  (void) RegisterFLIFImage();
+#endif
 #if defined(MAGICKCORE_FPX_DELEGATE)
   (void) RegisterFPXImage();
 #endif
@@ -390,6 +393,9 @@ MagickExport void UnregisterStaticModules(void)
   UnregisterFAXImage();
   UnregisterFDImage();
   UnregisterFITSImage();
+#if defined(MAGICKCORE_FLIF_DELEGATE)
+  UnregisterFLIFImage();
+#endif
 #if defined(MAGICKCORE_FPX_DELEGATE)
   UnregisterFPXImage();
 #endif
