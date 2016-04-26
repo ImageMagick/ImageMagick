@@ -3460,7 +3460,7 @@ MagickExport signed short ReadBlobLSBSignedShort(Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ReadBlobMSBLong() reads a ssize_t value as a 32-bit quantity in
+%  ReadBlobMSBLong() reads a unsigned int value as a 32-bit quantity in
 %  most-significant byte first order.
 %
 %  The format of the ReadBlobMSBLong method is:
@@ -3510,8 +3510,8 @@ MagickExport unsigned int ReadBlobMSBLong(Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ReadBlobMSBLongLong() reads a ssize_t value as a 64-bit quantity in
-%  most-significant byte first order.
+%  ReadBlobMSBLongLong() reads a unsigned long int value as a 64-bit quantity
+%  in most-significant byte first order.
 %
 %  The format of the ReadBlobMSBLongLong method is:
 %
@@ -4667,8 +4667,8 @@ MagickExport ssize_t WriteBlobFloat(Image *image,const float value)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  WriteBlobLong() writes a ssize_t value as a 32-bit quantity in the byte-order
-%  specified by the endian member of the image structure.
+%  WriteBlobLong() writes a unsigned int value as a 32-bit quantity in the
+%  byte-order specified by the endian member of the image structure.
 %
 %  The format of the WriteBlobLong method is:
 %
@@ -4757,7 +4757,7 @@ MagickExport ssize_t WriteBlobShort(Image *image,const unsigned short value)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  WriteBlobLSBLong() writes a ssize_t value as a 32-bit quantity in
+%  WriteBlobLSBLong() writes a unsigned int value as a 32-bit quantity in
 %  least-significant byte first order.
 %
 %  The format of the WriteBlobLSBLong method is:
@@ -4796,7 +4796,7 @@ MagickExport ssize_t WriteBlobLSBLong(Image *image,const unsigned int value)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  WriteBlobLSBShort() writes a ssize_t value as a 16-bit quantity in
+%  WriteBlobLSBShort() writes a unsigned short value as a 16-bit quantity in
 %  least-significant byte first order.
 %
 %  The format of the WriteBlobLSBShort method is:
@@ -4930,7 +4930,7 @@ MagickExport ssize_t WriteBlobLSBSignedShort(Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  WriteBlobMSBLong() writes a ssize_t value as a 32-bit quantity in
+%  WriteBlobMSBLong() writes a unsigned int value as a 32-bit quantity in
 %  most-significant byte first order.
 %
 %  The format of the WriteBlobMSBLong method is:
@@ -5013,7 +5013,7 @@ MagickExport ssize_t WriteBlobMSBLongLong(Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  WriteBlobMSBShort() writes a ssize_t value as a 16-bit quantity in
+%  WriteBlobMSBShort() writes a unsigned short value as a 16-bit quantity in
 %  most-significant byte first order.
 %
 %  The format of the WriteBlobMSBShort method is:
