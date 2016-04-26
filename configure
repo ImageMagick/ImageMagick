@@ -851,6 +851,9 @@ ddjvuapi_CFLAGS
 FPX_LIBS
 FPX_DELEGATE_FALSE
 FPX_DELEGATE_TRUE
+FLIF_LIBS
+FLIF_DELEGATE_FALSE
+FLIF_DELEGATE_TRUE
 FFTW_LIBS
 FFTW_CFLAGS
 FFTW_DELEGATE_FALSE
@@ -1205,6 +1208,7 @@ with_autotrace
 with_dps
 with_dejavu_font_dir
 with_fftw
+with_flif
 with_fpx
 with_djvu
 with_fontconfig
@@ -2005,6 +2009,7 @@ Optional Packages:
   --with-dejavu-font-dir=DIR
                           DejaVu font directory
   --without-fftw          disable FFTW support
+  --without-flif          disable FLIF support
   --without-fpx           disable FlashPIX support
   --without-djvu          disable DjVu support
   --without-fontconfig    disable fontconfig support
@@ -4523,7 +4528,7 @@ MAGICK_PATCHLEVEL_VERSION=9
 
 MAGICK_VERSION=6.9.3-9
 
-MAGICK_GIT_REVISION=10701:15663f7:20160424
+MAGICK_GIT_REVISION=10704:c669a6b:20160426
 
 
 # Substitute library versioning
@@ -31216,6 +31221,116 @@ fi
 
 
 #
+# Check for FLIF delegate library.
+#
+
+# Check whether --with-flif was given.
+if test "${with_flif+set}" = set; then :
+  withval=$with_flif; with_flif=$withval
+else
+  with_flif='yes'
+fi
+
+
+if test "$with_flif" != 'yes'; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-flif=$with_flif "
+fi
+
+have_flif='no'
+FLIF_LIBS=''
+if test "$with_flif" != 'no'; then
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
+$as_echo "-------------------------------------------------------------" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for FLIF" >&5
+$as_echo_n "checking for FLIF... " >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
+$as_echo "" >&6; }
+    failed=0
+    passed=0
+    ac_fn_c_check_header_mongrel "$LINENO" "flif.h" "ac_cv_header_flif_h" "$ac_includes_default"
+if test "x$ac_cv_header_flif_h" = xyes; then :
+  passed=`expr $passed + 1`
+else
+  failed=`expr $failed + 1`
+fi
+
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for flif_create_decoder in -lflif" >&5
+$as_echo_n "checking for flif_create_decoder in -lflif... " >&6; }
+if ${ac_cv_lib_flif_flif_create_decoder+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lflif  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char flif_create_decoder ();
+int
+main ()
+{
+return flif_create_decoder ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_flif_flif_create_decoder=yes
+else
+  ac_cv_lib_flif_flif_create_decoder=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_flif_flif_create_decoder" >&5
+$as_echo "$ac_cv_lib_flif_flif_create_decoder" >&6; }
+if test "x$ac_cv_lib_flif_flif_create_decoder" = xyes; then :
+  passed=`expr $passed + 1`
+else
+  failed=`expr $failed + 1`
+fi
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking if FLIF package is complete" >&5
+$as_echo_n "checking if FLIF package is complete... " >&6; }
+    if test $passed -gt 0; then
+        if test $failed -gt 0; then
+            { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
+$as_echo "no -- some components failed test" >&6; }
+            have_flif='no (failed tests)'
+        else
+            FLIF_LIBS='-lflif'
+            LIBS="$FLIF_LIBS $LIBS"
+
+$as_echo "#define FLIF_DELEGATE 1" >>confdefs.h
+
+            { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+            have_flif='yes'
+        fi
+    else
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+    fi
+fi
+ if test "$have_flif" = 'yes'; then
+  FLIF_DELEGATE_TRUE=
+  FLIF_DELEGATE_FALSE='#'
+else
+  FLIF_DELEGATE_TRUE='#'
+  FLIF_DELEGATE_FALSE=
+fi
+
+
+
+
+#
 # Check for FlashPIX delegate library.
 #
 
@@ -37569,6 +37684,9 @@ fi
 if test "$have_fftw"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES fftw"
 fi
+if test "$have_flif"    = 'yes' ; then
+   MAGICK_DELEGATES="$MAGICK_DELEGATES flif"
+fi
 if test "$have_fpx"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES fpx"
 fi
@@ -37787,9 +37905,9 @@ fi
 #
 
 if test "$build_modules" != 'no'; then
-    MAGICK_DEP_LIBS="$USER_LIBS $LCMS_LIBS $FREETYPE_LIBS $RAQM_LIBS $LQR_LIBS $FFTW_LIBS $FONTCONFIG_LIBS $XEXT_LIBS $IPC_LIBS $X11_LIBS $XT_LIBS $LZMA_LIBS $BZLIB_LIBS $ZLIB_LIBS $LTDL_LIBS $GDI32_LIBS $MATH_LIBS $GOMP_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS"
+    MAGICK_DEP_LIBS="$USER_LIBS $LCMS_LIBS $FREETYPE_LIBS $RAQM_LIBS $LQR_LIBS $FFTW_LIBS $FLIF_LIBS $FONTCONFIG_LIBS $XEXT_LIBS $IPC_LIBS $X11_LIBS $XT_LIBS $LZMA_LIBS $BZLIB_LIBS $ZLIB_LIBS $LTDL_LIBS $GDI32_LIBS $MATH_LIBS $GOMP_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS"
 else
-    MAGICK_DEP_LIBS="$USER_LIBS $JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $RAQM_LIBS $JPEG_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FPX_LIBS $FONTCONFIG_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $LIBOPENJP2_LIBS $PANGO_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $GDI32_LIBS $MATH_LIBS $GOMP_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS"
+    MAGICK_DEP_LIBS="$USER_LIBS $JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $RAQM_LIBS $JPEG_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FLIF_LIBS $FPX_LIBS $FONTCONFIG_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $LIBOPENJP2_LIBS $PANGO_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $GDI32_LIBS $MATH_LIBS $GOMP_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS"
 fi
 
 
@@ -38090,6 +38208,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${FFTW_DELEGATE_TRUE}" && test -z "${FFTW_DELEGATE_FALSE}"; then
   as_fn_error $? "conditional \"FFTW_DELEGATE\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${FLIF_DELEGATE_TRUE}" && test -z "${FLIF_DELEGATE_FALSE}"; then
+  as_fn_error $? "conditional \"FLIF_DELEGATE\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${FPX_DELEGATE_TRUE}" && test -z "${FPX_DELEGATE_FALSE}"; then
@@ -40813,6 +40935,7 @@ matches your expectations.
   DJVU              --with-djvu=$with_djvu		$have_djvu
   DPS               --with-dps=$with_dps		$have_dps
   FFTW              --with-fftw=$with_fftw		$have_fftw
+  FLIF              --with-flif=$with_flif		$have_flif
   FlashPIX          --with-fpx=$with_fpx		$have_fpx
   FontConfig        --with-fontconfig=$with_fontconfig	$have_fontconfig
   FreeType          --with-freetype=$with_freetype		$have_freetype
@@ -40899,6 +41022,7 @@ matches your expectations.
   DJVU              --with-djvu=$with_djvu		$have_djvu
   DPS               --with-dps=$with_dps		$have_dps
   FFTW              --with-fftw=$with_fftw		$have_fftw
+  FLIF              --with-flif=$with_flif		$have_flif
   FlashPIX          --with-fpx=$with_fpx		$have_fpx
   FontConfig        --with-fontconfig=$with_fontconfig	$have_fontconfig
   FreeType          --with-freetype=$with_freetype		$have_freetype
