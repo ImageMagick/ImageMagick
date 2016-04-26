@@ -1239,10 +1239,10 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
           {
             double
               gamma;
-            
+
             KernelInfo
               *kernel_info;
-            
+
             register ssize_t
               j;
 

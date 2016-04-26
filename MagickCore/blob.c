@@ -2545,8 +2545,8 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
                 (void) FormatLocaleString(filename,MagickPathExtent,"%s-%.20g",
                   path,(double) image->scene);
               else
-                (void) FormatLocaleString(filename,MagickPathExtent,"%s-%.20g.%s",
-                  path,(double) image->scene,extension);
+                (void) FormatLocaleString(filename,MagickPathExtent,
+                  "%s-%.20g.%s",path,(double) image->scene,extension);
             }
           (void) CopyMagickString(image->filename,filename,MagickPathExtent);
 #if defined(macintosh)
