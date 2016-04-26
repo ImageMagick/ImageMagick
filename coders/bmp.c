@@ -2000,8 +2000,8 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
           Write 12-byte version 2 bitmap header.
         */
         (void) WriteBlobLSBLong(image,bmp_info.size);
-        (void) WriteBlobLSBShort(image,(unsigned short) bmp_info.width);
-        (void) WriteBlobLSBShort(image,(unsigned short) bmp_info.height);
+        (void) WriteBlobLSBSignedShort(image,bmp_info.width);
+        (void) WriteBlobLSBSignedShort(image,bmp_info.height);
         (void) WriteBlobLSBShort(image,bmp_info.planes);
         (void) WriteBlobLSBShort(image,bmp_info.bits_per_pixel);
       }
@@ -2011,8 +2011,8 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
           Write 40-byte version 3+ bitmap header.
         */
         (void) WriteBlobLSBLong(image,bmp_info.size);
-        (void) WriteBlobLSBLong(image,(unsigned int) bmp_info.width);
-        (void) WriteBlobLSBLong(image,(unsigned int) bmp_info.height);
+        (void) WriteBlobLSBSignedLong(image,bmp_info.width);
+        (void) WriteBlobLSBSignedLong(image,bmp_info.height);
         (void) WriteBlobLSBShort(image,bmp_info.planes);
         (void) WriteBlobLSBShort(image,bmp_info.bits_per_pixel);
         (void) WriteBlobLSBLong(image,bmp_info.compression);
