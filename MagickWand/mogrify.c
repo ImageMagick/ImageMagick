@@ -53,6 +53,10 @@
 #include "MagickCore/string-private.h"
 #include "MagickCore/thread-private.h"
 #include "MagickCore/utility-private.h"
+#include "MagickCore/blob-private.h"
+#if defined(MAGICKCORE_HAVE_UTIME_H)
+#include <utime.h>
+#endif
 
 /*
   Constant declaration.
@@ -3921,6 +3925,9 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
         Image
           *images;
 
+        struct stat
+          properties;
+
         /*
           Option is a file name: begin by reading image from specified file.
         */
@@ -3933,6 +3940,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
           (exception->severity < ErrorException);
         if (images == (Image *) NULL)
           continue;
+        properties=(*GetBlobProperties(images));
         if (format != (char *) NULL)
           (void) CopyMagickString(images->filename,images->magick_filename,
             MagickPathExtent);
@@ -3980,8 +3988,29 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
         */
         image_info->synchronize=MagickTrue;
         status&=WriteImages(image_info,image,image->filename,exception);
-        if ((status != MagickFalse) && (*backup_filename != '\0'))
-          (void) remove_utf8(backup_filename);
+        if (status != MagickFalse)
+          {
+#if defined(MAGICKCORE_HAVE_UTIME)
+            {
+              MagickBooleanType
+                preserve_timestamp;
+
+              preserve_timestamp=IsStringTrue(GetImageOption(image_info,
+                "preserve-timestamp"));
+              if (preserve_timestamp != MagickFalse)
+                {
+                  struct utimbuf
+                    timestamp;
+
+                  timestamp.actime=properties.st_atime;
+                  timestamp.modtime=properties.st_mtime;
+                  (void) utime(image->filename,&timestamp);
+                }
+            }
+#endif
+            if (*backup_filename != '\0')
+              (void) remove_utf8(backup_filename);
+          }
         RemoveAllImageStack();
         continue;
       }
