@@ -5044,6 +5044,103 @@ MagickExport ssize_t WriteBlobMSBShort(Image *image,const unsigned short value)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++  W r i t e B l o b M S B S i g n e d L o n g                                %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  WriteBlobMSBSignedLong() writes a signed value as a 32-bit quantity in
+%  most-significant byte first order.
+%
+%  The format of the WriteBlobMSBSignedLong method is:
+%
+%      ssize_t WriteBlobMSBSignedLong(Image *image,const signed int value)
+%
+%  A description of each parameter follows.
+%
+%    o image: the image.
+%
+%    o value: Specifies the value to write.
+%
+*/
+MagickExport ssize_t WriteBlobMSBSignedLong(Image *image,const signed int value)
+{
+  union
+  {
+    unsigned int
+      unsigned_value;
+
+    signed int
+      signed_value;
+  } quantum;
+
+  unsigned char
+    buffer[4];
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  quantum.signed_value=value;
+  buffer[0]=(unsigned char) (quantum.unsigned_value >> 24);
+  buffer[1]=(unsigned char) (quantum.unsigned_value >> 16);
+  buffer[2]=(unsigned char) (quantum.unsigned_value >> 8);
+  buffer[3]=(unsigned char) quantum.unsigned_value;
+  return(WriteBlobStream(image,4,buffer));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   W r i t e B l o b M S B S i g n e d S h o r t                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  WriteBlobMSBSignedShort() writes a signed short value as a 16-bit quantity
+%  in most-significant byte first order.
+%
+%  The format of the WriteBlobMSBSignedShort method is:
+%
+%      ssize_t WriteBlobMSBSignedShort(Image *image,const signed short value)
+%
+%  A description of each parameter follows.
+%
+%    o image: the image.
+%
+%    o value:  Specifies the value to write.
+%
+*/
+MagickExport ssize_t WriteBlobMSBSignedShort(Image *image,
+  const signed short value)
+{
+  union
+  {
+    unsigned short
+      unsigned_value;
+
+    signed short
+      signed_value;
+  } quantum;
+
+  unsigned char
+    buffer[2];
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  quantum.signed_value=value;
+  buffer[0]=(unsigned char) (quantum.unsigned_value >> 8);
+  buffer[1]=(unsigned char) quantum.unsigned_value;
+  return(WriteBlobStream(image,2,buffer));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +  W r i t e B l o b S t r i n g                                              %
 %                                                                             %
 %                                                                             %
