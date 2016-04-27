@@ -176,7 +176,11 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
   }
   if (iterations == 1)
     {
-      status=command(image_info,argc,argv,metadata,exception);
+      char
+        *text;
+
+      text=(char *) NULL;
+      status=command(image_info,argc,argv,&text,exception);
       if (exception->severity != UndefinedException)
         {
           if ((exception->severity > ErrorException) ||
@@ -184,10 +188,11 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
             status=MagickFalse;
           CatchException(exception);
         }
-      if ((metadata != (char **) NULL) && (*metadata != (char *) NULL))
+      if (text != (char *) NULL)
         {
-          (void) fputs(*metadata,stdout);
-          *metadata=DestroyString(*metadata);
+          if (metadata != (char **) NULL)
+            (void) ConcatenateString(&(*metadata),text);
+          text=DestroyString(text);
         }
       return(status);
     }
@@ -209,6 +214,10 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
       {
         for (i=0; i < (ssize_t) iterations; i++)
         {
+          char
+            *text;
+
+          text=(char *) NULL;
           if (status == MagickFalse)
             continue;
           if (duration > 0)
@@ -217,7 +226,7 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
                 continue;
               (void) ContinueTimer(timer);
             }
-          status=command(image_info,argc,argv,metadata,exception);
+          status=command(image_info,argc,argv,&text,exception);
           if (exception->severity != UndefinedException)
             {
               if ((exception->severity > ErrorException) ||
@@ -225,12 +234,13 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
                 status=MagickFalse;
               CatchException(exception);
             }
-          if ((metadata != (char **) NULL) && (*metadata != (char *) NULL))
+          if (text != (char *) NULL)
             {
-              (void) fputs(*metadata,stdout);
-              *metadata=DestroyString(*metadata);
+              if (metadata != (char **) NULL)
+                (void) ConcatenateString(&(*metadata),text);
+              text=DestroyString(text);
             }
-        }
+          }
       }
     else
       {
@@ -240,6 +250,10 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
 #endif
         for (i=0; i < (ssize_t) iterations; i++)
         {
+          char
+            *text;
+
+          text=(char *) NULL;
           if (status == MagickFalse)
             continue;
           if (duration > 0)
@@ -248,7 +262,7 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
                 continue;
               (void) ContinueTimer(timer);
             }
-          status=command(image_info,argc,argv,metadata,exception);
+          status=command(image_info,argc,argv,&text,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
           # pragma omp critical (MagickCore_MagickCommandGenesis)
 #endif
@@ -260,10 +274,11 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
                   status=MagickFalse;
                 CatchException(exception);
               }
-            if ((metadata != (char **) NULL) && (*metadata != (char *) NULL))
+            if (text != (char *) NULL)
               {
-                (void) fputs(*metadata,stdout);
-                *metadata=DestroyString(*metadata);
+                if (metadata != (char **) NULL)
+                  (void) ConcatenateString(&(*metadata),text);
+                text=DestroyString(text);
               }
           }
         }

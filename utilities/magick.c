@@ -91,7 +91,8 @@ static int MagickMain(int argc,char **argv)
     };
 
   char
-    client_name[MagickPathExtent];
+    client_name[MagickPathExtent],
+    *metadata;
 
   ExceptionInfo
     *exception;
@@ -134,8 +135,14 @@ static int MagickMain(int argc,char **argv)
       }
       i%=(sizeof(MagickCommands)/sizeof(MagickCommands[0]));
     }
+  metadata=(char *) NULL;
   status=MagickCommandGenesis(image_info,MagickCommands[i].command,argc,argv,
-    (char **) NULL,exception);
+    &metadata,exception);
+  if (metadata != (char *) NULL)
+  {
+    (void) fputs(metadata,stdout);
+    metadata=DestroyString(metadata);
+  }
   image_info=DestroyImageInfo(image_info);
   exception=DestroyExceptionInfo(exception);
   MagickCoreTerminus();
