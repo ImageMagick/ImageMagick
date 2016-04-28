@@ -1741,7 +1741,7 @@ MagickExport Image *LocalContrastImage(const Image *image,const double radius,
     }
   scanLinePixels=(float *) GetVirtualMemoryBlob(scanLinePixels_info);
   /* Create intermediate buffer */
-  interImage_info=AcquireVirtualMemory((image->rows+(2*width))*image->columns,
+  interImage_info=AcquireVirtualMemory(image->rows*(image->columns+(2*width)),
     sizeof(*interImage));
   if (interImage_info == (MemoryInfo *) NULL)
     {
