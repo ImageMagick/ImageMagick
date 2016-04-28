@@ -60,7 +60,8 @@
 
 static int MagickMain(int argc,char **argv)
 {
-#define MagickCommandSize(name,command) { (name), sizeof(name)-1, (command) }
+#define MagickCommandSize(name,use_metadata,command) \
+  { (name), sizeof(name)-1, (use_metadata), (command) }
 
   typedef struct _CommandInfo
   {
@@ -70,6 +71,9 @@ static int MagickMain(int argc,char **argv)
     size_t
       extent;
 
+    MagickBooleanType
+      use_metadata;
+
     MagickCommand
       command;
   } CommandInfo;
@@ -77,21 +81,22 @@ static int MagickMain(int argc,char **argv)
   const CommandInfo
     MagickCommands[] =
     {
-      MagickCommandSize("magick", MagickImageCommand),
-      MagickCommandSize("convert", ConvertImageCommand),
-      MagickCommandSize("identify", IdentifyImageCommand),
-      MagickCommandSize("animate", AnimateImageCommand),
-      MagickCommandSize("compare", CompareImagesCommand),
-      MagickCommandSize("conjure", ConjureImageCommand),
-      MagickCommandSize("display", DisplayImageCommand),
-      MagickCommandSize("import", ImportImageCommand),
-      MagickCommandSize("mogrify", MogrifyImageCommand),
-      MagickCommandSize("montage", MontageImageCommand),
-      MagickCommandSize("stream", StreamImageCommand)
+      MagickCommandSize("magick", MagickFalse, MagickImageCommand),
+      MagickCommandSize("convert", MagickFalse, ConvertImageCommand),
+      MagickCommandSize("identify", MagickTrue, IdentifyImageCommand),
+      MagickCommandSize("animate", MagickFalse, AnimateImageCommand),
+      MagickCommandSize("compare", MagickTrue, CompareImagesCommand),
+      MagickCommandSize("conjure", MagickFalse, ConjureImageCommand),
+      MagickCommandSize("display", MagickFalse, DisplayImageCommand),
+      MagickCommandSize("import", MagickFalse, ImportImageCommand),
+      MagickCommandSize("mogrify", MagickFalse, MogrifyImageCommand),
+      MagickCommandSize("montage", MagickFalse, MontageImageCommand),
+      MagickCommandSize("stream", MagickFalse, StreamImageCommand)
     };
 
   char
-    client_name[MagickPathExtent];
+    client_name[MagickPathExtent],
+    *metadata;
 
   ExceptionInfo
     *exception;
@@ -134,8 +139,14 @@ static int MagickMain(int argc,char **argv)
       }
       i%=(sizeof(MagickCommands)/sizeof(MagickCommands[0]));
     }
+  metadata=(char *) NULL;
   status=MagickCommandGenesis(image_info,MagickCommands[i].command,argc,argv,
-    (char **) NULL,exception);
+    MagickCommands[i].use_metadata ? &metadata : (char **) NULL,exception);
+  if (metadata != (char *) NULL)
+  {
+    (void) fputs(metadata,stdout);
+    metadata=DestroyString(metadata);
+  }
   image_info=DestroyImageInfo(image_info);
   exception=DestroyExceptionInfo(exception);
   MagickCoreTerminus();
