@@ -105,6 +105,7 @@ static int MagickMain(int argc,char **argv)
     *image_info;
 
   int
+    exit_code,
     offset;
 
   MagickBooleanType
@@ -147,10 +148,25 @@ static int MagickMain(int argc,char **argv)
     (void) fputs(metadata,stdout);
     metadata=DestroyString(metadata);
   }
+  if (MagickCommands[i].command != CompareImagesCommand)
+    exit_code=status != MagickFalse ? 0 : 1;
+  else
+    {
+      if (status == MagickFalse)
+        exit_code=2;
+      else
+      {
+        const char
+          *option;
+
+        option=GetImageOption(image_info,"compare:dissimilar");
+        exit_code=IsStringTrue(option) ? 1 : 0;
+      }
+    }
   image_info=DestroyImageInfo(image_info);
   exception=DestroyExceptionInfo(exception);
   MagickCoreTerminus();
-  return(status != MagickFalse ? 0 : 1);
+  return(exit_code);
 }
 
 #if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__) || defined(__MINGW32__) || defined(__MINGW64__)
