@@ -165,8 +165,8 @@ Define arguments for the memory, map, area, and disk resources with SI prefixes 
 
 <pre>
 $MAGICK_CONFIGURE_PATH
-$PREFIX/etc/ImageMagick-6 
-$PREFIX/share/ImageMagick-6 
+$PREFIX/etc/ImageMagick-7 
+$PREFIX/share/ImageMagick-7 
 $XDG_CACHE_HOME/ImageMagick
 $HOME/.config/ImageMagick
 &lt;<var>client path</var>&gt;/etc/ImageMagick
@@ -178,9 +178,9 @@ $HOME/.config/ImageMagick
 
 <pre>
 $MAGICK_CONFIGURE_PATH
-$MAGICK_HOME/etc/ImageMagick-6 
-$MAGICK_HOME/share/ImageMagick-6 
-$PREFIX/share/ImageMagick-6 
+$MAGICK_HOME/etc/ImageMagick-7 
+$MAGICK_HOME/share/ImageMagick-7 
+$PREFIX/share/ImageMagick-7 
 $XDG_CACHE_HOME/ImageMagick
 $HOME/.config/ImageMagick/
 &lt;<var>client path</var>&gt;/etc/ImageMagick
@@ -197,7 +197,7 @@ $USERPROFILE/.config/ImageMagick
 &lt;<var>client path</var>&gt;
 </pre>
 
-<p>Above, $PREFIX is the default install path, typically <code>c:\\Program Files\\ImageMagick-6.9.2</code>.</p>
+<p>Above, $PREFIX is the default install path, typically <code>c:\\Program Files\\ImageMagick-7.0.0</code>.</p>
 
 <p>For an uninstalled Windows installation, the configuration load order is:</p>
 
@@ -217,25 +217,25 @@ $USERPROFILE/.config/ImageMagick
 <p>An image coder (i.e. encoder / decoder) is responsible for registering, optionally classifying, optionally reading, optionally writing, and unregistering one image format (e.g. PNG, GIF, JPEG, etc.).  ImageMagick searches for coders in the following order and it uses the first match found:</p>
 
 <pre>
-$MAGICK_HOME/lib/ImageMagick-6.9.2/modules-Q16/coders
-&lt;<var>client path</var>&gt;/../lib/ImageMagick-6.9.2/modules-Q16/coders
-$MAGICK_HOME/lib/ImageMagick-6.9.2/modules-Q16/coders
-$MAGICK_HOME/share/ImageMagick-6.9.2/modules-Q16/coders
+$MAGICK_HOME/lib/ImageMagick-7.0.0/modules-Q16/coders
+&lt;<var>client path</var>&gt;/../lib/ImageMagick-7.0.0/modules-Q16/coders
+$MAGICK_HOME/lib/ImageMagick-7.0.0/modules-Q16/coders
+$MAGICK_HOME/share/ImageMagick-7.0.0/modules-Q16/coders
 $XDG_CACHE_HOME/ImageMagick
 $HOME/.config/ImageMagick
-&lt;<var>client path</var>&gt;/lib/ImageMagick-6.9.2/modules-Q16/coders
+&lt;<var>client path</var>&gt;/lib/ImageMagick-7.0.0/modules-Q16/coders
 </pre>
 
 <h4>Filters</h4>
 <p>ImageMagick provides a convenient mechanism for adding your own custom image processing algorithms.  ImageMagick searches for filters in the following order and it uses the first match found:</p>
 <pre>
-$MAGICK_HOME/lib/ImageMagick-6.9.2/modules-Q16/filters
-&lt;<var>client path</var>&gt;/../lib/ImageMagick-6.9.2/modules-Q16/filters
-$MAGICK_HOME/lib/ImageMagick-6.9.2/modules-Q16/filters
-$MAGICK_HOME/share/ImageMagick-6.9.2/modules-Q16/filters
+$MAGICK_HOME/lib/ImageMagick-7.0.0/modules-Q16/filters
+&lt;<var>client path</var>&gt;/../lib/ImageMagick-7.0.0/modules-Q16/filters
+$MAGICK_HOME/lib/ImageMagick-7.0.0/modules-Q16/filters
+$MAGICK_HOME/share/ImageMagick-7.0.0/modules-Q16/filters
 $XDG_CACHE_HOME/ImageMagick
 $HOME/.config/ImageMagick
-&lt;<var>client path</var>&gt;/lib/ImageMagick-6.9.2/modules-Q16/filters
+&lt;<var>client path</var>&gt;/lib/ImageMagick-7.0.0/modules-Q16/filters
 </pre>
 
 <h2 class="magick-header"><a id="fonts"></a>Fonts</h2>
@@ -244,7 +244,7 @@ $HOME/.config/ImageMagick
 
 <pre>
 $MAGICK_CONFIGURE_PATH
-$MAGICK_HOME/etc/ImageMagick/-6.9.2$MAGICK_HOME/share/ImageMagick-6.9.2$XDG_CACHE_HOME/ImageMagick
+$MAGICK_HOME/etc/ImageMagick/-7.0.0$MAGICK_HOME/share/ImageMagick-7.0.0$XDG_CACHE_HOME/ImageMagick
 $HOME/.config/ImageMagick
 &lt;<var>client path</var>&gt;/etc/ImageMagick
 $MAGICK_FONT_PATH

@@ -4402,7 +4402,7 @@ installation.</p>
 
 <p>The direction you choose specifies where to position text or subimages. For
 example, a gravity of <code>Center</code> forces the text to be centered within
-the image. By default, the image gravity is <code>NorthWest</code>. See <a
+the image. By default, the image gravity is <code>undefined</code>. See <a
 href="command-line-options.html#draw">-draw</a> for more details about graphic primitives.  Only the
 text primitive of <a href="command-line-options.html#draw">-draw</a> is affected by the <a
 href="command-line-options.html#gravity">-gravity</a> option.</p>
@@ -7271,7 +7271,7 @@ href="command-line-options.html#style">-style</a>, and <a href="command-line-opt
   <h3 class="magick-header"><a id="strip"></a>-strip</h3>
 </div>
 
-<p class="magick-description">strip the image of any profiles or comments.</p>
+<p class="magick-description">strip the image of any profiles, comments or these PNG chunks: bKGD,cHRM,EXIF,gAMA,iCCP,iTXt,sRGB,tEXt,zCCP,zTXt,date.</p>
 
 <div style="margin: auto;">
   <h3 class="magick-header"><a id="stroke"></a>-stroke <var>color</var></h3>

@@ -6,13 +6,13 @@
 <html lang="en">
 <head>
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-    <title>ImageMagick: Command-line Tools: Convert</title>
+    <title>ImageMagick: Command-line Tools: Magick-script</title>
   <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
   <meta name="application-name" content="ImageMagick"/>
   <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves."/>
   <meta name="application-url" content="http://www.imagemagick.org"/>
   <meta name="generator" content="PHP"/>
-  <meta name="keywords" content="command-line, tools:, convert, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert"/>
+  <meta name="keywords" content="command-line, tools:, magick-script, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert"/>
   <meta name="rating" content="GENERAL"/>
   <meta name="robots" content="INDEX, FOLLOW"/>
   <meta name="generator" content="ImageMagick Studio LLC"/>
@@ -45,58 +45,24 @@
       <a class="magick-nav-item " href="command-line-processing.html">Command-line</a>
       <a class="magick-nav-item " href="resources.html">Resources</a>
       <a class="magick-nav-item " href="api.html">Develop</a>
-      <a class="magick-nav-item " href="http://nextgen.imagemagick.org/www/http://nextgen.imagemagick.org/script/search.php">Search</a>
+      <a class="magick-nav-item " href="http://nextgen.imagemagick.org/script/search.php">Search</a>
       <a class="magick-nav-item pull-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="lead magick-description">Use the <code>magick</code> program to convert between image formats as well as resize an image, blur, crop, despeckle, dither, draw on, flip, join, re-sample, and much more.   See <a href="command-line-processing.html">Command Line Processing</a> for advice on how to structure your <code>magick</code> command or see below for example usages of the command.</p>
+<p class="lead magick-description">Use the <code>magick-script</code> scripting language to convert between image formats as well as resize an image, blur, crop, despeckle, dither, draw on, flip, join, re-sample, and much more.   See <a href="command-line-processing.html">Command Line Processing</a> for advice on how to structure your <code>convert</code> command or see below for example usages of the command.</p>
 
-<p>We list a few examples of the <code>magick</code> command here to illustrate its usefulness and ease of use.  To get started, lets convert an image in the JPEG format to PNG:</p>
+<p>Here is an example script:</p>
 
-<pre>
-magick rose.jpg rose.png
+<pre class="code">
+    #!/bin/env magick-script
+    -size 100x100 xc:red ( rose: -rotate -90 ) +append  -write show:
 </pre>
 
-<p>Next, we reduce the image size before it is written to the PNG format:</p>
 
-<pre>
-magick rose.jpg -resize 50% rose.png
-</pre>
-
-<ul>
-  <a href="../images/rose.jpg">
-  <img src="../images/rose.jpg" width="70" height="46" alt="rose" />
-  </a>
-  <img style="margin-top:13px; margin-bottom:13px;" src="../images/right.gif" width="20" height="20" alt="==>" />
-  <a href="../images/rose.png">
-  <img style="margin-top:11px; margin-bottom:12px;" src="../images/rose.png" width="35" height="23" alt="rose" />
-  </a>
-</ul>
-
-<p>You can combine multiple image-processing operations to produce complex results:</p>
-
-<pre>
-magick -size 320x85 canvas:none -font Bookman-DemiItalic -pointsize 72 \
-  -draw "text 25,60 \'Magick\'" -channel RGBA -blur 0x6 -fill darkred -stroke magenta \
-  -draw "text 20,55 \'Magick\'" fuzzy-magick.png
-</pre>
-
-<ul>
-  <a href="../images/fuzzy-magick.png"><img src="../images/fuzzy-magick.png" width="320" height="85" alt="fuzzy-magick" /></a>
-</ul>
-
-<p>or here we resize an image with improved quality:</p>
-
-<pre>
-magick input.png -colorspace RGB +sigmoidal-contrast 11.6933 \
-  -define filter:filter=Sinc -define filter:window=Jinc -define filter:lobes=3 \
-  -resize 400% -sigmoidal-contrast 11.6933 -colorspace sRGB output.png');
-</pre>
-
-<p>You can find additional examples of using <code>magick</code> in <a href="http://www.imagemagick.org/Usage/">Examples of ImageMagick Usage</a>.</p>
+<p>You can find additional examples of using <code>magick-script</code> in <a href="http://www.imagemagick.org/Usage/">Examples of ImageMagick Usage</a>.</p>
 
 <h2 class="magick-header"><a id="options"></a>Option Summary</h2>
 
@@ -1298,9 +1264,9 @@ transparent, extract, background, or shape the alpha channel</td>
     <a href="links.html">Related</a> •
     <a href="architecture.html">Architecture</a>
 </p>
-    <p><a href="convert.html#">Back to top</a> •
+    <p><a href="magick-script.html#">Back to top</a> •
     <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-    <a href="http://nextgen.imagemagick.org/www/http://nextgen.imagemagick.org/script/contact.php">Contact Us</a></p>
+    <a href="http://nextgen.imagemagick.org/script/contact.php">Contact Us</a></p>
         <p><small>©  1999-2016 ImageMagick Studio LLC</small></p>
   </footer>
 </div><!-- /.container -->

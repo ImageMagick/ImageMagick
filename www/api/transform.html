@@ -52,7 +52,7 @@
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="text-center"><a href="transform.html#AutoOrientImage">AutoOrientImage</a> &#8226; <a href="transform.html#ChopImage">ChopImage</a> &#8226; <a href="transform.html#CropImage">CropImage</a> &#8226; <a href="transform.html#CropImageToTiles">CropImageToTiles</a> &#8226; <a href="transform.html#ExcerptImage">ExcerptImage</a> &#8226; <a href="transform.html#ExtentImage">ExtentImage</a> &#8226; <a href="transform.html#FlipImage">FlipImage</a> &#8226; <a href="transform.html#FlopImage">FlopImage</a> &#8226; <a href="transform.html#RollImage">RollImage</a> &#8226; <a href="transform.html#ShaveImage">ShaveImage</a> &#8226; <a href="transform.html#SpliceImage">SpliceImage</a> &#8226; <a href="transform.html#TransformImage">TransformImage</a> &#8226; <a href="transform.html#TransformImages">TransformImages</a> &#8226; <a href="transform.html#TransposeImage">TransposeImage</a> &#8226; <a href="transform.html#TransverseImage">TransverseImage</a> &#8226; <a href="transform.html#TrimImage">TrimImage</a></p>
+<p class="text-center"><a href="transform.html#AutoOrientImage">AutoOrientImage</a> &#8226; <a href="transform.html#ChopImage">ChopImage</a> &#8226; <a href="transform.html#CropImage">CropImage</a> &#8226; <a href="transform.html#CropImageToTiles">CropImageToTiles</a> &#8226; <a href="transform.html#ExcerptImage">ExcerptImage</a> &#8226; <a href="transform.html#ExtentImage">ExtentImage</a> &#8226; <a href="transform.html#FlipImage">FlipImage</a> &#8226; <a href="transform.html#FlopImage">FlopImage</a> &#8226; <a href="transform.html#RollImage">RollImage</a> &#8226; <a href="transform.html#ShaveImage">ShaveImage</a> &#8226; <a href="transform.html#SpliceImage">SpliceImage</a> &#8226; <a href="transform.html#TransformImage">TransformImage</a> &#8226; <a href="transform.html#TransposeImage">TransposeImage</a> &#8226; <a href="transform.html#TransverseImage">TransverseImage</a> &#8226; <a href="transform.html#TrimImage">TrimImage</a></p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/transform_8c.html" id="AutoOrientImage">AutoOrientImage</a></h2>
 
@@ -405,42 +405,6 @@ Image *SpliceImage(const Image *image,const RectangleInfo *geometry,
 <pre class="text">
 MagickBooleanType TransformImage(Image **image,const char *crop_geometry,
   const char *image_geometry,ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<dd>
-</dd>
-
-<dd> </dd>
-<dl class="dl-horizontal">
-<dt>image</dt>
-<dd>the image The transformed image is returned as this parameter. </dd>
-
-<dd> </dd>
-<dt>crop_geometry</dt>
-<dd>A crop geometry string.  This geometry defines a subregion of the image to crop. </dd>
-
-<dd> </dd>
-<dt>image_geometry</dt>
-<dd>An image geometry string.  This geometry defines the final size of the image. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
-<dd>  </dd>
-</dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/transform_8c.html" id="TransformImages">TransformImages</a></h2>
-
-<p>TransformImages() calls TransformImage() on each image of a sequence.</p>
-
-<p>The format of the TransformImage method is:</p>
-
-<pre class="text">
-MagickBooleanType TransformImages(Image **image,
-  const char *crop_geometry,const char *image_geometry,
-  ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
