@@ -1,3 +1,6 @@
+2016-04-30  7.0.1-0 Cristy  <quetzlzacatenango@image...>
+  * New version 7.0.1-0, GIT revision 10713:b335c4f:20160429.
+
 2016-01-30  7.0.0-0 	Fahad-Alsaidi & ShamsaHamed
   * Add support for languages that require complex text layout (reference
     https://github.com/ImageMagick/ImageMagick/pull/88).
