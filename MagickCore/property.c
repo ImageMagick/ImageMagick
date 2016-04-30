@@ -2382,7 +2382,7 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
     case 'i': /* Filename last used for an image (read or write) */
     {
       WarnNoImageReturn("\"%%%c\"",letter);
-      string=image->magick_filename;
+      string=image->filename;
       break;
     }
     case 'k': /* Number of unique colors  */
@@ -2527,6 +2527,27 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
       WarnNoImageReturn("\"%%%c\"",letter);
       string=CommandOptionToMnemonic(MagickDisposeOptions,
         (ssize_t) image->dispose);
+      break;
+    }
+    case 'F': /* Magick filename (sanitized) - filename given incl. coder & read mods */
+    {
+      const char
+        *q;
+
+      register char
+        *p;
+
+      static char
+        whitelist[] =
+          "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_- "
+          ".@&;<>()/\\\'\":%=~`";
+
+      WarnNoImageReturn("\"%%%c\"",letter);
+      (void) CopyMagickString(value,image->magick_filename,MagickPathExtent);
+      p=value;
+      q=value+strlen(value);
+      for (p+=strspn(p,whitelist); p != q; p+=strspn(p,whitelist))
+        *p='_';
       break;
     }
     case 'G': /* Image size as geometry = "%wx%h" */

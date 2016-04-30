@@ -3072,8 +3072,8 @@ ZipDelegateDefault='gzip'
 
 # Search for delegates
 AC_PATH_PROG(AutotraceDecodeDelegate, "$AutotraceDecodeDelegateDefault", "$AutotraceDecodeDelegateDefault")
-AC_PATH_PROG(BGPDecodeDelegate, "$BGPDecodeDelegateDefault", "$BGPDecodeDelegateDefault")
-AC_PATH_PROG(BGPEncodeDelegate, "$BGPEncodeDelegateDefault", "$BGPEncodeDelegateDefault")
+AC_PATH_PROG(BPGDecodeDelegate, "$BPGDecodeDelegateDefault", "$BPGDecodeDelegateDefault")
+AC_PATH_PROG(BPGEncodeDelegate, "$BPGEncodeDelegateDefault", "$BPGEncodeDelegateDefault")
 AC_PATH_PROG(BlenderDecodeDelegate, "$BlenderDecodeDelegateDefault", "$BlenderDecodeDelegateDefault")
 AC_PATH_PROG(BZIPDelegate, "$BZIPDelegateDefault", "$BZIPDelegateDefault")
 AC_PATH_PROGS(BrowseDelegate, "$BrowseDelegateDefault" google-chrome firefox konqueror mozilla lynx, "$BrowseDelegateDefault")
@@ -3272,8 +3272,8 @@ AC_SUBST(type_include_files)
 if test "$with_frozenpaths" != 'yes'; then
   # Re-set delegate definitions to default (no paths)
   AutotraceDecodeDelegate="$AutotraceDecodeDelegateDefault"
-  BGPDecodeDelegate="$BGPDecodeDelegateDefault"
-  BGPEncodeDelegate="$BGPEncodeDelegateDefault"
+  BPGDecodeDelegate="$BPGDecodeDelegateDefault"
+  BPGEncodeDelegate="$BPGEncodeDelegateDefault"
   BlenderDecodeDelegate="$BlenderDecodeDelegateDefault"
   BZIPDelegate="$BZIPDelegateDefault"
   BrowseDelegate="$BrowseDelegateDefault"
@@ -3323,8 +3323,8 @@ fi
 
 # Delegate substitutions
 AC_SUBST(AutotraceDecodeDelegate)
-AC_SUBST(BGPDecodeDelegate)
-AC_SUBST(BGPEncodeDelegate)
+AC_SUBST(BPGDecodeDelegate)
+AC_SUBST(BPGEncodeDelegate)
 AC_SUBST(BlenderDecodeDelegate)
 AC_SUBST(BZIPDelegate)
 AC_SUBST(BrowseDelegate)
