@@ -734,8 +734,8 @@ CatDelegate
 BrowseDelegate
 BZIPDelegate
 BlenderDecodeDelegate
-BGPEncodeDelegate
-BGPDecodeDelegate
+BPGEncodeDelegate
+BPGDecodeDelegate
 AutotraceDecodeDelegate
 SHAREARCH_PATH
 SHAREARCH_RELATIVE_PATH
@@ -4528,7 +4528,7 @@ MAGICK_PATCHLEVEL_VERSION=9
 
 MAGICK_VERSION=6.9.3-9
 
-MAGICK_GIT_REVISION=10708:98bd9d0:20160427
+MAGICK_GIT_REVISION=10714:0e51a51:20160430
 
 
 # Substitute library versioning
@@ -34694,16 +34694,16 @@ $as_echo "no" >&6; }
 fi
 
 
-# Extract the first word of ""$BGPDecodeDelegateDefault"", so it can be a program name with args.
-set dummy "$BGPDecodeDelegateDefault"; ac_word=$2
+# Extract the first word of ""$BPGDecodeDelegateDefault"", so it can be a program name with args.
+set dummy "$BPGDecodeDelegateDefault"; ac_word=$2
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
 $as_echo_n "checking for $ac_word... " >&6; }
-if ${ac_cv_path_BGPDecodeDelegate+:} false; then :
+if ${ac_cv_path_BPGDecodeDelegate+:} false; then :
   $as_echo_n "(cached) " >&6
 else
-  case $BGPDecodeDelegate in
+  case $BPGDecodeDelegate in
   [\\/]* | ?:[\\/]*)
-  ac_cv_path_BGPDecodeDelegate="$BGPDecodeDelegate" # Let the user override the test with a path.
+  ac_cv_path_BPGDecodeDelegate="$BPGDecodeDelegate" # Let the user override the test with a path.
   ;;
   *)
   as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
@@ -34713,7 +34713,7 @@ do
   test -z "$as_dir" && as_dir=.
     for ac_exec_ext in '' $ac_executable_extensions; do
   if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_path_BGPDecodeDelegate="$as_dir/$ac_word$ac_exec_ext"
+    ac_cv_path_BPGDecodeDelegate="$as_dir/$ac_word$ac_exec_ext"
     $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
     break 2
   fi
@@ -34721,30 +34721,30 @@ done
   done
 IFS=$as_save_IFS
 
-  test -z "$ac_cv_path_BGPDecodeDelegate" && ac_cv_path_BGPDecodeDelegate=""$BGPDecodeDelegateDefault""
+  test -z "$ac_cv_path_BPGDecodeDelegate" && ac_cv_path_BPGDecodeDelegate=""$BPGDecodeDelegateDefault""
   ;;
 esac
 fi
-BGPDecodeDelegate=$ac_cv_path_BGPDecodeDelegate
-if test -n "$BGPDecodeDelegate"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $BGPDecodeDelegate" >&5
-$as_echo "$BGPDecodeDelegate" >&6; }
+BPGDecodeDelegate=$ac_cv_path_BPGDecodeDelegate
+if test -n "$BPGDecodeDelegate"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $BPGDecodeDelegate" >&5
+$as_echo "$BPGDecodeDelegate" >&6; }
 else
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 fi
 
 
-# Extract the first word of ""$BGPEncodeDelegateDefault"", so it can be a program name with args.
-set dummy "$BGPEncodeDelegateDefault"; ac_word=$2
+# Extract the first word of ""$BPGEncodeDelegateDefault"", so it can be a program name with args.
+set dummy "$BPGEncodeDelegateDefault"; ac_word=$2
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
 $as_echo_n "checking for $ac_word... " >&6; }
-if ${ac_cv_path_BGPEncodeDelegate+:} false; then :
+if ${ac_cv_path_BPGEncodeDelegate+:} false; then :
   $as_echo_n "(cached) " >&6
 else
-  case $BGPEncodeDelegate in
+  case $BPGEncodeDelegate in
   [\\/]* | ?:[\\/]*)
-  ac_cv_path_BGPEncodeDelegate="$BGPEncodeDelegate" # Let the user override the test with a path.
+  ac_cv_path_BPGEncodeDelegate="$BPGEncodeDelegate" # Let the user override the test with a path.
   ;;
   *)
   as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
@@ -34754,7 +34754,7 @@ do
   test -z "$as_dir" && as_dir=.
     for ac_exec_ext in '' $ac_executable_extensions; do
   if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_path_BGPEncodeDelegate="$as_dir/$ac_word$ac_exec_ext"
+    ac_cv_path_BPGEncodeDelegate="$as_dir/$ac_word$ac_exec_ext"
     $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
     break 2
   fi
@@ -34762,14 +34762,14 @@ done
   done
 IFS=$as_save_IFS
 
-  test -z "$ac_cv_path_BGPEncodeDelegate" && ac_cv_path_BGPEncodeDelegate=""$BGPEncodeDelegateDefault""
+  test -z "$ac_cv_path_BPGEncodeDelegate" && ac_cv_path_BPGEncodeDelegate=""$BPGEncodeDelegateDefault""
   ;;
 esac
 fi
-BGPEncodeDelegate=$ac_cv_path_BGPEncodeDelegate
-if test -n "$BGPEncodeDelegate"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $BGPEncodeDelegate" >&5
-$as_echo "$BGPEncodeDelegate" >&6; }
+BPGEncodeDelegate=$ac_cv_path_BPGEncodeDelegate
+if test -n "$BPGEncodeDelegate"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $BPGEncodeDelegate" >&5
+$as_echo "$BPGEncodeDelegate" >&6; }
 else
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
@@ -36876,8 +36876,8 @@ fi
 if test "$with_frozenpaths" != 'yes'; then
   # Re-set delegate definitions to default (no paths)
   AutotraceDecodeDelegate="$AutotraceDecodeDelegateDefault"
-  BGPDecodeDelegate="$BGPDecodeDelegateDefault"
-  BGPEncodeDelegate="$BGPEncodeDelegateDefault"
+  BPGDecodeDelegate="$BPGDecodeDelegateDefault"
+  BPGEncodeDelegate="$BPGEncodeDelegateDefault"
   BlenderDecodeDelegate="$BlenderDecodeDelegateDefault"
   BZIPDelegate="$BZIPDelegateDefault"
   BrowseDelegate="$BrowseDelegateDefault"

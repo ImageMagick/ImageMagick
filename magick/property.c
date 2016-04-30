@@ -2431,7 +2431,7 @@ static const char *GetMagickPropertyLetter(const ImageInfo *image_info,
       /*
         Filename last used for image (read or write).
       */
-      string=image->magick_filename;
+      string=image->filename;
       break;
     }
     case 'k':
@@ -2604,6 +2604,29 @@ static const char *GetMagickPropertyLetter(const ImageInfo *image_info,
       */
       (void) FormatLocaleString(value,MaxTextExtent,"%s",
         CommandOptionToMnemonic(MagickDisposeOptions,(ssize_t) image->dispose));
+      break;
+    }
+    case 'F':
+    {
+      const char
+        *q;
+
+      register char
+        *p;
+
+      static char
+        whitelist[] =
+          "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_- "
+          ".@&;<>()/\\\'\":%=~`";
+
+      /*
+        Magick filename (sanitized) - filename given incl. coder & read mods.
+      */
+      (void) CopyMagickString(value,image->magick_filename,MaxTextExtent);
+      p=value;
+      q=value+strlen(value);
+      for (p+=strspn(p,whitelist); p != q; p+=strspn(p,whitelist))
+        *p='_';
       break;
     }
     case 'G':
