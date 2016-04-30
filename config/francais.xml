@@ -158,6 +158,9 @@
         <message name="NoDataReturned">
           aucune donnée fournie
         </message>
+        <message name="NoImagesDefined">
+          no d'image définis
+        </message>
         <message name="NoImageVectorGraphics">
           pas d'image en graphique vectoriel; unable to generate SVG
         </message>

@@ -695,6 +695,9 @@
         <message name="NoImagesFound">
           no images found for operation
         </message>
+        <message name="NoImagesDefined">
+          no images defined
+        </message>
         <message name="NoImageVectorGraphics">
           no image vector graphics
         </message>
