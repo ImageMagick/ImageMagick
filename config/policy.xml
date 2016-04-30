@@ -35,6 +35,10 @@
 
     <policy domain="path" rights="read" pattern="/repository/*" />
 
+  Lets prevent users from executing any image filters:
+
+    <policy domain="filter" rights="none" pattern="*" />
+
   Any large image is cached to disk rather than memory:
 
     <policy domain="resource" name="area" value="1GB"/>
