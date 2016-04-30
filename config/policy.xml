@@ -35,6 +35,10 @@
   
     <policy domain="path" rights="read" pattern="/repository/*" />
 
+  Let's prevent possible exploits by removing the right to use indirect reads.
+
+    <policy domain="path" rights="none" pattern="@*" />
+
   Any large image is cached to disk rather than memory:
 
     <policy domain="resource" name="area" value="1GB"/>
