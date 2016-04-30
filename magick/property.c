@@ -67,6 +67,7 @@
 #include "magick/monitor.h"
 #include "magick/montage.h"
 #include "magick/option.h"
+#include "magick/policy.h"
 #include "magick/profile.h"
 #include "magick/property.h"
 #include "magick/quantum.h"
@@ -3393,18 +3394,24 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
   if (embed_text == (const char *) NULL)
     return(ConstantString(""));
   p=embed_text;
-
+  while ((isspace((int) ((unsigned char) *p)) != 0) && (*p != '\0'))
+    p++;
   if (*p == '\0')
     return(ConstantString(""));
-
   if ((*p == '@') && (IsPathAccessible(p+1) != MagickFalse))
-    { 
+    {
       /* handle a '@' replace string from file */
+      if (IsRightsAuthorized(PathPolicyDomain,ReadPolicyRights,p) == MagickFalse)
+        {
+          errno=EPERM;
+          (void) ThrowMagickException(&image->exception,GetMagickModule(),
+            PolicyError,"NotAuthorized","`%s'",p);
+          return(ConstantString(""));
+        }
       interpret_text=FileToString(p+1,~0UL,&image->exception);
       if (interpret_text != (char *) NULL)
         return(interpret_text);
     }
-
   /*
     Translate any embedded format characters.
   */

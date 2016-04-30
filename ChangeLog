@@ -1,5 +1,5 @@
 2016-04-30  6.9.3-9 Cristy  <quetzlzacatenango@image...>
-  * New version 6.9.3-9, GIT revision 10715:2c04b05:20160430.
+  * New version 6.9.3-9, GIT revision 10716:b527bce:20160430.
 
 2016-04-12  6.9.3-9 Cristy  <quetzlzacatenango@image...>
   * Sanitize input filename for http / https delegates.
