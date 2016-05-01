@@ -4528,7 +4528,7 @@ MAGICK_PATCHLEVEL_VERSION=10
 
 MAGICK_VERSION=6.9.3-10
 
-MAGICK_GIT_REVISION=10720:f9d65b3:20160501
+MAGICK_GIT_REVISION=10722:2b4c789:20160501
 
 
 # Substitute library versioning
@@ -36748,7 +36748,7 @@ have_xps='no'        ; if test "$XPSDelegate" != "$XPSDelegateDefault"; then hav
 #
 type_include_files=''
 
- Apple fonts.
+# Apple fonts.
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for Apple fonts directory" >&5
 $as_echo_n "checking for Apple fonts directory... " >&6; }
 apple_font_dir=''
