@@ -5100,8 +5100,7 @@ WandExport InterlaceType MagickGetImageInterlaceScheme(MagickWand *wand)
 %
 %  The format of the MagickGetImageInterpolateMethod method is:
 %
-%      PixelInterpolateMethod MagickGetImagePixelInterpolateMethod(
-%        MagickWand *wand)
+%      PixelInterpolateMethod MagickGetImageInterpolateMethod(MagickWand *wand)
 %
 %  A description of each parameter follows:
 %

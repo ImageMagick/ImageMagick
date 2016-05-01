@@ -75,7 +75,7 @@ extern WandExport InterlaceType
   MagickGetImageInterlaceScheme(MagickWand *);
 
 extern WandExport PixelInterpolateMethod
-  MagickGetImagePixelInterpolateMethod(MagickWand *);
+  MagickGetImageInterpolateMethod(MagickWand *);
 
 extern WandExport MagickBooleanType
   MagickAdaptiveBlurImage(MagickWand *,const double,const double),
