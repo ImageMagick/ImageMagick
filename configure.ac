@@ -3156,7 +3156,7 @@ have_xps='no'        ; if test "$XPSDelegate" != "$XPSDelegateDefault"; then hav
 #
 type_include_files=''
 
- Apple fonts.
+# Apple fonts.
 AC_MSG_CHECKING(for Apple fonts directory)
 apple_font_dir=''
 if test "${with_apple_font_dir}" != 'default'; then
