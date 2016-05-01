@@ -2104,8 +2104,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
               weight;
 
             GetNextToken(q,&q,extent,token);
-            weight=ParseCommandOption(MagickWeightOptions,MagickFalse,
-              token);
+            weight=ParseCommandOption(MagickWeightOptions,MagickFalse,token);
             if (weight == -1)
               weight=StringToUnsignedLong(token);
             graphic_context[n]->weight=(size_t) weight;
