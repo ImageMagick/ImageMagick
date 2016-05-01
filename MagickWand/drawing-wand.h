@@ -54,7 +54,7 @@ extern WandExport double
   DrawGetOpacity(const DrawingWand *),
   *DrawGetStrokeDashArray(const DrawingWand *,size_t *),
   DrawGetStrokeDashOffset(const DrawingWand *),
-  DrawGetStrokeOpacty(const DrawingWand *),
+  DrawGetStrokeOpacity(const DrawingWand *),
   DrawGetStrokeWidth(const DrawingWand *),
   DrawGetTextKerning(DrawingWand *),
   DrawGetTextInterlineSpacing(DrawingWand *),
