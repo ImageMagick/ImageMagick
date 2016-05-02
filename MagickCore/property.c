@@ -2540,8 +2540,8 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
 
       static char
         whitelist[] =
-          "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_- "
-          ".@&;<>()/\\\'\":%=~`";
+          "^-ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+          "+&@#/%?=~_|!:,.;()";
 
       WarnNoImageReturn("\"%%%c\"",letter);
       (void) CopyMagickString(value,image->magick_filename,MagickPathExtent);
