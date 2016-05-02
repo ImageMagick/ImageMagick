@@ -2617,8 +2617,8 @@ static const char *GetMagickPropertyLetter(const ImageInfo *image_info,
 
       static char
         whitelist[] =
-          "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_- "
-          ".@&;<>()/\\\'\":%=~`";
+          "^-ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+          "+&@#/%?=~_|!:,.;()";
 
       /*
         Magick filename (sanitized) - filename given incl. coder & read mods.
