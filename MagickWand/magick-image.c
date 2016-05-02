@@ -10022,7 +10022,7 @@ WandExport MagickBooleanType MagickSetImageInterlaceScheme(MagickWand *wand,
 WandExport MagickBooleanType MagickSetImagePixelInterpolateMethod(
   MagickWand *wand,const PixelInterpolateMethod method)
 {
-  MagickSetImageInterpolateMethod(wand,method);
+  return(MagickSetImageInterpolateMethod(wand,method));
 }
 
 WandExport MagickBooleanType MagickSetImageInterpolateMethod(
