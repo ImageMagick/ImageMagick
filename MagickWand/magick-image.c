@@ -10003,12 +10003,11 @@ WandExport MagickBooleanType MagickSetImageInterlaceScheme(MagickWand *wand,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickSetImagePixelInterpolateMethod() sets the image interpolate pixel
-%  method.
+%  MagickSetImageInterpolateMethod() sets the image interpolate pixel method.
 %
-%  The format of the MagickSetImagePixelInterpolateMethod method is:
+%  The format of the MagickSetImageInterpolateMethod method is:
 %
-%      MagickBooleanType MagickSetImagePixelInterpolateMethod(MagickWand *wand,
+%      MagickBooleanType MagickSetImageInterpolateMethod(MagickWand *wand,
 %        const PixelInterpolateMethod method)
 %
 %  A description of each parameter follows:
@@ -10019,7 +10018,14 @@ WandExport MagickBooleanType MagickSetImageInterlaceScheme(MagickWand *wand,
 %      Average, Bicubic, Bilinear, Filter, Integer, Mesh, NearestNeighbor.
 %
 */
+
 WandExport MagickBooleanType MagickSetImagePixelInterpolateMethod(
+  MagickWand *wand,const PixelInterpolateMethod method)
+{
+  MagickSetImageInterpolateMethod(wand,method);
+}
+
+WandExport MagickBooleanType MagickSetImageInterpolateMethod(
   MagickWand *wand,const PixelInterpolateMethod method)
 {
   assert(wand != (MagickWand *) NULL);
