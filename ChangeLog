@@ -1,3 +1,8 @@
+2016-05-04  6.9.3-10 Cristy  <quetzlzacatenango@image...>
+  * Sanitize input filename for http / https delegates (improved patch).
+  * Fix for possible security vulnerabilities (reference
+    https://www.imagemagick.org/discourse-server/viewtopic.php?f=4&t=29588).
+
 2016-04-30  6.9.3-9 Cristy  <quetzlzacatenango@image...>
   * New version 6.9.3-9, GIT revision 10716:b527bce:20160430.
 
