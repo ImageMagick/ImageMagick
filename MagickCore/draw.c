@@ -1504,14 +1504,14 @@ static MagickBooleanType DrawDashPolygon(const DrawInfo *draw_info,
   assert(draw_info != (const DrawInfo *) NULL);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(DrawEvent,GetMagickModule(),"    begin draw-dash");
-  clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
-  clone_info->miterlimit=0;
   for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++) ;
   number_vertices=(size_t) i;
   dash_polygon=(PrimitiveInfo *) AcquireQuantumMemory((size_t)
     (2UL*number_vertices+1UL),sizeof(*dash_polygon));
   if (dash_polygon == (PrimitiveInfo *) NULL)
     return(MagickFalse);
+  clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
+  clone_info->miterlimit=0;
   dash_polygon[0]=primitive_info[0];
   scale=ExpandAffine(&draw_info->affine);
   length=scale*(draw_info->dash_pattern[0]-0.5);
@@ -1541,7 +1541,7 @@ static MagickBooleanType DrawDashPolygon(const DrawInfo *draw_info,
   status=MagickTrue;
   maximum_length=0.0;
   total_length=0.0;
-  for (i=1; i < (ssize_t) number_vertices; i++)
+  for (i=1; (i < number_vertices) && (length >= 0.0); i++)
   {
     dx=primitive_info[i].point.x-primitive_info[i-1].point.x;
     dy=primitive_info[i].point.y-primitive_info[i-1].point.y;
@@ -1553,7 +1553,7 @@ static MagickBooleanType DrawDashPolygon(const DrawInfo *draw_info,
           n=0;
         length=scale*(draw_info->dash_pattern[n]+(n == 0 ? -0.5 : 0.5));
       }
-    for (total_length=0.0; (total_length+length) <= maximum_length; )
+    for (total_length=0.0; (length >= 0.0) && (maximum_length >= (total_length+length)); )
     {
       total_length+=length;
       if ((n & 0x01) != 0)
@@ -2589,6 +2589,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
                     GetNextToken(q,&q,extent,token);
                   graphic_context[n]->dash_pattern[j]=StringToDouble(token,
                     (char **) NULL);
+                  if (graphic_context[n]->dash_pattern[j] < 0.0)
+                    status=MagickFalse;
                 }
                 if ((x & 0x01) != 0)
                   for ( ; j < (2*x); j++)
