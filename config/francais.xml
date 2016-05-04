@@ -159,7 +159,7 @@
           aucune donnée fournie
         </message>
         <message name="NoImagesDefined">
-          no d'image définis
+          aucune image définie
         </message>
         <message name="NoImageVectorGraphics">
           pas d'image en graphique vectoriel; unable to generate SVG
