@@ -1,3 +1,6 @@
+2016-05-04  6.9.4-0 Cristy  <quetzlzacatenango@image...>
+  * Check for buffer overflow in magick/draw.c/DrawStrokePolygon().
+
 2016-05-03  6.9.3-10 Cristy  <quetzlzacatenango@image...>
   * New version 6.9.3-10, GIT revision 10723:9fc8a0c:20160503.
 

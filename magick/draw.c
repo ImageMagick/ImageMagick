@@ -1548,7 +1548,7 @@ static MagickBooleanType DrawDashPolygon(const DrawInfo *draw_info,
   status=MagickTrue;
   maximum_length=0.0;
   total_length=0.0;
-  for (i=1; (i < number_vertices) && (length >= 0.0); i++)
+  for (i=1; (i < (ssize_t) number_vertices) && (length >= 0.0); i++)
   {
     dx=primitive_info[i].point.x-primitive_info[i-1].point.x;
     dy=primitive_info[i].point.y-primitive_info[i-1].point.y;
@@ -1797,7 +1797,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
     /*
       Interpret graphic primitive.
     */
-    GetNextToken(q,&q,extent,keyword);
+    GetNextToken(q,&q,MaxTextExtent,keyword);
     if (*keyword == '\0')
       break;
     if (*keyword == '#')
@@ -2106,7 +2106,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
             GetNextToken(q,&q,extent,token);
             weight=ParseCommandOption(MagickWeightOptions,MagickFalse,token);
             if (weight == -1)
-              weight=StringToUnsignedLong(token);
+              weight=(ssize_t) StringToUnsignedLong(token);
             graphic_context[n]->weight=(size_t) weight;
             break;
           }
@@ -4886,7 +4886,7 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
 
       weight=ParseCommandOption(MagickWeightOptions,MagickFalse,option);
       if (weight == -1)
-        weight=StringToUnsignedLong(option);
+        weight=(ssize_t) StringToUnsignedLong(option);
       draw_info->weight=(size_t) weight;
     }
   exception=DestroyExceptionInfo(exception);
@@ -5980,17 +5980,29 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
       }
     if (q >= (ssize_t) (max_strokes-6*BezierQuantum-360))
       {
-         max_strokes+=6*BezierQuantum+360;
-         path_p=(PointInfo *) ResizeQuantumMemory(path_p,(size_t) max_strokes,
-           sizeof(*path_p));
-         path_q=(PointInfo *) ResizeQuantumMemory(path_q,(size_t) max_strokes,
-           sizeof(*path_q));
-         if ((path_p == (PointInfo *) NULL) || (path_q == (PointInfo *) NULL))
-           {
-             polygon_primitive=(PrimitiveInfo *)
-               RelinquishMagickMemory(polygon_primitive);
-             return((PrimitiveInfo *) NULL);
-           }
+        if (~max_strokes < (6*BezierQuantum+360))
+          {
+            path_p=(PointInfo *) RelinquishMagickMemory(path_p);
+            path_q=(PointInfo *) RelinquishMagickMemory(path_q);
+          }
+        else
+          {
+            max_strokes+=6*BezierQuantum+360;
+            path_p=(PointInfo *) ResizeQuantumMemory(path_p,max_strokes,
+              sizeof(*path_p));
+            path_q=(PointInfo *) ResizeQuantumMemory(path_q,max_strokes,
+              sizeof(*path_q));
+          }
+        if ((path_p == (PointInfo *) NULL) || (path_q == (PointInfo *) NULL))
+          {
+            if (path_p != (PointInfo *) NULL)
+              path_p=(PointInfo *) RelinquishMagickMemory(path_p);
+            if (path_q != (PointInfo *) NULL)
+              path_q=(PointInfo *) RelinquishMagickMemory(path_q);
+            polygon_primitive=(PrimitiveInfo *)
+              RelinquishMagickMemory(polygon_primitive);
+            return((PrimitiveInfo *) NULL);
+          }
       }
     dot_product=dx.q*dy.p-dx.p*dy.q;
     if (dot_product <= 0.0)
@@ -6052,7 +6064,7 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
           q++;
           for (j=1; j < (ssize_t) arc_segments; j++)
           {
-            delta_theta=(j*(theta.q-theta.p)/arc_segments);
+            delta_theta=(double) (j*(theta.q-theta.p)/arc_segments);
             path_q[q].x=(double) (center.x+mid*cos(fmod((double)
               (theta.p+delta_theta),DegreesToRadians(360.0))));
             path_q[q].y=(double) (center.y+mid*sin(fmod((double)
@@ -6122,7 +6134,7 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
           path_p[p++]=box_p[1];
           for (j=1; j < (ssize_t) arc_segments; j++)
           {
-            delta_theta=(j*(theta.q-theta.p)/arc_segments);
+            delta_theta=(double) (j*(theta.q-theta.p)/arc_segments);
             path_p[p].x=(double) (center.x+mid*cos(fmod((double)
               (theta.p+delta_theta),DegreesToRadians(360.0))));
             path_p[p].y=(double) (center.y+mid*sin(fmod((double)
