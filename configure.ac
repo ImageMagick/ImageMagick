@@ -3031,7 +3031,6 @@ EditorDelegateDefault='xterm'
 ConvertDelegateDefault=`echo convert | sed ${configure_transform_name}`
 DisplayDelegateDefault=`echo display | sed ${configure_transform_name}`
 MogrifyDelegateDefault=`echo mogrify | sed ${configure_transform_name}`
-GnuplotDecodeDelegateDefault='gnuplot'
 HPGLDecodeDelegateDefault='hp2xx'
 HTMLDecodeDelegateDefault='html2ps'
 ILBMDecodeDelegateDefault='ilbmtoppm'
@@ -3085,7 +3084,6 @@ AC_PATH_PROG(ConvertDelegate, "$ConvertDelegateDefault", "$ConvertDelegateDefaul
 AC_PATH_PROG(DisplayDelegate, "$DisplayDelegateDefault", "$DisplayDelegateDefault")
 AC_PATH_PROG(EchoDelegate, "$EchoDelegateDefault", "$EchoDelegateDefault")
 AC_PATH_PROG(EditorDelegate, "$EditorDelegateDefault", "$EditorDelegateDefault")
-AC_PATH_PROG(GnuplotDecodeDelegate, "$GnuplotDecodeDelegateDefault", "$GnuplotDecodeDelegateDefault")
 AC_PATH_PROG(GVCDecodeDelegate, "$GVCDecodeDelegateDefault", "$GVCDecodeDelegateDefault")
 AC_PATH_PROG(HPGLDecodeDelegate, "$HPGLDecodeDelegateDefault", "$HPGLDecodeDelegateDefault")
 AC_PATH_PROG(HTMLDecodeDelegate, "$HTMLDecodeDelegateDefault", "$HTMLDecodeDelegateDefault")
@@ -3285,7 +3283,6 @@ if test "$with_frozenpaths" != 'yes'; then
   DVIDecodeDelegate="$DVIDecodeDelegateDefault"
   EchoDelegate="$EchoDelegateDefault"
   EditorDelegate="$EditorDelegateDefault"
-  GnuplotDecodeDelegate="$GnuplotDecodeDelegateDefault"
   GVCDecodeDelegate="$GVCDecodeDelegateDefault"
   HPGLDecodeDelegate="$HPGLDecodeDelegateDefault"
   HTMLDecodeDelegate="$HTMLDecodeDelegateDefault"
@@ -3334,7 +3331,6 @@ AC_SUBST(GVCDecodeDelegate)
 AC_SUBST(DVIDecodeDelegate)
 AC_SUBST(EchoDelegate)
 AC_SUBST(EditorDelegate)
-AC_SUBST(GnuplotDecodeDelegate)
 AC_SUBST(HPGLDecodeDelegate)
 AC_SUBST(HTMLDecodeDelegate)
 AC_SUBST(ILBMDecodeDelegate)
