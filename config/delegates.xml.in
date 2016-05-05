@@ -40,7 +40,6 @@
     %i  input image filename
     %o  output image filename
     %u  unique temporary filename
-    %u  unique temporary filename
     %#  input image signature
     %b  image file size
     %c  input image comment
