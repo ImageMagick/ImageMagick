@@ -45,7 +45,6 @@
     %g  image geometry
     %h  image rows (height)
     %k  input image number colors
-    %l  image label
     %m  input image format
     %p  page number
     %q  input image depth
@@ -92,8 +91,8 @@
   <delegate decode="ilbm" command="&quot;@ILBMDecodeDelegate@&quot; &quot;%i&quot; &gt; &quot;%o&quot;"/>
   <delegate decode="jxr" command="mv &quot;%i&quot; &quot;%i.jxr&quot;; &quot;@JXRDecodeDelegate@&quot; -i &quot;%i.jxr&quot; -o &quot;%o.bmp&quot; -c 0; mv &quot;%i.jxr&quot; &quot;%i&quot;; mv &quot;%o.bmp&quot; &quot;%o&quot;"/>
   <delegate decode="man" command="&quot;@MANDelegate@&quot; -man -Tps &quot;%i&quot; &gt; &quot;%o&quot;"/>
-  <delegate decode="miff" encode="show" spawn="True" command="&quot;@DisplayDelegate@&quot; -delay 0 -window-group %[group] -title &quot;%l &quot; &quot;ephemeral:%i&quot;"/>
-  <delegate decode="miff" encode="win" stealth="True" spawn="True" command="&quot;@DisplayDelegate@&quot; -immutable -delay 0 -window-group %[group] -title &quot;%l &quot; &quot;ephemeral:%i&quot;"/>
+  <delegate decode="miff" encode="show" spawn="True" command="&quot;@DisplayDelegate@&quot; -delay 0 -window-group %[group] &quot;ephemeral:%i&quot;"/>
+  <delegate decode="miff" encode="win" stealth="True" spawn="True" command="&quot;@DisplayDelegate@&quot; -immutable -delay 0 -window-group %[group] &quot;ephemeral:%i&quot;"/>
   <delegate decode="mpeg:decode" command="&quot;@MPEGDecodeDelegate@&quot; -nostdin -v -1 -i &quot;%i&quot; -vframes %S -vcodec pam -an -f rawvideo -y &quot;%u.pam&quot; 2&gt; &quot;%u&quot;"/>
   <delegate decode="odt" command="&quot;@DOCDecodeDelegate@&quot; --convert-to pdf -outdir `dirname &quot;%i&quot;` &quot;%i&quot; 2&gt; &quot;%u&quot;; mv &quot;%i.pdf&quot; &quot;%o&quot;"/>
   <delegate decode="pcl:cmyk" stealth="True" command="&quot;@PCLDelegate@&quot; -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=@PCLCMYKDevice@&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;%s&quot;"/>
