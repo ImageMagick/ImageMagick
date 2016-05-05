@@ -1760,6 +1760,69 @@ static inline double MagickRound(double x)
   return(ceil(x));
 }
 
+static Image *RenderHoughLines(const ImageInfo *image_info,const size_t columns,
+  const size_t rows,ExceptionInfo *exception)
+{
+#define BoundingBox  "viewbox"
+
+  DrawInfo
+    *draw_info;
+
+  Image
+    *image;
+
+  MagickBooleanType
+    status;
+
+  /*
+    Open image.
+  */
+  image=AcquireImage(image_info,exception);
+  status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
+  if (status == MagickFalse)
+    {
+      image=DestroyImageList(image);
+      return((Image *) NULL);
+    }
+  image->columns=columns;
+  image->rows=rows;
+  draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
+  draw_info->affine.sx=image->resolution.x == 0.0 ? 1.0 : image->resolution.x/
+    DefaultResolution;
+  draw_info->affine.sy=image->resolution.y == 0.0 ? 1.0 : image->resolution.y/
+    DefaultResolution;
+  image->columns=(size_t) (draw_info->affine.sx*image->columns);
+  image->rows=(size_t) (draw_info->affine.sy*image->rows);
+  status=SetImageExtent(image,image->columns,image->rows,exception);
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
+  if (SetImageBackgroundColor(image,exception) == MagickFalse)
+    {
+      image=DestroyImageList(image);
+      return((Image *) NULL);
+    }
+  /*
+    Render drawing.
+  */
+  if (GetBlobStreamData(image) == (unsigned char *) NULL)
+    draw_info->primitive=FileToString(image->filename,~0UL,exception);
+  else
+    {
+      draw_info->primitive=(char *) AcquireMagickMemory((size_t)
+        GetBlobSize(image)+1);
+      if (draw_info->primitive != (char *) NULL)
+        {
+          (void) CopyMagickMemory(draw_info->primitive,GetBlobStreamData(image),
+            (size_t) GetBlobSize(image));
+          draw_info->primitive[GetBlobSize(image)]='\0';
+        }
+     }
+  (void) DrawImage(image,draw_info,exception);
+  draw_info=DestroyDrawInfo(draw_info);
+  (void) CloseBlob(image);
+  return(GetFirstImageInList(image));
+}
+
 MagickExport Image *HoughLineImage(const Image *image,const size_t width,
   const size_t height,const size_t threshold,ExceptionInfo *exception)
 {
@@ -1911,8 +1974,8 @@ MagickExport Image *HoughLineImage(const Image *image,const size_t width,
     (double) height,(double) threshold);
   if (write(file,message,strlen(message)) != (ssize_t) strlen(message))
     status=MagickFalse;
-  (void) FormatLocaleString(message,MagickPathExtent,"viewbox 0 0 %.20g %.20g\n",
-    (double) image->columns,(double) image->rows);
+  (void) FormatLocaleString(message,MagickPathExtent,
+    "viewbox 0 0 %.20g %.20g\n",(double) image->columns,(double) image->rows);
   if (write(file,message,strlen(message)) != (ssize_t) strlen(message))
     status=MagickFalse;
   line_count=image->columns > image->rows ? image->columns/4 : image->rows/4;
@@ -2008,7 +2071,7 @@ MagickExport Image *HoughLineImage(const Image *image,const size_t width,
   */
   image_info=AcquireImageInfo();
   image_info->background_color=image->background_color;
-  (void) FormatLocaleString(image_info->filename,MagickPathExtent,"mvg:%s",path);
+  (void) FormatLocaleString(image_info->filename,MagickPathExtent,"%s",path);
   artifact=GetImageArtifact(image,"background");
   if (artifact != (const char *) NULL)
     (void) SetImageOption(image_info,"background",artifact);
@@ -2021,7 +2084,7 @@ MagickExport Image *HoughLineImage(const Image *image,const size_t width,
   artifact=GetImageArtifact(image,"strokewidth");
   if (artifact != (const char *) NULL)
     (void) SetImageOption(image_info,"strokewidth",artifact);
-  lines_image=ReadImage(image_info,exception);
+  lines_image=RenderHoughLines(image_info,image->columns,image->rows,exception);
   artifact=GetImageArtifact(image,"hough-lines:accumulator");
   if ((lines_image != (Image *) NULL) &&
       (IsStringTrue(artifact) != MagickFalse))
@@ -2061,7 +2124,7 @@ MagickExport Image *HoughLineImage(const Image *image,const size_t width,
 %  computes a new x,y centroid from those coordinates and a new mean. This new
 %  x,y centroid is used as the center for a new window. This process iterates
 %  until it converges and the final mean is replaces the (original window
-%  center) pixel value. It repeats this process for the next pixel, etc., 
+%  center) pixel value. It repeats this process for the next pixel, etc.,
 %  until it processes all pixels in the image. Results are typically better with
 %  colorspaces other than sRGB. We recommend YIQ, YUV or YCbCr.
 %
