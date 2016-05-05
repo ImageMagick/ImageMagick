@@ -2574,7 +2574,6 @@ GS_LIBS = @GS_LIBS@
 GVCDecodeDelegate = @GVCDecodeDelegate@
 GVC_CFLAGS = @GVC_CFLAGS@
 GVC_LIBS = @GVC_LIBS@
-GnuplotDecodeDelegate = @GnuplotDecodeDelegate@
 HPGLDecodeDelegate = @HPGLDecodeDelegate@
 HTMLDecodeDelegate = @HTMLDecodeDelegate@
 ILBMDecodeDelegate = @ILBMDecodeDelegate@
