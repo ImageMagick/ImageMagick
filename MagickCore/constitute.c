@@ -828,7 +828,8 @@ MagickExport Image *ReadImages(ImageInfo *image_info,const char *filename,
           read_info=DestroyImageInfo(read_info);
           return(ReadImage(image_info,exception));
         }
-      (void) CopyMagickString(read_filename,read_info->filename,MagickPathExtent);
+      (void) CopyMagickString(read_filename,read_info->filename,
+        MagickPathExtent);
       images=NewImageList();
       extent=(ssize_t) (read_info->scene+read_info->number_scenes);
       for (scene=(ssize_t) read_info->scene; scene < (ssize_t) extent; scene++)
@@ -1281,7 +1282,7 @@ MagickExport MagickBooleanType WriteImages(const ImageInfo *image_info,
   {
     register Image
       *next;
-    
+
     next=GetNextImageInList(p);
     if (next == (Image *) NULL)
       break;
