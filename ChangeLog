@@ -1,5 +1,7 @@
 2016-05-04  7.0.1-2 Cristy  <quetzlzacatenango@image...>
   * Check for buffer overflow in magick/draw.c/DrawStrokePolygon().
+  * Replace show delegate title with image filename rather than label.
+  * Fix GetNextToken() off by one error.
 
 2016-05-03  7.0.1-1 Cristy  <quetzlzacatenango@image...>
   * New version 7.0.1-1, GIT revision 10723:9fc8a0c:20160503.
