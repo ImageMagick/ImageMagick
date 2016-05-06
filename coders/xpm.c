@@ -336,9 +336,13 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (count == 4)
       break;
   }
-  if ((count != 4) || (width == 0) || (width > 10) || (image->columns == 0) ||
-      (image->rows == 0) || (image->colors == 0))
-    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+  if ((count != 4) || (width == 0) || (width > 2) ||
+      (image->columns == 0) || (image->rows == 0) ||
+      (image->colors == 0) || (image->colors > MaxColormapSize))
+    {
+      xpm_buffer=DestroyString(xpm_buffer);
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    }
   /*
     Remove unquoted characters.
   */
