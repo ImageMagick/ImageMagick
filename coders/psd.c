@@ -643,7 +643,7 @@ static void ParseImageResourceBlocks(Image *image,
     p=PushShortPixel(MSBEndian,p,&id);
     p=PushShortPixel(MSBEndian,p,&short_sans);
     p=PushLongPixel(MSBEndian,p,&count);
-    if (p+count > blocks+length)
+    if ((p+count) > (blocks+length-16))
       return;
     switch (id)
     {
