@@ -852,12 +852,6 @@ static MagickBooleanType IsMagickTreeInstantiated(ExceptionInfo *exception)
           if (magick_list == (SplayTreeInfo *) NULL)
             ThrowFatalException(ResourceLimitFatalError,
               "MemoryAllocationFailed");
-          magick_info=SetMagickInfo("ephemeral");
-          magick_info->stealth=MagickTrue;
-          status=AddValueToSplayTree(magick_list,magick_info->name,magick_info);
-          if (status == MagickFalse)
-            ThrowFatalException(ResourceLimitFatalError,
-              "MemoryAllocationFailed");
           magick_info=SetMagickInfo("clipmask");
           magick_info->stealth=MagickTrue;
           status=AddValueToSplayTree(magick_list,magick_info->name,magick_info);
