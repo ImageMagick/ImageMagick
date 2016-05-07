@@ -609,8 +609,8 @@ ModuleExport size_t RegisterTXTImage(void)
   entry->flags|=CoderEndianSupportFlag;
   (void) RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("TXT","TEXT","Text");
-  entry->decoder=(DecodeImageHandler *) ReadTXTImage;
-  entry->encoder=(EncodeImageHandler *) WriteTXTImage;
+  entry->decoder=(DecodeImageHandler *) ReadTEXTImage;
+  entry->format_type=ImplicitFormatType;
   entry->flags|=CoderRawSupportFlag;
   entry->flags|=CoderEndianSupportFlag;
   (void) RegisterMagickInfo(entry);

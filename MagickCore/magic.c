@@ -146,7 +146,6 @@ static const MagicMapInfo
     { "MPC", 0, MagicPattern("id=MagickCache") },
     { "MPEG", 0, MagicPattern("\000\000\001\263") },
     { "MRW", 0, MagicPattern("\x00MRM") },
-    { "MVG", 0, MagicPattern("push graphic-context") },
     { "ORF", 0, MagicPattern("IIRO\x08\x00\x00\x00") },
     { "PCD", 2048, MagicPattern("PCD_") },
     { "PCL", 0, MagicPattern("\033E\033") },
