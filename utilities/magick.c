@@ -83,6 +83,7 @@ static int MagickMain(int argc,char **argv)
     {
       MagickCommandSize("magick", MagickFalse, MagickImageCommand),
       MagickCommandSize("convert", MagickFalse, ConvertImageCommand),
+      MagickCommandSize("composite", MagickFalse, CompositeImageCommand),
       MagickCommandSize("identify", MagickTrue, IdentifyImageCommand),
       MagickCommandSize("animate", MagickFalse, AnimateImageCommand),
       MagickCommandSize("compare", MagickTrue, CompareImagesCommand),
