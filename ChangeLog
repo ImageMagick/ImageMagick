@@ -1,10 +1,11 @@
 2016-05-05  6.9.4-0 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 6.9.4-0, GIT revision 10738:47b0fa2:20160506.
+  * Release ImageMagick version 6.9.4-0, GIT revision 10741:5746147:20160507.
 
 2016-05-04  6.9.4-0 Cristy  <quetzlzacatenango@image...>
   * Check for buffer overflow in magick/draw.c/DrawStrokePolygon().
   * Replace show delegate title with image filename rather than label.
   * Fix GetNextToken() off by one error.
+  * Remove support for internal ephemeral coder.
 
 2016-05-03  6.9.3-10 Cristy  <quetzlzacatenango@image...>
   * New version 6.9.3-10, GIT revision 10723:9fc8a0c:20160503.
