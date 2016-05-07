@@ -1009,12 +1009,6 @@ static MagickBooleanType IsMagickTreeInstantiated(ExceptionInfo *exception)
           if (magick_list == (SplayTreeInfo *) NULL)
             ThrowFatalException(ResourceLimitFatalError,
               "MemoryAllocationFailed");
-          magick_info=AcquireMagickInfo("EPHEMERAL","EPHEMERAL","Internal format");
-          magick_info->flags|=CoderStealthFlag;
-          status=AddValueToSplayTree(magick_list,magick_info->name,magick_info);
-          if (status == MagickFalse)
-            ThrowFatalException(ResourceLimitFatalError,
-              "MemoryAllocationFailed");
 #if defined(MAGICKCORE_MODULES_SUPPORT)
           (void) GetModuleInfo((char *) NULL,exception);
 #endif

@@ -2614,7 +2614,6 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
           "BROWSE",
           "DCRAW",
           "EDIT",
-          "EPHEMERAL",
           "LAUNCH",
           "MPEG:DECODE",
           "MPEG:ENCODE",
@@ -2679,10 +2678,7 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
       if (IsMagickConflict(magic) == MagickFalse)
         {
           (void) CopyMagickString(image_info->magick,magic,MagickPathExtent);
-          if (LocaleCompare(magic,"EPHEMERAL") != 0)
-            image_info->affirm=MagickTrue;
-          else
-            image_info->temporary=MagickTrue;
+          image_info->affirm=MagickTrue;
         }
     }
   magick_info=GetMagickInfo(magic,sans_exception);
