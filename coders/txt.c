@@ -428,8 +428,6 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   (void) ResetMagickMemory(text,0,sizeof(text));
   (void) ReadBlobString(image,text);
-  if (LocaleNCompare((char *) text,MagickID,strlen(MagickID)) != 0)
-    return(ReadTEXTImage(image_info,image,text,exception));
   do
   {
     width=0;
@@ -628,10 +626,11 @@ ModuleExport size_t RegisterTXTImage(void)
   entry->module=ConstantString("TXT");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("TEXT");
-  entry->decoder=(DecodeImageHandler *) ReadTXTImage;
+  entry->decoder=(DecodeImageHandler *) ReadTEXTImage;
   entry->encoder=(EncodeImageHandler *) WriteTXTImage;
   entry->raw=MagickTrue;
   entry->endian_support=MagickTrue;
+  entry->format_type=ImplicitFormatType;
   entry->description=ConstantString("Text");
   entry->module=ConstantString("TXT");
   (void) RegisterMagickInfo(entry);

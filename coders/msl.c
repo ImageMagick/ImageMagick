@@ -7819,6 +7819,7 @@ ModuleExport size_t RegisterMSLImage(void)
   entry->decoder=(DecodeImageHandler *) ReadMSLImage;
   entry->encoder=(EncodeImageHandler *) WriteMSLImage;
 #endif
+  entry->format_type=ImplicitFormatType;
   entry->description=ConstantString("Magick Scripting Language");
   entry->module=ConstantString("MSL");
   (void) RegisterMagickInfo(entry);

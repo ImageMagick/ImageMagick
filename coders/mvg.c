@@ -257,6 +257,7 @@ ModuleExport size_t RegisterMVGImage(void)
   entry->magick=(IsImageFormatHandler *) IsMVG;
   entry->adjoin=MagickFalse;
   entry->seekable_stream=MagickTrue;
+  entry->format_type=ImplicitFormatType;
   entry->description=ConstantString("Magick Vector Graphics");
   entry->module=ConstantString("MVG");
   (void) RegisterMagickInfo(entry);
