@@ -998,12 +998,6 @@ static MagickBooleanType IsMagickTreeInstantiated(ExceptionInfo *exception)
       LockSemaphoreInfo(magick_semaphore);
       if (magick_list == (SplayTreeInfo *) NULL)
         {
-          MagickBooleanType
-            status;
-
-          MagickInfo
-            *magick_info;
-
           magick_list=NewSplayTree(CompareSplayTreeString,(void *(*)(void *))
             NULL,DestroyMagickNode);
           if (magick_list == (SplayTreeInfo *) NULL)
