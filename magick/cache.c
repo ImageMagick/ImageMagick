@@ -769,7 +769,7 @@ static MagickBooleanType ClonePixelCacheRepository(
 
         if (status == MagickFalse)
           continue;
-        if (y == (ssize_t) clone_info->rows)
+        if (y >= (ssize_t) clone_info->rows)
           continue;
         region.width=cache_info->columns;
         region.height=1;
