@@ -105,6 +105,9 @@ static MagickBooleanType ConcatenateImages(int argc,char **argv,
   int
     c;
 
+  MagickBooleanType
+    status;
+
   register ssize_t
     i;
 
@@ -118,6 +121,7 @@ static MagickBooleanType ConcatenateImages(int argc,char **argv,
         argv[argc-1]);
       return(MagickFalse);
     }
+  status=MagickTrue;
   for (i=2; i < (ssize_t) (argc-1); i++)
   {
     input=fopen_utf8(argv[i],"rb");
@@ -127,12 +131,13 @@ static MagickBooleanType ConcatenateImages(int argc,char **argv,
         continue;
       }
     for (c=fgetc(input); c != EOF; c=fgetc(input))
-      (void) fputc((char) c,output);
+      if (fputc((char) c,output) != c)
+        status=MagickFalse;
     (void) fclose(input);
     (void) remove_utf8(argv[i]);
   }
   (void) fclose(output);
-  return(MagickTrue);
+  return(status);
 }
 
 static MagickBooleanType ConvertUsage(void)
