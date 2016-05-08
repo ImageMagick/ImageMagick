@@ -119,6 +119,11 @@ Milan Votava
 
 We acknowledge these non-developer contributors to the ImageMagick project:
 
+Hanno Böck
+     Contributed numerous fuzzed-images that revealed program flaws in
+     ImageMagick.  Additional checks were added to guard against nefarious
+     image files.
+
 Rod Bogart and John W. Peterson, University of Utah
      Image compositing is loosely based on rlecomp of the Utah Raster Toolkit.
 
