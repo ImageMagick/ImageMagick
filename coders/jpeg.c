@@ -1229,8 +1229,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   if (option != (const char *) NULL)
     if (AcquireImageColormap(image,StringToUnsignedLong(option)) == MagickFalse)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-  if ((jpeg_info.output_components == 1) &&
-      (jpeg_info.quantize_colors == 0))
+  if ((jpeg_info.output_components == 1) && (jpeg_info.quantize_colors == 0))
     {
       size_t
         colors;

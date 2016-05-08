@@ -1888,9 +1888,6 @@ RestoreMSCWarning
           columns,
           rows;
 
-        size_t
-          number_pixels;
-
         /*
           Convert tiled TIFF image to DirectClass MIFF image.
         */
@@ -1901,7 +1898,13 @@ RestoreMSCWarning
             ThrowReaderException(CoderError,"ImageIsNotTiled");
           }
         (void) SetImageStorageClass(image,DirectClass);
-        number_pixels=columns*rows;
+        number_pixels=(MagickSizeType) columns*rows;
+        if ((number_pixels*sizeof(uint32)) != (MagickSizeType) ((size_t)
+            (number_pixels*sizeof(uint32))))
+          {
+            TIFFClose(tiff);
+            ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+          }
         tile_pixels=(uint32 *) AcquireQuantumMemory(number_pixels,
           sizeof(*tile_pixels));
         if (tile_pixels == (uint32 *) NULL)
