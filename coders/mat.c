@@ -489,6 +489,7 @@ size_t extent;
 int file;
 
 int status;
+int zip_status;
 
   if(clone_info==NULL) return NULL;
   if(clone_info->file)    /* Close file opened from previous transaction. */
@@ -515,14 +516,22 @@ int status;
   {
     RelinquishMagickMemory(CacheBlock);
     RelinquishMagickMemory(DecompressBlock);
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Gannot create file stream for PS image");
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Cannot create file stream for PS image");
     return NULL;
   }
 
   zip_info.zalloc=AcquireZIPMemory;
   zip_info.zfree=RelinquishZIPMemory;
   zip_info.opaque = (voidpf) NULL;
-  inflateInit(&zip_info);
+  zip_status = inflateInit(&zip_info);
+  if (zip_status != Z_OK)
+    {
+      RelinquishMagickMemory(CacheBlock);
+      RelinquishMagickMemory(DecompressBlock);
+      (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
+        "UnableToUncompressImage","`%s'",clone_info->filename);
+      return NULL;
+    }
   /* zip_info.next_out = 8*4;*/
 
   zip_info.avail_in = 0;
@@ -537,12 +546,16 @@ int status;
     {
       zip_info.avail_out = 4096;
       zip_info.next_out = (Bytef *) DecompressBlock;
-      status = inflate(&zip_info,Z_NO_FLUSH);
+      zip_status = inflate(&zip_info,Z_NO_FLUSH);
+			if ((zip_status != Z_OK) && (zip_status != Z_STREAM_END))
+        break;
       extent=fwrite(DecompressBlock, 4096-zip_info.avail_out, 1, mat_file);
       (void) extent;
 
-      if(status == Z_STREAM_END) goto DblBreak;
+      if(zip_status == Z_STREAM_END) goto DblBreak;
     }
+ 	  if ((zip_status != Z_OK) && (zip_status != Z_STREAM_END))
+      break;
 
     Size -= magick_size;
   }
