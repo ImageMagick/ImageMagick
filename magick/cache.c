@@ -3559,7 +3559,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
   assert(cache_info->signature == MagickSignature);
   if ((AcquireMagickResource(WidthResource,image->columns) == MagickFalse) ||
       (AcquireMagickResource(HeightResource,image->rows) == MagickFalse))
-    ThrowBinaryException(ResourceLimitError,"PixelCacheAllocationFailed",
+    ThrowBinaryException(ImageError,"WidthOrHeightExceedsLimit",
       image->filename);
   source_info=(*cache_info);
   source_info.file=(-1);
