@@ -1189,15 +1189,15 @@ static void MagickSignalHandler(int signal_number)
 #else
 #if defined(SIGHUP)
   if (signal_number == SIGHUP)
-    exit(signal_number);
+    _exit(signal_number);
 #endif
 #if defined(SIGINT)
   if (signal_number == SIGINT)
-    exit(signal_number);
+    _exit(signal_number);
 #endif
 #if defined(SIGTERM)
   if (signal_number == SIGTERM)
-    exit(signal_number);
+    _exit(signal_number);
 #endif
 #if defined(MAGICKCORE_HAVE_RAISE)
   if (signal_handlers[signal_number] != MagickSignalHandler)
