@@ -122,6 +122,11 @@ We acknowledge these non-developer contributors to the ImageMagick project:
 Rod Bogart and John W. Peterson, University of Utah
      Image compositing is loosely based on rlecomp of the Utah Raster Toolkit.
 
+Hanno Böck
+     Contributed numerous fuzzed-images that revealed program flaws in
+     ImageMagick.  Additional checks were added to guard against nefarious
+     image files.
+
 Thomas R Crimmins
      Inventor of the eight hull algorithm used for speckle reduction.
 
