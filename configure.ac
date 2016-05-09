@@ -3015,18 +3015,15 @@ configure_transform_name=`echo ${program_transform_name} | sed 's,\\$\\$,$,'`
 AC_MSG_RESULT([-------------------------------------------------------------])
 AC_MSG_CHECKING([for ImageMagick delegate programs])
 AC_MSG_RESULT([])
-AutotraceDecodeDelegateDefault='autotrace'
 BPGDecodeDelegateDefault='bpgdec'
 BPGEncodeDelegateDefault='bpgenc'
 BlenderDecodeDelegateDefault='blender'
 BZIPDelegateDefault='bzip2'
 BrowseDelegateDefault='xdg-open'
-CatDelegateDefault='cat'
 DNGDecodeDelegateDefault='ufraw-batch'
 DOCDecodeDelegateDefault='soffice'
 GVCDecodeDelegateDefault='dot'
 DVIDecodeDelegateDefault='dvips'
-EchoDelegateDefault='echo'
 EditorDelegateDefault='xterm'
 ConvertDelegateDefault=`echo convert | sed ${configure_transform_name}`
 DisplayDelegateDefault=`echo display | sed ${configure_transform_name}`
@@ -3040,14 +3037,11 @@ JXREncodeDelegateDefault='JxrEncApp'
 LPDelegateDefault='lp'
 LPRDelegateDefault='lpr'
 LaunchDelegateDefault='gimp'
-MANDelegateDefault='groff'
 MPEGDecodeDelegateDefault='avconv'
 MPEGEncodeDelegateDefault='avconv'
 MrSIDDecodeDelegateDefault='mrsidgeodecode'
 MVDelegateDefault='mv'
 PCLDelegateDefault='pcl6'
-PGPDecodeDelegateDefault='pgpv'
-POVDelegateDefault='povray'
 if test "$native_win32_build" = 'yes'; then
     PSDelegateDefault='gswin32c'
 elif test "$gslib_framework" = 'yes'; then
@@ -3055,34 +3049,25 @@ elif test "$gslib_framework" = 'yes'; then
 else
     PSDelegateDefault='gs'
 fi
-RLEEncodeDelegateDefault='rawtorle'
 RMDelegateDefault='rm'
 RSVGDecodeDelegateDefault='rsvg-convert'
-SCANDecodeDelegateDefault='scanimage'
 SVGDecodeDelegateDefault='inkscape'
-TXTDelegateDefault='enscript'
 UniconvertorDelegateDefault='uniconvertor'
 WebPDecodeDelegateDefault='dwebp'
 WebPEncodeDelegateDefault='cwebp'
-WMFDecodeDelegateDefault='wmf2eps'
-WWWDecodeDelegateDefault='curl'
 XPSDelegateDefault='gxps'
-ZipDelegateDefault='gzip'
 
 # Search for delegates
-AC_PATH_PROG(AutotraceDecodeDelegate, "$AutotraceDecodeDelegateDefault", "$AutotraceDecodeDelegateDefault")
 AC_PATH_PROG(BPGDecodeDelegate, "$BPGDecodeDelegateDefault", "$BPGDecodeDelegateDefault")
 AC_PATH_PROG(BPGEncodeDelegate, "$BPGEncodeDelegateDefault", "$BPGEncodeDelegateDefault")
 AC_PATH_PROG(BlenderDecodeDelegate, "$BlenderDecodeDelegateDefault", "$BlenderDecodeDelegateDefault")
 AC_PATH_PROG(BZIPDelegate, "$BZIPDelegateDefault", "$BZIPDelegateDefault")
 AC_PATH_PROGS(BrowseDelegate, "$BrowseDelegateDefault" google-chrome firefox konqueror mozilla lynx, "$BrowseDelegateDefault")
-AC_PATH_PROG(CatDelegate, "$CatDelegateDefault", "$CatDelegateDefault")
 AC_PATH_PROG(DNGDecodeDelegate, "$DNGDecodeDelegateDefault", "$DNGDecodeDelegateDefault")
 AC_PATH_PROG(DOCDecodeDelegate, "$DOCDecodeDelegateDefault", "$DOCDecodeDelegateDefault")
 AC_PATH_PROG(DVIDecodeDelegate, "$DVIDecodeDelegateDefault", "$DVIDecodeDelegateDefault")
 AC_PATH_PROG(ConvertDelegate, "$ConvertDelegateDefault", "$ConvertDelegateDefault")
 AC_PATH_PROG(DisplayDelegate, "$DisplayDelegateDefault", "$DisplayDelegateDefault")
-AC_PATH_PROG(EchoDelegate, "$EchoDelegateDefault", "$EchoDelegateDefault")
 AC_PATH_PROG(EditorDelegate, "$EditorDelegateDefault", "$EditorDelegateDefault")
 AC_PATH_PROG(GVCDecodeDelegate, "$GVCDecodeDelegateDefault", "$GVCDecodeDelegateDefault")
 AC_PATH_PROG(HPGLDecodeDelegate, "$HPGLDecodeDelegateDefault", "$HPGLDecodeDelegateDefault")
@@ -3094,7 +3079,6 @@ AC_PATH_PROG(JXREncodeDelegate, "$JXREncodeDelegateDefault", "$JXREncodeDelegate
 AC_PATH_PROG(LPDelegate, "$LPDelegateDefault", no)
 AC_PATH_PROG(LPRDelegate, "$LPRDelegateDefault", "$LPRDelegateDefault")
 AC_PATH_PROG(LaunchDelegate, "$LaunchDelegateDefault", "$LaunchDelegateDefault")
-AC_PATH_PROG(MANDelegate, "$MANDelegateDefault", "$MANDelegateDefault")
 AC_PATH_PROG(MogrifyDelegate, "$MogrifyDelegateDefault", "$MogrifyDelegateDefault")
 AC_PATH_PROG(MPEGDecodeDelegate, "$MPEGDecodeDelegateDefault", "$MPEGDecodeDelegateDefault")
 if test "$MPEGDecodeDelegate" = "$MPEGDecodeDelegateDefault" ; then
@@ -3109,22 +3093,14 @@ fi;
 AC_PATH_PROG(MrSIDDecodeDelegate, "$MrSIDDecodeDelegateDefault", "$MrSIDDecodeDelegateDefault")
 AC_PATH_PROG(MVDelegate, "$MVDelegateDefault", "$MVDelegateDefault")
 AC_PATH_PROG(PCLDelegate, "$PCLDelegateDefault", "$PCLDelegateDefault")
-AC_PATH_PROG(PGPDecodeDelegate, "$PGPDecodeDelegateDefault", "$PGPDecodeDelegateDefault")
-AC_PATH_PROG(POVDelegate, "$POVDelegateDefault", "$POVDelegateDefault")
 AC_PATH_PROGS(PSDelegate, gsx gsc "$PSDelegateDefault", "$PSDelegateDefault")
-AC_PATH_PROG(RLEEncodeDelegate, "$RLEEncodeDelegateDefault", "$RLEEncodeDelegateDefault")
 AC_PATH_PROG(RMDelegate, "$RMDelegateDefault", "$RMDelegateDefault")
 AC_PATH_PROG(RSVGDecodeDelegate, "$RSVGDecodeDelegateDefault", "$RSVGDecodeDelegateDefault")
-AC_PATH_PROG(SCANDecodeDelegate, "$SCANDecodeDelegateDefault", "$SCANDecodeDelegateDefault")
 AC_PATH_PROG(SVGDecodeDelegate, "$SVGDecodeDelegateDefault", "$SVGDecodeDelegateDefault")
-AC_PATH_PROG(TXTDelegate, "$TXTDelegateDefault", "$TXTDelegateDefault")
 AC_PATH_PROG(UniconvertorDelegate, "$UniconvertorDelegateDefault", "$UniconvertorDelegateDefault")
 AC_PATH_PROG(WebPDecodeDelegate, "$WebPDecodeDelegateDefault", "$WebPDecodeDelegateDefault")
 AC_PATH_PROG(WebPEncodeDelegate, "$WebPEncodeDelegateDefault", "$WebPEncodeDelegateDefault")
-AC_PATH_PROG(WMFDecodeDelegate, "$WMFDecodeDelegateDefault", "$WMFDecodeDelegateDefault")
-AC_PATH_PROG(WWWDecodeDelegate, "$WWWDecodeDelegateDefault", "$WWWDecodeDelegateDefault")
 AC_PATH_PROG(XPSDelegate, "$XPSDelegateDefault", "$XPSDelegateDefault")
-AC_PATH_PROG(ZipDelegate, "$ZipDelegateDefault", "$ZipDelegateDefault")
 
 # Prefer lpr to lp; lp needs options tacked on.
 if test "$LPRDelegate" != no; then
@@ -3269,19 +3245,16 @@ AC_SUBST(type_include_files)
 #
 if test "$with_frozenpaths" != 'yes'; then
   # Re-set delegate definitions to default (no paths)
-  AutotraceDecodeDelegate="$AutotraceDecodeDelegateDefault"
   BPGDecodeDelegate="$BPGDecodeDelegateDefault"
   BPGEncodeDelegate="$BPGEncodeDelegateDefault"
   BlenderDecodeDelegate="$BlenderDecodeDelegateDefault"
   BZIPDelegate="$BZIPDelegateDefault"
   BrowseDelegate="$BrowseDelegateDefault"
-  CatDelegate="$CatDelegateDefault"
   ConvertDelegate="$ConvertDelegateDefault"
   DisplayDelegate="$DisplayDelegateDefault"
   DNGDecodeDelegate="$DNGDecodeDelegateDefault"
   DOCDecodeDelegate="$DOCDecodeDelegateDefault"
   DVIDecodeDelegate="$DVIDecodeDelegateDefault"
-  EchoDelegate="$EchoDelegateDefault"
   EditorDelegate="$EditorDelegateDefault"
   GVCDecodeDelegate="$GVCDecodeDelegateDefault"
   HPGLDecodeDelegate="$HPGLDecodeDelegateDefault"
@@ -3292,44 +3265,32 @@ if test "$with_frozenpaths" != 'yes'; then
   JXREncodeDelegate="$JXREncodeDelegateDefault"
   LPDelegate="$LPDelegateDefault"
   LaunchDelegate="$LaunchDelegateDefault"
-  MANDelegate="$MANDelegateDefault"
   MPEGDecodeDelegate="$MPEGDecodeDelegateDefault"
   MPEGEncodeDelegate="$MPEGEncodeDelegateDefault"
   MogrifyDelegate="$MogrifyDelegateDefault"
   MrSIDDecodeDelegate="$MrSIDDecodeDelegateDefault"
   MVDelegate="$MVDelegateDefault"
   PCLDelegate="$PCLDelegateDefault"
-  PGPDecodeDelegate="$PGPDecodeDelegateDefault"
-  POVDelegate="$POVDelegateDefault"
   PSDelegate="$PSDelegateDefault"
-  RLEEncodeDelegate="$RLEEncodeDelegateDefault"
   RMDelegate="$RMDelegateDefault"
   RSVGDecodeDelegate="$RSVGDecodeDelegateDefault"
-  SCANDecodeDelegate="$SCANDecodeDelegateDefault"
   SVGDecodeDelegate="$SVGDecodeDelegateDefault"
   ShowImageDelegate="$ShowImageDelegateDefault"
-  TXTDelegate="$TXTDelegateDefault"
   UniconvertorDelegate="$UniconvertorDelegateDefault"
   WebPDecodeDelegate="$WebPDecodeDelegateDefault"
   WebPEncodeDelegate="$WebPEncodeDelegateDefault"
-  WMFDecodeDelegate="$WMFDecodeDelegateDefault"
-  WWWDecodeDelegate="$WWWDecodeDelegateDefault"
   XPSDelegate="$XPSDelegateDefault"
-  ZipDelegate="$ZipDelegateDefault"
 fi
 
 # Delegate substitutions
-AC_SUBST(AutotraceDecodeDelegate)
 AC_SUBST(BPGDecodeDelegate)
 AC_SUBST(BPGEncodeDelegate)
 AC_SUBST(BlenderDecodeDelegate)
 AC_SUBST(BZIPDelegate)
 AC_SUBST(BrowseDelegate)
-AC_SUBST(CatDelegate)
 AC_SUBST(ConvertDelegate)
 AC_SUBST(GVCDecodeDelegate)
 AC_SUBST(DVIDecodeDelegate)
-AC_SUBST(EchoDelegate)
 AC_SUBST(EditorDelegate)
 AC_SUBST(HPGLDecodeDelegate)
 AC_SUBST(HTMLDecodeDelegate)
@@ -3339,28 +3300,19 @@ AC_SUBST(JXRDecodeDelegate)
 AC_SUBST(JXREncodeDelegate)
 AC_SUBST(LPDelegate)
 AC_SUBST(LaunchDelegate)
-AC_SUBST(MANDelegate)
 AC_SUBST(MPEGDecodeDelegate)
 AC_SUBST(MPEGEncodeDelegate)
 AC_SUBST(MogrifyDelegate)
 AC_SUBST(MrSIDDecodeDelegate)
 AC_SUBST(MVDelegate)
 AC_SUBST(PCLDelegate)
-AC_SUBST(PGPDecodeDelegate)
-AC_SUBST(POVDelegate)
 AC_SUBST(PSDelegate)
-AC_SUBST(RLEEncodeDelegate)
 AC_SUBST(RMDelegate)
-AC_SUBST(SCANDecodeDelegate)
 AC_SUBST(ShowImageDelegate)
-AC_SUBST(TXTDelegate)
 AC_SUBST(UniconvertorDelegate)
-AC_SUBST(WMFDecodeDelegate)
 AC_SUBST(WebPDecodeDelegate)
 AC_SUBST(WebPEncodeDelegate)
-AC_SUBST(WWWDecodeDelegate)
 AC_SUBST(XPSDelegate)
-AC_SUBST(ZipDelegate)
 
 #
 # RPM support.
