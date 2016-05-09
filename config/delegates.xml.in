@@ -42,7 +42,6 @@
     %u  unique temporary filename
     %#  input image signature
     %b  image file size
-    %c  input image comment
     %g  image geometry
     %h  image rows (height)
     %k  input image number colors
