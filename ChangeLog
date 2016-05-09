@@ -1,3 +1,6 @@
+2016-05-07  6.9.4-1 Cristy  <quetzlzacatenango@image...>
+  * Remove https delegate.
+
 2016-05-05  6.9.4-0 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 6.9.4-0, GIT revision 10741:5746147:20160507.
 
