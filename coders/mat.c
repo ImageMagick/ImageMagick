@@ -516,7 +516,7 @@ int zip_status;
   {
     RelinquishMagickMemory(CacheBlock);
     RelinquishMagickMemory(DecompressBlock);
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Cannot create file stream for PS image");
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Cannot create file stream for decompressed image");
     return NULL;
   }
 
