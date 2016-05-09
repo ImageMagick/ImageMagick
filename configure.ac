@@ -27,7 +27,7 @@ AC_PREREQ(2.69)
 m4_define([magick_major_version], [6])
 m4_define([magick_minor_version], [9])
 m4_define([magick_micro_version], [4])
-m4_define([magick_patchlevel_version], [2])
+m4_define([magick_patchlevel_version], [1])
 m4_define([magick_version],
           [magick_major_version.magick_minor_version.magick_micro_version-magick_patchlevel_version])
 m4_define([magick_git_revision], esyscmd([sh -c "(gitversion .) | tr -d '\n'"]))
@@ -3018,7 +3018,6 @@ AC_MSG_RESULT([])
 BPGDecodeDelegateDefault='bpgdec'
 BPGEncodeDelegateDefault='bpgenc'
 BlenderDecodeDelegateDefault='blender'
-BZIPDelegateDefault='bzip2'
 BrowseDelegateDefault='xdg-open'
 DNGDecodeDelegateDefault='ufraw-batch'
 DOCDecodeDelegateDefault='soffice'
@@ -3055,13 +3054,13 @@ SVGDecodeDelegateDefault='inkscape'
 UniconvertorDelegateDefault='uniconvertor'
 WebPDecodeDelegateDefault='dwebp'
 WebPEncodeDelegateDefault='cwebp'
+WWWDecodeDelegateDefault='curl'
 XPSDelegateDefault='gxps'
 
 # Search for delegates
 AC_PATH_PROG(BPGDecodeDelegate, "$BPGDecodeDelegateDefault", "$BPGDecodeDelegateDefault")
 AC_PATH_PROG(BPGEncodeDelegate, "$BPGEncodeDelegateDefault", "$BPGEncodeDelegateDefault")
 AC_PATH_PROG(BlenderDecodeDelegate, "$BlenderDecodeDelegateDefault", "$BlenderDecodeDelegateDefault")
-AC_PATH_PROG(BZIPDelegate, "$BZIPDelegateDefault", "$BZIPDelegateDefault")
 AC_PATH_PROGS(BrowseDelegate, "$BrowseDelegateDefault" google-chrome firefox konqueror mozilla lynx, "$BrowseDelegateDefault")
 AC_PATH_PROG(DNGDecodeDelegate, "$DNGDecodeDelegateDefault", "$DNGDecodeDelegateDefault")
 AC_PATH_PROG(DOCDecodeDelegate, "$DOCDecodeDelegateDefault", "$DOCDecodeDelegateDefault")
@@ -3100,6 +3099,7 @@ AC_PATH_PROG(SVGDecodeDelegate, "$SVGDecodeDelegateDefault", "$SVGDecodeDelegate
 AC_PATH_PROG(UniconvertorDelegate, "$UniconvertorDelegateDefault", "$UniconvertorDelegateDefault")
 AC_PATH_PROG(WebPDecodeDelegate, "$WebPDecodeDelegateDefault", "$WebPDecodeDelegateDefault")
 AC_PATH_PROG(WebPEncodeDelegate, "$WebPEncodeDelegateDefault", "$WebPEncodeDelegateDefault")
+AC_PATH_PROG(WWWDecodeDelegate, "$WWWDecodeDelegate", "$WWWDecodeDelegate")
 AC_PATH_PROG(XPSDelegate, "$XPSDelegateDefault", "$XPSDelegateDefault")
 
 # Prefer lpr to lp; lp needs options tacked on.
@@ -3248,7 +3248,6 @@ if test "$with_frozenpaths" != 'yes'; then
   BPGDecodeDelegate="$BPGDecodeDelegateDefault"
   BPGEncodeDelegate="$BPGEncodeDelegateDefault"
   BlenderDecodeDelegate="$BlenderDecodeDelegateDefault"
-  BZIPDelegate="$BZIPDelegateDefault"
   BrowseDelegate="$BrowseDelegateDefault"
   ConvertDelegate="$ConvertDelegateDefault"
   DisplayDelegate="$DisplayDelegateDefault"
@@ -3269,16 +3268,15 @@ if test "$with_frozenpaths" != 'yes'; then
   MPEGEncodeDelegate="$MPEGEncodeDelegateDefault"
   MogrifyDelegate="$MogrifyDelegateDefault"
   MrSIDDecodeDelegate="$MrSIDDecodeDelegateDefault"
-  MVDelegate="$MVDelegateDefault"
   PCLDelegate="$PCLDelegateDefault"
   PSDelegate="$PSDelegateDefault"
-  RMDelegate="$RMDelegateDefault"
   RSVGDecodeDelegate="$RSVGDecodeDelegateDefault"
   SVGDecodeDelegate="$SVGDecodeDelegateDefault"
   ShowImageDelegate="$ShowImageDelegateDefault"
   UniconvertorDelegate="$UniconvertorDelegateDefault"
   WebPDecodeDelegate="$WebPDecodeDelegateDefault"
   WebPEncodeDelegate="$WebPEncodeDelegateDefault"
+  WWWDecodeDelegate="$WWWDecodeDelegateDefault"
   XPSDelegate="$XPSDelegateDefault"
 fi
 
@@ -3286,7 +3284,6 @@ fi
 AC_SUBST(BPGDecodeDelegate)
 AC_SUBST(BPGEncodeDelegate)
 AC_SUBST(BlenderDecodeDelegate)
-AC_SUBST(BZIPDelegate)
 AC_SUBST(BrowseDelegate)
 AC_SUBST(ConvertDelegate)
 AC_SUBST(GVCDecodeDelegate)
@@ -3304,14 +3301,13 @@ AC_SUBST(MPEGDecodeDelegate)
 AC_SUBST(MPEGEncodeDelegate)
 AC_SUBST(MogrifyDelegate)
 AC_SUBST(MrSIDDecodeDelegate)
-AC_SUBST(MVDelegate)
 AC_SUBST(PCLDelegate)
 AC_SUBST(PSDelegate)
-AC_SUBST(RMDelegate)
 AC_SUBST(ShowImageDelegate)
 AC_SUBST(UniconvertorDelegate)
 AC_SUBST(WebPDecodeDelegate)
 AC_SUBST(WebPEncodeDelegate)
+AC_SUBST(WWWDecodeDelegate)
 AC_SUBST(XPSDelegate)
 
 #
