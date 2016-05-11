@@ -1,3 +1,6 @@
+2016-05-10  7.0.1-4 Cristy  <quetzlzacatenango@image...>
+  * Quote passwords when passed to a delegate program.
+
 2016-05-09  7.0.1-3 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.1-3, GIT revision 10755:d540dda:20160509.
 

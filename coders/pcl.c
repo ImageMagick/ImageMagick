@@ -354,7 +354,7 @@ static Image *ReadPCLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   option=GetImageOption(image_info,"authenticate");
   if (option != (const char *) NULL)
     (void) FormatLocaleString(options+strlen(options),MagickPathExtent,
-      " -sPCLPassword=%s",option);
+      " -sPCLPassword=\"%s\"",option);
   (void) CopyMagickString(filename,read_info->filename,MagickPathExtent);
   (void) AcquireUniqueFilename(read_info->filename);
   (void) FormatLocaleString(command,MagickPathExtent,
