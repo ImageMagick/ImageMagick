@@ -524,6 +524,8 @@ static int UnpackWPGRaster(Image *image,int bpp,ExceptionInfo *exception)
             }
         }
       }
+      if (EOFBlob(image) != MagickFalse)
+        break;
     }
   BImgBuff=(unsigned char *) RelinquishMagickMemory(BImgBuff);
   return(y <(ssize_t) image->rows ? -5 : 0);
@@ -662,6 +664,8 @@ static int UnpackWPG2Raster(Image *image,int bpp,ExceptionInfo *exception)
               }
           }
         }
+      if (EOFBlob(image) != MagickFalse)
+        break;
     }
   BImgBuff=(unsigned char *) RelinquishMagickMemory(BImgBuff);
   return(0);

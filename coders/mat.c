@@ -525,6 +525,8 @@ int zip_status;
       RelinquishMagickMemory(DecompressBlock);
       (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
         "UnableToUncompressImage","`%s'",clone_info->filename);
+      (void) fclose(mat_file);
+      RelinquishUniqueFileResource(clone_info->filename);
       return NULL;
     }
   /* zip_info.next_out = 8*4;*/
@@ -571,7 +573,7 @@ EraseFile:
     fclose(clone_info->file);
     clone_info->file = NULL;
 UnlinkFile:
-    (void) remove_utf8(clone_info->filename);
+    RelinquishUniqueFileResource(clone_info->filename);
     return NULL;
   }
 
