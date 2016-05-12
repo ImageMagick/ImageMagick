@@ -1059,6 +1059,9 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   doc_info.file_size=GetBlobSize(image);
   image->compression=NoCompression;
   image->depth=8;
+  status=SetImageExtent(image,image->columns,image->rows,exception);
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
   if (image_type == GIMP_RGB)
     SetImageColorspace(image,sRGBColorspace,exception);
   else
@@ -1266,9 +1269,6 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       XCFLayerInfo
         *layer_info;
 
-      status=SetImageExtent(image,image->columns,image->rows,exception);
-      if (status == MagickFalse)
-        return(DestroyImageList(image));
       /* 
         the read pointer
       */
