@@ -29,7 +29,7 @@ typedef enum
   GpuCLDeviceType
 } MagickCLDeviceType;
 
-struct _KernelProfileRecord
+typedef struct _KernelProfileRecord
 {
   char
     *kernel_name;
@@ -39,9 +39,8 @@ struct _KernelProfileRecord
     max,
     min,
     total;
-};
+}* KernelProfileRecord;
 
-typedef struct _KernelProfileRecord* KernelProfileRecord;
 typedef struct _MagickCLDevice* MagickCLDevice;
 typedef struct _MagickCLEnv* MagickCLEnv;
 
