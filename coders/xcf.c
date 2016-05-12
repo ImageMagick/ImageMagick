@@ -1079,6 +1079,12 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   doc_info.file_size=GetBlobSize(image);
   image->compression=NoCompression;
   image->depth=8;
+  status=SetImageExtent(image,image->columns,image->rows);
+  if (status == MagickFalse)
+    {
+      InheritException(exception,&image->exception);
+      return(DestroyImageList(image));
+    }
   if (image_type == GIMP_RGB)
     ;
   else
@@ -1286,12 +1292,6 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       XCFLayerInfo
         *layer_info;
 
-      status=SetImageExtent(image,image->columns,image->rows);
-      if (status == MagickFalse)
-        {
-          InheritException(exception,&image->exception);
-          return(DestroyImageList(image));
-        }
       /*
         The read pointer.
       */
