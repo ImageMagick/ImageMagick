@@ -1923,7 +1923,7 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reference,
           q+=GetPixelChannels(similarity_image);
           continue;
         }
-      for (i=0; i < (ssize_t) GetPixelChannels(similarity_image); i++)
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel channel=GetPixelChannelChannel(image,i);
         PixelTrait traits=GetPixelChannelTraits(image,channel);

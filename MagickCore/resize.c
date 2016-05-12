@@ -1750,7 +1750,7 @@ MagickExport Image *InterpolativeResizeImage(const Image *image,
           q+=GetPixelChannels(resize_image);
           continue;
         }
-      for (i=0; i < (ssize_t) GetPixelChannels(resize_image); i++)
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel
           channel;
@@ -2515,7 +2515,7 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
       register ssize_t
         i;
 
-      for (i=0; i < (ssize_t) GetPixelChannels(resize_image); i++)
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         double
           alpha,
@@ -2731,7 +2731,7 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
       register ssize_t
         i;
 
-      for (i=0; i < (ssize_t) GetPixelChannels(resize_image); i++)
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         double
           alpha,
