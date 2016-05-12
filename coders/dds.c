@@ -2356,7 +2356,7 @@ static MagickBooleanType SkipDXTMipmaps(Image *image,DDSInfo *dds_info,
   */
   if (EOFBlob(image) != MagickFalse)
     {
-      ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
+      ThrowFileException(exception,CorruptImageWarning,"UnexpectedEndOfFile",
         image->filename);
       return(MagickFalse);
     }
