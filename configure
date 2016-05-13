@@ -4515,7 +4515,7 @@ MAGICK_PATCHLEVEL_VERSION=4
 
 MAGICK_VERSION=7.0.1-4
 
-MAGICK_GIT_REVISION=18148:564d610:20160511
+MAGICK_GIT_REVISION=18187:d05bf87:20160512
 
 
 # Substitute library versioning
@@ -34593,9 +34593,9 @@ DOCDecodeDelegateDefault='soffice'
 GVCDecodeDelegateDefault='dot'
 DVIDecodeDelegateDefault='dvips'
 EditorDelegateDefault='xterm'
-ConvertDelegateDefault=`echo convert | sed ${configure_transform_name}`
-DisplayDelegateDefault=`echo display | sed ${configure_transform_name}`
-MogrifyDelegateDefault=`echo mogrify | sed ${configure_transform_name}`
+ConvertDelegateDefault=`echo magick convert | sed ${configure_transform_name}`
+DisplayDelegateDefault=`echo magick display | sed ${configure_transform_name}`
+MogrifyDelegateDefault=`echo magick mogrify | sed ${configure_transform_name}`
 HPGLDecodeDelegateDefault='hp2xx'
 HTMLDecodeDelegateDefault='html2ps'
 ILBMDecodeDelegateDefault='ilbmtoppm'
