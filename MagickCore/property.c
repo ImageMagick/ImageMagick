@@ -725,7 +725,52 @@ static MagickBooleanType Get8BIMProperty(const Image *image,const char *key,
   return(status);
 }
 
-static inline signed short ReadPropertyShort(const EndianType endian,
+static inline signed int ReadPropertySignedLong(const EndianType endian,
+  const unsigned char *buffer)
+{
+  union
+  {
+    unsigned int
+      unsigned_value;
+
+    signed int
+      signed_value;
+  } quantum;
+
+  unsigned int
+    value;
+
+  if (endian == LSBEndian)
+    {
+      value=(unsigned int) ((buffer[3] << 24) | (buffer[2] << 16) |
+        (buffer[1] << 8 ) | (buffer[0]));
+      quantum.unsigned_value=(value & 0xffffffff);
+      return(quantum.signed_value);
+    }
+  value=(unsigned int) ((buffer[0] << 24) | (buffer[1] << 16) |
+    (buffer[2] << 8) | buffer[3]);
+  quantum.unsigned_value=(value & 0xffffffff);
+  return(quantum.signed_value);
+}
+
+static inline unsigned int ReadPropertyUnsignedLong(const EndianType endian,
+  const unsigned char *buffer)
+{
+  unsigned int
+    value;
+
+  if (endian == LSBEndian)
+    {
+      value=(unsigned int) ((buffer[3] << 24) | (buffer[2] << 16) |
+        (buffer[1] << 8 ) | (buffer[0]));
+      return((unsigned int) (value & 0xffffffff));
+    }
+  value=(unsigned int) ((buffer[0] << 24) | (buffer[1] << 16) |
+    (buffer[2] << 8) | buffer[3]);
+  return((unsigned int) (value & 0xffffffff));
+}   
+
+static inline signed short ReadPropertySignedShort(const EndianType endian,
   const unsigned char *buffer)
 {
   union
@@ -752,32 +797,20 @@ static inline signed short ReadPropertyShort(const EndianType endian,
   return(quantum.signed_value);
 }
 
-static inline signed int ReadPropertyLong(const EndianType endian,
+static inline unsigned short ReadPropertyUnsignedShort(const EndianType endian,
   const unsigned char *buffer)
 {
-  union
-  {
-    unsigned int
-      unsigned_value;
-
-    signed int
-      signed_value;
-  } quantum;
-
-  unsigned int
+  unsigned short
     value;
 
   if (endian == LSBEndian)
     {
-      value=(unsigned int) ((buffer[3] << 24) | (buffer[2] << 16) |
-        (buffer[1] << 8 ) | (buffer[0]));
-      quantum.unsigned_value=(value & 0xffffffff);
-      return(quantum.signed_value);
+      value=(unsigned short) ((buffer[1] << 8) | buffer[0]);
+      return((unsigned short) (value & 0xffff));
     }
-  value=(unsigned int) ((buffer[0] << 24) | (buffer[1] << 16) |
-    (buffer[2] << 8) | buffer[3]);
-  quantum.unsigned_value=(value & 0xffffffff);
-  return(quantum.signed_value);
+  value=(unsigned short) ((((unsigned char *) buffer)[0] << 8) |
+    ((unsigned char *) buffer)[1]);
+  return((unsigned short) (value & 0xffff));
 }
 
 static MagickBooleanType GetEXIFProperty(const Image *image,
@@ -1174,7 +1207,8 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
     entry,
     length,
     number_entries,
-    tag;
+    tag,
+    tag_value;
 
   SplayTreeInfo
     *exif_resources;
@@ -1184,8 +1218,7 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
     id,
     level,
     offset,
-    tag_offset,
-    tag_value;
+    tag_offset;
 
   static int
     tag_bytes[] = {0, 1, 1, 2, 4, 8, 1, 1, 2, 4, 8, 4, 8};
@@ -1302,7 +1335,7 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
   }
   if (length < 16)
     return(MagickFalse);
-  id=(ssize_t) ReadPropertyShort(LSBEndian,exif);
+  id=(ssize_t) ReadPropertySignedShort(LSBEndian,exif);
   endian=LSBEndian;
   if (id == 0x4949)
     endian=LSBEndian;
@@ -1311,12 +1344,12 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
       endian=MSBEndian;
     else
       return(MagickFalse);
-  if (ReadPropertyShort(endian,exif+2) != 0x002a)
+  if (ReadPropertyUnsignedShort(endian,exif+2) != 0x002a)
     return(MagickFalse);
   /*
     This the offset to the first IFD.
   */
-  offset=(ssize_t) ReadPropertyLong(endian,exif+4);
+  offset=(ssize_t) ReadPropertySignedLong(endian,exif+4);
   if ((offset < 0) || (size_t) offset >= length)
     return(MagickFalse);
   /*
@@ -1346,7 +1379,7 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
     /*
       Determine how many entries there are in the current IFD.
     */
-    number_entries=(size_t) ReadPropertyShort(endian,directory);
+    number_entries=(size_t) ReadPropertyUnsignedShort(endian,directory);
     for ( ; entry < number_entries; entry++)
     {
       register unsigned char
@@ -1364,11 +1397,11 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
       if (GetValueFromSplayTree(exif_resources,q) == q)
         break;
       (void) AddValueToSplayTree(exif_resources,q,q);
-      tag_value=(ssize_t) ReadPropertyShort(endian,q)+tag_offset;
-      format=(size_t) ReadPropertyShort(endian,q+2);
+      tag_value=(size_t) ReadPropertyUnsignedShort(endian,q)+tag_offset;
+      format=(size_t) ReadPropertyUnsignedShort(endian,q+2);
       if (format >= (sizeof(tag_bytes)/sizeof(*tag_bytes)))
         break;
-      components=(ssize_t) ReadPropertyLong(endian,q+4);
+      components=(ssize_t) ReadPropertySignedLong(endian,q+4);
       number_bytes=(size_t) components*tag_bytes[format];
       if (number_bytes < components)
         break;  /* prevent overflow */
@@ -1382,7 +1415,7 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
           /*
             The directory entry contains an offset.
           */
-          offset=(ssize_t) ReadPropertyLong(endian,q+8);
+          offset=(ssize_t) ReadPropertySignedLong(endian,q+8);
           if ((offset < 0) || (size_t) offset >= length)
             continue;
           if ((ssize_t) (offset+number_bytes) < offset)
@@ -1414,38 +1447,38 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
             }
             case EXIF_FMT_SSHORT:
             {
-              EXIFMultipleValues(2,"%hd",ReadPropertyShort(endian,p1));
+              EXIFMultipleValues(2,"%hd",ReadPropertySignedShort(endian,p1));
               break;
             }
             case EXIF_FMT_USHORT:
             {
-              EXIFMultipleValues(2,"%hu",ReadPropertyShort(endian,p1));
+              EXIFMultipleValues(2,"%hu",ReadPropertyUnsignedShort(endian,p1));
               break;
             }
             case EXIF_FMT_ULONG:
             {
               EXIFMultipleValues(4,"%.20g",(double)
-                ReadPropertyLong(endian,p1));
+                ReadPropertyUnsignedLong(endian,p1));
               break;
             }
             case EXIF_FMT_SLONG:
             {
               EXIFMultipleValues(4,"%.20g",(double)
-                ReadPropertyLong(endian,p1));
+                ReadPropertySignedLong(endian,p1));
               break;
             }
             case EXIF_FMT_URATIONAL:
             {
               EXIFMultipleFractions(8,"%.20g/%.20g",(double)
-                ReadPropertyLong(endian,p1),(double)
-                ReadPropertyLong(endian,p1+4));
+                ReadPropertyUnsignedLong(endian,p1),(double)
+                ReadPropertyUnsignedLong(endian,p1+4));
               break;
             }
             case EXIF_FMT_SRATIONAL:
             {
               EXIFMultipleFractions(8,"%.20g/%.20g",(double)
-                ReadPropertyLong(endian,p1),(double)
-                ReadPropertyLong(endian,p1+4));
+                ReadPropertySignedLong(endian,p1),(double)
+                ReadPropertySignedLong(endian,p1+4));
               break;
             }
             case EXIF_FMT_SINGLE:
@@ -1511,7 +1544,8 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
                         break;
                       }
                   }
-                  (void) FormatLocaleString(key,MagickPathExtent,"%s",description);
+                  (void) FormatLocaleString(key,MagickPathExtent,"%s",
+                    description);
                   if (level == 2)
                     (void) SubstituteString(&key,"exif:","exif:thumbnail:");
                   break;
@@ -1552,7 +1586,7 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
             ssize_t
               offset;
 
-            offset=(ssize_t) ReadPropertyLong(endian,p);
+            offset=(ssize_t) ReadPropertySignedLong(endian,p);
             if (((size_t) offset < length) && (level < (MaxDirectoryStack-2)))
               {
                 ssize_t
@@ -1571,7 +1605,7 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
                 level++;
                 if ((directory+2+(12*number_entries)) > (exif+length))
                   break;
-                offset=(ssize_t) ReadPropertyLong(endian,directory+2+(12*
+                offset=(ssize_t) ReadPropertySignedLong(endian,directory+2+(12*
                   number_entries));
                 if ((offset != 0) && ((size_t) offset < length) &&
                     (level < (MaxDirectoryStack-2)))

@@ -2,6 +2,8 @@
   * Quote passwords when passed to a delegate program.
   * Iterate channels over source image rather than destination (bug report
     from Hanno Böck).
+  * Can read geo-related EXIF metdata once-again (reference
+    https://github.com/ImageMagick/ImageMagick/issues/198).
 
 2016-05-09  7.0.1-3 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.1-3, GIT revision 10755:d540dda:20160509.
