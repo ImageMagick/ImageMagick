@@ -1,5 +1,7 @@
 2016-05-10  6.9.4-1 Cristy  <quetzlzacatenango@image...>
   * Quote passwords when passed to a delegate program.
+  * Can read geo-related EXIF metdata once-again (reference
+    https://github.com/ImageMagick/ImageMagick/issues/198).
 
 2016-05-09  6.9.4-1 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 6.9.4-1, GIT revision 10755:d540dda:20160509.
