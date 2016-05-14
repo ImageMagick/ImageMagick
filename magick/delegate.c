@@ -99,11 +99,11 @@ static const char
     "  <delegate decode=\"hpgl\" command=\"&quot;hp2xx&quot; -q -m eps -f `basename &quot;%o&quot;` &quot;%i&quot;     mv -f `basename &quot;%o&quot;` &quot;%o&quot;\"/>"
     "  <delegate decode=\"htm\" command=\"&quot;html2ps&quot; -U -o &quot;%o&quot; &quot;%i&quot;\"/>"
     "  <delegate decode=\"html\" command=\"&quot;html2ps&quot; -U -o &quot;%o&quot; &quot;%i&quot;\"/>"
-    "  <delegate decode=\"https\" command=\"&quot;curl&quot; -s -k -L -o &quot;%o&quot; &quot;https:%F&quot;\"/>"
+    "  <delegate decode=\"https\" command=\"&quot;curl&quot; -s -k -L -o &quot;%o&quot; &quot;https:%M&quot;\"/>"
     "  <delegate decode=\"ilbm\" command=\"&quot;ilbmtoppm&quot; &quot;%i&quot; &gt; &quot;%o&quot;\"/>"
     "  <delegate decode=\"man\" command=\"&quot;groff&quot; -man -Tps &quot;%i&quot; &gt; &quot;%o&quot;\"/>"
     "  <delegate decode=\"mpeg:decode\" stealth=\"True\" command=\"&quot;ffmpeg&quot; -nostdin -v -1 -vframes %S -i &quot;%i&quot; -vcodec pam -an -f rawvideo -y &quot;%u.pam&quot; 2&gt; &quot;%Z&quot;\"/>"
-    "  <delegate decode=\"null\" encode=\"mpeg:encode\" stealth=\"True\" command=\"&quot;ffmpeg&quot; -nostdin -v -1 -mbd rd -trellis 2 -cmp 2 -subcmp 2 -g 300 -i &quot;%F%%d.jpg&quot; &quot;%u.%m&quot; 2&gt; &quot;%Z&quot;\"/>"
+    "  <delegate decode=\"null\" encode=\"mpeg:encode\" stealth=\"True\" command=\"&quot;ffmpeg&quot; -nostdin -v -1 -mbd rd -trellis 2 -cmp 2 -subcmp 2 -g 300 -i &quot;%M%%d.jpg&quot; &quot;%u.%m&quot; 2&gt; &quot;%Z&quot;\"/>"
     "  <delegate decode=\"pcl:color\" stealth=\"True\" command=\"&quot;pcl6&quot; -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=ppmraw&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;%s&quot;\"/>"
     "  <delegate decode=\"pcl:cmyk\" stealth=\"True\" command=\"&quot;pcl6&quot; -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=bmpsep8&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;%s&quot;\"/>"
     "  <delegate decode=\"pcl:mono\" stealth=\"True\" command=\"&quot;pcl6&quot; -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=pbmraw&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;%s&quot;\"/>"
@@ -122,11 +122,11 @@ static const char
     "  <delegate decode=\"ps:mono\" stealth=\"True\" command=\"&quot;gs&quot; -q -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=pnmraw&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;-f%s&quot; &quot;-f%s&quot;\"/>"
     "  <delegate decode=\"rgba\" encode=\"rle\" mode=\"encode\" command=\"&quot;rawtorle&quot; -o &quot;%o&quot; -v &quot;%i&quot;\"/>"
     "  <delegate decode=\"scan\" command=\"&quot;scanimage&quot; -d &quot;%i&quot; &gt; &quot;%o&quot;\"/>"
-    "  <delegate encode=\"show\" spawn=\"True\" command=\"&quot;display&quot; -immutable -delay 0 -title &quot;%F&quot;\"  &quot;%i&quot;\"/>"
+    "  <delegate encode=\"show\" spawn=\"True\" command=\"&quot;display&quot; -immutable -delay 0 -title &quot;%M&quot;\"  &quot;%i&quot;\"/>"
     "  <delegate decode=\"shtml\" command=\"&quot;html2ps&quot; -U -o &quot;%o&quot; &quot;%i&quot;\"/>"
     "  <delegate decode=\"svg\" command=\"&quot;rsvg&quot; &quot;%i&quot; &quot;%o&quot;\"/>"
     "  <delegate decode=\"txt\" encode=\"ps\" mode=\"bi\" command=\"&quot;enscript&quot; -o &quot;%o&quot; &quot;%i&quot;\"/>"
-    "  <delegate encode=\"win\" spawn=\"True\" command=\"&quot;display&quot; -immutable -delay 0 -title &quot;%F&quot;\"  &quot;%i&quot;\"/>"
+    "  <delegate encode=\"win\" spawn=\"True\" command=\"&quot;display&quot; -immutable -delay 0 -title &quot;%M&quot;\"  &quot;%i&quot;\"/>"
     "  <delegate decode=\"wmf\" command=\"&quot;wmf2eps&quot; -o &quot;%o&quot; &quot;%i&quot;\"/>"
     "</delegatemap>";
 
@@ -2261,7 +2261,7 @@ static MagickBooleanType LoadDelegateCache(LinkedListInfo *delegate_cache,
               }
 #endif
             (void) SubstituteString((char **) &commands,"&amp;","&");
-            (void) SubstituteString((char **) &commands,"&quot;","\"");
+            (void) SubstituteString((char **) &commands,"&quot;","'");
             (void) SubstituteString((char **) &commands,"&gt;",">");
             (void) SubstituteString((char **) &commands,"&lt;","<");
             delegate_info->commands=commands;
