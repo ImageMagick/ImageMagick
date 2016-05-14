@@ -305,10 +305,6 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (read_info->scenes != (char *) NULL)
         *read_info->scenes='\0';
     }
-  option=GetImageOption(image_info,"authenticate");
-  if (option != (const char *) NULL)
-    (void) FormatLocaleString(options+strlen(options),MagickPathExtent,
-      " -sXPSPassword=\'%s\'",option);
   (void) CopyMagickString(filename,read_info->filename,MagickPathExtent);
   (void) AcquireUniqueFilename(read_info->filename);
   (void) FormatLocaleString(command,MagickPathExtent,

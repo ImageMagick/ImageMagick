@@ -736,10 +736,6 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (read_info->scenes != (char *) NULL)
         *read_info->scenes='\0';
     }
-  option=GetImageOption(image_info,"authenticate");
-  if (option != (const char *) NULL)
-    (void) FormatLocaleString(options+strlen(options),MagickPathExtent,
-      " -sPDFPassword=\'%s\'",option);
   (void) CopyMagickString(filename,read_info->filename,MagickPathExtent);
   (void) AcquireUniqueFilename(filename);
   (void) RelinquishUniqueFileResource(filename);
