@@ -874,10 +874,10 @@ MagickExport void RelinquishMagickResource(const ResourceType type,
     }
     case HeightResource:
     {
-      resource_info.width=(MagickOffsetType) size;
-      (void) FormatMagickSize((MagickSizeType) resource_info.width,MagickFalse,
+      resource_info.height=(MagickOffsetType) size;
+      (void) FormatMagickSize((MagickSizeType) resource_info.height,MagickFalse,
         "P",MagickFormatExtent,resource_current);
-      (void) FormatMagickSize(resource_info.width_limit,MagickFalse,"P",
+      (void) FormatMagickSize(resource_info.height_limit,MagickFalse,"P",
         MagickFormatExtent,resource_limit);
       break;
     }
