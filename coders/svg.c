@@ -822,6 +822,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
   svg_info->scale[svg_info->n]=svg_info->scale[svg_info->n-1];
   color=AcquireString("none");
   units=AcquireString("userSpaceOnUse");
+  *id='\0';
+  *token='\0';
   value=(const char *) NULL;
   if (attributes != (const xmlChar **) NULL)
     for (i=0; (attributes[i] != (const xmlChar *) NULL); i+=2)
@@ -2188,8 +2190,12 @@ static void SVGStartElement(void *context,const xmlChar *name,
           if ((svg_info->view_box.width == 0.0) ||
               (svg_info->view_box.height == 0.0))
             svg_info->view_box=svg_info->bounds;
-          svg_info->width=(size_t) floor(svg_info->bounds.width+0.5);
-          svg_info->height=(size_t) floor(svg_info->bounds.height+0.5);
+          svg_info->width=0;
+          if (svg_info->bounds.width > 0.0)
+            svg_info->width=(size_t) floor(svg_info->bounds.width+0.5);
+          svg_info->height=0;
+          if (svg_info->bounds.height > 0.0)
+            svg_info->height=(size_t) floor(svg_info->bounds.height+0.5);
           (void) FormatLocaleFile(svg_info->file,"viewbox 0 0 %.20g %.20g\n",
             (double) svg_info->width,(double) svg_info->height);
           sx=(double) svg_info->width/svg_info->view_box.width;
