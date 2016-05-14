@@ -16,16 +16,15 @@
 
     decode="in_format" encode="out_format"
 
-  specify the rules for converting from in_format to out_format These
-  rules may be used to translate directly between formats.
+  specify the rules for converting from in_format to out_format.  Use these
+  rules to translate directly between formats.
 
   Commands which specify only
 
     decode="in_format"
 
   specify the rules for converting from in_format to some format that
-  ImageMagick will automatically recognize. These rules are used to
-  decode formats.
+  ImageMagick automatically recognizes. Use these rules to decode formats.
 
   Commands which specify only
 
@@ -33,8 +32,7 @@
 
   specify the rules for an "encoder" which may accept any input format.
 
-  For delegates other than ps:*, pcl:*, and mpeg:* the substitution rules are
-  as follows:
+  The substitution rules are as follows:
 
     %a  authentication passphrase
     %b  image file size in bytes
@@ -58,8 +56,8 @@
   If stealth="True" the delegate is not listed in user requested
   "-list delegate" listings. These are typically special internal delegates.
 
-  If spawn="True" ImageMagick will not wait for the delegate to finish, nor will
-  it read any output image.
+  If spawn="True", ImageMagick does not wait for the delegate to finish, nor
+  will it read any output image.
 -->
 <delegatemap>
   <delegate decode="bpg" command="&quot;@BPGDecodeDelegate@&quot; -b 16 -o &quot;%o.png&quot; &quot;%i&quot;; @MVDelegate@ &quot;%o.png&quot; &quot;%o&quot;"/>
