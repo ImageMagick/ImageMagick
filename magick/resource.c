@@ -1111,7 +1111,7 @@ MagickExport MagickBooleanType ResourceComponentGenesis(void)
         100.0));
       limit=DestroyString(limit);
     }
-  (void) SetMagickResourceLimit(HeightResource,resource_info.width_limit);
+  (void) SetMagickResourceLimit(HeightResource,resource_info.height_limit);
   limit=GetEnvironmentValue("MAGICK_HEIGHT_LIMIT");
   if (limit != (char *) NULL)
     {
