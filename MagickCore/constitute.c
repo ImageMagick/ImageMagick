@@ -499,6 +499,9 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     }
   else
     {
+      MagickBooleanType
+        status;
+
       delegate_info=GetDelegateInfo(read_info->magick,(char *) NULL,exception);
       if (delegate_info == (const DelegateInfo *) NULL)
         {
@@ -524,13 +527,14 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       *read_info->filename='\0';
       if (GetDelegateThreadSupport(delegate_info) == MagickFalse)
         LockSemaphoreInfo(delegate_info->semaphore);
-      (void) InvokeDelegate(read_info,image,read_info->magick,(char *) NULL,
+      status=InvokeDelegate(read_info,image,read_info->magick,(char *) NULL,
         exception);
       if (GetDelegateThreadSupport(delegate_info) == MagickFalse)
         UnlockSemaphoreInfo(delegate_info->semaphore);
       image=DestroyImageList(image);
       read_info->temporary=MagickTrue;
-      (void) SetImageInfo(read_info,0,exception);
+      if (status != MagickFalse)
+        (void) SetImageInfo(read_info,0,exception);
       magick_info=GetMagickInfo(read_info->magick,exception);
       if ((magick_info == (const MagickInfo *) NULL) ||
           (GetImageDecoder(magick_info) == (DecodeImageHandler *) NULL))

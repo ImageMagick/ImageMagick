@@ -1696,7 +1696,6 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
   assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-
   rights=ExecutePolicyRights;
   if (IsRightsAuthorized(DelegatePolicyDomain,rights,decode) == MagickFalse)
     {
