@@ -1,5 +1,5 @@
 2016-05-15  6.9.4-2 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 6.9.4-2, GIT revision 18209:0445144:20160515.
+  * Release ImageMagick version 6.9.4-2, GIT revision 10776:4e2b7c0:20160515.
 
 2016-05-10  6.9.4-2 Cristy  <quetzlzacatenango@image...>
   * Quote passwords when passed to a delegate program.
