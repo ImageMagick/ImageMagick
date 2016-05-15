@@ -1,3 +1,6 @@
+2016-05-15  7.0.1-4 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.1-4, GIT revision 18209:0445144:20160515.
+
 2016-05-10  7.0.1-4 Cristy  <quetzlzacatenango@image...>
   * Quote passwords when passed to a delegate program.
   * Iterate channels over source image rather than destination (bug report
