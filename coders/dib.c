@@ -506,8 +506,8 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Microsoft Windows 3.X DIB image file.
   */
-  dib_info.width=(short) ReadBlobLSBLong(image);
-  dib_info.height=(short) ReadBlobLSBLong(image);
+  dib_info.width=ReadBlobLSBSignedLong(image);
+  dib_info.height=ReadBlobLSBSignedLong(image);
   dib_info.planes=ReadBlobLSBShort(image);
   dib_info.bits_per_pixel=ReadBlobLSBShort(image);
   dib_info.compression=ReadBlobLSBLong(image);
