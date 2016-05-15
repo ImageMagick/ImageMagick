@@ -2188,9 +2188,11 @@ static MagickBooleanType LoadDelegateCache(LinkedListInfo *delegate_cache,
                   path);
                 (void) SubstituteString((char **) &commands,"\\","/");
               }
+            (void) SubstituteString((char **) &commands,"&quot;","\"");
+#else
+            (void) SubstituteString((char **) &commands,"&quot;","'");
 #endif
             (void) SubstituteString((char **) &commands,"&amp;","&");
-            (void) SubstituteString((char **) &commands,"&quot;","'");
             (void) SubstituteString((char **) &commands,"&gt;",">");
             (void) SubstituteString((char **) &commands,"&lt;","<");
             delegate_info->commands=commands;
