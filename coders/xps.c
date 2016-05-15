@@ -112,9 +112,6 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *options,
     input_filename[MagickPathExtent];
 
-  const char
-    *option;
-
   const DelegateInfo
     *delegate_info;
 
