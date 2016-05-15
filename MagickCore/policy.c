@@ -669,7 +669,8 @@ MagickExport MagickBooleanType ListPolicyInfo(FILE *file,
     domain=CommandOptionToMnemonic(MagickPolicyDomainOptions,
       policy_info[i]->domain);
     (void) FormatLocaleFile(file,"  Policy: %s\n",domain);
-    if ((policy_info[i]->domain == ResourcePolicyDomain) ||
+    if ((policy_info[i]->domain == CachePolicyDomain) ||
+        (policy_info[i]->domain == ResourcePolicyDomain) ||
         (policy_info[i]->domain == SystemPolicyDomain))
       {
         if (policy_info[i]->name != (char *) NULL)
@@ -823,8 +824,8 @@ static MagickBooleanType LoadPolicyCache(LinkedListInfo *policy_cache,
                   file_xml=FileToXML(path,~0UL);
                   if (file_xml != (char *) NULL)
                     {
-                      status&=LoadPolicyCache(policy_cache,file_xml,path,depth+1,
-                        exception);
+                      status&=LoadPolicyCache(policy_cache,file_xml,path,
+                        depth+1,exception);
                       file_xml=DestroyString(file_xml);
                     }
                 }

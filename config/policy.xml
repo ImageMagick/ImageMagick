@@ -64,5 +64,5 @@
   <!-- <policy domain="coder" rights="none" pattern="MVG" /> -->
   <!-- <policy domain="delegate" rights="none" pattern="HTTPS" /> -->
   <!-- <policy domain="path" rights="none" pattern="@*" /> -->
-  <policy domain="cache" name="shared-secret" value="passphrase"/>
+  <policy domain="cache" name="shared-secret" value="passphrase" stealth="true"/>
 </policymap>

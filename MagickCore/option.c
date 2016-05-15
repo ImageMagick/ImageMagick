@@ -1541,6 +1541,7 @@ static const OptionInfo
   PolicyDomainOptions[] =
   {
     { "Undefined", UndefinedPolicyDomain, UndefinedOptionFlag, MagickTrue },
+    { "Cache", CachePolicyDomain, UndefinedOptionFlag, MagickFalse },
     { "Coder", CoderPolicyDomain, UndefinedOptionFlag, MagickFalse },
     { "Delegate", DelegatePolicyDomain, UndefinedOptionFlag, MagickFalse },
     { "Filter", FilterPolicyDomain, UndefinedOptionFlag, MagickFalse },

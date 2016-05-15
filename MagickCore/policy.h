@@ -33,7 +33,8 @@ typedef enum
   FilterPolicyDomain,
   PathPolicyDomain,
   ResourcePolicyDomain,
-  SystemPolicyDomain
+  SystemPolicyDomain,
+  CachePolicyDomain
 } PolicyDomain;
 
 typedef enum
