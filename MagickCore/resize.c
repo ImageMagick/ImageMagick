@@ -149,8 +149,6 @@ static double
 static double Blackman(const double x,
   const ResizeFilter *magick_unused(resize_filter))
 {
-  magick_unreferenced(resize_filter);
-
   /*
     Blackman: 2nd order cosine windowing function:
       0.42 + 0.5 cos(pi x) + 0.08 cos(2pi x)
@@ -159,14 +157,13 @@ static double Blackman(const double x,
     five flops.
   */
   const double cosine=cos((double) (MagickPI*x));
+  magick_unreferenced(resize_filter);
   return(0.34+cosine*(0.5+cosine*0.16));
 }
 
 static double Bohman(const double x,
   const ResizeFilter *magick_unused(resize_filter))
 {
-  magick_unreferenced(resize_filter);
-
   /*
     Bohman: 2rd Order cosine windowing function:
       (1-x) cos(pi x) + sin(pi x) / pi.
@@ -177,6 +174,7 @@ static double Bohman(const double x,
   */
   const double cosine=cos((double) (MagickPI*x));
   const double sine=sqrt(1.0-cosine*cosine);
+  magick_unreferenced(resize_filter);
   return((1.0-x)*cosine+(1.0/MagickPI)*sine);
 }
 
@@ -284,26 +282,24 @@ static double Gaussian(const double x,const ResizeFilter *resize_filter)
 static double Hann(const double x,
   const ResizeFilter *magick_unused(resize_filter))
 {
-  magick_unreferenced(resize_filter);
-
   /*
     Cosine window function:
       0.5+0.5*cos(pi*x).
   */
   const double cosine=cos((double) (MagickPI*x));
+  magick_unreferenced(resize_filter);
   return(0.5+0.5*cosine);
 }
 
 static double Hamming(const double x,
   const ResizeFilter *magick_unused(resize_filter))
 {
-  magick_unreferenced(resize_filter);
-
   /*
     Offset cosine window function:
      .54 + .46 cos(pi x).
   */
   const double cosine=cos((double) (MagickPI*x));
+  magick_unreferenced(resize_filter);
   return(0.54+0.46*cosine);
 }
 
