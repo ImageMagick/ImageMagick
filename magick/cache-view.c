@@ -115,7 +115,6 @@ MagickExport CacheView *AcquireAuthenticCacheView(const Image *image,
     *magick_restrict cache_view;
 
   cache_view=AcquireVirtualCacheView(image,exception);
-  (void) SyncImagePixelCache(cache_view->image,exception);
   return(cache_view);
 }
 
