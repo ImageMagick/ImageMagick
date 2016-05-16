@@ -720,14 +720,14 @@ static Image *ReadMATImageV4(const ImageInfo *image_info,Image *image,
   pixels=(unsigned char *) GetQuantumPixels(quantum_info);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    int
-      status;
+    ssize_t
+      count;
 
     register PixelPacket
       *magick_restrict q;
 
-    status=ReadBlob(image,depth/8*image->columns,(unsigned char *) pixels);
-    if (status == -1)
+    count=ReadBlob(image,depth/8*image->columns,(unsigned char *) pixels);
+    if (count == -1)
       break;
     q=QueueAuthenticPixels(image,0,image->rows-y-1,image->columns,1,exception);
     if (q == (PixelPacket *) NULL)
