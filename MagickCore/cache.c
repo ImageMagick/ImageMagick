@@ -3504,6 +3504,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
             }
         }
       RelinquishMagickResource(DiskResource,cache_info->length);
+      cache_info->type=UndefinedCache;
       (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
         "CacheResourcesExhausted","`%s'",image->filename);
       return(MagickFalse);
@@ -3516,6 +3517,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
   if (OpenPixelCacheOnDisk(cache_info,mode) == MagickFalse)
     {
       RelinquishMagickResource(DiskResource,cache_info->length);
+      cache_info->type=UndefinedCache;
       ThrowFileException(exception,CacheError,"UnableToOpenPixelCache",
         image->filename);
       return(MagickFalse);
@@ -3524,6 +3526,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
     cache_info->length);
   if (status == MagickFalse)
     {
+      cache_info->type=UndefinedCache;
       ThrowFileException(exception,CacheError,"UnableToExtendCache",
         image->filename);
       return(MagickFalse);
@@ -3582,6 +3585,8 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
                   (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s",
                     message);
                 }
+              if (status == MagickFalse)
+                cache_info->type=UndefinedCache;
               return(status);
             }
         }
@@ -3606,6 +3611,8 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
         cache_info->number_channels,format);
       (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s",message);
     }
+  if (status == MagickFalse)
+    cache_info->type=UndefinedCache;
   return(status);
 }
 

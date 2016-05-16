@@ -1311,7 +1311,6 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
               status=SetImageExtent(image,image->columns,image->rows,exception);
               if (status == MagickFalse)
                 break;
-
               if ((image->colors == 0) && (bpp != 24))
                 {
                   size_t
