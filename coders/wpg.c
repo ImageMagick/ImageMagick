@@ -1323,16 +1323,6 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                 break;
               if ((image->colors == 0) && (bpp != 24))
                 {
-                  image->colors=one << bpp;
-                  if (!AcquireImageColormap(image,image->colors))
-                    {
-                    NoMemory:
-                      ThrowReaderException(ResourceLimitError,
-                        "MemoryAllocationFailed");
-                    }
-                  /* printf("Load default colormap \n"); */
-              if ((image->colors == 0) && (bpp != 24))
-                {
                   size_t
                     one;
 
