@@ -1,11 +1,13 @@
 2016-05-15  6.9.4-2 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 6.9.4-2, GIT revision 10776:4e2b7c0:20160515.
+  * Release ImageMagick version 6.9.4-2, GIT revision 10778:52dae14:20160516.
 
 2016-05-10  6.9.4-2 Cristy  <quetzlzacatenango@image...>
   * Quote passwords when passed to a delegate program.
   * Can read geo-related EXIF metdata once-again (reference
     https://github.com/ImageMagick/ImageMagick/issues/198).
   * Sanitize all delegate emedded formatting characters.
+  * Don't sync pixel cache in AcquireAuthenticCacheView() (bug report from
+    Hanno Böck).
 
 2016-05-09  6.9.4-1 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 6.9.4-1, GIT revision 10755:d540dda:20160509.
