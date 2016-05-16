@@ -824,7 +824,10 @@ MagickExport Image *CloneImage(const Image *image,const size_t columns,
       clone_image->colormap=(PixelPacket *) AcquireQuantumMemory(length,
         sizeof(*clone_image->colormap));
       if (clone_image->colormap == (PixelPacket *) NULL)
-        ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+        {
+          clone_image=DestroyImage(clone_image);
+          ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+        }
       (void) CopyMagickMemory(clone_image->colormap,image->colormap,length*
         sizeof(*clone_image->colormap));
     }

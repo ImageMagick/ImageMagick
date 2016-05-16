@@ -3700,6 +3700,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
             }
         }
       RelinquishMagickResource(DiskResource,cache_info->length);
+      cache_info->type=UndefinedCache;
       (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
         "CacheResourcesExhausted","`%s'",image->filename);
       return(MagickFalse);
@@ -3712,6 +3713,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
   if (OpenPixelCacheOnDisk(cache_info,mode) == MagickFalse)
     {
       RelinquishMagickResource(DiskResource,cache_info->length);
+      cache_info->type=UndefinedCache;
       ThrowFileException(exception,CacheError,"UnableToOpenPixelCache",
         image->filename);
       return(MagickFalse);
@@ -3720,6 +3722,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
     cache_info->length);
   if (status == MagickFalse)
     {
+      cache_info->type=UndefinedCache;
       ThrowFileException(exception,CacheError,"UnableToExtendCache",
         image->filename);
       return(MagickFalse);
@@ -3749,6 +3752,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
               /*
                 Create file-backed memory-mapped pixel cache.
               */
+              status=MagickTrue;
               (void) ClosePixelCacheOnDisk(cache_info);
               cache_info->type=MapCache;
               cache_info->mapped=MagickTrue;
@@ -3776,7 +3780,9 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
                   (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s",
                     message);
                 }
-              return(MagickTrue);
+              if (status == MagickFalse)
+                cache_info->type=UndefinedCache;
+              return(status);
             }
         }
       RelinquishMagickResource(MapResource,cache_info->length);
@@ -3797,7 +3803,9 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
         cache_info->columns,(double) cache_info->rows,format);
       (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s",message);
     }
-  return(MagickTrue);
+  if (status == MagickFalse)
+    cache_info->type=UndefinedCache;
+  return(status);
 }
 
 /*
