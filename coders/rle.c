@@ -316,10 +316,11 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
          number_planes_filled))
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     pixel_info=AcquireVirtualMemory(image->columns,image->rows*
-      number_planes_filled*sizeof(*pixels));
+      MagickMax(number_planes_filled,4)*sizeof(*pixels));
     if (pixel_info == (MemoryInfo *) NULL)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-    pixel_info_length=image->columns*image->rows*number_planes_filled;
+    pixel_info_length=image->columns*image->rows*
+      MagickMax(number_planes_filled,4);
     pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
     if ((flags & 0x01) && !(flags & 0x02))
       {
