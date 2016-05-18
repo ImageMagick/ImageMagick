@@ -1,4 +1,7 @@
 2016-05-15  6.9.4-3 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 6.9.4-3, GIT revision 10789:f7c2e89:20160518.
+
+2016-05-15  6.9.4-3 Cristy  <quetzlzacatenango@image...>
   * Fix pixel cache on disk regression (reference
     https://github.com/ImageMagick/ImageMagick/issues/202).
 
