@@ -2006,6 +2006,7 @@ static void ImportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
   unsigned int
     pixel;
 
+  pixel=0;
   switch (quantum_info->depth)
   {
     case 1:
