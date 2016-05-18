@@ -490,10 +490,12 @@ static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info)
   if (polygon_info == (PolygonInfo *) NULL)
     return((PolygonInfo *) NULL);
   number_edges=16;
-  polygon_info->edges=(EdgeInfo *) AcquireQuantumMemory((size_t) number_edges,
+  polygon_info->edges=(EdgeInfo *) AcquireQuantumMemory(number_edges,
     sizeof(*polygon_info->edges));
   if (polygon_info->edges == (EdgeInfo *) NULL)
     return((PolygonInfo *) NULL);
+  (void) ResetMagickMemory(polygon_info->edges,0,number_edges*
+    sizeof(*polygon_info->edges));
   direction=0;
   edge=0;
   ghostline=MagickFalse;
