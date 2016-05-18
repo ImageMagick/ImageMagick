@@ -361,8 +361,7 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
 %
 %  The format of the ConvertPathToPolygon method is:
 %
-%      PolygonInfo *ConvertPathToPolygon(const DrawInfo *draw_info,
-%        const PathInfo *path_info)
+%      PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info)
 %
 %  A description of each parameter follows:
 %
@@ -455,8 +454,7 @@ static void ReversePoints(PointInfo *points,const size_t number_points)
   }
 }
 
-static PolygonInfo *ConvertPathToPolygon(
-  const DrawInfo *magick_unused(draw_info),const PathInfo *path_info)
+static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info)
 {
   long
     direction,
@@ -484,8 +482,6 @@ static PolygonInfo *ConvertPathToPolygon(
     number_edges,
     number_points;
 
-  magick_unreferenced(draw_info);
-
   /*
     Convert a path to the more efficient sorted rendering form.
   */
@@ -493,10 +489,12 @@ static PolygonInfo *ConvertPathToPolygon(
   if (polygon_info == (PolygonInfo *) NULL)
     return((PolygonInfo *) NULL);
   number_edges=16;
-  polygon_info->edges=(EdgeInfo *) AcquireQuantumMemory((size_t) number_edges,
+  polygon_info->edges=(EdgeInfo *) AcquireQuantumMemory(number_edges,
     sizeof(*polygon_info->edges));
   if (polygon_info->edges == (EdgeInfo *) NULL)
     return((PolygonInfo *) NULL);
+  (void) ResetMagickMemory(polygon_info->edges,0,number_edges*
+    sizeof(*polygon_info->edges));
   direction=0;
   edge=0;
   ghostline=MagickFalse;
@@ -3653,7 +3651,7 @@ static PolygonInfo **AcquirePolygonThreadSet(const DrawInfo *draw_info,
     return(DestroyPolygonThreadSet(polygon_info));
   for (i=0; i < (ssize_t) number_threads; i++)
   {
-    polygon_info[i]=ConvertPathToPolygon(draw_info,path_info);
+    polygon_info[i]=ConvertPathToPolygon(path_info);
     if (polygon_info[i] == (PolygonInfo *) NULL)
       return(DestroyPolygonThreadSet(polygon_info));
   }
