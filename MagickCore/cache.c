@@ -3540,9 +3540,13 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
       status=AcquireMagickResource(MapResource,cache_info->length);
       if ((status == MagickFalse) && (cache_info->type != MapCache) &&
           (cache_info->type != MemoryCache))
-        cache_info->type=DiskCache;
+        {
+          status=MagickTrue;
+          cache_info->type=DiskCache;
+        }
       else
         {
+          status=MagickTrue;
           cache_info->pixels=(Quantum *) MapBlob(cache_info->file,mode,
             cache_info->offset,(size_t) cache_info->length);
           if (cache_info->pixels == (Quantum *) NULL)
@@ -3555,7 +3559,6 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
               /*
                 Create file-backed memory-mapped pixel cache.
               */
-              status=MagickTrue;
               (void) ClosePixelCacheOnDisk(cache_info);
               cache_info->type=MapCache;
               cache_info->mapped=MagickTrue;

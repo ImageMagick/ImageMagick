@@ -145,10 +145,10 @@ static int MagickMain(int argc,char **argv)
   status=MagickCommandGenesis(image_info,MagickCommands[i].command,argc,argv,
     MagickCommands[i].use_metadata ? &metadata : (char **) NULL,exception);
   if (metadata != (char *) NULL)
-  {
-    (void) fputs(metadata,stdout);
-    metadata=DestroyString(metadata);
-  }
+    {
+      (void) fputs(metadata,stdout);
+      metadata=DestroyString(metadata);
+    }
   if (MagickCommands[i].command != CompareImagesCommand)
     exit_code=status != MagickFalse ? 0 : 1;
   else

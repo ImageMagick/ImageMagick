@@ -1,3 +1,10 @@
+2016-05-18  7.0.1-5 Cristy  <quetzlzacatenango@image...>
+  * Process channels independently for -channel -equalize (reference
+    https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=29708).
+  * Fix pixel cache on disk regression (reference
+    https://github.com/ImageMagick/ImageMagick/issues/202).
+
+
 2016-05-15  7.0.1-4 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.1-4, GIT revision 10778:52dae14:20160516.
 
