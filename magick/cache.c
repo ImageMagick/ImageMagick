@@ -3597,6 +3597,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
       if (((cache_info->type == UndefinedCache) && (status != MagickFalse)) ||
           (cache_info->type == MemoryCache))
         {
+          status=MagickTrue;
           cache_info->mapped=MagickFalse;
           cache_info->pixels=(PixelPacket *) MagickAssumeAligned(
             AcquireAlignedMemory(1,(size_t) cache_info->length));
@@ -3634,7 +3635,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
                     message);
                 }
               cache_info->storage_class=image->storage_class;
-              return(MagickTrue);
+              return(status);
             }
         }
       RelinquishMagickResource(MemoryResource,cache_info->length);
@@ -3665,6 +3666,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
               /*
                 Create a distributed pixel cache.
               */
+              status=MagickTrue;
               cache_info->type=DistributedCache;
               cache_info->storage_class=image->storage_class;
               cache_info->colorspace=image->colorspace;
@@ -3696,7 +3698,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
                   (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s",
                     message);
                 }
-              return(MagickTrue);
+              return(status);
             }
         }
       RelinquishMagickResource(DiskResource,cache_info->length);
@@ -3713,7 +3715,6 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
   if (OpenPixelCacheOnDisk(cache_info,mode) == MagickFalse)
     {
       RelinquishMagickResource(DiskResource,cache_info->length);
-      cache_info->type=UndefinedCache;
       ThrowFileException(exception,CacheError,"UnableToOpenPixelCache",
         image->filename);
       return(MagickFalse);
@@ -3722,7 +3723,6 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
     cache_info->length);
   if (status == MagickFalse)
     {
-      cache_info->type=UndefinedCache;
       ThrowFileException(exception,CacheError,"UnableToExtendCache",
         image->filename);
       return(MagickFalse);
@@ -3783,8 +3783,6 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
                   (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s",
                     message);
                 }
-              if (status == MagickFalse)
-                cache_info->type=UndefinedCache;
               return(status);
             }
         }
@@ -3806,8 +3804,6 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
         cache_info->columns,(double) cache_info->rows,format);
       (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s",message);
     }
-  if (status == MagickFalse)
-    cache_info->type=UndefinedCache;
   return(status);
 }
 
