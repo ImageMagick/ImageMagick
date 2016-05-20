@@ -180,7 +180,7 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
   char
     service[MaxTextExtent];
 
-  const char
+  char
     *shared_secret;
 
   int
@@ -204,12 +204,14 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
   */
   *session_key=0;
   shared_secret=GetPolicyValue("shared-secret");
-  if (shared_secret == (const char *) NULL)
+  if (shared_secret == (char *) NULL)
     {
+      shared_secret=DestroyString(shared_secret);
       (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
         "DistributedPixelCache","'%s'","shared secret expected");
       return(-1);
     }
+  shared_secret=DestroyString(shared_secret);
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
   NTInitializeWinsock(MagickTrue);
 #endif
@@ -758,7 +760,7 @@ static MagickBooleanType WriteDistributeCachePixels(SplayTreeInfo *registry,
 
 static HANDLER_RETURN_TYPE DistributePixelCacheClient(void *socket)
 {
-  const char
+  char
     *shared_secret;
 
   ExceptionInfo
@@ -797,11 +799,12 @@ static HANDLER_RETURN_TYPE DistributePixelCacheClient(void *socket)
     Distributed pixel cache client.
   */
   shared_secret=GetPolicyValue("shared-secret");
-  if (shared_secret == (const char *) NULL)
+  if (shared_secret == (char *) NULL)
     ThrowFatalException(CacheFatalError,"shared secret expected");
   p=session;
   (void) CopyMagickString((char *) p,shared_secret,MaxTextExtent);
   p+=strlen(shared_secret);
+  shared_secret=DestroyString(shared_secret);
   random_info=AcquireRandomInfo();
   secret=GetRandomKey(random_info,DPCSessionKeyLength);
   (void) memcpy(p,GetStringInfoDatum(secret),DPCSessionKeyLength);
