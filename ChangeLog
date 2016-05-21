@@ -1,5 +1,11 @@
-2016-05-15  6.9.4-3 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 6.9.4-3, GIT revision 10789:f7c2e89:20160518.
+2016-05-21  6.9.4-4 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 6.9.4-4, GIT revision 18241:d4f277c:20160521.
+
+2016-05-20  6.9.4-4 Cristy  <quetzlzacatenango@image...>
+  * Fixed proper placement of text annotation for east / west gravity.
+
+2016-05-15  6.9.4-4 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 6.9.4-4, GIT revision 10789:f7c2e89:20160518.
 
 2016-05-15  6.9.4-3 Cristy  <quetzlzacatenango@image...>
   * Fix pixel cache on disk regression (reference
