@@ -1,3 +1,9 @@
+2016-05-21  7.0.1-6 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.1-6, GIT revision 18241:d4f277c:20160521.
+
+2016-05-20  7.0.1-6 Cristy  <quetzlzacatenango@image...>
+  * Fixed proper placement of text annotation for east / west gravity.
+
 2016-05-18  7.0.1-5 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.1-5, GIT revision 10789:f7c2e89:20160518,
 
