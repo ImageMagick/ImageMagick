@@ -304,7 +304,7 @@ ModuleExport size_t RegisterURLImage(void)
 #endif
   entry->description=ConstantString("Uniform Resource Locator (http://)");
   entry->module=ConstantString("URL");
-  entry->stealth=MagickTrue;
+  entry->format_type=ImplicitFormatType;
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("HTTPS");
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) && \
@@ -313,7 +313,7 @@ ModuleExport size_t RegisterURLImage(void)
 #endif
   entry->description=ConstantString("Uniform Resource Locator (https://)");
   entry->module=ConstantString("URL");
-  entry->stealth=MagickTrue;
+  entry->format_type=ImplicitFormatType;
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("FTP");
 #if (defined(MAGICKCORE_WINDOWS_SUPPORT) && \
@@ -323,13 +323,13 @@ ModuleExport size_t RegisterURLImage(void)
 #endif
   entry->description=ConstantString("Uniform Resource Locator (ftp://)");
   entry->module=ConstantString("URL");
-  entry->stealth=MagickTrue;
+  entry->format_type=ImplicitFormatType;
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("FILE");
   entry->decoder=(DecodeImageHandler *) ReadURLImage;
   entry->description=ConstantString("Uniform Resource Locator (file://)");
   entry->module=ConstantString("URL");
-  entry->stealth=MagickTrue;
+  entry->format_type=ImplicitFormatType;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }
