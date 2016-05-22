@@ -147,9 +147,17 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   int
     unique_file;
 
-  image=(Image *) NULL;
   read_info=CloneImageInfo(image_info);
   SetImageInfoBlob(read_info,(void *) NULL,0);
+  if (LocaleCompare(read_info->magick,"file") == 0)
+    {
+      (void) CopyMagickString(read_info->filename,image_info->filename+2,
+        MagickPathExtent);
+      *read_info->magick='\0';
+      image=ReadImage(read_info,exception);
+      read_info=DestroyImageInfo(read_info);
+      return(GetFirstImageInList(image));
+    }
   file=(FILE *) NULL;
   unique_file=AcquireUniqueFileResource(read_info->filename);
   if (unique_file != -1)
@@ -166,13 +174,6 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   LocaleLower(filename);
   (void) ConcatenateMagickString(filename,image_info->filename,
     MagickPathExtent);
-  if (LocaleCompare(read_info->magick,"file") == 0)
-    {
-      (void) RelinquishUniqueFileResource(read_info->filename);
-      unique_file=(-1);
-      (void) CopyMagickString(read_info->filename,image_info->filename+2,
-        MagickPathExtent);
-    }
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) && \
     !(defined(__MINGW32__) || defined(__MINGW64__))
   (void) fclose(file);
@@ -234,28 +235,9 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #endif
   (void) fclose(file);
 #endif
-  {
-    ExceptionInfo
-      *sans;
-
-    ImageInfo
-      *clone_info;
-
-    /*
-      Guess image format from URL.
-    */
-    clone_info=CloneImageInfo(image_info);
-    sans=AcquireExceptionInfo();
-    (void) SetImageInfo(clone_info,0,sans);
-    (void) CopyMagickString(read_info->magick,clone_info->magick,
-      MagickPathExtent);
-    clone_info=DestroyImageInfo(clone_info);
-    sans=DestroyExceptionInfo(sans);
-  }
   *read_info->magick='\0';
   image=ReadImage(read_info,exception);
-  if (unique_file != -1)
-    (void) RelinquishUniqueFileResource(read_info->filename);
+  (void) RelinquishUniqueFileResource(read_info->filename);
   read_info=DestroyImageInfo(read_info);
   if (image != (Image *) NULL)
     GetPathComponent(image_info->filename,TailPath,image->filename);
