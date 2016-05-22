@@ -2901,6 +2901,14 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   image->compression=ZipCompression;
   image->columns=ping_width;
   image->rows=ping_height;
+
+  status=SetImageExtent(image,image->columns,image->rows);
+  if (status == MagickFalse)
+    {
+      InheritException(exception,&image->exception);
+      return(DestroyImageList(image));
+    }
+
   if (((int) ping_color_type == PNG_COLOR_TYPE_PALETTE) ||
       ((int) ping_bit_depth < 16 &&
       (int) ping_color_type == PNG_COLOR_TYPE_GRAY))
@@ -4588,6 +4596,13 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
   image->columns=jng_width;
   image->rows=jng_height;
   length=image->columns*sizeof(PixelPacket);
+
+  status=SetImageExtent(image,image->columns,image->rows);
+  if (status == MagickFalse)
+    {
+      InheritException(exception,&image->exception);
+      return(DestroyImageList(image));
+    }
 
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -12743,6 +12758,8 @@ static MagickBooleanType WriteJNGImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == MagickFalse)
     return(status);
+  if ((image->columns > 65535UL) || (image->rows > 65535UL))
+    ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit");
 
   /*
     Allocate a MngInfo structure.
