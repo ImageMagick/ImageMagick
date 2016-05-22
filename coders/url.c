@@ -302,14 +302,14 @@ ModuleExport size_t RegisterURLImage(void)
     (defined(MAGICKCORE_XML_DELEGATE) && defined(LIBXML_HTTP_ENABLED))
   entry->decoder=(DecodeImageHandler *) ReadURLImage;
 #endif
-  entry->flags|=CoderStealthFlag;
+  entry->format_type=ImplicitFormatType;
   (void) RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("URL","HTTPS","Uniform Resource Locator (https://)");
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) && \
     !(defined(__MINGW32__) || defined(__MINGW64__))
   entry->decoder=(DecodeImageHandler *) ReadURLImage;
 #endif
-  entry->flags|=CoderStealthFlag;
+  entry->format_type=ImplicitFormatType;
   (void) RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("URL","FTP","Uniform Resource Locator (ftp://)");
 #if (defined(MAGICKCORE_WINDOWS_SUPPORT) && \
@@ -317,11 +317,11 @@ ModuleExport size_t RegisterURLImage(void)
     (defined(MAGICKCORE_XML_DELEGATE) && defined(LIBXML_FTP_ENABLED))
   entry->decoder=(DecodeImageHandler *) ReadURLImage;
 #endif
-  entry->flags|=CoderStealthFlag;
+  entry->format_type=ImplicitFormatType;
   (void) RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("URL","FILE","Uniform Resource Locator (file://)");
   entry->decoder=(DecodeImageHandler *) ReadURLImage;
-  entry->flags|=CoderStealthFlag;
+  entry->format_type=ImplicitFormatType;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }
