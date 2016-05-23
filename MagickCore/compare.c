@@ -916,7 +916,7 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
     distortion[i]=0.0;
   rows=MagickMax(image->rows,reconstruct_image->rows);
   columns=MagickMax(image->columns,reconstruct_image->columns);
-  area=1.0/((double) columns*rows-1);
+  area=1.0/((double) columns*rows);
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
   for (y=0; y < (ssize_t) rows; y++)
