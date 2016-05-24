@@ -164,7 +164,7 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,
     filename[MaxTextExtent],
     geometry[MaxTextExtent],
     *p,
-    *text;
+    text[MaxTextExtent];
 
   DrawInfo
     *draw_info;
@@ -205,19 +205,8 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
-  if (GetBlobStreamData(image) == (unsigned char *) NULL)
-    text=FileToString(image->filename,~0UL,exception);
-  else
-    {
-      text=(char *) AcquireMagickMemory(GetBlobSize(image)+1);
-      if (text != (char *) NULL)
-        {
-          CopyMagickMemory(text,GetBlobStreamData(image),GetBlobSize(image));
-          text[GetBlobSize(image)]='\0';
-        }
-     }
-  if (text == (char *) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+  (void) ResetMagickMemory(text,0,sizeof(text));
+  (void) ReadBlobString(image,text);
   /*
     Set the page geometry.
   */
@@ -253,7 +242,6 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,
   status=SetImageExtent(image,image->columns,image->rows);
   if (status == MagickFalse)
     {
-      text=DestroyString(text);
       InheritException(exception,&image->exception);
       return(DestroyImageList(image));
     }
@@ -332,7 +320,6 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,
     AcquireNextImage(image_info,image);
     if (GetNextImageInList(image) == (Image *) NULL)
       {
-        text=DestroyString(text);
         image=DestroyImageList(image);
         return((Image *) NULL);
       }
@@ -360,7 +347,6 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,
   if (texture != (Image *) NULL)
     texture=DestroyImage(texture);
   draw_info=DestroyDrawInfo(draw_info);
-  text=DestroyString(text);
   (void) CloseBlob(image);
   return(GetFirstImageInList(image));
 }
