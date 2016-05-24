@@ -156,18 +156,20 @@ static MagickBooleanType IsTXT(const unsigned char *magick,const size_t length)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static Image *ReadTEXTImage(const ImageInfo *image_info,Image *image,
-  char *text,ExceptionInfo *exception)
+static Image *ReadTEXTImage(const ImageInfo *image_info,
+  ExceptionInfo *exception)
 {
   char
     filename[MagickPathExtent],
     geometry[MagickPathExtent],
-    *p;
+    *p,
+    *text;
 
   DrawInfo
     *draw_info;
 
   Image
+    *image,
     *texture;
 
   MagickBooleanType
@@ -195,6 +197,26 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,Image *image,
       image_info->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
+  image=AcquireImage(image_info,exception);
+  status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
+  if (status == MagickFalse)
+    {
+      image=DestroyImageList(image);
+      return((Image *) NULL);
+    }
+  if (GetBlobStreamData(image) == (unsigned char *) NULL)
+    text=FileToString(image->filename,~0UL,exception);
+  else
+    {
+      text=(char *) AcquireMagickMemory(GetBlobSize(image)+1);
+      if (text != (char *) NULL)
+        {
+          CopyMagickMemory(text,GetBlobStreamData(image),GetBlobSize(image));
+          text[GetBlobSize(image)]='\0';
+        }
+     }
+  if (text == (char *) NULL)
+    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   /*
     Set the page geometry.
   */
@@ -229,7 +251,10 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,Image *image,
     delta.y)+0.5);
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
-    return(DestroyImageList(image));
+    {
+      text=DestroyString(text);
+      return(DestroyImageList(image));
+    }
   image->page.x=0;
   image->page.y=0;
   texture=(Image *) NULL;
@@ -256,7 +281,10 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,Image *image,
   (void) CloneString(&draw_info->geometry,geometry);
   status=GetTypeMetrics(image,draw_info,&metrics,exception);
   if (status == MagickFalse)
-    ThrowReaderException(TypeError,"UnableToGetTypeMetrics");
+    {
+      text=DestroyString(text);
+      ThrowReaderException(TypeError,"UnableToGetTypeMetrics");
+    }
   page.y=(ssize_t) ceil((double) page.y+metrics.ascent-0.5);
   (void) FormatLocaleString(geometry,MagickPathExtent,"%gx%g%+g%+g",(double)
     image->columns,(double) image->rows,(double) page.x,(double) page.y);
@@ -305,6 +333,7 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,Image *image,
     AcquireNextImage(image_info,image,exception);
     if (GetNextImageInList(image) == (Image *) NULL)
       {
+        text=DestroyString(text);
         image=DestroyImageList(image);
         return((Image *) NULL);
       }
@@ -332,6 +361,7 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,Image *image,
   if (texture != (Image *) NULL)
     texture=DestroyImage(texture);
   draw_info=DestroyDrawInfo(draw_info);
+  text=DestroyString(text);
   (void) CloseBlob(image);
   return(GetFirstImageInList(image));
 }
@@ -422,7 +452,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) ResetMagickMemory(text,0,sizeof(text));
   (void) ReadBlobString(image,text);
   if (LocaleNCompare((char *) text,MagickID,strlen(MagickID)) != 0)
-    return(ReadTEXTImage(image_info,image,text,exception));
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   do
   {
     width=0;
