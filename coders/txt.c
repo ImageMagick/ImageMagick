@@ -157,18 +157,20 @@ static MagickBooleanType IsTXT(const unsigned char *magick,const size_t length)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static Image *ReadTEXTImage(const ImageInfo *image_info,Image *image,
-  char *text,ExceptionInfo *exception)
+static Image *ReadTEXTImage(const ImageInfo *image_info,
+  ExceptionInfo *exception)
 {
   char
     filename[MaxTextExtent],
     geometry[MaxTextExtent],
-    *p;
+    *p,
+    *text;
 
   DrawInfo
     *draw_info;
 
   Image
+    *image,
     *texture;
 
   MagickBooleanType
@@ -196,6 +198,26 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,Image *image,
       image_info->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
+  image=AcquireImage(image_info);
+  status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
+  if (status == MagickFalse)
+    {
+      image=DestroyImageList(image);
+      return((Image *) NULL);
+    }
+  if (GetBlobStreamData(image) == (unsigned char *) NULL)
+    text=FileToString(image->filename,~0UL,exception);
+  else
+    {
+      text=(char *) AcquireMagickMemory(GetBlobSize(image)+1);
+      if (text != (char *) NULL)
+        {
+          CopyMagickMemory(text,GetBlobStreamData(image),GetBlobSize(image));
+          text[GetBlobSize(image)]='\0';
+        }
+     }
+  if (text == (char *) NULL)
+    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   /*
     Set the page geometry.
   */
@@ -231,6 +253,7 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,Image *image,
   status=SetImageExtent(image,image->columns,image->rows);
   if (status == MagickFalse)
     {
+      text=DestroyString(text);
       InheritException(exception,&image->exception);
       return(DestroyImageList(image));
     }
@@ -309,6 +332,7 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,Image *image,
     AcquireNextImage(image_info,image);
     if (GetNextImageInList(image) == (Image *) NULL)
       {
+        text=DestroyString(text);
         image=DestroyImageList(image);
         return((Image *) NULL);
       }
@@ -336,6 +360,7 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,Image *image,
   if (texture != (Image *) NULL)
     texture=DestroyImage(texture);
   draw_info=DestroyDrawInfo(draw_info);
+  text=DestroyString(text);
   (void) CloseBlob(image);
   return(GetFirstImageInList(image));
 }
@@ -428,6 +453,8 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   (void) ResetMagickMemory(text,0,sizeof(text));
   (void) ReadBlobString(image,text);
+  if (LocaleNCompare((char *) text,MagickID,strlen(MagickID)) != 0)
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   do
   {
     width=0;
