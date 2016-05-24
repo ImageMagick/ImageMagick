@@ -163,7 +163,7 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,
     filename[MagickPathExtent],
     geometry[MagickPathExtent],
     *p,
-    *text;
+    text[MagickPathExtent];
 
   DrawInfo
     *draw_info;
@@ -204,19 +204,8 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
-  if (GetBlobStreamData(image) == (unsigned char *) NULL)
-    text=FileToString(image->filename,~0UL,exception);
-  else
-    {
-      text=(char *) AcquireMagickMemory(GetBlobSize(image)+1);
-      if (text != (char *) NULL)
-        {
-          CopyMagickMemory(text,GetBlobStreamData(image),GetBlobSize(image));
-          text[GetBlobSize(image)]='\0';
-        }
-     }
-  if (text == (char *) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+  (void) ResetMagickMemory(text,0,sizeof(text));
+  (void) ReadBlobString(image,text);
   /*
     Set the page geometry.
   */
@@ -251,10 +240,7 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,
     delta.y)+0.5);
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
-    {
-      text=DestroyString(text);
-      return(DestroyImageList(image));
-    }
+    return(DestroyImageList(image));
   image->page.x=0;
   image->page.y=0;
   texture=(Image *) NULL;
@@ -281,10 +267,7 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,
   (void) CloneString(&draw_info->geometry,geometry);
   status=GetTypeMetrics(image,draw_info,&metrics,exception);
   if (status == MagickFalse)
-    {
-      text=DestroyString(text);
-      ThrowReaderException(TypeError,"UnableToGetTypeMetrics");
-    }
+    ThrowReaderException(TypeError,"UnableToGetTypeMetrics");
   page.y=(ssize_t) ceil((double) page.y+metrics.ascent-0.5);
   (void) FormatLocaleString(geometry,MagickPathExtent,"%gx%g%+g%+g",(double)
     image->columns,(double) image->rows,(double) page.x,(double) page.y);
@@ -333,7 +316,6 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,
     AcquireNextImage(image_info,image,exception);
     if (GetNextImageInList(image) == (Image *) NULL)
       {
-        text=DestroyString(text);
         image=DestroyImageList(image);
         return((Image *) NULL);
       }
@@ -361,7 +343,6 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,
   if (texture != (Image *) NULL)
     texture=DestroyImage(texture);
   draw_info=DestroyDrawInfo(draw_info);
-  text=DestroyString(text);
   (void) CloseBlob(image);
   return(GetFirstImageInList(image));
 }
