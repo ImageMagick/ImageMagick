@@ -2515,9 +2515,11 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
       break;
     }
     case 'u': /* Unique filename */
+    {
       WarnNoImageInfoReturn("\"%%%c\"",letter);
       string=image_info->unique;
       break;
+    }
     case 'w': /* Image width (current) */
     {
       WarnNoImageReturn("\"%%%c\"",letter);
@@ -2686,8 +2688,10 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
       break;
     }
     case '%': /* percent escaped */
+    {
       string="%";
       break;
+    }
     case '@': /* Trim bounding box, without actually Trimming! */
     {
       RectangleInfo
