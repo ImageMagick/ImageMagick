@@ -4345,6 +4345,9 @@ MagickExport Image *ShadowImage(const Image *image,const double alpha,
   MagickBooleanType
     status;
 
+  PixelInfo
+    background_color;
+
   RectangleInfo
     border_info;
 
@@ -4362,7 +4365,7 @@ MagickExport Image *ShadowImage(const Image *image,const double alpha,
     return((Image *) NULL);
   if (IsGrayColorspace(image->colorspace) != MagickFalse)
     (void) SetImageColorspace(clone_image,sRGBColorspace,exception);
-  (void) SetImageVirtualPixelMethod(clone_image,TransparentVirtualPixelMethod,
+  (void) SetImageVirtualPixelMethod(clone_image,EdgeVirtualPixelMethod,
     exception);
   border_info.width=(size_t) floor(2.0*sigma+0.5);
   border_info.height=(size_t) floor(2.0*sigma+0.5);
@@ -4381,12 +4384,11 @@ MagickExport Image *ShadowImage(const Image *image,const double alpha,
     Shadow image.
   */
   status=MagickTrue;
+  background_color=border_image->background_color;
+  background_color.alpha_trait=BlendPixelTrait;
   image_view=AcquireAuthenticCacheView(border_image,exception);
   for (y=0; y < (ssize_t) border_image->rows; y++)
   {
-    PixelInfo
-      background_color;
-
     register Quantum
       *magick_restrict q;
 
@@ -4402,8 +4404,6 @@ MagickExport Image *ShadowImage(const Image *image,const double alpha,
         status=MagickFalse;
         continue;
       }
-    background_color=border_image->background_color;
-    background_color.alpha_trait=BlendPixelTrait;
     for (x=0; x < (ssize_t) border_image->columns; x++)
     {
       if (border_image->alpha_trait != UndefinedPixelTrait)
