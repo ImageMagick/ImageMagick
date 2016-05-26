@@ -1810,8 +1810,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                     if (LocaleCompare(keyword,"stroke-dashoffset") == 0)
                       {
                         (void) FormatLocaleFile(svg_info->file,
-                          "stroke-dashoffset %s\n",
-                          value);
+                          "stroke-dashoffset %s\n",value);
                         break;
                       }
                     if (LocaleCompare(keyword,"stroke-linecap") == 0)
@@ -1823,15 +1822,13 @@ static void SVGStartElement(void *context,const xmlChar *name,
                     if (LocaleCompare(keyword,"stroke-linejoin") == 0)
                       {
                         (void) FormatLocaleFile(svg_info->file,
-                          "stroke-linejoin '%s'\n",
-                          value);
+                          "stroke-linejoin '%s'\n",value);
                         break;
                       }
                     if (LocaleCompare(keyword,"stroke-miterlimit") == 0)
                       {
                         (void) FormatLocaleFile(svg_info->file,
-                          "stroke-miterlimit '%s'\n",
-                          value);
+                          "stroke-miterlimit '%s'\n",value);
                         break;
                       }
                     if (LocaleCompare(keyword,"stroke-opacity") == 0)
