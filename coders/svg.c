@@ -4160,13 +4160,11 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image,
                 GetNextToken(q,&q,extent,token);
                 if (*token == ',')
                   GetNextToken(q,&q,extent,token);
-                svg_info.bounds.height=StringToDouble(token,
-                  (char **) NULL);
+                svg_info.bounds.height=StringToDouble(token,(char **) NULL);
                 (void) FormatLocaleString(message,MagickPathExtent,
                   "<pattern id=\"%s\" x=\"%g\" y=\"%g\" width=\"%g\" "
-                  "height=\"%g\">\n",name,svg_info.bounds.x,
-                  svg_info.bounds.y,svg_info.bounds.width,
-                  svg_info.bounds.height);
+                  "height=\"%g\">\n",name,svg_info.bounds.x,svg_info.bounds.y,
+                  svg_info.bounds.width,svg_info.bounds.height);
                 (void) WriteBlobString(image,message);
                 break;
               }
@@ -4556,7 +4554,8 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image,
             status=MagickFalse;
             break;
           }
-        (void) CopyMagickString(message,"  <polyline points=\"",MagickPathExtent);
+        (void) CopyMagickString(message,"  <polyline points=\"",
+           MagickPathExtent);
         (void) WriteBlobString(image,message);
         length=strlen(message);
         for ( ; j < i; j++)
