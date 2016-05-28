@@ -21,6 +21,7 @@
 #include <time.h>
 #include "magick/cache.h"
 #include "magick/distribute-cache.h"
+#include "magick/opencl-private.h"
 #include "magick/random_.h"
 #include "magick/thread-private.h"
 #include "magick/semaphore.h"
@@ -125,6 +126,18 @@ typedef struct _NexusInfo
     signature;
 } NexusInfo;
 
+typedef struct _OpenCLCacheInfo
+{
+  cl_event
+    *events;
+
+  cl_mem
+    buffer;
+
+  cl_uint
+    event_count;
+} OpenCLCacheInfo;
+
 typedef struct _CacheInfo
 {
   ClassType
@@ -214,6 +227,9 @@ typedef struct _CacheInfo
 
   size_t
     signature;
+
+  OpenCLCacheInfo
+    *opencl;
 } CacheInfo;
 
 extern MagickExport Cache
@@ -274,6 +290,17 @@ extern MagickPrivate void
 
 extern MagickPrivate MagickBooleanType
   SyncImagePixelCache(Image *,ExceptionInfo *);
+
+#if defined(MAGICKCORE_OPENCL_SUPPORT)
+extern MagickPrivate const cl_event
+  *GetOpenCLEvents(const Image *,cl_uint *);
+
+extern MagickPrivate cl_mem
+  GetAuthenticOpenCLBuffer(const Image *,ExceptionInfo *);
+
+extern MagickPrivate void
+  AddOpenCLEvent(const Image *,cl_event);
+#endif
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

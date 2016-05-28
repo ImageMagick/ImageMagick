@@ -36,6 +36,7 @@ extern "C" {
   typedef void* cl_kernel;
   typedef void* cl_mem;
   typedef void* cl_platform_id;
+  typedef void* cl_uint;
   typedef struct { unsigned char t[8]; } cl_device_type; /* 64-bit */
 #else
 
@@ -163,9 +164,6 @@ typedef CL_API_ENTRY cl_int (CL_API_CALL *MAGICKpfn_clSetKernelArg)(
     size_t       arg_size,
     const void * arg_value) CL_API_SUFFIX__VERSION_1_0;
 
-/* Flush and Finish APIs */
-typedef CL_API_ENTRY cl_int (CL_API_CALL *MAGICKpfn_clFlush)(cl_command_queue command_queue) CL_API_SUFFIX__VERSION_1_0;
-
 typedef CL_API_ENTRY cl_int (CL_API_CALL *MAGICKpfn_clFinish)(cl_command_queue command_queue) CL_API_SUFFIX__VERSION_1_0;
 
 /* Enqueued Commands APIs */
@@ -236,6 +234,14 @@ typedef CL_API_ENTRY cl_int(CL_API_CALL *MAGICKpfn_clWaitForEvents)(
 typedef CL_API_ENTRY cl_int(CL_API_CALL *MAGICKpfn_clReleaseEvent)(
     cl_event event) CL_API_SUFFIX__VERSION_1_0;
 
+typedef CL_API_ENTRY cl_int(CL_API_CALL *MAGICKpfn_clRetainEvent)(
+    cl_event event) CL_API_SUFFIX__VERSION_1_0;
+
+typedef CL_API_ENTRY cl_int(CL_API_CALL *MAGICKpfn_clSetEventCallback)(
+    cl_event event,cl_int command_exec_callback_type,
+    void (CL_CALLBACK *MAGICKpfn_notify)(cl_event,cl_int,void *),
+    void *user_data) CL_API_SUFFIX__VERSION_1_1;
+
 /*
  *
  * vendor dispatch table structure
@@ -269,7 +275,6 @@ struct MagickLibraryRec
   MAGICKpfn_clCreateKernel                           clCreateKernel;
   MAGICKpfn_clReleaseKernel                          clReleaseKernel;
   MAGICKpfn_clSetKernelArg                           clSetKernelArg;
-  MAGICKpfn_clFlush                                  clFlush;
   MAGICKpfn_clFinish                                 clFinish;
   MAGICKpfn_clEnqueueReadBuffer                      clEnqueueReadBuffer;
   MAGICKpfn_clEnqueueWriteBuffer                     clEnqueueWriteBuffer;
@@ -279,6 +284,8 @@ struct MagickLibraryRec
   MAGICKpfn_clGetEventProfilingInfo                  clGetEventProfilingInfo;
   MAGICKpfn_clWaitForEvents                          clWaitForEvents;
   MAGICKpfn_clReleaseEvent                           clReleaseEvent;
+  MAGICKpfn_clRetainEvent                            clRetainEvent;
+  MAGICKpfn_clSetEventCallback                       clSetEventCallback;
 };
 
 struct _MagickCLEnv {

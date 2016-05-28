@@ -141,6 +141,11 @@ static PixelPacket
     const RectangleInfo *,const MagickBooleanType,NexusInfo *,ExceptionInfo *)
     magick_hot_spot;
 
+#if defined(MAGICKCORE_OPENCL_SUPPORT)
+  static void
+    UpdatePixelCacheBuffer(CacheInfo *magick_restrict);
+#endif
+
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif
@@ -156,6 +161,154 @@ static SemaphoreInfo
 
 static time_t
   cache_epoch = 0;
+
+static inline PixelPacket *RelinquishMemoryPixelCachePixels(
+  MagickBooleanType mapped,PixelPacket *pixels,MagickSizeType length)
+{
+  if (mapped == MagickFalse)
+    (void) RelinquishAlignedMemory(pixels);
+  else
+    (void) UnmapBlob(pixels,(size_t) length);
+  (void) RelinquishMagickResource(MemoryResource,length);
+  return((PixelPacket *) NULL);
+}
+
+#if defined(MAGICKCORE_OPENCL_SUPPORT)
+typedef struct _OpenCLRelinquishInfo
+{
+  MagickBooleanType
+    mapped;
+
+  PixelPacket
+    *pixels;
+
+  MagickSizeType
+    length;
+} OpenCLRelinquishInfo;
+
+static inline OpenCLCacheInfo *RelinquishOpenCLCacheInfo(MagickCLEnv clEnv,
+  OpenCLCacheInfo *info)
+{
+  size_t
+    i;
+
+  for (i=0; i<info->event_count; i++)
+    clEnv->library->clReleaseEvent(info->events[i]);
+  info->events=RelinquishMagickMemory(info->events);
+  info->event_count=0;
+  clEnv->library->clReleaseMemObject(info->buffer);
+  info->buffer=(cl_mem) NULL;
+  return((OpenCLCacheInfo *) RelinquishMagickMemory(info));
+}
+
+static void CL_API_CALL RelinquishPixelCachePixelsDelayed(
+  cl_event magick_unused(event),
+  cl_int magick_unused(event_command_exec_status),void *user_data)
+{
+  MagickCLEnv
+    clEnv;
+
+  OpenCLRelinquishInfo
+    *info;
+
+  magick_unreferenced(event);
+  magick_unreferenced(event_command_exec_status);
+  info=(OpenCLRelinquishInfo *) user_data;
+  clEnv=GetDefaultOpenCLEnv();
+  (void) RelinquishMemoryPixelCachePixels(info->mapped,info->pixels,
+    info->length);
+  (void) RelinquishMagickMemory(info);
+}
+
+static MagickBooleanType RelinquishOpenCLBuffer(
+  CacheInfo *magick_restrict cache_info)
+{
+  MagickCLEnv
+    clEnv;
+
+  assert(cache_info != (CacheInfo *) NULL);
+  if (cache_info->opencl == (OpenCLCacheInfo *) NULL)
+    return(MagickFalse);
+  clEnv=GetDefaultOpenCLEnv();
+  if (cache_info->opencl->event_count == 0)
+    {
+      cache_info->opencl=RelinquishOpenCLCacheInfo(clEnv,
+        cache_info->opencl);
+      return(MagickFalse);
+    }
+  else
+    {
+      OpenCLRelinquishInfo
+        *info;
+
+      info=AcquireMagickMemory(sizeof(*info));
+      info->mapped=cache_info->mapped;
+      info->pixels=cache_info->pixels;
+      info->length=cache_info->length;
+      clEnv->library->clSetEventCallback(cache_info->opencl->events[
+        cache_info->opencl->event_count-1],CL_COMPLETE,
+        &RelinquishPixelCachePixelsDelayed,info);
+      cache_info->opencl=RelinquishOpenCLCacheInfo(clEnv,cache_info->opencl);
+      return(MagickTrue);
+    }
+}
+#endif
+
+#if defined(MAGICKCORE_OPENCL_SUPPORT)
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   A d d O p e n C L E v e n t                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  AddOpenCLEvent() adds an event to the list of operations the next operation
+%  should wait for.
+%
+%  The format of the AddOpenCLEvent() method is:
+%
+%      void AddOpenCLEvent(const Image *image,cl_event event)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o event: the event that should be added.
+%
+*/
+extern MagickPrivate void AddOpenCLEvent(const Image *image,cl_event event)
+{
+  CacheInfo
+    *magick_restrict cache_info;
+
+  MagickCLEnv
+    clEnv;
+
+  assert(image != (const Image *) NULL);
+  assert(event != (cl_event) NULL);
+  cache_info=(CacheInfo *)image->cache;
+  clEnv=GetDefaultOpenCLEnv();
+  if (cache_info->opencl->events == (cl_event *) NULL)
+    {
+      cache_info->opencl->events=AcquireMagickMemory(sizeof(
+        *cache_info->opencl->events));
+      cache_info->opencl->event_count=1;
+    }
+  else
+    {
+      cache_info->opencl->event_count++;
+      cache_info->opencl->events=ResizeQuantumMemory(
+        cache_info->opencl->events,cache_info->opencl->event_count,
+        sizeof(*cache_info->opencl->events));
+    }
+  cache_info->opencl->events[cache_info->opencl->event_count-1]=event;
+  clEnv->library->clRetainEvent(event);
+}
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -925,15 +1078,15 @@ static inline void RelinquishPixelCachePixels(CacheInfo *cache_info)
   {
     case MemoryCache:
     {
-      if (cache_info->mapped == MagickFalse)
-        cache_info->pixels=(PixelPacket *) RelinquishAlignedMemory(
-          cache_info->pixels);
-      else
+#if defined(MAGICKCORE_OPENCL_SUPPORT)
+      if (RelinquishOpenCLBuffer(cache_info) != MagickFalse)
         {
-          (void) UnmapBlob(cache_info->pixels,(size_t) cache_info->length);
           cache_info->pixels=(PixelPacket *) NULL;
+          break;
         }
-      RelinquishMagickResource(MemoryResource,cache_info->length);
+#endif
+      cache_info->pixels=RelinquishMemoryPixelCachePixels(cache_info->mapped,
+        cache_info->pixels,cache_info->length);
       break;
     }
     case MapCache:
@@ -1158,6 +1311,66 @@ MagickExport IndexPacket *GetAuthenticIndexQueue(const Image *image)
   assert(id < (int) cache_info->number_threads);
   return(cache_info->nexus_info[id]->indexes);
 }
+
+#if defined(MAGICKCORE_OPENCL_SUPPORT)
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t A u t h e n t i c O p e n C L B u f f e r                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetAuthenticOpenCLBuffer() returns an OpenCL buffer that can be used to
+%  execute OpenCL operations.
+%
+%  The format of the GetAuthenticOpenCLBuffer() method is:
+%
+%      cl_mem GetAuthenticOpenCLBuffer(const Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+*/
+MagickPrivate cl_mem GetAuthenticOpenCLBuffer(const Image *image,
+  ExceptionInfo *exception)
+{
+  CacheInfo
+    *magick_restrict cache_info;
+
+  cl_context
+    context;
+
+  cl_int
+    status;
+
+  MagickCLEnv
+    clEnv;
+
+  assert(image != (const Image *) NULL);
+  cache_info=(CacheInfo *)image->cache;
+  if (cache_info->type == UndefinedCache)
+    SyncImagePixelCache((Image*) image,exception);
+  if (cache_info->type != MemoryCache)
+    return (cl_mem) NULL;
+  if (cache_info->opencl == (OpenCLCacheInfo *) NULL)
+    {
+      assert(cache_info->pixels != NULL);
+      clEnv=GetDefaultOpenCLEnv();
+      context=GetOpenCLContext(clEnv);
+      cache_info->opencl=AcquireMagickMemory(sizeof(*cache_info->opencl));
+      (void) ResetMagickMemory(cache_info->opencl,0,
+        sizeof(*cache_info->opencl));
+      cache_info->opencl->buffer=clEnv->library->clCreateBuffer(context,
+        CL_MEM_USE_HOST_PTR,cache_info->length,cache_info->pixels,&status);
+    }
+  return(cache_info->opencl->buffer);
+}
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1472,6 +1685,50 @@ MagickExport MagickSizeType GetImageExtent(const Image *image)
   assert(id < (int) cache_info->number_threads);
   return(GetPixelCacheNexusExtent(cache_info,cache_info->nexus_info[id]));
 }
+
+#if defined(MAGICKCORE_OPENCL_SUPPORT)
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   Ge t O p e n C L E v e n t s                                              %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetOpenCLEvents() returns the events that the next operation should wait
+%  for. The argument event_count will be set to the number of events.
+%
+%  The format of the GetOpenCLEvents() method is:
+%
+%      const cl_event *GetOpenCLEvents(const Image *image,
+%        cl_command_queue queue,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o event_count: will be set to the number of events.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+extern MagickPrivate const cl_event *GetOpenCLEvents(const Image *image,
+  cl_uint *event_count)
+{
+  CacheInfo
+    *magick_restrict cache_info;
+
+  assert(image != (const Image *) NULL);
+  assert(event_count != (cl_uint *) NULL);
+  cache_info=(CacheInfo *) image->cache;
+  assert(cache_info->opencl != (OpenCLCacheInfo *) NULL);
+  *event_count=cache_info->opencl->event_count;
+  return(cache_info->opencl->events);
+}
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1562,6 +1819,9 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
   LockSemaphoreInfo(image->semaphore);
   assert(image->cache != (Cache) NULL);
   cache_info=(CacheInfo *) image->cache;
+#if defined(MAGICKCORE_OPENCL_SUPPORT)
+  UpdatePixelCacheBuffer(cache_info);
+#endif
   destroy=MagickFalse;
   if ((cache_info->reference_count > 1) || (cache_info->mode == ReadMode))
     {
@@ -3871,6 +4131,9 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
   page_size=GetMagickPageSize();
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
+#if defined(MAGICKCORE_OPENCL_SUPPORT)
+  UpdatePixelCacheBuffer(cache_info);
+#endif
   if (attach != MagickFalse)
     {
       /*
@@ -3936,7 +4199,8 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
   clone_info=(CacheInfo *) DestroyPixelCache(clone_info);
   return(status);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -5227,7 +5491,78 @@ MagickPrivate MagickBooleanType SyncImagePixelCache(Image *image,
   cache_info=(CacheInfo *) GetImagePixelCache(image,MagickTrue,exception);
   return(cache_info == (CacheInfo *) NULL ? MagickFalse : MagickTrue);
 }
-
+
+#if defined(MAGICKCORE_OPENCL_SUPPORT)
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   U p d a t e P i x e l C a c h e B u f f e r                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  UpdatePixelCacheBuffer() makes sure that all the OpenCL operations have been
+%  completed and updates the host memory.
+%
+%  The format of the UpdatePixelCacheBuffer() method is:
+%
+%      void UpdatePixelCacheBuffer(CacheInfo *magick_restrict cache_info)
+%
+%  A description of each parameter follows:
+%
+%    o cache_info: the pixel cache.
+%
+%    o event_count: will be set to the number of events.
+%
+*/
+static void UpdatePixelCacheBuffer(CacheInfo *magick_restrict cache_info)
+{
+  MagickCLEnv
+    clEnv;
+
+  assert(cache_info != (CacheInfo *) NULL);
+  if ((cache_info->type != MemoryCache) ||
+      (cache_info->opencl == (OpenCLCacheInfo *) NULL))
+    return;
+  /*
+    We only need the lock here because multiple OpenMP threads will try to
+    access the pixels.
+  */
+  LockSemaphoreInfo(cache_info->semaphore);
+  if (cache_info->opencl != (OpenCLCacheInfo *) NULL)
+    {
+      clEnv=GetDefaultOpenCLEnv();
+      if (cache_info->opencl->event_count > 0)
+        {
+          cl_command_queue
+            queue;
+
+          cl_context
+            context;
+
+          cl_int
+            status;
+
+          PixelPacket
+            *pixels;
+
+          context=GetOpenCLContext(clEnv);
+          queue=AcquireOpenCLCommandQueue(clEnv);
+          pixels=(PixelPacket *) clEnv->library->clEnqueueMapBuffer(queue,
+            cache_info->opencl->buffer,CL_TRUE,CL_MAP_READ | CL_MAP_WRITE,0,
+            cache_info->length,cache_info->opencl->event_count,
+            cache_info->opencl->events,NULL,&status);
+          assert(pixels == cache_info->pixels);
+        }
+      cache_info->opencl=RelinquishOpenCLCacheInfo(clEnv,cache_info->opencl);
+    }
+  UnlockSemaphoreInfo(cache_info->semaphore);
+}
+#endif
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %

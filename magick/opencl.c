@@ -43,6 +43,7 @@
 #include "magick/studio.h"
 #include "magick/artifact.h"
 #include "magick/cache.h"
+#include "magick/cache-private.h"
 #include "magick/color.h"
 #include "magick/compare.h"
 #include "magick/constitute.h"
@@ -417,7 +418,6 @@ static MagickBooleanType bindOpenCLFunctions(void* library)
   BIND(clReleaseKernel);
   BIND(clSetKernelArg);
 
-  BIND(clFlush);
   BIND(clFinish);
 
   BIND(clEnqueueNDRangeKernel);
@@ -431,6 +431,8 @@ static MagickBooleanType bindOpenCLFunctions(void* library)
   BIND(clGetEventProfilingInfo);
   BIND(clWaitForEvents);
   BIND(clReleaseEvent);
+  BIND(clRetainEvent);
+  BIND(clSetEventCallback);
 
   return MagickTrue;
 }
@@ -1546,8 +1548,11 @@ MagickPrivate MagickBooleanType RelinquishOpenCLCommandQueue(MagickCLEnv clEnv,
   LockSemaphoreInfo(clEnv->commandQueuesLock);
 
   if (clEnv->commandQueuesPos >= MAX_COMMAND_QUEUES-1)
-    status=(clEnv->library->clReleaseCommandQueue(queue) == CL_SUCCESS) ?
-      MagickTrue : MagickFalse;
+    {
+      clEnv->library->clFinish(queue);
+      status=(clEnv->library->clReleaseCommandQueue(queue) == CL_SUCCESS) ?
+       MagickTrue : MagickFalse;
+    }
   else
     {
       clEnv->commandQueues[++clEnv->commandQueuesPos]=queue;
@@ -2413,6 +2418,12 @@ static ds_status AcceleratePerfEvaluator(ds_device *device,
 
     for (i=0; i<=NUM_ITER; i++)
     {
+      cl_uint
+        event_count;
+
+      const cl_event
+        *events;
+
       Image
         *bluredImage,
         *resizedImage,
@@ -2430,6 +2441,16 @@ static ds_status AcceleratePerfEvaluator(ds_device *device,
         exception);
       resizedImage=ResizeImage(unsharpedImage,640,480,LanczosFilter,1.0,
         exception);
+
+      /* 
+        We need this to get a proper performance benchmark, the operations
+        are executed asynchronous.
+      */
+      if (device->type != DS_DEVICE_NATIVE_CPU)
+        {
+          events=GetOpenCLEvents(resizedImage,&event_count);
+          clEnv->library->clWaitForEvents(event_count,events);
+        }
 
 #ifdef MAGICKCORE_CLPERFMARKER
       clEndPerfMarkerAMD();
