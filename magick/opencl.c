@@ -1344,6 +1344,18 @@ static MagickBooleanType autoSelectDevice(MagickCLEnv clEnv, ExceptionInfo* exce
 %
 */
 
+static void RelinquishCommandQueues(MagickCLEnv clEnv)
+{
+  if (clEnv == (MagickCLEnv) NULL)
+    return;
+
+  LockSemaphoreInfo(clEnv->commandQueuesLock);
+  while (clEnv->commandQueuesPos >= 0)
+    clEnv->library->clReleaseCommandQueue(
+      clEnv->commandQueues[clEnv->commandQueuesPos--]);
+  UnlockSemaphoreInfo(clEnv->commandQueuesLock);
+}
+
 MagickExport
 MagickBooleanType InitOpenCLEnvInternal(MagickCLEnv clEnv, ExceptionInfo* exception) {
   MagickBooleanType status = MagickTrue;
@@ -1398,6 +1410,8 @@ MagickBooleanType InitOpenCLEnvInternal(MagickCLEnv clEnv, ExceptionInfo* except
     status = MagickFalse;
     goto cleanup;
   }
+
+  RelinquishCommandQueues(clEnv);
 
   status = CompileOpenCLKernels(clEnv, exception);
   if (status == MagickFalse) {
