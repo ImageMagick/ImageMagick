@@ -141,11 +141,6 @@ static PixelPacket
     const RectangleInfo *,const MagickBooleanType,NexusInfo *,ExceptionInfo *)
     magick_hot_spot;
 
-#if defined(MAGICKCORE_OPENCL_SUPPORT)
-  static void
-    UpdatePixelCacheBuffer(CacheInfo *magick_restrict);
-#endif
-
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif
@@ -305,6 +300,8 @@ extern MagickPrivate void AddOpenCLEvent(const Image *image,cl_event event)
         cache_info->opencl->events,cache_info->opencl->event_count,
         sizeof(*cache_info->opencl->events));
     }
+  if (cache_info->opencl->events == (cl_event *) NULL)
+    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   cache_info->opencl->events[cache_info->opencl->event_count-1]=event;
   clEnv->library->clRetainEvent(event);
 }
@@ -958,6 +955,79 @@ static MagickBooleanType ClonePixelCacheRepository(
     }
   return(status);
 }
+
+
+
+#if defined(MAGICKCORE_OPENCL_SUPPORT)
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   C o p y O p e n C L B u f f e r                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  CopyOpenCLBuffer() makes sure that all the OpenCL operations have been
+%  completed and updates the host memory.
+%
+%  The format of the CopyOpenCLBuffer() method is:
+%
+%      void CopyOpenCLBuffer(CacheInfo *magick_restrict cache_info)
+%
+%  A description of each parameter follows:
+%
+%    o cache_info: the pixel cache.
+%
+%    o event_count: will be set to the number of events.
+%
+*/
+static void CopyOpenCLBuffer(CacheInfo *magick_restrict cache_info)
+{
+  MagickCLEnv
+    clEnv;
+
+  assert(cache_info != (CacheInfo *) NULL);
+  if ((cache_info->type != MemoryCache) ||
+      (cache_info->opencl == (OpenCLCacheInfo *) NULL))
+    return;
+  /*
+    We only need the lock here because multiple OpenMP threads will try to
+    access the pixels.
+  */
+  LockSemaphoreInfo(cache_info->semaphore);
+  if (cache_info->opencl != (OpenCLCacheInfo *) NULL)
+    {
+      clEnv=GetDefaultOpenCLEnv();
+      if (cache_info->opencl->event_count > 0)
+        {
+          cl_command_queue
+            queue;
+
+          cl_context
+            context;
+
+          cl_int
+            status;
+
+          PixelPacket
+            *pixels;
+
+          context=GetOpenCLContext(clEnv);
+          queue=AcquireOpenCLCommandQueue(clEnv);
+          pixels=(PixelPacket *) clEnv->library->clEnqueueMapBuffer(queue,
+            cache_info->opencl->buffer,CL_TRUE,CL_MAP_READ | CL_MAP_WRITE,0,
+            cache_info->length,cache_info->opencl->event_count,
+            cache_info->opencl->events,NULL,&status);
+          assert(pixels == cache_info->pixels);
+        }
+      cache_info->opencl=RelinquishOpenCLCacheInfo(clEnv,cache_info->opencl);
+    }
+  UnlockSemaphoreInfo(cache_info->semaphore);
+}
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1704,15 +1774,13 @@ MagickExport MagickSizeType GetImageExtent(const Image *image)
 %  The format of the GetOpenCLEvents() method is:
 %
 %      const cl_event *GetOpenCLEvents(const Image *image,
-%        cl_command_queue queue,ExceptionInfo *exception)
+%        cl_command_queue queue)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
 %    o event_count: will be set to the number of events.
-%
-%    o exception: return any errors or warnings in this structure.
 %
 */
 extern MagickPrivate const cl_event *GetOpenCLEvents(const Image *image,
@@ -1820,7 +1888,7 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
   assert(image->cache != (Cache) NULL);
   cache_info=(CacheInfo *) image->cache;
 #if defined(MAGICKCORE_OPENCL_SUPPORT)
-  UpdatePixelCacheBuffer(cache_info);
+  CopyOpenCLBuffer(cache_info);
 #endif
   destroy=MagickFalse;
   if ((cache_info->reference_count > 1) || (cache_info->mode == ReadMode))
@@ -4132,7 +4200,7 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
 #if defined(MAGICKCORE_OPENCL_SUPPORT)
-  UpdatePixelCacheBuffer(cache_info);
+  CopyOpenCLBuffer(cache_info);
 #endif
   if (attach != MagickFalse)
     {
@@ -5491,77 +5559,6 @@ MagickPrivate MagickBooleanType SyncImagePixelCache(Image *image,
   cache_info=(CacheInfo *) GetImagePixelCache(image,MagickTrue,exception);
   return(cache_info == (CacheInfo *) NULL ? MagickFalse : MagickTrue);
 }
-
-#if defined(MAGICKCORE_OPENCL_SUPPORT)
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   U p d a t e P i x e l C a c h e B u f f e r                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  UpdatePixelCacheBuffer() makes sure that all the OpenCL operations have been
-%  completed and updates the host memory.
-%
-%  The format of the UpdatePixelCacheBuffer() method is:
-%
-%      void UpdatePixelCacheBuffer(CacheInfo *magick_restrict cache_info)
-%
-%  A description of each parameter follows:
-%
-%    o cache_info: the pixel cache.
-%
-%    o event_count: will be set to the number of events.
-%
-*/
-static void UpdatePixelCacheBuffer(CacheInfo *magick_restrict cache_info)
-{
-  MagickCLEnv
-    clEnv;
-
-  assert(cache_info != (CacheInfo *) NULL);
-  if ((cache_info->type != MemoryCache) ||
-      (cache_info->opencl == (OpenCLCacheInfo *) NULL))
-    return;
-  /*
-    We only need the lock here because multiple OpenMP threads will try to
-    access the pixels.
-  */
-  LockSemaphoreInfo(cache_info->semaphore);
-  if (cache_info->opencl != (OpenCLCacheInfo *) NULL)
-    {
-      clEnv=GetDefaultOpenCLEnv();
-      if (cache_info->opencl->event_count > 0)
-        {
-          cl_command_queue
-            queue;
-
-          cl_context
-            context;
-
-          cl_int
-            status;
-
-          PixelPacket
-            *pixels;
-
-          context=GetOpenCLContext(clEnv);
-          queue=AcquireOpenCLCommandQueue(clEnv);
-          pixels=(PixelPacket *) clEnv->library->clEnqueueMapBuffer(queue,
-            cache_info->opencl->buffer,CL_TRUE,CL_MAP_READ | CL_MAP_WRITE,0,
-            cache_info->length,cache_info->opencl->event_count,
-            cache_info->opencl->events,NULL,&status);
-          assert(pixels == cache_info->pixels);
-        }
-      cache_info->opencl=RelinquishOpenCLCacheInfo(clEnv,cache_info->opencl);
-    }
-  UnlockSemaphoreInfo(cache_info->semaphore);
-}
-#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
