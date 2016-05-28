@@ -184,10 +184,10 @@ typedef struct _OpenCLRelinquishInfo
 static inline OpenCLCacheInfo *RelinquishOpenCLCacheInfo(MagickCLEnv clEnv,
   OpenCLCacheInfo *info)
 {
-  size_t
+  ssize_t
     i;
 
-  for (i=0; i<info->event_count; i++)
+  for (i=0; i < (ssize_t) info->event_count; i++)
     clEnv->library->clReleaseEvent(info->events[i]);
   info->events=RelinquishMagickMemory(info->events);
   info->event_count=0;
@@ -197,8 +197,8 @@ static inline OpenCLCacheInfo *RelinquishOpenCLCacheInfo(MagickCLEnv clEnv,
 }
 
 static void CL_API_CALL RelinquishPixelCachePixelsDelayed(
-  cl_event magick_unused(event),
-  cl_int magick_unused(event_command_exec_status),void *user_data)
+  cl_event magick_unused(event),cl_int magick_unused(event_command_exec_status),
+  void *user_data)
 {
   MagickCLEnv
     clEnv;
@@ -221,41 +221,39 @@ static MagickBooleanType RelinquishOpenCLBuffer(
   MagickCLEnv
     clEnv;
 
+  OpenCLRelinquishInfo
+    *relinquish_info;
+
   assert(cache_info != (CacheInfo *) NULL);
   if (cache_info->opencl == (OpenCLCacheInfo *) NULL)
     return(MagickFalse);
   clEnv=GetDefaultOpenCLEnv();
   if (cache_info->opencl->event_count == 0)
     {
-      cache_info->opencl=RelinquishOpenCLCacheInfo(clEnv,
-        cache_info->opencl);
+      cache_info->opencl=RelinquishOpenCLCacheInfo(clEnv,cache_info->opencl);
       return(MagickFalse);
     }
-  else
-    {
-      OpenCLRelinquishInfo
-        *info;
-
-      info=AcquireMagickMemory(sizeof(*info));
-      info->mapped=cache_info->mapped;
-      info->pixels=cache_info->pixels;
-      info->length=cache_info->length;
-      clEnv->library->clSetEventCallback(cache_info->opencl->events[
-        cache_info->opencl->event_count-1],CL_COMPLETE,
-        &RelinquishPixelCachePixelsDelayed,info);
-      cache_info->opencl=RelinquishOpenCLCacheInfo(clEnv,cache_info->opencl);
-      return(MagickTrue);
-    }
+  relinquish_info=(OpenCLRelinquishInfo *) AcquireMagickMemory(sizeof(*info));
+  if (relinquish_info == (OpenCLRelinquishInfo *) NULL)
+    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+  relinquish_info->mapped=cache_info->mapped;
+  relinquish_info->pixels=cache_info->pixels;
+  relinquish_info->length=cache_info->length;
+  clEnv->library->clSetEventCallback(cache_info->opencl->events[
+    cache_info->opencl->event_count-1],CL_COMPLETE,
+    &RelinquishPixelCachePixelsDelayed,relinquish_info);
+  cache_info->opencl=RelinquishOpenCLCacheInfo(clEnv,cache_info->opencl);
+  return(MagickTrue);
 }
 #endif
-
+
 #if defined(MAGICKCORE_OPENCL_SUPPORT)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   A d d O p e n C L E v e n t                                               %
++   A d d O p e n C L E v e n t                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -295,10 +293,10 @@ extern MagickPrivate void AddOpenCLEvent(const Image *image,cl_event event)
     }
   else
     {
-      cache_info->opencl->event_count++;
       cache_info->opencl->events=ResizeQuantumMemory(
         cache_info->opencl->events,cache_info->opencl->event_count,
         sizeof(*cache_info->opencl->events));
+      cache_info->opencl->event_count++;
     }
   if (cache_info->opencl->events == (cl_event *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
@@ -955,23 +953,21 @@ static MagickBooleanType ClonePixelCacheRepository(
     }
   return(status);
 }
-
-
-
+
 #if defined(MAGICKCORE_OPENCL_SUPPORT)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   C o p y O p e n C L B u f f e r                                           %
++   C o p y O p e n C L B u f f e r                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  CopyOpenCLBuffer() makes sure that all the OpenCL operations have been
-%  completed and updates the host memory.
+%  CopyOpenCLBuffer() ensures all the OpenCL operations have been completed and
+%  updates the host memory.
 %
 %  The format of the CopyOpenCLBuffer() method is:
 %
@@ -994,8 +990,7 @@ static void CopyOpenCLBuffer(CacheInfo *magick_restrict cache_info)
       (cache_info->opencl == (OpenCLCacheInfo *) NULL))
     return;
   /*
-    We only need the lock here because multiple OpenMP threads will try to
-    access the pixels.
+    Ensure single threaded access to OpenCL environment.
   */
   LockSemaphoreInfo(cache_info->semaphore);
   if (cache_info->opencl != (OpenCLCacheInfo *) NULL)
@@ -1381,21 +1376,21 @@ MagickExport IndexPacket *GetAuthenticIndexQueue(const Image *image)
   assert(id < (int) cache_info->number_threads);
   return(cache_info->nexus_info[id]->indexes);
 }
-
+
 #if defined(MAGICKCORE_OPENCL_SUPPORT)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t A u t h e n t i c O p e n C L B u f f e r                           %
++   G e t A u t h e n t i c O p e n C L B u f f e r                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetAuthenticOpenCLBuffer() returns an OpenCL buffer that can be used to
-%  execute OpenCL operations.
+%  GetAuthenticOpenCLBuffer() returns an OpenCL buffer used to execute OpenCL
+%  operations.
 %
 %  The format of the GetAuthenticOpenCLBuffer() method is:
 %
@@ -1424,15 +1419,18 @@ MagickPrivate cl_mem GetAuthenticOpenCLBuffer(const Image *image,
   assert(image != (const Image *) NULL);
   cache_info=(CacheInfo *)image->cache;
   if (cache_info->type == UndefinedCache)
-    SyncImagePixelCache((Image*) image,exception);
+    SyncImagePixelCache((Image *) image,exception);
   if (cache_info->type != MemoryCache)
-    return (cl_mem) NULL;
+    return((cl_mem) NULL);
   if (cache_info->opencl == (OpenCLCacheInfo *) NULL)
     {
       assert(cache_info->pixels != NULL);
       clEnv=GetDefaultOpenCLEnv();
       context=GetOpenCLContext(clEnv);
-      cache_info->opencl=AcquireMagickMemory(sizeof(*cache_info->opencl));
+      cache_info->opencl=(OpenCLCacheInfo *) AcquireMagickMemory(
+        sizeof(*cache_info->opencl));
+      if (cache_info->opencl == (OpenCLCacheInfo *) NULL)
+        ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
       (void) ResetMagickMemory(cache_info->opencl,0,
         sizeof(*cache_info->opencl));
       cache_info->opencl->buffer=clEnv->library->clCreateBuffer(context,
@@ -1755,21 +1753,21 @@ MagickExport MagickSizeType GetImageExtent(const Image *image)
   assert(id < (int) cache_info->number_threads);
   return(GetPixelCacheNexusExtent(cache_info,cache_info->nexus_info[id]));
 }
-
+
 #if defined(MAGICKCORE_OPENCL_SUPPORT)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   Ge t O p e n C L E v e n t s                                              %
++   Ge t O p e n C L E v e n t s                                              %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  GetOpenCLEvents() returns the events that the next operation should wait
-%  for. The argument event_count will be set to the number of events.
+%  for.  The argument event_count is set to the number of events.
 %
 %  The format of the GetOpenCLEvents() method is:
 %
