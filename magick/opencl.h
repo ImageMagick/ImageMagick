@@ -45,6 +45,8 @@ typedef enum {
                                                    /* if true, disable the kernel binary cache */
   , MAGICK_OPENCL_ENV_PARAM_REGENERATE_PROFILE     /* MagickBooleanType */
                                                    /* if true, rerun microbenchmark in auto device selection */
+  , MAGICK_OPENCL_ENV_PARAM_PLATFORM_VENDOR        /* char* */
+  , MAGICK_OPENCL_ENV_PARAM_DEVICE_NAME            /* char* */
 } MagickOpenCLEnvParam;
 
 typedef struct _MagickCLEnv* MagickCLEnv;

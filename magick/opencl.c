@@ -711,6 +711,9 @@ MagickExport
   MagickBooleanType
    status;
 
+  size_t
+    length;
+
   magick_unreferenced(exception);
 
   status = MagickFalse;
@@ -756,6 +759,28 @@ MagickExport
     status = MagickTrue;
     break;
 
+  case MAGICK_OPENCL_ENV_PARAM_PLATFORM_VENDOR:
+    if (dataSize != sizeof(char *))
+      goto cleanup;
+    clEnv->library->clGetPlatformInfo(clEnv->platform,CL_PLATFORM_VENDOR,0,
+      NULL,&length);
+    *((char **) data)=(char *) AcquireQuantumMemory(length,sizeof(char));
+    clEnv->library->clGetPlatformInfo(clEnv->platform,CL_PLATFORM_VENDOR,
+      length,*((char **) data),NULL);
+    status = MagickTrue;
+    break;
+
+  case MAGICK_OPENCL_ENV_PARAM_DEVICE_NAME:
+    if (dataSize != sizeof(char *))
+      goto cleanup;
+    clEnv->library->clGetDeviceInfo(clEnv->device,CL_DEVICE_NAME,0,NULL,
+      &length);
+    *((char **) data)=(char *) AcquireQuantumMemory(length,sizeof(char));
+    clEnv->library->clGetDeviceInfo(clEnv->device,CL_DEVICE_NAME,length,
+      *((char **) data),NULL);
+    status = MagickTrue;
+    break;
+  
   default:
     goto cleanup;
   };
