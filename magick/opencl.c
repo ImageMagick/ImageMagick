@@ -2742,89 +2742,6 @@ MagickBooleanType OpenCLThrowMagickException(ExceptionInfo *exception,
   return(status);
 }
 
-MagickPrivate cl_mem GetAndLockRandSeedBuffer(MagickCLEnv clEnv)
-{
-  LockSemaphoreInfo(clEnv->lock);
-  if (clEnv->seedsLock == NULL)
-  {
-    ActivateSemaphoreInfo(&clEnv->seedsLock);
-  }
-  LockSemaphoreInfo(clEnv->seedsLock);
-
-  if (clEnv->seeds == NULL)
-  {
-    cl_int clStatus;
-    clEnv->numGenerators = NUM_CL_RAND_GENERATORS;
-    clEnv->seeds = clEnv->library->clCreateBuffer(clEnv->context, CL_MEM_READ_WRITE,
-                                  clEnv->numGenerators*4*sizeof(unsigned int),
-                                  NULL, &clStatus);
-    if (clStatus != CL_SUCCESS)
-    {
-      clEnv->seeds = NULL;
-    }
-    else
-    {
-      unsigned int i;
-      cl_command_queue queue = NULL;
-      unsigned int *seeds;
-
-      queue = AcquireOpenCLCommandQueue(clEnv);
-      seeds = (unsigned int*) clEnv->library->clEnqueueMapBuffer(queue, clEnv->seeds, CL_TRUE,
-                                                  CL_MAP_WRITE, 0,
-                                                  clEnv->numGenerators*4
-                                                  *sizeof(unsigned int),
-                                                  0, NULL, NULL, &clStatus);
-      if (clStatus!=CL_SUCCESS)
-      {
-        clEnv->library->clReleaseMemObject(clEnv->seeds);
-        goto cleanup;
-      }
-
-      for (i = 0; i < clEnv->numGenerators; i++) {
-        RandomInfo* randomInfo = AcquireRandomInfo();
-        const unsigned long* s = GetRandomInfoSeed(randomInfo);
-        if (i == 0)
-          clEnv->randNormalize = GetRandomInfoNormalize(randomInfo);
-
-        seeds[i*4]   = (unsigned int) s[0];
-        seeds[i*4+1] = (unsigned int) 0x50a7f451;
-        seeds[i*4+2] = (unsigned int) 0x5365417e;
-        seeds[i*4+3] = (unsigned int) 0xc3a4171a;
-
-        randomInfo = DestroyRandomInfo(randomInfo);
-      }
-      clStatus = clEnv->library->clEnqueueUnmapMemObject(queue, clEnv->seeds, seeds, 0,
-                                          NULL, NULL);
-      clEnv->library->clFinish(queue);
-cleanup:
-      if (queue != NULL)
-        RelinquishOpenCLCommandQueue(clEnv, queue);
-    }
-  }
-  UnlockSemaphoreInfo(clEnv->lock);
-  return clEnv->seeds;
-}
-
-MagickPrivate void UnlockRandSeedBuffer(MagickCLEnv clEnv) {
-  if (clEnv->seedsLock == NULL)
-  {
-    ActivateSemaphoreInfo(&clEnv->seedsLock);
-  }
-  else
-    UnlockSemaphoreInfo(clEnv->seedsLock);
-}
-
-MagickPrivate unsigned int GetNumRandGenerators(MagickCLEnv clEnv)
-{
-  return clEnv->numGenerators;
-}
-
-
-MagickPrivate float GetRandNormalize(MagickCLEnv clEnv)
-{
-  return clEnv->randNormalize;
-}
-
 #else
 
 struct _MagickCLEnv {
@@ -2968,31 +2885,6 @@ MagickBooleanType OpenCLThrowMagickException(ExceptionInfo *exception,
   magick_unreferenced(tag);
   magick_unreferenced(format);
   return(MagickFalse);
-}
-
-
-MagickPrivate cl_mem GetAndLockRandSeedBuffer(MagickCLEnv clEnv)
-{
-  magick_unreferenced(clEnv);
-  return NULL;
-}
-
-
-MagickPrivate void UnlockRandSeedBuffer(MagickCLEnv clEnv)
-{
-  magick_unreferenced(clEnv);
-}
-
-MagickPrivate unsigned int GetNumRandGenerators(MagickCLEnv clEnv)
-{
-  magick_unreferenced(clEnv);
-  return 0;
-}
-
-MagickPrivate float GetRandNormalize(MagickCLEnv clEnv)
-{
-  magick_unreferenced(clEnv);
-  return 0.0f;
 }
 
 #endif /* MAGICKCORE_OPENCL_SUPPORT */

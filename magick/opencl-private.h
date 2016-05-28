@@ -298,12 +298,6 @@ struct _MagickCLEnv {
 
   MagickBooleanType regenerateProfile;   /* re-run the microbenchmark in auto device selection mode */ 
 
-  /* Random number generator seeds */
-  unsigned int numGenerators;
-  float randNormalize;
-  cl_mem seeds;
-  SemaphoreInfo* seedsLock;
-
   SemaphoreInfo* lock;
 
   cl_command_queue commandQueues[MAX_COMMAND_QUEUES];
@@ -402,17 +396,7 @@ extern MagickPrivate const char*
   GetOpenCLCachedFilesDirectory();
 
 extern MagickPrivate void
-  OpenCLLog(const char*),
-  UnlockRandSeedBuffer(MagickCLEnv);
-
-extern MagickPrivate cl_mem 
-  GetAndLockRandSeedBuffer(MagickCLEnv);
-
-extern MagickPrivate unsigned int 
-  GetNumRandGenerators(MagickCLEnv);
-
-extern MagickPrivate float 
-  GetRandNormalize(MagickCLEnv);
+  OpenCLLog(const char*);
 
 extern MagickPrivate void
   OpenCLTerminus(),
