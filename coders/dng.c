@@ -53,6 +53,7 @@
 #include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/memory_.h"
+#include "magick/opencl.h"
 #include "magick/pixel-accessor.h"
 #include "magick/quantum-private.h"
 #include "magick/resource_.h"
@@ -90,6 +91,51 @@
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
+#if defined(MAGICKCORE_WINDOWS_SUPPORT) && defined(MAGICKCORE_OPENCL_SUPPORT)
+static void InitializeDcrawOpenCL(ExceptionInfo *exception)
+{
+  MagickBooleanType
+    opencl_disabled;
+
+  MagickCLEnv
+    clEnv;
+
+  (void) SetEnvironmentVariable("DCR_CL_PLATFORM","");
+  (void) SetEnvironmentVariable("DCR_CL_DEVICE","");
+  clEnv=GetDefaultOpenCLEnv();
+  GetMagickOpenCLEnvParam(clEnv,MAGICK_OPENCL_ENV_PARAM_OPENCL_DISABLED,
+    sizeof(MagickBooleanType),&opencl_disabled,exception);
+  if (opencl_disabled != MagickFalse)
+    return;
+  if (InitOpenCLEnv(clEnv,exception) != MagickFalse)
+    {
+      char
+        *name;
+
+      GetMagickOpenCLEnvParam(clEnv,MAGICK_OPENCL_ENV_PARAM_PLATFORM_VENDOR,
+        sizeof(char *),&name,exception);
+      if (name != (char *) NULL)
+      {
+        (void) SetEnvironmentVariable("DCR_CL_PLATFORM",name);
+        name=RelinquishMagickMemory(name);
+      }
+      GetMagickOpenCLEnvParam(clEnv,MAGICK_OPENCL_ENV_PARAM_DEVICE_NAME,
+        sizeof(char *),&name,exception);
+      if (name != (char *) NULL)
+      {
+        (void) SetEnvironmentVariable("DCR_CL_DEVICE",name);
+        name=RelinquishMagickMemory(name);
+      }
+    }
+}
+#else
+static void InitializeDcrawOpenCL(ExceptionInfo *magick_unused(exception))
+{
+  magick_unreferenced(exception);
+}
+#endif
+
 static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   ExceptionInfo
@@ -126,6 +172,7 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Convert DNG to PPM with delegate.
   */
+  InitializeDcrawOpenCL(exception);
   image=AcquireImage(image_info);
   read_info=CloneImageInfo(image_info);
   SetImageInfoBlob(read_info,(void *) NULL,0);
