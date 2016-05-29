@@ -65,7 +65,6 @@ MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_DEPENDENC
 MAGICKCORE_BASE_SRCS = \
 	MagickCore/MagickCore.h \
 	MagickCore/accelerate.c \
-	MagickCore/accelerate.h \
 	MagickCore/accelerate-private.h \
 	MagickCore/animate.c \
 	MagickCore/animate.h \
@@ -313,7 +312,6 @@ endif # if WIN32_NATIVE_BUILD
 
 MAGICKCORE_INCLUDE_HDRS = \
 	MagickCore/MagickCore.h \
-	MagickCore/accelerate.h \
 	MagickCore/animate.h \
 	MagickCore/annotate.h \
 	MagickCore/artifact.h \
