@@ -137,22 +137,6 @@ static MagickBooleanType IsVIFF(const unsigned char *magick,const size_t length)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
-static MagickBooleanType CheckMemoryOverflow(const size_t count,
-  const size_t quantum)
-{
-  size_t
-    size;
-
-  size=count*quantum;
-  if ((count == 0) || (quantum != (size/count)))
-    {
-      errno=ENOMEM;
-      return(MagickTrue);
-    }
-  return(MagickFalse);
-}
-
 static Image *ReadVIFFImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
@@ -520,13 +504,13 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
     }
     if (viff_info.data_storage_type == VFF_TYP_BIT)
       {
-        if (CheckMemoryOverflow((image->columns+7UL) >> 3UL,image->rows) != MagickFalse)
+        if (HeapOverflowSanityCheck((image->columns+7UL) >> 3UL,image->rows) != MagickFalse)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         max_packets=((image->columns+7UL) >> 3UL)*image->rows;
       }
     else
       {
-        if (CheckMemoryOverflow(number_pixels,viff_info.number_data_bands) != MagickFalse)
+        if (HeapOverflowSanityCheck(number_pixels,viff_info.number_data_bands) != MagickFalse)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         max_packets=(size_t) (number_pixels*viff_info.number_data_bands);
       }

@@ -136,7 +136,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   status=GetMultilineTypeMetrics(image,draw_info,&metrics);
   if ((image->columns == 0) && (image->rows == 0))
     {
-      image->columns=(size_t) (metrics.width+draw_info->stroke_width+0.5);
+      image->columns=(size_t) floor(metrics.width+draw_info->stroke_width+0.5);
       image->rows=(size_t) floor(metrics.height+draw_info->stroke_width+0.5);
     }
   else
@@ -205,14 +205,16 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
       return((Image *) NULL);
     }
   if (image->columns == 0)
-    image->columns=(size_t) (metrics.width+draw_info->stroke_width+0.5);
+    image->columns=(size_t) floor(metrics.width+draw_info->stroke_width+0.5);
   if (image->columns == 0)
-    image->columns=(size_t) (draw_info->pointsize+draw_info->stroke_width+0.5);
+    image->columns=(size_t) floor(draw_info->pointsize+draw_info->stroke_width+
+      0.5);
   if (image->rows == 0)
-    image->rows=(size_t) (metrics.ascent-metrics.descent+
+    image->rows=(size_t) floor(metrics.ascent-metrics.descent+
       draw_info->stroke_width+0.5);
   if (image->rows == 0)
-    image->rows=(size_t) (draw_info->pointsize+draw_info->stroke_width+0.5);
+    image->rows=(size_t) floor(draw_info->pointsize+draw_info->stroke_width+
+      0.5);
   status=SetImageExtent(image,image->columns,image->rows);
   if (status == MagickFalse)
     {

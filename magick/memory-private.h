@@ -41,6 +41,9 @@ extern "C" {
 #define MagickAssumeAligned(address)  (address)
 #endif
 
+MagickExport MagickBooleanType
+  HeapOverflowSanityCheck(const size_t,const size_t) magick_alloc_sizes(1,2);
+
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif
