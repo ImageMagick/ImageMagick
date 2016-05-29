@@ -233,7 +233,8 @@ static MagickBooleanType RelinquishOpenCLBuffer(
       cache_info->opencl=RelinquishOpenCLCacheInfo(clEnv,cache_info->opencl);
       return(MagickFalse);
     }
-  relinquish_info=(OpenCLRelinquishInfo *) AcquireMagickMemory(sizeof(*info));
+  relinquish_info=(OpenCLRelinquishInfo *) AcquireMagickMemory(
+    sizeof(*relinquish_info));
   if (relinquish_info == (OpenCLRelinquishInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   relinquish_info->mapped=cache_info->mapped;
@@ -292,12 +293,8 @@ extern MagickPrivate void AddOpenCLEvent(const Image *image,cl_event event)
       cache_info->opencl->event_count=1;
     }
   else
-    {
-      cache_info->opencl->events=ResizeQuantumMemory(
-        cache_info->opencl->events,cache_info->opencl->event_count,
-        sizeof(*cache_info->opencl->events));
-      cache_info->opencl->event_count++;
-    }
+    cache_info->opencl->events=ResizeQuantumMemory(cache_info->opencl->events,
+      ++cache_info->opencl->event_count,sizeof(*cache_info->opencl->events));
   if (cache_info->opencl->events == (cl_event *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   cache_info->opencl->events[cache_info->opencl->event_count-1]=event;
