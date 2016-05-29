@@ -5893,10 +5893,13 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
     PixelChannel
       pixel_channel;
 
+    PixelTrait
+      traits;
 
     if (status == MagickFalse)
       continue;
-    if (GetPixelChannelTraits(image,channel) == UndefinedPixelTrait)
+    traits=GetPixelChannelTraits(image,(PixelChannel) channel);
+    if (traits == UndefinedPixelTrait)
       continue;
     pixel_channel=GetPixelChannelChannel(image,channel);
     if ((pixel_channel != RedPixelChannel) &&

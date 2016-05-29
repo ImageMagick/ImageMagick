@@ -119,7 +119,7 @@ static int MagickMain(int argc,char **argv)
   exception=AcquireExceptionInfo();
   image_info=AcquireImageInfo();
   GetPathComponent(argv[0],TailPath,client_name);
-  for (i=0; i < (sizeof(MagickCommands)/sizeof(MagickCommands[0])); i++)
+  for (i=0; i < (ssize_t) (sizeof(MagickCommands)/sizeof(MagickCommands[0])); i++)
   {
     offset=LocaleNCompare(MagickCommands[i].client_name,client_name,
       MagickCommands[i].extent);
@@ -129,7 +129,7 @@ static int MagickMain(int argc,char **argv)
   i%=(sizeof(MagickCommands)/sizeof(MagickCommands[0]));
   if ((i == 0) && (argc > 1))
     {
-      for (i=1; i < (sizeof(MagickCommands)/sizeof(MagickCommands[0])); i++)
+      for (i=1; i < (ssize_t) (sizeof(MagickCommands)/sizeof(MagickCommands[0])); i++)
       {
         offset=LocaleCompare(MagickCommands[i].client_name,argv[1]);
         if (offset == 0)

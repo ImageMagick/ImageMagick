@@ -1538,7 +1538,7 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
                   {
                     if (EXIFTag[i].tag == 0)
                       break;
-                    if ((ssize_t) EXIFTag[i].tag == tag_value)
+                    if (EXIFTag[i].tag == tag_value)
                       {
                         description=EXIFTag[i].description;
                         break;

@@ -617,6 +617,7 @@ static Image *ReadMATImageV4(const ImageInfo *image_info,Image *image,
     i;
 
   ssize_t
+    count,
     y;
 
   unsigned char
@@ -721,8 +722,8 @@ static Image *ReadMATImageV4(const ImageInfo *image_info,Image *image,
     register Quantum
       *magick_restrict q;
 
-    status=ReadBlob(image,depth/8*image->columns,(char *) pixels);
-    if (status == -1)
+    count=ReadBlob(image,depth/8*image->columns,(char *) pixels);
+    if (count == -1)
       break;
     q=QueueAuthenticPixels(image,0,image->rows-y-1,image->columns,1,exception);
     if (q == (Quantum *) NULL)
@@ -744,9 +745,6 @@ static Image *ReadMATImageV4(const ImageInfo *image_info,Image *image,
   if (HDR.imagf == 1)
     for (y=0; y < (ssize_t) image->rows; y++)
     {
-      ssize_t
-        count;
-
       /*
         Read complex pixels.
       */

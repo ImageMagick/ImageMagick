@@ -69,7 +69,7 @@
 #include "MagickCore/MagickCore.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/string_.h"
-#if defined(_VISUALC_)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
 #define WIN32_LEAN_AND_MEAN
 #define VC_EXTRALEAN
 #include <windows.h>
@@ -109,7 +109,7 @@ static MagickBooleanType
 %    o exception: return any errors or warnings in this structure.
 %
 */
-#if defined(_VISUALC_)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
 #  pragma warning(disable : 4477)
 static Image *ReadXTRNImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
@@ -260,7 +260,7 @@ ModuleExport size_t RegisterXTRNImage(void)
     *entry;
 
   entry=AcquireMagickInfo("XTRN","XTRNFILE","External transfer of a file");
-#if defined(_VISUALC_)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
   entry->decoder=ReadXTRNImage;
   entry->encoder=WriteXTRNImage;
 #endif
@@ -269,7 +269,7 @@ ModuleExport size_t RegisterXTRNImage(void)
   RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("XTRN","XTRNIMAGE",
     "External transfer of a image in memory");
-#if defined(_VISUALC_)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
   entry->decoder=ReadXTRNImage;
   entry->encoder=WriteXTRNImage;
 #endif
@@ -278,7 +278,7 @@ ModuleExport size_t RegisterXTRNImage(void)
   RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("XTRN","XTRNBLOB",
     "IExternal transfer of a blob in memory");
-#if defined(_VISUALC_)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
   entry->decoder=ReadXTRNImage;
   entry->encoder=WriteXTRNImage;
 #endif
@@ -287,7 +287,7 @@ ModuleExport size_t RegisterXTRNImage(void)
   RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("XTRN","XTRNARRAY",
     "External transfer via a smart array interface");
-#if defined(_VISUALC_)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
   entry->decoder=ReadXTRNImage;
   entry->encoder=WriteXTRNImage;
 #endif
@@ -354,7 +354,7 @@ ModuleExport void UnregisterXTRNImage(void)
 %
 */
 
-#if defined(_VISUALC_)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
 static size_t SafeArrayFifo(const Image *image,const void *data,
   const size_t length)
 {
@@ -399,7 +399,7 @@ static size_t SafeArrayFifo(const Image *image,const void *data,
 }
 #endif
 
-#if defined(_VISUALC_)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
 #  pragma warning(disable : 4477)
 static MagickBooleanType WriteXTRNImage(const ImageInfo *image_info,
   Image *image,ExceptionInfo *exception)

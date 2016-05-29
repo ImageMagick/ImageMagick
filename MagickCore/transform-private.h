@@ -22,8 +22,8 @@
 extern "C" {
 #endif
 
-  extern MagickPrivate MagickBooleanType
-    TransformImage(Image **, const char *, const char *, ExceptionInfo *);
+extern MagickPrivate MagickBooleanType
+  TransformImage(Image **,const char *,const char *,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
