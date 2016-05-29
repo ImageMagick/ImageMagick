@@ -939,7 +939,9 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,"ImproperImageHeader");
       case 16: z2=z = ReadBlobXXXLong(image2);  /* 4D matrix animation */
          if(z!=3 && z!=1)
             ThrowReaderException(CoderError, "MultidimensionalMatricesAreNotSupported");
-           Frames = ReadBlobXXXLong(image2);
+         Frames = ReadBlobXXXLong(image2);
+         if (Frames == 0)
+           ThrowReaderException(CorruptImageError,"ImproperImageHeader");
          break;
       default: ThrowReaderException(CoderError, "MultidimensionalMatricesAreNotSupported");
     }
