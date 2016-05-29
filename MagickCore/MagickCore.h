@@ -75,7 +75,6 @@ extern "C" {
 # include "MagickCore/methods.h"
 #endif
 #include "MagickCore/magick-type.h"
-#include "MagickCore/accelerate.h"
 #include "MagickCore/animate.h"
 #include "MagickCore/annotate.h"
 #include "MagickCore/artifact.h"

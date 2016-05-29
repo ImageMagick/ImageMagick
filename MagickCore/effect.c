@@ -41,7 +41,7 @@
   Include declarations.
 */
 #include "MagickCore/studio.h"
-#include "MagickCore/accelerate.h"
+#include "MagickCore/accelerate-private.h"
 #include "MagickCore/blob.h"
 #include "MagickCore/cache-view.h"
 #include "MagickCore/color.h"

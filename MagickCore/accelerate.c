@@ -40,7 +40,6 @@
 Include declarations.
 */
 #include "MagickCore/studio.h"
-#include "MagickCore/accelerate.h"
 #include "MagickCore/accelerate-private.h"
 #include "MagickCore/artifact.h"
 #include "MagickCore/cache.h"
@@ -58,7 +57,6 @@ Include declarations.
 #include "MagickCore/list.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/monitor-private.h"
-#include "MagickCore/accelerate.h"
 #include "MagickCore/opencl.h"
 #include "MagickCore/opencl-private.h"
 #include "MagickCore/option.h"
@@ -699,7 +697,7 @@ cleanup:
   return(filteredImage);
 }
 
-MagickExport Image *AccelerateAddNoiseImage(const Image *image,
+MagickPrivate Image *AccelerateAddNoiseImage(const Image *image,
   const NoiseType noise_type,ExceptionInfo *exception)
 {
   Image
@@ -978,7 +976,7 @@ cleanup:
   return(filteredImage);
 }
 
-MagickExport Image* AccelerateBlurImage(const Image *image,
+MagickPrivate Image* AccelerateBlurImage(const Image *image,
   const double radius,const double sigma,ExceptionInfo *exception)
 {
   Image
@@ -1226,7 +1224,7 @@ cleanup:
   return(outputReady);
 }
 
-MagickExport MagickBooleanType AccelerateCompositeImage(Image *image,
+MagickPrivate MagickBooleanType AccelerateCompositeImage(Image *image,
   const CompositeOperator compose,const Image *composite,
   const float destination_dissolve,const float source_dissolve,
   ExceptionInfo *exception)
@@ -1422,7 +1420,7 @@ cleanup:
   return(outputReady);
 }
 
-MagickExport MagickBooleanType AccelerateContrastImage(Image *image,
+MagickPrivate MagickBooleanType AccelerateContrastImage(Image *image,
   const MagickBooleanType sharpen,ExceptionInfo *exception)
 {
   MagickBooleanType
@@ -2022,7 +2020,7 @@ cleanup:
   return(outputReady);
 }
 
-MagickExport MagickBooleanType AccelerateContrastStretchImage(
+MagickPrivate MagickBooleanType AccelerateContrastStretchImage(
   Image *image,const double black_point,const double white_point,
   ExceptionInfo *exception)
 {
@@ -2384,7 +2382,7 @@ cleanup:
   return(filteredImage);
 }
 
-MagickExport Image *AccelerateConvolveImage(const Image *image,
+MagickPrivate Image *AccelerateConvolveImage(const Image *image,
   const KernelInfo *kernel,ExceptionInfo *exception)
 {
   /* Temporary disabled due to access violation
@@ -2784,7 +2782,7 @@ cleanup:
   return(filteredImage);
 }
 
-MagickExport Image *AccelerateDespeckleImage(const Image* image,
+MagickPrivate Image *AccelerateDespeckleImage(const Image* image,
   ExceptionInfo* exception)
 {
   Image
@@ -3245,7 +3243,7 @@ cleanup:
   return(outputReady);
 }
 
-MagickExport MagickBooleanType AccelerateEqualizeImage(Image *image,
+MagickPrivate MagickBooleanType AccelerateEqualizeImage(Image *image,
   ExceptionInfo *exception)
 {
   MagickBooleanType
@@ -3425,7 +3423,7 @@ cleanup:
   return(status);
 }
 
-MagickExport MagickBooleanType AccelerateFunctionImage(Image *image,
+MagickPrivate MagickBooleanType AccelerateFunctionImage(Image *image,
   const MagickFunction function,const size_t number_parameters,
   const double *parameters,ExceptionInfo *exception)
 {
@@ -3582,7 +3580,7 @@ cleanup:
   return( outputReady);
 }
 
-MagickExport MagickBooleanType AccelerateGrayscaleImage(Image* image,
+MagickPrivate MagickBooleanType AccelerateGrayscaleImage(Image* image,
   const PixelIntensityMethod method,ExceptionInfo *exception)
 {
   MagickBooleanType
@@ -3939,7 +3937,7 @@ cleanup:
   return(filteredImage);
 }
 
-MagickExport Image *AccelerateLocalContrastImage(const Image *image,
+MagickPrivate Image *AccelerateLocalContrastImage(const Image *image,
   const double radius,const double strength,ExceptionInfo *exception)
 {
   Image
@@ -4145,7 +4143,7 @@ cleanup:
 
 }
 
-MagickExport MagickBooleanType AccelerateModulateImage(Image *image,
+MagickPrivate MagickBooleanType AccelerateModulateImage(Image *image,
   const double percent_brightness,const double percent_hue,
   const double percent_saturation,const ColorspaceType colorspace,
   ExceptionInfo *exception)
@@ -4514,7 +4512,7 @@ cleanup:
   return(filteredImage);
 }
 
-MagickExport Image *AccelerateMotionBlurImage(const Image *image,
+MagickPrivate Image *AccelerateMotionBlurImage(const Image *image,
   const double* kernel,const size_t width,const OffsetInfo *offset,
   ExceptionInfo *exception)
 {
@@ -5149,7 +5147,7 @@ static MagickBooleanType gpuSupportedResizeWeighting(
   return(MagickFalse);
 }
 
-MagickExport Image *AccelerateResizeImage(const Image *image,
+MagickPrivate Image *AccelerateResizeImage(const Image *image,
   const size_t resizedColumns,const size_t resizedRows,
   const ResizeFilter *resizeFilter,ExceptionInfo *exception) 
 {
@@ -5422,7 +5420,7 @@ cleanup:
   return filteredImage;
 }
 
-MagickExport Image* AccelerateRotationalBlurImage(const Image *image,
+MagickPrivate Image* AccelerateRotationalBlurImage(const Image *image,
   const double angle,ExceptionInfo *exception)
 {
   Image
@@ -5889,7 +5887,7 @@ cleanup:
   return(filteredImage);
 }
 
-MagickExport Image *AccelerateUnsharpMaskImage(const Image *image,
+MagickPrivate Image *AccelerateUnsharpMaskImage(const Image *image,
   const double radius,const double sigma,const double gain,
   const double threshold,ExceptionInfo *exception)
 {
@@ -6081,7 +6079,7 @@ cleanup:
   return(filteredImage);
 }
 
-MagickExport Image *AccelerateWaveletDenoiseImage(const Image *image,
+MagickPrivate Image *AccelerateWaveletDenoiseImage(const Image *image,
   const double threshold,ExceptionInfo *exception)
 {
   Image
@@ -6107,7 +6105,7 @@ MagickExport Image *AccelerateWaveletDenoiseImage(const Image *image,
 
 #else  /* MAGICKCORE_OPENCL_SUPPORT  */
 
-MagickExport Image *AccelerateAddNoiseImage(const Image *magick_unused(image),
+MagickPrivate Image *AccelerateAddNoiseImage(const Image *magick_unused(image),
   const NoiseType magick_unused(noise_type),
   ExceptionInfo *magick_unused(exception))
 {
@@ -6117,7 +6115,7 @@ MagickExport Image *AccelerateAddNoiseImage(const Image *magick_unused(image),
   return((Image *) NULL);
 }
 
-MagickExport Image *AccelerateBlurImage(const Image *magick_unused(image),
+MagickPrivate Image *AccelerateBlurImage(const Image *magick_unused(image),
   const double magick_unused(radius),const double magick_unused(sigma),
   ExceptionInfo *magick_unused(exception))
 {
@@ -6129,7 +6127,7 @@ MagickExport Image *AccelerateBlurImage(const Image *magick_unused(image),
   return((Image *) NULL);
 }
 
-MagickExport MagickBooleanType AccelerateCompositeImage(
+MagickPrivate MagickBooleanType AccelerateCompositeImage(
   Image *magick_unused(image),const CompositeOperator magick_unused(compose),
   const Image *magick_unused(composite),
   const float magick_unused(destination_dissolve),
@@ -6146,7 +6144,7 @@ MagickExport MagickBooleanType AccelerateCompositeImage(
   return(MagickFalse);
 }
 
-MagickExport MagickBooleanType AccelerateContrastImage(
+MagickPrivate MagickBooleanType AccelerateContrastImage(
   Image* magick_unused(image),const MagickBooleanType magick_unused(sharpen),
   ExceptionInfo* magick_unused(exception))
 {
@@ -6157,7 +6155,7 @@ MagickExport MagickBooleanType AccelerateContrastImage(
   return(MagickFalse);
 }
 
-MagickExport MagickBooleanType AccelerateContrastStretchImage(
+MagickPrivate MagickBooleanType AccelerateContrastStretchImage(
   Image *magick_unused(image),const double magick_unused(black_point),
   const double magick_unused(white_point),
   ExceptionInfo* magick_unused(exception))
@@ -6170,7 +6168,7 @@ MagickExport MagickBooleanType AccelerateContrastStretchImage(
   return(MagickFalse);
 }
 
-MagickExport Image *AccelerateConvolveImage(const Image *magick_unused(image),
+MagickPrivate Image *AccelerateConvolveImage(const Image *magick_unused(image),
   const KernelInfo *magick_unused(kernel),
   ExceptionInfo *magick_unused(exception))
 {
@@ -6181,7 +6179,7 @@ MagickExport Image *AccelerateConvolveImage(const Image *magick_unused(image),
   return((Image *) NULL);
 }
 
-MagickExport MagickBooleanType AccelerateEqualizeImage(
+MagickPrivate MagickBooleanType AccelerateEqualizeImage(
   Image* magick_unused(image),ExceptionInfo* magick_unused(exception))
 {
   magick_unreferenced(image);
@@ -6190,7 +6188,7 @@ MagickExport MagickBooleanType AccelerateEqualizeImage(
   return(MagickFalse);
 }
 
-MagickExport Image *AccelerateDespeckleImage(const Image* magick_unused(image),
+MagickPrivate Image *AccelerateDespeckleImage(const Image* magick_unused(image),
   ExceptionInfo* magick_unused(exception))
 {
   magick_unreferenced(image);
@@ -6199,7 +6197,7 @@ MagickExport Image *AccelerateDespeckleImage(const Image* magick_unused(image),
   return((Image *) NULL);
 }
 
-MagickExport MagickBooleanType AccelerateFunctionImage(
+MagickPrivate MagickBooleanType AccelerateFunctionImage(
   Image *magick_unused(image),
   const MagickFunction magick_unused(function),
   const size_t magick_unused(number_parameters),
@@ -6215,7 +6213,7 @@ MagickExport MagickBooleanType AccelerateFunctionImage(
   return(MagickFalse);
 }
 
-MagickExport MagickBooleanType AccelerateGrayscaleImage(
+MagickPrivate MagickBooleanType AccelerateGrayscaleImage(
   Image *magick_unused(image),const PixelIntensityMethod magick_unused(method),
   ExceptionInfo *magick_unused(exception))
 {
@@ -6226,7 +6224,7 @@ MagickExport MagickBooleanType AccelerateGrayscaleImage(
   return(MagickFalse);
 }
 
-MagickExport Image *AccelerateLocalContrastImage(
+MagickPrivate Image *AccelerateLocalContrastImage(
   const Image *magick_unused(image),const double magick_unused(radius),
   const double magick_unused(strength),ExceptionInfo *magick_unused(exception))
 {
@@ -6238,7 +6236,7 @@ MagickExport Image *AccelerateLocalContrastImage(
   return((Image *) NULL);
 }
 
-MagickExport MagickBooleanType AccelerateModulateImage(
+MagickPrivate MagickBooleanType AccelerateModulateImage(
   Image *magick_unused(image),const double magick_unused(percent_brightness),
   const double magick_unused(percent_hue),
   const double magick_unused(percent_saturation),
@@ -6255,7 +6253,7 @@ MagickExport MagickBooleanType AccelerateModulateImage(
   return(MagickFalse);
 }
 
-MagickExport Image *AccelerateMotionBlurImage(
+MagickPrivate Image *AccelerateMotionBlurImage(
   const Image *magick_unused(image),const double *magick_unused(kernel),
   const size_t magick_unused(width),const OffsetInfo *magick_unused(offset),
   ExceptionInfo *magick_unused(exception))
@@ -6269,7 +6267,7 @@ MagickExport Image *AccelerateMotionBlurImage(
   return((Image *) NULL);
 }
 
-MagickExport MagickBooleanType AccelerateRandomImage(
+MagickPrivate MagickBooleanType AccelerateRandomImage(
   Image *magick_unused(image),ExceptionInfo *magick_unused(exception))
 {
   magick_unreferenced(image);
@@ -6278,7 +6276,7 @@ MagickExport MagickBooleanType AccelerateRandomImage(
   return(MagickFalse);
 }
 
-MagickExport Image *AccelerateResizeImage(const Image *magick_unused(image),
+MagickPrivate Image *AccelerateResizeImage(const Image *magick_unused(image),
   const size_t magick_unused(resizedColumns),
   const size_t magick_unused(resizedRows),
   const ResizeFilter *magick_unused(resizeFilter),
@@ -6293,7 +6291,7 @@ MagickExport Image *AccelerateResizeImage(const Image *magick_unused(image),
   return((Image *) NULL);
 }
 
-MagickExport Image *AccelerateRotationalBlurImage(
+MagickPrivate Image *AccelerateRotationalBlurImage(
   const Image *magick_unused(image),const double magick_unused(angle),
   ExceptionInfo *magick_unused(exception))
 {
@@ -6304,7 +6302,7 @@ MagickExport Image *AccelerateRotationalBlurImage(
   return((Image *) NULL);
 }
 
-MagickExport Image *AccelerateUnsharpMaskImage(
+MagickPrivate Image *AccelerateUnsharpMaskImage(
   const Image *magick_unused(image),const double magick_unused(radius),
   const double magick_unused(sigma),const double magick_unused(gain),
   const double magick_unused(threshold),
@@ -6320,7 +6318,7 @@ MagickExport Image *AccelerateUnsharpMaskImage(
   return((Image *) NULL);
 }
 
-MagickExport Image *AccelerateWaveletDenoiseImage(
+MagickPrivate Image *AccelerateWaveletDenoiseImage(
   const Image *magick_unused(image),const double magick_unused(threshold),
   ExceptionInfo *magick_unused(exception))
 {

@@ -42,7 +42,7 @@
 */
 #include "MagickCore/studio.h"
 #include "MagickCore/property.h"
-#include "MagickCore/accelerate.h"
+#include "MagickCore/accelerate-private.h"
 #include "MagickCore/animate.h"
 #include "MagickCore/blob.h"
 #include "MagickCore/blob-private.h"
