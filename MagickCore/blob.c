@@ -2484,7 +2484,8 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
   if (*filename == '|')
     {
       char
-        fileMode[MagickPathExtent];
+        fileMode[MagickPathExtent],
+        *sanitize_command;
 
       /*
         Pipe image to or from a system command.
@@ -2495,7 +2496,10 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
 #endif
       *fileMode =(*type);
       fileMode[1]='\0';
-      image->blob->file_info.file=(FILE *) popen_utf8(filename+1, fileMode);
+      sanitize_command=SanitizeString(filename+1);
+      image->blob->file_info.file=(FILE *) popen_utf8(sanitize_command,
+        fileMode);
+      sanitize_command=DestroyString(sanitize_command);
       if (image->blob->file_info.file == (FILE *) NULL)
         {
           ThrowFileException(exception,BlobError,"UnableToOpenBlob",filename);

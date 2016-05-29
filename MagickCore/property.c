@@ -2569,30 +2569,6 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
         (ssize_t) image->dispose);
       break;
     }
-    case 'F':
-    {
-      const char
-        *q;
-
-      register char
-        *p;
-
-      static char
-        whitelist[] =
-          "^-ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
-          "+&@#/%?=~_|!:,.;()";
-
-      /*
-        Magick filename (sanitized) - filename given incl. coder & read mods.
-      */
-      WarnNoImageReturn("\"%%%c\"",letter);
-      (void) CopyMagickString(value,image->magick_filename,MagickPathExtent);
-      p=value;
-      q=value+strlen(value);
-      for (p+=strspn(p,whitelist); p != q; p+=strspn(p,whitelist))
-        *p='_';
-      break;
-    }
     case 'G': /* Image size as geometry = "%wx%h" */
     {
       WarnNoImageReturn("\"%%%c\"",letter);
