@@ -3958,7 +3958,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
                     message);
                 }
               cache_info->storage_class=image->storage_class;
-              return(status);
+              return(status == 0 ? MagickFalse : MagickTrue);
             }
         }
       RelinquishMagickResource(MemoryResource,cache_info->length);
@@ -4021,7 +4021,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
                   (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s",
                     message);
                 }
-              return(status);
+              return(status == 0 ? MagickFalse : MagickTrue);
             }
         }
       RelinquishMagickResource(DiskResource,cache_info->length);
@@ -4106,7 +4106,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
                   (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s",
                     message);
                 }
-              return(status);
+              return(status == 0 ? MagickFalse : MagickTrue);
             }
         }
       RelinquishMagickResource(MapResource,cache_info->length);
@@ -4127,7 +4127,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
         cache_info->columns,(double) cache_info->rows,format);
       (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s",message);
     }
-  return(status);
+  return(status == 0 ? MagickFalse : MagickTrue);
 }
 
 /*

@@ -622,6 +622,7 @@ static Image *ReadMATImageV4(const ImageInfo *image_info,Image *image,
     i;
 
   ssize_t
+    count,
     y;
 
   unsigned char
@@ -720,9 +721,6 @@ static Image *ReadMATImageV4(const ImageInfo *image_info,Image *image,
   pixels=(unsigned char *) GetQuantumPixels(quantum_info);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    ssize_t
-      count;
-
     register PixelPacket
       *magick_restrict q;
 
@@ -752,8 +750,8 @@ static Image *ReadMATImageV4(const ImageInfo *image_info,Image *image,
       /*
         Read complex pixels.
       */
-      status=ReadBlob(image,depth/8*image->columns,(unsigned char *) pixels);
-      if (status == -1)
+      count=ReadBlob(image,depth/8*image->columns,(unsigned char *) pixels);
+      if (count == -1)
         break;
       if (HDR.Type[1] == 0)
         InsertComplexDoubleRow((double *) pixels,y,image,0,0);

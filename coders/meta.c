@@ -224,7 +224,7 @@ static size_t convertHTMLcodes(char *s, const size_t len)
       codes=sizeof(html_codes)/sizeof(html_code);
       for (i=0; i < codes; i++)
       {
-        if (html_codes[i].len <= len)
+        if (html_codes[i].len <= (ssize_t) len)
           if (stringnicmp(s, html_codes[i].code,(size_t) (html_codes[i].len)) == 0)
             {
               (void) memmove(s+1,s+html_codes[i].len,

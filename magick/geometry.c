@@ -360,7 +360,7 @@ MagickExport char *GetPageGeometry(const char *page_geometry)
     size_t
       extent;
 
-    char
+    const char
       *geometry;
   } PageInfo;
 
@@ -453,7 +453,7 @@ MagickExport char *GetPageGeometry(const char *page_geometry)
   assert(page_geometry != (char *) NULL);
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",page_geometry);
   CopyMagickMemory(page,page_geometry,MaxTextExtent);
-  for (i=0; i < (sizeof(PageSizes)/sizeof(PageSizes[0])); i++)
+  for (i=0; i < (ssize_t) (sizeof(PageSizes)/sizeof(PageSizes[0])); i++)
   {
     int
       status;
