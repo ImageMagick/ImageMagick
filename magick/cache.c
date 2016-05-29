@@ -1757,7 +1757,7 @@ MagickExport MagickSizeType GetImageExtent(const Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   Ge t O p e n C L E v e n t s                                              %
++   G e t O p e n C L E v e n t s                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
