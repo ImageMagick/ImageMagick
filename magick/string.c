@@ -1614,6 +1614,55 @@ MagickExport void ResetStringInfo(StringInfo *string_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   S a n t i z e S t r i n g                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SanitizeString() returns an new string removes all characters except
+%  letters, digits and !#$%&'*+-=?^_`{|}~@.[].
+%
+%  The returned string shoud be freed using DestoryString().
+%
+%  The format of the SanitizeString method is:
+%
+%      char *SanitizeString(const char *source)
+%
+%  A description of each parameter follows:
+%
+%    o source: A character string.
+%
+*/
+MagickExport char *SanitizeString(const char *source)
+{
+  char
+    *sanitize_source;
+
+  const char
+    *q;
+  
+  register char
+    *p;
+  
+  static char
+    whitelist[] =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 "
+      "$-_.+!*'(),{}|\\^~[]`\"><#%;/?:@&=";
+  
+  sanitize_source=AcquireString(source);
+  p=sanitize_source;
+  q=sanitize_source+strlen(sanitize_source);
+  for (p+=strspn(p,whitelist); p != q; p+=strspn(p,whitelist))
+    *p='_';
+  return(sanitize_source);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   S e t S t r i n g I n f o                                                 %
 %                                                                             %
 %                                                                             %

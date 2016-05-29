@@ -48,6 +48,7 @@ extern MagickExport char
   *EscapeString(const char *,const char),
   *FileToString(const char *,const size_t,ExceptionInfo *),
   *GetEnvironmentValue(const char *),
+  *SanitizeString(const char *),
   *StringInfoToHexString(const StringInfo *),
   *StringInfoToString(const StringInfo *),
   **StringToArgv(const char *,int *),

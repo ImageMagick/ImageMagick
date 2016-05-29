@@ -322,31 +322,6 @@ MagickExport void DelegateComponentTerminus(void)
 %    o exception: return any errors here.
 %
 */
-
-static char *SanitizeDelegateCommand(const char *command)
-{
-  char
-    *sanitize_command;
-
-  const char
-    *q;
-
-  register char
-    *p;
-
-  static char
-    whitelist[] =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_- "
-      ".@&;<>()|/\\\'\":%=~`";
-
-  sanitize_command=AcquireString(command);
-  p=sanitize_command;
-  q=sanitize_command+strlen(sanitize_command);
-  for (p+=strspn(p,whitelist); p != q; p+=strspn(p,whitelist))
-    *p='_';
-  return(sanitize_command);
-}
-
 MagickExport int ExternalDelegateCommand(const MagickBooleanType asynchronous,
   const MagickBooleanType verbose,const char *command,char *message,
   ExceptionInfo *exception)
@@ -396,7 +371,7 @@ MagickExport int ExternalDelegateCommand(const MagickBooleanType asynchronous,
       (void) FormatLocaleFile(stderr,"%s\n",command);
       (void) fflush(stderr);
     }
-  sanitize_command=SanitizeDelegateCommand(command);
+  sanitize_command=SanitizeString(command);
   if (asynchronous != MagickFalse)
     (void) ConcatenateMagickString(sanitize_command,"&",MaxTextExtent);
   if (message != (char *) NULL)
@@ -541,15 +516,6 @@ static char *GetMagickPropertyLetter(const ImageInfo *image_info,Image *image,
 
   const char
     *string;
-
-  register char
-    *p,
-    *q;
-
-  static char
-    whitelist[] =
-      "^-ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
-      "+&@#/%?=~_|!:,.;()";
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -944,15 +910,7 @@ static char *GetMagickPropertyLetter(const ImageInfo *image_info,Image *image,
       break;
     }
   }
-  /*
-    Sanitize property.
-  */
-  property=ConstantString(string);
-  p=property;
-  q=property+strlen(property);
-  for (p+=strspn(p,whitelist); p != q; p+=strspn(p,whitelist))
-    *p='_';
-  return(property);
+  return(SanitizeString(string));
 }
 
 static char *InterpretDelegateProperties(const ImageInfo *image_info,
