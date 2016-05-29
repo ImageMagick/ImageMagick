@@ -66,6 +66,7 @@ MAGICKCORE_BASE_SRCS = \
 	MagickCore/MagickCore.h \
 	MagickCore/accelerate.c \
 	MagickCore/accelerate-private.h \
+	MagickCore/accelerate-kernels-private.h \
 	MagickCore/animate.c \
 	MagickCore/animate.h \
 	MagickCore/animate-private.h \
@@ -408,6 +409,7 @@ MAGICKCORE_INCLUDE_HDRS = \
 
 MAGICKCORE_NOINST_HDRS = \
 	MagickCore/accelerate-private.h \
+	MagickCore/accelerate-kernels-private.h \
 	MagickCore/animate-private.h \
 	MagickCore/annotate-private.h \
 	MagickCore/blob-private.h \
