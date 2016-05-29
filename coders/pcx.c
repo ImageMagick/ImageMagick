@@ -391,7 +391,12 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Read image data.
     */
-    pcx_packets=(size_t) image->rows*pcx_info.bytes_per_line*pcx_info.planes;
+    if (HeapOverflowSanityCheck(image->rows, (size_t) pcx_info.bytes_per_line) != MagickFalse)
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    pcx_packets=(size_t) image->rows*pcx_info.bytes_per_line;
+    if (HeapOverflowSanityCheck(pcx_packets, (size_t)pcx_info.planes) != MagickFalse)
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    pcx_packets=(size_t) pcx_packets*pcx_info.planes;
     if ((size_t) (pcx_info.bits_per_pixel*pcx_info.planes*image->columns) >
         (pcx_packets*8U))
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
