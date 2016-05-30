@@ -1,3 +1,6 @@
+2016-05-30  6.9.4-5 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 6.9.4-5, GIT revision 18321:5511ef5:20160530.
+
 2016-05-28  6.9.4-5 Dirk Lemstra <dirk@lem.....org>
   * Most OpenCL operations are now executed asynchronous.
 
