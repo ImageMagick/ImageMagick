@@ -6,6 +6,8 @@
     https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=29754).
   * Fix stroke offset problem for -annotate (reference
     https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=29626).
+  * Add additional checks to DCM reader to prevent data-driven faults (bug
+    report from Hanno Böck).
 
 2016-05-21  6.9.4-4 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 6.9.4-4, GIT revision 18241:d4f277c:20160521.
