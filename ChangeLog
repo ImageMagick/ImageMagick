@@ -1,3 +1,6 @@
+2016-05-30  7.0.1-7 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.1-7, GIT revision 18321:5511ef5:20160530.
+
 2016-05-25  7.0.1-7 Cristy  <quetzlzacatenango@image...>
   * Security improvements to TEXT coder broke it (reference
     https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=29754).
