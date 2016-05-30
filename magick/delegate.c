@@ -511,7 +511,6 @@ static char *GetMagickPropertyLetter(const ImageInfo *image_info,Image *image,
   const char letter)
 {
   char
-    *property,
     value[MaxTextExtent];
 
   const char

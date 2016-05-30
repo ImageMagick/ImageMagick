@@ -3271,11 +3271,11 @@ MagickExport unsigned short ReadBlobShort(Image *image)
     {
       value=(unsigned short) (*p++);
       value|=((unsigned short) (*p++)) << 8;
-      return(value & 0xffff);
+      return(value);
     }
   value=(unsigned short) ((*p++) << 8);
   value|=(unsigned short) (*p++);
-  return(value & 0xffff);
+  return(value);
 }
 
 /*
