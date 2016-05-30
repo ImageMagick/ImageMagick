@@ -3216,6 +3216,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Photometric interpretation.
             */
+            if (data == (unsigned char *) NULL)
+              break;
             for (i=0; i < (ssize_t) MagickMin(length,MagickPathExtent-1); i++)
               photometric[i]=(char) data[i];
             photometric[i]='\0';
@@ -3237,6 +3239,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Number of frames.
             */
+            if (data == (unsigned char *) NULL)
+              break;
             number_scenes=StringToUnsignedLong((char *) data);
             break;
           }
@@ -3674,7 +3678,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (scale == (Quantum *) NULL)
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
       range=GetQuantumRange(depth);
-      for (i=0; i < (ssize_t) (GetQuantumRange(depth)+1); i++)
+      for (i=0; i <= (ssize_t) GetQuantumRange(depth); i++)
         scale[i]=ScaleAnyToQuantum((size_t) i,range);
     }
   if (image->compression == RLECompression)
@@ -3965,9 +3969,12 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 pixel.blue&=mask;
                 if (scale != (Quantum *) NULL)
                   {
-                    pixel.red=scale[pixel.red];
-                    pixel.green=scale[pixel.green];
-                    pixel.blue=scale[pixel.blue];
+                    if (pixel.red <= GetQuantumRange(depth))
+                      pixel.red=scale[pixel.red];
+                    if (pixel.green <= GetQuantumRange(depth))
+                      pixel.green=scale[pixel.green];
+                    if (pixel.blue <= GetQuantumRange(depth))
+                      pixel.blue=scale[pixel.blue];
                   }
               }
             SetPixelRed(image,(Quantum) pixel.red,q);
