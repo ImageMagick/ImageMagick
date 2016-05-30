@@ -101,8 +101,8 @@ static void InitializeDcrawOpenCL(ExceptionInfo *exception)
   MagickCLEnv
     clEnv;
 
-  (void) SetEnvironmentVariable("DCR_CL_PLATFORM","");
-  (void) SetEnvironmentVariable("DCR_CL_DEVICE","");
+  (void) SetEnvironmentVariable("DCR_CL_PLATFORM",NULL);
+  (void) SetEnvironmentVariable("DCR_CL_DEVICE",NULL);
   clEnv=GetDefaultOpenCLEnv();
   GetMagickOpenCLEnvParam(clEnv,MAGICK_OPENCL_ENV_PARAM_OPENCL_DISABLED,
     sizeof(MagickBooleanType),&opencl_disabled,exception);
