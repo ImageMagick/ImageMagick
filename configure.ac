@@ -696,6 +696,18 @@ if test "$enable_pipes" = 'yes'; then
     MAGICK_FEATURES="Pipes $MAGICK_FEATURES"
 fi
 
+# Enable indirect reads (@) in filenames.
+AC_ARG_ENABLE([indirect-reads],
+    [AC_HELP_STRING([--enable-indirect-reads],
+                    [enable indirect reads (@) in filenames])],
+    [enable_indirect_reads=$enableval],
+    [enable_indirect_reads='no'])
+
+if test "$enable_indirect-reads" = 'yes'; then
+    AC_DEFINE(INDIRECT_READS_SUPPORT,1,[enable indirect reads (@) in filenames])
+    MAGICK_FEATURES="IndirectReads $MAGICK_FEATURES"
+fi
+
 # Build a version of ImageMagick with assert statements.
 AC_ARG_ENABLE([assert],
     [AC_HELP_STRING([--disable-assert],

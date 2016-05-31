@@ -1168,6 +1168,7 @@ enable_cipher
 enable_zero_configuration
 enable_hdri
 enable_pipes
+enable_indirect_reads
 enable_assert
 enable_maintainer_mode
 enable_hugepages
@@ -1937,6 +1938,7 @@ Optional Features:
   --enable-hdri           accurately represent the wide range of intensity
                           levels found in real scenes
   --enable-pipes          enable pipes (|) in filenames
+  --enable-indirect-reads enable indirect reads (@) in filenames
   --disable-assert        disable assert() statements in build
   --enable-maintainer-mode
                           enable make rules and dependencies not useful (and
@@ -4517,7 +4519,7 @@ MAGICK_PATCHLEVEL_VERSION=8
 
 MAGICK_VERSION=7.0.1-8
 
-MAGICK_GIT_REVISION=18325:28587c2:20160531
+MAGICK_GIT_REVISION=18331:697159d:20160531
 
 
 # Substitute library versioning
@@ -23838,6 +23840,22 @@ if test "$enable_pipes" = 'yes'; then
 $as_echo "#define PIPES_SUPPORT 1" >>confdefs.h
 
     MAGICK_FEATURES="Pipes $MAGICK_FEATURES"
+fi
+
+# Enable indirect reads (@) in filenames.
+# Check whether --enable-indirect-reads was given.
+if test "${enable_indirect_reads+set}" = set; then :
+  enableval=$enable_indirect_reads; enable_indirect_reads=$enableval
+else
+  enable_indirect_reads='no'
+fi
+
+
+if test "$enable_indirect-reads" = 'yes'; then
+
+$as_echo "#define INDIRECT_READS_SUPPORT 1" >>confdefs.h
+
+    MAGICK_FEATURES="IndirectReads $MAGICK_FEATURES"
 fi
 
 # Build a version of ImageMagick with assert statements.
