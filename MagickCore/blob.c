@@ -2480,7 +2480,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
       image->blob->exempt=MagickTrue;
       return(SetStreamBuffering(image_info,image));
     }
-#if defined(MAGICKCORE_HAVE_POPEN)
+#if defined(MAGICKCORE_HAVE_POPEN) && defined(MAGICKCORE_PIPES_SUPPORT)
   if (*filename == '|')
     {
       char
