@@ -684,6 +684,18 @@ MAGICK_PCFLAGS="$MAGICK_PCFLAGS -DMAGICKCORE_HDRI_ENABLE=$magick_hdri_enable"
 CFLAGS="$CFLAGS -DMAGICKCORE_HDRI_ENABLE=$magick_hdri_enable"
 CPPFLAGS="$CPPFLAGS -DMAGICKCORE_HDRI_ENABLE=$magick_hdri_enable"
 
+# Enable pipes (|) in filenames.
+AC_ARG_ENABLE([pipes],
+    [AC_HELP_STRING([--enable-pipes],
+                    [enable pipes (|) in filenames])],
+    [enable_pipes=$enableval],
+    [enable_pipes='no'])
+
+if test "$enable_pipes" = 'yes'; then
+    AC_DEFINE(PIPES_SUPPORT,1,[enable pipes (|) in filenames])
+    MAGICK_FEATURES="Pipes $MAGICK_FEATURES"
+fi
+
 # Build a version of ImageMagick with assert statements.
 AC_ARG_ENABLE([assert],
     [AC_HELP_STRING([--disable-assert],
