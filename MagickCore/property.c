@@ -3313,7 +3313,7 @@ RestoreMSCWarning
     p++;
   if (*p == '\0')
     return(ConstantString(""));
-#if defined(INDIRECT_READS_SUPPORT)
+#if defined(MAGICKCORE_INDIRECT_READS_SUPPORT)
   if ((*p == '@') && (IsPathAccessible(p+1) != MagickFalse))
     {
       /*
