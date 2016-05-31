@@ -260,8 +260,10 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   size_t
     bytes_per_line,
+    data_length,
     extent,
-    height;
+    height,
+    pixels_length;
 
   ssize_t
     count,
@@ -412,44 +414,60 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
     status=SetImageExtent(image,image->columns,image->rows,exception);
     if (status == MagickFalse)
       return(DestroyImageList(image));
-    if ((sun_info.length*sizeof(*sun_data))/sizeof(*sun_data) !=
-        sun_info.length || !sun_info.length)
+    if (sun_info.length == 0)
       ThrowReaderException(ResourceLimitError,"ImproperImageHeader");
     number_pixels=(MagickSizeType) (image->columns*image->rows);
-    if ((sun_info.type != RT_ENCODED) && 
+    if ((sun_info.type != RT_ENCODED) &&
         ((number_pixels*sun_info.depth) > (8UL*sun_info.length)))
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     bytes_per_line=sun_info.width*sun_info.depth;
-    sun_data=(unsigned char *) AcquireQuantumMemory((size_t) MagickMax(
-      sun_info.length,bytes_per_line*sun_info.width)+7,sizeof(*sun_data));
+    data_length=(size_t) MagickMax(sun_info.length,bytes_per_line*
+      sun_info.width)+7;
+    sun_data=(unsigned char *) AcquireQuantumMemory(data_length,
+      sizeof(*sun_data));
     if (sun_data == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-    count=(ssize_t) ReadBlob(image,sun_info.length,sun_data);
-    if (count != (ssize_t) sun_info.length)
-      ThrowReaderException(CorruptImageError,"UnableToReadImageData");
+    count=(ssize_t) ReadBlob(image,data_length,sun_data);
+    if (count != (ssize_t) data_length)
+      {
+        sun_data=(unsigned char *) RelinquishMagickMemory(sun_data);
+        ThrowReaderException(CorruptImageError,"UnableToReadImageData");
+      }
     height=sun_info.height;
     if ((height == 0) || (sun_info.width == 0) || (sun_info.depth == 0) ||
         ((bytes_per_line/sun_info.depth) != sun_info.width))
-      ThrowReaderException(ResourceLimitError,"ImproperImageHeader");
+      {
+        sun_data=(unsigned char *) RelinquishMagickMemory(sun_data);
+        ThrowReaderException(ResourceLimitError,"ImproperImageHeader");
+      }
     bytes_per_line+=15;
     bytes_per_line<<=1;
     if ((bytes_per_line >> 1) != (sun_info.width*sun_info.depth+15))
-      ThrowReaderException(ResourceLimitError,"ImproperImageHeader");
+      {
+        sun_data=(unsigned char *) RelinquishMagickMemory(sun_data);
+        ThrowReaderException(ResourceLimitError,"ImproperImageHeader");
+      }
     bytes_per_line>>=4;
-    sun_pixels=(unsigned char *) AcquireQuantumMemory(height,
-      MagickMax(image->columns,bytes_per_line)*sizeof(*sun_pixels));
+    pixels_length=height*(MagickMax(image->columns,bytes_per_line)+1);
+    sun_pixels=(unsigned char *) AcquireQuantumMemory(pixels_length,
+      sizeof(*sun_pixels));
     if (sun_pixels == (unsigned char *) NULL)
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-    ResetMagickMemory(sun_pixels,0,height*MagickMax(image->columns,
-      bytes_per_line)*sizeof(*sun_pixels));
+      {
+        sun_data=(unsigned char *) RelinquishMagickMemory(sun_data);
+        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+      }
+    ResetMagickMemory(sun_pixels,0,pixels_length*sizeof(*sun_pixels));
     if (sun_info.type == RT_ENCODED)
-      (void) DecodeImage(sun_data,sun_info.length,sun_pixels,bytes_per_line*
-        height);
+      (void) DecodeImage(sun_data,data_length,sun_pixels,pixels_length);
     else
       {
-        if (sun_info.length > (height*bytes_per_line))
-          ThrowReaderException(ResourceLimitError,"ImproperImageHeader");
-        (void) CopyMagickMemory(sun_pixels,sun_data,sun_info.length);
+        if (data_length > pixels_length)
+          {
+            sun_data=(unsigned char *) RelinquishMagickMemory(sun_data);
+            sun_pixels=(unsigned char *) RelinquishMagickMemory(sun_pixels);
+            ThrowReaderException(ResourceLimitError,"ImproperImageHeader");
+          }
+        (void) CopyMagickMemory(sun_pixels,sun_data,data_length);
       }
     sun_data=(unsigned char *) RelinquishMagickMemory(sun_data);
     /*
