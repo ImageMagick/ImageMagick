@@ -1,6 +1,8 @@
 2016-05-31  7.0.1-8 Cristy  <quetzlzacatenango@image...>
   * Support configure script --enable-pipes option to enable pipes (|) in
     filenames.
+  * Support configure script --enable-indirect-reads option to enable
+    indirect reads (@) in filenames.
 
 2016-05-30  6.9.4-5 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 6.9.4-5, GIT revision 18321:5511ef5:20160530.
