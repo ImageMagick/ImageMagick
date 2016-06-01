@@ -1695,6 +1695,10 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
   MagickBooleanType
     proceed;
 
+  MagickSizeType
+    length,
+    number_points;
+
   MagickStatusType
     status;
 
@@ -1721,9 +1725,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
     bounds;
 
   size_t
-    extent,
-    length,
-    number_points;
+    extent;
 
   ssize_t
     j,
@@ -2892,7 +2894,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
       number_points<<=1;
       primitive_info=(PrimitiveInfo *) ResizeQuantumMemory(primitive_info,
         (size_t) number_points,sizeof(*primitive_info));
-      if (primitive_info == (PrimitiveInfo *) NULL)
+      if ((primitive_info == (PrimitiveInfo *) NULL) ||
+          (number_points != (MagickSizeType) ((size_t) number_points)))
         {
           (void) ThrowMagickException(&image->exception,GetMagickModule(),
             ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
@@ -2999,7 +3002,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
       default:
         break;
     }
-    if ((size_t) (i+length) >= number_points)
+    if ((i+length) >= number_points)
       {
         /*
           Resize based on speculative points required by primitive.
@@ -3007,7 +3010,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
         number_points+=length+1;
         primitive_info=(PrimitiveInfo *) ResizeQuantumMemory(primitive_info,
           (size_t) number_points,sizeof(*primitive_info));
-        if (primitive_info == (PrimitiveInfo *) NULL)
+        if ((primitive_info == (PrimitiveInfo *) NULL) ||
+            (number_points != (MagickSizeType) ((size_t) number_points)))
           {
             (void) ThrowMagickException(&image->exception,GetMagickModule(),
               ResourceLimitError,"MemoryAllocationFailed","`%s'",
