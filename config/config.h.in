@@ -727,6 +727,9 @@
 /* Directory where ImageMagick headers live. */
 #undef INCLUDE_PATH
 
+/* enable indirect reads (@) in filenames */
+#undef INDIRECT_READS_SUPPORT
+
 /* ImageMagick is formally installed under prefix */
 #undef INSTALLED_SUPPORT
 
@@ -818,6 +821,9 @@
 
 /* Define if you have PANGO library */
 #undef PANGO_DELEGATE
+
+/* enable pipes (|) in filenames */
+#undef PIPES_SUPPORT
 
 /* Define if you have PNG library */
 #undef PNG_DELEGATE
