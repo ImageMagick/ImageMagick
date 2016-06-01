@@ -48,7 +48,7 @@
       <a class="magick-nav-item " href="command-line-processing.html">Command-line</a>
       <a class="magick-nav-item " href="resources.html">Resources</a>
       <a class="magick-nav-item " href="api.html">Develop</a>
-      <a class="magick-nav-item " href="http://www.imagemagick.org/script/search.php">Search</a>
+      <a class="magick-nav-item " href="http://legacy.imagemagick.org/script/search.php">Search</a>
       <a class="magick-nav-item pull-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
@@ -145,7 +145,7 @@ convert photo.jpg -fx \'iso=32; rone=rand(); rtwo=rand(); \
      &amp;&amp; (logical AND),  || (logical OR),
      ~ (logical NOT),  ?: (ternary conditional)</dd>
   <dt> math functions: </dt>
-     <dd> abs(), acos(), acosh(), airy(), alt(), asin(), asinh(), atan(), atanh(), atan2(), ceil(), clamp(), cos(), cosh(), debug(), drc(), exp(), floor(), gauss(), gcd(), hypot(), int(), isnan(), j0(), j1(), jinc(), ln(), log(), logtwo(), max(), min(), mod(), not(), pow(), rand(), round(), sign(), sin(), sinc(), sinh(), sqrt(), squish(), tan(), tanh(), trunc()</dd>
+     <dd> abs(), acos(), acosh(), airy(), alt(), asin(), asinh(), atan(), atanh(), atan2(), ceil(), clamp(), cos(), cosh(), debug(), drc(), erf(), exp(), floor(), gauss(), gcd(), hypot(), int(), isnan(), j0(), j1(), jinc(), ln(), log(), logtwo(), max(), min(), mod(), not(), pow(), rand(), round(), sign(), sin(), sinc(), sinh(), sqrt(), squish(), tan(), tanh(), trunc()</dd>
   <dt> channel functions: </dt>
     <dd> channel(r,g,b,a), channel(c,m,y,k,a)</dd>
   <dt> color names:</dt>
@@ -268,6 +268,7 @@ convert photo.jpg -fx \'iso=32; rone=rand(); rtwo=rand(); \
 <dt> <code>cosh(</code><var>x</var><code>)</code></dt><dd> hyperbolic cosine function</dd>
 <dt> <code>debug(</code><var>x</var><code>)</code></dt><dd> print <var>x</var> (useful for debugging your expression)</dd>
 <dt> <code>drc(</code><var>x</var>,<var>y</var><code>)</code></dt><dd> dynamic range compression (knee curve); drc(<var>x</var>,<var>y</var>)=(<var>x</var>)/(<var>y</var>*(<var>x</var>-1)+1); -1&lt;<var>y</var>&lt;1 </dd>
+<dt> <code>erf(</code><var>x</var><code>)</code></dt><dd> error function</dd>
 <dt> <code>exp(</code><var>x</var><code>)</code></dt><dd> natural exponential function (<var>e<sup>x</sup></var>)</dd>
 <dt> <code>floor(</code><var>x</var><code>)</code></dt><dd> largest integral value not greater than argument</dd>
 <dt> <code>gauss(</code><var>x</var><code>)</code></dt><dd> gaussian function; gauss(<var>x</var>)=exp(<var>-x*x/2</var>)/sqrt(2*pi)</dd>
@@ -406,7 +407,7 @@ convert rose: -duplicate 29 -virtual-pixel Gray -distort SRT '%[fx:360.0*t/n]' \
 </p>
     <p><a href="fx.html#">Back to top</a> •
     <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-    <a href="http://www.imagemagick.org/script/contact.php">Contact Us</a></p>
+    <a href="http://legacy.imagemagick.org/script/contact.php">Contact Us</a></p>
         <p><small>©  1999-2016 ImageMagick Studio LLC</small></p>
   </footer>
 </div><!-- /.container -->
@@ -416,4 +417,3 @@ convert rose: -duplicate 29 -virtual-pixel Gray -distort SRT '%[fx:360.0*t/n]' \
 </div>
 </body>
 </html>
-<!-- Magick Cache 25th April 2016 12:40 -->

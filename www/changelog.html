@@ -48,13 +48,57 @@
       <a class="magick-nav-item " href="command-line-processing.html">Command-line</a>
       <a class="magick-nav-item " href="resources.html">Resources</a>
       <a class="magick-nav-item " href="api.html">Develop</a>
-      <a class="magick-nav-item " href="http://www.imagemagick.org/script/search.php">Search</a>
+      <a class="magick-nav-item " href="http://legacy.imagemagick.org/script/search.php">Search</a>
       <a class="magick-nav-item pull-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
 </div>
 <div class="container">
-<div class="magick-header"><dl>
+<div class="magick-header"><dl><dt>2016-05-30  6.9.4-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 6.9.4-5, GIT revision 18321:5511ef5:20160530.</li>
+<dt>2016-05-28  6.9.4-5 Dirk Lemstra &lt;dirk@lem.....org&gt;</dt>
+  <li> Most OpenCL operations are now executed asynchronous.</li>
+<dt>2016-05-25  6.9.4-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Security improvements to TEXT coder broke it (reference    https://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=29754).</li>
+  <li> Fix stroke offset problem for -annotate (reference    https://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=29626).</li>
+  <li> Add additional checks to DCM reader to prevent data-driven faults (bug    report from Hanno Böck).</li>
+<dt>2016-05-21  6.9.4-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 6.9.4-4, GIT revision 18241:d4f277c:20160521.</li>
+<dt>2016-05-20  6.9.4-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Fixed proper placement of text annotation for east / west gravity.</li>
+<dt>2016-05-15  6.9.4-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 6.9.4-4, GIT revision 10789:f7c2e89:20160518.</li>
+<dt>2016-05-15  6.9.4-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Fix pixel cache on disk regression (reference    https://github.com/ImageMagick/ImageMagick/issues/202).</li>
+<dt>2016-05-15  6.9.4-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 6.9.4-2, GIT revision 10778:52dae14:20160516.</li>
+<dt>2016-05-10  6.9.4-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Quote passwords when passed to a delegate program.</li>
+  <li> Can read geo-related EXIF metdata once-again (reference    https://github.com/ImageMagick/ImageMagick/issues/198).</li>
+  <li> Sanitize all delegate emedded formatting characters.</li>
+  <li> Don't sync pixel cache in AcquireAuthenticCacheView() (bug report from    Hanno Böck).</li>
+<dt>2016-05-09  6.9.4-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 6.9.4-1, GIT revision 10755:d540dda:20160509.</li>
+<dt>2016-05-07  6.9.4-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Remove https delegate.</li>
+<dt>2016-05-05  6.9.4-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 6.9.4-0, GIT revision 10741:5746147:20160507.</li>
+<dt>2016-05-04  6.9.4-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Check for buffer overflow in magick/draw.c/DrawStrokePolygon().</li>
+  <li> Replace show delegate title with image filename rather than label.</li>
+  <li> Fix GetNextToken() off by one error.</li>
+  <li> Remove support for internal ephemeral coder.</li>
+<dt>2016-05-03  6.9.3-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> New version 6.9.3-10, GIT revision 10723:9fc8a0c:20160503.</li>
+<dt>2016-05-03  6.9.3-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Sanitize input filename for http / https delegates (improved patch).</li>
+  <li> Fix for possible security vulnerabilities (reference    https://www.imagemagick.org/discourse-server/viewtopic.html?f=4&amp;t=29588).</li>
+<dt>2016-04-30  6.9.3-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> New version 6.9.3-9, GIT revision 10716:b527bce:20160430.</li>
+<dt>2016-04-12  6.9.3-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Sanitize input filename for http / https delegates.</li>
+  <li> Indirect filename must be authorized by policy.</li>
+  <li> The txt coder now properly reports Lab colors (reference    https://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=2944).</li>
 <dt>2016-04-11  6.9.3-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> New version 6.9.3-8, GIT revision 10690:d058a53:20160411</li>
 <dt>2016-03-22  6.9.3-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
@@ -3832,8 +3876,7 @@
   <li> Set AppendImage() matte channel only when image has matte attribute set.</li>
   <li> The -crop with negative offsets do not modify the virtual canvas.</li>
   <li> Caption: Given both the width and height ("-size") of the area to fill,    adjust the fonts "-pointsize" until the text just filles the whole space    without overflowing.</li>
-  <li> Generate proper Windows icon image files (patch provided by    Robert M. Jansen).</li></dl></div>
-  <footer class="magick-footer">
+  <li> Generate proper Windows icon image files (patch provided by    Robert M. Jansen).</li></dl></div>  <footer class="magick-footer">
     <p><a href="support.html">Donate</a> •
      <a href="sitemap.html">Sitemap</a> •
     <a href="links.html">Related</a> •
@@ -3841,7 +3884,7 @@
 </p>
     <p><a href="changelog.html#">Back to top</a> •
     <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-    <a href="http://www.imagemagick.org/script/contact.php">Contact Us</a></p>
+    <a href="http://legacy.imagemagick.org/script/contact.php">Contact Us</a></p>
         <p><small>©  1999-2016 ImageMagick Studio LLC</small></p>
   </footer>
 </div><!-- /.container -->
@@ -3851,4 +3894,3 @@
 </div>
 </body>
 </html>
-<!-- Magick Cache 25th April 2016 11:59 -->

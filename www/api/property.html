@@ -48,14 +48,14 @@
       <a class="magick-nav-item " href="../command-line-processing.html">Command-line</a>
       <a class="magick-nav-item " href="../resources.html">Resources</a>
       <a class="magick-nav-item " href="api.html">Develop</a>
-      <a class="magick-nav-item " href="http://www.imagemagick.org/script/search.php">Search</a>
+      <a class="magick-nav-item " href="http://legacy.imagemagick.org/script/search.php">Search</a>
       <a class="magick-nav-item pull-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="text-center"><a href="property.html#CloneImageProperties">CloneImageProperties</a> &#8226; <a href="property.html#DefineImageProperty">DefineImageProperty</a> &#8226; <a href="property.html#DeleteImageProperty">DeleteImageProperty</a> &#8226; <a href="property.html#DestroyImageProperties">DestroyImageProperties</a> &#8226; <a href="property.html#FormatImageProperty">FormatImageProperty</a> &#8226; <a href="property.html#GetImageProperty">GetImageProperty</a> &#8226; <a href="property.html#GetNextImageProperty">GetNextImageProperty</a> &#8226; <a href="property.html#InterpretImageProperties">InterpretImageProperties</a> &#8226; <a href="property.html#(void) LogMagickEvent(TraceEvent,GetMagickModule">(void) LogMagickEvent(TraceEvent,GetMagickModule</a> &#8226; <a href="property.html#RemoveImageProperty">RemoveImageProperty</a> &#8226; <a href="property.html#ResetImagePropertyIterator">ResetImagePropertyIterator</a> &#8226; <a href="property.html#SetImageProperty">SetImageProperty</a></p>
+<p class="text-center"><a href="property.html#CloneImageProperties">CloneImageProperties</a> &#8226; <a href="property.html#DefineImageProperty">DefineImageProperty</a> &#8226; <a href="property.html#DeleteImageProperty">DeleteImageProperty</a> &#8226; <a href="property.html#DestroyImageProperties">DestroyImageProperties</a> &#8226; <a href="property.html#FormatImageProperty">FormatImageProperty</a> &#8226; <a href="property.html#GetImageProperty">GetImageProperty</a> &#8226; <a href="property.html#GetNextImageProperty">GetNextImageProperty</a> &#8226; <a href="property.html#InterpretImageProperties">InterpretImageProperties</a> &#8226; <a href="property.html#RemoveImageProperty">RemoveImageProperty</a> &#8226; <a href="property.html#ResetImagePropertyIterator">ResetImagePropertyIterator</a> &#8226; <a href="property.html#SetImageProperty">SetImageProperty</a></p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/property_8c.html" id="CloneImageProperties">CloneImageProperties</a></h2>
 
@@ -270,17 +270,6 @@ char *InterpretImageProperties(const ImageInfo *image_info,Image *image,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/property_8c.html" id="(void)_LogMagickEvent(TraceEvent,GetMagickModule">(void) LogMagickEvent(TraceEvent,GetMagickModule</a></h2>
-
-<p>(void) LogMagickEvent(TraceEvent,GetMagickModule(),"s",image-&gt;filename);</p>
-
-<p>if (embed_text == (const char *) NULL) return(ConstantString("")); p=embed_text;</p>
-
-<p>if (*p == '\0') return(ConstantString(""));</p>
-
-<p>if ((*p == '@') &amp;&amp; (IsPathAccessible(p+1) != MagickFalse)) {  /* handle a '@' replace string from file */ interpret_text=FileToString(p+1,~0UL,&amp;image-&gt;exception); if (interpret_text != (char *) NULL) return(interpret_text); }</p>
-
-<p>/* Translate any embedded format characters. </p>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/property_8c.html" id="RemoveImageProperty">RemoveImageProperty</a></h2>
 
 <p>RemoveImageProperty() removes a property from the image and returns its value.</p>
@@ -371,7 +360,7 @@ MagickBooleanType SetImageProperty(Image *image,const char *property,
 </p>
     <p><a href="property.html#">Back to top</a> •
     <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-    <a href="http://www.imagemagick.org/script/contact.php">Contact Us</a></p>
+    <a href="http://legacy.imagemagick.org/script/contact.php">Contact Us</a></p>
         <p><small>©  1999-2016 ImageMagick Studio LLC</small></p>
   </footer>
 </div><!-- /.container -->
