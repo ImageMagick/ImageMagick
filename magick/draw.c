@@ -2295,6 +2295,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
                     (void) ThrowMagickException(&image->exception,
                       GetMagickModule(),DrawError,
                       "UnbalancedGraphicContextPushPop","`%s'",token);
+                    status=MagickFalse;
                     n=0;
                     break;
                   }
@@ -2635,6 +2636,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
                     (void) ThrowMagickException(&image->exception,
                       GetMagickModule(),ResourceLimitError,
                       "MemoryAllocationFailed","`%s'",image->filename);
+                    status=MagickFalse;
                     break;
                   }
                 for (j=0; j < x; j++)
