@@ -45,7 +45,7 @@
       <a class="magick-nav-item " href="command-line-processing.html">Command-line</a>
       <a class="magick-nav-item " href="resources.html">Resources</a>
       <a class="magick-nav-item " href="api.html">Develop</a>
-      <a class="magick-nav-item " href="http://nextgen.imagemagick.org/script/search.php">Search</a>
+      <a class="magick-nav-item " href="http://www.imagemagick.org/script/search.php">Search</a>
       <a class="magick-nav-item pull-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
@@ -73,7 +73,7 @@ radial-gradient:color1-color2
 
 <p>The default for a linear gradient has color1 at the top of the image and color2 at the bottom of the image. Similarly, the default for a radial gradient has color1 at the center of the image and color2 at the boundary of the image.</p>
 
-<p>Gradient colors may be any valid color defined per <a href="http://www.imagemagick.org/www/color.html" target="_blank">http://www.imagemagick.org/www/color.html</a>. The named colors of black/white/grayXX are non-linear gray gradients; whereas gray(XX[%]) is a linear gray gradient. For Unix systems, enclose rgb(a) and hex colors in quotes. Use double quotes, if using variables for the values.</p>
+<p>Gradient colors may be any valid color defined per <a href="color.html" target="_blank">http://www.imagemagick.org/www/color.html</a>. The named colors of black/white/grayXX are non-linear gray gradients; whereas gray(XX[%]) is a linear gray gradient. For Unix systems, enclose rgb(a) and hex colors in quotes. Use double quotes, if using variables for the values.</p>
 
 <p>Here is an example linear gradient:</p>
 
@@ -81,7 +81,7 @@ radial-gradient:color1-color2
 convert -size 256x256 gradient: linear_gradient.png
 convert -size 256x256 gradient:white-black linear_gradient.png
 </pre>
-<p><img src="http://nextgen.imagemagick.org/images/gradients/linear_gradient.png" width="256" height="256"></p>
+<p><img src="../images/gradients/linear_gradient.png" width="256" height="256"></p>
 
 <p>If you want a radial gradient, try:</p>
 
@@ -89,7 +89,7 @@ convert -size 256x256 gradient:white-black linear_gradient.png
 convert -size 256x256 radial-gradient: radial_gradient.png
 convert -size 256x256 radial-gradient:white-black radial_gradient.png
 </pre>
-<p><img src="http://nextgen.imagemagick.org/images/gradients/radial_gradient.png" width="256" height="256"></p>
+<p><img src="../images/gradients/radial_gradient.png" width="256" height="256"></p>
 
 <p>As of IM 6.9.2.5, gradients have been enhanced through the use of several -defines.</p>
 
@@ -167,7 +167,7 @@ convert -size 256x256 radial-gradient:white-black radial_gradient.png
 convert -size 256x128 -define gradient:direction=north gradient:black-white linear_gradient_default.png
 convert -size 256x128 -define gradient:angle=0 gradient:black-white linear_gradient_default.png
 </pre>
-<p><img src="http://nextgen.imagemagick.org/images/gradients/linear_gradient_default.png" width="256" height="128"></p>
+<p><img src="../images/gradients/linear_gradient_default.png" width="256" height="128"></p>
 
 <p>The equivalent of </p>
 
@@ -181,7 +181,7 @@ convert -size 128x256 gradient: -rotate 90 linear_gradient_east.png
 convert -size 256x128 -define gradient:direction=east gradient:black-white linear_gradient_east.png
 convert -size 256x128 -define gradient:angle=90 gradient:black-white linear_gradient_east.png
 </pre>
-<p><img src="http://nextgen.imagemagick.org/images/gradients/linear_gradient_east.png" width="256" height="128"></p>
+<p><img src="../images/gradients/linear_gradient_east.png" width="256" height="128"></p>
 
 
 <p>Examples of radial gradients going from black in the center to white at the boundary for the cases of "maximum/circle/default", "minimum", "diagonal", "ellipse" and 45 degree rotated ellipse, respectively, follow below.</p>
@@ -191,29 +191,29 @@ convert -size 256x128 -define gradient:angle=90 gradient:black-white linear_grad
 convert -size 256x128 radial-gradient:black-white radial_gradient_maximum.png
 convert -size 256x128 -define gradient:radii=128,128 radial-gradient:black-white radial_gradient_maximum.png
 </pre>
-<p><img src="http://nextgen.imagemagick.org/images/gradients/radial_gradient_maximum.png" width="256" height="128"></p>
+<p><img src="../images/gradients/radial_gradient_maximum.png" width="256" height="128"></p>
 
 <pre>
 convert -size 256x128 -define gradient:extent=minimum radial-gradient:black-white radial_gradient_minimum.png
 convert -size 256x128 -define gradient:radii=64,64 radial-gradient:black-white radial_gradient_minimum.png
 </pre>
-<p><img src="http://nextgen.imagemagick.org/images/gradients/radial_gradient_minimum.png" width="256" height="128"></p>
+<p><img src="../images/gradients/radial_gradient_minimum.png" width="256" height="128"></p>
 
 <pre>
 convert -size 256x128 -define gradient:extent=diagonal radial-gradient:black-white radial_gradient_diagonal.png
 </pre>
-<p><img src="http://nextgen.imagemagick.org/images/gradients/radial_gradient_diagonal.png" width="256" height="128"></p>
+<p><img src="../images/gradients/radial_gradient_diagonal.png" width="256" height="128"></p>
 
 <pre>
 convert -size 256x128 -define gradient:extent=ellipse radial-gradient:black-white radial_gradient_ellipse.png
 convert -size 256x128 -define gradient:radii=128,64 radial-gradient:black-white radial_gradient_ellipse.png
 </pre>
-<p><img src="http://nextgen.imagemagick.org/images/gradients/radial_gradient_ellipse.png" width="256" height="128"></p>
+<p><img src="../images/gradients/radial_gradient_ellipse.png" width="256" height="128"></p>
 
 <pre>
 convert -size 256x256 -define gradient:radii=128,64 -define gradient:angle=45 radial-gradient:black-white radial_gradient_ellipse_angle45.png
 </pre>
-<p><img src="http://nextgen.imagemagick.org/images/gradients/radial_gradient_ellipse_angle45.png" width="256" height="256"></p>
+<p><img src="../images/gradients/radial_gradient_ellipse_angle45.png" width="256" height="256"></p>
 
 </div>
 
@@ -225,13 +225,14 @@ convert -size 256x256 -define gradient:radii=128,64 -define gradient:angle=45 ra
 </p>
     <p><a href="gradient.html#">Back to top</a> •
     <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-    <a href="http://nextgen.imagemagick.org/script/contact.php">Contact Us</a></p>
+    <a href="http://www.imagemagick.org/script/contact.php">Contact Us</a></p>
         <p><small>©  1999-2016 ImageMagick Studio LLC</small></p>
   </footer>
 </div><!-- /.container -->
 
   <script src="https://localhost/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-  <script src="http://nextgen.imagemagick.org/js/magick.html"></script>
+  <script src="../js/magick.html"></script>
 </div>
 </body>
 </html>
+<!-- Magick Cache 30th May 2016 13:56 -->

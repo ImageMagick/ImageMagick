@@ -45,17 +45,17 @@
       <a class="magick-nav-item " href="command-line-processing.html">Command-line</a>
       <a class="magick-nav-item " href="resources.html">Resources</a>
       <a class="magick-nav-item " href="api.html">Develop</a>
-      <a class="magick-nav-item " href="http://nextgen.imagemagick.org/script/search.php">Search</a>
+      <a class="magick-nav-item " href="http://www.imagemagick.org/script/search.php">Search</a>
       <a class="magick-nav-item pull-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="text-center"><a href="http://nextgen.imagemagick.org/www/magick-vector-graphics.html#overview">MVG Overview</a> • <a href="http://nextgen.imagemagick.org/www/magick-vector-graphics.html#primitives">Drawing Primitives</a></p>
+<p class="text-center"><a href="http://www.imagemagick.org/www/magick-vector-graphics.html#overview">MVG Overview</a> • <a href="http://www.imagemagick.org/www/magick-vector-graphics.html#primitives">Drawing Primitives</a></p>
 
 <p class="lead magick-description">This specification defines the features and syntax for Magick Vector Graphics (MVG), a modularized language for describing two-dimensional vector and mixed vector/raster graphics in ImageMagick.  You can use the language to draw from the
-command line, from an MVG file, from an <a href="http://www.w3.org/TR/SVG/">SVG -- Scalable Vector Graphics</a> file or from one of the ImageMagick <a href="http://nextgen.imagemagick.org/www/api.html">program interfaces</a>.  Use this command, for example, to render an arc:</p>
+command line, from an MVG file, from an <a href="http://www.w3.org/TR/SVG/">SVG -- Scalable Vector Graphics</a> file or from one of the ImageMagick <a href="http://www.imagemagick.org/www/api.html">program interfaces</a>.  Use this command, for example, to render an arc:</p>
 
 <pre>
 convert -size 100x60 canvas:skyblue -fill white -stroke black \
@@ -226,7 +226,7 @@ pop graphic-context
 <p>to render a pie chart with this command:</p>
 
 <pre>
-convert piechart.mvg piechart.png
+convert mvg:piechart.mvg piechart.png
 </pre>
 
 <p>which produces this rendering:</p>
@@ -238,13 +238,13 @@ convert piechart.mvg piechart.png
 <p>However, in general, MVG is sufficiently difficult to work with that you probably want to use a program to generate your graphics in the SVG format.  ImageMagick automagically converts SVG to MVG and renders your image, for example, we render <a href="../source/piechart.svg">piechart.svg</a> with this command:</p>
 
 <pre>
-convert piechart.svg piechart.jpg
+convert mvg:piechart.svg piechart.jpg
 </pre>
 
 
 <p>to produce the same pie chart we created with the MVG language.</p>
 
-<p>Drawing is available from many of the ImageMagick <a href="http://nextgen.imagemagick.org/www/api.html">program interfaces</a> as well.  ImageMagick converts the drawing API calls to MVG and renders it.  Here is example code written in the <a href="http://nextgen.imagemagick.org/www/magick-wand.html">MagickWand</a> language: </p>
+<p>Drawing is available from many of the ImageMagick <a href="http://www.imagemagick.org/www/api.html">program interfaces</a> as well.  ImageMagick converts the drawing API calls to MVG and renders it.  Here is example code written in the <a href="http://www.imagemagick.org/www/magick-wand.html">MagickWand</a> language: </p>
 
 <pre class="pre-scrollable">(void) PushDrawingWand(draw_wand);
 {
@@ -416,7 +416,7 @@ underline</pre></td>
   </tr>
   <tr>
     <td><a id="fill"></a>fill <var>color</var></td>
-    <td>Choose from any of these <a href="http://nextgen.imagemagick.org/www/color.html">colors</a>.</td>
+    <td>Choose from any of these <a href="http://www.imagemagick.org/www/color.html">colors</a>.</td>
   </tr>
   <tr>
     <td><a id="fill-opacity"></a>fill-opacity <var>opacity</var></td>
@@ -667,7 +667,7 @@ SouthEast</pre></td>
 
   <tr>
     <td>change-mask</td>
-    <td>Replace any destination pixel that is the similar to the source images pixel (as defined by the current <a href="http://nextgen.imagemagick.org/www/magick-vector-graphics.html#fuzz">-fuzz</a> factor), with transparency. </td>
+    <td>Replace any destination pixel that is the similar to the source images pixel (as defined by the current <a href="http://www.imagemagick.org/www/magick-vector-graphics.html#fuzz">-fuzz</a> factor), with transparency. </td>
   </tr>
   </tbody>
 </table></td>
@@ -864,13 +864,14 @@ round</pre></td>
 </p>
     <p><a href="magick-vector-graphics.html#">Back to top</a> •
     <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-    <a href="http://nextgen.imagemagick.org/script/contact.php">Contact Us</a></p>
+    <a href="http://www.imagemagick.org/script/contact.php">Contact Us</a></p>
         <p><small>©  1999-2016 ImageMagick Studio LLC</small></p>
   </footer>
 </div><!-- /.container -->
 
   <script src="https://localhost/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-  <script src="http://nextgen.imagemagick.org/js/magick.html"></script>
+  <script src="../js/magick.html"></script>
 </div>
 </body>
 </html>
+<!-- Magick Cache 30th May 2016 12:35 -->

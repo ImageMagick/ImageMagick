@@ -45,7 +45,7 @@
       <a class="magick-nav-item " href="command-line-processing.html">Command-line</a>
       <a class="magick-nav-item " href="resources.html">Resources</a>
       <a class="magick-nav-item " href="api.html">Develop</a>
-      <a class="magick-nav-item " href="http://nextgen.imagemagick.org/script/search.php">Search</a>
+      <a class="magick-nav-item " href="http://www.imagemagick.org/script/search.php">Search</a>
       <a class="magick-nav-item pull-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
@@ -98,7 +98,7 @@
 
 <h2 class="magick-header"><a id="cache"></a>The Pixel Cache</h2>
 
-<p>The ImageMagick pixel cache is a repository for image pixels with up to 5 channels.  The first 4 channels are stored contiguously and an optional second area follows with 1 channel.  The channels are at the depth specified when ImageMagick was built.  The channel depths are 8 bits-per-pixel component for the Q8 version of ImageMagick, 16 bits-per-pixel component for the Q16 version, and 32 bits-per-pixel component for the Q32 version.  By default pixel components are unsigned quantities, however, if you use the <a href="high-dynamic-range.html">high dynamic-range</a> version of ImageMagick, the components are 32-bit floating point. The primary 4 channels can hold any value but typically contain red, green, blue, and alpha intensities or cyan, magenta, yellow, and alpha intensities.  The optional fifth channel contains the colormap indexes for colormapped images or the black channel for CMYK images.  The pixel cache storage may be heap memory, disk-backed memory mapped, or on disk.  The pixel cache is reference-counted.  Only the cache properties are copied when the cache is cloned.  The cache pixels are subsequently copied only when you signal your intention to update any of the pixels.</p>
+<p>The ImageMagick pixel cache is a repository for image pixels with up to 32 channels.  The channels are stored contiguously at the depth specified when ImageMagick was built.  The channel depths are 8 bits-per-pixel component for the Q8 version of ImageMagick, 16 bits-per-pixel component for the Q16 version, and 32 bits-per-pixel component for the Q32 version.  By default pixel components are 32-bit floating-bit <a href="high-dynamic-range.html">high dynamic-range</a> quantities. The channels can hold any value but typically contain red, green, blue, and alpha intensities or cyan, magenta, yellow, alpha intensities.  A channel might contain the colormap indexes for colormapped images or the black channel for CMYK images.  The pixel cache storage may be heap memory, disk-backed memory mapped, or on disk.  The pixel cache is reference-counted.  Only the cache properties are copied when the cache is cloned.  The cache pixels are subsequently copied only when you signal your intention to update any of the pixels.</p>
 
 <h3>Create the Pixel Cache</h3>
 
@@ -128,10 +128,10 @@ if (image == (Image *) NULL)
 
 <p>In our discussion of the pixel cache, we use the <a href="magick-core.html">MagickCore API</a> to illustrate our points, however, the principles are the same for other program interfaces to ImageMagick.</p>
 
-<p>When the pixel cache is initialized, pixels are scaled from whatever bit depth they originated from to that required by the pixel cache.  For example, a 1-channel 1-bit monochrome PBM image is scaled to a 4 channel 8-bit RGBA image, if you are using the Q8 version of ImageMagick, and 16-bit RGBA for the Q16 version.  You can determine which version you have with the <a href="command-line-options.html#version">&#x2011;version</a> option: </p>
+<p>When the pixel cache is initialized, pixels are scaled from whatever bit depth they originated from to that required by the pixel cache.  For example, a 1-channel 1-bit monochrome PBM image is scaled to 8-bit gray image, if you are using the Q8 version of ImageMagick, and 16-bit RGBA for the Q16 version.  You can determine which version you have with the <a href="command-line-options.html#version">&#x2011;version</a> option: </p>
 
-<pre><span class="crtprompt"> </span><span class='crtin'>identify -version</span><span class='crtout'>Version: ImageMagick 7.0.0-0 2016-03-26 Q16 http://www.imagemagick.org</span></pre>
-<p>As you can see, the convenience of the pixel cache sometimes comes with a trade-off in storage (e.g. storing a 1-bit monochrome image as 16-bit RGBA is wasteful) and speed (i.e. storing the entire image in memory is generally slower than accessing one scanline of pixels at a time).  In most cases, the benefits of the pixel cache typically outweigh any disadvantages.</p>
+<pre><span class="crtprompt"> </span><span class='crtin'>identify -version</span><span class='crtout'>Version: ImageMagick 7.0.1-7 2016-05-08 Q16 http://www.imagemagick.org</span></pre>
+<p>As you can see, the convenience of the pixel cache sometimes comes with a trade-off in storage (e.g. storing a 1-bit monochrome image as 16-bit is wasteful) and speed (i.e. storing the entire image in memory is generally slower than accessing one scanline of pixels at a time).  In most cases, the benefits of the pixel cache typically outweigh any disadvantages.</p>
 
 <h3><a id="authentic-pixels"></a>Access the Pixel Cache</h3>
 
@@ -145,10 +145,10 @@ if (image == (Image *) NULL)
 
 <p>Here is a typical <a href="magick-core.html">MagickCore</a> code snippet for manipulating pixels in the pixel cache.  In our example, we copy pixels from the input image to the output image and decrease the intensity by 10%:</p>
 
-<pre class="pre-scrollable">const PixelPacket
+<pre class="pre-scrollable">const Quantum
   *p;
 
-PixelPacket
+Quantum
   *q;
 
 ssize_t
@@ -163,16 +163,16 @@ for (y=0; y &lt; (ssize_t) source-&gt;rows; y++)
 {
   p=GetVirtualPixels(source,0,y,source-&gt;columns,1,exception);
   q=GetAuthenticPixels(destination,0,y,destination-&gt;columns,1,exception);
-  if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL)
+  if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL)
     break;
   for (x=0; x &lt; (ssize_t) source-&gt;columns; x++)
   {
-    SetPixelRed(q,90*p-&gt;red/100);
-    SetPixelGreen(q,90*p-&gt;green/100);
-    SetPixelBlue(q,90*p-&gt;blue/100);
-    SetPixelOpacity(q,90*p-&gt;opacity/100);
-    p++;
-    q++;
+    SetPixelRed(image,90*p-&gt;red/100,q);
+    SetPixelGreen(image,90*p-&gt;green/100,q);
+    SetPixelBlue(image,90*p-&gt;blue/100,q);
+    SetPixelAlpha(image,90*p-&gt;opacity/100,q);
+    p+=GetPixelChannels(source);
+    q+=GetPixelChannels(destination);
   }
   if (SyncAuthenticPixels(destination,exception) == MagickFalse)
     break;
@@ -191,7 +191,7 @@ if (y &lt; (ssize_t) source-&gt;rows)
 for (y=0; y &lt; (ssize_t) source-&gt;rows; y++)
 {
   p=GetVirtualPixels(source,0,y,source-&gt;columns,1);
-  if (p == (const PixelPacket *) NULL)
+  if (p == (const Quantum *) NULL)
     break;
   indexes=GetVirtualIndexQueue(source);
   for (x=0; x &lt; (ssize_t) source-&gt;columns; x++)
@@ -304,10 +304,14 @@ Resource limits:
   &lt;policy domain="resource" name="throttle" value="0"/>
   &lt;policy domain="resource" name="time" value="120"/>
   &lt;policy domain="system" name="precision" value="6"/>
-  &lt;policy domain="cache" name="shared-secret" value="replace with your secret phrase"/>
+  &lt;policy domain="cache" name="shared-secret" value="replace with your secret phrase" stealth="true"/>
+  &lt;policy domain="delegate" rights="none" pattern="HTTPS" />
+  &lt;policy domain="coder" rights="none" pattern="MVG" />
+  &lt;policy domain="path" rights="none" pattern="@*" />
+  &lt;policy domain="path" rights="none" pattern="|*" />
 &lt;/policymap>
 </pre>
-<p>Since we process multiple simultaneous sessions, we don't want any one session consuming all the available memory.  Instead large images are cached to disk.  If the image is too large and exceeds the pixel cache disk limit, the program exits.  In addition, we place a time limit to prevent any run-away processing tasks.</p>
+<p>Since we process multiple simultaneous sessions, we don't want any one session consuming all the available memory.With this policy, large images are cached to disk. If the image is too large and exceeds the pixel cache disk limit, the program exits. In addition, we place a time limit to prevent any run-away processing tasks. If any one image has a width or height that exceeds 8192 pixels, an exception is thrown and processing stops. As of ImageMagick 7.0.1-4 you can prevent the use of any delegate or all delegates (set the pattern to "*") or remove the right to use indirect reads. Note, prior to this release, use a domain of "coder" to prevent delegate usage (e.g. domain="coder" rights="none" pattern="HTTPS").</p>
 
 <p>Note, the cache limits are global to each invocation of ImageMagick, meaning if you create several images, the combined resource requirements are compared to the limit to determine the pixel cache storage disposition.</p>
 
@@ -354,7 +358,7 @@ for (y=0; y &lt; (ssize_t) source-&gt;rows; y++)
 {
   u=GetCacheViewVirtualPixels(view_1,0,y,source-&gt;columns,1,exception);
   v=GetCacheViewVirtualPixels(view_2,0,source-&gt;rows-y-1,source-&gt;columns,1,exception);
-  if ((u == (const PixelPacket *) NULL) || (v == (const PixelPacket *) NULL))
+  if ((u == (const Quantum *) NULL) || (v == (const Quantum *) NULL))
     break;
   for (x=0; x &lt; (ssize_t) source-&gt;columns; x++)
   {
@@ -419,15 +423,15 @@ convert image.mpc -crop 100x100+200+0 +repage 3.png
 
 <pre class="pre-scrollable">static size_t StreamPixels(const Image *image,const void *pixels,const size_t columns)
 {
-  register const PixelPacket
+  register const Quantum
     *p;
 
   MyData
     *my_data;
 
   my_data=(MyData *) image->client_data;
-  p=(PixelPacket *) pixels;
-  if (p != (const PixelPacket *) NULL)
+  p=(Quantum *) pixels;
+  if (p != (const Quantum *) NULL)
     {
       /* process pixels here */
     }
@@ -542,7 +546,7 @@ for (y=0; y &lt; (ssize_t) image-&gt;rows; y++)
   register IndexPacket
     *indexes;
 
-  register PixelPacket
+  register Quantum
     *q;
 
   register ssize_t
@@ -551,7 +555,7 @@ for (y=0; y &lt; (ssize_t) image-&gt;rows; y++)
   if (status == MagickFalse)
     continue;
   q=GetCacheViewAuthenticPixels(image_view,0,y,image-&gt;columns,1,exception);
-  if (q == (PixelPacket *) NULL)
+  if (q == (Quantum *) NULL)
     {
       status=MagickFalse;
       continue;
@@ -559,13 +563,13 @@ for (y=0; y &lt; (ssize_t) image-&gt;rows; y++)
   indexes=GetCacheViewAuthenticIndexQueue(image_view);
   for (x=0; x &lt; (ssize_t) image-&gt;columns; x++)
   {
-    SetPixelRed(q,...);
-    SetPixelGreen(q,...);
-    SetPixelBlue(q,...);
-    SetPixelOpacity(q,...);
+    SetPixelRed(image,...,q);
+    SetPixelGreen(image,...,q);
+    SetPixelBlue(image,...,q);
+    SetPixelAlpha(image,...,q);
     if (indexes != (IndexPacket *) NULL)
       SetPixelIndex(indexes+x,...);
-    q++;
+    q+=GetPixelChannels(image);
   }
   if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
     status=MagickFalse;
@@ -611,7 +615,7 @@ void ConvertBMPToImage(const BITMAPINFOHEADER *bmp_info,
     register const unsigned char
       *restrict p;
 
-    register MagickCore::PixelPacket
+    register MagickCore::Quantum
       *restrict q;
 
     row=(bmp_info->biHeight > 0) ? (image->rows()-y-1) : y;
@@ -619,13 +623,13 @@ void ConvertBMPToImage(const BITMAPINFOHEADER *bmp_info,
     q=image->setPixels(0,y,image->columns(),1);
     for (int x=0; x &lt; int(image->columns()); x++)
     {
-      SetPixelBlue(q,p[0]);
-      SetPixelGreen(q,p[1]);
-      SetPixelRed(q,p[2]);
+      SetPixelBlue(image,p[0],q);
+      SetPixelGreen(image,p[1],q);
+      SetPixelRed(image,p[2],q);
       if (bmp_info->biBitCount == 32) {
-        SetPixelOpacity(q,p[3]);
+        SetPixelAlpha(image,p[3],q);
       }
-      q++;
+      q+=GetPixelChannels(image);
       p+=bmp_info->biBitCount/8;
     }
     image->syncPixels();  // sync pixels to pixel cache.
@@ -859,7 +863,7 @@ static Image *ReadMGKImage(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  register PixelPacket
+  register Quantum
     *q;
 
   register size_t
@@ -934,14 +938,14 @@ static Image *ReadMGKImage(const ImageInfo *image_info,
         ThrowReaderException(CorruptImageError,"UnableToReadImageData");
       p=pixels;
       q=QueueAuthenticPixels(image,0,y,image-&gt;columns,1,exception);
-      if (q == (PixelPacket *) NULL)
+      if (q == (Quantum *) NULL)
         break;
       for (x=0; x &lt; (ssize_t) image-&gt;columns; x++)
       {
-        SetPixelRed(q,ScaleCharToQuantum(*p++));
-        SetPixelGreen(q,ScaleCharToQuantum(*p++));
-        SetPixelBlue(q,ScaleCharToQuantum(*p++));
-        q++;
+        SetPixelRed(image,ScaleCharToQuantum(*p++),q);
+        SetPixelGreen(image,ScaleCharToQuantum(*p++),q);
+        SetPixelBlue(image,ScaleCharToQuantum(*p++),q);
+        q+=GetPixelChannels(image);
       }
       if (SyncAuthenticPixels(image,exception) == MagickFalse)
         break;
@@ -1083,7 +1087,7 @@ static MagickBooleanType WriteMGKImage(const ImageInfo *image_info,Image *image)
   MagickOffsetType
     scene;
 
-  register const PixelPacket
+  register const Quantum
     *p;
 
   register ssize_t
@@ -1132,7 +1136,7 @@ static MagickBooleanType WriteMGKImage(const ImageInfo *image_info,Image *image)
     for (y=0; y &lt; (ssize_t) image-&gt;rows; y++)
     {
       p=GetVirtualPixels(image,0,y,image-&gt;columns,1,&amp;image-&gt;exception);
-      if (p == (const PixelPacket *) NULL)
+      if (p == (const Quantum *) NULL)
         break;
       q=pixels;
       for (x=0; x &lt; (ssize_t) image-&gt;columns; x++)
@@ -1140,7 +1144,7 @@ static MagickBooleanType WriteMGKImage(const ImageInfo *image_info,Image *image)
         *q++=ScaleQuantumToChar(GetPixelRed(p));
         *q++=ScaleQuantumToChar(GetPixelGreen(p));
         *q++=ScaleQuantumToChar(GetPixelBlue(p));
-        p++;
+        p+=GetPixelChannels(image);
       }
       (void) WriteBlob(image,(size_t) (q-pixels),pixels);
       if ((image-&gt;previous == (Image *) NULL) &amp;&amp;
@@ -1288,7 +1292,7 @@ ModuleExport size_t analyzeImage(Image **images,const int argc,const char **argv
 #endif
     for (y=0; y &lt; (ssize_t) image-&gt;rows; y++)
     {
-      register const PixelPacket
+      register const Quantum
         *p;
 
       register ssize_t
@@ -1297,7 +1301,7 @@ ModuleExport size_t analyzeImage(Image **images,const int argc,const char **argv
       if (status == MagickFalse)
         continue;
       p=GetCacheViewVirtualPixels(image_view,0,y,image-&gt;columns,1,exception);
-      if (p == (const PixelPacket *) NULL)
+      if (p == (const Quantum *) NULL)
         {
           status=MagickFalse;
           continue;
@@ -1316,7 +1320,7 @@ ModuleExport size_t analyzeImage(Image **images,const int argc,const char **argv
         saturation_sum_x3+=saturation*saturation*saturation;
         saturation_sum_x4+=saturation*saturation*saturation*saturation;
         area++;
-        p++;
+        p+=GetPixelChannels(image);
       }
     }
     image_view=DestroyCacheView(image_view);
@@ -1404,13 +1408,14 @@ ModuleExport size_t analyzeImage(Image **images,const int argc,const char **argv
 </p>
     <p><a href="architecture.html#">Back to top</a> •
     <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-    <a href="http://nextgen.imagemagick.org/script/contact.php">Contact Us</a></p>
+    <a href="http://www.imagemagick.org/script/contact.php">Contact Us</a></p>
         <p><small>©  1999-2016 ImageMagick Studio LLC</small></p>
   </footer>
 </div><!-- /.container -->
 
   <script src="https://localhost/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-  <script src="http://nextgen.imagemagick.org/js/magick.html"></script>
+  <script src="../js/magick.html"></script>
 </div>
 </body>
 </html>
+<!-- Magick Cache 30th May 2016 12:39 -->
