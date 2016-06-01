@@ -2966,8 +2966,9 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if ((image->resolution.x != 90.0) && (image->resolution.y != 90.0))
           rsvg_handle_set_dpi_x_y(svg_handle,image->resolution.x,
             image->resolution.y);
-        while ((n=ReadBlob(image,MagickPathExtent,message)) != 0)
+        while ((n=ReadBlob(image,MagickPathExtent-1,message)) != 0)
         {
+          message[n]='\0';
           error=(GError *) NULL;
           (void) rsvg_handle_write(svg_handle,message,n,&error);
           if (error != (GError *) NULL)
@@ -3184,13 +3185,15 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   sax_modules.cdataBlock=SVGCDataBlock;
   sax_modules.externalSubset=SVGExternalSubset;
   sax_handler=(&sax_modules);
-  n=ReadBlob(image,MagickPathExtent,message);
+  n=ReadBlob(image,MagickPathExtent-1,message);
+  message[n]='\0';
   if (n > 0)
     {
       svg_info->parser=xmlCreatePushParserCtxt(sax_handler,svg_info,(char *)
         message,n,image->filename);
-      while ((n=ReadBlob(image,MagickPathExtent,message)) != 0)
+      while ((n=ReadBlob(image,MagickPathExtent-1,message)) != 0)
       {
+        message[n]='\0';
         status=xmlParseChunk(svg_info->parser,(char *) message,(int) n,0);
         if (status != 0)
           break;
