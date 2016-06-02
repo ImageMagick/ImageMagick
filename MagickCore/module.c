@@ -549,6 +549,15 @@ static MagickBooleanType GetMagickModulePath(const char *filename,
   assert(path != (char *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
   (void) CopyMagickString(path,filename,MagickPathExtent);
+#if defined(MAGICKCORE_INSTALLED_SUPPORT)
+  if (strstr(path,"../") != (char *) NULL)
+    {
+      errno=EPERM;
+      (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
+        "NotAuthorized","`%s'",path);
+      return(MagickFalse);
+    }
+#endif
   module_path=(char *) NULL;
   switch (module_type)
   {
@@ -590,7 +599,8 @@ static MagickBooleanType GetMagickModulePath(const char *filename,
           *q='\0';
         q=path+strlen(path)-1;
         if ((q >= path) && (*q != *DirectorySeparator))
-          (void) ConcatenateMagickString(path,DirectorySeparator,MagickPathExtent);
+          (void) ConcatenateMagickString(path,DirectorySeparator,
+            MagickPathExtent);
         (void) ConcatenateMagickString(path,filename,MagickPathExtent);
         if (IsPathAccessible(path) != MagickFalse)
           {
@@ -625,7 +635,8 @@ static MagickBooleanType GetMagickModulePath(const char *filename,
           break;
         }
       }
-      (void) FormatLocaleString(path,MagickPathExtent,"%s%s",directory,filename);
+      (void) FormatLocaleString(path,MagickPathExtent,"%s%s",directory,
+        filename);
       if (IsPathAccessible(path) == MagickFalse)
         {
           ThrowFileException(exception,ConfigureWarning,
@@ -667,8 +678,8 @@ static MagickBooleanType GetMagickModulePath(const char *filename,
             "RegistryKeyLookupFailed","`%s'",registery_key);
           return(MagickFalse);
         }
-      (void) FormatLocaleString(path,MagickPathExtent,"%s%s%s",(char *) key_value,
-        DirectorySeparator,filename);
+      (void) FormatLocaleString(path,MagickPathExtent,"%s%s%s",(char *)
+        key_value,DirectorySeparator,filename);
       key_value=(unsigned char *) RelinquishMagickMemory(key_value);
       if (IsPathAccessible(path) == MagickFalse)
         {

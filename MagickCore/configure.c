@@ -677,7 +677,8 @@ MagickExport LinkedListInfo *GetConfigureOptions(const char *filename,
       element=(const char *) GetNextValueInLinkedList(paths);
       while (element != (const char *) NULL)
       {
-        (void) FormatLocaleString(path,MagickPathExtent,"%s%s",element,filename);
+        (void) FormatLocaleString(path,MagickPathExtent,"%s%s",element,
+          filename);
         (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
           "Searching for configure file: \"%s\"",path);
         xml=ConfigureFileToStringInfo(path);
