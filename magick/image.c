@@ -2813,26 +2813,33 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
   *magic='\0';
   GetPathComponent(image_info->filename,MagickPath,magic);
   if (*magic == '\0')
-    (void) CopyMagickString(magic,image_info->magick,MaxTextExtent);
+    {
+      (void) CopyMagickString(magic,image_info->magick,MaxTextExtent);
+      magick_info=GetMagickInfo(magic,sans_exception);
+    }
   else
     {
       /*
         User specified image format.
       */
       LocaleUpper(magic);
-      if (IsMagickConflict(magic) == MagickFalse)
+      magick_info=GetMagickInfo(magic,sans_exception);
+      if ((magick_info != (const MagickInfo *) NULL) &&
+          (IsMagickConflict(magic) == MagickFalse))
         {
           (void) CopyMagickString(image_info->magick,magic,MaxTextExtent);
           image_info->affirm=MagickTrue;
         }
     }
-  magick_info=GetMagickInfo(magic,sans_exception);
   sans_exception=DestroyExceptionInfo(sans_exception);
   if ((magick_info == (const MagickInfo *) NULL) ||
       (GetMagickEndianSupport(magick_info) == MagickFalse))
     image_info->endian=UndefinedEndian;
-  GetPathComponent(image_info->filename,CanonicalPath,filename);
-  (void) CopyMagickString(image_info->filename,filename,MaxTextExtent);
+  if (image_info->affirm != MagickFalse)
+    {
+      GetPathComponent(image_info->filename,CanonicalPath,filename);
+      (void) CopyMagickString(image_info->filename,filename,MaxTextExtent);
+    }
   if ((image_info->adjoin != MagickFalse) && (frames > 1))
     {
       /*
