@@ -57,6 +57,7 @@
 #include "magick/list.h"
 #include "magick/magick.h"
 #include "magick/memory_.h"
+#include "magick/memory-private.h"
 #include "magick/monitor.h"
 #include "magick/monitor-private.h"
 #include "magick/pixel-accessor.h"
@@ -263,7 +264,6 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   size_t
     bytes_per_line,
-    data_length,
     extent,
     height,
     pixels_length;
@@ -422,15 +422,15 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if ((sun_info.type != RT_ENCODED) &&
         ((number_pixels*sun_info.depth) > (8UL*sun_info.length)))
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    if (HeapOverflowSanityCheck(sun_info.width,sun_info.depth) != MagickFalse)
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     bytes_per_line=sun_info.width*sun_info.depth;
-    data_length=(size_t) MagickMax(sun_info.length,bytes_per_line*
-      sun_info.width)+7;
-    sun_data=(unsigned char *) AcquireQuantumMemory(data_length,
+    sun_data=(unsigned char *) AcquireQuantumMemory(sun_info.length,
       sizeof(*sun_data));
     if (sun_data == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-    count=(ssize_t) ReadBlob(image,data_length,sun_data);
-    if (count != (ssize_t) data_length)
+    count=(ssize_t) ReadBlob(image,sun_info.length,sun_data);
+    if (count != (ssize_t) sun_info.length)
       {
         sun_data=(unsigned char *) RelinquishMagickMemory(sun_data);
         ThrowReaderException(CorruptImageError,"UnableToReadImageData");
@@ -450,6 +450,11 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         ThrowReaderException(ResourceLimitError,"ImproperImageHeader");
       }
     bytes_per_line>>=4;
+    if (HeapOverflowSanityCheck(height,bytes_per_line) != MagickFalse)
+      {
+        sun_data=(unsigned char *) RelinquishMagickMemory(sun_data);
+        ThrowReaderException(ResourceLimitError,"ImproperImageHeader");
+      }
     pixels_length=height*(MagickMax(image->columns,bytes_per_line)+1);
     sun_pixels=(unsigned char *) AcquireQuantumMemory(pixels_length,
       sizeof(*sun_pixels));
@@ -460,16 +465,20 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     ResetMagickMemory(sun_pixels,0,pixels_length*sizeof(*sun_pixels));
     if (sun_info.type == RT_ENCODED)
-      (void) DecodeImage(sun_data,data_length,sun_pixels,pixels_length);
+      {
+        status=DecodeImage(sun_data,sun_info.length,sun_pixels,pixels_length);
+        if (status == MagickFalse)
+          ThrowReaderException(CorruptImageError,"UnableToReadImageData");
+      }
     else
       {
-        if (data_length > pixels_length)
+        if (sun_info.length > pixels_length)
           {
             sun_data=(unsigned char *) RelinquishMagickMemory(sun_data);
             sun_pixels=(unsigned char *) RelinquishMagickMemory(sun_pixels);
             ThrowReaderException(ResourceLimitError,"ImproperImageHeader");
           }
-        (void) CopyMagickMemory(sun_pixels,sun_data,data_length);
+        (void) CopyMagickMemory(sun_pixels,sun_data,sun_info.length);
       }
     sun_data=(unsigned char *) RelinquishMagickMemory(sun_data);
     /*
