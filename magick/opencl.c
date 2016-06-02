@@ -1420,7 +1420,6 @@ MagickBooleanType InitOpenCLEnvInternal(MagickCLEnv clEnv, ExceptionInfo* except
    (void) ThrowMagickException(exception, GetMagickModule(), DelegateWarning,
         "clCreateCommandQueue failed.", "(%d)", status);
 
-    status = MagickFalse;
     goto cleanup;
   }
 
@@ -2362,6 +2361,9 @@ static ds_status AcceleratePerfEvaluator(ds_device *device,
   ExceptionInfo
     *exception=NULL;
 
+  MagickBooleanType
+    status;
+
   MagickCLEnv
     clEnv=NULL,
     oldClEnv=NULL;
@@ -2394,11 +2396,12 @@ static ds_status AcceleratePerfEvaluator(ds_device *device,
   /* recompile the OpenCL kernels if it needs to */
   clEnv->disableProgramCache = defaultCLEnv->disableProgramCache;
 
-  InitOpenCLEnvInternal(clEnv,exception);
+  status=InitOpenCLEnvInternal(clEnv,exception);
   oldClEnv=defaultCLEnv;
   defaultCLEnv=clEnv;
 
   /* microbenchmark */
+  if (status != MagickFalse)
   {
     Image
       *inputImage;
@@ -2449,7 +2452,8 @@ static ds_status AcceleratePerfEvaluator(ds_device *device,
       if (device->type != DS_DEVICE_NATIVE_CPU)
         {
           events=GetOpenCLEvents(resizedImage,&event_count);
-          clEnv->library->clWaitForEvents(event_count,events);
+          if (event_count > 0)
+            clEnv->library->clWaitForEvents(event_count,events);
         }
 
 #ifdef MAGICKCORE_CLPERFMARKER
@@ -2472,7 +2476,11 @@ static ds_status AcceleratePerfEvaluator(ds_device *device,
 
   if (device->score == NULL)
     device->score=malloc(sizeof(AccelerateScoreType));
-  *(AccelerateScoreType*)device->score=readAccelerateTimer(&timer);
+
+  if (status != MagickFalse)
+    *(AccelerateScoreType*)device->score=readAccelerateTimer(&timer);
+  else
+    *(AccelerateScoreType*)device->score=42;
 
   ReturnStatus(DS_SUCCESS);
 }
