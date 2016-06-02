@@ -2566,11 +2566,14 @@ static void RemoveICCProfileFromResourceBlock(StringInfo *bim_profile)
     p=PushLongPixel(MSBEndian,p,&count);
     if (id == 0x0000040f)
       {
-        if ((q+PSDQuantum(count)+12) < (datum+length-16))
+        ssize_t
+          quantum;
+
+        quantum=PSDQuantum(count)+12;
+        if ((quantum >= 12) && (q+quantum < (datum+length-16)))
           {
-            (void) CopyMagickMemory(q,q+PSDQuantum(count)+12,length-
-              (PSDQuantum(count)+12)-(q-datum));
-            SetStringInfoLength(bim_profile,length-(PSDQuantum(count)+12));
+            (void) CopyMagickMemory(q,q+quantum,length-quantum-(q-datum));
+            SetStringInfoLength(bim_profile,length-quantum);
           }
         break;
       }
