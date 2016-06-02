@@ -547,6 +547,15 @@ static MagickBooleanType GetMagickModulePath(const char *filename,
   assert(path != (char *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
   (void) CopyMagickString(path,filename,MaxTextExtent);
+#if defined(MAGICKCORE_INSTALLED_SUPPORT)
+  if (strstr(path,"../") != (char *) NULL)
+    {
+      errno=EPERM;
+      (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
+        "NotAuthorized","`%s'",path);
+      return(MagickFalse);
+    }
+#endif
   module_path=(char *) NULL;
   switch (module_type)
   {
