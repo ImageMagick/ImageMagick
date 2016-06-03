@@ -454,6 +454,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           for (x=0; x < (ssize_t) image->columns; x++)
           {
             SetPixelRed(q,PNMInteger(image,2) == 0 ? QuantumRange : 0);
+            if (EOFBlob(image) != MagickFalse)
+              break;
             SetPixelGreen(q,GetPixelRed(q));
             SetPixelBlue(q,GetPixelRed(q));
             q++;
@@ -467,6 +469,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (status == MagickFalse)
                 break;
             }
+          if (EOFBlob(image) != MagickFalse)
+            break;
         }
         image->type=BilevelType;
         break;
@@ -494,6 +498,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           for (x=0; x < (ssize_t) image->columns; x++)
           {
             intensity=ScaleAnyToQuantum(PNMInteger(image,10),max_value);
+            if (EOFBlob(image) != MagickFalse)
+              break;
             SetPixelRed(q,intensity);
             SetPixelGreen(q,GetPixelRed(q));
             SetPixelBlue(q,GetPixelRed(q));
@@ -508,6 +514,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (status == MagickFalse)
                 break;
             }
+          if (EOFBlob(image) != MagickFalse)
+            break;
         }
         image->type=GrayscaleType;
         break;
@@ -534,6 +542,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               pixel;
 
             pixel=ScaleAnyToQuantum(PNMInteger(image,10),max_value);
+            if (EOFBlob(image) != MagickFalse)
+              break;
             SetPixelRed(q,pixel);
             pixel=ScaleAnyToQuantum(PNMInteger(image,10),max_value);
             SetPixelGreen(q,pixel);
@@ -550,6 +560,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (status == MagickFalse)
                 break;
             }
+          if (EOFBlob(image) != MagickFalse)
+            break;
         }
         break;
       }
