@@ -251,6 +251,7 @@ struct _MagickCLDevice
 {
   char
     *name,
+    *platform_name,
     *version;
 
   cl_command_queue
@@ -264,9 +265,6 @@ struct _MagickCLDevice
 
   cl_device_type
     type;
-
-  cl_platform_id
-    platform;
 
   cl_program
     program;
@@ -300,6 +298,9 @@ struct _MagickCLDevice
 
 struct _MagickCLEnv
 {
+  cl_context
+    *contexts;
+
   double
     cpu_score;
 
@@ -320,6 +321,7 @@ struct _MagickCLEnv
     *lock;
 
   size_t
+    number_contexts,
     number_devices;
 };
 
