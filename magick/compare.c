@@ -340,6 +340,7 @@ MagickExport Image *CompareImageChannels(Image *image,
   reconstruct_view=DestroyCacheView(reconstruct_view);
   image_view=DestroyCacheView(image_view);
   (void) CompositeImage(difference_image,image->compose,highlight_image,0,0);
+  (void) SetImageAlphaChannel(difference_image,DeactivateAlphaChannel);
   highlight_image=DestroyImage(highlight_image);
   if (status == MagickFalse)
     difference_image=DestroyImage(difference_image);

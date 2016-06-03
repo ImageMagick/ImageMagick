@@ -5,6 +5,8 @@
   * Fix small memory leak (patch provided by Андрей Черный).
   * Coder path traversal is not authorized (bug report provided by
     Masaaki Chida).
+  * Turn off alpha channel for the compare difference image (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=29828).
 
 2016-05-31  6.9.4-6 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 6.9.4-6, GIT revision 18334:97775b5:20160531.
