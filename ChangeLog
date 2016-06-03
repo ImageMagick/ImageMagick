@@ -1,3 +1,6 @@
+2016-06-03  6.9.4-7 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 6.9.4-7, GIT revision 10847:339f803:20160602.
+
 2016-06-02  6.9.4-7 Cristy  <quetzlzacatenango@image...>
   * Fix small memory leak (patch provided by Андрей Черный).
   * Coder path traversal is not authorized (bug report provided by
