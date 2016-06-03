@@ -738,6 +738,7 @@ static MagickBooleanType CheckImageColors(const Image *image,
                 image->filename);
               break;
             }
+          GetPixelInfo(image,&node_info->list[i]);
           node_info->list[i].red=(double) GetPixelRed(image,p);
           node_info->list[i].green=(double) GetPixelGreen(image,p);
           node_info->list[i].blue=(double) GetPixelBlue(image,p);
