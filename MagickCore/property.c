@@ -3313,7 +3313,6 @@ RestoreMSCWarning
     p++;
   if (*p == '\0')
     return(ConstantString(""));
-#if defined(MAGICKCORE_INDIRECT_READS_SUPPORT)
   if ((*p == '@') && (IsPathAccessible(p+1) != MagickFalse))
     {
       /*
@@ -3330,7 +3329,6 @@ RestoreMSCWarning
       if (interpret_text != (char *) NULL)
         return(interpret_text);
     }
-#endif
   /*
     Translate any embedded format characters.
   */

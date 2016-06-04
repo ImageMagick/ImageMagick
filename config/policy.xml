@@ -65,5 +65,6 @@
   <!-- <policy domain="delegate" rights="none" pattern="HTTPS" /> -->
   <!-- <policy domain="path" rights="none" pattern="@*" /> -->
   <!-- <policy domain="path" rights="none" pattern="|*" /> -->
+  <policy domain="path" rights="none" pattern="@*"/>  <!-- indirect reads not permitted -->
   <policy domain="cache" name="shared-secret" value="passphrase" stealth="true"/>
 </policymap>
