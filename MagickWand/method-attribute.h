@@ -15,8 +15,8 @@
 
   MagickWand method attributes.
 */
-#ifndef _MAGICKWAND_METHOD_ATTRIBUTE_H
-#define _MAGICKWAND_METHOD_ATTRIBUTE_H
+#ifndef MAGICKWAND_METHOD_ATTRIBUTE_H
+#define MAGICKWAND_METHOD_ATTRIBUTE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

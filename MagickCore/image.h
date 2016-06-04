@@ -15,8 +15,8 @@
 
   MagickCore image methods.
 */
-#ifndef _MAGICKCORE_IMAGE_H
-#define _MAGICKCORE_IMAGE_H
+#ifndef MAGICKCORE_IMAGE_H
+#define MAGICKCORE_IMAGE_H
 
 #include "MagickCore/color.h"
 #include "MagickCore/pixel.h"

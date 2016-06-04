@@ -15,8 +15,8 @@
 
   MagickCore private application programming interface declarations.
 */
-#ifndef _MAGICKCORE_STUDIO_H
-#define _MAGICKCORE_STUDIO_H
+#ifndef MAGICKCORE_STUDIO_H
+#define MAGICKCORE_STUDIO_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -30,8 +30,8 @@ extern "C" {
 
 #define MAGICKCORE_IMPLEMENTATION  1
 
-#if !defined(_MAGICKCORE_CONFIG_H)
-# define _MAGICKCORE_CONFIG_H
+#if !defined(MAGICKCORE_CONFIG_H)
+# define MAGICKCORE_CONFIG_H
 #include "MagickCore/magick-config.h"
 # if defined(MAGICKCORE__FILE_OFFSET_BITS) && !defined(_FILE_OFFSET_BITS)
 # define _FILE_OFFSET_BITS MAGICKCORE__FILE_OFFSET_BITS

@@ -15,8 +15,8 @@
 
   MagickCore private graphic gems methods.
 */
-#ifndef _MAGICKCORE_GEM_PRIVATE_H
-#define _MAGICKCORE_GEM_PRIVATE_H
+#ifndef MAGICKCORE_GEM_PRIVATE_H
+#define MAGICKCORE_GEM_PRIVATE_H
 
 #include "MagickCore/pixel-accessor.h"
 

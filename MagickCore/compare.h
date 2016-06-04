@@ -15,8 +15,8 @@
 
   MagickCore image compare methods.
 */
-#ifndef _MAGICKCORE_COMPARE_H
-#define _MAGICKCORE_COMPARE_H
+#ifndef MAGICKCORE_COMPARE_H
+#define MAGICKCORE_COMPARE_H
 
 #include "MagickCore/image.h"
 

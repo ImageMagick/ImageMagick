@@ -16,8 +16,8 @@
   MagickWand image Methods.
 */
 
-#ifndef _MAGICKWAND_MAGICK_IMAGE_H
-#define _MAGICKWAND_MAGICK_IMAGE_H
+#ifndef MAGICKWAND_MAGICK_IMAGE_H
+#define MAGICKWAND_MAGICK_IMAGE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

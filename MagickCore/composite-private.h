@@ -15,8 +15,8 @@
 
   MagickCore image composite private methods.
 */
-#ifndef _MAGICKCORE_COMPOSITE_PRIVATE_H
-#define _MAGICKCORE_COMPOSITE_PRIVATE_H
+#ifndef MAGICKCORE_COMPOSITE_PRIVATE_H
+#define MAGICKCORE_COMPOSITE_PRIVATE_H
 
 
 #include "MagickCore/color.h"

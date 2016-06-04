@@ -15,8 +15,8 @@
 
   MagickCore token methods.
 */
-#ifndef _MAGICKCORE_TOKEN_H
-#define _MAGICKCORE_TOKEN_H
+#ifndef MAGICKCORE_TOKEN_H
+#define MAGICKCORE_TOKEN_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

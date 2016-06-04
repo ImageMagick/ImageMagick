@@ -15,8 +15,8 @@
 
   MagickWand display command-line method.
 */
-#ifndef _MAGICKWAND_DISPLAY_H
-#define _MAGICKWAND_DISPLAY_H
+#ifndef MAGICKWAND_DISPLAY_H
+#define MAGICKWAND_DISPLAY_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

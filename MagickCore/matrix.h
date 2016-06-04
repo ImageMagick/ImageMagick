@@ -15,8 +15,8 @@
 
   MagickCore matrix methods.
 */
-#ifndef _MAGICKCORE_MATRIX_H
-#define _MAGICKCORE_MATRIX_H
+#ifndef MAGICKCORE_MATRIX_H
+#define MAGICKCORE_MATRIX_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

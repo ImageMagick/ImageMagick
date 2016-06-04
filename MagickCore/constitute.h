@@ -15,8 +15,8 @@
 
   MagickCore image constitute methods.
 */
-#ifndef _MAGICKCORE_CONSTITUTE_H
-#define _MAGICKCORE_CONSTITUTE_H
+#ifndef MAGICKCORE_CONSTITUTE_H
+#define MAGICKCORE_CONSTITUTE_H
 
 #include "MagickCore/pixel.h"
 

@@ -15,8 +15,8 @@
 
   MagickCore discrete Fourier transform (DFT) methods.
 */
-#ifndef _MAGICKCORE_FFT_H
-#define _MAGICKCORE_FFT_H
+#ifndef MAGICKCORE_FFT_H
+#define MAGICKCORE_FFT_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

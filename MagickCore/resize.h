@@ -15,8 +15,8 @@
 
   MagickCore image resize methods.
 */
-#ifndef _MAGICKCORE_RESIZE_H
-#define _MAGICKCORE_RESIZE_H
+#ifndef MAGICKCORE_RESIZE_H
+#define MAGICKCORE_RESIZE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

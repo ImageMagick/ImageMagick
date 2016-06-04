@@ -15,8 +15,8 @@
 
   MagickCore pribate image profile methods.
 */
-#ifndef _MAGICKCORE_PROFILE_PRIVATE_H
-#define _MAGICKCORE_PROFILE_PRIVATE_H
+#ifndef MAGICKCORE_PROFILE_PRIVATE_H
+#define MAGICKCORE_PROFILE_PRIVATE_H
 
 #include "MagickCore/string_.h"
 

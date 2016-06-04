@@ -15,8 +15,8 @@
 
   MagickCore exception methods.
 */
-#ifndef _MAGICKCORE_EXCEPTION_H
-#define _MAGICKCORE_EXCEPTION_H
+#ifndef MAGICKCORE_EXCEPTION_H
+#define MAGICKCORE_EXCEPTION_H
 
 #include "MagickCore/semaphore.h"
 

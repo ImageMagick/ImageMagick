@@ -15,8 +15,8 @@
 
   MagickCore private image annotation methods.
 */
-#ifndef _MAGICKCORE_ANNOTATE_PRIVATE_H
-#define _MAGICKCORE_ANNOTATE_PRIVATE_H
+#ifndef MAGICKCORE_ANNOTATE_PRIVATE_H
+#define MAGICKCORE_ANNOTATE_PRIVATE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

@@ -15,8 +15,8 @@
 
   MagickCore utility methods.
 */
-#ifndef _MAGICKCORE_UTILITY_H
-#define _MAGICKCORE_UTILITY_H
+#ifndef MAGICKCORE_UTILITY_H
+#define MAGICKCORE_UTILITY_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

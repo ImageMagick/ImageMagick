@@ -15,8 +15,8 @@
 
   MagickCore image composite methods.
 */
-#ifndef _MAGICKCORE_COMPOSITE_H
-#define _MAGICKCORE_COMPOSITE_H
+#ifndef MAGICKCORE_COMPOSITE_H
+#define MAGICKCORE_COMPOSITE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

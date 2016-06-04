@@ -15,8 +15,8 @@
 
   MagickCore image channel methods.
 */
-#ifndef _MAGICKCORE_CHANNEL_H
-#define _MAGICKCORE_CHANNEL_H
+#ifndef MAGICKCORE_CHANNEL_H
+#define MAGICKCORE_CHANNEL_H
 
 #include <MagickCore/image.h>
 

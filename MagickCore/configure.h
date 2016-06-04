@@ -15,8 +15,8 @@
 
   MagickCore configure methods.
 */
-#ifndef _MAGICKCORE_CONFIGURE_H
-#define _MAGICKCORE_CONFIGURE_H
+#ifndef MAGICKCORE_CONFIGURE_H
+#define MAGICKCORE_CONFIGURE_H
 
 #include "MagickCore/linked-list.h"
 

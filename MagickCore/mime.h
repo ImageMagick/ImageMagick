@@ -15,8 +15,8 @@
 
   The ImageMagick mime methods.
 */
-#ifndef _MIME_MIME_H
-#define _MIME_MIME_H
+#ifndef MAGICKCORE_MIME_H
+#define MAGICKCORE_MIME_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

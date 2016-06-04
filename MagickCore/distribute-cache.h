@@ -15,8 +15,8 @@
 
   MagickCore distributed cache methods.
 */
-#ifndef _MAGICKCORE_DISTRIBUTE_CACHE_H
-#define _MAGICKCORE_DISTRIBUTE_CACHE_H
+#ifndef MAGICKCORE_DISTRIBUTE_CACHE_H
+#define MAGICKCORE_DISTRIBUTE_CACHE_H
 
 #include "MagickCore/exception.h"
 

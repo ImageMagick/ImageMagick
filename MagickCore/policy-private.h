@@ -15,8 +15,8 @@
 
   MagickCore private image color methods.
 */
-#ifndef _MAGICKCORE_POLICY_PRIVATE_H
-#define _MAGICKCORE_POLICY_PRIVATE_H
+#ifndef MAGICKCORE_POLICY_PRIVATE_H
+#define MAGICKCORE_POLICY_PRIVATE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

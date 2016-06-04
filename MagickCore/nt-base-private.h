@@ -15,8 +15,8 @@
 
   MagickCore Windows NT private methods.
 */
-#ifndef _MAGICKCORE_NT_BASE_PRIVATE_H
-#define _MAGICKCORE_NT_BASE_PRIVATE_H
+#ifndef MAGICKCORE_NT_BASE_PRIVATE_H
+#define MAGICKCORE_NT_BASE_PRIVATE_H
 
 #include "MagickCore/delegate.h"
 #include "MagickCore/delegate-private.h"
@@ -168,4 +168,4 @@ extern MagickPrivate void
 }
 #endif /* !C++ */
 
-#endif /* !_MAGICKCORE_NT_BASE_H */
+#endif /* !MAGICKCORE_NT_BASE_H */

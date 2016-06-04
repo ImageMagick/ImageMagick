@@ -15,8 +15,8 @@
 
   MagickCore image stream methods.
 */
-#ifndef _MAGICKCORE_SHEAR_H
-#define _MAGICKCORE_SHEAR_H
+#ifndef MAGICKCORE_SHEAR_H
+#define MAGICKCORE_SHEAR_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

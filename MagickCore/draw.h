@@ -15,8 +15,8 @@
 
   MagickCore drawing methods.
 */
-#ifndef _MAGICKCORE_DRAW_H
-#define _MAGICKCORE_DRAW_H
+#ifndef MAGICKCORE_DRAW_H
+#define MAGICKCORE_DRAW_H
 
 #include "MagickCore/geometry.h"
 #include "MagickCore/image.h"

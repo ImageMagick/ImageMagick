@@ -15,8 +15,8 @@
 
   MagickCore image annotation methods.
 */
-#ifndef _MAGICKCORE_ANNOTATE_H
-#define _MAGICKCORE_ANNOTATE_H
+#ifndef MAGICKCORE_ANNOTATE_H
+#define MAGICKCORE_ANNOTATE_H
 
 #include "MagickCore/draw.h"
 

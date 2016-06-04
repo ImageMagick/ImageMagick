@@ -15,8 +15,8 @@
 
   MagickCore image colormap methods.
 */
-#ifndef _MAGICKCORE_COLORMAP_PRIVATE_H
-#define _MAGICKCORE_COLORMAP_PRIVATE_H
+#ifndef MAGICKCORE_COLORMAP_PRIVATE_H
+#define MAGICKCORE_COLORMAP_PRIVATE_H
 
 #include "MagickCore/image.h"
 #include "MagickCore/color.h"

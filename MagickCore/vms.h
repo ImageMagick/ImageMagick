@@ -15,8 +15,8 @@
 
   MagickCore VMS compatibility methods.
 */
-#ifndef _MAGICKCORE_VMS_H
-#define _MAGICKCORE_VMS_H
+#ifndef MAGICKCORE_VMS_H
+#define MAGICKCORE_VMS_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

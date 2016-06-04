@@ -15,8 +15,8 @@
 
   MagickCore option private methods.
 */
-#ifndef _MAGICKCORE_OPTION_PRIVATE_H
-#define _MAGICKCORE_OPTION_PRIVATE_H
+#ifndef MAGICKCORE_OPTION_PRIVATE_H
+#define MAGICKCORE_OPTION_PRIVATE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

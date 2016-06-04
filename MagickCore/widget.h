@@ -15,8 +15,8 @@
 
   MagickCore X11 widget methods.
 */
-#ifndef _MAGICKCORE_WIDGET_H
-#define _MAGICKCORE_WIDGET_H
+#ifndef MAGICKCORE_WIDGET_H
+#define MAGICKCORE_WIDGET_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

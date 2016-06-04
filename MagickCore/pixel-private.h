@@ -15,8 +15,8 @@
 
   MagickCore image pixel private methods.
 */
-#ifndef _MAGICKCORE_PIXEL_PRIVATE_H
-#define _MAGICKCORE_PIXEL_PRIVATE_H
+#ifndef MAGICKCORE_PIXEL_PRIVATE_H
+#define MAGICKCORE_PIXEL_PRIVATE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

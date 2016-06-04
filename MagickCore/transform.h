@@ -15,8 +15,8 @@
 
   MagickCore image transform methods.
 */
-#ifndef _MAGICKCORE_TRANSFORM_H
-#define _MAGICKCORE_TRANSFORM_H
+#ifndef MAGICKCORE_TRANSFORM_H
+#define MAGICKCORE_TRANSFORM_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

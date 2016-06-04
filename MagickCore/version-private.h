@@ -15,8 +15,8 @@
 
   MagickCore version private methods.
 */
-#ifndef _MAGICKCORE_VERSION_PRIVATE_H
-#define _MAGICKCORE_VERSION_PRIVATE_H
+#ifndef MAGICKCORE_VERSION_PRIVATE_H
+#define MAGICKCORE_VERSION_PRIVATE_H
 
 #include "MagickCore/string_.h"
 

@@ -15,8 +15,8 @@
 
   MagickWand conjure command-line method.
 */
-#ifndef _MAGICKWAND_CONJURE_H
-#define _MAGICKWAND_CONJURE_H
+#ifndef MAGICKWAND_CONJURE_H
+#define MAGICKWAND_CONJURE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

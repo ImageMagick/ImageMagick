@@ -15,8 +15,8 @@
 
   MagickCore distributed cache private methods.
 */
-#ifndef _MAGICKCORE_DISTRIBUTE_CACHE_PRIVATE_H
-#define _MAGICKCORE_DISTRIBUTE_CACHE_PRIVATE_H
+#ifndef MAGICKCORE_DISTRIBUTE_CACHE_PRIVATE_H
+#define MAGICKCORE_DISTRIBUTE_CACHE_PRIVATE_H
 
 #include "MagickCore/geometry.h"
 #include "MagickCore/exception.h"

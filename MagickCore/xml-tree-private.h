@@ -15,8 +15,8 @@
 
   MagickCore private xml-tree methods.
 */
-#ifndef _MAGICKCORE_XML_TREE_PRIVATE_H
-#define _MAGICKCORE_XML_TREE_PRIVATE_H
+#ifndef MAGICKCORE_XML_TREE_PRIVATE_H
+#define MAGICKCORE_XML_TREE_PRIVATE_H
 
 #include "MagickCore/exception.h"
 #include "MagickCore/splay-tree.h"

@@ -15,8 +15,8 @@
 
   MagickCore morphology methods.
 */
-#ifndef _MAGICKCORE_MORPHOLOGY_H
-#define _MAGICKCORE_MORPHOLOGY_H
+#ifndef MAGICKCORE_MORPHOLOGY_H
+#define MAGICKCORE_MORPHOLOGY_H
 
 #include "MagickCore/geometry.h"
 

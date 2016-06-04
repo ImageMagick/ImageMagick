@@ -15,8 +15,8 @@
 
   MagickCore private token methods.
 */
-#ifndef _MAGICKCORE_TOKEN_PRIVATE_H
-#define _MAGICKCORE_TOKEN_PRIVATE_H
+#ifndef MAGICKCORE_TOKEN_PRIVATE_H
+#define MAGICKCORE_TOKEN_PRIVATE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

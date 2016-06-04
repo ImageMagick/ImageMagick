@@ -15,8 +15,8 @@
 
   MagickCore image effects methods.
 */
-#ifndef _MAGICKCORE_EFFECT_H
-#define _MAGICKCORE_EFFECT_H
+#ifndef MAGICKCORE_EFFECT_H
+#define MAGICKCORE_EFFECT_H
 
 #include "MagickCore/morphology.h"
 

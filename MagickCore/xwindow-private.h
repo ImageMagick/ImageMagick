@@ -15,8 +15,8 @@
 
   MagickCore X11 window methods.
 */
-#ifndef _MAGICKCORE_XWINDOW_PRIVATE_H
-#define _MAGICKCORE_XWINDOW_PRIVATE_H
+#ifndef MAGICKCORE_XWINDOW_PRIVATE_H
+#define MAGICKCORE_XWINDOW_PRIVATE_H
 
 #include "MagickCore/draw.h"
 #include "MagickCore/exception.h"

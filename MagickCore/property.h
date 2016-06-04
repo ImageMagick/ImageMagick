@@ -15,8 +15,8 @@
 
   MagickCore property methods.
 */
-#ifndef _MAGICKCORE_PROPERTY_H
-#define _MAGICKCORE_PROPERTY_H
+#ifndef MAGICKCORE_PROPERTY_H
+#define MAGICKCORE_PROPERTY_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

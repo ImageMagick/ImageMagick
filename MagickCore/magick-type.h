@@ -15,8 +15,8 @@
 
   MagickCore types.
 */
-#ifndef _MAGICKCORE_MAGICK_TYPE_H
-#define _MAGICKCORE_MAGICK_TYPE_H
+#ifndef MAGICKCORE_MAGICK_TYPE_H
+#define MAGICKCORE_MAGICK_TYPE_H
 
 #include "MagickCore/magick-config.h"
 

@@ -16,8 +16,8 @@
   MagickCore private methods for accelerated functions.
 */
 
-#ifndef _MAGICKCORE_ACCELERATE_PRIVATE_H
-#define _MAGICKCORE_ACCELERATE_PRIVATE_H
+#ifndef MAGICKCORE_ACCELERATE_PRIVATE_H
+#define MAGICKCORE_ACCELERATE_PRIVATE_H
 
 #include "MagickCore/fx.h"
 #include "MagickCore/morphology.h"
@@ -63,4 +63,4 @@ extern MagickPrivate MagickBooleanType
 }
 #endif
 
-#endif // _MAGICKCORE_ACCELERATE_PRIVATE_H
+#endif // MAGICKCORE_ACCELERATE_PRIVATE_H

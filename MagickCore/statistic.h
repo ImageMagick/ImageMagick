@@ -15,8 +15,8 @@
 
   MagickCore statistical methods.
 */
-#ifndef _MAGICKCORE_STATISTIC_H
-#define _MAGICKCORE_STATISTIC_H
+#ifndef MAGICKCORE_STATISTIC_H
+#define MAGICKCORE_STATISTIC_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

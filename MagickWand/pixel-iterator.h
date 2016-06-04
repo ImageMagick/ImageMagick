@@ -15,8 +15,8 @@
 
   Pixel Iterator Methods.
 */
-#ifndef _MAGICKWAND_PIXEL_ITERATOR_H
-#define _MAGICKWAND_PIXEL_ITERATOR_H
+#ifndef MAGICKWAND_PIXEL_ITERATOR_H
+#define MAGICKWAND_PIXEL_ITERATOR_H
 
 #include "MagickWand/MagickWand.h"
 #include "MagickWand/pixel-wand.h"

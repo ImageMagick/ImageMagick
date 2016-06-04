@@ -15,8 +15,8 @@
 
   MagickCore resource methods.
 */
-#ifndef _MAGICKCORE_RESOURCE_H
-#define _MAGICKCORE_RESOURCE_H
+#ifndef MAGICKCORE_RESOURCE_H
+#define MAGICKCORE_RESOURCE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

@@ -15,8 +15,8 @@
 
   MagickCore Binary Large OBjects methods.
 */
-#ifndef _MAGICKCORE_BLOB_H
-#define _MAGICKCORE_BLOB_H
+#ifndef MAGICKCORE_BLOB_H
+#define MAGICKCORE_BLOB_H
 
 #include "MagickCore/image.h"
 #include "MagickCore/stream.h"

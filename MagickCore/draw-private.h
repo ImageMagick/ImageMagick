@@ -15,8 +15,8 @@
 
   MagickCore private image drawing methods.
 */
-#ifndef _MAGICKCORE_DRAW_PRIVATE_H
-#define _MAGICKCORE_DRAW_PRIVATE_H
+#ifndef MAGICKCORE_DRAW_PRIVATE_H
+#define MAGICKCORE_DRAW_PRIVATE_H
 
 #include "MagickCore/cache.h"
 #include "MagickCore/image.h"

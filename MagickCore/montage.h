@@ -15,8 +15,8 @@
 
   MagickCore montage methods.
 */
-#ifndef _MAGICKCORE_MONTAGE_H
-#define _MAGICKCORE_MONTAGE_H
+#ifndef MAGICKCORE_MONTAGE_H
+#define MAGICKCORE_MONTAGE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

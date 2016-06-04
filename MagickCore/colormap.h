@@ -15,8 +15,8 @@
 
   MagickCore image colormap methods.
 */
-#ifndef _MAGICKCORE_COLORMAP_H
-#define _MAGICKCORE_COLORMAP_H
+#ifndef MAGICKCORE_COLORMAP_H
+#define MAGICKCORE_COLORMAP_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

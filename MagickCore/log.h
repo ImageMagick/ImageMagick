@@ -15,8 +15,8 @@
 
   MagickCore log methods.
 */
-#ifndef _MAGICKCORE_LOG_H
-#define _MAGICKCORE_LOG_H
+#ifndef MAGICKCORE_LOG_H
+#define MAGICKCORE_LOG_H
 
 #include "MagickCore/exception.h"
 

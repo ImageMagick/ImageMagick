@@ -15,8 +15,8 @@
 
   MagickCore static coder registration methods.
 */
-#ifndef _MAGICKCORE_STATIC_H
-#define _MAGICKCORE_STATIC_H
+#ifndef MAGICKCORE_STATIC_H
+#define MAGICKCORE_STATIC_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

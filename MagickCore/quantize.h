@@ -15,8 +15,8 @@
 
   MagickCore image quantization methods.
 */
-#ifndef _MAGICKCORE_QUANTIZE_H
-#define _MAGICKCORE_QUANTIZE_H
+#ifndef MAGICKCORE_QUANTIZE_H
+#define MAGICKCORE_QUANTIZE_H
 
 #include "MagickCore/colorspace.h"
 

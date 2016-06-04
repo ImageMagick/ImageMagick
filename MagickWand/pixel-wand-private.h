@@ -15,8 +15,8 @@
 
   MAgickWand pixel wand private methods.
 */
-#ifndef _MAGICKWAND_PIXEL_WAND_PRIVATE_H
-#define _MAGICKWAND_PIXEL_WAND_PRIVATE_H
+#ifndef MAGICKWAND_PIXEL_WAND_PRIVATE_H
+#define MAGICKWAND_PIXEL_WAND_PRIVATE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

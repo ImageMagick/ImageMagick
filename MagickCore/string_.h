@@ -15,8 +15,8 @@
 
   MagickCore string methods.
 */
-#ifndef _MAGICKCORE_STRING_H_
-#define _MAGICKCORE_STRING_H_
+#ifndef MAGICKCORE_STRING_H_
+#define MAGICKCORE_STRING_H_
 
 #include "MagickCore/exception.h"
 

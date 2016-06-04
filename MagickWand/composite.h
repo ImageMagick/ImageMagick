@@ -15,8 +15,8 @@
 
   MagickWand composite command-line method.
 */
-#ifndef _MAGICKWAND_COMPOSITE_H
-#define _MAGICKWAND_COMPOSITE_H
+#ifndef MAGICKWAND_COMPOSITE_H
+#define MAGICKWAND_COMPOSITE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

@@ -15,8 +15,8 @@
 
   MagickCore image profile methods.
 */
-#ifndef _MAGICKCORE_PROFILE_H
-#define _MAGICKCORE_PROFILE_H
+#ifndef MAGICKCORE_PROFILE_H
+#define MAGICKCORE_PROFILE_H
 
 #include "MagickCore/string_.h"
 

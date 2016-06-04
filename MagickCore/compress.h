@@ -15,8 +15,8 @@
 
   MagickCore image compression/decompression methods.
 */
-#ifndef _MAGICKCORE_COMPRESS_H
-#define _MAGICKCORE_COMPRESS_H
+#ifndef MAGICKCORE_COMPRESS_H
+#define MAGICKCORE_COMPRESS_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

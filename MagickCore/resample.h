@@ -15,8 +15,8 @@
 
   MagickCore graphic resample methods.
 */
-#ifndef _MAGICKCORE_RESAMPLE_H
-#define _MAGICKCORE_RESAMPLE_H
+#ifndef MAGICKCORE_RESAMPLE_H
+#define MAGICKCORE_RESAMPLE_H
 
 #include "MagickCore/cache-view.h"
 

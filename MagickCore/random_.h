@@ -15,8 +15,8 @@
 
   MagickCore random methods.
 */
-#ifndef _MAGICKCORE_RANDOM__H
-#define _MAGICKCORE_RANDOM__H
+#ifndef MAGICKCORE_RANDOM__H
+#define MAGICKCORE_RANDOM__H
 
 #include "MagickCore/string_.h"
 

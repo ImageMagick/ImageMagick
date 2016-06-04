@@ -15,8 +15,8 @@
 
   MagickCore method attributes.
 */
-#ifndef _MAGICKCORE_METHOD_ATTRIBUTE_H
-#define _MAGICKCORE_METHOD_ATTRIBUTE_H
+#ifndef MAGICKCORE_METHOD_ATTRIBUTE_H
+#define MAGICKCORE_METHOD_ATTRIBUTE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

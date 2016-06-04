@@ -15,8 +15,8 @@
 
   MagickWand montage command-line method.
 */
-#ifndef _MAGICKWAND_MONTAGE_H
-#define _MAGICKWAND_MONTAGE_H
+#ifndef MAGICKWAND_MONTAGE_H
+#define MAGICKWAND_MONTAGE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

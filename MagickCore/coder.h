@@ -15,8 +15,8 @@
 
   MagickCore image coder methods.
 */
-#ifndef _MAGICKCORE_CODER_H
-#define _MAGICKCORE_CODER_H
+#ifndef MAGICKCORE_CODER_H
+#define MAGICKCORE_CODER_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

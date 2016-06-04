@@ -15,8 +15,8 @@
 
   MagickCore image enhance methods.
 */
-#ifndef _MAGICKCORE_ENHANCE_H
-#define _MAGICKCORE_ENHANCE_H
+#ifndef MAGICKCORE_ENHANCE_H
+#define MAGICKCORE_ENHANCE_H
 
 #include "MagickCore/pixel.h"
 

@@ -15,8 +15,8 @@
 
   MagickCore image decorate methods.
 */
-#ifndef _MAGICKCORE_DECORATE_H
-#define _MAGICKCORE_DECORATE_H
+#ifndef MAGICKCORE_DECORATE_H
+#define MAGICKCORE_DECORATE_H
 
 #include "MagickCore/image.h"
 

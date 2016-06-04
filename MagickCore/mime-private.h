@@ -15,8 +15,8 @@
 
   The ImageMagick mime private methods.
 */
-#ifndef _MAGICK_MIME_PRIVATE_H
-#define _MAGICK_MIME_PRIVATE_H
+#ifndef MAGICKCORE_MIME_PRIVATE_H
+#define MAGICKCORE_MIME_PRIVATE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

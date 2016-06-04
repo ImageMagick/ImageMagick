@@ -15,8 +15,8 @@
 
   MagickCore Windows NT utility methods.
 */
-#ifndef _MAGICKCORE_NT_FEATURE_H
-#define _MAGICKCORE_NT_FEATURE_H
+#ifndef MAGICKCORE_NT_FEATURE_H
+#define MAGICKCORE_NT_FEATURE_H
 
 #include "MagickCore/exception.h"
 #include "MagickCore/geometry.h"

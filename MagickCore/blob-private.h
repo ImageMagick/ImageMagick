@@ -15,8 +15,8 @@
 
   MagickCore Binary Large OBjects private methods.
 */
-#ifndef _MAGICKCORE_BLOB_PRIVATE_H
-#define _MAGICKCORE_BLOB_PRIVATE_H
+#ifndef MAGICKCORE_BLOB_PRIVATE_H
+#define MAGICKCORE_BLOB_PRIVATE_H
 
 #include "MagickCore/image.h"
 #include "MagickCore/stream.h"

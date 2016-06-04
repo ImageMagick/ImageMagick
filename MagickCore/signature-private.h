@@ -15,8 +15,8 @@
 
   MagickCore digital signature methods.
 */
-#ifndef _MAGICKCORE_SIGNATURE_PRIVATE_H
-#define _MAGICKCORE_SIGNATURE_PRIVATE_H
+#ifndef MAGICKCORE_SIGNATURE_PRIVATE_H
+#define MAGICKCORE_SIGNATURE_PRIVATE_H
 
 #include "MagickCore/string_.h"
 

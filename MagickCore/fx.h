@@ -15,8 +15,8 @@
 
   MagickCore image f/x methods.
 */
-#ifndef _MAGICKCORE_FX_H
-#define _MAGICKCORE_FX_H
+#ifndef MAGICKCORE_FX_H
+#define MAGICKCORE_FX_H
 
 #include "MagickCore/draw.h"
 

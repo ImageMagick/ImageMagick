@@ -15,8 +15,8 @@
 
   MagickCore random generation private methods.
 */
-#ifndef _MAGICKCORE_RANDOM_PRIVATE_H
-#define _MAGICKCORE_RANDOM_PRIVATE_H
+#ifndef MAGICKCORE_RANDOM_PRIVATE_H
+#define MAGICKCORE_RANDOM_PRIVATE_H
 
 #include "MagickCore/thread-private.h"
 

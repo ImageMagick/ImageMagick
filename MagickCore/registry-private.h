@@ -15,8 +15,8 @@
 
   MagickCore private registry methods.
 */
-#ifndef _MAGICKCORE_REGISTRY_PRIVATE_H
-#define _MAGICKCORE_REGISTRY_PRIVATE_H
+#ifndef MAGICKCORE_REGISTRY_PRIVATE_H
+#define MAGICKCORE_REGISTRY_PRIVATE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

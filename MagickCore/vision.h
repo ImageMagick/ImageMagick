@@ -15,8 +15,8 @@
 
   MagickCore computer vision methods.
 */
-#ifndef _MAGICKCORE_VISION_H
-#define _MAGICKCORE_VISION_H
+#ifndef MAGICKCORE_VISION_H
+#define MAGICKCORE_VISION_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

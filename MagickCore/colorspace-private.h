@@ -15,8 +15,8 @@
 
   MagickCore image colorspace private methods.
 */
-#ifndef _MAGICKCORE_COLORSPACE_PRIVATE_H
-#define _MAGICKCORE_COLORSPACE_PRIVATE_H
+#ifndef MAGICKCORE_COLORSPACE_PRIVATE_H
+#define MAGICKCORE_COLORSPACE_PRIVATE_H
 
 #include "MagickCore/image.h"
 #include "MagickCore/image-private.h"

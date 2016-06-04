@@ -15,8 +15,8 @@
 
   MagickCore delegates private methods.
 */
-#ifndef _MAGICKCORE_DELEGATE_PRIVATE_H
-#define _MAGICKCORE_DELEGATE_PRIVATE_H
+#ifndef MAGICKCORE_DELEGATE_PRIVATE_H
+#define MAGICKCORE_DELEGATE_PRIVATE_H
 
 #if defined(MAGICKCORE_GS_DELEGATE)
 #include "ghostscript/iapi.h"

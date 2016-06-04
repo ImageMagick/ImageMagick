@@ -15,8 +15,8 @@
 
   MagickCore cache view methods.
 */
-#ifndef _MAGICKCORE_CACHE_VIEW_H
-#define _MAGICKCORE_CACHE_VIEW_H
+#ifndef MAGICKCORE_CACHE_VIEW_H
+#define MAGICKCORE_CACHE_VIEW_H
 
 #include "MagickCore/pixel.h"
 

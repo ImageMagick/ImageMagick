@@ -15,8 +15,8 @@
 
   MagickCore image threshold methods.
 */
-#ifndef _MAGICKCORE_THRESHOLD_H
-#define _MAGICKCORE_THRESHOLD_H
+#ifndef MAGICKCORE_THRESHOLD_H
+#define MAGICKCORE_THRESHOLD_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

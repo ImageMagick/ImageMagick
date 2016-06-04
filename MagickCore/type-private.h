@@ -15,8 +15,8 @@
 
   MagickCore private image type methods.
 */
-#ifndef _MAGICKCORE_TYPE_PRIVATE_H
-#define _MAGICKCORE_TYPE_PRIVATE_H
+#ifndef MAGICKCORE_TYPE_PRIVATE_H
+#define MAGICKCORE_TYPE_PRIVATE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

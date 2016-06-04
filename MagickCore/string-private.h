@@ -15,8 +15,8 @@
 
   MagickCore private string methods.
 */
-#ifndef _MAGICKCORE_STRING_PRIVATE_H
-#define _MAGICKCORE_STRING_PRIVATE_H
+#ifndef MAGICKCORE_STRING_PRIVATE_H
+#define MAGICKCORE_STRING_PRIVATE_H
 
 #include "MagickCore/locale_.h"
 

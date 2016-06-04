@@ -15,8 +15,8 @@
 
   MagickCore methods to interactively animate an image sequence.
 */
-#ifndef _MAGICKCORE_ANIMATE_H
-#define _MAGICKCORE_ANIMATE_H
+#ifndef MAGICKCORE_ANIMATE_H
+#define MAGICKCORE_ANIMATE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

@@ -15,8 +15,8 @@
 
   MagickCore progress monitor methods.
 */
-#ifndef _MAGICKCORE_MONITOR_H
-#define _MAGICKCORE_MONITOR_H
+#ifndef MAGICKCORE_MONITOR_H
+#define MAGICKCORE_MONITOR_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

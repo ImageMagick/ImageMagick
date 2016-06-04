@@ -15,8 +15,8 @@
 
   MagickCore graphic gems methods.
 */
-#ifndef _MAGICKCORE_GEM_H
-#define _MAGICKCORE_GEM_H
+#ifndef MAGICKCORE_GEM_H
+#define MAGICKCORE_GEM_H
 
 #include "MagickCore/fx.h"
 #include "MagickCore/random_.h"

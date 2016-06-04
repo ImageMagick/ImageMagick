@@ -16,8 +16,8 @@
   MagickCore private kernels for accelerated functions.
 */
 
-#ifndef _MAGICKCORE_ACCELERATE_KERNELS_PRIVATE_H
-#define _MAGICKCORE_ACCELERATE_KERNELS_PRIVATE_H
+#ifndef MAGICKCORE_ACCELERATE_KERNELS_PRIVATE_H
+#define MAGICKCORE_ACCELERATE_KERNELS_PRIVATE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -3260,4 +3260,4 @@ OPENCL_ENDIF()
 }
 #endif
 
-#endif // _MAGICKCORE_ACCELERATE_KERNELS_PRIVATE_H
+#endif // MAGICKCORE_ACCELERATE_KERNELS_PRIVATE_H

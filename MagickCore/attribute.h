@@ -15,8 +15,8 @@
 
   MagickCore methods to set or get image attributes.
 */
-#ifndef _MAGICKCORE_ATTRIBUTE_H
-#define _MAGICKCORE_ATTRIBUTE_H
+#ifndef MAGICKCORE_ATTRIBUTE_H
+#define MAGICKCORE_ATTRIBUTE_H
 
 #include "MagickCore/image.h"
 #include "MagickCore/exception.h"

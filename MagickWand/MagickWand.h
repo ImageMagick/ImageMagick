@@ -16,15 +16,15 @@
   MagickWand Application Programming Interface declarations.
 */
 
-#ifndef _MAGICKWAND_MAGICKWAND_H
-#define _MAGICKWAND_MAGICKWAND_H
+#ifndef MAGICKWAND_MAGICKWAND_H
+#define MAGICKWAND_MAGICKWAND_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
 
-#if !defined(_MAGICKWAND_CONFIG_H)
-# define _MAGICKWAND_CONFIG_H
+#if !defined(MAGICKWAND_CONFIG_H)
+# define MAGICKWAND_CONFIG_H
 # if !defined(vms) && !defined(macintosh)
 #  include "MagickCore/magick-config.h"
 # else

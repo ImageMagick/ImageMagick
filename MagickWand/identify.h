@@ -15,8 +15,8 @@
 
   MagickWand identify command-line method.
 */
-#ifndef _MAGICKWAND_IDENTIFY_H
-#define _MAGICKWAND_IDENTIFY_H
+#ifndef MAGICKWAND_IDENTIFY_H
+#define MAGICKWAND_IDENTIFY_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

@@ -15,8 +15,8 @@
 
   MagickCore X11 window methods.
 */
-#ifndef _MAGICKCORE_XWINDOW_H
-#define _MAGICKCORE_XWINDOW_H
+#ifndef MAGICKCORE_XWINDOW_H
+#define MAGICKCORE_XWINDOW_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

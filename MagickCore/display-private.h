@@ -15,8 +15,8 @@
 
   MagickCore methods to interactively display and edit an image.
 */
-#ifndef _MAGICKCORE_DISPLAY_PRIVATE_H
-#define _MAGICKCORE_DISPLAY_PRIVATE_H
+#ifndef MAGICKCORE_DISPLAY_PRIVATE_H
+#define MAGICKCORE_DISPLAY_PRIVATE_H
 
 #if defined(MAGICKCORE_X11_DELEGATE)
 #include "MagickCore/xwindow-private.h"

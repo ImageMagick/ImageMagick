@@ -15,8 +15,8 @@
 
   ImageMagick pixel wand API.
 */
-#ifndef _MAGICKWAND_MAGICK_WAND_PRIVATE_H
-#define _MAGICKWAND_MAGICK_WAND_PRIVATE_H
+#ifndef MAGICKWAND_MAGICK_WAND_PRIVATE_H
+#define MAGICKWAND_MAGICK_WAND_PRIVATE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

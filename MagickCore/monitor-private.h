@@ -15,8 +15,8 @@
 
   The ImageMagick progress monitor private methods.
 */
-#ifndef _MAGICK_MONITOR_PRIVATE_H
-#define _MAGICK_MONITOR_PRIVATE_H
+#ifndef MAGICKCORE_MONITOR_PRIVATE_H
+#define MAGICKCORE_MONITOR_PRIVATE_H
 
 #include "MagickCore/image.h"
 

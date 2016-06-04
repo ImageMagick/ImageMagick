@@ -15,8 +15,8 @@
 
   MagickCore quantum inline methods.
 */
-#ifndef _MAGICKCORE_QUANTUM_PRIVATE_H
-#define _MAGICKCORE_QUANTUM_PRIVATE_H
+#ifndef MAGICKCORE_QUANTUM_PRIVATE_H
+#define MAGICKCORE_QUANTUM_PRIVATE_H
 
 #include "MagickCore/cache.h"
 

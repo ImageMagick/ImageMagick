@@ -15,8 +15,8 @@
 
   MagickCore module methods.
 */
-#ifndef _MAGICKCORE_MODULE_H
-#define _MAGICKCORE_MODULE_H
+#ifndef MAGICKCORE_MODULE_H
+#define MAGICKCORE_MODULE_H
 
 #include "MagickCore/version.h"
 

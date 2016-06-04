@@ -15,8 +15,8 @@
 
   MagickCore quantum inline methods.
 */
-#ifndef _MAGICKCORE_QUANTUM_H
-#define _MAGICKCORE_QUANTUM_H
+#ifndef MAGICKCORE_QUANTUM_H
+#define MAGICKCORE_QUANTUM_H
 
 #include "MagickCore/image.h"
 #include "MagickCore/semaphore.h"

@@ -15,8 +15,8 @@
 
   MagickCore locale methods.
 */
-#ifndef _MAGICKCORE_LOCALE_H
-#define _MAGICKCORE_LOCALE_H
+#ifndef MAGICKCORE_LOCALE_H
+#define MAGICKCORE_LOCALE_H
 
 #include "MagickCore/linked-list.h"
 

@@ -15,8 +15,8 @@
 
   MagickCore image resampling private methods.
 */
-#ifndef _MAGICKCORE_RESAMPLE_PRIVATE_H
-#define _MAGICKCORE_RESAMPLE_PRIVATE_H
+#ifndef MAGICKCORE_RESAMPLE_PRIVATE_H
+#define MAGICKCORE_RESAMPLE_PRIVATE_H
 
 #include "MagickCore/thread-private.h"
 

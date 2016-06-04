@@ -15,8 +15,8 @@
 
   MagickCore private methods to interactively animate an image sequence.
 */
-#ifndef _MAGICKCORE_ANIMATE_PRIVATE_H
-#define _MAGICKCORE_ANIMATE_PRIVATE_H
+#ifndef MAGICKCORE_ANIMATE_PRIVATE_H
+#define MAGICKCORE_ANIMATE_PRIVATE_H
 
 #if defined(MAGICKCORE_X11_DELEGATE)
 #include "MagickCore/xwindow-private.h"

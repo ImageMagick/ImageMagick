@@ -15,8 +15,8 @@
 
   MagickCore private log methods.
 */
-#ifndef _MAGICKCORE_LOG_PRIVATE_H
-#define _MAGICKCORE_LOG_PRIVATE_H
+#ifndef MAGICKCORE_LOG_PRIVATE_H
+#define MAGICKCORE_LOG_PRIVATE_H
 
 #include "MagickCore/exception.h"
 

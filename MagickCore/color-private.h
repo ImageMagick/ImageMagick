@@ -15,8 +15,8 @@
 
   MagickCore private image color methods.
 */
-#ifndef _MAGICKCORE_COLOR_PRIVATE_H
-#define _MAGICKCORE_COLOR_PRIVATE_H
+#ifndef MAGICKCORE_COLOR_PRIVATE_H
+#define MAGICKCORE_COLOR_PRIVATE_H
 
 #include "MagickCore/image.h"
 #include "MagickCore/image-private.h"

@@ -15,8 +15,8 @@
 
   Magick's toolkit xml-tree methods.
 */
-#ifndef _MAGICKCORE_XML_TREE_H
-#define _MAGICKCORE_XML_TREE_H
+#ifndef MAGICKCORE_XML_TREE_H
+#define MAGICKCORE_XML_TREE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

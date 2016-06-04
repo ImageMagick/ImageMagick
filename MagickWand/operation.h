@@ -15,8 +15,8 @@
 
   MagickWand command-line option process.
 */
-#ifndef _MAGICKWAND_OPERATION_H
-#define _MAGICKWAND_OPERATION_H
+#ifndef MAGICKWAND_OPERATION_H
+#define MAGICKWAND_OPERATION_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

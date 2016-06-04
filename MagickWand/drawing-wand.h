@@ -15,8 +15,8 @@
 
   MagickWand drawing wand methods.
 */
-#ifndef _MAGICKWAND_DRAWING_WAND_H
-#define _MAGICKWAND_DRAWING_WAND_H
+#ifndef MAGICKWAND_DRAWING_WAND_H
+#define MAGICKWAND_DRAWING_WAND_H
 
 #include "MagickWand/pixel-wand.h"
 

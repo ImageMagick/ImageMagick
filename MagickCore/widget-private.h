@@ -15,8 +15,8 @@
 
   MagickCore private X11 widget methods.
 */
-#ifndef _MAGICKCORE_WIDGET_PRIVATE_H
-#define _MAGICKCORE_WIDGET_PRIVATE_H
+#ifndef MAGICKCORE_WIDGET_PRIVATE_H
+#define MAGICKCORE_WIDGET_PRIVATE_H
 
 #include "MagickCore/xwindow-private.h"
 

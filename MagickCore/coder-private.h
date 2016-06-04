@@ -15,8 +15,8 @@
 
   MagickCore private image coder methods.
 */
-#ifndef _MAGICKCORE_CODER_PRIVATE_H
-#define _MAGICKCORE_CODER_PRIVATE_H
+#ifndef MAGICKCORE_CODER_PRIVATE_H
+#define MAGICKCORE_CODER_PRIVATE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

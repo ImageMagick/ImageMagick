@@ -15,8 +15,8 @@
 
   MagickCore memory methods.
 */
-#ifndef _MAGICKCORE_MEMORY_H
-#define _MAGICKCORE_MEMORY_H
+#ifndef MAGICKCORE_MEMORY_H
+#define MAGICKCORE_MEMORY_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

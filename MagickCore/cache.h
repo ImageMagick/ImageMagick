@@ -15,8 +15,8 @@
 
   MagickCore cache methods.
 */
-#ifndef _MAGICKCORE_CACHE_H
-#define _MAGICKCORE_CACHE_H
+#ifndef MAGICKCORE_CACHE_H
+#define MAGICKCORE_CACHE_H
 
 #include "MagickCore/blob.h"
 

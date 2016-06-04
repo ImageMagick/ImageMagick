@@ -15,8 +15,8 @@
 
   MagickCore private random methods.
 */
-#ifndef _MAGICKCORE_RANDOM_PRIVATE_H
-#define _MAGICKCORE_RANDOM_PRIVATE_H
+#ifndef MAGICKCORE_RANDOM_PRIVATE_H
+#define MAGICKCORE_RANDOM_PRIVATE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
