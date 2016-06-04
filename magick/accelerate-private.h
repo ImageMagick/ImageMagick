@@ -16,8 +16,8 @@
   MagickCore private methods for accelerated functions.
 */
 
-#ifndef _MAGICKCORE_ACCELERATE_PRIVATE_H
-#define _MAGICKCORE_ACCELERATE_PRIVATE_H
+#ifndef MAGICKCORE_ACCELERATE_PRIVATE_H
+#define MAGICKCORE_ACCELERATE_PRIVATE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -3434,4 +3434,4 @@ uint MWC64X_NextUint(mwc64x_state_t *s)
 }
 #endif
 
-#endif // _MAGICKCORE_ACCELERATE_PRIVATE_H
+#endif // MAGICKCORE_ACCELERATE_PRIVATE_H

@@ -15,8 +15,8 @@
 
   MagickWand animate command-line methods.
 */
-#ifndef _MAGICKWAND_ANIMATE_H
-#define _MAGICKWAND_ANIMATE_H
+#ifndef MAGICKWAND_ANIMATE_H
+#define MAGICKWAND_ANIMATE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

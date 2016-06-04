@@ -15,8 +15,8 @@
 
   MagickCore methods to lock and unlock semaphores.
 */
-#ifndef _MAGICKCORE_SEMAPHORE_H
-#define _MAGICKCORE_SEMAPHORE_H
+#ifndef MAGICKCORE_SEMAPHORE_H
+#define MAGICKCORE_SEMAPHORE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

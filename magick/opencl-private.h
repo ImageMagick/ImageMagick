@@ -15,8 +15,8 @@ limitations under the License.
 
 MagickCore OpenCL private methods.
 */
-#ifndef _MAGICKCORE_OPENCL_PRIVATE_H
-#define _MAGICKCORE_OPENCL_PRIVATE_H
+#ifndef MAGICKCORE_OPENCL_PRIVATE_H
+#define MAGICKCORE_OPENCL_PRIVATE_H
 
 /*
 Include declarations.

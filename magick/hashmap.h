@@ -15,8 +15,8 @@
 
   MagickCore hash methods.
 */
-#ifndef _MAGICKCORE_HASHMAP_H
-#define _MAGICKCORE_HASHMAP_H
+#ifndef MAGICKCORE_HASHMAP_H
+#define MAGICKCORE_HASHMAP_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

@@ -15,8 +15,8 @@
 
   MagickWand montage command-line method.
 */
-#ifndef _MAGICKWAND_STREAM_H
-#define _MAGICKWAND_STREAM_H
+#ifndef MAGICKWAND_STREAM_H
+#define MAGICKWAND_STREAM_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

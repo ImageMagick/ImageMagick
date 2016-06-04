@@ -15,8 +15,8 @@
 
   MagickCore private methods for internal threading.
 */
-#ifndef _MAGICKCORE_THREAD_PRIVATE_H
-#define _MAGICKCORE_THREAD_PRIVATE_H
+#ifndef MAGICKCORE_THREAD_PRIVATE_H
+#define MAGICKCORE_THREAD_PRIVATE_H
 
 #include "magick/cache.h"
 #include "magick/resource_.h"

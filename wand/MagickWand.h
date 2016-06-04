@@ -23,8 +23,8 @@
 extern "C" {
 #endif
 
-#if !defined(_MAGICKWAND_CONFIG_H)
-# define _MAGICKWAND_CONFIG_H
+#if !defined(MAGICKWAND_CONFIG_H)
+# define MAGICKWAND_CONFIG_H
 # if !defined(vms) && !defined(macintosh)
 #  include "magick/magick-config.h"
 # else

@@ -15,8 +15,8 @@
 
   MagickCore cipher methods.
 */
-#ifndef _MAGICKCORE_CIPHER_H
-#define _MAGICKCORE_CIPHER_H
+#ifndef MAGICKCORE_CIPHER_H
+#define MAGICKCORE_CIPHER_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

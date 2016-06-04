@@ -15,8 +15,8 @@
 
   MagickCore image segment methods.
 */
-#ifndef _MAGICKCORE_SEGMENT_H
-#define _MAGICKCORE_SEGMENT_H
+#ifndef MAGICKCORE_SEGMENT_H
+#define MAGICKCORE_SEGMENT_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

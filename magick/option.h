@@ -15,8 +15,8 @@
 
   MagickCore option methods.
 */
-#ifndef _MAGICKCORE_OPTION_H
-#define _MAGICKCORE_OPTION_H
+#ifndef MAGICKCORE_OPTION_H
+#define MAGICKCORE_OPTION_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

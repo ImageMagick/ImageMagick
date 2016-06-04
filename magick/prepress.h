@@ -15,8 +15,8 @@
 
   MagickCore prepress methods.
 */
-#ifndef _MAGICKCORE_PREPRESS_H
-#define _MAGICKCORE_PREPRESS_H
+#ifndef MAGICKCORE_PREPRESS_H
+#define MAGICKCORE_PREPRESS_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

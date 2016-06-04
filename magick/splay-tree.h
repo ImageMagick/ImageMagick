@@ -15,8 +15,8 @@
 
   MagickCore splay-tree methods.
 */
-#ifndef _MAGICKCORE_SPLAY_H
-#define _MAGICKCORE_SPLAY_H
+#ifndef MAGICKCORE_SPLAY_H
+#define MAGICKCORE_SPLAY_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

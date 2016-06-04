@@ -15,8 +15,8 @@
 
   MagickCore image resize private methods.
 */
-#ifndef _MAGICKCORE_RESIZE_PRIVATE_H
-#define _MAGICKCORE_RESIZE_PRIVATE_H
+#ifndef MAGICKCORE_RESIZE_PRIVATE_H
+#define MAGICKCORE_RESIZE_PRIVATE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

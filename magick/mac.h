@@ -15,15 +15,15 @@
 
   MagickCore utility methods.
 */
-#ifndef _MAGICKCORE_MAC_H
-#define _MAGICKCORE_MAC_H
+#ifndef MAGICKCORE_MAC_H
+#define MAGICKCORE_MAC_H
 
 #include <locale.h>
 #include <Errors.h>
 #include <Files.h>
 #include <errno.h>
 
-#if defined(_MAGICKCORE_POSIX_SUPPORT_VERSION)
+#if defined(MAGICKCORE_POSIX_SUPPORT_VERSION)
 # include <dirent.h>
 # if !defined(DISABLE_SIOUX)
 #  include <SIOUX.h>
@@ -89,7 +89,7 @@ extern MagickExport void
   MACFatalErrorHandler(const ExceptionType,const char *,const char *);
 #endif
 
-#if !defined(_MAGICKCORE_POSIX_SUPPORT_VERSION)
+#if !defined(MAGICKCORE_POSIX_SUPPORT_VERSION)
 extern MagickExport DIR
   *opendir(const char *);
 

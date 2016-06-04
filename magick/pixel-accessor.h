@@ -15,8 +15,8 @@
 
   MagickCore pixel accessor methods.
 */
-#ifndef _MAGICKCORE_PIXEL_ACCESSOR_H
-#define _MAGICKCORE_PIXEL_ACCESSOR_H
+#ifndef MAGICKCORE_PIXEL_ACCESSOR_H
+#define MAGICKCORE_PIXEL_ACCESSOR_H
 
 #include <math.h>
 #include "magick/gem.h"

@@ -15,8 +15,8 @@
 
   MagickCore delegates methods.
 */
-#ifndef _MAGICKCORE_DELEGATE_H
-#define _MAGICKCORE_DELEGATE_H
+#ifndef MAGICKCORE_DELEGATE_H
+#define MAGICKCORE_DELEGATE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

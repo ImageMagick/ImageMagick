@@ -15,8 +15,8 @@
 
   MagickCore image identify method.
 */
-#ifndef _MAGICKCORE_IDENTIFY_H
-#define _MAGICKCORE_IDENTIFY_H
+#ifndef MAGICKCORE_IDENTIFY_H
+#define MAGICKCORE_IDENTIFY_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

@@ -15,8 +15,8 @@
 
   MagickCore artifact methods.
 */
-#ifndef _MAGICKCORE_ARTIFACT_H
-#define _MAGICKCORE_ARTIFACT_H
+#ifndef MAGICKCORE_ARTIFACT_H
+#define MAGICKCORE_ARTIFACT_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

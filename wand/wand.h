@@ -15,8 +15,8 @@
 
   ImageMagick wand support methods.
 */
-#ifndef _MAGICKWAND_WAND_H
-#define _MAGICKWAND_WAND_H
+#ifndef MAGICKWAND_WAND_H
+#define MAGICKWAND_WAND_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

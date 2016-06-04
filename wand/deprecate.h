@@ -15,8 +15,8 @@
 
   MagickCore deprecated methods.
 */
-#ifndef _MAGICKWAND_DEPRECATE_H
-#define _MAGICKWAND_DEPRECATE_H
+#ifndef MAGICKWAND_DEPRECATE_H
+#define MAGICKWAND_DEPRECATE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

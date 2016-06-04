@@ -15,8 +15,8 @@
 
   MagickCore image distortion methods.
 */
-#ifndef _MAGICKCORE_DISTORT_H
-#define _MAGICKCORE_DISTORT_H
+#ifndef MAGICKCORE_DISTORT_H
+#define MAGICKCORE_DISTORT_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

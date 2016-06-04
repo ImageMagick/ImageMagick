@@ -15,8 +15,8 @@
 
   MagickCore image geometry methods.
 */
-#ifndef _MAGICKCORE_GEOMETRY_H
-#define _MAGICKCORE_GEOMETRY_H
+#ifndef MAGICKCORE_GEOMETRY_H
+#define MAGICKCORE_GEOMETRY_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

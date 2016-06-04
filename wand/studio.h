@@ -15,8 +15,8 @@
 
   MagickWand private application programming interface declarations.
 */
-#ifndef _MAGICKWAND_STUDIO_H
-#define _MAGICKWAND_STUDIO_H
+#ifndef MAGICKWAND_STUDIO_H
+#define MAGICKWAND_STUDIO_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -30,8 +30,8 @@ extern "C" {
 
 #define MAGICKWAND_IMPLEMENTATION  1
 
-#if !defined(_MAGICKWAND_CONFIG_H)
-# define _MAGICKWAND_CONFIG_H
+#if !defined(MAGICKWAND_CONFIG_H)
+# define MAGICKWAND_CONFIG_H
 # if !defined(vms) && !defined(macintosh)
 #  include "magick/magick-config.h"
 # else

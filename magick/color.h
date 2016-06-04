@@ -15,8 +15,8 @@
 
   MagickCore image color methods.
 */
-#ifndef _MAGICKCORE_COLOR_H
-#define _MAGICKCORE_COLOR_H
+#ifndef MAGICKCORE_COLOR_H
+#define MAGICKCORE_COLOR_H
 
 #include "magick/pixel.h"
 #include "magick/exception.h"

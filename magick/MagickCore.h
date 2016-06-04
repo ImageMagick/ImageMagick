@@ -16,15 +16,15 @@
   MagickCore Application Programming Interface declarations.
 */
 
-#ifndef _MAGICKCORE_CORE_H
-#define _MAGICKCORE_CORE_H
+#ifndef MAGICKCORE_CORE_H
+#define MAGICKCORE_CORE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
 
-#if !defined(_MAGICKCORE_CONFIG_H)
-# define _MAGICKCORE_CONFIG_H
+#if !defined(MAGICKCORE_CONFIG_H)
+# define MAGICKCORE_CONFIG_H
 # if !defined(vms) && !defined(macintosh)
 #  include "magick/magick-config.h"
 # else

@@ -15,8 +15,8 @@
 
   MagickWand mogrify command-line method.
 */
-#ifndef _MAGICKWAND_MOGRIFY_H
-#define _MAGICKWAND_MOGRIFY_H
+#ifndef MAGICKWAND_MOGRIFY_H
+#define MAGICKWAND_MOGRIFY_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

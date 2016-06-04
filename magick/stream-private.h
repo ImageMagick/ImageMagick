@@ -15,8 +15,8 @@
 
   MagickCore image stream private methods.
 */
-#ifndef _MAGICKCORE_STREAM_PRIVATE_H
-#define _MAGICKCORE_STREAM_PRIVATE_H
+#ifndef MAGICKCORE_STREAM_PRIVATE_H
+#define MAGICKCORE_STREAM_PRIVATE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

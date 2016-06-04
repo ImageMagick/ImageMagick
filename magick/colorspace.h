@@ -15,8 +15,8 @@
 
   MagickCore image colorspace methods.
 */
-#ifndef _MAGICKCORE_COLORSPACE_H
-#define _MAGICKCORE_COLORSPACE_H
+#ifndef MAGICKCORE_COLORSPACE_H
+#define MAGICKCORE_COLORSPACE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

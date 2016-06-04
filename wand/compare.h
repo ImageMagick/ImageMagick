@@ -15,8 +15,8 @@
 
   MagickWand compare command-line method.
 */
-#ifndef _MAGICKWAND_COMPARE_H
-#define _MAGICKWAND_COMPARE_H
+#ifndef MAGICKWAND_COMPARE_H
+#define MAGICKWAND_COMPARE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

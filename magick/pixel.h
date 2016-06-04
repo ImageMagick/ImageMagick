@@ -15,8 +15,8 @@
 
   MagickCore image constitute methods.
 */
-#ifndef _MAGICKCORE_PIXEL_H
-#define _MAGICKCORE_PIXEL_H
+#ifndef MAGICKCORE_PIXEL_H
+#define MAGICKCORE_PIXEL_H
 
 #include "magick/colorspace.h"
 #include "magick/constitute.h"

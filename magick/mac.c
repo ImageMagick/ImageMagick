@@ -280,7 +280,7 @@ static short BottleneckTest(PicHandle picture,CodecType *codec,int *depth,
 }
 #endif
 
-#if !defined(_MAGICKCORE_POSIX_SUPPORT_VERSION)
+#if !defined(MAGICKCORE_POSIX_SUPPORT_VERSION)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -973,7 +973,7 @@ MagickExport void MACWarningHandler(const ExceptionType warning,
 #endif
 }
 
-#if !defined(_MAGICKCORE_POSIX_SUPPORT_VERSION)
+#if !defined(MAGICKCORE_POSIX_SUPPORT_VERSION)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1084,7 +1084,7 @@ MagickExport void ProcessPendingEvents(const char *text)
 #endif
 }
 
-#if !defined(_MAGICKCORE_POSIX_SUPPORT_VERSION)
+#if !defined(MAGICKCORE_POSIX_SUPPORT_VERSION)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1475,7 +1475,7 @@ static Boolean SearchForFile(OSType creator_type,OSType file_type,FSSpec *file,
   return(error == eofErr);
 }
 
-#if !defined(_MAGICKCORE_POSIX_SUPPORT_VERSION)
+#if !defined(MAGICKCORE_POSIX_SUPPORT_VERSION)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1572,7 +1572,7 @@ MagickExport void SetApplicationType(const char *filename,const char *magick,
   FSpCreate(&file_specification,application,filetype,smSystemScript);
 }
 
-#if !defined(_MAGICKCORE_POSIX_SUPPORT_VERSION)
+#if !defined(MAGICKCORE_POSIX_SUPPORT_VERSION)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %

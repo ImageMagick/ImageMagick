@@ -15,8 +15,8 @@
 
   MagickCore digital signature methods.
 */
-#ifndef _MAGICKCORE_SIGNATURE_H
-#define _MAGICKCORE_SIGNATURE_H
+#ifndef MAGICKCORE_SIGNATURE_H
+#define MAGICKCORE_SIGNATURE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

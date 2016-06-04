@@ -18,8 +18,8 @@
   MagickCore Application Programming Interface declarations.
 */
 
-#ifndef _MAGICKCORE_IMAGEMAGICK_DEPRECATED_H
-#define _MAGICKCORE_IMAGEMAGICK_DEPRECATED_H
+#ifndef MAGICKCORE_IMAGEMAGICK_DEPRECATED_H
+#define MAGICKCORE_IMAGEMAGICK_DEPRECATED_H
 
 #include "magick/MagickCore.h"
 

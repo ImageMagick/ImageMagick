@@ -15,8 +15,8 @@
 
   MagickCore image layer methods.
 */
-#ifndef _MAGICKCORE_LAYER_H
-#define _MAGICKCORE_LAYER_H
+#ifndef MAGICKCORE_LAYER_H
+#define MAGICKCORE_LAYER_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

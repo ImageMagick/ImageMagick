@@ -16,8 +16,8 @@
   MagickWand API (deprecated, use magick-wand.h instead).
 */
 
-#ifndef _MAGICKWAND_MAGICK_WAND_DEPRECATED_H
-#define _MAGICKWAND_MAGICK_WAND_DEPRECATED_H
+#ifndef MAGICKWAND_MAGICK_WAND_DEPRECATED_H
+#define MAGICKWAND_MAGICK_WAND_DEPRECATED_H
 
 #include "wand/MagickWand.h"
 

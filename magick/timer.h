@@ -15,8 +15,8 @@
 
   MagickCore timer methods.
 */
-#ifndef _MAGICKCORE_TIMER_H
-#define _MAGICKCORE_TIMER_H
+#ifndef MAGICKCORE_TIMER_H
+#define MAGICKCORE_TIMER_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

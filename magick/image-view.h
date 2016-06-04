@@ -15,8 +15,8 @@
 
   MagickCore image view methods.
 */
-#ifndef _MAGICKIMAGE_IMAGE_VIEW_H
-#define _MAGICKIMAGE_IMAGE_VIEW_H
+#ifndef MAGICKCORE_IMAGE_VIEW_H
+#define MAGICKCORE_IMAGE_VIEW_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

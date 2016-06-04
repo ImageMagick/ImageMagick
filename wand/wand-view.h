@@ -15,8 +15,8 @@
 
   MagickWand wand view methods.
 */
-#ifndef _MAGICKWAND_WAND_VIEW_H
-#define _MAGICKWAND_WAND_VIEW_H
+#ifndef MAGICKWAND_WAND_VIEW_H
+#define MAGICKWAND_WAND_VIEW_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

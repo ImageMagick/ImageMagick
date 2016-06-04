@@ -15,8 +15,8 @@
 
   MagickCore image list methods.
 */
-#ifndef _MAGICKCORE_LIST_H
-#define _MAGICKCORE_LIST_H
+#ifndef MAGICKCORE_LIST_H
+#define MAGICKCORE_LIST_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

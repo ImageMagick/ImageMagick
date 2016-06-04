@@ -15,8 +15,8 @@
 
   MagickCore image stream methods.
 */
-#ifndef _MAGICKCORE_STREAM_H
-#define _MAGICKCORE_STREAM_H
+#ifndef MAGICKCORE_STREAM_H
+#define MAGICKCORE_STREAM_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

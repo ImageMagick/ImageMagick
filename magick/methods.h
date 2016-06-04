@@ -19,8 +19,8 @@
      egrep -v '(MagickError)|(MagickFatalError)|(MagickWarning)|(ThrowException)' | \
     awk '{ printf("#define %s  PrependMagickMethod(%s)\n", $3, $3); }' | sort
 */
-#ifndef _MAGICKCORE_METHOD_H
-#define _MAGICKCORE_METHOD_H
+#ifndef MAGICKCORE_METHOD_H
+#define MAGICKCORE_METHOD_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

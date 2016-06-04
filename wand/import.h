@@ -15,8 +15,8 @@
 
   MagickWand import command-line method.
 */
-#ifndef _MAGICKWAND_IMPORT_H
-#define _MAGICKWAND_IMPORT_H
+#ifndef MAGICKWAND_IMPORT_H
+#define MAGICKWAND_IMPORT_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

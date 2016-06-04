@@ -15,8 +15,8 @@
 
   MagickCore methods to interactively display and edit an image.
 */
-#ifndef _MAGICKCORE_DISPLAY_H
-#define _MAGICKCORE_DISPLAY_H
+#ifndef MAGICKCORE_DISPLAY_H
+#define MAGICKCORE_DISPLAY_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

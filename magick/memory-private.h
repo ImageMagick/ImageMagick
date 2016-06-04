@@ -15,8 +15,8 @@
 
   MagickCore private memory methods.
 */
-#ifndef _MAGICKCORE_MEMORY_PRIVATE_H
-#define _MAGICKCORE_MEMORY_PRIVATE_H
+#ifndef MAGICKCORE_MEMORY_PRIVATE_H
+#define MAGICKCORE_MEMORY_PRIVATE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

@@ -15,8 +15,8 @@
 
   MagickCore image paint methods.
 */
-#ifndef _MAGICKCORE_PAINT_H
-#define _MAGICKCORE_PAINT_H
+#ifndef MAGICKCORE_PAINT_H
+#define MAGICKCORE_PAINT_H
 
 #include "magick/color.h"
 #include "magick/draw.h"

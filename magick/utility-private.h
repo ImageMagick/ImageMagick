@@ -15,8 +15,8 @@
 
   MagickCore private utility methods.
 */
-#ifndef _MAGICKCORE_UTILITY_PRIVATE_H
-#define _MAGICKCORE_UTILITY_PRIVATE_H
+#ifndef MAGICKCORE_UTILITY_PRIVATE_H
+#define MAGICKCORE_UTILITY_PRIVATE_H
 
 #include "magick/memory_.h"
 #include "magick/nt-base.h"

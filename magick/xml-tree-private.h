@@ -15,8 +15,8 @@
 
   MagickCore private xml-tree methods.
 */
-#ifndef _MAGICKCORE_XML_TREE_PRIVATE_H
-#define _MAGICKCORE_XML_TREE_PRIVATE_H
+#ifndef MAGICKCORE_XML_TREE_PRIVATE_H
+#define MAGICKCORE_XML_TREE_PRIVATE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

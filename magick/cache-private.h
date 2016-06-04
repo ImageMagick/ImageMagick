@@ -15,8 +15,8 @@
 
   MagickCore cache private methods.
 */
-#ifndef _MAGICKCORE_CACHE_PRIVATE_H
-#define _MAGICKCORE_CACHE_PRIVATE_H
+#ifndef MAGICKCORE_CACHE_PRIVATE_H
+#define MAGICKCORE_CACHE_PRIVATE_H
 
 #include <time.h>
 #include "magick/cache.h"

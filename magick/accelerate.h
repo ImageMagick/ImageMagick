@@ -15,8 +15,8 @@
 
   MagickCore acceleration methods.
 */
-#ifndef _MAGICKCORE_ACCELERATE_H
-#define _MAGICKCORE_ACCELERATE_H
+#ifndef MAGICKCORE_ACCELERATE_H
+#define MAGICKCORE_ACCELERATE_H
 
 #include "magick/fx.h"
 #include "magick/morphology.h"

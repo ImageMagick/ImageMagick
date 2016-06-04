@@ -15,8 +15,8 @@
 
   MagickCore histogram methods.
 */
-#ifndef _MAGICKCORE_HISTOGRAM_H
-#define _MAGICKCORE_HISTOGRAM_H
+#ifndef MAGICKCORE_HISTOGRAM_H
+#define MAGICKCORE_HISTOGRAM_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

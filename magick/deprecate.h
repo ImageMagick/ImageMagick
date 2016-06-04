@@ -15,8 +15,8 @@
 
   MagickCore deprecated methods.
 */
-#ifndef _MAGICKCORE_DEPRECATE_H
-#define _MAGICKCORE_DEPRECATE_H
+#ifndef MAGICKCORE_DEPRECATE_H
+#define MAGICKCORE_DEPRECATE_H
 
 #include <stdarg.h>
 #include "magick/blob.h"

@@ -15,8 +15,8 @@
 
   Magick's toolkit xml-tree methods.
 */
-#ifndef _MAGICKCORE_XML_TREE_H
-#define _MAGICKCORE_XML_TREE_H
+#ifndef MAGICKCORE_XML_TREE_H
+#define MAGICKCORE_XML_TREE_H
 
 #include "magick/exception.h"
 #include "magick/splay-tree.h"
