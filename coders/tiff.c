@@ -390,8 +390,10 @@ static Image *ReadGROUP4Image(const ImageInfo *image_info,
   length=fwrite("\000\000\000\000",1,4,file);
   length=WriteLSBLong(file,(long) image->resolution.x);
   length=WriteLSBLong(file,1);
+  status=MagickTrue;
   for (length=0; (c=ReadBlobByte(image)) != EOF; length++)
-    (void) fputc(c,file);
+    if (fputc(c,file) != c)
+      status=MagickFalse;
   offset=(ssize_t) fseek(file,(ssize_t) offset,SEEK_SET);
   length=WriteLSBLong(file,(unsigned int) length);
   (void) fclose(file);
@@ -413,6 +415,8 @@ static Image *ReadGROUP4Image(const ImageInfo *image_info,
       (void) CopyMagickString(image->magick,"GROUP4",MagickPathExtent);
     }
   (void) RelinquishUniqueFileResource(filename);
+  if (status == MagickFalse)
+    image=DestroyImage(image);
   return(image);
 }
 #endif
