@@ -2816,6 +2816,8 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
     {
       (void) CopyMagickString(magic,image_info->magick,MaxTextExtent);
       magick_info=GetMagickInfo(magic,sans_exception);
+      GetPathComponent(image_info->filename,CanonicalPath,filename);
+      (void) CopyMagickString(image_info->filename,filename,MaxTextExtent);
     }
   else
     {
@@ -2829,17 +2831,14 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
         {
           (void) CopyMagickString(image_info->magick,magic,MaxTextExtent);
           image_info->affirm=MagickTrue;
+          GetPathComponent(image_info->filename,CanonicalPath,filename);
+          (void) CopyMagickString(image_info->filename,filename,MaxTextExtent);
         }
     }
   sans_exception=DestroyExceptionInfo(sans_exception);
   if ((magick_info == (const MagickInfo *) NULL) ||
       (GetMagickEndianSupport(magick_info) == MagickFalse))
     image_info->endian=UndefinedEndian;
-  if (image_info->affirm != MagickFalse)
-    {
-      GetPathComponent(image_info->filename,CanonicalPath,filename);
-      (void) CopyMagickString(image_info->filename,filename,MaxTextExtent);
-    }
   if ((image_info->adjoin != MagickFalse) && (frames > 1))
     {
       /*
