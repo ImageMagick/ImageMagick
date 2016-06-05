@@ -202,7 +202,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
-  if (fabs(image_info->pointsize) < MagickEpsilon)
+  if ((fabs(image_info->pointsize) < MagickEpsilon) && (strlen(caption) > 0))
     {
       double
         high,
