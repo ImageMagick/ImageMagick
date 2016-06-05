@@ -95,6 +95,7 @@ extern "C" {
 #if !defined(closedir)
 #  define closedir(directory)  NTCloseDirectory(directory)
 #endif
+#define MAGICKCORE_HAVE_ERF
 #if defined(_VISUALC_) && (_MSC_VER < 1700)
 #  define erf(x)  NTErf(x)
 #endif
