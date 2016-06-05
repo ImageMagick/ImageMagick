@@ -1,5 +1,5 @@
 2016-06-05  7.0.1-10 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.1-10, GIT revision 10859:d5ffaa3:20160605.
+  * Release ImageMagick version 7.0.1-10, GIT revision 18390:14ba9af:20160605.
 
 2016-06-04  7.0.1-10 Cristy  <quetzlzacatenango@image...>
   * Deny indirect reads by policy, remove policy to permit, e.g.,
