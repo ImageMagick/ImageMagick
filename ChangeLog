@@ -4,6 +4,8 @@
 2016-06-04  7.0.1-10 Cristy  <quetzlzacatenango@image...>
   * Deny indirect reads by policy, remove policy to permit, e.g.,
     convert caption:@mytext.txt ...
+  * RLE check for pixel offset less than 0 (heap overflow report from Craig
+    Young).
 
 2016-06-03  7.0.1-9 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.1-9, GIT revision 10847:339f803:20160602.

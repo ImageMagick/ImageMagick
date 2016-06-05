@@ -175,11 +175,11 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
     number_planes,
     number_planes_filled,
     one,
-    offset,
     pixel_info_length;
 
   ssize_t
     count,
+    offset,
     y;
 
   unsigned char
@@ -389,7 +389,8 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
           offset=((image->rows-y-1)*image->columns*number_planes)+x*
             number_planes+plane;
           operand++;
-          if (offset+((size_t) operand*number_planes) > pixel_info_length)
+          if ((offset < 0) ||
+              (offset+((size_t) operand*number_planes) > pixel_info_length))
             {
               if (number_colormaps != 0)
                 colormap=(unsigned char *) RelinquishMagickMemory(colormap);
@@ -420,7 +421,8 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
           offset=((image->rows-y-1)*image->columns*number_planes)+x*
             number_planes+plane;
           operand++;
-          if (offset+((size_t) operand*number_planes) > pixel_info_length)
+          if ((offset < 0) ||
+              (offset+((size_t) operand*number_planes) > pixel_info_length))
             {
               if (number_colormaps != 0)
                 colormap=(unsigned char *) RelinquishMagickMemory(colormap);
