@@ -510,7 +510,10 @@ static Image *ReadPESImage(const ImageInfo *image_info,ExceptionInfo *exception)
     blocks[i].offset=0;
   }
   for ( ; i < 256L; i++)
+  {
     blocks[i].offset=0;
+    blocks[i].color=PESColor;
+  }
   if (DiscardBlobBytes(image,532L-number_colors-21) == MagickFalse)
     ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
       image->filename);
@@ -556,7 +559,7 @@ static Image *ReadPESImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Normal stitch.
         */
         if ((x & 0x40) != 0)
-         x-=0x80;
+          x-=0x80;
       }
     else
       {
