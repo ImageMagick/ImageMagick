@@ -1245,7 +1245,7 @@ MagickExport void GetPathComponent(const char *path,PathType type,
           {
             magick_length=(size_t) (p-component+1);
             for (q=component; *(++p) != '\0'; q++)
-              *q=*p;
+              *q=(*p);
             *q='\0';
           }
         break;
@@ -1291,7 +1291,7 @@ MagickExport void GetPathComponent(const char *path,PathType type,
       if (magick_length != 0)
         (void) CopyMagickString(component,path,magick_length);
       else
-        *component = '\0';
+        *component='\0';
       break;
     }
     case RootPath:

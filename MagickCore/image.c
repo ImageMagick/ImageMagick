@@ -1107,7 +1107,7 @@ MagickExport MagickBooleanType CopyImagePixels(Image *image,
         i;
 
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-      { 
+      {
         PixelChannel channel=GetPixelChannelChannel(image,i);
         PixelTrait traits=GetPixelChannelTraits(image,channel);
         PixelTrait source_traits=GetPixelChannelTraits(source_image,channel);
@@ -2674,6 +2674,8 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
     {
       (void) CopyMagickString(magic,image_info->magick,MagickPathExtent);
       magick_info=GetMagickInfo(magic,sans_exception);
+      GetPathComponent(image_info->filename,CanonicalPath,component);
+      (void) CopyMagickString(image_info->filename,component,MagickPathExtent);
     }
   else
     {
@@ -2687,17 +2689,15 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
         {
           (void) CopyMagickString(image_info->magick,magic,MagickPathExtent);
           image_info->affirm=MagickTrue;
+          GetPathComponent(image_info->filename,CanonicalPath,component);
+          (void) CopyMagickString(image_info->filename,component,
+            MagickPathExtent);
         }
     }
   sans_exception=DestroyExceptionInfo(sans_exception);
   if ((magick_info == (const MagickInfo *) NULL) ||
       (GetMagickEndianSupport(magick_info) == MagickFalse))
     image_info->endian=UndefinedEndian;
-  if (image_info->affirm != MagickFalse)
-    {
-      GetPathComponent(image_info->filename,CanonicalPath,component);
-      (void) CopyMagickString(image_info->filename,component,MagickPathExtent);
-    }
   if ((image_info->adjoin != MagickFalse) && (frames > 1))
     {
       /*
