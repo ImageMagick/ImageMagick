@@ -1194,7 +1194,7 @@ MagickExport void ConcatenateColorComponent(const MagickPixelPacket *pixel,
   if (channel == OpacityChannel)
     {
       (void) FormatLocaleString(component,MaxTextExtent,"%.*g",
-        GetMagickPrecision(),(double) ClampToQuantum(QuantumScale*color));
+        GetMagickPrecision(),QuantumScale*ClampToQuantum(color));
       (void) ConcatenateMagickString(tuple,component,MaxTextExtent);
       return;
     }
