@@ -2551,12 +2551,14 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
     {
       if (LocaleCompare(expression,"epsilon") == 0)
         return(MagickEpsilon);
+#if defined(MAGICKCORE_HAVE_ERF)
       if (LocaleNCompare(expression,"erf",3) == 0)
         {
           alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+3,depth,
             beta,exception);
           return(erf(alpha));
         }
+#endif
       if (LocaleNCompare(expression,"exp",3) == 0)
         {
           alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+3,depth,
