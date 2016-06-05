@@ -140,8 +140,9 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
       image->rows=(size_t) floor(metrics.height+draw_info->stroke_width+0.5);
     }
   else
-    if (((image->columns == 0) || (image->rows == 0)) ||
-        (fabs(image_info->pointsize) < MagickEpsilon))
+    if ((strlen(label) > 0) &&
+        (((image->columns == 0) || (image->rows == 0)) ||
+         (fabs(image_info->pointsize) < MagickEpsilon)))
       {
         double
           high,
@@ -199,7 +200,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
    status=GetMultilineTypeMetrics(image,draw_info,&metrics,exception);
    if (status == MagickFalse)
      {
-      draw_info=DestroyDrawInfo(draw_info);
+       draw_info=DestroyDrawInfo(draw_info);
        image=DestroyImageList(image);
        return((Image *) NULL);
      }
