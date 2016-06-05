@@ -95,6 +95,9 @@ extern "C" {
 #if !defined(closedir)
 #  define closedir(directory)  NTCloseDirectory(directory)
 #endif
+#if defined(_VISUALC_) && (_MSC_VER < 1700)
+#  define erf(x)  NTErf(x)
+#endif
 #if !defined(fdopen)
 #  define fdopen  _fdopen
 #endif
@@ -138,9 +141,6 @@ extern "C" {
 #endif
 #if !defined(hypot)
 #  define hypot  _hypot
-#endif
-#if !defined(inline)
-#  define inline __inline
 #endif
 #if !defined(isatty)
 #  define isatty  _isatty

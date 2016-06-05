@@ -110,6 +110,7 @@ extern MagickPrivate DIR
 
 extern MagickPrivate double
   NTElapsedTime(void),
+  NTErf(double),
   NTUserTime(void);
 
 extern MagickPrivate int

@@ -528,7 +528,6 @@ MagickPrivate int NTCloseDirectory(DIR *entry)
   entry=(DIR *) RelinquishMagickMemory(entry);
   return(0);
 }
-
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -627,6 +626,59 @@ MagickPrivate double NTElapsedTime(void)
   SystemTimeToFileTime(&system_time,&elapsed_time.filetime);
   return((double) 1.0e-7*elapsed_time.filetime64);
 }
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   N T E r f                                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  NTErf() computes the error function of x.
+%
+%  The format of the NTErf method is:
+%
+%      double NTCloseDirectory(DIR *entry)
+%
+%  A description of each parameter follows:
+%
+%    o x: Specifies a pointer to a DIR structure.
+%
+*/
+MagickPrivate double NTErf(double x)
+{
+  double
+    a1,
+    a2,
+    a3,
+    a4,
+    a5,
+    p,
+    t,
+    y;
+
+  int
+    sign;
+
+  a1=0.254829592;
+  a2=-0.284496736;
+  a3=1.421413741;
+  a4=-1.453152027;
+  a5=1.061405429;
+  p=0.3275911;
+  sign=1;
+  if (x < 0)
+    sign=-1;
+  x=abs(x);
+  t=1.0/(1.0+p*x);
+  y=1.0-(((((a5*t+a4)*t)+a3)*t+a2)*t+a1)*t*exp(-x*x);
+  return(sign*y);
+}
+
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
