@@ -59,6 +59,7 @@
 #include "magick/composite-private.h"
 #include "magick/compress.h"
 #include "magick/constitute.h"
+#include "magick/delegate.h"
 #include "magick/deprecate.h"
 #include "magick/display.h"
 #include "magick/draw.h"
@@ -2821,16 +2822,23 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
     }
   else
     {
+      const DelegateInfo
+        *delegate_info;
+
       /*
         User specified image format.
       */
       LocaleUpper(magic);
       magick_info=GetMagickInfo(magic,sans_exception);
-      if ((magick_info != (const MagickInfo *) NULL) &&
+      delegate_info=GetDelegateInfo(magic,(const char *) NULL,sans_exception);
+      if (delegate_info == (const DelegateInfo *) NULL)
+        delegate_info=GetDelegateInfo((const char *) NULL,magic,sans_exception);
+      if (((magick_info != (const MagickInfo *) NULL) ||
+           (delegate_info != (const DelegateInfo *) NULL)) &&
           (IsMagickConflict(magic) == MagickFalse))
         {
-          (void) CopyMagickString(image_info->magick,magic,MaxTextExtent);
           image_info->affirm=MagickTrue;
+          (void) CopyMagickString(image_info->magick,magic,MaxTextExtent);
           GetPathComponent(image_info->filename,CanonicalPath,filename);
           (void) CopyMagickString(image_info->filename,filename,MaxTextExtent);
         }
