@@ -2830,9 +2830,9 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
       */
       LocaleUpper(magic);
       magick_info=GetMagickInfo(magic,sans_exception);
-      delegate_info=GetDelegateInfo(magic,(const char *) NULL,sans_exception);
+      delegate_info=GetDelegateInfo(magic,"*",sans_exception);
       if (delegate_info == (const DelegateInfo *) NULL)
-        delegate_info=GetDelegateInfo((const char *) NULL,magic,sans_exception);
+        delegate_info=GetDelegateInfo("*",magic,sans_exception);
       if (((magick_info != (const MagickInfo *) NULL) ||
            (delegate_info != (const DelegateInfo *) NULL)) &&
           (IsMagickConflict(magic) == MagickFalse))
