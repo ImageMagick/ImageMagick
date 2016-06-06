@@ -1017,7 +1017,7 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
       ThrowBinaryException(PolicyError,"NotAuthorized",filename);
     }
   /*
-    Call appropriate image reader based on image type.
+    Call appropriate image writer based on image type.
   */
   magick_info=GetMagickInfo(write_info->magick,sans_exception);
   sans_exception=DestroyExceptionInfo(sans_exception);
