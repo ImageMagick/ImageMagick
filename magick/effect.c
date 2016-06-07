@@ -1714,7 +1714,7 @@ MagickExport Image *FilterImageChannel(const Image *image,
             }
             kernel_pixels+=image->columns+kernel->width;
           }
-          gamma=PerceptibleReciprocal(gamma); 
+          gamma=PerceptibleReciprocal(gamma);
           if ((channel & RedChannel) != 0)
             SetPixelRed(q,ClampToQuantum(gamma*pixel.red));
           if ((channel & GreenChannel) != 0)
@@ -2501,7 +2501,6 @@ MagickExport Image *LocalContrastImage(const Image *image,const double radius,
 
   ssize_t
     scanLineSize,
-    thread_count,
     width;
 
   /*
@@ -2527,21 +2526,11 @@ MagickExport Image *LocalContrastImage(const Image *image,const double radius,
     }
   image_view=AcquireVirtualCacheView(image,exception);
   contrast_view=AcquireAuthenticCacheView(contrast_image,exception);
-  thread_count=1;
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel magick_threads(image,image,image->rows,1)
-  {
-    #pragma omp single
-    {
-      thread_count=omp_get_num_threads();
-    }
-  }
-#endif
   scanLineSize=(ssize_t) MagickMax(image->columns,image->rows);
   width=(ssize_t) scanLineSize*0.002f*fabs(radius);
   scanLineSize+=(2*width);
-  scanLinePixels_info=AcquireVirtualMemory(thread_count*scanLineSize,
-    sizeof(*scanLinePixels));
+  scanLinePixels_info=AcquireVirtualMemory(GetOpenMPMaximumThreads()*
+    scanLineSize,sizeof(*scanLinePixels));
   if (scanLinePixels_info == (MemoryInfo *) NULL)
     {
       contrast_view=DestroyCacheView(contrast_view);
@@ -2550,7 +2539,9 @@ MagickExport Image *LocalContrastImage(const Image *image,const double radius,
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
   scanLinePixels=(float *) GetVirtualMemoryBlob(scanLinePixels_info);
-  /* Create intermediate buffer */
+  /*
+    Create intermediate buffer.
+  */
   interImage_info=AcquireVirtualMemory(image->rows*(image->columns+(2*width)),
     sizeof(*interImage));
   if (interImage_info == (MemoryInfo *) NULL)
@@ -2563,18 +2554,22 @@ MagickExport Image *LocalContrastImage(const Image *image,const double radius,
     }
   interImage=(float *) GetVirtualMemoryBlob(interImage_info);
   totalWeight=(width+1)*(width+1);
-
-  /* Vertical Pass */
+  /*
+    Vertical pass.
+  */
   {
     ssize_t
       x;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-#pragma omp parallel for schedule(static,4) \
-    magick_threads(image,image,image->columns,1)
+    #pragma omp parallel for schedule(static,4) \
+      magick_threads(image,image,image->columns,1)
 #endif
     for (x=0; x < (ssize_t) image->columns; x++)
     {
+      const int
+        id = GetOpenMPThreadId();
+
       const PixelPacket
         *magick_restrict p;
 
@@ -2590,22 +2585,17 @@ MagickExport Image *LocalContrastImage(const Image *image,const double radius,
         i;
 
       pixels=scanLinePixels;
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-      pixels+=scanLineSize*omp_get_thread_num();
-#endif
+      pixels+=id*scanLineSize;
       pix=pixels;
       p=GetCacheViewVirtualPixels(image_view,x,-width,1,image->rows+(2*width),
         exception);
-
       for (y=0; y < (ssize_t) image->rows+(2*width); y++)
       {
         *pix++=(float)GetPixelLuma(image,p);
         p++;
       }
-
       out=interImage+x+width;
-
-      for (y = 0; y < (ssize_t) image->rows; y++)
+      for (y=0; y < (ssize_t) image->rows; y++)
       {
         float
           sum,
@@ -2632,12 +2622,13 @@ MagickExport Image *LocalContrastImage(const Image *image,const double radius,
         if ((x > (ssize_t) image->columns-width-2) &&
             (x != (ssize_t) image->columns-1))
           *(out+((image->columns-x-1)*2))=*out;
-
         out+=image->columns+(width*2);
       }
     }
   }
-  /* Horizontal Pass */
+  /*
+    Horizontal pass.
+  */
   {
     ssize_t
       y;
@@ -2648,6 +2639,9 @@ MagickExport Image *LocalContrastImage(const Image *image,const double radius,
 #endif
     for (y=0; y < (ssize_t) image->rows; y++)
     {
+      const int
+        id = GetOpenMPThreadId();
+
       const PixelPacket
         *magick_restrict p;
 
@@ -2665,17 +2659,13 @@ MagickExport Image *LocalContrastImage(const Image *image,const double radius,
         i;
 
       pixels=scanLinePixels;
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-      pixels+=scanLineSize*omp_get_thread_num();
-#endif
+      pixels+=id*scanLineSize;
       p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,
         exception);
       q=GetCacheViewAuthenticPixels(contrast_view,0,y,image->columns,1,
         exception);
-
       memcpy(pixels,interImage+(y*(image->columns+(2*width))),(image->columns+
         (2*width))*sizeof(float));
-
       for (x=0; x < (ssize_t) image->columns; x++)
       {
         float
@@ -2697,7 +2687,6 @@ MagickExport Image *LocalContrastImage(const Image *image,const double radius,
           sum+=weight*(*pix++);
           weight-=1.0f;
         }
-
         /* Apply and write */
         srcVal=(float) GetPixelLuma(image,p);
         mult=(srcVal-(sum/totalWeight))*(strength/100.0f);
@@ -2716,7 +2705,7 @@ MagickExport Image *LocalContrastImage(const Image *image,const double radius,
   image_view=DestroyCacheView(image_view);
   return(contrast_image);
 }
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
