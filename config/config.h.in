@@ -164,6 +164,9 @@
 /* Define to 1 if the system has the type `double_t'. */
 #undef HAVE_DOUBLE_T
 
+/* Define to 1 if you have the `erf' function. */
+#undef HAVE_ERF
+
 /* Define to 1 if you have the <errno.h> header file. */
 #undef HAVE_ERRNO_H
 
@@ -726,9 +729,6 @@
 
 /* Directory where ImageMagick headers live. */
 #undef INCLUDE_PATH
-
-/* enable indirect reads (@) in filenames */
-#undef INDIRECT_READS_SUPPORT
 
 /* ImageMagick is formally installed under prefix */
 #undef INSTALLED_SUPPORT
