@@ -2495,6 +2495,9 @@ MagickExport Image *LocalContrastImage(const Image *image,const double radius,
   Image
     *contrast_image;
 
+  MagickBooleanType
+    status;
+
   MemoryInfo
     *scanLinePixels_info,
     *interImage_info;
@@ -2557,6 +2560,7 @@ MagickExport Image *LocalContrastImage(const Image *image,const double radius,
   /*
     Vertical pass.
   */
+  status=MagickTrue;
   {
     ssize_t
       x;
@@ -2584,11 +2588,18 @@ MagickExport Image *LocalContrastImage(const Image *image,const double radius,
       ssize_t
         i;
 
+      if (status == MagickFalse)
+        continue;
       pixels=scanLinePixels;
       pixels+=id*scanLineSize;
       pix=pixels;
       p=GetCacheViewVirtualPixels(image_view,x,-width,1,image->rows+(2*width),
         exception);
+      if (p == (const PixelPacket *) NULL)
+        {
+          status=MagickFalse;
+          continue;
+        }
       for (y=0; y < (ssize_t) image->rows+(2*width); y++)
       {
         *pix++=(float)GetPixelLuma(image,p);
@@ -2658,12 +2669,19 @@ MagickExport Image *LocalContrastImage(const Image *image,const double radius,
       ssize_t
         i;
 
+      if (status == MagickFalse)
+        continue;
       pixels=scanLinePixels;
       pixels+=id*scanLineSize;
       p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,
         exception);
       q=GetCacheViewAuthenticPixels(contrast_view,0,y,image->columns,1,
         exception);
+      if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+        {
+          status=MagickFalse;
+          continue;
+        }
       memcpy(pixels,interImage+(y*(image->columns+(2*width))),(image->columns+
         (2*width))*sizeof(float));
       for (x=0; x < (ssize_t) image->columns; x++)
@@ -2697,12 +2715,16 @@ MagickExport Image *LocalContrastImage(const Image *image,const double radius,
         p++;
         q++;
       }
+      if (SyncCacheViewAuthenticPixels(contrast_view,exception) == MagickFalse)
+        status=MagickFalse;
     }
   }
   scanLinePixels_info=RelinquishVirtualMemory(scanLinePixels_info);
   interImage_info=RelinquishVirtualMemory(interImage_info);
   contrast_view=DestroyCacheView(contrast_view);
   image_view=DestroyCacheView(image_view);
+  if (status == MagickFalse)
+    contrast_image=DestroyImage(contrast_image);
   return(contrast_image);
 }
 
