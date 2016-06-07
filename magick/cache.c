@@ -191,8 +191,11 @@ static inline OpenCLCacheInfo *RelinquishOpenCLCacheInfo(MagickCLEnv clEnv,
     clEnv->library->clReleaseEvent(info->events[i]);
   info->events=RelinquishMagickMemory(info->events);
   info->event_count=0;
-  clEnv->library->clReleaseMemObject(info->buffer);
-  info->buffer=(cl_mem) NULL;
+  if (info->buffer != (cl_mem) NULL)
+  {
+    clEnv->library->clReleaseMemObject(info->buffer);
+    info->buffer=(cl_mem) NULL;
+  }
   return((OpenCLCacheInfo *) RelinquishMagickMemory(info));
 }
 
@@ -200,16 +203,12 @@ static void CL_API_CALL RelinquishPixelCachePixelsDelayed(
   cl_event magick_unused(event),cl_int magick_unused(event_command_exec_status),
   void *user_data)
 {
-  MagickCLEnv
-    clEnv;
-
   OpenCLRelinquishInfo
     *info;
 
   magick_unreferenced(event);
   magick_unreferenced(event_command_exec_status);
   info=(OpenCLRelinquishInfo *) user_data;
-  clEnv=GetDefaultOpenCLEnv();
   (void) RelinquishMemoryPixelCachePixels(info->mapped,info->pixels,
     info->length);
   (void) RelinquishMagickMemory(info);
