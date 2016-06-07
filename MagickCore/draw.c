@@ -50,6 +50,7 @@
 #include "MagickCore/artifact.h"
 #include "MagickCore/blob.h"
 #include "MagickCore/cache.h"
+#include "MagickCore/cache-private.h"
 #include "MagickCore/cache-view.h"
 #include "MagickCore/channel.h"
 #include "MagickCore/color.h"
@@ -4315,6 +4316,8 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
         draw_info->affine.rx,draw_info->affine.ry,draw_info->affine.sy,
         draw_info->affine.tx,draw_info->affine.ty);
     }
+  if (SyncImagePixelCache(image,exception) == MagickFalse)
+    return(MagickFalse);
   if ((IsGrayColorspace(image->colorspace) != MagickFalse) &&
       ((IsPixelInfoGray(&draw_info->fill) == MagickFalse) ||
        (IsPixelInfoGray(&draw_info->stroke) == MagickFalse)))

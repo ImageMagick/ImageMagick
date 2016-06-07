@@ -46,6 +46,7 @@
 #include "MagickCore/annotate.h"
 #include "MagickCore/annotate-private.h"
 #include "MagickCore/attribute.h"
+#include "MagickCore/cache-private.h"
 #include "MagickCore/cache-view.h"
 #include "MagickCore/channel.h"
 #include "MagickCore/client.h"
@@ -1482,8 +1483,10 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   if (annotate_info->dash_pattern != (double *) NULL)
     annotate_info->dash_pattern[0]=0.0;
   (void) CloneString(&annotate_info->primitive,"path '");
+  status=MagickTrue;
   if (draw_info->render != MagickFalse)
     {
+      status=SyncImagePixelCache(image,exception);
       if (image->storage_class != DirectClass)
         (void) SetImageStorageClass(image,DirectClass,exception);
       if (image->alpha_trait == UndefinedPixelTrait)
@@ -1503,7 +1506,6 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
       if (utf8 != (unsigned char *) NULL)
         p=(char *) utf8;
     }
-  status=MagickTrue;
   grapheme=(GraphemeInfo *) NULL;
   length=ComplexTextLayout(image,draw_info,p,strlen(p),face,flags,&grapheme,
     exception);
