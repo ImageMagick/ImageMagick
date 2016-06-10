@@ -91,6 +91,8 @@
   Define declarations.
 */
 #define BezierQuantum  200
+#define DrawEpsilon  (1.0e-6)
+
 
 /*
   Typedef declarations.
@@ -4747,10 +4749,10 @@ static void DrawRoundLinecap(Image *image,const DrawInfo *draw_info,
   for (i=0; i < 4; i++)
     linecap[i]=(*primitive_info);
   linecap[0].coordinates=4;
-  linecap[1].point.x+=(double) (10.0*MagickEpsilon);
-  linecap[2].point.x+=(double) (10.0*MagickEpsilon);
-  linecap[2].point.y+=(double) (10.0*MagickEpsilon);
-  linecap[3].point.y+=(double) (10.0*MagickEpsilon);
+  linecap[1].point.x+=DrawEpsilon;
+  linecap[2].point.x+=DrawEpsilon;
+  linecap[2].point.y+=DrawEpsilon;
+  linecap[3].point.y+=DrawEpsilon;
   linecap[4].primitive=UndefinedPrimitive;
   (void) DrawPolygonPrimitive(image,draw_info,linecap);
 }
@@ -5873,8 +5875,6 @@ static void TraceSquareLinecap(PrimitiveInfo *primitive_info,
 
 static inline double DrawEpsilonReciprocal(const double x)
 {
-#define DrawEpsilon  (1.0e-6)
-
   double sign = x < 0.0 ? -1.0 : 1.0;
   return((sign*x) >= DrawEpsilon ? 1.0/x : sign*(1.0/DrawEpsilon));
 }
