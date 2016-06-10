@@ -1,9 +1,11 @@
+2016-06-09  6.9.4-9 Cristy  <quetzlzacatenango@image...>
+  * Backoff finite precision epsilon (reference
+    https://github.com/ImageMagick/ImageMagick/issues/215).
+
 2016-06-05  6.9.4-8 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 6.9.4-8, GIT revision 18406:ba4ad2d:20160607.
 
 2016-06-04  6.9.4-8 Cristy  <quetzlzacatenango@image...>
-  * Deny indirect reads by policy, remove policy to permit, e.g.,
-	  convert caption:@mytext.txt ...
   * RLE check for pixel offset less than 0 (heap overflow report from Craig
     Young).
   * Properly initialze PES blocks (reference
