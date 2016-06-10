@@ -1,3 +1,7 @@
+2016-06-09  7.0.2-0 Cristy  <quetzlzacatenango@image...>
+  * Backoff finite precision epsilon (reference
+    https://github.com/ImageMagick/ImageMagick/issues/215).
+
 2016-06-05  7.0.1-10 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.1-10, GIT revision 18406:ba4ad2d:20160607.
 
