@@ -1503,7 +1503,7 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
     status;
 
   static MagickSizeType
-    cache_timelimit = 0,
+    cache_timelimit = MagickResourceInfinity,
     cpu_throttle = MagickResourceInfinity,
     cycles = 0;
 
@@ -1522,12 +1522,12 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
     }
   if ((cache_timelimit != MagickResourceInfinity) &&
       ((MagickSizeType) (time((time_t *) NULL)-cache_epoch) >= cache_timelimit))
-     {
+    {
 #if defined(ECANCELED)
-       errno=ECANCELED;
+      errno=ECANCELED;
 #endif
-       ThrowFatalException(ResourceLimitFatalError,"TimeLimitExceeded");
-     }
+      ThrowFatalException(ResourceLimitFatalError,"TimeLimitExceeded");
+    }
   LockSemaphoreInfo(image->semaphore);
   assert(image->cache != (Cache) NULL);
   cache_info=(CacheInfo *) image->cache;
