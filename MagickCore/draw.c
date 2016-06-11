@@ -432,10 +432,10 @@ static void LogPolygonInfo(const PolygonInfo *polygon_info)
     (void) LogMagickEvent(DrawEvent,GetMagickModule(),"      ghostline: %s",
       p->ghostline != MagickFalse ? "transparent" : "opaque");
     (void) LogMagickEvent(DrawEvent,GetMagickModule(),
-      "      bounds: %g %g - %g %g",p->bounds.x1,p->bounds.y1,
+      "      bounds: %g,%g - %g,%g",p->bounds.x1,p->bounds.y1,
       p->bounds.x2,p->bounds.y2);
     for (j=0; j < (ssize_t) p->number_points; j++)
-      (void) LogMagickEvent(DrawEvent,GetMagickModule(),"        %g %g",
+      (void) LogMagickEvent(DrawEvent,GetMagickModule(),"        %g,%g",
         p->points[j].x,p->points[j].y);
     p++;
   }
@@ -699,7 +699,7 @@ static void LogPathInfo(const PathInfo *path_info)
   (void) LogMagickEvent(DrawEvent,GetMagickModule(),"    begin vector-path");
   for (p=path_info; p->code != EndCode; p++)
     (void) LogMagickEvent(DrawEvent,GetMagickModule(),
-      "      %g %g %s",p->point.x,p->point.y,p->code == GhostlineCode ?
+      "      %g,%g %s",p->point.x,p->point.y,p->code == GhostlineCode ?
       "moveto ghostline" : p->code == OpenCode ? "moveto open" :
       p->code == MoveToCode ? "moveto" : p->code == LineToCode ? "lineto" :
       "?");
@@ -4314,7 +4314,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
       (void) LogMagickEvent(DrawEvent,GetMagickModule(),
         "  begin draw-primitive");
       (void) LogMagickEvent(DrawEvent,GetMagickModule(),
-        "    affine: %g %g %g %g %g %g",draw_info->affine.sx,
+        "    affine: %g,%g,%g,%g,%g,%g",draw_info->affine.sx,
         draw_info->affine.rx,draw_info->affine.ry,draw_info->affine.sy,
         draw_info->affine.tx,draw_info->affine.ty);
     }
@@ -6023,8 +6023,28 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
   }
   if (n == (ssize_t) number_vertices)
     n=(ssize_t) number_vertices-1L;
-  slope.p=DrawEpsilonReciprocal(dx.p)*dy.p;
-  inverse_slope.p=(-1.0*DrawEpsilonReciprocal(slope.p));
+  slope.p=0.0;
+  inverse_slope.p=0.0;
+  if (fabs(dx.p) < MagickEpsilon)
+    {
+      if (dx.p >= 0.0)
+        slope.p=dy.p < 0.0 ? -1.0/MagickEpsilon : 1.0/MagickEpsilon;
+      else
+        slope.p=dy.p < 0.0 ? 1.0/MagickEpsilon : -1.0/MagickEpsilon;
+    }
+  else
+    if (fabs(dy.p) < MagickEpsilon)
+      {
+        if (dy.p >= 0.0)
+          inverse_slope.p=dx.p < 0.0 ? -1.0/MagickEpsilon : 1.0/MagickEpsilon;
+        else
+          inverse_slope.p=dx.p < 0.0 ? 1.0/MagickEpsilon : -1.0/MagickEpsilon;
+      }
+    else
+      {
+        slope.p=dy.p/dx.p;
+        inverse_slope.p=(-1.0/slope.p);
+      }
   mid=ExpandAffine(&draw_info->affine)*draw_info->stroke_width/2.0;
   miterlimit=(double) (draw_info->miterlimit*draw_info->miterlimit*
     mid*mid);
@@ -6071,8 +6091,28 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
     dot_product=dx.q*dx.q+dy.q*dy.q;
     if (dot_product < 0.25)
       continue;
-    slope.q=DrawEpsilonReciprocal(dx.q)*dy.q;
-    inverse_slope.q=(-1.0*DrawEpsilonReciprocal(slope.q));
+    slope.q=0.0;
+    inverse_slope.q=0.0;
+    if (fabs(dx.q) < MagickEpsilon)
+      { 
+        if (dx.q >= 0.0) 
+          slope.q=dy.q < 0.0 ? -1.0/MagickEpsilon : 1.0/MagickEpsilon;
+        else
+          slope.q=dy.q < 0.0 ? 1.0/MagickEpsilon : -1.0/MagickEpsilon;
+      }
+    else 
+      if (fabs(dy.q) < MagickEpsilon)
+        { 
+          if (dy.q >= 0.0)
+            inverse_slope.q=dx.q < 0.0 ? -1.0/MagickEpsilon : 1.0/MagickEpsilon;
+          else
+            inverse_slope.q=dx.q < 0.0 ? 1.0/MagickEpsilon : -1.0/MagickEpsilon;
+        }
+      else
+        { 
+          slope.q=dy.q/dx.q;
+          inverse_slope.q=(-1.0/slope.q);
+        }
     offset.x=sqrt((double) (mid*mid/(inverse_slope.q*inverse_slope.q+1.0)));
     offset.y=(double) (offset.x*inverse_slope.q);
     dot_product=dy.q*offset.x-dx.q*offset.y;
