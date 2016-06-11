@@ -141,6 +141,11 @@ static PixelPacket
     const RectangleInfo *,const MagickBooleanType,NexusInfo *,ExceptionInfo *)
     magick_hot_spot;
 
+#if defined(MAGICKCORE_OPENCL_SUPPORT)
+static void
+  CopyOpenCLBuffer(CacheInfo *magick_restrict cache_info);
+#endif
+
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif
@@ -949,76 +954,6 @@ static MagickBooleanType ClonePixelCacheRepository(
     }
   return(status);
 }
-
-#if defined(MAGICKCORE_OPENCL_SUPPORT)
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   C o p y O p e n C L B u f f e r                                           %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  CopyOpenCLBuffer() ensures all the OpenCL operations have been completed and
-%  updates the host memory.
-%
-%  The format of the CopyOpenCLBuffer() method is:
-%
-%      void CopyOpenCLBuffer(CacheInfo *magick_restrict cache_info)
-%
-%  A description of each parameter follows:
-%
-%    o cache_info: the pixel cache.
-%
-%    o event_count: will be set to the number of events.
-%
-*/
-static void CopyOpenCLBuffer(CacheInfo *magick_restrict cache_info)
-{
-  MagickCLEnv
-    clEnv;
-
-  assert(cache_info != (CacheInfo *) NULL);
-  if ((cache_info->type != MemoryCache) ||
-      (cache_info->opencl == (OpenCLCacheInfo *) NULL))
-    return;
-  /*
-    Ensure single threaded access to OpenCL environment.
-  */
-  LockSemaphoreInfo(cache_info->semaphore);
-  if (cache_info->opencl != (OpenCLCacheInfo *) NULL)
-    {
-      clEnv=GetDefaultOpenCLEnv();
-      if (cache_info->opencl->event_count > 0)
-        {
-          cl_command_queue
-            queue;
-
-          cl_context
-            context;
-
-          cl_int
-            status;
-
-          PixelPacket
-            *pixels;
-
-          context=GetOpenCLContext(clEnv);
-          queue=AcquireOpenCLCommandQueue(clEnv);
-          pixels=(PixelPacket *) clEnv->library->clEnqueueMapBuffer(queue,
-            cache_info->opencl->buffer,CL_TRUE,CL_MAP_READ | CL_MAP_WRITE,0,
-            cache_info->length,cache_info->opencl->event_count,
-            cache_info->opencl->events,NULL,&status);
-          assert(pixels == cache_info->pixels);
-        }
-      cache_info->opencl=RelinquishOpenCLCacheInfo(clEnv,cache_info->opencl);
-    }
-  UnlockSemaphoreInfo(cache_info->semaphore);
-}
-#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -5344,6 +5279,84 @@ MagickExport VirtualPixelMethod SetPixelCacheVirtualMethod(const Image *image,
     }
   return(method);
 }
+
+#if defined(MAGICKCORE_OPENCL_SUPPORT)
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   S y n c A u t h e n t i c O p e n C L B u f f e r                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SyncAuthenticOpenCLBuffer() ensures all the OpenCL operations have been
+%  completed and updates the host memory.
+%
+%  The format of the SyncAuthenticOpenCLBuffer() method is:
+%
+%      void SyncAuthenticOpenCLBuffer(const Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+*/
+static void CopyOpenCLBuffer(CacheInfo *magick_restrict cache_info)
+{
+  MagickCLEnv
+    clEnv;
+
+  assert(cache_info != (CacheInfo *)NULL);
+  if ((cache_info->type != MemoryCache) ||
+    (cache_info->opencl == (OpenCLCacheInfo *)NULL))
+    return;
+  /*
+  Ensure single threaded access to OpenCL environment.
+  */
+  LockSemaphoreInfo(cache_info->semaphore);
+  if (cache_info->opencl != (OpenCLCacheInfo *)NULL)
+  {
+    clEnv = GetDefaultOpenCLEnv();
+    if (cache_info->opencl->event_count > 0)
+    {
+      cl_command_queue
+        queue;
+
+      cl_context
+        context;
+
+      cl_int
+        status;
+
+      PixelPacket
+        *pixels;
+
+      context = GetOpenCLContext(clEnv);
+      queue = AcquireOpenCLCommandQueue(clEnv);
+      pixels = (PixelPacket *)clEnv->library->clEnqueueMapBuffer(queue,
+        cache_info->opencl->buffer, CL_TRUE, CL_MAP_READ | CL_MAP_WRITE, 0,
+        cache_info->length, cache_info->opencl->event_count,
+        cache_info->opencl->events, NULL, &status);
+      assert(pixels == cache_info->pixels);
+    }
+    cache_info->opencl = RelinquishOpenCLCacheInfo(clEnv, cache_info->opencl);
+  }
+  UnlockSemaphoreInfo(cache_info->semaphore);
+}
+
+MagickPrivate void SyncAuthenticOpenCLBuffer(const Image *image)
+{
+  CacheInfo
+    *magick_restrict cache_info;
+
+  assert(image != (Image *)NULL);
+  cache_info = (CacheInfo *)image->cache;
+  CopyOpenCLBuffer(cache_info);
+}
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

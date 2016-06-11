@@ -156,11 +156,12 @@ MagickExport CacheView *AcquireVirtualCacheView(const Image *image,
   CacheView
     *magick_restrict cache_view;
 
+  magick_unreferenced(image);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  (void) exception;
+  SyncAuthenticOpenCLBuffer(image);
   cache_view=(CacheView *) MagickAssumeAligned(AcquireAlignedMemory(1,
     sizeof(*cache_view)));
   if (cache_view == (CacheView *) NULL)

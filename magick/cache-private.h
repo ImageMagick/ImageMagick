@@ -299,7 +299,8 @@ extern MagickPrivate cl_mem
   GetAuthenticOpenCLBuffer(const Image *,ExceptionInfo *);
 
 extern MagickPrivate void
-  AddOpenCLEvent(const Image *,cl_event);
+  AddOpenCLEvent(const Image *,cl_event),
+  SyncAuthenticOpenCLBuffer(const Image *);
 #endif
 
 #if defined(__cplusplus) || defined(c_plusplus)
