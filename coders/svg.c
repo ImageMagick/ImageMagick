@@ -3214,6 +3214,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     }
   (void) xmlParseChunk(svg_info->parser,(char *) message,0,1);
+  SVGEndDocument(svg_info);
   xmlFreeParserCtxt(svg_info->parser);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),"end SAX");
