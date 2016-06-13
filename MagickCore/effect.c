@@ -785,9 +785,11 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
+#if defined(MAGICKCORE_OPENCL_SUPPORT)
   blur_image=AccelerateBlurImage(image,radius,sigma,exception);
   if (blur_image != (Image *) NULL)
     return(blur_image);
+#endif
   (void) FormatLocaleString(geometry,MagickPathExtent,
     "blur:%.20gx%.20g;blur:%.20gx%.20g+90",radius,sigma,radius,sigma);
   kernel_info=AcquireKernelInfo(geometry,exception);
@@ -831,9 +833,11 @@ MagickExport Image *ConvolveImage(const Image *image,
   Image
     *convolve_image;
 
+#if defined(MAGICKCORE_OPENCL_SUPPORT)
   convolve_image=AccelerateConvolveImage(image,kernel_info,exception);
   if (convolve_image != (Image *) NULL)
     return(convolve_image);
+#endif
 
   convolve_image=MorphologyImage(image,ConvolveMorphology,1,kernel_info,
     exception);
@@ -1007,9 +1011,11 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
+#if defined(MAGICKCORE_OPENCL_SUPPORT)
   despeckle_image=AccelerateDespeckleImage(image,exception);
   if (despeckle_image != (Image *) NULL)
     return(despeckle_image);
+#endif
   despeckle_image=CloneImage(image,0,0,MagickTrue,exception);
   if (despeckle_image == (Image *) NULL)
     return((Image *) NULL);
@@ -1706,9 +1712,11 @@ MagickExport Image *LocalContrastImage(const Image *image,const double radius,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
+#if defined(MAGICKCORE_OPENCL_SUPPORT)
   contrast_image=AccelerateLocalContrastImage(image,radius,strength,exception);
   if (contrast_image != (Image *) NULL)
     return(contrast_image);
+#endif
   contrast_image=CloneImage(image,0,0,MagickTrue,exception);
   if (contrast_image == (Image *) NULL)
     return((Image *) NULL);
@@ -2808,9 +2816,11 @@ MagickExport Image *RotationalBlurImage(const Image *image,const double angle,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
+#if defined(MAGICKCORE_OPENCL_SUPPORT)
   blur_image=AccelerateRotationalBlurImage(image,angle,exception);
   if (blur_image != (Image *) NULL)
     return(blur_image);
+#endif
   blur_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
   if (blur_image == (Image *) NULL)
     return((Image *) NULL);
@@ -3903,10 +3913,12 @@ MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
+#if defined(MAGICKCORE_OPENCL_SUPPORT)
   unsharp_image=AccelerateUnsharpMaskImage(image,radius,sigma,gain,threshold,
     exception);
   if (unsharp_image != (Image *) NULL)
     return(unsharp_image);
+#endif
   unsharp_image=BlurImage(image,radius,sigma,exception);
   if (unsharp_image == (Image *) NULL)
     return((Image *) NULL);

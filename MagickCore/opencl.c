@@ -43,6 +43,7 @@
 #include "MagickCore/studio.h"
 #include "MagickCore/artifact.h"
 #include "MagickCore/cache.h"
+#include "MagickCore/cache-private.h"
 #include "MagickCore/color.h"
 #include "MagickCore/compare.h"
 #include "MagickCore/constitute.h"
@@ -145,38 +146,6 @@ static void
 extern const char
   *accelerateKernels, *accelerateKernels2;
 
-/*
-  static declarations.
-*/
-static const char *kernelNames[] =
-{
-  "AddNoise",
-  "BlurColumn",
-  "BlurRow",
-  "Composite",
-  "Contrast",
-  "ContrastStretch",
-  "Convolve",
-  "ConvolveOptimized",
-  "ComputeFunction",
-  "Equalize",
-  "GrayScale",
-  "Histogram",
-  "HullPass1",
-  "HullPass2",
-  "LocalContrastBlurApplyColumn",
-  "LocalContrastBlurRow",
-  "Modulate",
-  "MotionBlur",
-  "ResizeHorizontal",
-  "ResizeVertical",
-  "RotationalBlur",
-  "UnsharpMask",
-  "UnsharpMaskBlurColumn",
-  "WaveletDenoise",
-  "NONE"
-};
-
 /* OpenCL library */
 MagickLibrary
   *openCL_library;
@@ -187,7 +156,7 @@ MagickCLEnv
 MagickThreadType
   test_thread_id=0;
 SemaphoreInfo
-  *default_CLEnv_Lock;
+  *openCL_lock;
 
 /* Cached location of the OpenCL cache files */
 char
@@ -464,6 +433,99 @@ static size_t StringSignature(const char* string)
   return(signature);
 }
 
+static MagickCLCacheInfo DestroyMagickCLCacheInfo(MagickCLCacheInfo info)
+{
+  ssize_t
+    i;
+
+  for (i=0; i < (ssize_t) info->event_count; i++)
+    openCL_library->clReleaseEvent(info->events[i]);
+  info->events=RelinquishMagickMemory(info->events);
+  if (info->buffer != (cl_mem) NULL)
+    {
+      openCL_library->clReleaseMemObject(info->buffer);
+      info->buffer=(cl_mem) NULL;
+    }
+  ReleaseOpenCLDevice(info->device);
+  return((MagickCLCacheInfo) RelinquishMagickMemory(info));
+}
+
+/*
+  Provide call to OpenCL library methods
+*/
+
+MagickPrivate cl_mem CreateOpenCLBuffer(MagickCLDevice device,
+  cl_mem_flags flags, size_t size, void *host_ptr)
+{
+  return(openCL_library->clCreateBuffer(device->context, flags, size, host_ptr,
+    (cl_int *) NULL));
+}
+
+MagickPrivate void ReleaseOpenCLKernel(cl_kernel kernel)
+{
+  (void) openCL_library->clReleaseKernel(kernel);
+}
+
+MagickPrivate void ReleaseOpenCLMemObject(cl_mem memobj)
+{
+  (void) openCL_library->clReleaseMemObject(memobj);
+}
+
+MagickPrivate cl_int SetOpenCLKernelArg(cl_kernel kernel,cl_uint arg_index,
+  size_t arg_size,const void *arg_value)
+{
+  return(openCL_library->clSetKernelArg(kernel,arg_index,arg_size,arg_value));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   A c q u i r e M a g i c k C L C a c h e I n f o                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  AcquireMagickCLCacheInfo() acquires an OpenCL cache info structure.
+%
+%  The format of the AcquireMagickCLCacheInfo method is:
+%
+%      MagickCLCacheInfo AcquireMagickCLCacheInfo(MagickCLDevice device,
+%        Quantum *pixels,const MagickSizeType length)
+%
+%  A description of each parameter follows:
+%
+%    o device: the OpenCL device.
+%
+%    o pixels: the pixel buffer of the image.
+%
+%    o length: the length of the pixel buffer.
+%
+*/
+
+MagickPrivate MagickCLCacheInfo AcquireMagickCLCacheInfo(MagickCLDevice device,
+  Quantum *pixels,const MagickSizeType length)
+{
+  MagickCLCacheInfo
+    info;
+
+  info=(MagickCLCacheInfo) AcquireMagickMemory(sizeof(*info));
+  if (info == (MagickCLCacheInfo) NULL)
+    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+  (void) ResetMagickMemory(info,0,sizeof(*info));
+  LockSemaphoreInfo(openCL_lock);
+  device->requested++;
+  UnlockSemaphoreInfo(openCL_lock);
+  info->device=device;
+  info->length=length;
+  info->pixels=pixels;
+  info->buffer=openCL_library->clCreateBuffer(device->context,
+    CL_MEM_USE_HOST_PTR,(size_t) length,(void *) pixels,NULL);
+  return(info);
+}
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -542,7 +604,7 @@ static MagickCLEnv AcquireMagickCLEnv(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   A c q u i r e O p e n C L C o m m a n d Q u e u e                         %
++   A c q u i r e O p e n C L C o m m a n d Q u e u e                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -593,7 +655,7 @@ MagickPrivate cl_command_queue AcquireOpenCLCommandQueue(MagickCLDevice device)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   A c q u i r e O p e n C L K e r n e l                                     %
++   A c q u i r e O p e n C L K e r n e l                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -953,7 +1015,7 @@ static void AutoSelectOpenCLDevices(MagickCLEnv clEnv,ExceptionInfo *exception)
 %    o exception: return any errors or warnings
 */
 
-static double RunOpenCLBenchmark()
+static double RunOpenCLBenchmark(MagickBooleanType is_cpu)
 {
   AccelerateTimer
     timer;
@@ -994,6 +1056,21 @@ static double RunOpenCLBenchmark()
     resizedImage=ResizeImage(unsharpedImage,640,480,LanczosFilter,
       exception);
 
+    /* 
+      We need this to get a proper performance benchmark, the operations
+      are executed asynchronous.
+    */
+    if (is_cpu == MagickFalse)
+      {
+        CacheInfo
+          *cache_info;
+
+        cache_info=(CacheInfo *) resizedImage->cache;
+        if (cache_info->opencl != (MagickCLCacheInfo) NULL)
+          openCL_library->clWaitForEvents(cache_info->opencl->event_count,
+            cache_info->opencl->events);
+      }
+
     if (i > 0)
       StopAccelerateTimer(&timer);
 
@@ -1013,7 +1090,7 @@ static void RunDeviceBenckmark(MagickCLEnv clEnv,MagickCLEnv testEnv,
 {
   testEnv->devices[0]=device;
   default_CLEnv=testEnv;
-  device->score=RunOpenCLBenchmark();
+  device->score=RunOpenCLBenchmark(MagickFalse);
   default_CLEnv=clEnv;
   testEnv->devices[0]=(MagickCLDevice) NULL;
 }
@@ -1117,7 +1194,7 @@ static void BenchmarkOpenCLDevices(MagickCLEnv clEnv)
 
   testEnv->enabled=MagickFalse;
   default_CLEnv=testEnv;
-  clEnv->cpu_score=RunOpenCLBenchmark();
+  clEnv->cpu_score=RunOpenCLBenchmark(MagickTrue);
   default_CLEnv=clEnv;
 
   testEnv=RelinquishMagickCLEnv(testEnv);
@@ -1307,7 +1384,48 @@ static MagickBooleanType CompileOpenCLKernel(MagickCLDevice device,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D u m p O p e n C L P r o f i l e D a t a                                 %
++   C o p y M a g i c k C L C a c h e I n f o                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  CopyMagickCLCacheInfo() copies the memory from the device into host memory.
+%
+%  The format of the CopyMagickCLCacheInfo method is:
+%
+%      void CopyMagickCLCacheInfo(MagickCLCacheInfo info)
+%
+%  A description of each parameter follows:
+%
+%    o info: the OpenCL cache info.
+%
+*/
+MagickPrivate MagickCLCacheInfo CopyMagickCLCacheInfo(MagickCLCacheInfo info)
+{
+  cl_command_queue
+    queue;
+
+  Quantum
+    *pixels;
+
+  if (info == (MagickCLCacheInfo) NULL || info->event_count == 0)
+    return((MagickCLCacheInfo) NULL);
+  queue=AcquireOpenCLCommandQueue(info->device);
+  pixels=openCL_library->clEnqueueMapBuffer(queue,info->buffer,CL_TRUE,
+    CL_MAP_READ | CL_MAP_WRITE,0,info->length,info->event_count,info->events,
+    NULL,NULL);
+  assert(pixels == info->pixels);
+  RelinquishOpenCLCommandQueue(info->device,queue);
+  return(RelinquishMagickCLCacheInfo(info,MagickFalse));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   D u m p O p e n C L P r o f i l e D a t a                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1379,8 +1497,8 @@ MagickPrivate void DumpOpenCLProfileData()
 
       profile=device->profile_records[j];
       strcpy(indent,"                    ");
-      strncpy(indent,kernelNames[j],MagickMin(strlen(kernelNames[j]),
-        strlen(indent)-1));
+      strncpy(indent,profile->kernel_name,MagickMin(strlen(
+        profile->kernel_name),strlen(indent)-1));
       sprintf(buf,"%s %7d %7d %7d %7d",indent,(int) (profile->total/
         profile->count),(int) profile->count,(int) profile->min,
         (int) profile->max);
@@ -1392,13 +1510,158 @@ MagickPrivate void DumpOpenCLProfileData()
   }
   fclose(log);
 }
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   E n q u e u e O p e n C L K e r n e l                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  EnqueueOpenCLKernel() enques the specified kernel and registers the OpenCL
+%  events with the images.
+%
+%  The format of the EnqueueOpenCLKernel method is:
+%
+%      MagickBooleanType EnqueueOpenCLKernel(cl_kernel kernel,cl_uint work_dim,
+%        const size_t *global_work_offset,const size_t *global_work_size,
+%        const size_t *local_work_size,const Image *input_image,
+%        const Image *output_image,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o kernel: the OpenCL kernel.
+%
+%    o work_dim: the number of dimensions used to specify the global work-items
+%                and work-items in the work-group.
+%
+%    o offset: can be used to specify an array of work_dim unsigned values
+%              that describe the offset used to calculate the global ID of a
+%              work-item.
+%
+%    o gsize: points to an array of work_dim unsigned values that describe the
+%             number of global work-items in work_dim dimensions that will
+%             execute the kernel function.
+%
+%    o lsize: points to an array of work_dim unsigned values that describe the
+%             number of work-items that make up a work-group that will execute
+%             the kernel specified by kernel.
+%
+%    o input_image: the input image of the operation.
+%
+%    o output_image: the output or secondairy image of the operation.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+
+extern void RegisterCacheEvent(MagickCLCacheInfo info,cl_event event)
+{
+  assert(info != (MagickCLCacheInfo) NULL);
+  assert(event != (cl_event) NULL);
+  if (info->events == (cl_event *) NULL)
+    {
+      info->events=AcquireMagickMemory(sizeof(*info->events));
+      info->event_count=1;
+    }
+  else
+    info->events=ResizeQuantumMemory(info->events,++info->event_count,
+      sizeof(*info->events));
+  if (info->events == (cl_event *) NULL)
+    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+  info->events[info->event_count-1]=event;
+  openCL_library->clRetainEvent(event);
+}
+
+MagickPrivate MagickBooleanType EnqueueOpenCLKernel(cl_kernel kernel,
+  cl_uint work_dim,const size_t *offset,const size_t *gsize,
+  const size_t *lsize,const Image *input_image,const Image *output_image,
+  ExceptionInfo *exception)
+{
+  CacheInfo
+    *output_info,
+    *input_info;
+
+  cl_command_queue
+    queue;
+
+  cl_event
+    event,
+    *events;
+
+  cl_int
+    status;
+
+  cl_uint
+    event_count;
+
+  assert(input_image != (const Image *) NULL);
+  input_info=(CacheInfo *) input_image->cache;
+  assert(input_info != (CacheInfo *) NULL);
+  assert(input_info->opencl != (MagickCLCacheInfo) NULL);
+  queue=AcquireOpenCLCommandQueue(input_info->opencl->device);
+  if (queue == (cl_command_queue) NULL)
+    return(MagickFalse);
+  event_count=input_info->opencl->event_count;
+  events=input_info->opencl->events;
+  output_info=(CacheInfo *) NULL;
+  if (output_image != (const Image *) NULL)
+    {
+      output_info=(CacheInfo *) output_image->cache;
+      assert(output_info != (CacheInfo *) NULL);
+      assert(output_info->opencl != (MagickCLCacheInfo) NULL);
+      if (output_info->opencl->event_count > 0)
+        {
+          ssize_t
+            i;
+
+          event_count+=output_info->opencl->event_count;
+          events=AcquireQuantumMemory(event_count,sizeof(*events));
+          if (events == (cl_event *) NULL)
+            {
+              RelinquishOpenCLCommandQueue(input_info->opencl->device,queue);
+              return(MagickFalse);
+            }
+          for (i=0; i < (ssize_t) event_count; i++)
+          {
+            if (i < input_info->opencl->event_count)
+              events[i]=input_info->opencl->events[i];
+            else
+              events[i]=output_info->opencl->events[i-
+                input_info->opencl->event_count];
+          }
+        }
+    }
+  status=openCL_library->clEnqueueNDRangeKernel(queue,kernel,work_dim,offset,
+    gsize,lsize,event_count,events,&event);
+  RelinquishOpenCLCommandQueue(input_info->opencl->device,queue);
+  if ((output_info != (CacheInfo *) NULL) &&
+      (output_info->opencl->event_count > 0))
+    events=(cl_event *) RelinquishMagickMemory(events);
+  if (status != CL_SUCCESS)
+    {
+      (void) OpenCLThrowMagickException(input_info->opencl->device,exception,
+      GetMagickModule(),ResourceLimitWarning,"clEnqueueNDRangeKernel failed.",
+      "'%s'",".");
+      return(MagickFalse);
+    }
+  RegisterCacheEvent(input_info->opencl,event);
+  if (output_info != (CacheInfo *) NULL)
+    RegisterCacheEvent(output_info->opencl,event);
+  RecordProfileData(input_info->opencl->device,kernel,event);
+  openCL_library->clReleaseEvent(event);
+  return(MagickTrue);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t C u r r u n t O p e n C L E n v                                     %
++   G e t C u r r u n t O p e n C L E n v                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1423,13 +1686,13 @@ MagickPrivate MagickCLEnv GetCurrentOpenCLEnv(void)
       return(default_CLEnv);
   }
 
-  if (default_CLEnv_Lock == (SemaphoreInfo *) NULL)
-    ActivateSemaphoreInfo(&default_CLEnv_Lock);
+  if (openCL_lock == (SemaphoreInfo *) NULL)
+    ActivateSemaphoreInfo(&openCL_lock);
 
-  LockSemaphoreInfo(default_CLEnv_Lock);
+  LockSemaphoreInfo(openCL_lock);
   if (default_CLEnv == (MagickCLEnv) NULL)
     default_CLEnv=AcquireMagickCLEnv();
-  UnlockSemaphoreInfo(default_CLEnv_Lock);
+  UnlockSemaphoreInfo(openCL_lock);
 
   return(default_CLEnv);
 }
@@ -1826,7 +2089,7 @@ static MagickBooleanType HasOpenCLDevices(MagickCLEnv clEnv,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   I n i t i a l i z e O p e n C L                                           %
++   I n i t i a l i z e O p e n C L                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -2117,9 +2380,12 @@ static MagickBooleanType BindOpenCLFunctions()
   BIND(clEnqueueUnmapMemObject);
   BIND(clEnqueueNDRangeKernel);
 
-  BIND(clGetEventProfilingInfo);
   BIND(clWaitForEvents);
   BIND(clReleaseEvent);
+  BIND(clRetainEvent);
+  BIND(clSetEventCallback);
+
+  BIND(clGetEventProfilingInfo);
 
   BIND(clFinish);
 
@@ -2146,7 +2412,7 @@ static MagickBooleanType LoadOpenCLLibrary(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   O p e n C L T e r m i n u s                                               %
++   O p e n C L T e r m i n u s                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -2169,8 +2435,8 @@ MagickPrivate void OpenCLTerminus()
     RelinquishSemaphoreInfo(&cache_directory_lock);
   if (default_CLEnv != (MagickCLEnv) NULL)
     default_CLEnv=RelinquishMagickCLEnv(default_CLEnv);
-  if (default_CLEnv_Lock != (SemaphoreInfo *) NULL)
-    RelinquishSemaphoreInfo(&default_CLEnv_Lock);
+  if (openCL_lock != (SemaphoreInfo *) NULL)
+    RelinquishSemaphoreInfo(&openCL_lock);
   if (openCL_library != (MagickLibrary *) NULL)
     openCL_library=(MagickLibrary *)RelinquishMagickMemory(openCL_library);
 }
@@ -2180,7 +2446,7 @@ MagickPrivate void OpenCLTerminus()
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   O p e n C L T h r o w M a g i c k E x c e p t i o n                       %
++   O p e n C L T h r o w M a g i c k E x c e p t i o n                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -2263,7 +2529,7 @@ MagickPrivate MagickBooleanType OpenCLThrowMagickException(
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e c o r d P r o f i l e D a t a                                         %
++   R e c o r d P r o f i l e D a t a                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -2306,17 +2572,11 @@ MagickPrivate void RecordProfileData(MagickCLDevice device,
     length;
 
   if (device->profile_kernels == MagickFalse)
-    {
-      openCL_library->clReleaseEvent(event);
-      return;
-    }
+    return;
   status=openCL_library->clGetKernelInfo(kernel,CL_KERNEL_FUNCTION_NAME,0,NULL,
     &length);
   if (status != CL_SUCCESS)
-    {
-      openCL_library->clReleaseEvent(event);
-      return;
-    }
+    return;
   name=AcquireQuantumMemory(length,sizeof(*name));
   (void) openCL_library->clGetKernelInfo(kernel,CL_KERNEL_FUNCTION_NAME,length,
     name,NULL);
@@ -2326,7 +2586,6 @@ MagickPrivate void RecordProfileData(MagickCLDevice device,
     CL_PROFILING_COMMAND_START,sizeof(cl_ulong),&start,NULL);
   status&=openCL_library->clGetEventProfilingInfo(event,
     CL_PROFILING_COMMAND_END,sizeof(cl_ulong),&end,NULL);
-  openCL_library->clReleaseEvent(event);
   if (status != CL_SUCCESS)
     {
       name=DestroyString(name);
@@ -2375,7 +2634,7 @@ MagickPrivate void RecordProfileData(MagickCLDevice device,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e l e a s e  M a g i c k C L D e v i c e                                %
++   R e l e a s e  M a g i c k C L D e v i c e                                %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -2385,21 +2644,75 @@ MagickPrivate void RecordProfileData(MagickCLDevice device,
 %
 %  The format of the ReleaseOpenCLDevice method is:
 %
-%      void ReleaseOpenCLDevice(MagickCLEnv clEnv,MagickCLDevice device)
+%      void ReleaseOpenCLDevice(MagickCLDevice device)
 %
 %  A description of each parameter follows:
-%
-%    o clEnv: the OpenCL environment.
 %
 %    o device: the OpenCL device to be released.
 %
 */
 
-MagickPrivate void ReleaseOpenCLDevice(MagickCLEnv clEnv,MagickCLDevice device)
+MagickPrivate void ReleaseOpenCLDevice(MagickCLDevice device)
 {
-  LockSemaphoreInfo(clEnv->lock);
+  assert(device != (MagickCLDevice) NULL);
+  LockSemaphoreInfo(openCL_lock);
   device->requested--;
-  UnlockSemaphoreInfo(clEnv->lock);
+  UnlockSemaphoreInfo(openCL_lock);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   R e l i n q u i s h M a g i c k C L C a c h e I n f o                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  RelinquishMagickCLCacheInfo() frees memory acquired with
+%  AcquireMagickCLCacheInfo()
+%
+%  The format of the RelinquishMagickCLCacheInfo method is:
+%
+%      MagickCLCacheInfo RelinquishMagickCLCacheInfo(MagickCLCacheInfo info,
+%        const MagickBooleanType relinquish_pixels)
+%
+%  A description of each parameter follows:
+%
+%    o info: the OpenCL cache info.
+%
+%    o relinquish_pixels: the pixels will be relinquish when set to true.
+%
+*/
+
+static void CL_API_CALL DestroyMagickCLCacheInfoDelayed(
+  cl_event magick_unused(event),cl_int magick_unused(event_command_exec_status),
+  void *user_data)
+{
+  MagickCLCacheInfo
+    info;
+
+  magick_unreferenced(event);
+  magick_unreferenced(event_command_exec_status);
+  info=(MagickCLCacheInfo) user_data;
+  (void) RelinquishAlignedMemory(info->pixels);
+  RelinquishMagickResource(MemoryResource,info->length);
+  DestroyMagickCLCacheInfo(info);
+}
+
+MagickPrivate MagickCLCacheInfo RelinquishMagickCLCacheInfo(
+  MagickCLCacheInfo info,const MagickBooleanType relinquish_pixels)
+{
+  if (info == (MagickCLCacheInfo) NULL)
+    return((MagickCLCacheInfo) NULL);
+  if (relinquish_pixels)
+    openCL_library->clSetEventCallback(info->events[info->event_count-1],
+      CL_COMPLETE,&DestroyMagickCLCacheInfoDelayed,info);
+  else
+    DestroyMagickCLCacheInfo(info);
+  return((MagickCLCacheInfo) NULL);
 }
 
 /*
@@ -2489,7 +2802,7 @@ static MagickCLEnv RelinquishMagickCLEnv(MagickCLEnv clEnv)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e l i n q u i s h O p e n C L C o m m a n d Q u e u e                   %
++   R e l i n q u i s h O p e n C L C o m m a n d Q u e u e                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -2521,15 +2834,16 @@ MagickPrivate void RelinquishOpenCLCommandQueue(MagickCLDevice device,
   LockSemaphoreInfo(device->lock);
   if ((device->profile_kernels != MagickFalse) ||
       (device->command_queues_index >= MAGICKCORE_OPENCL_COMMAND_QUEUES - 1))
-  {
-    UnlockSemaphoreInfo(device->lock);
-    (void)openCL_library->clReleaseCommandQueue(queue);
-  }
+    {
+      UnlockSemaphoreInfo(device->lock);
+      openCL_library->clFinish(queue);
+      (void) openCL_library->clReleaseCommandQueue(queue);
+    }
   else
-  {
-    device->command_queues[++device->command_queues_index] = queue;
-    UnlockSemaphoreInfo(device->lock);
-  }
+    {
+      device->command_queues[++device->command_queues_index] = queue;
+      UnlockSemaphoreInfo(device->lock);
+    }
 }
 
 /*
@@ -2537,37 +2851,7 @@ MagickPrivate void RelinquishOpenCLCommandQueue(MagickCLDevice device,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e l i n q u i s h O p e n C L K e r n e l                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  RelinquishOpenCLKernel() releases an OpenCL kernel
-%
-%  The format of the RelinquishOpenCLKernel method is:
-%
-%    void RelinquishOpenCLKernel(cl_kernel kernel)
-%
-%  A description of each parameter follows:
-%
-%    o kernel: the OpenCL kernel object to be released.
-%
-%
-*/
-
-MagickPrivate void RelinquishOpenCLKernel(cl_kernel kernel)
-{
-  if (kernel != (cl_kernel) NULL)
-    (void) openCL_library->clReleaseKernel(kernel);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   R e q u e s t O p e n C L D e v i c e                                     %
++   R e q u e s t O p e n C L D e v i c e                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -2609,7 +2893,7 @@ MagickPrivate MagickCLDevice RequestOpenCLDevice(MagickCLEnv clEnv)
 
   device=(MagickCLDevice) NULL;
   best_score=0.0;
-  LockSemaphoreInfo(clEnv->lock);
+  LockSemaphoreInfo(openCL_lock);
   for (i = 0; i < clEnv->number_devices; i++)
   {
     if (clEnv->devices[i]->enabled == MagickFalse)
@@ -2625,7 +2909,7 @@ MagickPrivate MagickCLDevice RequestOpenCLDevice(MagickCLEnv clEnv)
   }
   if (device != (MagickCLDevice)NULL)
     device->requested++;
-  UnlockSemaphoreInfo(clEnv->lock);
+  UnlockSemaphoreInfo(openCL_lock);
 
   return(device);
 }

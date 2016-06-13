@@ -887,8 +887,10 @@ MagickExport MagickBooleanType ContrastImage(Image *image,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
+#if defined(MAGICKCORE_OPENCL_SUPPORT)
   if (AccelerateContrastImage(image,sharpen,exception) != MagickFalse)
     return(MagickTrue);
+#endif
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   sign=sharpen != MagickFalse ? 1 : -1;
@@ -1525,8 +1527,10 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
+#if defined(MAGICKCORE_OPENCL_SUPPORT)
   if (AccelerateEqualizeImage(image,exception) != MagickFalse)
     return(MagickTrue);
+#endif
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   equalize_map=(double *) AcquireQuantumMemory(MaxMap+1UL,
@@ -1978,12 +1982,14 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
       if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
         return(MagickFalse);
     }
+#if defined(MAGICKCORE_OPENCL_SUPPORT)
   if (AccelerateGrayscaleImage(image,method,exception) != MagickFalse)
     {
       image->intensity=method;
       image->type=GrayscaleType;
       return(SetImageColorspace(image,GRAYColorspace,exception));
     }
+#endif
   /*
     Grayscale image.
   */
@@ -3274,9 +3280,11 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate,
   /*
     Modulate image.
   */
-  if(AccelerateModulateImage(image,percent_brightness,percent_hue,
-     percent_saturation,colorspace,exception) != MagickFalse)
+#if defined(MAGICKCORE_OPENCL_SUPPORT)
+  if (AccelerateModulateImage(image,percent_brightness,percent_hue,
+        percent_saturation,colorspace,exception) != MagickFalse)
     return(MagickTrue);
+#endif
   status=MagickTrue;
   progress=0;
   image_view=AcquireAuthenticCacheView(image,exception);

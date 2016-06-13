@@ -30,15 +30,28 @@ extern "C" {
 #endif
 
 #if !defined(MAGICKCORE_OPENCL_SUPPORT)
-  typedef void* cl_context;
-  typedef void* cl_command_queue;
-  typedef void* cl_device_id;
-  typedef void* cl_event;
-  typedef void* cl_kernel;
-  typedef void* cl_mem;
-  typedef void* cl_platform_id;
-  typedef void* cl_device_type;
+typedef void* MagickCLCacheInfo;
 #else
+typedef struct _MagickCLCacheInfo
+{
+  cl_event
+    *events;
+
+  cl_mem
+    buffer;
+
+  cl_uint
+    event_count;
+
+  MagickCLDevice
+    device;
+
+  MagickSizeType
+    length;
+
+  Quantum
+    *pixels;
+}* MagickCLCacheInfo;
 
 /*
   Define declarations.
@@ -184,12 +197,7 @@ typedef CL_API_ENTRY cl_int
     CL_API_SUFFIX__VERSION_1_0;
 
 
-/* Profiling APIs */
-typedef CL_API_ENTRY cl_int
-  (CL_API_CALL *MAGICKpfn_clGetEventProfilingInfo)(cl_event event,
-    cl_profiling_info param_name,size_t param_value_size,void *param_value,
-    size_t *param_value_size_ret) CL_API_SUFFIX__VERSION_1_0;
-
+/* Events APIs */
 typedef CL_API_ENTRY cl_int
   (CL_API_CALL *MAGICKpfn_clWaitForEvents)(cl_uint num_events,
     const cl_event *event_list) CL_API_SUFFIX__VERSION_1_0;
@@ -198,8 +206,24 @@ typedef CL_API_ENTRY cl_int
   (CL_API_CALL *MAGICKpfn_clReleaseEvent)(cl_event event)
     CL_API_SUFFIX__VERSION_1_0;
 
+typedef CL_API_ENTRY cl_int
+  (CL_API_CALL *MAGICKpfn_clRetainEvent)(cl_event event)
+    CL_API_SUFFIX__VERSION_1_0;
 
-/* Finish APIs, only here for GetAndLockRandSeedBuffer */
+typedef CL_API_ENTRY cl_int
+  (CL_API_CALL *MAGICKpfn_clSetEventCallback)(cl_event event,
+    cl_int command_exec_callback_type,void (CL_CALLBACK *MAGICKpfn_notify)(
+      cl_event,cl_int,void *),void *user_data) CL_API_SUFFIX__VERSION_1_1;
+
+
+/* Profiling APIs */
+typedef CL_API_ENTRY cl_int
+  (CL_API_CALL *MAGICKpfn_clGetEventProfilingInfo)(cl_event event,
+    cl_profiling_info param_name,size_t param_value_size,void *param_value,
+    size_t *param_value_size_ret) CL_API_SUFFIX__VERSION_1_0;
+
+
+/* Finish APIs */
 typedef CL_API_ENTRY cl_int
   (CL_API_CALL *MAGICKpfn_clFinish)(cl_command_queue command_queue)
     CL_API_SUFFIX__VERSION_1_0;
@@ -240,9 +264,12 @@ struct MagickLibraryRec
   MAGICKpfn_clEnqueueUnmapMemObject   clEnqueueUnmapMemObject;
   MAGICKpfn_clEnqueueNDRangeKernel    clEnqueueNDRangeKernel;
 
-  MAGICKpfn_clGetEventProfilingInfo   clGetEventProfilingInfo;
   MAGICKpfn_clWaitForEvents           clWaitForEvents;
   MAGICKpfn_clReleaseEvent            clReleaseEvent;
+  MAGICKpfn_clRetainEvent             clRetainEvent;
+  MAGICKpfn_clSetEventCallback        clSetEventCallback;
+
+  MAGICKpfn_clGetEventProfilingInfo   clGetEventProfilingInfo;
 
   MAGICKpfn_clFinish                  clFinish;
 };
@@ -296,7 +323,7 @@ struct _MagickCLDevice
     command_queues_index;
 };
 
-struct _MagickCLEnv
+typedef struct _MagickCLEnv
 {
   cl_context
     *contexts;
@@ -323,9 +350,7 @@ struct _MagickCLEnv
   size_t
     number_contexts,
     number_devices;
-};
-
-#endif
+} *MagickCLEnv;
 
 #if defined(MAGICKCORE_HDRI_SUPPORT)
 #define CLOptions "-cl-single-precision-constant -cl-mad-enable -DMAGICKCORE_HDRI_SUPPORT=1 "\
@@ -372,14 +397,27 @@ struct _MagickCLEnv
 extern MagickPrivate cl_command_queue
   AcquireOpenCLCommandQueue(MagickCLDevice);
 
+extern MagickPrivate cl_int
+  SetOpenCLKernelArg(cl_kernel,cl_uint,size_t,const void *);
+
 extern MagickPrivate cl_kernel
   AcquireOpenCLKernel(MagickCLDevice,const char *);
 
+extern MagickPrivate cl_mem
+  CreateOpenCLBuffer(MagickCLDevice,cl_mem_flags,size_t,void *);
+
 extern MagickPrivate MagickBooleanType
+  EnqueueOpenCLKernel(cl_kernel,cl_uint,const size_t *,const size_t *,
+    const size_t *,const Image *,const Image *,ExceptionInfo *),
   InitializeOpenCL(MagickCLEnv,ExceptionInfo *),
   OpenCLThrowMagickException(MagickCLDevice,ExceptionInfo *,
     const char *,const char *,const size_t,const ExceptionType,const char *,
     const char *,...);
+
+extern MagickPrivate MagickCLCacheInfo
+  AcquireMagickCLCacheInfo(MagickCLDevice,Quantum *,const MagickSizeType),
+  CopyMagickCLCacheInfo(MagickCLCacheInfo),
+  RelinquishMagickCLCacheInfo(MagickCLCacheInfo,const MagickBooleanType);
 
 extern MagickPrivate MagickCLDevice
   RequestOpenCLDevice(MagickCLEnv);
@@ -394,9 +432,13 @@ extern MagickPrivate void
   DumpOpenCLProfileData(),
   OpenCLTerminus(),
   RecordProfileData(MagickCLDevice,cl_kernel,cl_event),
-  ReleaseOpenCLDevice(MagickCLEnv,MagickCLDevice),
+  ReleaseOpenCLDevice(MagickCLDevice),
+  ReleaseOpenCLKernel(cl_kernel),
+  ReleaseOpenCLMemObject(cl_mem),
   RelinquishOpenCLCommandQueue(MagickCLDevice,cl_command_queue),
-  RelinquishOpenCLKernel(cl_kernel);
+  RetainOpenCLEvent(cl_event);
+
+#endif
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

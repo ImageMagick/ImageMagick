@@ -29,6 +29,8 @@
 extern "C" {
 #endif
 
+#if defined(MAGICKCORE_OPENCL_SUPPORT)
+
 extern MagickPrivate Image
   *AccelerateAddNoiseImage(const Image*,const NoiseType,ExceptionInfo *),
   *AccelerateBlurImage(const Image *,const double,const double,ExceptionInfo *),
@@ -59,8 +61,10 @@ extern MagickPrivate MagickBooleanType
   AccelerateModulateImage(Image *,const double,const double,const double,
     const ColorspaceType, ExceptionInfo*);
 
+#endif /* MAGICKCORE_OPENCL_SUPPORT */
+
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif
 
-#endif // MAGICKCORE_ACCELERATE_PRIVATE_H
+#endif /* MAGICKCORE_ACCELERATE_PRIVATE_H */

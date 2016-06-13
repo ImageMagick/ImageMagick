@@ -138,6 +138,11 @@ static Quantum
   *SetPixelCacheNexusPixels(const CacheInfo *,const MapMode,
     const RectangleInfo *,NexusInfo *,ExceptionInfo *) magick_hot_spot;
 
+#if defined(MAGICKCORE_OPENCL_SUPPORT)
+static void
+  CopyOpenCLBuffer(CacheInfo *magick_restrict);
+#endif
+
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif
@@ -866,14 +871,19 @@ static inline void RelinquishPixelCachePixels(CacheInfo *cache_info)
   {
     case MemoryCache:
     {
-      if (cache_info->mapped == MagickFalse)
-        cache_info->pixels=(Quantum *) RelinquishAlignedMemory(
-          cache_info->pixels);
-      else
+#if defined(MAGICKCORE_OPENCL_SUPPORT)
+      if (cache_info->opencl != (MagickCLCacheInfo) NULL)
         {
-          (void) UnmapBlob(cache_info->pixels,(size_t) cache_info->length);
+          cache_info->opencl=RelinquishMagickCLCacheInfo(cache_info->opencl,
+            MagickTrue);
           cache_info->pixels=(Quantum *) NULL;
+          break;
         }
+#endif
+      if (cache_info->mapped == MagickFalse)
+        cache_info->pixels=RelinquishAlignedMemory(cache_info->pixels);
+      else
+        (void) UnmapBlob(cache_info->pixels,(size_t) cache_info->length);
       RelinquishMagickResource(MemoryResource,cache_info->length);
       break;
     }
@@ -1106,6 +1116,64 @@ static void *GetAuthenticMetacontentFromCache(const Image *image)
   assert(id < (int) cache_info->number_threads);
   return(cache_info->nexus_info[id]->metacontent);
 }
+
+#if defined(MAGICKCORE_OPENCL_SUPPORT)
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   G e t A u t h e n t i c O p e n C L B u f f e r                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetAuthenticOpenCLBuffer() returns an OpenCL buffer used to execute OpenCL
+%  operations.
+%
+%  The format of the GetAuthenticOpenCLBuffer() method is:
+%
+%      cl_mem GetAuthenticOpenCLBuffer(const Image *image,
+%        MagickCLDevice device,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o device: the device to use.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickPrivate cl_mem GetAuthenticOpenCLBuffer(const Image *image,
+  MagickCLDevice device,ExceptionInfo *exception)
+{
+  CacheInfo
+    *magick_restrict cache_info;
+
+  cl_int
+    status;
+
+  assert(image != (const Image *) NULL);
+  assert(device != (const MagickCLDevice) NULL);
+  cache_info=(CacheInfo *) image->cache;
+  if (cache_info->type == UndefinedCache)
+    SyncImagePixelCache((Image *) image,exception);
+  if (cache_info->type != MemoryCache || cache_info->mapped != MagickFalse)
+    return((cl_mem) NULL);
+  if ((cache_info->opencl != (MagickCLCacheInfo) NULL) &&
+      (cache_info->opencl->device->context != device->context))
+    cache_info->opencl=CopyMagickCLCacheInfo(cache_info->opencl);
+  if (cache_info->opencl == (MagickCLCacheInfo) NULL)
+    {
+      assert(cache_info->pixels != NULL);
+      cache_info->opencl=AcquireMagickCLCacheInfo(device,cache_info->pixels,
+        cache_info->length);
+    }
+  return(cache_info->opencl->buffer);
+}
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1265,7 +1333,8 @@ MagickExport Quantum *GetAuthenticPixelQueue(const Image *image)
 %   G e t A u t h e n t i c P i x e l s                                       %
 %                                                                             %
 %                                                                             %
-%                                                                             % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  GetAuthenticPixels() obtains a pixel region for read/write access. If the
 %  region is successfully accessed, a pointer to a Quantum array
@@ -1531,6 +1600,9 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
   LockSemaphoreInfo(image->semaphore);
   assert(image->cache != (Cache) NULL);
   cache_info=(CacheInfo *) image->cache;
+#if defined(MAGICKCORE_OPENCL_SUPPORT)
+  CopyOpenCLBuffer(cache_info);
+#endif
   destroy=MagickFalse;
   if ((cache_info->reference_count > 1) || (cache_info->mode == ReadMode))
     {
@@ -3681,6 +3753,9 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
   page_size=GetMagickPageSize();
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickCoreSignature);
+#if defined(MAGICKCORE_OPENCL_SUPPORT)
+  CopyOpenCLBuffer(cache_info);
+#endif
   if (attach != MagickFalse)
     {
       /*
@@ -4824,6 +4899,56 @@ MagickPrivate VirtualPixelMethod SetPixelCacheVirtualMethod(Image *image,
     }
   return(method);
 }
+
+#if defined(MAGICKCORE_OPENCL_SUPPORT)
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   S y n c A u t h e n t i c O p e n C L B u f f e r                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SyncAuthenticOpenCLBuffer() makes sure that all the OpenCL operations have
+%  been completed and updates the host memory.
+%
+%  The format of the SyncAuthenticOpenCLBuffer() method is:
+%
+%      void SyncAuthenticOpenCLBuffer(const Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+*/
+static void CopyOpenCLBuffer(CacheInfo *magick_restrict cache_info)
+{
+  assert(cache_info != (CacheInfo *) NULL);
+  assert(cache_info->signature == MagickCoreSignature);
+  if ((cache_info->type != MemoryCache) ||
+      (cache_info->opencl == (MagickCLCacheInfo) NULL))
+    return;
+  /*
+  Ensure single threaded access to OpenCL environment.
+  */
+  LockSemaphoreInfo(cache_info->semaphore);
+  cache_info->opencl=CopyMagickCLCacheInfo(cache_info->opencl);
+  UnlockSemaphoreInfo(cache_info->semaphore);
+}
+
+MagickPrivate void SyncAuthenticOpenCLBuffer(const Image *image)
+{
+  CacheInfo
+    *magick_restrict cache_info;
+
+  assert(image != (const Image *) NULL);
+  cache_info=(CacheInfo *) image->cache;
+  CopyOpenCLBuffer(cache_info);
+}
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

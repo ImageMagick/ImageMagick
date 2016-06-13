@@ -1011,9 +1011,11 @@ MagickExport MagickBooleanType FunctionImage(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
+#if defined(MAGICKCORE_OPENCL_SUPPORT)
   if (AccelerateFunctionImage(image,function,number_parameters,parameters,
         exception) != MagickFalse)
     return(MagickTrue);
+#endif
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   status=MagickTrue;
