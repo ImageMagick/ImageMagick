@@ -1186,7 +1186,7 @@ static MagickBooleanType ReadPSDChannel(Image *image,const PSDInfo *psd_info,
     channel_image=mask;
   }
 
-  offset=TellBlob(channel_image);
+  offset=TellBlob(image);
   status=MagickTrue;
   switch(compression)
   {
@@ -1222,17 +1222,16 @@ static MagickBooleanType ReadPSDChannel(Image *image,const PSDInfo *psd_info,
 #endif
       break;
     default:
-      SeekBlob(image,offset+layer_info->channel_info[channel].size-2,SEEK_SET);
       (void) ThrowMagickException(exception,GetMagickModule(),TypeWarning,
         "CompressionNotSupported","'%.20g'",(double) compression);
       break;
   }
 
+  SeekBlob(image,offset+layer_info->channel_info[channel].size-2,SEEK_SET);
   if (status == MagickFalse)
     {
       if (mask != (Image *) NULL)
         DestroyImage(mask);
-      SeekBlob(image,offset+layer_info->channel_info[channel].size-2,SEEK_SET);
       ThrowBinaryException(CoderError,"UnableToDecompressImage",
         image->filename);
     }
