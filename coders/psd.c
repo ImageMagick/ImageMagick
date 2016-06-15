@@ -1215,7 +1215,6 @@ static MagickBooleanType ReadPSDChannel(Image *image,const PSDInfo *psd_info,
         layer_info->channel_info[channel].type,compression,
         layer_info->channel_info[channel].size-2,exception);
 #else
-      SeekBlob(image,offset+layer_info->channel_info[channel].size-2,SEEK_SET);
       (void) ThrowMagickException(exception,GetMagickModule(),
           MissingDelegateWarning,"DelegateLibrarySupportNotBuiltIn",
             "'%s' (ZLIB)",image->filename);
