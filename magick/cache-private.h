@@ -136,6 +136,12 @@ typedef struct _OpenCLCacheInfo
 
   cl_uint
     event_count;
+
+  MagickSizeType
+    length;
+
+  PixelPacket
+    *pixels;
 } OpenCLCacheInfo;
 
 typedef struct _CacheInfo

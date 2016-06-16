@@ -162,30 +162,7 @@ static SemaphoreInfo
 static time_t
   cache_epoch = 0;
 
-static inline PixelPacket *RelinquishMemoryPixelCachePixels(
-  MagickBooleanType mapped,PixelPacket *pixels,MagickSizeType length)
-{
-  if (mapped == MagickFalse)
-    (void) RelinquishAlignedMemory(pixels);
-  else
-    (void) UnmapBlob(pixels,(size_t) length);
-  (void) RelinquishMagickResource(MemoryResource,length);
-  return((PixelPacket *) NULL);
-}
-
 #if defined(MAGICKCORE_OPENCL_SUPPORT)
-typedef struct _OpenCLRelinquishInfo
-{
-  MagickBooleanType
-    mapped;
-
-  PixelPacket
-    *pixels;
-
-  MagickSizeType
-    length;
-} OpenCLRelinquishInfo;
-
 static inline OpenCLCacheInfo *RelinquishOpenCLCacheInfo(MagickCLEnv clEnv,
   OpenCLCacheInfo *info)
 {
@@ -208,15 +185,20 @@ static void CL_API_CALL RelinquishPixelCachePixelsDelayed(
   cl_event magick_unused(event),cl_int magick_unused(event_command_exec_status),
   void *user_data)
 {
-  OpenCLRelinquishInfo
+  MagickCLEnv
+    clEnv;
+
+  OpenCLCacheInfo
     *info;
 
   magick_unreferenced(event);
   magick_unreferenced(event_command_exec_status);
-  info=(OpenCLRelinquishInfo *) user_data;
-  (void) RelinquishMemoryPixelCachePixels(info->mapped,info->pixels,
-    info->length);
-  (void) RelinquishMagickMemory(info);
+  info=(OpenCLCacheInfo *) user_data;
+  (void) RelinquishAlignedMemory(info->pixels);
+  RelinquishMagickResource(MemoryResource,info->length);
+  clEnv=GetDefaultOpenCLEnv();
+  (void) RelinquishOpenCLCacheInfo(clEnv,info);
+
 }
 
 static MagickBooleanType RelinquishOpenCLBuffer(
@@ -224,9 +206,6 @@ static MagickBooleanType RelinquishOpenCLBuffer(
 {
   MagickCLEnv
     clEnv;
-
-  OpenCLRelinquishInfo
-    *relinquish_info;
 
   assert(cache_info != (CacheInfo *) NULL);
   if (cache_info->opencl == (OpenCLCacheInfo *) NULL)
@@ -237,17 +216,9 @@ static MagickBooleanType RelinquishOpenCLBuffer(
       cache_info->opencl=RelinquishOpenCLCacheInfo(clEnv,cache_info->opencl);
       return(MagickFalse);
     }
-  relinquish_info=(OpenCLRelinquishInfo *) AcquireMagickMemory(
-    sizeof(*relinquish_info));
-  if (relinquish_info == (OpenCLRelinquishInfo *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  relinquish_info->mapped=cache_info->mapped;
-  relinquish_info->pixels=cache_info->pixels;
-  relinquish_info->length=cache_info->length;
   clEnv->library->clSetEventCallback(cache_info->opencl->events[
     cache_info->opencl->event_count-1],CL_COMPLETE,
-    &RelinquishPixelCachePixelsDelayed,relinquish_info);
-  cache_info->opencl=RelinquishOpenCLCacheInfo(clEnv,cache_info->opencl);
+    &RelinquishPixelCachePixelsDelayed,cache_info->opencl);
   return(MagickTrue);
 }
 #endif
@@ -1081,8 +1052,11 @@ static inline void RelinquishPixelCachePixels(CacheInfo *cache_info)
           break;
         }
 #endif
-      cache_info->pixels=RelinquishMemoryPixelCachePixels(cache_info->mapped,
-        cache_info->pixels,cache_info->length);
+      if (cache_info->mapped == MagickFalse)
+        cache_info->pixels=RelinquishAlignedMemory(cache_info->pixels);
+      else
+        (void) UnmapBlob(cache_info->pixels,(size_t) cache_info->length);
+      RelinquishMagickResource(MemoryResource,cache_info->length);
       break;
     }
     case MapCache:
@@ -1351,7 +1325,7 @@ MagickPrivate cl_mem GetAuthenticOpenCLBuffer(const Image *image,
   cache_info=(CacheInfo *)image->cache;
   if (cache_info->type == UndefinedCache)
     SyncImagePixelCache((Image *) image,exception);
-  if (cache_info->type != MemoryCache)
+  if ((cache_info->type != MemoryCache) || (cache_info->mapped != MagickFalse))
     return((cl_mem) NULL);
   if (cache_info->opencl == (OpenCLCacheInfo *) NULL)
     {
@@ -1364,6 +1338,8 @@ MagickPrivate cl_mem GetAuthenticOpenCLBuffer(const Image *image,
         ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
       (void) ResetMagickMemory(cache_info->opencl,0,
         sizeof(*cache_info->opencl));
+      cache_info->opencl->length=cache_info->length;
+      cache_info->opencl->pixels=cache_info->pixels;
       cache_info->opencl->buffer=clEnv->library->clCreateBuffer(context,
         CL_MEM_USE_HOST_PTR,cache_info->length,cache_info->pixels,&status);
     }
