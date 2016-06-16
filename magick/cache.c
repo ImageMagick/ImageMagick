@@ -198,7 +198,6 @@ static void CL_API_CALL RelinquishPixelCachePixelsDelayed(
   RelinquishMagickResource(MemoryResource,info->length);
   clEnv=GetDefaultOpenCLEnv();
   (void) RelinquishOpenCLCacheInfo(clEnv,info);
-
 }
 
 static MagickBooleanType RelinquishOpenCLBuffer(
@@ -5310,15 +5309,16 @@ static void CopyOpenCLBuffer(CacheInfo *magick_restrict cache_info)
       PixelPacket
         *pixels;
 
-      context = GetOpenCLContext(clEnv);
-      queue = AcquireOpenCLCommandQueue(clEnv);
-      pixels = (PixelPacket *)clEnv->library->clEnqueueMapBuffer(queue,
-        cache_info->opencl->buffer, CL_TRUE, CL_MAP_READ | CL_MAP_WRITE, 0,
-        cache_info->length, cache_info->opencl->event_count,
-        cache_info->opencl->events, NULL, &status);
+      context=GetOpenCLContext(clEnv);
+      queue=AcquireOpenCLCommandQueue(clEnv);
+      pixels=(PixelPacket *) clEnv->library->clEnqueueMapBuffer(queue,
+        cache_info->opencl->buffer,CL_TRUE, CL_MAP_READ | CL_MAP_WRITE,0,
+        cache_info->length,cache_info->opencl->event_count,
+        cache_info->opencl->events,NULL,&status);
       assert(pixels == cache_info->pixels);
+      RelinquishOpenCLCommandQueue(clEnv,queue);
     }
-    cache_info->opencl = RelinquishOpenCLCacheInfo(clEnv, cache_info->opencl);
+    cache_info->opencl=RelinquishOpenCLCacheInfo(clEnv,cache_info->opencl);
   }
   UnlockSemaphoreInfo(cache_info->semaphore);
 }
