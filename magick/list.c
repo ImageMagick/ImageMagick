@@ -378,7 +378,7 @@ MagickExport void DeleteImages(Image **images,const char *scenes,
   for (i=0; i < (ssize_t) length; i++)
     delete_list[i]=MagickFalse;
   /*
-    Note which images will be deleted, avoid duplicate deleted
+    Note which images will be deleted, avoid duplicates.
   */
   for (p=(char *) scenes; *p != '\0';)
   {
@@ -403,7 +403,7 @@ MagickExport void DeleteImages(Image **images,const char *scenes,
         delete_list[i]=MagickTrue;
   }
   /*
-    Delete images marked for deletion, once only
+    Delete images marked for deletion, once only.
   */
   image=(*images);
   for (i=0; i < (ssize_t) length; i++)
@@ -412,7 +412,6 @@ MagickExport void DeleteImages(Image **images,const char *scenes,
     image=GetNextImageInList(image);
     if (delete_list[i] != MagickFalse)
       DeleteImageFromList(images);
-
   }
   (void) RelinquishMagickMemory(delete_list);
   *images=GetFirstImageInList(*images);
