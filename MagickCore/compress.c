@@ -497,9 +497,7 @@ MagickExport MagickBooleanType HuffmanDecodeImage(Image *image,
     /*
       Initialize scanline to white.
     */
-    p=scanline;
-    for (x=0; x < (ssize_t) image->columns; x++)
-      *p++=(unsigned char) 0;
+    ResetMagickMemory(scanline,0,sizeof(*scanline)*image->columns);
     /*
       Decode Huffman encoded scanline.
     */
@@ -608,6 +606,7 @@ MagickExport MagickBooleanType HuffmanDecodeImage(Image *image,
     q=QueueCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
     if (q == (Quantum *) NULL)
       break;
+    printf("%d\n", (int)y);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       index=(Quantum) (*p++);
