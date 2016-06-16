@@ -3200,6 +3200,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     }
   (void) xmlParseChunk(svg_info->parser,(char *) message,0,1);
+  SVGEndDocument(svg_info);
   xmlFreeParserCtxt(svg_info->parser);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),"end SAX");
@@ -3284,7 +3285,8 @@ ModuleExport size_t RegisterSVGImage(void)
 
   *version='\0';
 #if defined(LIBXML_DOTTED_VERSION)
-  (void) CopyMagickString(version,"XML " LIBXML_DOTTED_VERSION,MagickPathExtent);
+  (void) CopyMagickString(version,"XML " LIBXML_DOTTED_VERSION,
+    MagickPathExtent);
 #endif
 #if defined(MAGICKCORE_RSVG_DELEGATE)
 #if !GLIB_CHECK_VERSION(2,35,0)

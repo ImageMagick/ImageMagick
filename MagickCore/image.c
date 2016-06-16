@@ -906,9 +906,9 @@ MagickExport Image *CloneImage(const Image *image,const size_t columns,
   clone_image->page.height=(size_t) floor(scale*image->page.height+0.5);
   clone_image->page.y=(ssize_t) ceil(scale*image->page.y-0.5);
   clone_image->tile_offset.y=(ssize_t) ceil(scale*image->tile_offset.y-0.5);
-  clone_image->columns=columns;
-  clone_image->rows=rows;
   clone_image->cache=ClonePixelCache(image->cache);
+  if (SetImageExtent(clone_image,columns,rows,exception) == MagickFalse)
+    clone_image=DestroyImage(clone_image);
   return(clone_image);
 }
 
