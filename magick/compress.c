@@ -505,9 +505,7 @@ MagickExport MagickBooleanType HuffmanDecodeImage(Image *image)
     /*
       Initialize scanline to white.
     */
-    p=scanline;
-    for (x=0; x < (ssize_t) image->columns; x++)
-      *p++=(unsigned char) 0;
+    ResetMagickMemory(scanline,0,sizeof(*scanline)*image->columns);
     /*
       Decode Huffman encoded scanline.
     */
