@@ -135,7 +135,7 @@ static Image* FaxReadG3(Image *image,ExceptionInfo *exception)
   MagickBooleanType
     status;
 
-  status=HuffmanDecodeImage(image,exception);
+  status=HuffmanDecodeImage(image);
   if (status == MagickFalse)
     ThrowFileException(exception,CorruptImageError,"UnableToReadImageData",
       image->filename);
