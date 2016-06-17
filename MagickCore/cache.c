@@ -1160,7 +1160,7 @@ MagickPrivate cl_mem GetAuthenticOpenCLBuffer(const Image *image,
   cache_info=(CacheInfo *) image->cache;
   if (cache_info->type == UndefinedCache)
     SyncImagePixelCache((Image *) image,exception);
-  if (cache_info->type != MemoryCache || cache_info->mapped != MagickFalse)
+  if ((cache_info->type != MemoryCache) || (cache_info->mapped != MagickFalse))
     return((cl_mem) NULL);
   if ((cache_info->opencl != (MagickCLCacheInfo) NULL) &&
       (cache_info->opencl->device->context != device->context))
