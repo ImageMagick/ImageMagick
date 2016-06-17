@@ -5,7 +5,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
     <title>ImageMagick: Changelog</title>
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -25,9 +24,11 @@
   <meta name="copyright" content="Copyright (c) 1999-2016 ImageMagick Studio LLC"/>
   <meta name="distribution" content="Global"/>
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
   <link rel="icon" href="../images/wand.png"/>
   <link rel="shortcut icon" href="../images/wand.ico"/>
-  <link rel="stylesheet" href="css/magick.css"/>
+  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700"  >
+  <link rel="stylesheet" type="text/css" href="css/magick.css"/>
 </head>
 <body>
 <div class="main">
@@ -54,7 +55,28 @@
   </div>
 </div>
 <div class="container">
-<div class="magick-header"><dl><dt>2016-05-30  6.9.4-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<div class="magick-header"><dl><dt>2016-06-12  6.9.4-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 6.9.4-9, GIT revision 10884:f0e15e8:20160612.</li>
+<dt>2016-06-09  6.9.4-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Backoff finite precision epsilon (reference    https://github.com/ImageMagick/ImageMagick/issues/215).</li>
+  <li> Fix drawing glitch for stroke widths greater than 2 (reference    https://github.com/ImageMagick/ImageMagick/issues/218).</li>
+<dt>2016-06-05  6.9.4-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 6.9.4-8, GIT revision 18406:ba4ad2d:20160607.</li>
+<dt>2016-06-04  6.9.4-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> RLE check for pixel offset less than 0 (heap overflow report from Craig    Young).</li>
+  <li> Properly initialze PES blocks (reference    https://github.com/ImageMagick/ImageMagick/issues/213).</li>
+<dt>2016-06-03  6.9.4-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 6.9.4-7, GIT revision 10847:339f803:20160602.</li>
+<dt>2016-06-02  6.9.4-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Fix small memory leak (patch provided by Андрей Черный).</li>
+  <li> Coder path traversal is not authorized (bug report provided by    Masaaki Chida).</li>
+  <li> Turn off alpha channel for the compare difference image (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=29828).</li>
+<dt>2016-05-31  6.9.4-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 6.9.4-6, GIT revision 18334:97775b5:20160531.</li>
+<dt>2016-05-31  6.9.4-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Support configure script --enable-pipes option to enable pipes (|) in    filenames.</li>
+  <li> Support configure script --enable-indirect-reads option to enable    indirect reads (@) in filenames.</li>
+<dt>2016-05-30  6.9.4-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 6.9.4-5, GIT revision 18321:5511ef5:20160530.</li>
 <dt>2016-05-28  6.9.4-5 Dirk Lemstra &lt;dirk@lem.....org&gt;</dt>
   <li> Most OpenCL operations are now executed asynchronous.</li>
