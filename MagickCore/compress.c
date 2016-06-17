@@ -606,7 +606,6 @@ MagickExport MagickBooleanType HuffmanDecodeImage(Image *image,
     q=QueueCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
     if (q == (Quantum *) NULL)
       break;
-    printf("%d\n", (int)y);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       index=(Quantum) (*p++);
