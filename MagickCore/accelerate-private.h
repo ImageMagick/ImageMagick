@@ -48,8 +48,6 @@ extern MagickPrivate Image
   *AccelerateWaveletDenoiseImage(const Image *,const double,ExceptionInfo *);
 
 extern MagickPrivate MagickBooleanType
-  AccelerateCompositeImage(Image *,const CompositeOperator,const Image *,
-    const float,const float,ExceptionInfo *),
   AccelerateContrastImage(Image *,const MagickBooleanType,ExceptionInfo *),
   AccelerateContrastStretchImage(Image *,const double,const double,
     ExceptionInfo*),
