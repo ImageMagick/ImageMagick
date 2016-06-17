@@ -689,6 +689,7 @@ static Image *ComputeBlurImage(const Image* image,const ChannelType channel,
         wsize[0] = 1;
         wsize[1] = chunkSize;
 
+        events=GetOpenCLEvents(image,&event_count);
         clStatus = clEnv->library->clEnqueueNDRangeKernel(queue, blurColumnKernel, 2, NULL, gsize, wsize, event_count, events, &event);
         if (clStatus != CL_SUCCESS)
         {
