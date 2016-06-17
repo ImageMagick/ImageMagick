@@ -46,6 +46,7 @@
 #include "MagickCore/colormap.h"
 #include "MagickCore/colorspace.h"
 #include "MagickCore/colorspace-private.h"
+#include "MagickCore/constitute.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
 #include "MagickCore/compress.h"
@@ -57,6 +58,7 @@
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/quantum-private.h"
+#include "MagickCore/resource_.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/module.h"
@@ -128,6 +130,58 @@ static MagickBooleanType IsFAX(const unsigned char *magick,const size_t length)
 %    o exception: return any errors or warnings in this structure.
 %
 */
+static Image* FaxReadG3(Image *image,ExceptionInfo *exception)
+{
+  MagickBooleanType
+    status;
+
+  status=HuffmanDecodeImage(image,exception);
+  if (status == MagickFalse)
+    ThrowFileException(exception,CorruptImageError,"UnableToReadImageData",
+      image->filename);
+  if (EOFBlob(image) != MagickFalse)
+    ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
+      image->filename);
+  (void) CloseBlob(image);
+  return(GetFirstImageInList(image));
+}
+
+static Image* FaxReadG4(Image *image,const ImageInfo *image_info,
+  ExceptionInfo *exception)
+{
+  char
+    filename[MagickPathExtent];
+
+  ImageInfo
+    *read_info;
+
+  MagickBooleanType
+    status;
+
+  filename[0]='\0';
+  if (ImageToFile(image,filename,exception) == MagickFalse)
+    ThrowImageException(FileOpenError,"UnableToCreateTemporaryFile");
+  (void) CloseBlob(image);
+  image=DestroyImage(image);
+  read_info=CloneImageInfo(image_info);
+  SetImageInfoBlob(read_info,(void *) NULL,0);
+  (void) FormatLocaleString(read_info->filename,MagickPathExtent,"group4:%s",
+    filename);
+  read_info->orientation=TopLeftOrientation;
+  image=ReadImage(read_info,exception);
+  if (image != (Image *) NULL)
+    {
+      (void) CopyMagickString(image->filename,image_info->filename,
+        MagickPathExtent);
+      (void) CopyMagickString(image->magick_filename,image_info->filename,
+        MagickPathExtent);
+      (void) CopyMagickString(image->magick,"G4",MagickPathExtent);
+    }
+  read_info=DestroyImageInfo(read_info);
+  (void) RelinquishUniqueFileResource(filename);
+  return(GetFirstImageInList(image));
+}
+
 static Image *ReadFAXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image
@@ -181,14 +235,10 @@ static Image *ReadFAXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
     return(DestroyImageList(image));
-  status=HuffmanDecodeImage(image,exception);
-  if (status == MagickFalse)
-    ThrowReaderException(CorruptImageError,"UnableToReadImageData");
-  if (EOFBlob(image) != MagickFalse)
-    ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
-      image->filename);
-  (void) CloseBlob(image);
-  return(GetFirstImageInList(image));
+  if (LocaleCompare(image_info->magick,"G4") == 0)
+    return(FaxReadG4(image,image_info,exception));
+  else
+    return(FaxReadG3(image,exception));
 }
 
 /*
@@ -240,6 +290,12 @@ ModuleExport size_t RegisterFAXImage(void)
   entry->magick=(IsImageFormatHandler *) IsFAX;
   entry->flags^=CoderAdjoinFlag;
   (void) RegisterMagickInfo(entry);
+  entry=AcquireMagickInfo("FAX","G4","Group 4 FAX");
+  entry->decoder=(DecodeImageHandler *) ReadFAXImage;
+  entry->encoder=(EncodeImageHandler *) WriteFAXImage;
+  entry->magick=(IsImageFormatHandler *) IsFAX;
+  entry->flags^=CoderAdjoinFlag;
+  (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }
 
@@ -266,6 +322,7 @@ ModuleExport void UnregisterFAXImage(void)
 {
   (void) UnregisterMagickInfo("FAX");
   (void) UnregisterMagickInfo("G3");
+  (void) UnregisterMagickInfo("G4");
 }
 
 /*

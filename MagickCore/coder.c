@@ -130,6 +130,7 @@ static const CoderMapInfo
     { "FTP", "URL" },
     { "FTS", "FITS" },
     { "G3", "FAX" },
+    { "G4", "FAX" },
     { "GIF87", "GIF" },
     { "G", "RAW" },
     { "GRANITE", "MAGICK" },

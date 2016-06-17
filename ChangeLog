@@ -1,3 +1,6 @@
+2016-06-17  7.0.2-1 Dirk Lemstra <dirk@lem.....org>
+  * Added support for GROUP4 compression to the FAX coder.
+
 2016-06-12  7.0.2-1 Cristy  <quetzlzacatenango@image...>
   * Distort no longer converts grayscale image to sRGB (reference
     https://www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=29895).
