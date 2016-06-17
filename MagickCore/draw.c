@@ -4318,8 +4318,6 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
         draw_info->affine.rx,draw_info->affine.ry,draw_info->affine.sy,
         draw_info->affine.tx,draw_info->affine.ty);
     }
-  if (SyncImagePixelCache(image,exception) == MagickFalse)
-    return(MagickFalse);
   if ((IsGrayColorspace(image->colorspace) != MagickFalse) &&
       ((IsPixelInfoGray(&draw_info->fill) == MagickFalse) ||
        (IsPixelInfoGray(&draw_info->stroke) == MagickFalse)))

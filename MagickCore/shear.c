@@ -745,8 +745,6 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
       exception);
   if (rotate_image == (Image *) NULL)
     return((Image *) NULL);
-  if (SyncImagePixelCache(rotate_image,exception) == MagickFalse)
-    return(DestroyImage(rotate_image));
   /*
     Integral rotate the image.
   */
