@@ -1558,7 +1558,7 @@ MagickPrivate void DumpOpenCLProfileData()
 %
 */
 
-extern void RegisterCacheEvent(MagickCLCacheInfo info,cl_event event)
+static void RegisterCacheEvent(MagickCLCacheInfo info,cl_event event)
 {
   assert(info != (MagickCLCacheInfo) NULL);
   assert(event != (cl_event) NULL);
