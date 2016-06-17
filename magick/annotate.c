@@ -1463,7 +1463,6 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   status=MagickTrue;
   if (draw_info->render != MagickFalse)
     {
-      status=SyncImagePixelCache(image,exception);
       if (image->storage_class != DirectClass)
         (void) SetImageStorageClass(image,DirectClass);
       if (image->matte == MagickFalse)
