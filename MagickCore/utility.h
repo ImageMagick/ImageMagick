@@ -22,10 +22,6 @@
 extern "C" {
 #endif
 
-#if defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(MAGICKCORE_POSIX_SUPPORT)
-# include <sys/stat.h>
-#endif
-
 typedef enum
 {
   UndefinedPath,
@@ -46,7 +42,7 @@ extern MagickExport MagickBooleanType
   AcquireUniqueFilename(char *),
   AcquireUniqueSymbolicLink(const char *,char *),
   ExpandFilenames(int *,char ***),
-  GetPathAttributes(const char *,struct stat *),
+  GetPathAttributes(const char *,void *),
   IsPathAccessible(const char *);
 
 extern MagickExport size_t
