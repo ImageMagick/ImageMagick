@@ -1260,9 +1260,9 @@ values and type_ parameters.</font></td>
       </small></td>
       <td style="vertical-align: middle;"><small>Random threshold the
 image. Changes the value of individual pixels based on the intensity of
-each pixel compared to a random threshold.  The result is a
-low-contrast, two color image.  The thresholds_ argument is a
-geometry containing LOWxHIGH thresholds.  If the string contains
+each pixel compared to a random threshold.  The result is a
+low-contrast, two color image.  The thresholds_ argument is a
+geometry containing LOWxHIGH thresholds.  If the string contains
 2x2, 3x3, or 4x4, then an ordered dither of order 2, 3, or 4 will be
 performed instead. This is a very fast alternative to 'quantize' based
 dithering.<br />
@@ -3064,7 +3064,7 @@ alpha channel.</font></td>
       <td><font size="-1">Returns a pointer to the Image pixel indexes
 corresponding to the pixel region requested by the last <a
  href="Image.html#getConstPixels">getConstPixels</a> , <a href="Image.html#getPixels">getPixels</a>
-, or <a href="Image.html#setPixels">setPixels</a> call. </font><font
+, or <a href="Image.html#setPixels">setPixels</a> call. </font><font
  size="-1">The
 returned pointer remains valid until the next getPixel, getConstPixels,
 or setPixels call and should never be deallocated by the user.</font><font
@@ -3073,7 +3073,7 @@ or
 CMYKA images. The pixel indexes represent an array of type
 IndexPacket, with each entry corresponding to a pixel x,y position. For
 PseudoClass images, the entry's value is the offset into the colormap
-(see <a href="Image.html#colorMap">colorMap</a> )  for that pixel. For
+(see <a href="Image.html#colorMap">colorMap</a> )  for that pixel. For
 CMYKA
 images, the indexes are used to contain the alpha channel.</font></td>
     </tr>
