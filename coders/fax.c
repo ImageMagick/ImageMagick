@@ -155,9 +155,6 @@ static Image* FaxReadG4(Image *image,const ImageInfo *image_info,
   ImageInfo
     *read_info;
 
-  MagickBooleanType
-    status;
-
   filename[0]='\0';
   if (ImageToFile(image,filename,exception) == MagickFalse)
     ThrowImageException(FileOpenError,"UnableToCreateTemporaryFile");
