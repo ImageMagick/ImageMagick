@@ -808,6 +808,11 @@ static void LoadOpenCLDeviceBenchmark(MagickCLEnv clEnv,const char *xml)
               }
           }
 
+        device_benchmark->platform_name=RelinquishMagickMemory(
+          device_benchmark->platform_name);
+        device_benchmark->name=RelinquishMagickMemory(device_benchmark->name);
+        device_benchmark->version=RelinquishMagickMemory(
+          device_benchmark->version);
         device_benchmark=(MagickCLDeviceBenchmark *) RelinquishMagickMemory(
           device_benchmark);
         continue;
@@ -1627,7 +1632,7 @@ MagickPrivate MagickBooleanType EnqueueOpenCLKernel(cl_kernel kernel,
             }
           for (i=0; i < (ssize_t) event_count; i++)
           {
-            if (i < input_info->opencl->event_count)
+            if (i < (ssize_t) input_info->opencl->event_count)
               events[i]=input_info->opencl->events[i];
             else
               events[i]=output_info->opencl->events[i-
