@@ -1,6 +1,10 @@
 2016-06-17  6.9.4-10 Dirk Lemstra <dirk@lem.....org>
   * Added support for GROUP4 compression to the FAX coder.
 
+2016-06-17  6.9.4-10 Cristy  <quetzlzacatenango@image...>
+  * Don't return a zero bounding box for QueryMultilineFontMetrics() (reference
+    https://github.com/ImageMagick/ImageMagick/issues/222).
+
 2016-06-12  6.9.4-9 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 6.9.4-9, GIT revision 10884:f0e15e8:20160612.
 

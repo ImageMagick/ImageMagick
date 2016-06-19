@@ -1509,13 +1509,17 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
     if (ft_status != 0)
       continue;
     if ((p == draw_info->text) || (bounds.xMin < metrics->bounds.x1))
-      metrics->bounds.x1=(double) bounds.xMin;
+      if (bounds.xMin != 0)
+        metrics->bounds.x1=(double) bounds.xMin;
     if ((p == draw_info->text) || (bounds.yMin < metrics->bounds.y1))
-      metrics->bounds.y1=(double) bounds.yMin;
+      if (bounds.yMin != 0)
+        metrics->bounds.y1=(double) bounds.yMin;
     if ((p == draw_info->text) || (bounds.xMax > metrics->bounds.x2))
-      metrics->bounds.x2=(double) bounds.xMax;
+      if (bounds.xMax != 0)
+        metrics->bounds.x2=(double) bounds.xMax;
     if ((p == draw_info->text) || (bounds.yMax > metrics->bounds.y2))
-      metrics->bounds.y2=(double) bounds.yMax;
+      if (bounds.yMax != 0)
+        metrics->bounds.y2=(double) bounds.yMax;
     if (((draw_info->stroke.opacity != TransparentOpacity) ||
          (draw_info->stroke_pattern != (Image *) NULL)) &&
         ((status != MagickFalse) && (draw_info->render != MagickFalse)))
