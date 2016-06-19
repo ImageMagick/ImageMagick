@@ -68,7 +68,7 @@
   Forward declarations.
 */
 static MagickBooleanType
-  WriteRGFImage(const ImageInfo *,Image *,ExceptionInfo *);
+  WriteRGFImage(const ImageInfo *,Image *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -305,7 +305,7 @@ ModuleExport void UnregisterRGFImage(void)
 %  The format of the WriteRGFImage method is:
 %
 %      MagickBooleanType WriteRGFImage(const ImageInfo *image_info,
-%        Image *image,ExceptionInfo *exception)
+%        Image *image)
 %
 %  A description of each parameter follows.
 %
@@ -316,8 +316,7 @@ ModuleExport void UnregisterRGFImage(void)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static MagickBooleanType WriteRGFImage(const ImageInfo *image_info,Image *image,
-  ExceptionInfo *exception)
+static MagickBooleanType WriteRGFImage(const ImageInfo *image_info,Image *image)
 {
   MagickBooleanType
     status;
@@ -346,9 +345,7 @@ static MagickBooleanType WriteRGFImage(const ImageInfo *image_info,Image *image,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == MagickFalse)
     return(status);
   (void) TransformImageColorspace(image,sRGBColorspace);
@@ -367,7 +364,7 @@ static MagickBooleanType WriteRGFImage(const ImageInfo *image_info,Image *image,
   y=0;
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    p=GetVirtualPixels(image,0,y,image->columns,1,exception);
+    p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
     if (p == (const PixelPacket *) NULL)
       break;
     bit=0;
