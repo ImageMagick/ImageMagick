@@ -457,7 +457,7 @@ static MagickCLCacheInfo DestroyMagickCLCacheInfo(MagickCLCacheInfo info)
 MagickPrivate cl_mem CreateOpenCLBuffer(MagickCLDevice device,
   cl_mem_flags flags, size_t size, void *host_ptr)
 {
-  return(openCL_library->clCreateBuffer(device->context, flags, size, host_ptr,
+  return(openCL_library->clCreateBuffer(device->context,flags,size,host_ptr,
     (cl_int *) NULL));
 }
 
@@ -508,6 +508,9 @@ MagickPrivate cl_int SetOpenCLKernelArg(cl_kernel kernel,cl_uint arg_index,
 MagickPrivate MagickCLCacheInfo AcquireMagickCLCacheInfo(MagickCLDevice device,
   Quantum *pixels,const MagickSizeType length)
 {
+  cl_int
+    status;
+
   MagickCLCacheInfo
     info;
 
@@ -522,8 +525,13 @@ MagickPrivate MagickCLCacheInfo AcquireMagickCLCacheInfo(MagickCLDevice device,
   info->length=length;
   info->pixels=pixels;
   info->buffer=openCL_library->clCreateBuffer(device->context,
-    CL_MEM_USE_HOST_PTR,(size_t) length,(void *) pixels,NULL);
-  return(info);
+    CL_MEM_USE_HOST_PTR,(size_t) length,(void *) pixels,&status);
+  if (status == CL_SUCCESS)
+    return(info);
+  LockSemaphoreInfo(openCL_lock);
+  device->requested--;
+  UnlockSemaphoreInfo(openCL_lock);
+  return((MagickCLCacheInfo) RelinquishMagickMemory(info));
 }
 
 /*
@@ -645,7 +653,7 @@ MagickPrivate cl_command_queue AcquireOpenCLCommandQueue(MagickCLDevice device)
     if (device->profile_kernels != MagickFalse)
       properties=CL_QUEUE_PROFILING_ENABLE;
     queue=openCL_library->clCreateCommandQueue(device->context,
-      device->deviceID,properties,NULL);
+      device->deviceID,properties,(cl_int *) NULL);
   }
   return(queue);
 }
@@ -681,14 +689,12 @@ MagickPrivate cl_command_queue AcquireOpenCLCommandQueue(MagickCLDevice device)
 MagickPrivate cl_kernel AcquireOpenCLKernel(MagickCLDevice device,
   const char *kernel_name)
 {
-  cl_int
-    status;
-
   cl_kernel
     kernel;
 
   assert(device != (MagickCLDevice) NULL);
-  kernel=openCL_library->clCreateKernel(device->program,kernel_name,&status);
+  kernel=openCL_library->clCreateKernel(device->program,kernel_name,
+    (cl_int *) NULL);
   return(kernel);
 }
 
@@ -1649,8 +1655,8 @@ MagickPrivate MagickBooleanType EnqueueOpenCLKernel(cl_kernel kernel,
   if (status != CL_SUCCESS)
     {
       (void) OpenCLThrowMagickException(input_info->opencl->device,exception,
-      GetMagickModule(),ResourceLimitWarning,"clEnqueueNDRangeKernel failed.",
-      "'%s'",".");
+        GetMagickModule(),ResourceLimitWarning,
+        "clEnqueueNDRangeKernel failed.","'%s'",".");
       return(MagickFalse);
     }
   RegisterCacheEvent(input_info->opencl,event);
@@ -2825,8 +2831,6 @@ static MagickCLEnv RelinquishMagickCLEnv(MagickCLEnv clEnv)
 %    o device: the OpenCL device.
 %
 %    o queue: the OpenCL queue to be released.
-%
-%
 */
 
 MagickPrivate void RelinquishOpenCLCommandQueue(MagickCLDevice device,
@@ -2838,7 +2842,7 @@ MagickPrivate void RelinquishOpenCLCommandQueue(MagickCLDevice device,
   assert(device != (MagickCLDevice) NULL);
   LockSemaphoreInfo(device->lock);
   if ((device->profile_kernels != MagickFalse) ||
-      (device->command_queues_index >= MAGICKCORE_OPENCL_COMMAND_QUEUES - 1))
+      (device->command_queues_index >= MAGICKCORE_OPENCL_COMMAND_QUEUES-1))
     {
       UnlockSemaphoreInfo(device->lock);
       openCL_library->clFinish(queue);
@@ -2846,7 +2850,7 @@ MagickPrivate void RelinquishOpenCLCommandQueue(MagickCLDevice device,
     }
   else
     {
-      device->command_queues[++device->command_queues_index] = queue;
+      device->command_queues[++device->command_queues_index]=queue;
       UnlockSemaphoreInfo(device->lock);
     }
 }

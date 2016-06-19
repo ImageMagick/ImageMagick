@@ -1170,6 +1170,8 @@ MagickPrivate cl_mem GetAuthenticOpenCLBuffer(const Image *image,
       assert(cache_info->pixels != NULL);
       cache_info->opencl=AcquireMagickCLCacheInfo(device,cache_info->pixels,
         cache_info->length);
+      if (cache_info->opencl == (MagickCLCacheInfo) NULL)
+        return((cl_mem) NULL);
     }
   return(cache_info->opencl->buffer);
 }
@@ -4932,10 +4934,11 @@ static void CopyOpenCLBuffer(CacheInfo *magick_restrict cache_info)
       (cache_info->opencl == (MagickCLCacheInfo) NULL))
     return;
   /*
-  Ensure single threaded access to OpenCL environment.
+    Ensure single threaded access to OpenCL environment.
   */
   LockSemaphoreInfo(cache_info->semaphore);
-  cache_info->opencl=CopyMagickCLCacheInfo(cache_info->opencl);
+  cache_info->opencl=(MagickCLCacheInfo) CopyMagickCLCacheInfo(
+    cache_info->opencl);
   UnlockSemaphoreInfo(cache_info->semaphore);
 }
 
