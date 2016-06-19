@@ -4,6 +4,8 @@
 2016-06-12  7.0.2-1 Cristy  <quetzlzacatenango@image...>
   * Distort no longer converts grayscale image to sRGB (reference
     https://www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=29895).
+  * Don't return a zero bounding box for QueryMultilineFontMetrics() (reference
+    https://github.com/ImageMagick/ImageMagick/issues/222).
 
 2016-06-12  7.0.2-0 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.2-0, GIT revision 10884:f0e15e8:20160612.
