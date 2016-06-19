@@ -609,7 +609,8 @@ static Image *ComputeBlurImage(const Image* image,MagickCLEnv clEnv,
   imageBuffer=GetAuthenticOpenCLBuffer(image,device,exception);
   if (imageBuffer == (cl_mem) NULL)
     goto cleanup;
-  filteredImage=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
+  filteredImage=CloneImage(image,image->columns,image->rows,MagickTrue,
+    exception);
   if (filteredImage == (Image *) NULL)
     goto cleanup;
   filteredImageBuffer=GetAuthenticOpenCLBuffer(filteredImage,device,exception);
@@ -2801,7 +2802,7 @@ static MagickBooleanType ComputeFunctionImage(Image *image,MagickCLEnv clEnv,
   for (i=0; i<number_parameters; i++)
     parametersBufferPtr[i]=(float) parameters[i];
   parametersBuffer=CreateOpenCLBuffer(device,CL_MEM_READ_ONLY |
-    CL_MEM_COPY_HOST_PTR,number_parameters*sizeof(float),
+    CL_MEM_COPY_HOST_PTR,number_parameters*sizeof(*parametersBufferPtr),
     parametersBufferPtr);
   parametersBufferPtr=RelinquishMagickMemory(parametersBufferPtr);
   if (parametersBuffer == (cl_mem) NULL)
@@ -4744,7 +4745,8 @@ static Image *ComputeUnsharpMaskImage(const Image *image,MagickCLEnv clEnv,
   imageBuffer=GetAuthenticOpenCLBuffer(image,device,exception);
   if (imageBuffer == (cl_mem) NULL)
     goto cleanup;
-  filteredImage=CloneImage(image,0,0,MagickTrue,exception);
+  filteredImage=CloneImage(image,image->columns,image->rows,MagickTrue,
+    exception);
   if (filteredImage == (Image *) NULL)
     goto cleanup;
   filteredImageBuffer=GetAuthenticOpenCLBuffer(filteredImage,device,exception);
@@ -4909,7 +4911,8 @@ static Image *ComputeUnsharpMaskImageSingle(const Image *image,
   imageBuffer=GetAuthenticOpenCLBuffer(image,device,exception);
   if (imageBuffer == (cl_mem) NULL)
     goto cleanup;
-  filteredImage=CloneImage(image,0,0,MagickTrue,exception);
+  filteredImage=CloneImage(image,image->columns,image->rows,MagickTrue,
+    exception);
   if (filteredImage == (Image *) NULL)
     goto cleanup;
   filteredImageBuffer=GetAuthenticOpenCLBuffer(filteredImage,device,exception);
@@ -5054,7 +5057,8 @@ static Image *ComputeWaveletDenoiseImage(const Image *image,MagickCLEnv clEnv,
   imageBuffer=GetAuthenticOpenCLBuffer(image,device,exception);
   if (imageBuffer == (cl_mem) NULL)
     goto cleanup;
-  filteredImage=CloneImage(image,0,0,MagickTrue,exception);
+  filteredImage=CloneImage(image,image->columns,image->rows,MagickTrue,
+    exception);
   if (filteredImage == (Image *) NULL)
     goto cleanup;
   filteredImageBuffer=GetAuthenticOpenCLBuffer(filteredImage,device,exception);
