@@ -264,11 +264,12 @@ static cl_mem createKernelInfo(MagickCLDevice device,const double radius,
       ResourceLimitWarning,"AcquireKernelInfo failed.",".");
     return((cl_mem) NULL);
   }
-  kernelBufferPtr=(float *)AcquireMagickMemory(kernel->width*sizeof(float));
+  kernelBufferPtr=(float *)AcquireMagickMemory(kernel->width*
+    sizeof(*kernelBufferPtr));
   for (i = 0; i < (ssize_t) kernel->width; i++)
     kernelBufferPtr[i] = (float)kernel->values[i];
-  imageKernelBuffer=CreateOpenCLBuffer(device,CL_MEM_READ_ONLY |
-    CL_MEM_COPY_HOST_PTR,kernel->width*sizeof(float),kernelBufferPtr);
+  imageKernelBuffer=CreateOpenCLBuffer(device,CL_MEM_COPY_HOST_PTR |
+    CL_MEM_READ_ONLY,kernel->width*sizeof(*kernelBufferPtr),kernelBufferPtr);
   *width=kernel->width;
   kernelBufferPtr=(float *) RelinquishMagickMemory(kernelBufferPtr);
   kernel=DestroyKernelInfo(kernel);
@@ -696,7 +697,7 @@ static Image *ComputeBlurImage(const Image* image,MagickCLEnv clEnv,
   lsize[0]=1;
   lsize[1]=chunkSize;
 
-  outputReady=EnqueueOpenCLKernel(blurRowKernel,2,NULL,gsize,lsize,image,
+  outputReady=EnqueueOpenCLKernel(blurColumnKernel,2,NULL,gsize,lsize,image,
     filteredImage,exception);
 
 cleanup:
