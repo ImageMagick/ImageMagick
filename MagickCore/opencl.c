@@ -433,23 +433,6 @@ static size_t StringSignature(const char* string)
   return(signature);
 }
 
-static MagickCLCacheInfo DestroyMagickCLCacheInfo(MagickCLCacheInfo info)
-{
-  ssize_t
-    i;
-
-  for (i=0; i < (ssize_t) info->event_count; i++)
-    openCL_library->clReleaseEvent(info->events[i]);
-  info->events=RelinquishMagickMemory(info->events);
-  if (info->buffer != (cl_mem) NULL)
-    {
-      openCL_library->clReleaseMemObject(info->buffer);
-      info->buffer=(cl_mem) NULL;
-    }
-  ReleaseOpenCLDevice(info->device);
-  return((MagickCLCacheInfo) RelinquishMagickMemory(info));
-}
-
 /*
   Provide call to OpenCL library methods
 */
@@ -2705,10 +2688,26 @@ MagickPrivate void ReleaseOpenCLDevice(MagickCLDevice device)
 %    o relinquish_pixels: the pixels will be relinquish when set to true.
 %
 */
+static void DestroyMagickCLCacheInfo(MagickCLCacheInfo info)
+{
+  ssize_t
+    i;
 
-static void CL_API_CALL DestroyMagickCLCacheInfoDelayed(
-  cl_event magick_unused(event),cl_int magick_unused(event_command_exec_status),
-  void *user_data)
+  for (i=0; i < (ssize_t) info->event_count; i++)
+    openCL_library->clReleaseEvent(info->events[i]);
+  info->events=RelinquishMagickMemory(info->events);
+  if (info->buffer != (cl_mem) NULL)
+    {
+      openCL_library->clReleaseMemObject(info->buffer);
+      info->buffer=(cl_mem) NULL;
+    }
+  ReleaseOpenCLDevice(info->device);
+  RelinquishMagickMemory(info);
+}
+
+static void CL_API_CALL DestroyMagickCLCacheInfoAndPixels(
+  cl_event magick_unused(event),
+  cl_int magick_unused(event_command_exec_status),void *user_data)
 {
   MagickCLCacheInfo
     info;
@@ -2726,9 +2725,14 @@ MagickPrivate MagickCLCacheInfo RelinquishMagickCLCacheInfo(
 {
   if (info == (MagickCLCacheInfo) NULL)
     return((MagickCLCacheInfo) NULL);
-  if (relinquish_pixels)
-    openCL_library->clSetEventCallback(info->events[info->event_count-1],
-      CL_COMPLETE,&DestroyMagickCLCacheInfoDelayed,info);
+  if (relinquish_pixels != MagickFalse)
+    {
+      if (info->event_count > 0)
+        openCL_library->clSetEventCallback(info->events[info->event_count-1],
+          CL_COMPLETE,&DestroyMagickCLCacheInfoAndPixels,info);
+      else
+        DestroyMagickCLCacheInfoAndPixels((cl_event) NULL,0,info);
+    }
   else
     DestroyMagickCLCacheInfo(info);
   return((MagickCLCacheInfo) NULL);
