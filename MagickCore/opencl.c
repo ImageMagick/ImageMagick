@@ -1417,17 +1417,25 @@ MagickPrivate MagickCLCacheInfo CopyMagickCLCacheInfo(MagickCLCacheInfo info)
   cl_command_queue
     queue;
 
+  cl_event
+    event;
+
   Quantum
     *pixels;
 
-  if (info == (MagickCLCacheInfo) NULL || info->event_count == 0)
+  if (info == (MagickCLCacheInfo) NULL)
     return((MagickCLCacheInfo) NULL);
-  queue=AcquireOpenCLCommandQueue(info->device);
-  pixels=openCL_library->clEnqueueMapBuffer(queue,info->buffer,CL_TRUE,
-    CL_MAP_READ | CL_MAP_WRITE,0,info->length,info->event_count,info->events,
-    NULL,NULL);
-  assert(pixels == info->pixels);
-  RelinquishOpenCLCommandQueue(info->device,queue);
+  if (info->event_count > 0)
+    {
+      queue=AcquireOpenCLCommandQueue(info->device);
+      pixels=openCL_library->clEnqueueMapBuffer(queue,info->buffer,CL_FALSE,
+        CL_MAP_READ | CL_MAP_WRITE,0,info->length,info->event_count,
+        info->events,&event,(cl_int *) NULL);
+      assert(pixels == info->pixels);
+      RelinquishOpenCLCommandQueue(info->device,queue);
+      openCL_library->clWaitForEvents(1,&event);
+      openCL_library->clReleaseEvent(event);
+    }
   return(RelinquishMagickCLCacheInfo(info,MagickFalse));
 }
 
