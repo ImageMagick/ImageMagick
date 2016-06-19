@@ -2075,7 +2075,7 @@ static MagickBooleanType HasOpenCLDevices(MagickCLEnv clEnv,
       continue;
     }
     device_signature=signature;
-    device_signature=StringSignature(device->platform_name);
+    device_signature^=StringSignature(device->platform_name);
     status=CompileOpenCLKernel(device,accelerateKernelsBuffer,options,
       device_signature,exception);
     UnlockSemaphoreInfo(device->lock);
