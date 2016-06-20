@@ -105,6 +105,14 @@ typedef CL_API_ENTRY cl_int
   (CL_API_CALL *MAGICKpfn_clReleaseCommandQueue)(
     cl_command_queue command_queue) CL_API_SUFFIX__VERSION_1_0;
 
+typedef CL_API_ENTRY cl_int
+  (CL_API_CALL *MAGICKpfn_clFlush)(cl_command_queue command_queue)
+    CL_API_SUFFIX__VERSION_1_0;
+
+typedef CL_API_ENTRY cl_int
+  (CL_API_CALL *MAGICKpfn_clFinish)(cl_command_queue command_queue)
+    CL_API_SUFFIX__VERSION_1_0;
+
 
 /* Memory Object APIs */
 typedef CL_API_ENTRY cl_mem
@@ -222,12 +230,6 @@ typedef CL_API_ENTRY cl_int
     cl_profiling_info param_name,size_t param_value_size,void *param_value,
     size_t *param_value_size_ret) CL_API_SUFFIX__VERSION_1_0;
 
-
-/* Finish APIs */
-typedef CL_API_ENTRY cl_int
-  (CL_API_CALL *MAGICKpfn_clFinish)(cl_command_queue command_queue)
-    CL_API_SUFFIX__VERSION_1_0;
-
 typedef struct MagickLibraryRec MagickLibrary;
 
 struct MagickLibraryRec
@@ -243,6 +245,8 @@ struct MagickLibraryRec
 
   MAGICKpfn_clCreateCommandQueue      clCreateCommandQueue;
   MAGICKpfn_clReleaseCommandQueue     clReleaseCommandQueue;
+  MAGICKpfn_clFlush                   clFlush;
+  MAGICKpfn_clFinish                  clFinish;
 
   MAGICKpfn_clCreateBuffer            clCreateBuffer;
   MAGICKpfn_clReleaseMemObject        clReleaseMemObject;
@@ -270,8 +274,6 @@ struct MagickLibraryRec
   MAGICKpfn_clSetEventCallback        clSetEventCallback;
 
   MAGICKpfn_clGetEventProfilingInfo   clGetEventProfilingInfo;
-
-  MAGICKpfn_clFinish                  clFinish;
 };
 
 struct _MagickCLDevice
@@ -407,8 +409,8 @@ extern MagickPrivate cl_mem
   CreateOpenCLBuffer(MagickCLDevice,cl_mem_flags,size_t,void *);
 
 extern MagickPrivate MagickBooleanType
-  EnqueueOpenCLKernel(cl_kernel,cl_uint,const size_t *,const size_t *,
-    const size_t *,const Image *,const Image *,ExceptionInfo *),
+  EnqueueOpenCLKernel(cl_command_queue,cl_kernel,cl_uint,const size_t *,
+    const size_t *,const size_t *,const Image *,const Image *,ExceptionInfo *),
   InitializeOpenCL(MagickCLEnv,ExceptionInfo *),
   OpenCLThrowMagickException(MagickCLDevice,ExceptionInfo *,
     const char *,const char *,const size_t,const ExceptionType,const char *,
@@ -432,10 +434,10 @@ extern MagickPrivate void
   DumpOpenCLProfileData(),
   OpenCLTerminus(),
   RecordProfileData(MagickCLDevice,cl_kernel,cl_event),
+  ReleaseOpenCLCommandQueue(MagickCLDevice,cl_command_queue),
   ReleaseOpenCLDevice(MagickCLDevice),
   ReleaseOpenCLKernel(cl_kernel),
   ReleaseOpenCLMemObject(cl_mem),
-  RelinquishOpenCLCommandQueue(MagickCLDevice,cl_command_queue),
   RetainOpenCLEvent(cl_event);
 
 #endif

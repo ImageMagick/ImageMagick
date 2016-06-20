@@ -1167,12 +1167,13 @@ MagickPrivate cl_mem GetAuthenticOpenCLBuffer(const Image *image,
     cache_info->opencl=CopyMagickCLCacheInfo(cache_info->opencl);
   if (cache_info->opencl == (MagickCLCacheInfo) NULL)
     {
-      assert(cache_info->pixels != NULL);
+      assert(cache_info->pixels != (Quantum *) NULL);
       cache_info->opencl=AcquireMagickCLCacheInfo(device,cache_info->pixels,
         cache_info->length);
       if (cache_info->opencl == (MagickCLCacheInfo) NULL)
         return((cl_mem) NULL);
     }
+  assert(cache_info->opencl->pixels == cache_info->pixels);
   return(cache_info->opencl->buffer);
 }
 #endif

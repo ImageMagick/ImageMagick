@@ -438,7 +438,7 @@ static size_t StringSignature(const char* string)
 */
 
 MagickPrivate cl_mem CreateOpenCLBuffer(MagickCLDevice device,
-  cl_mem_flags flags, size_t size, void *host_ptr)
+  cl_mem_flags flags,size_t size,void *host_ptr)
 {
   return(openCL_library->clCreateBuffer(device->context,flags,size,host_ptr,
     (cl_int *) NULL));
@@ -508,7 +508,8 @@ MagickPrivate MagickCLCacheInfo AcquireMagickCLCacheInfo(MagickCLDevice device,
   info->length=length;
   info->pixels=pixels;
   info->buffer=openCL_library->clCreateBuffer(device->context,
-    CL_MEM_USE_HOST_PTR,(size_t) length,(void *) pixels,&status);
+    CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR,(size_t) length,(void *) pixels,
+    &status);
   if (status == CL_SUCCESS)
     return(info);
   LockSemaphoreInfo(openCL_lock);
@@ -1400,9 +1401,6 @@ MagickPrivate MagickCLCacheInfo CopyMagickCLCacheInfo(MagickCLCacheInfo info)
   cl_command_queue
     queue;
 
-  cl_event
-    event;
-
   Quantum
     *pixels;
 
@@ -1411,13 +1409,11 @@ MagickPrivate MagickCLCacheInfo CopyMagickCLCacheInfo(MagickCLCacheInfo info)
   if (info->event_count > 0)
     {
       queue=AcquireOpenCLCommandQueue(info->device);
-      pixels=openCL_library->clEnqueueMapBuffer(queue,info->buffer,CL_FALSE,
+      pixels=openCL_library->clEnqueueMapBuffer(queue,info->buffer,CL_TRUE,
         CL_MAP_READ | CL_MAP_WRITE,0,info->length,info->event_count,
-        info->events,&event,(cl_int *) NULL);
+        info->events,(cl_event *) NULL,(cl_int *) NULL);
       assert(pixels == info->pixels);
-      RelinquishOpenCLCommandQueue(info->device,queue);
-      openCL_library->clWaitForEvents(1,&event);
-      openCL_library->clReleaseEvent(event);
+      ReleaseOpenCLCommandQueue(info->device,queue);
     }
   return(RelinquishMagickCLCacheInfo(info,MagickFalse));
 }
@@ -1578,17 +1574,14 @@ static void RegisterCacheEvent(MagickCLCacheInfo info,cl_event event)
   openCL_library->clRetainEvent(event);
 }
 
-MagickPrivate MagickBooleanType EnqueueOpenCLKernel(cl_kernel kernel,
-  cl_uint work_dim,const size_t *offset,const size_t *gsize,
+MagickPrivate MagickBooleanType EnqueueOpenCLKernel(cl_command_queue queue,
+  cl_kernel kernel,cl_uint work_dim,const size_t *offset,const size_t *gsize,
   const size_t *lsize,const Image *input_image,const Image *output_image,
   ExceptionInfo *exception)
 {
   CacheInfo
     *output_info,
     *input_info;
-
-  cl_command_queue
-    queue;
 
   cl_event
     event,
@@ -1604,9 +1597,6 @@ MagickPrivate MagickBooleanType EnqueueOpenCLKernel(cl_kernel kernel,
   input_info=(CacheInfo *) input_image->cache;
   assert(input_info != (CacheInfo *) NULL);
   assert(input_info->opencl != (MagickCLCacheInfo) NULL);
-  queue=AcquireOpenCLCommandQueue(input_info->opencl->device);
-  if (queue == (cl_command_queue) NULL)
-    return(MagickFalse);
   event_count=input_info->opencl->event_count;
   events=input_info->opencl->events;
   output_info=(CacheInfo *) NULL;
@@ -1623,10 +1613,7 @@ MagickPrivate MagickBooleanType EnqueueOpenCLKernel(cl_kernel kernel,
           event_count+=output_info->opencl->event_count;
           events=AcquireQuantumMemory(event_count,sizeof(*events));
           if (events == (cl_event *) NULL)
-            {
-              RelinquishOpenCLCommandQueue(input_info->opencl->device,queue);
-              return(MagickFalse);
-            }
+            return(MagickFalse);
           for (i=0; i < (ssize_t) event_count; i++)
           {
             if (i < (ssize_t) input_info->opencl->event_count)
@@ -1639,7 +1626,6 @@ MagickPrivate MagickBooleanType EnqueueOpenCLKernel(cl_kernel kernel,
     }
   status=openCL_library->clEnqueueNDRangeKernel(queue,kernel,work_dim,offset,
     gsize,lsize,event_count,events,&event);
-  RelinquishOpenCLCommandQueue(input_info->opencl->device,queue);
   if ((output_info != (CacheInfo *) NULL) &&
       (output_info->opencl->event_count > 0))
     events=(cl_event *) RelinquishMagickMemory(events);
@@ -2364,6 +2350,8 @@ static MagickBooleanType BindOpenCLFunctions()
 
   BIND(clCreateCommandQueue);
   BIND(clReleaseCommandQueue);
+  BIND(clFlush);
+  BIND(clFinish);
 
   BIND(clCreateProgramWithSource);
   BIND(clCreateProgramWithBinary);
@@ -2388,8 +2376,6 @@ static MagickBooleanType BindOpenCLFunctions()
   BIND(clSetEventCallback);
 
   BIND(clGetEventProfilingInfo);
-
-  BIND(clFinish);
 
   return(MagickTrue);
 }
@@ -2580,13 +2566,13 @@ MagickPrivate void RecordProfileData(MagickCLDevice device,
   if (status != CL_SUCCESS)
     return;
   name=AcquireQuantumMemory(length,sizeof(*name));
-  (void) openCL_library->clGetKernelInfo(kernel,CL_KERNEL_FUNCTION_NAME,length,
-    name,NULL);
+  status=openCL_library->clGetKernelInfo(kernel,CL_KERNEL_FUNCTION_NAME,length,
+    name,(size_t *) NULL);
   start=end=elapsed=0;
-  openCL_library->clWaitForEvents(1,&event);
-  status=openCL_library->clGetEventProfilingInfo(event,
+  status|=openCL_library->clWaitForEvents(1,&event);
+  status|=openCL_library->clGetEventProfilingInfo(event,
     CL_PROFILING_COMMAND_START,sizeof(cl_ulong),&start,NULL);
-  status&=openCL_library->clGetEventProfilingInfo(event,
+  status|=openCL_library->clGetEventProfilingInfo(event,
     CL_PROFILING_COMMAND_END,sizeof(cl_ulong),&end,NULL);
   if (status != CL_SUCCESS)
     {
@@ -2611,13 +2597,13 @@ MagickPrivate void RecordProfileData(MagickCLDevice device,
         i++;
       }
     }
-  if (profile_record == ((KernelProfileRecord) NULL))
+  if (profile_record == (KernelProfileRecord) NULL)
     {
       profile_record=AcquireMagickMemory(sizeof(*profile_record));
       (void) ResetMagickMemory(profile_record,0,sizeof(*profile_record));
       profile_record->kernel_name=AcquireString(name);
       device->profile_records=ResizeMagickMemory(device->profile_records,(i+2)*
-        sizeof(KernelProfileRecord));
+        sizeof(*device->profile_records));
       device->profile_records[i]=profile_record;
       device->profile_records[i+1]=(KernelProfileRecord) NULL;
     }
@@ -2629,6 +2615,54 @@ MagickPrivate void RecordProfileData(MagickCLDevice device,
   profile_record->count+=1;
   UnlockSemaphoreInfo(device->lock);
   name=DestroyString(name);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++  R e l e a s e O p e n C L C o m m a n d Q u e u e                          %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ReleaseOpenCLCommandQueue() releases the OpenCL command queue
+%
+%  The format of the ReleaseOpenCLCommandQueue method is:
+%
+%      void ReleaseOpenCLCommandQueue(MagickCLDevice device,
+%        cl_command_queue queue)
+%
+%  A description of each parameter follows:
+%
+%    o device: the OpenCL device.
+%
+%    o queue: the OpenCL queue to be released.
+*/
+
+MagickPrivate void ReleaseOpenCLCommandQueue(MagickCLDevice device,
+  cl_command_queue queue)
+{
+  if (queue == (cl_command_queue) NULL)
+    return;
+
+  assert(device != (MagickCLDevice) NULL);
+  LockSemaphoreInfo(device->lock);
+  if ((device->profile_kernels != MagickFalse) ||
+      (device->command_queues_index >= MAGICKCORE_OPENCL_COMMAND_QUEUES-1))
+    {
+      UnlockSemaphoreInfo(device->lock);
+      openCL_library->clFinish(queue);
+      (void) openCL_library->clReleaseCommandQueue(queue);
+    }
+  else
+    {
+      openCL_library->clFlush(queue);
+      device->command_queues[++device->command_queues_index]=queue;
+      UnlockSemaphoreInfo(device->lock);
+    }
 }
 
 /*
@@ -2695,12 +2729,9 @@ static void DestroyMagickCLCacheInfo(MagickCLCacheInfo info)
 
   for (i=0; i < (ssize_t) info->event_count; i++)
     openCL_library->clReleaseEvent(info->events[i]);
-  info->events=RelinquishMagickMemory(info->events);
+  info->events=(cl_event *) RelinquishMagickMemory(info->events);
   if (info->buffer != (cl_mem) NULL)
-    {
-      openCL_library->clReleaseMemObject(info->buffer);
-      info->buffer=(cl_mem) NULL;
-    }
+    openCL_library->clReleaseMemObject(info->buffer);
   ReleaseOpenCLDevice(info->device);
   RelinquishMagickMemory(info);
 }
@@ -2818,53 +2849,6 @@ static MagickCLEnv RelinquishMagickCLEnv(MagickCLEnv clEnv)
       clEnv->contexts=(cl_context *) RelinquishMagickMemory(clEnv->contexts);
     }
   return((MagickCLEnv) RelinquishMagickMemory(clEnv));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   R e l i n q u i s h O p e n C L C o m m a n d Q u e u e                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  RelinquishOpenCLCommandQueue() releases the OpenCL command queue
-%
-%  The format of the RelinquishOpenCLCommandQueue method is:
-%
-%      void RelinquishOpenCLCommandQueue(MagickCLDevice device,
-%        cl_command_queue queue)
-%
-%  A description of each parameter follows:
-%
-%    o device: the OpenCL device.
-%
-%    o queue: the OpenCL queue to be released.
-*/
-
-MagickPrivate void RelinquishOpenCLCommandQueue(MagickCLDevice device,
-  cl_command_queue queue)
-{
-  if (queue == (cl_command_queue) NULL)
-    return;
-
-  assert(device != (MagickCLDevice) NULL);
-  LockSemaphoreInfo(device->lock);
-  if ((device->profile_kernels != MagickFalse) ||
-      (device->command_queues_index >= MAGICKCORE_OPENCL_COMMAND_QUEUES-1))
-    {
-      UnlockSemaphoreInfo(device->lock);
-      openCL_library->clFinish(queue);
-      (void) openCL_library->clReleaseCommandQueue(queue);
-    }
-  else
-    {
-      device->command_queues[++device->command_queues_index]=queue;
-      UnlockSemaphoreInfo(device->lock);
-    }
 }
 
 /*

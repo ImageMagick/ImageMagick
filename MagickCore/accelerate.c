@@ -371,6 +371,9 @@ cleanup:
 static Image *ComputeAddNoiseImage(const Image *image,MagickCLEnv clEnv,
   const NoiseType noise_type,ExceptionInfo *exception)
 {
+  cl_command_queue
+    queue;
+
   cl_float
     attenuate;
 
@@ -423,6 +426,9 @@ static Image *ComputeAddNoiseImage(const Image *image,MagickCLEnv clEnv,
   outputReady=MagickFalse;
 
   device=RequestOpenCLDevice(clEnv);
+  queue=AcquireOpenCLCommandQueue(device);
+  if (queue == (cl_command_queue) NULL)
+    goto cleanup;
   imageBuffer=GetAuthenticOpenCLBuffer(image,device,exception);
   if (imageBuffer == (cl_mem) NULL)
     goto cleanup;
@@ -510,12 +516,15 @@ static Image *ComputeAddNoiseImage(const Image *image,MagickCLEnv clEnv,
     goto cleanup;
   }
 
-  outputReady=EnqueueOpenCLKernel(addNoiseKernel,1,(const size_t *) NULL,gsize,
+  outputReady=EnqueueOpenCLKernel(queue,addNoiseKernel,1,(const size_t *) NULL,gsize,
     lsize,image,filteredImage,exception);
+
 cleanup:
 
   if (addNoiseKernel != (cl_kernel) NULL)
     ReleaseOpenCLKernel(addNoiseKernel);
+  if (queue != (cl_command_queue) NULL)
+    ReleaseOpenCLCommandQueue(device,queue);
   if (device != (MagickCLDevice) NULL)
     ReleaseOpenCLDevice(device);
   if ((outputReady == MagickFalse) && (filteredImage != (Image *) NULL))
@@ -562,6 +571,9 @@ MagickPrivate Image *AccelerateAddNoiseImage(const Image *image,
 static Image *ComputeBlurImage(const Image* image,MagickCLEnv clEnv,
   const double radius,const double sigma,ExceptionInfo *exception)
 {
+  cl_command_queue
+    queue;
+
   cl_int
     status;
 
@@ -607,6 +619,7 @@ static Image *ComputeBlurImage(const Image* image,MagickCLEnv clEnv,
   outputReady=MagickFalse;
 
   device=RequestOpenCLDevice(clEnv);
+  queue=AcquireOpenCLCommandQueue(device);
   imageBuffer=GetAuthenticOpenCLBuffer(image,device,exception);
   if (imageBuffer == (cl_mem) NULL)
     goto cleanup;
@@ -625,19 +638,12 @@ static Image *ComputeBlurImage(const Image* image,MagickCLEnv clEnv,
 
   length=image->columns*image->rows;
   tempImageBuffer=CreateOpenCLBuffer(device,CL_MEM_READ_WRITE,length*
-    sizeof(cl_float4),NULL);
+    sizeof(cl_float4),(void *) NULL);
   if (tempImageBuffer == (cl_mem) NULL)
     goto cleanup;
 
   blurRowKernel=AcquireOpenCLKernel(device,"BlurRow");
   if (blurRowKernel == (cl_kernel) NULL)
-  {
-    (void) OpenCLThrowMagickException(device,exception,GetMagickModule(),
-      ResourceLimitWarning,"AcquireOpenCLKernel failed.",".");
-    goto cleanup;
-  }
-  blurColumnKernel=AcquireOpenCLKernel(device,"BlurColumn");
-  if (blurColumnKernel == (cl_kernel) NULL)
   {
     (void) OpenCLThrowMagickException(device,exception,GetMagickModule(),
       ResourceLimitWarning,"AcquireOpenCLKernel failed.",".");
@@ -670,10 +676,18 @@ static Image *ComputeBlurImage(const Image* image,MagickCLEnv clEnv,
   lsize[0]=chunkSize;
   lsize[1]=1;
 
-  outputReady=EnqueueOpenCLKernel(blurRowKernel,2,NULL,gsize,lsize,image,
-    filteredImage,exception);
+  outputReady=EnqueueOpenCLKernel(queue,blurRowKernel,2,(size_t *) NULL,gsize,
+    lsize,image,filteredImage,exception);
   if (outputReady == MagickFalse)
     goto cleanup;
+
+  blurColumnKernel=AcquireOpenCLKernel(device,"BlurColumn");
+  if (blurColumnKernel == (cl_kernel) NULL)
+  {
+    (void) OpenCLThrowMagickException(device,exception,GetMagickModule(),
+      ResourceLimitWarning,"AcquireOpenCLKernel failed.",".");
+    goto cleanup;
+  }
 
   i=0;
   status =SetOpenCLKernelArg(blurColumnKernel,i++,sizeof(cl_mem),(void *)&tempImageBuffer);
@@ -697,8 +711,8 @@ static Image *ComputeBlurImage(const Image* image,MagickCLEnv clEnv,
   lsize[0]=1;
   lsize[1]=chunkSize;
 
-  outputReady=EnqueueOpenCLKernel(blurColumnKernel,2,NULL,gsize,lsize,image,
-    filteredImage,exception);
+  outputReady=EnqueueOpenCLKernel(queue,blurColumnKernel,2,(size_t *) NULL,gsize,
+    lsize,image,filteredImage,exception);
 
 cleanup:
 
@@ -710,6 +724,8 @@ cleanup:
     ReleaseOpenCLKernel(blurRowKernel);
   if (blurColumnKernel != (cl_kernel) NULL)
     ReleaseOpenCLKernel(blurColumnKernel);
+  if (queue != (cl_command_queue) NULL)
+    ReleaseOpenCLCommandQueue(device,queue);
   if (device != (MagickCLDevice) NULL)
     ReleaseOpenCLDevice(device);
   if ((outputReady == MagickFalse) && (filteredImage != (Image *) NULL))
@@ -889,7 +905,7 @@ cleanup:
   if (filterKernel!=NULL)
     ReleaseOpenCLKernel(filterKernel);
   if (queue != NULL)
-    RelinquishOpenCLCommandQueue(device,queue);
+    ReleaseOpenCLCommandQueue(device,queue);
   if (device != NULL)
     ReleaseOpenCLDevice(device);
 
@@ -1489,7 +1505,7 @@ cleanup:
   if (stretchKernel!=NULL)
     ReleaseOpenCLKernel(stretchKernel);
   if (queue != NULL)
-    RelinquishOpenCLCommandQueue(device,queue);
+    ReleaseOpenCLCommandQueue(device,queue);
   if (device != NULL)
     ReleaseOpenCLDevice(device);
 
@@ -1843,7 +1859,7 @@ cleanup:
   if (clkernel != NULL)
     ReleaseOpenCLKernel(clkernel);
   if (queue != NULL)
-    RelinquishOpenCLCommandQueue(device,queue);
+    ReleaseOpenCLCommandQueue(device,queue);
   if (device != NULL)
     ReleaseOpenCLDevice(device);
   if (outputReady == MagickFalse)
@@ -2236,7 +2252,7 @@ cleanup:
     filteredImage_view=DestroyCacheView(filteredImage_view);
 
   if (queue != NULL)
-    RelinquishOpenCLCommandQueue(device,queue);
+    ReleaseOpenCLCommandQueue(device,queue);
   if (device != NULL)
     ReleaseOpenCLDevice(device);
   if (imageBuffer!=NULL)
@@ -2712,7 +2728,7 @@ cleanup:
   if (equalizeKernel!=NULL)
     ReleaseOpenCLKernel(equalizeKernel);
   if (queue != NULL)
-    RelinquishOpenCLCommandQueue(device, queue);
+    ReleaseOpenCLCommandQueue(device, queue);
   if (device != NULL)
     ReleaseOpenCLDevice(device);
 
@@ -2759,6 +2775,9 @@ static MagickBooleanType ComputeFunctionImage(Image *image,MagickCLEnv clEnv,
   const MagickFunction function,const size_t number_parameters,
   const double *parameters,ExceptionInfo *exception)
 {
+  cl_command_queue
+    queue;
+
   cl_int
     status;
 
@@ -2792,6 +2811,7 @@ static MagickBooleanType ComputeFunctionImage(Image *image,MagickCLEnv clEnv,
   parametersBuffer=NULL;
 
   device=RequestOpenCLDevice(clEnv);
+  queue=AcquireOpenCLCommandQueue(device);
   imageBuffer=GetAuthenticOpenCLBuffer(image,device,exception);
   if (imageBuffer == (cl_mem) NULL)
     goto cleanup;
@@ -2840,7 +2860,7 @@ static MagickBooleanType ComputeFunctionImage(Image *image,MagickCLEnv clEnv,
 
   gsize[0]=image->columns;
   gsize[1]=image->rows;
-  outputReady=EnqueueOpenCLKernel(functionKernel,2,(const size_t *) NULL,
+  outputReady=EnqueueOpenCLKernel(queue,functionKernel,2,(const size_t *) NULL,
     gsize,(const size_t *) NULL,image,(const Image *) NULL,exception);
 
 cleanup:
@@ -2849,6 +2869,8 @@ cleanup:
     ReleaseOpenCLMemObject(parametersBuffer);
   if (functionKernel != (cl_kernel) NULL)
     ReleaseOpenCLKernel(functionKernel);
+  if (queue != (cl_command_queue) NULL)
+    ReleaseOpenCLCommandQueue(device,queue);
   if (device != (MagickCLDevice) NULL)
     ReleaseOpenCLDevice(device);
   return(outputReady);
@@ -2894,6 +2916,9 @@ MagickPrivate MagickBooleanType AccelerateFunctionImage(Image *image,
 static MagickBooleanType ComputeGrayscaleImage(Image *image,MagickCLEnv clEnv,
   const PixelIntensityMethod method,ExceptionInfo *exception)
 {
+  cl_command_queue
+    queue;
+
   cl_int
     status;
 
@@ -2924,6 +2949,7 @@ static MagickBooleanType ComputeGrayscaleImage(Image *image,MagickCLEnv clEnv,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
   device=RequestOpenCLDevice(clEnv);
+  queue=AcquireOpenCLCommandQueue(device);
   imageBuffer=GetAuthenticOpenCLBuffer(image,device,exception);
   if (imageBuffer == (cl_mem) NULL)
     goto cleanup;
@@ -2954,13 +2980,16 @@ static MagickBooleanType ComputeGrayscaleImage(Image *image,MagickCLEnv clEnv,
 
   gsize[0]=image->columns;
   gsize[1]=image->rows;
-  outputReady=EnqueueOpenCLKernel(grayscaleKernel,2,(const size_t *) NULL,
-    gsize,(const size_t *) NULL,image,(Image *) NULL,exception);
+  outputReady=EnqueueOpenCLKernel(queue,grayscaleKernel,2,
+    (const size_t *) NULL,gsize,(const size_t *) NULL,image,(Image *) NULL,
+    exception);
 
 cleanup:
 
   if (grayscaleKernel != (cl_kernel) NULL)
     ReleaseOpenCLKernel(grayscaleKernel);
+  if (queue != (cl_command_queue) NULL)
+    ReleaseOpenCLCommandQueue(device,queue);
   if (device != (MagickCLDevice) NULL)
     ReleaseOpenCLDevice(device);
 
@@ -3309,7 +3338,7 @@ cleanup:
   if (blurColumnKernel!=NULL)
     ReleaseOpenCLKernel(blurColumnKernel);
   if (queue != NULL)
-    RelinquishOpenCLCommandQueue(device, queue);
+    ReleaseOpenCLCommandQueue(device, queue);
   if (device != NULL)
     ReleaseOpenCLDevice(device);
   if (outputReady == MagickFalse)
@@ -3522,7 +3551,7 @@ cleanup:
   if (modulateKernel!=NULL)
     ReleaseOpenCLKernel(modulateKernel);
   if (queue != NULL)
-    RelinquishOpenCLCommandQueue(device,queue);
+    ReleaseOpenCLCommandQueue(device,queue);
   if (device != NULL)
     ReleaseOpenCLDevice(device);
 
@@ -3890,7 +3919,7 @@ cleanup:
   if (motionBlurKernel!=NULL)
     ReleaseOpenCLKernel(motionBlurKernel);
   if (queue != NULL)
-    RelinquishOpenCLCommandQueue(device,queue);
+    ReleaseOpenCLCommandQueue(device,queue);
   if (device != NULL)
     ReleaseOpenCLDevice(device);
   if (outputReady == MagickFalse && filteredImage != NULL)
@@ -3939,8 +3968,8 @@ MagickPrivate Image *AccelerateMotionBlurImage(const Image *image,
 */
 
 static MagickBooleanType resizeHorizontalFilter(MagickCLDevice device,
-  const Image *image,Image *filteredImage,cl_mem imageBuffer,
-  cl_uint number_channels,cl_uint columns,cl_uint rows,
+  cl_command_queue queue,const Image *image,Image *filteredImage,
+  cl_mem imageBuffer,cl_uint number_channels,cl_uint columns,cl_uint rows,
   cl_mem resizedImageBuffer,cl_uint resizedColumns,cl_uint resizedRows,
   const ResizeFilter *resizeFilter,cl_mem resizeFilterCubicCoefficients,
   const float xFactor,ExceptionInfo *exception)
@@ -4110,8 +4139,8 @@ RestoreMSCWarning
   gsize[1]=resizedRows;
   lsize[0]=workgroupSize;
   lsize[1]=1;
-  outputReady=EnqueueOpenCLKernel(horizontalKernel,2,(const size_t *) NULL,
-    gsize,lsize,image,filteredImage,exception);
+  outputReady=EnqueueOpenCLKernel(queue,horizontalKernel,2,
+    (const size_t *) NULL,gsize,lsize,image,filteredImage,exception);
 cleanup:
 
   if (horizontalKernel != (cl_kernel) NULL)
@@ -4121,8 +4150,8 @@ cleanup:
 }
 
 static MagickBooleanType resizeVerticalFilter(MagickCLDevice device,
-  const Image *image,Image * filteredImage,cl_mem imageBuffer,
-  cl_uint number_channels,cl_uint columns,cl_uint rows,
+  cl_command_queue queue,const Image *image,Image * filteredImage,
+  cl_mem imageBuffer,cl_uint number_channels,cl_uint columns,cl_uint rows,
   cl_mem resizedImageBuffer,cl_uint resizedColumns,cl_uint resizedRows,
   const ResizeFilter *resizeFilter,cl_mem resizeFilterCubicCoefficients,
   const float yFactor,ExceptionInfo *exception)
@@ -4292,7 +4321,7 @@ RestoreMSCWarning
     workgroupSize;
   lsize[0]=1;
   lsize[1]=workgroupSize;
-  outputReady=EnqueueOpenCLKernel(verticalKernel,2,(const size_t *) NULL,
+  outputReady=EnqueueOpenCLKernel(queue,verticalKernel,2,(const size_t *) NULL,
     gsize,lsize,image,filteredImage,exception);
 
 cleanup:
@@ -4307,6 +4336,9 @@ static Image *ComputeResizeImage(const Image* image,MagickCLEnv clEnv,
   const size_t resizedColumns,const size_t resizedRows,
   const ResizeFilter *resizeFilter,ExceptionInfo *exception)
 {
+  cl_command_queue
+    queue;
+
   cl_mem
     cubicCoefficientsBuffer,
     filteredImageBuffer,
@@ -4345,6 +4377,7 @@ static Image *ComputeResizeImage(const Image* image,MagickCLEnv clEnv,
   outputReady=MagickFalse;
 
   device=RequestOpenCLDevice(clEnv);
+  queue=AcquireOpenCLCommandQueue(device);
   imageBuffer=GetAuthenticOpenCLBuffer(image,device,exception);
   if (imageBuffer == (cl_mem) NULL)
     goto cleanup;
@@ -4359,8 +4392,8 @@ static Image *ComputeResizeImage(const Image* image,MagickCLEnv clEnv,
   resizeFilterCoefficient=GetResizeFilterCoefficient(resizeFilter);
   for (i = 0; i < 7; i++)
     coefficientBuffer[i]=(float) resizeFilterCoefficient[i];
-  cubicCoefficientsBuffer=CreateOpenCLBuffer(device,CL_MEM_READ_ONLY |
-    CL_MEM_COPY_HOST_PTR,7*sizeof(float),&coefficientBuffer);
+  cubicCoefficientsBuffer=CreateOpenCLBuffer(device,CL_MEM_COPY_HOST_PTR |
+    CL_MEM_READ_ONLY,7*sizeof(*resizeFilterCoefficient),&coefficientBuffer);
   if (cubicCoefficientsBuffer == (cl_mem) NULL)
   {
     (void) OpenCLThrowMagickException(device,exception,GetMagickModule(),
@@ -4383,17 +4416,19 @@ static Image *ComputeResizeImage(const Image* image,MagickCLEnv clEnv,
       goto cleanup;
     }
 
-    outputReady=resizeHorizontalFilter(device,image,filteredImage,imageBuffer,
-      number_channels,(cl_uint) image->columns,(cl_uint) image->rows,
-      tempImageBuffer,(cl_uint) resizedColumns,(cl_uint) image->rows,
-      resizeFilter,cubicCoefficientsBuffer,xFactor,exception);
+    outputReady=resizeHorizontalFilter(device,queue,image,filteredImage,
+      imageBuffer,number_channels,(cl_uint) image->columns,
+      (cl_uint) image->rows,tempImageBuffer,(cl_uint) resizedColumns,
+      (cl_uint) image->rows,resizeFilter,cubicCoefficientsBuffer,xFactor,
+      exception);
     if (outputReady == MagickFalse)
       goto cleanup;
 
-    outputReady=resizeVerticalFilter(device,image,filteredImage,tempImageBuffer,
-      number_channels,(cl_uint) resizedColumns,(cl_uint) image->rows,
-      filteredImageBuffer,(cl_uint) resizedColumns,(cl_uint) resizedRows,
-      resizeFilter,cubicCoefficientsBuffer,yFactor,exception);
+    outputReady=resizeVerticalFilter(device,queue,image,filteredImage,
+      tempImageBuffer,number_channels,(cl_uint) resizedColumns,
+      (cl_uint) image->rows,filteredImageBuffer,(cl_uint) resizedColumns,
+      (cl_uint) resizedRows,resizeFilter,cubicCoefficientsBuffer,yFactor,
+      exception);
     if (outputReady == MagickFalse)
       goto cleanup;
   }
@@ -4409,17 +4444,19 @@ static Image *ComputeResizeImage(const Image* image,MagickCLEnv clEnv,
       goto cleanup;
     }
 
-    outputReady=resizeVerticalFilter(device,image,filteredImage,imageBuffer,
-      number_channels,(cl_uint) image->columns,(cl_int) image->rows,
-      tempImageBuffer,(cl_uint) image->columns,(cl_uint) resizedRows,
-      resizeFilter,cubicCoefficientsBuffer,yFactor,exception);
+    outputReady=resizeVerticalFilter(device,queue,image,filteredImage,
+      imageBuffer,number_channels,(cl_uint) image->columns,
+      (cl_int) image->rows,tempImageBuffer,(cl_uint) image->columns,
+      (cl_uint) resizedRows,resizeFilter,cubicCoefficientsBuffer,yFactor,
+      exception);
     if (outputReady == MagickFalse)
       goto cleanup;
 
-    outputReady=resizeHorizontalFilter(device,image,filteredImage,tempImageBuffer,
-      number_channels,(cl_uint) image->columns, (cl_uint) resizedRows,
-      filteredImageBuffer,(cl_uint) resizedColumns, (cl_uint) resizedRows,
-      resizeFilter,cubicCoefficientsBuffer,xFactor,exception);
+    outputReady=resizeHorizontalFilter(device,queue,image,filteredImage,
+      tempImageBuffer,number_channels,(cl_uint) image->columns,
+      (cl_uint) resizedRows,filteredImageBuffer,(cl_uint) resizedColumns,
+      (cl_uint) resizedRows,resizeFilter,cubicCoefficientsBuffer,xFactor,
+      exception);
     if (outputReady == MagickFalse)
       goto cleanup;
   }
@@ -4430,6 +4467,8 @@ cleanup:
     ReleaseOpenCLMemObject(tempImageBuffer);
   if (cubicCoefficientsBuffer != (cl_mem) NULL)
     ReleaseOpenCLMemObject(cubicCoefficientsBuffer);
+  if (queue != (cl_command_queue) NULL)
+    ReleaseOpenCLCommandQueue(device,queue);
   if (device != (MagickCLDevice) NULL)
     ReleaseOpenCLDevice(device);
   if ((outputReady == MagickFalse) && (filteredImage != (Image *) NULL))
@@ -4500,6 +4539,9 @@ MagickPrivate Image *AccelerateResizeImage(const Image *image,
 static Image* ComputeRotationalBlurImage(const Image *image,MagickCLEnv clEnv,
   const double angle,ExceptionInfo *exception)
 {
+  cl_command_queue
+    queue;
+
   cl_float2
     blurCenter;
 
@@ -4552,6 +4594,7 @@ static Image* ComputeRotationalBlurImage(const Image *image,MagickCLEnv clEnv,
   outputReady=MagickFalse;
 
   device=RequestOpenCLDevice(clEnv);
+  queue=AcquireOpenCLCommandQueue(device);
   imageBuffer=GetAuthenticOpenCLBuffer(image,device,exception);
   if (imageBuffer == (cl_mem) NULL)
     goto cleanup;
@@ -4634,8 +4677,9 @@ static Image* ComputeRotationalBlurImage(const Image *image,MagickCLEnv clEnv,
 
   gsize[0]=image->columns;
   gsize[1]=image->rows;
-  outputReady=EnqueueOpenCLKernel(rotationalBlurKernel,2,(const size_t *) NULL,
-    gsize,(const size_t *) NULL,image,filteredImage,exception);
+  outputReady=EnqueueOpenCLKernel(queue,rotationalBlurKernel,2,
+    (const size_t *) NULL,gsize,(const size_t *) NULL,image,filteredImage,
+    exception);
 
 cleanup:
 
@@ -4645,6 +4689,8 @@ cleanup:
     ReleaseOpenCLMemObject(cosThetaBuffer);
   if (rotationalBlurKernel != (cl_kernel) NULL)
     ReleaseOpenCLKernel(rotationalBlurKernel);
+  if (queue != (cl_command_queue) NULL)
+    ReleaseOpenCLCommandQueue(device,queue);
   if (device != (MagickCLDevice) NULL)
     ReleaseOpenCLDevice(device);
   if ((outputReady == MagickFalse) && (filteredImage != (Image *) NULL))
@@ -4692,6 +4738,9 @@ static Image *ComputeUnsharpMaskImage(const Image *image,MagickCLEnv clEnv,
   const double radius,const double sigma,const double gain,
   const double threshold,ExceptionInfo *exception)
 {
+  cl_command_queue
+    queue;
+
   cl_int
     status;
 
@@ -4743,6 +4792,7 @@ static Image *ComputeUnsharpMaskImage(const Image *image,MagickCLEnv clEnv,
   outputReady=MagickFalse;
 
   device=RequestOpenCLDevice(clEnv);
+  queue=AcquireOpenCLCommandQueue(device);
   imageBuffer=GetAuthenticOpenCLBuffer(image,device,exception);
   if (imageBuffer == (cl_mem) NULL)
     goto cleanup;
@@ -4811,8 +4861,8 @@ static Image *ComputeUnsharpMaskImage(const Image *image,MagickCLEnv clEnv,
   gsize[1]=image->rows;
   lsize[0]=chunkSize;
   lsize[1]=1;
-  outputReady=EnqueueOpenCLKernel(blurRowKernel,2,(const size_t *) NULL,gsize,
-    lsize,image,filteredImage,exception);
+  outputReady=EnqueueOpenCLKernel(queue,blurRowKernel,2,
+    (const size_t *) NULL,gsize,lsize,image,filteredImage,exception);
   
   chunkSize=256;
   fGain=(float) gain;
@@ -4843,7 +4893,7 @@ static Image *ComputeUnsharpMaskImage(const Image *image,MagickCLEnv clEnv,
   gsize[1]=chunkSize*((image->rows+chunkSize-1)/chunkSize);
   lsize[0]=1;
   lsize[1]=chunkSize;
-  outputReady=EnqueueOpenCLKernel(unsharpMaskBlurColumnKernel,2,
+  outputReady=EnqueueOpenCLKernel(queue,unsharpMaskBlurColumnKernel,2,
     (const size_t *) NULL,gsize,lsize,image,filteredImage,exception);
 
 cleanup:
@@ -4856,6 +4906,8 @@ cleanup:
     ReleaseOpenCLKernel(blurRowKernel);
   if (unsharpMaskBlurColumnKernel != (cl_kernel) NULL)
     ReleaseOpenCLKernel(unsharpMaskBlurColumnKernel);
+  if (queue != (cl_command_queue) NULL)
+    ReleaseOpenCLCommandQueue(device,queue);
   if (device != (MagickCLDevice) NULL)
     ReleaseOpenCLDevice(device);
   if ((outputReady == MagickFalse) && (filteredImage != (Image *) NULL))
@@ -4868,6 +4920,9 @@ static Image *ComputeUnsharpMaskImageSingle(const Image *image,
   MagickCLEnv clEnv,const double radius,const double sigma,const double gain,
   const double threshold,ExceptionInfo *exception)
 {
+  cl_command_queue
+    queue;
+
   cl_int
     status;
 
@@ -4909,6 +4964,7 @@ static Image *ComputeUnsharpMaskImageSingle(const Image *image,
   outputReady=MagickFalse;
 
   device=RequestOpenCLDevice(clEnv);
+  queue=AcquireOpenCLCommandQueue(device);
   imageBuffer=GetAuthenticOpenCLBuffer(image,device,exception);
   if (imageBuffer == (cl_mem) NULL)
     goto cleanup;
@@ -4960,7 +5016,7 @@ static Image *ComputeUnsharpMaskImageSingle(const Image *image,
   gsize[1]=((image->rows + 31) / 32)*32;
   lsize[0]=8;
   lsize[1]=32;
-  outputReady=EnqueueOpenCLKernel(unsharpMaskKernel,2,(const size_t *) NULL,
+  outputReady=EnqueueOpenCLKernel(queue,unsharpMaskKernel,2,(const size_t *) NULL,
     gsize,lsize,image,filteredImage,exception);
 
 cleanup:
@@ -4969,6 +5025,8 @@ cleanup:
     ReleaseOpenCLMemObject(imageKernelBuffer);
   if (unsharpMaskKernel != (cl_kernel) NULL)
     ReleaseOpenCLKernel(unsharpMaskKernel);
+  if (queue != (cl_command_queue) NULL)
+    ReleaseOpenCLCommandQueue(device,queue);
   if (device != (MagickCLDevice) NULL)
     ReleaseOpenCLDevice(device);
   if ((outputReady == MagickFalse) && (filteredImage != (Image *) NULL))
@@ -5009,6 +5067,9 @@ MagickPrivate Image *AccelerateUnsharpMaskImage(const Image *image,
 static Image *ComputeWaveletDenoiseImage(const Image *image,MagickCLEnv clEnv,
   const double threshold,ExceptionInfo *exception)
 {
+  cl_command_queue
+    queue;
+
   const cl_int
     PASSES=5;
 
@@ -5055,6 +5116,7 @@ static Image *ComputeWaveletDenoiseImage(const Image *image,MagickCLEnv clEnv,
   outputReady=MagickFalse;
 
   device=RequestOpenCLDevice(clEnv);
+  queue=AcquireOpenCLCommandQueue(device);
   imageBuffer=GetAuthenticOpenCLBuffer(image,device,exception);
   if (imageBuffer == (cl_mem) NULL)
     goto cleanup;
@@ -5102,13 +5164,15 @@ static Image *ComputeWaveletDenoiseImage(const Image *image,MagickCLEnv clEnv,
   gsize[1]=((height+(SIZE-1))/SIZE)*4;
   lsize[0]=TILESIZE;
   lsize[1]=4;
-  outputReady=EnqueueOpenCLKernel(denoiseKernel,2,(const size_t *) NULL,gsize,
-    lsize,image,filteredImage,exception);
+  outputReady=EnqueueOpenCLKernel(queue,denoiseKernel,2,(const size_t *) NULL,
+    gsize,lsize,image,filteredImage,exception);
 
 cleanup:
 
   if (denoiseKernel != (cl_kernel) NULL)
     ReleaseOpenCLKernel(denoiseKernel);
+  if (queue != (cl_command_queue) NULL)
+    ReleaseOpenCLCommandQueue(device,queue);
   if (device != (MagickCLDevice) NULL)
     ReleaseOpenCLDevice(device);
   if ((outputReady == MagickFalse) && (filteredImage != (Image *) NULL))
