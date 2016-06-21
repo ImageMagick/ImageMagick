@@ -392,6 +392,7 @@ extern MagickPrivate MagickBooleanType
   OpenCLThrowMagickException(ExceptionInfo *,
     const char *,const char *,const size_t,
     const ExceptionType,const char *,const char *,...),
+  RecordProfileData(MagickCLEnv,ProfiledKernels,cl_event),
   RelinquishOpenCLCommandQueue(MagickCLEnv, cl_command_queue),
   RelinquishOpenCLKernel(MagickCLEnv, cl_kernel);
 
@@ -406,8 +407,7 @@ extern MagickPrivate void
   OpenCLLog(const char*);
 
 extern MagickPrivate void
-  OpenCLTerminus(),
-  RecordProfileData(MagickCLEnv,ProfiledKernels,cl_event);
+  OpenCLTerminus();
 
 /* #define OPENCLLOG_ENABLED 1 */
 static inline void OpenCLLogException(const char* function, 

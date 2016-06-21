@@ -185,7 +185,7 @@ double readAccelerateTimer(AccelerateTimer* timer) {
   return (double)timer->_clocks/(double)timer->_freq;
 };
 
-MagickPrivate void RecordProfileData(MagickCLEnv clEnv, ProfiledKernels kernel, cl_event event)
+MagickPrivate MagickBooleanType RecordProfileData(MagickCLEnv clEnv, ProfiledKernels kernel, cl_event event)
 {
 #if PROFILE_OCL_KERNELS
   cl_int status;
@@ -209,6 +209,9 @@ MagickPrivate void RecordProfileData(MagickCLEnv clEnv, ProfiledKernels kernel, 
     profileRecords[kernel].count += 1;
     UnlockSemaphoreInfo(clEnv->commandQueuesLock);
   }
+  return(MagickTrue);
+#else
+  return(MagickFalse);
 #endif
 }
 
