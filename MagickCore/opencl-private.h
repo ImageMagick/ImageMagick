@@ -414,7 +414,8 @@ extern MagickPrivate MagickBooleanType
   InitializeOpenCL(MagickCLEnv,ExceptionInfo *),
   OpenCLThrowMagickException(MagickCLDevice,ExceptionInfo *,
     const char *,const char *,const size_t,const ExceptionType,const char *,
-    const char *,...);
+    const char *,...),
+  RecordProfileData(MagickCLDevice,cl_kernel,cl_event);
 
 extern MagickPrivate MagickCLCacheInfo
   AcquireMagickCLCacheInfo(MagickCLDevice,Quantum *,const MagickSizeType),
@@ -433,7 +434,6 @@ extern MagickPrivate unsigned long
 extern MagickPrivate void
   DumpOpenCLProfileData(),
   OpenCLTerminus(),
-  RecordProfileData(MagickCLDevice,cl_kernel,cl_event),
   ReleaseOpenCLCommandQueue(MagickCLDevice,cl_command_queue),
   ReleaseOpenCLDevice(MagickCLDevice),
   ReleaseOpenCLKernel(cl_kernel),

@@ -1636,10 +1636,12 @@ MagickPrivate MagickBooleanType EnqueueOpenCLKernel(cl_command_queue queue,
         "clEnqueueNDRangeKernel failed.","'%s'",".");
       return(MagickFalse);
     }
-  RegisterCacheEvent(input_info->opencl,event);
-  if (output_info != (CacheInfo *) NULL)
-    RegisterCacheEvent(output_info->opencl,event);
-  RecordProfileData(input_info->opencl->device,kernel,event);
+  if (RecordProfileData(input_info->opencl->device,kernel,event) == MagickFalse)
+    {
+      RegisterCacheEvent(input_info->opencl,event);
+      if (output_info != (CacheInfo *) NULL)
+        RegisterCacheEvent(output_info->opencl,event);
+    }
   openCL_library->clReleaseEvent(event);
   return(MagickTrue);
 }
@@ -2538,7 +2540,7 @@ MagickPrivate MagickBooleanType OpenCLThrowMagickException(
 %
 */
 
-MagickPrivate void RecordProfileData(MagickCLDevice device,
+MagickPrivate MagickBooleanType RecordProfileData(MagickCLDevice device,
   cl_kernel kernel,cl_event event)
 {
   char
@@ -2560,16 +2562,20 @@ MagickPrivate void RecordProfileData(MagickCLDevice device,
     length;
 
   if (device->profile_kernels == MagickFalse)
-    return;
+    return(MagickFalse);
+  status=openCL_library->clWaitForEvents(1,&event);
+  if (status != CL_SUCCESS)
+    return(MagickFalse);
   status=openCL_library->clGetKernelInfo(kernel,CL_KERNEL_FUNCTION_NAME,0,NULL,
     &length);
   if (status != CL_SUCCESS)
-    return;
+    return(MagickTrue);
   name=AcquireQuantumMemory(length,sizeof(*name));
+  if (name == (char *) NULL)
+    return(MagickTrue);
+  start=end=elapsed=0;
   status=openCL_library->clGetKernelInfo(kernel,CL_KERNEL_FUNCTION_NAME,length,
     name,(size_t *) NULL);
-  start=end=elapsed=0;
-  status|=openCL_library->clWaitForEvents(1,&event);
   status|=openCL_library->clGetEventProfilingInfo(event,
     CL_PROFILING_COMMAND_START,sizeof(cl_ulong),&start,NULL);
   status|=openCL_library->clGetEventProfilingInfo(event,
@@ -2577,7 +2583,7 @@ MagickPrivate void RecordProfileData(MagickCLDevice device,
   if (status != CL_SUCCESS)
     {
       name=DestroyString(name);
-      return;
+      return(MagickTrue);
     }
   start/=1000; // usecs
   end/=1000;   // usecs
@@ -2587,7 +2593,7 @@ MagickPrivate void RecordProfileData(MagickCLDevice device,
   profile_record=(KernelProfileRecord) NULL;
   if (device->profile_records != (KernelProfileRecord *) NULL)
     {
-      while (device->profile_records[i] != ((KernelProfileRecord) NULL))
+      while (device->profile_records[i] != (KernelProfileRecord) NULL)
       {
         if (LocaleCompare(device->profile_records[i]->kernel_name,name) == 0)
           {
@@ -2597,11 +2603,13 @@ MagickPrivate void RecordProfileData(MagickCLDevice device,
         i++;
       }
     }
-  if (profile_record == (KernelProfileRecord) NULL)
+  if (profile_record != (KernelProfileRecord) NULL)
+    name=DestroyString(name);
+  else
     {
       profile_record=AcquireMagickMemory(sizeof(*profile_record));
       (void) ResetMagickMemory(profile_record,0,sizeof(*profile_record));
-      profile_record->kernel_name=AcquireString(name);
+      profile_record->kernel_name=name;
       device->profile_records=ResizeMagickMemory(device->profile_records,(i+2)*
         sizeof(*device->profile_records));
       device->profile_records[i]=profile_record;
@@ -2614,7 +2622,7 @@ MagickPrivate void RecordProfileData(MagickCLDevice device,
   profile_record->total+=elapsed;
   profile_record->count+=1;
   UnlockSemaphoreInfo(device->lock);
-  name=DestroyString(name);
+  return(MagickTrue);
 }
 
 /*
