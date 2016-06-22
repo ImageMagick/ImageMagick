@@ -1,3 +1,6 @@
+2016-06-21  7.0.2-1 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.2-1, GIT revision 18479:931319b:20160622.
+
 2016-06-17  7.0.2-1 Dirk Lemstra <dirk@lem.....org>
   * Added support for GROUP4 compression to the FAX coder.
 
