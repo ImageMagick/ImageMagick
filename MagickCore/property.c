@@ -520,7 +520,7 @@ static inline signed int ReadPropertyMSBLong(const unsigned char **p,
   unsigned char
     buffer[4];
 
-  size_t
+  unsigned int
     value;
 
   if (*length < 4)
@@ -531,11 +531,11 @@ static inline signed int ReadPropertyMSBLong(const unsigned char **p,
     (*length)--;
     buffer[i]=(unsigned char) c;
   }
-  value=(size_t) (buffer[0] << 24);
-  value|=buffer[1] << 16;
-  value|=buffer[2] << 8;
-  value|=buffer[3];
-  quantum.unsigned_value=(value & 0xffffffff);
+  value=(unsigned int) buffer[0] << 24;
+  value|=(unsigned int) buffer[1] << 16;
+  value|=(unsigned int) buffer[2] << 8;
+  value|=(unsigned int) buffer[3];
+  quantum.unsigned_value=value & 0xffffffff;
   return(quantum.signed_value);
 }
 
@@ -571,9 +571,9 @@ static inline signed short ReadPropertyMSBShort(const unsigned char **p,
     (*length)--;
     buffer[i]=(unsigned char) c;
   }
-  value=(unsigned short) (buffer[0] << 8);
-  value|=buffer[1];
-  quantum.unsigned_value=(value & 0xffff);
+  value=(unsigned short) buffer[0] << 8;
+  value|=(unsigned short) buffer[1];
+  quantum.unsigned_value=value & 0xffff;
   return(quantum.signed_value);
 }
 
@@ -742,14 +742,18 @@ static inline signed int ReadPropertySignedLong(const EndianType endian,
 
   if (endian == LSBEndian)
     {
-      value=(unsigned int) ((buffer[3] << 24) | (buffer[2] << 16) |
-        (buffer[1] << 8 ) | (buffer[0]));
-      quantum.unsigned_value=(value & 0xffffffff);
+      value=(unsigned int) buffer[3] << 24;
+      value|=(unsigned int) buffer[2] << 16;
+      value|=(unsigned int) buffer[1] << 8;
+      value|=(unsigned int) buffer[0];
+      quantum.unsigned_value=value & 0xffffffff;
       return(quantum.signed_value);
     }
-  value=(unsigned int) ((buffer[0] << 24) | (buffer[1] << 16) |
-    (buffer[2] << 8) | buffer[3]);
-  quantum.unsigned_value=(value & 0xffffffff);
+  value=(unsigned int) buffer[0] << 24;
+  value|=(unsigned int) buffer[1] << 16;
+  value|=(unsigned int) buffer[2] << 8;
+  value|=(unsigned int) buffer[3];
+  quantum.unsigned_value=value & 0xffffffff;
   return(quantum.signed_value);
 }
 
@@ -761,13 +765,17 @@ static inline unsigned int ReadPropertyUnsignedLong(const EndianType endian,
 
   if (endian == LSBEndian)
     {
-      value=(unsigned int) ((buffer[3] << 24) | (buffer[2] << 16) |
-        (buffer[1] << 8 ) | (buffer[0]));
-      return((unsigned int) (value & 0xffffffff));
+      value=(unsigned int) buffer[3] << 24;
+      value|=(unsigned int) buffer[2] << 16;
+      value|=(unsigned int) buffer[1] << 8;
+      value|=(unsigned int) buffer[0];
+      return(value & 0xffffffff);
     }
-  value=(unsigned int) ((buffer[0] << 24) | (buffer[1] << 16) |
-    (buffer[2] << 8) | buffer[3]);
-  return((unsigned int) (value & 0xffffffff));
+  value=(unsigned int) buffer[0] << 24;
+  value|=(unsigned int) buffer[1] << 16;
+  value|=(unsigned int) buffer[2] << 8;
+  value|=(unsigned int) buffer[3];
+  return(value & 0xffffffff);
 }   
 
 static inline signed short ReadPropertySignedShort(const EndianType endian,
@@ -787,13 +795,14 @@ static inline signed short ReadPropertySignedShort(const EndianType endian,
 
   if (endian == LSBEndian)
     {
-      value=(unsigned short) ((buffer[1] << 8) | buffer[0]);
-      quantum.unsigned_value=(value & 0xffff);
+      value=(unsigned short) buffer[1] << 8;
+      value|=(unsigned short) buffer[0];
+      quantum.unsigned_value=value & 0xffff;
       return(quantum.signed_value);
     }
-  value=(unsigned short) ((((unsigned char *) buffer)[0] << 8) |
-    ((unsigned char *) buffer)[1]);
-  quantum.unsigned_value=(value & 0xffff);
+  value=(unsigned short) buffer[0] << 8;
+  value|=(unsigned short) buffer[1];
+  quantum.unsigned_value=value & 0xffff;
   return(quantum.signed_value);
 }
 
@@ -805,12 +814,13 @@ static inline unsigned short ReadPropertyUnsignedShort(const EndianType endian,
 
   if (endian == LSBEndian)
     {
-      value=(unsigned short) ((buffer[1] << 8) | buffer[0]);
-      return((unsigned short) (value & 0xffff));
+      value=(unsigned short) buffer[1] << 8;
+      value|=(unsigned short) buffer[0];
+      return(value & 0xffff);
     }
-  value=(unsigned short) ((((unsigned char *) buffer)[0] << 8) |
-    ((unsigned char *) buffer)[1]);
-  return((unsigned short) (value & 0xffff));
+  value=(unsigned short) buffer[0] << 8;
+  value|=(unsigned short) buffer[1];
+  return(value & 0xffff);
 }
 
 static MagickBooleanType GetEXIFProperty(const Image *image,
@@ -1394,6 +1404,8 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
         components;
 
       q=(unsigned char *) (directory+(12*entry)+2);
+      if (q > (exif+length-12))
+        break;  /* corrupt EXIF */
       if (GetValueFromSplayTree(exif_resources,q) == q)
         break;
       (void) AddValueToSplayTree(exif_resources,q,q);
@@ -1402,6 +1414,8 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
       if (format >= (sizeof(tag_bytes)/sizeof(*tag_bytes)))
         break;
       components=(ssize_t) ReadPropertySignedLong(endian,q+4);
+      if (components < 0)
+        break;  /* corrupt EXIF */
       number_bytes=(size_t) components*tag_bytes[format];
       if (number_bytes < components)
         break;  /* prevent overflow */
