@@ -1819,11 +1819,14 @@ static char *TracePSClippath(const unsigned char *blob,size_t length)
   (void) ConcatenateString(&path,message);
   (void) FormatLocaleString(message,MagickPathExtent,"{\n");
   (void) ConcatenateString(&path,message);
-  (void) FormatLocaleString(message,MagickPathExtent,"  /c {curveto} bind def\n");
+  (void) FormatLocaleString(message,MagickPathExtent,
+    "  /c {curveto} bind def\n");
   (void) ConcatenateString(&path,message);
-  (void) FormatLocaleString(message,MagickPathExtent,"  /l {lineto} bind def\n");
+  (void) FormatLocaleString(message,MagickPathExtent,
+    "  /l {lineto} bind def\n");
   (void) ConcatenateString(&path,message);
-  (void) FormatLocaleString(message,MagickPathExtent,"  /m {moveto} bind def\n");
+  (void) FormatLocaleString(message,MagickPathExtent,
+    "  /m {moveto} bind def\n");
   (void) ConcatenateString(&path,message);
   (void) FormatLocaleString(message,MagickPathExtent,
     "  /v {currentpoint 6 2 roll curveto} bind def\n");
@@ -1837,8 +1840,8 @@ static char *TracePSClippath(const unsigned char *blob,size_t length)
   (void) FormatLocaleString(message,MagickPathExtent,"  newpath\n");
   (void) ConcatenateString(&path,message);
   /*
-    The clipping path format is defined in "Adobe Photoshop File
-    Formats Specification" version 6.0 downloadable from adobe.com.
+    The clipping path format is defined in "Adobe Photoshop File Formats
+    Specification" version 6.0 downloadable from adobe.com.
   */
   (void) ResetMagickMemory(point,0,sizeof(point));
   (void) ResetMagickMemory(first,0,sizeof(first));
@@ -2023,14 +2026,14 @@ static char *TraceSVGClippath(const unsigned char *blob,size_t length,
   if (path == (char *) NULL)
     return((char *) NULL);
   message=AcquireString((char *) NULL);
-    (void) FormatLocaleString(message,MagickPathExtent,
-    ("<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n"
+  (void) FormatLocaleString(message,MagickPathExtent,(
+    "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n"
     "<svg xmlns=\"http://www.w3.org/2000/svg\""
     " width=\"%.20g\" height=\"%.20g\">\n"
     "<g>\n"
     "<path fill-rule=\"evenodd\" style=\"fill:#00000000;stroke:#00000000;"
-    "stroke-width:0;stroke-antialiasing:false\" d=\"\n"),
-    (double) columns,(double) rows);
+    "stroke-width:0;stroke-antialiasing:false\" d=\"\n"),(double) columns,
+    (double) rows);
   (void) ConcatenateString(&path,message);
   (void) ResetMagickMemory(point,0,sizeof(point));
   (void) ResetMagickMemory(first,0,sizeof(first));
