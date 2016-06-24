@@ -89,7 +89,7 @@
   Define declarations.
 */
 #define BezierQuantum  200
-#define DrawEpsilon  (1.0e-7)
+#define DrawEpsilon  (1.0e-10)
 
 
 /*
