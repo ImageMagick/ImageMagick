@@ -91,7 +91,7 @@
   Define declarations.
 */
 #define BezierQuantum  200
-#define DrawEpsilon  (1.0e-7)
+#define DrawEpsilon  (1.0e-10)
 
 
 /*
@@ -312,7 +312,7 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
       register ssize_t
         x;
 
-      for (x=0; fabs(draw_info->dash_pattern[x]) >= MagickEpsilon; x++) ;
+      for (x=0; fabs(draw_info->dash_pattern[x]) >= DrawEpsilon; x++) ;
       clone_info->dash_pattern=(double *) AcquireQuantumMemory((size_t) x+1UL,
         sizeof(*clone_info->dash_pattern));
       if (clone_info->dash_pattern == (double *) NULL)
@@ -393,13 +393,13 @@ static int CompareEdges(const void *x,const void *y)
   */
   p=(const EdgeInfo *) x;
   q=(const EdgeInfo *) y;
-  if ((p->points[0].y-MagickEpsilon) > q->points[0].y)
+  if ((p->points[0].y-DrawEpsilon) > q->points[0].y)
     return(1);
-  if ((p->points[0].y+MagickEpsilon) < q->points[0].y)
+  if ((p->points[0].y+DrawEpsilon) < q->points[0].y)
     return(-1);
-  if ((p->points[0].x-MagickEpsilon) > q->points[0].x)
+  if ((p->points[0].x-DrawEpsilon) > q->points[0].x)
     return(1);
-  if ((p->points[0].x+MagickEpsilon) < q->points[0].x)
+  if ((p->points[0].x+DrawEpsilon) < q->points[0].x)
     return(-1);
   if (((p->points[1].x-p->points[0].x)*(q->points[1].y-q->points[0].y)-
        (p->points[1].y-p->points[0].y)*(q->points[1].x-q->points[0].x)) > 0.0)
@@ -768,8 +768,8 @@ static PathInfo *ConvertPrimitiveToPath(
     /*
       Eliminate duplicate points.
     */
-    if ((i == 0) || (fabs(q.x-primitive_info[i].point.x) >= MagickEpsilon) ||
-        (fabs(q.y-primitive_info[i].point.y) >= MagickEpsilon))
+    if ((i == 0) || (fabs(q.x-primitive_info[i].point.x) >= DrawEpsilon) ||
+        (fabs(q.y-primitive_info[i].point.y) >= DrawEpsilon))
       {
         path_info[n].code=code;
         path_info[n].point=primitive_info[i].point;
@@ -778,8 +778,8 @@ static PathInfo *ConvertPrimitiveToPath(
       }
     if (coordinates > 0)
       continue;
-    if ((fabs(p.x-primitive_info[i].point.x) < MagickEpsilon) &&
-        (fabs(p.y-primitive_info[i].point.y) < MagickEpsilon))
+    if ((fabs(p.x-primitive_info[i].point.x) < DrawEpsilon) &&
+        (fabs(p.y-primitive_info[i].point.y) < DrawEpsilon))
       continue;
     /*
       Mark the p point as open if it does not match the q.
@@ -988,7 +988,7 @@ static SegmentInfo AffineEdge(const Image *image,const AffineMatrix *affine,
   inverse_edge.x2=edge->x2;
   inverse_edge.y2=edge->y2;
   z=affine->ry*y+affine->tx;
-  if (affine->sx >= MagickEpsilon)
+  if (affine->sx >= DrawEpsilon)
     {
       intercept=(-z/affine->sx);
       x=intercept;
@@ -1000,7 +1000,7 @@ static SegmentInfo AffineEdge(const Image *image,const AffineMatrix *affine,
         inverse_edge.x2=x;
     }
   else
-    if (affine->sx < -MagickEpsilon)
+    if (affine->sx < -DrawEpsilon)
       {
         intercept=(-z+(double) image->columns)/affine->sx;
         x=intercept;
@@ -1021,7 +1021,7 @@ static SegmentInfo AffineEdge(const Image *image,const AffineMatrix *affine,
     Determine top and bottom edges.
   */
   z=affine->sy*y+affine->ty;
-  if (affine->rx >= MagickEpsilon)
+  if (affine->rx >= DrawEpsilon)
     {
       intercept=(-z/affine->rx);
       x=intercept;
@@ -1033,7 +1033,7 @@ static SegmentInfo AffineEdge(const Image *image,const AffineMatrix *affine,
         inverse_edge.x2=x;
     }
   else
-    if (affine->rx < -MagickEpsilon)
+    if (affine->rx < -DrawEpsilon)
       {
         intercept=(-z+(double) image->rows)/affine->rx;
         x=intercept;
@@ -1523,7 +1523,7 @@ static MagickBooleanType DrawDashPolygon(const DrawInfo *draw_info,
   dash_polygon[0]=primitive_info[0];
   scale=ExpandAffine(&draw_info->affine);
   length=scale*(draw_info->dash_pattern[0]-0.5);
-  offset=fabs(draw_info->dash_offset) >= MagickEpsilon ?
+  offset=fabs(draw_info->dash_offset) >= DrawEpsilon ?
      scale*draw_info->dash_offset : 0.0;
   j=1;
   for (n=0; offset > 0.0; j=0)
@@ -1555,10 +1555,10 @@ static MagickBooleanType DrawDashPolygon(const DrawInfo *draw_info,
     dx=primitive_info[i].point.x-primitive_info[i-1].point.x;
     dy=primitive_info[i].point.y-primitive_info[i-1].point.y;
     maximum_length=hypot((double) dx,dy);
-    if (fabs(length) < MagickEpsilon)
+    if (fabs(length) < DrawEpsilon)
       {
         n++;
-        if (fabs(draw_info->dash_pattern[n]) < MagickEpsilon)
+        if (fabs(draw_info->dash_pattern[n]) < DrawEpsilon)
           n=0;
         length=scale*(draw_info->dash_pattern[n]+(n == 0 ? -0.5 : 0.5));
       }
@@ -1590,7 +1590,7 @@ static MagickBooleanType DrawDashPolygon(const DrawInfo *draw_info,
           status&=DrawStrokePolygon(image,clone_info,dash_polygon);
         }
       n++;
-      if (fabs(draw_info->dash_pattern[n]) < MagickEpsilon)
+      if (fabs(draw_info->dash_pattern[n]) < DrawEpsilon)
         n=0;
       length=scale*(draw_info->dash_pattern[n]+(n == 0 ? -0.5 : 0.5));
     }
@@ -1604,8 +1604,8 @@ static MagickBooleanType DrawDashPolygon(const DrawInfo *draw_info,
   if ((total_length <= maximum_length) && ((n & 0x01) == 0) && (j > 1))
     {
       dash_polygon[j]=primitive_info[i-1];
-      dash_polygon[j].point.x+=MagickEpsilon;
-      dash_polygon[j].point.y+=MagickEpsilon;
+      dash_polygon[j].point.x+=DrawEpsilon;
+      dash_polygon[j].point.y+=DrawEpsilon;
       dash_polygon[j].coordinates=1;
       j++;
       dash_polygon[0].coordinates=(size_t) j;
@@ -1657,7 +1657,7 @@ static inline MagickBooleanType IsPoint(const char *point)
     value;
 
   value=StringToDouble(point,&p);
-  return((fabs(value) < MagickEpsilon) && (p == point) ? MagickFalse : MagickTrue);
+  return((fabs(value) < DrawEpsilon) && (p == point) ? MagickFalse : MagickTrue);
 }
 
 static inline void TracePoint(PrimitiveInfo *primitive_info,
@@ -2844,12 +2844,12 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
     }
     if (status == MagickFalse)
       break;
-    if ((fabs(affine.sx-1.0) >= MagickEpsilon) ||
-        (fabs(affine.rx) >= MagickEpsilon) ||
-        (fabs(affine.ry) >= MagickEpsilon) ||
-        (fabs(affine.sy-1.0) >= MagickEpsilon) ||
-        (fabs(affine.tx) >= MagickEpsilon) ||
-        (fabs(affine.ty) >= MagickEpsilon))
+    if ((fabs(affine.sx-1.0) >= DrawEpsilon) ||
+        (fabs(affine.rx) >= DrawEpsilon) ||
+        (fabs(affine.ry) >= DrawEpsilon) ||
+        (fabs(affine.sy-1.0) >= DrawEpsilon) ||
+        (fabs(affine.tx) >= DrawEpsilon) ||
+        (fabs(affine.ty) >= DrawEpsilon))
       {
         graphic_context[n]->affine.sx=current.sx*affine.sx+current.ry*affine.rx;
         graphic_context[n]->affine.rx=current.rx*affine.sx+current.sy*affine.rx;
@@ -3845,7 +3845,7 @@ static double GetOpacityPixel(PolygonInfo *polygon_info,const double mid,
               else
                 {
                   beta=1.0;
-                  if (fabs(distance-1.0) >= MagickEpsilon)
+                  if (fabs(distance-1.0) >= DrawEpsilon)
                     beta=sqrt((double) distance);
                   alpha=beta-mid-0.5;
                   if (*stroke_opacity < ((alpha-0.25)*(alpha-0.25)))
@@ -3862,10 +3862,10 @@ static double GetOpacityPixel(PolygonInfo *polygon_info,const double mid,
         }
       if (distance > 1.0)
         continue;
-      if (fabs(beta) < MagickEpsilon)
+      if (fabs(beta) < DrawEpsilon)
         {
           beta=1.0;
-          if (fabs(distance-1.0) >= MagickEpsilon)
+          if (fabs(distance-1.0) >= DrawEpsilon)
             beta=sqrt(distance);
         }
       alpha=beta-1.0;
@@ -4245,8 +4245,8 @@ static void LogPrimitiveInfo(const PrimitiveInfo *primitive_info)
         p=point;
       }
     point=primitive_info[i].point;
-    if ((fabs(q.x-point.x) >= MagickEpsilon) ||
-        (fabs(q.y-point.y) >= MagickEpsilon))
+    if ((fabs(q.x-point.x) >= DrawEpsilon) ||
+        (fabs(q.y-point.y) >= DrawEpsilon))
       (void) LogMagickEvent(DrawEvent,GetMagickModule(),
         "      %.20g: %.18g,%.18g",(double) coordinates,point.x,point.y);
     else
@@ -4256,8 +4256,8 @@ static void LogPrimitiveInfo(const PrimitiveInfo *primitive_info)
     coordinates--;
     if (coordinates > 0)
       continue;
-    if ((fabs(p.x-point.x) >= MagickEpsilon) ||
-        (fabs(p.y-point.y) >= MagickEpsilon))
+    if ((fabs(p.x-point.x) >= DrawEpsilon) ||
+        (fabs(p.y-point.y) >= DrawEpsilon))
       (void) LogMagickEvent(DrawEvent,GetMagickModule(),"    end last (%.20g)",
         (double) coordinates);
     else
@@ -4652,8 +4652,8 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
         LogPrimitiveInfo(primitive_info);
       scale=ExpandAffine(&draw_info->affine);
       if ((draw_info->dash_pattern != (double *) NULL) &&
-          (fabs(draw_info->dash_pattern[0]) >= MagickEpsilon) &&
-          ((scale*draw_info->stroke_width) >= MagickEpsilon) &&
+          (fabs(draw_info->dash_pattern[0]) >= DrawEpsilon) &&
+          ((scale*draw_info->stroke_width) >= DrawEpsilon) &&
           (draw_info->stroke.opacity != (Quantum) TransparentOpacity))
         {
           /*
@@ -4914,7 +4914,7 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
     draw_info->density=AcquireString(clone_info->density);
   draw_info->text_antialias=clone_info->antialias;
   draw_info->pointsize=12.0;
-  if (fabs(clone_info->pointsize) >= MagickEpsilon)
+  if (fabs(clone_info->pointsize) >= DrawEpsilon)
     draw_info->pointsize=clone_info->pointsize;
   draw_info->undercolor.opacity=(Quantum) TransparentOpacity;
   draw_info->border_color=clone_info->border_color;
@@ -5088,7 +5088,7 @@ static void TraceArcPath(PrimitiveInfo *primitive_info,const PointInfo start,
     }
   radii.x=fabs(arc.x);
   radii.y=fabs(arc.y);
-  if ((fabs(radii.x) <MagickEpsilon) || (fabs(radii.y) < MagickEpsilon))
+  if ((fabs(radii.x) <DrawEpsilon) || (fabs(radii.y) < DrawEpsilon))
     {
       TraceLine(primitive_info,start,end);
       return;
@@ -5099,7 +5099,7 @@ static void TraceArcPath(PrimitiveInfo *primitive_info,const PointInfo start,
   center.y=(double) (cosine*(end.y-start.y)/2-sine*(end.x-start.x)/2);
   delta=(center.x*center.x)/(radii.x*radii.x)+(center.y*center.y)/
     (radii.y*radii.y);
-  if (delta < MagickEpsilon)
+  if (delta < DrawEpsilon)
     {
       TraceLine(primitive_info,start,end);
       return;
@@ -5134,7 +5134,7 @@ static void TraceArcPath(PrimitiveInfo *primitive_info,const PointInfo start,
     if ((theta > 0.0) && (sweep == MagickFalse))
       theta-=2.0*MagickPI;
   arc_segments=(size_t) ceil(fabs((double) (theta/(0.5*MagickPI+
-    MagickEpsilon))));
+    DrawEpsilon))));
   p=primitive_info;
   for (i=0; i < (ssize_t) arc_segments; i++)
   {
@@ -5319,7 +5319,7 @@ static void TraceEllipse(PrimitiveInfo *primitive_info,const PointInfo start,
   /*
     Ellipses are just short segmented polys.
   */
-  if ((fabs(stop.x) < MagickEpsilon) && (fabs(stop.y) < MagickEpsilon))
+  if ((fabs(stop.x) < DrawEpsilon) && (fabs(stop.y) < DrawEpsilon))
     {
       TracePoint(primitive_info,start);
       return;
@@ -5332,7 +5332,7 @@ static void TraceEllipse(PrimitiveInfo *primitive_info,const PointInfo start,
   y=degrees.y;
   while (y < degrees.x)
     y+=360.0;
-  angle.y=(double) (DegreesToRadians(y)-MagickEpsilon);
+  angle.y=(double) (DegreesToRadians(y)-DrawEpsilon);
   for (p=primitive_info; angle.x < angle.y; angle.x+=step)
   {
     point.x=cos(fmod(angle.x,DegreesToRadians(360.0)))*stop.x+start.x;
@@ -5356,8 +5356,8 @@ static void TraceLine(PrimitiveInfo *primitive_info,const PointInfo start,
   const PointInfo end)
 {
   TracePoint(primitive_info,start);
-  if ((fabs(start.x-end.x) < MagickEpsilon) &&
-      (fabs(start.y-end.y) < MagickEpsilon))
+  if ((fabs(start.x-end.x) < DrawEpsilon) &&
+      (fabs(start.y-end.y) < DrawEpsilon))
     {
       primitive_info->primitive=PointPrimitive;
       primitive_info->coordinates=1;
@@ -5850,8 +5850,8 @@ static void TraceSquareLinecap(PrimitiveInfo *primitive_info,
   {
     dx=primitive_info[0].point.x-primitive_info[i].point.x;
     dy=primitive_info[0].point.y-primitive_info[i].point.y;
-    if ((fabs((double) dx) >= MagickEpsilon) ||
-        (fabs((double) dy) >= MagickEpsilon))
+    if ((fabs((double) dx) >= DrawEpsilon) ||
+        (fabs((double) dy) >= DrawEpsilon))
       break;
   }
   if (i == (ssize_t) number_vertices)
@@ -5865,8 +5865,8 @@ static void TraceSquareLinecap(PrimitiveInfo *primitive_info,
   {
     dx=primitive_info[number_vertices-1].point.x-primitive_info[j].point.x;
     dy=primitive_info[number_vertices-1].point.y-primitive_info[j].point.y;
-    if ((fabs((double) dx) >= MagickEpsilon) ||
-        (fabs((double) dy) >= MagickEpsilon))
+    if ((fabs((double) dx) >= DrawEpsilon) ||
+        (fabs((double) dy) >= DrawEpsilon))
       break;
   }
   distance=hypot((double) dx,(double) dy);
@@ -5970,27 +5970,27 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
   {
     dx.p=polygon_primitive[n].point.x-polygon_primitive[0].point.x;
     dy.p=polygon_primitive[n].point.y-polygon_primitive[0].point.y;
-    if ((fabs(dx.p) >= MagickEpsilon) || (fabs(dy.p) >= MagickEpsilon))
+    if ((fabs(dx.p) >= DrawEpsilon) || (fabs(dy.p) >= DrawEpsilon))
       break;
   }
   if (n == (ssize_t) number_vertices)
     n=(ssize_t) number_vertices-1L;
   slope.p=0.0;
   inverse_slope.p=0.0;
-  if (fabs(dx.p) < MagickEpsilon)
+  if (fabs(dx.p) < DrawEpsilon)
     {
       if (dx.p >= 0.0)
-        slope.p=dy.p < 0.0 ? -1.0/MagickEpsilon : 1.0/MagickEpsilon;
+        slope.p=dy.p < 0.0 ? -1.0/DrawEpsilon : 1.0/DrawEpsilon;
       else
-        slope.p=dy.p < 0.0 ? 1.0/MagickEpsilon : -1.0/MagickEpsilon;
+        slope.p=dy.p < 0.0 ? 1.0/DrawEpsilon : -1.0/DrawEpsilon;
     }
   else
-    if (fabs(dy.p) < MagickEpsilon)
+    if (fabs(dy.p) < DrawEpsilon)
       {
         if (dy.p >= 0.0)
-          inverse_slope.p=dx.p < 0.0 ? -1.0/MagickEpsilon : 1.0/MagickEpsilon;
+          inverse_slope.p=dx.p < 0.0 ? -1.0/DrawEpsilon : 1.0/DrawEpsilon;
         else
-          inverse_slope.p=dx.p < 0.0 ? 1.0/MagickEpsilon : -1.0/MagickEpsilon;
+          inverse_slope.p=dx.p < 0.0 ? 1.0/DrawEpsilon : -1.0/DrawEpsilon;
       }
     else
       {
@@ -6044,20 +6044,20 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
       continue;
     slope.q=0.0;
     inverse_slope.q=0.0;
-    if (fabs(dx.q) < MagickEpsilon)
+    if (fabs(dx.q) < DrawEpsilon)
       {
         if (dx.q >= 0.0)
-          slope.q=dy.q < 0.0 ? -1.0/MagickEpsilon : 1.0/MagickEpsilon;
+          slope.q=dy.q < 0.0 ? -1.0/DrawEpsilon : 1.0/DrawEpsilon;
         else
-          slope.q=dy.q < 0.0 ? 1.0/MagickEpsilon : -1.0/MagickEpsilon;
+          slope.q=dy.q < 0.0 ? 1.0/DrawEpsilon : -1.0/DrawEpsilon;
       }
     else
-      if (fabs(dy.q) < MagickEpsilon)
+      if (fabs(dy.q) < DrawEpsilon)
         {
           if (dy.q >= 0.0)
-            inverse_slope.q=dx.q < 0.0 ? -1.0/MagickEpsilon : 1.0/MagickEpsilon;
+            inverse_slope.q=dx.q < 0.0 ? -1.0/DrawEpsilon : 1.0/DrawEpsilon;
           else
-            inverse_slope.q=dx.q < 0.0 ? 1.0/MagickEpsilon : -1.0/MagickEpsilon;
+            inverse_slope.q=dx.q < 0.0 ? 1.0/DrawEpsilon : -1.0/DrawEpsilon;
         }
       else
         {
@@ -6089,7 +6089,7 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
         box_q[3].x=polygon_primitive[i].point.x-offset.x;
         box_q[3].y=polygon_primitive[i].point.y-offset.y;
       }
-    if (fabs((double) (slope.p-slope.q)) < MagickEpsilon)
+    if (fabs((double) (slope.p-slope.q)) < DrawEpsilon)
       {
         box_p[4]=box_p[1];
         box_q[4]=box_q[1];
