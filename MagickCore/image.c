@@ -2449,7 +2449,7 @@ MagickExport MagickBooleanType SetImageExtent(Image *image,const size_t columns,
   const size_t rows,ExceptionInfo *exception)
 {
   if ((columns == 0) || (rows == 0))
-    return(MagickFalse);
+    ThrowBinaryException(ImageError,"NegativeOrZeroImageSize",image->filename);
   image->columns=columns;
   image->rows=rows;
   if (image->depth > (8*sizeof(MagickSizeType)))
