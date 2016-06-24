@@ -299,7 +299,7 @@ MagickPrivate void ConvertHSBToRGB(const double hue,const double saturation,
   assert(red != (double *) NULL);
   assert(green != (double *) NULL);
   assert(blue != (double *) NULL);
-  if (saturation == 0.0)
+  if (fabs(saturation) < MagickEpsilon)
     {
       *red=QuantumRange*brightness;
       *green=(*red);
@@ -685,7 +685,7 @@ MagickPrivate void ConvertHWBToRGB(const double hue,const double whiteness,
   assert(green != (double *) NULL);
   assert(blue != (double *) NULL);
   v=1.0-blackness;
-  if (hue == -1.0)
+  if (fabs(hue-(-1.0)) < MagickEpsilon)
     {
       *red=QuantumRange*v;
       *green=QuantumRange*v;
@@ -864,16 +864,16 @@ MagickPrivate void ConvertRGBToHCL(const double red,const double green,
   max=MagickMax(red,MagickMax(green,blue));
   c=max-(double) MagickMin(red,MagickMin(green,blue));
   h=0.0;
-  if (c == 0.0)
+  if (fabs(c) < MagickEpsilon)
     h=0.0;
   else
-    if (red == max)
+    if (fabs(red-max) < MagickEpsilon)
       h=fmod((green-blue)/c+6.0,6.0);
     else
-      if (green == max)
+      if (fabs(green-max) < MagickEpsilon)
         h=((blue-red)/c)+2.0;
       else
-        if (blue == max)
+        if (fabs(blue-max) < MagickEpsilon)
           h=((red-green)/c)+4.0;
   *hue=(h/6.0);
   *chroma=QuantumScale*c;
@@ -925,16 +925,16 @@ MagickPrivate void ConvertRGBToHCLp(const double red,const double green,
   max=MagickMax(red,MagickMax(green,blue));
   c=max-MagickMin(red,MagickMin(green,blue));
   h=0.0;
-  if (c == 0.0)
+  if (fabs(c) < MagickEpsilon)
     h=0.0;
   else
-    if (red == max)
+    if (fabs(red-max) < MagickEpsilon)
       h=fmod((green-blue)/c+6.0,6.0);
     else
-      if (green == max)
+      if (fabs(green-max) < MagickEpsilon)
         h=((blue-red)/c)+2.0;
       else
-        if (blue == max)
+        if (fabs(blue-max) < MagickEpsilon)
           h=((red-green)/c)+4.0;
   *hue=(h/6.0);
   *chroma=QuantumScale*c;
@@ -992,17 +992,17 @@ MagickPrivate void ConvertRGBToHSB(const double red,const double green,
   max=red > green ? red : green;
   if (blue > max)
     max=blue;
-  if (max == 0.0)
+  if (fabs(max) < MagickEpsilon)
     return;
   delta=max-min;
   *saturation=delta/max;
   *brightness=QuantumScale*max;
-  if (delta == 0.0)
+  if (fabs(delta) < MagickEpsilon)
     return;
-  if (red == max)
+  if (fabs(red-max) < MagickEpsilon)
     *hue=(green-blue)/delta;
   else
-    if (green == max)
+    if (fabs(green-max) < MagickEpsilon)
       *hue=2.0+(blue-red)/delta;
     else
       *hue=4.0+(red-green)/delta;
@@ -1122,14 +1122,14 @@ MagickExport void ConvertRGBToHSL(const double red,const double green,
       *saturation=0.0;
       return;
     }
-  if (max == (QuantumScale*red))
+  if (fabs(max-QuantumScale*red) < MagickEpsilon)
     {
       *hue=(QuantumScale*green-QuantumScale*blue)/c;
       if ((QuantumScale*green) < (QuantumScale*blue))
         *hue+=6.0;
     }
   else
-    if (max == (QuantumScale*green))
+    if (fabs(max-QuantumScale*green) < MagickEpsilon)
       *hue=2.0+(QuantumScale*blue-QuantumScale*red)/c;
     else
       *hue=4.0+(QuantumScale*red-QuantumScale*green)/c;
@@ -1194,14 +1194,14 @@ MagickPrivate void ConvertRGBToHSV(const double red,const double green,
       *saturation=0.0;
       return;
     }
-  if (max == (QuantumScale*red))
+  if (fabs(max-QuantumScale*red) < MagickEpsilon)
     {
       *hue=(QuantumScale*green-QuantumScale*blue)/c;
       if ((QuantumScale*green) < (QuantumScale*blue))
         *hue+=6.0;
     }
   else
-    if (max == (QuantumScale*green))
+    if (fabs(max-QuantumScale*green) < MagickEpsilon)
       *hue=2.0+(QuantumScale*blue-QuantumScale*red)/c;
     else
       *hue=4.0+(QuantumScale*red-QuantumScale*green)/c;
@@ -1256,13 +1256,15 @@ MagickPrivate void ConvertRGBToHWB(const double red,const double green,
   v=MagickMax(red,MagickMax(green,blue));
   *blackness=1.0-QuantumScale*v;
   *whiteness=QuantumScale*w;
-  if (v == w)
+  if (fabs(v-w) < MagickEpsilon)
     {
       *hue=(-1.0);
       return;
     }
-  f=(red == w) ? green-blue : ((green == w) ? blue-red : red-green);
-  p=(red == w) ? 3.0 : ((green == w) ? 5.0 : 1.0);
+  f=(fabs(red-w) < MagickEpsilon) ? green-blue :
+    ((fabs(green-w) < MagickEpsilon) ? blue-red : red-green);
+  p=(fabs(red-w) < MagickEpsilon) ? 3.0 :
+    ((fabs(green-w) < MagickEpsilon) ? 5.0 : 1.0);
   *hue=(p-f/(v-1.0*w))/6.0;
 }
 
@@ -1483,7 +1485,7 @@ MagickPrivate double GenerateDifferentialNoise(RandomInfo *random_info,
         gamma,
         tau;
 
-      if (alpha == 0.0)
+      if (fabs(alpha) < MagickEpsilon)
         alpha=1.0;
       beta=GetPseudoRandomValue(random_info);
       gamma=sqrt(-2.0*log(alpha));
