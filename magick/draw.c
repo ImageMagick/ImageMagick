@@ -561,7 +561,7 @@ static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info)
       Line to.
     */
     next_direction=((path_info[i].point.y > point.y) ||
-      ((path_info[i].point.y == point.y) &&
+      ((fabs(path_info[i].point.y-point.y) < DrawEpsilon) &&
        (path_info[i].point.x > point.x))) ? 1 : -1;
     if ((points != (PointInfo *) NULL) && (direction != 0) &&
         (direction != next_direction))
@@ -4804,8 +4804,8 @@ static MagickBooleanType DrawStrokePolygon(Image *image,
       break;
     stroke_polygon=(PrimitiveInfo *) RelinquishMagickMemory(stroke_polygon);
     q=p+p->coordinates-1;
-    closed_path=(q->point.x == p->point.x) && (q->point.y == p->point.y) ?
-      MagickTrue : MagickFalse;
+    closed_path=(fabs(q->point.x-p->point.x) < DrawEpsilon) && 
+      (fabs(q->point.y-p->point.y) < DrawEpsilon) ? MagickTrue : MagickFalse;
     if ((draw_info->linecap == RoundCap) && (closed_path == MagickFalse))
       {
         DrawRoundLinecap(image,draw_info,p);
@@ -5081,14 +5081,15 @@ static void TraceArcPath(PrimitiveInfo *primitive_info,const PointInfo start,
   size_t
     arc_segments;
 
-  if ((start.x == end.x) && (start.y == end.y))
+  if ((fabs(start.x-end.x) < DrawEpsilon) && 
+      (fabs(start.y-end.y) < DrawEpsilon))
     {
       TracePoint(primitive_info,end);
       return;
     }
   radii.x=fabs(arc.x);
   radii.y=fabs(arc.y);
-  if ((fabs(radii.x) <DrawEpsilon) || (fabs(radii.y) < DrawEpsilon))
+  if ((fabs(radii.x) < DrawEpsilon) || (fabs(radii.y) < DrawEpsilon))
     {
       TraceLine(primitive_info,start,end);
       return;
@@ -5951,8 +5952,8 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
   (void) CopyMagickMemory(polygon_primitive,primitive_info,(size_t)
     number_vertices*sizeof(*polygon_primitive));
   closed_path=
-    (primitive_info[number_vertices-1].point.x == primitive_info[0].point.x) &&
-    (primitive_info[number_vertices-1].point.y == primitive_info[0].point.y) ?
+    (fabs(primitive_info[number_vertices-1].point.x-primitive_info[0].point.x) < DrawEpsilon) &&
+    (fabs(primitive_info[number_vertices-1].point.y-primitive_info[0].point.y) < DrawEpsilon) ?
     MagickTrue : MagickFalse;
   if ((draw_info->linejoin == RoundJoin) ||
       ((draw_info->linejoin == MiterJoin) && (closed_path != MagickFalse)))
