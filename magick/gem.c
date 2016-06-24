@@ -297,7 +297,7 @@ MagickExport void ConvertHSBToRGB(const double hue,const double saturation,
   assert(red != (Quantum *) NULL);
   assert(green != (Quantum *) NULL);
   assert(blue != (Quantum *) NULL);
-  if (saturation == 0.0)
+  if (fabs(saturation) < MagickEpsilon)
     {
       *red=ClampToQuantum(QuantumRange*brightness);
       *green=(*red);
@@ -695,7 +695,7 @@ MagickExport void ConvertHWBToRGB(const double hue,const double whiteness,
   assert(green != (Quantum *) NULL);
   assert(blue != (Quantum *) NULL);
   v=1.0-blackness;
-  if (hue == -1.0)
+  if (fabs(hue-(-1.0)) < MagickEpsilon)
     {
       *red=ClampToQuantum(QuantumRange*v);
       *green=ClampToQuantum(QuantumRange*v);
@@ -880,7 +880,7 @@ MagickExport void ConvertRGBToHCL(const Quantum red,const Quantum green,
   max=MagickMax(r,MagickMax(g,b));
   c=max-(double) MagickMin(r,MagickMin(g,b));
   h=0.0;
-  if (c == 0.0)
+  if (fabs(c) < MagickEpsilon)
     h=0.0;
   else
     if (red == (Quantum) max)
@@ -947,7 +947,7 @@ MagickExport void ConvertRGBToHCLp(const Quantum red,const Quantum green,
   max=MagickMax(r,MagickMax(g,b));
   c=max-(double) MagickMin(r,MagickMin(g,b));
   h=0.0;
-  if (c == 0.0)
+  if (fabs(c) < MagickEpsilon)
     h=0.0;
   else
     if (red == (Quantum) max)
@@ -1020,17 +1020,17 @@ MagickExport void ConvertRGBToHSB(const Quantum red,const Quantum green,
   max=r > g ? r : g;
   if (b > max)
     max=b;
-  if (max == 0.0)
+  if (fabs(max) < MagickEpsilon)
     return;
   delta=max-min;
   *saturation=delta/max;
   *brightness=QuantumScale*max;
-  if (delta == 0.0)
+  if (fabs(delta) < MagickEpsilon)
     return;
-  if (r == max)
+  if (fabs(r-max) < MagickEpsilon)
     *hue=(g-b)/delta;
   else
-    if (g == max)
+    if (fabs(g-max) < MagickEpsilon)
       *hue=2.0+(b-r)/delta;
     else
       *hue=4.0+(r-g)/delta;
@@ -1150,14 +1150,14 @@ MagickExport void ConvertRGBToHSL(const Quantum red,const Quantum green,
       *saturation=0.0;
       return;
     }
-  if (max == (QuantumScale*red))
+  if (fabs(max-QuantumScale*red) < MagickEpsilon)
     {
       *hue=(QuantumScale*green-QuantumScale*blue)/c;
       if ((QuantumScale*green) < (QuantumScale*blue))
         *hue+=6.0;
     }
   else
-    if (max == (QuantumScale*green))
+    if (fabs(max-QuantumScale*green) < MagickEpsilon)
       *hue=2.0+(QuantumScale*blue-QuantumScale*red)/c;
     else
       *hue=4.0+(QuantumScale*red-QuantumScale*green)/c;
@@ -1222,14 +1222,14 @@ MagickExport void ConvertRGBToHSV(const Quantum red,const Quantum green,
       *saturation=0.0;
       return;
     }
-  if (max == (QuantumScale*red))
+  if (fabs(max-QuantumScale*red) < MagickEpsilon)
     {
       *hue=(QuantumScale*green-QuantumScale*blue)/c;
       if ((QuantumScale*green) < (QuantumScale*blue))
         *hue+=6.0;
     }
   else
-    if (max == (QuantumScale*green))
+    if (fabs(max-QuantumScale*green) < MagickEpsilon)
       *hue=2.0+(QuantumScale*blue-QuantumScale*red)/c;
     else
       *hue=4.0+(QuantumScale*red-QuantumScale*green)/c;
@@ -1290,13 +1290,13 @@ MagickExport void ConvertRGBToHWB(const Quantum red,const Quantum green,
   v=MagickMax(r,MagickMax(g,b));
   *blackness=1.0-QuantumScale*v;
   *whiteness=QuantumScale*w;
-  if (v == w)
+  if (fabs(v-w) < MagickEpsilon)
     {
       *hue=(-1.0);
       return;
     }
-  f=(r == w) ? g-b : ((g == w) ? b-r : r-g);
-  p=(r == w) ? 3.0 : ((g == w) ? 5.0 : 1.0);
+  f=(fabs(r-w) < MagickEpsilon) ? g-b : ((fabs(g-w) < MagickEpsilon) ? b-r : r-g);
+  p=(fabs(r-w) < MagickEpsilon) ? 3.0 : ((fabs(g-w) < MagickEpsilon) ? 5.0 : 1.0);
   *hue=(p-f/(v-1.0*w))/6.0;
 }
 
@@ -1517,7 +1517,7 @@ MagickExport double GenerateDifferentialNoise(RandomInfo *random_info,
         gamma,
         tau;
 
-      if (alpha == 0.0)
+      if (fabs(alpha) < MagickEpsilon)
         alpha=1.0;
       beta=GetPseudoRandomValue(random_info);
       gamma=sqrt(-2.0*log(alpha));
