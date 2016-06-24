@@ -2895,6 +2895,12 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
             image->colorspace);
           break;
         }
+      if (LocaleCompare("compose",property) == 0)
+        {
+          string=CommandOptionToMnemonic(MagickComposeOptions,(ssize_t)
+            image->compose);
+          break;
+        }
       if (LocaleCompare("copyright",property) == 0)
         {
           (void) CopyMagickString(value,GetMagickCopyright(),MaxTextExtent);
