@@ -4653,7 +4653,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
       scale=ExpandAffine(&draw_info->affine);
       if ((draw_info->dash_pattern != (double *) NULL) &&
           (fabs(draw_info->dash_pattern[0]) >= DrawEpsilon) &&
-          ((scale*draw_info->stroke_width) >= DrawEpsilon) &&
+          (fabs(scale*draw_info->stroke_width) >= DrawEpsilon) &&
           (draw_info->stroke.opacity != (Quantum) TransparentOpacity))
         {
           /*
@@ -4804,7 +4804,7 @@ static MagickBooleanType DrawStrokePolygon(Image *image,
       break;
     stroke_polygon=(PrimitiveInfo *) RelinquishMagickMemory(stroke_polygon);
     q=p+p->coordinates-1;
-    closed_path=(fabs(q->point.x-p->point.x) < DrawEpsilon) && 
+    closed_path=(fabs(q->point.x-p->point.x) < DrawEpsilon) &&
       (fabs(q->point.y-p->point.y) < DrawEpsilon) ? MagickTrue : MagickFalse;
     if ((draw_info->linecap == RoundCap) && (closed_path == MagickFalse))
       {
@@ -5081,7 +5081,7 @@ static void TraceArcPath(PrimitiveInfo *primitive_info,const PointInfo start,
   size_t
     arc_segments;
 
-  if ((fabs(start.x-end.x) < DrawEpsilon) && 
+  if ((fabs(start.x-end.x) < DrawEpsilon) &&
       (fabs(start.y-end.y) < DrawEpsilon))
     {
       TracePoint(primitive_info,end);
