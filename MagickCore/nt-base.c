@@ -1207,7 +1207,7 @@ static int NTGhostscriptGetString(const char *name,BOOL *is_64_bit,
   */
   *value='\0';
   directory=(char *) NULL;
-  if (LocaleCompare(name, "GS_DLL") == 0)
+  if (LocaleCompare(name,"GS_DLL") == 0)
     {
       directory=GetEnvironmentValue("MAGICK_GHOSTSCRIPT_PATH");
       if (directory != (char *) NULL)
@@ -1372,16 +1372,26 @@ MagickPrivate int NTGhostscriptEXE(char *path,int length)
     is_64_bit_version = FALSE;
 
   (void) CopyMagickString(path,"gswin32c.exe",length);
-  if ((*program == '\0') &&
-      (NTGhostscriptGetString("GS_DLL",&is_64_bit_version,program,sizeof(program)) == FALSE))
-    return(FALSE);
-  p=strrchr(program,'\\');
-  if (p != (char *) NULL)
+  if (*program == '\0')
     {
-      p++;
-      *p='\0';
-      (void) ConcatenateMagickString(program,is_64_bit_version ?
-        "gswin64c.exe" : "gswin32c.exe",sizeof(program));
+      if (ghost_semaphore == (SemaphoreInfo *) NULL)
+        ActivateSemaphoreInfo(&ghost_semaphore);
+      LockSemaphoreInfo(ghost_semaphore);
+      if (*program == '\0')
+        {
+          if (NTGhostscriptGetString("GS_DLL",&is_64_bit_version,program,
+              sizeof(program)) == FALSE)
+            return(FALSE);
+          p=strrchr(program,'\\');
+          if (p != (char *) NULL)
+            {
+              p++;
+              *p='\0';
+              (void) ConcatenateMagickString(program,is_64_bit_version ?
+                "gswin64c.exe" : "gswin32c.exe",sizeof(program));
+            }
+        }
+      UnlockSemaphoreInfo(ghost_semaphore);
     }
   (void) CopyMagickString(path,program,length);
   return(TRUE);
