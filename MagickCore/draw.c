@@ -4694,7 +4694,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
       scale=ExpandAffine(&draw_info->affine);
       if ((draw_info->dash_pattern != (double *) NULL) &&
           (fabs(draw_info->dash_pattern[0]) >= DrawEpsilon) &&
-          ((scale*draw_info->stroke_width) >= DrawEpsilon) &&
+          (fabs(scale*draw_info->stroke_width) >= DrawEpsilon) &&
           (draw_info->stroke.alpha != (Quantum) TransparentAlpha))
         {
           /*
