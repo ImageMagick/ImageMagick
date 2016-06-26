@@ -1329,15 +1329,16 @@ MagickPrivate int NTGhostscriptEXE(char *path,int length)
       if (*program == '\0')
         {
           if (NTGhostscriptGetString("GS_DLL",&is_64_bit_version,program,
-              sizeof(program)) == FALSE)
-            return(FALSE);
-          p=strrchr(program,'\\');
-          if (p != (char *) NULL)
+              sizeof(program)) != FALSE)
             {
-              p++;
-              *p='\0';
-              (void) ConcatenateMagickString(program,is_64_bit_version ?
-                "gswin64c.exe" : "gswin32c.exe",sizeof(program));
+              p=strrchr(program,'\\');
+              if (p != (char *) NULL)
+                {
+                  p++;
+                  *p='\0';
+                  (void) ConcatenateMagickString(program,is_64_bit_version ?
+                    "gswin64c.exe" : "gswin32c.exe",sizeof(program));
+                }
             }
         }
       UnlockSemaphoreInfo(ghost_semaphore);
