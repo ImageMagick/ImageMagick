@@ -1,3 +1,6 @@
+2016-06-26  7.0.2-2 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.2-2, GIT revision 18514:a7b5b46:20160626.
+
 2016-06-23  7.0.2-2 Cristy  <quetzlzacatenango@image...>
   * Correct for numerical instability (reference
     https://github.com/ImageMagick/ImageMagick/issues/218).
