@@ -168,7 +168,7 @@ testFilterCompare('input.miff',  q//, 'reference/filter/Sample.miff', 'Sample', 
 testFilterCompare('input.miff',  q//, 'reference/filter/Scale.miff', 'Scale', q/'60%'/, 0.008, 1.0);
 ++$test;
 
-testFilterCompare('input.miff',  q//, 'reference/filter/Segment.miff', 'Segment', q//, 0.002, 0.02);
+testFilterCompare('input.miff',  q//, 'reference/filter/Segment.miff', 'Segment', q//, 0.09, 0.9);
 ++$test;
 
 testFilterCompare('input.miff',  q//, 'reference/filter/Shade.miff', 'Shade', q/geometry=>'30x30',gray=>'true'/, 0.08, 0.3);
