@@ -421,6 +421,7 @@ static MagickBooleanType bindOpenCLFunctions(void* library)
   BIND(clReleaseKernel);
   BIND(clSetKernelArg);
 
+  BIND(clFlush);
   BIND(clFinish);
 
   BIND(clEnqueueNDRangeKernel);
@@ -1557,6 +1558,7 @@ MagickPrivate MagickBooleanType RelinquishOpenCLCommandQueue(MagickCLEnv clEnv,
     }
   else
     {
+      clEnv->library->clFlush(queue);
       clEnv->commandQueues[++clEnv->commandQueuesPos]=queue;
       status=MagickTrue;
     }

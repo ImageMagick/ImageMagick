@@ -164,6 +164,10 @@ typedef CL_API_ENTRY cl_int (CL_API_CALL *MAGICKpfn_clSetKernelArg)(
     size_t       arg_size,
     const void * arg_value) CL_API_SUFFIX__VERSION_1_0;
 
+typedef CL_API_ENTRY cl_int
+  (CL_API_CALL *MAGICKpfn_clFlush)(cl_command_queue command_queue)
+    CL_API_SUFFIX__VERSION_1_0;
+
 typedef CL_API_ENTRY cl_int (CL_API_CALL *MAGICKpfn_clFinish)(cl_command_queue command_queue) CL_API_SUFFIX__VERSION_1_0;
 
 /* Enqueued Commands APIs */
@@ -275,6 +279,7 @@ struct MagickLibraryRec
   MAGICKpfn_clCreateKernel                           clCreateKernel;
   MAGICKpfn_clReleaseKernel                          clReleaseKernel;
   MAGICKpfn_clSetKernelArg                           clSetKernelArg;
+  MAGICKpfn_clFlush                                  clFlush;
   MAGICKpfn_clFinish                                 clFinish;
   MAGICKpfn_clEnqueueReadBuffer                      clEnqueueReadBuffer;
   MAGICKpfn_clEnqueueWriteBuffer                     clEnqueueWriteBuffer;
