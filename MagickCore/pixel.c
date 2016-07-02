@@ -5172,18 +5172,20 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
         if ((traits == UndefinedPixelTrait) ||
             (destination_traits == UndefinedPixelTrait))
           continue;
-        if ((traits & BlendPixelTrait) == 0)
+        if (source->alpha_trait != BlendPixelTrait)
           for (j=0; j < 4; j++)
           {
             alpha[j]=1.0;
-            pixels[j]=(MagickRealType) p[j*GetPixelChannels(source)+channel];
+            pixels[j]=(double) p[j*GetPixelChannels(source)+i];
           }
         else
           for (j=0; j < 4; j++)
           {
             alpha[j]=QuantumScale*GetPixelAlpha(source,p+j*
               GetPixelChannels(source));
-            pixels[j]=alpha[j]*p[j*GetPixelChannels(source)+channel];
+            pixels[j]=(double) p[j*GetPixelChannels(source)+i];
+            if (channel != AlphaPixelChannel)
+              pixels[j]*=alpha[j];
           }
         gamma=1.0;  /* number of pixels blended together (its variable) */
         for (j=0; j <= 1L; j++)
@@ -5213,7 +5215,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
                alpha[0]+=alpha[1];  /* add up alpha weights */
                pixels[0]+=pixels[1];
              }
-        if ((traits & BlendPixelTrait) == 0)
+        if (channel != AlphaPixelChannel)
           gamma=PerceptibleReciprocal(alpha[0]);  /* (color) 1/alpha_weights */
         else
           gamma=PerceptibleReciprocal(gamma);  /* (alpha) 1/number_of_pixels */
