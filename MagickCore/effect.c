@@ -1501,7 +1501,7 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     magick_threads(image,kuwahara_image,image->rows,1)
 #endif
-  for (y=0; y < (ssize_t) image->rows; y++)
+  for (y=0; y < (ssize_t) gaussian_image->rows; y++)
   {
     register Quantum
       *magick_restrict q;
@@ -1518,7 +1518,7 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
         status=MagickFalse;
         continue;
       }
-    for (x=0; x < (ssize_t) image->columns; x++)
+    for (x=0; x < (ssize_t) gaussian_image->columns; x++)
     {
       const Quantum
         *magick_restrict p;
@@ -1587,7 +1587,7 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
         {
           for (j=0; j < (ssize_t) GetPixelChannels(gaussian_image); j++)
             mean[j]+=(double) k[j];
-          k+=GetPixelChannels(image);
+          k+=GetPixelChannels(gaussian_image);
         }
         for (j=0; j < (ssize_t) GetPixelChannels(gaussian_image); j++)
           mean[j]/=(double) (width*width);
@@ -1601,7 +1601,7 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
           luma=GetPixelLuma(gaussian_image,k);
           variance+=(luma-GetMeanLuma(gaussian_image,mean))*
             (luma-GetMeanLuma(gaussian_image,mean));
-          k+=GetPixelChannels(image);
+          k+=GetPixelChannels(gaussian_image);
         }
         if (variance < min_variance)
           {
