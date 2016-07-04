@@ -208,8 +208,8 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   do
   {
-    chroma_image=CloneImage(image,(image->columns + horizontal_factor - 1) /
-      horizontal_factor, (image->rows + vertical_factor - 1) / vertical_factor,
+    chroma_image=CloneImage(image,(image->columns+horizontal_factor-1)/
+      horizontal_factor,(image->rows+vertical_factor-1)/vertical_factor,
       MagickTrue,exception);
     if (chroma_image == (Image *) NULL)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
@@ -344,7 +344,8 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
         for (y=0; y < (ssize_t) chroma_image->rows; y++)
         {
-          (void) ReadBlob(image,(size_t) quantum*chroma_image->columns,scanline);
+          (void) ReadBlob(image,(size_t) quantum*chroma_image->columns,
+            scanline);
           p=scanline;
           q=QueueAuthenticPixels(chroma_image,0,y,chroma_image->columns,1,
             exception);
