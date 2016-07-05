@@ -3028,7 +3028,7 @@ static Image *ComputeLocalContrastImage(const Image *image,
       imageRows = (unsigned int) image->rows;
       iRadius = (cl_int) (image->rows > image->columns ? image->rows : image->columns) * 0.002f * fabs(radius); // Normalized radius, 100% gives blur radius of 20% of the largest dimension
 
-      passes = ((1.0f * imageColumns) * imageColumns * iRadius) / 4000000000.0f;
+      passes = (((1.0f * imageColumns) * imageColumns * iRadius) + 3999999999) / 4000000000.0f;
       passes = (passes < 1) ? 1: passes;
 
       /* set the kernel arguments */
@@ -3069,6 +3069,7 @@ static Image *ComputeLocalContrastImage(const Image *image,
           (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
           goto cleanup;
         }
+        clEnv->library->clFlush(queue);
         if (RecordProfileData(clEnv,LocalContrastBlurRowKernel,event) == MagickFalse)
           {
             AddOpenCLEvent(image,event);
@@ -3118,6 +3119,7 @@ static Image *ComputeLocalContrastImage(const Image *image,
           (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
           goto cleanup;
         }
+        clEnv->library->clFlush(queue);
         if (RecordProfileData(clEnv, LocalContrastBlurApplyColumnKernel, event) == MagickFalse)
           {
             AddOpenCLEvent(image,event);
