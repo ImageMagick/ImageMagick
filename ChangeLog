@@ -1,6 +1,7 @@
 2016-07-01  7.0.2-3 Cristy  <quetzlzacatenango@image...>
   * Patch so -kuwahara option can preserve colormapped edges.
   * The histogram coder now returns the correct extent.
+  * Use CopyMagickString() rather than CopyMagickMemory() for strings.
 
 2016-06-26  7.0.2-2 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.2-2, GIT revision 18514:a7b5b46:20160626.
