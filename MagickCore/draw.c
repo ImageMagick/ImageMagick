@@ -2870,14 +2870,14 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
               if (draw_info->gradient.type == RadialGradient)
                 type=RadialGradient;
               (void) GradientImage(image,type,PadSpread,stops,number_stops,
-                 exception);
+                exception);
              }
            if (number_stops > 0)
              stops=(StopInfo *) RelinquishMagickMemory(stops);
           }
         if (image->debug != MagickFalse)
-          (void) LogMagickEvent(DrawEvent,GetMagickModule(),"  %.*s",
-            (int) (q-p),p);
+          (void) LogMagickEvent(DrawEvent,GetMagickModule(),"  %.*s",(int)
+            (q-p),p);
         continue;
       }
     /*
