@@ -92,6 +92,9 @@
   * Release ImageMagick version 7.0.1-4, GIT revision 10778:52dae14:20160516.
 
 2016-05-10  7.0.1-4 Cristy  <quetzlzacatenango@image...>
+  * Prevent possible shell command injection vulnerability through the
+    authenticate parameter of the PDF, PCL and XPS coders (report from
+		Erez Turjeman).
   * Quote passwords when passed to a delegate program.
   * Iterate channels over source image rather than destination (bug report
     from Hanno Böck).
