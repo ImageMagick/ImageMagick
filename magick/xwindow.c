@@ -8481,7 +8481,7 @@ static const char *GetLocaleMonitorMessage(const char *text)
   register char
     *p;
 
-  (void) CopyMagickMemory(tag,text,MaxTextExtent);
+  (void) CopyMagickString(tag,text,MaxTextExtent);
   p=strrchr(tag,'/');
   if (p != (char *) NULL)
     *p='\0';
