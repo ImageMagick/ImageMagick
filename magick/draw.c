@@ -2572,8 +2572,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
             type=LinearGradient;
             if (draw_info->gradient.type == RadialGradient)
               type=RadialGradient;
-            (void) GradientImage(image,type,PadSpread,&start_color,
-              &stop_color);
+            (void) GradientImage(image,type,PadSpread,&start_color,&stop_color);
             start_color=stop_color;
             GetNextToken(q,&q,extent,token);
             break;
