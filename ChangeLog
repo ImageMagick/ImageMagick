@@ -1,5 +1,6 @@
 2016-07-04  6.9.5-1 Cristy  <quetzlzacatenango@image...>
   * The histogram coder now returns the correct extent.
+  * Use CopyMagickString() rather than CopyMagickMemory() for strings.
 
 2016-06-26  6.9.5-0 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 6.9.5-0, GIT revision 18514:a7b5b46:20160626.
