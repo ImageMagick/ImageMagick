@@ -383,7 +383,11 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
       (LocaleCompare(write_info->magick,"HISTOGRAM") == 0))
     (void) FormatLocaleString(histogram_image->filename,MaxTextExtent,
       "miff:%s",write_info->filename);
+  histogram_image->blob=(void *) DetachBlob(histogram_image->blob);
+  histogram_image->blob=CloneBlobInfo(image->blob);
   status=WriteImage(write_info,histogram_image);
+  image->blob=(void *) DetachBlob(image->blob);
+  image->blob=CloneBlobInfo(histogram_image->blob);
   histogram_image=DestroyImage(histogram_image);
   write_info=DestroyImageInfo(write_info);
   return(status);
