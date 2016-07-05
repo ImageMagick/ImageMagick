@@ -800,9 +800,9 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
     Replace current image with new image while copying base image
     attributes.
   */
-  (void) CopyMagickMemory(image2->filename,image->filename,MagickPathExtent);
-  (void) CopyMagickMemory(image2->magick_filename,image->magick_filename,MagickPathExtent);
-  (void) CopyMagickMemory(image2->magick,image->magick,MagickPathExtent);
+  (void) CopyMagickString(image2->filename,image->filename,MagickPathExtent);
+  (void) CopyMagickString(image2->magick_filename,image->magick_filename,MagickPathExtent);
+  (void) CopyMagickString(image2->magick,image->magick,MagickPathExtent);
   image2->depth=image->depth;
   DestroyBlob(image2);
   image2->blob=ReferenceBlob(image->blob);
