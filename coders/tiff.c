@@ -65,6 +65,7 @@
 #include "MagickCore/log.h"
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/memory-private.h"
 #include "MagickCore/module.h"
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
@@ -1902,14 +1903,13 @@ RestoreMSCWarning
           }
         (void) SetImageStorageClass(image,DirectClass,exception);
         number_pixels=(MagickSizeType) columns*rows;
-        if ((number_pixels*sizeof(uint32)) != (MagickSizeType) ((size_t)
-            (number_pixels*sizeof(uint32))))
+        if (HeapOverflowSanityCheck(rows,sizeof(*tile_pixels)) != MagickFalse)
           {
             TIFFClose(tiff);
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
           }
-        tile_pixels=(uint32 *) AcquireQuantumMemory(columns,
-          rows*sizeof(*tile_pixels));
+        tile_pixels=(uint32 *) AcquireQuantumMemory(columns,rows*
+          sizeof(*tile_pixels));
         if (tile_pixels == (uint32 *) NULL)
           {
             TIFFClose(tiff);
@@ -2010,8 +2010,7 @@ RestoreMSCWarning
           Convert TIFF image to DirectClass MIFF image.
         */
         number_pixels=(MagickSizeType) image->columns*image->rows;
-        if ((number_pixels*sizeof(uint32)) != (MagickSizeType) ((size_t)
-            (number_pixels*sizeof(uint32))))
+        if (HeapOverflowSanityCheck(image->rows,sizeof(*pixels)) != MagickFalse)
           {
             TIFFClose(tiff);
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
@@ -2024,8 +2023,8 @@ RestoreMSCWarning
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
           }
         pixels=(uint32 *) GetVirtualMemoryBlob(pixel_info);
-        (void) TIFFReadRGBAImage(tiff,(uint32) image->columns,
-          (uint32) image->rows,(uint32 *) pixels,0);
+        (void) TIFFReadRGBAImage(tiff,(uint32) image->columns,(uint32)
+          image->rows,(uint32 *) pixels,0);
         /*
           Convert image to DirectClass pixel packets.
         */
