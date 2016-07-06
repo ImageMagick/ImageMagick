@@ -4726,10 +4726,15 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
             (fabs(primitive_info[i-1].point.y-primitive_info[0].point.y) < DrawEpsilon) ?
             MagickTrue : MagickFalse;
           i=(ssize_t) primitive_info[0].coordinates;
-          if ((((draw_info->linecap == RoundCap) ||
-                (closed_path != MagickFalse)) &&
-               (draw_info->linejoin == RoundJoin)) ||
-               (primitive_info[i].primitive != UndefinedPrimitive))
+          if (((closed_path != MagickFalse) &&
+              (draw_info->linejoin == RoundJoin)) ||
+              (primitive_info[i].primitive != UndefinedPrimitive))
+            {
+              (void) DrawPolygonPrimitive(image,draw_info,primitive_info,
+                exception);
+              break;
+            }
+          if (draw_info->linecap == RoundCap)
             {
               (void) DrawPolygonPrimitive(image,draw_info,primitive_info,
                 exception);
