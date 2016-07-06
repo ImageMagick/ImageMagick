@@ -2902,13 +2902,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   image->columns=ping_width;
   image->rows=ping_height;
 
-  status=SetImageExtent(image,image->columns,image->rows);
-  if (status == MagickFalse)
-    {
-      InheritException(exception,&image->exception);
-      return(DestroyImageList(image));
-    }
-
   if (((int) ping_color_type == PNG_COLOR_TYPE_PALETTE) ||
       ((int) ping_bit_depth < 16 &&
       (int) ping_color_type == PNG_COLOR_TYPE_GRAY))
@@ -3069,6 +3062,13 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           "  exit ReadOnePNGImage().");
 
       return(image);
+    }
+
+  status=SetImageExtent(image,image->columns,image->rows);
+  if (status == MagickFalse)
+    {
+      InheritException(exception,&image->exception);
+      return(DestroyImageList(image));
     }
 
   if (logging != MagickFalse)
