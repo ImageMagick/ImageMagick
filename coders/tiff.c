@@ -62,6 +62,7 @@
 #include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/memory_.h"
+#include "magick/memory-private.h"
 #include "magick/module.h"
 #include "magick/monitor.h"
 #include "magick/monitor-private.h"
@@ -1903,14 +1904,13 @@ RestoreMSCWarning
           }
         (void) SetImageStorageClass(image,DirectClass);
         number_pixels=(MagickSizeType) columns*rows;
-        if ((number_pixels*sizeof(uint32)) != (MagickSizeType) ((size_t)
-            (number_pixels*sizeof(uint32))))
+        if (HeapOverflowSanityCheck(rows,sizeof(*tile_pixels)) != MagickFalse)
           {
             TIFFClose(tiff);
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
           }
-        tile_pixels=(uint32 *) AcquireQuantumMemory(number_pixels,
-          sizeof(*tile_pixels));
+        tile_pixels=(uint32 *) AcquireQuantumMemory(columns,
+          rows*sizeof(*tile_pixels));
         if (tile_pixels == (uint32 *) NULL)
           {
             TIFFClose(tiff);
@@ -2012,14 +2012,13 @@ RestoreMSCWarning
           Convert TIFF image to DirectClass MIFF image.
         */
         number_pixels=(MagickSizeType) image->columns*image->rows;
-        if ((number_pixels*sizeof(uint32)) != (MagickSizeType) ((size_t)
-            (number_pixels*sizeof(uint32))))
+        if (HeapOverflowSanityCheck(image->rows,sizeof(*pixels)) != MagickFalse)
           {
             TIFFClose(tiff);
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
           }
         pixel_info=AcquireVirtualMemory(image->columns,image->rows*
-          sizeof(uint32));
+          sizeof(*pixels));
         if (pixel_info == (MemoryInfo *) NULL)
           {
             TIFFClose(tiff);
