@@ -435,13 +435,13 @@ static void CMSExceptionHandler(cmsContext context,cmsUInt32Number severity,
   Image
     *image;
 
-  image=(Image *) NULL;
   cms_exception=(CMSExceptionInfo *) context;
-  if (cms_exception != (CMSExceptionInfo *) NULL)
-    {
-      image=cms_exception->image;
-      exception=cms_exception->exception;
-    }
+  if (cms_exception == (CMSExceptionInfo *) NULL)
+    return;
+  exception=cms_exception->exception;
+  if (exception == (ExceptionInfo *) NULL)
+    return;
+  image=cms_exception->image;
   if (image == (Image *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),ImageWarning,
