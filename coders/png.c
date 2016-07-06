@@ -2940,10 +2940,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   image->columns=ping_width;
   image->rows=ping_height;
 
-  status=SetImageExtent(image,image->columns,image->rows,exception);
-  if (status == MagickFalse)
-    return(DestroyImageList(image));
-
   if (((int) ping_color_type == PNG_COLOR_TYPE_GRAY) ||
       ((int) ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA))
     {
@@ -3144,6 +3140,10 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   if (logging != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
       "    Reading PNG IDAT chunk(s)");
+
+  status=SetImageExtent(image,image->columns,image->rows,exception);
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
 
   if (num_passes > 1)
     pixel_info=AcquireVirtualMemory(image->rows,ping_rowbytes*
