@@ -1297,12 +1297,6 @@ RestoreMSCWarning
     image->columns=(size_t) width;
     image->rows=(size_t) height;
     image->depth=(size_t) bits_per_sample;
-    status=SetImageExtent(image,image->columns,image->rows);
-    if (status == MagickFalse)
-      {
-        InheritException(exception,&image->exception);
-        return(DestroyImageList(image));
-      }
     if (image->debug != MagickFalse)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Image depth: %.20g",
         (double) image->depth);
@@ -1558,6 +1552,12 @@ RestoreMSCWarning
               break;
             }
         goto next_tiff_frame;
+      }
+    status=SetImageExtent(image,image->columns,image->rows);
+    if (status == MagickFalse)
+      {
+        InheritException(exception,&image->exception);
+        return(DestroyImageList(image));
       }
     method=ReadGenericMethod;
     if (TIFFGetField(tiff,TIFFTAG_ROWSPERSTRIP,&rows_per_strip) == 1)
