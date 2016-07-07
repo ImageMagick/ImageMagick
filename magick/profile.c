@@ -427,7 +427,6 @@ static void LCMSExceptionHandler(cmsContext context,cmsUInt32Number severity,
   if (image != (Image *) NULL)
     (void) ThrowMagickException(&image->exception,GetMagickModule(),
       ImageWarning,"UnableToTransformColorspace","`%s'",image->filename);
-
 }
 #endif
 
