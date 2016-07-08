@@ -226,26 +226,23 @@ static MagickCLEnv getOpenCLEnvironment(ExceptionInfo* exception)
   return(clEnv);
 }
 
-static inline void copyPixels(const Image *source,Image *destination,
-  ExceptionInfo *exception)
+static Image *cloneImage(const Image* image,ExceptionInfo *exception)
 {
-  RectangleInfo
-    geometry;
+  Image
+    *clone;
 
-  OffsetInfo
-    offset;
-
-  /* The pixels only need to be copied when a channel mask has been set */
-  if (((source->channel_mask & RedChannel) != 0) &&
-      ((source->channel_mask & GreenChannel) != 0) &&
-      ((source->channel_mask & BlueChannel) != 0) &&
-      ((source->channel_mask & AlphaChannel) != 0))
-    return;
-
-  geometry.width=source->columns;
-  geometry.height=source->rows;
-  geometry.x=geometry.y=offset.x=offset.y=0;
-  CopyImagePixels(destination,source,&geometry,&offset,exception);
+  if (((image->channel_mask & RedChannel) != 0) &&
+      ((image->channel_mask & GreenChannel) != 0) &&
+      ((image->channel_mask & BlueChannel) != 0) &&
+      ((image->channel_mask & AlphaChannel) != 0))
+    clone=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
+  else
+    {
+      clone=CloneImage(image,0,0,MagickTrue,exception);
+      if (clone != (Image *) NULL)
+        SyncImagePixelCache(clone,exception);
+    }
+  return(clone);
 }
 
 /* pad the global workgroup size to the next multiple of 
@@ -451,13 +448,11 @@ static Image *ComputeAddNoiseImage(const Image *image,MagickCLEnv clEnv,
   queue=AcquireOpenCLCommandQueue(device);
   if (queue == (cl_command_queue) NULL)
     goto cleanup;
-  filteredImage=CloneImage(image,image->columns,image->rows,MagickTrue,
-    exception);
+  filteredImage=cloneImage(image,exception);
   if (filteredImage == (Image *) NULL)
     goto cleanup;
   if (filteredImage->number_channels != image->number_channels)
     goto cleanup;
-  copyPixels(image,filteredImage,exception);
   imageBuffer=GetAuthenticOpenCLBuffer(image,device,exception);
   if (imageBuffer == (cl_mem) NULL)
     goto cleanup;
@@ -645,13 +640,11 @@ static Image *ComputeBlurImage(const Image* image,MagickCLEnv clEnv,
 
   device=RequestOpenCLDevice(clEnv);
   queue=AcquireOpenCLCommandQueue(device);
-  filteredImage=CloneImage(image,image->columns,image->rows,MagickTrue,
-    exception);
+  filteredImage=cloneImage(image,exception);
   if (filteredImage == (Image *) NULL)
     goto cleanup;
   if (filteredImage->number_channels != image->number_channels)
     goto cleanup;
-  copyPixels(image,filteredImage,exception);
   imageBuffer=GetAuthenticOpenCLBuffer(image,device,exception);
   if (imageBuffer == (cl_mem) NULL)
     goto cleanup;
@@ -4627,13 +4620,11 @@ static Image* ComputeRotationalBlurImage(const Image *image,MagickCLEnv clEnv,
 
   device=RequestOpenCLDevice(clEnv);
   queue=AcquireOpenCLCommandQueue(device);
-  filteredImage=CloneImage(image,image->columns,image->rows,MagickTrue,
-    exception);
+  filteredImage=cloneImage(image,exception);
   if (filteredImage == (Image *) NULL)
     goto cleanup;
   if (filteredImage->number_channels != image->number_channels)
     goto cleanup;
-  copyPixels(image,filteredImage,exception);
   imageBuffer=GetAuthenticOpenCLBuffer(image,device,exception);
   if (imageBuffer == (cl_mem) NULL)
     goto cleanup;
@@ -4828,13 +4819,11 @@ static Image *ComputeUnsharpMaskImage(const Image *image,MagickCLEnv clEnv,
 
   device=RequestOpenCLDevice(clEnv);
   queue=AcquireOpenCLCommandQueue(device);
-  filteredImage=CloneImage(image,image->columns,image->rows,MagickTrue,
-    exception);
+  filteredImage=cloneImage(image,exception);
   if (filteredImage == (Image *) NULL)
     goto cleanup;
   if (filteredImage->number_channels != image->number_channels)
     goto cleanup;
-  copyPixels(image,filteredImage,exception);
   imageBuffer=GetAuthenticOpenCLBuffer(image,device,exception);
   if (imageBuffer == (cl_mem) NULL)
     goto cleanup;
@@ -5003,13 +4992,11 @@ static Image *ComputeUnsharpMaskImageSingle(const Image *image,
 
   device=RequestOpenCLDevice(clEnv);
   queue=AcquireOpenCLCommandQueue(device);
-  filteredImage=CloneImage(image,image->columns,image->rows,MagickTrue,
-    exception);
+  filteredImage=cloneImage(image,exception);
   if (filteredImage == (Image *) NULL)
     goto cleanup;
   if (filteredImage->number_channels != image->number_channels)
     goto cleanup;
-  copyPixels(image,filteredImage,exception);
   imageBuffer=GetAuthenticOpenCLBuffer(image,device,exception);
   if (imageBuffer == (cl_mem) NULL)
     goto cleanup;
