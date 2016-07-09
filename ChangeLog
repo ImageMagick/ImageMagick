@@ -1,3 +1,6 @@
+2016-07-09  7.0.2-3 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.2-3, GIT revision 18572:28560fc:20160709.
+
 2016-07-01  7.0.2-3 Cristy  <quetzlzacatenango@image...>
   * Patch so -kuwahara option can preserve colormapped edges.
   * The histogram coder now returns the correct extent.
