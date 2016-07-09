@@ -2269,18 +2269,18 @@ MagickExport MagickBooleanType HaldClutImage(Image *image,
       point.y-=floor(point.y);
       point.z-=floor(point.z);
       pixel1=zero;
-      (void) InterpolatePixelInfo(image,hald_view,image->interpolate,
+      (void) InterpolatePixelInfo(hald_image,hald_view,hald_image->interpolate,
         fmod(offset,width),floor(offset/width),&pixel1,exception);
       pixel2=zero;
-      (void) InterpolatePixelInfo(image,hald_view,image->interpolate,
+      (void) InterpolatePixelInfo(hald_image,hald_view,hald_image->interpolate,
         fmod(offset+level,width),floor((offset+level)/width),&pixel2,exception);
       pixel3=zero;
       CompositePixelInfoAreaBlend(&pixel1,pixel1.alpha,&pixel2,pixel2.alpha,
         point.y,&pixel3);
       offset+=cube_size;
-      (void) InterpolatePixelInfo(image,hald_view,image->interpolate,
+      (void) InterpolatePixelInfo(hald_image,hald_view,hald_image->interpolate,
         fmod(offset,width),floor(offset/width),&pixel1,exception);
-      (void) InterpolatePixelInfo(image,hald_view,image->interpolate,
+      (void) InterpolatePixelInfo(hald_image,hald_view,hald_image->interpolate,
         fmod(offset+level,width),floor((offset+level)/width),&pixel2,exception);
       pixel4=zero;
       CompositePixelInfoAreaBlend(&pixel1,pixel1.alpha,&pixel2,pixel2.alpha,
