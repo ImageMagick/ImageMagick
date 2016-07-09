@@ -227,7 +227,6 @@ MagickExport Image *PingImage(const ImageInfo *image_info,
   if (image != (Image *) NULL)
     {
       ResetTimer(&image->timer);
-      InitializePixelChannelMap(image);
       if (ping_info->verbose != MagickFalse)
         (void) IdentifyImage(image,stdout,MagickFalse,exception);
     }
