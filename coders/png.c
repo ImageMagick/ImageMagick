@@ -3119,6 +3119,11 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       /* This happens later in non-ping decodes */
       if (png_get_valid(ping,ping_info,PNG_INFO_tRNS))
         image->storage_class=DirectClass;
+      image->alpha_trait=
+        (((int) ping_color_type == PNG_COLOR_TYPE_RGB_ALPHA) ||
+         ((int) ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA) ||
+         (png_get_valid(ping,ping_info,PNG_INFO_tRNS))) ?
+        BlendPixelTrait : UndefinedPixelTrait;
 
       if (logging != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
