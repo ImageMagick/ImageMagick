@@ -554,8 +554,8 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Note spot names.
         */
-        (void) FormatLocaleString(property,MagickPathExtent,"pdf:SpotColor-%.20g",
-          (double) spotcolor++);
+        (void) FormatLocaleString(property,MagickPathExtent,
+          "pdf:SpotColor-%.20g",(double) spotcolor++);
         i=0;
         for (c=ReadBlobByte(image); c != EOF; c=ReadBlobByte(image))
         {
