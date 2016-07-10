@@ -1827,7 +1827,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
       case 'A':
       {
         if (LocaleCompare("affine",keyword) == 0)
-          {;
+          {
             GetNextToken(q,&q,extent,token);
             affine.sx=StringToDouble(token,&next_token);
             if (token == next_token)
@@ -2030,13 +2030,10 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
                 &graphic_context[n]->fill_pattern,exception);
             else
               {
-                Quantum
-                  alpha;
-
-                alpha=graphic_context[n]->fill.alpha;
                 status&=QueryColorCompliance(token,AllCompliance,
                   &graphic_context[n]->fill,exception);
-                graphic_context[n]->fill.alpha=alpha;
+                if (graphic_context[n]->alpha != OpaqueAlpha)
+                  graphic_context[n]->fill.alpha=graphic_context[n]->alpha;
                 if (status == MagickFalse)
                   {
                     ImageInfo
@@ -2057,8 +2054,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
           {
             GetNextToken(q,&q,extent,token);
             factor=strchr(token,'%') != (char *) NULL ? 0.01 : 1.0;
-            graphic_context[n]->fill.alpha=(double) QuantumRange*
-              factor*StringToDouble(token,&next_token);
+            graphic_context[n]->fill.alpha=(double) QuantumRange*(1.0-factor*
+              StringToDouble(token,&next_token));
             if (token == next_token)
               status=MagickFalse;
             break;
@@ -2243,8 +2240,6 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
               StringToDouble(token,&next_token)))));
             if (token == next_token)
               status=MagickFalse;
-            graphic_context[n]->fill.alpha=(double) graphic_context[n]->alpha;
-            graphic_context[n]->stroke.alpha=(double) graphic_context[n]->alpha;
             break;
           }
         status=MagickFalse;
@@ -2595,13 +2590,10 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
                 &graphic_context[n]->stroke_pattern,exception);
             else
               {
-                Quantum
-                  alpha;
-
-                alpha=graphic_context[n]->stroke.alpha;
                 status&=QueryColorCompliance(token,AllCompliance,
                   &graphic_context[n]->stroke,exception);
-                graphic_context[n]->stroke.alpha=alpha;
+                if (graphic_context[n]->alpha != OpaqueAlpha)
+                  graphic_context[n]->stroke.alpha=graphic_context[n]->alpha;
                 if (status == MagickFalse)
                   {
                     ImageInfo
