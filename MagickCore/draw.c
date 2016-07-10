@@ -2082,8 +2082,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
             GetNextToken(q,&q,extent,token);
             (void) CloneString(&graphic_context[n]->font,token);
             if (LocaleCompare("none",token) == 0)
-              graphic_context[n]->font=(char *)
-                RelinquishMagickMemory(graphic_context[n]->font);
+              graphic_context[n]->font=(char *) RelinquishMagickMemory(
+                graphic_context[n]->font);
             break;
           }
         if (LocaleCompare("font-family",keyword) == 0)
@@ -2239,8 +2239,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
             GetNextToken(q,&q,extent,token);
             factor=strchr(token,'%') != (char *) NULL ? 0.01 : 1.0;
             graphic_context[n]->alpha=ClampToQuantum(QuantumRange*(1.0-(
-              QuantumScale*graphic_context[n]->alpha*factor*
-              StringToDouble(token,&next_token))));
+              QuantumScale*graphic_context[n]->alpha*(1.0-factor*
+              StringToDouble(token,&next_token)))));
             if (token == next_token)
               status=MagickFalse;
             graphic_context[n]->fill.alpha=(double) graphic_context[n]->alpha;
@@ -2724,8 +2724,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
           {
             GetNextToken(q,&q,extent,token);
             factor=strchr(token,'%') != (char *) NULL ? 0.01 : 1.0;
-            graphic_context[n]->stroke.alpha=(double) QuantumRange*
-              factor*StringToDouble(token,&next_token);
+            graphic_context[n]->stroke.alpha=(double) QuantumRange*(1.0-factor*
+              StringToDouble(token,&next_token));
             if (token == next_token)
               status=MagickFalse;
             break;
@@ -2733,8 +2733,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
         if (LocaleCompare("stroke-width",keyword) == 0)
           {
             GetNextToken(q,&q,extent,token);
-            graphic_context[n]->stroke_width=StringToDouble(token,
-              &next_token);
+            graphic_context[n]->stroke_width=StringToDouble(token,&next_token);
             if (token == next_token)
               status=MagickFalse;
             break;
@@ -2779,8 +2778,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
         if (LocaleCompare("text-antialias",keyword) == 0)
           {
             GetNextToken(q,&q,extent,token);
-            graphic_context[n]->text_antialias=
-              StringToLong(token) != 0 ? MagickTrue : MagickFalse;
+            graphic_context[n]->text_antialias=StringToLong(token) != 0 ?
+              MagickTrue : MagickFalse;
             break;
           }
         if (LocaleCompare("text-undercolor",keyword) == 0)
