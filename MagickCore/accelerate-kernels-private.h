@@ -2743,9 +2743,11 @@ OPENCL_ENDIF()
 */
 
   STRINGIFY(
-  __kernel void RotationalBlur(const __global CLQuantum *image,const unsigned int number_channels,
-    const unsigned int channel,const float4 bias,const float2 blurCenter,__constant float *cos_theta,
-    __constant float *sin_theta,const unsigned int cossin_theta_size,__global CLQuantum *filteredImage)
+  __kernel void RotationalBlur(const __global CLQuantum *image,
+    const unsigned int number_channels,const unsigned int channel,
+    const float2 blurCenter,__constant float *cos_theta,
+    __constant float *sin_theta,const unsigned int cossin_theta_size,
+    __global CLQuantum *filteredImage)
   {
     const int x = get_global_id(0);
     const int y = get_global_id(1);
@@ -2767,8 +2769,7 @@ OPENCL_ENDIF()
         step = cossin_theta_size-1;
     }
 
-    float4 result = bias;
-
+    float4 result = 0.0f;
     float normalize = 0.0f;
     float gamma = 0.0f;
 

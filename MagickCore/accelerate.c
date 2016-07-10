@@ -4570,9 +4570,6 @@ static Image* ComputeRotationalBlurImage(const Image *image,MagickCLEnv clEnv,
   cl_float2
     blurCenter;
 
-  cl_float4
-    biasPixel;
-
   cl_int
     status;
 
@@ -4605,9 +4602,6 @@ static Image* ComputeRotationalBlurImage(const Image *image,MagickCLEnv clEnv,
   MagickCLDevice
     device;
 
-  PixelInfo
-    bias;
-
   size_t
     gsize[2],
     i;
@@ -4632,10 +4626,11 @@ static Image* ComputeRotationalBlurImage(const Image *image,MagickCLEnv clEnv,
   if (filteredImageBuffer == (cl_mem) NULL)
     goto cleanup;
 
-  blurCenter.s[0]=(float) (image->columns-1)/2.0;
-  blurCenter.s[1]=(float) (image->rows-1)/2.0;
-  blurRadius=hypot(blurCenter.s[0],blurCenter.s[1]);
-  cossin_theta_size=(unsigned int) fabs(4.0*DegreesToRadians(angle)*sqrt((double)blurRadius)+2UL);
+  blurCenter.x=(float) (image->columns-1)/2.0;
+  blurCenter.y=(float) (image->rows-1)/2.0;
+  blurRadius=hypot(blurCenter.x,blurCenter.y);
+  cossin_theta_size=(unsigned int) fabs(4.0*DegreesToRadians(angle)*sqrt(
+    (double) blurRadius)+2UL);
 
   cosThetaPtr=AcquireQuantumMemory(cossin_theta_size,sizeof(float));
   if (cosThetaPtr == (float *) NULL)
@@ -4661,7 +4656,7 @@ static Image* ComputeRotationalBlurImage(const Image *image,MagickCLEnv clEnv,
   cosThetaBuffer=CreateOpenCLBuffer(device,CL_MEM_READ_ONLY |
     CL_MEM_COPY_HOST_PTR,cossin_theta_size*sizeof(float),cosThetaPtr);
   cosThetaPtr=RelinquishMagickMemory(cosThetaPtr);
-  if ((sinThetaBuffer == (cl_mem) NULL) || (cosThetaBuffer == (cl_mem)NULL))
+  if ((sinThetaBuffer == (cl_mem) NULL) || (cosThetaBuffer == (cl_mem) NULL))
   {
     (void) OpenCLThrowMagickException(device,exception,GetMagickModule(),
       ResourceLimitWarning,"CreateOpenCLBuffer failed.",".");
@@ -4676,19 +4671,12 @@ static Image* ComputeRotationalBlurImage(const Image *image,MagickCLEnv clEnv,
     goto cleanup;
   }
 
-  GetPixelInfo(image,&bias);
-  biasPixel.s[0]=bias.red;
-  biasPixel.s[1]=bias.green;
-  biasPixel.s[2]=bias.blue;
-  biasPixel.s[3]=bias.alpha;
-
   number_channels=(cl_uint) image->number_channels;
 
   i=0;
   status =SetOpenCLKernelArg(rotationalBlurKernel,i++,sizeof(cl_mem),(void *)&imageBuffer);
   status|=SetOpenCLKernelArg(rotationalBlurKernel,i++,sizeof(cl_uint),&number_channels);
   status|=SetOpenCLKernelArg(rotationalBlurKernel,i++,sizeof(ChannelType), &image->channel_mask);
-  status|=SetOpenCLKernelArg(rotationalBlurKernel,i++,sizeof(cl_float4), &biasPixel);
   status|=SetOpenCLKernelArg(rotationalBlurKernel,i++,sizeof(cl_float2), &blurCenter);
   status|=SetOpenCLKernelArg(rotationalBlurKernel,i++,sizeof(cl_mem),(void *)&cosThetaBuffer);
   status|=SetOpenCLKernelArg(rotationalBlurKernel,i++,sizeof(cl_mem),(void *)&sinThetaBuffer);
