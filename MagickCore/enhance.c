@@ -2373,7 +2373,9 @@ static inline double LevelPixel(const double black_point,
     level_pixel,
     scale;
 
-  scale=(white_point != black_point) ? 1.0/(white_point-black_point) : 1.0;
+  if (fabs(white_point-black_point) < MagickEpsilon)
+    return(pixel);
+  scale=1.0/(white_point-black_point);
   level_pixel=QuantumRange*gamma_pow(scale*((double) pixel-black_point),
     1.0/gamma);
   return(level_pixel);
@@ -2424,7 +2426,7 @@ MagickExport MagickBooleanType LevelImage(Image *image,const double black_point,
       if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
         image->colormap[i].alpha=(double) ClampToQuantum(LevelPixel(black_point,
           white_point,gamma,image->colormap[i].alpha));
-      }
+    }
   /*
     Level image.
   */
