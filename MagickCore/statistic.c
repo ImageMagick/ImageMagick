@@ -1813,7 +1813,7 @@ MagickExport ChannelPerceptualHash *GetImagePerceptualHash(
   if (moments == (ChannelMoments *) NULL)
     return((ChannelPerceptualHash *) NULL);
   perceptual_hash=(ChannelPerceptualHash *) AcquireQuantumMemory(
-    CompositeChannels+1UL,sizeof(*perceptual_hash));
+    MaxPixelChannels+1UL,sizeof(*perceptual_hash));
   if (perceptual_hash == (ChannelPerceptualHash *) NULL)
     return((ChannelPerceptualHash *) NULL);
   for (channel=0; channel <= MaxPixelChannels; channel++)
