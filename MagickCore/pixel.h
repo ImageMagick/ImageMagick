@@ -47,7 +47,7 @@ typedef enum
   ReadMaskChannel = 0x0040,          /* Pixel is Not Readable? */
   WriteMaskChannel = 0x0080,         /* Pixel is Write Protected? */
   MetaChannel = 0x0100,              /* ???? */
-  CompositeChannels = 0x002F,
+  CompositeChannels = 0x001F,
   AllChannels = 0x7ffffff,
   /*
     Special purpose channel types.

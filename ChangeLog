@@ -1,5 +1,6 @@
 2016-07-10  7.0.2-4 Cristy  <quetzlzacatenango@image...>
   * To comply with the SVG standard, use stroke-opacity for transparent strokes.
+  * Define CompositeChannels mask to Red, Green, Blue, Alpha, and Black.
 
 2016-07-09  7.0.2-3 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.2-3, GIT revision 18572:28560fc:20160709.
