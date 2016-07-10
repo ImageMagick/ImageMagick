@@ -2022,13 +2022,10 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
                 &graphic_context[n]->fill_pattern);
             else
               {
-                Quantum
-                  opacity;
-
-                opacity=graphic_context[n]->fill.opacity;
                 status&=QueryColorDatabase(token,&graphic_context[n]->fill,
                   &image->exception);
-                graphic_context[n]->fill.opacity=opacity;
+                if (graphic_context[n]->opacity != OpaqueOpacity)
+                  graphic_context[n]->fill.opacity=graphic_context[n]->opacity;
                 if (status == MagickFalse)
                   {
                     ImageInfo
@@ -2050,7 +2047,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
             GetNextToken(q,&q,extent,token);
             factor=strchr(token,'%') != (char *) NULL ? 0.01 : 1.0;
             graphic_context[n]->fill.opacity=ClampToQuantum((MagickRealType)
-              QuantumRange*(1.0-factor*StringToDouble(token,&next_token)));
+              QuantumRange*factor*StringToDouble(token,&next_token));
             if (token == next_token)
               status=MagickFalse;
             break;
@@ -2253,13 +2250,12 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
           {
             GetNextToken(q,&q,extent,token);
             factor=strchr(token,'%') != (char *) NULL ? 0.01 : 1.0;
-            graphic_context[n]->opacity=ClampToQuantum((MagickRealType)
-              QuantumRange*((1.0-QuantumScale*graphic_context[n]->opacity)*
-              factor*StringToDouble(token,&next_token)));
+            graphic_context[n]->opacity=QuantumRange-ClampToQuantum(
+              (MagickRealType) QuantumRange*((1.0-QuantumScale*
+              graphic_context[n]->opacity)*factor*
+              StringToDouble(token,&next_token)));
             if (token == next_token)
               status=MagickFalse;
-            graphic_context[n]->fill.opacity=graphic_context[n]->opacity;
-            graphic_context[n]->stroke.opacity=graphic_context[n]->opacity;
             break;
           }
         status=MagickFalse;
@@ -2591,13 +2587,11 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
                 &graphic_context[n]->stroke_pattern);
             else
               {
-                Quantum
-                  opacity;
-
-                opacity=graphic_context[n]->stroke.opacity;
                 status&=QueryColorDatabase(token,&graphic_context[n]->stroke,
                   &image->exception);
-                graphic_context[n]->stroke.opacity=opacity;
+                if (graphic_context[n]->opacity != OpaqueOpacity)
+                  graphic_context[n]->stroke.opacity=
+                    graphic_context[n]->opacity;
                 if (status == MagickFalse)
                   {
                     ImageInfo
