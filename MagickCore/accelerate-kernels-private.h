@@ -2778,7 +2778,7 @@ OPENCL_ENDIF()
       int cx = ClampToCanvas(blurCenter.x+center_x*cos_theta[i]-center_y*sin_theta[i]+0.5f,columns);
       int cy = ClampToCanvas(blurCenter.y+center_x*sin_theta[i]+center_y*cos_theta[i]+0.5f,rows);
 
-      float4 pixel = ReadFloat4(image, number_channels, columns, cx, cy, channel);
+      float4 pixel = ReadFloat4(image, number_channels, columns, cx, cy, AllChannels);
 
       if ((number_channels == 4) || (number_channels == 2))
       {
