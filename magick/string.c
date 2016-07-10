@@ -923,14 +923,17 @@ MagickExport char *EscapeString(const char *source,const char escape)
     length;
 
   assert(source != (const char *) NULL);
-  length=strlen(source);
+  length=0;
   for (p=source; *p != '\0'; p++)
+  {
     if ((*p == '\\') || (*p == escape))
       {
         if (~length < 1)
           ThrowFatalException(ResourceLimitFatalError,"UnableToEscapeString");
         length++;
       }
+    length++;
+  }
   destination=(char *) NULL;
   if (~length >= (MaxTextExtent-1))
     destination=(char *) AcquireQuantumMemory(length+MaxTextExtent,

@@ -1753,34 +1753,48 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
 %
 */
 
-static char *EscapeParenthesis(const char *text)
+static char *EscapeParenthesis(const char *source)
 {
   char
-    *buffer;
+    *destination;
 
   register char
+    *q;
+
+  register const char
     *p;
 
-  register ssize_t
-    i;
-
   size_t
-    escapes;
+    length;
 
-  escapes=0;
-  buffer=AcquireString(text);
-  p=buffer;
-  for (i=0; i < (ssize_t) MagickMin(strlen(text),MaxTextExtent-escapes-1); i++)
+  assert(source != (const char *) NULL);
+  length=0;
+  for (p=source; *p != '\0'; p++)
   {
-    if ((text[i] == '(') || (text[i] == ')'))
+    if ((*p == '\\') || (*p == '(') || (*p == ')'))
       {
-        *p++='\\';
-        escapes++;
+        if (~length < 1)
+          ThrowFatalException(ResourceLimitFatalError,"UnableToEscapeString");
+        length++;
       }
-    *p++=text[i];
+    length++;
   }
-  *p='\0';
-  return(buffer);
+  destination=(char *) NULL;
+  if (~length >= (MaxTextExtent-1))
+    destination=(char *) AcquireQuantumMemory(length+MaxTextExtent,
+      sizeof(*destination));
+  if (destination == (char *) NULL)
+    ThrowFatalException(ResourceLimitFatalError,"UnableToEscapeString");
+  *destination='\0';
+  q=destination;
+  for (p=source; *p != '\0'; p++)
+  {
+    if ((*p == '\\') || (*p == '(') || (*p == ')'))
+      *q++='\\';
+    *q++=(*p);
+  }
+  *q='\0';
+  return(destination);
 }
 
 static MagickBooleanType RenderPostscript(Image *image,
