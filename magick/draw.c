@@ -2254,8 +2254,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
             GetNextToken(q,&q,extent,token);
             factor=strchr(token,'%') != (char *) NULL ? 0.01 : 1.0;
             graphic_context[n]->opacity=ClampToQuantum((MagickRealType)
-              QuantumRange*(1.0-((1.0-QuantumScale*graphic_context[n]->opacity)*
-              factor*StringToDouble(token,&next_token))));
+              QuantumRange*((1.0-QuantumScale*graphic_context[n]->opacity)*
+              factor*StringToDouble(token,&next_token)));
             if (token == next_token)
               status=MagickFalse;
             graphic_context[n]->fill.opacity=graphic_context[n]->opacity;
@@ -2724,7 +2724,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
             GetNextToken(q,&q,extent,token);
             factor=strchr(token,'%') != (char *) NULL ? 0.01 : 1.0;
             graphic_context[n]->stroke.opacity=ClampToQuantum((MagickRealType)
-              QuantumRange*(1.0-factor*StringToDouble(token,&next_token)));
+              QuantumRange*factor*StringToDouble(token,&next_token));
             if (token == next_token)
               status=MagickFalse;
             break;
