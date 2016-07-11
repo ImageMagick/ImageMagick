@@ -2942,7 +2942,8 @@ MagickExport Image *RotationalBlurImage(const Image *image,const double angle,
           }
         gamma=0.0;
         pixel=0.0;
-        if ((blur_traits & BlendPixelTrait) == 0)
+        if ((GetPixelChannelTraits(image,AlphaChannel) == UndefinedPixelTrait) ||
+            (channel == AlphaChannel))
           {
             for (j=0; j < (ssize_t) n; j+=(ssize_t) step)
             {
@@ -2964,6 +2965,9 @@ MagickExport Image *RotationalBlurImage(const Image *image,const double angle,
           }
         for (j=0; j < (ssize_t) n; j+=(ssize_t) step)
         {
+          double
+            alpha;
+
           r=GetCacheViewVirtualPixels(radial_view, (ssize_t) (blur_center.x+
             center.x*cos_theta[j]-center.y*sin_theta[j]+0.5),(ssize_t)
             (blur_center.y+center.x*sin_theta[j]+center.y*cos_theta[j]+0.5),
@@ -2973,8 +2977,9 @@ MagickExport Image *RotationalBlurImage(const Image *image,const double angle,
               status=MagickFalse;
               continue;
             }
-          pixel+=GetPixelAlpha(image,r)*r[i];
-          gamma+=GetPixelAlpha(image,r);
+          alpha=(double) QuantumScale*GetPixelAlpha(image,r);
+          pixel+=alpha*r[i];
+          gamma+=alpha;
         }
         gamma=PerceptibleReciprocal(gamma);
         SetPixelChannel(blur_image,channel,ClampToQuantum(gamma*pixel),q);
