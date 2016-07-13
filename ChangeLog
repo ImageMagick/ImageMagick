@@ -1,3 +1,7 @@
+2016-07-13  7.0.2-5 Cristy  <quetzlzacatenango@image...>
+  * Fix MVG stroke-opacity (reference
+    https://github.com/ImageMagick/ImageMagick/issues/229).
+
 2016-07-11  7.0.2-4 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.2-4, GIT revision 18591:50debe5:20160710.
 

@@ -341,7 +341,8 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
   clone_info->bounds=draw_info->bounds;
   clone_info->clip_units=draw_info->clip_units;
   clone_info->render=draw_info->render;
-  clone_info->alpha=draw_info->alpha;
+  clone_info->fill_alpha=draw_info->fill_alpha;
+  clone_info->stroke_alpha=draw_info->stroke_alpha;
   clone_info->element_reference=draw_info->element_reference;
   clone_info->debug=IsEventLogging();
   exception=DestroyExceptionInfo(exception);
@@ -2032,8 +2033,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
               {
                 status&=QueryColorCompliance(token,AllCompliance,
                   &graphic_context[n]->fill,exception);
-                if (graphic_context[n]->alpha != OpaqueAlpha)
-                  graphic_context[n]->fill.alpha=graphic_context[n]->alpha;
+                if (graphic_context[n]->fill_alpha != OpaqueAlpha)
+                  graphic_context[n]->fill.alpha=graphic_context[n]->fill_alpha;
                 if (status == MagickFalse)
                   {
                     ImageInfo
@@ -2054,7 +2055,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
           {
             GetNextToken(q,&q,extent,token);
             factor=strchr(token,'%') != (char *) NULL ? 0.01 : 1.0;
-            graphic_context[n]->fill.alpha=(double) QuantumRange*(1.0-factor*
+            graphic_context[n]->fill_alpha=(double) QuantumRange*(1.0-factor*
               StringToDouble(token,&next_token));
             if (token == next_token)
               status=MagickFalse;
@@ -2235,8 +2236,11 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
           {
             GetNextToken(q,&q,extent,token);
             factor=strchr(token,'%') != (char *) NULL ? 0.01 : 1.0;
-            graphic_context[n]->alpha=ClampToQuantum(QuantumRange*(1.0-(
-              QuantumScale*graphic_context[n]->alpha*(1.0-factor*
+            graphic_context[n]->fill_alpha=ClampToQuantum(QuantumRange*(1.0-(
+              QuantumScale*graphic_context[n]->fill_alpha*(1.0-factor*
+              StringToDouble(token,&next_token)))));
+            graphic_context[n]->stroke_alpha=ClampToQuantum(QuantumRange*(1.0-(
+              QuantumScale*graphic_context[n]->stroke_alpha*(1.0-factor*
               StringToDouble(token,&next_token)))));
             if (token == next_token)
               status=MagickFalse;
@@ -2592,8 +2596,9 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
               {
                 status&=QueryColorCompliance(token,AllCompliance,
                   &graphic_context[n]->stroke,exception);
-                if (graphic_context[n]->alpha != OpaqueAlpha)
-                  graphic_context[n]->stroke.alpha=graphic_context[n]->alpha;
+                if (graphic_context[n]->stroke_alpha != OpaqueAlpha)
+                  graphic_context[n]->stroke.alpha=
+                    graphic_context[n]->stroke_alpha;
                 if (status == MagickFalse)
                   {
                     ImageInfo
@@ -2716,7 +2721,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
           {
             GetNextToken(q,&q,extent,token);
             factor=strchr(token,'%') != (char *) NULL ? 0.01 : 1.0;
-            graphic_context[n]->stroke.alpha=(double) QuantumRange*(1.0-factor*
+            graphic_context[n]->stroke_alpha=(double) QuantumRange*(1.0-factor*
               StringToDouble(token,&next_token));
             if (token == next_token)
               status=MagickFalse;
@@ -2842,12 +2847,10 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
     }
     if (status == MagickFalse)
       break;
-    if ((fabs(affine.sx-1.0) >= DrawEpsilon) || 
-        (fabs(affine.rx) >= DrawEpsilon) || 
-        (fabs(affine.ry) >= DrawEpsilon) ||
+    if ((fabs(affine.sx-1.0) >= DrawEpsilon) ||
+        (fabs(affine.rx) >= DrawEpsilon) || (fabs(affine.ry) >= DrawEpsilon) ||
         (fabs(affine.sy-1.0) >= DrawEpsilon) ||
-        (fabs(affine.tx) >= DrawEpsilon) || 
-        (fabs(affine.ty) >= DrawEpsilon))
+        (fabs(affine.tx) >= DrawEpsilon) || (fabs(affine.ty) >= DrawEpsilon))
       {
         graphic_context[n]->affine.sx=current.sx*affine.sx+current.ry*affine.rx;
         graphic_context[n]->affine.rx=current.rx*affine.sx+current.sy*affine.rx;
@@ -4855,7 +4858,7 @@ static MagickBooleanType DrawStrokePolygon(Image *image,
       break;
     stroke_polygon=(PrimitiveInfo *) RelinquishMagickMemory(stroke_polygon);
     q=p+p->coordinates-1;
-    closed_path=(fabs(q->point.x-p->point.x) < DrawEpsilon) && 
+    closed_path=(fabs(q->point.x-p->point.x) < DrawEpsilon) &&
       (fabs(q->point.y-p->point.y) < DrawEpsilon) ? MagickTrue : MagickFalse;
     if ((draw_info->linecap == RoundCap) && (closed_path == MagickFalse))
       {
@@ -4954,8 +4957,9 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   (void) QueryColorCompliance("#0000",AllCompliance,&draw_info->stroke,
     exception);
   draw_info->stroke_width=1.0;
-  draw_info->alpha=OpaqueAlpha;
   draw_info->fill_rule=EvenOddRule;
+  draw_info->fill_alpha=OpaqueAlpha;
+  draw_info->stroke_alpha=OpaqueAlpha;
   draw_info->linecap=ButtCap;
   draw_info->linejoin=MiterJoin;
   draw_info->miterlimit=10;
@@ -5137,7 +5141,7 @@ static void TraceArcPath(PrimitiveInfo *primitive_info,const PointInfo start,
   size_t
     arc_segments;
 
-  if ((fabs(start.x-end.x) < DrawEpsilon) && 
+  if ((fabs(start.x-end.x) < DrawEpsilon) &&
       (fabs(start.y-end.y) < DrawEpsilon))
     {
       TracePoint(primitive_info,end);
@@ -6103,22 +6107,22 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
     slope.q=0.0;
     inverse_slope.q=0.0;
     if (fabs(dx.q) < DrawEpsilon)
-      { 
-        if (dx.q >= 0.0) 
+      {
+        if (dx.q >= 0.0)
           slope.q=dy.q < 0.0 ? -1.0/DrawEpsilon : 1.0/DrawEpsilon;
         else
           slope.q=dy.q < 0.0 ? 1.0/DrawEpsilon : -1.0/DrawEpsilon;
       }
-    else 
+    else
       if (fabs(dy.q) < DrawEpsilon)
-        { 
+        {
           if (dy.q >= 0.0)
             inverse_slope.q=dx.q < 0.0 ? -1.0/DrawEpsilon : 1.0/DrawEpsilon;
           else
             inverse_slope.q=dx.q < 0.0 ? 1.0/DrawEpsilon : -1.0/DrawEpsilon;
         }
       else
-        { 
+        {
           slope.q=dy.q/dx.q;
           inverse_slope.q=(-1.0/slope.q);
         }
