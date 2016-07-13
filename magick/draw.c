@@ -342,7 +342,8 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
   clone_info->bounds=draw_info->bounds;
   clone_info->clip_units=draw_info->clip_units;
   clone_info->render=draw_info->render;
-  clone_info->opacity=draw_info->opacity;
+  clone_info->fill_opacity=draw_info->fill_opacity;
+  clone_info->stroke_opacity=draw_info->stroke_opacity;
   clone_info->element_reference=draw_info->element_reference;
   clone_info->debug=IsEventLogging();
   return(clone_info);
@@ -2024,8 +2025,9 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
               {
                 status&=QueryColorDatabase(token,&graphic_context[n]->fill,
                   &image->exception);
-                if (graphic_context[n]->opacity != OpaqueOpacity)
-                  graphic_context[n]->fill.opacity=graphic_context[n]->opacity;
+                if (graphic_context[n]->fill_opacity != OpaqueOpacity)
+                  graphic_context[n]->fill.opacity=
+                    graphic_context[n]->fill_opacity;
                 if (status == MagickFalse)
                   {
                     ImageInfo
@@ -2046,8 +2048,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
           {
             GetNextToken(q,&q,extent,token);
             factor=strchr(token,'%') != (char *) NULL ? 0.01 : 1.0;
-            graphic_context[n]->fill.opacity=ClampToQuantum((MagickRealType)
-              QuantumRange*factor*StringToDouble(token,&next_token));
+            graphic_context[n]->fill.opacity=QuantumRange*factor*
+              StringToDouble(token,&next_token);
             if (token == next_token)
               status=MagickFalse;
             break;
@@ -2250,10 +2252,12 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
           {
             GetNextToken(q,&q,extent,token);
             factor=strchr(token,'%') != (char *) NULL ? 0.01 : 1.0;
-            graphic_context[n]->opacity=QuantumRange-ClampToQuantum(
-              (MagickRealType) QuantumRange*((1.0-QuantumScale*
-              graphic_context[n]->opacity)*factor*
-              StringToDouble(token,&next_token)));
+            graphic_context[n]->fill_opacity=QuantumRange-QuantumRange*((1.0-
+              QuantumScale*graphic_context[n]->fill_opacity)*factor*
+              StringToDouble(token,&next_token));
+            graphic_context[n]->stroke_opacity=QuantumRange-QuantumRange*((1.0-
+              QuantumScale*graphic_context[n]->stroke_opacity)*factor*
+              StringToDouble(token,&next_token));
             if (token == next_token)
               status=MagickFalse;
             break;
@@ -2589,9 +2593,9 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
               {
                 status&=QueryColorDatabase(token,&graphic_context[n]->stroke,
                   &image->exception);
-                if (graphic_context[n]->opacity != OpaqueOpacity)
+                if (graphic_context[n]->stroke_opacity != OpaqueOpacity)
                   graphic_context[n]->stroke.opacity=
-                    graphic_context[n]->opacity;
+                    graphic_context[n]->stroke_opacity;
                 if (status == MagickFalse)
                   {
                     ImageInfo
@@ -2717,8 +2721,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
           {
             GetNextToken(q,&q,extent,token);
             factor=strchr(token,'%') != (char *) NULL ? 0.01 : 1.0;
-            graphic_context[n]->stroke.opacity=ClampToQuantum((MagickRealType)
-              QuantumRange*factor*StringToDouble(token,&next_token));
+            graphic_context[n]->stroke.opacity=QuantumRange*factor*
+              StringToDouble(token,&next_token);
             if (token == next_token)
               status=MagickFalse;
             break;
@@ -4910,8 +4914,9 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   (void) QueryColorDatabase("#FFF0",&draw_info->stroke,exception);
   draw_info->stroke_antialias=clone_info->antialias;
   draw_info->stroke_width=1.0;
-  draw_info->opacity=OpaqueOpacity;
   draw_info->fill_rule=EvenOddRule;
+  draw_info->fill_opacity=OpaqueOpacity;
+  draw_info->stroke_opacity=OpaqueOpacity;
   draw_info->linecap=ButtCap;
   draw_info->linejoin=MiterJoin;
   draw_info->miterlimit=10;
