@@ -1626,7 +1626,8 @@ RestoreMSCWarning
               quantum_type=GrayQuantum;
               pad=(size_t) MagickMax((size_t) samples_per_pixel-1,0);
             }
-        status=SetQuantumPad(image,quantum_info,pad*((bits_per_sample+7) >> 3));
+        status=SetQuantumPad(image,quantum_info,pad*pow(2,ceil(log(
+          bits_per_sample)/log(2))));
         if (status == MagickFalse)
           {
             TIFFClose(tiff);
