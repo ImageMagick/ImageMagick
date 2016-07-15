@@ -159,6 +159,19 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
     return(DestroyImageList(image));
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
+    if (q == (Quantum *) NULL)
+      break;
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      SetPixelIndex(image,0,q);
+      q+=GetPixelChannels(image);
+    }
+    if (SyncAuthenticPixels(image,exception) == MagickFalse)
+      break;
+  }
   /*
     Get hidden watermark from low-order bits of image.
   */

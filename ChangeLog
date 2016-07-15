@@ -3,6 +3,7 @@
     https://github.com/ImageMagick/ImageMagick/issues/229).
   * Prevent possible buffer overflow when reading TIFF images (bug report from
     Shi Pu of MS509 Team).
+  * Initialize index channel to get expected results from the stegano coder.
 
 2016-07-11  7.0.2-4 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.2-4, GIT revision 18591:50debe5:20160710.
