@@ -22,7 +22,7 @@
 extern "C" {
 #endif
 
-#if defined(MAGICKCORE_WINDOWS_SUPPORT)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(__MINGW32__)
 #include <intsafe.h>
 #endif
 
