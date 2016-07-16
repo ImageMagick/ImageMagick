@@ -2943,7 +2943,7 @@ MagickExport Image *RotationalBlurImage(const Image *image,const double angle,
         gamma=0.0;
         pixel=0.0;
         if ((GetPixelChannelTraits(image,AlphaChannel) == UndefinedPixelTrait) ||
-            (channel == AlphaChannel))
+            (channel == AlphaPixelChannel))
           {
             for (j=0; j < (ssize_t) n; j+=(ssize_t) step)
             {
