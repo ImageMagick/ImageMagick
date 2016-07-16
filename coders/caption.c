@@ -178,8 +178,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
     {
       split=MagickTrue;
       text=AcquireString(caption);
-      i=FormatMagickCaption(image,draw_info,split,&metrics,&text,
-        exception);
+      i=FormatMagickCaption(image,draw_info,split,&metrics,&text,exception);
       (void) CloneString(&draw_info->text,text);
       text=DestroyString(text);
       (void) FormatLocaleString(geometry,MagickPathExtent,"%+g%+g",
