@@ -894,7 +894,8 @@ static LinkedListInfo *AcquireColorCache(const char *filename,
   }
   return(color_cache);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -2583,6 +2584,7 @@ MagickExport MagickBooleanType QueryColorname(
   register const ColorInfo
     *p;
 
+  magick_unreferenced(image);
   *name='\0';
   pixel=(*color);
   if (compliance == XPMCompliance)
