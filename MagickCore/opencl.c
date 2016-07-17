@@ -905,8 +905,8 @@ static MagickBooleanType LoadOpenCLBenchmarks(MagickCLEnv clEnv,
     IMAGEMAGICK_PROFILE_FILE);
 
   /*
-    We can not write out a device profile, so don't cannot benchmark it
-    and pick the first GPU device(s).
+    We don't run the benchmark when we can not write out a device profile. The
+    first GPU device will be used.
   */
   if (CanWriteProfileToFile(filename) == MagickFalse)
     {
