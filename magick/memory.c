@@ -44,7 +44,7 @@
 %  written by Yoo C. Chung.
 %
 %  By default, ANSI memory methods are called (e.g. malloc).  Use the
-%  custom memory allocator by defining MAGICKCORE_ZERO_CONFIGURATION_SUPPORT
+%  custom memory allocator by defining MAGICKCORE_ANONYMOUS_MEMORY_SUPPORT
 %  to allocate memory with private anonymous mapping rather than from the
 %  heap.
 %
@@ -192,7 +192,7 @@ static MagickMemoryMethods
 #endif
   };
 
-#if defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
+#if defined(MAGICKCORE_ANONYMOUS_MEMORY_SUPPORT)
 static MemoryPool
   memory_pool;
 
@@ -280,7 +280,7 @@ MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
   return(memory);
 }
 
-#if defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
+#if defined(MAGICKCORE_ANONYMOUS_MEMORY_SUPPORT)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -457,7 +457,7 @@ MagickExport void *AcquireMagickMemory(const size_t size)
   register void
     *memory;
 
-#if !defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
+#if !defined(MAGICKCORE_ANONYMOUS_MEMORY_SUPPORT)
   memory=memory_methods.acquire_memory_handler(size == 0 ? 1UL : size);
 #else
   if (memory_semaphore == (SemaphoreInfo *) NULL)
@@ -728,7 +728,7 @@ MagickExport void *CopyMagickMemory(void *destination,const void *source,
 */
 MagickExport void DestroyMagickMemory(void)
 {
-#if defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
+#if defined(MAGICKCORE_ANONYMOUS_MEMORY_SUPPORT)
   register ssize_t
     i;
 
@@ -749,7 +749,7 @@ MagickExport void DestroyMagickMemory(void)
 #endif
 }
 
-#if defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
+#if defined(MAGICKCORE_ANONYMOUS_MEMORY_SUPPORT)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -999,7 +999,7 @@ MagickExport void *RelinquishMagickMemory(void *memory)
 {
   if (memory == (void *) NULL)
     return((void *) NULL);
-#if !defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
+#if !defined(MAGICKCORE_ANONYMOUS_MEMORY_SUPPORT)
   memory_methods.destroy_memory_handler(memory);
 #else
   LockSemaphoreInfo(memory_semaphore);
@@ -1159,7 +1159,7 @@ MagickExport void *ResetMagickMemory(void *memory,int byte,const size_t size)
 %
 */
 
-#if defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
+#if defined(MAGICKCORE_ANONYMOUS_MEMORY_SUPPORT)
 static inline void *ResizeBlock(void *block,size_t size)
 {
   register void
@@ -1186,7 +1186,7 @@ MagickExport void *ResizeMagickMemory(void *memory,const size_t size)
 
   if (memory == (void *) NULL)
     return(AcquireMagickMemory(size));
-#if !defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
+#if !defined(MAGICKCORE_ANONYMOUS_MEMORY_SUPPORT)
   block=memory_methods.resize_memory_handler(memory,size == 0 ? 1UL : size);
   if (block == (void *) NULL)
     memory=RelinquishMagickMemory(memory);
