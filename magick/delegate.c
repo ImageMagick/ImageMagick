@@ -177,13 +177,13 @@ static LinkedListInfo *AcquireDelegateCache(const char *filename,
   ExceptionInfo *exception)
 {
   LinkedListInfo
-    *delegate_cache;
+    *cache;
 
   MagickStatusType
     status;
 
-  delegate_cache=NewLinkedList(0);
-  if (delegate_cache == (LinkedListInfo *) NULL)
+  cache=NewLinkedList(0);
+  if (cache == (LinkedListInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   status=MagickTrue;
 #if !defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
@@ -198,17 +198,17 @@ static LinkedListInfo *AcquireDelegateCache(const char *filename,
     option=(const StringInfo *) GetNextValueInLinkedList(options);
     while (option != (const StringInfo *) NULL)
     {
-      status&=LoadDelegateCache(delegate_cache,(const char *)
+      status&=LoadDelegateCache(cache,(const char *)
         GetStringInfoDatum(option),GetStringInfoPath(option),0,exception);
       option=(const StringInfo *) GetNextValueInLinkedList(options);
     }
     options=DestroyConfigureOptions(options);
   }
 #endif
-  if (IsLinkedListEmpty(delegate_cache) != MagickFalse)
-    status&=LoadDelegateCache(delegate_cache,DelegateMap,"built-in",0,
+  if (IsLinkedListEmpty(cache) != MagickFalse)
+    status&=LoadDelegateCache(cache,DelegateMap,"built-in",0,
       exception);
-  return(delegate_cache);
+  return(cache);
 }
 
 /*
@@ -2046,7 +2046,7 @@ MagickExport MagickBooleanType ListDelegateInfo(FILE *file,
 %
 %  The format of the LoadDelegateCache method is:
 %
-%      MagickBooleanType LoadDelegateCache(LinkedListInfo *delegate_cache,
+%      MagickBooleanType LoadDelegateCache(LinkedListInfo *cache,
 %        const char *xml,const char *filename,const size_t depth,
 %        ExceptionInfo *exception)
 %
@@ -2061,7 +2061,7 @@ MagickExport MagickBooleanType ListDelegateInfo(FILE *file,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static MagickBooleanType LoadDelegateCache(LinkedListInfo *delegate_cache,
+static MagickBooleanType LoadDelegateCache(LinkedListInfo *cache,
   const char *xml,const char *filename,const size_t depth,
   ExceptionInfo *exception)
 {
@@ -2153,7 +2153,7 @@ static MagickBooleanType LoadDelegateCache(LinkedListInfo *delegate_cache,
                   xml=FileToXML(path,~0UL);
                   if (xml != (char *) NULL)
                     {
-                      status&=LoadDelegateCache(delegate_cache,xml,path,depth+1,
+                      status&=LoadDelegateCache(cache,xml,path,depth+1,
                         exception);
                       xml=(char *) RelinquishMagickMemory(xml);
                     }
@@ -2181,7 +2181,7 @@ static MagickBooleanType LoadDelegateCache(LinkedListInfo *delegate_cache,
       continue;
     if (LocaleCompare(keyword,"/>") == 0)
       {
-        status=AppendValueToLinkedList(delegate_cache,delegate_info);
+        status=AppendValueToLinkedList(cache,delegate_info);
         if (status == MagickFalse)
           (void) ThrowMagickException(exception,GetMagickModule(),
             ResourceLimitError,"MemoryAllocationFailed","`%s'",

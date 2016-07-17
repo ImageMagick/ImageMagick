@@ -265,7 +265,7 @@ static LinkedListInfo *AcquireMagicCache(const char *filename,
     *option;
 
   LinkedListInfo
-    *magic_cache,
+    *cache,
     *options;
 
   MagickStatusType
@@ -274,8 +274,8 @@ static LinkedListInfo *AcquireMagicCache(const char *filename,
   register ssize_t
     i;
 
-  magic_cache=NewLinkedList(0);
-  if (magic_cache == (LinkedListInfo *) NULL)
+  cache=NewLinkedList(0);
+  if (cache == (LinkedListInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   /*
     Load external magic map.
@@ -287,7 +287,7 @@ static LinkedListInfo *AcquireMagicCache(const char *filename,
   while (option != (const StringInfo *) NULL)
   {
     (void) CopyMagickString(path,GetStringInfoPath(option),MaxTextExtent);
-    status&=LoadMagicCache(magic_cache,(const char *)
+    status&=LoadMagicCache(cache,(const char *)
       GetStringInfoDatum(option),GetStringInfoPath(option),0,exception);
     option=(const StringInfo *) GetNextValueInLinkedList(options);
   }
@@ -319,14 +319,14 @@ static LinkedListInfo *AcquireMagicCache(const char *filename,
     magic_info->length=p->length;
     magic_info->exempt=MagickTrue;
     magic_info->signature=MagickSignature;
-    status&=InsertValueInSortedLinkedList(magic_cache,CompareMagickInfoSize,
+    status&=InsertValueInSortedLinkedList(cache,CompareMagickInfoSize,
       NULL,magic_info);
     if (status == MagickFalse)
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",magic_info->name);
   }
   options=DestroyConfigureOptions(options);
-  return(magic_cache);
+  return(cache);
 }
 
 /*
@@ -751,9 +751,8 @@ MagickExport MagickBooleanType ListMagicInfo(FILE *file,
 %
 %  The format of the LoadMagicCache method is:
 %
-%      MagickBooleanType LoadMagicCache(LinkedListInfo *magic_cache,
-%        const char *xml,const char *filename,const size_t depth,
-%        ExceptionInfo *exception)
+%      MagickBooleanType LoadMagicCache(LinkedListInfo *cache,const char *xml,
+%        const char *filename,const size_t depth,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -766,9 +765,8 @@ MagickExport MagickBooleanType ListMagicInfo(FILE *file,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static MagickBooleanType LoadMagicCache(LinkedListInfo *magic_cache,
-  const char *xml,const char *filename,const size_t depth,
-  ExceptionInfo *exception)
+static MagickBooleanType LoadMagicCache(LinkedListInfo *cache,const char *xml,
+  const char *filename,const size_t depth,ExceptionInfo *exception)
 {
   char
     keyword[MaxTextExtent],
@@ -858,7 +856,7 @@ static MagickBooleanType LoadMagicCache(LinkedListInfo *magic_cache,
                   xml=FileToXML(path,~0UL);
                   if (xml != (char *) NULL)
                     {
-                      status&=LoadMagicCache(magic_cache,xml,path,depth+1,
+                      status&=LoadMagicCache(cache,xml,path,depth+1,
                         exception);
                       xml=(char *) RelinquishMagickMemory(xml);
                     }
@@ -885,7 +883,7 @@ static MagickBooleanType LoadMagicCache(LinkedListInfo *magic_cache,
       continue;
     if (LocaleCompare(keyword,"/>") == 0)
       {
-        status=AppendValueToLinkedList(magic_cache,magic_info);
+        status=AppendValueToLinkedList(cache,magic_info);
         if (status == MagickFalse)
           (void) ThrowMagickException(exception,GetMagickModule(),
             ResourceLimitError,"MemoryAllocationFailed","`%s'",

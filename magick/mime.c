@@ -158,13 +158,13 @@ static LinkedListInfo *AcquireMimeCache(const char *filename,
   ExceptionInfo *exception)
 {
   LinkedListInfo
-    *mime_cache;
+    *cache;
 
   MagickStatusType
     status;
 
-  mime_cache=NewLinkedList(0);
-  if (mime_cache == (LinkedListInfo *) NULL)
+  cache=NewLinkedList(0);
+  if (cache == (LinkedListInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   status=MagickTrue;
 #if !defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
@@ -179,16 +179,16 @@ static LinkedListInfo *AcquireMimeCache(const char *filename,
     option=(const StringInfo *) GetNextValueInLinkedList(options);
     while (option != (const StringInfo *) NULL)
     {
-      status&=LoadMimeCache(mime_cache,(const char *)
+      status&=LoadMimeCache(cache,(const char *)
         GetStringInfoDatum(option),GetStringInfoPath(option),0,exception);
       option=(const StringInfo *) GetNextValueInLinkedList(options);
     }
     options=DestroyConfigureOptions(options);
   }
 #endif
-  if (IsLinkedListEmpty(mime_cache) != MagickFalse)
-    status&=LoadMimeCache(mime_cache,MimeMap,"built-in",0,exception);
-  return(mime_cache);
+  if (IsLinkedListEmpty(cache) != MagickFalse)
+    status&=LoadMimeCache(cache,MimeMap,"built-in",0,exception);
+  return(cache);
 }
 
 MagickExport MagickBooleanType LoadMimeLists(const char *name,
@@ -782,9 +782,8 @@ MagickExport MagickBooleanType ListMimeInfo(FILE *file,ExceptionInfo *exception)
 %
 %  The format of the LoadMimeCache method is:
 %
-%      MagickBooleanType LoadMimeCache(LinkedListInfo *mime_cache,
-%        const char *xml,const char *filename,const size_t depth,
-%        ExceptionInfo *exception)
+%      MagickBooleanType LoadMimeCache(LinkedListInfo *cache,const char *xml,
+%        const char *filename,const size_t depth,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -797,9 +796,8 @@ MagickExport MagickBooleanType ListMimeInfo(FILE *file,ExceptionInfo *exception)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static MagickBooleanType LoadMimeCache(LinkedListInfo *mime_cache,
-  const char *xml,const char *filename,const size_t depth,
-  ExceptionInfo *exception)
+static MagickBooleanType LoadMimeCache(LinkedListInfo *cache,const char *xml,
+  const char *filename,const size_t depth,ExceptionInfo *exception)
 {
   const char
     *attribute;
@@ -855,7 +853,7 @@ static MagickBooleanType LoadMimeCache(LinkedListInfo *mime_cache,
             xml=FileToXML(path,~0UL);
             if (xml != (char *) NULL)
               {
-                status&=LoadMimeCache(mime_cache,xml,path,depth+1,exception);
+                status&=LoadMimeCache(cache,xml,path,depth+1,exception);
                 xml=DestroyString(xml);
               }
           }
@@ -971,7 +969,7 @@ static MagickBooleanType LoadMimeCache(LinkedListInfo *mime_cache,
     attribute=GetXMLTreeAttribute(mime,"type");
     if (attribute != (const char *) NULL)
       mime_info->type=ConstantString(attribute);
-    status=AppendValueToLinkedList(mime_cache,mime_info);
+    status=AppendValueToLinkedList(cache,mime_info);
     if (status == MagickFalse)
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",filename);

@@ -186,11 +186,11 @@ static SplayTreeInfo *AcquireLocaleSplayTree(const char *filename,
     status;
 
   SplayTreeInfo
-    *locale_cache;
+    *cache;
 
-  locale_cache=NewSplayTree(CompareSplayTreeString,(void *(*)(void *)) NULL,
+  cache=NewSplayTree(CompareSplayTreeString,(void *(*)(void *)) NULL,
     DestroyLocaleNode);
-  if (locale_cache == (SplayTreeInfo *) NULL)
+  if (cache == (SplayTreeInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   status=MagickTrue;
 #if !defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
@@ -205,19 +205,18 @@ static SplayTreeInfo *AcquireLocaleSplayTree(const char *filename,
     option=(const StringInfo *) GetNextValueInLinkedList(options);
     while (option != (const StringInfo *) NULL)
     {
-      status&=LoadLocaleCache(locale_cache,(const char *)
-        GetStringInfoDatum(option),GetStringInfoPath(option),locale,0,
-        exception);
+      status&=LoadLocaleCache(cache,(const char *) GetStringInfoDatum(option),
+        GetStringInfoPath(option),locale,0,exception);
       option=(const StringInfo *) GetNextValueInLinkedList(options);
     }
     options=DestroyLocaleOptions(options);
-    if (GetNumberOfNodesInSplayTree(locale_cache) == 0)
+    if (GetNumberOfNodesInSplayTree(cache) == 0)
       {
         options=GetLocaleOptions("english.xml",exception);
         option=(const StringInfo *) GetNextValueInLinkedList(options);
         while (option != (const StringInfo *) NULL)
         {
-          status&=LoadLocaleCache(locale_cache,(const char *)
+          status&=LoadLocaleCache(cache,(const char *)
             GetStringInfoDatum(option),GetStringInfoPath(option),locale,0,
             exception);
           option=(const StringInfo *) GetNextValueInLinkedList(options);
@@ -226,10 +225,10 @@ static SplayTreeInfo *AcquireLocaleSplayTree(const char *filename,
       }
   }
 #endif
-  if (GetNumberOfNodesInSplayTree(locale_cache) == 0)
-    status&=LoadLocaleCache(locale_cache,LocaleMap,"built-in",locale,0,
+  if (GetNumberOfNodesInSplayTree(cache) == 0)
+    status&=LoadLocaleCache(cache,LocaleMap,"built-in",locale,0,
       exception);
-  return(locale_cache);
+  return(cache);
 }
 
 #if defined(MAGICKCORE_LOCALE_SUPPORT)
@@ -1090,9 +1089,8 @@ MagickExport MagickBooleanType ListLocaleInfo(FILE *file,
 %
 %  The format of the LoadLocaleCache method is:
 %
-%      MagickBooleanType LoadLocaleCache(SplayTreeInfo *locale_cache,
-%        const char *xml,const char *filename,const size_t depth,
-%        ExceptionInfo *exception)
+%      MagickBooleanType LoadLocaleCache(SplayTreeInfo *cache,const char *xml,
+%        const char *filename,const size_t depth,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1145,8 +1143,8 @@ static void LocaleFatalErrorHandler(
   exit(1);
 }
 
-static MagickBooleanType LoadLocaleCache(SplayTreeInfo *locale_cache,
-  const char *xml,const char *filename,const char *locale,const size_t depth,
+static MagickBooleanType LoadLocaleCache(SplayTreeInfo *cache,const char *xml,
+  const char *filename,const char *locale,const size_t depth,
   ExceptionInfo *exception)
 {
   char
@@ -1264,7 +1262,7 @@ static MagickBooleanType LoadLocaleCache(SplayTreeInfo *locale_cache,
                   xml=FileToXML(path,~0UL);
                   if (xml != (char *) NULL)
                     {
-                      status&=LoadLocaleCache(locale_cache,xml,path,locale,
+                      status&=LoadLocaleCache(cache,xml,path,locale,
                         depth+1,exception);
                       xml=(char *) RelinquishMagickMemory(xml);
                     }
@@ -1332,7 +1330,7 @@ static MagickBooleanType LoadLocaleCache(SplayTreeInfo *locale_cache,
         locale_info->tag=ConstantString(tag);
         locale_info->message=ConstantString(message);
         locale_info->signature=MagickSignature;
-        status=AddValueToSplayTree(locale_cache,locale_info->tag,locale_info);
+        status=AddValueToSplayTree(cache,locale_info->tag,locale_info);
         if (status == MagickFalse)
           (void) ThrowMagickException(exception,GetMagickModule(),
             ResourceLimitError,"MemoryAllocationFailed","`%s'",
