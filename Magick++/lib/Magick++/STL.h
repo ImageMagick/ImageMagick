@@ -1976,8 +1976,11 @@ namespace Magick
   {
     if (linkImages(first_,last_) == false)
       return;
-    MagickCore::AnimateImages(first_->imageInfo(),first_->image());
+    GetPPException;
+    MagickCore::AnimateImages(first_->imageInfo(),first_->image(),
+      exceptionInfo);
     unlinkImages(first_,last_);
+    ThrowPPException(first_->quiet());
   }
 
   // Append images from list into single image in either horizontal or
@@ -2281,13 +2284,14 @@ namespace Magick
   // Display an image sequence
   //
   template <class InputIterator>
-  void displayImages( InputIterator first_,
-          InputIterator last_ ) {
+  void displayImages(InputIterator first_,InputIterator last_)
+  {
     if (linkImages(first_,last_) == false)
       return;
     GetPPException;
-    MagickCore::DisplayImages( first_->imageInfo(), first_->image() );
-    unlinkImages( first_, last_ );
+    MagickCore::DisplayImages(first_->imageInfo(),first_->image(),
+      exceptionInfo);
+    unlinkImages(first_,last_);
     ThrowPPException(first_->quiet());
   }
 
@@ -2627,32 +2631,29 @@ namespace Magick
   // Quantize colors in images using current quantization settings
   // Set measureError_ to true in order to measure quantization error
   template <class InputIterator>
-  void quantizeImages( InputIterator first_,
-           InputIterator last_,
-           bool measureError_ = false ) {
+  void quantizeImages(InputIterator first_,InputIterator last_,
+    bool measureError_ = false)
+  {
     if (linkImages(first_,last_) == false)
       return;
     GetPPException;
+    MagickCore::QuantizeImages(first_->quantizeInfo(),first_->image(),
+      exceptionInfo);
+    unlinkImages(first_,last_);
 
-    MagickCore::QuantizeImages( first_->quantizeInfo(),
-             first_->image() );
-  unlinkImages( first_, last_ );
+    MagickCore::Image *image=first_->image();
+    while (image != (MagickCore::Image *) NULL)
+    {
+      // Calculate quantization error
+      if (measureError_)
+        MagickCore::GetImageQuantizeError(image,exceptionInfo);
 
-    MagickCore::Image* image = first_->image();
-    while( image != 0 )
-      {
-  // Calculate quantization error
-  if ( measureError_ )
-    MagickCore::GetImageQuantizeError( image,  exceptionInfo );
+      // Update DirectClass representation of pixels
+      MagickCore::SyncImage(image,exceptionInfo);
 
-  // Update DirectClass representation of pixels
-  MagickCore::SyncImage( image, exceptionInfo );
-
-  // Next image
-  image=image->next;
-      }
-
-    unlinkImages( first_, last_ );
+      image=image->next;
+    }
+    unlinkImages(first_,last_);
     ThrowPPException(first_->quiet());
   }
 
