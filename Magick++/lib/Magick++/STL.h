@@ -1927,7 +1927,7 @@ namespace Magick
   // container's begin() method and last_ via the container's end()
   // method in order to specify the entire container.
   template <class InputIterator>
-  void linkImages( InputIterator first_,
+  bool linkImages( InputIterator first_,
        InputIterator last_ ) {
 
     MagickCore::Image* previous = 0;
@@ -1950,6 +1950,7 @@ namespace Magick
 
       previous = current;
     }
+    return(scene > 0 ? true : false);
   }
 
   // Remove links added by linkImages. This should be called after the
@@ -2001,8 +2002,9 @@ namespace Magick
   template <class InputIterator>
   void animateImages( InputIterator first_,
           InputIterator last_ ) {
+    if (linkImages(first_,last_) == false)
+      return;
     GetPPException;
-    linkImages( first_, last_ );
     MagickCore::AnimateImages( first_->imageInfo(), first_->image() );
     MagickCore::GetImageException( first_->image(), exceptionInfo );
     unlinkImages( first_, last_ );
@@ -2016,8 +2018,9 @@ namespace Magick
          InputIterator first_,
          InputIterator last_,
          bool stack_ = false) {
+    if (linkImages(first_,last_) == false)
+      return;
     GetPPException;
-    linkImages( first_, last_ );
     MagickCore::Image* image = MagickCore::AppendImages( first_->image(),
                    (MagickBooleanType) stack_,
                    exceptionInfo ); 
@@ -2086,10 +2089,10 @@ namespace Magick
   void coalesceImages( Container *coalescedImages_,
                        InputIterator first_,
                        InputIterator last_ ) {
+    if (linkImages(first_,last_) == false)
+      return;
     GetPPException;
 
-    // Build image list
-    linkImages( first_, last_ );
     MagickCore::Image* images = MagickCore::CoalesceImages( first_->image(),
                                                           exceptionInfo);
     // Unlink image list
@@ -2255,8 +2258,9 @@ namespace Magick
                       InputIterator first_,
                       InputIterator last_,
                       const ChannelType channel_ ) {
+    if (linkImages(first_,last_) == false)
+      return;
     GetPPException;
-    linkImages( first_, last_ );
     MagickCore::Image* image = CombineImages( first_->image(), channel_, exceptionInfo );
     unlinkImages( first_, last_ );
     combinedImage_->replaceImage( image );
@@ -2281,10 +2285,11 @@ namespace Magick
   void deconstructImages( Container *deconstructedImages_,
                           InputIterator first_,
                           InputIterator last_ ) {
+    if (linkImages(first_,last_) == false)
+      return;
+
     GetPPException;
 
-    // Build image list
-    linkImages( first_, last_ );
     MagickCore::Image* images = DeconstructImages( first_->image(),
                                                    exceptionInfo);
     // Unlink image list
@@ -2306,8 +2311,9 @@ namespace Magick
   template <class InputIterator>
   void displayImages( InputIterator first_,
           InputIterator last_ ) {
+    if (linkImages(first_,last_) == false)
+      return;
     GetPPException;
-    linkImages( first_, last_ );
     MagickCore::DisplayImages( first_->imageInfo(), first_->image() );
     MagickCore::GetImageException( first_->image(), exceptionInfo );
     unlinkImages( first_, last_ );
@@ -2323,8 +2329,9 @@ namespace Magick
                        InputIterator first_,
                        InputIterator last_,
                        const MagickEvaluateOperator operator_ ) {
+    if (linkImages(first_,last_) == false)
+      return;
     GetPPException;
-    linkImages( first_, last_ );
     MagickCore::Image* image = EvaluateImages( first_->image(), operator_, exceptionInfo );
     unlinkImages( first_, last_ );
     evaluatedImage_->replaceImage( image );
@@ -2337,8 +2344,9 @@ namespace Magick
   void flattenImages( Image *flattendImage_,
           InputIterator first_,
           InputIterator last_ ) {
+    if (linkImages(first_,last_) == false)
+      return;
     GetPPException;
-    linkImages( first_, last_ );
     MagickCore::Image* image = MagickCore::MergeImageLayers( first_->image(),
       FlattenLayer,exceptionInfo );
     unlinkImages( first_, last_ );
@@ -2394,8 +2402,9 @@ namespace Magick
     MagickCore::Image
       *image;
 
+    if (linkImages(first_,last_) == false)
+      return;
     GetPPException;
-    linkImages(first_,last_);
     image=FxImageChannel(first_->constImage(),DefaultChannels,
       expression.c_str(),exceptionInfo);
     unlinkImages(first_,last_);
@@ -2414,11 +2423,12 @@ namespace Magick
       bool dither_ = false,
       bool measureError_ = false ) {
 
+    if (linkImages(first_,last_) == false)
+      return;
     GetPPException;
     MagickCore::QuantizeInfo quantizeInfo;
     MagickCore::GetQuantizeInfo( &quantizeInfo );
     quantizeInfo.dither = dither_ ? MagickCore::MagickTrue : MagickCore::MagickFalse;
-    linkImages( first_, last_ );
     MagickCore::RemapImages( &quantizeInfo, first_->image(),
         (mapImage_.isValid() ? mapImage_.constImage() : (const MagickCore::Image*) NULL));
     MagickCore::GetImageException( first_->image(), exceptionInfo );
@@ -2465,8 +2475,9 @@ namespace Magick
                          InputIterator first_,
                          InputIterator last_,
                          const ImageLayerMethod method_ ) {
+    if (linkImages(first_,last_) == false)
+      return;
     GetPPException;
-    linkImages( first_, last_ );
     MagickCore::Image* image = MergeImageLayers( first_->image(), method_, exceptionInfo );
     unlinkImages( first_, last_ );
     mergedImage_->replaceImage( image );
@@ -2484,6 +2495,9 @@ namespace Magick
     MagickCore::MontageInfo
       *montageInfo;
 
+    if (linkImages(first_,last_) == false)
+      return;
+
     montageInfo=static_cast<MagickCore::MontageInfo*>(
       MagickCore::AcquireMagickMemory(sizeof(MagickCore::MontageInfo)));
 
@@ -2493,9 +2507,6 @@ namespace Magick
     // Update options which must transfer to image options
     if (options_.label().length() != 0)
       first_->label(options_.label());
-
-    // Create linked image list
-    linkImages(first_,last_);
 
     // Do montage
     GetPPException;
@@ -2529,10 +2540,10 @@ namespace Magick
         InputIterator first_,
         InputIterator last_,
         size_t frames_ ) {
+    if (linkImages(first_,last_) == false)
+      return;
     GetPPException;
 
-    // Build image list
-    linkImages( first_, last_ );
     MagickCore::Image* images = MagickCore::MorphImages( first_->image(), frames_,
                    exceptionInfo);
     // Unlink image list
@@ -2553,8 +2564,9 @@ namespace Magick
   void mosaicImages( Image *mosaicImage_,
          InputIterator first_,
          InputIterator last_ ) {
+    if (linkImages(first_,last_) == false)
+      return;
     GetPPException;
-    linkImages( first_, last_ );
     MagickCore::Image* image = MagickCore::MergeImageLayers( first_->image(),
        MosaicLayer,exceptionInfo ); 
     unlinkImages( first_, last_ );
@@ -2570,9 +2582,9 @@ namespace Magick
   void optimizeImageLayers( Container *optimizedImages_,
                             InputIterator first_,
                             InputIterator last_ ) {
+    if (linkImages(first_,last_) == false)
+      return;
     GetPPException;
-
-    linkImages( first_, last_ );
     MagickCore::Image* images = OptimizeImageLayers( first_->image(), exceptionInfo );
 
     unlinkImages( first_, last_ );
@@ -2591,9 +2603,9 @@ namespace Magick
   void optimizePlusImageLayers( Container *optimizedImages_,
                                 InputIterator first_,
                                 InputIterator last_ ) {
+    if (linkImages(first_,last_) == false)
+      return;
     GetPPException;
-
-    linkImages( first_, last_ );
     MagickCore::Image* images = OptimizePlusImageLayers( first_->image(), exceptionInfo );
 
     unlinkImages( first_, last_ );
@@ -2611,9 +2623,9 @@ namespace Magick
   template<class InputIterator>
   void optimizeTransparency(InputIterator first_,InputIterator last_)
   {
+    if (linkImages(first_,last_) == false)
+      return;
     GetPPException;
-
-    linkImages(first_,last_);
     OptimizeImageTransparency(first_->image(),exceptionInfo);
     unlinkImages(first_,last_ );
 
@@ -2644,9 +2656,9 @@ namespace Magick
   void quantizeImages( InputIterator first_,
            InputIterator last_,
            bool measureError_ = false ) {
+    if (linkImages(first_,last_) == false)
+      return;
     GetPPException;
-
-    linkImages( first_, last_ );
 
     MagickCore::QuantizeImages( first_->quantizeInfo(),
              first_->image() );
@@ -2747,8 +2759,9 @@ namespace Magick
     MagickCore::Image
       *newImage;
 
+    if (linkImages(first_,last_) == false)
+      return;
     GetPPException;
-    linkImages(first_,last_);
     newImage=MagickCore::SmushImages(first_->constImage(),
       (MagickBooleanType) stack_,offset_,exceptionInfo);
     unlinkImages(first_,last_);
@@ -2762,12 +2775,12 @@ namespace Magick
         InputIterator last_,
         const std::string &imageSpec_,
         bool adjoin_ = true ) {
+    if (linkImages(first_,last_) == false)
+      return;
 
     first_->adjoin( adjoin_ );
 
     GetPPException;
-
-    linkImages( first_, last_ );
     ::ssize_t errorStat = MagickCore::WriteImages( first_->constImageInfo(),
                                             first_->image(),
                                             imageSpec_.c_str(),
@@ -2788,10 +2801,10 @@ namespace Magick
         InputIterator last_,
         Blob *blob_,
         bool adjoin_ = true) {
+    if (linkImages(first_,last_) == false)
+      return;
 
     first_->adjoin( adjoin_ );
-
-    linkImages( first_, last_ );
 
     GetPPException;
     size_t length = 2048; // Efficient size for small images
