@@ -258,15 +258,8 @@ static int CompareMagickInfoSize(const void *a,const void *b)
 static LinkedListInfo *AcquireMagicCache(const char *filename,
   ExceptionInfo *exception)
 {
-  char
-    path[MaxTextExtent];
-
-  const StringInfo
-    *option;
-
   LinkedListInfo
-    *cache,
-    *options;
+    *cache;
 
   MagickStatusType
     status;
@@ -281,16 +274,30 @@ static LinkedListInfo *AcquireMagicCache(const char *filename,
     Load external magic map.
   */
   status=MagickTrue;
-  *path='\0';
-  options=GetConfigureOptions(filename,exception);
-  option=(const StringInfo *) GetNextValueInLinkedList(options);
-  while (option != (const StringInfo *) NULL)
+#if !defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
   {
-    (void) CopyMagickString(path,GetStringInfoPath(option),MaxTextExtent);
-    status&=LoadMagicCache(cache,(const char *)
-      GetStringInfoDatum(option),GetStringInfoPath(option),0,exception);
+    char
+      path[MaxTextExtent];
+
+    const StringInfo
+      *option;
+
+    LinkedListInfo
+      *options;
+
+    *path='\0';
+    options=GetConfigureOptions(filename,exception);
     option=(const StringInfo *) GetNextValueInLinkedList(options);
+    while (option != (const StringInfo *) NULL)
+    {
+      (void) CopyMagickString(path,GetStringInfoPath(option),MaxTextExtent);
+      status&=LoadMagicCache(cache,(const char *)
+        GetStringInfoDatum(option),GetStringInfoPath(option),0,exception);
+      option=(const StringInfo *) GetNextValueInLinkedList(options);
+    }
+    options=DestroyConfigureOptions(options);
   }
+#endif
   /*
     Load built-in magic map.
   */
@@ -325,7 +332,6 @@ static LinkedListInfo *AcquireMagicCache(const char *filename,
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",magic_info->name);
   }
-  options=DestroyConfigureOptions(options);
   return(cache);
 }
 
