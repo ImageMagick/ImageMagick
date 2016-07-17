@@ -828,12 +828,8 @@ static MagickBooleanType
 static LinkedListInfo *AcquireColorCache(const char *filename,
   ExceptionInfo *exception)
 {
-  const StringInfo
-    *option;
-
   LinkedListInfo
-    *color_cache,
-    *options;
+    *cache;
 
   MagickStatusType
     status;
@@ -844,19 +840,29 @@ static LinkedListInfo *AcquireColorCache(const char *filename,
   /*
     Load external color map.
   */
-  color_cache=NewLinkedList(0);
-  if (color_cache == (LinkedListInfo *) NULL)
+  cache=NewLinkedList(0);
+  if (cache == (LinkedListInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   status=MagickTrue;
-  options=GetConfigureOptions(filename,exception);
-  option=(const StringInfo *) GetNextValueInLinkedList(options);
-  while (option != (const StringInfo *) NULL)
+#if !defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
   {
-    status&=LoadColorCache(color_cache,(const char *)
-      GetStringInfoDatum(option),GetStringInfoPath(option),0,exception);
+    const StringInfo
+      *option;
+
+    LinkedListInfo
+      *options;
+
+    options=GetConfigureOptions(filename,exception);
     option=(const StringInfo *) GetNextValueInLinkedList(options);
+    while (option != (const StringInfo *) NULL)
+    {
+      status&=LoadColorCache(cache,(const char *) GetStringInfoDatum(option),
+        GetStringInfoPath(option),0,exception);
+      option=(const StringInfo *) GetNextValueInLinkedList(options);
+    }
+    options=DestroyConfigureOptions(options);
   }
-  options=DestroyConfigureOptions(options);
+#endif
   /*
     Load built-in color map.
   */
@@ -887,15 +893,14 @@ static LinkedListInfo *AcquireColorCache(const char *filename,
     color_info->compliance=(ComplianceType) p->compliance;
     color_info->exempt=MagickTrue;
     color_info->signature=MagickCoreSignature;
-    status&=AppendValueToLinkedList(color_cache,color_info);
+    status&=AppendValueToLinkedList(cache,color_info);
     if (status == MagickFalse)
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",color_info->name);
   }
-  return(color_cache);
+  return(cache);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1976,9 +1981,8 @@ MagickExport MagickBooleanType ListColorInfo(FILE *file,
 %
 %  The format of the LoadColorCache method is:
 %
-%      MagickBooleanType LoadColorCache(LinkedListInfo *color_cache,
-%        const char *xml,const char *filename,const size_t depth,
-%        ExceptionInfo *exception)
+%      MagickBooleanType LoadColorCache(LinkedListInfo *cache,const char *xml,
+%        const char *filename,const size_t depth,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1991,9 +1995,8 @@ MagickExport MagickBooleanType ListColorInfo(FILE *file,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static MagickBooleanType LoadColorCache(LinkedListInfo *color_cache,
-  const char *xml,const char *filename,const size_t depth,
-  ExceptionInfo *exception)
+static MagickBooleanType LoadColorCache(LinkedListInfo *cache,const char *xml,
+  const char *filename,const size_t depth,ExceptionInfo *exception)
 {
   char
     keyword[MagickPathExtent],
@@ -2083,7 +2086,7 @@ static MagickBooleanType LoadColorCache(LinkedListInfo *color_cache,
                   file_xml=FileToXML(path,~0UL);
                   if (file_xml != (char *) NULL)
                     {
-                      status&=LoadColorCache(color_cache,file_xml,path,depth+1,
+                      status&=LoadColorCache(cache,file_xml,path,depth+1,
                         exception);
                       file_xml=DestroyString(file_xml);
                     }
@@ -2110,7 +2113,7 @@ static MagickBooleanType LoadColorCache(LinkedListInfo *color_cache,
       continue;
     if (LocaleCompare(keyword,"/>") == 0)
       {
-        status=AppendValueToLinkedList(color_cache,color_info);
+        status=AppendValueToLinkedList(cache,color_info);
         if (status == MagickFalse)
           (void) ThrowMagickException(exception,GetMagickModule(),
             ResourceLimitError,"MemoryAllocationFailed","`%s'",

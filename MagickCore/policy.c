@@ -163,12 +163,8 @@ static MagickBooleanType
 static LinkedListInfo *AcquirePolicyCache(const char *filename,
   ExceptionInfo *exception)
 {
-  const StringInfo
-    *option;
-
   LinkedListInfo
-    *options,
-    *policy_cache;
+    *cache;
 
   MagickStatusType
     status;
@@ -179,19 +175,29 @@ static LinkedListInfo *AcquirePolicyCache(const char *filename,
   /*
     Load external policy map.
   */
-  policy_cache=NewLinkedList(0);
-  if (policy_cache == (LinkedListInfo *) NULL)
+  cache=NewLinkedList(0);
+  if (cache == (LinkedListInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   status=MagickTrue;
-  options=GetConfigureOptions(filename,exception);
-  option=(const StringInfo *) GetNextValueInLinkedList(options);
-  while (option != (const StringInfo *) NULL)
+#if !defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
   {
-    status&=LoadPolicyCache(policy_cache,(const char *)
-      GetStringInfoDatum(option),GetStringInfoPath(option),0,exception);
+    const StringInfo
+      *option;
+
+    LinkedListInfo
+      *options;
+
+    options=GetConfigureOptions(filename,exception);
     option=(const StringInfo *) GetNextValueInLinkedList(options);
+    while (option != (const StringInfo *) NULL)
+    {
+      status&=LoadPolicyCache(cache,(const char *)
+        GetStringInfoDatum(option),GetStringInfoPath(option),0,exception);
+      option=(const StringInfo *) GetNextValueInLinkedList(options);
+    }
+    options=DestroyConfigureOptions(options);
   }
-  options=DestroyConfigureOptions(options);
+#endif
   /*
     Load built-in policy map.
   */
@@ -220,12 +226,12 @@ static LinkedListInfo *AcquirePolicyCache(const char *filename,
     policy_info->value=(char *) p->value;
     policy_info->exempt=MagickTrue;
     policy_info->signature=MagickCoreSignature;
-    status&=AppendValueToLinkedList(policy_cache,policy_info);
+    status&=AppendValueToLinkedList(cache,policy_info);
     if (status == MagickFalse)
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",policy_info->name);
   }
-  return(policy_cache);
+  return(cache);
 }
 
 /*
@@ -717,9 +723,8 @@ MagickExport MagickBooleanType ListPolicyInfo(FILE *file,
 %
 %  The format of the LoadPolicyCache method is:
 %
-%      MagickBooleanType LoadPolicyCache(LinkedListInfo *policy_cache,
-%        const char *xml,const char *filename,const size_t depth,
-%        ExceptionInfo *exception)
+%      MagickBooleanType LoadPolicyCache(LinkedListInfo *cache,const char *xml,
+%        const char *filename,const size_t depth,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -732,9 +737,8 @@ MagickExport MagickBooleanType ListPolicyInfo(FILE *file,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static MagickBooleanType LoadPolicyCache(LinkedListInfo *policy_cache,
-  const char *xml,const char *filename,const size_t depth,
-  ExceptionInfo *exception)
+static MagickBooleanType LoadPolicyCache(LinkedListInfo *cache,const char *xml,
+  const char *filename,const size_t depth,ExceptionInfo *exception)
 {
   char
     keyword[MagickPathExtent],
@@ -824,7 +828,7 @@ static MagickBooleanType LoadPolicyCache(LinkedListInfo *policy_cache,
                   file_xml=FileToXML(path,~0UL);
                   if (file_xml != (char *) NULL)
                     {
-                      status&=LoadPolicyCache(policy_cache,file_xml,path,
+                      status&=LoadPolicyCache(cache,file_xml,path,
                         depth+1,exception);
                       file_xml=DestroyString(file_xml);
                     }
@@ -851,7 +855,7 @@ static MagickBooleanType LoadPolicyCache(LinkedListInfo *policy_cache,
       continue;
     if (LocaleCompare(keyword,"/>") == 0)
       {
-        status=AppendValueToLinkedList(policy_cache,policy_info);
+        status=AppendValueToLinkedList(cache,policy_info);
         if (status == MagickFalse)
           (void) ThrowMagickException(exception,GetMagickModule(),
             ResourceLimitError,"MemoryAllocationFailed","`%s'",

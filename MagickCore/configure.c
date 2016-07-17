@@ -150,12 +150,8 @@ static MagickBooleanType
 static LinkedListInfo *AcquireConfigureCache(const char *filename,
   ExceptionInfo *exception)
 {
-  const StringInfo
-    *option;
-
   LinkedListInfo
-    *configure_cache,
-    *options;
+    *cache;
 
   MagickStatusType
     status;
@@ -166,19 +162,29 @@ static LinkedListInfo *AcquireConfigureCache(const char *filename,
   /*
     Load external configure map.
   */
-  configure_cache=NewLinkedList(0);
-  if (configure_cache == (LinkedListInfo *) NULL)
+  cache=NewLinkedList(0);
+  if (cache == (LinkedListInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   status=MagickTrue;
-  options=GetConfigureOptions(filename,exception);
-  option=(const StringInfo *) GetNextValueInLinkedList(options);
-  while (option != (const StringInfo *) NULL)
+#if !defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
   {
-    status&=LoadConfigureCache(configure_cache,(const char *)
-      GetStringInfoDatum(option),GetStringInfoPath(option),0,exception);
+    const StringInfo
+      *option;
+
+    LinkedListInfo
+      *options;
+
+    options=GetConfigureOptions(filename,exception);
     option=(const StringInfo *) GetNextValueInLinkedList(options);
+    while (option != (const StringInfo *) NULL)
+    {
+      status&=LoadConfigureCache(cache,(const char *)
+        GetStringInfoDatum(option),GetStringInfoPath(option),0,exception);
+      option=(const StringInfo *) GetNextValueInLinkedList(options);
+    }
+    options=DestroyConfigureOptions(options);
   }
-  options=DestroyConfigureOptions(options);
+#endif
   /*
     Load built-in configure map.
   */
@@ -205,13 +211,13 @@ static LinkedListInfo *AcquireConfigureCache(const char *filename,
     configure_info->value=(char *) p->value;
     configure_info->exempt=MagickTrue;
     configure_info->signature=MagickCoreSignature;
-    status&=AppendValueToLinkedList(configure_cache,configure_info);
+    status&=AppendValueToLinkedList(cache,configure_info);
     if (status == MagickFalse)
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",
         configure_info->name);
   }
-  return(configure_cache);
+  return(cache);
 }
 
 /*
@@ -1121,7 +1127,7 @@ MagickExport MagickBooleanType ListConfigureInfo(FILE *file,
 %
 %  The format of the LoadConfigureCache method is:
 %
-%      MagickBooleanType LoadConfigureCache(LinkedListInfo *configure_cache,
+%      MagickBooleanType LoadConfigureCache(LinkedListInfo *cache,
 %        const char *xml,const char *filename,const size_t depth,
 %        ExceptionInfo *exception)
 %
@@ -1136,7 +1142,7 @@ MagickExport MagickBooleanType ListConfigureInfo(FILE *file,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static MagickBooleanType LoadConfigureCache(LinkedListInfo *configure_cache,
+static MagickBooleanType LoadConfigureCache(LinkedListInfo *cache,
   const char *xml,const char *filename,const size_t depth,
   ExceptionInfo *exception)
 {
@@ -1226,8 +1232,8 @@ static MagickBooleanType LoadConfigureCache(LinkedListInfo *configure_cache,
                   file_xml=FileToXML(path,~0UL);
                   if (file_xml != (char *) NULL)
                     {
-                      status&=LoadConfigureCache(configure_cache,file_xml,path,
-                        depth+1,exception);
+                      status&=LoadConfigureCache(cache,file_xml,path,depth+1,
+                        exception);
                       file_xml=DestroyString(file_xml);
                     }
                 }
@@ -1254,7 +1260,7 @@ static MagickBooleanType LoadConfigureCache(LinkedListInfo *configure_cache,
       continue;
     if (LocaleCompare(keyword,"/>") == 0)
       {
-        status=AppendValueToLinkedList(configure_cache,configure_info);
+        status=AppendValueToLinkedList(cache,configure_info);
         if (status == MagickFalse)
           (void) ThrowMagickException(exception,GetMagickModule(),
             ResourceLimitError,"MemoryAllocationFailed","`%s'",

@@ -255,12 +255,8 @@ static MagickBooleanType
 static LinkedListInfo *AcquireLogCache(const char *filename,
   ExceptionInfo *exception)
 {
-  const StringInfo
-    *option;
-
   LinkedListInfo
-    *log_cache,
-    *options;
+    *cache;
 
   MagickStatusType
     status;
@@ -271,19 +267,29 @@ static LinkedListInfo *AcquireLogCache(const char *filename,
   /*
     Load external log map.
   */
-  log_cache=NewLinkedList(0);
-  if (log_cache == (LinkedListInfo *) NULL)
+  cache=NewLinkedList(0);
+  if (cache == (LinkedListInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   status=MagickTrue;
-  options=GetConfigureOptions(filename,exception);
-  option=(const StringInfo *) GetNextValueInLinkedList(options);
-  while (option != (const StringInfo *) NULL)
+#if !defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
   {
-    status&=LoadLogCache(log_cache,(const char *) GetStringInfoDatum(option),
-      GetStringInfoPath(option),0,exception);
+    const StringInfo
+      *option;
+
+    LinkedListInfo
+      *options;
+
+    options=GetConfigureOptions(filename,exception);
     option=(const StringInfo *) GetNextValueInLinkedList(options);
+    while (option != (const StringInfo *) NULL)
+    {
+      status&=LoadLogCache(cache,(const char *) GetStringInfoDatum(option),
+        GetStringInfoPath(option),0,exception);
+      option=(const StringInfo *) GetNextValueInLinkedList(options);
+    }
+    options=DestroyConfigureOptions(options);
   }
-  options=DestroyConfigureOptions(options);
+#endif
   /*
     Load built-in log map.
   */
@@ -311,12 +317,12 @@ static LinkedListInfo *AcquireLogCache(const char *filename,
     log_info->filename=ConstantString(p->filename);
     log_info->format=ConstantString(p->format);
     log_info->signature=MagickCoreSignature;
-    status&=AppendValueToLinkedList(log_cache,log_info);
+    status&=AppendValueToLinkedList(cache,log_info);
     if (status == MagickFalse)
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",log_info->name);
   }
-  return(log_cache);
+  return(cache);
 }
 
 /*
@@ -1406,7 +1412,7 @@ MagickBooleanType LogMagickEvent(const LogEventType type,const char *module,
 %
 %  The format of the LoadLogCache method is:
 %
-%      MagickBooleanType LoadLogCache(LinkedListInfo *log_cache,const char *xml,
+%      MagickBooleanType LoadLogCache(LinkedListInfo *cache,const char *xml,
 %        const char *filename,const size_t depth,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -1420,7 +1426,7 @@ MagickBooleanType LogMagickEvent(const LogEventType type,const char *module,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static MagickBooleanType LoadLogCache(LinkedListInfo *log_cache,const char *xml,
+static MagickBooleanType LoadLogCache(LinkedListInfo *cache,const char *xml,
   const char *filename,const size_t depth,ExceptionInfo *exception)
 {
   char
@@ -1508,7 +1514,7 @@ static MagickBooleanType LoadLogCache(LinkedListInfo *log_cache,const char *xml,
                   file_xml=FileToXML(path,~0UL);
                   if (file_xml != (char *) NULL)
                     {
-                      status&=LoadLogCache(log_cache,file_xml,path,depth+1,
+                      status&=LoadLogCache(cache,file_xml,path,depth+1,
                         exception);
                       file_xml=DestroyString(file_xml);
                     }
@@ -1535,7 +1541,7 @@ static MagickBooleanType LoadLogCache(LinkedListInfo *log_cache,const char *xml,
       continue;
     if (LocaleCompare(keyword,"</logmap>") == 0)
       {
-        status=AppendValueToLinkedList(log_cache,log_info);
+        status=AppendValueToLinkedList(cache,log_info);
         if (status == MagickFalse)
           (void) ThrowMagickException(exception,GetMagickModule(),
             ResourceLimitError,"MemoryAllocationFailed","`%s'",filename);
@@ -1627,7 +1633,7 @@ static MagickBooleanType LoadLogCache(LinkedListInfo *log_cache,const char *xml,
     }
   }
   token=DestroyString(token);
-  if (log_cache == (LinkedListInfo *) NULL)
+  if (cache == (LinkedListInfo *) NULL)
     return(MagickFalse);
   return(status != 0 ? MagickTrue : MagickFalse);
 }

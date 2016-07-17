@@ -261,15 +261,8 @@ static int CompareMagickInfoSize(const void *a,const void *b)
 static LinkedListInfo *AcquireMagicCache(const char *filename,
   ExceptionInfo *exception)
 {
-  char
-    path[MagickPathExtent];
-
-  const StringInfo
-    *option;
-
   LinkedListInfo
-    *magic_cache,
-    *options;
+    *cache;
 
   MagickStatusType
     status;
@@ -280,21 +273,34 @@ static LinkedListInfo *AcquireMagicCache(const char *filename,
   /*
     Load external magic map.
   */
-  magic_cache=NewLinkedList(0);
-  if (magic_cache == (LinkedListInfo *) NULL)
+  cache=NewLinkedList(0);
+  if (cache == (LinkedListInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   status=MagickTrue;
-  *path='\0';
-  options=GetConfigureOptions(filename,exception);
-  option=(const StringInfo *) GetNextValueInLinkedList(options);
-  while (option != (const StringInfo *) NULL)
+#if !defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
   {
-    (void) CopyMagickString(path,GetStringInfoPath(option),MagickPathExtent);
-    status&=LoadMagicCache(magic_cache,(const char *)
-      GetStringInfoDatum(option),GetStringInfoPath(option),0,exception);
+    char
+      path[MagickPathExtent];
+
+    const StringInfo
+      *option;
+
+    LinkedListInfo
+      *options;
+
+    *path='\0';
+    options=GetConfigureOptions(filename,exception);
     option=(const StringInfo *) GetNextValueInLinkedList(options);
+    while (option != (const StringInfo *) NULL)
+    {
+      (void) CopyMagickString(path,GetStringInfoPath(option),MagickPathExtent);
+      status&=LoadMagicCache(cache,(const char *)
+        GetStringInfoDatum(option),GetStringInfoPath(option),0,exception);
+      option=(const StringInfo *) GetNextValueInLinkedList(options);
+    }
+    options=DestroyConfigureOptions(options);
   }
-  options=DestroyConfigureOptions(options);
+#endif
   /*
     Load built-in magic map.
   */
@@ -323,13 +329,13 @@ static LinkedListInfo *AcquireMagicCache(const char *filename,
     magic_info->length=p->length;
     magic_info->exempt=MagickTrue;
     magic_info->signature=MagickCoreSignature;
-    status&=InsertValueInSortedLinkedList(magic_cache,CompareMagickInfoSize,
+    status&=InsertValueInSortedLinkedList(cache,CompareMagickInfoSize,
       NULL,magic_info);
     if (status == MagickFalse)
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",magic_info->name);
   }
-  return(magic_cache);
+  return(cache);
 }
 
 /*
@@ -808,9 +814,8 @@ MagickExport MagickBooleanType ListMagicInfo(FILE *file,
 %
 %  The format of the LoadMagicCache method is:
 %
-%      MagickBooleanType LoadMagicCache(LinkedListInfo *magic_cache,
-%        const char *xml,const char *filename,const size_t depth,
-%        ExceptionInfo *exception)
+%      MagickBooleanType LoadMagicCache(LinkedListInfo *cache,const char *xml,
+%        const char *filename,const size_t depth,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -823,9 +828,8 @@ MagickExport MagickBooleanType ListMagicInfo(FILE *file,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static MagickBooleanType LoadMagicCache(LinkedListInfo *magic_cache,
-  const char *xml,const char *filename,const size_t depth,
-  ExceptionInfo *exception)
+static MagickBooleanType LoadMagicCache(LinkedListInfo *cache,const char *xml,
+  const char *filename,const size_t depth,ExceptionInfo *exception)
 {
   char
     keyword[MagickPathExtent],
@@ -915,7 +919,7 @@ static MagickBooleanType LoadMagicCache(LinkedListInfo *magic_cache,
                   file_xml=FileToXML(path,~0UL);
                   if (xml != (char *) NULL)
                     {
-                      status&=LoadMagicCache(magic_cache,file_xml,path,depth+1,
+                      status&=LoadMagicCache(cache,file_xml,path,depth+1,
                         exception);
                       file_xml=DestroyString(file_xml);
                     }
@@ -942,7 +946,7 @@ static MagickBooleanType LoadMagicCache(LinkedListInfo *magic_cache,
       continue;
     if (LocaleCompare(keyword,"/>") == 0)
       {
-        status=InsertValueInSortedLinkedList(magic_cache,CompareMagickInfoSize,
+        status=InsertValueInSortedLinkedList(cache,CompareMagickInfoSize,
           NULL,magic_info);
         if (status == MagickFalse)
           (void) ThrowMagickException(exception,GetMagickModule(),
