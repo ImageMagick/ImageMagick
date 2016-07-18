@@ -128,10 +128,6 @@ namespace Magick
     void operator()( Image &image_ ) const;
 
   private:
-    // Copy constructor and assignment are not supported
-    annotateImage(const annotateImage&);
-    annotateImage& operator=(const annotateImage&);
-
     const std::string   _text;
     const Geometry      _geometry;
     const GravityType   _gravity;
