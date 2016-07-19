@@ -193,7 +193,7 @@ static SplayTreeInfo *AcquireLocaleSplayTree(const char *filename,
 
   cache=NewSplayTree(CompareSplayTreeString,(void *(*)(void *)) NULL,
     DestroyLocaleNode);
-  if (locale_cache == (SplayTreeInfo *) NULL)
+  if (cache == (SplayTreeInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   status=MagickTrue;
 #if !defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
