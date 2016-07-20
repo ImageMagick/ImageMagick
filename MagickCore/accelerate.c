@@ -4460,8 +4460,8 @@ static Image *ComputeResizeImage(const Image* image,MagickCLEnv clEnv,
   else
   {
     length=image->columns*resizedRows*number_channels;
-    tempImageBuffer=CreateOpenCLBuffer(device,CL_MEM_READ_WRITE,
-      length*sizeof(CLQuantum),(void *) NULL);
+    tempImageBuffer=CreateOpenCLBuffer(device,CL_MEM_READ_WRITE,length*
+      sizeof(CLQuantum),(void *) NULL);
     if (tempImageBuffer == (cl_mem) NULL)
     {
       (void) OpenCLThrowMagickException(device,exception,GetMagickModule(),

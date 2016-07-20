@@ -2511,7 +2511,6 @@ OPENCL_ENDIF()
           const unsigned int stopStep = MagickMin(startStep+numStepsPerWorkItem, n);
 
           unsigned int cacheIndex = start+startStep-cacheRangeStartX;
-
           for (unsigned int i = startStep; i < stopStep; i++, cacheIndex++)
           {
             float weight = getResizeFilterWeight(resizeFilterCubicCoefficients,
@@ -2520,7 +2519,7 @@ OPENCL_ENDIF()
               resizeFilterScale, resizeFilterWindowSupport,
               resizeFilterBlur, scale*(start + i - bisect + 0.5));
 
-            float4 cp = (float4) 0;
+            float4 cp = (float4)0.0f;
 
             __local CLQuantum *p = inputImageCache + (cacheIndex*number_channels);
             cp.x = (float) *(p);
@@ -2585,7 +2584,8 @@ OPENCL_ENDIF()
         {
           density = PerceptibleReciprocal(density);
           filteredPixel *= (float4) density;
-          gamma *= density;
+          if (alpha_index != 0)
+            gamma *= density;
         }
 
         if (alpha_index != 0)
@@ -2750,7 +2750,8 @@ OPENCL_ENDIF()
         {
           density = PerceptibleReciprocal(density);
           filteredPixel *= (float4) density;
-          gamma *= density;
+          if (alpha_index != 0)
+            gamma *= density;
         }
 
         if (alpha_index != 0)
