@@ -387,7 +387,10 @@ static MagickBooleanType WriteRGFImage(const ImageInfo *image_info,Image *image)
       p++;
     }
     if (bit != 0)
+    {
+      byte >>= 8 - bit;
       (void) WriteBlobByte(image,byte);
+    }
     status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
       image->rows);
     if (status == MagickFalse)
