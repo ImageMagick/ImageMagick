@@ -827,27 +827,27 @@ MagickExport Image *ReadImages(ImageInfo *image_info,const char *filename,
       sans=AcquireExceptionInfo();
       (void) SetImageInfo(read_info,0,sans);
       sans=DestroyExceptionInfo(sans);
-      if (read_info->number_scenes == 0)
+      if (read_info->number_scenes != 0)
         {
+          (void) CopyMagickString(read_filename,read_info->filename,
+            MagickPathExtent);
+          images=NewImageList();
+          extent=(ssize_t) (read_info->scene+read_info->number_scenes);
+          scene=(ssize_t) read_info->scene;
+          for ( ; scene < (ssize_t) extent; scene++)
+          {
+            (void) InterpretImageFilename(image_info,(Image *) NULL,
+              read_filename,(int) scene,read_info->filename,exception);
+            image=ReadImage(read_info,exception);
+            if (image == (Image *) NULL)
+              continue;
+            AppendImageToList(&images,image);
+          }
           read_info=DestroyImageInfo(read_info);
-          return(ReadImage(image_info,exception));
+          return(images);
         }
-      (void) CopyMagickString(read_filename,read_info->filename,
-        MagickPathExtent);
-      images=NewImageList();
-      extent=(ssize_t) (read_info->scene+read_info->number_scenes);
-      for (scene=(ssize_t) read_info->scene; scene < (ssize_t) extent; scene++)
-      {
-        (void) InterpretImageFilename(image_info,(Image *) NULL,read_filename,
-          (int) scene,read_info->filename,exception);
-        image=ReadImage(read_info,exception);
-        if (image == (Image *) NULL)
-          continue;
-        AppendImageToList(&images,image);
-      }
-      read_info=DestroyImageInfo(read_info);
-      return(images);
     }
+  (void) CopyMagickString(read_info->filename,filename,MagickPathExtent);
   image=ReadImage(read_info,exception);
   read_info=DestroyImageInfo(read_info);
   return(image);
