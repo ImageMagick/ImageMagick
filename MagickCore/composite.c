@@ -1602,7 +1602,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
               }
               case CopyAlphaCompositeOp:
               {
-                if ((source_traits & BlendPixelTrait) == 0)
+                if (source_image->alpha_trait == UndefinedPixelTrait)
                   pixel=GetPixelIntensity(source_image,p);
                 else
                   pixel=QuantumRange*Sa;
