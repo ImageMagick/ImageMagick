@@ -1892,9 +1892,9 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
               count;
 
             /*
-              Wait for input file to 'disappear', or maximum 10 seconds.
+              Wait for input file to 'disappear', or maximum 2 seconds.
             */
-            count=100;
+            count=20;
             while ((count-- > 0) && (access_utf8(image->filename,F_OK) == 0))
               (void) MagickDelay(100);  /* sleep 0.1 seconds */
           }
