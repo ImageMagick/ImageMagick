@@ -4285,7 +4285,10 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
           break;
         }
       if (LocaleCompare("metric",option+1) == 0)
-        break;
+        {
+          (void) SetImageOption(_image_info,option+1,arg1);
+          break;
+        }
       if (LocaleCompare("morph",option+1) == 0)
         {
           Image

@@ -96,8 +96,7 @@ ModuleExport size_t RegisterINFOImage(void)
   MagickInfo
     *entry;
 
-  entry=AcquireMagickInfo("INFO","INFO",
-    "The image format and characteristics");
+  entry=AcquireMagickInfo("INFO","INFO","The image format and characteristics");
   entry->encoder=(EncodeImageHandler *) WriteINFOImage;
   entry->flags^=CoderBlobSupportFlag;
   (void) RegisterMagickInfo(entry);
