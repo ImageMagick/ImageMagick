@@ -793,17 +793,15 @@ MagickPrivate Image* AccelerateBlurImage(const Image *image,
 static MagickBooleanType ComputeContrastImage(Image *image,MagickCLEnv clEnv,
   const MagickBooleanType sharpen,ExceptionInfo *exception)
 {
-  CacheView
-    *image_view;
-
   cl_command_queue
     queue;
 
   cl_int
-    clStatus;
+    status,
+    sign;
 
   cl_kernel
-    filterKernel;
+    contrastKernel;
 
   cl_event
     event;
@@ -811,8 +809,8 @@ static MagickBooleanType ComputeContrastImage(Image *image,MagickCLEnv clEnv,
   cl_mem
     imageBuffer;
 
-  cl_mem_flags
-    mem_flags;
+  cl_uint
+    number_channels;
 
   MagickBooleanType
     outputReady;
@@ -820,114 +818,54 @@ static MagickBooleanType ComputeContrastImage(Image *image,MagickCLEnv clEnv,
   MagickCLDevice
     device;
 
-  MagickSizeType
-    length;
-
   size_t
-    global_work_size[2];
+    gsize[2],
+    i;
 
-  unsigned int
-    i,
-    uSharpen;
+  contrastKernel=NULL;
+  outputReady=MagickFalse;
 
-  void
-    *inputPixels;
+  device=RequestOpenCLDevice(clEnv);
+  queue=AcquireOpenCLCommandQueue(device);
+  imageBuffer=GetAuthenticOpenCLBuffer(image,device,exception);
+  if (imageBuffer == (cl_mem) NULL)
+    goto cleanup;
 
-  outputReady = MagickFalse;
-  inputPixels = NULL;
-  imageBuffer = NULL;
-  filterKernel = NULL;
-  queue = NULL;
-
-  device = RequestOpenCLDevice(clEnv);
-
-  /* Create and initialize OpenCL buffers. */
-  image_view=AcquireAuthenticCacheView(image,exception);
-  inputPixels=GetCacheViewAuthenticPixels(image_view,0,0,image->columns,image->rows,exception);
-  if (inputPixels == (void *) NULL)
+  contrastKernel=AcquireOpenCLKernel(device,"Contrast");
+  if (contrastKernel == (cl_kernel) NULL)
   {
-    (void) OpenCLThrowMagickException(device,exception,GetMagickModule(),CacheWarning,"UnableToReadPixelCache.","`%s'",image->filename);
+    (void) OpenCLThrowMagickException(device,exception,GetMagickModule(),
+      ResourceLimitWarning,"AcquireOpenCLKernel failed.",".");
     goto cleanup;
   }
 
-  /* If the host pointer is aligned to the size of CLPixelPacket, 
-     then use the host buffer directly from the GPU; otherwise, 
-     create a buffer on the GPU and copy the data over */
-  if (ALIGNED(inputPixels,CLPixelPacket)) 
+  number_channels=(cl_uint) image->number_channels;
+  sign=sharpen != MagickFalse ? 1 : -1;
+
+  i=0;
+  status =SetOpenCLKernelArg(contrastKernel,i++,sizeof(cl_mem),(void *)&imageBuffer);
+  status|=SetOpenCLKernelArg(contrastKernel,i++,sizeof(cl_uint),&number_channels);
+  status|=SetOpenCLKernelArg(contrastKernel,i++,sizeof(cl_int),&sign);
+  if (status != CL_SUCCESS)
   {
-    mem_flags = CL_MEM_READ_WRITE|CL_MEM_USE_HOST_PTR;
-  }
-  else 
-  {
-    mem_flags = CL_MEM_READ_WRITE|CL_MEM_COPY_HOST_PTR;
-  }
-  /* create a CL buffer from image pixel buffer */
-  length = image->columns * image->rows;
-  imageBuffer = clEnv->library->clCreateBuffer(device->context, mem_flags, length * sizeof(CLPixelPacket), (void*)inputPixels, &clStatus);
-  if (clStatus != CL_SUCCESS)
-  {
-    (void) OpenCLThrowMagickException(device,exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clCreateBuffer failed.",".");
-    goto cleanup;
-  }
-  
-  filterKernel = AcquireOpenCLKernel(device,"Contrast");
-  if (filterKernel == NULL)
-  {
-    (void) OpenCLThrowMagickException(device,exception, GetMagickModule(), ResourceLimitWarning, "AcquireOpenCLKernel failed.", ".");
+    (void) OpenCLThrowMagickException(device,exception,GetMagickModule(),
+      ResourceLimitWarning,"SetOpenCLKernelArg failed.",".");
     goto cleanup;
   }
 
-  i = 0;
-  clStatus=clEnv->library->clSetKernelArg(filterKernel,i++,sizeof(cl_mem),(void *)&imageBuffer);
+  gsize[0]=image->columns;
+  gsize[1]=image->rows;
 
-  uSharpen = (sharpen == MagickFalse)?0:1;
-  clStatus|=clEnv->library->clSetKernelArg(filterKernel,i++,sizeof(cl_uint),&uSharpen);
-  if (clStatus != CL_SUCCESS)
-  {
-    (void) OpenCLThrowMagickException(device,exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clSetKernelArg failed.", ".");
-    goto cleanup;
-  }
-
-  global_work_size[0] = image->columns;
-  global_work_size[1] = image->rows;
-  /* launch the kernel */
-  queue = AcquireOpenCLCommandQueue(device);
-  clStatus = clEnv->library->clEnqueueNDRangeKernel(queue, filterKernel, 2, NULL, global_work_size, NULL, 0, NULL, &event);
-  if (clStatus != CL_SUCCESS)
-  {
-    (void) OpenCLThrowMagickException(device,exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", ".");
-    goto cleanup;
-  }
-  RecordProfileData(device,filterKernel,event);
-
-  if (ALIGNED(inputPixels,CLPixelPacket)) 
-  {
-    length = image->columns * image->rows;
-    clEnv->library->clEnqueueMapBuffer(queue, imageBuffer, CL_TRUE, CL_MAP_READ|CL_MAP_WRITE, 0, length * sizeof(CLPixelPacket), 0, NULL, NULL, &clStatus);
-  }
-  else 
-  {
-    length = image->columns * image->rows;
-    clStatus = clEnv->library->clEnqueueReadBuffer(queue, imageBuffer, CL_TRUE, 0, length * sizeof(CLPixelPacket), inputPixels, 0, NULL, NULL);
-  }
-  if (clStatus != CL_SUCCESS)
-  {
-    (void) OpenCLThrowMagickException(device,exception, GetMagickModule(), ResourceLimitWarning, "Reading output image from CL buffer failed.", ".");
-    goto cleanup;
-  }
-  outputReady=SyncCacheViewAuthenticPixels(image_view,exception);
+  outputReady=EnqueueOpenCLKernel(queue,contrastKernel,2,(const size_t *) NULL,
+    gsize,(const size_t *) NULL,image,(Image *) NULL,exception);
 
 cleanup:
 
-  image_view=DestroyCacheView(image_view);
-
-  if (imageBuffer!=NULL)
-    clEnv->library->clReleaseMemObject(imageBuffer);
-  if (filterKernel!=NULL)
-    ReleaseOpenCLKernel(filterKernel);
-  if (queue != NULL)
+  if (contrastKernel != (cl_kernel) NULL)
+    ReleaseOpenCLKernel(contrastKernel);
+  if (queue != (cl_command_queue) NULL)
     ReleaseOpenCLCommandQueue(device,queue);
-  if (device != NULL)
+  if (device != (MagickCLDevice) NULL)
     ReleaseOpenCLDevice(device);
 
   return(outputReady);
@@ -945,7 +883,7 @@ MagickPrivate MagickBooleanType AccelerateContrastImage(Image *image,
   assert(image != NULL);
   assert(exception != (ExceptionInfo *) NULL);
 
-  if (checkAccelerateConditionRGBA(image) == MagickFalse)
+  if (checkAccelerateCondition(image) == MagickFalse)
     return(MagickFalse);
 
   clEnv=getOpenCLEnvironment(exception);

@@ -1025,97 +1025,110 @@ OPENCL_ENDIF()
 
   STRINGIFY(
 
-  inline float3 ConvertRGBToHSB(CLPixelType pixel) {
-    float3 HueSaturationBrightness;
-    HueSaturationBrightness.x = 0.0f; // Hue
-    HueSaturationBrightness.y = 0.0f; // Saturation
-    HueSaturationBrightness.z = 0.0f; // Brightness
-
-    float r=(float) getRed(pixel);
-    float g=(float) getGreen(pixel);
-    float b=(float) getBlue(pixel);
-
-    float tmin=MagickMin(MagickMin(r,g),b);
-    float tmax=MagickMax(MagickMax(r,g),b);
-
-    if (tmax!=0.0f) {
+  inline float4 ConvertRGBToHSB(const float4 pixel)
+  {
+    float4 result=0.0f;
+    result.w=pixel.w;
+    float tmax=MagickMax(MagickMax(pixel.x,pixel.y),pixel.z);
+    if (tmax != 0.0f)
+    {
+      float tmin=MagickMin(MagickMin(pixel.x,pixel.y),pixel.z);
       float delta=tmax-tmin;
-      HueSaturationBrightness.y=delta/tmax;
-      HueSaturationBrightness.z=QuantumScale*tmax;
 
-      if (delta != 0.0f) {
-  HueSaturationBrightness.x = ((r == tmax)?0.0f:((g == tmax)?2.0f:4.0f));
-  HueSaturationBrightness.x += ((r == tmax)?(g-b):((g == tmax)?(b-r):(r-g)))/delta;
-        HueSaturationBrightness.x/=6.0f;
-        HueSaturationBrightness.x += (HueSaturationBrightness.x < 0.0f)?0.0f:1.0f;
+      result.y=delta/tmax;
+      result.z=QuantumScale*tmax;
+      if (delta != 0.0f)
+      {
+        result.x =((pixel.x == tmax) ? 0.0f : ((pixel.y == tmax) ? 2.0f : 4.0f));
+        result.x+=((pixel.x == tmax) ? (pixel.y-pixel.z) : ((pixel.y == tmax) ?
+          (pixel.z-pixel.x) : (pixel.x-pixel.y)))/delta;
+        result.x/=6.0f;
+        result.x+=(result.x < 0.0f) ? 0.0f : 1.0f;
       }
     }
-    return HueSaturationBrightness;
+    return(result);
   }
 
-  inline CLPixelType ConvertHSBToRGB(float3 HueSaturationBrightness) {
+  inline float4 ConvertHSBToRGB(const float4 pixel)
+  {
+    float hue=pixel.x;
+    float brightness=pixel.z;
+    float saturation=pixel.y;
 
-    float hue = HueSaturationBrightness.x;
-    float brightness = HueSaturationBrightness.z;
-    float saturation = HueSaturationBrightness.y;
-   
-    CLPixelType rgb;
+    float4 result=pixel;
 
-    if (saturation == 0.0f) {
-      setRed(&rgb,ClampToQuantum(QuantumRange*brightness));
-      setGreen(&rgb,getRed(rgb));
-      setBlue(&rgb,getRed(rgb));
+    if (saturation == 0.0f)
+    {
+      result.x=result.y=result.z=ClampToQuantum(QuantumRange*brightness);
     }
-    else {
-
+    else
+    {
       float h=6.0f*(hue-floor(hue));
       float f=h-floor(h);
       float p=brightness*(1.0f-saturation);
       float q=brightness*(1.0f-saturation*f);
       float t=brightness*(1.0f-(saturation*(1.0f-f)));
- 
-      float clampedBrightness = ClampToQuantum(QuantumRange*brightness);
-      float clamped_t = ClampToQuantum(QuantumRange*t);
-      float clamped_p = ClampToQuantum(QuantumRange*p);
-      float clamped_q = ClampToQuantum(QuantumRange*q);
       int ih = (int)h;
-      setRed(&rgb, (ih == 1)?clamped_q:
-        (ih == 2 || ih == 3)?clamped_p:
-        (ih == 4)?clamped_t:
-                 clampedBrightness);
- 
-      setGreen(&rgb, (ih == 1 || ih == 2)?clampedBrightness:
-        (ih == 3)?clamped_q:
-        (ih == 4 || ih == 5)?clamped_p:
-                 clamped_t);
 
-      setBlue(&rgb, (ih == 2)?clamped_t:
-        (ih == 3 || ih == 4)?clampedBrightness:
-        (ih == 5)?clamped_q:
-                 clamped_p);
+      if (ih == 1)
+      {
+        result.x=ClampToQuantum(QuantumRange*q);
+        result.y=ClampToQuantum(QuantumRange*brightness);
+        result.z=ClampToQuantum(QuantumRange*p);
+      }
+      else if (ih == 2)
+      {
+        result.x=ClampToQuantum(QuantumRange*p);
+        result.y=ClampToQuantum(QuantumRange*brightness);
+        result.z=ClampToQuantum(QuantumRange*t);
+      }
+      else if (ih == 3)
+      {
+        result.x=ClampToQuantum(QuantumRange*p);
+        result.y=ClampToQuantum(QuantumRange*q);
+        result.z=ClampToQuantum(QuantumRange*brightness);
+      }
+      else if (ih == 4)
+      {
+        result.x=ClampToQuantum(QuantumRange*t);
+        result.y=ClampToQuantum(QuantumRange*p);
+        result.z=ClampToQuantum(QuantumRange*brightness);
+      }
+      else if (ih == 5)
+      {
+        result.x=ClampToQuantum(QuantumRange*brightness);
+        result.y=ClampToQuantum(QuantumRange*p);
+        result.z=ClampToQuantum(QuantumRange*q);
+      }
+      else
+      {
+        result.x=ClampToQuantum(QuantumRange*q);
+        result.y=ClampToQuantum(QuantumRange*brightness);
+        result.z=ClampToQuantum(QuantumRange*p);
+      }
     }
-    return rgb;
+    return(result);
   }
 
-  __kernel void Contrast(__global CLPixelType *im, const unsigned int sharpen)
+  __kernel void Contrast(__global CLQuantum *image,const int sign,
+    const unsigned int number_channels)
   {
+    const int x=get_global_id(0);
+    const int y=get_global_id(1);
+    const unsigned int columns=get_global_size(0);
 
-    const int sign = sharpen!=0?1:-1;
-    const int x = get_global_id(0);  
-    const int y = get_global_id(1);
-    const int columns = get_global_size(0);
-    const int c = x + y * columns;
+    float4 pixel=ReadAllChannels(image,number_channels,columns,x,y);
+    if (number_channels < 3)
+      pixel.y=pixel.z=pixel.x;
 
-    CLPixelType pixel = im[c];
-    float3 HueSaturationBrightness = ConvertRGBToHSB(pixel);
-    float brightness = HueSaturationBrightness.z;
+    pixel=ConvertRGBToHSB(pixel);
+    float brightness=pixel.z;
     brightness+=0.5f*sign*(0.5f*(sinpi(brightness-0.5f)+1.0f)-brightness);
-    brightness = clamp(brightness,0.0f,1.0f);
-    HueSaturationBrightness.z = brightness;
+    brightness=clamp(brightness,0.0f,1.0f);
+    pixel.z=brightness;
+    pixel=ConvertHSBToRGB(pixel);
 
-    CLPixelType filteredPixel = ConvertHSBToRGB(HueSaturationBrightness);
-    filteredPixel.w = pixel.w;
-    im[c] = filteredPixel;
+    WriteAllChannels(image,number_channels,columns,x,y,pixel);
   }
   )
 
