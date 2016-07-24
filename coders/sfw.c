@@ -325,7 +325,7 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) extent;
   extent=fwrite(HuffmanTable,1,sizeof(HuffmanTable)/sizeof(*HuffmanTable),file);
   extent=fwrite(offset+1,(size_t) (data-offset),1,file);
-  status=ferror(file) == -1 ? MagickFalse : MagickTrue;
+  status=ferror(file) != 0 ? MagickFalse : MagickTrue;
   (void) fclose(file);
   (void) close(unique_file);
   buffer=(unsigned char *) RelinquishMagickMemory(buffer);

@@ -2597,12 +2597,12 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
                   Composite region.
                 */
                 (void) CompositeImage(region_image,region_image->matte !=
-                     MagickFalse ? CopyCompositeOp : OverCompositeOp,*image,
-                     region_geometry.x,region_geometry.y);
+                  MagickFalse ? CopyCompositeOp : OverCompositeOp,*image,
+                  region_geometry.x,region_geometry.y);
                 InheritException(exception,&region_image->exception);
                 *image=DestroyImage(*image);
                 *image=region_image;
-                region_image = (Image *) NULL;
+                region_image=(Image *) NULL;
               }
             if (*option == '+')
               break;
@@ -3348,7 +3348,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
         break;
     }
     /*
-       Replace current image with any image that was generated
+      Replace current image with any image that was generated.
     */
     if (mogrify_image != (Image *) NULL)
       ReplaceImageInListReturnLast(image,mogrify_image);
