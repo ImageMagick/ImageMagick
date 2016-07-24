@@ -1607,8 +1607,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
             }
           if (LocaleCompare(keyword,"stroke-dashoffset") == 0)
             {
-              (void) FormatLocaleFile(svg_info->file,"stroke-dashoffset %s\n",
-                value);
+              (void) FormatLocaleFile(svg_info->file,"stroke-dashoffset %g\n",
+                GetUserSpaceCoordinateValue(svg_info,1,value));
               break;
             }
           if (LocaleCompare(keyword,"stroke-linecap") == 0)
@@ -1810,7 +1810,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
                     if (LocaleCompare(keyword,"stroke-dashoffset") == 0)
                       {
                         (void) FormatLocaleFile(svg_info->file,
-                          "stroke-dashoffset %s\n",value);
+                          "stroke-dashoffset %g\n",
+                          GetUserSpaceCoordinateValue(svg_info,1,value));
                         break;
                       }
                     if (LocaleCompare(keyword,"stroke-linecap") == 0)
