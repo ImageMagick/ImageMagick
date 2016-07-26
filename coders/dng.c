@@ -287,7 +287,6 @@ ModuleExport size_t RegisterDNGImage(void)
   entry->flags^=CoderBlobSupportFlag;
   entry->flags|=CoderSeekableStreamFlag;
   entry->format_type=ExplicitFormatType;
-  entry->module=ConstantString("DNG");
   (void) RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("DNG","KDC","Kodak Digital Camera Raw Image Format");
   entry->decoder=(DecodeImageHandler *) ReadDNGImage;
