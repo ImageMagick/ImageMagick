@@ -3193,20 +3193,23 @@ MagickExport MagickBooleanType SetImageRegionMask(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      MagickRealType
-        intensity;
+      Quantum
+        pixel;
 
-      intensity=0;
+      pixel=0;
+      if (((x >= region->x) && (x < (region->x+region->width))) &&
+          ((y >= region->y) && (y < (region->y+region->height))))
+        pixel=QuantumRange;
       switch (type)
       {
         case WritePixelMask:
         {
-          SetPixelWriteMask(image,ClampToQuantum(QuantumRange-intensity),q);
+          SetPixelWriteMask(image,pixel,q);
           break;
         }
         default:
         {
-          SetPixelReadMask(image,ClampToQuantum(QuantumRange-intensity),q);
+          SetPixelReadMask(image,pixel,q);
           break;
         }
       }

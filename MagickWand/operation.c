@@ -3026,14 +3026,6 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
     }
     case 'r':
     {
-      if (LocaleCompare("rotational-blur",option+1) == 0)
-        {
-          flags=ParseGeometry(arg1,&geometry_info);
-          if ((flags & RhoValue) == 0)
-            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
-          new_image=RotationalBlurImage(_image,geometry_info.rho,_exception);
-          break;
-        }
       if (LocaleCompare("raise",option+1) == 0)
         {
           if (IsGeometry(arg1) == MagickFalse)
@@ -3089,7 +3081,22 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
       if (LocaleCompare("recolor",option+1) == 0)
         {
           CLIWandWarnReplaced("-color-matrix");
-          (void) CLISimpleOperatorImage(cli_wand,"-color-matrix",arg1,NULL,exception);
+          (void) CLISimpleOperatorImage(cli_wand,"-color-matrix",arg1,NULL,
+            exception);
+        }
+      if (LocaleCompare("region",option+1) == 0)
+        {
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
+          if (*option == '+')
+            {
+              (void) SetImageRegionMask(_image,ReadPixelMask,
+                (const RectangleInfo *) NULL,_exception);
+              break;
+            }
+          (void) ParseGravityGeometry(_image,arg1,&geometry,_exception);
+          (void) SetImageRegionMask(_image,ReadPixelMask,&geometry,_exception);
+          break;
         }
       if (LocaleCompare("remap",option+1) == 0)
         {
@@ -3156,6 +3163,14 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           if ((flags & LessValue) != 0 && (_image->columns >= _image->rows))
             break;
           new_image=RotateImage(_image,geometry_info.rho,_exception);
+          break;
+        }
+      if (LocaleCompare("rotational-blur",option+1) == 0)
+        {
+          flags=ParseGeometry(arg1,&geometry_info);
+          if ((flags & RhoValue) == 0)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
+          new_image=RotationalBlurImage(_image,geometry_info.rho,_exception);
           break;
         }
       CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);

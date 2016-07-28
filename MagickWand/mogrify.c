@@ -147,7 +147,7 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
   (void) setlocale(LC_ALL,"");
   (void) setlocale(LC_NUMERIC,"C");
   GetPathComponent(argv[0],TailPath,client_name);
-  SetClientName(client_name);
+  (void) SetClientName(client_name);
   concurrent=MagickFalse;
   duration=(-1.0);
   iterations=1;
@@ -690,9 +690,6 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
   GeometryInfo
     geometry_info;
 
-  Image
-    *region_image;
-
   ImageInfo
     *mogrify_info;
 
@@ -740,7 +737,6 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
   interpolate_method=UndefinedInterpolatePixel;
   format=GetImageOption(mogrify_info,"format");
   SetGeometry(*image,&region_geometry);
-  region_image=NewImageList();
   /*
     Transmogrify the image.
   */
@@ -2597,33 +2593,18 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
           }
         if (LocaleCompare("region",option+1) == 0)
           {
-            (void) SyncImageSettings(mogrify_info,*image,exception);
-            if (region_image != (Image *) NULL)
-              {
-                /*
-                  Composite region.
-                */
-                (void) CompositeImage(region_image,*image,
-                   region_image->alpha_trait != UndefinedPixelTrait ?
-                   CopyCompositeOp : OverCompositeOp,MagickTrue,
-                   region_geometry.x,region_geometry.y,exception);
-                *image=DestroyImage(*image);
-                *image=region_image;
-                region_image = (Image *) NULL;
-              }
-            if (*option == '+')
-              break;
             /*
-              Apply transformations to a selected region of the image.
+              Apply read mask as defined by a region geometry.
             */
-            (void) ParseGravityGeometry(*image,argv[i+1],&region_geometry,
-              exception);
-            mogrify_image=CropImage(*image,&region_geometry,exception);
-            if (mogrify_image == (Image *) NULL)
-              break;
-            region_image=(*image);
-            *image=mogrify_image;
-            mogrify_image=(Image *) NULL;
+            (void) SyncImageSettings(mogrify_info,*image,exception);
+            if (*option == '+')
+              {
+                (void) SetImageRegionMask(*image,ReadPixelMask,
+                  (const RectangleInfo *) NULL,exception);
+                break;
+              }
+            (void) ParseGravityGeometry(*image,argv[i+1],&geometry,exception);
+            (void) SetImageRegionMask(*image,ReadPixelMask,&geometry,exception);
             break;
           }
         if (LocaleCompare("render",option+1) == 0)
@@ -3388,20 +3369,6 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
       ReplaceImageInListReturnLast(image,mogrify_image);
     i+=count;
   }
-  if (region_image != (Image *) NULL)
-    {
-      /*
-        Composite transformed region onto image.
-      */
-      (void) SyncImageSettings(mogrify_info,*image,exception);
-      (void) CompositeImage(region_image,*image,
-         region_image->alpha_trait != UndefinedPixelTrait ? CopyCompositeOp :
-         OverCompositeOp,MagickTrue,region_geometry.x,region_geometry.y,
-         exception);
-      *image=DestroyImage(*image);
-      *image=region_image;
-      region_image = (Image *) NULL;
-    }
   /*
     Free resources.
   */
