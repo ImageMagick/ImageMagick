@@ -536,6 +536,8 @@ extern MagickExport MagickBooleanType
   SetImageExtent(Image *,const size_t,const size_t,ExceptionInfo *),
   SetImageInfo(ImageInfo *,const unsigned int,ExceptionInfo *),
   SetImageMask(Image *,const PixelMask type,const Image *,ExceptionInfo *),
+  SetImageRegionMask(Image *,const PixelMask type,const RectangleInfo *,
+    ExceptionInfo *),
   SetImageStorageClass(Image *,const ClassType,ExceptionInfo *),
   StripImage(Image *,ExceptionInfo *),
   SyncImage(Image *,ExceptionInfo *),

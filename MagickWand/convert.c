@@ -2510,6 +2510,15 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
               ThrowConvertInvalidArgumentException(option,argv[i]);
             break;
           }
+        if (LocaleCompare("read-mask",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowConvertException(OptionError,"MissingArgument",option);
+            break;
+          }
         if (LocaleCompare("red-primary",option+1) == 0)
           {
             if (*option == '+')
@@ -3209,6 +3218,15 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("write",option+1) == 0)
           {
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowConvertException(OptionError,"MissingArgument",option);
+            break;
+          }
+        if (LocaleCompare("write-mask",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
             i++;
             if (i == (ssize_t) argc)
               ThrowConvertException(OptionError,"MissingArgument",option);

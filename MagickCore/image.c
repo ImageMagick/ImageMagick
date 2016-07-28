@@ -2908,6 +2908,84 @@ MagickExport void SetImageInfoFile(ImageInfo *image_info,FILE *file)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%     S e t I m a g e A l p h a                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SetImageAlpha() sets the alpha levels of the image.
+%
+%  The format of the SetImageAlpha method is:
+%
+%      MagickBooleanType SetImageAlpha(Image *image,const Quantum alpha,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o Alpha: the level of transparency: 0 is fully opaque and QuantumRange is
+%      fully transparent.
+%
+*/
+MagickExport MagickBooleanType SetImageAlpha(Image *image,const Quantum alpha,
+  ExceptionInfo *exception)
+{
+  CacheView
+    *image_view;
+
+  MagickBooleanType
+    status;
+
+  ssize_t
+    y;
+
+  assert(image != (Image *) NULL);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
+  assert(image->signature == MagickCoreSignature);
+  image->alpha_trait=BlendPixelTrait;
+  status=MagickTrue;
+  image_view=AcquireAuthenticCacheView(image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static,4) shared(status) \
+    magick_threads(image,image,image->rows,1)
+#endif
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    register Quantum
+      *magick_restrict q;
+
+    register ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
+    if (q == (Quantum *) NULL)
+      {
+        status=MagickFalse;
+        continue;
+      }
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      if (GetPixelReadMask(image,q) != 0)
+        SetPixelAlpha(image,alpha,q);
+      q+=GetPixelChannels(image);
+    }
+    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
+      status=MagickFalse;
+  }
+  image_view=DestroyCacheView(image_view);
+  return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   S e t I m a g e M a s k                                                   %
 %                                                                             %
 %                                                                             %
@@ -3031,29 +3109,33 @@ MagickExport MagickBooleanType SetImageMask(Image *image,const PixelMask type,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%     S e t I m a g e A l p h a                                               %
+%   S e t I m a g e R e g i o n M a s k                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SetImageAlpha() sets the alpha levels of the image.
+%  SetImageRegionMask() associates a mask as defined by a region with the
+%  image.
 %
-%  The format of the SetImageAlpha method is:
+%  The format of the SetImageRegionMask method is:
 %
-%      MagickBooleanType SetImageAlpha(Image *image,const Quantum alpha,
-%        ExceptionInfo *exception)
+%      MagickBooleanType SetImageRegionMask(Image *image,const PixelMask type,
+%        const RectangleInfo *region,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
-%    o Alpha: the level of transparency: 0 is fully opaque and QuantumRange is
-%      fully transparent.
+%    o type: the mask type, ReadPixelMask or WritePixelMask.
+%
+%    o geometry: the mask region.
+%
+%    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport MagickBooleanType SetImageAlpha(Image *image,const Quantum alpha,
-  ExceptionInfo *exception)
+MagickExport MagickBooleanType SetImageRegionMask(Image *image,
+  const PixelMask type,const RectangleInfo *region,ExceptionInfo *exception)
 {
   CacheView
     *image_view;
@@ -3064,16 +3146,34 @@ MagickExport MagickBooleanType SetImageAlpha(Image *image,const Quantum alpha,
   ssize_t
     y;
 
+  /*
+    Set image mask as defined by the region.
+  */
   assert(image != (Image *) NULL);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(image->signature == MagickCoreSignature);
-  image->alpha_trait=BlendPixelTrait;
+  if (region == (const RectangleInfo *) NULL)
+    {
+      switch (type)
+      {
+        case WritePixelMask: image->write_mask=MagickFalse; break;
+        default: image->read_mask=MagickFalse; break;
+      }
+      return(SyncImagePixelCache(image,exception));
+    }
+  switch (type)
+  {
+    case WritePixelMask: image->write_mask=MagickTrue; break;
+    default: image->read_mask=MagickTrue; break;
+  }
+  if (SyncImagePixelCache(image,exception) == MagickFalse)
+    return(MagickFalse);
   status=MagickTrue;
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
-    magick_threads(image,image,image->rows,1)
+    magick_threads(image,image,1,1)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -3093,8 +3193,23 @@ MagickExport MagickBooleanType SetImageAlpha(Image *image,const Quantum alpha,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if (GetPixelReadMask(image,q) != 0)
-        SetPixelAlpha(image,alpha,q);
+      MagickRealType
+        intensity;
+
+      intensity=0;
+      switch (type)
+      {
+        case WritePixelMask:
+        {
+          SetPixelWriteMask(image,ClampToQuantum(QuantumRange-intensity),q);
+          break;
+        }
+        default:
+        {
+          SetPixelReadMask(image,ClampToQuantum(QuantumRange-intensity),q);
+          break;
+        }
+      }
       q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
