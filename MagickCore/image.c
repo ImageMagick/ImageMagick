@@ -3115,8 +3115,8 @@ MagickExport MagickBooleanType SetImageMask(Image *image,const PixelMask type,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SetImageRegionMask() associates a mask as defined by a region with the
-%  image.
+%  SetImageRegionMask() associates a mask with the image as defined by the
+%  specified region.
 %
 %  The format of the SetImageRegionMask method is:
 %
