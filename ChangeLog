@@ -1,3 +1,6 @@
+2016-07-30  7.0.2-6 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.2-6, GIT revision 18651:df24175:20160729.
+
 2016-07-29  7.0.2-6 Cristy  <quetzlzacatenango@image...>
   * Support -region option (reference
     https://www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=29692).
