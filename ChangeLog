@@ -1,4 +1,10 @@
-2016-07-15  6.9.5-2 Cristy  <quetzlzacatenango@image...>
+2016-07-30  6.9.5-4 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 6.9.5-4, GIT revision 10973:a00fa93:20160729.
+
+2016-07-35  6.9.5-4 Cristy  <quetzlzacatenango@image...>
+  * Prevent buffer overflow (bug report from Ibrahim el-sayed).
+
+2016-07-15  6.9.5-3 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 6.9.5-3, GIT revision 18627:2b5ddbd:20160721.
 
 2016-07-13  6.9.5-3 Cristy  <quetzlzacatenango@image...>
