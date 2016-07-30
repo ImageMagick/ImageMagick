@@ -44,7 +44,7 @@ h6, .h6 { margin-top: 0;
 .magick-post { margin-bottom: 60px; }
 .magick-post-title { margin-bottom: 5px; font-size: 40px; }
 .magick-post-meta { margin-bottom: 20px; color: #999; }
-.magick-footer { padding: 40px 0; color: #999; text-align: center;
+.magick-footer { padding: 20px 0; color: #999; text-align: center;
   background-color: #f9f9f9; border-top: 1px solid #e5e5e5; }
 .magick-footer p:last-child { margin-bottom: 0; }
 .magick-list-unstyled{ padding-left: 40px; padding-right: 40px;

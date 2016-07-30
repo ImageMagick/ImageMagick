@@ -380,7 +380,7 @@ specific </p>
 <p>Most algorithms update the red, green, blue, black (for CMYK), and alpha
 channels.  Most operators will blend alpha the other color channels, but other
 operators (and situations) may require this blending to be disabled, and is
-currently done by removing alpha from teh active channels via
+currently done by removing alpha from the active channels via
 <code>-channel</code> option.  (e.g. <code>convert castle.gif -channel RGB
 -negate castle.png</code>). </p>
 
@@ -518,7 +518,7 @@ convert wizard.png mask.pgm -channel-fx '| gray=>read-mask' wizard-mask.png
 <dd>prevent updates to image pixels specified by the mask</dd>
 
 <dt>-region</dt>
-<dd>not yet implemented in "<code>magick</code>". (very soon)</dd>
+<dd>supported in ImageMagick 7.0.2-6 and above</dd>
 
 <dt>-script {file}</dt>
 <dd>In "<code>magick</code>", stop the processing of command line arguments as
@@ -642,6 +642,7 @@ example "+annotate", "+resize", "+clut", and "+draw" .</p>
     <p><a href="support.html">Donate</a> •
      <a href="sitemap.html">Sitemap</a> •
     <a href="links.html">Related</a> •
+    <a href="security-policy.html">Security</a> •
     <a href="architecture.html">Architecture</a>
 </p>
     <p><a href="porting.html#">Back to top</a> •
@@ -656,3 +657,4 @@ example "+annotate", "+resize", "+clut", and "+draw" .</p>
 </div>
 </body>
 </html>
+<!-- Magick Cache 30th July 2016 10:47 -->

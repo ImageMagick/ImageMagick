@@ -55,7 +55,39 @@
   </div>
 </div>
 <div class="container">
-<div class="magick-header"><dl><dt>2016-06-12  7.0.2-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<div class="magick-header"><dl><dt>2016-07-30  7.0.2-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 7.0.2-6, GIT revision 18651:df24175:20160729.</li>
+<dt>2016-07-29  7.0.2-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Support -region option (reference    https://www.imagemagick.org/discourse-server/viewtopic.html?f=1&amp;t=29692).</li>
+<dt>2016-07-21  7.0.2-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 7.0.2-5, GIT revision 18627:2b5ddbd:20160721.</li>
+<dt>2016-07-13  7.0.2-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Fix MVG stroke-opacity (reference    https://github.com/ImageMagick/ImageMagick/issues/229).</li>
+  <li> Prevent possible buffer overflow when reading TIFF images (bug report from    Shi Pu of MS509 Team).</li>
+  <li> Initialize index channel to get expected results from the stegano coder.</li>
+<dt>2016-07-11  7.0.2-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 7.0.2-4, GIT revision 18591:50debe5:20160710.</li>
+<dt>2016-07-10  7.0.2-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> To comply with the SVG standard, use stroke-opacity for transparent strokes.</li>
+  <li> Define CompositeChannels mask to Red, Green, Blue, Alpha, and Black.</li>
+<dt>2016-07-09  7.0.2-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 7.0.2-3, GIT revision 18572:28560fc:20160709.</li>
+<dt>2016-07-01  7.0.2-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Patch so -kuwahara option can preserve colormapped edges.</li>
+  <li> The histogram coder now returns the correct extent.</li>
+  <li> Use CopyMagickString() rather than CopyMagickMemory() for strings.</li>
+<dt>2016-06-26  7.0.2-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 7.0.2-2, GIT revision 18514:a7b5b46:20160626.</li>
+<dt>2016-06-23  7.0.2-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Correct for numerical instability (reference    https://github.com/ImageMagick/ImageMagick/issues/218).<dt>			 </dt>
+  <li>2016-06-21  7.0.2-1 Cristy  &lt;quetzlzacatenango@image...&gt;</li>
+  <li> Release ImageMagick version 7.0.2-1, GIT revision 18479:931319b:20160622.</li>
+<dt>2016-06-17  7.0.2-1 Dirk Lemstra &lt;dirk@lem.....org&gt;</dt>
+  <li> Added support for GROUP4 compression to the FAX coder.</li>
+<dt>2016-06-12  7.0.2-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Distort no longer converts grayscale image to sRGB (reference    https://www.imagemagick.org/discourse-server/viewtopic.html?f=1&amp;t=29895).</li>
+  <li> Don't return a zero bounding box for QueryMultilineFontMetrics() (reference    https://github.com/ImageMagick/ImageMagick/issues/222).</li>
+<dt>2016-06-12  7.0.2-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.2-0, GIT revision 10884:f0e15e8:20160612.</li>
 <dt>2016-06-09  7.0.2-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Backoff finite precision epsilon (reference    https://github.com/ImageMagick/ImageMagick/issues/215).</li>
@@ -96,6 +128,7 @@
 <dt>2016-05-15  7.0.1-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.1-4, GIT revision 10778:52dae14:20160516.</li>
 <dt>2016-05-10  7.0.1-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Prevent possible shell command injection vulnerability through the    authenticate parameter of the PDF, PCL and XPS coders (report from    Erez Turjeman).</li>
   <li> Quote passwords when passed to a delegate program.</li>
   <li> Iterate channels over source image rather than destination (bug report    from Hanno Böck).</li>
   <li> Can read geo-related EXIF metdata once-again (reference    https://github.com/ImageMagick/ImageMagick/issues/198).</li>
@@ -143,6 +176,7 @@
     <p><a href="support.html">Donate</a> •
      <a href="sitemap.html">Sitemap</a> •
     <a href="links.html">Related</a> •
+    <a href="security-policy.html">Security</a> •
     <a href="architecture.html">Architecture</a>
 </p>
     <p><a href="changelog.html#">Back to top</a> •
@@ -157,3 +191,4 @@
 </div>
 </body>
 </html>
+<!-- Magick Cache 30th July 2016 09:58 -->
