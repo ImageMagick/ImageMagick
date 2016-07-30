@@ -55,7 +55,35 @@
   </div>
 </div>
 <div class="container">
-<div class="magick-header"><dl><dt>2016-06-12  6.9.4-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<div class="magick-header"><dl><dt>2016-07-30  6.9.5-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 6.9.5-4, GIT revision 10973:a00fa93:20160729.</li>
+<dt>2016-07-35  6.9.5-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Prevent buffer overflow (bug report from Ibrahim el-sayed).</li>
+<dt>2016-07-15  6.9.5-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 6.9.5-3, GIT revision 18627:2b5ddbd:20160721.</li>
+<dt>2016-07-13  6.9.5-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Fix MVG stroke-opacity (reference    https://github.com/ImageMagick/ImageMagick/issues/229).</li>
+  <li> Prevent possible buffer overflow when reading TIFF images (bug report from    Shi Pu of MS509 Team).</li>
+<dt>2016-07-11  6.9.5-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 6.9.5-2, GIT revision 18591:50debe5:20160710.</li>
+<dt>2016-07-10  6.9.5-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> To comply with the SVG standard, use stroke-opacity for transparent strokes.</li>
+<dt>2016-07-09  6.9.5-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 6.9.5-1, GIT revision 18572:28560fc:20160709.</li>
+<dt>2016-07-04  6.9.5-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> The histogram coder now returns the correct extent.</li>
+  <li> Use CopyMagickString() rather than CopyMagickMemory() for strings.</li>
+<dt>2016-06-26  6.9.5-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 6.9.5-0, GIT revision 18514:a7b5b46:20160626.</li>
+<dt>2016-06-23  6.9.5-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Correct for numerical instability (reference    https://github.com/ImageMagick/ImageMagick/issues/218).</li>
+<dt>2016-06-21  6.9.4-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 6.9.4-10, GIT revision 10907:a08de63:20160622.</li>
+<dt>2016-06-17  6.9.4-10 Dirk Lemstra &lt;dirk@lem.....org&gt;</dt>
+  <li> Added support for GROUP4 compression to the FAX coder.</li>
+<dt>2016-06-17  6.9.4-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Don't return a zero bounding box for QueryMultilineFontMetrics() (reference    https://github.com/ImageMagick/ImageMagick/issues/222).</li>
+<dt>2016-06-12  6.9.4-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 6.9.4-9, GIT revision 10884:f0e15e8:20160612.</li>
 <dt>2016-06-09  6.9.4-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Backoff finite precision epsilon (reference    https://github.com/ImageMagick/ImageMagick/issues/215).</li>
@@ -81,7 +109,8 @@
 <dt>2016-05-28  6.9.4-5 Dirk Lemstra &lt;dirk@lem.....org&gt;</dt>
   <li> Most OpenCL operations are now executed asynchronous.</li>
 <dt>2016-05-25  6.9.4-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <li> Security improvements to TEXT coder broke it (reference    https://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=29754).</li>
+  <li> Security improvements to TEXT coder broke it (reference</li>
+  <li> Prevent possible shell command injection vulnerability through the    authenticate parameter of the PDF, PCL and XPS coders (report from    Erez Turjeman).    https://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=29754).</li>
   <li> Fix stroke offset problem for -annotate (reference    https://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=29626).</li>
   <li> Add additional checks to DCM reader to prevent data-driven faults (bug    report from Hanno Böck).</li>
 <dt>2016-05-21  6.9.4-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
@@ -3902,6 +3931,7 @@
     <p><a href="support.html">Donate</a> •
      <a href="sitemap.html">Sitemap</a> •
     <a href="links.html">Related</a> •
+    <a href="security-policy.html">Security</a> •
     <a href="architecture.html">Architecture</a>
 </p>
     <p><a href="changelog.html#">Back to top</a> •
