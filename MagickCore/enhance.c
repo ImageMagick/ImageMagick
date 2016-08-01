@@ -1049,6 +1049,8 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (SetImageGray(image,exception) != MagickFalse)
     (void) SetImageColorspace(image,GRAYColorspace,exception);
+  if (SyncImagePixelCache(image,exception) == MagickFalse)
+    return(MagickFalse);
   black=(double *) AcquireQuantumMemory(GetPixelChannels(image),sizeof(*black));
   white=(double *) AcquireQuantumMemory(GetPixelChannels(image),sizeof(*white));
   histogram=(double *) AcquireQuantumMemory(MaxMap+1UL,GetPixelChannels(image)*
@@ -1533,6 +1535,8 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
 #endif
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  if (SyncImagePixelCache(image,exception) == MagickFalse)
+    return(MagickFalse);
   equalize_map=(double *) AcquireQuantumMemory(MaxMap+1UL,
     GetPixelChannels(image)*sizeof(*equalize_map));
   histogram=(double *) AcquireQuantumMemory(MaxMap+1UL,GetPixelChannels(image)*

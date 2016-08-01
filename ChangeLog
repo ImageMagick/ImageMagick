@@ -1,3 +1,7 @@
+2016-07-01  7.0.2-7 Cristy  <quetzlzacatenango@image...>
+  * Evaluate lazy pixel cache morphology to prevent buffer overflow (bug report
+    from Ibrahim M. El-Sayed).
+
 2016-07-30  7.0.2-6 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.2-6, GIT revision 18651:df24175:20160729.
 
