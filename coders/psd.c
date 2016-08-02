@@ -1847,8 +1847,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (psd_info.mode == CMYKMode)
     {
       SetImageColorspace(image,CMYKColorspace,exception);
-      image->alpha_trait=psd_info.channels > 4 ? BlendPixelTrait :
-        UndefinedPixelTrait;
+      if (psd_info.channels > 4)
+        SetImageAlphaChannel(image,ActivateAlphaChannel,exception);
     }
   else if ((psd_info.mode == BitmapMode) || (psd_info.mode == GrayscaleMode) ||
       (psd_info.mode == DuotoneMode))
@@ -1861,12 +1861,12 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "  Image colormap allocated");
       SetImageColorspace(image,GRAYColorspace,exception);
-      image->alpha_trait=psd_info.channels > 1 ? BlendPixelTrait :
-        UndefinedPixelTrait;
+      if (psd_info.channels > 1)
+        SetImageAlphaChannel(image,ActivateAlphaChannel,exception);
     }
   else
-    image->alpha_trait=psd_info.channels > 3 ? BlendPixelTrait :
-      UndefinedPixelTrait;
+    if (psd_info.channels > 3)
+      SetImageAlphaChannel(image,ActivateAlphaChannel,exception);
   /*
     Read PSD raster colormap only present for indexed and duotone images.
   */
