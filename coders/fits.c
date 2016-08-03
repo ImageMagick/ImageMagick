@@ -718,7 +718,7 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
       offset+=80;
     }
   (void) FormatLocaleString(header,FITSBlocksize,"HISTORY %.72s",
-    GetMagickVersion((size_t *) NULL));
+    GetMagickHomeURL());
   (void) strncpy(fits_info+offset,header,strlen(header));
   offset+=80;
   (void) strncpy(header,"END",FITSBlocksize);
