@@ -587,7 +587,7 @@ MagickExport const char *GetMagickVersion(size_t *version)
 MagickExport void ListMagickVersion(FILE *file)
 {
   (void) FormatLocaleFile(file,"Version: %s\n",
-    GetMagickVersion((size_t *) NULL));
+    GetMagickVersion((size_t *) NULL));;
   (void) FormatLocaleFile(file,"Copyright: %s\n",GetMagickCopyright());
   (void) FormatLocaleFile(file,"License: %s\n",GetMagickLicense());
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) && defined(_MSC_FULL_VER)

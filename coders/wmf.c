@@ -835,10 +835,10 @@ static void ipa_device_begin(wmfAPI * API)
   /* Make SVG output happy */
   (void) PushDrawingWand(WmfDrawingWand);
 
-  DrawSetViewbox(WmfDrawingWand, 0, 0, ddata->image->columns, ddata->image->rows );
+  DrawSetViewbox(WmfDrawingWand,0,0,ddata->image->columns,ddata->image->rows);
 
-  (void) FormatLocaleString(comment,MagickPathExtent,"Created by ImageMagick %s",
-    GetMagickVersion((size_t *) NULL));
+  (void) FormatLocaleString(comment,MagickPathExtent,
+    "Created by ImageMagick %s",GetMagickHomeURL());
   DrawComment(WmfDrawingWand,comment);
 
   /* Scale width and height to image */

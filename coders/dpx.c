@@ -1566,8 +1566,8 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
     dpx.file.timestamp);
   offset+=WriteBlob(image,sizeof(dpx.file.timestamp),(unsigned char *)
     dpx.file.timestamp);
-  (void) strncpy(dpx.file.creator,GetMagickVersion((size_t *) NULL),
-    sizeof(dpx.file.creator)-1);
+  (void) strncpy(dpx.file.creator,GetMagickHomeURL(),sizeof(dpx.file.creator)-
+    1);
   value=GetDPXProperty(image,"dpx:file.creator",exception);
   if (value != (const char *) NULL)
     (void) strncpy(dpx.file.creator,value,sizeof(dpx.file.creator)-1);

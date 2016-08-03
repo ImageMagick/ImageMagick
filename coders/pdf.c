@@ -1382,8 +1382,8 @@ RestoreMSCWarning
       (void) FormatMagickTime(time((time_t *) NULL),MagickPathExtent,timestamp);
       i=FormatLocaleString(xmp_profile,MagickPathExtent,XMPProfile,
         XMPProfileMagick,modify_date,create_date,timestamp,
-        GetMagickVersion(&version),EscapeParenthesis(basename),
-        GetMagickVersion(&version));
+        GetMagickHomeURL(),EscapeParenthesis(basename),
+        GetMagickHomeURL());
       (void) FormatLocaleString(buffer,MagickPathExtent,"/Length %.20g\n",
         (double) i);
       (void) WriteBlobString(image,buffer);
@@ -2837,7 +2837,7 @@ RestoreMSCWarning
   (void) FormatLocaleString(buffer,MagickPathExtent,"/ModDate (%s)\n",date);
   (void) WriteBlobString(image,buffer);
   (void) FormatLocaleString(buffer,MagickPathExtent,"/Producer (%s)\n",
-    EscapeParenthesis(GetMagickVersion((size_t *) NULL)));
+    EscapeParenthesis(GetMagickHomeURL()));
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,">>\n");
   (void) WriteBlobString(image,"endobj\n");

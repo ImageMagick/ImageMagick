@@ -1552,8 +1552,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
     (unsigned long) (elapsed_time/60.0),(unsigned long) ceil(fmod(
     elapsed_time,60.0)),(unsigned long) (1000.0*(elapsed_time-floor(
     elapsed_time))));
-  JsonFormatLocaleFile(file,"    \"version\": %s\n",
-    GetMagickVersion((size_t *) NULL));
+  JsonFormatLocaleFile(file,"    \"version\": %s\n",GetMagickHomeURL());
   (void) FormatLocaleFile(file,"  }\n}\n");
   (void) fflush(file);
   return(ferror(file) != 0 ? MagickFalse : MagickTrue);

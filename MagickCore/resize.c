@@ -3642,9 +3642,6 @@ MagickExport Image *ThumbnailImage(const Image *image,const size_t columns,
     x_factor,
     y_factor;
 
-  size_t
-    version;
-
   struct stat
     attributes;
 
@@ -3715,7 +3712,7 @@ MagickExport Image *ThumbnailImage(const Image *image,const size_t columns,
   (void) FormatLocaleString(value,MagickPathExtent,"image/%s",image->magick);
   LocaleLower(value);
   (void) SetImageProperty(thumbnail_image,"Thumb::Mimetype",value,exception);
-  (void) SetImageProperty(thumbnail_image,"software",GetMagickVersion(&version),
+  (void) SetImageProperty(thumbnail_image,"software",GetMagickHomeURL(),
     exception);
   (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
     image->magick_columns);
