@@ -1,3 +1,6 @@
+2016-08-06  6.9.5-5 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 6.9.5-5, GIT revision 10980:ecc03a2:20160806.
+
 2016-08-03  6.9.5-5 Cristy  <quetzlzacatenango@image...>
   * Prevent buffer overflow (bug report from Max Thrane).
   * Prevent memory use after free (reference
