@@ -503,38 +503,37 @@ MagickExport MagickBooleanType GlobExpression(const char *expression,
               done=MagickTrue;
               break;
             }
+          if (match != MagickFalse)
+            {
+              expression=p;
+              while ((GetUTFCode(pattern) != '}') &&
+                     (GetUTFCode(pattern) != 0))
+              {
+                pattern+=GetUTFOctets(pattern);
+                if (GetUTFCode(pattern) == '\\')
+                  {
+                    pattern+=GetUTFOctets(pattern);
+                    if (GetUTFCode(pattern) == '}')
+                      pattern+=GetUTFOctets(pattern);
+                  }
+              }
+            }
           else
-            if (match != MagickFalse)
+            {
+              while ((GetUTFCode(pattern) != '}') &&
+                     (GetUTFCode(pattern) != ',') &&
+                     (GetUTFCode(pattern) != 0))
               {
-                expression=p;
-                while ((GetUTFCode(pattern) != '}') &&
-                       (GetUTFCode(pattern) != 0))
-                {
-                  pattern+=GetUTFOctets(pattern);
-                  if (GetUTFCode(pattern) == '\\')
-                    {
+                pattern+=GetUTFOctets(pattern);
+                if (GetUTFCode(pattern) == '\\')
+                  {
+                    pattern+=GetUTFOctets(pattern);
+                    if ((GetUTFCode(pattern) == '}') ||
+                        (GetUTFCode(pattern) == ','))
                       pattern+=GetUTFOctets(pattern);
-                      if (GetUTFCode(pattern) == '}')
-                        pattern+=GetUTFOctets(pattern);
-                    }
-                }
+                  }
               }
-            else
-              {
-                while ((GetUTFCode(pattern) != '}') &&
-                       (GetUTFCode(pattern) != ',') &&
-                       (GetUTFCode(pattern) != 0))
-                {
-                  pattern+=GetUTFOctets(pattern);
-                  if (GetUTFCode(pattern) == '\\')
-                    {
-                      pattern+=GetUTFOctets(pattern);
-                      if ((GetUTFCode(pattern) == '}') ||
-                          (GetUTFCode(pattern) == ','))
-                        pattern+=GetUTFOctets(pattern);
-                    }
-                }
-              }
+            }
             if (GetUTFCode(pattern) != 0)
               pattern+=GetUTFOctets(pattern);
           }

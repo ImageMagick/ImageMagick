@@ -4517,7 +4517,7 @@ MAGICK_PATCHLEVEL_VERSION=6
 
 MAGICK_VERSION=6.9.5-6
 
-MAGICK_GIT_REVISION=10981:839128d:20160806
+MAGICK_GIT_REVISION=10982:2a667f8:20160807
 
 
 # Substitute library versioning
@@ -28890,6 +28890,51 @@ fi
 $as_echo "$ac_cv_lib_openmp_omp_get_num_procs" >&6; }
 if test "x$ac_cv_lib_openmp_omp_get_num_procs" = xyes; then :
   GOMP_LIBS="-lopenmp"
+fi
+
+      fi
+    fi
+    # Clang (passes for GCC but uses different OpenMP implementation)
+    if test "x$LIB_OMP" = x ; then
+      if $CC --version 2>&1 | grep clang > /dev/null ; then
+        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for GOMP_parallel_start in -lomp" >&5
+$as_echo_n "checking for GOMP_parallel_start in -lomp... " >&6; }
+if ${ac_cv_lib_omp_GOMP_parallel_start+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lomp  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char GOMP_parallel_start ();
+int
+main ()
+{
+return GOMP_parallel_start ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_omp_GOMP_parallel_start=yes
+else
+  ac_cv_lib_omp_GOMP_parallel_start=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_omp_GOMP_parallel_start" >&5
+$as_echo "$ac_cv_lib_omp_GOMP_parallel_start" >&6; }
+if test "x$ac_cv_lib_omp_GOMP_parallel_start" = xyes; then :
+  LIB_OMP="-lomp"
 fi
 
       fi

@@ -1409,6 +1409,12 @@ if test "$enable_openmp" != 'no'; then
         AC_CHECK_LIB(openmp,omp_get_num_procs,GOMP_LIBS="-lopenmp",,)
       fi
     fi
+    # Clang (passes for GCC but uses different OpenMP implementation)
+    if test "x$LIB_OMP" = x ; then
+      if $CC --version 2>&1 | grep clang > /dev/null ; then
+        AC_CHECK_LIB(omp,GOMP_parallel_start,LIB_OMP="-lomp",,)
+      fi
+    fi
     # GCC
     if test "x$GOMP_LIBS" = x ; then
       AC_CHECK_LIB(gomp,GOMP_parallel_start,GOMP_LIBS="-lgomp",,)
