@@ -3675,7 +3675,6 @@ static MagickBooleanType OpenPixelCacheOnDisk(CacheInfo *cache_info,
   if (cache_info->file != -1)
     (void) ClosePixelCacheOnDisk(cache_info);
   cache_info->file=file;
-  cache_info->mode=mode;
   return(MagickTrue);
 }
 
