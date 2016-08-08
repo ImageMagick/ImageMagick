@@ -199,9 +199,7 @@ static MagickBooleanType CropToFitImage(Image **image,
 %  artifact "deskew:angle".
 %
 %  If the artifact "deskew:auto-crop" is given the image will be automatically
-%  cropped of the excess background.  The value is the border width of all
-%  pixels around the edge that will be used to determine an average border
-%  color for the automatic trim.
+%  cropped of the excess background.
 %
 %  The format of the DeskewImage method is:
 %
