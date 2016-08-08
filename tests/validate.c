@@ -2394,7 +2394,7 @@ int main(int argc,char **argv)
       else
         {
           (void) FormatLocaleFile(stdout,"Version: %s\n",
-            GetMagickHomeURL();
+            GetMagickVersion((size_t *) NULL));
           (void) FormatLocaleFile(stdout,"Copyright: %s\n\n",
             GetMagickCopyright());
           (void) FormatLocaleFile(stdout,
