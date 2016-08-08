@@ -198,11 +198,6 @@ static MagickBooleanType CropToFitImage(Image **image,
 %  defined, while the amount the image is to be deskewed, in degrees is also
 %  saved as the artifact "deskew:angle".
 %
-%  If the artifact "deskew:auto-crop" is given the image will be automatically
-%  cropped of the excess background.  The value is the border width of all
-%  pixels around the edge that will be used to determine an average border
-%  color for the automatic trim.
-%
 %  The format of the DeskewImage method is:
 %
 %      Image *DeskewImage(const Image *image,const double threshold,
@@ -357,8 +352,8 @@ static MagickBooleanType RadonTransform(const Image *image,
   for (width=1; width < ((image->columns+7)/8); width<<=1) ;
   source_matrixs=AcquireMatrixInfo(width,image->rows,sizeof(unsigned short),
     exception);
-  destination_matrixs=AcquireMatrixInfo(width,image->rows,sizeof(unsigned short),
-    exception);
+  destination_matrixs=AcquireMatrixInfo(width,image->rows,
+    sizeof(unsigned short),exception);
   if ((source_matrixs == (MatrixInfo *) NULL) ||
       (destination_matrixs == (MatrixInfo *) NULL))
     {
