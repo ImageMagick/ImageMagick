@@ -1165,11 +1165,13 @@ MagickExport MagickBooleanType ContrastStretchImageChannel(Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
 
+#if 0
   /* Call OpenCL version */
   status=AccelerateContrastStretchImageChannel(image,channel,black_point,
     white_point,&image->exception);
   if (status != MagickFalse)
     return status;
+#endif
   histogram=(MagickPixelPacket *) AcquireQuantumMemory(MaxMap+1UL,
     sizeof(*histogram));
   stretch_map=(QuantumPixelPacket *) AcquireQuantumMemory(MaxMap+1UL,
