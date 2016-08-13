@@ -1052,8 +1052,8 @@ OPENCL_ENDIF()
   inline float4 ConvertHSBToRGB(const float4 pixel)
   {
     float hue=pixel.x;
-    float brightness=pixel.z;
     float saturation=pixel.y;
+    float brightness=pixel.z;
 
     float4 result=pixel;
 
@@ -1102,16 +1102,16 @@ OPENCL_ENDIF()
       }
       else
       {
-        result.x=ClampToQuantum(QuantumRange*q);
-        result.y=ClampToQuantum(QuantumRange*brightness);
+        result.x=ClampToQuantum(QuantumRange*brightness);
+        result.y=ClampToQuantum(QuantumRange*t);
         result.z=ClampToQuantum(QuantumRange*p);
       }
     }
     return(result);
   }
 
-  __kernel void Contrast(__global CLQuantum *image,const int sign,
-    const unsigned int number_channels)
+  __kernel void Contrast(__global CLQuantum *image,
+    const unsigned int number_channels,const int sign)
   {
     const int x=get_global_id(0);
     const int y=get_global_id(1);
