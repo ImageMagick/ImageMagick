@@ -106,6 +106,9 @@
 /* Define to 1 if you have the `clock' function. */
 #undef HAVE_CLOCK
 
+/* Define to 1 if you have the `clock_getres' function. */
+#undef HAVE_CLOCK_GETRES
+
 /* Define to 1 if you have clock_gettime. */
 #undef HAVE_CLOCK_GETTIME
 
