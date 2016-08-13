@@ -919,15 +919,9 @@ static MagickBooleanType LoadOpenCLBenchmarks(MagickCLEnv clEnv,
       return(MagickFalse);
     }
 
-  options=GetConfigureOptions(filename,exception);
-  option=(const StringInfo *) GetNextValueInLinkedList(options);
-  while (option != (const StringInfo *) NULL)
-  {
-    LoadOpenCLDeviceBenchmark(clEnv,(const char *) GetStringInfoDatum(
-      option));
-    option=(const StringInfo *) GetNextValueInLinkedList(options);
-  }
-  options=DestroyConfigureOptions(options);
+  option=ConfigureFileToStringInfo(filename,exception);
+  LoadOpenCLDeviceBenchmark(clEnv,(const char *) GetStringInfoDatum(option));
+  option=DestroyStringInfo(option);
   return(MagickTrue);
 }
 
