@@ -1918,10 +1918,15 @@ static void WriteProfile(j_compress_ptr jpeg_info,Image *image)
     profile=GetImageProfile(image,name);
     p=GetStringInfoDatum(custom_profile);
     if (LocaleCompare(name,"EXIF") == 0)
-      for (i=0; i < (ssize_t) GetStringInfoLength(profile); i+=65533L)
       {
-        length=MagickMin(GetStringInfoLength(profile)-i,65533L);
-        jpeg_write_marker(jpeg_info,XML_MARKER,GetStringInfoDatum(profile)+i,
+        length=GetStringInfoLength(profile);
+        if (length > 65533L)
+          {
+            (void) ThrowMagickException(&image->exception,GetMagickModule(),
+              CoderWarning,"ExifProfileSizeExceedsLimit",image->filename);
+            length=65533L;
+          }
+        jpeg_write_marker(jpeg_info,XML_MARKER,GetStringInfoDatum(profile),
           (unsigned int) length);
       }
     if (LocaleCompare(name,"ICC") == 0)

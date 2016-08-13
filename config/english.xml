@@ -205,6 +205,9 @@
         </message>
       </error>
       <warning>
+        <message name="ExifProfileSizeExceedsLimit">
+          exif profile size exceeds limit and will be truncated
+        </message>
         <message name="LosslessToLossyJPEGConversion">
           lossless to lossy JPEG conversion
         </message>
