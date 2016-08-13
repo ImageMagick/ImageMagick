@@ -36,6 +36,9 @@ extern "C" {
 # if defined(MAGICKCORE__FILE_OFFSET_BITS) && !defined(_FILE_OFFSET_BITS)
 # define _FILE_OFFSET_BITS MAGICKCORE__FILE_OFFSET_BITS
 #endif
+#if __cplusplus > 199711L
+#define register
+#endif  
 #if defined(_magickcore_const) && !defined(const)
 # define const  _magickcore_const
 #endif
