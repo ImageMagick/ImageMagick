@@ -1945,7 +1945,8 @@ static void WriteProfile(j_compress_ptr jpeg_info,Image *image,
         if (length > 65533L)
           {
             (void) ThrowMagickException(exception,GetMagickModule(),
-              CoderWarning,"ExifProfileSizeExceedsLimit",image->filename);
+              CoderWarning,"ExifProfileSizeExceedsLimit","`%s'",
+              image->filename);
             length=65533L;
           }
         jpeg_write_marker(jpeg_info,XML_MARKER,GetStringInfoDatum(profile),
@@ -2342,7 +2343,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
 #else
       if (image->quality < 100)
         (void) ThrowMagickException(exception,GetMagickModule(),CoderWarning,
-          "LosslessToLossyJPEGConversion",image->filename);
+          "LosslessToLossyJPEGConversion","`%s'",image->filename);
       else
         {
           int

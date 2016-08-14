@@ -1,6 +1,7 @@
 2016-08-14  7.0.2-9 Cristy  <quetzlzacatenango@image...>
   * Fix compile error in opencl.c (reference
     https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=30289).
+  * Eliminate compiler warning.
 
 2016-08-14  7.0.2-8 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.2-8, GIT revision 18698:74b1d5d:20160814.
