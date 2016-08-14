@@ -1,4 +1,7 @@
 2016-08-14  6.9.5-7 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 6.9.5-7, GIT revision 10993:7d2fd25:20160814.
+
+2016-08-14  6.9.5-7 Cristy  <quetzlzacatenango@image...>
   * Eliminate compiler warning.
 
 2016-08-14  6.9.5-6 Cristy  <quetzlzacatenango@image...>
