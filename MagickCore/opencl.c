@@ -725,16 +725,12 @@ static void LoadOpenCLDeviceBenchmark(MagickCLEnv clEnv,const char *xml)
   MagickCLDeviceBenchmark
     *device_benchmark;
 
-  MagickStatusType
-    status;
-
   size_t
     i,
     extent;
 
   if (xml == (char *) NULL)
     return;
-  status=MagickTrue;
   device_benchmark=(MagickCLDeviceBenchmark *) NULL;
   token=AcquireString(xml);
   extent=strlen(token)+MagickPathExtent;
@@ -919,7 +915,7 @@ static MagickBooleanType LoadOpenCLBenchmarks(MagickCLEnv clEnv,
       return(MagickFalse);
     }
 
-  option=ConfigureFileToStringInfo(filename,exception);
+  option=ConfigureFileToStringInfo(filename);
   LoadOpenCLDeviceBenchmark(clEnv,(const char *) GetStringInfoDatum(option));
   option=DestroyStringInfo(option);
   return(MagickTrue);
