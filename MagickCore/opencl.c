@@ -881,8 +881,7 @@ static MagickBooleanType CanWriteProfileToFile(const char *filename)
   return(MagickTrue);
 }
 
-static MagickBooleanType LoadOpenCLBenchmarks(MagickCLEnv clEnv,
-  ExceptionInfo *exception)
+static MagickBooleanType LoadOpenCLBenchmarks(MagickCLEnv clEnv)
 {
   char
     filename[MagickPathExtent];
@@ -918,7 +917,7 @@ static MagickBooleanType LoadOpenCLBenchmarks(MagickCLEnv clEnv,
   return(MagickTrue);
 }
 
-static void AutoSelectOpenCLDevices(MagickCLEnv clEnv,ExceptionInfo *exception)
+static void AutoSelectOpenCLDevices(MagickCLEnv clEnv)
 {
   const char
     *option;
@@ -947,7 +946,7 @@ static void AutoSelectOpenCLDevices(MagickCLEnv clEnv,ExceptionInfo *exception)
         }
     }
 
-  if (LoadOpenCLBenchmarks(clEnv,exception) == MagickFalse)
+  if (LoadOpenCLBenchmarks(clEnv) == MagickFalse)
     return;
 
   benchmark=MagickFalse;
@@ -2280,7 +2279,7 @@ MagickPrivate MagickBooleanType InitializeOpenCL(MagickCLEnv clEnv,
       clEnv->library=openCL_library;
       LoadOpenCLDevices(clEnv);
       if (clEnv->number_devices > 0)
-        AutoSelectOpenCLDevices(clEnv,exception);
+        AutoSelectOpenCLDevices(clEnv);
     }
   clEnv->initialized=MagickTrue;
   UnlockSemaphoreInfo(clEnv->lock);
