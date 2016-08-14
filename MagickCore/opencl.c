@@ -887,11 +887,8 @@ static MagickBooleanType LoadOpenCLBenchmarks(MagickCLEnv clEnv,
   char
     filename[MagickPathExtent];
 
-  const StringInfo
+  StringInfo
     *option;
-
-  LinkedListInfo
-    *options;
 
   size_t
     i;
