@@ -170,37 +170,6 @@ void Magick::VPath::operator()( MagickCore::DrawingWand * context_ ) const
     dp->operator()( context_ );
 }
 
-MagickPPExport int Magick::operator == ( const Magick::VPath& /*left_*/,
-                                        const Magick::VPath& /*right_*/ )
-{
-  return ( 1 );
-}
-MagickPPExport int Magick::operator != ( const Magick::VPath& /*left_*/,
-                                        const Magick::VPath& /*right_*/ )
-{
-  return ( 0 );
-}
-MagickPPExport int Magick::operator > ( const Magick::VPath& /*left_*/,
-                                       const Magick::VPath& /*right_*/ )
-{
-  return ( 0 );
-}
-MagickPPExport int Magick::operator <  ( const Magick::VPath& /*left_*/,
-                                        const Magick::VPath& /*right_*/ )
-{
-  return  ( 0 );
-}
-MagickPPExport int Magick::operator >= ( const Magick::VPath& left_,
-                                        const Magick::VPath& right_ )
-{
-  return ( ( left_ > right_ ) || ( left_ == right_ ) );
-}
-MagickPPExport int Magick::operator <= ( const Magick::VPath& left_,
-                                        const Magick::VPath& right_ )
-{
-  return ( ( left_ < right_ ) || ( left_ == right_ ) );
-}
-
 //
 // Drawable Objects
 //

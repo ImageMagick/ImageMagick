@@ -205,20 +205,6 @@ private:
   VPathBase* dp;
 };
 
-// Compare two VPath objects regardless of LHS/RHS
-extern MagickPPExport int operator == ( const VPath& left_,
-                                      const VPath& right_ );
-extern MagickPPExport int operator != ( const VPath& left_,
-                                      const VPath& right_ );
-extern MagickPPExport int operator >  ( const VPath& left_,
-                                      const VPath& right_ );
-extern MagickPPExport int operator <  ( const VPath& left_,
-                                      const VPath& right_ );
-extern MagickPPExport int operator >= ( const VPath& left_,
-                                      const VPath& right_ );
-extern MagickPPExport int operator <= ( const VPath& left_,
-                                      const VPath& right_ );
-
 typedef std::vector<Magick::VPath> VPathList;
 
 #if defined(MagickDLLExplicitTemplate)
