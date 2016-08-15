@@ -1564,17 +1564,17 @@ ModuleExport MagickBooleanType ReadPSDLayers(Image *image,
                 "      layer name: %s",layer_info[i].name);
             /*
                Skip the rest of the variable data until we support it.
-             */
-             if (image->debug != MagickFalse)
-               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                 "      unsupported data: length=%.20g",(double)
-                 ((MagickOffsetType) (size-combined_length)));
-             if (DiscardBlobBytes(image,(MagickSizeType) (size-combined_length)) == MagickFalse)
-               {
-                 layer_info=DestroyLayerInfo(layer_info,number_layers);
-                 ThrowBinaryException(CorruptImageError,
-                   "UnexpectedEndOfFile",image->filename);
-               }
+            */
+            if (image->debug != MagickFalse)
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                "      unsupported data: length=%.20g",(double)
+                ((MagickOffsetType) (size-combined_length)));
+            if (DiscardBlobBytes(image,(MagickSizeType) (size-combined_length)) == MagickFalse)
+              {
+                layer_info=DestroyLayerInfo(layer_info,number_layers);
+                ThrowBinaryException(CorruptImageError,
+                  "UnexpectedEndOfFile",image->filename);
+              }
           }
       }
 
