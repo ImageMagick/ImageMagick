@@ -165,6 +165,12 @@ static const OptionInfo
     { "Sync", SyncChannels, UndefinedOptionFlag, MagickFalse },
     { "Y", YellowChannel, UndefinedOptionFlag, MagickFalse },
     { "Yellow", YellowChannel, UndefinedOptionFlag, MagickFalse },
+    { "0", 0, UndefinedOptionFlag, MagickFalse },
+    { "1", 1, UndefinedOptionFlag, MagickFalse },
+    { "2", 2, UndefinedOptionFlag, MagickFalse },
+    { "3", 3, UndefinedOptionFlag, MagickFalse },
+    { "4", 4, UndefinedOptionFlag, MagickFalse },
+    { "5", 5, UndefinedOptionFlag, MagickFalse },
     { (char *) NULL, UndefinedChannel, UndefinedOptionFlag, MagickFalse }
   },
   ClassOptions[] =
