@@ -1695,10 +1695,13 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image)
           bmp_info.file_size+=extra_size;
           bmp_info.offset_bits+=extra_size;
         }
+    if ((image->columns != (signed int) image->columns) ||
+        (image->rows != (signed int) image->rows))
+      ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit");
     bmp_info.width=(ssize_t) image->columns;
     bmp_info.height=(ssize_t) image->rows;
     bmp_info.planes=1;
-    bmp_info.image_size=(unsigned int) (bytes_per_line*image->rows);
+    bmp_info.image_size=(unsigned long) (bytes_per_line*image->rows);
     bmp_info.file_size+=bmp_info.image_size;
     bmp_info.x_pixels=75*39;
     bmp_info.y_pixels=75*39;
