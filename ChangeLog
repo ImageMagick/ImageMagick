@@ -1,5 +1,6 @@
 2016-08-15  6.9.5-8 Cristy  <quetzlzacatenango@image...>
-  * Prevent buffer overflow in BMP coder (bug report from pwchen of tencent).
+  * Prevent buffer overflow in BMP coder (bug report from
+	  pwchen&rayzhong of tencent).
 
 2016-08-14  6.9.5-7 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 6.9.5-7, GIT revision 10993:7d2fd25:20160814.
