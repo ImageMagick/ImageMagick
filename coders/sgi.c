@@ -288,6 +288,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
     quantum;
 
   ssize_t
+    count,
     y,
     z;
 
@@ -342,15 +343,19 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
     iris_info.minimum_value=ReadBlobMSBLong(image);
     iris_info.maximum_value=ReadBlobMSBLong(image);
     iris_info.sans=ReadBlobMSBLong(image);
-    (void) ReadBlob(image,sizeof(iris_info.name),(unsigned char *)
+    count=ReadBlob(image,sizeof(iris_info.name),(unsigned char *)
       iris_info.name);
+    if (count != sizeof(iris_info.name))
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     iris_info.name[sizeof(iris_info.name)-1]='\0';
     if (*iris_info.name != '\0')
       (void) SetImageProperty(image,"label",iris_info.name);
     iris_info.pixel_format=ReadBlobMSBLong(image);
     if (iris_info.pixel_format != 0)
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-    (void) ReadBlob(image,sizeof(iris_info.filler),iris_info.filler);
+    count=ReadBlob(image,sizeof(iris_info.filler),iris_info.filler);
+    if (count != sizeof(iris_info.filler))
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     image->columns=iris_info.columns;
     image->rows=iris_info.rows;
     image->depth=(size_t) MagickMin(iris_info.depth,MAGICKCORE_QUANTUM_DEPTH);
@@ -362,9 +367,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image->storage_class=PseudoClass;
         image->colors=iris_info.bytes_per_pixel > 1 ? 65535 : 256;
       }
-    if (EOFBlob(image) != MagickFalse)
-      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-    if ((image_info->ping != MagickFalse)  && (image_info->number_scenes != 0))
+    if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
         break;
     status=SetImageExtent(image,image->columns,image->rows);
