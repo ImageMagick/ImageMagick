@@ -1,5 +1,5 @@
 2016-08-15  7.0.2-10 Cristy  <quetzlzacatenango@image...>
-  * Prevent buffer overflow in BMP coder (bug report from
+  * Prevent buffer overflow in BMP & SGI coders (bug report from
     pwchen&rayzhong of tencent).
 
 2016-08-14  7.0.2-9 Cristy  <quetzlzacatenango@image...>

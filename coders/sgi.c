@@ -354,13 +354,15 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->rows=iris_info.rows;
     image->depth=(size_t) MagickMin(iris_info.depth,MAGICKCORE_QUANTUM_DEPTH);
     if (iris_info.pixel_format == 0)
-      image->depth=(size_t) MagickMin((size_t) 8*
-        iris_info.bytes_per_pixel,MAGICKCORE_QUANTUM_DEPTH);
+      image->depth=(size_t) MagickMin((size_t) 8*iris_info.bytes_per_pixel,
+        MAGICKCORE_QUANTUM_DEPTH);
     if (iris_info.depth < 3)
       {
         image->storage_class=PseudoClass;
         image->colors=iris_info.bytes_per_pixel > 1 ? 65535 : 256;
       }
+    if (EOFBlob(image) != MagickFalse)
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     if ((image_info->ping != MagickFalse)  && (image_info->number_scenes != 0))
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
         break;
