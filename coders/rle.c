@@ -301,6 +301,12 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
               (void) ReadBlobByte(image);
           }
       }
+    if (EOFBlob(image) != MagickFalse)
+      {
+        ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
+          image->filename);
+        break;
+      }
     if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
         break;
