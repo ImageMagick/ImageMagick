@@ -1763,6 +1763,8 @@ MagickExport void SetStringInfoLength(StringInfo *string_info,
 {
   assert(string_info != (StringInfo *) NULL);
   assert(string_info->signature == MagickSignature);
+  if (string_info->length == length)
+    return;
   if (~length < MaxTextExtent)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   string_info->length=length;
