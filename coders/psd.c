@@ -84,7 +84,9 @@
 */
 #define MaxPSDChannels  56
 #define PSDQuantum(x) (((ssize_t) (x)+1) & -2)
-
+#define PSDAdditionalInfo "PSDInfo"
+
+
 /*
   Enumerated declaractions.
 */
@@ -165,6 +167,9 @@ typedef struct _LayerInfo
 
   unsigned short
     channels;
+
+  StringInfo
+    *info;
 } LayerInfo;
 
 /*
@@ -537,6 +542,8 @@ static inline LayerInfo *DestroyLayerInfo(LayerInfo *layer_info,
       layer_info[i].image=DestroyImage(layer_info[i].image);
     if (layer_info[i].mask.image != (Image *) NULL)
       layer_info[i].mask.image=DestroyImage(layer_info[i].mask.image);
+    if (layer_info[i].info != (StringInfo *) NULL)
+      layer_info[i].info=DestroyStringInfo(layer_info[i].info);
   }
 
   return (LayerInfo *) RelinquishMagickMemory(layer_info);
@@ -1541,7 +1548,7 @@ ModuleExport MagickBooleanType ReadPSDLayers(Image *image,
                 /*
                   We read it, but don't use it...
                 */
-                for (j=0; j < (ssize_t) (length); j+=8)
+                for (j=0; j < (ssize_t) length; j+=8)
                 {
                   size_t blend_source=ReadBlobLong(image);
                   size_t blend_dest=ReadBlobLong(image);
@@ -1554,7 +1561,7 @@ ModuleExport MagickBooleanType ReadPSDLayers(Image *image,
             /*
               Layer name.
             */
-            length=(size_t) ReadBlobByte(image);
+            length=(MagickSizeType) ReadBlobByte(image);
             combined_length+=length+1;
             if (length > 0)
               (void) ReadBlob(image,(size_t) length++,layer_info[i].name);
@@ -1562,18 +1569,24 @@ ModuleExport MagickBooleanType ReadPSDLayers(Image *image,
             if (image->debug != MagickFalse)
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                 "      layer name: %s",layer_info[i].name);
-            /*
-               Skip the rest of the variable data until we support it.
-            */
-            if (image->debug != MagickFalse)
-              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                "      unsupported data: length=%.20g",(double)
-                ((MagickOffsetType) (size-combined_length)));
-            if (DiscardBlobBytes(image,(MagickSizeType) (size-combined_length)) == MagickFalse)
+            length=(length+(4-(length % 4)))-length;
+            combined_length+=length;
+            /* Skip over the padding of the layer name */
+            if (DiscardBlobBytes(image,length) == MagickFalse)
               {
                 layer_info=DestroyLayerInfo(layer_info,number_layers);
                 ThrowBinaryException(CorruptImageError,
                   "UnexpectedEndOfFile",image->filename);
+              }
+            length=(MagickSizeType) size-combined_length;
+            if (length > 0)
+              {
+                unsigned char
+                  *info;
+
+                layer_info[i].info=AcquireStringInfo((const size_t) length);
+                info=GetStringInfoDatum(layer_info[i].info);
+                (void) ReadBlob(image,(const size_t) length,info);
               }
           }
       }
@@ -1602,6 +1615,13 @@ ModuleExport MagickBooleanType ReadPSDLayers(Image *image,
                 "  allocation of image for layer %.20g failed",(double) i);
             ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
               image->filename);
+          }
+
+        if (layer_info[i].info != (StringInfo *) NULL)
+          {
+            (void) SetImageProfile(layer_info[i].image,PSDAdditionalInfo,
+              layer_info[i].info,exception);
+            layer_info[i].info=DestroyStringInfo(layer_info[i].info);
           }
       }
 
@@ -2610,14 +2630,108 @@ static void RemoveResolutionFromResourceBlock(StringInfo *bim_profile)
   }
 }
 
+static const StringInfo *FilterAdditionalLayerInformation(Image *image)
+{
+#define PSDKeySize 5
+#define PSDAllowedLength 36
+
+  char
+    key[PSDKeySize];
+
+  /* Whitelist of keys from: https://www.adobe.com/devnet-apps/photoshop/fileformatashtml/ */
+  const char
+    allowed[PSDAllowedLength][PSDKeySize] = {
+      "blnc", "blwh", "brit", "brst", "clbl", "clrL", "curv", "expA", "FMsk",
+      "GdFl", "grdm", "hue ", "hue2", "infx", "knko", "lclr", "levl", "lnsr",
+      "lfx2", "luni", "lrFX", "lspf", "lyid", "lyvr", "mixr", "nvrt", "phfl",
+      "post", "PtFl", "selc", "shpa", "sn2P", "SoCo", "thrs", "tsly", "vibA"
+    };
+
+  const StringInfo
+    *info;
+
+  MagickBooleanType
+    found;
+
+  register size_t
+    i;
+
+  size_t
+    remaining_length,
+    length;
+
+  StringInfo
+    *profile;
+
+  unsigned char
+    *p;
+
+  unsigned int
+    size;
+
+  info=GetImageProfile(image,PSDAdditionalInfo);
+  if (info == (const StringInfo *) NULL)
+    return((const StringInfo *) NULL);
+  length=GetStringInfoLength(info);
+  p=GetStringInfoDatum(info);
+  remaining_length=length;
+  length=0;
+  while (remaining_length >= 12)
+  {
+    /* skip over signature */
+    p+=4;
+    key[0]=(*p++);
+    key[1]=(*p++);
+    key[2]=(*p++);
+    key[3]=(*p++);
+    key[4]='\0';
+    size=(unsigned int) (*p++) << 24;
+    size|=(unsigned int) (*p++) << 16;
+    size|=(unsigned int) (*p++) << 8;
+    size|=(unsigned int) (*p++);
+    size=size & 0xffffffff;
+    remaining_length-=12;
+    if ((size_t) size > remaining_length)
+      return((const StringInfo *) NULL);
+    found=MagickFalse;
+    for (i=0; i < PSDAllowedLength; i++)
+    {
+      if (LocaleNCompare(key,allowed[i],PSDKeySize) != 0)
+        continue;
+
+      found=MagickTrue;
+      break;
+    }
+    remaining_length-=(size_t) size;
+    if (found == MagickFalse)
+    {
+      if (remaining_length > 0)
+        p=(unsigned char *) CopyMagickMemory(p-12,p+size,remaining_length);
+      continue;
+    }
+    length+=(size_t) size+12;
+    p+=size;
+  }
+  profile=RemoveImageProfile(image,PSDAdditionalInfo);
+  if (length == 0)
+    return(DestroyStringInfo(profile));
+  SetStringInfoLength(profile,(const size_t) length);
+  SetImageProfile(image,PSDAdditionalInfo,info);
+  return(profile);
+}
+
 static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
   Image *image)
 {
+  char
+    layer_name[MaxTextExtent];
+
   const char
     *property;
 
   const StringInfo
-    *icc_profile;
+    *icc_profile,
+    *info;
 
   Image
     *base_image,
@@ -2638,6 +2752,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
     layer_count,
     layer_info_size,
     length,
+    name_length,
     num_channels,
     packet_size,
     rounded_layer_info_size;
@@ -2813,6 +2928,9 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
         length=strlen(property);
         layer_info_size+=8+length+(4-(length % 4));
       }
+    info=FilterAdditionalLayerInformation(next_image);
+    if (info != (const StringInfo *) NULL)
+      layer_info_size+=GetStringInfoLength(info);
     layer_count++;
     next_image=GetNextImageInList(next_image);
   }
@@ -2904,31 +3022,24 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
         (void) WriteBlobByte(image,next_image->compose==NoCompositeOp ?
           1 << 0x02 : 1); /* layer properties - visible, etc. */
         (void) WriteBlobByte(image,0);
+        info=GetImageProfile(next_image,PSDAdditionalInfo);
         property=(const char *) GetImageProperty(next_image,"label");
         if (property == (const char *) NULL)
           {
-            char
-              layer_name[MaxTextExtent];
-
-            (void) WriteBlobMSBLong(image,16);
-            (void) WriteBlobMSBLong(image,0);
-            (void) WriteBlobMSBLong(image,0);
-            (void) FormatLocaleString(layer_name,MaxTextExtent,"L%04ld",(long)
-              layer_count++);
-            WritePascalString(image,layer_name,4);
+            (void) FormatLocaleString(layer_name,MaxTextExtent,"L%.20g",
+              (double) layer_count++);
+            property=layer_name;
           }
-        else
-          {
-            size_t
-              length;
-
-            length=strlen(property);
-            (void) WriteBlobMSBLong(image,(unsigned int) (length+(4-
-              (length % 4))+8));
-            (void) WriteBlobMSBLong(image,0);
-            (void) WriteBlobMSBLong(image,0);
-            WritePascalString(image,property,4);
-          }
+        name_length=strlen(property);
+        name_length+=(4-(name_length % 4));
+        if (info != (const StringInfo *) NULL)
+          name_length+=GetStringInfoLength(info);
+        (void) WriteBlobMSBLong(image,(unsigned int)name_length+8);
+        (void) WriteBlobMSBLong(image,0);
+        (void) WriteBlobMSBLong(image,0);
+        WritePascalString(image,property,4);
+        if (info != (const StringInfo *) NULL)
+          (void) WriteBlob(image,GetStringInfoLength(info),GetStringInfoDatum(info));
         next_image=GetNextImageInList(next_image);
       }
       /*
