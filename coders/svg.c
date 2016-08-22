@@ -376,7 +376,7 @@ static char **GetStyleTokens(void *context,const char *style,
     *text,
     **tokens;
 
-  register size_t
+  register ssize_t
     i;
 
   SVGInfo
@@ -394,7 +394,7 @@ static char **GetStyleTokens(void *context,const char *style,
   text=DestroyString(text);
   for (i=0; tokens[i] != (char *) NULL; i++)
     StripStyleTokens(tokens[i]);
-  *number_tokens=i;
+  *number_tokens=(ssize_t) i;
   return(tokens);
 }
 
@@ -408,7 +408,7 @@ static char **GetTransformTokens(void *context,const char *text,
     *p,
     *q;
 
-  register size_t
+  register ssize_t
     i;
 
   size_t
@@ -459,7 +459,7 @@ static char **GetTransformTokens(void *context,const char *text,
   (void) CopyMagickString(tokens[i],p,(size_t) (q-p+1));
   StripString(tokens[i++]);
   tokens[i]=(char *) NULL;
-  *number_tokens=i;
+  *number_tokens=(size_t) i;
   return(tokens);
 }
 
