@@ -393,7 +393,7 @@ static char **GetStyleTokens(void *context,const char *style,
   text=DestroyString(text);
   for (i=0; tokens[i] != (char *) NULL; i++)
     StripStyleTokens(tokens[i]);
-  *number_tokens=(ssize_t) i;
+  *number_tokens=(size_t) i;
   return(tokens);
 }
 
@@ -407,7 +407,7 @@ static char **GetTransformTokens(void *context,const char *text,
     *p,
     *q;
 
-  register size_t
+  register ssize_t
     i;
 
   size_t
