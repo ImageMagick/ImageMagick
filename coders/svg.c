@@ -368,7 +368,8 @@ static void StripStyleTokens(char *message)
   StripString(message);
 }
 
-static char **GetStyleTokens(void *context,const char *style,int *number_tokens)
+static char **GetStyleTokens(void *context,const char *style,
+  size_t *number_tokens)
 {
   char
     *text,
@@ -392,12 +393,12 @@ static char **GetStyleTokens(void *context,const char *style,int *number_tokens)
   text=DestroyString(text);
   for (i=0; tokens[i] != (char *) NULL; i++)
     StripStyleTokens(tokens[i]);
-  *number_tokens=(int) i;
+  *number_tokens=(ssize_t) i;
   return(tokens);
 }
 
 static char **GetTransformTokens(void *context,const char *text,
-  int *number_tokens)
+  size_t *number_tokens)
 {
   char
     **tokens;
@@ -457,7 +458,7 @@ static char **GetTransformTokens(void *context,const char *text,
   (void) CopyMagickString(tokens[i],p,(size_t) (q-p+1));
   StripString(tokens[i++]);
   tokens[i]=(char *) NULL;
-  *number_tokens=i;
+  *number_tokens=(size_t) i;
   return(tokens);
 }
 
@@ -796,15 +797,15 @@ static void SVGStartElement(void *context,const xmlChar *name,
     *p,
     *value;
 
-  int
+  register ssize_t
+    i,
+    j;
+
+  size_t
     number_tokens;
 
   SVGInfo
     *svg_info;
-
-  register ssize_t
-    i,
-    j;
 
   /*
     Called when an opening tag has been processed.
@@ -1320,7 +1321,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
               tokens=GetTransformTokens(context,value,&number_tokens);
               if (tokens == (char **) NULL)
                 break;
-              for (j=0; j < (number_tokens-1); j+=2)
+              for (j=0; j < (ssize_t) (number_tokens-1); j+=2)
               {
                 keyword=(char *) tokens[j];
                 if (keyword == (char *) NULL)
@@ -1645,7 +1646,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
             {
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  ");
               tokens=GetStyleTokens(context,value,&number_tokens);
-              for (j=0; j < (number_tokens-1); j+=2)
+              for (j=0; j < (ssize_t) (number_tokens-1); j+=2)
               {
                 keyword=(char *) tokens[j];
                 value=(char *) tokens[j+1];
@@ -1939,7 +1940,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
               tokens=GetTransformTokens(context,value,&number_tokens);
               if (tokens == (char **) NULL)
                 break;
-              for (j=0; j < (number_tokens-1); j+=2)
+              for (j=0; j < (ssize_t) (number_tokens-1); j+=2)
               {
                 keyword=(char *) tokens[j];
                 value=(char *) tokens[j+1];
