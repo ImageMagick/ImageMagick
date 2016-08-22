@@ -1620,7 +1620,7 @@ ModuleExport MagickBooleanType ReadPSDLayers(Image *image,
         if (layer_info[i].info != (StringInfo *) NULL)
           {
             (void) SetImageProfile(layer_info[i].image,PSDAdditionalInfo,
-              layer_info[i].info,exception);
+              layer_info[i].info);
             layer_info[i].info=DestroyStringInfo(layer_info[i].info);
           }
       }
