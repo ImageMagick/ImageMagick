@@ -257,7 +257,7 @@ MagickBooleanType sixel_decode(unsigned char              /* in */  *p,         
 
     imsx = 2048;
     imsy = 2048;
-    imbuf = (unsigned char *) AcquireQuantumMemory(imsx * imsy,1);
+    imbuf = (unsigned char *) AcquireQuantumMemory(imsx , imsy);
 
     if (imbuf == NULL) {
         return(MagickFalse);
@@ -284,7 +284,7 @@ MagickBooleanType sixel_decode(unsigned char              /* in */  *p,         
         sixel_palet[n] = SIXEL_RGB(255, 255, 255);
     }
 
-    (void) ResetMagickMemory(imbuf, background_color_index, imsx * imsy);
+    (void) ResetMagickMemory(imbuf, background_color_index, (size_t) imsx * imsy);
 
     while (*p != '\0') {
         if ((p[0] == '\033' && p[1] == 'P') || *p == 0x90) {
@@ -358,12 +358,12 @@ MagickBooleanType sixel_decode(unsigned char              /* in */  *p,         
             if (imsx < attributed_ph || imsy < attributed_pv) {
                 dmsx = imsx > attributed_ph ? imsx : attributed_ph;
                 dmsy = imsy > attributed_pv ? imsy : attributed_pv;
-                dmbuf = (unsigned char *) AcquireQuantumMemory(dmsx * dmsy,1);
+                dmbuf = (unsigned char *) AcquireQuantumMemory(dmsx , dmsy);
                 if (dmbuf == (unsigned char *) NULL) {
                     imbuf = (unsigned char *) RelinquishMagickMemory(imbuf);
                     return (MagickFalse);
                 }
-                (void) ResetMagickMemory(dmbuf, background_color_index, dmsx * dmsy);
+                (void) ResetMagickMemory(dmbuf, background_color_index, (size_t) dmsx * dmsy);
                 for (y = 0; y < imsy; ++y) {
                     (void) CopyMagickMemory(dmbuf + dmsx * y, imbuf + imsx * y, imsx);
                 }
@@ -432,12 +432,12 @@ MagickBooleanType sixel_decode(unsigned char              /* in */  *p,         
 
                 dmsx = nx;
                 dmsy = ny;
-                dmbuf = (unsigned char *) AcquireQuantumMemory(dmsx * dmsy,1);
+                dmbuf = (unsigned char *) AcquireQuantumMemory(dmsx , dmsy);
                 if (dmbuf == (unsigned char *) NULL) {
                     imbuf = (unsigned char *) RelinquishMagickMemory(imbuf);
                     return (MagickFalse);
                 }
-                (void) ResetMagickMemory(dmbuf, background_color_index, dmsx * dmsy);
+                (void) ResetMagickMemory(dmbuf, background_color_index, (size_t) dmsx * dmsy);
                 for (y = 0; y < imsy; ++y) {
                     (void) CopyMagickMemory(dmbuf + dmsx * y, imbuf + imsx * y, imsx);
                 }
@@ -482,7 +482,7 @@ MagickBooleanType sixel_decode(unsigned char              /* in */  *p,         
                                 c <<= 1;
                             }
                             for (y = posision_y + i; y < posision_y + i + n; ++y) {
-                                (void) ResetMagickMemory(imbuf + imsx * y + posision_x, color_index, repeat_count);
+                                (void) ResetMagickMemory(imbuf + (size_t) imsx * y + posision_x, color_index, repeat_count);
                             }
                             if (max_x < (posision_x + repeat_count - 1)) {
                                 max_x = posision_x + repeat_count - 1;
@@ -515,7 +515,7 @@ MagickBooleanType sixel_decode(unsigned char              /* in */  *p,         
     if (imsx > max_x || imsy > max_y) {
         dmsx = max_x;
         dmsy = max_y;
-        if ((dmbuf = (unsigned char *) AcquireQuantumMemory(dmsx * dmsy,1)) == NULL) {
+        if ((dmbuf = (unsigned char *) AcquireQuantumMemory(dmsx , dmsy)) == NULL) {
             imbuf = (unsigned char *) RelinquishMagickMemory(imbuf);
             return (MagickFalse);
         }
