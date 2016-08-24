@@ -23,7 +23,7 @@ extern "C" {
 #endif
 
 
-#if defined(MAGICK_TARGET_CPU) && (MAGICK_TARGET_CPU == powerpc)
+#if defined(__powerpc__)
 #  define CACHE_LINE_SIZE  128
 #else
 #  define CACHE_LINE_SIZE  64
