@@ -3,8 +3,8 @@
 	  pwchen&rayzhong of tencent).
   * Fix MSVG regression (reference
     https://github.com/ImageMagick/ImageMagick/issues/252).
-  * Prevent buffer overflow in SIXEL, PDB, MAP, and CALS coders (bug report
-    from Donghai Zhu).
+  * Prevent buffer overflow and other problems in SIXEL, PDB, MAP, TIFF, and
+	  CALS coders (bug report from Donghai Zhu).
 
 2016-08-14  6.9.5-7 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 6.9.5-7, GIT revision 10993:7d2fd25:20160814.
