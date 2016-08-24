@@ -1,8 +1,8 @@
 2016-08-15  7.0.2-10 Cristy  <quetzlzacatenango@image...>
   * Prevent buffer overflow in BMP & SGI coders (bug report from
     pwchen&rayzhong of tencent).
-  * Prevent buffer overflow in SIXEL, PDB, MAP, and CALS coders (bug report
-    from Donghai Zhu).
+  * Prevent buffer overflow and other problems in SIXEL, PDB, MAP, TIFF and
+    CALS coders (bug report from Donghai Zhu).
 
 2016-08-14  7.0.2-9 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.2-9, GIT revision 18707:2c02f09:20160814.
