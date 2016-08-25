@@ -3,6 +3,8 @@
     pwchen&rayzhong of tencent).
   * Prevent buffer overflow and other problems in SIXEL, PDB, MAP, TIFF and
     CALS coders (bug report from Donghai Zhu).
+  * The -stream option now increments the pixel pointer properly (reference
+    https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=30327).
 
 2016-08-14  7.0.2-9 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.2-9, GIT revision 18707:2c02f09:20160814.
