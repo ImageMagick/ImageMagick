@@ -893,8 +893,7 @@ static MagickBooleanType LoadOpenCLBenchmarks(MagickCLEnv clEnv)
     i;
 
   (void) FormatLocaleString(filename,MagickPathExtent,"%s%s%s",
-    GetOpenCLCacheDirectory(),DirectorySeparator,
-    IMAGEMAGICK_PROFILE_FILE);
+    GetOpenCLCacheDirectory(),DirectorySeparator,IMAGEMAGICK_PROFILE_FILE);
 
   /*
     We don't run the benchmark when we can not write out a device profile. The
