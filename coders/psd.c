@@ -2563,9 +2563,10 @@ static void RemoveICCProfileFromResourceBlock(StringInfo *bim_profile)
           quantum;
 
         quantum=PSDQuantum(count)+12;
-        if ((quantum >= 12) && (q+quantum < (datum+length-16)))
+        if ((quantum >= 12) && (quantum < length))
           {
-            (void) CopyMagickMemory(q,q+quantum,length-quantum-(q-datum));
+            if ((q+quantum < (datum+length-16)))
+              (void) CopyMagickMemory(q,q+quantum,length-quantum-(q-datum));
             SetStringInfoLength(bim_profile,length-quantum);
           }
         break;
