@@ -1,3 +1,6 @@
+2016-08-27  7.0.2-10 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.2-10, GIT revision 18750:e3335b3:20160827.
+
 2016-08-15  7.0.2-10 Cristy  <quetzlzacatenango@image...>
   * Prevent buffer overflow in BMP & SGI coders (bug report from
     pwchen&rayzhong of tencent).
