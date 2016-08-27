@@ -84,7 +84,7 @@
 */
 #define MaxPSDChannels  56
 #define PSDQuantum(x) (((ssize_t) (x)+1) & -2)
-#define PSDAdditionalInfo "PSDInfo"
+#define PSDAdditionalInfo "psd:additional-info"
 
 
 /*
@@ -2630,7 +2630,8 @@ static void RemoveResolutionFromResourceBlock(StringInfo *bim_profile)
   }
 }
 
-static const StringInfo *FilterAdditionalLayerInformation(Image *image)
+static const StringInfo *GetAdditionalInformation(const ImageInfo *image_info,
+  Image *image)
 {
 #define PSDKeySize 5
 #define PSDAllowedLength 36
@@ -2645,7 +2646,8 @@ static const StringInfo *FilterAdditionalLayerInformation(Image *image)
       "GdFl", "grdm", "hue ", "hue2", "infx", "knko", "lclr", "levl", "lnsr",
       "lfx2", "luni", "lrFX", "lspf", "lyid", "lyvr", "mixr", "nvrt", "phfl",
       "post", "PtFl", "selc", "shpa", "sn2P", "SoCo", "thrs", "tsly", "vibA"
-    };
+    },
+    *option;
 
   const StringInfo
     *info;
@@ -2672,6 +2674,14 @@ static const StringInfo *FilterAdditionalLayerInformation(Image *image)
   info=GetImageProfile(image,PSDAdditionalInfo);
   if (info == (const StringInfo *) NULL)
     return((const StringInfo *) NULL);
+  option=GetImageOption(image_info,"psd:additional-info");
+  if (LocaleCompare(option,"all") == 0)
+    return(info);
+  if (LocaleCompare(option,"selective") != 0)
+    {
+      profile=RemoveImageProfile(image,PSDAdditionalInfo);
+      return(DestroyStringInfo(profile));
+    }
   length=GetStringInfoLength(info);
   p=GetStringInfoDatum(info);
   remaining_length=length;
@@ -2923,12 +2933,12 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
     else
       {
         size_t
-          length;
+          layer_length;
 
-        length=strlen(property);
-        layer_info_size+=8+length+(4-(length % 4));
+        layer_length=strlen(property);
+        layer_info_size+=8+layer_length+(4-(layer_length % 4));
       }
-    info=FilterAdditionalLayerInformation(next_image);
+    info=GetAdditionalInformation(image_info,next_image);
     if (info != (const StringInfo *) NULL)
       layer_info_size+=GetStringInfoLength(info);
     layer_count++;
