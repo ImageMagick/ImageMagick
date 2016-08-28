@@ -2502,27 +2502,32 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
   for (i=0; i < (ssize_t) (MaxMap+1U); i++)
   {
     histogram[i].red/=area;
-    channel_statistics[RedChannel].entropy+=-histogram[i].red*
-      MagickLog10(histogram[i].red)/MagickLog10((double) number_bins.red);
+    if (number_bins.red > MagickEpsilon)
+      channel_statistics[RedChannel].entropy+=-histogram[i].red*
+        MagickLog10(histogram[i].red)/MagickLog10((double) number_bins.red);
     histogram[i].green/=area;
-    channel_statistics[GreenChannel].entropy+=-histogram[i].green*
-      MagickLog10(histogram[i].green)/MagickLog10((double) number_bins.green);
+    if (number_bins.green > MagickEpsilon)
+      channel_statistics[GreenChannel].entropy+=-histogram[i].green*
+        MagickLog10(histogram[i].green)/MagickLog10((double) number_bins.green);
     histogram[i].blue/=area;
-    channel_statistics[BlueChannel].entropy+=-histogram[i].blue*
-      MagickLog10(histogram[i].blue)/MagickLog10((double) number_bins.blue);
+    if (number_bins.blue > MagickEpsilon)
+      channel_statistics[BlueChannel].entropy+=-histogram[i].blue*
+        MagickLog10(histogram[i].blue)/MagickLog10((double) number_bins.blue);
     if (image->matte != MagickFalse)
       {
         histogram[i].opacity/=area;
-        channel_statistics[OpacityChannel].entropy+=-histogram[i].opacity*
-          MagickLog10(histogram[i].opacity)/MagickLog10((double)
-          number_bins.opacity);
+        if (number_bins.opacity > MagickEpsilon)
+          channel_statistics[OpacityChannel].entropy+=-histogram[i].opacity*
+            MagickLog10(histogram[i].opacity)/MagickLog10((double)
+            number_bins.opacity);
       }
     if (image->colorspace == CMYKColorspace)
       {
         histogram[i].index/=area;
-        channel_statistics[IndexChannel].entropy+=-histogram[i].index*
-          MagickLog10(histogram[i].index)/MagickLog10((double)
-          number_bins.index);
+        if (number_bins.index > MagickEpsilon)
+          channel_statistics[IndexChannel].entropy+=-histogram[i].index*
+            MagickLog10(histogram[i].index)/MagickLog10((double)
+            number_bins.index);
       }
   }
   for (i=0; i < (ssize_t) CompositeChannels; i++)
