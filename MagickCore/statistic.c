@@ -2162,8 +2162,9 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
         count;
 
       count=histogram[GetPixelChannels(image)*j+i]*area;
-      channel_statistics[i].entropy+=-count*MagickLog10(count)/
-        MagickLog10(number_bins);
+      if (number_bins > MagickEpsilon)
+        channel_statistics[i].entropy+=-count*MagickLog10(count)/
+          MagickLog10(number_bins);
     }
   }
   for (i=0; i < (ssize_t) MaxPixelChannels; i++)
