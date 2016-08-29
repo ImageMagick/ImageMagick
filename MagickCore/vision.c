@@ -141,7 +141,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
     *object;
 
   char
-    *p;
+    *c;
 
   const char
     *artifact;
@@ -270,7 +270,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
 
         ssize_t
           neighbor_offset,
-          object,
+          obj,
           offset,
           ox,
           oy,
@@ -296,18 +296,18 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         offset=y*image->columns+x;
         neighbor_offset=dy*image->columns+dx;
         ox=offset;
-        status=GetMatrixElement(equivalences,ox,0,&object);
-        while (object != ox)
+        status=GetMatrixElement(equivalences,ox,0,&obj);
+        while (obj != ox)
         {
-          ox=object;
-          status=GetMatrixElement(equivalences,ox,0,&object);
+          ox=obj;
+          status=GetMatrixElement(equivalences,ox,0,&obj);
         }
         oy=offset+neighbor_offset;
-        status=GetMatrixElement(equivalences,oy,0,&object);
-        while (object != oy)
+        status=GetMatrixElement(equivalences,oy,0,&obj);
+        while (obj != oy)
         {
-          oy=object;
-          status=GetMatrixElement(equivalences,oy,0,&object);
+          oy=obj;
+          status=GetMatrixElement(equivalences,oy,0,&obj);
         }
         if (ox < oy)
           {
@@ -320,17 +320,17 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
             root=oy;
           }
         ox=offset;
-        status=GetMatrixElement(equivalences,ox,0,&object);
-        while (object != root)
+        status=GetMatrixElement(equivalences,ox,0,&obj);
+        while (obj != root)
         {
-          status=GetMatrixElement(equivalences,ox,0,&object);
+          status=GetMatrixElement(equivalences,ox,0,&obj);
           status=SetMatrixElement(equivalences,ox,0,&root);
         }
         oy=offset+neighbor_offset;
-        status=GetMatrixElement(equivalences,oy,0,&object);
-        while (object != root)
+        status=GetMatrixElement(equivalences,oy,0,&obj);
+        while (obj != root)
         {
-          status=GetMatrixElement(equivalences,oy,0,&object);
+          status=GetMatrixElement(equivalences,oy,0,&obj);
           status=SetMatrixElement(equivalences,oy,0,&root);
         }
         status=SetMatrixElement(equivalences,y*image->columns+x,0,&root);
@@ -554,19 +554,19 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       */
       for (i=0; i < (ssize_t) component_image->colors; i++)
         object[i].census=0;
-      for (p=(char *) artifact; *p != '\0';)
+      for (c=(char *) artifact; *c != '\0';)
       {
-        while ((isspace((int) ((unsigned char) *p)) != 0) || (*p == ','))
-          p++;
-        first=strtol(p,&p,10);
+        while ((isspace((int) ((unsigned char) *c)) != 0) || (*c == ','))
+          c++;
+        first=strtol(c,&c,10);
         if (first < 0)
           first+=(long) component_image->colors;
         last=first;
-        while (isspace((int) ((unsigned char) *p)) != 0)
-          p++;
-        if (*p == '-')
+        while (isspace((int) ((unsigned char) *c)) != 0)
+          c++;
+        if (*c == '-')
           {
-            last=strtol(p+1,&p,10);
+            last=strtol(c+1,&c,10);
             if (last < 0)
               last+=(long) component_image->colors;
           }
@@ -587,19 +587,19 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       /*
         Remove these object (make them transparent).
       */
-      for (p=(char *) artifact; *p != '\0';)
+      for (c=(char *) artifact; *c != '\0';)
       {
-        while ((isspace((int) ((unsigned char) *p)) != 0) || (*p == ','))
-          p++;
-        first=strtol(p,&p,10);
+        while ((isspace((int) ((unsigned char) *c)) != 0) || (*c == ','))
+          c++;
+        first=strtol(c,&c,10);
         if (first < 0)
           first+=(long) component_image->colors;
         last=first;
-        while (isspace((int) ((unsigned char) *p)) != 0)
-          p++;
-        if (*p == '-')
+        while (isspace((int) ((unsigned char) *c)) != 0)
+          c++;
+        if (*c == '-')
           {
-            last=strtol(p+1,&p,10);
+            last=strtol(c+1,&c,10);
             if (last < 0)
               last+=(long) component_image->colors;
           }
