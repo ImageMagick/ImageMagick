@@ -534,6 +534,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
             status=MagickFalse;
         }
       }
+      component_view=DestroyCacheView(component_view);
       (void) SyncImage(component_image,exception);
     }
   artifact=GetImageArtifact(image,"connected-components:mean-color");
