@@ -1892,13 +1892,13 @@ static MagickBooleanType ReadDXT1(Image *image,DDSInfo *dds_info,
     c0,
     c1;
 
-  for (y = 0; y < (ssize_t) image->columns; y += 4)
+  for (y = 0; y < (ssize_t) image->rows; y += 4)
   {
-    for (x = 0; x < (ssize_t) image->rows; x += 4)
+    for (x = 0; x < (ssize_t) image->columns; x += 4)
     {
       /* Get 4x4 patch of pixels to write on */
-      q=QueueAuthenticPixels(image,x,y,MagickMin(4,image->rows-x),
-        MagickMin(4,image->columns-y),exception);
+      q=QueueAuthenticPixels(image,x,y,MagickMin(4,image->columns-x),
+        MagickMin(4,image->rows-y),exception);
 
       if (q == (PixelPacket *) NULL)
         return MagickFalse;
@@ -1915,8 +1915,8 @@ static MagickBooleanType ReadDXT1(Image *image,DDSInfo *dds_info,
       {
         for (i = 0; i < 4; i++)
         {
-          if (((x + i) < (ssize_t) image->rows) &&
-              ((y + j) < (ssize_t) image->columns))
+          if (((x + i) < (ssize_t) image->columns) &&
+              ((y + j) < (ssize_t) image->rows))
             {
               code=(unsigned char) ((bits >> ((j*4+i)*2)) & 0x3);
               SetPixelRed(q,ScaleCharToQuantum(colors.r[code]));
