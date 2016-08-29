@@ -2032,11 +2032,13 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           return((Image *) NULL);
         }
     }
-  if ((has_merged_image == MagickFalse) && (GetImageListLength(image) > 1))
+  if (has_merged_image == MagickFalse)
     {
       Image
         *merged;
 
+      if (GetImageListLength(image) == 1)
+        ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
       SetImageAlphaChannel(image,TransparentAlphaChannel,exception);
       image->background_color.alpha=TransparentAlpha;
       image->background_color.alpha_trait=BlendPixelTrait;
