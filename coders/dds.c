@@ -1870,43 +1870,43 @@ static MagickBooleanType ReadDXT1(Image *image, DDSInfo *dds_info,
 
   register Quantum
     *q;
-  
+
   register ssize_t
     i,
     x;
-  
+
   size_t
     bits;
 
   ssize_t
     j,
     y;
-  
+
   unsigned char
     code;
-  
+
   unsigned short
     c0,
     c1;
-  
+
   for (y = 0; y < (ssize_t) dds_info->height; y += 4)
   {
     for (x = 0; x < (ssize_t) dds_info->width; x += 4)
     {
       /* Get 4x4 patch of pixels to write on */
-      q = QueueAuthenticPixels(image, x, y, MagickMin(4, dds_info->width - x),
-        MagickMin(4, dds_info->height - y),exception);
-      
+      q=QueueAuthenticPixels(image,x,y,MagickMin(4,dds_info->width-x),
+        MagickMin(4,dds_info->height-y),exception);
+
       if (q == (Quantum *) NULL)
         return MagickFalse;
-      
+
       /* Read 8 bytes of data from the image */
-      c0 = ReadBlobLSBShort(image);
-      c1 = ReadBlobLSBShort(image);
-      bits = ReadBlobLSBLong(image);
-      
-      CalculateColors(c0, c1, &colors, MagickFalse);
-      
+      c0=ReadBlobLSBShort(image);
+      c1=ReadBlobLSBShort(image);
+      bits=ReadBlobLSBLong(image);
+
+      CalculateColors(c0,c1,&colors,MagickFalse);
+
       /* Write the pixels */
       for (j = 0; j < 4; j++)
       {
@@ -1926,7 +1926,7 @@ static MagickBooleanType ReadDXT1(Image *image, DDSInfo *dds_info,
             }
         }
       }
-      
+
       if (SyncAuthenticPixels(image,exception) == MagickFalse)
         return MagickFalse;
     }
