@@ -1878,8 +1878,8 @@ static MagickBooleanType SetDXT1Pixels(Image *image,ssize_t x,ssize_t y,
   {
     for (i = 0; i < 4; i++)
     {
-      if ((x + i) < (ssize_t) image->rows &&
-          (y + j) < (ssize_t) image->columns)
+      if ((x + i) < (ssize_t) image->columns &&
+          (y + j) < (ssize_t) image->rows)
         {
           code=(unsigned char) ((bits >> ((j*4+i)*2)) & 0x3);
           SetPixelRed(image,ScaleCharToQuantum(colors.r[code]),q);
@@ -1918,13 +1918,13 @@ static MagickBooleanType ReadDXT1(Image *image,DDSInfo *dds_info,
     c0,
     c1;
 
-  for (y = 0; y < (ssize_t) image->columns; y += 4)
+  for (y = 0; y < (ssize_t) image->rows; y += 4)
   {
-    for (x = 0; x < (ssize_t) image->rows; x += 4)
+    for (x = 0; x < (ssize_t) image->columns; x += 4)
     {
       /* Get 4x4 patch of pixels to write on */
-      q=QueueAuthenticPixels(image,x,y,MagickMin(4,image->rows-x),
-        MagickMin(4,image->columns-y),exception);
+      q=QueueAuthenticPixels(image,x,y,MagickMin(4,image->columns-x),
+        MagickMin(4,image->rows-y),exception);
 
       if (q == (Quantum *) NULL)
         return MagickFalse;
@@ -1941,8 +1941,8 @@ static MagickBooleanType ReadDXT1(Image *image,DDSInfo *dds_info,
         {
           /* Correct alpha */
           SetImageAlpha(image,QuantumRange,exception);
-          q=QueueAuthenticPixels(image,x,y,MagickMin(4,image->rows-x),
-            MagickMin(4,image->columns-y),exception);
+          q=QueueAuthenticPixels(image,x,y,MagickMin(4,image->columns-x),
+            MagickMin(4,image->rows-y),exception);
           SetDXT1Pixels(image,x,y,colors,bits,q);
         }
 
@@ -2907,7 +2907,7 @@ static void WriteFourCC(Image *image, const size_t compression,
         }
       }
 
-      for (i=0; i <  (ssize_t) count; i++)
+      for (i=0; i < (ssize_t) count; i++)
         points[i].w = sqrt(points[i].w);
 
       if (compression == FOURCC_DXT5)
