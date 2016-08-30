@@ -594,9 +594,6 @@ MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
   const MagickBooleanType split,TypeMetric *metrics,char **caption,
   ExceptionInfo *exception)
 {
-  char
-    *text;
-
   MagickBooleanType
     digit,
     status;
@@ -616,7 +613,6 @@ MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
     n;
 
   digit=MagickFalse;
-  text=AcquireString(draw_info->text);
   q=draw_info->text;
   s=(char *) NULL;
   for (p=(*caption); GetUTFCode(p) != 0; p+=GetUTFOctets(p))
@@ -636,7 +632,6 @@ MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
     width=(size_t) floor(metrics->width+draw_info->stroke_width+0.5);
     if ((width <= image->columns) || (s == (char *) NULL))
       continue;
-    (void) strcpy(text,draw_info->text);
     if ((s != (char *) NULL) && (GetUTFOctets(s) == 1))
       {
         *s='\n';
@@ -663,7 +658,6 @@ MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
     q=draw_info->text;
     s=(char *) NULL;
   }
-  text=DestroyString(text);
   n=0;
   for (p=(*caption); GetUTFCode(p) != 0; p+=GetUTFOctets(p))
     if (GetUTFCode(p) == '\n')
