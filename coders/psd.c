@@ -1584,14 +1584,17 @@ ModuleExport MagickBooleanType ReadPSDLayers(Image *image,
             if (image->debug != MagickFalse)
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                 "      layer name: %s",layer_info[i].name);
-            length=(length+(4-(length % 4)))-length;
-            combined_length+=length;
-            /* Skip over the padding of the layer name */
-            if (DiscardBlobBytes(image,length) == MagickFalse)
+            if ((length % 4) != 0)
               {
-                layer_info=DestroyLayerInfo(layer_info,number_layers);
-                ThrowBinaryException(CorruptImageError,
-                  "UnexpectedEndOfFile",image->filename);
+                length=4-(length % 4);
+                combined_length+=length;
+                /* Skip over the padding of the layer name */
+                if (DiscardBlobBytes(image,length) == MagickFalse)
+                {
+                  layer_info=DestroyLayerInfo(layer_info,number_layers);
+                  ThrowBinaryException(CorruptImageError,
+                    "UnexpectedEndOfFile",image->filename);
+                }
               }
             length=(MagickSizeType) size-combined_length;
             if (length > 0)
@@ -2957,15 +2960,15 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
       16)+4*1+4+num_channels*channelLength);
     property=(const char *) GetImageProperty(next_image,"label",exception);
     if (property == (const char *) NULL)
-      layer_info_size+=16;
-    else
       {
-        size_t
-          layer_length;
-
-        layer_length=strlen(property);
-        layer_info_size+=8+layer_length+(4-(layer_length % 4));
+        (void) FormatLocaleString(layer_name,MagickPathExtent,"L%.20g",
+          (double) layer_count+1);
+        property=layer_name;
       }
+    name_length=strlen(property)+1;
+    if ((name_length % 4) != 0)
+      name_length+=(4-(name_length % 4));
+    layer_info_size+=8+name_length;
     info=GetAdditionalInformation(image_info,next_image,exception);
     if (info != (const StringInfo *) NULL)
       layer_info_size+=GetStringInfoLength(info);
@@ -3068,8 +3071,9 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
               (double) layer_count++);
             property=layer_name;
           }
-        name_length=strlen(property);
-        name_length+=(4-(name_length % 4));
+        name_length=strlen(property)+1;
+        if ((name_length % 4) != 0)
+          name_length+=(4-(name_length % 4));
         if (info != (const StringInfo *) NULL)
           name_length+=GetStringInfoLength(info);
         (void) WriteBlobMSBLong(image,(unsigned int)name_length+8);
