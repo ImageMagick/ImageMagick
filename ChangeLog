@@ -1,3 +1,6 @@
+2016-08-31  6.9.5-9 Dirk Lemstra <dirk@lem.....org>
+  * Fixed incorrect padding calculation in PSD encoder.
+
 2016-08-27  6.9.5-8 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 6.9.5-8, GIT revision 11015:e3335b3:20160827.
 
