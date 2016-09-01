@@ -1252,6 +1252,9 @@ static MagickBooleanType ReadPSDChannel(Image *image,const PSDInfo *psd_info,
         layer_info->mask.image->alpha_trait=UndefinedPixelTrait;
         GetPixelInfo(layer_info->mask.image,&color);
         color.red=layer_info->mask.background == 0 ? 0 : QuantumRange;
+        color.green=color.red;
+        color.blue=color.red;
+        color.black=color.red;
         SetImageColor(layer_info->mask.image,&color,exception);
         (void) CompositeImage(layer_info->mask.image,mask,OverCompositeOp,
           MagickTrue,layer_info->mask.page.x,layer_info->mask.page.y,
