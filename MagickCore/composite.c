@@ -569,9 +569,6 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
   if (IsGrayColorspace(image->colorspace) != MagickFalse)
     (void) SetImageColorspace(image,sRGBColorspace,exception);
   (void) SetImageColorspace(source_image,image->colorspace,exception);
-  if ((image->alpha_trait != UndefinedPixelTrait) &&
-      (source_image->alpha_trait == UndefinedPixelTrait))
-    (void) SetImageAlphaChannel(source_image,SetAlphaChannel,exception);
   if ((compose == OverCompositeOp) || (compose == SrcOverCompositeOp))
     {
       status=CompositeOverImage(image,source_image,clip_to_self,x_offset,
