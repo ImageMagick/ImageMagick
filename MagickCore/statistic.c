@@ -41,9 +41,9 @@
   Include declarations.
 */
 #include "MagickCore/studio.h"
-#include "MagickCore/property.h"
 #include "MagickCore/accelerate-private.h"
 #include "MagickCore/animate.h"
+#include "MagickCore/artifact.h"
 #include "MagickCore/blob.h"
 #include "MagickCore/blob-private.h"
 #include "MagickCore/cache.h"
@@ -78,6 +78,7 @@
 #include "MagickCore/paint.h"
 #include "MagickCore/pixel-accessor.h"
 #include "MagickCore/profile.h"
+#include "MagickCore/property.h"
 #include "MagickCore/quantize.h"
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/random_.h"
@@ -1772,86 +1773,85 @@ static inline double MagickLog10(const double x)
 {
 #define Log10Epsilon  (1.0e-11)
 
- if (fabs(x) < Log10Epsilon)
-   return(log10(Log10Epsilon));
- return(log10(fabs(x)));
+  if (fabs(x) < Log10Epsilon)
+    return(log10(Log10Epsilon));
+  return(log10(fabs(x)));
 }
 
-MagickExport ChannelPerceptualHash *GetImagePerceptualHash(
-  const Image *image,ExceptionInfo *exception)
+MagickExport ChannelPerceptualHash *GetImagePerceptualHash(const Image *image,
+  ExceptionInfo *exception)
 {
-  ChannelMoments
-    *moments;
-
   ChannelPerceptualHash
     *perceptual_hash;
 
-  Image
-    *hash_image;
+  char
+    *colorspaces,
+    *q;
+
+  const char
+    *artifact;
 
   MagickBooleanType
     status;
 
+  register char
+    *p;
+
   register ssize_t
     i;
 
-  ssize_t
-    channel;
-
-  /*
-    Blur then transform to sRGB colorspace.
-  */
-  hash_image=BlurImage(image,0.0,1.0,exception);
-  if (hash_image == (Image *) NULL)
-    return((ChannelPerceptualHash *) NULL);
-  hash_image->depth=8;
-  status=TransformImageColorspace(hash_image,sRGBColorspace,exception);
-  if (status == MagickFalse)
-    return((ChannelPerceptualHash *) NULL);
-  moments=GetImageMoments(hash_image,exception);
-  hash_image=DestroyImage(hash_image);
-  if (moments == (ChannelMoments *) NULL)
-    return((ChannelPerceptualHash *) NULL);
   perceptual_hash=(ChannelPerceptualHash *) AcquireQuantumMemory(
     MaxPixelChannels+1UL,sizeof(*perceptual_hash));
   if (perceptual_hash == (ChannelPerceptualHash *) NULL)
     return((ChannelPerceptualHash *) NULL);
-  for (channel=0; channel <= MaxPixelChannels; channel++)
-    for (i=0; i < MaximumNumberOfImageMoments; i++)
-      perceptual_hash[channel].srgb_hu_phash[i]=
-        (-MagickLog10(moments[channel].invariant[i]));
-  moments=(ChannelMoments *) RelinquishMagickMemory(moments);
-  /*
-    Blur then transform to HCLp colorspace.
-  */
-  hash_image=BlurImage(image,0.0,1.0,exception);
-  if (hash_image == (Image *) NULL)
-    {
-      perceptual_hash=(ChannelPerceptualHash *) RelinquishMagickMemory(
-        perceptual_hash);
-      return((ChannelPerceptualHash *) NULL);
-    }
-  hash_image->depth=8;
-  status=TransformImageColorspace(hash_image,HCLpColorspace,exception);
-  if (status == MagickFalse)
-    {
-      perceptual_hash=(ChannelPerceptualHash *) RelinquishMagickMemory(
-        perceptual_hash);
-      return((ChannelPerceptualHash *) NULL);
-    }
-  moments=GetImageMoments(hash_image,exception);
-  hash_image=DestroyImage(hash_image);
-  if (moments == (ChannelMoments *) NULL)
-    {
-      perceptual_hash=(ChannelPerceptualHash *) RelinquishMagickMemory(
-        perceptual_hash);
-      return((ChannelPerceptualHash *) NULL);
-    }
-  for (channel=0; channel <= MaxPixelChannels; channel++)
-    for (i=0; i < MaximumNumberOfImageMoments; i++)
-      perceptual_hash[channel].hclp_hu_phash[i]=
-        (-MagickLog10(moments[channel].invariant[i]));
-  moments=(ChannelMoments *) RelinquishMagickMemory(moments);
+  artifact=GetImageArtifact(image,"phash:colorspaces");
+  if (artifact != NULL)
+    colorspaces=AcquireString(artifact);
+  else
+    colorspaces=AcquireString("sRGB,HCLp");
+  q=colorspaces;
+  for (i=0; (p=StringToken(",",&q)) != (char *) NULL; i++)
+  {
+    ChannelMoments
+      *moments;
+
+    Image
+      *hash_image;
+
+
+    size_t
+      j;
+
+    ssize_t
+      channel,
+      colorspace;
+
+    if (i >= MaximumNumberOfPerceptualColorspaces)
+      break;
+    colorspace=ParseCommandOption(MagickColorspaceOptions,MagickFalse,p);
+    if (colorspace < 0)
+      break;
+    perceptual_hash[0].colorspace[i]=(ColorspaceType) colorspace;
+    hash_image=BlurImage(image,0.0,1.0,exception);
+    if (hash_image == (Image *) NULL)
+      break;
+    hash_image->depth=8;
+    status=TransformImageColorspace(hash_image,(ColorspaceType) colorspace,
+      exception);
+    if (status == MagickFalse)
+      break;
+    moments=GetImageMoments(hash_image,exception);
+    hash_image=DestroyImage(hash_image);
+    if (moments == (ChannelMoments *) NULL)
+      break;
+    for (channel=0; channel <= MaxPixelChannels; channel++)
+      for (j=0; j < MaximumNumberOfImageMoments; j++)
+        perceptual_hash[channel].phash[i][j]=
+          (-MagickLog10(moments[channel].invariant[j]));
+    moments=(ChannelMoments *) RelinquishMagickMemory(moments);
+  }
+  perceptual_hash[0].number_colorspaces=(size_t) i;
+  colorspaces=DestroyString(colorspaces);
   return(perceptual_hash);
 }
 

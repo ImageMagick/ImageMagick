@@ -23,6 +23,7 @@ extern "C" {
 #endif
 
 #define MaximumNumberOfImageMoments  8
+#define MaximumNumberOfPerceptualColorspaces  6
 #define MaximumNumberOfPerceptualHashes  7
 
 typedef struct _ChannelStatistics
@@ -49,7 +50,7 @@ typedef struct _ChannelStatistics
 typedef struct _ChannelMoments
 {
   double
-     invariant[MaximumNumberOfImageMoments+1];
+    invariant[MaximumNumberOfImageMoments+1];
 
   PointInfo
     centroid,
@@ -66,6 +67,15 @@ typedef struct _ChannelPerceptualHash
   double
     srgb_hu_phash[MaximumNumberOfImageMoments+1],
     hclp_hu_phash[MaximumNumberOfImageMoments+1];
+
+  size_t
+    number_colorspaces;
+
+  ColorspaceType
+    colorspace[MaximumNumberOfPerceptualColorspaces+1];
+
+  double
+    phash[MaximumNumberOfPerceptualColorspaces+1][MaximumNumberOfImageMoments+1];
 } ChannelPerceptualHash;
 
 typedef enum
