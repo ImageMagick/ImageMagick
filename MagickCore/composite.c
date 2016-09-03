@@ -559,7 +559,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
   assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  assert(composite!= (Image *) NULL);
+  assert(composite != (Image *) NULL);
   assert(composite->signature == MagickCoreSignature);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
@@ -1507,24 +1507,8 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         if (traits == UndefinedPixelTrait)
           continue;
         if ((source_traits == UndefinedPixelTrait) &&
-             (((compose != CopyAlphaCompositeOp) &&
-               (compose != ChangeMaskCompositeOp)) ||
-               (channel != AlphaPixelChannel)))
+            (channel != AlphaPixelChannel))
             continue;
-        /*
-          Sc: source color.
-          Dc: canvas color.
-        */
-        Sc=(MagickRealType) GetPixelChannel(source_image,channel,p);
-        Dc=(MagickRealType) q[i];
-        if ((traits & CopyPixelTrait) != 0)
-          {
-            /*
-              Copy channel.
-            */
-            q[i]=Sc;
-            continue;
-          }
         if (channel == AlphaPixelChannel)
           {
             /*
@@ -1640,6 +1624,20 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
             }
             q[i]=clamp != MagickFalse ? ClampPixel(pixel) :
               ClampToQuantum(pixel);
+            continue;
+          }
+        /*
+          Sc: source color.
+          Dc: canvas color.
+        */
+        Sc=(MagickRealType) GetPixelChannel(source_image,channel,p);
+        Dc=(MagickRealType) q[i];
+        if ((traits & CopyPixelTrait) != 0)
+          {
+            /*
+              Copy channel.
+            */
+            q[i]=Sc;
             continue;
           }
         /*
