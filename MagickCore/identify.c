@@ -403,9 +403,6 @@ static ssize_t PrintChannelPerceptualHash(Image *image,FILE *file,
   (void) FormatLocaleFile(file,"\n");
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
   {
-    const char
-      *name;
-
     register ssize_t
       j;
 
@@ -413,67 +410,7 @@ static ssize_t PrintChannelPerceptualHash(Image *image,FILE *file,
     PixelTrait traits=GetPixelChannelTraits(image,channel);
     if (traits == UndefinedPixelTrait)
       continue;
-    switch (channel)
-    {
-      case RedPixelChannel:
-      {
-        name="Red";
-        if (image->colorspace == CMYKColorspace)
-          name="Cyan";
-        if (image->colorspace == GRAYColorspace)
-          name="Gray";
-        break;
-      }
-      case GreenPixelChannel:
-      {
-        name="Green";
-        if (image->colorspace == CMYKColorspace)
-          name="Magenta";
-        break;
-      }
-      case BluePixelChannel:
-      {
-        name="Blue";
-        if (image->colorspace == CMYKColorspace)
-          name="Yellow";
-        break;
-      }
-      case BlackPixelChannel:
-      {
-        name="Black";
-        if (image->storage_class == PseudoClass)
-          name="Index";
-        break;
-      }
-      case IndexPixelChannel:
-      {
-        name="Index";
-        break;
-      }
-      case AlphaPixelChannel:
-      {
-        name="Alpha";
-        break;
-      }
-      case ReadMaskPixelChannel:
-      {
-        name="ReadMask";
-        break;
-      }
-      case WriteMaskPixelChannel:
-      {
-        name="WriteMask";
-        break;
-      }
-      case MetaPixelChannel:
-      {
-        name="Meta";
-        break;
-      }
-      default:
-        name="Undefined";
-    }
-    n=FormatLocaleFile(file,"    %s:\n",name);
+    n=FormatLocaleFile(file,"    Channel %.20g:\n",(double) channel);
     for (j=0; j < MaximumNumberOfPerceptualHashes; j++)
     {
       register ssize_t

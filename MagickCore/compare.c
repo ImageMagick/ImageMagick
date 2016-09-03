@@ -1153,7 +1153,7 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
   const Image *reconstruct_image,double *distortion,ExceptionInfo *exception)
 {
   ChannelPerceptualHash
-    *image_phash,
+    *channel_phash,
     *reconstruct_phash;
 
   ssize_t
@@ -1162,13 +1162,14 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
   /*
     Compute perceptual hash in the sRGB colorspace.
   */
-  image_phash=GetImagePerceptualHash(image,exception);
-  if (image_phash == (ChannelPerceptualHash *) NULL)
+  channel_phash=GetImagePerceptualHash(image,exception);
+  if (channel_phash == (ChannelPerceptualHash *) NULL)
     return(MagickFalse);
   reconstruct_phash=GetImagePerceptualHash(reconstruct_image,exception);
   if (reconstruct_phash == (ChannelPerceptualHash *) NULL)
     {
-      image_phash=(ChannelPerceptualHash *) RelinquishMagickMemory(image_phash);
+      channel_phash=(ChannelPerceptualHash *) RelinquishMagickMemory(
+        channel_phash);
       return(MagickFalse);
     }
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -1189,40 +1190,15 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
         alpha,
         beta;
 
-      alpha=image_phash[channel].srgb_hu_phash[i];
-      beta=reconstruct_phash[channel].srgb_hu_phash[i];
-      difference+=(beta-alpha)*(beta-alpha);
-    }
-    distortion[channel]+=difference;
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-    #pragma omp critical (MagickCore_GetPerceptualHashDistortion)
-#endif
-    distortion[CompositePixelChannel]+=difference;
-  }
-  /*
-    Compute perceptual hash in the HCLP colorspace.
-  */
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4)
-#endif
-  for (channel=0; channel < MaxPixelChannels; channel++)
-  {
-    double
-      difference;
+      register ssize_t
+        j;
 
-    register ssize_t
-      i;
-
-    difference=0.0;
-    for (i=0; i < MaximumNumberOfImageMoments; i++)
-    {
-      double
-        alpha,
-        beta;
-
-      alpha=image_phash[channel].hclp_hu_phash[i];
-      beta=reconstruct_phash[channel].hclp_hu_phash[i];
-      difference+=(beta-alpha)*(beta-alpha);
+      for (j=0; j < (ssize_t) channel_phash[0].number_colorspaces; j++)
+      {
+        alpha=channel_phash[channel].phash[j][i];
+        beta=reconstruct_phash[channel].phash[j][i];
+        difference+=(beta-alpha)*(beta-alpha);
+      }
     }
     distortion[channel]+=difference;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -1235,7 +1211,7 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
   */
   reconstruct_phash=(ChannelPerceptualHash *) RelinquishMagickMemory(
     reconstruct_phash);
-  image_phash=(ChannelPerceptualHash *) RelinquishMagickMemory(image_phash);
+  channel_phash=(ChannelPerceptualHash *) RelinquishMagickMemory(channel_phash);
   return(MagickTrue);
 }
 
