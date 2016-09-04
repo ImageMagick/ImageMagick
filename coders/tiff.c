@@ -3001,7 +3001,7 @@ static void TIFFSetProperties(TIFF *tiff,const ImageInfo *image_info,
       uint16
         page,
         pages;
-      
+
       page=(uint16) image->scene;
       pages=(uint16) GetImageListLength(image);
       if ((image_info->adjoin != MagickFalse) && (pages > 1))
@@ -3489,7 +3489,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         MagickStatusType
           flags;
 
-        rows_per_strip+=(16-(rows_per_strip % 16));
+        rows_per_strip=16*(((rows_per_strip < 16 ? 16 : rows_per_strip)+1)/16);
         if (image_info->quality != UndefinedCompressionQuality)
           (void) TIFFSetField(tiff,TIFFTAG_JPEGQUALITY,image_info->quality);
         (void) TIFFSetField(tiff,TIFFTAG_JPEGCOLORMODE,JPEGCOLORMODE_RAW);
@@ -3529,7 +3529,8 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
       }
       case COMPRESSION_ADOBE_DEFLATE:
       {
-        rows_per_strip=(uint32) image->rows;
+        if (((32*1024)/MagickMax(TIFFScanlineSize(tiff),1)) > rows_per_strip)
+          rows_per_strip=((32*1024)/MagickMax(TIFFScanlineSize(tiff),1));
         (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_BITSPERSAMPLE,
           &bits_per_sample);
         if (((photometric == PHOTOMETRIC_RGB) ||
@@ -3546,18 +3547,31 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         /*
           Byte-aligned EOL.
         */
-        rows_per_strip=(uint32) image->rows;
+        rows_per_strip=(16*1024*1024UL)/image->columns;
+        if (rows_per_strip < 1)
+          rows_per_strip=1;
+        if (rows_per_strip > image->rows)
+          rows_per_strip=(uint32) image->rows;
         (void) TIFFSetField(tiff,TIFFTAG_GROUP3OPTIONS,4);
         break;
       }
       case COMPRESSION_CCITTFAX4:
       {
-        rows_per_strip=(uint32) image->rows;
+        rows_per_strip=(16*1024*1024UL)/image->columns;
+        if (rows_per_strip < 1)
+          rows_per_strip=1;
+        if (rows_per_strip > image->rows)
+          rows_per_strip=(uint32) image->rows;
         break;
       }
 #if defined(LZMA_SUPPORT) && defined(COMPRESSION_LZMA)
       case COMPRESSION_LZMA:
       {
+        rows_per_strip=(16*1024*1024UL)/image->columns;
+        if (rows_per_strip < 1)
+          rows_per_strip=1;
+        if (rows_per_strip > image->rows)
+          rows_per_strip=(uint32) image->rows;
         if (((photometric == PHOTOMETRIC_RGB) ||
              (photometric == PHOTOMETRIC_MINISBLACK)) &&
             ((bits_per_sample == 8) || (bits_per_sample == 16)))
