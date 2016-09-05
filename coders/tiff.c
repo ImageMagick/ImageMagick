@@ -3083,10 +3083,6 @@ static void TIFFSetEXIFProperties(TIFF *tiff,Image *image,
 static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
   Image *image,ExceptionInfo *exception)
 {
-#if !defined(TIFFDefaultStripSize)
-#define TIFFDefaultStripSize(tiff,request)  (8192UL/TIFFScanlineSize(tiff))
-#endif
-
   const char
     *mode,
     *option;
@@ -3479,7 +3475,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
       if ((image_info->interlace == PlaneInterlace) ||
           (image_info->interlace == PartitionInterlace))
         (void) TIFFSetField(tiff,TIFFTAG_PLANARCONFIG,PLANARCONFIG_SEPARATE);
-    rows_per_strip=1;
+    rows_per_strip=(uint32) image->rows;
     if (TIFFScanlineSize(tiff) != 0)
       rows_per_strip=TIFFDefaultStripSize(tiff,0);
     option=GetImageOption(image_info,"tiff:rows-per-strip");
@@ -3499,7 +3495,6 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         MagickStatusType
           flags;
 
-        rows_per_strip=16*(((rows_per_strip < 16 ? 16 : rows_per_strip)+1)/16);
         if (image_info->quality != UndefinedCompressionQuality)
           (void) TIFFSetField(tiff,TIFFTAG_JPEGQUALITY,image_info->quality);
         (void) TIFFSetField(tiff,TIFFTAG_JPEGCOLORMODE,JPEGCOLORMODE_RAW);
@@ -3539,8 +3534,6 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
       }
       case COMPRESSION_ADOBE_DEFLATE:
       {
-        if (((32*1024)/MagickMax(TIFFScanlineSize(tiff),1)) > rows_per_strip)
-          rows_per_strip=((32*1024)/MagickMax(TIFFScanlineSize(tiff),1));
         (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_BITSPERSAMPLE,
           &bits_per_sample);
         if (((photometric == PHOTOMETRIC_RGB) ||
@@ -3557,31 +3550,14 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         /*
           Byte-aligned EOL.
         */
-        rows_per_strip=(16*1024*1024UL)/image->columns;
-        if (rows_per_strip < 1)
-          rows_per_strip=1;
-        if (rows_per_strip > image->rows)
-          rows_per_strip=(uint32) image->rows;
         (void) TIFFSetField(tiff,TIFFTAG_GROUP3OPTIONS,4);
         break;
       }
       case COMPRESSION_CCITTFAX4:
-      {
-        rows_per_strip=(16*1024*1024UL)/image->columns;
-        if (rows_per_strip < 1)
-          rows_per_strip=1;
-        if (rows_per_strip > image->rows)
-          rows_per_strip=(uint32) image->rows;
         break;
-      }
 #if defined(LZMA_SUPPORT) && defined(COMPRESSION_LZMA)
       case COMPRESSION_LZMA:
       {
-        rows_per_strip=(16*1024*1024UL)/image->columns;
-        if (rows_per_strip < 1)
-          rows_per_strip=1;
-        if (rows_per_strip > image->rows)
-          rows_per_strip=(uint32) image->rows;
         if (((photometric == PHOTOMETRIC_RGB) ||
              (photometric == PHOTOMETRIC_MINISBLACK)) &&
             ((bits_per_sample == 8) || (bits_per_sample == 16)))
@@ -3605,10 +3581,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
       default:
         break;
     }
-    if (rows_per_strip < 1)
-      rows_per_strip=1;
-    if ((image->rows/rows_per_strip) >= (1UL << 15))
-      rows_per_strip=(uint32) (image->rows >> 15);
+    rows_per_strip=TIFFDefaultStripSize(tiff,rows_per_strip);
     (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,rows_per_strip);
     if ((image->resolution.x != 0.0) && (image->resolution.y != 0.0))
       {
