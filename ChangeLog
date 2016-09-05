@@ -1,3 +1,6 @@
+2016-09-05  7.0.3-0 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.3-0, GIT revision 18786:10aa64c:20160905.
+
 2016-08-29  7.0.3-0 Dirk Lemstra <dirk@lem.....org>
   * Fixed reading DXT1 images with an alpha channel.
   * Fixed incorrect padding calculation in PSD encoder.
