@@ -821,7 +821,7 @@ static MagickBooleanType LaunchCompositeKernel(const Image *image,
   events=GetOpenCLEvents(image,&event_count);
   clStatus = clEnv->library->clEnqueueNDRangeKernel(queue, compositeKernel, 2, NULL,
     global_work_size, local_work_size, event_count, events, &event);
-  if (clStatus != CL_SUCCESS)
+  if (clStatus == CL_SUCCESS)
     AddOpenCLEvent(image,event);
   clEnv->library->clReleaseEvent(event);
 
