@@ -1180,7 +1180,7 @@ static MagickBooleanType ReadPSDChannel(Image *image,const PSDInfo *psd_info,
       Ignore mask that is not a user supplied layer mask, if the mask is
       disabled or if the flags have unsupported values.
     */
-    if (layer_info->channel_info[channel].type != -2 ||
+    if ((layer_info->channel_info[channel].type != -2) ||
         (layer_info->mask.flags > 3) || (layer_info->mask.flags & 0x02))
     {
       SeekBlob(image,layer_info->channel_info[channel].size-2,SEEK_CUR);
@@ -1338,7 +1338,8 @@ static MagickBooleanType ReadPSDLayer(Image *image,const PSDInfo *psd_info,
   if ((status != MagickFalse) && (layer_info->mask.image != (Image *) NULL))
     {
       status=CompositeImage(layer_info->image,layer_info->mask.image,
-        CopyAlphaCompositeOp,MagickTrue,0,0,exception);
+        CopyAlphaCompositeOp,MagickTrue,layer_info->mask.page.x,
+        layer_info->mask.page.y,exception);
       layer_info->mask.image=DestroyImage(layer_info->mask.image);
     }
 
