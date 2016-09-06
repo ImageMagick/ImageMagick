@@ -13298,7 +13298,7 @@ static MagickBooleanType WriteMAGICKImage(const ImageInfo *image_info,
   (void) DestroyImageInfo(write_info);
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,"*/\n");
-  (void) WriteBlobString(image,"static unsigned char\n");
+  (void) WriteBlobString(image,"static const unsigned char\n");
   (void) WriteBlobString(image,"  MagickImage[] =\n");
   (void) WriteBlobString(image,"  {\n");
   (void) WriteBlobString(image,"    ");
