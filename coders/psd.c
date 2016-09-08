@@ -1338,8 +1338,7 @@ static MagickBooleanType ReadPSDLayer(Image *image,const PSDInfo *psd_info,
   if ((status != MagickFalse) && (layer_info->mask.image != (Image *) NULL))
     {
       status=CompositeImage(layer_info->image,layer_info->mask.image,
-        CopyAlphaCompositeOp,MagickTrue,layer_info->mask.page.x,
-        layer_info->mask.page.y,exception);
+        CopyAlphaCompositeOp,MagickTrue,0,0,exception);
       layer_info->mask.image=DestroyImage(layer_info->mask.image);
     }
 
