@@ -630,9 +630,9 @@ static MagickBooleanType WriteIPLImage(const ImageInfo *image_info,Image *image)
     p=GetAuthenticPixels(image,0,y,image->columns,1,exception);
     if (p == (PixelPacket *) NULL)
       break;
-      (void) ExportQuantumPixels(image,(const CacheView *) NULL, quantum_info,
-        GrayQuantum, pixels,&image->exception);
-      (void) WriteBlob(image, image->columns*image->depth/8, pixels);
+    (void) ExportQuantumPixels(image,(const CacheView *) NULL, quantum_info,
+      GrayQuantum, pixels,&image->exception);
+    (void) WriteBlob(image, image->columns*image->depth/8, pixels);
   }
 
 }
@@ -642,9 +642,9 @@ static MagickBooleanType WriteIPLImage(const ImageInfo *image_info,Image *image)
     p=GetAuthenticPixels(image,0,y,image->columns,1,exception);
     if (p == (PixelPacket *) NULL)
       break;
-      (void) ExportQuantumPixels(image,(const CacheView *) NULL, quantum_info,
-        RedQuantum, pixels,&image->exception);
-      (void) WriteBlob(image, image->columns*image->depth/8, pixels);
+    (void) ExportQuantumPixels(image,(const CacheView *) NULL, quantum_info,
+      RedQuantum, pixels,&image->exception);
+    (void) WriteBlob(image, image->columns*image->depth/8, pixels);
   }
 
     /* Green frame */
@@ -652,9 +652,9 @@ static MagickBooleanType WriteIPLImage(const ImageInfo *image_info,Image *image)
       p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
       if (p == (PixelPacket *) NULL)
         break;
-        (void) ExportQuantumPixels(image,(const CacheView *) NULL, quantum_info,
-          GreenQuantum, pixels,&image->exception);
-        (void) WriteBlob(image, image->columns*image->depth/8, pixels);
+      (void) ExportQuantumPixels(image,(const CacheView *) NULL, quantum_info,
+        GreenQuantum, pixels,&image->exception);
+      (void) WriteBlob(image, image->columns*image->depth/8, pixels);
     }
     /* Blue frame */
     for(y = 0; y < (ssize_t) ipl_info.height; y++){
@@ -674,8 +674,8 @@ static MagickBooleanType WriteIPLImage(const ImageInfo *image_info,Image *image)
     }
   }
   quantum_info=DestroyQuantumInfo(quantum_info);
-      if (GetNextImageInList(image) == (Image *) NULL)
-  break;
+  if (GetNextImageInList(image) == (Image *) NULL)
+    break;
       image=SyncNextImageInList(image);
       status=SetImageProgress(image,SaveImagesTag,scene++,
         GetImageListLength(image));
