@@ -407,6 +407,8 @@ static ssize_t PrintChannelPerceptualHash(Image *image,FILE *file,
       j;
 
     PixelChannel channel=GetPixelChannelChannel(image,i);
+    if (channel == IndexPixelChannel)
+      continue;
     PixelTrait traits=GetPixelChannelTraits(image,channel);
     if (traits == UndefinedPixelTrait)
       continue;

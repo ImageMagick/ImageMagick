@@ -1792,6 +1792,7 @@ MagickExport ChannelPerceptualHash *GetImagePerceptualHash(const Image *image,
     *artifact;
 
   MagickBooleanType
+    normalize,
     status;
 
   register char
@@ -1804,6 +1805,9 @@ MagickExport ChannelPerceptualHash *GetImagePerceptualHash(const Image *image,
     MaxPixelChannels+1UL,sizeof(*perceptual_hash));
   if (perceptual_hash == (ChannelPerceptualHash *) NULL)
     return((ChannelPerceptualHash *) NULL);
+  artifact=GetImageArtifact(image,"phash:normalize");
+  normalize=(artifact == (const char *) NULL) ||
+    (IsStringTrue(artifact) == MagickFalse) ? MagickFalse : MagickTrue;
   artifact=GetImageArtifact(image,"phash:colorspaces");
   if (artifact != NULL)
     colorspaces=AcquireString(artifact);
@@ -1846,8 +1850,14 @@ MagickExport ChannelPerceptualHash *GetImagePerceptualHash(const Image *image,
       break;
     for (channel=0; channel <= MaxPixelChannels; channel++)
       for (j=0; j < MaximumNumberOfImageMoments; j++)
+      {
         perceptual_hash[channel].phash[i][j]=
           (-MagickLog10(moments[channel].invariant[j]));
+        if ((normalize != MagickFalse) &&
+            (fabs(perceptual_hash[channel].phash[i][j]) > MagickEpsilon))
+          perceptual_hash[channel].phash[i][j]=
+            sqrt(perceptual_hash[channel].phash[i][j]/3.0);
+      }
     moments=(ChannelMoments *) RelinquishMagickMemory(moments);
   }
   perceptual_hash[0].number_colorspaces=(size_t) i;
