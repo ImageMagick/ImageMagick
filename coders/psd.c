@@ -1249,12 +1249,10 @@ static MagickBooleanType ReadPSDChannel(Image *image,const PSDInfo *psd_info,
 
         layer_info->mask.image=CloneImage(image,image->columns,image->rows,
           MagickTrue,exception);
+        (void) SetImageGray(layer_info->mask.image,exception);
         layer_info->mask.image->alpha_trait=UndefinedPixelTrait;
         GetPixelInfo(layer_info->mask.image,&color);
         color.red=layer_info->mask.background == 0 ? 0 : QuantumRange;
-        color.green=color.red;
-        color.blue=color.red;
-        color.black=color.red;
         SetImageColor(layer_info->mask.image,&color,exception);
         (void) CompositeImage(layer_info->mask.image,mask,OverCompositeOp,
           MagickTrue,layer_info->mask.page.x,layer_info->mask.page.y,
@@ -2172,7 +2170,7 @@ static inline ssize_t WritePSDOffset(const PSDInfo *psd_info,Image *image,
   if (psd_info->version == 1)
     result=WriteBlobMSBShort(image,(unsigned short) size);
   else
-    result=(WriteBlobMSBLong(image,(unsigned short) offset));
+    result=(WriteBlobMSBLong(image,(unsigned short) size));
   SeekBlob(image,current_offset,SEEK_SET);
   return(result);
 }
@@ -2229,6 +2227,7 @@ static size_t PSDPackbitsEncodeImage(Image *image,const size_t length,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(pixels != (unsigned char *) NULL);
+  assert(compact_pixels != (unsigned char *) NULL);
   packbits=(unsigned char *) AcquireQuantumMemory(128UL,sizeof(*packbits));
   if (packbits == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
@@ -2400,6 +2399,27 @@ static size_t WriteOneChannel(const PSDInfo *psd_info,
   return(count);
 }
 
+static unsigned char *AcquireCompactPixels(const Image *image,
+  ExceptionInfo *exception)
+{
+  size_t
+    packet_size;
+
+  unsigned char
+    *compact_pixels;
+
+  packet_size=image->depth > 8UL ? 2UL : 1UL;
+  compact_pixels=(unsigned char *) AcquireQuantumMemory((9*
+    image->columns)+1,packet_size*sizeof(*compact_pixels));
+  if (compact_pixels == (unsigned char *) NULL)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",
+        image->filename);
+    }
+  return(compact_pixels);
+}
+
 static MagickBooleanType WriteImageChannels(const PSDInfo *psd_info,
   const ImageInfo *image_info,Image *image,Image *next_image,
   MagickOffsetType size_offset,const MagickBooleanType separate,
@@ -2426,19 +2446,9 @@ static MagickBooleanType WriteImageChannels(const PSDInfo *psd_info,
   compact_pixels=(unsigned char *) NULL;
   if (next_image->compression == RLECompression)
     {
-      size_t
-        packet_size;
-
-      packet_size=next_image->depth > 8UL ? 2UL : 1UL;
-      compact_pixels=(unsigned char *) AcquireQuantumMemory((9*
-        next_image->columns)+1,packet_size*sizeof(*compact_pixels));
+      compact_pixels=AcquireCompactPixels(image,exception);
       if (compact_pixels == (unsigned char *) NULL)
-        {
-          (void) ThrowMagickException(exception,GetMagickModule(),
-            ResourceLimitError,"MemoryAllocationFailed","`%s'",
-            image->filename);
-          return(0);
-        }
+        return(0);
     }
   channels=1;
   if (separate == MagickFalse)
@@ -2525,6 +2535,7 @@ static MagickBooleanType WriteImageChannels(const PSDInfo *psd_info,
         rows_offset+=offset_length;
       count+=length;
     }
+  compact_pixels=(unsigned char *) RelinquishMagickMemory(compact_pixels);
   if (next_image->colorspace == CMYKColorspace)
     (void) NegateCMYK(next_image,exception);
 
@@ -2594,12 +2605,12 @@ static void WriteResolutionResourceBlock(Image *image)
 }
 
 static inline size_t WriteChannelSize(const PSDInfo *psd_info,Image *image,
-  const unsigned short channel)
+  const signed short channel)
 {
   size_t
     count;
 
-  count=WriteBlobMSBShort(image,channel);
+  count=WriteBlobMSBSignedShort(image,channel);
   count+=SetPSDSize(psd_info,image,0);
   return(count);
 }
@@ -3038,9 +3049,9 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
     size+=WriteBlobMSBShort(image,total_channels);
     layer_size_offsets[layer_index++]=TellBlob(image);
     for (i=0; i < (ssize_t) channels; i++)
-      size+=WriteChannelSize(&psd_info,image,(unsigned short) i);
+      size+=WriteChannelSize(&psd_info,image,(signed short) i);
     if (next_image->alpha_trait != UndefinedPixelTrait)
-      size+=WriteChannelSize(&psd_info,image,(unsigned short) -1);
+      size+=WriteChannelSize(&psd_info,image,-1);
     size+=WriteBlob(image,4,(const unsigned char *) "8BIM");
     size+=WriteBlob(image,4,(const unsigned char *)
       CompositeOperatorToPSDBlendMode(next_image->compose));
