@@ -76,6 +76,9 @@ typedef struct _ChannelPerceptualHash
 
   double
     phash[MaximumNumberOfPerceptualColorspaces+1][MaximumNumberOfImageMoments+1];
+
+  size_t
+    number_channels;
 } ChannelPerceptualHash;
 
 typedef enum
