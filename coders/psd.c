@@ -73,6 +73,7 @@
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
+#include "MagickCore/string-private.h"
 #include "MagickCore/thread-private.h"
 #ifdef MAGICKCORE_ZLIB_DELEGATE
 #include <zlib.h>
@@ -3054,7 +3055,17 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
     size+=WriteBlob(image,4,(const unsigned char *) "8BIM");
     size+=WriteBlob(image,4,(const unsigned char *)
       CompositeOperatorToPSDBlendMode(next_image->compose));
-    size+=WriteBlobByte(image,255); /* layer opacity */
+    property=GetImageArtifact(next_image,"psd:layer.opacity");
+    if (property != (const char *) NULL)
+      {
+        Quantum
+          opacity;
+
+        opacity=(Quantum) StringToInteger(property);
+        size+=WriteBlobByte(image,ScaleQuantumToChar(opacity));
+      }
+    else
+      size+=WriteBlobByte(image,255);
     size+=WriteBlobByte(image,0);
     size+=WriteBlobByte(image,next_image->compose==NoCompositeOp ?
       1 << 0x02 : 1); /* layer properties - visible, etc. */
