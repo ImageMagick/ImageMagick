@@ -264,7 +264,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
           else
             high=draw_info->pointsize-0.5;
       }
-      draw_info->pointsize=(low+high)/2.0-0.5;
+      draw_info->pointsize=floor((low+high)/2.0-0.5);
     }
   /*
     Draw caption.
