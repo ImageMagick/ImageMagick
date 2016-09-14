@@ -2774,6 +2774,7 @@ static MagickBooleanType GetTIFFInfo(const ImageInfo *image_info,
     flags;
 
   uint32
+    rows_per_strip,
     tile_columns,
     tile_rows;
 
@@ -2781,7 +2782,20 @@ static MagickBooleanType GetTIFFInfo(const ImageInfo *image_info,
   (void) ResetMagickMemory(tiff_info,0,sizeof(*tiff_info));
   option=GetImageOption(image_info,"tiff:tile-geometry");
   if (option == (const char *) NULL)
-    return(MagickTrue);
+    {
+      option=GetImageOption(image_info,"tiff:rows-per-strip");
+      if (option != (const char *) NULL)
+        rows_per_strip=(size_t) strtol(option,(char **) NULL,10);
+      else
+        if (TIFFGetField(tiff,TIFFTAG_IMAGELENGTH,&rows_per_strip) == 0)
+          rows_per_strip = 0; /* let libtiff use its default */
+      rows_per_strip=TIFFDefaultStripSize(tiff,rows_per_strip);
+      (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,rows_per_strip);
+      return(MagickTrue);
+    }
+  /*
+    Create tiled TIFF, ignore "tiff:rows-per-strip".
+  */
   flags=ParseAbsoluteGeometry(option,&tiff_info->tile_geometry);
   if ((flags & HeightValue) == 0)
     tiff_info->tile_geometry.height=tiff_info->tile_geometry.width;
@@ -3126,9 +3140,6 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
     compress_tag,
     endian,
     photometric;
-
-  uint32
-    rows_per_strip;
 
   unsigned char
     *pixels;
@@ -3475,10 +3486,6 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
       if ((image_info->interlace == PlaneInterlace) ||
           (image_info->interlace == PartitionInterlace))
         (void) TIFFSetField(tiff,TIFFTAG_PLANARCONFIG,PLANARCONFIG_SEPARATE);
-    rows_per_strip=(uint32) image->rows;
-    option=GetImageOption(image_info,"tiff:rows-per-strip");
-    if (option != (const char *) NULL)
-      rows_per_strip=(size_t) strtol(option,(char **) NULL,10);
     switch (compress_tag)
     {
       case COMPRESSION_JPEG:
@@ -3579,8 +3586,6 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
       default:
         break;
     }
-    rows_per_strip=TIFFDefaultStripSize(tiff,rows_per_strip);
-    (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,rows_per_strip);
     if ((image->resolution.x != 0.0) && (image->resolution.y != 0.0))
       {
         unsigned short
