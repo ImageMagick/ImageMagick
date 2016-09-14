@@ -432,7 +432,10 @@ MagickExport MagickBooleanType GetPathTemplate(char *path)
     return(MagickTrue);
   value=GetPolicyValue("temporary-path");
   if (value != (char *) NULL)
-    (void) CloneString(&directory,value);
+    {
+      (void) CloneString(&directory,value);
+      value=DestroyString(value);
+    }
   if (strlen(directory) > (MaxTextExtent-25))
     {
       directory=DestroyString(directory);
