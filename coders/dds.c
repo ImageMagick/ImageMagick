@@ -2671,7 +2671,7 @@ static MagickBooleanType WriteDDSImage(const ImageInfo *image_info,
         {
           columns=image->columns;
           rows=image->rows;
-          while (columns != 1 && rows != 1 && mipmaps != maxMipmaps)
+          while ((columns != 1 || rows != 1) && mipmaps != maxMipmaps)
           {
             columns=DIV2(columns);
             rows=DIV2(rows);
@@ -3017,7 +3017,7 @@ static MagickBooleanType WriteMipmaps(Image *image, const size_t pixelFormat,
 
   for (i=0; i< (ssize_t) mipmaps; i++)
   {
-    resize_image = ResizeImage(image,columns/2,rows/2,TriangleFilter,
+    resize_image = ResizeImage(image,DIV2(columns),DIV2(rows),TriangleFilter,
       exception);
 
     if (resize_image == (Image *) NULL)
