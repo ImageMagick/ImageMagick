@@ -1,3 +1,8 @@
+2016-09-16  7.0.3-1 Dirk Lemstra <dirk@lem.....org>
+  * Added layer RLE compression to the PSD encoder.
+  * Added define 'psd:preserve-opacity-mask' to preserve the opacity mask
+    in a PSD file.
+
 2016-09-05  7.0.3-0 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.3-0, GIT revision 18786:10aa64c:20160905.
 
