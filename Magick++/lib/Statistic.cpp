@@ -271,8 +271,8 @@ Magick::ChannelPerceptualHash::ChannelPerceptualHash(
 
   for (i=0; i<7; i++)
   {
-    _srgbHuPhash[i]=channelPerceptualHash_->srgb_hu_phash[i];
-    _hclpHuPhash[i]=channelPerceptualHash_->hclp_hu_phash[i];
+    _srgbHuPhash[i]=channelPerceptualHash_->phash[0][i];
+    _hclpHuPhash[i]=channelPerceptualHash_->phash[1][i];
   }
 }
 
