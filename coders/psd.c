@@ -388,7 +388,7 @@ static MagickBooleanType ApplyPSDLayerOpacity(Image *image,Quantum opacity,
     if (status == MagickFalse)
       continue;
     q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
-    if (q == (Quantum *)NULL)
+    if (q == (Quantum *) NULL)
       {
         status=MagickFalse;
         continue;
@@ -482,7 +482,6 @@ static MagickBooleanType ApplyPSDOpacityMask(Image *image,const Image *mask,
       status=MagickFalse;
   }
   complete_mask=DestroyImage(complete_mask);
-
   return(status);
 }
 
@@ -1777,7 +1776,8 @@ ModuleExport MagickBooleanType ReadPSDLayers(Image *image,
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                 "  reading data for layer %.20g",(double) i);
 
-            status=ReadPSDLayer(image,image_info,psd_info,&layer_info[i],exception);
+            status=ReadPSDLayer(image,image_info,psd_info,&layer_info[i],
+              exception);
             if (status == MagickFalse)
               break;
 
