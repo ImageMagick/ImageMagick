@@ -84,7 +84,6 @@
 */
 #define MaxPSDChannels  56
 #define PSDQuantum(x) (((ssize_t) (x)+1) & -2)
-#define PSDAdditionalInfo "psd:additional-info"
 
 
 /*
@@ -1622,7 +1621,7 @@ ModuleExport MagickBooleanType ReadPSDLayers(Image *image,
 
         if (layer_info[i].info != (StringInfo *) NULL)
           {
-            (void) SetImageProfile(layer_info[i].image,PSDAdditionalInfo,
+            (void) SetImageProfile(layer_info[i].image,"psd:additional-info",
               layer_info[i].info);
             layer_info[i].info=DestroyStringInfo(layer_info[i].info);
           }
@@ -2739,7 +2738,7 @@ static const StringInfo *GetAdditionalInformation(const ImageInfo *image_info,
   unsigned int
     size;
 
-  info=GetImageProfile(image,PSDAdditionalInfo);
+  info=GetImageProfile(image,"psd:additional-info");
   if (info == (const StringInfo *) NULL)
     return((const StringInfo *) NULL);
   option=GetImageOption(image_info,"psd:additional-info");
@@ -2747,7 +2746,7 @@ static const StringInfo *GetAdditionalInformation(const ImageInfo *image_info,
     return(info);
   if (LocaleCompare(option,"selective") != 0)
     {
-      profile=RemoveImageProfile(image,PSDAdditionalInfo);
+      profile=RemoveImageProfile(image,"psd:additional-info");
       return(DestroyStringInfo(profile));
     }
   length=GetStringInfoLength(info);
@@ -2790,11 +2789,11 @@ static const StringInfo *GetAdditionalInformation(const ImageInfo *image_info,
     length+=(size_t) size+12;
     p+=size;
   }
-  profile=RemoveImageProfile(image,PSDAdditionalInfo);
+  profile=RemoveImageProfile(image,"psd:additional-info");
   if (length == 0)
     return(DestroyStringInfo(profile));
   SetStringInfoLength(profile,(const size_t) length);
-  SetImageProfile(image,PSDAdditionalInfo,info);
+  SetImageProfile(image,"psd:additional-info",info);
   return(profile);
 }
 
