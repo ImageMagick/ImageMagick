@@ -63,6 +63,18 @@
 #include <ImfCRgbaFile.h>
 
 /*
+  Typedef declaractions.
+*/
+typedef struct _ExrWindow
+{
+  int
+    max_x,
+    max_y,
+    min_x,
+    min_y;
+} ExrWindow;
+
+/*
   Forward declarations.
 */
 static MagickBooleanType
@@ -132,6 +144,10 @@ static MagickBooleanType IsEXR(const unsigned char *magick,const size_t length)
 */
 static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
+  ExrWindow
+    data_window,
+    display_window;
+
   const ImfHeader
     *hdr_info;
 
@@ -147,12 +163,6 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
   ImfRgba
     *scanline;
 
-  int
-    max_x,
-    max_y,
-    min_x,
-    min_y;
-
   MagickBooleanType
     status;
 
@@ -163,6 +173,7 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *q;
 
   ssize_t
+    columns,
     y;
 
   /*
@@ -199,9 +210,10 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
       return((Image *) NULL);
     }
   hdr_info=ImfInputHeader(file);
-  ImfHeaderDisplayWindow(hdr_info,&min_x,&min_y,&max_x,&max_y);
-  image->columns=max_x-min_x+1UL;
-  image->rows=max_y-min_y+1UL;
+  ImfHeaderDisplayWindow(hdr_info,&display_window.min_x,&display_window.min_y,
+    &display_window.max_x,&display_window.max_y);
+  image->columns=display_window.max_x-display_window.min_x+1UL;
+  image->rows=display_window.max_y-display_window.min_y+1UL;
   image->matte=MagickTrue;
   SetImageColorspace(image,RGBColorspace);
   image->gamma=1.0;
@@ -220,34 +232,74 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
       InheritException(exception,&image->exception);
       return(DestroyImageList(image));
     }
-  scanline=(ImfRgba *) AcquireQuantumMemory(image->columns,sizeof(*scanline));
-  if (scanline == (ImfRgba *) NULL)
+  ImfHeaderDataWindow(hdr_info,&data_window.min_x,&data_window.min_y,
+    &data_window.max_x,&data_window.max_y);
+  columns=(ssize_t) data_window.max_x-data_window.min_x+1UL;
+  if ((display_window.min_x > data_window.max_x) ||
+      (display_window.min_x+(int) image->columns <= data_window.min_x))
+    scanline=(ImfRgba *) NULL;
+  else
     {
-      (void) ImfCloseInputFile(file);
-      if (LocaleCompare(image_info->filename,read_info->filename) != 0)
-        (void) RelinquishUniqueFileResource(read_info->filename);
-      read_info=DestroyImageInfo(read_info);
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+      scanline=(ImfRgba *) AcquireQuantumMemory(columns,sizeof(*scanline));
+      if (scanline == (ImfRgba *) NULL)
+        {
+          (void) ImfCloseInputFile(file);
+          if (LocaleCompare(image_info->filename,read_info->filename) != 0)
+            (void) RelinquishUniqueFileResource(read_info->filename);
+          read_info=DestroyImageInfo(read_info);
+          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+        }
     }
   for (y=0; y < (ssize_t) image->rows; y++)
   {
+    int
+      yy;
+
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
     if (q == (PixelPacket *) NULL)
       break;
-    ResetMagickMemory(scanline,0,image->columns*sizeof(*scanline));
-    ImfInputSetFrameBuffer(file,scanline-min_x-image->columns*(min_y+y),1,
-      image->columns);
-    ImfInputReadPixels(file,min_y+y,min_y+y);
+    yy=display_window.min_y+y;
+    if ((yy < data_window.min_y) || (yy > data_window.max_y) ||
+        (scanline == (ImfRgba *) NULL))
+    {
+      for (x=0; x < (ssize_t) image->columns; x++)
+      {
+        SetPixelRed(q,image->background_color.red);
+        SetPixelGreen(q,image->background_color.green);
+        SetPixelBlue(q,image->background_color.blue);
+        SetPixelOpacity(q,image->background_color.opacity);
+        q++;
+      }
+      continue;
+    }
+    ResetMagickMemory(scanline,0,columns*sizeof(*scanline));
+    ImfInputSetFrameBuffer(file,scanline-data_window.min_x-columns*yy,1,
+      columns);
+    ImfInputReadPixels(file,yy,yy);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      SetPixelRed(q,ClampToQuantum((MagickRealType) QuantumRange*
-        ImfHalfToFloat(scanline[x].r)));
-      SetPixelGreen(q,ClampToQuantum((MagickRealType) QuantumRange*
-        ImfHalfToFloat(scanline[x].g)));
-      SetPixelBlue(q,ClampToQuantum((MagickRealType) QuantumRange*
-        ImfHalfToFloat(scanline[x].b)));
-      SetPixelAlpha(q,ClampToQuantum((MagickRealType) QuantumRange*
-        ImfHalfToFloat(scanline[x].a)));
+      int
+        xx;
+
+      xx=display_window.min_x+((int) x-data_window.min_x);
+      if ((xx < 0) || (display_window.min_x+(int) x > data_window.max_x))
+        {
+          SetPixelRed(q,image->background_color.red);
+          SetPixelGreen(q,image->background_color.green);
+          SetPixelBlue(q,image->background_color.blue);
+          SetPixelOpacity(q,image->background_color.opacity);
+        }
+      else
+        {
+          SetPixelRed(q,ClampToQuantum((MagickRealType) QuantumRange*
+            ImfHalfToFloat(scanline[xx].r)));
+          SetPixelGreen(q,ClampToQuantum((MagickRealType) QuantumRange*
+            ImfHalfToFloat(scanline[xx].g)));
+          SetPixelBlue(q,ClampToQuantum((MagickRealType) QuantumRange*
+            ImfHalfToFloat(scanline[xx].b)));
+          SetPixelAlpha(q,ClampToQuantum((MagickRealType) QuantumRange*
+            ImfHalfToFloat(scanline[xx].a)));
+        }
       q++;
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
