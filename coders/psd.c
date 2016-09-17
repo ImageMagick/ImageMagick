@@ -400,7 +400,7 @@ static MagickBooleanType ApplyPSDLayerOpacity(Image *image,Quantum opacity,
           opacity),q);
       else if (opacity > 0)
         SetPixelAlpha(image,(Quantum) (QuantumRange*(GetPixelAlpha(image,q)/
-          opacity)),q);
+          (MagickRealType) opacity)),q);
       q+=GetPixelChannels(image);
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
