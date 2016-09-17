@@ -2963,8 +2963,6 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
     i;
 
   size_t
-    channel_size,
-    channelLength,
     layer_count,
     layer_index,
     length,
