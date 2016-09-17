@@ -73,6 +73,7 @@
 #include "magick/quantum-private.h"
 #include "magick/static.h"
 #include "magick/string_.h"
+#include "magick/string-private.h"
 #include "magick/thread-private.h"
 #ifdef MAGICKCORE_ZLIB_DELEGATE
 #include <zlib.h>
@@ -352,8 +353,8 @@ static inline CompressionType ConvertPSDCompression(
   }
 }
 
-static MagickBooleanType CorrectPSDOpacity(LayerInfo* layer_info,
-  ExceptionInfo *exception)
+static MagickBooleanType ApplyPSDLayerOpacity(Image *image,Quantum opacity,
+  MagickBooleanType revert,ExceptionInfo *exception)
 {
   MagickBooleanType
     status;
@@ -361,16 +362,16 @@ static MagickBooleanType CorrectPSDOpacity(LayerInfo* layer_info,
   ssize_t
     y;
 
-  if (layer_info->opacity == OpaqueOpacity)
+  if (opacity == QuantumRange)
     return(MagickTrue);
 
-  layer_info->image->matte=MagickTrue;
+  image->matte=MagickTrue;
   status=MagickTrue;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
 #pragma omp parallel for schedule(static,4) shared(status) \
-  magick_threads(layer_info->image,layer_info->image,layer_info->image->rows,1)
+  magick_threads(image,image,image->rows,1)
 #endif
-  for (y=0; y < (ssize_t) layer_info->image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     register PixelPacket
       *magick_restrict q;
@@ -380,20 +381,22 @@ static MagickBooleanType CorrectPSDOpacity(LayerInfo* layer_info,
 
     if (status == MagickFalse)
       continue;
-    q=GetAuthenticPixels(layer_info->image,0,y,layer_info->image->columns,1,
-      exception);
-    if (q == (PixelPacket *)NULL)
+    q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
+    if (q == (PixelPacket *) NULL)
       {
         status=MagickFalse;
         continue;
       }
-    for (x=0; x < (ssize_t) layer_info->image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
-      q->opacity=(Quantum) (QuantumRange-(Quantum) (QuantumScale*(
-        (QuantumRange-q->opacity)*(QuantumRange-layer_info->opacity))));
+      if (revert == MagickFalse)
+        SetPixelAlpha(q,(Quantum) (QuantumScale*(GetPixelAlpha(q)*opacity)));
+      else if (opacity > 0)
+        SetPixelAlpha(q,(Quantum) (QuantumRange*(GetPixelAlpha(q)/
+          (MagickRealType) opacity)));
       q++;
     }
-    if (SyncAuthenticPixels(layer_info->image,exception) == MagickFalse)
+    if (SyncAuthenticPixels(image,exception) == MagickFalse)
       status=MagickFalse;
   }
   return(status);
@@ -1310,7 +1313,8 @@ static MagickBooleanType ReadPSDLayer(Image *image,const PSDInfo *psd_info,
   }
 
   if (status != MagickFalse)
-    status=CorrectPSDOpacity(layer_info,exception);
+    status=ApplyPSDLayerOpacity(layer_info->image,layer_info->opacity,
+      MagickFalse,exception);
 
   if ((status != MagickFalse) &&
       (layer_info->image->colorspace == CMYKColorspace))
@@ -1470,8 +1474,8 @@ ModuleExport MagickBooleanType ReadPSDLayers(Image *image,
           }
         (void) ReadBlob(image,4,(unsigned char *) layer_info[i].blendkey);
         ReversePSDString(image,layer_info[i].blendkey,4);
-        layer_info[i].opacity=(Quantum) (QuantumRange-ScaleCharToQuantum(
-          (unsigned char) ReadBlobByte(image)));
+        layer_info[i].opacity=(Quantum) ScaleCharToQuantum((unsigned char)
+          ReadBlobByte(image));
         layer_info[i].clipping=(unsigned char) ReadBlobByte(image);
         layer_info[i].flags=(unsigned char) ReadBlobByte(image);
         layer_info[i].visible=!(layer_info[i].flags & 0x02);
@@ -1695,8 +1699,8 @@ ModuleExport MagickBooleanType ReadPSDLayers(Image *image,
   return(status);
 }
 
-static MagickBooleanType ReadPSDMergedImage(const ImageInfo *image_info,Image* image,
-  const PSDInfo* psd_info,ExceptionInfo *exception)
+static MagickBooleanType ReadPSDMergedImage(const ImageInfo *image_info,
+  Image* image,const PSDInfo* psd_info,ExceptionInfo *exception)
 {
   MagickOffsetType
     *sizes;
@@ -3024,7 +3028,19 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
     size+=WriteBlob(image,4,(const unsigned char *) "8BIM");
     size+=WriteBlob(image,4,(const unsigned char *)
       CompositeOperatorToPSDBlendMode(next_image->compose));
-    size+=WriteBlobByte(image,255); /* layer opacity */
+    property=GetImageArtifact(next_image,"psd:layer.opacity");
+    if (property != (const char *) NULL)
+      {
+        Quantum
+          opacity;
+
+        opacity=(Quantum) StringToInteger(property);
+        size+=WriteBlobByte(image,ScaleQuantumToChar(opacity));
+        (void) ApplyPSDLayerOpacity(next_image,opacity,MagickTrue,
+          &image->exception);
+      }
+    else
+      size+=WriteBlobByte(image,255);
     size+=WriteBlobByte(image,0);
     size+=WriteBlobByte(image,next_image->compose==NoCompositeOp ?
       1 << 0x02 : 1); /* layer properties - visible, etc. */
