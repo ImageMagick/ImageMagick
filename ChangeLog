@@ -1,4 +1,7 @@
 2016-09-17  6.9.6-10 Dirk Lemstra <dirk@lem.....org>
+  * Added layer RLE compression to the PSD encoder.
+  * Added define 'psd:preserve-opacity-mask' to preserve the opacity mask
+    in a PSD file.
   * Fixed issue where the display window was used instead of the data window
     when reading EXR files (reference
     https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&p=137849).
