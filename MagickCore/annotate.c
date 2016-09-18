@@ -1111,6 +1111,7 @@ cleanup:
   ssize_t
     last_glyph;
 
+  magick_unreferenced(image);
   magick_unreferenced(exception);
 
   /*
