@@ -459,10 +459,11 @@ MagickPrivate void ReleaseOpenCLMemObject(cl_mem memobj)
   (void) openCL_library->clReleaseMemObject(memobj);
 }
 
-MagickPrivate cl_int SetOpenCLKernelArg(cl_kernel kernel,cl_uint arg_index,
+MagickPrivate cl_int SetOpenCLKernelArg(cl_kernel kernel,size_t arg_index,
   size_t arg_size,const void *arg_value)
 {
-  return(openCL_library->clSetKernelArg(kernel,arg_index,arg_size,arg_value));
+  return(openCL_library->clSetKernelArg(kernel,(cl_uint) arg_index,arg_size,
+    arg_value));
 }
 
 /*
@@ -2200,7 +2201,7 @@ static void LoadOpenCLDevices(MagickCLEnv clEnv)
       continue;
 
     status=clEnv->library->clGetDeviceIDs(platforms[i],CL_DEVICE_TYPE_CPU | 
-      CL_DEVICE_TYPE_GPU,clEnv->number_devices,devices,&number_devices);
+      CL_DEVICE_TYPE_GPU,(cl_uint) clEnv->number_devices,devices,&number_devices);
     if (status != CL_SUCCESS)
       continue;
 

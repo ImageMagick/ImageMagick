@@ -400,7 +400,7 @@ extern MagickPrivate cl_command_queue
   AcquireOpenCLCommandQueue(MagickCLDevice);
 
 extern MagickPrivate cl_int
-  SetOpenCLKernelArg(cl_kernel,cl_uint,size_t,const void *);
+  SetOpenCLKernelArg(cl_kernel,size_t,size_t,const void *);
 
 extern MagickPrivate cl_kernel
   AcquireOpenCLKernel(MagickCLDevice,const char *);

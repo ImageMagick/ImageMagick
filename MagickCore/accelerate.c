@@ -289,7 +289,7 @@ static cl_mem createKernelInfo(MagickCLDevice device,const double radius,
     kernelBufferPtr[i] = (float)kernel->values[i];
   imageKernelBuffer=CreateOpenCLBuffer(device,CL_MEM_COPY_HOST_PTR |
     CL_MEM_READ_ONLY,kernel->width*sizeof(*kernelBufferPtr),kernelBufferPtr);
-  *width=kernel->width;
+  *width=(cl_uint) kernel->width;
   kernelBufferPtr=(float *) RelinquishMagickMemory(kernelBufferPtr);
   kernel=DestroyKernelInfo(kernel);
   if (imageKernelBuffer == (cl_mem) NULL)
@@ -479,13 +479,13 @@ static Image *ComputeAddNoiseImage(const Image *image,MagickCLEnv clEnv,
       break;
   };
   if (GetPixelRedTraits(image) != UndefinedPixelTrait)
-    numRandomNumberPerPixel+=numRandPerChannel;
+    numRandomNumberPerPixel+=(cl_uint) numRandPerChannel;
   if (GetPixelGreenTraits(image) != UndefinedPixelTrait)
-    numRandomNumberPerPixel+=numRandPerChannel;
+    numRandomNumberPerPixel+=(cl_uint) numRandPerChannel;
   if (GetPixelBlueTraits(image) != UndefinedPixelTrait)
-    numRandomNumberPerPixel+=numRandPerChannel;
+    numRandomNumberPerPixel+=(cl_uint) numRandPerChannel;
   if (GetPixelAlphaTraits(image) != UndefinedPixelTrait)
-    numRandomNumberPerPixel+=numRandPerChannel;
+    numRandomNumberPerPixel+=(cl_uint) numRandPerChannel;
 
   addNoiseKernel=AcquireOpenCLKernel(device,"AddNoise");
   if (addNoiseKernel == (cl_kernel) NULL)
