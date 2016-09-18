@@ -103,14 +103,16 @@ extern "C" {
 #  define wand_aligned(x)  __attribute__((aligned(x)))
 #  define wand_attribute  __attribute__
 #  define wand_unused(x)  wand_unused_ ## x __attribute__((unused))
-#elif defined( __VMS )
-#  define wand_aligned(x)  /* nothing */
-#  define wand_attribute(x)  /* nothing */
-#  define wand_unused(x) x
-#else
+#elif defined(MAGICKWAND_WINDOWS_SUPPORT) && !defined(__CYGWIN__)
 #  define wand_aligned(x)  __declspec(align(x))
 #  define wand_attribute(x)  /* nothing */
 #  define wand_unused(x) x
+#  define wand_unreferenced(x) (x)
+#else
+#  define wand_aligned(x)  /* nothing */
+#  define wand_attribute(x)  /* nothing */
+#  define wand_unused(x) x
+#  define wand_unreferenced(x)  /* nothing */
 #endif
 
 #if !defined(__clang__) && (((__GNUC__) > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 3)))
