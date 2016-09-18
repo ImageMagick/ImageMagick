@@ -3840,6 +3840,8 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
     j,
     k;
 
+  wand_unreferenced(metadata);
+
   /*
     Set defaults.
   */
