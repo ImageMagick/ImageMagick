@@ -1525,7 +1525,7 @@ static MagickBooleanType DrawDashPolygon(const DrawInfo *draw_info,
   scale=ExpandAffine(&draw_info->affine);
   length=scale*(draw_info->dash_pattern[0]-0.5);
   offset=fabs(draw_info->dash_offset) >= DrawEpsilon ?
-     scale*draw_info->dash_offset : 0.0;
+    scale*draw_info->dash_offset : 0.0;
   j=1;
   for (n=0; offset > 0.0; j=0)
   {
@@ -4687,10 +4687,9 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
           */
           for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++) ;
           closed_path=
-            (primitive_info[i-1].point.x == primitive_info[0].point.x) &&
-            (primitive_info[i-1].point.y == primitive_info[0].point.y) ?
+            (fabs(primitive_info[i-1].point.x-primitive_info[0].point.x) < DrawEpsilon) &&
+            (fabs(primitive_info[i-1].point.y-primitive_info[0].point.y) < DrawEpsilon) ?
             MagickTrue : MagickFalse;
-          i=(ssize_t) primitive_info[0].coordinates;
           i=(ssize_t) primitive_info[0].coordinates;
           if (((closed_path != MagickFalse) &&
               (draw_info->linejoin == RoundJoin)) ||
@@ -5346,7 +5345,7 @@ static void TraceEllipse(PrimitiveInfo *primitive_info,const PointInfo start,
   y=degrees.y;
   while (y < degrees.x)
     y+=360.0;
-  angle.y=(double) (DegreesToRadians(y)-DrawEpsilon);
+  angle.y=DegreesToRadians(y);
   for (p=primitive_info; angle.x < angle.y; angle.x+=step)
   {
     point.x=cos(fmod(angle.x,DegreesToRadians(360.0)))*stop.x+start.x;
@@ -5888,12 +5887,6 @@ static void TraceSquareLinecap(PrimitiveInfo *primitive_info,
     dx*(distance+offset)/distance);
   primitive_info[number_vertices-1].point.y=(double) (primitive_info[j].point.y+
     dy*(distance+offset)/distance);
-}
-
-static inline double DrawEpsilonReciprocal(const double x)
-{
-  double sign = x < 0.0 ? -1.0 : 1.0;
-  return((sign*x) >= DrawEpsilon ? 1.0/x : sign*(1.0/DrawEpsilon));
 }
 
 static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
