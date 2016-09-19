@@ -11711,13 +11711,18 @@ WandExport MagickBooleanType MagickThresholdImageChannel(MagickWand *wand,
   MagickBooleanType
     status;
 
+  ChannelType
+    channel_mask;
+
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
+  channel_mask=SetImageChannelMask(wand->images,channel);
   status=BilevelImage(wand->images,threshold,wand->exception);
+  (void) SetImageChannelMask(wand->images,channel_mask);
   return(status);
 }
 
