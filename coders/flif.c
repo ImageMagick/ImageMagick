@@ -167,7 +167,7 @@ static Image *ReadFLIFImage(const ImageInfo *image_info,
     ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
   flifdec=flif_create_decoder();
   if (image_info->quality != UndefinedCompressionQuality)
-    flif_decoder_set_quality(flifdec,image_info->quality);
+    flif_decoder_set_quality(flifdec,(int32_t) image_info->quality);
   if (!flif_decoder_decode_memory(flifdec,stream,length))
     {
       flif_destroy_decoder(flifdec);
@@ -431,7 +431,7 @@ static MagickBooleanType WriteFLIFImage(const ImageInfo *image_info,
     return(status);
   flifenc=flif_create_encoder();
   if (image_info->quality != UndefinedCompressionQuality)
-    flif_encoder_set_lossy(flifenc,3*(100-image_info->quality));
+    flif_encoder_set_lossy(flifenc,3*(100-(int32_t) image_info->quality));
 
   /* relatively fast encoding */
   flif_encoder_set_learn_repeat(flifenc,1);
@@ -443,12 +443,14 @@ static MagickBooleanType WriteFLIFImage(const ImageInfo *image_info,
   /* Convert image to FLIFIMAGE */
   if (image->depth > 8)
     {
-      flifimage=flif_create_image_HDR(image->columns,image->rows);
+      flifimage=flif_create_image_HDR((uint32_t) image->columns,
+        (uint32_t) image->rows);
       length=sizeof(unsigned short)*4*image->columns;
     }
   else
     {
-      flifimage=flif_create_image(image->columns,image->rows);
+      flifimage=flif_create_image((uint32_t) image->columns,
+        (uint32_t) image->rows);
       length=sizeof(unsigned char)*4*image->columns;
     }
   if (flifimage == (FLIF_IMAGE *) NULL)
@@ -506,7 +508,7 @@ static MagickBooleanType WriteFLIFImage(const ImageInfo *image_info,
           flif_image_write_row_RGBA8(flifimage,y,pixels,length);
         }
     }
-    flif_image_set_frame_delay(flifimage,image->delay*100/
+    flif_image_set_frame_delay(flifimage,(uint32_t) image->delay*100/
       image->ticks_per_second);
     flif_encoder_add_image(flifenc,flifimage);
     if (GetNextImageInList(image) == (Image *) NULL)

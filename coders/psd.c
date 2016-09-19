@@ -3252,8 +3252,10 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
         size+=WriteBlobMSBLong(image,20);
         size+=WriteBlobMSBSignedLong(image,mask->page.y);
         size+=WriteBlobMSBSignedLong(image,mask->page.x);
-        size+=WriteBlobMSBLong(image,mask->rows+mask->page.y);
-        size+=WriteBlobMSBLong(image,mask->columns+mask->page.x);
+        size+=WriteBlobMSBLong(image,(const unsigned int) mask->rows+
+          mask->page.y);
+        size+=WriteBlobMSBLong(image,(const unsigned int) mask->columns+
+          mask->page.x);
         size+=WriteBlobByte(image,default_color);
         size+=WriteBlobByte(image,mask->compose == NoCompositeOp ? 2 : 0);
         size+=WriteBlobMSBShort(image,0);

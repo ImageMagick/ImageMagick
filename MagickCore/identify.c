@@ -401,6 +401,7 @@ static ssize_t PrintChannelPerceptualHash(Image *image,FILE *file,
       (void) FormatLocaleFile(file,", ");
   }
   (void) FormatLocaleFile(file,"\n");
+  n=0;
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
   {
     register ssize_t

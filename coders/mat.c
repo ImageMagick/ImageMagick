@@ -731,7 +731,7 @@ static Image *ReadMATImageV4(const ImageInfo *image_info,Image *image,
     (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
       GrayQuantum,pixels,exception);
     if ((HDR.Type[1] == 2) || (HDR.Type[1] == 3))
-      FixSignedValues(image,q,image->columns);
+      FixSignedValues(image,q,(int) image->columns);
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
     if (image->previous == (Image *) NULL)
