@@ -203,6 +203,24 @@ inline static unsigned int padGlobalWorkgroupSizeToLocalWorkgroupSize(
   return ((orgGlobalSize+(localGroupSize-1))/localGroupSize*localGroupSize);
 }
 
+static MagickBooleanType paramMatchesValue(MagickCLEnv clEnv,
+  MagickOpenCLEnvParam param,const char *value,ExceptionInfo *exception)
+{
+  char
+    *val;
+
+  MagickBooleanType
+    status;
+
+  status=GetMagickOpenCLEnvParam(clEnv,param,sizeof(val),&val,exception);
+  if (status != MagickFalse)
+    {
+      status=strcmp(value,val) == 0 ? MagickTrue : MagickFalse;
+      RelinquishMagickMemory(val);
+    }
+  return(status);
+}
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1722,6 +1740,12 @@ static Image *ComputeConvolveImage(const Image* image,
   outputReady = MagickFalse;
   
   clEnv = GetDefaultOpenCLEnv();
+
+  /* Work around an issue on NVIDIA devices */
+  if (paramMatchesValue(clEnv,MAGICK_OPENCL_ENV_PARAM_PLATFORM_VENDOR,
+      "NVIDIA Corporation",exception) != MagickFalse)
+    goto cleanup;
+
   context = GetOpenCLContext(clEnv);
 
   imageBuffer = GetAuthenticOpenCLBuffer(image,exception);
@@ -3056,7 +3080,7 @@ static Image *ComputeLocalContrastImage(const Image *image,
         size_t goffset[2];
 
         gsize[0] = 256;
-        gsize[1] = image->rows / passes;
+        gsize[1] = (image->rows + passes - 1) / passes;
         wsize[0] = 256;
         wsize[1] = 1;
         goffset[0] = 0;
@@ -5002,7 +5026,7 @@ static Image *ComputeWaveletDenoiseImage(const Image *image,
     queue;
 
   cl_context
-  context;
+    context;
 
   cl_int
     clStatus;
@@ -5031,7 +5055,8 @@ static Image *ComputeWaveletDenoiseImage(const Image *image,
 
   unsigned int
     event_count,
-    i;
+    i,
+    passes;
 
   clEnv = NULL;
   filteredImage = NULL;
@@ -5043,6 +5068,12 @@ static Image *ComputeWaveletDenoiseImage(const Image *image,
   outputReady = MagickFalse;
 
   clEnv = GetDefaultOpenCLEnv();
+
+  /* Work around an issue on low end Intel devices */
+  if (paramMatchesValue(clEnv,MAGICK_OPENCL_ENV_PARAM_DEVICE_NAME,
+      "Intel(R) HD Graphics",exception) != MagickFalse)
+    goto cleanup;
+
   context = GetOpenCLContext(clEnv);
   queue = AcquireOpenCLCommandQueue(clEnv);
 
@@ -5081,10 +5112,14 @@ static Image *ComputeWaveletDenoiseImage(const Image *image,
 
   // Process image
   {
+    int x;
     const int PASSES = 5;
     cl_int width = (cl_int)image->columns;
     cl_int height = (cl_int)image->rows;
     cl_float thresh = threshold;
+
+    passes = (((1.0f * image->columns) * image->rows) + 1999999.0f) / 2000000.0f;
+    passes = (passes < 1) ? 1 : passes;
 
     /* set the kernel arguments */
     i = 0;
@@ -5095,6 +5130,7 @@ static Image *ComputeWaveletDenoiseImage(const Image *image,
     clStatus |= clEnv->library->clSetKernelArg(denoiseKernel, i++, sizeof(cl_int), (void *)&width);
     clStatus |= clEnv->library->clSetKernelArg(denoiseKernel, i++, sizeof(cl_int), (void *)&height);
 
+    for (x = 0; x < passes; ++x)
     {
       const int TILESIZE = 64;
       const int PAD = 1 << (PASSES - 1);
@@ -5102,19 +5138,23 @@ static Image *ComputeWaveletDenoiseImage(const Image *image,
 
       size_t gsize[2];
       size_t wsize[2];
+      size_t goffset[2];
 
       gsize[0] = ((width + (SIZE - 1)) / SIZE) * TILESIZE;
-      gsize[1] = ((height + (SIZE - 1)) / SIZE) * 4;
+      gsize[1] = ((((height + (SIZE - 1)) / SIZE) + passes - 1) / passes) * 4;
       wsize[0] = TILESIZE;
       wsize[1] = 4;
+      goffset[0] = 0;
+      goffset[1] = x * gsize[1];
 
       events=GetOpenCLEvents(image,&event_count);
-      clStatus = clEnv->library->clEnqueueNDRangeKernel(queue, denoiseKernel, 2, NULL, gsize, wsize, event_count, events, &event);
+      clStatus = clEnv->library->clEnqueueNDRangeKernel(queue, denoiseKernel, 2, goffset, gsize, wsize, event_count, events, &event);
       if (clStatus != CL_SUCCESS)
       {
         (void)OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clEnqueueNDRangeKernel failed.", "'%s'", ".");
         goto cleanup;
       }
+      clEnv->library->clFlush(queue);
       if (RecordProfileData(clEnv, WaveletDenoiseKernel, event) == MagickFalse)
         {
           AddOpenCLEvent(image, event);

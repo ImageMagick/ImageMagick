@@ -2104,6 +2104,9 @@ uint MWC64X_NextUint(mwc64x_state_t *s)
         int x = get_local_id(0);
         int y = get_global_id(1);
 
+        if ((x >= imageWidth) || (y >= imageHeight))
+          return;
+
         global CLPixelType *src = srcImage + y * imageWidth;
 
         for (int i = x; i < imageWidth; i += get_local_size(0)) {
@@ -3320,8 +3323,8 @@ uint MWC64X_NextUint(mwc64x_state_t *s)
 
 		local float buffer[64 * 64];
 
-		int srcx = get_group_id(0) * (tileSize - 2 * pad) - pad + get_local_id(0);
-		int srcy = get_group_id(1) * (tileSize - 2 * pad) - pad;
+		int srcx = (get_group_id(0) + get_global_offset(0) / tileSize) * (tileSize - 2 * pad) - pad + get_local_id(0);
+		int srcy = (get_group_id(1) + get_global_offset(1) / 4) * (tileSize - 2 * pad) - pad;
 
 		for (int i = get_local_id(1); i < tileSize; i += get_local_size(1)) {
 			stage[i / 4] = srcImage[mirrorTop(mirrorBottom(srcx), imageWidth) + (mirrorTop(mirrorBottom(srcy + i) , imageHeight)) * imageWidth];
