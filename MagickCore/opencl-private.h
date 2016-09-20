@@ -323,6 +323,9 @@ struct _MagickCLDevice
 
   ssize_t
     command_queues_index;
+
+  char
+    *vendor_name;
 };
 
 typedef struct _MagickCLEnv

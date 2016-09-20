@@ -116,6 +116,7 @@ typedef struct
   char
     *name,
     *platform_name,
+    *vendor_name,
     *version;
 
   cl_uint
@@ -168,6 +169,7 @@ static inline MagickBooleanType IsSameOpenCLDevice(MagickCLDevice a,
   MagickCLDevice b)
 {
   if ((LocaleCompare(a->platform_name,b->platform_name) == 0) &&
+      (LocaleCompare(a->vendor_name,b->vendor_name) == 0) &&
       (LocaleCompare(a->name,b->name) == 0) &&
       (LocaleCompare(a->version,b->version) == 0) &&
       (a->max_clock_frequency == b->max_clock_frequency) &&
@@ -181,6 +183,7 @@ static inline MagickBooleanType IsBenchmarkedOpenCLDevice(MagickCLDevice a,
   MagickCLDeviceBenchmark *b)
 {
   if ((LocaleCompare(a->platform_name,b->platform_name) == 0) &&
+      (LocaleCompare(a->vendor_name,b->vendor_name) == 0) &&
       (LocaleCompare(a->name,b->name) == 0) &&
       (LocaleCompare(a->version,b->version) == 0) &&
       (a->max_clock_frequency == b->max_clock_frequency) &&
@@ -802,6 +805,8 @@ static void LoadOpenCLDeviceBenchmark(MagickCLEnv clEnv,const char *xml)
 
         device_benchmark->platform_name=RelinquishMagickMemory(
           device_benchmark->platform_name);
+        device_benchmark->vendor_name=RelinquishMagickMemory(
+          device_benchmark->vendor_name);
         device_benchmark->name=RelinquishMagickMemory(device_benchmark->name);
         device_benchmark->version=RelinquishMagickMemory(
           device_benchmark->version);
@@ -855,6 +860,8 @@ static void LoadOpenCLDeviceBenchmark(MagickCLEnv clEnv,const char *xml)
       case 'V':
       case 'v':
       {
+        if (LocaleCompare((char *) keyword,"vendor") == 0)
+          device_benchmark->vendor_name=ConstantString(token);
         if (LocaleCompare((char *) keyword,"version") == 0)
           device_benchmark->version=ConstantString(token);
         break;
@@ -1128,9 +1135,10 @@ static void CacheOpenCLBenchmarks(MagickCLEnv clEnv)
       continue;
 
     if (device->score != MAGICKCORE_OPENCL_UNDEFINED_SCORE)
-      fprintf(cache_file,"  <device platform=\"%s\" name=\"%s\" version=\"%s\"\
- maxClockFrequency=\"%d\" maxComputeUnits=\"%d\" score=\"%.4g\"/>\n",
-        device->platform_name,device->name,device->version,
+      fprintf(cache_file,"  <device platform=\"%s\" vendor=\"%s\" name=\"%s\"\
+ version=\"%s\" maxClockFrequency=\"%d\" maxComputeUnits=\"%d\"\
+ score=\"%.4g\"/>\n",
+        device->platform_name,device->vendor_name,device->name,device->version,
         (int)device->max_clock_frequency,(int)device->max_compute_units,
         device->score);
   }
@@ -2232,6 +2240,13 @@ static void LoadOpenCLDevices(MagickCLEnv clEnv)
       openCL_library->clGetPlatformInfo(platforms[i],CL_PLATFORM_NAME,length,
         device->platform_name,NULL);
 
+      openCL_library->clGetPlatformInfo(platforms[i],CL_PLATFORM_VENDOR,0,NULL,
+        &length);
+      device->vendor_name=AcquireQuantumMemory(length,
+        sizeof(*device->vendor_name));
+      openCL_library->clGetPlatformInfo(platforms[i],CL_PLATFORM_VENDOR,length,
+        device->vendor_name,NULL);
+
       openCL_library->clGetDeviceInfo(devices[j],CL_DEVICE_NAME,0,NULL,
         &length);
       device->name=AcquireQuantumMemory(length,sizeof(*device->name));
@@ -2804,6 +2819,7 @@ static MagickCLDevice RelinquishMagickCLDevice(MagickCLDevice device)
     return((MagickCLDevice) NULL);
 
   device->platform_name=RelinquishMagickMemory(device->platform_name);
+  device->vendor_name=RelinquishMagickMemory(device->vendor_name);
   device->name=RelinquishMagickMemory(device->name);
   device->version=RelinquishMagickMemory(device->version);
   if (device->program != (cl_program) NULL)
