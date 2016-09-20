@@ -250,9 +250,6 @@ static const CoderMapInfo
     { "X3f", "DNG" },
     { "XMP", "META" },
     { "XTRNARRAY", "XTRN" },
-    { "XTRNBLOB", "XTRN" },
-    { "XTRNFILE", "XTRN" },
-    { "XTRNIMAGE", "XTRN" },
     { "XV", "VIFF" },
     { "Y", "RAW" },
     { "YCbCrA", "YCbCr" }

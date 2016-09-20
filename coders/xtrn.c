@@ -38,17 +38,6 @@
 %  pass blobs back and forth using the coder interface. It simply encodes and %
 %  decodes the filename as a comma delimited string and extracts the info it  %
 %  needs. The five methods of passing images are:                             %
-%                                                                             %
-%     FILE   - same thing as filename so it should be a NOP                   %
-%     IMAGE  - passes an image and image info structure                       %
-%     BLOB   - passes binary blob containining the image                      %
-%     STREAM - passes pointers to stream hooks in and does the hooking        %
-%     ARRAY  - passes a pointer to a Win32 smart array and streams to it      %
-%                                                                             %
-%  Of all of these, the only one getting any real use at the moment is the    %
-%  ARRAY handler. It is the primary way that images are shuttled back and     %
-%  forth as blobs via COM since this is what VB and VBSCRIPT use internally   %
-%  for this purpose.                                                          %
 %
 %
 */
@@ -114,115 +103,67 @@ static MagickBooleanType
 static Image *ReadXTRNImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
+  char
+    *blob_data,
+    filename[MaxTextExtent];
+
+  HRESULT
+    hr;
+
   Image
     *image;
 
   ImageInfo
     *clone_info;
 
-  void
-    *param1,
-    *param2,
-    *param3;
+  long
+    lBoundl,
+    lBoundu;
 
-  param1 = param2 = param3 = (void *) NULL;
-  image = (Image *) NULL;
+  SAFEARRAY
+    *pSafeArray;
+
+  size_t
+    blob_length;
+
+  void
+    *param1;
+
+  param1=(void *) NULL;
+  image=(Image *) NULL;
   clone_info=CloneImageInfo(image_info);
   if (clone_info->filename == NULL)
     {
       clone_info=DestroyImageInfo(clone_info);
       ThrowReaderException(FileOpenWarning,"No filename specified");
     }
-  if (LocaleCompare(image_info->magick,"XTRNFILE") == 0)
+  *filename='\0';
+  (void) sscanf(clone_info->filename,"%p,%2048s",&param1,filename);
+  hr=S_OK;
+  pSafeArray=(SAFEARRAY *) param1;
+  if (pSafeArray)
     {
-      image=ReadImage(clone_info,exception);
-      CatchException(exception);
-    }
-  else if (LocaleCompare(image_info->magick,"XTRNIMAGE") == 0)
-    {
-      Image
-        **image_ptr;
-
-#ifdef ALL_IMAGEINFO
-      ImageInfo
-        **image_info_ptr;
-#endif
-
-      (void) sscanf(clone_info->filename,"%lx,%lx",&param1,&param2);
-      image_ptr=(Image **) param2;
-      if (*image_ptr != (Image *) NULL)
-        image=CloneImage(*image_ptr,0,0,MagickFalse,&(*image_ptr)->exception);
-#ifdef ALL_IMAGEINFO
-      image_info_ptr=(ImageInfo **) param1;
-      if (*image_info_ptr != (ImageInfo *) NULL)
-        image_info=*image_info_ptr;
-#endif
-    }
-  else if (LocaleCompare(image_info->magick,"XTRNBLOB") == 0)
-    {
-      char
-        **blob_data;
-
-      size_t
-        *blob_length;
-
-      char
-        filename[MaxTextExtent];
-
-      (void) sscanf(clone_info->filename,"%lx,%lx,%2048s",&param1,&param2,
-        filename);
-      blob_data=(char **) param1;
-      blob_length=(size_t *) param2;
-      image=BlobToImage(clone_info,*blob_data,*blob_length,exception);
-      CatchException(exception);
-    }
-  else if (LocaleCompare(image_info->magick,"XTRNARRAY") == 0)
-    {
-      char
-        *blob_data,
-        filename[MaxTextExtent];
-
-      HRESULT
-        hr;
-
-      long
-        lBoundl,
-        lBoundu;
-
-      SAFEARRAY
-        *pSafeArray;
-
-      size_t
-        blob_length;
-
-      *filename='\0';
-      (void) sscanf(clone_info->filename,"%lx,%2048s",&param1,filename);
-      hr=S_OK;
-      pSafeArray=(SAFEARRAY *) param1;
-      if (pSafeArray)
+      hr=SafeArrayGetLBound(pSafeArray,1,&lBoundl);
+      if (SUCCEEDED(hr))
         {
-          hr = SafeArrayGetLBound(pSafeArray, 1, &lBoundl);
+          hr=SafeArrayGetUBound(pSafeArray,1,&lBoundu);
           if (SUCCEEDED(hr))
             {
-              hr = SafeArrayGetUBound(pSafeArray, 1, &lBoundu);
-              if (SUCCEEDED(hr))
+              blob_length=lBoundu-lBoundl+1;
+              hr=SafeArrayAccessData(pSafeArray,(void**) &blob_data);
+              if(SUCCEEDED(hr))
                 {
-                  blob_length = lBoundu - lBoundl + 1;
-                  hr = SafeArrayAccessData(pSafeArray,(void**) &blob_data);
-                  if(SUCCEEDED(hr))
-                    {
-                      *clone_info->filename='\0';
-                      *clone_info->magick='\0';
-                      if (*filename != '\0')
-                        (void) CopyMagickString(clone_info->filename,filename,
-                          MaxTextExtent);
-                      image=BlobToImage(clone_info,blob_data,blob_length,
-                        exception);
-                      hr=SafeArrayUnaccessData(pSafeArray);
-                      CatchException(exception);
-                    }
-                 }
-            }
+                  *clone_info->filename='\0';
+                  *clone_info->magick='\0';
+                  if (*filename != '\0')
+                    (void) CopyMagickString(clone_info->filename,filename,
+                      MaxTextExtent);
+                  image=BlobToImage(clone_info,blob_data,blob_length,
+                    exception);
+                  hr=SafeArrayUnaccessData(pSafeArray);
+                  CatchException(exception);
+                }
+              }
         }
     }
   clone_info=DestroyImageInfo(clone_info);
@@ -258,36 +199,6 @@ ModuleExport size_t RegisterXTRNImage(void)
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("XTRNFILE");
-#if defined(_VISUALC_)
-  entry->decoder=ReadXTRNImage;
-  entry->encoder=WriteXTRNImage;
-#endif
-  entry->adjoin=MagickFalse;
-  entry->stealth=MagickTrue;
-  entry->description=ConstantString("External transfer of a file");
-  entry->module=ConstantString("XTRN");
-  RegisterMagickInfo(entry);
-  entry=SetMagickInfo("XTRNIMAGE");
-#if defined(_VISUALC_)
-  entry->decoder=ReadXTRNImage;
-  entry->encoder=WriteXTRNImage;
-#endif
-  entry->adjoin=MagickFalse;
-  entry->stealth=MagickTrue;
-  entry->description=ConstantString("External transfer of a image in memory");
-  entry->module=ConstantString("XTRN");
-  RegisterMagickInfo(entry);
-  entry=SetMagickInfo("XTRNBLOB");
-#if defined(_VISUALC_)
-  entry->decoder=ReadXTRNImage;
-  entry->encoder=WriteXTRNImage;
-#endif
-  entry->adjoin=MagickFalse;
-  entry->stealth=MagickTrue;
-  entry->description=ConstantString("IExternal transfer of a blob in memory");
-  entry->module=ConstantString("XTRN");
-  RegisterMagickInfo(entry);
   entry=SetMagickInfo("XTRNARRAY");
 #if defined(_VISUALC_)
   entry->decoder=ReadXTRNImage;
@@ -323,9 +234,6 @@ ModuleExport size_t RegisterXTRNImage(void)
 */
 ModuleExport void UnregisterXTRNImage(void)
 {
-  UnregisterMagickInfo("XTRNFILE");
-  UnregisterMagickInfo("XTRNIMAGE");
-  UnregisterMagickInfo("XTRNBLOB");
   UnregisterMagickInfo("XTRNARRAY");
 }
 
@@ -404,8 +312,11 @@ static size_t SafeArrayFifo(const Image *image,const void *data,
 static MagickBooleanType WriteXTRNImage(const ImageInfo *image_info,
   Image *image)
 {
-  Image *
-    p;
+  char
+    filename[MaxTextExtent];
+
+  Image
+    *p;
 
   ImageInfo
     *clone_info;
@@ -416,126 +327,42 @@ static MagickBooleanType WriteXTRNImage(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  void
-    *param1,
-    *param2,
-    *param3;
+  size_t
+    blob_length;
 
-  param1 = param2 = param3 = (void *) NULL;
+  unsigned char
+    *blob_data;
+
+  void
+    *param1;
+
+  param1=(void *) NULL;
   status=MagickTrue;
-  if (LocaleCompare(image_info->magick,"XTRNFILE") == 0)
+  clone_info=CloneImageInfo(image_info);
+  if (*clone_info->filename != '\0')
     {
-      clone_info=CloneImageInfo(image_info);
-      *clone_info->magick='\0';
-      status=WriteImage(clone_info,image);
+      (void) sscanf(clone_info->filename,"%p,%2048s",&param1,filename);
+      image->client_data=param1;
+      scene=0;
+      (void) CopyMagickString(clone_info->filename,filename,MaxTextExtent);
+      for (p=image; p != (Image *) NULL; p=GetNextImageInList(p))
+      {
+        (void) CopyMagickString(p->filename,filename,MaxTextExtent);
+        p->scene=scene++;
+      }
+      SetImageInfo(clone_info,1,&image->exception);
+      (void) CopyMagickString(image->magick,clone_info->magick,
+        MaxTextExtent);
+      blob_data=ImageToBlob(clone_info,image,&blob_length,
+        &image->exception);
+      if (blob_data == (unsigned char *) NULL)
+        status=MagickFalse;
+      else
+        SafeArrayFifo(image,blob_data,blob_length);
       if (status == MagickFalse)
         CatchImageException(image);
-      clone_info=DestroyImageInfo(clone_info);
     }
-  else if (LocaleCompare(image_info->magick,"XTRNIMAGE") == 0)
-    {
-      Image
-        **image_ptr;
-
-      ImageInfo
-        **image_info_ptr;
-
-      clone_info=CloneImageInfo(image_info);
-      if (clone_info->filename[0])
-        {
-          (void) sscanf(clone_info->filename,"%lx,%lx",&param1,&param2);
-          image_info_ptr=(ImageInfo **) param1;
-          image_ptr=(Image **) param2;
-          if ((image_info_ptr != (ImageInfo **) NULL) &&
-              (image_ptr != (Image **) NULL))
-            {
-              *image_ptr=CloneImage(image,0,0,MagickFalse,&(image->exception));
-              *image_info_ptr=clone_info;
-            }
-        }
-    }
-  else if (LocaleCompare(image_info->magick,"XTRNBLOB") == 0)
-    {
-      char
-        **blob_data;
-
-      ExceptionInfo
-        *exception;
-
-      size_t
-        *blob_length;
-
-      char
-        filename[MaxTextExtent];
-
-      clone_info=CloneImageInfo(image_info);
-      if (clone_info->filename[0])
-        {
-          (void) sscanf(clone_info->filename,"%lx,%lx,%2048s",
-            &param1,&param2,filename);
-
-          blob_data=(char **) param1;
-          blob_length=(size_t *) param2;
-          scene = 0;
-          (void) CopyMagickString(clone_info->filename,filename,MaxTextExtent);
-          for (p=image; p != (Image *) NULL; p=GetNextImageInList(p))
-          {
-            (void) CopyMagickString(p->filename,filename,MaxTextExtent);
-            p->scene=scene++;
-          }
-          SetImageInfo(clone_info,1,&image->exception);
-          (void) CopyMagickString(image->magick,clone_info->magick,
-            MaxTextExtent);
-          exception=AcquireExceptionInfo();
-          if (*blob_length == 0)
-            *blob_length=8192;
-          *blob_data=(char *) ImageToBlob(clone_info,image,blob_length,
-            exception);
-          exception=DestroyExceptionInfo(exception);
-          if (*blob_data == NULL)
-            status=MagickFalse;
-          if (status == MagickFalse)
-            CatchImageException(image);
-        }
-      clone_info=DestroyImageInfo(clone_info);
-    }
-  else if (LocaleCompare(image_info->magick,"XTRNARRAY") == 0)
-    {
-      char
-        filename[MaxTextExtent];
-
-      size_t
-        blob_length;
-
-      unsigned char
-        *blob_data;
-
-      clone_info=CloneImageInfo(image_info);
-      if (*clone_info->filename != '\0')
-        {
-          (void) sscanf(clone_info->filename,"%lx,%2048s",&param1,filename);
-          image->client_data=param1;
-          scene=0;
-          (void) CopyMagickString(clone_info->filename,filename,MaxTextExtent);
-          for (p=image; p != (Image *) NULL; p=GetNextImageInList(p))
-          {
-            (void) CopyMagickString(p->filename,filename,MaxTextExtent);
-            p->scene=scene++;
-          }
-          SetImageInfo(clone_info,1,&image->exception);
-          (void) CopyMagickString(image->magick,clone_info->magick,
-            MaxTextExtent);
-          blob_data=ImageToBlob(clone_info,image,&blob_length,
-            &image->exception);
-          if (blob_data == (unsigned char *) NULL)
-            status=MagickFalse;
-          else
-            SafeArrayFifo(image,blob_data,blob_length);
-          if (status == MagickFalse)
-            CatchImageException(image);
-        }
-      clone_info=DestroyImageInfo(clone_info);
-    }
+  clone_info=DestroyImageInfo(clone_info);
   return(MagickTrue);
 }
 #endif
