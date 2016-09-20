@@ -599,9 +599,15 @@ static int UnpackWPG2Raster(Image *image,int bpp)
         case 0x7D:
           SampleSize=ReadBlobByte(image);  /* DSZ */
           if(SampleSize>8)
-            return(-2);
+            {
+              BImgBuff=(unsigned char *) RelinquishMagickMemory(BImgBuff);
+              return(-2);
+            }
           if(SampleSize<1)
-            return(-2);
+            {
+              BImgBuff=(unsigned char *) RelinquishMagickMemory(BImgBuff);
+              return(-2);
+            }
           break;
         case 0x7E:
           (void) FormatLocaleFile(stderr,
@@ -634,6 +640,7 @@ static int UnpackWPG2Raster(Image *image,int bpp)
               (void) FormatLocaleFile(stderr,
                 "\nUnsupported WPG2 unaligned token RST x=%.20g, please report!\n"
                 ,(double) x);
+              BImgBuff=(unsigned char *) RelinquishMagickMemory(BImgBuff);
               return(-3);
             }
           {
