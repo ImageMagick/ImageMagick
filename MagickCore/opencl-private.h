@@ -413,7 +413,8 @@ extern MagickPrivate cl_mem
 
 extern MagickPrivate MagickBooleanType
   EnqueueOpenCLKernel(cl_command_queue,cl_kernel,cl_uint,const size_t *,
-    const size_t *,const size_t *,const Image *,const Image *,ExceptionInfo *),
+    const size_t *,const size_t *,const Image *,const Image *,
+    MagickBooleanType,ExceptionInfo *),
   InitializeOpenCL(MagickCLEnv,ExceptionInfo *),
   OpenCLThrowMagickException(MagickCLDevice,ExceptionInfo *,
     const char *,const char *,const size_t,const ExceptionType,const char *,

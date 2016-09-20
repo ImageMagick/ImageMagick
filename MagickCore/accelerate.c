@@ -537,7 +537,7 @@ static Image *ComputeAddNoiseImage(const Image *image,MagickCLEnv clEnv,
   }
 
   outputReady=EnqueueOpenCLKernel(queue,addNoiseKernel,1,(const size_t *) NULL,gsize,
-    lsize,image,filteredImage,exception);
+    lsize,image,filteredImage,MagickFalse,exception);
 
 cleanup:
 
@@ -698,7 +698,7 @@ static Image *ComputeBlurImage(const Image* image,MagickCLEnv clEnv,
   lsize[1]=1;
 
   outputReady=EnqueueOpenCLKernel(queue,blurRowKernel,2,(size_t *) NULL,gsize,
-    lsize,image,filteredImage,exception);
+    lsize,image,filteredImage,MagickFalse,exception);
   if (outputReady == MagickFalse)
     goto cleanup;
 
@@ -733,7 +733,7 @@ static Image *ComputeBlurImage(const Image* image,MagickCLEnv clEnv,
   lsize[1]=chunkSize;
 
   outputReady=EnqueueOpenCLKernel(queue,blurColumnKernel,2,(size_t *) NULL,gsize,
-    lsize,image,filteredImage,exception);
+    lsize,image,filteredImage,MagickFalse,exception);
 
 cleanup:
 
@@ -857,7 +857,7 @@ static MagickBooleanType ComputeContrastImage(Image *image,MagickCLEnv clEnv,
   gsize[1]=image->rows;
 
   outputReady=EnqueueOpenCLKernel(queue,contrastKernel,2,(const size_t *) NULL,
-    gsize,(const size_t *) NULL,image,(Image *) NULL,exception);
+    gsize,(const size_t *) NULL,image,(Image *) NULL,MagickFalse,exception);
 
 cleanup:
 
@@ -1586,6 +1586,10 @@ static Image *ComputeConvolveImage(const Image* image,MagickCLEnv clEnv,
   outputReady = MagickFalse;
 
   device = RequestOpenCLDevice(clEnv);
+
+  /* Work around an issue on NVIDIA devices */
+  if (strcmp("NVIDIA Corporation",device->vendor_name) == 0)
+    goto cleanup;
 
   image_view=AcquireAuthenticCacheView(image,exception);
   inputPixels=GetCacheViewAuthenticPixels(image_view,0,0,image->columns,image->rows,exception);
@@ -2820,7 +2824,8 @@ static MagickBooleanType ComputeFunctionImage(Image *image,MagickCLEnv clEnv,
   gsize[0]=image->columns;
   gsize[1]=image->rows;
   outputReady=EnqueueOpenCLKernel(queue,functionKernel,2,(const size_t *) NULL,
-    gsize,(const size_t *) NULL,image,(const Image *) NULL,exception);
+    gsize,(const size_t *) NULL,image,(const Image *) NULL,MagickFalse,
+    exception);
 
 cleanup:
 
@@ -2941,7 +2946,7 @@ static MagickBooleanType ComputeGrayscaleImage(Image *image,MagickCLEnv clEnv,
   gsize[1]=image->rows;
   outputReady=EnqueueOpenCLKernel(queue,grayscaleKernel,2,
     (const size_t *) NULL,gsize,(const size_t *) NULL,image,(Image *) NULL,
-    exception);
+    MagickFalse,exception);
 
 cleanup:
 
@@ -3199,7 +3204,7 @@ static Image *ComputeLocalContrastImage(const Image *image,MagickCLEnv clEnv,
         size_t goffset[2];
 
         gsize[0] = 256;
-        gsize[1] = image->rows / passes;
+        gsize[1] = (image->rows + passes - 1) / passes;
         wsize[0] = 256;
         wsize[1] = 1;
         goffset[0] = 0;
@@ -4101,7 +4106,9 @@ RestoreMSCWarning
   lsize[0]=workgroupSize;
   lsize[1]=1;
   outputReady=EnqueueOpenCLKernel(queue,horizontalKernel,2,
-    (const size_t *) NULL,gsize,lsize,image,filteredImage,exception);
+    (const size_t *) NULL,gsize,lsize,image,filteredImage,MagickFalse,
+    exception);
+
 cleanup:
 
   if (horizontalKernel != (cl_kernel) NULL)
@@ -4283,7 +4290,7 @@ RestoreMSCWarning
   lsize[0]=1;
   lsize[1]=workgroupSize;
   outputReady=EnqueueOpenCLKernel(queue,verticalKernel,2,(const size_t *) NULL,
-    gsize,lsize,image,filteredImage,exception);
+    gsize,lsize,image,filteredImage,MagickFalse,exception);
 
 cleanup:
 
@@ -4631,7 +4638,7 @@ static Image* ComputeRotationalBlurImage(const Image *image,MagickCLEnv clEnv,
   gsize[1]=image->rows;
   outputReady=EnqueueOpenCLKernel(queue,rotationalBlurKernel,2,
     (const size_t *) NULL,gsize,(const size_t *) NULL,image,filteredImage,
-    exception);
+    MagickFalse,exception);
 
 cleanup:
 
@@ -4815,8 +4822,9 @@ static Image *ComputeUnsharpMaskImage(const Image *image,MagickCLEnv clEnv,
   lsize[0]=chunkSize;
   lsize[1]=1;
   outputReady=EnqueueOpenCLKernel(queue,blurRowKernel,2,
-    (const size_t *) NULL,gsize,lsize,image,filteredImage,exception);
-  
+    (const size_t *) NULL,gsize,lsize,image,filteredImage,MagickFalse,
+    exception);
+
   chunkSize=256;
   fGain=(float) gain;
   fThreshold=(float) threshold;
@@ -4847,7 +4855,8 @@ static Image *ComputeUnsharpMaskImage(const Image *image,MagickCLEnv clEnv,
   lsize[0]=1;
   lsize[1]=chunkSize;
   outputReady=EnqueueOpenCLKernel(queue,unsharpMaskBlurColumnKernel,2,
-    (const size_t *) NULL,gsize,lsize,image,filteredImage,exception);
+    (const size_t *) NULL,gsize,lsize,image,filteredImage,MagickFalse,
+    exception);
 
 cleanup:
 
@@ -4971,7 +4980,7 @@ static Image *ComputeUnsharpMaskImageSingle(const Image *image,
   lsize[0]=8;
   lsize[1]=32;
   outputReady=EnqueueOpenCLKernel(queue,unsharpMaskKernel,2,(const size_t *) NULL,
-    gsize,lsize,image,filteredImage,exception);
+    gsize,lsize,image,filteredImage,MagickFalse,exception);
 
 cleanup:
 
@@ -5061,15 +5070,22 @@ static Image *ComputeWaveletDenoiseImage(const Image *image,MagickCLEnv clEnv,
     device;
 
   size_t
+    goffset[2],
     gsize[2],
     i,
-    lsize[2];
+    lsize[2],
+    passes,
+    x;
 
   filteredImage=NULL;
   denoiseKernel=NULL;
+  queue=NULL;
   outputReady=MagickFalse;
 
   device=RequestOpenCLDevice(clEnv);
+  /* Work around an issue on low end Intel devices */
+  if (strcmp("Intel(R) HD Graphics",device->name) == 0)
+    goto cleanup;
   queue=AcquireOpenCLCommandQueue(device);
   filteredImage=CloneImage(image,image->columns,image->rows,MagickTrue,
     exception);
@@ -5099,6 +5115,8 @@ static Image *ComputeWaveletDenoiseImage(const Image *image,MagickCLEnv clEnv,
   if ((max_channels == 4) || (max_channels == 2))
     max_channels=max_channels-1;
   thresh=threshold;
+  passes=(((1.0f*image->columns)*image->rows)+1999999.0f)/2000000.0f;
+  passes=(passes < 1) ? 1 : passes;
 
   i=0;
   status =SetOpenCLKernelArg(denoiseKernel,i++,sizeof(cl_mem),(void *)&imageBuffer);
@@ -5110,18 +5128,26 @@ static Image *ComputeWaveletDenoiseImage(const Image *image,MagickCLEnv clEnv,
   status|=SetOpenCLKernelArg(denoiseKernel,i++,sizeof(cl_uint),(void *)&width);
   status|=SetOpenCLKernelArg(denoiseKernel,i++,sizeof(cl_uint),(void *)&height);
   if (status != CL_SUCCESS)
-  {
-    (void) OpenCLThrowMagickException(device,exception,GetMagickModule(),
-      ResourceLimitWarning,"SetOpenCLKernelArg failed.",".");
-    goto cleanup;
-  }
+    {
+      (void) OpenCLThrowMagickException(device,exception,GetMagickModule(),
+        ResourceLimitWarning,"SetOpenCLKernelArg failed.",".");
+      goto cleanup;
+    }
 
-  gsize[0]=((width+(SIZE-1))/SIZE)*TILESIZE;
-  gsize[1]=((height+(SIZE-1))/SIZE)*4;
-  lsize[0]=TILESIZE;
-  lsize[1]=4;
-  outputReady=EnqueueOpenCLKernel(queue,denoiseKernel,2,(const size_t *) NULL,
-    gsize,lsize,image,filteredImage,exception);
+  for (x = 0; x < passes; ++x)
+  {
+    gsize[0]=((width+(SIZE-1))/SIZE)*TILESIZE;
+    gsize[1]=((((height+(SIZE-1))/SIZE)+passes-1)/passes)*4;
+    lsize[0]=TILESIZE;
+    lsize[1]=4;
+    goffset[0]=0;
+    goffset[1]=x*gsize[1];
+
+    outputReady=EnqueueOpenCLKernel(queue,denoiseKernel,2,goffset,gsize,lsize,
+      image,filteredImage,MagickTrue,exception);
+    if (outputReady == MagickFalse)
+      break;
+  }
 
 cleanup:
 

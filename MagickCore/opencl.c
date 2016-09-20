@@ -1580,7 +1580,7 @@ static void RegisterCacheEvent(MagickCLCacheInfo info,cl_event event)
 MagickPrivate MagickBooleanType EnqueueOpenCLKernel(cl_command_queue queue,
   cl_kernel kernel,cl_uint work_dim,const size_t *offset,const size_t *gsize,
   const size_t *lsize,const Image *input_image,const Image *output_image,
-  ExceptionInfo *exception)
+  MagickBooleanType flush,ExceptionInfo *exception)
 {
   CacheInfo
     *output_info,
@@ -1639,6 +1639,8 @@ MagickPrivate MagickBooleanType EnqueueOpenCLKernel(cl_command_queue queue,
         "clEnqueueNDRangeKernel failed.","'%s'",".");
       return(MagickFalse);
     }
+  if (flush != MagickFalse)
+    openCL_library->clFlush(queue);
   if (RecordProfileData(input_info->opencl->device,kernel,event) == MagickFalse)
     {
       RegisterCacheEvent(input_info->opencl,event);
