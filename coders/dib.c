@@ -652,7 +652,10 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       count=ReadBlob(image,length,pixels);
       if (count != (ssize_t) (length))
-        ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
+        {
+          pixel_info=RelinquishVirtualMemory(pixel_info);
+          ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
+        }
     }
   else
     {
@@ -662,7 +665,11 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       status=DecodeImage(image,dib_info.compression ? MagickTrue : MagickFalse,
         pixels);
       if (status == MagickFalse)
-        ThrowReaderException(CorruptImageError,"UnableToRunlengthDecodeImage");
+        {
+          pixel_info=RelinquishVirtualMemory(pixel_info);
+          ThrowReaderException(CorruptImageError,
+            "UnableToRunlengthDecodeImage");
+        }
     }
   /*
     Initialize image structure.
@@ -879,7 +886,10 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     }
     default:
+    {
+      pixel_info=RelinquishVirtualMemory(pixel_info);
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    }
   }
   pixel_info=RelinquishVirtualMemory(pixel_info);
   if (EOFBlob(image) != MagickFalse)
