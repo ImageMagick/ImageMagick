@@ -220,6 +220,7 @@ static Image *ReadMVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (draw_info->primitive == (char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   (void) DrawImage(image,draw_info);
+  (void) SetImageArtifact(image,"MVG",draw_info->primitive);
   draw_info=DestroyDrawInfo(draw_info);
   (void) CloseBlob(image);
   return(GetFirstImageInList(image));

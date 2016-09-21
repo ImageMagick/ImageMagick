@@ -1737,9 +1737,6 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
     k,
     n;
 
-  /*
-    Ensure the annotation info is valid.
-  */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
@@ -1760,13 +1757,11 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
   if (primitive == (char *) NULL)
     return(MagickFalse);
   primitive_extent=(double) strlen(primitive);
-  (void) SetImageArtifact(image,"MVG",primitive);
   n=0;
   /*
     Allocate primitive info memory.
   */
-  graphic_context=(DrawInfo **) AcquireMagickMemory(
-    sizeof(*graphic_context));
+  graphic_context=(DrawInfo **) AcquireMagickMemory(sizeof(*graphic_context));
   if (graphic_context == (DrawInfo **) NULL)
     {
       primitive=DestroyString(primitive);

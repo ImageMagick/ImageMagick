@@ -43,7 +43,7 @@ require AutoLoader;
       ConfigureError FatalErrorException
     );
 
-$VERSION = '6.94';
+$VERSION = '6.96';
 
 sub AUTOLOAD {
     # This AUTOLOAD is used to 'autoload' constants from the constant()
