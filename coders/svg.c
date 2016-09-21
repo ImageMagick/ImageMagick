@@ -2883,9 +2883,9 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             100.0*QuantumScale*image->background_color.blue);
           (void) FormatLocaleString(opacity,MagickPathExtent,"%.20g",
             QuantumScale*image->background_color.alpha);
-          (void) FormatLocaleString(command,MagickPathExtent,GetDelegateCommands(
-            delegate_info),input_filename,output_filename,density,background,
-            opacity,unique);
+          (void) FormatLocaleString(command,MagickPathExtent,
+            GetDelegateCommands(delegate_info),input_filename,output_filename,
+            density,background,opacity,unique);
           density=DestroyString(density);
           status=ExternalDelegateCommand(MagickFalse,image_info->verbose,
             command,(char *) NULL,exception);
