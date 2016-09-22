@@ -510,9 +510,6 @@ WandExport MagickBooleanType CompositeImageCommand(ImageInfo *image_info,
       }
     if (IsCommandOption(option) == MagickFalse)
       {
-        Image
-          *images;
-
         /*
           Read input image.
         */

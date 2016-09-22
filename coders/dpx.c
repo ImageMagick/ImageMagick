@@ -1236,7 +1236,6 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         length;
 
       ssize_t
-        count,
         offset;
 
       if (status == MagickFalse)

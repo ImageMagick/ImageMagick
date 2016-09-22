@@ -3827,9 +3827,6 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
   option=GetImageOption(image_info,"density");
   if (option != (const char *) NULL)
     {
-      GeometryInfo
-        geometry_info;
-
       flags=ParseGeometry(option,&geometry_info);
       image->resolution.x=geometry_info.rho;
       image->resolution.y=geometry_info.sigma;
