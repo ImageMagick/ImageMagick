@@ -1456,9 +1456,12 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
   if (strlen(format) > 1)
     format[strlen(format)-1]='\0';
   (void) FormatLocaleFile(file,"  Number pixels: %s\n",format);
-  (void) FormatMagickSize((MagickSizeType) ((double) image->columns*image->rows/
-    elapsed_time+0.5),MagickFalse,format);
-  (void) FormatLocaleFile(file,"  Pixels per second: %s\n",format);
+  if (elapsed_time > MagickEpsilon)
+    {
+      (void) FormatMagickSize((MagickSizeType) ((double) image->columns*
+        image->rows/elapsed_time+0.5),MagickFalse,format);
+      (void) FormatLocaleFile(file,"  Pixels per second: %s\n",format);
+    }
   (void) FormatLocaleFile(file,"  User time: %0.3fu\n",user_time);
   (void) FormatLocaleFile(file,"  Elapsed time: %lu:%02lu.%03lu\n",
     (unsigned long) (elapsed_time/60.0),(unsigned long) ceil(fmod(

@@ -790,7 +790,7 @@ AC_DEFUN([AX_COMPILER_FLAGS_LDFLAGS],[
 ])dnl AX_COMPILER_FLAGS
 
 # longlong.m4 serial 17
-dnl Copyright (C) 1999-2007, 2009-2015 Free Software Foundation, Inc.
+dnl Copyright (C) 1999-2007, 2009-2016 Free Software Foundation, Inc.
 dnl This file is free software; the Free Software Foundation
 dnl gives unlimited permission to copy and/or distribute it,
 dnl with or without modifications, as long as this notice is preserved.
