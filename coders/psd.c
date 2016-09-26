@@ -2563,7 +2563,7 @@ static MagickBooleanType WriteImageChannels(const PSDInfo *psd_info,
   channels=1;
   if (separate == MagickFalse)
     {
-      if (image->storage_class != PseudoClass)
+      if (next_image->storage_class != PseudoClass)
         {
           if (IsImageGray(next_image) == MagickFalse)
             channels=next_image->colorspace == CMYKColorspace ? 4 : 3;
