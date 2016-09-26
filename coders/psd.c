@@ -2637,16 +2637,16 @@ static MagickBooleanType WriteImageChannels(const PSDInfo *psd_info,
               count+=length;
             }
         }
-    }
-  if (next_image->alpha_trait != UndefinedPixelTrait)
-    {
-      length=WriteOneChannel(psd_info,image_info,image,next_image,AlphaQuantum,
-        compact_pixels,rows_offset,separate,exception);
-      if (separate != MagickFalse)
-        size_offset+=WritePSDSize(psd_info,image,length,size_offset)+2;
-      else
-        rows_offset+=offset_length;
-      count+=length;
+      if (next_image->alpha_trait != UndefinedPixelTrait)
+        {
+          length=WriteOneChannel(psd_info,image_info,image,next_image,
+            AlphaQuantum,compact_pixels,rows_offset,separate,exception);
+          if (separate != MagickFalse)
+            size_offset+=WritePSDSize(psd_info,image,length,size_offset)+2;
+          else
+            rows_offset+=offset_length;
+          count+=length;
+        }
     }
   compact_pixels=(unsigned char *) RelinquishMagickMemory(compact_pixels);
   if (next_image->colorspace == CMYKColorspace)
