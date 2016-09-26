@@ -2536,10 +2536,13 @@ static MagickBooleanType WriteImageChannels(const PSDInfo *psd_info,
   channels=1;
   if (separate == MagickFalse)
     {
-      if (IsGrayImage(next_image,&next_image->exception) == MagickFalse)
-        channels=next_image->colorspace == CMYKColorspace ? 4 : 3;
-      if (next_image->matte != MagickFalse)
-        channels++;
+      if (image->storage_class != PseudoClass)
+        {
+          if (IsGrayImage(next_image,&next_image->exception) == MagickFalse)
+            channels=next_image->colorspace == CMYKColorspace ? 4 : 3;
+          if (next_image->matte != MagickFalse)
+            channels++;
+        }
       rows_offset=TellBlob(image)+2;
       count+=WriteCompressionStart(psd_info,image,next_image,channels);
       offset_length=(next_image->rows*(psd_info->version == 1 ? 2 : 4));
