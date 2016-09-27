@@ -205,12 +205,12 @@ static MagickBooleanType SGIDecode(const size_t bytes_per_pixel,
           }
         else
           {
+            if (number_packets-- == 0)
+              return(MagickFalse);
             pixel=(size_t) (*p++) << 8;
             pixel|=(*p++);
             for ( ; count != 0; count--)
             {
-              if (number_packets-- == 0)
-                return(MagickFalse);
               *q=(unsigned char) (pixel >> 8);
               *(q+1)=(unsigned char) pixel;
               q+=8;
