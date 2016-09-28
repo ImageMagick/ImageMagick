@@ -1481,8 +1481,6 @@ RestoreMSCWarning
                 }
               }
           }
-        if (image->matte == MagickFalse)
-          image->depth=GetImageDepth(image,exception);
       }
     if (image_info->ping != MagickFalse)
       {
