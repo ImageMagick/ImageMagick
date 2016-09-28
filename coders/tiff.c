@@ -1485,8 +1485,6 @@ RestoreMSCWarning
                 }
               }
           }
-        if (image->alpha_trait == UndefinedPixelTrait)
-          image->depth=GetImageDepth(image,exception);
       }
     if (image_info->ping != MagickFalse)
       {
