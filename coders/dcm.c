@@ -2677,6 +2677,30 @@ static MagickBooleanType IsDCM(const unsigned char *magick,const size_t length)
 %    o exception: return any errors or warnings in this structure.
 %
 */
+typedef struct _DCMInfo
+{
+  MagickBooleanType
+    polarity;
+
+  Quantum
+    *scale;
+
+  size_t
+    bits_allocated,
+    bytes_per_pixel,
+    depth,
+    mask,
+    max_value,
+    samples_per_pixel,
+    signed_data,
+    significant_bits,
+    window_width;
+
+  ssize_t
+    rescale_intercept,
+    rescale_slope,
+    window_center;
+} DCMInfo;
 
 typedef struct _DCMStreamInfo
 {
@@ -2779,6 +2803,173 @@ static signed short ReadDCMSignedShort(DCMStreamInfo *stream_info,Image *image)
   return(quantum.signed_value);
 }
 
+static MagickBooleanType ReadDCMPixels(Image *image,DCMInfo *info,
+  DCMStreamInfo *stream_info,MagickBooleanType first_segment,
+  ExceptionInfo *exception)
+{
+  int
+    byte,
+    index;
+
+  MagickBooleanType
+    status;
+
+  LongPixelPacket
+    pixel;
+
+  register ssize_t
+    i,
+    x;
+
+  register IndexPacket
+    *indexes;
+
+  register PixelPacket
+    *q;
+
+  ssize_t
+    y;
+
+  /*
+    Convert DCM Medical image to pixel packets.
+  */
+  byte=0;
+  i=0;
+  status=MagickTrue;
+
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
+    if (q == (PixelPacket *) NULL)
+      break;
+    indexes=GetAuthenticIndexQueue(image);
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      if (info->samples_per_pixel == 1)
+        {
+          int
+            pixel_value;
+
+          if (info->bytes_per_pixel == 1)
+            pixel_value=info->polarity != MagickFalse ? ((int) info->max_value-
+              ReadDCMByte(stream_info,image)) :
+              ReadDCMByte(stream_info,image);
+          else
+            if ((info->bits_allocated != 12) || (info->significant_bits != 12))
+              {
+                if (info->signed_data)
+                  pixel_value=ReadDCMSignedShort(stream_info,image);
+                else
+                  pixel_value=ReadDCMShort(stream_info,image);
+                if (info->polarity != MagickFalse)
+                  pixel_value=(int) info->max_value-pixel_value;
+              }
+            else
+              {
+                if ((i & 0x01) != 0)
+                  pixel_value=(ReadDCMByte(stream_info,image) << 8) |
+                    byte;
+                else
+                  {
+                    pixel_value=ReadDCMSignedShort(stream_info,image);
+                    byte=(int) (pixel_value & 0x0f);
+                    pixel_value>>=4;
+                  }
+                i++;
+              }
+          index=(pixel_value*info->rescale_slope)+info->rescale_intercept;
+          if (info->window_width == 0)
+            {
+              if (info->signed_data == 1)
+                index-=32767;
+            }
+          else
+            {
+              ssize_t
+                window_max,
+                window_min;
+
+              window_min=(ssize_t) ceil((double) info->window_center-
+                (info->window_width-1.0)/2.0-0.5);
+              window_max=(ssize_t) floor((double) info->window_center+
+                (info->window_width-1.0)/2.0+0.5);
+              if ((ssize_t) index <= window_min)
+                index=0;
+              else
+                if ((ssize_t) index > window_max)
+                  index=(int) info->max_value;
+                else
+                  index=(int) (info->max_value*(((index-info->window_center-
+                    0.5)/(info->window_width-1))+0.5));
+            }
+          index&=info->mask;
+          index=(int) ConstrainColormapIndex(image,(size_t) index);
+          if (first_segment != MagickFalse)
+            SetPixelIndex(indexes+x,index);
+          else
+            SetPixelIndex(indexes+x,(((size_t) GetPixelIndex(indexes+x)) |
+              (((size_t) index) << 8)));
+          pixel.red=1U*image->colormap[index].red;
+          pixel.green=1U*image->colormap[index].green;
+          pixel.blue=1U*image->colormap[index].blue;
+        }
+      else
+        {
+          if (info->bytes_per_pixel == 1)
+            {
+              pixel.red=(unsigned int) ReadDCMByte(stream_info,image);
+              pixel.green=(unsigned int) ReadDCMByte(stream_info,image);
+              pixel.blue=(unsigned int) ReadDCMByte(stream_info,image);
+            }
+          else
+            {
+              pixel.red=ReadDCMShort(stream_info,image);
+              pixel.green=ReadDCMShort(stream_info,image);
+              pixel.blue=ReadDCMShort(stream_info,image);
+            }
+          pixel.red&=info->mask;
+          pixel.green&=info->mask;
+          pixel.blue&=info->mask;
+          if (info->scale != (Quantum *) NULL)
+            {
+              if (pixel.red <= GetQuantumRange(info->depth))
+                pixel.red=info->scale[pixel.red];
+              if (pixel.green <= GetQuantumRange(info->depth))
+                pixel.green=info->scale[pixel.green];
+              if (pixel.blue <= GetQuantumRange(info->depth))
+                pixel.blue=info->scale[pixel.blue];
+            }
+        }
+      if (first_segment != MagickFalse)
+        {
+          SetPixelRed(q,pixel.red);
+          SetPixelGreen(q,pixel.green);
+          SetPixelBlue(q,pixel.blue);
+        }
+      else
+        {
+          SetPixelRed(q,(((size_t) GetPixelRed(q)) |
+            (((size_t) pixel.red) << 8)));
+          SetPixelGreen(q,(((size_t) GetPixelGreen(q)) |
+            (((size_t) pixel.green) << 8)));
+          SetPixelBlue(q,(((size_t) GetPixelBlue(q)) |
+            (((size_t) pixel.blue) << 8)));
+        }
+      q++;
+    }
+    if (SyncAuthenticPixels(image,exception) == MagickFalse)
+      break;
+    if (image->previous == (Image *) NULL)
+      {
+        status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
+          image->rows);
+        if (status == MagickFalse)
+          break;
+      }
+  }
+  return(status);
+}
+
 static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   char
@@ -2786,6 +2977,9 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     implicit_vr[MaxTextExtent],
     magick[MaxTextExtent],
     photometric[MaxTextExtent];
+
+  DCMInfo
+    info;
 
   DCMStreamInfo
     *stream_info;
@@ -2798,7 +2992,6 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     datum,
     *greenmap,
     *graymap,
-    index,
     *redmap;
 
   MagickBooleanType
@@ -2811,47 +3004,24 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickOffsetType
     offset;
 
-  Quantum
-    *scale;
-
-  register IndexPacket
-    *indexes;
-
-  register ssize_t
-    i,
-    x;
-
-  register PixelPacket
-    *q;
-
   register unsigned char
     *p;
 
+  register ssize_t
+    i;
+
   size_t
-    bits_allocated,
-    bytes_per_pixel,
     colors,
-    depth,
     height,
     length,
-    mask,
-    max_value,
     number_scenes,
     quantum,
-    samples_per_pixel,
-    signed_data,
-    significant_bits,
     status,
-    width,
-    window_width;
+    width;
 
   ssize_t
     count,
-    rescale_intercept,
-    rescale_slope,
-    scene,
-    window_center,
-    y;
+    scene;
 
   unsigned char
     *data;
@@ -2900,11 +3070,21 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Read DCM Medical image.
   */
   (void) CopyMagickString(photometric,"MONOCHROME1 ",MaxTextExtent);
-  bits_allocated=8;
-  bytes_per_pixel=1;
+  info.bits_allocated=8;
+  info.bytes_per_pixel=1;
+  info.depth=8;
+  info.max_value=255UL;
+  info.mask=0xffff;
+  info.rescale_intercept=0;
+  info.rescale_slope=1;
+  info.samples_per_pixel=1;
+  info.scale=(Quantum *) NULL;
+  info.signed_data=(~0UL);
+  info.significant_bits=0;
+  info.window_center=0;
+  info.window_width=0;
   polarity=MagickFalse;
   data=(unsigned char *) NULL;
-  depth=8;
   element=0;
   explicit_vr[2]='\0';
   explicit_file=MagickFalse;
@@ -2914,21 +3094,11 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   bluemap=(int *) NULL;
   graymap=(int *) NULL;
   height=0;
-  max_value=255UL;
-  mask=0xffff;
   number_scenes=1;
-  rescale_intercept=0;
-  rescale_slope=1;
-  samples_per_pixel=1;
-  scale=(Quantum *) NULL;
   sequence=MagickFalse;
-  signed_data=(~0UL);
-  significant_bits=0;
   use_explicit=MagickFalse;
   explicit_retry = MagickFalse;
   width=0;
-  window_center=0;
-  window_width=0;
   for (group=0; (group != 0x7FE0) || (element != 0x0010) ||
                 (sequence != MagickFalse); )
   {
@@ -3211,7 +3381,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Samples per pixel.
             */
-            samples_per_pixel=(size_t) datum;
+            info.samples_per_pixel=(size_t) datum;
             break;
           }
           case 0x0004:
@@ -3224,7 +3394,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             for (i=0; i < (ssize_t) MagickMin(length,MaxTextExtent-1); i++)
               photometric[i]=(char) data[i];
             photometric[i]='\0';
-            polarity=LocaleCompare(photometric,"MONOCHROME1 ") == 0 ?
+            info.polarity=LocaleCompare(photometric,"MONOCHROME1 ") == 0 ?
               MagickTrue : MagickFalse;
             break;
           }
@@ -3268,14 +3438,14 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Bits allocated.
             */
-            bits_allocated=(size_t) datum;
-            bytes_per_pixel=1;
+            info.bits_allocated=(size_t) datum;
+            info.bytes_per_pixel=1;
             if (datum > 8)
-              bytes_per_pixel=2;
-            depth=bits_allocated;
-            if (depth > 32)
+              info.bytes_per_pixel=2;
+            info.depth=info.bits_allocated;
+            if (info.depth > 32)
               ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-            max_value=(1UL << bits_allocated)-1;
+            info.max_value=(1UL << info.bits_allocated)-1;
             break;
           }
           case 0x0101:
@@ -3283,15 +3453,15 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Bits stored.
             */
-            significant_bits=(size_t) datum;
-            bytes_per_pixel=1;
-            if (significant_bits > 8)
-              bytes_per_pixel=2;
-            depth=significant_bits;
-            if (depth > 32)
+            info.significant_bits=(size_t) datum;
+            info.bytes_per_pixel=1;
+            if (info.significant_bits > 8)
+              info.bytes_per_pixel=2;
+            info.depth=info.significant_bits;
+            if (info.depth > 32)
               ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-            max_value=(1UL << significant_bits)-1;
-            mask=(size_t) GetQuantumRange(significant_bits);
+            info.max_value=(1UL << info.significant_bits)-1;
+            info.mask=(size_t) GetQuantumRange(info.significant_bits);
             break;
           }
           case 0x0102:
@@ -3306,7 +3476,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Pixel representation.
             */
-            signed_data=(size_t) datum;
+            info.signed_data=(size_t) datum;
             break;
           }
           case 0x1050:
@@ -3315,7 +3485,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               Visible pixel range: center.
             */
             if (data != (unsigned char *) NULL)
-              window_center=(ssize_t) StringToLong((char *) data);
+              info.window_center=(ssize_t) StringToLong((char *) data);
             break;
           }
           case 0x1051:
@@ -3324,7 +3494,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               Visible pixel range: width.
             */
             if (data != (unsigned char *) NULL)
-              window_width=StringToUnsignedLong((char *) data);
+              info.window_width=StringToUnsignedLong((char *) data);
             break;
           }
           case 0x1052:
@@ -3333,7 +3503,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               Rescale intercept
             */
             if (data != (unsigned char *) NULL)
-              rescale_intercept=(ssize_t) StringToLong((char *) data);
+              info.rescale_intercept=(ssize_t) StringToLong((char *) data);
             break;
           }
           case 0x1053:
@@ -3342,7 +3512,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               Rescale slope
             */
             if (data != (unsigned char *) NULL)
-              rescale_slope=(ssize_t) StringToLong((char *) data);
+              info.rescale_slope=(ssize_t) StringToLong((char *) data);
             break;
           }
           case 0x1200:
@@ -3353,14 +3523,14 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             */
             if (data == (unsigned char *) NULL)
               break;
-            colors=(size_t) (length/bytes_per_pixel);
+            colors=(size_t) (length/info.bytes_per_pixel);
             datum=(int) colors;
             graymap=(int *) AcquireQuantumMemory((size_t) colors,
               sizeof(*graymap));
             if (graymap == (int *) NULL)
               ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
             for (i=0; i < (ssize_t) colors; i++)
-              if (bytes_per_pixel == 1)
+              if (info.bytes_per_pixel == 1)
                 graymap[i]=(int) data[i];
               else
                 graymap[i]=(int) ((short *) data)[i];
@@ -3542,8 +3712,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   image->columns=(size_t) width;
   image->rows=(size_t) height;
-  if (signed_data == 0xffff)
-    signed_data=(size_t) (significant_bits == 16 ? 1 : 0);
+  if (info.signed_data == 0xffff)
+    info.signed_data=(size_t) (info.significant_bits == 16 ? 1 : 0);
   if ((image->compression == JPEGCompression) ||
       (image->compression == JPEG2000Compression))
     {
@@ -3665,7 +3835,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image=DestroyImage(image);
       return(GetFirstImageInList(images));
     }
-  if (depth != (1UL*MAGICKCORE_QUANTUM_DEPTH))
+  if (info.depth != (1UL*MAGICKCORE_QUANTUM_DEPTH))
     {
       QuantumAny
         range;
@@ -3676,13 +3846,13 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Compute pixel scaling table.
       */
-      length=(size_t) (GetQuantumRange(depth)+1);
-      scale=(Quantum *) AcquireQuantumMemory(length,sizeof(*scale));
-      if (scale == (Quantum *) NULL)
+      length=(size_t) (GetQuantumRange(info.depth)+1);
+      info.scale=(Quantum *) AcquireQuantumMemory(length,sizeof(*info.scale));
+      if (info.scale == (Quantum *) NULL)
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-      range=GetQuantumRange(depth);
-      for (i=0; i <= (ssize_t) GetQuantumRange(depth); i++)
-        scale[i]=ScaleAnyToQuantum((size_t) i,range);
+      range=GetQuantumRange(info.depth);
+      for (i=0; i <= (ssize_t) GetQuantumRange(info.depth); i++)
+        info.scale[i]=ScaleAnyToQuantum((size_t) i,range);
     }
   if (image->compression == RLECompression)
     {
@@ -3723,7 +3893,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     image->columns=(size_t) width;
     image->rows=(size_t) height;
-    image->depth=depth;
+    image->depth=info.depth;
     status=SetImageExtent(image,image->columns,image->rows);
     if (status == MagickFalse)
       {
@@ -3731,46 +3901,54 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       }
     image->colorspace=RGBColorspace;
-    if ((image->colormap == (PixelPacket *) NULL) && (samples_per_pixel == 1))
+    if ((image->colormap == (PixelPacket *) NULL) &&
+        (info.samples_per_pixel == 1))
       {
+        int
+          index;
+
         size_t
           one;
 
         one=1;
         if (colors == 0)
-          colors=one << depth;
-        if (AcquireImageColormap(image,one << depth) == MagickFalse)
+          colors=one << info.depth;
+        if (AcquireImageColormap(image,one << info.depth) == MagickFalse)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         if (redmap != (int *) NULL)
           for (i=0; i < (ssize_t) colors; i++)
           {
             index=redmap[i];
-            if ((scale != (Quantum *) NULL) && (index <= (int) max_value))
-              index=(int) scale[index];
+            if ((info.scale != (Quantum *) NULL) &&
+                (index <= (int) info.max_value))
+              index=(int) info.scale[index];
             image->colormap[i].red=(Quantum) index;
           }
         if (greenmap != (int *) NULL)
           for (i=0; i < (ssize_t) colors; i++)
           {
             index=greenmap[i];
-            if ((scale != (Quantum *) NULL) && (index <= (int) max_value))
-              index=(int) scale[index];
+            if ((info.scale != (Quantum *) NULL) &&
+                (index <= (int) info.max_value))
+              index=(int) info.scale[index];
             image->colormap[i].green=(Quantum) index;
           }
         if (bluemap != (int *) NULL)
           for (i=0; i < (ssize_t) colors; i++)
           {
             index=bluemap[i];
-            if ((scale != (Quantum *) NULL) && (index <= (int) max_value))
-              index=(int) scale[index];
+            if ((info.scale != (Quantum *) NULL) &&
+                (index <= (int) info.max_value))
+              index=(int) info.scale[index];
             image->colormap[i].blue=(Quantum) index;
           }
         if (graymap != (int *) NULL)
           for (i=0; i < (ssize_t) colors; i++)
           {
             index=graymap[i];
-            if ((scale != (Quantum *) NULL) && (index <= (int) max_value))
-              index=(int) scale[index];
+            if ((info.scale != (Quantum *) NULL) &&
+                (index <= (int) info.max_value))
+              index=(int) info.scale[index];
             image->colormap[i].red=(Quantum) index;
             image->colormap[i].green=(Quantum) index;
             image->colormap[i].blue=(Quantum) index;
@@ -3795,19 +3973,28 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         stream_info->segment_count=ReadBlobLSBLong(image);
         if (stream_info->segment_count > 1)
           {
-            bytes_per_pixel=1;
-            depth=8;
+            info.bytes_per_pixel=1;
+            info.depth=8;
           }
         for (i=0; i < 15; i++)
           stream_info->segments[i]=(ssize_t) ReadBlobLSBSignedLong(image);
         stream_info->remaining-=64;
       }
-    if ((samples_per_pixel > 1) && (image->interlace == PlaneInterlace))
+    if ((info.samples_per_pixel > 1) && (image->interlace == PlaneInterlace))
       {
+        register ssize_t
+          x;
+
+        register PixelPacket
+          *q;
+
+        ssize_t
+          y;
+
         /*
           Convert Planar RGB DCM Medical image to pixel packets.
         */
-        for (i=0; i < (ssize_t) samples_per_pixel; i++)
+        for (i=0; i < (ssize_t) info.samples_per_pixel; i++)
         {
           for (y=0; y < (ssize_t) image->rows; y++)
           {
@@ -3864,255 +4051,20 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         const char
           *option;
 
-        int
-          byte;
-
-        LongPixelPacket
-          pixel;
-
         /*
           Convert DCM Medical image to pixel packets.
         */
-        byte=0;
-        i=0;
-        if ((window_center != 0) && (window_width == 0))
-          window_width=(size_t) window_center;
+        if ((info.window_center != 0) && (info.window_width == 0))
+          info.window_width=(size_t) info.window_center;
         option=GetImageOption(image_info,"dcm:display-range");
         if (option != (const char *) NULL)
           {
             if (LocaleCompare(option,"reset") == 0)
-              window_width=0;
+              info.window_width=0;
           }
-        (void) ResetMagickMemory(&pixel,0,sizeof(pixel));
-        for (y=0; y < (ssize_t) image->rows; y++)
-        {
-          q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-          if (q == (PixelPacket *) NULL)
-            break;
-          indexes=GetAuthenticIndexQueue(image);
-          for (x=0; x < (ssize_t) image->columns; x++)
-          {
-            if (samples_per_pixel == 1)
-              {
-                int
-                  pixel_value;
-
-                if (bytes_per_pixel == 1)
-                  pixel_value=polarity != MagickFalse ? ((int) max_value-
-                    ReadDCMByte(stream_info,image)) :
-                    ReadDCMByte(stream_info,image);
-                else
-                  if ((bits_allocated != 12) || (significant_bits != 12))
-                    {
-                      if (signed_data)
-                        pixel_value=ReadDCMSignedShort(stream_info,image);
-                      else
-                        pixel_value=ReadDCMShort(stream_info,image);
-                      if (polarity != MagickFalse)
-                        pixel_value=(int)max_value-pixel_value;
-                    }
-                  else
-                    {
-                      if ((i & 0x01) != 0)
-                        pixel_value=(ReadDCMByte(stream_info,image) << 8) |
-                          byte;
-                      else
-                        {
-                          pixel_value=ReadDCMSignedShort(stream_info,image);
-                          byte=(int) (pixel_value & 0x0f);
-                          pixel_value>>=4;
-                        }
-                      i++;
-                    }
-                index=(pixel_value*rescale_slope)+rescale_intercept;
-                if (window_width == 0)
-                  {
-                    if (signed_data == 1)
-                      index-=32767;
-                  }
-                else
-                  {
-                    ssize_t
-                      window_max,
-                      window_min;
-
-                    window_min=(ssize_t) ceil((double) window_center-
-                      (window_width-1.0)/2.0-0.5);
-                    window_max=(ssize_t) floor((double) window_center+
-                      (window_width-1.0)/2.0+0.5);
-                    if ((ssize_t) index <= window_min)
-                      index=0;
-                    else
-                      if ((ssize_t) index > window_max)
-                        index=(int) max_value;
-                      else
-                        index=(int) (max_value*(((index-window_center-
-                          0.5)/(window_width-1))+0.5));
-                  }
-                index&=mask;
-                index=(int) ConstrainColormapIndex(image,(size_t) index);
-                SetPixelIndex(indexes+x,index);
-                pixel.red=1U*image->colormap[index].red;
-                pixel.green=1U*image->colormap[index].green;
-                pixel.blue=1U*image->colormap[index].blue;
-              }
-            else
-              {
-                if (bytes_per_pixel == 1)
-                  {
-                    pixel.red=(unsigned int) ReadDCMByte(stream_info,image);
-                    pixel.green=(unsigned int) ReadDCMByte(stream_info,image);
-                    pixel.blue=(unsigned int) ReadDCMByte(stream_info,image);
-                  }
-                else
-                  {
-                    pixel.red=ReadDCMShort(stream_info,image);
-                    pixel.green=ReadDCMShort(stream_info,image);
-                    pixel.blue=ReadDCMShort(stream_info,image);
-                  }
-                pixel.red&=mask;
-                pixel.green&=mask;
-                pixel.blue&=mask;
-                if (scale != (Quantum *) NULL)
-                  {
-                    if (pixel.red <= GetQuantumRange(depth))
-                      pixel.red=scale[pixel.red];
-                    if (pixel.green <= GetQuantumRange(depth))
-                      pixel.green=scale[pixel.green];
-                    if (pixel.blue <= GetQuantumRange(depth))
-                      pixel.blue=scale[pixel.blue];
-                  }
-              }
-            SetPixelRed(q,pixel.red);
-            SetPixelGreen(q,pixel.green);
-            SetPixelBlue(q,pixel.blue);
-            q++;
-          }
-          if (SyncAuthenticPixels(image,exception) == MagickFalse)
-            break;
-          if (image->previous == (Image *) NULL)
-            {
-              status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
-                image->rows);
-              if (status == MagickFalse)
-                break;
-            }
-        }
-        if (stream_info->segment_count > 1)
-          for (y=0; y < (ssize_t) image->rows; y++)
-          {
-            q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-            if (q == (PixelPacket *) NULL)
-              break;
-            indexes=GetAuthenticIndexQueue(image);
-            for (x=0; x < (ssize_t) image->columns; x++)
-            {
-              if (samples_per_pixel == 1)
-                {
-                  int
-                    pixel_value;
-
-                  if (bytes_per_pixel == 1)
-                    pixel_value=polarity != MagickFalse ? ((int) max_value-
-                      ReadDCMByte(stream_info,image)) :
-                      ReadDCMByte(stream_info,image);
-                  else
-                    if ((bits_allocated != 12) || (significant_bits != 12))
-                      {
-                        pixel_value=(int) (polarity != MagickFalse ? (max_value-
-                          ReadDCMShort(stream_info,image)) :
-                          ReadDCMShort(stream_info,image));
-                        if (signed_data == 1)
-                          pixel_value=((signed short) pixel_value);
-                      }
-                    else
-                      {
-                        if ((i & 0x01) != 0)
-                          pixel_value=(ReadDCMByte(stream_info,image) << 8) |
-                            byte;
-                        else
-                          {
-                            pixel_value=ReadDCMShort(stream_info,image);
-                            byte=(int) (pixel_value & 0x0f);
-                            pixel_value>>=4;
-                          }
-                        i++;
-                      }
-                  index=(pixel_value*rescale_slope)+rescale_intercept;
-                  if (window_width == 0)
-                    {
-                      if (signed_data == 1)
-                        index-=32767;
-                    }
-                  else
-                    {
-                      ssize_t
-                        window_max,
-                        window_min;
-
-                      window_min=(ssize_t) ceil((double) window_center-
-                        (window_width-1.0)/2.0-0.5);
-                      window_max=(ssize_t) floor((double) window_center+
-                        (window_width-1.0)/2.0+0.5);
-                      if ((ssize_t) index <= window_min)
-                        index=0;
-                      else
-                        if ((ssize_t) index > window_max)
-                          index=(int) max_value;
-                        else
-                          index=(int) (max_value*(((index-window_center-
-                            0.5)/(window_width-1))+0.5));
-                    }
-                  index&=mask;
-                  index=(int) ConstrainColormapIndex(image,(size_t) index);
-                  SetPixelIndex(indexes+x,(((size_t) GetPixelIndex(indexes+x)) |
-                    (((size_t) index) << 8)));
-                  pixel.red=1U*image->colormap[index].red;
-                  pixel.green=1U*image->colormap[index].green;
-                  pixel.blue=1U*image->colormap[index].blue;
-                }
-              else
-                {
-                  if (bytes_per_pixel == 1)
-                    {
-                      pixel.red=(unsigned int) ReadDCMByte(stream_info,image);
-                      pixel.green=(unsigned int) ReadDCMByte(stream_info,image);
-                      pixel.blue=(unsigned int) ReadDCMByte(stream_info,image);
-                    }
-                  else
-                    {
-                      pixel.red=ReadDCMShort(stream_info,image);
-                      pixel.green=ReadDCMShort(stream_info,image);
-                      pixel.blue=ReadDCMShort(stream_info,image);
-                    }
-                  pixel.red&=mask;
-                  pixel.green&=mask;
-                  pixel.blue&=mask;
-                  if (scale != (Quantum *) NULL)
-                    {
-                      pixel.red=scale[pixel.red];
-                      pixel.green=scale[pixel.green];
-                      pixel.blue=scale[pixel.blue];
-                    }
-                }
-              SetPixelRed(q,(((size_t) GetPixelRed(q)) |
-                (((size_t) pixel.red) << 8)));
-              SetPixelGreen(q,(((size_t) GetPixelGreen(q)) |
-                (((size_t) pixel.green) << 8)));
-              SetPixelBlue(q,(((size_t) GetPixelBlue(q)) |
-                (((size_t) pixel.blue) << 8)));
-              q++;
-            }
-            if (SyncAuthenticPixels(image,exception) == MagickFalse)
-              break;
-            if (image->previous == (Image *) NULL)
-              {
-                status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
-                  image->rows);
-                if (status == MagickFalse)
-                  break;
-              }
-          }
+        status=ReadDCMPixels(image,&info,stream_info,MagickTrue,exception);
+        if ((status != MagickFalse) && (stream_info->segment_count > 1))
+          ReadDCMPixels(image,&info,stream_info,MagickFalse,exception);
       }
     if (SetImageGray(image,exception) != MagickFalse)
       (void) SetImageColorspace(image,GRAYColorspace);
@@ -4153,8 +4105,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     stream_info->offsets=(ssize_t *)
       RelinquishMagickMemory(stream_info->offsets);
   stream_info=(DCMStreamInfo *) RelinquishMagickMemory(stream_info);
-  if (scale != (Quantum *) NULL)
-    scale=(Quantum *) RelinquishMagickMemory(scale);
+  if (info.scale != (Quantum *) NULL)
+    info.scale=(Quantum *) RelinquishMagickMemory(info.scale);
   if (graymap != (int *) NULL)
     graymap=(int *) RelinquishMagickMemory(graymap);
   if (bluemap != (int *) NULL)
