@@ -1326,8 +1326,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       saved_pos=TellBlob(image);
       /* seek to the layer offset */
       if (SeekBlob(image,offset,SEEK_SET) != offset)
-        ThrowBinaryException(CorruptImageError,"NotEnoughPixelData",
-          image->filename);
+        ThrowReaderException(CorruptImageError,"NotEnoughPixelData");
       /* read in the layer */
       layer_ok=ReadOneLayer(image_info,image,&doc_info,
         &layer_info[current_layer],current_layer,exception);
