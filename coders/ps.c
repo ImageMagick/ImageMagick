@@ -980,7 +980,8 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   do
   {
-    (void) CopyMagickString(postscript_image->filename,filename,MagickPathExtent);
+    (void) CopyMagickString(postscript_image->filename,filename,
+      MagickPathExtent);
     (void) CopyMagickString(postscript_image->magick,image->magick,
       MagickPathExtent);
     if (columns != 0)
