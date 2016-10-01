@@ -399,10 +399,17 @@ static ssize_t parse8BIM(Image *ifile, Image *ofile)
             {
               if (brkused && next > 0)
                 {
+                  size_t
+                    codes_length;
+
                   char
                     *s = &token[next-1];
 
-                  len -= (ssize_t) convertHTMLcodes(s,strlen(s));
+                  codes_length=convertHTMLcodes(s, strlen(s));
+                  if (codes_length > len)
+                    len=0;
+                  else
+                    len-=codes_length;
                 }
             }
 
@@ -695,10 +702,17 @@ static ssize_t parse8BIMW(Image *ifile, Image *ofile)
             {
               if (brkused && next > 0)
                 {
+                  size_t
+                    codes_length;
+
                   char
                     *s = &token[next-1];
 
-                  len -= (ssize_t) convertHTMLcodes(s,strlen(s));
+                  codes_length=convertHTMLcodes(s, strlen(s));
+                  if (codes_length > len)
+                    len=0;
+                  else
+                    len-=codes_length;
                 }
             }
 
