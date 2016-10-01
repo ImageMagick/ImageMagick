@@ -195,9 +195,7 @@ static const MagicMapInfo
     { "XBM", 0, MagicPattern("#define") },
     { "XCF", 0, MagicPattern("gimp xcf") },
     { "XEF", 0, MagicPattern("FOVb") },
-    { "XPM", 1, MagicPattern("* XPM *") },
-    { "XWD", 4, MagicPattern("\007\000\000") },
-    { "XWD", 5, MagicPattern("\000\000\007") }
+    { "XPM", 1, MagicPattern("* XPM *") }
  };
 
 static LinkedListInfo
