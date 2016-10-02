@@ -2997,7 +2997,6 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickBooleanType
     explicit_file,
     explicit_retry,
-    polarity,
     sequence,
     use_explicit;
 
@@ -3083,7 +3082,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   info.significant_bits=0;
   info.window_center=0;
   info.window_width=0;
-  polarity=MagickFalse;
+  info.polarity=MagickFalse;
   data=(unsigned char *) NULL;
   element=0;
   explicit_vr[2]='\0';
@@ -3633,7 +3632,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             if ((data != (unsigned char *) NULL) &&
                 (strncmp((char *) data,"INVERSE",7) == 0))
-              polarity=MagickTrue;
+              info.polarity=MagickTrue;
             break;
           }
           default:
