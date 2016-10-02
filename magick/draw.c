@@ -1757,6 +1757,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
   if (primitive == (char *) NULL)
     return(MagickFalse);
   primitive_extent=(double) strlen(primitive);
+  (void) SetImageArtifact(image,"MVG",primitive);
   n=0;
   /*
     Allocate primitive info memory.
