@@ -132,7 +132,8 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
   if (image == (Image *) NULL)
     return((Image *) NULL);
   (void) SetImageAlpha(image,(Quantum) TransparentAlpha,exception);
-  (void) CopyMagickString(image->filename,image_info->filename,MagickPathExtent);
+  (void) CopyMagickString(image->filename,image_info->filename,
+    MagickPathExtent);
   icc_color=MagickFalse;
   if (LocaleCompare(colorname,"icc") == 0)
     {
@@ -145,7 +146,8 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   stops[0].offset=0.0;
   stops[1].offset=1.0;
-  status=QueryColorCompliance(colorname,AllCompliance,&stops[0].color,exception);
+  status=QueryColorCompliance(colorname,AllCompliance,&stops[0].color,
+    exception);
   if (status == MagickFalse)
     {
       stops=(StopInfo *) RelinquishMagickMemory(stops);
@@ -160,7 +162,8 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
     (void) sscanf(image_info->filename,"%*[^-]-%[^-]",colorname);
   else
     (void) sscanf(image_info->filename,"%*[^-]-%*[^-]-%[^-]",colorname);
-  status=QueryColorCompliance(colorname,AllCompliance,&stops[1].color,exception);
+  status=QueryColorCompliance(colorname,AllCompliance,&stops[1].color,
+    exception);
   if (status == MagickFalse)
     {
       stops=(StopInfo *) RelinquishMagickMemory(stops);
