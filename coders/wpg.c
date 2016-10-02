@@ -1030,6 +1030,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
   image->colors = 0;
   bpp=0;
   BitmapHeader2.RotAngle=0;
+  Rec2.RecordLength = 0;
 
   switch(Header.FileType)
     {
