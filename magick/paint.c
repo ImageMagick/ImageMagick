@@ -459,8 +459,8 @@ MagickExport MagickBooleanType GradientImage(Image *image,
   artifact=GetImageArtifact(image,"gradient:bounding-box");
   if (artifact != (const char *) NULL)
     (void) ParseAbsoluteGeometry(artifact,&gradient->bounding_box);
-  gradient->gradient_vector.x2=(double) image->columns-1.0;
-  gradient->gradient_vector.y2=(double) image->rows-1.0;
+  gradient->gradient_vector.x2=(double) image->columns;
+  gradient->gradient_vector.y2=(double) image->rows;
   artifact=GetImageArtifact(image,"gradient:direction");
   if (artifact != (const char *) NULL)
     {
@@ -473,8 +473,8 @@ MagickExport MagickBooleanType GradientImage(Image *image,
       {
         case NorthWestGravity:
         {
-          gradient->gradient_vector.x1=(double) image->columns-1.0;
-          gradient->gradient_vector.y1=(double) image->rows-1.0;
+          gradient->gradient_vector.x1=(double) image->columns;
+          gradient->gradient_vector.y1=(double) image->rows;
           gradient->gradient_vector.x2=0.0;
           gradient->gradient_vector.y2=0.0;
           break;
@@ -482,7 +482,7 @@ MagickExport MagickBooleanType GradientImage(Image *image,
         case NorthGravity:
         {
           gradient->gradient_vector.x1=0.0;
-          gradient->gradient_vector.y1=(double) image->rows-1.0;
+          gradient->gradient_vector.y1=(double) image->rows;
           gradient->gradient_vector.x2=0.0;
           gradient->gradient_vector.y2=0.0;
           break;
@@ -490,14 +490,14 @@ MagickExport MagickBooleanType GradientImage(Image *image,
         case NorthEastGravity:
         {
           gradient->gradient_vector.x1=0.0;
-          gradient->gradient_vector.y1=(double) image->rows-1.0;
-          gradient->gradient_vector.x2=(double) image->columns-1.0;
+          gradient->gradient_vector.y1=(double) image->rows;
+          gradient->gradient_vector.x2=(double) image->columns;
           gradient->gradient_vector.y2=0.0;
           break;
         }
         case WestGravity:
         {
-          gradient->gradient_vector.x1=(double) image->columns-1.0;
+          gradient->gradient_vector.x1=(double) image->columns;
           gradient->gradient_vector.y1=0.0;
           gradient->gradient_vector.x2=0.0;
           gradient->gradient_vector.y2=0.0;
@@ -507,16 +507,16 @@ MagickExport MagickBooleanType GradientImage(Image *image,
         {
           gradient->gradient_vector.x1=0.0;
           gradient->gradient_vector.y1=0.0;
-          gradient->gradient_vector.x2=(double) image->columns-1.0;
+          gradient->gradient_vector.x2=(double) image->columns;
           gradient->gradient_vector.y2=0.0;
           break;
         }
         case SouthWestGravity:
         {
-          gradient->gradient_vector.x1=(double) image->columns-1.0;
+          gradient->gradient_vector.x1=(double) image->columns;
           gradient->gradient_vector.y1=0.0;
           gradient->gradient_vector.x2=0.0;
-          gradient->gradient_vector.y2=(double) image->rows-1.0;
+          gradient->gradient_vector.y2=(double) image->rows;
           break;
         }
         case SouthGravity:
@@ -524,15 +524,15 @@ MagickExport MagickBooleanType GradientImage(Image *image,
           gradient->gradient_vector.x1=0.0;
           gradient->gradient_vector.y1=0.0;
           gradient->gradient_vector.x2=0.0;
-          gradient->gradient_vector.y2=(double) image->columns-1.0;
+          gradient->gradient_vector.y2=(double) image->columns;
           break;
         }
         case SouthEastGravity:
         {
           gradient->gradient_vector.x1=0.0;
           gradient->gradient_vector.y1=0.0;
-          gradient->gradient_vector.x2=(double) image->columns-1.0;
-          gradient->gradient_vector.y2=(double) image->rows-1.0;
+          gradient->gradient_vector.x2=(double) image->columns;
+          gradient->gradient_vector.y2=(double) image->rows;
           break;
         }
         default:
