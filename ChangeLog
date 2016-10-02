@@ -1,3 +1,6 @@
+2016-10-02  6.9.6-0 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 6.9.6-0, GIT revision 11078:9aec251:20161002.
+
 2016-09-27  6.9.6-0 Dirk Lemstra <dirk@lem.....org>
   * Fixed incorrect RLE decoding when reading an SGI image (reference 
     https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=30514)
