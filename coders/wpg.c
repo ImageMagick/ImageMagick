@@ -1075,7 +1075,9 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
             case 0x0E:  /*Color palette */
               WPG_Palette.StartIndex=ReadBlobLSBShort(image);
               WPG_Palette.NumOfEntries=ReadBlobLSBShort(image);
-
+              if ((WPG_Palette.NumOfEntries-WPG_Palette.StartIndex) >
+                  (Rec2.RecordLength-2-2) / 3)
+                ThrowReaderException(CorruptImageError,"InvalidColormapIndex");
               image->colors=WPG_Palette.NumOfEntries;
               if (!AcquireImageColormap(image,image->colors))
                 goto NoMemory;
@@ -1276,7 +1278,9 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
             case 0x0C:    /* Color palette */
               WPG_Palette.StartIndex=ReadBlobLSBShort(image);
               WPG_Palette.NumOfEntries=ReadBlobLSBShort(image);
-
+              if ((WPG_Palette.NumOfEntries-WPG_Palette.StartIndex) >
+                  (Rec2.RecordLength-2-2) / 3)
+                ThrowReaderException(CorruptImageError,"InvalidColormapIndex");
               image->colors=WPG_Palette.NumOfEntries;
               if (AcquireImageColormap(image,image->colors) == MagickFalse)
                 ThrowReaderException(ResourceLimitError,
