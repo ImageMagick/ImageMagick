@@ -1194,8 +1194,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                       flop_image = FlopImage(image, exception);
                       if (flop_image != (Image *) NULL) {
                         DuplicateBlob(flop_image,image);
-                        (void) RemoveLastImageFromList(&image);
-                        AppendImageToList(&image,flop_image);
+                        ReplaceImageInList(&image,flop_image);
                       }
                     }
                   /* flip command */
@@ -1207,8 +1206,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                       flip_image = FlipImage(image, exception);
                       if (flip_image != (Image *) NULL) {
                         DuplicateBlob(flip_image,image);
-                        (void) RemoveLastImageFromList(&image);
-                        AppendImageToList(&image,flip_image);
+                        ReplaceImageInList(&image,flip_image);
                       }
                     }
                   /* rotate command */
@@ -1221,8 +1219,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                         0x0FFF), exception);
                       if (rotate_image != (Image *) NULL) {
                         DuplicateBlob(rotate_image,image);
-                        (void) RemoveLastImageFromList(&image);
-                        AppendImageToList(&image,rotate_image);
+                        ReplaceImageInList(&image,rotate_image);
                       }
                     }
                 }
@@ -1389,8 +1386,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                   flop_image = FlopImage(image, exception);
                   if (flop_image != (Image *) NULL) {
                     DuplicateBlob(flop_image,image);
-                    (void) RemoveLastImageFromList(&image);
-                    AppendImageToList(&image,flop_image);
+                    ReplaceImageInList(&image,flop_image);
                   }
                   /* Try to change CTM according to Flip - I am not sure, must be checked.
                      Tx(0,0)=-1;      Tx(1,0)=0;   Tx(2,0)=0;
@@ -1406,8 +1402,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                   flip_image = FlipImage(image, exception);
                   if (flip_image != (Image *) NULL) {
                     DuplicateBlob(flip_image,image);
-                    (void) RemoveLastImageFromList(&image);
-                    AppendImageToList(&image,flip_image);
+                    ReplaceImageInList(&image,flip_image);
                   }
                   /* Try to change CTM according to Flip - I am not sure, must be checked.
                      float_matrix Tx(3,3);
