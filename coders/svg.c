@@ -2988,8 +2988,10 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if ((image->columns != 0) || (image->rows != 0))
               {
                 rsvg_handle_get_dimensions(svg_handle,&dimension_info);
-                image->resolution.x=90.0*image->columns/dimension_info.width;
-                image->resolution.y=90.0*image->rows/dimension_info.height;
+                if (dimension_info.width != 0)
+                  image->resolution.x=90.0*image->columns/dimension_info.width;
+                if (dimension_info.height != 0)
+                  image->resolution.y=90.0*image->rows/dimension_info.height;
                 if (image->resolution.x == 0)
                   image->resolution.x=image->resolution.y;
                 else if (image->resolution.y == 0)
