@@ -36,7 +36,8 @@
 %
 %
 */
-
+
+
 /*
   Include declarations.
 */
@@ -99,7 +100,8 @@
 #include "librsvg/librsvg-features.h"
 #endif
 #endif
-
+
+
 /*
   Typedef declarations.
 */
@@ -184,13 +186,15 @@ typedef struct _SVGInfo
     document;
 #endif
 } SVGInfo;
-
+
+
 /*
   Forward declarations.
 */
 static MagickBooleanType
   WriteSVGImage(const ImageInfo *,Image *,ExceptionInfo *);
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -2923,6 +2927,9 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         cairo_t
           *cairo_image;
 
+        MagickBooleanType
+          apply_density;
+
         MemoryInfo
           *pixel_info;
 
@@ -2981,9 +2988,51 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (error != (GError *) NULL)
           g_error_free(error);
 #if defined(MAGICKCORE_CAIRO_DELEGATE)
-        if ((image->columns == 0) || image->rows == 0))
+        apply_density=MagickTrue;
+        rsvg_handle_get_dimensions(svg_handle,&dimension_info);
+        if ((image->resolution.x > 0.0) && (image->resolution.y > 0.0))
+        {
+          RsvgDimensionData
+            dpi_dimension_info;
+
+          /*
+            We should not apply the density when the internal 'factor' is 'i'.
+            This can be checked by using the trick below.
+          */
+          rsvg_handle_set_dpi_x_y(svg_handle,image->resolution.x*256,
+            image->resolution.y*256);
+          rsvg_handle_get_dimensions(svg_handle,&dpi_dimension_info);
+          if ((dpi_dimension_info.width != dimension_info.width) ||
+              (dpi_dimension_info.height != dimension_info.height))
+            apply_density=MagickFalse;
+          rsvg_handle_set_dpi_x_y(svg_handle,image->resolution.x,
+            image->resolution.y);
+        }
+        if (image_info->size != (char *) NULL)
           {
-            rsvg_handle_get_dimensions(svg_handle,&dimension_info);
+            (void) GetGeometry(image_info->size,(ssize_t *) NULL,
+              (ssize_t *) NULL,&image->columns,&image->rows);
+            if ((image->columns != 0) || (image->rows != 0))
+              {
+                image->resolution.x=90.0*image->columns/dimension_info.width;
+                image->resolution.y=90.0*image->rows/dimension_info.height;
+                if (image->resolution.x == 0)
+                  image->resolution.x=image->resolution.y;
+                else if (image->resolution.y == 0)
+                  image->resolution.y=image->resolution.x;
+                else
+                  image->resolution.x=image->resolution.y=MagickMin(
+                    image->resolution.x,image->resolution.y);
+                apply_density=MagickTrue;
+              }
+          }
+        if (apply_density != MagickFalse)
+          {
+            image->columns=image->resolution.x*dimension_info.width/90.0;
+            image->rows=image->resolution.y*dimension_info.height/90.0;
+          }
+        else
+          {
             image->columns=dimension_info.width;
             image->rows=dimension_info.height;
           }
@@ -3043,8 +3092,9 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             cairo_set_operator(cairo_image,CAIRO_OPERATOR_CLEAR);
             cairo_paint(cairo_image);
             cairo_set_operator(cairo_image,CAIRO_OPERATOR_OVER);
-            cairo_scale(cairo_image,image->resolution.x/90.0,
-              image->resolution.y/90.0);
+            if (apply_density != MagickFalse)
+              cairo_scale(cairo_image,image->resolution.x/90.0,
+                image->resolution.y/90.0);
             rsvg_handle_render_cairo(svg_handle,cairo_image);
             cairo_destroy(cairo_image);
             cairo_surface_destroy(cairo_surface);
@@ -3239,7 +3289,8 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   return(GetFirstImageInList(image));
 }
 #endif
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -3319,7 +3370,8 @@ ModuleExport size_t RegisterSVGImage(void)
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -3348,7 +3400,8 @@ ModuleExport void UnregisterSVGImage(void)
   xmlCleanupParser();
 #endif
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
