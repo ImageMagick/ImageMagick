@@ -3477,14 +3477,6 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
       case COMPRESSION_JPEG:
       {
 #if defined(JPEG_SUPPORT)
-        const char
-          *sampling_factor;
-
-        GeometryInfo
-          geometry_info;
-
-        MagickStatusType
-          flags;
 
         if (image_info->quality != UndefinedCompressionQuality)
           (void) TIFFSetField(tiff,TIFFTAG_JPEGQUALITY,image_info->quality);
@@ -3495,26 +3487,37 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
               *value;
 
             (void) TIFFSetField(tiff,TIFFTAG_JPEGCOLORMODE,JPEGCOLORMODE_RGB);
-            sampling_factor=(const char *) NULL;
-            value=GetImageProperty(image,"jpeg:sampling-factor");
-            if (value != (char *) NULL)
+            if (image->colorspace == YCbCrColorspace)
               {
-                sampling_factor=value;
-                if (image->debug != MagickFalse)
-                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                    "  Input sampling-factors=%s",sampling_factor);
-              }
-            if (image_info->sampling_factor != (char *) NULL)
-              sampling_factor=image_info->sampling_factor;
-            if (sampling_factor != (const char *) NULL)
-              {
-                flags=ParseGeometry(sampling_factor,&geometry_info);
-                if ((flags & SigmaValue) == 0)
-                  geometry_info.sigma=geometry_info.rho;
-                if (image->colorspace == YCbCrColorspace)
-                  (void) TIFFSetField(tiff,TIFFTAG_YCBCRSUBSAMPLING,(uint16)
-                    geometry_info.rho,(uint16) geometry_info.sigma);
-              }
+                const char
+                  *sampling_factor;
+
+                GeometryInfo
+                  geometry_info;
+
+                MagickStatusType
+                  flags;
+
+                sampling_factor=(const char *) NULL;
+                value=GetImageProperty(image,"jpeg:sampling-factor");
+                if (value != (char *) NULL)
+                  {
+                    sampling_factor=value;
+                    if (image->debug != MagickFalse)
+                      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "  Input sampling-factors=%s",sampling_factor);
+                  }
+                if (image_info->sampling_factor != (char *) NULL)
+                  sampling_factor=image_info->sampling_factor;
+                if (sampling_factor != (const char *) NULL)
+                  {
+                    flags=ParseGeometry(sampling_factor,&geometry_info);
+                    if ((flags & SigmaValue) == 0)
+                      geometry_info.sigma=geometry_info.rho;
+                    (void) TIFFSetField(tiff,TIFFTAG_YCBCRSUBSAMPLING,(uint16)
+                      geometry_info.rho,(uint16) geometry_info.sigma);
+                  }
+            }
           }
         (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_BITSPERSAMPLE,
           &bits_per_sample);
