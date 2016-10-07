@@ -2901,8 +2901,8 @@ static MagickBooleanType ReadDCMPixels(Image *image,DCMInfo *info,
           if (first_segment)
             SetPixelIndex(image,(Quantum) index,q);
           else
-            SetPixelIndex(image,(Quantum) (((size_t) GetPixelIndex(image,q)) |
-              (((size_t) index) << 8)),q);
+            SetPixelIndex(image,(Quantum) (((size_t) index) |
+              (((size_t) GetPixelIndex(image,q)) << 8)),q);
           pixel.red=(unsigned int) image->colormap[index].red;
           pixel.green=(unsigned int) image->colormap[index].green;
           pixel.blue=(unsigned int) image->colormap[index].blue;
@@ -2942,12 +2942,12 @@ static MagickBooleanType ReadDCMPixels(Image *image,DCMInfo *info,
         }
       else
         {
-          SetPixelRed(image,(Quantum) (((size_t) GetPixelRed(image,q)) |
-            (((size_t) pixel.red) << 8)),q);
-          SetPixelGreen(image,(Quantum) (((size_t) GetPixelGreen(image,q)) |
-            (((size_t) pixel.green) << 8)),q);
-          SetPixelBlue(image,(Quantum) (((size_t) GetPixelBlue(image,q)) |
-            (((size_t) pixel.blue) << 8)),q);
+          SetPixelRed(image,(Quantum) (((size_t) pixel.red) |
+            (((size_t) GetPixelRed(image,q)) << 8)),q);
+          SetPixelGreen(image,(Quantum) (((size_t) pixel.green) |
+            (((size_t) GetPixelGreen(image,q)) << 8)),q);
+          SetPixelBlue(image,(Quantum) (((size_t) pixel.blue) |
+            (((size_t) GetPixelBlue(image,q)) << 8)),q);
         }
       q+=GetPixelChannels(image);
     }
@@ -3878,7 +3878,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
           for (i=0; i < (ssize_t) stream_info->offset_count; i++)
             stream_info->offsets[i]=(ssize_t) ReadBlobLSBSignedLong(image);
-          offset=TellBlob(image);
+          offset=TellBlob(image)+8;
           for (i=0; i < (ssize_t) stream_info->offset_count; i++)
             stream_info->offsets[i]+=offset;
         }
@@ -3964,14 +3964,17 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           ThrowReaderException(CorruptImageError,"ImproperImageHeader");
         stream_info->count=0;
         stream_info->segment_count=ReadBlobLSBLong(image);
+        for (i=0; i < 15; i++)
+          stream_info->segments[i]=(ssize_t) ReadBlobLSBSignedLong(image);
+        stream_info->remaining-=64;
         if (stream_info->segment_count > 1)
           {
             info.bytes_per_pixel=1;
             info.depth=8;
+            if (stream_info->offset_count > 0)
+              SeekBlob(image,stream_info->offsets[0]+stream_info->segments[0],
+                SEEK_SET);
           }
-        for (i=0; i < 15; i++)
-          stream_info->segments[i]=(ssize_t) ReadBlobLSBSignedLong(image);
-        stream_info->remaining-=64;
       }
     if ((info.samples_per_pixel > 1) && (image->interlace == PlaneInterlace))
       {
@@ -4057,7 +4060,12 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         status=ReadDCMPixels(image,&info,stream_info,MagickTrue,exception);
         if ((status != MagickFalse) && (stream_info->segment_count > 1))
-          ReadDCMPixels(image,&info,stream_info,MagickFalse,exception);
+          {
+            if (stream_info->offset_count > 0)
+              SeekBlob(image,stream_info->offsets[0]+stream_info->segments[1],
+                SEEK_SET);
+            ReadDCMPixels(image,&info,stream_info,MagickFalse,exception);
+          }
       }
     if (SetImageGray(image,exception) != MagickFalse)
       (void) SetImageColorspace(image,GRAYColorspace,exception);
