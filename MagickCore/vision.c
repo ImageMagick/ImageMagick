@@ -496,6 +496,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
             j=(ssize_t) GetPixelIndex(component_image,p);
             if (j != i)
               object[j].census++;
+            p+=GetPixelChannels(component_image);
           }
         }
         census=0;
@@ -527,7 +528,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
           for (x=0; x < (ssize_t) bounding_box.width; x++)
           {
             if ((ssize_t) GetPixelIndex(component_image,q) == i)
-              SetPixelIndex(image,(Quantum) id,q);
+              SetPixelIndex(component_image,(Quantum) id,q);
             q+=GetPixelChannels(component_image);
           }
           if (SyncCacheViewAuthenticPixels(component_view,exception) == MagickFalse)
