@@ -224,7 +224,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
     bits_per_pixel=(size_t) ReadBlobByte(image);
     number_colormaps=(size_t) ReadBlobByte(image);
     map_length=(unsigned char) ReadBlobByte(image);
-    if (map_length >= 64)
+    if (map_length >= 32)
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     one=1;
     map_length=one << map_length;
