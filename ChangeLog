@@ -1,3 +1,7 @@
+2016-10-07  6.9.6-1 Dirk Lemstra <dirk@lem.....org>
+  * Fixed incorrect RLE decoding when reading a DCM image that contains
+    multiple segments.
+
 2016-10-02  6.9.6-0 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 6.9.6-0, GIT revision 11078:9aec251:20161002.
 

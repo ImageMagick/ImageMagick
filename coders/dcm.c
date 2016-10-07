@@ -2907,8 +2907,8 @@ static MagickBooleanType ReadDCMPixels(Image *image,DCMInfo *info,
           if (first_segment != MagickFalse)
             SetPixelIndex(indexes+x,index);
           else
-            SetPixelIndex(indexes+x,(((size_t) GetPixelIndex(indexes+x)) |
-              (((size_t) index) << 8)));
+            SetPixelIndex(indexes+x,(((size_t) index) |
+              (((size_t) GetPixelIndex(indexes+x)) << 8)));
           pixel.red=1U*image->colormap[index].red;
           pixel.green=1U*image->colormap[index].green;
           pixel.blue=1U*image->colormap[index].blue;
@@ -2948,12 +2948,12 @@ static MagickBooleanType ReadDCMPixels(Image *image,DCMInfo *info,
         }
       else
         {
-          SetPixelRed(q,(((size_t) GetPixelRed(q)) |
-            (((size_t) pixel.red) << 8)));
-          SetPixelGreen(q,(((size_t) GetPixelGreen(q)) |
-            (((size_t) pixel.green) << 8)));
-          SetPixelBlue(q,(((size_t) GetPixelBlue(q)) |
-            (((size_t) pixel.blue) << 8)));
+          SetPixelRed(q,(((size_t) pixel.red) |
+            (((size_t) GetPixelRed(q)) << 8)));
+          SetPixelGreen(q,(((size_t) pixel.green) |
+            (((size_t) GetPixelGreen(q)) << 8)));
+          SetPixelBlue(q,(((size_t) pixel.blue) |
+            (((size_t) GetPixelBlue(q)) << 8)));
         }
       q++;
     }
@@ -3881,7 +3881,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
           for (i=0; i < (ssize_t) stream_info->offset_count; i++)
             stream_info->offsets[i]=(ssize_t) ReadBlobLSBSignedLong(image);
-          offset=TellBlob(image);
+          offset=TellBlob(image)+8;
           for (i=0; i < (ssize_t) stream_info->offset_count; i++)
             stream_info->offsets[i]+=offset;
         }
@@ -3970,14 +3970,17 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           ThrowReaderException(CorruptImageError,"ImproperImageHeader");
         stream_info->count=0;
         stream_info->segment_count=ReadBlobLSBLong(image);
+        for (i=0; i < 15; i++)
+          stream_info->segments[i]=(ssize_t) ReadBlobLSBSignedLong(image);
+        stream_info->remaining-=64;
         if (stream_info->segment_count > 1)
           {
             info.bytes_per_pixel=1;
             info.depth=8;
+            if (stream_info->offset_count > 0)
+              SeekBlob(image,stream_info->offsets[0]+stream_info->segments[0],
+                SEEK_SET);
           }
-        for (i=0; i < 15; i++)
-          stream_info->segments[i]=(ssize_t) ReadBlobLSBSignedLong(image);
-        stream_info->remaining-=64;
       }
     if ((info.samples_per_pixel > 1) && (image->interlace == PlaneInterlace))
       {
@@ -4063,7 +4066,12 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         status=ReadDCMPixels(image,&info,stream_info,MagickTrue,exception);
         if ((status != MagickFalse) && (stream_info->segment_count > 1))
-          ReadDCMPixels(image,&info,stream_info,MagickFalse,exception);
+          {
+            if (stream_info->offset_count > 0)
+              SeekBlob(image,stream_info->offsets[0]+stream_info->segments[1],
+                SEEK_SET);
+            ReadDCMPixels(image,&info,stream_info,MagickFalse,exception);
+          }
       }
     if (SetImageGray(image,exception) != MagickFalse)
       (void) SetImageColorspace(image,GRAYColorspace);
