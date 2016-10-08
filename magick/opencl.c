@@ -401,6 +401,7 @@ static MagickBooleanType bindOpenCLFunctions(void* library)
   BIND(clGetDeviceInfo);
 
   BIND(clCreateContext);
+  BIND(clReleaseContext);
 
   BIND(clCreateBuffer);
   BIND(clReleaseMemObject);
@@ -408,6 +409,7 @@ static MagickBooleanType bindOpenCLFunctions(void* library)
   BIND(clCreateProgramWithSource);
   BIND(clCreateProgramWithBinary);
   BIND(clBuildProgram);
+  BIND(clReleaseProgram);
   BIND(clGetProgramInfo);
   BIND(clGetProgramBuildInfo);
 
