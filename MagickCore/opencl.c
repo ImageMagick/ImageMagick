@@ -2335,23 +2335,22 @@ void *OsLibraryGetFunctionAddress(void *library,const char *functionName)
 
 static MagickBooleanType BindOpenCLFunctions()
 {
-  void
-    *library;
-
 #ifdef MAGICKCORE_OPENCL_MACOSX
 #define BIND(X) openCL_library->X= &X;
 #else
   (void) ResetMagickMemory(openCL_library,0,sizeof(MagickLibrary));
 #ifdef MAGICKCORE_WINDOWS_SUPPORT
-  library=(void *)LoadLibraryA("OpenCL.dll");
+  openCL_library->library=(void *)LoadLibraryA("OpenCL.dll");
 #else
-  library=(void *)dlopen("libOpenCL.so", RTLD_NOW);
+  openCL_library->library=(void *)dlopen("libOpenCL.so", RTLD_NOW);
 #endif
-
 #define BIND(X) \
-  if ((openCL_library->X=(MAGICKpfn_##X)OsLibraryGetFunctionAddress(library,#X)) == NULL) \
+  if ((openCL_library->X=(MAGICKpfn_##X)OsLibraryGetFunctionAddress(openCL_library->library,#X)) == NULL) \
     return(MagickFalse);
 #endif
+
+  if (openCL_library->library == (void*) NULL)
+    return(MagickFalse);
 
   BIND(clGetPlatformIDs);
   BIND(clGetPlatformInfo);
@@ -2423,11 +2422,11 @@ static MagickBooleanType LoadOpenCLLibrary(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  AnnotateComponentTerminus() destroys the annotate component.
+%  OpenCLTerminus() destroys the OpenCL component.
 %
-%  The format of the AnnotateComponentTerminus method is:
+%  The format of the OpenCLTerminus method is:
 %
-%      AnnotateComponentTerminus(void)
+%      OpenCLTerminus(void)
 %
 */
 
@@ -2443,7 +2442,11 @@ MagickPrivate void OpenCLTerminus()
   if (openCL_lock != (SemaphoreInfo *) NULL)
     RelinquishSemaphoreInfo(&openCL_lock);
   if (openCL_library != (MagickLibrary *) NULL)
-    openCL_library=(MagickLibrary *)RelinquishMagickMemory(openCL_library);
+    {
+      if (openCL_library->library != (void *) NULL)
+        (void) lt_dlclose(openCL_library->library);
+      openCL_library=(MagickLibrary *) RelinquishMagickMemory(openCL_library);
+    }
 }
 
 /*

@@ -234,6 +234,8 @@ typedef struct MagickLibraryRec MagickLibrary;
 
 struct MagickLibraryRec
 {
+  void *library;
+
   MAGICKpfn_clGetPlatformIDs          clGetPlatformIDs;
   MAGICKpfn_clGetPlatformInfo         clGetPlatformInfo;
 
