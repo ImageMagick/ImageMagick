@@ -358,6 +358,8 @@ MagickExport MagickBooleanType RelinquishMagickOpenCLEnv(MagickCLEnv clEnv)
         clEnv->library->clReleaseCommandQueue(
           clEnv->commandQueues[clEnv->commandQueuesPos--]);
       }
+      if (clEnv->programs[0] != (cl_program) NULL)
+        (void) clEnv->library->clReleaseProgram(clEnv->programs[0]);
       if (clEnv->context != (cl_context) NULL)
         clEnv->library->clReleaseContext(clEnv->context);
       DestroySemaphoreInfo(&clEnv->lock);
