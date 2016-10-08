@@ -182,17 +182,6 @@ typedef CL_API_ENTRY cl_int (CL_API_CALL *MAGICKpfn_clEnqueueReadBuffer)(
     const cl_event *    event_wait_list,
     cl_event *          event) CL_API_SUFFIX__VERSION_1_0;
 
-typedef CL_API_ENTRY cl_int (CL_API_CALL *MAGICKpfn_clEnqueueWriteBuffer)(
-    cl_command_queue   command_queue, 
-    cl_mem             buffer, 
-    cl_bool            blocking_write, 
-    size_t             offset, 
-    size_t             cb, 
-    const void *       ptr, 
-    cl_uint            num_events_in_wait_list, 
-    const cl_event *   event_wait_list, 
-    cl_event *         event) CL_API_SUFFIX__VERSION_1_0;
-
 typedef CL_API_ENTRY void * (CL_API_CALL *MAGICKpfn_clEnqueueMapBuffer)(
     cl_command_queue command_queue,
     cl_mem           buffer,
@@ -261,36 +250,43 @@ struct MagickLibraryRec
 {
   void * base;
 
-  MAGICKpfn_clGetPlatformIDs                         clGetPlatformIDs;
-  MAGICKpfn_clGetPlatformInfo                        clGetPlatformInfo;
-  MAGICKpfn_clGetDeviceIDs                           clGetDeviceIDs;
-  MAGICKpfn_clGetDeviceInfo                          clGetDeviceInfo;
-  MAGICKpfn_clCreateContext                          clCreateContext;
-  MAGICKpfn_clCreateCommandQueue                     clCreateCommandQueue;
-  MAGICKpfn_clReleaseCommandQueue                    clReleaseCommandQueue;
-  MAGICKpfn_clCreateBuffer                           clCreateBuffer;
-  MAGICKpfn_clReleaseMemObject                       clReleaseMemObject;
-  MAGICKpfn_clCreateProgramWithSource                clCreateProgramWithSource;
-  MAGICKpfn_clCreateProgramWithBinary                clCreateProgramWithBinary;
-  MAGICKpfn_clReleaseProgram                         clReleaseProgram;
-  MAGICKpfn_clBuildProgram                           clBuildProgram;
-  MAGICKpfn_clGetProgramInfo                         clGetProgramInfo;
-  MAGICKpfn_clGetProgramBuildInfo                    clGetProgramBuildInfo;
-  MAGICKpfn_clCreateKernel                           clCreateKernel;
-  MAGICKpfn_clReleaseKernel                          clReleaseKernel;
-  MAGICKpfn_clSetKernelArg                           clSetKernelArg;
-  MAGICKpfn_clFlush                                  clFlush;
-  MAGICKpfn_clFinish                                 clFinish;
-  MAGICKpfn_clEnqueueReadBuffer                      clEnqueueReadBuffer;
-  MAGICKpfn_clEnqueueWriteBuffer                     clEnqueueWriteBuffer;
-  MAGICKpfn_clEnqueueMapBuffer                       clEnqueueMapBuffer;
-  MAGICKpfn_clEnqueueUnmapMemObject                  clEnqueueUnmapMemObject;
-  MAGICKpfn_clEnqueueNDRangeKernel                   clEnqueueNDRangeKernel;
-  MAGICKpfn_clGetEventProfilingInfo                  clGetEventProfilingInfo;
-  MAGICKpfn_clWaitForEvents                          clWaitForEvents;
-  MAGICKpfn_clReleaseEvent                           clReleaseEvent;
-  MAGICKpfn_clRetainEvent                            clRetainEvent;
-  MAGICKpfn_clSetEventCallback                       clSetEventCallback;
+  MAGICKpfn_clGetPlatformIDs          clGetPlatformIDs;
+  MAGICKpfn_clGetPlatformInfo         clGetPlatformInfo;
+
+  MAGICKpfn_clGetDeviceIDs            clGetDeviceIDs;
+  MAGICKpfn_clGetDeviceInfo           clGetDeviceInfo;
+
+  MAGICKpfn_clCreateContext           clCreateContext;
+
+  MAGICKpfn_clCreateCommandQueue      clCreateCommandQueue;
+  MAGICKpfn_clReleaseCommandQueue     clReleaseCommandQueue;
+  MAGICKpfn_clFlush                   clFlush;
+  MAGICKpfn_clFinish                  clFinish;
+
+  MAGICKpfn_clCreateBuffer            clCreateBuffer;
+  MAGICKpfn_clReleaseMemObject        clReleaseMemObject;
+  MAGICKpfn_clCreateProgramWithSource clCreateProgramWithSource;
+  MAGICKpfn_clCreateProgramWithBinary clCreateProgramWithBinary;
+  MAGICKpfn_clReleaseProgram          clReleaseProgram;
+  MAGICKpfn_clBuildProgram            clBuildProgram;
+  MAGICKpfn_clGetProgramInfo          clGetProgramInfo;
+  MAGICKpfn_clGetProgramBuildInfo     clGetProgramBuildInfo;
+
+  MAGICKpfn_clCreateKernel            clCreateKernel;
+  MAGICKpfn_clReleaseKernel           clReleaseKernel;
+  MAGICKpfn_clSetKernelArg            clSetKernelArg;
+
+  MAGICKpfn_clEnqueueReadBuffer       clEnqueueReadBuffer;
+  MAGICKpfn_clEnqueueMapBuffer        clEnqueueMapBuffer;
+  MAGICKpfn_clEnqueueUnmapMemObject   clEnqueueUnmapMemObject;
+  MAGICKpfn_clEnqueueNDRangeKernel    clEnqueueNDRangeKernel;
+
+  MAGICKpfn_clGetEventProfilingInfo   clGetEventProfilingInfo;
+
+  MAGICKpfn_clWaitForEvents           clWaitForEvents;
+  MAGICKpfn_clReleaseEvent            clReleaseEvent;
+  MAGICKpfn_clRetainEvent             clRetainEvent;
+  MAGICKpfn_clSetEventCallback        clSetEventCallback;
 };
 
 struct _MagickCLEnv {
