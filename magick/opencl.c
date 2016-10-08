@@ -352,17 +352,19 @@ MagickExport MagickCLEnv AcquireMagickOpenCLEnv()
 MagickExport MagickBooleanType RelinquishMagickOpenCLEnv(MagickCLEnv clEnv)
 {
   if (clEnv != (MagickCLEnv) NULL)
-  {
-    while (clEnv->commandQueuesPos >= 0)
     {
-      clEnv->library->clReleaseCommandQueue(
-        clEnv->commandQueues[clEnv->commandQueuesPos--]);
+      while (clEnv->commandQueuesPos >= 0)
+      {
+        clEnv->library->clReleaseCommandQueue(
+          clEnv->commandQueues[clEnv->commandQueuesPos--]);
+      }
+      if (clEnv->context != (cl_context) NULL)
+        clEnv->library->clReleaseContext(clEnv->context);
+      DestroySemaphoreInfo(&clEnv->lock);
+      DestroySemaphoreInfo(&clEnv->commandQueuesLock);
+      RelinquishMagickMemory(clEnv);
+      return MagickTrue;
     }
-    DestroySemaphoreInfo(&clEnv->lock);
-    DestroySemaphoreInfo(&clEnv->commandQueuesLock);
-    RelinquishMagickMemory(clEnv);
-    return MagickTrue;
-  }
   return MagickFalse;
 }
 

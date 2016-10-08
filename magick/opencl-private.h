@@ -257,6 +257,7 @@ struct MagickLibraryRec
   MAGICKpfn_clGetDeviceInfo           clGetDeviceInfo;
 
   MAGICKpfn_clCreateContext           clCreateContext;
+  MAGICKpfn_clReleaseContext          clReleaseContext;
 
   MAGICKpfn_clCreateCommandQueue      clCreateCommandQueue;
   MAGICKpfn_clReleaseCommandQueue     clReleaseCommandQueue;
