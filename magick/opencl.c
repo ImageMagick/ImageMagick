@@ -295,16 +295,6 @@ void *OsLibraryGetFunctionAddress(void *library, const char *functionName)
 #endif
 }
 
-// unload a library.
-void OsLibraryUnload(void *library)
-{
-#ifdef MAGICKCORE_WINDOWS_SUPPORT
-    FreeLibrary( (HMODULE)library);
-#else
-    dlclose(library);
-#endif
-}
-
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -3145,7 +3135,11 @@ MagickPrivate void OpenCLTerminus()
   if (defaultCLEnvLock != (SemaphoreInfo*) NULL)
     DestroySemaphoreInfo(&defaultCLEnvLock);
   if (OpenCLLib != (MagickLibrary *)NULL)
-    OpenCLLib=(MagickLibrary *)RelinquishMagickMemory(OpenCLLib);
+    {
+      if (OpenCLLib->base != (void *) NULL)
+        (void) lt_dlclose(OpenCLLib->base);
+      OpenCLLib=(MagickLibrary *)RelinquishMagickMemory(OpenCLLib);
+    }
   if (OpenCLLibLock != (SemaphoreInfo*)NULL)
     DestroySemaphoreInfo(&OpenCLLibLock);
 #endif
