@@ -1100,7 +1100,7 @@ WandExport Quantum PixelGetIndex(const PixelWand *wand)
   assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  return((Quantum) wand->pixel.black);
+  return((Quantum) wand->pixel.index);
 }
 
 /*
