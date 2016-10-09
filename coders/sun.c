@@ -266,7 +266,8 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
     bytes_per_line,
     extent,
     height,
-    pixels_length;
+    pixels_length,
+    quantum;
 
   ssize_t
     count,
@@ -442,9 +443,10 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         sun_data=(unsigned char *) RelinquishMagickMemory(sun_data);
         ThrowReaderException(ResourceLimitError,"ImproperImageHeader");
       }
-    bytes_per_line+=7;
+    quantum=sun_info.depth == 1 ? 15 : 7;
+    bytes_per_line+=quantum;
     bytes_per_line<<=1;
-    if ((bytes_per_line >> 1) != (sun_info.width*sun_info.depth+7))
+    if ((bytes_per_line >> 1) != (sun_info.width*sun_info.depth+quantum))
       {
         sun_data=(unsigned char *) RelinquishMagickMemory(sun_data);
         ThrowReaderException(ResourceLimitError,"ImproperImageHeader");
