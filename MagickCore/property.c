@@ -3131,7 +3131,6 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
             image->units);
           break;
         }
-      if (LocaleCompare("copyright",property) == 0)
       break;
     }
     case 'v':
