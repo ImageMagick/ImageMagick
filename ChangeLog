@@ -1,7 +1,11 @@
-2016-10-10  7.0.3-3 Cristy  <quetzlzacatenango@image...>
+2016-10-10  7.0.3-4 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.3-3, GIT revision 18933:790401b:20161010.
 
-2016-10-10  7.0.3-3 Cristy  <quetzlzacatenango@image...>
+2016-10-10  7.0.3-4 Dirk Lemstra <dirk@lem.....org>
+  * Fixed incorrect parsing with ordered dither. (reference
+    https://github.com/ImageMagick/ImageMagick/issues/254)
+
+2016-10-10  7.0.3-4 Cristy  <quetzlzacatenango@image...>
   * Unit test pass again after small SUN image patch.
 
 2016-10-08  7.0.3-3 Cristy  <quetzlzacatenango@image...>
