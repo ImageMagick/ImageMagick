@@ -1,3 +1,9 @@
+2016-10-10  7.0.3-3 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.3-3, GIT revision 18933:790401b:20161010.
+
+2016-10-10  7.0.3-3 Cristy  <quetzlzacatenango@image...>
+  * Unit test pass again after small SUN image patch.
+
 2016-10-08  7.0.3-3 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.3-3, GIT revision 18924:d6614e7:20161008.
 
