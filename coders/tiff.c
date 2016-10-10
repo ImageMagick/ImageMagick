@@ -1398,8 +1398,8 @@ RestoreMSCWarning
              horizontal,
              vertical;
 
-           tiff_status=TIFFGetFieldDefaulted(tiff,TIFFTAG_YCBCRSUBSAMPLING,
-             &horizontal,&vertical);
+           tiff_status=TIFFGetField(tiff,TIFFTAG_YCBCRSUBSAMPLING,&horizontal,
+             &vertical);
            if (tiff_status == 1)
              {
                (void) FormatLocaleString(sampling_factor,MaxTextExtent,"%dx%d",
