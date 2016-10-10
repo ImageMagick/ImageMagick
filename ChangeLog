@@ -1,3 +1,9 @@
+2016-10-10  6.9.6-2 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 6.9.6-2, GIT revision 11095:14d2cea:20161010.
+
+2016-10-10  6.9.6-2 Cristy  <quetzlzacatenango@image...>
+  * Unit test pass again after small SUN image patch.
+
 2016-10-07  6.9.6-1 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 6.9.6-1, GIT revision 11092:1f7ca24:20161008.
 
