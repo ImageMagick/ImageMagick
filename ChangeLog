@@ -1,5 +1,5 @@
 2016-10-10  7.0.3-4 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.3-3, GIT revision 18933:790401b:20161010.
+  * Release ImageMagick version 7.0.3-3, GIT revision 18937:83da034:20161010.
 
 2016-10-10  7.0.3-4 Dirk Lemstra <dirk@lem.....org>
   * Fixed incorrect parsing with ordered dither. (reference
