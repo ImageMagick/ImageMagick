@@ -1348,12 +1348,17 @@ MagickExport MagickBooleanType OrderedDitherImage(Image *image,
     levels[i]=2.0;
   p=strchr((char *) threshold_map,',');
   if ((p != (char *) NULL) && (isdigit((int) ((unsigned char) *(++p))) != 0))
-    for (i=0; (*p != '\0') && (i < MaxPixelChannels); i++)
     {
       GetNextToken(p,&p,MagickPathExtent,token);
-      if (*token == ',')
+      for (i=0; (i < MaxPixelChannels); i++)
+        levels[i]=StringToDouble(token,(char **) NULL);
+      for (i=0; (*p != '\0') && (i < MaxPixelChannels); i++)
+      {
         GetNextToken(p,&p,MagickPathExtent,token);
-      levels[i]=StringToDouble(token,(char **) NULL);
+        if (*token == ',')
+          GetNextToken(p,&p,MagickPathExtent,token);
+        levels[i]=StringToDouble(token,(char **) NULL);
+      }
     }
   for (i=0; i < MaxPixelChannels; i++)
     if (fabs(levels[i]) >= 1)
@@ -1407,8 +1412,11 @@ MagickExport MagickBooleanType OrderedDitherImage(Image *image,
         PixelTrait traits=GetPixelChannelTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        if (fabs(levels[n++]) < MagickEpsilon)
-          continue;
+        if (fabs(levels[n]) < MagickEpsilon)
+          {
+            n++;
+            continue;
+          }
         threshold=(ssize_t) (QuantumScale*q[i]*(levels[n]*(map->divisor-1)+1));
         level=threshold/(map->divisor-1);
         threshold-=level*(map->divisor-1);
