@@ -457,7 +457,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         sun_data=(unsigned char *) RelinquishMagickMemory(sun_data);
         ThrowReaderException(ResourceLimitError,"ImproperImageHeader");
       }
-    pixels_length=height*(MagickMax(image->columns,bytes_per_line)+1);
+    pixels_length=height*bytes_per_line;
     sun_pixels=(unsigned char *) AcquireQuantumMemory(pixels_length,
       sizeof(*sun_pixels));
     if (sun_pixels == (unsigned char *) NULL)
