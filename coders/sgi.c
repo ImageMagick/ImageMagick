@@ -345,7 +345,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
     iris_info.sans=ReadBlobMSBLong(image);
     count=ReadBlob(image,sizeof(iris_info.name),(unsigned char *)
       iris_info.name);
-    if (count != sizeof(iris_info.name))
+    if ((size_t) count != sizeof(iris_info.name))
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     iris_info.name[sizeof(iris_info.name)-1]='\0';
     if (*iris_info.name != '\0')
@@ -354,7 +354,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (iris_info.pixel_format != 0)
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     count=ReadBlob(image,sizeof(iris_info.filler),iris_info.filler);
-    if (count != sizeof(iris_info.filler))
+    if ((size_t) count != sizeof(iris_info.filler))
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     image->columns=iris_info.columns;
     image->rows=iris_info.rows;
@@ -365,7 +365,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (iris_info.depth < 3)
       {
         image->storage_class=PseudoClass;
-        image->colors=iris_info.bytes_per_pixel > 1 ? 65535 : 256;
+        image->colors=(size_t) (iris_info.bytes_per_pixel > 1 ? 65535 : 256);
       }
     if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
@@ -467,7 +467,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         packets=(unsigned char *) GetVirtualMemoryBlob(packet_info);
         for (i=0; i < (ssize_t) (iris_info.rows*iris_info.depth); i++)
-          offsets[i]=ReadBlobMSBSignedLong(image);
+          offsets[i]=(ssize_t) ReadBlobMSBSignedLong(image);
         for (i=0; i < (ssize_t) (iris_info.rows*iris_info.depth); i++)
         {
           runlength[i]=ReadBlobMSBLong(image);
@@ -497,7 +497,8 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if (offset != offsets[y+z*iris_info.rows])
                   {
                     offset=offsets[y+z*iris_info.rows];
-                    offset=(ssize_t) SeekBlob(image,(ssize_t) offset,SEEK_SET);
+                    offset=(ssize_t) SeekBlob(image,(MagickOffsetType) offset,
+                      SEEK_SET);
                   }
                 (void) ReadBlob(image,(size_t) runlength[y+z*iris_info.rows],
                   packets);
@@ -506,7 +507,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 offset+=(ssize_t) runlength[y+z*iris_info.rows];
                 status=SGIDecode(bytes_per_pixel,(ssize_t)
                   (runlength[y+z*iris_info.rows]/bytes_per_pixel),packets,
-                  1L*iris_info.columns,p+bytes_per_pixel*z);
+                  (ssize_t) iris_info.columns,p+bytes_per_pixel*z);
                 if (status == MagickFalse)
                   ThrowReaderException(CorruptImageError,"ImproperImageHeader");
                 p+=(iris_info.columns*4*bytes_per_pixel);
@@ -527,7 +528,8 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if (offset != offsets[y+z*iris_info.rows])
                   {
                     offset=offsets[y+z*iris_info.rows];
-                    offset=(ssize_t) SeekBlob(image,(ssize_t) offset,SEEK_SET);
+                    offset=(ssize_t) SeekBlob(image,(MagickOffsetType) offset,
+                      SEEK_SET);
                   }
                 (void) ReadBlob(image,(size_t) runlength[y+z*iris_info.rows],
                   packets);
@@ -536,7 +538,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 offset+=(ssize_t) runlength[y+z*iris_info.rows];
                 status=SGIDecode(bytes_per_pixel,(ssize_t)
                   (runlength[y+z*iris_info.rows]/bytes_per_pixel),packets,
-                  1L*iris_info.columns,p+bytes_per_pixel*z);
+                  (ssize_t) iris_info.columns,p+bytes_per_pixel*z);
                 if (status == MagickFalse)
                   ThrowReaderException(CorruptImageError,"ImproperImageHeader");
               }
