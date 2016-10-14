@@ -3114,6 +3114,8 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
         (void) WriteBlobByte(image,0);
     }
   base_image=GetNextImageInList(image);
+  if (base_image == (Image *)NULL)
+    base_image=image;
   size=0;
   size_offset=TellBlob(image);
   SetPSDSize(&psd_info,image,0);
