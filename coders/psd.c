@@ -363,9 +363,11 @@ static MagickBooleanType ApplyPSDLayerOpacity(Image *image,Quantum opacity,
   ssize_t
     y;
 
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+      "  applying layer opacity %.20g", (double) opacity);
   if (opacity == QuantumRange)
     return(MagickTrue);
-
   image->matte=MagickTrue;
   status=MagickTrue;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -418,6 +420,9 @@ static MagickBooleanType ApplyPSDOpacityMask(Image *image,const Image *mask,
   ssize_t
     y;
 
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+      "  applying opacity mask");
   complete_mask=CloneImage(image,image->columns,image->rows,MagickTrue,
     exception);
   complete_mask->matte=MagickTrue;
@@ -476,6 +481,36 @@ static MagickBooleanType ApplyPSDOpacityMask(Image *image,const Image *mask,
   }
   complete_mask=DestroyImage(complete_mask);
   return(status);
+}
+
+static void PreservePSDOpacityMask(Image *image,LayerInfo* layer_info,
+  ExceptionInfo *exception)
+{
+  char
+    *key;
+
+  RandomInfo
+    *random_info;
+
+  StringInfo
+    *key_info;
+
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+      "  preserving opacity mask");
+  random_info=AcquireRandomInfo();
+  key_info=GetRandomKey(random_info,2+1);
+  key=(char *) GetStringInfoDatum(key_info);
+  key[8]=layer_info->mask.background;
+  key[9]='\0';
+  layer_info->mask.image->page.x+=layer_info->page.x;
+  layer_info->mask.image->page.y+=layer_info->page.y;
+  (void) SetImageRegistry(ImageRegistryType,(const char *) key,
+    layer_info->mask.image,exception);
+  (void) SetImageArtifact(layer_info->image,"psd:opacity-mask",
+    (const char *) key);
+  key_info=DestroyStringInfo(key_info);
+  random_info=DestroyRandomInfo(random_info);
 }
 
 static ssize_t DecodePSDPixels(const size_t number_compact_pixels,
@@ -1403,30 +1438,7 @@ static MagickBooleanType ReadPSDLayer(Image *image,const ImageInfo *image_info,
           exception);
       option=GetImageOption(image_info,"psd:preserve-opacity-mask");
       if (IsStringTrue(option) != MagickFalse)
-        {
-          char
-            *key;
-
-          RandomInfo
-            *random_info;
-
-          StringInfo
-            *key_info;
-
-          random_info=AcquireRandomInfo();
-          key_info=GetRandomKey(random_info,2+1);
-          key=(char *) GetStringInfoDatum(key_info);
-          key[8]=layer_info->mask.background;
-          key[9]='\0';
-          layer_info->mask.image->page.x+=layer_info->page.x;
-          layer_info->mask.image->page.y+=layer_info->page.y;
-          (void) SetImageRegistry(ImageRegistryType,(const char *) key,
-            layer_info->mask.image,exception);
-          (void) SetImageArtifact(layer_info->image,"psd:opacity-mask",
-            (const char *) key);
-          key_info=DestroyStringInfo(key_info);
-          random_info=DestroyRandomInfo(random_info);
-        }
+        PreservePSDOpacityMask(image,layer_info,exception);
       layer_info->mask.image=DestroyImage(layer_info->mask.image);
     }
 
