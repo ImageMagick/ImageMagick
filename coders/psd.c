@@ -1712,11 +1712,11 @@ ModuleExport MagickBooleanType ReadPSDLayers(Image *image,
                 combined_length+=length;
                 /* Skip over the padding of the layer name */
                 if (DiscardBlobBytes(image,length) == MagickFalse)
-                {
-                  layer_info=DestroyLayerInfo(layer_info,number_layers);
-                  ThrowBinaryException(CorruptImageError,
-                    "UnexpectedEndOfFile",image->filename);
-                }
+                  {
+                    layer_info=DestroyLayerInfo(layer_info,number_layers);
+                    ThrowBinaryException(CorruptImageError,
+                      "UnexpectedEndOfFile",image->filename);
+                  }
               }
             length=(MagickSizeType) size-combined_length;
             if (length > 0)
