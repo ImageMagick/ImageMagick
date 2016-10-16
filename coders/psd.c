@@ -3274,7 +3274,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
     Remove the opacity mask from the registry
   */
   next_image=base_image;
-  while (next_image != NULL)
+  while (next_image != (Image *) NULL)
   {
     property=GetImageArtifact(next_image,"psd:opacity-mask");
     if (property != (const char *) NULL)
@@ -3297,9 +3297,16 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
   */
   if (status != MagickFalse)
     {
+      CompressionType
+        compression;
+
+      compression=image->compression;
+      if (image->compression == ZipCompression)
+        image->compression=RLECompression;
       if (WritePSDChannels(&psd_info,image_info,image,image,0,
           MagickFalse) == 0)
         status=MagickFalse;
+      image->compression=compression;
     }
   (void) CloseBlob(image);
   return(status);
