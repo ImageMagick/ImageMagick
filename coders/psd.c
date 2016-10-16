@@ -866,7 +866,7 @@ static inline void ReversePSDString(Image *image,char *p,size_t length)
 
 static inline void SetPSDPixel(Image *image,const size_t channels,
   const ssize_t type,const size_t packet_size,const Quantum pixel,
-  PixelPacket *q,IndexPacket *indexes,ssize_t x,ExceptionInfo *exception)
+  PixelPacket *q,IndexPacket *indexes,ssize_t x)
 {
   if (image->storage_class == PseudoClass)
     {
@@ -975,8 +975,7 @@ static MagickBooleanType ReadPSDChannelPixels(Image *image,const size_t channels
       }
     if (image->depth > 1)
       {
-        SetPSDPixel(image,channels,type,packet_size,pixel,q++,indexes,x,
-          exception);
+        SetPSDPixel(image,channels,type,packet_size,pixel,q++,indexes,x);
       }
     else
       {
@@ -990,8 +989,7 @@ static MagickBooleanType ReadPSDChannelPixels(Image *image,const size_t channels
         for (bit=0; bit < number_bits; bit++)
         {
           SetPSDPixel(image,channels,type,packet_size,(((unsigned char) pixel)
-            & (0x01 << (7-bit))) != 0 ? 0 : QuantumRange,q++,indexes,x++,
-            exception);
+            & (0x01 << (7-bit))) != 0 ? 0 : QuantumRange,q++,indexes,x++);
         }
         if (x != (ssize_t) image->columns)
           x--;
