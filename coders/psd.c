@@ -3175,7 +3175,8 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
     size+=WriteBlobMSBLong(image,(unsigned int) (next_image->page.x+
       next_image->columns));
     channels=1U;
-    if (IsGrayImage(next_image,&next_image->exception) == MagickFalse)
+    if ((next_image->storage_class != PseudoClass) &&
+        (IsGrayImage(next_image,&next_image->exception) == MagickFalse))
       channels=next_image->colorspace == CMYKColorspace ? 4U : 3U;
     total_channels=channels;
     if (next_image->matte != MagickFalse)
