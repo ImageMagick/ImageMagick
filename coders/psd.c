@@ -2456,7 +2456,7 @@ static size_t WriteCompressionStart(const PSDInfo *psd_info,Image *image,
   return(length);
 }
 
-static size_t WriteOneChannel(const PSDInfo *psd_info,
+static size_t WritePSDChannel(const PSDInfo *psd_info,
   const ImageInfo *image_info,Image *image,Image *next_image,
   const QuantumType quantum_type, unsigned char *compact_pixels,
   MagickOffsetType size_offset,const MagickBooleanType separate,
@@ -2541,7 +2541,7 @@ static unsigned char *AcquireCompactPixels(const Image *image,
   return(compact_pixels);
 }
 
-static MagickBooleanType WriteImageChannels(const PSDInfo *psd_info,
+static MagickBooleanType WritePSDChannels(const PSDInfo *psd_info,
   const ImageInfo *image_info,Image *image,Image *next_image,
   MagickOffsetType size_offset,const MagickBooleanType separate,
   ExceptionInfo *exception)
@@ -2588,7 +2588,7 @@ static MagickBooleanType WriteImageChannels(const PSDInfo *psd_info,
   size_offset+=2;
   if (next_image->storage_class == PseudoClass)
     {
-      length=WriteOneChannel(psd_info,image_info,image,next_image,
+      length=WritePSDChannel(psd_info,image_info,image,next_image,
         IndexQuantum,compact_pixels,rows_offset,separate,exception);
       if (separate != MagickFalse)
         size_offset+=WritePSDSize(psd_info,image,length,size_offset)+2;
@@ -2600,7 +2600,7 @@ static MagickBooleanType WriteImageChannels(const PSDInfo *psd_info,
     {
       if (IsImageGray(next_image) != MagickFalse)
         {
-          length=WriteOneChannel(psd_info,image_info,image,next_image,
+          length=WritePSDChannel(psd_info,image_info,image,next_image,
             GrayQuantum,compact_pixels,rows_offset,separate,exception);
           if (separate != MagickFalse)
             size_offset+=WritePSDSize(psd_info,image,length,size_offset)+2;
@@ -2613,7 +2613,7 @@ static MagickBooleanType WriteImageChannels(const PSDInfo *psd_info,
           if (next_image->colorspace == CMYKColorspace)
             (void) NegateCMYK(next_image,exception);
 
-          length=WriteOneChannel(psd_info,image_info,image,next_image,
+          length=WritePSDChannel(psd_info,image_info,image,next_image,
             RedQuantum,compact_pixels,rows_offset,separate,exception);
           if (separate != MagickFalse)
             size_offset+=WritePSDSize(psd_info,image,length,size_offset)+2;
@@ -2621,7 +2621,7 @@ static MagickBooleanType WriteImageChannels(const PSDInfo *psd_info,
             rows_offset+=offset_length;
           count+=length;
 
-          length=WriteOneChannel(psd_info,image_info,image,next_image,
+          length=WritePSDChannel(psd_info,image_info,image,next_image,
             GreenQuantum,compact_pixels,rows_offset,separate,exception);
           if (separate != MagickFalse)
             size_offset+=WritePSDSize(psd_info,image,length,size_offset)+2;
@@ -2629,7 +2629,7 @@ static MagickBooleanType WriteImageChannels(const PSDInfo *psd_info,
             rows_offset+=offset_length;
           count+=length;
 
-          length=WriteOneChannel(psd_info,image_info,image,next_image,
+          length=WritePSDChannel(psd_info,image_info,image,next_image,
             BlueQuantum,compact_pixels,rows_offset,separate,exception);
           if (separate != MagickFalse)
             size_offset+=WritePSDSize(psd_info,image,length,size_offset)+2;
@@ -2639,7 +2639,7 @@ static MagickBooleanType WriteImageChannels(const PSDInfo *psd_info,
 
           if (next_image->colorspace == CMYKColorspace)
             {
-              length=WriteOneChannel(psd_info,image_info,image,next_image,
+              length=WritePSDChannel(psd_info,image_info,image,next_image,
                 BlackQuantum,compact_pixels,rows_offset,separate,exception);
               if (separate != MagickFalse)
                 size_offset+=WritePSDSize(psd_info,image,length,size_offset)+2;
@@ -2650,7 +2650,7 @@ static MagickBooleanType WriteImageChannels(const PSDInfo *psd_info,
         }
       if (next_image->alpha_trait != UndefinedPixelTrait)
         {
-          length=WriteOneChannel(psd_info,image_info,image,next_image,
+          length=WritePSDChannel(psd_info,image_info,image,next_image,
             AlphaQuantum,compact_pixels,rows_offset,separate,exception);
           if (separate != MagickFalse)
             size_offset+=WritePSDSize(psd_info,image,length,size_offset)+2;
@@ -2680,7 +2680,7 @@ static MagickBooleanType WriteImageChannels(const PSDInfo *psd_info,
                   if (compact_pixels == (unsigned char *) NULL)
                     return(0);
                 }
-              length=WriteOneChannel(psd_info,image_info,image,mask,
+              length=WritePSDChannel(psd_info,image_info,image,mask,
                 RedQuantum,compact_pixels,rows_offset,MagickTrue,exception);
               (void) WritePSDSize(psd_info,image,length,size_offset);
               count+=length;
@@ -3288,7 +3288,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
   layer_index=0;
   while (next_image != NULL)
   {
-    length=WriteImageChannels(&psd_info,image_info,image,next_image,
+    length=WritePSDChannels(&psd_info,image_info,image,next_image,
       layer_size_offsets[layer_index++],MagickTrue,exception);
     if (length == 0)
       {
@@ -3326,7 +3326,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
   */
   if (status != MagickFalse)
     {
-      if (WriteImageChannels(&psd_info,image_info,image,image,0,
+      if (WritePSDChannels(&psd_info,image_info,image,image,0,
           MagickFalse,exception) == 0)
         status=MagickFalse;
     }
