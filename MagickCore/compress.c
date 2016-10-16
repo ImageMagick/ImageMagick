@@ -1279,6 +1279,8 @@ MagickExport MagickBooleanType ZLIBEncodeImage(Image *image,
   const size_t magick_unused(length),unsigned char *magick_unused(pixels),
   ExceptionInfo *exception)
 {
+  magick_unreferenced(length);
+  magick_unreferenced(pixels);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
