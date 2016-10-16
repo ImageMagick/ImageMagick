@@ -1365,7 +1365,8 @@ static MagickBooleanType ReadPSDLayer(Image *image,const ImageInfo *image_info,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
       "    setting up new layer image");
-  (void) SetImageBackgroundColor(layer_info->image);
+  if (psd_info->mode != IndexedMode)
+    (void) SetImageBackgroundColor(layer_info->image);
   layer_info->image->compose=PSDBlendModeToCompositeOperator(
     layer_info->blendkey);
   if (layer_info->visible == MagickFalse)
@@ -1375,9 +1376,9 @@ static MagickBooleanType ReadPSDLayer(Image *image,const ImageInfo *image_info,
     }
   if (psd_info->mode == CMYKMode)
     SetImageColorspace(layer_info->image,CMYKColorspace);
-  if ((psd_info->mode == BitmapMode) || (psd_info->mode == GrayscaleMode) ||
-     (psd_info->mode == DuotoneMode))
-   SetImageColorspace(layer_info->image,GRAYColorspace);
+  else if ((psd_info->mode == BitmapMode) || (psd_info->mode == DuotoneMode) ||
+           (psd_info->mode == GrayscaleMode))
+    SetImageColorspace(layer_info->image,GRAYColorspace);
   /*
     Set up some hidden attributes for folks that need them.
   */
