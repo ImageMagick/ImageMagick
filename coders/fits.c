@@ -610,8 +610,9 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
   Image *image,ExceptionInfo *exception)
 {
   char
+    *fits_info,
     header[FITSBlocksize],
-    *fits_info;
+    *url;
 
   MagickBooleanType
     status;
@@ -712,8 +713,9 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
       (void) strncpy(fits_info+offset,header,strlen(header));
       offset+=80;
     }
-  (void) FormatLocaleString(header,FITSBlocksize,"HISTORY %.72s",
-    GetMagickHomeURL());
+  url=GetMagickHomeURL();
+  (void) FormatLocaleString(header,FITSBlocksize,"HISTORY %.72s",url);
+  url=DestroyString(url);
   (void) strncpy(fits_info+offset,header,strlen(header));
   offset+=80;
   (void) strncpy(header,"END",FITSBlocksize);

@@ -442,7 +442,7 @@ static size_t GetBytesPerRow(const size_t columns,
     case 16:
     {
       if (pad == MagickFalse)
-        { 
+        {
           bytes_per_row=2*(((size_t) samples_per_pixel*columns*bits_per_pixel+
             15)/16);
           break;
@@ -1440,6 +1440,9 @@ static inline const char *GetDPXProperty(const Image *image,
 static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
   ExceptionInfo *exception)
 {
+  char
+    *url;
+
   const char
     *value;
 
@@ -1565,8 +1568,9 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
     dpx.file.timestamp);
   offset+=WriteBlob(image,sizeof(dpx.file.timestamp),(unsigned char *)
     dpx.file.timestamp);
-  (void) strncpy(dpx.file.creator,GetMagickHomeURL(),sizeof(dpx.file.creator)-
-    1);
+  url=GetMagickHomeURL();
+  (void) strncpy(dpx.file.creator,url,sizeof(dpx.file.creator)-1);
+  url=DestroyString(url);
   value=GetDPXProperty(image,"dpx:file.creator",exception);
   if (value != (const char *) NULL)
     (void) strncpy(dpx.file.creator,value,sizeof(dpx.file.creator)-1);

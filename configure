@@ -1947,7 +1947,7 @@ Optional Features:
   --enable-prof           enable 'prof' profiling support
   --enable-gprof          enable 'gprof' profiling support
   --enable-gcov           enable 'gcov' profiling support
-  --enable-legacy-support  install legacy command-line utilities (default disabled)
+  --enable-legacy-support install legacy command-line utilities (default disabled)
   --disable-assert        turn off assertions
   --disable-docs          disable building of documentation
 
@@ -4517,7 +4517,7 @@ MAGICK_PATCHLEVEL_VERSION=5
 
 MAGICK_VERSION=7.0.3-5
 
-MAGICK_GIT_REVISION=18937:83da034:20161010
+MAGICK_GIT_REVISION=18940:62e5ca5:20161016
 
 
 # Substitute library versioning

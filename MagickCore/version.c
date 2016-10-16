@@ -292,9 +292,13 @@ MagickExport char *GetMagickHomeURL(void)
     (void) FormatLocaleString(path,MagickPathExtent,"%s%s%s",element,
       DirectorySeparator,MagickURLFilename);
     if (IsPathAccessible(path) != MagickFalse)
-      return(ConstantString(path));
+      {
+        paths=DestroyLinkedList(paths,RelinquishMagickMemory);
+        return(ConstantString(path));
+      }
     element=(const char *) GetNextValueInLinkedList(paths);
   }
+  paths=DestroyLinkedList(paths,RelinquishMagickMemory);
   return(ConstantString(MagickHomeURL));
 }
 

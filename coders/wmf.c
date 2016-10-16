@@ -827,7 +827,8 @@ static void ipa_device_close(wmfAPI * API)
 static void ipa_device_begin(wmfAPI * API)
 {
   char
-    comment[MagickPathExtent];
+    comment[MagickPathExtent],
+    *url;
 
   wmf_magick_t
     *ddata = WMF_MAGICK_GetData(API);
@@ -837,8 +838,10 @@ static void ipa_device_begin(wmfAPI * API)
 
   DrawSetViewbox(WmfDrawingWand,0,0,ddata->image->columns,ddata->image->rows);
 
+  url=GetMagickHomeURL();
   (void) FormatLocaleString(comment,MagickPathExtent,
-    "Created by ImageMagick %s",GetMagickHomeURL());
+    "Created by ImageMagick %s",url);
+  url=DestroyString(url);
   DrawComment(WmfDrawingWand,comment);
 
   /* Scale width and height to image */
