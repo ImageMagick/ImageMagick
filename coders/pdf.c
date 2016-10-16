@@ -1222,7 +1222,8 @@ RestoreMSCWarning
     buffer[MaxTextExtent],
     date[MaxTextExtent],
     **labels,
-    page_geometry[MaxTextExtent];
+    page_geometry[MaxTextExtent],
+    *url;
 
   CompressionType
     compression;
@@ -1382,7 +1383,8 @@ RestoreMSCWarning
         create_date[MaxTextExtent],
         modify_date[MaxTextExtent],
         timestamp[MaxTextExtent],
-        xmp_profile[MaxTextExtent];
+        xmp_profile[MaxTextExtent],
+        *url;
 
       /*
         Write XMP object.
@@ -1402,9 +1404,11 @@ RestoreMSCWarning
       if (value != (const char *) NULL)
         (void) CopyMagickString(create_date,value,MaxTextExtent);
       (void) FormatMagickTime(time((time_t *) NULL),MaxTextExtent,timestamp);
+      url=GetMagickHomeURL();
       i=FormatLocaleString(xmp_profile,MaxTextExtent,XMPProfile,
-        XMPProfileMagick,modify_date,create_date,timestamp,GetMagickHomeURL(),
-        EscapeParenthesis(basename),GetMagickHomeURL());
+        XMPProfileMagick,modify_date,create_date,timestamp,url,
+        EscapeParenthesis(basename),url);
+      url=DestroyString(url);
       (void) FormatLocaleString(buffer,MaxTextExtent,"/Length %.20g\n",(double)
         i);
       (void) WriteBlobString(image,buffer);
@@ -2829,8 +2833,10 @@ RestoreMSCWarning
   (void) WriteBlobString(image,buffer);
   (void) FormatLocaleString(buffer,MaxTextExtent,"/ModDate (%s)\n",date);
   (void) WriteBlobString(image,buffer);
+  url=GetMagickHomeURL();
   (void) FormatLocaleString(buffer,MaxTextExtent,"/Producer (%s)\n",
-    EscapeParenthesis(GetMagickHomeURL()));
+    EscapeParenthesis(url));
+  url=DestroyString(url);
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,">>\n");
   (void) WriteBlobString(image,"endobj\n");

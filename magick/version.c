@@ -42,6 +42,7 @@
 #include "magick/exception-private.h"
 #include "magick/hashmap.h"
 #include "magick/locale_.h"
+#include "magick/memory_.h"
 #include "magick/option.h"
 #include "magick/string_.h"
 #include "magick/utility.h"
@@ -291,9 +292,13 @@ MagickExport char *GetMagickHomeURL(void)
     (void) FormatLocaleString(path,MaxTextExtent,"%s%s%s",element,
       DirectorySeparator,MagickURLFilename);
     if (IsPathAccessible(path) != MagickFalse)
-      return(ConstantString(path));
+      {
+        paths=DestroyLinkedList(paths,RelinquishMagickMemory);
+        return(ConstantString(path));
+      }
     element=(const char *) GetNextValueInLinkedList(paths);
   }
+  paths=DestroyLinkedList(paths,RelinquishMagickMemory);
   return(ConstantString(MagickHomeURL));
 }
 

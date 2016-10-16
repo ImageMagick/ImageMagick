@@ -752,10 +752,13 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     dpx.file.creator);
   if (*dpx.file.creator == '\0')
     {
-      (void) FormatImageProperty(image,"dpx:file.creator","%.100s",
-        GetMagickHomeURL());
-      (void) FormatImageProperty(image,"software","%.100s",
-        GetMagickHomeURL());
+      char
+        *url;
+
+      url=GetMagickHomeURL();
+      (void) FormatImageProperty(image,"dpx:file.creator","%.100s",url);
+      (void) FormatImageProperty(image,"software","%.100s",url);
+      url=DestroyString(url);
     }
   else
     {
@@ -1434,6 +1437,9 @@ static inline const char *GetDPXProperty(const Image *image,
 static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,
   Image *image)
 {
+  char
+    *url;
+
   const char
     *value;
 
@@ -1563,8 +1569,9 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,
     dpx.file.timestamp);
   offset+=WriteBlob(image,sizeof(dpx.file.timestamp),(unsigned char *)
     dpx.file.timestamp);
-  (void) strncpy(dpx.file.creator,GetMagickHomeURL(),sizeof(dpx.file.creator)-
-    1);
+  url=GetMagickHomeURL();
+  (void) strncpy(dpx.file.creator,url,sizeof(dpx.file.creator)-1);
+  url=DestroyString(url);
   value=GetDPXProperty(image,"dpx:file.creator");
   if (value != (const char *) NULL)
     (void) strncpy(dpx.file.creator,value,sizeof(dpx.file.creator)-1);
