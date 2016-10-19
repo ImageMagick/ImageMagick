@@ -1739,6 +1739,8 @@ ModuleExport MagickBooleanType ReadPSDLayers(Image *image,
             if (image->debug != MagickFalse)
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                 "      layer data is empty");
+            if (layer_info[i].info != (StringInfo *) NULL)
+              layer_info[i].info=DestroyStringInfo(layer_info[i].info);
             continue;
           }
 
