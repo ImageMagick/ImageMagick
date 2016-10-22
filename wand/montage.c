@@ -266,6 +266,8 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
 {
 #define DestroyMontage() \
 { \
+  if (montage_info != (MontageInfo *) NULL) \
+    montage_info=DestroyMontageInfo(montage_info); \
   if (montage_image != (Image *) NULL) \
     montage_image=DestroyImageList(montage_image); \
   DestroyImageStack(); \
