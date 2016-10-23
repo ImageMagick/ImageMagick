@@ -3291,20 +3291,18 @@ uint MWC64X_NextUint(mwc64x_state_t *s)
 			value += (float4)(filter[i]) * pixels[px + (py + i) * prp];
 			++i;
 		}
+		if ((x < imageColumns) && (y < imageRows)) {
+			if (justBlur == 0) {		// apply sharpening
+				float4 srcPixel = convert_float4(im[x + y * imageColumns]);
+				float4 diff = srcPixel - value;
 
-		if (justBlur == 0) {		// apply sharpening
-			float4 srcPixel = convert_float4(im[x + y * imageColumns]);
-			float4 diff = srcPixel - value;
+				float quantumThreshold = QuantumRange*threshold;
 
-			float quantumThreshold = QuantumRange*threshold;
-
-			int4 mask = isless(fabs(2.0f * diff), (float4)quantumThreshold);
-			value = select(srcPixel + diff * gain, srcPixel, mask);
-		}
-	
-		if ((x < imageColumns) && (y < imageRows))
+				int4 mask = isless(fabs(2.0f * diff), (float4)quantumThreshold);
+				value = select(srcPixel + diff * gain, srcPixel, mask);
+			}
 			filtered_im[x + y * imageColumns] = (CLPixelType)(ClampToQuantum(value.s0), ClampToQuantum(value.s1), ClampToQuantum(value.s2), ClampToQuantum(value.s3));
-		}	
+		}
 	)
 
 	STRINGIFY(
