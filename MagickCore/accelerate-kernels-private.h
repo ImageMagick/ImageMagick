@@ -3009,16 +3009,17 @@ OPENCL_ENDIF()
       ++i;
     }
 
-    float4 srcPixel = ReadFloat4(image, number_channels, columns, x, y, channel);
-    float4 diff = srcPixel - value;
+    if ((x < columns) && (y < rows)) {
+      float4 srcPixel = ReadFloat4(image, number_channels, columns, x, y, channel);
+      float4 diff = srcPixel - value;
 
-    float quantumThreshold = QuantumRange*threshold;
+      float quantumThreshold = QuantumRange*threshold;
 
-    int4 mask = isless(fabs(2.0f * diff), (float4)quantumThreshold);
-    value = select(srcPixel + diff * gain, srcPixel, mask);
+      int4 mask = isless(fabs(2.0f * diff), (float4)quantumThreshold);
+      value = select(srcPixel + diff * gain, srcPixel, mask);
 
-    if ((x < columns) && (y < rows))
       WriteFloat4(filteredImage, number_channels, columns, x, y, channel, value);
+    }
   }
   )
 
