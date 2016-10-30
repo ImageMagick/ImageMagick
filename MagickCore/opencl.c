@@ -1235,25 +1235,61 @@ static void CacheOpenCLKernel(MagickCLDevice device,char *filename,
   ExceptionInfo *exception)
 {
   cl_uint
+    num_devices,
     status;
 
   size_t
-    binaryProgramSize;
-
-  unsigned char
-    *binaryProgram;
+    i,
+    size,
+    *program_sizes;
 
   status=openCL_library->clGetProgramInfo(device->program,
-    CL_PROGRAM_BINARY_SIZES,sizeof(size_t),&binaryProgramSize,NULL);
+    CL_PROGRAM_NUM_DEVICES,sizeof(cl_uint),&num_devices,NULL);
   if (status != CL_SUCCESS)
     return;
-
-  binaryProgram=(unsigned char*) AcquireMagickMemory(binaryProgramSize);
+  size=num_devices*sizeof(*program_sizes);
+  program_sizes=(size_t*) AcquireMagickMemory(size);
+  if (program_sizes == (size_t*) NULL)
+    return;
   status=openCL_library->clGetProgramInfo(device->program,
-    CL_PROGRAM_BINARIES,sizeof(unsigned char*),&binaryProgram,NULL);
+    CL_PROGRAM_BINARY_SIZES,size,program_sizes,NULL);
   if (status == CL_SUCCESS)
-    (void) BlobToFile(filename,binaryProgram,binaryProgramSize,exception);
-  binaryProgram=(unsigned char *) RelinquishMagickMemory(binaryProgram);
+    {
+      size_t
+        binary_program_size;
+
+      unsigned char
+        **binary_program;
+
+      binary_program_size=num_devices*sizeof(*binary_program);
+      binary_program=(unsigned char **) AcquireMagickMemory(
+        binary_program_size);
+      for (i = 0; i < num_devices; i++)
+        binary_program[i]=AcquireQuantumMemory(MagickMax(*(program_sizes+i),1),
+          sizeof(**binary_program));
+      status=openCL_library->clGetProgramInfo(device->program,
+        CL_PROGRAM_BINARIES,binary_program_size,binary_program,NULL);
+      if (status == CL_SUCCESS)
+        {
+          for (i = 0; i < num_devices; i++)
+          {
+            size_t
+              program_size;
+
+            program_size=*(program_sizes+i);
+            if (program_size < 1)
+              continue;
+            (void) BlobToFile(filename,binary_program[i],program_size,
+              exception);
+            break;
+          }
+        }
+      for (i = 0; i < num_devices; i++)
+        binary_program[i]=(unsigned char *) RelinquishMagickMemory(
+          binary_program[i]);
+      binary_program=(unsigned char **) RelinquishMagickMemory(binary_program);
+    }
+  program_sizes=(size_t *) RelinquishMagickMemory(program_sizes);
 }
 
 static MagickBooleanType LoadCachedOpenCLKernel(MagickCLDevice device,
