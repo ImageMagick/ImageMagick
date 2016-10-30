@@ -1,3 +1,6 @@
+2016-10-30  6.9.6-3 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 6.9.6-3, GIT revision 11117:e857a26:20161030.
+
 2016-10-16  6.9.6-3 Dirk Lemstra <dirk@lem.....org>
   * Added layer ZIP compression to the PSD encoder.
 
