@@ -850,65 +850,69 @@ static char* getBinaryCLProgramName(MagickCLEnv clEnv, MagickOpenCLProgram prog,
   return name;
 }
 
-static MagickBooleanType saveBinaryCLProgram(MagickCLEnv clEnv, MagickOpenCLProgram prog, unsigned int signature, ExceptionInfo* exception)
+static void saveBinaryCLProgram(MagickCLEnv clEnv,MagickOpenCLProgram prog,
+  unsigned int signature,ExceptionInfo* exception)
 {
-  MagickBooleanType saveSuccessful;
-  cl_int clStatus;
-  size_t binaryProgramSize;
-  unsigned char* binaryProgram;
-  char* binaryFileName;
-  FILE* fileHandle;
+  char
+    *filename;
 
-#ifdef MAGICKCORE_CLPERFMARKER
-  clBeginPerfMarkerAMD(__FUNCTION__,"");
-#endif
+  cl_uint
+    num_devices,
+    status;
 
-  binaryProgram = NULL;
-  binaryFileName = NULL;
-  fileHandle = NULL;
-  saveSuccessful = MagickFalse;
+  size_t
+    i,
+    size,
+    *program_sizes;
 
-  clStatus = clEnv->library->clGetProgramInfo(clEnv->programs[prog], CL_PROGRAM_BINARY_SIZES, sizeof(size_t), &binaryProgramSize, NULL);
-  if (clStatus != CL_SUCCESS)
-  {
-    (void) ThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clGetProgramInfo failed.", "'%s'", ".");
-    goto cleanup;
-  }
+  filename=getBinaryCLProgramName(clEnv,prog,signature);
+  status=clEnv->library->clGetProgramInfo(clEnv->programs[prog],
+    CL_PROGRAM_NUM_DEVICES,sizeof(cl_uint),&num_devices,NULL);
+  if (status != CL_SUCCESS)
+    return;
+  size=num_devices*sizeof(*program_sizes);
+  program_sizes=(size_t*) AcquireMagickMemory(size);
+  if (program_sizes == (size_t*) NULL)
+    return;
+  status=clEnv->library->clGetProgramInfo(clEnv->programs[prog],
+    CL_PROGRAM_BINARY_SIZES,size,program_sizes,NULL);
+  if (status == CL_SUCCESS)
+    {
+      size_t
+        binary_program_size;
 
-  binaryProgram = (unsigned char*) AcquireMagickMemory(binaryProgramSize);
-  clStatus = clEnv->library->clGetProgramInfo(clEnv->programs[prog], CL_PROGRAM_BINARIES, sizeof(char*), &binaryProgram, NULL);
-  if (clStatus != CL_SUCCESS)
-  {
-    (void) ThrowMagickException(exception, GetMagickModule(), ModuleFatalError, "clGetProgramInfo failed.", "'%s'", ".");
-    goto cleanup;
-  }
+      unsigned char
+        **binary_program;
 
-  binaryFileName = getBinaryCLProgramName(clEnv, prog, signature);
-  fileHandle = fopen(binaryFileName, "wb");
-  if (fileHandle != NULL)
-  {
-    fwrite(binaryProgram, sizeof(char), binaryProgramSize, fileHandle);
-    saveSuccessful = MagickTrue;
-  }
-  else
-  {
-    (void) ThrowMagickException(exception, GetMagickModule(), DelegateWarning,
-      "Saving binary kernel failed.", "'%s'", ".");
-  }
+      binary_program_size=num_devices*sizeof(*binary_program);
+      binary_program=(unsigned char **) AcquireMagickMemory(
+        binary_program_size);
+      for (i = 0; i < num_devices; i++)
+        binary_program[i]=AcquireQuantumMemory(MagickMax(*(program_sizes+i),1),
+          sizeof(**binary_program));
+      status=clEnv->library->clGetProgramInfo(clEnv->programs[prog],
+        CL_PROGRAM_BINARIES,binary_program_size,binary_program,NULL);
+      if (status == CL_SUCCESS)
+        {
+          for (i = 0; i < num_devices; i++)
+          {
+            size_t
+              program_size;
 
-cleanup:
-  if (fileHandle != NULL)
-    fclose(fileHandle);
-  if (binaryProgram != NULL)
-    RelinquishMagickMemory(binaryProgram);
-  if (binaryFileName != NULL)
-    free(binaryFileName);
-
-#ifdef MAGICKCORE_CLPERFMARKER
-  clEndPerfMarkerAMD();
-#endif
-
-  return saveSuccessful;
+            program_size=*(program_sizes+i);
+            if (program_size < 1)
+              continue;
+            (void) BlobToFile(filename,binary_program[i],program_size,
+              exception);
+            break;
+          }
+        }
+      for (i = 0; i < num_devices; i++)
+        binary_program[i]=(unsigned char *) RelinquishMagickMemory(
+          binary_program[i]);
+      binary_program=(unsigned char **) RelinquishMagickMemory(binary_program);
+    }
+  program_sizes=(size_t *) RelinquishMagickMemory(program_sizes);
 }
 
 static MagickBooleanType loadBinaryCLProgram(MagickCLEnv clEnv, MagickOpenCLProgram prog, unsigned int signature)
