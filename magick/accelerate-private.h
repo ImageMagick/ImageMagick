@@ -3303,6 +3303,7 @@ uint MWC64X_NextUint(mwc64x_state_t *s)
 			}
 			filtered_im[x + y * imageColumns] = (CLPixelType)(ClampToQuantum(value.s0), ClampToQuantum(value.s1), ClampToQuantum(value.s2), ClampToQuantum(value.s3));
 		}
+	}
 	)
 
 	STRINGIFY(
@@ -3312,7 +3313,7 @@ uint MWC64X_NextUint(mwc64x_state_t *s)
 					const int imageWidth,
 					const int imageHeight)
 	{
-		const int pad = (1 << (passes - 1));;
+		const int pad = (1 << (passes - 1));
 		const int tileSize = 64;
 		const int tileRowPixels = 64;
 		const float noise[] = { 0.8002, 0.2735, 0.1202, 0.0585, 0.0291, 0.0152, 0.0080, 0.0044 };
