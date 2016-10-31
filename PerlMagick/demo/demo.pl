@@ -483,7 +483,7 @@ push(@$images,$example);
 
 print "WaveletDenoise...\n";
 $example=$model->Clone();
-$example->Label('Wave');
+$example->Label('Wavelet Denoise');
 $example->WaveletDenoise('5%');
 push(@$images,$example);
 
