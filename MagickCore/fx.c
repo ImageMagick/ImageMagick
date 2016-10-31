@@ -5866,7 +5866,7 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
   pixels_info=AcquireVirtualMemory(3*image->columns,image->rows*
     sizeof(*pixels));
-  kernel=(float *) AcquireQuantumMemory(MagickMax(image->rows,image->columns),
+  kernel=(float *) AcquireQuantumMemory(MagickMax(image->rows,image->columns)+1,
     GetOpenMPMaximumThreads()*sizeof(*kernel));
   if ((pixels_info == (MemoryInfo *) NULL) || (kernel == (float *) NULL))
     {
