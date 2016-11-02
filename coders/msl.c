@@ -4999,6 +4999,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     Image
                       *image;
 
+                    if (value == (char *) NULL)
+                      break;
                     (void) CopyMagickString(msl_info->image_info[n]->filename,
                       value,MaxTextExtent);
                     image=ReadImage(msl_info->image_info[n],exception);
