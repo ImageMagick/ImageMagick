@@ -5047,6 +5047,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     Image
                       *image;
 
+                    if (value == (char *) NULL)
+                      break;
                     (void) CopyMagickString(msl_info->image_info[n]->filename,
                       value,MagickPathExtent);
                     image=ReadImage(msl_info->image_info[n],exception);
