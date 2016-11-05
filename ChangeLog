@@ -175,7 +175,7 @@
   * Coder path traversal is not authorized (bug report provided by
     Masaaki Chida).
   * Turn off alpha channel for the compare difference image (reference
-    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=29828).
+    https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=29828).
 
 2016-05-31  7.0.1-8 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.1-8, GIT revision 18334:97775b5:20160531.
