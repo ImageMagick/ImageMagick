@@ -5,14 +5,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
     <title>ImageMagick: PerlMagick, Perl API for ImageMagick</title>
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
   <meta name="application-name" content="ImageMagick"/>
   <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves."/>
-  <meta name="application-url" content="https://www.imagemagick.org"/>
+  <meta name="application-url" content="http://www.imagemagick.org"/>
   <meta name="generator" content="PHP"/>
   <meta name="keywords" content="perlmagick, perl, api, for, imagemagick, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert"/>
   <meta name="rating" content="GENERAL"/>
@@ -21,13 +19,11 @@
   <meta name="author" content="ImageMagick Studio LLC"/>
   <meta name="revisit-after" content="2 DAYS"/>
   <meta name="resource-type" content="document"/>
-  <meta name="copyright" content="Copyright (c) 1999-2016 ImageMagick Studio LLC"/>
+  <meta name="copyright" content="Copyright (c) 1999-2015 ImageMagick Studio LLC"/>
   <meta name="distribution" content="Global"/>
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
-  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
   <link rel="icon" href="../images/wand.png"/>
   <link rel="shortcut icon" href="../images/wand.ico"/>
-  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700">
   <link rel="stylesheet" href="css/magick.css"/>
 </head>
 <body>
@@ -49,8 +45,8 @@
       <a class="magick-nav-item " href="command-line-processing.html">Command-line</a>
       <a class="magick-nav-item " href="resources.html">Resources</a>
       <a class="magick-nav-item " href="api.html">Develop</a>
-      <a class="magick-nav-item " href="https://www.imagemagick.org/script/search.php">Search</a>
-      <a class="magick-nav-item pull-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
+      <a class="magick-nav-item " href="http://www.imagemagick.org/script/search.php">Search</a>
+      <a class="magick-nav-item pull-right" href="http://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
 </div>
@@ -61,9 +57,9 @@
 <a id="introduction"></a>
 <p class="lead magick-description"><a href="download.html">PerlMagick</a> is an objected-oriented <a href="http://www.perl.com/perl/">Perl</a> interface to ImageMagick. Use the module to read, manipulate, or write an image or image sequence from within a Perl script. This makes it very suitable for Web CGI scripts. You must have ImageMagick 6.5.5 or above and Perl version 5.005_02 or greater installed on your system for PerlMagick to build properly.</p>
 
-<p>There are a number of useful scripts available to show you the value of PerlMagick. You can do Web based image manipulation and conversion with <a href="https://www.imagemagick.org/download/perl">MagickStudio</a>, or use <a href="http://git.imagemagick.org/repos/ImageMagick/PerlMagick/demo">L-systems</a> to create images of plants using mathematical constructs, and finally navigate through collections of thumbnail images and select the image to view with the <a href="http://webmagick.sourceforge.net/">WebMagick Image Navigator</a>.</p>
+<p>There are a number of useful scripts available to show you the value of PerlMagick. You can do Web based image manipulation and conversion with <a href="http://www.imagemagick.org/download/perl">MagickStudio</a>, or use <a href="http://git.imagemagick.org/repos/ImageMagick/PerlMagick/demo">L-systems</a> to create images of plants using mathematical constructs, and finally navigate through collections of thumbnail images and select the image to view with the <a href="http://webmagick.sourceforge.net/">WebMagick Image Navigator</a>.</p>
 
-<p>You can try PerlMagick from your Web browser at the <a href="https://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">ImageMagick Studio</a>. Or, you can see <a href="examples.html">examples</a> of select PerlMagick functions.</p>
+<p>You can try PerlMagick from your Web browser at the <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">ImageMagick Studio</a>. Or, you can see <a href="examples.html">examples</a> of select PerlMagick functions.</p>
 
 <h2 class="magick-header"><a id="installation"></a>Installation</h2>
 
@@ -75,7 +71,7 @@
 yum install ImageMagick-perl
 </pre>
 
-<p>If not, you must install PerlMagick from the ImageMagick source distribution.  Download the latest <a href="https://www.imagemagick.org/download/ImageMagick.tar.gz">source</a> release.</p>
+<p>If not, you must install PerlMagick from the ImageMagick source distribution.  Download the latest <a href="http://www.imagemagick.org/download/ImageMagick.tar.gz">source</a> release.</p>
 
 <p>Unpack the distribution with this command:</p>
 
@@ -85,7 +81,7 @@ tar xvzf ImageMagick.tar.gz
 
 <p>Next configure and compile ImageMagick:</p>
 
-<pre><span class="crtprompt"> </span><span class='crtin'>cd ImageMagick-7.0.2</span><span class='crtout'></span><span class="crtprompt"> </span><span class='crtin'>./configure -with-perl</span><span class='crtout'></span><span class="crtprompt"> </span><span class='crtin'>make</span></pre>
+<pre><span class="crtprompt"> </span><span class='crtin'>cd ImageMagick-7.0.0</span><span class='crtout'></span><span class="crtprompt"> </span><span class='crtin'>./configure -with-perl</span><span class='crtout'></span><span class="crtprompt"> </span><span class='crtin'>make</span></pre>
 <p>If ImageMagick / PerlMagick configured and compiled without complaint, you are ready to install it on your system.  Administrator privileges are required to install.  To install, type</p>
 
 <pre>
@@ -105,7 +101,7 @@ sudo ldconfig /usr/local/lib
 perl -e \"use Image::Magick; print Image::Magick->QuantumDepth\"
 </pre>
 
-<p>Congratulations, you have a working ImageMagick distribution and you are ready to use PerlMagick to <a href="https://www.imagemagick.org/Usage/">convert, compose, or edit</a> your images.</p>
+<p>Congratulations, you have a working ImageMagick distribution and you are ready to use PerlMagick to <a href="http://www.imagemagick.org/Usage/">convert, compose, or edit</a> your images.</p>
 
 <p><b>Windows XP / Windows 2000</b></p>
 
@@ -459,7 +455,7 @@ $image-&gt;[$x]-&gt;Frame("100x200");
 
   <tr>
     <td>BlackThreshold</td>
-    <td>threshold=&gt;<i>string</i>, channel=&gt;{All, Default, Alpha, Black, Blue, CMYK, Cyan, Gray, Green, Index, Magenta, Opacity, Red, RGB, Yellow}</td>
+    <td>threshold=&gt;<i>string</i>, , channel=&gt;{All, Default, Alpha, Black, Blue, CMYK, Cyan, Gray, Green, Index, Magenta, Opacity, Red, RGB, Yellow}</td>
     <td>force all pixels below the threshold intensity into black</td>
   </tr>
 
@@ -653,7 +649,7 @@ ay connectivity.</td>
 
   <tr>
     <td>Distort</td>
-    <td>points=&gt;<i>array of float values</i>, method=&gt;{Affine, AffineProjection, ScaleRotateTranslate, SRT, Perspective, PerspectiveProjection, BilinearForward, BilinearReverse, Polynomial, Arc, Polar, DePolar, Barrel, BarrelInverse, Shepards, Resize}, 'virtual-pixel'=&gt;{Background Black Constant Dither Edge Gray Mirror Random Tile Transparent White}, 'best-fit'=&gt;{True, False}</td>
+    <td>points=&gt;<i>array of float values</i>, method=&gt;{Affine, AffineProjection, Bilinear, Perspective, Resize, ScaleRotateTranslate}, 'virtual-pixel'=&gt;{Background Black Constant Dither Edge Gray Mirror Random Tile Transparent White}, 'best-fit'=&gt;{True, False}</td>
     <td>distort image</td>
   </tr>
 
@@ -1218,12 +1214,6 @@ fill=&gt;<i><a href="color.html">color name</a></i>, channel=&gt;{All, Default, 
     <td>Wave</td>
     <td>geometry=&gt;<i>geometry</i>, amplitude=&gt;<i>double</i>, wavelength=&gt;<i>double</i>, interpolate=&gt;{undefined, average, bicubic, bilinear, mesh, nearest-neighbor, spline}</td>
     <td>alter an image along a sine wave</td>
-  </tr>
-
-  <tr>
-    <td>WaveDenoise</td>
-    <td>geometry=&gt;<i>geometry</i>, threshold=&gt;<i>double</i>, threshold=&gt;<i>double</i></td>
-    <td>removes noise from the image using a wavelet transform</td>
   </tr>
 
   <tr>
@@ -2589,19 +2579,17 @@ Image::Magick-&gt;QuantumDepth
     <p><a href="support.html">Donate</a> •
      <a href="sitemap.html">Sitemap</a> •
     <a href="links.html">Related</a> •
-    <a href="security-policy.html">Security</a> •
     <a href="architecture.html">Architecture</a>
 </p>
     <p><a href="perl-magick.html#">Back to top</a> •
     <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-    <a href="https://www.imagemagick.org/script/contact.php">Contact Us</a></p>
+    <a href="http://www.imagemagick.org/script/contact.php">Contact Us</a></p>
         <p><small>©  1999-2016 ImageMagick Studio LLC</small></p>
   </footer>
 </div><!-- /.container -->
 
   <script src="https://localhost/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-  <script src="../js/magick.html"></script>
+  <script src="http://nextgen.imagemagick.org/js/magick.html"></script>
 </div>
 </body>
 </html>
-<!-- Magick Cache 30th July 2016 10:08 -->

@@ -5,10 +5,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>ImageMagick: Command-line Options</title>
   <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <meta http-equiv="x-ua-compatible" content="ie=edge" />
+  <title>ImageMagick: Command-line Options</title>
   <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
   <meta name="application-name" content="ImageMagick"/>
   <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves."/>
@@ -25,16 +25,17 @@
   <meta name="distribution" content="Global"/>
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
+  <link rel="canonical" href="command-line-options.html?"/>
   <link rel="icon" href="../images/wand.png"/>
   <link rel="shortcut icon" href="../images/wand.ico"/>
-  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700">
+  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700">
   <link rel="stylesheet" href="css/magick.css"/>
 </head>
 <body>
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+    <script async="async" src="https://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
          style="display:block"
          data-ad-client="ca-pub-3129977114552745"
          data-ad-slot="6345125851"
@@ -49,8 +50,8 @@
       <a class="magick-nav-item " href="command-line-processing.html">Command-line</a>
       <a class="magick-nav-item " href="resources.html">Resources</a>
       <a class="magick-nav-item " href="api.html">Develop</a>
-      <a class="magick-nav-item " href="https://www.imagemagick.org/script/search.php">Search</a>
-      <a class="magick-nav-item pull-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
+      <a class="magick-nav-item " href="http://www.imagemagick.org/script/search.php">Search</a>
+      <a class="magick-nav-item pull-right" href="http://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
 </div>
@@ -625,26 +626,6 @@ times will produce a more accurate result. </p>
 by taking advantage of the separability properties of the distribution.  Here
 we apply a single-dimensional Gaussian matrix in the horizontal direction,
 then repeat the process in the vertical direction.</p>
-
-<p>The <a href="command-line-options.html#virtual-pixel">-virtual-pixel</a> setting will determine how
-pixels which are outside the image proper are blurred into the final result.
-</p>
-
-
-<div style="margin: auto;">
-  <h3 class="magick-header">-blur <var>Width</var>[x<var>Height</var>[+<var>Angle</var>]]</h3>
-</div>
-
-<p class="magick-description">Variably blur an image according to the overlay mapping.</p>
-
-<p>Each pixel in the overlaid region is replaced with an Elliptical Weighted
-Average (EWA) of the source image, scaled according to the grayscale
-mapping. </p>
-
-<p>The ellipse is weighted with sigma set to the given <var>Width</var> and <var >Height</var>. The <var >Height</var>
-defaults to the <var >Width</var> for a normal circular Gaussian
-weighting.  The <var >Angle</var> will rotate the ellipse from
-horizontal clock-wise.  </p>
 
 <p>The <a href="command-line-options.html#virtual-pixel">-virtual-pixel</a> setting will determine how
 pixels which are outside the image proper are blurred into the final result.
@@ -1884,8 +1865,13 @@ available:</p>
   </tr>
 
   <tr>
-    <td>dds:weight-by-alpha=<var>true|false</var></td>
+     <td>dds:weight-by-alpha=<var>true|false</var></td>
      <td>Enables the dds alpha weighting.</td>
+  </tr>
+
+  <tr>
+    <td>deskew:auto-crop=<var>true</var></td>
+    <td>auto crop the image after deskewing.</td>
   </tr>
 
   <tr>
@@ -2104,9 +2090,15 @@ available:</p>
   </tr>
 
   <tr>
+    <td>phash:colorspaces=<var>colorspace,colorspace,...</var></td>
+    <td>the perceptual hash defaults to the sRGB and HCLp colorspaces.  Use this define, you can specify up to six alternative colorspaces.</td>
+  </tr>
+
+  <tr>
     <td>png:bit-depth=<var>value</var></td>
     <td>&nbsp</td>
   </tr>
+
   <tr>
     <td>png:color-type=<var>value</var></td>
      <td>desired bit-depth and color-type for PNG output.  You can force the PNG
@@ -2292,13 +2284,25 @@ available:</p>
   </tr>
 
   <tr>
+    <td>psd:additional-info=all|selective</td>
+     <td>This option should only be used when converting from a PSD file to another PSD file. This should be placed after the image is read. The two options are 'all' and 'selective'. The 'selective' option will preserve all additional information that is not related to the geometry of the image. The 'all' option should only be used when the geometry of the image has not been changed. This option is helpful when transferring non-simple layers, such as adjustment layers from the input PSD file to the output PSD file. If this option is not used, the additional information will not be preserved. This define is available as of Imagemagick version 6.9.5-8.
+</td>
+  </tr>
+
+  <tr>
     <td>psd:alpha-unblend=off</td>
      <td>Disables new automatic un-blending of transparency with the base image 
      for the flattened layer 0 before adding the alpha channel to the output  
      image. This define must be placed before the input psd image. (Available 
      as of IM 6.9.2.5). The automatic un-blending is new to IM 6.9.2.5 and 
      prevents the transparency from being applied twice in the output 
-     image.</td>
+     image. This option should be set before reading the image.</td>
+  </tr>
+
+  <tr>
+    <td>psd:preserve-opacity-mask=true</td>
+     <td>This option should only be used when converting from a PSD file to another PSD file. It will preserve the opacity mask of a layer and add it back to the layer when the image is saved. Setting this to 'true' will enable this feature. This define is available as of Imagemagick version 6.9.5-10.
+</td>
   </tr>
 
   <tr>
@@ -2498,8 +2502,7 @@ or CMYK, or to change the depth of any image after it has been read.</p>
 <p class="magick-description">straighten an image.  A threshold of 40% works for most images.</p>
 
 <p>Use <a href="command-line-options.html#set">-set</a> <code>option:deskew:auto-crop
-<var>width</var></code> to auto crop the image.  The set argument is the pixel
-width of the image background (e.g 40).</p>
+<var>true | false</var></code> to auto crop the image.</p>
 
 <div style="margin: auto;">
   <h3 class="magick-header"><a id="despeckle"></a>-despeckle</h3>
@@ -5673,7 +5676,7 @@ name. </p>
 <dt>MSE</dt><dd>   mean error squared, average of the channel error squared</dd>
 <dt>NCC</dt><dd>   normalized cross correlation</dd>
 <dt>PAE</dt><dd>   peak absolute (normalized peak absolute)</dd>
-<dt>PHASH</dt><dd> perceptual hash</dd>
+<dt>PHASH</dt><dd> perceptual hash for the sRGB and HCLp colorspaces.  Specify an alternative colorspace with <code>-define phash:colorspaces=<var>colorspace,colorspace,...</var></code></dd>
 <dt>PSNR</dt><dd>  peak signal to noise ratio</dd>
 <dt>RMSE</dt><dd>  root mean squared (normalized root mean squared)</dd>
 </dl>
@@ -7980,7 +7983,7 @@ but with strict boolean masking. </p>
 </p>
     <p><a href="command-line-options.html#">Back to top</a> •
     <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-    <a href="https://www.imagemagick.org/script/contact.php">Contact Us</a></p>
+    <a href="http://www.imagemagick.org/script/contact.php">Contact Us</a></p>
         <p><small>©  1999-2016 ImageMagick Studio LLC</small></p>
   </footer>
 </div><!-- /.container -->
@@ -7990,4 +7993,4 @@ but with strict boolean masking. </p>
 </div>
 </body>
 </html>
-<!-- Magick Cache 30th July 2016 09:49 -->
+<!-- Magick Cache 4th November 2016 22:35 -->

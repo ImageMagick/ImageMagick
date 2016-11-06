@@ -5,10 +5,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>ImageMagick: Color Names</title>
   <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <meta http-equiv="x-ua-compatible" content="ie=edge" />
+  <title>ImageMagick: Color Names</title>
   <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
   <meta name="application-name" content="ImageMagick"/>
   <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves."/>
@@ -25,16 +25,17 @@
   <meta name="distribution" content="Global"/>
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
+  <link rel="canonical" href="color.html"/>
   <link rel="icon" href="../images/wand.png"/>
   <link rel="shortcut icon" href="../images/wand.ico"/>
-  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700">
+  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700">
   <link rel="stylesheet" href="css/magick.css"/>
 </head>
 <body>
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+    <script async="async" src="https://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
          style="display:block"
          data-ad-client="ca-pub-3129977114552745"
          data-ad-slot="6345125851"
@@ -49,8 +50,8 @@
       <a class="magick-nav-item " href="command-line-processing.html">Command-line</a>
       <a class="magick-nav-item " href="resources.html">Resources</a>
       <a class="magick-nav-item " href="api.html">Develop</a>
-      <a class="magick-nav-item " href="https://www.imagemagick.org/script/search.php">Search</a>
-      <a class="magick-nav-item pull-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
+      <a class="magick-nav-item " href="http://www.imagemagick.org/script/search.php">Search</a>
+      <a class="magick-nav-item pull-right" href="http://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
 </div>
@@ -116,7 +117,7 @@ gray(50%)        mid gray
 graya(50%, 0.5)  semi-transparent mid gray
 </pre>
 
-<p>The ImageMagick color model also supports hue-saturation-lightness (HSL) and hue-saturation-brightness (HSB) colors as a complement to numerical sRGB colors. HSL colors are encoding as a triple (hue, saturation, lightness). Likewise HSB colors are encoding as a triple (hue, saturation, brightness). HSL or HSB triples are either direct values (hue 0—360, saturation 0—255, ligthness or brightness 0—255) or as percentage values relative to these ranges.</p>
+<p>The ImageMagick color model also supports hue-saturation-lightness (HSL) and hue-saturation-brightness (HSB) colors as a complement to numerical sRGB colors. HSL colors are encoding as a triple (hue, saturation, lightness). Likewise HSB colors are encoding as a triple (hue, saturation, brightness). HSL or HSB triples are either direct values (hue 0—360, saturation 0—255, lightness or brightness 0—255) or with S,L,B as percentage values relative to these ranges.</p>
 
 <p>The HSB color system is geometrically represented as a cone with its apex pointing downward. Hue is measured around the perimeter. Saturation is measured from the axis outward. Brightness is measured from the apex upward.</p>
 
@@ -124,7 +125,7 @@ graya(50%, 0.5)  semi-transparent mid gray
 
 <p>See <a href="http://en.wikipedia.org/wiki/HSL_and_HSV">http://en.wikipedia.org/wiki/HSL_and_HSV</a> for more details on HSL and HSB color systems.</p>
 
-<p>Hue is represented as an angle of the color around the circular perimeter of the cone(s) (i.e. the rainbow represented in a circle). Hue values are either integer or floats in the range 0—360 or integer or float percentage values in the range 0—100%. By definition red=0=360 (or 0%=100%),  and the other colors are spread around the circle,  so green=120 (or 33.3333%),  blue=240 (or (66.6667%), etc. As an angle, it implicitly wraps around such that -120=240 and 480=120, for instance. (Students of trigonometry would say that "coterminal angles are equivalent" here; an angle <var>θ</var> can be standardized by computing the equivalent angle, <var>θ</var> mod 360.)</p>
+<p>Hue is represented as an angle of the color around the circular perimeter of the cone(s) (i.e. the rainbow represented in a circle). Hue values are integers or floats in the range 0—360. By definition red=0=360, and the other colors are spread around the circle, so green=120, blue=240, etc. As an angle, it implicitly wraps around such that -120=240 and 480=120, for instance. (Students of trigonometry would say that "coterminal angles are equivalent" here; an angle <var>θ</var> can be standardized by computing the equivalent angle, <var>θ</var> mod 360.)</p>
 
 <p>Saturation is measure outward from the central axis of the cone(s) toward the perimeter of the cone(s). Saturation may be expressed as an integer or float in the range 0—255 or as an integer or float percentage in the range 0—100. Saturation may be thought of as the absence of any "white" mixed with the base color. Thus 255 or 100% is full saturation and corresponds to a point on the outside surface of the cone (HSB) or double cone (HSL). It will be the most "colorful" region. 0 or 0% is no saturation which results in some shade of gray. It occurs along the central axis of the cone or double cone with black at the bottom apex and white at the top.</p>
 
@@ -133,23 +134,23 @@ graya(50%, 0.5)  semi-transparent mid gray
 <p>The HSB color system is a little easier to understand than the HSL color system. In the HSB color system, black is at the bottom apex and white is at the top center of the cone on the central axis. The most colorful or saturated colors will then be at the outer edge of the top of the cone at the widest part. Thus at Saturation=100% and Brightness=100%</p>
 
 <pre>
-hsb(0%, 100%,  100%)          or    hsb(0, 255,  255)          full red
-hsb(33.3333%, 100%,  100%)    or    hsb(120, 255,   255)       full green
-hsb(33.3333%, 100%,  75%)     or    hsb(120, 255,   191.25)    medium green
-hsb(33.3333%, 100%,  50%)     or    hsb(120, 255,   127.5)     dark green
-hsb(33.3333%, 100%,  25%)     or    hsb(120, 255,   63.75)     very dark green
-hsb(33.3333%, 50%,   50%)     or    hsb(120, 127.5, 127.5)     pastel green
+hsb(0,   100%,  100%)    or    hsb(0,   255,   255)          full red
+hsb(120, 100%,  100%)    or    hsb(120, 255,   255)       full green
+hsb(120, 100%,  75%)     or    hsb(120, 255,   191.25)    medium green
+hsb(120, 100%,  50%)     or    hsb(120, 255,   127.5)     dark green
+hsb(120, 100%,  25%)     or    hsb(120, 255,   63.75)     very dark green
+hsb(120, 50%,   50%)     or    hsb(120, 127.5, 127.5)     pastel green
 </pre>
 
 <p>In the HSL color system, black is at the bottom apex and white is at the top apex. However, saturation is largest at the middle of the double cone on its outer perimeter and thus at a lightness value of 50%. The most colorful or saturated colors will then be at the outer edge of the double cone at its widest part. Thus at Saturation=100% and Brightness=50%</p>
 
 <pre>
-hsl(0%, 100%,  50%)           or    hsl(0, 255,  127.5)        full red
-hsl(33.3333%, 100%,  100%)    or    hsl(120, 255,   255)       white
-hsl(33.3333%, 100%,  75%)     or    hsl(120, 255,   191.25)    pastel green
-hsl(33.3333%, 100%,  50%)     or    hsl(120, 255,   127.5)     full green
-hsl(33.3333%, 100%,  25%)     or    hsl(120, 255,   63.75)     dark green
-hsl(33.3333%, 50%,   50%)     or    hsl(120, 127.5, 127.5)     medium green
+hsl(0,   100%,  50%)     or    hsl(0,   255,   127.5)        full red
+hsl(120, 100%,  100%)    or    hsl(120, 255,   255)       white
+hsl(120, 100%,  75%)     or    hsl(120, 255,   191.25)    pastel green
+hsl(120, 100%,  50%)     or    hsl(120, 255,   127.5)     full green
+hsl(120, 100%,  25%)     or    hsl(120, 255,   63.75)     dark green
+hsl(120, 50%,   50%)     or    hsl(120, 127.5, 127.5)     medium green
 </pre>
 
 <p>One advantage of HSB or HSL over RGB is that it can be more intuitive: you can guess at the colors you want, and then tweak. It is also easier to create sets of matching colors (by keeping the hue the same and varying the brightness or lightness and saturation, for example).</p>
@@ -157,18 +158,18 @@ hsl(33.3333%, 50%,   50%)     or    hsl(120, 127.5, 127.5)     medium green
 <p>Just as the 'rgb()' functional notation has the 'rgba()' alpha counterpart, the 'hsl()' and 'hsb()' functional notations have their 'hsla()' 'hsba()' alpha counterparts. These examples specify the same color:</p>
 
 <pre>
-hsb(33.3333%, 100%,  100%)         full green in hsb
-hsba(33.3333%, 100%,  100%,  1.0)  the same, with an alpha value of 1.0
+hsb(120, 100%,  100%)              full green in hsb
+hsba(120, 100%,  100%,  1.0)       the same, with an alpha value of 1.0
 hsb(120, 255,  255)                full green in hsb
 hsba(120, 255,  255,  1.0)         the same, with an alpha value of 1.0
 
-hsl(33.3333%, 100%,  50%)          full green in hsl
-hsla(33.3333%, 100%,  50%,  1.0)   the same, with an alpha value of 1.0
+hsl(120, 100%,  50%)               full green in hsl
+hsla(120, 100%,  50%,  1.0)        the same, with an alpha value of 1.0
 hsl(120, 255,  127.5)              full green in hsl
 hsla(120, 255,  127.5,  1.0)       the same, with an alpha value of 1.0
 </pre>
 
-<p>Prior to ImageMagick 6.5.6-6, HSL (HSB) could only be specified with Hue in range 0—360, but Saturation and Lightness (Brightness) as percent in range 0—100%.</p>
+<p>For ImageMagick between 6.5.6-6 and 6.9.2-0, HSL (HSB) could only be specified with Hue as percent in range 0—100%, when Saturation and Lightness (Brightness) were also specified as percent in range 0—100%.</p>
 
 <p>Specify the Lab colors like this:</p>
 <pre>
@@ -4940,7 +4941,7 @@ device-cmyk(0.11, 0.48, 0.83, 0.00)
 </p>
     <p><a href="color.html#">Back to top</a> •
     <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-    <a href="https://www.imagemagick.org/script/contact.php">Contact Us</a></p>
+    <a href="http://www.imagemagick.org/script/contact.php">Contact Us</a></p>
         <p><small>©  1999-2016 ImageMagick Studio LLC</small></p>
   </footer>
 </div><!-- /.container -->
@@ -4950,4 +4951,4 @@ device-cmyk(0.11, 0.48, 0.83, 0.00)
 </div>
 </body>
 </html>
-<!-- Magick Cache 30th July 2016 09:50 -->
+<!-- Magick Cache 4th November 2016 22:34 -->
