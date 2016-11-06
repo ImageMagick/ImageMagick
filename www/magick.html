@@ -8,13 +8,13 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
   <meta http-equiv="x-ua-compatible" content="ie=edge" />
-  <title>ImageMagick: Command-line Tools: Convert</title>
+  <title>ImageMagick: Command-line Tools: Magick</title>
   <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
   <meta name="application-name" content="ImageMagick"/>
   <meta name="description" content="ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves."/>
   <meta name="application-url" content="https://www.imagemagick.org"/>
   <meta name="generator" content="PHP"/>
-  <meta name="keywords" content="command-line, tools:, convert, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert"/>
+  <meta name="keywords" content="command-line, tools:, magick, ImageMagick, PerlMagick, image processing, image, photo, software, Magick++, OpenMP, convert"/>
   <meta name="rating" content="GENERAL"/>
   <meta name="robots" content="INDEX, FOLLOW"/>
   <meta name="generator" content="ImageMagick Studio LLC"/>
@@ -25,7 +25,7 @@
   <meta name="distribution" content="Global"/>
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-  <link rel="canonical" href="https://www.imagemagick.org/www/convert.html"/>
+  <link rel="canonical" href="https://www.imagemagick.org/www/magick.html"/>
   <link rel="icon" href="../images/wand.png"/>
   <link rel="shortcut icon" href="../images/wand.ico"/>
   <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700">
@@ -57,18 +57,18 @@
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="lead magick-description">Use the <code>convert</code> program to convert between image formats as well as resize an image, blur, crop, despeckle, dither, draw on, flip, join, re-sample, and much more.   See <a href="command-line-processing.html">Command Line Processing</a> for advice on how to structure your <code>convert</code> command or see below for example usages of the command.</p>
+<p class="lead magick-description">Use the <code>magick</code> program to convert between image formats as well as resize an image, blur, crop, despeckle, dither, draw on, flip, join, re-sample, and much more.   See <a href="command-line-processing.html">Command Line Processing</a> for advice on how to structure your <code>convert</code> command or see below for example usages of the command.</p>
 
-<p>We list a few examples of the <code>convert</code> command here to illustrate its usefulness and ease of use.  To get started, lets convert an image in the JPEG format to PNG:</p>
+<p>We list a few examples of the <code>magick</code> command here to illustrate its usefulness and ease of use.  To get started, lets convert an image in the JPEG format to PNG:</p>
 
 <pre>
-convert rose.jpg rose.png
+magick rose.jpg rose.png
 </pre>
 
 <p>Next, we reduce the image size before it is written to the PNG format:</p>
 
 <pre>
-convert rose.jpg -resize 50% rose.png
+magick rose.jpg -resize 50% rose.png
 </pre>
 
 <ul>
@@ -84,7 +84,7 @@ convert rose.jpg -resize 50% rose.png
 <p>You can combine multiple image-processing operations to produce complex results:</p>
 
 <pre>
-convert -size 320x85 canvas:none -font Bookman-DemiItalic -pointsize 72 \
+magick -size 320x85 canvas:none -font Bookman-DemiItalic -pointsize 72 \
   -draw "text 25,60 \'Magick\'" -channel RGBA -blur 0x6 -fill darkred -stroke magenta \
   -draw "text 20,55 \'Magick\'" fuzzy-magick.png
 </pre>
@@ -96,16 +96,24 @@ convert -size 320x85 canvas:none -font Bookman-DemiItalic -pointsize 72 \
 <p>or here we resize an image with improved quality:</p>
 
 <pre>
-convert input.png -colorspace RGB +sigmoidal-contrast 11.6933 \
+magick input.png -colorspace RGB +sigmoidal-contrast 11.6933 \
   -define filter:filter=Sinc -define filter:window=Jinc -define filter:lobes=3 \
   -resize 400% -sigmoidal-contrast 11.6933 -colorspace sRGB output.png');
 </pre>
 
-<p>You can find additional examples of using <code>convert</code> in <a href="https://www.imagemagick.org/Usage/">Examples of ImageMagick Usage</a>.</p>
+<p>Utilize other command-line <a href="command-line-tools.html">tools</a> from the <code>magick</code> tool.  To invoke this functionality, simply create a symbolic link to the <code>magick</code> tool or specify the tool you want to use as the first argument.  These two methods are equivalent:</p>
+
+<pre>
+ln -s magick convert
+convert rose.jpg rose.png
+magick convert rose.jpg rose.png
+</pre>
+
+<p>You can find additional examples of using <code>magick</code> in <a href="https://www.imagemagick.org/Usage/">Examples of ImageMagick Usage</a>.</p>
 
 <h2 class="magick-header"><a id="options"></a>Option Summary</h2>
 
-<p>The <code>convert</code> command recognizes these options.  Click on an option to get more details about how that option works.</p>
+<p>The <code>magick</code> command recognizes these options.  Click on an option to get more details about how that option works.</p>
 
 <div class="table-responsive">
 <table class="table table-condensed table-striped">
@@ -746,6 +754,11 @@ transparent, extract, background, or shape the alpha channel</td>
   </tr>
 
   <tr>
+    <td><a href="command-line-options.html#mask">-mask <var>filename</var></a></td>
+    <td>associate a mask with the image</td>
+  </tr>
+
+  <tr>
     <td><a href="command-line-options.html#mattecolor">-mattecolor <var>color</var></a></td>
     <td>frame color</td>
   </tr>
@@ -928,11 +941,6 @@ transparent, extract, background, or shape the alpha channel</td>
   <tr>
     <td><a href="command-line-options.html#random-threshold">-random-threshold <var>low,high</var></a></td>
     <td>random threshold the image</td>
-  </tr>
-
-  <tr>
-    <td><a href="command-line-options.html#read-mask">-read-mask <var>filename</var></a></td>
-    <td>associate a read mask with the image</td>
   </tr>
 
   <tr>
@@ -1294,12 +1302,6 @@ transparent, extract, background, or shape the alpha channel</td>
     <td><a href="command-line-options.html#write">-write <var>filename</var></a></td>
     <td>write images to this file</td>
   </tr>
-
-  <tr>
-    <td><a href="command-line-options.html#write-mask">-write-mask <var>filename</var></a></td>
-    <td>associate a write mask with the image</td>
-  </tr>
-
 </table>
 </div>
 </div>
@@ -1310,7 +1312,7 @@ transparent, extract, background, or shape the alpha channel</td>
     <a href="security-policy.html">Security</a> •
     <a href="architecture.html">Architecture</a>
 </p>
-    <p><a href="convert.html#">Back to top</a> •
+    <p><a href="magick.html#">Back to top</a> •
     <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
     <a href="http://legacy.imagemagick.org/script/contact.php">Contact Us</a></p>
         <p><small>©  1999-2016 ImageMagick Studio LLC</small></p>
@@ -1322,4 +1324,4 @@ transparent, extract, background, or shape the alpha channel</td>
 </div>
 </body>
 </html>
-<!-- Magick Cache 4th November 2016 22:32 -->
+<!-- Magick Cache 4th November 2016 22:37 -->
