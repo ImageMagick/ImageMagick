@@ -896,14 +896,24 @@ static void saveBinaryCLProgram(MagickCLEnv clEnv,MagickOpenCLProgram prog,
         {
           for (i = 0; i < num_devices; i++)
           {
+            int
+              file;
+
             size_t
               program_size;
 
             program_size=*(program_sizes+i);
             if (program_size < 1)
               continue;
-            (void) BlobToFile(filename,binary_program[i],program_size,
-              exception);
+            file=open_utf8(filename,O_WRONLY | O_CREAT | O_BINARY,S_MODE);
+            if (file != -1)
+              {
+                write(file,binary_program[i],program_size);
+                file=close(file);
+              }
+            else
+              (void) ThrowMagickException(exception,GetMagickModule(),
+                DelegateWarning,"Saving kernel failed.","`%s'",filename);
             break;
           }
         }
