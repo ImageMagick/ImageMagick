@@ -82,6 +82,7 @@
 #include "magick/string_.h"
 #include "magick/token.h"
 #include "magick/utility.h"
+#include "magick/utility-private.h"
 
 #ifdef MAGICKCORE_CLPERFMARKER
 #include "CLPerfMarker.h"
