@@ -291,7 +291,7 @@ Install
   To get started building a self-installing ImageMagick executable, go to
   VisualMagick\installer folder and click on a script that matches your build
   environment. Press F9 to build and install ImageMagick. The default location
-  is C:Program Files\ImageMagick-6.?.?\Q?. The exact folder name depends
+  is C:Program Files\ImageMagick-7.?.?\Q?. The exact folder name depends
   on the ImageMagick version and quantum depth. Once installed, ImageMagick
   command line utilities and libraries are available to the MS Command Prompt,
   web scripts, or to meet your development needs.

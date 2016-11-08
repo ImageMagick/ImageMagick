@@ -36,7 +36,7 @@ mount | sed -e 's:\\:/:g'  | (
   do
     win_mount_path=`echo "$mount_entry" | sed -e 's: .*::g'`
     unix_mount_path=`echo "$mount_entry" | sed -e 's:.* on ::;s: type .*::'`
-    temp=`echo "$arg" | sed -e "s!^$unix_mount_path!$win_mount_path!"`
+    temp=`echo "$arg" | sed -e "s!^$unix_mount_path!$win_mount_path/!"`
     if test "$temp" != "$arg"
     then
       candidate="$temp"

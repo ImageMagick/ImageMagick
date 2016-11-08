@@ -356,12 +356,14 @@ case "${host_os}" in
     mingw* )
         native_win32_build='yes'
         GDI32_LIBS='-lgdi32'
+        OLE_LIBS='-loleaut32'
     ;;
 esac
 if test "${GDI32_LIBS}x" != 'x'; then
     AC_DEFINE(WINGDI32_DELEGATE,1,Define to use the Windows GDI32 library)
 fi
 AC_SUBST(GDI32_LIBS)
+AC_SUBST(OLE_LIBS)
 AM_CONDITIONAL(WINGDI32_DELEGATE, test "${GDI32_LIBS}x" != 'x' )
 AM_CONDITIONAL(WIN32_NATIVE_BUILD, test "${native_win32_build}" = 'yes' )
 AM_CONDITIONAL(CYGWIN_BUILD, test "${cygwin_build}" = 'yes' )
