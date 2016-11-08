@@ -39,7 +39,7 @@
 #  You may not use this file except in compliance with the License.  You may
 #  obtain a copy of the License at
 #
-#    https://www.imagemagick.org/script/license.php
+#    http://www.imagemagick.org/script/license.php
 #
 #  Unless required by applicable law or agreed to in writing, software
 #  distributed under the License is distributed on an "AS IS" BASIS,
@@ -55,7 +55,7 @@
 #  You may not use this file except in compliance with the License.  You may
 #  obtain a copy of the License at
 #
-#    https://www.imagemagick.org/script/license.php
+#    http://www.imagemagick.org/script/license.php
 #
 #  Unless required by applicable law or agreed to in writing, software
 #  distributed under the License is distributed on an "AS IS" BASIS,
@@ -71,7 +71,7 @@
 #  You may not use this file except in compliance with the License.  You may
 #  obtain a copy of the License at
 #
-#    https://www.imagemagick.org/script/license.php
+#    http://www.imagemagick.org/script/license.php
 #
 #  Unless required by applicable law or agreed to in writing, software
 #  distributed under the License is distributed on an "AS IS" BASIS,
@@ -87,7 +87,7 @@
 #  You may not use this file except in compliance with the License.  You may
 #  obtain a copy of the License at
 #
-#    https://www.imagemagick.org/script/license.php
+#    http://www.imagemagick.org/script/license.php
 #
 #  Unless required by applicable law or agreed to in writing, software
 #  distributed under the License is distributed on an "AS IS" BASIS,
@@ -104,7 +104,7 @@
 #  You may not use this file except in compliance with the License.  You may
 #  obtain a copy of the License at
 #
-#    https://www.imagemagick.org/script/license.php
+#    http://www.imagemagick.org/script/license.php
 #
 #  Unless required by applicable law or agreed to in writing, software
 #  distributed under the License is distributed on an "AS IS" BASIS,
@@ -120,7 +120,7 @@
 #  You may not use this file except in compliance with the License.  You may
 #  obtain a copy of the License at
 #
-#    https://www.imagemagick.org/script/license.php
+#    http://www.imagemagick.org/script/license.php
 #
 #  Unless required by applicable law or agreed to in writing, software
 #  distributed under the License is distributed on an "AS IS" BASIS,
@@ -145,7 +145,7 @@
 #  You may not use this file except in compliance with the License.  You may
 #  obtain a copy of the License at
 #
-#    https://www.imagemagick.org/script/license.php
+#    http://www.imagemagick.org/script/license.php
 #
 #  Unless required by applicable law or agreed to in writing, software
 #  distributed under the License is distributed on an "AS IS" BASIS,
@@ -161,7 +161,7 @@
 #  You may not use this file except in compliance with the License.  You may
 #  obtain a copy of the License at
 #
-#    https://www.imagemagick.org/script/license.php
+#    http://www.imagemagick.org/script/license.php
 #
 #  Unless required by applicable law or agreed to in writing, software
 #  distributed under the License is distributed on an "AS IS" BASIS,
@@ -1359,7 +1359,7 @@ coders_xps_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_xps_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_xps_la_rpath = -rpath $(codersdir)
-coders_xtrn_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_xtrn_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1)
 am_coders_xtrn_la_OBJECTS = coders/coders_xtrn_la-xtrn.lo
 coders_xtrn_la_OBJECTS = $(am_coders_xtrn_la_OBJECTS)
 coders_xtrn_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -2755,6 +2755,7 @@ NM = @NM@
 NMEDIT = @NMEDIT@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
+OLE_LIBS = @OLE_LIBS@
 OPENEXR_CFLAGS = @OPENEXR_CFLAGS@
 OPENEXR_LIBS = @OPENEXR_LIBS@
 OPENMP_CFLAGS = @OPENMP_CFLAGS@
@@ -4151,7 +4152,7 @@ coders_xps_la_LIBADD = $(MAGICKCORE_LIBS) $(MUPDF_LIBS) $(FREETYPE_LIBS) $(MATH_
 coders_xtrn_la_SOURCES = coders/xtrn.c
 coders_xtrn_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_xtrn_la_LDFLAGS = $(MODULECOMMONFLAGS)
-coders_xtrn_la_LIBADD = $(MAGICKCORE_LIBS)
+coders_xtrn_la_LIBADD = $(MAGICKCORE_LIBS) $(OLE_LIBS)
 
 # XWD coder module
 coders_xwd_la_SOURCES = coders/xwd.c
@@ -5066,7 +5067,7 @@ UTILITIES_CLEANFILES =
 # You may not use this file except in compliance with the License.
 # obtain a copy of the License at
 #
-#   https://www.imagemagick.org/script/license.php
+#   http://www.imagemagick.org/script/license.php
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,

@@ -958,6 +958,7 @@ WIN32_NATIVE_BUILD_FALSE
 WIN32_NATIVE_BUILD_TRUE
 WINGDI32_DELEGATE_FALSE
 WINGDI32_DELEGATE_TRUE
+OLE_LIBS
 GDI32_LIBS
 HAVE_LD_VERSION_SCRIPT_FALSE
 HAVE_LD_VERSION_SCRIPT_TRUE
@@ -4517,7 +4518,7 @@ MAGICK_PATCHLEVEL_VERSION=4
 
 MAGICK_VERSION=6.9.6-4
 
-MAGICK_GIT_REVISION=11119:8899e52:20161031
+MAGICK_GIT_REVISION=11129:6588e05:20161108
 
 
 # Substitute library versioning
@@ -10978,6 +10979,7 @@ case "${host_os}" in
     mingw* )
         native_win32_build='yes'
         GDI32_LIBS='-lgdi32'
+        OLE_LIBS='-loleaut32'
     ;;
 esac
 if test "${GDI32_LIBS}x" != 'x'; then
@@ -10985,6 +10987,7 @@ if test "${GDI32_LIBS}x" != 'x'; then
 $as_echo "#define WINGDI32_DELEGATE 1" >>confdefs.h
 
 fi
+
 
  if test "${GDI32_LIBS}x" != 'x' ; then
   WINGDI32_DELEGATE_TRUE=
