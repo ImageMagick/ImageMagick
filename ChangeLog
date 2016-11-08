@@ -1,3 +1,6 @@
+2016-11-08  7.0.3-6 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.3-6, GIT revision 19001:4cff747:20161108.
+
 2016-11-01  7.0.3-6 Cristy  <quetzlzacatenango@image...>
   * Off by one memory allocation (reference
     https://github.com/ImageMagick/ImageMagick/issues/296).
