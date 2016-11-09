@@ -793,8 +793,7 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
         (void) WriteBlobString(image,buffer);
         (void) CopyMagickString(tuple,"(",MagickPathExtent);
         if (pixel.colorspace == GRAYColorspace)
-          ConcatenateColorComponent(&pixel,GrayPixelChannel,compliance,
-            tuple);
+          ConcatenateColorComponent(&pixel,GrayPixelChannel,compliance,tuple);
         else
           {
             ConcatenateColorComponent(&pixel,RedPixelChannel,compliance,tuple);

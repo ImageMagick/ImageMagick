@@ -213,7 +213,7 @@ MagickExport MagickBooleanType CloneImageProperties(Image *image,
 %
 %  DefineImageProperty() associates an assignment string of the form
 %  "key=value" with an artifact or options. It is equivelent to
-%  SetImageProperty()
+%  SetImageProperty().
 %
 %  The format of the DefineImageProperty method is:
 %
@@ -3962,7 +3962,7 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
     {
       /*
         Do not 'set' single letter properties - read only shorthand.
-       */
+      */
       (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
         "SetReadOnlyProperty","`%s'",property);
       return(MagickFalse);
