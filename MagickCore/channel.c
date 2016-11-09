@@ -1091,8 +1091,47 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       status=CompositeImage(image,image,IntensityCompositeOp,MagickTrue,0,0,
         exception);
       if (alpha_type == ShapeAlphaChannel)
-        (void) LevelImageColors(image,&image->background_color,
-          &image->background_color,MagickTrue,exception);
+        {
+          PixelInfo
+            background;
+
+          if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
+            return(MagickFalse);
+          ConformPixelInfo(image,&image->background_color,&background,
+            exception);
+          /*
+            Set image background color.
+          */
+          status=MagickTrue;
+          image_view=AcquireAuthenticCacheView(image,exception);
+          for (y=0; y < (ssize_t) image->rows; y++)
+          {
+            register Quantum
+              *magick_restrict q;
+
+            register ssize_t
+              x;
+
+            if (status == MagickFalse)
+              continue;
+            q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
+              exception);
+            if (q == (Quantum *) NULL)
+              {
+                status=MagickFalse;
+                continue;
+              }
+            for (x=0; x < (ssize_t) image->columns; x++)
+            {
+              if (GetPixelAlpha(image,q) != TransparentAlpha)
+                SetPixelViaPixelInfo(image,&background,q);
+              q+=GetPixelChannels(image);
+            }
+            if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
+              status=MagickFalse;
+          }
+          image_view=DestroyCacheView(image_view);
+        }
       break;
     }
     case DeactivateAlphaChannel:

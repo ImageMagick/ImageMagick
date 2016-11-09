@@ -2707,8 +2707,8 @@ MagickExport MagickBooleanType LevelImageColors(Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if ((IsGrayColorspace(image->colorspace) != MagickFalse) &&
-      ((IsGrayColorspace(black_color->colorspace) == MagickFalse) ||
-       (IsGrayColorspace(white_color->colorspace) == MagickFalse)))
+      ((IsGrayColorspace(black_color->colorspace) != MagickFalse) ||
+       (IsGrayColorspace(white_color->colorspace) != MagickFalse)))
     (void) SetImageColorspace(image,sRGBColorspace,exception);
   status=MagickTrue;
   if (invert == MagickFalse)
