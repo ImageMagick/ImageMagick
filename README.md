@@ -65,4 +65,4 @@ Here are just a few examples of what ImageMagick can do:
 
 #### News
 
-The design of ImageMagick is an evolutionary process, with the design and implementation efforts serving to influence and guide further progress in the other.  With [ImageMagick version 7](http://nextgen.imagemagick.org), we aim to improve the design based on lessons learned from the version 6 implementation.  See the [porting](https://www.imagemagick.org/script/porting.php) guide to track the progress of the version 7 development effort.
+The design of ImageMagick is an evolutionary process, with the design and implementation efforts serving to influence and guide further progress in the other.  With [ImageMagick version 7](https://www.imagemagick.org), we aim to improve the design based on lessons learned from the version 6 implementation.  See the [porting](https://www.imagemagick.org/script/porting.php) guide to track the progress of the version 7 development effort.
