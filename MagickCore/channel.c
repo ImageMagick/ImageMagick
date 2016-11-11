@@ -511,7 +511,7 @@ MagickExport Image *CombineImages(const Image *image,
   {
     case UndefinedColorspace:
     case sRGBColorspace:
-    { 
+    {
       if (GetImageListLength(image) > 3)
         combine_image->alpha_trait=BlendPixelTrait;
       break;
@@ -523,7 +523,7 @@ MagickExport Image *CombineImages(const Image *image,
       break;
     }
     case CMYKColorspace:
-    { 
+    {
       if (GetImageListLength(image) > 4)
         combine_image->alpha_trait=BlendPixelTrait;
       break;
@@ -1005,10 +1005,10 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
         {
           double
             gamma;
-  
+
           register ssize_t
             i;
-  
+
           if (GetPixelReadMask(image,q) == 0)
             {
               q+=GetPixelChannels(image);
@@ -1132,7 +1132,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           double
-            gamma, 
+            gamma,
             Sa;
 
           register ssize_t
@@ -1256,14 +1256,10 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
         Shape alpha channel.
       */
       image->alpha_trait=BlendPixelTrait;
-      status=CompositeImage(image,image,IntensityCompositeOp,MagickTrue,0,0,
-        exception);
-      if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
-        return(MagickFalse);
+      status=SetImageStorageClass(image,DirectClass,exception);
+      if (status == MagickFalse)
+        break;
       ConformPixelInfo(image,&image->background_color,&background,exception);
-      /*
-        Set image background color.
-      */
       status=MagickTrue;
       image_view=AcquireAuthenticCacheView(image,exception);
       for (y=0; y < (ssize_t) image->rows; y++)
@@ -1285,7 +1281,12 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
           }
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          if (GetPixelAlpha(image,q) != TransparentAlpha)
+          if (GetPixelReadMask(image,q) == 0)
+            {
+              q+=GetPixelChannels(image);
+              continue;
+            }
+          if (fabs(GetPixelIntensity(image,q)) > MagickEpsilon)
             SetPixelViaPixelInfo(image,&background,q);
           q+=GetPixelChannels(image);
         }
