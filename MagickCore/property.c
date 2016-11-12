@@ -2792,6 +2792,13 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
             (void) ConcatenateMagickString(value,"a",MagickPathExtent);
           break;
         }
+      if (LocaleCompare("colors",property) == 0)
+        {
+          WarnNoImageReturn("\"%%[%s]\"",property);
+          (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
+            GetNumberColors(image,(FILE *) NULL,exception));
+          break;
+        }
       if (LocaleCompare("colorspace",property) == 0)
         {
           WarnNoImageReturn("\"%%[%s]\"",property);
@@ -2805,6 +2812,13 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
           WarnNoImageReturn("\"%%[%s]\"",property);
           string=CommandOptionToMnemonic(MagickComposeOptions,(ssize_t)
             image->compose);
+          break;
+        }
+      if (LocaleCompare("compression",property) == 0)
+        {
+          WarnNoImageReturn("\"%%[%s]\"",property);
+          string=CommandOptionToMnemonic(MagickCompressOptions,(ssize_t)
+            image->compression);
           break;
         }
       if (LocaleCompare("copyright",property) == 0)
@@ -2884,6 +2898,13 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
         {
           WarnNoImageReturn("\"%%[%s]\"",property);
           string=image->filename;
+          break;
+        }
+      if (LocaleCompare("interlace",property) == 0)
+        {
+          WarnNoImageReturn("\"%%[%s]\"",property);
+          string=CommandOptionToMnemonic(MagickInterlaceOptions,(ssize_t)
+            image->interlace);
           break;
         }
       break;
@@ -3031,8 +3052,26 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
         }
       break;
     }
+    case 'q':
+    {
+      if (LocaleCompare("quality",property) == 0)
+        {
+          WarnNoImageReturn("\"%%[%s]\"",property);
+          (void) FormatLocaleString(value,MagickPathExtent,"%.*g",
+            GetMagickPrecision(),(double) image->quality);
+          break;
+        }
+      break;
+    }
     case 'r':
     {
+      if (LocaleCompare("rendering-intent",property) == 0)
+        {
+          WarnNoImageReturn("\"%%[%s]\"",property);
+          string=CommandOptionToMnemonic(MagickIntentOptions,(ssize_t)
+            image->rendering_intent);
+          break;
+        }
       if (LocaleCompare("resolution.x",property) == 0)
         {
           WarnNoImageReturn("\"%%[%s]\"",property);
