@@ -2708,7 +2708,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
         */
         *q = p[r];
         if (image->colorspace == CMYKColorspace)
-          SetPixelIndex(q_indexes+y,GetPixelIndex(p_indexes+r));
+          SetPixelIndex(q_indexes+y,GetPixelIndex(p_indexes+y+r));
 
         /* Set the bias of the weighted average output */
         result.red     =
@@ -2726,7 +2726,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
         */
         k = &kernel->values[ kernel->height-1 ];
         k_pixels = p;
-        k_indexes = p_indexes;
+        k_indexes = p_indexes+y;
         if ( ((channel & SyncChannels) == 0 ) ||
                              (image->matte == MagickFalse) )
           { /* No 'Sync' involved.
@@ -2808,7 +2808,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
             || ( (image->matte != MagickFalse) &&
                  (p[r].opacity != GetPixelOpacity(q)))
             || ( (image->colorspace == CMYKColorspace) &&
-                 (GetPixelIndex(p_indexes+r) != GetPixelIndex(q_indexes+y))) )
+                 (GetPixelIndex(p_indexes+y+r) != GetPixelIndex(q_indexes+y))) )
           changes[id]++;
         p++;
         q++;
@@ -2911,7 +2911,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
        */
       *q = p[r];
       if (image->colorspace == CMYKColorspace)
-        SetPixelIndex(q_indexes+x,GetPixelIndex(p_indexes+r));
+        SetPixelIndex(q_indexes+x,GetPixelIndex(p_indexes+x+r));
 
       /* Defaults */
       min.red     =
@@ -2931,7 +2931,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
       result.opacity = QuantumRange - (double) p[r].opacity;
       result.index   = 0.0;
       if ( image->colorspace == CMYKColorspace)
-         result.index   = (double) GetPixelIndex(p_indexes+r);
+         result.index   = (double) GetPixelIndex(p_indexes+x+r);
 
       switch (method) {
         case ConvolveMorphology:
@@ -2973,7 +2973,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
             */
             k = &kernel->values[ kernel->width*kernel->height-1 ];
             k_pixels = p;
-            k_indexes = p_indexes;
+            k_indexes = p_indexes+x;
             if ( ((channel & SyncChannels) == 0 ) ||
                  (image->matte == MagickFalse) )
               { /* No 'Sync' involved.
@@ -3061,7 +3061,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
             */
             k = kernel->values;
             k_pixels = p;
-            k_indexes = p_indexes;
+            k_indexes = p_indexes+x;
             for (v=0; v < (ssize_t) kernel->height; v++) {
               for (u=0; u < (ssize_t) kernel->width; u++, k++) {
                 if ( IsNaN(*k) || (*k) < 0.5 ) continue;
@@ -3092,7 +3092,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
             */
             k = &kernel->values[ kernel->width*kernel->height-1 ];
             k_pixels = p;
-            k_indexes = p_indexes;
+            k_indexes = p_indexes+x;
             for (v=0; v < (ssize_t) kernel->height; v++) {
               for (u=0; u < (ssize_t) kernel->width; u++, k--) {
                 if ( IsNaN(*k) || (*k) < 0.5 ) continue;
@@ -3126,7 +3126,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
             */
             k = kernel->values;
             k_pixels = p;
-            k_indexes = p_indexes;
+            k_indexes = p_indexes+x;
             for (v=0; v < (ssize_t) kernel->height; v++) {
               for (u=0; u < (ssize_t) kernel->width; u++, k++) {
                 if ( IsNaN(*k) ) continue;
@@ -3175,7 +3175,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
             */
             k = kernel->values;
             k_pixels = p;
-            k_indexes = p_indexes;
+            k_indexes = p_indexes+x;
             for (v=0; v < (ssize_t) kernel->height; v++) {
               for (u=0; u < (ssize_t) kernel->width; u++, k++) {
                 if ( IsNaN(*k) || (*k) < 0.5 ) continue;
@@ -3206,7 +3206,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
             */
             k = &kernel->values[ kernel->width*kernel->height-1 ];
             k_pixels = p;
-            k_indexes = p_indexes;
+            k_indexes = p_indexes+x;
             for (v=0; v < (ssize_t) kernel->height; v++) {
               for (u=0; u < (ssize_t) kernel->width; u++, k--) {
                 if ( IsNaN(*k) || (*k) < 0.5 ) continue; /* boolean kernel */
@@ -3249,7 +3249,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
             */
             k = &kernel->values[ kernel->width*kernel->height-1 ];
             k_pixels = p;
-            k_indexes = p_indexes;
+            k_indexes = p_indexes+x;
             for (v=0; v < (ssize_t) kernel->height; v++) {
               for (u=0; u < (ssize_t) kernel->width; u++, k--) {
                 if ( IsNaN(*k) ) continue;
@@ -3258,8 +3258,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
                 Minimize(result.blue,    (*k)+k_pixels[u].blue);
                 Minimize(result.opacity, (*k)+QuantumRange-k_pixels[u].opacity);
                 if ( image->colorspace == CMYKColorspace)
-                  Minimize(result.index,(*k)+GetPixelIndex(
-                    k_indexes+u));
+                  Minimize(result.index,(*k)+GetPixelIndex(k_indexes+u));
               }
               k_pixels += virt_width;
               k_indexes += virt_width;
@@ -3334,7 +3333,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
           || ( (image->matte != MagickFalse) &&
                (p[r].opacity != GetPixelOpacity(q)))
           || ( (image->colorspace == CMYKColorspace) &&
-               (GetPixelIndex(p_indexes+r) != GetPixelIndex(q_indexes+x))) )
+               (GetPixelIndex(p_indexes+x+r) != GetPixelIndex(q_indexes+x))) )
         changes[id]++;
       p++;
       q++;
@@ -3508,7 +3507,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
             /* Add kernel Value and select the minimum value found. */
             k = &kernel->values[ kernel->width*kernel->height-1 ];
             k_pixels = p;
-            k_indexes = p_indexes;
+            k_indexes = p_indexes+x;
             for (v=0; v <= (ssize_t) offy; v++) {
               for (u=0; u < (ssize_t) kernel->width; u++, k--) {
                 if ( IsNaN(*k) ) continue;
@@ -3547,7 +3546,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
             */
             k = &kernel->values[ kernel->width*kernel->height-1 ];
             k_pixels = p;
-            k_indexes = p_indexes;
+            k_indexes = p_indexes+x;
             for (v=0; v <= (ssize_t) offy; v++) {
               for (u=0; u < (ssize_t) kernel->width; u++, k--) {
                 if ( IsNaN(*k) ) continue;
@@ -3606,7 +3605,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
           || ( (image->matte != MagickFalse) &&
                (p[r].opacity != GetPixelOpacity(q)))
           || ( (image->colorspace == CMYKColorspace) &&
-               (GetPixelIndex(p_indexes+r) != GetPixelIndex(q_indexes+x))) )
+               (GetPixelIndex(p_indexes+x+r) != GetPixelIndex(q_indexes+x))) )
         changed++;  /* The pixel was changed in some way! */
 
       p++; /* increment pixel buffers */
@@ -3701,7 +3700,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
             /* Add kernel Value and select the minimum value found. */
             k = &kernel->values[ kernel->width*(kernel->y+1)-1 ];
             k_pixels = p;
-            k_indexes = p_indexes;
+            k_indexes = p_indexes+x;
             for (v=offy; v < (ssize_t) kernel->height; v++) {
               for (u=0; u < (ssize_t) kernel->width; u++, k--) {
                 if ( IsNaN(*k) ) continue;
@@ -3738,7 +3737,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
             */
             k = &kernel->values[ kernel->width*(kernel->y+1)-1 ];
             k_pixels = p;
-            k_indexes = p_indexes;
+            k_indexes = p_indexes+x;
             for (v=offy; v < (ssize_t) kernel->height; v++) {
               for (u=0; u < (ssize_t) kernel->width; u++, k--) {
                 if ( IsNaN(*k) ) continue;
@@ -3797,7 +3796,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
           || ( (image->matte != MagickFalse) &&
                (p[r].opacity != GetPixelOpacity(q)))
           || ( (image->colorspace == CMYKColorspace) &&
-               (GetPixelIndex(p_indexes+r) != GetPixelIndex(q_indexes+x))) )
+               (GetPixelIndex(p_indexes+x+r) != GetPixelIndex(q_indexes+x))) )
         changed++;  /* The pixel was changed in some way! */
 
       p--; /* go backward through pixel buffers */
