@@ -1,5 +1,10 @@
+2016-11-15  6.9.6-5 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 6.9.6-5, GIT revision 11139:5175b3c:20161115.
+
 2016-11-10  6.9.6-5 Cristy  <quetzlzacatenango@image...>
   * Web pages were broken when we moved to HTTPS protocol.
+  * Restore -sharpen / -convolve options to work with CMYK (reference
+    https://github.com/ImageMagick/ImageMagick/issues/299).
 
 2016-11-08  6.9.6-4 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 6.9.6-4, GIT revision 11130:d7a7e4d:20161108.
