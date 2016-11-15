@@ -1,3 +1,6 @@
+2016-11-15  7.0.3-7 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.3-7, GIT revision 19024:87aca83:20161115.
+
 2016-11-10  7.0.3-7 Cristy  <quetzlzacatenango@image...>
   * Web pages were broken when we moved to HTTPS protocol.
 
