@@ -553,6 +553,9 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
       UndefinedPixelTrait;
     image->columns=iris_info.columns;
     image->rows=iris_info.rows;
+    status=SetImageExtent(image,image->columns,image->rows,exception);
+    if (status == MagickFalse)
+      return(DestroyImageList(image));
     /*
       Convert SGI raster image to pixel packets.
     */
