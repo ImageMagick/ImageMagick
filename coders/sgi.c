@@ -558,6 +558,12 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->matte=iris_info.depth == 4 ? MagickTrue : MagickFalse;
     image->columns=iris_info.columns;
     image->rows=iris_info.rows;
+    status=SetImageExtent(image,image->columns,image->rows);
+    if (status == MagickFalse)
+      {
+        InheritException(exception,&image->exception);
+        return(DestroyImageList(image));
+      }
     /*
       Convert SGI raster image to pixel packets.
     */
