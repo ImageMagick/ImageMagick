@@ -357,6 +357,8 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     image->columns=iris_info.columns;
     image->rows=iris_info.rows;
+    image->alpha_trait=iris_info.depth == 4 ? BlendPixelTrait :
+      UndefinedPixelTrait;
     image->depth=(size_t) MagickMin(iris_info.depth,MAGICKCORE_QUANTUM_DEPTH);
     if (iris_info.pixel_format == 0)
       image->depth=(size_t) MagickMin((size_t) 8*iris_info.bytes_per_pixel,
@@ -546,16 +548,6 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         runlength=(size_t *) RelinquishMagickMemory(runlength);
         offsets=(ssize_t *) RelinquishMagickMemory(offsets);
       }
-    /*
-      Initialize image structure.
-    */
-    image->alpha_trait=iris_info.depth == 4 ? BlendPixelTrait :
-      UndefinedPixelTrait;
-    image->columns=iris_info.columns;
-    image->rows=iris_info.rows;
-    status=SetImageExtent(image,image->columns,image->rows,exception);
-    if (status == MagickFalse)
-      return(DestroyImageList(image));
     /*
       Convert SGI raster image to pixel packets.
     */
