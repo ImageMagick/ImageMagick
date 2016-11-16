@@ -360,6 +360,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     image->columns=iris_info.columns;
     image->rows=iris_info.rows;
+    image->matte=iris_info.depth == 4 ? MagickTrue : MagickFalse;
     image->depth=(size_t) MagickMin(iris_info.depth,MAGICKCORE_QUANTUM_DEPTH);
     if (iris_info.pixel_format == 0)
       image->depth=(size_t) MagickMin((size_t) 8*iris_info.bytes_per_pixel,
@@ -551,18 +552,6 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         packet_info=RelinquishVirtualMemory(packet_info);
         runlength=(size_t *) RelinquishMagickMemory(runlength);
         offsets=(ssize_t *) RelinquishMagickMemory(offsets);
-      }
-    /*
-      Initialize image structure.
-    */
-    image->matte=iris_info.depth == 4 ? MagickTrue : MagickFalse;
-    image->columns=iris_info.columns;
-    image->rows=iris_info.rows;
-    status=SetImageExtent(image,image->columns,image->rows);
-    if (status == MagickFalse)
-      {
-        InheritException(exception,&image->exception);
-        return(DestroyImageList(image));
       }
     /*
       Convert SGI raster image to pixel packets.
