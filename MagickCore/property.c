@@ -4222,18 +4222,6 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
           image->intensity=(PixelIntensityMethod) intensity;
           return(MagickTrue);
         }
-      if (LocaleCompare("intent",property) == 0)
-        {
-          ssize_t
-            rendering_intent;
-
-          rendering_intent=ParseCommandOption(MagickIntentOptions,MagickFalse,
-            value);
-          if (rendering_intent < 0)
-            return(MagickFalse); /* FUTURE: value exception?? */
-          image->rendering_intent=(RenderingIntent) rendering_intent;
-          return(MagickTrue);
-        }
       if (LocaleCompare("interpolate",property) == 0)
         {
           ssize_t
