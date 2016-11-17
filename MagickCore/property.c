@@ -667,7 +667,7 @@ static MagickBooleanType Get8BIMProperty(const Image *image,const char *key,
     count=(ssize_t) ReadPropertyMSBLong(&info,&length);
     if ((count < 0) || ((size_t) count > length))
       {
-        length=0; 
+        length=0;
         continue;
       }
     if ((*name != '\0') && (*name != '#'))
@@ -4046,6 +4046,11 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
           (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
             "SetReadOnlyProperty","`%s'",property);
           return(MagickFalse);
+        }
+      if (LocaleCompare("colors",property) == 0)
+        {
+          image->colors=GetNumberColors(image,(FILE *) NULL,exception);
+          return(MagickTrue);
         }
       if (LocaleCompare("colorspace",property) == 0)
         {
