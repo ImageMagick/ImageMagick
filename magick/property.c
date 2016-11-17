@@ -2995,12 +2995,6 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
           string=image->filename;
           break;
         }
-      if (LocaleCompare("intent",property) == 0)
-        {
-          string=CommandOptionToMnemonic(MagickIntentOptions,(ssize_t)
-            image->rendering_intent);
-          break;
-        }
       if (LocaleCompare("interlace",property) == 0)
         {
           string=CommandOptionToMnemonic(MagickInterlaceOptions,(ssize_t)
@@ -3172,6 +3166,12 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
     }
     case 'r':
     {
+      if (LocaleCompare("rendering-intent",property) == 0)
+        {
+          string=CommandOptionToMnemonic(MagickIntentOptions,(ssize_t)
+            image->rendering_intent);
+          break;
+        }
       if (LocaleCompare("resolution.x",property) == 0)
         {
           (void) FormatLocaleString(value,MaxTextExtent,"%g",
@@ -4121,18 +4121,6 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
           if (intensity < 0)
             break;
           image->intensity=(PixelIntensityMethod) intensity;
-          break;
-        }
-      if (LocaleCompare("intent",property) == 0)
-        {
-          ssize_t
-            rendering_intent;
-
-          rendering_intent=ParseCommandOption(MagickIntentOptions,MagickFalse,
-            value);
-          if (rendering_intent < 0)
-            break;
-          image->rendering_intent=(RenderingIntent) rendering_intent;
           break;
         }
       if (LocaleCompare("interpolate",property) == 0)
