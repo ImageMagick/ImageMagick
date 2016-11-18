@@ -3442,6 +3442,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (info.depth > 32)
               ThrowReaderException(CorruptImageError,"ImproperImageHeader");
             info.max_value=(1UL << info.bits_allocated)-1;
+            image->depth=info.depth;
             break;
           }
           case 0x0101:
@@ -3458,6 +3459,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               ThrowReaderException(CorruptImageError,"ImproperImageHeader");
             info.max_value=(1UL << info.significant_bits)-1;
             info.mask=(size_t) GetQuantumRange(info.significant_bits);
+            image->depth=info.depth;
             break;
           }
           case 0x0102:
