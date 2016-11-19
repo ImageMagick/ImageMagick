@@ -4957,6 +4957,7 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   draw_info->fill_rule=EvenOddRule;
   draw_info->fill_alpha=OpaqueAlpha;
   draw_info->stroke_alpha=OpaqueAlpha;
+  draw_info->alpha=OpaqueAlpha;
   draw_info->linecap=ButtCap;
   draw_info->linejoin=MiterJoin;
   draw_info->miterlimit=10;
