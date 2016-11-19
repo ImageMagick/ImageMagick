@@ -600,6 +600,7 @@ MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
     n;
 
   digit=MagickFalse;
+  width=0;
   q=draw_info->text;
   s=(char *) NULL;
   for (p=(*caption); GetUTFCode(p) != 0; p+=GetUTFOctets(p))
@@ -645,6 +646,61 @@ MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
     q=draw_info->text;
     s=(char *) NULL;
   }
+  if (width > image->columns)
+    {
+      char
+        *text;
+
+      /*
+        No convenient break point, force one.
+      */
+      text=AcquireString(draw_info->text);
+      q=draw_info->text;
+      s=(char *) NULL;
+      for (p=(*caption); GetUTFCode(p) != 0; p+=GetUTFOctets(p))
+      {
+        if (IsUTFSpace(GetUTFCode(p)) != MagickFalse)
+          s=p;
+        if (GetUTFCode(p) == '\n')
+          q=draw_info->text;
+        for (i=0; i < (ssize_t) GetUTFOctets(p); i++)
+          *q++=(*(p+i));
+        *q='\0';
+        status=GetTypeMetrics(image,draw_info,metrics);
+        if (status == MagickFalse)
+          break;
+        width=(size_t) floor(metrics->width+draw_info->stroke_width+0.5);
+        if ((width <= image->columns) || (strcmp(text,draw_info->text) == 0))
+          continue;
+        (void) strcpy(text,draw_info->text);
+        if ((s != (char *) NULL) && (GetUTFOctets(s) == 1))
+          {
+            *s='\n';
+            p=s;
+          }
+        else
+          if ((s != (char *) NULL) || (split != MagickFalse))
+            {
+              char
+                *target;
+
+              /*
+                No convenient line breaks-- insert newline.
+              */
+              target=AcquireString(*caption);
+              n=p-(*caption);
+              CopyMagickString(target,*caption,n+1);
+              ConcatenateMagickString(target,"\n",strlen(*caption)+1);
+              ConcatenateMagickString(target,p,strlen(*caption)+2);
+              (void) DestroyString(*caption);
+              *caption=target;
+              p=(*caption)+n;
+            }
+        q=draw_info->text;
+        s=(char *) NULL;
+      }
+      text=DestroyString(text);
+    }
   n=0;
   for (p=(*caption); GetUTFCode(p) != 0; p+=GetUTFOctets(p))
     if (GetUTFCode(p) == '\n')
