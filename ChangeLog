@@ -4,6 +4,8 @@
     https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=30887).
   * Set alpha member of draw structure to OpaqueAlpha (reference
     https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=30894).
+  * Off by 1 error when computing the standard deviation (reference
+    https://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=30866).
 
 2016-11-15  7.0.3-7 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.3-7, GIT revision 19024:87aca83:20161115.
@@ -22,7 +24,7 @@
   * Prevent fault in MSL interpreter (reference
     https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=30797).
   * Mask composite produces proper results for the convert utility (reference
-    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=29675).
+    https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=29675).
     
 
 2016-10-10  7.0.3-5 Cristy  <quetzlzacatenango@image...>

@@ -1115,7 +1115,8 @@ MagickExport MagickBooleanType GetImageEntropy(const Image *image,
   double *entropy,ExceptionInfo *exception)
 {
   double
-    area;
+    area,
+    gamma;
 
   ChannelStatistics
     *channel_statistics;
@@ -1145,12 +1146,11 @@ MagickExport MagickBooleanType GetImageEntropy(const Image *image,
       channel_statistics[i].entropy;
     area++;
   }
-  if (area > MagickEpsilon)
-    {
-      channel_statistics[CompositePixelChannel].entropy/=area;
-      channel_statistics[CompositePixelChannel].standard_deviation=
-        sqrt(channel_statistics[CompositePixelChannel].standard_deviation/area);
-    }
+  gamma=PerceptibleReciprocal(area);
+  channel_statistics[CompositePixelChannel].entropy*=gamma;
+  gamma=PerceptibleReciprocal(area-1.0);
+  channel_statistics[CompositePixelChannel].standard_deviation=
+    sqrt(gamma*channel_statistics[CompositePixelChannel].standard_deviation);
   *entropy=channel_statistics[CompositePixelChannel].entropy;
   channel_statistics=(ChannelStatistics *) RelinquishMagickMemory(
     channel_statistics);
@@ -1378,7 +1378,8 @@ MagickExport MagickBooleanType GetImageMean(const Image *image,double *mean,
   double *standard_deviation,ExceptionInfo *exception)
 {
   double
-    area;
+    area,
+    gamma;
 
   ChannelStatistics
     *channel_statistics;
@@ -1410,12 +1411,11 @@ MagickExport MagickBooleanType GetImageMean(const Image *image,double *mean,
       channel_statistics[i].mean;
     area++;
   }
-  if (area > MagickEpsilon)
-    {
-      channel_statistics[CompositePixelChannel].mean/=area;
-      channel_statistics[CompositePixelChannel].standard_deviation=
-        sqrt(channel_statistics[CompositePixelChannel].standard_deviation/area);
-    }
+  gamma=PerceptibleReciprocal(area);
+  channel_statistics[CompositePixelChannel].mean*=gamma;
+  gamma=PerceptibleReciprocal(area-1.0);
+  channel_statistics[CompositePixelChannel].standard_deviation=
+    sqrt(gamma*channel_statistics[CompositePixelChannel].standard_deviation);
   *mean=channel_statistics[CompositePixelChannel].mean;
   *standard_deviation=
     channel_statistics[CompositePixelChannel].standard_deviation;
