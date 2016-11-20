@@ -2115,6 +2115,7 @@ MagickExport MagickBooleanType GetImageQuantizeError(Image *image)
     area,
     beta,
     distance,
+    gamma,
     maximum_error,
     mean_error,
     mean_error_per_pixel;
@@ -2184,10 +2185,10 @@ MagickExport MagickBooleanType GetImageQuantizeError(Image *image)
     }
   }
   image_view=DestroyCacheView(image_view);
-  image->error.mean_error_per_pixel=(double) mean_error_per_pixel/area;
-  image->error.normalized_mean_error=(double) QuantumScale*QuantumScale*
-    mean_error/area;
-  image->error.normalized_maximum_error=(double) QuantumScale*maximum_error;
+  gamma=PerceptibleReciprocal(area);
+  image->error.mean_error_per_pixel=gamma*mean_error_per_pixel;
+  image->error.normalized_mean_error=gamma*QuantumScale*QuantumScale*mean_error;
+  image->error.normalized_maximum_error=QuantumScale*maximum_error;
   return(MagickTrue);
 }
 

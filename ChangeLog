@@ -1,6 +1,8 @@
 2016-11-20  6.9.6-6 Cristy  <quetzlzacatenango@image...>
   * If a convenient line break is not found, force it for caption: (reference
     https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=30887).
+  * Off by 1 error when computing the standard deviation (reference
+    https://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=30866).
 
 2016-11-15  6.9.6-5 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 6.9.6-5, GIT revision 11139:5175b3c:20161115.

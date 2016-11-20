@@ -763,6 +763,7 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
 
   MagickRealType
     area,
+    gamma,
     maximum_error,
     mean_error;
 
@@ -875,8 +876,9 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
   }
   reconstruct_view=DestroyCacheView(reconstruct_view);
   image_view=DestroyCacheView(image_view);
-  image->error.mean_error_per_pixel=distortion[CompositeChannels]/area;
-  image->error.normalized_mean_error=QuantumScale*QuantumScale*mean_error/area;
+  gamma=PerceptibleReciprocal(area);
+  image->error.mean_error_per_pixel=gamma*distortion[CompositeChannels];
+  image->error.normalized_mean_error=gamma*QuantumScale*QuantumScale*mean_error;
   image->error.normalized_maximum_error=QuantumScale*maximum_error;
   return(status);
 }
@@ -1810,6 +1812,7 @@ MagickExport MagickBooleanType IsImagesEqual(Image *image,
 
   MagickRealType
     area,
+    gamma,
     maximum_error,
     mean_error,
     mean_error_per_pixel;
@@ -1904,10 +1907,10 @@ MagickExport MagickBooleanType IsImagesEqual(Image *image,
   }
   reconstruct_view=DestroyCacheView(reconstruct_view);
   image_view=DestroyCacheView(image_view);
-  image->error.mean_error_per_pixel=(double) (mean_error_per_pixel/area);
-  image->error.normalized_mean_error=(double) (QuantumScale*QuantumScale*
-    mean_error/area);
-  image->error.normalized_maximum_error=(double) (QuantumScale*maximum_error);
+  gamma=PerceptibleReciprocal(area);
+  image->error.mean_error_per_pixel=gamma*mean_error_per_pixel;
+  image->error.normalized_mean_error=gamma*QuantumScale*QuantumScale*mean_error;
+  image->error.normalized_maximum_error=QuantumScale*maximum_error;
   status=image->error.mean_error_per_pixel == 0.0 ? MagickTrue : MagickFalse;
   return(status);
 }
