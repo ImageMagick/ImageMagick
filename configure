@@ -589,7 +589,7 @@ MAKEFLAGS=
 
 # Identity of this package.
 PACKAGE_NAME='ImageMagick'
-PACKAGE_TARNAME='ImageMagick'
+PACKAGE_TARNAME='ImageMagick.6'
 PACKAGE_VERSION='6.9.6-6'
 PACKAGE_STRING='ImageMagick 6.9.6-6'
 PACKAGE_BUGREPORT='https://github.com/ImageMagick/ImageMagick/issues'
@@ -732,6 +732,7 @@ SHARE_PATH
 CONFIGURE_PATH
 INSTALL_DOC_FALSE
 INSTALL_DOC_TRUE
+EXTRA_DOC_DIR
 DOCUMENTATION_PATH
 FILTER_PATH
 FILTER_DIRNAME
@@ -1222,6 +1223,7 @@ with_webp
 with_windows_font_dir
 with_wmf
 with_xml
+with_extra_doc_dir
 enable_docs
 '
       ac_precious_vars='build_alias
@@ -1866,7 +1868,7 @@ Fine tuning of the installation directories:
   --infodir=DIR           info documentation [DATAROOTDIR/info]
   --localedir=DIR         locale-dependent data [DATAROOTDIR/locale]
   --mandir=DIR            man documentation [DATAROOTDIR/man]
-  --docdir=DIR            documentation root [DATAROOTDIR/doc/ImageMagick]
+  --docdir=DIR            documentation root [DATAROOTDIR/doc/ImageMagick.6]
   --htmldir=DIR           html documentation [DOCDIR]
   --dvidir=DIR            dvi documentation [DOCDIR]
   --pdfdir=DIR            pdf documentation [DOCDIR]
@@ -2025,6 +2027,9 @@ Optional Packages:
                           Windows font directory
   --with-wmf              enable WMF support
   --without-xml           disable XML support
+  --with-extra-doc-dir="" extra documentation dir could be overriden by
+                          distribution, for instance by " (you may install the
+                          imagemagick-doc package)"
 
 Some influential environment variables:
   CC          C compiler command
@@ -4203,7 +4208,7 @@ fi
 
 
 # Define the identity of the package.
- PACKAGE='ImageMagick'
+ PACKAGE='ImageMagick.6'
  VERSION='6.9.6-6'
 
 
@@ -4518,7 +4523,7 @@ MAGICK_PATCHLEVEL_VERSION=6
 
 MAGICK_VERSION=6.9.6-6
 
-MAGICK_GIT_REVISION=11140:87aca83:20161115
+MAGICK_GIT_REVISION=11148:1784a1b:20161122
 
 
 # Substitute library versioning
@@ -4694,7 +4699,7 @@ eval "eval LIBEXEC_DIR=$libexecdir"
 
 eval "eval DATA_DIR=$datadir"
 
-eval "eval DOC_DIR=$datadir/doc"
+eval "eval DOC_DIR=$docdir"
 
 eval "eval SYSCONF_DIR=$sysconfdir"
 
@@ -34535,9 +34540,8 @@ FILTER_PATH="${MODULES_PATH}/${FILTER_DIRNAME}"
 
 #
 # Path to ImageMagick documentation files
-DOCUMENTATION_RELATIVE_PATH="${PACKAGE_NAME}-${MAGICK_MAJOR_VERSION}"
-DOCUMENTATION_PATH="${DOC_DIR}/${DOCUMENTATION_RELATIVE_PATH}"
-DEFINE_DOCUMENTATION_PATH="${DOC_DIR}/${DOCUMENTATION_RELATIVE_PATH}/"
+DOCUMENTATION_PATH="${DOC_DIR}"
+DEFINE_DOCUMENTATION_PATH="${DOC_DIR}"
 case "${build_os}" in
   mingw* )
     DEFINE_DOCUMENTATION_PATH=`$WinPathScript "$DEFINE_DOCUMENTATION_PATH" 1`
@@ -34547,6 +34551,26 @@ esac
 cat >>confdefs.h <<_ACEOF
 #define DOCUMENTATION_PATH "$DEFINE_DOCUMENTATION_PATH"
 _ACEOF
+
+
+
+
+#
+# Add distribution specific string for documentation
+
+# Check whether --with-extra-doc-dir was given.
+if test "${with_extra_doc_dir+set}" = set; then :
+  withval=$with_extra_doc_dir; extra_doc_dir="$withval"
+else
+  extra_doc_dir=""
+fi
+
+
+cat >>confdefs.h <<_ACEOF
+#define EXTRA_DOC_DIR "$EXTRA_DOC_DIR"
+_ACEOF
+
+EXTRA_DOC_DIR=$extra_doc_dir
 
 
 

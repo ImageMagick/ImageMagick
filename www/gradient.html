@@ -28,7 +28,7 @@
   <link rel="canonical" href="https://www.imagemagick.org/script/gradient.html"/>
   <link rel="icon" href="../images/wand.png"/>
   <link rel="shortcut icon" href="../images/wand.ico"/>
-  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700">
+  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700" />
   <link rel="stylesheet" href="css/magick.css"/>
 </head>
 <body>
@@ -86,7 +86,7 @@ radial-gradient:color1-color2
 convert -size 256x256 gradient: linear_gradient.png
 convert -size 256x256 gradient:white-black linear_gradient.png
 </pre>
-<p><img src="../images/gradients/linear_gradient.png" width="256" height="256"></p>
+<p><img src="../images/gradients/linear_gradient.png" width="256" height="256" /></p>
 
 <p>If you want a radial gradient, try:</p>
 
@@ -94,13 +94,13 @@ convert -size 256x256 gradient:white-black linear_gradient.png
 convert -size 256x256 radial-gradient: radial_gradient.png
 convert -size 256x256 radial-gradient:white-black radial_gradient.png
 </pre>
-<p><img src="../images/gradients/radial_gradient.png" width="256" height="256"></p>
+<p><img src="../images/gradients/radial_gradient.png" width="256" height="256" /></p>
 
 <p>As of IM 6.9.2.5, gradients have been enhanced through the use of several -defines.</p>
 
 <table class="table table-condensed table-striped">
   <tr>
-    <td><code>-define gradient:vector=<var>x1</var>,<var>y1</var>, <var>x2</var>,<var>y2</var></code> <code></td>
+    <td><code>-define gradient:vector=<var>x1</var>,<var>y1</var>, <var>x2</var>,<var>y2</var></code></td>
     <td>Specifies the direction of the linear gradient going from vector1 
     (x1,y1) to vector2 (x2,y2). Color1 (fromColor) will be located at vector 
     position x1,y1 and color2 (toColor) will be located at vector position 
@@ -149,7 +149,7 @@ convert -size 256x256 radial-gradient:white-black radial_gradient.png
   </tr>
 
   <tr>
-    <td><code>-define gradient:extent=<em>{Circle, Diagonal, Ellipse, Maximum, Minimum}</code></td>
+    <td><code>-define gradient:extent=<em>{Circle, Diagonal, Ellipse, Maximum, Minimum}</em></code></td>
     <td>Specifies the shape of an image centered radial gradient. Circle and 
     Maximum draw a circular radial gradient even for rectangular shaped images 
     of radius equal to the larger of the half-width and half-height of the 
@@ -172,7 +172,7 @@ convert -size 256x256 radial-gradient:white-black radial_gradient.png
 convert -size 256x128 -define gradient:direction=north gradient:black-white linear_gradient_default.png
 convert -size 256x128 -define gradient:angle=0 gradient:black-white linear_gradient_default.png
 </pre>
-<p><img src="../images/gradients/linear_gradient_default.png" width="256" height="128"></p>
+<p><img src="../images/gradients/linear_gradient_default.png" width="256" height="128" /></p>
 
 <p>The equivalent of </p>
 
@@ -186,7 +186,7 @@ convert -size 128x256 gradient: -rotate 90 linear_gradient_east.png
 convert -size 256x128 -define gradient:direction=east gradient:black-white linear_gradient_east.png
 convert -size 256x128 -define gradient:angle=90 gradient:black-white linear_gradient_east.png
 </pre>
-<p><img src="../images/gradients/linear_gradient_east.png" width="256" height="128"></p>
+<p><img src="../images/gradients/linear_gradient_east.png" width="256" height="128" /></p>
 
 
 <p>Examples of radial gradients going from black in the center to white at the boundary for the cases of "maximum/circle/default", "minimum", "diagonal", "ellipse" and 45 degree rotated ellipse, respectively, follow below.</p>
@@ -196,29 +196,29 @@ convert -size 256x128 -define gradient:angle=90 gradient:black-white linear_grad
 convert -size 256x128 radial-gradient:black-white radial_gradient_maximum.png
 convert -size 256x128 -define gradient:radii=128,128 radial-gradient:black-white radial_gradient_maximum.png
 </pre>
-<p><img src="../images/gradients/radial_gradient_maximum.png" width="256" height="128"></p>
+<p><img src="../images/gradients/radial_gradient_maximum.png" width="256" height="128" /></p>
 
 <pre>
 convert -size 256x128 -define gradient:extent=minimum radial-gradient:black-white radial_gradient_minimum.png
 convert -size 256x128 -define gradient:radii=64,64 radial-gradient:black-white radial_gradient_minimum.png
 </pre>
-<p><img src="../images/gradients/radial_gradient_minimum.png" width="256" height="128"></p>
+<p><img src="../images/gradients/radial_gradient_minimum.png" width="256" height="128" /></p>
 
 <pre>
 convert -size 256x128 -define gradient:extent=diagonal radial-gradient:black-white radial_gradient_diagonal.png
 </pre>
-<p><img src="../images/gradients/radial_gradient_diagonal.png" width="256" height="128"></p>
+<p><img src="../images/gradients/radial_gradient_diagonal.png" width="256" height="128" /></p>
 
 <pre>
 convert -size 256x128 -define gradient:extent=ellipse radial-gradient:black-white radial_gradient_ellipse.png
 convert -size 256x128 -define gradient:radii=128,64 radial-gradient:black-white radial_gradient_ellipse.png
 </pre>
-<p><img src="../images/gradients/radial_gradient_ellipse.png" width="256" height="128"></p>
+<p><img src="../images/gradients/radial_gradient_ellipse.png" width="256" height="128" /></p>
 
 <pre>
 convert -size 256x256 -define gradient:radii=128,64 -define gradient:angle=45 radial-gradient:black-white radial_gradient_ellipse_angle45.png
 </pre>
-<p><img src="../images/gradients/radial_gradient_ellipse_angle45.png" width="256" height="256"></p>
+<p><img src="../images/gradients/radial_gradient_ellipse_angle45.png" width="256" height="256" /></p>
 
 </div>
 
@@ -241,4 +241,3 @@ convert -size 256x256 -define gradient:radii=128,64 -define gradient:angle=45 ra
 </div>
 </body>
 </html>
-<!-- Magick Cache 10th November 2016 08:07 -->

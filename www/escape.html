@@ -28,7 +28,7 @@
   <link rel="canonical" href="https://www.imagemagick.org/script/escape.html"/>
   <link rel="icon" href="../images/wand.png"/>
   <link rel="shortcut icon" href="../images/wand.ico"/>
-  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700">
+  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700" />
   <link rel="stylesheet" href="css/magick.css"/>
 </head>
 <body>
@@ -375,8 +375,16 @@ when enclosed in braces (long form):</p>
     <td>??? channels in use - colorspace ???</td>
   </tr>
   <tr>
+    <td>%[colors]</td>
+    <td>Number of unique colors in the image (as of IM 7.0.3.8)</td>
+  </tr>
+  <tr>
     <td>%[colorspace]</td>
     <td>Colorspace of Image Data (excluding transparency)</td>
+  </tr>
+  <tr>
+    <td>%[compression]</td>
+    <td>Image compression type (as of IM 7.0.3.8)</td>
   </tr>
   <tr>
     <td>%[copyright]</td>
@@ -417,6 +425,10 @@ when enclosed in braces (long form):</p>
   <tr>
     <td>%[height]</td>
     <td>original height of image (when it was read in)</td>
+  </tr>
+  <tr>
+    <td>%[interlace]</td>
+    <td>Image interlace mode (as of IM 7.0.3.8)</td>
   </tr>
   <tr>
     <td>%[kurtosis]</td>
@@ -473,6 +485,14 @@ when enclosed in braces (long form):</p>
   <tr>
     <td>%[profiles]</td>
     <td>list of any embedded profiles</td>
+  </tr>
+  <tr>
+    <td>%[quality]</td>
+    <td>Image quality value (as of IM 7.0.3.8)</td>
+  </tr>
+  <tr>
+    <td>%[rendering-intent]</td>
+    <td>Image rendering intent (as of IM 7.0.3.8)</td>
   </tr>
   <tr>
     <td>%[resolution.x]</td>
@@ -867,4 +887,3 @@ Post ObjectData Descriptor Record
 </div>
 </body>
 </html>
-<!-- Magick Cache 10th November 2016 08:04 -->
