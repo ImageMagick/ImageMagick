@@ -1696,7 +1696,6 @@ extern MagickPrivate const cl_event *GetOpenCLEvents(const Image *image,
   assert(image != (const Image *) NULL);
   assert(event_count != (cl_uint *) NULL);
   cache_info=(CacheInfo *) image->cache;
-  assert(cache_info->opencl != (OpenCLCacheInfo *) NULL);
   if (cache_info->opencl == (OpenCLCacheInfo *) NULL)
     {
       *event_count=0;
