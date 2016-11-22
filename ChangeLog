@@ -6,6 +6,8 @@
     https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=30894).
   * Off by 1 error when computing the standard deviation (reference
     https://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=30866).
+  * Apply Debian patches, (reference
+    https://github.com/ImageMagick/ImageMagick/issues/304).
 
 2016-11-15  7.0.3-7 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.3-7, GIT revision 19024:87aca83:20161115.
