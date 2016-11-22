@@ -133,7 +133,7 @@ cc -o core core.c `pkg-config --cflags --libs MagickWand`
 export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
 </pre>
 
-<p>Here is a example program that utilizes the MagickCore API to get you started, <a href="../source/core.c">core.c</a>. It reads a GIF image, creates a thumbnail, and writes it to disk in the PNG image format.</p>
+<p>Here is a example program that utilizes the MagickCore API to get you started, <a href="https://www.imagemagick.org/source/core.c">core.c</a>. It reads a GIF image, creates a thumbnail, and writes it to disk in the PNG image format.</p>
 
 <pre class="pre-scrollable">#include &lt;stdio.h>
 #include &lt;stdlib.h>
@@ -198,7 +198,7 @@ int main(int argc,char **argv)
   MagickCoreTerminus();
   return(0);
 }</pre>
-<p><a id="image-view"></a>Now lets perform the same contrast enhancement while taking advantage of our dual or quad-core processing system by running the algorithm in parallel utilizing wand views.  The <a href="../source/core/sigmoidal-contrast.c">sigmoidal-contrast.c</a> module reads an image, applies sigmoidal non-linearity contrast control, and writes the result to disk just like the previous contrast enhancement program, but now it does its work in parallel (assumes ImageMagick is built with OpenMP support).</p>
+<p><a id="image-view"></a>Now lets perform the same contrast enhancement while taking advantage of our dual or quad-core processing system by running the algorithm in parallel utilizing wand views.  The <a href="https://www.imagemagick.org/source/core/sigmoidal-contrast.c">sigmoidal-contrast.c</a> module reads an image, applies sigmoidal non-linearity contrast control, and writes the result to disk just like the previous contrast enhancement program, but now it does its work in parallel (assumes ImageMagick is built with OpenMP support).</p>
 
 <pre class="pre-scrollable">#include &lt;stdio.h>
 #include &lt;stdlib.h>
@@ -337,4 +337,4 @@ int main(int argc,char **argv)
 </div>
 </body>
 </html>
-<!-- Magick Cache 22nd November 2016 07:36 -->
+<!-- Magick Cache 22nd November 2016 09:38 -->
