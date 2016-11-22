@@ -25,7 +25,7 @@
   <meta name="distribution" content="Global"/>
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-  <link rel="canonical" href="https://www.imagemagick.org/script/architecture.html"/>
+  <link rel="canonical" href="https://www.imagemagick.org/script/../www/architecture.html"/>
   <link rel="icon" href="../images/wand.png"/>
   <link rel="shortcut icon" href="../images/wand.ico"/>
   <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700" />
@@ -135,7 +135,7 @@ if (image == (Image *) NULL)
 
 <p>When the pixel cache is initialized, pixels are scaled from whatever bit depth they originated from to that required by the pixel cache.  For example, a 1-channel 1-bit monochrome PBM image is scaled to 8-bit gray image, if you are using the Q8 version of ImageMagick, and 16-bit RGBA for the Q16 version.  You can determine which version you have with the <a href="command-line-options.html#version">&#x2011;version</a> option: </p>
 
-<pre><span class="crtprompt"> </span><span class='crtin'>identify -version</span><span class='crtout'><br/></span><span class="crtprompt"> </span><span class='crtin'>Version: ImageMagick 6.9.2-6 2015-10-10 Q16 https://www.imagemagick.org</span></pre>
+<pre><span class="crtprompt"> </span><span class='crtin'>identify -version</span><span class='crtout'><br/></span><span class="crtprompt"> </span><span class='crtin'>Version: ImageMagick 7.0.3-8 2016-11-10 Q16 https://www.imagemagick.org</span></pre>
 <p>As you can see, the convenience of the pixel cache sometimes comes with a trade-off in storage (e.g. storing a 1-bit monochrome image as 16-bit is wasteful) and speed (i.e. storing the entire image in memory is generally slower than accessing one scanline of pixels at a time).  In most cases, the benefits of the pixel cache typically outweigh any disadvantages.</p>
 
 <h3><a id="authentic-pixels"></a>Access the Pixel Cache</h3>
@@ -295,7 +295,7 @@ Resource limits:
   Time: unlimited
 </pre>
 
-<p>You can set these limits either as a <a href="security-policy.html">security policy</a> (see <a href="../source/policy.xml">policy.xml</a>), with an <a href="resources.html#environment">environment variable</a>, with the <a href="command-line-options.html#limit">-limit</a> command line option, or with the <a href="api/resource.html#SetMagickResourceLimit">SetMagickResourceLimit()</a> MagickCore API method. As an example, our online web interface to ImageMagick, <a href="https://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">ImageMagick Studio</a>, includes these policy limits to help prevent a denial-of-service:</p>
+<p>You can set these limits either as a <a href="security-policy.html">security policy</a> (see <a href="https://www.imagemagick.org/source/policy.xml">policy.xml</a>), with an <a href="resources.html#environment">environment variable</a>, with the <a href="command-line-options.html#limit">-limit</a> command line option, or with the <a href="api/resource.html#SetMagickResourceLimit">SetMagickResourceLimit()</a> MagickCore API method. As an example, our online web interface to ImageMagick, <a href="https://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">ImageMagick Studio</a>, includes these policy limits to help prevent a denial-of-service:</p>
 <pre>
 &lt;policymap>
   &lt;policy domain="resource" name="temporary-path" value="/tmp"/>
@@ -645,7 +645,7 @@ void ConvertBMPToImage(const BITMAPINFOHEADER *bmp_info,
 
 <p><a href="api/wand-view.html">MagickWand</a> supports wand views.  A view iterates over the entire, or portion, of the image in parallel and for each row of pixels, it invokes a callback method you provide.  This limits most of your parallel programming activity to just that one module.  There are similar methods in <a href="api/image-view.html">MagickCore</a>.  For an example, see the same sigmoidal contrast algorithm implemented in both <a href="magick-wand.html#wand-view">MagickWand</a> and <a href="magick-core.html#image-view">MagickCore</a>.</p>
 
-<p>In most circumstances, the default number of threads is set to the number of processor cores on your system for optimal performance.  However, if your system is hyperthreaded or if you are running on a virtual host and only a subset of the processors are available to your server instance, you might get an increase in performance by setting the thread <a href="resources.html#configure">policy</a> or the <a href="resources.html#environment">MAGICK_THREAD_LIMIT</a> environment variable.  For example, your virtual host has 8 processors but only 2 are assigned to your server instance.  The default of 8 threads can cause severe performance problems.  One solution is to limit the number of threads to the available processors in your <a href="../source/policy.xml">policy.xml</a> configuration file:</p>
+<p>In most circumstances, the default number of threads is set to the number of processor cores on your system for optimal performance.  However, if your system is hyperthreaded or if you are running on a virtual host and only a subset of the processors are available to your server instance, you might get an increase in performance by setting the thread <a href="resources.html#configure">policy</a> or the <a href="resources.html#environment">MAGICK_THREAD_LIMIT</a> environment variable.  For example, your virtual host has 8 processors but only 2 are assigned to your server instance.  The default of 8 threads can cause severe performance problems.  One solution is to limit the number of threads to the available processors in your <a href="https://www.imagemagick.org/source/policy.xml">policy.xml</a> configuration file:</p>
 
 <pre>
 &lt;policy domain="resource" name="thread" value="2"/>
@@ -765,7 +765,7 @@ __kernel void Convolve(const __global CLPixelType *source,__constant float *filt
 
 <p>An image coder (i.e. encoder / decoder) is responsible for registering, optionally classifying, optionally reading, optionally writing, and unregistering one image format (e.g.  PNG, GIF, JPEG, etc.).  Registering an image coder alerts ImageMagick a particular format is available to read or write.  While unregistering tells ImageMagick the format is no longer available.  The classifying method looks at the first few bytes of an image and determines if the image is in the expected format.  The reader sets the image size, colorspace, and other properties and loads the pixel cache with the pixels.  The reader returns a single image or an image sequence (if the format supports multiple images per file), or if an error occurs, an exception and a null image.  The writer does the reverse.  It takes the image properties and unloads the pixel cache and writes them as required by the image format.</p>
 
-<p>Here is a listing of a sample <a href="../source/mgk.c">custom coder</a>.  It reads and writes images in the MGK image format which is simply an ID followed by the image width and height followed by the RGB pixel values.</p>
+<p>Here is a listing of a sample <a href="https://www.imagemagick.org/source/mgk.c">custom coder</a>.  It reads and writes images in the MGK image format which is simply an ID followed by the image width and height followed by the RGB pixel values.</p>
 
 <pre class="pre-scrollable">/*
   Include declarations.
@@ -1181,7 +1181,7 @@ display logo.mgk
 
 <p>ImageMagick provides a convenient mechanism for adding your own custom image processing algorithms.  We call these image filters and they are invoked from the command line with the <a href="command-line-options.html#process">-process</a> option or from the MagickCore API method <a href="api/module.html#ExecuteModuleProcess">ExecuteModuleProcess()</a>.</p>
 
-<p>Here is a listing of a sample <a href="../source/analyze.c">custom image filter</a>.  It computes a few statistics such as the pixel brightness and saturation mean and standard-deviation.</p>
+<p>Here is a listing of a sample <a href="https://www.imagemagick.org/source/analyze.c">custom image filter</a>.  It computes a few statistics such as the pixel brightness and saturation mean and standard-deviation.</p>
 
 <pre class="pre-scrollable">#include &lt;stdio.h&gt;
 #include &lt;stdlib.h&gt;
@@ -1423,4 +1423,4 @@ ModuleExport size_t analyzeImage(Image **images,const int argc,const char **argv
 </div>
 </body>
 </html>
-<!-- Magick Cache 22nd November 2016 07:35 -->
+<!-- Magick Cache 22nd November 2016 09:32 -->
