@@ -10,6 +10,7 @@
     https://github.com/ImageMagick/ImageMagick/issues/304).
   * Permit EPT images with just a TIFF or EPS image, not both (reference
     https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=30921).
+  * The -clone option no longer leaks memory.
 
 2016-11-15  7.0.3-7 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.3-7, GIT revision 19024:87aca83:20161115.
