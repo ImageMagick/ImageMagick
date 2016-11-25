@@ -33,7 +33,6 @@ m4_define([magick_version],
 m4_define([magick_git_revision], esyscmd([sh -c "(gitversion .) | awk '{ print \$1 }' | tr -d '\n'"]))
 m4_define([magick_tar_name],[ImageMagick])
 
-
 # ==============================================================================
 # Initalize Automake
 # ==============================================================================
@@ -2972,18 +2971,6 @@ case "${build_os}" in
 esac
 AC_DEFINE_UNQUOTED(DOCUMENTATION_PATH,"$DEFINE_DOCUMENTATION_PATH",[Directory where ImageMagick documents live.])
 AC_SUBST(DOCUMENTATION_PATH)
-
-
-#
-# Add distribution specific string for documentation
-AC_ARG_WITH([extra-doc-dir],
-    [AC_HELP_STRING([--with-extra-doc-dir=""],
-       [extra documentation dir could be overriden by distribution, for instance by " (you may install the imagemagick-doc package)"])],
-    [extra_doc_dir="$withval"],
-    [extra_doc_dir=""])
-AC_DEFINE_UNQUOTED(EXTRA_DOC_DIR,"$EXTRA_DOC_DIR",[Extra documentation dir could be overriden by distribution, for instance by " (you may install th imagemagick-doc package)"])
-AC_SUBST(EXTRA_DOC_DIR,$extra_doc_dir)
-
 
 #
 # Enable/Disable documentation

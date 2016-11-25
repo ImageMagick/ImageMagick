@@ -46,10 +46,6 @@
 /* Directory where executables are installed. */
 #undef EXECUTABLE_PATH
 
-/* Extra documentation dir could be overriden by distribution, for instance by
-   " (you may install th imagemagick-doc package)" */
-#undef EXTRA_DOC_DIR
-
 /* Define if you have FFTW library */
 #undef FFTW_DELEGATE
 
