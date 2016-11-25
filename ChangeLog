@@ -1,5 +1,5 @@
 2016-11-25  6.9.6-6 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 6.9.6-6, GIT revision 11167:8a20fe6:20161125.
+  * Release ImageMagick version 6.9.6-6, GIT revision 11169:94edafc:20161125.
 
 2016-11-20  6.9.6-6 Cristy  <quetzlzacatenango@image...>
   * If a convenient line break is not found, force it for caption: (reference
