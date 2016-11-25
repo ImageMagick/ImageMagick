@@ -1,5 +1,5 @@
 2016-11-15  7.0.3-8 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.3-8, GIT revision 19064:6eeddf0:20161125.
+  * Release ImageMagick version 7.0.3-8, GIT revision 19067:5aceded:20161125.
 
 2016-11-18  7.0.3-8 Cristy  <quetzlzacatenango@image...>
   * Support the phash:colorspaces and phash:normalize options.
