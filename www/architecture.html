@@ -25,7 +25,7 @@
   <meta name="distribution" content="Global"/>
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-  <link rel="canonical" href="https://www.imagemagick.org/script/../www/architecture.html"/>
+  <link rel="canonical" href="https://www.imagemagick.org/script/architecture.html"/>
   <link rel="icon" href="../images/wand.png"/>
   <link rel="shortcut icon" href="../images/wand.ico"/>
   <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700" />
@@ -135,7 +135,7 @@ if (image == (Image *) NULL)
 
 <p>When the pixel cache is initialized, pixels are scaled from whatever bit depth they originated from to that required by the pixel cache.  For example, a 1-channel 1-bit monochrome PBM image is scaled to 8-bit gray image, if you are using the Q8 version of ImageMagick, and 16-bit RGBA for the Q16 version.  You can determine which version you have with the <a href="command-line-options.html#version">&#x2011;version</a> option: </p>
 
-<pre><span class="crtprompt"> </span><span class='crtin'>identify -version</span><span class='crtout'><br/></span><span class="crtprompt"> </span><span class='crtin'>Version: ImageMagick 7.0.3-8 2016-11-10 Q16 https://www.imagemagick.org</span></pre>
+<pre><span class="crtprompt"> </span><span class='crtin'>identify -version</span><span class='crtout'><br/></span><span class="crtprompt"> </span><span class='crtin'>Version: ImageMagick 7.0.3-8 2016-11-25 Q16 https://www.imagemagick.org</span></pre>
 <p>As you can see, the convenience of the pixel cache sometimes comes with a trade-off in storage (e.g. storing a 1-bit monochrome image as 16-bit is wasteful) and speed (i.e. storing the entire image in memory is generally slower than accessing one scanline of pixels at a time).  In most cases, the benefits of the pixel cache typically outweigh any disadvantages.</p>
 
 <h3><a id="authentic-pixels"></a>Access the Pixel Cache</h3>
@@ -757,7 +757,7 @@ __kernel void Convolve(const __global CLPixelType *source,__constant float *filt
   destination[index].w=ClampToQuantum(sum.w);
 };</pre>
 
-<p>See <a href="https://github.com/ImageMagick/ImageMagick/tree/ImageMagick-6/magick/accelerate.c">magick/accelerate.c</a> for a complete implementation of image convolution with an OpenCL kernel.</p>
+<p>See <a href="https://github.com/ImageMagick/ImageMagick/tree/ImageMagick-7/magick/accelerate.c">magick/accelerate.c</a> for a complete implementation of image convolution with an OpenCL kernel.</p>
 
 <p>Note, that under Windows, you might have an issue with TDR (Timeout Detection and Recovery of GPUs). Its purpose is to detect runaway tasks hanging the GPU by using an execution time threshold.  For some older low-end GPUs running the OpenCL filters in ImageMagick, longer execution times might trigger the TDR mechanism and pre-empt the GPU image filter.  When this happens, ImageMagick automatically falls back to the CPU code path and returns the expected results.  To avoid pre-emption, increase the <a href="http://msdn.microsoft.com/en-us/library/windows/hardware/gg487368.aspx">TdrDelay</a> registry key.</p>
 
@@ -1423,4 +1423,4 @@ ModuleExport size_t analyzeImage(Image **images,const int argc,const char **argv
 </div>
 </body>
 </html>
-<!-- Magick Cache 22nd November 2016 09:32 -->
+<!-- Magick Cache 26th November 2016 12:14 -->

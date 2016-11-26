@@ -268,7 +268,7 @@ magick image.ext win:
 
 <p>You can run ImageMagick command line utilities directly from the <code>VisualMagick\bin</code> folder, however, in most cases you may want the convenience of an installer script.  ImageMagick provides <a href="http://www.jrsoftware.org">Inno Setup</a> scripts for this purpose.  Note, you must define MAGICKCORE_INSTALLED_SUPPORT at <a href="advanced-windows-installation.html#configure">configure</a> time to utilize the installer scripts.</p>
 
-<p>To get started building a self-installing ImageMagick executable, go to <code>VisualMagick\installer</code> folder and click on a script that matches your build environment.  Press F9 to build and install ImageMagick.  The default location is <code>C:Program Files\ImageMagick-6.?.?\Q?</code>.  The exact folder name depends on the ImageMagick version and quantum depth.  Once installed, ImageMagick command line utilities and libraries are available to the MS Command Prompt, web scripts, or to meet your development needs.</p>
+<p>To get started building a self-installing ImageMagick executable, go to <code>VisualMagick\installer</code> folder and click on a script that matches your build environment.  Press F9 to build and install ImageMagick.  The default location is <code>C:Program Files\ImageMagick-7.?.?\Q?</code>.  The exact folder name depends on the ImageMagick version and quantum depth.  Once installed, ImageMagick command line utilities and libraries are available to the MS Command Prompt, web scripts, or to meet your development needs.</p>
 
 
 <h2 class="magick-header"><a id="binary"></a>Create a Self-Installing Binary Distribution</h2>
@@ -369,7 +369,7 @@ run_demos.bat
 
 <h2 class="magick-header"><a id="project"></a>Building Your Custom Project</h2>
 
-<p>The Windows <a href="https://www.imagemagick.org/script/binary-releases.html#windows">binary</a> distribution includes a number of demo projects that you can use as a template for your own custom project.  For example, start with the Button project, generally located in the <code>c:/Program Files/ImageMagick-6.5.5-0/Magick++_demos</code> folder.  If not, be sure to select <code>Configuration Properties->C/C++->Preprocessor</code> and set these definitions:</p>
+<p>The Windows <a href="https://www.imagemagick.org/script/binary-releases.html#windows">binary</a> distribution includes a number of demo projects that you can use as a template for your own custom project.  For example, start with the Button project, generally located in the <code>c:/Program Files/ImageMagick-7.5.5-0/Magick++_demos</code> folder.  If not, be sure to select <code>Configuration Properties->C/C++->Preprocessor</code> and set these definitions:</p>
 
 <pre>
 NDEBUG
@@ -401,3 +401,4 @@ _MAGICKMOD_
 </div>
 </body>
 </html>
+<!-- Magick Cache 26th November 2016 12:14 -->

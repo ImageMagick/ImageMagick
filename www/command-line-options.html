@@ -25,7 +25,7 @@
   <meta name="distribution" content="Global"/>
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-  <link rel="canonical" href="command-line-options.html?"/>
+  <link rel="canonical" href="https://www.imagemagick.org/script/command-line-options.html"/>
   <link rel="icon" href="../images/wand.png"/>
   <link rel="shortcut icon" href="../images/wand.ico"/>
   <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700" />
@@ -1919,9 +1919,10 @@ available:</p>
     <td>h:format=<var>value</var></td>
      <td>Set the image encoding format use when writing a C-style header.
          <var>format</var> can be any output format supported by ImageMagick
-         except for <var>h</var> and <var>magick</var></td>.  If this
+         except for <var>h</var> and <var>magick</var>.  If this
          option is omitted, the default is <var>GIF</var> for PseudoClass
          images and <var>PNM</var> for DirectClass images.
+    </td>
   </tr>
 
   <tr>
@@ -2049,7 +2050,7 @@ available:</p>
   <tr>
     <td>magick:format=<var>value</var></td>
      <td>Set the image encoding format use when writing a C-style header.
-         This is the same as "h:format=format" described above.</td>. 
+         This is the same as "h:format=format" described above.</td>
   </tr>
 
   <tr>
@@ -2073,6 +2074,7 @@ available:</p>
 
   <tr>
     <td>pcl:fit-to-page=<var>true</var></td>
+  </tr>
 
   <tr>
     <td>pdf:fit-page=<var>geometry</var></td>
@@ -2819,7 +2821,7 @@ and meaning of the floating point values depends on the distortion <var>method</
        Arc the image (variation of polar mapping) over the angle given around
        a circle.
 
-       <p><dl class="dl-horizontal">
+       <dl class="dl-horizontal">
        <dt>arc_angle</dt>
            <dd>The angle over which to arc the image side-to-side</dd>
        <dt>rotate_angle</dt>
@@ -2828,7 +2830,7 @@ and meaning of the floating point values depends on the distortion <var>method</
            <dd>Set top edge of source image at this radius</dd>
        <dt>bottom_radius </dt>
            <dd>Set bottom edge to this radius (radial scaling)</dd>
-       </dl></p>
+       </dl>
 
        The resulting image is always resized to best fit the resulting image,
        (as if using <a href="command-line-options.html#distort" >+distort</a>) while attempting to
@@ -3892,6 +3894,8 @@ href="command-line-options.html#set" >-set</a>):-</p>
 
   <tr>
     <td>-define filter:b=<var>b-spline_factor</var></td>
+  </tr>
+
   <tr>
     <td>-define filter:c=<var>keys_alpha_factor</var></td>
     <td>Redefine the values used for cubic filters such as <code>Cubic</code>,
@@ -4313,7 +4317,6 @@ All these values can be adjusted via the arguments.</p>
 <var>range</var>/π * atan( <var>slope</var>*π * ( <b><var>u</var></b> - <var>center</var> ) ) + <var>bias</var>
 </pre>
   </dd>
-  </tr>
 </dl>
 
 
@@ -8031,4 +8034,4 @@ but with strict boolean masking. </p>
 </div>
 </body>
 </html>
-<!-- Magick Cache 22nd November 2016 09:32 -->
+<!-- Magick Cache 26th November 2016 12:13 -->
