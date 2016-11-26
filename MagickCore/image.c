@@ -3084,12 +3084,12 @@ MagickExport MagickBooleanType SetImageMask(Image *image,const PixelMask type,
       {
         case WritePixelMask:
         {
-          SetPixelWriteMask(image,ClampToQuantum(QuantumRange-intensity),q);
+          SetPixelWriteMask(image,ClampToQuantum(intensity),q);
           break;
         }
         default:
         {
-          SetPixelReadMask(image,ClampToQuantum(QuantumRange-intensity),q);
+          SetPixelReadMask(image,ClampToQuantum(intensity),q);
           break;
         }
       }
