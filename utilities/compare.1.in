@@ -36,6 +36,7 @@ Image Settings:
                        de-emphasize pixel differences with this color
   \-metric type         measure differences between images with this metric
   \-monitor             monitor progress
+  \-negate              replace each pixel with its complementary color
   \-profile filename    add, delete, or apply an image profile
   \-quality value       JPEG/MIFF/PNG compression level
   \-quiet               suppress all warning messages
