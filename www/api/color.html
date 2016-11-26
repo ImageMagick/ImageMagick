@@ -28,14 +28,14 @@
   <link rel="canonical" href="https://www.imagemagick.org/api/color.html"/>
   <link rel="icon" href="../images/wand.png"/>
   <link rel="shortcut icon" href="../images/wand.ico"/>
-  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700" />
-  <link rel="stylesheet" href="../css/magick.html"/>
+  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700"   />
+  <link rel="stylesheet" type="text/css" href="../css/magick.html"/>
 </head>
 <body>
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async="async" src="https://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
          style="display:block"
          data-ad-client="ca-pub-3129977114552745"
          data-ad-slot="6345125851"
@@ -57,7 +57,7 @@
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="text-center"><a href="color.html#AcquireColorCache">AcquireColorCache</a> &#8226; <a href="color.html#GetColorInfoList">GetColorInfoList</a> &#8226; <a href="color.html#GetColorList">GetColorList</a> &#8226; <a href="color.html#ListColorInfo">ListColorInfo</a> &#8226; <a href="color.html#QueryColorname">QueryColorname</a></p>
+<p class="text-center"><a href="color.html#AcquireColorCache">AcquireColorCache</a> &#8226; <a href="color.html#GetColorInfoList">GetColorInfoList</a> &#8226; <a href="color.html#GetColorList">GetColorList</a> &#8226; <a href="color.html#ListColorInfo">ListColorInfo</a> &#8226; <a href="color.html#QueryColorCompliance">QueryColorCompliance</a> &#8226; <a href="color.html#QueryColorDatabase">QueryColorDatabase</a> &#8226; <a href="color.html#QueryColorname">QueryColorname</a> &#8226; <a href="color.html#QueryMagickColorCompliance">QueryMagickColorCompliance</a> &#8226; <a href="color.html#QueryMagickColor">QueryMagickColor</a> &#8226; <a href="color.html#QueryMagickColorname">QueryMagickColorname</a></p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/color_8c.html" id="AcquireColorCache">AcquireColorCache</a></h2>
 
@@ -166,24 +166,185 @@ MagickBooleanType ListColorInfo(FILE *file,ExceptionInfo *exception)
 <dt>exception</dt>
 <p>return any errors or warnings in this structure.</p>
 
+<h2><a href="http://www.imagemagick.org/api/MagickCore/color_8c.html" id="QueryColorCompliance">QueryColorCompliance</a></h2>
+
+<p>QueryColorCompliance() returns the red, green, blue, and opacity intensities for a given color name.</p>
+
+<p>The format of the QueryColorCompliance method is:</p>
+
+<pre class="text">
+MagickBooleanType QueryColorCompliance(const char *name,
+  const ComplianceType compliance,PixelPacket *color,
+  ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>name</dt>
+<dd>the color name (e.g. white, blue, yellow). </dd>
+
+<dd> </dd>
+<dt>compliance</dt>
+<dd>Adhere to this color standard: SVG, X11, or XPM. </dd>
+
+<dd> </dd>
+<dt>color</dt>
+<dd>the red, green, blue, and opacity intensities values of the named color in this structure. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/color_8c.html" id="QueryColorDatabase">QueryColorDatabase</a></h2>
+
+<p>QueryColorDatabase() returns the red, green, blue, and opacity intensities for a given color name.</p>
+
+<p>The format of the QueryColorDatabase method is:</p>
+
+<pre class="text">
+MagickBooleanType QueryColorDatabase(const char *name,PixelPacket *color,
+  ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>name</dt>
+<dd>the color name (e.g. white, blue, yellow). </dd>
+
+<dd> </dd>
+<dt>color</dt>
+<dd>the red, green, blue, and opacity intensities values of the named color in this structure. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/color_8c.html" id="QueryColorname">QueryColorname</a></h2>
 
-<p>QueryColorname() returns a named color for the given color intensity. If an exact match is not found, a hex value is returned instead.  For example an intensity of rgb:(0,0,0) returns black whereas rgb:(223,223,223) returns #dfdfdf.</p>
-
-<p>UPDATE: the 'image' argument is no longer needed as all information should have been preset using GetPixelInfo().</p>
+<p>QueryColorname() returns a named color for the given color intensity.  If an exact match is not found, a rgb() color is returned instead.</p>
 
 <p>The format of the QueryColorname method is:</p>
 
 <pre class="text">
 MagickBooleanType QueryColorname(const Image *image,
-  const PixelInfo *color,const ComplianceType compliance,char *name,
+  const PixelPacket *color,const ComplianceType compliance,char *name,
   ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows.</p>
 
 <dt>image</dt>
-<p>the image. (not used! - color gets settings from GetPixelInfo()</p>
+<p>the image.</p>
+
+<dt>color</dt>
+<p>the color intensities.</p>
+
+<dt>compliance</dt>
+<p>Adhere to this color standard: SVG, X11, or XPM.</p>
+
+<dt>name</dt>
+<p>Return the color name or hex value.</p>
+
+<dt>exception</dt>
+<p>return any errors or warnings in this structure.</p>
+
+<h2><a href="http://www.imagemagick.org/api/MagickCore/color_8c.html" id="QueryMagickColorCompliance">QueryMagickColorCompliance</a></h2>
+
+<p>QueryMagickColorCompliance() returns the red, green, blue, and opacity intensities for a given color name and standards compliance.</p>
+
+<p>The format of the QueryMagickColor method is:</p>
+
+<pre class="text">
+MagickBooleanType QueryMagickColorCompilence(const char *name,
+  const ComplianceType compliance,MagickPixelPacket *color,
+  ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>name</dt>
+<dd>the color name (e.g. white, blue, yellow). </dd>
+
+<dd> </dd>
+<dt>compliance</dt>
+<dd>Adhere to this color standard: SVG, X11, or XPM. </dd>
+
+<dd> </dd>
+<dt>color</dt>
+<dd>the red, green, blue, and opacity intensities values of the named color in this structure. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/color_8c.html" id="QueryMagickColor">QueryMagickColor</a></h2>
+
+<p>QueryMagickColor() returns the red, green, blue, and opacity intensities for a given color name.</p>
+
+<p>The format of the QueryMagickColor method is:</p>
+
+<pre class="text">
+MagickBooleanType QueryMagickColor(const char *name,
+  MagickPixelPacket *color,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>name</dt>
+<dd>the color name (e.g. white, blue, yellow). </dd>
+
+<dd> </dd>
+<dt>color</dt>
+<dd>the red, green, blue, and opacity intensities values of the named color in this structure. </dd>
+
+<dd> </dd>
+<dt>exception</dt>
+<dd>return any errors or warnings in this structure. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/color_8c.html" id="QueryMagickColorname">QueryMagickColorname</a></h2>
+
+<p>QueryMagickColorname() returns a named color for the given color intensity. If an exact match is not found, a hex value is returned instead.  For example an intensity of rgb:(0,0,0) returns black whereas rgb:(223,223,223) returns #dfdfdf.</p>
+
+<p>The format of the QueryMagickColorname method is:</p>
+
+<pre class="text">
+MagickBooleanType QueryMagickColorname(const Image *image,
+  const PixelPacket *color,const ComplianceType compliance,char *name,
+  ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows.</p>
+
+<dt>image</dt>
+<p>the image.</p>
 
 <dt>color</dt>
 <p>the color intensities.</p>

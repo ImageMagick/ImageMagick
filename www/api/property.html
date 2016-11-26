@@ -28,14 +28,14 @@
   <link rel="canonical" href="https://www.imagemagick.org/api/property.html"/>
   <link rel="icon" href="../images/wand.png"/>
   <link rel="shortcut icon" href="../images/wand.ico"/>
-  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700" />
-  <link rel="stylesheet" href="../css/magick.html"/>
+  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700"   />
+  <link rel="stylesheet" type="text/css" href="../css/magick.html"/>
 </head>
 <body>
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async="async" src="https://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
          style="display:block"
          data-ad-client="ca-pub-3129977114552745"
          data-ad-slot="6345125851"
@@ -61,7 +61,7 @@
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/property_8c.html" id="CloneImageProperties">CloneImageProperties</a></h2>
 
-<p>CloneImageProperties() clones all the image properties to another image.</p>
+<p>CloneImageProperties() clones one or more image properties.</p>
 
 <p>The format of the CloneImageProperties method is:</p>
 
@@ -88,13 +88,13 @@ MagickBooleanType CloneImageProperties(Image *image,
 </dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/property_8c.html" id="DefineImageProperty">DefineImageProperty</a></h2>
 
-<p>DefineImageProperty() associates an assignment string of the form "key=value" with an artifact or options. It is equivelent to SetImageProperty().</p>
+<p>DefineImageProperty() associates a key/value pair with an image property.</p>
 
 <p>The format of the DefineImageProperty method is:</p>
 
 <pre class="text">
-MagickBooleanType DefineImageProperty(Image *image,const char *property,
-  ExceptionInfo *exception)
+MagickBooleanType DefineImageProperty(Image *image,
+  const char *property)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -110,10 +110,6 @@ MagickBooleanType DefineImageProperty(Image *image,const char *property,
 <dd> </dd>
 <dt>property</dt>
 <dd>the image property. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
 
 <dd>  </dd>
 </dl>
@@ -145,7 +141,7 @@ MagickBooleanType DeleteImageProperty(Image *image,const char *property)
 </dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/property_8c.html" id="DestroyImageProperties">DestroyImageProperties</a></h2>
 
-<p>DestroyImageProperties() destroys all properties and associated memory attached to the given image.</p>
+<p>DestroyImageProperties() releases memory associated with image property values.</p>
 
 <p>The format of the DestroyDefines method is:</p>
 
@@ -191,15 +187,10 @@ MagickBooleanType FormatImageProperty(Image *image,const char *property,
 
 <p>GetImageProperty() gets a value associated with an image property.</p>
 
-<p>This includes,  profile prefixes, such as "exif:", "iptc:" and "8bim:" It does not handle non-prifile prefixes, such as "fx:", "option:", or "artifact:".</p>
-
-<p>The returned string is stored as a properity of the same name for faster lookup later. It should NOT be freed by the caller.</p>
-
 <p>The format of the GetImageProperty method is:</p>
 
 <pre class="text">
-const char *GetImageProperty(const Image *image,const char *key,
-  ExceptionInfo *exception)
+const char *GetImageProperty(const Image *image,const char *key)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -215,10 +206,6 @@ const char *GetImageProperty(const Image *image,const char *key,
 <dd> </dd>
 <dt>key</dt>
 <dd>the key. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
 
 <dd>  </dd>
 </dl>
@@ -254,15 +241,15 @@ char *GetNextImageProperty(const Image *image)
 
 <p>Single letter  substitutions will only happen if the character before the percent is NOT a number. But braced substitutions will always be performed. This prevents the typical usage of percent in a interpreted geometry argument from being substituted when the percent is a geometry flag.</p>
 
-<p>If 'glob-expresions' ('*' or '?' characters) is used for 'name' it may be used as a search pattern to print multiple lines of "name=value\n" pairs of the associacted set of properties.</p>
+<p>If 'glob-expresions' ('*' or '?' characters) is used for 'name' it may be used as a search pattern to print multiple lines of "name=value\n" pairs of the associacted set of properities.</p>
 
 <p>The returned string must be freed using DestoryString() by the caller.</p>
 
 <p>The format of the InterpretImageProperties method is:</p>
 
 <pre class="text">
-char *InterpretImageProperties(ImageInfo *image_info,
-  Image *image,const char *embed_text,ExceptionInfo *exception)
+char *InterpretImageProperties(const ImageInfo *image_info,Image *image,
+  const char *embed_text)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -273,19 +260,15 @@ char *InterpretImageProperties(ImageInfo *image_info,
 <dd> </dd>
 <dl class="dl-horizontal">
 <dt>image_info</dt>
-<dd>the image info. (required) </dd>
+<dd>the image info. </dd>
 
 <dd> </dd>
 <dt>image</dt>
-<dd>the image. (optional) </dd>
+<dd>the image. </dd>
 
 <dd> </dd>
 <dt>embed_text</dt>
 <dd>the address of a character string containing the embedded formatting characters. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
 
 <dd>  </dd>
 </dl>
@@ -343,13 +326,11 @@ ResetImagePropertyIterator(Image *image)
 
 <p>SetImageProperty() saves the given string value either to specific known attribute or to a freeform property string.</p>
 
-<p>Attempting to set a property that is normally calculated will produce an exception.</p>
-
 <p>The format of the SetImageProperty method is:</p>
 
 <pre class="text">
 MagickBooleanType SetImageProperty(Image *image,const char *property,
-  const char *value,ExceptionInfo *exception)
+  const char *value)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -369,10 +350,6 @@ MagickBooleanType SetImageProperty(Image *image,const char *property,
 <dd> </dd>
 <dt>values</dt>
 <dd>the image property values. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
 
 <dd>  </dd>
 </dl>

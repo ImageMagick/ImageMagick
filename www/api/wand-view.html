@@ -28,14 +28,14 @@
   <link rel="canonical" href="https://www.imagemagick.org/api/wand-view.html"/>
   <link rel="icon" href="../images/wand.png"/>
   <link rel="shortcut icon" href="../images/wand.ico"/>
-  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700" />
-  <link rel="stylesheet" href="../css/magick.html"/>
+  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700"   />
+  <link rel="stylesheet" type="text/css" href="../css/magick.html"/>
 </head>
 <body>
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async="async" src="https://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
          style="display:block"
          data-ad-client="ca-pub-3129977114552745"
          data-ad-slot="6345125851"
@@ -57,7 +57,7 @@
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="text-center"><a href="wand-view.html#CloneWandView">CloneWandView</a> &#8226; <a href="wand-view.html#DestroyWandView">DestroyWandView</a> &#8226; <a href="wand-view.html#DuplexTransferWandViewIterator">DuplexTransferWandViewIterator</a> &#8226; <a href="wand-view.html#GetWandViewException">GetWandViewException</a> &#8226; <a href="wand-view.html#GetWandViewExtent">GetWandViewExtent</a> &#8226; <a href="wand-view.html#GetWandViewIterator">GetWandViewIterator</a> &#8226; <a href="wand-view.html#GetWandViewPixels">GetWandViewPixels</a> &#8226; <a href="wand-view.html#GetWandViewWand">GetWandViewWand</a> &#8226; <a href="wand-view.html#IsWandView">IsWandView</a> &#8226; <a href="wand-view.html#NewWandView">NewWandView</a> &#8226; <a href="wand-view.html#NewWandViewExtent">NewWandViewExtent</a> &#8226; <a href="wand-view.html#SetWandViewDescription">SetWandViewDescription</a> &#8226; <a href="wand-view.html#SetWandViewIterator">SetWandViewIterator</a> &#8226; <a href="wand-view.html#TransferWandViewIterator">TransferWandViewIterator</a> &#8226; <a href="wand-view.html#UpdateWandViewIterator">UpdateWandViewIterator</a></p>
+<p class="text-center"><a href="wand-view.html#CloneWandView">CloneWandView</a> &#8226; <a href="wand-view.html#DestroyWandView">DestroyWandView</a> &#8226; <a href="wand-view.html#DuplexTransferWandViewIterator">DuplexTransferWandViewIterator</a> &#8226; <a href="wand-view.html#GetWandViewException">GetWandViewException</a> &#8226; <a href="wand-view.html#GetWandViewExtent">GetWandViewExtent</a> &#8226; <a href="wand-view.html#GetWandViewIterator">GetWandViewIterator</a> &#8226; <a href="wand-view.html#GetWandViewPixels">GetWandViewPixels</a> &#8226; <a href="wand-view.html#GetWandViewWand">GetWandViewWand</a> &#8226; <a href="wand-view.html#IsWandView">IsWandView</a> &#8226; <a href="wand-view.html#NewWandView">NewWandView</a> &#8226; <a href="wand-view.html#NewWandViewExtent">NewWandViewExtent</a> &#8226; <a href="wand-view.html#SetWandViewDescription">SetWandViewDescription</a> &#8226; <a href="wand-view.html#SetWandViewIterator">SetWandViewIterator</a> &#8226; <a href="wand-view.html#SetWandViewThreads">SetWandViewThreads</a> &#8226; <a href="wand-view.html#TransferWandViewIterator">TransferWandViewIterator</a> &#8226; <a href="wand-view.html#UpdateWandViewIterator">UpdateWandViewIterator</a></p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickWand/wand-view_8c.html" id="CloneWandView">CloneWandView</a></h2>
 
@@ -438,6 +438,33 @@ MagickBooleanType SetWandViewIterator(WandView *destination,
 <dd> </dd>
 <dt>context</dt>
 <dd>the user defined context. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/wand-view_8c.html" id="SetWandViewThreads">SetWandViewThreads</a></h2>
+
+<p>SetWandViewThreads() sets the number of threads in a thread team.</p>
+
+<p>The format of the SetWandViewDescription method is:</p>
+
+<pre class="text">
+void SetWandViewThreads(WandView *image_view,
+  const size_t number_threads)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>image_view</dt>
+<dd>the image view. </dd>
+
+<dd> </dd>
+<dt>number_threads</dt>
+<dd>the number of threads in a thread team. </dd>
 
 <dd>  </dd>
 </dl>

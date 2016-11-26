@@ -28,14 +28,14 @@
   <link rel="canonical" href="https://www.imagemagick.org/api/blob.html"/>
   <link rel="icon" href="../images/wand.png"/>
   <link rel="shortcut icon" href="../images/wand.ico"/>
-  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700" />
-  <link rel="stylesheet" href="../css/magick.html"/>
+  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700"   />
+  <link rel="stylesheet" type="text/css" href="../css/magick.html"/>
 </head>
 <body>
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async="async" src="https://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
          style="display:block"
          data-ad-client="ca-pub-3129977114552745"
          data-ad-slot="6345125851"
@@ -57,7 +57,7 @@
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="text-center"><a href="blob.html#BlobToImage">BlobToImage</a> &#8226; <a href="blob.html#FileToBlob">FileToBlob</a> &#8226; <a href="blob.html#FileToImage">FileToImage</a> &#8226; <a href="blob.html#GetBlobProperties">GetBlobProperties</a> &#8226; <a href="blob.html#ImageToBlob">ImageToBlob</a> &#8226; <a href="blob.html#ImageToFile">ImageToFile</a> &#8226; <a href="blob.html#ImagesToBlob">ImagesToBlob</a> &#8226; <a href="blob.html#InjectImageBlob">InjectImageBlob</a> &#8226; <a href="blob.html#IsBlobExempt">IsBlobExempt</a> &#8226; <a href="blob.html#IsBlobSeekable">IsBlobSeekable</a> &#8226; <a href="blob.html#IsBlobTemporary">IsBlobTemporary</a></p>
+<p class="text-center"><a href="blob.html#BlobToImage">BlobToImage</a> &#8226; <a href="blob.html#FileToBlob">FileToBlob</a> &#8226; <a href="blob.html#FileToImage">FileToImage</a> &#8226; <a href="blob.html#GetBlobProperties">GetBlobProperties</a> &#8226; <a href="blob.html#ImageToBlob">ImageToBlob</a> &#8226; <a href="blob.html#ImageToFile">ImageToFile</a> &#8226; <a href="blob.html#ImagesToBlob">ImagesToBlob</a> &#8226; <a href="blob.html#InjectImageBlob">InjectImageBlob</a> &#8226; <a href="blob.html#IsBlobExempt">IsBlobExempt</a> &#8226; <a href="blob.html#IsBlobTemporary">IsBlobTemporary</a></p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/blob_8c.html" id="BlobToImage">BlobToImage</a></h2>
 
@@ -101,7 +101,7 @@ Image *BlobToImage(const ImageInfo *image_info,const void *blob,
 <p>The format of the FileToBlob method is:</p>
 
 <pre class="text">
-void *FileToBlob(const char *filename,const size_t extent,
+unsigned char *FileToBlob(const char *filename,const size_t extent,
   size_t *length,ExceptionInfo *exception)
 </pre>
 
@@ -188,7 +188,7 @@ const struct stat *GetBlobProperties(const Image *image)
 <p>The format of the ImageToBlob method is:</p>
 
 <pre class="text">
-void *ImageToBlob(const ImageInfo *image_info,Image *image,
+unsigned char *ImageToBlob(const ImageInfo *image_info,Image *image,
   size_t *length,ExceptionInfo *exception)
 </pre>
 
@@ -256,7 +256,7 @@ void *ImageToBlob(const ImageInfo *image_info,Image *image,
 <p>The format of the ImagesToBlob method is:</p>
 
 <pre class="text">
-void *ImagesToBlob(const ImageInfo *image_info,Image *images,
+unsigned char *ImagesToBlob(const ImageInfo *image_info,Image *images,
   size_t *length,ExceptionInfo *exception)
 </pre>
 
@@ -332,28 +332,6 @@ MagickBooleanType InjectImageBlob(const ImageInfo *image_info,
 
 <pre class="text">
  MagickBooleanType IsBlobExempt(const Image *image)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<dd>
-</dd>
-
-<dd> </dd>
-<dl class="dl-horizontal">
-<dt>image</dt>
-<dd>the image. </dd>
-
-<dd>  </dd>
-</dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/blob_8c.html" id="IsBlobSeekable">IsBlobSeekable</a></h2>
-
-<p>IsBlobSeekable() returns true if the blob is seekable.</p>
-
-<p>The format of the IsBlobSeekable method is:</p>
-
-<pre class="text">
- MagickBooleanType IsBlobSeekable(const Image *image)
 </pre>
 
 <p>A description of each parameter follows:</p>

@@ -28,14 +28,14 @@
   <link rel="canonical" href="https://www.imagemagick.org/api/resize.html"/>
   <link rel="icon" href="../images/wand.png"/>
   <link rel="shortcut icon" href="../images/wand.ico"/>
-  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700" />
-  <link rel="stylesheet" href="../css/magick.html"/>
+  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700"   />
+  <link rel="stylesheet" type="text/css" href="../css/magick.html"/>
 </head>
 <body>
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async="async" src="https://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
          style="display:block"
          data-ad-client="ca-pub-3129977114552745"
          data-ad-slot="6345125851"
@@ -104,7 +104,7 @@ Image *AdaptiveResizeImage(const Image *image,const size_t columns,
 
 <pre class="text">
 Image *InterpolativeResizeImage(const Image *image,const size_t columns,
-  const size_t rows,const PixelInterpolateMethod method,
+  const size_t rows,const InterpolatePixelMethod method,
   ExceptionInfo *exception)
 </pre>
 
@@ -143,9 +143,9 @@ Image *InterpolativeResizeImage(const Image *image,const size_t columns,
 <p>The format of the LiquidRescaleImage method is:</p>
 
 <pre class="text">
-Image *LiquidRescaleImage(const Image *image,const size_t columns,
-  const size_t rows,const double delta_x,const double rigidity,
-  ExceptionInfo *exception)
+Image *LiquidRescaleImage(const Image *image,
+  const size_t columns,const size_t rows,
+  const double delta_x,const double rigidity,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -240,7 +240,7 @@ Image *MinifyImage(const Image *image,ExceptionInfo *exception)
 
 <pre class="text">
 Image *ResampleImage(Image *image,const double x_resolution,
-  const double y_resolution,const FilterType filter,
+  const double y_resolution,const FilterTypes filter,const double blur,
   ExceptionInfo *exception)
 </pre>
 
@@ -267,8 +267,8 @@ Image *ResampleImage(Image *image,const double x_resolution,
 <dd>Image filter to use. </dd>
 
 <dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
+<dt>blur</dt>
+<dd>the blur factor where &gt; 1 is blurry, &lt; 1 is sharp. </dd>
 
 <dd>  </dd>
 </dl>
@@ -283,8 +283,9 @@ Image *ResampleImage(Image *image,const double x_resolution,
 <p>The format of the ResizeImage method is:</p>
 
 <pre class="text">
-Image *ResizeImage(Image *image,const size_t columns,const size_t rows,
-  const FilterType filter,ExceptionInfo *exception)
+Image *ResizeImage(Image *image,const size_t columns,
+  const size_t rows,const FilterTypes filter,const double blur,
+  ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -308,6 +309,10 @@ Image *ResizeImage(Image *image,const size_t columns,const size_t rows,
 <dd> </dd>
 <dt>filter</dt>
 <dd>Image filter to use. </dd>
+
+<dd> </dd>
+<dt>blur</dt>
+<dd>the blur factor where &gt; 1 is blurry, &lt; 1 is sharp.  Typically set this to 1.0. </dd>
 
 <dd> </dd>
 <dt>exception</dt>

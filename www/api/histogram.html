@@ -28,14 +28,14 @@
   <link rel="canonical" href="https://www.imagemagick.org/api/histogram.html"/>
   <link rel="icon" href="../images/wand.png"/>
   <link rel="shortcut icon" href="../images/wand.ico"/>
-  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700" />
-  <link rel="stylesheet" href="../css/magick.html"/>
+  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700"   />
+  <link rel="stylesheet" type="text/css" href="../css/magick.html"/>
 </head>
 <body>
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async="async" src="https://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
          style="display:block"
          data-ad-client="ca-pub-3129977114552745"
          data-ad-slot="6345125851"
@@ -126,13 +126,17 @@ MagickBooleanType IsHistogramImage(const Image *image,
 <p>The format of the IsPaletteImage method is:</p>
 
 <pre class="text">
-MagickBooleanType IsPaletteImage(const Image *image)
+MagickBooleanType IsPaletteImage(const Image *image,
+  ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows.</p>
 
 <dt>image</dt>
 <p>the image.</p>
+
+<dt>exception</dt>
+<p>return any errors or warnings in this structure.</p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/histogram_8c.html" id="MinMaxStretchImage">MinMaxStretchImage</a></h2>
 
@@ -149,8 +153,9 @@ MagickBooleanType IsPaletteImage(const Image *image)
 <p>The format of the MinMaxStretchImage method is:</p>
 
 <pre class="text">
-MagickBooleanType MinMaxStretchImage(Image *image,const double black,
-  const double white,const double gamma,ExceptionInfo *exception)
+MagickBooleanType MinMaxStretchImage(Image *image,
+  const ChannelType channel, const double black_adjust,
+  const double white_adjust)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -164,16 +169,12 @@ MagickBooleanType MinMaxStretchImage(Image *image,const double black,
 <dd>The image to auto-level </dd>
 
 <dd> </dd>
-<dt>black, white</dt>
-<dd> move the black / white point inward from the minimum and maximum points by this color value. </dd>
+<dt>channel</dt>
+<dd>The channels to auto-level.  If the special 'SyncChannels' flag is set, all the given channels are stretched by the same amount. </dd>
 
 <dd> </dd>
-<dt>gamma</dt>
-<dd>the gamma. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
+<dt>black_adjust, white_adjust</dt>
+<dd> Move the Black/White Point inward from the minimum and maximum points by this color value. </dd>
 
 <dd>  </dd>
 </dl>

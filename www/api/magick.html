@@ -28,14 +28,14 @@
   <link rel="canonical" href="https://www.imagemagick.org/api/magick.html"/>
   <link rel="icon" href="../images/wand.png"/>
   <link rel="shortcut icon" href="../images/wand.ico"/>
-  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700" />
-  <link rel="stylesheet" href="../css/magick.html"/>
+  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700"   />
+  <link rel="stylesheet" type="text/css" href="../css/magick.html"/>
 </head>
 <body>
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async="async" src="https://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
          style="display:block"
          data-ad-client="ca-pub-3129977114552745"
          data-ad-slot="6345125851"
@@ -57,38 +57,8 @@
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="text-center"><a href="magick.html#AcquireMagickInfo">AcquireMagickInfo</a> &#8226; <a href="magick.html#GetMagickPrecision">GetMagickPrecision</a> &#8226; <a href="magick.html#IsMagickCoreInstantiated">IsMagickCoreInstantiated</a> &#8226; <a href="magick.html#MagickCoreGenesis">MagickCoreGenesis</a> &#8226; <a href="magick.html#MagickCoreTerminus">MagickCoreTerminus</a> &#8226; <a href="magick.html#SetMagickPrecision">SetMagickPrecision</a></p>
+<p class="text-center"><a href="magick.html#GetMagickPrecision">GetMagickPrecision</a> &#8226; <a href="magick.html#IsMagickCoreInstantiated">IsMagickCoreInstantiated</a> &#8226; <a href="magick.html#MagickCoreGenesis">MagickCoreGenesis</a> &#8226; <a href="magick.html#MagickCoreTerminus">MagickCoreTerminus</a> &#8226; <a href="magick.html#SetMagickPrecision">SetMagickPrecision</a></p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/magick_8c.html" id="AcquireMagickInfo">AcquireMagickInfo</a></h2>
-
-<p>AcquireMagickInfo() allocates a MagickInfo structure and initializes the members to default values.</p>
-
-<p>The format of the AcquireMagickInfo method is:</p>
-
-<pre class="text">
-MagickInfo *AcquireMagickInfo(const char *module, const char *name,)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<dd>
-</dd>
-
-<dd> </dd>
-<dl class="dl-horizontal">
-<dt>module</dt>
-<dd>a character string that represents the module associated with the MagickInfo structure. </dd>
-
-<dd> </dd>
-<dt>name</dt>
-<dd>a character string that represents the image format associated with the MagickInfo structure. </dd>
-
-<dd> </dd>
-<dt>description</dt>
-<dd>a character string that represents the image format associated with the MagickInfo structure. </dd>
-
-<dd>  </dd>
-</dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/magick_8c.html" id="GetMagickPrecision">GetMagickPrecision</a></h2>
 
 <p>GetMagickPrecision() returns the maximum number of significant digits to be printed.</p>
@@ -101,7 +71,7 @@ int GetMagickPrecision(void)
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/magick_8c.html" id="IsMagickCoreInstantiated">IsMagickCoreInstantiated</a></h2>
 
-<p>IsMagickCoreInstantiated() returns MagickTrue if the ImageMagick environment is currently instantiated:  MagickCoreGenesis() has been called but MagickDestroy() has not.</p>
+<p>IsMagickCoreInstantiated() returns MagickTrue if the ImageMagick environment is currently instantiated--  that is, MagickCoreGenesis() has been called but MagickCoreTerminus() has not.</p>
 
 <p>The format of the IsMagickCoreInstantiated method is:</p>
 

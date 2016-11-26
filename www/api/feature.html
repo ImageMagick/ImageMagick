@@ -28,14 +28,14 @@
   <link rel="canonical" href="https://www.imagemagick.org/api/feature.html"/>
   <link rel="icon" href="../images/wand.png"/>
   <link rel="shortcut icon" href="../images/wand.ico"/>
-  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700" />
-  <link rel="stylesheet" href="../css/magick.html"/>
+  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700"   />
+  <link rel="stylesheet" type="text/css" href="../css/magick.html"/>
 </head>
 <body>
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async="async" src="https://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
          style="display:block"
          data-ad-client="ca-pub-3129977114552745"
          data-ad-slot="6345125851"
@@ -57,7 +57,7 @@
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="text-center"><a href="feature.html#CannyEdgeImage">CannyEdgeImage</a> &#8226; <a href="feature.html#GetImageFeatures">GetImageFeatures</a> &#8226; <a href="feature.html#Use HoughLineImage">Use HoughLineImage</a> &#8226; <a href="feature.html#MeanShiftImage">MeanShiftImage</a></p>
+<p class="text-center"><a href="feature.html#CannyEdgeImage">CannyEdgeImage</a> &#8226; <a href="feature.html#GetImageChannelFeatures">GetImageChannelFeatures</a> &#8226; <a href="feature.html#Use HoughLineImage">Use HoughLineImage</a> &#8226; <a href="feature.html#MeanShiftImage">MeanShiftImage</a></p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/feature_8c.html" id="CannyEdgeImage">CannyEdgeImage</a></h2>
 
@@ -90,7 +90,7 @@ Image *CannyEdgeImage(const Image *image,const double radius,
 <dd>the sigma of the gaussian smoothing filter. </dd>
 
 <dd> </dd>
-<dt>lower_precent</dt>
+<dt>lower_percent</dt>
 <dd>percentage of edge pixels in the lower threshold. </dd>
 
 <dd> </dd>
@@ -103,21 +103,21 @@ Image *CannyEdgeImage(const Image *image,const double radius,
 
 <dd>  </dd>
 </dl>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/feature_8c.html" id="GetImageFeatures">GetImageFeatures</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/feature_8c.html" id="GetImageChannelFeatures">GetImageChannelFeatures</a></h2>
 
-<p>GetImageFeatures() returns features for each channel in the image in each of four directions (horizontal, vertical, left and right diagonals) for the specified distance.  The features include the angular second moment, contrast, correlation, sum of squares: variance, inverse difference moment, sum average, sum varience, sum entropy, entropy, difference variance,  difference entropy, information measures of correlation 1, information measures of correlation 2, and maximum correlation coefficient.  You can access the red channel contrast, for example, like this:</p>
+<p>GetImageChannelFeatures() returns features for each channel in the image in each of four directions (horizontal, vertical, left and right diagonals) for the specified distance.  The features include the angular second moment, contrast, correlation, sum of squares: variance, inverse difference moment, sum average, sum varience, sum entropy, entropy, difference variance,  difference entropy, information measures of correlation 1, information measures of correlation 2, and maximum correlation coefficient.  You can access the red channel contrast, for example, like this:</p>
 
 <pre class="text">
-channel_features=GetImageFeatures(image,1,exception);
-contrast=channel_features[RedPixelChannel].contrast[0];
+channel_features=GetImageChannelFeatures(image,1,exception);
+contrast=channel_features[RedChannel].contrast[0];
 </pre>
 
 <p>Use MagickRelinquishMemory() to free the features buffer.</p>
 
-<p>The format of the GetImageFeatures method is:</p>
+<p>The format of the GetImageChannelFeatures method is:</p>
 
 <pre class="text">
-ChannelFeatures *GetImageFeatures(const Image *image,
+ChannelFeatures *GetImageChannelFeatures(const Image *image,
   const size_t distance,ExceptionInfo *exception)
 </pre>
 
@@ -178,7 +178,7 @@ Image *HoughLineImage(const Image *image,const size_t width,
 </dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/feature_8c.html" id="MeanShiftImage">MeanShiftImage</a></h2>
 
-<p>MeanShiftImage() delineate arbitrarily shaped clusters in the image. For each pixel, it visits all the pixels in the neighborhood specified by the window centered at the pixel and excludes those that are outside the radius=(window-1)/2 surrounding the pixel. From those pixels, it finds those that are within the specified color distance from the current mean, and computes a new x,y centroid from those coordinates and a new mean. This new x,y centroid is used as the center for a new window. This process iterates until it converges and the final mean is replaces the (original window center) pixel value. It repeats this process for the next pixel, etc., until it processes all pixels in the image. Results are typically better with colorspaces other than sRGB. We recommend YIQ, YUV or YCbCr.</p>
+<p>MeanShiftImage() delineate arbitrarily shaped clusters in the image. For each pixel, it visits all the pixels in the neighborhood specified by the window centered at the pixel and excludes those that are outside the radius=(window-1)/2 surrounding the pixel. From those pixels, it finds those that are within the specified color distance from the current mean, and computes a new x,y centroid from those coordinates and a new mean. This new x,y centroid is used as the center for a new window. This process iterates until it converges and the final mean is replaces the (original window center) pixel value. It repeats this process for the next pixel, etc.,  until it processes all pixels in the image. Results are typically better with colorspaces other than sRGB. We recommend YIQ, YUV or YCbCr.</p>
 
 <p>The format of the MeanShiftImage method is:</p>
 

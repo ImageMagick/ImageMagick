@@ -28,14 +28,14 @@
   <link rel="canonical" href="https://www.imagemagick.org/api/magick-property.html"/>
   <link rel="icon" href="../images/wand.png"/>
   <link rel="shortcut icon" href="../images/wand.ico"/>
-  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700" />
-  <link rel="stylesheet" href="../css/magick.html"/>
+  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700"   />
+  <link rel="stylesheet" type="text/css" href="../css/magick.html"/>
 </head>
 <body>
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async="async" src="https://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
          style="display:block"
          data-ad-client="ca-pub-3129977114552745"
          data-ad-slot="6345125851"
@@ -563,7 +563,7 @@ InterlaceType MagickGetInterlaceScheme(MagickWand *wand)
 <p>The format of the MagickGetInterpolateMethod method is:</p>
 
 <pre class="text">
-PixelInterpolateMethod MagickGetInterpolateMethod(MagickWand *wand)
+InterpolatePixelMethod MagickGetInterpolateMethod(MagickWand *wand)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -611,7 +611,7 @@ char *MagickGetOption(MagickWand *wand,const char *key)
 <p>The format of the MagickGetOptions method is:</p>
 
 <pre class="text">
-char *MagickGetOptions(MagickWand *wand,const char *pattern,
+char *MagickGetOptions(MagickWand *wand,const char *pattern,,
   size_t *number_options)
 </pre>
 
@@ -1867,7 +1867,7 @@ MagickBooleanType MagickSetType(MagickWand *wand,
 
 <dd> </dd>
 <dt>image_type</dt>
-<dd>the image type:   UndefinedType, BilevelType, GrayscaleType, GrayscaleAlphaType, PaletteType, PaletteAlphaType, TrueColorType, TrueColorAlphaType, ColorSeparationType, ColorSeparationAlphaType, or OptimizeType. </dd>
+<dd>the image type:   UndefinedType, BilevelType, GrayscaleType, GrayscaleMatteType, PaletteType, PaletteMatteType, TrueColorType, TrueColorMatteType, ColorSeparationType, ColorSeparationMatteType, or OptimizeType. </dd>
 
 <dd>  </dd>
 </dl>

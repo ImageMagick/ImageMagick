@@ -28,14 +28,14 @@
   <link rel="canonical" href="https://www.imagemagick.org/api/transform.html"/>
   <link rel="icon" href="../images/wand.png"/>
   <link rel="shortcut icon" href="../images/wand.ico"/>
-  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700" />
-  <link rel="stylesheet" href="../css/magick.html"/>
+  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700"   />
+  <link rel="stylesheet" type="text/css" href="../css/magick.html"/>
 </head>
 <body>
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async="async" src="https://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
          style="display:block"
          data-ad-client="ca-pub-3129977114552745"
          data-ad-slot="6345125851"
@@ -57,7 +57,7 @@
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="text-center"><a href="transform.html#AutoOrientImage">AutoOrientImage</a> &#8226; <a href="transform.html#ChopImage">ChopImage</a> &#8226; <a href="transform.html#CropImage">CropImage</a> &#8226; <a href="transform.html#CropImageToTiles">CropImageToTiles</a> &#8226; <a href="transform.html#ExcerptImage">ExcerptImage</a> &#8226; <a href="transform.html#ExtentImage">ExtentImage</a> &#8226; <a href="transform.html#FlipImage">FlipImage</a> &#8226; <a href="transform.html#FlopImage">FlopImage</a> &#8226; <a href="transform.html#RollImage">RollImage</a> &#8226; <a href="transform.html#ShaveImage">ShaveImage</a> &#8226; <a href="transform.html#SpliceImage">SpliceImage</a> &#8226; <a href="transform.html#TransformImage">TransformImage</a> &#8226; <a href="transform.html#TransposeImage">TransposeImage</a> &#8226; <a href="transform.html#TransverseImage">TransverseImage</a> &#8226; <a href="transform.html#TrimImage">TrimImage</a></p>
+<p class="text-center"><a href="transform.html#AutoOrientImage">AutoOrientImage</a> &#8226; <a href="transform.html#ChopImage">ChopImage</a> &#8226; <a href="transform.html#CropImage">CropImage</a> &#8226; <a href="transform.html#CropImageToTiles">CropImageToTiles</a> &#8226; <a href="transform.html#ExcerptImage">ExcerptImage</a> &#8226; <a href="transform.html#ExtentImage">ExtentImage</a> &#8226; <a href="transform.html#FlipImage">FlipImage</a> &#8226; <a href="transform.html#FlopImage">FlopImage</a> &#8226; <a href="transform.html#RollImage">RollImage</a> &#8226; <a href="transform.html#ShaveImage">ShaveImage</a> &#8226; <a href="transform.html#SpliceImage">SpliceImage</a> &#8226; <a href="transform.html#TransformImage">TransformImage</a> &#8226; <a href="transform.html#to CropImageToTiles">to CropImageToTiles</a> &#8226; <a href="transform.html#TransformImages">TransformImages</a> &#8226; <a href="transform.html#TransposeImage">TransposeImage</a> &#8226; <a href="transform.html#TransverseImage">TransverseImage</a> &#8226; <a href="transform.html#TrimImage">TrimImage</a></p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/transform_8c.html" id="AutoOrientImage">AutoOrientImage</a></h2>
 
@@ -399,17 +399,11 @@ Image *SpliceImage(const Image *image,const RectangleInfo *geometry,
 
 <p>This should only be used for single images.</p>
 
-<p>This function destroys what it assumes to be a single image list. If the input image is part of a larger list, all other images in that list will be simply 'lost', not destroyed.</p>
-
-<p>Also if the crop generates a list of images only the first image is resized. And finally if the crop succeeds and the resize failed, you will get a cropped image, as well as a 'false' or 'failed' report.</p>
-
-<p>This function and should probably be deprecated in favor of direct calls to CropImageToTiles() or ResizeImage(), as appropriate.</p>
-
 <p>The format of the TransformImage method is:</p>
 
 <pre class="text">
 MagickBooleanType TransformImage(Image **image,const char *crop_geometry,
-  const char *image_geometry,ExceptionInfo *exception)
+  const char *image_geometry)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -430,9 +424,40 @@ MagickBooleanType TransformImage(Image **image,const char *crop_geometry,
 <dt>image_geometry</dt>
 <dd>An image geometry string.  This geometry defines the final size of the image. </dd>
 
+<dd>  </dd>
+</dl>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/transform_8c.html" id="to_CropImageToTiles">to CropImageToTiles</a></h2>
+
+<p>to CropImageToTiles() or ResizeImage(), as appropriate.</p>
+
+<h2><a href="http://www.imagemagick.org/api/MagickCore/transform_8c.html" id="TransformImages">TransformImages</a></h2>
+
+<p>TransformImages() calls TransformImage() on each image of a sequence.</p>
+
+<p>The format of the TransformImage method is:</p>
+
+<pre class="text">
+MagickBooleanType TransformImages(Image **image,
+  const char *crop_geometry,const char *image_geometry)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
 <dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
+<dl class="dl-horizontal">
+<dt>image</dt>
+<dd>the image The transformed image is returned as this parameter. </dd>
+
+<dd> </dd>
+<dt>crop_geometry</dt>
+<dd>A crop geometry string.  This geometry defines a subregion of the image to crop. </dd>
+
+<dd> </dd>
+<dt>image_geometry</dt>
+<dd>An image geometry string.  This geometry defines the final size of the image. </dd>
 
 <dd>  </dd>
 </dl>

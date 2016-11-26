@@ -28,14 +28,14 @@
   <link rel="canonical" href="https://www.imagemagick.org/api/draw.html"/>
   <link rel="icon" href="../images/wand.png"/>
   <link rel="shortcut icon" href="../images/wand.ico"/>
-  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700" />
-  <link rel="stylesheet" href="../css/magick.html"/>
+  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700"   />
+  <link rel="stylesheet" type="text/css" href="../css/magick.html"/>
 </head>
 <body>
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async="async" src="https://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
          style="display:block"
          data-ad-client="ca-pub-3129977114552745"
          data-ad-slot="6345125851"
@@ -126,7 +126,7 @@ DrawInfo *DestroyDrawInfo(DrawInfo *draw_info)
 
 <pre class="text">
 MagickBooleanType DrawAffineImage(Image *image,const Image *source,
-  const AffineMatrix *affine,ExceptionInfo *exception)
+  const AffineMatrix *affine)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -147,10 +147,6 @@ MagickBooleanType DrawAffineImage(Image *image,const Image *source,
 <dt>affine</dt>
 <dd>the affine transform. </dd>
 
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
 <dd>  </dd>
 </dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/draw_8c.html" id="DrawClipPath">DrawClipPath</a></h2>
@@ -161,7 +157,7 @@ MagickBooleanType DrawAffineImage(Image *image,const Image *source,
 
 <pre class="text">
 MagickBooleanType DrawClipPath(Image *image,const DrawInfo *draw_info,
-  const char *name,ExceptionInfo *exception)
+  const char *name)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -182,10 +178,6 @@ MagickBooleanType DrawClipPath(Image *image,const DrawInfo *draw_info,
 <dt>name</dt>
 <dd>the name of the clip path. </dd>
 
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
 <dd>  </dd>
 </dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/draw_8c.html" id="DrawImage">DrawImage</a></h2>
@@ -195,8 +187,7 @@ MagickBooleanType DrawClipPath(Image *image,const DrawInfo *draw_info,
 <p>The format of the DrawImage method is:</p>
 
 <pre class="text">
-MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
-  ExceptionInfo *exception)
+MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -212,10 +203,6 @@ MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
 <dd> </dd>
 <dt>draw_info</dt>
 <dd>the draw info. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
 
 <dd>  </dd>
 </dl>
@@ -227,7 +214,7 @@ MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
 
 <pre class="text">
 MagickBooleanType DrawGradientImage(Image *image,
-  const DrawInfo *draw_info,ExceptionInfo *exception)
+  const DrawInfo *draw_info)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -241,12 +228,8 @@ MagickBooleanType DrawGradientImage(Image *image,
 <dd>the image. </dd>
 
 <dd> </dd>
-<dt>draw_info</dt>
+<dt>_info</dt>
 <dd>the draw info. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
 
 <dd>  </dd>
 </dl>
@@ -258,7 +241,7 @@ MagickBooleanType DrawGradientImage(Image *image,
 
 <pre class="text">
 MagickBooleanType DrawPatternPath(Image *image,const DrawInfo *draw_info,
-  const char *name,Image **pattern,ExceptionInfo *exception)
+  const char *name,Image **pattern)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -283,10 +266,6 @@ MagickBooleanType DrawPatternPath(Image *image,const DrawInfo *draw_info,
 <dt>image</dt>
 <dd>the image. </dd>
 
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
-
 <dd>  </dd>
 </dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/draw_8c.html" id="DrawPrimitive">DrawPrimitive</a></h2>
@@ -297,7 +276,7 @@ MagickBooleanType DrawPatternPath(Image *image,const DrawInfo *draw_info,
 
 <pre class="text">
 MagickBooleanType DrawPrimitive(Image *image,const DrawInfo *draw_info,
-  PrimitiveInfo *primitive_info,ExceptionInfo *exception)
+  PrimitiveInfo *primitive_info)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -317,10 +296,6 @@ MagickBooleanType DrawPrimitive(Image *image,const DrawInfo *draw_info,
 <dd> </dd>
 <dt>primitive_info</dt>
 <dd>Specifies a pointer to a PrimitiveInfo structure. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
 
 <dd>  </dd>
 </dl>

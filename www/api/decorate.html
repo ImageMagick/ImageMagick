@@ -28,14 +28,14 @@
   <link rel="canonical" href="https://www.imagemagick.org/api/decorate.html"/>
   <link rel="icon" href="../images/wand.png"/>
   <link rel="shortcut icon" href="../images/wand.ico"/>
-  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700" />
-  <link rel="stylesheet" href="../css/magick.html"/>
+  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700"   />
+  <link rel="stylesheet" type="text/css" href="../css/magick.html"/>
 </head>
 <body>
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async="async" src="https://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
          style="display:block"
          data-ad-client="ca-pub-3129977114552745"
          data-ad-slot="6345125851"
@@ -67,7 +67,7 @@
 
 <pre class="text">
 Image *BorderImage(const Image *image,const RectangleInfo *border_info,
-  const CompositeOperator compose,ExceptionInfo *exception)
+  ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -82,11 +82,7 @@ Image *BorderImage(const Image *image,const RectangleInfo *border_info,
 
 <dd> </dd>
 <dt>border_info</dt>
-<dd> define the width and height of the border. </dd>
-
-<dd> </dd>
-<dt>compose</dt>
-<dd> the composite operator. </dd>
+<dd> Define the width and height of the border. </dd>
 
 <dd> </dd>
 <dt>exception</dt>
@@ -96,13 +92,13 @@ Image *BorderImage(const Image *image,const RectangleInfo *border_info,
 </dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/decorate_8c.html" id="FrameImage">FrameImage</a></h2>
 
-<p>FrameImage() adds a simulated three-dimensional border around the image. The color of the border is defined by the alpha_color member of image. Members width and height of frame_info specify the border width of the vertical and horizontal sides of the frame.  Members inner and outer indicate the width of the inner and outer shadows of the frame.</p>
+<p>FrameImage() adds a simulated three-dimensional border around the image. The color of the border is defined by the matte_color member of image. Members width and height of frame_info specify the border width of the vertical and horizontal sides of the frame.  Members inner and outer indicate the width of the inner and outer shadows of the frame.</p>
 
 <p>The format of the FrameImage method is:</p>
 
 <pre class="text">
 Image *FrameImage(const Image *image,const FrameInfo *frame_info,
-  const CompositeOperator compose,ExceptionInfo *exception)
+  ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -120,10 +116,6 @@ Image *FrameImage(const Image *image,const FrameInfo *frame_info,
 <dd>Define the width and height of the frame and its bevels. </dd>
 
 <dd> </dd>
-<dt>compose</dt>
-<dd>the composite operator. </dd>
-
-<dd> </dd>
 <dt>exception</dt>
 <dd>return any errors or warnings in this structure. </dd>
 
@@ -137,8 +129,7 @@ Image *FrameImage(const Image *image,const FrameInfo *frame_info,
 
 <pre class="text">
 MagickBooleanType RaiseImage(const Image *image,
-  const RectangleInfo *raise_info,const MagickBooleanType raise,
-  ExceptionInfo *exception)
+  const RectangleInfo *raise_info,const MagickBooleanType raise)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -158,10 +149,6 @@ MagickBooleanType RaiseImage(const Image *image,
 <dd> </dd>
 <dt>raise</dt>
 <dd>A value other than zero creates a 3-D raise effect, otherwise it has a lowered effect. </dd>
-
-<dd> </dd>
-<dt>exception</dt>
-<dd>return any errors or warnings in this structure. </dd>
 
 <dd>  </dd>
 </dl>
