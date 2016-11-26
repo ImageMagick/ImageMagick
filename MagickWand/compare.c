@@ -128,6 +128,7 @@ static MagickBooleanType CompareUsage(void)
       "-quality value       JPEG/MIFF/PNG compression level",
       "-quiet               suppress all warning messages",
       "-quantize colorspace reduce colors in this colorspace",
+      "-read-mask filename  associate a read mask with the image",
       "-regard-warnings     pay attention to warning messages",
       "-respect-parentheses settings remain in effect until parenthesis boundary",
       "-sampling-factor geometry",
@@ -348,10 +349,11 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowCompareException(OptionError,"MissingArgument",option);
-            type=ParseCommandOption(MagickAlphaChannelOptions,MagickFalse,argv[i]);
+            type=ParseCommandOption(MagickAlphaChannelOptions,MagickFalse,
+              argv[i]);
             if (type < 0)
-              ThrowCompareException(OptionError,"UnrecognizedAlphaChannelOption",
-                argv[i]);
+              ThrowCompareException(OptionError,
+                "UnrecognizedAlphaChannelOption",argv[i]);
             break;
           }
         if (LocaleCompare("authenticate",option+1) == 0)
@@ -774,6 +776,15 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
       }
       case 'r':
       {
+        if (LocaleCompare("read-mask",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowCompareException(OptionError,"MissingArgument",option);
+            break;
+          }
         if (LocaleCompare("regard-warnings",option+1) == 0)
           break;
         if (LocaleNCompare("respect-parentheses",option+1,17) == 0)

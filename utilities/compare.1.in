@@ -40,6 +40,7 @@ Image Settings:
   \-quality value       JPEG/MIFF/PNG compression level
   \-quiet               suppress all warning messages
   \-quantize colorspace reduce colors in this colorspace
+  \-read-mask filename  associate a read mask with the image
   \-regard-warnings     pay attention to warning messages
   \-respect-parentheses settings remain in effect until parenthesis boundary
   \-sampling-factor geometry
