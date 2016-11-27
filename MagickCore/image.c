@@ -576,7 +576,7 @@ MagickExport Image *AppendImages(const Image *images,
       GetPixelInfo(next,&pixel);
       for (x=0; x < (ssize_t) next->columns; x++)
       {
-        if (GetPixelReadMask(next,p) == 0)
+        if (GetPixelWriteMask(next,p) == QuantumRange)
           {
             SetPixelBackgoundColor(append_image,q);
             p+=GetPixelChannels(next);
@@ -1818,7 +1818,7 @@ MagickExport MagickBooleanType IsHighDynamicRangeImage(const Image *image,
       register ssize_t
         i;
 
-      if (GetPixelReadMask(image,p) == 0)
+      if (GetPixelWriteMask(image,p) == QuantumRange)
         {
           p+=GetPixelChannels(image);
           continue;
@@ -2970,7 +2970,7 @@ MagickExport MagickBooleanType SetImageAlpha(Image *image,const Quantum alpha,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if (GetPixelReadMask(image,q) != 0)
+      if (GetPixelWriteMask(image,q) != QuantumRange)
         SetPixelAlpha(image,alpha,q);
       q+=GetPixelChannels(image);
     }

@@ -124,6 +124,7 @@ static MagickBooleanType CompareUsage(void)
       "                     de-emphasize pixel differences with this color",
       "-metric type         measure differences between images with this metric",
       "-monitor             monitor progress",
+      "-negate              replace every pixel with its complementary color ",
       "-profile filename    add, delete, or apply an image profile",
       "-quality value       JPEG/MIFF/PNG compression level",
       "-quiet               suppress all warning messages",
@@ -726,6 +727,12 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
             break;
           }
         if (LocaleCompare("monitor",option+1) == 0)
+          break;
+        ThrowCompareException(OptionError,"UnrecognizedOption",option)
+      }
+      case 'n':
+      {
+        if (LocaleCompare("negate",option+1) == 0)
           break;
         ThrowCompareException(OptionError,"UnrecognizedOption",option)
       }
