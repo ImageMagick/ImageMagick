@@ -139,6 +139,7 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
     *artifact;
 
   Image
+    *clone_image,
     *difference_image,
     *highlight_image;
 
@@ -147,7 +148,8 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
 
   PixelInfo
     highlight,
-    lowlight;
+    lowlight,
+    masklight;
 
   RectangleInfo
     geometry;
@@ -178,7 +180,12 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
   SetGeometry(image,&geometry);
   geometry.width=columns;
   geometry.height=rows;
-  difference_image=ExtentImage(image,&geometry,exception);
+  clone_image=CloneImage(image,0,0,MagickTrue,exception);
+  if (clone_image == (Image *) NULL)
+    return((Image *) NULL);
+  (void) SetImageMask(clone_image,ReadPixelMask,(Image *) NULL,exception);
+  difference_image=ExtentImage(clone_image,&geometry,exception);
+  clone_image=DestroyImage(clone_image);
   if (difference_image == (Image *) NULL)
     return((Image *) NULL);
   (void) SetImageAlphaChannel(difference_image,OpaqueAlphaChannel,exception);
@@ -188,6 +195,7 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
       difference_image=DestroyImage(difference_image);
       return((Image *) NULL);
     }
+  (void) SetImageMask(highlight_image,ReadPixelMask,(Image *) NULL,exception);
   status=SetImageStorageClass(highlight_image,DirectClass,exception);
   if (status == MagickFalse)
     {
@@ -195,8 +203,6 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
       highlight_image=DestroyImage(highlight_image);
       return((Image *) NULL);
     }
-  (void) SetImageMask(difference_image,ReadPixelMask,(Image *) NULL,exception);
-  (void) SetImageMask(highlight_image,ReadPixelMask,(Image *) NULL,exception);
   (void) SetImageAlphaChannel(highlight_image,OpaqueAlphaChannel,exception);
   (void) QueryColorCompliance("#f1001ecc",AllCompliance,&highlight,exception);
   artifact=GetImageArtifact(image,"highlight-color");
@@ -206,6 +212,8 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
   artifact=GetImageArtifact(image,"lowlight-color");
   if (artifact != (const char *) NULL)
     (void) QueryColorCompliance(artifact,AllCompliance,&lowlight,exception);
+  masklight=lowlight;
+  masklight.alpha=(MagickRealType) TransparentAlpha;
   /*
     Generate difference image.
   */
@@ -258,7 +266,7 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
 
       if (GetPixelReadMask(image,p) == 0)
         {
-          SetPixelViaPixelInfo(highlight_image,&lowlight,r);
+          SetPixelViaPixelInfo(highlight_image,&masklight,r);
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(reconstruct_image);
           r+=GetPixelChannels(highlight_image);
