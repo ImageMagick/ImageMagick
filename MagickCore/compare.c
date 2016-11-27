@@ -195,6 +195,8 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
       highlight_image=DestroyImage(highlight_image);
       return((Image *) NULL);
     }
+  (void) SetImageMask(difference_image,ReadPixelMask,(Image *) NULL,exception);
+  (void) SetImageMask(highlight_image,ReadPixelMask,(Image *) NULL,exception);
   (void) SetImageAlphaChannel(highlight_image,OpaqueAlphaChannel,exception);
   (void) QueryColorCompliance("#f1001ecc",AllCompliance,&highlight,exception);
   artifact=GetImageArtifact(image,"highlight-color");
