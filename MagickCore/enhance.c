@@ -3317,6 +3317,11 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate,
         green,
         red;
 
+      if (GetPixelReadMask(image,q) == 0)
+        {
+          q+=GetPixelChannels(image);
+          continue;
+        }
       red=(double) GetPixelRed(image,q);
       green=(double) GetPixelGreen(image,q);
       blue=(double) GetPixelBlue(image,q);
