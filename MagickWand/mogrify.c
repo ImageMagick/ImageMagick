@@ -7894,100 +7894,113 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
           }
         if (LocaleCompare("composite",option+1) == 0)
           {
-            const char
-              *value;
+            CompositeOperator
+              compose;
 
-            Image
-              *mask_image,
-              *composite_image,
-              *image;
+            const char*
+              value;
 
             MagickBooleanType
               clip_to_self;
 
+            Image
+              *mask_image,
+              *new_images,
+              *source_image;
+
             RectangleInfo
               geometry;
 
-            (void) SyncImagesSettings(mogrify_info,*images,exception);
-            value=GetImageOption(mogrify_info,"compose:clip-to-self");
+            /* Compose value from "-compose" option only */
+            value=GetImageOption(image_info,"compose");
+            if (value == (const char *) NULL)
+              compose=OverCompositeOp;  /* use Over not source_image->compose */
+            else
+              compose=(CompositeOperator) ParseCommandOption(
+                MagickComposeOptions,MagickFalse,value);
+
+            /* Get "clip-to-self" expert setting (false is normal) */
+            value=GetImageOption(image_info,"compose:clip-to-self");
             if (value == (const char *) NULL)
               clip_to_self=MagickTrue;
             else
-              clip_to_self=IsStringTrue(GetImageOption(mogrify_info,
+              clip_to_self=IsStringTrue(GetImageOption(image_info,
                 "compose:clip-to-self")); /* if this is true */
-            if (clip_to_self == MagickFalse) /* or */
-              clip_to_self=IsStringFalse(GetImageOption(mogrify_info,
-                "compose:outside-overlay"));
-            image=RemoveFirstImageFromList(images);
-            composite_image=RemoveFirstImageFromList(images);
-            if (composite_image == (Image *) NULL)
-              {
-                status=MagickFalse;
-                break;
-              }
-            if (composite_image->geometry != (char *) NULL)
+            value=GetImageOption(image_info,"compose:outside-overlay");
+            if (value != (const char *) NULL) {   /* or this false */
+              /* FUTURE: depreciate warning for "compose:outside-overlay"*/
+              clip_to_self=IsStringFalse(value);
+            }
+
+            new_images=RemoveFirstImageFromList(images);
+            source_image=RemoveFirstImageFromList(images);
+            if (source_image == (Image *) NULL)
+              break; /* FUTURE - produce Exception, rather than silent fail */
+
+            /* FUTURE: this should not be here! - should be part of -geometry */
+            if (source_image->geometry != (char *) NULL)
               {
                 RectangleInfo
                   resize_geometry;
 
-                (void) ParseRegionGeometry(composite_image,
-                  composite_image->geometry,&resize_geometry,exception);
-                if ((composite_image->columns != resize_geometry.width) ||
-                    (composite_image->rows != resize_geometry.height))
+                (void) ParseRegionGeometry(source_image,source_image->geometry,
+                  &resize_geometry,exception);
+                if ((source_image->columns != resize_geometry.width) ||
+                    (source_image->rows != resize_geometry.height))
                   {
                     Image
                       *resize_image;
 
-                    resize_image=ResizeImage(composite_image,
-                      resize_geometry.width,resize_geometry.height,
-                      composite_image->filter,exception);
+                    resize_image=ResizeImage(source_image,resize_geometry.width,
+                      resize_geometry.height,source_image->filter,exception);
                     if (resize_image != (Image *) NULL)
                       {
-                        composite_image=DestroyImage(composite_image);
-                        composite_image=resize_image;
+                        source_image=DestroyImage(source_image);
+                        source_image=resize_image;
                       }
                   }
               }
-            SetGeometry(composite_image,&geometry);
-            (void) ParseAbsoluteGeometry(composite_image->geometry,&geometry);
-            GravityAdjustGeometry(image->columns,image->rows,image->gravity,
-              &geometry);
+            SetGeometry(source_image,&geometry);
+            (void) ParseAbsoluteGeometry(source_image->geometry,&geometry);
+            GravityAdjustGeometry(new_images->columns,new_images->rows,
+              new_images->gravity,&geometry);
             mask_image=RemoveFirstImageFromList(images);
             if (mask_image == (Image *) NULL)
-              (void) CompositeImage(image,composite_image,image->compose,
+              status&=CompositeImage(new_images,source_image,compose,
                 clip_to_self,geometry.x,geometry.y,exception);
             else
               {
-                if ((image->compose != DisplaceCompositeOp) &&
-                    (image->compose != DistortCompositeOp))
+                if ((compose == DisplaceCompositeOp) ||
+                    (compose == DistortCompositeOp))
                   {
-                    status&=CompositeImage(composite_image,mask_image,
+                    status&=CompositeImage(source_image,mask_image,
                       CopyGreenCompositeOp,MagickTrue,0,0,exception);
-                    (void) CompositeImage(image,composite_image,image->compose,
+                    status&=CompositeImage(new_images,source_image,compose,
                       clip_to_self,geometry.x,geometry.y,exception);
                   }
-                 else
+                else
                   {
                     Image
                       *clone_image;
 
-                    clone_image=CloneImage(image,0,0,MagickTrue,exception);
+                    clone_image=CloneImage(new_images,0,0,MagickTrue,exception);
                     if (clone_image == (Image *) NULL)
                       break;
-                    (void) CompositeImage(image,composite_image,image->compose,
+                    status&=CompositeImage(new_images,source_image,compose,
                       clip_to_self,geometry.x,geometry.y,exception);
-                    status&=CompositeImage(image,mask_image,
+                    status&=CompositeImage(new_images,mask_image,
                       CopyAlphaCompositeOp,MagickTrue,0,0,exception);
-                    status&=CompositeImage(clone_image,image,OverCompositeOp,
-                      clip_to_self,0,0,exception);
-                    image=DestroyImage(image);
-                    image=clone_image;
+                    status&=CompositeImage(clone_image,new_images,
+                      OverCompositeOp,clip_to_self,0,0,exception);
+                    new_images=DestroyImage(new_images);
+                    new_images=clone_image;
                   }
                 mask_image=DestroyImage(mask_image);
               }
-            composite_image=DestroyImage(composite_image);
+            source_image=DestroyImage(source_image);
             *images=DestroyImageList(*images);
-            *images=image;
+            *images=new_images;
+
             break;
           }
         if (LocaleCompare("copy",option+1) == 0)
