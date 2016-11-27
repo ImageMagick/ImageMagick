@@ -166,6 +166,7 @@ MagickExport Image *CompareImageChannels(Image *image,
     *artifact;
 
   Image
+    *clone_image,
     *difference_image,
     *highlight_image;
 
@@ -201,9 +202,14 @@ MagickExport Image *CompareImageChannels(Image *image,
     distortion,exception);
   if (status == MagickFalse)
     return((Image *) NULL);
-  difference_image=CloneImage(image,0,0,MagickTrue,exception);
+  clone_image=CloneImage(image,0,0,MagickTrue,exception);
+  if (clone_image == (Image *) NULL)
+    return((Image *) NULL);
+  difference_image=CloneImage(clone_image,0,0,MagickTrue,exception);
+  clone_image=DestroyImage(clone_image);
   if (difference_image == (Image *) NULL)
     return((Image *) NULL);
+  (void) SetImageMask(difference_image,(Image *) NULL);
   (void) SetImageAlphaChannel(difference_image,OpaqueAlphaChannel);
   rows=MagickMax(image->rows,reconstruct_image->rows);
   columns=MagickMax(image->columns,reconstruct_image->columns);
@@ -220,8 +226,6 @@ MagickExport Image *CompareImageChannels(Image *image,
       highlight_image=DestroyImage(highlight_image);
       return((Image *) NULL);
     }
-  (void) SetImageAlphaChannel(highlight_image,OpaqueAlphaChannel);
-  (void) SetImageMask(difference_image,(Image *) NULL);
   (void) SetImageMask(highlight_image,(Image *) NULL);
   (void) QueryMagickColor("#f1001ecc",&highlight,exception);
   artifact=GetImageArtifact(image,"highlight-color");
