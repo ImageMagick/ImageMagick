@@ -4571,8 +4571,8 @@ static Image* ComputeRotationalBlurImage(const Image *image,MagickCLEnv clEnv,
   if (filteredImageBuffer == (cl_mem) NULL)
     goto cleanup;
 
-  blurCenter.s[0]=(float) (image->columns-1)/2.0;
-  blurCenter.s[1]=(float) (image->rows-1)/2.0;
+  blurCenter.x=(float) (image->columns-1)/2.0;
+  blurCenter.y=(float) (image->rows-1)/2.0;
   blurRadius=hypot(blurCenter.x,blurCenter.y);
   cossin_theta_size=(unsigned int) fabs(4.0*DegreesToRadians(angle)*sqrt(
     (double) blurRadius)+2UL);

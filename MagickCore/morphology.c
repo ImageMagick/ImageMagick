@@ -156,8 +156,8 @@ static inline KernelInfo *LastKernelInfo(KernelInfo *kernel)
 %  shape.  However at least one non-nan value must be provided for correct
 %  working of a kernel.
 %
-%  The returned kernel should be freed using the DestroyKernelInfo method when
-%  you are finished with it.  Do not free this memory yourself.
+%  The returned kernel should be freed using the DestroyKernelInfo() when you
+%  are finished with it.  Do not free this memory yourself.
 %
 %  Input kernel defintion strings can consist of any of three types.
 %
@@ -551,7 +551,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+     A c q u i r e K e r n e l B u i l t I n                                 %
+%     A c q u i r e K e r n e l B u i l t I n                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -2712,7 +2712,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                 (morphology_traits == UndefinedPixelTrait))
               continue;
             if (((traits & CopyPixelTrait) != 0) ||
-                (GetPixelWriteMask(image,p+center) == QuantumRange))
+                (GetPixelReadMask(image,p+center) == 0))
               {
                 SetPixelChannel(morphology_image,channel,p[center+i],q);
                 continue;
@@ -2863,7 +2863,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
             (morphology_traits == UndefinedPixelTrait))
           continue;
         if (((traits & CopyPixelTrait) != 0) ||
-            (GetPixelWriteMask(image,p+center) == QuantumRange))
+            (GetPixelReadMask(image,p+center) == 0))
           {
             SetPixelChannel(morphology_image,channel,p[center+i],q);
             continue;
@@ -3344,7 +3344,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
         if (traits == UndefinedPixelTrait)
           continue;
         if (((traits & CopyPixelTrait) != 0) ||
-            (GetPixelWriteMask(image,p+center) == QuantumRange))
+            (GetPixelReadMask(image,p+center) == 0))
           continue;
         pixels=p;
         pixel=(double) QuantumRange;
@@ -3505,7 +3505,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
         if (traits == UndefinedPixelTrait)
           continue;
         if (((traits & CopyPixelTrait) != 0) ||
-            (GetPixelWriteMask(image,p+center) == QuantumRange))
+            (GetPixelReadMask(image,p+center) == 0))
           continue;
         pixels=p;
         pixel=(double) QuantumRange;

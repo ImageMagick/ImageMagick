@@ -1152,9 +1152,9 @@ MagickExport MagickBooleanType GetPathAttributes(const char *path,
 {
   MagickBooleanType
     status;
-
+  
   if (path == (const char *) NULL)
-    {
+    { 
       errno=EINVAL;
       return(MagickFalse);
     }

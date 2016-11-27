@@ -511,7 +511,7 @@ MagickExport Image *CombineImages(const Image *image,
   {
     case UndefinedColorspace:
     case sRGBColorspace:
-    {
+    { 
       if (GetImageListLength(image) > 3)
         combine_image->alpha_trait=BlendPixelTrait;
       break;
@@ -523,7 +523,7 @@ MagickExport Image *CombineImages(const Image *image,
       break;
     }
     case CMYKColorspace:
-    {
+    { 
       if (GetImageListLength(image) > 4)
         combine_image->alpha_trait=BlendPixelTrait;
       break;
@@ -754,7 +754,7 @@ MagickExport Image *SeparateImage(const Image *image,
       register ssize_t
         i;
 
-      if (GetPixelWriteMask(image,p) == QuantumRange)
+      if (GetPixelReadMask(image,p) == 0)
         {
           SetPixelBackgoundColor(separate_image,q);
           p+=GetPixelChannels(image);
@@ -1005,11 +1005,11 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
         {
           double
             gamma;
-
+  
           register ssize_t
             i;
-
-          if (GetPixelWriteMask(image,q) == QuantumRange)
+  
+          if (GetPixelReadMask(image,q) == 0)
             {
               q+=GetPixelChannels(image);
               continue;
@@ -1082,13 +1082,17 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       return(status);
     }
     case CopyAlphaChannel:
+    case ShapeAlphaChannel:
     {
       /*
         Copy pixel intensity to the alpha channel.
       */
-      image->alpha_trait=BlendPixelTrait;
+      image->alpha_trait=UpdatePixelTrait;
       status=CompositeImage(image,image,IntensityCompositeOp,MagickTrue,0,0,
         exception);
+      if (alpha_type == ShapeAlphaChannel)
+        (void) LevelImageColors(image,&image->background_color,
+          &image->background_color,MagickTrue,exception);
       break;
     }
     case DeactivateAlphaChannel:
@@ -1132,13 +1136,13 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           double
-            gamma,
+            gamma, 
             Sa;
 
           register ssize_t
             i;
 
-          if (GetPixelWriteMask(image,q) == QuantumRange)
+          if (GetPixelReadMask(image,q) == 0)
             {
               q+=GetPixelChannels(image);
               continue;
@@ -1245,55 +1249,6 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
     {
       if (image->alpha_trait == UndefinedPixelTrait)
         status=SetImageAlpha(image,OpaqueAlpha,exception);
-      break;
-    }
-    case ShapeAlphaChannel:
-    {
-      PixelInfo
-        background;
-
-      /*
-        Shape alpha channel.
-      */
-      image->alpha_trait=BlendPixelTrait;
-      status=SetImageStorageClass(image,DirectClass,exception);
-      if (status == MagickFalse)
-        break;
-      ConformPixelInfo(image,&image->background_color,&background,exception);
-      status=MagickTrue;
-      image_view=AcquireAuthenticCacheView(image,exception);
-      for (y=0; y < (ssize_t) image->rows; y++)
-      {
-        register Quantum
-          *magick_restrict q;
-
-        register ssize_t
-          x;
-
-        if (status == MagickFalse)
-          continue;
-        q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
-          exception);
-        if (q == (Quantum *) NULL)
-          {
-            status=MagickFalse;
-            continue;
-          }
-        for (x=0; x < (ssize_t) image->columns; x++)
-        {
-          if (GetPixelWriteMask(image,q) == QuantumRange)
-            {
-              q+=GetPixelChannels(image);
-              continue;
-            }
-          if (fabs(GetPixelIntensity(image,q)) > MagickEpsilon)
-            SetPixelViaPixelInfo(image,&background,q);
-          q+=GetPixelChannels(image);
-        }
-        if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
-          status=MagickFalse;
-      }
-      image_view=DestroyCacheView(image_view);
       break;
     }
     case TransparentAlphaChannel:

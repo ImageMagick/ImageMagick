@@ -265,8 +265,6 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
 {
 #define DestroyMontage() \
 { \
-  if (montage_info != (MontageInfo *) NULL) \
-    montage_info=DestroyMontageInfo(montage_info); \
   if (montage_image != (Image *) NULL) \
     montage_image=DestroyImageList(montage_image); \
   DestroyImageStack(); \
@@ -635,9 +633,8 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
               *clone_images,
               *clone_list;
             
-            if (k == 0)
-              clone_list=CloneImageList(image,exception);
-            else
+            clone_list=CloneImageList(image,exception);
+            if (k != 0)
               clone_list=CloneImageList(image_stack[k-1].image,exception);
             if (clone_list == (Image *) NULL)
               ThrowMontageException(ImageError,"ImageSequenceRequired",option);

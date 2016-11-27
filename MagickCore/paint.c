@@ -830,7 +830,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
             (paint_traits == UndefinedPixelTrait))
           continue;
         if (((paint_traits & CopyPixelTrait) != 0) ||
-            (GetPixelWriteMask(linear_image,p) == QuantumRange))
+            (GetPixelReadMask(linear_image,p) == 0))
           {
             SetPixelChannel(paint_image,channel,p[center+i],q);
             continue;
@@ -971,11 +971,6 @@ MagickExport MagickBooleanType OpaquePaintImage(Image *image,
     pixel=zero;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if (GetPixelWriteMask(image,q) == QuantumRange)
-        {
-          q+=GetPixelChannels(image);
-          continue;
-        }
       GetPixelInfoPixel(image,q,&pixel);
       if (IsFuzzyEquivalencePixelInfo(&pixel,&conform_target) != invert)
         SetPixelViaPixelInfo(image,&conform_fill,q);

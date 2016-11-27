@@ -520,7 +520,7 @@ MagickExport MagickBooleanType SignatureImage(Image *image,
       register ssize_t
         i;
 
-      if (GetPixelWriteMask(image,p) == QuantumRange)
+      if (GetPixelReadMask(image,p) == 0)
         {
           p+=GetPixelChannels(image);
           continue;

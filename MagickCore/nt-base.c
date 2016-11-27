@@ -626,7 +626,7 @@ MagickPrivate double NTElapsedTime(void)
   SystemTimeToFileTime(&system_time,&elapsed_time.filetime);
   return((double) 1.0e-7*elapsed_time.filetime64);
 }
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -678,6 +678,7 @@ MagickPrivate double NTErf(double x)
   y=1.0-(((((a5*t+a4)*t)+a3)*t+a2)*t+a1)*t*exp(-x*x);
   return(sign*y);
 }
+
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1749,7 +1750,6 @@ MagickPrivate DIR *NTOpenDirectory(const char *path)
     length;
 
   wchar_t
-    directory_separator[MagickPathExtent],
     file_specification[MagickPathExtent];
 
   assert(path != (const char *) NULL);
@@ -1757,11 +1757,8 @@ MagickPrivate DIR *NTOpenDirectory(const char *path)
     MagickPathExtent);
   if (length == 0)
     return((DIR *) NULL);
-  length=MultiByteToWideChar(CP_UTF8,0,DirectorySeparator,-1,
-    directory_separator,strlen(DirectorySeparator)+1);
-  if (length == 0)
-    return((DIR *) NULL);
-  if (wcsncat(file_specification,directory_separator,MagickPathExtent-wcslen(file_specification)-1) == (wchar_t*) NULL)
+  if(wcsncat(file_specification,(const wchar_t*) DirectorySeparator,
+       MagickPathExtent-wcslen(file_specification)-1) == (wchar_t*) NULL)
     return((DIR *) NULL);
   entry=(DIR *) AcquireMagickMemory(sizeof(DIR));
   if (entry != (DIR *) NULL)

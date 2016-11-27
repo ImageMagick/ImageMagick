@@ -1235,71 +1235,25 @@ static void CacheOpenCLKernel(MagickCLDevice device,char *filename,
   ExceptionInfo *exception)
 {
   cl_uint
-    num_devices,
     status;
 
   size_t
-    i,
-    size,
-    *program_sizes;
+    binaryProgramSize;
+
+  unsigned char
+    *binaryProgram;
 
   status=openCL_library->clGetProgramInfo(device->program,
-    CL_PROGRAM_NUM_DEVICES,sizeof(cl_uint),&num_devices,NULL);
+    CL_PROGRAM_BINARY_SIZES,sizeof(size_t),&binaryProgramSize,NULL);
   if (status != CL_SUCCESS)
     return;
-  size=num_devices*sizeof(*program_sizes);
-  program_sizes=(size_t*) AcquireMagickMemory(size);
-  if (program_sizes == (size_t*) NULL)
-    return;
+
+  binaryProgram=(unsigned char*) AcquireMagickMemory(binaryProgramSize);
   status=openCL_library->clGetProgramInfo(device->program,
-    CL_PROGRAM_BINARY_SIZES,size,program_sizes,NULL);
+    CL_PROGRAM_BINARIES,sizeof(unsigned char*),&binaryProgram,NULL);
   if (status == CL_SUCCESS)
-    {
-      size_t
-        binary_program_size;
-
-      unsigned char
-        **binary_program;
-
-      binary_program_size=num_devices*sizeof(*binary_program);
-      binary_program=(unsigned char **) AcquireMagickMemory(
-        binary_program_size);
-      for (i = 0; i < num_devices; i++)
-        binary_program[i]=AcquireQuantumMemory(MagickMax(*(program_sizes+i),1),
-          sizeof(**binary_program));
-      status=openCL_library->clGetProgramInfo(device->program,
-        CL_PROGRAM_BINARIES,binary_program_size,binary_program,NULL);
-      if (status == CL_SUCCESS)
-        {
-          for (i = 0; i < num_devices; i++)
-          {
-            int
-              file;
-
-            size_t
-              program_size;
-
-            program_size=*(program_sizes+i);
-            if (program_size < 1)
-              continue;
-            file=open_utf8(filename,O_WRONLY | O_CREAT | O_BINARY,S_MODE);
-            if (file != -1)
-              {
-                write(file,binary_program[i],program_size);
-                file=close(file);
-              }
-            else
-              (void) ThrowMagickException(exception,GetMagickModule(),
-                DelegateWarning,"Saving kernel failed.","`%s'",filename);
-            break;
-          }
-        }
-      for (i = 0; i < num_devices; i++)
-        binary_program[i]=(unsigned char *) RelinquishMagickMemory(
-          binary_program[i]);
-      binary_program=(unsigned char **) RelinquishMagickMemory(binary_program);
-    }
-  program_sizes=(size_t *) RelinquishMagickMemory(program_sizes);
+    (void) BlobToFile(filename,binaryProgram,binaryProgramSize,exception);
+  binaryProgram=(unsigned char *) RelinquishMagickMemory(binaryProgram);
 }
 
 static MagickBooleanType LoadCachedOpenCLKernel(MagickCLDevice device,

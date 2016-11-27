@@ -213,7 +213,7 @@ MagickExport MagickBooleanType CloneImageProperties(Image *image,
 %
 %  DefineImageProperty() associates an assignment string of the form
 %  "key=value" with an artifact or options. It is equivelent to
-%  SetImageProperty().
+%  SetImageProperty()
 %
 %  The format of the DefineImageProperty method is:
 %
@@ -667,7 +667,7 @@ static MagickBooleanType Get8BIMProperty(const Image *image,const char *key,
     count=(ssize_t) ReadPropertyMSBLong(&info,&length);
     if ((count < 0) || ((size_t) count > length))
       {
-        length=0;
+        length=0; 
         continue;
       }
     if ((*name != '\0') && (*name != '#'))
@@ -2792,13 +2792,6 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
             (void) ConcatenateMagickString(value,"a",MagickPathExtent);
           break;
         }
-      if (LocaleCompare("colors",property) == 0)
-        {
-          WarnNoImageReturn("\"%%[%s]\"",property);
-          (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
-            GetNumberColors(image,(FILE *) NULL,exception));
-          break;
-        }
       if (LocaleCompare("colorspace",property) == 0)
         {
           WarnNoImageReturn("\"%%[%s]\"",property);
@@ -2812,13 +2805,6 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
           WarnNoImageReturn("\"%%[%s]\"",property);
           string=CommandOptionToMnemonic(MagickComposeOptions,(ssize_t)
             image->compose);
-          break;
-        }
-      if (LocaleCompare("compression",property) == 0)
-        {
-          WarnNoImageReturn("\"%%[%s]\"",property);
-          string=CommandOptionToMnemonic(MagickCompressOptions,(ssize_t)
-            image->compression);
           break;
         }
       if (LocaleCompare("copyright",property) == 0)
@@ -2898,13 +2884,6 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
         {
           WarnNoImageReturn("\"%%[%s]\"",property);
           string=image->filename;
-          break;
-        }
-      if (LocaleCompare("interlace",property) == 0)
-        {
-          WarnNoImageReturn("\"%%[%s]\"",property);
-          string=CommandOptionToMnemonic(MagickInterlaceOptions,(ssize_t)
-            image->interlace);
           break;
         }
       break;
@@ -3052,26 +3031,8 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
         }
       break;
     }
-    case 'q':
-    {
-      if (LocaleCompare("quality",property) == 0)
-        {
-          WarnNoImageReturn("\"%%[%s]\"",property);
-          (void) FormatLocaleString(value,MagickPathExtent,"%.*g",
-            GetMagickPrecision(),(double) image->quality);
-          break;
-        }
-      break;
-    }
     case 'r':
     {
-      if (LocaleCompare("rendering-intent",property) == 0)
-        {
-          WarnNoImageReturn("\"%%[%s]\"",property);
-          string=CommandOptionToMnemonic(MagickIntentOptions,(ssize_t)
-            image->rendering_intent);
-          break;
-        }
       if (LocaleCompare("resolution.x",property) == 0)
         {
           WarnNoImageReturn("\"%%[%s]\"",property);
@@ -4001,7 +3962,7 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
     {
       /*
         Do not 'set' single letter properties - read only shorthand.
-      */
+       */
       (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
         "SetReadOnlyProperty","`%s'",property);
       return(MagickFalse);
@@ -4046,11 +4007,6 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
           (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
             "SetReadOnlyProperty","`%s'",property);
           return(MagickFalse);
-        }
-      if (LocaleCompare("colors",property) == 0)
-        {
-          image->colors=GetNumberColors(image,(FILE *) NULL,exception);
-          return(MagickTrue);
         }
       if (LocaleCompare("colorspace",property) == 0)
         {
@@ -4220,6 +4176,18 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
           if (intensity < 0)
             return(MagickFalse);
           image->intensity=(PixelIntensityMethod) intensity;
+          return(MagickTrue);
+        }
+      if (LocaleCompare("intent",property) == 0)
+        {
+          ssize_t
+            rendering_intent;
+
+          rendering_intent=ParseCommandOption(MagickIntentOptions,MagickFalse,
+            value);
+          if (rendering_intent < 0)
+            return(MagickFalse); /* FUTURE: value exception?? */
+          image->rendering_intent=(RenderingIntent) rendering_intent;
           return(MagickTrue);
         }
       if (LocaleCompare("interpolate",property) == 0)

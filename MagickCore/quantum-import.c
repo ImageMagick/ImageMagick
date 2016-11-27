@@ -4280,7 +4280,7 @@ MagickExport size_t ImportQuantumPixels(const Image *image,
         register ssize_t
           i;
 
-        if (GetPixelWriteMask(image,q) == QuantumRange)
+        if (GetPixelReadMask(image,q) == 0)
           {
             q+=GetPixelChannels(image);
             continue;

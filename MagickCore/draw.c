@@ -1421,7 +1421,7 @@ MagickExport MagickBooleanType DrawClipPath(Image *image,
   clip_mask=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
   if (clip_mask == (Image *) NULL)
     return(MagickFalse);
-  (void) QueryColorCompliance("#ffffff",AllCompliance,
+  (void) QueryColorCompliance("#0000",AllCompliance,
     &clip_mask->background_color,exception);
   clip_mask->background_color.alpha=(MagickRealType) TransparentAlpha;
   (void) SetImageBackgroundColor(clip_mask,exception);
@@ -1430,13 +1430,13 @@ MagickExport MagickBooleanType DrawClipPath(Image *image,
       draw_info->clip_mask);
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   (void) CloneString(&clone_info->primitive,value);
-  (void) QueryColorCompliance("#000000",AllCompliance,&clone_info->fill,
+  (void) QueryColorCompliance("#ffffff",AllCompliance,&clone_info->fill,
     exception);
-  if (clone_info->clip_mask != (char *) NULL)
-    clone_info->clip_mask=DestroyString(clone_info->clip_mask);
-  status=DrawImage(clip_mask,clone_info,exception);
+  clone_info->clip_mask=(char *) NULL;
+  status=NegateImage(clip_mask,MagickFalse,exception);
   (void) SetImageMask(image,ReadPixelMask,clip_mask,exception);
   clip_mask=DestroyImage(clip_mask);
+  status&=DrawImage(image,clone_info,exception);
   clone_info=DestroyDrawInfo(clone_info);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(DrawEvent,GetMagickModule(),"end clip-path");
@@ -4957,7 +4957,6 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   draw_info->fill_rule=EvenOddRule;
   draw_info->fill_alpha=OpaqueAlpha;
   draw_info->stroke_alpha=OpaqueAlpha;
-  draw_info->alpha=OpaqueAlpha;
   draw_info->linecap=ButtCap;
   draw_info->linejoin=MiterJoin;
   draw_info->miterlimit=10;

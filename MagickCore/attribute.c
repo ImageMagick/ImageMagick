@@ -407,7 +407,7 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
           continue;
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          if (GetPixelWriteMask(image,p) == QuantumRange)
+          if (GetPixelReadMask(image,p) == 0)
             {
               p+=GetPixelChannels(image);
               continue;
@@ -464,7 +464,7 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
       continue;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if (GetPixelWriteMask(image,p) == QuantumRange)
+      if (GetPixelReadMask(image,p) == 0)
         {
           p+=GetPixelChannels(image);
           continue;
@@ -679,7 +679,8 @@ MagickExport ImageType IdentifyImageGray(const Image *image,
           type=UndefinedType;
           break;
         }
-      if ((type == BilevelType) && (IsPixelMonochrome(image,p) == MagickFalse))
+      if ((type == BilevelType) &&
+          (IsPixelMonochrome(image,p) == MagickFalse))
         type=GrayscaleType;
       p+=GetPixelChannels(image);
     }
@@ -1094,7 +1095,7 @@ MagickExport MagickBooleanType SetImageDepth(Image *image,
           register ssize_t
             i;
 
-          if (GetPixelWriteMask(image,q) == QuantumRange)
+          if (GetPixelReadMask(image,q) == 0)
             {
               q+=GetPixelChannels(image);
               continue;
@@ -1158,7 +1159,7 @@ MagickExport MagickBooleanType SetImageDepth(Image *image,
       register ssize_t
         i;
 
-      if (GetPixelWriteMask(image,q) == QuantumRange)
+      if (GetPixelReadMask(image,q) == 0)
         {
           q+=GetPixelChannels(image);
           continue;
