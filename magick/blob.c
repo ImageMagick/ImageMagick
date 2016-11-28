@@ -129,7 +129,6 @@ struct _BlobInfo
 
   MagickBooleanType
     exempt,
-    immutable,
     synchronize,
     status,
     temporary;
@@ -209,7 +208,6 @@ MagickExport void AttachBlob(BlobInfo *blob_info,const void *blob,
   blob_info->file_info.file=(FILE *) NULL;
   blob_info->data=(unsigned char *) blob;
   blob_info->mapped=MagickFalse;
-  blob_info->immutable=MagickTrue;
 }
 
 /*
@@ -457,7 +455,6 @@ MagickExport BlobInfo *CloneBlobInfo(const BlobInfo *blob_info)
   clone_info->offset=blob_info->offset;
   clone_info->size=blob_info->size;
   clone_info->exempt=blob_info->exempt;
-  clone_info->immutable=blob_info->immutable;
   clone_info->status=blob_info->status;
   clone_info->temporary=blob_info->temporary;
   clone_info->type=blob_info->type;
@@ -697,7 +694,6 @@ MagickExport unsigned char *DetachBlob(BlobInfo *blob_info)
   blob_info->offset=0;
   blob_info->eof=MagickFalse;
   blob_info->exempt=MagickFalse;
-  blob_info->immutable=MagickFalse;
   blob_info->type=UndefinedStream;
   blob_info->file_info.file=(FILE *) NULL;
   data=blob_info->data;
@@ -4021,7 +4017,7 @@ MagickExport MagickOffsetType SeekBlob(Image *image,
       if (image->blob->offset < (MagickOffsetType)
           ((off_t) image->blob->extent))
         break;
-      if (image->blob->immutable != MagickFalse)
+      if (image->blob->mapped != MagickFalse)
         {
           image->blob->eof=MagickTrue;
           return(-1);
