@@ -811,7 +811,8 @@ MagickExport MagickBooleanType OpenStream(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  (void) CopyMagickString(stream_info->stream->filename,filename,MagickPathExtent);
+  (void) CopyMagickString(stream_info->stream->filename,filename,
+    MagickPathExtent);
   status=OpenBlob(image_info,stream_info->stream,WriteBinaryBlobMode,exception);
   return(status);
 }
@@ -1011,7 +1012,7 @@ MagickExport Image *ReadStream(const ImageInfo *image_info,StreamHandler stream,
   read_info->stream=stream;
   image=ReadImage(read_info,exception);
   if (image != (Image *) NULL)
-    InitializePixelChannelMap(image);
+    (void) SyncImagePixelCache(image,exception);
   read_info=DestroyImageInfo(read_info);
   return(image);
 }

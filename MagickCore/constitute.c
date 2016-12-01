@@ -308,7 +308,8 @@ MagickExport Image *PingImages(ImageInfo *image_info,const char *filename,
           read_info=DestroyImageInfo(read_info);
           return(PingImage(image_info,exception));
         }
-      (void) CopyMagickString(ping_filename,read_info->filename,MagickPathExtent);
+      (void) CopyMagickString(ping_filename,read_info->filename,
+        MagickPathExtent);
       images=NewImageList();
       extent=(ssize_t) (read_info->scene+read_info->number_scenes);
       for (scene=(ssize_t) read_info->scene; scene < (ssize_t) extent; scene++)

@@ -1,6 +1,8 @@
 2016-11-26  7.0.3-9 Cristy  <quetzlzacatenango@image...>
   * Support the compare -read-mask option.
   * Support read-masks for the -modulate option.
+  * Prevent buffer overflow when streaming an image (reference
+    https://github.com/ImageMagick/ImageMagick/issues/312).
 
 2016-11-15  7.0.3-8 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.3-8, GIT revision 19067:5aceded:20161125.
