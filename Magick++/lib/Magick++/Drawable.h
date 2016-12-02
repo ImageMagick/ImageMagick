@@ -94,8 +94,7 @@ namespace Magick
   //
   // Base class for all drawable objects
   //
-  class MagickPPExport DrawableBase:
-    public std::unary_function<MagickCore::DrawingWand,void>
+  class MagickPPExport DrawableBase
   {
   public:
 
