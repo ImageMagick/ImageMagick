@@ -4886,10 +4886,10 @@ static Image *ComputeUnsharpMaskImageSingle(const Image *image,
     }
 
     filteredImageBuffer = GetAuthenticOpenCLBuffer(filteredImage,exception);
-    if (imageBuffer == (cl_mem) NULL)
+    if (filteredImageBuffer == (cl_mem) NULL)
     {
       (void) OpenCLThrowMagickException(exception,GetMagickModule(),
-      ResourceLimitWarning,"GetAuthenticOpenCLBuffer failed.",".");
+        ResourceLimitWarning,"GetAuthenticOpenCLBuffer failed.",".");
       goto cleanup;
     }
   }
