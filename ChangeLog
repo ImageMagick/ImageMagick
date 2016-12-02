@@ -3,6 +3,8 @@
   * Support read-masks for the -modulate option.
   * Prevent buffer overflow when streaming an image (reference
     https://github.com/ImageMagick/ImageMagick/issues/312).
+  * Fix possible buffer overflow when writing compressed TIFFS (vulnerability
+    report from Cisco Talos, CVE-2016-8707).
 
 2016-11-15  7.0.3-8 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.3-8, GIT revision 19067:5aceded:20161125.
