@@ -372,7 +372,7 @@ MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
             (noise_traits == UndefinedPixelTrait))
           continue;
         if (((noise_traits & CopyPixelTrait) != 0) ||
-            (GetPixelReadMask(image,p) == 0))
+            (GetPixelWriteMask(image,p) == 0))
           {
             SetPixelChannel(noise_image,channel,p[i],q);
             continue;
@@ -780,7 +780,7 @@ MagickExport Image *ColorizeImage(const Image *image,const char *blend,
         if (traits == UndefinedPixelTrait)
           continue;
         if (((traits & CopyPixelTrait) != 0) ||
-            (GetPixelReadMask(colorize_image,q) == 0))
+            (GetPixelWriteMask(colorize_image,q) == 0))
           continue;
         SetPixelChannel(colorize_image,(PixelChannel) i,ClampToQuantum(
           Colorize(q[i],GetPixelInfoChannel(&blend_percentage,(PixelChannel) i),
@@ -3170,7 +3170,7 @@ MagickExport Image *FxImage(const Image *image,const char *expression,
             (fx_traits == UndefinedPixelTrait))
           continue;
         if (((fx_traits & CopyPixelTrait) != 0) ||
-            (GetPixelReadMask(image,p) == 0))
+            (GetPixelWriteMask(image,p) == 0))
           {
             SetPixelChannel(fx_image,channel,p[i],q);
             continue;
@@ -3356,7 +3356,7 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
       /*
         Determine if the pixel is within an ellipse.
       */
-      if (GetPixelReadMask(image,p) == 0)
+      if (GetPixelWriteMask(image,p) == 0)
         {
           SetPixelBackgoundColor(implode_image,q);
           p+=GetPixelChannels(image);
@@ -3600,7 +3600,7 @@ MagickExport Image *MorphImages(const Image *image,const size_t number_frames,
                 (morph_traits == UndefinedPixelTrait))
               continue;
             if (((morph_traits & CopyPixelTrait) != 0) ||
-                (GetPixelReadMask(morph_images,p) == 0))
+                (GetPixelWriteMask(morph_images,p) == 0))
               {
                 SetPixelChannel(morph_image,channel,p[i],q);
                 continue;
@@ -4547,7 +4547,7 @@ MagickExport Image *SketchImage(const Image *image,const double radius,
       register ssize_t
         i;
 
-      if (GetPixelReadMask(random_image,q) == 0)
+      if (GetPixelWriteMask(random_image,q) == 0)
         {
           q+=GetPixelChannels(random_image);
           continue;
@@ -4711,7 +4711,7 @@ MagickExport MagickBooleanType SolarizeImage(Image *image,
       register ssize_t
         i;
 
-      if (GetPixelReadMask(image,q) == 0)
+      if (GetPixelWriteMask(image,q) == 0)
         {
           q+=GetPixelChannels(image);
           continue;
@@ -5201,7 +5201,7 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
       /*
         Determine if the pixel is within an ellipse.
       */
-      if (GetPixelReadMask(image,p) == 0)
+      if (GetPixelWriteMask(image,p) == 0)
         {
           SetPixelBackgoundColor(swirl_image,q);
           p+=GetPixelChannels(image);
@@ -5437,7 +5437,7 @@ MagickExport Image *TintImage(const Image *image,const char *blend,
             (tint_traits == UndefinedPixelTrait))
           continue;
         if (((tint_traits & CopyPixelTrait) != 0) ||
-            (GetPixelReadMask(image,p) == 0))
+            (GetPixelWriteMask(image,p) == 0))
           {
             SetPixelChannel(tint_image,channel,p[i],q);
             continue;

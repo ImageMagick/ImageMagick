@@ -830,7 +830,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
             (paint_traits == UndefinedPixelTrait))
           continue;
         if (((paint_traits & CopyPixelTrait) != 0) ||
-            (GetPixelReadMask(linear_image,p) == 0))
+            (GetPixelWriteMask(linear_image,p) == 0))
           {
             SetPixelChannel(paint_image,channel,p[center+i],q);
             continue;
@@ -971,7 +971,7 @@ MagickExport MagickBooleanType OpaquePaintImage(Image *image,
     pixel=zero;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if (GetPixelReadMask(image,q) == 0)
+      if (GetPixelWriteMask(image,q) == 0)
         {
           q+=GetPixelChannels(image);
           continue;
@@ -1103,7 +1103,7 @@ MagickExport MagickBooleanType TransparentPaintImage(Image *image,
     pixel=zero;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if (GetPixelReadMask(image,q) == 0)
+      if (GetPixelWriteMask(image,q) == 0)
         {
           q+=GetPixelChannels(image);
           continue;
@@ -1238,7 +1238,7 @@ MagickExport MagickBooleanType TransparentPaintImageChroma(Image *image,
     GetPixelInfo(image,&pixel);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if (GetPixelReadMask(image,q) == 0)
+      if (GetPixelWriteMask(image,q) == 0)
         {
           q+=GetPixelChannels(image);
           continue;

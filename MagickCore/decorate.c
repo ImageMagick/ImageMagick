@@ -441,7 +441,7 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
         register ssize_t
           i;
 
-        if (GetPixelReadMask(image,q) == 0)
+        if (GetPixelWriteMask(image,q) == 0)
           {
             SetPixelBackgoundColor(frame_image,q);
             p+=GetPixelChannels(image);
@@ -714,7 +714,7 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
       }
     for (x=0; x < y; x++)
     {
-      if (GetPixelReadMask(image,q) == 0)
+      if (GetPixelWriteMask(image,q) == 0)
         {
           q+=GetPixelChannels(image);
           continue;
@@ -732,7 +732,7 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
     }
     for ( ; x < (ssize_t) (image->columns-y); x++)
     {
-      if (GetPixelReadMask(image,q) == 0)
+      if (GetPixelWriteMask(image,q) == 0)
         {
           q+=GetPixelChannels(image);
           continue;
@@ -750,7 +750,7 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
     }
     for ( ; x < (ssize_t) image->columns; x++)
     {
-      if (GetPixelReadMask(image,q) == 0)
+      if (GetPixelWriteMask(image,q) == 0)
         {
           q+=GetPixelChannels(image);
           continue;
@@ -804,7 +804,7 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
       }
     for (x=0; x < (ssize_t) raise_info->width; x++)
     {
-      if (GetPixelReadMask(image,q) == 0)
+      if (GetPixelWriteMask(image,q) == 0)
         {
           q+=GetPixelChannels(image);
           continue;
@@ -824,7 +824,7 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
       q+=GetPixelChannels(image);
     for ( ; x < (ssize_t) image->columns; x++)
     {
-      if (GetPixelReadMask(image,q) == 0)
+      if (GetPixelWriteMask(image,q) == 0)
         {
           q+=GetPixelChannels(image);
           continue;
@@ -878,7 +878,7 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
       }
     for (x=0; x < (ssize_t) (image->rows-y); x++)
     {
-      if (GetPixelReadMask(image,q) == 0)
+      if (GetPixelWriteMask(image,q) == 0)
         {
           q+=GetPixelChannels(image);
           continue;
@@ -909,7 +909,7 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
     }
     for ( ; x < (ssize_t) image->columns; x++)
     {
-      if (GetPixelReadMask(image,q) == 0)
+      if (GetPixelWriteMask(image,q) == 0)
         {
           q+=GetPixelChannels(image);
           continue;

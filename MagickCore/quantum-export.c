@@ -3920,7 +3920,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
         register ssize_t
           i;
 
-        if (GetPixelReadMask(image,q) == 0)
+        if (GetPixelWriteMask(image,q) == 0)
           {
             q+=GetPixelChannels(image);
             continue;

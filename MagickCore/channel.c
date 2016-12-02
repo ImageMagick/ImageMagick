@@ -754,7 +754,7 @@ MagickExport Image *SeparateImage(const Image *image,
       register ssize_t
         i;
 
-      if (GetPixelReadMask(image,p) == 0)
+      if (GetPixelWriteMask(image,p) == 0)
         {
           SetPixelBackgoundColor(separate_image,q);
           p+=GetPixelChannels(image);
@@ -1009,7 +1009,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
           register ssize_t
             i;
   
-          if (GetPixelReadMask(image,q) == 0)
+          if (GetPixelWriteMask(image,q) == 0)
             {
               q+=GetPixelChannels(image);
               continue;
@@ -1142,7 +1142,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
           register ssize_t
             i;
 
-          if (GetPixelReadMask(image,q) == 0)
+          if (GetPixelWriteMask(image,q) == 0)
             {
               q+=GetPixelChannels(image);
               continue;

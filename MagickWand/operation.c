@@ -2732,8 +2732,8 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("mask",option+1) == 0)
         {
-          CLIWandWarnReplaced("-read-mask");
-          (void) CLISimpleOperatorImage(cli_wand,"-read-mask",NULL,NULL,
+          CLIWandWarnReplaced("-write-mask");
+          (void) CLISimpleOperatorImage(cli_wand,"-write-mask",NULL,NULL,
             exception);
           break;
         }

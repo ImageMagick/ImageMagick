@@ -274,7 +274,7 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
           (threshold_traits == UndefinedPixelTrait))
         continue;
       if (((threshold_traits & CopyPixelTrait) != 0) ||
-          (GetPixelReadMask(image,p) == 0))
+          (GetPixelWriteMask(image,p) == 0))
         {
           SetPixelChannel(threshold_image,channel,p[center+i],q);
           continue;
@@ -309,7 +309,7 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
             (threshold_traits == UndefinedPixelTrait))
           continue;
         if (((threshold_traits & CopyPixelTrait) != 0) ||
-            (GetPixelReadMask(image,p) == 0))
+            (GetPixelWriteMask(image,p) == 0))
           {
             SetPixelChannel(threshold_image,channel,p[center+i],q);
             continue;
@@ -455,7 +455,7 @@ MagickExport MagickBooleanType BilevelImage(Image *image,const double threshold,
       register ssize_t
         i;
 
-      if (GetPixelReadMask(image,q) == 0)
+      if (GetPixelWriteMask(image,q) == 0)
         {
           q+=GetPixelChannels(image);
           continue;
@@ -620,7 +620,7 @@ MagickExport MagickBooleanType BlackThresholdImage(Image *image,
       register ssize_t
         i;
 
-      if (GetPixelReadMask(image,q) == 0)
+      if (GetPixelWriteMask(image,q) == 0)
         {
           q+=GetPixelChannels(image);
           continue;
@@ -756,7 +756,7 @@ MagickExport MagickBooleanType ClampImage(Image *image,ExceptionInfo *exception)
       register ssize_t
         i;
 
-      if (GetPixelReadMask(image,q) == 0)
+      if (GetPixelWriteMask(image,q) == 0)
         {
           q+=GetPixelChannels(image);
           continue;
@@ -1397,7 +1397,7 @@ MagickExport MagickBooleanType OrderedDitherImage(Image *image,
         n;
 
       n=0;
-      if (GetPixelReadMask(image,q) == 0)
+      if (GetPixelWriteMask(image,q) == 0)
         {
           q+=GetPixelChannels(image);
           continue;
@@ -1564,7 +1564,7 @@ MagickExport MagickBooleanType PerceptibleImage(Image *image,
       register ssize_t
         i;
 
-      if (GetPixelReadMask(image,q) == 0)
+      if (GetPixelWriteMask(image,q) == 0)
         {
           q+=GetPixelChannels(image);
           continue;
@@ -1701,7 +1701,7 @@ MagickExport MagickBooleanType RandomThresholdImage(Image *image,
       register ssize_t
         i;
 
-      if (GetPixelReadMask(image,q) == 0)
+      if (GetPixelWriteMask(image,q) == 0)
         {
           q+=GetPixelChannels(image);
           continue;
@@ -1875,7 +1875,7 @@ MagickExport MagickBooleanType WhiteThresholdImage(Image *image,
       register ssize_t
         i;
 
-      if (GetPixelReadMask(image,q) == 0)
+      if (GetPixelWriteMask(image,q) == 0)
         {
           q+=GetPixelChannels(image);
           continue;
