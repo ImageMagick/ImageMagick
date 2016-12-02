@@ -259,6 +259,7 @@ extern MagickPrivate void AddOpenCLEvent(const Image *image,cl_event event)
   assert(image != (const Image *) NULL);
   assert(event != (cl_event) NULL);
   cache_info=(CacheInfo *)image->cache;
+  assert(cache_info->opencl != (OpenCLCacheInfo *) NULL);
   clEnv=GetDefaultOpenCLEnv();
   if (cache_info->opencl->events == (cl_event *) NULL)
     {
