@@ -1,3 +1,7 @@
+2016-12-02  6.9.6-7 Cristy  <quetzlzacatenango@image...>
+  * Fix possible buffer overflow when writing compressed TIFFS (vulnerability
+    report from Cisco Talos, CVE-2016-8707).
+
 2016-11-25  6.9.6-6 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 6.9.6-6, GIT revision 11169:94edafc:20161125.
 
