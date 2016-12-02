@@ -1583,9 +1583,9 @@ RestoreMSCWarning
           (unsigned int) rows_per_strip);
         (void) SetImageProperty(image,"tiff:rows-per-strip",value,exception);
       }
-    if ((samples_per_pixel >= 2) && (interlace == PLANARCONFIG_CONTIG))
+    if ((samples_per_pixel >= 3) && (interlace == PLANARCONFIG_CONTIG))
       method=ReadRGBAMethod;
-    if ((samples_per_pixel >= 2) && (interlace == PLANARCONFIG_SEPARATE))
+    if ((samples_per_pixel >= 4) && (interlace == PLANARCONFIG_SEPARATE))
       method=ReadCMYKAMethod;
     if ((photometric != PHOTOMETRIC_RGB) &&
         (photometric != PHOTOMETRIC_CIELAB) &&
