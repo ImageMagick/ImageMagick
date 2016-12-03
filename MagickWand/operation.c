@@ -2122,10 +2122,10 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
         {
           double
             gamma;
-            
+
           KernelInfo
             *kernel_info;
-            
+
           register ssize_t
             j;
 
@@ -2732,9 +2732,27 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("mask",option+1) == 0)
         {
-          CLIWandWarnReplaced("-write-mask");
-          (void) CLISimpleOperatorImage(cli_wand,"-write-mask",NULL,NULL,
-            exception);
+          Image
+            *mask;
+
+          if (IfPlusOp)
+            {
+              /*
+                Remove a mask.
+              */
+              (void) SetImageMask(_image,WritePixelMask,(Image *) NULL,
+                _exception);
+              break;
+            }
+          /*
+            Set the image mask.
+          */
+          mask=GetImageCache(_image_info,arg1,_exception);
+          if (mask == (Image *) NULL)
+            break;
+          (void) NegateImage(mask,MagickFalse,exception);
+          (void) SetImageMask(_image,WritePixelMask,mask,_exception);
+          mask=DestroyImage(mask);
           break;
         }
       if (LocaleCompare("matte",option+1) == 0)
