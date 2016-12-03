@@ -473,6 +473,9 @@ static MagickBooleanType GetFuzzDistortion(const Image *image,
     *image_view,
     *reconstruct_view;
 
+  double
+    area;
+
   MagickBooleanType
     status;
 
@@ -489,6 +492,7 @@ static MagickBooleanType GetFuzzDistortion(const Image *image,
   status=MagickTrue;
   rows=MagickMax(image->rows,reconstruct_image->rows);
   columns=MagickMax(image->columns,reconstruct_image->columns);
+  area=0.0;
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -526,7 +530,8 @@ static MagickBooleanType GetFuzzDistortion(const Image *image,
       register ssize_t
         i;
 
-      if (GetPixelReadMask(image,p) == 0)
+      if ((GetPixelReadMask(image,p) == 0) ||
+          (GetPixelReadMask(reconstruct_image,q) == 0))
         {
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(reconstruct_image);
@@ -552,6 +557,7 @@ static MagickBooleanType GetFuzzDistortion(const Image *image,
         channel_distortion[i]+=distance*distance;
         channel_distortion[CompositePixelChannel]+=distance*distance;
       }
+      area++;
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(reconstruct_image);
     }
@@ -563,8 +569,9 @@ static MagickBooleanType GetFuzzDistortion(const Image *image,
   }
   reconstruct_view=DestroyCacheView(reconstruct_view);
   image_view=DestroyCacheView(image_view);
+  area=PerceptibleReciprocal(area);
   for (j=0; j <= MaxPixelChannels; j++)
-    distortion[j]/=((double) columns*rows);
+    distortion[j]*=area;
   distortion[CompositePixelChannel]/=(double) GetImageChannels(image);
   distortion[CompositePixelChannel]=sqrt(distortion[CompositePixelChannel]);
   return(status);
@@ -576,6 +583,9 @@ static MagickBooleanType GetMeanAbsoluteDistortion(const Image *image,
   CacheView
     *image_view,
     *reconstruct_view;
+
+  double
+    area;
 
   MagickBooleanType
     status;
@@ -593,6 +603,7 @@ static MagickBooleanType GetMeanAbsoluteDistortion(const Image *image,
   status=MagickTrue;
   rows=MagickMax(image->rows,reconstruct_image->rows);
   columns=MagickMax(image->columns,reconstruct_image->columns);
+  area=0.0;
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -630,7 +641,8 @@ static MagickBooleanType GetMeanAbsoluteDistortion(const Image *image,
       register ssize_t
         i;
 
-      if (GetPixelReadMask(image,p) == 0)
+      if ((GetPixelReadMask(image,p) == 0) ||
+          (GetPixelReadMask(reconstruct_image,q) == 0))
         {
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(reconstruct_image);
@@ -656,6 +668,7 @@ static MagickBooleanType GetMeanAbsoluteDistortion(const Image *image,
         channel_distortion[i]+=distance;
         channel_distortion[CompositePixelChannel]+=distance;
       }
+      area++;
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(reconstruct_image);
     }
@@ -667,8 +680,9 @@ static MagickBooleanType GetMeanAbsoluteDistortion(const Image *image,
   }
   reconstruct_view=DestroyCacheView(reconstruct_view);
   image_view=DestroyCacheView(image_view);
+  area=PerceptibleReciprocal(area);
   for (j=0; j <= MaxPixelChannels; j++)
-    distortion[j]/=((double) columns*rows);
+    distortion[j]*=area;
   distortion[CompositePixelChannel]/=(double) GetImageChannels(image);
   return(status);
 }
@@ -728,7 +742,8 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
       register ssize_t
         i;
 
-      if (GetPixelReadMask(image,p) == 0)
+      if ((GetPixelReadMask(image,p) == 0) ||
+          (GetPixelReadMask(reconstruct_image,q) == 0))
         {
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(reconstruct_image);
@@ -776,6 +791,9 @@ static MagickBooleanType GetMeanSquaredDistortion(const Image *image,
     *image_view,
     *reconstruct_view;
 
+  double
+    area;
+
   MagickBooleanType
     status;
 
@@ -792,6 +810,7 @@ static MagickBooleanType GetMeanSquaredDistortion(const Image *image,
   status=MagickTrue;
   rows=MagickMax(image->rows,reconstruct_image->rows);
   columns=MagickMax(image->columns,reconstruct_image->columns);
+  area=0.0;
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -829,7 +848,8 @@ static MagickBooleanType GetMeanSquaredDistortion(const Image *image,
       register ssize_t
         i;
 
-      if (GetPixelReadMask(image,p) == 0)
+      if ((GetPixelReadMask(image,p) == 0) ||
+          (GetPixelReadMask(reconstruct_image,q) == 0))
         {
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(reconstruct_image);
@@ -855,6 +875,7 @@ static MagickBooleanType GetMeanSquaredDistortion(const Image *image,
         channel_distortion[i]+=distance*distance;
         channel_distortion[CompositePixelChannel]+=distance*distance;
       }
+      area++;
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(reconstruct_image);
     }
@@ -866,8 +887,9 @@ static MagickBooleanType GetMeanSquaredDistortion(const Image *image,
   }
   reconstruct_view=DestroyCacheView(reconstruct_view);
   image_view=DestroyCacheView(image_view);
+  area=PerceptibleReciprocal(area);
   for (j=0; j <= MaxPixelChannels; j++)
-    distortion[j]/=((double) columns*rows);
+    distortion[j]*=area;
   distortion[CompositePixelChannel]/=GetImageChannels(image);
   return(status);
 }
@@ -927,9 +949,40 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
     distortion[i]=0.0;
   rows=MagickMax(image->rows,reconstruct_image->rows);
   columns=MagickMax(image->columns,reconstruct_image->columns);
-  area=1.0/((double) columns*rows);
+  area=0.0;
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
+  for (y=0; y < (ssize_t) rows; y++)
+  {
+    register const Quantum
+      *magick_restrict p,
+      *magick_restrict q;
+
+    register ssize_t
+      x;
+
+    p=GetCacheViewVirtualPixels(image_view,0,y,columns,1,exception);
+    q=GetCacheViewVirtualPixels(reconstruct_view,0,y,columns,1,exception);
+    if ((p == (const Quantum *) NULL) || (q == (const Quantum *) NULL))
+      {
+        status=MagickFalse;
+        break;
+      }
+    for (x=0; x < (ssize_t) columns; x++)
+    {
+      if ((GetPixelReadMask(image,p) == 0) ||
+          (GetPixelReadMask(reconstruct_image,q) == 0))
+        {
+          p+=GetPixelChannels(image);
+          q+=GetPixelChannels(reconstruct_image);
+          continue;
+        }
+      area++;
+      p+=GetPixelChannels(image);
+      q+=GetPixelChannels(reconstruct_image);
+    }
+  }
+  area=PerceptibleReciprocal(area);
   for (y=0; y < (ssize_t) rows; y++)
   {
     register const Quantum
@@ -952,7 +1005,8 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
         Da,
         Sa;
 
-      if (GetPixelReadMask(image,p) == 0)
+      if ((GetPixelReadMask(image,p) == 0) ||
+          (GetPixelReadMask(reconstruct_image,q) == 0))
         {
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(reconstruct_image);
@@ -1091,7 +1145,8 @@ static MagickBooleanType GetPeakAbsoluteDistortion(const Image *image,
       register ssize_t
         i;
 
-      if (GetPixelReadMask(image,p) == 0)
+      if ((GetPixelReadMask(image,p) == 0) ||
+          (GetPixelReadMask(reconstruct_image,q) == 0))
         {
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(reconstruct_image);
