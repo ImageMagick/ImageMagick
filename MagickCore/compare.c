@@ -264,7 +264,7 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
       register ssize_t
         i;
 
-      if (GetPixelWriteMask(image,p) == 0)
+      if (GetPixelReadMask(image,p) == 0)
         {
           SetPixelViaPixelInfo(highlight_image,&masklight,r);
           p+=GetPixelChannels(image);
@@ -526,7 +526,7 @@ static MagickBooleanType GetFuzzDistortion(const Image *image,
       register ssize_t
         i;
 
-      if (GetPixelWriteMask(image,p) == 0)
+      if (GetPixelReadMask(image,p) == 0)
         {
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(reconstruct_image);
@@ -630,7 +630,7 @@ static MagickBooleanType GetMeanAbsoluteDistortion(const Image *image,
       register ssize_t
         i;
 
-      if (GetPixelWriteMask(image,p) == 0)
+      if (GetPixelReadMask(image,p) == 0)
         {
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(reconstruct_image);
@@ -728,7 +728,7 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
       register ssize_t
         i;
 
-      if (GetPixelWriteMask(image,p) == 0)
+      if (GetPixelReadMask(image,p) == 0)
         {
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(reconstruct_image);
@@ -829,7 +829,7 @@ static MagickBooleanType GetMeanSquaredDistortion(const Image *image,
       register ssize_t
         i;
 
-      if (GetPixelWriteMask(image,p) == 0)
+      if (GetPixelReadMask(image,p) == 0)
         {
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(reconstruct_image);
@@ -952,7 +952,7 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
         Da,
         Sa;
 
-      if (GetPixelWriteMask(image,p) == 0)
+      if (GetPixelReadMask(image,p) == 0)
         {
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(reconstruct_image);
@@ -1091,7 +1091,7 @@ static MagickBooleanType GetPeakAbsoluteDistortion(const Image *image,
       register ssize_t
         i;
 
-      if (GetPixelWriteMask(image,p) == 0)
+      if (GetPixelReadMask(image,p) == 0)
         {
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(reconstruct_image);
