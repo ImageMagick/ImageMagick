@@ -3079,7 +3079,7 @@ MagickExport MagickBooleanType SetImageMask(Image *image,const PixelMask type,
       MagickRealType
         intensity;
 
-      intensity=0.0;
+      intensity=0;
       if ((x < (ssize_t) mask->columns) && (y < (ssize_t) mask->rows))
         intensity=GetPixelIntensity(mask,p);
       switch (type)
