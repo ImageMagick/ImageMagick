@@ -129,7 +129,7 @@ static MagickBooleanType CompareUsage(void)
       "-quality value       JPEG/MIFF/PNG compression level",
       "-quiet               suppress all warning messages",
       "-quantize colorspace reduce colors in this colorspace",
-      "-read-mask filename  associate a read mask with the image"
+      "-read-mask filename  associate a read mask with the image",
       "-regard-warnings     pay attention to warning messages",
       "-respect-parentheses settings remain in effect until parenthesis boundary",
       "-sampling-factor geometry",
@@ -150,6 +150,7 @@ static MagickBooleanType CompareUsage(void)
       "-version             print version information",
       "-virtual-pixel method",
       "                     virtual pixel access method",
+      "-write-mask filename  associate a write mask with the image",
       (char *) NULL
     };
 
@@ -932,6 +933,19 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
             if (method < 0)
               ThrowCompareException(OptionError,
                 "UnrecognizedVirtualPixelMethod",argv[i]);
+            break;
+          }
+        ThrowCompareException(OptionError,"UnrecognizedOption",option)
+      }
+      case 'w':
+      {
+        if (LocaleCompare("write-mask",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowCompareException(OptionError,"MissingArgument",option);
             break;
           }
         ThrowCompareException(OptionError,"UnrecognizedOption",option)

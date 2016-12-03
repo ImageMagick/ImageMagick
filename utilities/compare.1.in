@@ -57,6 +57,7 @@ Image Settings:
   \-transparent-color color
                        transparent color
   \-type type           image type
+  \-write-mask filename associate a write mask with the image
   \-verbose             print detailed information about the image
   \-virtual-pixel method
                        virtual pixel access method
