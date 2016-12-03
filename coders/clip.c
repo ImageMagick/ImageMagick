@@ -117,7 +117,7 @@ static Image *ReadCLIPImage(const ImageInfo *image_info,
         *clip_image;
 
       (void) ClipImage(image,exception);
-      clip_image=GetImageMask(image,ReadPixelMask,exception);
+      clip_image=GetImageMask(image,WritePixelMask,exception);
       if (clip_image == (Image *) NULL)
         ThrowReaderException(CoderError,"ImageDoesNotHaveAClipMask");
       image=DestroyImage(image);
@@ -225,11 +225,11 @@ static MagickBooleanType WriteCLIPImage(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  if (image->read_mask == MagickFalse)
+  if (image->write_mask == MagickFalse)
     (void) ClipImage(image,exception);
-  if (image->read_mask == MagickFalse)
+  if (image->write_mask == MagickFalse)
     ThrowWriterException(CoderError,"ImageDoesNotHaveAClipMask");
-  clip_image=GetImageMask(image,ReadPixelMask,exception);
+  clip_image=GetImageMask(image,WritePixelMask,exception);
   if (clip_image == (Image *) NULL)
     return(MagickFalse);
   (void) CopyMagickString(clip_image->filename,image->filename,
