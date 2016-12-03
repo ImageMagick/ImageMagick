@@ -321,7 +321,7 @@ static ChannelStatistics *GetLocationStatistics(const Image *image,
       register ssize_t
         i;
 
-      if (GetPixelReadMask(image,p) == 0)
+      if (GetPixelWriteMask(image,p) == 0)
         {
           p+=GetPixelChannels(image);
           continue;
