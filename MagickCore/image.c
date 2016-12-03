@@ -747,7 +747,7 @@ MagickExport MagickBooleanType ClipImagePath(Image *image,const char *pathname,
     (void) NegateImage(clip_mask,MagickFalse,exception);
   (void) FormatLocaleString(clip_mask->magick_filename,MagickPathExtent,
     "8BIM:1999,2998:%s\nPS",pathname);
-  (void) SetImageMask(image,ReadPixelMask,clip_mask,exception);
+  (void) SetImageMask(image,WritePixelMask,clip_mask,exception);
   clip_mask=DestroyImage(clip_mask);
   return(MagickTrue);
 }
@@ -3079,7 +3079,9 @@ MagickExport MagickBooleanType SetImageMask(Image *image,const PixelMask type,
       MagickRealType
         intensity;
 
-      intensity=GetPixelIntensity(mask,p);
+      intensity=0.0;
+      if ((x < (ssize_t) mask->columns) && (y < (ssize_t) mask->rows))
+        intensity=GetPixelIntensity(mask,p);
       switch (type)
       {
         case WritePixelMask:
