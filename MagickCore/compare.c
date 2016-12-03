@@ -212,8 +212,10 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
   artifact=GetImageArtifact(image,"lowlight-color");
   if (artifact != (const char *) NULL)
     (void) QueryColorCompliance(artifact,AllCompliance,&lowlight,exception);
-  masklight=lowlight;
-  masklight.alpha=(MagickRealType) TransparentAlpha;
+  (void) QueryColorCompliance("#ffffff88",AllCompliance,&masklight,exception);
+  artifact=GetImageArtifact(image,"masklight-color");
+  if (artifact != (const char *) NULL)
+    (void) QueryColorCompliance(artifact,AllCompliance,&masklight,exception);
   /*
     Generate difference image.
   */
@@ -264,7 +266,8 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
       register ssize_t
         i;
 
-      if (GetPixelReadMask(image,p) == 0)
+      if ((GetPixelReadMask(image,p) == 0) ||
+          (GetPixelReadMask(reconstruct_image,q) == 0))
         {
           SetPixelViaPixelInfo(highlight_image,&masklight,r);
           p+=GetPixelChannels(image);
