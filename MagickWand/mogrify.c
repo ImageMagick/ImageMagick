@@ -7859,7 +7859,7 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
                 break;
               }
             metric=UndefinedErrorMetric;
-            option=GetImageOption(image_info,"metric");
+            option=GetImageOption(mogrify_info,"metric");
             if (option != (const char *) NULL)
               metric=(MetricType) ParseCommandOption(MagickMetricOptions,
                 MagickFalse,option);
@@ -7913,7 +7913,7 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
               geometry;
 
             /* Compose value from "-compose" option only */
-            value=GetImageOption(image_info,"compose");
+            value=GetImageOption(mogrify_info,"compose");
             if (value == (const char *) NULL)
               compose=OverCompositeOp;  /* use Over not source_image->compose */
             else
@@ -7921,13 +7921,13 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
                 MagickComposeOptions,MagickFalse,value);
 
             /* Get "clip-to-self" expert setting (false is normal) */
-            value=GetImageOption(image_info,"compose:clip-to-self");
+            value=GetImageOption(mogrify_info,"compose:clip-to-self");
             if (value == (const char *) NULL)
               clip_to_self=MagickTrue;
             else
-              clip_to_self=IsStringTrue(GetImageOption(image_info,
+              clip_to_self=IsStringTrue(GetImageOption(mogrify_info,
                 "compose:clip-to-self")); /* if this is true */
-            value=GetImageOption(image_info,"compose:outside-overlay");
+            value=GetImageOption(mogrify_info,"compose:outside-overlay");
             if (value != (const char *) NULL) {   /* or this false */
               /* FUTURE: depreciate warning for "compose:outside-overlay"*/
               clip_to_self=IsStringFalse(value);
