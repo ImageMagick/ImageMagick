@@ -1485,7 +1485,7 @@ MagickExport Image *GetImageMask(const Image *image,const PixelMask type,
         }
         default:
         {
-          SetPixelGray(mask_image,GetPixelWriteMask(image,p),q);
+          SetPixelGray(mask_image,GetPixelReadMask(image,p),q);
           break;
         }
       }
