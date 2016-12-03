@@ -88,9 +88,6 @@ namespace Magick
   MagickDrawableExtern template class MagickPPExport
   std::allocator<Magick::Coordinate>;
 
-//   MagickDrawableExtern template class MagickPPExport
-//   std::list<Magick::Coordinate, std::allocator<Magick::Coordinate> >;
-
 #endif // MagickDLLExplicitTemplate
 
   // Compare two Coordinate objects regardless of LHS/RHS
@@ -110,9 +107,7 @@ namespace Magick
   //
   // Base class for all drawable objects
   //
-  //struct MagickPPExport std::unary_function<MagickCore::DrawingWand,void>;
-  class MagickPPExport DrawableBase:
-    public std::unary_function<MagickCore::DrawingWand,void>
+  class MagickPPExport DrawableBase
   {
   public:
     // Constructor
