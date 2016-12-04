@@ -1012,7 +1012,10 @@ MagickExport Image *ReadStream(const ImageInfo *image_info,StreamHandler stream,
   read_info->stream=stream;
   image=ReadImage(read_info,exception);
   if (image != (Image *) NULL)
-    (void) SyncImagePixelCache(image,exception);
+    {
+      InitializePixelChannelMap(image);
+      ResetPixelCacheChannels(image);
+    }
   read_info=DestroyImageInfo(read_info);
   return(image);
 }
