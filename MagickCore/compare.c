@@ -212,7 +212,7 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
   artifact=GetImageArtifact(image,"lowlight-color");
   if (artifact != (const char *) NULL)
     (void) QueryColorCompliance(artifact,AllCompliance,&lowlight,exception);
-  (void) QueryColorCompliance("#ffffff88",AllCompliance,&masklight,exception);
+  (void) QueryColorCompliance("#888888cc",AllCompliance,&masklight,exception);
   artifact=GetImageArtifact(image,"masklight-color");
   if (artifact != (const char *) NULL)
     (void) QueryColorCompliance(artifact,AllCompliance,&masklight,exception);
