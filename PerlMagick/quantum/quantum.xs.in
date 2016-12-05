@@ -11340,7 +11340,7 @@ Mogrify(ref,...)
           colorspace=sRGBColorspace;
           if (attribute_flag[0] != 0)
             colorspace=(ColorspaceType) argument_list[0].integer_reference;
-          (void) SegmentImageColorspaceType(image,colorspace,exception);
+          (void) TransformImageColormap(image,colorspace,exception);
           break;
         }
       }
