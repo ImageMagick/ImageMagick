@@ -109,6 +109,12 @@ $example->Label('ColorMatrix');
 $example->ColorMatrix([1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0.5, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1]);
 push(@$images,$example);
 
+print "Colorspace...\n";
+$example=$model->Clone();
+$example->Label('Colorspace');
+$example->Colorspace('Lab');
+push(@$images,$example);
+
 print "Composite...\n";
 $example=$model->Clone();
 $example->Label('Composite');
