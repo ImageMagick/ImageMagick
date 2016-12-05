@@ -1,3 +1,6 @@
+2016-12-05  7.0.3-9 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.3-9, GIT revision 19139:6fed3f1:20161205.
+
 2016-11-26  7.0.3-9 Cristy  <quetzlzacatenango@image...>
   * Support the compare -read-mask option.
   * Support read-masks for the -modulate option.
