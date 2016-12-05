@@ -2364,10 +2364,10 @@ static ds_status AcceleratePerfEvaluator(ds_device *device,
 #define NUM_ITER  2
 #define ReturnStatus(status) \
 { \
-  if (clEnv!=NULL) \
-    RelinquishMagickOpenCLEnv(clEnv); \
-  if (oldClEnv!=NULL) \
-    defaultCLEnv = oldClEnv; \
+  if (oldClEnv != (MagickCLEnv) NULL) \
+    defaultCLEnv=oldClEnv; \
+  if (clEnv != (MagickCLEnv) NULL) \
+    (void) RelinquishMagickOpenCLEnv(clEnv); \
   return status; \
 }
 
@@ -2581,6 +2581,8 @@ static MagickBooleanType autoSelectDevice(MagickCLEnv clEnv, ExceptionInfo* exce
     mStatus=InitOpenCLEnvInternal(clEnv, exception);
     goto cleanup;
   }
+
+  clEnv->library=OpenCLLib;
 
   status = initDSProfile(&profile, IMAGEMAGICK_PROFILE_VERSION);
   if (status!=DS_SUCCESS) {
