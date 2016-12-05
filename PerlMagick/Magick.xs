@@ -1300,7 +1300,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
               break;
             }
           for ( ; image; image=image->next)
-            image->colorspace=(ColorspaceType) sp;
+            (void) SetImageColorspace(image,(ColorspaceType) sp,exception);
           break;
         }
       if (LocaleCompare(attribute,"comment") == 0)
