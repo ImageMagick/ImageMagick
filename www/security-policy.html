@@ -57,6 +57,9 @@
 </div>
 <div class="container">
 <div class="magick-header">
+<p class="text-center"><a href="security-policy.html#policy">Security Policy </a> • <a href="security-policy.html#other">Other Security Considerations</a></p>
+
+
 <p class="lead magick-description">ImageMagick includes a security policy configuration file, <code>policy.xml</code>. It is useful for limiting the resources consumed by ImageMagick and can help prevent a denial-of-service or other exploits.</p>
 
 <p>As an example, suppose you download an image from the internet and unbeknownst to you its been crafted to generate a 20000 by 20000 pixel image. ImageMagick attempts to allocate enough resources (memory, disk) and your system will likely deny the resource request and exit. However, its also possible that your computer might be temporarily sluggish or unavailable or ImageMagick may abort. To prevent such a scenario, you can set limits in the <code>policy.xml</code> configuration file. You may ask why ImageMagick does not already include reasonable limits? Simply because what is reasonable in your environment, might not be reasonable to someone else. For example, one user has access to a host with 1TB of memory whereas another user is running ImageMagick on an iPhone. By policy, permitting giga-pixel image processing on the large memory host makes sense, not so much for the resource constrained iPhone. If you utilize ImageMagick from a public website, you may want to increase security by preventing usage of the MVG or HTTPS coders. Only you can decide what are reasonable limits taking in consideration your environment. We provide this policy with reasonable limits and encourage you to modify it to suit your local environment:</p>
@@ -147,6 +150,20 @@ Path: [built-in]
 </pre>
 
 <p>For additional details about resource limits and the policy configuration file, read <a href="resources.html">Resources</a> and <a href="architecture.html">Architecture</a>.</p>
+
+<h2 class="magick-header"><a id="other"></a>Other Security Considerations</h2>
+
+<p>If you spot a security flaw in ImageMagick, <a href="https://www.imagemagick.org/script/contact.php">contact us</a> and select Security Issue as the issue.  Alternatively, post your concern to <a href="https://github.com/ImageMagick/ImageMagick/issues">GitHub</a>.  Be sure to include how to reproduce the security flaw and a link to any images needed to reproduce the flaw.</p>
+
+<p>In addition to the security policy, you can make ImageMagick safer by ...</p>
+<ul>
+<li>keeping ImageMagick up-to-date.  The latest releases have fixes for any security flaws we discovered in the past.</li>
+<li>sanitizing any filenames or command line options you pass to ImageMagick.</li>
+<li>running ImageMagick in a sanitized software container such as Docker.</li>
+<li>running ImageMagick as the least-privileged user (e.g. 'nobody').</li>
+<li>explicitly setting the image file type.  For example, use the filename <code>png:image.png</code> rather than <code>image.png</code>.  Without an explicit image type in the filename, ImageMagick guesses the image type.</li>
+</ul>
+
 </div>
   <footer class="magick-footer">
     <p><a href="support.html">Donate</a> •
@@ -167,4 +184,4 @@ Path: [built-in]
 </div>
 </body>
 </html>
-<!-- Magick Cache 26th November 2016 12:14 -->
+<!-- Magick Cache 30th November 2016 14:04 -->
