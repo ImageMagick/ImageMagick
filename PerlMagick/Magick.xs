@@ -563,6 +563,7 @@ static struct
     { "WaveletDenoise", {  {"geometry", StringReference},
       {"threshold", RealReference}, {"softness", RealReference},
       {"channel", MagickChannelOptions} } },
+    { "Colorspace", { {"colorspace", MagickColorspaceOptions} } },
   };
 
 static SplayTreeInfo
@@ -1299,8 +1300,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
               break;
             }
           for ( ; image; image=image->next)
-            (void) TransformImageColorspace(image,(ColorspaceType) sp,
-              exception);
+            image->colorspace=(ColorspaceType) sp;
           break;
         }
       if (LocaleCompare(attribute,"comment") == 0)
@@ -7564,6 +7564,8 @@ Mogrify(ref,...)
     ColorImage         = 288
     WaveletDenoise     = 289
     WaveletDenoiseImage= 290
+    Colorspace         = 291
+    ColorspaceImage    = 292
     MogrifyRegion      = 666
   PPCODE:
   {
@@ -11328,6 +11330,17 @@ Mogrify(ref,...)
             exception);
           if (image != (Image *) NULL)
             (void) SetImageChannelMask(image,channel_mask);
+          break;
+        }
+        case 146:  /* Colorspace */
+        {
+          ColorspaceType
+            colorspace;
+
+          colorspace=sRGBColorspace;
+          if (attribute_flag[0] != 0)
+            colorspace=(ColorspaceType) argument_list[0].integer_reference;
+          (void) TransformImageColorspace(image,colorspace,exception);
           break;
         }
       }
