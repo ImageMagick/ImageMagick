@@ -1303,7 +1303,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
               break;
             }
           for ( ; image; image=image->next)
-            image->colorspace=(ColorspaceType) sp;
+            (void) SetImageColorspace(image,(ColorspaceType) sp);
           break;
         }
       if (LocaleCompare(attribute,"comment") == 0)
@@ -11087,7 +11087,7 @@ Mogrify(ref,...)
           colorspace=sRGBColorspace;
           if (attribute_flag[0] != 0)
             colorspace=(ColorspaceType) argument_list[0].integer_reference;
-          (void) TransformImageColorspace(image,colorspace,exception);
+          (void) TransformImageColorspace(image,colorspace);
           break;
         }
       }
