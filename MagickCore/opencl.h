@@ -45,6 +45,7 @@ typedef struct _MagickCLDevice* MagickCLDevice;
 
 extern MagickExport const char
   *GetOpenCLDeviceName(const MagickCLDevice),
+  *GetOpenCLDeviceVendorName(const MagickCLDevice),
   *GetOpenCLDeviceVersion(const MagickCLDevice);
 
 extern MagickExport const KernelProfileRecord

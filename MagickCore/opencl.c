@@ -1791,6 +1791,35 @@ MagickExport const char *GetOpenCLDeviceName(const MagickCLDevice device)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t O p e n C L D e v i c e V e n d o r N a m e                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetOpenCLDeviceVendorName() returns the vendor name of the device.
+%
+%  The format of the GetOpenCLDeviceVendorName method is:
+%
+%      const char *GetOpenCLDeviceVendorName(const MagickCLDevice device)
+%
+%  A description of each parameter follows:
+%
+%    o device: the OpenCL device.
+*/
+
+MagickExport const char *GetOpenCLDeviceVendorName(const MagickCLDevice device)
+{
+  if (device == (MagickCLDevice) NULL)
+    return((const char *) NULL);
+  return(device->vendor_name);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t O p e n C L D e v i c e s                                           %
 %                                                                             %
 %                                                                             %
