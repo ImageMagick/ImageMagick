@@ -53,6 +53,7 @@
 #include "MagickCore/log.h"
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/opencl.h"
 #include "MagickCore/resource_.h"
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/static.h"
@@ -90,6 +91,53 @@
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
+#if defined(MAGICKCORE_WINDOWS_SUPPORT) && defined(MAGICKCORE_OPENCL_SUPPORT)
+static void InitializeDcrawOpenCL(ExceptionInfo *exception)
+{
+  MagickBooleanType
+    opencl_disabled;
+
+  MagickCLDevice
+    *devices;
+
+  size_t
+    length;
+
+  ssize_t
+    i;
+
+  (void) SetEnvironmentVariable("DCR_CL_PLATFORM",NULL);
+  (void) SetEnvironmentVariable("DCR_CL_DEVICE",NULL);
+  devices=GetOpenCLDevices(&length,exception);
+  if (devices == (MagickCLDevice *) NULL)
+    return;
+  for (i=0; i < (ssize_t) length; i++)
+  {
+    const char
+      *name;
+
+    MagickCLDevice
+      device;
+
+    device=devices[i];
+    if (GetOpenCLDeviceEnabled(device) == MagickFalse)
+      continue;
+    name=GetOpenCLDeviceVendorName(device);
+    if (name != (const char *) NULL)
+      (void) SetEnvironmentVariable("DCR_CL_PLATFORM",name);
+    name=GetOpenCLDeviceName(device);
+    if (name != (const char *) NULL)
+      (void) SetEnvironmentVariable("DCR_CL_DEVICE",name);
+    return;
+  }
+}
+#else
+static void InitializeDcrawOpenCL(ExceptionInfo *magick_unused(exception))
+{
+  magick_unreferenced(exception);
+}
+#endif
 static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   ExceptionInfo
@@ -126,6 +174,7 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Convert DNG to PPM with delegate.
   */
+  InitializeDcrawOpenCL(exception);
   image=AcquireImage(image_info,exception);
   read_info=CloneImageInfo(image_info);
   SetImageInfoBlob(read_info,(void *) NULL,0);
