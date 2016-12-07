@@ -1,3 +1,7 @@
+2016-12-07  6.9.6-8 Cristy  <quetzlzacatenango@image...>
+  * Set colorspace to sRGB if -append has non-homogenous colorspaces (reference
+    https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=29105).
+
 2016-12-05  6.9.6-7 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 6.9.6-7, GIT revision 11188:668b60c:20161205.
 

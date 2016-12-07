@@ -435,6 +435,7 @@ MagickExport Image *AppendImages(const Image *images,
     *append_image;
 
   MagickBooleanType
+    homogeneous_colorspace,
     matte,
     status;
 
@@ -472,11 +473,14 @@ MagickExport Image *AppendImages(const Image *images,
   width=images->columns;
   height=images->rows;
   depth=images->depth;
+  homogeneous_colorspace=MagickTrue;
   next=GetNextImageInList(images);
   for ( ; next != (Image *) NULL; next=GetNextImageInList(next))
   {
     if (next->depth > depth)
       depth=next->depth;
+    if (next->colorspace != images->colorspace)
+      homogeneous_colorspace=MagickFalse;
     if (next->matte != MagickFalse)
       matte=MagickTrue;
     number_images++;
@@ -503,6 +507,8 @@ MagickExport Image *AppendImages(const Image *images,
       append_image=DestroyImage(append_image);
       return((Image *) NULL);
     }
+  if (homogeneous_colorspace == MagickFalse)
+    (void) SetImageColorspace(append_image,sRGBColorspace);
   append_image->depth=depth;
   append_image->matte=matte;
   (void) SetImageBackgroundColor(append_image);
