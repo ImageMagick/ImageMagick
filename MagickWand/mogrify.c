@@ -1830,7 +1830,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
       {
         if (LocaleCompare("highlight-color",option+1) == 0)
           {
-            (void) SetImageArtifact(*image,option+1,argv[i+1]);
+            (void) SetImageArtifact(*image,"compare:highlight-color",argv[i+1]);
             break;
           }
         if (LocaleCompare("hough-lines",option+1) == 0)
@@ -2087,7 +2087,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
           }
         if (LocaleCompare("lowlight-color",option+1) == 0)
           {
-            (void) SetImageArtifact(*image,option+1,argv[i+1]);
+            (void) SetImageArtifact(*image,"compare:lowlight-color",argv[i+1]);
             break;
           }
         break;

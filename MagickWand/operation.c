@@ -962,7 +962,8 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
         {
           /* FUTURE: this is only used by CompareImages() which is used
              only by the "compare" CLI program at this time.  */
-          (void) SetImageOption(_image_info,option+1,ArgOption(NULL));
+          (void) SetImageOption(_image_info,"compare:highlight-color",
+            ArgOption(NULL));
           break;
         }
       CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
@@ -1086,7 +1087,8 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
         {
           /* FUTURE: this is only used by CompareImages() which is used
              only by the "compare" CLI program at this time.  */
-          (void) SetImageOption(_image_info,option+1,ArgOption(NULL));
+          (void) SetImageOption(_image_info,"compare:lowlight-color",
+            ArgOption(NULL));
           break;
         }
       if (LocaleCompare("loop",option+1) == 0)
