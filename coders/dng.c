@@ -109,6 +109,12 @@ static void InitializeDcrawOpenCL(ExceptionInfo *exception)
 
   (void) SetEnvironmentVariable("DCR_CL_PLATFORM",NULL);
   (void) SetEnvironmentVariable("DCR_CL_DEVICE",NULL);
+  (void) SetEnvironmentVariable("DCR_CL_DISABLED",NULL);
+  if (GetOpenCLEnabled() == MagickFalse)
+    {
+      (void) SetEnvironmentVariable("DCR_CL_DISABLED","1");
+      return;
+    }
   devices=GetOpenCLDevices(&length,exception);
   if (devices == (MagickCLDevice *) NULL)
     return;
