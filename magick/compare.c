@@ -228,11 +228,11 @@ MagickExport Image *CompareImageChannels(Image *image,
     }
   (void) SetImageMask(highlight_image,(Image *) NULL);
   (void) QueryMagickColor("#f1001ecc",&highlight,exception);
-  artifact=GetImageArtifact(image,"highlight-color");
+  artifact=GetImageArtifact(image,"compare:highlight-color");
   if (artifact != (const char *) NULL)
     (void) QueryMagickColor(artifact,&highlight,exception);
   (void) QueryMagickColor("#ffffffcc",&lowlight,exception);
-  artifact=GetImageArtifact(image,"lowlight-color");
+  artifact=GetImageArtifact(image,"compare:lowlight-color");
   if (artifact != (const char *) NULL)
     (void) QueryMagickColor(artifact,&lowlight,exception);
   if (highlight_image->colorspace == CMYKColorspace)
