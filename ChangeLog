@@ -3,6 +3,8 @@
     https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=29105).
   * Respect connected-components:area-threshold define (reference
     https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=31006). 
+  * Enable alpha channel if background color is non-opaque (reference
+    https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=31016).
 
 2016-12-05  7.0.3-9 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.3-9, GIT revision 19139:6fed3f1:20161205.
