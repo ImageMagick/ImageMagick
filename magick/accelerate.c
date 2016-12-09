@@ -1226,7 +1226,7 @@ MagickExport MagickBooleanType ComputeContrastStretchImageChannel(Image *image,
   double
     intensity;
 
-  FloatPixelPacket
+  cl_float4
     black,
     white;
 
@@ -1335,8 +1335,8 @@ MagickExport MagickBooleanType ComputeContrastStretchImageChannel(Image *image,
   /*
      Find the histogram boundaries by locating the black/white levels.
   */
-  black.red=0.0;
-  white.red=MaxRange(QuantumRange);
+  black.z=0.0;
+  white.z=MaxRange(QuantumRange);
   if ((channel & RedChannel) != 0)
   {
     intensity=0.0;
@@ -1346,7 +1346,7 @@ MagickExport MagickBooleanType ComputeContrastStretchImageChannel(Image *image,
       if (intensity > black_point)
         break;
     }
-    black.red=(MagickRealType) i;
+    black.z=(MagickRealType) i;
     intensity=0.0;
     for (i=(ssize_t) MaxMap; i != 0; i--)
     {
@@ -1354,10 +1354,10 @@ MagickExport MagickBooleanType ComputeContrastStretchImageChannel(Image *image,
       if (intensity > ((double) image->columns*image->rows-white_point))
         break;
     }
-    white.red=(MagickRealType) i;
+    white.z=(MagickRealType) i;
   }
-  black.green=0.0;
-  white.green=MaxRange(QuantumRange);
+  black.y=0.0;
+  white.y=MaxRange(QuantumRange);
   if ((channel & GreenChannel) != 0)
   {
     intensity=0.0;
@@ -1367,7 +1367,7 @@ MagickExport MagickBooleanType ComputeContrastStretchImageChannel(Image *image,
       if (intensity > black_point)
         break;
     }
-    black.green=(MagickRealType) i;
+    black.y=(MagickRealType) i;
     intensity=0.0;
     for (i=(ssize_t) MaxMap; i != 0; i--)
     {
@@ -1375,10 +1375,10 @@ MagickExport MagickBooleanType ComputeContrastStretchImageChannel(Image *image,
       if (intensity > ((double) image->columns*image->rows-white_point))
         break;
     }
-    white.green=(MagickRealType) i;
+    white.y=(MagickRealType) i;
   }
-  black.blue=0.0;
-  white.blue=MaxRange(QuantumRange);
+  black.x=0.0;
+  white.x=MaxRange(QuantumRange);
   if ((channel & BlueChannel) != 0)
   {
     intensity=0.0;
@@ -1388,7 +1388,7 @@ MagickExport MagickBooleanType ComputeContrastStretchImageChannel(Image *image,
       if (intensity > black_point)
         break;
     }
-    black.blue=(MagickRealType) i;
+    black.x=(MagickRealType) i;
     intensity=0.0;
     for (i=(ssize_t) MaxMap; i != 0; i--)
     {
@@ -1396,10 +1396,10 @@ MagickExport MagickBooleanType ComputeContrastStretchImageChannel(Image *image,
       if (intensity > ((double) image->columns*image->rows-white_point))
         break;
     }
-    white.blue=(MagickRealType) i;
+    white.x=(MagickRealType) i;
   }
-  black.opacity=0.0;
-  white.opacity=MaxRange(QuantumRange);
+  black.w=0.0;
+  white.w=MaxRange(QuantumRange);
   if ((channel & OpacityChannel) != 0)
   {
     intensity=0.0;
@@ -1409,7 +1409,7 @@ MagickExport MagickBooleanType ComputeContrastStretchImageChannel(Image *image,
       if (intensity > black_point)
         break;
     }
-    black.opacity=(MagickRealType) i;
+    black.w=(MagickRealType) i;
     intensity=0.0;
     for (i=(ssize_t) MaxMap; i != 0; i--)
     {
@@ -1417,7 +1417,7 @@ MagickExport MagickBooleanType ComputeContrastStretchImageChannel(Image *image,
       if (intensity > ((double) image->columns*image->rows-white_point))
         break;
     }
-    white.opacity=(MagickRealType) i;
+    white.w=(MagickRealType) i;
   }
   /*
   black.index=0.0;
@@ -1459,51 +1459,51 @@ MagickExport MagickBooleanType ComputeContrastStretchImageChannel(Image *image,
   {
     if ((channel & RedChannel) != 0)
     {
-      if (i < (ssize_t) black.red)
+      if (i < (ssize_t) black.z)
         stretch_map[i].red=(Quantum) 0;
       else
-        if (i > (ssize_t) white.red)
+        if (i > (ssize_t) white.z)
           stretch_map[i].red=QuantumRange;
         else
-          if (black.red != white.red)
+          if (black.z != white.z)
             stretch_map[i].red=ScaleMapToQuantum((MagickRealType) (MaxMap*
-                  (i-black.red)/(white.red-black.red)));
+                  (i-black.z)/(white.z-black.z)));
     }
     if ((channel & GreenChannel) != 0)
     {
-      if (i < (ssize_t) black.green)
+      if (i < (ssize_t) black.y)
         stretch_map[i].green=0;
       else
-        if (i > (ssize_t) white.green)
+        if (i > (ssize_t) white.y)
           stretch_map[i].green=QuantumRange;
         else
-          if (black.green != white.green)
+          if (black.y != white.y)
             stretch_map[i].green=ScaleMapToQuantum((MagickRealType) (MaxMap*
-                  (i-black.green)/(white.green-black.green)));
+                  (i-black.y)/(white.y-black.y)));
     }
     if ((channel & BlueChannel) != 0)
     {
-      if (i < (ssize_t) black.blue)
+      if (i < (ssize_t) black.x)
         stretch_map[i].blue=0;
       else
-        if (i > (ssize_t) white.blue)
+        if (i > (ssize_t) white.x)
           stretch_map[i].blue= QuantumRange;
         else
-          if (black.blue != white.blue)
+          if (black.x != white.x)
             stretch_map[i].blue=ScaleMapToQuantum((MagickRealType) (MaxMap*
-                  (i-black.blue)/(white.blue-black.blue)));
+                  (i-black.x)/(white.x-black.x)));
     }
     if ((channel & OpacityChannel) != 0)
     {
-      if (i < (ssize_t) black.opacity)
+      if (i < (ssize_t) black.w)
         stretch_map[i].opacity=0;
       else
-        if (i > (ssize_t) white.opacity)
+        if (i > (ssize_t) white.w)
           stretch_map[i].opacity=QuantumRange;
         else
-          if (black.opacity != white.opacity)
+          if (black.w != white.w)
             stretch_map[i].opacity=ScaleMapToQuantum((MagickRealType) (MaxMap*
-                  (i-black.opacity)/(white.opacity-black.opacity)));
+                  (i-black.w)/(white.w-black.w)));
     }
     /*
     if (((channel & IndexChannel) != 0) &&
@@ -1537,25 +1537,25 @@ MagickExport MagickBooleanType ComputeContrastStretchImageChannel(Image *image,
     {
       if ((channel & RedChannel) != 0)
       {
-        if (black.red != white.red)
+        if (black.z != white.z)
           image->colormap[i].red=stretch_map[
             ScaleQuantumToMap(image->colormap[i].red)].red;
       }
       if ((channel & GreenChannel) != 0)
       {
-        if (black.green != white.green)
+        if (black.y != white.y)
           image->colormap[i].green=stretch_map[
             ScaleQuantumToMap(image->colormap[i].green)].green;
       }
       if ((channel & BlueChannel) != 0)
       {
-        if (black.blue != white.blue)
+        if (black.x != white.x)
           image->colormap[i].blue=stretch_map[
             ScaleQuantumToMap(image->colormap[i].blue)].blue;
       }
       if ((channel & OpacityChannel) != 0)
       {
-        if (black.opacity != white.opacity)
+        if (black.w != white.w)
           image->colormap[i].opacity=stretch_map[
             ScaleQuantumToMap(image->colormap[i].opacity)].opacity;
       }
@@ -1584,8 +1584,8 @@ MagickExport MagickBooleanType ComputeContrastStretchImageChannel(Image *image,
   clStatus=clEnv->library->clSetKernelArg(stretchKernel,i++,sizeof(cl_mem),(void *)&imageBuffer);
   clStatus|=clEnv->library->clSetKernelArg(stretchKernel,i++,sizeof(ChannelType),&channel);
   clStatus|=clEnv->library->clSetKernelArg(stretchKernel,i++,sizeof(cl_mem),(void *)&stretchMapBuffer);
-  clStatus|=clEnv->library->clSetKernelArg(stretchKernel,i++,sizeof(FloatPixelPacket),&white);
-  clStatus|=clEnv->library->clSetKernelArg(stretchKernel,i++,sizeof(FloatPixelPacket),&black);
+  clStatus|=clEnv->library->clSetKernelArg(stretchKernel,i++,sizeof(cl_float4),&white);
+  clStatus|=clEnv->library->clSetKernelArg(stretchKernel,i++,sizeof(cl_float4),&black);
   if (clStatus != CL_SUCCESS)
   {
     (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clSetKernelArg failed.", "'%s'", ".");
@@ -2320,7 +2320,7 @@ MagickExport MagickBooleanType ComputeEqualizeImage(Image *image,
   const cl_event
     *events;
 
-  FloatPixelPacket
+  cl_float4
     white,
     black,
     intensity,
@@ -2422,8 +2422,8 @@ MagickExport MagickBooleanType ComputeEqualizeImage(Image *image,
   if (equalize_map == (PixelPacket *) NULL)
     ThrowBinaryException(ResourceLimitWarning,"MemoryAllocationFailed", image->filename);
 
-  map=(FloatPixelPacket *) AcquireQuantumMemory(length,sizeof(*map));
-  if (map == (FloatPixelPacket *) NULL)
+  map=(cl_float4 *) AcquireQuantumMemory(length,sizeof(*map));
+  if (map == (cl_float4 *) NULL)
     ThrowBinaryException(ResourceLimitWarning,"MemoryAllocationFailed", image->filename);
 
   /*
@@ -2434,18 +2434,18 @@ MagickExport MagickBooleanType ComputeEqualizeImage(Image *image,
   {
     if ((channel & SyncChannels) != 0)
     {
-      intensity.red+=histogram[i].s[2];
+      intensity.z+=histogram[i].s[2];
       map[i]=intensity;
       continue;
     }
     if ((channel & RedChannel) != 0)
-      intensity.red+=histogram[i].s[2];
+      intensity.z+=histogram[i].s[2];
     if ((channel & GreenChannel) != 0)
-      intensity.green+=histogram[i].s[1];
+      intensity.y+=histogram[i].s[1];
     if ((channel & BlueChannel) != 0)
-      intensity.blue+=histogram[i].s[0];
+      intensity.x+=histogram[i].s[0];
     if ((channel & OpacityChannel) != 0)
-      intensity.opacity+=histogram[i].s[3];
+      intensity.w+=histogram[i].s[3];
     /*
     if (((channel & IndexChannel) != 0) &&
         (image->colorspace == CMYKColorspace))
@@ -2462,23 +2462,23 @@ MagickExport MagickBooleanType ComputeEqualizeImage(Image *image,
   {
     if ((channel & SyncChannels) != 0)
     {
-      if (white.red != black.red)
+      if (white.z != black.z)
         equalize_map[i].red=ScaleMapToQuantum((MagickRealType) ((MaxMap*
-                (map[i].red-black.red))/(white.red-black.red)));
+                (map[i].z-black.z))/(white.z-black.z)));
       continue;
     }
-    if (((channel & RedChannel) != 0) && (white.red != black.red))
+    if (((channel & RedChannel) != 0) && (white.z != black.z))
       equalize_map[i].red=ScaleMapToQuantum((MagickRealType) ((MaxMap*
-              (map[i].red-black.red))/(white.red-black.red)));
-    if (((channel & GreenChannel) != 0) && (white.green != black.green))
+              (map[i].z-black.z))/(white.z-black.z)));
+    if (((channel & GreenChannel) != 0) && (white.y != black.y))
       equalize_map[i].green=ScaleMapToQuantum((MagickRealType) ((MaxMap*
-              (map[i].green-black.green))/(white.green-black.green)));
-    if (((channel & BlueChannel) != 0) && (white.blue != black.blue))
+              (map[i].y-black.y))/(white.y-black.y)));
+    if (((channel & BlueChannel) != 0) && (white.x != black.x))
       equalize_map[i].blue=ScaleMapToQuantum((MagickRealType) ((MaxMap*
-              (map[i].blue-black.blue))/(white.blue-black.blue)));
-    if (((channel & OpacityChannel) != 0) && (white.opacity != black.opacity))
+              (map[i].x-black.x))/(white.x-black.x)));
+    if (((channel & OpacityChannel) != 0) && (white.w != black.w))
       equalize_map[i].opacity=ScaleMapToQuantum((MagickRealType) ((MaxMap*
-              (map[i].opacity-black.opacity))/(white.opacity-black.opacity)));
+              (map[i].w-black.w))/(white.w-black.w)));
     /*
     if ((((channel & IndexChannel) != 0) &&
           (image->colorspace == CMYKColorspace)) &&
@@ -2497,7 +2497,7 @@ MagickExport MagickBooleanType ComputeEqualizeImage(Image *image,
     {
       if ((channel & SyncChannels) != 0)
       {
-        if (white.red != black.red)
+        if (white.z != black.z)
         {
           image->colormap[i].red=equalize_map[
             ScaleQuantumToMap(image->colormap[i].red)].red;
@@ -2510,17 +2510,17 @@ MagickExport MagickBooleanType ComputeEqualizeImage(Image *image,
         }
         continue;
       }
-      if (((channel & RedChannel) != 0) && (white.red != black.red))
+      if (((channel & RedChannel) != 0) && (white.z != black.z))
         image->colormap[i].red=equalize_map[
           ScaleQuantumToMap(image->colormap[i].red)].red;
-      if (((channel & GreenChannel) != 0) && (white.green != black.green))
+      if (((channel & GreenChannel) != 0) && (white.y != black.y))
         image->colormap[i].green=equalize_map[
           ScaleQuantumToMap(image->colormap[i].green)].green;
-      if (((channel & BlueChannel) != 0) && (white.blue != black.blue))
+      if (((channel & BlueChannel) != 0) && (white.x != black.x))
         image->colormap[i].blue=equalize_map[
           ScaleQuantumToMap(image->colormap[i].blue)].blue;
       if (((channel & OpacityChannel) != 0) &&
-          (white.opacity != black.opacity))
+          (white.w != black.w))
         image->colormap[i].opacity=equalize_map[
           ScaleQuantumToMap(image->colormap[i].opacity)].opacity;
     }
@@ -2547,8 +2547,8 @@ MagickExport MagickBooleanType ComputeEqualizeImage(Image *image,
   clStatus=clEnv->library->clSetKernelArg(equalizeKernel,i++,sizeof(cl_mem),(void *)&imageBuffer);
   clStatus|=clEnv->library->clSetKernelArg(equalizeKernel,i++,sizeof(ChannelType),&channel);
   clStatus|=clEnv->library->clSetKernelArg(equalizeKernel,i++,sizeof(cl_mem),(void *)&equalizeMapBuffer);
-  clStatus|=clEnv->library->clSetKernelArg(equalizeKernel,i++,sizeof(FloatPixelPacket),&white);
-  clStatus|=clEnv->library->clSetKernelArg(equalizeKernel,i++,sizeof(FloatPixelPacket),&black);
+  clStatus|=clEnv->library->clSetKernelArg(equalizeKernel,i++,sizeof(cl_float4),&white);
+  clStatus|=clEnv->library->clSetKernelArg(equalizeKernel,i++,sizeof(cl_float4),&black);
   if (clStatus != CL_SUCCESS)
   {
     (void) OpenCLThrowMagickException(exception, GetMagickModule(), ResourceLimitWarning, "clEnv->library->clSetKernelArg failed.", "'%s'", ".");
@@ -2574,7 +2574,7 @@ cleanup:
   OpenCLLogException(__FUNCTION__,__LINE__,exception);
 
   if (map!=NULL)
-    map=(FloatPixelPacket *) RelinquishMagickMemory(map);
+    map=(cl_float4 *) RelinquishMagickMemory(map);
 
   if (equalizeMapBuffer!=NULL)
     clEnv->library->clReleaseMemObject(equalizeMapBuffer);
