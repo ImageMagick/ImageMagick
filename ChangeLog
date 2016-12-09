@@ -3,6 +3,8 @@
     https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=29105).
   * Respect connected-components:area-threshold define (reference
     https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=31006).
+  * Return correct offset for negative index for -fx option (reference
+    https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=31019).
 
 2016-12-05  6.9.6-7 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 6.9.6-7, GIT revision 11188:668b60c:20161205.
