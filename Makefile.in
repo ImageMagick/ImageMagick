@@ -1401,17 +1401,18 @@ filters_analyze_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 @WITH_MODULES_TRUE@am_filters_analyze_la_rpath = -rpath $(filtersdir)
 am__magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES_DIST =  \
 	magick/ImageMagick.h magick/MagickCore.h magick/accelerate.c \
-	magick/accelerate-private.h magick/animate.c magick/animate.h \
-	magick/animate-private.h magick/annotate.c magick/annotate.h \
-	magick/api.h magick/artifact.c magick/artifact.h \
-	magick/attribute.c magick/attribute.h magick/blob.c \
-	magick/blob.h magick/blob-private.h magick/cache.c \
-	magick/cache.h magick/cache-private.h magick/cache-view.c \
-	magick/cache-view.h magick/channel.c magick/channel.h \
-	magick/cipher.c magick/cipher.h magick/client.c \
-	magick/client.h magick/coder.c magick/coder.h magick/color.c \
-	magick/color.h magick/color-private.h magick/colormap.c \
-	magick/colormap.h magick/colormap-private.h \
+	magick/accelerate-private.h \
+	magick/accelerate-kernels-private.h magick/animate.c \
+	magick/animate.h magick/animate-private.h magick/annotate.c \
+	magick/annotate.h magick/api.h magick/artifact.c \
+	magick/artifact.h magick/attribute.c magick/attribute.h \
+	magick/blob.c magick/blob.h magick/blob-private.h \
+	magick/cache.c magick/cache.h magick/cache-private.h \
+	magick/cache-view.c magick/cache-view.h magick/channel.c \
+	magick/channel.h magick/cipher.c magick/cipher.h \
+	magick/client.c magick/client.h magick/coder.c magick/coder.h \
+	magick/color.c magick/color.h magick/color-private.h \
+	magick/colormap.c magick/colormap.h magick/colormap-private.h \
 	magick/colorspace.c magick/colorspace.h \
 	magick/colorspace-private.h magick/compare.c magick/compare.h \
 	magick/composite.c magick/composite.h \
@@ -4216,6 +4217,7 @@ MAGICK_BASE_SRCS = \
 	magick/MagickCore.h \
 	magick/accelerate.c \
 	magick/accelerate-private.h \
+	magick/accelerate-kernels-private.h \
 	magick/animate.c \
 	magick/animate.h \
 	magick/animate-private.h \
@@ -4553,6 +4555,7 @@ MAGICK_INCLUDE_HDRS = \
 
 MAGICK_NOINST_HDRS = \
 	magick/accelerate-private.h \
+  magick/accelerate-kernels-private.h \
 	magick/animate-private.h \
 	magick/blob-private.h \
 	magick/cache-private.h \
