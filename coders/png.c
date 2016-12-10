@@ -10282,12 +10282,12 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
   if (logging != MagickFalse)
     {
-     if (mng_info->write_png_compression_level)
+       if (mng_info->write_png_compression_level)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "    Compression level:    %d",
             (int) mng_info->write_png_compression_level-1);
 
-     if (mng_info->write_png_compression_strategy)
+       if (mng_info->write_png_compression_strategy)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "    Compression strategy: %d",
             (int) mng_info->write_png_compression_strategy-1);

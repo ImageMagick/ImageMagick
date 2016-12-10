@@ -298,7 +298,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
       "      {",
       "        /DataSource pixel_stream %s",
       "        <<",
-      "           /K "CCITTParam,
+      "           /K " CCITTParam,
       "           /Columns columns",
       "           /Rows rows",
       "        >> /CCITTFaxDecode filter",

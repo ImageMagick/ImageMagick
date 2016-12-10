@@ -443,7 +443,7 @@ static char **GetTransformTokens(void *context,const char *text,
   {
     if ((*q != '(') && (*q != ')') && (*q != '\0'))
       continue;
-    if (i == extent)
+    if (i == (ssize_t) extent)
       {
         extent<<=1;
         tokens=(char **) ResizeQuantumMemory(tokens,extent+2,sizeof(*tokens));

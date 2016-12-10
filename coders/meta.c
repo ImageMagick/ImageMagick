@@ -406,7 +406,7 @@ static ssize_t parse8BIM(Image *ifile, Image *ofile)
                     *s = &token[next-1];
 
                   codes_length=convertHTMLcodes(s, strlen(s));
-                  if (codes_length > len)
+                  if ((ssize_t) codes_length > len)
                     len=0;
                   else
                     len-=codes_length;
@@ -709,7 +709,7 @@ static ssize_t parse8BIMW(Image *ifile, Image *ofile)
                     *s = &token[next-1];
 
                   codes_length=convertHTMLcodes(s, strlen(s));
-                  if (codes_length > len)
+                  if ((ssize_t) codes_length > len)
                     len=0;
                   else
                     len-=codes_length;
