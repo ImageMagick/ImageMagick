@@ -2525,7 +2525,8 @@ static size_t WritePSDChannel(const PSDInfo *psd_info,
 #ifdef MAGICKCORE_ZLIB_DELEGATE
   if (next_image->compression == ZipCompression)
     {
-      compressed_pixels=AcquireQuantumMemory(CHUNK,sizeof(*compressed_pixels));
+      compressed_pixels=(unsigned char *) AcquireQuantumMemory(CHUNK,
+        sizeof(*compressed_pixels));
       if (compressed_pixels == (unsigned char *) NULL)
         {
           quantum_info=DestroyQuantumInfo(quantum_info);
@@ -2614,7 +2615,7 @@ static unsigned char *AcquireCompactPixels(const Image *image,
   return(compact_pixels);
 }
 
-static MagickBooleanType WritePSDChannels(const PSDInfo *psd_info,
+static size_t WritePSDChannels(const PSDInfo *psd_info,
   const ImageInfo *image_info,Image *image,Image *next_image,
   MagickOffsetType size_offset,const MagickBooleanType separate,
   ExceptionInfo *exception)
@@ -2879,7 +2880,7 @@ static void RemoveICCProfileFromResourceBlock(StringInfo *bim_profile)
           quantum;
 
         quantum=PSDQuantum(count)+12;
-        if ((quantum >= 12) && (quantum < length))
+        if ((quantum >= 12) && (quantum < (ssize_t) length))
           {
             if ((q+quantum < (datum+length-16)))
               (void) CopyMagickMemory(q,q+quantum,length-quantum-(q-datum));
@@ -3383,7 +3384,8 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
   else
     rounded_size=size;
   (void) WritePSDSize(&psd_info,image,rounded_size,size_offset);
-  layer_size_offsets=RelinquishMagickMemory(layer_size_offsets);
+  layer_size_offsets=(MagickOffsetType *) RelinquishMagickMemory(
+    layer_size_offsets);
   /*
     Remove the opacity mask from the registry
   */

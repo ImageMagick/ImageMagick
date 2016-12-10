@@ -653,7 +653,7 @@ static ssize_t PrintChannelPerceptualHash(Image *image,FILE *file,
       if (j < (MaximumNumberOfPerceptualHashes-1))
         n+=FormatLocaleFile(file,",\n");
     }
-    if (i < (GetPixelChannels(image)-1))
+    if (i < (ssize_t) (GetPixelChannels(image)-1))
       n+=FormatLocaleFile(file,"\n      },\n");
   }
   n+=FormatLocaleFile(file,"\n      }\n");

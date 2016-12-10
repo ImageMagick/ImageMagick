@@ -3209,8 +3209,8 @@ MagickExport MagickBooleanType SetImageRegionMask(Image *image,
         pixel;
 
       pixel=0;
-      if (((x >= region->x) && (x < (region->x+region->width))) &&
-          ((y >= region->y) && (y < (region->y+region->height))))
+      if (((x >= region->x) && (x < (region->x+(ssize_t) region->width))) &&
+          ((y >= region->y) && (y < (region->y+(ssize_t) region->height))))
         pixel=QuantumRange;
       switch (type)
       {

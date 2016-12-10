@@ -486,37 +486,42 @@ static MagickBooleanType WritePS3MaskImage(const ImageInfo *image_info,
     default:
     {
       (void) FormatLocaleString(buffer,MagickPathExtent,
-        "currentfile %.20g %.20g "PS3_NoCompression" ByteStreamDecodeFilter\n",
-        (double) image->columns,(double) image->rows);
+        "currentfile %.20g %.20g " PS3_NoCompression
+        " ByteStreamDecodeFilter\n",(double) image->columns,(double)
+        image->rows);
       break;
     }
     case FaxCompression:
     case Group4Compression:
     {
       (void) FormatLocaleString(buffer,MagickPathExtent,
-        "currentfile %.20g %.20g "PS3_FaxCompression" ByteStreamDecodeFilter\n",
-        (double) image->columns,(double) image->rows);
+        "currentfile %.20g %.20g " PS3_FaxCompression
+        " ByteStreamDecodeFilter\n",(double) image->columns,(double)
+        image->rows);
       break;
     }
     case LZWCompression:
     {
       (void) FormatLocaleString(buffer,MagickPathExtent,
-        "currentfile %.20g %.20g "PS3_LZWCompression" ByteStreamDecodeFilter\n",
-        (double) image->columns,(double) image->rows);
+        "currentfile %.20g %.20g " PS3_LZWCompression
+        " ByteStreamDecodeFilter\n",(double) image->columns,(double)
+        image->rows);
       break;
     }
     case RLECompression:
     {
       (void) FormatLocaleString(buffer,MagickPathExtent,
-        "currentfile %.20g %.20g "PS3_RLECompression" ByteStreamDecodeFilter\n",
-        (double) image->columns,(double) image->rows);
+        "currentfile %.20g %.20g " PS3_RLECompression
+        " ByteStreamDecodeFilter\n",(double) image->columns,(double)
+        image->rows);
       break;
     }
     case ZipCompression:
     {
       (void) FormatLocaleString(buffer,MagickPathExtent,
-        "currentfile %.20g %.20g "PS3_ZipCompression" ByteStreamDecodeFilter\n",
-        (double) image->columns,(double) image->rows);
+        "currentfile %.20g %.20g " PS3_ZipCompression
+        " ByteStreamDecodeFilter\n",(double) image->columns,(double)
+        image->rows);
       break;
     }
   }
@@ -623,25 +628,25 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
       "  /z exch def",
       "  /r exch def",
       "  /c exch def",
-      "  z "PS3_NoCompression" eq { /ASCII85Decode filter } if",
-      "  z "PS3_FaxCompression" eq",
+      "  z " PS3_NoCompression " eq { /ASCII85Decode filter } if",
+      "  z " PS3_FaxCompression " eq",
       "  {",
       "    <<",
-      "      /K "CCITTParam,
+      "      /K " CCITTParam,
       "      /Columns c",
       "      /Rows r",
       "    >>",
       "    /CCITTFaxDecode filter",
       "  } if",
-      "  z "PS3_JPEGCompression" eq { /DCTDecode filter } if",
-      "  z "PS3_LZWCompression" eq { /LZWDecode filter } if",
-      "  z "PS3_RLECompression" eq { /RunLengthDecode filter } if",
-      "  z "PS3_ZipCompression" eq { /FlateDecode filter } if",
+      "  z " PS3_JPEGCompression " eq { /DCTDecode filter } if",
+      "  z " PS3_LZWCompression " eq { /LZWDecode filter } if",
+      "  z " PS3_RLECompression " eq { /RunLengthDecode filter } if",
+      "  z " PS3_ZipCompression " eq { /FlateDecode filter } if",
       "} bind def",
       "",
       "/DirectClassImageDict",
       "{",
-      "  colorspace "PS3_RGBColorspace" eq",
+      "  colorspace " PS3_RGBColorspace " eq",
       "  {",
       "    /DeviceRGB setcolorspace",
       "    <<",
@@ -666,7 +671,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
       "      /MultipleDataSources false",
       "      /ImageMatrix [columns 0 0 rows neg 0 rows]",
       "      /Decode",
-      "        compression "PS3_JPEGCompression" eq",
+      "        compression " PS3_JPEGCompression " eq",
       "        { [1 0 1 0 1 0 1 0] }",
       "        { [0 1 0 1 0 1 0 1] }",
       "        ifelse",
@@ -699,7 +704,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
       "  {",
       "    % RGB colormap.",
       "    /colormap colors 3 mul string def",
-      "    compression "PS3_NoCompression" eq",
+      "    compression " PS3_NoCompression " eq",
       "    { currentfile /ASCII85Decode filter colormap readstring pop pop }",
       "    { currentfile colormap readstring pop pop }",
       "    ifelse",
@@ -719,7 +724,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
       "",
       "/NonMaskedImageDict",
       "{",
-      "  class "PS3_PseudoClass" eq",
+      "  class " PS3_PseudoClass " eq",
       "  { PseudoClassImageDict }",
       "  { DirectClassImageDict }",
       "  ifelse",
