@@ -42,7 +42,7 @@
   Include declarations.
 */
 #include "magick/studio.h"
-#include "magick/accelerate.h"
+#include "magick/accelerate-private.h"
 #include "magick/animate.h"
 #include "magick/animate.h"
 #include "magick/blob.h"

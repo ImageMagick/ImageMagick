@@ -42,8 +42,8 @@
 Include declarations.
 */
 #include "magick/studio.h"
-#include "magick/accelerate.h"
 #include "magick/accelerate-private.h"
+#include "magick/accelerate-kernels-private.h"
 #include "magick/artifact.h"
 #include "magick/cache.h"
 #include "magick/cache-private.h"
@@ -60,7 +60,6 @@ Include declarations.
 #include "magick/list.h"
 #include "magick/memory_.h"
 #include "magick/monitor-private.h"
-#include "magick/accelerate.h"
 #include "magick/opencl.h"
 #include "magick/opencl-private.h"
 #include "magick/option.h"
@@ -439,7 +438,7 @@ cleanup:
   return(filteredImage);
 }
 
-MagickExport Image *AccelerateAddNoiseImage(const Image *image,
+MagickPrivate Image *AccelerateAddNoiseImage(const Image *image,
   const ChannelType channel,const NoiseType noise_type,
   ExceptionInfo *exception) 
 {
@@ -745,7 +744,7 @@ cleanup:
   return(filteredImage);
 }
 
-MagickExport Image* AccelerateBlurImage(const Image *image,
+MagickPrivate Image* AccelerateBlurImage(const Image *image,
   const ChannelType channel,const double radius,const double sigma,
   ExceptionInfo *exception)
 {
@@ -922,7 +921,7 @@ cleanup:
   return(outputReady);
 }
 
-MagickExport MagickBooleanType AccelerateCompositeImage(Image *image,
+MagickPrivate MagickBooleanType AccelerateCompositeImage(Image *image,
   const ChannelType channel, const CompositeOperator compose,
   const Image *composite, const ssize_t x_offset, const ssize_t y_offset,
   const float destination_dissolve, const float source_dissolve,
@@ -1074,7 +1073,7 @@ cleanup:
   return(outputReady);
 }
 
-MagickExport MagickBooleanType AccelerateContrastImage(Image *image,
+MagickPrivate MagickBooleanType AccelerateContrastImage(Image *image,
   const MagickBooleanType sharpen,ExceptionInfo *exception)
 {
   MagickBooleanType
@@ -1187,7 +1186,7 @@ cleanup:
   return(outputReady);
 }
 
-MagickExport MagickBooleanType ComputeContrastStretchImageChannel(Image *image,
+MagickPrivate MagickBooleanType ComputeContrastStretchImageChannel(Image *image,
   const ChannelType channel,const double black_point,const double white_point, 
   ExceptionInfo *exception) 
 {
@@ -1637,7 +1636,7 @@ cleanup:
   return(outputReady);
 }
 
-MagickExport MagickBooleanType AccelerateContrastStretchImageChannel(
+MagickPrivate MagickBooleanType AccelerateContrastStretchImageChannel(
   Image *image,const ChannelType channel,const double black_point,
   const double white_point,ExceptionInfo *exception)
 {
@@ -1940,7 +1939,7 @@ cleanup:
   return(filteredImage);
 }
 
-MagickExport Image *AccelerateConvolveImageChannel(const Image *image,
+MagickPrivate Image *AccelerateConvolveImageChannel(const Image *image,
   const ChannelType channel,const KernelInfo *kernel,ExceptionInfo *exception)
 {
   Image
@@ -2256,7 +2255,7 @@ cleanup:
   return(filteredImage);
 }
 
-MagickExport Image *AccelerateDespeckleImage(const Image* image,
+MagickPrivate Image *AccelerateDespeckleImage(const Image* image,
   ExceptionInfo* exception)
 {
   Image
@@ -2285,7 +2284,7 @@ MagickExport Image *AccelerateDespeckleImage(const Image* image,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
 
-MagickExport MagickBooleanType ComputeEqualizeImage(Image *image,
+MagickPrivate MagickBooleanType ComputeEqualizeImage(Image *image,
   const ChannelType channel,ExceptionInfo *exception)
 {
 #define EqualizeImageTag  "Equalize/Image"
@@ -2597,7 +2596,7 @@ cleanup:
   return(outputReady);
 }
 
-MagickExport MagickBooleanType AccelerateEqualizeImage(Image *image,
+MagickPrivate MagickBooleanType AccelerateEqualizeImage(Image *image,
   const ChannelType channel,ExceptionInfo *exception)
 {
   MagickBooleanType
@@ -2747,7 +2746,7 @@ cleanup:
   return(status);
 }
 
-MagickExport MagickBooleanType AccelerateFunctionImage(Image *image,
+MagickPrivate MagickBooleanType AccelerateFunctionImage(Image *image,
   const ChannelType channel,const MagickFunction function,
   const size_t number_parameters,const double *parameters,
   ExceptionInfo *exception)
@@ -2894,7 +2893,7 @@ cleanup:
   return(outputReady);
 }
 
-MagickExport MagickBooleanType AccelerateGrayscaleImage(Image* image,
+MagickPrivate MagickBooleanType AccelerateGrayscaleImage(Image* image,
   const PixelIntensityMethod method,ExceptionInfo *exception)
 {
   MagickBooleanType
@@ -3169,7 +3168,7 @@ cleanup:
   return(filteredImage);
 }
 
-MagickExport Image *AccelerateLocalContrastImage(const Image *image,
+MagickPrivate Image *AccelerateLocalContrastImage(const Image *image,
   const double radius,const double strength,ExceptionInfo *exception)
 {
   Image
@@ -3322,7 +3321,7 @@ cleanup:
   return(outputReady);
 }
 
-MagickExport MagickBooleanType AccelerateModulateImage(Image *image,
+MagickPrivate MagickBooleanType AccelerateModulateImage(Image *image,
   double percent_brightness, double percent_hue, double percent_saturation,
   ColorspaceType colorspace, ExceptionInfo *exception)
 {
@@ -3603,7 +3602,7 @@ cleanup:
   return(filteredImage);
 }
 
-MagickExport Image *AccelerateMotionBlurImage(const Image *image,
+MagickPrivate Image *AccelerateMotionBlurImage(const Image *image,
   const ChannelType channel,const double* kernel,const size_t width,
   const OffsetInfo *offset,ExceptionInfo *exception)
 {
@@ -3855,7 +3854,7 @@ cleanup:
   return filteredImage;
 }
 
-MagickExport Image *AccelerateRadialBlurImage(const Image *image,
+MagickPrivate Image *AccelerateRadialBlurImage(const Image *image,
   const ChannelType channel,const double angle,ExceptionInfo *exception)
 {
   Image
@@ -4488,7 +4487,7 @@ static MagickBooleanType gpuSupportedResizeWeighting(
   return(MagickFalse);
 }
 
-MagickExport Image *AccelerateResizeImage(const Image *image,
+MagickPrivate Image *AccelerateResizeImage(const Image *image,
   const size_t resizedColumns,const size_t resizedRows,
   const ResizeFilter *resizeFilter,ExceptionInfo *exception) 
 {
@@ -4997,7 +4996,7 @@ cleanup:
   return(filteredImage);
 }
 
-MagickExport Image *AccelerateUnsharpMaskImage(const Image *image,
+MagickPrivate Image *AccelerateUnsharpMaskImage(const Image *image,
   const ChannelType channel,const double radius,const double sigma,
   const double gain,const double threshold,ExceptionInfo *exception)
 {
@@ -5176,7 +5175,7 @@ cleanup:
   return(filteredImage);
 }
 
-MagickExport Image *AccelerateWaveletDenoiseImage(const Image *image,
+MagickPrivate Image *AccelerateWaveletDenoiseImage(const Image *image,
   const double threshold,ExceptionInfo *exception)
 {
   Image
@@ -5194,274 +5193,4 @@ MagickExport Image *AccelerateWaveletDenoiseImage(const Image *image,
   return(filteredImage);
 }
 
-#else  /* MAGICKCORE_OPENCL_SUPPORT  */
-
-MagickExport Image *AccelerateAddNoiseImage(const Image *magick_unused(image),
-  const ChannelType magick_unused(channel),
-  const NoiseType magick_unused(noise_type),
-  ExceptionInfo *magick_unused(exception)) 
-{
-  magick_unreferenced(image);
-  magick_unreferenced(channel);
-  magick_unreferenced(noise_type);
-  magick_unreferenced(exception);
-  return((Image *) NULL);
-}
-
-MagickExport Image *AccelerateBlurImage(const Image *magick_unused(image),
-  const ChannelType magick_unused(channel),const double magick_unused(radius),
-  const double magick_unused(sigma),ExceptionInfo *magick_unused(exception))
-{
-  magick_unreferenced(image);
-  magick_unreferenced(channel);
-  magick_unreferenced(radius);
-  magick_unreferenced(sigma);
-  magick_unreferenced(exception);
-
-  return((Image *) NULL);
-}
-
-MagickExport MagickBooleanType AccelerateCompositeImage(
-  Image *magick_unused(image),const ChannelType magick_unused(channel),
-  const CompositeOperator magick_unused(compose),
-  const Image *magick_unused(composite),const ssize_t magick_unused(x_offset),
-  const ssize_t magick_unused(y_offset),
-  const float magick_unused(destination_dissolve),
-  const float magick_unused(source_dissolve),
-  ExceptionInfo *magick_unused(exception))
-{
-  magick_unreferenced(image);
-  magick_unreferenced(channel);
-  magick_unreferenced(compose);
-  magick_unreferenced(composite);
-  magick_unreferenced(x_offset);
-  magick_unreferenced(y_offset);
-  magick_unreferenced(destination_dissolve);
-  magick_unreferenced(source_dissolve);
-  magick_unreferenced(exception);
-
-  return(MagickFalse);
-}
-
-MagickExport MagickBooleanType AccelerateContrastImage(
-  Image* magick_unused(image),const MagickBooleanType magick_unused(sharpen),
-  ExceptionInfo* magick_unused(exception))
-{
-  magick_unreferenced(image);
-  magick_unreferenced(sharpen);
-  magick_unreferenced(exception);
-
-  return(MagickFalse);
-}
-
-MagickExport MagickBooleanType AccelerateContrastStretchImageChannel(
-  Image *magick_unused(image),const ChannelType magick_unused(channel),
-  const double magick_unused(black_point),
-  const double magick_unused(white_point),
-  ExceptionInfo* magick_unused(exception))
-{
-  magick_unreferenced(image);
-  magick_unreferenced(channel);
-  magick_unreferenced(black_point);
-  magick_unreferenced(white_point);
-  magick_unreferenced(exception);
-
-  return(MagickFalse);
-}
-
-MagickExport Image *AccelerateConvolveImageChannel(
-  const Image *magick_unused(image),const ChannelType magick_unused(channel),
-  const KernelInfo *magick_unused(kernel),
-  ExceptionInfo *magick_unused(exception))
-{
-  magick_unreferenced(image);
-  magick_unreferenced(channel);
-  magick_unreferenced(kernel);
-  magick_unreferenced(exception);
-
-  return((Image *) NULL);
-}
-
-MagickExport MagickBooleanType AccelerateEqualizeImage(
-  Image* magick_unused(image), const ChannelType magick_unused(channel),
-  ExceptionInfo* magick_unused(exception))
-{
-  magick_unreferenced(image);
-  magick_unreferenced(channel);
-  magick_unreferenced(exception);
-
-  return(MagickFalse);
-}
-
-MagickExport Image *AccelerateDespeckleImage(const Image* magick_unused(image),
-  ExceptionInfo* magick_unused(exception))
-{
-  magick_unreferenced(image);
-  magick_unreferenced(exception);
-
-  return((Image *) NULL);
-}
-
-MagickExport MagickBooleanType AccelerateFunctionImage(
-  Image *magick_unused(image),const ChannelType magick_unused(channel),
-  const MagickFunction magick_unused(function),
-  const size_t magick_unused(number_parameters),
-  const double *magick_unused(parameters),
-  ExceptionInfo *magick_unused(exception))
-{
-  magick_unreferenced(image);
-  magick_unreferenced(channel);
-  magick_unreferenced(function);
-  magick_unreferenced(number_parameters);
-  magick_unreferenced(parameters);
-  magick_unreferenced(exception);
-
-  return(MagickFalse);
-}
-
-MagickExport MagickBooleanType AccelerateGrayscaleImage(
-  Image *magick_unused(image),const PixelIntensityMethod magick_unused(method),
-  ExceptionInfo *magick_unused(exception))
-{
-  magick_unreferenced(image);
-  magick_unreferenced(method);
-  magick_unreferenced(exception);
-
-  return(MagickFalse);
-}
-
-MagickExport Image *AccelerateLocalContrastImage(
-  const Image *magick_unused(image),const double magick_unused(radius),
-  const double magick_unused(strength),ExceptionInfo *magick_unused(exception))
-{
-  magick_unreferenced(image);
-  magick_unreferenced(radius);
-  magick_unreferenced(strength);
-  magick_unreferenced(exception);
-
-  return((Image *) NULL);
-}
-
-MagickExport MagickBooleanType AccelerateModulateImage(
-  Image *magick_unused(image),double magick_unused(percent_brightness),
-  double magick_unused(percent_hue),double magick_unused(percent_saturation),
-  ColorspaceType magick_unused(colorspace),
-  ExceptionInfo *magick_unused(exception))
-{
-  magick_unreferenced(image);
-  magick_unreferenced(percent_brightness);
-  magick_unreferenced(percent_hue);
-  magick_unreferenced(percent_saturation);
-  magick_unreferenced(colorspace);
-  magick_unreferenced(exception);
-
-  return(MagickFalse);
-}
-
-MagickExport Image *AccelerateMotionBlurImage(
-  const Image *magick_unused(image),const ChannelType magick_unused(channel),
-  const double *magick_unused(kernel),const size_t magick_unused(width),
-  const OffsetInfo *magick_unused(offset),
-  ExceptionInfo *magick_unused(exception))
-{
-  magick_unreferenced(image);
-  magick_unreferenced(channel);
-  magick_unreferenced(kernel);
-  magick_unreferenced(width);
-  magick_unreferenced(offset);
-  magick_unreferenced(exception);
-
-  return((Image *) NULL);
-}
-
-MagickExport Image *AccelerateRadialBlurImage(
-  const Image *magick_unused(image),const ChannelType magick_unused(channel),
-  const double magick_unused(angle),ExceptionInfo *magick_unused(exception))
-{
-  magick_unreferenced(image);
-  magick_unreferenced(channel);
-  magick_unreferenced(angle);
-  magick_unreferenced(exception);
-
-  return((Image *) NULL);
-}
-
-MagickExport Image *AccelerateResizeImage(const Image *magick_unused(image),
-  const size_t magick_unused(resizedColumns),
-  const size_t magick_unused(resizedRows),
-  const ResizeFilter *magick_unused(resizeFilter),
-  ExceptionInfo *magick_unused(exception))
-{
-  magick_unreferenced(image);
-  magick_unreferenced(resizedColumns);
-  magick_unreferenced(resizedRows);
-  magick_unreferenced(resizeFilter);
-  magick_unreferenced(exception);
-
-  return((Image *) NULL);
-}
-
-MagickExport Image *AccelerateUnsharpMaskImage(
-  const Image *magick_unused(image),const ChannelType magick_unused(channel),
-  const double magick_unused(radius),const double magick_unused(sigma),
-  const double magick_unused(gain),const double magick_unused(threshold),
-  ExceptionInfo *magick_unused(exception))
-{
-  magick_unreferenced(image);
-  magick_unreferenced(channel);
-  magick_unreferenced(radius);
-  magick_unreferenced(sigma);
-  magick_unreferenced(gain);
-  magick_unreferenced(threshold);
-  magick_unreferenced(exception);
-
-  return((Image *) NULL);
-}
-
-MagickExport Image *AccelerateWaveletDenoiseImage(
-  const Image *magick_unused(image),const double magick_unused(threshold),
-  ExceptionInfo *magick_unused(exception))
-{
-  magick_unreferenced(image);
-  magick_unreferenced(threshold);
-  magick_unreferenced(exception);
-
-  return((Image *)NULL);
-}
-
 #endif /* MAGICKCORE_OPENCL_SUPPORT */
-
-MagickExport MagickBooleanType AccelerateConvolveImage(
-  const Image *magick_unused(image),const KernelInfo *magick_unused(kernel),
-  Image *magick_unused(convolve_image),ExceptionInfo *magick_unused(exception))
-{
-  magick_unreferenced(image);
-  magick_unreferenced(kernel);
-  magick_unreferenced(convolve_image);
-  magick_unreferenced(exception);
-
-  return(MagickFalse);
-}
-
-MagickExport
-MagickBooleanType AccelerateNegateImageChannel(
-  Image *magick_unused(image), const ChannelType magick_unused(channel),
-  const MagickBooleanType magick_unused(grayscale),
-  ExceptionInfo *magick_unused(exception))
-{
-  magick_unreferenced(image);
-  magick_unreferenced(channel);
-  magick_unreferenced(grayscale);
-  magick_unreferenced(exception);
-
-  return(MagickFalse);
-}
-
-MagickExport MagickBooleanType AccelerateRandomImage(
-  Image *magick_unused(image),ExceptionInfo *magick_unused(exception))
-{
-  magick_unreferenced(image);
-  magick_unreferenced(exception);
-
-  return(MagickFalse);
-}
