@@ -95,9 +95,6 @@
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) && defined(MAGICKCORE_OPENCL_SUPPORT)
 static void InitializeDcrawOpenCL(ExceptionInfo *exception)
 {
-  MagickBooleanType
-    opencl_disabled;
-
   MagickCLEnv
     clEnv;
 
@@ -105,18 +102,21 @@ static void InitializeDcrawOpenCL(ExceptionInfo *exception)
   (void) SetEnvironmentVariable("DCR_CL_DEVICE",NULL);
   (void) SetEnvironmentVariable("DCR_CL_DISABLED",NULL);
   clEnv=GetDefaultOpenCLEnv();
-  GetMagickOpenCLEnvParam(clEnv,MAGICK_OPENCL_ENV_PARAM_OPENCL_DISABLED,
-    sizeof(MagickBooleanType),&opencl_disabled,exception);
-  if (opencl_disabled != MagickFalse)
-    {
-      (void)SetEnvironmentVariable("DCR_CL_DISABLED","1");
-      return;
-    }
   if (InitOpenCLEnv(clEnv,exception) != MagickFalse)
     {
       char
         *name;
 
+      MagickBooleanType
+        opencl_disabled;
+
+      GetMagickOpenCLEnvParam(clEnv,MAGICK_OPENCL_ENV_PARAM_OPENCL_DISABLED,
+        sizeof(MagickBooleanType),&opencl_disabled,exception);
+      if (opencl_disabled != MagickFalse)
+        {
+          (void)SetEnvironmentVariable("DCR_CL_DISABLED","1");
+          return;
+        }
       GetMagickOpenCLEnvParam(clEnv,MAGICK_OPENCL_ENV_PARAM_PLATFORM_VENDOR,
         sizeof(char *),&name,exception);
       if (name != (char *) NULL)
