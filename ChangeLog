@@ -1,5 +1,5 @@
 2016-12-10  7.0.3-10 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.3-10, GIT revision 19189:dd8b929:20161210.
+  * Release ImageMagick version 7.0.3-10, GIT revision 19191:338f088:20161210.
 
 2016-12-07  7.0.3-10 Cristy  <quetzlzacatenango@image...>
   * Set colorspace to sRGB if -append has non-homogenous colorspaces (reference
