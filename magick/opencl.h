@@ -56,14 +56,11 @@ extern MagickExport MagickBooleanType
     ExceptionInfo*),
   InitImageMagickOpenCL(ImageMagickOpenCLMode,void*,void*,ExceptionInfo*),
   InitOpenCLEnv(MagickCLEnv,ExceptionInfo*),
-  RelinquishMagickOpenCLEnv(MagickCLEnv),
   SetMagickOpenCLEnvParam(MagickCLEnv,MagickOpenCLEnvParam,size_t,void*,
     ExceptionInfo*);
 
 extern MagickExport MagickCLEnv
-  AcquireMagickOpenCLEnv(),
-  GetDefaultOpenCLEnv(),
-  SetDefaultOpenCLEnv(MagickCLEnv);
+  GetDefaultOpenCLEnv();
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

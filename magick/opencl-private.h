@@ -381,28 +381,33 @@ typedef enum {
   KERNEL_COUNT
 } ProfiledKernels;
 
-extern MagickPrivate cl_context 
+extern MagickPrivate cl_context
   GetOpenCLContext(MagickCLEnv);
 
-extern MagickPrivate cl_kernel 
+extern MagickPrivate cl_kernel
   AcquireOpenCLKernel(MagickCLEnv, MagickOpenCLProgram, const char*);
 
-extern MagickPrivate cl_command_queue 
+extern MagickPrivate cl_command_queue
   AcquireOpenCLCommandQueue(MagickCLEnv);
 
-extern MagickPrivate MagickBooleanType 
+extern MagickPrivate MagickBooleanType
   OpenCLThrowMagickException(ExceptionInfo *,
     const char *,const char *,const size_t,
     const ExceptionType,const char *,const char *,...),
   RecordProfileData(MagickCLEnv,ProfiledKernels,cl_event),
+  RelinquishMagickOpenCLEnv(MagickCLEnv),
   RelinquishOpenCLCommandQueue(MagickCLEnv, cl_command_queue),
   RelinquishOpenCLKernel(MagickCLEnv, cl_kernel);
 
-extern MagickPrivate unsigned long 
+extern MagickPrivate MagickCLEnv
+  AcquireMagickOpenCLEnv(),
+  SetDefaultOpenCLEnv(MagickCLEnv);
+
+extern MagickPrivate unsigned long
   GetOpenCLDeviceLocalMemorySize(MagickCLEnv),
   GetOpenCLDeviceMaxMemAllocSize(MagickCLEnv);
 
-extern MagickPrivate const char* 
+extern MagickPrivate const char*
   GetOpenCLCachedFilesDirectory();
 
 extern MagickPrivate void

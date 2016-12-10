@@ -312,7 +312,7 @@ void *OsLibraryGetFunctionAddress(void *library, const char *functionName)
 %
 */
 
-MagickExport MagickCLEnv AcquireMagickOpenCLEnv()
+MagickPrivate MagickCLEnv AcquireMagickOpenCLEnv()
 {
   MagickCLEnv clEnv;
   clEnv = (MagickCLEnv) AcquireMagickMemory(sizeof(struct _MagickCLEnv));
@@ -350,7 +350,7 @@ MagickExport MagickCLEnv AcquireMagickOpenCLEnv()
 %
 */
 
-MagickExport MagickBooleanType RelinquishMagickOpenCLEnv(MagickCLEnv clEnv)
+MagickPrivate MagickBooleanType RelinquishMagickOpenCLEnv(MagickCLEnv clEnv)
 {
   if (clEnv != (MagickCLEnv) NULL)
     {
@@ -564,7 +564,7 @@ static void UnlockDefaultOpenCLEnv() {
 %    o clEnv: the new default OpenCL environment.
 %
 */
-MagickExport MagickCLEnv SetDefaultOpenCLEnv(MagickCLEnv clEnv)
+MagickPrivate MagickCLEnv SetDefaultOpenCLEnv(MagickCLEnv clEnv)
 {
   MagickCLEnv oldEnv;
   LockDefaultOpenCLEnv();
@@ -2834,12 +2834,12 @@ struct _MagickCLEnv {
   MagickBooleanType OpenCLInitialized;  /* whether OpenCL environment is initialized. */
 };
 
-MagickExport MagickCLEnv AcquireMagickOpenCLEnv()
+MagickPrivate MagickCLEnv AcquireMagickOpenCLEnv()
 {
   return NULL;
 }
 
-MagickExport MagickBooleanType RelinquishMagickOpenCLEnv(
+MagickPrivate MagickBooleanType RelinquishMagickOpenCLEnv(
   MagickCLEnv magick_unused(clEnv))
 {
   magick_unreferenced(clEnv);
@@ -2855,7 +2855,7 @@ MagickExport MagickCLEnv GetDefaultOpenCLEnv()
   return (MagickCLEnv) NULL;
 }
 
-MagickExport MagickCLEnv SetDefaultOpenCLEnv(
+MagickPrivate MagickCLEnv SetDefaultOpenCLEnv(
   MagickCLEnv magick_unused(clEnv))
 {
   magick_unreferenced(clEnv);
