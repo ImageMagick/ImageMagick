@@ -12,6 +12,8 @@
     https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=31019).
   * Fixed improper scaling of certain FITS images (reference
     https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=31028).
+  * Properly center text label (reference
+    https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=31027).
 
 2016-12-05  7.0.3-9 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.3-9, GIT revision 19139:6fed3f1:20161205.
