@@ -2965,7 +2965,7 @@ MagickExport Image *ResizeImage(const Image *image,const size_t columns,
         filter_type=MitchellFilter;
   resize_filter=AcquireResizeFilter(image,filter_type,blur,MagickFalse,
     exception);
-
+#if defined(MAGICKCORE_OPENCL_SUPPORT)
   resize_image=AccelerateResizeImage(image,columns,rows,resize_filter,
     exception);
   if (resize_image != NULL)
@@ -2973,6 +2973,7 @@ MagickExport Image *ResizeImage(const Image *image,const size_t columns,
       resize_filter=DestroyResizeFilter(resize_filter);
       return(resize_image);
     }
+#endif
   resize_image=CloneImage(image,columns,rows,MagickTrue,exception);
   if (resize_image == (Image *) NULL)
     {

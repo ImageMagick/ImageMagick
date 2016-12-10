@@ -1372,7 +1372,9 @@ MagickExport void MagickCoreTerminus(void)
   AnnotateComponentTerminus();
   MimeComponentTerminus();
   TypeComponentTerminus();
+#if defined(MAGICKCORE_OPENCL_SUPPORT)
   OpenCLTerminus();
+#endif
   ColorComponentTerminus();
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
   NTWindowsTerminus();

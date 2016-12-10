@@ -979,11 +979,11 @@ MagickExport MagickBooleanType ContrastImage(Image *image,
   /*
     Contrast enhance image.
   */
-
-  status = AccelerateContrastImage(image, sharpen, &image->exception);
+#if defined(MAGICKCORE_OPENCL_SUPPORT)
+  status=AccelerateContrastImage(image,sharpen,&image->exception);
   if (status != MagickFalse)
     return status;
-
+#endif
   status=MagickTrue;
   progress=0;
   exception=(&image->exception);
@@ -1165,7 +1165,7 @@ MagickExport MagickBooleanType ContrastStretchImageChannel(Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
 
-#if 0
+#if defined(MAGICKCORE_OPENCL_SUPPORT) && 0
   /* Call OpenCL version */
   status=AccelerateContrastStretchImageChannel(image,channel,black_point,
     white_point,&image->exception);
@@ -1805,11 +1805,12 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
 
+#if defined(MAGICKCORE_OPENCL_SUPPORT)
   /* Call OpenCL version */
-  status = AccelerateEqualizeImage(image, channel, &image->exception);
+  status=AccelerateEqualizeImage(image,channel,&image->exception);
   if (status != MagickFalse)
     return status;
-
+#endif
   /*
     Allocate and initialize histogram arrays.
   */
@@ -2421,10 +2422,11 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
   */
 
   /* call opencl version */
-  status = AccelerateGrayscaleImage(image, method, &image->exception);
+#if defined(MAGICKCORE_OPENCL_SUPPORT)
+  status=AccelerateGrayscaleImage(image,method,&image->exception);
   if (status != MagickFalse)
     return status;
-
+#endif
   status=MagickTrue;
   progress=0;
   exception=(&image->exception);
@@ -3812,10 +3814,12 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate)
   */
 
   /* call opencl version */
-  status = AccelerateModulateImage(image, percent_brightness, percent_hue, percent_saturation, colorspace, &image->exception);
+#if defined(MAGICKCORE_OPENCL_SUPPORT)
+  status=AccelerateModulateImage(image,percent_brightness,percent_hue,
+    percent_saturation,colorspace,&image->exception);
   if (status != MagickFalse)
     return status;
-
+#endif
   status=MagickTrue;
   progress=0;
   exception=(&image->exception);

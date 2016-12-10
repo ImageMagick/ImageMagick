@@ -29,15 +29,9 @@ extern "C" {
 #endif
 
 #if !defined(MAGICKCORE_OPENCL_SUPPORT)
-  typedef void* cl_context;
-  typedef void* cl_command_queue;
-  typedef void* cl_device_id;
   typedef void* cl_event;
-  typedef void* cl_kernel;
   typedef void* cl_mem;
-  typedef void* cl_platform_id;
   typedef void* cl_uint;
-  typedef struct { unsigned char t[8]; } cl_device_type; /* 64-bit */
 #else
 
 #define MAX_COMMAND_QUEUES 16
@@ -314,7 +308,6 @@ struct _MagickCLEnv {
   SemaphoreInfo* commandQueuesLock;
 };
 
-#endif
 
 #if defined(MAGICKCORE_HDRI_SUPPORT)
 #define CLOptions "-cl-single-precision-constant -cl-mad-enable -DMAGICKCORE_HDRI_SUPPORT=1 "\
@@ -434,7 +427,7 @@ static inline void OpenCLLogException(const char* function,
   magick_unreferenced(exception);
 #endif
 }
-
+#endif
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

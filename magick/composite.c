@@ -2266,10 +2266,12 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
   /*
     Composite image.
   */
+#if defined(MAGICKCORE_OPENCL_SUPPORT)
   status=AccelerateCompositeImage(image,channel,compose,source_image,
     x_offset,y_offset,canvas_dissolve,source_dissolve,exception);
   if (status != MagickFalse)
     return(status);
+#endif
   status=MagickTrue;
   progress=0;
   midpoint=((MagickRealType) QuantumRange+1.0)/2;

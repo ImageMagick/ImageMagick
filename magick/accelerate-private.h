@@ -28,6 +28,8 @@
 extern "C" {
 #endif
 
+#if defined(MAGICKCORE_OPENCL_SUPPORT)
+
 extern MagickPrivate Image
   *AccelerateAddNoiseImage(const Image*,const ChannelType,const NoiseType,
     ExceptionInfo *),
@@ -61,6 +63,8 @@ extern MagickPrivate MagickBooleanType
     ExceptionInfo *),
   AccelerateModulateImage(Image*, double, double, double, 
     ColorspaceType, ExceptionInfo*);
+
+#endif
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

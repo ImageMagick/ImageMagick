@@ -2828,153 +2828,6 @@ MagickBooleanType OpenCLThrowMagickException(ExceptionInfo *exception,
   return(status);
 }
 
-#else
-
-struct _MagickCLEnv {
-  MagickBooleanType OpenCLInitialized;  /* whether OpenCL environment is initialized. */
-};
-
-MagickPrivate MagickCLEnv AcquireMagickOpenCLEnv()
-{
-  return NULL;
-}
-
-MagickPrivate MagickBooleanType RelinquishMagickOpenCLEnv(
-  MagickCLEnv magick_unused(clEnv))
-{
-  magick_unreferenced(clEnv);
-
-  return MagickFalse;
-}
-
-/*
-* Return the OpenCL environment
-*/
-MagickExport MagickCLEnv GetDefaultOpenCLEnv()
-{
-  return (MagickCLEnv) NULL;
-}
-
-MagickPrivate MagickCLEnv SetDefaultOpenCLEnv(
-  MagickCLEnv magick_unused(clEnv))
-{
-  magick_unreferenced(clEnv);
-
-  return (MagickCLEnv) NULL;
-}
-
-MagickExport MagickBooleanType SetMagickOpenCLEnvParam(
-  MagickCLEnv magick_unused(clEnv),MagickOpenCLEnvParam magick_unused(param),
-  size_t magick_unused(dataSize),void *magick_unused(data),
-  ExceptionInfo *magick_unused(exception))
-{
-  magick_unreferenced(clEnv);
-  magick_unreferenced(param);
-  magick_unreferenced(dataSize);
-  magick_unreferenced(data);
-  magick_unreferenced(exception);
-
-  return MagickFalse;
-}
-
-MagickExport MagickBooleanType GetMagickOpenCLEnvParam(
-  MagickCLEnv magick_unused(clEnv),MagickOpenCLEnvParam magick_unused(param),
-  size_t magick_unused(dataSize),void *magick_unused(data),
-  ExceptionInfo *magick_unused(exception))
-{
-  magick_unreferenced(clEnv);
-  magick_unreferenced(param);
-  magick_unreferenced(dataSize);
-  magick_unreferenced(data);
-  magick_unreferenced(exception);
-
-  return MagickFalse;
-}
-
-MagickExport MagickBooleanType InitOpenCLEnv(MagickCLEnv magick_unused(clEnv),
-  ExceptionInfo *magick_unused(exception))
-{
-  magick_unreferenced(clEnv);
-  magick_unreferenced(exception);
-
-  return MagickFalse;
-}
-
-MagickPrivate cl_command_queue AcquireOpenCLCommandQueue(
-  MagickCLEnv magick_unused(clEnv))
-{
-  magick_unreferenced(clEnv);
-
-  return (cl_command_queue) NULL;
-}
-
-MagickExport MagickBooleanType RelinquishCommandQueue(
-  MagickCLEnv magick_unused(clEnv),cl_command_queue magick_unused(queue))
-{
-  magick_unreferenced(clEnv);
-  magick_unreferenced(queue);
-
-  return MagickFalse;
-}
-
-MagickPrivate cl_kernel AcquireOpenCLKernel(
-  MagickCLEnv magick_unused(clEnv),MagickOpenCLProgram magick_unused(program),
-  const char *magick_unused(kernelName))
-{
-  magick_unreferenced(clEnv);
-  magick_unreferenced(program);
-  magick_unreferenced(kernelName);
-
-  return (cl_kernel) NULL;
-}
-
-MagickPrivate MagickBooleanType RelinquishOpenCLKernel(
-  MagickCLEnv magick_unused(clEnv),cl_kernel magick_unused(kernel))
-{
-  magick_unreferenced(clEnv);
-  magick_unreferenced(kernel);
-
-  return MagickFalse;
-}
-
-MagickPrivate unsigned long GetOpenCLDeviceLocalMemorySize(
-  MagickCLEnv magick_unused(clEnv))
-{
-  magick_unreferenced(clEnv);
-
-  return 0;
-}
-
-MagickExport MagickBooleanType InitImageMagickOpenCL(
-  ImageMagickOpenCLMode magick_unused(mode),
-  void *magick_unused(userSelectedDevice),void *magick_unused(selectedDevice),
-  ExceptionInfo *magick_unused(exception))
-{
-  magick_unreferenced(mode);
-  magick_unreferenced(userSelectedDevice);
-  magick_unreferenced(selectedDevice);
-  magick_unreferenced(exception);
-  return MagickFalse;
-}
-
-
-MagickPrivate
-MagickBooleanType OpenCLThrowMagickException(ExceptionInfo *exception,
-  const char *module,const char *function,const size_t line,
-  const ExceptionType severity,const char *tag,const char *format,...)
-{
-  magick_unreferenced(exception);
-  magick_unreferenced(module);
-  magick_unreferenced(function);
-  magick_unreferenced(line);
-  magick_unreferenced(severity);
-  magick_unreferenced(tag);
-  magick_unreferenced(format);
-  return(MagickFalse);
-}
-
-#endif /* MAGICKCORE_OPENCL_SUPPORT */
-
 char* openclCachedFilesDirectory;
 SemaphoreInfo* openclCachedFilesDirectoryLock;
 
@@ -3144,7 +2997,6 @@ void OpenCLLog(const char* message) {
 
 MagickPrivate void OpenCLTerminus()
 {
-#if MAGICKCORE_OPENCL_SUPPORT
   DumpProfileData();
   if (openclCachedFilesDirectory != (char *) NULL)
     openclCachedFilesDirectory=DestroyString(openclCachedFilesDirectory);
@@ -3165,5 +3017,66 @@ MagickPrivate void OpenCLTerminus()
     }
   if (OpenCLLibLock != (SemaphoreInfo*)NULL)
     DestroySemaphoreInfo(&OpenCLLibLock);
-#endif
 }
+
+#else
+
+struct _MagickCLEnv {
+  MagickBooleanType OpenCLInitialized;  /* whether OpenCL environment is initialized. */
+};
+
+/*
+* Return the OpenCL environment
+*/
+MagickExport MagickCLEnv GetDefaultOpenCLEnv()
+{
+  return (MagickCLEnv) NULL;
+}
+
+MagickExport MagickBooleanType SetMagickOpenCLEnvParam(
+  MagickCLEnv magick_unused(clEnv),MagickOpenCLEnvParam magick_unused(param),
+  size_t magick_unused(dataSize),void *magick_unused(data),
+  ExceptionInfo *magick_unused(exception))
+{
+  magick_unreferenced(clEnv);
+  magick_unreferenced(param);
+  magick_unreferenced(dataSize);
+  magick_unreferenced(data);
+  magick_unreferenced(exception);
+  return(MagickFalse);
+}
+
+MagickExport MagickBooleanType GetMagickOpenCLEnvParam(
+  MagickCLEnv magick_unused(clEnv),MagickOpenCLEnvParam magick_unused(param),
+  size_t magick_unused(dataSize),void *magick_unused(data),
+  ExceptionInfo *magick_unused(exception))
+{
+  magick_unreferenced(clEnv);
+  magick_unreferenced(param);
+  magick_unreferenced(dataSize);
+  magick_unreferenced(data);
+  magick_unreferenced(exception);
+  return(MagickFalse);
+}
+
+MagickExport MagickBooleanType InitOpenCLEnv(MagickCLEnv magick_unused(clEnv),
+  ExceptionInfo *magick_unused(exception))
+{
+  magick_unreferenced(clEnv);
+  magick_unreferenced(exception);
+  return(MagickFalse);
+}
+
+MagickExport MagickBooleanType InitImageMagickOpenCL(
+  ImageMagickOpenCLMode magick_unused(mode),
+  void *magick_unused(userSelectedDevice),void *magick_unused(selectedDevice),
+  ExceptionInfo *magick_unused(exception))
+{
+  magick_unreferenced(mode);
+  magick_unreferenced(userSelectedDevice);
+  magick_unreferenced(selectedDevice);
+  magick_unreferenced(exception);
+  return(MagickFalse);
+}
+
+#endif /* MAGICKCORE_OPENCL_SUPPORT */

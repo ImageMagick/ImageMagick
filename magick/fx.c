@@ -313,9 +313,11 @@ MagickExport Image *AddNoiseImageChannel(const Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
+#if defined(MAGICKCORE_OPENCL_SUPPORT)
   noise_image=AccelerateAddNoiseImage(image,channel,noise_type,exception);
   if (noise_image != (Image *) NULL)
     return(noise_image);
+#endif
   noise_image=CloneImage(image,0,0,MagickTrue,exception);
   if (noise_image == (Image *) NULL)
     return((Image *) NULL);
@@ -5811,9 +5813,11 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   noise_image=(Image *) NULL;
+#if defined(MAGICKCORE_OPENCL_SUPPORT)
   noise_image=AccelerateWaveletDenoiseImage(image,threshold,exception);
   if (noise_image != (Image *) NULL)
     return(noise_image);
+#endif
   noise_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
   if (noise_image == (Image *) NULL)
     return((Image *) NULL);

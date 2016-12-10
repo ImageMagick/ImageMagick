@@ -1059,10 +1059,12 @@ MagickExport MagickBooleanType FunctionImageChannel(Image *image,
       InheritException(exception,&image->exception);
       return(MagickFalse);
     }
+#if defined(MAGICKCORE_OPENCL_SUPPORT)
   status=AccelerateFunctionImage(image,channel,function,number_parameters,
     parameters,exception);
   if (status != MagickFalse)
     return(status);
+#endif
   status=MagickTrue;
   progress=0;
   image_view=AcquireAuthenticCacheView(image,exception);
