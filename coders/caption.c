@@ -275,7 +275,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
     draw_info->direction == RightToLeftDirection ? image->columns-
     metrics.bounds.x2 : -metrics.bounds.x1,0.0),draw_info->gravity ==
     UndefinedGravity ? metrics.ascent : 0.0);
-  draw_info->geometry=AcquireString(geometry);
+  (void) CloneString(&draw_info->geometry,geometry);
   status=AnnotateImage(image,draw_info,exception);
   if (image_info->pointsize == 0.0)
     { 
