@@ -433,7 +433,7 @@ static MagickBooleanType CompositeOverImage(Image *image,
           Sa:  normalized source alpha.
           Da:  normalized canvas alpha.
       */
-      if (GetPixelWriteMask(source_image,p) == 0)
+      if (GetPixelReadMask(source_image,p) == 0)
         {
           p+=GetPixelChannels(source_image);
           channels=GetPixelChannels(source_image);
@@ -635,7 +635,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           register ssize_t
             i;
 
-          if (GetPixelWriteMask(source_image,p) == 0)
+          if (GetPixelReadMask(source_image,p) == 0)
             {
               p+=GetPixelChannels(source_image);
               q+=GetPixelChannels(image);
@@ -721,7 +721,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           }
         for (x=0; x < (ssize_t) source_image->columns; x++)
         {
-          if (GetPixelWriteMask(source_image,p) == 0)
+          if (GetPixelReadMask(source_image,p) == 0)
             {
               p+=GetPixelChannels(source_image);
               q+=GetPixelChannels(image);
