@@ -132,11 +132,11 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
     *image_view,
     *reconstruct_view;
 
-  double
-    fuzz;
-
   const char
     *artifact;
+
+  double
+    fuzz;
 
   Image
     *clone_image,
