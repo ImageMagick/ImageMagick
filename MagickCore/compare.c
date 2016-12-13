@@ -560,6 +560,9 @@ static MagickBooleanType GetFuzzDistortion(const Image *image,
         channel_distortion[i]+=distance*distance;
         channel_distortion[CompositePixelChannel]+=distance*distance;
       }
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+      #pragma omp critical (MagickCore_GetFuzzDistortion)
+#endif
       area++;
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(reconstruct_image);
@@ -671,6 +674,9 @@ static MagickBooleanType GetMeanAbsoluteDistortion(const Image *image,
         channel_distortion[i]+=distance;
         channel_distortion[CompositePixelChannel]+=distance;
       }
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+      #pragma omp critical (MagickCore_GetFuzzDistortion)
+#endif
       area++;
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(reconstruct_image);
@@ -878,6 +884,9 @@ static MagickBooleanType GetMeanSquaredDistortion(const Image *image,
         channel_distortion[i]+=distance*distance;
         channel_distortion[CompositePixelChannel]+=distance*distance;
       }
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+      #pragma omp critical (MagickCore_GetFuzzDistortion)
+#endif
       area++;
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(reconstruct_image);
