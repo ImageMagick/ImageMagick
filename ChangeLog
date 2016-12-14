@@ -1,3 +1,7 @@
+2016-12-14  7.0.4-0 Cristy  <quetzlzacatenango@image...>
+ * Lazily evaluate the image storage class and colorspace to prevent cache 
+   allocation when pinging an image.
+
 2016-12-10  7.0.3-10 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.3-10, GIT revision 19191:338f088:20161210.
 

@@ -1078,9 +1078,12 @@ MagickExport MagickBooleanType SetImageColorspace(Image *image,
   ImageType
     type;
 
-  MagickBooleanType
-    status;
-
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickCoreSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickCoreSignature);
   if (image->colorspace == colorspace)
     return(MagickTrue);
   image->colorspace=colorspace;
@@ -1115,9 +1118,8 @@ MagickExport MagickBooleanType SetImageColorspace(Image *image,
         image->chromaticity.white_point.y=0.3290;
         image->chromaticity.white_point.z=0.3583;
       }
-  status=SyncImagePixelCache(image,exception);
   image->type=type;
-  return(status);
+  return(MagickTrue);
 }
 
 /*
