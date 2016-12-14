@@ -1131,10 +1131,10 @@ MagickExport MagickBooleanType SetImageColorspace(Image *image,
   ImageType
     type;
 
-  assert(images != (Image *) NULL);
-  assert(images->signature == MagickSignature);
-  if (images->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->colorspace == colorspace)
     return(MagickTrue);
   image->colorspace=colorspace;
