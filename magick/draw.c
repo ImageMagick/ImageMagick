@@ -5958,8 +5958,8 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
     (fabs(primitive_info[number_vertices-1].point.x-primitive_info[0].point.x) < DrawEpsilon) &&
     (fabs(primitive_info[number_vertices-1].point.y-primitive_info[0].point.y) < DrawEpsilon) ?
     MagickTrue : MagickFalse;
-  if ((draw_info->linejoin == RoundJoin) ||
-      ((draw_info->linejoin == MiterJoin) && (closed_path != MagickFalse)))
+  if (((draw_info->linejoin == RoundJoin) ||
+       (draw_info->linejoin == MiterJoin)) && (closed_path != MagickFalse))
     {
       polygon_primitive[number_vertices]=primitive_info[1];
       number_vertices++;

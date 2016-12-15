@@ -2,6 +2,8 @@
   * Bump release to 6.9.7 to ensure coinstallability of old and new library.
   * Lazily evaluate the image storage class and colorspace to prevent cache
     allocation when pinging an image.
+  * Do not close path for linejoins of round (reference
+    https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=31039).
 
 2016-12-10  6.9.6-8 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 6.9.6-8, GIT revision 11219:11d48fe:20161210.
