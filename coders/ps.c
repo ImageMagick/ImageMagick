@@ -1454,7 +1454,6 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
       "  token pop /y exch def pop",
       "  currentfile buffer readline pop",
       "  token pop /pointsize exch def pop",
-      "  /Times-Roman findfont pointsize scalefont setfont",
       (const char *) NULL
     },
     *const PostscriptEpilog[]=
@@ -1829,13 +1828,18 @@ RestoreMSCWarning
         }
         value=GetImageProperty(image,"label");
         if (value != (const char *) NULL)
-          for (j=(ssize_t) MultilineCensus(value)-1; j >= 0; j--)
           {
-            (void) WriteBlobString(image,"  /label 512 string def\n");
-            (void) WriteBlobString(image,"  currentfile label readline pop\n");
-            (void) FormatLocaleString(buffer,MaxTextExtent,
-              "  0 y %g add moveto label show pop\n",j*pointsize+12);
-            (void) WriteBlobString(image,buffer);
+            (void) WriteBlobString(image,
+              "  /Times-Roman findfont pointsize scalefont setfont\n");
+            for (j=(ssize_t) MultilineCensus(value)-1; j >= 0; j--)
+            {
+              (void) WriteBlobString(image,"  /label 512 string def\n");
+              (void) WriteBlobString(image,
+                "  currentfile label readline pop\n");
+              (void) FormatLocaleString(buffer,MaxTextExtent,
+                "  0 y %g add moveto label show pop\n",j*pointsize+12);
+              (void) WriteBlobString(image,buffer);
+            }
           }
         for (s=PostscriptEpilog; *s != (char *) NULL; s++)
         {

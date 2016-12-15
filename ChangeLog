@@ -1,4 +1,5 @@
-2016-12-14  6.9.6-9 Cristy  <quetzlzacatenango@image...>
+2016-12-14  6.9.7-0 Cristy  <quetzlzacatenango@image...>
+  * Bump release to 6.9.7 to ensure coinstallability of old and new library.
   * Lazily evaluate the image storage class and colorspace to prevent cache
     allocation when pinging an image.
 

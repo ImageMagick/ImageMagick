@@ -357,7 +357,6 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
       "  token pop /y exch def pop",
       "  currentfile buffer readline pop",
       "  token pop /pointsize exch def pop",
-      "  /Helvetica findfont pointsize scalefont setfont",
       (const char *) NULL
     },
     *const PostscriptEpilog[]=
@@ -659,13 +658,18 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
         }
         value=GetImageProperty(image,"label");
         if (value != (const char *) NULL)
-          for (j=(ssize_t) MultilineCensus(value)-1; j >= 0; j--)
           {
-            (void) WriteBlobString(image,"  /label 512 string def\n");
-            (void) WriteBlobString(image,"  currentfile label readline pop\n");
-            (void) FormatLocaleString(buffer,MaxTextExtent,
-              "  0 y %g add moveto label show pop\n",j*pointsize+12);
-            (void) WriteBlobString(image,buffer);
+            (void) WriteBlobString(image,
+              "  /Helvetica findfont pointsize scalefont setfont\n");
+            for (j=(ssize_t) MultilineCensus(value)-1; j >= 0; j--)
+            {
+              (void) WriteBlobString(image,"  /label 512 string def\n");
+              (void) WriteBlobString(image,
+                "  currentfile label readline pop\n");
+              (void) FormatLocaleString(buffer,MaxTextExtent,
+                "  0 y %g add moveto label show pop\n",j*pointsize+12);
+              (void) WriteBlobString(image,buffer);
+            }
           }
         for (q=PostscriptEpilog; *q; q++)
         {
@@ -695,7 +699,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
       bounds.y2=(double) geometry.y+(geometry.height+text_size)-1;
     value=GetImageProperty(image,"label");
     if (value != (const char *) NULL)
-      (void) WriteBlobString(image,"%%PageResources: font Times-Roman\n");
+      (void) WriteBlobString(image,"%%PageResources: font Helvetica\n");
     if (LocaleCompare(image_info->magick,"PS2") != 0)
       (void) WriteBlobString(image,"userdict begin\n");
     start=TellBlob(image);
