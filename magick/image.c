@@ -2512,7 +2512,7 @@ MagickExport MagickBooleanType SetImageStorageClass(Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   image->storage_class=storage_class;
-  return(MagickTrue);
+  return(SyncImagePixelCache(image,&image->exception));
 }
 
 /*

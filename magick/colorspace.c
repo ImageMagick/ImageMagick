@@ -1170,7 +1170,7 @@ MagickExport MagickBooleanType SetImageColorspace(Image *image,
         image->chromaticity.white_point.z=0.3583;
       }
   image->type=type;
-  return(MagickTrue);
+  return(SyncImagePixelCache(image,&image->exception));
 }
 
 /*
