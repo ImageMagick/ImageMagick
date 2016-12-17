@@ -205,11 +205,11 @@ MagickExport Image *CompareImageChannels(Image *image,
   clone_image=CloneImage(image,0,0,MagickTrue,exception);
   if (clone_image == (Image *) NULL)
     return((Image *) NULL);
+  (void) SetImageMask(clone_image,(Image *) NULL);
   difference_image=CloneImage(clone_image,0,0,MagickTrue,exception);
   clone_image=DestroyImage(clone_image);
   if (difference_image == (Image *) NULL)
     return((Image *) NULL);
-  (void) SetImageMask(difference_image,(Image *) NULL);
   (void) SetImageAlphaChannel(difference_image,OpaqueAlphaChannel);
   rows=MagickMax(image->rows,reconstruct_image->rows);
   columns=MagickMax(image->columns,reconstruct_image->columns);
