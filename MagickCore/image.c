@@ -2430,7 +2430,7 @@ MagickExport MagickBooleanType SetImageStorageClass(Image *image,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
   image->storage_class=storage_class;
-  return(MagickTrue);
+  return(SyncImagePixelCache(image,exception));
 }
 
 /*

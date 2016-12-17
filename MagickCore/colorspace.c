@@ -1119,9 +1119,9 @@ MagickExport MagickBooleanType SetImageColorspace(Image *image,
         image->chromaticity.white_point.z=0.3583;
       }
   image->type=type;
-  return(MagickTrue);
+  return(SyncImagePixelCache(image,exception));
 }
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1178,7 +1178,7 @@ MagickExport MagickBooleanType SetImageGray(Image *image,
   image->type=type;
   return(MagickTrue);
 }
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1231,7 +1231,7 @@ MagickExport MagickBooleanType SetImageMonochrome(Image *image,
   image->type=BilevelType;
   return(MagickTrue);
 }
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
