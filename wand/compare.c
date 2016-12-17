@@ -122,6 +122,7 @@ static MagickBooleanType CompareUsage(void)
       "-limit type value    pixel cache resource limit",
       "-lowlight-color color",
       "                     de-emphasize pixel differences with this color",
+      "-mask filename       associate a mask with the image",
       "-metric type         measure differences between images with this metric",
       "-monitor             monitor progress",
       "-passphrase filename get the passphrase from this file",
@@ -715,6 +716,15 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
       }
       case 'm':
       {
+        if (LocaleCompare("mask",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowCompareException(OptionError,"MissingArgument",option);
+            break;
+          }
         if (LocaleCompare("matte",option+1) == 0)
           break;
         if (LocaleCompare("metric",option+1) == 0)
