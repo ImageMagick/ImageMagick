@@ -1,3 +1,6 @@
+2016-12-10  6.9.7-0 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 6.9.7-0, GIT revision 11230:d5e8abc:20161218.
+
 2016-12-14  6.9.7-0 Cristy  <quetzlzacatenango@image...>
   * Bump release to 6.9.7 to ensure coinstallability of old and new library.
   * Lazily evaluate the image storage class and colorspace to prevent cache
