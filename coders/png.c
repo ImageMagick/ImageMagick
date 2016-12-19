@@ -2145,10 +2145,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           "  exit ReadOnePNGImage() with error.");
 
       if (image != (Image *) NULL)
-        {
-          InheritException(exception,&image->exception);
-          image->columns=0;
-        }
+        InheritException(exception,&image->exception);
 
       return(GetFirstImageInList(image));
     }
