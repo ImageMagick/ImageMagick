@@ -2179,16 +2179,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "  exit ReadOnePNGImage() with error.");
 
-      if (image != (Image *) NULL)
-        {
-          const char
-            *option;
-
-          option=GetImageOption(image_info,"png:preserve-corrupt-image");
-          if (IsStringTrue(option) == MagickFalse)
-            image->columns=0;
-        }
-
       return(GetFirstImageInList(image));
     }
 
