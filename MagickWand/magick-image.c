@@ -9032,7 +9032,7 @@ WandExport MagickBooleanType MagickSetImageAlphaChannel(MagickWand *wand,
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   return(SetImageAlphaChannel(wand->images,alpha_type,wand->exception));
 }
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
