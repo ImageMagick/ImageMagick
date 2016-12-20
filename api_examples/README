@@ -17,7 +17,7 @@ ImageMagick Library.
 
 Shell API...
 
-  magick.sh           A simple "magick" shell command (as above)
+  magick_shell.sh     A simple "magick" shell command (as above)
   magick_script.mgk   As a "magick" script file
 
 MagickCLI API...

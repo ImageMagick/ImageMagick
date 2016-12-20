@@ -7,13 +7,13 @@
 
      gcc -lMagickWand -lMagickCore magick_command.c -o magick_command
 
-   Compile and run directly in Source Directory...
+   Compile and run directly from Source Directory...
 
      IM_PROG=api_examples/magick_command
      gcc -I`pwd` -LMagickWand/.libs -LMagickCore/.libs \
        -lMagickWand -lMagickCore  $IM_PROG.c -o $IM_PROG
 
-     sh magick.sh    $IM_PROG
+     sh ./magick.sh $IM_PROG
 
 */
 #include <stdio.h>

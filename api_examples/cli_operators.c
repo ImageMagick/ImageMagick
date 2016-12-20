@@ -10,13 +10,13 @@
 
      gcc -lMagickWand -lMagickCore cli_operators.c -o cli_operators
 
-   Compile and run directly in Source Directory...
+   Compile and run directly from Source Directory...
 
      IM_PROG=api_examples/cli_operators
      gcc -I`pwd` -LMagickWand/.libs -LMagickCore/.libs \
        -lMagickWand -lMagickCore  $IM_PROG.c -o $IM_PROG
 
-     sh magick.sh    $IM_PROG
+     sh ./magick.sh    $IM_PROG
 
 
 */

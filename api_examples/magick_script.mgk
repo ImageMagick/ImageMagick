@@ -2,12 +2,16 @@
 #
 # Magick Script
 #
+# Assumes the "magick-script" symlink to "magick" command has been installed
+#
 -size 100x100 xc:red
 ( rose: -rotate -90 )
 +append   -write show:
 
 # exit - not really needed here -- more for pipelines and debugging
 -exit
+
+
 -------------------------------------------------------------------------------
 This area is completely ignored by the magick script.
 

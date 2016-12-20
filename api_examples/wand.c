@@ -10,13 +10,13 @@
 
      gcc -lMagickWand -lMagickCore wand.c -o wand
 
-   Compile and run directly in Source Directory...
+   Compile and run directly from Source Directory...
 
      IM_PROG=api_examples/wand
      gcc -I`pwd` -LMagickWand/.libs -LMagickCore/.libs \
        -lMagickWand -lMagickCore  $IM_PROG.c -o $IM_PROG
 
-     sh magick.sh    $IM_PROG
+     sh ./magick.sh    $IM_PROG
 
 */
 #include <stdio.h>
@@ -103,13 +103,13 @@ int main(int argc, char *argv[])
     red = DestroyMagickWand(red);  /* finished with 'red' wand */
     /* NOTE ABOUT MagickAppendImages()
      *
-     * It is important to either set first or reset the iterator before
+     * It is important to either 'set first' or 'reset' the iterator before
      * appending images, as only images from current image onward are
      * appended together.
      *
-     * Also note how a new wand is created by this operation, and that want
-     * does not inherit any settings from the previous wand (at least not at
-     * this time).
+     * Also note how a new wand is created by this operation, and that new
+     * wand does not inherit any settings from the previous wand (at least not
+     * at this time).
      */
 
     /* Final output */
@@ -123,11 +123,12 @@ int main(int argc, char *argv[])
 }
 
 /*
- * The above can be simplified further.
+ * The above can be simplified further, though that is not what "magick"
+ * command would do which we are simulating.
  *
- * Specifically you can read the 'rose' image directly into the 'red' image
- * wand.  Then process just that rose image, even though it is sharing the
- * same wand as another image.
+ * Specifically you can read the 'rose' image directly on the end of of
+ * 'red' image wand.  Then process just that rose image, even though it is
+ * sharing the same wand as another image.
  *
  * Remember in MagickWand, simple image operators are only applied to the
  * current image in the wand an to no other image!  To apply a simple image
