@@ -528,6 +528,7 @@ MagickExport Image *AppendImages(const Image *images,
     (void) SetImageColorspace(append_image,sRGBColorspace,exception);
   append_image->depth=depth;
   append_image->alpha_trait=alpha_trait;
+  append_image->page=images->page;
   (void) SetImageBackgroundColor(append_image,exception);
   status=MagickTrue;
   x_offset=0;
@@ -907,10 +908,14 @@ MagickExport Image *CloneImage(const Image *image,const size_t columns,
   if (image->columns != 0)
     scale=(double) columns/(double) image->columns;
   clone_image->page.width=(size_t) floor(scale*image->page.width+0.5);
+  clone_image->page.x=(ssize_t) ceil(scale*image->page.x-0.5);
+  clone_image->tile_offset.x=(ssize_t) ceil(scale*image->tile_offset.x-0.5);
   scale=1.0;
   if (image->rows != 0)
     scale=(double) rows/(double) image->rows;
   clone_image->page.height=(size_t) floor(scale*image->page.height+0.5);
+  clone_image->page.y=(ssize_t) ceil(scale*image->page.y-0.5);
+  clone_image->tile_offset.y=(ssize_t) ceil(scale*image->tile_offset.y-0.5);
   clone_image->cache=ClonePixelCache(image->cache);
   if (SetImageExtent(clone_image,columns,rows,exception) == MagickFalse)
     clone_image=DestroyImage(clone_image);
