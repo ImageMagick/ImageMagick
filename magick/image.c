@@ -821,8 +821,6 @@ MagickExport Image *CloneImage(const Image *image,const size_t columns,
   clone_image->matte=image->matte;
   clone_image->columns=image->columns;
   clone_image->rows=image->rows;
-  clone_image->page=image->page;
-  clone_image->tile_offset=image->tile_offset;
   clone_image->dither=image->dither;
   if (image->colormap != (PixelPacket *) NULL)
     {
