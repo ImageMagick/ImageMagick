@@ -115,21 +115,25 @@ static int MagickMain(int argc,char **argv)
   register ssize_t
     i;
 
+  size_t
+    number_commands;
+
   MagickCoreGenesis(*argv,MagickTrue);
   exception=AcquireExceptionInfo();
   image_info=AcquireImageInfo();
   GetPathComponent(argv[0],TailPath,client_name);
-  for (i=0; i < (ssize_t) (sizeof(MagickCommands)/sizeof(MagickCommands[0])); i++)
+  number_commands=sizeof(MagickCommands)/sizeof(MagickCommands[0]);
+  for (i=0; i < (ssize_t) number_commands; i++)
   {
     offset=LocaleNCompare(MagickCommands[i].client_name,client_name,
       MagickCommands[i].extent);
     if (offset == 0)
       break;
   }
-  i%=(sizeof(MagickCommands)/sizeof(MagickCommands[0]));
+  i%=(number_commands);
   if ((i == 0) && (argc > 1))
     {
-      for (i=1; i < (ssize_t) (sizeof(MagickCommands)/sizeof(MagickCommands[0])); i++)
+      for (i=1; i < (ssize_t) number_commands; i++)
       {
         offset=LocaleCompare(MagickCommands[i].client_name,argv[1]);
         if (offset == 0)
@@ -139,7 +143,7 @@ static int MagickMain(int argc,char **argv)
             break;
           }
       }
-      i%=(sizeof(MagickCommands)/sizeof(MagickCommands[0]));
+      i%=number_commands;
     }
   metadata=(char *) NULL;
   status=MagickCommandGenesis(image_info,MagickCommands[i].command,argc,argv,
@@ -156,13 +160,13 @@ static int MagickMain(int argc,char **argv)
       if (status == MagickFalse)
         exit_code=2;
       else
-      {
-        const char
-          *option;
+        {
+          const char
+            *option;
 
-        option=GetImageOption(image_info,"compare:dissimilar");
-        exit_code=IsStringTrue(option) ? 1 : 0;
-      }
+          option=GetImageOption(image_info,"compare:dissimilar");
+          exit_code=IsStringTrue(option) ? 1 : 0;
+        }
     }
   image_info=DestroyImageInfo(image_info);
   exception=DestroyExceptionInfo(exception);
