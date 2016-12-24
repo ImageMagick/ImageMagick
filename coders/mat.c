@@ -717,6 +717,7 @@ static Image *ReadMATImageV4(const ImageInfo *image_info,Image *image,
       case 3:
         format_type=SignedQuantumFormat;
         depth=16;
+        break;
       case 4:
         format_type=UnsignedQuantumFormat;
         depth=8;
