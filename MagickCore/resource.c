@@ -68,6 +68,11 @@
 #include "MagickCore/utility-private.h"
 
 /*
+  Define declarations.
+*/
+#define MagickPathTemplate "XXXXXXXXXXXX"
+
+/*
   Typedef declarations.
 */
 typedef struct _ResourceInfo
@@ -403,8 +408,8 @@ MagickExport MagickBooleanType GetPathTemplate(char *path)
   struct stat
     attributes;
 
-  (void) FormatLocaleString(path,MagickPathExtent,"magick-%.20gXXXXXXXXXXXX",
-    (double) getpid());
+  (void) FormatLocaleString(path,MagickPathExtent,"magick-%.20g"
+    MagickPathTemplate,(double) getpid());
   exception=AcquireExceptionInfo();
   directory=(char *) GetImageRegistry(StringRegistryType,"temporary-path",
     exception);
@@ -450,11 +455,11 @@ MagickExport MagickBooleanType GetPathTemplate(char *path)
     }
   if (directory[strlen(directory)-1] == *DirectorySeparator)
     (void) FormatLocaleString(path,MagickPathExtent,
-      "%smagick-%.20gXXXXXXXXXXXX",directory,(double) getpid());
+      "%smagick-%.20g" MagickPathTemplate,directory,(double) getpid());
   else
     (void) FormatLocaleString(path,MagickPathExtent,
-      "%s%smagick-%.20gXXXXXXXXXXXX",directory,DirectorySeparator,(double)
-      getpid());
+      "%s%smagick-%.20g" MagickPathTemplate,directory,DirectorySeparator,
+      (double) getpid());
   directory=DestroyString(directory);
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
   {
@@ -519,7 +524,7 @@ MagickExport int AcquireUniqueFileResource(char *path)
     */
     (void) GetPathTemplate(path);
     key=GetRandomKey(random_info,6);
-    p=path+strlen(path)-12;
+    p=path+strlen(path)-strlen(MagickPathTemplate);
     datum=GetStringInfoDatum(key);
     for (i=0; i < (ssize_t) GetStringInfoLength(key); i++)
     {
@@ -540,8 +545,8 @@ MagickExport int AcquireUniqueFileResource(char *path)
         break;
       }
 #endif
-    key=GetRandomKey(random_info,12);
-    p=path+strlen(path)-12;
+    key=GetRandomKey(random_info,strlen(MagickPathTemplate));
+    p=path+strlen(path)-strlen(MagickPathTemplate);
     datum=GetStringInfoDatum(key);
     for (i=0; i < (ssize_t) GetStringInfoLength(key); i++)
     {
