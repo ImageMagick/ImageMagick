@@ -1359,14 +1359,7 @@ static MagickBooleanType ReadPSDChannel(Image *image,
       ThrowBinaryException(CoderError,"UnableToDecompressImage",
         image->filename);
     }
-  if (mask != (Image *) NULL)
-    {
-      if (status != MagickFalse)
-        layer_info->mask.image=mask;
-      else
-        mask=DestroyImage(mask);
-    }
-
+  layer_info->mask.image=mask;
   return(status);
 }
 
