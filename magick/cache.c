@@ -3759,7 +3759,7 @@ static MagickBooleanType SetPixelCacheExtent(Image *image,MagickSizeType length)
   offset=(MagickOffsetType) lseek(cache_info->file,0,SEEK_SET);
   if (offset < 0)
     return(MagickFalse);
-  return(count != (MagickOffsetType) 1 ? MagickFalse : MagickTrue);
+  return(MagickTrue);
 }
 
 static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
