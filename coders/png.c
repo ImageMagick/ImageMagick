@@ -2996,7 +2996,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         }
     }
 
-  if (image->storage_class == PseudoClass)
+  if ((image->storage_class == PseudoClass) &&
+      (image_info->ping == MagickFalse))
     {
       /*
         Initialize image colormap.
