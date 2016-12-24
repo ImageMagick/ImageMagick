@@ -803,7 +803,7 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
   if(exception->severity != UndefinedException) goto FINISH_UNL;
   if(magic_info->name == (char *) NULL) goto FINISH_UNL;
 
-  (void) strncpy(clone_info->magick,magic_info->name,MaxTextExtent);
+  (void) strncpy(clone_info->magick,magic_info->name,MaxTextExtent-1);
 
     /* Read nested image */
   /*FormatString(clone_info->filename,"%s:%s",magic_info->name,postscript_file);*/
