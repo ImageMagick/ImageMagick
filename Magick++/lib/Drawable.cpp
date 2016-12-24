@@ -1874,8 +1874,9 @@ void Magick::PathSmoothCurvetoAbs::operator()
       double x2 = p->x();
       double y2 = p->y();
       p++;
-      if(p != _coordinates.end() )
-        DrawPathCurveToSmoothAbsolute( context_, x2, y2, p->x(), p->y() );
+      if (p == _coordinates.end() )
+        break;
+      DrawPathCurveToSmoothAbsolute( context_, x2, y2, p->x(), p->y() );
     }
 }
 Magick::VPathBase* Magick::PathSmoothCurvetoAbs::copy() const
@@ -1910,8 +1911,9 @@ void Magick::PathSmoothCurvetoRel::operator()
       double x2 = p->x();
       double y2 = p->y();
       p++;
-      if(p != _coordinates.end() )
-        DrawPathCurveToSmoothRelative( context_, x2, y2, p->x(), p->y() );
+      if (p == _coordinates.end() )
+        break;
+      DrawPathCurveToSmoothRelative( context_, x2, y2, p->x(), p->y() );
     }
 }
 Magick::VPathBase* Magick::PathSmoothCurvetoRel::copy() const
