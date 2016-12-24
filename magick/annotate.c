@@ -620,7 +620,7 @@ MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
         p=s;
       }
     else
-      if ((s != (char *) NULL) || (split != MagickFalse))
+      if (split != MagickFalse)
         {
           char
             *target;
