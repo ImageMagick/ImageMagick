@@ -725,10 +725,10 @@ static const DDSSingleColourLookup*
 #define FixRange(min, max, steps) \
 if (min > max) \
   min = max; \
-if (max - min < steps) \
+if ((ssize_t) max - min < steps) \
   max = MagickMin(min + steps, 255); \
-if (max - min < steps) \
-  min = MagickMax(0, max - steps)
+if ((ssize_t) max - min < steps) \
+  min = MagickMax(0, (ssize_t) max - steps)
 
 #define Dot(left, right) (left.x*right.x) + (left.y*right.y) + (left.z*right.z)
 
