@@ -1943,7 +1943,8 @@ static MagickBooleanType ReadDXT1(Image *image,DDSInfo *dds_info,
           SetImageAlpha(image,QuantumRange,exception);
           q=QueueAuthenticPixels(image,x,y,MagickMin(4,image->columns-x),
             MagickMin(4,image->rows-y),exception);
-          SetDXT1Pixels(image,x,y,colors,bits,q);
+          if (q != (Quantum *) NULL)
+            SetDXT1Pixels(image,x,y,colors,bits,q);
         }
 
       if (SyncAuthenticPixels(image,exception) == MagickFalse)
