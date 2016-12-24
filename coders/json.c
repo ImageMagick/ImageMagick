@@ -615,7 +615,7 @@ static ssize_t PrintChannelPerceptualHash(Image *image,FILE *file,
     i;
 
   ssize_t
-    n;
+    n = 0;
 
   (void) FormatLocaleFile(file,"      \"colorspaces\": [ ");
   for (i=0; i < (ssize_t) channel_phash[0].number_colorspaces; i++)
