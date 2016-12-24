@@ -771,6 +771,7 @@ static MagickBooleanType ClassifyImageColors(CubeInfo *cube_info,
   midpoint.green=(MagickRealType) QuantumRange/2.0;
   midpoint.blue=(MagickRealType) QuantumRange/2.0;
   midpoint.opacity=(MagickRealType) QuantumRange/2.0;
+  midpoint.index=(MagickRealType) QuantumRange/2.0;
   error.opacity=0.0;
   image_view=AcquireVirtualCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
