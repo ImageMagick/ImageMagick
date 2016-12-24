@@ -1150,8 +1150,6 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             SetPixelIndex(image,index,q);
             q+=GetPixelChannels(image);
           }
-          if (x > 0)
-            break;
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;
           offset=(MagickOffsetType) (image->rows-y-1);
