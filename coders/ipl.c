@@ -545,6 +545,8 @@ static MagickBooleanType WriteIPLImage(const ImageInfo *image_info,Image *image)
   scene=0;
 
   quantum_info=AcquireQuantumInfo(image_info, image);
+  if (quantum_info == (QuantumInfo *) NULL)
+    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
   if ((quantum_info->format == UndefinedQuantumFormat) &&
       (IsHighDynamicRangeImage(image,&image->exception) != MagickFalse))
     SetQuantumFormat(image,quantum_info,FloatingPointQuantumFormat);
