@@ -2910,11 +2910,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
         (size_t) number_points,sizeof(*primitive_info));
       if ((primitive_info == (PrimitiveInfo *) NULL) ||
           (number_points != (MagickSizeType) ((size_t) number_points)))
-        {
-          (void) ThrowMagickException(&image->exception,GetMagickModule(),
-            ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
-          break;
-        }
+        ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+          image->filename);
     }
     primitive_info[j].primitive=primitive_type;
     primitive_info[j].coordinates=(size_t) x;
