@@ -507,6 +507,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
   opj_destroy_codec(jp2_codec);
   opj_image_destroy(jp2_image);
   opj_destroy_cstr_index(&codestream_index);
+  (void) CloseBlob(image);
   return(GetFirstImageInList(image));
 }
 #endif
