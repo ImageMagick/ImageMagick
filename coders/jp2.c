@@ -327,7 +327,9 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
   option=GetImageOption(image_info,"jp2:reduce-factor");
   if (option != (const char *) NULL)
     parameters.cp_reduce=StringToInteger(option);
-  option=GetImageOption(image_info,"jp2:layer-number");
+  option=GetImageOption(image_info,"jp2:quality-layers");
+  if (option == (const char *) NULL)
+    option=GetImageOption(image_info,"jp2:layer-number");
   if (option != (const char *) NULL)
     parameters.cp_layer=StringToInteger(option);
   if (opj_setup_decoder(jp2_codec,&parameters) == 0)
