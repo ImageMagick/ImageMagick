@@ -461,10 +461,11 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowAnimateException(OptionError,"MissingArgument",option);
-            type=ParseCommandOption(MagickAlphaChannelOptions,MagickFalse,argv[i]);
+            type=ParseCommandOption(MagickAlphaChannelOptions,MagickFalse,
+              argv[i]);
             if (type < 0)
-              ThrowAnimateException(OptionError,"UnrecognizedAlphaChannelOption",
-                argv[i]);
+              ThrowAnimateException(OptionError,
+                "UnrecognizedAlphaChannelOption",argv[i]);
             break;
           }
         if (LocaleCompare("alpha-color",option+1) == 0)

@@ -4742,8 +4742,9 @@ WandPrivate void CLINoImageOperator(MagickCLI *cli_wand,
         else
           new_images=ReadImages(_image_info,argv[i],_exception);
         AppendImageToList(&_images, new_images);
+        argv[i]=DestroyString(argv[i]);
       }
-      argv=DestroyStringList(argv);  /* Destroy the Expanded Filename list */
+      argv=(char **) RelinquishMagickMemory(argv);
       break;
     }
     /*
