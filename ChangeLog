@@ -1,5 +1,5 @@
 2016-12-26  7.0.4-1 Cristy  <quetzlzacatenango@image...>
- * Initialize draw_info alpha member to OpaqueAlpha.
+  * Initialize draw_info alpha member to OpaqueAlpha.
 
 2016-12-18  7.0.4-0 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.4-0, GIT revision 19221:d5e8abc:20161218.
