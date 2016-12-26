@@ -2249,6 +2249,9 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
           {
             GetNextToken(q,&q,extent,token);
             factor=strchr(token,'%') != (char *) NULL ? 0.01 : 1.0;
+            graphic_context[n]->opacity=QuantumRange-QuantumRange*((1.0-
+              QuantumScale*graphic_context[n]->opacity)*factor*
+              StringToDouble(token,&next_token));
             graphic_context[n]->fill_opacity=QuantumRange-QuantumRange*((1.0-
               QuantumScale*graphic_context[n]->fill_opacity)*factor*
               StringToDouble(token,&next_token));
