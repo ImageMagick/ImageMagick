@@ -1,9 +1,10 @@
+2016-12-26  7.0.4-1 Cristy  <quetzlzacatenango@image...>
+ * Initialize draw_info alpha member to OpaqueAlpha.
+
 2016-12-18  7.0.4-0 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.4-0, GIT revision 19221:d5e8abc:20161218.
 
 2016-12-14  7.0.4-0 Cristy  <quetzlzacatenango@image...>
- * Lazily evaluate the image storage class and colorspace to prevent cache 
-   allocation when pinging an image.
  * Do not close path for linejoins of round (reference
    https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=31039).
 
