@@ -247,7 +247,6 @@ endif
 
 install-data-html:
 	$(mkinstalldirs) $(DESTDIR)$(pkgdocdir)
-	$(INSTALL_DATA) $(srcdir)/index.html $(DESTDIR)$(pkgdocdir)
 	for dir in $(DOCDIRS) ; do \
 	  $(mkinstalldirs) $(DESTDIR)$(pkgdocdir)/$$dir && \
 	  if test -d $(builddir)/$$dir ; then \
@@ -266,7 +265,6 @@ install-data-html:
 # Uninstall HTML files
 HTML_UNINSTALL_DATA_TARGETS = uninstall-data-html
 uninstall-data-html:
-	rm -f $(DESTDIR)$(pkgdocdir)/index.html
 	for dir in $(DOCDIRS) ; do \
 	  rm -f -r $(DESTDIR)$(pkgdocdir)/$$dir ; \
 	done
