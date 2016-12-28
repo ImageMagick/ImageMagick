@@ -533,7 +533,7 @@ MagickExport PixelInfo *GetImageHistogram(const Image *image,
   cube_info=ClassifyImageColors(image,exception);
   if (cube_info != (CubeInfo *) NULL)
     {
-      histogram=(PixelInfo *) AcquireQuantumMemory((size_t) cube_info->colors,
+      histogram=(PixelInfo *) AcquireQuantumMemory((size_t) cube_info->colors+1,
         sizeof(*histogram));
       if (histogram == (PixelInfo *) NULL)
         (void) ThrowMagickException(exception,GetMagickModule(),
