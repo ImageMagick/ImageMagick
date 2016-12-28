@@ -537,8 +537,8 @@ MagickExport ColorPacket *GetImageHistogram(const Image *image,
   cube_info=ClassifyImageColors(image,exception);
   if (cube_info != (CubeInfo *) NULL)
     {
-      histogram=(ColorPacket *) AcquireQuantumMemory((size_t) cube_info->colors,
-        sizeof(*histogram));
+      histogram=(ColorPacket *) AcquireQuantumMemory((size_t)
+        cube_info->colors+1,sizeof(*histogram));
       if (histogram == (ColorPacket *) NULL)
         (void) ThrowMagickException(exception,GetMagickModule(),
           ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
