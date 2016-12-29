@@ -1264,7 +1264,6 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type,
           status=QuantizeImage(quantize_info,image,exception);
           quantize_info=DestroyQuantizeInfo(quantize_info);
         }
-      status=AcquireImageColormap(image,2,exception);
       image->alpha_trait=UndefinedPixelTrait;
       break;
     }
