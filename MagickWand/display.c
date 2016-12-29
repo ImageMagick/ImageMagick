@@ -459,10 +459,10 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
       if (image != (Image *) NULL)
         break;
       else
-        if (isatty(STDIN_FILENO) != MagickFalse)
+        if ((isatty(STDIN_FILENO) != MagickFalse) || (argc == 1))
           option="logo:";
         else
-         option="-";
+          option="-";
     if (LocaleCompare(option,"(") == 0)
       {
         FireImageStack(MagickFalse,MagickTrue,pend);
