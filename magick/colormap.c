@@ -114,11 +114,11 @@ MagickExport MagickBooleanType AcquireImageColormap(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   image->colors=MagickMax(colors,1);
   if (image->colormap == (PixelPacket *) NULL)
-    image->colormap=(PixelPacket *) AcquireQuantumMemory(image->colors,
+    image->colormap=(PixelPacket *) AcquireQuantumMemory(image->colors+1,
       sizeof(*image->colormap));
   else
     image->colormap=(PixelPacket *) ResizeQuantumMemory(image->colormap,
-      image->colors,sizeof(*image->colormap));
+      image->colors+1,sizeof(*image->colormap));
   if (image->colormap == (PixelPacket *) NULL)
     {
       image->colors=0;

@@ -1296,7 +1296,6 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type)
           status=QuantizeImage(quantize_info,image);
           quantize_info=DestroyQuantizeInfo(quantize_info);
         }
-      status=AcquireImageColormap(image,2);
       image->matte=MagickFalse;
       break;
     }
