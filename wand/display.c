@@ -510,9 +510,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
           continue;
         AppendImageStack(images);
         FinalizeImageSettings(image_info,image,MagickFalse);
-        iterations=0;
-        if (i == (ssize_t) argc)
-          iterations=image->iterations;
+        iterations=image->iterations;
         image_list=CloneImageList(image,exception);
         if (image_list == (Image *) NULL)
           ThrowDisplayException(ResourceLimitError,"MemoryAllocationFailed",
@@ -655,8 +653,12 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
           }
         if (resource_info.window_id != (char *) NULL)
           state|=ExitState;
-        if ((iterations != 0) && (++iteration == (ssize_t) iterations))
-          state|=ExitState;
+        if (iterations != 0)
+          {
+            if (++iteration == (ssize_t) iterations)
+              state|=ExitState;
+            i=0;
+          }
         if (LocaleCompare(filename,"-") == 0)
           state|=ExitState;
         RemoveAllImageStack();
