@@ -459,7 +459,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
       if (image != (Image *) NULL)
         break;
       else
-        if ((isatty(STDIN_FILENO) != MagickFalse) || (argc == 1))
+        if (isatty(STDIN_FILENO) != MagickFalse)
           option="logo:";
         else
           option="-";
