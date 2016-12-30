@@ -21,7 +21,7 @@
   <meta name="author" content="ImageMagick Studio LLC"/>
   <meta name="revisit-after" content="2 DAYS"/>
   <meta name="resource-type" content="document"/>
-  <meta name="copyright" content="Copyright (c) 1999-2016 ImageMagick Studio LLC"/>
+  <meta name="copyright" content="Copyright (c) 1999-2017 ImageMagick Studio LLC"/>
   <meta name="distribution" content="Global"/>
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
@@ -56,8 +56,27 @@
   </div>
 </div>
 <div class="container">
-<div class="magick-header"><dl><dt>2016-11-26  7.0.3-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<div class="magick-header"><dl><dt>2016-12-18  7.0.4-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 7.0.4-0, GIT revision 19221:d5e8abc:20161218.</li>
+<dt>2016-12-14  7.0.4-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Lazily evaluate the image storage class and colorspace to prevent cache    allocation when pinging an image.</li>
+  <li> Do not close path for linejoins of round (reference   https://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=31039).</li>
+<dt>2016-12-10  7.0.3-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 7.0.3-10, GIT revision 19191:338f088:20161210.</li>
+<dt>2016-12-07  7.0.3-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Set colorspace to sRGB if -append has non-homogenous colorspaces (reference    https://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=29105).</li>
+  <li> Respect connected-components:area-threshold define (reference    https://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=31006). </li>
+  <li> Enable alpha channel if background color is non-opaque (reference    https://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=31016).</li>
+  <li> Return correct offset for negative index for -fx option (reference    https://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=31019).</li>
+  <li> Fixed improper scaling of certain FITS images (reference    https://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=31028).</li>
+  <li> Properly center text label (reference    https://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=31027).</li>
+<dt>2016-12-05  7.0.3-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 7.0.3-9, GIT revision 19139:6fed3f1:20161205.</li>
+<dt>2016-11-26  7.0.3-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Support the compare -read-mask option.</li>
+  <li> Support read-masks for the -modulate option.</li>
+  <li> Prevent buffer overflow when streaming an image (reference    https://github.com/ImageMagick/ImageMagick/issues/312).</li>
+  <li> Fix possible buffer overflow when writing compressed TIFFS (vulnerability    report from Cisco Talos, CVE-2016-8707).</li>
 <dt>2016-11-15  7.0.3-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.3-8, GIT revision 19067:5aceded:20161125.</li>
 <dt>2016-11-18  7.0.3-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
@@ -260,7 +279,7 @@
     <p><a href="changelog.html#">Back to top</a> •
     <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
     <a href="https://www.imagemagick.org/script/contact.php">Contact Us</a></p>
-        <p><small>©  1999-2016 ImageMagick Studio LLC</small></p>
+        <p><small>© 1999-2017 ImageMagick Studio LLC</small></p>
   </footer>
 </div><!-- /.container -->
 
@@ -269,4 +288,4 @@
 </div>
 </body>
 </html>
-<!-- Magick Cache 30th November 2016 13:54 -->
+<!-- Magick Cache 24th December 2016 11:01 -->
