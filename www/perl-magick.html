@@ -21,7 +21,7 @@
   <meta name="author" content="ImageMagick Studio LLC"/>
   <meta name="revisit-after" content="2 DAYS"/>
   <meta name="resource-type" content="document"/>
-  <meta name="copyright" content="Copyright (c) 1999-2016 ImageMagick Studio LLC"/>
+  <meta name="copyright" content="Copyright (c) 1999-2017 ImageMagick Studio LLC"/>
   <meta name="distribution" content="Global"/>
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
@@ -86,7 +86,7 @@ tar xvzf ImageMagick.tar.gz
 
 <p>Next configure and compile ImageMagick:</p>
 
-<pre><span class="crtprompt"> </span><span class='crtin'>cd ImageMagick-7.0.3</span><span class='crtout'></span><span class="crtprompt"> </span><span class='crtin'>./configure -with-perl</span><span class='crtout'></span><span class="crtprompt"> </span><span class='crtin'>make</span></pre>
+<pre><span class="crtprompt"> </span><span class='crtin'>cd ImageMagick-7.0.4</span><span class='crtout'></span><span class="crtprompt"> </span><span class='crtin'>./configure -with-perl</span><span class='crtout'></span><span class="crtprompt"> </span><span class='crtin'>make</span></pre>
 <p>If ImageMagick / PerlMagick configured and compiled without complaint, you are ready to install it on your system.  Administrator privileges are required to install.  To install, type</p>
 
 <pre>
@@ -552,6 +552,12 @@ $image-&gt;[$x]-&gt;Frame("100x200");
     <td>ColorMatrix</td>
     <td>matrix=&gt;<i>array of float values</i></td>
     <td>apply color correction to the image.  Although you can use variable sized matrices, typically you use a 5 x 5 for an RGBA image and a 6x6 for CMYKA.  A 6x6 matrix is required for offsets (populate the last column with normalized values).</td>
+  </tr>
+
+  <tr>
+    <td>Colorspace</td>
+    <td>colorspace=&gt;{RGB, Gray, Transparent, OHTA, XYZ, YCbCr, YCC, YIQ, YPbPr, YUV, CMYK}</td>
+    <td> set the image colorspace</td>
   </tr>
 
   <tr>
@@ -2596,7 +2602,7 @@ Image::Magick-&gt;QuantumDepth
     <p><a href="perl-magick.html#">Back to top</a> •
     <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
     <a href="https://www.imagemagick.org/script/contact.php">Contact Us</a></p>
-        <p><small>©  1999-2016 ImageMagick Studio LLC</small></p>
+        <p><small>© 1999-2017 ImageMagick Studio LLC</small></p>
   </footer>
 </div><!-- /.container -->
 
@@ -2605,4 +2611,4 @@ Image::Magick-&gt;QuantumDepth
 </div>
 </body>
 </html>
-<!-- Magick Cache 30th November 2016 13:54 -->
+<!-- Magick Cache 24th December 2016 11:31 -->
