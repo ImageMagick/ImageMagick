@@ -1,3 +1,6 @@
+2016-12-31  7.0.4-1 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.4-1, GIT revision 19292:c5ccfa8:20161231.
+
 2016-12-26  7.0.4-1 Cristy  <quetzlzacatenango@image...>
   * Initialize draw_info alpha member to OpaqueAlpha.
   * Monochrome images no longer have inverted colors (reference
