@@ -1713,6 +1713,8 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
           {
             packet_size=1;
             (void) CopyMagickString(type,"GRAYSCALE",MaxTextExtent);
+            if (IsMonochromeImage(image,&image->exception) != MagickFalse)
+              (void) CopyMagickString(type,"BLACKANDWHITE",MaxTextExtent);
             break;
           }
           default:
