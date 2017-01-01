@@ -1690,6 +1690,8 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
           {
             packet_size=1;
             (void) CopyMagickString(type,"GRAYSCALE",MagickPathExtent);
+            if (IsImageMonochrome(image) != MagickFalse)
+              (void) CopyMagickString(type,"BLACKANDWHITE",MagickPathExtent);
             break;
           }
           default:
@@ -1713,8 +1715,8 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
           "DEPTH %.20g\nMAXVAL %.20g\n",(double) packet_size,(double)
           ((MagickOffsetType) GetQuantumRange(image->depth)));
         (void) WriteBlobString(image,buffer);
-        (void) FormatLocaleString(buffer,MagickPathExtent,"TUPLTYPE %s\nENDHDR\n",
-          type);
+        (void) FormatLocaleString(buffer,MagickPathExtent,
+          "TUPLTYPE %s\nENDHDR\n",type);
         (void) WriteBlobString(image,buffer);
       }
     /*
