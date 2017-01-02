@@ -3053,6 +3053,7 @@ ILBMDecodeDelegateDefault='ilbmtoppm'
 ILBMEncodeDelegateDefault='ppmtoilbm'
 JXRDecodeDelegateDefault='JxrDecApp'
 JXREncodeDelegateDefault='JxrEncApp'
+LEPDelegateDefault='lepton'
 LPDelegateDefault='lp'
 LPRDelegateDefault='lpr'
 LaunchDelegateDefault='gimp'
@@ -3095,6 +3096,7 @@ AC_PATH_PROG(ILBMDecodeDelegate, "$ILBMDecodeDelegateDefault", "$ILBMDecodeDeleg
 AC_PATH_PROG(ILBMEncodeDelegate, "$ILBMEncodeDelegateDefault", "$ILBMEncodeDelegateDefault")
 AC_PATH_PROG(JXRDecodeDelegate, "$JXRDecodeDelegateDefault", "$JXRDecodeDelegateDefault")
 AC_PATH_PROG(JXREncodeDelegate, "$JXREncodeDelegateDefault", "$JXREncodeDelegateDefault")
+AC_PATH_PROG(LEPDelegate, "$LEPDelegateDefault", "$LEPDelegateDefault")
 AC_PATH_PROG(LPDelegate, "$LPDelegateDefault", no)
 AC_PATH_PROG(LPRDelegate, "$LPRDelegateDefault", "$LPRDelegateDefault")
 AC_PATH_PROG(LaunchDelegate, "$LaunchDelegateDefault", "$LaunchDelegateDefault")
@@ -3282,6 +3284,7 @@ if test "$with_frozenpaths" != 'yes'; then
   ILBMEncodeDelegate="$ILBMEncodeDelegateDefault"
   JXRDecodeDelegate="$JXRDecodeDelegateDefault"
   JXREncodeDelegate="$JXREncodeDelegateDefault"
+  LEPDelegate="$LEPDelegateDefault"
   LPDelegate="$LPDelegateDefault"
   LaunchDelegate="$LaunchDelegateDefault"
   MPEGDecodeDelegate="$MPEGDecodeDelegateDefault"
@@ -3315,6 +3318,7 @@ AC_SUBST(ILBMDecodeDelegate)
 AC_SUBST(ILBMEncodeDelegate)
 AC_SUBST(JXRDecodeDelegate)
 AC_SUBST(JXREncodeDelegate)
+AC_SUBST(LEPDelegate)
 AC_SUBST(LPDelegate)
 AC_SUBST(LaunchDelegate)
 AC_SUBST(MPEGDecodeDelegate)
