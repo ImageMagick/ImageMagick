@@ -1587,10 +1587,6 @@ static Image *ComputeConvolveImage(const Image* image,MagickCLEnv clEnv,
 
   device = RequestOpenCLDevice(clEnv);
 
-  /* Work around an issue on NVIDIA devices */
-  if (strcmp("NVIDIA Corporation",device->vendor_name) == 0)
-    goto cleanup;
-
   image_view=AcquireAuthenticCacheView(image,exception);
   inputPixels=GetCacheViewAuthenticPixels(image_view,0,0,image->columns,image->rows,exception);
   if (inputPixels == (const void *) NULL)
