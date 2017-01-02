@@ -1740,11 +1740,6 @@ static Image *ComputeConvolveImage(const Image* image,
   
   clEnv = GetDefaultOpenCLEnv();
 
-  /* Work around an issue on NVIDIA devices */
-  if (paramMatchesValue(clEnv,MAGICK_OPENCL_ENV_PARAM_PLATFORM_VENDOR,
-      "NVIDIA Corporation",exception) != MagickFalse)
-    goto cleanup;
-
   context = GetOpenCLContext(clEnv);
 
   imageBuffer = GetAuthenticOpenCLBuffer(image,exception);
