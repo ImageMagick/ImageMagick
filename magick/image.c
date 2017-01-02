@@ -3590,7 +3590,8 @@ MagickExport MagickBooleanType SyncImage(Image *image)
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(image->signature == MagickSignature);
-  if (image->storage_class == DirectClass)
+  if ((image->storage_class != PseudoClass) ||
+      (image->colormap == (PixelPacket *) NULL))
     return(MagickFalse);
   range_exception=MagickFalse;
   status=MagickTrue;
