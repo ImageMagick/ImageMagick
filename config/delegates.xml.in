@@ -84,7 +84,7 @@
   <delegate decode="ilbm" command="&quot;@ILBMDecodeDelegate@&quot; &quot;%i&quot; &gt; &quot;%o&quot;"/>
   <delegate decode="jpg" encode="lep" mode="encode" command="&quot;@LEPDelegate@&quot; &quot;%i&quot; &quot;%o&quot;"/>
   <delegate decode="jxr" command="@MVDelegate@ &quot;%i&quot; &quot;%i.jxr&quot;; &quot;@JXRDecodeDelegate@&quot; -i &quot;%i.jxr&quot; -o &quot;%o.bmp&quot; -c 0; @MVDelegate@ &quot;%i.jxr&quot; &quot;%i&quot;; @MVDelegate@ &quot;%o.bmp&quot; &quot;%o&quot;"/>
-  <delegate decode="lep" mode="encode" command="&quot;@LEPDelegate@&quot; &quot;%i&quot; &quot;%o&quot;"/>
+  <delegate decode="lep" mode="decode" command="&quot;@LEPDelegate@&quot; &quot;%i&quot; &quot;%o&quot;"/>
   <delegate decode="miff" encode="show" spawn="True" command="&quot;@DisplayDelegate@&quot; -immutable -delay 0 -title &quot;%M&quot; &quot;%i&quot;"/>
   <delegate decode="miff" encode="win" stealth="True" spawn="True" command="&quot;@DisplayDelegate@&quot; -immutable -delay 0 -title &quot;%M&quot; &quot;%i&quot;"/>
   <delegate decode="mpeg:decode" command="&quot;@MPEGDecodeDelegate@&quot; -nostdin -v -1 -i &quot;%i&quot; -vframes %S -vcodec pam -an -f rawvideo -y &quot;%u.pam&quot; 2&gt; &quot;%u&quot;"/>
