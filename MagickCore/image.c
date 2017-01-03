@@ -3678,9 +3678,9 @@ MagickExport MagickBooleanType SyncImage(Image *image,ExceptionInfo *exception)
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(image->signature == MagickCoreSignature);
-  if ((image->storage_class != PseudoClass) ||
-      (image->colormap == (PixelInfo *) NULL))
+  if (image->storage_class != PseudoClass)
     return(MagickFalse);
+  assert(image->colormap != (PixelInfo *) NULL);
   range_exception=MagickFalse;
   status=MagickTrue;
   taint=image->taint;
