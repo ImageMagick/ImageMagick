@@ -1,3 +1,6 @@
+2017-01-03  6.9.7-2 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 6.9.7-2, GIT revision 11274:2faf8d7:20170103.
+
 2017-01-02  6.9.7-2 Cristy  <quetzlzacatenango@image...>
   * Validation unit test for MNG works again.
 
