@@ -1,3 +1,6 @@
+2016-01-02  7.0.4-2 Cristy  <quetzlzacatenango@image...>
+  * Validation unit test for MNG works again.
+
 2016-12-31  7.0.4-1 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.4-1, GIT revision 19292:c5ccfa8:20161231.
 
