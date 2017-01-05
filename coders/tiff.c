@@ -1606,8 +1606,9 @@ RestoreMSCWarning
       method=ReadTileMethod;
     quantum_info->endian=LSBEndian;
     quantum_type=RGBQuantum;
-    tiff_pixels=(unsigned char *) AcquireMagickMemory(TIFFScanlineSize(tiff)+
-      sizeof(uint32));
+    tiff_pixels=(unsigned char *) AcquireMagickMemory(MagickMax(
+      TIFFScanlineSize(tiff),(size_t) (image->columns*samples_per_pixel*
+      pow(2.0,ceil(log(bits_per_sample)/log(2.0))))));
     if (tiff_pixels == (unsigned char *) NULL)
       {
         TIFFClose(tiff);
