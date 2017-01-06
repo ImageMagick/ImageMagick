@@ -523,11 +523,6 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (file == (FILE *) NULL)
     file=stdout;
-  colorspace=image->colorspace;
-  type=IdentifyImageType(image,exception);
-  if ((type == BilevelType) || (type == GrayscaleType) ||
-      (type == GrayscaleAlphaType))
-    colorspace=GRAYColorspace;
   locate=GetImageArtifact(image,"identify:locate");
   if (locate != (const char *) NULL)
     {
@@ -538,56 +533,61 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         max_locations;
 
       StatisticType
-        type;
+        statistic_type;
 
       /*
         Display minimum, maximum, or mean pixel locations.
       */
-      type=(StatisticType) ParseCommandOption(MagickStatisticOptions,
+      statistic_type=(StatisticType) ParseCommandOption(MagickStatisticOptions,
         MagickFalse,locate);
       limit=GetImageArtifact(image,"identify:limit");
       max_locations=0;
       if (limit != (const char *) NULL)
         max_locations=StringToUnsignedLong(limit);
-      channel_statistics=GetLocationStatistics(image,type,exception);
+      channel_statistics=GetLocationStatistics(image,statistic_type,exception);
       if (channel_statistics == (ChannelStatistics *) NULL)
         return(MagickFalse);
       (void) FormatLocaleFile(file,"Channel %s locations:\n",locate);
+      colorspace=image->colorspace;
+      type=IdentifyImageType(image,exception);
+      if ((type == BilevelType) || (type == GrayscaleType) ||
+          (type == GrayscaleAlphaType))
+        colorspace=GRAYColorspace;
       switch (colorspace)
       {
         case RGBColorspace:
         default:
         {
           (void) PrintChannelLocations(file,image,RedPixelChannel,"Red",
-            type,max_locations,channel_statistics);
+            statistic_type,max_locations,channel_statistics);
           (void) PrintChannelLocations(file,image,GreenPixelChannel,"Green",
-            type,max_locations,channel_statistics);
+            statistic_type,max_locations,channel_statistics);
           (void) PrintChannelLocations(file,image,BluePixelChannel,"Blue",
-            type,max_locations,channel_statistics);
+            statistic_type,max_locations,channel_statistics);
           break;
         }
         case CMYKColorspace:
         {
           (void) PrintChannelLocations(file,image,CyanPixelChannel,"Cyan",
-            type,max_locations,channel_statistics);
+            statistic_type,max_locations,channel_statistics);
           (void) PrintChannelLocations(file,image,MagentaPixelChannel,"Magenta",
-            type,max_locations,channel_statistics);
+            statistic_type,max_locations,channel_statistics);
           (void) PrintChannelLocations(file,image,YellowPixelChannel,"Yellow",
-            type,max_locations,channel_statistics);
+            statistic_type,max_locations,channel_statistics);
           (void) PrintChannelLocations(file,image,BlackPixelChannel,"Black",
-            type,max_locations,channel_statistics);
+            statistic_type,max_locations,channel_statistics);
           break;
         }
         case GRAYColorspace:
         {
           (void) PrintChannelLocations(file,image,GrayPixelChannel,"Gray",
-            type,max_locations,channel_statistics);
+            statistic_type,max_locations,channel_statistics);
           break;
         }
       }
       if (image->alpha_trait != UndefinedPixelTrait)
         (void) PrintChannelLocations(file,image,AlphaPixelChannel,"Alpha",
-          type,max_locations,channel_statistics);
+          statistic_type,max_locations,channel_statistics);
       channel_statistics=(ChannelStatistics *) RelinquishMagickMemory(
         channel_statistics);
       return(ferror(file) != 0 ? MagickFalse : MagickTrue);
@@ -669,6 +669,11 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
   /*
     Display verbose info about the image.
   */
+  colorspace=image->colorspace;
+  type=IdentifyImageType(image,exception);
+  if ((type == BilevelType) || (type == GrayscaleType) ||
+      (type == GrayscaleAlphaType))
+    colorspace=GRAYColorspace;
   p=GetVirtualPixels(image,0,0,1,1,exception);
   ping=p == (const Quantum *) NULL ? MagickTrue : MagickFalse;
   (void) SignatureImage(image,exception);
