@@ -553,12 +553,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (file == (FILE *) NULL)
     file=stdout;
-  colorspace=image->colorspace;
   exception=AcquireExceptionInfo();
-  type=IdentifyImageType(image,exception);
-  if ((type == BilevelType) || (type == GrayscaleType) ||
-      (type == GrayscaleMatteType))
-    colorspace=GRAYColorspace;
   locate=GetImageArtifact(image,"identify:locate");
   if (locate != (const char *) NULL)
     {
@@ -569,22 +564,24 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         max_locations;
 
       StatisticType
-        type;
+        statistic_type;
 
       /*
         Display minimum, maximum, or mean pixel locations.
       */
-      type=(StatisticType) ParseCommandOption(MagickStatisticOptions,
+      statistic_type=(StatisticType) ParseCommandOption(MagickStatisticOptions,
         MagickFalse,locate);
       limit=GetImageArtifact(image,"identify:limit");
       max_locations=0;
       if (limit != (const char *) NULL)
         max_locations=StringToUnsignedLong(limit);
-      channel_statistics=GetLocationStatistics(image,type,exception);
+      channel_statistics=GetLocationStatistics(image,statistic_type,exception);
       if (channel_statistics == (ChannelStatistics *) NULL)
         return(MagickFalse);
       colorspace=image->colorspace;
-      if (SetImageGray(image,exception) != MagickFalse)
+      type=IdentifyImageType(image,exception);
+      if ((type == BilevelType) || (type == GrayscaleType) ||
+          (type == GrayscaleMatteType))
         colorspace=GRAYColorspace;
       (void) FormatLocaleFile(file,"  Channel %s locations:\n",locate);
       switch (colorspace)
@@ -592,36 +589,36 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         case RGBColorspace:
         default:
         {
-          (void) PrintChannelLocations(file,image,RedChannel,"Red",type,
-            max_locations,channel_statistics);
-          (void) PrintChannelLocations(file,image,GreenChannel,"Green",type,
-            max_locations,channel_statistics);
-          (void) PrintChannelLocations(file,image,BlueChannel,"Blue",type,
-            max_locations,channel_statistics);
+          (void) PrintChannelLocations(file,image,RedChannel,"Red",
+            statistic_type,max_locations,channel_statistics);
+          (void) PrintChannelLocations(file,image,GreenChannel,"Green",
+            statistic_type,max_locations,channel_statistics);
+          (void) PrintChannelLocations(file,image,BlueChannel,"Blue",
+            statistic_type,max_locations,channel_statistics);
           break;
         }
         case CMYKColorspace:
         {
-          (void) PrintChannelLocations(file,image,CyanChannel,"Cyan",type,
-            max_locations,channel_statistics);
-          (void) PrintChannelLocations(file,image,MagentaChannel,"Magenta",type,
-            max_locations,channel_statistics);
-          (void) PrintChannelLocations(file,image,YellowChannel,"Yellow",type,
-            max_locations,channel_statistics);
-          (void) PrintChannelLocations(file,image,BlackChannel,"Black",type,
-            max_locations,channel_statistics);
+          (void) PrintChannelLocations(file,image,CyanChannel,"Cyan",
+            statistic_type,max_locations,channel_statistics);
+          (void) PrintChannelLocations(file,image,MagentaChannel,"Magenta",
+            statistic_type,max_locations,channel_statistics);
+          (void) PrintChannelLocations(file,image,YellowChannel,"Yellow",
+            statistic_type,max_locations,channel_statistics);
+          (void) PrintChannelLocations(file,image,BlackChannel,"Black",
+            statistic_type,max_locations,channel_statistics);
           break;
         }
         case GRAYColorspace:
         {
-          (void) PrintChannelLocations(file,image,GrayChannel,"Gray",type,
-            max_locations,channel_statistics);
+          (void) PrintChannelLocations(file,image,GrayChannel,"Gray",
+            statistic_type,max_locations,channel_statistics);
           break;
         }
       }
       if (image->matte != MagickFalse)
-        (void) PrintChannelLocations(file,image,AlphaChannel,"Alpha",type,
-          max_locations,channel_statistics);
+        (void) PrintChannelLocations(file,image,AlphaChannel,"Alpha",
+          statistic_type,max_locations,channel_statistics);
       channel_statistics=(ChannelStatistics *) RelinquishMagickMemory(
         channel_statistics);
       exception=DestroyExceptionInfo(exception);
@@ -701,6 +698,11 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
   /*
     Display verbose info about the image.
   */
+  colorspace=image->colorspace;
+  type=IdentifyImageType(image,exception);
+  if ((type == BilevelType) || (type == GrayscaleType) ||
+      (type == GrayscaleMatteType))
+    colorspace=GRAYColorspace;
   pixels=GetVirtualPixels(image,0,0,1,1,exception);
   exception=DestroyExceptionInfo(exception);
   ping=pixels == (const PixelPacket *) NULL ? MagickTrue : MagickFalse;
