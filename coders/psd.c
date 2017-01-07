@@ -1691,7 +1691,7 @@ ModuleExport MagickBooleanType ReadPSDLayers(Image *image,
             /*
               Layer name.
             */
-            length=(MagickSizeType) ReadBlobByte(image);
+            length=(MagickSizeType) (unsigned char) ReadBlobByte(image);
             combined_length+=length+1;
             if (length > 0)
               (void) ReadBlob(image,(size_t) length++,layer_info[i].name);
