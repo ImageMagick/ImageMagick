@@ -2511,7 +2511,7 @@ static size_t WritePSDChannel(const PSDInfo *psd_info,
     next_image->depth=16;
   monochrome=IsImageMonochrome(image) && (image->depth == 1) ?
     MagickTrue : MagickFalse;
-  quantum_info=AcquireQuantumInfo(image_info,image);
+  quantum_info=AcquireQuantumInfo(image_info,next_image);
   if (quantum_info == (QuantumInfo *) NULL)
     return(0);
   pixels=(unsigned char *) GetQuantumPixels(quantum_info);
