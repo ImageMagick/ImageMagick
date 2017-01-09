@@ -1327,6 +1327,8 @@ static Image *OptimizeLayerFrames(const Image *image,
     prev_image=CloneImage(curr,0,0,MagickTrue,exception);
     if (prev_image == (Image *) NULL)
       break;
+    if (prev_image->alpha_trait == UndefinedPixelTrait)
+      (void) SetImageAlphaChannel(prev_image,OpaqueAlphaChannel,exception);
     if ( disposals[i] == DelDispose ) {
       size_t time = 0;
       while ( disposals[i] == DelDispose ) {
