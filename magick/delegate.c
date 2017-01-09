@@ -2179,7 +2179,8 @@ static MagickBooleanType LoadDelegateCache(LinkedListInfo *cache,
       }
     if (delegate_info == (DelegateInfo *) NULL)
       continue;
-    if (LocaleCompare(keyword,"/>") == 0)
+    if ((LocaleCompare(keyword,"/>") == 0) ||
+        (LocaleCompare(keyword,"</policy>") == 0))
       {
         status=AppendValueToLinkedList(cache,delegate_info);
         if (status == MagickFalse)

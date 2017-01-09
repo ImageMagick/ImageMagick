@@ -850,7 +850,8 @@ static MagickBooleanType LoadPolicyCache(LinkedListInfo *cache,const char *xml,
       }
     if (policy_info == (PolicyInfo *) NULL)
       continue;
-    if (LocaleCompare(keyword,"/>") == 0)
+    if ((LocaleCompare(keyword,"/>") == 0) ||
+        (LocaleCompare(keyword,"</policy>") == 0))
       {
         status=AppendValueToLinkedList(cache,policy_info);
         if (status == MagickFalse)

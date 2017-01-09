@@ -917,7 +917,8 @@ static MagickBooleanType LoadCoderCache(SplayTreeInfo *cache,const char *xml,
       }
     if (coder_info == (CoderInfo *) NULL)
       continue;
-    if (LocaleCompare(keyword,"/>") == 0)
+    if ((LocaleCompare(keyword,"/>") == 0) ||
+        (LocaleCompare(keyword,"</policy>") == 0))
       {
         status=AddValueToSplayTree(cache,ConstantString(
           coder_info->magick),coder_info);

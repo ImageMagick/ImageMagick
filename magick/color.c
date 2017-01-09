@@ -2340,7 +2340,8 @@ static MagickBooleanType LoadColorCache(LinkedListInfo *cache,const char *xml,
       }
     if (color_info == (ColorInfo *) NULL)
       continue;
-    if (LocaleCompare(keyword,"/>") == 0)
+    if ((LocaleCompare(keyword,"/>") == 0) ||
+        (LocaleCompare(keyword,"</policy>") == 0))
       {
         status=AppendValueToLinkedList(cache,color_info);
         if (status == MagickFalse)

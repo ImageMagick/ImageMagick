@@ -1262,7 +1262,8 @@ static MagickBooleanType LoadConfigureCache(LinkedListInfo *cache,
       }
     if (configure_info == (ConfigureInfo *) NULL)
       continue;
-    if (LocaleCompare(keyword,"/>") == 0)
+    if ((LocaleCompare(keyword,"/>") == 0) ||
+        (LocaleCompare(keyword,"</policy>") == 0))
       {
         status=AppendValueToLinkedList(cache,configure_info);
         if (status == MagickFalse)

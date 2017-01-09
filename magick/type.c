@@ -1193,7 +1193,8 @@ static MagickBooleanType LoadTypeCache(SplayTreeInfo *cache,const char *xml,
       }
     if (type_info == (TypeInfo *) NULL)
       continue;
-    if (LocaleCompare(keyword,"/>") == 0)
+    if ((LocaleCompare(keyword,"/>") == 0) ||
+        (LocaleCompare(keyword,"</policy>") == 0))
       {
         status=AddValueToSplayTree(cache,type_info->name,type_info);
         if (status == MagickFalse)
