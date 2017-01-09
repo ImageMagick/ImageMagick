@@ -942,7 +942,8 @@ static MagickBooleanType LoadMagicCache(LinkedListInfo *cache,const char *xml,
       }
     if (magic_info == (MagicInfo *) NULL)
       continue;
-    if (LocaleCompare(keyword,"/>") == 0)
+    if ((LocaleCompare(keyword,"/>") == 0) ||
+        (LocaleCompare(keyword,"</policy>") == 0))
       {
         status=InsertValueInSortedLinkedList(cache,CompareMagickInfoSize,
           NULL,magic_info);
