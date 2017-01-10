@@ -2606,7 +2606,7 @@ static ssize_t WritePSDChannels(const PSDInfo *psd_info,
   compact_pixels=(unsigned char *) NULL;
   if (next_image->compression == RLECompression)
     {
-      compact_pixels=AcquireCompactPixels(image);
+      compact_pixels=AcquireCompactPixels(next_image);
       if (compact_pixels == (unsigned char *) NULL)
         return(0);
     }
