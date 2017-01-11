@@ -365,6 +365,8 @@ static Image *ReadGROUP4Image(const ImageInfo *image_info,
   if ((unique_file == -1) || (file == (FILE *) NULL))
     ThrowImageException(FileOpenError,"UnableToCreateTemporaryFile");
   length=fwrite("\111\111\052\000\010\000\000\000\016\000",1,10,file);
+  if (length != 10)
+    ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
   length=fwrite("\376\000\003\000\001\000\000\000\000\000\000\000",1,12,file);
   length=fwrite("\000\001\004\000\001\000\000\000",1,8,file);
   length=WriteLSBLong(file,image->columns);
@@ -397,6 +399,8 @@ static Image *ReadGROUP4Image(const ImageInfo *image_info,
       status=MagickFalse;
   offset=(ssize_t) fseek(file,(ssize_t) offset,SEEK_SET);
   length=WriteLSBLong(file,(unsigned int) length);
+  if (ferror(file) != 0)
+    ThrowImageException(FileOpenError,"UnableToCreateTemporaryFile");
   (void) fclose(file);
   (void) CloseBlob(image);
   image=DestroyImage(image);
