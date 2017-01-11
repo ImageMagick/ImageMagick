@@ -1,3 +1,8 @@
+2017-01-10  6.9.7-4 Cristy  <quetzlzacatenango@image...>
+  * Recognize XML policy closing tags (reference
+    https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=31182).
+  * Fix memory leak in MPC image format.
+
 2017-01-07  6.9.7-3 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 6.9.7-3, GIT revision 11280:7d65a81:20170107.
 
