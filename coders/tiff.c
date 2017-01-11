@@ -394,6 +394,8 @@ static Image *ReadGROUP4Image(const ImageInfo *image_info,
       status=MagickFalse;
   offset=(ssize_t) fseek(file,(ssize_t) offset,SEEK_SET);
   length=WriteLSBLong(file,(unsigned int) length);
+  if (ferror(file) != 0)
+    ThrowImageException(FileOpenError,"UnableToCreateTemporaryFile");
   (void) fclose(file);
   (void) CloseBlob(image);
   image=DestroyImage(image);
