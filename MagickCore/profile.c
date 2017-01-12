@@ -2043,7 +2043,7 @@ MagickBooleanType SyncExifProfile(Image *image,StringInfo *profile)
             The directory entry contains an offset.
           */
           offset=(ssize_t)  ReadProfileLong(endian,q+8);
-          if ((size_t) (offset+number_bytes) > length)
+          if ((offset < 0) || ((size_t) (offset+number_bytes) > length))
             continue;
           if (~length < number_bytes)
             continue;  /* prevent overflow */
