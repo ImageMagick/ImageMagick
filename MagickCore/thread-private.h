@@ -19,6 +19,7 @@
 #define MAGICKCORE_THREAD_PRIVATE_H
 
 #include "MagickCore/cache.h"
+#include "MagickCore/image-private.h"
 #include "MagickCore/resource_.h"
 #include "MagickCore/thread_.h"
 
@@ -30,12 +31,12 @@ extern "C" {
   Single threaded unless workload justifies the threading overhead.
 */
 #define magick_threads(source,destination,chunk,expression) \
-  num_threads((expression) != 0 && \
+  num_threads((((expression) != 0) && \
     ((GetImagePixelCacheType(source) == MemoryCache) || \
      (GetImagePixelCacheType(source) == MapCache)) && \
     ((GetImagePixelCacheType(destination) == MemoryCache) || \
-     (GetImagePixelCacheType(destination) == MapCache)) ? \
-    max(1,min(GetMagickResourceLimit(ThreadResource),(chunk) / 16)) : 1)
+     (GetImagePixelCacheType(destination) == MapCache))) ? \
+    MagickMax(1,MagickMin(GetMagickResourceLimit(ThreadResource),(chunk)/16)) : 1)
 
 #if defined(__clang__) || (__GNUC__ > 3) || ((__GNUC__ == 3) && (__GNUC_MINOR__ > 10))
 #define MagickCachePrefetch(address,mode,locality) \
