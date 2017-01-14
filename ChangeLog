@@ -1,5 +1,5 @@
 2017-01-14  6.9.7-4 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 6.9.7-4, GIT revision 11293:272cd5d:20170114.
+  * Release ImageMagick version 6.9.7-4, GIT revision 11293:c359058:20170114.
 
 2017-01-14  6.9.7-4 Dirk Lemstra <dirk@lem.....org>
   * Added support for RGB555, RGB565, ARGB4444 and ARGB1555 to the
