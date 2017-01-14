@@ -1574,6 +1574,9 @@ static const OptionInfo
     { "Undefined", UndefinedResolution, UndefinedOptionFlag, MagickTrue },
     { "PixelsPerInch", PixelsPerInchResolution, UndefinedOptionFlag, MagickFalse },
     { "PixelsPerCentimeter", PixelsPerCentimeterResolution, UndefinedOptionFlag, MagickFalse },
+    { "1", UndefinedResolution, UndefinedOptionFlag, MagickFalse },
+    { "2", PixelsPerInchResolution, UndefinedOptionFlag, MagickFalse },
+    { "3", PixelsPerCentimeterResolution, UndefinedOptionFlag, MagickFalse },
     { (char *) NULL, UndefinedResolution, UndefinedOptionFlag, MagickFalse }
   },
   ResourceOptions[] =
