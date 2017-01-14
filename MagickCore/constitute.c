@@ -632,6 +632,8 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
         flags=ParseGeometry(value,&geometry_info);
         if (geometry_info.sigma != 0)
           next->resolution.x=geometry_info.rho/geometry_info.sigma;
+        if (strchr(value,',') != (char *) NULL)
+          next->resolution.x=geometry_info.rho+geometry_info.sigma/1000.0;
         (void) DeleteImageProperty(next,"exif:XResolution");
       }
     value=GetImageProperty(next,"exif:YResolution",exception);
@@ -642,6 +644,8 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
         flags=ParseGeometry(value,&geometry_info);
         if (geometry_info.sigma != 0)
           next->resolution.y=geometry_info.rho/geometry_info.sigma;
+        if (strchr(value,',') != (char *) NULL)
+          next->resolution.y=geometry_info.rho+geometry_info.sigma/1000.0;
         (void) DeleteImageProperty(next,"exif:YResolution");
       }
     value=GetImageProperty(next,"tiff:ResolutionUnit",exception);
@@ -649,7 +653,8 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       value=GetImageProperty(next,"exif:ResolutionUnit",exception);
     if (value != (char *) NULL)
       {
-        next->units=(ResolutionType) (StringToLong(value)-1);
+        next->units=(ResolutionType) ParseCommandOption(MagickResolutionOptions,
+          MagickFalse,value);
         (void) DeleteImageProperty(next,"exif:ResolutionUnit");
         (void) DeleteImageProperty(next,"tiff:ResolutionUnit");
       }

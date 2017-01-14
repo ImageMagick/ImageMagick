@@ -704,8 +704,8 @@ static MagickBooleanType Get8BIMProperty(const Image *image,const char *key,
         info+=count;
         length-=MagickMin(count,(ssize_t) length);
         if ((id <= 1999) || (id >= 2999))
-          (void) SetImageProperty((Image *) image,key,(const char *)
-            attribute,exception);
+          (void) SetImageProperty((Image *) image,key,(const char *) attribute,
+            exception);
         else
           {
             char
@@ -1766,6 +1766,9 @@ static MagickBooleanType GetXMPProperty(const Image *image,const char *property)
       description=GetXMLTreeChild(rdf,"rdf:Description");
       while (description != (XMLTreeInfo *) NULL)
       {
+        char
+          *namespace;
+
         node=GetXMLTreeChild(description,(const char *) NULL);
         while (node != (XMLTreeInfo *) NULL)
         {
@@ -1773,14 +1776,22 @@ static MagickBooleanType GetXMPProperty(const Image *image,const char *property)
           content=GetXMLTreeContent(node);
           if ((child == (XMLTreeInfo *) NULL) &&
               (SkipXMPValue(content) == MagickFalse))
-            (void) AddValueToSplayTree((SplayTreeInfo *) image->properties,
-              ConstantString(GetXMLTreeTag(node)),ConstantString(content));
+            {
+              namespace=ConstantString(GetXMLTreeTag(node));
+              (void) SubstituteString(&namespace,"exif:","xmp:");
+              (void) AddValueToSplayTree((SplayTreeInfo *) image->properties,
+                namespace,ConstantString(content));
+            }
           while (child != (XMLTreeInfo *) NULL)
           {
             content=GetXMLTreeContent(child);
             if (SkipXMPValue(content) == MagickFalse)
-              (void) AddValueToSplayTree((SplayTreeInfo *) image->properties,
-                ConstantString(GetXMLTreeTag(child)),ConstantString(content));
+              {
+                namespace=ConstantString(GetXMLTreeTag(node));
+                (void) SubstituteString(&namespace,"exif:","xmp:");
+                (void) AddValueToSplayTree((SplayTreeInfo *) image->properties,
+                  namespace,ConstantString(content));
+              }
             child=GetXMLTreeSibling(child);
           }
           node=GetXMLTreeSibling(node);
