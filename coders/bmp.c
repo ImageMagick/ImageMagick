@@ -107,6 +107,18 @@
 #endif
 
 /*
+  Enumerated declaractions.
+*/
+typedef enum
+{
+  UndefinedSubtype,
+  RGB555,
+  RGB565,
+  ARGB4444,
+  ARGB1555
+} BMPSubtype;
+
+/*
   Typedef declarations.
 */
 typedef struct _BMPInfo
@@ -1524,6 +1536,9 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image)
   BMPInfo
     bmp_info;
 
+  BMPSubtype
+    bmp_subtype;
+
   const char
     *option;
 
@@ -1610,6 +1625,11 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image)
       bmp_info.file_size+=28;
     bmp_info.offset_bits=bmp_info.file_size;
     bmp_info.compression=BI_RGB;
+    bmp_info.red_mask=0x00ff0000U;
+    bmp_info.green_mask=0x0000ff00U;
+    bmp_info.blue_mask=0x000000ffU;
+    bmp_info.alpha_mask=0xff000000U;
+    bmp_subtype=UndefinedSubtype;
     if ((image->storage_class == PseudoClass) && (image->colors > 256))
       (void) SetImageStorageClass(image,DirectClass);
     if (image->storage_class != DirectClass)
@@ -1651,15 +1671,65 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image)
           Full color BMP raster.
         */
         bmp_info.number_colors=0;
-        bmp_info.bits_per_pixel=(unsigned short)
-          ((type > 3) && (image->matte != MagickFalse) ? 32 : 24);
-        bmp_info.compression=(unsigned int) ((type > 3) &&
-          (image->matte != MagickFalse) ?  BI_BITFIELDS : BI_RGB);
-        if ((type == 3) && (image->matte != MagickFalse))
+        option=GetImageOption(image_info,"bmp:subtype");
+        if (option != (const char *) NULL)
+        {
+          if (image->matte != MagickFalse)
+            {
+              if (LocaleNCompare(option,"ARGB4444",8) == 0)
+                {
+                  bmp_subtype=ARGB4444;
+                  bmp_info.red_mask=0x00000f00U;
+                  bmp_info.green_mask=0x000000f0U;
+                  bmp_info.blue_mask=0x0000000fU;
+                  bmp_info.alpha_mask=0x0000f000U;
+                }
+              else if (LocaleNCompare(option,"ARGB1555",8) == 0)
+                {
+                  bmp_subtype=ARGB1555;
+                  bmp_info.red_mask=0x00007c00U;
+                  bmp_info.green_mask=0x000003e0U;
+                  bmp_info.blue_mask=0x0000001fU;
+                  bmp_info.alpha_mask=0x00008000U;
+                }
+            }
+          else
           {
-            option=GetImageOption(image_info,"bmp3:alpha");
-            if (IsStringTrue(option))
-              bmp_info.bits_per_pixel=32;
+            if (LocaleNCompare(option,"RGB555",6) == 0)
+              {
+                bmp_subtype=RGB555;
+                bmp_info.red_mask=0x00007c00U;
+                bmp_info.green_mask=0x000003e0U;
+                bmp_info.blue_mask=0x0000001fU;
+                bmp_info.alpha_mask=0U;
+              }
+            else if (LocaleNCompare(option,"RGB565",6) == 0)
+              {
+                bmp_subtype=RGB565;
+                bmp_info.red_mask=0x0000f800U;
+                bmp_info.green_mask=0x000007e0U;
+                bmp_info.blue_mask=0x0000001fU;
+                bmp_info.alpha_mask=0U;
+              }
+          }
+        }
+        if (bmp_subtype != UndefinedSubtype)
+          {
+            bmp_info.bits_per_pixel=16;
+            bmp_info.compression=BI_BITFIELDS;
+          }
+        else
+          {
+            bmp_info.bits_per_pixel=(unsigned short)
+              ((type > 3) && (image->matte != MagickFalse) ? 32 : 24);
+            bmp_info.compression=(unsigned int) ((type > 3) &&
+              (image->matte != MagickFalse) ?  BI_BITFIELDS : BI_RGB);
+            if ((type == 3) && (image->matte != MagickFalse))
+              {
+                option=GetImageOption(image_info,"bmp3:alpha");
+                if (IsStringTrue(option))
+                  bmp_info.bits_per_pixel=32;
+              }
           }
       }
     bytes_per_line=4*((image->columns*bmp_info.bits_per_pixel+31)/32);
@@ -1840,6 +1910,71 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image)
           for (x=0; x < (ssize_t) image->columns; x++)
             *q++=(unsigned char) GetPixelIndex(indexes+x);
           for ( ; x < (ssize_t) bytes_per_line; x++)
+            *q++=0x00;
+          if (image->previous == (Image *) NULL)
+            {
+              status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+                image->rows);
+              if (status == MagickFalse)
+                break;
+            }
+        }
+        break;
+      }
+      case 16:
+      {
+        /*
+          Convert DirectClass packet to BMP BGR888.
+        */
+        for (y=0; y < (ssize_t) image->rows; y++)
+        {
+          p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+          if (p == (const PixelPacket *) NULL)
+            break;
+          q=(pixels+(image->rows-y-1)*bytes_per_line);
+          for (x=0; x < (ssize_t) image->columns; x++)
+          {
+            unsigned short
+              pixel;
+
+            pixel=0;
+            if (bmp_subtype == ARGB4444)
+              {
+                pixel=(unsigned short) ScaleQuantumToAny(
+                  GetPixelAlpha(p),15) << 12;
+                pixel|=(unsigned short) ScaleQuantumToAny(
+                  GetPixelRed(p),15) << 8;
+                pixel|=(unsigned short) ScaleQuantumToAny(
+                  GetPixelGreen(p),15) << 4;
+                pixel|=(unsigned short) ScaleQuantumToAny(
+                  GetPixelBlue(p),15);
+              }
+            else if (bmp_subtype == RGB565)
+              {
+                pixel=(unsigned short) ScaleQuantumToAny(
+                  GetPixelRed(p),31) << 11;
+                pixel|=(unsigned short) ScaleQuantumToAny(
+                  GetPixelGreen(p),63) << 5;
+                pixel|=(unsigned short) ScaleQuantumToAny(
+                  GetPixelBlue(p),31);
+              }
+            else
+              {
+                if (bmp_subtype == ARGB1555)
+                  pixel=(unsigned short) ScaleQuantumToAny(
+                    GetPixelAlpha(p),1) << 15;
+                pixel|=(unsigned short) ScaleQuantumToAny(
+                  GetPixelRed(p),31) << 10;
+                pixel|=(unsigned short) ScaleQuantumToAny(
+                  GetPixelGreen(p),31) << 5;
+                pixel|=(unsigned short) ScaleQuantumToAny(
+                  GetPixelBlue(p),31);
+              }
+            *((unsigned short *) q)=pixel;
+            q+=2;
+            p++;
+          }
+          for (x=2L*(ssize_t) image->columns; x < (ssize_t) bytes_per_line; x++)
             *q++=0x00;
           if (image->previous == (Image *) NULL)
             {
@@ -2032,10 +2167,10 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image)
         /*
           Write the rest of the 108-byte BMP Version 4 header.
         */
-        (void) WriteBlobLSBLong(image,0x00ff0000U);  /* Red mask */
-        (void) WriteBlobLSBLong(image,0x0000ff00U);  /* Green mask */
-        (void) WriteBlobLSBLong(image,0x000000ffU);  /* Blue mask */
-        (void) WriteBlobLSBLong(image,0xff000000U);  /* Alpha mask */
+        (void) WriteBlobLSBLong(image,bmp_info.red_mask);
+        (void) WriteBlobLSBLong(image,bmp_info.green_mask);
+        (void) WriteBlobLSBLong(image,bmp_info.blue_mask);
+        (void) WriteBlobLSBLong(image,bmp_info.alpha_mask);
         (void) WriteBlobLSBLong(image,0x73524742U);  /* sRGB */
         (void) WriteBlobLSBLong(image,(unsigned int)
           (image->chromaticity.red_primary.x*0x40000000));
