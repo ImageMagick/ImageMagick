@@ -1,3 +1,8 @@
+2017-01-14  7.0.4-4 Dirk Lemstra <dirk@lem.....org>
+  * Added support for RGB555, RGB565, ARGB4444 and ARGB1555 to the
+    BMP encoder (reference
+    https://github.com/ImageMagick/ImageMagick/issues/344).
+
 2017-01-10  7.0.4-4 Cristy  <quetzlzacatenango@image...>
   * Recognize XML policy closing tags (reference
     https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=31182).
