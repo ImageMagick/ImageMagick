@@ -1,3 +1,6 @@
+2017-01-14  7.0.4-4 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.4-4, GIT revision 19361:a12953c:20170114.
+
 2017-01-14  7.0.4-4 Dirk Lemstra <dirk@lem.....org>
   * Added support for RGB555, RGB565, ARGB4444 and ARGB1555 to the
     BMP encoder (reference
