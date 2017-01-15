@@ -469,7 +469,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
 
         if (status == MagickFalse)
           continue;
-        if ((double) object[i].area > area_threshold)
+        if ((double) object[i].area >= area_threshold)
           continue;
         for (j=0; j < (ssize_t) component_image->colors; j++)
           object[j].census=0;
