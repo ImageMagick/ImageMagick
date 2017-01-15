@@ -388,11 +388,11 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         }
       if (x < object[id].bounding_box.x)
         object[id].bounding_box.x=x;
-      if (x > (ssize_t) object[id].bounding_box.width)
+      if (x >= (ssize_t) object[id].bounding_box.width)
         object[id].bounding_box.width=(size_t) x;
       if (y < object[id].bounding_box.y)
         object[id].bounding_box.y=y;
-      if (y > (ssize_t) object[id].bounding_box.height)
+      if (y >= (ssize_t) object[id].bounding_box.height)
         object[id].bounding_box.height=(size_t) y;
       object[id].color.red+=GetPixelRed(image,p);
       object[id].color.green+=GetPixelGreen(image,p);
