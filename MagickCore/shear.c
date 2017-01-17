@@ -957,7 +957,6 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
       }
       (void) SetImageProgress(image,RotateImageTag,(MagickOffsetType)
         image->rows-1,image->rows);
-      Swap(page.width,page.height);
       Swap(page.x,page.y);
       if (page.width != 0)
         page.x=(ssize_t) (page.width-rotate_image->columns-page.x);
