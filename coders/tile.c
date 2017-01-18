@@ -128,8 +128,6 @@ static Image *ReadTILEImage(const ImageInfo *image_info,
     ThrowReaderException(OptionError,"MustSpecifyAnImageName");
   image->colorspace=tile_image->colorspace;
   image->matte=tile_image->matte;
-  if (image->matte != MagickFalse)
-    (void) SetImageBackgroundColor(image);
   (void) CopyMagickString(image->filename,image_info->filename,MaxTextExtent);
   if (LocaleCompare(tile_image->magick,"PATTERN") == 0)
     {
