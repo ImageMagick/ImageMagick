@@ -124,9 +124,8 @@ static Image *ReadTILEImage(const ImageInfo *image_info,
     return(DestroyImageList(image));
   image->colorspace=tile_image->colorspace;
   image->alpha_trait=tile_image->alpha_trait;
-  if (image->alpha_trait != UndefinedPixelTrait)
-    (void) SetImageBackgroundColor(image,exception);
-  (void) CopyMagickString(image->filename,image_info->filename,MagickPathExtent);
+  (void) CopyMagickString(image->filename,image_info->filename,
+    MagickPathExtent);
   if (LocaleCompare(tile_image->magick,"PATTERN") == 0)
     {
       tile_image->tile_offset.x=0;

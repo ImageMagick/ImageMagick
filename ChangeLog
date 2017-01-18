@@ -1,3 +1,7 @@
+2017-01-18  7.0.4-5 Cristy  <quetzlzacatenango@image...>
+  * Don't set background for transparent tiled images (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=31210).
+
 2017-01-14  7.0.4-4 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.4-4, GIT revision 19361:a12953c:20170114.
 
