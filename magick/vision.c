@@ -403,13 +403,13 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         object[id].bounding_box.y=y;
       if (y >=(ssize_t) object[id].bounding_box.height)
         object[id].bounding_box.height=(size_t) y;
-      object[id].color.red+=p->red;
-      object[id].color.green+=p->green;
-      object[id].color.blue+=p->blue;
+      object[id].color.red+=QuantumScale*p->red;
+      object[id].color.green+=QuantumScale*p->green;
+      object[id].color.blue+=QuantumScale*p->blue;
       if (image->matte != MagickFalse)
-        object[id].color.opacity+=p->opacity;
+        object[id].color.opacity+=QuantumScale*p->opacity;
       if (image->colorspace == CMYKColorspace)
-        object[id].color.index+=indexes[x];
+        object[id].color.index+=QuantumScale*indexes[x];
       object[id].centroid.x+=x;
       object[id].centroid.y+=y;
       object[id].area++;
@@ -446,13 +446,14 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
   {
     object[i].bounding_box.width-=(object[i].bounding_box.x-1);
     object[i].bounding_box.height-=(object[i].bounding_box.y-1);
-    object[i].color.red=object[i].color.red/object[i].area;
-    object[i].color.green=object[i].color.green/object[i].area;
-    object[i].color.blue=object[i].color.blue/object[i].area;
+    object[i].color.red=QuantumRange*(object[i].color.red/object[i].area);
+    object[i].color.green=QuantumRange*(object[i].color.green/object[i].area);
+    object[i].color.blue=QuantumRange*(object[i].color.blue/object[i].area);
     if (image->matte != MagickFalse)
-      object[i].color.opacity=object[i].color.opacity/object[i].area;
+      object[i].color.opacity=QuantumRange*(object[i].color.opacity/
+        object[i].area);
     if (image->colorspace == CMYKColorspace)
-      object[i].color.index=object[i].color.index/object[i].area;
+      object[i].color.index=QuantumRange*(object[i].color.index/object[i].area);
     object[i].centroid.x=object[i].centroid.x/object[i].area;
     object[i].centroid.y=object[i].centroid.y/object[i].area;
   }
