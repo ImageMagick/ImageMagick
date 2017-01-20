@@ -540,8 +540,8 @@ MagickExport const void *GetStreamInfoClientData(StreamInfo *stream_info)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetVirtualPixelsStream() returns the pixels associated with the last
-%  call to QueueAuthenticPixelsStream() or GetVirtualPixelStream().
+%  GetVirtualPixelsStream() returns the pixels associated with the last call to
+%  QueueAuthenticPixelsStream() or GetVirtualPixelStream().
 %
 %  The format of the GetVirtualPixelsStream() method is:
 %
