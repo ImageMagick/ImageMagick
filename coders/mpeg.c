@@ -241,6 +241,20 @@ ModuleExport size_t RegisterMPEGImage(void)
   MagickInfo
     *entry;
 
+  entry=SetMagickInfo("3GP");
+  entry->decoder=(DecodeImageHandler *) ReadMPEGImage;
+  entry->blob_support=MagickFalse;
+  entry->seekable_stream=MagickTrue;
+  entry->description=ConstantString("Media Container");
+  entry->module=ConstantString("MPEG");
+  (void) RegisterMagickInfo(entry);
+  entry=SetMagickInfo("3G2");
+  entry->decoder=(DecodeImageHandler *) ReadMPEGImage;
+  entry->blob_support=MagickFalse;
+  entry->seekable_stream=MagickTrue;
+  entry->description=ConstantString("Media Container");
+  entry->module=ConstantString("MPEG");
+  (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("AVI");
   entry->decoder=(DecodeImageHandler *) ReadMPEGImage;
   entry->magick=(IsImageFormatHandler *) IsAVI;
@@ -354,6 +368,8 @@ ModuleExport void UnregisterMPEGImage(void)
   (void) UnregisterMagickInfo("MPEG");
   (void) UnregisterMagickInfo("MKV");
   (void) UnregisterMagickInfo("AVI");
+  (void) UnregisterMagickInfo("3G2");
+  (void) UnregisterMagickInfo("3GP");
 }
 
 /*

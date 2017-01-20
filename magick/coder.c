@@ -81,6 +81,8 @@ static const CoderMapInfo
   CoderMap[] =
   {
     { "3FR", "DNG" },
+    { "3GP", "MPEG" },
+    { "3G2", "MPEG" },
     { "8BIM", "META" },
     { "8BIMTEXT", "META" },
     { "8BIMWTEXT", "META" },
