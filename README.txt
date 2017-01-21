@@ -30,8 +30,8 @@ Introduction to ImageMagick
   security vulnerabilities.
 
   ImageMagick is available from
-  https://www.imagemagick.org/script/binary-releases.php.  It runs on Linux,
-  Windows, Mac Os X, iOS, Android OS, and others.
+  https://www.imagemagick.org/script/download.php.  It runs on Linux, Windows,
+  Mac Os X, iOS, Android OS, and others.
 
   The authoritative ImageMagick web site is
   https://www.imagemagick.org. The authoritative source code repository is
