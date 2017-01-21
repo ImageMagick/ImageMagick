@@ -28,8 +28,8 @@
   <link rel="canonical" href="https://www.imagemagick.org/script/resources.html"/>
   <link rel="icon" href="../images/wand.png"/>
   <link rel="shortcut icon" href="../images/wand.ico"/>
-  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700" />
-  <link rel="stylesheet" href="css/magick.css"/>
+  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700"   />
+  <link rel="stylesheet" type="text/css" href="css/magick.css"/>
 </head>
 <body>
 <div class="main">
@@ -170,8 +170,8 @@ Define arguments for the memory, map, area, and disk resources with SI prefixes 
 
 <pre>
 $MAGICK_CONFIGURE_PATH
-$PREFIX/etc/ImageMagick-7 
-$PREFIX/share/ImageMagick-7 
+$PREFIX/etc/ImageMagick-6 
+$PREFIX/share/ImageMagick-6 
 $XDG_CACHE_HOME/ImageMagick
 $HOME/.config/ImageMagick
 &lt;<var>client path</var>&gt;/etc/ImageMagick
@@ -183,9 +183,9 @@ $HOME/.config/ImageMagick
 
 <pre>
 $MAGICK_CONFIGURE_PATH
-$MAGICK_HOME/etc/ImageMagick-7 
-$MAGICK_HOME/share/ImageMagick-7 
-$PREFIX/share/ImageMagick-7 
+$MAGICK_HOME/etc/ImageMagick-6 
+$MAGICK_HOME/share/ImageMagick-6 
+$PREFIX/share/ImageMagick-6 
 $XDG_CACHE_HOME/ImageMagick
 $HOME/.config/ImageMagick/
 &lt;<var>client path</var>&gt;/etc/ImageMagick
@@ -202,7 +202,7 @@ $USERPROFILE/.config/ImageMagick
 &lt;<var>client path</var>&gt;
 </pre>
 
-<p>Above, $PREFIX is the default install path, typically <code>c:\\Program Files\\ImageMagick-7.0.4</code>.</p>
+<p>Above, $PREFIX is the default install path, typically <code>c:\\Program Files\\ImageMagick-6.9.7</code>.</p>
 
 <p>For an uninstalled Windows installation, the configuration load order is:</p>
 
@@ -222,25 +222,25 @@ $USERPROFILE/.config/ImageMagick
 <p>An image coder (i.e. encoder / decoder) is responsible for registering, optionally classifying, optionally reading, optionally writing, and unregistering one image format (e.g. PNG, GIF, JPEG, etc.).  ImageMagick searches for coders in the following order and it uses the first match found:</p>
 
 <pre>
-$MAGICK_HOME/lib/ImageMagick-7.0.4/modules-Q16/coders
-&lt;<var>client path</var>&gt;/../lib/ImageMagick-7.0.4/modules-Q16/coders
-$MAGICK_HOME/lib/ImageMagick-7.0.4/modules-Q16/coders
-$MAGICK_HOME/share/ImageMagick-7.0.4/modules-Q16/coders
+$MAGICK_HOME/lib/ImageMagick-6.9.7/modules-Q16/coders
+&lt;<var>client path</var>&gt;/../lib/ImageMagick-6.9.7/modules-Q16/coders
+$MAGICK_HOME/lib/ImageMagick-6.9.7/modules-Q16/coders
+$MAGICK_HOME/share/ImageMagick-6.9.7/modules-Q16/coders
 $XDG_CACHE_HOME/ImageMagick
 $HOME/.config/ImageMagick
-&lt;<var>client path</var>&gt;/lib/ImageMagick-7.0.4/modules-Q16/coders
+&lt;<var>client path</var>&gt;/lib/ImageMagick-6.9.7/modules-Q16/coders
 </pre>
 
 <h4>Filters</h4>
 <p>ImageMagick provides a convenient mechanism for adding your own custom image processing algorithms.  ImageMagick searches for filters in the following order and it uses the first match found:</p>
 <pre>
-$MAGICK_HOME/lib/ImageMagick-7.0.4/modules-Q16/filters
-&lt;<var>client path</var>&gt;/../lib/ImageMagick-7.0.4/modules-Q16/filters
-$MAGICK_HOME/lib/ImageMagick-7.0.4/modules-Q16/filters
-$MAGICK_HOME/share/ImageMagick-7.0.4/modules-Q16/filters
+$MAGICK_HOME/lib/ImageMagick-6.9.7/modules-Q16/filters
+&lt;<var>client path</var>&gt;/../lib/ImageMagick-6.9.7/modules-Q16/filters
+$MAGICK_HOME/lib/ImageMagick-6.9.7/modules-Q16/filters
+$MAGICK_HOME/share/ImageMagick-6.9.7/modules-Q16/filters
 $XDG_CACHE_HOME/ImageMagick
 $HOME/.config/ImageMagick
-&lt;<var>client path</var>&gt;/lib/ImageMagick-7.0.4/modules-Q16/filters
+&lt;<var>client path</var>&gt;/lib/ImageMagick-6.9.7/modules-Q16/filters
 </pre>
 
 <h2 class="magick-header"><a id="fonts"></a>Fonts</h2>
@@ -249,8 +249,8 @@ $HOME/.config/ImageMagick
 
 <pre>
 $MAGICK_CONFIGURE_PATH
-$MAGICK_HOME/etc/ImageMagick/-7.0.4
-$MAGICK_HOME/share/ImageMagick-7.0.4
+$MAGICK_HOME/etc/ImageMagick/-6.9.7
+$MAGICK_HOME/share/ImageMagick-6.9.7
 $XDG_CACHE_HOME/ImageMagick
 $HOME/.config/ImageMagick
 &lt;<var>client path</var>&gt;/etc/ImageMagick
@@ -383,4 +383,3 @@ $MAGICK_FONT_PATH
 </div>
 </body>
 </html>
-<!-- Magick Cache 24th December 2016 11:08 -->

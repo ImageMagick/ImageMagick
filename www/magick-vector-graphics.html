@@ -28,8 +28,8 @@
   <link rel="canonical" href="https://www.imagemagick.org/script/magick-vector-graphics.html"/>
   <link rel="icon" href="../images/wand.png"/>
   <link rel="shortcut icon" href="../images/wand.ico"/>
-  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700" />
-  <link rel="stylesheet" href="css/magick.css"/>
+  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700"   />
+  <link rel="stylesheet" type="text/css" href="css/magick.css"/>
 </head>
 <body>
 <div class="main">
@@ -60,12 +60,12 @@
 <p class="text-center"><a href="http://legacy.imagemagick.org/www/magick-vector-graphics.html#overview">MVG Overview</a> • <a href="http://legacy.imagemagick.org/www/magick-vector-graphics.html#primitives">Drawing Primitives</a></p>
 
 <p class="lead magick-description">This specification defines the features and syntax for Magick Vector Graphics (MVG), a modularized language for describing two-dimensional vector and mixed vector/raster graphics in ImageMagick.  You can use the language to draw from the
-command line, from an MVG file, from an <a href="http://www.w3.org/TR/SVG/">SVG -- Scalable Vector Graphics</a> file or from one of the ImageMagick <a href="http://legacy.imagemagick.org/www/develop.html">program interfaces</a>.  Use this command, for example, to render an arc:</p>
+command line, from an MVG file, from an <a href="http://www.w3.org/TR/SVG/">SVG -- Scalable Vector Graphics</a> file or from one of the ImageMagick <a href="http://legacy.imagemagick.org/www/api.html">program interfaces</a>.  Use this command, for example, to render an arc:</p>
 
 <pre>
 convert -size 100x60 canvas:skyblue -fill white -stroke black \
-  -draw "path 'M 30,40  A 30,20  20  0,0 70,20 A 30,20  20  1,0 30,40 Z '" \
-  arc.png
+  -draw "path \'M 30,40  A 30,20  20  0,0 70,20 A 30,20  20  1,0 30,40 Z \'" \
+  arc.png');
 </pre>
 
 <p>and here is the result:</p>
@@ -249,7 +249,7 @@ convert mvg:piechart.svg piechart.jpg
 
 <p>to produce the same pie chart we created with the MVG language.</p>
 
-<p>Drawing is available from many of the ImageMagick <a href="http://legacy.imagemagick.org/www/develop.html">program interfaces</a> as well.  ImageMagick converts the drawing API calls to MVG and renders it.  Here is example code written in the <a href="http://legacy.imagemagick.org/www/magick-wand.html">MagickWand</a> language: </p>
+<p>Drawing is available from many of the ImageMagick <a href="http://legacy.imagemagick.org/www/api.html">program interfaces</a> as well.  ImageMagick converts the drawing API calls to MVG and renders it.  Here is example code written in the <a href="http://legacy.imagemagick.org/www/magick-wand.html">MagickWand</a> language: </p>
 
 <pre class="pre-scrollable">(void) PushDrawingWand(draw_wand);
 {
@@ -881,4 +881,3 @@ round</pre></td>
 </div>
 </body>
 </html>
-<!-- Magick Cache 24th December 2016 11:26 -->
