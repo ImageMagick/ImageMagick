@@ -45,11 +45,11 @@
     </script>
     <nav class="magick-nav">
       <a class="magick-nav-item " href="../index.html">Home</a>
-      <a class="magick-nav-item " href="binary-releases.html">Download</a>
+      <a class="magick-nav-item " href="download.html">Download</a>
       <a class="magick-nav-item " href="command-line-tools.html">Tools</a>
       <a class="magick-nav-item " href="command-line-processing.html">Command-line</a>
       <a class="magick-nav-item " href="resources.html">Resources</a>
-      <a class="magick-nav-item " href="api.html">Develop</a>
+      <a class="magick-nav-item " href="develop.html">Develop</a>
       <a class="magick-nav-item " href="https://www.imagemagick.org/script/search.php">Search</a>
       <a class="magick-nav-item pull-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
@@ -60,7 +60,7 @@
 <p class="text-center"><a href="http://www.imagemagick.org/www/magick-vector-graphics.html#overview">MVG Overview</a> • <a href="http://www.imagemagick.org/www/magick-vector-graphics.html#primitives">Drawing Primitives</a></p>
 
 <p class="lead magick-description">This specification defines the features and syntax for Magick Vector Graphics (MVG), a modularized language for describing two-dimensional vector and mixed vector/raster graphics in ImageMagick.  You can use the language to draw from the
-command line, from an MVG file, from an <a href="http://www.w3.org/TR/SVG/">SVG -- Scalable Vector Graphics</a> file or from one of the ImageMagick <a href="http://www.imagemagick.org/www/api.html">program interfaces</a>.  Use this command, for example, to render an arc:</p>
+command line, from an MVG file, from an <a href="http://www.w3.org/TR/SVG/">SVG -- Scalable Vector Graphics</a> file or from one of the ImageMagick <a href="http://www.imagemagick.org/www/develop.html">program interfaces</a>.  Use this command, for example, to render an arc:</p>
 
 <pre>
 convert -size 100x60 canvas:skyblue -fill white -stroke black \
@@ -249,7 +249,7 @@ convert mvg:piechart.svg piechart.jpg
 
 <p>to produce the same pie chart we created with the MVG language.</p>
 
-<p>Drawing is available from many of the ImageMagick <a href="http://www.imagemagick.org/www/api.html">program interfaces</a> as well.  ImageMagick converts the drawing API calls to MVG and renders it.  Here is example code written in the <a href="http://www.imagemagick.org/www/magick-wand.html">MagickWand</a> language: </p>
+<p>Drawing is available from many of the ImageMagick <a href="http://www.imagemagick.org/www/develop.html">program interfaces</a> as well.  ImageMagick converts the drawing API calls to MVG and renders it.  Here is example code written in the <a href="http://www.imagemagick.org/www/magick-wand.html">MagickWand</a> language: </p>
 
 <pre class="pre-scrollable">(void) PushDrawingWand(draw_wand);
 {
