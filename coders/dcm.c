@@ -4165,7 +4165,7 @@ ModuleExport size_t RegisterDCMImage(void)
   entry->decoder=(DecodeImageHandler *) ReadDCMImage;
   entry->magick=(IsImageFormatHandler *) IsDCM;
   entry->flags^=CoderAdjoinFlag;
-  entry->flags|=CoderSeekableStreamFlag;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
   entry->note=ConstantString(DCMNote);
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);

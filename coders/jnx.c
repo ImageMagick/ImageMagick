@@ -358,7 +358,7 @@ ModuleExport size_t RegisterJNXImage(void)
 
   entry=AcquireMagickInfo("JNX","JNX","Garmin tile format");
   entry->decoder=(DecodeImageHandler *) ReadJNXImage;
-  entry->flags|=CoderSeekableStreamFlag;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

@@ -284,7 +284,7 @@ ModuleExport size_t RegisterEPTImage(void)
   entry->decoder=(DecodeImageHandler *) ReadEPTImage;
   entry->encoder=(EncodeImageHandler *) WriteEPTImage;
   entry->magick=(IsImageFormatHandler *) IsEPT;
-  entry->flags|=CoderSeekableStreamFlag;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
   entry->flags^=CoderAdjoinFlag;
   entry->flags^=CoderBlobSupportFlag;
   (void) RegisterMagickInfo(entry);
@@ -294,7 +294,7 @@ ModuleExport size_t RegisterEPTImage(void)
   entry->encoder=(EncodeImageHandler *) WriteEPTImage;
   entry->magick=(IsImageFormatHandler *) IsEPT;
   entry->flags^=CoderAdjoinFlag;
-  entry->flags|=CoderSeekableStreamFlag;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
   entry->flags^=CoderBlobSupportFlag;
   (void) RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("EPT","EPT3",
@@ -302,7 +302,7 @@ ModuleExport size_t RegisterEPTImage(void)
   entry->decoder=(DecodeImageHandler *) ReadEPTImage;
   entry->encoder=(EncodeImageHandler *) WriteEPTImage;
   entry->magick=(IsImageFormatHandler *) IsEPT;
-  entry->flags|=CoderSeekableStreamFlag;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
   entry->flags^=CoderBlobSupportFlag;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);

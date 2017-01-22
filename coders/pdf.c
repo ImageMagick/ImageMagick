@@ -866,7 +866,6 @@ ModuleExport size_t RegisterPDFImage(void)
   entry->encoder=(EncodeImageHandler *) WritePDFImage;
   entry->flags^=CoderAdjoinFlag;
   entry->flags^=CoderBlobSupportFlag;
-  entry->flags|=CoderSeekableStreamFlag;
   entry->mime_type=ConstantString("application/pdf");
   (void) RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("PDF","EPDF",
@@ -875,7 +874,6 @@ ModuleExport size_t RegisterPDFImage(void)
   entry->encoder=(EncodeImageHandler *) WritePDFImage;
   entry->flags^=CoderAdjoinFlag;
   entry->flags^=CoderBlobSupportFlag;
-  entry->flags|=CoderSeekableStreamFlag;
   entry->mime_type=ConstantString("application/pdf");
   (void) RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("PDF","PDF","Portable Document Format");
@@ -883,7 +881,6 @@ ModuleExport size_t RegisterPDFImage(void)
   entry->encoder=(EncodeImageHandler *) WritePDFImage;
   entry->magick=(IsImageFormatHandler *) IsPDF;
   entry->flags^=CoderBlobSupportFlag;
-  entry->flags|=CoderSeekableStreamFlag;
   entry->mime_type=ConstantString("application/pdf");
   (void) RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("PDF","PDFA","Portable Document Archive Format");
@@ -891,7 +888,6 @@ ModuleExport size_t RegisterPDFImage(void)
   entry->encoder=(EncodeImageHandler *) WritePDFImage;
   entry->magick=(IsImageFormatHandler *) IsPDF;
   entry->flags^=CoderBlobSupportFlag;
-  entry->flags|=CoderSeekableStreamFlag;
   entry->mime_type=ConstantString("application/pdf");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);

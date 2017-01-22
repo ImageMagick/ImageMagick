@@ -1446,19 +1446,19 @@ ModuleExport size_t RegisterBMPImage(void)
   entry->encoder=(EncodeImageHandler *) WriteBMPImage;
   entry->magick=(IsImageFormatHandler *) IsBMP;
   entry->flags^=CoderAdjoinFlag;
-  entry->flags|=CoderSeekableStreamFlag;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
   (void) RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("BMP","BMP2","Microsoft Windows bitmap image (V2)");
   entry->encoder=(EncodeImageHandler *) WriteBMPImage;
   entry->magick=(IsImageFormatHandler *) IsBMP;
   entry->flags^=CoderAdjoinFlag;
-  entry->flags|=CoderSeekableStreamFlag;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
   (void) RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("BMP","BMP3","Microsoft Windows bitmap image (V3)");
   entry->encoder=(EncodeImageHandler *) WriteBMPImage;
   entry->magick=(IsImageFormatHandler *) IsBMP;
   entry->flags^=CoderAdjoinFlag;
-  entry->flags|=CoderSeekableStreamFlag;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

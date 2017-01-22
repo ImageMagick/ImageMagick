@@ -1372,7 +1372,7 @@ ModuleExport size_t RegisterMATImage(void)
   entry->decoder=(DecodeImageHandler *) ReadMATImage;
   entry->encoder=(EncodeImageHandler *) WriteMATImage;
   entry->flags^=CoderBlobSupportFlag;
-  entry->flags|=CoderSeekableStreamFlag;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

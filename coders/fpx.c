@@ -503,7 +503,6 @@ ModuleExport size_t RegisterFPXImage(void)
   entry->encoder=(EncodeImageHandler *) WriteFPXImage;
 #endif
   entry->flags^=CoderAdjoinFlag;
-  entry->flags|=CoderSeekableStreamFlag;
   entry->flags^=CoderBlobSupportFlag;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);

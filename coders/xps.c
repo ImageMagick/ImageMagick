@@ -375,7 +375,6 @@ ModuleExport size_t RegisterXPSImage(void)
   entry->flags^=CoderAdjoinFlag;
   entry->flags^=CoderBlobSupportFlag;
   entry->flags^=CoderDecoderThreadSupportFlag;
-  entry->flags|=CoderSeekableStreamFlag;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

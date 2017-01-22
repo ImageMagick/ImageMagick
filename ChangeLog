@@ -1,3 +1,7 @@
+2017-01-22  7.0.4-6 Dirk Lemstra <dirk@lem.....org>
+  * Replaced CoderSeekableStreamFlag with CoderDecoderSeekableStreamFlag and
+    CoderEncoderSeekableStreamFlag.
+
 2017-01-21  7.0.4-5 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.4-5, GIT revision 19381:7ae396f:20170121.
 

@@ -24,6 +24,9 @@ extern "C" {
 
 #if !defined(MAGICKCORE_EXCLUDE_DEPRECATED)
 
+extern MagickExport MagickBooleanType
+  GetMagickSeekableStream(const MagickInfo *);
+
 #endif
 
 #if defined(__cplusplus) || defined(c_plusplus)

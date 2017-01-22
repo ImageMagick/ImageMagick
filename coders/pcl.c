@@ -422,7 +422,6 @@ ModuleExport size_t RegisterPCLImage(void)
   entry->magick=(IsImageFormatHandler *) IsPCL;
   entry->flags^=CoderBlobSupportFlag;
   entry->flags^=CoderDecoderThreadSupportFlag;
-  entry->flags|=CoderSeekableStreamFlag;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

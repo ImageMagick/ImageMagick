@@ -2309,7 +2309,8 @@ ModuleExport size_t RegisterTIFFImage(void)
 #endif
   entry->flags|=CoderRawSupportFlag;
   entry->flags|=CoderEndianSupportFlag;
-  entry->flags|=CoderSeekableStreamFlag;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
+  entry->flags|=CoderEncoderSeekableStreamFlag;
   entry->flags^=CoderAdjoinFlag;
   entry->flags^=CoderUseExtensionFlag;
   entry->format_type=ImplicitFormatType;
@@ -2321,7 +2322,8 @@ ModuleExport size_t RegisterTIFFImage(void)
   entry->encoder=(EncodeImageHandler *) WritePTIFImage;
 #endif
   entry->flags|=CoderEndianSupportFlag;
-  entry->flags|=CoderSeekableStreamFlag;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
+  entry->flags|=CoderEncoderSeekableStreamFlag;
   entry->flags^=CoderUseExtensionFlag;
   entry->mime_type=ConstantString("image/tiff");
   (void) RegisterMagickInfo(entry);
@@ -2331,7 +2333,8 @@ ModuleExport size_t RegisterTIFFImage(void)
   entry->encoder=(EncodeImageHandler *) WriteTIFFImage;
 #endif
   entry->flags|=CoderEndianSupportFlag;
-  entry->flags|=CoderSeekableStreamFlag;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
+  entry->flags|=CoderEncoderSeekableStreamFlag;
   entry->flags|=CoderStealthFlag;
   entry->flags^=CoderUseExtensionFlag;
   if (*version != '\0')
@@ -2345,7 +2348,8 @@ ModuleExport size_t RegisterTIFFImage(void)
 #endif
   entry->magick=(IsImageFormatHandler *) IsTIFF;
   entry->flags|=CoderEndianSupportFlag;
-  entry->flags|=CoderSeekableStreamFlag;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
+  entry->flags|=CoderEncoderSeekableStreamFlag;
   entry->flags^=CoderUseExtensionFlag;
   if (*version != '\0')
     entry->version=ConstantString(version);
@@ -2357,7 +2361,8 @@ ModuleExport size_t RegisterTIFFImage(void)
   entry->encoder=(EncodeImageHandler *) WriteTIFFImage;
 #endif
   entry->flags|=CoderEndianSupportFlag;
-  entry->flags|=CoderSeekableStreamFlag;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
+  entry->flags|=CoderEncoderSeekableStreamFlag;
   entry->flags^=CoderAdjoinFlag;
   entry->flags^=CoderUseExtensionFlag;
   if (*version != '\0')

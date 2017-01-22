@@ -426,7 +426,7 @@ ModuleExport size_t RegisterRLAImage(void)
   entry=AcquireMagickInfo("RLA","RLA","Alias/Wavefront image");
   entry->decoder=(DecodeImageHandler *) ReadRLAImage;
   entry->flags^=CoderAdjoinFlag;
-  entry->flags|=CoderSeekableStreamFlag;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

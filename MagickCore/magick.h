@@ -41,9 +41,12 @@ typedef enum
   CoderEncoderThreadSupportFlag = 0x0008,
   CoderEndianSupportFlag = 0x0010,
   CoderRawSupportFlag = 0x0020,
-  CoderSeekableStreamFlag = 0x0040,
+  CoderSeekableStreamFlag = 0x0040, /* deprecated */
   CoderStealthFlag = 0x0080,
-  CoderUseExtensionFlag = 0x0100
+  CoderUseExtensionFlag = 0x0100,
+  CoderDecoderSeekableStreamFlag = 0x0200,
+  CoderEncoderSeekableStreamFlag = 0x0400,
+
 } MagickInfoFlag;
 
 typedef Image
@@ -114,11 +117,12 @@ extern MagickExport MagickBooleanType
   GetImageMagick(const unsigned char *,const size_t,char *),
   GetMagickAdjoin(const MagickInfo *),
   GetMagickBlobSupport(const MagickInfo *),
+  GetMagickDecoderSeekableStream(const MagickInfo *),
   GetMagickDecoderThreadSupport(const MagickInfo *),
+  GetMagickEncoderSeekableStream(const MagickInfo *),
   GetMagickEncoderThreadSupport(const MagickInfo *),
   GetMagickEndianSupport(const MagickInfo *),
   GetMagickRawSupport(const MagickInfo *),
-  GetMagickSeekableStream(const MagickInfo *),
   GetMagickStealth(const MagickInfo *),
   GetMagickUseExtension(const MagickInfo *),
   IsMagickCoreInstantiated(void),

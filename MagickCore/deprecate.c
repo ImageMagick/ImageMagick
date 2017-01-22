@@ -89,5 +89,37 @@
 #include "MagickCore/utility.h"
 
 #if !defined(MAGICKCORE_EXCLUDE_DEPRECATED)
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   G e t M a g i c k S e e k a b l e S t r e a m                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetMagickSeekableStream() returns MagickTrue if the magick supports a
+%  seekable stream.
+%
+%  The format of the GetMagickSeekableStream method is:
+%
+%      MagickBooleanType GetMagickSeekableStream(const MagickInfo *magick_info)
+%
+%  A description of each parameter follows:
+%
+%    o magick_info:  The magick info.
+%
+*/
+MagickExport MagickBooleanType GetMagickSeekableStream(
+  const MagickInfo *magick_info)
+{
+  assert(magick_info != (MagickInfo *) NULL);
+  assert(magick_info->signature == MagickCoreSignature);
+  return(((magick_info->flags & CoderSeekableStreamFlag) == 0) ? MagickFalse :
+    MagickTrue);
+}
 
 #endif

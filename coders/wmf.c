@@ -2952,7 +2952,7 @@ ModuleExport size_t RegisterWMFImage(void)
 #if defined(MAGICKCORE_SANS_DELEGATE) || defined(MAGICKCORE_WMF_DELEGATE)
   entry->decoder=ReadWMFImage;
 #endif
-  entry->flags|=CoderSeekableStreamFlag;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
   (void) RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("WMF","WMF","Windows Meta File");
 #if defined(MAGICKCORE_SANS_DELEGATE) || defined(MAGICKCORE_WMF_DELEGATE)

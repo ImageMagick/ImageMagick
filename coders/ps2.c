@@ -116,12 +116,12 @@ ModuleExport size_t RegisterPS2Image(void)
   entry=AcquireMagickInfo("PS2","EPS2","Level II Encapsulated PostScript");
   entry->encoder=(EncodeImageHandler *) WritePS2Image;
   entry->flags^=CoderAdjoinFlag;
-  entry->flags|=CoderSeekableStreamFlag;
+  entry->flags|=CoderEncoderSeekableStreamFlag;
   entry->mime_type=ConstantString("application/postscript");
   (void) RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("PS2","PS2","Level II PostScript");
   entry->encoder=(EncodeImageHandler *) WritePS2Image;
-  entry->flags|=CoderSeekableStreamFlag;
+  entry->flags|=CoderEncoderSeekableStreamFlag;
   entry->mime_type=ConstantString("application/postscript");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);

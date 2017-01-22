@@ -749,7 +749,7 @@ ModuleExport size_t RegisterSGIImage(void)
   entry->decoder=(DecodeImageHandler *) ReadSGIImage;
   entry->encoder=(EncodeImageHandler *) WriteSGIImage;
   entry->magick=(IsImageFormatHandler *) IsSGI;
-  entry->flags|=CoderSeekableStreamFlag;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

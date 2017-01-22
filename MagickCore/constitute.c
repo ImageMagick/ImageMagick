@@ -442,7 +442,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
          }
     }
   if ((magick_info != (const MagickInfo *) NULL) &&
-      (GetMagickSeekableStream(magick_info) != MagickFalse))
+      (GetMagickDecoderSeekableStream(magick_info) != MagickFalse))
     {
       MagickBooleanType
         status;
@@ -1071,7 +1071,7 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
   status=MagickFalse;
   temporary=MagickFalse;
   if ((magick_info != (const MagickInfo *) NULL) &&
-      (GetMagickSeekableStream(magick_info) != MagickFalse))
+      (GetMagickEncoderSeekableStream(magick_info) != MagickFalse))
     {
       char
         image_filename[MagickPathExtent];

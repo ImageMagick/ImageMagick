@@ -607,7 +607,8 @@ ModuleExport size_t RegisterPALMImage(void)
   entry=AcquireMagickInfo("PALM","PALM","Palm pixmap");
   entry->decoder=(DecodeImageHandler *) ReadPALMImage;
   entry->encoder=(EncodeImageHandler *) WritePALMImage;
-  entry->flags|=CoderSeekableStreamFlag;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
+  entry->flags|=CoderEncoderSeekableStreamFlag;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

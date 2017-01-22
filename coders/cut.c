@@ -636,7 +636,7 @@ ModuleExport size_t RegisterCUTImage(void)
 
   entry=AcquireMagickInfo("CUT","CUT","DR Halo");
   entry->decoder=(DecodeImageHandler *) ReadCUTImage;
-  entry->flags|=CoderSeekableStreamFlag;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

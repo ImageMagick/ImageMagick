@@ -1685,7 +1685,7 @@ ModuleExport size_t RegisterMIFFImage(void)
   entry->decoder=(DecodeImageHandler *) ReadMIFFImage;
   entry->encoder=(EncodeImageHandler *) WriteMIFFImage;
   entry->magick=(IsImageFormatHandler *) IsMIFF;
-  entry->flags|=CoderSeekableStreamFlag;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
   if (*version != '\0')
     entry->version=ConstantString(version);
   (void) RegisterMagickInfo(entry);
