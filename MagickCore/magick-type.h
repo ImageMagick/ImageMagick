@@ -46,10 +46,10 @@ typedef float float_t;
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)
 #define MaxColormapSize  256UL
 #define MaxMap  255UL
-typedef float_t MagickRealType;
+typedef double_t MagickRealType;
 
 #if defined(MAGICKCORE_HDRI_SUPPORT)
-typedef float Quantum;
+typedef float_t Quantum;
 #define QuantumRange  255.0
 #define QuantumFormat  "%g"
 #else
@@ -60,10 +60,10 @@ typedef unsigned char Quantum;
 #elif (MAGICKCORE_QUANTUM_DEPTH == 16)
 #define MaxColormapSize  65536UL
 #define MaxMap  65535UL
-typedef float_t MagickRealType;
+typedef double_t MagickRealType;
 
 #if defined(MAGICKCORE_HDRI_SUPPORT)
-typedef float Quantum;
+typedef float_t Quantum;
 #define QuantumRange  65535.0f
 #define QuantumFormat  "%g"
 #else
@@ -74,7 +74,7 @@ typedef unsigned short Quantum;
 #elif (MAGICKCORE_QUANTUM_DEPTH == 32)
 #define MaxColormapSize  65536UL
 #define MaxMap  65535UL
-typedef float_t MagickRealType;
+typedef double_t MagickRealType;
 
 #if defined(MAGICKCORE_HDRI_SUPPORT)
 typedef double Quantum;
