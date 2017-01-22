@@ -7470,7 +7470,7 @@ ModuleExport size_t RegisterPNGImage(void)
 #endif
 
   entry=AcquireMagickInfo("PNG","MNG","Multiple-image Network Graphics");
-  entry->flags|=CoderSeekableStreamFlag;  /* To do: eliminate this. */
+  entry->flags|=CoderDecoderSeekableStreamFlag;  /* To do: eliminate this. */
 
 #if defined(MAGICKCORE_PNG_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadMNGImage;
