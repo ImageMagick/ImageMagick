@@ -55,9 +55,6 @@ typedef enum
   BlobStream
 } StreamType;
 
-typedef int
-  *(*BlobFifo)(const Image *,const void *,const size_t);
-
 extern MagickExport BlobInfo
   *CloneBlobInfo(const BlobInfo *),
   *ReferenceBlob(BlobInfo *);
