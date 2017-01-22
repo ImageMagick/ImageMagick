@@ -26,6 +26,9 @@ extern "C" {
 
 #include "MagickCore/magick.h"
 
+typedef int
+  *(*BlobFifo)(const Image *,const void *,const size_t);
+
 extern MagickExport MagickBooleanType
   GetMagickSeekableStream(const MagickInfo *);
 
