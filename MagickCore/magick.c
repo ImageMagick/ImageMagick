@@ -877,7 +877,7 @@ MagickExport MagickBooleanType GetMagickSeekableStream(
   return(((magick_info->flags & CoderSeekableStreamFlag) == 0) ? MagickFalse :
     MagickTrue);
 }
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -907,7 +907,7 @@ MagickExport MagickBooleanType GetMagickStealth(const MagickInfo *magick_info)
   return(((magick_info->flags & CoderStealthFlag) == 0) ? MagickFalse :
     MagickTrue);
 }
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
