@@ -22,6 +22,8 @@
 extern "C" {
 #endif
 
+#include "MagickCore/magick.h"
+
 #if !defined(MAGICKCORE_EXCLUDE_DEPRECATED)
 
 extern MagickExport MagickBooleanType
