@@ -1,3 +1,11 @@
++2017-01-22  6.9.7-6 Glenn Randers-Pehrson <glennrp@image...>
+  * Renamed read_vpag_chunk_callback() function to png_user_chunk_callback()
+    in coders/png.c
+  * Implemented a private PNG caNv (canvas) chunk for remembering the
+    original dimensions and offsets when an image is cropped.  Previously
+    we used the oFFs and vpAg chunks for this purpose, but this had potential
+    conflicts with other applications that also use the oFFs chunk.
+
 2017-01-14  6.9.7-5 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 6.9.7-5, GIT revision 11306:cd9b64b:20170121.
 
