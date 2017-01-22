@@ -3945,6 +3945,7 @@ MagickExport MagickOffsetType SeekBlob(Image *image,
     case UndefinedStream:
       break;
     case StandardStream:
+    case PipeStream:
       return(-1);
     case FileStream:
     {
@@ -3955,7 +3956,6 @@ MagickExport MagickOffsetType SeekBlob(Image *image,
       image->blob->offset=TellBlob(image);
       break;
     }
-    case PipeStream:
     case ZipStream:
     {
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
