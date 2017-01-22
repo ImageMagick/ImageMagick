@@ -5,6 +5,9 @@
     original dimensions and offsets when an image is cropped.  Previously
     we used the oFFs and vpAg chunks for this purpose, but this had potential
     conflicts with other applications that also use the oFFs chunk.
+  * coders/png.c: Added support for a proposed new PNG chunk (exIf
+    read-write, eXIf read-only) that is currently being discussed on the
+    png-mng-misc at lists.sourceforge.net mailing list.
 
 2017-01-22  7.0.4-6 Dirk Lemstra <dirk@lem.....org>
   * Replaced CoderSeekableStreamFlag with CoderDecoderSeekableStreamFlag and
