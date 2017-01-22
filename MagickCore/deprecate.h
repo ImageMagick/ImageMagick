@@ -26,6 +26,8 @@ extern "C" {
 
 #if !defined(MAGICKCORE_EXCLUDE_DEPRECATED)
 
+#include "MagickCore/magick.h"
+
 extern MagickExport MagickBooleanType
   GetMagickSeekableStream(const MagickInfo *);
 
