@@ -367,8 +367,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
     q=QueueCacheViewAuthenticPixels(component_view,0,y,component_image->columns,
       1,exception);
-    if ((p == (const PixelPacket *) NULL) ||
-        (q == (PixelPacket *) NULL))
+    if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       {
         status=MagickFalse;
         continue;
@@ -383,18 +382,15 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
 
       offset=y*image->columns+x;
       status=GetMatrixElement(equivalences,offset,0,&id);
-      if (id == offset)
-        {
-          id=n++;
-          if (n > (ssize_t) MaxColormapSize)
-            break;
-          status=SetMatrixElement(equivalences,offset,0,&id);
-        }
+      if (id != offset)
+        status=GetMatrixElement(equivalences,id,0,&id);
       else
         {
-          status=GetMatrixElement(equivalences,id,0,&id);
-          status=SetMatrixElement(equivalences,offset,0,&id);
+          id=n++;
+          if (id >= (ssize_t) MaxColormapSize)
+            break;
         }
+      status=SetMatrixElement(equivalences,offset,0,&id);
       if (x < object[id].bounding_box.x)
         object[id].bounding_box.x=x;
       if (x >= (ssize_t) object[id].bounding_box.width)
