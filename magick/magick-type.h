@@ -44,9 +44,9 @@ extern "C" {
   Float_t is not an ABI type.
 */
 #if MAGICKCORE_SIZEOF_FLOAT_T == 0
-typedef float MagickRealType;
+typedef double MagickRealType;
 #elif (MAGICKCORE_SIZEOF_FLOAT_T == MAGICKCORE_SIZEOF_FLOAT)
-typedef float MagickRealType;
+typedef double MagickRealType;
 #elif (MAGICKCORE_SIZEOF_FLOAT_T == MAGICKCORE_SIZEOF_DOUBLE)
 typedef double MagickRealType;
 #elif (MAGICKCORE_SIZEOF_FLOAT_T == MAGICKCORE_SIZEOF_LONG_DOUBLE)
