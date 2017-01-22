@@ -22,8 +22,6 @@
 extern "C" {
 #endif
 
-#include "MagickCore/magick.h"
-
 #if !defined(MAGICKCORE_EXCLUDE_DEPRECATED)
 
 #include "MagickCore/magick.h"
