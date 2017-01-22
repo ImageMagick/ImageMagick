@@ -520,6 +520,12 @@ static SemaphoreInfo
   portable, we use ASCII numbers like this, not characters.
 */
 
+/* until registration of eXIf */
+static const png_byte mng_exIf[5]={101, 120,  73, 102, (png_byte) '\0'};
+
+/* after registration of eXIf */
+static const png_byte mng_eXIf[5]={101,  88,  73, 102, (png_byte) '\0'};
+
 static const png_byte mng_MHDR[5]={ 77,  72,  68,  82, (png_byte) '\0'};
 static const png_byte mng_BACK[5]={ 66,  65,  67,  75, (png_byte) '\0'};
 static const png_byte mng_BASI[5]={ 66,  65,  83,  73, (png_byte) '\0'};
@@ -797,6 +803,7 @@ typedef struct _MngInfo
     ping_exclude_bKGD,
     ping_exclude_cHRM,
     ping_exclude_date,
+    ping_exclude_eXIf,
     ping_exclude_EXIF,
     ping_exclude_gAMA,
     ping_exclude_iCCP,
@@ -1799,6 +1806,63 @@ static int read_user_chunk_callback(png_struct *ping, png_unknown_chunkp chunk)
      "    read_user_chunk: found %c%c%c%c chunk",
        chunk->name[0],chunk->name[1],chunk->name[2],chunk->name[3]);
 
+  if (chunk->name[0]  == 101 &&
+      (chunk->name[1] ==   88 || chunk->name[1] == 120 ) &&
+      chunk->name[2] ==   73 &&
+      chunk-> name[3] == 102)
+    {
+      /* process eXIf or exIf chunk */
+
+      PNGErrorInfo
+        *error_info;
+
+      StringInfo
+        *profile;
+
+      unsigned char
+        *p;
+
+      png_byte
+        *s;
+
+      int
+        i;
+
+      LogMagickEvent(CoderEvent,GetMagickModule(),
+        " recognized eXIf|exIf chunk");
+
+      image=(Image *) png_get_user_chunk_ptr(ping);
+
+      error_info=(PNGErrorInfo *) png_get_error_ptr(ping);
+
+      profile=BlobToStringInfo((const void *) NULL,chunk->size+6);
+      if (profile == (StringInfo *) NULL)
+        {
+          (void) ThrowMagickException(error_info->exception,GetMagickModule(),
+            ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+          return(-1);
+        }
+      p=GetStringInfoDatum(profile);
+
+      /* Initialize profile with "Exif\0\0" */
+      *p++ ='E';
+      *p++ ='x';
+      *p++ ='i';
+      *p++ ='f';
+      *p++ ='\0';
+      *p++ ='\0';
+
+      /* copy chunk->data to profile */
+      s=chunk->data;
+      for (i=0; i<chunk->size; i++)
+        *p++ = *s++;
+
+      (void) SetImageProfile(image,"exif",profile,
+        error_info->exception);
+
+      return(1);
+    }
+
   /* vpAg (deprecated, replaced by caNv) */
   if (chunk->name[0] == 118 &&
       chunk->name[1] == 112 &&
@@ -2271,14 +2335,16 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #endif
   }
 #if defined(PNG_UNKNOWN_CHUNKS_SUPPORTED)
-  /* Ignore unused chunks and all unknown chunks except for caNv and vpAg */
+  /* Ignore unused chunks and all unknown chunks except for exIf, caNv,
+     and vpAg */
 # if PNG_LIBPNG_VER < 10700 /* Avoid libpng16 warning */
   png_set_keep_unknown_chunks(ping, 2, NULL, 0);
 # else
   png_set_keep_unknown_chunks(ping, 1, NULL, 0);
 # endif
-  png_set_keep_unknown_chunks(ping, 2, mng_vpAg, 1);
+  png_set_keep_unknown_chunks(ping, 2, mng_exIf, 1);
   png_set_keep_unknown_chunks(ping, 2, mng_caNv, 1);
+  png_set_keep_unknown_chunks(ping, 2, mng_vpAg, 1);
   png_set_keep_unknown_chunks(ping, 1, unused_chunks,
      (int)sizeof(unused_chunks)/5);
   /* Callback for other unknown chunks */
@@ -7902,6 +7968,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     ping_have_non_bw,
     ping_have_PLTE,
     ping_have_bKGD,
+    ping_have_eXIf,
     ping_have_iCCP,
     ping_have_pHYs,
     ping_have_sRGB,
@@ -7911,6 +7978,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     ping_exclude_cHRM,
     ping_exclude_date,
     /* ping_exclude_EXIF, */
+    ping_exclude_eXIf,
     ping_exclude_gAMA,
     ping_exclude_iCCP,
     /* ping_exclude_iTXt, */
@@ -8052,6 +8120,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   ping_have_non_bw=MagickTrue;
   ping_have_PLTE=MagickFalse;
   ping_have_bKGD=MagickFalse;
+  ping_have_eXIf=MagickTrue;
   ping_have_iCCP=MagickFalse;
   ping_have_pHYs=MagickFalse;
   ping_have_sRGB=MagickFalse;
@@ -8062,6 +8131,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   ping_exclude_cHRM=mng_info->ping_exclude_cHRM;
   ping_exclude_date=mng_info->ping_exclude_date;
   /* ping_exclude_EXIF=mng_info->ping_exclude_EXIF; */
+  ping_exclude_eXIf=mng_info->ping_exclude_eXIf;
   ping_exclude_gAMA=mng_info->ping_exclude_gAMA;
   ping_exclude_iCCP=mng_info->ping_exclude_iCCP;
   /* ping_exclude_iTXt=mng_info->ping_exclude_iTXt; */
@@ -11298,6 +11368,65 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   /* write any PNG-chunk-e profiles */
   (void) Magick_png_write_chunk_from_profile(image,"PNG-chunk-e",logging);
 
+  /* write exIf profile */
+  if (ping_have_eXIf != MagickFalse && ping_exclude_eXIf == MagickFalse)
+    {
+      char
+        *name;
+
+      ResetImageProfileIterator(image);
+
+      for (name=GetNextImageProfile(image); name != (const char *) NULL; )
+      {
+        if (LocaleCompare(name,"exif") == 0)
+          {
+            const StringInfo
+              *profile;
+
+            profile=GetImageProfile(image,name);
+
+            if (profile != (StringInfo *) NULL)
+              {
+                png_uint_32
+                  length;
+                unsigned char
+                  chunk[4],
+                  *data;
+
+                StringInfo
+                  *ping_profile;
+
+                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                   "  Have eXIf profile");
+
+                ping_profile=CloneStringInfo(profile);
+                data=GetStringInfoDatum(ping_profile),
+
+                length=(png_uint_32) GetStringInfoLength(ping_profile);
+
+#if 0 /* eXIf chunk is registered */
+                PNGType(chunk,mng_eXIf);
+#else /* eXIf chunk not yet registered; write exIf instead */
+                PNGType(chunk,mng_exIf);
+#endif
+                if (length < 7)
+                  break;  /* othewise crashes */
+
+                /* skip the "Exif\0\0" JFIF Exif Header ID */
+                length -= 6;
+
+                LogPNGChunk(logging,chunk,length);
+                (void) WriteBlobMSBULong(image,length);
+                (void) WriteBlob(image,4,chunk);
+                (void) WriteBlob(image,length,data+6);
+                (void) WriteBlobMSBULong(image,crc32(crc32(0,chunk,4),
+                  data+6, (uInt) length));
+                break;
+              }
+          }
+      }
+    }
+
   if (logging != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
       "  Writing PNG end info");
@@ -11833,6 +11962,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,Image *image)
   mng_info->ping_exclude_caNv=MagickFalse;
   mng_info->ping_exclude_cHRM=MagickFalse;
   mng_info->ping_exclude_date=MagickFalse;
+  mng_info->ping_exclude_eXIf=MagickFalse;
   mng_info->ping_exclude_EXIF=MagickFalse; /* hex-encoded EXIF in zTXt */
   mng_info->ping_exclude_gAMA=MagickFalse;
   mng_info->ping_exclude_iCCP=MagickFalse;
@@ -12045,6 +12175,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,Image *image)
         mng_info->ping_exclude_cHRM=excluding;
         mng_info->ping_exclude_date=excluding;
         mng_info->ping_exclude_EXIF=excluding;
+        mng_info->ping_exclude_eXIf=excluding;
         mng_info->ping_exclude_gAMA=excluding;
         mng_info->ping_exclude_iCCP=excluding;
         /* mng_info->ping_exclude_iTXt=excluding; */
@@ -12068,6 +12199,8 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,Image *image)
         mng_info->ping_exclude_cHRM=excluding != MagickFalse ? MagickFalse :
           MagickTrue;
         mng_info->ping_exclude_date=excluding != MagickFalse ? MagickFalse :
+          MagickTrue;
+        mng_info->ping_exclude_eXIf=excluding != MagickFalse ? MagickFalse :
           MagickTrue;
         mng_info->ping_exclude_EXIF=excluding != MagickFalse ? MagickFalse :
           MagickTrue;
@@ -12109,7 +12242,10 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,Image *image)
       mng_info->ping_exclude_date=excluding;
 
     if (IsOptionMember("exif",value) != MagickFalse)
-      mng_info->ping_exclude_EXIF=excluding;
+      {
+        mng_info->ping_exclude_EXIF=excluding;
+        mng_info->ping_exclude_eXIf=excluding;
+      }
 
     if (IsOptionMember("gama",value) != MagickFalse)
       mng_info->ping_exclude_gAMA=excluding;
@@ -12169,6 +12305,9 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,Image *image)
     if (mng_info->ping_exclude_EXIF != MagickFalse)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "    EXIF");
+    if (mng_info->ping_exclude_eXIf != MagickFalse)
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "    eXIf");
     if (mng_info->ping_exclude_gAMA != MagickFalse)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "    gAMA");
@@ -13706,6 +13845,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image)
        mng_info->ping_exclude_cHRM=MagickTrue;
        mng_info->ping_exclude_date=MagickTrue;
        mng_info->ping_exclude_EXIF=MagickTrue;
+       mng_info->ping_exclude_eXIf=MagickTrue;
        mng_info->ping_exclude_gAMA=MagickTrue;
        mng_info->ping_exclude_iCCP=MagickTrue;
        /* mng_info->ping_exclude_iTXt=MagickTrue; */
