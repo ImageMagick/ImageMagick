@@ -549,6 +549,7 @@ static const png_byte mng_SEEK[5]={ 83,  69,  69,  75, (png_byte) '\0'};
 static const png_byte mng_SHOW[5]={ 83,  72,  79,  87, (png_byte) '\0'};
 static const png_byte mng_TERM[5]={ 84,  69,  82,  77, (png_byte) '\0'};
 static const png_byte mng_bKGD[5]={ 98,  75,  71,  68, (png_byte) '\0'};
+static const png_byte mng_caNv[5]={ 99,  97,  78, 118, (png_byte) '\0'};
 static const png_byte mng_cHRM[5]={ 99,  72,  82,  77, (png_byte) '\0'};
 static const png_byte mng_gAMA[5]={103,  65,  77,  65, (png_byte) '\0'};
 static const png_byte mng_iCCP[5]={105,  67,  67,  80, (png_byte) '\0'};
@@ -811,6 +812,7 @@ typedef struct _MngInfo
     ping_exclude_tEXt,
     ping_exclude_tRNS,
     ping_exclude_vpAg,
+    ping_exclude_caNv,
     ping_exclude_zCCP, /* hex-encoded iCCP */
     ping_exclude_zTXt,
     ping_preserve_colormap,
@@ -1806,7 +1808,7 @@ Magick_png_read_raw_profile(png_struct *ping,Image *image,
 }
 
 #if defined(PNG_UNKNOWN_CHUNKS_SUPPORTED)
-static int read_vpag_chunk_callback(png_struct *ping, png_unknown_chunkp chunk)
+static int read_user_chunk_callback(png_struct *ping, png_unknown_chunkp chunk)
 {
   Image
     *image;
@@ -1821,36 +1823,68 @@ static int read_vpag_chunk_callback(png_struct *ping, png_unknown_chunkp chunk)
   */
 
   LogMagickEvent(CoderEvent,GetMagickModule(),
-     " read_vpag_chunk: found %c%c%c%c chunk",
+     "    read_user_chunk: found %c%c%c%c chunk",
        chunk->name[0],chunk->name[1],chunk->name[2],chunk->name[3]);
 
-  if (chunk->name[0] != 118 || chunk->name[1] != 112 ||
-      chunk->name[2] != 65 ||chunk-> name[3] != 103)
-    return(0); /* Did not recognize */
+  /* vpAg (deprecated, replaced by caNv) */
+  if (chunk->name[0] == 118 &&
+      chunk->name[1] == 112 &&
+      chunk->name[2] ==  65 &&
+      chunk->name[3] == 103)
+    {
+     /* recognized vpAg */
 
-  /* recognized vpAg */
+     if (chunk->size != 9)
+       return(-1); /* Error return */
 
-  if (chunk->size != 9)
-    return(-1); /* Error return */
+     if (chunk->data[8] != 0)
+       return(0);  /* ImageMagick requires pixel units */
 
-  if (chunk->data[8] != 0)
-    return(0);  /* ImageMagick requires pixel units */
+     image=(Image *) png_get_user_chunk_ptr(ping);
 
-  image=(Image *) png_get_user_chunk_ptr(ping);
+     image->page.width=(size_t) ((chunk->data[0] << 24) |
+        (chunk->data[1] << 16) | (chunk->data[2] << 8) | chunk->data[3]);
 
-  image->page.width=(size_t) ((chunk->data[0] << 24) |
-     (chunk->data[1] << 16) | (chunk->data[2] << 8) | chunk->data[3]);
+     image->page.height=(size_t) ((chunk->data[4] << 24) |
+        (chunk->data[5] << 16) | (chunk->data[6] << 8) | chunk->data[7]);
 
-  image->page.height=(size_t) ((chunk->data[4] << 24) |
-     (chunk->data[5] << 16) | (chunk->data[6] << 8) | chunk->data[7]);
+     return(1);
+    }
 
-  /* Return one of the following: */
-     /* return(-n);  chunk had an error */
-     /* return(0);  did not recognize */
-     /* return(n);  success */
+  /* caNv */
+  if (chunk->name[0] ==  99 &&
+      chunk->name[1] ==  97 &&
+      chunk->name[2] ==  78 &&
+      chunk->name[3] == 118)
+    {
+     /* recognized caNv */
 
-  return(1);
+     if (chunk->size != 16)
+       return(-1); /* Error return */
 
+     image=(Image *) png_get_user_chunk_ptr(ping);
+
+     image->page.width=(size_t) ((chunk->data[0] << 24) |
+        (chunk->data[1] << 16) | (chunk->data[2] << 8) | chunk->data[3]);
+
+     image->page.height=(size_t) ((chunk->data[4] << 24) |
+        (chunk->data[5] << 16) | (chunk->data[6] << 8) | chunk->data[7]);
+
+     image->page.x=(size_t) ((chunk->data[8] << 24) |
+        (chunk->data[9] << 16) | (chunk->data[10] << 8) | chunk->data[11]);
+
+     image->page.y=(size_t) ((chunk->data[12] << 24) |
+        (chunk->data[13] << 16) | (chunk->data[14] << 8) | chunk->data[15]);
+
+     /* Return one of the following: */
+        /* return(-n);  chunk had an error */
+        /* return(0);  did not recognize */
+        /* return(n);  success */
+
+     return(1);
+    }
+
+  return(0); /* Did not recognize */
 }
 #endif
 
@@ -2263,22 +2297,23 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #if defined(PNG_UNKNOWN_CHUNKS_SUPPORTED)
     else
     {
-       png_set_keep_unknown_chunks(ping, 1, mng_iCCP, 1);
+       png_set_keep_unknown_chunks(ping, 1, (png_bytep) mng_iCCP, 1);
     }
 #endif
   }
 #if defined(PNG_UNKNOWN_CHUNKS_SUPPORTED)
-  /* Ignore unused chunks and all unknown chunks except for vpAg */
-#if PNG_LIBPNG_VER < 10700 /* Avoid libpng16 warning */
+  /* Ignore unused chunks and all unknown chunks except for caNv and vpAg */
+# if PNG_LIBPNG_VER < 10700 /* Avoid libpng16 warning */
   png_set_keep_unknown_chunks(ping, 2, NULL, 0);
-#else
+# else
   png_set_keep_unknown_chunks(ping, 1, NULL, 0);
-#endif
-  png_set_keep_unknown_chunks(ping, 2, mng_vpAg, 1);
+# endif
+  png_set_keep_unknown_chunks(ping, 2, (png_bytep) mng_caNv, 1);
+  png_set_keep_unknown_chunks(ping, 2, (png_bytep) mng_vpAg, 1);
   png_set_keep_unknown_chunks(ping, 1, unused_chunks,
      (int)sizeof(unused_chunks)/5);
   /* Callback for other unknown chunks */
-  png_set_read_user_chunk_fn(ping, image, read_vpag_chunk_callback);
+  png_set_read_user_chunk_fn(ping, image, read_user_chunk_callback);
 #endif
 
 #ifdef PNG_SET_USER_LIMITS_SUPPORTED
@@ -3823,6 +3858,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                 exception);
        }
 
+     /* cHRM chunk: */
      if (ping_found_cHRM != MagickFalse)
        {
          (void) FormatLocaleString(msg,MagickPathExtent,"%s",
@@ -3831,6 +3867,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                 exception);
        }
 
+     /* bKGD chunk: */
      if (png_get_valid(ping,ping_info,PNG_INFO_bKGD))
        {
          (void) FormatLocaleString(msg,MagickPathExtent,"%s",
@@ -3843,6 +3880,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         "chunk was found");
 
 #if defined(PNG_iCCP_SUPPORTED)
+     /* iCCP chunk: */
      if (ping_found_iCCP != MagickFalse)
         (void) SetImageProperty(image,"png:iCCP",msg,
                 exception);
@@ -3853,6 +3891,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                 exception);
 
 #if defined(PNG_sRGB_SUPPORTED)
+     /* sRGB chunk: */
      if (ping_found_sRGB != MagickFalse)
        {
          (void) FormatLocaleString(msg,MagickPathExtent,
@@ -3864,6 +3903,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
        }
 #endif
 
+     /* gAMA chunk: */
      if (ping_found_gAMA != MagickFalse)
        {
          (void) FormatLocaleString(msg,MagickPathExtent,
@@ -3874,6 +3914,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
        }
 
 #if defined(PNG_pHYs_SUPPORTED)
+     /* pHYs chunk: */
      if (png_get_valid(ping,ping_info,PNG_INFO_pHYs))
        {
          (void) FormatLocaleString(msg,MagickPathExtent,
@@ -3885,6 +3926,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #endif
 
 #if defined(PNG_oFFs_SUPPORTED)
+     /* oFFs chunk: */
      if (png_get_valid(ping,ping_info,PNG_INFO_oFFs))
        {
          (void) FormatLocaleString(msg,MagickPathExtent,"x_off=%.20g, y_off=%.20g",
@@ -3898,6 +3940,20 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
      read_tIME_chunk(image,ping,end_info,exception);
 #endif
 
+     /* caNv chunk: */
+     if ((image->page.width != 0 && image->page.width != image->columns) ||
+         (image->page.height != 0 && image->page.height != image->rows) ||
+         (image->page.x != 0 || image->page.y != 0))
+       {
+         (void) FormatLocaleString(msg,MagickPathExtent,
+            "width=%.20g, height=%.20g, x_offset=%.20g, y_offset=%.20g",
+            (double) image->page.width,(double) image->page.height,
+            (double) image->page.x,(double) image->page.y);
+         (void) SetImageProperty(image,"png:caNv",msg,
+                exception);
+       }
+
+     /* vpAg chunk: */
      if ((image->page.width != 0 && image->page.width != image->columns) ||
          (image->page.height != 0 && image->page.height != image->rows))
        {
@@ -7414,7 +7470,7 @@ ModuleExport size_t RegisterPNGImage(void)
 #endif
 
   entry=AcquireMagickInfo("PNG","MNG","Multiple-image Network Graphics");
-  entry->flags|=CoderDecoderSeekableStreamFlag;  /* To do: eliminate this. */
+  entry->flags|=CoderSeekableStreamFlag;  /* To do: eliminate this. */
 
 #if defined(MAGICKCORE_PNG_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadMNGImage;
@@ -7906,7 +7962,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
   int
     num_passes,
-    pass;
+    pass,
+    ping_wrote_caNv;
 
   png_byte
      ping_trans_alpha[256];
@@ -7961,6 +8018,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     ping_exclude_tIME,
     /* ping_exclude_tRNS, */
     ping_exclude_vpAg,
+    ping_exclude_caNv,
     ping_exclude_zCCP, /* hex-encoded iCCP */
     ping_exclude_zTXt,
 
@@ -8105,6 +8163,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   ping_have_tRNS=MagickFalse;
 
   ping_exclude_bKGD=mng_info->ping_exclude_bKGD;
+  ping_exclude_caNv=mng_info->ping_exclude_caNv;
   ping_exclude_cHRM=mng_info->ping_exclude_cHRM;
   ping_exclude_date=mng_info->ping_exclude_date;
   /* ping_exclude_EXIF=mng_info->ping_exclude_EXIF; */
@@ -10708,22 +10767,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         }
     }
 
-#if defined(PNG_oFFs_SUPPORTED)
-  if (ping_exclude_oFFs == MagickFalse)
-    {
-      if (image->page.x || image->page.y)
-        {
-           png_set_oFFs(ping,ping_info,(png_int_32) image->page.x,
-              (png_int_32) image->page.y, 0);
-
-           if (logging != MagickFalse)
-             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                 "    Setting up oFFs chunk with x=%d, y=%d, units=0",
-                 (int) image->page.x, (int) image->page.y);
-        }
-    }
-#endif
-
 #if defined(PNG_tIME_SUPPORTED)
   if (ping_exclude_tIME == MagickFalse)
     {
@@ -10802,7 +10845,49 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   /* write any PNG-chunk-m profiles */
   (void) Magick_png_write_chunk_from_profile(image,"PNG-chunk-m",logging);
 
-  if (ping_exclude_vpAg == MagickFalse)
+  ping_wrote_caNv = MagickFalse;
+
+  /* write caNv chunk */
+  if (ping_exclude_caNv == MagickFalse)
+    {
+      if ((image->page.width != 0 && image->page.width != image->columns) ||
+          (image->page.height != 0 && image->page.height != image->rows) ||
+          image->page.x != 0 || image->page.y != 0)
+        {
+          unsigned char
+            chunk[20];
+
+          (void) WriteBlobMSBULong(image,16L);  /* data length=8 */
+          PNGType(chunk,mng_caNv);
+          LogPNGChunk(logging,mng_caNv,16L);
+          PNGLong(chunk+4,(png_uint_32) image->page.width);
+          PNGLong(chunk+8,(png_uint_32) image->page.height);
+          PNGsLong(chunk+12,(png_int_32) image->page.x);
+          PNGsLong(chunk+16,(png_int_32) image->page.y);
+          (void) WriteBlob(image,20,chunk);
+          (void) WriteBlobMSBULong(image,crc32(0,chunk,20));
+          ping_wrote_caNv = MagickTrue;
+        }
+    }
+
+#if defined(PNG_oFFs_SUPPORTED)
+  if (ping_exclude_oFFs == MagickFalse && ping_wrote_caNv == MagickFalse)
+    {
+      if (image->page.x || image->page.y)
+        {
+           png_set_oFFs(ping,ping_info,(png_int_32) image->page.x,
+              (png_int_32) image->page.y, 0);
+
+           if (logging != MagickFalse)
+             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                 "    Setting up oFFs chunk with x=%d, y=%d, units=0",
+                 (int) image->page.x, (int) image->page.y);
+        }
+    }
+#endif
+
+  /* write vpAg chunk (deprecated, replaced by caNv) */
+  if (ping_exclude_vpAg == MagickFalse && ping_wrote_caNv == MagickFalse)
     {
       if ((image->page.width != 0 && image->page.width != image->columns) ||
           (image->page.height != 0 && image->page.height != image->rows))
@@ -11809,6 +11894,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
    */
 
   mng_info->ping_exclude_bKGD=MagickFalse;
+  mng_info->ping_exclude_caNv=MagickFalse;
   mng_info->ping_exclude_cHRM=MagickFalse;
   mng_info->ping_exclude_date=MagickFalse;
   mng_info->ping_exclude_EXIF=MagickFalse; /* hex-encoded EXIF in zTXt */
@@ -12016,6 +12102,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
     if (IsOptionMember("all",value) != MagickFalse)
       {
         mng_info->ping_exclude_bKGD=excluding;
+        mng_info->ping_exclude_caNv=excluding;
         mng_info->ping_exclude_cHRM=excluding;
         mng_info->ping_exclude_date=excluding;
         mng_info->ping_exclude_EXIF=excluding;
@@ -12036,6 +12123,8 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
     if (IsOptionMember("none",value) != MagickFalse)
       {
         mng_info->ping_exclude_bKGD=excluding != MagickFalse ? MagickFalse :
+          MagickTrue;
+        mng_info->ping_exclude_caNv=excluding != MagickFalse ? MagickFalse :
           MagickTrue;
         mng_info->ping_exclude_cHRM=excluding != MagickFalse ? MagickFalse :
           MagickTrue;
@@ -12070,6 +12159,9 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
 
     if (IsOptionMember("bkgd",value) != MagickFalse)
       mng_info->ping_exclude_bKGD=excluding;
+
+    if (IsOptionMember("caNv",value) != MagickFalse)
+      mng_info->ping_exclude_caNv=excluding;
 
     if (IsOptionMember("chrm",value) != MagickFalse)
       mng_info->ping_exclude_cHRM=excluding;
@@ -12126,6 +12218,9 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
     if (mng_info->ping_exclude_bKGD != MagickFalse)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "    bKGD");
+    if (mng_info->ping_exclude_caNv != MagickFalse)
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "    caNv");
     if (mng_info->ping_exclude_cHRM != MagickFalse)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "    cHRM");
@@ -13652,6 +13747,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
 
        /* We don't want any ancillary chunks written */
        mng_info->ping_exclude_bKGD=MagickTrue;
+       mng_info->ping_exclude_caNv=MagickTrue;
        mng_info->ping_exclude_cHRM=MagickTrue;
        mng_info->ping_exclude_date=MagickTrue;
        mng_info->ping_exclude_EXIF=MagickTrue;
