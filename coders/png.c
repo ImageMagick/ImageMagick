@@ -1625,6 +1625,15 @@ static long mng_get_long(unsigned char *p)
   return((long) ((p[0] << 24) | (p[1] << 16) | (p[2] << 8) | p[3]));
 }
 
+typedef struct _PNGErrorInfo
+{
+  Image
+    *image;
+
+  ExceptionInfo
+    *exception;
+} PNGErrorInfo;
+
 static void MagickPNGErrorHandler(png_struct *ping,png_const_charp message)
 {
   Image
@@ -1857,8 +1866,7 @@ static int read_user_chunk_callback(png_struct *ping, png_unknown_chunkp chunk)
       for (i=0; i<chunk->size; i++)
         *p++ = *s++;
 
-      (void) SetImageProfile(image,"exif",profile,
-        error_info->exception);
+      (void) SetImageProfile(image,"exif",profile);
 
       return(1);
     }
@@ -3961,12 +3969,11 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
          (image->page.height != 0 && image->page.height != image->rows) ||
          (image->page.x != 0 || image->page.y != 0))
        {
-         (void) FormatLocaleString(msg,MagickPathExtent,
+         (void) FormatLocaleString(msg,MaxTextExtent,
             "width=%.20g, height=%.20g, x_offset=%.20g, y_offset=%.20g",
             (double) image->page.width,(double) image->page.height,
             (double) image->page.x,(double) image->page.y);
-         (void) SetImageProperty(image,"png:caNv",msg,
-                exception);
+         (void) SetImageProperty(image,"png:caNv",msg);
        }
 
      /* vpAg chunk: */
@@ -10418,7 +10425,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           "    Compression strategy: %d",
             (int) mng_info->write_png_compression_strategy-1);
 
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "  Setting up filtering");
 
         if (mng_info->write_png_compression_filter == 6)
