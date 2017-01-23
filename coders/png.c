@@ -13022,7 +13022,6 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
   return(status);
 }
 
-
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -13109,9 +13108,6 @@ static MagickBooleanType WriteJNGImage(const ImageInfo *image_info,
 static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,
   Image *image, ExceptionInfo *exception)
 {
-  const char
-    *option;
-
   Image
     *next_image;
 
@@ -13290,6 +13286,9 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,
         green,
         blue;
 
+      const char *
+        option;
+
       mng_info->page=image->page;
       need_geom=MagickTrue;
       if (mng_info->page.width || mng_info->page.height)
@@ -13315,8 +13314,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,
       {
         if (need_geom)
           {
-            if ((next_image->columns+next_image->page.x) >
-                mng_info->page.width)
+            if ((next_image->columns+next_image->page.x) > mng_info->page.width)
               mng_info->page.width=next_image->columns+next_image->page.x;
 
             if ((next_image->rows+next_image->page.y) > mng_info->page.height)
@@ -13504,9 +13502,39 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,
                PNGLong(chunk+28,19L);  /* simplicity=LC+JNG, no transparency */
 
              else
+               PNGLong(chunk+28,17L);  /* simplicity=VLC+JNG, no transparency */
+           }
+       }
 
-           Write "nEED CACHEOFF" to turn playback caching off for
-           streaming MNG.
+     else
+       {
+         if (need_matte)
+           {
+             if (need_defi || mng_info->need_fram || use_global_plte)
+               PNGLong(chunk+28,11L);    /* simplicity=LC */
+
+             else
+               PNGLong(chunk+28,9L);    /* simplicity=VLC */
+           }
+
+         else
+           {
+             if (need_defi || mng_info->need_fram || use_global_plte)
+               PNGLong(chunk+28,3L);    /* simplicity=LC, no transparency */
+
+             else
+               PNGLong(chunk+28,1L);    /* simplicity=VLC, no transparency */
+           }
+       }
+     (void) WriteBlob(image,32,chunk);
+     (void) WriteBlobMSBULong(image,crc32(0,chunk,32));
+     option=GetImageOption(image_info,"mng:need-cacheoff");
+     if (option != (const char *) NULL)
+       {
+         size_t
+           length;
+         /*
+           Write "nEED CACHEOFF" to turn playback caching off for streaming MNG.
          */
          PNGType(chunk,mng_nEED);
          length=CopyMagickString((char *) chunk+4,"CACHEOFF",20);
@@ -13898,7 +13926,6 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,
        mng_info->ping_exclude_cHRM=MagickTrue;
        mng_info->ping_exclude_date=MagickTrue;
        mng_info->ping_exclude_EXIF=MagickTrue;
-       mng_info->ping_exclude_eXIf=MagickTrue;
        mng_info->ping_exclude_gAMA=MagickTrue;
        mng_info->ping_exclude_iCCP=MagickTrue;
        /* mng_info->ping_exclude_iTXt=MagickTrue; */
