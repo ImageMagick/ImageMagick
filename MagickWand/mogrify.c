@@ -7913,6 +7913,7 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
               geometry;
 
             /* Compose value from "-compose" option only */
+            (void) SyncImageSettings(mogrify_info,*images,exception);
             value=GetImageOption(mogrify_info,"compose");
             if (value == (const char *) NULL)
               compose=OverCompositeOp;  /* use Over not source_image->compose */
