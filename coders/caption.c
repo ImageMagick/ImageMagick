@@ -159,6 +159,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
     draw_info->gravity=(GravityType) ParseCommandOption(MagickGravityOptions,
       MagickFalse,gravity);
   split=MagickFalse;
+  status=MagickTrue;
   if (image->columns == 0)
     {
       text=AcquireString(caption);
@@ -189,7 +190,8 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
       image->rows=(size_t) ((i+1)*(metrics.ascent-metrics.descent+
         draw_info->interline_spacing+draw_info->stroke_width)+0.5);
     }
-  status=SetImageExtent(image,image->columns,image->rows,exception);
+  if (status != MagickFalse)
+    status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
     { 
       draw_info=DestroyDrawInfo(draw_info);
