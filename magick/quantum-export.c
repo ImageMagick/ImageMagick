@@ -2210,7 +2210,7 @@ static void ExportGrayAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
 
       black=0x00;
       white=0x01;
-      if (quantum_info->min_is_white == MagickFalse)
+      if (quantum_info->min_is_white != MagickFalse)
         {
           black=0x01;
           white=0x00;
