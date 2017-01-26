@@ -11431,6 +11431,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                 break;
               }
           }
+        name=GetNextImageProfile(image);
       }
     }
 
