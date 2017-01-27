@@ -18,6 +18,8 @@
 #ifndef MAGICKCORE_BLOB_H
 #define MAGICKCORE_BLOB_H
 
+typedef struct _UserBlobInfo UserBlobInfo;
+
 #include "MagickCore/image.h"
 #include "MagickCore/stream.h"
 
@@ -34,12 +36,38 @@ typedef enum
   IOMode
 } MapMode;
 
+typedef ssize_t
+  (*BlobHandler)(const unsigned char *,const size_t,const void *);
+
+typedef size_t
+  (*BlobSeeker)(const MagickOffsetType offset,const int whence,const void *);
+
+typedef MagickOffsetType
+  (*BlobTeller)(const void *);
+
+struct _UserBlobInfo
+{
+  BlobHandler
+    handler;
+
+  BlobSeeker
+    seeker;
+
+  BlobTeller
+    teller;
+
+  void
+    *data;
+};
+
 extern MagickExport FILE
   *GetBlobFileHandle(const Image *);
 
 extern MagickExport Image
   *BlobToImage(const ImageInfo *,const void *,const size_t,ExceptionInfo *),
-  *PingBlob(const ImageInfo *,const void *,const size_t,ExceptionInfo *);
+  *PingBlob(const ImageInfo *,const void *,const size_t,ExceptionInfo *),
+  *UserBlobToImage(const ImageInfo *image_info,UserBlobInfo *user_info,
+    ExceptionInfo *exception);
 
 extern MagickExport MagickBooleanType
   BlobToFile(char *,const void *,const size_t,ExceptionInfo *),
@@ -64,7 +92,9 @@ extern MagickExport void
   DuplicateBlob(Image *,const Image *),
   *FileToBlob(const char *,const size_t,size_t *,ExceptionInfo *),
   *ImageToBlob(const ImageInfo *,Image *,size_t *,ExceptionInfo *),
+  ImageToUserBlob(const ImageInfo *,Image *,UserBlobInfo *,ExceptionInfo *),
   *ImagesToBlob(const ImageInfo *,Image *,size_t *,ExceptionInfo *),
+  ImagesToUserBlob(const ImageInfo *,Image *,UserBlobInfo *,ExceptionInfo *),
   SetBlobExempt(Image *,const MagickBooleanType);
 
 #if defined(__cplusplus) || defined(c_plusplus)

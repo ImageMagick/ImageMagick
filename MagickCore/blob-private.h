@@ -52,7 +52,8 @@ typedef enum
   ZipStream,
   BZipStream,
   FifoStream,
-  BlobStream
+  BlobStream,
+  UserStream
 } StreamType;
 
 extern MagickExport BlobInfo

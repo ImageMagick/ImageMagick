@@ -477,6 +477,9 @@ struct _ImageInfo
 
   size_t
     signature;
+
+  UserBlobInfo
+    *user_info;
 };
 
 extern MagickExport ChannelType
