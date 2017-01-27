@@ -1559,10 +1559,11 @@ static const OptionInfo
   PolicyRightsOptions[] =
   {
     { "Undefined", UndefinedPolicyRights, UndefinedOptionFlag, MagickTrue },
+    { "All", AllPolicyRights, UndefinedOptionFlag, MagickFalse },
+    { "Execute", ExecutePolicyRights, UndefinedOptionFlag, MagickFalse },
     { "None", NoPolicyRights, UndefinedOptionFlag, MagickFalse },
     { "Read", ReadPolicyRights, UndefinedOptionFlag, MagickFalse },
     { "Write", WritePolicyRights, UndefinedOptionFlag, MagickFalse },
-    { "Execute", ExecutePolicyRights, UndefinedOptionFlag, MagickFalse },
     { (char *) NULL, UndefinedPolicyRights, UndefinedOptionFlag, MagickFalse }
   },
   PreviewOptions[] =
