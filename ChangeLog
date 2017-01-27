@@ -5,7 +5,7 @@
   * Uninitialized data in MAT image format (reference
     https://github.com/ImageMagick/ImageMagick/issues/362).
 
-+2017-01-22  6.9.7-6 Glenn Randers-Pehrson <glennrp@image...>
+2017-01-22  6.9.7-6 Glenn Randers-Pehrson <glennrp@image...>
   * Renamed read_vpag_chunk_callback() function to png_user_chunk_callback()
     in coders/png.c
   * Implemented a private PNG caNv (canvas) chunk for remembering the
