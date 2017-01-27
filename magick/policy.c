@@ -590,20 +590,17 @@ MagickExport MagickBooleanType IsRightsAuthorized(const PolicyDomain domain,
   LockSemaphoreInfo(policy_semaphore);
   ResetLinkedListIterator(policy_cache);
   p=(PolicyInfo *) GetNextValueInLinkedList(policy_cache);
-  while ((p != (PolicyInfo *) NULL) && (authorized != MagickFalse))
+  while (p != (PolicyInfo *) NULL)
   {
     if ((p->domain == domain) &&
         (GlobExpression(pattern,p->pattern,MagickFalse) != MagickFalse))
       {
-        if (((rights & ReadPolicyRights) != 0) &&
-            ((p->rights & ReadPolicyRights) == 0))
-          authorized=MagickFalse;
-        if (((rights & WritePolicyRights) != 0) &&
-            ((p->rights & WritePolicyRights) == 0))
-          authorized=MagickFalse;
-        if (((rights & ExecutePolicyRights) != 0) &&
-            ((p->rights & ExecutePolicyRights) == 0))
-          authorized=MagickFalse;
+        if ((rights & ReadPolicyRights) != 0)
+          authorized=(p->rights & ReadPolicyRights) != 0;
+        if ((rights & WritePolicyRights) != 0)
+          authorized=(p->rights & WritePolicyRights) != 0;
+        if ((rights & ExecutePolicyRights) != 0)
+          authorized=(p->rights & ExecutePolicyRights) != 0;
       }
     p=(PolicyInfo *) GetNextValueInLinkedList(policy_cache);
   }

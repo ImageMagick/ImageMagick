@@ -1486,10 +1486,11 @@ static const OptionInfo
   PolicyRightsOptions[] =
   {
     { "Undefined", UndefinedPolicyRights, UndefinedOptionFlag, MagickTrue },
+    { "All", AllPolicyRights, UndefinedOptionFlag, MagickFalse },
+    { "Execute", ExecutePolicyRights, UndefinedOptionFlag, MagickFalse },
     { "None", NoPolicyRights, UndefinedOptionFlag, MagickFalse },
     { "Read", ReadPolicyRights, UndefinedOptionFlag, MagickFalse },
     { "Write", WritePolicyRights, UndefinedOptionFlag, MagickFalse },
-    { "Execute", ExecutePolicyRights, UndefinedOptionFlag, MagickFalse },
     { (char *) NULL, UndefinedPolicyRights, UndefinedOptionFlag, MagickFalse }
   },
   PreviewOptions[] =
@@ -1690,8 +1691,8 @@ static const OptionInfo
     { "Identify", IdentifyValidate, UndefinedOptionFlag, MagickFalse },
     { "ImportExport", ImportExportValidate, UndefinedOptionFlag, MagickFalse },
     { "Montage", MontageValidate, UndefinedOptionFlag, MagickFalse },
-    { "Stream", StreamValidate, UndefinedOptionFlag, MagickFalse },
     { "None", NoValidate, UndefinedOptionFlag, MagickFalse },
+    { "Stream", StreamValidate, UndefinedOptionFlag, MagickFalse },
     { (char *) NULL, UndefinedValidate, UndefinedOptionFlag, MagickFalse }
   },
   VirtualPixelOptions[] =

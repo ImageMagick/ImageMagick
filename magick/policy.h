@@ -43,7 +43,8 @@ typedef enum
   NoPolicyRights = 0x00,
   ReadPolicyRights = 0x01,
   WritePolicyRights = 0x02,
-  ExecutePolicyRights = 0x04
+  ExecutePolicyRights = 0x04,
+  AllPolicyRights = 0xff
 } PolicyRights;
 
 typedef struct _PolicyInfo
