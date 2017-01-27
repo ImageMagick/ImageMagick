@@ -1,3 +1,16 @@
+2017-01-27  7.0.4-6 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.4-6, GIT revision 19442:4747de9:20170127.
+
+2017-01-27  7.0.4-6 Cristy  <quetzlzacatenango@image...>
+  * Uninitialized data in MAT image format (reference
+    https://github.com/ImageMagick/ImageMagick/issues/362).
+  * Properly auto-fit caption (reference
+    https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=30887).
+  * Correction to composite Over operator (reference
+    https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=31282).
+  * Respect gravity option (reference
+    https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=31284).
+
 2017-01-22  7.0.4-6 Glenn Randers-Pehrson <glennrp@image...>
   * Renamed read_vpag_chunk_callback() function to png_user_chunk_callback()
     in coders/png.c
