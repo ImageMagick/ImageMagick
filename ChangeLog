@@ -1,3 +1,12 @@
+2017-01-27  7.0.4-7 Glenn Randers-Pehrson <glennrp@image...>
+  * coders/png.c: Added support for a proposed new PNG chunk
+    (zxIf, read-only) that is currently being discussed on the
+    png-mng-misc at lists.sourceforge.net mailing list.  Enable
+    exIf and zxIf with CPPFLAGS="-DexIf_SUPPORTED -DxzIf_SUPPORTED".
+    If exIf is enabled, only the uncompressed exIF chunk will be
+    written and the hex-encoded zTXt chunk containing the raw Exif
+    profile won't be written.
+
 2017-01-27  7.0.4-6 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.4-6, GIT revision 19442:4747de9:20170127.
 
