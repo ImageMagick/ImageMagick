@@ -332,6 +332,7 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
     {
       case AssignChannelOp:
       {
+        destination_channel=(PixelChannel) i;
         pixel=StringToDoubleInterval(token,(double) QuantumRange+1.0);
         GetNextToken(p,&p,MagickPathExtent,token);
         break;
