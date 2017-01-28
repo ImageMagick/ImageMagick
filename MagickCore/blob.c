@@ -1703,7 +1703,7 @@ MagickExport void ImageToUserBlob(const ImageInfo *image_info,Image *image,
       (void) CloseBlob(image);
       image->blob->user_info=user_info;
       *image->filename='\0';
-      status=WriteImage(blob_info,image,exception);
+      (void) WriteImage(blob_info,image,exception);
       (void) CloseBlob(image);
     }
   else
@@ -1748,14 +1748,17 @@ MagickExport void ImageToUserBlob(const ImageInfo *image_info,Image *image,
             "%s:%s",image->magick,unique);
           status=WriteImage(blob_info,image,exception);
           (void) CloseBlob(image);
-          (void) fseek(blob_info->file,0,SEEK_SET);
-          count=(ssize_t) MagickMaxBufferExtent;
-          while (count == (ssize_t) MagickMaxBufferExtent)
-          {
-            count=(ssize_t) fread(blob,sizeof(*blob),MagickMaxBufferExtent,
-              blob_info->file);
-            user_info->handler(blob,count,user_info->data);
-          }
+          if (status != MagickFalse)
+            {
+              (void) fseek(blob_info->file,0,SEEK_SET);
+              count=(ssize_t) MagickMaxBufferExtent;
+              while (count == (ssize_t) MagickMaxBufferExtent)
+              {
+                count=(ssize_t) fread(blob,sizeof(*blob),MagickMaxBufferExtent,
+                  blob_info->file);
+                user_info->handler(blob,count,user_info->data);
+              }
+            }
           (void) fclose(blob_info->file);
         }
       blob=(unsigned char *) RelinquishMagickMemory(blob);
@@ -2099,7 +2102,7 @@ MagickExport void ImagesToUserBlob(const ImageInfo *image_info,Image *images,
       (void) CloseBlob(images);
       images->blob->user_info=user_info;
       *images->filename='\0';
-      status=WriteImages(blob_info,images,images->filename,exception);
+      (void) WriteImages(blob_info,images,images->filename,exception);
       (void) CloseBlob(images);
     }
   else
@@ -2145,14 +2148,17 @@ MagickExport void ImagesToUserBlob(const ImageInfo *image_info,Image *images,
             images->magick,unique);
           status=WriteImages(blob_info,images,filename,exception);
           (void) CloseBlob(images);
-          (void) fseek(blob_info->file,0,SEEK_SET);
-          count=(ssize_t) MagickMaxBufferExtent;
-          while (count == (ssize_t) MagickMaxBufferExtent)
-          {
-            count=(ssize_t) fread(blob,sizeof(*blob),MagickMaxBufferExtent,
-              blob_info->file);
-            user_info->handler(blob,count,user_info->data);
-          }
+          if (status != MagickFalse)
+            {
+              (void) fseek(blob_info->file,0,SEEK_SET);
+              count=(ssize_t) MagickMaxBufferExtent;
+              while (count == (ssize_t) MagickMaxBufferExtent)
+              {
+                count=(ssize_t) fread(blob,sizeof(*blob),MagickMaxBufferExtent,
+                  blob_info->file);
+                user_info->handler(blob,count,user_info->data);
+              }
+            }
           (void) fclose(blob_info->file);
         }
       blob=(unsigned char *) RelinquishMagickMemory(blob);
@@ -4779,6 +4785,7 @@ MagickExport Image *UserBlobToImage(const ImageInfo *image_info,
       blob_info=DestroyImageInfo(blob_info);
       return((Image *) NULL);
     }
+  image=(Image *) NULL;
   if (GetMagickBlobSupport(magick_info) != MagickFalse)
     {
       /*
@@ -4791,7 +4798,7 @@ MagickExport Image *UserBlobToImage(const ImageInfo *image_info,
       blob_info->user_info=user_info;
       image=ReadImage(blob_info,exception);
       if (image != (Image *) NULL)
-        (void) DetachBlob(image->blob);
+        (void) CloseBlob(image);
     }
   else
     {
@@ -4832,9 +4839,6 @@ MagickExport Image *UserBlobToImage(const ImageInfo *image_info,
       blob_info->file=fdopen(file,"wb+");
       if (blob_info->file != (FILE *) NULL)
         {
-          size_t
-            length;
-
           ssize_t
             count;
 
@@ -4849,7 +4853,6 @@ MagickExport Image *UserBlobToImage(const ImageInfo *image_info,
           (void) FormatLocaleString(clone_info->filename,MagickPathExtent,
             "%s:%s",blob_info->magick,unique);
           image=ReadImage(clone_info,exception);
-          clone_info=DestroyImageInfo(clone_info);
           if (image != (Image *) NULL)
             {
               Image
@@ -4866,10 +4869,12 @@ MagickExport Image *UserBlobToImage(const ImageInfo *image_info,
                   image_info->filename,MagickPathExtent);
                 (void) CopyMagickString(images->magick,magick_info->name,
                   MagickPathExtent);
+                (void) CloseBlob(images);
                 images=GetNextImageInList(images);
               }
             }
         }
+      clone_info=DestroyImageInfo(clone_info);
       blob=(unsigned char *) RelinquishMagickMemory(blob);
       (void) RelinquishUniqueFileResource(unique);
     }
