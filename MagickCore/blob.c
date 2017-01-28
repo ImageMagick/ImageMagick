@@ -4762,9 +4762,6 @@ MagickExport Image *UserBlobToImage(const ImageInfo *image_info,
   ImageInfo
     *blob_info;
 
-  MagickBooleanType
-    status;
-
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
   if (image_info->debug != MagickFalse)
