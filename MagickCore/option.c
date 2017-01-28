@@ -159,6 +159,7 @@ static const OptionInfo
     { "M", MagentaChannel, UndefinedOptionFlag, MagickFalse },
     { "Magenta", MagentaChannel, UndefinedOptionFlag, MagickFalse },
     { "Matte", AlphaChannel, DeprecateOptionFlag, MagickTrue },/*depreciate*/
+    { "Meta", MetaChannel, UndefinedOptionFlag, MagickFalse },
     { "Opacity", AlphaChannel, DeprecateOptionFlag, MagickTrue },/*depreciate*/
     { "R", RedChannel, UndefinedOptionFlag, MagickFalse },
     { "Red", RedChannel, UndefinedOptionFlag, MagickFalse },
@@ -172,6 +173,10 @@ static const OptionInfo
     { "3", 3, UndefinedOptionFlag, MagickFalse },
     { "4", 4, UndefinedOptionFlag, MagickFalse },
     { "5", 5, UndefinedOptionFlag, MagickFalse },
+    { "6", 6, UndefinedOptionFlag, MagickFalse },
+    { "7", 7, UndefinedOptionFlag, MagickFalse },
+    { "8", 8, UndefinedOptionFlag, MagickFalse },
+    { "9", 9, UndefinedOptionFlag, MagickFalse },
     { (char *) NULL, UndefinedChannel, UndefinedOptionFlag, MagickFalse }
   },
   ClassOptions[] =
@@ -1503,6 +1508,7 @@ static const OptionInfo
     { "K", BlackPixelChannel, UndefinedOptionFlag, MagickFalse },
     { "M", MagentaPixelChannel, UndefinedOptionFlag, MagickFalse },
     { "Magenta", MagentaPixelChannel, UndefinedOptionFlag, MagickFalse },
+    { "Meta", MetaPixelChannel, UndefinedOptionFlag, MagickFalse },
     { "R", RedPixelChannel, UndefinedOptionFlag, MagickFalse },
     { "ReadMask", ReadMaskPixelChannel, UndefinedOptionFlag, MagickFalse },
     { "Red", RedPixelChannel, UndefinedOptionFlag, MagickFalse },
