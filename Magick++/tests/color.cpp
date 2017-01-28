@@ -40,7 +40,7 @@ int main( int /*argc*/, char **argv)
       struct colorStr colorMap [] =
       { 
 	{ "red", 1,0,0 },
-	{ "green", 0,0.5019607843137256,0 },
+	{ "green", 0,0.5019607843137255,0 },
 	{ "blue", 0,0,1 },
 	{ "black", 0,0,0 },
 	{ "white", 1,1,1 },
