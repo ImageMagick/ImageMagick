@@ -4785,15 +4785,13 @@ MagickExport Image *UserBlobToImage(const ImageInfo *image_info,
       return((Image *) NULL);
     }
   image=(Image *) NULL;
-  if (GetMagickBlobSupport(magick_info) != MagickFalse)
+  if ((GetMagickBlobSupport(magick_info) != MagickFalse) ||
+      (blob_info->user_info == (UserBlobInfo *) NULL))
     {
       /*
-        Native blob support for this image format.
+        Native blob support for this image format or SetImageInfo changed the
+        blob to a file.
       */
-      (void) CopyMagickString(blob_info->filename,image_info->filename,
-        MagickPathExtent);
-      (void) CopyMagickString(blob_info->magick,image_info->magick,
-        MagickPathExtent);
       image=ReadImage(blob_info,exception);
       if (image != (Image *) NULL)
         (void) CloseBlob(image);
