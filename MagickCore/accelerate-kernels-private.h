@@ -35,20 +35,6 @@ extern "C" {
 #define OPENCL_IF(...)		"\n #""if " #__VA_ARGS__ " \n"
 #define STRINGIFY(...) #__VA_ARGS__ "\n"
 
-/*
-  Typedef declarations.
-*/
-
-typedef struct _FloatPixelPacket
-{
-  MagickRealType
-    red,
-    green,
-    blue,
-    alpha,
-    black;
-} FloatPixelPacket;
-
 const char *accelerateKernels =
 
 /*
