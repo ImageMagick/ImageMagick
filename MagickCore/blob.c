@@ -2719,7 +2719,8 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
       AttachBlob(image->blob,image_info->blob,image_info->length);
       return(MagickTrue);
     }
-  if (image_info->user_info != (UserBlobInfo *) NULL)
+  if ((image_info->user_info != (UserBlobInfo *) NULL) &&
+      (*image->filename == '\0'))
     {
       image->blob->type=UserStream;
       image->blob->user_info=image_info->user_info;
