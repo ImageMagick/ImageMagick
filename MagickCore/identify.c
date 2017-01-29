@@ -844,6 +844,11 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       if (image->alpha_trait != UndefinedPixelTrait)
         (void) PrintChannelStatistics(file,AlphaPixelChannel,"Alpha",1.0/
           scale,channel_statistics);
+      if (image->number_meta_channels != 0)
+        for (i=0; i < (ssize_t) image->number_meta_channels; i++)
+          (void) PrintChannelStatistics(file,(PixelChannel)
+            image->number_channels-image->number_meta_channels+i,"Meta",1.0/
+            scale,channel_statistics);
       if (colorspace != GRAYColorspace)
         {
           (void) FormatLocaleFile(file,"  Image statistics:\n");
