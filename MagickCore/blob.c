@@ -2078,7 +2078,6 @@ MagickExport void ImagesToUserBlob(const ImageInfo *image_info,Image *images,
   assert(user_info->handler != (BlobHandler) NULL);
   assert(exception != (ExceptionInfo *) NULL);
   blob_info=CloneImageInfo(image_info);
-  blob_info->adjoin=MagickFalse;
   blob_info->user_info=user_info;
   (void) SetImageInfo(blob_info,(unsigned int) GetImageListLength(images),
     exception);
