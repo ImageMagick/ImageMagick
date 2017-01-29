@@ -3279,8 +3279,6 @@ MagickExport ssize_t ReadBlob(Image *image,const size_t length,void *data)
     {
       count=image->blob->user_info->reader(q,length,
         image->blob->user_info->data);
-      if (count != (ssize_t) length)
-        image->blob->eof=MagickTrue;
       break;
     }
   }
