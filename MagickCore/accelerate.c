@@ -911,7 +911,7 @@ static MagickBooleanType ComputeContrastStretchImage(Image *image,
   ExceptionInfo *exception)
 {
 #define ContrastStretchImageTag  "ContrastStretch/Image"
-#define MaxRange(color)  ((MagickRealType) ScaleQuantumToMap((Quantum) (color)))
+#define MaxRange(color)  ((cl_float) ScaleQuantumToMap((Quantum) (color)))
 
   CacheView
     *image_view;
@@ -1123,7 +1123,7 @@ static MagickBooleanType ComputeContrastStretchImage(Image *image,
       if (intensity > black_point)
         break;
     }
-    black.x=(MagickRealType) i;
+    black.x=(cl_float) i;
     intensity=0.0;
     for (i=(ssize_t) MaxMap; i != 0; i--)
     {
@@ -1131,7 +1131,7 @@ static MagickBooleanType ComputeContrastStretchImage(Image *image,
       if (intensity > ((double) image->columns*image->rows-white_point))
         break;
     }
-    white.x=(MagickRealType) i;
+    white.x=(cl_float) i;
   }
   black.y=0.0;
   white.y=MaxRange(QuantumRange);
@@ -1144,7 +1144,7 @@ static MagickBooleanType ComputeContrastStretchImage(Image *image,
       if (intensity > black_point)
         break;
     }
-    black.y=(MagickRealType) i;
+    black.y=(cl_float) i;
     intensity=0.0;
     for (i=(ssize_t) MaxMap; i != 0; i--)
     {
@@ -1152,7 +1152,7 @@ static MagickBooleanType ComputeContrastStretchImage(Image *image,
       if (intensity > ((double) image->columns*image->rows-white_point))
         break;
     }
-    white.y=(MagickRealType) i;
+    white.y=(cl_float) i;
   }
   black.z=0.0;
   white.z=MaxRange(QuantumRange);
@@ -1165,7 +1165,7 @@ static MagickBooleanType ComputeContrastStretchImage(Image *image,
       if (intensity > black_point)
         break;
     }
-    black.z=(MagickRealType) i;
+    black.z=(cl_float) i;
     intensity=0.0;
     for (i=(ssize_t) MaxMap; i != 0; i--)
     {
@@ -1173,7 +1173,7 @@ static MagickBooleanType ComputeContrastStretchImage(Image *image,
       if (intensity > ((double) image->columns*image->rows-white_point))
         break;
     }
-    white.z=(MagickRealType) i;
+    white.z=(cl_float) i;
   }
   black.w=0.0;
   white.w=MaxRange(QuantumRange);
@@ -1186,7 +1186,7 @@ static MagickBooleanType ComputeContrastStretchImage(Image *image,
       if (intensity > black_point)
         break;
     }
-    black.w=(MagickRealType) i;
+    black.w=(cl_float) i;
     intensity=0.0;
     for (i=(ssize_t) MaxMap; i != 0; i--)
     {
@@ -1194,7 +1194,7 @@ static MagickBooleanType ComputeContrastStretchImage(Image *image,
       if (intensity > ((double) image->columns*image->rows-white_point))
         break;
     }
-    white.w=(MagickRealType) i;
+    white.w=(cl_float) i;
   }
 
   stretch_map=(PixelPacket *) AcquireQuantumMemory(MaxMap+1UL,
@@ -3937,7 +3937,7 @@ static MagickBooleanType resizeHorizontalFilter(MagickCLDevice device,
     Support too small even for nearest neighbour: Reduce to point
     sampling.
     */
-    support=(MagickRealType) 0.5;
+    support=(float) 0.5;
     scale=1.0;
   }
   scale=PerceptibleReciprocal(scale);
@@ -4121,7 +4121,7 @@ static MagickBooleanType resizeVerticalFilter(MagickCLDevice device,
     Support too small even for nearest neighbour: Reduce to point
     sampling.
     */
-    support=(MagickRealType) 0.5;
+    support=(float) 0.5;
     scale=1.0;
   }
   scale=PerceptibleReciprocal(scale);
@@ -4529,8 +4529,8 @@ static Image* ComputeRotationalBlurImage(const Image *image,MagickCLEnv clEnv,
     goto cleanup;
   }
 
-  theta=DegreesToRadians(angle)/(MagickRealType) (cossin_theta_size-1);
-  offset=theta*(MagickRealType) (cossin_theta_size-1)/2.0;
+  theta=DegreesToRadians(angle)/(double) (cossin_theta_size-1);
+  offset=theta*(float) (cossin_theta_size-1)/2.0;
   for (i=0; i < (ssize_t) cossin_theta_size; i++)
   {
     cosThetaPtr[i]=(float)cos((double) (theta*i-offset));
