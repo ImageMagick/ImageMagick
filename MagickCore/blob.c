@@ -1701,7 +1701,6 @@ MagickExport void ImageToUserBlob(const ImageInfo *image_info,Image *image,
         Native blob support for this image format.
       */
       (void) CloseBlob(image);
-      image->blob->user_info=user_info;
       *image->filename='\0';
       (void) WriteImage(blob_info,image,exception);
       (void) CloseBlob(image);
@@ -1720,6 +1719,7 @@ MagickExport void ImageToUserBlob(const ImageInfo *image_info,Image *image,
       /*
         Write file to disk in blob image format.
       */
+      blob_info->user_info=(UserBlobInfo *) NULL;
       blob=(unsigned char *) AcquireQuantumMemory(MagickMaxBufferExtent,
         sizeof(*blob));
       if (blob == (unsigned char *) NULL)
@@ -2100,7 +2100,6 @@ MagickExport void ImagesToUserBlob(const ImageInfo *image_info,Image *images,
         Native blob support for this image format.
       */
       (void) CloseBlob(images);
-      images->blob->user_info=user_info;
       *images->filename='\0';
       (void) WriteImages(blob_info,images,images->filename,exception);
       (void) CloseBlob(images);
@@ -2120,6 +2119,7 @@ MagickExport void ImagesToUserBlob(const ImageInfo *image_info,Image *images,
       /*
         Write file to disk in blob image format.
       */
+      blob_info->user_info=(UserBlobInfo *) NULL;
       blob=(unsigned char *) AcquireQuantumMemory(MagickMaxBufferExtent,
         sizeof(*blob));
       if (blob == (unsigned char *) NULL)
@@ -4771,6 +4771,7 @@ MagickExport Image *UserBlobToImage(const ImageInfo *image_info,
   assert(user_info->handler != (BlobHandler) NULL);
   assert(exception != (ExceptionInfo *) NULL);
   blob_info=CloneImageInfo(image_info);
+  blob_info->user_info=user_info;
   if (*blob_info->magick == '\0')
     (void) SetImageInfo(blob_info,0,exception);
   magick_info=GetMagickInfo(blob_info->magick,exception);
@@ -4792,7 +4793,6 @@ MagickExport Image *UserBlobToImage(const ImageInfo *image_info,
         MagickPathExtent);
       (void) CopyMagickString(blob_info->magick,image_info->magick,
         MagickPathExtent);
-      blob_info->user_info=user_info;
       image=ReadImage(blob_info,exception);
       if (image != (Image *) NULL)
         (void) CloseBlob(image);
@@ -4814,6 +4814,7 @@ MagickExport Image *UserBlobToImage(const ImageInfo *image_info,
       /*
         Write data to file on disk.
       */
+      blob_info->user_info=(UserBlobInfo *) NULL;
       blob=(unsigned char *) AcquireQuantumMemory(MagickMaxBufferExtent,
         sizeof(*blob));
       if (blob == (unsigned char *) NULL)
