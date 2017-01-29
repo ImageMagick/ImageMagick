@@ -1677,7 +1677,8 @@ MagickExport void ImageToUserBlob(const ImageInfo *image_info,Image *image,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
   assert(user_info != (UserBlobInfo *) NULL);
-  assert(user_info->handler != (BlobHandler) NULL);
+  assert(user_info->reader != (BlobHandler) NULL);
+  assert(user_info->writer != (BlobHandler) NULL);
   assert(exception != (ExceptionInfo *) NULL);
   blob_info=CloneImageInfo(image_info);
   blob_info->adjoin=MagickFalse;
@@ -1756,7 +1757,7 @@ MagickExport void ImageToUserBlob(const ImageInfo *image_info,Image *image,
               {
                 count=(ssize_t) fread(blob,sizeof(*blob),MagickMaxBufferExtent,
                   blob_info->file);
-                user_info->handler(blob,count,user_info->data);
+                user_info->writer(blob,count,user_info->data);
               }
             }
           (void) fclose(blob_info->file);
@@ -2075,7 +2076,8 @@ MagickExport void ImagesToUserBlob(const ImageInfo *image_info,Image *images,
   assert(images != (Image *) NULL);
   assert(images->signature == MagickCoreSignature);
   assert(user_info != (UserBlobInfo *) NULL);
-  assert(user_info->handler != (BlobHandler) NULL);
+  assert(user_info->reader != (BlobHandler) NULL);
+  assert(user_info->writer != (BlobHandler) NULL);
   assert(exception != (ExceptionInfo *) NULL);
   blob_info=CloneImageInfo(image_info);
   blob_info->user_info=user_info;
@@ -2155,7 +2157,7 @@ MagickExport void ImagesToUserBlob(const ImageInfo *image_info,Image *images,
               {
                 count=(ssize_t) fread(blob,sizeof(*blob),MagickMaxBufferExtent,
                   blob_info->file);
-                user_info->handler(blob,count,user_info->data);
+                user_info->writer(blob,count,user_info->data);
               }
             }
           (void) fclose(blob_info->file);
@@ -3275,8 +3277,10 @@ MagickExport ssize_t ReadBlob(Image *image,const size_t length,void *data)
     }
     case UserStream:
     {
-      count=image->blob->user_info->handler(q,length,
+      count=image->blob->user_info->reader(q,length,
         image->blob->user_info->data);
+      if (count != (ssize_t) length)
+        image->blob->eof=MagickTrue;
       break;
     }
   }
@@ -4344,9 +4348,8 @@ MagickExport MagickOffsetType SeekBlob(Image *image,
     {
       if (image->blob->user_info->seeker == (BlobSeeker) NULL)
         return(-1);
-      image->blob->user_info->seeker(offset,whence,
+      image->blob->offset=image->blob->user_info->seeker(offset,whence,
         image->blob->user_info->data);
-      image->blob->offset=TellBlob(image);
       break;
     }
   }
@@ -4767,7 +4770,8 @@ MagickExport Image *UserBlobToImage(const ImageInfo *image_info,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
   assert(user_info != (UserBlobInfo *) NULL);
-  assert(user_info->handler != (BlobHandler) NULL);
+  assert(user_info->reader != (BlobHandler) NULL);
+  assert(user_info->writer != (BlobHandler) NULL);
   assert(exception != (ExceptionInfo *) NULL);
   blob_info=CloneImageInfo(image_info);
   blob_info->user_info=user_info;
@@ -4842,7 +4846,7 @@ MagickExport Image *UserBlobToImage(const ImageInfo *image_info,
           count=(ssize_t) MagickMaxBufferExtent;
           while (count == (ssize_t) MagickMaxBufferExtent)
           {
-            count=user_info->handler(blob,MagickMaxBufferExtent,
+            count=user_info->reader(blob,MagickMaxBufferExtent,
               user_info->data);
             count=(ssize_t) write(file,(const char *) blob,count);
           }
@@ -5066,7 +5070,7 @@ MagickExport ssize_t WriteBlob(Image *image,const size_t length,
     }
     case UserStream:
     {
-      count=image->blob->user_info->handler((const unsigned char *) data,
+      count=image->blob->user_info->writer((const unsigned char *) data,
         length,image->blob->user_info->data);
       break;
     }

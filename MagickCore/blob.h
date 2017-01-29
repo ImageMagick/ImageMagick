@@ -48,7 +48,8 @@ typedef MagickOffsetType
 struct _UserBlobInfo
 {
   BlobHandler
-    handler;
+    reader,
+    writer;
 
   BlobSeeker
     seeker;
