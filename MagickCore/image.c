@@ -2918,6 +2918,7 @@ MagickExport void SetImageInfoFile(ImageInfo *image_info,FILE *file)
   if (image_info->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
+  image_info->user_info=(UserBlobInfo *) NULL;
   image_info->file=file;
 }
 
