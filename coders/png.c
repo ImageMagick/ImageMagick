@@ -2410,14 +2410,14 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   {
     if (LocaleCompare(libpng_vers,libpng_runv) != 0)
     {
-    LogMagickEvent(CoderEvent,GetMagickModule(),"      running with   %s",
+   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"      running with   %s",
         libpng_runv);
     }
-    LogMagickEvent(CoderEvent,GetMagickModule(),"    Zlib version   = %s",
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),"    Zlib version   = %s",
         zlib_vers);
     if (LocaleCompare(zlib_vers,zlib_runv) != 0)
     {
-    LogMagickEvent(CoderEvent,GetMagickModule(),"      running with   %s",
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),"      running with   %s",
         zlib_runv);
     }
   }
@@ -2445,7 +2445,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
   if (logging != MagickFalse)
   {
-    (void)LogMagickEvent(CoderEvent,GetMagickModule(),
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
        "    Before reading:\n"
        "      image->alpha_trait=%d"
        "      image->rendering_intent=%d\n"
@@ -8460,20 +8460,20 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
   if (logging != MagickFalse)
     {
-       LogMagickEvent(CoderEvent,GetMagickModule(),"    IM version     = %s",
+       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"    IM version     = %s",
            im_vers);
-       LogMagickEvent(CoderEvent,GetMagickModule(),"    Libpng version = %s",
+       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"    Libpng version = %s",
            libpng_vers);
        if (LocaleCompare(libpng_vers,libpng_runv) != 0)
        {
-       LogMagickEvent(CoderEvent,GetMagickModule(),"      running with   %s",
+       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"      running with   %s",
            libpng_runv);
        }
-       LogMagickEvent(CoderEvent,GetMagickModule(),"    Zlib version   = %s",
+       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"    Zlib version   = %s",
            zlib_vers);
        if (LocaleCompare(zlib_vers,zlib_runv) != 0)
        {
-       LogMagickEvent(CoderEvent,GetMagickModule(),"      running with   %s",
+       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"      running with   %s",
            zlib_runv);
        }
     }
