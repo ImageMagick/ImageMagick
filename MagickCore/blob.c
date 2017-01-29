@@ -4769,7 +4769,6 @@ MagickExport Image *UserBlobToImage(const ImageInfo *image_info,
       image_info->filename);
   assert(user_info != (UserBlobInfo *) NULL);
   assert(user_info->reader != (BlobHandler) NULL);
-  assert(user_info->writer != (BlobHandler) NULL);
   assert(exception != (ExceptionInfo *) NULL);
   blob_info=CloneImageInfo(image_info);
   blob_info->user_info=user_info;
