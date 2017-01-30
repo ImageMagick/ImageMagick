@@ -1,3 +1,7 @@
+2017-01-28  7.0.4-7 Cristy  <quetzlzacatenango@image...>
+  * Sanitize comments that include braces for the MIFF image format (reference
+    https://github.com/ImageMagick/ImageMagick/issues/368).
+
 2017-01-27  7.0.4-7 Glenn Randers-Pehrson <glennrp@image...>
   * coders/png.c: Added support for a proposed new PNG chunk
     (zxIf, read-only) that is currently being discussed on the
