@@ -404,8 +404,6 @@ MagickExport MagickBooleanType GetMagickDecoderSeekableStream(
   assert(magick_info->signature == MagickCoreSignature);
   if ((magick_info->flags & CoderDecoderSeekableStreamFlag) == 0)
     return(MagickFalse);
-  if ((magick_info->flags & CoderSeekableStreamFlag) == 0)
-    return(MagickFalse);
   return(MagickTrue);
 }
 
@@ -501,8 +499,6 @@ MagickExport MagickBooleanType GetMagickEncoderSeekableStream(
   assert(magick_info != (MagickInfo *) NULL);
   assert(magick_info->signature == MagickCoreSignature);
   if ((magick_info->flags & CoderEncoderSeekableStreamFlag) == 0)
-    return(MagickFalse);
-  if ((magick_info->flags & CoderSeekableStreamFlag) == 0)
     return(MagickFalse);
   return(MagickTrue);
 }
