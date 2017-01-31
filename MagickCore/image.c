@@ -996,7 +996,7 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
   SetImageInfoFile(clone_info,image_info->file);
   SetImageInfoBlob(clone_info,image_info->blob,image_info->length);
   clone_info->stream=image_info->stream;
-  clone_info->user_info=image_info->user_info;
+  clone_info->custom_info=image_info->custom_info;
   (void) CopyMagickString(clone_info->magick,image_info->magick,
     MagickPathExtent);
   (void) CopyMagickString(clone_info->unique,image_info->unique,
