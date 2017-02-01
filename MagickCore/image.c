@@ -996,7 +996,7 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
   SetImageInfoFile(clone_info,image_info->file);
   SetImageInfoBlob(clone_info,image_info->blob,image_info->length);
   clone_info->stream=image_info->stream;
-  clone_info->custom_info=image_info->custom_info;
+  clone_info->custom_stream=image_info->custom_stream;
   (void) CopyMagickString(clone_info->magick,image_info->magick,
     MagickPathExtent);
   (void) CopyMagickString(clone_info->unique,image_info->unique,
@@ -2200,6 +2200,84 @@ MagickExport MagickBooleanType ResetImagePage(Image *image,const char *page)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%     S e t I m a g e A l p h a                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SetImageAlpha() sets the alpha levels of the image.
+%
+%  The format of the SetImageAlpha method is:
+%
+%      MagickBooleanType SetImageAlpha(Image *image,const Quantum alpha,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o Alpha: the level of transparency: 0 is fully opaque and QuantumRange is
+%      fully transparent.
+%
+*/
+MagickExport MagickBooleanType SetImageAlpha(Image *image,const Quantum alpha,
+  ExceptionInfo *exception)
+{
+  CacheView
+    *image_view;
+
+  MagickBooleanType
+    status;
+
+  ssize_t
+    y;
+
+  assert(image != (Image *) NULL);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
+  assert(image->signature == MagickCoreSignature);
+  image->alpha_trait=BlendPixelTrait;
+  status=MagickTrue;
+  image_view=AcquireAuthenticCacheView(image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static,4) shared(status) \
+    magick_threads(image,image,image->rows,1)
+#endif
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    register Quantum
+      *magick_restrict q;
+
+    register ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
+    if (q == (Quantum *) NULL)
+      {
+        status=MagickFalse;
+        continue;
+      }
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      if (GetPixelWriteMask(image,q) != 0)
+        SetPixelAlpha(image,alpha,q);
+      q+=GetPixelChannels(image);
+    }
+    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
+      status=MagickFalse;
+  }
+  image_view=DestroyCacheView(image_view);
+  return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   S e t I m a g e B a c k g r o u n d C o l o r                             %
 %                                                                             %
 %                                                                             %
@@ -2892,6 +2970,54 @@ MagickExport void SetImageInfoBlob(ImageInfo *image_info,const void *blob,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   S e t I m a g e I n f o C u s t o m S t r e a m                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SetImageInfoCustomStream() sets the image info custom stream handlers.
+%
+%  The format of the SetImageInfoCustomStream method is:
+%
+%      void SetImageInfoCustomStream(ImageInfo *image_info,
+%        ssize_t (*reader)(const unsigned char *,const size_t,const void *),
+%        ssize_t (*writer)(const unsigned char *,const size_t,const void *),
+%        size_t (*seeker)(const MagickOffsetType,const int,const void *),
+%        MagickOffsetType (*teller)(const void *))
+%
+%  A description of each parameter follows:
+%
+%    o image_info: the image info.
+%
+%    o reader: your custom stream reader.
+%
+%    o writer: your custom stream writer.
+%
+%    o seeker: your custom stream seeker.
+%
+%    o teller: your custom stream teller.
+%
+*/
+MagickExport void SetImageInfoCustomStream(ImageInfo *image_info,
+  ssize_t (*reader)(const unsigned char *,const size_t,const void *),
+  ssize_t (*writer)(const unsigned char *,const size_t,const void *),
+  size_t (*seeker)(const MagickOffsetType,const int,const void *),
+  MagickOffsetType (*teller)(const void *))
+{
+  assert(image_info != (ImageInfo *) NULL);
+  assert(image_info->signature == MagickCoreSignature);
+  if (image_info->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
+      image_info->filename);
+  SetBlobCustomStream(image_info->blob,reader,writer,seeker,teller);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   S e t I m a g e I n f o F i l e                                           %
 %                                                                             %
 %                                                                             %
@@ -2919,84 +3045,6 @@ MagickExport void SetImageInfoFile(ImageInfo *image_info,FILE *file)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
   image_info->file=file;
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%     S e t I m a g e A l p h a                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  SetImageAlpha() sets the alpha levels of the image.
-%
-%  The format of the SetImageAlpha method is:
-%
-%      MagickBooleanType SetImageAlpha(Image *image,const Quantum alpha,
-%        ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-%    o Alpha: the level of transparency: 0 is fully opaque and QuantumRange is
-%      fully transparent.
-%
-*/
-MagickExport MagickBooleanType SetImageAlpha(Image *image,const Quantum alpha,
-  ExceptionInfo *exception)
-{
-  CacheView
-    *image_view;
-
-  MagickBooleanType
-    status;
-
-  ssize_t
-    y;
-
-  assert(image != (Image *) NULL);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
-  assert(image->signature == MagickCoreSignature);
-  image->alpha_trait=BlendPixelTrait;
-  status=MagickTrue;
-  image_view=AcquireAuthenticCacheView(image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(status) \
-    magick_threads(image,image,image->rows,1)
-#endif
-  for (y=0; y < (ssize_t) image->rows; y++)
-  {
-    register Quantum
-      *magick_restrict q;
-
-    register ssize_t
-      x;
-
-    if (status == MagickFalse)
-      continue;
-    q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
-    if (q == (Quantum *) NULL)
-      {
-        status=MagickFalse;
-        continue;
-      }
-    for (x=0; x < (ssize_t) image->columns; x++)
-    {
-      if (GetPixelWriteMask(image,q) != 0)
-        SetPixelAlpha(image,alpha,q);
-      q+=GetPixelChannels(image);
-    }
-    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
-      status=MagickFalse;
-  }
-  image_view=DestroyCacheView(image_view);
-  return(status);
 }
 
 /*

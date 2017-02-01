@@ -139,7 +139,12 @@ extern MagickExport void
   GetBlobInfo(BlobInfo *),
   *MapBlob(int,const MapMode,const MagickOffsetType,const size_t),
   MSBOrderLong(unsigned char *,const size_t),
-  MSBOrderShort(unsigned char *,const size_t);
+  MSBOrderShort(unsigned char *,const size_t),
+  SetBlobCustomStream(BlobInfo *,
+    ssize_t (*reader)(const unsigned char *,const size_t,const void *),
+    ssize_t (*writer)(const unsigned char *,const size_t,const void *),
+    size_t (*seeker)(const MagickOffsetType,const int,const void *),
+    MagickOffsetType (*teller)(const void *));
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

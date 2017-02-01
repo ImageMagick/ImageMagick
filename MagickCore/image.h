@@ -478,8 +478,8 @@ struct _ImageInfo
   size_t
     signature;
 
-  CustomBlobInfo
-    *custom_info;
+  void
+    *custom_stream;
 };
 
 extern MagickExport ChannelType
@@ -564,7 +564,12 @@ extern MagickExport void
   DisassociateImageStream(Image *),
   GetImageInfo(ImageInfo *),
   SetImageInfoBlob(ImageInfo *,const void *,const size_t),
-  SetImageInfoFile(ImageInfo *,FILE *);
+  SetImageInfoFile(ImageInfo *,FILE *),
+  SetImageInfoCustomStream(ImageInfo *,
+    ssize_t (*reader)(const unsigned char *,const size_t,const void *),
+    ssize_t (*writer)(const unsigned char *,const size_t,const void *),
+    size_t (*seeker)(const MagickOffsetType,const int,const void *),
+    MagickOffsetType (*teller)(const void *));
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
