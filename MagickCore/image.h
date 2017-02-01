@@ -18,9 +18,6 @@
 #ifndef MAGICKCORE_IMAGE_H
 #define MAGICKCORE_IMAGE_H
 
-#include "MagickCore/color.h"
-#include "MagickCore/pixel.h"
-
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
@@ -565,11 +562,7 @@ extern MagickExport void
   GetImageInfo(ImageInfo *),
   SetImageInfoBlob(ImageInfo *,const void *,const size_t),
   SetImageInfoFile(ImageInfo *,FILE *),
-  SetImageInfoCustomStream(ImageInfo *,
-    ssize_t (*reader)(const unsigned char *,const size_t,const void *),
-    ssize_t (*writer)(const unsigned char *,const size_t,const void *),
-    size_t (*seeker)(const MagickOffsetType,const int,const void *),
-    MagickOffsetType (*teller)(const void *));
+  SetImageInfoCustomStream(ImageInfo *,CustomStreamInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

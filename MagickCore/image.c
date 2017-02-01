@@ -2981,36 +2981,24 @@ MagickExport void SetImageInfoBlob(ImageInfo *image_info,const void *blob,
 %  The format of the SetImageInfoCustomStream method is:
 %
 %      void SetImageInfoCustomStream(ImageInfo *image_info,
-%        ssize_t (*reader)(const unsigned char *,const size_t,const void *),
-%        ssize_t (*writer)(const unsigned char *,const size_t,const void *),
-%        size_t (*seeker)(const MagickOffsetType,const int,const void *),
-%        MagickOffsetType (*teller)(const void *))
+%        CustomStreamInfo *custom_stream)
 %
 %  A description of each parameter follows:
 %
 %    o image_info: the image info.
 %
-%    o reader: your custom stream reader.
-%
-%    o writer: your custom stream writer.
-%
-%    o seeker: your custom stream seeker.
-%
-%    o teller: your custom stream teller.
+%    o custom_stream: your custom stream methods.
 %
 */
 MagickExport void SetImageInfoCustomStream(ImageInfo *image_info,
-  ssize_t (*reader)(const unsigned char *,const size_t,const void *),
-  ssize_t (*writer)(const unsigned char *,const size_t,const void *),
-  size_t (*seeker)(const MagickOffsetType,const int,const void *),
-  MagickOffsetType (*teller)(const void *))
+  CustomStreamInfo *custom_stream)
 {
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
   if (image_info->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
-  SetBlobCustomStream(image_info->blob,reader,writer,seeker,teller);
+  image_info->custom_stream=(void *) custom_stream;
 }
 
 /*
@@ -4058,8 +4046,6 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
     into per-image artifacts, while ensuring only specifically set per-image
     artifacts are preserved when parenthesis ends.
   */
-  if (image->image_info != (ImageInfo *) NULL)
-    image->image_info=DestroyImageInfo(image->image_info);
   image->image_info=CloneImageInfo(image_info);
   return(MagickTrue);
 }

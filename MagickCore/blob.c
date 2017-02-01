@@ -94,31 +94,6 @@
 /*
   Typedef declarations.
 */
-typedef ssize_t
-  (*BlobHandler)(const unsigned char *,const size_t,const void *);
-
-typedef size_t
-  (*BlobSeeker)(const MagickOffsetType offset,const int whence,const void *);
-
-typedef MagickOffsetType
-  (*BlobTeller)(const void *);
-
-struct _CustomStreamInfo
-{
-  BlobHandler
-    reader,
-    writer;
-
-  BlobSeeker
-    seeker;
-
-  BlobTeller
-    teller;
-
-  void
-    *data;
-};
-
 typedef union FileInfo
 {
   FILE
@@ -1080,7 +1055,7 @@ MagickExport void *FileToBlob(const char *filename,const size_t extent,
       blob[*length]='\0';
       return(blob);
     }
-  *length=(size_t) MagickMin(offset,(MagickOffsetType) 
+  *length=(size_t) MagickMin(offset,(MagickOffsetType)
     MagickMin(extent,SSIZE_MAX));
   blob=(unsigned char *) NULL;
   if (~(*length) >= (MagickPathExtent-1))
@@ -2293,8 +2268,8 @@ MagickExport MagickBooleanType InjectImageBlob(const ImageInfo *image_info,
       (void) RelinquishUniqueFileResource(filename);
       return(MagickFalse);
     }
-  (void) FormatLocaleString(byte_image->filename,MagickPathExtent,"%s:%s",format,
-    filename);
+  (void) FormatLocaleString(byte_image->filename,MagickPathExtent,"%s:%s",
+    format,filename);
   DestroyBlob(byte_image);
   byte_image->blob=CloneBlobInfo((BlobInfo *) NULL);
   write_info=CloneImageInfo(image_info);
@@ -4378,54 +4353,6 @@ MagickExport MagickOffsetType SeekBlob(Image *image,
     }
   }
   return(image->blob->offset);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   S e t B l o b C u s t o m S t r e a m                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  SetBlobCustomStream() sets the blob's custom stream handlers.
-%
-%  The format of the SetBlobCustomStream method is:
-%
-%      void SetBlobCustomStream(BlobInfo *blob_info,
-%        ssize_t (*reader)(const unsigned char *,const size_t,const void *),
-%        ssize_t (*writer)(const unsigned char *,const size_t,const void *),
-%        size_t (*seeker)(const MagickOffsetType,const int,const void *),
-%        MagickOffsetType (*teller)(const void *))
-%
-%  A description of each parameter follows:
-%
-%    o blob_info: the blob info.
-%
-%    o reader: your custom stream reader.
-%
-%    o writer: your custom stream writer.
-%
-%    o seeker: your custom stream seeker.
-%
-%    o teller: your custom stream teller.
-%
-*/
-MagickExport void SetBlobCustomStream(BlobInfo *blob_info,
-  ssize_t (*reader)(const unsigned char *,const size_t,const void *),
-  ssize_t (*writer)(const unsigned char *,const size_t,const void *),
-  size_t (*seeker)(const MagickOffsetType,const int,const void *),
-  MagickOffsetType (*teller)(const void *))
-{
-  assert(blob_info != (BlobInfo *) NULL);
-  assert(blob_info->signature == MagickCoreSignature);
-  blob_info->custom_stream->reader=reader;
-  blob_info->custom_stream->writer=writer;
-  blob_info->custom_stream->seeker=seeker;
-  blob_info->custom_stream->teller=teller;
 }
 
 /*

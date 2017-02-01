@@ -18,9 +18,6 @@
 #ifndef MAGICKCORE_BLOB_H
 #define MAGICKCORE_BLOB_H
 
-#include "MagickCore/image.h"
-#include "MagickCore/stream.h"
-
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
@@ -34,8 +31,34 @@ typedef enum
   IOMode
 } MapMode;
 
+typedef ssize_t
+  (*BlobHandler)(const unsigned char *,const size_t,const void *);
+
+typedef size_t
+  (*BlobSeeker)(const MagickOffsetType offset,const int whence,const void *);
+
+typedef MagickOffsetType
+  (*BlobTeller)(const void *);
+
 typedef struct _CustomStreamInfo
-  CustomStreamInfo;
+{
+  BlobHandler
+    reader,
+    writer;
+
+  BlobSeeker
+    seeker;
+
+  BlobTeller
+    teller;
+
+  void
+    *data;
+} CustomStreamInfo;
+
+#include "MagickCore/image.h"
+#include "MagickCore/stream.h"
+
 
 extern MagickExport FILE
   *GetBlobFileHandle(const Image *);
