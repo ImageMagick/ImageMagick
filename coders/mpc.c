@@ -1146,12 +1146,9 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image,
           CommandOptionToMnemonic(MagickTypeOptions,image->type));
         (void) WriteBlobString(image,buffer);
       }
-    if (image->colorspace != UndefinedColorspace)
-      {
-        (void) FormatLocaleString(buffer,MagickPathExtent,"colorspace=%s\n",
-          CommandOptionToMnemonic(MagickColorspaceOptions,image->colorspace));
-        (void) WriteBlobString(image,buffer);
-      }
+    (void) FormatLocaleString(buffer,MagickPathExtent,"colorspace=%s\n",
+      CommandOptionToMnemonic(MagickColorspaceOptions,image->colorspace));
+    (void) WriteBlobString(image,buffer);
     if (image->intensity != UndefinedPixelIntensityMethod)
       {
         (void) FormatLocaleString(buffer,MagickPathExtent,

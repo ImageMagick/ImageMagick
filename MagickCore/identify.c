@@ -767,7 +767,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       switch (colorspace)
       {
         case RGBColorspace:
-        default:
+        case sRGBColorspace:
         {
           (void) FormatLocaleFile(file,"    Red: %.20g-bit\n",(double)
             channel_statistics[RedPixelChannel].depth);
@@ -795,6 +795,17 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
             channel_statistics[GrayPixelChannel].depth);
           break;
         }
+	default:
+        {
+          ssize_t
+            number_channels;
+
+          number_channels=image->number_channels+image->number_meta_channels;
+          for (i=0; i < (ssize_t) number_channels; i++)
+            (void) FormatLocaleFile(file,"    Channel %.20g: %.20g-bit\n",
+              (double) i,(double) channel_statistics[i].depth);
+          break;
+        }
       }
       if (image->alpha_trait != UndefinedPixelTrait)
         (void) FormatLocaleFile(file,"    Alpha: %.20g-bit\n",(double)
@@ -812,7 +823,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       switch (colorspace)
       {
         case RGBColorspace:
-        default:
+        case sRGBColorspace:
         {
           (void) PrintChannelStatistics(file,RedPixelChannel,"Red",1.0/
             scale,channel_statistics);
@@ -840,15 +851,28 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
             scale,channel_statistics);
           break;
         }
+	default:
+        {
+          ssize_t
+            number_channels;
+
+          number_channels=image->number_channels+image->number_meta_channels;
+          for (i=0; i < (ssize_t) number_channels; i++)
+          {
+            char
+              channel[MagickPathExtent];
+
+            (void) FormatLocaleString(channel,MagickPathExtent,"Channel %.20g",
+              (double) i);
+            (void) PrintChannelStatistics(file,GrayPixelChannel,channel,1.0/
+              scale,channel_statistics);
+          }
+          break;
+        }
       }
       if (image->alpha_trait != UndefinedPixelTrait)
         (void) PrintChannelStatistics(file,AlphaPixelChannel,"Alpha",1.0/
           scale,channel_statistics);
-      if (image->number_meta_channels != 0)
-        for (i=0; i < (ssize_t) image->number_meta_channels; i++)
-          (void) PrintChannelStatistics(file,(PixelChannel)
-            image->number_channels-image->number_meta_channels+i,"Meta",1.0/
-            scale,channel_statistics);
       if (colorspace != GRAYColorspace)
         {
           (void) FormatLocaleFile(file,"  Image statistics:\n");
@@ -865,7 +889,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       switch (colorspace)
       {
         case RGBColorspace:
-        default:
+        case sRGBColorspace:
         {
           (void) PrintChannelMoments(file,RedPixelChannel,"Red",scale,
             channel_moments);
@@ -891,6 +915,24 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         {
           (void) PrintChannelMoments(file,GrayPixelChannel,"Gray",scale,
             channel_moments);
+          break;
+        }
+	default:
+        {
+          ssize_t
+            number_channels;
+
+          number_channels=image->number_channels+image->number_meta_channels;
+          for (i=0; i < (ssize_t) number_channels; i++)
+          {
+            char
+              channel[MagickPathExtent];
+
+            (void) FormatLocaleString(channel,MagickPathExtent,"Channel %.20g",
+              (double) i);
+            (void) PrintChannelMoments(file,GrayPixelChannel,"channel",scale,
+              channel_moments);
+          }
           break;
         }
       }
@@ -919,7 +961,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       switch (colorspace)
       {
         case RGBColorspace:
-        default:
+        case sRGBColorspace:
         {
           (void) PrintChannelFeatures(file,RedPixelChannel,"Red",
             channel_features);
@@ -945,6 +987,24 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         {
           (void) PrintChannelFeatures(file,GrayPixelChannel,"Gray",
             channel_features);
+          break;
+        }
+	default:
+        {
+          ssize_t
+            number_channels;
+
+          number_channels=image->number_channels+image->number_meta_channels;
+          for (i=0; i < (ssize_t) number_channels; i++)
+          {
+            char
+              channel[MagickPathExtent];
+
+            (void) FormatLocaleString(channel,MagickPathExtent,"Channel %.20g",
+              (double) i);
+            (void) PrintChannelFeatures(file,GrayPixelChannel,channel,
+              channel_features);
+          }
           break;
         }
       }
