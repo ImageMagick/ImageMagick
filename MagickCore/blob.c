@@ -708,7 +708,7 @@ MagickExport void *DetachBlob(BlobInfo *blob_info)
   data=blob_info->data;
   blob_info->data=(unsigned char *) NULL;
   blob_info->stream=(StreamHandler) NULL;
-  blob_info->custom_info=(CustomBlobInfo*) NULL;
+  blob_info->custom_info=(CustomBlobInfo *) NULL;
   return(data);
 }
 
@@ -1639,7 +1639,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  ImageToCustomBlob() is the equivalent of WriteImage(), but writes the
-%  formatted "file" to the suplied method rather than to an actual file.
+%  formatted "file" to the supplied method rather than to an actual file.
 %
 %  The format of the ImageToCustomBlob method is:
 %
@@ -2038,7 +2038,7 @@ MagickExport void *ImagesToBlob(const ImageInfo *image_info,Image *images,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  ImagesToCustomBlob() is the equivalent of WriteImages(), but writes the
-%  formatted "file" to the suplied method rather than to an actual file.
+%  formatted "file" to the supplied method rather than to an actual file.
 %
 %  The format of the ImageToCustomBlob method is:
 %
