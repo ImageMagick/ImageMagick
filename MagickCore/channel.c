@@ -334,7 +334,6 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
       case ExchangeChannelOp:
       case TransferChannelOp:
       {
-        destination_channel=(PixelChannel) i;
         if (channel_op == AssignChannelOp)
           pixel=StringToDoubleInterval(token,(double) QuantumRange+1.0);
         else
@@ -348,6 +347,7 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
                 return(destination_image);
               }
           }
+        destination_channel=(PixelChannel) i;
         switch (destination_channel)
         {
           case RedPixelChannel:
