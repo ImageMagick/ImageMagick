@@ -4429,7 +4429,8 @@ MagickExport void InitializePixelChannelMap(Image *image)
   if (image->alpha_trait != UndefinedPixelTrait)
     trait=(PixelTrait) (trait | BlendPixelTrait);
   n=0;
-  if (image->colorspace == GRAYColorspace)
+  if ((image->colorspace == GRAYColorspace) ||
+      (image->colorspace == UndefinedColorspace))
     {
       SetPixelChannelAttributes(image,BluePixelChannel,trait,n);
       SetPixelChannelAttributes(image,GreenPixelChannel,trait,n);
