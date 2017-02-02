@@ -475,7 +475,7 @@ struct _ImageInfo
   size_t
     signature;
 
-  void
+  CustomStreamInfo
     *custom_stream;
 };
 

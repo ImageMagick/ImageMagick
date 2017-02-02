@@ -32,33 +32,19 @@ typedef enum
 } MapMode;
 
 typedef ssize_t
-  (*BlobHandler)(const unsigned char *,const size_t,const void *);
+  (*CustomStreamHandler)(const unsigned char *,const size_t,const void *);
 
 typedef size_t
-  (*BlobSeeker)(const MagickOffsetType offset,const int whence,const void *);
+  (*CustomStreamSeeker)(const MagickOffsetType offset,const int whence,const void *);
 
 typedef MagickOffsetType
-  (*BlobTeller)(const void *);
+  (*CustomStreamTeller)(const void *);
 
 typedef struct _CustomStreamInfo
-{
-  BlobHandler
-    reader,
-    writer;
-
-  BlobSeeker
-    seeker;
-
-  BlobTeller
-    teller;
-
-  void
-    *data;
-} CustomStreamInfo;
+  CustomStreamInfo;
 
 #include "MagickCore/image.h"
 #include "MagickCore/stream.h"
-
 
 extern MagickExport FILE
   *GetBlobFileHandle(const Image *);
@@ -66,7 +52,7 @@ extern MagickExport FILE
 extern MagickExport Image
   *BlobToImage(const ImageInfo *,const void *,const size_t,ExceptionInfo *),
   *PingBlob(const ImageInfo *,const void *,const size_t,ExceptionInfo *),
-  *CustomStreamToImage(const ImageInfo *,CustomStreamInfo *,ExceptionInfo *);
+  *CustomStreamToImage(const ImageInfo *,ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
   BlobToFile(char *,const void *,const size_t,ExceptionInfo *),
@@ -91,12 +77,15 @@ extern MagickExport void
   DuplicateBlob(Image *,const Image *),
   *FileToBlob(const char *,const size_t,size_t *,ExceptionInfo *),
   *ImageToBlob(const ImageInfo *,Image *,size_t *,ExceptionInfo *),
-  ImageToCustomStream(const ImageInfo *,Image *,CustomStreamInfo *,
-    ExceptionInfo *),
+  ImageToCustomStream(const ImageInfo *,Image *,ExceptionInfo *),
   *ImagesToBlob(const ImageInfo *,Image *,size_t *,ExceptionInfo *),
-  ImagesToCustomStream(const ImageInfo *,Image *,CustomStreamInfo *,
-    ExceptionInfo *),
-  SetBlobExempt(Image *,const MagickBooleanType);
+  ImagesToCustomStream(const ImageInfo *,Image *,ExceptionInfo *),
+  SetBlobExempt(Image *,const MagickBooleanType),
+  SetCustomStreamData(CustomStreamInfo *, void *),
+  SetCustomStreamReader(CustomStreamInfo *, CustomStreamHandler),
+  SetCustomStreamSeeker(CustomStreamInfo *, CustomStreamSeeker),
+  SetCustomStreamTeller(CustomStreamInfo *, CustomStreamTeller),
+  SetCustomStreamWriter(CustomStreamInfo *, CustomStreamHandler);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
