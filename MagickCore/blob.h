@@ -35,7 +35,7 @@ typedef ssize_t
   (*CustomStreamHandler)(const unsigned char *,const size_t,const void *);
 
 typedef size_t
-  (*CustomStreamSeeker)(const MagickOffsetType offset,const int whence,const void *);
+  (*CustomStreamSeeker)(const MagickOffsetType,const int,const void *);
 
 typedef MagickOffsetType
   (*CustomStreamTeller)(const void *);
@@ -81,11 +81,11 @@ extern MagickExport void
   *ImagesToBlob(const ImageInfo *,Image *,size_t *,ExceptionInfo *),
   ImagesToCustomStream(const ImageInfo *,Image *,ExceptionInfo *),
   SetBlobExempt(Image *,const MagickBooleanType),
-  SetCustomStreamData(CustomStreamInfo *, void *),
-  SetCustomStreamReader(CustomStreamInfo *, CustomStreamHandler),
-  SetCustomStreamSeeker(CustomStreamInfo *, CustomStreamSeeker),
-  SetCustomStreamTeller(CustomStreamInfo *, CustomStreamTeller),
-  SetCustomStreamWriter(CustomStreamInfo *, CustomStreamHandler);
+  SetCustomStreamData(CustomStreamInfo *,void *),
+  SetCustomStreamReader(CustomStreamInfo *,CustomStreamHandler),
+  SetCustomStreamSeeker(CustomStreamInfo *,CustomStreamSeeker),
+  SetCustomStreamTeller(CustomStreamInfo *,CustomStreamTeller),
+  SetCustomStreamWriter(CustomStreamInfo *,CustomStreamHandler);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
