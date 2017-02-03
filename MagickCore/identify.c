@@ -795,7 +795,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
             channel_statistics[GrayPixelChannel].depth);
           break;
         }
-	default:
+        default:
         {
           ssize_t
             number_channels;
@@ -851,7 +851,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
             scale,channel_statistics);
           break;
         }
-	default:
+        default:
         {
           ssize_t
             number_channels;
@@ -864,7 +864,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
 
             (void) FormatLocaleString(channel,MagickPathExtent,"Channel %.20g",
               (double) i);
-            (void) PrintChannelStatistics(file,GrayPixelChannel,channel,1.0/
+            (void) PrintChannelStatistics(file,(PixelChannel) i,channel,1.0/
               scale,channel_statistics);
           }
           break;
@@ -917,7 +917,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
             channel_moments);
           break;
         }
-	default:
+        default:
         {
           ssize_t
             number_channels;
@@ -930,7 +930,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
 
             (void) FormatLocaleString(channel,MagickPathExtent,"Channel %.20g",
               (double) i);
-            (void) PrintChannelMoments(file,GrayPixelChannel,"channel",scale,
+            (void) PrintChannelMoments(file,(PixelChannel) i,"channel",scale,
               channel_moments);
           }
           break;
@@ -989,7 +989,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
             channel_features);
           break;
         }
-	default:
+        default:
         {
           ssize_t
             number_channels;
@@ -1002,7 +1002,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
 
             (void) FormatLocaleString(channel,MagickPathExtent,"Channel %.20g",
               (double) i);
-            (void) PrintChannelFeatures(file,GrayPixelChannel,channel,
+            (void) PrintChannelFeatures(file,(PixelChannel) i,channel,
               channel_features);
           }
           break;

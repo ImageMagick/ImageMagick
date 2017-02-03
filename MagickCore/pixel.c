@@ -4425,12 +4425,26 @@ MagickExport void InitializePixelChannelMap(Image *image)
   assert(image->signature == MagickCoreSignature);
   (void) ResetMagickMemory(image->channel_map,0,MaxPixelChannels*
     sizeof(*image->channel_map));
+  n=0;
+  if (image->colorspace == UndefinedColorspace)
+    {
+      /*
+        Multispectral image.
+      */
+      for (i=0; i < (ssize_t) image->number_channels; i++)
+        SetPixelChannelAttributes(image,(PixelChannel) i,UpdatePixelTrait,n++);
+      for (i=0; i < (ssize_t) image->number_meta_channels; i++)
+        SetPixelChannelAttributes(image,(PixelChannel) (image->number_channels+
+          i),UpdatePixelTrait,n++);
+      if (image->debug != MagickFalse)
+        LogPixelChannels(image);
+      SetImageChannelMask(image,image->channel_mask);
+      return;
+    }
   trait=UpdatePixelTrait;
   if (image->alpha_trait != UndefinedPixelTrait)
     trait=(PixelTrait) (trait | BlendPixelTrait);
-  n=0;
-  if ((image->colorspace == GRAYColorspace) ||
-      (image->colorspace == UndefinedColorspace))
+  if (image->colorspace == GRAYColorspace)
     {
       SetPixelChannelAttributes(image,BluePixelChannel,trait,n);
       SetPixelChannelAttributes(image,GreenPixelChannel,trait,n);
@@ -4454,12 +4468,9 @@ MagickExport void InitializePixelChannelMap(Image *image)
     SetPixelChannelAttributes(image,WriteMaskPixelChannel,CopyPixelTrait,n++);
   assert((n+image->number_meta_channels) < MaxPixelChannels);
   image->number_channels=(size_t) n;
-  trait=CopyPixelTrait;
-  if (image->colorspace == UndefinedColorspace)
-    trait=UpdatePixelTrait;
   for (i=0; i < (ssize_t) image->number_meta_channels; i++)
-    SetPixelChannelAttributes(image,(PixelChannel) (MetaPixelChannel+i),trait,
-      n++);
+    SetPixelChannelAttributes(image,(PixelChannel) (MetaPixelChannel+i),
+      CopyPixelTrait,n++);
   if (image->debug != MagickFalse)
     LogPixelChannels(image);
   SetImageChannelMask(image,image->channel_mask);
