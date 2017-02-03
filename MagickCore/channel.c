@@ -239,12 +239,6 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
     return((Image *) NULL);
   if (expression == (const char *) NULL)
     return(destination_image);
-  status=SetImageStorageClass(destination_image,DirectClass,exception);
-  if (status == MagickFalse)
-    {
-      destination_image=GetLastImageInList(destination_image);
-      return((Image *) NULL);
-    }
   destination_channel=RedPixelChannel;
   channel_mask=UndefinedChannel;
   pixel=0.0;
@@ -281,6 +275,18 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
           *canvas;
 
         (void) SetPixelChannelMask(destination_image,channel_mask);
+        if ((channel_op == ExtractChannelOp) && (channels == 1))
+          {
+            (void) SetPixelMetaChannels(destination_image,0,exception);
+            (void) SetImageColorspace(destination_image,GRAYColorspace,
+              exception);
+          }
+        status=SetImageStorageClass(destination_image,DirectClass,exception);
+        if (status == MagickFalse)
+          {
+            destination_image=GetLastImageInList(destination_image);
+            return((Image *) NULL);
+          }
         canvas=CloneImage(source_image,0,0,MagickTrue,exception);
         if (canvas == (Image *) NULL)
           {
@@ -378,6 +384,9 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
             break;
         }
         channel_mask=(ChannelType) (channel_mask | ParseChannelOption(token));
+        if (((channels >= 1)  || (destination_channel >= 1)) &&
+            (IsGrayColorspace(destination_image->colorspace) != MagickFalse))
+          (void) SetImageColorspace(destination_image,sRGBColorspace,exception);
         GetNextToken(p,&p,MagickPathExtent,token);
         break;
       }
@@ -420,6 +429,17 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
       break;
   }
   (void) SetPixelChannelMask(destination_image,channel_mask);
+  if ((channel_op == ExtractChannelOp) && (channels == 1))
+    {
+      (void) SetPixelMetaChannels(destination_image,0,exception);
+      (void) SetImageColorspace(destination_image,GRAYColorspace,exception);
+    }
+  status=SetImageStorageClass(destination_image,DirectClass,exception);
+  if (status == MagickFalse)
+    {
+      destination_image=GetLastImageInList(destination_image);
+      return((Image *) NULL);
+    }
   return(GetFirstImageInList(destination_image));
 }
 
