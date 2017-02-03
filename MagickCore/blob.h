@@ -46,6 +46,10 @@ typedef struct _CustomStreamInfo
 #include "MagickCore/image.h"
 #include "MagickCore/stream.h"
 
+extern MagickExport CustomStreamInfo
+  *AcquireCustomStreamInfo(ExceptionInfo *),
+  *DestroyCustomStreamInfo(CustomStreamInfo *);
+
 extern MagickExport FILE
   *GetBlobFileHandle(const Image *);
 

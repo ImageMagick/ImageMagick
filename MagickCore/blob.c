@@ -191,6 +191,42 @@ static int
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   A c q u i r e C u s t o m S t r e a m I n f o                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  AcquireCustomStreamInfo() allocates the CustomStreamInfo structure.
+%
+%  The format of the AcquireCustomStreamInfo method is:
+%
+%      CustomStreamInfo *AcquireCustomStreamInfo(ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport CustomStreamInfo *AcquireCustomStreamInfo(
+  ExceptionInfo *exception)
+{
+  CustomStreamInfo
+    *custom_stream;
+
+  custom_stream=(CustomStreamInfo *) AcquireMagickMemory(
+    sizeof(*custom_stream));
+  if (custom_stream == (CustomStreamInfo *) NULL)
+    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+  (void) ResetMagickMemory(custom_stream,0,sizeof(*custom_stream));
+  return(custom_stream);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   A t t a c h B l o b                                                       %
 %                                                                             %
 %                                                                             %
@@ -676,6 +712,38 @@ MagickExport void DestroyBlob(Image *image)
     RelinquishSemaphoreInfo(&image->blob->semaphore);
   image->blob->signature=(~MagickCoreSignature);
   image->blob=(BlobInfo *) RelinquishMagickMemory(image->blob);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   D e s t r o y C u s t o m S t r e a m I n f o                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DestroyCustomStreamInfo() destroys memory associated with the
+%  CustomStreamInfo structure.
+%
+%  The format of the DestroyCustomStreamInfo method is:
+%
+%      CustomStreamInfo *DestroyCustomStreamInfo(CustomStreamInfo *stream_info)
+%
+%  A description of each parameter follows:
+%
+%    o custom_stream: the custom stream info.
+%
+*/
+MagickExport CustomStreamInfo *DestroyCustomStreamInfo(
+  CustomStreamInfo *custom_stream)
+{
+  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
+  assert(custom_stream != (CustomStreamInfo *) NULL);
+  custom_stream=(CustomStreamInfo *) RelinquishMagickMemory(custom_stream);
+  return(custom_stream);
 }
 
 /*
