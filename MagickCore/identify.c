@@ -556,7 +556,6 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       switch (colorspace)
       {
         case RGBColorspace:
-        default:
         {
           (void) PrintChannelLocations(file,image,RedPixelChannel,"Red",
             statistic_type,max_locations,channel_statistics);
@@ -582,6 +581,13 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         {
           (void) PrintChannelLocations(file,image,GrayPixelChannel,"Gray",
             statistic_type,max_locations,channel_statistics);
+          break;
+        }
+        default:
+        {
+          for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+            (void) PrintChannelLocations(file,image,(PixelChannel) i,"Gray",
+              statistic_type,max_locations,channel_statistics);
           break;
         }
       }
@@ -797,11 +803,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         }
         default:
         {
-          ssize_t
-            number_channels;
-
-          number_channels=image->number_channels+image->number_meta_channels;
-          for (i=0; i < (ssize_t) number_channels; i++)
+          for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
             (void) FormatLocaleFile(file,"    Channel %.20g: %.20g-bit\n",
               (double) i,(double) channel_statistics[i].depth);
           break;
@@ -853,11 +855,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         }
         default:
         {
-          ssize_t
-            number_channels;
-
-          number_channels=image->number_channels+image->number_meta_channels;
-          for (i=0; i < (ssize_t) number_channels; i++)
+          for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
           {
             char
               channel[MagickPathExtent];
@@ -919,11 +917,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         }
         default:
         {
-          ssize_t
-            number_channels;
-
-          number_channels=image->number_channels+image->number_meta_channels;
-          for (i=0; i < (ssize_t) number_channels; i++)
+          for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
           {
             char
               channel[MagickPathExtent];
@@ -991,11 +985,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         }
         default:
         {
-          ssize_t
-            number_channels;
-
-          number_channels=image->number_channels+image->number_meta_channels;
-          for (i=0; i < (ssize_t) number_channels; i++)
+          for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
           {
             char
               channel[MagickPathExtent];

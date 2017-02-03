@@ -239,14 +239,11 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
     return((Image *) NULL);
   if (expression == (const char *) NULL)
     return(destination_image);
-  if (image->colorspace == UndefinedColorspace)
+  status=SetImageStorageClass(destination_image,DirectClass,exception);
+  if (status == MagickFalse)
     {
-      status=SetImageStorageClass(destination_image,DirectClass,exception);
-      if (status == MagickFalse)
-        {
-          destination_image=DestroyImageList(destination_image);
-          return(destination_image);
-        }
+      destination_image=GetLastImageInList(destination_image);
+      return((Image *) NULL);
     }
   destination_channel=RedPixelChannel;
   channel_mask=UndefinedChannel;
@@ -286,12 +283,6 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
         (void) SetPixelChannelMask(destination_image,channel_mask);
         if ((channel_op == ExtractChannelOp) && (channels == 1))
           (void) SetImageColorspace(destination_image,GRAYColorspace,exception);
-        status=SetImageStorageClass(destination_image,DirectClass,exception);
-        if (status == MagickFalse)
-          {
-            destination_image=DestroyImageList(destination_image);
-            return(destination_image);
-          }
         canvas=CloneImage(source_image,0,0,MagickTrue,exception);
         if (canvas == (Image *) NULL)
           {
@@ -357,7 +348,7 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
               }
           }
         destination_channel=(PixelChannel) i;
-        if (image->colorspace == UndefinedColorspace)
+        if (i >= GetPixelChannels(destination_image))
           (void) SetPixelMetaChannels(destination_image,(size_t) (
             destination_channel-GetPixelChannels(destination_image)+1),
             exception);
@@ -385,14 +376,8 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
             destination_image->write_mask=MagickTrue;
             break;
           }
-          case MetaPixelChannel:
           default:
-          {
-            (void) SetPixelMetaChannels(destination_image,(size_t) (
-              destination_channel-GetPixelChannels(destination_image)+1),
-              exception);
             break;
-          }
         }
         channel_mask=(ChannelType) (channel_mask | ParseChannelOption(token));
         if (((channels >= 1)  || (destination_channel >= 1)) &&
@@ -442,12 +427,6 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
   (void) SetPixelChannelMask(destination_image,channel_mask);
   if ((channel_op == ExtractChannelOp) && (channels == 1))
     (void) SetImageColorspace(destination_image,GRAYColorspace,exception);
-  status=SetImageStorageClass(destination_image,DirectClass,exception);
-  if (status == MagickFalse)
-    {
-      destination_image=GetLastImageInList(destination_image);
-      return((Image *) NULL);
-    }
   return(GetFirstImageInList(destination_image));
 }
 
