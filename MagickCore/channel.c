@@ -239,6 +239,15 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
     return((Image *) NULL);
   if (expression == (const char *) NULL)
     return(destination_image);
+  if (image->colorspace == UndefinedColorspace)
+    {
+      status=SetImageStorageClass(destination_image,DirectClass,exception);
+      if (status == MagickFalse)
+        {
+          destination_image=DestroyImageList(destination_image);
+          return(destination_image);
+        }
+    }
   destination_channel=RedPixelChannel;
   channel_mask=UndefinedChannel;
   pixel=0.0;
@@ -348,6 +357,10 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
               }
           }
         destination_channel=(PixelChannel) i;
+        if (image->colorspace == UndefinedColorspace)
+          (void) SetPixelMetaChannels(destination_image,(size_t) (
+            destination_channel-GetPixelChannels(destination_image)+1),
+            exception);
         switch (destination_channel)
         {
           case RedPixelChannel:
