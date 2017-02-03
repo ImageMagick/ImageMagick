@@ -366,8 +366,7 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
             break;
           case AlphaPixelChannel:
           {
-            if (image->colorspace != UndefinedColorspace)
-              destination_image->alpha_trait=BlendPixelTrait;
+            destination_image->alpha_trait=BlendPixelTrait;
             break;
           }
           case ReadMaskPixelChannel:
