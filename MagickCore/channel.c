@@ -356,6 +356,40 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
           (void) SetPixelMetaChannels(destination_image,(size_t) (
             destination_channel-GetPixelChannels(destination_image)+1),
             exception);
+        if (image->colorspace != UndefinedColorspace)
+          switch (destination_channel)
+          {
+            case RedPixelChannel:
+            case GreenPixelChannel:
+            case BluePixelChannel:
+            case BlackPixelChannel:
+            case IndexPixelChannel:
+              break;
+            case AlphaPixelChannel:
+            {
+              if (image->colorspace != UndefinedColorspace)
+                destination_image->alpha_trait=BlendPixelTrait;
+              break;
+            }
+            case ReadMaskPixelChannel:
+            {
+              destination_image->read_mask=MagickTrue;
+              break;
+            }
+            case WriteMaskPixelChannel:
+            {
+              destination_image->write_mask=MagickTrue;
+              break;
+            }
+            case MetaPixelChannel:
+            default:
+            {
+              (void) SetPixelMetaChannels(destination_image,(size_t) (
+                destination_channel-GetPixelChannels(destination_image)+1),
+                exception);
+              break;
+            }
+          }
         channel_mask=(ChannelType) (channel_mask | ParseChannelOption(token));
         if (((channels >= 1)  || (destination_channel >= 1)) &&
             (IsGrayColorspace(destination_image->colorspace) != MagickFalse))
