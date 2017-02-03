@@ -178,6 +178,9 @@ struct _CustomStreamInfo
 
   void
     *data;
+
+  size_t
+    signature;
 };
 
 /*
@@ -219,6 +222,7 @@ MagickExport CustomStreamInfo *AcquireCustomStreamInfo(
   if (custom_stream == (CustomStreamInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(custom_stream,0,sizeof(*custom_stream));
+  custom_stream->signature=MagickCoreSignature;
   return(custom_stream);
 }
 
@@ -742,6 +746,8 @@ MagickExport CustomStreamInfo *DestroyCustomStreamInfo(
 {
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(custom_stream != (CustomStreamInfo *) NULL);
+  assert(custom_stream->signature == MagickCoreSignature);
+  custom_stream->signature=(~MagickCoreSignature);
   custom_stream=(CustomStreamInfo *) RelinquishMagickMemory(custom_stream);
   return(custom_stream);
 }
@@ -1759,6 +1765,7 @@ MagickExport void ImageToCustomStream(const ImageInfo *image_info,Image *image,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
   assert(image_info->custom_stream != (CustomStreamInfo *) NULL);
+  assert(image_info->custom_stream->signature == MagickCoreSignature);
   assert(image_info->custom_stream->reader != (CustomStreamHandler) NULL);
   assert(image_info->custom_stream->writer != (CustomStreamHandler) NULL);
   assert(exception != (ExceptionInfo *) NULL);
@@ -2156,6 +2163,7 @@ MagickExport void ImagesToCustomStream(const ImageInfo *image_info,
   assert(images != (Image *) NULL);
   assert(images->signature == MagickCoreSignature);
   assert(image_info->custom_stream != (CustomStreamInfo *) NULL);
+  assert(image_info->custom_stream->signature == MagickCoreSignature);
   assert(image_info->custom_stream->reader != (CustomStreamHandler) NULL);
   assert(image_info->custom_stream->writer != (CustomStreamHandler) NULL);
   assert(exception != (ExceptionInfo *) NULL);
@@ -4646,6 +4654,7 @@ MagickExport void SetCustomStreamData(CustomStreamInfo *custom_stream,
   void *data)
 {
   assert(custom_stream != (CustomStreamInfo *) NULL);
+  assert(custom_stream->signature == MagickCoreSignature);
   custom_stream->data=data;
 }
 
@@ -4678,6 +4687,7 @@ MagickExport void SetCustomStreamReader(CustomStreamInfo *custom_stream,
   CustomStreamHandler reader)
 {
   assert(custom_stream != (CustomStreamInfo *) NULL);
+  assert(custom_stream->signature == MagickCoreSignature);
   custom_stream->reader=reader;
 }
 
@@ -4710,6 +4720,7 @@ MagickExport void SetCustomStreamSeeker(CustomStreamInfo *custom_stream,
   CustomStreamSeeker seeker)
 {
   assert(custom_stream != (CustomStreamInfo *) NULL);
+  assert(custom_stream->signature == MagickCoreSignature);
   custom_stream->seeker=seeker;
 }
 
@@ -4742,6 +4753,7 @@ MagickExport void SetCustomStreamTeller(CustomStreamInfo *custom_stream,
   CustomStreamTeller teller)
 {
   assert(custom_stream != (CustomStreamInfo *) NULL);
+  assert(custom_stream->signature == MagickCoreSignature);
   custom_stream->teller=teller;
 }
 
@@ -4774,6 +4786,7 @@ MagickExport void SetCustomStreamWriter(CustomStreamInfo *custom_stream,
   CustomStreamHandler writer)
 {
   assert(custom_stream != (CustomStreamInfo *) NULL);
+  assert(custom_stream->signature == MagickCoreSignature);
   custom_stream->writer=writer;
 }
 
@@ -5003,6 +5016,7 @@ MagickExport Image *CustomStreamToImage(const ImageInfo *image_info,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
   assert(image_info->custom_stream != (CustomStreamInfo *) NULL);
+  assert(image_info->custom_stream->signature == MagickCoreSignature);
   assert(image_info->custom_stream->reader != (CustomStreamHandler) NULL);
   assert(exception != (ExceptionInfo *) NULL);
   blob_info=CloneImageInfo(image_info);
