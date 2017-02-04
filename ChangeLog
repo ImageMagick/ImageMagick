@@ -1,3 +1,6 @@
+2017-02-04  7.0.4-7 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.4-7, GIT revision 19513:5783e57:20170204.
+
 2017-01-28  7.0.4-7 Cristy  <quetzlzacatenango@image...>
   * Sanitize comments that include braces for the MIFF image format (reference
     https://github.com/ImageMagick/ImageMagick/issues/368).
