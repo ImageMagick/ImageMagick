@@ -4443,6 +4443,11 @@ MagickExport void InitializePixelChannelMap(Image *image)
     }
   if (image->colorspace == CMYKColorspace)
     SetPixelChannelAttributes(image,BlackPixelChannel,trait,n++);
+  for (i=0; i < (ssize_t) image->number_meta_channels; i++)
+  {
+    SetPixelChannelAttributes(image,(PixelChannel) n,UpdatePixelTrait,n);
+    n++;
+  }
   if (image->alpha_trait != UndefinedPixelTrait)
     SetPixelChannelAttributes(image,AlphaPixelChannel,CopyPixelTrait,n++);
   if (image->storage_class == PseudoClass)
@@ -4451,12 +4456,6 @@ MagickExport void InitializePixelChannelMap(Image *image)
     SetPixelChannelAttributes(image,ReadMaskPixelChannel,CopyPixelTrait,n++);
   if (image->write_mask != MagickFalse)
     SetPixelChannelAttributes(image,WriteMaskPixelChannel,CopyPixelTrait,n++);
-  assert((n+image->number_meta_channels) < MaxPixelChannels);
-  for (i=0; i < (ssize_t) image->number_meta_channels; i++)
-  {
-    SetPixelChannelAttributes(image,(PixelChannel) n,UpdatePixelTrait,n);
-    n++;
-  }
   image->number_channels=(size_t) n;
   if (image->debug != MagickFalse)
     LogPixelChannels(image);
