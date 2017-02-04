@@ -239,6 +239,12 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
     return((Image *) NULL);
   if (expression == (const char *) NULL)
     return(destination_image);
+  status=SetImageStorageClass(destination_image,DirectClass,exception);
+  if (status == MagickFalse)
+    {
+      destination_image=GetLastImageInList(destination_image);
+      return((Image *) NULL);
+    }
   destination_channel=RedPixelChannel;
   channel_mask=UndefinedChannel;
   pixel=0.0;
@@ -281,12 +287,6 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
             (void) SetImageColorspace(destination_image,GRAYColorspace,
               exception);
           }
-        status=SetImageStorageClass(destination_image,DirectClass,exception);
-        if (status == MagickFalse)
-          {
-            destination_image=GetLastImageInList(destination_image);
-            return((Image *) NULL);
-          }
         canvas=CloneImage(source_image,0,0,MagickTrue,exception);
         if (canvas == (Image *) NULL)
           {
@@ -295,6 +295,12 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
           }
         AppendImageToList(&destination_image,canvas);
         destination_image=GetLastImageInList(destination_image);
+        status=SetImageStorageClass(destination_image,DirectClass,exception);
+        if (status == MagickFalse)
+          {
+            destination_image=GetLastImageInList(destination_image);
+            return((Image *) NULL);
+          }
         GetNextToken(p,&p,MagickPathExtent,token);
         channels=0;
         destination_channel=RedPixelChannel;
@@ -352,7 +358,7 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
               }
           }
         destination_channel=(PixelChannel) i;
-        if (i >= GetPixelChannels(destination_image))
+        if (i >= (ssize_t) GetPixelChannels(destination_image))
           (void) SetPixelMetaChannels(destination_image,(size_t) (
             destination_channel-GetPixelChannels(destination_image)+1),
             exception);
@@ -367,8 +373,7 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
               break;
             case AlphaPixelChannel:
             {
-              if (image->colorspace != UndefinedColorspace)
-                destination_image->alpha_trait=BlendPixelTrait;
+              destination_image->alpha_trait=BlendPixelTrait;
               break;
             }
             case ReadMaskPixelChannel:
@@ -440,12 +445,6 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
     {
       (void) SetPixelMetaChannels(destination_image,0,exception);
       (void) SetImageColorspace(destination_image,GRAYColorspace,exception);
-    }
-  status=SetImageStorageClass(destination_image,DirectClass,exception);
-  if (status == MagickFalse)
-    {
-      destination_image=GetLastImageInList(destination_image);
-      return((Image *) NULL);
     }
   return(GetFirstImageInList(destination_image));
 }
