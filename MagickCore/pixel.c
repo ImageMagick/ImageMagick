@@ -4326,6 +4326,7 @@ static void LogPixelChannels(const Image *image)
   for (i=0; i < (ssize_t) image->number_channels; i++)
   {
     char
+      channel_name[MagickPathExtent],
       traits[MagickPathExtent];
 
     const char
@@ -4334,7 +4335,8 @@ static void LogPixelChannels(const Image *image)
     PixelChannel
       channel;
 
-    switch (GetPixelChannelChannel(image,i))
+    channel=GetPixelChannelChannel(image,i);
+    switch (channel)
     {
       case RedPixelChannel:
       {
@@ -4394,7 +4396,12 @@ static void LogPixelChannels(const Image *image)
       default:
         name="undefined";
     }
-    channel=GetPixelChannelChannel(image,i);
+    if (image->colorspace ==  UndefinedColorspace)
+      {
+        (void) FormatLocaleString(channel_name,MagickPathExtent,"%.20g",
+          (double) channel);
+        name=(const char *) channel_name;
+      }
     *traits='\0';
     if ((GetPixelChannelTraits(image,channel) & UpdatePixelTrait) != 0)
       (void) ConcatenateMagickString(traits,"update,",MagickPathExtent);
