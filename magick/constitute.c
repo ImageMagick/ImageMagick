@@ -1038,7 +1038,6 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
       rights=WritePolicyRights;
       if (IsRightsAuthorized(domain,rights,write_info->magick) == MagickFalse)
         {
-          sans_exception=DestroyExceptionInfo(sans_exception);
           write_info=DestroyImageInfo(write_info);
           errno=EPERM;
           ThrowBinaryException(PolicyError,"NotAuthorized",filename);

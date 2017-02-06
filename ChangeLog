@@ -1,3 +1,7 @@
+2017-02-06  6.9.7-8 Cristy  <quetzlzacatenango@image...>
+  * Eliminate bogus assertion (reference
+    https://github.com/ImageMagick/ImageMagick/issues/372).
+
 2017-02-04  6.9.7-7 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 6.9.7-7, GIT revision 11338:cc980d1:20170204.
 
