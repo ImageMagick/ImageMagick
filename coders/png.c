@@ -1229,7 +1229,6 @@ static void PNGLong(png_bytep p,png_uint_32 value)
   *p++=(png_byte) (value & 0xff);
 }
 
-#if defined(JNG_SUPPORTED)
 static void PNGsLong(png_bytep p,png_int_32 value)
 {
   *p++=(png_byte) ((value >> 24) & 0xff);
@@ -1237,7 +1236,6 @@ static void PNGsLong(png_bytep p,png_int_32 value)
   *p++=(png_byte) ((value >> 8) & 0xff);
   *p++=(png_byte) (value & 0xff);
 }
-#endif
 
 static void PNGShort(png_bytep p,png_uint_16 value)
 {
