@@ -1,3 +1,7 @@
+2017-03-07  7.0.4-9 Cristy  <quetzlzacatenango@image...>
+  * Unbreak build without JPEG support (reference
+    https://github.com/ImageMagick/ImageMagick/pull/373).
+
 2017-02-04  7.0.4-7 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.4-7, GIT revision 19513:5783e57:20170204.
 
