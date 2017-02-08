@@ -458,7 +458,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         ThrowReaderException(ResourceLimitError,"ImproperImageHeader");
       }
     pixels_length=height*bytes_per_line;
-    sun_pixels=(unsigned char *) AcquireQuantumMemory(pixels_length,
+    sun_pixels=(unsigned char *) AcquireQuantumMemory(pixels_length+image->rows,
       sizeof(*sun_pixels));
     if (sun_pixels == (unsigned char *) NULL)
       {
