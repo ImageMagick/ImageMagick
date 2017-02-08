@@ -4046,6 +4046,8 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
     into per-image artifacts, while ensuring only specifically set per-image
     artifacts are preserved when parenthesis ends.
   */
+  if (image->image_info != (ImageInfo *) NULL)
+    image->image_info=DestroyImageInfo(image->image_info);
   image->image_info=CloneImageInfo(image_info);
   return(MagickTrue);
 }
