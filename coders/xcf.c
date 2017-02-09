@@ -1422,7 +1422,8 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   }
 
   (void) CloseBlob(image);
-  DestroyImage(RemoveFirstImageFromList(&image));
+  if (GetNextImageInList(image) != (Image *) NULL)
+    DestroyImage(RemoveFirstImageFromList(&image));
   if (image_type == GIMP_GRAY)
     image->type=GrayscaleType;
   return(GetFirstImageInList(image));
