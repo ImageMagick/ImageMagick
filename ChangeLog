@@ -1,3 +1,7 @@
+2017-02-09  6.9.7-8 Dirk Lemstra <dirk@lem.....org>
+  * Fixed memory leak when creating nested exceptions in Magick++ (reference
+    https://www.imagemagick.org/discourse-server/viewtopic.php?f=23&p=142634)
+
 2017-02-06  6.9.7-8 Cristy  <quetzlzacatenango@image...>
   * Eliminate bogus assertion (reference
     https://github.com/ImageMagick/ImageMagick/issues/372).
