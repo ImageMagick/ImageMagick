@@ -842,6 +842,7 @@ MagickPPExport void Magick::throwException(ExceptionInfo *exception_,
 
   message=formatExceptionMessage(exception_);
   nestedException=(Exception *) NULL;
+  q=(Exception *) NULL;
   LockSemaphoreInfo(exception_->semaphore);
   if (exception_->exceptions != (void *) NULL)
     {
@@ -856,12 +857,18 @@ MagickPPExport void Magick::throwException(ExceptionInfo *exception_,
             exception_->description) != 0))
           {
             if (nestedException == (Exception *) NULL)
-              nestedException=createException(p);
+              {
+                nestedException=createException(p);
+                q=nestedException;
+              }
             else
               {
-                q=createException(p);
-                nestedException->nested(q);
-                nestedException=q;
+                Exception
+                  *r;
+
+                r=createException(p);
+                q->nested(r);
+                q=r;
               }
           }
       }
