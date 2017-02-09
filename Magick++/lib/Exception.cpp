@@ -838,6 +838,7 @@ MagickPPExport void Magick::throwException(ExceptionInfo *exception_,
 
   std::string message=formatExceptionMessage(exception_);
   nestedException=(Exception *) NULL;
+  q=(Exception *) NULL;
   LockSemaphoreInfo(exception_->semaphore);
   if (exception_->exceptions != (void *) NULL)
     {
