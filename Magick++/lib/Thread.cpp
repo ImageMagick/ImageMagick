@@ -59,16 +59,10 @@ Magick::MutexLock::MutexLock(void)
 Magick::MutexLock::~MutexLock(void)
 {
 #if defined(MAGICKCORE_HAVE_PTHREAD)
-  int sysError;
-  if ( (sysError = ::pthread_mutex_destroy( &_mutex )) == 0 )
-    return;
-  throwExceptionExplicit( OptionError, "mutex destruction failed",
-                          strerror(sysError) );
+  (void) ::pthread_mutex_destroy(&_mutex);
 #endif
 #if defined(_MT) && defined(_VISUALC_)
-  if ( ::CloseHandle(_mutex.id) != 0 )
-    return;
-  throwExceptionExplicit( OptionError, "mutex destruction failed" );
+  (void) ::CloseHandle(_mutex.id);
 #endif
 }
 
