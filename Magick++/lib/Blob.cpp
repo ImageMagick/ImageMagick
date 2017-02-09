@@ -1,7 +1,7 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
 // Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2004
-// Copyright Dirk Lemstra 2013-2015
+// Copyright Dirk Lemstra 2013-2017
 //
 // Implementation of Blob
 //
@@ -12,6 +12,7 @@
 #include "Magick++/Include.h"
 #include "Magick++/Blob.h"
 #include "Magick++/BlobRef.h"
+#include "Magick++/Exception.h"
 
 #include <string.h>
 
@@ -34,8 +35,14 @@ Magick::Blob::Blob(const Magick::Blob& blob_)
 
 Magick::Blob::~Blob()
 {
-  if (_blobRef->decrease() == 0)
-    delete _blobRef;
+  try
+  {
+    if (_blobRef->decrease() == 0)
+      delete _blobRef;
+  }
+  catch(Magick::Exception)
+  {
+  }
 
   _blobRef=(Magick::BlobRef *) NULL;
 }

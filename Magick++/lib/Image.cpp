@@ -1,7 +1,7 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
 // Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003
-// Copyright Dirk Lemstra 2013-2016
+// Copyright Dirk Lemstra 2013-2017
 //
 // Implementation of Image
 //
@@ -265,8 +265,14 @@ Magick::Image::Image(const std::string &imageSpec_)
 
 Magick::Image::~Image()
 {
-  if (_imgRef->decrease() == 0)
-    delete _imgRef;
+  try
+  {
+    if (_imgRef->decrease() == 0)
+      delete _imgRef;
+  }
+  catch(Magick::Exception)
+  {
+  }
 
   _imgRef=(Magick::ImageRef *) NULL;
 }
