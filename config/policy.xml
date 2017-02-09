@@ -13,7 +13,7 @@
 
   Domains include system, delegate, coder, filter, path, or resource.
 
-  Rights include none, read, write, and execute.  Use | to combine them,
+  Rights include none, read, write, execute and all.  Use | to combine them,
   for example: "read | write" to permit read from, or write to, a path.
 
   Use a glob expression as a pattern.
@@ -47,6 +47,13 @@
   with SI prefixes (.e.g 100MB).  In addition, resource policies are maximums
   for each instance of ImageMagick (e.g. policy memory limit 1GB, -limit 2GB
   exceeds policy maximum so memory limit is 1GB).
+
+  Rules are processed in order.  Here we want to restrict ImageMagick to only
+  read or write a small subset of proven web-safe image types:
+
+    <policy domain="delegate" rights="none" pattern="*" />
+    <policy domain="coder" rights="none" pattern="*" />
+    <policy domain="coder" rights="all" pattern="{GIF,JPEG,PNG,WEBP}" />
 -->
 <policymap>
   <!-- <policy domain="resource" name="temporary-path" value="/tmp"/> -->
