@@ -133,8 +133,7 @@ struct _FxInfo
   ExceptionInfo
     *exception;
 };
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -150,19 +149,19 @@ struct _FxInfo
 %
 %  The format of the AcquireFxInfo method is:
 %
-%      FxInfo *AcquireFxInfo(Image *image,const char *expression,
+%      FxInfo *AcquireFxInfo(Image *images,const char *expression,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o image: the image.
+%    o images: the image sequence.
 %
 %    o expression: the expression.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickPrivate FxInfo *AcquireFxInfo(const Image *image,const char *expression,
+MagickPrivate FxInfo *AcquireFxInfo(const Image *images,const char *expression,
   ExceptionInfo *exception)
 {
   char
@@ -182,7 +181,7 @@ MagickPrivate FxInfo *AcquireFxInfo(const Image *image,const char *expression,
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(fx_info,0,sizeof(*fx_info));
   fx_info->exception=AcquireExceptionInfo();
-  fx_info->images=image;
+  fx_info->images=images;
   fx_info->colors=NewSplayTree(CompareSplayTreeString,RelinquishMagickMemory,
     RelinquishAlignedMemory);
   fx_info->symbols=NewSplayTree(CompareSplayTreeString,RelinquishMagickMemory,
@@ -233,8 +232,7 @@ MagickPrivate FxInfo *AcquireFxInfo(const Image *image,const char *expression,
   (void) SubstituteString(&fx_info->expression,"**",fx_op);
   return(fx_info);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -408,8 +406,7 @@ MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
     noise_image=DestroyImage(noise_image);
   return(noise_image);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -564,8 +561,7 @@ MagickExport Image *BlueShiftImage(const Image *image,const double factor,
     shift_image=DestroyImage(shift_image);
   return(shift_image);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -627,8 +623,7 @@ MagickExport Image *CharcoalImage(const Image *image,const double radius,
   (void) GrayscaleImage(charcoal_image,image->intensity,exception);
   return(charcoal_image);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -810,8 +805,7 @@ MagickExport Image *ColorizeImage(const Image *image,const char *blend,
     colorize_image=DestroyImage(colorize_image);
   return(colorize_image);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1033,8 +1027,7 @@ MagickExport Image *ColorMatrixImage(const Image *image,
     color_image=DestroyImage(color_image);
   return(color_image);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1073,8 +1066,7 @@ MagickPrivate FxInfo *DestroyFxInfo(FxInfo *fx_info)
   fx_info=(FxInfo *) RelinquishMagickMemory(fx_info);
   return(fx_info);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -2984,8 +2976,7 @@ MagickPrivate MagickBooleanType FxEvaluateChannelExpression(FxInfo *fx_info,
     &beta,exception);
   return(exception->severity == OptionError ? MagickFalse : MagickTrue);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -3205,8 +3196,7 @@ MagickExport Image *FxImage(const Image *image,const char *expression,
     fx_image=DestroyImage(fx_image);
   return(fx_image);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -3417,8 +3407,7 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
     implode_image=DestroyImage(implode_image);
   return(implode_image);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -3654,8 +3643,7 @@ MagickExport Image *MorphImages(const Image *image,const size_t number_frames,
     }
   return(GetFirstImageInList(morph_images));
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -3949,8 +3937,7 @@ MagickExport MagickBooleanType PlasmaImage(Image *image,
   image_view=DestroyCacheView(image_view);
   return(status);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -4142,8 +4129,7 @@ MagickExport Image *PolaroidImage(const Image *image,const DrawInfo *draw_info,
   polaroid_image=trim_image;
   return(polaroid_image);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -4292,8 +4278,7 @@ MagickExport Image *SepiaToneImage(const Image *image,const double threshold,
     sepia_image=DestroyImage(sepia_image);
   return(sepia_image);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -4439,8 +4424,7 @@ MagickExport Image *ShadowImage(const Image *image,const double alpha,
   shadow_image->page.y+=y_offset-(ssize_t) border_info.height;
   return(shadow_image);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -4607,8 +4591,7 @@ MagickExport Image *SketchImage(const Image *image,const double radius,
   blend_image=DestroyImage(blend_image);
   return(sketch_image);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -4745,8 +4728,7 @@ MagickExport MagickBooleanType SolarizeImage(Image *image,
   image_view=DestroyCacheView(image_view);
   return(status);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -4917,8 +4899,7 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
     stegano_image=DestroyImage(stegano_image);
   return(stegano_image);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -5061,8 +5042,7 @@ MagickExport Image *StereoAnaglyphImage(const Image *left_image,
     stereo_image=DestroyImage(stereo_image);
   return(stereo_image);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -5268,8 +5248,7 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
     swirl_image=DestroyImage(swirl_image);
   return(swirl_image);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -5481,8 +5460,7 @@ MagickExport Image *TintImage(const Image *image,const char *blend,
     tint_image=DestroyImage(tint_image);
   return(tint_image);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -5583,8 +5561,7 @@ MagickExport Image *VignetteImage(const Image *image,const double radius,
     (void) TransformImageColorspace(vignette_image,image->colorspace,exception);
   return(vignette_image);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
