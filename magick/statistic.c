@@ -2472,21 +2472,26 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
       p++;
     }
   }
-  area=(double) image->columns*image->rows;
   for (i=0; i < (ssize_t) CompositeChannels; i++)
   {
     double
-      mean;
+      area,
+      mean,
+      standard_deviation;
 
-    mean=channel_statistics[i].sum/area;
+    area=PerceptibleReciprocal((double) image->columns*image->rows);
+    mean=channel_statistics[i].sum*area;
     channel_statistics[i].sum=mean;
-    channel_statistics[i].sum_squared/=area;
-    channel_statistics[i].sum_cubed/=area;
-    channel_statistics[i].sum_fourth_power/=area;
+    channel_statistics[i].sum_squared*=area;
+    channel_statistics[i].sum_cubed*=area;
+    channel_statistics[i].sum_fourth_power*=area;
     channel_statistics[i].mean=mean;
     channel_statistics[i].variance=channel_statistics[i].sum_squared;
-    channel_statistics[i].standard_deviation=sqrt(
-      channel_statistics[i].variance-(mean*mean));
+    standard_deviation=sqrt(channel_statistics[i].variance-(mean*mean));
+    area=PerceptibleReciprocal((double) image->columns*image->rows-1.0)*
+      ((double) image->columns*image->rows);
+    standard_deviation=sqrt(area*standard_deviation*standard_deviation);
+    channel_statistics[i].standard_deviation=standard_deviation;
   }
   for (i=0; i < (ssize_t) (MaxMap+1U); i++)
   {
@@ -2501,23 +2506,24 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
     if ((image->colorspace == CMYKColorspace) && (histogram[i].red > 0.0))
       number_bins.index++;
   }
+  area=PerceptibleReciprocal((double) image->columns*image->rows);
   for (i=0; i < (ssize_t) (MaxMap+1U); i++)
   {
-    histogram[i].red/=area;
+    histogram[i].red*=area;
     if (number_bins.red > MagickEpsilon)
       channel_statistics[RedChannel].entropy+=-histogram[i].red*
         MagickLog10(histogram[i].red)/MagickLog10((double) number_bins.red);
-    histogram[i].green/=area;
+    histogram[i].green*=area;
     if (number_bins.green > MagickEpsilon)
       channel_statistics[GreenChannel].entropy+=-histogram[i].green*
         MagickLog10(histogram[i].green)/MagickLog10((double) number_bins.green);
-    histogram[i].blue/=area;
+    histogram[i].blue*=area;
     if (number_bins.blue > MagickEpsilon)
       channel_statistics[BlueChannel].entropy+=-histogram[i].blue*
         MagickLog10(histogram[i].blue)/MagickLog10((double) number_bins.blue);
     if (image->matte != MagickFalse)
       {
-        histogram[i].opacity/=area;
+        histogram[i].opacity*=area;
         if (number_bins.opacity > MagickEpsilon)
           channel_statistics[OpacityChannel].entropy+=-histogram[i].opacity*
             MagickLog10(histogram[i].opacity)/MagickLog10((double)
@@ -2525,7 +2531,7 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
       }
     if (image->colorspace == CMYKColorspace)
       {
-        histogram[i].index/=area;
+        histogram[i].index*=area;
         if (number_bins.index > MagickEpsilon)
           channel_statistics[IndexChannel].entropy+=-histogram[i].index*
             MagickLog10(histogram[i].index)/MagickLog10((double)
