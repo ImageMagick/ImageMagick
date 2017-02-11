@@ -2058,6 +2058,7 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
     Compute overall statistics.
   */
   i=CompositePixelChannel;
+  area=PerceptibleReciprocal(channel_statistics[i].area);
   channel_statistics[i].variance=area*channel_statistics[i].sum_squared;
   channel_statistics[i].mean=area*channel_statistics[i].sum;
   standard_deviation=sqrt(channel_statistics[i].variance-
