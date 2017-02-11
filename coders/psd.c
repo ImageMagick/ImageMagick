@@ -1306,8 +1306,11 @@ static MagickBooleanType ReadPSDChannel(Image *image,
       }
       mask=CloneImage(image,layer_info->mask.page.width,
         layer_info->mask.page.height,MagickFalse,exception);
-      SetImageType(mask,GrayscaleType,exception);
-      channel_image=mask;
+      if (mask != (Image *) NULL)
+        {
+          SetImageType(mask,GrayscaleType,exception);
+          channel_image=mask;
+        }
     }
 
   offset=TellBlob(image);
