@@ -1146,7 +1146,8 @@ MagickExport MagickBooleanType GetImageEntropy(const Image *image,
     area++;
   }
   area=PerceptibleReciprocal(area);
-  *entropy=area*channel_statistics[CompositePixelChannel].entropy;
+  channel_statistics[CompositePixelChannel].entropy*=area;
+  *entropy=channel_statistics[CompositePixelChannel].entropy;
   channel_statistics=(ChannelStatistics *) RelinquishMagickMemory(
     channel_statistics);
   return(MagickTrue);
@@ -1318,11 +1319,13 @@ MagickExport MagickBooleanType GetImageKurtosis(const Image *image,
     }
   }
   image_view=DestroyCacheView(image_view);
-  area=PerceptibleReciprocal(area);
-  mean*=area;
-  sum_squares*=area;
-  sum_cubes*=area;
-  sum_fourth_power*=area;
+  if (area != 0.0)
+    {
+      mean/=area;
+      sum_squares/=area;
+      sum_cubes/=area;
+      sum_fourth_power/=area;
+    }
   standard_deviation=sqrt(sum_squares-(mean*mean));
   if (standard_deviation != 0.0)
     {
@@ -1400,12 +1403,15 @@ MagickExport MagickBooleanType GetImageMean(const Image *image,double *mean,
     channel_statistics[CompositePixelChannel].mean+=
       channel_statistics[channel].mean;
     channel_statistics[CompositePixelChannel].standard_deviation+=
-      channel_statistics[channel].standard_deviation;
+      channel_statistics[channel].variance-channel_statistics[channel].mean*
+      channel_statistics[channel].mean;
     area++;
   }
   area=PerceptibleReciprocal(area);
-  *mean=area*channel_statistics[CompositePixelChannel].mean;
-  *standard_deviation=area*
+  channel_statistics[CompositePixelChannel].mean*=area;
+  channel_statistics[CompositePixelChannel].standard_deviation*=area;
+  *mean=channel_statistics[CompositePixelChannel].mean;
+  *standard_deviation=
     channel_statistics[CompositePixelChannel].standard_deviation;
   channel_statistics=(ChannelStatistics *) RelinquishMagickMemory(
     channel_statistics);
@@ -1808,6 +1814,7 @@ MagickExport ChannelPerceptualHash *GetImagePerceptualHash(const Image *image,
     Image
       *hash_image;
 
+
     size_t
       j;
 
@@ -2075,9 +2082,6 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
     register ssize_t
       x;
 
-    /*
-      Compute general statistics.
-    */
     p=GetVirtualPixels(image,0,y,image->columns,1,exception);
     if (p == (const Quantum *) NULL)
       break;
@@ -2128,54 +2132,10 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
   }
   for (i=0; i < (ssize_t) MaxPixelChannels; i++)
   {
-    /*
-      Compute mean statistic.
-    */
-    double area=PerceptibleReciprocal(channel_statistics[i].area);
-    channel_statistics[i].mean=area*channel_statistics[i].sum;
-  }
-  for (y=0; y < (ssize_t) image->rows; y++)
-  {
-    register const Quantum
-      *magick_restrict p;
-
-    register ssize_t
-      x;
-
-    /*
-      Compute variance statistic.
-    */
-    p=GetVirtualPixels(image,0,y,image->columns,1,exception);
-    if (p == (const Quantum *) NULL)
-      break;
-    for (x=0; x < (ssize_t) image->columns; x++)
-    {
-      register ssize_t
-        i;
-
-      if (GetPixelWriteMask(image,p) == 0)
-        {
-          p+=GetPixelChannels(image);
-          continue;
-        }
-      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-      {
-        PixelChannel channel=GetPixelChannelChannel(image,i);
-        PixelTrait traits=GetPixelChannelTraits(image,channel);
-        if (traits == UndefinedPixelTrait)
-          continue;
-        channel_statistics[channel].variance+=
-          (p[i]-channel_statistics[channel].mean)*
-          (p[i]-channel_statistics[channel].mean);
-      }
-      p+=GetPixelChannels(image);
-    }
-  }
-  for (i=0; i < (ssize_t) MaxPixelChannels; i++)
-  {
     double
       area,
-      number_bins;
+      number_bins,
+      standard_deviation;
 
     register ssize_t
       j;
@@ -2185,6 +2145,8 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
     channel_statistics[i].sum_squared*=area;
     channel_statistics[i].sum_cubed*=area;
     channel_statistics[i].sum_fourth_power*=area;
+    channel_statistics[i].mean=channel_statistics[i].sum;
+    channel_statistics[i].variance=channel_statistics[i].sum_squared;
     number_bins=0.0;
     for (j=0; j < (ssize_t) (MaxMap+1U); j++)
       if (histogram[GetPixelChannels(image)*j+i] > 0.0)
@@ -2199,9 +2161,12 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
         channel_statistics[i].entropy+=-count*MagickLog10(count)/
           MagickLog10(number_bins);
     }
-    area=PerceptibleReciprocal(channel_statistics[i].area-1.0);
-    channel_statistics[i].standard_deviation=sqrt(area*
-      channel_statistics[i].variance);
+    standard_deviation=sqrt(channel_statistics[i].variance-
+      (channel_statistics[i].mean*channel_statistics[i].mean));
+    area=PerceptibleReciprocal(channel_statistics[i].area-1.0)*
+      channel_statistics[i].area;
+    standard_deviation=sqrt(area*standard_deviation*standard_deviation);
+    channel_statistics[i].standard_deviation=standard_deviation;
   }
   for (i=0; i < (ssize_t) MaxPixelChannels; i++)
   {
@@ -2224,9 +2189,11 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
       channel_statistics[i].sum_fourth_power;
     channel_statistics[CompositePixelChannel].mean+=channel_statistics[i].mean;
     channel_statistics[CompositePixelChannel].variance+=
-      channel_statistics[i].variance;
+      channel_statistics[i].variance-channel_statistics[i].mean*
+      channel_statistics[i].mean;
     channel_statistics[CompositePixelChannel].standard_deviation+=
-      channel_statistics[i].standard_deviation;
+      channel_statistics[i].variance-channel_statistics[i].mean*
+      channel_statistics[i].mean;
     if (channel_statistics[i].entropy > MagickEpsilon)
       channel_statistics[CompositePixelChannel].entropy+=
         channel_statistics[i].entropy;
@@ -2239,7 +2206,8 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
   channel_statistics[CompositePixelChannel].sum_fourth_power/=channels;
   channel_statistics[CompositePixelChannel].mean/=channels;
   channel_statistics[CompositePixelChannel].variance/=channels;
-  channel_statistics[CompositePixelChannel].standard_deviation/=channels;
+  channel_statistics[CompositePixelChannel].standard_deviation=
+    sqrt(channel_statistics[CompositePixelChannel].standard_deviation/channels);
   channel_statistics[CompositePixelChannel].kurtosis/=channels;
   channel_statistics[CompositePixelChannel].skewness/=channels;
   channel_statistics[CompositePixelChannel].entropy/=channels;
