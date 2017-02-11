@@ -14392,6 +14392,8 @@ Statistics(ref,...)
         EXTEND(sp,8*(i+1)*count);
         ChannelStatistics(channel);
       }
+      EXTEND(sp,8*(i+1)*count);
+      ChannelStatistics(CompositePixelChannel);
       channel_statistics=(ChannelStatistics *)
         RelinquishMagickMemory(channel_statistics);
     }
