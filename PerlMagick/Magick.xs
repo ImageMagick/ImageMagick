@@ -4201,20 +4201,24 @@ Features(ref,...)
     count=0;
     for ( ; image; image=image->next)
     {
+      register ssize_t
+        j;
+
       channel_features=GetImageFeatures(image,distance,exception);
       if (channel_features == (ChannelFeatures *) NULL)
         continue;
       count++;
-      EXTEND(sp,280*count);
-      for (i=0; i < 4; i++)
+      for (j=0; j < 4; j++)
       {
-        ChannelFeatures(RedChannel,i);
-        ChannelFeatures(GreenChannel,i);
-        ChannelFeatures(BlueChannel,i);
-        if (image->colorspace == CMYKColorspace)
-          ChannelFeatures(BlackChannel,i);
-        if (image->alpha_trait != UndefinedPixelTrait)
-          ChannelFeatures(AlphaChannel,i);
+        for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+        {
+          PixelChannel channel=GetPixelChannelChannel(image,i);
+          PixelTrait traits=GetPixelChannelTraits(image,channel);
+          if (traits == UndefinedPixelTrait)
+            continue;
+          EXTEND(sp,14*(i+1)*count);
+          ChannelFeatures(channel,j);
+        }
       }
       channel_features=(ChannelFeatures *)
         RelinquishMagickMemory(channel_features);
@@ -14301,16 +14305,16 @@ Statistics(ref,...)
     (double) channel_statistics[channel].depth); \
   PUSHs(sv_2mortal(newSVpv(message,0))); \
   (void) FormatLocaleString(message,MagickPathExtent,"%.20g", \
-    channel_statistics[channel].minima/scale); \
+    channel_statistics[channel].minima/QuantumRange); \
   PUSHs(sv_2mortal(newSVpv(message,0))); \
   (void) FormatLocaleString(message,MagickPathExtent,"%.20g", \
-    channel_statistics[channel].maxima/scale); \
+    channel_statistics[channel].maxima/QuantumRange); \
   PUSHs(sv_2mortal(newSVpv(message,0))); \
   (void) FormatLocaleString(message,MagickPathExtent,"%.20g", \
-    channel_statistics[channel].mean/scale); \
+    channel_statistics[channel].mean/QuantumRange); \
   PUSHs(sv_2mortal(newSVpv(message,0))); \
   (void) FormatLocaleString(message,MagickPathExtent,"%.20g", \
-    channel_statistics[channel].standard_deviation/scale); \
+    channel_statistics[channel].standard_deviation/QuantumRange); \
   PUSHs(sv_2mortal(newSVpv(message,0))); \
   (void) FormatLocaleString(message,MagickPathExtent,"%.20g", \
     channel_statistics[channel].kurtosis); \
@@ -14331,9 +14335,6 @@ Statistics(ref,...)
 
     ChannelStatistics
       *channel_statistics;
-
-    double
-      scale;
 
     ExceptionInfo
       *exception;
@@ -14386,9 +14387,9 @@ Statistics(ref,...)
       {
         PixelChannel channel=GetPixelChannelChannel(image,i);
         PixelTrait traits=GetPixelChannelTraits(image,channel);
-        if ((traits & UpdatePixelTrait) == 0)
+        if (traits == UndefinedPixelTrait)
           continue;
-        EXTEND(sp,8*i*count);
+        EXTEND(sp,8*(i+1)*count);
         ChannelStatistics(channel);
       }
       channel_statistics=(ChannelStatistics *)
