@@ -2363,9 +2363,9 @@ MagickExport MagickRealType GetPixelIntensity(const Image *magick_restrict image
     red,
     intensity;
 
-  red=GetPixelRed(image,pixel);
-  green=GetPixelGreen(image,pixel);
-  blue=GetPixelBlue(image,pixel);
+  red=(MagickRealType) GetPixelRed(image,pixel);
+  green=(MagickRealType) GetPixelGreen(image,pixel);
+  blue=(MagickRealType) GetPixelBlue(image,pixel);
   switch (image->intensity)
   {
     case AveragePixelIntensityMethod:
@@ -4362,7 +4362,7 @@ MagickExport void InitializePixelChannelMap(Image *image)
   if (image->write_mask != MagickFalse)
     SetPixelChannelAttributes(image,WriteMaskPixelChannel,CopyPixelTrait,n++);
   image->number_channels=(size_t) n;
-  SetPixelChannelMask(image,image->channel_mask);
+  (void) SetPixelChannelMask(image,image->channel_mask);
 }
 
 /*
