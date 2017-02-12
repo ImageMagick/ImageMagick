@@ -6290,14 +6290,15 @@ MagickExport ChannelType SetPixelChannelMask(Image *image,
             SetPixelChannelTraits(image,channel,CopyPixelTrait);
             continue;
           }
+        SetPixelChannelTraits(image,channel,UpdatePixelTrait);
+        continue;
       }
-    else
-      if (image->alpha_trait != UndefinedPixelTrait)
-        {
-          SetPixelChannelTraits(image,channel,(const PixelTrait)
-            (UpdatePixelTrait | BlendPixelTrait));
-          continue;
-        }
+    if (image->alpha_trait != UndefinedPixelTrait)
+      {
+        SetPixelChannelTraits(image,channel,(const PixelTrait)
+          (UpdatePixelTrait | BlendPixelTrait));
+        continue;
+      }
     SetPixelChannelTraits(image,channel,UpdatePixelTrait);
   }
   if (image->storage_class == PseudoClass)
