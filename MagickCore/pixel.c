@@ -4321,8 +4321,8 @@ static void LogPixelChannels(const Image *image)
   register ssize_t
     i;
 
-  (void) LogMagickEvent(PixelEvent,GetMagickModule(),"%s[%.20g]",
-    image->filename,(double) image->number_channels);
+  (void) LogMagickEvent(PixelEvent,GetMagickModule(),"%s[%08x]",
+    image->filename,image->channel_mask);
   for (i=0; i < (ssize_t) image->number_channels; i++)
   {
     char
@@ -4466,7 +4466,7 @@ MagickExport void InitializePixelChannelMap(Image *image)
   image->number_channels=(size_t) n;
   if (image->debug != MagickFalse)
     LogPixelChannels(image);
-  SetImageChannelMask(image,image->channel_mask);
+  SetPixelChannelMask(image,image->channel_mask);
 }
 
 /*
@@ -6292,15 +6292,14 @@ MagickExport ChannelType SetPixelChannelMask(Image *image,
             SetPixelChannelTraits(image,channel,CopyPixelTrait);
             continue;
           }
-        SetPixelChannelTraits(image,channel,UpdatePixelTrait);
-        continue;
       }
-    if (image->alpha_trait != UndefinedPixelTrait)
-      {
-        SetPixelChannelTraits(image,channel,(const PixelTrait)
-          (UpdatePixelTrait | BlendPixelTrait));
-        continue;
-      }
+    else
+      if (image->alpha_trait != UndefinedPixelTrait)
+        {
+          SetPixelChannelTraits(image,channel,(const PixelTrait)
+            (UpdatePixelTrait | BlendPixelTrait));
+          continue;
+        }
     SetPixelChannelTraits(image,channel,UpdatePixelTrait);
   }
   if (image->storage_class == PseudoClass)
