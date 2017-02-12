@@ -1984,12 +1984,12 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
         channel_statistics[channel].sum_fourth_power+=(double) p[i]*p[i]*p[i]*
           p[i];
         channel_statistics[channel].area++;
-        histogram[GetPixelChannels(image)*ScaleQuantumToMap(
-          ClampToQuantum((double) p[i]))+channel]++;
         if ((double) p[i] < channel_statistics[CompositePixelChannel].minima)
           channel_statistics[CompositePixelChannel].minima=(double) p[i];
         if ((double) p[i] > channel_statistics[CompositePixelChannel].maxima)
           channel_statistics[CompositePixelChannel].maxima=(double) p[i];
+        histogram[GetPixelChannels(image)*ScaleQuantumToMap(
+          ClampToQuantum((double) p[i]))+i]++;
         channel_statistics[CompositePixelChannel].sum+=(double) p[i];
         channel_statistics[CompositePixelChannel].sum_squared+=(double)
           p[i]*p[i];
