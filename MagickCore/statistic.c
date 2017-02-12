@@ -1984,6 +1984,8 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
         channel_statistics[channel].sum_fourth_power+=(double) p[i]*p[i]*p[i]*
           p[i];
         channel_statistics[channel].area++;
+        histogram[GetPixelChannels(image)*ScaleQuantumToMap(
+          ClampToQuantum((double) p[i]))+channel]++;
         if ((double) p[i] < channel_statistics[CompositePixelChannel].minima)
           channel_statistics[CompositePixelChannel].minima=(double) p[i];
         if ((double) p[i] > channel_statistics[CompositePixelChannel].maxima)
@@ -1996,8 +1998,6 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
         channel_statistics[CompositePixelChannel].sum_fourth_power+=(double)
           p[i]*p[i]*p[i]*p[i];
         channel_statistics[CompositePixelChannel].area++;
-        histogram[GetPixelChannels(image)*ScaleQuantumToMap(
-          ClampToQuantum((double) p[i]))+i]++;
         histogram[GetPixelChannels(image)*ScaleQuantumToMap(
           ClampToQuantum((double) p[i]))+CompositePixelChannel]++;
       }
@@ -2049,6 +2049,7 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
           MagickLog10(number_bins);
     }
   }
+  histogram=(double *) RelinquishMagickMemory(histogram);
   /*
     Compute overall statistics.
   */
@@ -2081,7 +2082,6 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
       channel_statistics[i].mean)*(standard_deviation*standard_deviation*
       standard_deviation*standard_deviation)-3.0;
   }
-  histogram=(double *) RelinquishMagickMemory(histogram);
   if (y < (ssize_t) image->rows)
     channel_statistics=(ChannelStatistics *) RelinquishMagickMemory(
       channel_statistics);
