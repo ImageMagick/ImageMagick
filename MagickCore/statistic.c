@@ -1320,8 +1320,9 @@ static size_t GetImageChannels(const Image *image)
   {
     PixelChannel channel=GetPixelChannelChannel(image,i);
     PixelTrait traits=GetPixelChannelTraits(image,channel);
-    if ((traits & UpdatePixelTrait) != 0)
-      channels++;
+    if (traits == UndefinedPixelTrait)
+      continue;
+    channels++;
   }
   return((size_t) (channels == 0 ? 1 : channels));
 }
