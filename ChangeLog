@@ -7,7 +7,6 @@
     https://github.com/ImageMagick/ImageMagick/issues/372).
   * Unbreak build without JPEG support (reference
     https://github.com/ImageMagick/ImageMagick/pull/373).
-  * SO Bump due to security policy improvements.
 
 2017-02-04  6.9.7-7 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 6.9.7-7, GIT revision 11338:cc980d1:20170204.
