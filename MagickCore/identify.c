@@ -556,6 +556,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       switch (colorspace)
       {
         case RGBColorspace:
+        case sRGBColorspace:
         {
           (void) PrintChannelLocations(file,image,RedPixelChannel,"Red",
             statistic_type,max_locations,channel_statistics);
