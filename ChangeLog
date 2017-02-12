@@ -11,7 +11,6 @@
     https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=31377).
   * Don't set update trait on alpha channel (private e-mail concerning
     -levels-colors option).
-  * SO Bump due to security policy improvements.
 
 2017-02-04  7.0.4-7 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.4-7, GIT revision 19513:5783e57:20170204.
