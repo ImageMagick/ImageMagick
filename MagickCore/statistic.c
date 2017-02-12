@@ -2043,7 +2043,7 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
       double
         count;
 
-      count=histogram[GetPixelChannels(image)*j+i]*area;
+      count=area*histogram[GetPixelChannels(image)*j+i];
       if (number_bins > MagickEpsilon)
         channel_statistics[i].entropy+=-count*MagickLog10(count)/
           MagickLog10(number_bins);
