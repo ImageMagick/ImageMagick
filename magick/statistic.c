@@ -2508,9 +2508,9 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
       number_bins.green++;
     if (histogram[i].blue > 0.0)
       number_bins.blue++;
-    if ((image->matte != MagickFalse) && (histogram[i].red > 0.0))
+    if ((image->matte != MagickFalse) && (histogram[i].opacity > 0.0))
       number_bins.opacity++;
-    if ((image->colorspace == CMYKColorspace) && (histogram[i].red > 0.0))
+    if ((image->colorspace == CMYKColorspace) && (histogram[i].index > 0.0))
       number_bins.index++;
   }
   area=PerceptibleReciprocal((double) image->columns*image->rows);
