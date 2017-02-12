@@ -1410,6 +1410,8 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
         PixelTrait traits=GetPixelChannelTraits(image,channel);
         if (traits == UndefinedPixelTrait)
           continue;
+        if ((traits & UpdatePixelTrait) == 0)
+          continue;
         M00[channel]+=QuantumScale*p[i];
         M00[MaxPixelChannels]+=QuantumScale*p[i];
         M10[channel]+=x*QuantumScale*p[i];
@@ -1465,6 +1467,8 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
         PixelChannel channel=GetPixelChannelChannel(image,i);
         PixelTrait traits=GetPixelChannelTraits(image,channel);
         if (traits == UndefinedPixelTrait)
+          continue;
+        if ((traits & UpdatePixelTrait) == 0)
           continue;
         M11[channel]+=(x-centroid[channel].x)*(y-centroid[channel].y)*
           QuantumScale*p[i];
@@ -1804,6 +1808,8 @@ MagickExport MagickBooleanType GetImageRange(const Image *image,double *minima,
         PixelTrait traits=GetPixelChannelTraits(image,channel);
         if (traits == UndefinedPixelTrait)
           continue;
+        if ((traits & UpdatePixelTrait) == 0)
+          continue;
         if (row_initialize != MagickFalse)
           {
             row_minima=(double) p[i];
@@ -1958,7 +1964,7 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
       {
         PixelChannel channel=GetPixelChannelChannel(image,i);
         PixelTrait traits=GetPixelChannelTraits(image,channel);
-        if (traits == UndefinedPixelTrait)
+        if (traits  == UndefinedPixelTrait)
           continue;
         if (channel_statistics[channel].depth != MAGICKCORE_QUANTUM_DEPTH)
           {
