@@ -1998,8 +1998,6 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
         channel_statistics[CompositePixelChannel].sum_fourth_power+=(double)
           p[i]*p[i]*p[i]*p[i];
         channel_statistics[CompositePixelChannel].area++;
-        histogram[GetPixelChannels(image)*ScaleQuantumToMap(
-          ClampToQuantum((double) p[i]))+CompositePixelChannel]++;
       }
       p+=GetPixelChannels(image);
     }
@@ -2022,7 +2020,7 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
       1.0)*channel_statistics[i].area*standard_deviation*standard_deviation);
     channel_statistics[i].standard_deviation=standard_deviation;
   }
-  for (i=0; i <= (ssize_t) MaxPixelChannels; i++)
+  for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
   {
     double
       number_bins;
@@ -2033,11 +2031,12 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
     /*
       Compute pixel entropy.
     */
+    PixelChannel channel=GetPixelChannelChannel(image,i);
     number_bins=0.0;
     for (j=0; j < (ssize_t) (MaxMap+1U); j++)
       if (histogram[GetPixelChannels(image)*j+i] > 0.0)
         number_bins++;
-    area=PerceptibleReciprocal(channel_statistics[i].area);
+    area=PerceptibleReciprocal(channel_statistics[channel].area);
     for (j=0; j < (ssize_t) (MaxMap+1U); j++)
     {
       double
@@ -2045,8 +2044,13 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
 
       count=area*histogram[GetPixelChannels(image)*j+i];
       if (number_bins > MagickEpsilon)
-        channel_statistics[i].entropy+=-count*MagickLog10(count)/
-          MagickLog10(number_bins);
+        {
+          channel_statistics[channel].entropy+=-count*MagickLog10(count)/
+            MagickLog10(number_bins);
+          channel_statistics[CompositePixelChannel].entropy+=-count*
+            MagickLog10(count)/MagickLog10(number_bins)/
+            GetPixelChannels(image);
+        }
     }
   }
   histogram=(double *) RelinquishMagickMemory(histogram);
