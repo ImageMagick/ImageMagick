@@ -2002,7 +2002,7 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
       p+=GetPixelChannels(image);
     }
   }
-  for (i=0; i < (ssize_t) MaxPixelChannels; i++)
+  for (i=0; i <= (ssize_t) MaxPixelChannels; i++)
   {
     /*
       Normalize pixel statistics.
@@ -2033,11 +2033,11 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
     */
     PixelChannel channel=GetPixelChannelChannel(image,i);
     number_bins=0.0;
-    for (j=0; j < (ssize_t) (MaxMap+1U); j++)
+    for (j=0; j <= (ssize_t) MaxMap; j++)
       if (histogram[GetPixelChannels(image)*j+i] > 0.0)
         number_bins++;
     area=PerceptibleReciprocal(channel_statistics[channel].area);
-    for (j=0; j < (ssize_t) (MaxMap+1U); j++)
+    for (j=0; j <= (ssize_t) MaxMap; j++)
     {
       double
         count;
@@ -2054,18 +2054,6 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
     }
   }
   histogram=(double *) RelinquishMagickMemory(histogram);
-  /*
-    Compute overall statistics.
-  */
-  i=CompositePixelChannel;
-  area=PerceptibleReciprocal(channel_statistics[i].area);
-  channel_statistics[i].variance=area*channel_statistics[i].sum_squared;
-  channel_statistics[i].mean=area*channel_statistics[i].sum;
-  standard_deviation=sqrt(channel_statistics[i].variance-
-    (channel_statistics[i].mean*channel_statistics[i].mean));
-  standard_deviation=sqrt(PerceptibleReciprocal(channel_statistics[i].area-1.0)*
-    channel_statistics[i].area*standard_deviation*standard_deviation);
-  channel_statistics[i].standard_deviation=standard_deviation;
   for (i=0; i <= (ssize_t) MaxPixelChannels; i++)
   {
     /*
