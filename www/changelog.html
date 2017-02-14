@@ -56,7 +56,35 @@
   </div>
 </div>
 <div class="container">
-<div class="magick-header"><dl><dt>2017-01-21  7.0.4-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<div class="magick-header"><dl><dt>2017-02-13  7.0.4-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 7.0.4-8, GIT revision 19574:7642384:20170213.</li>
+<dt>2017-02-09  7.0.4-8 Dirk Lemstra &lt;dirk@lem.....org&gt;</dt>
+  <li> Fixed memory leak when creating nested exceptions in Magick++ (reference    https://www.imagemagick.org/discourse-server/viewtopic.html?f=23&amp;p=142634)</li>
+<dt>2017-02-09  7.0.4-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Unbreak build without JPEG support (reference    https://github.com/ImageMagick/ImageMagick/pull/373).</li>
+  <li> Document behavior change in the security policy (thanks to yoya @    https://blog.awm.jp/2017/02/09/imagemagick-en/).</li>
+  <li> Return unbiased standard deviation for image statistics (reference    https://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=31377).</li>
+  <li> Don't set update trait on alpha channel (private e-mail concerning    -levels-colors option).</li>
+<dt>2017-02-04  7.0.4-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 7.0.4-7, GIT revision 19513:5783e57:20170204.</li>
+<dt>2017-01-28  7.0.4-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Sanitize comments that include braces for the MIFF image format (reference    https://github.com/ImageMagick/ImageMagick/issues/368).</li>
+<dt>2017-01-27  7.0.4-7 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <li> coders/png.c: Added support for a proposed new PNG chunk    (zxIf, read-only) that is currently being discussed on the    png-mng-misc at lists.sourceforge.net mailing list.  Enable    exIf and zxIf with CPPFLAGS="-DexIf_SUPPORTED -DxzIf_SUPPORTED".    If exIf is enabled, only the uncompressed exIF chunk will be    written and the hex-encoded zTXt chunk containing the raw Exif    profile won't be written.</li>
+<dt>2017-01-27  7.0.4-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 7.0.4-6, GIT revision 19442:4747de9:20170127.</li>
+<dt>2017-01-27  7.0.4-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Uninitialized data in MAT image format (reference    https://github.com/ImageMagick/ImageMagick/issues/362).</li>
+  <li> Properly auto-fit caption (reference    https://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=30887).</li>
+  <li> Correction to composite Over operator (reference    https://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=31282).</li>
+  <li> Respect gravity option (reference    https://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=31284).</li>
+<dt>2017-01-22  7.0.4-6 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <li> Renamed read_vpag_chunk_callback() function to png_user_chunk_callback()    in coders/png.c</li>
+  <li> Implemented a private PNG caNv (canvas) chunk for remembering the    original dimensions and offsets when an image is cropped.  Previously    we used the oFFs and vpAg chunks for this purpose, but this had potential    conflicts with other applications that also use the oFFs chunk.</li>
+  <li> coders/png.c: Added support for a proposed new PNG chunk (exIf    read-write, eXIf read-only) that is currently being discussed on the    png-mng-misc at lists.sourceforge.net mailing list.</li>
+<dt>2017-01-22  7.0.4-6 Dirk Lemstra &lt;dirk@lem.....org&gt;</dt>
+  <li> Replaced CoderSeekableStreamFlag with CoderDecoderSeekableStreamFlag and    CoderEncoderSeekableStreamFlag.</li>
+<dt>2017-01-21  7.0.4-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.4-5, GIT revision 19381:7ae396f:20170121.</li>
 <dt>2017-01-18  7.0.4-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Don't set background for transparent tiled images (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=31210).</li>
@@ -311,4 +339,4 @@
 </div>
 </body>
 </html>
-<!-- Magick Cache 21st January 2017 12:16 -->
+<!-- Magick Cache 13th February 2017 11:34 -->

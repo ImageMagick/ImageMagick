@@ -364,6 +364,7 @@ convert logo: gif:- | display -define stream:buffer-size=0 gif:-
 <ul>
 <li><a href="command-line-processing.html#setting">Image Setting</a></li>
 <li><a href="command-line-processing.html#operator">Image Operator</a></li>
+<li><a href="command-line-processing.html#channel">Image Channel Operator</a></li>
 <li><a href="command-line-processing.html#sequence">Image Sequence Operator</a></li>
 <li><a href="command-line-processing.html#geometry">Image Geometry</a></li>
 <li><a href="command-line-processing.html#stack">Image Stack</a></li>
@@ -406,6 +407,11 @@ include:</p>
 convert wand.png -negate wizard.png images.png
 </pre>
 
+<h4 class="magick-header"><a id="channel"></a>Image Channel Operator</h4>
+<p>Operate directly on image channels:</p>
+<ul>
+<a href="command-line-options.html#channel-fx">&#x2011;channel&#x2011;fx</a>  • <a href="command-line-options.html#separate">&#x2011;separate</a> </ul>
+
 <h4 class="magick-header"><a id="sequence"></a>Image Sequence Operator</h4>
 
 <p>An image sequence operator differs from a setting in that it affects an
@@ -413,7 +419,7 @@ image sequence immediately as it appears on the command-line.  Choose from
 these image sequence operators:</p>
 
 <ul>
-<a href="command-line-options.html#append">&#x2011;append</a>  • <a href="command-line-options.html#affinity">&#x2011;affinity</a>  • <a href="command-line-options.html#average">&#x2011;average</a>  • <a href="command-line-options.html#clut">&#x2011;clut</a>  • <a href="command-line-options.html#coalesce">&#x2011;coalesce</a>  • <a href="command-line-options.html#combine">&#x2011;combine</a>  • <a href="command-line-options.html#compare">&#x2011;compare</a>  • <a href="command-line-options.html#complex">&#x2011;complex</a>  • <a href="command-line-options.html#composite">&#x2011;composite</a>  • <a href="command-line-options.html#copy">&#x2011;copy</a>  • <a href="command-line-options.html#crop">&#x2011;crop</a>  • <a href="command-line-options.html#debug">&#x2011;debug</a>  • <a href="command-line-options.html#deconstruct">&#x2011;deconstruct</a>  • <a href="command-line-options.html#delete">&#x2011;delete</a>  • <a href="command-line-options.html#evaluate-sequence">&#x2011;evaluate&#x2011;sequence</a>  • <a href="command-line-options.html#fft">&#x2011;fft</a>  • <a href="command-line-options.html#flatten">&#x2011;flatten</a>  • <a href="command-line-options.html#fx">&#x2011;fx</a>  • <a href="command-line-options.html#hald-clut">&#x2011;hald&#x2011;clut</a>  • <a href="command-line-options.html#ift">&#x2011;ift</a>  • <a href="command-line-options.html#identify">&#x2011;identify</a>  • <a href="command-line-options.html#insert">&#x2011;insert</a>  • <a href="command-line-options.html#layers">&#x2011;layers</a>  • <a href="command-line-options.html#limit">&#x2011;limit</a>  • <a href="command-line-options.html#map">&#x2011;map</a>  • <a href="command-line-options.html#maximum">&#x2011;maximum</a>  • <a href="command-line-options.html#minimum">&#x2011;minimum</a>  • <a href="command-line-options.html#morph">&#x2011;morph</a>  • <a href="command-line-options.html#mosaic">&#x2011;mosaic</a>  • <a href="command-line-options.html#optimize">&#x2011;optimize</a>  • <a href="command-line-options.html#print">&#x2011;print</a>  • <a href="command-line-options.html#process">&#x2011;process</a>  • <a href="command-line-options.html#quiet">&#x2011;quiet</a>  • <a href="command-line-options.html#separate">&#x2011;separate</a>  • <a href="command-line-options.html#swap">&#x2011;swap</a>  • <a href="command-line-options.html#write">&#x2011;write</a> </ul>
+<a href="command-line-options.html#append">&#x2011;append</a>  • <a href="command-line-options.html#affinity">&#x2011;affinity</a>  • <a href="command-line-options.html#average">&#x2011;average</a>  • <a href="command-line-options.html#clut">&#x2011;clut</a>  • <a href="command-line-options.html#coalesce">&#x2011;coalesce</a>  • <a href="command-line-options.html#combine">&#x2011;combine</a>  • <a href="command-line-options.html#compare">&#x2011;compare</a>  • <a href="command-line-options.html#complex">&#x2011;complex</a>  • <a href="command-line-options.html#composite">&#x2011;composite</a>  • <a href="command-line-options.html#copy">&#x2011;copy</a>  • <a href="command-line-options.html#crop">&#x2011;crop</a>  • <a href="command-line-options.html#debug">&#x2011;debug</a>  • <a href="command-line-options.html#deconstruct">&#x2011;deconstruct</a>  • <a href="command-line-options.html#delete">&#x2011;delete</a>  • <a href="command-line-options.html#evaluate-sequence">&#x2011;evaluate&#x2011;sequence</a>  • <a href="command-line-options.html#fft">&#x2011;fft</a>  • <a href="command-line-options.html#flatten">&#x2011;flatten</a>  • <a href="command-line-options.html#fx">&#x2011;fx</a>  • <a href="command-line-options.html#hald-clut">&#x2011;hald&#x2011;clut</a>  • <a href="command-line-options.html#ift">&#x2011;ift</a>  • <a href="command-line-options.html#identify">&#x2011;identify</a>  • <a href="command-line-options.html#insert">&#x2011;insert</a>  • <a href="command-line-options.html#layers">&#x2011;layers</a>  • <a href="command-line-options.html#limit">&#x2011;limit</a>  • <a href="command-line-options.html#map">&#x2011;map</a>  • <a href="command-line-options.html#maximum">&#x2011;maximum</a>  • <a href="command-line-options.html#minimum">&#x2011;minimum</a>  • <a href="command-line-options.html#morph">&#x2011;morph</a>  • <a href="command-line-options.html#mosaic">&#x2011;mosaic</a>  • <a href="command-line-options.html#optimize">&#x2011;optimize</a>  • <a href="command-line-options.html#print">&#x2011;print</a>  • <a href="command-line-options.html#process">&#x2011;process</a>  • <a href="command-line-options.html#quiet">&#x2011;quiet</a>  • <a href="command-line-options.html#swap">&#x2011;swap</a>  • <a href="command-line-options.html#write">&#x2011;write</a> </ul>
 <p>In this example, <var>-append</var> appends three images into one:</p>
 
 <pre>
@@ -685,4 +691,4 @@ convert -define stream:buffer-size=0 logo: gif:- | display gif:-
 </div>
 </body>
 </html>
-<!-- Magick Cache 21st January 2017 12:16 -->
+<!-- Magick Cache 13th February 2017 11:33 -->

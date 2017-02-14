@@ -96,6 +96,14 @@ convert: unable to open file: No such file or directory
 convert: no images defined `wizard.jpg'
 </pre>
 
+<p>As of ImageMagick version 7.0.4-7, you can conveniently deny access to all delegates and coders except for a small subset of proven web-safe image types.  For example,</p>
+
+<pre>
+  &lt;policy domain="delegate" rights="none" pattern="*" />
+  &lt;policy domain="coder" rights="none" pattern="*" />
+  &lt;policy domain="coder" rights="read|write" pattern="{GIF,JPEG,PNG,WEBP}" />
+</pre>
+
 <p>You can verify your policy changes are in effect with this command:</p>
 
 <pre class="pre-scrollable">
@@ -184,4 +192,4 @@ Path: [built-in]
 </div>
 </body>
 </html>
-<!-- Magick Cache 21st January 2017 12:17 -->
+<!-- Magick Cache 13th February 2017 12:01 -->
