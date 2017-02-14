@@ -1,3 +1,6 @@
+2017-02-14  7.0.4-9 Cristy  <quetzlzacatenango@image...>
+  * Revert patch that did not set update trait on alpha channel.
+
 2017-02-13  7.0.4-8 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.4-8, GIT revision 19574:7642384:20170213.
 
