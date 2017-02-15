@@ -603,6 +603,9 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     const StringInfo
       *profile;
 
+    ssize_t
+      option_type;
+
     next->taint=MagickFalse;
     GetPathComponent(magick_filename,MagickPath,magick_path);
     if (*magick_path == '\0' && *next->magick == '\0')
@@ -653,8 +656,10 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       value=GetImageProperty(next,"exif:ResolutionUnit",exception);
     if (value != (char *) NULL)
       {
-        next->units=(ResolutionType) ParseCommandOption(MagickResolutionOptions,
-          MagickFalse,value);
+        option_type=ParseCommandOption(MagickResolutionOptions,MagickFalse,
+          value);
+        if (option_type >= 0)
+          next->units=(ResolutionType) option_type;
         (void) DeleteImageProperty(next,"exif:ResolutionUnit");
         (void) DeleteImageProperty(next,"tiff:ResolutionUnit");
       }
@@ -753,8 +758,12 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       }
     option=GetImageOption(image_info,"dispose");
     if (option != (const char *) NULL)
-      next->dispose=(DisposeType) ParseCommandOption(MagickDisposeOptions,
-        MagickFalse,option);
+      {
+        option_type=ParseCommandOption(MagickDisposeOptions,MagickFalse,
+          option);
+        if (option_type >= 0)
+          next->dispose=(DisposeType) option_type;
+      }
     if (read_info->verbose != MagickFalse)
       (void) IdentifyImage(next,stderr,MagickFalse,exception);
     image=next;
