@@ -2,6 +2,7 @@
   * Prevent random pixel data for corrupt JPEG image (bug report from
     Hirokazu Moriguchi, Sony).
   * Restore -mattecolor option.
+  * Support pixel-cache and shred security policies.
 
 2017-02-14  7.0.4-9 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.4-9, GIT revision 19580:d474b37:20170214.
