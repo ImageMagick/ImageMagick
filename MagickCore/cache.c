@@ -4699,6 +4699,8 @@ static inline MagickBooleanType AcquireCacheNexusPixels(
       nexus_info->mapped=MagickFalse;
       nexus_info->cache=(Quantum *) MagickAssumeAligned(AcquireAlignedMemory(1,
         (size_t) nexus_info->length));
+      if (nexus_info->cache != (PixelPacket *) NULL)
+        ResetMagickMemory(nexus_info->cache,0,(size_t) nexus_info->length);
     }
   else
     {
