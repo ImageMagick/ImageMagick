@@ -1807,7 +1807,9 @@ MagickPrivate MagickBooleanType ShredFile(const char *path)
 
   if ((path == (const char *) NULL) || (*path == '\0'))
     return(MagickFalse);
-  passes=GetEnvironmentValue("MAGICK_SHRED_PASSES");
+  passes=GetPolicyValue("shred");
+  if (passes == (char *) NULL)
+    passes=GetEnvironmentValue("MAGICK_SHRED_PASSES");
   if (passes == (char *) NULL)
     {
       /*

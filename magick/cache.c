@@ -3832,14 +3832,40 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
   length=number_pixels*(sizeof(PixelPacket)+sizeof(IndexPacket));
   if ((status != MagickFalse) && (length == (MagickSizeType) ((size_t) length)))
     {
+      static ssize_t
+        anonymous_pixel_cache = (-1);
+
+      if (anonymous_pixel_cache < 0)
+        {
+          char
+            *value;
+
+          /*
+            Does the security policy require anonymous mapping for pixel cache?
+          */
+          anonymous_pixel_cache=0;
+          value=GetPolicyValue("pixel-cache");
+          if (LocaleCompare(value,"anonymous") == 0)
+            anonymous_pixel_cache=1;
+          value=DestroyString(value);
+        }
       status=AcquireMagickResource(MemoryResource,cache_info->length);
       if (((cache_info->type == UndefinedCache) && (status != MagickFalse)) ||
           (cache_info->type == MemoryCache))
         {
           status=MagickTrue;
-          cache_info->mapped=MagickFalse;
-          cache_info->pixels=(PixelPacket *) MagickAssumeAligned(
-            AcquireAlignedMemory(1,(size_t) cache_info->length));
+          if (anonymous_pixel_cache == 0)
+            {
+              cache_info->mapped=MagickFalse;
+              cache_info->pixels=(PixelPacket *) MagickAssumeAligned(
+                AcquireAlignedMemory(1,(size_t) cache_info->length));
+            }
+          else
+            {
+              cache_info->mapped=MagickTrue;
+              cache_info->pixels=(PixelPacket *) MapBlob(-1,IOMode,0,(size_t)
+                cache_info->length);
+            }
           if (cache_info->pixels == (PixelPacket *) NULL)
             cache_info->pixels=source_info.pixels;
           else

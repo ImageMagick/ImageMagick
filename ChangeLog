@@ -1,6 +1,7 @@
 2017-02-15  6.9.7-9 Cristy  <quetzlzacatenango@image...>
   * Prevent random pixel data for corrupt JPEG image (bug report from
     Hirokazu Moriguchi, Sony).
+  * * Support pixel-cache and shred security policies.
 
 2017-02-09  6.9.7-8 Dirk Lemstra <dirk@lem.....org>
   * Fixed memory leak when creating nested exceptions in Magick++ (reference
