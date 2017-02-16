@@ -1551,15 +1551,15 @@ namespace Magick
   };
 
   // Transparent color
-  class MagickPPExport alphaColorImage
+  class MagickPPExport matteColorImage
   {
   public:
-    alphaColorImage( const Color &alphaColor_ );
+    matteColorImage( const Color &matteColor_ );
 
     void operator()( Image &image_ ) const;
 
   private:
-    Color _alphaColor;
+    Color _matteColor;
   };
 
   // Indicate that image is black and white

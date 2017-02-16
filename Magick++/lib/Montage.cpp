@@ -181,8 +181,8 @@ void Magick::Montage::updateMontageInfo(MontageInfo &montageInfo_ ) const
 {
   (void) MagickCore::ResetMagickMemory(&montageInfo_,0,sizeof(montageInfo_));
 
-  // alpha_color
-  montageInfo_.alpha_color=Color();
+  // matte_color
+  montageInfo_.matte_color=Color();
   // background_color
   montageInfo_.background_color=_backgroundColor;
   // border_color
@@ -230,7 +230,7 @@ void Magick::Montage::updateMontageInfo(MontageInfo &montageInfo_ ) const
 //
 
 Magick::MontageFramed::MontageFramed(void)
-  : _alphaColor("#bdbdbd"),
+  : _matteColor("#bdbdbd"),
     _borderColor("#dfdfdf"),
     _borderWidth(0),
     _frame()
@@ -241,14 +241,14 @@ Magick::MontageFramed::~MontageFramed(void)
 {
 }
 
-void Magick::MontageFramed::alphaColor(const Magick::Color &alphaColor_)
+void Magick::MontageFramed::matteColor(const Magick::Color &matteColor_)
 {
-  _alphaColor=alphaColor_;
+  _matteColor=matteColor_;
 }
 
-Magick::Color Magick::MontageFramed::alphaColor(void) const
+Magick::Color Magick::MontageFramed::matteColor(void) const
 {
-  return(_alphaColor);
+  return(_matteColor);
 }
 
 void Magick::MontageFramed::borderColor(const Magick::Color &borderColor_)
@@ -286,8 +286,8 @@ void Magick::MontageFramed::updateMontageInfo(MontageInfo &montageInfo_) const
   // Do base updates
   Montage::updateMontageInfo(montageInfo_);
 
-  // alpha_color
-  montageInfo_.alpha_color = _alphaColor;
+  // matte_color
+  montageInfo_.matte_color = _matteColor;
   // border_color
   montageInfo_.border_color=_borderColor;
   // border_width

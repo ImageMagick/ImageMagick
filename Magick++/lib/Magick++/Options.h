@@ -43,8 +43,8 @@ namespace Magick
     bool adjoin(void) const;
 
     // Transparent color
-    void alphaColor(const Color &alphaColor_);
-    Color alphaColor(void) const;
+    void matteColor(const Color &matteColor_);
+    Color matteColor(void) const;
 
     // Image background color
     void backgroundColor(const Color &color_);

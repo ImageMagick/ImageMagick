@@ -121,8 +121,8 @@ namespace Magick
     ~MontageFramed(void);
 
     // Frame foreground color
-    void alphaColor(const Color &alphaColor_);
-    Color alphaColor(void) const;
+    void matteColor(const Color &matteColor_);
+    Color matteColor(void) const;
 
     // Frame border color
     void borderColor(const Color &borderColor_);
@@ -145,7 +145,7 @@ namespace Magick
 
   private:
 
-    Color _alphaColor;
+    Color _matteColor;
     Color _borderColor;
     size_t _borderWidth;
     Geometry _frame;

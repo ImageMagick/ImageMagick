@@ -73,14 +73,14 @@ bool Magick::Options::adjoin(void) const
   return(static_cast<bool>(_imageInfo->adjoin));
 }
 
-void Magick::Options::alphaColor(const Color &alphaColor_)
+void Magick::Options::matteColor(const Color &matteColor_)
 {
-  _imageInfo->alpha_color=alphaColor_;
+  _imageInfo->matte_color=matteColor_;
 }
 
-Magick::Color Magick::Options::alphaColor(void) const
+Magick::Color Magick::Options::matteColor(void) const
 {
-  return(Magick::Color(_imageInfo->alpha_color));
+  return(Magick::Color(_imageInfo->matte_color));
 }
 
 void Magick::Options::backgroundColor(const Color &color_)

@@ -930,28 +930,28 @@ int main( int /*argc*/, char ** argv)
     image.alpha(false);
 
     //
-    // alphaColor
+    // matteColor
     //
     // Test default
-    if ( image.alphaColor() != Color("#BDBDBD") )
+    if ( image.matteColor() != Color("#BDBDBD") )
       {
 	++failures;
 	cout << "Line: " << __LINE__
-             << ", alphaColor default is not #BDBDBD as expected" << endl;
+             << ", matteColor default is not #BDBDBD as expected" << endl;
       }
 
     // Test set/get
-    image.alphaColor(ColorRGB(0.5,0.5,1));
-    if ( image.alphaColor() != ColorRGB(0.5,0.5,1) )
+    image.matteColor(ColorRGB(0.5,0.5,1));
+    if ( image.matteColor() != ColorRGB(0.5,0.5,1) )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", alphaColor set/get failed" << endl;
+	cout << "Line: " << __LINE__ << ", matteColor set/get failed" << endl;
       }
 
     // Test unset
-    image.alphaColor( Color() );
+    image.matteColor( Color() );
 
-    image.alphaColor("#BDBDBD");
+    image.matteColor("#BDBDBD");
 
     //
     // meanErrorPerPixel

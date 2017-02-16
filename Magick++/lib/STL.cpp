@@ -1412,13 +1412,13 @@ void Magick::alphaFlagImage::operator()( Magick::Image &image_ ) const
 }
 
 // Transparent color
-Magick::alphaColorImage::alphaColorImage( const Color &alphaColor_ )
-  : _alphaColor( alphaColor_ )
+Magick::matteColorImage::matteColorImage( const Color &matteColor_ )
+  : _matteColor( matteColor_ )
 {
 }
-void Magick::alphaColorImage::operator()( Magick::Image &image_ ) const
+void Magick::matteColorImage::operator()( Magick::Image &image_ ) const
 {
-  image_.alphaColor( _alphaColor );
+  image_.matteColor( _matteColor );
 }
 
 // Indicate that image is black and white

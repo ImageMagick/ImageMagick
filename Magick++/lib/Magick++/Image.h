@@ -106,8 +106,8 @@ namespace Magick
     bool alpha(void) const;
 
     // Transparent color
-    void alphaColor(const Color &alphaColor_);
-    Color alphaColor(void) const;
+    void matteColor(const Color &matteColor_);
+    Color matteColor(void) const;
 
     // Time in 1/100ths of a second which must expire before
     // displaying the next image in an animated sequence.
