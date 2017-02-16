@@ -160,7 +160,7 @@ static SemaphoreInfo
   *cache_semaphore = (SemaphoreInfo *) NULL;
 
 static ssize_t
-  anonymous_pixel_cache = (-1);
+  cache_anonymous_memory = (-1);
 
 static time_t
   cache_epoch = 0;
@@ -3795,7 +3795,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
   assert(image->cache != (Cache) NULL);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if (anonymous_pixel_cache < 0)
+  if (cache_anonymous_memory < 0)
     {
       char
         *value;
@@ -3803,10 +3803,10 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
       /*
         Does the security policy require anonymous mapping for pixel cache?
       */
-      anonymous_pixel_cache=0;
-      value=GetPolicyValue("pixel-cache");
+      cache_anonymous_memory=0;
+      value=GetPolicyValue("pixel-cache-memory");
       if (LocaleCompare(value,"anonymous") == 0)
-        anonymous_pixel_cache=1;
+        cache_anonymous_memory=1;
       value=DestroyString(value);
     }
   if ((image->columns == 0) || (image->rows == 0))
@@ -3854,7 +3854,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
           (cache_info->type == MemoryCache))
         {
           status=MagickTrue;
-          if (anonymous_pixel_cache == 0)
+          if (cache_anonymous_memory == 0)
             {
               cache_info->mapped=MagickFalse;
               cache_info->pixels=(PixelPacket *) MagickAssumeAligned(
@@ -5010,7 +5010,7 @@ static inline MagickBooleanType AcquireCacheNexusPixels(
 {
   if (nexus_info->length != (MagickSizeType) ((size_t) nexus_info->length))
     return(MagickFalse);
-  if (anonymous_pixel_cache == 0)
+  if (cache_anonymous_memory == 0)
     {
       nexus_info->mapped=MagickFalse;
       nexus_info->cache=(PixelPacket *) MagickAssumeAligned(
