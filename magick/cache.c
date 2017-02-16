@@ -3806,7 +3806,15 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
       cache_anonymous_memory=0;
       value=GetPolicyValue("pixel-cache-memory");
       if (LocaleCompare(value,"anonymous") == 0)
-        cache_anonymous_memory=1;
+        {
+#if defined(MAGICKCORE_HAVE_MMAP) && defined(MAP_ANONYMOUS)
+          cache_anonymous_memory=1;
+#else
+          (void) ThrowMagickException(exception,GetMagickModule(),
+            MissingDelegateError,"DelegateLibrarySupportNotBuiltIn",
+            "'%s' (policy requires anonymous memory mapping)",image->filename);
+#endif
+        }
       value=DestroyString(value);
     }
   if ((image->columns == 0) || (image->rows == 0))
