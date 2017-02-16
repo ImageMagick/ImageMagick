@@ -3854,7 +3854,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
           (cache_info->type == MemoryCache))
         {
           status=MagickTrue;
-          if (cache_anonymous_memory == 0)
+          if (cache_anonymous_memory <= 0)
             {
               cache_info->mapped=MagickFalse;
               cache_info->pixels=(PixelPacket *) MagickAssumeAligned(
@@ -5010,7 +5010,7 @@ static inline MagickBooleanType AcquireCacheNexusPixels(
 {
   if (nexus_info->length != (MagickSizeType) ((size_t) nexus_info->length))
     return(MagickFalse);
-  if (cache_anonymous_memory == 0)
+  if (cache_anonymous_memory <= 0)
     {
       nexus_info->mapped=MagickFalse;
       nexus_info->cache=(PixelPacket *) MagickAssumeAligned(
