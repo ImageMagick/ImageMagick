@@ -339,12 +339,6 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
               case 'a':
               case 'A':
               {
-                if (LocaleCompare(keyword,"alpha-color") == 0)
-                  {
-                    (void) QueryColorCompliance(options,AllCompliance,
-                      &image->alpha_color,exception);
-                    break;
-                  }
                 if (LocaleCompare(keyword,"alpha-trait") == 0)
                   {
                     ssize_t
@@ -535,6 +529,12 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if (LocaleCompare(keyword,"magick-signature") == 0)
                   {
                     signature=(unsigned int) StringToUnsignedLong(options);
+                    break;
+                  }
+                if (LocaleCompare(keyword,"mattecolor") == 0)
+                  {
+                    (void) QueryColorCompliance(options,AllCompliance,
+                      &image->matte_color,exception);
                     break;
                   }
                 if (LocaleCompare(keyword,"maximum-error") == 0)

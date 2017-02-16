@@ -363,7 +363,6 @@ static MagickBooleanType ConvertUsage(void)
       "-adjoin              join images into a single multi-image file",
       "-affine matrix       affine transform matrix",
       "-alpha option        activate, deactivate, reset, or set the alpha channel",
-      "-alpha-color color   frame color",
       "-antialias           remove pixel-aliasing",
       "-authenticate password",
       "                     decipher image with this password",
@@ -416,6 +415,7 @@ static MagickBooleanType ConvertUsage(void)
       "-limit type value    pixel cache resource limit",
       "-loop iterations     add Netscape loop extension to your GIF animation",
       "-matte               store matte channel if the image has one",
+      "-mattecolor color    frame color",
       "-moments             report image moments",
       "-monitor             monitor progress",
       "-orient type         image orientation",
@@ -706,15 +706,6 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
                 "UnrecognizedAlphaChannelOption",argv[i]);
             break;
           }
-        if (LocaleCompare("alpha-color", option + 1) == 0)
-        {
-          if (*option == '+')
-            break;
-          i++;
-          if (i == (ssize_t)argc)
-            ThrowConvertException(OptionError, "MissingArgument", option);
-          break;
-        }
         if (LocaleCompare("annotate",option+1) == 0)
           {
             if (*option == '+')
@@ -2120,6 +2111,15 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("matte",option+1) == 0)
           break;
+        if (LocaleCompare("mattecolor",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t)argc)
+              ThrowConvertException(OptionError, "MissingArgument", option);
+            break;
+          }
         if (LocaleCompare("maximum",option+1) == 0)
           break;
         if (LocaleCompare("mean-shift",option+1) == 0)

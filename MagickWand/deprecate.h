@@ -22,7 +22,13 @@
 extern "C" {
 #endif
 
+#include "MagickWand/pixel-wand.h"
+
 #if !defined(MAGICKCORE_EXCLUDE_DEPRECATED)
+
+extern WandExport MagickBooleanType
+  MagickGetImageAlphaColor(MagickWand *,PixelWand *),
+  MagickSetImageAlphaColor(MagickWand *,const PixelWand *);
 
 #endif
 

@@ -1155,9 +1155,9 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
     (void) FormatLocaleFile(file,"  Tile geometry: %.20gx%.20g%+.20g%+.20g\n",
       (double) image->extract_info.width,(double) image->extract_info.height,
       (double) image->extract_info.x,(double) image->extract_info.y);
-  (void) QueryColorname(image,&image->alpha_color,SVGCompliance,color,
+  (void) QueryColorname(image,&image->matte_color,SVGCompliance,color,
     exception);
-  (void) FormatLocaleFile(file,"  Alpha color: %s\n",color);
+  (void) FormatLocaleFile(file,"  Matte color: %s\n",color);
   (void) QueryColorname(image,&image->background_color,SVGCompliance,color,
     exception);
   (void) FormatLocaleFile(file,"  Background color: %s\n",color);

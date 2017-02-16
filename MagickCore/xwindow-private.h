@@ -198,7 +198,7 @@ typedef struct _XPixelInfo
     *pixels;
 
   XColor
-    alpha_color,
+    alpha_color,  /* deprecated */
     foreground_color,
     background_color,
     border_color,
@@ -218,6 +218,9 @@ typedef struct _XPixelInfo
   unsigned short
     box_index,
     pen_index;
+
+  XColor
+    matte_color;
 } XPixelInfo;
 
 typedef struct _XResourceInfo
@@ -282,7 +285,7 @@ typedef struct _XResourceInfo
     *image_geometry;
 
   char
-    *alpha_color,
+    *alpha_color,  /* deprecated */
     *map_type,
     *name;
 
@@ -324,6 +327,9 @@ typedef struct _XResourceInfo
 
   char
     home_directory[MagickPathExtent];
+
+  char
+    *matte_color;
 } XResourceInfo;
 
 typedef struct _XWindowInfo

@@ -50,7 +50,7 @@ typedef struct _MontageInfo
     shadow;
 
   PixelInfo
-    alpha_color,
+    alpha_color,  /* deprecated */
     background_color,
     border_color,
     fill,
@@ -67,6 +67,9 @@ typedef struct _MontageInfo
 
   size_t
     signature;
+
+  PixelInfo
+    matte_color;
 } MontageInfo;
 
 extern MagickExport Image

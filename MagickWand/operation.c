@@ -486,14 +486,6 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
             GetAffineMatrix(&_draw_info->affine);
           break;
         }
-      if (LocaleCompare("alpha-color",option+1) == 0)
-        {
-          /* SyncImageSettings() used to set per-image attribute. */
-          (void) SetImageOption(_image_info,option+1,ArgOption(NULL));
-          (void) QueryColorCompliance(ArgOption(MogrifyAlphaColor),AllCompliance,
-             &_image_info->alpha_color,_exception);
-          break;
-        }
       if (LocaleCompare("antialias",option+1) == 0)
         {
           _image_info->antialias =
@@ -1104,6 +1096,14 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
     }
     case 'm':
     {
+      if (LocaleCompare("mattecolor",option+1) == 0)
+        {
+          /* SyncImageSettings() used to set per-image attribute. */
+          (void) SetImageOption(_image_info,option+1,ArgOption(NULL));
+          (void) QueryColorCompliance(ArgOption(MogrifyAlphaColor),
+            AllCompliance,&_image_info->matte_color,_exception);
+          break;
+        }
       if (LocaleCompare("metric",option+1) == 0)
         {
           /* FUTURE: this is only used by CompareImages() which is used

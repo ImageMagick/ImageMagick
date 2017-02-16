@@ -177,7 +177,7 @@ struct _Image
 
   PixelInfo
     *colormap,
-    alpha_color,        /* current alphacolor attribute */
+    alpha_color,        /* deprecated */
     background_color,   /* current background color attribute */
     border_color,       /* current bordercolor attribute */
     transparent_color;  /* color for 'transparent' color index in GIF */
@@ -352,6 +352,9 @@ struct _Image
 
   size_t
     signature;
+
+  PixelInfo
+    matte_color;        /* current mattecolor attribute */
 };
 
 /*
@@ -409,7 +412,7 @@ struct _ImageInfo
     fuzz;               /* current color fuzz attribute */
 
   PixelInfo
-    alpha_color,        /* alpha (frame) color */
+    alpha_color,        /* deprecated */
     background_color,   /* user set background color */
     border_color,       /* user set border color */
     transparent_color;  /* color for transparent index in color tables */
@@ -477,6 +480,9 @@ struct _ImageInfo
 
   CustomStreamInfo
     *custom_stream;
+
+  PixelInfo
+    matte_color;        /* matte (frame) color */
 };
 
 extern MagickExport ChannelType

@@ -2323,7 +2323,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
     if (i == (NumberTiles/2))
       {
         (void) QueryColorCompliance("#dfdfdf",AllCompliance,
-          &thumbnail->alpha_color,exception);
+          &thumbnail->matte_color,exception);
         AppendImageToList(&images,thumbnail);
         continue;
       }
