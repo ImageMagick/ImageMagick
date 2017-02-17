@@ -1,3 +1,7 @@
+2017-02-18  7.0.4-10 Dirk Lemstra <dirk@lem.....org>
+  * Fixed fd leak for webp coder (reference
+    https://github.com/ImageMagick/ImageMagick/pull/382)
+
 2017-02-15  7.0.4-10 Cristy  <quetzlzacatenango@image...>
   * Prevent random pixel data for corrupt JPEG image (bug report from
     Hirokazu Moriguchi, Sony).
