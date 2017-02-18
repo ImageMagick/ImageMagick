@@ -368,6 +368,7 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
   }
   WebPFreeDecBuffer(webp_image);
   stream=(unsigned char*) RelinquishMagickMemory(stream);
+  (void) CloseBlob(image);
   return(image);
 }
 #endif
