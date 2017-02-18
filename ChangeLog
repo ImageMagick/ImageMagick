@@ -1,5 +1,5 @@
 2017-02-18  6.9.7-9 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 6.9.7-7, GIT revision 11371:126c7c9:20170218.
+  * Release ImageMagick version 6.9.7-9, GIT revision 11371:126c7c9:20170218.
 
 2017-02-18  6.9.7-9 Dirk Lemstra <dirk@lem.....org>
   * Fixed fd leak for webp coder (reference
