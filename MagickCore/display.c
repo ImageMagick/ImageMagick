@@ -14731,7 +14731,8 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
           "%s: %s[scene: %.20g frames: %.20g]",MagickPackageName,filename,
           (double) display_image->scene,(double) GetImageListLength(
           display_image));
-      (void) CopyMagickString(windows->image.icon_name,filename,MagickPathExtent);
+      (void) CopyMagickString(windows->image.icon_name,filename,
+        MagickPathExtent);
     }
   if (resource_info->immutable)
     windows->image.immutable=MagickTrue;
