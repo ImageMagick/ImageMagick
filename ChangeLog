@@ -1,3 +1,7 @@
+2017-02-20  7.0.5-0 Cristy  <quetzlzacatenango@image...>
+  * Fix transient bug with -separate option (reference
+    https://github.com/ImageMagick/ImageMagick/issues/385).
+
 2017-02-18  7.0.4-10 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.4-10, GIT revision 19608:fe757a2:20170218.
 
