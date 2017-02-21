@@ -1224,6 +1224,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       (void) SetImageColorspace(image,LabColorspace);
       jpeg_info.out_color_space=JCS_YCbCr;
     }
+  option=GetImageOption(image_info,"jpeg:colors");
   if (option != (const char *) NULL)
     if (AcquireImageColormap(image,StringToUnsignedLong(option)) == MagickFalse)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
