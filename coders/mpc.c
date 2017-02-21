@@ -850,9 +850,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Create image colormap.
         */
-        image->colormap=(PixelInfo *) AcquireQuantumMemory(image->colors+1,
-          sizeof(*image->colormap));
-        if (image->colormap == (PixelInfo *) NULL)
+        if (AcquireImageColormap(image,image->colors) == MagickFalse)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         if (image->colors != 0)
           {
