@@ -1227,7 +1227,10 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   option=GetImageOption(image_info,"jpeg:colors");
   if (option != (const char *) NULL)
     if (AcquireImageColormap(image,StringToUnsignedLong(option)) == MagickFalse)
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+      {
+        InheritException(exception,&image->exception);
+        return(DestroyImageList(image));
+      }
   if ((jpeg_info.output_components == 1) && (jpeg_info.quantize_colors == 0))
     {
       size_t
@@ -1235,7 +1238,10 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
 
       colors=(size_t) GetQuantumRange(image->depth)+1;
       if (AcquireImageColormap(image,colors) == MagickFalse)
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+        {
+          InheritException(exception,&image->exception);
+          return(DestroyImageList(image));
+        }
     }
   if (image->debug != MagickFalse)
     {
