@@ -126,7 +126,6 @@ MagickExport MagickBooleanType AcquireImageColormap(Image *image,
       ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
         image->filename);
     }
-  image->storage_class=PseudoClass;
   for (i=0; i < (ssize_t) image->colors; i++)
   {
     size_t
@@ -138,7 +137,7 @@ MagickExport MagickBooleanType AcquireImageColormap(Image *image,
     image->colormap[i].blue=(Quantum) pixel;
     image->colormap[i].opacity=OpaqueOpacity;
   }
-  return(MagickTrue);
+  return(SetImageStorageClass(image,PseudoClass));
 }
 
 /*
