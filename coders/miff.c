@@ -1159,7 +1159,10 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         */
         status=AcquireImageColormap(image,colors != 0 ? colors : 256);
         if (status == MagickFalse)
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+          {
+            InheritException(exception,&image->exception);
+            return(DestroyImageList(image));
+          }
         if (colors != 0)
           {
             size_t
