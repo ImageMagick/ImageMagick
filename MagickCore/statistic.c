@@ -1528,6 +1528,37 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
       (M20[channel]-M02[channel])*(M20[channel]-M02[channel]))));
     channel_moments[channel].ellipse_angle=RadiansToDegrees(0.5*atan(2.0*
       M11[channel]/(M20[channel]-M02[channel]+MagickEpsilon)));
+    if (fabs(M11[channel]) < MagickEpsilon)
+      {
+        if (fabs(M20[channel]-M02[channel]) < MagickEpsilon)
+          channel_moments[channel].ellipse_angle+=0.0;
+        else
+          if ((M20[channel]-M02[channel]) < 0.0)
+            channel_moments[channel].ellipse_angle+=90.0;
+          else
+            channel_moments[channel].ellipse_angle+=0.0;
+      }
+    else
+      if (M11[channel] < 0.0)
+        {
+          if (fabs(M20[channel]-M02[channel]) < MagickEpsilon)
+            channel_moments[channel].ellipse_angle+=0.0;
+          else
+            if ((M20[channel]-M02[channel]) < 0.0)
+              channel_moments[channel].ellipse_angle+=90.0;
+            else
+              channel_moments[channel].ellipse_angle+=180.0;
+        }
+      else
+        {
+          if (fabs(M20[channel]-M02[channel]) < MagickEpsilon)
+            channel_moments[channel].ellipse_angle+=0.0;
+          else
+            if ((M20[channel]-M02[channel]) < 0.0)
+              channel_moments[channel].ellipse_angle+=90.0;
+            else
+              channel_moments[channel].ellipse_angle+=0.0;
+       }
     channel_moments[channel].ellipse_eccentricity=sqrt(1.0-(
       channel_moments[channel].ellipse_axis.y/
       (channel_moments[channel].ellipse_axis.x+MagickEpsilon)));
