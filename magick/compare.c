@@ -1323,36 +1323,47 @@ static MagickBooleanType GetPeakSignalToNoiseRatio(const Image *image,
   const Image *reconstruct_image,const ChannelType channel,
   double *distortion,ExceptionInfo *exception)
 {
+  double
+    gamma;
+
   MagickBooleanType
     status;
 
   status=GetMeanSquaredDistortion(image,reconstruct_image,channel,distortion,
     exception);
   if ((channel & RedChannel) != 0)
-    if (fabs(distortion[RedChannel]) >= MagickEpsilon)
-      distortion[RedChannel]=20.0*MagickLog10((double) 1.0/sqrt(
-        distortion[RedChannel]));
+    {
+      gamma=PerceptibleReciprocal(sqrt(distortion[RedChannel]));
+      distortion[RedChannel]=20.0*MagickLog10(gamma);
+    }
   if ((channel & GreenChannel) != 0)
-    if (fabs(distortion[GreenChannel]) >= MagickEpsilon)
-      distortion[GreenChannel]=20.0*MagickLog10((double) 1.0/sqrt(
-        distortion[GreenChannel]));
+    {
+      gamma=PerceptibleReciprocal(sqrt(distortion[GreenChannel]));
+      distortion[GreenChannel]=20.0*MagickLog10(gamma);
+    }
   if ((channel & BlueChannel) != 0)
+    {
+      gamma=PerceptibleReciprocal(sqrt(distortion[BlueChannel]));
+      distortion[BlueChannel]=20.0*MagickLog10(gamma);
+    }
     if (fabs(distortion[BlueChannel]) >= MagickEpsilon)
       distortion[BlueChannel]=20.0*MagickLog10((double) 1.0/sqrt(
         distortion[BlueChannel]));
-  if (((channel & OpacityChannel) != 0) &&
-      (image->matte != MagickFalse))
-    if (fabs(distortion[OpacityChannel]) >= MagickEpsilon)
-      distortion[OpacityChannel]=20.0*MagickLog10((double) 1.0/sqrt(
-        distortion[OpacityChannel]));
-  if (((channel & IndexChannel) != 0) &&
-      (image->colorspace == CMYKColorspace))
-    if (fabs(distortion[BlackChannel]) >= MagickEpsilon)
-      distortion[BlackChannel]=20.0*MagickLog10((double) 1.0/sqrt(
-        distortion[BlackChannel]));
+  if (((channel & OpacityChannel) != 0) && (image->matte != MagickFalse))
+    {
+      gamma=PerceptibleReciprocal(sqrt(distortion[OpacityChannel]));
+      distortion[OpacityChannel]=20.0*MagickLog10(gamma);
+    }
+  if (((channel & IndexChannel) != 0) && (image->colorspace == CMYKColorspace))
+    {
+      gamma=PerceptibleReciprocal(sqrt(distortion[BlackChannel]));
+      distortion[BlackChannel]=20.0*MagickLog10(gamma);
+    }
   if (fabs(distortion[CompositeChannels]) >= MagickEpsilon)
-    distortion[CompositeChannels]=20.0*MagickLog10((double) 1.0/sqrt(
-      distortion[CompositeChannels]));
+    {
+      gamma=PerceptibleReciprocal(sqrt(distortion[CompositeChannels]));
+      distortion[CompositeChannels]=20.0*MagickLog10(gamma);
+    }
   return(status);
 }
 
