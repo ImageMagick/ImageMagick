@@ -194,13 +194,17 @@ static void CL_API_CALL RelinquishPixelCachePixelsDelayed(
   OpenCLCacheInfo
     *info;
 
+  PixelPacket
+    *pixels;
+
   magick_unreferenced(event);
   magick_unreferenced(event_command_exec_status);
   info=(OpenCLCacheInfo *) user_data;
-  (void) RelinquishAlignedMemory(info->pixels);
+  pixels=info->pixels;
   RelinquishMagickResource(MemoryResource,info->length);
   clEnv=GetDefaultOpenCLEnv();
   (void) RelinquishOpenCLCacheInfo(clEnv,info);
+  (void) RelinquishAlignedMemory(pixels);
 }
 
 static MagickBooleanType RelinquishOpenCLBuffer(
