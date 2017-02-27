@@ -430,6 +430,7 @@ static MagickBooleanType bindOpenCLFunctions(void* library)
   BIND(clReleaseCommandQueue);
 
   BIND(clGetEventProfilingInfo);
+  BIND(clGetEventInfo);
   BIND(clWaitForEvents);
   BIND(clReleaseEvent);
   BIND(clRetainEvent);

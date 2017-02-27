@@ -210,14 +210,37 @@ static void CL_API_CALL RelinquishPixelCachePixelsDelayed(
 static MagickBooleanType RelinquishOpenCLBuffer(
   CacheInfo *magick_restrict cache_info)
 {
+  MagickBooleanType
+    events_completed;
+
   MagickCLEnv
     clEnv;
+
+  ssize_t
+    i;
 
   assert(cache_info != (CacheInfo *) NULL);
   if (cache_info->opencl == (OpenCLCacheInfo *) NULL)
     return(MagickFalse);
   clEnv=GetDefaultOpenCLEnv();
-  if (cache_info->opencl->event_count == 0)
+  events_completed=MagickTrue;
+  for (i=0; i < (ssize_t)cache_info->opencl->event_count; i++)
+  {
+    cl_int
+      event_status;
+
+    cl_uint
+      status;
+
+    status=clEnv->library->clGetEventInfo(cache_info->opencl->events[i],
+      CL_EVENT_COMMAND_EXECUTION_STATUS,sizeof(cl_int),&event_status,NULL);
+    if ((status == CL_SUCCESS) && (event_status != CL_COMPLETE))
+      {
+        events_completed=MagickFalse;
+        break;
+      }
+  }
+  if (events_completed != MagickFalse)
     {
       cache_info->opencl=RelinquishOpenCLCacheInfo(clEnv,cache_info->opencl);
       return(MagickFalse);
