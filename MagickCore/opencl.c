@@ -2415,6 +2415,7 @@ static MagickBooleanType BindOpenCLFunctions()
   BIND(clEnqueueUnmapMemObject);
   BIND(clEnqueueNDRangeKernel);
 
+  BIND(clGetEventInfo);
   BIND(clWaitForEvents);
   BIND(clReleaseEvent);
   BIND(clRetainEvent);
@@ -2817,7 +2818,30 @@ MagickPrivate MagickCLCacheInfo RelinquishMagickCLCacheInfo(
     return((MagickCLCacheInfo) NULL);
   if (relinquish_pixels != MagickFalse)
     {
-      if (info->event_count > 0)
+      MagickBooleanType
+        events_completed;
+
+      ssize_t
+        i;
+
+      events_completed=MagickTrue;
+      for (i=0; i < (ssize_t)info->event_count; i++)
+      {
+        cl_int
+          event_status;
+
+        cl_uint
+          status;
+
+        status=openCL_library->clGetEventInfo(info->events[i],
+          CL_EVENT_COMMAND_EXECUTION_STATUS,sizeof(cl_int),&event_status,NULL);
+        if ((status == CL_SUCCESS) && (event_status != CL_COMPLETE))
+          {
+            events_completed=MagickFalse;
+            break;
+          }
+      }
+      if (events_completed == MagickFalse)
         openCL_library->clSetEventCallback(info->events[info->event_count-1],
           CL_COMPLETE,&DestroyMagickCLCacheInfoAndPixels,info);
       else
