@@ -2798,12 +2798,16 @@ static void CL_API_CALL DestroyMagickCLCacheInfoAndPixels(
   MagickCLCacheInfo
     info;
 
+  Quantum
+    *pixels;
+
   magick_unreferenced(event);
   magick_unreferenced(event_command_exec_status);
   info=(MagickCLCacheInfo) user_data;
-  (void) RelinquishAlignedMemory(info->pixels);
+  pixels=info->pixels;
   RelinquishMagickResource(MemoryResource,info->length);
   DestroyMagickCLCacheInfo(info);
+  (void) RelinquishAlignedMemory(pixels);
 }
 
 MagickPrivate MagickCLCacheInfo RelinquishMagickCLCacheInfo(
