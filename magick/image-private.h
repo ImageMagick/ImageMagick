@@ -30,6 +30,9 @@ extern "C" {
 #else
 #  define IsNaN(a) (a != a)
 #endif
+#if !defined(INFINITY)
+#  define INFINITY (log(0))
+#endif
 #define MagickAbsoluteValue(x)  ((x) < 0 ? -(x) : (x))
 #define MagickMax(x,y)  (((x) > (y)) ? (x) : (y))
 #define MagickMin(x,y)  (((x) < (y)) ? (x) : (y))
