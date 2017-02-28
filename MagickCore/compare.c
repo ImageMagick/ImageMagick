@@ -1212,13 +1212,10 @@ static MagickBooleanType GetPeakSignalToNoiseRatio(const Image *image,
 
   status=GetMeanSquaredDistortion(image,reconstruct_image,distortion,exception);
   for (i=0; i <= MaxPixelChannels; i++)
-  {
-    double
-      gamma;
-
-    gamma=PerceptibleReciprocal(sqrt(distortion[i]));
-    distortion[i]=20.0*MagickLog10(gamma);
-  }
+    if (fabs(distortion[i]) < MagickEpsilon)
+      distortion[i]=INFINITY;
+    else
+      distortion[i]=20.0*MagickLog10(1.0/sqrt(distortion[i]));
   return(status);
 }
 
