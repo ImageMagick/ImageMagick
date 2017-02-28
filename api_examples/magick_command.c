@@ -29,8 +29,7 @@ int main(int argc, char **argv)
   MagickCoreGenesis(argv[0],MagickFalse);
 
   {
-    MagickBooleanType status;
-
+    
     ImageInfo *image_info = AcquireImageInfo();
     ExceptionInfo *exception = AcquireExceptionInfo();
 
