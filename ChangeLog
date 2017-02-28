@@ -1,6 +1,8 @@
 2017-02-21  7.0.5-1 Cristy  <quetzlzacatenango@image...>
   * Fix Spurious memory allocation message (reference
     https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=31438).
+  * Identical images should return inf for PSNR (reference
+    https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=31487).
 
 2017-02-20  7.0.5-0 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.5-0, GIT revision 19616:505fea9:20170220.
