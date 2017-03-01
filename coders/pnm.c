@@ -597,12 +597,10 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           size_t
             length;
 
-          if (status == MagickFalse)
-            continue;
           pixels=(unsigned char *) ReadBlobStream(image,extent,
             GetQuantumPixels(quantum_info),&count);
           if (count != (ssize_t) extent)
-            status=MagickFalse;
+            break;
           if ((image->progress_monitor != (MagickProgressMonitor) NULL) &&
               (image->previous == (Image *) NULL))
             {
@@ -612,26 +610,21 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               proceed=SetImageProgress(image,LoadImageTag,(MagickOffsetType)
                 row,image->rows);
               if (proceed == MagickFalse)
-                status=MagickFalse;
+                break;
             }
           offset=row++;
           q=QueueAuthenticPixels(image,0,offset,image->columns,1,exception);
           if (q == (PixelPacket *) NULL)
-            {
-              status=MagickFalse;
-              continue;
-            }
+            break;
           length=ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
             quantum_type,pixels,exception);
           if (length != extent)
-            status=MagickFalse;
+            break;
           sync=SyncAuthenticPixels(image,exception);
           if (sync == MagickFalse)
-            status=MagickFalse;
+            break;
         }
         quantum_info=DestroyQuantumInfo(quantum_info);
-        if (status == MagickFalse)
-          ThrowReaderException(CorruptImageError,"UnableToReadImageData");
         SetQuantumImageType(image,quantum_type);
         break;
       }
@@ -673,12 +666,10 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             count,
             offset;
 
-          if (status == MagickFalse)
-            continue;
           pixels=(unsigned char *) ReadBlobStream(image,extent,
             GetQuantumPixels(quantum_info),&count);
           if (count != (ssize_t) extent)
-            status=MagickFalse;
+            break;
           if ((image->progress_monitor != (MagickProgressMonitor) NULL) &&
               (image->previous == (Image *) NULL))
             {
@@ -688,15 +679,12 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               proceed=SetImageProgress(image,LoadImageTag,(MagickOffsetType)
                 row,image->rows);
               if (proceed == MagickFalse)
-                status=MagickFalse;
+                break;
             }
           offset=row++;
           q=QueueAuthenticPixels(image,0,offset,image->columns,1,exception);
           if (q == (PixelPacket *) NULL)
-            {
-              status=MagickFalse;
-              continue;
-            }
+            break;
           p=pixels;
           switch (image->depth)
           {
@@ -756,11 +744,9 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
           sync=SyncAuthenticPixels(image,exception);
           if (sync == MagickFalse)
-            status=MagickFalse;
+            break;
         }
         quantum_info=DestroyQuantumInfo(quantum_info);
-        if (status == MagickFalse)
-          ThrowReaderException(CorruptImageError,"UnableToReadImageData");
         SetQuantumImageType(image,quantum_type);
         break;
       }
@@ -802,12 +788,10 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             count,
             offset;
 
-          if (status == MagickFalse)
-            continue;
           pixels=(unsigned char *) ReadBlobStream(image,extent,
             GetQuantumPixels(quantum_info),&count);
           if (count != (ssize_t) extent)
-            status=MagickFalse;
+            break;
           if ((image->progress_monitor != (MagickProgressMonitor) NULL) &&
               (image->previous == (Image *) NULL))
             {
@@ -817,15 +801,12 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               proceed=SetImageProgress(image,LoadImageTag,(MagickOffsetType)
                 row,image->rows);
               if (proceed == MagickFalse)
-                status=MagickFalse;
+                break;
             }
           offset=row++;
           q=QueueAuthenticPixels(image,0,offset,image->columns,1,exception);
           if (q == (PixelPacket *) NULL)
-            {
-              status=MagickFalse;
-              continue;
-            }
+            break;
           p=pixels;
           switch (image->depth)
           {
@@ -935,11 +916,9 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
           sync=SyncAuthenticPixels(image,exception);
           if (sync == MagickFalse)
-            status=MagickFalse;
+            break;
         }
         quantum_info=DestroyQuantumInfo(quantum_info);
-        if (status == MagickFalse)
-          ThrowReaderException(CorruptImageError,"UnableToReadImageData");
         break;
       }
       case '7':
@@ -1006,12 +985,10 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             count,
             offset;
 
-          if (status == MagickFalse)
-            continue;
           pixels=(unsigned char *) ReadBlobStream(image,extent,
             GetQuantumPixels(quantum_info),&count);
           if (count != (ssize_t) extent)
-            status=MagickFalse;
+            break;
           if ((image->progress_monitor != (MagickProgressMonitor) NULL) &&
               (image->previous == (Image *) NULL))
             {
@@ -1021,15 +998,12 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               proceed=SetImageProgress(image,LoadImageTag,(MagickOffsetType)
                 row,image->rows);
               if (proceed == MagickFalse)
-                status=MagickFalse;
+                break;
             }
           offset=row++;
           q=QueueAuthenticPixels(image,0,offset,image->columns,1,exception);
           if (q == (PixelPacket *) NULL)
-            {
-              status=MagickFalse;
-              continue;
-            }
+            break;
           indexes=GetAuthenticIndexQueue(image);
           p=pixels;
           switch (image->depth)
@@ -1273,11 +1247,9 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
           sync=SyncAuthenticPixels(image,exception);
           if (sync == MagickFalse)
-            status=MagickFalse;
+            break;
         }
         quantum_info=DestroyQuantumInfo(quantum_info);
-        if (status == MagickFalse)
-          ThrowReaderException(CorruptImageError,"UnableToReadImageData");
         SetQuantumImageType(image,quantum_type);
         break;
       }
@@ -1322,12 +1294,10 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           size_t
             length;
 
-          if (status == MagickFalse)
-            continue;
           pixels=(unsigned char *) ReadBlobStream(image,extent,
             GetQuantumPixels(quantum_info),&count);
           if ((size_t) count != extent)
-            status=MagickFalse;
+            break;
           if ((image->progress_monitor != (MagickProgressMonitor) NULL) &&
               (image->previous == (Image *) NULL))
             {
@@ -1337,33 +1307,30 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               proceed=SetImageProgress(image,LoadImageTag,(MagickOffsetType)
                 row,image->rows);
               if (proceed == MagickFalse)
-                status=MagickFalse;
+                break;
             }
           offset=row++;
           q=QueueAuthenticPixels(image,0,(ssize_t) (image->rows-offset-1),
             image->columns,1,exception);
           if (q == (PixelPacket *) NULL)
-            {
-              status=MagickFalse;
-              continue;
-            }
+            break;
           length=ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
             quantum_type,pixels,exception);
           if (length != extent)
-            status=MagickFalse;
+            break;
           sync=SyncAuthenticPixels(image,exception);
           if (sync == MagickFalse)
-            status=MagickFalse;
+            break;
         }
         quantum_info=DestroyQuantumInfo(quantum_info);
-        if (status == MagickFalse)
-          ThrowReaderException(CorruptImageError,"UnableToReadImageData");
         SetQuantumImageType(image,quantum_type);
         break;
       }
       default:
         ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     }
+    if (y < (ssize_t) image->rows)
+      ThrowReaderException(CorruptImageError,"UnableToReadImageData");
     if (EOFBlob(image) != MagickFalse)
       {
         (void) ThrowMagickException(exception,GetMagickModule(),
