@@ -2,10 +2,16 @@
 <!DOCTYPE policymap [
 <!ELEMENT policymap (policy)+>
 <!ELEMENT policy (#PCDATA)>
-<!ATTLIST policy domain (delegate|coder|filter|path|resource) #IMPLIED>
+<!ATTLIST policy domain (cache|delegate|coder|path|resource|system) #IMPLIED>
 <!ATTLIST policy name CDATA #IMPLIED>
 <!ATTLIST policy rights CDATA #IMPLIED>
+<!ATTLIST policy stealth CDATA #IMPLIED>
+<!ATTLIST policy cache CDATA #IMPLIED>
+<!ATTLIST policy coder CDATA #IMPLIED>
+<!ATTLIST policy delegate CDATA #IMPLIED>
 <!ATTLIST policy pattern CDATA #IMPLIED>
+<!ATTLIST policy path CDATA #IMPLIED>
+<!ATTLIST policy system CDATA #IMPLIED>
 <!ATTLIST policy value CDATA #IMPLIED>
 ]>
 <!--
