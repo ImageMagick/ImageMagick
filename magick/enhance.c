@@ -3475,10 +3475,6 @@ static inline void ModulateHCL(const double percent_hue,
   */
   ConvertRGBToHCL(*red,*green,*blue,&hue,&chroma,&luma);
   hue+=0.5*(0.01*percent_hue-1.0);
-  while (hue < 0.0)
-    hue+=1.0;
-  while (hue > 1.0)
-    hue-=1.0;
   chroma*=0.01*percent_chroma;
   luma*=0.01*percent_luma;
   ConvertHCLToRGB(hue,chroma,luma,red,green,blue);
@@ -3498,10 +3494,6 @@ static inline void ModulateHCLp(const double percent_hue,
   */
   ConvertRGBToHCLp(*red,*green,*blue,&hue,&chroma,&luma);
   hue+=0.5*(0.01*percent_hue-1.0);
-  while (hue < 0.0)
-    hue+=1.0;
-  while (hue > 1.0)
-    hue-=1.0;
   chroma*=0.01*percent_chroma;
   luma*=0.01*percent_luma;
   ConvertHCLpToRGB(hue,chroma,luma,red,green,blue);
@@ -3521,10 +3513,6 @@ static inline void ModulateHSB(const double percent_hue,
   */
   ConvertRGBToHSB(*red,*green,*blue,&hue,&saturation,&brightness);
   hue+=0.5*(0.01*percent_hue-1.0);
-  while (hue < 0.0)
-    hue+=1.0;
-  while (hue > 1.0)
-    hue-=1.0;
   saturation*=0.01*percent_saturation;
   brightness*=0.01*percent_brightness;
   ConvertHSBToRGB(hue,saturation,brightness,red,green,blue);
@@ -3544,10 +3532,6 @@ static inline void ModulateHSI(const double percent_hue,
   */
   ConvertRGBToHSI(*red,*green,*blue,&hue,&saturation,&intensity);
   hue+=0.5*(0.01*percent_hue-1.0);
-  while (hue < 0.0)
-    hue+=1.0;
-  while (hue > 1.0)
-    hue-=1.0;
   saturation*=0.01*percent_saturation;
   intensity*=0.01*percent_intensity;
   ConvertHSIToRGB(hue,saturation,intensity,red,green,blue);
@@ -3567,10 +3551,6 @@ static inline void ModulateHSL(const double percent_hue,
   */
   ConvertRGBToHSL(*red,*green,*blue,&hue,&saturation,&lightness);
   hue+=0.5*(0.01*percent_hue-1.0);
-  while (hue < 0.0)
-    hue+=1.0;
-  while (hue >= 1.0)
-    hue-=1.0;
   saturation*=0.01*percent_saturation;
   lightness*=0.01*percent_lightness;
   ConvertHSLToRGB(hue,saturation,lightness,red,green,blue);
@@ -3590,10 +3570,6 @@ static inline void ModulateHSV(const double percent_hue,
   */
   ConvertRGBToHSV(*red,*green,*blue,&hue,&saturation,&value);
   hue+=0.5*(0.01*percent_hue-1.0);
-  while (hue < 0.0)
-    hue+=1.0;
-  while (hue >= 1.0)
-    hue-=1.0;
   saturation*=0.01*percent_saturation;
   value*=0.01*percent_value;
   ConvertHSVToRGB(hue,saturation,value,red,green,blue);
@@ -3613,10 +3589,6 @@ static inline void ModulateHWB(const double percent_hue,
   */
   ConvertRGBToHWB(*red,*green,*blue,&hue,&whiteness,&blackness);
   hue+=0.5*(0.01*percent_hue-1.0);
-  while (hue < 0.0)
-    hue+=1.0;
-  while (hue >= 1.0)
-    hue-=1.0;
   blackness*=0.01*percent_blackness;
   whiteness*=0.01*percent_whiteness;
   ConvertHWBToRGB(hue,whiteness,blackness,red,green,blue);
@@ -3638,10 +3610,6 @@ static inline void ModulateLCHab(const double percent_luma,
   luma*=0.01*percent_luma;
   chroma*=0.01*percent_chroma;
   hue+=0.5*(0.01*percent_hue-1.0);
-  while (hue < 0.0)
-    hue+=1.0;
-  while (hue >= 1.0)
-    hue-=1.0;
   ConvertLCHabToRGB(luma,chroma,hue,red,green,blue);
 }
 
@@ -3661,10 +3629,6 @@ static inline void ModulateLCHuv(const double percent_luma,
   luma*=0.01*percent_luma;
   chroma*=0.01*percent_chroma;
   hue+=0.5*(0.01*percent_hue-1.0);
-  while (hue < 0.0)
-    hue+=1.0;
-  while (hue >= 1.0)
-    hue-=1.0;
   ConvertLCHuvToRGB(luma,chroma,hue,red,green,blue);
 }
 
