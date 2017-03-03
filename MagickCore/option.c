@@ -1677,6 +1677,7 @@ static const OptionInfo
     { "Map", MapResource, UndefinedOptionFlag, MagickFalse },
     { "Memory", MemoryResource, UndefinedOptionFlag, MagickFalse },
     { "Thread", ThreadResource, UndefinedOptionFlag, MagickFalse },
+    { "Throttle", ThrottleResource, UndefinedOptionFlag, MagickFalse },
     { "Time", TimeResource, UndefinedOptionFlag, MagickFalse },
     { "Width", WidthResource, UndefinedOptionFlag, MagickFalse },
     { (char *) NULL, UndefinedResource, UndefinedOptionFlag, MagickFalse }
