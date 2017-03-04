@@ -104,6 +104,12 @@ convert: no images defined `wizard.jpg'
   &lt;policy domain="coder" rights="read|write" pattern="{GIF,JPEG,PNG,WEBP}" />
 </pre>
 
+<p>As of ImageMagick 7.0.4-10, you can allocate the pixel cache with anonymous memory mapping rather than from heap.  As a consequence, the pixels are initialized to zero.  You can also shred any temporary files for increased security.  The value is the number of times to shred a temporary file.  For example,</p>
+<pre>
+  &lt;policy domain="system" name="pixel-cache-memory" value="anonymous"/>
+  &lt;policy domain="system" name="shred" value="1"/>
+</pre>
+
 <p>You can verify your policy changes are in effect with this command:</p>
 
 <pre class="pre-scrollable">
@@ -145,9 +151,6 @@ Path: ImageMagick/policy.xml
   Policy: System
     name: precision
     value: 6
-  Policy: Cache
-    name: shared-secret
-    value: replace with your secret phrase
   Policy: Path
     rights: None 
     pattern: @*
@@ -156,6 +159,7 @@ Path: [built-in]
   Policy: Undefined
     rights: None 
 </pre>
+<p>Notice the <code>Cache</code> policy is not listed due to the <code>stealth</code> property.</p>
 
 <p>For additional details about resource limits and the policy configuration file, read <a href="resources.html">Resources</a> and <a href="architecture.html">Architecture</a>.</p>
 
@@ -187,9 +191,9 @@ Path: [built-in]
   </footer>
 </div><!-- /.container -->
 
-  <script src="https://localhost/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="https://localhost/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
   <script src="../js/magick.html"></script>
 </div>
 </body>
 </html>
-<!-- Magick Cache 13th February 2017 12:01 -->
+<!-- Magick Cache 3rd March 2017 19:25 -->

@@ -57,8 +57,62 @@
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="text-center"><a href="deprecate.html#Unknown method">Unknown method</a></p>
+<p class="text-center"><a href="deprecate.html#MagickGetImageAlphaColor">MagickGetImageAlphaColor</a> &#8226; <a href="deprecate.html#MagickSetImageAlphaColor">MagickSetImageAlphaColor</a></p>
 
+<h2><a href="http://www.imagemagick.org/api/MagickWand/deprecate_8c.html" id="MagickGetImageAlphaColor">MagickGetImageAlphaColor</a></h2>
+
+<p>MagickGetImageAlphaColor() returns the image alpha color.</p>
+
+<p>The format of the MagickGetImageAlphaColor method is:</p>
+
+<pre class="text">
+MagickBooleanType MagickGetImageAlphaColor(MagickWand *wand,
+  PixelWand *alpha_color)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>wand</dt>
+<dd>the magick wand. </dd>
+
+<dd> </dd>
+<dt>alpha_color</dt>
+<dd>return the alpha color. </dd>
+
+<dd>  </dd>
+</dl>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/deprecate_8c.html" id="MagickSetImageAlphaColor">MagickSetImageAlphaColor</a></h2>
+
+<p>MagickSetImageAlphaColor() sets the image alpha color.</p>
+
+<p>The format of the MagickSetImageAlphaColor method is:</p>
+
+<pre class="text">
+MagickBooleanType MagickSetImageAlphaColor(MagickWand *wand,
+  const PixelWand *matte)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<dd>
+</dd>
+
+<dd> </dd>
+<dl class="dl-horizontal">
+<dt>wand</dt>
+<dd>the magick wand. </dd>
+
+<dd> </dd>
+<dt>matte</dt>
+<dd>the alpha pixel wand. </dd>
+
+<dd>  </dd>
+</dl>
 </div>
   <footer class="magick-footer">
     <p><a href="https://www.imagemagick.org/script/support.html">Donate</a> •
@@ -74,7 +128,7 @@
   </footer>
 </div><!-- /.container -->
 
-  <script src="https://localhost/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="https://localhost/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
   <script src="https://www.imagemagick.org/js/magick.html"></script>
 </div>
 </body>

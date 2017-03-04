@@ -191,6 +191,13 @@ the supported image formats.</p>
   </tr>
 
   <tr>
+    <td><a href="http://en.wikipedia.org/wiki/Braille_ASCII">BRF</a></td>
+    <td>W</td>
+    <td>Braille Ready Format</td>
+    <td>Uses juxtaposition of 6-dot braille patterns (thus 6x2 dot matrices) to reproduce images, using the BRF ASCII Braille encoding.</td>
+  </tr>
+
+  <tr>
     <td><a href="http://www.fileformat.info/format/cals/egff.htm">CALS</a></td>
     <td>R</td>
     <td>Continuous Acquisition and Life-cycle Support Type 1 image</td>
@@ -483,6 +490,20 @@ the supported image formats.</p>
     <td>RW</td>
     <td>Base64-encoded inline image</td>
     <td>The inline image look similar to <code>inline:data:;base64,/9j/4AAQSk...knrn//2Q==</code>.  If the inline image exceeds 5000 characters, reference it from a file (e.g. <code>inline:inline.txt</code>). You can also write a base64-encoded image.  Embed the mime type in the filename, for example, <code>convert myimage inline:jpeg:myimage.txt</code>.</td>
+  </tr>
+
+  <tr>
+    <td><a href="https://www.iso.org/obp/ui/#iso:std:iso:tr:11548:-1">ISOBRL</a></td>
+    <td>W</td>
+    <td>ISO/TR 11548-1 BRaiLle</td>
+    <td>Uses juxtaposition of 8-dot braille patterns (thus 8x2 dot matrices) to reproduce images, using the ISO/TR 11548-1 Braille encoding.</td>
+  </tr>
+
+  <tr>
+    <td><a href="https://www.iso.org/obp/ui/#iso:std:iso:tr:11548:-1">ISOBRL6</a></td>
+    <td>W</td>
+    <td>ISO/TR 11548-1 BRaiLle 6 dots</td>
+    <td>Uses juxtaposition of 6-dot braille patterns (thus 6x2 dot matrices) to reproduce images, using the ISO/TR 11548-1 Braille encoding.</td>
   </tr>
 
   <tr>
@@ -1047,6 +1068,20 @@ convert \( -size 15x15 canvas:black canvas:white -append \) \
     <td>RW</td>
     <td>Raw text file</td>
     <td>Use <a href="command-line-options.html#define">-define</a> to specify the color compliance (e.g. <code>-define txt:compliance=css</code>).</td>
+  </tr>
+
+   <tr>
+    <td><a href="http://www.unicode.org/charts/PDF/U2800.pdf">UBRL</a></td>
+    <td>W</td>
+    <td>Unicode BRaiLle</td>
+    <td>Uses juxtaposition of 8-dot braille patterns (thus 8x2 dot matrices) to reproduce images, using the Unicode Braille encoding.</td>
+  </tr>
+
+  <tr>
+    <td><a href="http://www.unicode.org/charts/PDF/U2800.pdf">UBRL6</a></td>
+    <td>W</td>
+    <td>Unicode BRaiLle 6 dots</td>
+    <td>Uses juxtaposition of 6-dot braille patterns (thus 6x2 dot matrices) to reproduce images, using the Unicode Braille encoding.</td>
   </tr>
 
   <tr>
@@ -1927,9 +1962,9 @@ convert \( -size 15x15 canvas:black canvas:white -append \) \
   </footer>
 </div><!-- /.container -->
 
-  <script src="https://localhost/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="https://localhost/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
   <script src="../js/magick.html"></script>
 </div>
 </body>
 </html>
-<!-- Magick Cache 13th February 2017 11:35 -->
+<!-- Magick Cache 3rd March 2017 19:25 -->

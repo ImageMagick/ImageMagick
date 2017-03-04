@@ -202,7 +202,7 @@ $USERPROFILE/.config/ImageMagick
 &lt;<var>client path</var>&gt;
 </pre>
 
-<p>Above, $PREFIX is the default install path, typically <code>c:\\Program Files\\ImageMagick-7.0.4</code>.</p>
+<p>Above, $PREFIX is the default install path, typically <code>c:\\Program Files\\ImageMagick-7.0.5</code>.</p>
 
 <p>For an uninstalled Windows installation, the configuration load order is:</p>
 
@@ -222,25 +222,25 @@ $USERPROFILE/.config/ImageMagick
 <p>An image coder (i.e. encoder / decoder) is responsible for registering, optionally classifying, optionally reading, optionally writing, and unregistering one image format (e.g. PNG, GIF, JPEG, etc.).  ImageMagick searches for coders in the following order and it uses the first match found:</p>
 
 <pre>
-$MAGICK_HOME/lib/ImageMagick-7.0.4/modules-Q16/coders
-&lt;<var>client path</var>&gt;/../lib/ImageMagick-7.0.4/modules-Q16/coders
-$MAGICK_HOME/lib/ImageMagick-7.0.4/modules-Q16/coders
-$MAGICK_HOME/share/ImageMagick-7.0.4/modules-Q16/coders
+$MAGICK_HOME/lib/ImageMagick-7.0.5/modules-Q16/coders
+&lt;<var>client path</var>&gt;/../lib/ImageMagick-7.0.5/modules-Q16/coders
+$MAGICK_HOME/lib/ImageMagick-7.0.5/modules-Q16/coders
+$MAGICK_HOME/share/ImageMagick-7.0.5/modules-Q16/coders
 $XDG_CACHE_HOME/ImageMagick
 $HOME/.config/ImageMagick
-&lt;<var>client path</var>&gt;/lib/ImageMagick-7.0.4/modules-Q16/coders
+&lt;<var>client path</var>&gt;/lib/ImageMagick-7.0.5/modules-Q16/coders
 </pre>
 
 <h4>Filters</h4>
 <p>ImageMagick provides a convenient mechanism for adding your own custom image processing algorithms.  ImageMagick searches for filters in the following order and it uses the first match found:</p>
 <pre>
-$MAGICK_HOME/lib/ImageMagick-7.0.4/modules-Q16/filters
-&lt;<var>client path</var>&gt;/../lib/ImageMagick-7.0.4/modules-Q16/filters
-$MAGICK_HOME/lib/ImageMagick-7.0.4/modules-Q16/filters
-$MAGICK_HOME/share/ImageMagick-7.0.4/modules-Q16/filters
+$MAGICK_HOME/lib/ImageMagick-7.0.5/modules-Q16/filters
+&lt;<var>client path</var>&gt;/../lib/ImageMagick-7.0.5/modules-Q16/filters
+$MAGICK_HOME/lib/ImageMagick-7.0.5/modules-Q16/filters
+$MAGICK_HOME/share/ImageMagick-7.0.5/modules-Q16/filters
 $XDG_CACHE_HOME/ImageMagick
 $HOME/.config/ImageMagick
-&lt;<var>client path</var>&gt;/lib/ImageMagick-7.0.4/modules-Q16/filters
+&lt;<var>client path</var>&gt;/lib/ImageMagick-7.0.5/modules-Q16/filters
 </pre>
 
 <h2 class="magick-header"><a id="fonts"></a>Fonts</h2>
@@ -249,8 +249,8 @@ $HOME/.config/ImageMagick
 
 <pre>
 $MAGICK_CONFIGURE_PATH
-$MAGICK_HOME/etc/ImageMagick/-7.0.4
-$MAGICK_HOME/share/ImageMagick-7.0.4
+$MAGICK_HOME/etc/ImageMagick/-7.0.5
+$MAGICK_HOME/share/ImageMagick-7.0.5
 $XDG_CACHE_HOME/ImageMagick
 $HOME/.config/ImageMagick
 &lt;<var>client path</var>&gt;/etc/ImageMagick
@@ -348,7 +348,7 @@ $MAGICK_FONT_PATH
     <td>Set maximum parallel threads.  Many ImageMagick algorithms run in parallel on multi-processor systems.  Use this environment variable to set the maximum number of threads that are permitted to run in parallel.</td>
   </tr>
   <tr>
-    <td>MAGICK_THROTTLE</td>
+    <td>MAGICK_THROTTLE_LIMIT</td>
     <td>Periodically yield the CPU for at least the time specified in milliseconds.</td>
   </tr>
   <tr>
@@ -378,9 +378,9 @@ $MAGICK_FONT_PATH
   </footer>
 </div><!-- /.container -->
 
-  <script src="https://localhost/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="https://localhost/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
   <script src="../js/magick.html"></script>
 </div>
 </body>
 </html>
-<!-- Magick Cache 13th February 2017 11:37 -->
+<!-- Magick Cache 3rd March 2017 19:25 -->
