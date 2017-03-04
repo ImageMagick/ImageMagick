@@ -28,14 +28,14 @@
   <link rel="canonical" href="https://www.imagemagick.org/script/formats.html"/>
   <link rel="icon" href="../images/wand.png"/>
   <link rel="shortcut icon" href="../images/wand.ico"/>
-  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700" />
-  <link rel="stylesheet" href="css/magick.css"/>
+  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700"   />
+  <link rel="stylesheet" type="text/css" href="css/magick.css"/>
 </head>
 <body>
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+    <script async="async" src="https://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
          style="display:block"
          data-ad-client="ca-pub-3129977114552745"
          data-ad-slot="6345125851"
@@ -188,6 +188,13 @@ the supported image formats.</p>
     <td>RW</td>
     <td>Microsoft Windows bitmap</td>
     <td>By default the BMP format is version 4.  Use BMP3 and BMP2 to write versions 3 and 2 respectively.</td>
+  </tr>
+
+  <tr>
+    <td><a href="http://en.wikipedia.org/wiki/Braille_ASCII">BRF</a></td>
+    <td>W</td>
+    <td>Braille Ready Format</td>
+    <td>Uses juxtaposition of 6-dot braille patterns (thus 6x2 dot matrices) to reproduce images, using the BRF ASCII Braille encoding.</td>
   </tr>
 
   <tr>
@@ -483,6 +490,20 @@ the supported image formats.</p>
     <td>RW</td>
     <td>Base64-encoded inline image</td>
     <td>The inline image look similar to <code>inline:data:;base64,/9j/4AAQSk...knrn//2Q==</code>.  If the inline image exceeds 5000 characters, reference it from a file (e.g. <code>inline:inline.txt</code>). You can also write a base64-encoded image.  Embed the mime type in the filename, for example, <code>convert myimage inline:jpeg:myimage.txt</code>.</td>
+  </tr>
+
+  <tr>
+    <td><a href="https://www.iso.org/obp/ui/#iso:std:iso:tr:11548:-1">ISOBRL</a></td>
+    <td>W</td>
+    <td>ISO/TR 11548-1 BRaiLle</td>
+    <td>Uses juxtaposition of 8-dot braille patterns (thus 8x2 dot matrices) to reproduce images, using the ISO/TR 11548-1 Braille encoding.</td>
+  </tr>
+
+  <tr>
+    <td><a href="https://www.iso.org/obp/ui/#iso:std:iso:tr:11548:-1">ISOBRL6</a></td>
+    <td>W</td>
+    <td>ISO/TR 11548-1 BRaiLle 6 dots</td>
+    <td>Uses juxtaposition of 6-dot braille patterns (thus 6x2 dot matrices) to reproduce images, using the ISO/TR 11548-1 Braille encoding.</td>
   </tr>
 
   <tr>
@@ -1047,6 +1068,20 @@ convert \( -size 15x15 canvas:black canvas:white -append \) \
     <td>RW</td>
     <td>Raw text file</td>
     <td>Use <a href="command-line-options.html#define">-define</a> to specify the color compliance (e.g. <code>-define txt:compliance=css</code>).</td>
+  </tr>
+
+   <tr>
+    <td><a href="http://www.unicode.org/charts/PDF/U2800.pdf">UBRL</a></td>
+    <td>W</td>
+    <td>Unicode BRaiLle</td>
+    <td>Uses juxtaposition of 8-dot braille patterns (thus 8x2 dot matrices) to reproduce images, using the Unicode Braille encoding.</td>
+  </tr>
+
+  <tr>
+    <td><a href="http://www.unicode.org/charts/PDF/U2800.pdf">UBRL6</a></td>
+    <td>W</td>
+    <td>Unicode BRaiLle 6 dots</td>
+    <td>Uses juxtaposition of 6-dot braille patterns (thus 6x2 dot matrices) to reproduce images, using the Unicode Braille encoding.</td>
   </tr>
 
   <tr>
@@ -1927,9 +1962,8 @@ convert \( -size 15x15 canvas:black canvas:white -append \) \
   </footer>
 </div><!-- /.container -->
 
-  <script src="https://localhost/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="https://localhost/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
   <script src="../js/magick.html"></script>
 </div>
 </body>
 </html>
-<!-- Magick Cache 21st January 2017 12:15 -->

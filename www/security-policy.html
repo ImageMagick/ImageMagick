@@ -28,14 +28,14 @@
   <link rel="canonical" href="https://www.imagemagick.org/script/security-policy.html"/>
   <link rel="icon" href="../images/wand.png"/>
   <link rel="shortcut icon" href="../images/wand.ico"/>
-  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700"   />
+  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700"   />
   <link rel="stylesheet" type="text/css" href="css/magick.css"/>
 </head>
 <body>
 <div class="main">
 <div class="magick-masthead">
   <div class="container">
-    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
+    <script async="async" src="https://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
          style="display:block"
          data-ad-client="ca-pub-3129977114552745"
          data-ad-slot="6345125851"
@@ -96,6 +96,20 @@ convert: unable to open file: No such file or directory
 convert: no images defined `wizard.jpg'
 </pre>
 
+<p>As of ImageMagick 6.9.7-7, you can conveniently deny access to all delegates and coders except for a small subset of proven web-safe image types.  For example,</p>
+
+<pre>
+  &lt;policy domain="delegate" rights="none" pattern="*" />
+  &lt;policy domain="coder" rights="none" pattern="*" />
+  &lt;policy domain="coder" rights="read|write" pattern="{GIF,JPEG,PNG,WEBP}" />
+</pre>
+
+<p>As of ImageMagick 6.9.7-9, you can allocate the pixel cache with anonymous memory mapping rather than from heap.  As a consequence, the pixels are initialized to zero.  You can also shred any temporary files for increased security.  The value is the number of times to shred a temporary file. For example,</p>
+<pre>
+  &lt;policy domain="system" name="pixel-cache-memory" value="anonymous"/>
+  &lt;policy domain="system" name="shred" value="1"/>
+</pre>
+
 <p>You can verify your policy changes are in effect with this command:</p>
 
 <pre class="pre-scrollable">
@@ -137,9 +151,6 @@ Path: ImageMagick/policy.xml
   Policy: System
     name: precision
     value: 6
-  Policy: Cache
-    name: shared-secret
-    value: replace with your secret phrase
   Policy: Path
     rights: None 
     pattern: @*
@@ -148,6 +159,7 @@ Path: [built-in]
   Policy: Undefined
     rights: None 
 </pre>
+<p>Notice the <code>Cache</code> policy is not listed due to the <code>stealth</code> property.</p>
 
 <p>For additional details about resource limits and the policy configuration file, read <a href="resources.html">Resources</a> and <a href="architecture.html">Architecture</a>.</p>
 
@@ -179,7 +191,7 @@ Path: [built-in]
   </footer>
 </div><!-- /.container -->
 
-  <script src="https://localhost/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="https://localhost/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
   <script src="../js/magick.html"></script>
 </div>
 </body>
