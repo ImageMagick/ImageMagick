@@ -156,6 +156,7 @@ MAGICK_CODER_SRCS = \
 	coders/pdb.c \
 	coders/pdf.c \
 	coders/pes.c \
+	coders/pgx.c \
 	coders/pict.c \
 	coders/pix.c \
 	coders/plasma.c \
@@ -285,6 +286,7 @@ coders_LTLIBRARIES = \
 	coders/pdb.la \
 	coders/pdf.la \
 	coders/pes.la \
+	coders/pgx.la \
 	coders/pict.la \
 	coders/pix.la \
 	coders/plasma.la \
@@ -798,6 +800,12 @@ coders_pes_la_SOURCES      = coders/pes.c
 coders_pes_la_CPPFLAGS     = $(MAGICK_CODER_CPPFLAGS)
 coders_pes_la_LDFLAGS      = $(MODULECOMMONFLAGS)
 coders_pes_la_LIBADD       = $(MAGICKCORE_LIBS)
+
+# PGX coder module
+coders_pgx_la_SOURCES      = coders/pgx.c
+coders_pgx_la_CPPFLAGS     = $(MAGICK_CODER_CPPFLAGS)
+coders_pgx_la_LDFLAGS      = $(MODULECOMMONFLAGS)
+coders_pgx_la_LIBADD       = $(MAGICKCORE_LIBS)
 
 # PICT coder module
 coders_pict_la_SOURCES     = coders/pict.c
