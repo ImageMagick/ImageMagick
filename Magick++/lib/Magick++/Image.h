@@ -670,6 +670,7 @@ namespace Magick
     std::string artifact(const std::string &name_) const;
 
     // Access/Update a named image attribute
+    void attribute(const std::string name_,const char *value_);
     void attribute(const std::string name_,const std::string value_);
     std::string attribute(const std::string name_ ) const;
 
