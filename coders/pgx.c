@@ -88,13 +88,9 @@ static MagickBooleanType
 %
 %  A description of each parameter follows:
 %
-%    o status:  Method IsPGX returns True if the image format type is PGX.
-%
-%    o magick: This string is generally the first few bytes of an image file
-%      or blob.
+%    o magick: compare image format pattern against these bytes.
 %
 %    o length: Specifies the length of the magick string.
-%
 %
 */
 static unsigned int IsPGX(const unsigned char *magick,const size_t length)
