@@ -1970,6 +1970,14 @@ std::string Magick::Image::artifact(const std::string &name_) const
   return(std::string());
 }
 
+void Magick::Image::attribute(const std::string name_,const char *value_)
+{
+  modifyImage();
+  GetPPException;
+  SetImageProperty(image(),name_.c_str(),value_,exceptionInfo);
+  ThrowImageException;
+}
+
 void Magick::Image::attribute(const std::string name_,const std::string value_)
 {
   modifyImage();
