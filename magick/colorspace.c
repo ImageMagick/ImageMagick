@@ -161,13 +161,15 @@ static void ConvertRGBToxyY(const Quantum red,const Quantum green,
   const Quantum blue,double *low_x,double *low_y,double *cap_Y)
 {
   double
+     gamma,
     X,
     Y,
     Z;
 
   ConvertRGBToXYZ(red,green,blue,&X,&Y,&Z);
-  *low_x=X/(X+Y+Z);
-  *low_y=Y/(X+Y+Z);
+  gamma=PerceptibleReciprocal(X+Y+Z);
+  *low_x=gamma*X;
+  *low_y=gamma*Y;
   *cap_Y=Y;
 }
 
@@ -1519,13 +1521,16 @@ static inline void ConvertxyYToRGB(const double low_x,const double low_y,
   const double cap_Y,Quantum *red,Quantum *green,Quantum *blue)
 {
   double
+    gamma,
     X,
     Y,
     Z;
 
-  X=cap_Y/low_y*low_x;
+  gamma=PerceptibleReciprocal(low_y*low_x);
+  X=gamma*cap_Y;
   Y=cap_Y;
-  Z=cap_Y/low_y*(1.0-low_x-low_y);
+  gamma=PerceptibleReciprocal(low_y);
+  Z=gamma*cap_Y*(1.0-low_x-low_y);
   ConvertXYZToRGB(X,Y,Z,red,green,blue);
 }
 
