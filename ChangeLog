@@ -1,3 +1,7 @@
+2017-03-06  6.9.8-0 Cristy  <quetzlzacatenango@image...>
+  * Respect throttle policy (reference
+    https://github.com/ImageMagick/ImageMagick/issues/393).
+
 2017-03-03  6.9.7-10 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 6.9.7-10, GIT revision 11396:44b1bc6:20170303.
 
