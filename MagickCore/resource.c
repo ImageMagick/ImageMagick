@@ -1314,8 +1314,9 @@ MagickExport MagickBooleanType SetMagickResourceLimit(const ResourceType type,
           100.0));
       if (resource_info.thread_limit > GetOpenMPMaximumThreads())
         resource_info.thread_limit=GetOpenMPMaximumThreads();
-      else if (resource_info.thread_limit == 0)
-        resource_info.thread_limit=1;
+      else
+        if (resource_info.thread_limit == 0)
+          resource_info.thread_limit=1;
       break;
     }
     case ThrottleResource:
@@ -1323,10 +1324,8 @@ MagickExport MagickBooleanType SetMagickResourceLimit(const ResourceType type,
       resource_info.throttle_limit=limit;
       value=GetPolicyValue("throttle");
       if (value != (char *) NULL)
-        resource_info.throttle_limit=MagickMin(limit,StringToSizeType(value,
+        resource_info.throttle_limit=MagickMax(limit,StringToSizeType(value,
           100.0));
-      if (resource_info.throttle_limit > GetOpenMPMaximumThreads())
-        resource_info.throttle_limit=GetOpenMPMaximumThreads();
       break;
     }
     case TimeResource:
