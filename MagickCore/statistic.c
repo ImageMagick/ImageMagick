@@ -551,7 +551,7 @@ MagickExport Image *EvaluateImages(const Image *images,
               if ((traits == UndefinedPixelTrait) ||
                   (evaluate_traits == UndefinedPixelTrait))
                 continue;
-              if ((evaluate_traits & UpdatePixelTrait) == 0)
+              if ((traits & UpdatePixelTrait) == 0)
                 continue;
               evaluate_pixel[j].channel[i]=ApplyEvaluateOperator(
                 random_info[id],GetPixelChannel(image,channel,p),op,
@@ -828,6 +828,8 @@ MagickExport MagickBooleanType EvaluateImage(Image *image,
           continue;
         if (((traits & CopyPixelTrait) != 0) ||
             (GetPixelWriteMask(image,q) == 0))
+          continue;
+        if ((traits & UpdatePixelTrait) == 0)
           continue;
         result=ApplyEvaluateOperator(random_info[id],q[i],op,value);
         if (op == MeanEvaluateOperator)
@@ -1411,6 +1413,8 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
         PixelTrait traits=GetPixelChannelTraits(image,channel);
         if (traits == UndefinedPixelTrait)
           continue;
+        if ((traits & UpdatePixelTrait) == 0)
+          continue;
         M00[channel]+=QuantumScale*p[i];
         M00[MaxPixelChannels]+=QuantumScale*p[i];
         M10[channel]+=x*QuantumScale*p[i];
@@ -1466,6 +1470,8 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
         PixelChannel channel=GetPixelChannelChannel(image,i);
         PixelTrait traits=GetPixelChannelTraits(image,channel);
         if (traits == UndefinedPixelTrait)
+          continue;
+        if ((traits & UpdatePixelTrait) == 0)
           continue;
         M11[channel]+=(x-centroid[channel].x)*(y-centroid[channel].y)*
           QuantumScale*p[i];
@@ -1836,7 +1842,9 @@ MagickExport MagickBooleanType GetImageRange(const Image *image,double *minima,
         PixelTrait traits=GetPixelChannelTraits(image,channel);
         if (traits == UndefinedPixelTrait)
           continue;
-        if (row_initialize != MagickFalse)
+        if ((traits & UpdatePixelTrait) == 0)
+          continue;
+				if (row_initialize != MagickFalse)
           {
             row_minima=(double) p[i];
             row_maxima=(double) p[i];
@@ -2946,6 +2954,8 @@ MagickExport Image *StatisticImage(const Image *image,const StatisticType type,
             SetPixelChannel(statistic_image,channel,p[center+i],q);
             continue;
           }
+        if ((statistic_traits & UpdatePixelTrait) == 0)
+          continue;
         pixels=p;
         ResetPixelList(pixel_list[id]);
         for (v=0; v < (ssize_t) MagickMax(height,1); v++)
