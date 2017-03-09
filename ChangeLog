@@ -3,6 +3,8 @@
     https://github.com/ImageMagick/ImageMagick/issues/393).
   * Return proper minima / maxima (reference
     https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=31377).
+  * Support the -authenticate option for PDF (reference
+    Counting objects: 7, done.g/discourse-server/viewtopic.php?f=3&t=31530).
 
 2017-03-03  7.0.5-1 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.5-1, GIT revision 19662:b7f455a:20170303.
