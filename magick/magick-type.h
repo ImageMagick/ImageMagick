@@ -27,6 +27,9 @@ extern "C" {
 #if !defined(MAGICKCORE_QUANTUM_DEPTH)
 #define MAGICKCORE_QUANTUM_DEPTH  16
 #endif
+#if !defined(MagickPathExtent)
+#define MagickPathExtent  MaxTextExtent
+#endif
 
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(__MINGW32__) && !defined(__MINGW64__)
 #  define MagickLLConstant(c)  (MagickOffsetType) (c ## i64)
