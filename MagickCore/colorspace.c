@@ -1402,10 +1402,9 @@ static inline void ConvertxyYToRGB(const double low_x,const double low_y,
     Y,
     Z;
 
-  gamma=PerceptibleReciprocal(low_y*low_x);
-  X=gamma*cap_Y;
-  Y=cap_Y;
   gamma=PerceptibleReciprocal(low_y);
+  X=gamma*cap_Y*low_x;
+  Y=cap_Y;
   Z=gamma*cap_Y*(1.0-low_x-low_y);
   ConvertXYZToRGB(X,Y,Z,red,green,blue);
 }
