@@ -5003,6 +5003,7 @@ MagickPrivate VirtualPixelMethod SetPixelCacheVirtualMethod(Image *image,
 %    o image: the image.
 %
 */
+
 static void CopyOpenCLBuffer(CacheInfo *magick_restrict cache_info)
 {
   assert(cache_info != (CacheInfo *) NULL);

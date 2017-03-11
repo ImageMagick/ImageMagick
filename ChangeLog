@@ -1,4 +1,7 @@
-2017-03-06  7.0.5-6 Cristy  <quetzlzacatenango@image...>
+2017-03-11  7.0.5-2 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.5-2, GIT revision 19696:da91a7c:20170311.
+
+2017-03-06  7.0.5-2 Cristy  <quetzlzacatenango@image...>
   * Respect throttle policy (reference
     https://github.com/ImageMagick/ImageMagick/issues/393).
   * Return proper minima / maxima (reference
