@@ -13692,6 +13692,8 @@ SetPixel(ref,...)
       }
     av=(AV *) NULL;
     channel=DefaultChannels;
+    if (image->matte != MagickFalse)
+      channel|=OpacityChannel;
     normalize=MagickTrue;
     region.x=0;
     region.y=0;
