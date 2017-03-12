@@ -455,7 +455,7 @@ static ssize_t PrintChannelStatistics(FILE *file,const ChannelType channel,
   ssize_t
     n;
 
-  if (channel == AlphaChannel)
+  if ((channel == AlphaChannel) || (LocaleCompare(name,"Overall") == 0))
     {
       n=FormatLocaleFile(file,StatisticsFormat,name,ClampToQuantum(
         (MagickRealType) (scale*(QuantumRange-
