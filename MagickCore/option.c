@@ -1531,6 +1531,7 @@ static const OptionInfo
     { "M", MagentaPixelChannel, UndefinedOptionFlag, MagickFalse },
     { "Magenta", MagentaPixelChannel, UndefinedOptionFlag, MagickFalse },
     { "Meta", MetaPixelChannel, UndefinedOptionFlag, MagickFalse },
+    { "O", AlphaPixelChannel, UndefinedOptionFlag, MagickFalse },
     { "R", RedPixelChannel, UndefinedOptionFlag, MagickFalse },
     { "ReadMask", ReadMaskPixelChannel, UndefinedOptionFlag, MagickFalse },
     { "Red", RedPixelChannel, UndefinedOptionFlag, MagickFalse },
