@@ -808,7 +808,7 @@ MagickExport MagickBooleanType ListMagickResourceInfo(FILE *file,
     MagickFormatExtent,map_limit);
   (void) CopyMagickString(disk_limit,"unlimited",MagickFormatExtent);
   if (resource_info.disk_limit != MagickResourceInfinity)
-    (void) FormatMagickSize(resource_info.disk_limit,MagickTrue,"B",
+    (void) FormatMagickSize(resource_info.disk_limit,MagickFalse,"B",
       MagickFormatExtent,disk_limit);
   (void) CopyMagickString(time_limit,"unlimited",MagickFormatExtent);
   if (resource_info.time_limit != MagickResourceInfinity)
