@@ -1861,7 +1861,7 @@ static int read_user_chunk_callback(png_struct *ping, png_unknown_chunkp chunk)
 
       /* copy chunk->data to profile */
       s=chunk->data;
-      for (i=0; i<chunk->size; i++)
+      for (i=0; i < (ssize_t) chunk->size; i++)
         *p++ = *s++;
 
       (void) SetImageProfile(image,"exif",profile);
