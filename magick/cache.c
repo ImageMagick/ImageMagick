@@ -335,7 +335,7 @@ MagickExport Cache AcquirePixelCache(const size_t number_threads)
     *magick_restrict cache_info;
 
   char
-    *synchronize;
+    *value;
 
   cache_info=(CacheInfo *) AcquireQuantumMemory(1,sizeof(*cache_info));
   if (cache_info == (CacheInfo *) NULL)
@@ -357,11 +357,17 @@ MagickExport Cache AcquirePixelCache(const size_t number_threads)
   cache_info->nexus_info=AcquirePixelCacheNexus(cache_info->number_threads);
   if (cache_info->nexus_info == (NexusInfo **) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  synchronize=GetEnvironmentValue("MAGICK_SYNCHRONIZE");
-  if (synchronize != (const char *) NULL)
+  value=GetEnvironmentValue("MAGICK_SYNCHRONIZE");
+  if (value != (const char *) NULL)
     {
-      cache_info->synchronize=IsStringTrue(synchronize);
-      synchronize=DestroyString(synchronize);
+      cache_info->synchronize=IsStringTrue(value);
+      value=DestroyString(value);
+    }
+  value=GetPolicyValue("synchronize");
+  if (value != (const char *) NULL)
+    {
+      cache_info->synchronize=IsStringTrue(value);
+      value=DestroyString(value);
     }
   cache_info->semaphore=AllocateSemaphoreInfo();
   cache_info->reference_count=1;
