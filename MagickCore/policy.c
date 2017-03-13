@@ -264,6 +264,9 @@ static PolicyInfo *GetPolicyInfo(const char *name,ExceptionInfo *exception)
   char
     policyname[MagickPathExtent];
 
+  PolicyDomain
+    domain;
+
   register PolicyInfo
     *p;
 
@@ -287,6 +290,19 @@ static PolicyInfo *GetPolicyInfo(const char *name,ExceptionInfo *exception)
     q--;
   }
   /*
+    Strip domain from policy name (e.g. resource:map).
+  */
+  domain=UndefinedPolicyDomain;
+  for (q=policyname; *q != '\0'; q++)
+  {
+    if (*q != ':')
+      continue;
+    *q='\0';
+    domain=(PolicyDomain) ParseCommandOption(MagickPolicyDomainOptions,
+      MagickTrue,policyname);
+    (void) CopyMagickString(policyname,q+1,MagickPathExtent);
+  }
+  /*
     Search for policy tag.
   */
   LockSemaphoreInfo(policy_semaphore);
@@ -299,8 +315,9 @@ static PolicyInfo *GetPolicyInfo(const char *name,ExceptionInfo *exception)
     }
   while (p != (PolicyInfo *) NULL)
   {
-    if (LocaleCompare(policyname,p->name) == 0)
-      break;
+    if ((domain == UndefinedPolicyDomain) || (p->domain == domain))
+      if (LocaleCompare(policyname,p->name) == 0)
+        break;
     p=(PolicyInfo *) GetNextValueInLinkedList(policy_cache);
   }
   if (p != (PolicyInfo *) NULL)
@@ -599,11 +616,14 @@ MagickExport MagickBooleanType IsRightsAuthorized(const PolicyDomain domain,
         (GlobExpression(pattern,p->pattern,MagickFalse) != MagickFalse))
       {
         if ((rights & ReadPolicyRights) != 0)
-          authorized=(p->rights & ReadPolicyRights) != 0;
+          authorized=(p->rights & ReadPolicyRights) != 0 ? MagickTrue :
+            MagickFalse;
         if ((rights & WritePolicyRights) != 0)
-          authorized=(p->rights & WritePolicyRights) != 0;
+          authorized=(p->rights & WritePolicyRights) != 0 ? MagickTrue :
+            MagickFalse;
         if ((rights & ExecutePolicyRights) != 0)
-          authorized=(p->rights & ExecutePolicyRights) != 0;
+          authorized=(p->rights & ExecutePolicyRights) != 0 ? MagickTrue :
+            MagickFalse;
       }
     p=(PolicyInfo *) GetNextValueInLinkedList(policy_cache);
   }

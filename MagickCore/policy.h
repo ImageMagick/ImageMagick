@@ -51,7 +51,7 @@ typedef struct _PolicyInfo
   PolicyInfo;
 
 extern MagickExport char
-  *GetPolicyValue(const char *name),
+  *GetPolicyValue(const char *),
   **GetPolicyList(const char *,size_t *,ExceptionInfo *);
 
 extern MagickExport const PolicyInfo

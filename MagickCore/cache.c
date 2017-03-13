@@ -217,7 +217,7 @@ MagickPrivate Cache AcquirePixelCache(const size_t number_threads)
       cache_info->synchronize=IsStringTrue(value);
       value=DestroyString(value);
     }
-  value=GetPolicyValue("synchronize");
+  value=GetPolicyValue("cache:synchronize");
   if (value != (const char *) NULL)
     {
       cache_info->synchronize=IsStringTrue(value);
@@ -3449,6 +3449,8 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
       */
       cache_anonymous_memory=0;
       value=GetPolicyValue("pixel-cache-memory");
+      if (value == (char *) NULL)
+        value=GetPolicyValue("cache:memory-map");
       if (LocaleCompare(value,"anonymous") == 0)
         {
 #if defined(MAGICKCORE_HAVE_MMAP) && defined(MAP_ANONYMOUS)
