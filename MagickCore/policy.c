@@ -301,6 +301,7 @@ static PolicyInfo *GetPolicyInfo(const char *name,ExceptionInfo *exception)
     domain=(PolicyDomain) ParseCommandOption(MagickPolicyDomainOptions,
       MagickTrue,policyname);
     (void) CopyMagickString(policyname,q+1,MagickPathExtent);
+    break;
   }
   /*
     Search for policy tag.
