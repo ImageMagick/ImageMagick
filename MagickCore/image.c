@@ -2998,7 +2998,7 @@ MagickExport void SetImageInfoCustomStream(ImageInfo *image_info,
   if (image_info->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
-  image_info->custom_stream=(void *) custom_stream;
+  image_info->custom_stream=(CustomStreamInfo *) custom_stream;
 }
 
 /*
