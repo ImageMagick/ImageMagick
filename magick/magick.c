@@ -1546,7 +1546,7 @@ MagickExport int SetMagickPrecision(const int precision)
       magick_precision=MagickPrecision;
       limit=GetEnvironmentValue("MAGICK_PRECISION");
       if (limit == (char *) NULL)
-        limit=GetPolicyValue("precision");
+        limit=GetPolicyValue("system:precision");
       if (limit != (char *) NULL)
         {
           magick_precision=StringToInteger(limit);

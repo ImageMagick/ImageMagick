@@ -435,7 +435,7 @@ MagickExport MagickBooleanType GetPathTemplate(char *path)
 #endif
   if (directory == (char *) NULL)
     return(MagickTrue);
-  value=GetPolicyValue("temporary-path");
+  value=GetPolicyValue("resource:temporary-path");
   if (value != (char *) NULL)
     {
       (void) CloneString(&directory,value);
@@ -1293,7 +1293,7 @@ MagickExport MagickBooleanType SetMagickResourceLimit(const ResourceType type,
     case WidthResource:
     {
       resource_info.width_limit=limit;
-      value=GetPolicyValue("width");
+      value=GetPolicyValue("resource:width");
       if (value != (char *) NULL)
         resource_info.width_limit=MagickMin(limit,StringToSizeType(value,
           100.0));
@@ -1302,7 +1302,7 @@ MagickExport MagickBooleanType SetMagickResourceLimit(const ResourceType type,
     case HeightResource:
     {
       resource_info.height_limit=limit;
-      value=GetPolicyValue("height");
+      value=GetPolicyValue("resource:height");
       if (value != (char *) NULL)
         resource_info.height_limit=MagickMin(limit,StringToSizeType(value,
           100.0));
@@ -1311,7 +1311,7 @@ MagickExport MagickBooleanType SetMagickResourceLimit(const ResourceType type,
     case AreaResource:
     {
       resource_info.area_limit=limit;
-      value=GetPolicyValue("area");
+      value=GetPolicyValue("resource:area");
       if (value != (char *) NULL)
         resource_info.area_limit=MagickMin(limit,StringToSizeType(value,100.0));
       break;
@@ -1319,7 +1319,7 @@ MagickExport MagickBooleanType SetMagickResourceLimit(const ResourceType type,
     case MemoryResource:
     {
       resource_info.memory_limit=limit;
-      value=GetPolicyValue("memory");
+      value=GetPolicyValue("resource:memory");
       if (value != (char *) NULL)
         resource_info.memory_limit=MagickMin(limit,StringToSizeType(value,
           100.0));
@@ -1328,7 +1328,7 @@ MagickExport MagickBooleanType SetMagickResourceLimit(const ResourceType type,
     case MapResource:
     {
       resource_info.map_limit=limit;
-      value=GetPolicyValue("map");
+      value=GetPolicyValue("resource:map");
       if (value != (char *) NULL)
         resource_info.map_limit=MagickMin(limit,StringToSizeType(value,100.0));
       break;
@@ -1336,7 +1336,7 @@ MagickExport MagickBooleanType SetMagickResourceLimit(const ResourceType type,
     case DiskResource:
     {
       resource_info.disk_limit=limit;
-      value=GetPolicyValue("disk");
+      value=GetPolicyValue("resource:disk");
       if (value != (char *) NULL)
         resource_info.disk_limit=MagickMin(limit,StringToSizeType(value,100.0));
       break;
@@ -1344,7 +1344,7 @@ MagickExport MagickBooleanType SetMagickResourceLimit(const ResourceType type,
     case FileResource:
     {
       resource_info.file_limit=limit;
-      value=GetPolicyValue("file");
+      value=GetPolicyValue("resource:file");
       if (value != (char *) NULL)
         resource_info.file_limit=MagickMin(limit,StringToSizeType(value,100.0));
       break;
@@ -1352,7 +1352,7 @@ MagickExport MagickBooleanType SetMagickResourceLimit(const ResourceType type,
     case ThreadResource:
     {
       resource_info.thread_limit=limit;
-      value=GetPolicyValue("thread");
+      value=GetPolicyValue("resource:thread");
       if (value != (char *) NULL)
         resource_info.thread_limit=MagickMin(limit,StringToSizeType(value,
           100.0));
@@ -1366,7 +1366,7 @@ MagickExport MagickBooleanType SetMagickResourceLimit(const ResourceType type,
     case ThrottleResource:
     {
       resource_info.throttle_limit=limit;
-      value=GetPolicyValue("throttle");
+      value=GetPolicyValue("resource:throttle");
       if (value != (char *) NULL)
         resource_info.throttle_limit=MagickMax(limit,StringToSizeType(value,
           100.0));
@@ -1375,7 +1375,7 @@ MagickExport MagickBooleanType SetMagickResourceLimit(const ResourceType type,
     case TimeResource:
     {
       resource_info.time_limit=limit;
-      value=GetPolicyValue("time");
+      value=GetPolicyValue("resource:time");
       if (value != (char *) NULL)
         resource_info.time_limit=MagickMax(limit,StringToSizeType(value,100.0));
       ResetPixelCacheEpoch();

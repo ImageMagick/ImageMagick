@@ -203,7 +203,7 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
     Connect to distributed pixel cache and get session key.
   */
   *session_key=0;
-  shared_secret=GetPolicyValue("shared-secret");
+  shared_secret=GetPolicyValue("cache:shared-secret");
   if (shared_secret == (char *) NULL)
     {
       shared_secret=DestroyString(shared_secret);
@@ -798,7 +798,7 @@ static HANDLER_RETURN_TYPE DistributePixelCacheClient(void *socket)
   /*
     Distributed pixel cache client.
   */
-  shared_secret=GetPolicyValue("shared-secret");
+  shared_secret=GetPolicyValue("cache:shared-secret");
   if (shared_secret == (char *) NULL)
     ThrowFatalException(CacheFatalError,"shared secret expected");
   p=session;
