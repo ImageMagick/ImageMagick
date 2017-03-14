@@ -1377,7 +1377,7 @@ MagickExport MagickBooleanType SetMagickResourceLimit(const ResourceType type,
       resource_info.time_limit=limit;
       value=GetPolicyValue("resource:time");
       if (value != (char *) NULL)
-        resource_info.time_limit=MagickMax(limit,StringToSizeType(value,100.0));
+        resource_info.time_limit=MagickMin(limit,StringToSizeType(value,100.0));
       ResetPixelCacheEpoch();
       break;
     }
