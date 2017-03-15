@@ -1907,9 +1907,8 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("cdl",option+1) == 0)
         {
-          /* Note: arguments do not have percent escapes expanded */
           char
-            *color_correction_collection;
+            *color_correction_collection; /* Note: arguments do not have percent escapes expanded */
 
           /*
             Color correct with a color decision list.
@@ -1930,8 +1929,8 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
             }
           parse=ParseChannelOption(arg1);
           if (parse < 0)
-            CLIWandExceptArgBreak(OptionError,"UnrecognizedIntensityMethod",
-              option,arg1);
+            CLIWandExceptArgBreak(OptionError,"UnrecognizedChannelType",option,
+              arg1);
           (void) SetPixelChannelMask(_image,(ChannelType) parse);
           break;
         }
@@ -3785,7 +3784,8 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
       if (LocaleCompare("average",option+1) == 0)
         {
           CLIWandWarnReplaced("-evaluate-sequence Mean");
-          (void) CLIListOperatorImages(cli_wand,"-evaluate-sequence","Mean",NULL);
+          (void) CLIListOperatorImages(cli_wand,"-evaluate-sequence","Mean",
+            NULL);
           break;
         }
       CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
