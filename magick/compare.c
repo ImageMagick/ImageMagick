@@ -624,12 +624,7 @@ static MagickBooleanType GetFuzzDistortion(const Image *image,
   image_view=DestroyCacheView(image_view);
   for (i=0; i <= (ssize_t) CompositeChannels; i++)
     distortion[i]/=((double) columns*rows);
-  if (((channel & OpacityChannel) != 0) && ((image->matte != MagickFalse) ||
-      (reconstruct_image->matte != MagickFalse)))
-    distortion[CompositeChannels]/=(double)
-      (GetNumberChannels(image,channel)-1);
-  else
-    distortion[CompositeChannels]/=(double) GetNumberChannels(image,channel);
+  distortion[CompositeChannels]/=(double) GetNumberChannels(image,channel);
   distortion[CompositeChannels]=sqrt(distortion[CompositeChannels]);
   return(status);
 }
