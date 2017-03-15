@@ -278,7 +278,7 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
   if (argc < 3)
     return(CompareUsage());
   restore_info=image_info;
-  channels=CompositeChannels;
+  channels=DefaultChannels;
   difference_image=NewImageList();
   similarity_image=NewImageList();
   dissimilarity_threshold=DefaultDissimilarityThreshold;
