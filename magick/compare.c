@@ -131,11 +131,9 @@ static size_t GetNumberChannels(const Image *image,const ChannelType channel)
     channels++;
   if ((channel & BlueChannel) != 0)
     channels++;
-  if (((channel & OpacityChannel) != 0) &&
-       (image->matte != MagickFalse))
+  if (((channel & OpacityChannel) != 0) && (image->matte != MagickFalse))
     channels++;
-  if (((channel & IndexChannel) != 0) &&
-      (image->colorspace == CMYKColorspace))
+  if (((channel & IndexChannel) != 0) && (image->colorspace == CMYKColorspace))
     channels++;
   return(channels == 0 ? 1 : channels);
 }
