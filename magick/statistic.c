@@ -1212,8 +1212,7 @@ MagickExport MagickBooleanType GetImageChannelEntropy(const Image *image,
         channel_statistics[BlueChannel].entropy;
       channels++;
     }
-  if (((channel & OpacityChannel) != 0) &&
-      (image->matte != MagickFalse))
+  if (((channel & OpacityChannel) != 0) && (image->matte != MagickFalse))
     {
       channel_statistics[CompositeChannels].entropy+=
         channel_statistics[OpacityChannel].entropy;
@@ -1553,7 +1552,7 @@ MagickExport MagickBooleanType GetImageChannelMean(const Image *image,
         channel_statistics[BlueChannel].standard_deviation;
       channels++;
     }
-  if (((channel & OpacityChannel) != 0) || (image->matte != MagickFalse))
+  if (((channel & OpacityChannel) != 0) && (image->matte != MagickFalse))
     {
       channel_statistics[CompositeChannels].mean+=
         (QuantumRange-channel_statistics[OpacityChannel].mean);
@@ -2229,8 +2228,7 @@ MagickExport MagickBooleanType GetImageChannelRange(const Image *image,
           if (pixel.blue > *maxima)
             *maxima=(double) pixel.blue;
         }
-      if (((channel & OpacityChannel) != 0) &&
-          (image->matte != MagickFalse))
+      if (((channel & OpacityChannel) != 0) && (image->matte != MagickFalse))
         {
           if ((QuantumRange-pixel.opacity) < *minima)
             *minima=(double) (QuantumRange-pixel.opacity);
