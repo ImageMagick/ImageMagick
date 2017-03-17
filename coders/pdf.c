@@ -721,6 +721,16 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       MagickPathExtent);
   if (trimbox != MagickFalse)
     (void) ConcatenateMagickString(options,"-dUseTrimBox ",MagickPathExtent);
+  option=GetImageOption(image_info,"authenticate");
+  if (option != (char *) NULL)
+    {
+      char
+        passphrase[MagickPathExtent];
+
+      (void) FormatLocaleString(passphrase,MagickPathExtent,
+        "'-sPDFPassword=%s' ",option);
+      (void) ConcatenateMagickString(options,passphrase,MagickPathExtent);
+    }
   read_info=CloneImageInfo(image_info);
   *read_info->magick='\0';
   if (read_info->number_scenes != 0)
