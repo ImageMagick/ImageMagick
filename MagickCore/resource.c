@@ -800,7 +800,7 @@ MagickExport MagickBooleanType ListMagickResourceInfo(FILE *file,
     MagickFormatExtent,width_limit);
   (void) FormatMagickSize(resource_info.height_limit,MagickFalse,"P",
     MagickFormatExtent,height_limit);
-  (void) FormatMagickSize(resource_info.area_limit,MagickFalse,"B",
+  (void) FormatMagickSize(resource_info.area_limit,MagickFalse,"P",
     MagickFormatExtent,area_limit);
   (void) FormatMagickSize(resource_info.memory_limit,MagickTrue,"B",
     MagickFormatExtent,memory_limit);
