@@ -1,3 +1,6 @@
+2017-03-17  7.0.5-3 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.5-3, GIT revision 19741:070c3fb:20170317.
+
 2017-03-14  7.0.5-3 Cristy  <quetzlzacatenango@image...>
   * Support namespaces for the security policy.
   * Support the -authenticate option for PDF (reference
