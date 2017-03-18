@@ -66,7 +66,7 @@
   Forward declarations.
 */
 static MagickBooleanType
-  WritePGXImage(const ImageInfo *,Image *,ExceptionInfo *);
+  WritePGXImage(const ImageInfo *,Image *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -312,7 +312,7 @@ ModuleExport void UnregisterPGXImage(void)
 %  The format of the WritePGXImage method is:
 %
 %      MagickBooleanType WritePGXImage(const ImageInfo *image_info,
-%        Image *image,ExceptionInfo *exception)
+%        Image *image)
 %
 %  A description of each parameter follows.
 %
@@ -320,14 +320,14 @@ ModuleExport void UnregisterPGXImage(void)
 %
 %    o image:  The image.
 %
-%    o exception: return any errors or warnings in this structure.
-%
 */
-static MagickBooleanType WritePGXImage(const ImageInfo *image_info,Image *image,
-  ExceptionInfo *exception)
+static MagickBooleanType WritePGXImage(const ImageInfo *image_info,Image *image)
 {
   char
     buffer[MaxTextExtent];
+
+  ExceptionInfo
+    *exception;
 
   MagickBooleanType
     status;
@@ -357,6 +357,7 @@ static MagickBooleanType WritePGXImage(const ImageInfo *image_info,Image *image,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  exception=(&image->exception);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
