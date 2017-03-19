@@ -1233,7 +1233,7 @@ MagickExport void GetPathComponent(const char *path,PathType type,
         if (*p == '\0')
           break;
       }
-    if ((*p == ':') && (IsPathDirectory(path) < 0) &&
+    if ((p != component) && (*p == ':') && (IsPathDirectory(path) < 0) &&
         (IsPathAccessible(path) == MagickFalse))
       {
         /*
