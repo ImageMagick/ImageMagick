@@ -44,7 +44,7 @@ while test $# -gt 0; do
       pkg-config --cflags MagickWand
       ;;
     --cppflags)
-      pkg-config --clags MagickWand
+      pkg-config --cflags MagickWand
       ;;
     --ldflags)
       pkg-config --libs MagickWand
