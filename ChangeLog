@@ -1,3 +1,7 @@
+2017-03-21  7.0.5-4 Cristy  <quetzlzacatenango@image...>
+  * Respect -loop option for animate -window (reference
+    https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=31619).
+
 2017-03-17  7.0.5-3 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.5-3, GIT revision 19741:070c3fb:20170317.
 
