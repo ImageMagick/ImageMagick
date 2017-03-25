@@ -932,7 +932,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
         y_map[i].x=0.010566*i;
         z_map[i].x=0.002052*i;
         x_map[i].y=(-0.003296)*i;
-        y_map[i].y=(-006471)*i;
+        y_map[i].y=(-0.006471)*i;
         z_map[i].y=0.009768*i;
         x_map[i].z=0.009410*i;
         y_map[i].z=(-0.007880)*i;
