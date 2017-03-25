@@ -403,17 +403,17 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
   if (status == MagickFalse)
     return(DestroyImageList(image));
   image->compression=JPEG2000Compression;
-  if (jp2_image->numcomps <= 2)
+  if (jp2_image->color_space == 2)
     {
       SetImageColorspace(image,GRAYColorspace,exception);
       if (jp2_image->numcomps > 1)
         image->alpha_trait=BlendPixelTrait;
     }
+  else
+    if (jp2_image->color_space == 3)
+      SetImageColorspace(image,Rec601YCbCrColorspace,exception);
   if (jp2_image->numcomps > 3)
     image->alpha_trait=BlendPixelTrait;
-  for (i=0; i < (ssize_t) jp2_image->numcomps; i++)
-    if ((jp2_image->comps[i].dx > 1) || (jp2_image->comps[i].dy > 1))
-      SetImageColorspace(image,YUVColorspace,exception);
   if (jp2_image->icc_profile_buf != (unsigned char *) NULL)
     {
       StringInfo
