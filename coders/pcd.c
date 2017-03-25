@@ -790,7 +790,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image->previous == (Image *) NULL)
       {
         status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
-                image->rows);
+          image->rows);
         if (status == MagickFalse)
           break;
       }
