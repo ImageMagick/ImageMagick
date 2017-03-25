@@ -1046,7 +1046,7 @@ static MagickBooleanType WritePCDTile(Image *image,const char *page_geometry,
     {
       (void) WriteBlobByte(image,ScaleQuantumToChar(
         GetPixelGreen(tile_image,q)));
-      q++;
+      q+=GetPixelChannels(tile_image);
     }
     q=GetVirtualPixels(downsample_image,0,y >> 1,downsample_image->columns,1,
       exception);
@@ -1056,7 +1056,7 @@ static MagickBooleanType WritePCDTile(Image *image,const char *page_geometry,
     {
       (void) WriteBlobByte(image,ScaleQuantumToChar(
         GetPixelBlue(tile_image,q)));
-      q++;
+      q+=GetPixelChannels(tile_image);
     }
     status=SetImageProgress(image,SaveImageTag,y,tile_image->rows);
     if (status == MagickFalse)
