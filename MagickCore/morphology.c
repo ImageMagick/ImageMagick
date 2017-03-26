@@ -507,7 +507,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string,
       if (kernel_cache == (char *) NULL)
         return((KernelInfo *) NULL);
       p=(const char *) kernel_cache;
-    }    
+    }
   kernel=NULL;
   while (GetNextToken(p,(const char **) NULL,MagickPathExtent,token), *token != '\0')
   {
@@ -2875,19 +2875,17 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
         switch (method)
         {
           case ConvolveMorphology: pixel=bias; break;
-          case HitAndMissMorphology: pixel=(double) QuantumRange; break;
-          case ThinningMorphology: pixel=(double) QuantumRange; break;
-          case ThickenMorphology: pixel=(double) QuantumRange; break;
-          case ErodeMorphology: pixel=(double) QuantumRange; break;
-          case DilateMorphology: pixel=0.0; break;
+          case DilateMorphology:
           case ErodeIntensityMorphology:
-          case DilateIntensityMorphology:
-          case IterativeDistanceMorphology:
+          {
+            pixel=0.0;
+            break;
+          }
+          default:
           {
             pixel=(double) p[center+i];
             break;
           }
-          default: pixel=0; break;
         }
         gamma=1.0;
         switch (method)
