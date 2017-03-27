@@ -65,4 +65,6 @@ Here are just a few examples of what ImageMagick can do:
 
 #### News
 
-The design of ImageMagick is an evolutionary process, with the design and implementation efforts serving to influence and guide further progress in the other.  With [ImageMagick version 7](https://www.imagemagick.org), we aim to improve the design based on lessons learned from the version 6 implementation.  See the [porting](https://www.imagemagick.org/script/porting.php) guide to track the progress of the version 7 development effort.
+Now that ImageMagick [version 7](https://www.imagemagick.org) is released, we continue to maintain the legacy release of ImageMagick, [version 6](https://legacy.imagemagick.org). Learn how ImageMagick version 7 differs from previous versions with our [porting guide](https://www.imagemagick.org/script/porting.php).
+
+ImageMagick best practices **strongly** encourages you to configure a [security policy](https://www.imagemagick.org/script/security.php) that suits your local environment.
