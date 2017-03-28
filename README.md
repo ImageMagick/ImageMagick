@@ -67,4 +67,4 @@ Here are just a few examples of what ImageMagick can do:
 
 Now that ImageMagick [version 7](https://www.imagemagick.org) is released, we continue to maintain the legacy release of ImageMagick, [version 6](https://legacy.imagemagick.org). Learn how ImageMagick version 7 differs from previous versions with our [porting guide](https://www.imagemagick.org/script/porting.php).
 
-ImageMagick best practices **strongly** encourages you to configure a [security policy](https://www.imagemagick.org/script/security.php) that suits your local environment.
+ImageMagick best practices **strongly** encourages you to configure a [security policy](https://www.imagemagick.org/script/security-policy.php) that suits your local environment.
