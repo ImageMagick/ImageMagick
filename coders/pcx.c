@@ -337,10 +337,8 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->rows=(size_t) MagickAbsoluteValue((ssize_t) pcx_info.bottom-
       pcx_info.top)+1UL;
     if ((image->columns == 0) || (image->rows == 0) ||
-        ((pcx_info.bits_per_pixel != 1) &&
-         (pcx_info.bits_per_pixel != 2) &&
-         (pcx_info.bits_per_pixel != 4) &&
-         (pcx_info.bits_per_pixel != 8)))
+        ((pcx_info.bits_per_pixel != 1) && (pcx_info.bits_per_pixel != 2) &&
+         (pcx_info.bits_per_pixel != 4) && (pcx_info.bits_per_pixel != 8)))
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     image->depth=pcx_info.bits_per_pixel;
     image->units=PixelsPerInchResolution;
@@ -352,6 +350,8 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     pcx_info.reserved=(unsigned char) ReadBlobByte(image);
     pcx_info.planes=(unsigned char) ReadBlobByte(image);
+    if (pcx_info.planes == 0)
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     if ((pcx_info.bits_per_pixel*pcx_info.planes) >= 64)
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     one=1;
@@ -389,7 +389,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (HeapOverflowSanityCheck(image->rows, (size_t) pcx_info.bytes_per_line) != MagickFalse)
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     pcx_packets=(size_t) image->rows*pcx_info.bytes_per_line;
-    if (HeapOverflowSanityCheck(pcx_packets, (size_t)pcx_info.planes) != MagickFalse)
+    if (HeapOverflowSanityCheck(pcx_packets, (size_t) pcx_info.planes) != MagickFalse)
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     pcx_packets=(size_t) pcx_packets*pcx_info.planes;
     if ((size_t) (pcx_info.bits_per_pixel*pcx_info.planes*image->columns) >

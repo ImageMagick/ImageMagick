@@ -71,7 +71,7 @@
   &lt;policy domain="resource" name="map" value="512MiB"/>
   &lt;policy domain="resource" name="width" value="8KP"/>
   &lt;policy domain="resource" name="height" value="8KP"/>
-  &lt;policy domain="resource" name="area" value="128MB"/>
+  &lt;policy domain="resource" name="area" value="16KP"/>
   &lt;policy domain="resource" name="disk" value="1GiB"/>
   &lt;policy domain="resource" name="file" value="768"/>
   &lt;policy domain="resource" name="thread" value="2"/>
@@ -104,9 +104,9 @@ convert: no images defined `wizard.jpg'
   &lt;policy domain="coder" rights="read|write" pattern="{GIF,JPEG,PNG,WEBP}" />
 </pre>
 
-<p>As of ImageMagick 7.0.4-10, you can allocate the pixel cache with anonymous memory mapping rather than from heap.  As a consequence, the pixels are initialized to zero.  You can also shred any temporary files for increased security.  The value is the number of times to shred a temporary file.  For example,</p>
+<p>As of ImageMagick 7.0.5-4, you can allocate the pixel cache with anonymous memory mapping rather than from heap.  As a consequence, the pixels are initialized to zero.  You can also shred any temporary files for increased security.  The value is the number of times to shred a temporary file.  For example,</p>
 <pre>
-  &lt;policy domain="system" name="pixel-cache-memory" value="anonymous"/>
+  &lt;policy domain="cache" name="memory-map" value="anonymous"/>
   &lt;policy domain="system" name="shred" value="1"/>
 </pre>
 
@@ -138,7 +138,7 @@ Path: ImageMagick/policy.xml
     value: 256MiB
   Policy: Resource
     name: area
-    value: 128MB
+    value: 16KP
   Policy: Resource
     name: height
     value: 8KP
@@ -196,4 +196,4 @@ Path: [built-in]
 </div>
 </body>
 </html>
-<!-- Magick Cache 3rd March 2017 19:25 -->
+<!-- Magick Cache 26th March 2017 15:48 -->

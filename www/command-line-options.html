@@ -1925,6 +1925,11 @@ available:</p>
   </tr>
 
   <tr>
+    <td>exr:color-type=<var>value</var></td>
+     <td>Specifies the color type for the EXR format: RGB, RGBA, YC, YCA, Y, YA, R, G, B, A).</td>
+  </tr>
+
+  <tr>
     <td>filter:option=<var>value</var></td>
      <td>Set a filter option for use with <a href="command-line-options.html#resize">-resize</a>.
     See <a href="command-line-options.html#filter">-filter</a> for details.</td>
@@ -1951,6 +1956,16 @@ available:</p>
     <td>icon:auto-resize</td>
      <td>Automatically stores multiple sizes when writing an ico image
     (requires a 256x256 input image).</td>
+  </tr>
+
+  <tr>
+    <td>identify:locate=<var>minimum|maximum</var></td>
+     <td>Locates the coordinates of one or more image minimum or maximum</td>
+  </tr>
+
+  <tr>
+    <td>identify:limit=<var>number</var></td>
+     <td>Locates the coordinates for the number of minima or maxima specified</td>
   </tr>
 
   <tr>
@@ -2117,6 +2132,16 @@ available:</p>
 
   <tr>
     <td>pdf:use-trimbox=<var>true</var></td>
+    <td> </td>
+  </tr>
+
+  <tr>
+    <td>pdf:stop-on-error=<var>true</var></td>
+    <td> </td>
+  </tr>
+
+  <tr>
+    <td>pdf:pdf:page-direction=<var>right-to-left</var></td>
     <td> </td>
   </tr>
 
@@ -2409,8 +2434,8 @@ available:</p>
   </tr>
 
   <tr>
-    <td>tiff:exif-properties=<var>false</var></td>
-    <td>Skips reading the EXIF properties.</td>
+    <td>tiff:exif-properties=<var>true</var></td>
+    <td>Enables reading the EXIF properties.</td>
   </tr>
 
   <tr>
@@ -2447,6 +2472,21 @@ available:</p>
   <tr>
     <td>type:hinting=<var>off</var></td>
     <td> </td>
+  </tr>
+
+  <tr>
+    <td>txt:compliance=<var>css</var></td>
+    <td> </td>
+  </tr>
+
+  <tr>
+    <td>x:screen=<var>true</var></td>
+    <td>Obtains the image from the root window </td>
+  </tr>
+
+  <tr>
+    <td>x:silent=<var>true</var></td>
+    <td>Turns off the beep when importing an image </td>
   </tr>
 </table>
 
@@ -8054,4 +8094,4 @@ but with strict boolean masking. </p>
 </div>
 </body>
 </html>
-<!-- Magick Cache 3rd March 2017 19:25 -->
+<!-- Magick Cache 26th March 2017 15:32 -->

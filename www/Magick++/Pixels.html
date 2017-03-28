@@ -10,7 +10,7 @@
 <div class="doc-section">
 <h1 align="center">Magick::Pixels</h1>
 <p>The <i>Pixels</i> class provides efficient access to raw image
-pixels. Image pixels (of type <a href="PixelPacket.html"><i>PixelPacket</i></a>)
+pixels. Image pixels (of type <a href="https://www.imagemagick.org/Magick++/Quantum.html"><i>Quantum</i></a>)
 may be accessed directly via the <i>Image Pixel Cache</i>. The image
 pixel cache is a rectangular window (a view) into the actual image
 pixels (which may be in memory, memory-mapped from a disk file, or
@@ -33,7 +33,7 @@ method should be invoked to reduce the reference count on the underlying
 image to one. If this is not done, then it is possible for a previous
 generation of the image to be modified due to the use of reference
 counting when copying or constructing an Image. </p>
-<p>The <i>PixelPacket</i>* returned by the <i>set</i> and <i>get</i>
+<p>The <i>Quantum</i>* returned by the <i>set</i> and <i>get</i>
 methods, and the <i>IndexPacket</i>* returned by the <i>indexes</i>
 method point to pixel data managed by the <i>Pixels</i> class. The <i>Pixels</i>
 class is responsible for releasing resources associated with the pixel
@@ -61,7 +61,7 @@ right (minus lines and text): </p>
  // Set all pixels in region anchored at 38x36, with size 160x230 to green. 
  size_t columns = 196; size_t rows = 162; 
  Color green("green"); 
- PixelPacket *pixels = view.get(38,36,columns,rows); 
+ Quantum *pixels = view.get(38,36,columns,rows); 
  for ( ssize_t row = 0; row &lt; rows ; ++row ) 
    for ( ssize_t column = 0; column &lt; columns ; ++column ) 
      *pixels++=green; 
@@ -108,7 +108,7 @@ methods: </p>
       <p align="center"><a name="get"></a><font size="2">get</font></p>
 		</td>
 		<td> 			
-      <p><font size="2"><a href="PixelPacket.html">PixelPacket</a>*</font></p>
+      <p><font size="2"><a href="https://www.imagemagick.org/Magick++/Quantum.html">Quantum</a>*</font></p>
 		</td>
 		<td> 			
       <p><font size="2">const ssize_t x_, const ssize_t y_, const size_t
@@ -127,7 +127,7 @@ the 			pixel cache as defined by the specified rectangular region.
       <p align="center"><a name="getConst"></a><font size="2">getConst</font></p>
 		</td>
 		<td> 			
-      <p><font size="2">const <a href="PixelPacket.html">PixelPacket</a>*</font></p>
+      <p><font size="2">const <a href="https://www.imagemagick.org/Magick++/Quantum.html">Quantum</a>*</font></p>
 		</td>
 		<td> 			
       <p><font size="2">const ssize_t x_, const ssize_t y_, const size_t
@@ -143,7 +143,7 @@ the 			pixel cache as defined by the specified rectangular region.</font></p>
       <p align="center"><a name="set"></a><font size="2">set</font></p>
 		</td>
 		<td> 			
-      <p><font size="2"><a href="PixelPacket.html">PixelPacket</a>*</font></p>
+      <p><font size="2"><a href="https://www.imagemagick.org/Magick++/Quantum.html">Quantum</a>*</font></p>
 		</td>
 		<td> 			
       <p><font size="2">const ssize_t x_, const ssize_t y_, const size_t

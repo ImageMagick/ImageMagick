@@ -4,7 +4,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Magick++ API: Working with Images</title>
-<link rel="stylesheet" href="magick.css" type="text/css" />
+<link rel="stylesheet" href="http://www.imagemagick.org/Magick++/magick.css" type="text/css" />
 </head>
 <body>
 <div class="doc-section">
@@ -2947,7 +2947,7 @@ or to capture image from</font></td>
 <center>
 <h3> <a name="Raw Image Pixel Access"></a> Low-Level Image Pixel Access</h3>
 </center>
-Image pixels (of type <i><a href="http://www.imagemagick.org/Magick++/PixelPacket.html">PixelPacket</a> </i>)
+Image pixels (of type <i><a href="http://www.imagemagick.org/Magick++/Quantum.html">Quantum</a> </i>)
 may be accessed directly via the <i>Image Pixel Cache</i> .&#160; The
 image pixel cache is a rectangular window into the actual image pixels
 (which may be in memory, memory-mapped from a disk file, or entirely on
@@ -2993,11 +2993,11 @@ image.modifyImage();
 image.type(TrueColorType);
 // Request pixel region with size 60x40, and top origin at 20x30 
 ssize_t columns = 60; 
-PixelPacket *pixel_cache = image.getPixels(20,30,columns,40); 
+Quantum *pixel_cache = image.getPixels(20,30,columns,40); 
 // Set pixel at column 5, and row 10 in the pixel cache to red. 
 ssize_t column = 5; 
 ssize_t row = 10; 
-PixelPacket *pixel = pixel_cache+row*columns+column; 
+Quantum *pixel = pixel_cache+row*columns+column; 
 *pixel = Color("red"); 
 // Save changes to underlying image .
 image.syncPixels();
@@ -3026,7 +3026,7 @@ image.write("horse.png");
       <td>
       <center><a name="getConstPixels"></a> <font size="-1">getConstPixels</font></center>
       </td>
-      <td><font size="-1">const <a href="http://www.imagemagick.org/Magick++/PixelPacket.html">PixelPacket</a>
+      <td><font size="-1">const <a href="http://www.imagemagick.org/Magick++/Quantum.html">Quantum</a>
 *</font></td>
       <td><font size="-1">const ssize_t x_, const ssize_t y_, const size_t
 columns_, const size_t rows_</font></td>
@@ -3081,7 +3081,7 @@ images, the indexes are used to contain the alpha channel.</font></td>
       <td>
       <center><a name="getPixels"></a> <font size="-1">getPixels</font></center>
       </td>
-      <td><font size="-1"><a href="http://www.imagemagick.org/Magick++/PixelPacket.html">PixelPacket</a> *</font></td>
+      <td><font size="-1"><a href="http://www.imagemagick.org/Magick++/Quantum.html">Quantum</a> *</font></td>
       <td><font size="-1">const ssize_t x_, const ssize_t y_, const size_t
 columns_, const size_t rows_</font></td>
       <td><font size="-1">Transfers pixels from the image to the pixel
@@ -3096,7 +3096,7 @@ user.</font><font size="-1"></font></td>
       <td>
       <center><a name="setPixels"></a> <font size="-1">setPixels</font></center>
       </td>
-      <td><font size="-1"><a href="http://www.imagemagick.org/Magick++/PixelPacket.html">PixelPacket</a> *</font></td>
+      <td><font size="-1"><a href="http://www.imagemagick.org/Magick++/Quantum.html">Quantum</a> *</font></td>
       <td><font size="-1">const ssize_t x_, const ssize_t y_, const size_t
 columns_, const size_t rows_</font></td>
       <td><font size="-1">Allocates a pixel cache region to store image

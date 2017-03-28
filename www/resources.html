@@ -128,7 +128,7 @@ file or data stream.
   By default any coder, delegate, filter, or file path is permitted.  Use a policy to deny access to, for example, the MPEG video delegate, or permit reading images from a file system but deny writing to that same file system.  Or use the resource policy to set resource limits.  Policies are useful for multi-user servers that want to limit the overall impact ImageMagick has on the system.  For example, to limit the maximum image size in memory to 100MB:
 
 <pre>
-&lt;policy domain="resource" name="area" value="100MB"/>
+&lt;policy domain="resource" name="area" value="100KP"/>
 </pre>
 
 Any image larger than this area limit is cached to disk rather than memory.
@@ -144,7 +144,7 @@ To limit the elapsed time of any ImageMagick command to 5 minutes, use this poli
 <pre>
 &lt;policy domain="resource" name="time" value="300"/>
 </pre>
-Define arguments for the memory, map, area, and disk resources with SI prefixes (.e.g 100MB).  In addition, resource policies are maximums for each instance of ImageMagick (e.g. policy memory limit 1GB, the <code>-limit 2GB</code> option exceeds policy maximum so memory limit is 1GB). </dd>
+Define arguments for the memory, map, and disk resources with SI prefixes (.e.g 100MB).  In addition, resource policies are maximums for each instance of ImageMagick (e.g. policy memory limit 1GB, the <code>-limit 2GB</code> option exceeds policy maximum so memory limit is 1GB). </dd>
 
 <dt><a href="https://www.imagemagick.org/source/quantization-table.xml">quantization-table.xml</a></dt>
   <dd>Custom JPEG quantization tables. Activate with <code>-define:q-table=quantization-table.xml</code>.</dd>
@@ -383,4 +383,4 @@ $MAGICK_FONT_PATH
 </div>
 </body>
 </html>
-<!-- Magick Cache 3rd March 2017 19:25 -->
+<!-- Magick Cache 26th March 2017 15:46 -->

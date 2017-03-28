@@ -14,9 +14,9 @@
 
 The base type used to represent color samples in ImageMagick is the Quantum type. Pixels are represented by a structure of Quantum values. For example, an RGB pixel contains red, green, and blue quantums, while an RGBA pixel contains red, green, blue, and opacity quantums. The maximum value that a Quantum can attain is specified by a constant value represented by the MaxRGB define, which is itself determined by the number of bits in a Quantum. The QuantumDepth build option determines the number of bits in a Quantum.
 
-<h4>PixelPacket</h4>
+<h4>Quantum</h4>
 
-PixelPacket is the internal representation of a pixel in ImageMagick. ImageMagick may be compiled to support 32, 64, or 128 bit pixels of type PixelPacket. This is controlled by the value of the QuantumDepth define. The default is 32 bit pixels (QuantumDepth=8), which provides the best performance and the least resource consumption. If additional color precision or range is desired, then ImageMagick may be compiled with QuantumDepth=16 or QuantumDepth=32. The following table shows the relationship between QuantumDepth, the type of Quantum, and the overall PixelPacket size.
+Quantum is the internal representation of a pixel in ImageMagick. ImageMagick may be compiled to support 32, 64, or 128 bit pixels of type Quantum. This is controlled by the value of the QuantumDepth define. The default is 32 bit pixels (QuantumDepth=8), which provides the best performance and the least resource consumption. If additional color precision or range is desired, then ImageMagick may be compiled with QuantumDepth=16 or QuantumDepth=32. The following table shows the relationship between QuantumDepth, the type of Quantum, and the overall Quantum size.
 <p align="center" style="margin-bottom: 0cm"><b>Effect Of QuantumDepth Values</b></p>
 <center>
 <table width="361" border="1" cellpadding="2" cellspacing="3">
@@ -29,7 +29,7 @@ PixelPacket is the internal representation of a pixel in ImageMagick. ImageMagic
 <td width="121">
 <p align="center"><b>Quantum Typedef</b></p></td>
 <td width="111">
-<p align="center"><b>PixelPacket Size</b></p></td></tr>
+<p align="center"><b>Quantum Size</b></p></td></tr>
 <tr>
 <td width="102">
 <p align="center">8</p></td>
@@ -53,7 +53,7 @@ PixelPacket is the internal representation of a pixel in ImageMagick. ImageMagic
 <p align="center">128 bits</p></td></tr>
 </table></center>
 <h3><a name="Color"></a>Color Class</h3>
-<p>The Color base class is not intended to be used directly. Normally a user will construct a derived class or inherit from this class. Color arguments are must be scaled to fit the Quantum size. The Color class contains a pointer to a PixelPacket, which may be allocated by the Color class, or may refer to an existing pixel in an image.</p>
+<p>The Color base class is not intended to be used directly. Normally a user will construct a derived class or inherit from this class. Color arguments are must be scaled to fit the Quantum size. The Color class contains a pointer to a Quantum, which may be allocated by the Color class, or may refer to an existing pixel in an image.</p>
 <p>An alternate way to construct the class is via an SVG-compatible color specification string (e.g. Color("red") or Color ("#FF0000")). Since the class may be constructed from a string, convenient strings may be passed in place of an explicit Color object in methods which accept a reference to Color. Color may also be converted to a std::string for convenience in user interfaces, and for saving settings to a text file.</p>
 <div class="viewport">
 class Color 
@@ -107,14 +107,14 @@ class Color
     // Return SVG color specification string 
     /* virtual */ operator std::string() const;
 
-    // Return ImageMagick PixelPacket 
-    operator PixelPacket() const;
+    // Return ImageMagick Quantum 
+    operator Quantum() const;
 
-    // Construct color via ImageMagick PixelPacket 
-    Color ( const PixelPacket &amp;color_ );
+    // Construct color via ImageMagick Quantum 
+    Color ( const Quantum &amp;color_ );
 
-    // Set color via ImageMagick PixelPacket 
-    const Color&amp; operator= ( PixelPacket &amp;color_ ); 
+    // Set color via ImageMagick Quantum 
+    const Color&amp; operator= ( Quantum &amp;color_ ); 
 };
 </div>
 <p align="center" style="margin-bottom: 0cm"><b>Color Derived Classes</b></p>
