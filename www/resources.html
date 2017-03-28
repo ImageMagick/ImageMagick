@@ -128,7 +128,7 @@ file or data stream.
   By default any coder, delegate, filter, or file path is permitted.  Use a policy to deny access to, for example, the MPEG video delegate, or permit reading images from a file system but deny writing to that same file system.  Or use the resource policy to set resource limits.  Policies are useful for multi-user servers that want to limit the overall impact ImageMagick has on the system.  For example, to limit the maximum image size in memory to 100MB:
 
 <pre>
-&lt;policy domain="resource" name="area" value="100MB"/>
+&lt;policy domain="resource" name="area" value="100KP"/>
 </pre>
 
 Any image larger than this area limit is cached to disk rather than memory.
@@ -144,7 +144,7 @@ To limit the elapsed time of any ImageMagick command to 5 minutes, use this poli
 <pre>
 &lt;policy domain="resource" name="time" value="300"/>
 </pre>
-Define arguments for the memory, map, area, and disk resources with SI prefixes (.e.g 100MB).  In addition, resource policies are maximums for each instance of ImageMagick (e.g. policy memory limit 1GB, the <code>-limit 2GB</code> option exceeds policy maximum so memory limit is 1GB). </dd>
+Define arguments for the memory, map, and disk resources with SI prefixes (.e.g 100MB).  In addition, resource policies are maximums for each instance of ImageMagick (e.g. policy memory limit 1GB, the <code>-limit 2GB</code> option exceeds policy maximum so memory limit is 1GB). </dd>
 
 <dt><a href="https://www.imagemagick.org/source/quantization-table.xml">quantization-table.xml</a></dt>
   <dd>Custom JPEG quantization tables. Activate with <code>-define:q-table=quantization-table.xml</code>.</dd>
@@ -202,7 +202,7 @@ $USERPROFILE/.config/ImageMagick
 &lt;<var>client path</var>&gt;
 </pre>
 
-<p>Above, $PREFIX is the default install path, typically <code>c:\\Program Files\\ImageMagick-6.9.7</code>.</p>
+<p>Above, $PREFIX is the default install path, typically <code>c:\\Program Files\\ImageMagick-6.9.8</code>.</p>
 
 <p>For an uninstalled Windows installation, the configuration load order is:</p>
 
@@ -222,25 +222,25 @@ $USERPROFILE/.config/ImageMagick
 <p>An image coder (i.e. encoder / decoder) is responsible for registering, optionally classifying, optionally reading, optionally writing, and unregistering one image format (e.g. PNG, GIF, JPEG, etc.).  ImageMagick searches for coders in the following order and it uses the first match found:</p>
 
 <pre>
-$MAGICK_HOME/lib/ImageMagick-6.9.7/modules-Q16/coders
-&lt;<var>client path</var>&gt;/../lib/ImageMagick-6.9.7/modules-Q16/coders
-$MAGICK_HOME/lib/ImageMagick-6.9.7/modules-Q16/coders
-$MAGICK_HOME/share/ImageMagick-6.9.7/modules-Q16/coders
+$MAGICK_HOME/lib/ImageMagick-6.9.8/modules-Q16/coders
+&lt;<var>client path</var>&gt;/../lib/ImageMagick-6.9.8/modules-Q16/coders
+$MAGICK_HOME/lib/ImageMagick-6.9.8/modules-Q16/coders
+$MAGICK_HOME/share/ImageMagick-6.9.8/modules-Q16/coders
 $XDG_CACHE_HOME/ImageMagick
 $HOME/.config/ImageMagick
-&lt;<var>client path</var>&gt;/lib/ImageMagick-6.9.7/modules-Q16/coders
+&lt;<var>client path</var>&gt;/lib/ImageMagick-6.9.8/modules-Q16/coders
 </pre>
 
 <h4>Filters</h4>
 <p>ImageMagick provides a convenient mechanism for adding your own custom image processing algorithms.  ImageMagick searches for filters in the following order and it uses the first match found:</p>
 <pre>
-$MAGICK_HOME/lib/ImageMagick-6.9.7/modules-Q16/filters
-&lt;<var>client path</var>&gt;/../lib/ImageMagick-6.9.7/modules-Q16/filters
-$MAGICK_HOME/lib/ImageMagick-6.9.7/modules-Q16/filters
-$MAGICK_HOME/share/ImageMagick-6.9.7/modules-Q16/filters
+$MAGICK_HOME/lib/ImageMagick-6.9.8/modules-Q16/filters
+&lt;<var>client path</var>&gt;/../lib/ImageMagick-6.9.8/modules-Q16/filters
+$MAGICK_HOME/lib/ImageMagick-6.9.8/modules-Q16/filters
+$MAGICK_HOME/share/ImageMagick-6.9.8/modules-Q16/filters
 $XDG_CACHE_HOME/ImageMagick
 $HOME/.config/ImageMagick
-&lt;<var>client path</var>&gt;/lib/ImageMagick-6.9.7/modules-Q16/filters
+&lt;<var>client path</var>&gt;/lib/ImageMagick-6.9.8/modules-Q16/filters
 </pre>
 
 <h2 class="magick-header"><a id="fonts"></a>Fonts</h2>
@@ -249,8 +249,8 @@ $HOME/.config/ImageMagick
 
 <pre>
 $MAGICK_CONFIGURE_PATH
-$MAGICK_HOME/etc/ImageMagick/-6.9.7
-$MAGICK_HOME/share/ImageMagick-6.9.7
+$MAGICK_HOME/etc/ImageMagick/-6.9.8
+$MAGICK_HOME/share/ImageMagick-6.9.8
 $XDG_CACHE_HOME/ImageMagick
 $HOME/.config/ImageMagick
 &lt;<var>client path</var>&gt;/etc/ImageMagick
@@ -348,7 +348,7 @@ $MAGICK_FONT_PATH
     <td>Set maximum parallel threads.  Many ImageMagick algorithms run in parallel on multi-processor systems.  Use this environment variable to set the maximum number of threads that are permitted to run in parallel.</td>
   </tr>
   <tr>
-    <td>MAGICK_THROTTLE</td>
+    <td>MAGICK_THROTTLE_LIMIT</td>
     <td>Periodically yield the CPU for at least the time specified in milliseconds.</td>
   </tr>
   <tr>
