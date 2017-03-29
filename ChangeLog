@@ -3,17 +3,8 @@
     https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=3164).
 
 2017-03-24  6.9.8-3 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 6.9.7-3, GIT revision 11444:3f523e5:20170324.
+  * Release ImageMagick version 6.9.8-3, GIT revision 11444:3f523e5:20170324.
 
-2017-03-14  6.9.8-1 Cristy  <quetzlzacatenango@image...>
-  * Support namespaces for the security policy.
-
-2017-03-03  6.9.8-0 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 6.9.7-0, GIT revision 11408:da91a7c:20170311.
-
-2017-03-06  6.9.8-0 Cristy  <quetzlzacatenango@image...>
-  * Respect throttle policy (reference
-    https://github.com/ImageMagick/ImageMagick/issues/393).
 2017-03-20  6.9.8-3 Cristy  <quetzlzacatenango@image...>
   * MagickWand-config, use --cflags, not --clags (reference
     https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=31602).
@@ -21,13 +12,13 @@
     https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=31619).
 
 2017-03-18  6.9.8-2 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 6.9.7-2, GIT revision 11436:a912791:20170318.
+  * Release ImageMagick version 6.9.8-2, GIT revision 11436:a912791:20170318.
 
 2017-03-14  6.9.8-1 Cristy  <quetzlzacatenango@image...>
   * Support namespaces for the security policy.
 
-2017-03-03  6.9.8-0 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 6.9.7-0, GIT revision 11408:da91a7c:20170311.
+2017-03-11  6.9.8-0 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 6.9.8-0, GIT revision 11408:da91a7c:20170311.
 
 2017-03-06  6.9.8-0 Cristy  <quetzlzacatenango@image...>
   * Respect throttle policy (reference
