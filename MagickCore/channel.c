@@ -516,10 +516,8 @@ MagickExport Image *CombineImages(const Image *image,
       combine_image=DestroyImage(combine_image);
       return((Image *) NULL);
     }
-  if ((colorspace == UndefinedColorspace) || (image->number_channels == 1))
-    (void) SetImageColorspace(combine_image,sRGBColorspace,exception);
-  else
-    (void) SetImageColorspace(combine_image,colorspace,exception);
+  (void) SetImageColorspace(combine_image,colorspace == UndefinedColorspace ?
+    sRGBColorspace : colorspace,exception);
   switch (combine_image->colorspace)
   {
     case UndefinedColorspace:
