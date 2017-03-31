@@ -1842,7 +1842,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
       */
       SetGeometryInfo(&geometry_info);
       flags=NoValue;
-      value=GetImageArtifact(source_image,"compose:args");
+      value=GetImageArtifact(image,"compose:args");
       if (value != (char *) NULL)
         flags=ParseGeometry(value,&geometry_info);
       if ((flags & WidthValue) == 0)
@@ -2018,7 +2018,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
         }
       SetGeometryInfo(&geometry_info);
       flags=NoValue;
-      value=GetImageArtifact(source_image,"compose:args");
+      value=GetImageArtifact(image,"compose:args");
       if (value != (char *) NULL)
         flags=ParseGeometry(value,&geometry_info);
       if ((flags & (WidthValue | HeightValue)) == 0 )
@@ -2162,7 +2162,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
       /*
         Geometry arguments to dissolve factors.
       */
-      value=GetImageArtifact(source_image,"compose:args");
+      value=GetImageArtifact(image,"compose:args");
       if (value != (char *) NULL)
         {
           flags=ParseGeometry(value,&geometry_info);
@@ -2190,7 +2190,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
     }
     case BlendCompositeOp:
     {
-      value=GetImageArtifact(source_image,"compose:args");
+      value=GetImageArtifact(image,"compose:args");
       if (value != (char *) NULL)
         {
           flags=ParseGeometry(value,&geometry_info);
@@ -2215,7 +2215,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
         number of values)
       */
       SetGeometryInfo(&geometry_info);
-      value=GetImageArtifact(source_image,"compose:args");
+      value=GetImageArtifact(image,"compose:args");
       if (value != (char *) NULL)
         (void) ParseGeometry(value,&geometry_info);
       break;
@@ -2225,7 +2225,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
       /*
         Determine the luma and chroma scale.
       */
-      value=GetImageArtifact(source_image,"compose:args");
+      value=GetImageArtifact(image,"compose:args");
       if (value != (char *) NULL)
         {
           flags=ParseGeometry(value,&geometry_info);
@@ -2241,7 +2241,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
         Determine the amount and threshold.
         This Composition method is deprecated
       */
-      value=GetImageArtifact(source_image,"compose:args");
+      value=GetImageArtifact(image,"compose:args");
       if (value != (char *) NULL)
         {
           flags=ParseGeometry(value,&geometry_info);
@@ -2256,11 +2256,11 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
     default:
       break;
   }
-  value=GetImageArtifact(source_image,"compose:outside-overlay");
+  value=GetImageArtifact(image,"compose:outside-overlay");
   if (value != (const char *) NULL)
     clip_to_self=IsMagickTrue(value) == MagickFalse ? MagickTrue : MagickFalse;
   clamp=MagickTrue;
-  value=GetImageArtifact(source_image,"compose:clamp");
+  value=GetImageArtifact(image,"compose:clamp");
   if (value != (const char *) NULL)
     clamp=IsMagickTrue(value);
   /*
