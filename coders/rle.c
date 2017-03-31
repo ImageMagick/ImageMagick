@@ -274,7 +274,8 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         p=colormap;
         for (i=0; i < (ssize_t) number_colormaps; i++)
           for (x=0; x < (ssize_t) map_length; x++)
-            *p++=(unsigned char) ScaleShortToQuantum(ReadBlobLSBShort(image));
+            *p++=(unsigned char) ScaleQuantumToChar(ScaleShortToQuantum(
+              ReadBlobLSBShort(image)));
       }
     if ((flags & 0x08) != 0)
       {
