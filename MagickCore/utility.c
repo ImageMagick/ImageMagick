@@ -1565,17 +1565,6 @@ static int FileCompare(const void *x,const void *y)
 }
 #endif
 
-static inline int MagickReadDirectory(DIR *directory,struct dirent *entry,
-  struct dirent **result)
-{
-  errno=0;
-  entry=readdir(directory);
-  *result=entry;
-  if ((entry == (struct dirent *) NULL) && (errno != 0))
-    return(-1);
-  return(0);
-}
-
 MagickPrivate char **ListFiles(const char *directory,const char *pattern,
   size_t *number_entries)
 {
