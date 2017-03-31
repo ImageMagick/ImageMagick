@@ -271,7 +271,8 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         p=colormap;
         for (i=0; i < (ssize_t) number_colormaps; i++)
           for (x=0; x < (ssize_t) map_length; x++)
-            *p++=(unsigned char) ScaleShortToQuantum(ReadBlobLSBShort(image));
+            *p++=(unsigned char) ScaleQuantumToChar(ScaleShortToQuantum(
+              ReadBlobLSBShort(image)));
       }
     if ((flags & 0x08) != 0)
       {
@@ -476,7 +477,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
               for (x=0; x < (ssize_t) number_planes; x++)
               {
                 ValidateColormapValue(image,(size_t) (x*map_length+
-                    (*p & mask)),&index,exception);
+                  (*p & mask)),&index,exception);
                 *p=colormap[(ssize_t) index];
                 p++;
               }

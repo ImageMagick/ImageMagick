@@ -1979,7 +1979,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
                           pixel=ScaleQuantumToChar(GetPixelRed(image,p));
                         else
                           pixel=ScaleQuantumToAny(GetPixelRed(image,p),
-                          max_value);
+                            max_value);
                       }
                     q=PopCharPixel((unsigned char) pixel,q);
                     p+=GetPixelChannels(image);
