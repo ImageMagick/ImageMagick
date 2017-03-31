@@ -1588,7 +1588,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
                 (void) DeleteImageArtifact(*image,"identify:features");
                 break;
               }
-            (void) SetImageArtifact(*image,"vdentify:features",argv[i+1]);
+            (void) SetImageArtifact(*image,"identify:features",argv[i+1]);
             (void) SetImageArtifact(*image,"verbose","true");
             break;
           }
