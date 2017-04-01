@@ -146,7 +146,7 @@ static void *AcquireSemaphoreMemory(const size_t count,const size_t quantum)
       return((void *) NULL);
     }
   memory=NULL;
-  alignment=GetMagickPageSize();
+  alignment=CACHE_LINE_SIZE;
   extent=AlignedExtent(size,CACHE_LINE_SIZE);
   if ((size == 0) || (extent < size))
     return((void *) NULL);
