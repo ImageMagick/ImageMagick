@@ -134,6 +134,7 @@ extern MagickPrivate int
   NTSystemCommand(const char *,char *);
 
 extern MagickPrivate ssize_t
+  NTGetPageSize(void),
   NTSystemConfiguration(int),
   NTTellDirectory(DIR *);
 
