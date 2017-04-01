@@ -1116,7 +1116,7 @@ MagickExport ssize_t GetMagickPageSize(void)
   page_size=NTGetPageSize();
 #endif
   if (page_size <= 0)
-    page_size=16384;
+    page_size=4096;
   return(page_size);
 }
 
