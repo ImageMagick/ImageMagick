@@ -1031,7 +1031,7 @@ MagickPrivate MagickBooleanType NTGetModulePath(const char *module,char *path)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  NTGetPageSize() returns the page size under Windows.
+%  NTGetPageSize() returns the memory page size under Windows.
 %
 %  The format of the NTPageSize
 %
