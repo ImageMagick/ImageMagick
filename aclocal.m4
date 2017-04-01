@@ -20,9 +20,9 @@ You have another version of autoconf.  It may work, but is not guaranteed to.
 If you have problems, you may need to regenerate the build system entirely.
 To do so, use the procedure documented by the package, typically 'autoreconf'.])])
 
-# ===========================================================================
-#  http://www.gnu.org/software/autoconf-archive/ax_append_compile_flags.html
-# ===========================================================================
+# ============================================================================
+#  https://www.gnu.org/software/autoconf-archive/ax_append_compile_flags.html
+# ============================================================================
 #
 # SYNOPSIS
 #
@@ -63,7 +63,7 @@ To do so, use the procedure documented by the package, typically 'autoreconf'.])
 #   Public License for more details.
 #
 #   You should have received a copy of the GNU General Public License along
-#   with this program. If not, see <http://www.gnu.org/licenses/>.
+#   with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 #   As a special exception, the respective Autoconf Macro's copyright owner
 #   gives unlimited permission to copy, distribute and modify the configure
@@ -78,7 +78,7 @@ To do so, use the procedure documented by the package, typically 'autoreconf'.])
 #   modified version of the Autoconf Macro, you may extend this special
 #   exception to the GPL to apply to your modified version as well.
 
-#serial 5
+#serial 6
 
 AC_DEFUN([AX_APPEND_COMPILE_FLAGS],
 [AX_REQUIRE_DEFINED([AX_CHECK_COMPILE_FLAG])
@@ -89,7 +89,7 @@ done
 ])dnl AX_APPEND_COMPILE_FLAGS
 
 # ===========================================================================
-#   http://www.gnu.org/software/autoconf-archive/ax_append_link_flags.html
+#   https://www.gnu.org/software/autoconf-archive/ax_append_link_flags.html
 # ===========================================================================
 #
 # SYNOPSIS
@@ -129,7 +129,7 @@ done
 #   Public License for more details.
 #
 #   You should have received a copy of the GNU General Public License along
-#   with this program. If not, see <http://www.gnu.org/licenses/>.
+#   with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 #   As a special exception, the respective Autoconf Macro's copyright owner
 #   gives unlimited permission to copy, distribute and modify the configure
@@ -144,7 +144,7 @@ done
 #   modified version of the Autoconf Macro, you may extend this special
 #   exception to the GPL to apply to your modified version as well.
 
-#serial 5
+#serial 6
 
 AC_DEFUN([AX_APPEND_LINK_FLAGS],
 [AX_REQUIRE_DEFINED([AX_CHECK_LINK_FLAG])
@@ -155,7 +155,7 @@ done
 ])dnl AX_APPEND_LINK_FLAGS
 
 # ===========================================================================
-#    http://www.gnu.org/software/autoconf-archive/ax_check_link_flag.html
+#    https://www.gnu.org/software/autoconf-archive/ax_check_link_flag.html
 # ===========================================================================
 #
 # SYNOPSIS
@@ -196,7 +196,7 @@ done
 #   Public License for more details.
 #
 #   You should have received a copy of the GNU General Public License along
-#   with this program. If not, see <http://www.gnu.org/licenses/>.
+#   with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 #   As a special exception, the respective Autoconf Macro's copyright owner
 #   gives unlimited permission to copy, distribute and modify the configure
@@ -211,7 +211,7 @@ done
 #   modified version of the Autoconf Macro, you may extend this special
 #   exception to the GPL to apply to your modified version as well.
 
-#serial 4
+#serial 5
 
 AC_DEFUN([AX_CHECK_LINK_FLAG],
 [AC_PREREQ(2.64)dnl for _AC_LANG_PREFIX and AS_VAR_IF
@@ -230,7 +230,7 @@ AS_VAR_POPDEF([CACHEVAR])dnl
 ])dnl AX_CHECK_LINK_FLAGS
 
 # ===========================================================================
-#     http://www.gnu.org/software/autoconf-archive/ax_compiler_flags.html
+#    https://www.gnu.org/software/autoconf-archive/ax_compiler_flags.html
 # ===========================================================================
 #
 # SYNOPSIS
@@ -332,7 +332,7 @@ AS_VAR_POPDEF([CACHEVAR])dnl
 #   and this notice are preserved.  This file is offered as-is, without any
 #   warranty.
 
-#serial 13
+#serial 14
 
 # _AX_COMPILER_FLAGS_LANG([LANGNAME])
 m4_defun([_AX_COMPILER_FLAGS_LANG],
@@ -388,9 +388,9 @@ AC_DEFUN([AX_COMPILER_FLAGS],[
     AX_COMPILER_FLAGS_GIR([WARN_SCANNERFLAGS],[$ax_compiler_flags_is_release])
 ])dnl AX_COMPILER_FLAGS
 
-# ============================================================================
-#  http://www.gnu.org/software/autoconf-archive/ax_compiler_flags_cflags.html
-# ============================================================================
+# =============================================================================
+#  https://www.gnu.org/software/autoconf-archive/ax_compiler_flags_cflags.html
+# =============================================================================
 #
 # SYNOPSIS
 #
@@ -415,7 +415,7 @@ AC_DEFUN([AX_COMPILER_FLAGS],[
 #   and this notice are preserved.  This file is offered as-is, without any
 #   warranty.
 
-#serial 11
+#serial 14
 
 AC_DEFUN([AX_COMPILER_FLAGS_CFLAGS],[
     AC_REQUIRE([AC_PROG_SED])
@@ -424,7 +424,7 @@ AC_DEFUN([AX_COMPILER_FLAGS_CFLAGS],[
     AX_REQUIRE_DEFINED([AX_CHECK_COMPILE_FLAG])
 
     # Variable names
-    m4_define(ax_warn_cflags_variable,
+    m4_define([ax_warn_cflags_variable],
               [m4_normalize(ifelse([$1],,[WARN_CFLAGS],[$1]))])
 
     AC_LANG_PUSH([C])
@@ -438,6 +438,13 @@ AC_DEFUN([AX_COMPILER_FLAGS_CFLAGS],[
         ax_compiler_flags_test="-Werror=unknown-warning-option"
     ],[
         ax_compiler_flags_test=""
+    ])
+
+    # Check that -Wno-suggest-attribute=format is supported
+    AX_CHECK_COMPILE_FLAG([-Wno-suggest-attribute=format],[
+        ax_compiler_no_suggest_attribute_flags="-Wno-suggest-attribute=format"
+    ],[
+        ax_compiler_no_suggest_attribute_flags=""
     ])
 
     # Base flags
@@ -498,7 +505,7 @@ AC_DEFUN([AX_COMPILER_FLAGS_CFLAGS],[
         AX_APPEND_FLAG([-Werror],ax_warn_cflags_variable)
 
         AX_APPEND_COMPILE_FLAGS([ dnl
-            -Wno-suggest-attribute=format dnl
+            [$ax_compiler_no_suggest_attribute_flags] dnl
         ],ax_warn_cflags_variable,[$ax_compiler_flags_test])
     ])
 
@@ -522,9 +529,9 @@ AC_DEFUN([AX_COMPILER_FLAGS_CFLAGS],[
     AC_SUBST(ax_warn_cflags_variable)
 ])dnl AX_COMPILER_FLAGS
 
-# ==============================================================================
-#  http://www.gnu.org/software/autoconf-archive/ax_compiler_flags_cxxflags.html
-# ==============================================================================
+# ===============================================================================
+#  https://www.gnu.org/software/autoconf-archive/ax_compiler_flags_cxxflags.html
+# ===============================================================================
 #
 # SYNOPSIS
 #
@@ -550,7 +557,7 @@ AC_DEFUN([AX_COMPILER_FLAGS_CFLAGS],[
 #   and this notice are preserved.  This file is offered as-is, without any
 #   warranty.
 
-#serial 7
+#serial 10
 
 AC_DEFUN([AX_COMPILER_FLAGS_CXXFLAGS],[
     AC_REQUIRE([AC_PROG_SED])
@@ -559,7 +566,7 @@ AC_DEFUN([AX_COMPILER_FLAGS_CXXFLAGS],[
     AX_REQUIRE_DEFINED([AX_CHECK_COMPILE_FLAG])
 
     # Variable names
-    m4_define(ax_warn_cxxflags_variable,
+    m4_define([ax_warn_cxxflags_variable],
               [m4_normalize(ifelse([$1],,[WARN_CXXFLAGS],[$1]))])
 
     AC_LANG_PUSH([C++])
@@ -573,6 +580,13 @@ AC_DEFUN([AX_COMPILER_FLAGS_CXXFLAGS],[
         ax_compiler_flags_test="-Werror=unknown-warning-option"
     ],[
         ax_compiler_flags_test=""
+    ])
+
+    # Check that -Wno-suggest-attribute=format is supported
+    AX_CHECK_COMPILE_FLAG([-Wno-suggest-attribute=format],[
+        ax_compiler_no_suggest_attribute_flags="-Wno-suggest-attribute=format"
+    ],[
+        ax_compiler_no_suggest_attribute_flags=""
     ])
 
     # Base flags
@@ -628,7 +642,7 @@ AC_DEFUN([AX_COMPILER_FLAGS_CXXFLAGS],[
         AX_APPEND_FLAG([-Werror],ax_warn_cxxflags_variable)
 
         AX_APPEND_COMPILE_FLAGS([ dnl
-            -Wno-suggest-attribute=format dnl
+            [$ax_compiler_no_suggest_attribute_flags] dnl
         ],ax_warn_cxxflags_variable,[$ax_compiler_flags_test])
     ])
 
@@ -653,7 +667,7 @@ AC_DEFUN([AX_COMPILER_FLAGS_CXXFLAGS],[
 ])dnl AX_COMPILER_FLAGS_CXXFLAGS
 
 # ===========================================================================
-#   http://www.gnu.org/software/autoconf-archive/ax_compiler_flags_gir.html
+#  https://www.gnu.org/software/autoconf-archive/ax_compiler_flags_gir.html
 # ===========================================================================
 #
 # SYNOPSIS
@@ -680,13 +694,13 @@ AC_DEFUN([AX_COMPILER_FLAGS_CXXFLAGS],[
 #   and this notice are preserved.  This file is offered as-is, without any
 #   warranty.
 
-#serial 4
+#serial 6
 
 AC_DEFUN([AX_COMPILER_FLAGS_GIR],[
     AX_REQUIRE_DEFINED([AX_APPEND_FLAG])
 
     # Variable names
-    m4_define(ax_warn_scannerflags_variable,
+    m4_define([ax_warn_scannerflags_variable],
               [m4_normalize(ifelse([$1],,[WARN_SCANNERFLAGS],[$1]))])
 
     # Base flags
@@ -713,9 +727,9 @@ AC_DEFUN([AX_COMPILER_FLAGS_GIR],[
     AC_SUBST(ax_warn_scannerflags_variable)
 ])dnl AX_COMPILER_FLAGS
 
-# =============================================================================
-#  http://www.gnu.org/software/autoconf-archive/ax_compiler_flags_ldflags.html
-# =============================================================================
+# ==============================================================================
+#  https://www.gnu.org/software/autoconf-archive/ax_compiler_flags_ldflags.html
+# ==============================================================================
 #
 # SYNOPSIS
 #
@@ -740,15 +754,16 @@ AC_DEFUN([AX_COMPILER_FLAGS_GIR],[
 #   and this notice are preserved.  This file is offered as-is, without any
 #   warranty.
 
-#serial 5
+#serial 8
 
 AC_DEFUN([AX_COMPILER_FLAGS_LDFLAGS],[
     AX_REQUIRE_DEFINED([AX_APPEND_LINK_FLAGS])
     AX_REQUIRE_DEFINED([AX_APPEND_FLAG])
     AX_REQUIRE_DEFINED([AX_CHECK_COMPILE_FLAG])
+    AX_REQUIRE_DEFINED([AX_CHECK_LINK_FLAG])
 
     # Variable names
-    m4_define(ax_warn_ldflags_variable,
+    m4_define([ax_warn_ldflags_variable],
               [m4_normalize(ifelse([$1],,[WARN_LDFLAGS],[$1]))])
 
     # Always pass -Werror=unknown-warning-option to get Clang to fail on bad
@@ -762,9 +777,25 @@ AC_DEFUN([AX_COMPILER_FLAGS_LDFLAGS],[
         ax_compiler_flags_test=""
     ])
 
+    # macOS linker does not have --as-needed
+    AX_CHECK_LINK_FLAG([-Wl,--no-as-needed], [
+        ax_compiler_flags_as_needed_option="-Wl,--no-as-needed"
+    ], [
+        ax_compiler_flags_as_needed_option=""
+    ])
+
+    # macOS linker speaks with a different accent
+    ax_compiler_flags_fatal_warnings_option=""
+    AX_CHECK_LINK_FLAG([-Wl,--fatal-warnings], [
+        ax_compiler_flags_fatal_warnings_option="-Wl,--fatal-warnings"
+    ])
+    AX_CHECK_LINK_FLAG([-Wl,-fatal_warnings], [
+        ax_compiler_flags_fatal_warnings_option="-Wl,-fatal_warnings"
+    ])
+
     # Base flags
     AX_APPEND_LINK_FLAGS([ dnl
-        -Wl,--no-as-needed dnl
+        $ax_compiler_flags_as_needed_option dnl
         $3 dnl
     ],ax_warn_ldflags_variable,[$ax_compiler_flags_test])
 
@@ -781,7 +812,7 @@ AC_DEFUN([AX_COMPILER_FLAGS_LDFLAGS],[
         # suggest-attribute=format is disabled because it gives too many false
         # positives
         AX_APPEND_LINK_FLAGS([ dnl
-            -Wl,--fatal-warnings dnl
+            $ax_compiler_flags_fatal_warnings_option dnl
         ],ax_warn_ldflags_variable,[$ax_compiler_flags_test])
     ])
 

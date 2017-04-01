@@ -4519,7 +4519,7 @@ MAGICK_PATCHLEVEL_VERSION=4
 
 MAGICK_VERSION=6.9.8-4
 
-MAGICK_GIT_REVISION=11445:f48cb7d:20170325
+MAGICK_GIT_REVISION=11462:87be424:20170401
 
 
 # Substitute library versioning
@@ -9531,6 +9531,47 @@ else
 fi
 
 
+    # Check that -Wno-suggest-attribute=format is supported
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C compiler accepts -Wno-suggest-attribute=format" >&5
+$as_echo_n "checking whether C compiler accepts -Wno-suggest-attribute=format... " >&6; }
+if ${ax_cv_check_cflags___Wno_suggest_attribute_format+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+  ax_check_save_flags=$CFLAGS
+  CFLAGS="$CFLAGS  -Wno-suggest-attribute=format"
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"; then :
+  ax_cv_check_cflags___Wno_suggest_attribute_format=yes
+else
+  ax_cv_check_cflags___Wno_suggest_attribute_format=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+  CFLAGS=$ax_check_save_flags
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cflags___Wno_suggest_attribute_format" >&5
+$as_echo "$ax_cv_check_cflags___Wno_suggest_attribute_format" >&6; }
+if test "x$ax_cv_check_cflags___Wno_suggest_attribute_format" = xyes; then :
+
+        ax_compiler_no_suggest_attribute_flags="-Wno-suggest-attribute=format"
+
+else
+
+        ax_compiler_no_suggest_attribute_flags=""
+
+fi
+
+
     # Base flags
 
 
@@ -9732,7 +9773,7 @@ fi
 
 
 
-for flag in              -Wno-suggest-attribute=format         ; do
+for flag in              $ax_compiler_no_suggest_attribute_flags         ; do
   as_CACHEVAR=`$as_echo "ax_cv_check_cflags_$ax_compiler_flags_test_$flag" | $as_tr_sh`
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C compiler accepts $flag" >&5
 $as_echo_n "checking whether C compiler accepts $flag... " >&6; }
@@ -9971,6 +10012,47 @@ else
 fi
 
 
+    # Check that -Wno-suggest-attribute=format is supported
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -Wno-suggest-attribute=format" >&5
+$as_echo_n "checking whether C++ compiler accepts -Wno-suggest-attribute=format... " >&6; }
+if ${ax_cv_check_cxxflags___Wno_suggest_attribute_format+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+  ax_check_save_flags=$CXXFLAGS
+  CXXFLAGS="$CXXFLAGS  -Wno-suggest-attribute=format"
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"; then :
+  ax_cv_check_cxxflags___Wno_suggest_attribute_format=yes
+else
+  ax_cv_check_cxxflags___Wno_suggest_attribute_format=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+  CXXFLAGS=$ax_check_save_flags
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___Wno_suggest_attribute_format" >&5
+$as_echo "$ax_cv_check_cxxflags___Wno_suggest_attribute_format" >&6; }
+if test "x$ax_cv_check_cxxflags___Wno_suggest_attribute_format" = xyes; then :
+
+        ax_compiler_no_suggest_attribute_flags="-Wno-suggest-attribute=format"
+
+else
+
+        ax_compiler_no_suggest_attribute_flags=""
+
+fi
+
+
     # Base flags
 
 
@@ -10172,7 +10254,7 @@ fi
 
 
 
-for flag in              -Wno-suggest-attribute=format         ; do
+for flag in              $ax_compiler_no_suggest_attribute_flags         ; do
   as_CACHEVAR=`$as_echo "ax_cv_check_cxxflags_$ax_compiler_flags_test_$flag" | $as_tr_sh`
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts $flag" >&5
 $as_echo_n "checking whether C++ compiler accepts $flag... " >&6; }
@@ -10355,6 +10437,8 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 
+
+
     # Variable names
 
 
@@ -10403,12 +10487,133 @@ else
 fi
 
 
+    # macOS linker does not have --as-needed
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether the linker accepts -Wl,--no-as-needed" >&5
+$as_echo_n "checking whether the linker accepts -Wl,--no-as-needed... " >&6; }
+if ${ax_cv_check_ldflags___Wl___no_as_needed+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+  ax_check_save_flags=$LDFLAGS
+  LDFLAGS="$LDFLAGS  -Wl,--no-as-needed"
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ax_cv_check_ldflags___Wl___no_as_needed=yes
+else
+  ax_cv_check_ldflags___Wl___no_as_needed=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+  LDFLAGS=$ax_check_save_flags
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_ldflags___Wl___no_as_needed" >&5
+$as_echo "$ax_cv_check_ldflags___Wl___no_as_needed" >&6; }
+if test "x$ax_cv_check_ldflags___Wl___no_as_needed" = xyes; then :
+
+        ax_compiler_flags_as_needed_option="-Wl,--no-as-needed"
+
+else
+
+        ax_compiler_flags_as_needed_option=""
+
+fi
+
+
+    # macOS linker speaks with a different accent
+    ax_compiler_flags_fatal_warnings_option=""
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether the linker accepts -Wl,--fatal-warnings" >&5
+$as_echo_n "checking whether the linker accepts -Wl,--fatal-warnings... " >&6; }
+if ${ax_cv_check_ldflags___Wl___fatal_warnings+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+  ax_check_save_flags=$LDFLAGS
+  LDFLAGS="$LDFLAGS  -Wl,--fatal-warnings"
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ax_cv_check_ldflags___Wl___fatal_warnings=yes
+else
+  ax_cv_check_ldflags___Wl___fatal_warnings=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+  LDFLAGS=$ax_check_save_flags
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_ldflags___Wl___fatal_warnings" >&5
+$as_echo "$ax_cv_check_ldflags___Wl___fatal_warnings" >&6; }
+if test "x$ax_cv_check_ldflags___Wl___fatal_warnings" = xyes; then :
+
+        ax_compiler_flags_fatal_warnings_option="-Wl,--fatal-warnings"
+
+else
+  :
+fi
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether the linker accepts -Wl,-fatal_warnings" >&5
+$as_echo_n "checking whether the linker accepts -Wl,-fatal_warnings... " >&6; }
+if ${ax_cv_check_ldflags___Wl__fatal_warnings+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+  ax_check_save_flags=$LDFLAGS
+  LDFLAGS="$LDFLAGS  -Wl,-fatal_warnings"
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ax_cv_check_ldflags___Wl__fatal_warnings=yes
+else
+  ax_cv_check_ldflags___Wl__fatal_warnings=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+  LDFLAGS=$ax_check_save_flags
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_ldflags___Wl__fatal_warnings" >&5
+$as_echo "$ax_cv_check_ldflags___Wl__fatal_warnings" >&6; }
+if test "x$ax_cv_check_ldflags___Wl__fatal_warnings" = xyes; then :
+
+        ax_compiler_flags_fatal_warnings_option="-Wl,-fatal_warnings"
+
+else
+  :
+fi
+
+
     # Base flags
 
 
 
 
-for flag in          -Wl,--no-as-needed              ; do
+for flag in          $ax_compiler_flags_as_needed_option              ; do
   as_CACHEVAR=`$as_echo "ax_cv_check_ldflags_$ax_compiler_flags_test_$flag" | $as_tr_sh`
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether the linker accepts $flag" >&5
 $as_echo_n "checking whether the linker accepts $flag... " >&6; }
@@ -10573,7 +10778,7 @@ fi
 
 
 
-for flag in              -Wl,--fatal-warnings         ; do
+for flag in              $ax_compiler_flags_fatal_warnings_option         ; do
   as_CACHEVAR=`$as_echo "ax_cv_check_ldflags_$ax_compiler_flags_test_$flag" | $as_tr_sh`
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether the linker accepts $flag" >&5
 $as_echo_n "checking whether the linker accepts $flag... " >&6; }

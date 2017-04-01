@@ -221,7 +221,7 @@ static MagickBooleanType
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  AcquireAlignedMemory() returns a pointer to a block of memory at least size
-%  bytes whose address is a multiple of 16*sizeof(void *).
+%  bytes whose address is aligned on a page boundary.
 %
 %  The format of the AcquireAlignedMemory method is:
 %
@@ -250,10 +250,10 @@ MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
   if (HeapOverflowSanityCheck(count,quantum) != MagickFalse)
     return((void *) NULL);
   memory=NULL;
-  alignment=CACHE_LINE_SIZE;
+  alignment=GetMagickPageSize();
   size=count*quantum;
-  extent=AlignedExtent(size,alignment);
-  if ((size == 0) || (alignment < sizeof(void *)) || (extent < size))
+  extent=AlignedExtent(size,CACHE_LINE_SIZE);
+  if ((size == 0) || (extent < size))
     return((void *) NULL);
 #if defined(MAGICKCORE_HAVE_POSIX_MEMALIGN)
   if (posix_memalign(&memory,alignment,extent) != 0)
