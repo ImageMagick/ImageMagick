@@ -63,7 +63,7 @@
 #include "magick/resource_.h"
 #include "magick/semaphore.h"
 #include "magick/string_.h"
-#include "magick/utility-private.h"
+#include "magick/utility.h"
 
 /*
   Define declarations.
