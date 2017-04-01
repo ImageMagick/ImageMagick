@@ -51,6 +51,7 @@
 #include "MagickCore/string_.h"
 #include "MagickCore/thread_.h"
 #include "MagickCore/thread-private.h"
+#include "MagickCore/utility-private.h"
 
 /*
   Struct declaractions.
@@ -145,15 +146,15 @@ static void *AcquireSemaphoreMemory(const size_t count,const size_t quantum)
       return((void *) NULL);
     }
   memory=NULL;
-  alignment=CACHE_LINE_SIZE;
-  extent=AlignedExtent(size,alignment);
+  alignment=GetMagickPageSize();
+  extent=AlignedExtent(size,CACHE_LINE_SIZE);
   if ((size == 0) || (alignment < sizeof(void *)) || (extent < size))
     return((void *) NULL);
 #if defined(MAGICKCORE_HAVE_POSIX_MEMALIGN)
   if (posix_memalign(&memory,alignment,extent) != 0)
     memory=NULL;
 #elif defined(MAGICKCORE_HAVE__ALIGNED_MALLOC)
-  memory=_aligned_malloc(extent,alignment);
+   memory=_aligned_malloc(extent,alignment);
 #else
   {
     void
