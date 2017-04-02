@@ -1,4 +1,5 @@
 2017-03-26  6.9.8-4 Cristy  <quetzlzacatenango@image...>
+  * Minimize buffer copies to improve OpenCL performance.
   * Patch a PCD writer problem, dark pixels (reference
     https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=3164).
 
