@@ -1325,6 +1325,9 @@ RestoreMSCWarning
       version=(size_t) MagickMax(version,4);
   if (LocaleCompare(image_info->magick,"PDFA") == 0)
     version=(size_t) MagickMax(version,6);
+  profile=GetImageProfile(image,"icc");
+  if (profile != (StringInfo *) NULL) 
+    version=(size_t) MagickMax(version,7);
   (void) FormatLocaleString(buffer,MagickPathExtent,"%%PDF-1.%.20g \n",(double)
     version);
   (void) WriteBlobString(image,buffer);
