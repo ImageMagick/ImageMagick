@@ -183,7 +183,7 @@ MagickPrivate FxInfo *AcquireFxInfo(const Image *images,const char *expression,
   fx_info->exception=AcquireExceptionInfo();
   fx_info->images=images;
   fx_info->colors=NewSplayTree(CompareSplayTreeString,RelinquishMagickMemory,
-    RelinquishAlignedMemory);
+    RelinquishMagickMemory);
   fx_info->symbols=NewSplayTree(CompareSplayTreeString,RelinquishMagickMemory,
     RelinquishMagickMemory);
   fx_info->view=(CacheView **) AcquireQuantumMemory(GetImageListLength(
