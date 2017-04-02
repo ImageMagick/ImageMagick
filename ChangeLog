@@ -1,4 +1,5 @@
 2017-03-26  7.0.5-5 Cristy  <quetzlzacatenango@image...>
+  * Minimize buffer copies to improve OpenCL performance.
   * Morphology thinning is no longer a no-op (reference
     https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=31650).
   * Patch two PCD writer problems, corrupt output and dark pixels (reference
