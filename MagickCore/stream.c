@@ -55,6 +55,7 @@
 #include "MagickCore/memory-private.h"
 #include "MagickCore/pixel.h"
 #include "MagickCore/pixel-accessor.h"
+#include "MagickCore/policy.h"
 #include "MagickCore/quantum.h"
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/semaphore.h"
@@ -126,6 +127,9 @@ static Quantum
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif
+
+static ssize_t
+  cache_anonymous_memory = (-1);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -682,15 +686,42 @@ static inline MagickBooleanType AcquireStreamPixels(CacheInfo *cache_info,
 {
   if (cache_info->length != (MagickSizeType) ((size_t) cache_info->length))
     return(MagickFalse);
-  cache_info->mapped=MagickFalse;
-  cache_info->pixels=(Quantum *) AcquireAlignedMemory(1,(size_t)
-    cache_info->length);
-  if (cache_info->pixels == (Quantum *) NULL)
+  if (cache_anonymous_memory < 0)
     {
-      cache_info->mapped=MagickTrue;
-      cache_info->pixels=(Quantum *) MapBlob(-1,IOMode,0,(size_t)
-        cache_info->length);
+      char
+        *value;
+
+      /*
+        Does the security policy require anonymous mapping for pixel cache?
+      */
+      cache_anonymous_memory=0;
+      value=GetPolicyValue("pixel-cache-memory");
+      if (value == (char *) NULL)
+        value=GetPolicyValue("cache:memory-map");
+      if (LocaleCompare(value,"anonymous") == 0)
+        {
+#if defined(MAGICKCORE_HAVE_MMAP) && defined(MAP_ANONYMOUS)
+          cache_anonymous_memory=1;
+#else
+          (void) ThrowMagickException(exception,GetMagickModule(),
+            MissingDelegateError,"DelegateLibrarySupportNotBuiltIn",
+            "'%s' (policy requires anonymous memory mapping)",image->filename);
+#endif
+        }
+      value=DestroyString(value);
     }
+   if (cache_anonymous_memory <= 0)
+     {
+       cache_info->mapped=MagickFalse;
+       cache_info->pixels=(Quantum *) MagickAssumeAligned(
+         AcquireAlignedMemory(1,(size_t) cache_info->length));
+     }
+   else
+     {
+       cache_info->mapped=MagickTrue;
+       cache_info->pixels=(Quantum *) MapBlob(-1,IOMode,0,(size_t)
+         cache_info->length);
+     }
   if (cache_info->pixels == (Quantum *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
@@ -744,7 +775,7 @@ static const Quantum *GetVirtualPixelStream(const Image *image,
   number_pixels=(MagickSizeType) columns*rows;
   length=(size_t) number_pixels*cache_info->number_channels*sizeof(Quantum);
   if (cache_info->number_channels == 0)
-    length=number_pixels*sizeof(Quantum);
+    length=(size_t) number_pixels*sizeof(Quantum);
   if (cache_info->metacontent_extent != 0)
     length+=number_pixels*cache_info->metacontent_extent;
   if (cache_info->pixels == (Quantum *) NULL)
@@ -909,7 +940,7 @@ static Quantum *QueueAuthenticPixelsStream(Image *image,const ssize_t x,
   number_pixels=(MagickSizeType) columns*rows;
   length=(size_t) number_pixels*cache_info->number_channels*sizeof(Quantum);
   if (cache_info->number_channels == 0)
-    length=number_pixels*sizeof(Quantum);
+    length=(size_t) number_pixels*sizeof(Quantum);
   if (cache_info->metacontent_extent != 0)
     length+=number_pixels*cache_info->metacontent_extent;
   if (cache_info->pixels == (Quantum *) NULL)
