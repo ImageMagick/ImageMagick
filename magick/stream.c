@@ -54,6 +54,7 @@
 #include "magick/memory_.h"
 #include "magick/memory-private.h"
 #include "magick/pixel.h"
+#include "magick/policy.h"
 #include "magick/quantum.h"
 #include "magick/quantum-private.h"
 #include "magick/semaphore.h"
@@ -125,6 +126,12 @@ static PixelPacket
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif
+
+/*
+  Global declarations.
+*/
+static ssize_t
+  cache_anonymous_memory = (-1);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -647,15 +654,42 @@ static inline MagickBooleanType AcquireStreamPixels(CacheInfo *cache_info,
 {
   if (cache_info->length != (MagickSizeType) ((size_t) cache_info->length))
     return(MagickFalse);
-  cache_info->mapped=MagickFalse;
-  cache_info->pixels=(PixelPacket *) MagickAssumeAligned(AcquireAlignedMemory(1,
-    (size_t) cache_info->length));
-  if (cache_info->pixels == (PixelPacket *) NULL)
+  if (cache_anonymous_memory < 0)
     {
-      cache_info->mapped=MagickTrue;
-      cache_info->pixels=(PixelPacket *) MapBlob(-1,IOMode,0,(size_t)
-        cache_info->length);
+      char
+        *value;
+
+      /*
+        Does the security policy require anonymous mapping for pixel cache?
+      */
+      cache_anonymous_memory=0;
+      value=GetPolicyValue("pixel-cache-memory");
+      if (value == (char *) NULL)
+        value=GetPolicyValue("cache:memory-map");
+      if (LocaleCompare(value,"anonymous") == 0)
+        {
+#if defined(MAGICKCORE_HAVE_MMAP) && defined(MAP_ANONYMOUS)
+          cache_anonymous_memory=1;
+#else
+          (void) ThrowMagickException(exception,GetMagickModule(),
+            MissingDelegateError,"DelegateLibrarySupportNotBuiltIn",
+            "'%s' (policy requires anonymous memory mapping)",image->filename);
+#endif
+        }
+      value=DestroyString(value);
     }
+   if (cache_anonymous_memory <= 0)
+     {
+       cache_info->mapped=MagickFalse;
+       cache_info->pixels=(PixelPacket *) MagickAssumeAligned(
+         AcquireAlignedMemory(1,(size_t) cache_info->length));
+     }
+   else
+     {
+       cache_info->mapped=MagickTrue;
+       cache_info->pixels=(PixelPacket *) MapBlob(-1,IOMode,0,(size_t)
+         cache_info->length);
+     }
   if (cache_info->pixels == (PixelPacket *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
