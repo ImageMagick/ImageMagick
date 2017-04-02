@@ -96,8 +96,7 @@ void Magick::Pixels::sync(void)
   ThrowPPException(_image.quiet());
 }
 
-// Return pixel colormap index array
-/*
+// Return pixel meta content
 Magick::void* Magick::Pixels::metacontent(void)
 {
   void* pixel_metacontent=GetCacheViewAuthenticMetacontent(_view);
@@ -107,7 +106,6 @@ Magick::void* Magick::Pixels::metacontent(void)
 
   return pixel_metacontent;
 }
-*/
 
 Magick::PixelData::PixelData(Magick::Image &image_,std::string map_,
   const StorageType type_)
