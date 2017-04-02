@@ -1326,7 +1326,7 @@ RestoreMSCWarning
   if (LocaleCompare(image_info->magick,"PDFA") == 0)
     version=(size_t) MagickMax(version,6);
   profile=GetImageProfile(image,"icc");
-  if (profile != (StringInfo *) NULL) 
+  if (profile != (StringInfo *) NULL)
     version=(size_t) MagickMax(version,7);
   (void) FormatLocaleString(buffer,MagickPathExtent,"%%PDF-1.%.20g \n",(double)
     version);
@@ -2167,6 +2167,7 @@ RestoreMSCWarning
     (void) FormatLocaleString(buffer,MagickPathExtent,"%.20g 0 obj\n",(double)
       object);
     (void) WriteBlobString(image,buffer);
+    device="DeviceRGB";
     channels=0;
     if (image->colorspace == CMYKColorspace)
       {
@@ -2197,8 +2198,9 @@ RestoreMSCWarning
           (void) FormatLocaleString(buffer,MagickPathExtent,"\%s\n",device);
         else
           (void) FormatLocaleString(buffer,MagickPathExtent,
-            "[ /Indexed /DeviceRGB %.20g %.20g 0 R ]\n",(double) image->colors-
+            "[ /Indexed /%s %.20g %.20g 0 R ]\n",device,(double) image->colors-
             1,(double) object+3);
+
         (void) WriteBlobString(image,buffer);
       }
     else
