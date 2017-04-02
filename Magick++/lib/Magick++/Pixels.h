@@ -36,8 +36,8 @@ namespace Magick
     const Quantum *getConst(const ::ssize_t x_,const ::ssize_t y_,
       const size_t columns_,const size_t rows_);
 
-    // Return pixel colormap index array
-    //Quantum *metacontent(void);
+    // Return pixel metacontent
+    void *metacontent(void);
 
     // Returns the offset for the specified channel.
     ssize_t offset(PixelChannel channel) const;

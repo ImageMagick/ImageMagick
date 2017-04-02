@@ -97,12 +97,9 @@ void Magick::Pixels::sync(void)
 }
 
 // Return pixel meta content
-Magick::void* Magick::Pixels::metacontent(void)
+void* Magick::Pixels::metacontent(void)
 {
   void* pixel_metacontent=GetCacheViewAuthenticMetacontent(_view);
-
-  if (!pixel_metacontent)
-    _image.throwImageException();
 
   return pixel_metacontent;
 }
