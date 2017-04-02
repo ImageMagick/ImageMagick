@@ -2,6 +2,8 @@
   * Minimize buffer copies to improve OpenCL performance.
   * Patch a PCD writer problem, dark pixels (reference
     https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=3164).
+  * Support ICC based PDF's (reference
+    https://github.com/ImageMagick/ImageMagick/issues/417).
 
 2017-03-24  6.9.8-3 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 6.9.8-3, GIT revision 11444:3f523e5:20170324.

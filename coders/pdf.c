@@ -1080,8 +1080,8 @@ static size_t UTF8ToUTF16(const unsigned char *utf8,wchar_t *utf16)
               return(0);
         q++;
       }
-      *q++='\0';
-      return(q-utf16);
+      *q++=(wchar_t) '\0';
+      return((size_t) (q-utf16));
     }
   /*
     Compute UTF-16 string length.
@@ -1110,7 +1110,7 @@ static size_t UTF8ToUTF16(const unsigned char *utf8,wchar_t *utf16)
        else
          return(0);
   }
-  return(p-utf8);
+  return((size_t) (p-utf8));
 }
 
 static wchar_t *ConvertUTF8ToUTF16(const unsigned char *source,size_t *length)
@@ -1241,8 +1241,12 @@ RestoreMSCWarning
     compression;
 
   const char
+    *device,
     *option,
     *value;
+
+  const StringInfo
+    *profile;
 
   double
     pointsize;
@@ -1292,6 +1296,7 @@ RestoreMSCWarning
     x;
 
   size_t
+    channels,
     info_id,
     length,
     object,
@@ -2174,27 +2179,71 @@ RestoreMSCWarning
       Write Colorspace object.
     */
     xref[object++]=TellBlob(image);
-    (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g 0 obj\n",(double)
+    (void) FormatLocaleString(buffer,MagickPathExtent,"%.20g 0 obj\n",(double)
       object);
     (void) WriteBlobString(image,buffer);
+    channels=0;
     if (image->colorspace == CMYKColorspace)
-      (void) CopyMagickString(buffer,"/DeviceCMYK\n",MaxTextExtent);
+      {
+        device="DeviceCMYK";
+        channels=4;
+      }
     else
       if ((compression == FaxCompression) ||
           (compression == Group4Compression) ||
           ((image_info->type != TrueColorType) &&
            (SetImageGray(image,&image->exception) != MagickFalse)))
-          (void) CopyMagickString(buffer,"/DeviceGray\n",MaxTextExtent);
+        {
+          device="DeviceGray";
+          channels=1;
+        }
       else
-        if ((image->storage_class == DirectClass) || (image->colors > 256) ||
-            (compression == JPEGCompression) ||
+        if ((image->storage_class == DirectClass) ||
+            (image->colors > 256) || (compression == JPEGCompression) ||
             (compression == JPEG2000Compression))
-          (void) CopyMagickString(buffer,"/DeviceRGB\n",MaxTextExtent);
+          {
+            device="DeviceRGB";
+            channels=3;
+          }
+    profile=GetImageProfile(image,"icc");
+    if ((profile == (StringInfo *) NULL) || (channels == 0))
+      {
+        if (channels != 0)
+          (void) FormatLocaleString(buffer,MagickPathExtent,"\%s\n",device);
         else
-          (void) FormatLocaleString(buffer,MaxTextExtent,
+          (void) FormatLocaleString(buffer,MagickPathExtent,
             "[ /Indexed /DeviceRGB %.20g %.20g 0 R ]\n",(double) image->colors-
             1,(double) object+3);
-    (void) WriteBlobString(image,buffer);
+        (void) WriteBlobString(image,buffer);
+      }
+    else
+      {
+        const unsigned char
+          *p;
+
+        /*
+          Write ICC profile.
+        */
+        (void) FormatLocaleString(buffer,MagickPathExtent,
+          "[/ICCBased %.20g 0 R]\n",(double) object+1);
+        (void) WriteBlobString(image,buffer);
+        (void) WriteBlobString(image,"endobj\n");
+        xref[object++]=TellBlob(image);
+        (void) FormatLocaleString(buffer,MagickPathExtent,"%.20g 0 obj\n",
+          (double) object);
+        (void) WriteBlobString(image,buffer);
+        (void) FormatLocaleString(buffer,MagickPathExtent,"<<\n/N %.20g\n"
+          "/Filter /ASCIIHexDecode\n/Length %.20g\n/Alternate /%s\n>>\n"
+          "stream\n",(double) channels,2.0*GetStringInfoLength(profile),device);
+        (void) WriteBlobString(image,buffer);
+        p=GetStringInfoDatum(profile);
+        for (i=0; i < (ssize_t) GetStringInfoLength(profile); i++)
+        {
+          (void) FormatLocaleString(buffer,MagickPathExtent,"%02x",*p++);
+          (void) WriteBlobString(image,buffer);
+        }
+        (void) WriteBlobString(image,"\nendstream\n");
+      }
     (void) WriteBlobString(image,"endobj\n");
     /*
       Write Thumb object.
@@ -2828,7 +2877,7 @@ RestoreMSCWarning
       (void) FormatLocaleString(buffer,MaxTextExtent,"/Title (\xfe\xff");
       (void) WriteBlobString(image,buffer);
       for (i=0; i < (ssize_t) length; i++)
-        WriteBlobMSBShort(image,(unsigned short) utf16[i]);
+        (void) WriteBlobMSBShort(image,(unsigned short) utf16[i]);
       (void) FormatLocaleString(buffer,MaxTextExtent,")\n");
       (void) WriteBlobString(image,buffer);
       utf16=(wchar_t *) RelinquishMagickMemory(utf16);
