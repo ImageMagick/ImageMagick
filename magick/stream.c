@@ -673,7 +673,8 @@ static inline MagickBooleanType AcquireStreamPixels(CacheInfo *cache_info,
 #else
           (void) ThrowMagickException(exception,GetMagickModule(),
             MissingDelegateError,"DelegateLibrarySupportNotBuiltIn",
-            "'%s' (policy requires anonymous memory mapping)",image->filename);
+            "'%s' (policy requires anonymous memory mapping)",
+            cache_info->filename);
 #endif
         }
       value=DestroyString(value);
