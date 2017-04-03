@@ -2195,7 +2195,7 @@ RestoreMSCWarning
     if ((profile == (StringInfo *) NULL) || (channels == 0))
       {
         if (channels != 0)
-          (void) FormatLocaleString(buffer,MagickPathExtent,"\%s\n",device);
+          (void) FormatLocaleString(buffer,MagickPathExtent,"/%s\n",device);
         else
           (void) FormatLocaleString(buffer,MagickPathExtent,
             "[ /Indexed /%s %.20g %.20g 0 R ]\n",device,(double) image->colors-
