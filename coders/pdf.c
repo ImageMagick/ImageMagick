@@ -2220,16 +2220,28 @@ RestoreMSCWarning
           (double) object);
         (void) WriteBlobString(image,buffer);
         (void) FormatLocaleString(buffer,MagickPathExtent,"<<\n/N %.20g\n"
-          "/Filter /ASCIIHexDecode\n/Length %.20g\n/Alternate /%s\n>>\n"
-          "stream\n",(double) channels,2.0*GetStringInfoLength(profile),device);
+          "/Filter /ASCII85Decode\n/Length %.20g 0 R\n/Alternate /%s\n>>\n"
+          "stream\n",(double) channels,(double) object+1,device);
         (void) WriteBlobString(image,buffer);
+        offset=TellBlob(image);
+        Ascii85Initialize(image);
         p=GetStringInfoDatum(profile);
         for (i=0; i < (ssize_t) GetStringInfoLength(profile); i++)
-        {
-          (void) FormatLocaleString(buffer,MagickPathExtent,"%02x",*p++);
-          (void) WriteBlobString(image,buffer);
-        }
-        (void) WriteBlobString(image,"\nendstream\n");
+          Ascii85Encode(image,(unsigned char) *p++);
+        Ascii85Flush(image);
+        offset=TellBlob(image)-offset;
+        (void) WriteBlobString(image,"endstream\n");
+        (void) WriteBlobString(image,"endobj\n");
+        /*
+          Write Length object.
+        */
+        xref[object++]=TellBlob(image);
+        (void) FormatLocaleString(buffer,MagickPathExtent,"%.20g 0 obj\n",
+          (double) object);
+        (void) WriteBlobString(image,buffer);
+        (void) FormatLocaleString(buffer,MagickPathExtent,"%.20g\n",(double)
+          offset);
+        (void) WriteBlobString(image,buffer);
       }
     (void) WriteBlobString(image,"endobj\n");
     /*
