@@ -1230,7 +1230,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
       for ( ; image; image=image->next)
       {
         (void) SetImageProperty(image,attribute,SvPV(sval,na),exception);
-        (void) SetImageArtifact(image,attribute,SvPV(sval,na))
+        (void) SetImageArtifact(image,attribute,SvPV(sval,na));
       }
       break;
     }
@@ -1338,7 +1338,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
       for ( ; image; image=image->next)
       {
         (void) SetImageProperty(image,attribute,SvPV(sval,na),exception);
-        (void) SetImageArtifact(image,attribute,SvPV(sval,na))
+        (void) SetImageArtifact(image,attribute,SvPV(sval,na));
       }
       break;
     }
@@ -1444,7 +1444,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
       for ( ; image; image=image->next)
       {
         (void) SetImageProperty(image,attribute,SvPV(sval,na),exception);
-        (void) SetImageArtifact(image,attribute,SvPV(sval,na))
+        (void) SetImageArtifact(image,attribute,SvPV(sval,na));
       }
       break;
     }
@@ -1480,7 +1480,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
       for ( ; image; image=image->next)
       {
         (void) SetImageProperty(image,attribute,SvPV(sval,na),exception);
-        (void) SetImageArtifact(image,attribute,SvPV(sval,na))
+        (void) SetImageArtifact(image,attribute,SvPV(sval,na));
       }
       break;
     }
@@ -1553,7 +1553,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
       for ( ; image; image=image->next)
       {
         (void) SetImageProperty(image,attribute,SvPV(sval,na),exception);
-        (void) SetImageArtifact(image,attribute,SvPV(sval,na))
+        (void) SetImageArtifact(image,attribute,SvPV(sval,na));
       }
       break;
     }
@@ -1600,7 +1600,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
       for ( ; image; image=image->next)
       {
         (void) SetImageProperty(image,attribute,SvPV(sval,na),exception);
-        (void) SetImageArtifact(image,attribute,SvPV(sval,na))
+        (void) SetImageArtifact(image,attribute,SvPV(sval,na));
       }
       break;
     }
@@ -1670,7 +1670,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
       for ( ; image; image=image->next)
       {
         (void) SetImageProperty(image,attribute,SvPV(sval,na),exception);
-        (void) SetImageArtifact(image,attribute,SvPV(sval,na))
+        (void) SetImageArtifact(image,attribute,SvPV(sval,na));
       }
       break;
     }
@@ -1692,7 +1692,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
       for ( ; image; image=image->next)
       {
         (void) SetImageProperty(image,attribute,SvPV(sval,na),exception);
-        (void) SetImageArtifact(image,attribute,SvPV(sval,na))
+        (void) SetImageArtifact(image,attribute,SvPV(sval,na));
       }
       break;
     }
@@ -1790,7 +1790,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
       for ( ; image; image=image->next)
       {
         (void) SetImageProperty(image,attribute,SvPV(sval,na),exception);
-        (void) SetImageArtifact(image,attribute,SvPV(sval,na))
+        (void) SetImageArtifact(image,attribute,SvPV(sval,na));
       }
       break;
     }
@@ -1824,7 +1824,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
       for ( ; image; image=image->next)
       {
         (void) SetImageProperty(image,attribute,SvPV(sval,na),exception);
-        (void) SetImageArtifact(image,attribute,SvPV(sval,na))
+        (void) SetImageArtifact(image,attribute,SvPV(sval,na));
       }
       break;
     }
@@ -1914,7 +1914,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
       for ( ; image; image=image->next)
       {
         (void) SetImageProperty(image,attribute,SvPV(sval,na),exception);
-        (void) SetImageArtifact(image,attribute,SvPV(sval,na))
+        (void) SetImageArtifact(image,attribute,SvPV(sval,na));
       }
       break;
     }
@@ -1934,7 +1934,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
       for ( ; image; image=image->next)
       {
         (void) SetImageProperty(image,attribute,SvPV(sval,na),exception);
-        (void) SetImageArtifact(image,attribute,SvPV(sval,na))
+        (void) SetImageArtifact(image,attribute,SvPV(sval,na));
       }
       break;
     }
@@ -2025,7 +2025,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
       for ( ; image; image=image->next)
       {
         (void) SetImageProperty(image,attribute,SvPV(sval,na),exception);
-        (void) SetImageArtifact(image,attribute,SvPV(sval,na))
+        (void) SetImageArtifact(image,attribute,SvPV(sval,na));
       }
       break;
     }
@@ -2078,7 +2078,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
       for ( ; image; image=image->next)
       {
         (void) SetImageProperty(image,attribute,SvPV(sval,na),exception);
-        (void) SetImageArtifact(image,attribute,SvPV(sval,na))
+        (void) SetImageArtifact(image,attribute,SvPV(sval,na));
       }
       break;
     }
@@ -2160,7 +2160,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
       for ( ; image; image=image->next)
       {
         (void) SetImageProperty(image,attribute,SvPV(sval,na),exception);
-        (void) SetImageArtifact(image,attribute,SvPV(sval,na))
+        (void) SetImageArtifact(image,attribute,SvPV(sval,na));
       }
       break;
     }
@@ -2217,7 +2217,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
       for ( ; image; image=image->next)
       {
         (void) SetImageProperty(image,attribute,SvPV(sval,na),exception);
-        (void) SetImageArtifact(image,attribute,SvPV(sval,na))
+        (void) SetImageArtifact(image,attribute,SvPV(sval,na));
       }
       break;
     }
@@ -2257,7 +2257,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
       for ( ; image; image=image->next)
       {
         (void) SetImageProperty(image,attribute,SvPV(sval,na),exception);
-        (void) SetImageArtifact(image,attribute,SvPV(sval,na))
+        (void) SetImageArtifact(image,attribute,SvPV(sval,na));
       }
       break;
     }
@@ -2294,7 +2294,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
       for ( ; image; image=image->next)
       {
         (void) SetImageProperty(image,attribute,SvPV(sval,na),exception);
-        (void) SetImageArtifact(image,attribute,SvPV(sval,na))
+        (void) SetImageArtifact(image,attribute,SvPV(sval,na));
       }
       break;
     }
@@ -2305,7 +2305,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
       for ( ; image; image=image->next)
       {
         (void) SetImageProperty(image,attribute,SvPV(sval,na),exception);
-        (void) SetImageArtifact(image,attribute,SvPV(sval,na))
+        (void) SetImageArtifact(image,attribute,SvPV(sval,na));
       }
       break;
     }
