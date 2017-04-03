@@ -2209,7 +2209,7 @@ RestoreMSCWarning
           *p;
 
         /*
-          Write ICC profile.
+          Write ICC profile. 
         */
         (void) FormatLocaleString(buffer,MagickPathExtent,
           "[/ICCBased %.20g 0 R]\n",(double) object+1);
