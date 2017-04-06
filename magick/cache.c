@@ -2932,6 +2932,9 @@ MagickExport const PixelPacket *GetVirtualPixelsFromNexus(const Image *image,
   assert(cache_info->signature == MagickSignature);
   if (cache_info->type == UndefinedCache)
     return((const PixelPacket *) NULL);
+#if defined(MAGICKCORE_OPENCL_SUPPORT)
+  CopyOpenCLBuffer(cache_info);
+#endif
   region.x=x;
   region.y=y;
   region.width=columns;
