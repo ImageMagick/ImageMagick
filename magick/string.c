@@ -1110,8 +1110,8 @@ MagickExport ssize_t FormatMagickSize(const MagickSizeType size,
   count=0;
   for (j=2; j < 12; j++)
   {
-    count=FormatLocaleString(format,MaxTextExtent,"%.*g%sB",(int) (i+j),length,
-      units[i]);
+    count=FormatLocaleString(format,MaxTextExtent,"%.*g%sB",
+      GetMagickPrecision(),length,units[i]);
     if (strchr(format,'+') == (char *) NULL)
       break;
   }
