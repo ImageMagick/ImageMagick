@@ -195,8 +195,8 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
       status=(resource_info.area_limit == MagickResourceInfinity) ||
         (size < limit) ? MagickTrue : MagickFalse;
       (void) FormatMagickSize((MagickSizeType) resource_info.area,MagickFalse,
-        "B",MagickFormatExtent,resource_current);
-      (void) FormatMagickSize(resource_info.area_limit,MagickFalse,"B",
+        "P",MagickFormatExtent,resource_current);
+      (void) FormatMagickSize(resource_info.area_limit,MagickFalse,"P",
         MagickFormatExtent,resource_limit);
       break;
     }
