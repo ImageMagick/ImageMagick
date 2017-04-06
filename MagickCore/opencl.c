@@ -1630,6 +1630,13 @@ MagickPrivate MagickBooleanType EnqueueOpenCLKernel(cl_command_queue queue,
     }
   status=openCL_library->clEnqueueNDRangeKernel(queue,kernel,work_dim,offset,
     gsize,lsize,event_count,events,&event);
+  /* This can fail due to memory issues and calling clFinish might help. */
+  if ((status != CL_SUCCESS) && (event_count > 0))
+    {
+      openCL_library->clFinish(queue);
+      status=openCL_library->clEnqueueNDRangeKernel(queue,kernel,work_dim,
+        offset,gsize,lsize,event_count,events,&event);
+    }
   if ((output_info != (CacheInfo *) NULL) &&
       (output_info->opencl->event_count > 0))
     events=(cl_event *) RelinquishMagickMemory(events);
