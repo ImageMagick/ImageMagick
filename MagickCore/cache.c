@@ -2632,6 +2632,9 @@ MagickPrivate const Quantum *GetVirtualPixelsFromNexus(const Image *image,
   assert(cache_info->signature == MagickCoreSignature);
   if (cache_info->type == UndefinedCache)
     return((const Quantum *) NULL);
+#if defined(MAGICKCORE_OPENCL_SUPPORT)
+  CopyOpenCLBuffer(cache_info);
+#endif
   region.x=x;
   region.y=y;
   region.width=columns;
