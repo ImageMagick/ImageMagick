@@ -661,7 +661,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
           image->error.normalized_maximum_error);
       if (GetBlobSize(image) != 0)
         {
-          (void) FormatMagickSize(GetBlobSize(image),MagickFalse,"B",
+          (void) FormatMagickSize(GetBlobSize(image),MagickTrue,"B",
             MagickPathExtent,format);
           (void) FormatLocaleFile(file,"%s ",format);
         }
@@ -1469,11 +1469,11 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
     }
   (void) FormatLocaleFile(file,"  Tainted: %s\n",CommandOptionToMnemonic(
     MagickBooleanOptions,(ssize_t) image->taint));
-  (void) FormatMagickSize(GetBlobSize(image),MagickFalse,"B",MagickPathExtent,
+  (void) FormatMagickSize(GetBlobSize(image),MagickTrue,"B",MagickPathExtent,
     format);
   (void) FormatLocaleFile(file,"  Filesize: %s\n",format);
   (void) FormatMagickSize((MagickSizeType) image->columns*image->rows,
-    MagickFalse,"B",MagickPathExtent,format);
+    MagickFalse,"P",MagickPathExtent,format);
   if (strlen(format) > 1)
     format[strlen(format)-1]='\0';
   (void) FormatLocaleFile(file,"  Number pixels: %s\n",format);
