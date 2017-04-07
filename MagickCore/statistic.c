@@ -2414,7 +2414,7 @@ static PixelList *DestroyPixelList(PixelList *pixel_list)
   if (pixel_list == (PixelList *) NULL)
     return((PixelList *) NULL);
   if (pixel_list->skip_list.nodes != (SkipNode *) NULL)
-    pixel_list->skip_list.nodes=(SkipNode *) RelinquishMagickMemory(
+    pixel_list->skip_list.nodes=(SkipNode *) RelinquishAlignedMemory(
       pixel_list->skip_list.nodes);
   pixel_list=(PixelList *) RelinquishMagickMemory(pixel_list);
   return(pixel_list);
@@ -2443,7 +2443,7 @@ static PixelList *AcquirePixelList(const size_t width,const size_t height)
     return(pixel_list);
   (void) ResetMagickMemory((void *) pixel_list,0,sizeof(*pixel_list));
   pixel_list->length=width*height;
-  pixel_list->skip_list.nodes=(SkipNode *) AcquireQuantumMemory(65537UL,
+  pixel_list->skip_list.nodes=(SkipNode *) AcquireAlignedMemory(65537UL,
     sizeof(*pixel_list->skip_list.nodes));
   if (pixel_list->skip_list.nodes == (SkipNode *) NULL)
     return(DestroyPixelList(pixel_list));
