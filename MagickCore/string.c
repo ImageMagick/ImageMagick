@@ -1125,11 +1125,11 @@ MagickExport ssize_t FormatMagickSize(const MagickSizeType size,
   for (j=2; j < 12; j++)
   {
     if (suffix == (const char *) NULL)
-      count=FormatLocaleString(format,length,"%.*g%s",(int) (i+j),extent,
-        units[i]);
+      count=FormatLocaleString(format,length,"%.*g%s",GetMagickPrecision(),
+        extent,units[i]);
     else
-      count=FormatLocaleString(format,length,"%.*g%s%s",(int) (i+j),extent,
-        units[i],suffix);
+      count=FormatLocaleString(format,length,"%.*g%s%s",GetMagickPrecision(),
+        extent,units[i],suffix);
     if (strchr(format,'+') == (char *) NULL)
       break;
   }
