@@ -60,6 +60,7 @@
 #include "MagickCore/exception-private.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/memory-private.h"
+#include "MagickCore/policy.h"
 #include "MagickCore/resource_.h"
 #include "MagickCore/semaphore.h"
 #include "MagickCore/string_.h"
@@ -569,6 +570,9 @@ MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
   size_t
     extent;
 
+  static ssize_t
+    virtual_anonymous_memory = (-1);
+
   if (HeapOverflowSanityCheck(count,quantum) != MagickFalse)
     return((MemoryInfo *) NULL);
   memory_info=(MemoryInfo *) MagickAssumeAligned(AcquireAlignedMemory(1,
@@ -579,64 +583,88 @@ MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
   extent=count*quantum;
   memory_info->length=extent;
   memory_info->signature=MagickCoreSignature;
-  if (AcquireMagickResource(MemoryResource,extent) != MagickFalse)
+  if (virtual_anonymous_memory < 0)
     {
-      memory_info->blob=AcquireAlignedMemory(1,extent);
-      if (memory_info->blob != NULL)
-        {
-          memory_info->type=AlignedVirtualMemory;
-          return(memory_info);
-        }
-    }
-  RelinquishMagickResource(MemoryResource,extent);
-  if (AcquireMagickResource(MapResource,extent) != MagickFalse)
-    {
+      char
+        *value;
+
       /*
-        Heap memory failed, try anonymous memory mapping.
+        Does the security policy require anonymous mapping for pixel cache?
       */
-      memory_info->blob=MapBlob(-1,IOMode,0,extent);
-      if (memory_info->blob != NULL)
+      virtual_anonymous_memory=0;
+      value=GetPolicyValue("system:memory-map");
+      if (LocaleCompare(value,"anonymous") == 0)
         {
-          memory_info->type=MapVirtualMemory;
-          return(memory_info);
+#if defined(MAGICKCORE_HAVE_MMAP) && defined(MAP_ANONYMOUS)
+          virtual_anonymous_memory=1;
+#endif
         }
-      if (AcquireMagickResource(DiskResource,extent) != MagickFalse)
+      value=DestroyString(value);
+    }
+  if (virtual_anonymous_memory <= 0)
+    {
+      if (AcquireMagickResource(MemoryResource,extent) != MagickFalse)
         {
-          int
-            file;
-
-          /*
-            Anonymous memory mapping failed, try file-backed memory mapping.
-            If the MapResource request failed, there is no point in trying
-            file-backed memory mapping.
-          */
-          file=AcquireUniqueFileResource(memory_info->filename);
-          if (file != -1)
+          memory_info->blob=AcquireAlignedMemory(1,extent);
+          if (memory_info->blob != NULL)
             {
-              MagickOffsetType
-                offset;
-
-              offset=(MagickOffsetType) lseek(file,extent-1,SEEK_SET);
-              if ((offset == (MagickOffsetType) (extent-1)) &&
-                  (write(file,"",1) == 1))
-                {
-                  memory_info->blob=MapBlob(file,IOMode,0,extent);
-                  if (memory_info->blob != NULL)
-                    {
-                      (void) close(file);
-                      memory_info->type=MapVirtualMemory;
-                      return(memory_info);
-                    }
-                }
-              /*
-                File-backed memory mapping failed, delete the temporary file.
-              */
-              (void) close(file);
-              (void) RelinquishUniqueFileResource(memory_info->filename);
-              *memory_info->filename = '\0';
+              memory_info->type=AlignedVirtualMemory;
+              return(memory_info);
             }
         }
-      RelinquishMagickResource(DiskResource,extent);
+      RelinquishMagickResource(MemoryResource,extent);
+    }
+  else
+    {
+      if (AcquireMagickResource(MapResource,extent) != MagickFalse)
+        {
+          /*
+            Acquire anonymous memory map.
+          */
+          memory_info->blob=MapBlob(-1,IOMode,0,extent);
+          if (memory_info->blob != NULL)
+            {
+              memory_info->type=MapVirtualMemory;
+              return(memory_info);
+            }
+          if (AcquireMagickResource(DiskResource,extent) != MagickFalse)
+            {
+              int
+                file;
+
+              /*
+                Anonymous memory mapping failed, try file-backed memory mapping.
+                If the MapResource request failed, there is no point in trying
+                file-backed memory mapping.
+              */
+              file=AcquireUniqueFileResource(memory_info->filename);
+              if (file != -1)
+                {
+                  MagickOffsetType
+                    offset;
+
+                  offset=(MagickOffsetType) lseek(file,extent-1,SEEK_SET);
+                  if ((offset == (MagickOffsetType) (extent-1)) &&
+                      (write(file,"",1) == 1))
+                    {
+                      memory_info->blob=MapBlob(file,IOMode,0,extent);
+                      if (memory_info->blob != NULL)
+                        {
+                          (void) close(file);
+                          memory_info->type=MapVirtualMemory;
+                          return(memory_info);
+                        }
+                    }
+                  /*
+                    File-backed memory mapping fail, delete the temporary file.
+                  */
+                  (void) close(file);
+                  (void) RelinquishUniqueFileResource(memory_info->filename);
+                  *memory_info->filename = '\0';
+                }
+            }
+          RelinquishMagickResource(DiskResource,extent);
+        }
     }
   RelinquishMagickResource(MapResource,extent);
   if (memory_info->blob == NULL)
