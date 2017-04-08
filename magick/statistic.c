@@ -2994,7 +2994,7 @@ static PixelList *AcquirePixelList(const size_t width,const size_t height)
   pixel_list->length=width*height;
   for (i=0; i < ListChannels; i++)
   {
-    pixel_list->lists[i].nodes=(ListNode *) AcquireAlignemdMemory(65537UL,
+    pixel_list->lists[i].nodes=(ListNode *) AcquireAlignedMemory(65537UL,
       sizeof(*pixel_list->lists[i].nodes));
     if (pixel_list->lists[i].nodes == (ListNode *) NULL)
       return(DestroyPixelList(pixel_list));
