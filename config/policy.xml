@@ -64,6 +64,7 @@
 <policymap>
   <!-- <policy domain="system" name="shred" value="2"/> -->
   <!-- <policy domain="system" name="precision" value="6"/> -->
+  <!-- <policy domain="system" name="memory-map" value="anonymous"/> -->
   <!-- <policy domain="resource" name="temporary-path" value="/tmp"/> -->
   <!-- <policy domain="resource" name="memory" value="2GiB"/> -->
   <!-- <policy domain="resource" name="map" value="4GiB"/> -->
