@@ -649,7 +649,7 @@ MagickExport StringInfo *ConfigureFileToStringInfo(const char *filename)
   (void) CopyMagickString(string_info->path,filename,MaxTextExtent);
   string_info->length=length;
   if (string_info->datum != (unsigned char *) NULL)
-    string_info->datum=(unsigned char *) RelinquishMagickMemory( 
+    string_info->datum=(unsigned char *) RelinquishMagickMemory(
       string_info->datum);
   string_info->datum=(unsigned char *) string;
   return(string_info);
@@ -1027,7 +1027,7 @@ MagickExport StringInfo *FileToStringInfo(const char *filename,
   string_info=AcquireStringInfo(0);
   (void) CopyMagickString(string_info->path,filename,MaxTextExtent);
   if (string_info->datum != (unsigned char *) NULL)
-    string_info->datum=(unsigned char *) RelinquishMagickMemory( 
+    string_info->datum=(unsigned char *) RelinquishMagickMemory(
       string_info->datum);
   string_info->datum=FileToBlob(filename,extent,&string_info->length,exception);
   if (string_info->datum == (unsigned char *) NULL)
@@ -1077,8 +1077,7 @@ MagickExport ssize_t FormatMagickSize(const MagickSizeType size,
     length;
 
   register ssize_t
-    i,
-    j;
+    i;
 
   ssize_t
     count;
@@ -1107,14 +1106,17 @@ MagickExport ssize_t FormatMagickSize(const MagickSizeType size,
 #endif
   for (i=0; (length >= bytes) && (units[i+1] != (const char *) NULL); i++)
     length/=bytes;
-  count=0;
-  for (j=2; j < 12; j++)
-  {
-    count=FormatLocaleString(format,MaxTextExtent,"%.*g%sB",
-      GetMagickPrecision(),length,units[i]);
-    if (strchr(format,'+') == (char *) NULL)
-      break;
-  }
+  count=FormatLocaleString(format,MaxTextExtent,"%.*g%sB",GetMagickPrecision(),
+    length,units[i]);
+  if (fabs(bytes*strtod(format,(char **) NULL)-size) < MagickEpsilon)
+    {
+#if defined(_MSC_VER) && (_MSC_VER == 1200)
+      length=(double) ((MagickOffsetType) size);
+#else
+      length=(double) size;
+#endif
+      count=FormatLocaleString(format,MaxTextExtent,"%.20g%sB",length,units[0]);
+    }
   return(count);
 }
 
@@ -1642,15 +1644,15 @@ MagickExport char *SanitizeString(const char *source)
 
   const char
     *q;
-  
+
   register char
     *p;
-  
+
   static char
     whitelist[] =
       "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 "
       "$-_.+!*'(),{}|\\^~[]`\"><#%;/?:@&=";
-  
+
   sanitize_source=AcquireString(source);
   p=sanitize_source;
   q=sanitize_source+strlen(sanitize_source);
