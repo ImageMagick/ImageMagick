@@ -1091,8 +1091,7 @@ MagickExport ssize_t FormatMagickSize(const MagickSizeType size,
     extent;
 
   register ssize_t
-    i,
-    j;
+    i;
 
   ssize_t
     count;
@@ -1121,18 +1120,25 @@ MagickExport ssize_t FormatMagickSize(const MagickSizeType size,
 #endif
   for (i=0; (extent >= bytes) && (units[i+1] != (const char *) NULL); i++)
     extent/=bytes;
-  count=0;
-  for (j=2; j < 12; j++)
-  {
-    if (suffix == (const char *) NULL)
-      count=FormatLocaleString(format,length,"%.*g%s",GetMagickPrecision(),
-        extent,units[i]);
-    else
-      count=FormatLocaleString(format,length,"%.*g%s%s",GetMagickPrecision(),
-        extent,units[i],suffix);
-    if (strchr(format,'+') == (char *) NULL)
-      break;
-  }
+  if (suffix == (const char *) NULL)
+    count=FormatLocaleString(format,length,"%.*g%s",GetMagickPrecision(),
+      extent,units[i]);
+  else
+    count=FormatLocaleString(format,length,"%.*g%s%s",GetMagickPrecision(),
+      extent,units[i],suffix);
+  if (fabs(bytes*strtod(format,(char **) NULL)-size) < MagickEpsilon)
+    {
+#if defined(_MSC_VER) && (_MSC_VER == 1200)
+      extent=(double) ((MagickOffsetType) size);
+#else
+      extent=(double) size;
+#endif
+      if (suffix == (const char *) NULL)
+        count=FormatLocaleString(format,length,"%.20g%s",extent,units[0]);
+      else
+        count=FormatLocaleString(format,length,"%.20g%s%s",extent,units[0],
+          suffix);
+    }
   return(count);
 }
 
