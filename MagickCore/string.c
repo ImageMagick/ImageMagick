@@ -1126,7 +1126,7 @@ MagickExport ssize_t FormatMagickSize(const MagickSizeType size,
   else
     count=FormatLocaleString(format,length,"%.*g%s%s",GetMagickPrecision(),
       extent,units[i],suffix);
-  if (fabs(bytes*strtod(format,(char **) NULL)-size) < MagickEpsilon)
+  if (fabs(pow(bytes,(double) i)*strtod(format,(char **) NULL)-size) < MagickEpsilon)
     {
 #if defined(_MSC_VER) && (_MSC_VER == 1200)
       extent=(double) ((MagickOffsetType) size);
