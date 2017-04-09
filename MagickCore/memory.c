@@ -665,8 +665,8 @@ MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
             }
           RelinquishMagickResource(DiskResource,extent);
         }
+      RelinquishMagickResource(MapResource,extent);
     }
-  RelinquishMagickResource(MapResource,extent);
   if (memory_info->blob == NULL)
     {
       memory_info->blob=AcquireMagickMemory(extent);
