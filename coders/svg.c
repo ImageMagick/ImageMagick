@@ -2834,7 +2834,8 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
-  if ((image->resolution.x == 0.0) || (image->resolution.y == 0.0))
+  if ((fabs(image->resolution.x) < MagickEpsilon) ||
+      (fabs(image->resolution.y) < MagickEpsilon))
     {
       GeometryInfo
         geometry_info;
