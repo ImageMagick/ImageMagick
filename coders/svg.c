@@ -1695,7 +1695,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                          if (LocaleCompare(value,"currentColor") == 0)
                            {
                              (void) FormatLocaleFile(svg_info->file,
-                          "fill '%s'\n",color);
+                               "fill '%s'\n",color);
                              break;
                            }
                         if (LocaleCompare(value,"#000000ff") == 0)
@@ -1788,7 +1788,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                          if (LocaleCompare(value,"currentColor") == 0)
                            {
                              (void) FormatLocaleFile(svg_info->file,
-                          "stroke '%s'\n",color);
+                               "stroke '%s'\n",color);
                              break;
                            }
                         if (LocaleCompare(value,"#000000ff") == 0)
