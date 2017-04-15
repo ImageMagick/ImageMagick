@@ -2997,6 +2997,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (error != (GError *) NULL)
           g_error_free(error);
 #if defined(MAGICKCORE_CAIRO_DELEGATE)
+        apply_density=MagickTrue;
         rsvg_handle_get_dimensions(svg_handle,&dimension_info);
         if ((image->x_resolution > 0.0) && (image->y_resolution > 0.0))
         {
