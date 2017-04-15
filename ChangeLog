@@ -6,6 +6,8 @@
     https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=3164).
   * Support ICC based PDF's (reference
     https://github.com/ImageMagick/ImageMagick/issues/417).
+  * Fix improper EPS clip path rendering (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=31722).
 
 2017-03-24  7.0.5-4 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.5-4, GIT revision 19754:350fff3:20170324.
