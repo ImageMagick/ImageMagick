@@ -3007,8 +3007,8 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if ((dpi_dimension_info.width != dimension_info.width) ||
                 (dpi_dimension_info.height != dimension_info.height))
               apply_density=MagickFalse;
-              rsvg_handle_set_dpi_x_y(svg_handle,image->resolution.x,
-                image->resolution.y);
+            rsvg_handle_set_dpi_x_y(svg_handle,image->resolution.x,
+              image->resolution.y);
           }
         if (image_info->size != (char *) NULL)
           {
