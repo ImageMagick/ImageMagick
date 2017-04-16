@@ -123,7 +123,7 @@ static Image *ReadINLINEImage(const ImageInfo *image_info,
       image_info->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  if (LocaleCompare(image_info->magick,"DATA") == 0)
+  if (LocaleNCompare(image_info->filename,"data:",5) == 0)
     {
       char
         *filename;
