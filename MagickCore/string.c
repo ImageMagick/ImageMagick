@@ -1127,11 +1127,6 @@ MagickExport ssize_t FormatMagickSize(const MagickSizeType size,
   (void) FormatLocaleString(q,MagickPathExtent,"%.20g",extent);
   if (strtod(p,(char **) NULL) == strtod(q,(char **) NULL))
     {
-#if defined(_MSC_VER) && (_MSC_VER == 1200)
-      extent=(double) ((MagickOffsetType) size);
-#else
-      extent=(double) size;
-#endif
       if (suffix == (const char *) NULL)
         count=FormatLocaleString(format,length,"%.20g%s",extent,units[0]);
       else
