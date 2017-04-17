@@ -1206,7 +1206,7 @@ MagickExport ssize_t FormatMagickTime(const time_t time,const size_t length,
   (void) gmtime_r(&time,&gm_time);
 #else
   {
-        a[MaxTstruct tm
+    struct tm
       *my_time;
 
     my_time=gmtime(&time);
