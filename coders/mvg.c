@@ -185,9 +185,9 @@ static Image *ReadMVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(OptionError,"MustSpecifyImageSize");
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
   draw_info->affine.sx=image->x_resolution == 0.0 ? 1.0 : image->x_resolution/
-    DefaultResolution;
+    96.0;
   draw_info->affine.sy=image->y_resolution == 0.0 ? 1.0 : image->y_resolution/
-    DefaultResolution;
+    96.0;
   image->columns=(size_t) (draw_info->affine.sx*image->columns);
   image->rows=(size_t) (draw_info->affine.sy*image->rows);
   status=SetImageExtent(image,image->columns,image->rows);
