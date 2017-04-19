@@ -1284,8 +1284,8 @@ static void DrawBoundingRectangles(Image *image,const DrawInfo *draw_info,
 
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   (void) QueryColorDatabase("#0000",&clone_info->fill,&image->exception);
-  resolution.x=DefaultResolution;
-  resolution.y=DefaultResolution;
+  resolution.x=96.0;;
+  resolution.y=96.0;;
   if (clone_info->density != (char *) NULL)
     {
       GeometryInfo
@@ -1300,7 +1300,7 @@ static void DrawBoundingRectangles(Image *image,const DrawInfo *draw_info,
       if ((flags & SigmaValue) == MagickFalse)
         resolution.y=resolution.x;
     }
-  mid=(resolution.x/72.0)*ExpandAffine(&clone_info->affine)*
+  mid=(resolution.x/96.0)*ExpandAffine(&clone_info->affine)*
     clone_info->stroke_width/2.0;
   bounds.x1=0.0;
   bounds.y1=0.0;
