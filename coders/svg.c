@@ -330,17 +330,17 @@ static double GetUserSpaceCoordinateValue(const SVGInfo *svg_info,int type,
     }
   GetNextToken(p,&p,MagickPathExtent,token);
   if (LocaleNCompare(token,"cm",2) == 0)
-    return(DefaultResolution*svg_info->scale[0]/2.54*value);
+    return(96.0*svg_info->scale[0]/2.54*value);
   if (LocaleNCompare(token,"em",2) == 0)
     return(svg_info->pointsize*value);
   if (LocaleNCompare(token,"ex",2) == 0)
     return(svg_info->pointsize*value/2.0);
   if (LocaleNCompare(token,"in",2) == 0)
-    return(DefaultResolution*svg_info->scale[0]*value);
+    return(96.0*svg_info->scale[0]*value);
   if (LocaleNCompare(token,"mm",2) == 0)
-    return(DefaultResolution*svg_info->scale[0]/25.4*value);
+    return(96.0*svg_info->scale[0]/25.4*value);
   if (LocaleNCompare(token,"pc",2) == 0)
-    return(DefaultResolution*svg_info->scale[0]/6.0*value);
+    return(96.0*svg_info->scale[0]/6.0*value);
   if (LocaleNCompare(token,"pt",2) == 0)
     return(1.25*svg_info->scale[0]*value);
   if (LocaleNCompare(token,"px",2) == 0)
