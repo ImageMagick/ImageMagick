@@ -2784,7 +2784,7 @@ static void SVGExternalSubset(void *context,const xmlChar *name,
   Static declarations.
 */
 static char
-  SVGDensityGeometry[] = "90.0x90.0";
+  SVGDensityGeometry[] = "96.0x96.0";
 
 static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
@@ -3024,8 +3024,8 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               (ssize_t *) NULL,&image->columns,&image->rows);
             if ((image->columns != 0) || (image->rows != 0))
               {
-                image->x_resolution=90.0*image->columns/dimension_info.width;
-                image->y_resolution=90.0*image->rows/dimension_info.height;
+                image->x_resolution=96.0*image->columns/dimension_info.width;
+                image->y_resolution=96.0*image->rows/dimension_info.height;
                 if (fabs(image->x_resolution) < MagickEpsilon)
                   image->x_resolution=image->y_resolution;
                 else
@@ -3039,8 +3039,8 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         if (apply_density != MagickFalse)
           {
-            image->columns=image->x_resolution*dimension_info.width/90.0;
-            image->rows=image->y_resolution*dimension_info.height/90.0;
+            image->columns=image->x_resolution*dimension_info.width/96.0;
+            image->rows=image->y_resolution*dimension_info.height/96.0;
           }
         else
           {
@@ -3105,8 +3105,8 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             cairo_paint(cairo_image);
             cairo_set_operator(cairo_image,CAIRO_OPERATOR_OVER);
             if (apply_density != MagickFalse)
-              cairo_scale(cairo_image,image->x_resolution/90.0,
-                image->y_resolution/90.0);
+              cairo_scale(cairo_image,image->x_resolution/96.0,
+                image->y_resolution/96.0);
             rsvg_handle_render_cairo(svg_handle,cairo_image);
             cairo_destroy(cairo_image);
             cairo_surface_destroy(cairo_surface);
