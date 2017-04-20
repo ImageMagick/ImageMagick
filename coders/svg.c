@@ -3047,8 +3047,6 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image->rows=gdk_pixbuf_get_height(pixel_buffer);
 #endif
         image->alpha_trait=BlendPixelTrait;
-        SetImageProperty(image,"svg:base-uri",
-          rsvg_handle_get_base_uri(svg_handle),exception);
         status=SetImageExtent(image,image->columns,image->rows,exception);
         if (status == MagickFalse)
           {
