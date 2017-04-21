@@ -426,45 +426,10 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
     /*
       Set frame interior pixels.
     */
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
-      register const Quantum
-        *p;
-
-      p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
-      if (p == (const Quantum *) NULL)
-        {
-          status=MagickFalse;
-          continue;
-        }
-      for (x=0; x < (ssize_t) image->columns; x++)
-      {
-        register ssize_t
-          i;
-
-        if (GetPixelWriteMask(image,q) == 0)
-          {
-            SetPixelBackgoundColor(frame_image,q);
-            p+=GetPixelChannels(image);
-            q+=GetPixelChannels(frame_image);
-            continue;
-          }
-        for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-        {
-          PixelChannel channel=GetPixelChannelChannel(image,i);
-          PixelTrait traits=GetPixelChannelTraits(image,channel);
-          PixelTrait frame_traits=GetPixelChannelTraits(frame_image,channel);
-          if ((traits == UndefinedPixelTrait) ||
-              (frame_traits == UndefinedPixelTrait))
-            continue;
-          SetPixelChannel(frame_image,channel,p[i],q);
-        }
-        SetPixelRed(frame_image,GetPixelRed(image,p),q);
-        SetPixelGreen(frame_image,GetPixelGreen(image,p),q);
-        SetPixelBlue(frame_image,GetPixelBlue(image,p),q);
-        SetPixelAlpha(frame_image,GetPixelAlpha(image,p),q);
-        p+=GetPixelChannels(image);
-        q+=GetPixelChannels(frame_image);
-      }
+      SetPixelViaPixelInfo(frame_image,&frame_image->border_color,q);
+      q+=GetPixelChannels(frame_image);
     }
     for (x=0; x < (ssize_t) frame_info->inner_bevel; x++)
     {
