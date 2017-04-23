@@ -512,7 +512,7 @@ static MagickBooleanType ClonePixelCacheOnDisk(
     *buffer;
 
   /*
-    Clone pixel cache on disk with identifcal morphology.
+    Clone pixel cache on disk with identical morphology.
   */
   if ((OpenPixelCacheOnDisk(cache_info,ReadMode) == MagickFalse) ||
       (OpenPixelCacheOnDisk(clone_info,IOMode) == MagickFalse))
@@ -3818,7 +3818,7 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
         MagickPathExtent);
       cache_info->type=DiskCache;
       cache_info->offset=(*offset);
-      if (OpenPixelCache(image,ReadMode,exception) == MagickFalse)
+      if (OpenPixelCache(image,cache_info->mode,exception) == MagickFalse)
         return(MagickFalse);
       *offset+=cache_info->length+page_size-(cache_info->length % page_size);
       return(MagickTrue);
@@ -3862,7 +3862,7 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
   cache_info->type=DiskCache;
   cache_info->offset=(*offset);
   cache_info=(CacheInfo *) image->cache;
-  status=OpenPixelCache(image,IOMode,exception);
+  status=OpenPixelCache(image,cache_info->mode,exception);
   if (status != MagickFalse)
     status=ClonePixelCacheRepository(cache_info,clone_info,exception);
   *offset+=cache_info->length+page_size-(cache_info->length % page_size);
