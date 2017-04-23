@@ -1327,7 +1327,8 @@ namespace Magick
     void roll(const Geometry &roll_);
     void roll(const size_t columns_,const size_t rows_);
 
-    // Rotate image counter-clockwise by specified number of degrees.
+    // Rotate image clockwise by specified number of degrees. Specify a
+    // negative number for degrees to rotate counter-clockwise.
     void rotate(const double degrees_);
 
     // Rotational blur image.
