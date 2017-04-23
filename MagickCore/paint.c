@@ -974,7 +974,18 @@ MagickExport MagickBooleanType OpaquePaintImage(Image *image,
         }
       GetPixelInfoPixel(image,q,&pixel);
       if (IsFuzzyEquivalencePixelInfo(&pixel,&conform_target) != invert)
-        SetPixelViaPixelInfo(image,&conform_fill,q);
+        {
+          if (image->channel_map[RedPixelChannel].traits == UpdatePixelTrait)
+            SetPixelRed(image,conform_fill.red,q);
+          if (image->channel_map[GreenPixelChannel].traits == UpdatePixelTrait)
+            SetPixelRed(image,conform_fill.green,q);
+          if (image->channel_map[BluePixelChannel].traits == UpdatePixelTrait)
+            SetPixelRed(image,conform_fill.blue,q);
+          if (image->channel_map[BlackPixelChannel].traits == UpdatePixelTrait)
+            SetPixelRed(image,conform_fill.black,q);
+          if (image->channel_map[AlphaPixelChannel].traits == UpdatePixelTrait)
+            SetPixelRed(image,conform_fill.alpha,q);
+        }
       q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
