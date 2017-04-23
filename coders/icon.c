@@ -254,6 +254,9 @@ static Image *ReadICONImage(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
+  MagickSizeType
+    extent;
+
   register IndexPacket
     *indexes;
 
@@ -301,6 +304,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,
       ((icon_file.resource_type != 1) && (icon_file.resource_type != 2)) ||
       (icon_file.count > MaxIcons))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+  extent=0;
   for (i=0; i < icon_file.count; i++)
   {
     icon_file.directory[i].width=(unsigned char) ReadBlobByte(image);
@@ -314,8 +318,9 @@ static Image *ReadICONImage(const ImageInfo *image_info,
     icon_file.directory[i].offset=ReadBlobLSBLong(image);
     if (EOFBlob(image) != MagickFalse)
       break;
+    extent=MagickMax(extent,icon_file.directory[i].size);
   }
-  if (EOFBlob(image) != MagickFalse)
+  if ((EOFBlob(image) != MagickFalse) || (extent > GetBlobSize(image)))
     ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
   one=1;
   for (i=0; i < icon_file.count; i++)
