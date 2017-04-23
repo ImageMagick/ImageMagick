@@ -47,7 +47,7 @@
 
   Any large image is cached to disk rather than memory:
 
-    <policy domain="resource" name="area" value="1GB"/>
+    <policy domain="resource" name="area" value="1GP"/>
 
   Define arguments for the memory, map, area, width, height and disk resources
   with SI prefixes (.e.g 100MB).  In addition, resource policies are maximums
