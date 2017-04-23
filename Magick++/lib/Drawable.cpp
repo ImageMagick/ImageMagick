@@ -1106,8 +1106,8 @@ Magick::DrawableRoundRectangle::~DrawableRoundRectangle ( void )
 void Magick::DrawableRoundRectangle::operator()
   ( MagickCore::DrawingWand * context_ ) const
 {
-  DrawRoundRectangle( context_, _centerX,_centerY, _width,_hight,
-                      _cornerWidth, _cornerHeight);
+  DrawRoundRectangle(context_,_upperLeftX,_upperLeftY,_lowerRightX,
+    _lowerRightY,_cornerWidth, _cornerHeight);
 }
 Magick::DrawableBase* Magick::DrawableRoundRectangle::copy() const
 {
