@@ -1459,7 +1459,7 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image)
       Image *clone_image=CloneImage(image,0,0,MagickTrue,&image->exception);
       if (clone_image == (Image *) NULL)
         ThrowWriterException(CacheError,"UnableToPersistPixelCache");
-      status=PersistPixelCache(image,cache_filename,MagickFalse,&offset,
+      status=PersistPixelCache(clone_image,cache_filename,MagickFalse,&offset,
         &image->exception);
       clone_image=DestroyImage(clone_image);
     }
