@@ -4202,36 +4202,6 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
       *offset+=cache_info->length+page_size-(cache_info->length % page_size);
       return(MagickTrue);
     }
-  if ((cache_info->mode != ReadMode) && (cache_info->type != MemoryCache) &&
-      (cache_info->reference_count == 1))
-    {
-      LockSemaphoreInfo(cache_info->semaphore);
-      if ((cache_info->mode != ReadMode) && (cache_info->type != MemoryCache) &&
-          (cache_info->reference_count == 1))
-        {
-          int
-            status;
-
-          /*
-            Usurp existing persistent pixel cache.
-          */
-          status=rename_utf8(cache_info->cache_filename,filename);
-          if (status == 0)
-            {
-              (void) CopyMagickString(cache_info->cache_filename,filename,
-                MaxTextExtent);
-              *offset+=cache_info->length+page_size-(cache_info->length %
-                page_size);
-              UnlockSemaphoreInfo(cache_info->semaphore);
-              cache_info=(CacheInfo *) ReferencePixelCache(cache_info);
-              if (image->debug != MagickFalse)
-                (void) LogMagickEvent(CacheEvent,GetMagickModule(),
-                  "Usurp resident persistent cache");
-              return(MagickTrue);
-            }
-        }
-      UnlockSemaphoreInfo(cache_info->semaphore);
-    }
   /*
     Clone persistent pixel cache.
   */
