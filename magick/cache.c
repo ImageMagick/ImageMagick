@@ -4023,7 +4023,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
       (void) ClosePixelCacheOnDisk(cache_info);
       *cache_info->cache_filename='\0';
     }
-  if (OpenPixelCacheOnDisk(cache_info,IOMode) == MagickFalse)
+  if (OpenPixelCacheOnDisk(cache_info,mode) == MagickFalse)
     {
       RelinquishMagickResource(DiskResource,cache_info->length);
       ThrowFileException(exception,CacheError,"UnableToOpenPixelCache",
