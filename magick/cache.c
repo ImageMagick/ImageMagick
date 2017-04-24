@@ -4164,7 +4164,7 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
     *magick_restrict clone_info;
 
   Image
-    *clone_image;
+    clone_image;
 
   MagickBooleanType
     status;
@@ -4235,10 +4235,8 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
   /*
     Clone persistent pixel cache.
   */
-  clone_image=CloneImage(image,0,0,MagickTrue,exception);
-  if (clone_image == (Image *) NULL)
-    return(MagickFalse);
-  clone_info=(CacheInfo *) clone_image->cache;
+  clone_image=(*image);
+  clone_info=(CacheInfo *) clone_image.cache;
   image->cache=ClonePixelCache(cache_info);
   cache_info=(CacheInfo *) ReferencePixelCache(image->cache);
   (void) CopyMagickString(cache_info->cache_filename,filename,MaxTextExtent);
@@ -4250,7 +4248,6 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
     status=ClonePixelCacheRepository(cache_info,clone_info,&image->exception);
   *offset+=cache_info->length+page_size-(cache_info->length % page_size);
   clone_info=(CacheInfo *) DestroyPixelCache(clone_info);
-  clone_image=DestroyImage(clone_image);
   return(status);
 }
 
