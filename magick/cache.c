@@ -4023,7 +4023,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
       (void) ClosePixelCacheOnDisk(cache_info);
       *cache_info->cache_filename='\0';
     }
-  if (OpenPixelCacheOnDisk(cache_info,mode) == MagickFalse)
+  if (OpenPixelCacheOnDisk(cache_info,IOMode) == MagickFalse)
     {
       RelinquishMagickResource(DiskResource,cache_info->length);
       ThrowFileException(exception,CacheError,"UnableToOpenPixelCache",
@@ -4197,7 +4197,7 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
         MaxTextExtent);
       cache_info->type=DiskCache;
       cache_info->offset=(*offset);
-      if (OpenPixelCache(image,cache_info->mode,exception) == MagickFalse)
+      if (OpenPixelCache(image,ReadMode,exception) == MagickFalse)
         return(MagickFalse);
       *offset+=cache_info->length+page_size-(cache_info->length % page_size);
       return(MagickTrue);
@@ -4243,7 +4243,7 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
   cache_info->type=DiskCache;
   cache_info->offset=(*offset);
   cache_info=(CacheInfo *) image->cache;
-  status=OpenPixelCache(image,cache_info->mode,exception);
+  status=OpenPixelCache(image,IOMode,exception);
   if (status != MagickFalse)
     status=ClonePixelCacheRepository(cache_info,clone_info,&image->exception);
   *offset+=cache_info->length+page_size-(cache_info->length % page_size);
