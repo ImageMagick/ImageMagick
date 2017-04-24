@@ -35,7 +35,7 @@ extern "C" {
 static inline Quantum ClampPixel(const MagickRealType value)
 { 
   if (value < 0.0f)
-    return(0); 
+    return((Quantum) 0); 
   if (value >= (MagickRealType) QuantumRange)
     return((Quantum) QuantumRange);
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
@@ -630,7 +630,7 @@ static inline void SetPixelBackgoundColor(const Image *magick_restrict image,
     i;
 
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-    pixel[i]=0;
+    pixel[i]=(Quantum) 0;
   pixel[image->channel_map[RedPixelChannel].offset]=
     ClampToQuantum(image->background_color.red);
   pixel[image->channel_map[GreenPixelChannel].offset]=
