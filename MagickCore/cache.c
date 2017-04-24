@@ -3855,6 +3855,8 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
     Clone persistent pixel cache.
   */
   clone_image=CloneImage(image,0,0,MagickTrue,exception);
+  if (clone_image == (Image *) NULL)
+    return(MagickFalse);
   clone_info=(CacheInfo *) clone_image->cache;
   image->cache=ClonePixelCache(cache_info);
   cache_info=(CacheInfo *) ReferencePixelCache(image->cache);
