@@ -1,5 +1,5 @@
 2017-04-24  6.9.8-4 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 6.9.8-4, GIT revision 11519:5f63715:20170424.
+  * Release ImageMagick version 6.9.8-4, GIT revision 11521:d7433aa:20170424.
 
 2017-03-26  6.9.8-4 Cristy  <quetzlzacatenango@image...>
   * Minimize buffer copies to improve OpenCL performance.
