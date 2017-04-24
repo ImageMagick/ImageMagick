@@ -2723,7 +2723,7 @@ MagickPrivate const Quantum *GetVirtualPixelsFromNexus(const Image *image,
         case BlackVirtualPixelMethod:
         {
           for (i=0; i < (ssize_t) cache_info->number_channels; i++)
-            SetPixelChannel(image,(PixelChannel) i,0,virtual_pixel);
+            SetPixelChannel(image,(PixelChannel) i,(Quantum) 0,virtual_pixel);
           SetPixelAlpha(image,OpaqueAlpha,virtual_pixel);
           break;
         }
@@ -2738,7 +2738,7 @@ MagickPrivate const Quantum *GetVirtualPixelsFromNexus(const Image *image,
         case TransparentVirtualPixelMethod:
         {
           for (i=0; i < (ssize_t) cache_info->number_channels; i++)
-            SetPixelChannel(image,(PixelChannel) i,0,virtual_pixel);
+            SetPixelChannel(image,(PixelChannel) i,(Quantum) 0,virtual_pixel);
           SetPixelAlpha(image,TransparentAlpha,virtual_pixel);
           break;
         }
@@ -4719,7 +4719,8 @@ static inline MagickBooleanType AcquireCacheNexusPixels(
       nexus_info->cache=(Quantum *) MagickAssumeAligned(AcquireAlignedMemory(1,
         (size_t) nexus_info->length));
       if (nexus_info->cache != (Quantum *) NULL)
-        ResetMagickMemory(nexus_info->cache,0,(size_t) nexus_info->length);
+        (void) ResetMagickMemory(nexus_info->cache,0,(size_t)
+          nexus_info->length);
     }
   else
     {
