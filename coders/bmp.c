@@ -908,10 +908,17 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           packet_size=4;
         offset=SeekBlob(image,start_position+14+bmp_info.size,SEEK_SET);
         if (offset < 0)
-          ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+          {
+            bmp_colormap=(unsigned char *) RelinquishMagickMemory(bmp_colormap);
+            ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+          }
         count=ReadBlob(image,packet_size*image->colors,bmp_colormap);
         if (count != (ssize_t) (packet_size*image->colors))
-          ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
+          {
+            bmp_colormap=(unsigned char *) RelinquishMagickMemory(bmp_colormap);
+            ThrowReaderException(CorruptImageError,
+              "InsufficientImageDataInFile");
+          }
         p=bmp_colormap;
         for (i=0; i < (ssize_t) image->colors; i++)
         {
