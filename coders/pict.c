@@ -1192,9 +1192,15 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                   }
               }
             if (ReadRectangle(image,&source) == MagickFalse)
-              ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+              {
+                tile_image=DestroyImage(tile_image);
+                ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+              }
             if (ReadRectangle(image,&destination) == MagickFalse)
-              ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+              {
+                tile_image=DestroyImage(tile_image);
+                ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+              }
             (void) ReadBlobMSBShort(image);
             if ((code == 0x91) || (code == 0x99) || (code == 0x9b))
               {
@@ -1225,7 +1231,10 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             for (y=0; y < (ssize_t) tile_image->rows; y++)
             {
               if (p > (pixels+extent+image->columns))
-                ThrowReaderException(CorruptImageError,"NotEnoughPixelData");
+                {
+                  tile_image=DestroyImage(tile_image);
+                  ThrowReaderException(CorruptImageError,"NotEnoughPixelData");
+                }
               q=QueueAuthenticPixels(tile_image,0,y,tile_image->columns,1,
                 exception);
               if (q == (PixelPacket *) NULL)
@@ -1262,8 +1271,11 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                       if (tile_image->matte == MagickFalse)
                         {
                           if (p > (pixels+extent+2*image->columns))
-                            ThrowReaderException(CorruptImageError,
-                              "NotEnoughPixelData");
+                            {
+                              tile_image=DestroyImage(tile_image);
+                              ThrowReaderException(CorruptImageError,
+                                "NotEnoughPixelData");
+                            }
                           SetPixelRed(q,ScaleCharToQuantum(*p));
                           SetPixelGreen(q,ScaleCharToQuantum(
                             *(p+tile_image->columns)));
@@ -1273,8 +1285,11 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                       else
                         {
                           if (p > (pixels+extent+3*image->columns))
-                            ThrowReaderException(CorruptImageError,
-                              "NotEnoughPixelData");
+                            {
+                              tile_image=DestroyImage(tile_image);
+                              ThrowReaderException(CorruptImageError,
+                                "NotEnoughPixelData");
+                            }
                           SetPixelAlpha(q,ScaleCharToQuantum(*p));
                           SetPixelRed(q,ScaleCharToQuantum(
                             *(p+tile_image->columns)));
@@ -1343,8 +1358,11 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                 status=SetImageProfile(image,"icc",profile);
                 profile=DestroyStringInfo(profile);
                 if (status == MagickFalse)
-                  ThrowReaderException(ResourceLimitError,
-                    "MemoryAllocationFailed");
+                  {
+                    info=(unsigned char *) RelinquishMagickMemory(info);
+                    ThrowReaderException(ResourceLimitError,
+                      "MemoryAllocationFailed");
+                  }
                 break;
               }
               case 0x1f2:
@@ -1353,8 +1371,11 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                 SetStringInfoDatum(profile,info);
                 status=SetImageProfile(image,"iptc",profile);
                 if (status == MagickFalse)
-                  ThrowReaderException(ResourceLimitError,
-                    "MemoryAllocationFailed");
+                  {
+                    info=(unsigned char *) RelinquishMagickMemory(info);
+                    ThrowReaderException(ResourceLimitError,
+                      "MemoryAllocationFailed");
+                  }
                 profile=DestroyStringInfo(profile);
                 break;
               }
