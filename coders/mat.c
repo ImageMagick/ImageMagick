@@ -1189,7 +1189,6 @@ ImportQuantumPixelsFailed:
   }
       }
     } while(z-- >= 2);
-    quantum_info=DestroyQuantumInfo(quantum_info);
 ExitLoop:
 
 
@@ -1298,6 +1297,7 @@ done_reading:
   }
 
   RelinquishMagickMemory(BImgBuff);
+  quantum_info=DestroyQuantumInfo(quantum_info);
 END_OF_READING:
   clone_info=DestroyImageInfo(clone_info);
   CloseBlob(image);
