@@ -207,6 +207,7 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (LocaleCompare(image_info->filename,read_info->filename) != 0)
         (void) RelinquishUniqueFileResource(read_info->filename);
       read_info=DestroyImageInfo(read_info);
+      image=DestroyImageList(image);
       return((Image *) NULL);
     }
   hdr_info=ImfInputHeader(file);
@@ -247,6 +248,7 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (LocaleCompare(image_info->filename,read_info->filename) != 0)
             (void) RelinquishUniqueFileResource(read_info->filename);
           read_info=DestroyImageInfo(read_info);
+          image=DestroyImageList(image);
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         }
     }
