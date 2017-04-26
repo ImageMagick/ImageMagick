@@ -175,7 +175,10 @@ static Image *ReadMTVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       count=(ssize_t) ReadBlob(image,(size_t) (3*image->columns),pixels);
       if (count != (ssize_t) (3*image->columns))
-        ThrowReaderException(CorruptImageError,"UnableToReadImageData");
+        {
+          pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+          ThrowReaderException(CorruptImageError,"UnableToReadImageData");
+        }
       p=pixels;
       q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
       if (q == (PixelPacket *) NULL)
