@@ -261,7 +261,10 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
   count=ReadBlob(image,(size_t) GetBlobSize(image),buffer);
   if ((count != (ssize_t) GetBlobSize(image)) ||
       (LocaleNCompare((char *) buffer,"SFW",3) != 0))
-    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    {
+      buffer=(unsigned char *) RelinquishMagickMemory(buffer);
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    }
   (void) CloseBlob(image);
   /*
     Find the start of the JFIF data
