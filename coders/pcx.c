@@ -203,11 +203,15 @@ static MagickBooleanType IsPCX(const unsigned char *magick,const size_t length)
 static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
 #define ThrowPCXException(severity,tag) \
-  { \
+{ \
+  if (scanline != (unsigned char *) NULL) \
     scanline=(unsigned char *) RelinquishMagickMemory(scanline); \
+  if (pixel_info != (MemoryInfo *) NULL) \
     pixel_info=RelinquishVirtualMemory(pixel_info); \
-    ThrowReaderException(severity,tag); \
-  }
+  if (page_table != (MagickOffsetType *) NULL) \
+    page_table=(MagickOffsetType *) RelinquishMagickMemory(page_table); \
+  ThrowReaderException(severity,tag); \
+}
 
   Image
     *image;
@@ -281,6 +285,8 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Determine if this a PCX file.
   */
   page_table=(MagickOffsetType *) NULL;
+  scanline=(unsigned char *) NULL;
+  pixel_info=(MemoryInfo *) NULL;
   if (LocaleCompare(image_info->magick,"DCX") == 0)
     {
       size_t
@@ -291,11 +297,11 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       magic=ReadBlobLSBLong(image);
       if (magic != 987654321)
-        ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+        ThrowPCXException(CorruptImageError,"ImproperImageHeader");
       page_table=(MagickOffsetType *) AcquireQuantumMemory(1024UL,
         sizeof(*page_table));
       if (page_table == (MagickOffsetType *) NULL)
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+        ThrowPCXException(ResourceLimitError,"MemoryAllocationFailed");
       for (id=0; id < 1024; id++)
       {
         page_table[id]=(MagickOffsetType) ReadBlobLSBLong(image);
@@ -307,7 +313,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       offset=SeekBlob(image,(MagickOffsetType) page_table[0],SEEK_SET);
       if (offset < 0)
-        ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+        ThrowPCXException(CorruptImageError,"ImproperImageHeader");
     }
   count=ReadBlob(image,1,&pcx_info.identifier);
   for (id=1; id < 1024; id++)
@@ -320,11 +326,11 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     pcx_info.version=(unsigned char) ReadBlobByte(image);
     if ((count != 1) || (pcx_info.identifier != 0x0a))
-      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+      ThrowPCXException(CorruptImageError,"ImproperImageHeader");
     pcx_info.encoding=(unsigned char) ReadBlobByte(image);
     bits_per_pixel=ReadBlobByte(image);
     if (bits_per_pixel == -1)
-      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+      ThrowPCXException(CorruptImageError,"ImproperImageHeader");
     pcx_info.bits_per_pixel=(unsigned char) bits_per_pixel;
     pcx_info.left=ReadBlobLSBShort(image);
     pcx_info.top=ReadBlobLSBShort(image);
@@ -342,7 +348,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if ((image->columns == 0) || (image->rows == 0) ||
         ((pcx_info.bits_per_pixel != 1) && (pcx_info.bits_per_pixel != 2) &&
          (pcx_info.bits_per_pixel != 4) && (pcx_info.bits_per_pixel != 8)))
-      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+      ThrowPCXException(CorruptImageError,"ImproperImageHeader");
     image->depth=pcx_info.bits_per_pixel;
     image->units=PixelsPerInchResolution;
     image->x_resolution=(double) pcx_info.horizontal_resolution;
@@ -350,13 +356,13 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->colors=16;
     count=ReadBlob(image,3*image->colors,pcx_colormap);
     if (count != (ssize_t) (3*image->colors))
-      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+      ThrowPCXException(CorruptImageError,"ImproperImageHeader");
     pcx_info.reserved=(unsigned char) ReadBlobByte(image);
     pcx_info.planes=(unsigned char) ReadBlobByte(image);
     if ((pcx_info.bits_per_pixel*pcx_info.planes) >= 64)
-      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+      ThrowPCXException(CorruptImageError,"ImproperImageHeader");
     if (pcx_info.planes == 0)
-      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+      ThrowPCXException(CorruptImageError,"ImproperImageHeader");
     one=1;
     if ((pcx_info.bits_per_pixel != 8) || (pcx_info.planes == 1))
       if ((pcx_info.version == 3) || (pcx_info.version == 5) ||
@@ -364,7 +370,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image->colors=(size_t) MagickMin(one << (1UL*
           (pcx_info.bits_per_pixel*pcx_info.planes)),256UL);
     if (AcquireImageColormap(image,image->colors) == MagickFalse)
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+      ThrowPCXException(ResourceLimitError,"MemoryAllocationFailed");
     if ((pcx_info.bits_per_pixel >= 8) && (pcx_info.planes != 1))
       image->storage_class=DirectClass;
     p=pcx_colormap;
@@ -393,14 +399,14 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Read image data.
     */
     if (HeapOverflowSanityCheck(image->rows, (size_t) pcx_info.bytes_per_line) != MagickFalse)
-      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+      ThrowPCXException(CorruptImageError,"ImproperImageHeader");
     pcx_packets=(size_t) image->rows*pcx_info.bytes_per_line;
     if (HeapOverflowSanityCheck(pcx_packets, (size_t) pcx_info.planes) != MagickFalse)
-      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+      ThrowPCXException(CorruptImageError,"ImproperImageHeader");
     pcx_packets=(size_t) pcx_packets*pcx_info.planes;
     if ((size_t) (pcx_info.bits_per_pixel*pcx_info.planes*image->columns) >
         (pcx_packets*8U))
-      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+      ThrowPCXException(CorruptImageError,"ImproperImageHeader");
     scanline=(unsigned char *) AcquireQuantumMemory(MagickMax(image->columns,
       pcx_info.bytes_per_line),MagickMax(8,pcx_info.planes)*sizeof(*scanline));
     pixel_info=AcquireVirtualMemory(pcx_packets,2*sizeof(*pixels));
@@ -411,7 +417,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           scanline=(unsigned char *) RelinquishMagickMemory(scanline);
         if (pixel_info != (MemoryInfo *) NULL)
           pixel_info=RelinquishVirtualMemory(pixel_info);
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+        ThrowPCXException(ResourceLimitError,"MemoryAllocationFailed");
       }
     pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
     /*
@@ -665,7 +671,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     offset=SeekBlob(image,(MagickOffsetType) page_table[id],SEEK_SET);
     if (offset < 0)
-      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+      ThrowPCXException(CorruptImageError,"ImproperImageHeader");
     count=ReadBlob(image,1,&pcx_info.identifier);
     if ((count != 0) && (pcx_info.identifier == 0x0a))
       {
