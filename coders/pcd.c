@@ -541,12 +541,15 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   overview=LocaleNCompare((char *) header,"PCD_OPA",7) == 0;
   if ((count != (3*0x800)) ||
       ((LocaleNCompare((char *) header+0x800,"PCD",3) != 0) && (overview == 0)))
-    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    {
+      header=(unsigned char *) RelinquishMagickMemory(header);
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    }
   rotate=header[0x0e02] & 0x03;
   number_images=(header[10] << 8) | header[11];
+  header=(unsigned char *) RelinquishMagickMemory(header);
   if (number_images > 65535)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-  header=(unsigned char *) RelinquishMagickMemory(header);
   /*
     Determine resolution by scene specification.
   */
@@ -686,7 +689,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
         image->colorspace=YCCColorspace;
         if (LocaleCompare(image_info->magick,"PCDS") == 0)
-          SetImageColorspace(image,sRGBColorspace);
+          (void) SetImageColorspace(image,sRGBColorspace);
         if (j < (ssize_t) number_images)
           {
             /*
@@ -840,7 +843,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->gamma=1.000f/2.200f;
   image->colorspace=YCCColorspace;
   if (LocaleCompare(image_info->magick,"PCDS") == 0)
-    SetImageColorspace(image,sRGBColorspace);
+    (void) SetImageColorspace(image,sRGBColorspace);
   return(GetFirstImageInList(image));
 }
 
