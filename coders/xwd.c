@@ -333,6 +333,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         count=ReadBlob(image,sz_XWDColor,(unsigned char *) &color);
         if (count != sz_XWDColor)
           {
+            colors=(XColor *) RelinquishMagickMemory(colors);
             ximage=(XImage *) RelinquishMagickMemory(ximage);
             ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
           }
@@ -363,6 +364,8 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   length=(size_t) ximage->bytes_per_line*ximage->height;
   if (CheckOverflowException(length,ximage->bytes_per_line,ximage->height))
     {
+      if (header.ncolors != 0)
+        colors=(XColor *) RelinquishMagickMemory(colors);
       ximage=(XImage *) RelinquishMagickMemory(ximage);
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     }
@@ -375,6 +378,8 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       length*=ximage->depth;
       if (CheckOverflowException(length,extent,ximage->depth))
         {
+          if (header.ncolors != 0)
+            colors=(XColor *) RelinquishMagickMemory(colors);
           ximage=(XImage *) RelinquishMagickMemory(ximage);
           ThrowReaderException(CorruptImageError,"ImproperImageHeader");
         }
@@ -382,12 +387,16 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   ximage->data=(char *) AcquireQuantumMemory(length,sizeof(*ximage->data));
   if (ximage->data == (char *) NULL)
     {
+      if (header.ncolors != 0)
+        colors=(XColor *) RelinquishMagickMemory(colors);
       ximage=(XImage *) RelinquishMagickMemory(ximage);
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     }
   count=ReadBlob(image,length,(unsigned char *) ximage->data);
   if (count != (ssize_t) length)
     {
+      if (header.ncolors != 0)
+        colors=(XColor *) RelinquishMagickMemory(colors);
       ximage->data=DestroyString(ximage->data);
       ximage=(XImage *) RelinquishMagickMemory(ximage);
       ThrowReaderException(CorruptImageError,"UnableToReadImageData");
@@ -400,7 +409,13 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->depth=8;
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
-    return(DestroyImageList(image));
+    {
+      if (header.ncolors != 0)
+        colors=(XColor *) RelinquishMagickMemory(colors);
+      ximage->data=DestroyString(ximage->data);
+      ximage=(XImage *) RelinquishMagickMemory(ximage);
+      return(DestroyImageList(image));
+    }
   if ((header.ncolors == 0U) || (ximage->red_mask != 0) ||
       (ximage->green_mask != 0) || (ximage->blue_mask != 0))
     image->storage_class=DirectClass;
@@ -521,6 +536,8 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         if (AcquireImageColormap(image,image->colors,exception) == MagickFalse)
           {
+            if (header.ncolors != 0)
+              colors=(XColor *) RelinquishMagickMemory(colors);
             ximage->data=DestroyString(ximage->data);
             ximage=(XImage *) RelinquishMagickMemory(ximage);
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
