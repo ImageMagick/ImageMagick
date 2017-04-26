@@ -210,19 +210,33 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   ept_info.tiff=(unsigned char *) AcquireQuantumMemory(ept_info.tiff_length+1,
     sizeof(*ept_info.tiff));
   if (ept_info.tiff == (unsigned char *) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+    {
+      ept_info.postscript=(unsigned char *) RelinquishMagickMemory(
+        ept_info.postscript);
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+    }
   (void) ResetMagickMemory(ept_info.tiff,0,(ept_info.tiff_length+1)*
     sizeof(*ept_info.tiff));
   offset=SeekBlob(image,ept_info.tiff_offset,SEEK_SET);
   if ((ept_info.tiff_length != 0) && (offset < 30))
-    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    {
+      ept_info.tiff=(unsigned char *) RelinquishMagickMemory(ept_info.tiff);
+      ept_info.postscript=(unsigned char *) RelinquishMagickMemory(
+        ept_info.postscript);
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    }
   count=ReadBlob(image,ept_info.tiff_length,ept_info.tiff);
   if (count != (ssize_t) (ept_info.tiff_length))
     (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageWarning,
       "InsufficientImageDataInFile","`%s'",image->filename);
   offset=SeekBlob(image,ept_info.postscript_offset,SEEK_SET);
   if ((ept_info.postscript_length != 0) && (offset < 30))
-    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    {
+      ept_info.tiff=(unsigned char *) RelinquishMagickMemory(ept_info.tiff);
+      ept_info.postscript=(unsigned char *) RelinquishMagickMemory(
+        ept_info.postscript);
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    }
   count=ReadBlob(image,ept_info.postscript_length,ept_info.postscript);
   if (count != (ssize_t) (ept_info.postscript_length))
     (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageWarning,
