@@ -366,17 +366,26 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         count=ReadBlob(image,image->colors,sun_colormap);
         if (count != (ssize_t) image->colors)
-          ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
+          {
+            sun_colormap=(unsigned char *) RelinquishMagickMemory(sun_colormap);
+            ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
+          }
         for (i=0; i < (ssize_t) image->colors; i++)
           image->colormap[i].red=ScaleCharToQuantum(sun_colormap[i]);
         count=ReadBlob(image,image->colors,sun_colormap);
         if (count != (ssize_t) image->colors)
-          ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
+          {
+            sun_colormap=(unsigned char *) RelinquishMagickMemory(sun_colormap);
+            ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
+          }
         for (i=0; i < (ssize_t) image->colors; i++)
           image->colormap[i].green=ScaleCharToQuantum(sun_colormap[i]);
         count=ReadBlob(image,image->colors,sun_colormap);
         if (count != (ssize_t) image->colors)
-          ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
+          {
+            sun_colormap=(unsigned char *) RelinquishMagickMemory(sun_colormap);
+            ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
+          }
         for (i=0; i < (ssize_t) image->colors; i++)
           image->colormap[i].blue=ScaleCharToQuantum(sun_colormap[i]);
         sun_colormap=(unsigned char *) RelinquishMagickMemory(sun_colormap);
@@ -395,9 +404,9 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (sun_colormap == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         count=ReadBlob(image,sun_info.maplength,sun_colormap);
+        sun_colormap=(unsigned char *) RelinquishMagickMemory(sun_colormap);
         if (count != (ssize_t) sun_info.maplength)
           ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
-        sun_colormap=(unsigned char *) RelinquishMagickMemory(sun_colormap);
         break;
       }
       default:
