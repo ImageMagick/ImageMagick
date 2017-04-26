@@ -207,6 +207,7 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (LocaleCompare(image_info->filename,read_info->filename) != 0)
         (void) RelinquishUniqueFileResource(read_info->filename);
       read_info=DestroyImageInfo(read_info);
+      image=DestroyImageList(image);
       return((Image *) NULL);
     }
   hdr_info=ImfInputHeader(file);
@@ -244,6 +245,7 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (LocaleCompare(image_info->filename,read_info->filename) != 0)
             (void) RelinquishUniqueFileResource(read_info->filename);
           read_info=DestroyImageInfo(read_info);
+          image=DestroyImageList(image);
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         }
     }
@@ -258,14 +260,14 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
     yy=display_window.min_y+y;
     if ((yy < data_window.min_y) || (yy > data_window.max_y) ||
         (scanline == (ImfRgba *) NULL))
-    {
-      for (x=0; x < (ssize_t) image->columns; x++)
       {
-        SetPixelViaPixelInfo(image,&image->background_color,q);
-        q+=GetPixelChannels(image);
+        for (x=0; x < (ssize_t) image->columns; x++)
+        {
+          SetPixelViaPixelInfo(image,&image->background_color,q);
+          q+=GetPixelChannels(image);
+        }
+        continue;
       }
-      continue;
-    }
     ResetMagickMemory(scanline,0,columns*sizeof(*scanline));
     ImfInputSetFrameBuffer(file,scanline-data_window.min_x-columns*yy,1,
       columns);
