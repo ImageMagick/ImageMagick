@@ -5243,7 +5243,7 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
                 AcquireNextImage(image_info,image);
 
                 if (GetNextImageInList(image) == (Image *) NULL)
-                  return((Image *) NULL);
+                  return(DestroyImageList(image));
 
                 image=SyncNextImageInList(image);
                 mng_info->image=image;
@@ -5691,10 +5691,7 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
                     AcquireNextImage(image_info,image);
 
                     if (GetNextImageInList(image) == (Image *) NULL)
-                      {
-                        image=DestroyImageList(image);
-                        return((Image *) NULL);
-                      }
+                      return(DestroyImageList(image));
 
                     image=SyncNextImageInList(image);
                   }
@@ -6272,10 +6269,7 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
                     AcquireNextImage(image_info,image);
 
                     if (GetNextImageInList(image) == (Image *) NULL)
-                      {
-                        image=DestroyImageList(image);
-                        return((Image *) NULL);
-                      }
+                      return(DestroyImageList(image));
 
                     image=SyncNextImageInList(image);
                   }
@@ -6324,10 +6318,7 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
               AcquireNextImage(image_info,image);
 
               if (GetNextImageInList(image) == (Image *) NULL)
-                {
-                  image=DestroyImageList(image);
-                  return((Image *) NULL);
-                }
+                return(DestroyImageList(image));
 
               image=SyncNextImageInList(image);
             }
@@ -6372,10 +6363,7 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
             AcquireNextImage(image_info,image);
 
             if (GetNextImageInList(image) == (Image *) NULL)
-              {
-                image=DestroyImageList(image);
-                return((Image *) NULL);
-              }
+              return(DestroyImageList(image));
 
             image=SyncNextImageInList(image);
           }
@@ -6449,8 +6437,7 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
     if (image->columns == 0 || image->rows == 0)
       {
         (void) CloseBlob(image);
-        image=DestroyImageList(image);
-        return((Image *) NULL);
+        return(DestroyImageList(image));
       }
 
     mng_info->image=image;
@@ -6561,10 +6548,7 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
                 AcquireNextImage(image_info,image);
 
                 if (GetNextImageInList(image) == (Image *) NULL)
-                  {
-                    image=DestroyImageList(image);
-                    return((Image *) NULL);
-                  }
+                  return(DestroyImageList(image));
 
                 large_image=SyncNextImageInList(image);
 
@@ -7107,13 +7091,11 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
           AcquireNextImage(image_info,image);
           if (GetNextImageInList(image) == (Image *) NULL)
             {
-              image=DestroyImageList(image);
-
               if (logging != MagickFalse)
                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                   "  Allocation failed, returning NULL.");
 
-              return((Image *) NULL);
+              return(DestroyImageList(image));
             }
           image=SyncNextImageInList(image);
         }
@@ -7149,7 +7131,7 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
           CoderError,"Linked list is corrupted, beginning of list not found",
           "`%s'",image_info->filename);
 
-        return((Image *) NULL);
+        return(DestroyImageList(image));
       }
 
     image=GetPreviousImageInList(image);
@@ -7187,10 +7169,7 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
       (void) ThrowMagickException(&image->exception,GetMagickModule(),
         CoderError,"No visible images in file","`%s'",image_info->filename);
 
-      if (image != (Image *) NULL)
-        image=DestroyImageList(image);
-
-      return((Image *) NULL);
+      return(DestroyImageList(image));
     }
 
   if (mng_info->ticks_per_second)
