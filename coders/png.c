@@ -4244,7 +4244,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
       AcquireNextImage(image_info,image);
 
       if (GetNextImageInList(image) == (Image *) NULL)
-        return((Image *) NULL);
+        return(DestroyImageList(image));
 
       image=SyncNextImageInList(image);
     }
@@ -4395,7 +4395,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
           exception);
 
         if (status == MagickFalse)
-          return((Image *) NULL);
+          return(DestroyImageList(image));
 
         if ((image_info->ping == MagickFalse) && (jng_color_type >= 12))
           {
@@ -4425,7 +4425,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
               exception);
 
             if (status == MagickFalse)
-              return((Image *) NULL);
+              return(DestroyImageList(image));
 
             if (jng_alpha_compression_method == 0)
               {
@@ -4683,13 +4683,13 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
     {
       assert(color_image == (Image *) NULL);
       assert(alpha_image == (Image *) NULL);
-      return((Image *) NULL);
+      return(DestroyImageList(image));
     }
 
   if (color_image == (Image *) NULL)
     {
       assert(alpha_image == (Image *) NULL);
-      return((Image *) NULL);
+      return(DestroyImageList(image));
     }
 
   (void) SeekBlob(color_image,0,SEEK_SET);
@@ -4711,7 +4711,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
   color_image_info=DestroyImageInfo(color_image_info);
 
   if (jng_image == (Image *) NULL)
-    return((Image *) NULL);
+    return(DestroyImageList(image));
 
   if (logging != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -4827,7 +4827,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
     2*GetBlobSize(image));
 
   if (status == MagickFalse)
-    return((Image *) NULL);
+    return(DestroyImageList(image));
 
   if (logging != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
