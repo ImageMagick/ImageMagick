@@ -6240,8 +6240,12 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
                               SEEK_SET);
 
                             if (offset < 0)
-                              ThrowReaderException(CorruptImageError,
-                                "ImproperImageHeader");
+                              {
+                                chunk=(unsigned char *) RelinquishMagickMemory(
+                                  chunk);
+                                ThrowReaderException(CorruptImageError,
+                                  "ImproperImageHeader");
+                              }
                           }
 
                         else
@@ -6557,7 +6561,10 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
           }
 #if defined(MNG_INSERT_LAYERS)
         if (length < 8)
-          ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+          {
+            chunk=(unsigned char *) RelinquishMagickMemory(chunk);
+            ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+          }
 
         image_width=(size_t) mng_get_long(p);
         image_height=(size_t) mng_get_long(&p[4]);
