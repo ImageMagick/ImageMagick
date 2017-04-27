@@ -627,6 +627,7 @@ static Image *ReadMATImageV4(const ImageInfo *image_info,Image *image,
     depth;
 
 
+  quantum_info=(QuantumInfo *) NULL;
   (void) SeekBlob(image,0,SEEK_SET);
   while (EOFBlob(image) != MagickFalse)
   {
@@ -772,7 +773,8 @@ static Image *ReadMATImageV4(const ImageInfo *image_info,Image *image,
         else
           InsertComplexFloatRow(image,(float *) pixels,y,0,0,exception);
       }
-    quantum_info=DestroyQuantumInfo(quantum_info);
+    if (quantum_info != (QuantumInfo *) NULL)
+      quantum_info=DestroyQuantumInfo(quantum_info);
     rotate_image=RotateImage(image,90.0,exception);
     if (rotate_image != (Image *) NULL)
       {
@@ -890,6 +892,7 @@ static Image *ReadMATImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
      Read MATLAB image.
    */
+  quantum_info=(QuantumInfo *) NULL;
   clone_info=CloneImageInfo(image_info);
   if (ReadBlob(image,124,(unsigned char *) &MATLAB_HDR.identific) != 124)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
@@ -1290,7 +1293,8 @@ done_reading:
   }
 
   RelinquishMagickMemory(BImgBuff);
-  quantum_info=DestroyQuantumInfo(quantum_info);
+  if (quantum_info != (QuantumInfo *) NULL)
+    quantum_info=DestroyQuantumInfo(quantum_info);
 END_OF_READING:
   clone_info=DestroyImageInfo(clone_info);
   CloseBlob(image);
