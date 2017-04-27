@@ -1554,24 +1554,22 @@ static void MngInfoDiscardObject(MngInfo *mng_info,int i)
     }
 }
 
-static void MngInfoFreeStruct(MngInfo *mng_info,
-    MagickBooleanType *have_mng_structure)
+static MngInfo *MngInfoFreeStruct(MngInfo *mng_info)
 {
-  if (*have_mng_structure != MagickFalse && (mng_info != (MngInfo *) NULL))
-    {
-      register ssize_t
-        i;
+  register ssize_t
+    i;
 
-      for (i=1; i < MNG_MAX_OBJECTS; i++)
-        MngInfoDiscardObject(mng_info,i);
+  if (mng_info == (MngInfo *) NULL)
+    return((MngInfo *) NULL);
 
-      if (mng_info->global_plte != (png_colorp) NULL)
-        mng_info->global_plte=(png_colorp)
-          RelinquishMagickMemory(mng_info->global_plte);
+  for (i=1; i < MNG_MAX_OBJECTS; i++)
+    MngInfoDiscardObject(mng_info,i);
 
-      mng_info=(MngInfo *) RelinquishMagickMemory(mng_info);
-      *have_mng_structure=MagickFalse;
-    }
+  if (mng_info->global_plte != (png_colorp) NULL)
+    mng_info->global_plte=(png_colorp)
+      RelinquishMagickMemory(mng_info->global_plte);
+
+  return((MngInfo *) RelinquishMagickMemory(mng_info));
 }
 
 static MngBox mng_minimum_box(MngBox box1,MngBox box2)
@@ -4320,7 +4318,6 @@ static Image *ReadPNGImage(const ImageInfo *image_info,
     *image;
 
   MagickBooleanType
-    have_mng_structure,
     logging,
     status;
 
@@ -4364,7 +4361,6 @@ static Image *ReadPNGImage(const ImageInfo *image_info,
   /*
     Allocate a MngInfo structure.
   */
-  have_mng_structure=MagickFalse;
   mng_info=(MngInfo *) AcquireMagickMemory(sizeof(MngInfo));
 
   if (mng_info == (MngInfo *) NULL)
@@ -4375,10 +4371,9 @@ static Image *ReadPNGImage(const ImageInfo *image_info,
   */
   (void) ResetMagickMemory(mng_info,0,sizeof(MngInfo));
   mng_info->image=image;
-  have_mng_structure=MagickTrue;
 
   image=ReadOnePNGImage(mng_info,image_info,exception);
-  MngInfoFreeStruct(mng_info,&have_mng_structure);
+  mng_info=MngInfoFreeStruct(mng_info);
 
   if (image == (Image *) NULL)
     {
@@ -5193,7 +5188,6 @@ static Image *ReadJNGImage(const ImageInfo *image_info,
     *image;
 
   MagickBooleanType
-    have_mng_structure,
     logging,
     status;
 
@@ -5235,7 +5229,6 @@ static Image *ReadJNGImage(const ImageInfo *image_info,
 
   /* Allocate a MngInfo structure.  */
 
-  have_mng_structure=MagickFalse;
   mng_info=(MngInfo *) AcquireMagickMemory(sizeof(*mng_info));
 
   if (mng_info == (MngInfo *) NULL)
@@ -5244,11 +5237,10 @@ static Image *ReadJNGImage(const ImageInfo *image_info,
   /* Initialize members of the MngInfo structure.  */
 
   (void) ResetMagickMemory(mng_info,0,sizeof(MngInfo));
-  have_mng_structure=MagickTrue;
 
   mng_info->image=image;
   image=ReadOneJNGImage(mng_info,image_info,exception);
-  MngInfoFreeStruct(mng_info,&have_mng_structure);
+  mng_info=MngInfoFreeStruct(mng_info);
 
   if (image == (Image *) NULL)
     {
@@ -5286,8 +5278,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
     *image;
 
   MagickBooleanType
-    logging,
-    have_mng_structure;
+    logging;
 
   volatile int
     first_mng_object,
@@ -5395,7 +5386,6 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
 
   first_mng_object=MagickFalse;
   skipping_loop=(-1);
-  have_mng_structure=MagickFalse;
 
   /* Allocate a MngInfo structure.  */
 
@@ -5408,7 +5398,6 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
 
   (void) ResetMagickMemory(mng_info,0,sizeof(MngInfo));
   mng_info->image=image;
-  have_mng_structure=MagickTrue;
 
   if (LocaleCompare(image_info->magick,"MNG") == 0)
     {
@@ -6050,7 +6039,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
                     if (GetNextImageInList(image) == (Image *) NULL)
                       {
                         image=DestroyImageList(image);
-                        MngInfoFreeStruct(mng_info,&have_mng_structure);
+                        mng_info=MngInfoFreeStruct(mng_info);
                         return((Image *) NULL);
                       }
 
@@ -6627,7 +6616,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
                     if (GetNextImageInList(image) == (Image *) NULL)
                       {
                         image=DestroyImageList(image);
-                        MngInfoFreeStruct(mng_info,&have_mng_structure);
+                        MngInfoFreeStruct(mng_info);
                         return((Image *) NULL);
                       }
 
@@ -6680,7 +6669,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
               if (GetNextImageInList(image) == (Image *) NULL)
                 {
                   image=DestroyImageList(image);
-                  MngInfoFreeStruct(mng_info,&have_mng_structure);
+                  mng_info=MngInfoFreeStruct(mng_info);
                   return((Image *) NULL);
                 }
 
@@ -6729,7 +6718,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
             if (GetNextImageInList(image) == (Image *) NULL)
               {
                 image=DestroyImageList(image);
-                MngInfoFreeStruct(mng_info,&have_mng_structure);
+                mng_info=MngInfoFreeStruct(mng_info);
                 return((Image *) NULL);
               }
 
@@ -6799,7 +6788,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "exit ReadJNGImage() with error");
 
-        MngInfoFreeStruct(mng_info,&have_mng_structure);
+        mng_info=MngInfoFreeStruct(mng_info);
         return((Image *) NULL);
       }
 
@@ -6807,7 +6796,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
       {
         (void) CloseBlob(image);
         image=DestroyImageList(image);
-        MngInfoFreeStruct(mng_info,&have_mng_structure);
+        mng_info=MngInfoFreeStruct(mng_info);
         return((Image *) NULL);
       }
 
@@ -6921,7 +6910,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
                 if (GetNextImageInList(image) == (Image *) NULL)
                   {
                     image=DestroyImageList(image);
-                    MngInfoFreeStruct(mng_info,&have_mng_structure);
+                    mng_info=MngInfoFreeStruct(mng_info);
                     return((Image *) NULL);
                   }
 
@@ -7004,7 +6993,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
                     (next == (Quantum *) NULL))
                   {
                      image=DestroyImageList(image);
-                     MngInfoFreeStruct(mng_info,&have_mng_structure);
+                     mng_info=MngInfoFreeStruct(mng_info);
                      ThrowReaderException(ResourceLimitError,
                        "MemoryAllocationFailed");
                   }
@@ -7502,7 +7491,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
           if (GetNextImageInList(image) == (Image *) NULL)
             {
               image=DestroyImageList(image);
-              MngInfoFreeStruct(mng_info,&have_mng_structure);
+              mng_info=MngInfoFreeStruct(mng_info);
 
               if (logging != MagickFalse)
                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -7585,7 +7574,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
       if (image != (Image *) NULL)
         image=DestroyImageList(image);
 
-      MngInfoFreeStruct(mng_info,&have_mng_structure);
+      mng_info=MngInfoFreeStruct(mng_info);
       return((Image *) NULL);
     }
 
@@ -7721,8 +7710,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
    }
 
   image=GetFirstImageInList(image);
-  MngInfoFreeStruct(mng_info,&have_mng_structure);
-  have_mng_structure=MagickFalse;
+  mng_info=MngInfoFreeStruct(mng_info);
 
   if (logging != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),"exit ReadMNGImage()");
@@ -12066,7 +12054,6 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
   MagickBooleanType
     excluding,
     logging,
-    have_mng_structure,
     status;
 
   MngInfo
@@ -12090,7 +12077,6 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
   /*
     Allocate a MngInfo structure.
   */
-  have_mng_structure=MagickFalse;
   mng_info=(MngInfo *) AcquireMagickMemory(sizeof(MngInfo));
 
   if (mng_info == (MngInfo *) NULL)
@@ -12102,7 +12088,6 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
   (void) ResetMagickMemory(mng_info,0,sizeof(MngInfo));
   mng_info->image=image;
   mng_info->equal_backgrounds=MagickTrue;
-  have_mng_structure=MagickTrue;
 
   /* See if user has requested a specific PNG subformat */
 
@@ -12746,7 +12731,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
 
   status=WriteOnePNGImage(mng_info,image_info,image,exception);
 
-  MngInfoFreeStruct(mng_info,&have_mng_structure);
+  mng_info=MngInfoFreeStruct(mng_info);
 
   if (logging != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),"exit WritePNGImage()");
@@ -13352,7 +13337,6 @@ static MagickBooleanType WriteJNGImage(const ImageInfo *image_info,
   Image *image, ExceptionInfo *exception)
 {
   MagickBooleanType
-    have_mng_structure,
     logging,
     status;
 
@@ -13377,7 +13361,6 @@ static MagickBooleanType WriteJNGImage(const ImageInfo *image_info,
   /*
     Allocate a MngInfo structure.
   */
-  have_mng_structure=MagickFalse;
   mng_info=(MngInfo *) AcquireMagickMemory(sizeof(MngInfo));
   if (mng_info == (MngInfo *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
@@ -13386,15 +13369,14 @@ static MagickBooleanType WriteJNGImage(const ImageInfo *image_info,
   */
   (void) ResetMagickMemory(mng_info,0,sizeof(MngInfo));
   mng_info->image=image;
-  have_mng_structure=MagickTrue;
 
   (void) WriteBlob(image,8,(const unsigned char *) "\213JNG\r\n\032\n");
 
   status=WriteOneJNGImage(mng_info,image_info,image,exception);
+  mng_info=MngInfoFreeStruct(mng_info);
   (void) CloseBlob(image);
 
   (void) CatchImageException(image);
-  MngInfoFreeStruct(mng_info,&have_mng_structure);
   if (logging != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),"exit WriteJNGImage()");
   return(status);
@@ -13408,7 +13390,6 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,
     *next_image;
 
   MagickBooleanType
-    have_mng_structure,
     status;
 
   volatile MagickBooleanType
@@ -13470,7 +13451,6 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,
   /*
     Allocate a MngInfo structure.
   */
-  have_mng_structure=MagickFalse;
   mng_info=(MngInfo *) AcquireMagickMemory(sizeof(MngInfo));
   if (mng_info == (MngInfo *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
@@ -13479,7 +13459,6 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,
   */
   (void) ResetMagickMemory(mng_info,0,sizeof(MngInfo));
   mng_info->image=image;
-  have_mng_structure=MagickTrue;
   write_mng=LocaleCompare(image_info->magick,"MNG") == 0;
 
   /*
@@ -14239,7 +14218,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,
 
     if (status == MagickFalse)
       {
-        MngInfoFreeStruct(mng_info,&have_mng_structure);
+        mng_info=MngInfoFreeStruct(mng_info);
         (void) CloseBlob(image);
         return(MagickFalse);
       }
@@ -14272,7 +14251,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,
     Relinquish resources.
   */
   (void) CloseBlob(image);
-  MngInfoFreeStruct(mng_info,&have_mng_structure);
+  mng_info=MngInfoFreeStruct(mng_info);
 
   if (logging != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),"exit WriteMNGImage()");
