@@ -5547,8 +5547,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
           {
             if (length != 28)
               {
-                if (chunk)
-                  chunk=(unsigned char *) RelinquishMagickMemory(chunk);
+                chunk=(unsigned char *) RelinquishMagickMemory(chunk);
                 ThrowReaderException(CorruptImageError,"CorruptImage");
               }
 
