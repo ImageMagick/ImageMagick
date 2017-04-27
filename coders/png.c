@@ -5190,8 +5190,7 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
           {
             if (length != 28)
               {
-                if (chunk == (unsigned char *) NULL)
-                  chunk=(unsigned char *) RelinquishMagickMemory(chunk);
+                chunk=(unsigned char *) RelinquishMagickMemory(chunk);
                 ThrowReaderException(CorruptImageError,"CorruptImage");
               }
 
