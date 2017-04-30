@@ -404,13 +404,19 @@ static ssize_t PrintChannelPerceptualHash(Image *image,FILE *file,
   n=0;
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
   {
+    PixelChannel
+      channel;
+
+    PixelTrait
+      traits;
+
     register ssize_t
       j;
 
-    PixelChannel channel=GetPixelChannelChannel(image,i);
+    channel=GetPixelChannelChannel(image,i);
     if (channel == IndexPixelChannel)
       continue;
-    PixelTrait traits=GetPixelChannelTraits(image,channel);
+    traits=GetPixelChannelTraits(image,channel);
     if (traits == UndefinedPixelTrait)
       continue;
     n=FormatLocaleFile(file,"    Channel %.20g:\n",(double) channel);
