@@ -429,19 +429,25 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     case 0:
     {
       image->compression=NoCompression;
-      count=(ssize_t) ReadBlob(image, packets * image -> rows, pixels);
+      count=(ssize_t) ReadBlob(image,packets*image->rows,pixels);
       break;
     }
     case 1:
     {
       image->compression=RLECompression;
-      if (!DecodeImage(image, pixels, packets * image -> rows))
-        ThrowReaderException( CorruptImageError, "RLEDecoderError" );
+      if (!DecodeImage(image,pixels,packets*image->rows))
+        {
+          pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+          ThrowReaderException( CorruptImageError,"RLEDecoderError");
+        }
       break;
     }
     default:
-      ThrowReaderException(CorruptImageError,
-         "UnrecognizedImageCompressionType" );
+      {
+        pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+        ThrowReaderException(CorruptImageError,
+          "UnrecognizedImageCompressionType");
+      }
   }
   p=pixels;
   switch (bits_per_pixel)
@@ -542,7 +548,10 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     }
     default:
+    {
+      pixels=(unsigned char *) RelinquishMagickMemory(pixels);
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    }
   }
   pixels=(unsigned char *) RelinquishMagickMemory(pixels);
   if (EOFBlob(image) != MagickFalse)
