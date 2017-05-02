@@ -864,12 +864,16 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
               ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
             count=ReadBlob(image,packet_size*image->colors,colormap);
             if (count != (ssize_t) (packet_size*image->colors))
-              ThrowReaderException(CorruptImageError,
-                "InsufficientImageDataInFile");
+              {
+                colormap=(unsigned char *) RelinquishMagickMemory(colormap);
+                ThrowReaderException(CorruptImageError,
+                  "InsufficientImageDataInFile");
+              }
             p=colormap;
             switch (depth)
             {
               default:
+                colormap=(unsigned char *) RelinquishMagickMemory(colormap);
                 ThrowReaderException(CorruptImageError,
                   "ImageDepthNotSupported");
               case 8:
