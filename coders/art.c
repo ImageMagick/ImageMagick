@@ -168,7 +168,10 @@ static Image *ReadARTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     pixels=(const unsigned char *) ReadBlobStream(image,length,
       GetQuantumPixels(quantum_info),&count);
     if (count != (ssize_t) length)
-      ThrowReaderException(CorruptImageError,"UnableToReadImageData");
+      {
+        quantum_info=DestroyQuantumInfo(quantum_info);
+        ThrowReaderException(CorruptImageError,"UnableToReadImageData");
+      }
     (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
       GrayQuantum,pixels,exception);
     pixels=(const unsigned char *) ReadBlobStream(image,(size_t) (-(ssize_t)
