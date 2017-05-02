@@ -3832,8 +3832,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       }
     }
 
-  if (quantum_info != (QuantumInfo *) NULL)
-    quantum_info=DestroyQuantumInfo(quantum_info);
+  quantum_info=DestroyQuantumInfo(quantum_info);
 
   if (image->storage_class == PseudoClass)
     {
