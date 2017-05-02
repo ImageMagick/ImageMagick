@@ -460,8 +460,12 @@ static Image *ReadICONImage(const ImageInfo *image_info,
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
           count=ReadBlob(image,(size_t) (4*image->colors),icon_colormap);
           if (count != (ssize_t) (4*image->colors))
-            ThrowReaderException(CorruptImageError,
-              "InsufficientImageDataInFile");
+            {
+              icon_colormap=(unsigned char *) RelinquishMagickMemory(
+                icon_colormap);
+              ThrowReaderException(CorruptImageError,
+                "InsufficientImageDataInFile");
+            }
           p=icon_colormap;
           for (i=0; i < (ssize_t) image->colors; i++)
           {
