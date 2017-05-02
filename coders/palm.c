@@ -477,7 +477,12 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
       if (bits_per_pixel == 16)
         {
           if (image->columns > (2*bytes_per_row))
-            ThrowReaderException(CorruptImageError,"CorruptImage");
+            {
+              one_row=(unsigned char *) RelinquishMagickMemory(one_row);
+              if (compressionType == PALM_COMPRESSION_SCANLINE)
+                lastrow=(unsigned char *) RelinquishMagickMemory(lastrow);
+              ThrowReaderException(CorruptImageError,"CorruptImage");
+            }
           for (x=0; x < (ssize_t) image->columns; x++)
           {
             color16=(*ptr++ << 8);
@@ -498,7 +503,12 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
           for (x=0; x < (ssize_t) image->columns; x++)
           {
             if ((size_t) (ptr-one_row) >= bytes_per_row)
-              ThrowReaderException(CorruptImageError,"CorruptImage");
+              {
+                one_row=(unsigned char *) RelinquishMagickMemory(one_row);
+                if (compressionType == PALM_COMPRESSION_SCANLINE)
+                  lastrow=(unsigned char *) RelinquishMagickMemory(lastrow);
+                ThrowReaderException(CorruptImageError,"CorruptImage");
+              }
             index=(Quantum) (mask-(((*ptr) & (mask << bit)) >> bit));
             SetPixelIndex(image,index,q);
             SetPixelViaPixelInfo(image,image->colormap+(ssize_t) index,q);
