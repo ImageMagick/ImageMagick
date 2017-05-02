@@ -418,12 +418,13 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
     if (one_row == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     lastrow=(unsigned char *) NULL;
-    if (compressionType == PALM_COMPRESSION_SCANLINE) {
-      lastrow=(unsigned char *) AcquireQuantumMemory(MagickMax(bytes_per_row,
-        2*image->columns),sizeof(*lastrow));
-    if (lastrow == (unsigned char *) NULL)
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-    }
+    if (compressionType == PALM_COMPRESSION_SCANLINE)
+      {
+        lastrow=(unsigned char *) AcquireQuantumMemory(MagickMax(bytes_per_row,
+          2*image->columns),sizeof(*lastrow));
+        if (lastrow == (unsigned char *) NULL)
+          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+      }
     mask=(size_t) (1U << bits_per_pixel)-1;
     for (y=0; y < (ssize_t) image->rows; y++)
     {
