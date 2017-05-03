@@ -438,7 +438,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,
         {
           image->storage_class=PseudoClass;
           image->colors=icon_info.number_colors;
-          if (image->colors == 0)
+          if ((image->colors == 0) || (image->colors > 256))
             image->colors=one << icon_info.bits_per_pixel;
         }
       if (image->storage_class == PseudoClass)
