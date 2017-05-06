@@ -1092,17 +1092,10 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       return(status);
     }
     case CopyAlphaChannel:
-    case ShapeAlphaChannel:
     {
-      /*
-        Copy pixel intensity to the alpha channel.
-      */
       image->alpha_trait=UpdatePixelTrait;
       status=CompositeImage(image,image,IntensityCompositeOp,MagickTrue,0,0,
         exception);
-      if (alpha_type == ShapeAlphaChannel)
-        (void) LevelImageColors(image,&image->background_color,
-          &image->background_color,MagickTrue,exception);
       break;
     }
     case DeactivateAlphaChannel:
@@ -1259,6 +1252,18 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
     {
       if (image->alpha_trait == UndefinedPixelTrait)
         status=SetImageAlpha(image,OpaqueAlpha,exception);
+      break;
+    }
+    case ShapeAlphaChannel:
+    {
+      /*
+        Set alpha channel by shape.
+      */
+      image->alpha_trait=UpdatePixelTrait;
+      (void) SetImageMask(image,WritePixelMask,image,exception);
+      (void) LevelImageColors(image,&image->background_color,
+        &image->background_color,MagickTrue,exception);
+      (void) SetImageMask(image,WritePixelMask,(Image *) NULL,exception);
       break;
     }
     case TransparentAlphaChannel:

@@ -1,3 +1,7 @@
+2017-05-06  7.0.5-6 Cristy  <quetzlzacatenango@image...>
+  * Restore the -alpha Shape option (reference
+    https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=31879).
+
 2017-04-24  7.0.5-5 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.5-5, GIT revision 19915:12eec43:20170424.
 
