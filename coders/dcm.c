@@ -2697,8 +2697,6 @@ typedef struct _DCMInfo
     window_width;
 
   ssize_t
-    rescale_intercept,
-    rescale_slope,
     window_center;
 } DCMInfo;
 
@@ -3083,8 +3081,6 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   info.depth=8;
   info.max_value=255UL;
   info.mask=0xffff;
-  info.rescale_intercept=0;
-  info.rescale_slope=1;
   info.samples_per_pixel=1;
   info.scale=(Quantum *) NULL;
   info.signed_data=(~0UL);
@@ -3504,24 +3500,6 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             */
             if (data != (unsigned char *) NULL)
               info.window_width=StringToUnsignedLong((char *) data);
-            break;
-          }
-          case 0x1052:
-          {
-            /*
-              Rescale intercept
-            */
-            if (data != (unsigned char *) NULL)
-              info.rescale_intercept=(ssize_t) StringToLong((char *) data);
-            break;
-          }
-          case 0x1053:
-          {
-            /*
-              Rescale slope
-            */
-            if (data != (unsigned char *) NULL)
-              info.rescale_slope=(ssize_t) StringToLong((char *) data);
             break;
           }
           case 0x1200:
