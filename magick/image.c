@@ -829,6 +829,8 @@ MagickExport Image *CloneImage(const Image *image,const size_t columns,
       */
       clone_image->colors=image->colors;
       length=(size_t) image->colors;
+      if (length > ((~0UL)/sizeof(*colors)))
+        ThrowReaderException(CorruptImageError,"ImproperImageHeader");
       clone_image->colormap=(PixelPacket *) AcquireQuantumMemory(length,
         sizeof(*clone_image->colormap));
       if (clone_image->colormap == (PixelPacket *) NULL)
