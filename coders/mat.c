@@ -883,6 +883,7 @@ static Image *ReadMATImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
      Open image file.
    */
+  quantum_info=(QuantumInfo *) NULL;
   image = AcquireImage(image_info);
 
   status = OpenBlob(image_info, image, ReadBinaryBlobMode, exception);
@@ -1297,7 +1298,8 @@ done_reading:
   }
 
   RelinquishMagickMemory(BImgBuff);
-  quantum_info=DestroyQuantumInfo(quantum_info);
+  if (quantum_info != (QuantumInfo *) NULL)
+    quantum_info=DestroyQuantumInfo(quantum_info);
 END_OF_READING:
   clone_info=DestroyImageInfo(clone_info);
   CloseBlob(image);
