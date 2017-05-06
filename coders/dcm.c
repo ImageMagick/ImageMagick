@@ -2877,12 +2877,10 @@ static MagickBooleanType ReadDCMPixels(Image *image,DCMInfo *info,
                   }
                 i++;
               }
-          index=(int) ((pixel_value*info->rescale_slope)+
-            info->rescale_intercept);
           if (info->window_width == 0)
             {
               if (info->signed_data == 1)
-                index-=32767;
+                index=pixel_value-32767;
             }
           else
             {
@@ -2894,14 +2892,14 @@ static MagickBooleanType ReadDCMPixels(Image *image,DCMInfo *info,
                 (info->window_width-1.0)/2.0-0.5);
               window_max=(ssize_t) floor((double) info->window_center+
                 (info->window_width-1.0)/2.0+0.5);
-              if ((ssize_t) index <= window_min)
+              if ((ssize_t) pixel_value <= window_min)
                 index=0;
               else
-                if ((ssize_t) index > window_max)
+                if ((ssize_t) pixel_value > window_max)
                   index=(int) info->max_value;
                 else
-                  index=(int) (info->max_value*(((index-info->window_center-
-                    0.5)/(info->window_width-1))+0.5));
+                  index=(int) (info->max_value*(((pixel_value-
+		    info->window_center-0.5)/(info->window_width-1))+0.5));
             }
           index&=info->mask;
           index=(int) ConstrainColormapIndex(image,(size_t) index);
