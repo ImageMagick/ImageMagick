@@ -30,10 +30,10 @@ typedef struct _LocaleInfo
     *path,
     *tag,
     *message;
-                                                                                
+
   MagickBooleanType
     stealth;
-                                                                                
+
   size_t
     signature;
 } LocaleInfo;
