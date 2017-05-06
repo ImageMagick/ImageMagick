@@ -325,6 +325,8 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         color;
 
       length=(size_t) header.ncolors;
+      if (length > ((~0UL)/sizeof(*colors)))
+        ThrowReaderException(CorruptImageError,"ImproperImageHeader");
       colors=(XColor *) AcquireQuantumMemory(length,sizeof(*colors));
       if (colors == (XColor *) NULL)
         {
