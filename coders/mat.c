@@ -1091,9 +1091,6 @@ RestoreMSCWarning
     (void) sample_size;
     image->columns = MATLAB_HDR.SizeX;
     image->rows = MATLAB_HDR.SizeY;
-    quantum_info=AcquireQuantumInfo(clone_info,image);
-    if (quantum_info == (QuantumInfo *) NULL)
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     one=1;
     image->colors = one << image->depth;
     if (image->columns == 0 || image->rows == 0)
@@ -1121,6 +1118,9 @@ RestoreMSCWarning
     status=SetImageExtent(image,image->columns,image->rows,exception);
     if (status == MagickFalse)
       return(DestroyImageList(image));
+    quantum_info=AcquireQuantumInfo(clone_info,image);
+    if (quantum_info == (QuantumInfo *) NULL)
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
 
   /* ----- Load raster data ----- */
     BImgBuff = (unsigned char *) AcquireQuantumMemory((size_t) (ldblk),sizeof(double));    /* Ldblk was set in the check phase */
