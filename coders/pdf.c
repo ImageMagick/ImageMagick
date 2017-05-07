@@ -1625,6 +1625,10 @@ RestoreMSCWarning
     (void) WriteBlobString(image,buffer);
     (void) FormatLocaleString(buffer,MagickPathExtent,"/Thumb %.20g 0 R\n",
       (double) object+8);
+    profile=GetImageProfile(image,"icc");
+    if (profile != (StringInfo *) NULL)
+      (void) FormatLocaleString(buffer,MagickPathExtent,"/Thumb %.20g 0 R\n",
+        (double) object+10);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,">>\n");
     (void) WriteBlobString(image,"endobj\n");
@@ -1808,6 +1812,10 @@ RestoreMSCWarning
       {
         (void) FormatLocaleString(buffer,MagickPathExtent,"/SMask %.20g 0 R\n",
           (double) object+7);
+        profile=GetImageProfile(image,"icc");
+        if (profile != (StringInfo *) NULL)
+          (void) FormatLocaleString(buffer,MagickPathExtent,
+            "/SMask %.20g 0 R\n",(double) object+9);
         (void) WriteBlobString(image,buffer);
       }
     (void) FormatLocaleString(buffer,MagickPathExtent,"/Length %.20g 0 R\n",
@@ -2200,7 +2208,6 @@ RestoreMSCWarning
           (void) FormatLocaleString(buffer,MagickPathExtent,
             "[ /Indexed /%s %.20g %.20g 0 R ]\n",device,(double) image->colors-
             1,(double) object+3);
-
         (void) WriteBlobString(image,buffer);
       }
     else
@@ -2324,6 +2331,10 @@ RestoreMSCWarning
     (void) WriteBlobString(image,buffer);
     (void) FormatLocaleString(buffer,MagickPathExtent,"/ColorSpace %.20g 0 R\n",
       (double) object-1);
+    profile=GetImageProfile(image,"icc");
+    if (profile != (StringInfo *) NULL)
+      (void) FormatLocaleString(buffer,MagickPathExtent,
+        "/ColorSpace %.20g 0 R\n",(double) object-3);
     (void) WriteBlobString(image,buffer);
     (void) FormatLocaleString(buffer,MagickPathExtent,"/BitsPerComponent %d\n",
       (compression == FaxCompression) || (compression == Group4Compression) ?
