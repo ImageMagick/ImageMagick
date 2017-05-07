@@ -6044,7 +6044,7 @@ WandExport void DrawSetTextKerning(DrawingWand *wand,const double kerning)
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if ((wand->filter_off != MagickFalse) &&
-      (CurrentContext->kerning != kerning))
+      (fabs((CurrentContext->kerning-kerning)) >= MagickEpsilon))
     {
       CurrentContext->kerning=kerning;
       (void) MVGPrintf(wand,"kerning %lf\n",kerning);
@@ -6085,7 +6085,8 @@ WandExport void DrawSetTextInterlineSpacing(DrawingWand *wand,
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if ((wand->filter_off != MagickFalse) &&
-      (CurrentContext->interline_spacing != interline_spacing))
+      (fabs((CurrentContext->interline_spacing-
+        interline_spacing)) >= MagickEpsilon))
     {
       CurrentContext->interline_spacing=interline_spacing;
       (void) MVGPrintf(wand,"interline-spacing %lf\n",interline_spacing);
@@ -6126,7 +6127,8 @@ WandExport void DrawSetTextInterwordSpacing(DrawingWand *wand,
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if ((wand->filter_off != MagickFalse) &&
-      (CurrentContext->interword_spacing != interword_spacing))
+      (fabs((CurrentContext->interword_spacing-
+        interword_spacing)) >= MagickEpsilon))
     {
       CurrentContext->interword_spacing=interword_spacing;
       (void) MVGPrintf(wand,"interword-spacing %lf\n",interword_spacing);
