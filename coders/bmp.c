@@ -1380,7 +1380,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (flipped_image != (Image *) NULL)
           {
             DuplicateBlob(flipped_image,image);
-            image=DestroyImage(image);
+            ReplaceImageInList(&image, flipped_image);
             image=flipped_image;
           }
       }
