@@ -4701,7 +4701,10 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
           exception);
 
         if (status == MagickFalse)
-          return(DestroyImageList(image));
+          {
+            color_image=DestroyImage(color_image);
+            return(DestroyImageList(image));
+          }
 
         if ((image_info->ping == MagickFalse) && (jng_color_type >= 12))
           {
@@ -4709,15 +4712,19 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
               AcquireMagickMemory(sizeof(ImageInfo));
 
             if (alpha_image_info == (ImageInfo *) NULL)
-              ThrowReaderException(ResourceLimitError,
-                "MemoryAllocationFailed");
+              {
+                color_image=DestroyImage(color_image);
+                ThrowReaderException(ResourceLimitError,
+                  "MemoryAllocationFailed");
+              }
 
             GetImageInfo(alpha_image_info);
             alpha_image=AcquireImage(alpha_image_info,exception);
 
             if (alpha_image == (Image *) NULL)
               {
-                alpha_image=DestroyImage(alpha_image);
+                alpha_image_info=DestroyImageInfo(alpha_image_info);
+                color_image=DestroyImage(color_image);
                 ThrowReaderException(ResourceLimitError,
                   "MemoryAllocationFailed");
               }
@@ -4731,7 +4738,12 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
               exception);
 
             if (status == MagickFalse)
-              return(DestroyImageList(image));
+              {
+                alpha_image=DestroyImage(alpha_image);
+                alpha_image_info=DestroyImageInfo(alpha_image_info);
+                color_image=DestroyImage(color_image);
+                return(DestroyImageList(image));
+              }
 
             if (jng_alpha_compression_method == 0)
               {
