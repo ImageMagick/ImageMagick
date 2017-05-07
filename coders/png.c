@@ -5579,7 +5579,10 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
 
             if ((mng_info->mng_width > 65535L) ||
                 (mng_info->mng_height > 65535L))
-              ThrowReaderException(ImageError,"WidthOrHeightExceedsLimit");
+              {
+                chunk=(unsigned char *) RelinquishMagickMemory(chunk);
+                ThrowReaderException(ImageError,"WidthOrHeightExceedsLimit");
+              }
 
             (void) FormatLocaleString(page_geometry,MagickPathExtent,
               "%.20gx%.20g+0+0",(double) mng_info->mng_width,(double)
