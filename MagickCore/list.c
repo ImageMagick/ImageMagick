@@ -1181,7 +1181,7 @@ MagickExport void ReplaceImageInList(Image **images,Image *replace)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  ReplaceImageInListReturnLast() is exactly as ReplaceImageInList() except
-%  the images pointer is set to the last image in the list of replacemen
+%  the images pointer is set to the last image in the list of replacement
 %  images.
 %
 %  This allows you to simply use GetNextImageInList() to go to the image
