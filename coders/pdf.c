@@ -1307,6 +1307,7 @@ RestoreMSCWarning
 
   ssize_t
     count,
+    page_count,
     y;
 
   struct tm
@@ -1453,6 +1454,7 @@ RestoreMSCWarning
     object+1);
   (void) WriteBlobString(image,buffer);
   count=(ssize_t) (pages_id+ObjectsPerImage+1);
+  page_count=1;
   if (image_info->adjoin != MagickFalse)
     {
       Image
@@ -1464,6 +1466,10 @@ RestoreMSCWarning
       kid_image=image;
       for ( ; GetNextImageInList(kid_image) != (Image *) NULL; count+=ObjectsPerImage)
       {
+        page_count++;
+        profile=GetImageProfile(kid_image,"icc");
+        if (profile != (StringInfo *) NULL)
+          count+=2;
         (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g 0 R ",(double)
           count);
         (void) WriteBlobString(image,buffer);
@@ -1476,13 +1482,18 @@ RestoreMSCWarning
     }
   (void) WriteBlobString(image,"]\n");
   (void) FormatLocaleString(buffer,MaxTextExtent,"/Count %.20g\n",(double)
-    ((count-pages_id)/ObjectsPerImage));
+    page_count);
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,">>\n");
   (void) WriteBlobString(image,"endobj\n");
   scene=0;
   do
   {
+    MagickBooleanType
+      has_icc_profile;
+
+    profile=GetImageProfile(image,"icc");
+    has_icc_profile=(profile != (StringInfo *) NULL) ? MagickTrue : MagickFalse;
     compression=image->compression;
     if (image_info->compression != UndefinedCompression)
       compression=image_info->compression;
@@ -1650,12 +1661,8 @@ RestoreMSCWarning
     (void) FormatLocaleString(buffer,MaxTextExtent,"/Contents %.20g 0 R\n",
       (double) object+1);
     (void) WriteBlobString(image,buffer);
-    (void) FormatLocaleString(buffer,MaxTextExtent,"/Thumb %.20g 0 R\n",(double)
-      object+8);
-    profile=GetImageProfile(image,"icc");
-    if (profile != (StringInfo *) NULL)
-      (void) FormatLocaleString(buffer,MaxTextExtent,"/Thumb %.20g 0 R\n",
-        (double) object+10);
+    (void) FormatLocaleString(buffer,MaxTextExtent,"/Thumb %.20g 0 R\n",
+      (double) object+(has_icc_profile != MagickFalse ? 10 : 8));
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,">>\n");
     (void) WriteBlobString(image,"endobj\n");
@@ -1833,11 +1840,7 @@ RestoreMSCWarning
     if (image->matte != MagickFalse)
       {
         (void) FormatLocaleString(buffer,MaxTextExtent,"/SMask %.20g 0 R\n",
-          (double) object+7);
-        profile=GetImageProfile(image,"icc");
-        if (profile != (StringInfo *) NULL)
-          (void) FormatLocaleString(buffer,MaxTextExtent,
-            "/SMask %.20g 0 R\n",(double) object+9);
+          (double) object+(has_icc_profile != MagickFalse ? 9 : 7));
         (void) WriteBlobString(image,buffer);
       }
     (void) FormatLocaleString(buffer,MaxTextExtent,"/Length %.20g 0 R\n",
@@ -2347,11 +2350,7 @@ RestoreMSCWarning
       tile_image->rows);
     (void) WriteBlobString(image,buffer);
     (void) FormatLocaleString(buffer,MaxTextExtent,"/ColorSpace %.20g 0 R\n",
-      (double) object-1);
-    profile=GetImageProfile(image,"icc");
-    if (profile != (StringInfo *) NULL)
-      (void) FormatLocaleString(buffer,MaxTextExtent,
-        "/ColorSpace %.20g 0 R\n",(double) object-3);
+      (double) object-(has_icc_profile != MagickFalse ? 3 : 1));
     (void) WriteBlobString(image,buffer);
     (void) FormatLocaleString(buffer,MaxTextExtent,"/BitsPerComponent %d\n",
       (compression == FaxCompression) || (compression == Group4Compression) ?
