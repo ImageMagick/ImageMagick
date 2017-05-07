@@ -6079,7 +6079,8 @@ WandExport void DrawSetTextInterlineSpacing(DrawingWand *wand,
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if ((wand->filter_off != MagickFalse) &&
-      (fabs((CurrentContext->interline_spacing-interline_spacing)) >= MagickEpsilon))
+      (fabs((CurrentContext->interline_spacing-
+        interline_spacing)) >= MagickEpsilon))
     {
       CurrentContext->interline_spacing=interline_spacing;
       (void) MVGPrintf(wand,"interline-spacing %lf\n",interline_spacing);
@@ -6120,7 +6121,8 @@ WandExport void DrawSetTextInterwordSpacing(DrawingWand *wand,
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if ((wand->filter_off != MagickFalse) &&
-      (fabs((CurrentContext->interword_spacing-interword_spacing)) >= MagickEpsilon))
+      (fabs((CurrentContext->interword_spacing-
+        interword_spacing)) >= MagickEpsilon))
     {
       CurrentContext->interword_spacing=interword_spacing;
       (void) MVGPrintf(wand,"interword-spacing %lf\n",interword_spacing);
