@@ -1443,28 +1443,23 @@ ModuleExport void UnregisterMATImage(void)
 */
 static MagickBooleanType WriteMATImage(const ImageInfo *image_info,Image *image)
 {
+  char
+    MATLAB_HDR[0x80];
+
   ExceptionInfo
     *exception;
 
-  ssize_t y;
-  unsigned z;
-  const PixelPacket *p;
-
-  unsigned int status;
-  int logging;
-  size_t DataSize;
-  char padding;
-  char MATLAB_HDR[0x80];
-  time_t current_time;
-  struct tm local_time;
-  unsigned char *pixels;
-  int is_gray;
+  MagickBooleanType
+    status;
 
   MagickOffsetType
     scene;
 
-  QuantumInfo
-    *quantum_info;
+  struct tm
+    local_time;
+
+  time_t
+    current_time;
 
   /*
     Open output image file.
@@ -1473,8 +1468,7 @@ static MagickBooleanType WriteMATImage(const ImageInfo *image_info,Image *image)
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  logging=LogMagickEvent(CoderEvent,GetMagickModule(),"enter MAT");
-  (void) logging;
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"enter MAT");
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == MagickFalse)
     return(MagickFalse);
@@ -1500,37 +1494,57 @@ static MagickBooleanType WriteMATImage(const ImageInfo *image_info,Image *image)
   scene=0;
   do
   {
+    char
+      padding;
+
+    MagickBooleanType
+      is_gray;
+
+    QuantumInfo
+      *quantum_info;
+
+    size_t
+      data_size;
+
+    unsigned char
+      *pixels;
+
+    unsigned int
+      z;
+
     (void) TransformImageColorspace(image,sRGBColorspace);
-    is_gray = SetImageGray(image,&image->exception);
-    z = is_gray ? 0 : 3;
+    is_gray=SetImageGray(image,&image->exception);
+    z=(is_gray != MagickFalse) ? 0 : 3;
 
     /*
       Store MAT header.
     */
-    DataSize = image->rows /*Y*/ * image->columns /*X*/;
-    if(!is_gray) DataSize *= 3 /*Z*/;
-    padding=((unsigned char)(DataSize-1) & 0x7) ^ 0x7;
+    data_size=image->rows*image->columns;
+    if (is_gray == MagickFalse)
+      data_size*=3;
+    padding=((unsigned char)(data_size-1) & 0x7) ^ 0x7;
 
-    (void) WriteBlobLSBLong(image, miMATRIX);
-    (void) WriteBlobLSBLong(image, (unsigned int) DataSize+padding+(is_gray ? 48 : 56));
-    (void) WriteBlobLSBLong(image, 0x6); /* 0x88 */
-    (void) WriteBlobLSBLong(image, 0x8); /* 0x8C */
-    (void) WriteBlobLSBLong(image, 0x6); /* 0x90 */
-    (void) WriteBlobLSBLong(image, 0);
-    (void) WriteBlobLSBLong(image, 0x5); /* 0x98 */
-    (void) WriteBlobLSBLong(image, is_gray ? 0x8 : 0xC); /* 0x9C - DimFlag */
-    (void) WriteBlobLSBLong(image, (unsigned int) image->rows);    /* x: 0xA0 */
-    (void) WriteBlobLSBLong(image, (unsigned int) image->columns); /* y: 0xA4 */
-    if(!is_gray)
-    {
-      (void) WriteBlobLSBLong(image, 3); /* z: 0xA8 */
-      (void) WriteBlobLSBLong(image, 0);
-    }
-    (void) WriteBlobLSBShort(image, 1);  /* 0xB0 */
-    (void) WriteBlobLSBShort(image, 1);  /* 0xB2 */
-    (void) WriteBlobLSBLong(image, 'M'); /* 0xB4 */
-    (void) WriteBlobLSBLong(image, 0x2); /* 0xB8 */
-    (void) WriteBlobLSBLong(image, (unsigned int) DataSize); /* 0xBC */
+    (void) WriteBlobLSBLong(image,miMATRIX);
+    (void) WriteBlobLSBLong(image,(unsigned int) data_size+padding+
+      ((is_gray != MagickFalse) ? 48 : 56));
+    (void) WriteBlobLSBLong(image,0x6); /* 0x88 */
+    (void) WriteBlobLSBLong(image,0x8); /* 0x8C */
+    (void) WriteBlobLSBLong(image,0x6); /* 0x90 */
+    (void) WriteBlobLSBLong(image,0);
+    (void) WriteBlobLSBLong(image,0x5); /* 0x98 */
+    (void) WriteBlobLSBLong(image,(is_gray != MagickFalse) ? 0x8 : 0xC); /* 0x9C - DimFlag */
+    (void) WriteBlobLSBLong(image,(unsigned int) image->rows);    /* x: 0xA0 */
+    (void) WriteBlobLSBLong(image,(unsigned int) image->columns); /* y: 0xA4 */
+    if (is_gray == MagickFalse)
+      {
+        (void) WriteBlobLSBLong(image,3); /* z: 0xA8 */
+        (void) WriteBlobLSBLong(image,0);
+      }
+    (void) WriteBlobLSBShort(image,1);  /* 0xB0 */
+    (void) WriteBlobLSBShort(image,1);  /* 0xB2 */
+    (void) WriteBlobLSBLong(image,'M'); /* 0xB4 */
+    (void) WriteBlobLSBLong(image,0x2); /* 0xB8 */
+    (void) WriteBlobLSBLong(image,(unsigned int) data_size); /* 0xBC */
 
     /*
       Store image data.
@@ -1542,6 +1556,12 @@ static MagickBooleanType WriteMATImage(const ImageInfo *image_info,Image *image)
     pixels=GetQuantumPixels(quantum_info);
     do
     {
+      const PixelPacket
+        *p;
+
+      ssize_t
+        y;
+
       for (y=0; y < (ssize_t)image->columns; y++)
       {
         p=GetVirtualPixels(image,y,0,1,image->rows,&image->exception);
@@ -1553,8 +1573,9 @@ static MagickBooleanType WriteMATImage(const ImageInfo *image_info,Image *image)
       }
       if (!SyncAuthenticPixels(image,exception))
         break;
-    } while(z-- >= 2);
-    while(padding-->0) (void) WriteBlobByte(image,0);
+    } while (z-- >= 2);
+    while (padding-- > 0)
+      (void) WriteBlobByte(image,0);
     quantum_info=DestroyQuantumInfo(quantum_info);
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
@@ -1565,5 +1586,5 @@ static MagickBooleanType WriteMATImage(const ImageInfo *image_info,Image *image)
       break;
   } while (image_info->adjoin != MagickFalse);
   (void) CloseBlob(image);
-  return(MagickTrue);
+  return(status);
 }
