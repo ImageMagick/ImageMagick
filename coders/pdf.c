@@ -741,11 +741,11 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (option != (char *) NULL)
     {
       char
-        passphrase[MagickPathExtent];
+        passphrase[MaxTextExtent];
 
-      (void) FormatLocaleString(passphrase,MagickPathExtent,
+      (void) FormatLocaleString(passphrase,MaxTextExtent,
         "'-sPDFPassword=%s' ",option);
-      (void) ConcatenateMagickString(options,passphrase,MagickPathExtent);
+      (void) ConcatenateMagickString(options,passphrase,MaxTextExtent);
     }
   read_info=CloneImageInfo(image_info);
   *read_info->magick='\0';
@@ -1836,7 +1836,7 @@ RestoreMSCWarning
           (double) object+7);
         profile=GetImageProfile(image,"icc");
         if (profile != (StringInfo *) NULL)
-          (void) FormatLocaleString(buffer,MagickPathExtent,
+          (void) FormatLocaleString(buffer,MaxTextExtent,
             "/SMask %.20g 0 R\n",(double) object+9);
         (void) WriteBlobString(image,buffer);
       }
@@ -2190,7 +2190,7 @@ RestoreMSCWarning
       Write Colorspace object.
     */
     xref[object++]=TellBlob(image);
-    (void) FormatLocaleString(buffer,MagickPathExtent,"%.20g 0 obj\n",(double)
+    (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g 0 obj\n",(double)
       object);
     (void) WriteBlobString(image,buffer);
     device="DeviceRGB";
@@ -2221,9 +2221,9 @@ RestoreMSCWarning
     if ((profile == (StringInfo *) NULL) || (channels == 0))
       {
         if (channels != 0)
-          (void) FormatLocaleString(buffer,MagickPathExtent,"/%s\n",device);
+          (void) FormatLocaleString(buffer,MaxTextExtent,"/%s\n",device);
         else
-          (void) FormatLocaleString(buffer,MagickPathExtent,
+          (void) FormatLocaleString(buffer,MaxTextExtent,
             "[ /Indexed /%s %.20g %.20g 0 R ]\n",device,(double) image->colors-
             1,(double) object+3);
         (void) WriteBlobString(image,buffer);
@@ -2236,15 +2236,15 @@ RestoreMSCWarning
         /*
           Write ICC profile.
         */
-        (void) FormatLocaleString(buffer,MagickPathExtent,
+        (void) FormatLocaleString(buffer,MaxTextExtent,
           "[/ICCBased %.20g 0 R]\n",(double) object+1);
         (void) WriteBlobString(image,buffer);
         (void) WriteBlobString(image,"endobj\n");
         xref[object++]=TellBlob(image);
-        (void) FormatLocaleString(buffer,MagickPathExtent,"%.20g 0 obj\n",
+        (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g 0 obj\n",
           (double) object);
         (void) WriteBlobString(image,buffer);
-        (void) FormatLocaleString(buffer,MagickPathExtent,"<<\n/N %.20g\n"
+        (void) FormatLocaleString(buffer,MaxTextExtent,"<<\n/N %.20g\n"
           "/Filter /ASCII85Decode\n/Length %.20g 0 R\n/Alternate /%s\n>>\n"
           "stream\n",(double) channels,(double) object+1,device);
         (void) WriteBlobString(image,buffer);
@@ -2261,10 +2261,10 @@ RestoreMSCWarning
           Write Length object.
         */
         xref[object++]=TellBlob(image);
-        (void) FormatLocaleString(buffer,MagickPathExtent,"%.20g 0 obj\n",
+        (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g 0 obj\n",
           (double) object);
         (void) WriteBlobString(image,buffer);
-        (void) FormatLocaleString(buffer,MagickPathExtent,"%.20g\n",(double)
+        (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g\n",(double)
           offset);
         (void) WriteBlobString(image,buffer);
       }
@@ -2350,7 +2350,7 @@ RestoreMSCWarning
       (double) object-1);
     profile=GetImageProfile(image,"icc");
     if (profile != (StringInfo *) NULL)
-      (void) FormatLocaleString(buffer,MagickPathExtent,
+      (void) FormatLocaleString(buffer,MaxTextExtent,
         "/ColorSpace %.20g 0 R\n",(double) object-3);
     (void) WriteBlobString(image,buffer);
     (void) FormatLocaleString(buffer,MaxTextExtent,"/BitsPerComponent %d\n",
