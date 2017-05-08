@@ -978,13 +978,13 @@ MagickExport MagickBooleanType OpaquePaintImage(Image *image,
           if (image->channel_map[RedPixelChannel].traits == UpdatePixelTrait)
             SetPixelRed(image,conform_fill.red,q);
           if (image->channel_map[GreenPixelChannel].traits == UpdatePixelTrait)
-            SetPixelRed(image,conform_fill.green,q);
+            SetPixelGreen(image,conform_fill.green,q);
           if (image->channel_map[BluePixelChannel].traits == UpdatePixelTrait)
-            SetPixelRed(image,conform_fill.blue,q);
+            SetPixelBlue(image,conform_fill.blue,q);
           if (image->channel_map[BlackPixelChannel].traits == UpdatePixelTrait)
-            SetPixelRed(image,conform_fill.black,q);
+            SetPixelBlack(image,conform_fill.black,q);
           if (image->channel_map[AlphaPixelChannel].traits == UpdatePixelTrait)
-            SetPixelRed(image,conform_fill.alpha,q);
+            SetPixelAlpha(image,conform_fill.alpha,q);
         }
       q+=GetPixelChannels(image);
     }
