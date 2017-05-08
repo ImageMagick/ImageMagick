@@ -2697,8 +2697,6 @@ typedef struct _DCMInfo
     window_width;
 
   ssize_t
-    rescale_intercept,
-    rescale_slope,
     window_center;
 } DCMInfo;
 
@@ -2877,12 +2875,10 @@ static MagickBooleanType ReadDCMPixels(Image *image,DCMInfo *info,
                   }
                 i++;
               }
-          index=(int) ((pixel_value*info->rescale_slope)+
-            info->rescale_intercept);
           if (info->window_width == 0)
             {
               if (info->signed_data == 1)
-                index-=32767;
+                index=pixel_value-32767;
             }
           else
             {
@@ -2894,14 +2890,14 @@ static MagickBooleanType ReadDCMPixels(Image *image,DCMInfo *info,
                 (info->window_width-1.0)/2.0-0.5);
               window_max=(ssize_t) floor((double) info->window_center+
                 (info->window_width-1.0)/2.0+0.5);
-              if ((ssize_t) index <= window_min)
+              if ((ssize_t) pixel_value <= window_min)
                 index=0;
               else
-                if ((ssize_t) index > window_max)
+                if ((ssize_t) pixel_value > window_max)
                   index=(int) info->max_value;
                 else
-                  index=(int) (info->max_value*(((index-info->window_center-
-                    0.5)/(info->window_width-1))+0.5));
+                  index=(int) (info->max_value*(((pixel_value-
+		    info->window_center-0.5)/(info->window_width-1))+0.5));
             }
           index&=info->mask;
           index=(int) ConstrainColormapIndex(image,(size_t) index);
@@ -3085,8 +3081,6 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   info.depth=8;
   info.max_value=255UL;
   info.mask=0xffff;
-  info.rescale_intercept=0;
-  info.rescale_slope=1;
   info.samples_per_pixel=1;
   info.scale=(Quantum *) NULL;
   info.signed_data=(~0UL);
@@ -3506,24 +3500,6 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             */
             if (data != (unsigned char *) NULL)
               info.window_width=StringToUnsignedLong((char *) data);
-            break;
-          }
-          case 0x1052:
-          {
-            /*
-              Rescale intercept
-            */
-            if (data != (unsigned char *) NULL)
-              info.rescale_intercept=(ssize_t) StringToLong((char *) data);
-            break;
-          }
-          case 0x1053:
-          {
-            /*
-              Rescale slope
-            */
-            if (data != (unsigned char *) NULL)
-              info.rescale_slope=(ssize_t) StringToLong((char *) data);
             break;
           }
           case 0x1200:
