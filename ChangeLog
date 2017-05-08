@@ -3,6 +3,8 @@
     https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=31879).
   * Fix transient PDF bug (reference
     https://github.com/ImageMagick/ImageMagick/issues/463).
+  * The +opaque option now works on all channels (reference
+    https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=31862).
 
 2017-04-24  7.0.5-5 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.5-5, GIT revision 19915:12eec43:20170424.
