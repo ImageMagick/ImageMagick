@@ -7820,6 +7820,8 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
 
             (void) SyncImagesSettings(mogrify_info,*images,exception);
             colorspace=(*images)->colorspace;
+            if ((*images)->number_channels < GetImageListLength(*images))
+              colorspace=sRGBColorspace;
             if (*option == '+')
               colorspace=(ColorspaceType) ParseCommandOption(
                 MagickColorspaceOptions,MagickFalse,argv[i+1]);
