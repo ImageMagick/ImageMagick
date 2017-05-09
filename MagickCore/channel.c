@@ -1259,6 +1259,9 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       /*
         Set alpha channel by shape.
       */
+      status=SetImageStorageClass(image,DirectClass,exception);
+      if (status == MagickFalse)
+        break;
       image->alpha_trait=UpdatePixelTrait;
       (void) SetImageMask(image,WritePixelMask,image,exception);
       (void) LevelImageColors(image,&image->background_color,
