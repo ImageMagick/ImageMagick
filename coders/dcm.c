@@ -3104,7 +3104,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   info.samples_per_pixel=1;
   info.signed_data=(~0UL);
   info.significant_bits=0;
-  info.rescale=0;
+  info.rescale=MagickFalse;
   info.rescale_intercept=0.0;
   info.rescale_slope=1.0;
   info.window_center=0.0;
@@ -4097,8 +4097,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         option=GetImageOption(image_info,"dcm:rescale");
         if (option != (char *) NULL)
-          info.rescale=(int) ParseCommandOption(MagickBooleanOptions,
-            MagickFalse,option);
+          info.rescale=IsStringTrue(option);
         status=ReadDCMPixels(image,&info,stream_info,MagickTrue,exception);
         if ((status != MagickFalse) && (stream_info->segment_count > 1))
           {
