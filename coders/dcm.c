@@ -2914,9 +2914,9 @@ static MagickBooleanType ReadDCMPixels(Image *image,DCMInfo *info,
           else
             {
               index=pixel_value;
+              if (info->signed_data == 1)
+                index-=32767;
             }
-          if (info->signed_data == 1)
-            index-=32767;
           index&=info->mask;
           index=(int) ConstrainColormapIndex(image,(size_t) index);
           if (first_segment != MagickFalse)
@@ -4087,8 +4087,6 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert DCM Medical image to pixel packets.
         */
-        if ((info.window_center != 0) && (info.window_width == 0))
-          info.window_width=(size_t) info.window_center;
         option=GetImageOption(image_info,"dcm:display-range");
         if (option != (const char *) NULL)
           {
@@ -4097,7 +4095,24 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         option=GetImageOption(image_info,"dcm:rescale");
         if (option != (char *) NULL)
-          info.rescale=IsStringTrue(option);
+          info.rescale=(int) ParseCommandOption(MagickBooleanOptions,
+	    MagickFalse,option);
+        option=GetImageOption(image_info,"dcm:window");
+        if (option != (char *) NULL)
+	  {
+            GeometryInfo
+              geometry_info;
+            MagickStatusType
+              flags;
+
+            flags=ParseGeometry(option,&geometry_info);
+            if (flags & RhoValue)
+              info.window_center=geometry_info.rho;
+            if (flags & SigmaValue)
+	      info.window_width=geometry_info.sigma;
+	  }
+        if ((info.window_center != 0) && (info.window_width == 0))
+          info.window_width=info.window_center;
         status=ReadDCMPixels(image,&info,stream_info,MagickTrue,exception);
         if ((status != MagickFalse) && (stream_info->segment_count > 1))
           {
