@@ -2880,6 +2880,8 @@ static MagickBooleanType ReadDCMPixels(Image *image,DCMInfo *info,
                   }
                 i++;
               }
+          if (info->signed_data == 1)
+            pixel_value-=32767;
           if (info->rescale)
             {
               double
@@ -2914,8 +2916,6 @@ static MagickBooleanType ReadDCMPixels(Image *image,DCMInfo *info,
           else
             {
               index=pixel_value;
-              if (info->signed_data == 1)
-                index-=32767;
             }
           index&=info->mask;
           index=(int) ConstrainColormapIndex(image,(size_t) index);
@@ -4093,15 +4093,12 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (LocaleCompare(option,"reset") == 0)
               info.window_width=0;
           }
-        option=GetImageOption(image_info,"dcm:rescale");
-        if (option != (char *) NULL)
-          info.rescale=(int) ParseCommandOption(MagickBooleanOptions,
-	    MagickFalse,option);
         option=GetImageOption(image_info,"dcm:window");
         if (option != (char *) NULL)
 	  {
             GeometryInfo
               geometry_info;
+
             MagickStatusType
               flags;
 
@@ -4110,7 +4107,12 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               info.window_center=geometry_info.rho;
             if (flags & SigmaValue)
 	      info.window_width=geometry_info.sigma;
+            info.rescale=MagickTrue;
 	  }
+        option=GetImageOption(image_info,"dcm:rescale");
+        if (option != (char *) NULL)
+          info.rescale=(int) ParseCommandOption(MagickBooleanOptions,
+	    MagickFalse,option);
         if ((info.window_center != 0) && (info.window_width == 0))
           info.window_width=info.window_center;
         status=ReadDCMPixels(image,&info,stream_info,MagickTrue,exception);
