@@ -4095,7 +4095,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         option=GetImageOption(image_info,"dcm:window");
         if (option != (char *) NULL)
-	  {
+          {
             GeometryInfo
               geometry_info;
 
@@ -4106,13 +4106,12 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (flags & RhoValue)
               info.window_center=geometry_info.rho;
             if (flags & SigmaValue)
-	      info.window_width=geometry_info.sigma;
+              info.window_width=geometry_info.sigma;
             info.rescale=MagickTrue;
-	  }
+          }
         option=GetImageOption(image_info,"dcm:rescale");
         if (option != (char *) NULL)
-          info.rescale=(int) ParseCommandOption(MagickBooleanOptions,
-	    MagickFalse,option);
+          info.rescale=IsStringTrue(option);
         if ((info.window_center != 0) && (info.window_width == 0))
           info.window_width=info.window_center;
         status=ReadDCMPixels(image,&info,stream_info,MagickTrue,exception);
