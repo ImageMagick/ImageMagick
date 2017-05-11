@@ -1182,11 +1182,15 @@ static MagickBooleanType ReadPSDChannelZip(Image *image,const size_t channels,
       ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
         image->filename);
     }
+  if (ReadBlob(image,compact_size,compact_pixels) != (ssize_t) compact_size)
+    {
+      compact_pixels=(unsigned char *) RelinquishMagickMemory(compact_pixels);
+      ThrowBinaryException(CorruptImageError,"UnexpectedEndOfFile",
+        image->filename);
+    }
 
   ResetMagickMemory(&stream,0,sizeof(stream));
   stream.data_type=Z_BINARY;
-  (void) ReadBlob(image,compact_size,compact_pixels);
-
   stream.next_in=(Bytef *)compact_pixels;
   stream.avail_in=(uInt) compact_size;
   stream.next_out=(Bytef *)pixels;
