@@ -1,3 +1,7 @@
+2017-05-10  6.9.8-5 John Cupitt <jcupitt@gmail.com>
+  * Revise DICOM window and rescale handling (reference 
+    https://github.com/ImageMagick/ImageMagick/pull/484)
+
 2017-05-08  6.9.8-5 Cristy  <quetzlzacatenango@image...>
   * Fix transient PDF bug (reference
     https://github.com/ImageMagick/ImageMagick/issues/463).
