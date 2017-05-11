@@ -2691,13 +2691,16 @@ typedef struct _DCMInfo
     max_value,
     samples_per_pixel,
     signed_data,
-    significant_bits,
-    window_width;
+    significant_bits;
 
-  ssize_t
+  MagickBooleanType
+    rescale;
+
+  double
     rescale_intercept,
     rescale_slope,
-    window_center;
+    window_center,
+    window_width;
 } DCMInfo;
 
 typedef struct _DCMStreamInfo
@@ -2871,31 +2874,42 @@ static MagickBooleanType ReadDCMPixels(Image *image,DCMInfo *info,
                   }
                 i++;
               }
-          index=(int) ((pixel_value*info->rescale_slope)+
-            info->rescale_intercept);
-          if (info->window_width == 0)
+          if (info->signed_data == 1)
+            pixel_value-=32767;
+          if (info->rescale)
             {
-              if (info->signed_data == 1)
-                index-=32767;
+              double
+                scaled_value;
+
+              scaled_value=pixel_value*info->rescale_slope+
+                info->rescale_intercept;
+              if (info->window_width == 0)
+                {
+                  index=(int) scaled_value;
+                }
+              else
+                {
+                  double
+                    window_max,
+                    window_min;
+    
+                  window_min=ceil(info->window_center-
+                    (info->window_width-1.0)/2.0-0.5);
+                  window_max=floor(info->window_center+
+                    (info->window_width-1.0)/2.0+0.5);
+                  if (scaled_value <= window_min)
+                    index=0;
+                  else
+                    if (scaled_value > window_max)
+                      index=(int) info->max_value;
+                    else
+                      index=(int) (info->max_value*(((scaled_value-
+                        info->window_center-0.5)/(info->window_width-1))+0.5));
+                }
             }
           else
             {
-              ssize_t
-                window_max,
-                window_min;
-
-              window_min=(ssize_t) ceil((double) info->window_center-
-                (info->window_width-1.0)/2.0-0.5);
-              window_max=(ssize_t) floor((double) info->window_center+
-                (info->window_width-1.0)/2.0+0.5);
-              if ((ssize_t)index <= window_min)
-                index=0;
-              else
-                if ((ssize_t)index > window_max)
-                  index=(int) info->max_value;
-                else
-                  index=(int) (info->max_value*(((index-info->window_center-
-                    0.5)/(info->window_width-1))+0.5));
+              index=pixel_value;
             }
           index&=info->mask;
           index=(int) ConstrainColormapIndex(image,(ssize_t) index,exception);
@@ -3074,20 +3088,21 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Read DCM Medical image.
   */
   (void) CopyMagickString(photometric,"MONOCHROME1 ",MagickPathExtent);
+  info.polarity=MagickFalse;
+  info.scale=(Quantum *) NULL;
   info.bits_allocated=8;
   info.bytes_per_pixel=1;
   info.depth=8;
-  info.max_value=255UL;
   info.mask=0xffff;
-  info.polarity=MagickFalse;
-  info.rescale_intercept=0;
-  info.rescale_slope=1;
+  info.max_value=255UL;
   info.samples_per_pixel=1;
-  info.scale=(Quantum *) NULL;
   info.signed_data=(~0UL);
   info.significant_bits=0;
-  info.window_center=0;
-  info.window_width=0;
+  info.rescale=MagickFalse;
+  info.rescale_intercept=0.0;
+  info.rescale_slope=1.0;
+  info.window_center=0.0;
+  info.window_width=0.0;
   data=(unsigned char *) NULL;
   element=0;
   explicit_vr[2]='\0';
@@ -3493,7 +3508,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               Visible pixel range: center.
             */
             if (data != (unsigned char *) NULL)
-              info.window_center=(ssize_t) StringToLong((char *) data);
+              info.window_center=StringToDouble((char *) data, (char **) NULL);
             break;
           }
           case 0x1051:
@@ -3502,7 +3517,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               Visible pixel range: width.
             */
             if (data != (unsigned char *) NULL)
-              info.window_width=StringToUnsignedLong((char *) data);
+              info.window_width=StringToDouble((char *) data, (char **) NULL);
             break;
           }
           case 0x1052:
@@ -3511,7 +3526,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               Rescale intercept
             */
             if (data != (unsigned char *) NULL)
-              info.rescale_intercept=(ssize_t) StringToLong((char *) data);
+              info.rescale_intercept=StringToDouble((char *) data, 
+                (char **) NULL);
             break;
           }
           case 0x1053:
@@ -3520,7 +3536,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               Rescale slope
             */
             if (data != (unsigned char *) NULL)
-              info.rescale_slope=(ssize_t) StringToLong((char *) data);
+              info.rescale_slope=StringToDouble((char *) data, (char **) NULL);
             break;
           }
           case 0x1200:
@@ -4063,14 +4079,33 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert DCM Medical image to pixel packets.
         */
-        if ((info.window_center != 0) && (info.window_width == 0))
-          info.window_width=(size_t) info.window_center;
         option=GetImageOption(image_info,"dcm:display-range");
         if (option != (const char *) NULL)
           {
             if (LocaleCompare(option,"reset") == 0)
               info.window_width=0;
           }
+        option=GetImageOption(image_info,"dcm:window");
+        if (option != (char *) NULL)
+          {
+            GeometryInfo
+              geometry_info;
+
+            MagickStatusType
+              flags;
+
+            flags=ParseGeometry(option,&geometry_info);
+            if (flags & RhoValue)
+              info.window_center=geometry_info.rho;
+            if (flags & SigmaValue)
+              info.window_width=geometry_info.sigma;
+            info.rescale=MagickTrue;
+          }
+        option=GetImageOption(image_info,"dcm:rescale");
+        if (option != (char *) NULL)
+          info.rescale=IsStringTrue(option);
+        if ((info.window_center != 0) && (info.window_width == 0))
+          info.window_width=info.window_center;
         status=ReadDCMPixels(image,&info,stream_info,MagickTrue,exception);
         if ((status != MagickFalse) && (stream_info->segment_count > 1))
           {

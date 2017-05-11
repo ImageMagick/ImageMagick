@@ -1,3 +1,7 @@
+2017-05-10  7.0.5-6 John Cupitt <jcupitt@gmail.com>
+  * Revise DICOM window and rescale handling (reference 
+    https://github.com/ImageMagick/ImageMagick/pull/484)
+
 2017-05-06  7.0.5-6 Cristy  <quetzlzacatenango@image...>
   * Restore the -alpha Shape option (reference
     https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=31879).
