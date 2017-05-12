@@ -280,14 +280,14 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
           Is neighbor an authentic pixel and a different color than the pixel?
         */
         GetPixelInfoPixel(image,p,&pixel);
-        neighbor_offset=dy*(GetPixelChannels(image)*image->columns)+dx*
-          GetPixelChannels(image);
         if (((x+dx) < 0) || ((x+dx) >= (ssize_t) image->columns) ||
             ((y+dy) < 0) || ((y+dy) >= (ssize_t) image->rows))
           {
             p+=GetPixelChannels(image);
             continue;
           }
+        neighbor_offset=dy*(GetPixelChannels(image)*image->columns)+dx*
+          GetPixelChannels(image);
         GetPixelInfoPixel(image,p+neighbor_offset,&target);
         if (IsFuzzyEquivalencePixelInfo(&pixel,&target) == MagickFalse)
           {
