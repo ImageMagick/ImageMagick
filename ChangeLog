@@ -5,6 +5,7 @@
 2017-05-08  6.9.8-5 Cristy  <quetzlzacatenango@image...>
   * Fix transient PDF bug (reference
     https://github.com/ImageMagick/ImageMagick/issues/463).
+  * Check for EOF conditions for RLE image format.
 
 2017-04-24  6.9.8-4 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 6.9.8-4, GIT revision 11521:d7433aa:20170424.
