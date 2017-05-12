@@ -1,3 +1,6 @@
+2017-05-12  6.9.8-5 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 6.9.8-5, GIT revision 11575:186b15d:20170512.
+
 2017-05-10  6.9.8-5 John Cupitt <jcupitt@gmail.com>
   * Revise DICOM window and rescale handling (reference 
     https://github.com/ImageMagick/ImageMagick/pull/484)
