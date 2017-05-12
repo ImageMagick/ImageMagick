@@ -6,6 +6,8 @@
   * Fix transient PDF bug (reference
     https://github.com/ImageMagick/ImageMagick/issues/463).
   * Check for EOF conditions for RLE image format.
+  * Reset histogram page geometry (reference
+    https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=31920).
 
 2017-04-24  6.9.8-4 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 6.9.8-4, GIT revision 11521:d7433aa:20170424.
