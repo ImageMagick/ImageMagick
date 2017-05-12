@@ -282,10 +282,14 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         GetPixelInfoPixel(image,p,&pixel);
         neighbor_offset=dy*(GetPixelChannels(image)*image->columns)+dx*
           GetPixelChannels(image);
-        GetPixelInfoPixel(image,p+neighbor_offset,&target);
         if (((x+dx) < 0) || ((x+dx) >= (ssize_t) image->columns) ||
-            ((y+dy) < 0) || ((y+dy) >= (ssize_t) image->rows) ||
-            (IsFuzzyEquivalencePixelInfo(&pixel,&target) == MagickFalse))
+            ((y+dy) < 0) || ((y+dy) >= (ssize_t) image->rows))
+          {
+            p+=GetPixelChannels(image);
+            continue;
+          }
+        GetPixelInfoPixel(image,p+neighbor_offset,&target);
+        if (IsFuzzyEquivalencePixelInfo(&pixel,&target) == MagickFalse)
           {
             p+=GetPixelChannels(image);
             continue;
