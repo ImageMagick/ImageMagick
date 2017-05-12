@@ -1210,6 +1210,7 @@ static MagickBooleanType ReadPSDChannelZip(Image *image,const size_t channels,
       ThrowBinaryException(CorruptImageError,"UnexpectedEndOfFile",
         image->filename);
     }
+
   ResetMagickMemory(&stream,0,sizeof(stream));
   stream.data_type=Z_BINARY;
   stream.next_in=(Bytef *)compact_pixels;
