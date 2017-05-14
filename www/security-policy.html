@@ -57,12 +57,12 @@
 </div>
 <div class="container">
 <div class="magick-header">
-<p class="text-center"><a href="security-policy.html#policy">Security Policy </a> • <a href="security-policy.html#other">Other Security Considerations</a></p>
+<p class="text-center"><a href="security-policy.html#policy">Security Policy </a> • <a href="security-policy.html#zero-configuration">Zero Configuration Security Policy</a> • <a href="security-policy.html#other">Other Security Considerations</a></p>
 
 
-<p class="lead magick-description">ImageMagick includes a security policy configuration file, <code>policy.xml</code>. It is useful for limiting the resources consumed by ImageMagick and can help prevent a denial-of-service or other exploits.</p>
+<p class="lead magick-description">ImageMagick includes a security policy configuration file, <a href="https://www.imagemagick.org/source/policy.xml">policy.xml</a>. It is useful for limiting the resources consumed by ImageMagick and can help prevent a denial-of-service or other exploits.</p>
 
-<p>As an example, suppose you download an image from the internet and unbeknownst to you its been crafted to generate a 20000 by 20000 pixel image. ImageMagick attempts to allocate enough resources (memory, disk) and your system will likely deny the resource request and exit. However, its also possible that your computer might be temporarily sluggish or unavailable or ImageMagick may abort. To prevent such a scenario, you can set limits in the <code>policy.xml</code> configuration file. You may ask why ImageMagick does not already include reasonable limits? Simply because what is reasonable in your environment, might not be reasonable to someone else. For example, one user has access to a host with 1TB of memory whereas another user is running ImageMagick on an iPhone. By policy, permitting giga-pixel image processing on the large memory host makes sense, not so much for the resource constrained iPhone. If you utilize ImageMagick from a public website, you may want to increase security by preventing usage of the MVG or HTTPS coders. Only you can decide what are reasonable limits taking in consideration your environment. We provide this policy with reasonable limits and encourage you to modify it to suit your local environment:</p>
+<p>As an example, suppose you download an image from the internet and unbeknownst to you its been crafted to generate a 20000 by 20000 pixel image. ImageMagick attempts to allocate enough resources (memory, disk) and your system will likely deny the resource request and exit. However, its also possible that your computer might be temporarily sluggish or unavailable or ImageMagick may abort. To prevent such a scenario, you can set limits in the <code>policy.xml</code> configuration file. You may ask why ImageMagick does not already include reasonable limits? Simply because what is reasonable in your environment, might not be reasonable to someone else. For example, you may have ImageMagick sandboxed where security is not a concern, whereas another user may use ImageMagick to process images on their publically accessible website.  Or ImageMagick is running on a host with 1TB of memory whereas another ImageMagick instance is running on an iPhone. By policy, permitting giga-pixel image processing on the large memory host makes sense, not so much for the resource constrained iPhone. If you utilize ImageMagick from a public website, you may want to increase security by preventing usage of the MVG or HTTPS coders. Only you can decide what are reasonable limits taking in consideration your environment. We provide this policy with reasonable limits and encourage you to modify it to suit your local environment:</p>
 
 <pre class="pre-scrollable">
 &lt;policymap>
@@ -101,11 +101,12 @@ convert: no images defined `wizard.jpg'
 <pre>
   &lt;policy domain="delegate" rights="none" pattern="*" />
   &lt;policy domain="coder" rights="none" pattern="*" />
-  &lt;policy domain="coder" rights="read|write" pattern="{GIF,JPEG,PNG,WEBP}" />
+  &lt;policy domain="coder" rights="read | write" pattern="{GIF,JPEG,PNG,WEBP}" />
 </pre>
 
-<p>As of ImageMagick 7.0.5-4, you can allocate the pixel cache with anonymous memory mapping rather than from heap.  As a consequence, the pixels are initialized to zero.  You can also shred any temporary files for increased security.  The value is the number of times to shred a temporary file.  For example,</p>
+<p>As of ImageMagick 7.0.5-5, you can allocate the pixel cache and some internal buffers with anonymous memory mapping rather than from heap.  As a consequence, the pixels are initialized to zero.  You can also securely delete any temporary files for increased security.  The value is the number of times to shred (replace its content with random data before deleting) a temporary file.  For example,</p>
 <pre>
+  &lt;policy domain="system" name="memory-map" value="anonymous"/>
   &lt;policy domain="cache" name="memory-map" value="anonymous"/>
   &lt;policy domain="system" name="shred" value="1"/>
 </pre>
@@ -163,6 +164,18 @@ Path: [built-in]
 
 <p>For additional details about resource limits and the policy configuration file, read <a href="resources.html">Resources</a> and <a href="architecture.html">Architecture</a>.</p>
 
+<h2 class="magick-header"><a id="zero-configuration"></a>Zero Configuration Security Policy</h2>
+
+<p>A zero configuration build of ImageMagick does not permit external configuration files.  To define your security policy, you must instead edit the <code>MagickCore/policy-private.h</code> source module, add your policy statements, and then build the ImageMagick distribution.  Here is an example zero configuration security policy:</p>
+
+<pre>
+static const char
+  *ZeroConfigurationPolicy = \
+"&lt;policymap> \
+  &lt;policy domain=\"coder\" rights=\"none\" pattern=\"MVG\"/> \
+&lt;/policymap>";
+</pre>
+
 <h2 class="magick-header"><a id="other"></a>Other Security Considerations</h2>
 
 <p>If you spot a security flaw in ImageMagick, <a href="https://www.imagemagick.org/script/contact.php">contact us</a> and select Security Issue as the issue.  Alternatively, post your concern to <a href="https://github.com/ImageMagick/ImageMagick/issues">GitHub</a>.  Be sure to include how to reproduce the security flaw and a link to any images needed to reproduce the flaw.</p>
@@ -196,4 +209,4 @@ Path: [built-in]
 </div>
 </body>
 </html>
-<!-- Magick Cache 26th March 2017 15:48 -->
+<!-- Magick Cache 14th May 2017 12:20 -->

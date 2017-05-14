@@ -22,6 +22,18 @@
 extern "C" {
 #endif
 
+#if defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
+/*
+  Zero configuration security policy.  Discussion @
+  https://www.imagemagick.org/script/security-policy.php.
+*/
+static const char
+  *ZeroConfigurationPolicy = \
+"<policymap> \
+  <policy domain=\"system\" name=\"precision\" value=\"6\"/> \
+</policymap>";
+#endif
+
 extern MagickPrivate MagickBooleanType
   PolicyComponentGenesis(void);
 
