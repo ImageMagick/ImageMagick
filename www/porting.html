@@ -305,10 +305,14 @@ convert myImage.png -intensity Rec709Luminance -colorspace gray myImage.jpg
 <p>Previously, grayscale images were Rec601Luminance and consumed 4 channels: red, green, blue, and alpha.  With version 7, grayscale consumes only 1 channel requiring far less resources as a result.</p>
 
 <h2 class="magick-header"><a id="mask"></a>Masks</h2>
-<p>Version 7 supports masks for most image operators.  As an example, here are two methods to compute the statistics of any pixel selected by the image mask:</p>
+<p>Version 7 supports masks for most image operators.  Black pixels in a read mask ignores corresponding pixel in an image whereas black pixels in a write mask protects the corresponding pixel in the image.  From the command-line, you can associate a mask with an image with the <code>-read-mask</code> and <code>-write-mask</code> options.  This polarity is the reverse of masks in version 6 of ImageMagick.  For convenience, we continue to support the <code>-mask</code> option in version 7 to match the behavior of version 6.</p>
+<p>In this example, we compute the distortion of a masked reconstructed image:</p>
 <pre>
-identify -verbose -clip statue.tif
-identify -verbose -read-mask mask.png statue.tif
+compare -metric rmse -read-mask hat_mask.png hat.png wizard.png difference.png
+</pre>
+<p>Here we protect certain pixels from change:</p>
+<pre>
+convert rose: -write-mask rose_bg_mask.png -modulate 110,100,33.3  +mask rose_blue.png
 </pre>
 
 <h2 class="magick-header"><a id="core"></a>MagickCore API</h2>
@@ -486,11 +490,11 @@ scripts.</p>
 
 <p>Here we take an sRGB image and a grayscale image and inject the grayscale image into the alpha channel:</p>
 <pre>
-convert wizard.png mask.pgm -channel-fx '| gray=>alpha' wizard-alpha.png 
+convert wizard.png mask.pgm -channel-fx '| gray=>alpha' wizard-alpha.png
 </pre>
 <p>Use a similar command to define a read mask:</p>
 <pre>
-convert wizard.png mask.pgm -channel-fx '| gray=>read-mask' wizard-mask.png 
+convert wizard.png mask.pgm -channel-fx '| gray=>read-mask' wizard-mask.png
 </pre>
 
 <p>Add <code>-debug pixel</code> prior to the <code>-channel-fx</code> option to track the channel morphology.</p>
