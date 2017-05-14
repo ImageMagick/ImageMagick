@@ -217,6 +217,7 @@ MAGICK_BASE_SRCS = \
 	magick/pixel-private.h \
 	magick/policy.c \
 	magick/policy.h \
+	magick/policy-private.h \
 	magick/prepress.c \
 	magick/prepress.h \
 	magick/property.c \
@@ -440,6 +441,7 @@ MAGICK_NOINST_HDRS = \
 	magick/opencl.h \
 	magick/option-private.h \
 	magick/pixel-private.h \
+	magick/policy-private.h \
 	magick/quantum-private.h \
 	magick/random-private.h \
 	magick/resample-private.h \

@@ -50,6 +50,7 @@
 #include "magick/monitor-private.h"
 #include "magick/option.h"
 #include "magick/policy.h"
+#include "magick/policy-private.h"
 #include "magick/semaphore.h"
 #include "magick/string_.h"
 #include "magick/token.h"
@@ -176,7 +177,10 @@ static LinkedListInfo *AcquirePolicyCache(const char *filename,
   if (cache == (LinkedListInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   status=MagickTrue;
-#if !defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
+#if defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
+  status=LoadPolicyCache(cache,ZeroConfigurationPolicy,"ZeroConfiguration",0,
+    exception);
+#else
   {
     const StringInfo
       *option;
