@@ -179,7 +179,10 @@ static LinkedListInfo *AcquirePolicyCache(const char *filename,
   if (cache == (LinkedListInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   status=MagickTrue;
-#if !defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
+#if defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
+  status=LoadPolicyCache(cache,ZeroConfigurationPolicy,"ZeroConfiguration",0,
+    exception);
+#else
   {
     const StringInfo
       *option;
