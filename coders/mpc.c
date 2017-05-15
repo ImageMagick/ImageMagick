@@ -568,6 +568,9 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if (LocaleCompare(keyword,"number-meta-channels") == 0)
                   {
                     image->number_meta_channels=StringToUnsignedLong(options);
+                    if (image->number_meta_channels > MaxPixelChannels)
+                      ThrowReaderException(CorruptImageError,
+                        "ImproperImageHeader");
                     break;
                   }
                 break;
