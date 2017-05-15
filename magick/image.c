@@ -829,7 +829,7 @@ MagickExport Image *CloneImage(const Image *image,const size_t columns,
       */
       clone_image->colors=image->colors;
       length=(size_t) image->colors;
-      clone_image->colormap=(PixelPacket *) AcquireQuantumMemory(length,
+      clone_image->colormap=(PixelPacket *) AcquireQuantumMemory(length+1,
         sizeof(*clone_image->colormap));
       if (clone_image->colormap == (PixelPacket *) NULL)
         {
