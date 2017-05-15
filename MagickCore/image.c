@@ -853,7 +853,7 @@ MagickExport Image *CloneImage(const Image *image,const size_t columns,
         sizeof(*clone_image->colormap));
       if (clone_image->colormap == (PixelInfo *) NULL)
         {
-          clone_image=DestroyImage(clone_image);
+          image=(Image *) RelinquishMagickMemory(image);
           ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
         }
       (void) CopyMagickMemory(clone_image->colormap,image->colormap,length*
