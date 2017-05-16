@@ -822,23 +822,6 @@ MagickExport Image *CloneImage(const Image *image,const size_t columns,
   clone_image->columns=image->columns;
   clone_image->rows=image->rows;
   clone_image->dither=image->dither;
-  if (image->colormap != (PixelPacket *) NULL)
-    {
-      /*
-        Allocate and copy the image colormap.
-      */
-      clone_image->colors=image->colors;
-      length=(size_t) image->colors;
-      clone_image->colormap=(PixelPacket *) AcquireQuantumMemory(length+1,
-        sizeof(*clone_image->colormap));
-      if (clone_image->colormap == (PixelPacket *) NULL)
-        {
-          image=(Image *) RelinquishMagickMemory(image);
-          ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
-        }
-      (void) CopyMagickMemory(clone_image->colormap,image->colormap,length*
-        sizeof(*clone_image->colormap));
-    }
   (void) CloneImageProfiles(clone_image,image);
   (void) CloneImageProperties(clone_image,image);
   (void) CloneImageArtifacts(clone_image,image);
@@ -873,6 +856,23 @@ MagickExport Image *CloneImage(const Image *image,const size_t columns,
   clone_image->ping=image->ping;
   clone_image->debug=IsEventLogging();
   clone_image->semaphore=AllocateSemaphoreInfo();
+  if (image->colormap != (PixelPacket *) NULL)
+    {
+      /*
+        Allocate and copy the image colormap.
+      */
+      clone_image->colors=image->colors;
+      length=(size_t) image->colors;
+      clone_image->colormap=(PixelPacket *) AcquireQuantumMemory(length+1,
+        sizeof(*clone_image->colormap));
+      if (clone_image->colormap == (PixelPacket *) NULL)
+        {
+          clone_image=DestroyImage(clone_image);
+          ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+        }
+      (void) CopyMagickMemory(clone_image->colormap,image->colormap,length*
+        sizeof(*clone_image->colormap));
+    }
   if ((columns == 0) || (rows == 0))
     {
       if (image->montage != (char *) NULL)
