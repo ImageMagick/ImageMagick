@@ -153,7 +153,7 @@ Image Operators:
   \-deskew threshold    straighten an image
   \-despeckle           reduce the speckles within an image
   \-distort method args
-                       distort images according to given method ad args
+                       distort images according to given method and args
   \-draw string         annotate the image with a graphic primitive
   \-edge radius         apply a filter to detect edges in the image
   \-emboss radius       emboss an image

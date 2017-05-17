@@ -12,7 +12,7 @@ For more information about the composite command, point your browser to file://@
 Image Settings:
   \-affine matrix       affine transform matrix
   \-alpha option        on, activate, off, deactivate, set, opaque, copy
-  \                     transparent, extract, background, or shape
+                        transparent, extract, background, or shape
   \-authenticate value  decrypt image with this password
   \-blue-primary point  chromaticity blue primary point
   \-colorspace type     alternate image colorspace

@@ -11,7 +11,7 @@ For more information about the compare command, point your browser to file://@DO
 .SH DESCRIPTION
 Image Settings:
   \-alpha option        on, activate, off, deactivate, set, opaque, copy
-  \                     transparent, extract, background, or shape
+                        transparent, extract, background, or shape
   \-authenticate value  decrypt image with this password
   \-colorspace type     alternate image colorspace
   \-compose operator    set image composite operator
@@ -61,6 +61,21 @@ Image Settings:
   \-verbose             print detailed information about the image
   \-virtual-pixel method
                        virtual pixel access method
+
+Image Operators:
+  \-brightness-contrast geometry
+                        improve brightness / contrast of the image
+  \-distort method args
+                        distort images according to given method and args
+  \-level value         adjust the level of image contrast
+  \-resize geometry     resize the image
+  \-rotate degrees      apply Paeth rotation to the image
+  \-sigmoidal-contrast geometry
+                       lightness rescaling using sigmoidal contrast enhancement
+  \-trim                trim image edges
+
+Image Sequence Operators:
+  \-crop geometry       cut out a rectangular region of the image
 
 Miscellaneous Options:
   \-channel mask        set the image channel mask
