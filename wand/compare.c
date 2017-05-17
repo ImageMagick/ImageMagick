@@ -94,6 +94,25 @@ static MagickBooleanType CompareUsage(void)
       "-log format          format of debugging information",
       (char *) NULL
     },
+    *operators[]=
+    {
+      "-brightness-contrast geometry",
+      "                     improve brightness / contrast of the image",
+      "-distort method args",
+      "                     distort images according to given method and args",
+      "-level value         adjust the level of image contrast",
+      "-resize geometry     resize the image",
+      "-rotate degrees      apply Paeth rotation to the image",
+      "-sigmoidal-contrast geometry",
+      "                     increase the contrast without saturating highlights or",
+      "-trim                trim image edges",
+      (char *) NULL
+    },
+    *sequence_operators[]=
+    {
+      "-crop geometry       cut out a rectangular region of the image",
+      (char *) NULL
+    },
     *settings[]=
     {
       "-alpha option        on, activate, off, deactivate, set, opaque, copy",
@@ -158,6 +177,12 @@ static MagickBooleanType CompareUsage(void)
     GetClientName());
   (void) printf("\nImage Settings:\n");
   for (p=settings; *p != (char *) NULL; p++)
+    (void) printf("  %s\n",*p);
+  (void) printf("\nImage Operators:\n");
+  for (p=operators; *p != (char *) NULL; p++)
+    (void) printf("  %s\n",*p);
+  (void) printf("\nImage Sequence Operators:\n");
+  for (p=sequence_operators; *p != (char *) NULL; p++)
     (void) printf("  %s\n",*p);
   (void) printf("\nMiscellaneous Options:\n");
   for (p=miscellaneous; *p != (char *) NULL; p++)
@@ -377,6 +402,19 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
           }
         ThrowCompareException(OptionError,"UnrecognizedOption",option);
       }
+      case 'b':
+      {
+        if (LocaleCompare("brightness-contrast",option+1) == 0)
+          {
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowCompareException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowCompareInvalidArgumentException(option,argv[i]);
+            break;
+          }
+        ThrowCompareException(OptionError,"UnrecognizedOption",option);
+      }
       case 'c':
       {
         if (LocaleCompare("cache",option+1) == 0)
@@ -460,6 +498,17 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("concurrent",option+1) == 0)
           break;
+        if (LocaleCompare("crop",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowCompareException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowCompareInvalidArgumentException(option,argv[i]);
+            break;
+          }
         ThrowCompareException(OptionError,"UnrecognizedOption",option)
       }
       case 'd':
@@ -541,6 +590,23 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
               dissimilarity_threshold=DefaultDissimilarityThreshold;
             else
               dissimilarity_threshold=StringToDouble(argv[i],(char **) NULL);
+            break;
+          }
+        if (LocaleCompare("distort",option+1) == 0)
+          {
+            ssize_t
+              op;
+
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowCompareException(OptionError,"MissingArgument",option);
+            op=ParseCommandOption(MagickDistortOptions,MagickFalse,argv[i]);
+            if (op < 0)
+              ThrowCompareException(OptionError,"UnrecognizedDistortMethod",
+                argv[i]);
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowCompareException(OptionError,"MissingArgument",option);
             break;
           }
         if (LocaleCompare("duration",option+1) == 0)
@@ -646,6 +712,15 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
       }
       case 'l':
       {
+        if (LocaleCompare("level",option+1) == 0)
+          {
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowCompareException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowCompareInvalidArgumentException(option,argv[i]);
+            break;
+          }
         if (LocaleCompare("limit",option+1) == 0)
           {
             char
@@ -806,6 +881,26 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
       {
         if (LocaleCompare("regard-warnings",option+1) == 0)
           break;
+        if (LocaleCompare("resize",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowCompareException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowCompareInvalidArgumentException(option,argv[i]);
+            break;
+          }
+        if (LocaleCompare("rotate",option+1) == 0)
+          {
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowCompareException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowCompareInvalidArgumentException(option,argv[i]);
+            break;
+          }
         if (LocaleNCompare("respect-parentheses",option+1,17) == 0)
           {
             respect_parenthesis=(*option == '-') ? MagickTrue : MagickFalse;
@@ -847,6 +942,15 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowCompareException(OptionError,"MissingArgument",option);
+            break;
+          }
+        if (LocaleCompare("sigmoidal-contrast",option+1) == 0)
+          {
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowCompareException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowCompareInvalidArgumentException(option,argv[i]);
             break;
           }
         if (LocaleCompare("similarity-threshold",option+1) == 0)
@@ -902,6 +1006,8 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
               ThrowCompareException(OptionError,"MissingArgument",option);
             break;
           }
+        if (LocaleCompare("trim",option+1) == 0)
+          break;
         if (LocaleCompare("type",option+1) == 0)
           {
             ssize_t

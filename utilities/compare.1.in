@@ -62,6 +62,20 @@ Image Settings:
   \-virtual-pixel method
                        virtual pixel access method
 
+Image Operators:
+  \-brightness-contrast geometry
+                       improve brightness / contrast of the image
+  \-distort method args
+                        distort images according to given method and args
+  \-level value         adjust the level of image contrast
+  \-resize geometry     resize the image
+  \-rotate degrees      apply Paeth rotation to the image
+  \-trim                trim image edges
+
+
+Image Sequence Operators:
+  \-crop geometry       cut out a rectangular region of the image
+
 Miscellaneous Options:
   \-debug events        display copious debugging information
   \-help                print program options
