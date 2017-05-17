@@ -13,6 +13,7 @@ Image Settings:
   \-alpha option        on, activate, off, deactivate, set, opaque, copy
                         transparent, extract, background, or shape
   \-authenticate value  decrypt image with this password
+  \-background color    background color
   \-colorspace type     alternate image colorspace
   \-compose operator    set image composite operator
   \-compress type       type of pixel compression when writing the image
