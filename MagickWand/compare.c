@@ -100,7 +100,7 @@ static MagickBooleanType CompareUsage(void)
       "-brightness-contrast geometry",
       "                     improve brightness / contrast of the image",
       "-distort method args",
-      "                     distort images according to given method ad args",
+      "                     distort images according to given method and args",
       "-level value         adjust the level of image contrast",
       "-resize geometry     resize the image",
       "-rotate degrees      apply Paeth rotation to the image",
