@@ -106,11 +106,13 @@ static MagickBooleanType CompareUsage(void)
       "-rotate degrees      apply Paeth rotation to the image",
       "-sigmoidal-contrast geometry",
       "                     increase the contrast without saturating highlights or",
-      "-trim                trim image edges"
+      "-trim                trim image edges",
+      (char *) NULL
     },
     *sequence_operators[]=
     {
-      "-crop geometry       cut out a rectangular region of the image"
+      "-crop geometry       cut out a rectangular region of the image",
+      (char *) NULL
     },
     *settings[]=
     {
