@@ -119,6 +119,7 @@ static MagickBooleanType CompareUsage(void)
       "                     transparent, extract, background, or shape",
       "-authenticate password",
       "                     decipher image with this password",
+      "-background color    background color",
       "-channel type        apply option to select image channels",
       "-colorspace type     alternate image colorspace",
       "-compose operator    set image composite operator",
@@ -404,6 +405,15 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
       }
       case 'b':
       {
+        if (LocaleCompare("background",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowCompareException(OptionError,"MissingArgument",option);
+            break;
+          }
         if (LocaleCompare("brightness-contrast",option+1) == 0)
           {
             i++;

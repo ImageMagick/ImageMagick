@@ -11,8 +11,9 @@ For more information about the compare command, point your browser to file://@DO
 .SH DESCRIPTION
 Image Settings:
   \-alpha option        on, activate, off, deactivate, set, opaque, copy
-  \                     transparent, extract, background, or shape
+                        transparent, extract, background, or shape
   \-authenticate value  decrypt image with this password
+  \-background color    background color
   \-channel type        apply option to select image channels
   \-colorspace type     alternate image colorspace
   \-compose operator    set image composite operator
