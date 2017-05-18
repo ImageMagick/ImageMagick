@@ -66,9 +66,9 @@
 <p>We list a few examples of the <code>compare</code> command here to illustrate its usefulness and ease of use. To get started, lets compare an image to one thats been sharpened:</p>
 
 <pre>
-convert rose.jpg -sharpen 0x1 reconstruct.jpg
-compare rose.jpg reconstruct.jpg difference.png
-compare -compose src rose.jpg reconstruct.jpg difference.png
+magick convert rose.jpg -sharpen 0x1 reconstruct.jpg
+magick compare rose.jpg reconstruct.jpg difference.png
+magick compare -compose src rose.jpg reconstruct.jpg difference.png
 </pre>
 
 <ul>
@@ -83,7 +83,7 @@ compare -compose src rose.jpg reconstruct.jpg difference.png
 <p>In addition to the visual interpretation of the difference in an image and its reconstruction, we report a mathematical measure of the difference:</p>
 
 <pre>
--> compare -verbose -metric mae rose.jpg reconstruct.jpg difference.png
+-> magick compare -verbose -metric mae rose.jpg reconstruct.jpg difference.png
 Image: rose.jpg
  Channel distortion: MAE
   red: 2282.91 (0.034835)
@@ -94,21 +94,21 @@ Image: rose.jpg
 <p>Or, if you just want the red channel distortion, use this command:</p>
 
 <pre>
--> compare -channel red -metric PSNR rose.jpg reconstruct.jpg difference.png
+-> magick compare -channel red -metric PSNR rose.jpg reconstruct.jpg difference.png
 19.63
 </pre>
 
 <p>Or, if you just want the overall image distortion, use this command:</p>
 
 <pre>
--> compare -metric PSNR rose.jpg reconstruct.jpg difference.png
+-> magick compare -metric PSNR rose.jpg reconstruct.jpg difference.png
 28.31
 </pre>
 
 <p>If the reconstructed image is a subimage of the image, the compare program returns the best match offset.  In addition, it returns a similarity image such that an exact match location is completely white and if none of the pixels match, black, otherwise some gray level in-between:</p>
 
 <pre>
--> compare -metric RMSE -subimage-search logo.png wizard.jpg similarity.gif
+-> magick compare -metric RMSE -subimage-search logo.png wizard.jpg similarity.gif
 85.05 (0.00129778) @ 353,157
 </pre>
 
@@ -139,6 +139,11 @@ transparent, extract, background, or shape the alpha channel</td>
   </tr>
 
   <tr>
+    <td><a href="command-line-options.html#brightness-contrast">-brightness-contrast <var>geometry</var></a></td>
+    <td>improve brightness / contrast of the image</td>
+  </tr>
+
+  <tr>
     <td><a href="command-line-options.html#channel">-channel <var>type</var></a></td>
     <td>apply option to select image channels</td>
   </tr>
@@ -151,6 +156,11 @@ transparent, extract, background, or shape the alpha channel</td>
   <tr>
     <td><a href="command-line-options.html#compose">-compose <var>operator</var></a></td>
     <td>set image composite operator</td>
+  </tr>
+
+  <tr>
+    <td><a href="command-line-options.html#crop">-crop <var>geometry</var></a></td>
+    <td>crop the image</td>
   </tr>
 
   <tr>
@@ -181,6 +191,11 @@ transparent, extract, background, or shape the alpha channel</td>
   <tr>
     <td><a href="command-line-options.html#dissimilarity-threshold">-dissimilarity-threshold <var>value</var></a></td>
     <td>maximum distortion for (sub)image match (default 0.2)</td>
+  </tr>
+
+  <tr>
+    <td><a href="command-line-options.html#distort">-distort <var>type coefficients</var></a></td>
+    <td>distort image</td>
   </tr>
 
   <tr>
@@ -216,6 +231,11 @@ transparent, extract, background, or shape the alpha channel</td>
   <tr>
     <td><a href="command-line-options.html#interlace">-interlace <var>type</var></a></td>
     <td>type of image interlacing scheme</td>
+  </tr>
+
+  <tr>
+    <td><a href="command-line-options.html#level">-level <var>value</var></a></td>
+    <td>adjust the level of image contrast</td>
   </tr>
 
   <tr>
@@ -274,8 +294,18 @@ transparent, extract, background, or shape the alpha channel</td>
   </tr>
 
   <tr>
+    <td><a href="command-line-options.html#resize">-resize <var>geometry</var></a></td>
+    <td>resize the image</td>
+  </tr>
+
+  <tr>
     <td><a href="command-line-options.html#respect-parentheses">-respect-parentheses</a></td>
     <td>settings remain in effect until parenthesis boundary.</td>
+  </tr>
+
+  <tr>
+    <td><a href="command-line-options.html#rotate">-rotate <var>degrees</var></a></td>
+    <td>apply Paeth rotation to the image</td>
   </tr>
 
   <tr>
@@ -291,6 +321,11 @@ transparent, extract, background, or shape the alpha channel</td>
   <tr>
     <td><a href="command-line-options.html#set">-set <var>attribute value</var></a></td>
     <td>set an image attribute</td>
+  </tr>
+
+  <tr>
+    <td><a href="command-line-options.html#sigmoidal">-sigmoidal-contrast <var>geometry</var></a></td>
+    <td>increase the contrast without saturating highlights or shadows</td>
   </tr>
 
   <tr>
@@ -321,6 +356,11 @@ transparent, extract, background, or shape the alpha channel</td>
   <tr>
     <td><a href="command-line-options.html#transparent-color">-transparent-color <var>color</var></a></td>
     <td>transparent color</td>
+  </tr>
+
+  <tr>
+    <td><a href="command-line-options.html#trim">-trim</a></td>
+    <td>trim image edges</td>
   </tr>
 
   <tr>
@@ -365,4 +405,4 @@ transparent, extract, background, or shape the alpha channel</td>
 </div>
 </body>
 </html>
-<!-- Magick Cache 14th May 2017 12:20 -->
+<!-- Magick Cache 17th May 2017 15:03 -->
