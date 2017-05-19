@@ -1,3 +1,10 @@
+2017-05-19  6.9.8-6 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 6.9.8-5, GIT revision 11590:7ce2d38:20170519.
+
+2017-05-15  6.9.8-6 Cristy  <quetzlzacatenango@image...>
+  * Support various image operators for the compare utility (reference
+    https://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=31938).
+
 2017-05-12  6.9.8-5 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 6.9.8-5, GIT revision 11575:186b15d:20170512.
 
