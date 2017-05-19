@@ -44,6 +44,7 @@ Image Settings:
   \-quantize colorspace reduce colors in this colorspace
   \-read-mask filename  associate a read mask with the image
   \-regard-warnings     pay attention to warning messages
+  \-repage geometry     size and location of an image canvas
   \-respect-parentheses settings remain in effect until parenthesis boundary
   \-sampling-factor geometry
                        horizontal and vertical sampling factor

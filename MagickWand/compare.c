@@ -157,6 +157,7 @@ static MagickBooleanType CompareUsage(void)
       "-seed value          seed a new sequence of pseudo-random numbers",
       "-set attribute value set an image attribute",
       "-quality value       JPEG/MIFF/PNG compression level",
+      "-repage geometry     size and location of an image canvas",
       "-similarity-threshold value",
       "                     minimum distortion for (sub)image match",
       "-size geometry       width and height of image",
@@ -879,6 +880,17 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("regard-warnings",option+1) == 0)
           break;
+        if (LocaleCompare("repage",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowCompareException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowCompareInvalidArgumentException(option,argv[i]);
+            break;
+          }
         if (LocaleCompare("resize",option+1) == 0)
           {
             if (*option == '+')

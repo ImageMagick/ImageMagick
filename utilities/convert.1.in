@@ -84,6 +84,7 @@ Image Settings:
   \-red-primary point   chromaticity red primary point
   \-regard-warnings     pay attention to warning messages
   \-remap filename      transform image colors to match this set of colors
+  \-repage geometry     size and location of an image canvas
   \-respect-parentheses settings remain in effect until parenthesis boundary
   \-sampling-factor geometry
                        horizontal and vertical sampling factor
@@ -220,7 +221,6 @@ Image Operators:
                        random threshold the image
   \-region geometry     apply options to a portion of the image
   \-render              render vector graphics
-  \-repage geometry     size and location of an image canvas
   \-resample geometry   change the resolution of an image
   \-resize geometry     resize the image
   \-roll geometry       roll an image vertically or horizontally
