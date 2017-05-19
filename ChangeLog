@@ -1,4 +1,11 @@
-2017-05-12  7.0.5-6 Cristy  <quetzlzacatenango@image...>
+2017-05-19  7.0.5-7 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.5-6, GIT revision 20078:7ce2d38:20170519.
+
+2017-05-15  7.0.5-7 Cristy  <quetzlzacatenango@image...>
+  * Support various image operators for the compare utility (reference
+    https://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=31938).
+
+ 2017-05-12  7.0.5-6 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.5-6, GIT revision 20039:9371904:20170512.
 
 2017-05-10  7.0.5-6 John Cupitt <jcupitt@gmail.com>
