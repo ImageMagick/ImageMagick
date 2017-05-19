@@ -151,6 +151,7 @@ static MagickBooleanType CompareUsage(void)
       "-quiet               suppress all warning messages",
       "-quantize colorspace reduce colors in this colorspace",
       "-regard-warnings     pay attention to warning messages",
+      "-repage geometry     size and location of an image canvas",
       "-respect-parentheses settings remain in effect until parenthesis boundary",
       "-sampling-factor geometry",
       "                     horizontal and vertical sampling factor",
@@ -891,6 +892,17 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
       {
         if (LocaleCompare("regard-warnings",option+1) == 0)
           break;
+        if (LocaleCompare("repage",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowCompareException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowCompareInvalidArgumentException(option,argv[i]);
+            break;
+          }
         if (LocaleCompare("resize",option+1) == 0)
           {
             if (*option == '+')

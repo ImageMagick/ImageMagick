@@ -45,6 +45,7 @@ Image Settings:
   \-quiet               suppress all warning messages
   \-quantize colorspace reduce colors in this colorspace
   \-regard-warnings     pay attention to warning messages
+  \-repage geometry     size and location of an image canvas
   \-respect-parentheses settings remain in effect until parenthesis boundary
   \-sampling-factor geometry
                        horizontal and vertical sampling factor
