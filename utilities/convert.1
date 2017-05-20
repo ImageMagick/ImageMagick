@@ -85,6 +85,7 @@ Image Settings:
   \-red-primary point   chromaticity red primary point
   \-regard-warnings     pay attention to warning messages
   \-remap filename      transform image colors to match this set of colors
+  \-repage geometry     size and location of an image canvas
   \-respect-parentheses settings remain in effect until parenthesis boundary
   \-sampling-factor geometry
                        horizontal and vertical sampling factor
@@ -134,7 +135,7 @@ Image Operators:
   \-blur geometry       reduce image noise and reduce detail levels
   \-border geometry     surround image with a border of color
   \-brightness-contrast geometry
-  \                     improve brightness / contrast of the image
+                        improve brightness / contrast of the image
   \-canny geometry      detect edges in the image
   \-charcoal radius     simulate a charcoal drawing
   \-chop geometry       remove pixels from the image interior
@@ -155,7 +156,7 @@ Image Operators:
   \-deskew threshold    straighten an image
   \-despeckle           reduce the speckles within an image
   \-distort method args
-  \                     distort images according to given method ad args
+                        distort images according to given method and args
   \-draw string         annotate the image with a graphic primitive
   \-edge radius         apply a filter to detect edges in the image
   \-emboss radius       emboss an image
@@ -183,7 +184,7 @@ Image Operators:
   \-ift                 implements the inverse discrete Fourier transform (DFT)
   \-implode amount      implode image pixels about the center
   \-interpolative-resize geometry
-  \                     resize image using 'point sampled' interpolation
+                        resize image using 'point sampled' interpolation
   \-lat geometry        local adaptive thresholding
   \-layers method       optimize or compare image layers
   \-level value         adjust the level of image contrast
@@ -192,7 +193,7 @@ Image Operators:
   \-linear-stretch geometry
                        improve contrast by `stretching with saturation' the intensity range
   \-liquid-rescale geometry
-  \                     rescale image with seam-carving
+                        rescale image with seam-carving
   \-magnify             double the size of the image with pixel art scaling
   \-mean-shift geometry delineate arbitrarily shaped clusters in the image
   \-median geometry     apply a median filter to the image
@@ -223,7 +224,6 @@ Image Operators:
                        random threshold the image
   \-region geometry     apply options to a portion of the image
   \-render              render vector graphics
-  \-repage geometry     size and location of an image canvas
   \-resample geometry   change the resolution of an image
   \-resize geometry     resize the image
   \-roll geometry       roll an image vertically or horizontally
@@ -246,7 +246,7 @@ Image Operators:
   \-sketch geometry     simulate a pencil sketch
   \-solarize threshold  negate all pixels above the threshold level
   \-sparse-color method args
-  \                     fill in a image based on a few color points
+                        fill in a image based on a few color points
   \-splice geometry     splice the background color into the image
   \-spread amount       displace image pixels by a random amount
   \-strip               strip image of all profiles and comments

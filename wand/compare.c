@@ -111,6 +111,7 @@ static MagickBooleanType CompareUsage(void)
     *sequence_operators[]=
     {
       "-crop geometry       cut out a rectangular region of the image",
+      "-write filename      write images to this file",
       (char *) NULL
     },
     *settings[]=
@@ -172,6 +173,11 @@ static MagickBooleanType CompareUsage(void)
       "-virtual-pixel method",
       "                     virtual pixel access method",
       (char *) NULL
+    },
+    *stack_operators[]=
+    {
+      "-delete indexes      delete the image from the image sequence",
+      (char *) NULL
     };
 
   ListMagickVersion(stdout);
@@ -185,6 +191,9 @@ static MagickBooleanType CompareUsage(void)
     (void) printf("  %s\n",*p);
   (void) printf("\nImage Sequence Operators:\n");
   for (p=sequence_operators; *p != (char *) NULL; p++)
+    (void) printf("  %s\n",*p);
+  (void) printf("\nImage Stack Operators:\n");
+  for (p=stack_operators; *p != (char *) NULL; p++)
     (void) printf("  %s\n",*p);
   (void) printf("\nMiscellaneous Options:\n");
   for (p=miscellaneous; *p != (char *) NULL; p++)
@@ -564,6 +573,17 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
                   ThrowCompareException(OptionError,"NoSuchOption",argv[i]);
                 break;
               }
+            break;
+          }
+        if (LocaleCompare("delete",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowCompareException(OptionError,"MissingArgument",option);
+            if (IsSceneGeometry(argv[i],MagickFalse) == MagickFalse)
+              ThrowCompareInvalidArgumentException(option,argv[i]);
             break;
           }
         if (LocaleCompare("density",option+1) == 0)
@@ -1073,6 +1093,17 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
             if (method < 0)
               ThrowCompareException(OptionError,
                 "UnrecognizedVirtualPixelMethod",argv[i]);
+            break;
+          }
+        ThrowCompareException(OptionError,"UnrecognizedOption",option)
+      }
+      case 'w':
+      {
+        if (LocaleCompare("write",option+1) == 0)
+          {
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowCompareException(OptionError,"MissingArgument",option);
             break;
           }
         ThrowCompareException(OptionError,"UnrecognizedOption",option)

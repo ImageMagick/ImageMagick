@@ -11,8 +11,9 @@ For more information about the compare command, point your browser to file:///us
 .SH DESCRIPTION
 Image Settings:
   \-alpha option        on, activate, off, deactivate, set, opaque, copy
-  \                     transparent, extract, background, or shape
+                        transparent, extract, background, or shape
   \-authenticate value  decrypt image with this password
+  \-background color    background color
   \-channel type        apply option to select image channels
   \-colorspace type     alternate image colorspace
   \-compose operator    set image composite operator
@@ -44,6 +45,7 @@ Image Settings:
   \-quiet               suppress all warning messages
   \-quantize colorspace reduce colors in this colorspace
   \-regard-warnings     pay attention to warning messages
+  \-repage geometry     size and location of an image canvas
   \-respect-parentheses settings remain in effect until parenthesis boundary
   \-sampling-factor geometry
                        horizontal and vertical sampling factor
@@ -61,6 +63,20 @@ Image Settings:
   \-verbose             print detailed information about the image
   \-virtual-pixel method
                        virtual pixel access method
+
+Image Operators:
+  \-brightness-contrast geometry
+                       improve brightness / contrast of the image
+  \-distort method args
+                        distort images according to given method and args
+  \-level value         adjust the level of image contrast
+  \-resize geometry     resize the image
+  \-rotate degrees      apply Paeth rotation to the image
+  \-trim                trim image edges
+
+
+Image Sequence Operators:
+  \-crop geometry       cut out a rectangular region of the image
 
 Miscellaneous Options:
   \-debug events        display copious debugging information
