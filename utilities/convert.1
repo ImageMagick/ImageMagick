@@ -59,10 +59,10 @@ Image Settings:
   \-intent type         type of rendering intent when managing the image color
   \-interlace type      type of image interlacing scheme
   \-interline-spacing value
-  \                     set the space between two text lines
+                        set the space between two text lines
   \-interpolate method  pixel color interpolation method
   \-interword-spacing value
-  \                     set the space between two words
+                        set the space between two words
   \-kerning value       set the space between two letters
   \-label string        assign a label to an image
   \-limit type value    pixel cache resource limit
@@ -84,6 +84,7 @@ Image Settings:
   \-red-primary point   chromaticity red primary point
   \-regard-warnings     pay attention to warning messages
   \-remap filename      transform image colors to match this set of colors
+  \-repage geometry     size and location of an image canvas
   \-respect-parentheses settings remain in effect until parenthesis boundary
   \-sampling-factor geometry
                        horizontal and vertical sampling factor
@@ -133,7 +134,7 @@ Image Operators:
   \-blur geometry       reduce image noise and reduce detail levels
   \-border geometry     surround image with a border of color
   \-brightness-contrast geometry
-  \                     improve brightness / contrast of the image
+                        improve brightness / contrast of the image
   \-canny geometry      detect edges in the image
   \-channel mask        set the image channel mask
   \-charcoal radius     simulate a charcoal drawing
@@ -155,7 +156,7 @@ Image Operators:
   \-deskew threshold    straighten an image
   \-despeckle           reduce the speckles within an image
   \-distort method args
-  \                     distort images according to given method ad args
+                        distort images according to given method and args
   \-draw string         annotate the image with a graphic primitive
   \-edge radius         apply a filter to detect edges in the image
   \-emboss radius       emboss an image
@@ -186,7 +187,7 @@ Image Operators:
   \-layers method       optimize or compare image layers
   \-level value         adjust the level of image contrast
   \-level-colors color,color
-  \                     level image with the given colors
+                        level image with the given colors
   \-linear-stretch geometry
                        improve contrast by `stretching with saturation' the intensity range
   \-liquid-rescale geometry
@@ -220,7 +221,6 @@ Image Operators:
                        random threshold the image
   \-region geometry     apply options to a portion of the image
   \-render              render vector graphics
-  \-repage geometry     size and location of an image canvas
   \-resample geometry   change the resolution of an image
   \-resize geometry     resize the image
   \-roll geometry       roll an image vertically or horizontally
@@ -243,7 +243,7 @@ Image Operators:
   \-sketch geometry     simulate a pencil sketch
   \-solarize threshold  negate all pixels above the threshold level
   \-sparse-color method args
-  \                     fill in a image based on a few color points
+                        fill in a image based on a few color points
   \-splice geometry     splice the background color into the image
   \-spread amount       displace image pixels by a random amount
   \-strip               strip image of all profiles and comments
