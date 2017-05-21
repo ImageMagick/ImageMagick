@@ -2016,6 +2016,7 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reference,
       }
   }
   similarity_view=DestroyCacheView(similarity_view);
+  (void) SetImageAlphaChannel(similarity_image,OffAlphaChannel,exception);
   if (status == MagickFalse)
     similarity_image=DestroyImage(similarity_image);
   return(similarity_image);
