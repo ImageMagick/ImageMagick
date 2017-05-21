@@ -386,7 +386,11 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
   opj_stream_destroy(jp2_stream);
   for (i=0; i < (ssize_t) jp2_image->numcomps; i++)
   {
-    if ((jp2_image->comps[i].dx == 0) || (jp2_image->comps[i].dy == 0))
+    if ((jp2_image->comps[0].dx == 0) || (jp2_image->comps[0].dy == 0) ||
+        (jp2_image->comps[0].dx != jp2_image->comps[i].dx) ||
+        (jp2_image->comps[0].dy != jp2_image->comps[i].dy) ||
+        (jp2_image->comps[0].prec != jp2_image->comps[i].prec) ||
+        (jp2_image->comps[0].sgnd != jp2_image->comps[i].sgnd))
       {
         opj_destroy_codec(jp2_codec);
         opj_image_destroy(jp2_image);
