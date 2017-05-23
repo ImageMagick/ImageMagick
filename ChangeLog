@@ -1,6 +1,8 @@
 2017-05-23  7.0.5-8 Cristy  <quetzlzacatenango@image...>
   * Improper allocation of memory for IM instances without threads (reference
     https://github.com/ImageMagick/ImageMagick/issues/497).
+  * Delete corrupt image from list (reference
+    https://github.com/ImageMagick/ImageMagick/issues/500).
 
 2017-05-19  7.0.5-7 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.5-6, GIT revision 20078:7ce2d38:20170519.

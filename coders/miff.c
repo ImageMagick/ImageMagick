@@ -1088,6 +1088,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
       {
         if (image->previous == (Image *) NULL)
           ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+        DeleteImageFromList(&image);
         (void) ThrowMagickException(exception,GetMagickModule(),
           CorruptImageError,"ImproperImageHeader","`%s'",image->filename);
         break;
