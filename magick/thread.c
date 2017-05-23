@@ -140,6 +140,7 @@ MagickExport MagickBooleanType CreateMagickThreadKey(MagickThreadKey *key,
 #if defined(MAGICKCORE_THREAD_SUPPORT)
   return(pthread_key_create(key,destructor) == 0 ? MagickTrue : MagickFalse);
 #elif defined(MAGICKCORE_WINDOWS_SUPPORT)
+  magick_unreferenced(destructor);
   *key=TlsAlloc();
   return(*key != TLS_OUT_OF_INDEXES ? MagickTrue : MagickFalse);
 #else
@@ -148,7 +149,7 @@ MagickExport MagickBooleanType CreateMagickThreadKey(MagickThreadKey *key,
       **keys;
 
     keys=(MagickThreadValue **) key;
-    *keys=(MagickThreadValue *) AcquireQuantumMemory(1,sizeof(*keys));
+    *keys=(MagickThreadValue *) AcquireQuantumMemory(1,sizeof(**keys));
     if (*keys != (MagickThreadValue *) NULL)
       {
         (*keys)->number_threads=GetOpenMPMaximumThreads();
