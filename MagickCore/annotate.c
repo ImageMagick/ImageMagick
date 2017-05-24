@@ -1621,12 +1621,19 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
         CacheView
           *image_view;
 
+        MagickBooleanType
+          transparent_fill;
+
         register unsigned char
           *r;
 
         /*
           Rasterize the glyph.
         */
+        transparent_fill=(draw_info->fill.alpha == TransparentAlpha) &&
+          (draw_info->fill_pattern == (Image *) NULL) &&
+          (draw_info->stroke.alpha == TransparentAlpha) &&
+          (draw_info->stroke_pattern == (Image *) NULL);
         image_view=AcquireAuthenticCacheView(image,exception);
         r=bitmap->bitmap.buffer;
         for (y=0; y < (ssize_t) bitmap->bitmap.rows; y++)
@@ -1690,11 +1697,26 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
                 exception);
             if (q == (Quantum *) NULL)
               continue;
-            GetPixelInfo(image,&fill_color);
-            GetFillColor(draw_info,x_offset,y_offset,&fill_color,exception);
-            fill_opacity=fill_opacity*fill_color.alpha;
-            CompositePixelOver(image,&fill_color,fill_opacity,q,
-              GetPixelAlpha(image,q),q);
+            if (transparent_fill == MagickFalse)
+              {
+                GetPixelInfo(image,&fill_color);
+                GetFillColor(draw_info,x_offset,y_offset,&fill_color,
+                  exception);
+                fill_opacity=fill_opacity*fill_color.alpha;
+                CompositePixelOver(image,&fill_color,fill_opacity,q,
+                  GetPixelAlpha(image,q),q);
+              }
+            else
+              {
+                double
+                  Sa,
+                  Da;
+                
+                Da=1.0-(QuantumScale*GetPixelAlpha(image,q));
+                Sa=fill_opacity;
+                fill_opacity=(1.0-RoundToUnity(Sa+Da-Sa*Da))*QuantumRange;
+                SetPixelAlpha(image,fill_opacity,q);
+              }
             if (active == MagickFalse)
               {
                 sync=SyncCacheViewAuthenticPixels(image_view,exception);
