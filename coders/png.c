@@ -8352,7 +8352,9 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     ping_have_non_bw,
     ping_have_PLTE,
     ping_have_bKGD,
+#ifdef exIf_SUPPORTED
     ping_have_eXIf,
+#endif
     ping_have_iCCP,
     ping_have_pHYs,
     ping_have_sRGB,
@@ -8362,7 +8364,9 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     ping_exclude_cHRM,
     ping_exclude_date,
     /* ping_exclude_EXIF, */
+#ifdef exIf_SUPPORTED
     ping_exclude_eXIf,
+#endif
     ping_exclude_gAMA,
     ping_exclude_iCCP,
     /* ping_exclude_iTXt, */
@@ -8512,7 +8516,9 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   ping_have_non_bw=MagickTrue;
   ping_have_PLTE=MagickFalse;
   ping_have_bKGD=MagickFalse;
+#ifdef exIf_SUPPORTED
   ping_have_eXIf=MagickTrue;
+#endif
   ping_have_iCCP=MagickFalse;
   ping_have_pHYs=MagickFalse;
   ping_have_sRGB=MagickFalse;
@@ -8522,8 +8528,10 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   ping_exclude_caNv=mng_info->ping_exclude_caNv;
   ping_exclude_cHRM=mng_info->ping_exclude_cHRM;
   ping_exclude_date=mng_info->ping_exclude_date;
+#ifdef exIf_SUPPORTED
   /* ping_exclude_EXIF=mng_info->ping_exclude_EXIF; */
   ping_exclude_eXIf=mng_info->ping_exclude_eXIf;
+#endif
   ping_exclude_gAMA=mng_info->ping_exclude_gAMA;
   ping_exclude_iCCP=mng_info->ping_exclude_iCCP;
   /* ping_exclude_iTXt=mng_info->ping_exclude_iTXt; */
