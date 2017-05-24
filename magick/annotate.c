@@ -1597,9 +1597,16 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
         register unsigned char
           *p;
 
+        MagickBooleanType
+          transparent_fill;
+
         /*
           Rasterize the glyph.
         */
+        transparent_fill=(draw_info->fill.opacity == TransparentOpacity) &&
+          (draw_info->fill_pattern == (Image *) NULL) &&
+          (draw_info->stroke.opacity == TransparentOpacity) &&
+          (draw_info->stroke_pattern == (Image *) NULL);
         p=bitmap->bitmap.buffer;
         image_view=AcquireAuthenticCacheView(image,exception);
         for (y=0; y < (ssize_t) bitmap->bitmap.rows; y++)
@@ -1663,10 +1670,24 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
                 exception);
             if (q == (PixelPacket *) NULL)
               continue;
-            (void) GetFillColor(draw_info,x_offset,y_offset,&fill_color);
-            fill_opacity=QuantumRange-fill_opacity*(QuantumRange-
-              fill_color.opacity);
-            MagickCompositeOver(&fill_color,fill_opacity,q,q->opacity,q);
+            if (transparent_fill == MagickFalse)
+              {
+                (void) GetFillColor(draw_info,x_offset,y_offset,&fill_color);
+                fill_opacity=QuantumRange-fill_opacity*(QuantumRange-
+                  fill_color.opacity);
+                MagickCompositeOver(&fill_color,fill_opacity,q,q->opacity,q);
+              }
+            else
+              {
+                double
+                  Sa,
+                  Da;
+                
+                Da=1.0-(QuantumScale*(QuantumRange-q->opacity));
+                Sa=fill_opacity;
+                fill_opacity=(1.0-RoundToUnity(Sa+Da-Sa*Da))*QuantumRange;
+                SetPixelAlpha(q,fill_opacity);
+              }
             if (active == MagickFalse)
               {
                 sync=SyncCacheViewAuthenticPixels(image_view,exception);
