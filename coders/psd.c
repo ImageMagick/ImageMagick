@@ -68,6 +68,7 @@
 #include "MagickCore/option.h"
 #include "MagickCore/pixel.h"
 #include "MagickCore/pixel-accessor.h"
+#include "MagickCore/policy.h"
 #include "MagickCore/profile.h"
 #include "MagickCore/property.h"
 #include "MagickCore/registry.h"
@@ -1465,7 +1466,7 @@ static MagickBooleanType ReadPSDLayer(Image *image,const ImageInfo *image_info,
   return(status);
 }
 
-ModuleExport MagickBooleanType ReadPSDLayers(Image *image,
+static MagickBooleanType ReadPSDLayersInternal(Image *image,
   const ImageInfo *image_info,const PSDInfo *psd_info,
   const MagickBooleanType skip_layers,ExceptionInfo *exception)
 {
@@ -1838,6 +1839,24 @@ ModuleExport MagickBooleanType ReadPSDLayers(Image *image,
   return(status);
 }
 
+ModuleExport MagickBooleanType ReadPSDLayers(Image *image,
+  const ImageInfo *image_info,const PSDInfo *psd_info,
+  const MagickBooleanType skip_layers,ExceptionInfo *exception)
+{
+  PolicyDomain
+    domain;
+
+  PolicyRights
+    rights;
+
+  domain=CoderPolicyDomain;
+  rights=ReadPolicyRights;
+  if (IsRightsAuthorized(domain,rights,"PSD") == MagickFalse)
+    return(MagickFalse);
+  return(ReadPSDLayersInternal(image,image_info,psd_info,skip_layers,
+    exception));
+}
+
 static MagickBooleanType ReadPSDMergedImage(const ImageInfo *image_info,
   Image *image,const PSDInfo *psd_info,ExceptionInfo *exception)
 {
@@ -2118,8 +2137,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   else
     {
-      if (ReadPSDLayers(image,image_info,&psd_info,skip_layers,exception) !=
-          MagickTrue)
+      if (ReadPSDLayersInternal(image,image_info,&psd_info,skip_layers,
+            exception) != MagickTrue)
         {
           (void) CloseBlob(image);
           image=DestroyImageList(image);
@@ -2152,7 +2171,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (length != 0))
     {
       SeekBlob(image,offset,SEEK_SET);
-      status=ReadPSDLayers(image,image_info,&psd_info,MagickFalse,exception);
+      status=ReadPSDLayersInternal(image,image_info,&psd_info,MagickFalse,
+        exception);
       if (status != MagickTrue)
         {
           (void) CloseBlob(image);
