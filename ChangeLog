@@ -1,3 +1,6 @@
+2017-05-26  6.9.8-7 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 6.9.8-7, GIT revision 11598:07d1dee:20170526.
+
 2017-05-23  6.9.8-7 Cristy  <quetzlzacatenango@image...>
   * Improper allocation of memory for IM instances without threads (reference
 	  https://github.com/ImageMagick/ImageMagick/issues/497).
@@ -5,7 +8,7 @@
     https://github.com/ImageMagick/ImageMagick/issues/500).
 
 2017-05-19  6.9.8-6 Cristy  <quetzlzacatenango@image...>
-  * Release ImageMagick version 6.9.8-5, GIT revision 11590:7ce2d38:20170519.
+  * Release ImageMagick version 6.9.8-6, GIT revision 11590:7ce2d38:20170519.
 
 2017-05-15  6.9.8-6 Cristy  <quetzlzacatenango@image...>
   * Support various image operators for the compare utility (reference
