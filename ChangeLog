@@ -1,3 +1,6 @@
+2017-05-26  7.0.5-8 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.5-8, GIT revision 20099:870a016:20170526.
+
 2017-05-23  7.0.5-8 Cristy  <quetzlzacatenango@image...>
   * Improper allocation of memory for IM instances without threads (reference
     https://github.com/ImageMagick/ImageMagick/issues/497).
