@@ -391,7 +391,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
         (jp2_image->comps[0].dy != jp2_image->comps[i].dy) ||
         (jp2_image->comps[0].prec != jp2_image->comps[i].prec) ||
         (jp2_image->comps[0].sgnd != jp2_image->comps[i].sgnd) ||
-        (jp2_image->comps[i].data == NULL))
+        ((image->ping == MagickFalse) && (jp2_image->comps[i].data == NULL)))
       {
         opj_destroy_codec(jp2_codec);
         opj_image_destroy(jp2_image);
