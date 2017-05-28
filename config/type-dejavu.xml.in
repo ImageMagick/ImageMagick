@@ -16,6 +16,9 @@
 <!ATTLIST type version CDATA #IMPLIED>
 <!ATTLIST include file CDATA #REQUIRED>
 ]>
+<!--
+  ImageMagick DejaVU font configuration.
+-->
 <typemap>
   <type name="DejaVu-LGC-Sans-Bold" fullname="DejaVu LGC Sans Bold" family="DejaVuGC Sans" style="Normal" stretch="Normal" weight="700" glyphs="@dejavu_font_dir@DejaVuLGCSans-Bold.ttf"/>
   <type name="DejaVu-LGC-Sans-Bold-Oblique" fullname="DejaVu LGC Sans Bold Oblique" family="DejaVuGC Sans" style="Oblique" stretch="Normal" weight="700" glyphs="@dejavu_font_dir@DejaVuLGCSans-BoldOblique.ttf"/>

@@ -16,6 +16,9 @@
 <!ATTLIST type version CDATA #IMPLIED>
 <!ATTLIST include file CDATA #REQUIRED>
 ]>
+<!--
+  ImageMagick font configuration.
+-->
 <typemap>
   @type_include_files@
 </typemap>

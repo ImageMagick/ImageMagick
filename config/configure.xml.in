@@ -5,6 +5,9 @@
 <!ATTLIST configure name CDATA #REQUIRED>
 <!ATTLIST configure value CDATA #REQUIRED>
 ]>
+<!--
+  ImageMagick build configuration.
+-->
 <configuremap>
   <configure name="CC" value="@CC@"/>
   <configure name="CFLAGS" value="@MAGICK_CFLAGS@"/>
