@@ -2892,7 +2892,7 @@ static MagickBooleanType ReadDCMPixels(Image *image,DCMInfo *info,
                   double
                     window_max,
                     window_min;
-    
+
                   window_min=ceil(info->window_center-
                     (info->window_width-1.0)/2.0-0.5);
                   window_max=floor(info->window_center+
@@ -3526,7 +3526,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               Rescale intercept
             */
             if (data != (unsigned char *) NULL)
-              info.rescale_intercept=StringToDouble((char *) data, 
+              info.rescale_intercept=StringToDouble((char *) data,
                 (char **) NULL);
             break;
           }
@@ -3935,7 +3935,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         one=1;
         if (colors == 0)
           colors=one << info.depth;
-        if (AcquireImageColormap(image,one << info.depth,exception) == MagickFalse)
+        if (AcquireImageColormap(image,colors,exception) == MagickFalse)
           ThrowDCMException(ResourceLimitError,"MemoryAllocationFailed");
         if (redmap != (int *) NULL)
           for (i=0; i < (ssize_t) colors; i++)
