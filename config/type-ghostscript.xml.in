@@ -16,6 +16,9 @@
 <!ATTLIST type version CDATA #IMPLIED>
 <!ATTLIST include file CDATA #REQUIRED>
 ]>
+<!--
+  ImageMagick Ghostscript font configuration.
+-->
 <typemap>
   <type name="AvantGarde-Book" fullname="AvantGarde Book" family="AvantGarde" foundry="URW" weight="400" style="normal" stretch="normal" format="type1" metrics="@ghostscript_font_dir@a010013l.afm" glyphs="@ghostscript_font_dir@a010013l.pfb"/>
   <type name="AvantGarde-BookOblique" fullname="AvantGarde Book Oblique" family="AvantGarde" foundry="URW" weight="400" style="oblique" stretch="normal" format="type1" metrics="@ghostscript_font_dir@a010033l.afm" glyphs="@ghostscript_font_dir@a010033l.pfb"/>

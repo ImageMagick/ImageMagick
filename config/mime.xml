@@ -13,6 +13,9 @@
   <!ATTLIST mime mask CDATA #IMPLIED>
   <!ATTLIST mime priority CDATA #IMPLIED>
 ]>
+<!--
+  Configure ImageMagick mime types.
+-->
 <mimemap>
   <mime type="application/andrew-inset" acronym="ATK" description="Andrew Toolkit" priority="100" pattern="*.ez" />
   <mime type="application/illustrator" description="Adobe Illustrator document" priority="100" pattern="*.ai" />

@@ -16,6 +16,9 @@
 <!ATTLIST type version CDATA #IMPLIED>
 <!ATTLIST include file CDATA #REQUIRED>
 ]>
+<!--
+  ImageMagick Windows font configuration.
+-->
 <typemap>
   <type name="Arial" fullname="Arial" family="Arial" weight="400" style="normal" stretch="normal" glyphs="@windows_font_dir@arial.ttf"/>
   <type name="Arial-Black" fullname="Arial Black" family="Arial" weight="900" style="normal" stretch="normal" glyphs="@windows_font_dir@ariblk.ttf"/>
