@@ -1,3 +1,9 @@
+2017-05-28  6.9.8-8 Cristy  <quetzlzacatenango@image...>
+  * Transient error validating the JPEG-2000 image format (reference
+    https://github.com/ImageMagick/ImageMagick/issues/501).
+  * Properly allocate DCM image colormap (reference
+    https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=32063).
+
 2017-05-26  6.9.8-7 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 6.9.8-7, GIT revision 11598:07d1dee:20170526.
 

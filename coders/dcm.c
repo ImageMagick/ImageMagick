@@ -3943,7 +3943,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         one=1;
         if (colors == 0)
           colors=one << info.depth;
-        if (AcquireImageColormap(image,one << info.depth) == MagickFalse)
+        if (AcquireImageColormap(image,colors) == MagickFalse)
           ThrowDCMException(ResourceLimitError,"MemoryAllocationFailed");
         if (redmap != (int *) NULL)
           for (i=0; i < (ssize_t) colors; i++)
