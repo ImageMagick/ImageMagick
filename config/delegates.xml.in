@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE delegatemap [
-<!ELEMENT delegatemap (delegate)+>
-<!ELEMENT delegate (#PCDATA)>
-<!ATTLIST delegate decode CDATA #IMPLIED>
-<!ATTLIST delegate encode CDATA #IMPLIED>
-<!ATTLIST delegate mode CDATA #IMPLIED>
-<!ATTLIST delegate spawn CDATA #IMPLIED>
-<!ATTLIST delegate stealth CDATA #IMPLIED>
-<!ATTLIST delegate thread-support CDATA #IMPLIED>
-<!ATTLIST delegate command CDATA #REQUIRED>
+  <!ELEMENT delegatemap (delegate)+>
+  <!ATTLIST delegatemap xmlns CDATA #FIXED ''>
+  <!ELEMENT delegate EMPTY>
+  <!ATTLIST delegate xmlns CDATA #FIXED '' command CDATA #REQUIRED
+    decode NMTOKEN #IMPLIED encode NMTOKEN #IMPLIED mode NMTOKEN #IMPLIED
+    spawn NMTOKEN #IMPLIED stealth NMTOKEN #IMPLIED>
 ]>
 <!--
   Delegate command file.
