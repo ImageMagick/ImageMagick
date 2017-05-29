@@ -1,18 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE policymap [
-<!ELEMENT policymap (policy)+>
-<!ELEMENT policy (#PCDATA)>
-<!ATTLIST policy domain (cache|delegate|coder|path|resource|system) #IMPLIED>
-<!ATTLIST policy name CDATA #IMPLIED>
-<!ATTLIST policy rights CDATA #IMPLIED>
-<!ATTLIST policy stealth CDATA #IMPLIED>
-<!ATTLIST policy cache CDATA #IMPLIED>
-<!ATTLIST policy coder CDATA #IMPLIED>
-<!ATTLIST policy delegate CDATA #IMPLIED>
-<!ATTLIST policy pattern CDATA #IMPLIED>
-<!ATTLIST policy path CDATA #IMPLIED>
-<!ATTLIST policy system CDATA #IMPLIED>
-<!ATTLIST policy value CDATA #IMPLIED>
+  <!ELEMENT policymap (policy)+>
+  <!ATTLIST policymap xmlns CDATA #FIXED ''>
+  <!ELEMENT policy EMPTY>
+  <!ATTLIST policy xmlns CDATA #FIXED '' domain NMTOKEN #REQUIRED
+    name NMTOKEN #IMPLIED pattern CDATA #IMPLIED rights NMTOKEN #IMPLIED
+    stealth NMTOKEN #IMPLIED value CDATA #IMPLIED>
 ]>
 <!--
   Configure ImageMagick policies.
@@ -38,18 +31,18 @@
 
   The /repository file system is restricted to read only.  We use a glob
   expression to match all paths that start with /repository:
-  
+
     <policy domain="path" rights="read" pattern="/repository/*" />
 
-  Let's prevent possible exploits by removing the right to use indirect reads.
+  Lets prevent users from executing any image filters:
 
-    <policy domain="path" rights="none" pattern="@*" />
+    <policy domain="filter" rights="none" pattern="*" />
 
   Any large image is cached to disk rather than memory:
 
     <policy domain="resource" name="area" value="1GP"/>
 
-  Define arguments for the memory, map, area, width, height, and disk resources
+  Define arguments for the memory, map, area, width, height and disk resources
   with SI prefixes (.e.g 100MB).  In addition, resource policies are maximums
   for each instance of ImageMagick (e.g. policy memory limit 1GB, -limit 2GB
   exceeds policy maximum so memory limit is 1GB).
@@ -76,9 +69,10 @@
   <!-- <policy domain="resource" name="thread" value="4"/> -->
   <!-- <policy domain="resource" name="throttle" value="0"/> -->
   <!-- <policy domain="resource" name="time" value="3600"/> -->
+  <!-- <policy domain="resource" name="time" value="3600"/> -->
   <!-- <policy domain="coder" rights="none" pattern="MVG" /> -->
   <!-- <policy domain="delegate" rights="none" pattern="HTTPS" /> -->
-  <!-- <policy domain="path" rights="none" pattern="@*"/>  -->
+  <!-- <policy domain="path" rights="none" pattern="@*" /> -->
   <!-- <policy domain="cache" name="memory-map" value="anonymous"/> -->
   <!-- <policy domain="cache" name="synchronize" value="True"/> -->
   <policy domain="cache" name="shared-secret" value="passphrase" stealth="true"/>
