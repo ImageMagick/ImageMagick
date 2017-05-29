@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE configuremap [
-<!ELEMENT configuremap (configure)+>
-<!ELEMENT configure (#PCDATA)>
-<!ATTLIST configure name CDATA #REQUIRED>
-<!ATTLIST configure value CDATA #REQUIRED>
+  <!ELEMENT configuremap (configure)+>
+  <!ATTLIST configuremap xmlns CDATA #FIXED ''>
+  <!ELEMENT configure EMPTY>
+  <!ATTLIST configure xmlns CDATA #FIXED '' name NMTOKEN #REQUIRED
+    value CDATA #REQUIRED>
 ]>
 <!--
   ImageMagick build configuration.
