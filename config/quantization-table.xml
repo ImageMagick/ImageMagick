@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE quantization-tables [
-<!ELEMENT quantization-tables (table)+>
-<!ELEMENT table (description , levels)>
-<!ELEMENT description (CDATA)>
-<!ELEMENT levels (CDATA)>
-<!ATTLIST table slot ID #REQUIRED>
-<!ATTLIST levels width CDATA #REQUIRED>
-<!ATTLIST levels height CDATA #REQUIRED>
-<!ATTLIST levels divisor CDATA #REQUIRED>
+  <!ELEMENT quantization-tables (table)>
+  <!ATTLIST quantization-tables xmlns CDATA #FIXED "">
+  <!ELEMENT table (description , levels)>
+  <!ATTLIST table xmlns CDATA #FIXED "">
+  <!ATTLIST table alias NMTOKEN #REQUIRED>
+  <!ATTLIST table slot CDATA #REQUIRED>
+  <!ELEMENT description (#PCDATA)>
+  <!ATTLIST description xmlns CDATA #FIXED "">
+  <!ELEMENT levels (#PCDATA)>
+  <!ATTLIST levels xmlns CDATA #FIXED "">
+  <!ATTLIST levels divisor CDATA #REQUIRED>
+  <!ATTLIST levels height CDATA #REQUIRED>
+  <!ATTLIST levels width CDATA #REQUIRED>
 ]>
 <!--
   JPEG quantization table created by Dr. Nicolas Robidoux, Senior Research
@@ -47,16 +52,17 @@
       85,  75,  135, 156, 189, 238, 311, 418
     </levels>
   </table>
-<!--
-  If you want to use a different quantization table for Chroma (say), just add 
+  <!--
+    If you want to use a different quantization table for Chroma, for example,
+    just add:
 
-  <table slot="1" alias="chroma">
-    <description>Chroma Quantization Table</description>
-    INSERT 64 POSITIVE INTEGERS HERE, COMMA-SEPARATED
-    </levels>
-  </table>
+    <table slot="1" alias="chroma">
+      <description>Chroma Quantization Table</description>
+      INSERT 64 POSITIVE INTEGERS HERE, COMMA-SEPARATED
+      </levels>
+    </table>
 
-  here (but outside of these comments).
--->
+    here (but outside of these comments).
+  -->
 </quantization-tables>
 
