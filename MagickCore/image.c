@@ -3225,6 +3225,8 @@ MagickExport MagickBooleanType SetImageRegionMask(Image *image,
   }
   if (SyncImagePixelCache(image,exception) == MagickFalse)
     return(MagickFalse);
+  if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
+    return(MagickFalse);
   status=MagickTrue;
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)

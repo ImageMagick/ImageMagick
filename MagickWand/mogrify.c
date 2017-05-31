@@ -2600,12 +2600,13 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             (void) SyncImageSettings(mogrify_info,*image,exception);
             if (*option == '+')
               {
-                (void) SetImageRegionMask(*image,ReadPixelMask,
+                (void) SetImageRegionMask(*image,WritePixelMask,
                   (const RectangleInfo *) NULL,exception);
                 break;
               }
             (void) ParseGravityGeometry(*image,argv[i+1],&geometry,exception);
-            (void) SetImageRegionMask(*image,ReadPixelMask,&geometry,exception);
+            (void) SetImageRegionMask(*image,WritePixelMask,&geometry,
+              exception);
             break;
           }
         if (LocaleCompare("render",option+1) == 0)

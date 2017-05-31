@@ -3109,12 +3109,12 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           if (*option == '+')
             {
-              (void) SetImageRegionMask(_image,ReadPixelMask,
+              (void) SetImageRegionMask(_image,WritePixelMask,
                 (const RectangleInfo *) NULL,_exception);
               break;
             }
           (void) ParseGravityGeometry(_image,arg1,&geometry,_exception);
-          (void) SetImageRegionMask(_image,ReadPixelMask,&geometry,_exception);
+          (void) SetImageRegionMask(_image,WritePixelMask,&geometry,_exception);
           break;
         }
       if (LocaleCompare("remap",option+1) == 0)
