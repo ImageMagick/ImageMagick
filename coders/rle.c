@@ -383,12 +383,12 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         case SkipLinesOp:
         {
           operand=ReadBlobByte(image);
-          if (opcode == EOF)
+          if (operand == EOF)
             ThrowRLEException(CorruptImageError,"UnexpectedEndOfFile");
           if (opcode & 0x40)
             {
               operand=ReadBlobLSBSignedShort(image);
-              if (opcode == EOF)
+              if (operand == EOF)
                 ThrowRLEException(CorruptImageError,"UnexpectedEndOfFile");
             }
           x=0;
@@ -398,7 +398,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         case SetColorOp:
         {
           operand=ReadBlobByte(image);
-          if (opcode == EOF)
+          if (operand == EOF)
             ThrowRLEException(CorruptImageError,"UnexpectedEndOfFile");
           plane=(unsigned char) operand;
           if (plane == 255)
@@ -409,12 +409,12 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         case SkipPixelsOp:
         {
           operand=ReadBlobByte(image);
-          if (opcode == EOF)
+          if (operand == EOF)
             ThrowRLEException(CorruptImageError,"UnexpectedEndOfFile");
           if (opcode & 0x40)
             {
               operand=ReadBlobLSBSignedShort(image);
-              if (opcode == EOF)
+              if (operand == EOF)
                 ThrowRLEException(CorruptImageError,"UnexpectedEndOfFile");
             }
           x+=operand;
@@ -423,12 +423,12 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         case ByteDataOp:
         {
           operand=ReadBlobByte(image);
-          if (opcode == EOF)
+          if (operand == EOF)
             ThrowRLEException(CorruptImageError,"UnexpectedEndOfFile");
           if (opcode & 0x40)
             {
               operand=ReadBlobLSBSignedShort(image);
-              if (opcode == EOF)
+              if (operand == EOF)
                 ThrowRLEException(CorruptImageError,"UnexpectedEndOfFile");
             }
           offset=(ssize_t) (((image->rows-y-1)*image->columns*number_planes)+x*
@@ -459,12 +459,12 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         case RunDataOp:
         {
           operand=ReadBlobByte(image);
-          if (opcode == EOF)
+          if (operand == EOF)
             ThrowRLEException(CorruptImageError,"UnexpectedEndOfFile");
           if (opcode & 0x40)
             {
               operand=ReadBlobLSBSignedShort(image);
-              if (opcode == EOF)
+              if (operand == EOF)
                 ThrowRLEException(CorruptImageError,"UnexpectedEndOfFile");
             }
           pixel=(unsigned char) ReadBlobByte(image);
