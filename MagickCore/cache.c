@@ -2679,8 +2679,6 @@ MagickPrivate const Quantum *GetVirtualPixelsFromNexus(const Image *image,
   virtual_nexus=AcquirePixelCacheNexus(1);
   if (virtual_nexus == (NexusInfo **) NULL)
     {
-      if (virtual_nexus != (NexusInfo **) NULL)
-        virtual_nexus=DestroyPixelCacheNexus(virtual_nexus,1);
       (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
         "UnableToGetCacheNexus","`%s'",image->filename);
       return((const Quantum *) NULL);
