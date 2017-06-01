@@ -1497,7 +1497,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
       encoding != (char *) NULL ? encoding : "none",
       draw_info->encoding != (char *) NULL ? draw_info->encoding : "none",
       draw_info->pointsize);
-  flags=FT_LOAD_NO_BITMAP;
+  flags=FT_LOAD_DEFAULT;
   if (draw_info->text_antialias == MagickFalse)
     flags|=FT_LOAD_TARGET_MONO;
   else

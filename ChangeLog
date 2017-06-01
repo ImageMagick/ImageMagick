@@ -1,3 +1,7 @@
+2017-06-02  7.0.5-10 Cristy  <quetzlzacatenango@image...>
+  * Fix choppy bitmap font rendering (reference
+    https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=32071).
+
 2017-05-28  7.0.5-9 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.5-9, GIT revision 20113:8b67333:20170528.
 
