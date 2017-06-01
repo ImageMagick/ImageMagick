@@ -1778,7 +1778,7 @@ MagickExport void ImageToCustomStream(const ImageInfo *image_info,Image *image,
   if (magick_info == (const MagickInfo *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
-        MissingDelegateError,"NoDecodeDelegateForThisImageFormat","`%s'",
+        MissingDelegateError,"NoEncodeDelegateForThisImageFormat","`%s'",
         image->magick);
       blob_info=DestroyImageInfo(blob_info);
       return;
@@ -2176,7 +2176,7 @@ MagickExport void ImagesToCustomStream(const ImageInfo *image_info,
   if (magick_info == (const MagickInfo *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
-        MissingDelegateError,"NoDecodeDelegateForThisImageFormat","`%s'",
+        MissingDelegateError,"NoEncodeDelegateForThisImageFormat","`%s'",
         images->magick);
       blob_info=DestroyImageInfo(blob_info);
       return;
