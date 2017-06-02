@@ -1583,7 +1583,7 @@ MagickExport void GetColorTuple(const PixelInfo *pixel,
     Convert pixel to rgb() or cmyk() color.
   */
   color=(*pixel);
-  if (color.depth > 8 && IsSVGCompliant(pixel) != MagickFalse)
+  if ((color.depth > 8) && (IsSVGCompliant(pixel) != MagickFalse))
     color.depth=8;
   (void) ConcatenateMagickString(tuple,CommandOptionToMnemonic(
     MagickColorspaceOptions,(ssize_t) color.colorspace),MagickPathExtent);
