@@ -2240,6 +2240,50 @@ MagickExport const char *GetImageProperty(const Image *image,
         }
       break;
     }
+    case 'H':
+    case 'h':
+    {
+      if (LocaleNCompare("hex:",property,4) == 0)
+        {
+          MagickPixelPacket
+            pixel;
+
+          GetMagickPixelPacket(image,&pixel);
+          fx_info=AcquireFxInfo(image,property+6);
+          status=FxEvaluateChannelExpression(fx_info,RedChannel,0,0,&alpha,
+            exception);
+          pixel.red=(MagickRealType) QuantumRange*alpha;
+          status&=FxEvaluateChannelExpression(fx_info,GreenChannel,0,0,&alpha,
+            exception);
+          pixel.green=(MagickRealType) QuantumRange*alpha;
+          status&=FxEvaluateChannelExpression(fx_info,BlueChannel,0,0,&alpha,
+            exception);
+          pixel.blue=(MagickRealType) QuantumRange*alpha;
+          status&=FxEvaluateChannelExpression(fx_info,OpacityChannel,0,0,&alpha,
+            exception);
+          pixel.opacity=(MagickRealType) QuantumRange*(1.0-alpha);
+          if (image->colorspace == CMYKColorspace)
+            {
+              status&=FxEvaluateChannelExpression(fx_info,BlackChannel,0,0,
+                &alpha,exception);
+              pixel.index=(MagickRealType) QuantumRange*alpha;
+            }
+          fx_info=DestroyFxInfo(fx_info);
+          if (status != MagickFalse)
+            {
+              char
+                hex[MaxTextExtent],
+                name[MaxTextExtent];
+
+              (void) QueryMagickColorname(image,&pixel,SVGCompliance,name,
+                exception);
+              GetColorTuple(&pixel,MagickTrue,hex);
+              (void) SetImageProperty((Image *) image,property,hex);
+            }
+          break;
+        }
+      break;
+    }
     case 'I':
     case 'i':
     {
