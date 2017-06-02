@@ -66,6 +66,7 @@
 #include "MagickCore/string_.h"
 #include "MagickCore/thread-private.h"
 #include "MagickCore/transform.h"
+#include "MagickCore/transform-private.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2110,11 +2111,11 @@ MagickPrivate MagickBooleanType TransformImage(Image **image,
     }
   if (image_geometry == (const char *) NULL)
     return(MagickTrue);
-
   /*
     Scale image to a user specified size.
   */
-  (void) ParseRegionGeometry(transform_image,image_geometry,&geometry,exception);
+  (void) ParseRegionGeometry(transform_image,image_geometry,&geometry,
+    exception);
   if ((transform_image->columns == geometry.width) &&
       (transform_image->rows == geometry.height))
     return(MagickTrue);

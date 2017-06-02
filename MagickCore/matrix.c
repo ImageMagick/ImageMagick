@@ -47,6 +47,7 @@
 #include "MagickCore/exception-private.h"
 #include "MagickCore/image-private.h"
 #include "MagickCore/matrix.h"
+#include "MagickCore/matrix-private.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/pixel-accessor.h"
 #include "MagickCore/pixel-private.h"
