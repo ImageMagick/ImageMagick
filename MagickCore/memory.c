@@ -252,7 +252,7 @@ MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
   memory=NULL;
   size=count*quantum;
   alignment=CACHE_LINE_SIZE;
-  if (size > (GetMagickPageSize() >> 1))
+  if (size > (size_t) (GetMagickPageSize() >> 1))
     alignment=GetMagickPageSize();
   extent=AlignedExtent(size,CACHE_LINE_SIZE);
   if ((size == 0) || (extent < size))
