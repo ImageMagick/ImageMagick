@@ -1632,10 +1632,11 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
         /*
           Rasterize the glyph.
         */
-        transparent_fill=(draw_info->fill.alpha == TransparentAlpha) &&
+        transparent_fill=((draw_info->fill.alpha == TransparentAlpha) &&
           (draw_info->fill_pattern == (Image *) NULL) &&
           (draw_info->stroke.alpha == TransparentAlpha) &&
-          (draw_info->stroke_pattern == (Image *) NULL);
+          (draw_info->stroke_pattern == (Image *) NULL)) ? MagickTrue :
+          MagickFalse;
         image_view=AcquireAuthenticCacheView(image,exception);
         r=bitmap->bitmap.buffer;
         for (y=0; y < (ssize_t) bitmap->bitmap.rows; y++)
