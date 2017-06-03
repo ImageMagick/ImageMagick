@@ -398,7 +398,7 @@ convert rose: -duplicate 29 -virtual-pixel Gray -distort SRT '%[fx:360.0*t/n]' \
   -set delay '%[fx:t == 0 ? 240 : 10]' -loop 0 rose.gif"
 </pre>
 
-<p>The color-escape <code>%[pixel:]</code> is evaluated once per image and per color channel in that image (<a href="command-line-options.html#channel">-channel</a> is ignored), The values generated are then converted into a color string (a named color or hex color value).  The symbols <code>i</code> and <code>j</code> are set to zero, and <code>s</code> and <code>t</code> refer to each successively current image and index.</p>
+<p>The color-escape <code>%[pixel:]</code> or <code>%[hex:]</code> is evaluated once per image and per color channel in that image (<a href="command-line-options.html#channel">-channel</a> is ignored), The values generated are then converted into a color string (a named color or hex color value).  The symbols <code>i</code> and <code>j</code> are set to zero, and <code>s</code> and <code>t</code> refer to each successively current image and index.</p>
 
 </div>
   <footer class="magick-footer">
