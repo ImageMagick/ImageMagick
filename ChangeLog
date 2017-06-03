@@ -1,4 +1,7 @@
 2017-06-02  6.9.8-9 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 6.9.8-9, GIT revision 11625:91bb35e:20170602.
+
+2017-06-02  6.9.8-9 Cristy  <quetzlzacatenango@image...>
   * Fix choppy bitmap font rendering (reference
     https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=32071).
   * Add support for 'hex:' property.
