@@ -1,4 +1,7 @@
-2017-06=01  7.0.4-10 Glenn Randers-Pehrson <glennrp@image...>
+2017-06-02  7.0.5-10 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.5-10, GIT revision 20155:38ebc02:20170602.
+
+2017-06-01  7.0.5-10 Glenn Randers-Pehrson <glennrp@image...>
   * Removed experimental zxIF chunk support; the proposal is dead.
 
 2017-06-01  7.0.5-10 Cristy  <quetzlzacatenango@image...>
