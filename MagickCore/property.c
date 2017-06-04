@@ -3652,7 +3652,7 @@ RestoreMSCWarning
 
               (void) QueryColorname(image,&pixel,SVGCompliance,name,exception);
               GetColorTuple(&pixel,MagickTrue,hex);
-              AppendString2Text(hex);
+              AppendString2Text(hex+1);
             }
           continue;
         }
