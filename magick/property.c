@@ -2278,7 +2278,7 @@ MagickExport const char *GetImageProperty(const Image *image,
               (void) QueryMagickColorname(image,&pixel,SVGCompliance,name,
                 exception);
               GetColorTuple(&pixel,MagickTrue,hex);
-              (void) SetImageProperty((Image *) image,property,hex);
+              (void) SetImageProperty((Image *) image,property,hex+1);
             }
           break;
         }
