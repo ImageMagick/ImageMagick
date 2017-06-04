@@ -4436,11 +4436,11 @@ MagickExport ssize_t WriteBlob(Image *image,const size_t length,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  assert(data != (const unsigned char *) NULL);
   assert(image->blob != (BlobInfo *) NULL);
   assert(image->blob->type != UndefinedStream);
   if (length == 0)
     return(0);
+  assert(data != (const unsigned char *) NULL);
   count=0;
   p=data;
   switch (image->blob->type)
