@@ -3365,8 +3365,9 @@ MagickExport ssize_t ReadBlob(Image *image,const size_t length,void *data)
     }
     case CustomStream:
     {
-      count=image->blob->custom_stream->reader(q,length,
-        image->blob->custom_stream->data);
+      if (image->blob->custom_stream->reader != (CustomStreamHandler) NULL)
+        count=image->blob->custom_stream->reader(q,length,
+          image->blob->custom_stream->data);
       break;
     }
   }
@@ -5312,8 +5313,9 @@ MagickExport ssize_t WriteBlob(Image *image,const size_t length,
     }
     case CustomStream:
     {
-      count=image->blob->custom_stream->writer((const unsigned char *) data,
-        length,image->blob->custom_stream->data);
+      if (image->blob->custom_stream->writer != (CustomStreamHandler) NULL)
+        count=image->blob->custom_stream->writer((const unsigned char *) data,
+          length,image->blob->custom_stream->data);
       break;
     }
   }
