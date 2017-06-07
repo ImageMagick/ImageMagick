@@ -325,9 +325,9 @@ MagickExport MagickBooleanType ClutImage(Image *image,const Image *clut_image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(clut_image != (Image *) NULL);
   assert(clut_image->signature == MagickCoreSignature);
-  if( SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
+  if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
-  if( (IsGrayColorspace(image->colorspace) != MagickFalse) &&
+  if ((IsGrayColorspace(image->colorspace) != MagickFalse) &&
       (IsGrayColorspace(clut_image->colorspace) == MagickFalse))
     (void) SetImageColorspace(image,sRGBColorspace,exception);
   clut_map=(PixelInfo *) AcquireQuantumMemory(MaxMap+1UL,sizeof(*clut_map));
