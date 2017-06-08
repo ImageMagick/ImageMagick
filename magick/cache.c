@@ -1822,7 +1822,7 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
       cache_epoch=time((time_t *) NULL);
       cache_timelimit=GetMagickResourceLimit(TimeResource);
     }
-  if ((cache_timelimit != MagickResourceInfinity) &&
+  else if ((cache_timelimit != MagickResourceInfinity) &&
       ((MagickSizeType) (time((time_t *) NULL)-cache_epoch) >= cache_timelimit))
     {
 #if defined(ECANCELED)
