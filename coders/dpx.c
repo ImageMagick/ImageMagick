@@ -1117,7 +1117,11 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
     }
   for ( ; offset < (MagickOffsetType) dpx.file.image_offset; offset++)
-    (void) ReadBlobByte(image);
+    if (ReadBlobByte(image) == EOF)
+      break;
+  if (EOFBlob(image) != MagickFalse)
+    ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
+      image->filename);
   if (image_info->ping != MagickFalse)
     {
       (void) CloseBlob(image);
@@ -1142,7 +1146,8 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
            offset=SeekBlob(image,data_offset,SEEK_SET);
          else
            for ( ; offset < data_offset; offset++)
-             (void) ReadBlobByte(image);
+             if (ReadBlobByte(image) == EOF)
+               break;
           if (offset != data_offset)
             ThrowReaderException(CorruptImageError,"UnableToReadImageData");
        }
