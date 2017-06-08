@@ -1158,7 +1158,8 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
            offset=SeekBlob(image,data_offset,SEEK_SET);
          else
            for ( ; offset < data_offset; offset++)
-             (void) ReadBlobByte(image);
+             if (ReadBlobByte(image) == EOF)
+               break;
           if (offset != data_offset)
             ThrowReaderException(CorruptImageError,"UnableToReadImageData");
        }
