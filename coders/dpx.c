@@ -1126,10 +1126,11 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
     }
   for ( ; offset < (MagickOffsetType) dpx.file.image_offset; offset++)
-    (void) ReadBlobByte(image);
-  /*
-    Read DPX image header.
-  */
+    if (ReadBlobByte(image) == EOF)
+      break;
+  if (EOFBlob(image) != MagickFalse)
+    ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
+      image->filename);
   if (image_info->ping != MagickFalse)
     {
       (void) CloseBlob(image);
