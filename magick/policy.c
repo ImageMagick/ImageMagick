@@ -153,7 +153,7 @@ static MagickBooleanType
 %
 %  A description of each parameter follows:
 %
-%    o filename: the font file name.
+%    o filename: the policy configuration file name.
 %
 %    o exception: return any errors or warnings in this structure.
 %
