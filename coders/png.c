@@ -535,7 +535,7 @@ static SemaphoreInfo
   portable, we use ASCII numbers like this, not characters.
 */
 
-/* until registration of eXIf */
+/* until registration of eXIf use exIf */
 static const png_byte mng_exIf[5]={101, 120,  73, 102, (png_byte) '\0'};
 
 /* after registration of eXIf */
@@ -1886,13 +1886,27 @@ static int read_user_chunk_callback(png_struct *ping, png_unknown_chunkp chunk)
         }
       p=GetStringInfoDatum(profile);
 
-      /* Initialize profile with "Exif\0\0" */
-      *p++ ='E';
-      *p++ ='x';
-      *p++ ='i';
-      *p++ ='f';
-      *p++ ='\0';
-      *p++ ='\0';
+      if (*p != 'E')
+        {
+          /* Initialize profile with "Exif\0\0" if it is not
+             already present by accident
+          */
+          *p++ ='E';
+          *p++ ='x';
+          *p++ ='i';
+          *p++ ='f';
+          *p++ ='\0';
+          *p++ ='\0';
+        }
+      else
+        {
+          if (p[1] != 'x' || p[2] != 'i' || p[3] != 'f' ||
+              p[4] != '\0' || p[5] != '\0')
+            {
+              /* Chunk is malformed */
+              return(-1);
+            }
+         }
 
       /* copy chunk->data to profile */
       s=chunk->data;
@@ -1912,23 +1926,23 @@ static int read_user_chunk_callback(png_struct *ping, png_unknown_chunkp chunk)
       chunk->name[2] ==  65 &&
       chunk->name[3] == 103)
     {
-     /* recognized vpAg */
+      /* recognized vpAg */
 
-     if (chunk->size != 9)
-       return(-1); /* Error return */
+      if (chunk->size != 9)
+        return(-1); /* Error return */
 
-     if (chunk->data[8] != 0)
-       return(0);  /* ImageMagick requires pixel units */
+      if (chunk->data[8] != 0)
+        return(0);  /* ImageMagick requires pixel units */
 
-     image=(Image *) png_get_user_chunk_ptr(ping);
+      image=(Image *) png_get_user_chunk_ptr(ping);
 
-     image->page.width=(size_t) ((chunk->data[0] << 24) |
-        (chunk->data[1] << 16) | (chunk->data[2] << 8) | chunk->data[3]);
+      image->page.width=(size_t) ((chunk->data[0] << 24) |
+         (chunk->data[1] << 16) | (chunk->data[2] << 8) | chunk->data[3]);
 
-     image->page.height=(size_t) ((chunk->data[4] << 24) |
-        (chunk->data[5] << 16) | (chunk->data[6] << 8) | chunk->data[7]);
+      image->page.height=(size_t) ((chunk->data[4] << 24) |
+         (chunk->data[5] << 16) | (chunk->data[6] << 8) | chunk->data[7]);
 
-     return(1);
+      return(1);
     }
 
   /* caNv */
@@ -1937,26 +1951,26 @@ static int read_user_chunk_callback(png_struct *ping, png_unknown_chunkp chunk)
       chunk->name[2] ==  78 &&
       chunk->name[3] == 118)
     {
-     /* recognized caNv */
+      /* recognized caNv */
 
-     if (chunk->size != 16)
-       return(-1); /* Error return */
+      if (chunk->size != 16)
+        return(-1); /* Error return */
 
-     image=(Image *) png_get_user_chunk_ptr(ping);
+      image=(Image *) png_get_user_chunk_ptr(ping);
 
-     image->page.width=(size_t) ((chunk->data[0] << 24) |
-        (chunk->data[1] << 16) | (chunk->data[2] << 8) | chunk->data[3]);
+      image->page.width=(size_t) ((chunk->data[0] << 24) |
+         (chunk->data[1] << 16) | (chunk->data[2] << 8) | chunk->data[3]);
 
-     image->page.height=(size_t) ((chunk->data[4] << 24) |
-        (chunk->data[5] << 16) | (chunk->data[6] << 8) | chunk->data[7]);
+      image->page.height=(size_t) ((chunk->data[4] << 24) |
+         (chunk->data[5] << 16) | (chunk->data[6] << 8) | chunk->data[7]);
 
-     image->page.x=(size_t) ((chunk->data[8] << 24) |
-        (chunk->data[9] << 16) | (chunk->data[10] << 8) | chunk->data[11]);
+      image->page.x=(size_t) ((chunk->data[8] << 24) |
+         (chunk->data[9] << 16) | (chunk->data[10] << 8) | chunk->data[11]);
 
-     image->page.y=(size_t) ((chunk->data[12] << 24) |
-        (chunk->data[13] << 16) | (chunk->data[14] << 8) | chunk->data[15]);
+      image->page.y=(size_t) ((chunk->data[12] << 24) |
+         (chunk->data[13] << 16) | (chunk->data[14] << 8) | chunk->data[15]);
 
-     return(1);
+      return(1);
     }
 
   return(0); /* Did not recognize */
