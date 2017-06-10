@@ -118,12 +118,6 @@
 <p>After you write your MagickCore program, compile it like this:</p>
 
 <pre>
-cc -o core core.c `pkg-config --cflags --libs MagickCore`
-</pre>
-
-<p>Note, if your instance of ImageMagick does not support modules but does include support for the WMF image format, you'll need to link with the <a href="magick-wand.html">MagickWand</a> library instead (since it is a dependency of the WMF image format):</p>
-
-<pre>
 cc -o core core.c `pkg-config --cflags --libs MagickWand`
 </pre>
 
@@ -139,7 +133,7 @@ export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
 #include &lt;stdlib.h>
 #include &lt;string.h>
 #include &lt;time.h>
-#include &lt;magick/MagickCore.h>
+#include &lt;MagickCore/MagickCore.h>
 
 int main(int argc,char **argv)
 {
@@ -178,7 +172,7 @@ int main(int argc,char **argv)
   thumbnails=NewImageList();
   while ((image=RemoveFirstImageFromList(&amp;images)) != (Image *) NULL)
   {
-    resize_image=ResizeImage(image,106,80,LanczosFilter,1.0,exception);
+    resize_image=ResizeImage(image,106,80,LanczosFilter,exception);
     if (resize_image == (Image *) NULL)
       MagickError(exception-&gt;severity,exception-&gt;reason,exception-&gt;description);
     (void) AppendImageToList(&amp;thumbnails,resize_image);
@@ -188,7 +182,7 @@ int main(int argc,char **argv)
     Write the image thumbnail.
   */
   (void) strcpy(thumbnails-&gt;filename,argv[2]);
-  WriteImage(image_info,thumbnails);
+  WriteImage(image_info,thumbnails,exception);
   /*
     Destroy the image thumbnail and exit.
   */
@@ -203,7 +197,7 @@ int main(int argc,char **argv)
 <pre class="pre-scrollable">#include &lt;stdio.h>
 #include &lt;stdlib.h>
 #include &lt;math.h>
-#include &lt;magick/MagickCore.h>
+#include &lt;MagickCore/MagickCore.h>
 
 static MagickBooleanType SigmoidalContrast(ImageView *contrast_view,
   const ssize_t y,const int id,void *context)
@@ -337,4 +331,4 @@ int main(int argc,char **argv)
 </div>
 </body>
 </html>
-<!-- Magick Cache 2nd June 2017 20:19 -->
+<!-- Magick Cache 10th June 2017 13:15 -->
