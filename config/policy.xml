@@ -75,5 +75,5 @@
   <!-- <policy domain="path" rights="none" pattern="@*" /> -->
   <!-- <policy domain="cache" name="memory-map" value="anonymous"/> -->
   <!-- <policy domain="cache" name="synchronize" value="True"/> -->
-  <policy domain="cache" name="shared-secret" value="passphrase" stealth="true"/>
+  <!-- <policy domain="cache" name="shared-secret" value="passphrase" stealth="true"/> -->
 </policymap>

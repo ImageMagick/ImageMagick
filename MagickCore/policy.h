@@ -59,7 +59,8 @@ extern MagickExport const PolicyInfo
 
 extern MagickExport MagickBooleanType
   IsRightsAuthorized(const PolicyDomain,const PolicyRights,const char *),
-  ListPolicyInfo(FILE *,ExceptionInfo *);
+  ListPolicyInfo(FILE *,ExceptionInfo *),
+  SetMagickSecurityPolicy(const char *,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

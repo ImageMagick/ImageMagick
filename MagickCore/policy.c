@@ -52,6 +52,7 @@
 #include "MagickCore/option.h"
 #include "MagickCore/policy.h"
 #include "MagickCore/policy-private.h"
+#include "MagickCore/resource-private.h"
 #include "MagickCore/semaphore.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/token.h"
@@ -1036,4 +1037,53 @@ MagickPrivate void PolicyComponentTerminus(void)
     policy_cache=DestroyLinkedList(policy_cache,DestroyPolicyElement);
   UnlockSemaphoreInfo(policy_semaphore);
   RelinquishSemaphoreInfo(&policy_semaphore);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  S e t M a g i c k S e c u r i t y P o l i c y                              %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SetMagickSecurityPolicy() sets the ImageMagick security policy.  It returns
+%  MagickFalse if the policy is already set or if the policy does not parse.
+%
+%  The format of the SetMagickSecurityPolicy method is:
+%
+%      MagickBooleanType SetMagickSecurityPolicy(const char *policy,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o policy: the security policy in the XML format.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport MagickBooleanType SetMagickSecurityPolicy(const char *policy,
+  ExceptionInfo *exception)
+{
+  PolicyInfo
+    *p;
+  
+  MagickBooleanType
+    status;
+  
+  LockSemaphoreInfo(policy_semaphore);
+  ResetLinkedListIterator(policy_cache);
+  p=(PolicyInfo *) GetNextValueInLinkedList(policy_cache);
+  if ((p == (PolicyInfo *) NULL) || (p->domain != UndefinedPolicyDomain))
+    {
+      UnlockSemaphoreInfo(policy_semaphore);
+      return(MagickFalse);
+    }
+  UnlockSemaphoreInfo(policy_semaphore);
+  status=LoadPolicyCache(policy_cache,policy,"[user-policy]",0,exception);
+  ResourceComponentGenesis();
+  return(status);
 }
