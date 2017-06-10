@@ -2819,6 +2819,43 @@ WandExport MagickBooleanType MagickSetSamplingFactors(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k S e t S e c u r i t y P o l i c y                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickSetSecurityPolicy() sets the ImageMagick security policy.  It returns
+%  MagickFalse if the policy is already set or if the policy does not parse.
+%
+%  The format of the MagickSetAntialias method is:
+%
+%      MagickBooleanType MagickSetAntialias(MagickWand *wand,
+%        const char *policy)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+%    o policy: the security policy in the XML format.
+%
+*/
+WandExport MagickBooleanType MagickSetSecurityPolicy(MagickWand *wand,
+  const char *policy)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickWandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
+  return(SetMagickSecurityPolicy(policy,wand->exception));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k S e t S i z e                                                 %
 %                                                                             %
 %                                                                             %

@@ -60,7 +60,8 @@ extern MagickExport const PolicyInfo
 extern MagickExport MagickBooleanType
   IsRightsAuthorized(const PolicyDomain,const PolicyRights,const char *),
   ListPolicyInfo(FILE *,ExceptionInfo *),
-  PolicyComponentGenesis(void);
+  PolicyComponentGenesis(void),
+  SetMagickSecurityPolicy(const char *,ExceptionInfo *);
 
 extern MagickExport void
   PolicyComponentTerminus(void);

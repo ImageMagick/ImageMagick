@@ -1,3 +1,8 @@
+2017-06-10  6.9.8-10 Cristy  <quetzlzacatenango@image...>
+  * Introduce SetMagickSecurityPolicy() (MagickCore) and
+    MagickSetSecurityPolicy() (MagickWand) to set the ImageMagick security
+    policy (reference https://github.com/ImageMagick/ImageMagick/issues/407).
+
 2017-06-02  6.9.8-9 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 6.9.8-9, GIT revision 11625:91bb35e:20170602.
 

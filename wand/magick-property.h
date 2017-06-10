@@ -111,6 +111,7 @@ extern WandExport MagickBooleanType
   MagickSetResolution(MagickWand *,const double,const double),
   MagickSetResourceLimit(const ResourceType type,const MagickSizeType limit),
   MagickSetSamplingFactors(MagickWand *,const size_t,const double *),
+  MagickSetSecurityPolicy(MagickWand *,const char *),
   MagickSetSize(MagickWand *,const size_t,const size_t),
   MagickSetSizeOffset(MagickWand *,const size_t,const size_t,const ssize_t),
   MagickSetType(MagickWand *,const ImageType);
