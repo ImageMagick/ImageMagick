@@ -1068,20 +1068,21 @@ MagickExport MagickBooleanType SetMagickSecurityPolicy(const char *policy,
 {
   PolicyInfo
     *p;
-  
+
   MagickBooleanType
     status;
-  
+
   LockSemaphoreInfo(policy_semaphore);
   ResetLinkedListIterator(policy_cache);
   p=(PolicyInfo *) GetNextValueInLinkedList(policy_cache);
-  if ((p == (PolicyInfo *) NULL) || (p->domain != UndefinedPolicyDomain))
+  if ((p != (PolicyInfo *) NULL) && (p->domain != UndefinedPolicyDomain))
     {
       UnlockSemaphoreInfo(policy_semaphore);
       return(MagickFalse);
     }
   UnlockSemaphoreInfo(policy_semaphore);
   status=LoadPolicyCache(policy_cache,policy,"[user-policy]",0,exception);
-  ResourceComponentGenesis();
-  return(status);
+  if (status == MagickFalse)
+    return(MagickFalse);
+  return(ResourceComponentGenesis());
 }
