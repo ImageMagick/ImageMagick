@@ -30,7 +30,6 @@ extern "C" {
 static const char
   *ZeroConfigurationPolicy = \
 "<policymap> \
-  <policy domain=\"system\" name=\"precision\" value=\"6\"/> \
 </policymap>";
 #endif
 
