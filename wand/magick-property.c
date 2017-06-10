@@ -2844,7 +2844,7 @@ WandExport MagickBooleanType MagickSetSecurityPolicy(MagickWand *wand,
   const char *policy)
 {
   assert(wand != (MagickWand *) NULL);
-  assert(wand->signature == MagickWandSignature);
+  assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
 
