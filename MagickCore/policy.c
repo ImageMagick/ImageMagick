@@ -1077,7 +1077,7 @@ MagickExport MagickBooleanType SetMagickSecurityPolicy(const char *policy,
   LockSemaphoreInfo(policy_semaphore);
   ResetLinkedListIterator(policy_cache);
   p=(PolicyInfo *) GetNextValueInLinkedList(policy_cache);
-  if ((p == (PolicyInfo *) NULL) || (p->domain != UndefinedPolicyDomain))
+  if ((p != (PolicyInfo *) NULL) && (p->domain != UndefinedPolicyDomain))
     {
       UnlockSemaphoreInfo(policy_semaphore);
       return(MagickFalse);
