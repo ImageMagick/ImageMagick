@@ -2091,6 +2091,8 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
       }
       case 'm':
       {
+        if (LocaleCompare("magnify",option+1) == 0)
+          break;
         if (LocaleCompare("map",option+1) == 0)
           {
             if (*option == '+')
