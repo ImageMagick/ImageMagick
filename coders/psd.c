@@ -891,12 +891,23 @@ static inline void SetPSDPixel(Image *image,const size_t channels,
 {
   if (image->storage_class == PseudoClass)
     {
-      if (packet_size == 1)
-        SetPixelIndex(image,ScaleQuantumToChar(pixel),q);
+      PixelInfo
+        *color;
+
+      if (type == 0)
+        {
+          if (packet_size == 1)
+            SetPixelIndex(image,ScaleQuantumToChar(pixel),q);
+          else
+            SetPixelIndex(image,ScaleQuantumToShort(pixel),q);
+        }
+      color=image->colormap+(ssize_t) ConstrainColormapIndex(image,
+        GetPixelIndex(image,q),exception);
+      if ((type == 0) && (channels > 1))
+        return;
       else
-        SetPixelIndex(image,ScaleQuantumToShort(pixel),q);
-      SetPixelViaPixelInfo(image,image->colormap+(ssize_t)
-        ConstrainColormapIndex(image,GetPixelIndex(image,q),exception),q);
+        color->alpha=(MagickRealType) pixel;
+      SetPixelViaPixelInfo(image,color,q);
       return;
     }
   switch (type)
@@ -914,18 +925,12 @@ static inline void SetPSDPixel(Image *image,const size_t channels,
     }
     case 1:
     {
-      if (image->storage_class == PseudoClass)
-        SetPixelAlpha(image,pixel,q);
-      else
-        SetPixelGreen(image,pixel,q);
+      SetPixelGreen(image,pixel,q);
       break;
     }
     case 2:
     {
-      if (image->storage_class == PseudoClass)
-        SetPixelAlpha(image,pixel,q);
-      else
-        SetPixelBlue(image,pixel,q);
+      SetPixelBlue(image,pixel,q);
       break;
     }
     case 3:
