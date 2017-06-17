@@ -3112,7 +3112,9 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
   (void) WriteBlobMSBShort(image,psd_info.version);  /* version */
   for (i=1; i <= 6; i++)
     (void) WriteBlobByte(image, 0);  /* 6 bytes of reserved */
-  if (SetImageGray(image,&image->exception) != MagickFalse)
+  /* When the image has a color profile it won't be converted to gray scale */
+  if ((GetImageProfile(image,"icc") == (StringInfo *) NULL) &&
+      (SetImageGray(image,&image->exception) != MagickFalse))
     num_channels=(image->matte != MagickFalse ? 2UL : 1UL);
   else
     if ((image_info->type != TrueColorType) && (image_info->type !=
