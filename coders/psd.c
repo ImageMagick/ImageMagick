@@ -871,12 +871,23 @@ static inline void SetPSDPixel(Image *image,const size_t channels,
 {
   if (image->storage_class == PseudoClass)
     {
-      if (packet_size == 1)
-        SetPixelIndex(indexes+x,ScaleQuantumToChar(pixel));
+      PixelPacket
+        *color;
+
+      if (type == 0)
+        {
+          if (packet_size == 1)
+            SetPixelIndex(indexes+x,ScaleQuantumToChar(pixel));
+          else
+            SetPixelIndex(indexes+x,ScaleQuantumToShort(pixel));
+        }
+      color=image->colormap+(ssize_t) ConstrainColormapIndex(image,
+        GetPixelIndex(indexes+x));
+      if ((type == 0) && (channels > 1))
+        return;
       else
-        SetPixelIndex(indexes+x,ScaleQuantumToShort(pixel));
-      SetPixelRGBO(q,image->colormap+(ssize_t)
-        ConstrainColormapIndex(image,GetPixelIndex(indexes+x)));
+        SetPixelAlpha(color,pixel);
+      SetPixelRGBO(q,color);
       return;
     }
   switch (type)
@@ -890,7 +901,7 @@ static inline void SetPSDPixel(Image *image,const size_t channels,
     case 0:
     {
       SetPixelRed(q,pixel);
-      if (channels == 1 || type == -2)
+      if (channels < 3 || type == -2)
         {
           SetPixelGreen(q,GetPixelRed(q));
           SetPixelBlue(q,GetPixelRed(q));
@@ -899,18 +910,12 @@ static inline void SetPSDPixel(Image *image,const size_t channels,
     }
     case 1:
     {
-      if (image->storage_class == PseudoClass)
-        SetPixelAlpha(q,pixel);
-      else
-        SetPixelGreen(q,pixel);
+      SetPixelGreen(q,pixel);
       break;
     }
     case 2:
     {
-      if (image->storage_class == PseudoClass)
-        SetPixelAlpha(q,pixel);
-      else
-        SetPixelBlue(q,pixel);
+      SetPixelBlue(q,pixel);
       break;
     }
     case 3:
