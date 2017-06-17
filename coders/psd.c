@@ -903,15 +903,13 @@ static inline void SetPSDPixel(Image *image,const size_t channels,
   {
     case -1:
     {
-      SetPixelAlpha(image, pixel,q);
+      SetPixelAlpha(image,pixel,q);
       break;
     }
     case -2:
     case 0:
     {
       SetPixelRed(image,pixel,q);
-      if (channels == 1 || type == -2)
-        SetPixelGray(image,pixel,q);
       break;
     }
     case 1:
