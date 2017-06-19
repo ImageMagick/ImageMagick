@@ -165,16 +165,16 @@ static Image *ReadSCREENSHOTImage(const ImageInfo *image_info,
       screen->columns=(size_t) GetDeviceCaps(hDC,HORZRES);
       screen->rows=(size_t) GetDeviceCaps(hDC,VERTRES);
       screen->storage_class=DirectClass;
+      if (image == (Image *) NULL)
+        image=screen;
+      else
+        AppendImageToList(&image,screen);
       status=SetImageExtent(screen,screen->columns,screen->rows);
       if (status == MagickFalse)
         {
           InheritException(exception,&image->exception);
           return(DestroyImageList(image));
         }
-      if (image == (Image *) NULL)
-        image=screen;
-      else
-        AppendImageToList(&image,screen);
 
       bitmapDC=CreateCompatibleDC(hDC);
       if (bitmapDC == (HDC) NULL)
