@@ -30828,6 +30828,7 @@ if test "$have_zlib" = 'yes'; then
 $as_echo "#define ZLIB_DELEGATE 1" >>confdefs.h
 
   CFLAGS="$ZLIB_CFLAGS $CFLAGS"
+  LIBS="$ZLIB_LIBS $LIBS"
 fi
 
  if test "$have_zlib" = 'yes'; then
