@@ -1904,6 +1904,7 @@ static int read_user_chunk_callback(png_struct *ping, png_unknown_chunkp chunk)
               p[4] != '\0' || p[5] != '\0')
             {
               /* Chunk is malformed */
+              profile=DestroyStringInfo(profile);
               return(-1);
             }
          }
@@ -1916,6 +1917,8 @@ static int read_user_chunk_callback(png_struct *ping, png_unknown_chunkp chunk)
       error_info=(PNGErrorInfo *) png_get_error_ptr(ping);
       (void) SetImageProfile(image,"exif",profile,
         error_info->exception);
+
+      profile=DestroyStringInfo(profile);
 
       return(1);
     }
@@ -2290,6 +2293,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       /*
         PNG image is corrupt.
       */
+      printf("  destroy_read_struct\n");
       png_destroy_read_struct(&ping,&ping_info,&end_info);
 
 #ifdef IMPNG_SETJMP_NOT_THREAD_SAFE
