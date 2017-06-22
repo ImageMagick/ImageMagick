@@ -1673,6 +1673,7 @@ fi
 if test "$have_zlib" = 'yes'; then
   AC_DEFINE(ZLIB_DELEGATE,1,Define if you have ZLIB library)
   CFLAGS="$ZLIB_CFLAGS $CFLAGS"
+  LIBS="$ZLIB_LIBS $LIBS"
 fi
 
 AM_CONDITIONAL(ZLIB_DELEGATE, test "$have_zlib" = 'yes')

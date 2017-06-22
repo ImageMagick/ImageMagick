@@ -4519,7 +4519,7 @@ MAGICK_PATCHLEVEL_VERSION=1
 
 MAGICK_VERSION=7.0.6-1
 
-MAGICK_GIT_REVISION=20195:9caa8b0:20170611
+MAGICK_GIT_REVISION=20211:8ca3583:20170622
 
 
 # Substitute library versioning
@@ -30828,6 +30828,7 @@ if test "$have_zlib" = 'yes'; then
 $as_echo "#define ZLIB_DELEGATE 1" >>confdefs.h
 
   CFLAGS="$ZLIB_CFLAGS $CFLAGS"
+  LIBS="$ZLIB_LIBS $LIBS"
 fi
 
  if test "$have_zlib" = 'yes'; then

@@ -278,12 +278,12 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         p=colormap;
         for (i=0; i < (ssize_t) number_colormaps; i++)
           for (x=0; x < (ssize_t) map_length; x++)
-	  {
+          {
             *p++=(unsigned char) ScaleQuantumToChar(ScaleShortToQuantum(
               ReadBlobLSBShort(image)));
             if (EOFBlob(image) != MagickFalse)
               ThrowRLEException(CorruptImageError,"UnexpectedEndOfFile");
-	  }
+          }
       }
     if ((flags & 0x08) != 0)
       {
