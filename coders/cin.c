@@ -710,6 +710,8 @@ static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         User defined data.
       */
+      if (cin.file.user_length > GetBlobSize(image))
+        ThrowReaderException(CorruptImageError,"ImproperImageHeader");
       profile=BlobToStringInfo((const void *) NULL,cin.file.user_length);
       if (profile == (StringInfo *) NULL)
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
@@ -822,6 +824,7 @@ ModuleExport size_t RegisterCINImage(void)
   entry->encoder=(EncodeImageHandler *) WriteCINImage;
   entry->magick=(IsImageFormatHandler *) IsCIN;
   entry->adjoin=MagickFalse;
+  entry->seekable_stream=MagickTrue;
   entry->description=ConstantString("Cineon Image File");
   entry->module=ConstantString("CIN");
   (void) RegisterMagickInfo(entry);
