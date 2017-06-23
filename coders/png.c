@@ -118,7 +118,7 @@
 #define eXIf_SUPPORTED
 */
 
-/* Experimental; define one or both of these:
+/* Experimental; use this until eXIf chunk is approved:
 #define exIf_SUPPORTED
 */
 
@@ -2293,7 +2293,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       /*
         PNG image is corrupt.
       */
-      printf("  destroy_read_struct\n");
       png_destroy_read_struct(&ping,&ping_info,&end_info);
 
 #ifdef IMPNG_SETJMP_NOT_THREAD_SAFE
