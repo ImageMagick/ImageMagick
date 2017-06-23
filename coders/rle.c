@@ -739,7 +739,7 @@ ModuleExport size_t RegisterRLEImage(void)
   entry=AcquireMagickInfo("RLE","RLE","Utah Run length encoded image");
   entry->decoder=(DecodeImageHandler *) ReadRLEImage;
   entry->magick=(IsImageFormatHandler *) IsRLE;
-  entry->flags^=CoderBlobSupportFlag;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
   entry->flags^=CoderAdjoinFlag;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
