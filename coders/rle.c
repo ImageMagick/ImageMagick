@@ -266,6 +266,14 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (void) ReadBlobByte(image);
     if (EOFBlob(image) != MagickFalse)
       ThrowRLEException(CorruptImageError,"UnexpectedEndOfFile");
+    if (image->alpha_trait != UndefinedPixelTrait)
+      number_planes++;
+    number_pixels=(MagickSizeType) image->columns*image->rows;
+    if ((GetBlobSize(image) == 0) || ((((MagickSizeType) number_pixels*
+         number_planes*bits_per_pixel/8)/GetBlobSize(image)) > 254.0))
+      ThrowRLEException(CorruptImageError,"InsufficientImageDataInFile")
+    if (((MagickSizeType) number_colormaps*map_length) > GetBlobSize(image))
+      ThrowRLEException(CorruptImageError,"InsufficientImageDataInFile")
     if (number_colormaps != 0)
       {
         /*
@@ -321,9 +329,6 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Allocate RLE pixels.
     */
-    if (image->alpha_trait != UndefinedPixelTrait)
-      number_planes++;
-    number_pixels=(MagickSizeType) image->columns*image->rows;
     number_planes_filled=(number_planes % 2 == 0) ? number_planes :
       number_planes+1;
     if ((number_pixels*number_planes_filled) != (size_t) (number_pixels*
@@ -734,6 +739,7 @@ ModuleExport size_t RegisterRLEImage(void)
   entry=AcquireMagickInfo("RLE","RLE","Utah Run length encoded image");
   entry->decoder=(DecodeImageHandler *) ReadRLEImage;
   entry->magick=(IsImageFormatHandler *) IsRLE;
+  entry->flags^=CoderBlobSupportFlag;
   entry->flags^=CoderAdjoinFlag;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
