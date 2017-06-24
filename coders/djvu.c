@@ -605,6 +605,7 @@ static Image *ReadOneDJVUImage(LoadContext* lc,const int pagenum,
                                 if (tag == 0) break;
                                 ddjvu_message_pop(lc->context);
                         } while ((message = ddjvu_message_peek(lc->context)));
+               if (tag == 0) break;
         } while (!ddjvu_page_decoding_done(lc->page));
 
         ddjvu_document_get_pageinfo(lc->document, pagenum, &info);
@@ -875,7 +876,8 @@ static Image *ReadDJVUImage(const ImageInfo *image_info,
         break;
   }
   djvu_close_lc(lc);
-  (void) CloseBlob(images);
+  if (images != (Image *) NULL)
+    (void) CloseBlob(images);
   if (image != (Image *) NULL)
     image=DestroyImageList(image);
 
