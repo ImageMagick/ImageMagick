@@ -1115,6 +1115,8 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           StringInfo
             *profile;
 
+           if (dpx.file.user_size > GetBlobSize(image))
+             ThrowReaderException(CorruptImageError,"ImproperImageHeader");
            profile=BlobToStringInfo((const void *) NULL,
              dpx.file.user_size-sizeof(dpx.user.id));
            if (profile == (StringInfo *) NULL)
@@ -1338,6 +1340,7 @@ ModuleExport size_t RegisterDPXImage(void)
   entry->decoder=(DecodeImageHandler *) ReadDPXImage;
   entry->encoder=(EncodeImageHandler *) WriteDPXImage;
   entry->magick=(IsImageFormatHandler *) IsDPX;
+  entry->seekable_stream=MagickTrue;
   entry->adjoin=MagickFalse;
   entry->description=ConstantString("SMPTE 268M-2003 (DPX 2.0)");
   entry->note=ConstantString(DPXNote);
