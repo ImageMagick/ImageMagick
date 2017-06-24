@@ -1074,6 +1074,9 @@ MagickExport MagickBooleanType SetMagickSecurityPolicy(const char *policy,
   MagickBooleanType
     status;
   
+  assert(exception != (ExceptionInfo *) NULL);
+  if (policy == (const char *) NULL)
+    return(MagickFalse);
   if (IsPolicyCacheInstantiated(exception) == MagickFalse)
     return(MagickFalse);
   LockSemaphoreInfo(policy_semaphore);
