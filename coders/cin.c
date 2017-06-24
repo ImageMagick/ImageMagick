@@ -42,8 +42,7 @@
 %
 %
 */
-
-
+
 /*
   Include declarations.
 */
@@ -71,8 +70,7 @@
 #include "magick/string_.h"
 #include "magick/string-private.h"
 #include "magick/module.h"
-
-
+
 /*
   Typedef declaration.
 */
@@ -225,15 +223,13 @@ typedef struct CINInfo
   CINUserInfo
     user;
 } CINInfo;
-
-
+
 /*
   Forward declaractions.
 */
 static MagickBooleanType
   WriteCINImage(const ImageInfo *,Image *);
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -267,8 +263,7 @@ static MagickBooleanType IsCIN(const unsigned char *magick,const size_t length)
     return(MagickTrue);
   return(MagickFalse);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -830,8 +825,7 @@ ModuleExport size_t RegisterCINImage(void)
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -855,8 +849,7 @@ ModuleExport void UnregisterCINImage(void)
 {
   (void) UnregisterMagickInfo("CINEON");
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
