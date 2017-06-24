@@ -817,7 +817,7 @@ ModuleExport size_t RegisterCINImage(void)
   entry->decoder=(DecodeImageHandler *) ReadCINImage;
   entry->encoder=(EncodeImageHandler *) WriteCINImage;
   entry->magick=(IsImageFormatHandler *) IsCIN;
-  entry->flags|=CoderDecoderSeekableStreamFlag
+  entry->flags|=CoderDecoderSeekableStreamFlag;
   entry->flags^=CoderAdjoinFlag;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
