@@ -623,7 +623,10 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       packet_size=4;
       count=ReadBlob(image,packet_size*image->colors,dib_colormap);
       if (count != (ssize_t) (packet_size*image->colors))
-        ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
+        {
+          dib_colormap=(unsigned char *) RelinquishMagickMemory(dib_colormap);
+          ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
+        }
       p=dib_colormap;
       for (i=0; i < (ssize_t) image->colors; i++)
       {
