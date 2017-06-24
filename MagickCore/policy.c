@@ -1074,6 +1074,8 @@ MagickExport MagickBooleanType SetMagickSecurityPolicy(const char *policy,
   MagickBooleanType
     status;
   
+  if (IsPolicyCacheInstantiated(exception) == MagickFalse)
+    return((PolicyInfo *) NULL);
   LockSemaphoreInfo(policy_semaphore);
   ResetLinkedListIterator(policy_cache);
   p=(PolicyInfo *) GetNextValueInLinkedList(policy_cache);
