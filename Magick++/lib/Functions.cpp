@@ -1,7 +1,7 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
 // Copyright Bob Friesenhahn, 1999, 2002, 2003
-// Copyright Dirk Lemstra 2014-2015
+// Copyright Dirk Lemstra 2014-2017
 //
 // Simple C++ function wrappers for ImageMagick equivalents
 //
@@ -50,6 +50,18 @@ MagickPPExport void Magick::InitializeMagick(const char *path_)
 MagickPPExport void Magick::SetRandomSeed(const unsigned long seed)
 {
   MagickCore::SetRandomSecretKey(seed);
+}
+
+MagickPPExport bool Magick::SetSecurityPolicy(const std::string &policy_)
+{
+  bool
+    status;
+
+  GetPPException;
+  status=MagickCore::SetMagickSecurityPolicy(policy_.c_str(),
+    exceptionInfo) != MagickFalse;
+  ThrowPPException(false);
+  return(status);
 }
 
 MagickPPExport void Magick::TerminateMagick(void)

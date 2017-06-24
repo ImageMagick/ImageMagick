@@ -1,7 +1,7 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
 // Copyright Bob Friesenhahn, 1999, 2000, 2001, 2003
-// Copyright Dirk Lemstra 2014
+// Copyright Dirk Lemstra 2014-2017
 //
 // Simple C++ function wrappers for often used or otherwise
 // inconvenient ImageMagick equivalents
@@ -30,6 +30,9 @@ namespace Magick
 
   // Seed a new sequence of pseudo-random numbers
   MagickPPExport void SetRandomSeed(const unsigned long seed);
+
+  // Set the ImageMagick security policy.
+  MagickPPExport bool SetSecurityPolicy(const std::string &policy_);
 
   // C library initialization routine
   MagickPPExport void TerminateMagick();
