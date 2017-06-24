@@ -893,7 +893,7 @@ static Image *ReadMATImage(const ImageInfo *image_info,ExceptionInfo *exception)
      Read MATLAB image.
    */
   quantum_info=(QuantumInfo *) NULL;
-  clone_info=CloneImageInfo(image_info);
+  clone_info=(ImageInfo *) NULL;
   if (ReadBlob(image,124,(unsigned char *) &MATLAB_HDR.identific) != 124)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   if (strncmp(MATLAB_HDR.identific,"MATLAB",6) != 0)
@@ -946,6 +946,7 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     if(EOFBlob(image)) break;
     filepos += MATLAB_HDR.ObjectSize + 4 + 4;
 
+    clone_info=CloneImageInfo(image_info);
     image2 = image;
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
     if(MATLAB_HDR.DataType == miCOMPRESSED)
