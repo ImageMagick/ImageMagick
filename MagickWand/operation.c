@@ -1965,7 +1965,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           if (IfNormalOp)
             (void) ClipImage(_image,_exception);
           else /* "+mask" remove the write mask */
-            (void) SetImageMask(_image,ReadPixelMask,(Image *) NULL,_exception);
+            (void) SetImageMask(_image,WritePixelMask,(Image *) NULL,_exception);
           break;
         }
       if (LocaleCompare("clip-mask",option+1) == 0)

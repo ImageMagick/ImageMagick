@@ -1073,7 +1073,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             (void) SyncImageSettings(mogrify_info,*image,exception);
             if (*option == '+')
               {
-                (void) SetImageMask(*image,ReadPixelMask,(Image *) NULL,
+                (void) SetImageMask(*image,WritePixelMask,(Image *) NULL,
                   exception);
                 break;
               }
