@@ -2353,8 +2353,8 @@ MagickExport MagickRealType GetPixelInfoIntensity(
 %    o pixel: Specifies a pointer to a Quantum structure.
 %
 */
-MagickExport MagickRealType GetPixelIntensity(const Image *magick_restrict image,
-  const Quantum *magick_restrict pixel)
+MagickExport MagickRealType GetPixelIntensity(
+  const Image *magick_restrict image,const Quantum *magick_restrict pixel)
 {
   MagickRealType
     blue,
