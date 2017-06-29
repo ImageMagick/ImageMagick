@@ -81,8 +81,8 @@ h6, .h6 {
 
 
 /*
- * Blog name and description
- */
+  Name and description.
+*/
 
 .magick-header {
   padding-bottom: 1.25rem;
@@ -107,8 +107,8 @@ h6, .h6 {
 
 
 /*
- * Main column and sidebar layout
- */
+ Main column and sidebar layout
+*/
 
 /* Sidebar modules for boxing content */
 .sidebar-module {
@@ -137,8 +137,8 @@ h6, .h6 {
 
 
 /*
- * posts
- */
+ Posts
+*/
 
 .magick-post {
   margin-bottom: 4rem;
