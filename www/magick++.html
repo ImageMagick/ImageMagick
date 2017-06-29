@@ -25,14 +25,13 @@
   <meta name="distribution" content="Global"/>
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-  <link rel="canonical" href="https://www.imagemagick.org/script/magick++.html"/>
-  <link rel="icon" href="../images/wand.png"/>
-  <link rel="shortcut icon" href="../images/wand.ico"/>
-  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700"   />
-  <link rel="stylesheet" type="text/css" href="css/magick.css"/>
+  <link rel="canonical" href="https://www.imagemagick.org/script/magick++.html" />
+  <link rel="icon" href="../images/wand.png" />
+  <link rel="shortcut icon" href="../images/wand.ico" />
+  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700" />
+  <link rel="stylesheet" href="css/magick.css" />
 </head>
 <body>
-<div class="main">
 <div class="magick-masthead">
   <div class="container">
     <script async="async" src="https://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
@@ -43,19 +42,20 @@
     <script>
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
-    <nav class="magick-nav">
-      <a class="magick-nav-item " href="../index.html">Home</a>
-      <a class="magick-nav-item " href="download.html">Download</a>
-      <a class="magick-nav-item " href="command-line-tools.html">Tools</a>
-      <a class="magick-nav-item " href="command-line-processing.html">Command-line</a>
-      <a class="magick-nav-item " href="resources.html">Resources</a>
-      <a class="magick-nav-item " href="develop.html">Develop</a>
-      <a class="magick-nav-item " href="https://www.imagemagick.org/script/search.php">Search</a>
-      <a class="magick-nav-item float-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
+    <nav class="nav magick-nav">
+      <a class="nav-link " href="../index.html">Home</a>
+      <a class="nav-link " href="download.html">Download</a>
+      <a class="nav-link " href="command-line-tools.html">Tools</a>
+      <a class="nav-link " href="command-line-processing.html">Command-line</a>
+      <a class="nav-link " href="resources.html">Resources</a>
+      <a class="nav-link " href="develop.html">Develop</a>
+      <a class="nav-link " href="https://www.imagemagick.org/script/search.php">Search</a>
+      <a class="nav-link float-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
 </div>
 <div class="container">
+<div class="magick-main">
 <div class="magick-header">
 <p class="text-center"><a href="magick++.html#documentation">Documentation</a> • <a href="magick++.html#get">Obtaining Magick++</a> • <a href="magick++.html#install">Installation</a> • <a href="magick++.html#bugs">Reporting Bugs</a></p>
 
@@ -80,24 +80,24 @@ PerlMagick. STL-compatible template versions of ImageMagick's
 list-style operations are provided so that operations may be
 performed on multiple images stored in STL containers. 
 </p>
-<h2 class="magick-header">Documentation</h2>
+<h2 class="magick-post-title">Documentation</h2>
 <a id="documentation"></a>
 <p>Detailed <a href="api/magick++-classes.html">documentation</a> is
 provided for all Magick++ classes, class methods, and template
 functions which comprise the API.  See a <a href="https://www.imagemagick.org/Magick++/tutorial/Magick++_tutorial.pdf">  Gentle Introduction to Magick++</a> for an introductory tutorial to Magick++.  We include the <a href="https://www.imagemagick.org/Magick++/tutorial/Magick++_tutorial.odt" >source</a> if you want to correct, enhance, or expand the tutorial.</p>
-<h2 class="magick-header">Obtaining Magick++</h2>
+<h2 class="magick-post-title">Obtaining Magick++</h2>
 <a id="get"></a>
 <p>Magick++ is included as part of <a href="../index.html">ImageMagick</a>
 source releases and may be retrieved via <a href="https://www.imagemagick.org/script/mirror.html">ftp</a>
 or <a href="http://git.imagemagick.org/repos/ImageMagick/Magick++">GIT</a>.
 </p>
-<h2 class="magick-header">Installation</h2>
+<h2 class="magick-post-title">Installation</h2>
 <a id="install"></a>
 <p>Once you have the Magick++ sources available, follow these detailed
 <a href="../Magick++/Install.html">installation instructions</a> for UNIX and
 Windows. 
 </p>
-<h2 class="magick-header">Usage</h2>
+<h2 class="magick-post-title">Usage</h2>
 <p>A helper script named <code>Magick++-config</code> is installed
 under Unix which assists with recalling compilation options required
 to compile and link programs which use Magick++. For example, the
@@ -105,31 +105,31 @@ following command compiles and links the source file <code>demo.cpp</code>
 to produce the executable <code>demo</code> (notice that quotes are
 backward quotes): 
 </p>
-<pre>
+<pre><code>
 c++ `Magick++-config --cxxflags --cppflags` -O2 -o demo demo.cpp \
   `Magick++-config --ldflags --libs`
-</pre>
+</code></pre>
 <p>Set the <code>PKG_CONFIG_PATH</code> environment variable if ImageMagick is not in your default system path:</p>
 
-<pre>
+<pre><code>
 export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
-</pre>
+</code></pre>
 
 <p>Windows users may get started by manually editing a project file
 for one of the Magick++ demo programs. 
 </p>
 <p>Note, under Windows (and possibly the Mac) it may be necessary to initialize the ImageMagick library prior to using the Magick++ library. This initialization is performed by passing the path to the ImageMagick DLLs (assumed to be in the same directory as your program) to the InitializeMagick() function call. This is commonly performed by providing the path to your program (argv[0]) as shown in the following example: </p>
-<pre>
+<pre><code>
 int main( int argc, char ** argv) {
   InitializeMagick(*argv);
   ...
-</pre>
+</code></pre>
 <p>This initialization step is not required under Unix, Linux,
 Cygwin, or any other operating environment that supports the notion
 of <var>installing</var> ImageMagick in a known location.  </p>
 <p>Here is a example program that utilizes the Magick++ API to get you started, <a href="https://www.imagemagick.org/source/magick++.cpp">magick++.cpp</a>. It reads an image, crops it, and writes it to disk in the PNG image format.</p>
 
-<pre class="pre-scrollable">
+<pre class="pre-scrollable"><code>
 #include &lt;Magick++.h> 
 #include &lt;iostream> 
 
@@ -161,8 +161,8 @@ int main(int argc,char **argv)
     } 
   return 0; 
 }
-</pre>
-<h2 class="magick-header">Reporting Bugs</h2>
+</code></pre>
+<h2 class="magick-post-title">Reporting Bugs</h2>
 <a id="bugs"></a>
 <p>Questions regarding usage should be directed to or to report any bugs go to
 <a href="https://www.imagemagick.org/discourse-server/viewforum.html?f=23">Magick++ bug tracking forum</a>.

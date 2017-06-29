@@ -25,14 +25,13 @@
   <meta name="distribution" content="Global"/>
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-  <link rel="canonical" href="https://www.imagemagick.org/script/security-policy.html"/>
-  <link rel="icon" href="../images/wand.png"/>
-  <link rel="shortcut icon" href="../images/wand.ico"/>
-  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700"   />
-  <link rel="stylesheet" type="text/css" href="css/magick.css"/>
+  <link rel="canonical" href="https://www.imagemagick.org/script/security-policy.html" />
+  <link rel="icon" href="../images/wand.png" />
+  <link rel="shortcut icon" href="../images/wand.ico" />
+  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700" />
+  <link rel="stylesheet" href="css/magick.css" />
 </head>
 <body>
-<div class="main">
 <div class="magick-masthead">
   <div class="container">
     <script async="async" src="https://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
@@ -43,19 +42,20 @@
     <script>
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
-    <nav class="magick-nav">
-      <a class="magick-nav-item " href="../index.html">Home</a>
-      <a class="magick-nav-item " href="download.html">Download</a>
-      <a class="magick-nav-item " href="command-line-tools.html">Tools</a>
-      <a class="magick-nav-item " href="command-line-processing.html">Command-line</a>
-      <a class="magick-nav-item " href="resources.html">Resources</a>
-      <a class="magick-nav-item " href="develop.html">Develop</a>
-      <a class="magick-nav-item " href="https://www.imagemagick.org/script/search.php">Search</a>
-      <a class="magick-nav-item float-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
+    <nav class="nav magick-nav">
+      <a class="nav-link " href="../index.html">Home</a>
+      <a class="nav-link " href="download.html">Download</a>
+      <a class="nav-link " href="command-line-tools.html">Tools</a>
+      <a class="nav-link " href="command-line-processing.html">Command-line</a>
+      <a class="nav-link " href="resources.html">Resources</a>
+      <a class="nav-link " href="develop.html">Develop</a>
+      <a class="nav-link " href="https://www.imagemagick.org/script/search.php">Search</a>
+      <a class="nav-link float-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
 </div>
 <div class="container">
+<div class="magick-main">
 <div class="magick-header">
 <p class="text-center"><a href="security-policy.html#policy">Security Policy </a> • <a href="security-policy.html#zero-configuration">Zero Configuration Security Policy</a> • <a href="security-policy.html#other">Other Security Considerations</a></p>
 
@@ -64,7 +64,7 @@
 
 <p>As an example, suppose you download an image from the internet and unbeknownst to you its been crafted to generate a 20000 by 20000 pixel image. ImageMagick attempts to allocate enough resources (memory, disk) and your system will likely deny the resource request and exit. However, its also possible that your computer might be temporarily sluggish or unavailable or ImageMagick may abort. To prevent such a scenario, you can set limits in the <code>policy.xml</code> configuration file. You may ask why ImageMagick does not already include reasonable limits? Simply because what is reasonable in your environment, might not be reasonable to someone else. For example, you may have ImageMagick sandboxed where security is not a concern, whereas another user may use ImageMagick to process images on their publically accessible website.  Or ImageMagick is running on a host with 1TB of memory whereas another ImageMagick instance is running on an iPhone. By policy, permitting giga-pixel image processing on the large memory host makes sense, not so much for the resource constrained iPhone. If you utilize ImageMagick from a public website, you may want to increase security by preventing usage of the MVG or HTTPS coders. Only you can decide what are reasonable limits taking in consideration your environment. We provide this policy with reasonable limits and encourage you to modify it to suit your local environment:</p>
 
-<pre class="pre-scrollable">
+<pre class="pre-scrollable"><code>
 &lt;policymap>
   &lt;policy domain="resource" name="temporary-path" value="/tmp"/>
   &lt;policy domain="resource" name="memory" value="256MiB"/>
@@ -83,37 +83,37 @@
   &lt;policy domain="delegate" rights="none" pattern="HTTPS" />  <!--  prevent 'curl' program from reading HTTPS URL's -->
   &lt;policy domain="path" rights="none" pattern="@*"/>  <!-- indirect reads not permitted -->
 &lt;/policymap>
-</pre>
+</code></pre>
 
 <p>Since we process multiple simultaneous sessions, we do not want any one session consuming all the available memory.With this policy, large images are cached to disk. If the image is too large and exceeds the pixel cache disk limit, the program exits. In addition, we place a time limit to prevent any run-away processing tasks. If any one image has a width or height that exceeds 8192 pixels, an exception is thrown and processing stops. As of ImageMagick 7.0.1-8 and 6.9.4-6, you can prevent the use of any delegate or all delegates (set the pattern to "*"). Note, prior to these releases, use a domain of <code>coder</code> to prevent delegate usage (e.g. <code>domain="coder" rights="none" pattern="HTTPS"</code>). The policy also prevents indirect reads. If you want to, for example, read text from a file (e.g. <code>caption:@myCaption.txt</code>), you'll need to disable the <code>path</code> policy.</p>
 
 <p>Here is what you can expect when you restrict the HTTPS coder, for example:</p>
 
-<pre>
+<pre><code>
 $ convert https://www.imagemagick.org/images/wizard.png wizard.jpg
 convert: not authorized `HTTPS'
 convert: unable to open file: No such file or directory
 convert: no images defined `wizard.jpg'
-</pre>
+</code></pre>
 
 <p>As of ImageMagick version 6.9.7-9, you can conveniently deny access to all delegates and coders except for a small subset of proven web-safe image types.  For example,</p>
 
-<pre>
+<pre><code>
   &lt;policy domain="delegate" rights="none" pattern="*" />
   &lt;policy domain="coder" rights="none" pattern="*" />
   &lt;policy domain="coder" rights="read | write" pattern="{GIF,JPEG,PNG,WEBP}" />
-</pre>
+</code></pre>
 
-<p>As of ImageMagick 6.9.8-4, you can allocate the pixel cache and some internal buffers with anonymous memory mapping rather than from heap.  As a consequence, the pixels are initialized to zero.  You can also securely delete any temporary files for increased security.  The value is the number of times to shred (replace its content with random data before deleting) a temporary file.  For example,</p>
-<pre>
+<p>As of ImageMagick 6.9.8-4, you can allocate the pixel cache and some internal buffers with anonymous memory mapping rather than from heap.  As a consequence, the pixels are initialized to zero.  You can also securely delete any temporary files for increased security.  The value is the number of times to shred (replace its content with random data) before deleting a temporary file.  For example,</p>
+<pre><code>
   &lt;policy domain="system" name="memory-map" value="anonymous"/>
   &lt;policy domain="cache" name="memory-map" value="anonymous"/>
   &lt;policy domain="system" name="shred" value="1"/>
-</pre>
+</code></pre>
 
 <p>You can verify your policy changes are in effect with this command:</p>
 
-<pre class="pre-scrollable">
+<pre class="pre-scrollable"><code>
 -> identify -list policy
 Path: ImageMagick/policy.xml
   Policy: Resource
@@ -159,25 +159,28 @@ Path: ImageMagick/policy.xml
 Path: [built-in]
   Policy: Undefined
     rights: None 
-</pre>
+</code></pre>
 <p>Notice the <code>Cache</code> policy is not listed due to the <code>stealth</code> property.</p>
+
+<p>As of ImageMagick 6.9.8-10, you can programmatically set the ImageMagick security policy with SetMagickSecurityPolicy() (MagickCore) or MagickSetSecurityPolicy() (MagickWand).</p>
 
 <p>For additional details about resource limits and the policy configuration file, read <a href="resources.html">Resources</a> and <a href="architecture.html">Architecture</a>.</p>
 
-<h2 class="magick-header"><a id="zero-configuration"></a>Zero Configuration Security Policy</h2>
+<h2 class="magick-post-title"><a id="zero-configuration"></a>Zero Configuration Security Policy</h2>
 
 <p>A zero configuration build of ImageMagick does not permit external configurat
 ion files.  To define your security policy, you must instead edit the <code>magick/policy-private.h</code> source module, add your policy statements, and then build the ImageMagick distribution.  Here is an example zero configuration security policy:</p>
 
-<pre>
+<pre><code>
 static const char
   *ZeroConfigurationPolicy = \
 "&lt;policymap> \
   &lt;policy domain=\"coder\" rights=\"none\" pattern=\"MVG\"/> \
 &lt;/policymap>";
-</pre>
+</code></pre>
 
-<h2 class="magick-header"><a id="other"></a>Other Security Considerations</h2>
+
+<h2 class="magick-post-title"><a id="other"></a>Other Security Considerations</h2>
 
 <p>If you spot a security flaw in ImageMagick, <a href="https://www.imagemagick.org/script/contact.php">contact us</a> and select Security Issue as the issue.  Alternatively, post your concern to <a href="https://github.com/ImageMagick/ImageMagick/issues">GitHub</a>.  Be sure to include how to reproduce the security flaw and a link to any images needed to reproduce the flaw.</p>
 

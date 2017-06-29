@@ -25,14 +25,13 @@
   <meta name="distribution" content="Global"/>
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-  <link rel="canonical" href="https://www.imagemagick.org/script/stream.html"/>
-  <link rel="icon" href="../images/wand.png"/>
-  <link rel="shortcut icon" href="../images/wand.ico"/>
-  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700"   />
-  <link rel="stylesheet" type="text/css" href="css/magick.css"/>
+  <link rel="canonical" href="https://www.imagemagick.org/script/stream.html" />
+  <link rel="icon" href="../images/wand.png" />
+  <link rel="shortcut icon" href="../images/wand.ico" />
+  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700" />
+  <link rel="stylesheet" href="css/magick.css" />
 </head>
 <body>
-<div class="main">
 <div class="magick-masthead">
   <div class="container">
     <script async="async" src="https://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
@@ -43,47 +42,48 @@
     <script>
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
-    <nav class="magick-nav">
-      <a class="magick-nav-item " href="../index.html">Home</a>
-      <a class="magick-nav-item " href="download.html">Download</a>
-      <a class="magick-nav-item " href="command-line-tools.html">Tools</a>
-      <a class="magick-nav-item " href="command-line-processing.html">Command-line</a>
-      <a class="magick-nav-item " href="resources.html">Resources</a>
-      <a class="magick-nav-item " href="develop.html">Develop</a>
-      <a class="magick-nav-item " href="https://www.imagemagick.org/script/search.php">Search</a>
-      <a class="magick-nav-item float-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
+    <nav class="nav magick-nav">
+      <a class="nav-link " href="../index.html">Home</a>
+      <a class="nav-link " href="download.html">Download</a>
+      <a class="nav-link " href="command-line-tools.html">Tools</a>
+      <a class="nav-link " href="command-line-processing.html">Command-line</a>
+      <a class="nav-link " href="resources.html">Resources</a>
+      <a class="nav-link " href="develop.html">Develop</a>
+      <a class="nav-link " href="https://www.imagemagick.org/script/search.php">Search</a>
+      <a class="nav-link float-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
 </div>
 <div class="container">
+<div class="magick-main">
 <div class="magick-header">
 <p class="text-center"><a href="stream.html#usage">Example Usage</a> • <a href="stream.html#options">Option Summary</a></p>
 
 <p class="lead magick-description"><code>Stream</code> is a lightweight tool to stream one or more pixel components of the image or portion of the image to your choice of storage formats.  It writes the pixel components as they are read from the input image a row at a time making <code>stream</code> desirable when working with large images or when you require raw pixel components.</p>
 
-<h2 class="magick-header"><a id="usage"></a>Example Usage</h2>
+<h2 class="magick-post-title"><a id="usage"></a>Example Usage</h2>
 
 <p>We list a few examples of the <code>stream</code> command here to illustrate its usefulness and ease of use. To get started, lets stream the red, green, blue components of a 640x480 JPEG image to disk as unsigned characters:</p>
 
-<pre>
+<pre><code>
 stream -map rgb -storage-type char image.jpg pixels.dat
 display -depth 8 -size 640x480 rgb:pixels.dat
-</pre>
+</code></pre>
 
 <p>Here we extract a 100x100 region from a TIFF image in the grayscale format as doubles:</p>
 
-<pre>
+<pre><code>
 stream -map i -storage-type double -extract 100x100+30+40 image.tif gray.raw
-</pre>
+</code></pre>
 
 <p>You can also associate the region to extract with the image filename:</p>
 
-<pre>
+<pre><code>
 stream -map i -storage-type double 'image.tif[100x100+30+40]' gray.raw
-</pre>
+</code></pre>
 
 
-<h2 class="magick-header"><a id="options"></a>Option Summary</h2>
+<h2 class="magick-post-title"><a id="options"></a>Option Summary</h2>
 
 <p>The <code>stream</code> command recognizes these options.  Click on an option to get more details about how that option works.</p>
 

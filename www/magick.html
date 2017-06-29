@@ -25,14 +25,13 @@
   <meta name="distribution" content="Global"/>
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-  <link rel="canonical" href="https://www.imagemagick.org/script/magick.html"/>
-  <link rel="icon" href="../images/wand.png"/>
-  <link rel="shortcut icon" href="../images/wand.ico"/>
-  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700"   />
-  <link rel="stylesheet" type="text/css" href="css/magick.css"/>
+  <link rel="canonical" href="https://www.imagemagick.org/script/magick.html" />
+  <link rel="icon" href="../images/wand.png" />
+  <link rel="shortcut icon" href="../images/wand.ico" />
+  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700" />
+  <link rel="stylesheet" href="css/magick.css" />
 </head>
 <body>
-<div class="main">
 <div class="magick-masthead">
   <div class="container">
     <script async="async" src="https://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
@@ -43,33 +42,34 @@
     <script>
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
-    <nav class="magick-nav">
-      <a class="magick-nav-item " href="../index.html">Home</a>
-      <a class="magick-nav-item " href="download.html">Download</a>
-      <a class="magick-nav-item " href="command-line-tools.html">Tools</a>
-      <a class="magick-nav-item " href="command-line-processing.html">Command-line</a>
-      <a class="magick-nav-item " href="resources.html">Resources</a>
-      <a class="magick-nav-item " href="develop.html">Develop</a>
-      <a class="magick-nav-item " href="https://www.imagemagick.org/script/search.php">Search</a>
-      <a class="magick-nav-item float-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
+    <nav class="nav magick-nav">
+      <a class="nav-link " href="../index.html">Home</a>
+      <a class="nav-link " href="download.html">Download</a>
+      <a class="nav-link " href="command-line-tools.html">Tools</a>
+      <a class="nav-link " href="command-line-processing.html">Command-line</a>
+      <a class="nav-link " href="resources.html">Resources</a>
+      <a class="nav-link " href="develop.html">Develop</a>
+      <a class="nav-link " href="https://www.imagemagick.org/script/search.php">Search</a>
+      <a class="nav-link float-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
 </div>
 <div class="container">
+<div class="magick-main">
 <div class="magick-header">
 <p class="lead magick-description">Use the <code>magick</code> program to convert between image formats as well as resize an image, blur, crop, despeckle, dither, draw on, flip, join, re-sample, and much more.   See <a href="command-line-processing.html">Command Line Processing</a> for advice on how to structure your <code>convert</code> command or see below for example usages of the command.</p>
 
 <p>We list a few examples of the <code>magick</code> command here to illustrate its usefulness and ease of use.  To get started, lets convert an image in the JPEG format to PNG:</p>
 
-<pre>
+<pre><code>
 magick rose.jpg rose.png
-</pre>
+</code></pre>
 
 <p>Next, we reduce the image size before it is written to the PNG format:</p>
 
-<pre>
+<pre><code>
 magick rose.jpg -resize 50% rose.png
-</pre>
+</code></pre>
 
 <ul>
   <a href="../images/rose.jpg">
@@ -83,11 +83,11 @@ magick rose.jpg -resize 50% rose.png
 
 <p>You can combine multiple image-processing operations to produce complex results:</p>
 
-<pre>
+<pre><code>
 magick -size 320x85 canvas:none -font Bookman-DemiItalic -pointsize 72 \
   -draw "text 25,60 \'Magick\'" -channel RGBA -blur 0x6 -fill darkred -stroke magenta \
   -draw "text 20,55 \'Magick\'" fuzzy-magick.png
-</pre>
+</code></pre>
 
 <ul>
   <a href="../images/fuzzy-magick.png"><img src="../images/fuzzy-magick.png" width="320" height="85" alt="fuzzy-magick" /></a>
@@ -95,23 +95,23 @@ magick -size 320x85 canvas:none -font Bookman-DemiItalic -pointsize 72 \
 
 <p>or here we resize an image with improved quality:</p>
 
-<pre>
+<pre><code>
 magick input.png -colorspace RGB +sigmoidal-contrast 11.6933 \
   -define filter:filter=Sinc -define filter:window=Jinc -define filter:lobes=3 \
   -resize 400% -sigmoidal-contrast 11.6933 -colorspace sRGB output.png');
-</pre>
+</code></pre>
 
 <p>Utilize other command-line <a href="command-line-tools.html">tools</a> from the <code>magick</code> tool.  To invoke this functionality, simply create a symbolic link to the <code>magick</code> tool or specify the tool you want to use as the first argument.  These two methods are equivalent:</p>
 
-<pre>
+<pre><code>
 ln -s magick convert
 convert rose.jpg rose.png
 magick convert rose.jpg rose.png
-</pre>
+</code></pre>
 
 <p>You can find additional examples of using <code>magick</code> in <a href="https://www.imagemagick.org/Usage/">Examples of ImageMagick Usage</a>.</p>
 
-<h2 class="magick-header"><a id="options"></a>Option Summary</h2>
+<h2 class="magick-post-title"><a id="options"></a>Option Summary</h2>
 
 <p>The <code>magick</code> command recognizes these options.  Click on an option to get more details about how that option works.</p>
 

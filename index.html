@@ -25,14 +25,13 @@
   <meta name="distribution" content="Global"/>
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-  <link rel="canonical" href="https://www.imagemagick.org/script/index.html"/>
-  <link rel="icon" href="images/wand.png"/>
-  <link rel="shortcut icon" href="images/wand.ico"/>
-  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700"   />
-  <link rel="stylesheet" type="text/css" href="www/css/magick.css"/>
+  <link rel="canonical" href="https://www.imagemagick.org/script/index.html" />
+  <link rel="icon" href="images/wand.png" />
+  <link rel="shortcut icon" href="images/wand.ico" />
+  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700" />
+  <link rel="stylesheet" href="www/css/magick.css" />
 </head>
 <body>
-<div class="main">
 <div class="magick-masthead">
   <div class="container">
     <script async="async" src="https://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
@@ -43,19 +42,20 @@
     <script>
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
-    <nav class="magick-nav">
-      <a class="magick-nav-item active" href="index.html">Home</a>
-      <a class="magick-nav-item " href="www/download.html">Download</a>
-      <a class="magick-nav-item " href="www/command-line-tools.html">Tools</a>
-      <a class="magick-nav-item " href="www/command-line-processing.html">Command-line</a>
-      <a class="magick-nav-item " href="www/resources.html">Resources</a>
-      <a class="magick-nav-item " href="www/develop.html">Develop</a>
-      <a class="magick-nav-item " href="https://www.imagemagick.org/script/search.php">Search</a>
-      <a class="magick-nav-item float-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
+    <nav class="nav magick-nav">
+      <a class="nav-link active" href="index.html">Home</a>
+      <a class="nav-link " href="www/download.html">Download</a>
+      <a class="nav-link " href="www/command-line-tools.html">Tools</a>
+      <a class="nav-link " href="www/command-line-processing.html">Command-line</a>
+      <a class="nav-link " href="www/resources.html">Resources</a>
+      <a class="nav-link " href="www/develop.html">Develop</a>
+      <a class="nav-link " href="https://www.imagemagick.org/script/search.php">Search</a>
+      <a class="nav-link float-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
 </div>
 <div class="container">
+<div class="magick-main">
 <div class="magick-header">
 <p class="text-center"><a href="index.html#features">Features and Capabilities</a> • <a href="index.html#news">News</a> • <a href="index.html#community">Community</a></p>
 
@@ -68,13 +68,13 @@ Use ImageMagick<sup><a href="http://tarr.uspto.gov/servlet/tarr?regser=serial&am
 
 <p>The ImageMagick development process ensures a stable API and <a href="http://abi-laboratory.pro/tracker/timeline/imagemagick/">ABI</a>. Before each ImageMagick release, we perform a comprehensive security assessment that includes <a href="https://github.com/google/sanitizers/wiki/AddressSanitizer">memory error</a> and <a href="ttps://github.com/google/sanitizers/wiki/ThreadSanitizer">thread data race</a> detection to help prevent security vulnerabilities.</p>
 
-<p>The current release is ImageMagick <a href="https://www.imagemagick.org/script/download.html">6.9.8-8</a>.  It runs on <a href="https://www.imagemagick.org/script/download.html#unix">Linux</a>, <a href="https://www.imagemagick.org/script/download.html#windows">Windows</a>, <a href="https://www.imagemagick.org/script/download.html#macosx">Mac Os X</a>, <a href="https://www.imagemagick.org/script/download.html#iOS">iOS</a>, Android OS, and others.</p>
+<p>The current release is ImageMagick <a href="https://www.imagemagick.org/script/download.html">6.9.8-10</a>.  It runs on <a href="https://www.imagemagick.org/script/download.html#unix">Linux</a>, <a href="https://www.imagemagick.org/script/download.html#windows">Windows</a>, <a href="https://www.imagemagick.org/script/download.html#macosx">Mac Os X</a>, <a href="https://www.imagemagick.org/script/download.html#iOS">iOS</a>, Android OS, and others.</p>
 
 <p>The authoritative ImageMagick web site is <a href="https://www.imagemagick.org/">https://www.imagemagick.org</a>. The authoritative source code repository is <a href="http://git.imagemagick.org/repos/ImageMagick">http://git.imagemagick.org/repos/ImageMagick</a>.  We maintain a source code mirror at <a href="https://gitlab.com/ImageMagick/ImageMagick">GitLab</a> and <a href="https://github.com/ImageMagick/ImageMagick">GitHub</a>.</p>
 
 <p>The design of ImageMagick is an evolutionary process, with the design and implementation efforts serving to influence and guide further progress in the other. With <a href="https://www.imagemagick.org/">ImageMagick version 7</a> we aim to improve the design based on lessons learned from the version 6 implementation.</p>
 
-<h2 class="magick-header"><a id="features"></a>Features and Capabilities</h2>
+<h2 class="magick-post-title"><a id="features"></a>Features and Capabilities</h2>
 <p>Here are just a few <a href="www/examples.html">examples</a> of what ImageMagick can do for you:</p>
 <div class="table-responsive">
 <table class="table table-condensed table-striped">
@@ -209,13 +209,13 @@ Use ImageMagick<sup><a href="http://tarr.uspto.gov/servlet/tarr?regser=serial&am
 </table>
 </div>
 
-<p><a href="https://www.imagemagick.org/Usage/">Examples of ImageMagick Usage</a> shows how to use ImageMagick from the <a href="www/command-line-processing.html">command-line</a> to accomplish any of these tasks and much more. Also, see <a href="http://www.fmwconcepts.com/imagemagick/">Fred's ImageMagick Scripts</a>:  a plethora of command-line scripts that perform geometric transforms, blurs, sharpens, edging, noise removal, and color manipulations. With <a href="https://magick.codeplex.com/">Magick.NET</a>, use ImageMagick without having to install ImageMagick on your server or desktop.</p>
+<p><a href="https://www.imagemagick.org/Usage/">Examples of ImageMagick Usage</a> shows how to use ImageMagick from the <a href="www/command-line-processing.html">command-line</a> to accomplish any of these tasks and much more. Also, see <a href="http://www.fmwconcepts.com/imagemagick/">Fred's ImageMagick Scripts</a>:  a plethora of command-line scripts that perform geometric transforms, blurs, sharpens, edging, noise removal, and color manipulations. With <a href="https://github.com/dlemstra/Magick.NET">Magick.NET</a>, use ImageMagick without having to install ImageMagick on your server or desktop.</p>
 
-<h2 class="magick-header"><a id="news"></a>News</h2>
+<h2 class="magick-post-title"><a id="news"></a>News</h2>
 
 <p>ImageMagick best practices <strong>strongly</strong> encourages you to configure a <a href="www/security-policy.html">security policy</a> that best suits your local environment.</p>
 
-<h2 class="magick-header"><a id="community"></a>Community</h2>
+<h2 class="magick-post-title"><a id="community"></a>Community</h2>
 <p>To join the ImageMagick community, try the <a href="https://www.imagemagick.org/discourse-server/">discourse server</a>.  You can review questions or comments (with informed responses) posed by ImageMagick users or ask your own questions. If you want to contribute image processing algorithms, other enhancements, or bug fixes, open an <a href="https://github.com/ImageMagick/ImageMagick">issue</a>. </p>
 </div>
   <footer class="magick-footer">

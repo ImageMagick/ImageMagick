@@ -25,14 +25,13 @@
   <meta name="distribution" content="Global"/>
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-  <link rel="canonical" href="https://www.imagemagick.org/script/advanced-windows-installation.html"/>
-  <link rel="icon" href="../images/wand.png"/>
-  <link rel="shortcut icon" href="../images/wand.ico"/>
-  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700"   />
-  <link rel="stylesheet" type="text/css" href="css/magick.css"/>
+  <link rel="canonical" href="https://www.imagemagick.org/script/advanced-windows-installation.html" />
+  <link rel="icon" href="../images/wand.png" />
+  <link rel="shortcut icon" href="../images/wand.ico" />
+  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700" />
+  <link rel="stylesheet" href="css/magick.css" />
 </head>
 <body>
-<div class="main">
 <div class="magick-masthead">
   <div class="container">
     <script async="async" src="https://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
@@ -43,25 +42,26 @@
     <script>
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
-    <nav class="magick-nav">
-      <a class="magick-nav-item " href="../index.html">Home</a>
-      <a class="magick-nav-item " href="download.html">Download</a>
-      <a class="magick-nav-item " href="command-line-tools.html">Tools</a>
-      <a class="magick-nav-item " href="command-line-processing.html">Command-line</a>
-      <a class="magick-nav-item " href="resources.html">Resources</a>
-      <a class="magick-nav-item " href="develop.html">Develop</a>
-      <a class="magick-nav-item " href="https://www.imagemagick.org/script/search.php">Search</a>
-      <a class="magick-nav-item float-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
+    <nav class="nav magick-nav">
+      <a class="nav-link " href="../index.html">Home</a>
+      <a class="nav-link " href="download.html">Download</a>
+      <a class="nav-link " href="command-line-tools.html">Tools</a>
+      <a class="nav-link " href="command-line-processing.html">Command-line</a>
+      <a class="nav-link " href="resources.html">Resources</a>
+      <a class="nav-link " href="develop.html">Develop</a>
+      <a class="nav-link " href="https://www.imagemagick.org/script/search.php">Search</a>
+      <a class="nav-link float-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
 </div>
 <div class="container">
+<div class="magick-main">
 <div class="magick-header">
 <p class="text-center"><a href="advanced-windows-installation.html#download">Download &amp; Unpack</a> • <a href="advanced-windows-installation.html#configure">Configure</a>  • <a href="advanced-windows-installation.html#build">Build</a> • <a href="advanced-windows-installation.html#install">Install</a> • <a href="advanced-windows-installation.html#binary">Create a Self-installing Binary Distribution</a> • <a href="advanced-windows-installation.html#problems">Dealing with Unexpected Problems</a> • <a href="advanced-windows-installation.html#project">Building Your Custom Project</a></p>
 
 <p  class="lead magick-description">It's possible you don't want to concern yourself with advanced installation under Windows.  If so, you also have the option of installing a self-installing <a href="download.html#windows">binary release</a> or if you still want to install from source without all the fuss see the simple <a href="install-source.html#windows">Install From Source</a> instructions.  However, if you want to customize the configuration and installation of ImageMagick under Windows, lets begin.</p>
 
-<h2 class="magick-header"><a id="download"></a>Download &amp; Unpack</h2>
+<h2 class="magick-post-title"><a id="download"></a>Download &amp; Unpack</h2>
 
 <p>Building ImageMagick source for Windows requires a modern version of Microsoft Visual Studio IDE.  Users have reported success with the Borland C++ compiler as well.  If you don't have a compiler you can still install a self-installing <a href="download.html#windows">binary release</a>.</p>
 
@@ -69,14 +69,14 @@
 
 <p>You can unpack the distribution with <a href="http://www.winzip.com">WinZip</a> or type the following from any Command Prompt window:</p>
 
-<pre>
+<pre><code>
 unzip ImageMagick-windows.zip
-</pre>
+</code></pre>
 
 <p>Now that you have the ImageMagick Windows source distribution unpacked, let's configure it.</p>
 
 
-<h2 class="magick-header"><a id="configure"></a>Configure</h2>
+<h2 class="magick-post-title"><a id="configure"></a>Configure</h2>
 
 <p>These instructions are specific to building ImageMagick with the <a href="http://msdn.microsoft.com/vstudio/">Visual Studio</a> under Windows XP, Win2K, or Windows 98.  ImageMagick does not include any workspace (DSW) or project files (DSP) except for those included with third party libraries. Instead, there is a <code>configure</code> program that must be built and run which creates the Visual Studio workspaces for ImageMagick.  The Visual Studio system provides four different types of <var>runtime</var> environments that must match across all application, library, and dynamic-library (DLL) code that is built. The <code>configure</code> program creates a set of build files that are consistent for a specific runtime selection listed here:</p>
 
@@ -125,7 +125,7 @@ unzip ImageMagick-windows.zip
 
 <p>The default build is WIN32.  For 64-bit, open a newly created solution and enter Configuration Manager. Add a x64 configuration, copying the configuration from Win32. Be sure  that it adds the configuration to all the projects.  Now compile.  For the 64-bit build, you will also need to disable X11 support.  Edit magick-config.h and undefine the MAGICKCORE_X11_DELEGATE define.</p>
 
-<h2 class="magick-header"><a id="Build"></a>Build</h2>
+<h2 class="magick-post-title"><a id="Build"></a>Build</h2>
 
 <p>After creating your build environment, proceed to open the DSW (or SLN) workspace in the <code>VisualMagick</code> folder.  In the DSW file choose the <var>All</var> project to make it the <var>active</var> project.  Set the build configuration to the desired one (Debug, or Release) and <var>clean</var> and <var>build:</var></p>
 
@@ -161,10 +161,10 @@ unzip ImageMagick-windows.zip
 
 <p>With this feature enabled, you should be able to nab a copy of</p>
 
-<pre>
+<pre><code>
 VisualMagick\utilities\UTIL_convert_xxx_exe.dsp  (for C) or
 VisualMagick\Magick++\demo\UTIL_demo_xxx_exe.dsp (for C++)
-</pre>
+</code></pre>
 
 <p>and pop it into Notepad, modify it (carefully) to your needs and be on your way to happy compiling and linking.</p>
 
@@ -174,27 +174,27 @@ VisualMagick\Magick++\demo\UTIL_demo_xxx_exe.dsp (for C++)
 
 <p>For straight C API command line applications use something from:</p>
 
-<pre>
+<pre><code>
 ImageMagick\tests or
 ImageMagick\utilities (source code) or
 ImageMagick\VisualMagick\tests or
 ImageMagick\Visualmagick\utilities (project - DSP)
-</pre>
+</code></pre>
 
 <p>For C++ and Magick++ command line applications use something from:</p>
 
-<pre>
+<pre><code>
 ImageMagick\Magick++\tests or ImageMagick\Magick++\demo (source code) or
 ImageMagick\VisualMagick\Magick++\tests or  <br/>
 ImageMagick\VisualMagick\Magick++\demo (project - DSP)
-</pre>
+</code></pre>
 
 <p>For C++ and Magick++ and MFC windows applications use:</p>
 
-<pre>
+<pre><code>
 ImageMagick\contrib\win32\MFC\NtMagick (source code) or
 ImageMagick\VisualMagick\contrib\win32\MFC\NtMagick (project - DSP)
-</pre>
+</code></pre>
 
 <p>The ImageMagick distribution is very modular. The default configuration is there to get you rolling, but you need to make some serious choices when you wish to change things around.</p>
 
@@ -225,16 +225,16 @@ ImageMagick\VisualMagick\contrib\win32\MFC\NtMagick (project - DSP)
 		  <p>This environmental variable sets the default list of places were Windows looks for EXE's and DLL's. Windows CMD shell seems to look in the <var>current</var> directory first no matter what, which may make it unnecessary to update the PATH. If you wish to run any of utilities from another location then you must add the path to your <code>bin</code> directory in. For instance, to do this for the default build environment like I do, you might add:</p>
 
 
-<pre>
+<pre><code>
 C:\ImageMagick\VisualMagick\bin
-</pre>
+</code></pre>
 
 		<h4>MAGICK_HOME</h4>
 		  <p>If all you do is modify the PATH variable, the first problem you will run into is that ImageMagick may not be able to find any of its <var>modules</var>. Modules are all the IM_MOD*.DLL files you see in the distribution. There is one of these for each and every file format that ImageMagick supports. This environment variable tells the system were to look for these DLL's. The compiled in <var>default</var> is <var>execution path</var> - which says - look in the same place that the application is running <var>in</var>. If you are running from somewhere other then <code>bin</code> - this will no longer work and you must use this variable. If you elect to leave the modules in the same place as the EXE's (a good idea) then you can simply set this to the same place as you did the PATH variable. In my case:</p>
 
-<pre>
+<pre><code>
 C:\ImageMagick\coders
-</pre>
+</code></pre>
 
 			<p>This also the place were ImageMagick expects to find the <code>colors.xml</code>, <code>delegates.xml</code>, <code>magic.xml</code>, <code>modules.xml</code>, and <code>type.xml</code> files.</p>
 
@@ -244,15 +244,15 @@ C:\ImageMagick\coders
 
 <p>You can elect to changes these things the good old <var>hard-coded</var> way. This define is applicable in <code>magick-config.h</code>:</p>
 
-<pre>
+<pre><code>
 #define MagickConfigurePath  "C:\\ImageMagick\\"
-</pre>
+</code></pre>
 
 <p>To view any image in a Microsoft window, type</p>
 
-<pre>
+<pre><code>
 convert image.ext win:
-</pre>
+</code></pre>
 
 <p>Make sure <a href="http://www.cs.wisc.edu/~ghost/">Ghostscript</a> is installed, otherwise, you will be unable to convert or view a Postscript document, and Postscript standard fonts will not be available.</p>
 
@@ -264,14 +264,14 @@ convert image.ext win:
 
 <p>If you are looking to install the ImageMagick COM+ object, see <a href="ImageMagickObject.html">Installing the ImageMagickObject COM+ Component</a>.</p>
 
-<h2 class="magick-header"><a id="Install"></a>Install</h2>
+<h2 class="magick-post-title"><a id="Install"></a>Install</h2>
 
 <p>You can run ImageMagick command line utilities directly from the <code>VisualMagick\bin</code> folder, however, in most cases you may want the convenience of an installer script.  ImageMagick provides <a href="http://www.jrsoftware.org">Inno Setup</a> scripts for this purpose.  Note, you must define MAGICKCORE_INSTALLED_SUPPORT at <a href="advanced-windows-installation.html#configure">configure</a> time to utilize the installer scripts.</p>
 
 <p>To get started building a self-installing ImageMagick executable, go to <code>VisualMagick\installer</code> folder and click on a script that matches your build environment.  Press F9 to build and install ImageMagick.  The default location is <code>C:Program Files\ImageMagick-6.?.?\Q?</code>.  The exact folder name depends on the ImageMagick version and quantum depth.  Once installed, ImageMagick command line utilities and libraries are available to the MS Command Prompt, web scripts, or to meet your development needs.</p>
 
 
-<h2 class="magick-header"><a id="binary"></a>Create a Self-Installing Binary Distribution</h2>
+<h2 class="magick-post-title"><a id="binary"></a>Create a Self-Installing Binary Distribution</h2>
 
 <h3>Prerequisites</h3>
 
@@ -303,10 +303,10 @@ convert image.ext win:
 	<ol>
 	<li>Launch the Command Prompt application and move to the <code>contrib\win32\ATL7\ImageMagickObject</code> folder.</li>
 	<li>Build ImageMagickObject with these commands:
-<pre>
+<pre><code>
 BuildImageMagickObject clean
 BuildImageMagickObject release
-</pre></li>
+</code></pre></li>
 	</ol>
 
 <h3>Build PerlMagick</h3>
@@ -314,10 +314,10 @@ BuildImageMagickObject release
 	<ol>
 	<li>Launch the Command Prompt application and move to the <code>PerlMagick</code> folder.</li>
 	<li>Build PerlMagick with these commands:
-<pre>
+<pre><code>
 perl Makefile.PL
 dmake release
-</pre></li>
+</code></pre></li>
 	</ol>
 
 <h3>Create the Self-installing ImageMagick Binary Distribution</h3>
@@ -331,7 +331,7 @@ dmake release
 
 	<ol>
 	<li>Double-click on
-	<code>VisualMagick/bin/ImageMagick-6.9.8-8-Q16-windows-dll.exe</code>
+	<code>VisualMagick/bin/ImageMagick-6.9.8-10-Q16-windows-dll.exe</code>
 	to launch the ImageMagick binary distribution.</li>
 	<li>Complete the installer screens to install ImageMagick on your system.</li>
 	</ol>
@@ -340,38 +340,38 @@ dmake release
 
 	<ol>
 	<li>Launch the Command Prompt application and move to the <code>PerlMagick</code> folder and type
-<pre>
+<pre><code>
 nmake test
-</pre></li>
+</code></pre></li>
 
 	<li>Move to the <code>VisualMagick/tests</code> folder and type
-<pre>
+<pre><code>
 validate
-</pre></li>
+</code></pre></li>
 	<li>Move to the <code>VisualMagick/Magick++/tests</code> folder and type
-<pre>
+<pre><code>
 run_tests.bat
-</pre></li>
+</code></pre></li>
 	<li>Move to the <code>VisualMagick/Magick++/demo</code> folder and type
-<pre>
+<pre><code>
 run_demos.bat
-</pre></li>
+</code></pre></li>
 	</ol>
 
 <p>If all the tests pass without complaint, the ImageMagick self-install binary distribution is ready for use.</p>
 
-<h2 class="magick-header"><a id="problems"></a>Dealing with Unexpected Problems</h2>
+<h2 class="magick-post-title"><a id="problems"></a>Dealing with Unexpected Problems</h2>
 
 <p>Chances are the download, configure, build, and install of ImageMagick went flawlessly as it is intended, however, certain systems and environments may cause one or more steps to fail.  We discuss a few problems we've run across and how to take corrective action to ensure you have a working release of ImageMagick.</p>
 
 <p>If the compiler generates an error or if it quits unexpectedly, go to the <a href="http://msdn.microsoft.com/vstudio/">Visual Studio</a> web site and look for Visual Studio service packs.  Chances are, after you download and install all the Visual Studio service packs, ImageMagick will compile and build as expected.</p>
 
 
-<h2 class="magick-header"><a id="project"></a>Building Your Custom Project</h2>
+<h2 class="magick-post-title"><a id="project"></a>Building Your Custom Project</h2>
 
 <p>The Windows <a href="download.html#windows">binary</a> distribution includes a number of demo projects that you can use as a template for your own custom project.  For example, start with the Button project, generally located in the <code>c:/Program Files/ImageMagick-6.5.5-0/Magick++_demos</code> folder.  If not, be sure to select <code>Configuration Properties->C/C++->Preprocessor</code> and set these definitions:</p>
 
-<pre>
+<pre><code>
 NDEBUG
 WIN32
 _CONSOLE
@@ -379,7 +379,7 @@ _VISUALC_
 NeedFunctionPrototypes
 _DLL
 _MAGICKMOD_
-</pre>
+</code></pre>
 
 </div>
   <footer class="magick-footer">

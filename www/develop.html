@@ -25,14 +25,13 @@
   <meta name="distribution" content="Global"/>
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-  <link rel="canonical" href="https://www.imagemagick.org/script/develop.html"/>
-  <link rel="icon" href="../images/wand.png"/>
-  <link rel="shortcut icon" href="../images/wand.ico"/>
-  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700"   />
-  <link rel="stylesheet" type="text/css" href="css/magick.css"/>
+  <link rel="canonical" href="https://www.imagemagick.org/script/develop.html" />
+  <link rel="icon" href="../images/wand.png" />
+  <link rel="shortcut icon" href="../images/wand.ico" />
+  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700" />
+  <link rel="stylesheet" href="css/magick.css" />
 </head>
 <body>
-<div class="main">
 <div class="magick-masthead">
   <div class="container">
     <script async="async" src="https://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
@@ -43,128 +42,129 @@
     <script>
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
-    <nav class="magick-nav">
-      <a class="magick-nav-item " href="../index.html">Home</a>
-      <a class="magick-nav-item " href="download.html">Download</a>
-      <a class="magick-nav-item " href="command-line-tools.html">Tools</a>
-      <a class="magick-nav-item " href="command-line-processing.html">Command-line</a>
-      <a class="magick-nav-item " href="resources.html">Resources</a>
-      <a class="magick-nav-item " href="develop.html">Develop</a>
-      <a class="magick-nav-item " href="https://www.imagemagick.org/script/search.php">Search</a>
-      <a class="magick-nav-item float-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
+    <nav class="nav magick-nav">
+      <a class="nav-link " href="../index.html">Home</a>
+      <a class="nav-link " href="download.html">Download</a>
+      <a class="nav-link " href="command-line-tools.html">Tools</a>
+      <a class="nav-link " href="command-line-processing.html">Command-line</a>
+      <a class="nav-link " href="resources.html">Resources</a>
+      <a class="nav-link " href="develop.html">Develop</a>
+      <a class="nav-link " href="https://www.imagemagick.org/script/search.php">Search</a>
+      <a class="nav-link float-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
 </div>
 <div class="container">
+<div class="magick-main">
 <div class="magick-header">
 
 <p class="lead magick-description">ImageMagick includes a number of ready-made interfaces. This makes it possible to modify or create images automagically and dynamically utilizing your favorite development platform.</p>
 
-<dl class="dl-horizontal">
-  <dt><a id="ada"></a>Ada</dt>
+<dl class="row">
+  <dt class="col-md-4"><a id="ada"></a>Ada</dt>
 
-<dd><a href="https://gna.org/projects/g2f/">G2F</a> implements an Ada 95 binding to a subset of the low-level MagickCore library.</dd>
+<dd class="col-md-8"><a href="https://gna.org/projects/g2f/">G2F</a> implements an Ada 95 binding to a subset of the low-level MagickCore library.</dd>
 
-  <dt><a id="c"></a>C</dt>
+  <dt class="col-md-4"><a id="c"></a>C</dt>
 
-<dd>Use <a href="magick-wand.html">MagickWand</a> to convert, compose, and edit images from the C language.  There is also the low-level <a href="magick-core.html">MagickCore</a> library for wizard-level developers.</dd>
+<dd class="col-md-8">Use <a href="magick-wand.html">MagickWand</a> to convert, compose, and edit images from the C language.  There is also the low-level <a href="magick-core.html">MagickCore</a> library for wizard-level developers.</dd>
 
-  <dt><a id="ch"></a>Ch</dt>
+  <dt class="col-md-4"><a id="ch"></a>Ch</dt>
 
-<dd><a href="https://www.imagemagick.org/ChMagick">ChMagick</a> is a <a href="http://www.softintegration.com/">Ch</a> binding to the MagickCore and MagickWand API.  Ch is an embeddable C/C++ interpreter for cross-platform scripting.</dd>
+<dd class="col-md-8"><a href="https://www.imagemagick.org/ChMagick">ChMagick</a> is a <a href="http://www.softintegration.com/">Ch</a> binding to the MagickCore and MagickWand API.  Ch is an embeddable C/C++ interpreter for cross-platform scripting.</dd>
 
-  <dt><a id="com_"></a>COM+</dt>
+  <dt class="col-md-4"><a id="com_"></a>COM+</dt>
 
-<dd>Use <a href="ImageMagickObject.html">ImageMagickObject</a> to convert, compose, and edit images from a Windows COM+ compatible component.</dd>
+<dd class="col-md-8">Use <a href="ImageMagickObject.html">ImageMagickObject</a> to convert, compose, and edit images from a Windows COM+ compatible component.</dd>
 
-  <dt><a id="c__"></a>C++</dt>
+  <dt class="col-md-4"><a id="c__"></a>C++</dt>
 
-<dd><a href="magick++.html">Magick++</a> provides an object-oriented C++ interface to ImageMagick.  See <a href="https://www.imagemagick.org/Magick++/tutorial/Magick++_tutorial.pdf">A Gentle Introduction to Magick++</a> for an introductory tutorial to Magick++.  We include the <a href="https://www.imagemagick.org/Magick++/tutorial/Magick++_tutorial.odt">source</a> if you want to correct, enhance, or expand the tutorial.</dd>
+<dd class="col-md-8"><a href="magick++.html">Magick++</a> provides an object-oriented C++ interface to ImageMagick.  See <a href="https://www.imagemagick.org/Magick++/tutorial/Magick++_tutorial.pdf">A Gentle Introduction to Magick++</a> for an introductory tutorial to Magick++.  We include the <a href="https://www.imagemagick.org/Magick++/tutorial/Magick++_tutorial.odt">source</a> if you want to correct, enhance, or expand the tutorial.</dd>
 
-  <dt><a id="go"></a>GO</dt>
-  <dd><a href="https://github.com/gographics/imagick">GoImagick</a> is a set of Go bindings to ImageMagick's MagickWand and MagickCore C APIs.</dd>
+  <dt class="col-md-4"><a id="go"></a>GO</dt>
+  <dd class="col-md-8"><a href="https://github.com/gographics/imagick">GoImagick</a> is a set of Go bindings to ImageMagick's MagickWand and MagickCore C APIs.</dd>
 
-  <dt><a id="java"></a>Java</dt>
+  <dt class="col-md-4"><a id="java"></a>Java</dt>
 
-<dd><a href="http://www.jmagick.org">JMagick</a> provides an object-oriented Java interface to ImageMagick.  <a href="http://im4java.sourceforge.net">Im4java</a> is a pure-java interface to the ImageMagick command-line.</dd>
+<dd class="col-md-8"><a href="http://www.jmagick.org">JMagick</a> provides an object-oriented Java interface to ImageMagick.  <a href="http://im4java.sourceforge.net">Im4java</a> is a pure-java interface to the ImageMagick command-line.</dd>
 
-  <dt><a id="julia"></a>Julia</dt>
+  <dt class="col-md-4"><a id="julia"></a>Julia</dt>
 
-<dd><a href="https://github.com/JuliaIO/ImageMagick.jl">JuliaIO</a> provides an object-oriented Julia interface to ImageMagick.</dd>
+<dd class="col-md-8"><a href="https://github.com/JuliaIO/ImageMagick.jl">JuliaIO</a> provides an object-oriented Julia interface to ImageMagick.</dd>
 
-  <dt><a id="labview"></a>LabVIEW</dt>
+  <dt class="col-md-4"><a id="labview"></a>LabVIEW</dt>
 
-<dd><a href="http://forums.lavag.org/downloads-file90.html">LVOOP ImageMagick</a> is an object-oriented LabVIEW interface to ImageMagick.</dd>
+<dd class="col-md-8"><a href="http://forums.lavag.org/downloads-file90.html">LVOOP ImageMagick</a> is an object-oriented LabVIEW interface to ImageMagick.</dd>
 
-  <dt><a id="lisp"></a>Lisp</dt>
+  <dt class="col-md-4"><a id="lisp"></a>Lisp</dt>
 
-<dd><a href="http://common-lisp.net/project/cl-magick/">CL-Magick</a> provides a Common Lisp interface to the ImageMagick library.</dd>
+<dd class="col-md-8"><a href="http://common-lisp.net/project/cl-magick/">CL-Magick</a> provides a Common Lisp interface to the ImageMagick library.</dd>
 
-  <dt><a id="lua"></a>Lua</dt>
+  <dt class="col-md-4"><a id="lua"></a>Lua</dt>
 
-<dd><a href="https://github.com/leafo/magick">Lua</a> bindings to ImageMagick for LuaJIT using FFI.</dd>
-<dd><a href="https://github.com/isage/lua-imagick">Lua</a> bindings to ImageMagick for Lua using pure-C.</dd>
+<dd class="col-md-8"><a href="https://github.com/leafo/magick">Lua</a> bindings to ImageMagick for LuaJIT using FFI.</dd>
+<dd class="col-md-8"><a href="https://github.com/isage/lua-imagick">Lua</a> bindings to ImageMagick for Lua using pure-C.</dd>
 
-  <dt><a id="neko"></a>Neko</dt>
+  <dt class="col-md-4"><a id="neko"></a>Neko</dt>
 
-<dd><a href="http://code.google.com/p/nmagick">NMagick</a> is a port of the ImageMagick library to the haXe and Neko platforms. It provides image manipulation capabilities to both web and desktop applications using Neko.</dd>
+<dd class="col-md-8"><a href="http://code.google.com/p/nmagick">NMagick</a> is a port of the ImageMagick library to the haXe and Neko platforms. It provides image manipulation capabilities to both web and desktop applications using Neko.</dd>
 
-  <dt><a id="dot-net"></a>.NET</dt>
+  <dt class="col-md-4"><a id="dot-net"></a>.NET</dt>
 
-<dd>Use <a href="http://magick.codeplex.com/">Magick.NET</a> to convert, compose, and edit images from Windows .NET.</dd>
+<dd class="col-md-8">Use <a href="http://magick.codeplex.com/">Magick.NET</a> to convert, compose, and edit images from Windows .NET.</dd>
 
-<dd><a href="http://sourceforge.net/projects/imagemagickapp/">ImageMagickApp</a> is a .NET application written in C# that utilizes the ImageMagick command line to allow conversion of multiple image formats to different formats.</dd>
+<dd class="col-md-8"><a href="http://sourceforge.net/projects/imagemagickapp/">ImageMagickApp</a> is a .NET application written in C# that utilizes the ImageMagick command line to allow conversion of multiple image formats to different formats.</dd>
 
-  <dt><a id="pascal"></a>Pascal</dt>
+  <dt class="col-md-4"><a id="pascal"></a>Pascal</dt>
 
-<dd><a href="http://wiki.freepascal.org/PascalMagick">PascalMagick</a> a Pascal binding for the MagickWand API and also the low-level MagickCore library. It works with Free Pascal / Lazarus and Delphi.</dd>
+<dd class="col-md-8"><a href="http://wiki.freepascal.org/PascalMagick">PascalMagick</a> a Pascal binding for the MagickWand API and also the low-level MagickCore library. It works with Free Pascal / Lazarus and Delphi.</dd>
 
-  <dt><a id="perl"></a>Perl</dt>
+  <dt class="col-md-4"><a id="perl"></a>Perl</dt>
 
-<dd>Use <a href="perl-magick.html">PerlMagick</a> to convert, compose, and edit images from the Perl language.</dd>
+<dd class="col-md-8">Use <a href="perl-magick.html">PerlMagick</a> to convert, compose, and edit images from the Perl language.</dd>
 
-  <dt><a id="php"></a>PHP</dt>
+  <dt class="col-md-4"><a id="php"></a>PHP</dt>
 
-<dd><a href="http://www.magickwand.org/">MagickWand for PHP</a> a native PHP-extension to the ImageMagick MagickWand API.</dd>
+<dd class="col-md-8"><a href="http://www.magickwand.org/">MagickWand for PHP</a> a native PHP-extension to the ImageMagick MagickWand API.</dd>
 
-<dd><a href="http://pecl.html.net/package/imagick">IMagick</a> is a native PHP extension to create and modify images using the ImageMagick API.  Documentation for the extension is available <a href="http://php.net/imagick">here</a>.</dd>
+<dd class="col-md-8"><a href="http://pecl.html.net/package/imagick">IMagick</a> is a native PHP extension to create and modify images using the ImageMagick API.  Documentation for the extension is available <a href="http://php.net/imagick">here</a>.</dd>
 
-<dd><a href="https://github.com/francodacosta/phmagick">phMagick</a> is a wrapper class for ImageMagick, wrapping the most common web image manipulation actions in easy to use functions, but allowing full access to ImageMagick's power by issuing system calls to it's command-line programs.</dd>
-
-
-  <dt><a id="python"></a>Python</dt>
+<dd class="col-md-8"><a href="https://github.com/francodacosta/phmagick">phMagick</a> is a wrapper class for ImageMagick, wrapping the most common web image manipulation actions in easy to use functions, but allowing full access to ImageMagick's power by issuing system calls to it's command-line programs.</dd>
 
 
-<dd><a href="http://wand-py.org/">Wand</a> is a ctypes-based ImagedMagick binding library for Python.</dd>
-<dd><a href="https://www.imagemagick.org/download/python/">PythonMagick</a> is an object-oriented Python interface to ImageMagick.</dd>
-<dd><a href="http://www.assembla.com/wiki/show/pythonmagickwand">PythonMagickWand</a> is an object-oriented Python interface to MagickWand based on ctypes.</dd>
-<dd><a href="http://siptoolbox.sourceforge.net/">Scilab Image Processing</a> toolbox utilizes ImageMagick to do imaging tasks such as filtering, blurring, edge detection, thresholding, histogram manipulation, segmentation, mathematical morphology, color image processing, etc..</dd>
+  <dt class="col-md-4"><a id="python"></a>Python</dt>
 
-  <dt><a id="realbasic"></a>REALbasic</dt>
 
-<dd>The <a href="http://www.monkeybreadsoftware.de/realbasic/plugin-imagemagick.shtml">MBS Realbasic ImageMagick</a> is a plugin that utilizes the power of ImageMagick from within the RealBasic environment.</dd>
+<dd class="col-md-8"><a href="http://wand-py.org/">Wand</a> is a ctypes-based ImagedMagick binding library for Python.</dd>
+<dd class="col-md-8"><a href="https://www.imagemagick.org/download/python/">PythonMagick</a> is an object-oriented Python interface to ImageMagick.</dd>
+<dd class="col-md-8"><a href="http://www.assembla.com/wiki/show/pythonmagickwand">PythonMagickWand</a> is an object-oriented Python interface to MagickWand based on ctypes.</dd>
+<dd class="col-md-8"><a href="http://siptoolbox.sourceforge.net/">Scilab Image Processing</a> toolbox utilizes ImageMagick to do imaging tasks such as filtering, blurring, edge detection, thresholding, histogram manipulation, segmentation, mathematical morphology, color image processing, etc..</dd>
 
-  <dt><a id="ruby"></a>Ruby</dt>
+  <dt class="col-md-4"><a id="realbasic"></a>REALbasic</dt>
 
-<dd><a href="https://rmagick.github.io/">RMagick</a> is an interface between the Ruby programming language and the <a href="magick-core.html">MagickCore</a> image processing libraries.  Get started with RMagick by perusing the <a href="https://rmagick.github.io/">documentation</a>.</dd>
+<dd class="col-md-8">The <a href="http://www.monkeybreadsoftware.de/realbasic/plugin-imagemagick.shtml">MBS Realbasic ImageMagick</a> is a plugin that utilizes the power of ImageMagick from within the RealBasic environment.</dd>
 
-<dd><a href="http://magickwand.rubyforge.org/">MagickWand for Ruby</a> is an interface between the Ruby programming language and the <a href="magick-wand.html">MagickWand</a> image processing libraries.  Get started with MagickWand for PHP by perusing the <a href="http://magickwand.rubyforge.org/">documentation</a>.</dd>
+  <dt class="col-md-4"><a id="ruby"></a>Ruby</dt>
 
-<dd><a href="https://github.com/minimagick">MiniMagick</a> is a Ruby wrapper for ImageMagick command line. MiniMagick gives you convenient access to all the command line options ImageMagick supports.</dd>
+<dd class="col-md-8"><a href="https://rmagick.github.io/">RMagick</a> is an interface between the Ruby programming language and the <a href="magick-core.html">MagickCore</a> image processing libraries.  Get started with RMagick by perusing the <a href="https://rmagick.github.io/">documentation</a>.</dd>
 
-<dd><a href="http://quickmagick.rubyforge.org/quick_magick">QuickMagick</a> is a gem for easily accessing ImageMagick command line tools from Ruby programs.</dd>
+<dd class="col-md-8"><a href="http://magickwand.rubyforge.org/">MagickWand for Ruby</a> is an interface between the Ruby programming language and the <a href="magick-wand.html">MagickWand</a> image processing libraries.  Get started with MagickWand for PHP by perusing the <a href="http://magickwand.rubyforge.org/">documentation</a>.</dd>
 
-  <dt><a id="rust"></a>Rust</dt>
+<dd class="col-md-8"><a href="https://github.com/minimagick">MiniMagick</a> is a Ruby wrapper for ImageMagick command line. MiniMagick gives you convenient access to all the command line options ImageMagick supports.</dd>
 
-<dd><a href="https://github.com/influenza/wand-of-rust">RustWand</a> is a MagickWand bindings for the Rust language.</dd>
+<dd class="col-md-8"><a href="http://quickmagick.rubyforge.org/quick_magick">QuickMagick</a> is a gem for easily accessing ImageMagick command line tools from Ruby programs.</dd>
 
-<dt><a id="tcl"></a>Tcl/Tk</dt>
+  <dt class="col-md-4"><a id="rust"></a>Rust</dt>
 
-<dd><a href="http://tclmagick.sourceforge.net/">TclMagick</a> a native Tcl-extension to the ImageMagick MagickWand API.</dd>
+<dd class="col-md-8"><a href="https://github.com/influenza/wand-of-rust">RustWand</a> is a MagickWand bindings for the Rust language.</dd>
 
-  <dt><a id="xml-rpc"></a>XML RPC</dt>
+<dt class="col-md-4"><a id="tcl"></a>Tcl/Tk</dt>
 
-<dd><a href="http://code.google.com/p/remotemagick/">RemoteMagick</a> is an XML-RPC web service that creates image thumbnails.</dd>
+<dd class="col-md-8"><a href="http://tclmagick.sourceforge.net/">TclMagick</a> a native Tcl-extension to the ImageMagick MagickWand API.</dd>
+
+  <dt class="col-md-4"><a id="xml-rpc"></a>XML RPC</dt>
+
+<dd class="col-md-8"><a href="http://code.google.com/p/remotemagick/">RemoteMagick</a> is an XML-RPC web service that creates image thumbnails.</dd>
 </dl>
 </div>
   <footer class="magick-footer">

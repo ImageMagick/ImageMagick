@@ -25,14 +25,13 @@
   <meta name="distribution" content="Global"/>
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-  <link rel="canonical" href="https://www.imagemagick.org/script/color.html"/>
-  <link rel="icon" href="../images/wand.png"/>
-  <link rel="shortcut icon" href="../images/wand.ico"/>
-  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700"   />
-  <link rel="stylesheet" type="text/css" href="css/magick.css"/>
+  <link rel="canonical" href="https://www.imagemagick.org/script/color.html" />
+  <link rel="icon" href="../images/wand.png" />
+  <link rel="shortcut icon" href="../images/wand.ico" />
+  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700" />
+  <link rel="stylesheet" href="css/magick.css" />
 </head>
 <body>
-<div class="main">
 <div class="magick-masthead">
   <div class="container">
     <script async="async" src="https://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
@@ -43,19 +42,20 @@
     <script>
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
-    <nav class="magick-nav">
-      <a class="magick-nav-item " href="../index.html">Home</a>
-      <a class="magick-nav-item " href="download.html">Download</a>
-      <a class="magick-nav-item " href="command-line-tools.html">Tools</a>
-      <a class="magick-nav-item " href="command-line-processing.html">Command-line</a>
-      <a class="magick-nav-item " href="resources.html">Resources</a>
-      <a class="magick-nav-item " href="develop.html">Develop</a>
-      <a class="magick-nav-item " href="https://www.imagemagick.org/script/search.php">Search</a>
-      <a class="magick-nav-item float-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
+    <nav class="nav magick-nav">
+      <a class="nav-link " href="../index.html">Home</a>
+      <a class="nav-link " href="download.html">Download</a>
+      <a class="nav-link " href="command-line-tools.html">Tools</a>
+      <a class="nav-link " href="command-line-processing.html">Command-line</a>
+      <a class="nav-link " href="resources.html">Resources</a>
+      <a class="nav-link " href="develop.html">Develop</a>
+      <a class="nav-link " href="https://www.imagemagick.org/script/search.php">Search</a>
+      <a class="nav-link float-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
 </div>
 <div class="container">
+<div class="magick-main">
 <div class="magick-header">
 <p class="text-center"><a href="color.html#usage">Example Usage</a> • <a href="color.html#models">Color Model Specification</a> • <a href="color.html#color_names">List of Color Names</a></p>
 
@@ -63,25 +63,25 @@
 
 <p>Use the <a href="../contrib/color-converter.html">Color Converter</a> to supply any valid ImageMagick color specification as described below to see a color swatch of that color and to convert to all the other color models.</p>
 
-<h2 class="magick-header"><a id="usage"></a>Example Usage</h2>
+<h2 class="magick-post-title"><a id="usage"></a>Example Usage</h2>
 
 <p>Each of the following commands produces the same <var>lime</var> border around the image. (Use "double quotes" for Windows.)</p>
 
-<pre>
+<pre><code>
 convert -bordercolor lime -border 10 image.jpg image.png
 convert -bordercolor '#0f0' -border 10 image.jpg image.png
 convert -bordercolor '#00ff00' -border 10 image.jpg image.png
 convert -bordercolor 'rgb(0,255,0)' -border 10 image.jpg image.png
 convert -bordercolor 'rgb(0,100%,0)' -border 10 image.jpg image.png
-</pre>
+</code></pre>
 
 <p>The list of recognized color names (for example, <var>aqua</var>, <var>black</var>, <var>blue</var>, <var>fuchsia</var>, <var>gray</var>, <var>green</var>, <var>lime</var>, <var>maroon</var>, <var>navy</var>, <var>olive</var>, <var>purple</var>, <var>red</var>, <var>silver</var>, <var>teal</var>, <var>white</var>, <var>yellow</var>, and others) is shown in a table further below.</p>
 
-<h2 class="magick-header"><a id="models"></a>Color Model Specification</h2>
+<h2 class="magick-post-title"><a id="models"></a>Color Model Specification</h2>
 
 <p>The sRGB, CMYK, HSL and HSB color models are used in numerical color specifications. These examples all specify the same red sRGB color:</p>
 
-<pre>
+<pre><code>
 #f00                      #rgb
 #ff0000                   #rrggbb
 #ff0000ff                 #rrggbbaa
@@ -99,12 +99,12 @@ rgb(100.0%, 0.0%, 0.0%)   a float in the range 0—100% for each component
 
 <p>The sRGB color model is extended in this specification to include <var>alpha</var> to allow specification of the transparency of a color. These examples all specify the same color:</p>
 
-<pre>
+<pre><code>
 rgb(255, 0, 0)                 range 0 - 255
 rgba(255, 0, 0, 1.0)           the same, with an explicit alpha value
 rgb(100%, 0%, 0%)              range 0.0% - 100.0%
 rgba(100%, 0%, 0%, 1.0)        the same, with an explicit alpha value
-</pre>
+</code></pre>
 
 <p>The format of an RGBA value in the functional notation is 'rgba(<var>r</var>,<var>g</var>,<var>b</var>,<var>a</var>)',  where  <var>r</var>, <var>g</var>, and <var>b</var> are as described above for the RGB functional notation, and where the alpha value <var>a</var> ranges from 0.0 (fully transparent) to 1.0 (fully opaque).</p>
 
@@ -112,10 +112,10 @@ rgba(100%, 0%, 0%, 1.0)        the same, with an explicit alpha value
 
 <p>Gray values are conveniently defined with a single intensity value or an intensity value and an alpha value:</p>
 
-<pre>
+<pre><code>
 gray(50%)        mid gray
 graya(50%, 0.5)  semi-transparent mid gray
-</pre>
+</code></pre>
 
 <p>The ImageMagick color model also supports hue-saturation-lightness (HSL) and hue-saturation-brightness (HSB) colors as a complement to numerical sRGB colors. HSL colors are encoding as a triple (hue, saturation, lightness). Likewise HSB colors are encoding as a triple (hue, saturation, brightness). HSL or HSB triples are either direct values (hue 0—360, saturation 0—255, lightness or brightness 0—255) or with S,L,B as percentage values relative to these ranges.</p>
 
@@ -133,31 +133,31 @@ graya(50%, 0.5)  semi-transparent mid gray
 
 <p>The HSB color system is a little easier to understand than the HSL color system. In the HSB color system, black is at the bottom apex and white is at the top center of the cone on the central axis. The most colorful or saturated colors will then be at the outer edge of the top of the cone at the widest part. Thus at Saturation=100% and Brightness=100%</p>
 
-<pre>
+<pre><code>
 hsb(0,   100%,  100%)    or    hsb(0,   255,   255)          full red
 hsb(120, 100%,  100%)    or    hsb(120, 255,   255)       full green
 hsb(120, 100%,  75%)     or    hsb(120, 255,   191.25)    medium green
 hsb(120, 100%,  50%)     or    hsb(120, 255,   127.5)     dark green
 hsb(120, 100%,  25%)     or    hsb(120, 255,   63.75)     very dark green
 hsb(120, 50%,   50%)     or    hsb(120, 127.5, 127.5)     pastel green
-</pre>
+</code></pre>
 
 <p>In the HSL color system, black is at the bottom apex and white is at the top apex. However, saturation is largest at the middle of the double cone on its outer perimeter and thus at a lightness value of 50%. The most colorful or saturated colors will then be at the outer edge of the double cone at its widest part. Thus at Saturation=100% and Brightness=50%</p>
 
-<pre>
+<pre><code>
 hsl(0,   100%,  50%)     or    hsl(0,   255,   127.5)        full red
 hsl(120, 100%,  100%)    or    hsl(120, 255,   255)       white
 hsl(120, 100%,  75%)     or    hsl(120, 255,   191.25)    pastel green
 hsl(120, 100%,  50%)     or    hsl(120, 255,   127.5)     full green
 hsl(120, 100%,  25%)     or    hsl(120, 255,   63.75)     dark green
 hsl(120, 50%,   50%)     or    hsl(120, 127.5, 127.5)     medium green
-</pre>
+</code></pre>
 
 <p>One advantage of HSB or HSL over RGB is that it can be more intuitive: you can guess at the colors you want, and then tweak. It is also easier to create sets of matching colors (by keeping the hue the same and varying the brightness or lightness and saturation, for example).</p>
 
 <p>Just as the 'rgb()' functional notation has the 'rgba()' alpha counterpart, the 'hsl()' and 'hsb()' functional notations have their 'hsla()' 'hsba()' alpha counterparts. These examples specify the same color:</p>
 
-<pre>
+<pre><code>
 hsb(120, 100%,  100%)              full green in hsb
 hsba(120, 100%,  100%,  1.0)       the same, with an alpha value of 1.0
 hsb(120, 255,  255)                full green in hsb
@@ -167,14 +167,14 @@ hsl(120, 100%,  50%)               full green in hsl
 hsla(120, 100%,  50%,  1.0)        the same, with an alpha value of 1.0
 hsl(120, 255,  127.5)              full green in hsl
 hsla(120, 255,  127.5,  1.0)       the same, with an alpha value of 1.0
-</pre>
+</code></pre>
 
 <p>For ImageMagick between 6.5.6-6 and 6.9.2-0, HSL (HSB) could only be specified with Hue as percent in range 0—100%, when Saturation and Lightness (Brightness) were also specified as percent in range 0—100%.</p>
 
 <p>Specify the Lab colors like this:</p>
-<pre>
+<pre><code>
 cielab(62.253188, 23.950124, 48.410653)
-</pre>
+</code></pre>
 <p>Note, the <code>a</code> and <code>b</code> components of any Lab color you specify are biased internally by 50% to ensure it fits in the quantum range (typically 0 to 65535).  The bias is retained when writing to the TIFF and MIFF image formats.  However, the TXT format supports negative pixel values so the bias is removed when writing to this format:</p>
 <pre class="text">
 -> convert xc:cyan -colorspace LAB txt:
@@ -182,22 +182,22 @@ cielab(62.253188, 23.950124, 48.410653)
 0,0: (91.1131%,-18.8571%,-5.5436%)  #E93F00000000  cielab(91.1131%,-18.8571%,-5.5436%)
 
 -> convert -size 100x100 xc:"cielab(91.1131%,-18.8571%,-5.5436%)" -colorspace sRGB cyan.png
-</pre>
+</code></pre>
 
 <p>Or specify colors generically with the <code>icc-color</code> keyword, for example:</p>
-<pre>
+<pre><code>
 icc-color(cmyk, 0.11, 0.48, 0.83, 0.00)
 icc-color(rgb, white)
-</pre>
+</code></pre>
 
 <p>Or specify uncalibrated device colors with the <code>device-</code> keyword, for example:</p>
-<pre>
+<pre><code>
 device-gray(0.5)
 device-rgb(0.5, 1.0, 0.0)
 device-cmyk(0.11, 0.48, 0.83, 0.00)
-</pre>
+</code></pre>
 
-<h2 class="magick-header"><a id="color_names"></a>List of Color Names</h2>
+<h2 class="magick-post-title"><a id="color_names"></a>List of Color Names</h2>
 
 <p>The table below provides a list of named colors recognized by ImageMagick:</p>
 
