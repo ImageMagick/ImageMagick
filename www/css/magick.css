@@ -9,9 +9,6 @@
  */
 
 @media (min-width: 48em) {
-  html {
-    font-size: 18px;
-  }
 }
 
 body {
@@ -140,7 +137,7 @@ h6, .h6 {
 
 
 /*
- * Blog posts
+ * posts
  */
 
 .magick-post {
@@ -169,4 +166,35 @@ h6, .h6 {
 }
 .magick-footer p:last-child {
   margin-bottom: 0;
+}
+
+/*
+  Miscellaneous.
+*/
+.magick-list-unstyled {
+  padding-left: 40px;
+  padding-right: 40px;
+  list-style: none;
+}
+.magick-icon {
+  float: left;
+  margin: 5px;
+}
+fieldset {
+  padding: .5em;
+  background: white;
+  border: 1px dotted #aaaa77;
+  margin-left: 20px;
+  margin-right: 20px;
+  margin-top: .5em;
+}
+
+fieldset legend {
+  color: #fff;
+  background-color: #aaaa77;
+  font-size: smaller;
+  padding: .1ex .5ex;
+  border-right: 1px solid gray;
+  border-bottom: 1px solid gray;
+  font-weight: bold;
 }
