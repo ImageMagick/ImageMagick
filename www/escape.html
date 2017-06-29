@@ -25,14 +25,13 @@
   <meta name="distribution" content="Global"/>
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-  <link rel="canonical" href="https://www.imagemagick.org/script/escape.html"/>
-  <link rel="icon" href="../images/wand.png"/>
-  <link rel="shortcut icon" href="../images/wand.ico"/>
+  <link rel="canonical" href="https://www.imagemagick.org/script/escape.html" />
+  <link rel="icon" href="../images/wand.png" />
+  <link rel="shortcut icon" href="../images/wand.ico" />
   <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700" />
-  <link rel="stylesheet" href="css/magick.css"/>
+  <link rel="stylesheet" href="css/magick.css" />
 </head>
 <body>
-<div class="main">
 <div class="magick-masthead">
   <div class="container">
     <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
@@ -43,19 +42,20 @@
     <script>
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
-    <nav class="magick-nav">
-      <a class="magick-nav-item " href="../index.html">Home</a>
-      <a class="magick-nav-item " href="download.html">Download</a>
-      <a class="magick-nav-item " href="command-line-tools.html">Tools</a>
-      <a class="magick-nav-item " href="command-line-processing.html">Command-line</a>
-      <a class="magick-nav-item " href="resources.html">Resources</a>
-      <a class="magick-nav-item " href="develop.html">Develop</a>
-      <a class="magick-nav-item " href="https://www.imagemagick.org/script/search.php">Search</a>
-      <a class="magick-nav-item float-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
+    <nav class="nav magick-nav">
+      <a class="nav-link " href="../index.html">Home</a>
+      <a class="nav-link " href="download.html">Download</a>
+      <a class="nav-link " href="command-line-tools.html">Tools</a>
+      <a class="nav-link " href="command-line-processing.html">Command-line</a>
+      <a class="nav-link " href="resources.html">Resources</a>
+      <a class="nav-link " href="develop.html">Develop</a>
+      <a class="nav-link " href="https://www.imagemagick.org/script/search.php">Search</a>
+      <a class="nav-link float-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
 </div>
 <div class="container">
+<div class="magick-main">
 <div class="magick-header">
 <p class="lead magick-description">There are copious amounts of extra data associated with images (metadata), beyond the actual image pixels. This metadata can be useful, either for display, or for various calculations, or in modifying the behavior of later image processing operations.  You can utilize percent escapes in a number of options, for example in <a href="command-line-options.html#format_identify_">-format</a> or in montage <a href="command-line-options.html#label" >-label</a>, to print various properties and other settings associated with an image.</p>
 
@@ -95,7 +95,7 @@
     </td></tr>
 </table></div>
 
-<h3 class="magick-header">Percent Escape Handling</h3>
+<h3>Percent Escape Handling</h3>
 
 <p>If you request a percent escape such as <code>%[key]</code> the setting
 is looked for in the following order until the first match has been
@@ -126,20 +126,20 @@ insensitive manner. </p>
 free-form string tables directly, allowing you to override the above sequence,
 and avoid accessing an attribute or property of the same name.</p>
 
-<pre>
+<pre><code>
 %[artifact:<var>setting</var>]
 %[option:<var>setting</var>]
-</pre>
+</code></pre>
 
 
-<h3 class="magick-header">Single Letter Attribute Percent Escapes</h3>
+<h3>Single Letter Attribute Percent Escapes</h3>
 
 <p>Here are common single letter escapes (short form) is used to report the most
 common attributes and properties of an image, such as: the image filename
 filename, type, width, height. </p>
 
 <div class="table-responsive">
-<table class="table table-condensed table-striped">
+<table class="table table-sm table-striped">
   <tr>
     <td>\n</td>
     <td>newline</td>
@@ -333,10 +333,10 @@ filename, type, width, height. </p>
 <p>Here is a sample command and its output for an image with filename
 <code>bird.miff</code> and whose width is 512 and height is 480.</p>
 
-<pre>
+<pre><code>
 -> identify -format "%m:%f %wx%h" bird.miff
 MIFF:bird.miff 512x480
-</pre>
+</code></pre>
 
 <p>Note that all single letter percent escapes can also be used using long
 form (from IM version 6.7.6-9, see next). For example <code>%[f]</code> is
@@ -351,13 +351,13 @@ is after a number.  For example,  <code>10%x10</code> does not expand the
 <p>Also be warned that calculated attributes can take some time to generate,
 especially for large images.</p>
 
-<h3 class="magick-header">Long Form Attribute Percent Escapes</h3>
+<h3>Long Form Attribute Percent Escapes</h3>
 
 <p>In addition to the above specific and calculated attributes are recognized
 when enclosed in braces (long form):</p>
 
 <div class="table-responsive">
-<table class="table table-condensed table-striped">
+<table class="table table-sm table-striped">
   <tr>
     <td>%[base]</td>
     <td>base filename, no suffixes (as %t)</td>
@@ -544,7 +544,7 @@ when enclosed in braces (long form):</p>
   </tr>
 </table></div>
 
-<h3 class="magick-header">Properties</h3>
+<h3>Properties</h3>
 
 <p>All other long forms of percent escapes (not single letter long form) are
 handled in a case insensitive manner. Such escapes will will attempt to look
@@ -572,7 +572,7 @@ href="command-line-options.html#set" >-set</a>.
 images when write, if the image file format allows. </p>
 
 
-<h3 class="magick-header">Artifacts and Options</h3>
+<h3>Artifacts and Options</h3>
 
 <p>The previous percent escapes are associated with the primary Attributes and
 Properties. Which is the original and primary focus of such percent escapes.
@@ -631,56 +631,56 @@ Options, only per-image Artifacts. </p>
 Artifact. </p>
 
 
-<h3 class="magick-header">Glob-Pattern Listing of Properties, Artifacts and Options</h3>
+<h3>Glob-Pattern Listing of Properties, Artifacts and Options</h3>
 
 <p>The <var>setting</var> can contain a glob pattern. As such you can
 now list all free-form string properties, artifacts, and options, (but not
 specific image attributes) using...</p>
 
-<pre>
+<pre><code>
 convert ... \
    -print "__Properties__\n%[*]" \
    -print "__Artifacts__\n%[artifact:*]" \
    -print "__Options__\n%[option:*]" \
    ...
-</pre>
+</code></pre>
 
 <p> The format of glob patterns are very specific and as such is generally
 only used to list specific settings, such as when debugging, rather than being
 used for image processing use. </p>
 
 
-<h3 class="magick-header">Calculated Percent Escape Prefixes</h3>
+<h3>Calculated Percent Escape Prefixes</h3>
 
 <p>There are some special prefixes (before the first ':') which performs
 calculations based on the user provided string that follows that prefix.  For
 example you can do a numerical calculation use <code>%[fx:...]</code> to
 evaluate the given <a href="fx.html">FX</a> expressions:</p>
 
-<pre>
+<pre><code>
 %[fx:<var>expression</var>]
-</pre>
+</code></pre>
 
 <p>Use <code>pixel:</code> or <code>hex:</code> to evaluate a pixel color as defined by the <a
 href="fx.html">FX</a>
 expression:</p>
 
-<pre>
+<pre><code>
 %[pixel:<var>expression</var>]
-</pre>
+</code></pre>
 
-<h3 class="magick-header">Specific Profile Percent Escape Prefixes</h3>
+<h3>Specific Profile Percent Escape Prefixes</h3>
 
 <p>You can also use the following special formatting syntax to print EXIF
 mage meta-data that was included in the image read in:</p>
 
-<pre>
+<pre><code>
 %[EXIF:<var>tag</var>]
-</pre>
+</code></pre>
 
 <p>Choose <var>tag</var> from the following:</p>
 
-<pre class="pre-scrollable">
+<pre class="pre-scrollable"><code>
 *  (print all EXIF tags, in keyword=data format)
 !  (print all EXIF tags, in tag_number data format)
 #hhhh (print data for EXIF tag #hhhh)
@@ -766,7 +766,7 @@ ExposureIndex
 SensingMethod
 FileSource
 SceneType
-</pre>
+</code></pre>
 <br/>
 <p>Surround the format specification with quotation marks to prevent your
 shell from misinterpreting any spaces and square brackets.</p>
@@ -774,9 +774,9 @@ shell from misinterpreting any spaces and square brackets.</p>
 <p>The following special formatting syntax can be used to print IPTC
 information contained in the file:</p>
 
-<pre>
+<pre><code>
 %[IPTC:<var>dataset</var>:<var>record</var>]
-</pre>
+</code></pre>
 
 <p>Select <var>dataset</var> and <var>record</var> from the following:</p>
 
@@ -866,7 +866,7 @@ ObjectData Record
 
 Post ObjectData Descriptor Record
   9:10   Confirmed ObjectData Size
-</pre>
+</code></pre>
 </div>
   <footer class="magick-footer">
     <p><a href="support.html">Donate</a> •
@@ -887,4 +887,4 @@ Post ObjectData Descriptor Record
 </div>
 </body>
 </html>
-<!-- Magick Cache 10th June 2017 13:16 -->
+<!-- Magick Cache 29th June 2017 10:58 -->

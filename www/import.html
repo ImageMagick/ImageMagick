@@ -25,14 +25,13 @@
   <meta name="distribution" content="Global"/>
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-  <link rel="canonical" href="https://www.imagemagick.org/script/import.html"/>
-  <link rel="icon" href="../images/wand.png"/>
-  <link rel="shortcut icon" href="../images/wand.ico"/>
+  <link rel="canonical" href="https://www.imagemagick.org/script/import.html" />
+  <link rel="icon" href="../images/wand.png" />
+  <link rel="shortcut icon" href="../images/wand.ico" />
   <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700" />
-  <link rel="stylesheet" href="css/magick.css"/>
+  <link rel="stylesheet" href="css/magick.css" />
 </head>
 <body>
-<div class="main">
 <div class="magick-masthead">
   <div class="container">
     <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
@@ -43,46 +42,47 @@
     <script>
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
-    <nav class="magick-nav">
-      <a class="magick-nav-item " href="../index.html">Home</a>
-      <a class="magick-nav-item " href="download.html">Download</a>
-      <a class="magick-nav-item " href="command-line-tools.html">Tools</a>
-      <a class="magick-nav-item " href="command-line-processing.html">Command-line</a>
-      <a class="magick-nav-item " href="resources.html">Resources</a>
-      <a class="magick-nav-item " href="develop.html">Develop</a>
-      <a class="magick-nav-item " href="https://www.imagemagick.org/script/search.php">Search</a>
-      <a class="magick-nav-item float-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
+    <nav class="nav magick-nav">
+      <a class="nav-link " href="../index.html">Home</a>
+      <a class="nav-link " href="download.html">Download</a>
+      <a class="nav-link " href="command-line-tools.html">Tools</a>
+      <a class="nav-link " href="command-line-processing.html">Command-line</a>
+      <a class="nav-link " href="resources.html">Resources</a>
+      <a class="nav-link " href="develop.html">Develop</a>
+      <a class="nav-link " href="https://www.imagemagick.org/script/search.php">Search</a>
+      <a class="nav-link float-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
 </div>
 <div class="container">
+<div class="magick-main">
 <div class="magick-header">
 <p class="text-center"><a href="import.html#usage">Example Usage</a> • <a href="import.html#options">Option Summary</a></p>
 
 <p class="lead magick-description">Use the <code>import</code> program to capture some or all of an X server screen and save the image to a file. See <a href="command-line-processing.html">Command Line Processing</a> for advice on how to structure your <code>import</code> command or see below for example usages of the command.</p>
 
-<h2 class="magick-header"><a id="usage"></a>Example Usage</h2>
+<h2 class="magick-post-title"><a id="usage"></a>Example Usage</h2>
 
 <p>We list a few examples of the <code>import</code> command here to illustrate its usefulness and ease of use.  To get started, lets import an image in the JPEG format:</p>
 
-<pre>
+<pre><code>
 magick import rose.jpg
-</pre>
+</code></pre>
 
 <p>To capture the entire X server screen in the Postscript image format:</p>
 
-<pre>
+<pre><code>
 magick import -window root screen.ps
-</pre>
+</code></pre>
 
 <p>You can find additional examples of using <code>import</code> in <a href="http://www.ibm.com/developerworks/library/l-graf/?ca=dnt-428">Graphics from the Command Line</a>.  Further discussion is available in  <a href="http://www.ibm.com/developerworks/library/l-graf2/?ca=dgr-lnxw15GraphicsLine">More Graphics from the Command Line</a> and <a href="https://www.imagemagick.org/Usage/">Examples of ImageMagick Usage</a>.</p>
 
 
-<h2 class="magick-header"><a id="options"></a>Option Summary</h2>
+<h2 class="magick-post-title"><a id="options"></a>Option Summary</h2>
 
 <p>The <code>import</code> command recognizes these options.  Click on an option to get more details about how that option works.</p>
 
-<table class="table table-condensed table-striped">
+<table class="table table-sm table-striped">
   <tbody>
   <tr>
     <th align="left">Option</th>
@@ -427,4 +427,4 @@ magick import -window root screen.ps
 </div>
 </body>
 </html>
-<!-- Magick Cache 10th June 2017 13:15 -->
+<!-- Magick Cache 29th June 2017 11:06 -->

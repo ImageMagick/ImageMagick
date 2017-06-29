@@ -25,14 +25,13 @@
   <meta name="distribution" content="Global"/>
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-  <link rel="canonical" href="https://www.imagemagick.org/script/high-dynamic-range.html"/>
-  <link rel="icon" href="../images/wand.png"/>
-  <link rel="shortcut icon" href="../images/wand.ico"/>
+  <link rel="canonical" href="https://www.imagemagick.org/script/high-dynamic-range.html" />
+  <link rel="icon" href="../images/wand.png" />
+  <link rel="shortcut icon" href="../images/wand.ico" />
   <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700" />
-  <link rel="stylesheet" href="css/magick.css"/>
+  <link rel="stylesheet" href="css/magick.css" />
 </head>
 <body>
-<div class="main">
 <div class="magick-masthead">
   <div class="container">
     <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
@@ -43,19 +42,20 @@
     <script>
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
-    <nav class="magick-nav">
-      <a class="magick-nav-item " href="../index.html">Home</a>
-      <a class="magick-nav-item " href="download.html">Download</a>
-      <a class="magick-nav-item " href="command-line-tools.html">Tools</a>
-      <a class="magick-nav-item " href="command-line-processing.html">Command-line</a>
-      <a class="magick-nav-item " href="resources.html">Resources</a>
-      <a class="magick-nav-item " href="develop.html">Develop</a>
-      <a class="magick-nav-item " href="https://www.imagemagick.org/script/search.php">Search</a>
-      <a class="magick-nav-item float-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
+    <nav class="nav magick-nav">
+      <a class="nav-link " href="../index.html">Home</a>
+      <a class="nav-link " href="download.html">Download</a>
+      <a class="nav-link " href="command-line-tools.html">Tools</a>
+      <a class="nav-link " href="command-line-processing.html">Command-line</a>
+      <a class="nav-link " href="resources.html">Resources</a>
+      <a class="nav-link " href="develop.html">Develop</a>
+      <a class="nav-link " href="https://www.imagemagick.org/script/search.php">Search</a>
+      <a class="nav-link float-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
 </div>
 <div class="container">
+<div class="magick-main">
 <div class="magick-header">
 
 <p class="lead magick-description">High dynamic-range imaging (HDRI) permits a far greater dynamic range of exposures (i.e. a large difference between light and dark areas) than standard digital imaging techniques. HDRI accurately represents the wide range of intensity levels found in real scenes ranging from the brightest direct sunlight to the deepest darkest shadows.  The HDR imaging approach includes:</p>
@@ -67,7 +67,7 @@
   <li>apply tone-mapping for specific display</li>
 </ul>
 
-<h2 class="magick-header"><a id="enable"></a>Enabling HDRI in ImageMagick</h2>
+<h2 class="magick-post-title"><a id="enable"></a>Enabling HDRI in ImageMagick</h2>
 
 <p>By default, image pixels in ImageMagick version 7 are stored in a floating-point representation that range from 0 to the quantum depth, which is typically 16-bits (Q16).  With HDRI enabled, the pixels can include negative values as well as values that exceed the quantum depth. A majority of digital image formats do not support HDRI, and for those images any pixels outside the quantum range are clamped before they are stored.</p>
 
@@ -75,18 +75,18 @@
 
 <p>To disable the HDRI version of ImageMagick, use this Unix/Linux command:</p>
 
-<pre>
+<pre><code>
 ./configure --disable-hdri
-</pre>
+</code></pre>
 
 <p>Under Windows, uncomment the <code>MAGICKCORE_HDRI_SUPPORT</code> definition in the <code>magick-baseconfig.h</code> configuration file and build.</p>
 
 <p>To verify HDRI is properly configured, look for "HDRI" as a feature:</p>
 
-<pre>
+<pre><code>
 identify -version
 Features: HDRI
-</pre>
+</code></pre>
 </div>
   <footer class="magick-footer">
     <p><a href="support.html">Donate</a> •
@@ -107,4 +107,4 @@ Features: HDRI
 </div>
 </body>
 </html>
-<!-- Magick Cache 10th June 2017 13:15 -->
+<!-- Magick Cache 29th June 2017 11:06 -->

@@ -25,14 +25,13 @@
   <meta name="distribution" content="Global"/>
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-  <link rel="canonical" href="https://www.imagemagick.org/script/command-line-tools.html"/>
-  <link rel="icon" href="../images/wand.png"/>
-  <link rel="shortcut icon" href="../images/wand.ico"/>
+  <link rel="canonical" href="https://www.imagemagick.org/script/command-line-tools.html" />
+  <link rel="icon" href="../images/wand.png" />
+  <link rel="shortcut icon" href="../images/wand.ico" />
   <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700" />
-  <link rel="stylesheet" href="css/magick.css"/>
+  <link rel="stylesheet" href="css/magick.css" />
 </head>
 <body>
-<div class="main">
 <div class="magick-masthead">
   <div class="container">
     <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
@@ -43,19 +42,20 @@
     <script>
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
-    <nav class="magick-nav">
-      <a class="magick-nav-item " href="../index.html">Home</a>
-      <a class="magick-nav-item " href="download.html">Download</a>
-      <a class="magick-nav-item active" href="command-line-tools.html">Tools</a>
-      <a class="magick-nav-item " href="command-line-processing.html">Command-line</a>
-      <a class="magick-nav-item " href="resources.html">Resources</a>
-      <a class="magick-nav-item " href="develop.html">Develop</a>
-      <a class="magick-nav-item " href="https://www.imagemagick.org/script/search.php">Search</a>
-      <a class="magick-nav-item float-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
+    <nav class="nav magick-nav">
+      <a class="nav-link " href="../index.html">Home</a>
+      <a class="nav-link " href="download.html">Download</a>
+      <a class="nav-link active" href="command-line-tools.html">Tools</a>
+      <a class="nav-link " href="command-line-processing.html">Command-line</a>
+      <a class="nav-link " href="resources.html">Resources</a>
+      <a class="nav-link " href="develop.html">Develop</a>
+      <a class="nav-link " href="https://www.imagemagick.org/script/search.php">Search</a>
+      <a class="nav-link float-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
 </div>
 <div class="container">
+<div class="magick-main">
 <div class="magick-header">
 
 <p class="lead magick-description">ImageMagick includes a number of command-line utilities for manipulating images.  Most of you are probably accustomed to editing images one at a time with a graphical user interface (GUI) with such programs as Gimp or Photoshop.  However, a GUI is not always convenient.  Suppose you want to process an image dynamically from a web script or you want to apply the same operations to many images or repeat a specific operation at different times to the same or different image.  For these types of operations, the command-line image processing utility is appropriate.</p>
@@ -64,28 +64,28 @@
 
 <p>Here is a short description for each command-line tool. Click on the program name to get details about the program usage and a list of command-line options that alters how the program behaves.  If you are just getting acquainted with ImageMagick, start with the <a href="command-line-tools.html#magick">magick</a> program.  Be sure to peruse Anthony Thyssen's tutorial on how to use ImageMagick utilities to <a href="https://www.imagemagick.org/Usage/">create, edit, compose, or convert</a> images from the command-line.</p>
 
-<dl class="dl-horizontal">
-  <dt><a id="magick"></a><a href="magick.html">magick</a></dt><dd>convert between image formats as well as resize an image, blur, crop, despeckle, dither, draw on, flip, join, re-sample, and much more.</dd>
-  <dt><a id="magick-script"></a><a href="magick-script.html">magick-script</a></dt><dd>use this scripting language interpreter to convert between image formats as well as resize an image, blur, crop, despeckle, dither, draw on, flip, join, re-sample, and much more.</dd>
+<dl class="row">
+  <dt class="col-md-4"><a id="magick"></a><a href="magick.html">magick</a></dt><dd class="col-md-8">convert between image formats as well as resize an image, blur, crop, despeckle, dither, draw on, flip, join, re-sample, and much more.</dd>
+  <dt class="col-md-4"><a id="magick-script"></a><a href="magick-script.html">magick-script</a></dt><dd class="col-md-8">use this scripting language interpreter to convert between image formats as well as resize an image, blur, crop, despeckle, dither, draw on, flip, join, re-sample, and much more.</dd>
 </dl>
 <p>We also support tools for compatibility with ImageMagick <a href="http://legacy.imagemagick.org">version 6</a>:</p>
-<dl class="dl-horizontal">
-  <dt><a href="animate.html">animate</a></dt><dd>animate an image sequence on any X server.</dd>
-  <dt><a id="compare"></a><a href="compare.html">compare</a></dt><dd>mathematically and visually annotate the difference between an image and its reconstruction.</dd>
-  <dt><a id="composite"></a><a href="composite.html">composite</a></dt><dd>overlap one image over another.</dd>
-  <dt><a id="conjure"></a><a href="conjure.html">conjure</a></dt><dd>interpret and execute scripts written in the Magick Scripting Language (MSL).</dd>
-  <dt><a id="convert"></a><a href="convert.html">convert</a></dt><dd>convert between image formats as well as resize an image, blur, crop, despeckle, dither, draw on, flip, join, re-sample, and much more.</dd>
-  <dt><a id="display"></a><a href="display.html">display</a></dt><dd>display an image or image sequence on any X server.</dd>
-  <dt><a id="identify"></a><a href="identify.html">identify</a></dt><dd>describe the format and characteristics of one or more image files.</dd>
-  <dt><a id="import"></a><a href="import.html">import</a></dt><dd>save any visible window on an X server and outputs it as an image file. You can capture a single window, the entire screen, or any rectangular portion of the screen.</dd>
-  <dt><a id="mogrify"></a><a href="mogrify.html">mogrify</a></dt><dd>resize an image, blur, crop, despeckle, dither, draw on, flip, join, re-sample, and much more.  Mogrify overwrites the original image file, whereas, <a href="convert.html">convert</a> writes to a different image file.</dd>
-  <dt><a id="montage"></a><a href="montage.html">montage</a></dt><dd>create a composite image by combining several separate images.  The images are tiled on the composite image optionally adorned with a border, frame, image name, and more.</dd>
-  <dt><a id="stream"></a><a href="stream.html">stream</a></dt><dd>a lightweight tool to stream one or more pixel components of the image or portion of the image to your choice of storage formats.  It writes the pixel components as they are read from the input image a row at a time making <code>stream</code> desirable when working with large images or when you require raw pixel components.</dd>
+<dl class="row">
+  <dt class="col-md-4"><a href="animate.html">animate</a></dt><dd class="col-md-8">animate an image sequence on any X server.</dd>
+  <dt class="col-md-4"><a id="compare"></a><a href="compare.html">compare</a></dt><dd class="col-md-8">mathematically and visually annotate the difference between an image and its reconstruction.</dd>
+  <dt class="col-md-4"><a id="composite"></a><a href="composite.html">composite</a></dt><dd class="col-md-8">overlap one image over another.</dd>
+  <dt class="col-md-4"><a id="conjure"></a><a href="conjure.html">conjure</a></dt><dd class="col-md-8">interpret and execute scripts written in the Magick Scripting Language (MSL).</dd>
+  <dt class="col-md-4"><a id="convert"></a><a href="convert.html">convert</a></dt><dd class="col-md-8">convert between image formats as well as resize an image, blur, crop, despeckle, dither, draw on, flip, join, re-sample, and much more.</dd>
+  <dt class="col-md-4"><a id="display"></a><a href="display.html">display</a></dt><dd class="col-md-8">display an image or image sequence on any X server.</dd>
+  <dt class="col-md-4"><a id="identify"></a><a href="identify.html">identify</a></dt><dd class="col-md-8">describe the format and characteristics of one or more image files.</dd>
+  <dt class="col-md-4"><a id="import"></a><a href="import.html">import</a></dt><dd class="col-md-8">save any visible window on an X server and outputs it as an image file. You can capture a single window, the entire screen, or any rectangular portion of the screen.</dd>
+  <dt class="col-md-4"><a id="mogrify"></a><a href="mogrify.html">mogrify</a></dt><dd class="col-md-8">resize an image, blur, crop, despeckle, dither, draw on, flip, join, re-sample, and much more.  Mogrify overwrites the original image file, whereas, <a href="convert.html">convert</a> writes to a different image file.</dd>
+  <dt class="col-md-4"><a id="montage"></a><a href="montage.html">montage</a></dt><dd class="col-md-8">create a composite image by combining several separate images.  The images are tiled on the composite image optionally adorned with a border, frame, image name, and more.</dd>
+  <dt class="col-md-4"><a id="stream"></a><a href="stream.html">stream</a></dt><dd class="col-md-8">a lightweight tool to stream one or more pixel components of the image or portion of the image to your choice of storage formats.  It writes the pixel components as they are read from the input image a row at a time making <code>stream</code> desirable when working with large images or when you require raw pixel components.</dd>
 </dl>
 <p>If these tools are not available, you can simply append them to the <code>magick</code> tool like this:</p>
-<pre>
+<pre><code>
 magick convert logo: logo.jpg
-</pre>
+</code></pre>
 
 </div>
   <footer class="magick-footer">
@@ -107,4 +107,4 @@ magick convert logo: logo.jpg
 </div>
 </body>
 </html>
-<!-- Magick Cache 10th June 2017 13:14 -->
+<!-- Magick Cache 29th June 2017 11:02 -->

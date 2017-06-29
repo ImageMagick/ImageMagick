@@ -25,14 +25,13 @@
   <meta name="distribution" content="Global"/>
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-  <link rel="canonical" href="https://www.imagemagick.org/script/identify.html"/>
-  <link rel="icon" href="../images/wand.png"/>
-  <link rel="shortcut icon" href="../images/wand.ico"/>
+  <link rel="canonical" href="https://www.imagemagick.org/script/identify.html" />
+  <link rel="icon" href="../images/wand.png" />
+  <link rel="shortcut icon" href="../images/wand.ico" />
   <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700" />
-  <link rel="stylesheet" href="css/magick.css"/>
+  <link rel="stylesheet" href="css/magick.css" />
 </head>
 <body>
-<div class="main">
 <div class="magick-masthead">
   <div class="container">
     <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
@@ -43,36 +42,37 @@
     <script>
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
-    <nav class="magick-nav">
-      <a class="magick-nav-item " href="../index.html">Home</a>
-      <a class="magick-nav-item " href="download.html">Download</a>
-      <a class="magick-nav-item " href="command-line-tools.html">Tools</a>
-      <a class="magick-nav-item " href="command-line-processing.html">Command-line</a>
-      <a class="magick-nav-item " href="resources.html">Resources</a>
-      <a class="magick-nav-item " href="develop.html">Develop</a>
-      <a class="magick-nav-item " href="https://www.imagemagick.org/script/search.php">Search</a>
-      <a class="magick-nav-item float-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
+    <nav class="nav magick-nav">
+      <a class="nav-link " href="../index.html">Home</a>
+      <a class="nav-link " href="download.html">Download</a>
+      <a class="nav-link " href="command-line-tools.html">Tools</a>
+      <a class="nav-link " href="command-line-processing.html">Command-line</a>
+      <a class="nav-link " href="resources.html">Resources</a>
+      <a class="nav-link " href="develop.html">Develop</a>
+      <a class="nav-link " href="https://www.imagemagick.org/script/search.php">Search</a>
+      <a class="nav-link float-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
 </div>
 <div class="container">
+<div class="magick-main">
 <div class="magick-header">
 <p class="text-center"><a href="identify.html#usage">Example Usage</a> • <a href="identify.html#options">Option Summary</a></p>
 
 <p class="lead magick-description">The <code>identify</code> program describes the format and characteristics of one or more image files. It also reports if an image is incomplete or corrupt. The information returned includes the image number, the file name, the width and height of the image, whether the image is colormapped or not, the number of colors in the image, the number of bytes in the image, the format of the image (JPEG, PNM, etc.), and finally the number of seconds it took to read and process the image.  Many more attributes are available with the verbose option.  See <a href="command-line-processing.html">Command Line Processing</a> for advice on how to structure your <code>identify</code> command or see below for example usages of the command.</p>
 
-<h2 class="magick-header"><a id="usage"></a>Example Usage</h2>
+<h2 class="magick-post-title"><a id="usage"></a>Example Usage</h2>
 
 <p>We list a few examples of the <code>identify</code> command here to illustrate its usefulness and ease of use. To get started, lets identify an image in the JPEG format:</p>
 
-<pre>
+<pre><code>
 -> magick identify rose.jpg
 rose.jpg JPEG 70x46 70x46+0+0 8-bit sRGB 2.36KB 0.000u 0:00.000
-</pre>
+</code></pre>
 
 <p>Next, we look at the same image in greater detail:</p>
 
-<pre class="pre-scrollable">-> magick identify -verbose rose.jpg
+<pre class="pre-scrollable"><code>-> magick identify -verbose rose.jpg
 Image: rose.jpg
   Format: JPEG (Joint Photographic Experts Group JFIF format)
   Mime type: images/jpeg
@@ -154,41 +154,41 @@ Image: rose.jpg
   User time: 0.000u
   Elapsed time: 0:01.000
   Version: ImageMagick 7.0.4-8 Q16 x86_64 http://www.imagemagick.org
-</pre>
+</code></pre>
 
 <p>To get the print size in inches of an image at 72 DPI, use:</p>
 
-<pre>
+<pre><code>
 -> magick identify -format "%[fx:w/72] by %[fx:h/72] inches" document.png
 8.5 x 11 inches
-</pre>
+</code></pre>
 
 <p>The depth and dimensions of a raw image must be specified on the command line:</p>
 
-<pre>
+<pre><code>
 -> magick identify -depth 8 -size 640x480 image.raw
 image.raw RGB 640x480 sRGB 9kb 0.000u 0:01
-</pre>
+</code></pre>
 
 <p>Here we display the image texture features, moments, perceptual hash, and the number of unique colors in the image:</p>
 
-<pre>
+<pre><code>
 -> magick identify -verbose -features 1 -moments -unique image.png
-</pre>
+</code></pre>
 
 <p>Here is a special define that outputs the location of the minimum or maximum pixel of the image:</p>
 
-<pre>
+<pre><code>
 magick identify -precision 5 -define identify:locate=maximum -define identify:limit=3 image.png
-</pre>
+</code></pre>
 
 <p>You can find additional examples of using <code>identify</code> in <a href="https://www.imagemagick.org/Usage/">Examples of ImageMagick Usage</a>.</p>
 
-<h2 class="magick-header"><a id="options"></a>Option Summary</h2>
+<h2 class="magick-post-title"><a id="options"></a>Option Summary</h2>
 
 <p>The <code>identify</code> command recognizes these options.  Click on an option to get more details about how that option works.</p>
 
-<table class="table table-condensed table-striped">
+<table class="table table-sm table-striped">
   <tbody>
   <tr>
     <th align="left">Option</th>
@@ -429,4 +429,4 @@ transparent, extract, background, or shape the alpha channel</td>
 </div>
 </body>
 </html>
-<!-- Magick Cache 10th June 2017 13:15 -->
+<!-- Magick Cache 29th June 2017 11:06 -->

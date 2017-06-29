@@ -25,14 +25,13 @@
   <meta name="distribution" content="Global"/>
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-  <link rel="canonical" href="https://www.imagemagick.org/script/color-management.html"/>
-  <link rel="icon" href="../images/wand.png"/>
-  <link rel="shortcut icon" href="../images/wand.ico"/>
+  <link rel="canonical" href="https://www.imagemagick.org/script/color-management.html" />
+  <link rel="icon" href="../images/wand.png" />
+  <link rel="shortcut icon" href="../images/wand.ico" />
   <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700" />
-  <link rel="stylesheet" href="css/magick.css"/>
+  <link rel="stylesheet" href="css/magick.css" />
 </head>
 <body>
-<div class="main">
 <div class="magick-masthead">
   <div class="container">
     <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
@@ -43,19 +42,20 @@
     <script>
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
-    <nav class="magick-nav">
-      <a class="magick-nav-item " href="../index.html">Home</a>
-      <a class="magick-nav-item " href="download.html">Download</a>
-      <a class="magick-nav-item " href="command-line-tools.html">Tools</a>
-      <a class="magick-nav-item " href="command-line-processing.html">Command-line</a>
-      <a class="magick-nav-item " href="resources.html">Resources</a>
-      <a class="magick-nav-item " href="develop.html">Develop</a>
-      <a class="magick-nav-item " href="https://www.imagemagick.org/script/search.php">Search</a>
-      <a class="magick-nav-item float-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
+    <nav class="nav magick-nav">
+      <a class="nav-link " href="../index.html">Home</a>
+      <a class="nav-link " href="download.html">Download</a>
+      <a class="nav-link " href="command-line-tools.html">Tools</a>
+      <a class="nav-link " href="command-line-processing.html">Command-line</a>
+      <a class="nav-link " href="resources.html">Resources</a>
+      <a class="nav-link " href="develop.html">Develop</a>
+      <a class="nav-link " href="https://www.imagemagick.org/script/search.php">Search</a>
+      <a class="nav-link float-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
 </div>
 <div class="container">
+<div class="magick-main">
 <div class="magick-header">
 
 <p class="lead magick-description">Color management has changed significantly between ImageMagick version 6.7.5-5 and 6.8.0-3 in order to better conform to color and grayscale standards.</p>
@@ -64,63 +64,63 @@
 
 <p>ImageMagick supports color profiles, however, for images without a profile or a declaration of colorspace, ImageMagick assumes non-linear sRGB.  Most image processing algorithms assume a linear colorspace, therefore it might be prudent to convert to linear color or remove the gamma function before certain image processing algorithms are applied. For example,</p>
 
-<pre>
+<pre><code>
 convert myimage.jpg -colorspace RGB -resize 200% -colorspace sRGB mybigimage.jpg
-</pre>
+</code></pre>
 
 <p>To declare that an image is linear RGB rather than sRGB, you can use the set option:</p>
 
-<pre>
+<pre><code>
 convert myimage.png -set colorspace RGB myRGBimage.png
-</pre>
+</code></pre>
 
 <p>Afterwards, the verbose information for the output file lists the colorspace as RGB. This only works on image types containing meta data that distinguishes between linear RGB and non-linear sRGB, such as PNG and GIF. Therefore, if the above command is run with a JPG or TIF output format, the verbose information for the colorspace still shows sRGB. In order to properly have the JPG output know that it is linear RGB, include an appropriate color profile.</p>
 
 
 <p>The second major change treats any grayscale image as linear rather than non-linear, as it was previously.  This change is appropriate, since many types of processing requires a linear colorspace. This means that the conversion of a color image to grayscale via <code>-colorspace gray</code> looks darker relative to previous versions of ImageMagick (note that desaturating to convert to grayscale does not convert the image to linear grayscale). If you prefer to keep the conversion to non-linear grayscale, set the colorspace of the input to linear RGB so that <code>-colorspace gray</code> does not apply the gamma correction during the conversion process. For example, the following produces a non-linear grayscale result.</p>
 
-<pre>
+<pre><code>
 convert myimage.png -set colorspace RGB -colorspace gray myRGBimage.png
-</pre>
+</code></pre>
 
 <p>The same concept is needed when separating channels. Normally, the conversion to separate each channel of an sRGB color image produces separate linear grayscale images. However the same concept can be applied, if it is desired to keep the separate channels as non-linear grayscale. For example, the following produces non-linear grayscale channels.</p>
 
-<pre>
+<pre><code>
 convert myimage.png -set colorspace RGB -separate myimage_channels_%d.png
-</pre>
+</code></pre>
 
 <p>When separating and recombining channels, with potential intermediate processing, it is important to identify the colorspace used, especially during the recombination. For example,</p>
 
-<pre>
+<pre><code>
 convert myimage.png -separate myimage_channels_%d.png
 convert myimage_channels_*.png -combine myimage2.png
-</pre>
+</code></pre>
 
 <p>In the above example, the result is darker than the original, because the channels were separate as linear gray and subsequently combined as linear color. In order to return the channels back to sRGB, one must change the colorspace from RGB back to sRGB after the <code>-combine</code> step.</p>
 
-<pre>
+<pre><code>
 convert myimage.png -separate myimage_channels_%d.png
 convert myimage_channels_*.png -combine -colorspace sRGB myimage2.png
-</pre>
+</code></pre>
 
 <p>If one desires to separate to non-linear grayscale channels, recombine them later, perhaps after some processing, then use the same concept as above for maintaining non-linear grayscale:</p>
 
-<pre>
+<pre><code>
 convert myimage.png -set colorspace RGB -separate myimage_channels_%d.png
 convert myimage_channels_*.png -combine -colorspace RGB -set colorspace sRGB myimage2.png
-</pre>
+</code></pre>
 
 <p>When converting to another colorspace and back, such as between sRGB and HSL, the following two commands handle the first case of linear channels and the second case of non-linear channels:</p>
 
-<pre>
+<pre><code>
 convert myimage.png -colorspace HSL -separate myimage_channels_%d.png
 convert myimage_channels_*.png -set colorspace HSL -combine -colorspace sRGB myimage2.png
-</pre>
+</code></pre>
 
-<pre>
+<pre><code>
 convert myimage.png -set colorspace RGB -colorspace HSL -separate myimage_channels_%d.png
 convert myimage_channels_*.png -set colorspace HSL -combine -colorspace RGB -set colorspace sRGB myimage2.png
-</pre>
+</code></pre>
 
 <p>A majority of the image formats assume an sRGB colorspace (e.g. JPEG, PNG, etc.). A few support only linear RGB (e.g. EXR, DPX, CIN, HDR) or only linear GRAY (e.g. PGM). A few formats support CMYK. For example JPG does, but PNG does not. Then there is the occasional format that also supports LAB (that is CieLAB) (e.g. TIFF, PSD, JPG, JP2). For additional information, see the <a href="https://www.imagemagick.org/script/formats.html#colorspace" >Colorspace</a> and <a href="https://www.imagemagick.org/script/formats.html#supported" >Supported Formats</a> pages.</p>
 
@@ -150,4 +150,4 @@ convert myimage_channels_*.png -set colorspace HSL -combine -colorspace RGB -set
 </div>
 </body>
 </html>
-<!-- Magick Cache 10th June 2017 13:15 -->
+<!-- Magick Cache 29th June 2017 11:03 -->

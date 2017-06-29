@@ -25,14 +25,13 @@
   <meta name="distribution" content="Global"/>
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-  <link rel="canonical" href="https://www.imagemagick.org/script/ImageMagickObject.html"/>
-  <link rel="icon" href="../images/wand.png"/>
-  <link rel="shortcut icon" href="../images/wand.ico"/>
+  <link rel="canonical" href="https://www.imagemagick.org/script/ImageMagickObject.html" />
+  <link rel="icon" href="../images/wand.png" />
+  <link rel="shortcut icon" href="../images/wand.ico" />
   <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700" />
-  <link rel="stylesheet" href="css/magick.css"/>
+  <link rel="stylesheet" href="css/magick.css" />
 </head>
 <body>
-<div class="main">
 <div class="magick-masthead">
   <div class="container">
     <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
@@ -43,19 +42,20 @@
     <script>
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
-    <nav class="magick-nav">
-      <a class="magick-nav-item " href="../index.html">Home</a>
-      <a class="magick-nav-item " href="download.html">Download</a>
-      <a class="magick-nav-item " href="command-line-tools.html">Tools</a>
-      <a class="magick-nav-item " href="command-line-processing.html">Command-line</a>
-      <a class="magick-nav-item " href="resources.html">Resources</a>
-      <a class="magick-nav-item " href="develop.html">Develop</a>
-      <a class="magick-nav-item " href="https://www.imagemagick.org/script/search.php">Search</a>
-      <a class="magick-nav-item float-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
+    <nav class="nav magick-nav">
+      <a class="nav-link " href="../index.html">Home</a>
+      <a class="nav-link " href="download.html">Download</a>
+      <a class="nav-link " href="command-line-tools.html">Tools</a>
+      <a class="nav-link " href="command-line-processing.html">Command-line</a>
+      <a class="nav-link " href="resources.html">Resources</a>
+      <a class="nav-link " href="develop.html">Develop</a>
+      <a class="nav-link " href="https://www.imagemagick.org/script/search.php">Search</a>
+      <a class="nav-link float-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
 </div>
 <div class="container">
+<div class="magick-main">
 <div class="magick-header">
 <p class="text-center"><a href="http://www.imagemagick.org/www/#build">Build ImageMagickObject From Source</a></p>
 
@@ -65,17 +65,17 @@
 
 <p>ImageMagick provides a statically-built ImageMagick object as part of its <a href="download.html#windows">Windows installation package</a>.  When this package is installed, ImageMagickObject and its sample programs are installed to this path:</p>
 
-<pre>
-  c:\Program Files\ImageMagick-7.0.5-Q16\ImageMagickObject
-</pre>
+<pre><code>
+  c:\Program Files\ImageMagick-7.0.6-Q16\ImageMagickObject
+</code></pre>
 
 <p>The ImageMagickObject is registered if the checkbox, <code>Register ImageMagickObject</code>, is checked at install time.</p>
 
 <p>To execute the sample program from the Windows Command Shell, type:</p>
 
-<pre>
+<pre><code>
 cscript SimpleTest.vbs
-</pre>
+</code></pre>
 
 <p>Since the ImageMagick utility command line parsers are incorporated within ImageMagickObject, please refer to the <a href="command-line-tools.html">command-line tools</a> discussion to learn how to use it. The sample VBS scripts show how the object should be called and used and have lots of comments.</p>
 
@@ -83,30 +83,30 @@ cscript SimpleTest.vbs
 
 <p>MagickCMD is a C++ sample, but it also serves as a replacement for all the other command line utilities in most applications. Instead of using <code>convert xxxx yyyy</code> you can use <code>MagickCMD convert xxxx yyyy</code> instead. MagickCMD calls the COM object to accomplish the designated task.  This small tight combination replaces the entire usual binary distribution in just a few mebibytes.</p>
 
-<h2 class="magick-header"><a id="build"></a>Build ImageMagickObject From Source</h2>
+<h2 class="magick-post-title"><a id="build"></a>Build ImageMagickObject From Source</h2>
 
 <p>The source code for ImageMagickObject is available from the ImageMagick <a href="http://git.imagemagick.org/repos/ImageMagick">GIT</a> repository, or as part of the <a href="install-source.html#windows">Windows source</a> distribution. Once the source code has been retrieved and extracted, the source for ImageMagickObject is the directory <code>ImageMagick\contrib\win32\ATL7ImageMagickObject</code>, however, ImageMagick itself must be built using the static-multithread (VisualStaticMT) build configuration.  Building ImageMagickObject requires Microsoft Visual C++ 7.0 as delivered with Microsoft's Visual Studio .NET package. See the <a href="install-source.html#windows">Windows compilation instructions</a> to get ImageMagick itself built before building the ImageMagick COM+ component.</p>
 
 <p>Once the VisualStaticMT project has been built, build the ImageMagickObject with this procedure:</p>
 
-<pre>
+<pre><code>
 cd ImageMagick/contrib/win32/ATL7/ImageMagickObject
 BuildImageMagickObject release
-</pre>
+</code></pre>
 
 <p>Here, we assume that the VisualStaticMT project has been built using the release setting for an optimized build. If the debug setting was used for a debug build, specify the argument <code>debug</code>; instead.</p>
 
 <p>To register the DLL as a COM+ server, type</p>
 
-<pre>
+<pre><code>
 regsvr32 /c /s ImageMagickObject.dll
-</pre>
+</code></pre>
 
 <p>To unregister the DLL, type</p>
 
-<pre>
+<pre><code>
 regsvr32 /u /s ImageMagickObject.dll
-</pre>
+</code></pre>
 
 <p>Use MagickCMD to exercise ImageMagickObject to verify that it is working properly.</p>
 
@@ -130,4 +130,4 @@ regsvr32 /u /s ImageMagickObject.dll
 </div>
 </body>
 </html>
-<!-- Magick Cache 10th June 2017 13:15 -->
+<!-- Magick Cache 29th June 2017 11:07 -->

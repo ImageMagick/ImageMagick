@@ -25,14 +25,13 @@
   <meta name="distribution" content="Global"/>
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-  <link rel="canonical" href="https://www.imagemagick.org/script/miff.html"/>
-  <link rel="icon" href="../images/wand.png"/>
-  <link rel="shortcut icon" href="../images/wand.ico"/>
+  <link rel="canonical" href="https://www.imagemagick.org/script/miff.html" />
+  <link rel="icon" href="../images/wand.png" />
+  <link rel="shortcut icon" href="../images/wand.ico" />
   <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700" />
-  <link rel="stylesheet" href="css/magick.css"/>
+  <link rel="stylesheet" href="css/magick.css" />
 </head>
 <body>
-<div class="main">
 <div class="magick-masthead">
   <div class="container">
     <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
@@ -43,25 +42,26 @@
     <script>
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
-    <nav class="magick-nav">
-      <a class="magick-nav-item " href="../index.html">Home</a>
-      <a class="magick-nav-item " href="download.html">Download</a>
-      <a class="magick-nav-item " href="command-line-tools.html">Tools</a>
-      <a class="magick-nav-item " href="command-line-processing.html">Command-line</a>
-      <a class="magick-nav-item " href="resources.html">Resources</a>
-      <a class="magick-nav-item " href="develop.html">Develop</a>
-      <a class="magick-nav-item " href="https://www.imagemagick.org/script/search.php">Search</a>
-      <a class="magick-nav-item float-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
+    <nav class="nav magick-nav">
+      <a class="nav-link " href="../index.html">Home</a>
+      <a class="nav-link " href="download.html">Download</a>
+      <a class="nav-link " href="command-line-tools.html">Tools</a>
+      <a class="nav-link " href="command-line-processing.html">Command-line</a>
+      <a class="nav-link " href="resources.html">Resources</a>
+      <a class="nav-link " href="develop.html">Develop</a>
+      <a class="nav-link " href="https://www.imagemagick.org/script/search.php">Search</a>
+      <a class="nav-link float-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
 </div>
 <div class="container">
+<div class="magick-main">
 <div class="magick-header">
 <p class="text-center"><a href="miff.html#miff-header">MIFF Header</a> • <a href="miff.html#binary">MIFF Binary Data</a></p>
 
 <p class="lead magick-description">The Magick Image File Format (MIFF) is ImageMagick's own platform-independent format for storing bitmap images.  It has an advantage over other image formats in that it stores all metadata known to ImageMagick (e.g. image color profiles, comments, author, copyright, etc.), whereas, other formats may only support a small portion of available metadata or none at all.  A MIFF image file consist of two sections.  The first section is a header composed of keys describing the image in text form.  The next section is the binary image data.  We discuss these sections in detail below.</p>
 
-<h2 class="magick-header"><a id="miff-header"></a>MIFF Header</h2>
+<h2 class="magick-post-title"><a id="miff-header"></a>MIFF Header</h2>
 
 
 <p>The MIFF header is composed entirely of ISO-8859-1 characters.  The fields in the header are key and value combination in the <var>key = value</var> format, with each key and value separated by an equal sign (<code>=</code>).  Each <var>key = value</var> combination is delimited by at least one control or whitespace character.  Comments may appear in the header section and are always delimited by braces.  The MIFF header always ends with a colon (<code>:</code>) character, followed by a <var>ctrl-Z</var> character.  It is also common to proceed the colon with a <var>formfeed</var> and a <var>newline</var> character.  The <var>formfeed</var> prevents the listing of binary data when using the <code>more</code> Unix program, whereas, the <var>ctrl-Z</var> has the same effect with the <code>type</code> command on the Windows command line.</p>
@@ -69,7 +69,7 @@
 <p>The following is a partial list of <var> key = value</var> combinations that are typically be found in a MIFF file:</p>
 
 <div class="table-responsive">
-<table class="table table-condensed table-striped">
+<table class="table table-sm table-striped">
   <tr>
     <td>background-color = <var>color</var></td>
     <td> </td>
@@ -114,10 +114,10 @@
     <td>dispose = <var>value</var></td>
     <td>layer disposal method.  Here are the valid values:
 	  <ul>
-	    <dd>0. No disposal specified.</dd>
-  	  <dd>1. Do not dispose between frames.</dd>
-  	  <dd>2. Overwrite frame with background color from header.</dd>
-  	  <dd>3. Overwrite with previous frame.</dd>
+	    <dd class="col-md-8">0. No disposal specified.</dd>
+  	  <dd class="col-md-8">1. Do not dispose between frames.</dd>
+  	  <dd class="col-md-8">2. Overwrite frame with background color from header.</dd>
+  	  <dd class="col-md-8">3. Overwrite with previous frame.</dd>
   	</ul>
     </td>
   </tr>
@@ -194,7 +194,7 @@
 
 <p>Other key value pairs are permitted.  If a value contains whitespace it must be enclosed with braces as illustrated here:</p>
 
-<pre>
+<pre><code>
 id=ImageMagick
 class=PseudoClass  colors=256  matte=False
 columns=1280  rows=1024  depth=8
@@ -202,7 +202,7 @@ compression=RLE
 colorspace=RGB
 copyright={© 1999-2017 ImageMagick Studio LLC}
 &#8942;
-</pre>
+</code></pre>
 
 <p>Note that <var>key = value</var> combinations may be separated by <var>newlines</var> or spaces and may occur in any order within the header.  Comments (within braces) may appear anywhere before the colon.</p>
 
@@ -212,7 +212,7 @@ copyright={© 1999-2017 ImageMagick Studio LLC}
 
 <p>The header is separated from the image data by a <code>:</code> character immediately followed by a <var>newline</var>.</p>
 
-<h2 class="magick-header"><a id="binary"></a>MIFF Binary Data</h2>
+<h2 class="magick-post-title"><a id="binary"></a>MIFF Binary Data</h2>
 
 <p>Next comes the binary image data itself.  How the image data is formatted depends upon the class of the image as specified (or not specified) by the value of the class key in the header.</p>
 
@@ -245,4 +245,4 @@ or fewer colors in the image, each byte of image data contains an index value. I
 </div>
 </body>
 </html>
-<!-- Magick Cache 10th June 2017 13:15 -->
+<!-- Magick Cache 29th June 2017 11:07 -->

@@ -25,14 +25,13 @@
   <meta name="distribution" content="Global"/>
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-  <link rel="canonical" href="https://www.imagemagick.org/script/formats.html"/>
-  <link rel="icon" href="../images/wand.png"/>
-  <link rel="shortcut icon" href="../images/wand.ico"/>
+  <link rel="canonical" href="https://www.imagemagick.org/script/formats.html" />
+  <link rel="icon" href="../images/wand.png" />
+  <link rel="shortcut icon" href="../images/wand.ico" />
   <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700" />
-  <link rel="stylesheet" href="css/magick.css"/>
+  <link rel="stylesheet" href="css/magick.css" />
 </head>
 <body>
-<div class="main">
 <div class="magick-masthead">
   <div class="container">
     <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
@@ -43,19 +42,20 @@
     <script>
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
-    <nav class="magick-nav">
-      <a class="magick-nav-item " href="../index.html">Home</a>
-      <a class="magick-nav-item " href="download.html">Download</a>
-      <a class="magick-nav-item " href="command-line-tools.html">Tools</a>
-      <a class="magick-nav-item " href="command-line-processing.html">Command-line</a>
-      <a class="magick-nav-item " href="resources.html">Resources</a>
-      <a class="magick-nav-item " href="develop.html">Develop</a>
-      <a class="magick-nav-item " href="https://www.imagemagick.org/script/search.php">Search</a>
-      <a class="magick-nav-item float-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
+    <nav class="nav magick-nav">
+      <a class="nav-link " href="../index.html">Home</a>
+      <a class="nav-link " href="download.html">Download</a>
+      <a class="nav-link " href="command-line-tools.html">Tools</a>
+      <a class="nav-link " href="command-line-processing.html">Command-line</a>
+      <a class="nav-link " href="resources.html">Resources</a>
+      <a class="nav-link " href="develop.html">Develop</a>
+      <a class="nav-link " href="https://www.imagemagick.org/script/search.php">Search</a>
+      <a class="nav-link float-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
 </div>
 <div class="container">
+<div class="magick-main">
 <div class="magick-header">
 <p class="text-center"><a href="formats.html#colorspace">A Word about Colorspaces</a> • <a href="formats.html#supported">Supported Formats</a> • <a href="formats.html#pseudo">Pseudo Formats</a> • <a href="formats.html#builtin-images">Built-in Images</a>  • <a href="formats.html#builtin-patterns">Built-in Patterns</a> • <a href="formats.html#embedded">Embedded Profiles</a></p>
 
@@ -63,13 +63,13 @@
 
 <p>To get a complete listing of which image formats are supported on your system, type</p>
 
-<pre>
+<pre><code>
 identify -list format
-</pre>
+</code></pre>
 
 <p>On some platforms, ImageMagick automagically processes these extensions: .gz for Zip compression, .Z for Unix compression, .bz2 for block compression, and .pgp for PGP encryption. For example, a PNM image called image.pnm.gz is automagically uncompressed.</p>
 
-<h2 class="magick-header"><a id="colorspace"></a>A Word about Colorspaces</h2>
+<h2 class="magick-post-title"><a id="colorspace"></a>A Word about Colorspaces</h2>
  <p>A majority of the image formats assume an sRGB
 colorspace (e.g. JPEG, PNG, etc.).  A few support only linear RGB (e.g. EXR,
 DPX, CIN, HDR) or only linear GRAY (e.g. PGM).  A few formats support CMYK.
@@ -77,19 +77,19 @@ Then there is the occasional format that also supports LAB (that is CieLAB)
 (e.g. TIFF, PSD, JPG, JP2).  To determine the colorspace of your image, use
 this command:</p>
 
-<pre>
+<pre><code>
 -> identify -verbose image.jpg
 Image: image.jpg
 Format: JPEG (Joint Photographic Experts Group JFIF format)
 ...
 Colorspace: sRGB
-</pre>
+</code></pre>
 
 OR use the appropriate percent escape
-<pre>
+<pre><code>
 -> convert image.jpg -print "%[colorspace]\n" null:
 sRGB
-</pre>
+</code></pre>
 
 
 <p>When processing an image, be aware of the colorspace.  Many image
@@ -98,18 +98,18 @@ satisfactory results processing in the sRGB colorspace, you may get improved
 results in linear RGB (essentially sRGB with the gamma function removed).  For
 example,</p>
 
-<pre>
+<pre><code>
 convert image.jpg -colorspace RGB -resize 50% -colorspace sRGB resize.jpg
-</pre>
+</code></pre>
 
 <p>As of IM 6.7.8-2 one can properly work in LAB colorspace whether or not
 Imagemagick is <a href="high-dynamic-range.html">HDRI</a>-enabled.  Essentually the A and
 B channels are stored with a 50% gray bias, to allow it to handle the
 negatives required by the format.</p>
 
-<pre>
+<pre><code>
 convert lab.tif -resize 50% resize.jpg
-</pre>
+</code></pre>
 
 <p>Again, it may not make sense for some image processing operators to work
 directly in LAB space, but ImageMagick permits it and generally returns
@@ -121,18 +121,18 @@ colorspace some other linear colorspace, before apply your processing
 operator. Afterward you can transform back to the LAB colorspace.  For
 example,</p>
 
-<pre>
+<pre><code>
   convert lab.tif -colorspace RGB -resize 50% -colorspace Lab resize.jpg
-</pre>
+</code></pre>
 
-<h2 class="magick-header"><a id="supported"></a>Supported Image Formats</h2>
+<h2 class="magick-post-title"><a id="supported"></a>Supported Image Formats</h2>
 
 <p>ImageMagick supports reading over 100 major file formats (not
 including sub-formats). The following table provides a summary of
 the supported image formats.</p>
 
 <div class="table-responsive">
-<table class="table table-condensed table-striped">
+<table class="table table-sm table-striped">
   <tbody>
   <tr>
     <th>Tag</th>
@@ -630,11 +630,11 @@ the supported image formats.</p>
     <td>RW</td>
     <td>Magick Persistent Registry</td>
     <td>This format permits you to write to and read images from memory.  The image persists until the program exits.  For example, let's use the MPR to create a checkerboard:
-<pre>
+<pre><code>
 convert \( -size 15x15 canvas:black canvas:white -append \) \
   \( +clone -flip \) +append -write mpr:checkers +delete \
   -size 240x240 tile:mpr:checkers board.png
-</pre></td>
+</code></pre></td>
   </tr>
 
   <tr>
@@ -1213,12 +1213,12 @@ convert \( -size 15x15 canvas:black canvas:white -append \) \
 </table>
 </div>
 
-<h2 class="magick-header"><a id="pseudo"></a>Pseudo-image Formats</h2>
+<h2 class="magick-post-title"><a id="pseudo"></a>Pseudo-image Formats</h2>
 
 <p>ImageMagick supports a number of image format specifications which refer to images prepared via an algorithm, or input/output targets. The following table lists these pseudo-image formats:</p>
 
 <div class="table-responsive">
-<table class="table table-condensed table-striped">
+<table class="table table-sm table-striped">
   <tr>
     <th>Tag</th>
     <th>Mode</th>
@@ -1439,12 +1439,12 @@ convert \( -size 15x15 canvas:black canvas:white -append \) \
 </table>
 </div>
 
-<h2 class="magick-header"><a id="builtin-images"></a>Built-in Images</h2>
+<h2 class="magick-post-title"><a id="builtin-images"></a>Built-in Images</h2>
 
 <p>ImageMagick includes a number of built-in (embedded) images which may be referenced as if they were an image file. The <code>magick:</code> format tag may be used via the syntax <code>magick:</code><var>name</var> to request an embedded image (e.g. <code>magick:logo</code>). For backwards compatibility, the image specifications <code>GRANITE:</code>, <code>LOGO:</code>, <code>NETSCAPE:</code>, and <code>ROSE:</code> may also be used to request images with those names.</p>
 
 <div class="table-responsive">
-<table class="table table-condensed table-striped">
+<table class="table table-sm table-striped">
   <tr>
     <th>Tag</th>
     <th>Mode</th>
@@ -1489,12 +1489,12 @@ convert \( -size 15x15 canvas:black canvas:white -append \) \
 
 </table></div>
 
-<h2 class="magick-header"><a id="builtin-patterns"></a>Built-in Patterns</h2>
+<h2 class="magick-post-title"><a id="builtin-patterns"></a>Built-in Patterns</h2>
 
 <p>ImageMagick includes a number of built-in (embedded) patterns which may be referenced as if they were an image file. The <code>pattern:</code> format tag may be used via the syntax <code>pattern:</code><var>name</var> to request an embedded pattern (e.g. <code>pattern:checkerboard</code>). The pattern size is controlled with the <a href="command-line-options.html#size">-size</a> command line option.</p>
 
 <div class="table-responsive">
-<table class="table table-condensed table-striped">
+<table class="table table-sm table-striped">
   <tr>
     <th>Tag</th>
     <th>Mode</th>
@@ -1881,12 +1881,12 @@ convert \( -size 15x15 canvas:black canvas:white -append \) \
   </tr>
 </table></div>
 
-<h2 class="magick-header"><a id="embedded"></a>Embedded Image Profiles</h2>
+<h2 class="magick-post-title"><a id="embedded"></a>Embedded Image Profiles</h2>
 
 <p>ImageMagick provides a number of format identifiers which are used to add, remove, and save embedded profiles for images which can support embedded profiles. Image types which may contain embedded profiles are TIFF, JPEG, and PDF.</p>
 
 <div class="table-responsive">
-<table class="table table-condensed table-striped">
+<table class="table table-sm table-striped">
   <tbody>
   <tr>
     <th>Tag</th>
@@ -1967,4 +1967,4 @@ convert \( -size 15x15 canvas:black canvas:white -append \) \
 </div>
 </body>
 </html>
-<!-- Magick Cache 10th June 2017 13:14 -->
+<!-- Magick Cache 29th June 2017 11:03 -->

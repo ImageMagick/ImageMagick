@@ -25,14 +25,13 @@
   <meta name="distribution" content="Global"/>
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-  <link rel="canonical" href="compose.html"/>
-  <link rel="icon" href="https://www.imagemagick.org/images/wand.png"/>
-  <link rel="shortcut icon" href="https://www.imagemagick.org/images/wand.ico"/>
+  <link rel="canonical" href="compose.html" />
+  <link rel="icon" href="https://www.imagemagick.org/images/wand.png" />
+  <link rel="shortcut icon" href="https://www.imagemagick.org/images/wand.ico" />
   <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700" />
-  <link rel="stylesheet" href="https://www.imagemagick.org/css/magick.html"/>
+  <link rel="stylesheet" href="https://www.imagemagick.org/css/magick.html" />
 </head>
 <body>
-<div class="main">
 <div class="magick-masthead">
   <div class="container">
     <script async="async" src="https://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
@@ -43,19 +42,20 @@
     <script>
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
-    <nav class="magick-nav">
-      <a class="magick-nav-item " href="https://www.imagemagick.org/index.html">Home</a>
-      <a class="magick-nav-item " href="https://www.imagemagick.org/script/download.html">Download</a>
-      <a class="magick-nav-item " href="https://www.imagemagick.org/script/command-line-tools.html">Tools</a>
-      <a class="magick-nav-item " href="https://www.imagemagick.org/script/command-line-processing.html">Command-line</a>
-      <a class="magick-nav-item " href="https://www.imagemagick.org/script/resources.html">Resources</a>
-      <a class="magick-nav-item " href="https://www.imagemagick.org/script/develop.html">Develop</a>
-      <a class="magick-nav-item " href="https://www.imagemagick.org/script/https://www.imagemagick.org/script/search.php">Search</a>
-      <a class="magick-nav-item float-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
+    <nav class="nav magick-nav">
+      <a class="nav-link " href="https://www.imagemagick.org/index.html">Home</a>
+      <a class="nav-link " href="https://www.imagemagick.org/script/download.html">Download</a>
+      <a class="nav-link " href="https://www.imagemagick.org/script/command-line-tools.html">Tools</a>
+      <a class="nav-link " href="https://www.imagemagick.org/script/command-line-processing.html">Command-line</a>
+      <a class="nav-link " href="https://www.imagemagick.org/script/resources.html">Resources</a>
+      <a class="nav-link " href="https://www.imagemagick.org/script/develop.html">Develop</a>
+      <a class="nav-link " href="https://www.imagemagick.org/script/https://www.imagemagick.org/script/search.php">Search</a>
+      <a class="nav-link float-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
 </div>
 <div class="container">
+<div class="magick-main">
 <div class="magick-header">
 
 <p class="lead magick-description">This page descibed the Image composition methods that is used to define how
@@ -93,7 +93,7 @@ floating-point mathematics rather than simple boolean operations.</p>
 
 <p>The following alpha blending (Duff-Porter) compose methods are available:</p>
 
-<table class="table table-condensed table-striped">
+<table class="table table-sm table-striped">
   <tbody>
   <tr>
     <th align="left" style="width: 8%">Method</th>
@@ -198,7 +198,7 @@ the rest of the image outside the overlaid area.  </p>
 
 <p>The following mathematical composition methods are also available. </p>
 
-<table class="table table-condensed table-striped">
+<table class="table table-sm table-striped">
   <tbody>
   <tr>
     <th align="left" style="width: 8%">Method</th>
@@ -307,7 +307,7 @@ methods.</p>
 
 <p>The following lighting composition methods are also available. </p>
 
-<table class="table table-condensed table-striped">
+<table class="table table-sm table-striped">
   <tbody>
   <tr>
     <th align="left" style="width: 8%">Method</th>
@@ -411,7 +411,7 @@ methods.</p>
 
 <p>Also included are these special purpose compose methods:</p>
 
-<table class="table table-condensed table-striped">
+<table class="table table-sm table-striped">
   <tbody>
   <tr>
     <th align="left" style="width: 8%">Method</th>
@@ -456,9 +456,9 @@ but not always, the same name as the composite 'method' they use, and replaces
 the normal use of the <a href="https://www.imagemagick.org/script/command-line-options.html#compose" >-compose</a>
 setting in the "<code>composite</code>" command.  For example... </p>
 
-<pre>
+<pre><code>
 composite ... -blend 50x50 ...
-</pre>
+</code></pre>
 
 <p>As of IM v6.5.3-4 the "<code>convert</code>" command can now also supply
 these extra arguments to its <a href="https://www.imagemagick.org/script/command-line-options.html#composite"
@@ -468,15 +468,15 @@ make use of these special augmented <a href="https://www.imagemagick.org/script/
 >-compose</a> methods, those the argument and the method both need to be set
 separately.  For example... </p>
 
-<pre>
+<pre><code>
 convert ... -compose blend  -define compose:args=50,50 -composite ...
-</pre>
+</code></pre>
 
 <p>The following is a table of these special 'argumented' compose methods,
 with a brief summary of what they do. For more details see the equivalent
 "composite" command option name.  </p>
 
-<table class="table table-condensed table-striped">
+<table class="table table-sm table-striped">
   <tbody>
   <tr>
     <th align="left" style="width: 8%">Method</th>

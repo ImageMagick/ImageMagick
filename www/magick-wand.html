@@ -25,14 +25,13 @@
   <meta name="distribution" content="Global"/>
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-  <link rel="canonical" href="https://www.imagemagick.org/script/magick-wand.html"/>
-  <link rel="icon" href="../images/wand.png"/>
-  <link rel="shortcut icon" href="../images/wand.ico"/>
+  <link rel="canonical" href="https://www.imagemagick.org/script/magick-wand.html" />
+  <link rel="icon" href="../images/wand.png" />
+  <link rel="shortcut icon" href="../images/wand.ico" />
   <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700" />
-  <link rel="stylesheet" href="css/magick.css"/>
+  <link rel="stylesheet" href="css/magick.css" />
 </head>
 <body>
-<div class="main">
 <div class="magick-masthead">
   <div class="container">
     <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
@@ -43,19 +42,20 @@
     <script>
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
-    <nav class="magick-nav">
-      <a class="magick-nav-item " href="../index.html">Home</a>
-      <a class="magick-nav-item " href="download.html">Download</a>
-      <a class="magick-nav-item " href="command-line-tools.html">Tools</a>
-      <a class="magick-nav-item " href="command-line-processing.html">Command-line</a>
-      <a class="magick-nav-item " href="resources.html">Resources</a>
-      <a class="magick-nav-item " href="develop.html">Develop</a>
-      <a class="magick-nav-item " href="https://www.imagemagick.org/script/search.php">Search</a>
-      <a class="magick-nav-item float-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
+    <nav class="nav magick-nav">
+      <a class="nav-link " href="../index.html">Home</a>
+      <a class="nav-link " href="download.html">Download</a>
+      <a class="nav-link " href="command-line-tools.html">Tools</a>
+      <a class="nav-link " href="command-line-processing.html">Command-line</a>
+      <a class="nav-link " href="resources.html">Resources</a>
+      <a class="nav-link " href="develop.html">Develop</a>
+      <a class="nav-link " href="https://www.imagemagick.org/script/search.php">Search</a>
+      <a class="nav-link float-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
 </div>
 <div class="container">
+<div class="magick-main">
 <div class="magick-header">
 
 <p class="lead magick-description">The <a href="http://www.imagemagick.org/api/MagickWand/index.html">MagickWand API</a> is the recommended interface between the C programming language and the ImageMagick image processing libraries.  Unlike the <a href="magick-core.html">MagickCore</a> C API, MagickWand uses only a few opaque types.  Accessors are available to set or get important wand properties.  A description of the MagickWand public methods are found here:</p>
@@ -75,19 +75,19 @@
 
 <p>After you write your MagickWand program, compile it like this:</p>
 
-<pre>
+<pre><code>
 cc -o wand wand.c `pkg-config --cflags --libs MagickWand`
-</pre>
+</code></pre>
 
 <p>Set the <code>PKG_CONFIG_PATH</code> environment variable if ImageMagick is not in your default system path:</p>
 
-<pre>
+<pre><code>
 export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
-</pre>
+</code></pre>
 
 <p>Here is a example program that utilizes the MagickWand API to get you started, <a href="http://www.imagemagick.org/source/wand.c">wand.c</a>. It reads an image, creates a thumbnail, and writes the result to disk.</p>
 
-<pre class="pre-scrollable">#include &lt;stdio.h>
+<pre class="pre-scrollable"><code>#include &lt;stdio.h>
 #include &lt;stdlib.h>
 #include &lt;wand/MagickWand.h>
 
@@ -142,11 +142,11 @@ int main(int argc,char **argv)
   MagickWandTerminus();
   return(0);
 }
-</pre>
+</code></pre>
 
 <p>Here is another program that shows one way to get and set image pixels with the MagickWand API, <a href="http://www.imagemagick.org/source/contrast.c">contrast.c</a>. It reads an image, applies sigmoidal non-linearity contrast control, and writes the result to disk.</p>
 
-<pre class="pre-scrollable">#include &lt;stdio.h>
+<pre class="pre-scrollable"><code>#include &lt;stdio.h>
 #include &lt;stdlib.h>
 #include &lt;math.h>
 #include &lt;wand/MagickWand.h>
@@ -252,10 +252,10 @@ int main(int argc,char **argv)
   MagickWandTerminus();
   return(0);
 }
-</pre>
+</code></pre>
 <p><a id="wand-view"></a>Now lets perform the same contrast enhancement while taking advantage of our dual or quad-core processing system by running the algorithm in parallel utilizing wand views.  The <a href="http://www.imagemagick.org/source/wand/sigmoidal-contrast.c">sigmoidal-contrast.c</a> module reads an image, applies sigmoidal non-linearity contrast control, and writes the result to disk just like the previous contrast enhancement program, but now it does its work in parallel (assumes ImageMagick is built with OpenMP support).</p>
 
-<pre class="pre-scrollable">#include &lt;stdio.h>
+<pre class="pre-scrollable"><code>#include &lt;stdio.h>
 #include &lt;stdlib.h>
 #include &lt;math.h>
 #include &lt;wand/MagickWand.h>
@@ -361,7 +361,7 @@ int main(int argc,char **argv)
   MagickWandTerminus();
   return(0);
 }
-</pre>
+</code></pre>
 <p><a href="../MagickWand/index.html">MagickWand Examples in C</a> illustrates how to use the ImageMagick MagickWand API. Each example is presented as a C function, complete with headers, so that it can be copied to a file and then included in your own C project.</p>
 </div>
   <footer class="magick-footer">
@@ -383,4 +383,4 @@ int main(int argc,char **argv)
 </div>
 </body>
 </html>
-<!-- Magick Cache 10th June 2017 13:15 -->
+<!-- Magick Cache 29th June 2017 11:03 -->

@@ -25,14 +25,13 @@
   <meta name="distribution" content="Global"/>
   <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1"/>
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-  <link rel="canonical" href="quantize.html"/>
-  <link rel="icon" href="https://www.imagemagick.org/images/wand.png"/>
-  <link rel="shortcut icon" href="https://www.imagemagick.org/images/wand.ico"/>
+  <link rel="canonical" href="quantize.html" />
+  <link rel="icon" href="https://www.imagemagick.org/images/wand.png" />
+  <link rel="shortcut icon" href="https://www.imagemagick.org/images/wand.ico" />
   <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:900,400,400italic,700,700italic,300,300italic|Open+Sans:300italic,400italic,700italic,300,400,600,700" />
-  <link rel="stylesheet" href="https://www.imagemagick.org/css/magick.html"/>
+  <link rel="stylesheet" href="https://www.imagemagick.org/css/magick.html" />
 </head>
 <body>
-<div class="main">
 <div class="magick-masthead">
   <div class="container">
     <script async="async" src="https://localhost/pagead/js/adsbygoogle.js"></script>    <ins class="adsbygoogle"
@@ -43,25 +42,26 @@
     <script>
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
-    <nav class="magick-nav">
-      <a class="magick-nav-item " href="https://www.imagemagick.org/index.html">Home</a>
-      <a class="magick-nav-item " href="https://www.imagemagick.org/script/download.html">Download</a>
-      <a class="magick-nav-item " href="https://www.imagemagick.org/script/command-line-tools.html">Tools</a>
-      <a class="magick-nav-item " href="https://www.imagemagick.org/script/command-line-processing.html">Command-line</a>
-      <a class="magick-nav-item " href="https://www.imagemagick.org/script/resources.html">Resources</a>
-      <a class="magick-nav-item " href="https://www.imagemagick.org/script/develop.html">Develop</a>
-      <a class="magick-nav-item " href="https://www.imagemagick.org/script/https://www.imagemagick.org/script/search.php">Search</a>
-      <a class="magick-nav-item float-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
+    <nav class="nav magick-nav">
+      <a class="nav-link " href="https://www.imagemagick.org/index.html">Home</a>
+      <a class="nav-link " href="https://www.imagemagick.org/script/download.html">Download</a>
+      <a class="nav-link " href="https://www.imagemagick.org/script/command-line-tools.html">Tools</a>
+      <a class="nav-link " href="https://www.imagemagick.org/script/command-line-processing.html">Command-line</a>
+      <a class="nav-link " href="https://www.imagemagick.org/script/resources.html">Resources</a>
+      <a class="nav-link " href="https://www.imagemagick.org/script/develop.html">Develop</a>
+      <a class="nav-link " href="https://www.imagemagick.org/script/https://www.imagemagick.org/script/search.php">Search</a>
+      <a class="nav-link float-right" href="https://www.imagemagick.org/discourse-server/">Community</a>
     </nav>
   </div>
 </div>
 <div class="container">
+<div class="magick-main">
 <div class="magick-header">
 <p class="text-center"><a href="quantize.html#describe">Algorithm Description</a> • <a href="quantize.html#measure">Measuring Color Reduction Error</a></p>
 
 <p class="lead magick-description">This document describes how ImageMagick performs color reduction on an image. To fully understand what follows, you should have a knowledge of basic imaging techniques and the tree data structure and terminology.</p>
 
-<h2 class="magick-header"><a id="describe"></a>Algorithm Description</h2>
+<h2 class="magick-post-title"><a id="describe"></a>Algorithm Description</h2>
 
 <p>For purposes of color allocation, an image is a set of <var>n</var> pixels, where each pixel is a point in RGB space. RGB space is a 3-dimensional vector space, and each pixel, <var>p(i)</var>, is defined by an ordered triple of red, green, and blue coordinates, (<var>r(i)</var>, <var>g(i)</var>, <var>b(i)</var>).</p>
 
@@ -85,14 +85,14 @@
 
 <p>Classification begins by initializing a color description tree of sufficient depth to represent each possible input color in a leaf. However, it is impractical to generate a fully-formed color description tree in the classification phase for realistic values of <var>Cmax</var>. If color components in the input image are quantized to <var>k</var>-bit precision, so that <var>Cmax</var> = <var>2^k-1</var>, the tree would need <var>k</var> levels below the root node to allow representing each possible input color in a leaf.  This becomes prohibitive because the tree's total number of nodes:</p>
 
-<pre>
+<pre><code>
 total nodes = 1+Sum(8^i), i=1,k
 
 For k=8,
 nodes = 1 + (8^1+8^2+....+8^8)
       = 1 + 8(8^8 - 1)/(8 - 1)
       = 19,173,961
-</pre>
+</code></pre>
 
 <p>Therefore, to avoid building a fully populated tree, ImageMagick:</p>
 
@@ -101,37 +101,37 @@ nodes = 1 + (8^1+8^2+....+8^8)
   <li>chooses a maximum depth for the tree as a function of the desired number of colors in the output image (currently the <var>base-two</var> logarithm of <var>Cmax</var>).</li>
 </ol>
 
-<pre>
+<pre><code>
 For Cmax=255,
 maximum tree depth = log<sub>2</sub>(256)
                    = 8
-</pre>
+</code></pre>
 
 <p>A tree of this depth generally allows the best representation of the source image with the fastest computational speed and the least amount of memory. However, the default depth is inappropriate for some images. Therefore, the caller can request a specific tree depth.</p>
 
 <p>For each pixel in the input image, classification scans downward from the root of the color description tree. At each level of the tree, it identifies the single node which represents a cube in RGB space containing the pixels' color. It updates the following data for each such node:</p>
 
-<dl class="dl-horizontal">
-<dt>n1</dt>
-	<dd>number of pixels whose color is contained in the RGB cube which this node represents;</dd>
-<dt>n2</dt>
-  <dd>number of pixels whose color is not represented in a node at lower depth in the tree; initially, <var>n2=0</var> for all nodes except leaves of the tree.</dd>
-<dt>Sr,Sg,Sb</dt>
-  <dd>sums of the <var>red</var>, <var>green</var>, and <var>blue</var> component values for all pixels not classified at a lower depth. The combination of these sums and <var>n2</var> will ultimately characterize the mean color of a set of pixels represented by this node.</dd>
-<dt>E</dt>
-  <dd>the distance squared in RGB space between each pixel contained within a node and the nodes' center. This represents the quantization error for a node.</dd>
+<dl class="row">
+<dt class="col-md-4">n1</dt>
+	<dd class="col-md-8">number of pixels whose color is contained in the RGB cube which this node represents;</dd>
+<dt class="col-md-4">n2</dt>
+  <dd class="col-md-8">number of pixels whose color is not represented in a node at lower depth in the tree; initially, <var>n2=0</var> for all nodes except leaves of the tree.</dd>
+<dt class="col-md-4">Sr,Sg,Sb</dt>
+  <dd class="col-md-8">sums of the <var>red</var>, <var>green</var>, and <var>blue</var> component values for all pixels not classified at a lower depth. The combination of these sums and <var>n2</var> will ultimately characterize the mean color of a set of pixels represented by this node.</dd>
+<dt class="col-md-4">E</dt>
+  <dd class="col-md-8">the distance squared in RGB space between each pixel contained within a node and the nodes' center. This represents the quantization error for a node.</dd>
 </dl>
 
 <p><b>Reduction</b></p>
 
 <p>Reduction repeatedly prunes the tree until the number of nodes with <var>n2</var> &gt; <var>0</var> is less than or equal to the maximum number of colors allowed in the output image. On any given iteration over the tree, it selects those nodes whose <var>E</var> value is minimal for pruning and merges their color statistics upward. It uses a pruning threshold, <var>Ep</var>, to govern node selection as follows:</p>
 
-<pre>
+<pre><code>
 Ep = 0
 while number of nodes with (n2 &gt; 0) &gt; required maximum number of colors
    prune all nodes such that E &lt;= Ep
    Set Ep  to minimum E in remaining nodes
-</pre>
+</code></pre>
 
 <p>This has the effect of minimizing any quantization error when merging two nodes together.</p>
 
@@ -156,7 +156,7 @@ while number of nodes with (n2 &gt; 0) &gt; required maximum number of colors
 
 <p>Empirical evidence suggests that the distances in color spaces such as YUV, or YIQ correspond to perceptual color differences more closely than do distances in RGB space.  These color spaces may give better results when color reducing an image. Here the algorithm is as described except each pixel is a point in the alternate color space. For convenience, the color components are normalized to the range 0 to a maximum value, <var>Cmax</var>. The color reduction can then proceed as described.</p>
 
-<h2 class="magick-header"><a id="measure"></a>Measuring Color Reduction Error</h2>
+<h2 class="magick-post-title"><a id="measure"></a>Measuring Color Reduction Error</h2>
 
 <p>Depending on the image, the color reduction error may be obvious or invisible. Images with high spatial frequencies (such as hair or grass) will show error much less than pictures with large smoothly shaded areas (such as faces). This because the high-frequency contour edges introduced by the color reduction process are masked by the high frequencies in the image.</p>
 
@@ -167,7 +167,7 @@ while number of nodes with (n2 &gt; 0) &gt; required maximum number of colors
 <p>These errors are measured and printed when the <a href="https://www.imagemagick.org/script/command-line-options.html#colors">-colors</a> and <a href="https://www.imagemagick.org/script/command-line-options.html#verbose">-verbose</a> options are specified on the <a href="https://www.imagemagick.org/script/convert.html">convert</a> command line:</p>
 
 <div class="table-responsive">
-<table class="table table-condensed table-striped">
+<table class="table table-sm table-striped">
   <tr>
     <td>mean error per pixel</td>
     <td>is the mean error for any single pixel in the image.</td>
