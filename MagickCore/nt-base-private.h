@@ -71,6 +71,8 @@ typedef struct _NTMEMORYSTATUSEX
 } NTMEMORYSTATUSEX;
 
 #if !defined(__MINGW32__) && !defined(__MINGW64__)
+struct timeval;
+
 struct timezone
 {
   int
