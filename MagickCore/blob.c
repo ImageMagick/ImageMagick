@@ -212,11 +212,12 @@ static int
 %
 */
 MagickExport CustomStreamInfo *AcquireCustomStreamInfo(
-  ExceptionInfo *exception)
+  ExceptionInfo *magick_unused(exception))
 {
   CustomStreamInfo
     *custom_stream;
 
+  magick_unreferenced(exception);
   custom_stream=(CustomStreamInfo *) AcquireMagickMemory(
     sizeof(*custom_stream));
   if (custom_stream == (CustomStreamInfo *) NULL)

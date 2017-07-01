@@ -3753,26 +3753,16 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       int
         c;
 
-      size_t
-        length;
-
-      unsigned int
-        tag;
-
       /*
         Read offset table.
       */
       for (i=0; i < (ssize_t) stream_info->remaining; i++)
         (void) ReadBlobByte(image);
-      tag=(ReadBlobLSBShort(image) << 16) | ReadBlobLSBShort(image);
-      (void) tag;
+      (void)((ReadBlobLSBShort(image) << 16) | ReadBlobLSBShort(image));
       length=(size_t) ReadBlobLSBLong(image);
       stream_info->offset_count=length >> 2;
       if (stream_info->offset_count != 0)
         {
-          MagickOffsetType
-            offset;
-
           stream_info->offsets=(ssize_t *) AcquireQuantumMemory(
             stream_info->offset_count,sizeof(*stream_info->offsets));
           if (stream_info->offsets == (ssize_t *) NULL)
@@ -3867,9 +3857,6 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       QuantumAny
         range;
 
-      size_t
-        length;
-
       /*
         Compute pixel scaling table.
       */
@@ -3883,9 +3870,6 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   if (image->compression == RLECompression)
     {
-      size_t
-        length;
-
       unsigned int
         tag;
 
@@ -3900,9 +3884,6 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       stream_info->offset_count=length >> 2;
       if (stream_info->offset_count != 0)
         {
-          MagickOffsetType
-            offset;
-
           stream_info->offsets=(ssize_t *) AcquireQuantumMemory(
             stream_info->offset_count,sizeof(*stream_info->offsets));
           if (stream_info->offsets == (ssize_t *) NULL)
