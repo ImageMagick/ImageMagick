@@ -765,7 +765,7 @@ static void ParseImageResourceBlocks(Image *image,
     p+=4;
     p=PushShortPixel(MSBEndian,p,&id);
     p=PushCharPixel(p,&name_length);
-    if (name_length % 2 == 0)
+    if ((name_length % 2) == 0)
       name_length++;
     p+=name_length;
     if (p > (blocks+length-4))
@@ -790,14 +790,16 @@ static void ParseImageResourceBlocks(Image *image,
           return;
         p=PushShortPixel(MSBEndian,p,&resolution);
         image->resolution.x=(double) resolution;
-        (void) FormatLocaleString(value,MagickPathExtent,"%g",image->resolution.x);
+        (void) FormatLocaleString(value,MagickPathExtent,"%g",
+          image->resolution.x);
         (void) SetImageProperty(image,"tiff:XResolution",value,exception);
         p=PushShortPixel(MSBEndian,p,&short_sans);
         p=PushShortPixel(MSBEndian,p,&short_sans);
         p=PushShortPixel(MSBEndian,p,&short_sans);
         p=PushShortPixel(MSBEndian,p,&resolution);
         image->resolution.y=(double) resolution;
-        (void) FormatLocaleString(value,MagickPathExtent,"%g",image->resolution.y);
+        (void) FormatLocaleString(value,MagickPathExtent,"%g",
+          image->resolution.y);
         (void) SetImageProperty(image,"tiff:YResolution",value,exception);
         p=PushShortPixel(MSBEndian,p,&short_sans);
         p=PushShortPixel(MSBEndian,p,&short_sans);
@@ -1009,7 +1011,7 @@ static MagickBooleanType ReadPSDChannelPixels(Image *image,
         ssize_t
           bit,
           number_bits;
-      
+
         number_bits=image->columns-x;
         if (number_bits > 8)
           number_bits=8;
@@ -1459,7 +1461,7 @@ static MagickBooleanType ReadPSDLayer(Image *image,const ImageInfo *image_info,
     {
       const char
         *option;
-      
+
       layer_info->mask.image->page.x=layer_info->mask.page.x;
       layer_info->mask.image->page.y=layer_info->mask.page.y;
       /* Do not composite the mask when it is disabled */
@@ -1671,10 +1673,11 @@ static MagickBooleanType ReadPSDLayersInternal(Image *image,
                 if (image->debug != MagickFalse)
                   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                     "      layer mask: offset(%.20g,%.20g), size(%.20g,%.20g), length=%.20g",
-                    (double) layer_info[i].mask.page.x,(double) 
-                    layer_info[i].mask.page.y,(double) layer_info[i].mask.page.width,
-                    (double) layer_info[i].mask.page.height,(double)
-                    ((MagickOffsetType) length)-18);
+                    (double) layer_info[i].mask.page.x,(double)
+                    layer_info[i].mask.page.y,(double)
+                    layer_info[i].mask.page.width,(double)
+                    layer_info[i].mask.page.height,(double) ((MagickOffsetType)
+                    length)-18);
                 /*
                   Skip over the rest of the layer mask information.
                 */
