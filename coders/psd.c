@@ -720,9 +720,11 @@ static void ParseImageResourceBlocks(Image *image,
   StringInfo
     *profile;
 
+  unsigned char
+    name_length;
+
   unsigned int
-    count,
-    long_sans;
+    count;
 
   unsigned short
     id,
@@ -734,15 +736,20 @@ static void ParseImageResourceBlocks(Image *image,
   SetStringInfoDatum(profile,blocks);
   (void) SetImageProfile(image,"8bim",profile);
   profile=DestroyStringInfo(profile);
-  for (p=blocks; (p >= blocks) && (p < (blocks+length-16)); )
+  for (p=blocks; (p >= blocks) && (p < (blocks+length-7)); )
   {
     if (LocaleNCompare((const char *) p,"8BIM",4) != 0)
       break;
-    p=PushLongPixel(MSBEndian,p,&long_sans);
+    p+4;
     p=PushShortPixel(MSBEndian,p,&id);
-    p=PushShortPixel(MSBEndian,p,&short_sans);
+    p=PushCharPixel(p,&name_length);
+    if (name_length % 2 == 0)
+      name_length++;
+    p+=name_length;
+    if (p > (blocks+length-4))
+      return;
     p=PushLongPixel(MSBEndian,p,&count);
-    if ((p+count) > (blocks+length-16))
+    if ((p+count) > (blocks+length))
       return;
     switch (id)
     {
@@ -757,6 +764,8 @@ static void ParseImageResourceBlocks(Image *image,
         /*
           Resolution info.
         */
+        if (count < 16)
+          return;
         p=PushShortPixel(MSBEndian,p,&resolution);
         image->x_resolution=(double) resolution;
         (void) FormatLocaleString(value,MaxTextExtent,"%g",
@@ -778,7 +787,7 @@ static void ParseImageResourceBlocks(Image *image,
       }
       case 0x0421:
       {
-        if (*(p+4) == 0)
+        if ((count > 3) && (*(p+4) == 0))
           *has_merged_image=MagickFalse;
         p+=count;
         break;
