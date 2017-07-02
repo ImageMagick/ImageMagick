@@ -122,7 +122,7 @@
 %
 %    o sigma: the sigma of the gaussian smoothing filter.
 %
-%    o lower_precent: percentage of edge pixels in the lower threshold.
+%    o lower_percent: percentage of edge pixels in the lower threshold.
 %
 %    o upper_percent: percentage of edge pixels in the upper threshold.
 %
@@ -177,7 +177,7 @@ static MagickBooleanType TraceEdges(Image *edge_image,CacheView *edge_view,
   *q=QuantumRange;
   status=SyncCacheViewAuthenticPixels(edge_view,exception);
   if (status == MagickFalse)
-    return(MagickFalse);;
+    return(MagickFalse);
   if (GetMatrixElement(canny_cache,0,0,&edge) == MagickFalse)
     return(MagickFalse);
   edge.x=x;
@@ -287,11 +287,11 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
   kernel_info=AcquireKernelInfo(geometry,exception);
   if (kernel_info == (KernelInfo *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
-  edge_image=ConvolveImage(image, kernel_info, exception);
+  edge_image=MorphologyImage(image,ConvolveMorphology,1,kernel_info,exception);
   kernel_info=DestroyKernelInfo(kernel_info);
   if (edge_image == (Image *) NULL)
     return((Image *) NULL);
-  if (SetImageColorspace(edge_image,GRAYColorspace,exception) == MagickFalse)
+  if (TransformImageColorspace(edge_image,GRAYColorspace,exception) == MagickFalse)
     {
       edge_image=DestroyImage(edge_image);
       return((Image *) NULL);
