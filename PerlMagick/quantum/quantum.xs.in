@@ -11415,7 +11415,7 @@ Mogrify(ref,...)
 
           method=UndefinedThresholdMethod;
           if (attribute_flag[0] != 0)
-            method=(AuthoThresholdMethod) argument_list[0].integer_reference;
+            method=(AutoThresholdMethod) argument_list[0].integer_reference;
           (void) AutoThresholdImage(image,method,exception);
           break;
         }
