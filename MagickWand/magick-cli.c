@@ -109,7 +109,7 @@
 %
 */
 WandExport void ProcessScriptOptions(MagickCLI *cli_wand,const char *filename,
-  int argc,char **argv,int index)
+  int magick_unused(argc),char **magick_unused(argv),int magick_unused(index))
 {
   ScriptTokenInfo
     *token_info;
@@ -125,6 +125,9 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,const char *filename,
     *arg1,
     *arg2;
 
+  magick_unreferenced(argc);
+  magick_unreferenced(argv);
+  magick_unreferenced(index);
   assert(filename != (char *) NULL ); /* at least one argument - script name */
   assert(cli_wand != (MagickCLI *) NULL);
   assert(cli_wand->signature == MagickWandSignature);
