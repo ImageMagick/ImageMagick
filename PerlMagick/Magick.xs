@@ -564,6 +564,7 @@ static struct
       {"threshold", RealReference}, {"softness", RealReference},
       {"channel", MagickChannelOptions} } },
     { "Colorspace", { {"colorspace", MagickColorspaceOptions} } },
+    { "AutoThreshold", { {"method", MagickAutoThresholdOptions} } },
   };
 
 static SplayTreeInfo
@@ -7631,6 +7632,8 @@ Mogrify(ref,...)
     WaveletDenoiseImage= 290
     Colorspace         = 291
     ColorspaceImage    = 292
+    AutoThreshold      = 293
+    AutoThresholdImage = 294
     MogrifyRegion      = 666
   PPCODE:
   {
@@ -11406,6 +11409,17 @@ Mogrify(ref,...)
           if (attribute_flag[0] != 0)
             colorspace=(ColorspaceType) argument_list[0].integer_reference;
           (void) TransformImageColorspace(image,colorspace,exception);
+          break;
+        }
+        case 147:  /* AutoThreshold */
+        {
+          AutoThresholdMethod
+            method;
+
+          method=UndefinedThresholdMethod;
+          if (attribute_flag[0] != 0)
+            method=(AuthoThresholdMethod) argument_list[0].integer_reference;
+          (void) AutoThresholdImage(image,method,exception);
           break;
         }
       }
