@@ -761,11 +761,11 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
               break;
             i++;
             if (i == (ssize_t) argc)
-              ThrowMogrifyException(OptionError,"MissingArgument",option);
+              ThrowConvertException(OptionError,"MissingArgument",option);
             method=ParseCommandOption(MagickAutoThresholdOptions,MagickFalse,
               argv[i]);
             if (method < 0)
-              ThrowMogrifyException(OptionError,"UnrecognizedThresholdMethod",
+              ThrowConvertException(OptionError,"UnrecognizedThresholdMethod",
                 argv[i]);
             break;
           }
