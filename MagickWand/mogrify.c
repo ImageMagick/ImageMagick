@@ -899,6 +899,17 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               exception);
             break;
           }
+        if (LocaleCompare("auto-threshold",option+1) == 0)
+          {
+            AutoThresholdMethod
+              method;
+
+            (void) SyncImageSettings(mogrify_info,*image,exception);
+            method=(AutoThresholdMethod) ParseCommandOption(
+              MagickAutoThresholdOptions,MagickFalse,argv[i+1]);
+            (void) AutoThresholdImage(*image,method,exception);
+            break;
+          }
         break;
       }
       case 'b':
@@ -3451,6 +3462,8 @@ static MagickBooleanType MogrifyUsage(void)
       "-auto-gamma          automagically adjust gamma level of image",
       "-auto-level          automagically adjust color levels of image",
       "-auto-orient         automagically orient (rotate) image",
+      "-auto-threshold method",
+      "                     automatically perform image thresholding",
       "-bench iterations    measure performance",
       "-black-threshold value",
       "                     force all pixels below the threshold into black",
@@ -4102,6 +4115,23 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
           break;
         if (LocaleCompare("auto-orient",option+1) == 0)
           break;
+        if (LocaleCompare("auto-threshold",option+1) == 0)
+          {
+            ssize_t
+              method;
+
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            method=ParseCommandOption(MagickAutoThresholdOptions,MagickFalse,
+              argv[i]);
+            if (method < 0)
+              ThrowMogrifyException(OptionError,"UnrecognizedThresholdMethod",
+                argv[i]);
+            break;
+          }
         if (LocaleCompare("average",option+1) == 0)
           break;
         ThrowMogrifyException(OptionError,"UnrecognizedOption",option)

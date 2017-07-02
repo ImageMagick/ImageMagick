@@ -1806,6 +1806,16 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           new_image=AutoOrientImage(_image,_image->orientation,_exception);
           break;
         }
+      if (LocaleCompare("auto-threshold",option+1) == 0)
+        {
+          AutoThresholdMethod
+            method;
+
+          method=(AutoThresholdMethod) ParseCommandOption(
+            MagickAutoThresholdOptions,MagickFalse,argv[i+1]);
+          (void) AutoThresholdImage(_image,method,_exception);
+          break;
+        }
       CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 'b':

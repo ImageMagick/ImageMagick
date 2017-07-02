@@ -22,6 +22,14 @@
 extern "C" {
 #endif
 
+typedef enum
+{
+  UndefinedThresholdMethod,
+  KapurThresholdMethod,
+  OTSUThresholdMethod,
+  TriangleThresholdMethod
+} AutoThresholdMethod;
+
 typedef struct _ThresholdMap
   ThresholdMap;
 
@@ -34,6 +42,7 @@ extern MagickExport ThresholdMap
   *GetThresholdMap(const char *,ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
+  AutoThresholdImage(Image *,const AutoThresholdMethod,ExceptionInfo *),
   BilevelImage(Image *,const double,ExceptionInfo *),
   BlackThresholdImage(Image *,const char *,ExceptionInfo *),
   ClampImage(Image *,ExceptionInfo *),

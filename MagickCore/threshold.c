@@ -360,6 +360,39 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%     A u t o T h r e s o l d I m a g e                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  AutoThresholdImage() ...
+%
+%  The format of the AutoThresholdImage method is:
+%
+%      MagickBooleanType AutoThresholdImage(Image *image,
+%        const AutoThresholdMethod threshold_type,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image to auto-threshold.
+%
+%    o threshold_type: choose from Kapur, OTSU, or Triangle.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport MagickBooleanType AutoThresholdImage(Image *image,
+  const AutoThresholdMethod threshold_type,ExceptionInfo *exception)
+{
+  return(MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %     B i l e v e l I m a g e                                                 %
 %                                                                             %
 %                                                                             %

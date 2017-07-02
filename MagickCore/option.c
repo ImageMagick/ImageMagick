@@ -75,6 +75,7 @@
 #include "MagickCore/splay-tree.h"
 #include "MagickCore/statistic.h"
 #include "MagickCore/string_.h"
+#include "MagickCore/threshold.h"
 #include "MagickCore/token.h"
 #include "MagickCore/utility.h"
 
@@ -113,6 +114,14 @@ static const OptionInfo
     { "Reset", SetAlphaChannel, DeprecateOptionFlag, MagickTrue },
     { "Transparent", TransparentAlphaChannel, UndefinedOptionFlag, MagickFalse },
     { (char *) NULL, UndefinedAlphaChannel, UndefinedOptionFlag, MagickFalse }
+  },
+  AutoThresholdOptions[] =
+  {
+    { "Undefined", UndefinedThresholdMethod, UndefinedOptionFlag, MagickTrue },
+    { "Kapur", KapurThresholdMethod, UndefinedOptionFlag, MagickFalse },
+    { "OTSU", OTSUThresholdMethod, UndefinedOptionFlag, MagickFalse },
+    { "Triangle", TriangleThresholdMethod, UndefinedOptionFlag, MagickFalse },
+    { (char *) NULL, UndefinedThresholdMethod, UndefinedOptionFlag, MagickFalse }
   },
   BooleanOptions[] =
   {
@@ -326,6 +335,8 @@ static const OptionInfo
     { "-auto-level", 0L, SimpleOperatorFlag, MagickFalse },
     { "+auto-orient", 0L, DeprecateOptionFlag, MagickTrue },
     { "-auto-orient", 0L, SimpleOperatorFlag, MagickFalse },
+    { "+auto-threshold", 1L, DeprecateOptionFlag, MagickTrue },
+    { "-auto-threshold", 1L, SimpleOperatorFlag, MagickFalse },
     { "+average", 0L, DeprecateOptionFlag, MagickTrue },
     { "-average", 0L, ReplacedOptionFlag | ListOperatorFlag | FireOptionFlag, MagickTrue },
     { "+backdrop", 0L, NonMagickOptionFlag | NeverInterpretArgsFlag, MagickFalse },
@@ -1313,6 +1324,7 @@ static const OptionInfo
   {
     { "Align", MagickAlignOptions, UndefinedOptionFlag, MagickFalse },
     { "Alpha", MagickAlphaChannelOptions, UndefinedOptionFlag, MagickFalse },
+    { "AutoThreshold", MagickAutoThresholdOptions, UndefinedOptionFlag, MagickFalse },
     { "Boolean", MagickBooleanOptions, UndefinedOptionFlag, MagickFalse },
     { "Cache", MagickCacheOptions, UndefinedOptionFlag, MagickFalse },
     { "Channel", MagickChannelOptions, UndefinedOptionFlag, MagickFalse },
@@ -2073,6 +2085,7 @@ static const OptionInfo *GetOptionInfo(const CommandOption option)
   {
     case MagickAlignOptions: return(AlignOptions);
     case MagickAlphaChannelOptions: return(AlphaChannelOptions);
+    case MagickAutoThresholdOptions: return(AutoThresholdOptions);
     case MagickBooleanOptions: return(BooleanOptions);
     case MagickCacheOptions: return(CacheOptions);
     case MagickChannelOptions: return(ChannelOptions);

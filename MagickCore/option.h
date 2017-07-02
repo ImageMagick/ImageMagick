@@ -101,7 +101,8 @@ typedef enum
   MagickTypeOptions,
   MagickValidateOptions,
   MagickVirtualPixelOptions,
-  MagickWeightOptions
+  MagickWeightOptions,
+  MagickAutoThresholdOptions
 } CommandOption;
 
 typedef enum
