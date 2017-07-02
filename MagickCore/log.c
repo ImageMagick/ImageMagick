@@ -1091,15 +1091,15 @@ static char *TranslateEvent(const char *module,const char *function,
       case 'm':
       {
         register const char
-          *p;
+          *r;
 
-        for (p=module+strlen(module)-1; p > module; p--)
-          if (*p == *DirectorySeparator)
+        for (r=module+strlen(module)-1; r > module; r--)
+          if (*r == *DirectorySeparator)
             {
-              p++;
+              r++;
               break;
             }
-        q+=CopyMagickString(q,p,extent);
+        q+=CopyMagickString(q,r,extent);
         break;
       }
       case 'n':

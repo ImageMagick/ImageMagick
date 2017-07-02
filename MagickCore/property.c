@@ -855,23 +855,23 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
      component; \
  \
    size_t \
-     length; \
+     length1; \
  \
    unsigned char \
      *p1; \
  \
-   length=0; \
+   length1=0; \
    p1=p; \
    for (component=0; component < components; component++) \
    { \
-     length+=FormatLocaleString(buffer+length,MagickPathExtent-length, \
+     length1+=FormatLocaleString(buffer+length1,MagickPathExtent-length1, \
        format", ",arg); \
-     if (length >= (MagickPathExtent-1)) \
-       length=MagickPathExtent-1; \
+     if (length1 >= (MagickPathExtent-1)) \
+       length1=MagickPathExtent-1; \
      p1+=size; \
    } \
-   if (length > 1) \
-     buffer[length-2]='\0'; \
+   if (length1 > 1) \
+     buffer[length1-2]='\0'; \
    value=AcquireString(buffer); \
 }
 
@@ -881,23 +881,23 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
      component; \
  \
    size_t \
-     length; \
+     length1; \
  \
    unsigned char \
      *p1; \
  \
-   length=0; \
+   length1=0; \
    p1=p; \
    for (component=0; component < components; component++) \
    { \
-     length+=FormatLocaleString(buffer+length,MagickPathExtent-length, \
+     length1+=FormatLocaleString(buffer+length1,MagickPathExtent-length1, \
        format", ",(arg1),(arg2)); \
-     if (length >= (MagickPathExtent-1)) \
-       length=MagickPathExtent-1; \
+     if (length1 >= (MagickPathExtent-1)) \
+       length1=MagickPathExtent-1; \
      p1+=size; \
    } \
-   if (length > 1) \
-     buffer[length-2]='\0'; \
+   if (length1 > 1) \
+     buffer[length1-2]='\0'; \
    value=AcquireString(buffer); \
 }
 
@@ -1427,9 +1427,6 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
         p=q+8;
       else
         {
-          ssize_t
-            offset;
-
           /*
             The directory entry contains an offset.
           */
@@ -1518,9 +1515,6 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
                   sizeof(*value));
               if (value != (char *) NULL)
                 {
-                  register ssize_t
-                    i;
-
                   for (i=0; i < (ssize_t) number_bytes; i++)
                   {
                     value[i]='.';
@@ -1537,9 +1531,6 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
               char
                 *key;
 
-              register const char
-                *p;
-
               key=AcquireString(property);
               switch (all)
               {
@@ -1547,9 +1538,6 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
                 {
                   const char
                     *description;
-
-                  register ssize_t
-                    i;
 
                   description="unknown";
                   for (i=0; ; i++)
@@ -1587,11 +1575,7 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
                     (void) SubstituteString(&key,"exif:","exif:thumbnail:");
                 }
               }
-              p=(const char *) NULL;
-              if (image->properties != (void *) NULL)
-                p=(const char *) GetValueFromSplayTree((SplayTreeInfo *)
-                  image->properties,key);
-              if (p == (const char *) NULL)
+              if (GetImageProperty(image,key,exception) == (const char *) NULL)
                 (void) SetImageProperty((Image *) image,key,value,exception);
               value=DestroyString(value);
               key=DestroyString(key);
@@ -1601,9 +1585,6 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
         if ((tag_value == TAG_EXIF_OFFSET) ||
             (tag_value == TAG_INTEROP_OFFSET) || (tag_value == TAG_GPS_OFFSET))
           {
-            ssize_t
-              offset;
-
             offset=(ssize_t) ReadPropertySignedLong(endian,p);
             if (((size_t) offset < length) && (level < (MaxDirectoryStack-2)))
               {

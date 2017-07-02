@@ -227,18 +227,18 @@ static SplayTreeInfo *AcquireTypeCache(const char *filename,
     if (font_path != (char *) NULL)
       {
         char
-          *option;
+          *xml;
 
         /*
           Search MAGICK_FONT_PATH.
         */
         (void) FormatLocaleString(path,MagickPathExtent,"%s%s%s",font_path,
           DirectorySeparator,filename);
-        option=FileToString(path,~0UL,exception);
-        if (option != (void *) NULL)
+        xml=FileToString(path,~0UL,exception);
+        if (xml != (void *) NULL)
           {
-            status&=LoadTypeCache(cache,option,path,0,exception);
-            option=DestroyString(option);
+            status&=LoadTypeCache(cache,xml,path,0,exception);
+            xml=DestroyString(xml);
           }
         font_path=DestroyString(font_path);
       }
@@ -1153,7 +1153,7 @@ static MagickBooleanType LoadTypeCache(SplayTreeInfo *cache,const char *xml,
                 {
                   char
                     path[MagickPathExtent],
-                    *xml;
+                    *file_xml;
 
                   ExceptionInfo
                     *sans_exception;
@@ -1168,12 +1168,13 @@ static MagickBooleanType LoadTypeCache(SplayTreeInfo *cache,const char *xml,
                   else
                     (void) ConcatenateMagickString(path,token,MagickPathExtent);
                   sans_exception=AcquireExceptionInfo();
-                  xml=FileToString(path,~0UL,sans_exception);
+                  file_xml=FileToString(path,~0UL,sans_exception);
                   sans_exception=DestroyExceptionInfo(sans_exception);
-                  if (xml != (char *) NULL)
+                  if (file_xml != (char *) NULL)
                     {
-                      status&=LoadTypeCache(cache,xml,path,depth+1,exception);
-                      xml=(char *) RelinquishMagickMemory(xml);
+                      status&=LoadTypeCache(cache,file_xml,path,depth+1,
+                        exception);
+                      file_xml=(char *) RelinquishMagickMemory(file_xml);
                     }
                 }
             }

@@ -1322,10 +1322,6 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                 break;
               if ((image->colors == 0) && (bpp != 24))
                 {
-                  size_t
-                    one;
-
-                  one=1;
                   image->colors=one << bpp;
                   if (!AcquireImageColormap(image,image->colors,exception))
                     goto NoMemory;

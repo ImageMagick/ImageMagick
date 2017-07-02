@@ -758,7 +758,6 @@ MagickExport MagickBooleanType ListMagicInfo(FILE *file,
   magic_info=GetMagicInfoList("*",&number_aliases,exception);
   if (magic_info == (const MagicInfo **) NULL)
     return(MagickFalse);
-  j=0;
   path=(const char *) NULL;
   for (i=0; i < (ssize_t) number_aliases; i++)
   {
@@ -781,9 +780,6 @@ MagickExport MagickBooleanType ListMagicInfo(FILE *file,
     (void) FormatLocaleFile(file,"%6ld ",(long) magic_info[i]->offset);
     if (magic_info[i]->target != (char *) NULL)
       {
-        register ssize_t
-          j;
-
         for (j=0; magic_info[i]->target[j] != '\0'; j++)
           if (isprint((int) ((unsigned char) magic_info[i]->target[j])) != 0)
             (void) FormatLocaleFile(file,"%c",magic_info[i]->target[j]);
@@ -1002,7 +998,7 @@ static MagickBooleanType LoadMagicCache(LinkedListInfo *cache,const char *xml,
               *p;
 
             register unsigned char
-              *q;
+              *r;
 
             size_t
               length;
@@ -1010,7 +1006,7 @@ static MagickBooleanType LoadMagicCache(LinkedListInfo *cache,const char *xml,
             length=strlen(token);
             magic_info->target=ConstantString(token);
             magic_info->magic=(unsigned char *) ConstantString(token);
-            q=magic_info->magic;
+            r=magic_info->magic;
             for (p=magic_info->target; *p != '\0'; )
             {
               if (*p == '\\')
@@ -1021,32 +1017,32 @@ static MagickBooleanType LoadMagicCache(LinkedListInfo *cache,const char *xml,
                       char
                         *end;
 
-                      *q++=(unsigned char) strtol(p,&end,8);
+                      *r++=(unsigned char) strtol(p,&end,8);
                       p+=(end-p);
                       magic_info->length++;
                       continue;
                     }
                   switch (*p)
                   {
-                    case 'b': *q='\b'; break;
-                    case 'f': *q='\f'; break;
-                    case 'n': *q='\n'; break;
-                    case 'r': *q='\r'; break;
-                    case 't': *q='\t'; break;
-                    case 'v': *q='\v'; break;
-                    case 'a': *q='a'; break;
-                    case '?': *q='\?'; break;
-                    default: *q=(unsigned char) (*p); break;
+                    case 'b': *r='\b'; break;
+                    case 'f': *r='\f'; break;
+                    case 'n': *r='\n'; break;
+                    case 'r': *r='\r'; break;
+                    case 't': *r='\t'; break;
+                    case 'v': *r='\v'; break;
+                    case 'a': *r='a'; break;
+                    case '?': *r='\?'; break;
+                    default: *r=(unsigned char) (*p); break;
                   }
                   p++;
-                  q++;
+                  r++;
                   magic_info->length++;
                   continue;
                 }
               else
                 if (LocaleNCompare(p,"&amp;",5) == 0)
                   (void) CopyMagickString(p+1,p+5,length-magic_info->length);
-              *q++=(unsigned char) (*p++);
+              *r++=(unsigned char) (*p++);
               magic_info->length++;
             }
             break;

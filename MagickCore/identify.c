@@ -180,9 +180,6 @@ static ChannelStatistics *GetLocationStatistics(const Image *image,
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      register ssize_t
-        i;
-
       if (GetPixelReadMask(image,p) == 0)
         {
           p+=GetPixelChannels(image);
@@ -1020,9 +1017,6 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       x=0;
       if (image->alpha_trait != UndefinedPixelTrait)
         {
-          register const Quantum
-            *p;
-
           p=(const Quantum *) NULL;
           for (y=0; y < (ssize_t) image->rows; y++)
           {
@@ -1078,7 +1072,6 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       if (image->colors <= 1024)
         {
           char
-            color[MagickPathExtent],
             hex[MagickPathExtent],
             tuple[MagickPathExtent];
 
@@ -1086,13 +1079,13 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
             pixel;
 
           register PixelInfo
-            *magick_restrict p;
+            *magick_restrict c;
 
           GetPixelInfo(image,&pixel);
-          p=image->colormap;
+          c=image->colormap;
           for (i=0; i < (ssize_t) image->colors; i++)
           {
-            pixel=(*p);
+            pixel=(*c);
             (void) CopyMagickString(tuple,"(",MagickPathExtent);
             ConcatenateColorComponent(&pixel,RedPixelChannel,X11Compliance,
               tuple);
@@ -1120,7 +1113,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
             GetColorTuple(&pixel,MagickTrue,hex);
             (void) FormatLocaleFile(file,"  %8ld: %s %s %s\n",(long) i,tuple,
               hex,color);
-            p++;
+            c++;
           }
         }
     }
@@ -1221,7 +1214,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         *image_info;
 
       register char
-        *p,
+        *d,
         *q;
 
       WarningHandler
@@ -1233,13 +1226,13 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       image_info=AcquireImageInfo();
       (void) CloneString(&image_info->size,"64x64");
       (void) FormatLocaleFile(file,"  Directory:\n");
-      for (p=image->directory; *p != '\0'; p++)
+      for (d=image->directory; *d != '\0'; d++)
       {
-        q=p;
+        q=d;
         while ((*q != '\n') && (*q != '\0'))
           q++;
-        (void) CopyMagickString(image_info->filename,p,(size_t) (q-p+1));
-        p=q;
+        (void) CopyMagickString(image_info->filename,d,(size_t) (q-d+1));
+        d=q;
         (void) FormatLocaleFile(file,"    %s",image_info->filename);
         handler=SetWarningHandler((WarningHandler) NULL);
         tile=ReadImage(image_info,exception);

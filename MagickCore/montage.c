@@ -666,29 +666,28 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
       (void) TextureImage(montage,texture,exception);
     if (montage_info->title != (char *) NULL)
       {
-        char
-          geometry[MagickPathExtent];
-
         DrawInfo
-          *clone_info;
+          *draw_clone_info;
 
         TypeMetric
-          metrics;
+          tile_metrics;
 
         /*
           Annotate composite image with title.
         */
-        clone_info=CloneDrawInfo(image_info,draw_info);
-        clone_info->gravity=CenterGravity;
-        clone_info->pointsize*=2.0;
-        (void) GetTypeMetrics(image_list[0],clone_info,&metrics,exception);
-        (void) FormatLocaleString(geometry,MagickPathExtent,
+        draw_clone_info=CloneDrawInfo(image_info,draw_info);
+        draw_clone_info->gravity=CenterGravity;
+        draw_clone_info->pointsize*=2.0;
+        (void) GetTypeMetrics(image_list[0],draw_clone_info,&tile_metrics,
+          exception);
+        (void) FormatLocaleString(tile_geometry,MagickPathExtent,
           "%.20gx%.20g%+.20g%+.20g",(double) montage->columns,(double)
-          (metrics.ascent-metrics.descent),0.0,(double) extract_info.y+4);
-        (void) CloneString(&clone_info->geometry,geometry);
-        (void) CloneString(&clone_info->text,title);
-        (void) AnnotateImage(montage,clone_info,exception);
-        clone_info=DestroyDrawInfo(clone_info);
+          (tile_metrics.ascent-tile_metrics.descent),0.0,
+          (double) extract_info.y+4);
+        (void) CloneString(&draw_clone_info->geometry,tile_geometry);
+        (void) CloneString(&draw_clone_info->text,title);
+        (void) AnnotateImage(montage,draw_clone_info,exception);
+        draw_clone_info=DestroyDrawInfo(draw_clone_info);
       }
     (void) SetImageProgressMonitor(montage,progress_monitor,
       montage->client_data);
@@ -764,7 +763,7 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
       if ((montage_info->frame != (char *) NULL) && (bevel_width != 0))
         {
           FrameInfo
-            extract_info;
+            frame_clone;
 
           Image
             *frame_image;
@@ -772,14 +771,14 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
           /*
             Put an ornamental border around this tile.
           */
-          extract_info=frame_info;
-          extract_info.width=width+2*frame_info.width;
-          extract_info.height=height+2*frame_info.height;
+          frame_clone=frame_info;
+          frame_clone.width=width+2*frame_info.width;
+          frame_clone.height=height+2*frame_info.height;
           value=GetImageProperty(image,"label",exception);
           if (value != (const char *) NULL)
-            extract_info.height+=(size_t) ((metrics.ascent-metrics.descent+4)*
+            frame_clone.height+=(size_t) ((metrics.ascent-metrics.descent+4)*
               MultilineCensus(value));
-          frame_image=FrameImage(image,&extract_info,image->compose,exception);
+          frame_image=FrameImage(image,&frame_clone,image->compose,exception);
           if (frame_image != (Image *) NULL)
             {
               image=DestroyImage(image);
@@ -817,13 +816,10 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
           value=GetImageProperty(image,"label",exception);
           if (value != (const char *) NULL)
             {
-              char
-                geometry[MagickPathExtent];
-
               /*
                 Annotate composite tile with label.
               */
-              (void) FormatLocaleString(geometry,MagickPathExtent,
+              (void) FormatLocaleString(tile_geometry,MagickPathExtent,
                 "%.20gx%.20g%+.20g%+.20g",(double) ((montage_info->frame ?
                 image->columns : width)-2*border_width),(double)
                 (metrics.ascent-metrics.descent+4)*MultilineCensus(value),
@@ -831,7 +827,7 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
                 ((montage_info->frame ? y_offset+height+border_width+4 :
                 y_offset+extract_info.height+border_width+
                 (montage_info->shadow != MagickFalse ? 4 : 0))+bevel_width));
-              (void) CloneString(&draw_info->geometry,geometry);
+              (void) CloneString(&draw_info->geometry,tile_geometry);
               (void) CloneString(&draw_info->text,value);
               (void) AnnotateImage(montage,draw_info,exception);
             }
@@ -848,9 +844,6 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
         }
       if (images->progress_monitor != (MagickProgressMonitor) NULL)
         {
-          MagickBooleanType
-            proceed;
-
           proceed=SetImageProgress(image,MontageImageTag,tiles,total_tiles);
           if (proceed == MagickFalse)
             status=MagickFalse;

@@ -732,9 +732,6 @@ static Image *ReadMATImageV4(const ImageInfo *image_info,Image *image,
     pixels=(unsigned char *) GetQuantumPixels(quantum_info);
     for (y=0; y < (ssize_t) image->rows; y++)
     {
-      int
-        status;
-
       register Quantum
         *magick_restrict q;
 

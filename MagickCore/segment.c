@@ -539,7 +539,7 @@ static MagickBooleanType Classify(Image *image,short **extrema,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     Cluster
-      *cluster;
+      *clust;
 
     register const PixelInfo
       *magick_restrict p;
@@ -561,29 +561,29 @@ static MagickBooleanType Classify(Image *image,short **extrema,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       SetPixelIndex(image,0,q);
-      for (cluster=head; cluster != (Cluster *) NULL; cluster=cluster->next)
+      for (clust=head; clust != (Cluster *) NULL; clust=clust->next)
       {
         if (((ssize_t) ScaleQuantumToChar(GetPixelRed(image,q)) >=
-             (cluster->red.left-SafeMargin)) &&
+             (clust->red.left-SafeMargin)) &&
             ((ssize_t) ScaleQuantumToChar(GetPixelRed(image,q)) <=
-             (cluster->red.right+SafeMargin)) &&
+             (clust->red.right+SafeMargin)) &&
             ((ssize_t) ScaleQuantumToChar(GetPixelGreen(image,q)) >=
-             (cluster->green.left-SafeMargin)) &&
+             (clust->green.left-SafeMargin)) &&
             ((ssize_t) ScaleQuantumToChar(GetPixelGreen(image,q)) <=
-             (cluster->green.right+SafeMargin)) &&
+             (clust->green.right+SafeMargin)) &&
             ((ssize_t) ScaleQuantumToChar(GetPixelBlue(image,q)) >=
-             (cluster->blue.left-SafeMargin)) &&
+             (clust->blue.left-SafeMargin)) &&
             ((ssize_t) ScaleQuantumToChar(GetPixelBlue(image,q)) <=
-             (cluster->blue.right+SafeMargin)))
+             (clust->blue.right+SafeMargin)))
           {
             /*
               Classify this pixel.
             */
-            SetPixelIndex(image,(Quantum) cluster->id,q);
+            SetPixelIndex(image,(Quantum) clust->id,q);
             break;
           }
       }
-      if (cluster == (Cluster *) NULL)
+      if (clust == (Cluster *) NULL)
         {
           double
             distance_squared,

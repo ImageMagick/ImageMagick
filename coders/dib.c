@@ -600,7 +600,6 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (image->storage_class == PseudoClass)
     {
       size_t
-        length,
         packet_size;
 
       unsigned char

@@ -478,20 +478,20 @@ static unsigned int CRC32(const unsigned char *message,const size_t length)
   if (crc_initial == MagickFalse)
     {
       register unsigned int
-        i;
+        j;
 
       unsigned int
         alpha;
 
-      for (i=0; i < 256; i++)
+      for (j=0; j < 256; j++)
       {
         register ssize_t
-          j;
+          k;
 
-        alpha=i;
-        for (j=0; j < 8; j++)
+        alpha=j;
+        for (k=0; k < 8; k++)
           alpha=(alpha & 0x01) ? (0xEDB88320 ^ (alpha >> 1)) : (alpha >> 1);
-        crc_xor[i]=alpha;
+        crc_xor[j]=alpha;
       }
       crc_initial=MagickTrue;
     }

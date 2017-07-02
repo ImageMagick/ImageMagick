@@ -1943,14 +1943,14 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
   while (lqr_carver_scan_ext(carver,&x_offset,&y_offset,(void **) &packet) != 0)
   {
     register Quantum
-      *magick_restrict q;
+      *magick_restrict p;
 
     register ssize_t
       i;
 
-    q=QueueCacheViewAuthenticPixels(rescale_view,x_offset,y_offset,1,1,
+    p=QueueCacheViewAuthenticPixels(rescale_view,x_offset,y_offset,1,1,
       exception);
-    if (q == (Quantum *) NULL)
+    if (p == (Quantum *) NULL)
       break;
     for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
     {
@@ -1968,7 +1968,7 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
           (rescale_traits == UndefinedPixelTrait))
         continue;
       SetPixelChannel(rescale_image,channel,ClampToQuantum(QuantumRange*
-        packet[i]),q);
+        packet[i]),p);
     }
     if (SyncCacheViewAuthenticPixels(rescale_view,exception) == MagickFalse)
       break;
@@ -2981,7 +2981,7 @@ MagickExport Image *SampleImage(const Image *image,const size_t columns,
     progress;
 
   register ssize_t
-    x;
+    x1;
 
   ssize_t
     *x_offset,
@@ -3040,8 +3040,8 @@ MagickExport Image *SampleImage(const Image *image,const size_t columns,
       sample_image=DestroyImage(sample_image);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
-  for (x=0; x < (ssize_t) sample_image->columns; x++)
-    x_offset[x]=(ssize_t) ((((double) x+sample_offset.x)*image->columns)/
+  for (x1=0; x1 < (ssize_t) sample_image->columns; x1++)
+    x_offset[x1]=(ssize_t) ((((double) x1+sample_offset.x)*image->columns)/
       sample_image->columns);
   /*
     Sample each row.
@@ -3193,12 +3193,8 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
     proceed,
     status;
 
-  PixelChannel
-    channel;
-
   PixelTrait
-    scale_traits,
-    traits;
+    scale_traits;
 
   PointInfo
     scale,
@@ -3450,8 +3446,8 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
             }
           for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
           {
-            channel=GetPixelChannelChannel(image,i);
-            traits=GetPixelChannelTraits(image,channel);
+            PixelChannel channel=GetPixelChannelChannel(image,i);
+            PixelTrait traits=GetPixelChannelTraits(image,channel);
             scale_traits=GetPixelChannelTraits(scale_image,channel);
             if ((traits == UndefinedPixelTrait) ||
                 (scale_traits == UndefinedPixelTrait))

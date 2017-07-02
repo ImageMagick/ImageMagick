@@ -481,33 +481,29 @@ static StringInfo *GenerateEntropicChaos(RandomInfo *random_info)
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
   {
     double
-      seconds;
+      datum;
 
     LARGE_INTEGER
-      nanoseconds;
-
-    MagickBooleanType
-      status;
+      datum1;
 
     /*
       Not crytographically strong but better than nothing.
     */
-    seconds=NTElapsedTime()+NTUserTime();
-    SetStringInfoLength(chaos,sizeof(seconds));
-    SetStringInfoDatum(chaos,(unsigned char *) &seconds);
+    datum=NTElapsedTime()+NTUserTime();
+    SetStringInfoLength(chaos,sizeof(datum));
+    SetStringInfoDatum(chaos,(unsigned char *) &datum);
     ConcatenateStringInfo(entropy,chaos);
-    if (QueryPerformanceCounter(&nanoseconds) != 0)
+    if (QueryPerformanceCounter(&datum1) != 0)
       {
-        SetStringInfoLength(chaos,sizeof(nanoseconds));
-        SetStringInfoDatum(chaos,(unsigned char *) &nanoseconds);
+        SetStringInfoLength(chaos,sizeof(datum1));
+        SetStringInfoDatum(chaos,(unsigned char *) &datum1);
         ConcatenateStringInfo(entropy,chaos);
       }
     /*
       Our best hope for true entropy.
     */
     SetStringInfoLength(chaos,MaxEntropyExtent);
-    status=NTGatherRandomData(MaxEntropyExtent,GetStringInfoDatum(chaos));
-    (void) status;
+    (void) NTGatherRandomData(MaxEntropyExtent,GetStringInfoDatum(chaos));
     ConcatenateStringInfo(entropy,chaos);
   }
 #else

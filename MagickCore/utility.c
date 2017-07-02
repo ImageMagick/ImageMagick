@@ -899,22 +899,24 @@ MagickExport MagickBooleanType ExpandFilenames(int *number_arguments,
       if (IsPathDirectory(filename) <= 0)
         {
           char
-            path[MagickPathExtent];
+            file_path[MagickPathExtent];
 
-          *path='\0';
+          *file_path='\0';
           if (*magick != '\0')
             {
-              (void) ConcatenateMagickString(path,magick,MagickPathExtent);
-              (void) ConcatenateMagickString(path,":",MagickPathExtent);
+              (void) ConcatenateMagickString(file_path,magick,
+                MagickPathExtent);
+              (void) ConcatenateMagickString(file_path,":",MagickPathExtent);
             }
-          (void) ConcatenateMagickString(path,filename,MagickPathExtent);
+          (void) ConcatenateMagickString(file_path,filename,MagickPathExtent);
           if (*subimage != '\0')
             {
-              (void) ConcatenateMagickString(path,"[",MagickPathExtent);
-              (void) ConcatenateMagickString(path,subimage,MagickPathExtent);
-              (void) ConcatenateMagickString(path,"]",MagickPathExtent);
+              (void) ConcatenateMagickString(file_path,"[",MagickPathExtent);
+              (void) ConcatenateMagickString(file_path,subimage,
+                MagickPathExtent);
+              (void) ConcatenateMagickString(file_path,"]",MagickPathExtent);
             }
-          if (strlen(path) >= (MagickPathExtent-1))
+          if (strlen(file_path) >= (MagickPathExtent-1))
             ThrowFatalException(OptionFatalError,"FilenameTruncated");
           if (destroy != MagickFalse)
             {
@@ -922,7 +924,7 @@ MagickExport MagickBooleanType ExpandFilenames(int *number_arguments,
               vector[count]=DestroyString(vector[count]);
               destroy=MagickFalse;
             }
-          vector[count++]=ConstantString(path);
+          vector[count++]=ConstantString(file_path);
         }
     }
     filelist=(char **) RelinquishMagickMemory(filelist);
