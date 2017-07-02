@@ -740,7 +740,7 @@ static void ParseImageResourceBlocks(Image *image,
   {
     if (LocaleNCompare((const char *) p,"8BIM",4) != 0)
       break;
-    p+4;
+    p+=4;
     p=PushShortPixel(MSBEndian,p,&id);
     p=PushCharPixel(p,&name_length);
     if (name_length % 2 == 0)
