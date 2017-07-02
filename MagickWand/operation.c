@@ -1812,7 +1812,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
             method;
 
           method=(AutoThresholdMethod) ParseCommandOption(
-            MagickAutoThresholdOptions,MagickFalse,argv[i+1]);
+            MagickAutoThresholdOptions,MagickFalse,arg1);
           (void) AutoThresholdImage(_image,method,_exception);
           break;
         }
