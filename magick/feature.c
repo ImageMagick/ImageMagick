@@ -249,7 +249,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
     *edge_view;
 
   CannyInfo
-    pixel;
+    element;
 
   char
     geometry[MaxTextExtent];
@@ -297,7 +297,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
   kernel_info=DestroyKernelInfo(kernel_info);
   if (edge_image == (Image *) NULL)
     return((Image *) NULL);
-  if (SetImageColorspace(edge_image,GRAYColorspace) == MagickFalse)
+  if (TransformImageColorspace(edge_image,GRAYColorspace) == MagickFalse)
     {
       edge_image=DestroyImage(edge_image);
       return((Image *) NULL);
@@ -423,9 +423,9 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
     of an edge.
   */
   progress=0;
-  (void) GetMatrixElement(canny_cache,0,0,&pixel);
-  max=pixel.intensity;
-  min=pixel.intensity;
+  (void) GetMatrixElement(canny_cache,0,0,&element);
+  max=element.intensity;
+  min=element.intensity;
   edge_view=AcquireAuthenticCacheView(edge_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
