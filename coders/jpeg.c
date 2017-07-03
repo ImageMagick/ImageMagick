@@ -1031,6 +1031,11 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       return((Image *) NULL);
     }
   /*
+    Verify that file size large enough to contain a JPEG datastream.
+  */
+  if (GetBlobSize(image) < 107)
+    ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
+  /*
     Initialize JPEG parameters.
   */
   (void) ResetMagickMemory(&error_manager,0,sizeof(error_manager));
@@ -1504,6 +1509,7 @@ ModuleExport size_t RegisterJPEGImage(void)
 #endif
   entry->magick=(IsImageFormatHandler *) IsJPEG;
   entry->adjoin=MagickFalse;
+  entry->seekable_stream=MagickTrue;
   entry->description=ConstantString(description);
   if (*version != '\0')
     entry->version=ConstantString(version);
@@ -1520,6 +1526,7 @@ ModuleExport size_t RegisterJPEGImage(void)
 #endif
   entry->magick=(IsImageFormatHandler *) IsJPEG;
   entry->adjoin=MagickFalse;
+  entry->seekable_stream=MagickTrue;
   entry->description=ConstantString(description);
   if (*version != '\0')
     entry->version=ConstantString(version);
@@ -1535,6 +1542,7 @@ ModuleExport size_t RegisterJPEGImage(void)
   entry->encoder=(EncodeImageHandler *) WriteJPEGImage;
 #endif
   entry->adjoin=MagickFalse;
+  entry->seekable_stream=MagickTrue;
   entry->description=ConstantString(description);
   if (*version != '\0')
     entry->version=ConstantString(version);
@@ -1550,6 +1558,7 @@ ModuleExport size_t RegisterJPEGImage(void)
   entry->encoder=(EncodeImageHandler *) WriteJPEGImage;
 #endif
   entry->adjoin=MagickFalse;
+  entry->seekable_stream=MagickTrue;
   entry->description=ConstantString(description);
   if (*version != '\0')
     entry->version=ConstantString(version);
@@ -1565,6 +1574,7 @@ ModuleExport size_t RegisterJPEGImage(void)
   entry->encoder=(EncodeImageHandler *) WriteJPEGImage;
 #endif
   entry->adjoin=MagickFalse;
+  entry->seekable_stream=MagickTrue;
   entry->description=ConstantString(description);
   if (*version != '\0')
     entry->version=ConstantString(version);
