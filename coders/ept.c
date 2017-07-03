@@ -198,13 +198,13 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   ept_info.postscript_offset=(MagickOffsetType) ReadBlobLSBLong(image);
   ept_info.postscript_length=ReadBlobLSBLong(image);
   if (ept_info.postscript_length > GetBlobSize(image))
-    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
   (void) ReadBlobLSBLong(image);
   (void) ReadBlobLSBLong(image);
   ept_info.tiff_offset=(MagickOffsetType) ReadBlobLSBLong(image);
   ept_info.tiff_length=ReadBlobLSBLong(image);
   if (ept_info.tiff_length > GetBlobSize(image))
-    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
   (void) ReadBlobLSBShort(image);
   ept_info.postscript=(unsigned char *) AcquireQuantumMemory(
     ept_info.postscript_length+1,sizeof(*ept_info.postscript));
