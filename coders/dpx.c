@@ -1107,7 +1107,8 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             *profile;
 
            if (dpx.file.user_size > GetBlobSize(image))
-             ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+             ThrowReaderException(CorruptImageError,
+               "InsufficientImageDataInFile");
            profile=BlobToStringInfo((const unsigned char *) NULL,
              dpx.file.user_size-sizeof(dpx.user.id));
            if (profile == (StringInfo *) NULL)
