@@ -4136,8 +4136,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
 
   /*
-     Verify that file size large enough to contain a PNG datastream
-     if using a seekable blob
+     Verify that file size large enough to contain a PNG datastream.
   */
   if (GetBlobSize(image) < 61)
     ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
@@ -5032,7 +5031,10 @@ static Image *ReadJNGImage(const ImageInfo *image_info,
   if (count < 8 || memcmp(magic_number,"\213JNG\r\n\032\n",8) != 0)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
 
-  if (IsBlobSeekable(image) && GetBlobSize(image) < 147)
+  /*
+     Verify that file size large enough to contain a JNG datastream.
+  */
+  if (GetBlobSize(image) < 147)
     ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
 
   /* Allocate a MngInfo structure.  */
