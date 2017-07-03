@@ -4139,7 +4139,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,
      Verify that file size large enough to contain a PNG datastream
      if using a seekable blob
   */
-  if (IsBlobSeekable(image) && GetBlobSize(image) < 61)
+  if (GetBlobSize(image) < 61)
     ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
 
   /*
@@ -7627,7 +7627,7 @@ ModuleExport size_t RegisterPNGImage(void)
 #endif
 
   entry=AcquireMagickInfo("PNG","MNG","Multiple-image Network Graphics");
-  entry->flags|=CoderSeekableStreamFlag;  /* To do: eliminate this. */
+  entry->flags|=CoderDecoderSeekableStreamFlag;
 
 #if defined(MAGICKCORE_PNG_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadMNGImage;
@@ -7651,6 +7651,7 @@ ModuleExport size_t RegisterPNGImage(void)
 #endif
 
   entry->magick=(IsImageFormatHandler *) IsPNG;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
   entry->flags^=CoderAdjoinFlag;
   entry->mime_type=ConstantString("image/png");
 
@@ -7669,6 +7670,7 @@ ModuleExport size_t RegisterPNGImage(void)
 #endif
 
   entry->magick=(IsImageFormatHandler *) IsPNG;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
   entry->flags^=CoderAdjoinFlag;
   entry->mime_type=ConstantString("image/png");
   (void) RegisterMagickInfo(entry);
@@ -7697,6 +7699,7 @@ ModuleExport size_t RegisterPNGImage(void)
 #endif
 
   entry->magick=(IsImageFormatHandler *) IsPNG;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
   entry->flags^=CoderAdjoinFlag;
   entry->mime_type=ConstantString("image/png");
   (void) RegisterMagickInfo(entry);
@@ -7709,6 +7712,7 @@ ModuleExport size_t RegisterPNGImage(void)
 #endif
 
   entry->magick=(IsImageFormatHandler *) IsPNG;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
   entry->flags^=CoderAdjoinFlag;
   entry->mime_type=ConstantString("image/png");
   (void) RegisterMagickInfo(entry);
@@ -7722,6 +7726,7 @@ ModuleExport size_t RegisterPNGImage(void)
 #endif
 
   entry->magick=(IsImageFormatHandler *) IsPNG;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
   entry->flags^=CoderAdjoinFlag;
   entry->mime_type=ConstantString("image/png");
   (void) RegisterMagickInfo(entry);
@@ -7734,6 +7739,7 @@ ModuleExport size_t RegisterPNGImage(void)
 #endif
 
   entry->magick=(IsImageFormatHandler *) IsPNG;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
   entry->flags^=CoderAdjoinFlag;
   entry->mime_type=ConstantString("image/png");
   (void) RegisterMagickInfo(entry);
@@ -7747,6 +7753,7 @@ ModuleExport size_t RegisterPNGImage(void)
 #endif
 
   entry->magick=(IsImageFormatHandler *) IsPNG;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
   entry->flags^=CoderAdjoinFlag;
   entry->mime_type=ConstantString("image/png");
   (void) RegisterMagickInfo(entry);
@@ -7761,6 +7768,7 @@ ModuleExport size_t RegisterPNGImage(void)
 #endif
 
   entry->magick=(IsImageFormatHandler *) IsJNG;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
   entry->flags^=CoderAdjoinFlag;
   entry->mime_type=ConstantString("image/x-jng");
   entry->note=ConstantString(JNGNote);
