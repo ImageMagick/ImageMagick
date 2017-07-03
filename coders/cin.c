@@ -707,7 +707,7 @@ static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
         User defined data.
       */
       if (cin.file.user_length > GetBlobSize(image))
-        ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+        ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
       profile=BlobToStringInfo((const unsigned char *) NULL,
         cin.file.user_length);
       if (profile == (StringInfo *) NULL)

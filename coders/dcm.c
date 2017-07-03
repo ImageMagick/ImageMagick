@@ -3270,7 +3270,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if ((quantum != 0) && (length != 0))
             {
               if (length > GetBlobSize(image))
-                ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+                ThrowReaderException(CorruptImageError,
+                  "InsufficientImageDataInFile");
               if (~length >= 1)
                 data=(unsigned char *) AcquireQuantumMemory(length+1,quantum*
                   sizeof(*data));
