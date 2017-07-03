@@ -1062,8 +1062,8 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       return((Image *) NULL);
     }
   /*
-     Verify that file size large enough to contain a JPEG datastream
-     if using a seekable blob
+    Verify that file size large enough to contain a JPEG datastream
+    if using a seekable blob
   */
   if (IsBlobSeekable(image) && GetBlobSize(image) < 107)
     ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");

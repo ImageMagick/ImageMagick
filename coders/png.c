@@ -5032,6 +5032,9 @@ static Image *ReadJNGImage(const ImageInfo *image_info,
   if (count < 8 || memcmp(magic_number,"\213JNG\r\n\032\n",8) != 0)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
 
+  if (IsBlobSeekable(image) && GetBlobSize(image) < 147)
+    ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
+
   /* Allocate a MngInfo structure.  */
 
   mng_info=(MngInfo *) AcquireMagickMemory(sizeof(*mng_info));
