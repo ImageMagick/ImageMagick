@@ -1062,12 +1062,10 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       return((Image *) NULL);
     }
   /*
-    Verify that file size large enough to contain a JPEG datastream
-    if using a seekable blob
+    Verify that file size large enough to contain a JPEG datastream.
   */
-  if (IsBlobSeekable(image) && GetBlobSize(image) < 107)
+  if (GetBlobSize(image) < 107)
     ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
-
   /*
     Initialize JPEG parameters.
   */
@@ -1535,6 +1533,7 @@ ModuleExport size_t RegisterJPEGImage(void)
   entry->encoder=(EncodeImageHandler *) WriteJPEGImage;
 #endif
   entry->magick=(IsImageFormatHandler *) IsJPEG;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
   entry->flags^=CoderAdjoinFlag;
   entry->flags^=CoderUseExtensionFlag;
   if (*version != '\0')
@@ -1550,6 +1549,7 @@ ModuleExport size_t RegisterJPEGImage(void)
   entry->encoder=(EncodeImageHandler *) WriteJPEGImage;
 #endif
   entry->magick=(IsImageFormatHandler *) IsJPEG;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
   entry->flags^=CoderAdjoinFlag;
   if (*version != '\0')
     entry->version=ConstantString(version);
@@ -1563,6 +1563,7 @@ ModuleExport size_t RegisterJPEGImage(void)
   entry->decoder=(DecodeImageHandler *) ReadJPEGImage;
   entry->encoder=(EncodeImageHandler *) WriteJPEGImage;
 #endif
+  entry->flags|=CoderDecoderSeekableStreamFlag;
   entry->flags^=CoderAdjoinFlag;
   entry->flags^=CoderUseExtensionFlag;
   if (*version != '\0')
@@ -1577,6 +1578,7 @@ ModuleExport size_t RegisterJPEGImage(void)
   entry->decoder=(DecodeImageHandler *) ReadJPEGImage;
   entry->encoder=(EncodeImageHandler *) WriteJPEGImage;
 #endif
+  entry->flags|=CoderDecoderSeekableStreamFlag;
   entry->flags^=CoderAdjoinFlag;
   entry->flags^=CoderUseExtensionFlag;
   if (*version != '\0')
@@ -1591,6 +1593,7 @@ ModuleExport size_t RegisterJPEGImage(void)
   entry->decoder=(DecodeImageHandler *) ReadJPEGImage;
   entry->encoder=(EncodeImageHandler *) WriteJPEGImage;
 #endif
+  entry->flags|=CoderDecoderSeekableStreamFlag;
   entry->flags^=CoderAdjoinFlag;
   entry->flags^=CoderUseExtensionFlag;
   if (*version != '\0')
