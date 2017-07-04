@@ -469,10 +469,103 @@ static double OTSUThreshold(const Image *image,const double *histogram,
   return(threshold);
 }
 
-static double TriangleThreshold(const Image *image,const double *histogram,
+static double TriangleThreshold(const Image *image,double *histogram,
   ExceptionInfo *exception)
 {
-  return(QuantumRange/2.0);
+  double
+    count,
+    d,
+    distance,
+    split,
+    x,
+    y;
+
+  MagickBooleanType
+    inverted;
+
+  register ssize_t
+    i;
+
+  ssize_t
+    max,
+    start,
+    end;
+
+  /*
+    Compute optimal threshold with triangle algorithm.
+  */
+  start=0;  /* find start bin, first one not zero */
+  for (i=0; i <= (ssize_t) MaxMap; i++)
+    if (histogram[i] > 0.0)
+      {
+        start=i;
+        break;
+      }
+  if (start > 0)
+    start--;
+  end=0;  /* find end bin, last one not zero */
+  for (i=(ssize_t) MaxMap; i > 0; i--)
+    if (histogram[i] > 0.0)
+      {
+        end=i;
+        break;
+      }
+  if (end < (ssize_t) MaxMap)
+    end++;
+  max=0;  /* find max bin, bin with largest count */
+  count=0.0;
+  for (i=0; i <= (ssize_t) MaxMap; i++)
+    if (histogram[i] > count)
+      {
+        max=i;
+        count=histogram[i];
+      }
+  inverted=MagickFalse;
+  if ((max-start) < (end-max))
+    {
+      /*
+        Invert skewed histogram.
+      */
+      inverted=MagickTrue;
+      ssize_t p = 0;
+      ssize_t q = (ssize_t) MaxMap;
+      while (p < q)
+      {
+        double count = histogram[p];
+        histogram[p]=histogram[q];
+        histogram[q]=count;
+        p++;
+        q--;
+      }
+      start=MaxMap-end;
+      max=MaxMap-max;
+    }
+  if (start == max)
+    return((double) ScaleMapToQuantum((MagickRealType) start));
+  /*
+    Compute threshold at split point.
+  */
+  x=histogram[max];
+  y=(double) start-max;
+  d=sqrt(x*x+y*y);
+  x/=d;
+  y/=d;
+  d=x*start+y*histogram[start];
+  split=(double) start;
+  distance=0.0;
+  for (i=start+1; i <= max; i++)
+  {
+    double split_distance = x*i+y*histogram[i]-d;
+    if (split_distance > distance)
+      {
+        split=(double) i;
+        distance=split_distance;
+      }
+  }
+  split--;
+  if (inverted != MagickFalse)
+    return(2.0*ScaleMapToQuantum(MaxMap-split));
+  return(2.0*ScaleMapToQuantum(split));
 }
 
 MagickExport MagickBooleanType AutoThresholdImage(Image *image,
