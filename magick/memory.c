@@ -668,11 +668,13 @@ MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
         }
       RelinquishMagickResource(MapResource,extent);
     }
-  if (memory_info->blob == NULL)
+  if ((memory_info->blob == NULL) &&
+      (AcquireMagickResource(MemoryResource,extent) != MagickFalse))
     {
       memory_info->blob=AcquireMagickMemory(extent);
       if (memory_info->blob != NULL)
         memory_info->type=UnalignedVirtualMemory;
+      RelinquishMagickResource(MemoryResource,extent);
     }
   if (memory_info->blob == NULL)
     memory_info=RelinquishVirtualMemory(memory_info);

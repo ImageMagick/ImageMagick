@@ -359,6 +359,8 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
     pcx_info.reserved=(unsigned char) ReadBlobByte(image);
     pcx_info.planes=(unsigned char) ReadBlobByte(image);
+    if (pcx_info.planes > 6)
+      ThrowPCXException(CorruptImageError,"ImproperImageHeader");
     if ((pcx_info.bits_per_pixel*pcx_info.planes) >= 64)
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
     if (pcx_info.planes == 0)
