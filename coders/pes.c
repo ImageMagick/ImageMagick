@@ -534,7 +534,7 @@ static Image *ReadPESImage(const ImageInfo *image_info,ExceptionInfo *exception)
   j=0;
   delta_x=0;
   delta_y=0;
-  while (EOFBlob(image) != EOF)
+  while (EOFBlob(image) == MagickFalse)
   {
     x=ReadBlobByte(image);
     y=ReadBlobByte(image);
@@ -620,6 +620,11 @@ static Image *ReadPESImage(const ImageInfo *image_info,ExceptionInfo *exception)
   j++;
   blocks[j].offset=(ssize_t) i;
   number_blocks=(size_t) j;
+  image->columns=bounds.x2-bounds.x1;
+  image->rows=bounds.y2-bounds.y1;
+  status=SetImageExtent(image,image->columns,image->rows,exception);
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
   /*
     Write stitches as SVG file.
   */
@@ -633,8 +638,8 @@ static Image *ReadPESImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) FormatLocaleFile(file,"<svg xmlns=\"http://www.w3.org/2000/svg\" "
     "xlink=\"http://www.w3.org/1999/xlink\" "
     "ev=\"http://www.w3.org/2001/xml-events\" version=\"1.1\" "
-    "baseProfile=\"full\" width=\"%g\" height=\"%g\">\n",bounds.x2-bounds.x1,
-    bounds.y2-bounds.y1);
+    "baseProfile=\"full\" width=\"%g\" height=\"%g\">\n",(double)
+    image->columns,(double) image->rows);
   for (i=0; i < (ssize_t) number_blocks; i++)
   {
     offset=blocks[i].offset;
