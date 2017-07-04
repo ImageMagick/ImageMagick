@@ -395,6 +395,8 @@ static double KapurThreshold(const Image *image,const double *histogram,
 static double OTSUThreshold(const Image *image,const double *histogram,
   ExceptionInfo *exception)
 {
+#define MaxIntensity  255
+
   double
     max_sigma,
     *myu,
@@ -409,10 +411,11 @@ static double OTSUThreshold(const Image *image,const double *histogram,
   /*
     Compute optimal threshold from maximization of inter-class variance.
   */
-  myu=(double *) AcquireQuantumMemory(MaxMap+1UL,sizeof(*myu));
-  omega=(double *) AcquireQuantumMemory(MaxMap+1UL,sizeof(*omega));
-  probability=(double *) AcquireQuantumMemory(MaxMap+1UL,sizeof(*probability));
-  sigma=(double *) AcquireQuantumMemory(MaxMap+1UL,sizeof(*sigma));
+  myu=(double *) AcquireQuantumMemory(MaxIntensity+1UL,sizeof(*myu));
+  omega=(double *) AcquireQuantumMemory(MaxIntensity+1UL,sizeof(*omega));
+  probability=(double *) AcquireQuantumMemory(MaxIntensity+1UL,
+    sizeof(*probability));
+  sigma=(double *) AcquireQuantumMemory(MaxIntensity+1UL,sizeof(*sigma));
   if ((myu == (double *) NULL) || (omega == (double *) NULL) ||
       (probability == (double *) NULL) || (sigma == (double *) NULL))
     {
@@ -431,14 +434,14 @@ static double OTSUThreshold(const Image *image,const double *histogram,
   /*
     Calculate probability density.
   */
-  for (i=0; i <= (ssize_t) MaxMap; i++)
+  for (i=0; i <= (ssize_t) MaxIntensity; i++)
     probability[i]=histogram[i]/(double) (image->columns*image->rows);
   /*
     Generate probability of graylevels and mean value for separation.
   */
   omega[0]=probability[0];
   myu[0]=0.0;
-  for (i=0; i <= (ssize_t) MaxMap; i++)
+  for (i=0; i <= (ssize_t) MaxIntensity; i++)
   {
     omega[i]=omega[i-1]+probability[i];
     myu[i]=myu[i-1]+i*probability[i];
@@ -448,11 +451,12 @@ static double OTSUThreshold(const Image *image,const double *histogram,
   */
   threshold=0;
   max_sigma=0.0;
-  for (i=0; i < (ssize_t) MaxMap; i++)
+  for (i=0; i < (ssize_t) MaxIntensity; i++)
   {
     sigma[i]=0.0;
     if ((omega[i] != 0.0) && (omega[i] != 1.0))
-      sigma[i]=pow(myu[MaxMap]*omega[i]-myu[i],2.0)/(omega[i]*(1.0-omega[i]));
+      sigma[i]=pow(myu[MaxIntensity]*omega[i]-myu[i],2.0)/(omega[i]*(1.0-
+        omega[i]));
     if (sigma[i] > max_sigma)
       {
         max_sigma=sigma[i];
@@ -466,106 +470,98 @@ static double OTSUThreshold(const Image *image,const double *histogram,
   omega=(double *) RelinquishMagickMemory(omega);
   probability=(double *) RelinquishMagickMemory(probability);
   sigma=(double *) RelinquishMagickMemory(sigma);
-  return(threshold);
+  return(100.0*threshold/MaxIntensity);
 }
 
-static double TriangleThreshold(const Image *image,double *histogram,
+static double TriangleThreshold(const Image *image,const double *histogram,
   ExceptionInfo *exception)
 {
   double
+    a,
+    b,
+    c,
     count,
-    d,
     distance,
-    split,
-    x,
-    y;
-
-  MagickBooleanType
-    inverted;
+    inverse_ratio,
+    max_distance,
+    segment,
+    x1,
+    x2,
+    y1,
+    y2;
 
   register ssize_t
     i;
 
   ssize_t
+    end,
     max,
     start,
-    end;
+    threshold;
 
   /*
     Compute optimal threshold with triangle algorithm.
   */
-  start=0;  /* find start bin, first one not zero */
-  for (i=0; i <= (ssize_t) MaxMap; i++)
+  start=0;  /* find start bin, first bin not zero count */
+  for (i=0; i <= (ssize_t) MaxIntensity; i++)
     if (histogram[i] > 0.0)
       {
         start=i;
         break;
       }
-  if (start > 0)
-    start--;
-  end=0;  /* find end bin, last one not zero */
-  for (i=(ssize_t) MaxMap; i > 0; i--)
+  end=0;  /* find end bin, last bin not zero count */
+  for (i=(ssize_t) MaxIntensity; i >= 0; i--)
     if (histogram[i] > 0.0)
       {
         end=i;
         break;
       }
-  if (end < (ssize_t) MaxMap)
-    end++;
   max=0;  /* find max bin, bin with largest count */
   count=0.0;
-  for (i=0; i <= (ssize_t) MaxMap; i++)
+  for (i=0; i <= (ssize_t) MaxIntensity; i++)
     if (histogram[i] > count)
       {
         max=i;
         count=histogram[i];
       }
-  inverted=MagickFalse;
-  if ((max-start) < (end-max))
-    {
-      /*
-        Invert skewed histogram.
-      */
-      inverted=MagickTrue;
-      ssize_t p = 0;
-      ssize_t q = (ssize_t) MaxMap;
-      while (p < q)
-      {
-        double count = histogram[p];
-        histogram[p]=histogram[q];
-        histogram[q]=count;
-        p++;
-        q--;
-      }
-      start=MaxMap-end;
-      max=MaxMap-max;
-    }
-  if (start == max)
-    return((double) ScaleMapToQuantum((MagickRealType) start));
   /*
     Compute threshold at split point.
   */
-  x=histogram[max];
-  y=(double) start-max;
-  d=sqrt(x*x+y*y);
-  x/=d;
-  y/=d;
-  d=x*start+y*histogram[start];
-  split=(double) start;
-  distance=0.0;
-  for (i=start+1; i <= max; i++)
-  {
-    double split_distance = x*i+y*histogram[i]-d;
-    if (split_distance > distance)
-      {
-        split=(double) i;
-        distance=split_distance;
-      }
-  }
-  split--;
-  if (inverted != MagickFalse)
-    return(2.0*ScaleMapToQuantum(MaxMap-split));
-  return(2.0*ScaleMapToQuantum(split));
+  x1=(double) max;
+  y1=histogram[max];
+  x2=(double) end;
+  if ((max-start) >= (end-max))
+    x2=(double) start;
+  y2=0.0;
+  a=y1-y2;
+  b=x2-x1;
+  c=(-1.0)*(a*x1+b*y1);
+  inverse_ratio=1.0/sqrt(a*a+b*b+c*c);
+  threshold=0;
+  max_distance=0.0;
+  if (x2 == (double) start)
+    for (i=start; i < max; i++)
+    {
+      segment=inverse_ratio*(a*i+b*histogram[i]+c);
+      distance=sqrt(segment*segment);
+      if ((distance > max_distance) && (segment > 0.0))
+        {
+          threshold=i;
+          max_distance=distance;
+        }
+    }
+  else
+    for (i=end; i > max; i--)
+    {
+      segment=inverse_ratio*(a*i+b*histogram[i]+c);
+      distance=sqrt(segment*segment);
+      if ((distance > max_distance) && (segment < 0.0))
+        {
+          threshold=i;
+          max_distance=distance;
+        }
+    }
+  return(100.0*threshold/MaxIntensity);
 }
 
 MagickExport MagickBooleanType AutoThresholdImage(Image *image,
@@ -591,12 +587,13 @@ MagickExport MagickBooleanType AutoThresholdImage(Image *image,
   assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  histogram=(double *) AcquireQuantumMemory(MaxMap+1UL,sizeof(*histogram));
+  histogram=(double *) AcquireQuantumMemory(MaxIntensity+1UL,
+    sizeof(*histogram));
   if (histogram == (double *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
   status=MagickTrue;
-  (void) ResetMagickMemory(histogram,0,(MaxMap+1)*sizeof(*histogram));
+  (void) ResetMagickMemory(histogram,0,(MaxIntensity+1UL)*sizeof(*histogram));
   image_view=AcquireVirtualCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -612,7 +609,7 @@ MagickExport MagickBooleanType AutoThresholdImage(Image *image,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       double intensity = GetPixelIntensity(image,p);
-      histogram[ScaleQuantumToMap(ClampToQuantum(intensity))]++;
+      histogram[ScaleQuantumToChar(ClampToQuantum(intensity))]++;
       p+=GetPixelChannels(image);
     }
   }
@@ -641,9 +638,8 @@ MagickExport MagickBooleanType AutoThresholdImage(Image *image,
     status=MagickFalse;
   if (status == MagickFalse)
     return(MagickFalse);
-  (void) FormatLocaleFile(stdout,"Threshold %.4g%%\n",100.0*QuantumScale*
-    threshold);
-  return(BilevelImage(image,threshold,exception));
+  (void) FormatLocaleFile(stdout,"threshold=%.6g%%\n",threshold);
+  return(BilevelImage(image,QuantumRange*threshold/100.0,exception));
 }
 
 /*
