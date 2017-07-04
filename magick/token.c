@@ -180,9 +180,13 @@ MagickExport void GetNextToken(const char *start,const char **end,
   register ssize_t
     i;
 
+  size_t
+    length;
+
   assert(start != (const char *) NULL);
   assert(token != (char *) NULL);
   i=0;
+  length=strlen(start);
   p=start;
   while ((isspace((int) ((unsigned char) *p)) != 0) && (*p != '\0'))
     p++;
@@ -218,6 +222,8 @@ MagickExport void GetNextToken(const char *start,const char **end,
             }
         if (i < (ssize_t) (extent-1))
           token[i++]=(*p);
+        if ((p-start) >= length)
+          break;
       }
       break;
     }
@@ -240,8 +246,12 @@ MagickExport void GetNextToken(const char *start,const char **end,
       if ((p != q) && (*p != ','))
         {
           for ( ; (p < q) && (*p != ','); p++)
+          {
             if (i < (ssize_t) (extent-1))
               token[i++]=(*p);
+            if ((p-start) >= length)
+              break;
+          }
           if (*p == '%')
             if (i < (ssize_t) (extent-1))
               token[i++]=(*p++);
@@ -272,7 +282,11 @@ MagickExport void GetNextToken(const char *start,const char **end,
               token[i++]=(*p);
             if ((*p == ')') && (*(p-1) != '\\'))
               break;
+            if ((p-start) >= length)
+              break;
           }
+        if ((p-start) >= length)
+          break;
       }
       break;
     }
