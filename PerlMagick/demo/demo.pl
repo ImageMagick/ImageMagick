@@ -79,6 +79,12 @@ $example->Label('Auto Level');
 $example->AutoLevel();
 push(@$images,$example);
 
+print "Auto-threshold...\n";
+$example=$model->Clone();
+$example->Label('Auto Threshold');
+$example->AutoThreshold();
+push(@$images,$example);
+
 print "Blur...\n";
 $example=$model->Clone();
 $example->Label('Blur');
