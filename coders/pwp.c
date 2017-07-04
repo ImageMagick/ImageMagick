@@ -216,6 +216,8 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     for (i=0; i < (ssize_t) filesize; i++)
     {
       c=ReadBlobByte(pwp_image);
+      if (c == EOF)
+        break;
       (void) fputc(c,file);
     }
     (void) fclose(file);
