@@ -472,11 +472,11 @@ static void RelinquishZIPMemory(voidpf context,voidpf memory)
 
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
 /** This procedure decompreses an image block for a new MATLAB format. */
-static Image *DecompressBlock(Image *orig, unsigned int *Size, ImageInfo *clone_info, ExceptionInfo *exception)
+static Image *decompress_block(Image *orig, unsigned int *Size, ImageInfo *clone_info, ExceptionInfo *exception)
 {
 
 Image *image2;
-void *CacheBlock, *DecompressBlock;
+void *cache_block, *decompress_block;
 z_stream zip_info;
 FILE *mat_file;
 size_t magick_size;
@@ -495,12 +495,12 @@ ssize_t TotalSize = 0;
     (void) remove_utf8(clone_info->filename);
   }
 
-  CacheBlock = AcquireQuantumMemory((size_t)((*Size<16384)?*Size:16384),sizeof(unsigned char *));
-  if(CacheBlock==NULL) return NULL;
-  DecompressBlock = AcquireQuantumMemory((size_t)(4096),sizeof(unsigned char *));
-  if(DecompressBlock==NULL)
+  cache_block = AcquireQuantumMemory((size_t)(*Size < 16384) ? *Size: 16384,sizeof(unsigned char *));
+  if(cache_block==NULL) return NULL;
+  decompress_block = AcquireQuantumMemory((size_t)(4096),sizeof(unsigned char *));
+  if(decompress_block==NULL)
   {
-    RelinquishMagickMemory(CacheBlock);
+    RelinquishMagickMemory(cache_block);
     return NULL;
   }
 
@@ -510,8 +510,8 @@ ssize_t TotalSize = 0;
     mat_file = fdopen(file,"w");
   if(!mat_file)
   {
-    RelinquishMagickMemory(CacheBlock);
-    RelinquishMagickMemory(DecompressBlock);
+    RelinquishMagickMemory(cache_block);
+    RelinquishMagickMemory(decompress_block);
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Cannot create file stream for decompressed image");
     return NULL;
   }
@@ -522,8 +522,8 @@ ssize_t TotalSize = 0;
   zip_status = inflateInit(&zip_info);
   if (zip_status != Z_OK)
     {
-      RelinquishMagickMemory(CacheBlock);
-      RelinquishMagickMemory(DecompressBlock);
+      RelinquishMagickMemory(cache_block);
+      RelinquishMagickMemory(decompress_block);
       (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
         "UnableToUncompressImage","`%s'",clone_info->filename);
       (void) fclose(mat_file);
@@ -536,18 +536,18 @@ ssize_t TotalSize = 0;
   zip_info.total_out = 0;
   while(*Size>0 && !EOFBlob(orig))
   {
-    magick_size = ReadBlob(orig, (*Size<16384)?*Size:16384, (unsigned char *) CacheBlock);
-    zip_info.next_in = (Bytef *) CacheBlock;
+    magick_size = ReadBlob(orig, (*Size < 16384) ? *Size : 16384, (unsigned char *) cache_block);
+    zip_info.next_in = (Bytef *) cache_block;
     zip_info.avail_in = (uInt) magick_size;
 
     while(zip_info.avail_in>0)
     {
       zip_info.avail_out = 4096;
-      zip_info.next_out = (Bytef *) DecompressBlock;
+      zip_info.next_out = (Bytef *) decompress_block;
       zip_status = inflate(&zip_info,Z_NO_FLUSH);
       if ((zip_status != Z_OK) && (zip_status != Z_STREAM_END))
         break;
-      extent=fwrite(DecompressBlock, 4096-zip_info.avail_out, 1, mat_file);
+      extent=fwrite(decompress_block, 4096-zip_info.avail_out, 1, mat_file);
       (void) extent;
       TotalSize += 4096-zip_info.avail_out;
 
@@ -562,8 +562,8 @@ DblBreak:
 
   inflateEnd(&zip_info);
   (void)fclose(mat_file);
-  RelinquishMagickMemory(CacheBlock);
-  RelinquishMagickMemory(DecompressBlock);
+  RelinquishMagickMemory(cache_block);
+  RelinquishMagickMemory(decompress_block);
   *Size = TotalSize;
 
   if((clone_info->file=fopen(clone_info->filename,"rb"))==NULL) goto UnlinkFile;
@@ -944,6 +944,8 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     if(EOFBlob(image)) break;
     MATLAB_HDR.ObjectSize = ReadBlobXXXLong(image);
     if(EOFBlob(image)) break;
+    if(MATLAB_HDR.ObjectSize+filepos > GetBlobSize(image))
+      goto MATLAB_KO;
     filepos += MATLAB_HDR.ObjectSize + 4 + 4;
 
     clone_info=CloneImageInfo(image_info);
@@ -951,7 +953,7 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,"ImproperImageHeader");
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
     if(MATLAB_HDR.DataType == miCOMPRESSED)
     {
-      image2 = DecompressBlock(image,&MATLAB_HDR.ObjectSize,clone_info,exception);
+      image2 = decompress_block(image,&MATLAB_HDR.ObjectSize,clone_info,exception);
       if(image2==NULL) continue;
       MATLAB_HDR.DataType = ReadBlobXXXLong(image2); /* replace compressed object type. */
     }
@@ -1095,6 +1097,8 @@ RestoreMSCWarning
     one=1;
     image->colors = one << image->depth;
     if (image->columns == 0 || image->rows == 0)
+      goto MATLAB_KO;
+    if((unsigned long)ldblk*MATLAB_HDR.SizeY > MATLAB_HDR.ObjectSize)
       goto MATLAB_KO;
     /* Image is gray when no complex flag is set and 2D Matrix */
     if ((MATLAB_HDR.DimFlag == 8) &&
