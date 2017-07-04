@@ -386,13 +386,16 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
 %
 */
 
-static double OTSUThreshold(const Image *image,ExceptionInfo *exception)
+static double KapurThreshold(const Image *image,const double *histogram,
+  ExceptionInfo *exception)
 {
-  CacheView
-    *image_view;
+  return(QuantumRange/2.0);
+}
 
+static double OTSUThreshold(const Image *image,const double *histogram,
+  ExceptionInfo *exception)
+{
   double
-    *histogram,
     max_sigma,
     *myu,
     *omega,
@@ -400,30 +403,18 @@ static double OTSUThreshold(const Image *image,ExceptionInfo *exception)
     *sigma,
     threshold;
 
-  MagickBooleanType
-    status;
-
   register ssize_t
     i;
-
-  ssize_t
-    y;
 
   /*
     Compute optimal threshold from maximization of inter-class variance.
   */
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  histogram=(double *) AcquireQuantumMemory(MaxMap+1UL,sizeof(*histogram));
   myu=(double *) AcquireQuantumMemory(MaxMap+1UL,sizeof(*myu));
   omega=(double *) AcquireQuantumMemory(MaxMap+1UL,sizeof(*omega));
   probability=(double *) AcquireQuantumMemory(MaxMap+1UL,sizeof(*probability));
   sigma=(double *) AcquireQuantumMemory(MaxMap+1UL,sizeof(*sigma));
-  if ((histogram == (double *) NULL) || (myu == (double *) NULL) ||
-      (omega == (double *) NULL) || (probability == (double *) NULL) ||
-      (sigma == (double *) NULL))
+  if ((myu == (double *) NULL) || (omega == (double *) NULL) ||
+      (probability == (double *) NULL) || (sigma == (double *) NULL))
     {
       if (sigma != (double *) NULL)
         sigma=(double *) RelinquishMagickMemory(sigma);
@@ -433,36 +424,10 @@ static double OTSUThreshold(const Image *image,ExceptionInfo *exception)
         omega=(double *) RelinquishMagickMemory(omega);
       if (myu != (double *) NULL)
         myu=(double *) RelinquishMagickMemory(myu);
-      if (histogram != (double *) NULL)
-        histogram=(double *) RelinquishMagickMemory(histogram);
-      ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-        image->filename);
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed",image->filename);
+      return(-1.0);
     }
-  /*
-    Form histogram.
-  */
-  status=MagickTrue;
-  (void) ResetMagickMemory(histogram,0,(MaxMap+1)*sizeof(*histogram));
-  image_view=AcquireVirtualCacheView(image,exception);
-  for (y=0; y < (ssize_t) image->rows; y++)
-  {
-    register const Quantum
-      *magick_restrict p;
-
-    register ssize_t
-      x;
-
-    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
-    if (p == (const Quantum *) NULL)
-      break;
-    for (x=0; x < (ssize_t) image->columns; x++)
-    {
-      double intensity=GetPixelIntensity(image,p);
-      histogram[ScaleQuantumToMap(ClampToQuantum(intensity))]++;
-      p+=GetPixelChannels(image);
-    }
-  }
-  image_view=DestroyCacheView(image_view);
   /*
     Calculate probability density.
   */
@@ -497,32 +462,91 @@ static double OTSUThreshold(const Image *image,ExceptionInfo *exception)
   /*
     Free resources.
   */
-  histogram=(double *) RelinquishMagickMemory(histogram);
   myu=(double *) RelinquishMagickMemory(myu);
   omega=(double *) RelinquishMagickMemory(omega);
   probability=(double *) RelinquishMagickMemory(probability);
   sigma=(double *) RelinquishMagickMemory(sigma);
-  if (status == MagickFalse)
-    return(-1.0);
   return(threshold);
+}
+
+static double TriangleThreshold(const Image *image,const double *histogram,
+  ExceptionInfo *exception)
+{
+  return(QuantumRange/2.0);
 }
 
 MagickExport MagickBooleanType AutoThresholdImage(Image *image,
   const AutoThresholdMethod method,ExceptionInfo *exception)
 {
+  CacheView
+    *image_view;
+
   double
+    *histogram,
     threshold;
 
+  MagickBooleanType
+    status;
+
+  ssize_t
+    y;
+
+  /*
+    Form histogram.
+  */
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickCoreSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  histogram=(double *) AcquireQuantumMemory(MaxMap+1UL,sizeof(*histogram));
+  if (histogram == (double *) NULL)
+    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+      image->filename);
+  status=MagickTrue;
+  (void) ResetMagickMemory(histogram,0,(MaxMap+1)*sizeof(*histogram));
+  image_view=AcquireVirtualCacheView(image,exception);
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    register const Quantum
+      *magick_restrict p;
+
+    register ssize_t
+      x;
+
+    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
+    if (p == (const Quantum *) NULL)
+      break;
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      double intensity = GetPixelIntensity(image,p);
+      histogram[ScaleQuantumToMap(ClampToQuantum(intensity))]++;
+      p+=GetPixelChannels(image);
+    }
+  }
+  image_view=DestroyCacheView(image_view);
   switch (method)
   {
+    case KapurThresholdMethod:
+    {
+      threshold=KapurThreshold(image,histogram,exception);
+      break;
+    }
     case OTSUThresholdMethod:
     default:
     {
-      threshold=OTSUThreshold(image,exception);
+      threshold=OTSUThreshold(image,histogram,exception);
+      break;
+    }
+    case TriangleThresholdMethod:
+    {
+      threshold=TriangleThreshold(image,histogram,exception);
       break;
     }
   }
+  histogram=(double *) RelinquishMagickMemory(histogram);
   if (threshold < 0.0)
+    status=MagickFalse;
+  if (status == MagickFalse)
     return(MagickFalse);
   (void) FormatLocaleFile(stdout,"Threshold %.4g%%\n",100.0*QuantumScale*
     threshold);
