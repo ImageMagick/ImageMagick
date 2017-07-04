@@ -7619,8 +7619,8 @@ Mogrify(ref,...)
     MeanShiftImage     = 280
     Kuwahara           = 281
     KuwaharaImage      = 282
-    ConnectedComponent = 283
-    ConnectedComponentImage = 284
+    ConnectedComponents = 283
+    ConnectedComponentsImage = 284
     CopyPixels         = 285
     CopyImagePixels    = 286
     Color              = 287
@@ -11304,7 +11304,7 @@ Mogrify(ref,...)
             (void) SetImageChannelMask(image,channel_mask);
           break;
         }
-        case 142:  /* ConnectedComponent */
+        case 142:  /* ConnectedComponents */
         {
           size_t
             connectivity;
