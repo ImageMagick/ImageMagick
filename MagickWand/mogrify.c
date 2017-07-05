@@ -6647,10 +6647,10 @@ WandExport MagickBooleanType MogrifyImageInfo(ImageInfo *image_info,
           {
             if (*option == '+')
               {
-                (void) SetImageOption(image_info,option+1,"0.0");
+                (void) SetImageOption(image_info,"convolve:bias","0.0");
                 break;
               }
-            (void) SetImageOption(image_info,option+1,argv[i+1]);
+            (void) SetImageOption(image_info,"convolve:bias",argv[i+1]);
             break;
           }
         if (LocaleCompare("black-point-compensation",option+1) == 0)
