@@ -336,6 +336,8 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         size_t
           one;
 
+        if (sun_info.maplength > GetBlobSize(image))
+          ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
         image->colors=sun_info.maplength;
         one=1;
         if (sun_info.maptype == RMT_NONE)
@@ -684,10 +686,12 @@ ModuleExport size_t RegisterSUNImage(void)
   entry->decoder=(DecodeImageHandler *) ReadSUNImage;
   entry->encoder=(EncodeImageHandler *) WriteSUNImage;
   entry->magick=(IsImageFormatHandler *) IsSUN;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
   (void) RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("SUN","SUN","SUN Rasterfile");
   entry->decoder=(DecodeImageHandler *) ReadSUNImage;
   entry->encoder=(EncodeImageHandler *) WriteSUNImage;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }
