@@ -623,7 +623,7 @@ static Image *ReadPESImage(const ImageInfo *image_info,ExceptionInfo *exception)
   number_blocks=(size_t) j;
   image->columns=bounds.x2-bounds.x1;
   image->rows=bounds.y2-bounds.y1;
-  status=SetImageExtent(image,image->columns,image->rows,exception);
+  status=SetImageExtent(image,image->columns,image->rows);
   if (status == MagickFalse)
     return(DestroyImageList(image));
   /*
