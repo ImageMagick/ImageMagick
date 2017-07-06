@@ -1301,7 +1301,8 @@ done_reading:
   if (quantum_info != (QuantumInfo *) NULL)
     quantum_info=DestroyQuantumInfo(quantum_info);
 END_OF_READING:
-  clone_info=DestroyImageInfo(clone_info);
+  if (clone_info)
+    clone_info=DestroyImageInfo(clone_info);
   CloseBlob(image);
 
 
