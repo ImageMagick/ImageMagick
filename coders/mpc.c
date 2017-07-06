@@ -860,7 +860,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Create image colormap.
         */
         packet_size=(size_t) (3UL*depth/8UL);
-        if ((packet_size*colors) > GetBlobSize(image))
+        if ((packet_size*image->colors) > GetBlobSize(image))
           ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
         image->colormap=(PixelInfo *) AcquireQuantumMemory(image->colors+1,
           sizeof(*image->colormap));
