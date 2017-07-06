@@ -1155,10 +1155,17 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
     image->depth=GetImageQuantumDepth(image,MagickFalse);
     if (image->storage_class == PseudoClass)
       {
+        size_t
+          packet_size;
+
+        unsigned char
+          *colormap;
+
         /*
           Create image colormap.
         */
-        if ((colors*image->depth/8) > GetBlobSize(image))
+        packet_size=(size_t) (3UL*image->depth/8UL);
+        if ((packet_size*image->colors) > GetBlobSize(image))
           ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
         status=AcquireImageColormap(image,colors != 0 ? colors : 256);
         if (status == MagickFalse)
@@ -1168,16 +1175,9 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
           }
         if (colors != 0)
           {
-            size_t
-              packet_size;
-
-            unsigned char
-              *colormap;
-
             /*
               Read image colormap from file.
             */
-            packet_size=(size_t) (3UL*image->depth/8UL);
             colormap=(unsigned char *) AcquireQuantumMemory(image->colors,
               packet_size*sizeof(*colormap));
             if (colormap == (unsigned char *) NULL)
