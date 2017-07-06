@@ -5871,6 +5871,8 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
 
               for (i=(ssize_t) first_object; i <= (ssize_t) last_object; i++)
               {
+                if ((i < 0) || (i >= MNG_MAX_OBJECTS))
+                  continue;
                 if (mng_info->exists[i] && !mng_info->frozen[i] &&
                     (p-chunk) < (ssize_t) (length-8))
                   {
