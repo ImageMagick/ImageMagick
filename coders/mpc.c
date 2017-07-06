@@ -850,25 +850,27 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
     depth=GetImageQuantumDepth(image,MagickFalse);
     if (image->storage_class == PseudoClass)
       {
+        size_t
+          packet_size;
+
+        unsigned char
+          *colormap;
+
         /*
           Create image colormap.
         */
+        packet_size=(size_t) (3UL*depth/8UL);
+        if ((packet_size*image->colors) > GetBlobSize(image))
+          ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
         image->colormap=(PixelInfo *) AcquireQuantumMemory(image->colors+1,
           sizeof(*image->colormap));
         if (image->colormap == (PixelInfo *) NULL)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         if (image->colors != 0)
           {
-            size_t
-              packet_size;
-
-            unsigned char
-              *colormap;
-
             /*
               Read image colormap from file.
             */
-            packet_size=(size_t) (3UL*depth/8UL);
             colormap=(unsigned char *) AcquireQuantumMemory(image->colors,
               packet_size*sizeof(*colormap));
             if (colormap == (unsigned char *) NULL)
