@@ -5260,7 +5260,7 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
 
         if (length != 0)
           {
-            chunk=(unsigned char *) AcquireQuantumMemory(length_
+            chunk=(unsigned char *) AcquireQuantumMemory(length+
              MagickPathExtent,sizeof(*chunk));
 
             if (chunk == (unsigned char *) NULL)
