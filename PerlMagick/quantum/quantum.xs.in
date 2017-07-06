@@ -9653,7 +9653,7 @@ Mogrify(ref,...)
           if (attribute_flag[1] != 0)
             channel=(ChannelType) argument_list[1].integer_reference;
           if (attribute_flag[2] != 0)
-            SetImageArtifact(image,"filter:blur",
+            SetImageArtifact(image,"convolve:bias",
               argument_list[2].string_reference);
           if (attribute_flag[3] != 0)
             {
