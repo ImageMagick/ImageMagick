@@ -1158,6 +1158,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         /*
           Create image colormap.
         */
+        if ((colors*image->depth/8) > GetBlobSize(image))
+          ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
         status=AcquireImageColormap(image,colors != 0 ? colors : 256,exception);
         if (status == MagickFalse)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
