@@ -1008,7 +1008,6 @@ ModuleExport size_t RegisterMPCImage(void)
   entry=SetMagickInfo("CACHE");
   entry->description=ConstantString("Magick Persistent Cache image format");
   entry->module=ConstantString("MPC");
-  entry->seekable_stream=MagickTrue;
   entry->stealth=MagickTrue;
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("MPC");
