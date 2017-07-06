@@ -2679,6 +2679,11 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (wmf_error != wmf_E_None)
     {
       wmf_api_destroy(API);
+      if (ddata->draw_info != (DrawInfo *) NULL)
+        {
+          DestroyDrawInfo(ddata->draw_info);
+          ddata->draw_info=(DrawInfo *)NULL;
+        }
       if (image->debug != MagickFalse)
         {
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
