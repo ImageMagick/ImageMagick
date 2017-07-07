@@ -624,7 +624,10 @@ static Image *ReadPESImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->rows=bounds.y2-bounds.y1;
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
-    return(DestroyImageList(image));
+    {
+      stitches=(PointInfo *) RelinquishMagickMemory(stitches);
+      return(DestroyImageList(image));
+    }
   /*
     Write stitches as SVG file.
   */
@@ -654,6 +657,7 @@ static Image *ReadPESImage(const ImageInfo *image_info,ExceptionInfo *exception)
   }
   (void) FormatLocaleFile(file,"</svg>\n");
   (void) fclose(file);
+  stitches=(PointInfo *) RelinquishMagickMemory(stitches);
   (void) CloseBlob(image);
   image=DestroyImage(image);
   /*
