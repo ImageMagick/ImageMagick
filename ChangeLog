@@ -1,6 +1,9 @@
 2017-07-8  7.0.6-1 Cristy  <quetzlzacatenango@image...>
   * Support new -auto-threshold option.  OTSU and Triangle methods are
     currently supported.  Look for the Kapur method in the next release.
+  * Fixed numerous memory leaks (reference
+    https://github.com/ImageMagick/ImageMagick/issues).
+
 
 2017-07-02  7.0.6-1 Glenn Randers-Pehrson <glennrp@image...>
   * Reject PNG file that is too small (under 60 bytes) to contain
