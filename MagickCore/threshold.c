@@ -570,6 +570,9 @@ MagickExport MagickBooleanType AutoThresholdImage(Image *image,
   CacheView
     *image_view;
 
+  char
+    property[MagickPathExtent];
+
   double
     *histogram,
     threshold;
@@ -638,7 +641,8 @@ MagickExport MagickBooleanType AutoThresholdImage(Image *image,
     status=MagickFalse;
   if (status == MagickFalse)
     return(MagickFalse);
-  (void) FormatLocaleFile(stdout,"threshold=%.6g%%\n",threshold);
+  (void) FormatLocaleString(property,MagickPathExtent,"%g%%",threshold);
+  (void) SetImageProperty(image,"auto-threshold:threshold",property,exception);
   return(BilevelImage(image,QuantumRange*threshold/100.0,exception));
 }
 
