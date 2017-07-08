@@ -429,7 +429,6 @@ static double OTSUThreshold(const Image *image,const double *histogram,
         myu=(double *) RelinquishMagickMemory(myu);
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
-
       return(-1.0);
     }
   /*
