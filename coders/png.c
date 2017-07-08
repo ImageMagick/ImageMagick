@@ -4377,7 +4377,13 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
         type[0],type[1],type[2],type[3],(double) length);
 
     if (length > PNG_UINT_31_MAX || count == 0)
-      ThrowReaderException(CorruptImageError,"CorruptImage");
+      {
+        if (color_image != (Image *) NULL)
+          color_image=DestroyImage(color_image);
+        if (color_image_info != (Image *) NULL)
+          color_image_info=DestroyImageInfo(color_image_info);
+        ThrowReaderException(CorruptImageError,"CorruptImage");
+      }
 
     p=NULL;
     chunk=(unsigned char *) NULL;
