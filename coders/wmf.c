@@ -2614,8 +2614,6 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   wmf_error = wmf_api_create(&API, wmf_options_flags, &wmf_api_options);
   if (wmf_error != wmf_E_None)
     {
-      if (API)
-        wmf_api_destroy(API);
       if (image->debug != MagickFalse)
         {
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -2623,6 +2621,8 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "leave ReadWMFImage()");
         }
+      if (API)
+        wmf_api_destroy(API);
       ThrowReaderException(DelegateError,"UnableToInitializeWMFLibrary");
     }
 
@@ -2654,7 +2654,6 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ipa_blob_tell,(void*)image);
   if (wmf_error != wmf_E_None)
     {
-      wmf_api_destroy(API);
       if (image->debug != MagickFalse)
         {
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -2662,6 +2661,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "leave ReadWMFImage()");
         }
+      wmf_api_destroy(API);
       ThrowFileException(exception,FileOpenError,"UnableToOpenFile",
         image->filename);
       image=DestroyImageList(image);
@@ -2678,7 +2678,6 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   wmf_error=wmf_scan(API, 0, &bbox);
   if (wmf_error != wmf_E_None)
     {
-      wmf_api_destroy(API);
       if (ddata->draw_info != (DrawInfo *) NULL)
         {
           DestroyDrawInfo(ddata->draw_info);
@@ -2691,6 +2690,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "leave ReadWMFImage()");
         }
+      wmf_api_destroy(API);
       ThrowReaderException(DelegateError,"FailedToScanFile");
     }
 
@@ -2721,7 +2721,6 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   wmf_error=wmf_size(API,&wmf_width,&wmf_height);
   if (wmf_error != wmf_E_None)
     {
-      wmf_api_destroy(API);
       if (image->debug != MagickFalse)
         {
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -2729,6 +2728,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "leave ReadWMFImage()");
         }
+      wmf_api_destroy(API);
       ThrowReaderException(DelegateError,"FailedToComputeOutputSize");
     }
 
@@ -2892,7 +2892,6 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   wmf_error = wmf_play(API, 0, &bbox);
   if (wmf_error != wmf_E_None)
     {
-      wmf_api_destroy(API);
       if (image->debug != MagickFalse)
         {
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -2900,6 +2899,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "leave ReadWMFImage()");
         }
+      wmf_api_destroy(API);
       ThrowReaderException(DelegateError,"FailedToRenderFile");
     }
 
