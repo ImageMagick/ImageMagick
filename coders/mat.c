@@ -931,7 +931,11 @@ static Image *ReadMATImage(const ImageInfo *image_info,ExceptionInfo *exception)
     goto MATLAB_KO;    /* unsupported endian */
 
   if (strncmp(MATLAB_HDR.identific, "MATLAB", 6))
-MATLAB_KO: ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    {
+MATLAB_KO:
+      clone_info=DestroyImageInfo(clone_info);
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    }
 
   filepos = TellBlob(image);
   while(!EOFBlob(image)) /* object parser loop */
