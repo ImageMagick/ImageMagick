@@ -1358,7 +1358,7 @@ static inline const unsigned char *ReadResourceLong(const unsigned char *p,
   *quantum=(unsigned int) (*p++) << 24;
   *quantum|=(unsigned int) (*p++) << 16;
   *quantum|=(unsigned int) (*p++) << 8;
-  *quantum|=(unsigned int) (*p++) << 0;
+  *quantum|=(unsigned int) (*p++);
   return(p);
 }
 
@@ -1457,12 +1457,12 @@ static void WriteTo8BimProfile(Image *image,const char *name,
           offset;
 
         ssize_t
-          extract_count;
+          extract_extent;
 
         StringInfo
           *extract_profile;
 
-        extract_count=0;
+        extract_extent=0;
         extent=(datum+length)-(p+count);
         if (profile == (StringInfo *) NULL)
           {
@@ -1473,17 +1473,17 @@ static void WriteTo8BimProfile(Image *image,const char *name,
         else
           {
             offset=(p-datum);
-            extract_count=profile->length;
-            if ((extract_count & 0x01) != 0)
-              extract_count++;
-            extract_profile=AcquireStringInfo(offset+extract_count+extent);
+            extract_extent=profile->length;
+            if ((extract_extent & 0x01) != 0)
+              extract_extent++;
+            extract_profile=AcquireStringInfo(offset+extract_extent+extent);
             (void) CopyMagickMemory(extract_profile->datum,datum,offset-4);
-            WriteResourceLong(extract_profile->datum+offset-4,
-              (unsigned int)profile->length);
+            WriteResourceLong(extract_profile->datum+offset-4,(unsigned int)
+              profile->length);
             (void) CopyMagickMemory(extract_profile->datum+offset,
               profile->datum,profile->length);
           }
-        (void) CopyMagickMemory(extract_profile->datum+offset+extract_count,
+        (void) CopyMagickMemory(extract_profile->datum+offset+extract_extent,
           p+count,extent);
         (void) AddValueToSplayTree((SplayTreeInfo *) image->profiles,
           ConstantString("8bim"),CloneStringInfo(extract_profile));
@@ -1514,8 +1514,8 @@ static void GetProfilesFromResourceBlock(Image *image,
   unsigned char
     length_byte;
 
-   unsigned int
-     value;
+  unsigned int
+    value;
 
   unsigned short
     id;
@@ -1889,17 +1889,17 @@ static MagickBooleanType Sync8BimProfile(Image *image,StringInfo *profile)
     if ((id == 0x3ED) && (count == 16))
       {
         if (image->units == PixelsPerCentimeterResolution)
-          WriteProfileLong(MSBEndian, (unsigned int) (image->resolution.x*2.54*
+          WriteProfileLong(MSBEndian,(unsigned int) (image->resolution.x*2.54*
             65536.0),p);
         else
-          WriteProfileLong(MSBEndian, (unsigned int) (image->resolution.x*
+          WriteProfileLong(MSBEndian,(unsigned int) (image->resolution.x*
             65536.0),p);
         WriteProfileShort(MSBEndian,(unsigned short) image->units,p+4);
         if (image->units == PixelsPerCentimeterResolution)
-          WriteProfileLong(MSBEndian, (unsigned int) (image->resolution.y*2.54*
+          WriteProfileLong(MSBEndian,(unsigned int) (image->resolution.y*2.54*
             65536.0),p+8);
         else
-          WriteProfileLong(MSBEndian, (unsigned int) (image->resolution.y*
+          WriteProfileLong(MSBEndian,(unsigned int) (image->resolution.y*
             65536.0),p+8);
         WriteProfileShort(MSBEndian,(unsigned short) image->units,p+12);
       }
@@ -1936,6 +1936,9 @@ MagickBooleanType SyncExifProfile(Image *image,StringInfo *profile)
     entry,
     length,
     number_entries;
+
+  SplayTreeInfo
+    *exif_resources;
 
   ssize_t
     id,
@@ -1993,11 +1996,13 @@ MagickBooleanType SyncExifProfile(Image *image,StringInfo *profile)
     This the offset to the first IFD.
   */
   offset=(ssize_t) ReadProfileLong(endian,exif+4);
-  if ((offset < 0) || (size_t) offset >= length)
+  if ((offset < 0) || ((size_t) offset >= length))
     return(MagickFalse);
   directory=exif+offset;
   level=0;
   entry=0;
+  exif_resources=NewSplayTree((int (*)(const void *,const void *)) NULL,
+    (void *(*)(void *)) NULL,(void *(*)(void *)) NULL);
   do
   {
     if (level > 0)
@@ -2031,11 +2036,14 @@ MagickBooleanType SyncExifProfile(Image *image,StringInfo *profile)
       q=(unsigned char *) (directory+2+(12*entry));
       if (q > (exif+length-12))
         break;  /* corrupt EXIF */
+      if (GetValueFromSplayTree(exif_resources,q) == q)
+        break;
+      (void) AddValueToSplayTree(exif_resources,q,q);
       tag_value=(ssize_t) ReadProfileShort(endian,q);
       format=(ssize_t) ReadProfileShort(endian,q+2);
       if ((format < 0) || ((format-1) >= EXIF_NUM_FORMATS))
         break;
-      components=(ssize_t) ReadProfileLong(endian,q+4);
+      components=(int) ReadProfileLong(endian,q+4);
       if (components < 0)
         break;  /* corrupt EXIF */
       number_bytes=(size_t) components*format_bytes[format];
@@ -2048,7 +2056,7 @@ MagickBooleanType SyncExifProfile(Image *image,StringInfo *profile)
           /*
             The directory entry contains an offset.
           */
-          offset=(ssize_t)  ReadProfileLong(endian,q+8);
+          offset=(ssize_t) ReadProfileLong(endian,q+8);
           if ((offset < 0) || ((size_t) (offset+number_bytes) > length))
             continue;
           if (~length < number_bytes)
@@ -2095,7 +2103,7 @@ MagickBooleanType SyncExifProfile(Image *image,StringInfo *profile)
       }
       if ((tag_value == TAG_EXIF_OFFSET) || (tag_value == TAG_INTEROP_OFFSET))
         {
-          offset=(ssize_t)  ReadProfileLong(endian,p);
+          offset=(ssize_t) ReadProfileLong(endian,p);
           if (((size_t) offset < length) && (level < (MaxDirectoryStack-2)))
             {
               directory_stack[level].directory=directory;
@@ -2107,7 +2115,7 @@ MagickBooleanType SyncExifProfile(Image *image,StringInfo *profile)
               level++;
               if ((directory+2+(12*number_entries)) > (exif+length))
                 break;
-              offset=(ssize_t)  ReadProfileLong(endian,directory+2+(12*
+              offset=(ssize_t) ReadProfileLong(endian,directory+2+(12*
                 number_entries));
               if ((offset != 0) && ((size_t) offset < length) &&
                   (level < (MaxDirectoryStack-2)))
@@ -2121,6 +2129,7 @@ MagickBooleanType SyncExifProfile(Image *image,StringInfo *profile)
         }
     }
   } while (level > 0);
+  exif_resources=DestroySplayTree(exif_resources);
   return(MagickTrue);
 }
 

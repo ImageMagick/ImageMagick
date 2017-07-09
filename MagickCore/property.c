@@ -213,7 +213,7 @@ MagickExport MagickBooleanType CloneImageProperties(Image *image,
 %
 %  DefineImageProperty() associates an assignment string of the form
 %  "key=value" with an artifact or options. It is equivelent to
-%  SetImageProperty()
+%  SetImageProperty().
 %
 %  The format of the DefineImageProperty method is:
 %
@@ -855,23 +855,23 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
      component; \
  \
    size_t \
-     length1; \
+     length; \
  \
    unsigned char \
      *p1; \
  \
-   length1=0; \
+   length=0; \
    p1=p; \
    for (component=0; component < components; component++) \
    { \
-     length1+=FormatLocaleString(buffer+length1,MagickPathExtent-length1, \
+     length+=FormatLocaleString(buffer+length,MagickPathExtent-length, \
        format", ",arg); \
-     if (length1 >= (MagickPathExtent-1)) \
-       length1=MagickPathExtent-1; \
+     if (length >= (MagickPathExtent-1)) \
+       length=MagickPathExtent-1; \
      p1+=size; \
    } \
-   if (length1 > 1) \
-     buffer[length1-2]='\0'; \
+   if (length > 1) \
+     buffer[length-2]='\0'; \
    value=AcquireString(buffer); \
 }
 
@@ -881,23 +881,23 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
      component; \
  \
    size_t \
-     length1; \
+     length; \
  \
    unsigned char \
      *p1; \
  \
-   length1=0; \
+   length=0; \
    p1=p; \
    for (component=0; component < components; component++) \
    { \
-     length1+=FormatLocaleString(buffer+length1,MagickPathExtent-length1, \
+     length+=FormatLocaleString(buffer+length,MagickPathExtent-length, \
        format", ",(arg1),(arg2)); \
-     if (length1 >= (MagickPathExtent-1)) \
-       length1=MagickPathExtent-1; \
+     if (length >= (MagickPathExtent-1)) \
+       length=MagickPathExtent-1; \
      p1+=size; \
    } \
-   if (length1 > 1) \
-     buffer[length1-2]='\0'; \
+   if (length > 1) \
+     buffer[length-2]='\0'; \
    value=AcquireString(buffer); \
 }
 
