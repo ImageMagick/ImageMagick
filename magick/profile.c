@@ -1196,7 +1196,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
             target_pixels=DestroyPixelThreadSet(target_pixels);
             source_pixels=DestroyPixelThreadSet(source_pixels);
             transform=DestroyTransformThreadSet(transform);
-            if ((status != MagickFalse) ||
+            if ((status != MagickFalse) &&
                 (cmsGetDeviceClass(source_profile) != cmsSigLinkClass))
               status=SetImageProfile(image,name,profile);
             if (target_profile != (cmsHPROFILE) NULL)
@@ -1473,8 +1473,8 @@ static void WriteTo8BimProfile(Image *image,const char *name,
               extract_extent++;
             extract_profile=AcquireStringInfo(offset+extract_extent+extent);
             (void) CopyMagickMemory(extract_profile->datum,datum,offset-4);
-            (void) WriteResourceLong(extract_profile->datum+offset-4,
-              (unsigned int) profile->length);
+            WriteResourceLong(extract_profile->datum+offset-4,(unsigned int)
+              profile->length);
             (void) CopyMagickMemory(extract_profile->datum+offset,
               profile->datum,profile->length);
           }
@@ -1767,7 +1767,7 @@ static inline signed short ReadProfileShort(const EndianType endian,
     }
   value=(unsigned short) buffer[0] << 8;
   value|=(unsigned short) buffer[1];
-  quantum.unsigned_value=(value & 0xffff);
+  quantum.unsigned_value=value & 0xffff;
   return(quantum.signed_value);
 }
 
@@ -1911,17 +1911,17 @@ static MagickBooleanType Sync8BimProfile(Image *image,StringInfo *profile)
     if ((id == 0x3ED) && (count == 16))
       {
         if (image->units == PixelsPerCentimeterResolution)
-          WriteProfileLong(MSBEndian, (unsigned int) (image->x_resolution*2.54*
+          WriteProfileLong(MSBEndian,(unsigned int) (image->x_resolution*2.54*
             65536.0),p);
         else
-          WriteProfileLong(MSBEndian, (unsigned int) (image->x_resolution*
+          WriteProfileLong(MSBEndian,(unsigned int) (image->x_resolution*
             65536.0),p);
         WriteProfileShort(MSBEndian,(unsigned short) image->units,p+4);
         if (image->units == PixelsPerCentimeterResolution)
-          WriteProfileLong(MSBEndian, (unsigned int) (image->y_resolution*2.54*
+          WriteProfileLong(MSBEndian,(unsigned int) (image->y_resolution*2.54*
             65536.0),p+8);
         else
-          WriteProfileLong(MSBEndian, (unsigned int) (image->y_resolution*
+          WriteProfileLong(MSBEndian,(unsigned int) (image->y_resolution*
             65536.0),p+8);
         WriteProfileShort(MSBEndian,(unsigned short) image->units,p+12);
       }
@@ -2041,6 +2041,9 @@ static MagickBooleanType SyncExifProfile(Image *image, StringInfo *profile)
     number_entries=ReadProfileShort(endian,directory);
     for ( ; entry < number_entries; entry++)
     {
+      int
+        components;
+
       register unsigned char
         *p,
         *q;
@@ -2049,7 +2052,6 @@ static MagickBooleanType SyncExifProfile(Image *image, StringInfo *profile)
         number_bytes;
 
       ssize_t
-        components,
         format,
         tag_value;
 
@@ -2063,7 +2065,7 @@ static MagickBooleanType SyncExifProfile(Image *image, StringInfo *profile)
       format=(ssize_t) ReadProfileShort(endian,q+2);
       if ((format < 0) || ((format-1) >= EXIF_NUM_FORMATS))
         break;
-      components=(ssize_t) ReadProfileLong(endian,q+4);
+      components=(int) ReadProfileLong(endian,q+4);
       if (components < 0)
         break;  /* corrupt EXIF */
       number_bytes=(size_t) components*format_bytes[format];
