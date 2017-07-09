@@ -1427,6 +1427,9 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
         p=q+8;
       else
         {
+          ssize_t
+            offset;
+
           /*
             The directory entry contains an offset.
           */
@@ -1515,6 +1518,9 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
                   sizeof(*value));
               if (value != (char *) NULL)
                 {
+                  register ssize_t
+                    i;
+
                   for (i=0; i < (ssize_t) number_bytes; i++)
                   {
                     value[i]='.';
@@ -1531,6 +1537,9 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
               char
                 *key;
 
+              register const char
+                *p;
+
               key=AcquireString(property);
               switch (all)
               {
@@ -1538,6 +1547,9 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
                 {
                   const char
                     *description;
+
+                  register ssize_t
+                    i;
 
                   description="unknown";
                   for (i=0; ; i++)
@@ -1575,7 +1587,11 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
                     (void) SubstituteString(&key,"exif:","exif:thumbnail:");
                 }
               }
-              if (GetImageProperty(image,key,exception) == (const char *) NULL)
+              p=(const char *) NULL;
+              if (image->properties != (void *) NULL)
+                p=(const char *) GetValueFromSplayTree((SplayTreeInfo *)
+                  image->properties,key);
+              if (p == (const char *) NULL)
                 (void) SetImageProperty((Image *) image,key,value,exception);
               value=DestroyString(value);
               key=DestroyString(key);
@@ -1585,6 +1601,9 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
         if ((tag_value == TAG_EXIF_OFFSET) ||
             (tag_value == TAG_INTEROP_OFFSET) || (tag_value == TAG_GPS_OFFSET))
           {
+            ssize_t
+              offset;
+
             offset=(ssize_t) ReadPropertySignedLong(endian,p);
             if (((size_t) offset < length) && (level < (MaxDirectoryStack-2)))
               {
