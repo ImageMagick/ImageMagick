@@ -786,9 +786,17 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (image->storage_class == UndefinedClass) ||
         (image->compression == UndefinedCompression) || (image->columns == 0) ||
         (image->rows == 0))
-      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+      {
+        if (profiles != (LinkedListInfo *) NULL)
+          profiles=DestroyLinkedList(profiles,RelinquishMagickMemory);
+        ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+      }
     if (signature != GetMagickSignature((const StringInfo *) NULL))
-      ThrowReaderException(CacheError,"IncompatibleAPI");
+      {
+        if (profiles != (LinkedListInfo *) NULL)
+          profiles=DestroyLinkedList(profiles,RelinquishMagickMemory);
+        ThrowReaderException(CacheError,"IncompatibleAPI");
+      }
     if (image->montage != (char *) NULL)
       {
         register char
@@ -812,7 +820,12 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
               image->directory=(char *) ResizeQuantumMemory(image->directory,
                 length+MagickPathExtent,sizeof(*image->directory));
               if (image->directory == (char *) NULL)
-                ThrowReaderException(CorruptImageError,"UnableToReadImageData");
+                {
+                  if (profiles != (LinkedListInfo *) NULL)
+                    profiles=DestroyLinkedList(profiles,RelinquishMagickMemory);
+                  ThrowReaderException(CorruptImageError,
+                    "UnableToReadImageData");
+                }
               p=image->directory+strlen(image->directory);
             }
           c=ReadBlobByte(image);
