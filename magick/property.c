@@ -113,7 +113,7 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  CloneImageProperties() clones one or more image properties.
+%  CloneImageProperties() clones all the image properties to another image.
 %
 %  The format of the CloneImageProperties method is:
 %
@@ -190,8 +190,9 @@ MagickExport MagickBooleanType CloneImageProperties(Image *image,
     {
       if (image->properties != (void *) NULL)
         DestroyImageProperties(image);
-      image->properties=CloneSplayTree((SplayTreeInfo *) clone_image->properties,
-        (void *(*)(void *)) ConstantString,(void *(*)(void *)) ConstantString);
+      image->properties=CloneSplayTree((SplayTreeInfo *)
+        clone_image->properties,(void *(*)(void *)) ConstantString,
+        (void *(*)(void *)) ConstantString);
     }
   return(MagickTrue);
 }
@@ -207,7 +208,9 @@ MagickExport MagickBooleanType CloneImageProperties(Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DefineImageProperty() associates a key/value pair with an image property.
+%  DefineImageProperty() associates an assignment string of the form
+%  "key=value" with an artifact or options. It is equivelent to
+%  SetImageProperty().
 %
 %  The format of the DefineImageProperty method is:
 %
@@ -274,8 +277,7 @@ MagickExport MagickBooleanType DeleteImageProperty(Image *image,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
-      image->filename);
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->properties == (void *) NULL)
     return(MagickFalse);
   return(DeleteNodeFromSplayTree((SplayTreeInfo *) image->properties,property));
@@ -292,8 +294,8 @@ MagickExport MagickBooleanType DeleteImageProperty(Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DestroyImageProperties() releases memory associated with image property
-%  values.
+%  DestroyImageProperties() destroys all properties and associated memory
+%  attached to the given image.
 %
 %  The format of the DestroyDefines method is:
 %
@@ -309,8 +311,7 @@ MagickExport void DestroyImageProperties(Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
-      image->filename);
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->properties != (void *) NULL)
     image->properties=(void *) DestroySplayTree((SplayTreeInfo *)
       image->properties);
@@ -376,6 +377,13 @@ MagickExport MagickBooleanType FormatImageProperty(Image *image,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  GetImageProperty() gets a value associated with an image property.
+%
+%  This includes,  profile prefixes, such as "exif:", "iptc:" and "8bim:"
+%  It does not handle non-prifile prefixes, such as "fx:", "option:", or
+%  "artifact:".
+%
+%  The returned string is stored as a properity of the same name for faster
+%  lookup later. It should NOT be freed by the caller.
 %
 %  The format of the GetImageProperty method is:
 %
@@ -574,13 +582,13 @@ static MagickBooleanType Get8BIMProperty(const Image *image,const char *key)
   register ssize_t
     i;
 
+  size_t
+    length;
+
   ssize_t
     count,
     id,
     sub_number;
-
-  size_t
-    length;
 
   /*
     There are no newlines in path names, so it's safe as terminator.
@@ -677,8 +685,7 @@ static MagickBooleanType Get8BIMProperty(const Image *image,const char *key)
         info+=count;
         length-=MagickMin(count,(ssize_t) length);
         if ((id <= 1999) || (id >= 2999))
-          (void) SetImageProperty((Image *) image,key,(const char *)
-            attribute);
+          (void) SetImageProperty((Image *) image,key,(const char *) attribute);
         else
           {
             char
