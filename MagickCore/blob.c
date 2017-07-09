@@ -1518,7 +1518,22 @@ MagickExport MagickSizeType GetBlobSize(const Image *image)
       break;
     }
     case CustomStream:
+    {
+      if ((image->blob->custom_stream->teller != (CustomStreamTeller) NULL) &&
+          (image->blob->custom_stream->seeker != (CustomStreamTeller) NULL))
+        {
+          MagickOffsetType
+            offset;
+
+          offset=image->blob->custom_stream->teller(
+            image->blob->custom_stream->data);
+          extent=image->blob->custom_stream->seeker(0,SEEK_END,
+            image->blob->custom_stream->data);
+          image->blob->custom_stream->seeker(offset,SEEK_SET,
+            image->blob->custom_stream->data);
+        }
       break;
+    }
   }
   return(extent);
 }
