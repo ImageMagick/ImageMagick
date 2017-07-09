@@ -4380,7 +4380,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
       {
         if (color_image != (Image *) NULL)
           color_image=DestroyImage(color_image);
-        if (color_image_info != (Image *) NULL)
+        if (color_image_info != (ImageInfo *) NULL)
           color_image_info=DestroyImageInfo(color_image_info);
         ThrowReaderException(CorruptImageError,"CorruptImage");
       }
