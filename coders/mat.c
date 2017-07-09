@@ -952,7 +952,7 @@ MATLAB_KO:
     if(EOFBlob(image)) break;
     MATLAB_HDR.ObjectSize = ReadBlobXXXLong(image);
     if(EOFBlob(image)) break;
-    if(MATLAB_HDR.ObjectSize+filepos > GetBlobSize(image))
+    if((MagickSizeType) (MATLAB_HDR.ObjectSize+filepos) > GetBlobSize(image))
       goto MATLAB_KO;
     filepos += MATLAB_HDR.ObjectSize + 4 + 4;
 
