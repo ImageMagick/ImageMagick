@@ -5804,6 +5804,8 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
 
                 for (i=(int) first_object; i <= (int) last_object; i++)
                 {
+                  if ((i < 0) || (i >= MNG_MAX_OBJECTS))
+                    continue;
                   if (mng_info->exists[i] && !mng_info->frozen[i])
                     {
                       MngBox
