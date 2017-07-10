@@ -5709,7 +5709,7 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
                     if (change_clipping && (p-chunk) < (ssize_t) (length-17))
                       {
                         fb=mng_read_box(previous_fb,(char) p[0],&p[1]);
-                        p+=17;
+                        p+=16;
                         previous_fb=fb;
 
                         if (logging != MagickFalse)
