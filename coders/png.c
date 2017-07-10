@@ -4308,8 +4308,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
       {
         if (length > GetBlobSize(image))
           ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
-        chunk=(unsigned char *) AcquireQuantumMemory(length+MagickPathExtent,
-          sizeof(*chunk));
+        chunk=(unsigned char *) AcquireQuantumMemory(length,sizeof(*chunk));
 
         if (chunk == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
@@ -5179,8 +5178,7 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
             if (length > GetBlobSize(image))
               ThrowReaderException(CorruptImageError,
                 "InsufficientImageDataInFile");
-            chunk=(unsigned char *) AcquireQuantumMemory(length+
-              MagickPathExtent,sizeof(*chunk));
+            chunk=(unsigned char *) AcquireQuantumMemory(length,sizeof(*chunk));
 
             if (chunk == (unsigned char *) NULL)
               ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
