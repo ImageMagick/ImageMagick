@@ -171,7 +171,8 @@ static Image *ReadMPEGImage(const ImageInfo *image_info,
 
   Image
     *image,
-    *images;
+    *images,
+    *next;
 
   ImageInfo
     *read_info;
@@ -204,12 +205,18 @@ static Image *ReadMPEGImage(const ImageInfo *image_info,
   read_info=CloneImageInfo(image_info);
   image=AcquireImage(image_info);
   (void) InvokeDelegate(read_info,image,"mpeg:decode",(char *) NULL,exception);
-  image=DestroyImage(image);
   (void) FormatLocaleString(read_info->filename,MaxTextExtent,"%s.%s",
     read_info->unique,ReadMPEGIntermediateFormat);
   images=ReadImage(read_info,exception);
+  if (images != (Image *) NULL)
+    for (next=images; next != (Image *) NULL; next=next->next)
+    {
+      (void) CopyMagickString(next->filename,image->filename,MagickPathExtent);
+      (void) CopyMagickString(next->magick,image->magick,MagickPathExtent);
+    }
   (void) RelinquishUniqueFileResource(read_info->filename);
   read_info=DestroyImageInfo(read_info);
+  image=DestroyImage(image);
   return(images);
 }
 
