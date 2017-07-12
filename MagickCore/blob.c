@@ -1520,7 +1520,7 @@ MagickExport MagickSizeType GetBlobSize(const Image *image)
     case CustomStream:
     {
       if ((image->blob->custom_stream->teller != (CustomStreamTeller) NULL) &&
-          (image->blob->custom_stream->seeker != (CustomStreamTeller) NULL))
+          (image->blob->custom_stream->seeker != (CustomStreamSeeker) NULL))
         {
           MagickOffsetType
             offset;

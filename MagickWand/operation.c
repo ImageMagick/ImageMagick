@@ -1232,6 +1232,18 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
           (void) SetMagickPrecision(StringToInteger(arg1));
           break;
         }
+      if (LocaleCompare("preview",option+1) == 0)
+        {
+          /* FUTURE: should be a 'Genesis' option?
+             Option however is also in WandSettingOptionInfo()
+             Why???
+          */
+          parse=ParseCommandOption(MagickPreviewOptions, MagickFalse,arg1);
+          if ( parse < 0 )
+            CLIWandExceptArgBreak(OptionError,"UnrecognizedPreviewType",
+                option,arg1);
+          break;
+        }
       CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 'q':
