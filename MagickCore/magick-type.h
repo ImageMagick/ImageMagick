@@ -36,20 +36,13 @@ extern "C" {
 #  define MagickULLConstant(c)  (MagickSizeType) (c ## ULL)
 #endif
 
-#if !defined(MAGICKCORE_HAVE_DOUBLE_T)
-typedef double double_t;
-#endif
-#if !defined(MAGICKCORE_HAVE_FLOAT_T)
-typedef float float_t;
-#endif
-
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)
 #define MaxColormapSize  256UL
 #define MaxMap  255UL
-typedef double_t MagickRealType;
+typedef double MagickRealType;
 
 #if defined(MAGICKCORE_HDRI_SUPPORT)
-typedef float_t Quantum;
+typedef float Quantum;
 #define QuantumRange  255.0
 #define QuantumFormat  "%g"
 #else
@@ -60,10 +53,10 @@ typedef unsigned char Quantum;
 #elif (MAGICKCORE_QUANTUM_DEPTH == 16)
 #define MaxColormapSize  65536UL
 #define MaxMap  65535UL
-typedef double_t MagickRealType;
+typedef double MagickRealType;
 
 #if defined(MAGICKCORE_HDRI_SUPPORT)
-typedef float_t Quantum;
+typedef float Quantum;
 #define QuantumRange  65535.0f
 #define QuantumFormat  "%g"
 #else
@@ -74,7 +67,7 @@ typedef unsigned short Quantum;
 #elif (MAGICKCORE_QUANTUM_DEPTH == 32)
 #define MaxColormapSize  65536UL
 #define MaxMap  65535UL
-typedef double_t MagickRealType;
+typedef double MagickRealType;
 
 #if defined(MAGICKCORE_HDRI_SUPPORT)
 typedef double Quantum;

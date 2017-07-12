@@ -1,3 +1,7 @@
+2017-07-12  7.0.6-1  Dirk Lemstra <dirk@snakeware...>
+  * For portability, Color() arguments must be Magick::Quantum (reference
+    https://github.com/ImageMagick/ImageMagick/issues/510).
+
 2011-02-12  6.6.7-7 Cristy  <quetzlzacatenango@image...>
   * Add support for the strip() and stripImage() STL methods.
 
