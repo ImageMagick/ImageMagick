@@ -75,7 +75,8 @@ Magick::Color::Color(void)
   initPixel();
 }
 
-Magick::Color::Color(Quantum red_,Quantum green_,Quantum blue_)
+Magick::Color::Color(Magick::Quantum red_,Magick::Quantum green_,
+  Magick::Quantum blue_)
   : _pixel(new PixelPacket),
     _isValid(true),
     _pixelOwn(true),
@@ -87,7 +88,8 @@ Magick::Color::Color(Quantum red_,Quantum green_,Quantum blue_)
   alphaQuantum(OpaqueOpacity);
 }
 
-Magick::Color::Color(Quantum red_,Quantum green_,Quantum blue_,Quantum alpha_)
+Magick::Color::Color(Magick::Quantum red_,Magick::Quantum green_,
+  Magick::Quantum blue_,Magick::Quantum alpha_)
   : _pixel(new PixelPacket),
     _isValid(true),
     _pixelOwn(true),

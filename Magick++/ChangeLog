@@ -1,3 +1,7 @@
+2017-07-12  6.9.9-0 Dirk Lemstra <dirk@snakeware...>
+  * For portability, Color() arguments must be Magick::Quantum (reference
+    https://github.com/ImageMagick/ImageMagick/issues/510).
+
 2013-07-09  6.8.6-4 Dirk Lemstra <dirk@snakeware...>
   * Added combineImages, evaluateImages, mergeImageLayers, optimizeImageLayers
     optimizePlusImageLayers and separateImages to STL.h (reference

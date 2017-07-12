@@ -37,10 +37,10 @@ namespace Magick
     Color(void);
 
     // Construct Color using the specified RGB values
-    Color(Quantum red_,Quantum green_,Quantum blue_);
+    Color(Magick::Quantum red_,Magick::Quantum green_,Magick::Quantum blue_);
 
     // Construct Color using the specified RGBA values
-    Color(Quantum red_,Quantum green_,Quantum blue_,Quantum alpha_);
+    Color(Magick::Quantum red_,Magick::Quantum green_,Magick::Quantum blue_,Magick::Quantum alpha_);
 
     // Construct Color using the specified color string
     Color(const char *x11color_);
