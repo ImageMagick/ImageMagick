@@ -91,9 +91,9 @@ typedef unsigned short Quantum;
 #elif (MAGICKCORE_QUANTUM_DEPTH == 32)
 #define MaxColormapSize  65536UL
 #define MaxMap  65535UL
-typedef MagickDouble_T SignedQuantum;
+typedef MagickDouble_t SignedQuantum;
 #if defined(MAGICKCORE_HDRI_SUPPORT)
-typedef MagickDouble_T Quantum;
+typedef MagickDouble_t Quantum;
 #define QuantumRange  4294967295.0
 #define QuantumFormat  "%g"
 #else
@@ -105,8 +105,8 @@ typedef unsigned int Quantum;
 #define MAGICKCORE_HDRI_SUPPORT 1
 #define MaxColormapSize  65536UL
 #define MaxMap  65535UL
-typedef MagickDouble_T SignedQuantum;
-typedef MagickDouble_T Quantum;
+typedef MagickDouble_t SignedQuantum;
+typedef MagickDouble_t Quantum;
 #define QuantumRange  18446744073709551615.0
 #define QuantumFormat  "%g"
 #else
