@@ -36,13 +36,34 @@ extern "C" {
 #  define MagickULLConstant(c)  (MagickSizeType) (c ## ULL)
 #endif
 
+#if MAGICKCORE_SIZEOF_FLOAT_T == 0
+typedef float MagickFloat_t;
+#elif (MAGICKCORE_SIZEOF_FLOAT_T == MAGICKCORE_SIZEOF_FLOAT)
+typedef float MagickFloat_t;
+#elif (MAGICKCORE_SIZEOF_FLOAT_T == MAGICKCORE_SIZEOF_DOUBLE)
+typedef double MagickFloat_t;
+#elif (MAGICKCORE_SIZEOF_FLOAT_T == MAGICKCORE_SIZEOF_LONG_DOUBLE)
+typedef long double MagickFloat_t;
+#else
+#error Your MagickFloat_t type is neither a float, nor a double, nor a long double
+#endif
+#if MAGICKCORE_SIZEOF_DOUBLE_T == 0
+typedef double MagickDouble_t;
+#elif (MAGICKCORE_SIZEOF_DOUBLE_T == MAGICKCORE_SIZEOF_DOUBLE)
+typedef double MagickDouble_t;
+#elif (MAGICKCORE_SIZEOF_DOUBLE_T == MAGICKCORE_SIZEOF_LONG_DOUBLE)
+typedef long double MagickDouble_t;
+#else
+#error Your MagickDouble_t type is neither a float, nor a double, nor a long double
+#endif
+
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)
 #define MaxColormapSize  256UL
 #define MaxMap  255UL
-typedef double MagickRealType;
+typedef MagickDouble_t MagickRealType;
 
 #if defined(MAGICKCORE_HDRI_SUPPORT)
-typedef float Quantum;
+typedef MagickFloat_t Quantum;
 #define QuantumRange  255.0
 #define QuantumFormat  "%g"
 #else
@@ -53,10 +74,10 @@ typedef unsigned char Quantum;
 #elif (MAGICKCORE_QUANTUM_DEPTH == 16)
 #define MaxColormapSize  65536UL
 #define MaxMap  65535UL
-typedef double MagickRealType;
+typedef MagickDouble_t MagickRealType;
 
 #if defined(MAGICKCORE_HDRI_SUPPORT)
-typedef float Quantum;
+typedef MagickFloat_t Quantum;
 #define QuantumRange  65535.0f
 #define QuantumFormat  "%g"
 #else
@@ -67,7 +88,7 @@ typedef unsigned short Quantum;
 #elif (MAGICKCORE_QUANTUM_DEPTH == 32)
 #define MaxColormapSize  65536UL
 #define MaxMap  65535UL
-typedef double MagickRealType;
+typedef MagickDouble_t MagickRealType;
 
 #if defined(MAGICKCORE_HDRI_SUPPORT)
 typedef double Quantum;
