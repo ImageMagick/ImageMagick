@@ -37,24 +37,24 @@ extern "C" {
 #endif
 
 #if MAGICKCORE_SIZEOF_FLOAT_T == 0
-typedef float MagickFloat_t;
+typedef float MagickFloatType;
 #elif (MAGICKCORE_SIZEOF_FLOAT_T == MAGICKCORE_SIZEOF_FLOAT)
-typedef float MagickFloat_t;
+typedef float MagickFloatType;
 #elif (MAGICKCORE_SIZEOF_FLOAT_T == MAGICKCORE_SIZEOF_DOUBLE)
-typedef double MagickFloat_t;
+typedef double MagickFloatType;
 #elif (MAGICKCORE_SIZEOF_FLOAT_T == MAGICKCORE_SIZEOF_LONG_DOUBLE)
-typedef long double MagickFloat_t;
+typedef long double MagickFloatType;
 #else
-#error Your MagickFloat_t type is neither a float, nor a double, nor a long double
+#error Your MagickFloatType type is neither a float, nor a double, nor a long double
 #endif
 #if MAGICKCORE_SIZEOF_DOUBLE_T == 0
-typedef double MagickDouble_t;
+typedef double MagickDoubleType;
 #elif (MAGICKCORE_SIZEOF_DOUBLE_T == MAGICKCORE_SIZEOF_DOUBLE)
-typedef double MagickDouble_t;
+typedef double MagickDoubleType;
 #elif (MAGICKCORE_SIZEOF_DOUBLE_T == MAGICKCORE_SIZEOF_LONG_DOUBLE)
-typedef long double MagickDouble_t;
+typedef long double MagickDoubleType;
 #else
-#error Your MagickDouble_t type is neither a float, nor a double, nor a long double
+#error Your MagickDoubleType type is neither a float, nor a double, nor a long double
 #endif
 
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)
@@ -62,7 +62,7 @@ typedef long double MagickDouble_t;
 #define MaxMap  255UL
 
 #if defined(MAGICKCORE_HDRI_SUPPORT)
-typedef MagickFloat_t Quantum;
+typedef MagickFloatType Quantum;
 #define QuantumRange  255.0
 #define QuantumFormat  "%g"
 #else
@@ -75,7 +75,7 @@ typedef unsigned char Quantum;
 #define MaxMap  65535UL
 
 #if defined(MAGICKCORE_HDRI_SUPPORT)
-typedef MagickFloat_t Quantum;
+typedef MagickFloatType Quantum;
 #define QuantumRange  65535.0f
 #define QuantumFormat  "%g"
 #else
@@ -88,7 +88,7 @@ typedef unsigned short Quantum;
 #define MaxMap  65535UL
 
 #if defined(MAGICKCORE_HDRI_SUPPORT)
-typedef MagickDouble_t Quantum;
+typedef MagickDoubleType Quantum;
 #define QuantumRange  4294967295.0
 #define QuantumFormat  "%g"
 #else
@@ -101,7 +101,7 @@ typedef unsigned int Quantum;
 #define MaxColormapSize  65536UL
 #define MaxMap  65535UL
 
-typedef MagickDouble_t Quantum;
+typedef MagickDoubleType Quantum;
 #define QuantumRange  18446744073709551615.0
 #define QuantumFormat  "%g"
 #else
@@ -115,7 +115,7 @@ typedef MagickDouble_t Quantum;
 /*
   Typedef declarations.
 */
-typedef MagickDouble_t MagickRealType;
+typedef MagickDoubleType MagickRealType;
 typedef unsigned int MagickStatusType;
 #if !defined(MAGICKCORE_WINDOWS_SUPPORT)
 #if (MAGICKCORE_SIZEOF_UNSIGNED_LONG_LONG == 8)
