@@ -60,8 +60,6 @@ typedef long double MagickDouble_t;
 #error Your MagickDouble_t type is neither a float, nor a double, nor a long double
 #endif
 
-typedef MagickDouble_t MagickRealType;
-
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)
 #define MaxColormapSize  256UL
 #define MaxMap  255UL
@@ -122,6 +120,8 @@ typedef MagickDouble_t Quantum;
 /*
   Typedef declarations.
 */
+typedef MagickDouble_t MagickRealType;
+
 typedef unsigned int MagickStatusType;
 #if !defined(MAGICKCORE_WINDOWS_SUPPORT)
 #if (MAGICKCORE_SIZEOF_UNSIGNED_LONG_LONG == 8)
