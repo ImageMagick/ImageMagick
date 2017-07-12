@@ -253,7 +253,7 @@ MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
   size=count*quantum;
   alignment=CACHE_LINE_SIZE;
   if (size > (size_t) (GetMagickPageSize() >> 1))
-    alignment=GetMagickPageSize();
+    alignment=(size_t) GetMagickPageSize();
   extent=AlignedExtent(size,CACHE_LINE_SIZE);
   if ((size == 0) || (extent < size))
     return((void *) NULL);
@@ -667,13 +667,11 @@ MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
         }
       RelinquishMagickResource(MapResource,extent);
     }
-  if ((memory_info->blob == NULL) &&
-      (AcquireMagickResource(MemoryResource,extent) != MagickFalse))
+  if (memory_info->blob == NULL)
     {
       memory_info->blob=AcquireMagickMemory(extent);
       if (memory_info->blob != NULL)
         memory_info->type=UnalignedVirtualMemory;
-      RelinquishMagickResource(MemoryResource,extent);
     }
   if (memory_info->blob == NULL)
     memory_info=RelinquishVirtualMemory(memory_info);
