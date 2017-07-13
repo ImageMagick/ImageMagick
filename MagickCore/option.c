@@ -681,7 +681,7 @@ static const OptionInfo
     { "+precision", 0L, ImageInfoOptionFlag, MagickFalse },
     { "-precision", 1L, ImageInfoOptionFlag, MagickFalse },
     { "+preview", 0L, DeprecateOptionFlag, MagickTrue },
-    { "-preview", 1L, GlobalOptionFlag, MagickFalse },
+    { "-preview", 1L, SimpleOperatorFlag, MagickFalse },
     { "+print", 1L, DeprecateOptionFlag | FireOptionFlag, MagickTrue },
     { "-print", 1L, NoImageOperatorFlag | AlwaysInterpretArgsFlag | FireOptionFlag, MagickFalse },
     { "+process", 1L, DeprecateOptionFlag | FireOptionFlag, MagickTrue },
