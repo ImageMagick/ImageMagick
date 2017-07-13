@@ -520,11 +520,6 @@ static SemaphoreInfo
   portable, we use ASCII numbers like this, not characters.
 */
 
-/* until registration of eXIf */
-static const png_byte mng_exIf[5]={101, 120,  73, 102, (png_byte) '\0'};
-
-/* after registration of eXIf */
-static const png_byte mng_eXIf[5]={101,  88,  73, 102, (png_byte) '\0'};
 
 static const png_byte mng_MHDR[5]={ 77,  72,  68,  82, (png_byte) '\0'};
 static const png_byte mng_BACK[5]={ 66,  65,  67,  75, (png_byte) '\0'};
@@ -552,6 +547,7 @@ static const png_byte mng_TERM[5]={ 84,  69,  82,  77, (png_byte) '\0'};
 static const png_byte mng_bKGD[5]={ 98,  75,  71,  68, (png_byte) '\0'};
 static const png_byte mng_caNv[5]={ 99,  97,  78, 118, (png_byte) '\0'};
 static const png_byte mng_cHRM[5]={ 99,  72,  82,  77, (png_byte) '\0'};
+static const png_byte mng_eXIf[5]={101,  88,  73, 102, (png_byte) '\0'};
 static const png_byte mng_gAMA[5]={103,  65,  77,  65, (png_byte) '\0'};
 static const png_byte mng_iCCP[5]={105,  67,  67,  80, (png_byte) '\0'};
 static const png_byte mng_nEED[5]={110,  69,  69,  68, (png_byte) '\0'};
@@ -1834,7 +1830,7 @@ static int read_user_chunk_callback(png_struct *ping, png_unknown_chunkp chunk)
         i;
 
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        " recognized eXIf|exIf chunk");
+        " recognized eXIf chunk");
 
       image=(Image *) png_get_user_chunk_ptr(ping);
 
@@ -2334,7 +2330,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     else
     {
        /* Ignore the iCCP chunk */
-       png_set_keep_unknown_chunks(ping, 1, mng_iCCP, 1);
+       png_set_keep_unknown_chunks(ping, 1, (png_bytep)mng_iCCP, 1);
     }
 #endif
   }
@@ -2342,13 +2338,13 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   /* Ignore unused chunks and all unknown chunks except for exIf, caNv,
      and vpAg */
 # if PNG_LIBPNG_VER < 10700 /* Avoid libpng16 warning */
-  png_set_keep_unknown_chunks(ping, 2, NULL, 0);
+  png_set_keep_unknown_chunks(ping, 2, (png_bytep)NULL, 0);
 # else
-  png_set_keep_unknown_chunks(ping, 1, NULL, 0);
+  png_set_keep_unknown_chunks(ping, 1, (png_bytep)NULL, 0);
 # endif
-  png_set_keep_unknown_chunks(ping, 2, mng_exIf, 1);
-  png_set_keep_unknown_chunks(ping, 2, mng_caNv, 1);
-  png_set_keep_unknown_chunks(ping, 2, mng_vpAg, 1);
+  png_set_keep_unknown_chunks(ping, 2, (png_bytep)mng_eXIf, 1);
+  png_set_keep_unknown_chunks(ping, 2, (png_bytep)mng_caNv, 1);
+  png_set_keep_unknown_chunks(ping, 2, (png_bytep)mng_vpAg, 1);
   png_set_keep_unknown_chunks(ping, 1, unused_chunks,
      (int)sizeof(unused_chunks)/5);
   /* Callback for other unknown chunks */
@@ -11469,11 +11465,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
                 length=(png_uint_32) GetStringInfoLength(ping_profile);
 
-#if 0 /* eXIf chunk is registered */
                 PNGType(chunk,mng_eXIf);
-#else /* eXIf chunk not yet registered; write exIf instead */
-                PNGType(chunk,mng_exIf);
-#endif
                 if (length < 7)
                   break;  /* othewise crashes */
 
