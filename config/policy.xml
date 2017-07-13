@@ -58,6 +58,7 @@
   <!-- <policy domain="system" name="shred" value="2"/> -->
   <!-- <policy domain="system" name="precision" value="6"/> -->
   <!-- <policy domain="system" name="memory-map" value="anonymous"/> -->
+  <!-- <policy domain="system" name="max-memory-request" value="256MiB"/> -->
   <!-- <policy domain="resource" name="temporary-path" value="/tmp"/> -->
   <!-- <policy domain="resource" name="memory" value="2GiB"/> -->
   <!-- <policy domain="resource" name="map" value="4GiB"/> -->
@@ -68,7 +69,6 @@
   <!-- <policy domain="resource" name="file" value="768"/> -->
   <!-- <policy domain="resource" name="thread" value="4"/> -->
   <!-- <policy domain="resource" name="throttle" value="0"/> -->
-  <!-- <policy domain="resource" name="time" value="3600"/> -->
   <!-- <policy domain="resource" name="time" value="3600"/> -->
   <!-- <policy domain="coder" rights="none" pattern="MVG" /> -->
   <!-- <policy domain="delegate" rights="none" pattern="HTTPS" /> -->

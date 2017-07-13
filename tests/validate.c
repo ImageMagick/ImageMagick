@@ -1597,8 +1597,8 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
         (double) reference_image->columns,(double) reference_image->rows);
       (void) CloneString(&image_info->size,size);
       image_info->depth=reference_types[j].depth;
-      (void) FormatLocaleString(reference_image->filename,MagickPathExtent,"%s:%s",
-        reference_formats[i].magick,output_filename);
+      (void) FormatLocaleString(reference_image->filename,MagickPathExtent,
+        "%s:%s",reference_formats[i].magick,output_filename);
       status=SetImageType(reference_image,reference_types[j].type,exception);
       if (status == MagickFalse || exception->severity >= ErrorException)
         {
@@ -1662,8 +1662,8 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
       /*
         Write reference image.
       */
-      (void) FormatLocaleString(reference_image->filename,MagickPathExtent,"%s:%s",
-        reference_formats[i].magick,output_filename);
+      (void) FormatLocaleString(reference_image->filename,MagickPathExtent,
+        "%s:%s",reference_formats[i].magick,output_filename);
       (void) CopyMagickString(image_info->magick,reference_formats[i].magick,
         MagickPathExtent);
       reference_image->depth=reference_types[j].depth;
@@ -1860,8 +1860,8 @@ static size_t ValidateImageFormatsOnDisk(ImageInfo *image_info,
         (double) reference_image->columns,(double) reference_image->rows);
       (void) CloneString(&image_info->size,size);
       image_info->depth=reference_types[j].depth;
-      (void) FormatLocaleString(reference_image->filename,MagickPathExtent,"%s:%s",
-        reference_formats[i].magick,output_filename);
+      (void) FormatLocaleString(reference_image->filename,MagickPathExtent,
+        "%s:%s",reference_formats[i].magick,output_filename);
       status=SetImageType(reference_image,reference_types[j].type,exception);
       if (status == MagickFalse || exception->severity >= ErrorException)
         {
@@ -1911,8 +1911,8 @@ static size_t ValidateImageFormatsOnDisk(ImageInfo *image_info,
       /*
         Write reference image.
       */
-      (void) FormatLocaleString(reference_image->filename,MagickPathExtent,"%s:%s",
-        reference_formats[i].magick,output_filename);
+      (void) FormatLocaleString(reference_image->filename,MagickPathExtent,
+        "%s:%s",reference_formats[i].magick,output_filename);
       reference_image->depth=reference_types[j].depth;
       reference_image->compression=reference_formats[i].compression;
       status=WriteImage(image_info,reference_image,exception);
