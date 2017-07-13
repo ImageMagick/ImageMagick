@@ -114,14 +114,6 @@
 */
 /* #define PNG_DEBUG -- turning this on breaks VisualC compiling */
 
-/* After eXIf chunk has been approved:
-#define eXIf_SUPPORTED
-*/
-
-/* Experimental; use this until eXIf chunk is approved:
-#define exIf_SUPPORTED
-*/
-
 /*
   Features under construction.  Define these to work on them.
 */
@@ -535,12 +527,6 @@ static SemaphoreInfo
   portable, we use ASCII numbers like this, not characters.
 */
 
-/* until registration of eXIf use exIf */
-static const png_byte mng_exIf[5]={101, 120,  73, 102, (png_byte) '\0'};
-
-/* after registration of eXIf */
-static const png_byte mng_eXIf[5]={101,  88,  73, 102, (png_byte) '\0'};
-
 static const png_byte mng_MHDR[5]={ 77,  72,  68,  82, (png_byte) '\0'};
 static const png_byte mng_BACK[5]={ 66,  65,  67,  75, (png_byte) '\0'};
 static const png_byte mng_BASI[5]={ 66,  65,  83,  73, (png_byte) '\0'};
@@ -567,6 +553,7 @@ static const png_byte mng_TERM[5]={ 84,  69,  82,  77, (png_byte) '\0'};
 static const png_byte mng_bKGD[5]={ 98,  75,  71,  68, (png_byte) '\0'};
 static const png_byte mng_caNv[5]={ 99,  97,  78, 118, (png_byte) '\0'};
 static const png_byte mng_cHRM[5]={ 99,  72,  82,  77, (png_byte) '\0'};
+static const png_byte mng_eXIf[5]={101,  88,  73, 102, (png_byte) '\0'};
 static const png_byte mng_gAMA[5]={103,  65,  77,  65, (png_byte) '\0'};
 static const png_byte mng_iCCP[5]={105,  67,  67,  80, (png_byte) '\0'};
 static const png_byte mng_nEED[5]={110,  69,  69,  68, (png_byte) '\0'};
@@ -1869,7 +1856,7 @@ static int read_user_chunk_callback(png_struct *ping, png_unknown_chunkp chunk)
         i;
 
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        " recognized eXIf|exIf chunk");
+        " recognized eXIf chunk");
 
       image=(Image *) png_get_user_chunk_ptr(ping);
 
@@ -8181,9 +8168,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     ping_have_non_bw,
     ping_have_PLTE,
     ping_have_bKGD,
-#ifdef exIf_SUPPORTED
     ping_have_eXIf,
-#endif
     ping_have_iCCP,
     ping_have_pHYs,
     ping_have_sRGB,
@@ -8193,9 +8178,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     ping_exclude_cHRM,
     ping_exclude_date,
     /* ping_exclude_EXIF, */
-#ifdef exIf_SUPPORTED
     ping_exclude_eXIf,
-#endif
     ping_exclude_gAMA,
     ping_exclude_iCCP,
     /* ping_exclude_iTXt, */
@@ -8345,9 +8328,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   ping_have_non_bw=MagickTrue;
   ping_have_PLTE=MagickFalse;
   ping_have_bKGD=MagickFalse;
-#ifdef exIf_SUPPORTED
   ping_have_eXIf=MagickTrue;
-#endif
   ping_have_iCCP=MagickFalse;
   ping_have_pHYs=MagickFalse;
   ping_have_sRGB=MagickFalse;
@@ -8357,10 +8338,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   ping_exclude_caNv=mng_info->ping_exclude_caNv;
   ping_exclude_cHRM=mng_info->ping_exclude_cHRM;
   ping_exclude_date=mng_info->ping_exclude_date;
-#ifdef exIf_SUPPORTED
-  /* ping_exclude_EXIF=mng_info->ping_exclude_EXIF; */
   ping_exclude_eXIf=mng_info->ping_exclude_eXIf;
-#endif
   ping_exclude_gAMA=mng_info->ping_exclude_gAMA;
   ping_exclude_iCCP=mng_info->ping_exclude_iCCP;
   /* ping_exclude_iTXt=mng_info->ping_exclude_iTXt; */
@@ -10824,7 +10802,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
               }
 #endif /* WRITE_iCCP */
 
-#if defined(eXIf_SUPPORTED) || defined(exIf_SUPPORTED)
             if (LocaleCompare(name,"exif") == 0)
               {
                    /* Do not write hex-encoded ICC chunk; we will
@@ -10832,7 +10809,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                    name=GetNextImageProfile(image);
                    continue;
               }
-#endif
 
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                  "  Setting up zTXt chunk with uuencoded %s profile",
@@ -11555,7 +11531,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   /* write any PNG-chunk-e profiles */
   (void) Magick_png_write_chunk_from_profile(image,"PNG-chunk-e",logging);
 
-#ifdef exIf_SUPPORTED
   /* write exIf profile */
 #ifdef IM
   if (ping_have_eXIf != MagickFalse && ping_exclude_eXIf == MagickFalse)
@@ -11623,11 +11598,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                length=(png_uint_32) GetStringInfoLength(ping_profile);
 #endif /* GM */
 
-#if 0 /* eXIf chunk is registered */
                PNGType(chunk,mng_eXIf);
-#else /* eXIf chunk not yet registered; write exIf instead */
-               PNGType(chunk,mng_exIf);
-#endif
                if (length < 7)
                  break;  /* othewise crashes */
 
@@ -11648,7 +11619,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
          }
      }
   }
-#endif /* exIf_SUPPORTED */
 
   if (logging != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
