@@ -435,7 +435,7 @@ static double OTSUThreshold(const Image *image,const double *histogram,
     Calculate probability density.
   */
   for (i=0; i <= (ssize_t) MaxIntensity; i++)
-    probability[i]=histogram[i]/(double) (image->columns*image->rows);
+    probability[i]=histogram[i];
   /*
     Generate probability of graylevels and mean value for separation.
   */
@@ -574,11 +574,16 @@ MagickExport MagickBooleanType AutoThresholdImage(Image *image,
     property[MagickPathExtent];
 
   double
+    gamma,
     *histogram,
+    sum,
     threshold;
 
   MagickBooleanType
     status;
+
+  register ssize_t
+    i;
 
   ssize_t
     y;
@@ -617,6 +622,18 @@ MagickExport MagickBooleanType AutoThresholdImage(Image *image,
     }
   }
   image_view=DestroyCacheView(image_view);
+  /*
+    Normalize histogram.
+  */
+  sum=0.0;
+  for (i=0; i <= (ssize_t) MaxIntensity; i++)
+    sum+=histogram[i];
+  gamma=PerceptibleReciprocal(sum);
+  for (i=0; i <= (ssize_t) MaxIntensity; i++)
+    histogram[i]=gamma*histogram[i];
+  /*
+    Discover threshold from histogram.
+  */
   switch (method)
   {
     case KapurThresholdMethod:
@@ -641,6 +658,9 @@ MagickExport MagickBooleanType AutoThresholdImage(Image *image,
     status=MagickFalse;
   if (status == MagickFalse)
     return(MagickFalse);
+  /*
+    Threshold image.
+  */
   (void) FormatLocaleString(property,MagickPathExtent,"%g%%",threshold);
   (void) SetImageProperty(image,"auto-threshold:threshold",property,exception);
   return(BilevelImage(image,QuantumRange*threshold/100.0,exception));
