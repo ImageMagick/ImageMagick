@@ -1105,19 +1105,14 @@ MagickExport MemoryInfo *RelinquishVirtualMemory(MemoryInfo *memory_info)
       case AlignedVirtualMemory:
       {
         memory_info->blob=RelinquishAlignedMemory(memory_info->blob);
-        RelinquishMagickResource(MemoryResource,memory_info->length);
         break;
       }
       case MapVirtualMemory:
       {
         (void) UnmapBlob(memory_info->blob,memory_info->length);
         memory_info->blob=NULL;
-        RelinquishMagickResource(MapResource,memory_info->length);
         if (*memory_info->filename != '\0')
-          {
-            (void) RelinquishUniqueFileResource(memory_info->filename);
-            RelinquishMagickResource(DiskResource,memory_info->length);
-          }
+          (void) RelinquishUniqueFileResource(memory_info->filename);
         break;
       }
       case UnalignedVirtualMemory:
