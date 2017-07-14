@@ -66,7 +66,7 @@
 #include "MagickCore/utility.h"
 #include "MagickCore/xml-tree.h"
 #include "MagickCore/xml-tree-private.h"
-#if defined(MAGICKCORE_RAW_DELEGATE)
+#if defined(MAGICKCORE_RAW_R_DELEGATE)
 #include <libraw.h>
 #endif
 
@@ -186,7 +186,7 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       return((Image *) NULL);
     }
   (void) CloseBlob(image);
-#if defined(MAGICKCORE_RAW_DELEGATE)
+#if defined(MAGICKCORE_RAW_R_DELEGATE)
   {
     int
       status;
