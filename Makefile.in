@@ -949,7 +949,7 @@ coders_djvu_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$@
 @DJVU_DELEGATE_TRUE@@WITH_MODULES_TRUE@am_coders_djvu_la_rpath =  \
 @DJVU_DELEGATE_TRUE@@WITH_MODULES_TRUE@	-rpath $(codersdir)
-coders_dng_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1)
+coders_dng_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
 am_coders_dng_la_OBJECTS = coders/coders_dng_la-dng.lo
 coders_dng_la_OBJECTS = $(am_coders_dng_la_OBJECTS)
 coders_dng_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
@@ -2758,8 +2758,8 @@ QUANTUM_DEPTH = @QUANTUM_DEPTH@
 RANLIB = @RANLIB@
 RAQM_CFLAGS = @RAQM_CFLAGS@
 RAQM_LIBS = @RAQM_LIBS@
-RAW_CFLAGS = @RAW_CFLAGS@
-RAW_LIBS = @RAW_LIBS@
+RAW_R_CFLAGS = @RAW_R_CFLAGS@
+RAW_R_LIBS = @RAW_R_LIBS@
 RMDelegate = @RMDelegate@
 RPM = @RPM@
 RSVGDecodeDelegate = @RSVGDecodeDelegate@
