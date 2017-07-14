@@ -5070,8 +5070,7 @@ Get(ref,...)
             }
           if (LocaleCompare(attribute,"filename") == 0)
             {
-              if (info && info->image_info->filename &&
-                  *info->image_info->filename)
+              if (info && *info->image_info->filename)
                 s=newSVpv(info->image_info->filename,0);
               if (image != (Image *) NULL)
                 s=newSVpv(image->filename,0);
