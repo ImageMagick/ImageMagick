@@ -773,12 +773,10 @@ CAIRO_SVG_LIBS
 CAIRO_SVG_CFLAGS
 RSVG_LIBS
 RSVG_CFLAGS
-RAW_LIBS
-RAW_CFLAGS
 RAW_DELEGATE_FALSE
 RAW_DELEGATE_TRUE
-LIBRAW_LIBS
-LIBRAW_CFLAGS
+RAW_LIBS
+RAW_CFLAGS
 PNG_DELEGATE_FALSE
 PNG_DELEGATE_TRUE
 PNG_LIBS
@@ -1280,8 +1278,8 @@ PANGO_CFLAGS
 PANGO_LIBS
 PNG_CFLAGS
 PNG_LIBS
-LIBRAW_CFLAGS
-LIBRAW_LIBS
+RAW_CFLAGS
+RAW_LIBS
 RSVG_CFLAGS
 RSVG_LIBS
 CAIRO_SVG_CFLAGS
@@ -2102,9 +2100,8 @@ Some influential environment variables:
   PANGO_LIBS  linker flags for PANGO, overriding pkg-config
   PNG_CFLAGS  C compiler flags for PNG, overriding pkg-config
   PNG_LIBS    linker flags for PNG, overriding pkg-config
-  LIBRAW_CFLAGS
-              C compiler flags for LIBRAW, overriding pkg-config
-  LIBRAW_LIBS linker flags for LIBRAW, overriding pkg-config
+  RAW_CFLAGS  C compiler flags for RAW, overriding pkg-config
+  RAW_LIBS    linker flags for RAW, overriding pkg-config
   RSVG_CFLAGS C compiler flags for RSVG, overriding pkg-config
   RSVG_LIBS   linker flags for RSVG, overriding pkg-config
   CAIRO_SVG_CFLAGS
@@ -4532,7 +4529,7 @@ MAGICK_PATCHLEVEL_VERSION=1
 
 MAGICK_VERSION=7.0.6-1
 
-MAGICK_GIT_REVISION=20419:f94b084a6:20170714
+MAGICK_GIT_REVISION=20423:cb6833b82:20170714
 
 
 # Substitute library versioning
@@ -33738,11 +33735,11 @@ if test "x$with_raw" = "xyes"; then
 $as_echo "-------------------------------------------------------------" >&6; }
 
 pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for LIBRAW" >&5
-$as_echo_n "checking for LIBRAW... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for RAW" >&5
+$as_echo_n "checking for RAW... " >&6; }
 
-if test -n "$LIBRAW_CFLAGS"; then
-    pkg_cv_LIBRAW_CFLAGS="$LIBRAW_CFLAGS"
+if test -n "$RAW_CFLAGS"; then
+    pkg_cv_RAW_CFLAGS="$RAW_CFLAGS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
     { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libraw >= 0.14.8\""; } >&5
@@ -33750,7 +33747,7 @@ if test -n "$LIBRAW_CFLAGS"; then
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_LIBRAW_CFLAGS=`$PKG_CONFIG --cflags "libraw >= 0.14.8" 2>/dev/null`
+  pkg_cv_RAW_CFLAGS=`$PKG_CONFIG --cflags "libraw >= 0.14.8" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -33758,8 +33755,8 @@ fi
  else
     pkg_failed=untried
 fi
-if test -n "$LIBRAW_LIBS"; then
-    pkg_cv_LIBRAW_LIBS="$LIBRAW_LIBS"
+if test -n "$RAW_LIBS"; then
+    pkg_cv_RAW_LIBS="$RAW_LIBS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
     { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libraw >= 0.14.8\""; } >&5
@@ -33767,7 +33764,7 @@ if test -n "$LIBRAW_LIBS"; then
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_LIBRAW_LIBS=`$PKG_CONFIG --libs "libraw >= 0.14.8" 2>/dev/null`
+  pkg_cv_RAW_LIBS=`$PKG_CONFIG --libs "libraw >= 0.14.8" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -33788,12 +33785,12 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        LIBRAW_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "libraw >= 0.14.8" 2>&1`
+	        RAW_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "libraw >= 0.14.8" 2>&1`
         else
-	        LIBRAW_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "libraw >= 0.14.8" 2>&1`
+	        RAW_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "libraw >= 0.14.8" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
-	echo "$LIBRAW_PKG_ERRORS" >&5
+	echo "$RAW_PKG_ERRORS" >&5
 
 	have_raw=no
 elif test $pkg_failed = untried; then
@@ -33801,8 +33798,8 @@ elif test $pkg_failed = untried; then
 $as_echo "no" >&6; }
 	have_raw=no
 else
-	LIBRAW_CFLAGS=$pkg_cv_LIBRAW_CFLAGS
-	LIBRAW_LIBS=$pkg_cv_LIBRAW_LIBS
+	RAW_CFLAGS=$pkg_cv_RAW_CFLAGS
+	RAW_LIBS=$pkg_cv_RAW_LIBS
         { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
 	have_raw=yes

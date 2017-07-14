@@ -2614,7 +2614,7 @@ RAW_LIBS=""
 RAW_PKG=""
 if test "x$with_raw" = "xyes"; then
   AC_MSG_RESULT([-------------------------------------------------------------])
-  PKG_CHECK_MODULES(LIBRAW,[libraw >= 0.14.8], have_raw=yes, have_raw=no)
+  PKG_CHECK_MODULES(RAW,[libraw >= 0.14.8], have_raw=yes, have_raw=no)
   AC_MSG_RESULT([])
 fi
 
