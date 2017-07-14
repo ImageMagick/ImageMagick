@@ -1480,11 +1480,6 @@ MagickExport MagickStatusType ParsePageGeometry(const Image *image,
       if ((flags & HeightValue) == 0)
         region_info->height=region_info->width;
     }
-  if ((flags & PercentValue) != 0)
-    {
-      region_info->x*=image->columns/100;
-      region_info->y*=image->rows/100;
-    }
   return(flags);
 }
 
