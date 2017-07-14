@@ -64,7 +64,7 @@
 #include "magick/utility.h"
 #include "magick/xml-tree.h"
 #if defined(MAGICKCORE_RAW_DELEGATE)
-#include <libraw/libraw.h>
+#include <libraw.h>
 #endif
 
 /*

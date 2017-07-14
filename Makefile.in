@@ -538,7 +538,7 @@ coders_djvu_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$@
 @DJVU_DELEGATE_TRUE@@WITH_MODULES_TRUE@am_coders_djvu_la_rpath =  \
 @DJVU_DELEGATE_TRUE@@WITH_MODULES_TRUE@	-rpath $(codersdir)
-coders_dng_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_dng_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1)
 am_coders_dng_la_OBJECTS = coders/coders_dng_la-dng.lo
 coders_dng_la_OBJECTS = $(am_coders_dng_la_OBJECTS)
 coders_dng_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
@@ -2682,8 +2682,6 @@ LIBOPENJP2_CFLAGS = @LIBOPENJP2_CFLAGS@
 LIBOPENJP2_LIBS = @LIBOPENJP2_LIBS@
 LIBRARY_EXTRA_CPPFLAGS = @LIBRARY_EXTRA_CPPFLAGS@
 LIBRARY_PATH = @LIBRARY_PATH@
-LIBRAW_CFLAGS = @LIBRAW_CFLAGS@
-LIBRAW_LIBS = @LIBRAW_LIBS@
 LIBS = @LIBS@
 LIBSTDCLDFLAGS = @LIBSTDCLDFLAGS@
 LIBTOOL = @LIBTOOL@
@@ -3547,7 +3545,7 @@ coders_djvu_la_LIBADD = $(MAGICKCORE_LIBS) $(DJVU_LIBS) $(JPEG_LIBS) $(LZMA_LIBS
 coders_dng_la_SOURCES = coders/dng.c
 coders_dng_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_dng_la_LDFLAGS = $(MODULECOMMONFLAGS)
-coders_dng_la_LIBADD = $(MAGICKCORE_LIBS)
+coders_dng_la_LIBADD = $(MAGICKCORE_LIBS) $(RAW_LIBS)
 
 # DPS coder module
 coders_dps_la_SOURCES = coders/dps.c
