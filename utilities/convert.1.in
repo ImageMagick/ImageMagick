@@ -269,7 +269,6 @@ Image Operators:
   \-white-threshold value
                        force all pixels above the threshold into white
 
-
 Image Channel Operators:
   \-channel-fx expression
                        exchange, extract, or transfer one or more image channels

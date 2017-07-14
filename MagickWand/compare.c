@@ -86,6 +86,11 @@ static MagickBooleanType CompareUsage(void)
     **p;
 
   static const char
+    *channel_operators[]=
+    {
+      "-separate            separate an image channel into a grayscale image",
+      (char *) NULL
+    },
     *miscellaneous[]=
     {
       "-channel mask        set the image channel mask",
@@ -189,6 +194,9 @@ static MagickBooleanType CompareUsage(void)
     (void) printf("  %s\n",*p);
   (void) printf("\nImage Operators:\n");
   for (p=operators; *p != (char *) NULL; p++)
+    (void) printf("  %s\n",*p);
+  (void) printf("\nImage Channel Operators:\n");
+  for (p=channel_operators; *p != (char *) NULL; p++)
     (void) printf("  %s\n",*p);
   (void) printf("\nImage Sequence Operators:\n");
   for (p=sequence_operators; *p != (char *) NULL; p++)
@@ -962,6 +970,8 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
               ThrowCompareInvalidArgumentException(option,argv[i]);
             break;
           }
+        if (LocaleCompare("separate",option+1) == 0)
+          break;
         if (LocaleCompare("set",option+1) == 0)
           {
             i++;
