@@ -63,6 +63,9 @@
 #include "MagickCore/utility.h"
 #include "MagickCore/xml-tree.h"
 #include "MagickCore/xml-tree-private.h"
+#if defined(MAGICKCORE_RAW_DELEGATE)
+#include <libraw/libraw.h>
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -182,8 +185,7 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) CloseBlob(image);
   (void) DestroyImageList(image);
 #if defined(MAGICKCORE_RAW_DELEGATE)
-  return((Image *) NULL);
-#else
+#endif
   /*
     Convert DNG to PPM with delegate.
   */
@@ -272,7 +274,6 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       sans=DestroyExceptionInfo(sans);
     }
   read_info=DestroyImageInfo(read_info);
-#endif
   return(image);
 }
 
