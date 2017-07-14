@@ -176,6 +176,9 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   (void) CloseBlob(image);
   (void) DestroyImageList(image);
+#if defined(MAGICKCORE_RAW_DELEGATE)
+  return((Image *) NULL);
+#else
   /*
     Convert DNG to PPM with delegate.
   */
@@ -263,6 +266,7 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       sans=DestroyExceptionInfo(sans);
     }
   read_info=DestroyImageInfo(read_info);
+#endif
   return(image);
 }
 
@@ -296,6 +300,7 @@ ModuleExport size_t RegisterDNGImage(void)
 
   entry=SetMagickInfo("3FR");
   entry->decoder=(DecodeImageHandler *) ReadDNGImage;
+  entry->seekable_stream=MagickTrue;
   entry->blob_support=MagickFalse;
   entry->seekable_stream=MagickTrue;
   entry->format_type=ExplicitFormatType;
@@ -304,6 +309,7 @@ ModuleExport size_t RegisterDNGImage(void)
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("ARW");
   entry->decoder=(DecodeImageHandler *) ReadDNGImage;
+  entry->seekable_stream=MagickTrue;
   entry->blob_support=MagickFalse;
   entry->seekable_stream=MagickTrue;
   entry->format_type=ExplicitFormatType;
@@ -312,6 +318,7 @@ ModuleExport size_t RegisterDNGImage(void)
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("DNG");
   entry->decoder=(DecodeImageHandler *) ReadDNGImage;
+  entry->seekable_stream=MagickTrue;
   entry->blob_support=MagickFalse;
   entry->seekable_stream=MagickTrue;
   entry->format_type=ExplicitFormatType;
@@ -320,6 +327,7 @@ ModuleExport size_t RegisterDNGImage(void)
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("CR2");
   entry->decoder=(DecodeImageHandler *) ReadDNGImage;
+  entry->seekable_stream=MagickTrue;
   entry->blob_support=MagickFalse;
   entry->seekable_stream=MagickTrue;
   entry->format_type=ExplicitFormatType;
@@ -328,6 +336,7 @@ ModuleExport size_t RegisterDNGImage(void)
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("CRW");
   entry->decoder=(DecodeImageHandler *) ReadDNGImage;
+  entry->seekable_stream=MagickTrue;
   entry->blob_support=MagickFalse;
   entry->seekable_stream=MagickTrue;
   entry->format_type=ExplicitFormatType;
@@ -336,6 +345,7 @@ ModuleExport size_t RegisterDNGImage(void)
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("DCR");
   entry->decoder=(DecodeImageHandler *) ReadDNGImage;
+  entry->seekable_stream=MagickTrue;
   entry->blob_support=MagickFalse;
   entry->seekable_stream=MagickTrue;
   entry->format_type=ExplicitFormatType;
@@ -344,6 +354,7 @@ ModuleExport size_t RegisterDNGImage(void)
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("ERF");
   entry->decoder=(DecodeImageHandler *) ReadDNGImage;
+  entry->seekable_stream=MagickTrue;
   entry->blob_support=MagickFalse;
   entry->seekable_stream=MagickTrue;
   entry->format_type=ExplicitFormatType;
@@ -352,6 +363,7 @@ ModuleExport size_t RegisterDNGImage(void)
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("IIQ");
   entry->decoder=(DecodeImageHandler *) ReadDNGImage;
+  entry->seekable_stream=MagickTrue;
   entry->blob_support=MagickFalse;
   entry->seekable_stream=MagickTrue;
   entry->format_type=ExplicitFormatType;
@@ -360,6 +372,7 @@ ModuleExport size_t RegisterDNGImage(void)
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("KDC");
   entry->decoder=(DecodeImageHandler *) ReadDNGImage;
+  entry->seekable_stream=MagickTrue;
   entry->blob_support=MagickFalse;
   entry->seekable_stream=MagickTrue;
   entry->format_type=ExplicitFormatType;
@@ -368,6 +381,7 @@ ModuleExport size_t RegisterDNGImage(void)
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("K25");
   entry->decoder=(DecodeImageHandler *) ReadDNGImage;
+  entry->seekable_stream=MagickTrue;
   entry->blob_support=MagickFalse;
   entry->seekable_stream=MagickTrue;
   entry->format_type=ExplicitFormatType;
@@ -376,6 +390,7 @@ ModuleExport size_t RegisterDNGImage(void)
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("MEF");
   entry->decoder=(DecodeImageHandler *) ReadDNGImage;
+  entry->seekable_stream=MagickTrue;
   entry->blob_support=MagickFalse;
   entry->seekable_stream=MagickTrue;
   entry->format_type=ExplicitFormatType;
@@ -384,6 +399,7 @@ ModuleExport size_t RegisterDNGImage(void)
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("MRW");
   entry->decoder=(DecodeImageHandler *) ReadDNGImage;
+  entry->seekable_stream=MagickTrue;
   entry->blob_support=MagickFalse;
   entry->seekable_stream=MagickTrue;
   entry->format_type=ExplicitFormatType;
@@ -392,6 +408,7 @@ ModuleExport size_t RegisterDNGImage(void)
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("NEF");
   entry->decoder=(DecodeImageHandler *) ReadDNGImage;
+  entry->seekable_stream=MagickTrue;
   entry->blob_support=MagickFalse;
   entry->seekable_stream=MagickTrue;
   entry->format_type=ExplicitFormatType;
@@ -400,6 +417,7 @@ ModuleExport size_t RegisterDNGImage(void)
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("NRW");
   entry->decoder=(DecodeImageHandler *) ReadDNGImage;
+  entry->seekable_stream=MagickTrue;
   entry->blob_support=MagickFalse;
   entry->seekable_stream=MagickTrue;
   entry->format_type=ExplicitFormatType;
@@ -408,6 +426,7 @@ ModuleExport size_t RegisterDNGImage(void)
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("ORF");
   entry->decoder=(DecodeImageHandler *) ReadDNGImage;
+  entry->seekable_stream=MagickTrue;
   entry->blob_support=MagickFalse;
   entry->seekable_stream=MagickTrue;
   entry->format_type=ExplicitFormatType;
@@ -416,6 +435,7 @@ ModuleExport size_t RegisterDNGImage(void)
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("PEF");
   entry->decoder=(DecodeImageHandler *) ReadDNGImage;
+  entry->seekable_stream=MagickTrue;
   entry->blob_support=MagickFalse;
   entry->seekable_stream=MagickTrue;
   entry->format_type=ExplicitFormatType;
@@ -424,6 +444,7 @@ ModuleExport size_t RegisterDNGImage(void)
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("RAF");
   entry->decoder=(DecodeImageHandler *) ReadDNGImage;
+  entry->seekable_stream=MagickTrue;
   entry->blob_support=MagickFalse;
   entry->seekable_stream=MagickTrue;
   entry->format_type=ExplicitFormatType;
@@ -432,6 +453,7 @@ ModuleExport size_t RegisterDNGImage(void)
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("RAW");
   entry->decoder=(DecodeImageHandler *) ReadDNGImage;
+  entry->seekable_stream=MagickTrue;
   entry->blob_support=MagickFalse;
   entry->seekable_stream=MagickTrue;
   entry->format_type=ExplicitFormatType;
@@ -440,6 +462,7 @@ ModuleExport size_t RegisterDNGImage(void)
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("RMF");
   entry->decoder=(DecodeImageHandler *) ReadDNGImage;
+  entry->seekable_stream=MagickTrue;
   entry->blob_support=MagickFalse;
   entry->seekable_stream=MagickTrue;
   entry->format_type=ExplicitFormatType;
@@ -448,6 +471,7 @@ ModuleExport size_t RegisterDNGImage(void)
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("RW2");
   entry->decoder=(DecodeImageHandler *) ReadDNGImage;
+  entry->seekable_stream=MagickTrue;
   entry->blob_support=MagickFalse;
   entry->seekable_stream=MagickTrue;
   entry->format_type=ExplicitFormatType;
@@ -456,6 +480,7 @@ ModuleExport size_t RegisterDNGImage(void)
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("SRF");
   entry->decoder=(DecodeImageHandler *) ReadDNGImage;
+  entry->seekable_stream=MagickTrue;
   entry->blob_support=MagickFalse;
   entry->seekable_stream=MagickTrue;
   entry->format_type=ExplicitFormatType;
@@ -464,6 +489,7 @@ ModuleExport size_t RegisterDNGImage(void)
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("SR2");
   entry->decoder=(DecodeImageHandler *) ReadDNGImage;
+  entry->seekable_stream=MagickTrue;
   entry->blob_support=MagickFalse;
   entry->seekable_stream=MagickTrue;
   entry->format_type=ExplicitFormatType;
@@ -472,8 +498,8 @@ ModuleExport size_t RegisterDNGImage(void)
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("X3F");
   entry->decoder=(DecodeImageHandler *) ReadDNGImage;
-  entry->blob_support=MagickFalse;
   entry->seekable_stream=MagickTrue;
+  entry->blob_support=MagickFalse;
   entry->format_type=ExplicitFormatType;
   entry->description=ConstantString("Sigma Camera RAW Picture File");
   entry->module=ConstantString("DNG");
