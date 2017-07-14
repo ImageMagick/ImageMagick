@@ -111,6 +111,7 @@ static MagickBooleanType CompareUsage(void)
     *sequence_operators[]=
     {
       "-crop geometry       cut out a rectangular region of the image",
+      "-separate            separate an image channel into a grayscale image",
       "-write filename      write images to this file",
       (char *) NULL
     },
@@ -974,6 +975,8 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
               ThrowCompareInvalidArgumentException(option,argv[i]);
             break;
           }
+        if (LocaleCompare("separate",option+1) == 0)
+          break;
         if (LocaleCompare("set",option+1) == 0)
           {
             i++;

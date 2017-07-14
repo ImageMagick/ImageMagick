@@ -72,6 +72,7 @@ Image Operators:
   \-level value         adjust the level of image contrast
   \-resize geometry     resize the image
   \-rotate degrees      apply Paeth rotation to the image
+  \-separate            separate an image channel into a grayscale image
   \-trim                trim image edges
   \-write filename      write images to this file
 
