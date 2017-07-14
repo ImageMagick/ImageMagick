@@ -53,6 +53,8 @@
 #include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/memory_.h"
+#include "magick/monitor.h"
+#include "magick/monitor-private.h"
 #include "magick/opencl.h"
 #include "magick/pixel-accessor.h"
 #include "magick/quantum-private.h"
@@ -63,7 +65,7 @@
 #include "magick/transform.h"
 #include "magick/utility.h"
 #include "magick/xml-tree.h"
-#if defined(MAGICKCORE_RAW_DELEGATE)
+#if defined(MAGICKCORE_RAW_R_DELEGATE)
 #include <libraw.h>
 #endif
 
@@ -178,9 +180,108 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       return((Image *) NULL);
     }
   (void) CloseBlob(image);
-  (void) DestroyImageList(image);
-#if defined(MAGICKCORE_RAW_DELEGATE)
+#if defined(MAGICKCORE_RAW_R_DELEGATE)
+  {
+    int
+      status;
+
+    libraw_data_t
+      *raw_info;
+
+    libraw_processed_image_t
+      *raw_image;
+
+    register ssize_t
+      y;
+
+    unsigned short
+      *p;
+
+    status=0;
+    raw_info=libraw_init(0);
+    if (raw_info == (libraw_data_t *) NULL)
+      {
+        (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
+          libraw_strerror(status),"`%s'",image->filename);
+        return(DestroyImageList(image));
+      }
+    status=libraw_open_file(raw_info,image->filename);
+    if (status != LIBRAW_SUCCESS)
+      {
+        (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
+          libraw_strerror(status),"`%s'",image->filename);
+        return(DestroyImageList(image));
+      }
+    status=libraw_unpack(raw_info);
+    if (status != LIBRAW_SUCCESS)
+      {
+        libraw_close(raw_info);
+        (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
+          libraw_strerror(status),"`%s'",image->filename);
+        return(DestroyImageList(image));
+      }
+    raw_info->params.output_bps=16;
+    status=libraw_dcraw_process(raw_info);
+    if (status != LIBRAW_SUCCESS)
+      {
+        libraw_close(raw_info);
+        (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
+          libraw_strerror(status),"`%s'",image->filename);
+        return(DestroyImageList(image));
+      }
+    raw_image=libraw_dcraw_make_mem_image(raw_info,&status);
+    if (status != LIBRAW_SUCCESS)
+      {
+        libraw_close(raw_info);
+        (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
+          libraw_strerror(status),"`%s'",image->filename);
+        return(DestroyImageList(image));
+      }
+    image->columns=raw_image->width;
+    image->rows=raw_image->height;
+    image->depth=16;
+    status=SetImageExtent(image,image->columns,image->rows);
+    if (status == MagickFalse)
+      {
+        libraw_dcraw_clear_mem(raw_image);
+        libraw_close(raw_info);
+        return(DestroyImageList(image));
+      }
+    p=(unsigned short *) raw_image->data;
+    for (y=0; y < (ssize_t) image->rows; y++)
+    {
+      register PixelPacket
+        *q;
+
+      register ssize_t
+        x;
+
+      q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
+      if (q == (PixelPacket *) NULL)
+        break;
+      for (x=0; x < (ssize_t) image->columns; x++)
+      {
+        SetPixelRed(q,ScaleShortToQuantum(*p++));
+        SetPixelGreen(q,ScaleShortToQuantum(*p++));
+        SetPixelBlue(q,ScaleShortToQuantum(*p++));
+        q++;
+      }
+      if (SyncAuthenticPixels(image,exception) == MagickFalse)
+        break;
+      if (image->previous == (Image *) NULL)
+        {
+          status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
+            image->rows);
+          if (status == MagickFalse)
+            break;
+        }
+    }
+    libraw_dcraw_clear_mem(raw_image);
+    libraw_close(raw_info);
+    return(image);
+  }
 #endif
+  (void) DestroyImageList(image);
   /*
     Convert DNG to PPM with delegate.
   */
