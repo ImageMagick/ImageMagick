@@ -841,6 +841,9 @@
 /* Define if you have RAQM library */
 #undef RAQM_DELEGATE
 
+/* Define if you have LIBRAW library */
+#undef RAW_DELEGATE
+
 /* Define as the return type of signal handlers (`int' or `void'). */
 #undef RETSIGTYPE
 
