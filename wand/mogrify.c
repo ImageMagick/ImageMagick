@@ -2685,7 +2685,12 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               Roll image.
             */
             (void) SyncImageSettings(mogrify_info,*image);
-            (void) ParsePageGeometry(*image,argv[i+1],&geometry,exception);
+            flags=ParsePageGeometry(*image,argv[i+1],&geometry,exception);
+            if ((flags & PercentValue) != 0)
+              {
+                geometry.x*=(double) (*image)->columns/100.0;
+                geometry.y*=(double) (*image)->rows/100.0;
+              }
             mogrify_image=RollImage(*image,geometry.x,geometry.y,exception);
             break;
           }

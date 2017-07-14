@@ -8106,8 +8106,15 @@ Mogrify(ref,...)
         case 22:  /* Roll */
         {
           if (attribute_flag[0] != 0)
-            flags=ParsePageGeometry(image,argument_list[0].string_reference,
-              &geometry,exception);
+            {
+              flags=ParsePageGeometry(image,argument_list[0].string_reference,
+                &geometry,exception);
+              if ((flags & PercentValue) != 0)
+                {
+                  geometry.x*=(double) image->columns/100.0;
+                  geometry.y*=(double) image->rows/100.0;
+                }
+            }
           if (attribute_flag[1] != 0)
             geometry.x=argument_list[1].integer_reference;
           if (attribute_flag[2] != 0)
