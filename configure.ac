@@ -2244,7 +2244,6 @@ dnl ===========================================================================
 #
 # Check for JBIG delegate library.
 #
-
 AC_ARG_WITH([jbig],
     [AC_HELP_STRING([--without-jbig],
                     [disable JBIG support])],
@@ -2593,6 +2592,40 @@ fi
 AM_CONDITIONAL(PNG_DELEGATE, test "$have_png" = 'yes')
 AC_SUBST(PNG_CFLAGS)
 AC_SUBST(PNG_LIBS)
+
+dnl ===========================================================================
+
+#
+# Check for the Raw delegate library.
+#
+AC_ARG_WITH([LibRaw],
+    [AC_HELP_STRING([--without-raw],
+                    [disable Raw support])],
+    [with_raw=$withval],
+    [with_raw='yes'])
+
+if test "$with_raw" != 'yes'; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-libraw=$with_raw "
+fi
+
+have_raw='no'
+RAW_CFLAGS=""
+RAW_LIBS=""
+RAW_PKG=""
+if test "x$with_raw" = "xyes"; then
+  AC_MSG_RESULT([-------------------------------------------------------------])
+  PKG_CHECK_MODULES(LIBRAW,[libraw >= 0.14.8], have_raw=yes, have_raw=no)
+  AC_MSG_RESULT([])
+fi
+
+if test "$have_raw" = 'yes'; then
+  AC_DEFINE(RAW_DELEGATE,1,Define if you have LIBRAW library)
+  CFLAGS="$RAW_CFLAGS $CFLAGS"
+fi
+
+AM_CONDITIONAL(RAW_DELEGATE, test "$have_raw" = 'yes')
+AC_SUBST(RAW_CFLAGS)
+AC_SUBST(RAW_LIBS)
 
 dnl ===========================================================================
 
@@ -3685,6 +3718,9 @@ fi
 if test "$have_ps"     = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES ps"
 fi
+if test "$have_raw"    = 'yes' ; then
+   MAGICK_DELEGATES="$MAGICK_DELEGATES raw"
+fi
 if test "$have_raqm"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES raqm"
 fi
@@ -3766,7 +3802,7 @@ fi
 if test "$build_modules" != 'no'; then
     MAGICK_DEP_LIBS="$USER_LIBS $LCMS_LIBS $FREETYPE_LIBS $RAQM_LIBS $LQR_LIBS $FFTW_LIBS $FLIF_LIBS $FONTCONFIG_LIBS $XEXT_LIBS $IPC_LIBS $X11_LIBS $XT_LIBS $LZMA_LIBS $BZLIB_LIBS $ZLIB_LIBS $LTDL_LIBS $GDI32_LIBS $MATH_LIBS $GOMP_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS"
 else
-    MAGICK_DEP_LIBS="$USER_LIBS $JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $RAQM_LIBS $JPEG_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FLIF_LIBS $FPX_LIBS $FONTCONFIG_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $LIBOPENJP2_LIBS $PANGO_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $GDI32_LIBS $MATH_LIBS $GOMP_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS"
+    MAGICK_DEP_LIBS="$USER_LIBS $JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $RAQM_LIBS $JPEG_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FLIF_LIBS $FPX_LIBS $FONTCONFIG_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $LIBOPENJP2_LIBS $PANGO_LIBS $RAW_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $GDI32_LIBS $MATH_LIBS $GOMP_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS"
 fi
 AC_SUBST(MAGICK_DEP_LIBS)
 
@@ -3921,6 +3957,7 @@ matches your expectations.
   PERL              --with-perl=$with_perl		$have_perl
   PNG               --with-png=$with_png		$have_png
   RAQM              --with-raqm=$with_raqm		$have_raqm
+  RAW               --with-raw=$with_raw		$have_raw
   RSVG              --with-rsvg=$with_rsvg		$have_rsvg
   TIFF              --with-tiff=$with_tiff		$have_tiff
   WEBP              --with-webp=$with_webp		$have_webp
