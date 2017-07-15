@@ -661,7 +661,6 @@ MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
                 offset;
 
               offset=(MagickOffsetType) lseek(file,extent-1,SEEK_SET);
-              (void) close(file);
               if ((offset == (MagickOffsetType) (extent-1)) &&
                   (write(file,"",1) == 1))
                 {
@@ -675,8 +674,15 @@ MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
                       *memory_info->filename='\0';
                     }
                 }
+              (void) close(file);
             }
         }
+    }
+  if (memory_info->blob == NULL)
+    {
+      memory_info->blob=AcquireQuantumMemory(1,extent);
+      if (memory_info->blob != NULL)
+        memory_info->type=UnalignedVirtualMemory;
     }
   if (memory_info->blob == NULL)
     memory_info=RelinquishVirtualMemory(memory_info);
