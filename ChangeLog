@@ -19,7 +19,8 @@
 
 2017-06-22  7.0.6-1 Glenn Randers-Pehrson <glennrp@image...>
   * Stop a memory leak in read_user_chunk_callback() (reference
-    https://github.com/ImageMagick/ImageMagick/issues/517).
+    https://github.com/ImageMagick/ImageMagick/issues/517,
+    CVE 2017-11310).
 
 2017-06-10  7.0.6-0 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.6-0, GIT revision 20194:b0c0d00:20170611.
