@@ -11547,71 +11547,40 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   (void) Magick_png_write_chunk_from_profile(image,"PNG-chunk-e",logging);
 
   /* write exIf profile */
-#ifdef IM
   if (ping_have_eXIf != MagickFalse && ping_exclude_eXIf == MagickFalse)
-#endif
-  {
-#ifdef GM
- ImageProfileIterator
-   *profile_iterator;
-
- profile_iterator=AllocateImageProfileIterator(image);
- if (profile_iterator)
-   {
-     const char
-       *profile_name;
-
-     const unsigned char
-       *profile_info;
-
-     size_t
-       profile_length;
-
-     while (NextImageProfile(profile_iterator,&profile_name,&profile_info,
-                             &profile_length) != MagickFail)
-       {
-         if (LocaleCompare(profile_name,"exif") == 0)
-         {
-#else /* IM */
+    {
       char
         *name;
 
       ResetImageProfileIterator(image);
 
-      for (name=GetNextImageProfile(image);
-           name != (const char *) NULL; )
-        {
-          if (LocaleCompare(name,"exif") == 0)
-            {
-              const StringInfo
-                *profile;
+      for (name=GetNextImageProfile(image); name != (const char *) NULL; )
+      {
+        if (LocaleCompare(name,"exif") == 0)
+          {
+            const StringInfo
+              *profile;
 
-              profile=GetImageProfile(image,name);
+            profile=GetImageProfile(image,name);
 
-              if (profile != (StringInfo *) NULL)
-                {
-#endif /* GM */
-               png_uint_32
-                 length;
-               unsigned char
-                 chunk[4],
-                 *data;
+            if (profile != (StringInfo *) NULL)
+              {
+                png_uint_32
+                  length;
 
-#ifdef IM
+                unsigned char
+                  chunk[4],
+                  *data;
+
                StringInfo
                  *ping_profile;
-#endif
+
                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                   "  Have eXIf profile");
 
-#ifdef GM
-                data=profile_info;
-                length=(png_uint_32) profile_length;
-#else /* IM */
                ping_profile=CloneStringInfo(profile);
                data=GetStringInfoDatum(ping_profile),
                length=(png_uint_32) GetStringInfoLength(ping_profile);
-#endif /* GM */
 
                PNGType(chunk,mng_eXIf);
                if (length < 7)
@@ -11627,11 +11596,9 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                (void) WriteBlobMSBULong(image,crc32(crc32(0,chunk,4),
                  data+6, (uInt) length));
                break;
-#ifdef IM
-   name=GetNextImageProfile(image);
-#endif
              }
          }
+       name=GetNextImageProfile(image);
      }
   }
 
