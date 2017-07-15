@@ -8,6 +8,7 @@
     https://github.com/ImageMagick/ImageMagick/issues).
   * Don't use variable float_t / double_t, bump SO (reference
     https://github.com/ImageMagick/ImageMagick/issues/510).
+  * Support DNG images with libraw delegate library.
 
 2017-07-02  7.0.6-1 Glenn Randers-Pehrson <glennrp@image...>
   * Reject PNG file that is too small (under 60 bytes) to contain
