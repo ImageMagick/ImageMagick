@@ -1577,10 +1577,14 @@ static MngBox mng_read_box(MngBox previous_box,char delta_type,unsigned char *p)
   /*
     Read clipping boundaries from DEFI, CLIP, FRAM, or PAST chunk.
   */
-  box.left=(ssize_t) ((p[0]  << 24) | (p[1]  << 16) | (p[2]  << 8) | p[3]);
-  box.right=(ssize_t) ((p[4]  << 24) | (p[5]  << 16) | (p[6]  << 8) | p[7]);
-  box.top=(ssize_t) ((p[8]  << 24) | (p[9]  << 16) | (p[10] << 8) | p[11]);
-  box.bottom=(ssize_t) ((p[12] << 24) | (p[13] << 16) | (p[14] << 8) | p[15]);
+  box.left=(long) (((png_uint_32) p[0] << 24) | ((png_uint_32) p[1] << 16) |
+    ((png_uint_32) p[2] << 8) | (png_uint_32) p[3]);
+  box.right=(long) (((png_uint_32) p[4]  << 24) | ((png_uint_32) p[5] << 16) |
+    ((png_uint_32) p[6] << 8) | (png_uint_32) p[7]);
+  box.top=(long) (((png_uint_32) p[8]  << 24) | ((png_uint_32) p[9] << 16) |
+    ((png_uint_32) p[10] << 8) | (png_uint_32) p[11]);
+  box.bottom=(long) (((png_uint_32) p[12] << 24) | ((png_uint_32) p[13] << 16) |
+    ((png_uint_32) p[14] << 8) | (png_uint_32) p[15]);
   if (delta_type != 0)
     {
       box.left+=previous_box.left;
@@ -1597,12 +1601,14 @@ static MngPair mng_read_pair(MngPair previous_pair,int delta_type,
 {
   MngPair
     pair;
-  /*
-    Read two ssize_ts from CLON, MOVE or PAST chunk
-  */
-  pair.a=(long) ((p[0] << 24) | (p[1] << 16) | (p[2] << 8) | p[3]);
-  pair.b=(long) ((p[4] << 24) | (p[5] << 16) | (p[6] << 8) | p[7]);
 
+  /*
+    Read two ssize_t's from CLON, MOVE or PAST chunk
+  */
+  pair.a=(long) (((png_uint_32) p[0] << 24) | ((png_uint_32) p[1] << 16) |
+    ((png_uint_32) p[2] << 8) | (png_uint_32) p[3]);
+  pair.b=(long) (((png_uint_32) p[4] << 24) | ((png_uint_32) p[5] << 16) |
+    ((png_uint_32) p[6] << 8) | (png_uint_32) p[7]);
   if (delta_type != 0)
     {
       pair.a+=previous_pair.a;
@@ -1614,7 +1620,8 @@ static MngPair mng_read_pair(MngPair previous_pair,int delta_type,
 
 static long mng_get_long(unsigned char *p)
 {
-  return((long) ((p[0] << 24) | (p[1] << 16) | (p[2] << 8) | p[3]));
+  return ((long) (((png_uint_32) p[0] << 24) | ((png_uint_32) p[1] << 16) |
+    ((png_uint_32) p[2] << 8) | (png_uint_32) p[3]));
 }
 
 typedef struct _PNGErrorInfo
@@ -1879,11 +1886,12 @@ static int read_user_chunk_callback(png_struct *ping, png_unknown_chunkp chunk)
 
      image=(Image *) png_get_user_chunk_ptr(ping);
 
-     image->page.width=(size_t) ((chunk->data[0] << 24) |
-        (chunk->data[1] << 16) | (chunk->data[2] << 8) | chunk->data[3]);
-
-     image->page.height=(size_t) ((chunk->data[4] << 24) |
-        (chunk->data[5] << 16) | (chunk->data[6] << 8) | chunk->data[7]);
+     image->page.width=(size_t) (((png_uint_32) chunk->data[0] << 24) |
+       ((png_uint_32) chunk->data[1] << 16) |
+       ((png_uint_32) chunk->data[2] << 8) | (png_uint_32) chunk->data[3]);
+     image->page.height=(size_t) (((png_uint_32) chunk->data[4] << 24) |
+       ((png_uint_32) chunk->data[5] << 16) |
+       ((png_uint_32) chunk->data[6] << 8) | (png_uint_32) chunk->data[7]);
 
      return(1);
     }
@@ -1901,17 +1909,18 @@ static int read_user_chunk_callback(png_struct *ping, png_unknown_chunkp chunk)
 
      image=(Image *) png_get_user_chunk_ptr(ping);
 
-     image->page.width=(size_t) ((chunk->data[0] << 24) |
-        (chunk->data[1] << 16) | (chunk->data[2] << 8) | chunk->data[3]);
-
-     image->page.height=(size_t) ((chunk->data[4] << 24) |
-        (chunk->data[5] << 16) | (chunk->data[6] << 8) | chunk->data[7]);
-
-     image->page.x=(size_t) ((chunk->data[8] << 24) |
-        (chunk->data[9] << 16) | (chunk->data[10] << 8) | chunk->data[11]);
-
-     image->page.y=(size_t) ((chunk->data[12] << 24) |
-        (chunk->data[13] << 16) | (chunk->data[14] << 8) | chunk->data[15]);
+     image->page.width=(size_t) (((png_uint_32) chunk->data[0] << 24) |
+       ((png_uint_32) chunk->data[1] << 16) |
+       ((png_uint_32) chunk->data[2] << 8) | (png_uint_32) chunk->data[3]);
+     image->page.height=(size_t) (((png_uint_32) chunk->data[4] << 24) |
+       ((png_uint_32) chunk->data[5] << 16) |
+       ((png_uint_32) chunk->data[6] << 8) | (png_uint_32) chunk->data[7]);
+     image->page.x=(ssize_t) (((png_uint_32) chunk->data[8] << 24) |
+       ((png_uint_32) chunk->data[9] << 16) |
+       ((png_uint_32) chunk->data[10] << 8) | (png_uint_32) chunk->data[11]);
+     image->page.y=(ssize_t) (((png_uint_32) chunk->data[12] << 24) |
+       ((png_uint_32) chunk->data[13] << 16) |
+       ((png_uint_32) chunk->data[14] << 8) | (png_uint_32) chunk->data[15]);
 
      /* Return one of the following: */
         /* return(-n);  chunk had an error */
@@ -2914,7 +2923,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         max_sample;
 
       size_t
-        one=1;
+        one = 1;
 
       if (logging != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -3418,7 +3427,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                 quantum;
 
               if (image->colors > 256)
-                quantum=((*p++) << 8);
+                quantum=(((unsigned int) *p++) << 8);
 
               else
                 quantum=0;
@@ -3431,7 +3440,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
               if (ping_color_type == 4)
                 {
                   if (image->colors > 256)
-                    quantum=((*p++) << 8);
+                    quantum=(((unsigned int) *p++) << 8);
                   else
                     quantum=0;
 
@@ -4329,10 +4338,12 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
       {
         if (length == 16)
           {
-            jng_width=(size_t) ((p[0] << 24) | (p[1] << 16) |
-              (p[2] << 8) | p[3]);
-            jng_height=(size_t) ((p[4] << 24) | (p[5] << 16) |
-              (p[6] << 8) | p[7]);
+            jng_width=(png_uint_32) (((png_uint_32) p[0] << 24) |
+              ((png_uint_32) p[1] << 16) | ((png_uint_32) p[2] << 8) |
+              (png_uint_32) p[3]);
+            jng_height=(png_uint_32) (((png_uint_32) p[4] << 24) | 
+              ((png_uint_32) p[5] << 16) | ((png_uint_32) p[6] << 8) | 
+              (png_uint_32) p[7]);
             if ((jng_width == 0) || (jng_height == 0))
               ThrowReaderException(CorruptImageError,"NegativeOrZeroImageSize");
             jng_color_type=p[8];
@@ -5243,11 +5254,12 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
                 ThrowReaderException(CorruptImageError,"CorruptImage");
               }
 
-            mng_info->mng_width=(size_t) ((p[0] << 24) | (p[1] << 16) |
-                (p[2] << 8) | p[3]);
-
-            mng_info->mng_height=(size_t) ((p[4] << 24) | (p[5] << 16) |
-                (p[6] << 8) | p[7]);
+            mng_info->mng_width=(unsigned long) (((png_uint_32) p[0] << 24) |
+              ((png_uint_32) p[1] << 16) | ((png_uint_32) p[2] << 8) |
+              (png_uint_32) p[3]);
+            mng_info->mng_height=(unsigned long) (((png_uint_32) p[4] << 24) |
+              ((png_uint_32) p[5] << 16) | ((png_uint_32) p[6] << 8) |
+              (png_uint_32) p[7]);
 
             if (logging != MagickFalse)
               {
@@ -5402,12 +5414,12 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
                 */
                 if (length > 11)
                   {
-                    mng_info->x_off[object_id]=(ssize_t) ((p[4] << 24) |
-                        (p[5] << 16) | (p[6] << 8) | p[7]);
-
-                    mng_info->y_off[object_id]=(ssize_t) ((p[8] << 24) |
-                        (p[9] << 16) | (p[10] << 8) | p[11]);
-
+                    mng_info->x_off[object_id]=(ssize_t) 
+                      (((png_uint_32) p[4] << 24) | ((png_uint_32) p[5] << 16) |
+                      ((png_uint_32) p[6] << 8) | (png_uint_32) p[7]);
+                    mng_info->y_off[object_id]=(ssize_t) 
+                      (((png_uint_32) p[8] << 24) | ((png_uint_32) p[9] << 16) |
+                      ((png_uint_32) p[10] << 8) | (png_uint_32) p[11]);
                     if (logging != MagickFalse)
                       {
                         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -6213,35 +6225,37 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
 #ifdef MNG_BASI_SUPPORTED
             if (length > 11)
               {
-                basi_width=(size_t) ((p[0] << 24) | (p[1] << 16) |
-                   (p[2] << 8) | p[3]);
-                basi_height=(size_t) ((p[4] << 24) | (p[5] << 16) |
-                   (p[6] << 8) | p[7]);
+               basi_width=(unsigned long) (((png_uint_32) p[0] << 24) |
+                  ((png_uint_32) p[1] << 16) | ((png_uint_32) p[2] << 8) |
+                  (png_uint_32) p[3]);
+                basi_height=(unsigned long) (((png_uint_32) p[4] << 24) |
+                  ((png_uint_32) p[5] << 16) | ((png_uint_32) p[6] << 8) |
+                  (png_uint_32) p[7]);
                 basi_color_type=p[8];
                 basi_compression_method=p[9];
                 basi_filter_type=p[10];
                 basi_interlace_method=p[11];
               }
             if (length > 13)
-              basi_red=(p[12] << 8) & p[13];
+              basi_red=(png_uint_32) p[12] << 8) & png_uint_32) p[13];
 
             else
               basi_red=0;
 
             if (length > 15)
-              basi_green=(p[14] << 8) & p[15];
+              basi_green=(png_uint_32) p[14] << 8) & png_uint_32) p[15];
 
             else
               basi_green=0;
 
             if (length > 17)
-              basi_blue=(p[16] << 8) & p[17];
+              basi_blue=(png_uint_32) p[16] << 8) & png_uint_32) p[17];
 
             else
               basi_blue=0;
 
             if (length > 19)
-              basi_alpha=(p[18] << 8) & p[19];
+              basi_alpha=(png_uint_32) p[18] << 8) & png_uint_32) p[19];
 
             else
               {
@@ -12870,10 +12884,10 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
           p=blob+8;
           for (i=8; i<(ssize_t) length; i+=len+12)
           {
-            len=(size_t) (*p) << 24;
-            len|=(size_t) (*(p+1)) << 16;
-            len|=(size_t) (*(p+2)) << 8;
-            len|=(size_t) (*(p+3));
+            len=(((unsigned int) *(p    ) & 0xff) << 24) +
+                (((unsigned int) *(p + 1) & 0xff) << 16) +
+                (((unsigned int) *(p + 2) & 0xff) <<  8) +
+                (((unsigned int) *(p + 3) & 0xff)      ) ;
             p+=4;
 
             if (*(p)==73 && *(p+1)==68 && *(p+2)==65 && *(p+3)==84) /* IDAT */
