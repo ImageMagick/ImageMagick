@@ -236,8 +236,13 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         return(DestroyImageList(image));
       }
     raw_image=libraw_dcraw_make_mem_image(raw_info,&status);
-    if (status != LIBRAW_SUCCESS)
+    if ((status != LIBRAW_SUCCESS) ||
+        (raw_image == (libraw_processed_image_t *) NULL) ||
+        (raw_image->type != LIBRAW_IMAGE_BITMAP) || (raw_image->bits != 16) ||
+        (raw_image->colors < 3) || (raw_image->colors > 4))
       {
+        if (raw_image != (libraw_processed_image_t *) NULL)
+          libraw_dcraw_clear_mem(raw_image);
         libraw_close(raw_info);
         (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
           libraw_strerror(status),"`%s'",image->filename);
@@ -270,6 +275,8 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         SetPixelRed(image,ScaleShortToQuantum(*p++),q);
         SetPixelGreen(image,ScaleShortToQuantum(*p++),q);
         SetPixelBlue(image,ScaleShortToQuantum(*p++),q);
+        if (raw_image->colors > 3)
+          SetPixelAlpha(image,ScaleShortToQuantum(*p++),q);
         q+=GetPixelChannels(image);
       }
       if (SyncAuthenticPixels(image,exception) == MagickFalse)
