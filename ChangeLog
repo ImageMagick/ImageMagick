@@ -1,3 +1,6 @@
+2017-07-15  7.0.6-1 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.6-1, GIT revision 20447:c2a315e10:20170715.
+
 2017-07-13  7.0.6-1 Glenn Randers-Pehrson <glennrp@image...>
   * Implemented PNG eXIf chunk support.
 
