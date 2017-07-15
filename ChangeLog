@@ -6,6 +6,7 @@
     https://github.com/ImageMagick/ImageMagick/issues).
   * Don't use variable float_t / double_t, bump SO (reference
     https://github.com/ImageMagick/ImageMagick/issues/510).
+  * Support DNG images with libraw delegate library.
 
 2017-06-10  6.9.8-10 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 6.9.8-10, GIT revision 11637:eb6f363:20170610.
