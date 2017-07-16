@@ -1681,43 +1681,6 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t I m a g e P i x e l C a c h e P i x e l s                           %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetImagePixelCachePixels() returns the pixels associated with the image
-%  pixel cache.
-%
-%  The format of the GetImagePixelCachePixels() method is:
-%
-%      CachePixels GetImagePixelCachePixels(const Image *image,
-%        MagickSizeType *length)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-%    o length: the length of the pixel cache in bytes.
-%
-*/
-MagickExport void *GetImagePixelCachePixels(const Image *image,
-  MagickSizeType *length)
-{
-  CacheInfo
-    *magick_restrict cache_info;
-
-  cache_info=(CacheInfo *) image->cache;
-  *length=cache_info->length;
-  return(cache_info->pixels);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 +   G e t I m a g e P i x e l C a c h e T y p e                               %
 %                                                                             %
 %                                                                             %
@@ -2106,6 +2069,42 @@ MagickPrivate ColorspaceType GetPixelCacheColorspace(const Cache cache)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   G e t P i x e l C a c h e F i l e n a m e                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetPixelCacheFilename() returns the filename associated with the pixel
+%  cache.
+%
+%  The format of the GetPixelCacheFilename() method is:
+%
+%      const char *GetPixelCacheFilename(const Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+*/
+MagickExport const char *GetPixelCacheFilename(const Image *image)
+{
+  CacheInfo
+    *magick_restrict cache_info;
+
+  assert(image != (const Image *) NULL);
+  assert(image->signature == MagickCoreSignature);
+  assert(image->cache != (Cache) NULL);
+  cache_info=(CacheInfo *) image->cache;
+  assert(cache_info->signature == MagickCoreSignature);
+  return(cache_info->cache_filename);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   G e t P i x e l C a c h e M e t h o d s                                   %
 %                                                                             %
 %                                                                             %
@@ -2213,7 +2212,7 @@ MagickPrivate MagickSizeType GetPixelCacheNexusExtent(const Cache cache,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickPrivate void *GetPixelCachePixels(Image *image,MagickSizeType *length,
+MagickExport void *GetPixelCachePixels(Image *image,MagickSizeType *length,
   ExceptionInfo *exception)
 {
   CacheInfo
@@ -2227,10 +2226,9 @@ MagickPrivate void *GetPixelCachePixels(Image *image,MagickSizeType *length,
   assert(exception->signature == MagickCoreSignature);
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickCoreSignature);
-  *length=0;
+  *length=cache_info->length;
   if ((cache_info->type != MemoryCache) && (cache_info->type != MapCache))
     return((void *) NULL);
-  *length=cache_info->length;
   return((void *) cache_info->pixels);
 }
 

@@ -37,6 +37,9 @@ typedef enum
 extern MagickExport CacheType
   GetImagePixelCacheType(const Image *);
 
+extern MagickExport const char
+  *GetPixelCacheFilename(const Image *);
+
 extern MagickExport const Quantum
   *GetVirtualPixels(const Image *,const ssize_t,const ssize_t,const size_t,
     const size_t,ExceptionInfo *) magick_hot_spot,
@@ -67,8 +70,8 @@ extern MagickExport Quantum
     const size_t,ExceptionInfo *) magick_hot_spot;
 
 extern MagickExport void
-  *GetImagePixelCachePixels(const Image *,MagickSizeType *),
-  *GetAuthenticMetacontent(const Image *);
+  *GetAuthenticMetacontent(const Image *),
+  *GetPixelCachePixels(Image *,MagickSizeType *,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
