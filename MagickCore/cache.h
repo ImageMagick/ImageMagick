@@ -67,6 +67,7 @@ extern MagickExport Quantum
     const size_t,ExceptionInfo *) magick_hot_spot;
 
 extern MagickExport void
+  *GetImagePixelCachePixels(const Image *,MagickSizeType *),
   *GetAuthenticMetacontent(const Image *);
 
 #if defined(__cplusplus) || defined(c_plusplus)

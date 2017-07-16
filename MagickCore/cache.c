@@ -1681,6 +1681,43 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t I m a g e P i x e l C a c h e P i x e l s                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetImagePixelCachePixels() returns the pixels associated with the image
+%  pixel cache.
+%
+%  The format of the GetImagePixelCachePixels() method is:
+%
+%      CachePixels GetImagePixelCachePixels(const Image *image,
+%        MagickSizeType *length)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o length: the length of the pixel cache in bytes.
+%
+*/
+MagickExport void *GetImagePixelCachePixels(const Image *image,
+  MagickSizeType *length)
+{
+  CacheInfo
+    *magick_restrict cache_info;
+
+  cache_info=(CacheInfo *) image->cache;
+  *length=cache_info->length;
+  return(cache_info->pixels);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   G e t I m a g e P i x e l C a c h e T y p e                               %
 %                                                                             %
 %                                                                             %
