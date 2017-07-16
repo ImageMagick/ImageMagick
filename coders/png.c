@@ -11490,7 +11490,10 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
                 PNGType(chunk,mng_eXIf);
                 if (length < 7)
-                  break;  /* othewise crashes */
+                  {
+                    ping_profile=DestroyStringInfo(ping_profile);
+                    break;  /* othewise crashes */
+                  }
 
                 /* skip the "Exif\0\0" JFIF Exif Header ID */
                 length -= 6;
@@ -11501,6 +11504,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                 (void) WriteBlob(image,length,data+6);
                 (void) WriteBlobMSBULong(image,crc32(crc32(0,chunk,4),
                   data+6, (uInt) length));
+                ping_profile=DestroyStringInfo(ping_profile);
                 break;
               }
           }
