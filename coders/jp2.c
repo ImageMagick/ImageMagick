@@ -924,7 +924,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
       &parameters.subsampling_dx,&parameters.subsampling_dy);
   property=GetImageProperty(image,"comment");
   if (property != (const char *) NULL)
-    parameters.cp_comment=ConstantString(property);
+    parameters.cp_comment=property;
   channels=3;
   jp2_colorspace=OPJ_CLRSPC_SRGB;
   if (image->colorspace == YUVColorspace)
