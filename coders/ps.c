@@ -1173,7 +1173,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
 {
 #define WriteRunlengthPacket(image,pixel,length,p) \
 { \
-  if ((image->matte != MagickFalse) && \
+  if ((image->matte != MagickFalse) && (length != 0) &&\
       (GetPixelOpacity(p) == (Quantum) TransparentOpacity)) \
     { \
       q=PopHexPixel(hex_digits,0xff,q); \
