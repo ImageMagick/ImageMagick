@@ -10717,6 +10717,14 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
             else
 #endif
+            {
+              if (LocaleCompare(name,"exif") == 0)
+                {
+                   /* Do not write hex-encoded ICC chunk; we will
+                      write it later as an eXIf chunk */
+                   name=GetNextImageProfile(image);
+                   continue;
+                }
               if (ping_exclude_zCCP == MagickFalse)
                 {
                   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -10727,6 +10735,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                     (png_uint_32) GetStringInfoLength(profile));
                   ping_have_iCCP = MagickTrue;
                 }
+            }
           }
 
           if (logging != MagickFalse)
