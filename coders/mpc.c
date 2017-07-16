@@ -862,7 +862,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Create image colormap.
         */
         packet_size=(size_t) (3UL*depth/8UL);
-        if ((packet_size*image->colors) > GetBlobSize(image))
+        if ((MagickSizeType) (packet_size*image->colors) > GetBlobSize(image))
           ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
         image->colormap=(PixelPacket *) AcquireQuantumMemory(image->colors+1,
           sizeof(*image->colormap));
@@ -1083,6 +1083,27 @@ ModuleExport void UnregisterMPCImage(void)
 %    o image: the image.
 %
 */
+
+static inline int open_utf8(const char *path,int flags,mode_t mode)
+{
+#if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__) || defined(__MINGW32__) || defined(__MINGW64__)
+  return(open(path,flags,mode));
+#else
+   int
+     status;
+
+   wchar_t
+     *path_wide;
+
+   path_wide=create_wchar_path(path);
+   if (path_wide == (wchar_t *) NULL)
+     return(-1);
+   status=_wopen(path_wide,flags,mode);
+   path_wide=(wchar_t *) RelinquishMagickMemory(path_wide);
+   return(status);
+#endif
+}
+
 static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image)
 {
   char
@@ -1093,12 +1114,17 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image)
     *property,
     *value;
 
+  int
+    destination;
+
   MagickBooleanType
     status;
 
   MagickOffsetType
-    offset,
     scene;
+
+  MagickSizeType
+    length;
 
   register ssize_t
     i;
@@ -1106,6 +1132,12 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image)
   size_t
     depth,
     one;
+
+  ssize_t
+    count;
+
+  unsigned char
+    *pixels;
 
   /*
     Open persistent cache.
@@ -1122,7 +1154,6 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image)
   (void) CopyMagickString(cache_filename,image->filename,MaxTextExtent);
   AppendImageFormat("cache",cache_filename);
   scene=0;
-  offset=0;
   one=1;
   do
   {
@@ -1361,7 +1392,7 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image)
                 {
                   if (value[i] == (int) '}')
                     (void) WriteBlobByte(image,'\\');
-                  (void) WriteBlobByte(image,value[i]);
+                  (void) WriteBlobByte(image,(unsigned char) value[i]);
                 }
               (void) WriteBlobByte(image,'}');
             }
@@ -1473,12 +1504,90 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image)
         colormap=(unsigned char *) RelinquishMagickMemory(colormap);
       }
     /*
-      Initialize persistent pixel cache.
+      Persistent pixel cache.
     */
-    status=PersistPixelCache(image,cache_filename,MagickFalse,&offset,
-      &image->exception);
-    if (status == MagickFalse)
+    destination=open_utf8(cache_filename,O_WRONLY | O_CREAT | O_BINARY,S_MODE);
+    if (destination == -1)
       ThrowWriterException(CacheError,"UnableToPersistPixelCache");
+    pixels=(unsigned char *)  GetPixelCachePixels(image,&length,
+      &image->exception);
+    if (pixels == (unsigned char *) NULL)
+      {
+        int
+          source;
+
+        register MagickOffsetType
+          i;
+
+        size_t
+          quantum;
+
+        struct stat
+          file_stats;
+
+        unsigned char
+          *buffer;
+
+        /*
+          Persist disk-based pixel cache to disk.
+        */
+        source=open_utf8(GetPixelCacheFilename(image),O_RDONLY | O_BINARY,0);
+        if (source == -1)
+          ThrowWriterException(CacheError,"UnableToPersistPixelCache");
+        quantum=(size_t) MagickMaxBufferExtent;
+        if ((fstat(source,&file_stats) == 0) && (file_stats.st_size > 0))
+          quantum=(size_t) MagickMin(file_stats.st_size,MagickMaxBufferExtent);
+        buffer=(unsigned char *) AcquireQuantumMemory(quantum,sizeof(*buffer));
+        if (buffer == (unsigned char *) NULL)
+          {
+            (void) close(source);
+            ThrowWriterException(CacheError,"UnableToPersistPixelCache");
+          }
+        for (i=0; (count=read(source,buffer,quantum)) > 0; )
+        {
+          ssize_t
+            number_bytes;
+
+          number_bytes=write(destination,buffer,(size_t) count);
+          if (number_bytes != count)
+            break;
+          i+=number_bytes;
+        }
+        buffer=(unsigned char *) RelinquishMagickMemory(buffer);
+        (void) close(destination);
+        (void) close(source);
+        if (i < (MagickOffsetType) length)
+          ThrowWriterException(CacheError,"UnableToPersistPixelCache");
+      }
+    else
+      {
+        register MagickOffsetType
+          i;
+
+        /*
+          Persist in-memory pixel cache to disk.
+        */
+        count=0;
+        for (i=0; i < (MagickOffsetType) length; i+=count)
+        {
+#if !defined(MAGICKCORE_HAVE_PWRITE)
+          count=write(destination,pixels+i,(size_t) MagickMin(length-i,(size_t)
+            SSIZE_MAX));
+#else
+          count=pwrite(destination,pixels+i,(size_t) MagickMin(length-i,(size_t)
+            SSIZE_MAX),(off_t) i);
+#endif   
+          if (count <= 0)
+            {
+              count=0;
+              if (errno != EINTR)
+                break;
+            }
+        }
+        (void) close(destination);
+        if (i < (MagickOffsetType) length)
+          ThrowWriterException(CacheError,"UnableToPersistPixelCache");
+      }
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);

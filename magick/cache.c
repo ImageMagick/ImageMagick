@@ -2387,6 +2387,42 @@ MagickExport ColorspaceType GetPixelCacheColorspace(const Cache cache)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   G e t P i x e l C a c h e F i l e n a m e                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetPixelCacheFilename() returns the filename associated with the pixel
+%  cache.
+%
+%  The format of the GetPixelCacheFilename() method is:
+%
+%      const char *GetPixelCacheFilename(const Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+*/
+MagickExport const char *GetPixelCacheFilename(const Image *image)
+{
+  CacheInfo
+    *magick_restrict cache_info;
+
+  assert(image != (const Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(image->cache != (Cache) NULL);
+  cache_info=(CacheInfo *) image->cache;
+  assert(cache_info->signature == MagickSignature);
+  return(cache_info->cache_filename);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   G e t P i x e l C a c h e M e t h o d s                                   %
 %                                                                             %
 %                                                                             %
@@ -2507,10 +2543,9 @@ MagickExport void *GetPixelCachePixels(Image *image,MagickSizeType *length,
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
   (void) exception;
-  *length=0;
+  *length=cache_info->length;
   if ((cache_info->type != MemoryCache) && (cache_info->type != MapCache))
     return((void *) NULL);
-  *length=cache_info->length;
   return((void *) cache_info->pixels);
 }
 

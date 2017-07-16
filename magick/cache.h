@@ -37,6 +37,9 @@ typedef enum
 extern MagickExport CacheType
   GetImagePixelCacheType(const Image *);
 
+extern MagickExport const char
+  *GetPixelCacheFilename(const Image *);
+
 extern MagickExport const IndexPacket
   *GetVirtualIndexQueue(const Image *);
 
