@@ -1751,6 +1751,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
     return(MagickFalse);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(DrawEvent,GetMagickModule(),"begin draw-image");
+  if (SetImageStorageClass(image,DirectClass) == MagickFalse)
+    return(MagickFalse);
   if (*draw_info->primitive != '@')
     primitive=AcquireString(draw_info->primitive);
   else
@@ -1792,8 +1794,6 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
   token=AcquireString(primitive);
   extent=strlen(token)+MaxTextExtent;
   (void) QueryColorDatabase("#000000",&start_color,&image->exception);
-  if (SetImageStorageClass(image,DirectClass) == MagickFalse)
-    return(MagickFalse);
   status=MagickTrue;
   for (q=primitive; *q != '\0'; )
   {

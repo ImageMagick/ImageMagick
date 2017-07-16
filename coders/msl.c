@@ -7697,8 +7697,7 @@ static MagickBooleanType ProcessMSLScript(const ImageInfo *image_info,
       (msl_info.image == (Image **) NULL) ||
       (msl_info.attributes == (Image **) NULL) ||
       (msl_info.group_info == (MSLGroupInfo *) NULL))
-    ThrowFatalException(ResourceLimitFatalError,
-      "UnableToInterpretMSLImage");
+    ThrowFatalException(ResourceLimitFatalError,"UnableToInterpretMSLImage");
   *msl_info.image_info=CloneImageInfo(image_info);
   *msl_info.draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
   *msl_info.attributes=AcquireImage(image_info);
