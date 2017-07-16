@@ -819,7 +819,8 @@ static void ipa_device_close(wmfAPI * API)
       ddata->draw_info=(DrawInfo *)NULL;
     }
   if (WMF_MAGICK_GetFontData(API)->ps_name)
-    RelinquishMagickMemory(WMF_MAGICK_GetFontData(API)->ps_name);
+    WMF_MAGICK_GetFontData(API)->ps_name=RelinquishMagickMemory(
+      WMF_MAGICK_GetFontData(API)->ps_name);
 }
 
 /*
@@ -2853,7 +2854,6 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   if (image_info->ping != MagickFalse)
     {
-      ipa_device_close(API);
       wmf_api_destroy(API);
       (void) CloseBlob(image);
       if (image->debug != MagickFalse)
@@ -2897,7 +2897,6 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "leave ReadWMFImage()");
         }
-      ipa_device_close(API);
       wmf_api_destroy(API);
       ThrowReaderException(DelegateError,"FailedToRenderFile");
     }
