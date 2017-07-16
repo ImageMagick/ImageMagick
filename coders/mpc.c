@@ -1540,12 +1540,12 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image,
       */
       pixels=(unsigned char *)  GetImagePixelCachePixels(image,&length);
       if (pixels == (unsigned char *) NULL)
-        ThrowWriterException(CacheError,"UnableToWritePixelCache");
+        ThrowWriterException(CacheError,"UnableToPersistPixelCache");
       if (file == -1)
         ThrowWriterException(FileOpenError,"UnableToOpenFile");
       file=open_utf8(cache_filename,O_WRONLY | O_CREAT | O_BINARY,S_MODE);
       if (file == -1)
-        ThrowWriterException(FileOpenError,"UnableToOpenFile");
+        ThrowWriterException(CacheError,"UnableToPersistPixelCache");
       count=0;
       for (i=0; i < (MagickOffsetType) length; i+=count)
       {
@@ -1565,7 +1565,7 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image,
       }
       close(file);
       if (i < (MagickOffsetType) length)
-        ThrowWriterException(CacheError,"UnableToWritePixelCache");
+        ThrowWriterException(CacheError,"UnableToPersistPixelCache");
     }
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
