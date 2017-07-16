@@ -64,7 +64,7 @@
 #include "MagickWand/MagickWand.h"
 
 #if defined(__CYGWIN__)
-#undef MAGICKCORE_SANS_DELEGATE 
+#undef MAGICKCORE_SANS_DELEGATE
 #endif
 
 #if defined(MAGICKCORE_SANS_DELEGATE)
@@ -818,7 +818,8 @@ static void ipa_device_close(wmfAPI * API)
       DestroyDrawInfo(ddata->draw_info);
       ddata->draw_info=(DrawInfo *)NULL;
     }
-  RelinquishMagickMemory(WMF_MAGICK_GetFontData(API)->ps_name);
+  if (WMF_MAGICK_GetFontData(API)->ps_name)
+    RelinquishMagickMemory(WMF_MAGICK_GetFontData(API)->ps_name);
 }
 
 /*
@@ -2678,11 +2679,6 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   wmf_error=wmf_scan(API, 0, &bbox);
   if (wmf_error != wmf_E_None)
     {
-      if (ddata->draw_info != (DrawInfo *) NULL)
-        {
-          DestroyDrawInfo(ddata->draw_info);
-          ddata->draw_info=(DrawInfo *)NULL;
-        }
       if (image->debug != MagickFalse)
         {
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -2690,6 +2686,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "leave ReadWMFImage()");
         }
+      ipa_device_close(API);
       wmf_api_destroy(API);
       ThrowReaderException(DelegateError,"FailedToScanFile");
     }
@@ -2856,6 +2853,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   if (image_info->ping != MagickFalse)
     {
+      ipa_device_close(API);
       wmf_api_destroy(API);
       (void) CloseBlob(image);
       if (image->debug != MagickFalse)
@@ -2899,6 +2897,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "leave ReadWMFImage()");
         }
+      ipa_device_close(API);
       wmf_api_destroy(API);
       ThrowReaderException(DelegateError,"FailedToRenderFile");
     }
