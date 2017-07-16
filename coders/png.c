@@ -11586,7 +11586,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                if (length < 7)
                  {
                    ping_profile=DestroyStringInfo(ping_profile);
-                   break;  /* othewise crashes */
+                   break;  /* otherwise crashes */
                  }
 
                /* skip the "Exif\0\0" JFIF Exif Header ID */
