@@ -1012,7 +1012,10 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image)
     length=(size_t) pcx_info.bytes_per_line;
     pixel_info=AcquireVirtualMemory(length,pcx_info.planes*sizeof(*pixels));
     if (pixel_info == (MemoryInfo *) NULL)
-      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+      {
+        pcx_colormap=(unsigned char *) RelinquishMagickMemory(pcx_colormap);
+        ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+      }
     pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
     q=pixels;
     if ((image->storage_class == DirectClass) || (image->colors > 256))
