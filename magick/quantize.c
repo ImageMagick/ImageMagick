@@ -3260,8 +3260,11 @@ static MagickBooleanType SetGrayscaleImage(Image *image)
       (void) ResetMagickMemory(colormap_index,(-1),MaxColormapSize*
         sizeof(*colormap_index));
       if (AcquireImageColormap(image,MaxColormapSize) == MagickFalse)
-        ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-          image->filename);
+        {
+          colormap_index=(ssize_t *) RelinquishMagickMemory(colormap_index);
+          ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+            image->filename);
+        }
       image->colors=0;
       status=MagickTrue;
       exception=(&image->exception);
