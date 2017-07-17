@@ -3395,8 +3395,11 @@ static MagickBooleanType SetGrayscaleImage(Image *image,
     IntensityCompare);
   colormap=(PixelInfo *) AcquireQuantumMemory(image->colors,sizeof(*colormap));
   if (colormap == (PixelInfo *) NULL)
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      image->filename);
+    {
+      colormap_index=(ssize_t *) RelinquishMagickMemory(colormap_index);
+      ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+        image->filename);
+    }
   j=0;
   colormap[j]=image->colormap[0];
   for (i=0; i < (ssize_t) image->colors; i++)
