@@ -557,6 +557,7 @@ static MagickBooleanType WriteCALSImage(const ImageInfo *image_info,
   group4_image=CloneImage(image,0,0,MagickTrue,exception);
   if (group4_image == (Image *) NULL)
     {
+      write_info=DestroyImageInfo(write_info);
       (void) CloseBlob(image);
       return(MagickFalse);
     }
@@ -565,6 +566,7 @@ static MagickBooleanType WriteCALSImage(const ImageInfo *image_info,
   group4_image=DestroyImage(group4_image);
   if (group4 == (unsigned char *) NULL)
     {
+      write_info=DestroyImageInfo(write_info);
       (void) CloseBlob(image);
       return(MagickFalse);
     }
