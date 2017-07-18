@@ -8270,9 +8270,11 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     "  Enter WriteOnePNGImage()");
 
   image = CloneImage(IMimage,0,0,MagickFalse,exception);
+  if (image == (Image *) NULL)
+    return(MagickFalse);
   image_info=(ImageInfo *) CloneImageInfo(IMimage_info);
   if (image_info == (ImageInfo *) NULL)
-     ThrowWriterException(ResourceLimitError, "MemoryAllocationFailed");
+    ThrowWriterException(ResourceLimitError, "MemoryAllocationFailed");
 
   /* Define these outside of the following "if logging()" block so they will
    * show in debuggers.
