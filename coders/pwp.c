@@ -83,7 +83,6 @@
 %
 %    o length: Specifies the length of the magick string.
 %
-%
 */
 static MagickBooleanType IsPWP(const unsigned char *magick,const size_t length)
 {
@@ -171,6 +170,7 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   status=OpenBlob(image_info,pwp_image,ReadBinaryBlobMode,exception);
   if (status == MagickFalse)
     return((Image *) NULL);
+  ResetMagickMemory(magick,0,sizeof(magick));
   count=ReadBlob(pwp_image,5,magick);
   if ((count != 5) || (LocaleNCompare((char *) magick,"SFW95",5) != 0))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
