@@ -1221,7 +1221,7 @@ with_lzma
 with_openexr
 with_pango
 with_png
-with_LibRaw
+with_raw
 with_rsvg
 with_tiff
 with_webp
@@ -4530,7 +4530,7 @@ MAGICK_PATCHLEVEL_VERSION=2
 
 MAGICK_VERSION=7.0.6-2
 
-MAGICK_GIT_REVISION=20448:9871b4ad7:20170715
+MAGICK_GIT_REVISION=20502:955bd1008:20170718
 
 
 # Substitute library versioning
@@ -33715,9 +33715,9 @@ fi
 # Check for the Raw delegate library.
 #
 
-# Check whether --with-LibRaw was given.
-if test "${with_LibRaw+set}" = set; then :
-  withval=$with_LibRaw; with_raw=$withval
+# Check whether --with-raw was given.
+if test "${with_raw+set}" = set; then :
+  withval=$with_raw; with_raw=$withval
 else
   with_raw='yes'
 fi
