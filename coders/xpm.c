@@ -826,7 +826,7 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
       symbol[j]='\0';
       (void) CopyMagickString(buffer,symbol,MagickPathExtent);
       (void) WriteBlobString(image,buffer);
-      p+=GetPixelChannels(image);
+      p+=GetPixelChannels(picon);
     }
     (void) FormatLocaleString(buffer,MagickPathExtent,"\"%s\n",
       y == (ssize_t) (picon->rows-1) ? "" : ",");
