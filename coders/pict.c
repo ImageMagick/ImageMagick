@@ -1744,7 +1744,16 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
   if ((buffer == (unsigned char *) NULL) ||
       (packed_scanline == (unsigned char *) NULL) ||
       (scanline == (unsigned char *) NULL))
-    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+    {
+      if (scanline != (unsigned char *) NULL)
+        scanline=(unsigned char *) RelinquishMagickMemory(scanline);
+      if (packed_scanline != (unsigned char *) NULL)
+        packed_scanline=(unsigned char *) RelinquishMagickMemory(
+          packed_scanline);
+      if (buffer != (unsigned char *) NULL)
+        buffer=(unsigned char *) RelinquishMagickMemory(buffer);
+      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+    }
   (void) ResetMagickMemory(scanline,0,row_bytes);
   (void) ResetMagickMemory(packed_scanline,0,(size_t) (row_bytes+MaxCount));
   /*

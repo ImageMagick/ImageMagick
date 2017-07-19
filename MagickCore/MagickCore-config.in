@@ -38,19 +38,19 @@ while test $# -gt 0; do
       echo '@PACKAGE_VERSION@ Q@QUANTUM_DEPTH@ @MAGICK_HDRI@'
       ;;
     --cflags)
-      pkg-config --cflags MagickCore
+      @PKG_CONFIG@ --cflags MagickCore
       ;;
     --cxxflags)
-      pkg-config --cflags MagickCore
+      @PKG_CONFIG@ --cflags MagickCore
       ;;
     --cppflags)
-      pkg-config --cflags MagickCore
+      @PKG_CONFIG@ --cflags MagickCore
       ;;
     --ldflags)
-      pkg-config --libs MagickCore
+      @PKG_CONFIG@ --libs MagickCore
       ;;
     --libs)
-      pkg-config --libs MagickCore
+      @PKG_CONFIG@ --libs MagickCore
       ;;
     --coder-path)
       echo "@CODER_PATH@"

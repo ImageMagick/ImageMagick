@@ -2107,7 +2107,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     y_resolution;
 
   QuantumInfo
-    *quantum_info;
+    *volatile quantum_info;
 
   ssize_t
     ping_rowbytes,
@@ -2299,6 +2299,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
       if (pixel_info != (MemoryInfo *) NULL)
         pixel_info=RelinquishVirtualMemory(pixel_info);
+
+      if (quantum_info != (QuantumInfo *) NULL)
+        quantum_info=DestroyQuantumInfo(quantum_info);
 
       if (logging != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -8267,9 +8270,11 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     "  Enter WriteOnePNGImage()");
 
   image = CloneImage(IMimage,0,0,MagickFalse,exception);
+  if (image == (Image *) NULL)
+    return(MagickFalse);
   image_info=(ImageInfo *) CloneImageInfo(IMimage_info);
   if (image_info == (ImageInfo *) NULL)
-     ThrowWriterException(ResourceLimitError, "MemoryAllocationFailed");
+    ThrowWriterException(ResourceLimitError, "MemoryAllocationFailed");
 
   /* Define these outside of the following "if logging()" block so they will
    * show in debuggers.

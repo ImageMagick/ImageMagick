@@ -2674,17 +2674,20 @@ static MagickBooleanType WritePTIFImage(const ImageInfo *image_info,
       AppendImageToList(&images,pyramid_image);
     }
   }
-  images=GetFirstImageInList(images);
-  /*
-    Write pyramid-encoded TIFF image.
-  */
-  write_info=CloneImageInfo(image_info);
-  write_info->adjoin=MagickTrue;
-  (void) CopyMagickString(write_info->magick,"TIFF",MagickPathExtent);
-  (void) CopyMagickString(images->magick,"TIFF",MagickPathExtent);
-  status=WriteTIFFImage(write_info,images,exception);
-  images=DestroyImageList(images);
-  write_info=DestroyImageInfo(write_info);
+  if (images != (Image *) NULL)
+    {
+      /*
+        Write pyramid-encoded TIFF image.
+      */
+      images=GetFirstImageInList(images);
+      write_info=CloneImageInfo(image_info);
+      write_info->adjoin=MagickTrue;
+      (void) CopyMagickString(write_info->magick,"TIFF",MagickPathExtent);
+      (void) CopyMagickString(images->magick,"TIFF",MagickPathExtent);
+      status=WriteTIFFImage(write_info,images,exception);
+      images=DestroyImageList(images);
+      write_info=DestroyImageInfo(write_info);
+    }
   return(status);
 }
 #endif

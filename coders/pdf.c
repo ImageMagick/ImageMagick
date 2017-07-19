@@ -1989,7 +1989,11 @@ RestoreMSCWarning
             length*=image->colorspace == CMYKColorspace ? 4UL : 3UL;
             pixel_info=AcquireVirtualMemory(length,sizeof(*pixels));
             if (pixel_info == (MemoryInfo *) NULL)
-              ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+              {
+                xref=(MagickOffsetType *) RelinquishMagickMemory(xref);
+                ThrowWriterException(ResourceLimitError,
+                  "MemoryAllocationFailed");
+              }
             pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
             /*
               Dump runoffset encoded pixels.
@@ -2086,8 +2090,11 @@ RestoreMSCWarning
               length=(size_t) number_pixels;
               pixel_info=AcquireVirtualMemory(length,sizeof(*pixels));
               if (pixel_info == (MemoryInfo *) NULL)
-                ThrowWriterException(ResourceLimitError,
-                  "MemoryAllocationFailed");
+                {
+                  xref=(MagickOffsetType *) RelinquishMagickMemory(xref);
+                  ThrowWriterException(ResourceLimitError,
+                    "MemoryAllocationFailed");
+                }
               pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
               /*
                 Dump Runlength encoded pixels.

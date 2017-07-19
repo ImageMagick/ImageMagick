@@ -425,7 +425,7 @@ void Magick::Geometry::xOff(::ssize_t xOff_)
   return(_xOff);
 }
 
-inline void Magick::Geometry::yOff(::ssize_t yOff_)
+void Magick::Geometry::yOff(::ssize_t yOff_)
 {
   _yOff=yOff_;
 }

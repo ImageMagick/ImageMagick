@@ -41,19 +41,19 @@ while test $# -gt 0; do
       echo '@PACKAGE_VERSION@ Q@QUANTUM_DEPTH@ @MAGICK_HDRI@'
       ;;
     --cflags)
-      pkg-config --cflags Magick++
+      @PKG_CONFIG@ --cflags Magick++
       ;;
     --cxxflags)
-      pkg-config --cflags Magick++
+      @PKG_CONFIG@ --cflags Magick++
       ;;
     --cppflags)
-      pkg-config --cflags Magick++
+      @PKG_CONFIG@ --cflags Magick++
       ;;
     --ldflags)
-      pkg-config --libs Magick++
+      @PKG_CONFIG@ --libs Magick++
       ;;
     --libs)
-      pkg-config --libs Magick++
+      @PKG_CONFIG@ --libs Magick++
       ;;
     *)
       echo "${usage}" 1>&2

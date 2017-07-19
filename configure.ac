@@ -2598,7 +2598,7 @@ dnl ===========================================================================
 #
 # Check for the Raw delegate library.
 #
-AC_ARG_WITH([LibRaw],
+AC_ARG_WITH([raw],
     [AC_HELP_STRING([--without-raw],
                     [disable Raw support])],
     [with_raw=$withval],
