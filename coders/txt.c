@@ -563,6 +563,12 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
           break;
       }
     }
+    if (EOFBlob(image) != MagickFalse)
+      {
+        ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
+          image->filename);
+        break;
+      }
     (void) ReadBlobString(image,text);
     if (LocaleNCompare((char *) text,MagickID,strlen(MagickID)) == 0)
       {
