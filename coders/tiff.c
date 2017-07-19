@@ -2674,6 +2674,7 @@ static MagickBooleanType WritePTIFImage(const ImageInfo *image_info,
       AppendImageToList(&images,pyramid_image);
     }
   }
+  status=MagickFalse;
   if (images != (Image *) NULL)
     {
       /*
