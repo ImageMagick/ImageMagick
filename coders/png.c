@@ -1548,6 +1548,12 @@ static MngInfo *MngInfoFreeStruct(MngInfo *mng_info)
   return((MngInfo *) RelinquishMagickMemory(mng_info));
 }
 
+static long mng_get_long(unsigned char *p)
+{
+  return ((long) (((png_uint_32) p[0] << 24) | ((png_uint_32) p[1] << 16) |
+    ((png_uint_32) p[2] << 8) | (png_uint_32) p[3]));
+}
+
 static MngBox mng_minimum_box(MngBox box1,MngBox box2)
 {
   MngBox
@@ -1577,14 +1583,10 @@ static MngBox mng_read_box(MngBox previous_box,char delta_type,unsigned char *p)
   /*
     Read clipping boundaries from DEFI, CLIP, FRAM, or PAST chunk.
   */
-  box.left=(long) (((png_uint_32) p[0] << 24) | ((png_uint_32) p[1] << 16) |
-    ((png_uint_32) p[2] << 8) | (png_uint_32) p[3]);
-  box.right=(long) (((png_uint_32) p[4]  << 24) | ((png_uint_32) p[5] << 16) |
-    ((png_uint_32) p[6] << 8) | (png_uint_32) p[7]);
-  box.top=(long) (((png_uint_32) p[8]  << 24) | ((png_uint_32) p[9] << 16) |
-    ((png_uint_32) p[10] << 8) | (png_uint_32) p[11]);
-  box.bottom=(long) (((png_uint_32) p[12] << 24) | ((png_uint_32) p[13] << 16) |
-    ((png_uint_32) p[14] << 8) | (png_uint_32) p[15]);
+  box.left=mng_get_long(p);
+  box.right=mng_get_long(&p[4]);
+  box.top=mng_get_long(&p[8]);
+  box.bottom=mng_get_long(&p[12]);
   if (delta_type != 0)
     {
       box.left+=previous_box.left;
@@ -1605,10 +1607,8 @@ static MngPair mng_read_pair(MngPair previous_pair,int delta_type,
   /*
     Read two ssize_t's from CLON, MOVE or PAST chunk
   */
-  pair.a=(long) (((png_uint_32) p[0] << 24) | ((png_uint_32) p[1] << 16) |
-    ((png_uint_32) p[2] << 8) | (png_uint_32) p[3]);
-  pair.b=(long) (((png_uint_32) p[4] << 24) | ((png_uint_32) p[5] << 16) |
-    ((png_uint_32) p[6] << 8) | (png_uint_32) p[7]);
+  pair.a=mng_get_long(p);
+  pair.b=mng_get_long(&p[4]);
   if (delta_type != 0)
     {
       pair.a+=previous_pair.a;
@@ -1616,12 +1616,6 @@ static MngPair mng_read_pair(MngPair previous_pair,int delta_type,
     }
 
   return(pair);
-}
-
-static long mng_get_long(unsigned char *p)
-{
-  return ((long) (((png_uint_32) p[0] << 24) | ((png_uint_32) p[1] << 16) |
-    ((png_uint_32) p[2] << 8) | (png_uint_32) p[3]));
 }
 
 typedef struct _PNGErrorInfo
@@ -1886,12 +1880,8 @@ static int read_user_chunk_callback(png_struct *ping, png_unknown_chunkp chunk)
 
      image=(Image *) png_get_user_chunk_ptr(ping);
 
-     image->page.width=(size_t) (((png_uint_32) chunk->data[0] << 24) |
-       ((png_uint_32) chunk->data[1] << 16) |
-       ((png_uint_32) chunk->data[2] << 8) | (png_uint_32) chunk->data[3]);
-     image->page.height=(size_t) (((png_uint_32) chunk->data[4] << 24) |
-       ((png_uint_32) chunk->data[5] << 16) |
-       ((png_uint_32) chunk->data[6] << 8) | (png_uint_32) chunk->data[7]);
+     image->page.width=(size_t)mng_get_long(chunk->data);
+     image->page.height=(size_t)mng_get_long(&chunk->data[4]);
 
      return(1);
     }
@@ -1909,18 +1899,10 @@ static int read_user_chunk_callback(png_struct *ping, png_unknown_chunkp chunk)
 
      image=(Image *) png_get_user_chunk_ptr(ping);
 
-     image->page.width=(size_t) (((png_uint_32) chunk->data[0] << 24) |
-       ((png_uint_32) chunk->data[1] << 16) |
-       ((png_uint_32) chunk->data[2] << 8) | (png_uint_32) chunk->data[3]);
-     image->page.height=(size_t) (((png_uint_32) chunk->data[4] << 24) |
-       ((png_uint_32) chunk->data[5] << 16) |
-       ((png_uint_32) chunk->data[6] << 8) | (png_uint_32) chunk->data[7]);
-     image->page.x=(ssize_t) (((png_uint_32) chunk->data[8] << 24) |
-       ((png_uint_32) chunk->data[9] << 16) |
-       ((png_uint_32) chunk->data[10] << 8) | (png_uint_32) chunk->data[11]);
-     image->page.y=(ssize_t) (((png_uint_32) chunk->data[12] << 24) |
-       ((png_uint_32) chunk->data[13] << 16) |
-       ((png_uint_32) chunk->data[14] << 8) | (png_uint_32) chunk->data[15]);
+     image->page.width=(size_t)mng_get_long(chunk->data);
+     image->page.height=(size_t)mng_get_long(&chunk->data[4]);
+     image->page.x=(size_t)mng_get_long(&chunk->data[8]);
+     image->page.y=(size_t)mng_get_long(&chunk->data[12]);
 
      /* Return one of the following: */
         /* return(-n);  chunk had an error */
@@ -4338,12 +4320,8 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
       {
         if (length == 16)
           {
-            jng_width=(png_uint_32) (((png_uint_32) p[0] << 24) |
-              ((png_uint_32) p[1] << 16) | ((png_uint_32) p[2] << 8) |
-              (png_uint_32) p[3]);
-            jng_height=(png_uint_32) (((png_uint_32) p[4] << 24) | 
-              ((png_uint_32) p[5] << 16) | ((png_uint_32) p[6] << 8) | 
-              (png_uint_32) p[7]);
+            jng_width=(png_uint_32)mng_get_long(p);
+            jng_height=(png_uint_32)mng_get_long(&p[4]);
             if ((jng_width == 0) || (jng_height == 0))
               ThrowReaderException(CorruptImageError,"NegativeOrZeroImageSize");
             jng_color_type=p[8];
@@ -5254,12 +5232,8 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
                 ThrowReaderException(CorruptImageError,"CorruptImage");
               }
 
-            mng_info->mng_width=(unsigned long) (((png_uint_32) p[0] << 24) |
-              ((png_uint_32) p[1] << 16) | ((png_uint_32) p[2] << 8) |
-              (png_uint_32) p[3]);
-            mng_info->mng_height=(unsigned long) (((png_uint_32) p[4] << 24) |
-              ((png_uint_32) p[5] << 16) | ((png_uint_32) p[6] << 8) |
-              (png_uint_32) p[7]);
+            mng_info->mng_width=(unsigned long)mng_get_long(p);
+            mng_info->mng_height=(unsigned long)mng_get_long(&p[4]);
 
             if (logging != MagickFalse)
               {
@@ -5414,12 +5388,8 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
                 */
                 if (length > 11)
                   {
-                    mng_info->x_off[object_id]=(ssize_t) 
-                      (((png_uint_32) p[4] << 24) | ((png_uint_32) p[5] << 16) |
-                      ((png_uint_32) p[6] << 8) | (png_uint_32) p[7]);
-                    mng_info->y_off[object_id]=(ssize_t) 
-                      (((png_uint_32) p[8] << 24) | ((png_uint_32) p[9] << 16) |
-                      ((png_uint_32) p[10] << 8) | (png_uint_32) p[11]);
+                    mng_info->x_off[object_id]=(ssize_t) mng_get_long(&p[4]);
+                    mng_info->y_off[object_id]=(ssize_t) mng_get_long(&p[8]);
                     if (logging != MagickFalse)
                       {
                         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -6225,12 +6195,8 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
 #ifdef MNG_BASI_SUPPORTED
             if (length > 11)
               {
-               basi_width=(unsigned long) (((png_uint_32) p[0] << 24) |
-                  ((png_uint_32) p[1] << 16) | ((png_uint_32) p[2] << 8) |
-                  (png_uint_32) p[3]);
-                basi_height=(unsigned long) (((png_uint_32) p[4] << 24) |
-                  ((png_uint_32) p[5] << 16) | ((png_uint_32) p[6] << 8) |
-                  (png_uint_32) p[7]);
+                basi_width=(unsigned long) mng_get_long(p);
+                basi_width=(unsigned long) mng_get_long(&p[4]);
                 basi_color_type=p[8];
                 basi_compression_method=p[9];
                 basi_filter_type=p[10];
@@ -11492,7 +11458,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                 if (length < 7)
                   {
                     ping_profile=DestroyStringInfo(ping_profile);
-                    break;  /* othewise crashes */
+                    break;  /* otherwise crashes */
                   }
 
                 /* skip the "Exif\0\0" JFIF Exif Header ID */
