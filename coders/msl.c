@@ -8268,13 +8268,13 @@ static MagickBooleanType WriteMSLImage(const ImageInfo *image_info,Image *image)
     status;
 
   assert(image_info != (const ImageInfo *) NULL);
-  assert(image_info->signature == MagickCoreSignature);
+  assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
-  assert(image->signature == MagickCoreSignature);
+  assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  msl_image=CloneImage(image,0,0,MagickTrue,exception);
-  status=ProcessMSLScript(image_info,&msl_image,exception);
+  msl_image=CloneImage(image,0,0,MagickTrue,&image->exception);
+  status=ProcessMSLScript(image_info,&msl_image,&image->exception);
   msl_image=DestroyImage(msl_image);
   return(status);
 }
