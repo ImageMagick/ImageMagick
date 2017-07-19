@@ -1574,6 +1574,12 @@ static MngBox mng_minimum_box(MngBox box1,MngBox box2)
   return box;
 }
 
+static long mng_get_long(unsigned char *p)
+{
+  return ((long) (((png_uint_32) p[0] << 24) | ((png_uint_32) p[1] << 16) |
+    ((png_uint_32) p[2] << 8) | (png_uint_32) p[3]));
+}
+
 static MngBox mng_read_box(MngBox previous_box,char delta_type,
   unsigned char *p)
 {
@@ -1583,14 +1589,10 @@ static MngBox mng_read_box(MngBox previous_box,char delta_type,
   /*
     Read clipping boundaries from DEFI, CLIP, FRAM, or PAST chunk.
   */
-  box.left=(long) (((png_uint_32) p[0] << 24) | ((png_uint_32) p[1] << 16) |
-    ((png_uint_32) p[2] << 8) | (png_uint_32) p[3]);
-  box.right=(long) (((png_uint_32) p[4]  << 24) | ((png_uint_32) p[5] << 16) |
-    ((png_uint_32) p[6] << 8) | (png_uint_32) p[7]);
-  box.top=(long) (((png_uint_32) p[8]  << 24) | ((png_uint_32) p[9] << 16) |
-    ((png_uint_32) p[10] << 8) | (png_uint_32) p[11]);
-  box.bottom=(long) (((png_uint_32) p[12] << 24) | ((png_uint_32) p[13] << 16) |
-    ((png_uint_32) p[14] << 8) | (png_uint_32) p[15]);
+  box.left=mng_get_long(p);
+  box.right=mng_get_long(&p[4]);
+  box.top=mng_get_long(&p[8]);
+  box.bottom=mng_get_long(&p[12]);
   if (delta_type != 0)
     {
       box.left+=previous_box.left;
@@ -1611,10 +1613,8 @@ static MngPair mng_read_pair(MngPair previous_pair,int delta_type,
   /*
     Read two ssize_t's from CLON, MOVE or PAST chunk
   */
-  pair.a=(long) (((png_uint_32) p[0] << 24) | ((png_uint_32) p[1] << 16) |
-    ((png_uint_32) p[2] << 8) | (png_uint_32) p[3]);
-  pair.b=(long) (((png_uint_32) p[4] << 24) | ((png_uint_32) p[5] << 16) |
-    ((png_uint_32) p[6] << 8) | (png_uint_32) p[7]);
+  pair.a=mng_get_long(p);
+  pair.b=mng_get_long(&p[4]);
   if (delta_type != 0)
     {
       pair.a+=previous_pair.a;
@@ -1622,12 +1622,6 @@ static MngPair mng_read_pair(MngPair previous_pair,int delta_type,
     }
 
   return(pair);
-}
-
-static long mng_get_long(unsigned char *p)
-{
-  return ((long) (((png_uint_32) p[0] << 24) | ((png_uint_32) p[1] << 16) |
-    ((png_uint_32) p[2] << 8) | (png_uint_32) p[3]));
 }
 
 typedef struct _PNGErrorInfo
@@ -5482,12 +5476,8 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
             */
             if (length > 11)
               {
-                mng_info->x_off[object_id]=(ssize_t)
-                  (((png_uint_32) p[4] << 24) | ((png_uint_32) p[5] << 16) |
-                  ((png_uint_32) p[6] << 8) | (png_uint_32) p[7]);
-                mng_info->y_off[object_id]=(ssize_t)
-                  (((png_uint_32) p[8] << 24) | ((png_uint_32) p[9] << 16) |
-                  ((png_uint_32) p[10] << 8) | (png_uint_32) p[11]);
+                mng_info->x_off[object_id]=(ssize_t) mng_get_long(&p[4]);
+                mng_info->y_off[object_id]=(ssize_t) mng_get_long(&p[8]);
                 if (logging != MagickFalse)
                   {
                     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -6296,12 +6286,8 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
 
             mng_info->basi_warning++;
 #ifdef MNG_BASI_SUPPORTED
-            basi_width=(unsigned long) (((png_uint_32) p[0] << 24) |
-              ((png_uint_32) p[1] << 16) | ((png_uint_32) p[2] << 8) |
-              (png_uint_32) p[3]);
-            basi_height=(unsigned long) (((png_uint_32) p[4] << 24) |
-              ((png_uint_32) p[5] << 16) | ((png_uint_32) p[6] << 8) |
-              (png_uint_32) p[7]);
+            basi_width=(unsigned long) mng_get_long(p);
+            basi_width=(unsigned long) mng_get_long(&p[4]);
             basi_color_type=p[8];
             basi_compression_method=p[9];
             basi_filter_type=p[10];
