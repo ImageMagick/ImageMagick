@@ -12120,6 +12120,12 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
    * to or instead of a comma-separated list of chunks, the
    * "exclude-chunk" string can be simply "all" or "none".
    *
+   * Note that the "-strip" option provides a convenient way of
+   * doing the equivalent of
+   *
+   *    -define png:exclude-chunk="bKGD,caNv,cHRM,eXIf,gAMA,iCCP,
+   *            iTXt,pHYs,sRGB,tEXt,zCCP,zTXt,date"
+   *
    * The exclude-chunk define takes priority over the mng_info.
    *
    * A "png:include-chunk" define takes  priority over both the
