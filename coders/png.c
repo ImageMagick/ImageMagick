@@ -1933,14 +1933,8 @@ static int read_user_chunk_callback(png_struct *ping, png_unknown_chunkp chunk)
 
       image=(Image *) png_get_user_chunk_ptr(ping);
 
-      image->page.width=(size_t) (((png_uint_32) chunk->data[0] << 24) |
-        ((png_uint_32) chunk->data[1] << 16) |
-        ((png_uint_32) chunk->data[2] << 8) |
-        (png_uint_32) chunk->data[3]);
-      image->page.height=(size_t) (((png_uint_32) chunk->data[4] << 24) |
-        ((png_uint_32) chunk->data[5] << 16) |
-        ((png_uint_32) chunk->data[6] << 8) |
-        (png_uint_32) chunk->data[7]);
+      image->page.width=(size_t)mng_get_long(chunk->data);
+      image->page.height=(size_t)mng_get_long(&chunk->data[4]);
 
       return(1);
     }
@@ -1958,18 +1952,10 @@ static int read_user_chunk_callback(png_struct *ping, png_unknown_chunkp chunk)
 
       image=(Image *) png_get_user_chunk_ptr(ping);
 
-      image->page.width=(size_t) (((png_uint_32) chunk->data[0] << 24) |
-        ((png_uint_32) chunk->data[1] << 16) |
-        ((png_uint_32) chunk->data[2] << 8) | (png_uint_32) chunk->data[3]);
-      image->page.height=(size_t) (((png_uint_32) chunk->data[4] << 24) |
-        ((png_uint_32) chunk->data[5] << 16) |
-        ((png_uint_32) chunk->data[6] << 8) | (png_uint_32) chunk->data[7]);
-      image->page.x=(ssize_t) (((png_uint_32) chunk->data[8] << 24) |
-        ((png_uint_32) chunk->data[9] << 16) |
-        ((png_uint_32) chunk->data[10] << 8) | (png_uint_32) chunk->data[11]);
-      image->page.y=(ssize_t) (((png_uint_32) chunk->data[12] << 24) |
-        ((png_uint_32) chunk->data[13] << 16) |
-        ((png_uint_32) chunk->data[14] << 8) | (png_uint_32) chunk->data[15]);
+      image->page.width=(size_t)mng_get_long(chunk->data);
+      image->page.height=(size_t)mng_get_long(&chunk->data[4]);
+      image->page.x=(size_t)mng_get_long(&chunk->data[8]);
+      image->page.y=(size_t)mng_get_long(&chunk->data[12]);
 
       return(1);
     }
@@ -4418,12 +4404,8 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
       {
         if (length == 16)
           {
-            jng_width=(png_uint_32) (((png_uint_32) p[0] << 24) |
-              ((png_uint_32) p[1] << 16) | ((png_uint_32) p[2] << 8) |
-              (png_uint_32) p[3]);
-            jng_height=(png_uint_32) (((png_uint_32) p[4] << 24) |
-              ((png_uint_32) p[5] << 16) | ((png_uint_32) p[6] << 8) |
-              (png_uint_32) p[7]);
+            jng_width=(png_uint_32)mng_get_long(p);
+            jng_height=(png_uint_32)mng_get_long(&p[4]);
             if ((jng_width == 0) || (jng_height == 0))
               ThrowReaderException(CorruptImageError,
                 "NegativeOrZeroImageSize");
@@ -5342,12 +5324,9 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
                 ThrowReaderException(CorruptImageError,"CorruptImage");
               }
 
-            mng_info->mng_width=(unsigned long) (((png_uint_32) p[0] << 24) |
-              ((png_uint_32) p[1] << 16) | ((png_uint_32) p[2] << 8) |
-              (png_uint_32) p[3]);
-            mng_info->mng_height=(unsigned long) (((png_uint_32) p[4] << 24) |
-              ((png_uint_32) p[5] << 16) | ((png_uint_32) p[6] << 8) |
-              (png_uint_32) p[7]);
+            mng_info->mng_width=(unsigned long)mng_get_long(p);
+            mng_info->mng_height=(unsigned long)mng_get_long(&p[4]);
+
             if (logging != MagickFalse)
               {
                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
