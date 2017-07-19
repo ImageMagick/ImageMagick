@@ -1,3 +1,7 @@
+2017-07-19  6.9.9-1 Cristy  <quetzlzacatenango@image...>
+  * Fixed numerous memory leaks (reference
+    https://github.com/ImageMagick/ImageMagick/issues).
+
 2017-07-15  6.9.9-1 Glenn Randers-Pehrson <glennrp@image...>
   * Don't write a hex-encoded Exif profile when writing the eXIf chunk.
   * Added caNv, eXIf, and pHYs to the list of PNG chunks to be removed
