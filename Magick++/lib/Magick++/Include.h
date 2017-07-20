@@ -1,7 +1,7 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
 // Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
-// Copyright Dirk Lemstra 2013-2015
+// Copyright Dirk Lemstra 2013-2017
 //
 // Inclusion of ImageMagick headers (with namespace magic)
 
@@ -158,6 +158,9 @@ namespace MagickCore
 #        if defined(MAGICKCORE_PNG_DELEGATE)
 #          pragma comment(lib, "CORE_DB_png_.lib")
 #        endif
+#        if defined(MAGICKCORE_RAW_R_DELEGATE)
+#          pragma comment(lib, "CORE_DB_libraw_.lib")
+#        endif
 #        if defined(MAGICKCORE_RSVG_DELEGATE)
 #          pragma comment(lib, "CORE_DB_croco_.lib")
 #          pragma comment(lib, "CORE_DB_librsvg_.lib")
@@ -225,6 +228,9 @@ namespace MagickCore
 #        endif
 #        if defined(MAGICKCORE_PNG_DELEGATE)
 #          pragma comment(lib, "CORE_RL_png_.lib")
+#        endif
+#        if defined(MAGICKCORE_RAW_R_DELEGATE)
+#          pragma comment(lib, "CORE_RL_libraw_.lib")
 #        endif
 #        if defined(MAGICKCORE_RSVG_DELEGATE)
 #          pragma comment(lib, "CORE_RL_croco_.lib")
