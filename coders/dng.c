@@ -183,7 +183,7 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #if defined(MAGICKCORE_RAW_R_DELEGATE)
   {
     int
-      status;
+      errorcode;
 
     libraw_data_t
       *raw_info;
@@ -197,40 +197,40 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     unsigned short
       *p;
 
-    status=0;
+    errorcode=0;
     raw_info=libraw_init(0);
     if (raw_info == (libraw_data_t *) NULL)
       {
         (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
-          libraw_strerror(status),"`%s'",image->filename);
+          libraw_strerror(errorcode),"`%s'",image->filename);
         return(DestroyImageList(image));
       }
-    status=libraw_open_file(raw_info,image->filename);
-    if (status != LIBRAW_SUCCESS)
+    errorcode=libraw_open_file(raw_info,image->filename);
+    if (errorcode != LIBRAW_SUCCESS)
       {
         (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
-          libraw_strerror(status),"`%s'",image->filename);
+          libraw_strerror(errorcode),"`%s'",image->filename);
         return(DestroyImageList(image));
       }
-    status=libraw_unpack(raw_info);
-    if (status != LIBRAW_SUCCESS)
+    errorcode=libraw_unpack(raw_info);
+    if (errorcode != LIBRAW_SUCCESS)
       {
         libraw_close(raw_info);
         (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
-          libraw_strerror(status),"`%s'",image->filename);
+          libraw_strerror(errorcode),"`%s'",image->filename);
         return(DestroyImageList(image));
       }
     raw_info->params.output_bps=16;
-    status=libraw_dcraw_process(raw_info);
-    if (status != LIBRAW_SUCCESS)
+    errorcode=libraw_dcraw_process(raw_info);
+    if (errorcode != LIBRAW_SUCCESS)
       {
         libraw_close(raw_info);
         (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
-          libraw_strerror(status),"`%s'",image->filename);
+          libraw_strerror(errorcode),"`%s'",image->filename);
         return(DestroyImageList(image));
       }
-    raw_image=libraw_dcraw_make_mem_image(raw_info,&status);
-    if ((status != LIBRAW_SUCCESS) || 
+    raw_image=libraw_dcraw_make_mem_image(raw_info,&errorcode);
+    if ((errorcode != LIBRAW_SUCCESS) || 
         (raw_image == (libraw_processed_image_t *) NULL) ||
         (raw_image->type != LIBRAW_IMAGE_BITMAP) || (raw_image->bits != 16) ||
         (raw_image->colors < 3) || (raw_image->colors > 4))
@@ -239,7 +239,7 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           libraw_dcraw_clear_mem(raw_image);
         libraw_close(raw_info);
         (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
-          libraw_strerror(status),"`%s'",image->filename);
+          libraw_strerror(errorcode),"`%s'",image->filename);
         return(DestroyImageList(image));
       }
     image->columns=raw_image->width;
@@ -287,7 +287,7 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     libraw_close(raw_info);
     return(image);
   }
-#endif
+#else
   (void) DestroyImageList(image);
   /*
     Convert DNG to PPM with delegate.
@@ -377,6 +377,7 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   read_info=DestroyImageInfo(read_info);
   return(image);
+#endif
 }
 
 /*
