@@ -211,7 +211,18 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           libraw_strerror(errcode),"`%s'",image->filename);
         return(DestroyImageList(image));
       }
+#if defined(MAGICKCORE_WINDOWS_SUPPORT) && defined(_MSC_VER) && (_MSC_VER > 1310)
+    {
+      wchar_t
+        fileName[MagickPathExtent];
+
+      MultiByteToWideChar(CP_UTF8,0,image->filename,-1,fileName,
+        MagickPathExtent);
+      errcode=libraw_open_wfile(raw_info,fileName);
+    }
+#else
     errcode=libraw_open_file(raw_info,image->filename);
+#endif
     if (errcode != LIBRAW_SUCCESS)
       {
         (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
