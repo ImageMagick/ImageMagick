@@ -2054,6 +2054,14 @@ void Magick::Image::autoOrient(void)
   ThrowImageException;
 }
 
+void Magick::Image::autoThreshold(const AutoThresholdMethod method_)
+{
+  modifyImage();
+  GetPPException;
+  AutoThresholdImage(image(),method_, exceptionInfo);
+  ThrowImageException;
+}
+
 void Magick::Image::blackThreshold(const std::string &threshold_)
 {
   modifyImage();

@@ -1,7 +1,7 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
 // Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003
-// Copyright Dirk Lemstra 2013-2016
+// Copyright Dirk Lemstra 2013-2017
 //
 // Definition of Image, the representation of a single image in Magick++
 //
@@ -640,6 +640,11 @@ namespace Magick
 
     // Adjusts an image so that its orientation is suitable for viewing.
     void autoOrient(void);
+
+    // Automatically selects a threshold and replaces each pixel in the image
+    // with a black pixel if the image intentsity is less than the selected
+    // threshold otherwise white.
+    void autoThreshold(const AutoThresholdMethod method_);
 
     // Forces all pixels below the threshold into black while leaving all
     // pixels at or above the threshold unchanged.

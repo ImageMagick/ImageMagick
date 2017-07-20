@@ -336,6 +336,13 @@ namespace Magick
   using MagickCore::ShapeAlphaChannel;
   using MagickCore::TransparentAlphaChannel;
 
+  // Auto threshold methods
+  using MagickCore::AutoThresholdMethod;
+  using MagickCore::UndefinedThresholdMethod;
+  using MagickCore::KapurThresholdMethod;
+  using MagickCore::OTSUThresholdMethod;
+  using MagickCore::TriangleThresholdMethod;
+
   // Channel types
   using MagickCore::ChannelType;
   using MagickCore::UndefinedChannel;
@@ -1144,6 +1151,7 @@ namespace Magick
   using MagickCore::AutoGammaImage;
   using MagickCore::AutoLevelImage;
   using MagickCore::AutoOrientImage;
+  using MagickCore::AutoThresholdImage;
   using MagickCore::Base64Decode;
   using MagickCore::Base64Encode;
   using MagickCore::BilevelImage;
