@@ -258,6 +258,12 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         libraw_close(raw_info);
         return(DestroyImageList(image));
       }
+    if (image_info->ping != MagickFalse)
+      {
+        libraw_dcraw_clear_mem(raw_image);
+        libraw_close(raw_info);
+        return(image);
+      }
     p=(unsigned short *) raw_image->data;
     for (y=0; y < (ssize_t) image->rows; y++)
     {
