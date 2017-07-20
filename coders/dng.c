@@ -183,7 +183,7 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #if defined(MAGICKCORE_RAW_R_DELEGATE)
   {
     int
-      errorcode;
+      errcode;
 
     libraw_data_t
       *raw_info;
@@ -197,40 +197,51 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     unsigned short
       *p;
 
-    errorcode=0;
+    errcode=0;
     raw_info=libraw_init(0);
     if (raw_info == (libraw_data_t *) NULL)
       {
         (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
-          libraw_strerror(errorcode),"`%s'",image->filename);
+          libraw_strerror(errcode),"`%s'",image->filename);
         return(DestroyImageList(image));
       }
-    errorcode=libraw_open_file(raw_info,image->filename);
-    if (errorcode != LIBRAW_SUCCESS)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT) && defined(_MSC_VER) && (_MSC_VER > 1310)
+    {
+      wchar_t
+        fileName[MagickPathExtent];
+
+      MultiByteToWideChar(CP_UTF8,0,image->filename,-1,fileName,
+        MagickPathExtent);
+      errcode=libraw_open_wfile(raw_info,fileName);
+    }
+#else
+    errcode=libraw_open_file(raw_info,image->filename);
+#endif
+    if (errcode != LIBRAW_SUCCESS)
       {
         (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
-          libraw_strerror(errorcode),"`%s'",image->filename);
+          libraw_strerror(errcode),"`%s'",image->filename);
         return(DestroyImageList(image));
       }
-    errorcode=libraw_unpack(raw_info);
-    if (errorcode != LIBRAW_SUCCESS)
+    errcode=libraw_unpack(raw_info);
+    if (errcode != LIBRAW_SUCCESS)
       {
         libraw_close(raw_info);
         (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
-          libraw_strerror(errorcode),"`%s'",image->filename);
+          libraw_strerror(errcode),"`%s'",image->filename);
         return(DestroyImageList(image));
       }
     raw_info->params.output_bps=16;
-    errorcode=libraw_dcraw_process(raw_info);
-    if (errorcode != LIBRAW_SUCCESS)
+    errcode=libraw_dcraw_process(raw_info);
+    if (errcode != LIBRAW_SUCCESS)
       {
         libraw_close(raw_info);
         (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
-          libraw_strerror(errorcode),"`%s'",image->filename);
+          libraw_strerror(errcode),"`%s'",image->filename);
         return(DestroyImageList(image));
       }
-    raw_image=libraw_dcraw_make_mem_image(raw_info,&errorcode);
-    if ((errorcode != LIBRAW_SUCCESS) || 
+    raw_image=libraw_dcraw_make_mem_image(raw_info,&errcode);
+    if ((errcode != LIBRAW_SUCCESS) || 
         (raw_image == (libraw_processed_image_t *) NULL) ||
         (raw_image->type != LIBRAW_IMAGE_BITMAP) || (raw_image->bits != 16) ||
         (raw_image->colors < 3) || (raw_image->colors > 4))
@@ -239,7 +250,7 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           libraw_dcraw_clear_mem(raw_image);
         libraw_close(raw_info);
         (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
-          libraw_strerror(errorcode),"`%s'",image->filename);
+          libraw_strerror(errcode),"`%s'",image->filename);
         return(DestroyImageList(image));
       }
     image->columns=raw_image->width;
