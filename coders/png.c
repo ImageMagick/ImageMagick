@@ -3160,6 +3160,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   status=SetImageExtent(image,image->columns,image->rows);
   if (status == MagickFalse)
     {
+#ifdef IMPNG_SETJMP_NOT_THREAD_SAFE
+      UnlockSemaphoreInfo(ping_semaphore);
+#endif
       InheritException(exception,&image->exception);
       return(DestroyImageList(image));
     }
