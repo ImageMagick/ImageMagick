@@ -5682,7 +5682,7 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
                             "    Framing_timeout=%.20g",(double) frame_timeout);
                       }
 
-                    if (change_clipping && (p-chunk) < (ssize_t) (length-17))
+                    if (change_clipping && (p-chunk) < (ssize_t) (length-16))
                       {
                         fb=mng_read_box(previous_fb,(char) p[0],&p[1]);
                         p+=16;
