@@ -539,7 +539,7 @@ static double OTSUThreshold(const Image *image,const double *histogram,
   */
   omega[0]=probability[0];
   myu[0]=0.0;
-  for (i=0; i <= (ssize_t) MaxIntensity; i++)
+  for (i=1; i <= (ssize_t) MaxIntensity; i++)
   {
     omega[i]=omega[i-1]+probability[i];
     myu[i]=myu[i-1]+i*probability[i];
