@@ -368,7 +368,7 @@ MagickExport size_t GetImageChannelDepth(const Image *image,
   image_view=AcquireVirtualCacheView(image,exception);
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
 DisableMSCWarning(4127)
-  if (QuantumRange <= MaxMap)
+  if (1UL*QuantumRange <= MaxMap)
 RestoreMSCWarning
     {
       size_t
@@ -1097,16 +1097,17 @@ MagickExport MagickBooleanType SetImageChannelDepth(Image *image,
       {
         if ((channel & RedChannel) != 0)
           image->colormap[i].red=ScaleAnyToQuantum(ScaleQuantumToAny(
-            ClampPixel(image->colormap[i].red),range),range);
+            ClampPixel((MagickRealType) image->colormap[i].red),range),range);
         if ((channel & GreenChannel) != 0)
           image->colormap[i].green=ScaleAnyToQuantum(ScaleQuantumToAny(
-            ClampPixel(image->colormap[i].green),range),range);
+            ClampPixel((MagickRealType) image->colormap[i].green),range),range);
         if ((channel & BlueChannel) != 0)
           image->colormap[i].blue=ScaleAnyToQuantum(ScaleQuantumToAny(
-            ClampPixel(image->colormap[i].blue),range),range);
+            ClampPixel((MagickRealType) image->colormap[i].blue),range),range);
         if ((channel & OpacityChannel) != 0)
           image->colormap[i].opacity=ScaleAnyToQuantum(ScaleQuantumToAny(
-            ClampPixel(image->colormap[i].opacity),range),range);
+            ClampPixel((MagickRealType) image->colormap[i].opacity),range),
+              range);
       }
     }
   status=MagickTrue;
@@ -1114,7 +1115,7 @@ MagickExport MagickBooleanType SetImageChannelDepth(Image *image,
   image_view=AcquireAuthenticCacheView(image,exception);
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
 DisableMSCWarning(4127)
-  if (QuantumRange <= MaxMap)
+  if (1UL*QuantumRange <= MaxMap)
 RestoreMSCWarning
     {
       Quantum
@@ -1206,16 +1207,16 @@ RestoreMSCWarning
     {
       if ((channel & RedChannel) != 0)
         SetPixelRed(q,ScaleAnyToQuantum(ScaleQuantumToAny(ClampPixel(
-          GetPixelRed(q)),range),range));
+          (MagickRealType) GetPixelRed(q)),range),range));
       if ((channel & GreenChannel) != 0)
         SetPixelGreen(q,ScaleAnyToQuantum(ScaleQuantumToAny(ClampPixel(
-          GetPixelGreen(q)),range),range));
+          (MagickRealType) GetPixelGreen(q)),range),range));
       if ((channel & BlueChannel) != 0)
         SetPixelBlue(q,ScaleAnyToQuantum(ScaleQuantumToAny(ClampPixel(
-          GetPixelBlue(q)),range),range));
+          (MagickRealType) GetPixelBlue(q)),range),range));
       if (((channel & OpacityChannel) != 0) && (image->matte != MagickFalse))
         SetPixelOpacity(q,ScaleAnyToQuantum(ScaleQuantumToAny(ClampPixel(
-          GetPixelOpacity(q)),range),range));
+          (MagickRealType) GetPixelOpacity(q)),range),range));
       q++;
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -1287,15 +1288,8 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type)
     case BilevelType:
     {
       if (SetImageMonochrome(image,&image->exception) == MagickFalse)
-        {
-          status=TransformImageColorspace(image,GRAYColorspace);
-          (void) NormalizeImage(image);
-          quantize_info=AcquireQuantizeInfo(image_info);
-          quantize_info->number_colors=2;
-          quantize_info->colorspace=GRAYColorspace;
-          status=QuantizeImage(quantize_info,image);
-          quantize_info=DestroyQuantizeInfo(quantize_info);
-        }
+        status=AutoThresholdImage(image,UndefinedThresholdMethod,
+          &image->exception);
       image->matte=MagickFalse;
       break;
     }
