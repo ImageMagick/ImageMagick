@@ -1256,7 +1256,15 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type,
     case BilevelType:
     {
       if (SetImageMonochrome(image,exception) == MagickFalse)
-        status=AutoThresholdImage(image,UndefinedThresholdMethod,exception);
+        {
+          status=TransformImageColorspace(image,GRAYColorspace,exception);
+          (void) NormalizeImage(image,exception);
+          quantize_info=AcquireQuantizeInfo(image_info);
+          quantize_info->number_colors=2;
+          quantize_info->colorspace=GRAYColorspace;
+          status=QuantizeImage(quantize_info,image,exception);
+          quantize_info=DestroyQuantizeInfo(quantize_info);
+        }
       image->alpha_trait=UndefinedPixelTrait;
       break;
     }

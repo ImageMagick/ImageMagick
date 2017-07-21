@@ -110,8 +110,8 @@
 %
 %    Sr, Sg, Sb: Sums of the red, green, and blue component values for all
 %    pixels not classified at a lower depth. The combination of these sums
-%    and n2 will ultimately characterize the mean color of a set of
-%    pixels represented by this node.
+%    and n2 will ultimately characterize the mean color of a set of pixels
+%    represented by this node.
 %
 %    E: the distance squared in RGB space between each pixel contained
 %    within a node and the nodes' center.  This represents the
@@ -1195,7 +1195,7 @@ MagickExport MagickBooleanType CompressImageColormap(Image *image,
   assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if (image->storage_class != PseudoClass)
+  if (IsPaletteImage(image) == MagickFalse)
     return(MagickFalse);
   GetQuantizeInfo(&quantize_info);
   quantize_info.number_colors=image->colors;

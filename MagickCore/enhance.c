@@ -1162,8 +1162,9 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
         if (j > (ssize_t) white[i])
           stretch_map[GetPixelChannels(image)*j+i]=(double) QuantumRange;
         else
-          stretch_map[GetPixelChannels(image)*j+i]=(double) ScaleMapToQuantum(
-            (double) (MaxMap*gamma*(j-black[i])));
+          if (black[i] != white[i])
+            stretch_map[GetPixelChannels(image)*j+i]=(double) ScaleMapToQuantum(
+              (double) (MaxMap*gamma*(j-black[i])));
     }
   }
   if (image->storage_class == PseudoClass)
@@ -1243,6 +1244,8 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
         PixelChannel channel=GetPixelChannelChannel(image,j);
         PixelTrait traits=GetPixelChannelTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
+          continue;
+        if (black[j] == white[j])
           continue;
         q[j]=ClampToQuantum(stretch_map[GetPixelChannels(image)*
           ScaleQuantumToMap(q[j])+j]);
