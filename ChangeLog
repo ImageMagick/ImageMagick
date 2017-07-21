@@ -1,6 +1,8 @@
 2017-07-19  7.0.6-2 Cristy  <quetzlzacatenango@image...>
   * Fixed numerous memory leaks (reference
     https://github.com/ImageMagick/ImageMagick/issues).
+  * The -monochrome option no longer returns a blank canvas (reference
+    https://github.com/ImageMagick/ImageMagick/issues/594).
 
 2017-07-15  7.0.6-2 Glenn Randers-Pehrson <glennrp@image...>
   * Added caNv, eXIf, and pHYs to the list of PNG chunks to be removed
