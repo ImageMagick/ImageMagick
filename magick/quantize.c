@@ -110,8 +110,8 @@
 %
 %    Sr, Sg, Sb: Sums of the red, green, and blue component values for all
 %    pixels not classified at a lower depth. The combination of these sums
-%    and n2  will ultimately characterize the mean color of a set of
-%    pixels represented by this node.
+%    and n2 will ultimately characterize the mean color of a set of pixels
+%    represented by this node.
 %
 %    E: the distance squared in RGB space between each pixel contained
 %    within a node and the nodes' center.  This represents the
@@ -844,7 +844,7 @@ static MagickBooleanType ClassifyImageColors(CubeInfo *cube_info,
           error.opacity=QuantumScale*(pixel.opacity-mid.opacity);
         distance=(double) (error.red*error.red+error.green*error.green+
           error.blue*error.blue+error.opacity*error.opacity);
-        if (IsNaN(distance))
+        if (IsNaN(distance) != MagickFalse)
           distance=0.0;
         node_info->quantize_error+=count*sqrt(distance);
         cube_info->root->quantize_error+=node_info->quantize_error;
