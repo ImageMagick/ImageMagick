@@ -361,7 +361,7 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%     A u t o T h r e s o l d I m a g e                                       %
+%     A u t o T h r e s h o l d I m a g e                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -474,7 +474,7 @@ static double KapurThreshold(const Image *image,const double *histogram,
     if ((black_entropy[j]+white_entropy[j]) > maximum_entropy)
       {
         maximum_entropy=black_entropy[j]+white_entropy[j];
-        threshold=(ssize_t) j;
+        threshold=(size_t) j;
       }
   /*
     Free resources.
