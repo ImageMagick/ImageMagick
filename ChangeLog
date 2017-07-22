@@ -1,4 +1,7 @@
 2017-07-22  6.9.9-2 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 6.9.9-2, GIT revision 11786:21b23bf09:20170722.
+
+2017-07-22  6.9.9-2 Cristy  <quetzlzacatenango@image...>
   * composite -dissolve works again reference
     https://github.com/ImageMagick/ImageMagick/issues/597).
 
