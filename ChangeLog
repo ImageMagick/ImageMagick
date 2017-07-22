@@ -1,3 +1,6 @@
+2017-07-21  7.0.6-2 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.6-2, GIT revision 20549:62fcf3d96:20170721.
+
 2017-07-19  7.0.6-2 Cristy  <quetzlzacatenango@image...>
   * Fixed numerous memory leaks (reference
     https://github.com/ImageMagick/ImageMagick/issues).
