@@ -10,7 +10,7 @@
 %                            M   M  A   A  P                                  %
 %                                                                             %
 %                                                                             %
-%                  Read/Write Image Colormaps As An Image File.               %
+%                  Read/Write Image Colormaps as an Image File.               %
 %                                                                             %
 %                              Software Design                                %
 %                                   Cristy                                    %
@@ -385,8 +385,8 @@ static MagickBooleanType WriteMAPImage(const ImageInfo *image_info,Image *image)
   /*
     Allocate colormap.
   */
-  if (IsPaletteImage(image,&image->exception) == MagickFalse)
-    (void) SetImageType(image,PaletteType);
+  if (SetImageType(image,PaletteType) == MagickFalse)
+    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
   depth=GetImageQuantumDepth(image,MagickTrue);
   packet_size=(size_t) (depth/8);
   pixels=(unsigned char *) AcquireQuantumMemory(image->columns,packet_size*

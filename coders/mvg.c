@@ -193,11 +193,13 @@ static Image *ReadMVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   status=SetImageExtent(image,image->columns,image->rows);
   if (status == MagickFalse)
     {
+      draw_info=DestroyDrawInfo(draw_info);
       InheritException(exception,&image->exception);
       return(DestroyImageList(image));
     }
   if (SetImageBackgroundColor(image) == MagickFalse)
     {
+      draw_info=DestroyDrawInfo(draw_info);
       InheritException(exception,&image->exception);
       image=DestroyImageList(image);
       return((Image *) NULL);
