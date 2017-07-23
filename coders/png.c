@@ -4120,7 +4120,6 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 }
 
 
-
 #if defined(JNG_SUPPORTED)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -4154,6 +4153,36 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
+void
+DestroyJNG(unsigned char *chunk,Image **color_image,
+   ImageInfo **color_image_info,
+   Image **alpha_image,ImageInfo **alpha_image_info)
+
+{
+  if (chunk)
+    (void) RelinquishMagickMemory(chunk);
+  if (*color_image_info)
+  {
+    DestroyImageInfo(*color_image_info);
+    *color_image_info = (ImageInfo *)NULL;
+  }
+  if (*alpha_image_info)
+  {
+    DestroyImageInfo(*alpha_image_info);
+    *alpha_image_info = (ImageInfo *)NULL;
+  }
+  if (*color_image)
+  {
+    DestroyImage(*color_image);
+    *color_image = (Image *)NULL;
+  }
+  if (*alpha_image)
+  {
+    DestroyImage(*alpha_image);
+    *alpha_image = (Image *)NULL;
+  }
+}
 static Image *ReadOneJNGImage(MngInfo *mng_info,
     const ImageInfo *image_info, ExceptionInfo *exception)
 {
@@ -4285,10 +4314,8 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
 
     if (length > PNG_UINT_31_MAX || count == 0)
       {
-        if (color_image != (Image *) NULL)
-          color_image=DestroyImage(color_image);
-        if (color_image_info != (ImageInfo *) NULL)
-          color_image_info=DestroyImageInfo(color_image_info);
+        DestroyJNG(NULL,&color_image,&color_image_info,
+          &alpha_image,&alpha_image_info);
         ThrowReaderException(CorruptImageError,"CorruptImage");
       }
 
@@ -4369,6 +4396,18 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
 
         if (length != 0)
           chunk=(unsigned char *) RelinquishMagickMemory(chunk);
+
+        if (jng_width > 65535 || jng_height > 65535 ||
+             (long) jng_width > GetMagickResourceLimit(WidthResource) ||
+             (long) jng_height > GetMagickResourceLimit(HeightResource))
+          {
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+               "    JNG width or height too large: (%lu x %lu)",
+                (long) jng_width, (long) jng_height);
+            DestroyJNG(chunk,&color_image,&color_image_info,
+              &alpha_image,&alpha_image_info);
+            ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+          }
 
         continue;
       }
