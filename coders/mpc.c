@@ -73,7 +73,6 @@
 #include "magick/string_.h"
 #include "magick/string-private.h"
 #include "magick/utility.h"
-#include "magick/utility-private.h"
 #include "magick/version-private.h"
 
 /*
@@ -1084,6 +1083,26 @@ ModuleExport void UnregisterMPCImage(void)
 %    o image: the image.
 %
 */
+
+static inline int open_utf8(const char *path,int flags,mode_t mode)
+{
+#if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__) || defined(__MINGW32__) || defined(__MINGW64__)
+  return(open(path,flags,mode));
+#else
+   int
+     status;
+
+   wchar_t
+     *path_wide;
+
+   path_wide=create_wchar_path(path);
+   if (path_wide == (wchar_t *) NULL)
+     return(-1);
+   status=_wopen(path_wide,flags,mode);
+   path_wide=(wchar_t *) RelinquishMagickMemory(path_wide);
+   return(status);
+#endif
+}
 
 static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image)
 {
