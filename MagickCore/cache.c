@@ -3544,6 +3544,8 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
       return(MagickTrue);
     }
   status=AcquireMagickResource(AreaResource,cache_info->length);
+  if ((status != MagickFalse) && (cache_info->persist != MagickFalse))
+    status=MagickFalse;
   length=number_pixels*(cache_info->number_channels*sizeof(Quantum)+
     cache_info->metacontent_extent);
   if ((status != MagickFalse) && (length == (MagickSizeType) ((size_t) length)))
@@ -3669,7 +3671,8 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
         "CacheResourcesExhausted","`%s'",image->filename);
       return(MagickFalse);
     }
-  if ((source_info.storage_class != UndefinedClass) && (mode != ReadMode))
+  if ((source_info.storage_class != UndefinedClass) && (mode != ReadMode) &&
+      (cache_info->persist != MagickFalse))
     {
       (void) ClosePixelCacheOnDisk(cache_info);
       *cache_info->cache_filename='\0';
@@ -3819,7 +3822,7 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
     *magick_restrict clone_info;
 
   Image
-    clone_image;
+    *clone_image;
 
   MagickBooleanType
     status;
@@ -3860,19 +3863,16 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
   /*
     Clone persistent pixel cache.
   */
-  clone_image=(*image);
-  clone_info=(CacheInfo *) clone_image.cache;
-  image->cache=ClonePixelCache(cache_info);
-  cache_info=(CacheInfo *) ReferencePixelCache(image->cache);
-  (void) CopyMagickString(cache_info->cache_filename,filename,MagickPathExtent);
-  cache_info->type=DiskCache;
-  cache_info->offset=(*offset);
-  cache_info=(CacheInfo *) image->cache;
-  status=OpenPixelCache(image,IOMode,exception);
-  if (status != MagickFalse)
-    status=ClonePixelCacheRepository(cache_info,clone_info,exception);
+  clone_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
+  if (clone_image == (Image *) NULL)
+    return(MagickFalse);
+  clone_info=(CacheInfo *) clone_image->cache;
+  (void) CopyMagickString(clone_info->cache_filename,filename,MagickPathExtent);
+  clone_info->persist=MagickTrue;
+  clone_info->offset=(*offset);
+  status=ClonePixelCacheRepository(clone_info,image->cache,exception);
   *offset+=cache_info->length+page_size-(cache_info->length % page_size);
-  clone_info=(CacheInfo *) DestroyPixelCache(clone_info);
+  clone_image=DestroyImage(clone_image);
   return(status);
 }
 
