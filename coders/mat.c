@@ -1093,6 +1093,10 @@ RestoreMSCWarning
         ldblk = (ssize_t) (8 * MATLAB_HDR.SizeX);
         break;
       default:
+        if ((image != image2) && (image2 != (Image *) NULL))
+          image2=DestroyImage(image2);
+        if (clone_info)
+          clone_info=DestroyImageInfo(clone_info);
         ThrowReaderException(CoderError, "UnsupportedCellTypeInTheMatrix");
     }
     (void) sample_size;
