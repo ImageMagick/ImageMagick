@@ -191,9 +191,13 @@ static Image *ReadMVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->rows=(size_t) (draw_info->affine.sy*image->rows);
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
-    return(DestroyImageList(image));
+    {
+      draw_info=DestroyDrawInfo(draw_info);
+      return(DestroyImageList(image));
+    }
   if (SetImageBackgroundColor(image,exception) == MagickFalse)
     {
+      draw_info=DestroyDrawInfo(draw_info);
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
