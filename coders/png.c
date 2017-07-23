@@ -2061,6 +2061,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     length,
     row_offset;
 
+  Quantum
+    *volatile quantum_scanline;
+
   ssize_t
     j;
 
@@ -2222,12 +2225,15 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       */
       png_destroy_read_struct(&ping,&ping_info,&end_info);
 
+      if (pixel_info != (MemoryInfo *) NULL)
+        pixel_info=RelinquishVirtualMemory(pixel_info);
+
+      if (quantum_scanline != (Quantum *) NULL)
+        quantum_scanline=(Quantum *) RelinquishMagickMemory(quantum_scanline);
+
 #ifdef IMPNG_SETJMP_NOT_THREAD_SAFE
       UnlockSemaphoreInfo(ping_semaphore);
 #endif
-
-      if (pixel_info != (MemoryInfo *) NULL)
-        pixel_info=RelinquishVirtualMemory(pixel_info);
 
       if (logging != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -3326,9 +3332,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
     for (pass=0; pass < num_passes; pass++)
     {
-      Quantum
-        *quantum_scanline;
-
       register Quantum
         *r;
 
