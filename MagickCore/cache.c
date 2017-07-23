@@ -475,6 +475,7 @@ MagickPrivate void ClonePixelCacheMethods(Cache clone,const Cache cache)
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
 %  ClonePixelCacheRepository() clones the source pixel cache to the destination
 %  cache.
 %
