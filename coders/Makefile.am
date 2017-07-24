@@ -467,7 +467,7 @@ coders_djvu_la_LIBADD      = $(MAGICKCORE_LIBS) $(DJVU_LIBS) $(JPEG_LIBS) $(LZMA
 coders_dng_la_SOURCES      = coders/dng.c
 coders_dng_la_CPPFLAGS     = $(MAGICK_CODER_CPPFLAGS)
 coders_dng_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-coders_dng_la_LIBADD       = $(MAGICKCORE_LIBS) $(RAW_LIBS)
+coders_dng_la_LIBADD       = $(MAGICKCORE_LIBS) $(RAW_R_LIBS)
 
 # DPS coder module
 coders_dps_la_SOURCES      = coders/dps.c
