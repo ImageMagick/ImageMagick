@@ -4249,8 +4249,9 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
   clone_info=(CacheInfo *) clone_image->cache;
   (void) CopyMagickString(clone_info->cache_filename,filename,MagickPathExtent);
   clone_info->mode=PersistMode;
+  clone_info->type=DiskCache;
   clone_info->offset=(*offset);
-  status=ClonePixelCacheRepository(clone_info,image->cache,exception);
+  status=ClonePixelCacheRepository(clone_info,cache_info,exception);
   *offset+=cache_info->length+page_size-(cache_info->length % page_size);
   clone_image=DestroyImage(clone_image);
   return(status);
