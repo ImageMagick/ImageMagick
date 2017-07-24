@@ -2382,14 +2382,12 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #endif
   }
 #if defined(PNG_UNKNOWN_CHUNKS_SUPPORTED)
-  /* Ignore unused chunks and all unknown chunks except for eXIf,
-     caNv, and vpAg */
+  /* Ignore unused chunks and all unknown chunks except for caNv and vpAg */
 # if PNG_LIBPNG_VER < 10700 /* Avoid libpng16 warning */
   png_set_keep_unknown_chunks(ping, 2, NULL, 0);
 # else
   png_set_keep_unknown_chunks(ping, 1, NULL, 0);
 # endif
-  png_set_keep_unknown_chunks(ping, 2, (png_bytep) mng_eXIf, 1);
   png_set_keep_unknown_chunks(ping, 2, (png_bytep) mng_caNv, 1);
   png_set_keep_unknown_chunks(ping, 2, (png_bytep) mng_vpAg, 1);
   png_set_keep_unknown_chunks(ping, 1, unused_chunks,
@@ -8017,6 +8015,7 @@ Magick_png_write_raw_profile(const ImageInfo *image_info,png_struct *ping,
    png_free(ping,text);
 }
 
+#if 0 /* This has not worked since 6.7.6 or earlier */
 static MagickBooleanType Magick_png_write_chunk_from_profile(Image *image,
   const char *string, MagickBooleanType logging)
 {
@@ -8067,6 +8066,7 @@ static MagickBooleanType Magick_png_write_chunk_from_profile(Image *image,
 
    return(MagickTrue);
 }
+#endif
 
 static inline MagickBooleanType Magick_png_color_equal(const Image *image,
   const Quantum *p, const PixelInfo *q)
@@ -11049,13 +11049,17 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
          }
     }
 
+#if 0 /* This has not worked since 6.7.6 or earlier */
   /* write any png-chunk-b profiles */
   (void) Magick_png_write_chunk_from_profile(image,"PNG-chunk-b",logging);
+#endif
 
   png_write_info(ping,ping_info);
 
+#if 0 /* This has not worked since 6.7.6 or earlier */
   /* write any PNG-chunk-m profiles */
   (void) Magick_png_write_chunk_from_profile(image,"PNG-chunk-m",logging);
+#endif
 
   ping_wrote_caNv = MagickFalse;
 
@@ -11560,10 +11564,12 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     }
   }
 
+#if 0 /* This has not worked since 6.7.6 or earlier */
   /* write any PNG-chunk-e profiles */
   (void) Magick_png_write_chunk_from_profile(image,"PNG-chunk-e",logging);
+#endif
 
-  /* write exIf profile */
+  /* write eXIf profile */
   if (ping_have_eXIf != MagickFalse && ping_exclude_eXIf == MagickFalse)
     {
       char
@@ -11836,6 +11842,10 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 %  is not intended for external use.  It is only used internally by the
 %  PNG encoder to inform the JNG encoder of the depth of the alpha channel.
 %
+#if 0 /* This has not worked since 6.7.6 or earlier */
+      /* To do: Perhaps it can be redesigned to use
+        -define PNG-chunk-x=<file> instead */
+%
 %  It is possible to request that the PNG encoder write previously-formatted
 %  ancillary chunks in the output PNG file, using the "-profile" commandline
 %  option as shown below or by setting the profile via a programming
@@ -11854,6 +11864,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 %  subsequent profiles from overwriting the preceding ones, e.g.,
 %
 %     -profile PNG-chunk-b01:file01 -profile PNG-chunk-b02:file02
+#endif
 %
 %  As of version 6.6.6 the following optimizations are always done:
 %
@@ -12807,8 +12818,10 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
         "    JNG alpha interlace:%5d",0);
     }
 
+#if 0 /* This has not worked since 6.7.6 or earlier */
   /* Write any JNG-chunk-b profiles */
   (void) Magick_png_write_chunk_from_profile(image,"JNG-chunk-b",logging);
+#endif
 
   /*
      Write leading ancillary chunks
@@ -13117,8 +13130,10 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
   jpeg_image_info=DestroyImageInfo(jpeg_image_info);
   blob=(unsigned char *) RelinquishMagickMemory(blob);
 
+#if 0 /* This has not worked since 6.7.6 or earlier */
   /* Write any JNG-chunk-e profiles */
   (void) Magick_png_write_chunk_from_profile(image,"JNG-chunk-e",logging);
+#endif
 
   /* Write IEND chunk */
   (void) WriteBlobMSBULong(image,0L);

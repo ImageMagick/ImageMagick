@@ -1,3 +1,7 @@
+2017-07-24  7.0.6-4 Glenn Randers-Pehrson <glennrp@image...>
+  * Temporarily removed write_chunk_from_profile() from coders/png.c
+    because it has not worked at least since version 6.7.6.
+
 2017-07-24  7.0.6-3 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.6-3, GIT revision 20598:cc9c43b44:20170724.
 
