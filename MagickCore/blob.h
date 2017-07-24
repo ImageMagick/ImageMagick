@@ -28,7 +28,8 @@ typedef enum
 {
   ReadMode,
   WriteMode,
-  IOMode
+  IOMode,
+  PersistMode
 } MapMode;
 
 typedef ssize_t
