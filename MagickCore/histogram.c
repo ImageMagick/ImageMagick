@@ -256,11 +256,8 @@ static CubeInfo *ClassifyImageColors(const Image *image,
         index--;
       }
       for (i=0; i < (ssize_t) node_info->number_unique; i++)
-      {
-        target=node_info->list[i];
-        if (IsPixelInfoEquivalent(&pixel,&target) != MagickFalse)
+        if (IsPixelInfoEquivalent(&pixel,node_info->list+i) != MagickFalse)
           break;
-      }
       if (i < (ssize_t) node_info->number_unique)
         node_info->list[i].count++;
       else
