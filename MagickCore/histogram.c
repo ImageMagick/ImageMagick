@@ -187,8 +187,7 @@ static CubeInfo *ClassifyImageColors(const Image *image,
     proceed;
 
   PixelInfo
-    pixel,
-    target;
+    pixel;
 
   NodeInfo
     *node_info;
@@ -223,7 +222,6 @@ static CubeInfo *ClassifyImageColors(const Image *image,
       return(cube_info);
     }
   GetPixelInfo(image,&pixel);
-  GetPixelInfo(image,&target);
   image_view=AcquireVirtualCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
