@@ -236,9 +236,6 @@ typedef struct _CacheInfo
 
   OpenCLCacheInfo
     *opencl;
-
-  MagickBooleanType
-    persist;
 } CacheInfo;
 
 extern MagickExport Cache

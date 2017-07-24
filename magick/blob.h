@@ -31,7 +31,8 @@ typedef enum
 {
   ReadMode,
   WriteMode,
-  IOMode
+  IOMode,
+  PersistMode
 } MapMode;
 
 extern MagickExport FILE

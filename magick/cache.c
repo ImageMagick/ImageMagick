@@ -1100,7 +1100,7 @@ static inline void RelinquishPixelCachePixels(CacheInfo *cache_info)
     {
       (void) UnmapBlob(cache_info->pixels,(size_t) cache_info->length);
       cache_info->pixels=(PixelPacket *) NULL;
-      if (cache_info->mode != ReadMode)
+      if ((cache_info->mode != ReadMode) && (cache_info->mode != PersistMode))
         (void) RelinquishUniqueFileResource(cache_info->cache_filename);
       *cache_info->cache_filename='\0';
       RelinquishMagickResource(MapResource,cache_info->length);
@@ -1109,7 +1109,7 @@ static inline void RelinquishPixelCachePixels(CacheInfo *cache_info)
     {
       if (cache_info->file != -1)
         (void) ClosePixelCacheOnDisk(cache_info);
-      if (cache_info->mode != ReadMode)
+      if ((cache_info->mode != ReadMode) && (cache_info->mode != PersistMode))
         (void) RelinquishUniqueFileResource(cache_info->cache_filename);
       *cache_info->cache_filename='\0';
       RelinquishMagickResource(DiskResource,cache_info->length);
@@ -3927,7 +3927,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
       return(MagickTrue);
     }
   status=AcquireMagickResource(AreaResource,cache_info->length);
-  if ((status != MagickFalse) && (cache_info->persist != MagickFalse))
+  if (cache_info->mode == PersistMode)
     status=MagickFalse;
   length=number_pixels*(sizeof(PixelPacket)+sizeof(IndexPacket));
   if ((status != MagickFalse) && (length == (MagickSizeType) ((size_t) length)))
@@ -4056,7 +4056,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
       return(MagickFalse);
     }
   if ((source_info.storage_class != UndefinedClass) && (mode != ReadMode) &&
-      (cache_info->persist != MagickFalse))
+      (cache_info->mode != PersistMode))
     {
       (void) ClosePixelCacheOnDisk(cache_info);
       *cache_info->cache_filename='\0';
@@ -4248,7 +4248,7 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
     return(MagickFalse);
   clone_info=(CacheInfo *) clone_image->cache;
   (void) CopyMagickString(clone_info->cache_filename,filename,MagickPathExtent);
-  clone_info->persist=MagickTrue;
+  clone_info->mode=PersistMode;
   clone_info->offset=(*offset);
   status=ClonePixelCacheRepository(clone_info,image->cache,exception);
   *offset+=cache_info->length+page_size-(cache_info->length % page_size);
