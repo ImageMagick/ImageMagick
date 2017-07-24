@@ -11842,9 +11842,11 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 %  is not intended for external use.  It is only used internally by the
 %  PNG encoder to inform the JNG encoder of the depth of the alpha channel.
 %
-#if 0 /* This has not worked since 6.7.6 or earlier */
-      /* To do: Perhaps it can be redesigned to use
-        -define PNG-chunk-x=<file> instead */
+#if 0
+
+      This has not worked since 6.7.6 or earlier
+      To do: Perhaps it can be redesigned to use
+        -define PNG-chunk-x=<file> instead
 %
 %  It is possible to request that the PNG encoder write previously-formatted
 %  ancillary chunks in the output PNG file, using the "-profile" commandline
