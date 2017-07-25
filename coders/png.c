@@ -2217,6 +2217,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     }
 
   pixel_info=(MemoryInfo *) NULL;
+  quantum_scanline = (Quantum *) NULL;
 
   if (setjmp(png_jmpbuf(ping)))
     {
