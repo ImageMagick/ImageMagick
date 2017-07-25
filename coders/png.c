@@ -4405,7 +4405,14 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
     if (length != 0)
       {
         if (length > GetBlobSize(image))
-          ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
+          {
+            if (color_image != (Image *) NULL)
+              color_image=DestroyImage(color_image);
+            if (color_image_info != (ImageInfo *) NULL)
+              color_image_info=DestroyImageInfo(color_image_info);
+            ThrowReaderException(CorruptImageError,
+              "InsufficientImageDataInFile");
+          }
         chunk=(unsigned char *) AcquireQuantumMemory(length,sizeof(*chunk));
 
         if (chunk == (unsigned char *) NULL)
