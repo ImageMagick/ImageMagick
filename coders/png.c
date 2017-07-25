@@ -1546,9 +1546,8 @@ static MngInfo *MngInfoFreeStruct(MngInfo *mng_info)
   for (i=1; i < MNG_MAX_OBJECTS; i++)
     MngInfoDiscardObject(mng_info,i);
 
-  if (mng_info->global_plte != (png_colorp) NULL)
-    mng_info->global_plte=(png_colorp)
-      RelinquishMagickMemory(mng_info->global_plte);
+  mng_info->global_plte=(png_colorp)
+    RelinquishMagickMemory(mng_info->global_plte);
 
   return((MngInfo *) RelinquishMagickMemory(mng_info));
 }
@@ -2284,8 +2283,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       if (quantum_info != (QuantumInfo *) NULL)
         quantum_info=DestroyQuantumInfo(quantum_info);
 
-      if (quantum_scanline != (Quantum *) NULL)
-        quantum_scanline=(Quantum *) RelinquishMagickMemory(quantum_scanline);
+      quantum_scanline=(Quantum *) RelinquishMagickMemory(quantum_scanline);
 
 #ifdef IMPNG_SETJMP_NOT_THREAD_SAFE
       UnlockSemaphoreInfo(ping_semaphore);
@@ -4246,8 +4244,7 @@ DestroyJNG(unsigned char *chunk,Image **color_image,
    ImageInfo **color_image_info,
    Image **alpha_image,ImageInfo **alpha_image_info)
 {
-  if (chunk)
-    (void) RelinquishMagickMemory(chunk);
+  (void) RelinquishMagickMemory(chunk);
   if (*color_image_info)
   {
     DestroyImageInfo(*color_image_info);
@@ -4481,8 +4478,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
               }
           }
 
-        if (length != 0)
-          chunk=(unsigned char *) RelinquishMagickMemory(chunk);
+        chunk=(unsigned char *) RelinquishMagickMemory(chunk);
 
         if (jng_width > 65535 || jng_height > 65535 ||
              (long) jng_width > GetMagickResourceLimit(WidthResource) ||
@@ -4643,8 +4639,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
               crc32(crc32(0,data,4),chunk,(uInt) length));
           }
 
-        if (length != 0)
-          chunk=(unsigned char *) RelinquishMagickMemory(chunk);
+        chunk=(unsigned char *) RelinquishMagickMemory(chunk);
 
         continue;
       }
@@ -4662,8 +4657,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
             (void) WriteBlob(alpha_image,length,chunk);
           }
 
-        if (length != 0)
-          chunk=(unsigned char *) RelinquishMagickMemory(chunk);
+        chunk=(unsigned char *) RelinquishMagickMemory(chunk);
 
         continue;
       }
@@ -4672,8 +4666,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
       {
         read_JSEP=MagickTrue;
 
-        if (length != 0)
-          chunk=(unsigned char *) RelinquishMagickMemory(chunk);
+        chunk=(unsigned char *) RelinquishMagickMemory(chunk);
 
         continue;
       }
@@ -4694,8 +4687,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
             image->background_color.blue=ScaleCharToQuantum(p[5]);
           }
 
-        if (length != 0)
-          chunk=(unsigned char *) RelinquishMagickMemory(chunk);
+        chunk=(unsigned char *) RelinquishMagickMemory(chunk);
         continue;
       }
 
@@ -4704,8 +4696,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
         if (length == 4)
           image->gamma=((float) mng_get_long(p))*0.00001;
 
-        if (length != 0)
-          chunk=(unsigned char *) RelinquishMagickMemory(chunk);
+        chunk=(unsigned char *) RelinquishMagickMemory(chunk);
         continue;
       }
 
@@ -4723,8 +4714,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
             image->chromaticity.blue_primary.y=0.00001*mng_get_long(&p[28]);
           }
 
-        if (length != 0)
-          chunk=(unsigned char *) RelinquishMagickMemory(chunk);
+        chunk=(unsigned char *) RelinquishMagickMemory(chunk);
         continue;
       }
 
@@ -4745,8 +4735,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
             image->chromaticity.white_point.y=0.3290f;
           }
 
-        if (length != 0)
-          chunk=(unsigned char *) RelinquishMagickMemory(chunk);
+        chunk=(unsigned char *) RelinquishMagickMemory(chunk);
         continue;
       }
 
@@ -4764,8 +4753,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
               }
           }
 
-        if (length != 0)
-          chunk=(unsigned char *) RelinquishMagickMemory(chunk);
+        chunk=(unsigned char *) RelinquishMagickMemory(chunk);
 
         continue;
       }
@@ -4784,8 +4772,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
               }
           }
 
-        if (length != 0)
-          chunk=(unsigned char *) RelinquishMagickMemory(chunk);
+        chunk=(unsigned char *) RelinquishMagickMemory(chunk);
         continue;
       }
 
@@ -4793,15 +4780,13 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
     if (memcmp(type,mng_iCCP,4) == 0)
       {
         /* To do: */
-        if (length != 0)
-          chunk=(unsigned char *) RelinquishMagickMemory(chunk);
+        chunk=(unsigned char *) RelinquishMagickMemory(chunk);
 
         continue;
       }
 #endif
 
-    if (length != 0)
-      chunk=(unsigned char *) RelinquishMagickMemory(chunk);
+    chunk=(unsigned char *) RelinquishMagickMemory(chunk);
 
     if (memcmp(type,mng_IEND,4))
       continue;
@@ -5350,8 +5335,7 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
           }
         if (memcmp(type,mng_MEND,4) == 0)
           {
-            if (length != 0)
-              chunk=(unsigned char *) RelinquishMagickMemory(chunk);
+            chunk=(unsigned char *) RelinquishMagickMemory(chunk);
             break;
           }
 
@@ -5360,8 +5344,7 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
             if (memcmp(type,mng_IEND,4) == 0)
               skip_to_iend=MagickFalse;
 
-            if (length != 0)
-              chunk=(unsigned char *) RelinquishMagickMemory(chunk);
+            chunk=(unsigned char *) RelinquishMagickMemory(chunk);
 
             if (logging != MagickFalse)
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -5492,8 +5475,7 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
 
             if (length < 2)
               {
-                if (chunk)
-                  chunk=(unsigned char *) RelinquishMagickMemory(chunk);
+                chunk=(unsigned char *) RelinquishMagickMemory(chunk);
                 ThrowReaderException(CorruptImageError,"CorruptImage");
               }
 
@@ -5735,8 +5717,7 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
             /*
               Read global iCCP.
             */
-            if (length != 0)
-              chunk=(unsigned char *) RelinquishMagickMemory(chunk);
+            chunk=(unsigned char *) RelinquishMagickMemory(chunk);
 
             continue;
           }
@@ -5961,8 +5942,7 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
 #endif
                 }
 
-            if (length != 0)
-              chunk=(unsigned char *) RelinquishMagickMemory(chunk);
+            chunk=(unsigned char *) RelinquishMagickMemory(chunk);
 
             continue;
           }
@@ -5989,8 +5969,7 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
                 }
               }
 
-            if (length != 0)
-              chunk=(unsigned char *) RelinquishMagickMemory(chunk);
+            chunk=(unsigned char *) RelinquishMagickMemory(chunk);
 
             continue;
           }
@@ -6399,8 +6378,7 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
             )
           {
             /* Not an IHDR or JHDR chunk */
-            if (length != 0)
-              chunk=(unsigned char *) RelinquishMagickMemory(chunk);
+            chunk=(unsigned char *) RelinquishMagickMemory(chunk);
 
             continue;
           }
