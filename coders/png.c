@@ -4329,10 +4329,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
       {
         if (length > GetBlobSize(image))
           {
-            if (color_image != (Image *) NULL)
-              color_image=DestroyImage(color_image);
-            if (color_image_info != (ImageInfo *) NULL)
-              color_image_info=DestroyImageInfo(color_image_info);
+            DestroyJNG(NULL,&color_image,&color_image_info,NULL,NULL);
             ThrowReaderException(CorruptImageError,
               "InsufficientImageDataInFile");
           }
