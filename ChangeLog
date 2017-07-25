@@ -1,3 +1,7 @@
+2017-07-24  7.0.6-3 Cristy  <quetzlzacatenango@image...>
+  * YUV coder no longer renders streaks (reference
+    https://github.com/ImageMagick/ImageMagick/issues/612).
+
 2017-07-24  7.0.6-4 Glenn Randers-Pehrson <glennrp@image...>
   * Removed write_chunk_from_profile() from coders/png.c because it has
     not worked at least since version 6.7.6.
