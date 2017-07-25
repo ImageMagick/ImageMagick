@@ -246,13 +246,14 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           for (x=0; x < (ssize_t) image->columns; x+=2)
           {
-            SetPixelRed(image,0,chroma_pixels);
+            SetPixelRed(chroma_image,0,chroma_pixels);
             if (quantum == 1)
-              SetPixelGreen(image,ScaleCharToQuantum(*p++),chroma_pixels);
+              SetPixelGreen(chroma_image,ScaleCharToQuantum(*p++),
+                chroma_pixels);
             else
               {
-                SetPixelGreen(image,ScaleShortToQuantum(((*p) << 8) | *(p+1)),
-                  chroma_pixels);
+                SetPixelGreen(chroma_image,ScaleShortToQuantum(((*p) << 8) |
+                  *(p+1)),chroma_pixels);
                 p+=2;
               }
             if (quantum == 1)
@@ -268,11 +269,11 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
             SetPixelGreen(image,0,q);
             SetPixelBlue(image,0,q);
             if (quantum == 1)
-              SetPixelBlue(image,ScaleCharToQuantum(*p++),chroma_pixels);
+              SetPixelBlue(chroma_image,ScaleCharToQuantum(*p++),chroma_pixels);
             else
               {
-                SetPixelBlue(image,ScaleShortToQuantum(((*p) << 8) | *(p+1)),
-                  chroma_pixels);
+                SetPixelBlue(chroma_image,ScaleShortToQuantum(((*p) << 8) |
+                  *(p+1)),chroma_pixels);
                 p+=2;
               }
             if (quantum == 1)
@@ -282,7 +283,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 SetPixelRed(image,ScaleShortToQuantum(((*p) << 8) | *(p+1)),q);
                 p+=2;
               }
-            chroma_pixels++;
+            chroma_pixels+=GetPixelChannels(chroma_image);
             q+=GetPixelChannels(image);
           }
         }
@@ -412,9 +413,9 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        SetPixelGreen(image,GetPixelGreen(image,chroma_pixels),q);
-        SetPixelBlue(image,GetPixelBlue(image,chroma_pixels),q);
-        chroma_pixels++;
+        SetPixelGreen(image,GetPixelGreen(resize_image,chroma_pixels),q);
+        SetPixelBlue(image,GetPixelBlue(resize_image,chroma_pixels),q);
+        chroma_pixels+=GetPixelChannels(resize_image);
         q+=GetPixelChannels(image);
       }
       if (SyncAuthenticPixels(image,exception) == MagickFalse)
