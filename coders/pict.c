@@ -73,28 +73,6 @@
 /*
   ImageMagick Macintosh PICT Methods.
 */
-#define ReadPixmap(pixmap) \
-{ \
-  pixmap.version=(short) ReadBlobMSBShort(image); \
-  pixmap.pack_type=(short) ReadBlobMSBShort(image); \
-  pixmap.pack_size=ReadBlobMSBLong(image); \
-  pixmap.horizontal_resolution=1UL*ReadBlobMSBShort(image); \
-  (void) ReadBlobMSBShort(image); \
-  pixmap.vertical_resolution=1UL*ReadBlobMSBShort(image); \
-  (void) ReadBlobMSBShort(image); \
-  pixmap.pixel_type=(short) ReadBlobMSBShort(image); \
-  pixmap.bits_per_pixel=(short) ReadBlobMSBShort(image); \
-  pixmap.component_count=(short) ReadBlobMSBShort(image); \
-  pixmap.component_size=(short) ReadBlobMSBShort(image); \
-  pixmap.plane_bytes=ReadBlobMSBLong(image); \
-  pixmap.table=ReadBlobMSBLong(image); \
-  pixmap.reserved=ReadBlobMSBLong(image); \
-  if ((EOFBlob(image) != MagickFalse) || (pixmap.bits_per_pixel <= 0) || \
-      (pixmap.bits_per_pixel > 32) || (pixmap.component_count <= 0) || \
-      (pixmap.component_count > 4) || (pixmap.component_size <= 0)) \
-    ThrowReaderException(CorruptImageError,"ImproperImageHeader"); \
-}
-
 typedef struct _PICTCode
 {
   const char
@@ -790,6 +768,29 @@ static MagickBooleanType IsPICT(const unsigned char *magick,const size_t length)
 %
 */
 
+static MagickBooleanType ReadPixmap(Image *image,PICTPixmap *pixmap)
+{
+  pixmap->version=(short) ReadBlobMSBShort(image);
+  pixmap->pack_type=(short) ReadBlobMSBShort(image);
+  pixmap->pack_size=ReadBlobMSBLong(image);
+  pixmap->horizontal_resolution=1UL*ReadBlobMSBShort(image);
+  (void) ReadBlobMSBShort(image);
+  pixmap->vertical_resolution=1UL*ReadBlobMSBShort(image);
+  (void) ReadBlobMSBShort(image);
+  pixmap->pixel_type=(short) ReadBlobMSBShort(image);
+  pixmap->bits_per_pixel=(short) ReadBlobMSBShort(image);
+  pixmap->component_count=(short) ReadBlobMSBShort(image);
+  pixmap->component_size=(short) ReadBlobMSBShort(image);
+  pixmap->plane_bytes=ReadBlobMSBLong(image);
+  pixmap->table=ReadBlobMSBLong(image);
+  pixmap->reserved=ReadBlobMSBLong(image);
+  if ((EOFBlob(image) != MagickFalse) || (pixmap->bits_per_pixel <= 0) ||
+      (pixmap->bits_per_pixel > 32) || (pixmap->component_count <= 0) ||
+      (pixmap->component_count > 4) || (pixmap->component_size <= 0))
+    return(MagickFalse);
+  return(MagickTrue);
+}
+
 static MagickBooleanType ReadRectangle(Image *image,PICTRectangle *rectangle)
 {
   rectangle->top=(short) ReadBlobMSBShort(image);
@@ -1005,7 +1006,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             length=ReadBlobMSBShort(image);
             if (ReadRectangle(image,&frame) == MagickFalse)
               ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-            ReadPixmap(pixmap);
+            if (ReadPixmap(image,&pixmap) == MagickFalse)
+              ThrowReaderException(CorruptImageError,"ImproperImageHeader");
             image->depth=1UL*pixmap.component_size;
             image->resolution.x=1.0*pixmap.horizontal_resolution;
             image->resolution.y=1.0*pixmap.vertical_resolution;
@@ -1124,7 +1126,12 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             if ((code == 0x9a) || (code == 0x9b) ||
                 ((bytes_per_line & 0x8000) != 0))
               {
-                ReadPixmap(pixmap);
+                if (ReadPixmap(image,&pixmap) == MagickFalse)
+                  {
+                    tile_image=DestroyImage(tile_image);
+                    ThrowReaderException(CorruptImageError,
+                      "ImproperImageHeader");
+                  }
                 tile_image->depth=1UL*pixmap.component_size;
                 tile_image->alpha_trait=pixmap.component_count == 4 ?
                   BlendPixelTrait : UndefinedPixelTrait;
