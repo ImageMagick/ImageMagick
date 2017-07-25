@@ -933,6 +933,8 @@ static Image *ReadMATImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (strncmp(MATLAB_HDR.identific, "MATLAB", 6))
     {
 MATLAB_KO:
+      if ((image != image2) && (image2 != (Image *) NULL))
+        image2=DestroyImage(image2);
       if (clone_info != (ImageInfo *) NULL)
         clone_info=DestroyImageInfo(clone_info);
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
