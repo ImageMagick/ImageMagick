@@ -4616,7 +4616,8 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
             image->background_color.blue=ScaleCharToQuantum(p[5]);
           }
 
-        chunk=(unsigned char *) RelinquishMagickMemory(chunk);
+        if (length != 0)
+          chunk=(unsigned char *) RelinquishMagickMemory(chunk);
         continue;
       }
 
@@ -4625,7 +4626,8 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
         if (length == 4)
           image->gamma=((float) mng_get_long(p))*0.00001;
 
-        chunk=(unsigned char *) RelinquishMagickMemory(chunk);
+        if (length != 0)
+          chunk=(unsigned char *) RelinquishMagickMemory(chunk);
         continue;
       }
 
@@ -4643,7 +4645,8 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
             image->chromaticity.blue_primary.y=0.00001*mng_get_long(&p[28]);
           }
 
-        chunk=(unsigned char *) RelinquishMagickMemory(chunk);
+        if (length != 0)
+          chunk=(unsigned char *) RelinquishMagickMemory(chunk);
         continue;
       }
 
@@ -4664,7 +4667,8 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
             image->chromaticity.white_point.y=0.3290f;
           }
 
-        chunk=(unsigned char *) RelinquishMagickMemory(chunk);
+        if (length != 0)
+          chunk=(unsigned char *) RelinquishMagickMemory(chunk);
         continue;
       }
 
@@ -4702,7 +4706,8 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
               }
           }
 
-        chunk=(unsigned char *) RelinquishMagickMemory(chunk);
+        if (length != 0)
+          chunk=(unsigned char *) RelinquishMagickMemory(chunk);
         continue;
       }
 
