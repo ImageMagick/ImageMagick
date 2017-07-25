@@ -5338,7 +5338,11 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
             mng_info->dhdr_warning++;
           }
         if (memcmp(type,mng_MEND,4) == 0)
-          break;
+          {
+            if (length != 0)
+              chunk=(unsigned char *) RelinquishMagickMemory(chunk);
+            break;
+          }
 
         if (skip_to_iend)
           {
