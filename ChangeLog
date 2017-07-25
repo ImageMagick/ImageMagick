@@ -1,3 +1,7 @@
+2017-07-25  6.9.9-4 Cristy  <quetzlzacatenango@image...>
+  * Fixed numerous memory leaks (reference
+    https://github.com/ImageMagick/ImageMagick/issues).
+
 2017-07-24  6.9.9-4 Glenn Randers-Pehrson <glennrp@image...>
   * Removed write_chunk_from_profile() from coders/png.c because it
     has not worked at least since version 6.7.6.
