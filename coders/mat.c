@@ -998,7 +998,12 @@ MATLAB_KO:
          if (Frames == 0)
            ThrowReaderException(CorruptImageError,"ImproperImageHeader");
          break;
-      default: ThrowReaderException(CoderError, "MultidimensionalMatricesAreNotSupported");
+      default:
+        if (clone_info != (ImageInfo *) NULL)
+          clone_info=DestroyImageInfo(clone_info);
+        if ((image != image2) && (image2 != (Image *) NULL))
+          image2=DestroyImage(image2);
+        ThrowReaderException(CoderError, "MultidimensionalMatricesAreNotSupported");
     }
 
     MATLAB_HDR.Flag1 = ReadBlobXXXShort(image2);
