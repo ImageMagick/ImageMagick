@@ -679,11 +679,10 @@ MagickExport Cache ClonePixelCache(const Cache cache)
   clone_info->colorspace=cache_info->colorspace;
   clone_info->rows=cache_info->rows;
   clone_info->columns=cache_info->columns;
-  clone_info->channels=cache_info->channels;
   clone_info->active_index_channel=cache_info->active_index_channel;
   clone_info->mode=cache_info->mode;
-  clone_info->virtual_pixel_method=cache_info->virtual_pixel_method;
   clone_info->length=cache_info->length;
+  clone_info->virtual_pixel_method=cache_info->virtual_pixel_method;
   return((Cache ) clone_info);
 }
 
