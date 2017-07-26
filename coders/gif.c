@@ -1124,14 +1124,11 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
               loop=LocaleNCompare((char *) header,"NETSCAPE2.0",11) == 0 ?
                 MagickTrue : MagickFalse;
             if (loop != MagickFalse)
+              while (ReadBlobBlock(image,header) != 0)
               {
-                while (ReadBlobBlock(image,header) != 0)
-                {
-                  iterations=(size_t) ((header[2] << 8) | header[1]);
-                  if (iterations != 0)
-                    iterations++;
-                }
-                break;
+                iterations=(size_t) ((header[2] << 8) | header[1]);
+                if (iterations != 0)
+                  iterations++;
               }
             else
               {
