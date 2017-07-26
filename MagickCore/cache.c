@@ -429,8 +429,6 @@ MagickPrivate Cache ClonePixelCache(const Cache cache)
   clone_info->rows=cache_info->rows;
   clone_info->columns=cache_info->columns;
   clone_info->number_channels=cache_info->number_channels;
-  (void) memcpy(clone_info->channel_map,cache_info->channel_map,
-    MaxPixelChannels*sizeof(*cache_info->channel_map));
   clone_info->metacontent_extent=cache_info->metacontent_extent;
   clone_info->mode=cache_info->mode;
   clone_info->virtual_pixel_method=cache_info->virtual_pixel_method;
