@@ -13,6 +13,7 @@
   * Removed many redundant checks before RelinquishMagickMemory(), which
     is safe to call with a NULL argument.
   * Added experimental PNG orNT chunk, to store image->orientation.
+  * Removed vpAg chunk write support (we are now writing caNv instead).
 
 2017-07-24  7.0.6-3 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.6-3, GIT revision 20598:cc9c43b44:20170724.
