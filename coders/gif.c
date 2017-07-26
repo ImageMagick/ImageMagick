@@ -1126,7 +1126,11 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (loop != MagickFalse)
               {
                 while (ReadBlobBlock(image,header) != 0)
+                {
                   iterations=(size_t) ((header[2] << 8) | header[1]);
+                  if (iterations != 0)
+                    iterations++;
+                }
                 break;
               }
             else
@@ -1758,7 +1762,7 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image)
             (void) WriteBlob(image,11,(unsigned char *) "NETSCAPE2.0");
             (void) WriteBlobByte(image,(unsigned char) 0x03);
             (void) WriteBlobByte(image,(unsigned char) 0x01);
-            (void) WriteBlobLSBShort(image,(unsigned short) image->iterations);
+            (void) WriteBlobLSBShort(image,(unsigned short) (image->iterations ? image->iterations - 1 : 0));
             (void) WriteBlobByte(image,(unsigned char) 0x00);
           }
         if ((image->gamma != 1.0f/2.2f))
