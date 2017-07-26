@@ -809,7 +809,6 @@ typedef struct _MngInfo
     ping_exclude_sRGB,
     ping_exclude_tEXt,
     ping_exclude_tRNS,
-    ping_exclude_vpAg,
     ping_exclude_caNv,
     ping_exclude_zCCP, /* hex-encoded iCCP */
     ping_exclude_zTXt,
@@ -3962,16 +3961,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             (double) image->page.width,(double) image->page.height,
             (double) image->page.x,(double) image->page.y);
          (void) SetImageProperty(image,"png:caNv",msg);
-       }
-
-     /* vpAg chunk: */
-     if ((image->page.width != 0 && image->page.width != image->columns) ||
-         (image->page.height != 0 && image->page.height != image->rows))
-       {
-         (void) FormatLocaleString(msg,MaxTextExtent,
-            "width=%.20g, height=%.20g",
-            (double) image->page.width,(double) image->page.height);
-         (void) SetImageProperty(image,"png:vpAg",msg);
        }
    }
 
@@ -8016,7 +8005,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     ping_exclude_tEXt,
     ping_exclude_tIME,
     /* ping_exclude_tRNS, */
-    ping_exclude_vpAg,
     ping_exclude_caNv,
     ping_exclude_zCCP, /* hex-encoded iCCP */
     ping_exclude_zTXt,
@@ -8169,7 +8157,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   ping_exclude_tEXt=mng_info->ping_exclude_tEXt;
   ping_exclude_tIME=mng_info->ping_exclude_tIME;
   /* ping_exclude_tRNS=mng_info->ping_exclude_tRNS; */
-  ping_exclude_vpAg=mng_info->ping_exclude_vpAg;
   ping_exclude_zCCP=mng_info->ping_exclude_zCCP; /* hex-encoded iCCP in zTXt */
   ping_exclude_zTXt=mng_info->ping_exclude_zTXt;
 
@@ -10938,26 +10925,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     }
 #endif
 
-  /* write vpAg chunk (deprecated, replaced by caNv) */
-  if (ping_exclude_vpAg == MagickFalse && ping_wrote_caNv == MagickFalse)
-    {
-      if ((image->page.width != 0 && image->page.width != image->columns) ||
-          (image->page.height != 0 && image->page.height != image->rows))
-        {
-          unsigned char
-            chunk[14];
-
-          (void) WriteBlobMSBULong(image,9L);  /* data length=8 */
-          PNGType(chunk,mng_vpAg);
-          LogPNGChunk(logging,mng_vpAg,9L);
-          PNGLong(chunk+4,(png_uint_32) image->page.width);
-          PNGLong(chunk+8,(png_uint_32) image->page.height);
-          chunk[12]=0;   /* unit = pixels */
-          (void) WriteBlob(image,13,chunk);
-          (void) WriteBlobMSBULong(image,crc32(0,chunk,13));
-        }
-    }
-
 #if (PNG_LIBPNG_VER == 10206)
     /* avoid libpng-1.2.6 bug by setting PNG_HAVE_IDAT flag */
 #define PNG_HAVE_IDAT               0x04
@@ -11980,7 +11947,6 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,Image *image)
   mng_info->ping_exclude_tEXt=MagickFalse;
   mng_info->ping_exclude_tIME=MagickFalse;
   mng_info->ping_exclude_tRNS=MagickFalse;
-  mng_info->ping_exclude_vpAg=MagickFalse;
   mng_info->ping_exclude_zCCP=MagickFalse; /* hex-encoded iCCP in zTXt */
   mng_info->ping_exclude_zTXt=MagickFalse;
 
@@ -12192,7 +12158,6 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,Image *image)
         mng_info->ping_exclude_tIME=excluding;
         mng_info->ping_exclude_tEXt=excluding;
         mng_info->ping_exclude_tRNS=excluding;
-        mng_info->ping_exclude_vpAg=excluding;
         mng_info->ping_exclude_zCCP=excluding;
         mng_info->ping_exclude_zTXt=excluding;
       }
@@ -12227,8 +12192,6 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,Image *image)
         mng_info->ping_exclude_tIME=excluding != MagickFalse ? MagickFalse :
           MagickTrue;
         mng_info->ping_exclude_tRNS=excluding != MagickFalse ? MagickFalse :
-          MagickTrue;
-        mng_info->ping_exclude_vpAg=excluding != MagickFalse ? MagickFalse :
           MagickTrue;
         mng_info->ping_exclude_zCCP=excluding != MagickFalse ? MagickFalse :
           MagickTrue;
@@ -12282,9 +12245,6 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,Image *image)
 
     if (IsOptionMember("trns",value) != MagickFalse)
       mng_info->ping_exclude_tRNS=excluding;
-
-    if (IsOptionMember("vpag",value) != MagickFalse)
-      mng_info->ping_exclude_vpAg=excluding;
 
     if (IsOptionMember("zccp",value) != MagickFalse)
       mng_info->ping_exclude_zCCP=excluding;
@@ -12345,9 +12305,6 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,Image *image)
     if (mng_info->ping_exclude_tRNS != MagickFalse)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "    tRNS");
-    if (mng_info->ping_exclude_vpAg != MagickFalse)
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "    vpAg");
     if (mng_info->ping_exclude_zCCP != MagickFalse)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "    zCCP");
@@ -12785,17 +12742,6 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
       chunk[12]=0;
       (void) WriteBlob(image,13,chunk);
       (void) WriteBlobMSBULong(image,crc32(0,chunk,13));
-    }
-  if (mng_info->write_mng == 0 && (image->page.width || image->page.height))
-    {
-       (void) WriteBlobMSBULong(image,9L);  /* data length=8 */
-       PNGType(chunk,mng_vpAg);
-       LogPNGChunk(logging,mng_vpAg,9L);
-       PNGLong(chunk+4,(png_uint_32) image->page.width);
-       PNGLong(chunk+8,(png_uint_32) image->page.height);
-       chunk[12]=0;   /* unit = pixels */
-       (void) WriteBlob(image,13,chunk);
-       (void) WriteBlobMSBULong(image,crc32(0,chunk,13));
     }
 
   if (transparent != 0)
@@ -13849,7 +13795,6 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image)
        mng_info->ping_exclude_sRGB=MagickTrue;
        mng_info->ping_exclude_tEXt=MagickTrue;
        mng_info->ping_exclude_tRNS=MagickTrue;
-       mng_info->ping_exclude_vpAg=MagickTrue;
        mng_info->ping_exclude_zCCP=MagickTrue;
        mng_info->ping_exclude_zTXt=MagickTrue;
 
