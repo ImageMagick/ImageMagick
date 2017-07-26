@@ -4252,6 +4252,7 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
   */
   clone_info=ClonePixelCache(cache_info);
   (void) CopyMagickString(clone_info->cache_filename,filename,MaxTextExtent);
+  clone_info->channels=cache_info->channels;
   clone_info->mode=PersistMode;
   clone_info->type=DiskCache;
   clone_info->offset=(*offset);
