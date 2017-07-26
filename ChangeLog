@@ -5,8 +5,8 @@
 2017-07-24  6.9.9-4 Glenn Randers-Pehrson <glennrp@image...>
   * Removed write_chunk_from_profile() from coders/png.c because it
     has not worked at least since version 6.7.6.
-  * Removed many redundant checks on chunk length before
-    RelinquishMagickMemory() which is safe to call with a NULL argument.
+  * Removed many redundant checks before RelinquishMagickMemory(),
+    which is safe to call with a NULL argument.
 
 2017-07-24  6.9.9-3 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 6.9.9-3, GIT revision 11809:2bd88257b:20170724.
