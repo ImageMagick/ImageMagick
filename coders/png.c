@@ -1981,7 +1981,8 @@ static int read_user_chunk_callback(png_struct *ping, png_unknown_chunkp chunk)
 
      image=(Image *) png_get_user_chunk_ptr(ping);
 
-     Magick_Orientation_from_Exif_Orientation((int) chunk->data[0]);
+     image->orientation=
+       Magick_Orientation_from_Exif_Orientation((int) chunk->data[0]);
 
      return(1);
     }
