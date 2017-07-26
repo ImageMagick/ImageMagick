@@ -418,7 +418,7 @@ MagickPrivate Cache ClonePixelCache(const Cache cache)
   clone_info=(CacheInfo *) AcquirePixelCache(cache_info->number_threads);
   if (clone_info == (Cache) NULL)
     return((Cache) NULL);
-  clone_info->file=cache_info->file;
+  clone_info->file=(-1);
   (void) CopyMagickString(clone_info->filename,cache_info->filename,
     MagickPathExtent);
   clone_info->storage_class=cache_info->storage_class;
