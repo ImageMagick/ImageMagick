@@ -557,12 +557,13 @@ static const png_byte mng_eXIf[5]={101,  88,  73, 102, (png_byte) '\0'};
 static const png_byte mng_gAMA[5]={103,  65,  77,  65, (png_byte) '\0'};
 static const png_byte mng_iCCP[5]={105,  67,  67,  80, (png_byte) '\0'};
 static const png_byte mng_nEED[5]={110,  69,  69,  68, (png_byte) '\0'};
+static const png_byte mng_orNT[5]={111, 114,  78,  84, (png_byte) '\0'};
 static const png_byte mng_pHYg[5]={112,  72,  89, 103, (png_byte) '\0'};
-static const png_byte mng_vpAg[5]={118, 112,  65, 103, (png_byte) '\0'};
 static const png_byte mng_pHYs[5]={112,  72,  89, 115, (png_byte) '\0'};
 static const png_byte mng_sBIT[5]={115,  66,  73,  84, (png_byte) '\0'};
 static const png_byte mng_sRGB[5]={115,  82,  71,  66, (png_byte) '\0'};
 static const png_byte mng_tRNS[5]={116,  82,  78,  83, (png_byte) '\0'};
+static const png_byte mng_vpAg[5]={118, 112,  65, 103, (png_byte) '\0'};
 
 #if defined(JNG_SUPPORTED)
 static const png_byte mng_IDAT[5]={ 73,  68,  65,  84, (png_byte) '\0'};
@@ -976,6 +977,64 @@ static const char* PngColorTypeToString(const unsigned int color_type)
     }
 
   return result;
+}
+
+static int
+Magick_Orientation_to_Exif_Orientation(const OrientationType orientation)
+{
+  switch (orientation)
+  {
+    /* Convert to Exif orientations as defined in "Exchangeable image file
+     * format for digital still cameras: Exif Version 2.31",
+     * http://www.cipa.jp/std/documents/e/DC-008-Translation-2016-E.pdf
+     */
+
+    case TopLeftOrientation:
+       return 1;
+    case TopRightOrientation:
+       return 2;
+    case BottomRightOrientation:
+       return 3;
+    case BottomLeftOrientation:
+       return 4;
+    case LeftTopOrientation:
+       return 5;
+    case RightTopOrientation:
+       return 6;
+    case RightBottomOrientation:
+       return 7;
+    case LeftBottomOrientation:
+       return 8;
+    case UndefinedOrientation:
+    default:
+       return 0;
+  }
+}
+static OrientationType
+Magick_Orientation_from_Exif_Orientation(const int orientation)
+{
+  switch (orientation)
+  {
+    case 1:
+      return TopLeftOrientation;
+    case 2:
+      return TopRightOrientation;
+    case 3:
+      return BottomRightOrientation;
+    case 4:
+      return BottomLeftOrientation;
+    case 5:
+      return LeftTopOrientation;
+    case 6:
+      return RightTopOrientation;
+    case 7:
+      return RightBottomOrientation;
+    case 8:
+      return LeftBottomOrientation;
+    case 0:
+    default:
+      return UndefinedOrientation;
+  }
 }
 
 static int
@@ -1908,6 +1967,23 @@ static int read_user_chunk_callback(png_struct *ping, png_unknown_chunkp chunk)
       profile=DestroyStringInfo(profile);
 
       return(1);
+    }
+
+  /* orNT */
+  if (chunk->name[0] == 111 &&
+      chunk->name[1] == 114 &&
+      chunk->name[2] ==  78 &&
+      chunk->name[3] ==  84)
+    {
+     /* recognized orNT */
+     if (chunk->size != 1)
+       return(-1); /* Error return */
+
+     image=(Image *) png_get_user_chunk_ptr(ping);
+
+     Magick_Orientation_from_Exif_Orientation((int) chunk->data[0]);
+
+     return(1);
     }
 
   /* vpAg (deprecated, replaced by caNv) */
@@ -10990,6 +11066,20 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     }
 
   png_write_info(ping,ping_info);
+
+  /* write orNT if image->orientation is defined */
+  if (image->orientation != UndefinedOrientation)
+    {
+      unsigned char
+        chunk[6];
+      (void) WriteBlobMSBULong(image,1L);  /* data length=1 */
+      PNGType(chunk,mng_orNT);
+      LogPNGChunk(logging,mng_orNT,1L);
+      /* PNG uses Exif orientation values */
+      chunk[4]=Magick_Orientation_to_Exif_Orientation(image->orientation);
+      (void) WriteBlob(image,5,chunk);
+      (void) WriteBlobMSBULong(image,crc32(0,chunk,5));
+    }
 
   ping_wrote_caNv = MagickFalse;
 
