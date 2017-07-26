@@ -3,6 +3,9 @@
     https://github.com/ImageMagick/ImageMagick/issues/612).
   * Fixed numerous memory leaks (reference
     https://github.com/ImageMagick/ImageMagick/issues).
+  * coders/png.c: Initialized quantum_scanline and quantum_info
+    to prevent a bad free (reference
+    https://github.com/ImageMagick/ImageMagick/issues/621).
 
 2017-07-24  7.0.6-4 Glenn Randers-Pehrson <glennrp@image...>
   * Removed write_chunk_from_profile() from coders/png.c because it has
