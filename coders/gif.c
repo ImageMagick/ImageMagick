@@ -1381,6 +1381,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       status=PingGIFImage(image);
     else
       status=DecodeImage(image,opacity);
+    InheritException(exception,&image->exception);
     if ((image_info->ping == MagickFalse) && (status == MagickFalse))
       {
         global_colormap=(unsigned char *) RelinquishMagickMemory(
