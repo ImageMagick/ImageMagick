@@ -2062,6 +2062,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   Quantum
     *volatile quantum_scanline;
 
+  QuantumInfo
+    *volatile quantum_info;
+
   ssize_t
     j;
 
@@ -2216,6 +2219,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
   pixel_info=(MemoryInfo *) NULL;
   quantum_scanline = (Quantum *) NULL;
+  quantum_info = (QuantumInfo *) NULL;
 
   if (setjmp(png_jmpbuf(ping)))
     {
@@ -2228,6 +2232,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         pixel_info=RelinquishVirtualMemory(pixel_info);
 
       quantum_scanline=(Quantum *) RelinquishMagickMemory(quantum_scanline);
+
+      quantum_info=DestroyQuantumInfo(quantum_info);
 
 #ifdef IMPNG_SETJMP_NOT_THREAD_SAFE
       UnlockSemaphoreInfo(ping_semaphore);
@@ -3201,9 +3207,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
   if (image->storage_class == DirectClass)
     {
-      QuantumInfo
-        *quantum_info;
-
       quantum_info=AcquireQuantumInfo(image_info,image);
 
       if (quantum_info == (QuantumInfo *) NULL)
