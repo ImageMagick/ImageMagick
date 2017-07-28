@@ -2124,15 +2124,15 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   {
     if (LocaleCompare(libpng_vers,libpng_runv) != 0)
     {
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),"      running with   %s",
-        libpng_runv);
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+       "      running with   %s", libpng_runv);
     }
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),"    Zlib version   = %s",
-        zlib_vers);
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+       "      Zlib version   = %s", zlib_vers);
     if (LocaleCompare(zlib_vers,zlib_runv) != 0)
     {
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),"      running with   %s",
-        zlib_runv);
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+       "      running with   %s", zlib_runv);
     }
   }
 
@@ -8092,21 +8092,21 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
   if (logging != MagickFalse)
     {
-       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"    IM version     = %s",
-           im_vers);
-       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"    Libpng version = %s",
-           libpng_vers);
+       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "    IM version     = %s", im_vers);
+       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "    Libpng version = %s", libpng_vers);
        if (LocaleCompare(libpng_vers,libpng_runv) != 0)
        {
-       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"      running with   %s",
-           libpng_runv);
+       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "      running with   %s", libpng_runv);
        }
-       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"    Zlib version   = %s",
-           zlib_vers);
+       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "    Zlib version   = %s", zlib_vers);
        if (LocaleCompare(zlib_vers,zlib_runv) != 0)
        {
-       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"      running with   %s",
-           zlib_runv);
+       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "      running with   %s", zlib_runv);
        }
     }
 
@@ -8286,6 +8286,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
       (void) LogMagickEvent(CoderEvent,GetMagickModule(), image->taint ?
           "    image->taint=MagickTrue":
           "    image->taint=MagickFalse");
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "    image->gamma=%g", image->gamma);
     }
 
   if (image->storage_class == PseudoClass &&
