@@ -1,3 +1,6 @@
+2017-07-28  7.0.6-4 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.6-4, GIT revision 20657:4e81160d6:20170728.
+
 2017-07-24  7.0.6-3 Cristy  <quetzlzacatenango@image...>
   * YUV coder no longer renders streaks (reference
     https://github.com/ImageMagick/ImageMagick/issues/612).
