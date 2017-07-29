@@ -572,43 +572,45 @@ MagickExport MagickBooleanType GradientImage(Image *image,
       */
       sine=sin((double) DegreesToRadians(gradient->angle-90.0));
       cosine=cos((double) DegreesToRadians(gradient->angle-90.0));
-      distance=fabs((double) image->columns*cosine)+
-        fabs((double) image->rows*sine);
-      gradient->gradient_vector.x1=0.5*(image->columns-distance*cosine);
-      gradient->gradient_vector.y1=0.5*(image->rows-distance*sine);
-      gradient->gradient_vector.x2=0.5*(image->columns+distance*cosine);
-      gradient->gradient_vector.y2=0.5*(image->rows+distance*sine);
+      distance=fabs((double) (image->columns-1)*cosine)+
+        fabs((double) (image->rows-1)*sine);
+      gradient->gradient_vector.x1=0.5*((image->columns-1)-distance*cosine);
+      gradient->gradient_vector.y1=0.5*((image->rows-1)-distance*sine);
+      gradient->gradient_vector.x2=0.5*((image->columns-1)+distance*cosine);
+      gradient->gradient_vector.y2=0.5*((image->rows-1)+distance*sine);
     }
-  gradient->radii.x=(double) MagickMax(image->columns,image->rows)/2.0;
+  gradient->radii.x=(double) MagickMax((image->columns-1),(image->rows-1))/2.0;
   gradient->radii.y=gradient->radii.x;
   artifact=GetImageArtifact(image,"gradient:extent");
   if (artifact != (const char *) NULL)
     {
       if (LocaleCompare(artifact,"Circle") == 0)
         {
-          gradient->radii.x=(double) (MagickMax(image->columns,image->rows))/
-            2.0;
+          gradient->radii.x=(double) (MagickMax((image->columns-1),
+           (image->rows-1)))/2.0;
           gradient->radii.y=gradient->radii.x;
         }
       if (LocaleCompare(artifact,"Diagonal") == 0)
         {
-          gradient->radii.x=(double) (sqrt((double) image->columns*
-            image->columns+image->rows*image->rows))/2.0;
+          gradient->radii.x=(double) (sqrt((double) (image->columns-1)*
+            (image->columns-1)+(image->rows-1)*(image->rows-1)))/2.0;
           gradient->radii.y=gradient->radii.x;
         }
       if (LocaleCompare(artifact,"Ellipse") == 0)
         {
-          gradient->radii.x=(double) image->columns/2.0;
-          gradient->radii.y=(double) image->rows/2.0;
+          gradient->radii.x=(double) (image->columns-1)/2.0;
+          gradient->radii.y=(double) (image->rows-1)/2.0;
         }
       if (LocaleCompare(artifact,"Maximum") == 0)
         {
-          gradient->radii.x=(double) MagickMax(image->columns,image->rows)/2.0;
+          gradient->radii.x=(double) MagickMax((image->columns-1),
+            (image->rows-1))/2.0;
           gradient->radii.y=gradient->radii.x;
         }
       if (LocaleCompare(artifact,"Minimum") == 0)
         {
-          gradient->radii.x=(double) MagickMin(image->columns,image->rows)/2.0;
+          gradient->radii.x=(double) MagickMin((image->columns-1),
+            (image->rows-1))/2.0;
           gradient->radii.y=gradient->radii.x;
         }
     }
