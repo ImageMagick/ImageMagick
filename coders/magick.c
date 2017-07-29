@@ -13067,7 +13067,10 @@ static Image *ReadMAGICKImage(const ImageInfo *image_info,
         break;
       }
   if (blob == (const void *) NULL)
-    ThrowReaderException(OptionError,"UnrecognizedImageFormat");
+    {
+      blob_info=DestroyImageInfo(blob_info);
+      ThrowReaderException(OptionError,"UnrecognizedImageFormat");
+    }
   image=BlobToImage(blob_info,blob,extent,exception);
   blob_info=DestroyImageInfo(blob_info);
   if (image == (Image *) NULL)
