@@ -1369,7 +1369,7 @@ END_OF_READING:
   if (logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(),"return");
   if (image==NULL)
   {
-    ThrowReaderException(CorruptImageError,"ImproperImageHeader")
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   }
   else
   {
