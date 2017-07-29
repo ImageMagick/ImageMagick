@@ -38,6 +38,8 @@
     https://github.com/ImageMagick/ImageMagick/issues).
   * The -monochrome option no longer returns a blank canvas (reference
     https://github.com/ImageMagick/ImageMagick/issues/594).
+  * coders/png.c: fixed memory leak of quantum_info (CVE-2017-11539, reference
+    https://github.com/ImageMagick/ImageMagick/issues/582
 
 2017-07-15  7.0.6-2 Glenn Randers-Pehrson <glennrp@image...>
   * Added caNv, eXIf, and pHYs to the list of PNG chunks to be removed
