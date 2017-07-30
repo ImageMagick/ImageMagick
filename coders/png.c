@@ -3154,6 +3154,36 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
       image->gamma = image_gamma;
     }
+  else
+    {
+      double
+        image_gamma = image->gamma;
+
+      (void)LogMagickEvent(CoderEvent,GetMagickModule(),
+         "    image->gamma=%f",(float) image_gamma);
+
+      if (image_gamma > 0.75)
+        {
+          /* Set image->rendering_intent to Undefined,
+           * image->colorspace to GRAY, and reset image->chromaticity.
+           */
+          image->intensity = Rec709LuminancePixelIntensityMethod;
+          SetImageColorspace(image,RGBColorspace,exception);
+        }
+      else
+        {
+          RenderingIntent
+            save_rendering_intent = image->rendering_intent;
+          ChromaticityInfo
+            save_chromaticity = image->chromaticity;
+
+          SetImageColorspace(image,sRGBColorspace,exception);
+          image->rendering_intent = save_rendering_intent;
+          image->chromaticity = save_chromaticity;
+        }
+
+      image->gamma = image_gamma;
+    }
 
   (void)LogMagickEvent(CoderEvent,GetMagickModule(),
       "    image->colorspace=%d",(int) image->colorspace);
@@ -4250,7 +4280,15 @@ static Image *ReadPNGImage(const ImageInfo *image_info,
            image->chromaticity.white_point.y>0.3289f &&
            image->chromaticity.white_point.y<0.3291f))
     {
+       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "SetImageColorspace to RGBColorspace");
        SetImageColorspace(image,RGBColorspace,exception);
+    }
+    else
+    {
+       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "NOT SetImageColorspace to RGBColorspace, image->gamma=%g",
+        image->gamma);
     }
 
   if (logging != MagickFalse)
