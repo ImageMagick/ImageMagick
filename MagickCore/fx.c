@@ -5537,14 +5537,12 @@ MagickExport Image *VignetteImage(const Image *image,const double radius,
   canvas=CloneImage(image,0,0,MagickTrue,exception);
   if (canvas == (Image *) NULL)
     return((Image *) NULL);
-  if ((canvas->alpha_trait == UndefinedPixelTrait) &&
-      (canvas->background_color.alpha != OpaqueAlpha))
-    (void) SetImageAlphaChannel(canvas,OpaqueAlphaChannel,exception);
   if (SetImageStorageClass(canvas,DirectClass,exception) == MagickFalse)
     {
       canvas=DestroyImage(canvas);
       return((Image *) NULL);
     }
+  canvas->alpha_trait=BlendPixelTrait;
   oval_image=CloneImage(canvas,canvas->columns,canvas->rows,MagickTrue,
     exception);
   if (oval_image == (Image *) NULL)
