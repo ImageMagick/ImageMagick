@@ -4284,12 +4284,6 @@ static Image *ReadPNGImage(const ImageInfo *image_info,
           "SetImageColorspace to RGBColorspace");
        SetImageColorspace(image,RGBColorspace,exception);
     }
-    else
-    {
-       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "NOT SetImageColorspace to RGBColorspace, image->gamma=%g",
-        image->gamma);
-    }
 
   if (logging != MagickFalse)
     {
