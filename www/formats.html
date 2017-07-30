@@ -260,7 +260,7 @@ the supported image formats.</p>
     <td>DCM</td>
     <td>R</td>
     <td>Digital Imaging and Communications in Medicine (DICOM) image</td>
-    <td>Used by the medical community for images like X-rays.  ImageMagick sets the initial display range based on the Window Center (0028,1050) and Window Width (0028,1051) tags. Use <a href="command-line-options.html#define">-define dcm:display-range=reset</a> to set the display range to the minimum and maximum pixel values.</td>
+    <td>Used by the medical community for images like X-rays.  ImageMagick sets the initial display range based on the Window Center (0028,1050) and Window Width (0028,1051) tags. Use <a href="command-line-options.html#define">-define dcm:display-range=reset</a> to set the display range to the minimum and maximum pixel values. Use <a href="command-line-options.html#define">-define dcm:rescale=true</a> to enable interpretation of the rescale slope and intercept settings in the file. Use <a href="command-line-options.html#define">-define dcm:window=centerXwidth</a> to override the center and width settings in the file with your own values.</td>
   </tr>
 
   <tr>
@@ -763,6 +763,13 @@ convert \( -size 15x15 canvas:black canvas:white -append \) \
     <td>R</td>
     <td>Pentax Electronic File</td>
     <td>Requires an explicit image format otherwise the image is interpreted as a TIFF image (e.g. pef:image.pef).</td>
+  </tr>
+
+  <tr>
+    <td>PES</td>
+    <td>R</td>
+    <td>Embrid Embroidery Format</td>
+    <td> </td>
   </tr>
 
   <tr>
@@ -1962,4 +1969,4 @@ convert \( -size 15x15 canvas:black canvas:white -append \) \
   <script src="../js/magick.html"></script>
 </body>
 </html>
-<!-- Magick Cache 13th July 2017 06:27 -->
+<!-- Magick Cache 30th July 2017 18:15 -->

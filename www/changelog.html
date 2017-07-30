@@ -52,12 +52,45 @@
   </div>
 </div>
 <div class="container">
-<div class="magick-header"><dl><dt>2017-07-02  7.0.6-1 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+<div class="magick-header"><dl><dt>2017-07-28  7.0.6-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 7.0.6-4, GIT revision 20657:4e81160d6:20170728.</li>
+<dt>2017-07-24  7.0.6-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> YUV coder no longer renders streaks (reference    https://github.com/ImageMagick/ImageMagick/issues/612).</li>
+  <li> Fixed numerous memory leaks (reference    https://github.com/ImageMagick/ImageMagick/issues).</li>
+  <li> coders/png.c: Initialized quantum_scanline and quantum_info    to prevent a bad free (reference    https://github.com/ImageMagick/ImageMagick/issues/621).</li>
+<dt>2017-07-25  7.0.6-4 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <li> Removed write_chunk_from_profile() from coders/png.c because it has    not worked at least since version 6.7.6.</li>
+  <li> Removed many redundant checks before RelinquishMagickMemory(), which    is safe to call with a NULL argument.</li>
+  <li> Added experimental PNG orNT chunk, to store image-&gt;orientation.</li>
+  <li> Removed vpAg chunk write support (we are now writing caNv instead).</li>
+<dt>2017-07-24  7.0.6-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 7.0.6-3, GIT revision 20598:cc9c43b44:20170724.</li>
+<dt>2017-07-23  7.0.6-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Fixed numerous memory leaks (reference    https://github.com/ImageMagick/ImageMagick/issues).</li>
+<dt>2017-07-23  7.0.6-3 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <li> Fix memory leaks when reading a malformed JNG image:    https://github.com/ImageMagick/ImageMagick/issues/600,    https://github.com/ImageMagick/ImageMagick/issues/602).</li>
+<dt>2017-07-21  7.0.6-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 7.0.6-2, GIT revision 20549:62fcf3d96:20170721.</li>
+<dt>2017-07-19  7.0.6-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Fixed numerous memory leaks (reference    https://github.com/ImageMagick/ImageMagick/issues).</li>
+  <li> The -monochrome option no longer returns a blank canvas (reference    https://github.com/ImageMagick/ImageMagick/issues/594).</li>
+<dt>2017-07-15  7.0.6-2 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <li> Added caNv, eXIf, and pHYs to the list of PNG chunks to be removed    by the "-strip" option.</li>
+<dt>2017-07-15  7.0.6-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 7.0.6-1, GIT revision 20447:c2a315e10:20170715.</li>
+<dt>2017-07-13  7.0.6-1 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <li> Implemented PNG eXIf chunk support.</li>
+<dt>2017-07-08  7.0.6-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Support new -auto-threshold option.  OTSU and Triangle methods are    currently supported.  Look for the Kapur method in the next release.</li>
+  <li> Fixed numerous memory leaks (reference    https://github.com/ImageMagick/ImageMagick/issues).</li>
+  <li> Don't use variable float_t / double_t, bump SO (reference    https://github.com/ImageMagick/ImageMagick/issues/510).</li>
+  <li> Support DNG images with libraw delegate library.</li>
+<dt>2017-07-02  7.0.6-1 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
   <li> Reject PNG file that is too small (under 60 bytes) to contain    a valid image.</li>
   <li> Reject JPEG file that is too small (under 107 bytes) to contain    a valid image.</li>
   <li> Reject JNG file that is too small (under 147 bytes) to contain    a valid image.</li>
 <dt>2017-06-22  7.0.6-1 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
-  <li> Stop a memory leak in read_user_chunk_callback() (reference    https://github.com/ImageMagick/ImageMagick/issues/517).</li>
+  <li> Stop a memory leak in read_user_chunk_callback() (reference    https://github.com/ImageMagick/ImageMagick/issues/517,    CVE 2017-11310).</li>
 <dt>2017-06-10  7.0.6-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.6-0, GIT revision 20194:b0c0d00:20170611.</li>
 <dt>2017-06-10  7.0.6-0 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
@@ -423,4 +456,4 @@
   <script src="../js/magick.html"></script>
 </body>
 </html>
-<!-- Magick Cache 13th July 2017 06:30 -->
+<!-- Magick Cache 30th July 2017 18:07 -->
