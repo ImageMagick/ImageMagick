@@ -3,6 +3,8 @@
     it was setting image->gamma, but only setting image->colorspace
     for grayscale and gray-alpha images.  Reference
     https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=32418).
+  * Fix improper use of NULL in the JNG decoder (Reference
+    https://github.com/ImageMagick/ImageMagick/issues/632).
 
 2017-07-29  6.9.9-5 Cristy  <quetzlzacatenango@image...>
   * Off by one error for gradient coder (reference
