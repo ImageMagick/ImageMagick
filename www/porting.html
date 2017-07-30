@@ -400,6 +400,8 @@ be applied to expand the one channel into separate RGB (or other) channels.
 <dd class="col-md-8">the default is to update the RGBA channels, previously, in IMv6, the default was RGB.  If you get results that differ from IMv6, you may need to specify <code>-channel RGB</code> on your command line (e.g. -level-colors option).</dd>
 <dt class="col-md-4">+combine</dt>
 <dd class="col-md-8">This option now requires an argument, the image colorspace (e.g. +combine sRGB).</dd>
+dt class="col-md-4">-gamma</dt>
+<dd class="col-md-8">Multiple gamma arguments (e.g. <code>-gamma 1,2,3</code>) are no longer supported, instead use <code>-channel</code> (e.g. <code>-channel blue -gamma 2)</code>.</dd>
 </dl>
 
 <h3>New Options</h3>

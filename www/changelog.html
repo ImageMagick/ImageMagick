@@ -52,7 +52,42 @@
   </div>
 </div>
 <div class="container">
-<div class="magick-header"><dl><dt>2017-06-10  6.9.8-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<div class="magick-header"><dl><dt>2017-07-28  6.9.9-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 6.9.9-3, GIT revision 11833:4e81160d6:20170728.</li>
+<dt>2017-07-25  6.9.9-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Fixed numerous memory leaks (reference    https://github.com/ImageMagick/ImageMagick/issues).</li>
+  <li> coders/png.c: Initialized quantum_scanline to prevent a bad free    (reference https://github.com/ImageMagick/ImageMagick/issues/621).</li>
+<dt>2017-07-24  6.9.9-4 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <li> Removed write_chunk_from_profile() from coders/png.c because it    has not worked at least since version 6.7.6.</li>
+  <li> Removed many redundant checks before RelinquishMagickMemory(),    which is safe to call with a NULL argument.</li>
+  <li> Removed vpAg chunk write support (we are now writing caNv instead).</li>
+  <li> coders/png.c: Initialized quantum_info to prevent memory leakage    (reference https://github.com/ImageMagick/ImageMagick/issues/582).</li>
+<dt>2017-07-24  6.9.9-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 6.9.9-3, GIT revision 11809:2bd88257b:20170724.</li>
+<dt>2017-07-23  6.9.9-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Fixed numerous memory leaks (reference    https://github.com/ImageMagick/ImageMagick/issues).</li>
+<dt>2017-07-23  6.9.9-3 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <li> Fix memory leaks when reading a malformed JNG image:    https://github.com/ImageMagick/ImageMagick/issues/600).    https://github.com/ImageMagick/ImageMagick/issues/602).</li>
+<dt>2017-07-22  6.9.9-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 6.9.9-2, GIT revision 11786:21b23bf09:20170722.</li>
+<dt>2017-07-22  6.9.9-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> composite -dissolve works again reference    https://github.com/ImageMagick/ImageMagick/issues/597).</li>
+<dt>2017-07-21  6.9.9-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 6.9.9-1, GIT revision 11782:75f7e994e:20170721.</li>
+<dt>2017-07-19  6.9.9-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Fixed numerous memory leaks (reference    https://github.com/ImageMagick/ImageMagick/issues).</li>
+<dt>2017-07-15  6.9.9-1 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <li> Don't write a hex-encoded Exif profile when writing the eXIf chunk.</li>
+  <li> Added caNv, eXIf, and pHYs to the list of PNG chunks to be removed    by the "-strip" option.</li>
+<dt>2017-07-15  6.9.9-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 6.9.9-0, GIT revision 11738:8903861b2:20170715.</li>
+<dt>2017-07-13  6.9.9-0 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <li> Implemented PNG eXIf chunk support.</li>
+<dt>2017-07-08  6.9.9-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Fixed numerous memory leaks (reference    https://github.com/ImageMagick/ImageMagick/issues).</li>
+  <li> Don't use variable float_t / double_t, bump SO (reference    https://github.com/ImageMagick/ImageMagick/issues/510).</li>
+  <li> Support DNG images with libraw delegate library.</li>
+<dt>2017-06-10  6.9.8-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 6.9.8-10, GIT revision 11637:eb6f363:20170610.</li>
 <dt>2017-06-10  6.9.8-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Introduce SetMagickSecurityPolicy() (MagickCore) and    MagickSetSecurityPolicy() (MagickWand) to set the ImageMagick security    policy (reference https://github.com/ImageMagick/ImageMagick/issues/407).</li>
