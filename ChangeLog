@@ -28,6 +28,9 @@
   * coders/png.c: Initialized quantum_info to prevent memory leakage
     (reference https://github.com/ImageMagick/ImageMagick/issues/582,
     CVE-2017-11539).
+  * coders/png.c: fixed NULL dereference when trying to write an empty MNG
+    (CVE-2017-11522, reference
+    https://github.com/ImageMagick/ImageMagick/issues/586
 
 2017-07-24  6.9.9-3 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 6.9.9-3, GIT revision 11809:2bd88257b:20170724.
