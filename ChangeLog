@@ -53,6 +53,9 @@
     https://github.com/ImageMagick/ImageMagick/issues/594).
   * coders/png.c: fixed memory leak of quantum_info (CVE-2017-11539, reference
     https://github.com/ImageMagick/ImageMagick/issues/582
+  * coders/png.c: fixed NULL dereference when trying to write an empty MNG
+    (CVE-2017-11522, reference
+    https://github.com/ImageMagick/ImageMagick/issues/586
 
 2017-07-15  7.0.6-2 Glenn Randers-Pehrson <glennrp@image...>
   * Added caNv, eXIf, and pHYs to the list of PNG chunks to be removed
