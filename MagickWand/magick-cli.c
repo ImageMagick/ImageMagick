@@ -816,25 +816,27 @@ Magick_Command_Cleanup:
   assert(cli_wand->wand.exception == exception);
 
   /* Handle metadata for ImageMagickObject COM object for Windows VBS */
-  if (metadata != (char **) NULL) {
-    const char
-      *format;
+  if ((cli_wand->wand.images != (Image *) NULL) &&
+      (metadata != (char **) NULL))
+    {
+      const char
+        *format;
 
-    char
-      *text;
-
-    format="%w,%h,%m";   // Get this from image_info Option splaytree
-
-    text=InterpretImageProperties(image_info,cli_wand->wand.images,format,
-      exception);
-    if (text == (char *) NULL)
-      ThrowMagickException(exception,GetMagickModule(),ResourceLimitError,
-        "MemoryAllocationFailed","`%s'", GetExceptionMessage(errno));
-    else {
-      (void) ConcatenateString(&(*metadata),text);
-      text=DestroyString(text);
+      char
+        *text;
+  
+      format="%w,%h,%m";   // Get this from image_info Option splaytree
+      text=InterpretImageProperties(image_info,cli_wand->wand.images,format,
+        exception);
+      if (text == (char *) NULL)
+        ThrowMagickException(exception,GetMagickModule(),ResourceLimitError,
+          "MemoryAllocationFailed","`%s'", GetExceptionMessage(errno));
+      else
+        {
+          (void) ConcatenateString(&(*metadata),text);
+          text=DestroyString(text);
+        }
     }
-  }
 
 Magick_Command_Exit:
   cli_wand->location="Exiting";
