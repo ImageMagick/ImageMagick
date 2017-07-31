@@ -8332,7 +8332,8 @@ static MagickBooleanType WriteMSLImage(const ImageInfo *image_info,Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   msl_image=CloneImage(image,0,0,MagickTrue,exception);
   status=ProcessMSLScript(image_info,&msl_image,exception);
-  msl_image=DestroyImage(msl_image);
+  if (msl_image != (Image *) NULL)
+    msl_image=DestroyImage(msl_image);
   return(status);
 }
 #endif
