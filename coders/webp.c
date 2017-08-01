@@ -271,7 +271,11 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
   memcpy(stream,header,12);
   count=ReadBlob(image,length-12,stream+12);
   if (count != (ssize_t) (length-12))
-    ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
+    {
+      stream=(unsigned char*) RelinquishMagickMemory(stream);
+      (void) CloseBlob(image);
+      ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
+    }
   webp_status=WebPGetFeatures(stream,length,features);
   if (webp_status == VP8_STATUS_OK)
     {
@@ -288,7 +292,11 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
         }
       status=SetImageExtent(image,image->columns,image->rows,exception);
       if (status == MagickFalse)
-        return(DestroyImageList(image));
+        {
+          stream=(unsigned char*) RelinquishMagickMemory(stream);
+          (void) CloseBlob(image);
+          return(DestroyImageList(image));
+        }
       webp_status=WebPDecode(stream,length,&configure);
     }
   if (webp_status != VP8_STATUS_OK)
@@ -298,41 +306,59 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
       {
         case VP8_STATUS_OUT_OF_MEMORY:
         {
+          stream=(unsigned char*) RelinquishMagickMemory(stream);
+          (void) CloseBlob(image);
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
           break;
         }
         case VP8_STATUS_INVALID_PARAM:
         {
+          stream=(unsigned char*) RelinquishMagickMemory(stream);
+          (void) CloseBlob(image);
           ThrowReaderException(CorruptImageError,"invalid parameter");
           break;
         }
         case VP8_STATUS_BITSTREAM_ERROR:
         {
+          stream=(unsigned char*) RelinquishMagickMemory(stream);
+          (void) CloseBlob(image);
           ThrowReaderException(CorruptImageError,"CorruptImage");
           break;
         }
         case VP8_STATUS_UNSUPPORTED_FEATURE:
         {
+          stream=(unsigned char*) RelinquishMagickMemory(stream);
+          (void) CloseBlob(image);
           ThrowReaderException(CoderError,"DataEncodingSchemeIsNotSupported");
           break;
         }
         case VP8_STATUS_SUSPENDED:
         {
+          stream=(unsigned char*) RelinquishMagickMemory(stream);
+          (void) CloseBlob(image);
           ThrowReaderException(CorruptImageError,"decoder suspended");
           break;
         }
         case VP8_STATUS_USER_ABORT:
         {
+          stream=(unsigned char*) RelinquishMagickMemory(stream);
+          (void) CloseBlob(image);
           ThrowReaderException(CorruptImageError,"user abort");
           break;
         }
         case VP8_STATUS_NOT_ENOUGH_DATA:
         {
+          stream=(unsigned char*) RelinquishMagickMemory(stream);
+          (void) CloseBlob(image);
           ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
           break;
         }
         default:
+        {
+          stream=(unsigned char*) RelinquishMagickMemory(stream);
+          (void) CloseBlob(image);
           ThrowReaderException(CorruptImageError,"CorruptImage");
+        }
       }
     }
   if (IsWEBPImageLossless(stream,length) != MagickFalse)
