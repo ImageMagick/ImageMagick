@@ -1,4 +1,8 @@
-2017-07-29  7.0.6-5 Glenn Randers-Pehrson <glennrp@image...>
+2017-08-01  6.9.9-5 Cristy  <quetzlzacatenango@image...>
+  * Fixed numerous memory leaks (reference
+    https://github.com/ImageMagick/ImageMagick/issues).
+
+2017-07-29  6.9.9-5 Glenn Randers-Pehrson <glennrp@image...>
   * Properly set image->colorspace in the PNG decoder (previously
     it was setting image->gamma, but only setting image->colorspace
     for grayscale and gray-alpha images.  Reference
