@@ -273,7 +273,6 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
   if (count != (ssize_t) (length-12))
     {
       stream=(unsigned char*) RelinquishMagickMemory(stream);
-      (void) CloseBlob(image);
       ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
     }
   webp_status=WebPGetFeatures(stream,length,features);
@@ -307,56 +306,48 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
         case VP8_STATUS_OUT_OF_MEMORY:
         {
           stream=(unsigned char*) RelinquishMagickMemory(stream);
-          (void) CloseBlob(image);
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
           break;
         }
         case VP8_STATUS_INVALID_PARAM:
         {
           stream=(unsigned char*) RelinquishMagickMemory(stream);
-          (void) CloseBlob(image);
           ThrowReaderException(CorruptImageError,"invalid parameter");
           break;
         }
         case VP8_STATUS_BITSTREAM_ERROR:
         {
           stream=(unsigned char*) RelinquishMagickMemory(stream);
-          (void) CloseBlob(image);
           ThrowReaderException(CorruptImageError,"CorruptImage");
           break;
         }
         case VP8_STATUS_UNSUPPORTED_FEATURE:
         {
           stream=(unsigned char*) RelinquishMagickMemory(stream);
-          (void) CloseBlob(image);
           ThrowReaderException(CoderError,"DataEncodingSchemeIsNotSupported");
           break;
         }
         case VP8_STATUS_SUSPENDED:
         {
           stream=(unsigned char*) RelinquishMagickMemory(stream);
-          (void) CloseBlob(image);
           ThrowReaderException(CorruptImageError,"decoder suspended");
           break;
         }
         case VP8_STATUS_USER_ABORT:
         {
           stream=(unsigned char*) RelinquishMagickMemory(stream);
-          (void) CloseBlob(image);
           ThrowReaderException(CorruptImageError,"user abort");
           break;
         }
         case VP8_STATUS_NOT_ENOUGH_DATA:
         {
           stream=(unsigned char*) RelinquishMagickMemory(stream);
-          (void) CloseBlob(image);
           ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
           break;
         }
         default:
         {
           stream=(unsigned char*) RelinquishMagickMemory(stream);
-          (void) CloseBlob(image);
           ThrowReaderException(CorruptImageError,"CorruptImage");
         }
       }
