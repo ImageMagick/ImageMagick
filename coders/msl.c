@@ -7899,12 +7899,25 @@ static MagickBooleanType ProcessMSLScript(const ImageInfo *image_info,
   }
   if (msl_info.exception->severity == UndefinedException)
     (void) xmlParseChunk(msl_info.parser," ",1,MagickTrue);
+  /*
+    Free resources.
+  */
   xmlFreeParserCtxt(msl_info.parser);
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"end SAX");
   msl_info.group_info=(MSLGroupInfo *) RelinquishMagickMemory(
     msl_info.group_info);
   if (*image == (Image *) NULL)
     *image=(*msl_info.image);
+  *msl_info.image_info=DestroyImageInfo(*msl_info.image_info);
+  msl_info.image_info=(ImageInfo **) RelinquishMagickMemory(
+    msl_info.image_info);
+  *msl_info.draw_info=DestroyDrawInfo(*msl_info.draw_info);
+  msl_info.draw_info=(DrawInfo **) RelinquishMagickMemory(msl_info.draw_info);
+  msl_info.image=(Image **) RelinquishMagickMemory(msl_info.image);
+  *msl_info.attributes=DestroyImage(*msl_info.attributes);
+  msl_info.attributes=(Image **) RelinquishMagickMemory(msl_info.attributes);
+  msl_info.group_info=(MSLGroupInfo *) RelinquishMagickMemory(
+    msl_info.group_info);
   if (msl_info.exception->severity != UndefinedException)
     return(MagickFalse);
   return(MagickTrue);
@@ -8332,7 +8345,8 @@ static MagickBooleanType WriteMSLImage(const ImageInfo *image_info,Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   msl_image=CloneImage(image,0,0,MagickTrue,exception);
   status=ProcessMSLScript(image_info,&msl_image,exception);
-  msl_image=DestroyImage(msl_image);
+  if (msl_image != (Image *) NULL)
+    msl_image=DestroyImage(msl_image);
   return(status);
 }
 #endif
