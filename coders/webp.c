@@ -271,7 +271,10 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
   (void) memcpy(stream,header,12);
   count=ReadBlob(image,length-12,stream+12);
   if (count != (ssize_t) (length-12))
-    ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
+    {
+      stream=(unsigned char*) RelinquishMagickMemory(stream);
+      ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
+    }
   webp_status=WebPGetFeatures(stream,length,features);
   if (webp_status == VP8_STATUS_OK)
     {
@@ -290,7 +293,9 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
       status=SetImageExtent(image,image->columns,image->rows);
       if (status == MagickFalse)
         {
+          stream=(unsigned char*) RelinquishMagickMemory(stream);
           InheritException(exception,&image->exception);
+          (void) CloseBlob(image);
           return(DestroyImageList(image));
         }
       webp_status=WebPDecode(stream,length,&configure);
@@ -302,41 +307,51 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
       {
         case VP8_STATUS_OUT_OF_MEMORY:
         {
+          stream=(unsigned char*) RelinquishMagickMemory(stream);
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
           break;
         }
         case VP8_STATUS_INVALID_PARAM:
         {
+          stream=(unsigned char*) RelinquishMagickMemory(stream);
           ThrowReaderException(CorruptImageError,"invalid parameter");
           break;
         }
         case VP8_STATUS_BITSTREAM_ERROR:
         {
+          stream=(unsigned char*) RelinquishMagickMemory(stream);
           ThrowReaderException(CorruptImageError,"CorruptImage");
           break;
         }
         case VP8_STATUS_UNSUPPORTED_FEATURE:
         {
+          stream=(unsigned char*) RelinquishMagickMemory(stream);
           ThrowReaderException(CoderError,"DataEncodingSchemeIsNotSupported");
           break;
         }
         case VP8_STATUS_SUSPENDED:
         {
+          stream=(unsigned char*) RelinquishMagickMemory(stream);
           ThrowReaderException(CorruptImageError,"decoder suspended");
           break;
         }
         case VP8_STATUS_USER_ABORT:
         {
+          stream=(unsigned char*) RelinquishMagickMemory(stream);
           ThrowReaderException(CorruptImageError,"user abort");
           break;
         }
         case VP8_STATUS_NOT_ENOUGH_DATA:
         {
+          stream=(unsigned char*) RelinquishMagickMemory(stream);
           ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
           break;
         }
         default:
+        {
+          stream=(unsigned char*) RelinquishMagickMemory(stream);
           ThrowReaderException(CorruptImageError,"CorruptImage");
+        }
       }
     }
   p=(unsigned char *) webp_image->u.RGBA.rgba;
