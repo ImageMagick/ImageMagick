@@ -351,8 +351,6 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
       default:
         ThrowWEBPException(CorruptImageError,"CorruptImage");
     }
-  if (IsWEBPImageLossless(stream,length) != MagickFalse)
-    image->quality=100;
   p=(unsigned char *) webp_image->u.RGBA.rgba;
   for (y=0; y < (ssize_t) image->rows; y++)
   {
