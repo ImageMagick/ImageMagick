@@ -263,7 +263,6 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
       return((Image *) NULL);
     }
   stream=(unsigned char *) NULL;
-  webp_image=(WebPDecBuffer *) NULL;
   if (WebPInitDecoderConfig(&configure) == 0)
     ThrowReaderException(ResourceLimitError,"UnableToDecodeImageFile");
   webp_image->colorspace=MODE_RGBA;
