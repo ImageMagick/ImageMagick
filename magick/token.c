@@ -230,10 +230,14 @@ MagickExport void GetNextToken(const char *start,const char **end,
     case '/':
     {
       if (i < (ssize_t) (extent-1))
-        token[i++]=(*p++);
+        token[i++]=(*p);
+      p++;
       if ((*p == '>') || (*p == '/'))
-        if (i < (ssize_t) (extent-1))
-          token[i++]=(*p++);
+        {
+          if (i < (ssize_t) (extent-1))
+            token[i++]=(*p);
+          p++;
+        }
       break;
     }
     default:
@@ -253,15 +257,19 @@ MagickExport void GetNextToken(const char *start,const char **end,
               break;
           }
           if (*p == '%')
-            if (i < (ssize_t) (extent-1))
-              token[i++]=(*p++);
+            {
+              if (i < (ssize_t) (extent-1))
+                token[i++]=(*p);
+              p++;
+            }
           break;
         }
       if ((*p != '\0') && (isalpha((int) ((unsigned char) *p)) == 0) &&
           (*p != *DirectorySeparator) && (*p != '#') && (*p != '<'))
         {
           if (i < (ssize_t) (extent-1))
-            token[i++]=(*p++);
+            token[i++]=(*p);
+          p++;
           break;
         }
       for ( ; *p != '\0'; p++)
