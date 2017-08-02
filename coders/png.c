@@ -2428,6 +2428,19 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     const char
       *value;
 
+    value=GetImageOption(image_info,"png:ignore-crc");
+    if (value != NULL)
+    {
+       /* Turn off CRC checking while reading */
+       png_set_crc_action(ping, PNG_CRC_QUIET_USE, PNG_CRC_QUIET_USE);
+#ifdef PNG_IGNORE_ADLER32
+       /* Turn off ADLER32 checking while reading */
+       png_set_option(ping, PNG_IGNORE_ADLER32, PNG_OPTION_ON);
+#endif
+     }
+
+    ping_preserve_iCCP=MagickTrue;
+
     value=GetImageOption(image_info,"profile:skip");
 
     if (IsOptionMember("ICC",value) == MagickFalse)
