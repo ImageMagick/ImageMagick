@@ -223,7 +223,7 @@ MagickExport void GetNextToken(const char *start,const char **end,
             }
         if (i < (ssize_t) (extent-1))
           token[i++]=(*p);
-        if ((p-start) >= (ssize_t) length)
+        if ((size_t) (p-start) >= length)
           break;
       }
       break;
@@ -254,7 +254,7 @@ MagickExport void GetNextToken(const char *start,const char **end,
           {
             if (i < (ssize_t) (extent-1))
               token[i++]=(*p);
-            if ((p-start) >= (ssize_t) length)
+            if ((size_t) (p-start) >= length)
               break;
           }
           if (*p == '%')
@@ -291,10 +291,10 @@ MagickExport void GetNextToken(const char *start,const char **end,
               token[i++]=(*p);
             if ((*p == ')') && (*(p-1) != '\\'))
               break;
-            if ((p-start) >= (ssize_t) length)
+            if ((size_t) (p-start) >= length)
               break;
           }
-        if ((p-start) >= (ssize_t) length)
+        if ((size_t) (p-start) >= length)
           break;
       }
       break;
