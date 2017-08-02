@@ -1,3 +1,6 @@
+2017-08-02  6.9.9-5 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 6.9.9-5, GIT revision 11858:7a555e53f:20170802.
+
 2017-08-01  6.9.9-5 Cristy  <quetzlzacatenango@image...>
   * Fixed numerous memory leaks (reference
     https://github.com/ImageMagick/ImageMagick/issues).
