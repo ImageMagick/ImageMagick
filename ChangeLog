@@ -7,7 +7,7 @@
     it was setting image->gamma, but only setting image->colorspace
     for grayscale and gray-alpha images.  Reference
     https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=32418).
-  * Fix improper use of NULL in the JNG decoder (Reference
+  * Fix improper use of NULL in the JNG decoder (CVE-2017-11750, Reference
     https://github.com/ImageMagick/ImageMagick/issues/632).
 
 2017-07-29  7.0.6-5 Cristy  <quetzlzacatenango@image...>
