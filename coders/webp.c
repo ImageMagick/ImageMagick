@@ -13,11 +13,11 @@
 %                         Read/Write WebP Image Format                        %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                                   Cristy                                    %
 %                                 March 2011                                  %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2013 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2017 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -204,6 +204,15 @@ static MagickBooleanType IsWEBPImageLossless(const unsigned char *stream,
 static Image *ReadWEBPImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
+#define ThrowWEBPException(severity,tag) \
+{ \
+  if (stream != (unsigned char *) NULL) \
+    stream=(unsigned char*) RelinquishMagickMemory(stream); \
+  if (webp_image != (WebPDecBuffer *) NULL) \
+    WebPFreeDecBuffer(webp_image); \
+  ThrowReaderException(severity,tag); \
+}
+
   Image
     *image;
 
@@ -253,28 +262,29 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
+  stream=(unsigned char *) NULL;
+  webp_image=(WebPDecBuffer *) NULL;
   if (WebPInitDecoderConfig(&configure) == 0)
     ThrowReaderException(ResourceLimitError,"UnableToDecodeImageFile");
   webp_image->colorspace=MODE_RGBA;
   count=ReadBlob(image,12,header);
   if (count != 12)
-    ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
+    ThrowWEBPException(CorruptImageError,"InsufficientImageDataInFile");
   status=IsWEBP(header,count);
   if (status == MagickFalse)
-    ThrowReaderException(CorruptImageError,"CorruptImage");
+    ThrowWEBPException(CorruptImageError,"CorruptImage");
   length=(size_t) (ReadWebPLSBWord(header+4)+8);
   if (length < 12)
-    ThrowReaderException(CorruptImageError,"CorruptImage");
+    ThrowWEBPException(CorruptImageError,"CorruptImage");
+  if (length > GetBlobSize(image))
+    ThrowWEBPException(CorruptImageError,"InsufficientImageDataInFile");
   stream=(unsigned char *) AcquireQuantumMemory(length,sizeof(*stream));
   if (stream == (unsigned char *) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-  memcpy(stream,header,12);
+    ThrowWEBPException(ResourceLimitError,"MemoryAllocationFailed");
+  (void) memcpy(stream,header,12);
   count=ReadBlob(image,length-12,stream+12);
   if (count != (ssize_t) (length-12))
-    {
-      stream=(unsigned char*) RelinquishMagickMemory(stream);
-      ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
-    }
+    ThrowWEBPException(CorruptImageError,"InsufficientImageDataInFile");
   webp_status=WebPGetFeatures(stream,length,features);
   if (webp_status == VP8_STATUS_OK)
     {
@@ -283,6 +293,8 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
       image->depth=8;
       image->alpha_trait=features->has_alpha != 0 ? BlendPixelTrait :
         UndefinedPixelTrait;
+      if (IsWEBPImageLossless(stream,length) != MagickFalse)
+        image->quality=100;
       if (image_info->ping != MagickFalse)
         {
           stream=(unsigned char*) RelinquishMagickMemory(stream);
@@ -299,58 +311,45 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
       webp_status=WebPDecode(stream,length,&configure);
     }
   if (webp_status != VP8_STATUS_OK)
+    switch (webp_status)
     {
-      stream=(unsigned char*) RelinquishMagickMemory(stream);
-      switch (webp_status)
+      case VP8_STATUS_OUT_OF_MEMORY:
       {
-        case VP8_STATUS_OUT_OF_MEMORY:
-        {
-          stream=(unsigned char*) RelinquishMagickMemory(stream);
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-          break;
-        }
-        case VP8_STATUS_INVALID_PARAM:
-        {
-          stream=(unsigned char*) RelinquishMagickMemory(stream);
-          ThrowReaderException(CorruptImageError,"invalid parameter");
-          break;
-        }
-        case VP8_STATUS_BITSTREAM_ERROR:
-        {
-          stream=(unsigned char*) RelinquishMagickMemory(stream);
-          ThrowReaderException(CorruptImageError,"CorruptImage");
-          break;
-        }
-        case VP8_STATUS_UNSUPPORTED_FEATURE:
-        {
-          stream=(unsigned char*) RelinquishMagickMemory(stream);
-          ThrowReaderException(CoderError,"DataEncodingSchemeIsNotSupported");
-          break;
-        }
-        case VP8_STATUS_SUSPENDED:
-        {
-          stream=(unsigned char*) RelinquishMagickMemory(stream);
-          ThrowReaderException(CorruptImageError,"decoder suspended");
-          break;
-        }
-        case VP8_STATUS_USER_ABORT:
-        {
-          stream=(unsigned char*) RelinquishMagickMemory(stream);
-          ThrowReaderException(CorruptImageError,"user abort");
-          break;
-        }
-        case VP8_STATUS_NOT_ENOUGH_DATA:
-        {
-          stream=(unsigned char*) RelinquishMagickMemory(stream);
-          ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
-          break;
-        }
-        default:
-        {
-          stream=(unsigned char*) RelinquishMagickMemory(stream);
-          ThrowReaderException(CorruptImageError,"CorruptImage");
-        }
+        ThrowWEBPException(ResourceLimitError,"MemoryAllocationFailed");
+        break;
       }
+      case VP8_STATUS_INVALID_PARAM:
+      {
+        ThrowWEBPException(CorruptImageError,"invalid parameter");
+        break;
+      }
+      case VP8_STATUS_BITSTREAM_ERROR:
+      {
+        ThrowWEBPException(CorruptImageError,"CorruptImage");
+        break;
+      }
+      case VP8_STATUS_UNSUPPORTED_FEATURE:
+      {
+        ThrowWEBPException(CoderError,"DataEncodingSchemeIsNotSupported");
+        break;
+      }
+      case VP8_STATUS_SUSPENDED:
+      {
+        ThrowWEBPException(CorruptImageError,"decoder suspended");
+        break;
+      }
+      case VP8_STATUS_USER_ABORT:
+      {
+        ThrowWEBPException(CorruptImageError,"user abort");
+        break;
+      }
+      case VP8_STATUS_NOT_ENOUGH_DATA:
+      {
+        ThrowWEBPException(CorruptImageError,"InsufficientImageDataInFile");
+        break;
+      }
+      default:
+        ThrowWEBPException(CorruptImageError,"CorruptImage");
     }
   if (IsWEBPImageLossless(stream,length) != MagickFalse)
     image->quality=100;
@@ -430,6 +429,7 @@ ModuleExport size_t RegisterWEBPImage(void)
     (WebPGetDecoderVersion() >> 0) & 0xff,WEBP_DECODER_ABI_VERSION);
 #endif
   entry->mime_type=ConstantString("image/webp");
+  entry->flags|=CoderDecoderSeekableStreamFlag;
   entry->flags^=CoderAdjoinFlag;
   entry->magick=(IsImageFormatHandler *) IsWEBP;
   if (*version != '\0')
