@@ -2156,7 +2156,11 @@ static int format8BIM(Image *ifile, Image *ofile)
       for (i=0; i<plen; i++)
       {
         c=ReadBlobByte(ifile);
-        if (c == EOF) return -1;
+        if (c == EOF)
+          {
+            PString=(unsigned char *) RelinquishMagickMemory(PString);
+            return -1;
+          }
         PString[i] = (unsigned char) c;
       }
       PString[ plen ] = 0;
@@ -2164,15 +2168,23 @@ static int format8BIM(Image *ifile, Image *ofile)
       {
         c=ReadBlobByte(ifile);
         if (c == EOF)
-          return(-1);
+          {
+            PString=(unsigned char *) RelinquishMagickMemory(PString);
+            return -1;
+          }
       }
     }
     count=ReadBlobMSBSignedLong(ifile);
-    if (count < 0) return -1;
+    if (count < 0)
+      {
+        PString=(unsigned char *) RelinquishMagickMemory(PString);
+        return -1;
+      }
     /* make a buffer to hold the datand snag it from the input stream */
     str=(unsigned char *) AcquireQuantumMemory((size_t) count,sizeof(*str));
     if (str == (unsigned char *) NULL)
       {
+        PString=(unsigned char *) RelinquishMagickMemory(PString);
         printf("MemoryAllocationFailed");
         return 0;
       }
@@ -2180,7 +2192,10 @@ static int format8BIM(Image *ifile, Image *ofile)
     {
       c=ReadBlobByte(ifile);
       if (c == EOF)
-        return(-1);
+        {
+          PString=(unsigned char *) RelinquishMagickMemory(PString);
+          return -1;
+        }
       str[i]=(unsigned char) c;
     }
 
