@@ -407,6 +407,9 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
           continue;
         for (x=0; x < (ssize_t) image->columns; x++)
         {
+          register ssize_t
+            i;
+
           if (GetPixelWriteMask(image,p) == 0)
             {
               p+=GetPixelChannels(image);
