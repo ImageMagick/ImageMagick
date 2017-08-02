@@ -308,11 +308,6 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
   if ((image->storage_class == PseudoClass) &&
       (image->alpha_trait == UndefinedPixelTrait))
     {
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static,4) shared(status) \
-        if ((image->colors) > 256) \
-          num_threads(GetMagickResourceLimit(ThreadResource))
-#endif
       for (i=0; i < (ssize_t) image->colors; i++)
       {
         const int
