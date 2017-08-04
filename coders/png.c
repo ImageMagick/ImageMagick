@@ -8189,6 +8189,22 @@ static void write_tIME_chunk(Image *image,png_struct *ping,png_info *info,
    if (ptime.minute > 60)
    {
       ptime.hour++;
+      if (ptime.hour > 24)
+      {
+         ptime.hour = 0;
+         ptime.day ++;
+         /* To do: fix this for short months */
+         if (ptime.day > 31)
+         {
+            ptime.day = 1;
+            ptime.month++;
+            if (ptime.month > 12)
+            {
+               ptime.month=1;
+               ptime.year++;
+            }
+         }
+      }
       ptime.minute=+60;
    }
    ptime.second=(png_byte) second;
