@@ -1144,6 +1144,8 @@ RestoreMSCWarning
     status=SetImageExtent(image,image->columns,image->rows);
     if (status == MagickFalse)
       {
+        if ((image != image2) && (image2 != (Image *) NULL))
+          image2=DestroyImage(image2);
         InheritException(exception,&image->exception);
         return(DestroyImageList(image));
       }
