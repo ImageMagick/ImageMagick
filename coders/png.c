@@ -8193,8 +8193,10 @@ static void write_tIME_chunk(Image *image,png_struct *ping,png_info *info,
       {
          ptime.hour = 0;
          ptime.day ++;
-         /* To do: fix this for short months */
-         if (ptime.day > 31)
+         /* To do: fix this for leap years */
+         if (ptime.day > 31 || (ptime.month == 2 && ptime.day > 28) ||
+             ((ptime.month == 4 || ptime.month == 6 || ptime.month == 9 ||
+             ptime.month == 11) && ptime.day > 30))
          {
             ptime.day = 1;
             ptime.month++;
