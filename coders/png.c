@@ -8148,37 +8148,51 @@ static void write_tIME_chunk(Image *image,png_struct *ping,png_info *info,
     minute,
     month,
     second,
-    year;
+    year,
+    addhours=0,
+    addminutes=0;
 
   png_time
     ptime;
 
-  time_t
-    ttime;
-
-  if (date != (const char *) NULL)
+  if (date == (const char *) NULL)
     {
-      if (sscanf(date,"%d-%d-%dT%d:%d:%dZ",&year,&month,&day,&hour,&minute,
-          &second) != 6)
-        {
+      const char
+        *timestamp;
+
+      timestamp=GetImageProperty(image,"date:modify",exception);
+      if (sscanf(timestamp,"%d-%d-%dT%d:%d:%d%d:%d",&year,&month,&day,&hour,
+          &minute, &second, &addhours, &addminutes) != 8)
+      {
           (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
             "Invalid date format specified for png:tIME","`%s'",
             image->filename);
           return;
-        }
-      ptime.year=(png_uint_16) year;
-      ptime.month=(png_byte) month;
-      ptime.day=(png_byte) day;
-      ptime.hour=(png_byte) hour;
-      ptime.minute=(png_byte) minute;
-      ptime.second=(png_byte) second;
+      }
     }
   else
-  {
-    time(&ttime);
-    png_convert_from_time_t(&ptime,ttime);
-  }
-  png_set_tIME(ping,info,&ptime);
+    {
+      if (sscanf(date,"%d-%d-%dT%d:%d:%d%d:%d",&year,&month,&day,&hour,
+          &minute, &second, &addhours, &addminutes) != 8)
+      {
+          (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
+            "Invalid date format specified for png:tIME","`%s'",
+            image->filename);
+          return;
+      }
+    }
+   ptime.year=(png_uint_16) year;
+   ptime.month=(png_byte) month;
+   ptime.day=(png_byte) day;
+   ptime.hour=(png_byte) hour+addhours;
+   ptime.minute=(png_byte) minute+addminutes;
+   if (ptime.minute > 60)
+   {
+      ptime.hour++;
+      ptime.minute=+60;
+   }
+   ptime.second=(png_byte) second;
+   png_set_tIME(ping,info,&ptime);
 }
 #endif
 
