@@ -1721,6 +1721,12 @@ static MagickBooleanType ReadPSDLayersInternal(Image *image,
                 unsigned char
                   *info;
 
+                if (length > GetBlobSize(image))
+                  {
+                    layer_info=DestroyLayerInfo(layer_info,number_layers);
+                    ThrowBinaryException(CorruptImageError,
+                      "InsufficientImageDataInFile",image->filename);
+                  }
                 layer_info[i].info=AcquireStringInfo((const size_t) length);
                 info=GetStringInfoDatum(layer_info[i].info);
                 (void) ReadBlob(image,(const size_t) length,info);
