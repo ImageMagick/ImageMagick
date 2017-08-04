@@ -8207,7 +8207,7 @@ static void write_tIME_chunk(Image *image,png_struct *ping,png_info *info,
             }
          }
       }
-      ptime.minute=+60;
+      ptime.minute-=60;
    }
    ptime.second=(png_byte) second;
    png_set_tIME(ping,info,&ptime);
