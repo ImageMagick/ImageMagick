@@ -1138,7 +1138,11 @@ RestoreMSCWarning
     }
     status=SetImageExtent(image,image->columns,image->rows,exception);
     if (status == MagickFalse)
-      return(DestroyImageList(image));
+      {
+        if ((image != image2) && (image2 != (Image *) NULL))
+          image2=DestroyImage(image2);
+        return(DestroyImageList(image));
+      }
     quantum_info=AcquireQuantumInfo(clone_info,image);
     if (quantum_info == (QuantumInfo *) NULL)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
