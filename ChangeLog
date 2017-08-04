@@ -1,3 +1,7 @@
+2017-08-03  6.9.9-6 Glenn Randers-Pehrson <glennrp@image...>
+  * Put UTC time in the PNG tIME chunk instead of local time (reference
+    https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=32447).
+
 2017-08-02  6.9.9-5 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 6.9.9-5, GIT revision 11858:7a555e53f:20170802.
 
