@@ -368,8 +368,11 @@ static MagickBooleanType load_tile(Image *image,Image *tile_image,
   graydata=(unsigned char *) xcfdata;  /* used by gray and indexed */
   count=ReadBlob(image,data_length,(unsigned char *) xcfdata);
   if (count != (ssize_t) data_length)
-    ThrowBinaryException(CorruptImageError,"NotEnoughPixelData",
-      image->filename);
+    {
+      xcfodata=(XCFPixelInfo *) RelinquishMagickMemory(xcfodata);
+      ThrowBinaryException(CorruptImageError,"NotEnoughPixelData",
+        image->filename);
+    }
   for (y=0; y < (ssize_t) tile_image->rows; y++)
   {
     q=GetAuthenticPixels(tile_image,0,y,tile_image->columns,1,exception);
@@ -1332,9 +1335,9 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         &layer_info[current_layer],current_layer,exception);
       if (layer_ok == MagickFalse)
         {
-          int j;
+          ssize_t j;
 
-          for (j=0; j < current_layer; j++)
+          for (j=0; j <= current_layer; j++)
             layer_info[j].image=DestroyImage(layer_info[j].image);
           layer_info=(XCFLayerInfo *) RelinquishMagickMemory(layer_info);
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
