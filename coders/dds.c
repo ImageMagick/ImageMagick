@@ -1783,6 +1783,8 @@ static Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (n != 0)
       {
         /* Start a new image */
+        if (EOFBlob(image) != MagickFalse)
+          ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
         AcquireNextImage(image_info,image,exception);
         if (GetNextImageInList(image) == (Image *) NULL)
           return(DestroyImageList(image));
