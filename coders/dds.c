@@ -1937,6 +1937,8 @@ static MagickBooleanType ReadDXT1(Image *image,DDSInfo *dds_info,
       bits=ReadBlobLSBLong(image);
 
       CalculateColors(c0,c1,&colors,MagickFalse);
+      if (EOFBlob(image) != MagickFalse)
+        break;
 
       /* Write the pixels */
       if (SetDXT1Pixels(image,x,y,colors,bits,q) == MagickFalse)
@@ -1952,6 +1954,8 @@ static MagickBooleanType ReadDXT1(Image *image,DDSInfo *dds_info,
       if (SyncAuthenticPixels(image,exception) == MagickFalse)
         return MagickFalse;
     }
+    if (EOFBlob(image) != MagickFalse)
+      break;
   }
   
   return(SkipDXTMipmaps(image,dds_info,8,exception));
@@ -2009,6 +2013,9 @@ static MagickBooleanType ReadDXT3(Image *image, DDSInfo *dds_info,
       
       CalculateColors(c0, c1, &colors, MagickTrue);
       
+      if (EOFBlob(image) != MagickFalse)
+        break;
+
       /* Write the pixels */
       for (j = 0; j < 4; j++)
       {
@@ -2036,6 +2043,8 @@ static MagickBooleanType ReadDXT3(Image *image, DDSInfo *dds_info,
       if (SyncAuthenticPixels(image,exception) == MagickFalse)
         return MagickFalse;
     }
+    if (EOFBlob(image) != MagickFalse)
+      break;
   }
   
   return(SkipDXTMipmaps(image,dds_info,16,exception));
@@ -2099,6 +2108,8 @@ static MagickBooleanType ReadDXT5(Image *image, DDSInfo *dds_info,
       bits = ReadBlobLSBLong(image);
       
       CalculateColors(c0, c1, &colors, MagickTrue);
+      if (EOFBlob(image) != MagickFalse)
+        break;
       
       /* Write the pixels */
       for (j = 0; j < 4; j++)
@@ -2135,6 +2146,8 @@ static MagickBooleanType ReadDXT5(Image *image, DDSInfo *dds_info,
       if (SyncAuthenticPixels(image,exception) == MagickFalse)
         return MagickFalse;
     }
+    if (EOFBlob(image) != MagickFalse)
+      break;
   }
   
   return(SkipDXTMipmaps(image,dds_info,16,exception));
