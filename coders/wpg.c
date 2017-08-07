@@ -1035,6 +1035,8 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
           if(i==EOF)
             break;
           Rd_WP_DWORD(image,&Rec.RecordLength);
+          if (Rec.RecordLength > GetBlobSize(image))
+            ThrowReaderException(CorruptImageError,"ImproperImageHeader");
           if(EOFBlob(image))
             break;
 
