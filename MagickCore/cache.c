@@ -3861,9 +3861,9 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
     Clone persistent pixel cache.
   */
   clone_info=ClonePixelCache(cache_info);
+  clone_info->type=DiskCache;
+  (void) CopyMagickString(clone_info->cache_filename,filename,MagickPathExtent);
   clone_info->file=(-1);
-  (void) CopyMagickString(clone_info->filename,cache_info->filename,
-    MagickPathExtent);
   clone_info->storage_class=cache_info->storage_class;
   clone_info->colorspace=cache_info->colorspace;
   clone_info->alpha_trait=cache_info->alpha_trait;
@@ -3873,12 +3873,10 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
   clone_info->columns=cache_info->columns;
   clone_info->number_channels=cache_info->number_channels;
   clone_info->metacontent_extent=cache_info->metacontent_extent;
-  clone_info->mode=cache_info->mode;
+  clone_info->mode=PersistMode;
   clone_info->length=cache_info->length;
   (void) memcpy(clone_info->channel_map,cache_info->channel_map,
     MaxPixelChannels*sizeof(*cache_info->channel_map));
-  clone_info->mode=PersistMode;
-  clone_info->type=DiskCache;
   clone_info->offset=(*offset);
   status=ClonePixelCacheRepository(clone_info,cache_info,exception);
   *offset+=cache_info->length+page_size-(cache_info->length % page_size);
