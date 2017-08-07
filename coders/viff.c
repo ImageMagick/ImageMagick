@@ -511,6 +511,8 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         max_packets=(size_t) (number_pixels*viff_info.number_data_bands);
       }
+    if ((bytes_per_pixel*max_packets) > GetBlobSize(image))
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     pixels=(unsigned char *) AcquireQuantumMemory(MagickMax(number_pixels,
       max_packets),bytes_per_pixel*sizeof(*pixels));
     if (pixels == (unsigned char *) NULL)
@@ -801,10 +803,12 @@ ModuleExport size_t RegisterVIFFImage(void)
   entry->decoder=(DecodeImageHandler *) ReadVIFFImage;
   entry->encoder=(EncodeImageHandler *) WriteVIFFImage;
   entry->magick=(IsImageFormatHandler *) IsVIFF;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
   (void) RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("VIFF","XV","Khoros Visualization image");
   entry->decoder=(DecodeImageHandler *) ReadVIFFImage;
   entry->encoder=(EncodeImageHandler *) WriteVIFFImage;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }
