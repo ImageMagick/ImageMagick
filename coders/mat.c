@@ -966,7 +966,11 @@ MATLAB_KO:
     }
 #endif
 
-    if(MATLAB_HDR.DataType!=miMATRIX) continue;  /* skip another objects. */
+    if (MATLAB_HDR.DataType!=miMATRIX)
+      {
+        clone_info=DestroyImageInfo(clone_info);
+        continue;  /* skip another objects. */
+      }
 
     MATLAB_HDR.unknown1 = ReadBlobXXXLong(image2);
     MATLAB_HDR.unknown2 = ReadBlobXXXLong(image2);
