@@ -672,16 +672,6 @@ MagickExport Cache ClonePixelCache(const Cache cache)
   clone_info=(CacheInfo *) AcquirePixelCache(cache_info->number_threads);
   if (clone_info == (Cache) NULL)
     return((Cache) NULL);
-  clone_info->file=(-1);
-  (void) CopyMagickString(clone_info->filename,cache_info->filename,
-    MagickPathExtent);
-  clone_info->storage_class=cache_info->storage_class;
-  clone_info->colorspace=cache_info->colorspace;
-  clone_info->rows=cache_info->rows;
-  clone_info->columns=cache_info->columns;
-  clone_info->active_index_channel=cache_info->active_index_channel;
-  clone_info->mode=cache_info->mode;
-  clone_info->length=cache_info->length;
   clone_info->virtual_pixel_method=cache_info->virtual_pixel_method;
   return((Cache ) clone_info);
 }
@@ -4251,6 +4241,16 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
     Clone persistent pixel cache.
   */
   clone_info=ClonePixelCache(cache_info);
+  clone_info->file=(-1);
+  (void) CopyMagickString(clone_info->filename,cache_info->filename,
+    MagickPathExtent);
+  clone_info->storage_class=cache_info->storage_class;
+  clone_info->colorspace=cache_info->colorspace;
+  clone_info->rows=cache_info->rows;
+  clone_info->columns=cache_info->columns;
+  clone_info->active_index_channel=cache_info->active_index_channel;
+  clone_info->mode=cache_info->mode;
+  clone_info->length=cache_info->length;
   (void) CopyMagickString(clone_info->cache_filename,filename,MaxTextExtent);
   clone_info->channels=cache_info->channels;
   clone_info->mode=PersistMode;
