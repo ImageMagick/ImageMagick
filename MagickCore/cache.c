@@ -418,21 +418,7 @@ MagickPrivate Cache ClonePixelCache(const Cache cache)
   clone_info=(CacheInfo *) AcquirePixelCache(cache_info->number_threads);
   if (clone_info == (Cache) NULL)
     return((Cache) NULL);
-  clone_info->file=(-1);
-  (void) CopyMagickString(clone_info->filename,cache_info->filename,
-    MagickPathExtent);
-  clone_info->storage_class=cache_info->storage_class;
-  clone_info->colorspace=cache_info->colorspace;
-  clone_info->alpha_trait=cache_info->alpha_trait;
-  clone_info->read_mask=cache_info->read_mask;
-  clone_info->write_mask=cache_info->write_mask;
-  clone_info->rows=cache_info->rows;
-  clone_info->columns=cache_info->columns;
-  clone_info->number_channels=cache_info->number_channels;
-  clone_info->metacontent_extent=cache_info->metacontent_extent;
-  clone_info->mode=cache_info->mode;
   clone_info->virtual_pixel_method=cache_info->virtual_pixel_method;
-  clone_info->length=cache_info->length;
   return((Cache ) clone_info);
 }
 
@@ -3875,7 +3861,20 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
     Clone persistent pixel cache.
   */
   clone_info=ClonePixelCache(cache_info);
-  (void) CopyMagickString(clone_info->cache_filename,filename,MagickPathExtent);
+  clone_info->file=(-1);
+  (void) CopyMagickString(clone_info->filename,cache_info->filename,
+    MagickPathExtent);
+  clone_info->storage_class=cache_info->storage_class;
+  clone_info->colorspace=cache_info->colorspace;
+  clone_info->alpha_trait=cache_info->alpha_trait;
+  clone_info->read_mask=cache_info->read_mask;
+  clone_info->write_mask=cache_info->write_mask;
+  clone_info->rows=cache_info->rows;
+  clone_info->columns=cache_info->columns;
+  clone_info->number_channels=cache_info->number_channels;
+  clone_info->metacontent_extent=cache_info->metacontent_extent;
+  clone_info->mode=cache_info->mode;
+  clone_info->length=cache_info->length;
   (void) memcpy(clone_info->channel_map,cache_info->channel_map,
     MaxPixelChannels*sizeof(*cache_info->channel_map));
   clone_info->mode=PersistMode;
