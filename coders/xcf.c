@@ -781,6 +781,9 @@ static MagickBooleanType ReadOneLayer(const ImageInfo *image_info,Image* image,
   XCFDocInfo* inDocInfo,XCFLayerInfo *outLayer,const ssize_t layer,
   ExceptionInfo *exception)
 {
+  MagickBooleanType
+    status;
+
   MagickOffsetType
     offset;
 
@@ -914,6 +917,13 @@ static MagickBooleanType ReadOneLayer(const ImageInfo *image_info,Image* image,
     exception);
   if (outLayer->image == (Image *) NULL)
     return(MagickFalse);
+  status=SetImageExtent(outLayer->image,outLayer->image->columns,
+    outLayer->image->rows,exception);
+  if (status == MagickFalse)
+    {
+      outLayer->image=DestroyImageList(outLayer->image);
+      return(MagickFalse);
+    }
   /* clear the image based on the layer opacity */
   outLayer->image->background_color.alpha=
     ScaleCharToQuantum((unsigned char) outLayer->alpha);
@@ -1338,7 +1348,8 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           ssize_t j;
 
           for (j=0; j <= current_layer; j++)
-            layer_info[j].image=DestroyImage(layer_info[j].image);
+            if (layer_info[j].image != (Image *) NULL)
+              layer_info[j].image=DestroyImage(layer_info[j].image);
           layer_info=(XCFLayerInfo *) RelinquishMagickMemory(layer_info);
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         }
