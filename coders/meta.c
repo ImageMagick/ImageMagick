@@ -2195,7 +2195,7 @@ static int format8BIM(Image *ifile, Image *ofile)
           }
       }
     }
-    count=ReadBlobMSBSignedLong(ifile);
+    count=(ssize_t) ReadBlobMSBSignedLong(ifile);
     if (count < 0)
       {
         PString=(unsigned char *) RelinquishMagickMemory(PString);
