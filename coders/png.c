@@ -8170,25 +8170,16 @@ static void write_tIME_chunk(Image *image,png_struct *ping,png_info *info,
       "  Writing tIME chunk: timestamp property is %30s\n",timestamp);
   ret=sscanf(timestamp,"%d-%d-%dT%d:%d:%d",&year,&month,&day,&hour,
       &minute, &second);
-  if (ret < 6)
-  {
-      (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
-        "Invalid date format specified for png:tIME","`%s'",
-        image->filename);
-      return;
-  }
   addhours=0;     
   addminutes=0;     
   ret=sscanf(timestamp,"%d-%d-%dT%d:%d:%d%d:%d",&year,&month,&day,&hour,
       &minute, &second, &addhours, &addminutes);
   if (ret < 6)
   {
-      LogMagickEvent(CoderEvent,GetMagickModule(),
-          " Invalid timestamp is %60s\n",timestamp);
-      (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
-        "Invalid date format specified for png:tIME","`%s'",
-        image->filename);
-      return;
+    (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
+      "Invalid date format specified for png:tIME","`%s'",
+      image->filename);
+    return;
   }
   ptime.year=(png_uint_16) year;
   ptime.month=(png_byte) month;
