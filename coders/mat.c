@@ -1335,8 +1335,6 @@ done_reading:
   if (quantum_info != (QuantumInfo *) NULL)
     quantum_info=DestroyQuantumInfo(quantum_info);
 END_OF_READING:
-  if (clone_info)
-    clone_info=DestroyImageInfo(clone_info);
   CloseBlob(image);
 
 
@@ -1354,6 +1352,8 @@ END_OF_READING:
         Image *tmp=p;
         if ((p->rows == 0) || (p->columns == 0)) {
           p=p->previous;
+          if (tmp == image2)
+            image2=(Image *) NULL;
           DeleteImageFromList(&tmp);
         } else {
           image=p;
