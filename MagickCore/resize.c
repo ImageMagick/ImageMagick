@@ -1879,8 +1879,8 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
     return(CloneImage(image,0,0,MagickTrue,exception));
   if ((columns <= 2) || (rows <= 2))
     return(ResizeImage(image,columns,rows,image->filter,exception));
-  pixel_info=AcquireVirtualMemory(image->columns,image->rows*
-    GetPixelChannels(image)*sizeof(*pixels));
+  pixel_info=AcquireVirtualMemory(image->columns,image->rows*MacPixelChannels*
+    sizeof(*pixels));
   if (pixel_info == (MemoryInfo *) NULL)
     return((Image *) NULL);
   pixels=(gfloat *) GetVirtualMemoryBlob(pixel_info);
@@ -3233,19 +3233,17 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
     Allocate memory.
   */
   x_vector=(double *) AcquireQuantumMemory((size_t) image->columns,
-    GetPixelChannels(image)*sizeof(*x_vector));
+    MaxPixelChannels*sizeof(*x_vector));
   scanline=x_vector;
   if (image->rows != scale_image->rows)
     scanline=(double *) AcquireQuantumMemory((size_t) image->columns,
-      GetPixelChannels(image)*sizeof(*scanline));
-  scale_scanline=(double *) AcquireQuantumMemory((size_t)
-    scale_image->columns,GetPixelChannels(image)*sizeof(*scale_scanline));
+      MaxPixelChannels*sizeof(*scanline));
+  scale_scanline=(double *) AcquireQuantumMemory((size_t) scale_image->columns,
+    MaxPixelChannels*sizeof(*scale_scanline));
   y_vector=(double *) AcquireQuantumMemory((size_t) image->columns,
-    GetPixelChannels(image)*sizeof(*y_vector));
-  if ((scanline == (double *) NULL) ||
-      (scale_scanline == (double *) NULL) ||
-      (x_vector == (double *) NULL) ||
-      (y_vector == (double *) NULL))
+    MaxPixelChannels*sizeof(*y_vector));
+  if ((scanline == (double *) NULL) || (scale_scanline == (double *) NULL) ||
+      (x_vector == (double *) NULL) || (y_vector == (double *) NULL))
     {
       scale_image=DestroyImage(scale_image);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
@@ -3257,8 +3255,8 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
   next_row=MagickTrue;
   span.y=1.0;
   scale.y=(double) scale_image->rows/(double) image->rows;
-  (void) ResetMagickMemory(y_vector,0,(size_t) GetPixelChannels(image)*
-    image->columns*sizeof(*y_vector));
+  (void) ResetMagickMemory(y_vector,0,(size_t) MaxPixelChannels*image->columns*
+    sizeof(*y_vector));
   n=0;
   status=MagickTrue;
   image_view=AcquireVirtualCacheView(image,exception);
