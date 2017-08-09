@@ -45,6 +45,7 @@
 #include "MagickCore/artifact.h"
 #include "MagickCore/attribute.h"
 #include "MagickCore/cache.h"
+#include "MagickCore/cache-private.h"
 #include "MagickCore/cache-view.h"
 #include "MagickCore/channel.h"
 #include "MagickCore/color.h"
@@ -1047,6 +1048,8 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
   assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  if (SyncImagePixelCache(image,exception) == MagickFalse)
+    return(MagickFalse);
   if (SetImageGray(image,exception) != MagickFalse)
     (void) SetImageColorspace(image,GRAYColorspace,exception);
   black=(double *) AcquireQuantumMemory(GetPixelChannels(image),sizeof(*black));
@@ -1530,6 +1533,8 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
+  if (SyncImagePixelCache(image,exception) == MagickFalse)
+    return(MagickFalse);
 #if defined(MAGICKCORE_OPENCL_SUPPORT)
   if (AccelerateEqualizeImage(image,exception) != MagickFalse)
     return(MagickTrue);
