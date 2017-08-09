@@ -1879,7 +1879,7 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
     return(CloneImage(image,0,0,MagickTrue,exception));
   if ((columns <= 2) || (rows <= 2))
     return(ResizeImage(image,columns,rows,image->filter,exception));
-  pixel_info=AcquireVirtualMemory(image->columns,image->rows*MacPixelChannels*
+  pixel_info=AcquireVirtualMemory(image->columns,image->rows*MaxPixelChannels*
     sizeof(*pixels));
   if (pixel_info == (MemoryInfo *) NULL)
     return((Image *) NULL);
