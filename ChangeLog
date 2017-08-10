@@ -1,3 +1,10 @@
+2017-08-10  6.9.9-6 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 6.9.9-6, GIT revision 11886:af2b102db:20170810.
+
+2017-08-10  6.9.9-6 Cristy  <quetzlzacatenango@image...>
+  * Fixed numerous memory leaks (reference
+    https://github.com/ImageMagick/ImageMagick/issues).
+
 2017-08-10  6.9.9-6 Glenn Randers-Pehrson <glennrp@image...>
   * tests/validate.c: Show the reason for failures in the test logs,
     if available.
