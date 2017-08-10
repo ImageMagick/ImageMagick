@@ -137,7 +137,12 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
       return((Image *) NULL);
     }
   if (IssRGBCompatibleColorspace(image->colorspace) != MagickFalse)
-    (void) SetImageColorspace(combine_image,sRGBColorspace);
+    {
+      if (fabs(image->gamma-1.0) <= MagickEpsilon)
+        (void) SetImageColorspace(combine_image,RGBColorspace);
+      else
+        (void) SetImageColorspace(combine_image,sRGBColorspace);
+    }
   if ((channel & OpacityChannel) != 0)
     combine_image->matte=MagickTrue;
   (void) SetImageBackgroundColor(combine_image);
