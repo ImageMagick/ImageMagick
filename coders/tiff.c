@@ -1645,7 +1645,7 @@ RestoreMSCWarning
           if (image->storage_class != PseudoClass)
             {
               quantum_type=GrayQuantum;
-              pad=(size_t) MagickMax((size_t) samples_per_pixel-1,0);
+              pad=(size_t) MagickMax((ssize_t) samples_per_pixel-1,0);
             }
         status=SetQuantumPad(image,quantum_info,pad*pow(2,ceil(log(
           bits_per_sample)/log(2))));
