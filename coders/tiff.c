@@ -1631,26 +1631,26 @@ RestoreMSCWarning
           Convert TIFF image to PseudoClass MIFF image.
         */
         quantum_type=IndexQuantum;
-        pad=(size_t) MagickMax((size_t) samples_per_pixel-1,0);
+        pad=(size_t) MagickMax((ssize_t) samples_per_pixel-1,0);
         if (image->alpha_trait != UndefinedPixelTrait)
           {
             if (image->storage_class != PseudoClass)
               {
                 quantum_type=samples_per_pixel == 1 ? AlphaQuantum :
                   GrayAlphaQuantum;
-                pad=(size_t) MagickMax((size_t) samples_per_pixel-2,0);
+                pad=(size_t) MagickMax((ssize_t) samples_per_pixel-2,0);
               }
             else
               {
                 quantum_type=IndexAlphaQuantum;
-                pad=(size_t) MagickMax((size_t) samples_per_pixel-2,0);
+                pad=(size_t) MagickMax((ssize_t) samples_per_pixel-2,0);
               }
           }
         else
           if (image->storage_class != PseudoClass)
             {
               quantum_type=GrayQuantum;
-              pad=(size_t) MagickMax((size_t) samples_per_pixel-1,0);
+              pad=(size_t) MagickMax((ssize_t) samples_per_pixel-1,0);
             }
         status=SetQuantumPad(image,quantum_info,pad*pow(2,ceil(log(
           bits_per_sample)/log(2))));
