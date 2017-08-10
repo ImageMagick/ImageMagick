@@ -530,6 +530,7 @@ MagickExport MagickBooleanType SeparateImageChannel(Image *image,
     {
       image->matte=MagickFalse;
       (void) SetImageColorspace(image,GRAYColorspace);
+      image->intensity=Rec709LuminancePixelIntensityMethod;
     }
   return(status);
 }
