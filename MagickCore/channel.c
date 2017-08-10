@@ -726,9 +726,9 @@ MagickExport Image *SeparateImage(const Image *image,
       separate_image=DestroyImage(separate_image);
       return((Image *) NULL);
     }
-  (void) SetImageColorspace(separate_image,GRAYColorspace,exception);
   separate_image->intensity=Rec709LuminancePixelIntensityMethod;
   separate_image->alpha_trait=UndefinedPixelTrait;
+  (void) SetImageColorspace(separate_image,GRAYColorspace,exception);
   /*
     Separate image.
   */

@@ -273,7 +273,6 @@ MagickExport void DestroyXResources(void)
   magick_windows[number_windows++]=(&windows->command);
   magick_windows[number_windows++]=(&windows->widget);
   magick_windows[number_windows++]=(&windows->popup);
-  magick_windows[number_windows++]=(&windows->context);
   for (i=0; i < (int) number_windows; i++)
   {
     if (magick_windows[i]->mapped != MagickFalse)
