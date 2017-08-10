@@ -1174,6 +1174,8 @@ static size_t ValidateCompareCommand(ImageInfo *image_info,
       {
         (void) FormatLocaleFile(stdout,"... fail @ %s/%s/%lu.\n",
           GetMagickModule());
+        (void) LogMagickEvent(ExceptionEvent,GetMagickModule(),
+          "%s",exception->reason);
         (*fail)++;
         continue;
       }
@@ -1186,6 +1188,8 @@ static size_t ValidateCompareCommand(ImageInfo *image_info,
       {
         (void) FormatLocaleFile(stdout,"... fail @ %s/%s/%lu.\n",
           GetMagickModule());
+        (void) LogMagickEvent(ExceptionEvent,GetMagickModule(),
+          "%s",exception->reason);
         (*fail)++;
         continue;
       }
@@ -1586,6 +1590,9 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
         {
           (void) FormatLocaleFile(stdout,"... fail @ %s/%s/%lu.\n",
             GetMagickModule());
+          if (exception->reason)
+            (void) FormatLocaleFile(stdout,
+                 "    reason:%s\n",exception->reason);
           CatchException(exception);
           (*fail)++;
           continue;
@@ -1604,6 +1611,9 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
         {
           (void) FormatLocaleFile(stdout,"... fail @ %s/%s/%lu.\n",
             GetMagickModule());
+          if (exception->reason)
+            (void) FormatLocaleFile(stdout,
+                 "    reason:%s\n",exception->reason);
           CatchException(exception);
           (*fail)++;
           reference_image=DestroyImage(reference_image);
@@ -1626,6 +1636,9 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
         {
           (void) FormatLocaleFile(stdout,"... fail @ %s/%s/%lu.\n",
             GetMagickModule());
+          if (exception->reason)
+            (void) FormatLocaleFile(stdout,
+                 "    reason:%s\n",exception->reason);
           CatchException(exception);
           (*fail)++;
           continue;
@@ -1641,6 +1654,9 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
         {
           (void) FormatLocaleFile(stdout,"... fail @ %s/%s/%lu.\n",
             GetMagickModule());
+          if (exception->reason)
+            (void) FormatLocaleFile(stdout,
+                 "    reason:%s\n",exception->reason);
           CatchException(exception);
           (*fail)++;
           continue;
@@ -1655,6 +1671,9 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
         {
           (void) FormatLocaleFile(stdout,"... fail @ %s/%s/%lu.\n",
             GetMagickModule());
+          if (exception->reason)
+            (void) FormatLocaleFile(stdout,
+                 "    reason:%s\n",exception->reason);
           CatchException(exception);
           (*fail)++;
           continue;
@@ -1675,6 +1694,9 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
         {
           (void) FormatLocaleFile(stdout,"... fail @ %s/%s/%lu.\n",
             GetMagickModule());
+          if (exception->reason)
+            (void) FormatLocaleFile(stdout,
+                 "    reason:%s\n",exception->reason);
           CatchException(exception);
           (*fail)++;
           reference_image=DestroyImage(reference_image);
@@ -1689,6 +1711,9 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
         {
           (void) FormatLocaleFile(stdout,"... fail @ %s/%s/%lu.\n",
             GetMagickModule());
+          if (exception->reason)
+            (void) FormatLocaleFile(stdout,
+                 "    reason:%s\n",exception->reason);
           CatchException(exception);
           (*fail)++;
           blob=(unsigned char *) RelinquishMagickMemory(blob);
@@ -1707,6 +1732,9 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
         {
           (void) FormatLocaleFile(stdout,"... fail @ %s/%s/%lu.\n",
             GetMagickModule());
+          if (exception->reason)
+            (void) FormatLocaleFile(stdout,
+                 "    reason:%s\n",exception->reason);
           CatchException(exception);
           (*fail)++;
           reference_image=DestroyImage(reference_image);
@@ -1727,6 +1755,9 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
         {
           (void) FormatLocaleFile(stdout,"... fail @ %s/%s/%lu.\n",
             GetMagickModule());
+          if (exception->reason)
+            (void) FormatLocaleFile(stdout,
+                 "    reason:%s\n",exception->reason);
           CatchException(exception);
           (*fail)++;
           continue;
@@ -1849,6 +1880,9 @@ static size_t ValidateImageFormatsOnDisk(ImageInfo *image_info,
         {
           (void) FormatLocaleFile(stdout,"... fail @ %s/%s/%lu.\n",
             GetMagickModule());
+          if (exception->reason)
+            (void) FormatLocaleFile(stdout,
+                 "    reason:%s\n",exception->reason);
           CatchException(exception);
           (*fail)++;
           continue;
@@ -1867,6 +1901,9 @@ static size_t ValidateImageFormatsOnDisk(ImageInfo *image_info,
         {
           (void) FormatLocaleFile(stdout,"... fail @ %s/%s/%lu.\n",
             GetMagickModule());
+          if (exception->reason)
+            (void) FormatLocaleFile(stdout,
+                 "    reason:%s\n",exception->reason);
           CatchException(exception);
           (*fail)++;
           reference_image=DestroyImage(reference_image);
@@ -1889,6 +1926,9 @@ static size_t ValidateImageFormatsOnDisk(ImageInfo *image_info,
         {
           (void) FormatLocaleFile(stdout,"... fail @ %s/%s/%lu.\n",
             GetMagickModule());
+          if (exception->reason)
+            (void) FormatLocaleFile(stdout,
+                 "    reason:%s\n",exception->reason);
           CatchException(exception);
           (*fail)++;
           continue;
