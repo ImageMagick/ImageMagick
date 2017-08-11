@@ -1884,10 +1884,12 @@ static int formatIPTC(Image *ifile, Image *ofile)
 
     /* we found the 0x1c tag and now grab the dataset and record number tags */
     c = ReadBlobByte(ifile);
-    if (c == EOF) return -1;
+    if (c == EOF)
+      return(-1);
     dataset = (unsigned char) c;
     c = ReadBlobByte(ifile);
-    if (c == EOF) return -1;
+    if (c == EOF)
+      return(-1);
     recnum = (unsigned char) c;
     /* try to match this record to one of the ones in our named table */
     for (i=0; i< tagcount; i++)
@@ -1903,31 +1905,38 @@ static int formatIPTC(Image *ifile, Image *ofile)
       We decode the length of the block that follows - ssize_t or short fmt.
     */
     c=ReadBlobByte(ifile);
-    if (c == EOF) return -1;
+    if (c == EOF)
+      return(-1);
     if (c & (unsigned char) 0x80)
-      return 0;
+      return(0);
     else
       {
         int
           c0;
 
         c0=ReadBlobByte(ifile);
-        if (c0 == EOF) return -1;
+        if (c0 == EOF)
+          return(-1);
         taglen = (c << 8) | c0;
       }
-    if (taglen < 0) return -1;
+    if (taglen < 0)
+      return(-1);
     /* make a buffer to hold the tag datand snag it from the input stream */
     str=(unsigned char *) AcquireQuantumMemory((size_t) (taglen+MagickPathExtent),
       sizeof(*str));
     if (str == (unsigned char *) NULL)
       {
         printf("MemoryAllocationFailed");
-        return 0;
+        return(0);
       }
     for (tagindx=0; tagindx<taglen; tagindx++)
     {
       c=ReadBlobByte(ifile);
-      if (c == EOF) return -1;
+      if (c == EOF)
+        {
+          str=(unsigned char *) RelinquishMagickMemory(str);
+          return(-1);
+        }
       str[tagindx] = (unsigned char) c;
     }
     str[taglen] = 0;
