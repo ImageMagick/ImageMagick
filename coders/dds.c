@@ -3030,12 +3030,12 @@ static MagickBooleanType WriteMipmaps(Image *image, const size_t pixelFormat,
     columns,
     rows;
 
-  columns = image->columns;
-  rows = image->rows;
+  columns=image->columns;
+  rows=image->rows;
 
   for (i=0; i< (ssize_t) mipmaps; i++)
   {
-    resize_image = ResizeImage(image,DIV2(columns),DIV2(rows),TriangleFilter,
+    resize_image=ResizeImage(image,DIV2(columns),DIV2(rows),TriangleFilter,
       exception);
 
     if (resize_image == (Image *) NULL)
@@ -3049,8 +3049,8 @@ static MagickBooleanType WriteMipmaps(Image *image, const size_t pixelFormat,
 
     resize_image=DestroyImage(resize_image);
 
-    columns = DIV2(columns);
-    rows = DIV2(rows);
+    columns=DIV2(columns);
+    rows=DIV2(rows);
   }
 
   return(MagickTrue);
