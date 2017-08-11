@@ -550,9 +550,9 @@ static MagickBooleanType EncodeImage(const ImageInfo *image_info,Image *image,
     Emit a code. \
   */ \
   if (bits > 0) \
-    datum|=(code) << bits; \
+    datum|=(size_t) (code) << bits; \
   else \
-    datum=code; \
+    datum=(size_t) (code); \
   bits+=number_bits; \
   while (bits >= 8) \
   { \
@@ -715,7 +715,7 @@ static MagickBooleanType EncodeImage(const ImageInfo *image_info,Image *image,
           if (next_pixel != MagickFalse)
             continue;
         }
-      GIFOutputCode((size_t) waiting_code);
+      GIFOutputCode(waiting_code);
       if (free_code < MaxGIFTable)
         {
           hash_code[k]=(short) free_code++;
@@ -785,7 +785,7 @@ static MagickBooleanType EncodeImage(const ImageInfo *image_info,Image *image,
   /*
     Flush out the buffered code.
   */
-  GIFOutputCode((size_t) waiting_code);
+  GIFOutputCode(waiting_code);
   GIFOutputCode(end_of_information_code);
   if (bits > 0)
     {
@@ -1081,8 +1081,8 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
               Read graphics control extension.
             */
             while (ReadBlobBlock(image,header) != 0) ;
-            dispose=(size_t) (header[0] >> 2);
-            delay=(size_t) ((header[2] << 8) | header[1]);
+            dispose=(size_t) header[0] >> 2;
+            delay=((size_t) header[2] << 8) | header[1];
             if ((ssize_t) (header[0] & 0x01) == 0x01)
               opacity=(ssize_t) header[3];
             break;
@@ -1126,7 +1126,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (loop != MagickFalse)
               while (ReadBlobBlock(image,header) != 0)
               {
-                iterations=(size_t) ((header[2] << 8) | header[1]);
+                iterations=((size_t) header[2] << 8) | header[1];
                 if (iterations != 0)
                   iterations++;
               }
@@ -1760,7 +1760,8 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image)
             (void) WriteBlob(image,11,(unsigned char *) "NETSCAPE2.0");
             (void) WriteBlobByte(image,(unsigned char) 0x03);
             (void) WriteBlobByte(image,(unsigned char) 0x01);
-            (void) WriteBlobLSBShort(image,(unsigned short) (image->iterations ? image->iterations - 1 : 0));
+            (void) WriteBlobLSBShort(image,(unsigned short) (image->iterations ?
+              image->iterations-1 : 0));
             (void) WriteBlobByte(image,(unsigned char) 0x00);
           }
         if ((image->gamma != 1.0f/2.2f))
