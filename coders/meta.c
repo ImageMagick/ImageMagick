@@ -1925,10 +1925,7 @@ static int formatIPTC(Image *ifile, Image *ofile)
     str=(unsigned char *) AcquireQuantumMemory((size_t) (taglen+MagickPathExtent),
       sizeof(*str));
     if (str == (unsigned char *) NULL)
-      {
-        printf("MemoryAllocationFailed");
-        return(0);
-      }
+      return(0);
     for (tagindx=0; tagindx<taglen; tagindx++)
     {
       c=ReadBlobByte(ifile);
@@ -2061,10 +2058,7 @@ static int formatIPTCfromBuffer(Image *ofile, char *s, ssize_t len)
     str=(unsigned char *) AcquireQuantumMemory((size_t) (taglen+MagickPathExtent),
       sizeof(*str));
     if (str == (unsigned char *) NULL)
-      {
-        printf("MemoryAllocationFailed");
-        return 0;
-      }
+      printf("MemoryAllocationFailed");
     for (tagindx=0; tagindx<taglen; tagindx++)
     {
       c = *s++; len--;
@@ -2158,10 +2152,7 @@ static int format8BIM(Image *ifile, Image *ofile)
       PString=(unsigned char *) AcquireQuantumMemory((size_t) (plen+
         MagickPathExtent),sizeof(*PString));
       if (PString == (unsigned char *) NULL)
-        {
-          printf("MemoryAllocationFailed");
-          return 0;
-        }
+        return 0;
       for (i=0; i<plen; i++)
       {
         c=ReadBlobByte(ifile);
@@ -2194,7 +2185,6 @@ static int format8BIM(Image *ifile, Image *ofile)
     if (str == (unsigned char *) NULL)
       {
         PString=(unsigned char *) RelinquishMagickMemory(PString);
-        printf("MemoryAllocationFailed");
         return 0;
       }
     for (i=0; i < (ssize_t) count; i++)
