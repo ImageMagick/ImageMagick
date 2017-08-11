@@ -2223,6 +2223,7 @@ static int format8BIM(Image *ifile, Image *ofile)
       c=ReadBlobByte(ifile);
       if (c == EOF)
         {
+          str=(unsigned char *) RelinquishMagickMemory(str);
           PString=(unsigned char *) RelinquishMagickMemory(PString);
           return(-1);
         }
