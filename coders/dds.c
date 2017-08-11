@@ -757,7 +757,7 @@ static MagickBooleanType
   SkipDXTMipmaps(Image *,DDSInfo *,int,ExceptionInfo *),
   SkipRGBMipmaps(Image *,DDSInfo *,int,ExceptionInfo *),
   WriteDDSImage(const ImageInfo *,Image *,ExceptionInfo *),
-  WriteMipmaps(Image *,const size_t,const size_t,const size_t,
+  WriteMipmaps(Image *,const ImageInfo*,const size_t,const size_t,const size_t,
     const MagickBooleanType,const MagickBooleanType,ExceptionInfo *);
 
 static void
@@ -2703,8 +2703,8 @@ static MagickBooleanType WriteDDSImage(const ImageInfo *image_info,
   WriteImageData(image,pixelFormat,compression,clusterFit,weightByAlpha,
     exception);
 
-  if (mipmaps > 0 && WriteMipmaps(image,pixelFormat,compression,mipmaps,
-        clusterFit,weightByAlpha,exception) == MagickFalse)
+  if ((mipmaps > 0) && (WriteMipmaps(image,image_info,pixelFormat,compression,
+       mipmaps,clusterFit,weightByAlpha,exception) == MagickFalse))
     return(MagickFalse);
 
   (void) CloseBlob(image);
@@ -3015,13 +3015,21 @@ static void WriteIndices(Image *image, const DDSVector3 start,
   }
 }
 
-static MagickBooleanType WriteMipmaps(Image *image, const size_t pixelFormat,
-  const size_t compression, const size_t mipmaps,
-  const MagickBooleanType clusterFit, const MagickBooleanType weightByAlpha,
+static MagickBooleanType WriteMipmaps(Image *image,const ImageInfo *image_info,
+  const size_t pixelFormat,const size_t compression,const size_t mipmaps,
+  const MagickBooleanType clusterFit,const MagickBooleanType weightByAlpha,
   ExceptionInfo *exception)
 {
-  Image*
-    resize_image;
+  const char
+    *option;
+
+  Image
+    *mipmap_image,
+    *resize_image;
+
+  MagickBooleanType
+    fast_mipmaps,
+    status;
 
   register ssize_t
     i;
@@ -3030,16 +3038,23 @@ static MagickBooleanType WriteMipmaps(Image *image, const size_t pixelFormat,
     columns,
     rows;
 
-  columns=image->columns;
-  rows=image->rows;
+  columns=DIV2(image->columns);
+  rows=DIV2(image->rows);
 
+  option=GetImageOption(image_info,"dds:fast-mipmaps");
+  fast_mipmaps=IsStringTrue(option);
+  mipmap_image=image;
+  status=MagickTrue;
   for (i=0; i< (ssize_t) mipmaps; i++)
   {
-    resize_image=ResizeImage(image,DIV2(columns),DIV2(rows),TriangleFilter,
+    resize_image=ResizeImage(mipmap_image,columns,rows,TriangleFilter,
       exception);
 
     if (resize_image == (Image *) NULL)
-      return(MagickFalse);
+      {
+        status=MagickFalse;
+        break;
+      }
 
     DestroyBlob(resize_image);
     resize_image->blob=ReferenceBlob(image->blob);
@@ -3047,13 +3062,23 @@ static MagickBooleanType WriteMipmaps(Image *image, const size_t pixelFormat,
     WriteImageData(resize_image,pixelFormat,compression,weightByAlpha,
       clusterFit,exception);
 
-    resize_image=DestroyImage(resize_image);
+    if (fast_mipmaps == MagickFalse)
+      resize_image=DestroyImage(resize_image);
+    else
+      {
+        if (mipmap_image != image)
+          mipmap_image=DestroyImage(mipmap_image);
+        mipmap_image=resize_image;
+      }
 
     columns=DIV2(columns);
     rows=DIV2(rows);
   }
 
-  return(MagickTrue);
+  if (mipmap_image != image)
+    mipmap_image=DestroyImage(mipmap_image);
+
+  return(status);
 }
 
 static void WriteSingleColorFit(Image *image, const DDSVector4 *points,
