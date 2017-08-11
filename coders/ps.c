@@ -631,13 +631,18 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Read ICC profile.
         */
-        profile=AcquireStringInfo(65536);
+        profile=AcquireStringInfo(MaxTextExtent);
+        datum=GetStringInfoDatum(profile);
         for (i=0; (c=ProfileInteger(image,hex_digits)) != EOF; i++)
         {
-          SetStringInfoLength(profile,(size_t) i+1);
-          datum=GetStringInfoDatum(profile);
+          if (i >= GetStringInfoLength(profile))
+            {
+              SetStringInfoLength(profile,(size_t) i << 1);
+              datum=GetStringInfoDatum(profile);
+            }
           datum[i]=(unsigned char) c;
         }
+        SetStringInfoLength(profile,(size_t) i+1);
         (void) SetImageProfile(image,"icc",profile);
         profile=DestroyStringInfo(profile);
         continue;
