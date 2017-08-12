@@ -829,7 +829,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
             (paint_traits == UndefinedPixelTrait))
           continue;
         if (((paint_traits & CopyPixelTrait) != 0) ||
-            (GetPixelWriteMask(linear_image,p) == 0))
+            (GetPixelWriteMask(linear_image,p) <= (QuantumRange/2)))
           {
             SetPixelChannel(paint_image,channel,p[center+i],q);
             continue;

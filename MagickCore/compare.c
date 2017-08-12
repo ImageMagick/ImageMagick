@@ -267,7 +267,7 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
         i;
 
       if ((GetPixelReadMask(image,p) <= (QuantumRange/2)) ||
-          (GetPixelReadMask(reconstruct_image,q) == 0))
+          (GetPixelReadMask(reconstruct_image,q) <= (QuantumRange/2)))
         {
           SetPixelViaPixelInfo(highlight_image,&masklight,r);
           p+=GetPixelChannels(image);
@@ -534,7 +534,7 @@ static MagickBooleanType GetFuzzDistortion(const Image *image,
         i;
 
       if ((GetPixelReadMask(image,p) <= (QuantumRange/2)) ||
-          (GetPixelReadMask(reconstruct_image,q) == 0))
+          (GetPixelReadMask(reconstruct_image,q) <= (QuantumRange/2)))
         {
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(reconstruct_image);
@@ -645,7 +645,7 @@ static MagickBooleanType GetMeanAbsoluteDistortion(const Image *image,
         i;
 
       if ((GetPixelReadMask(image,p) <= (QuantumRange/2)) ||
-          (GetPixelReadMask(reconstruct_image,q) == 0))
+          (GetPixelReadMask(reconstruct_image,q) <= (QuantumRange/2)))
         {
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(reconstruct_image);
@@ -746,7 +746,7 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
         i;
 
       if ((GetPixelReadMask(image,p) <= (QuantumRange/2)) ||
-          (GetPixelReadMask(reconstruct_image,q) == 0))
+          (GetPixelReadMask(reconstruct_image,q) <= (QuantumRange/2)))
         {
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(reconstruct_image);
@@ -852,7 +852,7 @@ static MagickBooleanType GetMeanSquaredDistortion(const Image *image,
         i;
 
       if ((GetPixelReadMask(image,p) <= (QuantumRange/2)) ||
-          (GetPixelReadMask(reconstruct_image,q) == 0))
+          (GetPixelReadMask(reconstruct_image,q) <= (QuantumRange/2)))
         {
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(reconstruct_image);
@@ -974,7 +974,7 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
     for (x=0; x < (ssize_t) columns; x++)
     {
       if ((GetPixelReadMask(image,p) <= (QuantumRange/2)) ||
-          (GetPixelReadMask(reconstruct_image,q) == 0))
+          (GetPixelReadMask(reconstruct_image,q) <= (QuantumRange/2)))
         {
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(reconstruct_image);
@@ -1009,7 +1009,7 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
         Sa;
 
       if ((GetPixelReadMask(image,p) <= (QuantumRange/2)) ||
-          (GetPixelReadMask(reconstruct_image,q) == 0))
+          (GetPixelReadMask(reconstruct_image,q) <= (QuantumRange/2)))
         {
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(reconstruct_image);
@@ -1149,7 +1149,7 @@ static MagickBooleanType GetPeakAbsoluteDistortion(const Image *image,
         i;
 
       if ((GetPixelReadMask(image,p) <= (QuantumRange/2)) ||
-          (GetPixelReadMask(reconstruct_image,q) == 0))
+          (GetPixelReadMask(reconstruct_image,q) <= (QuantumRange/2)))
         {
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(reconstruct_image);

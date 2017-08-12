@@ -2712,7 +2712,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                 (morphology_traits == UndefinedPixelTrait))
               continue;
             if (((traits & CopyPixelTrait) != 0) ||
-                (GetPixelWriteMask(image,p+center) == 0))
+                (GetPixelWriteMask(image,p+center) <= (QuantumRange/2)))
               {
                 SetPixelChannel(morphology_image,channel,p[center+i],q);
                 continue;
@@ -2863,7 +2863,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
             (morphology_traits == UndefinedPixelTrait))
           continue;
         if (((traits & CopyPixelTrait) != 0) ||
-            (GetPixelWriteMask(image,p+center) == 0))
+            (GetPixelWriteMask(image,p+center) <= (QuantumRange/2)))
           {
             SetPixelChannel(morphology_image,channel,p[center+i],q);
             continue;
@@ -3342,7 +3342,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
         if (traits == UndefinedPixelTrait)
           continue;
         if (((traits & CopyPixelTrait) != 0) ||
-            (GetPixelWriteMask(image,p+center) == 0))
+            (GetPixelWriteMask(image,p+center) <= (QuantumRange/2)))
           continue;
         pixels=p;
         pixel=(double) QuantumRange;
@@ -3503,7 +3503,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
         if (traits == UndefinedPixelTrait)
           continue;
         if (((traits & CopyPixelTrait) != 0) ||
-            (GetPixelWriteMask(image,p+center) == 0))
+            (GetPixelWriteMask(image,p+center) <= (QuantumRange/2)))
           continue;
         pixels=p;
         pixel=(double) QuantumRange;

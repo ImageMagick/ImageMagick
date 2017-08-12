@@ -336,7 +336,7 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
             (blur_traits == UndefinedPixelTrait))
           continue;
         if (((blur_traits & CopyPixelTrait) != 0) ||
-            (GetPixelWriteMask(image,p+center) == 0))
+            (GetPixelWriteMask(image,p+center) <= (QuantumRange/2)))
           {
             SetPixelChannel(blur_image,channel,p[center+i],q);
             continue;
@@ -657,7 +657,7 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
             (sharp_traits == UndefinedPixelTrait))
           continue;
         if (((sharp_traits & CopyPixelTrait) != 0) ||
-            (GetPixelWriteMask(image,p+center) == 0))
+            (GetPixelWriteMask(image,p+center) <= (QuantumRange/2)))
           {
             SetPixelChannel(sharp_image,channel,p[center+i],q);
             continue;
@@ -3252,7 +3252,7 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
             (blur_traits == UndefinedPixelTrait))
           continue;
         if (((blur_traits & CopyPixelTrait) != 0) ||
-            (GetPixelWriteMask(image,p+center) == 0))
+            (GetPixelWriteMask(image,p+center) <= (QuantumRange/2)))
           {
             SetPixelChannel(blur_image,channel,p[center+i],q);
             continue;
@@ -3544,7 +3544,7 @@ MagickExport Image *ShadeImage(const Image *image,const MagickBooleanType gray,
             (shade_traits == UndefinedPixelTrait))
           continue;
         if (((shade_traits & CopyPixelTrait) != 0) ||
-            (GetPixelWriteMask(linear_image,center) == 0))
+            (GetPixelWriteMask(linear_image,center) <= (QuantumRange/2)))
           {
             SetPixelChannel(shade_image,channel,center[i],q);
             continue;

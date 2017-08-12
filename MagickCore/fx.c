@@ -773,7 +773,7 @@ MagickExport Image *ColorizeImage(const Image *image,const char *blend,
         if (traits == UndefinedPixelTrait)
           continue;
         if (((traits & CopyPixelTrait) != 0) ||
-            (GetPixelWriteMask(colorize_image,q) == 0))
+            (GetPixelWriteMask(colorize_image,q) <= (QuantumRange/2)))
           continue;
         SetPixelChannel(colorize_image,(PixelChannel) i,ClampToQuantum(
           Colorize(q[i],GetPixelInfoChannel(&blend_percentage,(PixelChannel) i),
@@ -3597,7 +3597,7 @@ MagickExport Image *MorphImages(const Image *image,const size_t number_frames,
                 (morph_traits == UndefinedPixelTrait))
               continue;
             if (((morph_traits & CopyPixelTrait) != 0) ||
-                (GetPixelWriteMask(morph_images,p) == 0))
+                (GetPixelWriteMask(morph_images,p) <= (QuantumRange/2)))
               {
                 SetPixelChannel(morph_image,channel,p[i],q);
                 continue;
