@@ -635,7 +635,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         datum=GetStringInfoDatum(profile);
         for (i=0; (c=ProfileInteger(image,hex_digits)) != EOF; i++)
         {
-          if (i >= GetStringInfoLength(profile))
+          if (i >= (ssize_t) GetStringInfoLength(profile))
             {
               SetStringInfoLength(profile,(size_t) i << 1);
               datum=GetStringInfoDatum(profile);
