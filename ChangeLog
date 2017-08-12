@@ -1,4 +1,7 @@
 2017-08-12  7.0.6-7 Cristy  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.6-7, GIT revision 20799:0db4d8a16:20170812.
+
+2017-08-12  7.0.6-7 Cristy  <quetzlzacatenango@image...>
   * Improve EPS aliasing (reference
     https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=32497).
 
