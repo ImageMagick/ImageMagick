@@ -405,7 +405,7 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
           register ssize_t
             i;
 
-          if (GetPixelWriteMask(image,p) == 0)
+          if (GetPixelWriteMask(image,p) <= (QuantumRange/2))
             {
               p+=GetPixelChannels(image);
               continue;
@@ -465,7 +465,7 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
       register ssize_t
         i;
 
-      if (GetPixelWriteMask(image,p) == 0)
+      if (GetPixelWriteMask(image,p) <= (QuantumRange/2))
         {
           p+=GetPixelChannels(image);
           continue;
@@ -1096,7 +1096,7 @@ MagickExport MagickBooleanType SetImageDepth(Image *image,
           register ssize_t
             i;
 
-          if (GetPixelWriteMask(image,q) == 0)
+          if (GetPixelWriteMask(image,q) <= (QuantumRange/2))
             {
               q+=GetPixelChannels(image);
               continue;
@@ -1160,7 +1160,7 @@ MagickExport MagickBooleanType SetImageDepth(Image *image,
       register ssize_t
         i;
 
-      if (GetPixelWriteMask(image,q) == 0)
+      if (GetPixelWriteMask(image,q) <= (QuantumRange/2))
         {
           q+=GetPixelChannels(image);
           continue;

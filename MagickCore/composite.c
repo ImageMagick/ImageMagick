@@ -420,7 +420,7 @@ static MagickBooleanType CompositeOverImage(Image *image,
           */
           (void) GetOneVirtualPixel(source_image,x-x_offset,y-y_offset,source,
             exception);
-          if (GetPixelWriteMask(image,q) == 0)
+          if (GetPixelWriteMask(image,q) <= (QuantumRange/2))
             {
               q+=GetPixelChannels(image);
               continue;
@@ -455,7 +455,7 @@ static MagickBooleanType CompositeOverImage(Image *image,
       Sa=QuantumScale*GetPixelAlpha(source_image,p);
       Da=QuantumScale*GetPixelAlpha(image,q);
       alpha=Sa+Da-Sa*Da;
-      if (GetPixelWriteMask(image,q) == 0)
+      if (GetPixelWriteMask(image,q) <= (QuantumRange/2))
         {
           p+=GetPixelChannels(source_image);
           q+=GetPixelChannels(image);
@@ -659,7 +659,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           register ssize_t
             i;
 
-          if (GetPixelReadMask(source_image,p) == 0)
+          if (GetPixelReadMask(source_image,p) <= (QuantumRange/2))
             {
               p+=GetPixelChannels(source_image);
               q+=GetPixelChannels(image);
@@ -745,7 +745,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           }
         for (x=0; x < (ssize_t) source_image->columns; x++)
         {
-          if (GetPixelReadMask(source_image,p) == 0)
+          if (GetPixelReadMask(source_image,p) <= (QuantumRange/2))
             {
               p+=GetPixelChannels(source_image);
               q+=GetPixelChannels(image);
@@ -1341,7 +1341,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           */
           (void) GetOneVirtualPixel(source_image,x-x_offset,y-y_offset,source,
             exception);
-          if (GetPixelWriteMask(image,q) == 0)
+          if (GetPixelWriteMask(image,q) <= (QuantumRange/2))
             {
               q+=GetPixelChannels(image);
               continue;
@@ -1500,7 +1500,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           break;
         }
       }
-      if (GetPixelWriteMask(image,q) == 0)
+      if (GetPixelWriteMask(image,q) <= (QuantumRange/2))
         {
           p+=GetPixelChannels(source_image);
           q+=GetPixelChannels(image);
@@ -2503,7 +2503,7 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture,
         register ssize_t
           i;
 
-        if (GetPixelWriteMask(image,q) == 0)
+        if (GetPixelWriteMask(image,q) <= (QuantumRange/2))
           {
             p+=GetPixelChannels(texture_image);
             q+=GetPixelChannels(image);

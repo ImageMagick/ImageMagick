@@ -368,7 +368,7 @@ MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
             (noise_traits == UndefinedPixelTrait))
           continue;
         if (((noise_traits & CopyPixelTrait) != 0) ||
-            (GetPixelWriteMask(image,p) == 0))
+            (GetPixelWriteMask(image,p) <= (QuantumRange/2)))
           {
             SetPixelChannel(noise_image,channel,p[i],q);
             continue;
@@ -3158,7 +3158,7 @@ MagickExport Image *FxImage(const Image *image,const char *expression,
             (fx_traits == UndefinedPixelTrait))
           continue;
         if (((fx_traits & CopyPixelTrait) != 0) ||
-            (GetPixelWriteMask(image,p) == 0))
+            (GetPixelWriteMask(image,p) <= (QuantumRange/2)))
           {
             SetPixelChannel(fx_image,channel,p[i],q);
             continue;
@@ -3352,7 +3352,7 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
       /*
         Determine if the pixel is within an ellipse.
       */
-      if (GetPixelWriteMask(canvas,p) == 0)
+      if (GetPixelWriteMask(canvas,p) <= (QuantumRange/2))
         {
           SetPixelBackgoundColor(implode_image,q);
           p+=GetPixelChannels(canvas);
@@ -4539,7 +4539,7 @@ MagickExport Image *SketchImage(const Image *image,const double radius,
       register ssize_t
         i;
 
-      if (GetPixelWriteMask(random_image,q) == 0)
+      if (GetPixelWriteMask(random_image,q) <= (QuantumRange/2))
         {
           q+=GetPixelChannels(random_image);
           continue;
@@ -4702,7 +4702,7 @@ MagickExport MagickBooleanType SolarizeImage(Image *image,
       register ssize_t
         i;
 
-      if (GetPixelWriteMask(image,q) == 0)
+      if (GetPixelWriteMask(image,q) <= (QuantumRange/2))
         {
           q+=GetPixelChannels(image);
           continue;
@@ -5199,7 +5199,7 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
       /*
         Determine if the pixel is within an ellipse.
       */
-      if (GetPixelWriteMask(canvas,p) == 0)
+      if (GetPixelWriteMask(canvas,p) <= (QuantumRange/2))
         {
           SetPixelBackgoundColor(swirl_image,q);
           p+=GetPixelChannels(canvas);
@@ -5436,7 +5436,7 @@ MagickExport Image *TintImage(const Image *image,const char *blend,
             (tint_traits == UndefinedPixelTrait))
           continue;
         if (((tint_traits & CopyPixelTrait) != 0) ||
-            (GetPixelWriteMask(image,p) == 0))
+            (GetPixelWriteMask(image,p) <= (QuantumRange/2)))
           {
             SetPixelChannel(tint_image,channel,p[i],q);
             continue;

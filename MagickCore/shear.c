@@ -830,7 +830,7 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
               register ssize_t
                 i;
 
-              if (GetPixelWriteMask(image,tile_pixels) == 0)
+              if (GetPixelWriteMask(image,tile_pixels) <= (QuantumRange/2))
                 {
                   tile_pixels-=width*GetPixelChannels(image);
                   q+=GetPixelChannels(rotate_image);
@@ -920,7 +920,7 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
             i;
 
           q-=GetPixelChannels(rotate_image);
-          if (GetPixelWriteMask(image,p) == 0)
+          if (GetPixelWriteMask(image,p) <= (QuantumRange/2))
             {
               p+=GetPixelChannels(image);
               continue;
@@ -1043,7 +1043,7 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
               register ssize_t
                 i;
 
-              if (GetPixelWriteMask(image,tile_pixels) == 0)
+              if (GetPixelWriteMask(image,tile_pixels) <= (QuantumRange/2))
                 {
                   tile_pixels+=width*GetPixelChannels(image);
                   q+=GetPixelChannels(rotate_image);

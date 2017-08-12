@@ -266,7 +266,7 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
       register ssize_t
         i;
 
-      if ((GetPixelReadMask(image,p) == 0) ||
+      if ((GetPixelReadMask(image,p) <= (QuantumRange/2)) ||
           (GetPixelReadMask(reconstruct_image,q) == 0))
         {
           SetPixelViaPixelInfo(highlight_image,&masklight,r);
@@ -424,7 +424,7 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
       register ssize_t
         i;
 
-      if (GetPixelWriteMask(image,p) == 0)
+      if (GetPixelWriteMask(image,p) <= (QuantumRange/2))
         {
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(reconstruct_image);
@@ -533,7 +533,7 @@ static MagickBooleanType GetFuzzDistortion(const Image *image,
       register ssize_t
         i;
 
-      if ((GetPixelReadMask(image,p) == 0) ||
+      if ((GetPixelReadMask(image,p) <= (QuantumRange/2)) ||
           (GetPixelReadMask(reconstruct_image,q) == 0))
         {
           p+=GetPixelChannels(image);
@@ -644,7 +644,7 @@ static MagickBooleanType GetMeanAbsoluteDistortion(const Image *image,
       register ssize_t
         i;
 
-      if ((GetPixelReadMask(image,p) == 0) ||
+      if ((GetPixelReadMask(image,p) <= (QuantumRange/2)) ||
           (GetPixelReadMask(reconstruct_image,q) == 0))
         {
           p+=GetPixelChannels(image);
@@ -745,7 +745,7 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
       register ssize_t
         i;
 
-      if ((GetPixelReadMask(image,p) == 0) ||
+      if ((GetPixelReadMask(image,p) <= (QuantumRange/2)) ||
           (GetPixelReadMask(reconstruct_image,q) == 0))
         {
           p+=GetPixelChannels(image);
@@ -851,7 +851,7 @@ static MagickBooleanType GetMeanSquaredDistortion(const Image *image,
       register ssize_t
         i;
 
-      if ((GetPixelReadMask(image,p) == 0) ||
+      if ((GetPixelReadMask(image,p) <= (QuantumRange/2)) ||
           (GetPixelReadMask(reconstruct_image,q) == 0))
         {
           p+=GetPixelChannels(image);
@@ -973,7 +973,7 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
       }
     for (x=0; x < (ssize_t) columns; x++)
     {
-      if ((GetPixelReadMask(image,p) == 0) ||
+      if ((GetPixelReadMask(image,p) <= (QuantumRange/2)) ||
           (GetPixelReadMask(reconstruct_image,q) == 0))
         {
           p+=GetPixelChannels(image);
@@ -1008,7 +1008,7 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
         Da,
         Sa;
 
-      if ((GetPixelReadMask(image,p) == 0) ||
+      if ((GetPixelReadMask(image,p) <= (QuantumRange/2)) ||
           (GetPixelReadMask(reconstruct_image,q) == 0))
         {
           p+=GetPixelChannels(image);
@@ -1148,7 +1148,7 @@ static MagickBooleanType GetPeakAbsoluteDistortion(const Image *image,
       register ssize_t
         i;
 
-      if ((GetPixelReadMask(image,p) == 0) ||
+      if ((GetPixelReadMask(image,p) <= (QuantumRange/2)) ||
           (GetPixelReadMask(reconstruct_image,q) == 0))
         {
           p+=GetPixelChannels(image);
@@ -1621,7 +1621,7 @@ MagickExport MagickBooleanType IsImagesEqual(const Image *image,
       register ssize_t
         i;
 
-      if (GetPixelWriteMask(image,p) == 0)
+      if (GetPixelWriteMask(image,p) <= (QuantumRange/2))
         {
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(reconstruct_image);
@@ -1760,7 +1760,7 @@ MagickExport MagickBooleanType SetImageColorMetric(Image *image,
       register ssize_t
         i;
 
-      if (GetPixelWriteMask(image,p) == 0)
+      if (GetPixelWriteMask(image,p) <= (QuantumRange/2))
         {
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(reconstruct_image);
@@ -1978,7 +1978,7 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reference,
         }
       if (metric == PerceptualHashErrorMetric)
         similarity=MagickMin(0.01*similarity,1.0);
-      if (GetPixelWriteMask(similarity_image,q) == 0)
+      if (GetPixelWriteMask(similarity_image,q) <= (QuantumRange/2))
         {
           SetPixelBackgoundColor(similarity_image,q);
           q+=GetPixelChannels(similarity_image);

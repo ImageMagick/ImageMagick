@@ -819,7 +819,7 @@ static void ipa_device_close(wmfAPI * API)
       ddata->draw_info=(DrawInfo *)NULL;
     }
   if (WMF_MAGICK_GetFontData(API)->ps_name)
-    WMF_MAGICK_GetFontData(API)->ps_name=RelinquishMagickMemory(
+    WMF_MAGICK_GetFontData(API)->ps_name=(char *) RelinquishMagickMemory(
       WMF_MAGICK_GetFontData(API)->ps_name);
 }
 

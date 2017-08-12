@@ -1,3 +1,7 @@
+2017-08-12  7.0.6-7 Cristy  <quetzlzacatenango@image...>
+  * Improve EPS aliasing (reference
+    https://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=32497).
+
 2017-08-11  7.0.6-7 Dirk Lemstra <dirk@lem.....org>
   * Added a new option called 'dds:fast-mipmaps' (reference
     https://github.com/ImageMagick/ImageMagick/issues/558)

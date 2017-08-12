@@ -2136,7 +2136,7 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
             (blur_traits == UndefinedPixelTrait))
           continue;
         if (((blur_traits & CopyPixelTrait) != 0) ||
-            (GetPixelWriteMask(image,p) == 0))
+            (GetPixelWriteMask(image,p) <= (QuantumRange/2)))
           {
             SetPixelChannel(blur_image,channel,p[i],q);
             continue;
@@ -2938,7 +2938,7 @@ MagickExport Image *RotationalBlurImage(const Image *image,const double angle,
             (blur_traits == UndefinedPixelTrait))
           continue;
         if (((blur_traits & CopyPixelTrait) != 0) ||
-            (GetPixelWriteMask(image,p) == 0))
+            (GetPixelWriteMask(image,p) <= (QuantumRange/2)))
           {
             SetPixelChannel(blur_image,channel,p[i],q);
             continue;
@@ -3985,7 +3985,7 @@ MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
             (unsharp_traits == UndefinedPixelTrait))
           continue;
         if (((unsharp_traits & CopyPixelTrait) != 0) ||
-            (GetPixelWriteMask(image,p) == 0))
+            (GetPixelWriteMask(image,p) <= (QuantumRange/2)))
           {
             SetPixelChannel(unsharp_image,channel,p[i],q);
             continue;
