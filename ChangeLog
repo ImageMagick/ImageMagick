@@ -1,6 +1,9 @@
 2017-08-11  7.0.6-7 Dirk Lemstra <dirk@lem.....org>
   * Added a new option called 'dds:fast-mipmaps' (reference
     https://github.com/ImageMagick/ImageMagick/issues/558)
+  * The mipmaps of a dds image can now be created from a list of images with
+    -define dds:mipmaps=fromlist (reference
+    https://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=30236).
 
 2017-08-10  7.0.6-6 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.6-6, GIT revision 20775:061d0fa25:20170810.
