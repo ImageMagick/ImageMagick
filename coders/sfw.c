@@ -127,16 +127,15 @@ static unsigned char *SFWScan(unsigned char *p,const unsigned char *q,
   register ssize_t
     i;
 
-  if ((p+length) < q)
-    while (p < q)
-    {
-      for (i=0; i < (ssize_t) length; i++)
-        if (p[i] != target[i])
-          break;
-      if (i == (ssize_t) length)
-        return((unsigned char *) p);
-      p++;
-    }
+  while ((p+length) < q)
+  {
+    for (i=0; i < (ssize_t) length; i++)
+      if (p[i] != target[i])
+        break;
+    if (i == (ssize_t) length)
+      return((unsigned char *) p);
+    p++;
+  }
   return((unsigned char *) NULL);
 }
 
