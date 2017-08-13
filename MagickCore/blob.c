@@ -4276,6 +4276,7 @@ MagickExport char *ReadBlobString(Image *image,char *string)
       {
         if (i == 0)
           return((char *) NULL);
+        string[i]='\0';
         break;
       }
     string[i]=(char) (*p);
