@@ -62,7 +62,7 @@ typedef enum
   CosineFilter,
   SplineFilter,
   LanczosRadiusFilter,
-  SplineLobesFilter,
+  CubicSplineFilter,
   SentinelFilter  /* a count of all the filters, not a real filter */
 } FilterType;
 

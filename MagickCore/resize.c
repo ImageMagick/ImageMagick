@@ -244,6 +244,46 @@ static double CubicBC(const double x,const ResizeFilter *resize_filter)
   return(0.0);
 }
 
+static double CubicSpline(const double x,const ResizeFilter *resize_filter)
+{
+  if (resize_filter->support <= 2.0)
+    {
+      /*
+        2-lobe Spline filter.
+      */
+      if (x < 1.0)
+        return(((x-9.0/5.0)*x-1.0/5.0)*x+1.0);
+      if (x < 2.0)
+        return(((-1.0/3.0*(x-1.0)+4.0/5.0)*(x-1.0)-7.0/15.0)*(x-1.0));
+      return(0.0);
+    }
+  if (resize_filter->support <= 3.0)
+    {
+      /*
+        3-lobe Spline filter.
+      */
+      if (x < 1.0)
+        return(((13.0/11.0*x-453.0/209.0)*x-3.0/209.0)*x+1.0);
+      if (x < 2.0)
+        return(((-6.0/11.0*(x-1.0)+270.0/209.0)*(x-1.0)-156.0/209.0)*(x-1.0));
+      if (x < 3.0)
+        return(((1.0/11.0*(x-2.0)-45.0/209.0)*(x-2.0)+26.0/209.0)*(x-2.0));
+      return(0.0);
+    }
+  /*
+    4-lobe Spline filter.
+  */
+  if (x < 1.0)
+    return(((49.0/41.0*x-6387.0/2911.0)*x-3.0/2911.0)*x+1.0);
+  if (x < 2.0)
+    return(((-24.0/41.0*(x-1.0)+4032.0/2911.0)*(x-1.0)-2328.0/2911.0)*(x-1.0));
+  if (x < 3.0)
+    return(((6.0/41.0*(x-2.0)-1008.0/2911.0)*(x-2.0)+582.0/2911.0)*(x-2.0));
+  if (x < 4.0)
+    return(((-1.0/41.0*(x-3.0)+168.0/2911.0)*(x-3.0)-97.0/2911.0)*(x-3.0));
+  return(0.0);
+}
+
 static double Gaussian(const double x,const ResizeFilter *resize_filter)
 {
   /*
@@ -498,46 +538,6 @@ static double SincFast(const double x,
     return((xx-1.0)*(xx-4.0)*(xx-9.0)*(xx-16.0)/q*p);
 #endif
   }
-}
-
-static double SplineLobes(const double x,const ResizeFilter *resize_filter)
-{
-  if (resize_filter->support <= 2.0)
-    {
-      /*
-        2-lobe Spline filter.
-      */
-      if (x < 1.0)
-        return(((x-9.0/5.0)*x-1.0/5.0)*x+1.0);
-      if (x < 2.0)
-        return(((-1.0/3.0*(x-1.0)+4.0/5.0)*(x-1.0)-7.0/15.0)*(x-1.0));
-      return(0.0);
-    }
-  if (resize_filter->support <= 3.0)
-    {
-      /*
-        3-lobe Spline filter.
-      */
-      if (x < 1.0)
-        return(((13.0/11.0*x-453.0/209.0)*x-3.0/209.0)*x+1.0);
-      if (x < 2.0)
-        return(((-6.0/11.0*(x-1.0)+270.0/209.0)*(x-1.0)-156.0/209.0)*(x-1.0));
-      if (x < 3.0)
-        return(((1.0/11.0*(x-2.0)-45.0/209.0)*(x-2.0)+26.0/209.0)*(x-2.0));
-      return(0.0);
-    }
-  /*
-    4-lobe Spline filter.
-  */
-  if (x < 1.0)
-    return(((49.0/41.0*x-6387.0/2911.0)*x-3.0/2911.0)*x+1.0);
-  if (x < 2.0)
-    return(((-24.0/41.0*(x-1.0)+4032.0/2911.0)*(x-1.0)-2328.0/2911.0)*(x-1.0));
-  if (x < 3.0)
-    return(((6.0/41.0*(x-2.0)-1008.0/2911.0)*(x-2.0)+582.0/2911.0)*(x-2.0));
-  if (x < 4.0)
-    return(((-1.0/41.0*(x-3.0)+168.0/2911.0)*(x-3.0)-97.0/2911.0)*(x-3.0));
-  return(0.0);
 }
 
 static double Triangle(const double x,
@@ -824,7 +824,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
     { LanczosFilter,       CosineFilter   },  /* Cosine window (3 lobes)      */
     { SplineFilter,        BoxFilter      },  /* Spline Cubic Filter          */
     { LanczosRadiusFilter, LanczosFilter  },  /* Lanczos with integer radius  */
-    { SplineLobesFilter,   BoxFilter      },  /* SplineLobes (n lobes)  */
+    { CubicSplineFilter,   BoxFilter      },  /* CubicSpline (2/3/4 lobes)    */
   };
   /*
     Table mapping the filter/window from the above table to an actual function.
@@ -888,7 +888,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
     { Cosine,    1.0, 1.0, 0.0, 0.0, CosineWeightingFunction },   /* Low level cosine window     */
     { CubicBC,   2.0, 2.0, 1.0, 0.0, CubicBCWeightingFunction },  /* Cubic B-Spline (B=1,C=0)    */
     { SincFast,  3.0, 1.0, 0.0, 0.0, SincFastWeightingFunction }, /* Lanczos, Interger Radius    */
-    { SplineLobes,  2.0, 0.5, 0.0, 0.0, BoxWeightingFunction },  /* Spline Lobes 2-lobed */
+    { CubicSpline,2.0, 0.5, 0.0, 0.0, BoxWeightingFunction },  /* Spline Lobes 2-lobed */
   };
   /*
     The known zero crossings of the Jinc() or more accurately the Jinc(x*PI)
