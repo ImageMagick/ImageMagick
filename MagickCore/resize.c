@@ -895,9 +895,9 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
     { Cosine,    1.0, 1.0, 0.0, 0.0, CosineWeightingFunction },   /* Low level cosine window     */
     { CubicBC,   2.0, 2.0, 1.0, 0.0, CubicBCWeightingFunction },  /* Cubic B-Spline (B=1,C=0)    */
     { SincFast,  3.0, 1.0, 0.0, 0.0, SincFastWeightingFunction }, /* Lanczos, Interger Radius    */
-    { Spline16,  2.0, 2.0, 1.0, 0.0, BoxWeightingFunction },  /* Spline 16 2-lobed */
-    { Spline36,  3.0, 2.0, 1.0, 0.0, BoxWeightingFunction },  /* Spline 36 3-lobed */
-    { Spline64,  4.0, 2.0, 1.0, 0.0, BoxWeightingFunction },  /* Spline 64 4-lobed */
+    { Spline16,  2.0, 0.5, 1.0, 0.0, BoxWeightingFunction },  /* Spline 16 2-lobed */
+    { Spline36,  3.0, 0.5, 1.0, 0.0, BoxWeightingFunction },  /* Spline 36 3-lobed */
+    { Spline64,  4.0, 0.5, 1.0, 0.0, BoxWeightingFunction },  /* Spline 64 4-lobed */
   };
   /*
     The known zero crossings of the Jinc() or more accurately the Jinc(x*PI)
