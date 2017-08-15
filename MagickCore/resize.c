@@ -831,7 +831,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
     { LanczosRadiusFilter, LanczosFilter  },  /* Lanczos with integer radius  */
     { Spline16Filter,      BoxFilter      },  /* Spline 16 (2 lobes)  */
     { Spline36Filter,      BoxFilter      },  /* Spline 36 (3 lobes)  */
-    { Spline16Filter,      BoxFilter      },  /* Spline 64 (4 lobes)  */
+    { Spline64Filter,      BoxFilter      },  /* Spline 64 (4 lobes)  */
   };
   /*
     Table mapping the filter/window from the above table to an actual function.
