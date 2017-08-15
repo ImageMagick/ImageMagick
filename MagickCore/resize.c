@@ -500,37 +500,32 @@ static double SincFast(const double x,
   }
 }
 
-static double Spline16(const double x,
-  const ResizeFilter *magick_unused(resize_filter))
+static double SplineLobes(const double x,const ResizeFilter *resize_filter)
 {
-  /*
-    2-lobe Spline filter.
-  */
-  if (x < 1.0)
-    return(((x-9.0/5.0)*x-1.0/5.0)*x+1.0);
-  if (x < 2.0)
-    return(((-1.0/3.0*(x-1.0)+4.0/5.0)*(x-1.0)-7.0/15.0)*(x-1.0));
-  return(0.0);
-}
-
-static double Spline36(const double x,
-  const ResizeFilter *magick_unused(resize_filter))
-{
-  /*
-    3-lobe Spline filter.
-  */
-  if (x < 1.0)
-    return(((13.0/11.0*x-453.0/209.0)*x-3.0/209.0)*x+1.0);
-  if (x < 2.0)
-    return(((-6.0/11.0*(x-1.0)+270.0/209.0)*(x-1.0)-156.0/209.0)*(x-1.0));
-  if (x < 3.0)
-    return(((1.0/11.0*(x-2.0)-45.0/209.0)*(x-2.0)+26.0/209.0)*(x-2.0));
-  return(0.0);
-}
-
-static double Spline64(const double x,
-  const ResizeFilter *magick_unused(resize_filter))
-{
+  if (resize_filter->support <= 2.0)
+    {
+      /*
+        2-lobe Spline filter.
+      */
+      if (x < 1.0)
+        return(((x-9.0/5.0)*x-1.0/5.0)*x+1.0);
+      if (x < 2.0)
+        return(((-1.0/3.0*(x-1.0)+4.0/5.0)*(x-1.0)-7.0/15.0)*(x-1.0));
+      return(0.0);
+    }
+  if (resize_filter->support <= 3.0)
+    {
+      /*
+        3-lobe Spline filter.
+      */
+      if (x < 1.0)
+        return(((13.0/11.0*x-453.0/209.0)*x-3.0/209.0)*x+1.0);
+      if (x < 2.0)
+        return(((-6.0/11.0*(x-1.0)+270.0/209.0)*(x-1.0)-156.0/209.0)*(x-1.0));
+      if (x < 3.0)
+        return(((1.0/11.0*(x-2.0)-45.0/209.0)*(x-2.0)+26.0/209.0)*(x-2.0));
+      return(0.0);
+    }
   /*
     4-lobe Spline filter.
   */
@@ -829,9 +824,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
     { LanczosFilter,       CosineFilter   },  /* Cosine window (3 lobes)      */
     { SplineFilter,        BoxFilter      },  /* Spline Cubic Filter          */
     { LanczosRadiusFilter, LanczosFilter  },  /* Lanczos with integer radius  */
-    { Spline16Filter,      BoxFilter      },  /* Spline 16 (2 lobes)  */
-    { Spline36Filter,      BoxFilter      },  /* Spline 36 (3 lobes)  */
-    { Spline64Filter,      BoxFilter      },  /* Spline 64 (4 lobes)  */
+    { SplineLobesFilter,   BoxFilter      },  /* SplineLobes (n lobes)  */
   };
   /*
     Table mapping the filter/window from the above table to an actual function.
@@ -895,9 +888,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
     { Cosine,    1.0, 1.0, 0.0, 0.0, CosineWeightingFunction },   /* Low level cosine window     */
     { CubicBC,   2.0, 2.0, 1.0, 0.0, CubicBCWeightingFunction },  /* Cubic B-Spline (B=1,C=0)    */
     { SincFast,  3.0, 1.0, 0.0, 0.0, SincFastWeightingFunction }, /* Lanczos, Interger Radius    */
-    { Spline16,  2.0, 0.5, 1.0, 0.0, BoxWeightingFunction },  /* Spline 16 2-lobed */
-    { Spline36,  3.0, 0.5, 1.0, 0.0, BoxWeightingFunction },  /* Spline 36 3-lobed */
-    { Spline64,  4.0, 0.5, 1.0, 0.0, BoxWeightingFunction },  /* Spline 64 4-lobed */
+    { SplineLobes,  2.0, 0.5, 1.0, 0.0, BoxWeightingFunction },  /* Spline Lobes 2-lobed */
   };
   /*
     The known zero crossings of the Jinc() or more accurately the Jinc(x*PI)
