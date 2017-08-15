@@ -507,7 +507,7 @@ static double Spline16(const double x,
     2-lobe Spline filter.
   */
   if (x < 1.0)
-    return(((x-9.0/5.0 )*x-1.0/5.0)*x+1.0);
+    return(((x-9.0/5.0)*x-1.0/5.0)*x+1.0);
   if (x < 2.0)
     return(((-1.0/3.0*(x-1.0)+4.0/5.0)*(x-1.0)-7.0/15.0)*(x-1.0));
   return(0.0);
