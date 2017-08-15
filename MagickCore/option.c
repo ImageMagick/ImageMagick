@@ -1164,6 +1164,9 @@ static const OptionInfo
     { "Sinc", SincFilter, UndefinedOptionFlag, MagickFalse },
     { "SincFast", SincFastFilter, UndefinedOptionFlag, MagickFalse },
     { "Spline", SplineFilter, UndefinedOptionFlag, MagickFalse },
+    { "Spline16", Spline16Filter, UndefinedOptionFlag, MagickFalse },
+    { "Spline36", Spline36Filter, UndefinedOptionFlag, MagickFalse },
+    { "Spline64", Spline64Filter, UndefinedOptionFlag, MagickFalse },
     { "Triangle", TriangleFilter, UndefinedOptionFlag, MagickFalse },
     { "Welch", WelchFilter, UndefinedOptionFlag, MagickFalse },
     { "Welsh", WelchFilter, UndefinedOptionFlag, MagickTrue }, /*misspell*/
