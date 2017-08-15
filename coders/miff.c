@@ -1087,7 +1087,11 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         (image->columns == 0) || (image->rows == 0))
       {
         if (image->previous == (Image *) NULL)
-          ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+          {
+            if (profiles != (LinkedListInfo *) NULL)
+              profiles=DestroyLinkedList(profiles,RelinquishMagickMemory);
+            ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+          }
         DeleteImageFromList(&image);
         (void) ThrowMagickException(exception,GetMagickModule(),
           CorruptImageError,"ImproperImageHeader","`%s'",image->filename);
