@@ -1,7 +1,8 @@
 2017-08-14  7.0.6-7 Cristy  <quetzlzacatenango@image...>
   * Fixed numerous memory leaks (reference
     https://github.com/ImageMagick/ImageMagick/issues).
-  * Support splin16, spline36, and spline64 resize filters (reference
+  * Support spline-lobes resize filter.  Define the lobes with the
+    -define filter:lobes={2,3,4} (reference
     https://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=32506).
   * Prevent assertion failure when creating PDF thumbnail (reference
     https://github.com/ImageMagick/ImageMagick/issues/674).
