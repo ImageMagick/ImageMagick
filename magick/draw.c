@@ -1284,8 +1284,8 @@ static void DrawBoundingRectangles(Image *image,const DrawInfo *draw_info,
 
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   (void) QueryColorDatabase("#0000",&clone_info->fill,&image->exception);
-  resolution.x=96.0;;
-  resolution.y=96.0;;
+  resolution.x=96.0;
+  resolution.y=96.0;
   if (clone_info->density != (char *) NULL)
     {
       GeometryInfo
@@ -4688,14 +4688,10 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
             (fabs(primitive_info[i-1].point.y-primitive_info[0].point.y) < DrawEpsilon) ?
             MagickTrue : MagickFalse;
           i=(ssize_t) primitive_info[0].coordinates;
-          if (((closed_path != MagickFalse) &&
-              (draw_info->linejoin == RoundJoin)) ||
-              (primitive_info[i].primitive != UndefinedPrimitive))
-            {
-              (void) DrawPolygonPrimitive(image,draw_info,primitive_info);
-              break;
-            }
-          if (draw_info->linecap == RoundCap)
+          if ((((draw_info->linecap == RoundCap) ||
+                (closed_path != MagickFalse)) &&
+               (draw_info->linejoin == RoundJoin)) ||
+               (primitive_info[i].primitive != UndefinedPrimitive))
             {
               (void) DrawPolygonPrimitive(image,draw_info,primitive_info);
               break;
