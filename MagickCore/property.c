@@ -3624,7 +3624,7 @@ RestoreMSCWarning
               continue; /* else no image to retrieve artifact */
             }
           GetPixelInfo(image,&pixel);
-          fx_info=AcquireFxInfo(image,pattern+6,exception);
+          fx_info=AcquireFxInfo(image,pattern+4,exception);
           status=FxEvaluateChannelExpression(fx_info,RedPixelChannel,0,0,
             &value,exception);
           pixel.red=(double) QuantumRange*value;
