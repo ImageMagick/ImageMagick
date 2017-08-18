@@ -252,8 +252,8 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   if (GetBlobSize(image) != (size_t) GetBlobSize(image))
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-  buffer=(unsigned char *) AcquireQuantumMemory((size_t) GetBlobSize(image),
-    sizeof(*buffer));
+  buffer=(unsigned char *) AcquireQuantumMemory((size_t) GetBlobSize(image)+
+    MagickPathExtent,sizeof(*buffer));
   if (buffer == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   count=ReadBlob(image,(size_t) GetBlobSize(image),buffer);
@@ -355,7 +355,8 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image=DestroyImageList(image);
       return(jpeg_image);
     }
-  (void) CopyMagickString(jpeg_image->filename,image->filename,MagickPathExtent);
+  (void) CopyMagickString(jpeg_image->filename,image->filename,
+    MagickPathExtent);
   (void) CopyMagickString(jpeg_image->magick,image->magick,MagickPathExtent);
   image=DestroyImageList(image);
   image=jpeg_image;
@@ -403,6 +404,7 @@ ModuleExport size_t RegisterSFWImage(void)
   entry=AcquireMagickInfo("SFW","SFW","Seattle Film Works");
   entry->decoder=(DecodeImageHandler *) ReadSFWImage;
   entry->magick=(IsImageFormatHandler *) IsSFW;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
   entry->flags^=CoderAdjoinFlag;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
