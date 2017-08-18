@@ -253,8 +253,8 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   if (GetBlobSize(image) != (size_t) GetBlobSize(image))
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-  buffer=(unsigned char *) AcquireQuantumMemory((size_t) GetBlobSize(image),
-    sizeof(*buffer));
+  buffer=(unsigned char *) AcquireQuantumMemory((size_t) GetBlobSize(image)+
+    MaxTextExtent,sizeof(*buffer));
   if (buffer == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   count=ReadBlob(image,(size_t) GetBlobSize(image),buffer);
@@ -404,6 +404,7 @@ ModuleExport size_t RegisterSFWImage(void)
   entry=SetMagickInfo("SFW");
   entry->decoder=(DecodeImageHandler *) ReadSFWImage;
   entry->magick=(IsImageFormatHandler *) IsSFW;
+  entry->seekable_stream=MagickTrue;
   entry->adjoin=MagickFalse;
   entry->description=ConstantString("Seattle Film Works");
   entry->module=ConstantString("SFW");
