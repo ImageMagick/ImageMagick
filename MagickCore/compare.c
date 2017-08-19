@@ -1313,6 +1313,33 @@ static MagickBooleanType GetRootMeanSquaredDistortion(const Image *image,
   return(status);
 }
 
+static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
+  const Image *reconstruct_image,double *distortion,ExceptionInfo *exception)
+{
+  MagickBooleanType
+    status;
+
+  register ssize_t
+    i;
+
+  status=GetMeanSquaredDistortion(image,reconstruct_image,distortion,exception);
+  for (i=0; i <= MaxPixelChannels; i++)
+    distortion[i]=sqrt(distortion[i]);
+  return(status);
+}
+
+static MagickBooleanType GetStructuralDisimilarityDistortion(const Image *image,
+  const Image *reconstruct_image,double *distortion,ExceptionInfo *exception)
+{
+  MagickBooleanType
+    status;
+
+  status=GetStructuralSimilarityDistortion(image,reconstruct_image,
+    distortion,exception);
+  *distortion=(1.0-(*distortion))/2.0;
+  return(status);
+}
+
 MagickExport MagickBooleanType GetImageDistortion(Image *image,
   const Image *reconstruct_image,const MetricType metric,double *distortion,
   ExceptionInfo *exception)
@@ -1406,6 +1433,18 @@ MagickExport MagickBooleanType GetImageDistortion(Image *image,
     case RootMeanSquaredErrorMetric:
     {
       status=GetRootMeanSquaredDistortion(image,reconstruct_image,
+        channel_distortion,exception);
+      break;
+    }
+    case StructuralSimilarityErrorMetric:
+    {
+      status=GetStructuralSimilarityDistortion(image,reconstruct_image,
+        channel_distortion,exception);
+      break;
+    }
+    case StructuralDissimilarityErrorMetric:
+    {
+      status=GetStructuralDisimilarityDistortion(image,reconstruct_image,
         channel_distortion,exception);
       break;
     }

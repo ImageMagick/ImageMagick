@@ -36,7 +36,9 @@ typedef enum
   PeakAbsoluteErrorMetric,
   PeakSignalToNoiseRatioErrorMetric,
   PerceptualHashErrorMetric,
-  RootMeanSquaredErrorMetric
+  RootMeanSquaredErrorMetric,
+  StructuralSimilarityErrorMetric,
+  StructuralDissimilarityErrorMetric
 } MetricType;
 
 extern MagickExport double
