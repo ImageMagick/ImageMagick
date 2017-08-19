@@ -1359,11 +1359,11 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
     Compute structural similarity index.
   */
   radius=SSIMRadius;
-  artifact=GetImageArtifact(image,"compare:radius");
+  artifact=GetImageArtifact(image,"compare:ssim-radius");
   if (artifact != (const char *) NULL)
     radius=StringToDouble(artifact,(char **) NULL);
   sigma=SSIMSigma;
-  artifact=GetImageArtifact(image,"compare:sigma");
+  artifact=GetImageArtifact(image,"compare:ssim-sigma");
   if (artifact != (const char *) NULL)
     sigma=StringToDouble(artifact,(char **) NULL);
   (void) FormatLocaleString(geometry,MagickPathExtent,"gaussian:%.20gx%.20g",
@@ -1373,11 +1373,11 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
   c1=pow(SSIMK1*SSIML,2.0);
-  artifact=GetImageArtifact(image,"compare:k1");
+  artifact=GetImageArtifact(image,"compare:ssim-k1");
   if (artifact != (const char *) NULL)
     c1=pow(StringToDouble(artifact,(char **) NULL)*QuantumRange,2.0);
   c2=pow(SSIMK2*SSIML,2.0);
-  artifact=GetImageArtifact(image,"compare:k2");
+  artifact=GetImageArtifact(image,"compare:ssim-k2");
   if (artifact != (const char *) NULL)
     c2=pow(StringToDouble(artifact,(char **) NULL)*QuantumRange,2.0);
   status=MagickTrue;
