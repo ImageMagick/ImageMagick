@@ -1239,6 +1239,8 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
             case NormalizedCrossCorrelationErrorMetric:
             case PeakSignalToNoiseRatioErrorMetric:
             case PerceptualHashErrorMetric:
+            case StructuralSimilarityErrorMetric:
+            case StructuralDissimilarityErrorMetric:
             {
               (void) FormatLocaleFile(stderr,"%g",distortion);
               break;
@@ -1340,6 +1342,8 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
             case NormalizedCrossCorrelationErrorMetric:
             case PeakSignalToNoiseRatioErrorMetric:
             case PerceptualHashErrorMetric:
+            case StructuralSimilarityErrorMetric:
+            case StructuralDissimilarityErrorMetric:
             {
               switch (image->colorspace)
               {

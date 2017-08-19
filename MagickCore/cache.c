@@ -2293,9 +2293,9 @@ MagickPrivate ClassType GetPixelCacheStorageClass(const Cache cache)
 %
 %    o image: the image.
 %
-%    o width: the optimize cache tile width in pixels.
+%    o width: the optimized cache tile width in pixels.
 %
-%    o height: the optimize cache tile height in pixels.
+%    o height: the optimized cache tile height in pixels.
 %
 */
 MagickPrivate void GetPixelCacheTileSize(const Image *image,size_t *width,
