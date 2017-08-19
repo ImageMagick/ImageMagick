@@ -1,3 +1,7 @@
+2017-08-18  7.0.6-9 Glenn Randers-Pehrson <glennrp@image...>
+  * Fixed bug with writing tIME chunk when timezone has a negative offset
+  (reference: https://github.com/ImageMagick/ImageMagick/issues/685)
+
 2017-08-18  7.0.6-8 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.6-8, GIT revision 20838:e2eb79427:20170818.
 
