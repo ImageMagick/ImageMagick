@@ -411,6 +411,8 @@ static Image *ReadICONImage(const ImageInfo *image_info,
         if (image->rows == 0)
           image->rows=256;
         image->depth=icon_info.bits_per_pixel;
+        if (image->depth > 16)
+          image->depth=8;
         if (image->debug != MagickFalse)
           {
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
