@@ -1317,20 +1317,31 @@ static MagickBooleanType GetRootMeanSquaredDistortion(const Image *image,
 static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
   const Image *reconstruct_image,double *distortion,ExceptionInfo *exception)
 {
+#define SSIMRadius  5.0
+#define SSIMSigma  1.5
 #define SSIMBlocksize  8
 #define SSIMK1  0.01
 #define SSIMK2  0.03
+#define SSIML  1.0
 
   CacheView
     *image_view,
     *reconstruct_view;
+
+  char
+    geometry[MagickPathExtent];
 
   const char
     *artifact;
 
   double
     c1,
-    c2;
+    c2,
+    radius,
+    sigma;
+
+  KernelInfo
+    *kernel_info;
 
   MagickBooleanType
     status;
@@ -1339,7 +1350,6 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
     i;
 
   size_t
-    blocksize,
     n;
 
   ssize_t
@@ -1348,16 +1358,25 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
   /*
     Compute structural similarity index.
   */
-  blocksize=SSIMBlocksize;
-  artifact=GetImageArtifact(image,"compare:blocksize");
+  radius=SSIMRadius;
+  artifact=GetImageArtifact(image,"compare:radius");
   if (artifact != (const char *) NULL)
-    if (StringToDouble(artifact,(char **) NULL) > 0.0)
-      blocksize=(size_t) StringToDouble(artifact,(char **) NULL);
-  c1=pow(SSIMK1*QuantumRange,2.0);
+    radius=StringToDouble(artifact,(char **) NULL);
+  sigma=SSIMSigma;
+  artifact=GetImageArtifact(image,"compare:sigma");
+  if (artifact != (const char *) NULL)
+    sigma=StringToDouble(artifact,(char **) NULL);
+  (void) FormatLocaleString(geometry,MagickPathExtent,"gaussian:%.20gx%.20g",
+    radius,sigma);
+  kernel_info=AcquireKernelInfo(geometry,exception);
+  if (kernel_info == (KernelInfo *) NULL)
+    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+      image->filename);
+  c1=pow(SSIMK1*SSIML,2.0);
   artifact=GetImageArtifact(image,"compare:k1");
   if (artifact != (const char *) NULL)
     c1=pow(StringToDouble(artifact,(char **) NULL)*QuantumRange,2.0);
-  c2=pow(SSIMK2*QuantumRange,2.0);
+  c2=pow(SSIMK2*SSIML,2.0);
   artifact=GetImageArtifact(image,"compare:k2");
   if (artifact != (const char *) NULL)
     c2=pow(StringToDouble(artifact,(char **) NULL)*QuantumRange,2.0);
@@ -1365,11 +1384,11 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
   n=0;
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
-#if defined(MMAGICKCORE_OPENMP_SUPPORT)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
     magick_threads(image,image,1,1)
 #endif
-  for (tile_y=0; tile_y < (ssize_t) image->rows; tile_y+=(ssize_t) blocksize)
+  for (tile_y=0; tile_y < (ssize_t) image->rows; tile_y+=(ssize_t) kernel_info->width)
   {
     double
       channel_distortion[MaxPixelChannels+1];
@@ -1384,7 +1403,7 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
       continue;
     (void) ResetMagickMemory(channel_distortion,0,sizeof(channel_distortion));
     tile_x=0;
-    for ( ; tile_x < (ssize_t) image->columns; tile_x+=(ssize_t) blocksize)
+    for ( ; tile_x < (ssize_t) image->columns; tile_x+=(ssize_t) kernel_info->width)
     {
       double
         image_reconstruct_sum[MaxPixelChannels+1],
@@ -1397,13 +1416,16 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
         *magick_restrict p,
         *magick_restrict q;
 
+      register double
+        *k;
+
       register ssize_t
         y;
 
-      p=GetCacheViewVirtualPixels(image_view,tile_x,tile_y,blocksize,blocksize,
-        exception);
-      q=GetCacheViewVirtualPixels(reconstruct_view,tile_x,tile_y,blocksize,
-        blocksize,exception);
+      p=GetCacheViewVirtualPixels(image_view,tile_x,tile_y,kernel_info->width,
+        kernel_info->height,exception);
+      q=GetCacheViewVirtualPixels(reconstruct_view,tile_x,tile_y,
+        kernel_info->width,kernel_info->height,exception);
       if ((p == (const Quantum *) NULL) || (q == (const Quantum *) NULL))
         {
           status=MagickFalse;
@@ -1419,12 +1441,13 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
         sizeof(*reconstruct_sum_squared));
       (void) ResetMagickMemory(image_reconstruct_sum,0,(MaxPixelChannels+1)*
         sizeof(*image_reconstruct_sum));
-      for (y=0; y < (ssize_t) blocksize; y++)
+      k=kernel_info->values;
+      for (y=0; y < (ssize_t) kernel_info->height; y++)
       {
         register ssize_t
           x;
 
-        for (x=0; x < (ssize_t) blocksize; x++)
+        for (x=0; x < (ssize_t) kernel_info->width; x++)
         {
           register ssize_t
             i;
@@ -1439,34 +1462,40 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
                 (reconstruct_traits == UndefinedPixelTrait) ||
                 ((reconstruct_traits & UpdatePixelTrait) == 0))
               continue;
-            image_sum[i]+=p[i];
-            image_sum_squared[i]+=(p[i]*p[i]);
-            reconstruct_sum[i]+=GetPixelChannel(reconstruct_image,channel,q);
-            reconstruct_sum_squared[i]+=(GetPixelChannel(reconstruct_image,
-              channel,q)*GetPixelChannel(reconstruct_image,channel,q));
-            image_reconstruct_sum[i]+=(p[i]*GetPixelChannel(reconstruct_image,
-              channel,q));
+            image_sum[i]+=(*k)*p[i];
+            image_sum_squared[i]+=((*k)*p[i]*(*k)*p[i]);
+            reconstruct_sum[i]+=(*k)*GetPixelChannel(reconstruct_image,channel,
+              q);
+            reconstruct_sum_squared[i]+=((*k)*GetPixelChannel(reconstruct_image,
+              channel,q)*(*k)*GetPixelChannel(reconstruct_image,channel,q));
+            image_reconstruct_sum[i]+=((*k)*p[i]*(*k)*GetPixelChannel(
+              reconstruct_image,channel,q));
           }
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(reconstruct_image);
+          k++;
         }
         for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
         {
           double
             image_mean,
+            image_reconstruct_covariance,
             image_variance,
             reconstruct_mean,
-            reconstruct_variance,
-            image_reconstruct_covariance;
+            reconstruct_variance;
 
-          image_mean=image_sum[i]/(blocksize*blocksize);
-          image_variance=image_sum_squared[i]/(blocksize*blocksize)-
-            (image_mean*image_mean);
-          reconstruct_mean=reconstruct_sum[i]/(blocksize*blocksize);
-          reconstruct_variance=reconstruct_sum_squared[i]/(blocksize*blocksize)-
+          size_t
+            number_samples;
+
+          number_samples=kernel_info->width*kernel_info->height;
+          image_mean=image_sum[i]/number_samples;
+          image_variance=image_sum_squared[i]/number_samples-(image_mean*
+            image_mean);
+          reconstruct_mean=reconstruct_sum[i]/number_samples;
+          reconstruct_variance=reconstruct_sum_squared[i]/number_samples-
             (reconstruct_mean*reconstruct_mean);
-          image_reconstruct_covariance=image_reconstruct_sum[i]/
-            (blocksize*blocksize)-(image_mean*reconstruct_mean);
+          image_reconstruct_covariance=image_reconstruct_sum[i]/number_samples-
+            (image_mean*reconstruct_mean);
           channel_distortion[i]+=((2.0*image_mean*reconstruct_mean+c1)*(2.0*
             image_reconstruct_covariance+c2))/((image_mean*image_mean+
             reconstruct_mean*reconstruct_mean+c1)*(image_variance+
@@ -1493,6 +1522,7 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
     distortion[CompositePixelChannel]+=distortion[i];
   }
   distortion[CompositePixelChannel]/=(double) GetImageChannels(image);
+  kernel_info=DestroyKernelInfo(kernel_info);
   return(status);
 }
 
