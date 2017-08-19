@@ -7933,7 +7933,9 @@ static void write_tIME_chunk(Image *image,png_struct *ping,png_info *info,
     minute,
     month,
     second,
-    year,
+    year;
+
+  int
     addhours=0,
     addminutes=0;
 
@@ -7953,11 +7955,18 @@ static void write_tIME_chunk(Image *image,png_struct *ping,png_info *info,
   addminutes=0;     
   ret=sscanf(timestamp,"%d-%d-%dT%d:%d:%d%d:%d",&year,&month,&day,&hour,
       &minute, &second, &addhours, &addminutes);
+    LogMagickEvent(CoderEvent,GetMagickModule(),
+      "   Date format specified for png:tIME=%s" ,timestamp);
+    LogMagickEvent(CoderEvent,GetMagickModule(),
+      "      ret=%d,y=%d, m=%d, d=%d, h=%d, m=%d, s=%d, ah=%d, as=%d",
+      ret,year,month,day,hour,minute,second,addhours,addminutes);
   if (ret < 6)
   {
-    (void) ThrowMagickException(&image->exception,GetMagickModule(),
-        CoderError, "Invalid date format specified for png:tIME","`%s'",
-        image->filename);
+    LogMagickEvent(CoderEvent,GetMagickModule(),
+      "      Invalid date, ret=%d",ret);
+    (void) ThrowMagickException(&image->exception,GetMagickModule(),CoderError,
+      "Invalid date format specified for png:tIME","`%s' (ret=%d)",
+      image->filename,ret);
     return;
   }
   ptime.year=(png_uint_16) year;
@@ -7966,6 +7975,23 @@ static void write_tIME_chunk(Image *image,png_struct *ping,png_info *info,
   ptime.hour=(png_byte) hour+addhours;
   ptime.minute=(png_byte) minute+addminutes;
   ptime.second=(png_byte) second;
+  if (addhours < 0)
+  {
+    addhours+=24;
+    ptime.hour=(png_byte) hour+addhours;
+    ptime.day--;
+    if (ptime.day == 0)
+    {
+      /* wrong for short months */
+      ptime.month--;
+      ptime.day=31;
+    }
+    if (ptime.month == 0)
+    {
+      ptime.month++;
+      ptime.year--;
+    }
+  }
   if (ptime.minute > 60)
   {
      ptime.hour++;
@@ -7975,6 +8001,11 @@ static void write_tIME_chunk(Image *image,png_struct *ping,png_info *info,
   {
      ptime.day ++;
      ptime.hour -=24;
+  }
+  if (ptime.hour < 0)
+  {
+     ptime.day --;
+     ptime.hour +=24;
   }
   /* To do: fix this for leap years */
   if (ptime.day > 31 || (ptime.month == 2 && ptime.day > 28) ||
@@ -7989,6 +8020,11 @@ static void write_tIME_chunk(Image *image,png_struct *ping,png_info *info,
      ptime.year++;
      ptime.month=1;
   }
+
+  LogMagickEvent(CoderEvent,GetMagickModule(),
+      "      png_set_tIME: y=%d, m=%d, d=%d, h=%d, m=%d, s=%d, ah=%d, am=%d",
+      ptime.year, ptime.month, ptime.day, ptime.hour, ptime.minute,
+      ptime.second, addhours, addminutes);
   png_set_tIME(ping,info,&ptime);
 }
 #endif
@@ -12896,10 +12932,7 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
 
   jpeg_image=CloneImage(image,0,0,MagickTrue,&image->exception);
   if (jpeg_image == (Image *) NULL)
-    {
-      jpeg_image_info=DestroyImageInfo(jpeg_image_info);
-      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
-    }
+    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
   (void) CopyMagickString(jpeg_image->magick,"JPEG",MaxTextExtent);
 
   (void) AcquireUniqueFilename(jpeg_image->filename);
