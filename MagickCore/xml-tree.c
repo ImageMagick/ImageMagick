@@ -2732,7 +2732,7 @@ static char *XMLTreeTagToXML(XMLTreeInfo *xml_info,char **source,size_t *length,
   if (*xml_info->content != '\0')
     *length+=FormatLocaleString(*source+(*length),*extent,"</%s>",
       xml_info->tag);
-  while ((content[offset] != '\0') && (offset < xml_info->offset))
+  while ((offset < xml_info->offset) && (content[offset] != '\0'))
     offset++;
   if (xml_info->ordered != (XMLTreeInfo *) NULL)
     content=XMLTreeTagToXML(xml_info->ordered,source,length,extent,offset,
