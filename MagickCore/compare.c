@@ -1372,11 +1372,11 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
   c1=pow(SSIMK1*SSIML,2.0);
   artifact=GetImageArtifact(image,"compare:ssim-k1");
   if (artifact != (const char *) NULL)
-    c1=pow(StringToDouble(artifact,(char **) NULL)*QuantumRange,2.0);
+    c1=pow(StringToDouble(artifact,(char **) NULL)*SSIML,2.0);
   c2=pow(SSIMK2*SSIML,2.0);
   artifact=GetImageArtifact(image,"compare:ssim-k2");
   if (artifact != (const char *) NULL)
-    c2=pow(StringToDouble(artifact,(char **) NULL)*QuantumRange,2.0);
+    c2=pow(StringToDouble(artifact,(char **) NULL)*SSIML,2.0);
   status=MagickTrue;
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
