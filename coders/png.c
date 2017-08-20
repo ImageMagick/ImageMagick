@@ -8200,7 +8200,6 @@ static void write_tIME_chunk(Image *image,png_struct *ping,png_info *info,
     ptime.day--;
     if (ptime.day == 0)
     {
-      /* wrong for short months */
       ptime.month--;
       if(ptime.month == 2)
         ptime.day=28;
