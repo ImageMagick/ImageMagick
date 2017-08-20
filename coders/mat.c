@@ -695,7 +695,9 @@ static Image *ReadMATImageV4(const ImageInfo *image_info,Image *image,
     if (image_info->ping != MagickFalse)
       {
         Swap(image->columns,image->rows);
-        return(image);
+        if(HDR.imagf==1) ldblk *= 2;
+        SeekBlob(image, HDR.nCols*ldblk, SEEK_CUR);
+        goto skip_reading_current;
       }
     status=SetImageExtent(image,image->columns,image->rows);
     if (status == MagickFalse)
@@ -800,6 +802,7 @@ static Image *ReadMATImageV4(const ImageInfo *image_info,Image *image,
     /*
       Allocate next image structure.
     */
+skip_reading_current:
     AcquireNextImage(image_info,image);
     if (GetNextImageInList(image) == (Image *) NULL)
       {
