@@ -7982,9 +7982,18 @@ static void write_tIME_chunk(Image *image,png_struct *ping,png_info *info,
     ptime.day--;
     if (ptime.day == 0)
     {
-      /* wrong for short months */
       ptime.month--;
       ptime.day=31;
+      if(ptime.month == 2)
+        ptime.day=28;
+      else
+      {
+        if(ptime.month == 4 || ptime.month == 6 || ptime.month == 9 ||
+           ptime.month == 11)
+          ptime.day=30;
+        else
+          ptime.day=31;
+      }
     }
     if (ptime.month == 0)
     {
