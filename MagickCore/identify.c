@@ -187,8 +187,8 @@ static ChannelStatistics *GetLocationStatistics(const Image *image,
         }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
-        PixelChannel channel=GetPixelChannelChannel(image,i);
-        PixelTrait traits=GetPixelChannelTraits(image,channel);
+        PixelChannel channel = GetPixelChannelChannel(image,i);
+        PixelTrait traits = GetPixelChannelTraits(image,channel);
         if (traits == UndefinedPixelTrait)
           continue;
         switch (type)
@@ -324,7 +324,7 @@ static ssize_t PrintChannelLocations(FILE *file,const Image *image,
       MagickBooleanType
         match;
 
-      PixelTrait traits=GetPixelChannelTraits(image,channel);
+      PixelTrait traits = GetPixelChannelTraits(image,channel);
       if (traits == UndefinedPixelTrait)
         continue;
       offset=GetPixelChannelOffset(image,channel);

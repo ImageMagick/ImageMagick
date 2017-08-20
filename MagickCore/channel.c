@@ -588,8 +588,8 @@ MagickExport Image *CombineImages(const Image *image,
       register ssize_t
         x;
 
-      PixelChannel channel=GetPixelChannelChannel(combine_image,i);
-      PixelTrait traits=GetPixelChannelTraits(combine_image,channel);
+      PixelChannel channel = GetPixelChannelChannel(combine_image,i);
+      PixelTrait traits = GetPixelChannelTraits(combine_image,channel);
       if (traits == UndefinedPixelTrait)
         continue;
       if (next == (Image *) NULL)
@@ -781,8 +781,8 @@ MagickExport Image *SeparateImage(const Image *image,
       SetPixelChannel(separate_image,GrayPixelChannel,0,q);
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
-        PixelChannel channel=GetPixelChannelChannel(image,i);
-        PixelTrait traits=GetPixelChannelTraits(image,channel);
+        PixelChannel channel = GetPixelChannelChannel(image,i);
+        PixelTrait traits = GetPixelChannelTraits(image,channel);
         if ((traits == UndefinedPixelTrait) ||
             (GetChannelBit(channel_type,channel) == 0))
           continue;
@@ -855,8 +855,8 @@ MagickExport Image *SeparateImages(const Image *image,ExceptionInfo *exception)
   images=NewImageList();
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
   {
-    PixelChannel channel=GetPixelChannelChannel(image,i);
-    PixelTrait traits=GetPixelChannelTraits(image,channel);
+    PixelChannel channel = GetPixelChannelChannel(image,i);
+    PixelTrait traits = GetPixelChannelTraits(image,channel);
     if ((traits == UndefinedPixelTrait) || ((traits & UpdatePixelTrait) == 0))
       continue;
     separate_image=SeparateImage(image,(ChannelType) (1 << channel),exception);
@@ -922,8 +922,8 @@ static inline void FlattenPixelInfo(const Image *image,const PixelInfo *p,
   gamma=PerceptibleReciprocal(gamma);
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
   {
-    PixelChannel channel=GetPixelChannelChannel(image,i);
-    PixelTrait traits=GetPixelChannelTraits(image,channel);
+    PixelChannel channel = GetPixelChannelChannel(image,i);
+    PixelTrait traits = GetPixelChannelTraits(image,channel);
     if (traits == UndefinedPixelTrait)
       continue;
     switch (channel)
@@ -1033,8 +1033,8 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
           gamma=QuantumScale*GetPixelAlpha(image,q);
           for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
           {
-            PixelChannel channel=GetPixelChannelChannel(image,i);
-            PixelTrait traits=GetPixelChannelTraits(image,channel);
+            PixelChannel channel = GetPixelChannelChannel(image,i);
+            PixelTrait traits = GetPixelChannelTraits(image,channel);
             if (channel == AlphaPixelChannel)
               continue;
             if ((traits & UpdatePixelTrait) == 0)
@@ -1160,8 +1160,8 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
           gamma=PerceptibleReciprocal(Sa);
           for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
           {
-            PixelChannel channel=GetPixelChannelChannel(image,i);
-            PixelTrait traits=GetPixelChannelTraits(image,channel);
+            PixelChannel channel = GetPixelChannelChannel(image,i);
+            PixelTrait traits = GetPixelChannelTraits(image,channel);
             if (channel == AlphaPixelChannel)
               continue;
             if ((traits & UpdatePixelTrait) == 0)

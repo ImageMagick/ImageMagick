@@ -331,7 +331,7 @@ static MagickBooleanType CorrectPSDAlphaBlend(const ImageInfo *image_info,
         {
           for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
           {
-            PixelChannel channel=GetPixelChannelChannel(image,i);
+            PixelChannel channel = GetPixelChannelChannel(image,i);
             if (channel != AlphaPixelChannel)
               q[i]=ClampToQuantum((q[i]-((1.0-gamma)*QuantumRange))/gamma);
           }

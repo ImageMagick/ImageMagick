@@ -4289,8 +4289,8 @@ MagickExport size_t ImportQuantumPixels(const Image *image,
         gamma=PerceptibleReciprocal(Sa);
         for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
         {
-          PixelChannel channel=GetPixelChannelChannel(image,i);
-          PixelTrait traits=GetPixelChannelTraits(image,channel);
+          PixelChannel channel = GetPixelChannelChannel(image,i);
+          PixelTrait traits = GetPixelChannelTraits(image,channel);
           if ((channel == AlphaPixelChannel) ||
               ((traits & UpdatePixelTrait) == 0))
             continue;

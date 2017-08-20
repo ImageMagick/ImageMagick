@@ -412,8 +412,8 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
             }
           for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
           {
-            PixelChannel channel=GetPixelChannelChannel(image,i);
-            PixelTrait traits=GetPixelChannelTraits(image,channel);
+            PixelChannel channel = GetPixelChannelChannel(image,i);
+            PixelTrait traits = GetPixelChannelTraits(image,channel);
             if ((traits == UndefinedPixelTrait) ||
                 (channel == IndexPixelChannel) ||
                 (channel == ReadMaskPixelChannel) ||

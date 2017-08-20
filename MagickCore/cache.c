@@ -1765,7 +1765,7 @@ static inline MagickBooleanType CopyPixel(const Image *image,
     }
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
   {
-    PixelChannel channel=GetPixelChannelChannel(image,i);
+    PixelChannel channel = GetPixelChannelChannel(image,i);
     destination[channel]=source[i];
   }
   return(MagickTrue);

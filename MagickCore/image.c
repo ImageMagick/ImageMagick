@@ -1118,8 +1118,8 @@ MagickExport MagickBooleanType CopyImagePixels(Image *image,
 
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
-        PixelChannel channel=GetPixelChannelChannel(image,i);
-        PixelTrait traits=GetPixelChannelTraits(image,channel);
+        PixelChannel channel = GetPixelChannelChannel(image,i);
+        PixelTrait traits = GetPixelChannelTraits(image,channel);
         PixelTrait source_traits=GetPixelChannelTraits(source_image,channel);
         if ((traits == UndefinedPixelTrait) ||
             ((traits & UpdatePixelTrait) == 0) ||
