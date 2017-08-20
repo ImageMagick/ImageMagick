@@ -8177,7 +8177,7 @@ static void write_tIME_chunk(Image *image,png_struct *ping,png_info *info,
   ret=sscanf(timestamp,"%d-%d-%dT%d:%d:%d%d:%d",&year,&month,&day,&hour,
       &minute, &second, &addhours, &addminutes);
     LogMagickEvent(CoderEvent,GetMagickModule(),
-      "   Date format specified for png:tIME=%60s" ,timestamp);
+      "   Date format specified for png:tIME=%s" ,timestamp);
     LogMagickEvent(CoderEvent,GetMagickModule(),
       "      ret=%d,y=%d, m=%d, d=%d, h=%d, m=%d, s=%d, ah=%d, as=%d",
       ret,year,month,day,hour,minute,second,addhours,addminutes);
@@ -12718,7 +12718,10 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
       jpeg_image_info=(ImageInfo *) CloneImageInfo(image_info);
 
       if (jpeg_image_info == (ImageInfo *) NULL)
-        ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+        {
+          jpeg_image_info=DestroyImageInfo(jpeg_image_info);
+          ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+        }
 
       if (logging != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
