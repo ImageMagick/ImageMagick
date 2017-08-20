@@ -12509,7 +12509,10 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
       jpeg_image_info=(ImageInfo *) CloneImageInfo(image_info);
 
       if (jpeg_image_info == (ImageInfo *) NULL)
-        ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+        {
+          jpeg_image_info=DestroyImageInfo(jpeg_image_info);
+          ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+        }
 
       if (logging != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
