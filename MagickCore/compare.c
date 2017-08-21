@@ -1349,8 +1349,11 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
   register ssize_t
     i;
 
+  size_t
+    n;
+
   ssize_t
-    tile_y;
+    y;
 
   /*
     Compute structural similarity index.
@@ -1384,13 +1387,13 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
   #pragma omp parallel for schedule(static,4) shared(status) \
     magick_threads(image,image,1,1)
 #endif
-  for (tile_y=0; tile_y < (ssize_t) image->rows; tile_y+=(ssize_t) kernel_info->height)
+  for (y=0; y < (ssize_t) image->rows; y+=(ssize_t) kernel_info->height)
   {
     double
       channel_distortion[MaxPixelChannels+1];
 
     register ssize_t
-      tile_x;
+      x;
 
     ssize_t
       j;
@@ -1398,7 +1401,7 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
     if (status == MagickFalse)
       continue;
     (void) ResetMagickMemory(channel_distortion,0,sizeof(channel_distortion));
-    for (tile_x=0; tile_x < (ssize_t) image->columns; tile_x+=(ssize_t) kernel_info->width)
+    for (x=0; x < (ssize_t) image->columns; x+=(ssize_t) kernel_info->width)
     {
       double
         image_sum[MaxPixelChannels+1],
@@ -1415,12 +1418,12 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
         *k;
 
       register ssize_t
-        y;
+        u;
 
-      p=GetCacheViewVirtualPixels(image_view,tile_x,tile_y,kernel_info->width,
+      p=GetCacheViewVirtualPixels(image_view,x,y,kernel_info->width,
         kernel_info->height,exception);
-      q=GetCacheViewVirtualPixels(reconstruct_view,tile_x,tile_y,
-        kernel_info->width,kernel_info->height,exception);
+      q=GetCacheViewVirtualPixels(reconstruct_view,x,y,kernel_info->width,
+        kernel_info->height,exception);
       if ((p == (const Quantum *) NULL) || (q == (const Quantum *) NULL))
         {
           status=MagickFalse;
@@ -1436,12 +1439,12 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
         sizeof(*reconstruct_sum_squared));
       (void) ResetMagickMemory(sum,0,(MaxPixelChannels+1)*sizeof(*sum));
       k=kernel_info->values;
-      for (y=0; y < (ssize_t) kernel_info->height; y++)
+      for (u=0; u < (ssize_t) kernel_info->height; u++)
       {
         register ssize_t
-          x;
+          v;
 
-        for (x=0; x < (ssize_t) kernel_info->width; x++)
+        for (v=0; v < (ssize_t) kernel_info->width; v++)
         {
           register ssize_t
             i;
@@ -1503,14 +1506,22 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
   }
   image_view=DestroyCacheView(image_view);
   reconstruct_view=DestroyCacheView(reconstruct_view);
+  n=0;
+  for (y=0; y < (ssize_t) image->rows; y+=(ssize_t) kernel_info->height)
+  {
+    register ssize_t
+      x;
+
+    for (x=0; x < (ssize_t) image->columns; x+=(ssize_t) kernel_info->width)
+      n+=kernel_info->width;
+  }
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
   {
     PixelChannel channel = GetPixelChannelChannel(image,i);
     PixelTrait traits = GetPixelChannelTraits(image,channel);
     if ((traits == UndefinedPixelTrait) || ((traits & UpdatePixelTrait) == 0))
       continue;
-    distortion[i]/=(double) (kernel_info->height*(image->rows/
-      kernel_info->height+1)*(image->columns/kernel_info->width+1));
+    distortion[i]/=(double) n;
     distortion[CompositePixelChannel]+=distortion[i];
   }
   distortion[CompositePixelChannel]/=(double) GetImageChannels(image);
