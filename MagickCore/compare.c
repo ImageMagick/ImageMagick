@@ -1511,7 +1511,7 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
   {
     register ssize_t x;
     for (x=0; x < (ssize_t) image->columns; x+=(ssize_t) kernel_info->width)
-      n+=kernel_info->width;
+      n+=kernel_info->height;
   }
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
   {
