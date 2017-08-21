@@ -1418,7 +1418,7 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
         *k;
 
       register ssize_t
-        u;
+        v;
 
       p=GetCacheViewVirtualPixels(image_view,x,y,kernel_info->width,
         kernel_info->height,exception);
@@ -1439,12 +1439,12 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
         sizeof(*reconstruct_sum_squared));
       (void) ResetMagickMemory(sum,0,(MaxPixelChannels+1)*sizeof(*sum));
       k=kernel_info->values;
-      for (u=0; u < (ssize_t) kernel_info->height; u++)
+      for (v=0; v < (ssize_t) kernel_info->height; v++)
       {
         register ssize_t
-          v;
+          u;
 
-        for (v=0; v < (ssize_t) kernel_info->width; v++)
+        for (u=0; u < (ssize_t) kernel_info->width; u++)
         {
           register ssize_t
             i;
@@ -1509,9 +1509,7 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
   n=0;
   for (y=0; y < (ssize_t) image->rows; y+=(ssize_t) kernel_info->height)
   {
-    register ssize_t
-      x;
-
+    register ssize_t x;
     for (x=0; x < (ssize_t) image->columns; x+=(ssize_t) kernel_info->width)
       n+=kernel_info->width;
   }
