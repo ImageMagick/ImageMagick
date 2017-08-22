@@ -942,14 +942,16 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       bmp_info.bits_per_pixel<<=1;
     bytes_per_line=4*((image->columns*bmp_info.bits_per_pixel+31)/32);
     length=(size_t) bytes_per_line*image->rows;
-    pixel_info=AcquireVirtualMemory((size_t) image->rows,
-      MagickMax(bytes_per_line,image->columns+256UL)*sizeof(*pixels));
-    if (pixel_info == (MemoryInfo *) NULL)
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-    pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
     if ((bmp_info.compression == BI_RGB) ||
         (bmp_info.compression == BI_BITFIELDS))
       {
+        if (length > GetBlobSize(image))
+          ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
+        pixel_info=AcquireVirtualMemory((size_t) image->rows,
+          MagickMax(bytes_per_line,image->columns+256UL)*sizeof(*pixels));
+        if (pixel_info == (MemoryInfo *) NULL)
+          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+        pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
         if (image->debug != MagickFalse)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "  Reading pixels (%.20g bytes)",(double) length);
@@ -966,6 +968,11 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert run-length encoded raster pixels.
         */
+        pixel_info=AcquireVirtualMemory((size_t) image->rows,
+          MagickMax(bytes_per_line,image->columns+256UL)*sizeof(*pixels));
+        if (pixel_info == (MemoryInfo *) NULL)
+          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+        pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
         status=DecodeImage(image,bmp_info.compression,pixels);
         if (status == MagickFalse)
           {
