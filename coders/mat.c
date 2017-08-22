@@ -1383,12 +1383,11 @@ END_OF_READING:
     clone_info = NULL;
   }
   if (logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(),"return");
-  if (image==NULL)
+  if ((image != image2) && (image2 != (Image *) NULL))
+    image2=DestroyImage(image2);
+  if (image == (Image *) NULL)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader")
-  else
-    if ((image != image2) && (image2 != (Image *) NULL))
-      image2=DestroyImage(image2);
-  return (image);
+  return(image);
 }
 
 /*
