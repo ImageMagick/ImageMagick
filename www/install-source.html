@@ -63,7 +63,7 @@ identify -version
 
 <p>If the <a href="identify.html">identify</a> program executes and identifies itself as ImageMagick, you may not need to install ImageMagick from source unless you want to add support for additional image formats or upgrade to a newer version.  You also have the option of installing a pre-compiled <a href="download.html">binary release</a>.  However, if you still want to install from source, choose a platform, <a href="install-source.html#unix">Unix</a> or <a href="install-source.html#windows">Windows</a>.  Before installing from source, you may want to review recent <a href="changelog.html">changes</a> to the ImageMagick distribution.</p>
 
-<p>The authoritative source code repository is <a href="http://git.imagemagick.org/repos/ImageMagick">http://git.imagemagick.org/repos/ImageMagick</a>.  We maintain a source code mirror at <a href="https://github.com/ImageMagick/ImageMagick">GitHub</a>.  We test and deploy ImageMagick with <a href="https://travis-ci.org/ImageMagick">Travis CI</a> and <a href="https://ci.appveyor.com/project/dlemstra/imagemagick-windows">AppVeyor</a>.</p>
+<p>The authoritative source code repository is <a href="https://github.com/ImageMagick">https://github.com/ImageMagick</a>.  We maintain a source code mirror at <a href="https://git.imagemagick.org/repos/ImageMagick">https://git.imagemagick.org/repos/ImageMagick</a>.  We test and deploy ImageMagick with <a href="https://travis-ci.org/ImageMagick">Travis CI</a> and <a href="https://ci.appveyor.com/project/dlemstra/imagemagick-windows">AppVeyor</a>.</p>
 
 <h2 class="magick-post-title"><a id="unix"></a>Install from Unix Source</h2>
 
@@ -121,7 +121,7 @@ unzip ImageMagick-windows.zip
 <p>Next, launch your Visual Studio IDE and choose <kbd>Open->Project</kbd>.  Select the configure workspace from the <kbd>ImageMagick-6.9.9/VisualMagick/configure</kbd> folder and press Open.  Choose <kbd>Build->Build Solution</kbd>
 to compile the program and on completion run the program.</p>
 
-<p><img class="img-responsive mx-auto d-block" src="../images/configure.jpg" alt="[configure]" /></p>
+<p><img class="img-fluid mx-auto d-block" src="../images/configure.jpg" alt="[configure]" /></p>
 
 <p>Press <kbd>Next</kbd> and click on the multi-threaded static build.  If you are using the Visual Studio 6.0 IDE, make sure no check is next to the <var>Generate Visual Studio 7</var> format option.  Now press, on <kbd>Next</kbd> twice and finally <kbd>Finish</kbd>.  The configuration utility just created a workspace required to build ImageMagick from source.  Choose <kbd>Open->Project</kbd> and select the VisualStaticMT workspace from the <kbd>ImageMagick-6.9.9/VisualMagick/</kbd>  folder.  Finally, choose <kbd>Build->Build Solution</kbd> to compile and build the ImageMagick distribution.</p>
 

@@ -52,8 +52,35 @@
   </div>
 </div>
 <div class="container">
-<div class="magick-header"><dl><dt>2017-07-28  6.9.9-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <li> Release ImageMagick version 6.9.9-3, GIT revision 11833:4e81160d6:20170728.</li>
+<div class="magick-header"><dl><dt>2017-08-20  6.9.9-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 6.9.9-9, GIT revision 11915:5205bda17:20170820.</li>
+<dt>2017-08-18  6.6.9-9 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <li> Fixed bug with writing tIME chunk when timezone has a negative offset    (reference: https://github.com/ImageMagick/ImageMagick/issues/685).</li>
+<dt>2017-08-18  6.9.9-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 6.9.9-8, GIT revision 11906:26078285f:20170818.</li>
+<dt>2017-08-18  6.9.9-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Fixed numerous memory leaks (reference    https://github.com/ImageMagick/ImageMagick/issues).</li>
+<dt>2017-08-12  6.9.9-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 6.9.9-7, GIT revision 11893:8c4c56a0e:20170812    (Windows binaries out of sync).</li>
+<dt>2017-08-10  6.9.9-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 6.9.9-6, GIT revision 11886:af2b102db:20170810.</li>
+<dt>2017-08-10  6.9.9-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Fixed numerous memory leaks (reference    https://github.com/ImageMagick/ImageMagick/issues).</li>
+<dt>2017-08-10  6.9.9-6 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <li> tests/validate.c: Show the reason for failures in the test logs,    if available.</li>
+<dt>2017-08-03  6.9.9-6 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <li> Put UTC time in the PNG tIME chunk instead of local time (reference    https://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=32447).</li>
+<dt>2017-08-02  6.9.9-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 6.9.9-5, GIT revision 11858:7a555e53f:20170802.</li>
+<dt>2017-08-01  6.9.9-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Fixed numerous memory leaks (reference    https://github.com/ImageMagick/ImageMagick/issues).</li>
+<dt>2017-07-29  6.9.9-5 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <li> Properly set image-&gt;colorspace in the PNG decoder (previously    it was setting image-&gt;gamma, but only setting image-&gt;colorspace    for grayscale and gray-alpha images.  Reference    https://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=32418).</li>
+  <li> Fix improper use of NULL in the JNG decoder (CVE-2017-11750, Reference    https://github.com/ImageMagick/ImageMagick/issues/632).</li>
+<dt>2017-07-29  6.9.9-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Off by one error for gradient coder (reference    https://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=32416).</li>
+<dt>2017-07-28  6.9.9-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 6.9.9-4, GIT revision 11833:4e81160d6:20170728.</li>
 <dt>2017-07-25  6.9.9-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Fixed numerous memory leaks (reference    https://github.com/ImageMagick/ImageMagick/issues).</li>
   <li> coders/png.c: Initialized quantum_scanline to prevent a bad free    (reference https://github.com/ImageMagick/ImageMagick/issues/621).</li>
@@ -61,7 +88,8 @@
   <li> Removed write_chunk_from_profile() from coders/png.c because it    has not worked at least since version 6.7.6.</li>
   <li> Removed many redundant checks before RelinquishMagickMemory(),    which is safe to call with a NULL argument.</li>
   <li> Removed vpAg chunk write support (we are now writing caNv instead).</li>
-  <li> coders/png.c: Initialized quantum_info to prevent memory leakage    (reference https://github.com/ImageMagick/ImageMagick/issues/582).</li>
+  <li> coders/png.c: Initialized quantum_info to prevent memory leakage    (reference https://github.com/ImageMagick/ImageMagick/issues/582,    CVE-2017-11539).</li>
+  <li> coders/png.c: fixed NULL dereference when trying to write an empty MNG    (CVE-2017-11522, reference    https://github.com/ImageMagick/ImageMagick/issues/586).</li>
 <dt>2017-07-24  6.9.9-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 6.9.9-3, GIT revision 11809:2bd88257b:20170724.</li>
 <dt>2017-07-23  6.9.9-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
