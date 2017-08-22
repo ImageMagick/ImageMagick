@@ -52,9 +52,44 @@
   </div>
 </div>
 <div class="container">
-<div class="magick-header"><dl><dt>2017-07-28  7.0.6-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<div class="magick-header"><dl><dt>2017-08-20  7.0.6-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 7.0.6-9, GIT revision 20860:3f307d8ad:20170820.</li>
+<dt>2017-08-18  7.0.6-9 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <li> Fixed bug with writing tIME chunk when timezone has a negative offset    (reference: https://github.com/ImageMagick/ImageMagick/issues/685)</li>
+<dt>2017-08-18  7.0.6-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 7.0.6-8, GIT revision 20838:e2eb79427:20170818.</li>
+<dt>2017-08-14  7.0.6-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Fixed numerous memory leaks (reference    https://github.com/ImageMagick/ImageMagick/issues).</li>
+  <li> Support CubicSpline resize filter.  Define the lobes with the    -define filter:lobes={2,3,4} (reference    https://www.imagemagick.org/discourse-server/viewtopic.html?f=2&amp;t=32506).</li>
+  <li> Prevent assertion failure when creating PDF thumbnail (reference    https://github.com/ImageMagick/ImageMagick/issues/674).</li>
+<dt>2017-08-12  7.0.6-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 7.0.6-7, GIT revision 20799:0db4d8a16:20170812.</li>
+<dt>2017-08-12  7.0.6-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Improve EPS aliasing (reference    https://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=32497).</li>
+<dt>2017-08-11  7.0.6-7 Dirk Lemstra &lt;dirk@lem.....org&gt;</dt>
+  <li> Added a new option called 'dds:fast-mipmaps' (reference    https://github.com/ImageMagick/ImageMagick/issues/558)</li>
+  <li> The mipmaps of a dds image can now be created from a list of images with    -define dds:mipmaps=fromlist (reference    https://www.imagemagick.org/discourse-server/viewtopic.html?f=2&amp;t=30236).</li>
+<dt>2017-08-10  7.0.6-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 7.0.6-6, GIT revision 20775:061d0fa25:20170810.</li>
+<dt>2017-08-10  7.0.6-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Fixed numerous memory leaks (reference    https://github.com/ImageMagick/ImageMagick/issues).</li>
+<dt>2017-08-10  7.0.6-6 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <li> tests/validate.c: Show the reason for failures in the test logs,    if available.</li>
+<dt>2017-08-03  7.0.6-6 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <li> Put UTC time in the PNG tIME chunk instead of local time (reference    https://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=32447).</li>
+<dt>2017-08-02  7.0.6-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Release ImageMagick version 7.0.6-5, GIT revision 20715:26b28d50a:20170802.</li>
+<dt>2017-08-01  7.0.6-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Fixed numerous memory leaks (reference    https://github.com/ImageMagick/ImageMagick/issues).</li>
+<dt>2017-07-29  7.0.6-5 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <li> Properly set image-&gt;colorspace in the PNG decoder (previously    it was setting image-&gt;gamma, but only setting image-&gt;colorspace    for grayscale and gray-alpha images.  Reference    https://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=32418).</li>
+  <li> Fix improper use of NULL in the JNG decoder (CVE-2017-11750, Reference    https://github.com/ImageMagick/ImageMagick/issues/632).</li>
+  <li> Added "-define png:ignore-crc" option to PNG decoder. When you know    your image has no CRC or ADLER32 errors, this can speed up decoding.    It is also helpful in debugging bug reports from "fuzzers".</li>
+<dt>2017-07-29  7.0.6-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Off by one error for gradient coder (reference    https://www.imagemagick.org/discourse-server/viewtopic.html?f=3&amp;t=32416),    https://github.com/ImageMagick/ImageMagick/issues/612).</li>
+<dt>2017-07-28  7.0.6-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Release ImageMagick version 7.0.6-4, GIT revision 20657:4e81160d6:20170728.</li>
-<dt>2017-07-24  7.0.6-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<dt>2017-07-24  7.0.6-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> YUV coder no longer renders streaks (reference    https://github.com/ImageMagick/ImageMagick/issues/612).</li>
   <li> Fixed numerous memory leaks (reference    https://github.com/ImageMagick/ImageMagick/issues).</li>
   <li> coders/png.c: Initialized quantum_scanline and quantum_info    to prevent a bad free (reference    https://github.com/ImageMagick/ImageMagick/issues/621).</li>
@@ -74,6 +109,8 @@
 <dt>2017-07-19  7.0.6-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Fixed numerous memory leaks (reference    https://github.com/ImageMagick/ImageMagick/issues).</li>
   <li> The -monochrome option no longer returns a blank canvas (reference    https://github.com/ImageMagick/ImageMagick/issues/594).</li>
+  <li> coders/png.c: fixed memory leak of quantum_info (CVE-2017-11539, reference    https://github.com/ImageMagick/ImageMagick/issues/582</li>
+  <li> coders/png.c: fixed NULL dereference when trying to write an empty MNG    (CVE-2017-11522, reference    https://github.com/ImageMagick/ImageMagick/issues/586).</li>
 <dt>2017-07-15  7.0.6-2 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
   <li> Added caNv, eXIf, and pHYs to the list of PNG chunks to be removed    by the "-strip" option.</li>
 <dt>2017-07-15  7.0.6-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
@@ -456,4 +493,4 @@
   <script src="../js/magick.html"></script>
 </body>
 </html>
-<!-- Magick Cache 30th July 2017 18:07 -->
+<!-- Magick Cache 22nd August 2017 09:53 -->
