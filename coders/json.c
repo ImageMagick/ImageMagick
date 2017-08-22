@@ -1464,7 +1464,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
                 case 219: tag="Custom Field 20"; break;
                 default: tag="unknown"; break;
               }
-              (void) FormatLocaleFile(file,"      %s[%.20g,%.20g]: ",tag,
+              (void) FormatLocaleFile(file,"      \"%s[%.20g,%.20g]\": ",tag,
                 (double) dataset,(double) record);
               length=(size_t) (GetStringInfoDatum(profile)[i++] << 8);
               length|=GetStringInfoDatum(profile)[i++];
