@@ -1368,6 +1368,7 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
     sigma=StringToDouble(artifact,(char **) NULL);
   (void) FormatLocaleString(geometry,MagickPathExtent,"gaussian:%.20gx%.20g",
     radius,sigma);
+(void) FormatLocaleString(geometry,MagickPathExtent,"square:%.20g",4.0);
   kernel_info=AcquireKernelInfo(geometry,exception);
   if (kernel_info == (KernelInfo *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
@@ -1387,7 +1388,7 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
   #pragma omp parallel for schedule(static,4) shared(status) \
     magick_threads(image,image,1,1)
 #endif
-  for (y=0; y < (ssize_t) image->rows; y+=(ssize_t) kernel_info->height)
+  for (y=(-((ssize_t) kernel_info->height/2)); y < (ssize_t) image->rows; y+=(ssize_t) kernel_info->height)
   {
     double
       channel_distortion[MaxPixelChannels+1];
@@ -1401,7 +1402,7 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
     if (status == MagickFalse)
       continue;
     (void) ResetMagickMemory(channel_distortion,0,sizeof(channel_distortion));
-    for (x=0; x < (ssize_t) image->columns; x+=(ssize_t) kernel_info->width)
+    for (x=(-((ssize_t) kernel_info->width/2)); x < (ssize_t) image->columns; x+=(ssize_t) kernel_info->width)
     {
       double
         image_sum[MaxPixelChannels+1],
@@ -1507,10 +1508,10 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
   image_view=DestroyCacheView(image_view);
   reconstruct_view=DestroyCacheView(reconstruct_view);
   n=0;
-  for (y=0; y < (ssize_t) image->rows; y+=(ssize_t) kernel_info->height)
+  for (y=(-((ssize_t) kernel_info->height/2)); y < (ssize_t) image->rows; y+=(ssize_t) kernel_info->height)
   {
     register ssize_t x;
-    for (x=0; x < (ssize_t) image->columns; x+=(ssize_t) kernel_info->width)
+    for (x=(-((ssize_t) kernel_info->width/2)); x < (ssize_t) image->columns; x+=(ssize_t) kernel_info->width)
       n+=kernel_info->height;
   }
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
