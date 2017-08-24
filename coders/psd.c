@@ -1287,10 +1287,12 @@ static MagickBooleanType ReadPSDChannel(Image *image,
 
   channel_image=image;
   mask=(Image *) NULL;
-  if (layer_info->channel_info[channel].type < -1)
+  if ((layer_info->channel_info[channel].type < -1) &&
+      (layer_info->mask.page.width > 0) && (layer_info->mask.page.height > 0))
     {
       const char
         *option;
+
       /*
         Ignore mask that is not a user supplied layer mask, if the mask is
         disabled or if the flags have unsupported values.
@@ -1637,9 +1639,9 @@ static MagickBooleanType ReadPSDLayersInternal(Image *image,
                 */
                 layer_info[i].mask.page.y=ReadBlobSignedLong(image);
                 layer_info[i].mask.page.x=ReadBlobSignedLong(image);
-                layer_info[i].mask.page.height=(size_t) (ReadBlobLong(image)-
+                layer_info[i].mask.page.height=(size_t) (ReadBlobSignedLong(image)-
                   layer_info[i].mask.page.y);
-                layer_info[i].mask.page.width=(size_t) (ReadBlobLong(image)-
+                layer_info[i].mask.page.width=(size_t) (ReadBlobSignedLong(image)-
                   layer_info[i].mask.page.x);
                 layer_info[i].mask.background=(unsigned char) ReadBlobByte(
                   image);
@@ -3358,8 +3360,10 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
         size+=WriteBlobMSBLong(image,20);
         size+=WriteBlobMSBSignedLong(image,mask->page.y);
         size+=WriteBlobMSBSignedLong(image,mask->page.x);
-        size+=WriteBlobMSBLong(image,mask->rows+mask->page.y);
-        size+=WriteBlobMSBLong(image,mask->columns+mask->page.x);
+        size+=WriteBlobMSBSignedLong(image,(const signed int) mask->rows+
+          mask->page.y);
+        size+=WriteBlobMSBSignedLong(image,(const signed int) mask->columns+
+          mask->page.x);
         size+=WriteBlobByte(image,default_color);
         size+=WriteBlobByte(image,mask->compose == NoCompositeOp ? 2 : 0);
         size+=WriteBlobMSBShort(image,0);
