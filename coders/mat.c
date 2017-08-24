@@ -1387,7 +1387,7 @@ END_OF_READING:
     image2=DestroyImage(image2);
   if (image == (Image *) NULL)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader")
-  return(image);
+  return(image); 
 }
 
 /*
