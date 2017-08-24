@@ -733,6 +733,10 @@ MagickExport Image *SeparateImage(const Image *image,
     }
   separate_image->alpha_trait=UndefinedPixelTrait;
   (void) SetImageColorspace(separate_image,GRAYColorspace,exception);
+  if ((IsRGBColorspace(image->colorspace) != MagickFalse) ||
+      (image->colorspace == XYZColorspace) ||
+      (image->colorspace == xyYColorspace))
+    image->gamma=1.000;
   /*
     Separate image.
   */
