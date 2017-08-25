@@ -648,9 +648,6 @@ static MagickBooleanType load_level(Image *image,XCFDocInfo *inDocInfo,
     if (offset2 == 0)
       offset2=(MagickOffsetType) (offset + TILE_WIDTH * TILE_WIDTH * 4* 1.5);
     /* seek to the tile offset */
-    if (offset2 > GetBlobSize(image))
-      ThrowBinaryException(CorruptImageError,"InsufficientImageDataInFile",
-        image->filename);
     if (SeekBlob(image, offset, SEEK_SET) != offset)
       ThrowBinaryException(CorruptImageError,"InsufficientImageDataInFile",
         image->filename);
