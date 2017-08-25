@@ -1368,7 +1368,6 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
     sigma=StringToDouble(artifact,(char **) NULL);
   (void) FormatLocaleString(geometry,MagickPathExtent,"gaussian:%.20gx%.20g",
     radius,sigma);
-(void) FormatLocaleString(geometry,MagickPathExtent,"square:%.20g",4.0);
   kernel_info=AcquireKernelInfo(geometry,exception);
   if (kernel_info == (KernelInfo *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
