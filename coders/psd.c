@@ -689,8 +689,8 @@ static inline size_t GetPSDPacketSize(Image *image)
 static inline MagickSizeType GetPSDSize(const PSDInfo *psd_info,Image *image)
 {
   if (psd_info->version == 1)
-    return((MagickSizeType) ReadBlobLong(image));
-  return((MagickSizeType) ReadBlobLongLong(image));
+    return((MagickSizeType) ReadBlobMSBLong(image));
+  return((MagickSizeType) ReadBlobMSBLongLong(image));
 }
 
 static inline size_t GetPSDRowSize(Image *image)
