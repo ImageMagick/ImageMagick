@@ -1436,19 +1436,19 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
           for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
           {
             double
-              reference_pixel,
-              reference_pixel_mu,
-              reference_pixel_mu_squared,
-              reference_pixel_sigma_squared,
-              reference_pixel_squared,
-              reference_target_mu,
-              reference_target_pixel,
-              reference_target_sigma,
-              target_pixel,
-              target_pixel_mu,
-              target_pixel_mu_squared,
-              target_pixel_sigma_squared,
-              target_pixel_squared;
+              x_pixel,
+              x_pixel_mu,
+              x_pixel_mu_squared,
+              x_pixel_sigma_squared,
+              x_pixel_squared,
+              x_y_mu,
+              x_y_pixel,
+              x_y_sigma,
+              y_pixel,
+              y_pixel_mu,
+              y_pixel_mu_squared,
+              y_pixel_sigma_squared,
+              y_pixel_squared;
 
             PixelChannel channel = GetPixelChannelChannel(image,i);
             PixelTrait traits = GetPixelChannelTraits(image,channel);
@@ -1461,27 +1461,23 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
             /*
                Reference https://en.wikipedia.org/wiki/Structural_similarity.
             */
-            reference_pixel=QuantumScale*p[i];
-            reference_pixel_squared=reference_pixel*reference_pixel;
-            reference_pixel_mu=(*k)*reference_pixel;
-            reference_pixel_mu_squared=reference_pixel_mu*reference_pixel_mu;
-            reference_pixel_sigma_squared=(*k)*reference_pixel_squared-
-              reference_pixel_mu_squared;
-            target_pixel=QuantumScale*
-              GetPixelChannel(reconstruct_image,channel,q);
-            target_pixel_squared=target_pixel*target_pixel;
-            target_pixel_mu=(*k)*target_pixel;
-            target_pixel_mu_squared=target_pixel_mu*target_pixel_mu;
-            target_pixel_sigma_squared=(*k)*target_pixel_squared-
-              target_pixel_mu_squared;
-            reference_target_pixel=reference_pixel*target_pixel;
-            reference_target_sigma=(*k)*reference_target_pixel;
-            reference_target_mu=reference_pixel_mu*target_pixel_mu;
-            reference_target_sigma=reference_target_sigma-reference_target_mu;
-            channel_distortion[i]+=
-              ((2.0*reference_target_mu+c1)*(2.0*reference_target_sigma+c2))/
-              ((reference_pixel_mu_squared+target_pixel_mu_squared+c1)*
-               (reference_pixel_sigma_squared+target_pixel_sigma_squared+c2));
+            x_pixel=QuantumScale*p[i];
+            x_pixel_squared=x_pixel*x_pixel;
+            x_pixel_mu=(*k)*x_pixel;
+            x_pixel_mu_squared=x_pixel_mu*x_pixel_mu;
+            x_pixel_sigma_squared=(*k)*x_pixel_squared-x_pixel_mu_squared;
+            y_pixel=QuantumScale*GetPixelChannel(reconstruct_image,channel,q);
+            y_pixel_squared=y_pixel*y_pixel;
+            y_pixel_mu=(*k)*y_pixel;
+            y_pixel_mu_squared=y_pixel_mu*y_pixel_mu;
+            y_pixel_sigma_squared=(*k)*y_pixel_squared-y_pixel_mu_squared;
+            x_y_pixel=x_pixel*y_pixel;
+            x_y_sigma=(*k)*x_y_pixel;
+            x_y_mu=x_pixel_mu*y_pixel_mu;
+            x_y_sigma=x_y_sigma-x_y_mu;
+            channel_distortion[i]+=((2.0*x_y_mu+c1)*(2.0*x_y_sigma+c2))/
+              ((x_pixel_mu_squared+y_pixel_mu_squared+c1)*
+               (x_pixel_sigma_squared+y_pixel_sigma_squared+c2));
           }
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(reconstruct_image);
