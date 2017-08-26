@@ -1478,21 +1478,16 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
         for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
         {
           double
-            covarience,
-            image_mean,
             image_variance,
-            reconstruct_mean,
             reconstruct_variance;
 
-          image_mean=image_sum[i];
-          image_variance=image_sum_squared[i]-(image_mean*image_mean);
-          reconstruct_mean=reconstruct_sum[i];
-          reconstruct_variance=reconstruct_sum_squared[i]-(reconstruct_mean*
-            reconstruct_mean);
-          covarience=sum[i]-(image_mean*reconstruct_mean);
-          channel_distortion[i]+=((2.0*image_mean*reconstruct_mean+c1)*(2.0*
-            covarience+c2))/((image_mean*image_mean+reconstruct_mean*
-            reconstruct_mean+c1)*(image_variance+reconstruct_variance+c2));
+          image_variance=image_sum_squared[i]-(image_sum[i]*image_sum[i]);
+          reconstruct_variance=reconstruct_sum_squared[i]-(reconstruct_sum[i]*
+            reconstruct_sum[i]);
+          channel_distortion[i]+=((2.0*image_sum[i]*reconstruct_sum[i]+c1)*(2.0*
+            (sum[i]-(image_sum[i]*reconstruct_sum[i]))+c2))/((image_sum[i]*
+            image_sum[i]+reconstruct_sum[i]*reconstruct_sum[i]+c1)*
+            (image_variance+reconstruct_variance+c2));
         }
       }
     }
