@@ -1,3 +1,7 @@
+2017-08-26  7.0.6-10 Dirk Lemstra <dirk@lem.....org>
+  * Fixed thread safety issue inside the pango and librsvg decoder
+    (reference: https://github.com/dlemstra/Magick.NET/issues/91).
+
 2017-08-20  6.9.9-9 Cristy  <quetzlzacatenango@image...>
   * Release ImageMagick version 6.9.9-9, GIT revision 11915:5205bda17:20170820.
 
