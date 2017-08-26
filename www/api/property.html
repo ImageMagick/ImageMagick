@@ -57,7 +57,7 @@
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/property_8c.html" id="CloneImageProperties">CloneImageProperties</a></h2>
 
-<p>CloneImageProperties() clones one or more image properties.</p>
+<p>CloneImageProperties() clones all the image properties to another image.</p>
 
 <p>The format of the CloneImageProperties method is:</p>
 
@@ -84,7 +84,7 @@ MagickBooleanType CloneImageProperties(Image *image,
 </dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/property_8c.html" id="DefineImageProperty">DefineImageProperty</a></h2>
 
-<p>DefineImageProperty() associates a key/value pair with an image property.</p>
+<p>DefineImageProperty() associates an assignment string of the form "key=value" with an artifact or options. It is equivelent to SetImageProperty().</p>
 
 <p>The format of the DefineImageProperty method is:</p>
 
@@ -137,7 +137,7 @@ MagickBooleanType DeleteImageProperty(Image *image,const char *property)
 </dl>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/property_8c.html" id="DestroyImageProperties">DestroyImageProperties</a></h2>
 
-<p>DestroyImageProperties() releases memory associated with image property values.</p>
+<p>DestroyImageProperties() destroys all properties and associated memory attached to the given image.</p>
 
 <p>The format of the DestroyDefines method is:</p>
 
@@ -182,6 +182,10 @@ MagickBooleanType FormatImageProperty(Image *image,const char *property,
 <h2><a href="http://www.imagemagick.org/api/MagickCore/property_8c.html" id="GetImageProperty">GetImageProperty</a></h2>
 
 <p>GetImageProperty() gets a value associated with an image property.</p>
+
+<p>This includes,  profile prefixes, such as "exif:", "iptc:" and "8bim:" It does not handle non-prifile prefixes, such as "fx:", "option:", or "artifact:".</p>
+
+<p>The returned string is stored as a properity of the same name for faster lookup later. It should NOT be freed by the caller.</p>
 
 <p>The format of the GetImageProperty method is:</p>
 
