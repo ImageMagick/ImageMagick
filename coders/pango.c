@@ -507,6 +507,7 @@ ModuleExport size_t RegisterPANGOImage(void)
   if (*version != '\0')
     entry->version=ConstantString(version);
   entry->flags^=CoderAdjoinFlag;
+  entry->flags^=CoderDecoderThreadSupportFlag;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

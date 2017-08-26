@@ -3346,6 +3346,9 @@ ModuleExport size_t RegisterSVGImage(void)
 #endif
   entry->encoder=(EncodeImageHandler *) WriteSVGImage;
   entry->flags^=CoderBlobSupportFlag;
+#if defined(MAGICKCORE_RSVG_DELEGATE)
+  entry->flags^=CoderDecoderThreadSupportFlag;
+#endif
   entry->mime_type=ConstantString("image/svg+xml");
   if (*version != '\0')
     entry->version=ConstantString(version);
@@ -3357,6 +3360,9 @@ ModuleExport size_t RegisterSVGImage(void)
 #endif
   entry->encoder=(EncodeImageHandler *) WriteSVGImage;
   entry->flags^=CoderBlobSupportFlag;
+#if defined(MAGICKCORE_RSVG_DELEGATE)
+  entry->flags^=CoderDecoderThreadSupportFlag;
+#endif
   entry->mime_type=ConstantString("image/svg+xml");
   if (*version != '\0')
     entry->version=ConstantString(version);
@@ -3369,6 +3375,9 @@ ModuleExport size_t RegisterSVGImage(void)
 #endif
   entry->encoder=(EncodeImageHandler *) WriteSVGImage;
   entry->flags^=CoderBlobSupportFlag;
+#if defined(MAGICKCORE_RSVG_DELEGATE)
+  entry->flags^=CoderDecoderThreadSupportFlag;
+#endif
   entry->magick=(IsImageFormatHandler *) IsSVG;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
