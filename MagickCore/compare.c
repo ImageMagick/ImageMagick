@@ -1441,9 +1441,9 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
               x_pixel_mu_squared,
               x_pixel_sigma_squared,
               x_pixel_squared,
-              x_y_mu,
-              x_y_pixel,
-              x_y_sigma,
+              xy_mu,
+              xy_pixel,
+              xy_sigma,
               y_pixel,
               y_pixel_mu,
               y_pixel_mu_squared,
@@ -1471,11 +1471,11 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
             y_pixel_mu=(*k)*y_pixel;
             y_pixel_mu_squared=y_pixel_mu*y_pixel_mu;
             y_pixel_sigma_squared=(*k)*y_pixel_squared-y_pixel_mu_squared;
-            x_y_pixel=x_pixel*y_pixel;
-            x_y_sigma=(*k)*x_y_pixel;
-            x_y_mu=x_pixel_mu*y_pixel_mu;
-            x_y_sigma=x_y_sigma-x_y_mu;
-            channel_distortion[i]+=((2.0*x_y_mu+c1)*(2.0*x_y_sigma+c2))/
+            xy_pixel=x_pixel*y_pixel;
+            xy_sigma=(*k)*xy_pixel;
+            xy_mu=x_pixel_mu*y_pixel_mu;
+            xy_sigma=xy_sigma-xy_mu;
+            channel_distortion[i]+=((2.0*xy_mu+c1)*(2.0*xy_sigma+c2))/
               ((x_pixel_mu_squared+y_pixel_mu_squared+c1)*
                (x_pixel_sigma_squared+y_pixel_sigma_squared+c2));
           }
