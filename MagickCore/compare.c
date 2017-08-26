@@ -1451,6 +1451,10 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
 
           for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
           {
+            double
+              pixel_p,
+              pixel_q;
+
             PixelChannel channel = GetPixelChannelChannel(image,i);
             PixelTrait traits = GetPixelChannelTraits(image,channel);
             PixelTrait reconstruct_traits = GetPixelChannelTraits(
@@ -1459,14 +1463,13 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
                 (reconstruct_traits == UndefinedPixelTrait) ||
                 ((reconstruct_traits & UpdatePixelTrait) == 0))
               continue;
-            image_sum[i]+=(*k)*p[i];
-            image_sum_squared[i]+=((*k)*p[i]*(*k)*p[i]);
-            reconstruct_sum[i]+=(*k)*GetPixelChannel(reconstruct_image,channel,
-              q);
-            reconstruct_sum_squared[i]+=((*k)*GetPixelChannel(reconstruct_image,
-              channel,q)*(*k)*GetPixelChannel(reconstruct_image,channel,q));
-            sum[i]+=((*k)*p[i]*(*k)*GetPixelChannel(reconstruct_image,channel,
-              q));
+            pixel_p=(*k)*p[i];
+            pixel_q=(*k)*GetPixelChannel(reconstruct_image,channel,q);
+            image_sum[i]+=pixel_p;
+            image_sum_squared[i]+=pixel_p*pixel_p;
+            reconstruct_sum[i]+=pixel_q;
+            reconstruct_sum_squared[i]+=pixel_q*pixel_q;
+            sum[i]+=pixel_p*pixel_q;
           }
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(reconstruct_image);
@@ -1481,17 +1484,12 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
             reconstruct_mean,
             reconstruct_variance;
 
-          size_t
-            number_samples;
-
-          number_samples=kernel_info->width*kernel_info->height;
-          image_mean=image_sum[i]/number_samples;
-          image_variance=image_sum_squared[i]/number_samples-(image_mean*
-            image_mean);
-          reconstruct_mean=reconstruct_sum[i]/number_samples;
-          reconstruct_variance=reconstruct_sum_squared[i]/number_samples-
-            (reconstruct_mean*reconstruct_mean);
-          covarience=sum[i]/number_samples-(image_mean*reconstruct_mean);
+          image_mean=image_sum[i];
+          image_variance=image_sum_squared[i]-(image_mean*image_mean);
+          reconstruct_mean=reconstruct_sum[i];
+          reconstruct_variance=reconstruct_sum_squared[i]-(reconstruct_mean*
+            reconstruct_mean);
+          covarience=sum[i]-(image_mean*reconstruct_mean);
           channel_distortion[i]+=((2.0*image_mean*reconstruct_mean+c1)*(2.0*
             covarience+c2))/((image_mean*image_mean+reconstruct_mean*
             reconstruct_mean+c1)*(image_variance+reconstruct_variance+c2));
