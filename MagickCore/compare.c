@@ -1403,13 +1403,6 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
     (void) ResetMagickMemory(channel_distortion,0,sizeof(channel_distortion));
     for (x=(-((ssize_t) kernel_info->width/2)); x < (ssize_t) image->columns; x+=(ssize_t) kernel_info->width)
     {
-      double
-        image_sum[MaxPixelChannels+1],
-        image_sum_squared[MaxPixelChannels+1],
-        reconstruct_sum[MaxPixelChannels+1],
-        reconstruct_sum_squared[MaxPixelChannels+1],
-        sum[MaxPixelChannels+1];
-
       register const Quantum
         *magick_restrict p,
         *magick_restrict q;
@@ -1429,15 +1422,6 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
           status=MagickFalse;
           break;
         }
-      (void) ResetMagickMemory(image_sum,0,(MaxPixelChannels+1)*
-        sizeof(*image_sum));
-      (void) ResetMagickMemory(image_sum_squared,0,(MaxPixelChannels+1)*
-        sizeof(*image_sum_squared));
-      (void) ResetMagickMemory(reconstruct_sum,0,(MaxPixelChannels+1)*
-        sizeof(*reconstruct_sum));
-      (void) ResetMagickMemory(reconstruct_sum_squared,0,(MaxPixelChannels+1)*
-        sizeof(*reconstruct_sum_squared));
-      (void) ResetMagickMemory(sum,0,(MaxPixelChannels+1)*sizeof(*sum));
       k=kernel_info->values;
       for (v=0; v < (ssize_t) kernel_info->height; v++)
       {
@@ -1452,8 +1436,19 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
           for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
           {
             double
-              pixel_p,
-              pixel_q;
+              reference_pixel,
+              reference_pixel_mu,
+              reference_pixel_mu_squared,
+              reference_pixel_sigma_squared,
+              reference_pixel_squared,
+              reference_target_mu,
+              reference_target_pixel,
+              reference_target_sigma,
+              target_pixel,
+              target_pixel_mu,
+              target_pixel_mu_squared,
+              target_pixel_sigma_squared,
+              target_pixel_squared;
 
             PixelChannel channel = GetPixelChannelChannel(image,i);
             PixelTrait traits = GetPixelChannelTraits(image,channel);
@@ -1463,31 +1458,34 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
                 (reconstruct_traits == UndefinedPixelTrait) ||
                 ((reconstruct_traits & UpdatePixelTrait) == 0))
               continue;
-            pixel_p=(*k)*p[i];
-            pixel_q=(*k)*GetPixelChannel(reconstruct_image,channel,q);
-            image_sum[i]+=pixel_p;
-            image_sum_squared[i]+=pixel_p*pixel_p;
-            reconstruct_sum[i]+=pixel_q;
-            reconstruct_sum_squared[i]+=pixel_q*pixel_q;
-            sum[i]+=pixel_p*pixel_q;
+            /*
+               Reference https://en.wikipedia.org/wiki/Structural_similarity.
+            */
+            reference_pixel=QuantumScale*p[i];
+            reference_pixel_squared=reference_pixel*reference_pixel;
+            reference_pixel_mu=(*k)*reference_pixel;
+            reference_pixel_mu_squared=reference_pixel_mu*reference_pixel_mu;
+            reference_pixel_sigma_squared=(*k)*reference_pixel_squared-
+              reference_pixel_mu_squared;
+            target_pixel=QuantumScale*
+              GetPixelChannel(reconstruct_image,channel,q);
+            target_pixel_squared=target_pixel*target_pixel;
+            target_pixel_mu=(*k)*target_pixel;
+            target_pixel_mu_squared=target_pixel_mu*target_pixel_mu;
+            target_pixel_sigma_squared=(*k)*target_pixel_squared-
+              target_pixel_mu_squared;
+            reference_target_pixel=reference_pixel*target_pixel;
+            reference_target_sigma=(*k)*reference_target_pixel;
+            reference_target_mu=reference_pixel_mu*target_pixel_mu;
+            reference_target_sigma=reference_target_sigma-reference_target_mu;
+            channel_distortion[i]+=
+              ((2.0*reference_target_mu+c1)*(2.0*reference_target_sigma+c2))/
+              ((reference_pixel_mu_squared+target_pixel_mu_squared+c1)*
+               (reference_pixel_sigma_squared+target_pixel_sigma_squared+c2));
           }
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(reconstruct_image);
           k++;
-        }
-        for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-        {
-          double
-            image_variance,
-            reconstruct_variance;
-
-          image_variance=image_sum_squared[i]-(image_sum[i]*image_sum[i]);
-          reconstruct_variance=reconstruct_sum_squared[i]-(reconstruct_sum[i]*
-            reconstruct_sum[i]);
-          channel_distortion[i]+=((2.0*image_sum[i]*reconstruct_sum[i]+c1)*(2.0*
-            (sum[i]-(image_sum[i]*reconstruct_sum[i]))+c2))/((image_sum[i]*
-            image_sum[i]+reconstruct_sum[i]*reconstruct_sum[i]+c1)*
-            (image_variance+reconstruct_variance+c2));
         }
       }
     }
@@ -1497,15 +1495,17 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
     for (j=0; j <= MaxPixelChannels; j++)
       distortion[j]+=channel_distortion[j];
   }
-  image_view=DestroyCacheView(image_view);
-  reconstruct_view=DestroyCacheView(reconstruct_view);
   n=0;
   for (y=(-((ssize_t) kernel_info->height/2)); y < (ssize_t) image->rows; y+=(ssize_t) kernel_info->height)
   {
-    register ssize_t x;
+    register ssize_t
+      x;
+
     for (x=(-((ssize_t) kernel_info->width/2)); x < (ssize_t) image->columns; x+=(ssize_t) kernel_info->width)
-      n+=kernel_info->height;
+      n+=kernel_info->width*kernel_info->height;
   }
+  image_view=DestroyCacheView(image_view);
+  reconstruct_view=DestroyCacheView(reconstruct_view);
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
   {
     PixelChannel channel = GetPixelChannelChannel(image,i);
