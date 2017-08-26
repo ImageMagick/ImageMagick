@@ -1153,14 +1153,8 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
       metric,&distortion,exception);
   else
     if (similarity_image == (Image *) NULL)
-      {
-        if (metric == PerceptualHashErrorMetric)
-          difference_image=CompareImageChannels(image,reconstruct_image,
-            channels,metric,&distortion,exception);
-        else
-          ThrowCompareException(OptionError,"ImageWidthsOrHeightsDiffer",
-            image->filename);
-      }
+      difference_image=CompareImageChannels(image,reconstruct_image,channels,
+        metric,&distortion,exception);
     else
       {
         Image
