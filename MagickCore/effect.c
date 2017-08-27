@@ -3204,7 +3204,8 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
       (ssize_t) ((width-1)/2L),luminance_image->columns+width,width,exception);
     q=QueueCacheViewAuthenticPixels(blur_view,0,y,blur_image->columns,1,
       exception);
-    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
+    if ((p == (const Quantum *) NULL) || (l == (const Quantum *) NULL) ||
+        (q == (Quantum *) NULL))
       {
         status=MagickFalse;
         continue;
