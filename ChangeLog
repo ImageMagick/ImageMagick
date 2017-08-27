@@ -1,3 +1,6 @@
+2017-08-27  7.0.6-10 Cristy  <quetzlzacatenango@image...>
+  * Support -metric ssim, structual similarity index.
+
 2017-08-26  7.0.6-10 Dirk Lemstra <dirk@lem.....org>
   * Fixed thread safety issue inside the pango and librsvg decoder
     (reference: https://github.com/dlemstra/Magick.NET/issues/91).
