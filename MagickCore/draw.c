@@ -2051,9 +2051,9 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
           {
             GetNextToken(q,&q,extent,token);
             factor=strchr(token,'%') != (char *) NULL ? 0.01 : 1.0;
-            graphic_context[n]->fill.alpha=QuantumRange-ClampToQuantum(
-              (MagickRealType) QuantumRange*(1.0-factor*StringToDouble(token,
-              &next_token)));
+            graphic_context[n]->fill.alpha=(MagickRealType) (QuantumRange-
+              ClampToQuantum((MagickRealType) QuantumRange*(1.0-factor*
+              StringToDouble(token,&next_token))));
             if (token == next_token)
               status=MagickFalse;
             break;
@@ -2233,9 +2233,9 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
           {
             GetNextToken(q,&q,extent,token);
             factor=strchr(token,'%') != (char *) NULL ? 0.01 : 1.0;
-            graphic_context[n]->alpha=QuantumRange*(1.0-(QuantumScale*
-              graphic_context[n]->alpha*(1.0-factor*StringToDouble(token,
-              &next_token))));
+            graphic_context[n]->alpha=(Quantum) (QuantumRange*(1.0-
+              (QuantumScale*graphic_context[n]->alpha*(1.0-factor*
+              StringToDouble(token,&next_token)))));
             graphic_context[n]->fill_alpha=QuantumRange*(1.0-(QuantumScale*
               graphic_context[n]->fill_alpha*(1.0-factor*StringToDouble(token,
               &next_token))));
@@ -2721,9 +2721,9 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
           {
             GetNextToken(q,&q,extent,token);
             factor=strchr(token,'%') != (char *) NULL ? 0.01 : 1.0;
-            graphic_context[n]->stroke.alpha=QuantumRange-ClampToQuantum(
-              (MagickRealType) QuantumRange*(1.0-factor*StringToDouble(token,
-              &next_token)));
+            graphic_context[n]->stroke.alpha=(MagickRealType) (QuantumRange-
+              ClampToQuantum((MagickRealType) QuantumRange*(1.0-factor*
+              StringToDouble(token,&next_token))));
             if (token == next_token)
               status=MagickFalse;
             break;
@@ -2953,7 +2953,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
     /*
       Speculate how many points our primitive might consume.
     */
-    points_extent=primitive_info[j].coordinates;
+    points_extent=(double) primitive_info[j].coordinates;
     switch (primitive_type)
     {
       case RectanglePrimitive:
@@ -2980,7 +2980,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
         if (primitive_info[j].coordinates > 107)
           (void) ThrowMagickException(exception,GetMagickModule(),DrawError,
             "TooManyBezierCoordinates","`%s'",token);
-        points_extent=BezierQuantum*primitive_info[j].coordinates;
+        points_extent=(double) (BezierQuantum*primitive_info[j].coordinates);
         break;
       }
       case PathPrimitive:
@@ -3027,13 +3027,13 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
       default:
         break;
     }
-    if (((size_t) points_extent) < points_extent)
+    if (((double) ((size_t) points_extent)) < points_extent)
       {
         (void) ThrowMagickException(exception,GetMagickModule(),
           ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
         break;
       }
-    if ((i+points_extent) >= number_points)
+    if (((MagickSizeType) (i+points_extent)) >= number_points)
       {
         /*
           Resize based on speculative points required by primitive.
