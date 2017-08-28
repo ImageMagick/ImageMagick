@@ -1394,8 +1394,8 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
       *magick_restrict p,
       *magick_restrict q;
 
-		register ssize_t
-			i,
+    register ssize_t
+      i,
       x;
 
     if (status == MagickFalse)
