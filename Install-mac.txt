@@ -75,8 +75,8 @@ against its message digest.
   
 Unpack and change into the top-level ImageMagick directory:
   
-    $magick> tar xvfz ImageMagick-7.0.6-0.tar.gz 
-    $magick> cd ImageMagick-7.0.6
+    $magick> tar xvfz ImageMagick-7.0.7-0.tar.gz 
+    $magick> cd ImageMagick-7.0.7
   
 Configure ImageMagick:
   
