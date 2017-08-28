@@ -1693,6 +1693,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
   double
     angle,
     factor,
+    points_extent,
     primitive_extent;
 
   DrawInfo
@@ -1702,7 +1703,6 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
     proceed;
 
   MagickSizeType
-    length,
     number_points;
 
   MagickStatusType
@@ -2023,7 +2023,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
                 status&=QueryColorDatabase(token,&graphic_context[n]->fill,
                   &image->exception);
                 if (graphic_context[n]->fill_opacity != OpaqueOpacity)
-                  graphic_context[n]->fill.opacity=
+                  graphic_context[n]->fill.opacity=(Quantum)
                     graphic_context[n]->fill_opacity;
                 if (status == MagickFalse)
                   {
@@ -2249,9 +2249,9 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
           {
             GetNextToken(q,&q,extent,token);
             factor=strchr(token,'%') != (char *) NULL ? 0.01 : 1.0;
-            graphic_context[n]->opacity=QuantumRange-QuantumRange*((1.0-
-              QuantumScale*graphic_context[n]->opacity)*factor*
-              StringToDouble(token,&next_token));
+            graphic_context[n]->opacity=(Quantum) (QuantumRange-QuantumRange*
+              ((1.0-QuantumScale*graphic_context[n]->opacity)*factor*
+              StringToDouble(token,&next_token)));
             graphic_context[n]->fill_opacity=QuantumRange-QuantumRange*((1.0-
               QuantumScale*graphic_context[n]->fill_opacity)*factor*
               StringToDouble(token,&next_token));
@@ -2594,7 +2594,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
                 status&=QueryColorDatabase(token,&graphic_context[n]->stroke,
                   &image->exception);
                 if (graphic_context[n]->stroke_opacity != OpaqueOpacity)
-                  graphic_context[n]->stroke.opacity=
+                  graphic_context[n]->stroke.opacity=(Quantum)
                     graphic_context[n]->stroke_opacity;
                 if (status == MagickFalse)
                   {
@@ -2942,12 +2942,12 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
     /*
       Speculate how many points our primitive might consume.
     */
-    length=primitive_info[j].coordinates;
+    points_extent=(double) primitive_info[j].coordinates;
     switch (primitive_type)
     {
       case RectanglePrimitive:
       {
-        length*=5;
+        points_extent*=5;
         break;
       }
       case RoundRectanglePrimitive:
@@ -2960,8 +2960,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
         alpha=bounds.x2-bounds.x1;
         beta=bounds.y2-bounds.y1;
         radius=hypot((double) alpha,(double) beta);
-        length*=5;
-        length+=2*((size_t) ceil((double) MagickPI*radius))+6*BezierQuantum+360;
+        points_extent*=5;
+        points_extent+=2*ceil((double) MagickPI*radius)+6*BezierQuantum+360;
         break;
       }
       case BezierPrimitive:
@@ -2969,7 +2969,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
         if (primitive_info[j].coordinates > 107)
           (void) ThrowMagickException(&image->exception,GetMagickModule(),
             DrawError,"TooManyBezierCoordinates","`%s'",token);
-        length=BezierQuantum*primitive_info[j].coordinates;
+        points_extent=(double) (BezierQuantum*primitive_info[j].coordinates);
         break;
       }
       case PathPrimitive:
@@ -2979,7 +2979,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
           *t;
 
         GetNextToken(q,&q,extent,token);
-        length=1;
+        points_extent=1;
         t=token;
         for (s=token; *s != '\0'; s=t)
         {
@@ -2993,9 +2993,9 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
               t++;
               continue;
             }
-          length++;
+          points_extent++;
         }
-        length=length*BezierQuantum;
+        points_extent=points_extent*BezierQuantum;
         break;
       }
       case CirclePrimitive:
@@ -3010,18 +3010,24 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
         alpha=bounds.x2-bounds.x1;
         beta=bounds.y2-bounds.y1;
         radius=hypot((double) alpha,(double) beta);
-        length=2*((size_t) ceil((double) MagickPI*radius))+6*BezierQuantum+360;
+        points_extent=2*ceil((double) MagickPI*radius)+6*BezierQuantum+360;
         break;
       }
       default:
         break;
     }
-    if ((i+length) >= number_points)
+    if (((double) ((size_t) points_extent)) < points_extent)
+      {
+        (void) ThrowMagickException(&image->exception,GetMagickModule(),
+          ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+        break;
+      }
+    if ((MagickSizeType) (i+points_extent) >= number_points)
       {
         /*
           Resize based on speculative points required by primitive.
         */
-        number_points+=length+1;
+        number_points+=points_extent+1;
         primitive_info=(PrimitiveInfo *) ResizeQuantumMemory(primitive_info,
           (size_t) number_points,sizeof(*primitive_info));
         if ((primitive_info == (PrimitiveInfo *) NULL) ||
