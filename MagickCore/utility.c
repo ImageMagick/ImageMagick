@@ -173,26 +173,38 @@ MagickExport MagickBooleanType AcquireUniqueSymbolicLink(const char *source,
   assert(source != (const char *) NULL);
   assert(destination != (char *) NULL);
 #if defined(MAGICKCORE_HAVE_SYMLINK)
-  (void) AcquireUniqueFilename(destination);
-  (void) RelinquishUniqueFileResource(destination);
-  if (*source == *DirectorySeparator)
-    {
-      if (symlink(source,destination) == 0)
-        return(MagickTrue);
-    }
-  else
-    {
-      char
-        path[MagickPathExtent];
+  {
+    char
+      *passes;
 
-      *path='\0';
-      if (getcwd(path,MagickPathExtent) == (char *) NULL)
-        return(MagickFalse);
-      (void) ConcatenateMagickString(path,DirectorySeparator,MagickPathExtent);
-      (void) ConcatenateMagickString(path,source,MagickPathExtent);
-      if (symlink(path,destination) == 0)
-        return(MagickTrue);
-    }
+    (void) AcquireUniqueFilename(destination);
+    (void) RelinquishUniqueFileResource(destination);
+    passes=GetPolicyValue("system:shred");
+    if (passes != (char *) NULL)
+      passes=DestroyString(passes);
+    else
+      {
+        if (*source == *DirectorySeparator)
+          {
+            if (symlink(source,destination) == 0)
+              return(MagickTrue);
+          }
+        else
+          {
+            char
+              path[MagickPathExtent];
+
+            *path='\0';
+            if (getcwd(path,MagickPathExtent) == (char *) NULL)
+              return(MagickFalse);
+            (void) ConcatenateMagickString(path,DirectorySeparator,
+              MagickPathExtent);
+            (void) ConcatenateMagickString(path,source,MagickPathExtent);
+            if (symlink(path,destination) == 0)
+              return(MagickTrue);
+          }
+      }
+  }
 #endif
   destination_file=AcquireUniqueFileResource(destination);
   if (destination_file == -1)
