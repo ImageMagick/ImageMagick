@@ -869,7 +869,7 @@ MagickExport void RelinquishMagickResource(const ResourceType type,
   (void) FormatMagickSize(size,MagickFalse,"B",MagickFormatExtent,
     resource_request);
   if (resource_semaphore == (SemaphoreInfo *) NULL)
-		ActivateSemaphoreInfo(&resource_semaphore);
+    ActivateSemaphoreInfo(&resource_semaphore);
   LockSemaphoreInfo(resource_semaphore);
   switch (type)
   {
