@@ -2233,7 +2233,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
       quantum_scanline=(Quantum *) RelinquishMagickMemory(quantum_scanline);
 
-      quantum_info=DestroyQuantumInfo(quantum_info);
+      if (quantum_info != (QuantumInfo *) NULL)
+        quantum_info=DestroyQuantumInfo(quantum_info);
 
 #ifdef IMPNG_SETJMP_NOT_THREAD_SAFE
       UnlockSemaphoreInfo(ping_semaphore);
