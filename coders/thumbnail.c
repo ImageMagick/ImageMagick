@@ -190,11 +190,11 @@ static MagickBooleanType WriteTHUMBNAILImage(const ImageInfo *image_info,
   if (property == (const char *) NULL)
     ThrowWriterException(CoderError,"ImageDoesNotHaveAThumbnail");
   length=(size_t) StringToLong(property);
+  if (((offset+length) < 2) || ((offset+length) > GetStringInfoLength(profile)))
+    ThrowWriterException(CoderError,"ImageDoesNotHaveAThumbnail");
   (void) ResetMagickMemory(magick,0,sizeof(magick));
   for (i=0; i < (ssize_t) length; i++)
   {
-    if ((offset+i) >= GetStringInfoLength(profile))
-      break;
     magick[0]=magick[1];
     magick[1]=magick[2];
     magick[2]=GetStringInfoDatum(profile)[offset+i];
