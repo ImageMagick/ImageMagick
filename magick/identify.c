@@ -1027,7 +1027,8 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
                 pixel;
 
               GetMagickPixelPacket(image,&pixel);
-              SetMagickPixelPacket(image,p,indexes+x,&pixel);
+              if (p != (const PixelPacket *) NULL)
+                SetMagickPixelPacket(image,p,indexes+x,&pixel);
               (void) QueryMagickColorname(image,&pixel,SVGCompliance,tuple,
                 exception);
               (void) FormatLocaleFile(file,"  Alpha: %s ",tuple);
