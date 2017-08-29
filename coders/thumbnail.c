@@ -177,7 +177,7 @@ static MagickBooleanType WriteTHUMBNAILImage(const ImageInfo *image_info,
     offset;
 
   unsigned char
-    magick[MagickPathExtent];
+    *q;
 
   profile=GetImageProfile(image,"exif");
   if (profile == (const StringInfo *) NULL)
@@ -186,23 +186,22 @@ static MagickBooleanType WriteTHUMBNAILImage(const ImageInfo *image_info,
   if (property == (const char *) NULL)
     ThrowWriterException(CoderError,"ImageDoesNotHaveAThumbnail");
   offset=(ssize_t) StringToLong(property);
+  if (offset < 0)
+    ThrowWriterException(CoderError,"ImageDoesNotHaveAThumbnail");
   property=GetImageProperty(image,"exif:JPEGInterchangeFormatLength",exception);
   if (property == (const char *) NULL)
     ThrowWriterException(CoderError,"ImageDoesNotHaveAThumbnail");
   length=(size_t) StringToLong(property);
-  if (((offset+length) < 2) || ((offset+length) > GetStringInfoLength(profile)))
-    ThrowWriterException(CoderError,"ImageDoesNotHaveAThumbnail");
-  (void) ResetMagickMemory(magick,0,sizeof(magick));
-  for (i=0; i < (ssize_t) length; i++)
+  q=GetStringInfoDatum(profile)+offset;
+  for (i=offset; i < (ssize_t) GetStringInfoLength(profile) - 3; i++)
   {
-    magick[0]=magick[1];
-    magick[1]=magick[2];
-    magick[2]=GetStringInfoDatum(profile)[offset+i];
-    if (memcmp(magick,"\377\330\377",3) == 0)
+    if (memcmp(q,"\377\330\377",3) == 0)
       break;
+    q++;
   }
-  thumbnail_image=BlobToImage(image_info,GetStringInfoDatum(profile)+offset+i-2,
-    length,exception);
+  if ((q+length) > (GetStringInfoDatum(profile)+GetStringInfoLength(profile)))
+    ThrowWriterException(CoderError,"ImageDoesNotHaveAThumbnail");
+  thumbnail_image=BlobToImage(image_info,q,length,exception);
   if (thumbnail_image == (Image *) NULL)
     return(MagickFalse);
   (void) SetImageType(thumbnail_image,thumbnail_image->alpha_trait ==
