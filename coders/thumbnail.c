@@ -193,6 +193,8 @@ static MagickBooleanType WriteTHUMBNAILImage(const ImageInfo *image_info,
   (void) ResetMagickMemory(magick,0,sizeof(magick));
   for (i=0; i < (ssize_t) length; i++)
   {
+    if ((offset+i) >= GetStringInfoLength(profile))
+      break;
     magick[0]=magick[1];
     magick[1]=magick[2];
     magick[2]=GetStringInfoDatum(profile)[offset+i];
