@@ -3261,25 +3261,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             image->colormap[i].blue=0;
           }
         }
-
-      else
-        {
-          Quantum
-            scale;
-
-          scale = (Quantum) (65535.0/((1UL << ping_file_depth)-1.0));
-
-#if (MAGICKCORE_QUANTUM_DEPTH > 16)
-          scale = ScaleShortToQuantum(scale);
-#endif
-
-          for (i=0; i < (ssize_t) image->colors; i++)
-          {
-            image->colormap[i].red=(Quantum) (i*scale);
-            image->colormap[i].green=(Quantum) (i*scale);
-            image->colormap[i].blue=(Quantum) (i*scale);
-          }
-       }
     }
 
    /* Set some properties for reporting by "identify" */
@@ -3659,6 +3640,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           default:
             break;
         }
+
+        if (SyncAuthenticPixels(image,exception) == MagickFalse)
+          break;
 
         /*
           Transfer image scanline.
