@@ -135,7 +135,7 @@ static size_t GetNumberChannels(const Image *image,const ChannelType channel)
     channels++;
   if (((channel & IndexChannel) != 0) && (image->colorspace == CMYKColorspace))
     channels++;
-  return(channels == 0 ? 1 : channels);
+  return(channels == 0 ? 1UL : channels);
 }
 
 static inline MagickBooleanType ValidateImageMorphology(
@@ -408,11 +408,11 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
     *image_view,
     *reconstruct_view;
 
+  double
+    fuzz;
+
   MagickBooleanType
     status;
-
-  MagickPixelPacket
-    zero;
 
   size_t
     columns,
@@ -425,7 +425,7 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
     Compute the absolute difference in pixels between two images.
   */
   status=MagickTrue;
-  GetMagickPixelPacket(image,&zero);
+  fuzz=GetFuzzyColorDistance(image,reconstruct_image);
   rows=MagickMax(image->rows,reconstruct_image->rows);
   columns=MagickMax(image->columns,reconstruct_image->columns);
   image_view=AcquireVirtualCacheView(image,exception);
@@ -438,10 +438,6 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
   {
     double
       channel_distortion[CompositeChannels+1];
-
-    MagickPixelPacket
-      pixel,
-      reconstruct_pixel;
 
     register const IndexPacket
       *magick_restrict indexes,
@@ -466,30 +462,69 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
       }
     indexes=GetCacheViewVirtualIndexQueue(image_view);
     reconstruct_indexes=GetCacheViewVirtualIndexQueue(reconstruct_view);
-    pixel=zero;
-    reconstruct_pixel=pixel;
     (void) ResetMagickMemory(channel_distortion,0,sizeof(channel_distortion));
     for (x=0; x < (ssize_t) columns; x++)
     {
-      SetMagickPixelPacket(image,p,indexes+x,&pixel);
-      SetMagickPixelPacket(reconstruct_image,q,reconstruct_indexes+x,
-        &reconstruct_pixel);
-      if (IsMagickColorSimilar(&pixel,&reconstruct_pixel) == MagickFalse)
+      double
+        Da,
+        distance,
+        Sa;
+
+      MagickBooleanType
+        difference;
+
+      difference=MagickFalse;
+      Sa=QuantumScale*GetPixelAlpha(p);
+      Da=QuantumScale*GetPixelAlpha(q);
+      if ((channel & RedChannel) != 0)
         {
-          if ((channel & RedChannel) != 0)
-            channel_distortion[RedChannel]++;
-          if ((channel & GreenChannel) != 0)
-            channel_distortion[GreenChannel]++;
-          if ((channel & BlueChannel) != 0)
-            channel_distortion[BlueChannel]++;
-          if (((channel & OpacityChannel) != 0) &&
-              (image->matte != MagickFalse))
-            channel_distortion[OpacityChannel]++;
-          if (((channel & IndexChannel) != 0) &&
-              (image->colorspace == CMYKColorspace))
-            channel_distortion[BlackChannel]++;
-          channel_distortion[CompositeChannels]++;
+          distance=Sa*GetPixelRed(p)-Da*GetPixelRed(q);
+          if ((distance*distance) > fuzz)
+            {
+              channel_distortion[RedChannel]++;
+              difference=MagickTrue;
+            }
         }
+      if ((channel & GreenChannel) != 0)
+        {
+          distance=Sa*GetPixelGreen(p)-Da*GetPixelGreen(q);
+          if ((distance*distance) > fuzz)
+            {
+              channel_distortion[GreenChannel]++;
+              difference=MagickTrue;
+            }
+        }
+      if ((channel & BlueChannel) != 0)
+        {
+          distance=Sa*GetPixelBlue(p)-Da*GetPixelBlue(q);
+          if ((distance*distance) > fuzz)
+            {
+              channel_distortion[BlueChannel]++;
+              difference=MagickTrue;
+            }
+        }
+      if (((channel & OpacityChannel) != 0) &&
+          (image->matte != MagickFalse))
+        {
+          distance=(double) GetPixelOpacity(p)-GetPixelOpacity(q);
+          if ((distance*distance) > fuzz)
+            {
+              channel_distortion[OpacityChannel]++;
+              difference=MagickTrue;
+            }
+        }
+      if (((channel & IndexChannel) != 0) &&
+          (image->colorspace == CMYKColorspace))
+        {
+          distance=Sa*indexes[x]-Da*reconstruct_indexes[x];
+          if ((distance*distance) > fuzz)
+            {
+              channel_distortion[BlackChannel]++;
+              difference=MagickTrue;
+            }
+        }
+      if (difference != MagickFalse)
+        channel_distortion[CompositeChannels]++;
       p++;
       q++;
     }
