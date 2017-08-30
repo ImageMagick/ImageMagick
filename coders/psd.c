@@ -1337,7 +1337,7 @@ static MagickBooleanType ReadPSDChannel(Image *image,
     }
 
   offset=TellBlob(image);
-  status=MagickTrue;
+  status=MagickFalse;
   switch(compression)
   {
     case Raw:
