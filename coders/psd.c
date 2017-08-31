@@ -1681,24 +1681,12 @@ static MagickBooleanType ReadPSDLayersInternal(Image *image,
                   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                     "      layer blending ranges: length=%.20g",(double)
                     ((MagickOffsetType) length));
-                /*
-                  We read it, but don't use it...
-                */
-                for (j=0; j < (ssize_t) length; j+=8)
-                {
-                  size_t blend_source=ReadBlobLong(image);
-                  size_t blend_dest=ReadBlobLong(image);
-                  if (EOFBlob(image) != MagickFalse)
-                    {
-                      layer_info=DestroyLayerInfo(layer_info,number_layers);
-                      ThrowBinaryException(CorruptImageError,
-                        "InsufficientImageDataInFile",image->filename);
-                    }
-                  if (image->debug != MagickFalse)
-                    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                      "        source(%x), dest(%x)",(unsigned int)
-                      blend_source,(unsigned int) blend_dest);
-                }
+                if (DiscardBlobBytes(image,length) == MagickFalse)
+                  {
+                    layer_info=DestroyLayerInfo(layer_info,number_layers);
+                    ThrowBinaryException(CorruptImageError,
+                      "UnexpectedEndOfFile",image->filename);
+                  }
               }
             /*
               Layer name.
