@@ -466,6 +466,12 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
         {
            case 0:
            {
+             if (jp2_image->numcomps == 1)
+               {
+                 SetPixelGray(image,ClampToQuantum(pixel),q);
+                 SetPixelAlpha(image,OpaqueAlpha,q);
+                 break;
+               }
              SetPixelRed(image,ClampToQuantum(pixel),q);
              SetPixelGreen(image,ClampToQuantum(pixel),q);
              SetPixelBlue(image,ClampToQuantum(pixel),q);
