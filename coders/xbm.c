@@ -361,7 +361,7 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   else
     for (i=0; i < (ssize_t) (bytes_per_line*image->rows); i++)
     {
-      value=XBMInteger(image,hex_digits);
+      c=XBMInteger(image,hex_digits);
       if (c < 0)
         break;
       *p++=(unsigned char) c;
