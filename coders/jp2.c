@@ -471,6 +471,12 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
         {
            case 0:
            {
+             if (jp2_image->numcomps == 1)
+               {
+                 SetPixelGray(q,ClampToQuantum(pixel));
+                 SetPixelOpacity(q,OpaqueOpacity);
+                 break;
+               }
              q->red=ClampToQuantum(pixel);
              q->green=q->red;
              q->blue=q->red;
@@ -1014,7 +1020,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
           {
             if (jp2_colorspace == OPJ_CLRSPC_GRAY)
               {
-                *q=(int) (scale*GetPixelLuma(image,p));
+                *q=(int) (scale*GetPixelGray(image,p));
                 break;
               }
             *q=(int) (scale*p->red);
