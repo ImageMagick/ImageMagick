@@ -659,6 +659,8 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (count != 1)
           continue;
         length=extent;
+        if (length > GetBlobSize(image))
+          ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
         profile=BlobToStringInfo((const void *) NULL,length);
         if (profile != (StringInfo *) NULL)
           {
@@ -1051,6 +1053,7 @@ ModuleExport size_t RegisterPSImage(void)
   entry->decoder=(DecodeImageHandler *) ReadPSImage;
   entry->encoder=(EncodeImageHandler *) WritePSImage;
   entry->magick=(IsImageFormatHandler *) IsPS;
+  entry->seekable_stream=MagickTrue;
   entry->adjoin=MagickFalse;
   entry->blob_support=MagickFalse;
   entry->seekable_stream=MagickTrue;
@@ -1062,6 +1065,7 @@ ModuleExport size_t RegisterPSImage(void)
   entry=SetMagickInfo("EPS");
   entry->decoder=(DecodeImageHandler *) ReadPSImage;
   entry->encoder=(EncodeImageHandler *) WritePSImage;
+  entry->seekable_stream=MagickTrue;
   entry->magick=(IsImageFormatHandler *) IsPS;
   entry->adjoin=MagickFalse;
   entry->blob_support=MagickFalse;
@@ -1073,6 +1077,7 @@ ModuleExport size_t RegisterPSImage(void)
   entry=SetMagickInfo("EPSF");
   entry->decoder=(DecodeImageHandler *) ReadPSImage;
   entry->encoder=(EncodeImageHandler *) WritePSImage;
+  entry->seekable_stream=MagickTrue;
   entry->magick=(IsImageFormatHandler *) IsPS;
   entry->adjoin=MagickFalse;
   entry->blob_support=MagickFalse;
@@ -1084,6 +1089,7 @@ ModuleExport size_t RegisterPSImage(void)
   entry=SetMagickInfo("EPSI");
   entry->decoder=(DecodeImageHandler *) ReadPSImage;
   entry->encoder=(EncodeImageHandler *) WritePSImage;
+  entry->seekable_stream=MagickTrue;
   entry->magick=(IsImageFormatHandler *) IsPS;
   entry->adjoin=MagickFalse;
   entry->blob_support=MagickFalse;
@@ -1096,6 +1102,7 @@ ModuleExport size_t RegisterPSImage(void)
   entry=SetMagickInfo("PS");
   entry->decoder=(DecodeImageHandler *) ReadPSImage;
   entry->encoder=(EncodeImageHandler *) WritePSImage;
+  entry->seekable_stream=MagickTrue;
   entry->magick=(IsImageFormatHandler *) IsPS;
   entry->mime_type=ConstantString("application/postscript");
   entry->module=ConstantString("PS");
