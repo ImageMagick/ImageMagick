@@ -1013,7 +1013,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
           {
             if (jp2_colorspace == OPJ_CLRSPC_GRAY)
               {
-                *q=(int) (scale*GetPixelLuma(image,p));
+                *q=(int) (scale*GetPixelGray(image,p));
                 break;
               }
             *q=(int) (scale*GetPixelRed(image,p));
