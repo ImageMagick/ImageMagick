@@ -954,12 +954,6 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
             colormap=(unsigned char *) RelinquishMagickMemory(colormap);
           }
       }
-    if (EOFBlob(image) != MagickFalse)
-      {
-        ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
-          image->filename);
-        break;
-      }
     if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
         break;
@@ -972,6 +966,12 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
     status=PersistPixelCache(image,cache_filename,MagickTrue,&offset,exception);
     if (status == MagickFalse)
       ThrowReaderException(CacheError,"UnableToPersistPixelCache");
+    if (EOFBlob(image) != MagickFalse)
+      {
+        ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
+          image->filename);
+        break;
+      }
     /*
       Proceed to next image.
     */
