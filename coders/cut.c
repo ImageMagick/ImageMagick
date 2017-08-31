@@ -577,6 +577,8 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
               for (i=0; i < (ssize_t)image->rows; i++)
                 {
                   q=QueueAuthenticPixels(image,0,i,image->columns,1,exception);
+                  if (q == (PixelPacket *) NULL)
+                    break;
                   for (j=0; j < (ssize_t)image->columns; j++)
                     {
                       if (GetPixelRed(q) == ScaleCharToQuantum(1))
