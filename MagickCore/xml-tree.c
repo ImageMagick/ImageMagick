@@ -1280,7 +1280,7 @@ MagickPrivate XMLTreeInfo *InsertTagIntoXMLTree(XMLTreeInfo *xml_info,
 %
 %  A description of each parameter follows:
 %
-%    o xml:  The XML string.
+%    o xml:  A null-terminated XML string.
 %
 %    o exception: return any errors or warnings in this structure.
 %
